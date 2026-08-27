@@ -261,7 +261,18 @@ export function wireSelect(wrap: HTMLElement, ctx: SelectCtx): () => void {
    capture phase so the cell's own single-click sheet never opens under it. */
 export function wireMove(
   wrap: HTMLElement,
-  opts: { count: number; onCommit: (targetDate: string) => void; onCancel: () => void },
+  opts: {
+    count: number
+    // Desktop only — the mouse hovering a day, so the matrix can paint the
+    // landing preview live. A phone has no hover, so this never fires there.
+    onHover: (targetDate: string) => void
+    // A click (desktop) or tap (phone) ON a day. The matrix decides what it
+    // means: a desktop click lands the block at once (the live hover was the
+    // preview); a phone tap STAGES the landing and shows a Confirm bar, since
+    // there is no undo and no hover to preview with (owner, 27 Aug 26).
+    onPick: (targetDate: string) => void
+    onCancel: () => void
+  },
 ): () => void {
   // Inline-styled on purpose: the ghost lives on document.body, OUTSIDE the
   // `#page-leavewar` section every matrix.css rule is scoped under, so a class
@@ -277,16 +288,21 @@ export function wireMove(
   } as Partial<CSSStyleDeclaration>)
   document.body.appendChild(ghost)
 
+  const cellAtTarget = (t: EventTarget | null): Cell | null =>
+    parseCellId((t as HTMLElement)?.closest?.('[data-testid^="cell-"]')?.getAttribute('data-testid'))
+
   const onMouseMove = (e: MouseEvent) => {
     ghost.style.display = ''
     ghost.style.left = `${e.clientX + 14}px`
     ghost.style.top = `${e.clientY + 14}px`
+    const cell = cellAtTarget(e.target)
+    if (cell) opts.onHover(cell.date)
   }
   const onClick = (e: MouseEvent) => {
-    const cell = parseCellId((e.target as HTMLElement)?.closest?.('[data-testid^="cell-"]')?.getAttribute('data-testid'))
+    const cell = cellAtTarget(e.target)
     if (!cell) return
     e.stopPropagation(); e.preventDefault()   // never open the cell's own sheet
-    opts.onCommit(cell.date)
+    opts.onPick(cell.date)
   }
   const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') { e.stopPropagation(); opts.onCancel() } }
 
@@ -299,6 +315,30 @@ export function wireMove(
     document.removeEventListener('keydown', onKey, true)
     ghost.remove()
   }
+}
+
+/** Paint the move-mode LANDING preview onto the grid — where the picked block
+ *  will sit if dropped now. Stateless (it clears by the `.mvland` class, not a
+ *  tracked set) so the matrix can drive it from either the desktop hover or the
+ *  phone's staged tap without threading a painter through. */
+export function paintLanding(wrap: HTMLElement, cells: Cell[]): void {
+  clearLanding(wrap)
+  for (const c of cells) wrap.querySelector(`[data-testid="cell-${c.personId}-${c.date}"]`)?.classList.add('mvland')
+}
+export function clearLanding(wrap: HTMLElement): void {
+  wrap.querySelectorAll('.mvland').forEach(el => el.classList.remove('mvland'))
+}
+
+/** The earliest day among a set of cells (min YYYY-MM-DD, which sorts as date
+ *  order). The move anchors here so the block's FIRST input lands on the tapped
+ *  day (owner, 27 Aug 26 — "drop the leave on the day you tap"); any empty
+ *  margin the user swept up before it is simply dropped, and the gaps BETWEEN
+ *  inputs ride along because every cell shifts by the same delta. `null` for an
+ *  empty set. */
+export function earliestDate(cells: Cell[]): string | null {
+  let min: string | null = null
+  for (const c of cells) if (min === null || c.date < min) min = c.date
+  return min
 }
 
 /** Whole days between two YYYY-MM-DD dates (b − a), for the move delta. */

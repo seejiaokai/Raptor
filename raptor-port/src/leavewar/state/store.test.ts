@@ -43,6 +43,7 @@ import {
   clearCells,
   setBidStates,
   moveCells,
+  movableCells,
 } from './store'
 import { makeWar, seedRequirements } from '../engine'
 import { localBackend, memoryBackend } from './storage'
@@ -1862,5 +1863,34 @@ describe('the batch writers (drag-select)', () => {
     setCells(cells('ramp', '2026-01-06'), 'LL')
     expect(moveCells(cells('ramp', '2026-01-06'), -400)).toMatchObject({ reason: 'window' })
     expect(getState().grid.ramp['2026-01-06']).toBe('LL')
+  })
+
+  // The loose-selection move (owner, 27 Aug 26 — "move items … that are present
+  // … if I select more area than required it registers as nothing"). The empty
+  // cells swept up around the inputs are dropped; only the inputs move.
+  it('movableCells keeps only the cells holding a bid this role may move', () => {
+    setCells(cells('ramp', '2026-01-07', '2026-01-08'), 'LL')
+    // a loose box: 06 and 09 are empty, 07/08 hold LL
+    const box = cells('ramp', '2026-01-06', '2026-01-07', '2026-01-08', '2026-01-09')
+    expect(movableCells(box)).toEqual(cells('ramp', '2026-01-07', '2026-01-08'))
+    // a Raptor-owned cell is not movable either (tata OIL on 09, seed)
+    expect(movableCells(cells('tata', '2026-01-09'))).toEqual([])
+    // a box of nothing but empty cells has nothing to move
+    expect(movableCells(cells('ramp', '2026-01-20', '2026-01-21'))).toEqual([])
+  })
+
+  it('a loose box moves the inputs present and keeps the gap between them', () => {
+    // LL on 07 and 09, a one-day gap at 08 between them
+    setCells(cells('ramp', '2026-01-07'), 'LL')
+    setCells(cells('ramp', '2026-01-09'), 'LL')
+    // the user sweeps a wider box (06..09, empties at 06 and 08) and drops it so
+    // the first input (07) lands on 15 → delta +8
+    const movers = movableCells(cells('ramp', '2026-01-06', '2026-01-07', '2026-01-08', '2026-01-09'))
+    expect(moveCells(movers, 8)).toBe('moved')
+    expect(getState().grid.ramp['2026-01-15']).toBe('LL')   // first input on the tapped day
+    expect(getState().grid.ramp['2026-01-17']).toBe('LL')   // the 2-day gap is kept
+    expect(getState().grid.ramp['2026-01-16']).toBeUndefined()
+    expect(getState().grid.ramp?.['2026-01-07']).toBeUndefined()   // sources vacated
+    expect(getState().grid.ramp?.['2026-01-09']).toBeUndefined()
   })
 })

@@ -1937,6 +1937,28 @@ export function shiftBid(personId: string, from: string, to: string): ShiftResul
   return 'shifted'
 }
 
+/** Does this cell hold a bid THIS role may move? The same three conditions
+ *  `moveCells` guards each source by (below): not Raptor-owned, a real
+ *  biddable bid, and editable in the current stage/window. Kept as one body so
+ *  the sheet (whether to offer Move at all), the anchor (which day is the
+ *  block's first input) and the mover all read the SAME rule — a second copy
+ *  would be a drift seam. */
+function isMovableSource(personId: string, date: string): boolean {
+  return !raptorOwns(state.states, personId, date)
+    && isBiddable(state.grid[personId]?.[date])
+    && canEditCell(state.period, state.role, date)
+}
+
+/** The cells of a selection that actually hold a movable bid — the drag-move
+ *  acts on the inputs PRESENT in the box and ignores the empty cells around
+ *  them (owner, 27 Aug 26 — "move items … that are present … if I select more
+ *  area than required it registers as nothing"). The caller filters with this
+ *  before a move, both to skip the empties and to anchor the slide on the
+ *  block's first input. */
+export function movableCells(cells: { personId: string; date: string }[]): { personId: string; date: string }[] {
+  return cells.filter(c => isMovableSource(c.personId, c.date))
+}
+
 export type MoveResult = 'moved' | { reason: 'nothing' | 'raptor' | 'occupied' | 'window'; at?: string }
 /** Move a whole SELECTION by a day-delta — the drag-select "Move" (owner,
  *  27 Aug 26). ATOMIC on purpose: every source and every landing day is

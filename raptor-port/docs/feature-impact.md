@@ -446,6 +446,15 @@ check the other):
   through the store's single `quiet` flag; a second batching owner is the
   other half of this seam (`setCellRange` is the precedent, save/restore keeps
   them safe if nested). Pinned in `store.test.ts` §the batch writers.
+  **`movableCells` is the third face of the same guard** (27 Aug 26, loose-box
+  move): "which cells of a selection hold a movable bid" is read in THREE places
+  — the sheet (offer Move at all), the anchor (`earliestDate` of the movers, so
+  the first input lands on the tapped day), and the mover itself. It is one
+  exported body over the same `!raptorOwns && isBiddable && canEditCell` triple
+  `moveCells` guards each source by; a second copy is the seam. The move now
+  ignores the empty cells swept up around the inputs (a loose box no longer
+  refuses as "nothing") — but the ATOMIC target guards still refuse an occupied
+  / Raptor / out-of-window landing, so nothing is overwritten.
 - **The two role reads: `LOGINROLE` (the ceiling) vs `SESSION.role` (the
   effective role)** (27 Aug 26, the admin's view toggle). DELIBERATELY two
   values, not a drift bug — but a seam to respect: every PERMISSION gate

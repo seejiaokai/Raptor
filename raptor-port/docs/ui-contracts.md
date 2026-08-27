@@ -4018,17 +4018,39 @@ BidPicker's look and vocabulary, not instead of it.
   admin adds the Medical row); Decide (Pending / Approve / Refuse) is the
   admin's once bidding is CLOSED **or PUBLISHED** (owner, 27 Aug 26 — the admin
   still runs a published war); Delete (second-tap confirm — no undo here)
-  and Move act on the editable bids the selection holds; Post-out shows only
+  and Move act on the editable bids the selection holds, and **show only when it
+  holds one** (`movableCells(sel.cells).length`, owner 27 Aug 26 — a loose box
+  of empty cells is Fill-only, so Move never opens on nothing to move);
+  Post-out shows only
   for a single-person selection. Partial writes report in the `sel-note` voice
   and keep the sheet up. The per-person negative-balance confirm the single
   sheet shows is deliberately NOT carried here (it would ask a block-spanning
   question per person).
-- **Move mode** (`wireMove`): the sheet gives way to a pinned banner
-  (`.mv-banner`) and, on a desktop, a faded ghost that follows the mouse; a
-  CLICK/TAP on any day lands the block shifted by the day-delta from its start
-  (`moveCells`, atomic — an occupied/Raptor/out-of-window landing refuses the
-  whole move and says why). A phone SWIPE scrolls and never drops; only a
-  clean tap commits. The `moved` dotted-orange edge marks the landed cells via
+- **Move mode** (`wireMove`) moves the inputs PRESENT in the box and ignores
+  the empty cells swept up around them (owner, 27 Aug 26 — "move items … that
+  are present … if I select more area than required it registers as nothing"):
+  `Matrix.tsx` filters the rectangle through `movableCells` first, so a loose
+  box no longer refuses as "nothing". The block ANCHORS on its earliest input
+  (`earliestDate(movers)`), and that input lands on the day picked — the leading
+  empty margin is dropped, the gaps between multiple inputs ride along
+  (`daysBetween(anchor, target)` is the one delta every cell shifts by). Owner's
+  call, asked 27 Aug 26: *drop the leave on the tapped day*, not preserve a
+  leading gap.
+  - **Landing preview** (`.mvland`, a warm-amber wash + ring — deliberately NOT
+    the accent-blue of the selection or the viewer's own row, so it reads as
+    "will land here" over whatever it covers). Painted straight onto the cells
+    (`paintLanding`/`clearLanding`, no React state).
+  - **Desktop:** a faded ghost follows the mouse and the landing highlights live
+    under it; a CLICK lands the block (the hover WAS the preview).
+  - **Phone:** no hover, and no undo — so it is TWO steps (owner, 27 Aug 26 —
+    *show a preview, then Confirm*): a TAP stages the landing (highlighted) and
+    the banner shows **Confirm / Cancel**; Confirm commits, a fresh tap
+    re-stages, Cancel exits. A SWIPE scrolls and never stages (only a clean tap
+    fires). `movePreview` holds the staged day; the banner counts `movers`, not
+    the raw rectangle.
+  - The move itself is `moveCells(movers, delta)`, atomic — an occupied / Raptor
+    / out-of-window landing refuses the whole move and says why in the banner.
+  The `moved` dotted-orange edge marks the landed cells via
   the existing `shiftedFrom` state — but **only once bidding has CLOSED**
   (owner, 27 Aug 26): while a war is still OPEN people shuffle their own bids
   freely, so a moved mark then is noise; `Matrix.tsx`'s `movedShown`
@@ -4044,7 +4066,10 @@ BidPicker's look and vocabulary, not instead of it.
   `setBidStates` / `moveCells`) and carry the SAME per-cell guards as their
   single-cell parents under the `quiet` suppression, so a batch can never
   write where one cell could not; details in `docs/engine-rules.md`
-  §Auth / roles. Pinned in `store.test.ts`, `selectsheet.test.tsx`.
+  §Auth / roles. `movableCells` factors those same guards into "which cells of a
+  selection hold a movable bid" — the ONE body the sheet (offer Move?), the
+  anchor (first input), and the mover all read, so "what moves" can't drift.
+  Pinned in `store.test.ts`, `selectsheet.test.tsx`.
 
 ### Published-stage remarks editing (owner, 27 Aug 26)
 

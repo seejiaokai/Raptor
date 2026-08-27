@@ -715,6 +715,10 @@ test('drag-selecting a row fills the leave across the whole span', async ({ page
 test('a drag-selection offers Move, and the move banner appears on entering it', async ({ page }) => {
   desktopOnly()
   await lwRole(page, 'admin')
+  // fill the block first: Move (and Delete) are offered only when the selection
+  // actually holds a movable bid (owner, 27 Aug 26 — an empty box is Fill-only)
+  await dragSelect(page, 'cell-slipway-2026-01-06', 'cell-slipway-2026-01-07')
+  await page.locator('[data-testid="sel-LL"]').click()
   await dragSelect(page, 'cell-slipway-2026-01-06', 'cell-slipway-2026-01-07')
   await expect(page.locator('[data-testid="select-sheet"]')).toBeVisible()
   await page.locator('[data-testid="sel-move"]').click()
@@ -725,6 +729,32 @@ test('a drag-selection offers Move, and the move banner appears on entering it',
   await expect(page.locator('[data-testid="move-banner"]')).toBeVisible()
   await page.locator('[data-testid="move-cancel"]').click()
   await expect(page.locator('[data-testid="move-banner"]')).toHaveCount(0)
+})
+
+// A loose box — bigger than the inputs, with an empty margin — must MOVE the
+// inputs present and ignore the empties (owner, 27 Aug 26 — "move items … that
+// are present … if I select more area than required it registers as nothing").
+// The block's first input lands on the day clicked; the empty leading day (06)
+// is dropped. Desktop lands on the click; the phone preview+Confirm is checked
+// in the live-view pass.
+test('a loose box moves the inputs present, first input landing on the clicked day', async ({ page }) => {
+  desktopOnly()
+  await lwRole(page, 'admin')
+  // two inputs on 07–08; 06 stays empty
+  await dragSelect(page, 'cell-slipway-2026-01-07', 'cell-slipway-2026-01-08')
+  await page.locator('[data-testid="sel-LL"]').click()
+  await expect(page.locator('[data-testid="cell-slipway-2026-01-07"] .c')).toBeVisible()
+  await expect(page.locator('[data-testid="select-sheet"]')).toHaveCount(0)
+  // over-select 06..08 (06 empty) and move — the empty must NOT refuse it
+  await dragSelect(page, 'cell-slipway-2026-01-06', 'cell-slipway-2026-01-08')
+  await page.locator('[data-testid="sel-move"]').click()
+  await expect(page.locator('[data-testid="move-banner"]')).toBeVisible()
+  // click a landing day: the first input (07) lands here, 08 rides along
+  await page.locator('[data-testid="cell-slipway-2026-01-12"]').click()
+  await expect(page.locator('[data-testid="move-banner"]')).toHaveCount(0)              // moved, mode cleared
+  await expect(page.locator('[data-testid="cell-slipway-2026-01-12"] .c')).toBeVisible() // first input on the clicked day
+  await expect(page.locator('[data-testid="cell-slipway-2026-01-13"] .c')).toBeVisible() // the gap is kept
+  await expect(page.locator('[data-testid="cell-slipway-2026-01-07"] .c')).toHaveCount(0) // source vacated
 })
 
 // Published-stage remarks editing (owner, 27 Aug 26): once the war is

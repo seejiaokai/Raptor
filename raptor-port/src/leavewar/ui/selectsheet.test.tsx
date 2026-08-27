@@ -100,6 +100,21 @@ describe('the selection sheet', () => {
     expect(screen.getByTestId('sel-LL')).toBeTruthy() // but can still fill
   })
 
+  it('hides Delete and Move when the box holds no movable bid (Fill-only)', () => {
+    // rampTwo's cells are empty here — nothing to delete or move
+    mount(rampTwo)
+    expect(screen.queryByTestId('sel-delete')).toBeNull()
+    expect(screen.queryByTestId('sel-move')).toBeNull()
+    expect(screen.getByTestId('sel-LL')).toBeTruthy() // Fill still offered
+  })
+
+  it('shows Delete and Move once the box holds a movable bid', () => {
+    setCell('ramp', '2026-01-06', 'LL')   // one input inside the box
+    mount(rampTwo)
+    expect(screen.getByTestId('sel-delete')).toBeTruthy()
+    expect(screen.getByTestId('sel-move')).toBeTruthy()
+  })
+
   it('offers Post-out only for a single-person selection', () => {
     const onPostOut = vi.fn()
     mount(rampTwo, { onPostOut })

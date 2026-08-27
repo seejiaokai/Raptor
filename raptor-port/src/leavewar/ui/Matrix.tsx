@@ -28,7 +28,7 @@ import {
   type Group,
   type Person,
 } from '../engine'
-import { addEventRow, autoSortRoster, DEFAULT_EVENT_ROWS, displayRoster, eventRowUsed, getState, MAX_EVENT_ROWS, moveCells, moveRosterRow, orderedManningIds, personLabel, removeEventRow, resetManningRules, setPersLabel, setPostOut, setShowSans, type MoveResult } from '../state/store'
+import { addEventRow, autoSortRoster, DEFAULT_EVENT_ROWS, displayRoster, eventRowUsed, getState, MAX_EVENT_ROWS, moveCells, movableCells, moveRosterRow, orderedManningIds, personLabel, removeEventRow, resetManningRules, setPersLabel, setPostOut, setShowSans, type MoveResult } from '../state/store'
 import { BidPicker, DecisionSheet, PostOutSheet, RaptorSheet } from './BidPicker'
 import { CounterSheet, FigureBreakdownSheet, PersonFiguresSheet } from './CounterSheet'
 import { PersonSheet } from './PersonSheet'
@@ -38,7 +38,7 @@ import { ManningSheet } from './ManningSheet'
 import { EventRows } from './EventRows'
 import { EventSheet } from './EventSheet'
 import { monthInView } from './monthview'
-import { wireSelect, wireMove, daysBetween, type Selection, type SelectCtx } from './select'
+import { wireSelect, wireMove, daysBetween, paintLanding, clearLanding, earliestDate, type Cell, type Selection, type SelectCtx } from './select'
 import { SelectSheet } from './SelectSheet'
 import { RemarksSheet } from './RemarksSheet'
 import { leaveInputAt } from '../sync'
@@ -156,6 +156,10 @@ export function Matrix() {
   const [sel, setSel] = useState<Selection | null>(null)
   const [moveSel, setMoveSel] = useState<Selection | null>(null)
   const [moveErr, setMoveErr] = useState('')
+  // Phone move-mode: the day a tap has STAGED, awaiting a Confirm (there is no
+  // undo, so a phone drop is a two-step — preview then commit, owner 27 Aug 26).
+  // Desktop lands on the click and never sets this.
+  const [movePreview, setMovePreview] = useState<string | null>(null)
   // Whether the open cell is a POSTED-OUT day (admin tapped a greyed cell to
   // undo it, owner 18 Aug 26). A day before the person joined is blank, not a
   // post-out, so it is excluded — there is nothing to undo there.
@@ -338,26 +342,9 @@ export function Matrix() {
   }, [])
   // A stage or war change drops any open selection or in-flight move, so a
   // block picked on one screen can never act on another.
-  useEffect(() => { setSel(null); setMoveSel(null) }, [period.stage, period.id])
-  // MOVE MODE: once a selection is being moved, a click on any day lands the
-  // whole block shifted by the day-delta from its start; a refusal keeps the
-  // mode and says why. The gesture is re-armed whenever `moveSel` changes, so
-  // its closure always holds the current block.
-  useEffect(() => {
-    const w = wrapRef.current
-    if (!moveSel || !w) return
-    setMoveErr('')
-    return wireMove(w, {
-      count: moveSel.cells.length,
-      onCommit: targetDate => {
-        const r = moveCells(moveSel.cells, daysBetween(moveSel.from, targetDate))
-        if (r === 'moved') { setMoveSel(null); setMoveErr('') }
-        else setMoveErr(moveReason(r))
-      },
-      onCancel: () => setMoveSel(null),
-    })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [moveSel])
+  useEffect(() => { setSel(null); setMoveSel(null); setMovePreview(null) }, [period.stage, period.id])
+  // MOVE MODE is wired further down, after the `phone` breakpoint state it
+  // reads to choose commit-on-click (desktop) vs preview-then-Confirm (phone).
   // The frozen-column overlay's own anchors (see the .mxband block below and
   // in matrix.css). `mxOuterRef` is the page-flow box the overlay is absolutely
   // placed inside; `rosterBodyRef` is the one row group it must line up with.
@@ -366,6 +353,45 @@ export function Matrix() {
   const rosterBodyRef = useRef<HTMLTableSectionElement>(null)
   const [phone, setPhone] = useState(false)
   const [bandTop, setBandTop] = useState<number | null>(null)
+
+  // MOVE MODE (owner, 27 Aug 26). The picked block is dropped onto a new day.
+  // `movers` are the inputs PRESENT in the selection — the empty cells the user
+  // swept up are dropped, so a loose box no longer refuses as "nothing"; the
+  // earliest of them (`moveAnchor`) is the block's first input, and it lands on
+  // the day tapped, the rest shifting with it (gaps between inputs kept). The
+  // landing is previewed live on desktop (hover) and staged before a Confirm on
+  // phone (no undo). `daysBetween(moveAnchor, target)` is the shared delta.
+  const movers = useMemo<Cell[]>(() => (moveSel ? movableCells(moveSel.cells) : []), [moveSel])
+  const moveAnchor = useMemo(() => earliestDate(movers), [movers])
+  const landingFor = (targetDate: string): Cell[] =>
+    moveAnchor === null ? [] : movers.map(c => ({ personId: c.personId, date: addDays(c.date, daysBetween(moveAnchor, targetDate)) }))
+  const commitMove = (targetDate: string) => {
+    const w = wrapRef.current
+    if (moveAnchor === null) { setMoveSel(null); setMovePreview(null); return }
+    const r = moveCells(movers, daysBetween(moveAnchor, targetDate))
+    if (w) clearLanding(w)
+    if (r === 'moved') { setMoveSel(null); setMovePreview(null); setMoveErr('') }
+    else { setMoveErr(moveReason(r)); setMovePreview(null) }   // keep the mode, say why
+  }
+  useEffect(() => {
+    const w = wrapRef.current
+    if (!moveSel || !w) return
+    setMoveErr(''); setMovePreview(null)
+    const cleanup = wireMove(w, {
+      count: movers.length,
+      onHover: date => paintLanding(w, landingFor(date)),   // desktop live preview
+      onPick: date => {
+        // Desktop lands on the click (the hover WAS the preview); a phone has no
+        // hover, so a tap stages the landing and waits for Confirm.
+        if (phone) { paintLanding(w, landingFor(date)); setMovePreview(date) }
+        else commitMove(date)
+      },
+      onCancel: () => { clearLanding(w); setMoveSel(null); setMovePreview(null) },
+    })
+    return () => { clearLanding(w); cleanup() }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [moveSel])
+
   const months = monthsIn(period.start, period.end)
 
   // The month BRACKET above the dates (owner, 18 Aug 26 — "draw a line at the
@@ -1877,14 +1903,29 @@ export function Matrix() {
           onClose={() => setSel(null)}
         />
       )}
-      {/* Move mode: a slim banner (the phone has no ghost to follow the finger)
-          and a Cancel; the desktop ghost follows the mouse from wireMove. A
-          tap on any day lands the block; a refusal shows here and keeps the
-          mode. */}
+      {/* Move mode: a slim banner. On desktop a ghost follows the mouse (from
+          wireMove) and a CLICK lands the block at once; on phone a TAP stages
+          the landing (`movePreview`) and the banner turns into Confirm/Cancel,
+          since there is no hover to preview with and no undo. A refusal shows
+          here and keeps the mode. The count is `movers` — the inputs present,
+          not the raw rectangle. */}
       {moveSel && (
         <div className="mv-banner" data-testid="move-banner">
-          <span className="mv-msg">{moveErr || `Tap a day to move ${moveSel.cells.length} ${moveSel.cells.length === 1 ? 'entry' : 'entries'}`}</span>
-          <button className="dchip" data-testid="move-cancel" onClick={() => setMoveSel(null)}>Cancel</button>
+          <span className="mv-msg">
+            {moveErr
+              ? moveErr
+              : movePreview
+                ? `Move ${movers.length} ${movers.length === 1 ? 'entry' : 'entries'} here?`
+                : `Tap a day to move ${movers.length} ${movers.length === 1 ? 'entry' : 'entries'}`}
+          </span>
+          {movePreview && (
+            <button className="dchip confirm" data-testid="move-confirm" onClick={() => commitMove(movePreview)}>Confirm</button>
+          )}
+          <button
+            className="dchip"
+            data-testid="move-cancel"
+            onClick={() => { const w = wrapRef.current; if (w) clearLanding(w); setMoveSel(null); setMovePreview(null) }}
+          >Cancel</button>
         </div>
       )}
       {/* A posted-out cell an admin tapped: the ONE control it offers is Undo,

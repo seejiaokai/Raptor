@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { parseCellId, rectCells, wireSelect } from './select'
+import { clearLanding, earliestDate, paintLanding, parseCellId, rectCells, wireSelect } from './select'
 
 // The gesture controller (wireSelect) needs a real browser (elementFromPoint,
 // pointer capture, layout) and is covered by e2e/leavewar.spec.ts. Here we pin
@@ -53,6 +53,47 @@ describe('rectCells', () => {
   it('returns null on a stale endpoint (a hit-test that missed the grid)', () => {
     expect(rectCells(order, dates, { personId: 'ramp', date: '2026-01-06' }, { personId: 'ghost', date: '2026-01-06' })).toBeNull()
     expect(rectCells(order, dates, { personId: 'ramp', date: '1999-01-01' }, { personId: 'ramp', date: '2026-01-06' })).toBeNull()
+  })
+})
+
+// The move anchor (owner, 27 Aug 26 — "drop the leave on the day you tap"): the
+// block's earliest input is the day that lands on the tap, so any empty margin
+// swept up before it is dropped. YYYY-MM-DD sorts as date order, so a min string
+// is the min date.
+describe('earliestDate', () => {
+  it('returns the earliest day among the cells, whatever their order', () => {
+    expect(earliestDate([
+      { personId: 'dusk', date: '2026-01-09' },
+      { personId: 'ramp', date: '2026-01-07' },
+      { personId: 'asics', date: '2026-01-08' },
+    ])).toBe('2026-01-07')
+  })
+  it('is null for an empty set', () => {
+    expect(earliestDate([])).toBeNull()
+  })
+})
+
+// The landing preview paints `.mvland` straight onto the cells the block would
+// occupy, matching by testid the way the selection paint does — so the phone
+// can show where a drop lands before it commits (there is no undo).
+describe('paintLanding / clearLanding', () => {
+  it('marks exactly the landing cells and clears them all again', () => {
+    const wrap = document.createElement('div')
+    for (const id of ['cell-ramp-2026-01-15', 'cell-ramp-2026-01-16', 'cell-dusk-2026-01-15']) {
+      const td = document.createElement('td')
+      td.setAttribute('data-testid', id)
+      wrap.appendChild(td)
+    }
+    document.body.appendChild(wrap)
+    paintLanding(wrap, [{ personId: 'ramp', date: '2026-01-15' }, { personId: 'dusk', date: '2026-01-15' }])
+    expect(wrap.querySelectorAll('.mvland').length).toBe(2)
+    expect(wrap.querySelector('[data-testid="cell-ramp-2026-01-16"]')?.classList.contains('mvland')).toBe(false)
+    // a fresh paint moves the marks, never stacks them
+    paintLanding(wrap, [{ personId: 'ramp', date: '2026-01-16' }])
+    expect(wrap.querySelectorAll('.mvland').length).toBe(1)
+    clearLanding(wrap)
+    expect(wrap.querySelectorAll('.mvland').length).toBe(0)
+    wrap.remove()
   })
 })
 

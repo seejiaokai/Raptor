@@ -17,7 +17,7 @@
 
 import { useState } from 'react'
 import { displayCell, formatCell, LEAVE_TYPES, MEDICAL_TYPES, type BidState, type Portion } from '../engine'
-import { clearCells, setBidStates, setCells } from '../state/store'
+import { clearCells, movableCells, setBidStates, setCells } from '../state/store'
 import { Sheet } from './Sheet'
 import { shortSpan } from './dates'
 import type { Selection } from './select'
@@ -71,6 +71,10 @@ export function SelectSheet({
       ? sel.people.map(people).join(', ')
       : `${nPeople} people`
   const span = sel.from === sel.to ? sel.from : shortSpan(sel.from, sel.to)
+  // Delete and Move only make sense when the box actually holds a movable bid —
+  // a purely-empty selection (Fill only) hides them, so Move never opens on
+  // nothing to move (owner, 27 Aug 26).
+  const hasBids = movableCells(sel.cells).length > 0
 
   const skipNote = (verb: string, written: number, skipped: number) =>
     written === 0
@@ -158,16 +162,19 @@ export function SelectSheet({
         </div>
       )}
 
-      {/* Delete + Move act on the editable bids the selection holds. Delete
-          confirms on a second tap (no undo here); Move hands off to the
+      {/* Delete + Move act on the editable bids the selection holds, so they
+          show only when it holds one (a loose box of empties is Fill-only).
+          Delete confirms on a second tap (no undo here); Move hands off to the
           matrix's ghost/tap-to-place mode. */}
-      <div className="bidsheet-row">
-        <span className="lab">Selected</span>
-        <button className="dchip refuse" data-testid="sel-delete" onClick={del}>
-          {confirmDel ? 'Delete — sure?' : 'Delete'}
-        </button>
-        <button className="dchip" data-testid="sel-move" onClick={() => { onClose(); onMove(sel) }}>Move…</button>
-      </div>
+      {hasBids && (
+        <div className="bidsheet-row">
+          <span className="lab">Selected</span>
+          <button className="dchip refuse" data-testid="sel-delete" onClick={del}>
+            {confirmDel ? 'Delete — sure?' : 'Delete'}
+          </button>
+          <button className="dchip" data-testid="sel-move" onClick={() => { onClose(); onMove(sel) }}>Move…</button>
+        </div>
+      )}
 
       {/* PO only for a single person (posting several out from one drag is too
           heavy an act for one tap; the PO flow picks its own date anyway) */}
