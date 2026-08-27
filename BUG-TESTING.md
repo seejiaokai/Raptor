@@ -39,6 +39,7 @@ them.
 | 24 Aug 26 | **bug sweep** (shipped as #310) | the recent calendar, week-swipe and board work (batches #303–#309): cross-week glide stranding, board day-chip month strip, unaccept re-land on week return, calendar-popover stray drop, seated-puck ✕ |
 | 26 Aug 26 | **bug pass** (fixes in #327/#329) | removed-input dormancy, SC MAIN per-type grading, the redesigned highlight filter bar, board trailing drop zones |
 | 27 Aug 26 (overnight) | **adversarial agent sweep** (fixes in #334) | everything in #333 + #334: Leave War store/permissions, drag/move gestures, medical engine & trims, documents & Medical view, admin-vs-member authority, the sync seam — ~24 confirmed findings fixed, each pinned |
+| 28 Aug 26 | **upchit semantics rework** (rides #334) | the owner's two morning decisions: the upchit day is a FIT day (statuses end the day before), and an upchit save always shows a summary sheet with a forced Keep/Remove on any later-dated medical entry — pinned in `medical.test.ts`, `medwrite.test.ts`, `upconfirm.test.tsx` — then extended the same day: a different-type medical overlap also asks at save time (the clash sheet, `medclash.test.tsx`) |
 
 Everything before batch #281 is the **squashed port** of the original
 single-file app — covered historically by the 15 Aug sweep and held by the

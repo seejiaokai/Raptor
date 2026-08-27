@@ -342,11 +342,15 @@ describe('medical crosses both ways (owner, 17 Aug 26)', () => {
     runInbound()
     expect(getState().grid.ammo['2026-02-12']).toBe('ATTC')
     const med = INPUTS.find((r: any) => r.person === 'ammo' && r.type === 'ATT C')!
+    /* the upchit day is a FIT day (owner, 27 Aug 26): upchit 11 Feb ends the
+       row on the 10th — start == end collapses to the single-day form */
     writeInputs(() => { applyMedPlan(upchitTrimPlan('ammo', 20260211)) })
-    expect(med.endDate).toBe('Feb 11')
+    expect(med.endDate).toBeUndefined()
+    expect(med.date).toBe('Feb 10')
     runInbound()
-    expect(getState().grid.ammo['2026-02-12'], 'the freed day clears').toBeUndefined()
-    expect(getState().grid.ammo['2026-02-11'], 'the kept days stay').toBe('ATTC')
+    expect(getState().grid.ammo['2026-02-12'], 'the freed days clear').toBeUndefined()
+    expect(getState().grid.ammo['2026-02-11'], 'the upchit day clears too').toBeUndefined()
+    expect(getState().grid.ammo['2026-02-10'], 'the kept day stays').toBe('ATTC')
   })
 
   /* An UPCHIT never crosses (owner, 27 Aug 26 — "the leave war will not show

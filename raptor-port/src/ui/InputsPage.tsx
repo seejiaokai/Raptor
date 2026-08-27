@@ -5,7 +5,9 @@
    stack and re-validate the week. */
 import { useEffect, useRef, useState } from 'react'
 import { INPUTS, INPUT_TYPES, TYPE_GROUPS, inpMeta, inpId, typeGroup, isLateInput, lateNote, isSansAvail, isDownchit, isUpchit, needsDoc, sansLetters, defaultAllday, withRemarksTail, baseYear, dateOrd } from '../engine/inputs'
-import { upchitTrimPlan, newMedTrimPlan } from '../engine/medical'
+import { upchitTrimPlan, upchitEffects, newMedTrimPlan, medClashes, ordLabel } from '../engine/medical'
+import { UpchitConfirm } from './UpchitConfirm'
+import { MedClashConfirm } from './MedClashConfirm'
 import { PEOPLE } from '../engine/people'
 import { hhmm, parseHM } from '../engine/time'
 import { HOOKS } from '../engine/hooks'
@@ -24,7 +26,8 @@ import { InputsCal } from './InputsCal'
 import {
   fmt, fmtDay, fmtDMY, unfmt, hasHalf, spanOf, spanFields, SpanPicker, typeOptions,
   draftOf, commitInputEdit, removeInput, SansPicker, sansRefusal, sansOverlapRefusal, sansFlags,
-  medOverlapRefusal, upchitRefusal, downOverUpchitRefusal, applyMedPlan, DocField,
+  medOverlapRefusal, upchitRefusal, downOverUpchitRefusal, applyMedPlan, normalizeInputDraft,
+  medKeptSegments, mintMedSegments, ordISO, DocField,
   rosterOptions as people, inputTone,
 } from './inputedit'
 import { useVersion } from './useStore'
@@ -230,6 +233,13 @@ export function InputsPage() {
   /* Rows just added, newest first, and rows still flashing. Both hold the input
      OBJECT rather than its index, for the same reason the row editor does:
      adding, deleting or undoing renumbers INPUTS underneath us. */
+  /* the upchit save-time summary (owner, 27 Aug 26) — holds the effects to
+     show and the commit to run on Save; null = no sheet. One state serves
+     both the add form and the row editor, so the sheet has one render site. */
+  const [upConf, setUpConf] = useState<any>(null)
+  /* the medical clash sheet (owner, 27 Aug 26) — same shape, same one
+     render site for the add form and the row editor */
+  const [medConf, setMedConf] = useState<any>(null)
   const [pinned, setPinned] = useState<any[]>([])
   const [flash, setFlash] = useState<any[]>([])
   const timers = useRef<any[]>([])
@@ -348,50 +358,112 @@ export function InputsPage() {
     if (!allday && (e as number) === (s as number)) return HOOKS.toast('Give the input a start and end that are not the same time', 'warn')
     /* writeInputsBatch, not writeInputs: the medical trims below run engine
        helpers (Leave-War retraction) that push history of their own, and the
-       add plus its trims must land as ONE undo step */
-    writeInputsBatch(() => {
-      INPUTS.unshift(withId({
-        /* yr anchors the bare labels to the year they were picked under —
-           the same stamp every other creation path writes (24 Aug 26) */
-        person: filedFor(), date, endDate, allday, s, e, yr: baseYear(),
-        /* only carried when it is one — an absence typed as an exact range is
-           not a half-day and must not read as one */
-        ...(!allday && half ? { half } : {}),
-        /* SANS's own Fly/AMT/OFT flags — never carried by a non-SANS type */
-        ...(isSansAvail(type) ? { sans: sansFlags(sans) } : {}),
-        /* the id only — the blob lives in state/docs, outside every snapshot.
-           Gated on the type needing one: a certificate uploaded under a
-           medical pick, then the type switched to leave, must not ride onto
-           the leave row */
-        ...(docId && needsDoc(type) ? { docId } : {}),
-        type, remarks: remarks.trim(), mod: 'now',
-      }))
-      /* a new medical input wins its overlapping days from a different-type
-         downchit; an upchit cuts everything still running past its date
-         (owner, 27 Aug 26) */
-      if (isDownchit(type))
-        applyMedPlan(newMedTrimPlan(INPUTS[0].person, type, dateOrd(date, INPUTS[0].yr), dateOrd(endDate || date, INPUTS[0].yr), INPUTS[0]))
-      if (isUpchit(type))
-        applyMedPlan(upchitTrimPlan(INPUTS[0].person, dateOrd(date, INPUTS[0].yr), INPUTS[0]))
-      /* an ACTIVITY input files straight onto the Ground Programme (owner, Aug
-         26 — "by default all inputs are accepted"); leave/medical/SANS and a
-         published day are silent no-ops. Inside the SAME write so add-plus-land
-         is one undo step, exactly as commitNewInput's toGround already is. */
-      autoAcceptInput(INPUTS[0])
+       add plus its trims must land as ONE undo step. Wrapped in a closure
+       because an UPCHIT does not write yet — the save-time summary sheet
+       (owner, 27 Aug 26) runs first, and its Save calls this with the
+       leftovers the filer ticked Remove on. */
+    /* one row body for every segment the save files (the clash sheet can
+       split an entry around a kept status) — dates and remarks vary, the
+       rest is the form's state verbatim */
+    const rowBody = (d: string, ed: string | undefined, rem: string) => withId({
+      /* yr anchors the bare labels to the year they were picked under —
+         the same stamp every other creation path writes (24 Aug 26) */
+      person: filedFor(), date: d, allday, s, e, yr: baseYear(),
+      ...(ed ? { endDate: ed } : {}),
+      /* only carried when it is one — an absence typed as an exact range is
+         not a half-day and must not read as one */
+      ...(!allday && half ? { half } : {}),
+      /* SANS's own Fly/AMT/OFT flags — never carried by a non-SANS type */
+      ...(isSansAvail(type) ? { sans: sansFlags(sans) } : {}),
+      /* the id only — the blob lives in state/docs, outside every snapshot.
+         Gated on the type needing one: a certificate uploaded under a
+         medical pick, then the type switched to leave, must not ride onto
+         the leave row */
+      ...(docId && needsDoc(type) ? { docId } : {}),
+      type, remarks: rem, mod: 'now',
     })
     /* the row INPUTS.unshift just made — pin it to the top of the table and
        light it, so the add is visible even from a view that would filter it
-       out. The flash comes off on a timer; the pin waits for the user. */
-    const row = INPUTS[0]
-    setPinned(p => [row, ...p])
-    setFlash(f => [row, ...f])
-    setJustAddedIid(row.iid)
-    timers.current.push(setTimeout(() => setFlash(f => f.filter(x => x !== row)), FLASH_MS))
-    /* the dates stay on the form after an add, so the tail that describes them
+       out. The flash comes off on a timer; the pin waits for the user. The
+       dates stay on the form after an add, so the tail that describes them
        stays too — only what the typist wrote is cleared. The document goes
        with its input; the next one needs its own. */
-    setRemarks(withTill('', start, end))
-    setDocId(null)
+    const finishAdd = () => {
+      const row = INPUTS[0]
+      setPinned(p => [row, ...p])
+      setFlash(f => [row, ...f])
+      setJustAddedIid(row.iid)
+      timers.current.push(setTimeout(() => setFlash(f => f.filter(x => x !== row)), FLASH_MS))
+      setRemarks(withTill('', start, end))
+      setDocId(null)
+    }
+    const commit = (removals: any[]) => {
+      writeInputsBatch(() => {
+        INPUTS.unshift(rowBody(date, endDate, remarks.trim()))
+        /* a new medical input wins its overlapping days from a different-type
+           downchit (no clash reached the sheet on this path); an upchit cuts
+           everything covering its date to end the day before — the upchit
+           day is a fit day (owner, 27 Aug 26) */
+        if (isDownchit(type))
+          applyMedPlan(newMedTrimPlan(INPUTS[0].person, type, dateOrd(date, INPUTS[0].yr), dateOrd(endDate || date, INPUTS[0].yr), INPUTS[0]))
+        if (isUpchit(type))
+          applyMedPlan(upchitTrimPlan(INPUTS[0].person, dateOrd(date, INPUTS[0].yr), INPUTS[0]).map((p: any) => ({ ...p, why: 'closed by the upchit' })))
+        /* the leftovers the filer chose to remove on the summary sheet ride
+           the SAME undo step, logged with the honest reason */
+        if (removals.length)
+          applyMedPlan(removals.map((lr: any) => ({ row: lr, action: 'delete', why: 'removed with the upchit' })))
+        /* an ACTIVITY input files straight onto the Ground Programme (owner, Aug
+           26 — "by default all inputs are accepted"); leave/medical/SANS and a
+           published day are silent no-ops. Inside the SAME write so add-plus-land
+           is one undo step, exactly as commitNewInput's toGround already is. */
+        autoAcceptInput(INPUTS[0])
+      })
+      finishAdd()
+    }
+    /* an upchit is NEVER saved silently (owner, 27 Aug 26): the summary sheet
+       says what it ends and puts every later-dated entry to the filer as an
+       explicit Keep/Remove before anything is written */
+    if (isUpchit(type)) {
+      setUpConf({
+        who: PEOPLE[filedFor()] ? PEOPLE[filedFor()].cs : filedFor(),
+        dateLabel: date,
+        effects: upchitEffects(filedFor(), dateOrd(date, baseYear()), null),
+        commit,
+      })
+      return
+    }
+    /* a DIFFERENT-type medical overlap is asked about, never resolved
+       silently (owner, 27 Aug 26 — the clash sheet): the choices become the
+       kept segments, filed as one row plus minted siblings, one undo step */
+    if (isDownchit(type)) {
+      const aOrd = dateOrd(date, baseYear()), bOrd = dateOrd(endDate || date, baseYear())
+      const clashes = medClashes(filedFor(), type, aOrd, bOrd, null)
+      if (clashes.length) {
+        setMedConf({
+          who: PEOPLE[filedFor()] ? PEOPLE[filedFor()].cs : filedFor(),
+          newType: type,
+          span: date + (endDate ? ' – ' + endDate : ''),
+          clashes,
+          commit: (choices: string[]) => {
+            const segs = medKeptSegments(aOrd, bOrd, clashes, choices)
+            if (!segs.length) return          // toasted; nothing written
+            writeInputsBatch(() => {
+              const g0 = segs[0]
+              INPUTS.unshift(rowBody(
+                ordLabel(g0.startOrd, baseYear()),
+                g0.endOrd > g0.startOrd ? ordLabel(g0.endOrd, baseYear()) : undefined,
+                withRemarksTail(remarks.trim(), ordISO(g0.startOrd), ordISO(g0.endOrd), 'till')))
+              applyMedPlan(newMedTrimPlan(INPUTS[0].person, type, g0.startOrd, g0.endOrd, INPUTS[0]))
+              mintMedSegments(INPUTS[0], segs.slice(1))
+              autoAcceptInput(INPUTS[0])
+            })
+            finishAdd()
+          },
+        })
+        return
+      }
+    }
+    commit([])
   }
 
   /* the pencil turns ONE row into fields in place (owner, Aug 26). The draft is
@@ -411,6 +483,71 @@ export function InputsPage() {
      toasts these two same words for the identical commit/removeInput calls;
      this page's own inline ✓/✕ ran the same functions silently. */
   const saveEdit = () => {
+    if (!editRow || !draft) return
+    /* an upchit EDIT re-runs its trims against the (possibly moved) date, so
+       it goes through the same save-time summary a new upchit does (owner,
+       27 Aug 26 — nothing silent); the sheet's Save then commits the edit and
+       the ticked leftover removals as ONE undo step (the nested batch is
+       safe: the inner writeInputsBatch's push is a no-op under the outer). A
+       missing date skips straight to the commit, whose own refusal says so. */
+    if (isUpchit(draft.type) && draft.start) {
+      /* the shared refusals run FIRST — a bad draft toasts at once instead
+         of after the summary sheet was already shown */
+      if (!normalizeInputDraft(draft, editRow)) return
+      const dateLabel = fmt(draft.start)
+      setUpConf({
+        who: PEOPLE[draft.person] ? PEOPLE[draft.person].cs : draft.person,
+        dateLabel,
+        effects: upchitEffects(draft.person, dateOrd(dateLabel, editRow.yr), editRow),
+        commit: (removals: any[]) => {
+          let ok = false
+          writeInputsBatch(() => {
+            ok = commitInputEdit(editRow, draft)
+            if (ok && removals.length)
+              applyMedPlan(removals.map((lr: any) => ({ row: lr, action: 'delete', why: 'removed with the upchit' })))
+          })
+          if (ok) { setEditRow(null); setDraft(null); HOOKS.toast('Input updated', 'ok') }
+          else if (INPUTS.indexOf(editRow) < 0) { setEditRow(null); setDraft(null) }
+        },
+      })
+      return
+    }
+    /* a DIFFERENT-type medical overlap on an EDIT asks too (owner, 27 Aug 26
+       — the clash sheet): the edited row becomes the first kept segment, the
+       rest are minted as siblings, all one undo step */
+    if (isDownchit(draft.type) && draft.start) {
+      if (!normalizeInputDraft(draft, editRow)) return
+      const aOrd = dateOrd(fmt(draft.start), editRow.yr)
+      const bOrd = dateOrd(draft.end ? fmt(draft.end) : fmt(draft.start), editRow.yr)
+      const clashes = medClashes(draft.person, draft.type, aOrd, bOrd, editRow)
+      if (clashes.length) {
+        setMedConf({
+          who: PEOPLE[draft.person] ? PEOPLE[draft.person].cs : draft.person,
+          newType: draft.type,
+          span: fmt(draft.start) + (draft.end && draft.end !== draft.start ? ' – ' + fmt(draft.end) : ''),
+          clashes,
+          commit: (choices: string[]) => {
+            const segs = medKeptSegments(aOrd, bOrd, clashes, choices)
+            if (!segs.length) return
+            const g0 = segs[0]
+            const d2 = {
+              ...draft,
+              start: ordISO(g0.startOrd),
+              end: g0.endOrd > g0.startOrd ? ordISO(g0.endOrd) : '',
+              remarks: withRemarksTail(draft.remarks, ordISO(g0.startOrd), ordISO(g0.endOrd), 'till'),
+            }
+            let ok = false
+            writeInputsBatch(() => {
+              ok = commitInputEdit(editRow, d2)
+              if (ok) mintMedSegments(editRow, segs.slice(1))
+            })
+            if (ok) { setEditRow(null); setDraft(null); HOOKS.toast('Input updated', 'ok') }
+            else if (INPUTS.indexOf(editRow) < 0) { setEditRow(null); setDraft(null) }
+          },
+        })
+        return
+      }
+    }
     if (commitInputEdit(editRow, draft)) { setEditRow(null); setDraft(null); HOOKS.toast('Input updated', 'ok') }
     else if (editRow && INPUTS.indexOf(editRow) < 0) { setEditRow(null); setDraft(null) }
   }
@@ -810,6 +947,17 @@ export function InputsPage() {
         seedIso={range.from || isoOf(new Date())}
         onClose={() => { setInpView('table'); notify() }} />}
       {INPVIEW === 'med' && <MedicalView onClose={() => { setInpView('table'); notify() }} />}
+      {/* the upchit save-time summary (owner, 27 Aug 26) — one render site
+          for the add form and the row editor; Save runs the stashed commit
+          with the removals the filer ticked, Cancel writes nothing */}
+      {upConf && <UpchitConfirm who={upConf.who} dateLabel={upConf.dateLabel} effects={upConf.effects}
+        onCancel={() => setUpConf(null)}
+        onSave={removals => { const c = upConf.commit; setUpConf(null); c(removals) }} />}
+      {/* the medical clash sheet — same contract as the upchit one */}
+      {medConf && <MedClashConfirm who={medConf.who} newType={medConf.newType} span={medConf.span}
+        clashes={medConf.clashes}
+        onCancel={() => setMedConf(null)}
+        onSave={choices => { const c = medConf.commit; setMedConf(null); c(choices) }} />}
     </>
   )
 }

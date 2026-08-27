@@ -671,6 +671,21 @@ agree — name it here so the next session knows to check both.
     `writeInputsBatch` from all three creation funnels and both edit paths.
     A new input-creation path that skips the planner silently un-invents the
     overwrite rule.
+  - `upchitEffects` (`engine/medical.ts`) is the ONE body behind the upchit
+    save-time summary sheet (`ui/UpchitConfirm.tsx`, 27 Aug 26): what the
+    sheet shows and what the save then trims come from the same call, and
+    ALL THREE form paths (Inputs add, its row editor, `InputEditor`) gate an
+    upchit save through the sheet — a fourth form path that saves an upchit
+    without it re-opens the silent-save hole; the calendar re-date drag
+    (`caldrag.ts`) is the one documented direct path.
+  - `medClashes` (`engine/medical.ts`) is the same pattern for the clash
+    sheet (`ui/MedClashConfirm.tsx`, 27 Aug 26): it selects the rows BOTH
+    for the sheet's questions and for `newMedTrimPlan`'s knife, and the
+    "keep the old status" answer resolves through `medKeptSegments` /
+    `mintMedSegments` (`ui/inputedit.tsx`) — kept rows are protected by
+    segment construction, not by a second guard, so a new writer that
+    bypasses the segments silently reverts to new-always-wins. Same
+    three-form-paths rule, same caldrag exception.
   Plus one known demo wrinkle, documented in `state/demoseed.ts`: reloading
   week 1 restores the pristine INPUTS snapshot and drops the seeded demo
   docIds — the viewer's "No document on file" state covers it; not a bug to

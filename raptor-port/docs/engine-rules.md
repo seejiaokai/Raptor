@@ -1295,34 +1295,84 @@ Pending on expiry" is arithmetic, the `isLateInput` doctrine.
 `applyMedPlan` in `ui/inputedit.tsx`, inside the SAME `writeInputsBatch` as
 the input that caused them — one undo step):
 
-- An **upchit on X** cuts every downchit of that person RUNNING AT X (started
-  on/before it, still running past it) to end ON X (down 10–13 Jul, upchit
-  12 Jul → 10–12 Jul). A row that STARTS AFTER X is untouched (27 Aug 26
-  overnight pass) — it is the "newer entry" that replaces the pending nag (a
-  future surgery already filed), not part of the episode being closed; the
-  first cut deleted it. The remarks "till …" token is rewritten
+- An **upchit on X marks the man FIT ON X ITSELF** (owner, 27 Aug 26 —
+  "upchit on 14 Jul means fit for full duty after the moment upchit was
+  selected"): every downchit of that person COVERING X (started on/before
+  it, ending on or past it) is cut to end the DAY BEFORE (down 10–13 Jul,
+  upchit 12 Jul → 10–11 Jul); a row left covering only fit days (it started
+  ON X) is removed, visibly, via the save-time sheet below. A row that
+  STARTS AFTER X is untouched (27 Aug 26 overnight pass) — it is the "newer
+  entry" that replaces the pending nag (a future surgery already filed), not
+  part of the episode being closed — and instead surfaces as a LEFTOVER of
+  `upchitEffects(person, x, except)`, the one body the save-time summary
+  sheet and the write both read. The remarks "till …" token is rewritten
   (`withRemarksTail`), `retractLwRow` runs first on an lw-tagged row, and the
-  Leave War's freed days clear on the next reconcile.
-- A **different-type medical overlap** wins its days — and ONLY its days
-  (27 Aug 26 overnight pass): the older row is cut to end the day before the
-  new one starts (deleted when nothing remains before it), and when it also
-  ran PAST the new one's end the surviving tail is minted as a second
-  same-type row in the same plan (same person, year anchor and document).
-  A short entry landing mid-way through a long downchit no longer silently
-  marks the man fit for its remainder.
+  Leave War's freed days clear on the next reconcile. The canonical closer of
+  an EXPIRED episode is dated the day AFTER its end; `pendingUpchits`' `>=`
+  covering test admits it and still tolerates old ends-on-the-date records.
+- A **different-type medical overlap is ASKED ABOUT, never resolved
+  silently** (owner, 27 Aug 26 — the clash sheet, below). The programmatic
+  default — what `newMedTrimPlan` still does when a caller applies it, and
+  what "the new entry takes them" chooses — is that the new entry wins its
+  days and ONLY its days (27 Aug 26 overnight pass): the older row is cut to
+  end the day before the new one starts (deleted when nothing remains before
+  it), and when it also ran PAST the new one's end the surviving tail is
+  minted as a second same-type row in the same plan (same person, year
+  anchor and document). A short entry landing mid-way through a long
+  downchit no longer silently marks the man fit for its remainder.
+  `newMedTrimPlan` selects its rows through `medClashes` — the same body the
+  clash sheet lists — so the question and the cut cannot disagree.
 - A **same-type overlap is REFUSED**, never trimmed (`medOverlapRefusal`, the
   `sansOverlapRefusal` shape): the person is told to edit the entry on file
   and attach the new document to it. Upchit-vs-upchit same day likewise. Three
   more refusals joined 27 Aug 26 (all in `normalizeInputDraft`/`upchitRefusal`,
-  shared by every editor): a downchit may not RUN OVER one of the person's
-  upchits (`downOverUpchitRefusal` — strictly inside its span; ending ON the
-  upchit date is the trimmed convention and stays editable); an upchit for an
-  episode ALREADY answered by a later upchit is refused; and a cleared date
-  box is refused, never silently defaulted to the loaded week's Monday. A
-  medical row also KEEPS ITS FAMILY at the write path — downchit stays
+  shared by every editor): a downchit may not run over — or END ON — one of
+  the person's upchits (`downOverUpchitRefusal`; the upchit day is a fit day,
+  so ending the day BEFORE is the trimmed convention and stays editable,
+  and STARTING on it stays allowed as a new same-day episode); an upchit for
+  an episode ALREADY answered by a later upchit is refused; and a cleared
+  date box is refused, never silently defaulted to the loaded week's Monday.
+  A medical row also KEEPS ITS FAMILY at the write path — downchit stays
   downchit, upchit stays upchit — and a `docId` is written only for a type
   that `needsDoc`, so a certificate cannot ride a type switch onto leave.
-  Every trim/delete/tail the plan applies now writes an edit-log line.
+  Every trim/delete/tail the plan applies writes an edit-log line, with the
+  HONEST reason: an upchit's cuts log "closed by the upchit", a leftover the
+  filer ticked logs "removed with the upchit" (`applyMedPlan`'s `why`).
+
+**The upchit save-time summary** (owner, 27 Aug 26 — "ask at save time").
+An upchit is NEVER saved silently from a form: the Inputs page's add form,
+its row editor and the shared `InputEditor` dialog all open
+`ui/UpchitConfirm.tsx` before writing. The sheet lists exactly what the
+upchit will trim or remove (from `upchitEffects` — the same body the write
+runs, so sheet and save cannot disagree) and puts every LEFTOVER — a
+later-dated downchit, the tail of a split entry or a filed future one — to
+the filer as an explicit **Keep / Remove with NO default**: Save stays
+disabled until each has an answer (owner — "if the owner doesn't select …
+can't move forward"). Save commits the upchit, its trims and the ticked
+removals as ONE `writeInputsBatch` undo step; Cancel writes nothing. The
+calendar re-date drag (`caldrag.ts`) stays direct — an explicit logged
+gesture on the upchit itself; leftovers simply stay.
+
+**The medical clash sheet** (owner, 27 Aug 26 — "ask at save time", the
+upchit sheet's sibling, `ui/MedClashConfirm.tsx`). Saving a medical entry
+that overlaps a DIFFERENT-type one — new or edited, from any of the same
+three form paths — opens a sheet listing every clash (`medClashes`) with a
+forced per-clash choice, no default: the new entry **takes** the shared days
+(the old row is trimmed/split exactly as the default rule above), or the
+existing status **keeps** them — then the new entry is filed AROUND it: its
+kept day segments come from `subtractSpans` via `medKeptSegments`
+(`ui/inputedit.tsx`), the first segment is the row saved, later segments are
+minted as sibling rows (`mintMedSegments`, same document — the applyMedPlan
+tail idiom), each trimmed only against rows the filer chose to overwrite. A
+kept row is never trimmed BY CONSTRUCTION — the segments cannot touch it.
+Choices that leave the new entry no days at all are refused ("nothing left
+to file") and nothing is written. The whole resolution is one
+`writeInputsBatch` undo step. The invariant this protects: **each person
+holds exactly ONE medical status per day** — overlaps are resolved at the
+write, never stored and re-interpreted at display time. Same-type overlap
+stays refused outright (edit that entry), and the programmatic callers
+(`caldrag.ts`, hand-made `commitNewInput`/`commitInputEdit` calls) keep the
+silent new-wins default, documented.
 
 **The mandatory document.** `needsDoc(t)` (= downchit or upchit, ONE body in
 `engine/inputs.ts`) decides both the upload control's visibility and the

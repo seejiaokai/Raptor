@@ -5,7 +5,7 @@
    anchor so nothing here leans on the loaded week. */
 import { afterEach, describe, expect, it } from 'vitest'
 import { INPUTS } from './inputs'
-import { ordShift, ordLabel, medStartOrd, medEndOrd, medDownAsOf, pendingUpchits, upchitsWithin, upchitTrimPlan, newMedTrimPlan } from './medical'
+import { ordShift, ordLabel, medStartOrd, medEndOrd, medDownAsOf, pendingUpchits, upchitsWithin, upchitTrimPlan, upchitEffects, newMedTrimPlan, medClashes, subtractSpans } from './medical'
 
 const ISNAP = JSON.stringify(INPUTS)
 afterEach(() => { INPUTS.length = 0; JSON.parse(ISNAP).forEach((r: any) => INPUTS.push(r)) })
@@ -100,14 +100,18 @@ describe('upchitsWithin — the trailing 30-day window, newest first', () => {
   })
 })
 
-describe('upchitTrimPlan — an upchit cuts what still runs past it', () => {
-  it('trims a spanning row to end ON the upchit date (the owner\'s example)', () => {
+describe('upchitTrimPlan — the upchit day itself is a FIT day (owner, 27 Aug 26)', () => {
+  it('trims a spanning row to end the day BEFORE the upchit (the owner\'s example)', () => {
     const r = med('t1', 'ATT C', 'Jul 10', 'Jul 13')
-    expect(upchitTrimPlan('t1', 20260712)).toEqual([{ row: r, action: 'trim', newEndOrd: 20260712 }])
+    expect(upchitTrimPlan('t1', 20260712)).toEqual([{ row: r, action: 'trim', newEndOrd: 20260711 }])
+  })
+  it('a row ending ON the upchit date still covers it — trimmed back a day too', () => {
+    const r = med('t1', 'ATT C', 'Jul 10', 'Jul 12')
+    expect(upchitTrimPlan('t1', 20260712)).toEqual([{ row: r, action: 'trim', newEndOrd: 20260711 }])
   })
   it('leaves an already-ended row alone (pending clears without mutation)', () => {
     med('t1', 'ATT C', 'Jul 10', 'Jul 12')
-    expect(upchitTrimPlan('t1', 20260712)).toEqual([])
+    expect(upchitTrimPlan('t1', 20260713)).toEqual([])   // the canonical day-after upchit
     expect(upchitTrimPlan('t1', 20260714)).toEqual([])
   })
   // A row that STARTS AFTER the upchit is not this episode — it is the
@@ -119,23 +123,45 @@ describe('upchitTrimPlan — an upchit cuts what still runs past it', () => {
     med('t1', 'OML', 'Jul 10', 'Jul 13')
     expect(upchitTrimPlan('t1', 20260709)).toEqual([])
   })
-  it('a single-day row: on its day no-op, and a future one is untouched', () => {
-    med('t1', 'HL', 'Jul 10')
-    expect(upchitTrimPlan('t1', 20260710)).toEqual([])
+  it('a single-day row on the upchit day is REMOVED (a status covering only fit days is void), a future one untouched', () => {
+    const r = med('t1', 'HL', 'Jul 10')
+    expect(upchitTrimPlan('t1', 20260710)).toEqual([{ row: r, action: 'delete' }])
     expect(upchitTrimPlan('t1', 20260709)).toEqual([])
   })
-  it('covers every RUNNING row of the person in one pass — nobody else\'s, and no future row', () => {
+  it('covers every COVERING row of the person in one pass — nobody else\'s, and no future row', () => {
     const a = med('t1', 'ATT C', 'Jul 10', 'Jul 20')
     const b = med('t1', 'OML', 'Jul 14', 'Jul 18')      // starts after the upchit — untouched
     med('t2', 'ATT C', 'Jul 10', 'Jul 20')
     const plan = upchitTrimPlan('t1', 20260712)
     expect(plan).toHaveLength(1)
-    expect(plan[0]).toMatchObject({ row: a, action: 'trim', newEndOrd: 20260712 })
+    expect(plan[0]).toMatchObject({ row: a, action: 'trim', newEndOrd: 20260711 })
     expect(b.endDate).toBe('Jul 18')                    // the future row untouched
   })
   it('the row being edited is excluded via except', () => {
     const r = med('t1', 'ATT C', 'Jul 10', 'Jul 13')
     expect(upchitTrimPlan('t1', 20260712, r)).toEqual([])
+  })
+})
+
+describe('upchitEffects — the save-time summary: what the upchit does, and what it leaves standing', () => {
+  it('splits covering rows into the plan and later-dated rows into leftovers', () => {
+    const now = med('t1', 'ATT B', 'Jul 13', 'Jul 15')
+    const later = med('t1', 'ATT C', 'Jul 16', 'Jul 20')   // the tail of a split, or a filed future entry
+    med('t2', 'ATT C', 'Jul 16', 'Jul 20')                 // someone else's — neither list
+    const fx = upchitEffects('t1', 20260714)
+    expect(fx.plan).toEqual([{ row: now, action: 'trim', newEndOrd: 20260713 }])
+    expect(fx.leftovers).toEqual([later])
+  })
+  it('an already-ended row is in NEITHER list — it is history, not a leftover', () => {
+    med('t1', 'ATT C', 'Jul 10', 'Jul 12')
+    const fx = upchitEffects('t1', 20260714)
+    expect(fx.plan).toEqual([])
+    expect(fx.leftovers).toEqual([])
+  })
+  it('honours except and an unreadable date answers nothing', () => {
+    const r = med('t1', 'ATT C', 'Jul 16', 'Jul 20')
+    expect(upchitEffects('t1', 20260714, r).leftovers).toEqual([])
+    expect(upchitEffects('t1', null)).toEqual({ plan: [], leftovers: [] })
   })
 })
 
@@ -178,5 +204,49 @@ describe('newMedTrimPlan — a different-type overlap wins its days', () => {
   it('cross-year: a row anchored 2027 is untouched by a 2026 span on the same words', () => {
     med('t1', 'ATT C', 'Jul 10', 'Jul 13', 2027)
     expect(newMedTrimPlan('t1', 'ATT B', 20260712, 20260715)).toEqual([])
+  })
+})
+
+describe('medClashes — the clash sheet\'s list, one body with the trim planner', () => {
+  it('lists each different-type overlap with the SHARED window, clamped both ends', () => {
+    const c = med('t1', 'ATT C', 'Jul 10', 'Jul 15')
+    expect(medClashes('t1', 'ATT B', 20260713, 20260718))
+      .toEqual([{ row: c, loOrd: 20260713, hiOrd: 20260715 }])
+    expect(medClashes('t1', 'ATT B', 20260708, 20260712))
+      .toEqual([{ row: c, loOrd: 20260710, hiOrd: 20260712 }])
+  })
+  it('skips same-type rows, other people, disjoint spans and except', () => {
+    const c = med('t1', 'ATT C', 'Jul 10', 'Jul 15')
+    med('t1', 'ATT B', 'Jul 1', 'Jul 3')          // disjoint
+    med('t2', 'OML', 'Jul 10', 'Jul 15')          // someone else
+    expect(medClashes('t1', 'ATT C', 20260713, 20260718)).toEqual([])   // same type — refused elsewhere
+    expect(medClashes('t1', 'ATT B', 20260713, 20260718, c)).toEqual([])
+    expect(medClashes('t1', 'ATT B', 20260713, 20260718)).toHaveLength(1)
+  })
+})
+
+describe('subtractSpans — the days a new entry keeps after the filer\'s choices', () => {
+  it('a kept status in the middle splits the new span into two pieces', () => {
+    expect(subtractSpans(20260710, 20260720, [{ s: 20260713, e: 20260714 }]))
+      .toEqual([{ startOrd: 20260710, endOrd: 20260712 }, { startOrd: 20260715, endOrd: 20260720 }])
+  })
+  it('a kept status covering everything leaves nothing', () => {
+    expect(subtractSpans(20260713, 20260715, [{ s: 20260710, e: 20260715 }])).toEqual([])
+  })
+  it('edge overlaps clamp; no choices keeps the whole span; month edges step through real dates', () => {
+    expect(subtractSpans(20260710, 20260715, [{ s: 20260708, e: 20260711 }]))
+      .toEqual([{ startOrd: 20260712, endOrd: 20260715 }])
+    expect(subtractSpans(20260710, 20260715, [])).toEqual([{ startOrd: 20260710, endOrd: 20260715 }])
+    expect(subtractSpans(20260728, 20260805, [{ s: 20260801, e: 20260802 }]))
+      .toEqual([{ startOrd: 20260728, endOrd: 20260731 }, { startOrd: 20260803, endOrd: 20260805 }])
+  })
+  it('two kept statuses carve three ways round them, overlapping choices merge', () => {
+    expect(subtractSpans(20260701, 20260715, [{ s: 20260704, e: 20260705 }, { s: 20260709, e: 20260710 }]))
+      .toEqual([
+        { startOrd: 20260701, endOrd: 20260703 },
+        { startOrd: 20260706, endOrd: 20260708 },
+        { startOrd: 20260711, endOrd: 20260715 }])
+    expect(subtractSpans(20260701, 20260710, [{ s: 20260703, e: 20260706 }, { s: 20260705, e: 20260708 }]))
+      .toEqual([{ startOrd: 20260701, endOrd: 20260702 }, { startOrd: 20260709, endOrd: 20260710 }])
   })
 })

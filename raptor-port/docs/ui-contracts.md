@@ -3950,6 +3950,32 @@ ctx `'up'` (person and type fixed as VALUES, a single plain date defaulting
 to today, the mandatory `DocField`). Both upchit paths — the pending card
 and typing an Upchit on the Inputs form — are one write path.
 
+**The upchit save-time summary sheet** (`ui/UpchitConfirm.tsx`, owner,
+27 Aug 26). Saving an upchit from ANY form — the Inputs add form, the
+in-table row editor, or the shared `InputEditor` (where it paints one layer
+above the dialog, `.upconf-pop` z 470 over airpop's 460) — opens this sheet
+before anything is written. Top section: what the save will do, one boxed
+line per trim ("ATT B … → now ends 13 Jul") or removal, then the green "Fit
+for full duty from <date>". Below, every LATER-dated medical entry renders
+with a **Keep / Remove** pair that has NO resting state — Save is disabled
+and the footer says "Choose Keep or Remove for each entry above" until all
+are answered; Keep lights accent, Remove lights the warning red. Cancel (or
+Escape, or the scrim) closes just the sheet — the form under it keeps
+everything typed. Escape inside `InputEditor` peels one layer: the sheet
+first, the dialog second.
+
+**The medical clash sheet** (`ui/MedClashConfirm.tsx`, owner, 27 Aug 26)
+is its sibling, same recipe and layer (`.upconf-*` classes, `.medclash-row`
+wraps on a phone). It opens when a saved medical entry overlaps a
+different-type one, from the same three form paths. Each clash renders one
+boxed line — "ATT C Jul 10 – Jul 15 · both cover **Jul 13 – Jul 15**" —
+with two choice buttons: "<new type> takes them" / "<old type> keeps them".
+Both light accent when picked (they are peers, neither is destructive); no
+resting state, Save disabled until every clash is answered, footer hint
+"Choose for each clash above". A body note says the outcome plainly: every
+day holds one status, and the new entry is filed around whatever is kept.
+Cancel/Escape/scrim close only the sheet.
+
 **The upload control** (`DocField` in `ui/inputedit.tsx`: `UploadIcon`
 button + hidden file input + filename chip, `.docbtn.has` turning the ok
 green once attached) renders in all three editors — the Inputs add form,
