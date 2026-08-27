@@ -1,10 +1,11 @@
-import { describe, expect, it } from 'vitest'
-import { parseCellId, rectCells } from './select'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { parseCellId, rectCells, wireSelect } from './select'
 
 // The gesture controller (wireSelect) needs a real browser (elementFromPoint,
 // pointer capture, layout) and is covered by e2e/leavewar.spec.ts. Here we pin
 // the DOM-free geometry, which is where an off-by-one would silently select
-// the wrong people or days.
+// the wrong people or days — and the touch scroll-lock below, which jsdom can
+// drive without layout because it turns only on the `armed` flag.
 
 describe('parseCellId', () => {
   it('splits a person id from the trailing YYYY-MM-DD date', () => {
@@ -52,5 +53,56 @@ describe('rectCells', () => {
   it('returns null on a stale endpoint (a hit-test that missed the grid)', () => {
     expect(rectCells(order, dates, { personId: 'ramp', date: '2026-01-06' }, { personId: 'ghost', date: '2026-01-06' })).toBeNull()
     expect(rectCells(order, dates, { personId: 'ramp', date: '1999-01-01' }, { personId: 'ramp', date: '2026-01-06' })).toBeNull()
+  })
+})
+
+// The phone regression (owner, 27 Aug 26 — "when I hold then drag … I can't
+// select a date range, I'm stuck with just adding 1 input"). On touch the
+// browser latches scroll-intent at touchstart, so once the drag moves it
+// scrolls the grid and fires pointercancel, killing the armed selection. The
+// only cure is a NON-PASSIVE touchmove that preventDefaults — but ONLY once
+// the long-press has armed, so a quick drag still scrolls (that scroll is
+// sacred). This has no e2e coverage (Playwright cannot drive a touch drag —
+// see the desktopOnly guard in leavewar.spec.ts), which is how it broke
+// silently; this pins the exact on/off condition.
+describe('wireSelect touch scroll-lock', () => {
+  let wrap: HTMLElement, cell: HTMLElement, teardown: () => void
+  const origEFP = document.elementFromPoint
+  beforeEach(() => {
+    vi.useFakeTimers()
+    // jsdom has no layout, so the gesture's hit-test finds nothing; a null
+    // focus just paints no rectangle, which is all this test needs.
+    document.elementFromPoint = () => null
+    wrap = document.createElement('div')
+    cell = document.createElement('div')
+    cell.setAttribute('data-testid', 'cell-ramp-2026-01-06')
+    wrap.appendChild(cell)
+    document.body.appendChild(wrap)
+    teardown = wireSelect(wrap, {
+      order: () => ['ramp'], dates: () => ['2026-01-06'],
+      enabled: () => true, onSelect: () => {},
+    })
+  })
+  afterEach(() => { teardown(); wrap.remove(); document.elementFromPoint = origEFP; vi.useRealTimers() })
+
+  const press = () => cell.dispatchEvent(new PointerEvent('pointerdown',
+    { bubbles: true, pointerId: 1, pointerType: 'touch', clientX: 5, clientY: 5, button: 0 }))
+  // Was the grid's scroll left alone? A touchmove whose default is NOT
+  // prevented lets the browser scroll; one that IS prevented locks it.
+  const touchmovePrevented = () => {
+    const ev = new TouchEvent('touchmove', { bubbles: true, cancelable: true })
+    wrap.dispatchEvent(ev)
+    return ev.defaultPrevented
+  }
+
+  it('leaves a touchmove alone before the hold arms — the sideways scroll survives', () => {
+    press()
+    expect(touchmovePrevented()).toBe(false)
+  })
+
+  it('locks the scroll once the 180ms hold has armed — the drag can select a range', () => {
+    press()
+    vi.advanceTimersByTime(200)   // past HOLD → arm() fires with no movement
+    expect(touchmovePrevented()).toBe(true)
   })
 })

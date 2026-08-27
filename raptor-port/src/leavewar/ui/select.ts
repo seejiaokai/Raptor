@@ -121,6 +121,11 @@ export function wireSelect(wrap: HTMLElement, ctx: SelectCtx): () => void {
     // capture is just belt-and-braces for a fast touch drag.
     if (pid >= 0) { try { wrap.setPointerCapture(pid) } catch { /* jsdom / not capturable */ } }
     wrap.style.touchAction = 'none'
+    // Lock the scroll now, and ONLY now: the non-passive touchmove listener
+    // exists for the life of an armed drag and nowhere else, so a normal
+    // sideways scroll never runs JS per frame (that scroll is sacred). See the
+    // onTouchMove note.
+    wrap.addEventListener('touchmove', onTouchMove, { passive: false })
     repaint()
     if (!raf) raf = requestAnimationFrame(edgeScroll)
   }
@@ -167,10 +172,25 @@ export function wireSelect(wrap: HTMLElement, ctx: SelectCtx): () => void {
     window.removeEventListener('pointerup', onUp, true)
     window.removeEventListener('pointercancel', onCancel, true)
     if (pid >= 0) { try { wrap.releasePointerCapture(pid) } catch { /* not captured */ } }
+    wrap.removeEventListener('touchmove', onTouchMove)
     wrap.style.touchAction = ''
     anchor = null; armed = false; pid = -1
   }
   const onCancel = () => { teardown(); clearPaint() }
+
+  // THE SCROLL LOCK (owner, 27 Aug 26 — "when I hold then drag … I can't
+  // select a date range, I'm stuck with just adding 1 input"). On touch the
+  // browser decides at touchstart whether the finger scrolls the grid, and a
+  // pointermove's preventDefault does NOT change that — so once the drag
+  // moved, the grid scrolled and the browser fired pointercancel, killing the
+  // armed selection mid-drag. The only thing that stops the scroll is a
+  // NON-PASSIVE touchmove preventDefault. This listener is added in arm() and
+  // removed in teardown(), so it exists ONLY during an armed drag: the
+  // long-press fires arm() before the finger has moved, so the very first move
+  // is already caught and no scroll ever starts, while a quick drag that never
+  // held never adds it at all — the grid's sideways scroll (sacred, reported
+  // broken three times) keeps its fully-passive fast path.
+  const onTouchMove = (e: TouchEvent) => { if (armed) e.preventDefault() }
 
   const onDown = (e: PointerEvent) => {
     if (!ctx.enabled()) return
