@@ -20,6 +20,10 @@ what still needs it?*
 **Legend:** ✅ bug-tested (date — what was found) · 🟡 partly tested · ⬜ not yet
 bug-tested.
 
+> **Deferred (owner will revisit):** add a short "how to run a pass" checklist
+> to this file (test the batch → run the six gates → record clean/found). Not
+> done yet — the owner is working on the rules logic first (Tier 1 below).
+
 ---
 
 ## Bug passes already on record
