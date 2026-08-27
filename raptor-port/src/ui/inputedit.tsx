@@ -1115,7 +1115,6 @@ export function InputEditor() {
           <label className="inped-f">
             <span className="inped-k">Remarks</span>
             <input id="inpEditRmk" aria-label="Remarks" maxLength={200} value={draft.remarks} autoComplete="off"
-              placeholder="e.g. medical appt, till 15 Jul"
               onChange={e => setDraft({ ...draft, remarks: e.target.value })}
               onKeyDown={e => { if (e.key === 'Enter') save() }} />
           </label>
