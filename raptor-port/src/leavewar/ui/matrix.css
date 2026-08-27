@@ -61,6 +61,26 @@
   padding: 3px 2px;
   text-align: center;
   height: 22px;
+  /* Kill the phone's OWN text selection on the grid (owner, 27 Aug 26 — "when
+     I drag, it will also attempt to select … that blue"). A press-and-hold to
+     arm a drag-select is exactly the gesture iOS/Android read as "select text",
+     so they paint their blue highlight and drop a teardrop handle on top of our
+     own selection wash. There is no text to select in a scheduling grid, so
+     turn the native selection off here; `-webkit-touch-callout: none` also
+     stops the long-press copy/lookup bubble. Our `.selcell` highlight is a
+     class we paint, untouched by this. Form fields re-enable it just below. */
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+/* The callsign editor is a real text field — the one place in the grid where
+   selecting and editing text is the point — so give selection back to any
+   input/textarea the cells host, overriding the grid-wide `none` above. */
+.mx td input,
+.mx td textarea {
+  -webkit-user-select: text;
+  user-select: text;
 }
 
 /* The two frozen columns. `left: 0` plus a solid --panel background is what
