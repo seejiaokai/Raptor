@@ -68,21 +68,27 @@ meant a bid placed here, so `source: 'bid'` is a fact and not a guess.
 Rejecting them would have degraded a squadron's real decisions to the seed to
 gain nothing.
 
-## The role switch is an affordance, not a permission
+## The role is an affordance, not a permission
 
-The interface now has a MEMBER/ADMIN switch, and **anyone can flip it**.
-There is no login, so nothing verifies which one a person is: the switch
-decides which controls appear and nothing else. Closing the war genuinely
-locks members out of editing *in the interface*; it does not stop anyone who
-flips the switch.
+The war's role now RIDES THE RAPTOR LOGIN (resetSession is its production
+writer; the admin's view-toggle is the only other), and since the 27 Aug 26
+overnight pass the store enforces it at every write path: a member cannot
+decide (`setBidState`/`setBidStates` check `canDecide` — admin, once bidding
+is no longer open), cannot advance or reopen the stage, cannot write a
+medical marker, cannot touch another person's row (`canEditRow`), and cannot
+shift a bid outside what `canEditCell` lets them edit — the single-cell
+`shiftBid` now carries the same stage/window/day law as the drag mover.
 
-This is the spec's own two-role model (§Roles) built ahead of the accounts
-that will enforce it, in the same way approval was. **Do not present it as a
-security model** — it is the shape a real one will take, with the check
-missing.
-
-Everything else that follows from having no accounts still holds: anyone can
-approve, refuse or shift anyone's bid.
+**It is still not a security model.** The whole app is client-side with no
+server: the probe bridge (`src/probe-bridge.ts`, the e2e suite's window
+hooks — `lwSetRole`, `lwSetViewer`, `lwLoadWars` and the Raptor writers)
+ships in the served bundle, so a browser console can forge any role or
+identity. That forgery only ever rewrites the forger's OWN session-local
+copy — there is no shared data to corrupt until the server exists — and the
+bridge is what the six gates drive the built bundle with, so it stays. The
+real check is the future server re-running these same rules where a console
+cannot reach; the rule bodies (`canDecide`, `canEditRow`, `canEditCell`) are
+the shape it will keep.
 
 A member no longer bids on anyone's row, though (owner, 27 Aug 26 — "if I am
 viewing as a member and I view as ranger… I shouldn't be able to input on

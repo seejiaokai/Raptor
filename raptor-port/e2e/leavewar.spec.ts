@@ -622,12 +622,16 @@ test('the Raptor mark is painted, and an ordinary bid carries none', async ({ pa
   expect(parseFloat(raptor.width)).toBeGreaterThan(0)
   expect(raptor.style).toBe('solid')
 
-  // The dotted "moved" edge only shows once bidding has closed (owner, 27 Aug
-  // 26 — while a war is open, people shuffle their own bids and a moved mark
-  // is just noise). Close the war as an admin, then it paints.
+  // The dotted "moved" edge exists only for a move made once bidding has
+  // closed (owner, 27 Aug 26 — an open-war shuffle stores no trail, so the
+  // seed no longer plants one). Close the war as an admin and MOVE a bid —
+  // the landed cell paints the dotted edge.
   await lwRole(page, 'admin')
   await page.locator('[data-testid="stage-advance"]').click()
-  const moved = await edge('[data-testid="cell-slash-2026-02-03"] .c')
+  await page.locator('[data-testid="cell-slash-2026-02-03"]').click()
+  await page.locator('[data-testid="shift-date"]').fill('2026-02-06')
+  await page.locator('[data-testid="decide-shift"]').click()
+  const moved = await edge('[data-testid="cell-slash-2026-02-06"] .c')
   expect(parseFloat(moved.width)).toBeGreaterThan(0)
   expect(moved.style).toBe('dotted')
 
@@ -835,7 +839,12 @@ test('the date header freezes on desktop when the page scrolls down', async ({ p
 // lives on the Raptor input, so this proves the cross-app save in a real
 // browser.
 test('at published, a tap on an approved leave edits its note, and it sticks', async ({ page }) => {
-  await lwRole(page, 'admin')
+  // A REAL admin login, not just the war-role bridge: the note saves through
+  // Raptor's commitInputEdit, whose member-own gate genuinely fires since the
+  // 27 Aug overnight pass — a member session editing prowler's record is
+  // refused there, and production's war admin IS the Raptor admin (the war
+  // role mirrors the login), so the realistic session is the admin one.
+  await openLeaveWar(page, 'a')
   await page.locator('[data-testid="stage-advance"]').click()   // open -> closed
   await page.locator('[data-testid="stage-advance"]').click()   // closed -> published
   const cell = page.locator('[data-testid="cell-prowler-2026-01-09"]')  // a Raptor-owned leave

@@ -29,7 +29,7 @@ import { stashPut, stashGet, stashHas } from '../engine/weekstash'
 import { afterSchedMutate } from './view'
 import * as view from './view'
 import { histPush, histInit, schedFields } from './history'
-import { setSession as authSetSession, canEditSched, SESSION, ACCOUNTS, canToggleRole, setEffectiveRole, setLgEdit } from './auth'
+import { setSession as authSetSession, canEditSched, SESSION, ACCOUNTS, canToggleRole, setEffectiveRole, setLgEdit, setMe } from './auth'
 import { setRole as lwSetRole } from '../leavewar/state/store'
 import { clearPlan } from './plan'
 
@@ -142,6 +142,16 @@ export function resetSession(s: any) {
   view.setCalMonth(null)
   view.setMedAsOf(null)
   clearPlan()
+  /* the "View as" IDENTITY goes back to the boot default too. It is what
+     every member-own gate keys on — the Inputs page's person filter and
+     edit/delete reach, the Leave War's own-row rule (mirrored into its
+     `viewer` by the sync) — so carrying it across a logout handed the next
+     login the PREVIOUS session's person: an admin who left "View as ranger"
+     open bequeathed ranger's identity, filter and war row to the next member
+     to sign in on that browser. The picker still offers any person (the
+     prototype has no per-person accounts, known-gaps); this only stops a
+     session INHERITING one nobody chose. */
+  setMe('bane')
   /* the Leave War page's role rides the Raptor session: an admin login is a
      Leave War admin, everyone else (and a logout) is a member. This is the
      ONE production writer of that role — the standalone app's own toggle was

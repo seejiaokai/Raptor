@@ -3999,8 +3999,8 @@ BidPicker's look and vocabulary, not instead of it.
   refuses another row at the WRITE path too (`setCell`, the batch writers, move
   and shift), so nothing — not a batch, not a keyboard path — can put one
   member's leave on another man's row. It is still not a security boundary while
-  the role switch is unguarded (a member can flip to admin) — see
-  `docs/leavewar/known-gaps.md` §The role switch is an affordance.
+  the app is client-side and a console can forge the role — see
+  `docs/leavewar/known-gaps.md` §The role is an affordance.
 - **The gesture** (`ui/select.ts`, `wireSelect`) is ONE delegated
   `pointerdown` on `.mx-wrap` — never per-cell (the grid is ~28k nodes) —
   hit-testing with `elementFromPoint().closest('[data-testid^="cell-"]')`. It
@@ -4053,7 +4053,17 @@ BidPicker's look and vocabulary, not instead of it.
   - **Landing preview** (`.mvland`, a warm-amber wash + ring — deliberately NOT
     the accent-blue of the selection or the viewer's own row, so it reads as
     "will land here" over whatever it covers). Painted straight onto the cells
-    (`paintLanding`/`clearLanding`, no React state).
+    (`paintLanding`/`clearLanding`, no React state). **It paints only what the
+    commit would accept** (27 Aug 26 overnight pass): `Matrix.previewAt` asks
+    `moveProblem` — the validation half of `moveCells` itself, one body — and a
+    refused hover/stage clears the paint and puts the reason in the banner
+    (on the phone a refused tap stages NO Confirm; the reason stands where the
+    button would be). The first cut painted the in-range half of an off-grid
+    landing, a legal-looking partial drop the click then wholly refused. Hover
+    re-fires only when the hovered DAY changes (`wireMove` keeps the last
+    date), never per mousemove — the 28k-node grid's per-frame law. The ghost
+    chip exists only where hover does (`(hover: none)` suppresses it — a
+    phone's compatibility mousemove used to strand it at the tap point).
   - **Desktop:** a faded ghost follows the mouse and the landing highlights live
     under it; a CLICK lands the block (the hover WAS the preview). **A RIGHT-CLICK
     cancels** the move (owner, 27 Aug 26 — the mouse equivalent of Escape;
@@ -4116,6 +4126,19 @@ BidPicker's look and vocabulary, not instead of it.
   §Auth / roles. `movableCells` factors those same guards into "which cells of a
   selection hold a movable bid" — the ONE body the sheet (offer Move?), the
   anchor (first input), and the mover all read, so "what moves" can't drift.
+  Since the 27 Aug overnight pass the counting is honest too: an empty cell
+  swept into a delete-box counts as neither written nor skipped (the sheet's
+  "N deleted" names real deletions, and an all-empty clear neither persists
+  nor notifies), and a PARTIAL write keeps the sheet OPEN so its "N written,
+  M skipped" note is actually read (`onDone`'s `keepOpen`; closing on the
+  same tap killed the note it had just set). The single-cell writers carry
+  the batch writers' whole law now as well: `setBidState` checks `canDecide`
+  exactly as `setBidStates` does, `shiftBid` checks the stage/window/war-day/
+  in-squadron law exactly as `moveCells` does (a typed off-war date used to
+  make a bid vanish from every screen while still draining the balance), a
+  medical code is refused from a member at `setCell` itself, and a chain of
+  closed-war moves keeps the ORIGINAL origin in `shiftedFrom` — the trail
+  answers "when did he bid this", not "where was it last hop".
   Pinned in `store.test.ts`, `selectsheet.test.tsx`.
 
 ### Published-stage remarks editing (owner, 27 Aug 26)
@@ -4128,15 +4151,26 @@ member editing their own leave) or an admin (anyone). It takes precedence in
 (a block of runs has no one note). The note lives on the Raptor INPUT the cell
 derives from — a leave FILED on Inputs (Raptor-owned) or BID in the war (the
 lw-tagged row `runOutbound` mints at publish), both found by
-`sync.ts:leaveInputAt`. The save runs through Raptor's one commit path
+`sync.ts:leaveInputAt` — which since the 27 Aug overnight pass is handed the
+CELL'S OWN code, so under a leave clash (two inputs covering one day) it opens
+the record that actually derives the tapped cell: same leave type, exact
+portion preferred, the lw-tagged (war-minted) row outranking a plain one, and
+a non-leave code (an FS/HS credit) matching nothing. The save runs through
+Raptor's one commit path
 (`inputedit.ts:setLeaveRemarks → commitInputEdit`): a remarks-only edit leaves
 the leave's `rowSig` unchanged, so the lw tag and the war cells do not move —
 only the note the Inputs page reads is rewritten, and the member-own /
 scheduler-any gate comes free from `commitInputEdit`. To make the cell tappable
 at published for a member's own war-bid leave, `openable` gains a CHEAP branch
-(a code exists on the viewer's own row, or any row for an admin) — the precise
-"is there a backing leave" test stays in `canRemark`, run once per opened cell,
-never per drawn cell. Pinned in `remarks.test.tsx` (own → editor, admin → any,
+— since the overnight pass it is the viewer's own APPROVED biddable cell (code
++ state truthiness only; an admin's cells are already openable via
+`canEditCell`): a refused or pending bid at published opens NOTHING for a
+member, and the first cut still painted it tappable — a dead tap exactly where
+the stakes are highest. The precise "is there a backing leave" test stays in
+`canRemark`, run once per opened cell, never per drawn cell. Exactly ONE sheet
+renders per opened cell — the decision sheet and the post-out sheet carry the
+same exclusion terms the others always did (a posted-out day holding a bid
+used to stack both). Pinned in `remarks.test.tsx` (own → editor, admin → any,
 member-other → the read-only Raptor sheet, not-published → neither) and the
 scrim table; e2e drives the admin round trip in a real browser.
 

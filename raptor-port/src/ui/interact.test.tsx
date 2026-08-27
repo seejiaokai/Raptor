@@ -581,7 +581,7 @@ describe('the nudge buttons move a row one place as rendered', () => {
   })
 
   it('a member cannot nudge', () => {
-    setSession({ user: 'user', role: 'member' } as any)
+    setSession({ user: 'user', role: 'main' } as any)
     const di = DAYS.findIndex((d: any) => (d.allhands || []).length > 1)
     const was = JSON.stringify(DAYS[di].allhands)
     mountBoard(di)
@@ -664,7 +664,7 @@ describe('the Auto sort buttons put a section back in order', () => {
   })
 
   it('a member sees no Auto sort control', () => {
-    setSession({ user: 'user', role: 'member' } as any)
+    setSession({ user: 'user', role: 'main' } as any)
     act(() => notify())   // canEditSched() flipped — repaint so mvRO takes hold, not stale admin markup
     const di = DAYS.findIndex((d: any) => (d.allhands || []).length > 1)
     mountBoard(di)
@@ -799,7 +799,7 @@ describe('Sort all — every section, one confirm, one undo step (owner, 8 Aug 2
   })
 
   it('a member cannot trigger it', () => {
-    setSession({ user: 'user', role: 'member' } as any)
+    setSession({ user: 'user', role: 'main' } as any)
     act(() => notify())
     const di = 0
     mountBoard(di)

@@ -103,10 +103,10 @@ export function seedDemoSans() {
 
    Each medical row also gets a PLACEHOLDER supporting document — a small
    SVG the viewer can actually show — because the demo's point is seeing the
-   flow work. Session-only like every document (state/docs). RELOADING WEEK
-   1 restores the pristine snapshot and drops these docIds (loadWeek), and
-   the viewer's "No document on file" state covers that plainly — a known
-   demo wrinkle, not a bug to chase. */
+   flow work. Session-only like every document (state/docs); a page RELOAD
+   forgets docs and INPUTS in lockstep and this seed re-runs, so no dangling
+   docId survives. (An earlier note here claimed loadWeek drops these ids —
+   it never touches INPUTS content, only the `acc` flags; corrected 27 Aug.) */
 const DEMO_MED: any[] = [
   { person: 'nasty', date: 'Jul 6', endDate: 'Jul 9', allday: true,
     type: 'OML', remarks: 'Medically down till 9 Jul', mod: '2026-07-05' },

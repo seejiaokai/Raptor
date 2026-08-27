@@ -38,6 +38,7 @@ them.
 | ~Aug 26 (overnight) | **devil's-advocate pass on auto-land** | Ground-programme auto-land + the four board tools (batch #284) |
 | 24 Aug 26 | **bug sweep** (shipped as #310) | the recent calendar, week-swipe and board work (batches #303–#309): cross-week glide stranding, board day-chip month strip, unaccept re-land on week return, calendar-popover stray drop, seated-puck ✕ |
 | 26 Aug 26 | **bug pass** (fixes in #327/#329) | removed-input dormancy, SC MAIN per-type grading, the redesigned highlight filter bar, board trailing drop zones |
+| 27 Aug 26 (overnight) | **adversarial agent sweep** (fixes in #334) | everything in #333 + #334: Leave War store/permissions, drag/move gestures, medical engine & trims, documents & Medical view, admin-vs-member authority, the sync seam — ~24 confirmed findings fixed, each pinned |
 
 Everything before batch #281 is the **squashed port** of the original
 single-file app — covered historically by the 15 Aug sweep and held by the
@@ -45,7 +46,7 @@ byte-exact parity gate (`node reference/tfin.js`) rather than batch-by-batch.
 
 ---
 
-## The batches (#281 → #333)
+## The batches (#281 → #334)
 
 | batch | what it is (plain language) | bug-tested? |
 |---|---|---|
@@ -78,7 +79,8 @@ byte-exact parity gate (`node reference/tfin.js`) rather than batch-by-batch.
 | **#327** | Wave templates, blank waves, published-only marks, board stripes, highlight menus, version picker + mobile polish | ✅ 26 Aug — bug pass |
 | **#329** | SC MAIN per-type grading, dormant removed inputs, UI polish | ✅ 26 Aug — bug pass |
 | **#331** | Seam fixes, SANS in-time window + A chip, crew-panel & board-bar chrome, Leave War roster/grid, stores save flash | ⬜ (the 26 Aug pass predates it) |
-| **#333** | Medical tracker: Upchit input, mandatory documents + viewer, Medically Down / Pending Upchit / Upchit Complete sections, overlap & trim rules · same-day follow-ups: admin's role-badge view toggle, Leave War stage-advance made admin-only, medical-type guard rail, Medical view polish, Leave War drag-select (batch fill/decide/delete/move) + Acknowledge→Pending rename · plus a second 27 Aug follow-up wave: a plain single click on a Leave War cell opens the input sheet again (pointer-capture fix), the dotted "moved" mark shows only after bidding closes, "Key"→"Legend", the admin keeps bid decisions at PUBLISHED, and on the Inputs page a member defaults to their own inputs and can edit/delete only their own (view-only + attachment-view on others) | ⬜ (built 27 Aug — self-tested at build, no independent pass yet) |
+| **#333** | Medical tracker: Upchit input, mandatory documents + viewer, Medically Down / Pending Upchit / Upchit Complete sections, overlap & trim rules · same-day follow-ups: admin's role-badge view toggle, Leave War stage-advance made admin-only, medical-type guard rail, Medical view polish, Leave War drag-select (batch fill/decide/delete/move) + Acknowledge→Pending rename · plus a second 27 Aug follow-up wave: a plain single click on a Leave War cell opens the input sheet again (pointer-capture fix), the dotted "moved" mark shows only after bidding closes, "Key"→"Legend", the admin keeps bid decisions at PUBLISHED, and on the Inputs page a member defaults to their own inputs and can edit/delete only their own (view-only + attachment-view on others) | 🟡 (built 27 Aug; the 27 Aug overnight adversarial sweep covered its logic — owner's own pass still to come) |
+| **#334** | Leave War member row scoping + moved-stripe recording, then the 27 Aug overnight adversarial sweep: the single-bid mover obeys the closed-war/day law (no more off-war landings), single-bid decisions are admin-at-closed in the store, chained moves keep the original origin, honest batch counts + the partial-write note stays readable, a member can't write medical marks, an upchit no longer deletes a future medical entry, a mid-span medical drop splits instead of erasing the tail, downchit-over-upchit / junk-upchit / blank-date / retype refusals, documents don't ride type switches and survive war-side date changes, undo of a war-synced edit no longer double-deletes, the published note editor opens the right record, one sheet per tapped cell, refused/pending cells aren't dead-tappable at published, move preview only shows what would land, legend & popover fixes, "View as" resets on logout, dead member write-gates fixed (role literal) | ⬜ (built overnight 27→28 Aug — all pinned by tests; owner pass pending) |
 
 ## The queue — ordered by risk (do these next, top first)
 

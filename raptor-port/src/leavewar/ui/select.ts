@@ -27,11 +27,12 @@ export type EventSelection = { line: number; from: string; to: string; dates: st
 
 /* caldrag.ts's own numbers */
 const HOLD = 180        // ms a finger must dwell before a drag arms
-const SLOWARM = 140     // ms down after which a slide past the slop arms a
+const SLOWARM = 140     // ms down after which a slide past GIVEUP arms a
                         // SELECT instead of ceding — a slow, deliberate drag,
                         // never a quick scroll flick (owner, 27 Aug 26)
-const SLOP = 8          // wobble tolerated while dwelling (touch)
 const GIVEUP = 26       // a pre-arm slide past this is a scroll, not a select
+                        // (any smaller wobble during the dwell is simply
+                        // tolerated — there is no second, tighter threshold)
 const MOUSE_SLOP = 4    // a mouse arms on this move, no dwell
 const EDGE = 36         // px from a wrap edge that auto-scrolls during a drag
 const EDGE_STEP = 18    // px per frame of edge auto-scroll
@@ -197,6 +198,7 @@ export function wireSelect(wrap: HTMLElement, ctx: SelectCtx): () => void {
     // sideways scroll never runs JS per frame (that scroll is sacred). See the
     // onTouchMove note.
     wrap.addEventListener('touchmove', onTouchMove, { passive: false })
+    document.addEventListener('contextmenu', onCtxMenu, true)
     repaint()
     // Edge auto-scroll is a desktop-only convenience — a phone drag keeps the
     // grid still (see edgeScroll).
@@ -205,17 +207,20 @@ export function wireSelect(wrap: HTMLElement, ctx: SelectCtx): () => void {
 
   const onMove = (e: PointerEvent) => {
     if (!anchor) return
+    // Only the gesture's OWN pointer moves it — a second finger brushing the
+    // grid mid-drag must not steer (or, worse, disarm) the selection.
+    if (e.pointerId !== pid) return
     lastX = e.clientX; lastY = e.clientY
     if (!armed) {
       const dx = Math.abs(e.clientX - sx), dy = Math.abs(e.clientY - sy)
       const moved = Math.max(dx, dy)
       if (e.pointerType === 'mouse') { if (moved >= MOUSE_SLOP) arm() }
       else if (moved > GIVEUP) {
-        // A slide past the slop before the still-hold armed. If the finger has
+        // A slide past GIVEUP before the still-hold armed. If the finger has
         // already been down past SLOWARM (slowReady), this is a SLOW, deliberate
         // drag the user began without pausing first — arm the select rather
         // than lose it (owner, 27 Aug 26 — "I can't select a range … stuck with
-        // 1 input"). A quick scroll flick crosses the slop long before SLOWARM,
+        // 1 input"). A quick scroll flick crosses GIVEUP long before SLOWARM,
         // so the grid's sacred sideways scroll still wins it: cede.
         if (slowReady) arm()
         else { teardown(); clearPaint() }
@@ -242,7 +247,18 @@ export function wireSelect(wrap: HTMLElement, ctx: SelectCtx): () => void {
     clearPaint()
   }
 
-  const onUp = () => finish(true)
+  // Commit only on the gesture's own pointer, and only on the PRIMARY button
+  // going up: a second finger lifting, or a right button pressed-and-released
+  // mid-left-drag, used to commit the rectangle at wherever the cursor
+  // happened to be.
+  const onUp = (e: PointerEvent) => {
+    if (e.pointerId !== pid) return
+    if (e.button > 0) return
+    finish(true)
+  }
+  // While a drag is ARMED, a right-click must not pop the browser menu over
+  // the selection wash (move mode swallows its own; this covers the drag).
+  const onCtxMenu = (e: Event) => { if (armed) e.preventDefault() }
 
   function teardown() {
     if (holdTimer) { clearTimeout(holdTimer); holdTimer = null }
@@ -252,13 +268,17 @@ export function wireSelect(wrap: HTMLElement, ctx: SelectCtx): () => void {
     window.removeEventListener('pointermove', onMove, true)
     window.removeEventListener('pointerup', onUp, true)
     window.removeEventListener('pointercancel', onCancel, true)
+    document.removeEventListener('contextmenu', onCtxMenu, true)
     if (pid >= 0) { try { wrap.releasePointerCapture(pid) } catch { /* not captured */ } }
     wrap.removeEventListener('touchmove', onTouchMove)
     wrap.style.touchAction = ''
     wrap.classList.remove('selecting')
     anchor = null; armed = false; pid = -1
   }
-  const onCancel = () => { teardown(); clearPaint() }
+  const onCancel = (e: PointerEvent) => {
+    if (e.pointerId !== pid) return   // a second pointer's cancel is not ours
+    teardown(); clearPaint()
+  }
 
   // THE SCROLL LOCK (owner, 27 Aug 26 — "when I hold then drag … I can't
   // select a date range, I'm stuck with just adding 1 input"). On touch the
@@ -277,6 +297,11 @@ export function wireSelect(wrap: HTMLElement, ctx: SelectCtx): () => void {
   const onDown = (e: PointerEvent) => {
     if (!ctx.enabled()) return
     if (e.button !== undefined && e.button !== 0) return   // left / primary only
+    // One gesture at a time: a second finger landing mid-drag used to RESET
+    // the state (anchor kept, armed dropped, pid re-aimed), so the armed
+    // selection silently evaporated on lift. The first pointer owns the
+    // gesture until it ends.
+    if (anchor) return
     const el = e.target as HTMLElement
     const roster = parseCellId(el?.closest?.('[data-testid^="cell-"]')?.getAttribute('data-testid'))
     const event = roster ? null : parseEventCell(el?.closest?.('[data-testid^="event-"]')?.getAttribute('data-testid'))
@@ -323,29 +348,48 @@ export function wireMove(
     onCancel: () => void
   },
 ): () => void {
+  // The ghost is a HOVER decoration, so it exists only where hover exists: a
+  // phone fires compatibility mousemove events around a tap, and those used to
+  // unhide the chip at the tap point — a stranded copy of the banner that then
+  // teleported tap to tap. `(hover: none)` is the device truth; when
+  // matchMedia itself is absent (jsdom) the desktop path stands.
+  const hasHover = (() => {
+    try { return typeof window.matchMedia !== 'function' || !window.matchMedia('(hover: none)').matches }
+    catch { return true }
+  })()
   // Inline-styled on purpose: the ghost lives on document.body, OUTSIDE the
   // `#page-leavewar` section every matrix.css rule is scoped under, so a class
   // would not reach it. It is a transient cursor decoration, not chrome.
-  const ghost = document.createElement('div')
-  ghost.setAttribute('data-testid', 'move-ghost')
-  ghost.textContent = `Move ${opts.count} ${opts.count === 1 ? 'entry' : 'entries'}`
-  Object.assign(ghost.style, {
-    position: 'fixed', zIndex: '9999', pointerEvents: 'none', display: 'none',
-    padding: '4px 10px', borderRadius: '8px', font: '600 12px/1.2 system-ui, sans-serif',
-    color: '#E8F6FB', background: 'rgba(20, 40, 50, .92)',
-    border: '1px solid rgba(59, 198, 232, .6)', boxShadow: '0 8px 24px rgba(0,0,0,.5)', opacity: '.9',
-  } as Partial<CSSStyleDeclaration>)
-  document.body.appendChild(ghost)
+  const ghost = hasHover ? document.createElement('div') : null
+  if (ghost) {
+    ghost.setAttribute('data-testid', 'move-ghost')
+    ghost.textContent = `Move ${opts.count} ${opts.count === 1 ? 'entry' : 'entries'}`
+    Object.assign(ghost.style, {
+      position: 'fixed', zIndex: '9999', pointerEvents: 'none', display: 'none',
+      padding: '4px 10px', borderRadius: '8px', font: '600 12px/1.2 system-ui, sans-serif',
+      color: '#E8F6FB', background: 'rgba(20, 40, 50, .92)',
+      border: '1px solid rgba(59, 198, 232, .6)', boxShadow: '0 8px 24px rgba(0,0,0,.5)', opacity: '.9',
+    } as Partial<CSSStyleDeclaration>)
+    document.body.appendChild(ghost)
+  }
 
   const cellAtTarget = (t: EventTarget | null): Cell | null =>
     parseCellId((t as HTMLElement)?.closest?.('[data-testid^="cell-"]')?.getAttribute('data-testid'))
 
+  // The hover preview re-fires only when the hovered DAY changes. Mousemove
+  // arrives per pixel (~60-120/s), and the first cut repainted the landing —
+  // full-grid querySelector scans — on every one of them; on the ~28k-node
+  // grid that is exactly the per-frame work the perf notes forbid.
+  let lastHover = ''
   const onMouseMove = (e: MouseEvent) => {
-    ghost.style.display = ''
-    ghost.style.left = `${e.clientX + 14}px`
-    ghost.style.top = `${e.clientY + 14}px`
+    if (ghost) {
+      ghost.style.display = ''
+      ghost.style.left = `${e.clientX + 14}px`
+      ghost.style.top = `${e.clientY + 14}px`
+    }
+    if (!hasHover) return
     const cell = cellAtTarget(e.target)
-    if (cell) opts.onHover(cell.date)
+    if (cell && cell.date !== lastHover) { lastHover = cell.date; opts.onHover(cell.date) }
   }
   const onClick = (e: MouseEvent) => {
     const cell = cellAtTarget(e.target)
@@ -368,7 +412,7 @@ export function wireMove(
     document.removeEventListener('click', onClick, true)
     document.removeEventListener('contextmenu', onCtx, true)
     document.removeEventListener('keydown', onKey, true)
-    ghost.remove()
+    ghost?.remove()
   }
 }
 

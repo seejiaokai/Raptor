@@ -6,6 +6,7 @@
 import {
   addDays,
   biddingClosed,
+  canDecide,
   canEditCell,
   canEditRow,
   inSquadron,
@@ -1059,6 +1060,11 @@ export function setCell(personId: string, date: string, code: string): void {
   if (!canEditRow(state.role, state.viewer, personId)) return
 
   const clean = code.trim().toUpperCase()
+  // ...and the VOCABULARY: the medical markers are management's (owner,
+  // 17 Aug 26 — "for management only"). Every sheet already offers them to
+  // an admin alone, but until this line the store took an HL from anyone —
+  // the one vocabulary the affordance gated that the write path did not.
+  if (isMedical(clean) && state.role !== 'admin') return
   const previous = state.grid[personId]?.[date]
   const row = { ...(state.grid[personId] ?? {}) }
   const srow = { ...(state.states[personId] ?? {}) }
@@ -1116,6 +1122,10 @@ export function setCellRange(
   let written = 0
   let skipped = 0
   const person = state.people.find(p => p.id === personId)
+  // the vocabulary gate setCell carries — evaluated once out here, and kept in
+  // the predicate below so the count reports the refusal instead of silently
+  // absorbing it
+  const medBlocked = isMedical(code.trim().toUpperCase()) && state.role !== 'admin'
 
   // Suppressed for the run, then released once. Without this a fortnight is
   // fourteen persists and fourteen re-renders, and every subscriber sees the
@@ -1127,6 +1137,7 @@ export function setCellRange(
         !raptorOwns(state.states, personId, d) &&
         canEditCell(state.period, state.role, d) &&
         canEditRow(state.role, state.viewer, personId) &&
+        !medBlocked &&
         (!person || inSquadron(person, d))
       if (!allowed) {
         skipped++
@@ -1165,14 +1176,23 @@ export function setCells(cells: { personId: string; date: string }[], code: stri
   let written = 0
   let skipped = 0
   const wasQuiet = quiet
+  // the vocabulary gate setCell carries, reported by the count rather than
+  // silently absorbed (see setCellRange)
+  const medBlocked = isMedical(code.trim().toUpperCase()) && state.role !== 'admin'
   quiet = true
   try {
     for (const { personId, date } of cells) {
+      // Clearing an EMPTY cell is not a write and not a refusal — a loose
+      // delete-box sweeps up empty cells around the bids, and counting them
+      // as "deleted" made the sheet report deletions that never existed.
+      // They simply don't count either way.
+      if (!code && state.grid[personId]?.[date] === undefined) continue
       const person = state.people.find(p => p.id === personId)
       const allowed =
         !raptorOwns(state.states, personId, date) &&
         canEditCell(state.period, state.role, date) &&
         canEditRow(state.role, state.viewer, personId) &&
+        !medBlocked &&
         (!person || inSquadron(person, date))
       if (!allowed) { skipped++; continue }
       setCell(personId, date, code)
@@ -1196,7 +1216,7 @@ export function clearCells(cells: { personId: string; date: string }[]): RangeWr
  *  sheet). Per cell it needs a biddable, non-Raptor cell, so a mixed
  *  selection decides the bids and skips the rest. */
 export function setBidStates(cells: { personId: string; date: string }[], bid: BidState): { decided: number; skipped: number } {
-  if (state.role !== 'admin') return { decided: 0, skipped: cells.length }
+  if (!canDecide(state.period.stage, state.role)) return { decided: 0, skipped: cells.length }
   let decided = 0
   let skipped = 0
   const wasQuiet = quiet
@@ -1214,10 +1234,15 @@ export function setBidStates(cells: { personId: string; date: string }[], bid: B
   return { decided, skipped }
 }
 
-/** Record a decision on a bid. Deliberately not role-gated: there is no
- *  login in this prototype, so anyone can decide anything — see
- *  `docs/known-gaps.md`. */
+/** Record a decision on a bid — ADMIN ONLY, once bidding is no longer open
+ *  (`canDecide`, the same body the sheet renders by). The old "deliberately
+ *  not role-gated: there is no login" note pre-dated the Raptor merge; there
+ *  IS a login now, the role rides it with a ceiling a member cannot climb,
+ *  and this batch's own doctrine is that the store is what makes a rule true
+ *  — the batch sibling `setBidStates` above was already gated, and a gate
+ *  the single writer didn't share was a drift seam, not a decision. */
 export function setBidState(personId: string, date: string, bid: BidState): void {
+  if (!canDecide(state.period.stage, state.role)) return
   // A decision on a cell nobody bid for would be a state with no bid behind
   // it, which is exactly the drift `setCell` exists to prevent. Ignore it
   // rather than write it.
@@ -1903,8 +1928,11 @@ export function withdrawLeaveCell(personId: string, date: string, code: string):
   return true
 }
 
-/** What a shift did, or why it did nothing. */
-export type ShiftResult = 'shifted' | 'occupied' | 'raptor' | 'nothing'
+/** What a shift did, or why it did nothing. `window` covers every "not an
+ *  editable day" refusal: outside the stage/window this role may write, off
+ *  the war's own calendar (a typed date the war has no column for), or on a
+ *  day the person has left the squadron. */
+export type ShiftResult = 'shifted' | 'occupied' | 'raptor' | 'nothing' | 'window'
 
 /**
  * Move a bid to a different date.
@@ -1928,6 +1956,20 @@ export function shiftBid(personId: string, from: string, to: string): ShiftResul
   // write path is what makes it true.
   if (!canEditRow(state.role, state.viewer, personId)) return 'nothing'
   if (raptorOwns(state.states, personId, from)) return 'raptor'
+  // The same day law `moveCells` enforces per cell, which this single-cell
+  // sibling was missing: both ends must be days this role may write (a member
+  // cannot slide a bid once the war closes, nor outside the bid window), and
+  // the LANDING day must exist on the war's own calendar and inside the
+  // person's time in the squadron. Without the calendar check a typed date —
+  // the Move field is a keyed input, and min/max on a date input are advisory
+  // — could land a bid on a day no column renders: gone from every screen,
+  // still draining the leave balance. That is `setBidWindow`'s wrong-year
+  // typo, and the answer is the same: refuse, never absorb.
+  if (!canEditCell(state.period, state.role, from)) return 'window'
+  if (!canEditCell(state.period, state.role, to)) return 'window'
+  if (!state.period.days.some((d: any) => d.date === to)) return 'window'
+  const person = state.people.find(p => p.id === personId)
+  if (person && !inSquadron(person, to)) return 'window'
   // Never overwrite. Moving one man's leave onto a day he already has
   // something booked would destroy the second booking to save the first.
   // Shifting onto its own date lands here too, which is right: it is not a
@@ -1939,12 +1981,17 @@ export function shiftBid(personId: string, from: string, to: string): ShiftResul
   row[to] = code
 
   const srow = { ...(state.states[personId] ?? {}) }
+  // The ORIGIN survives a chain of moves: a bid moved 23 → 30 → Feb 6 was
+  // still BID on the 23rd, and the trail exists so the ledger can answer
+  // exactly that — "moved from the 30th" would trace to a date nobody asked
+  // for. Read before the delete below takes the old record with it.
+  const origin = srow[from]?.shiftedFrom ?? from
   delete srow[from]
   // Record the moved-from trace ONLY once bidding has closed — the same rule as
   // moveCells: a shift while the war is OPEN is ordinary shuffling and leaves no
   // stripe (owner, 27 Aug 26).
   srow[to] = biddingClosed(state.period.stage)
-    ? { state: 'pending', source: 'bid', shiftedFrom: from }
+    ? { state: 'pending', source: 'bid', shiftedFrom: origin }
     : { state: 'pending', source: 'bid' }
 
   updateCurrent(w => ({
@@ -1993,7 +2040,13 @@ export type MoveResult = 'moved' | { reason: 'nothing' | 'raptor' | 'occupied' |
  *  so the occupied check excludes the selection's own sources. Role-gated by
  *  `canEditCell` like `shiftBid` — a member may slide bids they could shift
  *  one at a time; medical/PO never reach here (not biddable / admin-only). */
-export function moveCells(cells: { personId: string; date: string }[], dayDelta: number): MoveResult {
+/** The validation half of `moveCells`, held apart so the grid's landing
+ *  preview can ask "would this move actually go?" BEFORE painting it — a
+ *  preview that shows half a landing the atomic commit then wholly refuses is
+ *  a lie, and a second copy of these guards in the UI would be the drift seam
+ *  this store exists to prevent. Returns null when the move is clear, else
+ *  the same `{reason, at}` the commit reports. */
+export function moveProblem(cells: { personId: string; date: string }[], dayDelta: number): Exclude<MoveResult, 'moved'> | null {
   if (!dayDelta || cells.length === 0) return { reason: 'nothing' }
   const dayset = new Set(state.period.days.map((d: any) => d.date))
   const sources = new Set(cells.map(c => `${c.personId}|${c.date}`))
@@ -2020,6 +2073,12 @@ export function moveCells(cells: { personId: string; date: string }[], dayDelta:
     const occ = state.grid[c.personId]?.[to]
     if (occ && !sources.has(`${c.personId}|${to}`)) return { reason: 'occupied', at: to }
   }
+  return null
+}
+
+export function moveCells(cells: { personId: string; date: string }[], dayDelta: number): MoveResult {
+  const problem = moveProblem(cells, dayDelta)
+  if (problem) return problem
   // apply as ONE write: clone the touched rows, drop every source, then land
   // every target (all deletes before any set, so a self-overlapping slide
   // never deletes a day it has just filled)
@@ -2039,12 +2098,20 @@ export function moveCells(cells: { personId: string; date: string }[], dayDelta:
   // closed AND the input is moved"). Clearing shiftedFrom on the open re-place
   // also drops any stale trail a prior closed-era move had left.
   const tracked = biddingClosed(state.period.stage)
-  const moves = cells.map(c => ({ pid: c.personId, from: c.date, to: addDays(c.date, dayDelta), code: state.grid[c.personId][c.date] }))
+  // `origin` rather than `from`: the trail survives a CHAIN of moves — a bid
+  // moved 23 → 30 → Feb 6 was still bid on the 23rd, and that is the date the
+  // ledger exists to answer with (same rule as shiftBid). Read here, before
+  // the delete loop takes the old records with it.
+  const moves = cells.map(c => ({
+    pid: c.personId, from: c.date, to: addDays(c.date, dayDelta),
+    code: state.grid[c.personId][c.date],
+    origin: state.states[c.personId]?.[c.date]?.shiftedFrom ?? c.date,
+  }))
   for (const m of moves) { delete grid[m.pid][m.from]; delete states[m.pid][m.from] }
   for (const m of moves) {
     grid[m.pid][m.to] = m.code
     states[m.pid][m.to] = tracked
-      ? { state: 'pending', source: 'bid', shiftedFrom: m.from }
+      ? { state: 'pending', source: 'bid', shiftedFrom: m.origin }
       : { state: 'pending', source: 'bid' }
   }
   updateCurrent(w => ({ ...w, grid: { ...w.grid, ...grid }, states: { ...w.states, ...states } }))

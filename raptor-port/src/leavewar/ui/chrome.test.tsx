@@ -1,6 +1,6 @@
 import { act, fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
-import { getState, initStore, setBidState, setRole } from '../state/store'
+import { advanceStage, getState, initStore, setBidState, setRole } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { StageBar, Topbar } from './Chrome'
 
@@ -43,7 +43,9 @@ describe('the stage strip', () => {
   it('counts under-manned days against the live bid states', () => {
     render(<StageBar />)
     const before = screen.getByTestId('undermanned').textContent
-    act(() => setBidState('ramp', '2026-01-01', 'refused'))
+    // deciding is the admin's, once bidding is closed (canDecide — the store
+    // refuses it otherwise since the 27 Aug overnight pass)
+    act(() => { setRole('admin'); advanceStage(); setBidState('ramp', '2026-01-01', 'refused') })
     const after = screen.getByTestId('undermanned').textContent
     expect(after).not.toBe(before)
     expect(Number(after!.split(' ')[0])).toBe(Number(before!.split(' ')[0]) - 1)
@@ -63,14 +65,26 @@ describe('the colour/mark legend', () => {
     expect(text).toContain('Approved')
     expect(text).toContain('Pending')
     expect(text).toContain('Refused')
-    expect(text).toContain('Moved here from another day')
     expect(text).toContain('Filed on the Inputs page')
     expect(text).toContain('Morning')
     expect(text).toContain('Afternoon')
+    // The moved row appears only once bidding has closed — at `open` no cell
+    // can wear the stripe (movedShown), and a legend advertising a mark the
+    // grid cannot show sends readers hunting for it (27 Aug 26).
+    expect(text).not.toContain('Moved here from another day')
     // the swatches reuse the grid's own classes, so the key cannot drift from
-    // the cells (the dotted-orange 'moved' and the blue 'raptor' edge marks)
-    expect(leg.querySelector('.leg-sw.moved')).toBeTruthy()
+    // the cells (the blue 'raptor' edge mark; the dotted-orange 'moved' below)
     expect(leg.querySelector('.leg-sw.raptor')).toBeTruthy()
+  })
+
+  it('the moved row joins the key once bidding is closed', () => {
+    setRole('admin')
+    advanceStage()
+    render(<StageBar />)
+    fireEvent.click(screen.getByTestId('legend-open'))
+    const leg = screen.getByTestId('legend')
+    expect(leg.textContent).toContain('Moved here from another day')
+    expect(leg.querySelector('.leg-sw.moved')).toBeTruthy()
   })
 })
 

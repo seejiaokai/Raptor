@@ -205,7 +205,7 @@ describe('adding and removing in-time lines', () => {
   })
 
   it('a member is refused at routeClick, even with a hand-made button', async () => {
-    await act(async () => { setSession({ user: 'm', role: 'member' }); notify() })
+    await act(async () => { setSession({ user: 'm', role: 'main' }); notify() })
     const w = W0()
     const before = w.intimes.slice()
     try {

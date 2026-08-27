@@ -231,21 +231,56 @@ export function medOverlapRefusal(person: any, type: any, date: any, endDate: an
   })
   return clash ? `A ${t} is already filed over these days — edit that entry instead, and attach the new document to it` : ''
 }
-/* An upchit is ONE date closing a real medical-down period — three refusals:
-   a ranged upchit, an upchit with nothing on file to close, and a second
-   upchit on the same day (the shared-edit-address hazard again). */
+/* An upchit is ONE date closing a real, still-open medical-down period —
+   four refusals: a ranged upchit, an upchit with nothing on file to close,
+   one for an episode ALREADY closed (a second later-dated upchit would trim
+   nothing and sit in Upchit Complete as paperwork for no event), and a
+   second upchit on the same day (the shared-edit-address hazard again). */
 export function upchitRefusal(person: any, date: any, endDate: any, except: any): string {
   if (endDate) return 'An upchit is a single date — pick the day he is medically up'
   const x = dateOrd(date)
   if (x == null) return ''
-  const hasMed = INPUTS.some((r: any) => {
-    if (!isDownchit(r.type) || r.person !== person) return false
-    const a = dateOrd(r.date, r.yr)
-    return a != null && a <= x
-  })
-  if (!hasMed) return 'There is no medical-down entry to upchit — file the medical input first'
+  /* something to close: a downchit RUNNING at x (this upchit will trim it),
+     or an expired one still unanswered — no upchit already on/after its end
+     (the same covering test pendingUpchits reads, so the refusal and the nag
+     cannot disagree about what "open" means) */
+  let running = false, latestEnd: any = null
+  for (const r of INPUTS) {
+    if (!isDownchit(r.type) || r.person !== person) continue
+    const a = dateOrd(r.date, r.yr), b = dateOrd(r.endDate || r.date, r.yr)
+    if (a == null || b == null || a > x) continue
+    if (b >= x) { running = true; break }
+    if (latestEnd == null || b > latestEnd) latestEnd = b
+  }
+  if (!running && latestEnd == null) return 'There is no medical-down entry to upchit — file the medical input first'
+  if (!running) {
+    const answered = INPUTS.some((r: any) => {
+      if (r === except || r.person !== person || !isUpchit(r.type)) return false
+      const o = dateOrd(r.date, r.yr)
+      return o != null && o >= latestEnd
+    })
+    if (answered) return 'That medical-down period is already closed — edit the existing upchit instead'
+  }
   const dup = INPUTS.some((r: any) => r !== except && r.person === person && isUpchit(r.type) && dateOrd(r.date, r.yr) === x)
   return dup ? 'An upchit is already filed for that day — edit that entry instead' : ''
+}
+
+/* A downchit cannot RUN OVER one of the person's upchits — the record would
+   read "medically down" and "medically up" at once for the same episode, and
+   the Medical view would list him in two sections. Only a date STRICTLY
+   inside the span conflicts: ending ON the upchit date IS the trimmed
+   convention (down 10–13, upchit 12 → 10–12), and starting on it is a man
+   cleared in the morning and down again the same day. The refusal follows
+   the edit-that-entry shape of its siblings above. */
+export function downOverUpchitRefusal(person: any, date: any, endDate: any): string {
+  const na = dateOrd(date), nb = dateOrd(endDate || date)
+  if (na == null || nb == null) return ''
+  const hit = INPUTS.find((r: any) => {
+    if (r.person !== person || !isUpchit(r.type)) return false
+    const o = dateOrd(r.date, r.yr)
+    return o != null && o > na && o < nb
+  })
+  return hit ? `An upchit is filed for ${hit.date} — edit or delete that entry first` : ''
 }
 /* ord (dateOrd form) → ISO, for the remarks-tail rewrite below */
 const ordISO = (o: any) => `${Math.floor(o / 10000)}-${String(Math.floor(o / 100) % 100).padStart(2, '0')}-${String(o % 100).padStart(2, '0')}`
@@ -261,9 +296,37 @@ const ordISO = (o: any) => `${Math.floor(o / 10000)}-${String(Math.floor(o / 100
    while the typist's own words stay. inpKey is person|date|type|s — an
    end-trim moves none of them, so no accepted-row relink is needed. */
 export function applyMedPlan(plan: any[]) {
+  const cs = (r: any) => (PEOPLE[r.person] ? PEOPLE[r.person].cs : r.person)
   for (const p of plan || []) {
     const r = p.row
-    if (p.action === 'delete') { dropInputRow(r); continue }
+    /* The surviving TAIL of a row the new input only partly covered — minted
+       BEFORE the head is trimmed or dropped, while the row still says what it
+       covered. A second row of the same type, person, year anchor and
+       document (the certificate covers the whole original episode), spanning
+       the days past the new input's end: the new input wins exactly its own
+       days, and the man does not silently read as fit for the rest of a long
+       downchit because a two-day one landed in the middle of it. */
+    if (p.tail && p.tail.startOrd != null && p.tail.endOrd != null) {
+      const t: any = { ...r, date: ordLabel(p.tail.startOrd, r.yr), mod: 'now' }
+      delete t.iid          // its own address, minted below — never a copy
+      delete t.lw           // a plain Raptor row; the war re-lands it inbound
+      delete t.acc
+      if (p.tail.endOrd > p.tail.startOrd) t.endDate = ordLabel(p.tail.endOrd, r.yr)
+      else delete t.endDate
+      t.remarks = withRemarksTail(r.remarks, ordISO(p.tail.startOrd), ordISO(p.tail.endOrd), 'till')
+      inpId(t)
+      INPUTS.push(t)
+      logAction(null, `Input added — ${cs(r)}, ${t.type}, ${t.date}${t.endDate ? '–' + t.endDate : ''} (the tail of a split medical entry)`)
+    }
+    /* Every cut leaves a line in the day log — the trim cascade is the one
+       writer of medical paperwork that is not a person's own hand, and a row
+       that shortens or vanishes with no record anywhere is exactly the
+       untraceable edit the log exists to end. */
+    if (p.action === 'delete') {
+      logAction(null, `Input removed — ${cs(r)}, ${r.type}, ${r.date}${r.endDate ? '–' + r.endDate : ''} (overwritten by a newer medical entry)`)
+      dropInputRow(r)
+      continue
+    }
     if (p.action !== 'trim' || p.newEndOrd == null) continue
     if (r.lw) { retractLwRow(r); delete r.lw }
     const a = dateOrd(r.date, r.yr)
@@ -271,6 +334,7 @@ export function applyMedPlan(plan: any[]) {
     else r.endDate = ordLabel(p.newEndOrd, r.yr)
     r.remarks = withRemarksTail(r.remarks, a != null ? ordISO(a) : '', ordISO(p.newEndOrd), 'till')
     r.mod = 'now'
+    logAction(null, `Input trimmed — ${cs(r)}, ${r.type}, now ends ${ordLabel(p.newEndOrd, r.yr)}`)
   }
 }
 
@@ -368,6 +432,25 @@ export function normalizeInputDraft(draft: any, except: any):
      roll is that a transposed 09:00–08:00 becomes a 23-hour absence instead of
      an error — the same trade every other row type on the board already makes. */
   if (!draft.allday && (e as number) === (s as number)) { HOOKS.toast('Give the input a start and end that are not the same time', 'warn'); return null }
+  /* A CLEARED DATE IS REFUSED, never guessed at. fmt() answers a blank with
+     the loaded week's Monday — the right default for a field that was never
+     shown — but a dialog's date box CAN be emptied by hand, and silently
+     filing the input on Monday is the missing-input trap the doctrine names:
+     on an upchit it would then trim the man's downchits against a date
+     nobody picked. The add form already refuses this; the dialogs share it
+     here so no editor can disagree. */
+  if (!draft.start) { HOOKS.toast('Pick the date first', 'warn'); return null }
+  /* A MEDICAL RECORD KEEPS ITS FAMILY (owner, 27 Aug 26): a downchit stays a
+     downchit type, an upchit stays an upchit — retyping one into leave would
+     strand its document and walk it out of the tracker without a trace. The
+     dialogs already narrow their type lists; this is the write-path half, so
+     a hand-made call cannot do what the picker will not offer. */
+  if (except && isDownchit(except.type) && !isDownchit(draft.type)) {
+    HOOKS.toast('A medical entry stays medical — delete it instead if it was filed in error', 'warn'); return null
+  }
+  if (except && isUpchit(except.type) && !isUpchit(draft.type)) {
+    HOOKS.toast('An upchit stays an upchit — delete it instead if it was filed in error', 'warn'); return null
+  }
   const date = fmt(draft.start), endDate = draft.end && fmt(draft.end) !== date ? fmt(draft.end) : undefined
   /* A SPAN HAS TO RUN FORWARDS. Dates now carry their year whenever it is not
      the loaded week's (fmt above), so a leave into the new year — Dec 28 →
@@ -411,6 +494,11 @@ export function normalizeInputDraft(draft: any, except: any):
   if (isDownchit(draft.type)) {
     const dup = medOverlapRefusal(draft.person, draft.type, date, endDate, except)
     if (dup) { HOOKS.toast(dup, 'warn'); return null }
+    /* ...and it must not swallow an upchit: extending a downchit back over
+       the date that closed it would say "down" and "up" at once (27 Aug 26
+       overnight pass — the contradiction was accepted silently). */
+    const over = downOverUpchitRefusal(draft.person, date, endDate)
+    if (over) { HOOKS.toast(over, 'warn'); return null }
   }
   if (isUpchit(draft.type)) {
     const why = upchitRefusal(draft.person, date, endDate, except)
@@ -485,8 +573,11 @@ export function commitNewInput(draft: any, toGround?: boolean): boolean {
     ...(half ? { half } : {}),
     ...(Object.keys(flags).length ? { sans: flags } : {}),
     /* the supporting document's id only — the blob stays in state/docs, so
-       history snapshots (JSON of INPUTS) never copy a file */
-    ...(draft.docId ? { docId: draft.docId } : {}),
+       history snapshots (JSON of INPUTS) never copy a file. Gated on the type
+       actually needing one: a certificate uploaded under a medical pick and
+       left behind by a switch to leave must not ride onto the leave row and
+       draw a paperclip nothing explains. */
+    ...(draft.docId && needsDoc(draft.type) ? { docId: draft.docId } : {}),
   }
   /* the row's own address, minted before the write so the snapshot this add
      pushes already carries it — the Inputs page add's own withId precedent */
@@ -537,11 +628,17 @@ export function commitInputEdit(r: any, draft: any) {
   }
   /* write-path role backstop (owner, 27 Aug 26): a LOGGED-IN MEMBER edits only
      their OWN inputs. The row's ✎ is hidden on everyone else's, so a real
-     gesture cannot reach here; this refuses a hand-made call. Gated on an
-     actual member SESSION, not merely "not admin", so the app's own internal
-     edit cascades (sync retraction, medical trims, the accepted-row relink)
-     and a scheduler edit still run on any row. */
-  if (SESSION?.role === 'member' && r.person !== ME) {
+     gesture cannot reach here; this refuses a hand-made call. "Member" is any
+     signed-in session that cannot edit the schedule — the same predicate the
+     render gate reads (InputsPage), NOT a role literal: the first cut compared
+     against 'member', a string no account ever carries (the member login is
+     role 'main', auth.ts), so the gate never fired in production while its
+     test logged in with the fabricated shape and stayed green. The app's own
+     internal edit cascades (sync retraction, medical trims, the accepted-row
+     relink) stay person-scoped to the row's own person, so a member's cascade
+     is their own row and still passes; a sessionless test/boot context is not
+     a member and is not gated. */
+  if (SESSION && !canEditSched() && r.person !== ME) {
     HOOKS.toast('You can only edit your own inputs', 'warn')
     return false
   }
@@ -622,8 +719,11 @@ export function commitInputEdit(r: any, draft: any) {
     const flags = sansFlags(draft.sans)
     if (Object.keys(flags).length) r.sans = flags; else delete r.sans
     /* a fresh upload REPLACES the document reference; an edit that touched
-       nothing else keeps the old one (paperwork is never silently dropped) */
-    if (draft.docId) r.docId = draft.docId
+       nothing else keeps the old one (paperwork is never silently dropped).
+       Only on a type that KEEPS documents — the family guard above stops a
+       medical row leaving the group, so this bites only on a stray docId a
+       dialog carried while the type was flipped among non-medical picks. */
+    if (draft.docId && needsDoc(draft.type)) r.docId = draft.docId
     /* DERIVED from the times, never copied from the draft (audit, 12 Aug 26).
        The in-place cells already derived it (halfOf), but the Inputs page's own
        two time boxes did not: press AM, then type 08:00 over the start, and the
@@ -799,10 +899,11 @@ export function removeInput(r: any) {
   if (inx < 0) { HOOKS.toast('That input is no longer there', 'warn'); return false }
   /* write-path role backstop (owner, 27 Aug 26): a LOGGED-IN MEMBER deletes
      only their OWN inputs — the row's ✕ is hidden on everyone else's, this
-     refuses a hand-made call. Gated on an actual member SESSION (not "not
-     admin") so the app's own removal cascades and a scheduler still run on
-     any row. */
-  if (SESSION?.role === 'member' && r.person !== ME) {
+     refuses a hand-made call. Same predicate as commitInputEdit's gate above
+     (and the render gate): any signed-in session that cannot edit the
+     schedule — not the role literal 'member', which no account carries and
+     which left this gate inert in production. */
+  if (SESSION && !canEditSched() && r.person !== ME) {
     HOOKS.toast('You can only delete your own inputs', 'warn')
     return false
   }

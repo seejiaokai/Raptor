@@ -1,7 +1,7 @@
 import { act, fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
 
-import { getState, initStore, moveFigure, resetFigureOrder, setBidState, setCell, setPeople, setRole, setViewer } from '../state/store'
+import { advanceStage, getState, initStore, moveFigure, resetFigureOrder, setBidState, setCell, setPeople, setRole, setViewer } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { Matrix } from './Matrix'
 
@@ -152,7 +152,8 @@ describe('the counter column', () => {
     const before = Number(screen.getByTestId('bal-dusk').textContent)
     act(() => setCell('dusk', '2026-02-11', 'LL'))
     expect(Number(screen.getByTestId('bal-dusk').textContent)).toBe(before - 1)
-    act(() => setBidState('dusk', '2026-02-11', 'refused'))
+    // the refusal is management's, once bidding is closed (canDecide)
+    act(() => { setRole('admin'); advanceStage(); setBidState('dusk', '2026-02-11', 'refused') })
     expect(Number(screen.getByTestId('bal-dusk').textContent)).toBe(before)
   })
 

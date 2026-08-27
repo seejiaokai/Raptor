@@ -92,25 +92,37 @@ export function upchitsWithin(asOf:any,days:any=30){
 /* THE TRIM PLANS. One primitive decides trim-vs-delete; both flows use it. */
 const trimTo=(r:any,newEnd:any)=>{const a=medStartOrd(r);
   return newEnd<a?{row:r,action:'delete'}:{row:r,action:'trim',newEndOrd:newEnd};};
-/* an upchit on X: every downchit of the person still running past X is cut
-   to end ON X (down 10–13, upchit 12 → 10–12); one on or before the start
-   cancels the row outright. Rows already ended are left alone — the pending
-   nag clears through pendingUpchits, no mutation needed. */
+/* an upchit on X: every downchit of the person RUNNING AT X (started on or
+   before it, still running past it) is cut to end ON X (down 10–13, upchit
+   12 → 10–12). Rows already ended are left alone — the pending nag clears
+   through pendingUpchits, no mutation needed. Rows that START AFTER X are
+   left alone too, deliberately: they are the "newer entry" the owner said
+   replaces the nag (a future surgery already filed, with its own document),
+   not part of the episode this upchit closes — the first cut swept them into
+   trimTo's delete branch, so an upchit for an OLD episode silently destroyed
+   an unrelated future downchit, the one case the delete branch could ever
+   actually fire on (the refusal gate demands a row starting on/before X, and
+   only a row starting AFTER X can reach newEnd<start). */
 export function upchitTrimPlan(person:any,xOrd:any,except?:any){
   const out:any=[];
   if(xOrd==null)return out;
   for(const r of medRows(person)){if(r===except)continue;
     const a=medStartOrd(r),b=medEndOrd(r);
-    if(a==null||b==null||b<=xOrd)continue;
+    if(a==null||b==null||b<=xOrd||a>xOrd)continue;
     out.push(trimTo(r,xOrd));}
   return out;
 }
 /* a NEW medical input of a DIFFERENT type wins its days (owner: "the latest
-   input ... overwrites the previous input thats conflicting"): every
-   overlapping other-type downchit is cut to end the day BEFORE the new one
-   starts, and deleted when nothing remains — including one that starts
-   inside the new range, whose tail past the new end is deliberately lost.
-   Same-type overlap never reaches here; it is refused at the form. */
+   input ... overwrites the previous input thats conflicting") — and ONLY its
+   days: every overlapping other-type downchit is cut to end the day BEFORE
+   the new one starts (deleted when nothing remains before it), and when the
+   old row also ran PAST the new one's end, the surviving tail rides the plan
+   as a second same-type row for the applier to mint. The first cut dropped
+   that tail wholesale, so a two-day ATT B dropped mid-way through a long
+   hospitalisation silently marked the man fit for the rest of it — days the
+   new input never claimed, the exact silent availability error the tracker
+   exists to prevent. Same-type overlap never reaches here; it is refused at
+   the form. */
 export function newMedTrimPlan(person:any,type:any,aOrd:any,bOrd:any,except?:any){
   const out:any=[];
   if(aOrd==null)return out;
@@ -120,6 +132,8 @@ export function newMedTrimPlan(person:any,type:any,aOrd:any,bOrd:any,except?:any
     const s=medStartOrd(r),e=medEndOrd(r);
     if(s==null||e==null)continue;
     if(s>b||e<aOrd)continue;
-    out.push(trimTo(r,ordShift(aOrd,-1)));}
+    const p:any=trimTo(r,ordShift(aOrd,-1));
+    if(e>b)p.tail={startOrd:ordShift(b,1),endOrd:e};
+    out.push(p);}
   return out;
 }

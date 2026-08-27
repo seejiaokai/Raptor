@@ -312,10 +312,10 @@ export function BidPicker({
 /**
  * Approve or refuse a bid, once bidding has closed.
  *
- * Deliberately NOT role-gated: this prototype has no login, so anyone can
- * decide anything. That is a consequence of deferring accounts to the
- * backend, recorded in `docs/known-gaps.md` — it is not a security model and
- * must not be presented as one.
+ * The sheet renders only under `canDecide`, and since the 27 Aug overnight
+ * pass the store's `setBidState` re-checks the same body — the role rides the
+ * Raptor login now, so "there is no login" stopped being a reason to leave
+ * the write path open the day the apps merged.
  *
  * Reuses the bid sheet's shell so a decision and a bid read as the same
  * object in the same place, rather than as two unrelated surfaces.
@@ -361,7 +361,9 @@ export function DecisionSheet({
         ? `${to} already has something booked — clear it first.`
         : result === 'raptor'
           ? 'Raptor owns this cell; move it there instead.'
-          : 'There is no bid here to move.',
+          : result === 'window'
+            ? `${to} is not a day this leave can land on — pick a day inside the war.`
+            : 'There is no bid here to move.',
     )
   }
 

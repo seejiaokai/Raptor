@@ -1,7 +1,7 @@
 import { act, render, screen, within } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
 import type { Person } from '../engine'
-import { getState, initStore, setBidState, setCell, setPersLabel } from '../state/store'
+import { advanceStage, getState, initStore, setBidState, setCell, setPersLabel, setRole } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { Matrix } from './Matrix'
 
@@ -261,7 +261,7 @@ describe('bid state on a cell', () => {
     render(<Matrix />)
     const cls = () => screen.getByTestId('cell-asics-2026-01-23').querySelector('.c')!.className
     expect(cls()).not.toContain('appr')
-    act(() => setBidState('asics', '2026-01-23', 'approved'))
+    act(() => { setRole('admin'); advanceStage(); setBidState('asics', '2026-01-23', 'approved') })
     expect(cls()).toContain('appr')
   })
 
@@ -274,7 +274,7 @@ describe('bid state on a cell', () => {
     const cls = () => screen.getByTestId('cell-asics-2026-01-23').querySelector('.c')!.className
     expect(cls()).not.toContain('tbc')
     const before = screen.getByTestId('count-opsp-2026-01-23').textContent
-    act(() => setBidState('asics', '2026-01-23', 'acknowledged'))
+    act(() => { setRole('admin'); advanceStage(); setBidState('asics', '2026-01-23', 'acknowledged') })
     expect(cls()).toContain('tbc')
     expect(screen.getByTestId('count-opsp-2026-01-23').textContent).toBe(before)
   })
@@ -285,7 +285,7 @@ describe('bid state on a cell', () => {
   it('counts a refused bid as a man at work', () => {
     render(<Matrix />)
     const before = screen.getByTestId('count-opsp-2026-01-23').textContent
-    act(() => setBidState('asics', '2026-01-23', 'refused'))
+    act(() => { setRole('admin'); advanceStage(); setBidState('asics', '2026-01-23', 'refused') })
     expect(screen.getByTestId('count-opsp-2026-01-23').textContent).not.toBe(before)
   })
 })

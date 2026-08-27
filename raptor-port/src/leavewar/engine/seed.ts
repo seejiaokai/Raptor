@@ -198,8 +198,8 @@ export function seedGrid(): Grid {
 }
 
 // Enough of each state that the matrix shows all three colours on first run,
-// plus one cell Raptor owns and one management shifted, so those two paths
-// render without anyone having to construct them.
+// plus one cell Raptor owns, so that path renders without anyone having to
+// construct it. (No seeded `shiftedFrom` — see the MILES note below.)
 //
 // Every entry here must name a cell that seedGrid() actually holds, and a
 // code someone would bid for — a state on a cell with no code is a bug the
@@ -232,12 +232,16 @@ export function seedStates(): States {
       '2026-01-23': { state: 'pending', source: 'bid' },
       '2026-02-24': { state: 'acknowledged', source: 'bid' },
     },
-    // MILES asked for the 4th and management moved him to the 3rd. A shift
-    // lands PENDING — moving it is a proposal, and someone still has to
-    // approve the date it was moved to.
+    // MILES holds two plain pending bids. The seed used to plant a
+    // `shiftedFrom` on the second so the moved stripe rendered on first run,
+    // but the 27 Aug 26 ruling made that record a closed-war fact — a move
+    // made while bidding is OPEN stores no trail — and a seeded trail on an
+    // OPEN war painted the stripe the moment anyone closed bidding, on a bid
+    // nobody had moved: the exact false mark the ruling exists to kill. The
+    // moved path is exercised by the e2e (close, shift, look), not the seed.
     miles: {
       '2026-02-02': { state: 'pending', source: 'bid' },
-      '2026-02-03': { state: 'pending', source: 'bid', shiftedFrom: '2026-02-04' },
+      '2026-02-03': { state: 'pending', source: 'bid' },
     },
     roulette: { '2026-01-15': { state: 'approved', source: 'bid' } },
     cross: { '2026-03-10': { state: 'refused', source: 'bid' } },

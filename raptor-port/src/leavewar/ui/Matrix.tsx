@@ -30,7 +30,7 @@ import {
   type Group,
   type Person,
 } from '../engine'
-import { addEventRow, autoSortRoster, DEFAULT_EVENT_ROWS, displayRoster, eventRowUsed, getState, MAX_EVENT_ROWS, moveCells, movableCells, moveRosterRow, orderedManningIds, personLabel, removeEventRow, resetManningRules, setPersLabel, setPostOut, setShowSans, type MoveResult } from '../state/store'
+import { addEventRow, autoSortRoster, DEFAULT_EVENT_ROWS, displayRoster, eventRowUsed, getState, MAX_EVENT_ROWS, moveCells, movableCells, moveProblem, moveRosterRow, orderedManningIds, personLabel, removeEventRow, resetManningRules, setPersLabel, setPostOut, setShowSans, type MoveResult } from '../state/store'
 import { BidPicker, DecisionSheet, PostOutSheet, RaptorSheet } from './BidPicker'
 import { CounterSheet, FigureBreakdownSheet, PersonFiguresSheet } from './CounterSheet'
 import { PersonSheet } from './PersonSheet'
@@ -110,7 +110,11 @@ function PersLabel({ p, editable }: { p: Person; editable: boolean }) {
 }
 
 export function Matrix() {
-  useVersion()
+  /* kept in a name (not just subscribed) so store-reading memos below can
+     re-derive on every store change — `movers` reads live grid state, and a
+     memo keyed only on the selection went stale when a sync pass changed a
+     selected cell under an armed move */
+  const version = useVersion()
   const { people, period, grid, states, requirements, role, viewer, eventDefs, openings, ledger, wars, figureOrder, manningHidden, eventRows, showSans, focusDate, focusSeq } = getState()
   const dates = period.days.map(d => d.date)
   // Memoized on the store objects (the store replaces what it writes, so
@@ -367,10 +371,26 @@ export function Matrix() {
   // the day tapped, the rest shifting with it (gaps between inputs kept). The
   // landing is previewed live on desktop (hover) and staged before a Confirm on
   // phone (no undo). `daysBetween(moveAnchor, target)` is the shared delta.
-  const movers = useMemo<Cell[]>(() => (moveSel ? movableCells(moveSel.cells) : []), [moveSel])
+  const movers = useMemo<Cell[]>(() => (moveSel ? movableCells(moveSel.cells) : []), [moveSel, version])
   const moveAnchor = useMemo(() => earliestDate(movers), [movers])
   const landingFor = (targetDate: string): Cell[] =>
     moveAnchor === null ? [] : movers.map(c => ({ personId: c.personId, date: addDays(c.date, daysBetween(moveAnchor, targetDate)) }))
+  /* Paint the landing ONLY when the atomic commit would accept it —
+     `moveProblem` is the validation half of `moveCells` itself, so the
+     preview cannot show half a landing (the off-grid cells simply not
+     painting) that the commit then wholly refuses. A refused hover/stage
+     clears the paint and says why in the banner instead. */
+  const previewAt = (targetDate: string): boolean => {
+    const w = wrapRef.current
+    if (!w || moveAnchor === null) return false
+    const delta = daysBetween(moveAnchor, targetDate)
+    if (delta === 0) { setMoveErr(''); paintLanding(w, landingFor(targetDate)); return true }
+    const problem = moveProblem(movers, delta)
+    if (problem) { clearLanding(w); setMoveErr(moveReason(problem)); return false }
+    setMoveErr('')
+    paintLanding(w, landingFor(targetDate))
+    return true
+  }
   const commitMove = (targetDate: string) => {
     const w = wrapRef.current
     if (moveAnchor === null) { setMoveSel(null); setMovePreview(null); return }
@@ -385,11 +405,13 @@ export function Matrix() {
     setMoveErr(''); setMovePreview(null)
     const cleanup = wireMove(w, {
       count: movers.length,
-      onHover: date => paintLanding(w, landingFor(date)),   // desktop live preview
+      onHover: date => previewAt(date),                     // desktop live preview
       onPick: date => {
         // Desktop lands on the click (the hover WAS the preview); a phone has no
-        // hover, so a tap stages the landing and waits for Confirm.
-        if (phone) { paintLanding(w, landingFor(date)); setMovePreview(date) }
+        // hover, so a tap stages the landing and waits for Confirm — but only a
+        // landing the store would accept stages (a refused one shows its reason
+        // where the Confirm button would be, never a Confirm under an error).
+        if (phone) setMovePreview(previewAt(date) ? date : null)
         else commitMove(date)
       },
       onCancel: () => { clearLanding(w); setMoveSel(null); setMovePreview(null) },
@@ -1232,7 +1254,9 @@ export function Matrix() {
   // "view as" — the member's own person. It takes precedence over the
   // read-only Raptor sheet and the bid/decision sheets below, and exists only
   // at published; `leaveInputAt` runs once per open cell, never per grid cell.
-  const remarkRow = open && period.stage === 'published' ? leaveInputAt(open.id, open.date) : null
+  const remarkRow = open && period.stage === 'published'
+    ? leaveInputAt(open.id, open.date, grid[open.id]?.[open.date])
+    : null
   const canRemark = !!remarkRow && (role === 'admin' || (!!open && open.id === viewer))
 
   // Which sheet a click opens follows from three things: the stage, the role,
@@ -1253,13 +1277,18 @@ export function Matrix() {
     // date/window half is `canEditCell`; both must pass.
     (canEditCell(period, role, date) && canEditRow(role, viewer, personId)) ||
     (deciding && isBiddable(grid[personId]?.[date])) ||
-    // Published remarks editor (owner, 27 Aug 26): any filled cell of the
-    // viewer's own row (or every row, for an admin) is tappable to edit its
-    // note. Kept CHEAP — a truthiness check on the code, never leaveInputAt —
-    // because this runs for every drawn cell; the precise "is there a backing
-    // leave input" test is `canRemark`, computed once when a cell is opened.
-    (period.stage === 'published' && (role === 'admin' || personId === viewer)
-      && !!grid[personId]?.[date])
+    // Published remarks editor (owner, 27 Aug 26): the viewer's own APPROVED
+    // leave is tappable to edit its note (an admin's every cell is already
+    // openable through the canEditCell branch above). Kept CHEAP — code and
+    // state truthiness, never leaveInputAt, because this runs for every drawn
+    // cell; the precise "is there a backing leave input" test is `canRemark`,
+    // computed once when a cell is opened. Approved-only on purpose: a
+    // member's refused or pending bid at published opens NOTHING (no editor,
+    // no decision sheet), and the first cut still painted it tappable — a
+    // dead-feeling tap exactly where the stakes are highest, a refusal.
+    (period.stage === 'published' && personId === viewer
+      && isBiddable(grid[personId]?.[date])
+      && states[personId]?.[date]?.state === 'approved')
 
   // A day the squadron may not bid on, drawn as such. Without this the window
   // is invisible: a member taps an October cell, nothing happens, and the app
@@ -1932,7 +1961,10 @@ export function Matrix() {
           medical={role === 'admin'}
           onPostOut={role === 'admin' ? (pid, from, archive) => setPostOut(pid, from, archive) : undefined}
           onMove={s => setMoveSel(s)}
-          onDone={() => setSel(null)}
+          /* a PARTIAL write keeps the sheet up (keepOpen) so its "N written,
+             M skipped" note is actually read — closing here killed the note
+             in the same tap that set it (27 Aug 26 overnight find) */
+          onDone={(_changed, keepOpen) => { if (!keepOpen) setSel(null) }}
           onClose={() => setSel(null)}
         />
       )}
@@ -1964,7 +1996,7 @@ export function Matrix() {
       {/* A posted-out cell an admin tapped: the ONE control it offers is Undo,
           and it short-circuits every bid/decision sheet below (owner, 18 Aug
           26). */}
-      {open && openPostedOut && role === 'admin' && (
+      {open && !canRemark && openPostedOut && role === 'admin' && (
         <PostOutSheet
           callsign={open.callsign}
           date={open.date}
@@ -2090,7 +2122,12 @@ export function Matrix() {
           onClose={close}
         />
       )}
-      {open && !canRemark && !raptorOwns(states, open.id, open.date) && deciding
+      {/* `!openPostedOut` for the same reason BidPicker carries it: the PO
+          sheet's comment promises it short-circuits every bid/decision sheet,
+          and without the term here BOTH mounted on a posted-out day that
+          still held a bid — the decision sheet painting on top of the Undo
+          the admin actually tapped for. One `open`, one sheet. */}
+      {open && !canRemark && !openPostedOut && !raptorOwns(states, open.id, open.date) && deciding
         && isBiddable(grid[open.id]?.[open.date]) && (
         <DecisionSheet
           key={`${open.id}-${open.date}`}

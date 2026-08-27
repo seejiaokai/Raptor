@@ -277,3 +277,65 @@ describe('wireSelect edge auto-scroll is desktop-only', () => {
     expect(rafSpy).not.toHaveBeenCalled()
   })
 })
+
+// The gesture belongs to ONE pointer (27 Aug 26 overnight pass). A second
+// finger brushing the grid used to re-enter onDown and reset the state, so an
+// armed selection silently evaporated on lift; and any pointerup — a second
+// finger's, or a right button clicked mid-left-drag — committed the rectangle
+// at wherever the cursor happened to be.
+describe('wireSelect ignores pointers that are not the gesture\'s own', () => {
+  let wrap: HTMLElement, cell: HTMLElement, teardown: () => void
+  let selections: unknown[]
+  const origEFP = document.elementFromPoint
+  beforeEach(() => {
+    vi.useFakeTimers()
+    document.elementFromPoint = () => null
+    wrap = document.createElement('div')
+    cell = document.createElement('div')
+    cell.setAttribute('data-testid', 'cell-ramp-2026-01-06')
+    wrap.appendChild(cell)
+    document.body.appendChild(wrap)
+    selections = []
+    teardown = wireSelect(wrap, {
+      order: () => ['ramp'], dates: () => ['2026-01-06'],
+      enabled: () => true, onSelect: s => selections.push(s),
+    })
+  })
+  afterEach(() => { teardown(); wrap.remove(); document.elementFromPoint = origEFP; vi.useRealTimers() })
+
+  const touchmovePrevented = () => {
+    const ev = new TouchEvent('touchmove', { bubbles: true, cancelable: true })
+    wrap.dispatchEvent(ev)
+    return ev.defaultPrevented
+  }
+
+  it('a second finger landing and lifting mid-drag neither disarms nor commits', () => {
+    cell.dispatchEvent(new PointerEvent('pointerdown',
+      { bubbles: true, pointerId: 1, pointerType: 'touch', clientX: 5, clientY: 5, button: 0 }))
+    vi.advanceTimersByTime(200)              // hold → armed
+    expect(touchmovePrevented()).toBe(true)
+    cell.dispatchEvent(new PointerEvent('pointerdown',
+      { bubbles: true, pointerId: 2, pointerType: 'touch', clientX: 60, clientY: 40, button: 0 }))
+    window.dispatchEvent(new PointerEvent('pointerup',
+      { bubbles: true, pointerId: 2, pointerType: 'touch', button: 0 }))
+    expect(touchmovePrevented()).toBe(true)  // the drag is still live
+    expect(selections).toHaveLength(0)       // and nothing committed
+    // the OWNING finger's lift commits exactly once
+    window.dispatchEvent(new PointerEvent('pointerup',
+      { bubbles: true, pointerId: 1, pointerType: 'touch', button: 0 }))
+    expect(selections).toHaveLength(1)
+  })
+
+  it('a right-button release mid-left-drag does not commit; the left release still does', () => {
+    cell.dispatchEvent(new PointerEvent('pointerdown',
+      { bubbles: true, pointerId: 1, pointerType: 'mouse', clientX: 5, clientY: 5, button: 0 }))
+    window.dispatchEvent(new PointerEvent('pointermove',
+      { bubbles: true, pointerId: 1, pointerType: 'mouse', clientX: 15, clientY: 5 }))  // > MOUSE_SLOP → armed
+    window.dispatchEvent(new PointerEvent('pointerup',
+      { bubbles: true, pointerId: 1, pointerType: 'mouse', button: 2 }))   // chorded right release
+    expect(selections).toHaveLength(0)
+    window.dispatchEvent(new PointerEvent('pointerup',
+      { bubbles: true, pointerId: 1, pointerType: 'mouse', button: 0 }))
+    expect(selections).toHaveLength(1)
+  })
+})

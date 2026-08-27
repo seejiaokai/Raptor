@@ -114,20 +114,17 @@ describe('seedStates', () => {
     expect(raptor.length).toBeGreaterThan(0)
   })
 
-  // A shift records the date it came from, and that date must be EMPTY in
-  // the grid — the bid moved off it. A shiftedFrom pointing at a cell that
-  // still holds a code would mean the move never happened.
-  it('seeds a shifted bid whose original date is now empty', () => {
-    const grid = seedGrid()
-    const shifted = Object.entries(seedStates()).flatMap(([id, row]) =>
-      Object.entries(row).filter(([, v]) => v.shiftedFrom).map(([date, v]) => ({ id, date, from: v.shiftedFrom! })),
-    )
-    expect(shifted.length).toBeGreaterThan(0)
-    for (const s of shifted) {
-      if (grid[s.id]?.[s.from]) throw new Error(`shiftedFrom still holds a code: ${s.id} ${s.from}`)
-      // A shift lands pending: management still has to approve where they moved it to.
-      expect(seedStates()[s.id][s.date].state).toBe('pending')
-    }
+  // The seed plants NO shiftedFrom (27 Aug 26): the trail is a CLOSED-war
+  // fact — a move made while bidding is open stores none — and the seed war
+  // opens at `open`, so a seeded trail painted the moved stripe the moment
+  // anyone closed bidding, on a bid nobody had moved after the close. The
+  // moved path is exercised by the e2e (close, shift, look) instead. If a
+  // trail is ever seeded again it must ride a war seeded at closed, and its
+  // origin cell must be empty (the old invariant this test kept).
+  it('seeds no shifted trail — the moved stripe is a closed-war fact', () => {
+    const shifted = Object.values(seedStates()).flatMap(row =>
+      Object.values(row).filter((v: any) => v.shiftedFrom))
+    expect(shifted).toHaveLength(0)
   })
 
   it('never records a state for a cell that has no code', () => {

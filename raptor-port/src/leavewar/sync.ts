@@ -191,6 +191,22 @@ function desiredRuns(): Run[] {
    never overlap. */
 const runSig = (r: Run) => `${r.person}|${r.type}|${r.portion}|${r.start}|${r.end}`
 
+/* Signatures of lw rows whose war cells RAPTOR ITSELF withdrew (an edit or
+   delete of the input ran retractLwRow). If a row with such a signature turns
+   up lw-tagged and stale again, it did not sneak past the retraction — a
+   HISTORY RESTORE (undo) brought it back, and the war, which has no history
+   of its own, still lacks the cells. Splicing it again would turn Undo into a
+   double delete on both sides (27 Aug 26 overnight find); it is DEMOTED to an
+   ordinary Raptor-owned input instead. A fresh mint of the same signature
+   clears the entry, so a later WAR-side revocation of the re-approved leave
+   splices exactly as before. Session-only, like both stores. */
+const RETRACTED = new Set<string>()
+/* The member's own remark wording (and a medical row's document id), kept
+   ACROSS passes keyed by the exact leave. The in-pass carry below handles a
+   date change; this survives a refuse-then-re-approve, where the splice and
+   the re-mint happen in different passes and the in-pass maps are empty. */
+const RETAINED = new Map<string, { remarks: string; docId?: string }>()
+
 /* One dispatcher so every reader of a row's portion picks the right rule by
    the row's own type — a medical row must never be read with leave's
    round-OUT rule or the two sides of the diff would disagree about the same
@@ -245,7 +261,7 @@ export function runOutbound(): void {
          18 Aug 26 — the same "the note remains, the date moves" rule the Inputs
          calendar now follows). withRemarksTail rewrites just the date token in
          whatever the member wrote. */
-      const priorRemark = new Map<string, string>()
+      const priorRemark = new Map<string, { remarks: string; docId?: string }>()
       /* keyed WITHOUT the portion, as the fallback (review fix, 19 Aug 26):
          converting a full-day leave to a half day moves the exact key from
          'p|OL|full' to 'p|OL|am', so the lookup missed and the member's own
@@ -254,19 +270,39 @@ export function runOutbound(): void {
          matches, so two same-type leaves with different portions carry their
          own remarks; only an unmatched portion falls back to the person+type's
          first stale remark, which beats losing the words. */
-      const priorLoose = new Map<string, string>()
+      const priorLoose = new Map<string, { remarks: string; docId?: string }>()
       for (const row of stale) {
+        const sig = rowSig(row)
+        /* the undo case — see RETRACTED above: Raptor retracted this row's
+           cells itself, so its lw-tagged reappearance is a history restore.
+           Demote, never re-splice: the tag drops, the row is an ordinary
+           input again, and inbound re-lands it as Raptor-owned cells. */
+        if (sig && RETRACTED.has(sig)) {
+          RETRACTED.delete(sig)
+          delete row.lw
+          continue
+        }
         const t = lwTypeOf(row.type)
+        /* the document id rides the carry with the remarks (27 Aug 26
+           overnight find: a war-side date change on a synced medical row
+           spliced the old row and minted afresh — certificate gone) */
+        const kept = { remarks: String(row.remarks ?? ''), ...(row.docId ? { docId: row.docId } : {}) }
         const key = `${row.person}|${t}|${portionOfRow(row)}`
-        if (!priorRemark.has(key)) priorRemark.set(key, String(row.remarks ?? ''))
+        if (!priorRemark.has(key)) priorRemark.set(key, kept)
         const lk = `${row.person}|${t}`
-        if (!priorLoose.has(lk)) priorLoose.set(lk, String(row.remarks ?? ''))
+        if (!priorLoose.has(lk)) priorLoose.set(lk, kept)
+        if (sig) RETAINED.set(sig, kept)
         const ix = INPUTS.indexOf(row)
         if (ix >= 0) INPUTS.splice(ix, 1)
       }
       for (const r of missing) {
+        const sig = runSig(r)
         const prior = priorRemark.get(`${r.person}|${r.type}|${r.portion}`)
           ?? priorLoose.get(`${r.person}|${r.type}`)
+          ?? RETAINED.get(sig)
+        /* a fresh mint supersedes whatever history the same leave had */
+        RETAINED.delete(sig)
+        RETRACTED.delete(sig)
         const row: any = {
           person: r.person,
           /* Back to Raptor's own spelling — an 'ATTB' run lands as an
@@ -286,7 +322,7 @@ export function runOutbound(): void {
              are not in the signature, so an unchanged leave is matched, not
              re-minted; and when the DATES change, `prior` above carries the
              detail into the re-minted row with only the date token moved. */
-          remarks: withRemarksTail(prior ?? '', r.start, r.end, 'on'),
+          remarks: withRemarksTail(prior?.remarks ?? '', r.start, r.end, 'on'),
           mod: 'now',
           /* The ownership tag: which war this row is derived from. Inbound
              skips lw-tagged rows (the loop-breaker), and reconciliation
@@ -295,6 +331,9 @@ export function runOutbound(): void {
              nothing downstream reads fields it does not know. */
           lw: r.warId,
         }
+        /* the carried document follows its record (medical rows only ever
+           have one; a leave's `prior` never carries the field) */
+        if (prior?.docId) row.docId = prior.docId
         if (r.end !== r.start) row.endDate = isoToLabel(r.end)
         if (r.portion === 'full') row.allday = true
         else {
@@ -343,6 +382,11 @@ export function retractLwRow(row: any): void {
   if (!row?.lw) return
   const start = labelToISO(row.date, row.yr)
   if (!start) return
+  /* Remember that RAPTOR withdrew this leave's cells — the mark that lets a
+     history restore of this row read as an undo (demoted) rather than as a
+     war-side revocation (spliced). See RETRACTED at the top. */
+  const sig = rowSig(row)
+  if (sig) RETRACTED.add(sig)
   let end = row.endDate ? labelToISO(row.endDate, row.yr) ?? start : start
   if (end < start) end = start
   const type = lwTypeOf(row.type)
@@ -367,19 +411,38 @@ export function retractLwRow(row: any): void {
    lw-tagged row outbound mints at publish): both are ordinary INPUTS rows and
    both carry the remark. Same date arithmetic as `inputCoversDate`, on the
    war cell's ISO date. Leaves only — medical is management's, filed and read
-   on the Inputs page. */
-export function leaveInputAt(personId: string, iso: string): any | null {
+   on the Inputs page.
+
+   `code` is the CELL'S OWN notation, when the caller has it: a leave clash
+   keeps two inputs alive over one day (an approved LL minted lw-tagged plus
+   an OL filed on the Inputs page), and the plain first-covering-row walk
+   returned whichever sat earlier in INPUTS — the editor then opened, and
+   SAVED, the wrong record under the tapped cell's header. With the code the
+   match is the row that actually derives the cell: same leave type, exact
+   portion when one matches, and the lw-tagged row (the one the war minted)
+   outranking a plain one. A code that is not a leave at all (an FS/HS duty
+   credit) matches nothing — that cell has no note to edit. Callers without
+   a cell in hand keep the date-only walk. */
+export function leaveInputAt(personId: string, iso: string, code?: string): any | null {
   const t = dateOrd(isoToLabel(iso))
   if (t == null) return null
+  const covering: any[] = []
   for (const row of INPUTS) {
     if (row.person !== personId || !isLeave(row.type)) continue
     const a = dateOrd(row.date, row.yr)
     if (a == null) continue
     const b = row.endDate ? dateOrd(row.endDate, row.yr) : a
     if (b == null) continue
-    if (t >= a && t <= b) return row
+    if (t >= a && t <= b) covering.push(row)
   }
-  return null
+  if (covering.length === 0) return null
+  const cell = code ? parseCell(code) : null
+  if (!cell) return covering[0]
+  const typed = covering.filter(r => lwTypeOf(r.type) === cell.type)
+  if (typed.length === 0) return null
+  const exact = typed.filter(r => portionOfRow(r) === cell.portion)
+  const pool = exact.length ? exact : typed
+  return pool.find(r => r.lw) ?? pool[0]
 }
 
 /* ---- inbound: Raptor inputs -> Leave War cells --------------------------- */

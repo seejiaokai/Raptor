@@ -467,6 +467,15 @@ check the other):
   independently refuse. `viewer === null` (raw store / tests only — production
   always mirrors a real `ME`) imposes no row rule. Pinned in `store.test.ts`
   §a member edits only their own row.
+- **The 27 Aug overnight pass added three more one-body seams to watch.**
+  `canDecide` is now read by the DecisionSheet/SelectSheet AND both store
+  decision writers (`setBidState`/`setBidStates`) — a decision gate grown in
+  only one of those places is the seam. `moveProblem` is the validation half
+  of `moveCells`, read by the commit AND the landing preview (`previewAt`) —
+  a preview that stopped asking it would show landings the commit refuses.
+  And the member-own Inputs backstop reads `canEditSched()` (the render
+  gate's predicate), never a role literal — the literal `'member'` matched
+  no real session and left the gate inert while its fixtures matched it.
 - **The two role reads: `LOGINROLE` (the ceiling) vs `SESSION.role` (the
   effective role)** (27 Aug 26, the admin's view toggle). DELIBERATELY two
   values, not a drift bug — but a seam to respect: every PERMISSION gate

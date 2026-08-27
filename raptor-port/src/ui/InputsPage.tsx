@@ -24,7 +24,7 @@ import { InputsCal } from './InputsCal'
 import {
   fmt, fmtDay, fmtDMY, unfmt, hasHalf, spanOf, spanFields, SpanPicker, typeOptions,
   draftOf, commitInputEdit, removeInput, SansPicker, sansRefusal, sansOverlapRefusal, sansFlags,
-  medOverlapRefusal, upchitRefusal, applyMedPlan, DocField,
+  medOverlapRefusal, upchitRefusal, downOverUpchitRefusal, applyMedPlan, DocField,
   rosterOptions as people, inputTone,
 } from './inputedit'
 import { useVersion } from './useStore'
@@ -330,6 +330,8 @@ export function InputsPage() {
     if (isDownchit(type)) {
       const dup = medOverlapRefusal(filedFor(), type, date, endDate, null)
       if (dup) return HOOKS.toast(dup, 'warn')
+      const over = downOverUpchitRefusal(filedFor(), date, endDate)
+      if (over) return HOOKS.toast(over, 'warn')
     }
     if (isUpchit(type)) {
       const why = upchitRefusal(filedFor(), date, endDate, null)
@@ -357,8 +359,11 @@ export function InputsPage() {
         ...(!allday && half ? { half } : {}),
         /* SANS's own Fly/AMT/OFT flags — never carried by a non-SANS type */
         ...(isSansAvail(type) ? { sans: sansFlags(sans) } : {}),
-        /* the id only — the blob lives in state/docs, outside every snapshot */
-        ...(docId ? { docId } : {}),
+        /* the id only — the blob lives in state/docs, outside every snapshot.
+           Gated on the type needing one: a certificate uploaded under a
+           medical pick, then the type switched to leave, must not ride onto
+           the leave row */
+        ...(docId && needsDoc(type) ? { docId } : {}),
         type, remarks: remarks.trim(), mod: 'now',
       }))
       /* a new medical input wins its overlapping days from a different-type

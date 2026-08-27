@@ -424,17 +424,20 @@
    Fixed rather than absolute for the same reason `.bidsheet` is — see the
    note on WarSheet in Chrome.tsx about `backdrop-filter` making an ancestor
    the containing block. */
+/* 69/70, not the old 40/41: the frozen date-header mirror is fixed at 55
+   (matrix.css .mxfixed) and, once the page scrolled, painted OVER these
+   popovers; they sit above it now and still under the sheets' 79/80. */
 .umscrim {
   position: fixed;
   inset: 0;
-  z-index: 40;
+  z-index: 69;
 }
 
 .umlist {
   position: fixed;
   top: 96px;
   left: 8px;
-  z-index: 41;
+  z-index: 70;
   width: 244px;
   background: var(--panel);
   border: 1px solid var(--edge);
@@ -509,7 +512,7 @@
   position: fixed;
   top: 96px;
   left: 8px;
-  z-index: 41;
+  z-index: 70;   /* above the frozen header mirror (55) — see .umlist */
   width: 272px;
   background: var(--panel);
   border: 1px solid var(--edge);

@@ -110,23 +110,28 @@ describe('upchitTrimPlan — an upchit cuts what still runs past it', () => {
     expect(upchitTrimPlan('t1', 20260712)).toEqual([])
     expect(upchitTrimPlan('t1', 20260714)).toEqual([])
   })
-  it('an upchit before the start cancels the row outright', () => {
-    const r = med('t1', 'OML', 'Jul 10', 'Jul 13')
-    expect(upchitTrimPlan('t1', 20260709)).toEqual([{ row: r, action: 'delete' }])
+  // A row that STARTS AFTER the upchit is not this episode — it is the
+  // "newer entry" the owner said replaces the nag (a future surgery already
+  // filed, with its own document). The first cut swept it into the delete
+  // branch, so an upchit for an OLD episode silently destroyed the future
+  // record (27 Aug 26 overnight pass).
+  it('a row starting after the upchit is left alone — a future entry is not this episode', () => {
+    med('t1', 'OML', 'Jul 10', 'Jul 13')
+    expect(upchitTrimPlan('t1', 20260709)).toEqual([])
   })
-  it('a single-day row: on its day no-op, before it delete', () => {
-    const r = med('t1', 'HL', 'Jul 10')
+  it('a single-day row: on its day no-op, and a future one is untouched', () => {
+    med('t1', 'HL', 'Jul 10')
     expect(upchitTrimPlan('t1', 20260710)).toEqual([])
-    expect(upchitTrimPlan('t1', 20260709)).toEqual([{ row: r, action: 'delete' }])
+    expect(upchitTrimPlan('t1', 20260709)).toEqual([])
   })
-  it('covers every running row of the person in one pass, nobody else\'s', () => {
+  it('covers every RUNNING row of the person in one pass — nobody else\'s, and no future row', () => {
     const a = med('t1', 'ATT C', 'Jul 10', 'Jul 20')
-    const b = med('t1', 'OML', 'Jul 14', 'Jul 18')
+    const b = med('t1', 'OML', 'Jul 14', 'Jul 18')      // starts after the upchit — untouched
     med('t2', 'ATT C', 'Jul 10', 'Jul 20')
     const plan = upchitTrimPlan('t1', 20260712)
-    expect(plan).toHaveLength(2)
-    expect(plan.find((p: any) => p.row === a)).toMatchObject({ action: 'trim', newEndOrd: 20260712 })
-    expect(plan.find((p: any) => p.row === b)).toMatchObject({ action: 'delete' })
+    expect(plan).toHaveLength(1)
+    expect(plan[0]).toMatchObject({ row: a, action: 'trim', newEndOrd: 20260712 })
+    expect(b.endDate).toBe('Jul 18')                    // the future row untouched
   })
   it('the row being edited is excluded via except', () => {
     const r = med('t1', 'ATT C', 'Jul 10', 'Jul 13')
@@ -150,14 +155,25 @@ describe('newMedTrimPlan — a different-type overlap wins its days', () => {
     expect(newMedTrimPlan('t1', 'ATT B', 20260710, 20260715)).toEqual([{ row: r, action: 'delete' }])
     expect(newMedTrimPlan('t1', 'ATT B', 20260714, 20260715)).toEqual([])
   })
-  it('an old row starting inside the new range goes, tail and all', () => {
+  // The new input wins exactly ITS OWN days — an old row running PAST the
+  // new one's end keeps its tail as a second row the applier mints. The
+  // first cut dropped the tail wholesale, so a two-day entry landing
+  // mid-way through a long downchit marked the man fit for the rest of it
+  // (27 Aug 26 overnight pass).
+  it('an old row starting inside the new range loses its head, and its tail rides the plan', () => {
     const r = med('t1', 'ATT C', 'Jul 12', 'Jul 20')
-    expect(newMedTrimPlan('t1', 'HL', 20260710, 20260715)).toEqual([{ row: r, action: 'delete' }])
+    expect(newMedTrimPlan('t1', 'HL', 20260710, 20260715))
+      .toEqual([{ row: r, action: 'delete', tail: { startOrd: 20260716, endOrd: 20260720 } }])
   })
-  it('a single-day new input still cuts what it lands on', () => {
+  it('a mid-span drop splits the old row: head trimmed, tail minted', () => {
+    const r = med('t1', 'ATT C', 'Jul 10', 'Jul 20')
+    expect(newMedTrimPlan('t1', 'ATT B', 20260712, 20260714))
+      .toEqual([{ row: r, action: 'trim', newEndOrd: 20260711, tail: { startOrd: 20260715, endOrd: 20260720 } }])
+  })
+  it('a single-day new input still cuts what it lands on, keeping the day after as the tail', () => {
     const r = med('t1', 'ATT C', 'Jul 10', 'Jul 13')
     expect(newMedTrimPlan('t1', 'OML', 20260712, null))
-      .toEqual([{ row: r, action: 'trim', newEndOrd: 20260711 }])
+      .toEqual([{ row: r, action: 'trim', newEndOrd: 20260711, tail: { startOrd: 20260713, endOrd: 20260713 } }])
   })
   it('cross-year: a row anchored 2027 is untouched by a 2026 span on the same words', () => {
     med('t1', 'ATT C', 'Jul 10', 'Jul 13', 2027)

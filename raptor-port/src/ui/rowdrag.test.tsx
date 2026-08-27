@@ -76,7 +76,7 @@ describe('wireRowDrag', () => {
   })
 
   it('a member cannot pick a row up at all', () => {
-    setSession({ user: 'user', role: 'member' } as any)
+    setSession({ user: 'user', role: 'main' } as any)
     const di = DAYS.findIndex((d: any) => (d.allhands || []).length > 1)
     const was = JSON.stringify(DAYS[di].allhands)
     host.innerHTML = rowsHTML([`mv:p.${di}.0`, `mv:p.${di}.1`])

@@ -278,7 +278,7 @@ describe('adding through the board', () => {
 /* ---- (e) a member is refused at the handler, not just hidden -------------- */
 describe('a member cannot add from here', () => {
   it('the click handler refuses even a hand-made button (defence in depth)', async () => {
-    await act(async () => { setSession({ user: 'user', role: 'member' }); notify() })
+    await act(async () => { setSession({ user: 'user', role: 'main' }); notify() })
     const before = INPUTS.length
     const btn = document.createElement('button')
     btn.setAttribute('data-inpadd', '0.u')

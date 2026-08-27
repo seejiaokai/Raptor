@@ -4,7 +4,7 @@
 // the engine does not model. See CLAUDE-facing restyle brief for why.
 
 import { useLayoutEffect, useRef, useState, useSyncExternalStore } from 'react'
-import { canReopen, evaluatePeriod, nextStage, previousStage, stageLabel } from '../engine'
+import { biddingClosed, canReopen, evaluatePeriod, nextStage, previousStage, stageLabel } from '../engine'
 import { getClashes, getClashVersion, subscribeClashes } from '../sync'
 import {
   advanceStage,
@@ -381,7 +381,13 @@ export function StageBar() {
               <div className="leg-row"><span className="leg-sw ref">LL</span><span className="leg-t">Refused</span></div>
               <div className="leg-sec">The left edge — where it came from</div>
               <div className="leg-row"><span className="leg-sw raptor">LL</span><span className="leg-t">Filed on the Inputs page — change it there, not here</span></div>
-              <div className="leg-row"><span className="leg-sw moved">LL</span><span className="leg-t">Moved here from another day</span></div>
+              {/* The moved stripe exists only once bidding has closed
+                  (movedShown, one biddingClosed body with the store) — while
+                  the war is open the legend must not advertise a mark no cell
+                  can wear, sending readers hunting for it. */}
+              {biddingClosed(period.stage) && (
+                <div className="leg-row"><span className="leg-sw moved">LL</span><span className="leg-t">Moved here from another day</span></div>
+              )}
               <div className="leg-sec">The <b>*</b> — a half day</div>
               <div className="leg-row"><span className="leg-sw plain">*LL</span><span className="leg-t">Morning (before the code)</span></div>
               <div className="leg-row"><span className="leg-sw plain">LL*</span><span className="leg-t">Afternoon (after the code)</span></div>

@@ -1295,17 +1295,34 @@ Pending on expiry" is arithmetic, the `isLateInput` doctrine.
 `applyMedPlan` in `ui/inputedit.tsx`, inside the SAME `writeInputsBatch` as
 the input that caused them — one undo step):
 
-- An **upchit on X** cuts every downchit of that person still running past X
-  to end ON X (down 10–13 Jul, upchit 12 Jul → 10–12 Jul); on/before the
-  start it deletes the row. The remarks "till …" token is rewritten
+- An **upchit on X** cuts every downchit of that person RUNNING AT X (started
+  on/before it, still running past it) to end ON X (down 10–13 Jul, upchit
+  12 Jul → 10–12 Jul). A row that STARTS AFTER X is untouched (27 Aug 26
+  overnight pass) — it is the "newer entry" that replaces the pending nag (a
+  future surgery already filed), not part of the episode being closed; the
+  first cut deleted it. The remarks "till …" token is rewritten
   (`withRemarksTail`), `retractLwRow` runs first on an lw-tagged row, and the
   Leave War's freed days clear on the next reconcile.
-- A **different-type medical overlap** wins its days: the older row is cut to
-  end the day before the new one starts, deleted when nothing remains (a tail
-  past the new end is deliberately lost — "the latest input overwrites").
+- A **different-type medical overlap** wins its days — and ONLY its days
+  (27 Aug 26 overnight pass): the older row is cut to end the day before the
+  new one starts (deleted when nothing remains before it), and when it also
+  ran PAST the new one's end the surviving tail is minted as a second
+  same-type row in the same plan (same person, year anchor and document).
+  A short entry landing mid-way through a long downchit no longer silently
+  marks the man fit for its remainder.
 - A **same-type overlap is REFUSED**, never trimmed (`medOverlapRefusal`, the
   `sansOverlapRefusal` shape): the person is told to edit the entry on file
-  and attach the new document to it. Upchit-vs-upchit same day likewise.
+  and attach the new document to it. Upchit-vs-upchit same day likewise. Three
+  more refusals joined 27 Aug 26 (all in `normalizeInputDraft`/`upchitRefusal`,
+  shared by every editor): a downchit may not RUN OVER one of the person's
+  upchits (`downOverUpchitRefusal` — strictly inside its span; ending ON the
+  upchit date is the trimmed convention and stays editable); an upchit for an
+  episode ALREADY answered by a later upchit is refused; and a cleared date
+  box is refused, never silently defaulted to the loaded week's Monday. A
+  medical row also KEEPS ITS FAMILY at the write path — downchit stays
+  downchit, upchit stays upchit — and a `docId` is written only for a type
+  that `needsDoc`, so a certificate cannot ride a type switch onto leave.
+  Every trim/delete/tail the plan applies now writes an edit-log line.
 
 **The mandatory document.** `needsDoc(t)` (= downchit or upchit, ONE body in
 `engine/inputs.ts`) decides both the upload control's visibility and the
@@ -2115,8 +2132,13 @@ control is hidden from a member).
 (owner, 27 Aug 26).** `setCells` / `clearCells` fill or empty many cells and
 ride `canEditCell` per cell — a member fills what they could fill one cell at
 a time (open stage, in window), skipping Raptor-owned/locked/out-of-squadron
-days (PARTIAL by design, like `setCellRange`). `setBidStates` is admin-only
-(a decision is management's, as the single `setBidState`'s sheet already is).
+days (PARTIAL by design, like `setCellRange`). `setBidStates` AND the single
+`setBidState` both check `canDecide` at the write (27 Aug 26 overnight pass —
+the single writer's "no login in this prototype" rationale pre-dated the
+merge and had left it wholly ungated: a member could self-approve through
+the store). A medical code is refused from a member in `setCell` itself (the
+sheets only ever offered it to an admin; the store now agrees), and the batch
+predicates carry the same term so the refusal lands in the COUNT.
 `moveCells` is `shiftBid` for a whole selection: role-gated by `canEditCell`,
 ATOMIC (every source and every landing day validated before any write — a
 half-moved block is worse than a refused one, and there is no undo), landing
@@ -2124,9 +2146,16 @@ half-moved block is worse than a refused one, and there is no undo), landing
 occupied by a non-selected cell, Raptor-owned, or outside the war refuses the
 whole move. All batch to ONE save-and-notify under the store's `quiet`
 suppression. A batch API growing its OWN guard would be the drift-seam to
-avoid — they must always call through the same per-cell checks. Pinned in
-`store.test.ts` §the batch writers. On screen: `docs/ui-contracts.md`
-§Selecting on the Leave War grid.
+avoid — they must always call through the same per-cell checks. Since the
+27 Aug overnight pass that cuts BOTH ways: `shiftBid`, the single-cell mover,
+carries `moveCells`' whole day law (stage/window via `canEditCell` on both
+ends, the landing on a real war day the person is still in the squadron for —
+a typed off-war date used to land a bid on a day no column renders, silently
+draining the balance), the validation half of `moveCells` is factored as
+`moveProblem` (the grid's landing preview asks it, so the preview and the
+commit cannot disagree), and a CHAIN of closed-war moves keeps the ORIGINAL
+`shiftedFrom`. Pinned in `store.test.ts` §the batch writers. On screen:
+`docs/ui-contracts.md` §Selecting on the Leave War grid.
 
 **An admin keeps the bid decision after PUBLISHING (owner, 27 Aug 26 — "if
 leave war is published, the admin can still have these functions").**
@@ -2134,9 +2163,10 @@ leave war is published, the admin can still have these functions").**
 only: publication freezes the picture for the SQUADRON, but the admin still
 runs the war, so a late change tapped in after publication is approved /
 refused / moved exactly as at closed — via the drag-selection sheet's Decide
-row, and the single-cell decision sheet. The store's `setBidStates` was
-already stage-agnostic (admin-only, no stage check), so this is a UI-gate
-widening only. `canDecide` and `canEdit` are still disjoint per stage (a
+row, and the single-cell decision sheet. Since the 27 Aug overnight pass BOTH
+store writers (`setBidState` and `setBidStates`) check this same `canDecide`
+body at the write, so the store and the sheets cannot disagree about who
+decides or when. `canDecide` and `canEdit` are still disjoint per stage (a
 member never edits at closed or published), so the "no stage lets a member
 bid and an admin decide at once" invariant holds. Pinned in `stages.test.ts`
 and `deciding.test.tsx` (the admin decision survives into published). The
@@ -2154,10 +2184,18 @@ for a member, `all` for a scheduler) with "Everyone" one pick away; on every
 other person's row the ✎ and ✕ are not rendered, but the document paperclip
 stays (anyone may VIEW any attachment — owner, same day). The write-path
 backstop behind the hidden controls is in `commitInputEdit` / `removeInput`,
-gated on an ACTUAL member session (`SESSION?.role === 'member' && r.person
-!== ME`) rather than "not admin" — the app's own edit cascades (sync
-retraction, medical trims, the accepted-row relink) and every scheduler edit
-run with no member session, so they must not be caught. This SITS BESIDE the
+gated on a signed-in session that CANNOT edit the schedule (`SESSION &&
+!canEditSched() && r.person !== ME`) — the render gate's own predicate.
+NOT the role literal `'member'`: the first cut compared against that string,
+which no account ever carries (the member login is role `'main'`, auth.ts),
+so the gate never fired in production while its tests logged in with the
+fabricated shape and stayed green (27 Aug 26 overnight find — the fixtures
+now use the real role). The app's own edit cascades (sync retraction,
+medical trims, the accepted-row relink) stay person-scoped to the row's own
+person, and a sessionless test/boot context is not gated. `resetSession`
+also resets `ME` to the boot default now — the "View as" identity every
+member gate keys on used to survive a logout, handing the next login the
+previous session's person. This SITS BESIDE the
 existing 22 Aug person-MOVE guard (a member may not reassign an input to
 another person), which stays. Pinned in `audit-guards-inputs.test.ts`
 (a member is refused another's edit and delete, allowed their own, a

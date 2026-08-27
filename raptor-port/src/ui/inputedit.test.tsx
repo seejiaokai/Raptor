@@ -78,7 +78,7 @@ describe('the control — which surfaces carry it, and who may press it', () => 
   })
 
   it('a member gets no editable label, and is refused if one is clicked anyway', async () => {
-    await act(async () => { setSession({ user: 'user', role: 'member' }); notify() })
+    await act(async () => { setSession({ user: 'user', role: 'main' }); notify() })
     await page('viewsched')                       // a member cannot reach editsched's edit mode
     expect($$('[data-inpedit]')).toHaveLength(0)
     /* the gate is the HANDLER, not the missing markup — a stale button left
