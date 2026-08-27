@@ -41,6 +41,21 @@ const isoOrd = (iso: string) => +iso.slice(0, 4) * 10000 + +iso.slice(5, 7) * 10
    speaks ('12 Jul') — through the row's own yr so cross-year stays honest */
 const lblDay = (lbl: any, yr: any) => fmtDay(unfmt(lbl, yr)) || String(lbl || '')
 
+/* the card already prints a derived 'till <date>' status line; a remark that
+   only restates that date (the app's own auto '… till 13 Jul' tail, or a demo
+   'Medically down till 17 Jul') would double it (owner, 27 Aug). So show the
+   remark ONLY when, stripped of dates and medical boilerplate, a real note
+   survives — 'knee injury' shows, 'Medically down till 17 Jul' does not. */
+const STOP = new Set(['medically', 'medical', 'down', 'leave', 'till', 'until', 'was', 'up', 'upchit', 'upchitted',
+  'on', 'fit', 'to', 'fly', 'again', 'dnif', 'and', 'the', 'a', 'of',
+  'jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'])
+function remarkNote(remark: any): string {
+  const s = String(remark || '').trim()
+  if (!s) return ''
+  const left = s.toLowerCase().replace(/[0-9]/g, ' ').split(/[^a-z]+/).filter(w => w && !STOP.has(w))
+  return left.length ? s : ''
+}
+
 /* one section's card: puck + what the section says about him + his remarks.
    The puck sits inside the row-direction top line and the texts are its
    SIBLINGS — the sanscard flex contract (scheduler.css), where nesting them
@@ -56,7 +71,7 @@ function Card({ e, line, up, onOpen }: { e: any, line: string, up?: boolean, onO
         <span className="medcard-type">{inpType(r.type)}</span>
       </span>
       <span className="medcard-t">{line}</span>
-      {r.remarks ? <span className="medcard-r" title={r.remarks}>{r.remarks}</span> : null}
+      {remarkNote(r.remarks) ? <span className="medcard-r" title={r.remarks}>{r.remarks}</span> : null}
     </button>
   )
 }
@@ -96,24 +111,33 @@ export function MedicalView({ onClose }: { onClose: () => void }) {
         {MEDASOF && <button type="button" className="abtn" id="medToday" onClick={() => pick(todayIso)}>Today</button>}
         <span style={{ flex: 1 }}></span>
         <button type="button" className="abtn" id="medClose" onClick={onClose}>✕ List</button>
+        {/* the as-of picker is a FLOATING dropdown, not an in-flow band — it
+            overlays the sections rather than shoving them down (owner, 27 Aug).
+            Anchored to the header (position:relative) so it hangs from the bar
+            whatever the bar's height; a transparent scrim closes it on an
+            outside tap, the popover manner a date pick wants. */}
+        {calOpen && <>
+          <button type="button" className="med-cal-scrim" aria-label="Close the date picker"
+            onClick={() => setCalOpen(false)} />
+          <div className="med-cal" role="dialog" aria-label="Pick the as-of date">
+            <div className="med-cal-head">
+              <button type="button" className="abtn" id="medCalPrev" aria-label="Previous month"
+                onClick={() => setCal(c => c.m === 1 ? { y: c.y - 1, m: 12 } : { y: c.y, m: c.m - 1 })}>‹</button>
+              <span className="ic-mon">{MON[cal.m - 1]} {cal.y}</span>
+              <button type="button" className="abtn" id="medCalNext" aria-label="Next month"
+                onClick={() => setCal(c => c.m === 12 ? { y: c.y + 1, m: 1 } : { y: c.y, m: c.m + 1 })}>›</button>
+            </div>
+            <div className="med-cal-dow">{DOW.map(d => <span key={d}>{d}</span>)}</div>
+            <div className="med-cal-grid">
+              {monthCells(cal.y, cal.m).map((iso, i) => iso
+                ? <button type="button" key={iso} data-medday={iso}
+                  className={'med-cal-d' + (iso === asOf ? ' on' : '') + (iso === todayIso ? ' today' : '')}
+                  onClick={() => pick(iso)}>{+iso.slice(8, 10)}</button>
+                : <span key={'x' + i} className="med-cal-x" />)}
+            </div>
+          </div>
+        </>}
       </div>
-      {calOpen && <div className="med-cal" role="dialog" aria-label="Pick the as-of date">
-        <div className="med-cal-head">
-          <button type="button" className="abtn" id="medCalPrev" aria-label="Previous month"
-            onClick={() => setCal(c => c.m === 1 ? { y: c.y - 1, m: 12 } : { y: c.y, m: c.m - 1 })}>‹</button>
-          <span className="ic-mon">{MON[cal.m - 1]} {cal.y}</span>
-          <button type="button" className="abtn" id="medCalNext" aria-label="Next month"
-            onClick={() => setCal(c => c.m === 12 ? { y: c.y + 1, m: 1 } : { y: c.y, m: c.m + 1 })}>›</button>
-        </div>
-        <div className="med-cal-dow">{DOW.map(d => <span key={d}>{d}</span>)}</div>
-        <div className="med-cal-grid">
-          {monthCells(cal.y, cal.m).map((iso, i) => iso
-            ? <button type="button" key={iso} data-medday={iso}
-              className={'med-cal-d' + (iso === asOf ? ' on' : '') + (iso === todayIso ? ' today' : '')}
-              onClick={() => pick(iso)}>{+iso.slice(8, 10)}</button>
-            : <span key={'x' + i} className="med-cal-x" />)}
-        </div>
-      </div>}
       <div className="med-body">
         <section className="medsec med-down">
           <div className="medsec-h">Medically Down<span className="medsec-n">{down.length}</span>

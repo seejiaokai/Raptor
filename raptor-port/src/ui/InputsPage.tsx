@@ -700,7 +700,11 @@ export function InputsPage() {
                       const t = e.target.value
                       setDraft({ ...draft, type: t, ...(hasHalf(t) ? {} : { half: '' }), sans: isSansAvail(t) ? (draft.sans || {}) : null })
                     }}>
-                    {typeOptions()}
+                    {/* GUARD RAIL (owner, 27 Aug 26): a medical row stays
+                        medical here too — a downchit edits only within the
+                        downchit family, an upchit stays an upchit; the full
+                        cross-group list is kept for every other row. */}
+                    {typeOptions(isDownchit(r.type) ? isDownchit : isUpchit(r.type) ? isUpchit : undefined)}
                   </select>
                     {/* replace (or first-attach, on a retype into medical) the
                         supporting document without leaving the row */}

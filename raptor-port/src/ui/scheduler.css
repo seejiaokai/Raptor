@@ -4937,9 +4937,16 @@ button.sbi-ty.inpedit:hover{text-decoration:none;filter:brightness(1.3)}
 .medcount{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;margin-left:6px;
   background:var(--hard);color:#fff;border-radius:999px;padding:0 6px;line-height:15px;display:inline-block}
 #inMedBtn{display:inline-flex;align-items:center;gap:6px}
-/* the as-of month grid, a dropdown panel under the header (not a modal — a
-   date pick needs neither interruption nor protected focus) */
-.med-cal{border-bottom:1px solid var(--edge);background:var(--panel);padding:8px 16px 12px;max-width:420px}
+/* the as-of month grid — a FLOATING rounded dropdown that hangs off the header
+   and overlays the sections, never an in-flow band that pushes them down
+   (owner, 27 Aug). Anchored to the medical header (position:relative below);
+   a transparent scrim closes it on an outside tap. */
+.medview .ic-head{position:relative}
+.med-cal-scrim{position:fixed;inset:0;z-index:4;background:transparent;border:0;padding:0;margin:0;cursor:default}
+.med-cal{position:absolute;top:calc(100% + 6px);left:12px;z-index:5;
+  width:min(340px,calc(100vw - 24px));background:var(--panel);
+  border:1px solid var(--edge);border-radius:12px;box-shadow:0 14px 34px rgba(0,0,0,.45);
+  padding:10px 12px 12px}
 .med-cal-head{display:flex;align-items:center;gap:8px;margin-bottom:6px}
 .med-cal-head .ic-mon{flex:1;text-align:center}
 .med-cal-dow{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:2px;

@@ -955,6 +955,16 @@ export function InputEditor() {
      ordinary EDIT, which keeps the full type list — retyping an existing row
      across groups is a real move the app already handles. */
   const ctx = isNew ? (r._ctx || '') : ''
+  /* GUARD RAIL (owner, 27 Aug 26): a medical input stays medical. Editing a
+     downchit offers ONLY the downchit family (ATT C/B, OML, HL) — never a
+     retype into leave or a course, which would strand its mandatory document
+     and the trim rules; an upchit edit likewise stays an upchit. The
+     cross-group retype the comment above allows is kept for non-medical rows.
+     Board + Add keeps its own TYPE_ALLOW list; this only narrows an EDIT. */
+  const typeFilter = ctx ? TYPE_ALLOW[ctx]
+    : (r && !isNew && isDownchit(r.type)) ? isDownchit
+    : (r && !isNew && isUpchit(r.type)) ? isUpchit
+    : undefined
   const [draft, setDraft] = useState<any>(null)
   const box = useRef<HTMLDivElement>(null)
   /* re-seed whenever a different row is opened, never on a repaint — a
@@ -1047,7 +1057,7 @@ export function InputEditor() {
                        An EDIT keeps whatever the saved record already carries. */
                     ...(isNew ? { allday: defaultAllday(t) } : {}),
                   })
-                }}>{typeOptions(ctx ? TYPE_ALLOW[ctx] : undefined)}</select>
+                }}>{typeOptions(typeFilter)}</select>
             </label>}
           {/* the Unavailable add takes a RANGE (owner, 19 Aug 26 — "I can
               select a date range as well"): the same two-click calendar the
