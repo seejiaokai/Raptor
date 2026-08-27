@@ -1263,13 +1263,13 @@
   padding: 3px 5px 0;
 }
 
-/* ---- the phone's frozen header (owner, 18 Aug 26) ----
+/* ---- the frozen date header (owner, 18 Aug 26 phone; 27 Aug 26 desktop too) ----
 
-   A fixed MIRROR of the bracket + header rows, shown by Matrix only while
-   the real rows sit under the top bar and only under 700px — the page still
-   has its ONE vertical scroll (the 10 Aug rule at the top of this file); the
-   mirror just rides above it. Its own scrollbar is hidden: it is a slave to
-   the grid's horizontal position, not a second control. */
+   A fixed MIRROR of the bracket + header rows, shown by Matrix at ANY width
+   while the real rows sit under the pinned top bar — the page still has its ONE
+   vertical scroll (the 10 Aug rule at the top of this file); the mirror just
+   rides above it, just below the bar. Its own scrollbar is hidden: it is a
+   slave to the grid's horizontal position, not a second control. */
 .mxfixed {
   position: fixed;
   z-index: 55;

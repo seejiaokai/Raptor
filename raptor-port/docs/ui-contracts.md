@@ -4041,7 +4041,9 @@ BidPicker's look and vocabulary, not instead of it.
     "will land here" over whatever it covers). Painted straight onto the cells
     (`paintLanding`/`clearLanding`, no React state).
   - **Desktop:** a faded ghost follows the mouse and the landing highlights live
-    under it; a CLICK lands the block (the hover WAS the preview).
+    under it; a CLICK lands the block (the hover WAS the preview). **A RIGHT-CLICK
+    cancels** the move (owner, 27 Aug 26 — the mouse equivalent of Escape;
+    `wireMove` swallows the context menu and drops the block).
   - **Phone:** no hover, and no undo — so it is TWO steps (owner, 27 Aug 26 —
     *show a preview, then Confirm*): a TAP stages the landing (highlighted) and
     the banner shows **Confirm / Cancel**; Confirm commits, a fresh tap
@@ -4057,6 +4059,30 @@ BidPicker's look and vocabulary, not instead of it.
   (`stage === 'closed' || 'published'`) gates the class, the `shiftedFrom`
   data is untouched. Pinned in `deciding.test.tsx` (hidden at open, shown at
   closed, hidden again on reopen).
+- **Dragging an EVENT row** (owner, 27 Aug 26 — "drag and select grids in the
+  events column to input events. Just like what we recently implemented"). The
+  same `wireSelect` gesture also claims the `event-<line>-<date>` day cells (not
+  the band / blocked / row testids that share the prefix). Events live one row
+  each, so a drag never crosses lines — the anchor's line wins and only the date
+  span matters (`eventRange`, and the focus supplies only the column, so a finger
+  straying onto another row still extends the span). On release the event sheet
+  opens pre-set to that span: scope **A range**, from → to filled on its
+  calendar, ready for the word + off/no-leave/work tag + merge-or-repeat. A
+  one-cell drag opens on the single day, exactly like a tap. Admin only
+  (`eventsEnabled` — the store refuses a member event write anyway). Pins:
+  `parseEventCell` / `eventRange` in `select.test.ts`; the sheet seed reads
+  `EventSheet`'s new optional `to` prop.
+- **The date header FREEZES on desktop too** (owner, 27 Aug 26 — "freeze top
+  panel for leave war on desktop … when I scroll down the top bar that has the
+  dates goes out of view, the top bar will freeze just like how the mobile does
+  it"). The phone's fixed header MIRROR (`.mxfixed` / `sticky-head`, an overlay
+  because the page owns the one vertical scroll so CSS sticky cannot pin against
+  it) now activates at ANY width — the `max-width:700px` gate is gone. It freezes
+  just below the app top bar (its sticky lower edge, `.topbar` bottom, z-index
+  60 over the mirror's 55), tracks the grid's horizontal scroll one-way via the
+  rAF pump, and reuses the same `.who`/`.bal` sticky-left CSS to keep its lead
+  columns frozen. Desktop keeps its own real-`sticky` frozen-left columns
+  untouched; only the header path widened.
 - **The colour/mark pop-out is labelled "Legend"** (owner, 27 Aug 26 — renamed
   from "Key"; `Chrome.tsx`, testid `legend-open` unchanged).
 - **The word "Acknowledge" became "Pending"** on the decision controls

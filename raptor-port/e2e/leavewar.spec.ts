@@ -757,6 +757,43 @@ test('a loose box moves the inputs present, first input landing on the clicked d
   await expect(page.locator('[data-testid="cell-slipway-2026-01-07"] .c')).toHaveCount(0) // source vacated
 })
 
+// A right-click cancels a move on desktop (owner, 27 Aug 26 — the mouse Escape).
+test('right-click cancels a move on desktop', async ({ page }) => {
+  desktopOnly()
+  await lwRole(page, 'admin')
+  await dragSelect(page, 'cell-slipway-2026-01-06', 'cell-slipway-2026-01-07')
+  await page.locator('[data-testid="sel-LL"]').click()
+  await dragSelect(page, 'cell-slipway-2026-01-06', 'cell-slipway-2026-01-07')
+  await page.locator('[data-testid="sel-move"]').click()
+  await expect(page.locator('[data-testid="move-banner"]')).toBeVisible()
+  await page.locator('[data-testid="cell-slipway-2026-01-10"]').click({ button: 'right' })
+  await expect(page.locator('[data-testid="move-banner"]')).toHaveCount(0)   // cancelled, nothing moved
+  await expect(page.locator('[data-testid="cell-slipway-2026-01-06"] .c')).toBeVisible()
+})
+
+// Dragging an EVENT row opens the event sheet pre-set to the swept span (owner,
+// 27 Aug 26 — "drag and select grids in the events column to input events").
+test('dragging an event row opens the event sheet ranged to the span', async ({ page }) => {
+  desktopOnly()
+  await lwRole(page, 'admin')
+  await dragSelect(page, 'event-0-2026-01-06', 'event-0-2026-01-08')
+  await expect(page.locator('[data-testid="event-text"]')).toBeVisible()
+  // seeded to a RANGE, not a single day: the "A range" scope is the active chip
+  await expect(page.locator('[data-testid="event-scope-range"]')).toHaveClass(/approve/)
+})
+
+// The date header freezes below the top bar on a DESKTOP page scroll now, like
+// the phone (owner, 27 Aug 26). The mirror only exists once the real header has
+// scrolled up under the bar.
+test('the date header freezes on desktop when the page scrolls down', async ({ page }) => {
+  desktopOnly()
+  await expect(page.locator('[data-testid="sticky-head"]')).toHaveCount(0)
+  await page.evaluate(() => window.scrollTo(0, 1400))
+  await expect(page.locator('[data-testid="sticky-head"]')).toBeVisible()
+  await page.evaluate(() => window.scrollTo(0, 0))
+  await expect(page.locator('[data-testid="sticky-head"]')).toHaveCount(0)   // thaws back
+})
+
 // Published-stage remarks editing (owner, 27 Aug 26): once the war is
 // published, a tap on an approved leave opens a note editor. An admin does it
 // for anyone (a member for their own is pinned in remarks.test.tsx); the note

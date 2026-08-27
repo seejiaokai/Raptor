@@ -47,19 +47,22 @@ const KIND_LABEL: Record<EventKind, string> = {
   work: 'Work',
 }
 
-export function EventSheet({ line, date, onClose }: { line: number; date: string; onClose: () => void }) {
+export function EventSheet({ line, date, to, onClose }: { line: number; date: string; to?: string; onClose: () => void }) {
   useVersion()
   const { period, eventDefs: defs } = getState()
   // The band (if any) that owns this cell. Editing it means replacing it, so
   // it is captured up front and removed on apply/delete.
   const band = bandAt(period.bands, line, date)
   const day = period.days.find(d => d.date === date)
+  // A DRAG opens the sheet already ranged from the swept span (owner, 27 Aug
+  // 26); a plain click leaves `to` undefined and opens on the one day.
+  const dragged = to !== undefined && to !== date
 
   const [text, setText] = useState(band ? band.text : (day?.events[line] ?? ''))
-  const [scope, setScope] = useState<'day' | 'range'>(band ? 'range' : 'day')
+  const [scope, setScope] = useState<'day' | 'range'>(band || dragged ? 'range' : 'day')
   const [mode, setMode] = useState<'merge' | 'repeat'>(band ? 'merge' : 'repeat')
   const [range, setRange] = useState<Range | null>(
-    band ? { from: band.from, to: band.to } : { from: date, to: date },
+    band ? { from: band.from, to: band.to } : { from: date, to: to ?? date },
   )
   const [view, setView] = useState<'event' | 'types'>('event')
   const [problem, setProblem] = useState('')

@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { clearLanding, earliestDate, paintLanding, parseCellId, rectCells, wireSelect } from './select'
+import { clearLanding, earliestDate, eventRange, paintLanding, parseCellId, parseEventCell, rectCells, wireSelect } from './select'
 
 // The gesture controller (wireSelect) needs a real browser (elementFromPoint,
 // pointer capture, layout) and is covered by e2e/leavewar.spec.ts. Here we pin
@@ -53,6 +53,42 @@ describe('rectCells', () => {
   it('returns null on a stale endpoint (a hit-test that missed the grid)', () => {
     expect(rectCells(order, dates, { personId: 'ramp', date: '2026-01-06' }, { personId: 'ghost', date: '2026-01-06' })).toBeNull()
     expect(rectCells(order, dates, { personId: 'ramp', date: '1999-01-01' }, { personId: 'ramp', date: '2026-01-06' })).toBeNull()
+  })
+})
+
+// Event cells (owner, 27 Aug 26): a drag along one event line opens the event
+// sheet for a date span. The parser must claim ONLY the plain day cell, never
+// the band / blocked / row testids that share the `event-` prefix.
+describe('parseEventCell', () => {
+  it('splits an event line number from the trailing date', () => {
+    expect(parseEventCell('event-0-2026-03-14')).toEqual({ line: 0, date: '2026-03-14' })
+    expect(parseEventCell('event-12-2026-12-31')).toEqual({ line: 12, date: '2026-12-31' })
+  })
+  it('rejects the band / blocked / row testids and anything else', () => {
+    expect(parseEventCell('event-band-0-2026-03-14')).toBeNull()
+    expect(parseEventCell('event-blocked-2026-03-14')).toBeNull()
+    expect(parseEventCell('event-row-0')).toBeNull()
+    expect(parseEventCell('cell-ramp-2026-03-14')).toBeNull()
+    expect(parseEventCell(null)).toBeNull()
+  })
+})
+
+describe('eventRange', () => {
+  const dates = ['2026-01-06', '2026-01-07', '2026-01-08', '2026-01-09']
+  it('spans the days between two dates on one line, either drag direction', () => {
+    const fwd = eventRange(dates, 1, '2026-01-06', '2026-01-08')!
+    const back = eventRange(dates, 1, '2026-01-08', '2026-01-06')!
+    expect(fwd).toEqual(back)
+    expect(fwd.line).toBe(1)
+    expect(fwd.from).toBe('2026-01-06')
+    expect(fwd.to).toBe('2026-01-08')
+    expect(fwd.dates).toEqual(['2026-01-06', '2026-01-07', '2026-01-08'])
+  })
+  it('a single cell is a one-day span', () => {
+    expect(eventRange(dates, 0, '2026-01-07', '2026-01-07')!.dates).toEqual(['2026-01-07'])
+  })
+  it('returns null on a date off the visible list (a stale hit-test)', () => {
+    expect(eventRange(dates, 0, '2026-01-06', '1999-01-01')).toBeNull()
   })
 })
 

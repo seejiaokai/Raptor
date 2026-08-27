@@ -185,7 +185,9 @@ export function Matrix() {
   const [editingWho, setEditing] = useState<string | null>(null)
   // Which event cell the admin has tapped to edit, or null. Keyed by line +
   // day; the Event sheet reads the current text or band off the store.
-  const [eventEdit, setEventEdit] = useState<{ line: number; date: string } | null>(null)
+  // `to` is set only when a DRAG selected a span (owner, 27 Aug 26) — the sheet
+  // then opens pre-set to that range; a single click leaves it undefined.
+  const [eventEdit, setEventEdit] = useState<{ line: number; date: string; to?: string } | null>(null)
   // Which manning count row's explainer is open (owner, 19 Aug 26 — a tap on
   // the row's name says what it counts and where its colours turn on).
   const [manningInfo, setManningInfo] = useState<string | null>(null)
@@ -338,6 +340,8 @@ export function Matrix() {
       dates: () => selCtxRef.current?.dates() ?? [],
       enabled: () => selCtxRef.current?.enabled() ?? false,
       onSelect: s => selCtxRef.current?.onSelect(s),
+      eventsEnabled: () => selCtxRef.current?.eventsEnabled?.() ?? false,
+      onEventSelect: s => selCtxRef.current?.onEventSelect?.(s),
     })
   }, [])
   // A stage or war change drops any open selection or in-flight move, so a
@@ -530,8 +534,12 @@ export function Matrix() {
   // the same `.who`/`.bal` sticky-left CSS freeze its lead columns for free.
   // Its column widths are MEASURED off the live header (the events row is
   // what widens a column, and only layout knows by how much) and pinned via
-  // a fixed-layout colgroup. Phone only — a desktop window is tall enough
-  // that the owner has not asked for it there.
+  // a fixed-layout colgroup. On DESKTOP too now (owner, 27 Aug 26 — "freeze top
+  // panel for leave war on desktop … when I scroll down the top bar that has the
+  // dates goes out of view, the top bar will freeze just like how the mobile
+  // does it"): the app top bar stays pinned at the top (sticky, z-index 60), so
+  // the mirror freezes just below it (its lower edge) the moment the real header
+  // would slide under, at every width. No width gate any more.
   const headRef = useRef<HTMLTableSectionElement>(null)
   const mirrorRef = useRef<HTMLDivElement>(null)
   const [stuck, setStuck] = useState<{ top: number; left: number; width: number; cols: number[] } | null>(null)
@@ -556,18 +564,20 @@ export function Matrix() {
 
   useEffect(() => {
     setStuck(null)
-    // jsdom has neither matchMedia nor layout — the mirror is a browser-only
-    // creature and the browser gate is what proves it.
+    // jsdom has no layout — the mirror is a browser-only creature, and a
+    // 0-height header (jsdom, or not yet laid out) never activates.
     if (typeof window.matchMedia !== 'function') return
-    const mq = window.matchMedia('(max-width: 700px)')
     const onScroll = () => {
       const head = headRef.current
-      if (!head || !mq.matches) { setStuck(null); return }
+      if (!head) { setStuck(prev => (prev ? null : prev)); return }
       const r = head.getBoundingClientRect()
       if (r.height === 0) return // jsdom, or not laid out yet — never activate
-      // The Raptor top bar is sticky, so "the top" is its lower edge.
+      // The app top bar stays pinned (sticky, both widths), so "the top" is its
+      // LOWER edge: the mirror freezes there the instant the real header would
+      // slide under it. The bar's height is constant, so the pinned `top` needs
+      // no per-tick update. Both phone and desktop now (owner, 27 Aug 26).
       const topEdge = document.querySelector('.topbar')?.getBoundingClientRect().bottom ?? 0
-      if (r.top >= topEdge) { setStuck(null); return }
+      if (r.top >= topEdge) { setStuck(prev => (prev ? null : prev)); return }
       setStuck(prev => {
         if (prev) return prev
         const wrap = wrapRef.current
@@ -1257,6 +1267,11 @@ export function Matrix() {
     dates: () => dates,
     enabled: () => !arranging && !moveSel && (role === 'admin' || period.stage === 'open'),
     onSelect: s => setSel(s),
+    // Events are the admin's (the store refuses a member write anyway); a drag
+    // along one event line opens the event sheet pre-set to that date span
+    // (owner, 27 Aug 26). from === to (a one-cell drag) opens on the single day.
+    eventsEnabled: () => role === 'admin' && !arranging && !moveSel,
+    onEventSelect: s => setEventEdit({ line: s.line, date: s.from, to: s.from === s.to ? undefined : s.to }),
   }
   const csOf = (id: string): string => displayRoster().find(p => p.id === id)?.callsign ?? id
 
@@ -1985,9 +2000,10 @@ export function Matrix() {
       )}
       {eventEdit && role === 'admin' && (
         <EventSheet
-          key={`${eventEdit.line}-${eventEdit.date}`}
+          key={`${eventEdit.line}-${eventEdit.date}-${eventEdit.to ?? ''}`}
           line={eventEdit.line}
           date={eventEdit.date}
+          to={eventEdit.to}
           onClose={() => setEventEdit(null)}
         />
       )}

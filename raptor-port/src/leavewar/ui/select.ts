@@ -20,6 +20,10 @@
 
 export type Cell = { personId: string; date: string }
 export type Selection = { people: string[]; from: string; to: string; cells: Cell[] }
+// An EVENT selection (owner, 27 Aug 26) — a date span on ONE event line. Events
+// live one row each, so there is no people axis; a drag never crosses lines.
+export type EventCell = { line: number; date: string }
+export type EventSelection = { line: number; from: string; to: string; dates: string[] }
 
 /* caldrag.ts's own numbers */
 const HOLD = 180        // ms a finger must dwell before a drag arms
@@ -60,21 +64,50 @@ export function rectCells(order: string[], dates: string[], a: Cell, f: Cell): S
   return { people, from: days[0], to: days[days.length - 1], cells }
 }
 
+/* An event DAY cell is `event-<line>-<YYYY-MM-DD>`. The band (`event-band-…`),
+   blocked (`event-blocked-…`) and row (`event-row-…`) testids share the prefix
+   but are not per-day cells, so this matches ONLY the plain day cell. */
+export function parseEventCell(testid: string | null | undefined): EventCell | null {
+  const m = /^event-(\d+)-(\d{4}-\d{2}-\d{2})$/.exec(testid ?? '')
+  return m ? { line: Number(m[1]), date: m[2] } : null
+}
+
+/** The run of one event LINE between two dates, in the grid's own column order.
+ *  Events are one row each, so a drag never spans lines — the anchor's line
+ *  wins and only the date span matters. `null` if either date is off the given
+ *  date list (a stale hit-test), so the caller paints nothing rather than guess. */
+export function eventRange(dates: string[], line: number, a: string, f: string): EventSelection | null {
+  const ai = dates.indexOf(a), fi = dates.indexOf(f)
+  if (ai < 0 || fi < 0) return null
+  const c0 = Math.min(ai, fi), c1 = Math.max(ai, fi)
+  const span = dates.slice(c0, c1 + 1)
+  return { line, from: span[0], to: span[span.length - 1], dates: span }
+}
+
 export interface SelectCtx {
   order: () => string[]     // visible person ids, top → bottom
   dates: () => string[]     // ordered day strings, left → right
   enabled: () => boolean    // selection allowed right now (not arranging, a sheet closed, …)
   onSelect: (sel: Selection) => void
+  // Events (admin only): a drag along ONE event line selects a date span and
+  // opens the event sheet for it (owner, 27 Aug 26). `eventsEnabled` absent or
+  // false ⇒ event cells are not selectable (a member, or the rows are gone).
+  eventsEnabled?: () => boolean
+  onEventSelect?: (sel: EventSelection) => void
 }
 /* elementFromPoint works in client coords regardless of the table's CSS
    `zoom`, so the hit-test needs no un-scaling. */
 
 const cellAt = (x: number, y: number): Cell | null =>
   parseCellId((document.elementFromPoint(x, y) as HTMLElement | null)?.closest('[data-testid^="cell-"]')?.getAttribute('data-testid'))
+const eventAt = (x: number, y: number): EventCell | null =>
+  parseEventCell((document.elementFromPoint(x, y) as HTMLElement | null)?.closest('[data-testid^="event-"]')?.getAttribute('data-testid'))
 
 /** Attach the one selection listener to `.mx-wrap`. Returns a teardown. */
+type Hit = { kind: 'roster'; cell: Cell } | { kind: 'event'; cell: EventCell }
+
 export function wireSelect(wrap: HTMLElement, ctx: SelectCtx): () => void {
-  let anchor: Cell | null = null
+  let anchor: Hit | null = null
   let armed = false
   let pid = -1
   let sx = 0, sy = 0
@@ -91,19 +124,34 @@ export function wireSelect(wrap: HTMLElement, ctx: SelectCtx): () => void {
     for (const id of painted) wrap.querySelector(`[data-testid="${id}"]`)?.classList.remove('selcell')
     painted = new Set()
   }
-  const paint = (sel: Selection | null) => {
-    const want = new Set((sel?.cells ?? []).map(c => `cell-${c.personId}-${c.date}`))
+  const paintIds = (ids: string[]) => {
+    const want = new Set(ids)
     for (const id of painted) if (!want.has(id)) wrap.querySelector(`[data-testid="${id}"]`)?.classList.remove('selcell')
     for (const id of want) if (!painted.has(id)) wrap.querySelector(`[data-testid="${id}"]`)?.classList.add('selcell')
     painted = want
   }
 
-  const focusFrom = (clientX: number, clientY: number): Cell | null => cellAt(clientX, clientY)
+  // The selection under the current focus point, as the ids to paint plus the
+  // typed payload to hand off on release. Roster and event anchors take separate
+  // axes: a roster drag is a people×days rectangle; an event drag is a date span
+  // on the anchor's own line (the focus supplies only the COLUMN — its row is
+  // ignored, so a finger straying onto another row still extends the span).
+  const current = (): { ids: string[]; roster?: Selection; event?: EventSelection } | null => {
+    if (!anchor) return null
+    if (anchor.kind === 'roster') {
+      const f = cellAt(lastX, lastY) ?? anchor.cell
+      const sel = rectCells(ctx.order(), ctx.dates(), anchor.cell, f)
+      return sel ? { ids: sel.cells.map(c => `cell-${c.personId}-${c.date}`), roster: sel } : null
+    }
+    const fd = cellAt(lastX, lastY)?.date ?? eventAt(lastX, lastY)?.date ?? anchor.cell.date
+    const sel = eventRange(ctx.dates(), anchor.cell.line, anchor.cell.date, fd)
+    return sel ? { ids: sel.dates.map(d => `event-${sel.line}-${d}`), event: sel } : null
+  }
 
   const repaint = () => {
     if (!armed || !anchor) return
-    const f = focusFrom(lastX, lastY)
-    if (f) paint(rectCells(ctx.order(), ctx.dates(), anchor, f))
+    const s = current()
+    paintIds(s ? s.ids : [])
   }
 
   // Auto-scroll the grid when a MOUSE drag reaches a wrap edge, so a desktop
@@ -179,20 +227,17 @@ export function wireSelect(wrap: HTMLElement, ctx: SelectCtx): () => void {
   }
 
   const finish = (commit: boolean) => {
-    const a = anchor
-    const wasArmed = armed
+    // Read the selection BEFORE teardown nulls the anchor.
+    const s = commit && armed && anchor ? current() : null
     teardown()
-    if (commit && wasArmed && a) {
-      const f = focusFrom(lastX, lastY) ?? a
-      const sel = rectCells(ctx.order(), ctx.dates(), a, f)
-      if (sel) {
-        // swallow the click the browser fires on the anchor cell after this
-        // pointerup, or its single-cell onClick would open the wrong sheet
-        const swallow = (ev: Event) => { ev.stopPropagation(); ev.preventDefault() }
-        document.addEventListener('click', swallow, { capture: true, once: true })
-        setTimeout(() => document.removeEventListener('click', swallow, true), 0)
-        ctx.onSelect(sel)
-      }
+    if (s) {
+      // swallow the click the browser fires on the anchor cell after this
+      // pointerup, or its single-cell onClick would open the wrong sheet
+      const swallow = (ev: Event) => { ev.stopPropagation(); ev.preventDefault() }
+      document.addEventListener('click', swallow, { capture: true, once: true })
+      setTimeout(() => document.removeEventListener('click', swallow, true), 0)
+      if (s.roster) ctx.onSelect(s.roster)
+      else if (s.event) ctx.onEventSelect?.(s.event)
     }
     clearPaint()
   }
@@ -232,9 +277,13 @@ export function wireSelect(wrap: HTMLElement, ctx: SelectCtx): () => void {
   const onDown = (e: PointerEvent) => {
     if (!ctx.enabled()) return
     if (e.button !== undefined && e.button !== 0) return   // left / primary only
-    const cell = parseCellId((e.target as HTMLElement)?.closest?.('[data-testid^="cell-"]')?.getAttribute('data-testid'))
-    if (!cell) return                                       // not a day cell (who / bal / handle)
-    anchor = cell; armed = false; pid = e.pointerId
+    const el = e.target as HTMLElement
+    const roster = parseCellId(el?.closest?.('[data-testid^="cell-"]')?.getAttribute('data-testid'))
+    const event = roster ? null : parseEventCell(el?.closest?.('[data-testid^="event-"]')?.getAttribute('data-testid'))
+    if (roster) anchor = { kind: 'roster', cell: roster }
+    else if (event && (ctx.eventsEnabled?.() ?? false)) anchor = { kind: 'event', cell: event }
+    else return   // not a selectable cell (who / bal / handle / a band / events off)
+    armed = false; pid = e.pointerId
     touchGesture = e.pointerType !== 'mouse'
     sx = e.clientX; sy = e.clientY; lastX = e.clientX; lastY = e.clientY
     // NB: pointer capture is taken in arm(), not here — see the note there.
@@ -305,13 +354,19 @@ export function wireMove(
     opts.onPick(cell.date)
   }
   const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') { e.stopPropagation(); opts.onCancel() } }
+  // Right-click cancels the move on a desktop (owner, 27 Aug 26 — "if I want to
+  // cancel, I can just right click to deselect what I selected"): swallow the
+  // browser context menu and drop the block, the mouse equivalent of Escape.
+  const onCtx = (e: MouseEvent) => { e.preventDefault(); e.stopPropagation(); opts.onCancel() }
 
   document.addEventListener('mousemove', onMouseMove)
   document.addEventListener('click', onClick, true)   // capture — beat React's cell onClick
+  document.addEventListener('contextmenu', onCtx, true)
   document.addEventListener('keydown', onKey, true)
   return () => {
     document.removeEventListener('mousemove', onMouseMove)
     document.removeEventListener('click', onClick, true)
+    document.removeEventListener('contextmenu', onCtx, true)
     document.removeEventListener('keydown', onKey, true)
     ghost.remove()
   }
