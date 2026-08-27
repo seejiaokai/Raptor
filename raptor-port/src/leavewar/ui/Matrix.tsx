@@ -40,6 +40,8 @@ import { EventSheet } from './EventSheet'
 import { monthInView } from './monthview'
 import { wireSelect, wireMove, daysBetween, type Selection, type SelectCtx } from './select'
 import { SelectSheet } from './SelectSheet'
+import { RemarksSheet } from './RemarksSheet'
+import { leaveInputAt } from '../sync'
 import { useVersion } from './useStore'
 import './matrix.css'
 
@@ -1181,6 +1183,17 @@ export function Matrix() {
   // admin deliberately moving someone's input off the date they bid.
   const movedShown = period.stage === 'closed' || period.stage === 'published'
 
+  // Published-stage remarks editor (owner, 27 Aug 26 — "after the leave war is
+  // published … click on their inputs … and edit the remarks. but the admin
+  // can also … the same for all"). A click on an approved leave at PUBLISHED
+  // opens the note editor for the run's OWN person (a member editing their own
+  // leave) or for an admin (anyone). `viewer` is the war's mirror of Raptor's
+  // "view as" — the member's own person. It takes precedence over the
+  // read-only Raptor sheet and the bid/decision sheets below, and exists only
+  // at published; `leaveInputAt` runs once per open cell, never per grid cell.
+  const remarkRow = open && period.stage === 'published' ? leaveInputAt(open.id, open.date) : null
+  const canRemark = !!remarkRow && (role === 'admin' || (!!open && open.id === viewer))
+
   // Which sheet a click opens follows from three things: the stage, the role,
   // and what the cell already holds.
   //
@@ -1194,7 +1207,14 @@ export function Matrix() {
   const openable = (personId: string, date: string): boolean =>
     raptorOwns(states, personId, date) ||
     canEditCell(period, role, date) ||
-    (deciding && isBiddable(grid[personId]?.[date]))
+    (deciding && isBiddable(grid[personId]?.[date])) ||
+    // Published remarks editor (owner, 27 Aug 26): any filled cell of the
+    // viewer's own row (or every row, for an admin) is tappable to edit its
+    // note. Kept CHEAP — a truthiness check on the code, never leaveInputAt —
+    // because this runs for every drawn cell; the precise "is there a backing
+    // leave input" test is `canRemark`, computed once when a cell is opened.
+    (period.stage === 'published' && (role === 'admin' || personId === viewer)
+      && !!grid[personId]?.[date])
 
   // A day the squadron may not bid on, drawn as such. Without this the window
   // is invisible: a member taps an October cell, nothing happens, and the app
@@ -1202,9 +1222,10 @@ export function Matrix() {
   // does not bind them, so drawing one would be a lie about their own screen.
   const lockedDate = (date: string): boolean => !canEditCell(period, role, date)
 
-  // Feed the drag-select controller live state. A member may drag only where
-  // a single click already does something: fill while the war is OPEN (Task F
-  // adds the published remarks path). An admin may drag at every stage.
+  // Feed the drag-select controller live state. A member may DRAG only while
+  // the war is OPEN (batch fill). The published remarks editor is a SINGLE
+  // click, not a drag — a block of runs has no one note to edit — so a member
+  // still cannot drag at published. An admin may drag at every stage.
   selCtxRef.current = {
     order: () => rosterSequence().filter(r => r.kind === 'person').map(r => (r as { p: Person }).p.id),
     dates: () => dates,
@@ -1814,11 +1835,25 @@ export function Matrix() {
           sheet inside it would be clipped by its own scroller. Keyed by the
           cell so opening a second one remounts rather than carrying the
           first's portion choice across. */}
-      {/* Raptor's ownership is checked FIRST and short-circuits both other
+      {/* The published-stage remarks editor wins FIRST where it applies (an
+          approved leave, the viewer's own or an admin's any) — even over the
+          Raptor sheet, because on a published war editing the note is the
+          point, and the note lives on the same Raptor row the read-only sheet
+          would only point at. */}
+      {open && canRemark && (
+        <RemarksSheet
+          key={`rmk-${open.id}-${open.date}`}
+          callsign={open.callsign}
+          row={remarkRow}
+          code={grid[open.id]?.[open.date] ?? ''}
+          onClose={close}
+        />
+      )}
+      {/* Raptor's ownership is checked next and short-circuits both other
           sheets. That cell is approved elsewhere: offering a picker or a
           decision on it would offer an action the store will refuse, which
           is worse than offering nothing. */}
-      {open && raptorOwns(states, open.id, open.date) && (
+      {open && !canRemark && raptorOwns(states, open.id, open.date) && (
         <RaptorSheet
           callsign={open.callsign}
           date={open.date}
@@ -1932,7 +1967,7 @@ export function Matrix() {
       {counterEdit !== false && (
         <CounterForm key={counterEdit ?? 'new'} ruleId={counterEdit} onClose={() => setCounterEdit(false)} />
       )}
-      {open && !openPostedOut && !raptorOwns(states, open.id, open.date)
+      {open && !canRemark && !openPostedOut && !raptorOwns(states, open.id, open.date)
         && canEditCell(period, role, open.date)
         && !(deciding && isBiddable(grid[open.id]?.[open.date])) && (
         <BidPicker
@@ -1980,7 +2015,7 @@ export function Matrix() {
           onClose={close}
         />
       )}
-      {open && !raptorOwns(states, open.id, open.date) && deciding
+      {open && !canRemark && !raptorOwns(states, open.id, open.date) && deciding
         && isBiddable(grid[open.id]?.[open.date]) && (
         <DecisionSheet
           key={`${open.id}-${open.date}`}

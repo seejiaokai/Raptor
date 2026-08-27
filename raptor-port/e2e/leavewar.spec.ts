@@ -727,6 +727,26 @@ test('a drag-selection offers Move, and the move banner appears on entering it',
   await expect(page.locator('[data-testid="move-banner"]')).toHaveCount(0)
 })
 
+// Published-stage remarks editing (owner, 27 Aug 26): once the war is
+// published, a tap on an approved leave opens a note editor. An admin does it
+// for anyone (a member for their own is pinned in remarks.test.tsx); the note
+// lives on the Raptor input, so this proves the cross-app save in a real
+// browser.
+test('at published, a tap on an approved leave edits its note, and it sticks', async ({ page }) => {
+  await lwRole(page, 'admin')
+  await page.locator('[data-testid="stage-advance"]').click()   // open -> closed
+  await page.locator('[data-testid="stage-advance"]').click()   // closed -> published
+  const cell = page.locator('[data-testid="cell-prowler-2026-01-09"]')  // a Raptor-owned leave
+  await cell.click()
+  await expect(page.locator('[data-testid="remarks-sheet"]')).toBeVisible()
+  await page.locator('[data-testid="remarks-field"]').fill('checked by e2e')
+  await page.locator('[data-testid="remarks-save"]').click()
+  await expect(page.locator('[data-testid="remarks-sheet"]')).toHaveCount(0)
+  // reopen — the note survived the round trip through the Raptor input
+  await cell.click()
+  await expect(page.locator('[data-testid="remarks-field"]')).toHaveValue('checked by e2e')
+})
+
 // ---- the frozen counter column ----
 //
 // This is the riskiest surface in the build and the one jsdom is blindest

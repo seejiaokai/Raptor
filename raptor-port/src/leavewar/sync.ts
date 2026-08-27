@@ -361,6 +361,27 @@ export function retractLwRow(row: any): void {
   }
 }
 
+/* The Raptor leave INPUT a war cell derives from — the row whose remarks the
+   published-stage editor edits (owner, 27 Aug 26). Covers both a leave FILED
+   on the Inputs page (raptor-owned in the war) and one BID in the war (the
+   lw-tagged row outbound mints at publish): both are ordinary INPUTS rows and
+   both carry the remark. Same date arithmetic as `inputCoversDate`, on the
+   war cell's ISO date. Leaves only — medical is management's, filed and read
+   on the Inputs page. */
+export function leaveInputAt(personId: string, iso: string): any | null {
+  const t = dateOrd(isoToLabel(iso))
+  if (t == null) return null
+  for (const row of INPUTS) {
+    if (row.person !== personId || !isLeave(row.type)) continue
+    const a = dateOrd(row.date, row.yr)
+    if (a == null) continue
+    const b = row.endDate ? dateOrd(row.endDate, row.yr) : a
+    if (b == null) continue
+    if (t >= a && t <= b) return row
+  }
+  return null
+}
+
 /* ---- inbound: Raptor inputs -> Leave War cells --------------------------- */
 
 /** A leave input asking for a date the squadron already bid differently on.

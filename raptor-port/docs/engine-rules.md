@@ -2141,7 +2141,11 @@ member never edits at closed or published), so the "no stage lets a member
 bid and an admin decide at once" invariant holds. Pinned in `stages.test.ts`
 and `deciding.test.tsx` (the admin decision survives into published). The
 single click that a MEMBER makes on their own published leave is the remarks
-editor — a separate, still-open piece (`docs/ui-contracts.md`).
+editor (`docs/ui-contracts.md` §Published-stage remarks editing) — a member
+edits their own note, an admin edits anyone's, and the save runs through
+Raptor's `setLeaveRemarks → commitInputEdit`, so the same member-own gate
+applies. `sync.ts:leaveInputAt` is a new query on the sync seam that finds the
+Raptor input a war cell derives from.
 
 **A member edits and deletes only their OWN personal inputs (owner, 27 Aug
 26 — "they cant edit other people's input, only can view").** On the Inputs

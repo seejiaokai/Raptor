@@ -4037,11 +4037,27 @@ BidPicker's look and vocabulary, not instead of it.
   write where one cell could not; details in `docs/engine-rules.md`
   §Auth / roles. Pinned in `store.test.ts`, `selectsheet.test.tsx`.
 
-*(Published-stage member remarks editing — a member clicking their own approved
-leave to edit its remarks, the admin able to do it for anyone — is the
-immediate NEXT piece (owner asked, 27 Aug 26). It crosses into Raptor's INPUTS
-(the remark lives on the lw-tagged input row) so it lands in its own follow-up
-commit. Until it ships, a member cannot select at `published`.)*
+### Published-stage remarks editing (owner, 27 Aug 26)
+
+Once a war is PUBLISHED, a single tap on an approved leave opens a note editor
+(`ui/RemarksSheet.tsx`, testid `remarks-sheet`) — the run's OWN person (a
+member editing their own leave) or an admin (anyone). It takes precedence in
+`Matrix.tsx` over the read-only Raptor sheet and the bid/decision sheets
+(`canRemark`), and exists only at `published`; a member still cannot DRAG there
+(a block of runs has no one note). The note lives on the Raptor INPUT the cell
+derives from — a leave FILED on Inputs (Raptor-owned) or BID in the war (the
+lw-tagged row `runOutbound` mints at publish), both found by
+`sync.ts:leaveInputAt`. The save runs through Raptor's one commit path
+(`inputedit.ts:setLeaveRemarks → commitInputEdit`): a remarks-only edit leaves
+the leave's `rowSig` unchanged, so the lw tag and the war cells do not move —
+only the note the Inputs page reads is rewritten, and the member-own /
+scheduler-any gate comes free from `commitInputEdit`. To make the cell tappable
+at published for a member's own war-bid leave, `openable` gains a CHEAP branch
+(a code exists on the viewer's own row, or any row for an admin) — the precise
+"is there a backing leave" test stays in `canRemark`, run once per opened cell,
+never per drawn cell. Pinned in `remarks.test.tsx` (own → editor, admin → any,
+member-other → the read-only Raptor sheet, not-published → neither) and the
+scrim table; e2e drives the admin round trip in a real browser.
 
 ## A member edits only their own personal inputs (owner, 27 Aug 26)
 

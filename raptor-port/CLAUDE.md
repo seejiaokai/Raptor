@@ -502,7 +502,11 @@ same seam. Its DISPLAY is categorised (`engine/people.ts:groupOf` — SXO / IP /
 OPS P by CAT / IWSO / OPS W by CAT / OCU / Personnel, colours from Raptor's
 `--q-*`), and ground crew ride it (`pers`, seat `gnd`) but are skipped by every
 manning count (`countsFor`); `categoryOf` and the thresholds are untouched.
-Don't add a fifth seam casually,
+The PUBLISHED remarks editor (27 Aug 26) rides this same seam in the war→Raptor
+direction: `sync.ts:leaveInputAt` finds the Raptor input a war cell derives
+from, and `RemarksSheet` saves through Raptor's own `setLeaveRemarks →
+commitInputEdit` — a remarks-only edit, so `rowSig` is unchanged and the war
+cells never move. Don't add a fifth seam casually,
 and never call its `initStore` from a component — it clears the store's
 subscribers.
 
@@ -1146,4 +1150,4 @@ subscribers.
 | The rules engine | `src/engine/` — `validate.ts` is the heart |
 | Store / UI state / undo | `src/state/` |
 | Components + HTML builders | `src/ui/` |
-| **The Leave War tab** (vendored app: engine, store, UI, tests) | `src/leavewar/` — its own store and `leavewar:` storage keys; role written only by `resetSession` + the admin's `toggleRole`; stage-advance is admin-only (27 Aug 26, members still bid); an admin decides bids at closed OR published (`canDecide`, 27 Aug 26); a drag selects a block to batch fill/decide/move/delete and a plain click still opens the single-cell sheet (`select.ts`, capture taken in `arm()`); the dotted "moved" mark shows only once bidding is closed; the colour pop-out is "Legend"; CSS scoped under `#page-leavewar`; gaps in `docs/leavewar/known-gaps.md`, future sync in `docs/superpowers/specs/leavewar-sync.md` |
+| **The Leave War tab** (vendored app: engine, store, UI, tests) | `src/leavewar/` — its own store and `leavewar:` storage keys; role written only by `resetSession` + the admin's `toggleRole`; stage-advance is admin-only (27 Aug 26, members still bid); an admin decides bids at closed OR published (`canDecide`, 27 Aug 26); a drag selects a block to batch fill/decide/move/delete and a plain click still opens the single-cell sheet (`select.ts`, capture taken in `arm()`); the dotted "moved" mark shows only once bidding is closed; the colour pop-out is "Legend"; at PUBLISHED a tap on an approved leave opens the remarks editor (`RemarksSheet` → `sync.ts:leaveInputAt` + `inputedit.ts:setLeaveRemarks`, member edits own / admin any); CSS scoped under `#page-leavewar`; gaps in `docs/leavewar/known-gaps.md`, future sync in `docs/superpowers/specs/leavewar-sync.md` |

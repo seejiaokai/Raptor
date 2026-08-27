@@ -301,6 +301,17 @@ export const draftOf = (r: any) => ({
   docId: r.docId || null,
 })
 
+/* Edit ONLY the remarks of an existing input, through the one commit path
+   (owner, 27 Aug 26 — the published Leave War remarks editor). Everything but
+   the remark is seeded back from the row, so `rowSig` is unchanged: a
+   Leave-War-synced leave keeps its lw tag and its grid cells, only the note
+   the Inputs page reads is rewritten. The member-own / scheduler-any gate,
+   the mod timestamp and the undo snapshot all come free from commitInputEdit
+   — this must NOT grow its own copy of any of them. */
+export function setLeaveRemarks(row: any, remarks: string): boolean {
+  return commitInputEdit(row, { ...draftOf(row), remarks })
+}
+
 /* THE UPLOAD CONTROL every editor renders when needsDoc(type) — one
    component so the add form, the in-table row editor and the modal cannot
    grow three file inputs with three behaviours. Picking a file stores it at
