@@ -75,9 +75,43 @@ byte-exact parity gate (`node reference/tfin.js`) rather than batch-by-batch.
 | **#329** | SC MAIN per-type grading, dormant removed inputs, UI polish | ✅ 26 Aug — bug pass |
 | **#331** | Seam fixes, SANS in-time window + A chip, crew-panel & board-bar chrome, Leave War roster/grid, stores save flash | ⬜ (the 26 Aug pass predates it) |
 
-**Not yet bug-tested (the working list):** #281, #282, #283, #286, #288,
-#289 (dedicated pass), #311, #313, #315, #316, #317, #319, #320, #321, #322,
-#323 (groups/pucks/palette), #325, #326, #331.
+## The queue — ordered by risk (do these next, top first)
+
+Risk here means **how silent a bug would be**, not how likely. A wrong crew-rest
+flag or a mis-dated input can sit unnoticed and burn someone; a broken arrow
+button announces itself the moment you press it. So the validation engine,
+roles, dates and saved data go first (`CLAUDE.md` §How to work here: escalate
+"where a defect would be SILENT rather than obvious").
+
+### 🔴 Tier 1 — test first (silent + safety/data critical)
+
+The rules engine, crew-rest safety, who-can-do-what, dates, and saved data.
+
+1. **#281** — Rule interdependencies: one knob updates every reader *(engine core)*
+2. **#282** — A double-booked man: the clash warning fires correctly *(clash detection)*
+3. **#288** — Crew-rest warning reads once, cause-first *(crew-rest safety flag)*
+4. **#319** — SC B box is an in-time *(rules engine)*
+5. **#320** — MAIN/SPARE toggle's reach into the rules engine *(roles × engine)*
+6. **#321** — Early SC B counts toward the long day; in-time window advises *(rules engine)*
+7. **#331** — SANS in-time window + A chip *(SANS availability engine)*
+8. **#311** — Every input date anchored to a real year, no cross-year bleed *(silent date bug)*
+9. **#313** — Late-input deadline runs with each input's own week *(silent deadline logic)*
+10. **#316** — Accounts renamed; demo accounts no longer printed *(login / auth)*
+11. **#317** — SC MAIN/SPARE badge + probes learn renamed accounts *(roles × engine)*
+12. **#283** — Scrubbed demo data + switchable second week *(saved week data)*
+13. **#325** — Admin console + **flexible clearing** *(roles + a destructive wipe; the Help tab / motion parts are low-risk)*
+
+### 🟡 Tier 2 — test next (functional, failures usually visible)
+
+14. **#289** — Inputs month calendar + per-type All-day defaults + colour code
+15. **#286** — Five UI asks + SQN strip (undo-a-mute, public notes, reminders)
+16. **#323** — Highlight groups (OR/AND) + pucks drag-swap + palette *(the filter bar was already checked 26 Aug)*
+
+### 🟢 Tier 3 — test last (cosmetic / navigation, a bug shows itself instantly)
+
+17. **#315** — Desktop arrow from Saturday reaches Sunday in one press
+18. **#322** — Desktop day arrows: proxy scrollbar no longer cancels the glide
+19. **#326** — Desktop day-arrows: mid-glide cancellation that skipped a day
 
 ---
 
