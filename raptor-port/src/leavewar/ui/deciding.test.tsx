@@ -1,6 +1,6 @@
 import { act, fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
-import { advanceStage, getState, initStore, setRole } from '../state/store'
+import { advanceStage, getState, initStore, reopenStage, setRole } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { StageBar } from './Chrome'
 import { Matrix } from './Matrix'
@@ -116,19 +116,22 @@ describe('deciding a bid', () => {
     expect(screen.queryByTestId('decide-approve')).toBeNull()
   })
 
-  // Published is the end of the cycle: the squadron has been told the
-  // outcome, so there is nothing left to decide. An admin can still correct
-  // the sheet — they edit at every stage — which is why the picker opens
-  // here and only the decision buttons are gone.
-  it('offers no decision once the period is published, though an admin may still edit', () => {
+  // Published still decides (owner, 27 Aug 26 — "if leave war is published,
+  // the admin can still have these functions"): publication freezes the
+  // picture for the squadron, but the admin still runs the war, so a late
+  // change tapped in after publication is approved/refused exactly as at
+  // closed. A bid gets the decision; an empty cell still gets the picker.
+  it('keeps the admin decision once the period is published', () => {
     advanceStage()
     advanceStage()
     setRole('admin')
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(PENDING))
-    expect(screen.queryByTestId('decide-approve')).toBeNull()
-    expect(screen.queryByTestId('decide-refuse')).toBeNull()
-    expect(screen.getByTestId('bid-picker')).toBeTruthy()
+    expect(screen.getByTestId('decide-approve')).toBeTruthy()
+    expect(screen.getByTestId('decide-refuse')).toBeTruthy()
+    expect(screen.queryByTestId('bid-LL')).toBeNull()
+    fireEvent.click(screen.getByTestId('cell-dusk-2026-02-11'))
+    expect(screen.getByTestId('bid-LL')).toBeTruthy()
   })
 
   // The precedence that had to be got right: an admin at `closed` satisfies
@@ -333,6 +336,31 @@ describe('shifting a bid', () => {
     expect(getState().states.asics['2026-01-30']).toEqual({
       state: 'approved', source: 'bid', shiftedFrom: '2026-01-23',
     })
+  })
+})
+
+// Owner, 27 Aug 26: the dotted "moved" edge is noise while bidding is open —
+// people shuffle their own bids freely then — and becomes meaningful only once
+// bidding has closed, where a shift is management moving someone's input.
+describe('the moved mark waits for bidding to close', () => {
+  const MOVED = 'cell-asics-2026-01-30'
+  // Close the war, move ASICS's pending bid to 2026-01-30 (a shift), and it
+  // carries the dotted "moved" edge — the trail management can see.
+  const makeShift = () => {
+    advanceStage()                    // admin (file beforeEach) closes the war
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId(PENDING))
+    fireEvent.change(screen.getByTestId('shift-date'), { target: { value: '2026-01-30' } })
+    fireEvent.click(screen.getByTestId('decide-shift'))
+  }
+  it('draws the moved edge once bidding has closed', () => {
+    makeShift()
+    expect(screen.getByTestId(MOVED).querySelector('.c')!.className).toContain('moved')
+  })
+  it('hides it again if the war is reopened for bidding', () => {
+    makeShift()
+    act(() => { reopenStage() })       // back to open — the bid (and its shift) survive
+    expect(screen.getByTestId(MOVED).querySelector('.c')!.className).not.toContain('moved')
   })
 })
 

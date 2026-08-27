@@ -622,6 +622,11 @@ test('the Raptor mark is painted, and an ordinary bid carries none', async ({ pa
   expect(parseFloat(raptor.width)).toBeGreaterThan(0)
   expect(raptor.style).toBe('solid')
 
+  // The dotted "moved" edge only shows once bidding has closed (owner, 27 Aug
+  // 26 — while a war is open, people shuffle their own bids and a moved mark
+  // is just noise). Close the war as an admin, then it paints.
+  await lwRole(page, 'admin')
+  await page.locator('[data-testid="stage-advance"]').click()
   const moved = await edge('[data-testid="cell-slash-2026-02-03"] .c')
   expect(parseFloat(moved.width)).toBeGreaterThan(0)
   expect(moved.style).toBe('dotted')

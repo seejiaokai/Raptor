@@ -113,6 +113,13 @@ export function wireSelect(wrap: HTMLElement, ctx: SelectCtx): () => void {
   const arm = () => {
     armed = true
     if (holdTimer) { clearTimeout(holdTimer); holdTimer = null }
+    // Capture the pointer only now that a DRAG is real. Taking it on
+    // pointerdown breaks a plain tap: Chromium retargets the click that
+    // follows a captured pointerup to the capturing element (the wrap), so
+    // the cell's own onClick — the single-cell input sheet — never fires.
+    // The window-level move/up listeners already track the drag without it;
+    // capture is just belt-and-braces for a fast touch drag.
+    if (pid >= 0) { try { wrap.setPointerCapture(pid) } catch { /* jsdom / not capturable */ } }
     wrap.style.touchAction = 'none'
     repaint()
     if (!raf) raf = requestAnimationFrame(edgeScroll)
@@ -172,7 +179,7 @@ export function wireSelect(wrap: HTMLElement, ctx: SelectCtx): () => void {
     if (!cell) return                                       // not a day cell (who / bal / handle)
     anchor = cell; armed = false; pid = e.pointerId
     sx = e.clientX; sy = e.clientY; lastX = e.clientX; lastY = e.clientY
-    try { wrap.setPointerCapture(e.pointerId) } catch { /* jsdom */ }
+    // NB: pointer capture is taken in arm(), not here — see the note there.
     window.addEventListener('pointermove', onMove, true)
     window.addEventListener('pointerup', onUp, true)
     window.addEventListener('pointercancel', onCancel, true)

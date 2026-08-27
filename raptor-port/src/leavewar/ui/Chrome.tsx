@@ -361,7 +361,7 @@ export function StageBar() {
         aria-expanded={legOpen}
         title="What the colours and marks on the grid mean"
       >
-        Key
+        Legend
       </button>
       {legOpen && (
         <>

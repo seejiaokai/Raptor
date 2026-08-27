@@ -114,9 +114,15 @@ export function canEditCell(period: Period, role: Role, date: string): boolean {
 /** Decisions are made once bidding has closed and the picture has frozen —
  *  not while bids are still arriving underneath them — and only by an
  *  admin. A member watching the same screen sees the outcome, not the
- *  buttons. */
+ *  buttons.
+ *
+ *  Published counts too (owner, 27 Aug 26 — "if leave war is published, the
+ *  admin can still have these functions"): publishing freezes the picture for
+ *  the squadron, but the admin still runs it, so a late change tapped in after
+ *  publication can be approved/refused/moved exactly as at closed. The gate is
+ *  "bidding is no longer open", not "the stage is closed". */
 export function canDecide(stage: Stage, role: Role): boolean {
-  return role === 'admin' && stage === 'closed'
+  return role === 'admin' && (stage === 'closed' || stage === 'published')
 }
 
 export function stageLabel(stage: Stage): string {

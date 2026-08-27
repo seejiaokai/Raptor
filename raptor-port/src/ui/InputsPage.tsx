@@ -216,7 +216,10 @@ export function InputsPage() {
      — the id into state/docs; cleared after a successful add because the
      file belongs to the input just filed, not to the next one */
   const [docId, setDocId] = useState<string | null>(null)
-  const [fPerson, setFPerson] = useState('all')
+  /* A member lands on THEIR OWN inputs (owner, 27 Aug 26) — the page is their
+     paperwork first — with "Everyone" one pick away in the same filter. A
+     scheduler (admin) still opens on the whole squadron. */
+  const [fPerson, setFPerson] = useState(canEditSched() ? 'all' : ME)
   const [fType, setFType] = useState('all')
   const [fSearch, setFSearch] = useState('')
   const [editRow, setEditRow] = useState<any>(null)
@@ -772,8 +775,15 @@ export function InputsPage() {
                         the row's other actions live */}
                     {r.docId && <span className="rclip" data-doc={inx} title="View the document"
                       onClick={() => { setDocView({ row: r }); notify() }}><ClipIcon /></span>}
-                    <span className="red" data-edit={inx} title="Edit this input" onClick={() => startEdit(inx)}>✎</span>
-                    <span className="rmx" data-inx={inx} onClick={() => del(inx)}>✕</span>
+                    {/* Edit and delete are the owner's OWN-INPUT rights for a
+                        member (owner, 27 Aug 26): a scheduler works every row,
+                        a member only their own — someone else's row is view
+                        only (the document clip above stays, so they can still
+                        read the paperwork). The write path repeats this gate. */}
+                    {(canEditSched() || r.person === ME) && <>
+                      <span className="red" data-edit={inx} title="Edit this input" onClick={() => startEdit(inx)}>✎</span>
+                      <span className="rmx" data-inx={inx} onClick={() => del(inx)}>✕</span>
+                    </>}
                   </td>
                 </tr>
               )

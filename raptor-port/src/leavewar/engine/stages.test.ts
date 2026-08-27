@@ -45,11 +45,13 @@ describe('what each stage allows', () => {
     for (const s of STAGE_ORDER) expect(canEdit(s, 'admin')).toBe(true)
   })
 
-  it('accepts decisions only once closed, and only from an admin', () => {
+  it('accepts decisions once bidding is no longer open, and only from an admin', () => {
     expect(canDecide('closed', 'admin')).toBe(true)
+    // Published still decides (owner, 27 Aug 26): the admin runs the war after
+    // publication too, so a late change can be approved/refused/moved there.
+    expect(canDecide('published', 'admin')).toBe(true)
     expect(canDecide('draft', 'admin')).toBe(false)
     expect(canDecide('open', 'admin')).toBe(false)
-    expect(canDecide('published', 'admin')).toBe(false)
     for (const s of STAGE_ORDER) expect(canDecide(s, 'member')).toBe(false)
   })
 

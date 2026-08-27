@@ -29,7 +29,7 @@ import { writeInputsBatch, notify } from '../state/store'
 import { retractLwRow, rowSig } from '../leavewar/sync'
 import { PLANPUCKS, DAYRMK } from '../state/plan'
 import { stashKeys, stashDrop } from '../engine/weekstash'
-import { canEditSched, ME } from '../state/auth'
+import { canEditSched, ME, SESSION } from '../state/auth'
 import { INPEDIT, setInpEdit } from './pops'
 import { useVersion } from './useStore'
 import { RangeCal } from './RangeCal'
@@ -524,6 +524,16 @@ export function commitInputEdit(r: any, draft: any) {
     HOOKS.toast('That input is no longer there — nothing was saved', 'warn')
     return false
   }
+  /* write-path role backstop (owner, 27 Aug 26): a LOGGED-IN MEMBER edits only
+     their OWN inputs. The row's ✎ is hidden on everyone else's, so a real
+     gesture cannot reach here; this refuses a hand-made call. Gated on an
+     actual member SESSION, not merely "not admin", so the app's own internal
+     edit cascades (sync retraction, medical trims, the accepted-row relink)
+     and a scheduler edit still run on any row. */
+  if (SESSION?.role === 'member' && r.person !== ME) {
+    HOOKS.toast('You can only edit your own inputs', 'warn')
+    return false
+  }
   /* write-path role backstop (owner, 22 Aug 26): moving an input onto a
      DIFFERENT person is a scheduler's act — the same line reassignInput and
      the calendar drag (caldrag.ts) already draw. A member's editors no
@@ -776,6 +786,15 @@ export function setInpField(inp: any, field: 'str' | 'end' | 'rmks', text: any) 
 export function removeInput(r: any) {
   const inx = INPUTS.indexOf(r)
   if (inx < 0) { HOOKS.toast('That input is no longer there', 'warn'); return false }
+  /* write-path role backstop (owner, 27 Aug 26): a LOGGED-IN MEMBER deletes
+     only their OWN inputs — the row's ✕ is hidden on everyone else's, this
+     refuses a hand-made call. Gated on an actual member SESSION (not "not
+     admin") so the app's own removal cascades and a scheduler still run on
+     any row. */
+  if (SESSION?.role === 'member' && r.person !== ME) {
+    HOOKS.toast('You can only delete your own inputs', 'warn')
+    return false
+  }
   /* WHAT was deleted, and which day it logs against — captured before the
      splice below, the same "read the row, then remove it" order every
      deletion in board.ts follows. di follows interactions.ts:424's rule for

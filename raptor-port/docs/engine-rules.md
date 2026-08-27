@@ -2094,6 +2094,8 @@ the squadron's programme*, not read vs write:
 | The Edit Schedule page at all (`canEditSched()`) | no | yes |
 | Logic — editing VCONF / SHIFT_HARD | no | yes |
 | Leave War — advancing the cycle stage (→ BIDDING CLOSED / → PUBLISHED) | no | yes |
+| Leave War — deciding a bid (Pending / Approve / Refuse), at closed OR published | no | yes |
+| Editing or deleting ANOTHER person's personal input (own inputs: either role) | no | yes |
 
 **In the Leave War, moving the cycle FORWARD is admin-only (owner, 27 Aug 26
 — "for a member i shouldnt be able to click on bidding closed or published,
@@ -2125,6 +2127,37 @@ suppression. A batch API growing its OWN guard would be the drift-seam to
 avoid — they must always call through the same per-cell checks. Pinned in
 `store.test.ts` §the batch writers. On screen: `docs/ui-contracts.md`
 §Selecting on the Leave War grid.
+
+**An admin keeps the bid decision after PUBLISHING (owner, 27 Aug 26 — "if
+leave war is published, the admin can still have these functions").**
+`stages.ts:canDecide` is now `admin && (closed || published)`, not closed
+only: publication freezes the picture for the SQUADRON, but the admin still
+runs the war, so a late change tapped in after publication is approved /
+refused / moved exactly as at closed — via the drag-selection sheet's Decide
+row, and the single-cell decision sheet. The store's `setBidStates` was
+already stage-agnostic (admin-only, no stage check), so this is a UI-gate
+widening only. `canDecide` and `canEdit` are still disjoint per stage (a
+member never edits at closed or published), so the "no stage lets a member
+bid and an admin decide at once" invariant holds. Pinned in `stages.test.ts`
+and `deciding.test.tsx` (the admin decision survives into published). The
+single click that a MEMBER makes on their own published leave is the remarks
+editor — a separate, still-open piece (`docs/ui-contracts.md`).
+
+**A member edits and deletes only their OWN personal inputs (owner, 27 Aug
+26 — "they cant edit other people's input, only can view").** On the Inputs
+page a member LANDS on their own inputs (the person filter defaults to `ME`
+for a member, `all` for a scheduler) with "Everyone" one pick away; on every
+other person's row the ✎ and ✕ are not rendered, but the document paperclip
+stays (anyone may VIEW any attachment — owner, same day). The write-path
+backstop behind the hidden controls is in `commitInputEdit` / `removeInput`,
+gated on an ACTUAL member session (`SESSION?.role === 'member' && r.person
+!== ME`) rather than "not admin" — the app's own edit cascades (sync
+retraction, medical trims, the accepted-row relink) and every scheduler edit
+run with no member session, so they must not be caught. This SITS BESIDE the
+existing 22 Aug person-MOVE guard (a member may not reassign an input to
+another person), which stays. Pinned in `audit-guards-inputs.test.ts`
+(a member is refused another's edit and delete, allowed their own, a
+scheduler allowed any).
 
 **An admin can VIEW AS a member — the role badge is a toggle (owner, 27 Aug
 26).** Clicking the topbar's Admin/Member chip (or the drawer's Account-row

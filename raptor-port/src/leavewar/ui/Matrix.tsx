@@ -1174,6 +1174,13 @@ export function Matrix() {
   // "is the sheet writable at all" — and has no date to narrow itself with.
   const deciding = canDecide(period.stage, role)
 
+  // The dotted-orange "moved" mark is only meaningful once bidding has CLOSED
+  // (owner, 27 Aug 26). While a war is still open for bidding, people shuffle
+  // their own bids around freely — a moved mark on every re-placed bid is just
+  // noise. It becomes worth showing only after close, when a shift is the
+  // admin deliberately moving someone's input off the date they bid.
+  const movedShown = period.stage === 'closed' || period.stage === 'published'
+
   // Which sheet a click opens follows from three things: the stage, the role,
   // and what the cell already holds.
   //
@@ -1626,7 +1633,7 @@ export function Matrix() {
                     // bid off another date.
                     const marks = [
                       here && code && raptorOwns(states, p.id, d.date) ? 'raptor' : '',
-                      here && code && shiftedFrom(states, p.id, d.date) ? 'moved' : '',
+                      movedShown && here && code && shiftedFrom(states, p.id, d.date) ? 'moved' : '',
                     ].filter(Boolean).join(' ')
                     // A cell outside the person's time in the squadron is
                     // never actionable FOR A BID: bidding leave for a man who

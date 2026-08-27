@@ -3995,13 +3995,20 @@ BidPicker's look and vocabulary, not instead of it.
   past 26px before that cedes to the native scroll (caldrag's constants). The
   highlight (`.selcell`) is written straight onto the cells, never through
   React state. An un-armed press is an ordinary click and opens the
-  single-cell sheet exactly as before. Geometry is DOM-free and unit-tested
-  (`select.test.ts`); the gesture itself is e2e (`leavewar.spec.ts`).
+  single-cell sheet exactly as before — **pointer capture is taken in `arm()`,
+  NOT on pointerdown** (owner, 27 Aug 26 — "if i just click 1 area to input …
+  it should also allow me to input"): capturing on the down retargets the
+  click that follows a captured pointerup to `.mx-wrap` in Chromium, so the
+  cell's own onClick — the single-cell input sheet — never fired on a real
+  device. The window-level move/up listeners track a drag without the capture;
+  it is belt-and-braces for a fast touch drag only. Geometry is DOM-free and
+  unit-tested (`select.test.ts`); the gesture itself is e2e (`leavewar.spec.ts`).
 - **The sheet** (`ui/SelectSheet.tsx`, `data-testid="select-sheet"`) is the
   BidPicker's sibling on the same `Sheet` chassis. Sections are contextual to
   role and stage: everyone Fills while the war is OPEN (portion + leave chips;
   admin adds the Medical row); Decide (Pending / Approve / Refuse) is the
-  admin's once bidding is CLOSED; Delete (second-tap confirm — no undo here)
+  admin's once bidding is CLOSED **or PUBLISHED** (owner, 27 Aug 26 — the admin
+  still runs a published war); Delete (second-tap confirm — no undo here)
   and Move act on the editable bids the selection holds; Post-out shows only
   for a single-person selection. Partial writes report in the `sel-note` voice
   and keep the sheet up. The per-person negative-balance confirm the single
@@ -4013,7 +4020,14 @@ BidPicker's look and vocabulary, not instead of it.
   (`moveCells`, atomic — an occupied/Raptor/out-of-window landing refuses the
   whole move and says why). A phone SWIPE scrolls and never drops; only a
   clean tap commits. The `moved` dotted-orange edge marks the landed cells via
-  the existing `shiftedFrom` state.
+  the existing `shiftedFrom` state — but **only once bidding has CLOSED**
+  (owner, 27 Aug 26): while a war is still OPEN people shuffle their own bids
+  freely, so a moved mark then is noise; `Matrix.tsx`'s `movedShown`
+  (`stage === 'closed' || 'published'`) gates the class, the `shiftedFrom`
+  data is untouched. Pinned in `deciding.test.tsx` (hidden at open, shown at
+  closed, hidden again on reopen).
+- **The colour/mark pop-out is labelled "Legend"** (owner, 27 Aug 26 — renamed
+  from "Key"; `Chrome.tsx`, testid `legend-open` unchanged).
 - **The word "Acknowledge" became "Pending"** on the decision controls
   (single and batch) — the same word the colour legend already gives the
   purple state. The stored token stays `'acknowledged'`; only the label moved.
@@ -4023,6 +4037,20 @@ BidPicker's look and vocabulary, not instead of it.
   write where one cell could not; details in `docs/engine-rules.md`
   §Auth / roles. Pinned in `store.test.ts`, `selectsheet.test.tsx`.
 
-*(Published-stage member remarks editing — clicking a continuous approved run
-to edit its remarks — is the one piece still to come; it crosses into Raptor's
-INPUTS and lands in a follow-up. Today a member cannot select at `published`.)*
+*(Published-stage member remarks editing — a member clicking their own approved
+leave to edit its remarks, the admin able to do it for anyone — is the
+immediate NEXT piece (owner asked, 27 Aug 26). It crosses into Raptor's INPUTS
+(the remark lives on the lw-tagged input row) so it lands in its own follow-up
+commit. Until it ships, a member cannot select at `published`.)*
+
+## A member edits only their own personal inputs (owner, 27 Aug 26)
+
+On the Inputs page a member lands on THEIR OWN inputs — the person filter
+defaults to `ME` for a member, `all` (Everyone) for a scheduler — with
+Everyone one pick away in the same filter. On every other person's row the
+edit ✎ and delete ✕ are simply not rendered (`canEditSched() || r.person ===
+ME`); the row is view-only. The document paperclip is the exception and stays
+on every row — anyone may VIEW any attachment, gated nowhere. The write-path
+backstop behind the hidden controls lives in `commitInputEdit` / `removeInput`
+and is in `docs/engine-rules.md` §Auth / roles. Pinned in
+`audit-guards-inputs.test.ts`.
