@@ -1138,6 +1138,73 @@ export function setCellRange(
   return { written, skipped }
 }
 
+/* ---- THE DRAG-SELECTION BATCH WRITERS (owner, 27 Aug 26) -----------------
+   The grid gained a drag-to-select layer, so an action can now name MANY
+   cells across many people at once. These wrap `setCell`/`setBidState` under
+   the same `quiet` suppression `setCellRange` uses — one save-and-notify for
+   the whole batch, not one per cell — and carry the SAME per-cell guards, so
+   a batch can never write where a single cell could not: raptor-owned cells,
+   locked dates and out-of-squadron days are skipped, never forced. Partial
+   BY DESIGN, exactly like `setCellRange`: a fortnight that clips one blocked
+   day writes the rest and reports the skip. `quiet` is saved and restored
+   (not hard-cleared) so these stay safe if one is ever nested.
+   The role gate is per-writer: fill/clear ride `canEditCell` (a member fills
+   what they could fill one cell at a time); decide and move are admin's. */
+
+/** Write one code across a hand-picked set of cells. `{written, skipped}` in
+ *  the `setCellRange` shape. */
+export function setCells(cells: { personId: string; date: string }[], code: string): RangeWrite {
+  let written = 0
+  let skipped = 0
+  const wasQuiet = quiet
+  quiet = true
+  try {
+    for (const { personId, date } of cells) {
+      const person = state.people.find(p => p.id === personId)
+      const allowed =
+        !raptorOwns(state.states, personId, date) &&
+        canEditCell(state.period, state.role, date) &&
+        (!person || inSquadron(person, date))
+      if (!allowed) { skipped++; continue }
+      setCell(personId, date, code)
+      written++
+    }
+  } finally {
+    quiet = wasQuiet
+  }
+  if (written > 0 && !quiet) { persist(); notify() }
+  return { written, skipped }
+}
+
+/** Clear a set of cells — the empty-code path of `setCells`, named so the
+ *  caller (and the tests) read as delete, not "write nothing". */
+export function clearCells(cells: { personId: string; date: string }[]): RangeWrite {
+  return setCells(cells, '')
+}
+
+/** Decide a set of bids at once — ADMIN ONLY (a decision is management's, the
+ *  same as the single `setBidState` is only offered on the admin's closed
+ *  sheet). Per cell it needs a biddable, non-Raptor cell, so a mixed
+ *  selection decides the bids and skips the rest. */
+export function setBidStates(cells: { personId: string; date: string }[], bid: BidState): { decided: number; skipped: number } {
+  if (state.role !== 'admin') return { decided: 0, skipped: cells.length }
+  let decided = 0
+  let skipped = 0
+  const wasQuiet = quiet
+  quiet = true
+  try {
+    for (const { personId, date } of cells) {
+      if (raptorOwns(state.states, personId, date) || !isBiddable(state.grid[personId]?.[date])) { skipped++; continue }
+      setBidState(personId, date, bid)
+      decided++
+    }
+  } finally {
+    quiet = wasQuiet
+  }
+  if (decided > 0 && !quiet) { persist(); notify() }
+  return { decided, skipped }
+}
+
 /** Record a decision on a bid. Deliberately not role-gated: there is no
  *  login in this prototype, so anyone can decide anything — see
  *  `docs/known-gaps.md`. */
@@ -1868,6 +1935,55 @@ export function shiftBid(personId: string, from: string, to: string): ShiftResul
     states: { ...w.states, [personId]: srow },
   }))
   return 'shifted'
+}
+
+export type MoveResult = 'moved' | { reason: 'nothing' | 'raptor' | 'occupied' | 'window'; at?: string }
+/** Move a whole SELECTION by a day-delta — the drag-select "Move" (owner,
+ *  27 Aug 26). ATOMIC on purpose: every source and every landing day is
+ *  validated FIRST, and only an all-clear applies — a half-moved block is a
+ *  worse state than a refused move, and there is no undo here. Each cell
+ *  lands on its own row shifted by the same delta, `{state:'pending', source,
+ *  shiftedFrom}` exactly as `shiftBid` lands one. A cell whose landing day is
+ *  another SELECTED cell's source is fine (the block is sliding over itself),
+ *  so the occupied check excludes the selection's own sources. Role-gated by
+ *  `canEditCell` like `shiftBid` — a member may slide bids they could shift
+ *  one at a time; medical/PO never reach here (not biddable / admin-only). */
+export function moveCells(cells: { personId: string; date: string }[], dayDelta: number): MoveResult {
+  if (!dayDelta || cells.length === 0) return { reason: 'nothing' }
+  const dayset = new Set(state.period.days.map((d: any) => d.date))
+  const sources = new Set(cells.map(c => `${c.personId}|${c.date}`))
+  // every source must be a movable bid this role may edit
+  for (const c of cells) {
+    if (raptorOwns(state.states, c.personId, c.date)) return { reason: 'raptor', at: c.date }
+    if (!isBiddable(state.grid[c.personId]?.[c.date])) return { reason: 'nothing', at: c.date }
+    if (!canEditCell(state.period, state.role, c.date)) return { reason: 'window', at: c.date }
+  }
+  // every landing day must be a real, editable, in-squadron day this role owns,
+  // and empty of anything not itself sliding away
+  for (const c of cells) {
+    const to = addDays(c.date, dayDelta)
+    if (!dayset.has(to)) return { reason: 'window', at: to }
+    if (!canEditCell(state.period, state.role, to)) return { reason: 'window', at: to }
+    const person = state.people.find(p => p.id === c.personId)
+    if (person && !inSquadron(person, to)) return { reason: 'window', at: to }
+    if (raptorOwns(state.states, c.personId, to)) return { reason: 'occupied', at: to }
+    const occ = state.grid[c.personId]?.[to]
+    if (occ && !sources.has(`${c.personId}|${to}`)) return { reason: 'occupied', at: to }
+  }
+  // apply as ONE write: clone the touched rows, drop every source, then land
+  // every target (all deletes before any set, so a self-overlapping slide
+  // never deletes a day it has just filled)
+  const grid: Record<string, Record<string, string>> = {}
+  const states: Record<string, any> = {}
+  for (const pid of new Set(cells.map(c => c.personId))) {
+    grid[pid] = { ...(state.grid[pid] ?? {}) }
+    states[pid] = { ...(state.states[pid] ?? {}) }
+  }
+  const moves = cells.map(c => ({ pid: c.personId, from: c.date, to: addDays(c.date, dayDelta), code: state.grid[c.personId][c.date] }))
+  for (const m of moves) { delete grid[m.pid][m.from]; delete states[m.pid][m.from] }
+  for (const m of moves) { grid[m.pid][m.to] = m.code; states[m.pid][m.to] = { state: 'pending', source: 'bid', shiftedFrom: m.from } }
+  updateCurrent(w => ({ ...w, grid: { ...w.grid, ...grid }, states: { ...w.states, ...states } }))
+  return 'moved'
 }
 
 /**

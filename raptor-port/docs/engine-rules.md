@@ -2109,6 +2109,23 @@ the out-of-window dim and every sync seam are as they were. Pinned in
 `store.test.ts` (advanceStage refuses a member) and `chrome.test.tsx` (the
 control is hidden from a member).
 
+**The Leave War drag-select batch writers carry the single-cell gates
+(owner, 27 Aug 26).** `setCells` / `clearCells` fill or empty many cells and
+ride `canEditCell` per cell — a member fills what they could fill one cell at
+a time (open stage, in window), skipping Raptor-owned/locked/out-of-squadron
+days (PARTIAL by design, like `setCellRange`). `setBidStates` is admin-only
+(a decision is management's, as the single `setBidState`'s sheet already is).
+`moveCells` is `shiftBid` for a whole selection: role-gated by `canEditCell`,
+ATOMIC (every source and every landing day validated before any write — a
+half-moved block is worse than a refused one, and there is no undo), landing
+`{state:'pending', source:'bid', shiftedFrom}` per cell; a landing that is
+occupied by a non-selected cell, Raptor-owned, or outside the war refuses the
+whole move. All batch to ONE save-and-notify under the store's `quiet`
+suppression. A batch API growing its OWN guard would be the drift-seam to
+avoid — they must always call through the same per-cell checks. Pinned in
+`store.test.ts` §the batch writers. On screen: `docs/ui-contracts.md`
+§Selecting on the Leave War grid.
+
 **An admin can VIEW AS a member — the role badge is a toggle (owner, 27 Aug
 26).** Clicking the topbar's Admin/Member chip (or the drawer's Account-row
 button on a phone) flips the EFFECTIVE role the whole app reads; a member

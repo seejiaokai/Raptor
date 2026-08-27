@@ -674,6 +674,54 @@ test('an admin moves a bid to another date, and it lands pending there', async (
   expect(cls).toContain('moved')
 })
 
+// ---- drag-to-select (owner, 27 Aug 26) ----
+//
+// The gesture needs a real browser — pointer capture, elementFromPoint and
+// layout — so it lives here, not in the unit suite (which pins the DOM-free
+// geometry in select.test.ts). A mouse arms on a 4px move, so a Playwright
+// drag with intermediate steps always arms; the selection sheet then opens on
+// release. An un-dragged click still opens the single-cell sheet (every other
+// test above proves that path unbroken).
+
+async function dragSelect(page: Page, fromId: string, toId: string) {
+  const a = (await page.locator(`[data-testid="${fromId}"]`).boundingBox())!
+  const b = (await page.locator(`[data-testid="${toId}"]`).boundingBox())!
+  await page.mouse.move(a.x + a.width / 2, a.y + a.height / 2)
+  await page.mouse.down()
+  await page.mouse.move(a.x + a.width / 2 + 8, a.y + a.height / 2)      // arm past MOUSE_SLOP
+  await page.mouse.move(b.x + b.width / 2, b.y + b.height / 2, { steps: 6 })
+  await page.mouse.up()
+}
+
+// Desktop only: the mouse gesture (4px arm) is what Playwright can drive; the
+// phone TOUCH gesture (180ms hold) and its frozen-column overlay are checked
+// in the live-view pass, not here.
+const desktopOnly = () => test.skip(test.info().project.name !== 'lw-desktop', 'mouse-drag path')
+
+test('drag-selecting a row fills the leave across the whole span', async ({ page }) => {
+  desktopOnly()
+  await dragSelect(page, 'cell-slipway-2026-01-06', 'cell-slipway-2026-01-08')
+  await expect(page.locator('[data-testid="select-sheet"]')).toBeVisible()
+  await page.locator('[data-testid="sel-LL"]').click()
+  for (const d of ['2026-01-06', '2026-01-07', '2026-01-08'])
+    await expect(page.locator(`[data-testid="cell-slipway-${d}"] .c`)).toBeVisible()
+})
+
+test('a drag-selection offers Move, and the move banner appears on entering it', async ({ page }) => {
+  desktopOnly()
+  await lwRole(page, 'admin')
+  await dragSelect(page, 'cell-slipway-2026-01-06', 'cell-slipway-2026-01-07')
+  await expect(page.locator('[data-testid="select-sheet"]')).toBeVisible()
+  await page.locator('[data-testid="sel-move"]').click()
+  // the sheet gives way to the move banner; the landing itself (moveCells) is
+  // pinned in store.test.ts and driven by hand in the live-view pass, where
+  // the desktop ghost and phone tap-to-place are actually looked at
+  await expect(page.locator('[data-testid="select-sheet"]')).toHaveCount(0)
+  await expect(page.locator('[data-testid="move-banner"]')).toBeVisible()
+  await page.locator('[data-testid="move-cancel"]').click()
+  await expect(page.locator('[data-testid="move-banner"]')).toHaveCount(0)
+})
+
 // ---- the frozen counter column ----
 //
 // This is the riskiest surface in the build and the one jsdom is blindest

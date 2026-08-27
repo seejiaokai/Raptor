@@ -28,7 +28,7 @@ import {
   type Group,
   type Person,
 } from '../engine'
-import { addEventRow, autoSortRoster, DEFAULT_EVENT_ROWS, displayRoster, eventRowUsed, getState, MAX_EVENT_ROWS, moveRosterRow, orderedManningIds, personLabel, removeEventRow, resetManningRules, setPersLabel, setPostOut, setShowSans } from '../state/store'
+import { addEventRow, autoSortRoster, DEFAULT_EVENT_ROWS, displayRoster, eventRowUsed, getState, MAX_EVENT_ROWS, moveCells, moveRosterRow, orderedManningIds, personLabel, removeEventRow, resetManningRules, setPersLabel, setPostOut, setShowSans, type MoveResult } from '../state/store'
 import { BidPicker, DecisionSheet, PostOutSheet, RaptorSheet } from './BidPicker'
 import { CounterSheet, FigureBreakdownSheet, PersonFiguresSheet } from './CounterSheet'
 import { PersonSheet } from './PersonSheet'
@@ -38,6 +38,8 @@ import { ManningSheet } from './ManningSheet'
 import { EventRows } from './EventRows'
 import { EventSheet } from './EventSheet'
 import { monthInView } from './monthview'
+import { wireSelect, wireMove, daysBetween, type Selection, type SelectCtx } from './select'
+import { SelectSheet } from './SelectSheet'
 import { useVersion } from './useStore'
 import './matrix.css'
 
@@ -45,6 +47,16 @@ import './matrix.css'
  *  same rule the count rows use; nothing in this engine rounds a real
  *  figure. */
 const show = (n: number) => String(Math.round(n * 10) / 10)
+
+/** A move refusal, in plain words for the move banner. */
+function moveReason(r: Exclude<MoveResult, 'moved'>): string {
+  switch (r.reason) {
+    case 'occupied': return `That lands on ${r.at} which is already booked — pick another day.`
+    case 'raptor': return 'One of those is filed on the Inputs page and cannot be moved here.'
+    case 'window': return 'That lands outside what you can edit — pick another day.'
+    default: return 'Nothing to move.'
+  }
+}
 
 const MONTHS = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC']
 
@@ -135,6 +147,13 @@ export function Matrix() {
   // controls on screen.
   const [open, setOpen] = useState<{ id: string; callsign: string; date: string } | null>(null)
   const close = () => setOpen(null)
+  // The DRAG-SELECTION (owner, 27 Aug 26): the rectangle the last drag left,
+  // and the sheet it opens. `moveSel` is the selection currently being MOVED
+  // (Task E) — sheet closed, waiting for a drop. Both cleared on a stage/war
+  // change so a stale block cannot act on the wrong screen.
+  const [sel, setSel] = useState<Selection | null>(null)
+  const [moveSel, setMoveSel] = useState<Selection | null>(null)
+  const [moveErr, setMoveErr] = useState('')
   // Whether the open cell is a POSTED-OUT day (admin tapped a greyed cell to
   // undo it, owner 18 Aug 26). A day before the person joined is blank, not a
   // post-out, so it is excluded — there is nothing to undo there.
@@ -299,6 +318,44 @@ export function Matrix() {
   // Jumping to a month is how a year-long war is navigable at all: 365
   // columns is roughly 13,600px, and nobody finds September by dragging.
   const wrapRef = useRef<HTMLDivElement>(null)
+  // Drag-select wiring: ONE delegated pointer listener on `.mx-wrap` (never
+  // per-cell — the grid is ~28k nodes), reading live state through a ref so
+  // the gesture always sees the current roster/dates/mode without re-binding.
+  // Assigned just before the return, where rosterSequence and the mode flags
+  // are in scope.
+  const selCtxRef = useRef<SelectCtx | null>(null)
+  useEffect(() => {
+    const w = wrapRef.current
+    if (!w) return
+    return wireSelect(w, {
+      order: () => selCtxRef.current?.order() ?? [],
+      dates: () => selCtxRef.current?.dates() ?? [],
+      enabled: () => selCtxRef.current?.enabled() ?? false,
+      onSelect: s => selCtxRef.current?.onSelect(s),
+    })
+  }, [])
+  // A stage or war change drops any open selection or in-flight move, so a
+  // block picked on one screen can never act on another.
+  useEffect(() => { setSel(null); setMoveSel(null) }, [period.stage, period.id])
+  // MOVE MODE: once a selection is being moved, a click on any day lands the
+  // whole block shifted by the day-delta from its start; a refusal keeps the
+  // mode and says why. The gesture is re-armed whenever `moveSel` changes, so
+  // its closure always holds the current block.
+  useEffect(() => {
+    const w = wrapRef.current
+    if (!moveSel || !w) return
+    setMoveErr('')
+    return wireMove(w, {
+      count: moveSel.cells.length,
+      onCommit: targetDate => {
+        const r = moveCells(moveSel.cells, daysBetween(moveSel.from, targetDate))
+        if (r === 'moved') { setMoveSel(null); setMoveErr('') }
+        else setMoveErr(moveReason(r))
+      },
+      onCancel: () => setMoveSel(null),
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [moveSel])
   // The frozen-column overlay's own anchors (see the .mxband block below and
   // in matrix.css). `mxOuterRef` is the page-flow box the overlay is absolutely
   // placed inside; `rosterBodyRef` is the one row group it must line up with.
@@ -1138,6 +1195,17 @@ export function Matrix() {
   // does not bind them, so drawing one would be a lie about their own screen.
   const lockedDate = (date: string): boolean => !canEditCell(period, role, date)
 
+  // Feed the drag-select controller live state. A member may drag only where
+  // a single click already does something: fill while the war is OPEN (Task F
+  // adds the published remarks path). An admin may drag at every stage.
+  selCtxRef.current = {
+    order: () => rosterSequence().filter(r => r.kind === 'person').map(r => (r as { p: Person }).p.id),
+    dates: () => dates,
+    enabled: () => !arranging && !moveSel && (role === 'admin' || period.stage === 'open'),
+    onSelect: s => setSel(s),
+  }
+  const csOf = (id: string): string => displayRoster().find(p => p.id === id)?.callsign ?? id
+
   return (
     <div className="stage">
       <div className="card">
@@ -1750,6 +1818,32 @@ export function Matrix() {
           code={grid[open.id]?.[open.date] ?? ''}
           onClose={close}
         />
+      )}
+      {/* The drag-selection sheet — batched fill / decide / delete / move over
+          the whole rectangle (owner, 27 Aug 26). Independent of the single-cell
+          `open`; a drag never sets `open`. */}
+      {sel && (
+        <SelectSheet
+          sel={sel}
+          people={csOf}
+          role={role}
+          canDecide={canDecide(period.stage, role)}
+          medical={role === 'admin'}
+          onPostOut={role === 'admin' ? (pid, from, archive) => setPostOut(pid, from, archive) : undefined}
+          onMove={s => setMoveSel(s)}
+          onDone={() => setSel(null)}
+          onClose={() => setSel(null)}
+        />
+      )}
+      {/* Move mode: a slim banner (the phone has no ghost to follow the finger)
+          and a Cancel; the desktop ghost follows the mouse from wireMove. A
+          tap on any day lands the block; a refusal shows here and keeps the
+          mode. */}
+      {moveSel && (
+        <div className="mv-banner" data-testid="move-banner">
+          <span className="mv-msg">{moveErr || `Tap a day to move ${moveSel.cells.length} ${moveSel.cells.length === 1 ? 'entry' : 'entries'}`}</span>
+          <button className="dchip" data-testid="move-cancel" onClick={() => setMoveSel(null)}>Cancel</button>
+        </div>
       )}
       {/* A posted-out cell an admin tapped: the ONE control it offers is Undo,
           and it short-circuits every bid/decision sheet below (owner, 18 Aug

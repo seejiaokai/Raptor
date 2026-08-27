@@ -39,6 +39,10 @@ import {
   shiftBid,
   reopenStage,
   subscribe,
+  setCells,
+  clearCells,
+  setBidStates,
+  moveCells,
 } from './store'
 import { makeWar, seedRequirements } from '../engine'
 import { localBackend, memoryBackend } from './storage'
@@ -1751,5 +1755,112 @@ describe('session-only counters', () => {
     initStore(memoryBackend())
     expect(getState().grid['ramp']?.['2026-01-05']).toBeUndefined()
     expect(getState().requirements.default.rules.some(r => r.id === 'scn')).toBe(true)
+  })
+})
+
+// The drag-selection batch writers (owner, 27 Aug 26). They carry the SAME
+// per-cell guards as their single-cell parents, batch to ONE notify, and are
+// partial by design — a selection clipping a Raptor cell writes the rest.
+describe('the batch writers (drag-select)', () => {
+  beforeEach(() => { initStore(memoryBackend()); setRole('admin') })
+  const cells = (person: string, ...dates: string[]) => dates.map(date => ({ personId: person, date }))
+
+  it('setCells writes one code across every named cell', () => {
+    const r = setCells(cells('ramp', '2026-01-06', '2026-01-07', '2026-01-08'), 'LL')
+    expect(r).toEqual({ written: 3, skipped: 0 })
+    for (const d of ['2026-01-06', '2026-01-07', '2026-01-08']) expect(getState().grid.ramp[d]).toBe('LL')
+  })
+
+  it('setCells skips a Raptor-owned cell and writes around it — partial by design', () => {
+    // tata carries a Raptor-owned OIL on 2026-01-09 (seed)
+    const r = setCells(cells('tata', '2026-01-08', '2026-01-09', '2026-01-10'), 'LL')
+    expect(r).toEqual({ written: 2, skipped: 1 })
+    expect(getState().grid.tata['2026-01-09']).toBe('OIL')
+    expect(getState().grid.tata['2026-01-08']).toBe('LL')
+  })
+
+  it('fills across MULTIPLE people in one call', () => {
+    const r = setCells([...cells('ramp', '2026-01-06'), ...cells('dusk', '2026-01-06')], 'OL')
+    expect(r.written).toBe(2)
+    expect(getState().grid.ramp['2026-01-06']).toBe('OL')
+    expect(getState().grid.dusk['2026-01-06']).toBe('OL')
+  })
+
+  it('notifies ONCE for the whole batch', () => {
+    const fn = vi.fn()
+    subscribe(fn)
+    setCells(cells('ramp', '2026-01-06', '2026-01-07', '2026-01-08', '2026-01-12'), 'LL')
+    expect(fn).toHaveBeenCalledTimes(1)
+  })
+
+  it('writes nothing and does not notify when every cell is refused', () => {
+    const fn = vi.fn()
+    subscribe(fn)
+    const r = setCells(cells('tata', '2026-01-09'), 'LL') // the one Raptor cell
+    expect(r).toEqual({ written: 0, skipped: 1 })
+    expect(fn).not.toHaveBeenCalled()
+  })
+
+  it('clearCells empties a set of cells', () => {
+    setCells(cells('ramp', '2026-01-06', '2026-01-07'), 'LL')
+    const r = clearCells(cells('ramp', '2026-01-06', '2026-01-07'))
+    expect(r.written).toBe(2)
+    expect(getState().grid.ramp?.['2026-01-06']).toBeUndefined()
+    expect(getState().grid.ramp?.['2026-01-07']).toBeUndefined()
+  })
+
+  it('a member can fill in the window but never batch-decide', () => {
+    setRole('member')
+    expect(setCells(cells('ramp', '2026-01-06'), 'LL').written).toBe(1)
+    expect(setBidStates(cells('ramp', '2026-01-06'), 'approved')).toEqual({ decided: 0, skipped: 1 })
+    expect(getState().states.ramp['2026-01-06'].state).toBe('pending')
+  })
+
+  it('setBidStates (admin) decides biddable cells and skips a Raptor cell', () => {
+    setCells(cells('ramp', '2026-01-06', '2026-01-07'), 'LL')
+    const r = setBidStates([...cells('ramp', '2026-01-06', '2026-01-07'), ...cells('tata', '2026-01-09')], 'approved')
+    expect(r).toEqual({ decided: 2, skipped: 1 })
+    expect(getState().states.ramp['2026-01-06'].state).toBe('approved')
+    expect(getState().states.ramp['2026-01-07'].state).toBe('approved')
+  })
+
+  it('moveCells slides a block by a delta, landing pending with the moved trail', () => {
+    setCells(cells('ramp', '2026-01-06', '2026-01-07'), 'LL')
+    expect(moveCells(cells('ramp', '2026-01-06', '2026-01-07'), 4)).toBe('moved')
+    expect(getState().grid.ramp?.['2026-01-06']).toBeUndefined()
+    expect(getState().grid.ramp['2026-01-10']).toBe('LL')
+    expect(getState().states.ramp['2026-01-10']).toEqual({ state: 'pending', source: 'bid', shiftedFrom: '2026-01-06' })
+    expect(getState().grid.ramp['2026-01-11']).toBe('LL')
+  })
+
+  it('moveCells allows a self-overlapping slide (the block moves over its own days)', () => {
+    setCells(cells('ramp', '2026-01-06', '2026-01-07'), 'LL')
+    // +1 lands 07 (its own vacating source) and 08 — the occupied check must
+    // exclude the selection's own sources
+    expect(moveCells(cells('ramp', '2026-01-06', '2026-01-07'), 1)).toBe('moved')
+    expect(getState().grid.ramp?.['2026-01-06']).toBeUndefined()
+    expect(getState().grid.ramp['2026-01-07']).toBe('LL')
+    expect(getState().grid.ramp['2026-01-08']).toBe('LL')
+  })
+
+  it('moveCells REFUSES atomically onto an occupied day — nothing moves', () => {
+    setCells(cells('ramp', '2026-01-06', '2026-01-07'), 'LL')
+    setCells(cells('ramp', '2026-01-10'), 'OL') // a blocker at the +4 landing of 06
+    const r = moveCells(cells('ramp', '2026-01-06', '2026-01-07'), 4)
+    expect(r).toEqual({ reason: 'occupied', at: '2026-01-10' })
+    // atomic: the untouched source is still where it was
+    expect(getState().grid.ramp['2026-01-06']).toBe('LL')
+    expect(getState().grid.ramp['2026-01-07']).toBe('LL')
+    expect(getState().grid.ramp['2026-01-10']).toBe('OL')
+  })
+
+  it('moveCells refuses a Raptor-owned source', () => {
+    expect(moveCells(cells('tata', '2026-01-09'), 3)).toEqual({ reason: 'raptor', at: '2026-01-09' })
+  })
+
+  it('moveCells refuses a landing day outside the war', () => {
+    setCells(cells('ramp', '2026-01-06'), 'LL')
+    expect(moveCells(cells('ramp', '2026-01-06'), -400)).toMatchObject({ reason: 'window' })
+    expect(getState().grid.ramp['2026-01-06']).toBe('LL')
   })
 })

@@ -437,6 +437,15 @@ ON these, don't route around them):
 split — these are where this app's recurring bugs come from; touch one side and
 check the other):
 
+- **The Leave War batch writers vs their single-cell parents** (27 Aug 26,
+  drag-select). `setCells`/`clearCells`/`setBidStates`/`moveCells` MUST call
+  through the exact per-cell guards `setCell`/`setBidState`/`shiftBid` use
+  (`raptorOwns`, `canEditCell`, `isBiddable`, `inSquadron`) — a batch API that
+  grew its OWN copy of "may this cell be written" is the seam that would let a
+  drag write where a click could not. They also all batch to one save-notify
+  through the store's single `quiet` flag; a second batching owner is the
+  other half of this seam (`setCellRange` is the precedent, save/restore keeps
+  them safe if nested). Pinned in `store.test.ts` §the batch writers.
 - **The two role reads: `LOGINROLE` (the ceiling) vs `SESSION.role` (the
   effective role)** (27 Aug 26, the admin's view toggle). DELIBERATELY two
   values, not a drift bug — but a seam to respect: every PERMISSION gate

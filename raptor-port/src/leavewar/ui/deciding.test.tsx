@@ -49,6 +49,9 @@ describe('deciding a bid', () => {
     render(<Matrix />)
     const before = screen.getByTestId('count-opsp-2026-01-23').textContent
     fireEvent.click(screen.getByTestId(PENDING))
+    // the button reads "Pending" (owner, 27 Aug 26) though the stored state
+    // token is still 'acknowledged' — the label changed, not the model
+    expect(screen.getByTestId('decide-ack').textContent).toBe('Pending')
     fireEvent.click(screen.getByTestId('decide-ack'))
     expect(getState().states.asics['2026-01-23']?.state).toBe('acknowledged')
     expect(screen.getByTestId('count-opsp-2026-01-23').textContent).toBe(before)

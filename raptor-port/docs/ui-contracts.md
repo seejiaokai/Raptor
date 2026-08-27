@@ -3980,3 +3980,49 @@ idiom the stage-back chip already used. That is the ONLY member-facing
 change: a member still bids while the war is open, the bid-window chip and
 the out-of-window dim are unchanged, and a member's cell tap behaves exactly
 as before.
+
+## Selecting on the Leave War grid (owner, 27 Aug 26)
+
+Press-and-drag across day-cells to select a rectangle — one row or many
+people's rows — then act on the whole block at once. It is built AROUND the
+BidPicker's look and vocabulary, not instead of it.
+
+- **The gesture** (`ui/select.ts`, `wireSelect`) is ONE delegated
+  `pointerdown` on `.mx-wrap` — never per-cell (the grid is ~28k nodes) —
+  hit-testing with `elementFromPoint().closest('[data-testid^="cell-"]')`. It
+  ARMS before it claims anything, so the grid's sideways scroll is never
+  stolen: a mouse arms at a 4px move; a finger must HOLD 180ms, and a slide
+  past 26px before that cedes to the native scroll (caldrag's constants). The
+  highlight (`.selcell`) is written straight onto the cells, never through
+  React state. An un-armed press is an ordinary click and opens the
+  single-cell sheet exactly as before. Geometry is DOM-free and unit-tested
+  (`select.test.ts`); the gesture itself is e2e (`leavewar.spec.ts`).
+- **The sheet** (`ui/SelectSheet.tsx`, `data-testid="select-sheet"`) is the
+  BidPicker's sibling on the same `Sheet` chassis. Sections are contextual to
+  role and stage: everyone Fills while the war is OPEN (portion + leave chips;
+  admin adds the Medical row); Decide (Pending / Approve / Refuse) is the
+  admin's once bidding is CLOSED; Delete (second-tap confirm — no undo here)
+  and Move act on the editable bids the selection holds; Post-out shows only
+  for a single-person selection. Partial writes report in the `sel-note` voice
+  and keep the sheet up. The per-person negative-balance confirm the single
+  sheet shows is deliberately NOT carried here (it would ask a block-spanning
+  question per person).
+- **Move mode** (`wireMove`): the sheet gives way to a pinned banner
+  (`.mv-banner`) and, on a desktop, a faded ghost that follows the mouse; a
+  CLICK/TAP on any day lands the block shifted by the day-delta from its start
+  (`moveCells`, atomic — an occupied/Raptor/out-of-window landing refuses the
+  whole move and says why). A phone SWIPE scrolls and never drops; only a
+  clean tap commits. The `moved` dotted-orange edge marks the landed cells via
+  the existing `shiftedFrom` state.
+- **The word "Acknowledge" became "Pending"** on the decision controls
+  (single and batch) — the same word the colour legend already gives the
+  purple state. The stored token stays `'acknowledged'`; only the label moved.
+- **The batch writers** live in `state/store.ts` (`setCells` / `clearCells` /
+  `setBidStates` / `moveCells`) and carry the SAME per-cell guards as their
+  single-cell parents under the `quiet` suppression, so a batch can never
+  write where one cell could not; details in `docs/engine-rules.md`
+  §Auth / roles. Pinned in `store.test.ts`, `selectsheet.test.tsx`.
+
+*(Published-stage member remarks editing — clicking a continuous approved run
+to edit its remarks — is the one piece still to come; it crosses into Raptor's
+INPUTS and lands in a follow-up. Today a member cannot select at `published`.)*

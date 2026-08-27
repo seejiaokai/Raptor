@@ -388,6 +388,10 @@ export function DecisionSheet({
             cell purple. Before it existed a bid was purple from the moment it
             was typed, so the squadron could not tell an untouched input from
             one already in hand. */}
+        {/* The visible word is "Pending" (owner, 27 Aug 26) — the same word the
+            grid legend already gives this purple state, so the two now agree.
+            The STATE TOKEN stays 'acknowledged' (persisted in BID_STATES), only
+            the label changed; testid stays decide-ack. */}
         <button
           className="dchip ack"
           data-testid="decide-ack"
@@ -395,7 +399,7 @@ export function DecisionSheet({
           title="Seen, not yet decided"
           onClick={() => decide('acknowledged')}
         >
-          Acknowledge
+          Pending
         </button>
         <button
           className="dchip approve"
