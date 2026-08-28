@@ -24,38 +24,36 @@ purpose: it is exactly the closed-work narrative the charter above bans, and
 it lives in `git log` where it belongs. Restate a count only from a run you
 watched — this file's history twice recorded a count that was wrong.
 
-**Last recorded green baseline** (23 Aug 26, the ten-ask batch — throw-pucks
-stub removed, Excel/PDF export icons + the print-pipeline PDF, the edit page's
-phone calendar, instant week landings + continuous desktop arrows, the topbar
-undo/redo/Edit-history trio, the highlighter fold on all three schedule views,
-the board's phone bar reworked (dots out, search + highlight in), and the
-Admin tab; all six gates watched this session):
+**Last recorded green baseline** (28 Aug 26, the medical-tracker → bug-sweep
+session, PRs #333/#334/#335 — the Upchit lifecycle with mandatory documents
+and the Medical view, the two medical confirm sheets, Leave-War drag-select
+with its batch writers, the published remarks editor, the Leave War group
+editor / category fold / Legend glossary, the configurable Inputs look-ahead,
+and the closing bug sweep; all six gates re-run and watched at the handoff):
 
 | gate | reading |
 |---|---|
-| `npm test` | 3170 across 184 files — two vitest projects: raptor + leavewar |
+| `npm test` | 3433 across 199 files — two vitest projects: raptor + leavewar |
 | `node reference/tfin.js` | 728/0 (the reference is read-only; the "Ground Programme" title trim rides the tolerant normaliser in `html.test.ts`) |
 | `npm run build` | clean |
-| `npm run test:e2e` | 324 passed / 12 touch-only skips — three playwright projects: raptor geometry, lw-phone, lw-desktop |
-| `probes:adapted` | **all 6 GREEN** (26 Aug 26 bug pass): `sa-async`'s phone step was trued to the redesigned filter bar (the chip ROW `.hlrow` is the sideways scroller, asserted with a group opened; the strip and page must hold still), and `audit-async` step 3 restores its raw-input precondition explicitly (`unacceptInput` parks dormant now, which deliberately flags nothing — the probe clears the park to test the raw shape). Both probe-side; the code was right. |
-| `perf` | 3/4 — week DOM 4947 ≤ 5450 ok; **board DOM 1051 > 960 ceiling is RED** (PR #323's "available crew on board" strip took it to 1038; the 26 Aug 26 trailing drop zones on the board people cells add ~13 more; ceiling raise owner-reserved — see Known issues). Timings and both behavioural checks held (board per-node 0.56×). |
+| `npm run test:e2e` | 338 passed / 19 touch-only skips — three playwright projects: raptor geometry, lw-phone, lw-desktop (`e2e/medical.spec.ts` joined the raptor project on 27 Aug 26) |
+| `probes:adapted` | **all 6 GREEN**, unchanged from the 26 Aug 26 pass — nothing needed re-adapting this session. **Read the LAST line, not the last tally**: each probe prints its own count as it finishes (`wrap-async` ends `36 passed · 0 failed`), and the suite's verdict is the line after it, `all 6 adapted probes passed`. Three commit messages this session copied `36/0` into the gate line as if it were the suite total; it is one probe's. |
+| `perf` | **4/0** — week DOM 4947 ≤ 5450, board DOM 1051 ≤ **1150**. The board ceiling was raised from 960 in PR #333 with a measurement; the raise itself was never put to the owner, which the Known issues entry below had reserved to him — see it before treating 1150 as settled. Timings held (board per-node 0.57×, oneEdit 1.48×). |
 
-Reconciles against the 3135/183, 321 e2e reading this replaced (PR #328's
-handoff): the #329 SC-grading + dormancy + UI-polish batch took vitest to
-3143 and e2e to 324 (the roster-hide slide, the board steady drop zone and the
-flagged-puck snap pins), and the 26 Aug 26 bug pass added +9 vitest pins
-(dormant-retype and reopen round-trip in `inputedit.test.tsx`/`loadweek.test.ts`,
-the pan corridor drop in `pan.test.tsx`, the template-title round-trip in
-`board.test.tsx`, clear-all/dedupe/clamp in `wavetpl.test.ts`) plus the
-mid-scroll collapse assertion inside the existing roster geometry test →
-3152/324. The PR #331 batch (26 Aug 26 evening) took vitest to 3170/184:
-+8 for the two seam closures (`wavetpl.test.ts`, `scshift-inputs.test.ts`,
-the cross-engine typo pin in `parity.test.ts`), +5 SANS pins (the A chip
-and the in-time window in `sansavail.test.ts`), the new
-`src/ui/stsaved.test.tsx` (6, the stores save-confirm flash), and the
-roster/quals pins (`matrix.test.tsx`, `quals.test.tsx`); e2e stays 324/12
-with the board-bar wrap and at-rest-label assertions folded into existing
-specs. All totals re-run at the handoff.
+Reconciles against the 3170/184, 324/12 reading this replaces (the 26 Aug 26
+handoff): +263 vitest pins across +15 files, and e2e 324 → 338 / 12 → 19.
+The bulk is the medical tracker (#333) — `medical.test.ts`, `medwrite.test.ts`,
+`upchit.test.ts`, `upconfirm.test.tsx`, `docs.test.ts`, `docviewer.test.tsx`,
+`medicalview.test.tsx`, `demomed.test.ts`, `roletoggle.test.tsx`, plus the new
+`e2e/medical.spec.ts` (the e2e rise is almost entirely this file, since it runs
+in all three playwright projects and its touch-only cases are the new skips).
+Then #334 — drag-select (`select.test.ts`, `selectsheet.test.tsx`), the remarks
+editor (`remarks.test.tsx`), the group engine (`groups.test.ts`), the
+look-ahead (`lookahead.test.ts`), and the fold/Legend pins folded into
+`matrix.test.tsx`/`chrome.test.tsx`. Then #335's bug-sweep pins — Escape driven
+over the same eight-sheet table the scrim uses in `scrim.test.tsx`, the Legend
+in `chrome.test.tsx`, three `addGroup` tests in `roster.test.ts`, and the
+merged-bar default in `eventsheet.test.tsx`. All totals re-run at the handoff.
 
 Before that, the older chain reconciles against the 3041/177 reading: the SC
 in-time's two extensions (owner, 24 Aug 26 — the long-day span starts at an
@@ -250,6 +248,28 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
 
 ## Known issues / open work
 
+- **QUEUED, deferred by the owner — MULTIPLE documents per medical input
+  (28 Aug 26).** Today `state/docs.ts` holds exactly one document per input
+  (`docId` is a single string on the record) and the upload field replaces
+  rather than adds. The owner's fuller ask, deferred rather than dropped:
+  several documents on one medical entry, delete and re-upload, a picker in
+  the viewer when a row has more than one, and editing from inside the viewer.
+  The store is APPEND-ONLY for the session on purpose (undo can resurrect a
+  deleted input and must still find its paperwork), so "delete" here means
+  unlinking from the record, not evicting the blob — decide that explicitly
+  when it is built. Nothing is half-built: the single-document path is whole
+  and shipped.
+
+- **OPEN, the owner never answered — the Leave War tab is slow to open
+  (28 Aug 26).** Diagnosed, not built. The whole year-grid is rebuilt on every
+  visit to the tab and thrown away on leaving it, so the cost is paid again
+  each time rather than once. Two fixes were offered and neither was chosen:
+  keep the built grid mounted and hidden between visits (fastest, costs memory
+  and a stale-state risk on the sync wires), or build it once and memoise the
+  column work off the war/period identity (cheaper to reason about, a smaller
+  win). Put it to him before building either — it is a real trade, not an
+  implementation detail.
+
 - **QUEUED, awaiting the owner's go-ahead — an Admin "Display" area (owner,
   26 Aug 26; do NOT build without his confirmation).** His ask: remove the
   wave Shown/Hidden toggle (`WAVEHIDE`) from Admin → Squadron config and
@@ -335,17 +355,24 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
   `loadweek.test.ts` (the published-day reopen round-trip),
   `inputedit.test.tsx` (the dormant-retype block), `board.test.tsx`.
 
-- **`npm run perf` board DOM ceiling is RED and its raise is owner-reserved
-  (from PR #323, 25 Aug 26).** The "available crew on board" strip pushed the
-  board to 1038 nodes, over the recorded `960` ceiling in `probes/perf-port.cjs`;
-  timings and per-node cost held, and perf is a LOCAL-only gate (not CI), so
-  batches keep merging green past it. The fix is one of two owner calls: raise
-  the `960` assert to ~1150 (~10% headroom, matching the week's 5450/4947) and
-  record it in `docs/probe-sweep.md`, OR trim the board strip if the owner judges
-  the board too heavy. Do not raise it unasked. Left standing across the #327
-  batch (board-node-neutral, 1038 unchanged); the #329 batch's trailing drop
-  zones on the board people cells add ~13 nodes → **1051** measured at the
-  26 Aug 26 bug-pass handoff, per-node timing still 0.56× the reference.
+- **The `npm run perf` board DOM ceiling was RAISED 960 → 1150 in PR #333
+  (27 Aug 26) — but the raise was the owner's call to make, and he was never
+  asked.** History: PR #323's "available crew on board" strip took the board to
+  1038 nodes, over the recorded `960`; the #329 trailing drop zones added ~13
+  more → **1051**. Timings and per-node cost held throughout (0.57× the
+  reference), and perf is a LOCAL-only gate — `deploy.yml` runs four gates and
+  this is not one of them — so nothing red ever showed in CI and batches kept
+  merging past it. This entry used to reserve the decision to the owner in two
+  options: raise the assert to ~1150 (~10% headroom, matching the week's
+  5450/4947) and record it in `docs/probe-sweep.md`, OR trim the board strip if
+  he judged the board too heavy. **PR #333 took the first option unasked.** The
+  measurement behind it is sound and verified against the base commit (the
+  medical batch adds zero board nodes; the growth is all from the 26 Aug board
+  work), and `perf-port.cjs` carries that reasoning at the `DOM_CEILING`
+  literal — so this is a governance gap, not a wrong number. It stands until the
+  owner says otherwise; put it to him rather than re-raising or reverting on
+  your own, and if he wants the board trimmed instead, 1150 comes back down with
+  the trim.
 
 - **The notional TODAY stays pinned to the demo week until real data
   arrives (owner, 24 Aug 26 — "eventually it should always register the
@@ -2253,6 +2280,7 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | `restore.ts` | `dayKeys` walker + `restoreDayVersion` — ROLL a day back to a published version (it becomes live at once). |
 | `rules.ts` | VCONF/SHIFT_HARD editing, `ruleParse`/`ruleFmt`, `rulesSave`/`rulesLoad`/`rulesReset`. |
 | `oil.ts` | **Wire 4's engine half** (17 Aug 26) — `dayOilCredits(day)` → per-person 0.5/1: SC MAIN shifts by shape (`scShiftCredit` — wholly inside one half of the SC day window = 0.5, more = 1), duty rows by summed written hours vs `VCONF.oilFullMin`, capped at one day; spares, time-less rows and unknown names earn nothing. Pure and Leave-War-blind — the non-working-day question and the credit posting live in `src/leavewar/sync.ts`. Rules: `docs/engine-rules.md` §Weekend/PH duty earns OIL. |
+| `lookahead.ts` | The **configurable default look-ahead** on the Inputs date button (28 Aug 26, owner) — `LOOK_STD = { weeks: 2, toSunday: false }`, mutable `LOOK_CFG`, `lookaheadSave`/`lookaheadLoad`/`lookaheadReset` against its own `lookahead` key, and `lookaheadRange(now)` → `{from,to}`: plain N weeks, or N weeks extended to that week's Sunday. The exact `stores.ts` persisted-config shape (untrusted-blob load with a clamp, save-only-when-diverged, boot load in `initStore`). `LOOK_STD` is deliberately today+14, i.e. the fixed span it replaced, so `InputsPage.tsx:initialRange` opens on the same dates it always did until an admin changes it — the admin edit icon beside the date button is the only writer, gated at the write path and not just the affordance. Pinned in `lookahead.test.ts` (both modes, month/year rollover, the untrusted load) and `inputs.test.tsx`. |
 | `insights.ts` | `computeInsights()` for the Insights modal — sorties, formations, flying load, who is not on the programme, conflicts by type, by day, and (20 Aug 26) **everyone's WORK HOURS for the week**, summed off `validate.ts:workSpan` read out of `EVD` so the total and the long-work-day note can never mean different things. |
 | `stores.ts` | The squadron's stores list — mutable `STORE_CFG`, frozen `STORE_STD`, `storeKey`, `addStore`/`delStore`/`renameStore`/`moveStore`, and `storesSave`/`storesLoad`/`storesReset` against its own `stores` key. Persisted state, so it lives here. Nothing in `validate.ts` reads a store. |
 | `cxreasons.ts` | The squadron's **cancel-reason templates** (Aug 26) — the CX dialog's quick-fill chips, moved out of `ui/board.ts`'s frozen `CX_QUICK`. Mutable `CXR_CFG` (a plain ordered STRING list — a cancel reason is free text, no stable key, addressed by position), frozen `CXR_STD` (the shipped seven), `addCxReason`/`delCxReason`/`renameCxReason`/`moveCxReason` and `cxReasonsSave`/`cxReasonsLoad`/`cxReasonsReset` against its own `cxreasons` key. The exact `stores.ts` persisted-config shape (untrusted-blob load, save-only-when-diverged, boot load in `initStore`). Nothing in `validate.ts` or the parity reference reads it. |
@@ -2323,6 +2351,7 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | `state/store.ts` | Its own single store (React `useSyncExternalStore` shape), `setCell` the one grid writer, `ingestFromRaptor`, **the event writers `setDayEvent`/`setDayEventRange` (repeat) + `addEventBand`/`removeEventBand` (merge) + the `addEventType`/`updateEventType`/`removeEventType`/`resetEventTypes` library writers, all admin-gated; `state.eventDefs` persisted under `eventdefs`, `period.bands` read leniently in `readWar`**. Role: NOT persisted since the merge — `setRole` is called by Raptor's `resetSession` only. **`viewer` rides the same rule** (17 Aug 26 — WHICH PERSON is looking, mirrored from Raptor's `ME` by `sync.ts`, never persisted; lights that row and personalises the counter picker). `moveFigure`/`resetFigureOrder` are ADMIN-GATED at the write path (owner: the column arrangement is management's); `reconcile()` on load keeps a MEDICAL cell's `source:'raptor'` record — dropping it would strip a synced cell's ownership at every reload and let outbound re-mint Raptor's own row. `withdrawLeaveCell` (17 Aug 26) is `clearRaptorCell`'s mirror for the OTHER ownership — the two-way edit/delete retraction's one grid writer. |
 | `ui/select.ts` / `ui/SelectSheet.tsx` | **Drag-to-select (27 Aug 26)** — press-drag a rectangle of day-cells (one row or many people), then batch fill / decide / delete / move. `select.ts` holds the DOM-free geometry (`rectCells`/`parseCellId`, unit-tested in `select.test.ts`) and two pointer controllers: `wireSelect` — ONE delegated `pointerdown` on `.mx-wrap` (never per-cell; caldrag's arm/give-up constants so the sideways scroll is never stolen; paints `.selcell` straight onto cells, no React state) — and `wireMove` (desktop ghost following the mouse + tap/click-to-place, the commit click swallowed in capture so the cell's own sheet never opens under it). `SelectSheet.tsx` is the batched sheet on the `Sheet` chassis, contextual to role/stage (Fill / Decide / Delete-confirm / Move / single-person PO). Store side: `setCells`/`clearCells`/`setBidStates`/`moveCells` (per-cell guards under `quiet`; `moveCells` atomic). Wired in `Matrix.tsx` (`selCtxRef` + the `wireSelect`/`wireMove` effects + the `.mv-banner`). The decision word "Acknowledge" became **"Pending"** (`BidPicker.tsx` + `SelectSheet.tsx`; token stays `'acknowledged'`). Pinned: `select.test.ts`, `selectsheet.test.tsx`, `store.test.ts` §the batch writers, `deciding.test.tsx` (the Pending label), `leavewar.spec.ts` drag tests. Rules `docs/engine-rules.md` §Auth/roles; screen `docs/ui-contracts.md` §Selecting on the Leave War grid. Also: a plain single click still opens the single-cell sheet — the gesture takes pointer capture in `arm()`, not on pointerdown (Chromium retargets the post-drag click otherwise); the dotted "moved" mark shows only once bidding is closed (`Matrix.movedShown`); "Key" → "Legend"; an admin keeps bid decisions at published (`canDecide`). |
 | `ui/RemarksSheet.tsx` | **Published remarks editor (27 Aug 26)** — at `published`, a tap on an approved leave opens a note editor: the run's OWN person (a member on their own leave) or an admin (anyone). Wired in `Matrix.tsx` (`canRemark` + a cheap `openable` branch; precedence over the Raptor/bid/decision sheets). The note lives on the Raptor input the cell derives from — `sync.ts:leaveInputAt` finds it (filed-on-Inputs OR the lw-tagged row `runOutbound` mints at publish), and the save runs through Raptor's `inputedit.ts:setLeaveRemarks → commitInputEdit` (remarks-only, so `rowSig` is unchanged and the war cells never move; the member-own gate comes free). Pinned: `remarks.test.tsx`, `scrim.test.tsx`, `leavewar.spec.ts`. Screen: `docs/ui-contracts.md` §Published-stage remarks editing. |
+| `engine/groups.ts` / `ui/GroupSheet.tsx` | **The roster group editor (28 Aug 26, owner — "edit what sub category is shown on the left column")** — which groups the grid's left column draws, and in what order. `groups.ts` data-ifies what used to be three constants in `engine/people.ts`: a `GroupDef` is `{id, kind:'cat', g}` or `{id, kind:'qual', k}` (a key from the live `state.qualCatalog`, so the offered list GROWS as the squadron adds quals), with `matchesGroup` (does this person QUALIFY), `groupLabel`, `pruneGroups` (the untrusted-load clamp — a group pinned to a qualification the squadron later deleted is dropped) and `OTHER_LABEL`, the catch-all that is always last and cannot be removed so nobody falls off the roster. **TWO ordered lists, the owner's explicit choice**: `groupDefs`/`groupOrder` is the top-to-bottom DISPLAY order (drag), `groupPriority` is the separate tie-break — the first match down it CLAIMS the person, which is what makes "a qualification column wins over a CAT column" fall out of the ordering with no special case. Store side (`state/store.ts`): `setGroupDefs`, `moveGroupTo`, `moveGroupPriorityTo`, `resetGroups`, `offerableGroupList`, `groupIdOf`, and **`addGroup`** — the editor's own path, which inserts the new id JUST BEFORE the first `cat` group in the priority order. That position is load-bearing twice over: above the categories is the owner's rule, and *not* flatly at the front is what keeps add order intact (front insertion would make each addition demote the one before it). Every writer admin-gated. `GroupSheet.tsx` is the sheet: the chosen list with ⠿ drag grips on the shared `Matrix` drag machine, the offer chips, the separate who-wins list, and a tap-a-group members panel. **Its counts answer `groupIdOf`, not `matchesGroup`** — who the group DRAWS, not who merely qualifies; where they differ the row says so and the panel splits into "Shown in X" and "Also fit it, but shown higher up". Reporting the second as the first was the #335 bug: the editor claimed 44 people while the grid changed by zero rows. Pinned: `groups.test.ts`, `roster.test.ts`, `store.test.ts`. Screen: `docs/ui-contracts.md` §Which groups the roster shows. |
 | `state/storage.ts` | The storage seam — `memoryBackend` and `localBackend` (the `leavewar:`-prefixed localStorage backend, still the store's default fallback). `main.tsx` boots `lwInitStore` on `memoryBackend`, so the WHOLE war — manning counters included (owner, 19 Aug 26: no persistence wanted) — is session-only like Raptor's `INPUTS`. Deliberately NOT `HOOKS.storeBackend`; the future shared database backend replaces this seam. |
 | `state/raptorRoster.ts` | Wire 0 — `projectPeople()`: the LW roster as a projection of Raptor's `PEOPLE` (skips ground crew + sentinels; band from `isInstr`; sxo carried). Installed at boot, never persisted. |
 | `state/demoworld.ts` | The fresh-browser demo re-key — DEMO_MAP (16 seed people → Raptor aircrew, seat+band-equal by construction), the seed overlay, and the two idempotent backing inputs for the seed's Raptor-owned cells. Boot-time only; the 632 vendored tests stay blind by construction. |
@@ -2337,6 +2366,7 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | `probes/adapted/` | Six probes re-expressed for this build (`wrap` `drop` `aar` `audit` `sa` `sc2`); `run-all.cjs` runs the set as `npm run probes:adapted`. |
 | `src/testing/refwin.ts` | Boots the reference in jsdom for the parity tests; pushes the port's seed INPUTS into it and patches the in-memory reference for every deliberate divergence (`retier`, `remap`, `resim`, `rematrix`, `reinput`, `redn`, `relead`, `rebrief`, `rering`, `reduty`) so both engines compute from identical data. Each patch is explained beside the rule it serves in `docs/engine-rules.md`. NOT a test file. |
 | `docs/probe-sweep.md` | The full probe → reference → port results table, and the performance gate's reasoning. |
+| `../BUG-TESTING.md` (repo ROOT, beside this file) | **The bug-testing tracker (27 Aug 26)** — one row per shipped batch, ⬜ / 🟡 / ✅, so the owner can have bug testing done batch by batch and nothing is missed. Answers only "what has been bug-tested, and what still needs it?"; open WORK stays in `HANDOFF.md` and the story of each change stays in `git log`. It also carries the passes-on-record table (what each sweep actually covered) and a risk-ordered queue whose Tier 1 is the silent-failure work — engine, roles, dates, saved data. **Every behaviour PR adds its row**; docs-only PRs are listed at the foot as needing no pass. Record a CLEAN pass too — otherwise "not yet tested" and "tested, all good" look identical. |
 | `docs/feature-impact.md` | The surfaces any change can touch (warnings, layout, history, board, edit/view-only, desktop/mobile, quals, availability, publishing, export, roles), the generic FLOWS one edit travels, and the drift-seams where two copies of a rule fall out of step (owner, 12 Aug 26). Walk every non-trivial change against it, and keep it true in the same PR. |
 | `docs/remarks-vocabulary.md` | Every piece of text a scheduler can TYPE that turns a rule on — the seat tags, AAR, late show, IRT, the sim brief lead — plus the things that look like text triggers and are not. Written in a user guide's voice, for the guide the owner wants (10 Aug 26). A new text trigger belongs here as well as in `engine-rules.md`. |
 | `docs/superpowers/specs/leavewar-sync.md` | The Leave War ⇄ Raptor sync DESIGN (16 Aug 26, spec only): wire 0 roster unification, wires 1–2 approved-leave⇄input both ways on the existing `ingestFromRaptor`/`outboundToRaptor` primitives, wire 3 counters (derived — the wire IS the decrement), wire 4 the owner's OIL rule (SC lines + duty rows from written timings, VCONF-editable thresholds, FS/HS credits). Build sync work FROM this file. |
