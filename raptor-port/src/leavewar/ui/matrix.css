@@ -289,6 +289,19 @@
   border-style: dashed;
   color: var(--muted, #8a94a6);
 }
+/* The reorder GRIP (owner, 28 Aug 26 — drag-and-drop replaced the ▲▼ arrows).
+   The same ⠿ the roster rows use, sized to the count row's narrow tools column
+   and sitting beside the hide (eye). */
+.mx .counts .mrow-tools .drag {
+  color: var(--edge-2);
+  font-size: 12px;
+  line-height: 1;
+  cursor: grab;
+  padding: 0 1px;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.mx .counts .mrow-tools .drag:active { cursor: grabbing; }
 /* A hidden row, shown dimmed WHILE arranging so an admin can bring it back. */
 .mx .counts tr.mrow-hidden td {
   opacity: .45;
@@ -310,6 +323,28 @@
   font-weight: 700;
   letter-spacing: .04em;
   min-width: 24px;
+}
+
+/* ...but the DAY-column headers must NOT be sticky. The header's vertical
+   freeze is done by the fixed JS mirror (.mxfixed), never by CSS sticky —
+   `.mx-wrap` scrolls horizontally only, so a `top: 0` sticky here pins
+   NOTHING (see the top-of-file note and the Matrix mirror comment: "CSS
+   sticky cannot pin the header — its scrollport never moves vertically").
+   Left sticky, all ~365 day headers were re-evaluated as sticky constraints
+   by the engine on every horizontal-scroll frame, and on a phone that
+   main-thread work is exactly what made a sideways swipe stutter — the grid
+   read as "laggy" though nothing was actually being held in place (owner,
+   28 Aug 26, screen recording). Making them `static` drops the per-frame
+   sticky cost from ~365 cells to a handful; the day headers now ride the
+   grid natively, like the body cells directly beneath them. Nothing that
+   ACTUALLY freezes is touched: the frozen left columns keep their own
+   left-sticky (`.mx .who, .mx .bal` above), the month labels keep theirs
+   (`.brakl` below), and the fixed mirror is unchanged. `z-index: 1` from the
+   rule above goes inert on a static cell, which is correct — the positioned
+   frozen columns (z-index 2/3) must, and still do, paint over the day cells
+   sliding under them. */
+.mx .mxhead th.day {
+  position: static;
 }
 
 /* Square the date cells (owner, Aug 26 — "make the dates at the top a
@@ -1024,6 +1059,18 @@
   width: 0;
   overflow: visible;
 }
+/* The heading is the FOLD control (owner, 28 Aug 26 — "allow me to minimise
+   categories on leave war"). The sticky td is the target, not the zero-width
+   `.grphd-in` inside it, so the whole frozen-column width is tappable. */
+.mx tbody tr.grp td.grphd { cursor: pointer; }
+.mx tbody tr.grp td.grphd:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.grphd-in .gcar {
+  font-size: 9px;
+  color: var(--ink-3);
+  flex: none;
+  width: 7px;
+  line-height: 1;
+}
 .grphd-in .gsw { width: 10px; height: 10px; border-radius: 3px; flex: none; background: var(--edge-2); }
 .grphd-in .gname { font-size: 11px; font-weight: 800; letter-spacing: .09em; color: var(--ink); }
 .grphd-in .gcount { font-size: 10px; color: var(--ink-3); font-weight: 600; }
@@ -1233,6 +1280,35 @@
   left: 0;
   z-index: 3;
   background: var(--panel-2);
+  padding: 2px 4px;
+}
+
+/* The admin's GROUP EDITOR opener, in the corner cell above CS/Name (owner,
+   28 Aug 26 — he circled that empty space). Sized to the frozen pair's width
+   so it can never widen the callsign column; the label ellipses rather than
+   pushing the column out on a phone. */
+.mx .mxhead th.brakhd .grpedit {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  max-width: 100%;
+  padding: 3px 7px;
+  background: var(--panel-2);
+  border: 1px solid var(--edge);
+  border-radius: 7px;
+  color: var(--ink-2);
+  font-family: inherit;
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: .06em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+.mx .mxhead th.brakhd .grpedit:hover {
+  border-color: rgba(59, 198, 232, .5);
+  color: var(--ink);
 }
 
 .mx .mxhead th.brakm {
@@ -1276,6 +1352,19 @@
   overflow: hidden;
   background: var(--panel-2);
   box-shadow: 0 2px 10px rgba(0, 0, 0, .4);
+  /* Tighten the sideways follow (owner, 28 Aug 26 — "the lag on the frozen
+     bar … 0 latency … the top bar sticks to it when u scroll horizontally").
+     The header is a JS-driven mirror (it must be — the page owns the vertical
+     scroll, so `position: sticky` cannot pin it; see the top-of-file note), and
+     the residual lag is DROPPED FRAMES: on a busy frame the compositor slides
+     the grid but the main thread is too late to repaint the mirror, so it falls
+     a frame behind. Promoting the whole bar to its own compositor layer makes
+     that repaint cheap enough to land every frame. `translateZ(0)` (no offset —
+     it does not move the bar, only lifts it onto GPU) is the reliable promoter;
+     the layer lives only while the mirror is mounted (freeze state), so it is
+     not a standing cost. This does not touch the JS sync or the sticky columns
+     inside — it only changes how the bar is painted. */
+  transform: translateZ(0);
 }
 
 .mxfixed-scroll {
@@ -1292,10 +1381,79 @@
   overflow-y: hidden;
   touch-action: none;
   scrollbar-width: none;
+  /* Composite the scroller itself so a JS `scrollLeft` write moves a GPU layer
+     instead of forcing a main-thread repaint of the header (owner, 28 Aug 26).
+     This is the exact case `will-change: scroll-position` names — a scroller
+     whose position code changes — and it is what turns each rAF sync from a
+     paint into a cheap recomposite, which is what keeps the bar on the grid
+     during a fast flick. Paired with the layer promotion on `.mxfixed` above. */
+  will-change: scroll-position;
 }
 
 .mxfixed-scroll::-webkit-scrollbar {
   display: none;
+}
+
+/* ---- the scroll-DRIVEN frozen bar (owner, 28 Aug 26 — "the top bar not
+   catching up to the horizontal scroll … glue it, keep the feel") -----------
+
+   The JS mirror above FOLLOWS the grid one frame behind, because the grid
+   scrolls on the compositor while the follow runs on the main thread — on a
+   fast fling that gap reads as the date bar trailing the columns by a column
+   or two, then snapping into place when you stop. These rules remove the
+   follow entirely on browsers that can drive an animation from a scroll
+   position (CSS scroll-driven animations): the grid's own horizontal scroll
+   IS the timeline, and the bar's day columns are translated by it on the
+   compositor, so the two move as one with nothing to catch up. Gated by
+   `.lw-sda`, added to `.mx-outer` only when the JS feature-detect passes
+   (Matrix.tsx `sdaActive`); without it, the JS mirror above is used unchanged.
+
+   `.mx-wrap` names its horizontal scroll `--lwx`; `.mx-outer` (the nearest
+   common ancestor of the scroller and the fixed bar, which is NOT a
+   descendant of the scroller) hoists that name into scope with `timeline-scope`
+   so the bar can bind to it. The travel distance `--lwx-max` is the grid's max
+   scrollLeft, set from JS on layout changes (Matrix.tsx measureStripGeo). */
+.mx-outer.lw-sda { timeline-scope: --lwx; }
+.mx-outer.lw-sda .mx-wrap { scroll-timeline: --lwx x; }
+
+/* In the scroll-driven path the layer is TRANSLATED, not scrolled — so it must
+   not be a scroller (an overflow scroller would clip/scroll instead). */
+.lw-sda .mxfixed-track {
+  overflow: hidden;
+  touch-action: auto;
+}
+.lw-sda .mxfixed-anim {
+  animation: lwx-follow linear both;
+  animation-timeline: --lwx;
+  will-change: transform;
+  /* keep the translated layer crisp during an iOS momentum fling */
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+/* @keyframes lwx-follow is defined at the FILE'S TOP LEVEL, past the closing
+   brace below — a keyframes at-rule cannot live inside this file's
+   `#page-leavewar { … }` nesting wrapper (invalid CSS; the minifier rejects
+   it). Keyframe names are global, so `animation: lwx-follow` here still binds
+   to it. */
+/* The scrolling layer's own frozen columns are covered by the static overlay
+   below and must not steal its taps — the overlay carries the live counter
+   picker while the grid is scrolled sideways. */
+.lw-sda .mxfixed-anim .who,
+.lw-sda .mxfixed-anim .bal { pointer-events: none; }
+
+/* The bar's frozen LEFT columns, drawn as a static copy pinned over the left
+   and clipped to their own width (set inline), so the translated day columns
+   pass UNDER them. Opaque and above the scrolling layer; aria-hidden (the
+   scrolling layer stays the one accessible copy — see the render note). Only
+   ever present under `.lw-sda`. */
+.mxfixed-frozen {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  overflow: hidden;
+  z-index: 4;
+  background: var(--panel-2);
 }
 
 /* ---- the frozen roster columns, drawn once (owner, 20 Aug 26 — the third
@@ -1353,14 +1511,18 @@
    JS to overlay the grid; the inner spacer is as wide as the grid's content, so
    the browser sizes the thumb for free. The webkit rules force a visible,
    grabbable thumb even where the OS uses hover-only overlay scrollbars — the
-   whole point is that it is always THERE. z below the sheets (79/80) and the
-   phone frozen header (55); above the grid. Phone gets none of this (Matrix only
-   mounts it off a desktop measurement). */
+   whole point is that it is always THERE. z ABOVE the sheets (79/80) now
+   (owner, 28 Aug 26 — "on the desktop if i decide to use the horizontal bar …
+   to scroll, this is allowed as well"): a sheet's scrim used to cover this
+   strip and kill it, so the bar sits over the scrim to stay grabbable while a
+   panel is open. It is a 15px strip at the very foot of the viewport and the
+   panels are anchored 14px up, so it never paints over a panel's content.
+   Phone gets none of this (Matrix only mounts it off a desktop measurement). */
 .mx-hbar {
   position: fixed;
   bottom: 0;
   height: 15px;
-  z-index: 50;
+  z-index: 81;
   overflow-x: auto;
   overflow-y: hidden;
   background: var(--panel-2);
@@ -1417,4 +1579,14 @@
   border-color: rgba(59, 198, 232, .55);
 }
 
+}
+
+/* TOP LEVEL — outside the #page-leavewar nesting wrapper above (a @keyframes
+   at-rule is invalid nested inside a style rule). Drives the scroll-linked
+   frozen bar: the .lw-sda .mxfixed-anim table translates from 0 to the grid's
+   max scrollLeft (--lwx-max, set from JS) across the grid's whole scroll range,
+   so the bar's day columns ride the grid's own compositor scroll. See the
+   `.lw-sda` rules above. */
+@keyframes lwx-follow {
+  to { transform: translateX(calc(-1 * var(--lwx-max, 0) * 1px)); }
 }

@@ -68,28 +68,42 @@ meant a bid placed here, so `source: 'bid'` is a fact and not a guess.
 Rejecting them would have degraded a squadron's real decisions to the seed to
 gain nothing.
 
-## The role switch is an affordance, not a permission
+## The role is an affordance, not a permission
 
-The interface now has a MEMBER/ADMIN switch, and **anyone can flip it**.
-There is no login, so nothing verifies which one a person is: the switch
-decides which controls appear and nothing else. Closing the war genuinely
-locks members out of editing *in the interface*; it does not stop anyone who
-flips the switch.
+The war's role now RIDES THE RAPTOR LOGIN (resetSession is its production
+writer; the admin's view-toggle is the only other), and since the 27 Aug 26
+overnight pass the store enforces it at every write path: a member cannot
+decide (`setBidState`/`setBidStates` check `canDecide` — admin, once bidding
+is no longer open), cannot advance or reopen the stage, cannot write a
+medical marker, cannot touch another person's row (`canEditRow`), and cannot
+shift a bid outside what `canEditCell` lets them edit — the single-cell
+`shiftBid` now carries the same stage/window/day law as the drag mover.
 
-This is the spec's own two-role model (§Roles) built ahead of the accounts
-that will enforce it, in the same way approval was. **Do not present it as a
-security model** — it is the shape a real one will take, with the check
-missing.
+**It is still not a security model.** The whole app is client-side with no
+server: the probe bridge (`src/probe-bridge.ts`, the e2e suite's window
+hooks — `lwSetRole`, `lwSetViewer`, `lwLoadWars` and the Raptor writers)
+ships in the served bundle, so a browser console can forge any role or
+identity. That forgery only ever rewrites the forger's OWN session-local
+copy — there is no shared data to corrupt until the server exists — and the
+bridge is what the six gates drive the built bundle with, so it stays. The
+real check is the future server re-running these same rules where a console
+cannot reach; the rule bodies (`canDecide`, `canEditRow`, `canEditCell`) are
+the shape it will keep.
 
-Everything else that follows from having no accounts still holds: anyone can
-approve, refuse or shift anyone's bid, and anyone can bid on anyone's row.
-
-The bidding plan called for a fixed `ME` roster entry standing in for a
-session. That was not built: the tests bid on whichever row was clicked, so an
-`ME` constant would have been dead code claiming an identity model that does
-not exist. A real one arrives with accounts. Until then the app is honest
-about being a scheduler's view of everybody rather than a bidder's view of
-themselves.
+A member no longer bids on anyone's row, though (owner, 27 Aug 26 — "if I am
+viewing as a member and I view as ranger… I shouldn't be able to input on
+other people's row except mine"). The identity the bidding plan reserved for
+`ME` now exists as `viewer` — the war mirrors Raptor's "View as" person — and
+`canEditRow` (engine/stages.ts) scopes a member to that one row at the write
+path (setCell, the range/batch writers, move and shift) as well as in the grid
+(a member's tap and drag reach only their own row). An admin is scoped to none.
+This is real for the `member` role, but it is still not a security boundary:
+the role switch itself is unguarded, so a member can flip to admin and bid
+anywhere. The scoping and the identity are the shape the accounts will keep;
+the missing check is the login that stops the flip. (`viewer` is only ever
+null in the raw store / tests — the "View as" picker has no empty option and
+boot mirrors `ME`, always a person — so an un-scoped session imposes no row
+rule, which is why the tests still bid on whichever row they name.)
 
 ## What balances do not yet do
 
@@ -487,6 +501,13 @@ What is a contract, and what is deliberately still open:
   merged label never hides stray words a later delete would resurrect. Bands on
   one line never overlap (refused, not trimmed). `period.bands` is read
   leniently in `readWar`, so a war stored before the feature loads with none.
+  **MERGE is the default a fresh range opens on** (owner, 28 Aug 26 — "can the
+  default selection be one merged bar instead of repeat each day"), including a
+  drag-swept span; reopening an existing band already opened merged. One
+  consequence worth knowing: merge refuses an empty label and refuses a span
+  crossing another band on the line, where repeat silently skips banded days —
+  so the common mistake now gets a message instead of a partial write. Pinned
+  in `eventsheet.test.tsx` ("defaults a fresh range to one merged bar").
 - **Editing is a sheet, not inline.** An admin taps an event cell to open the
   Event sheet (`ui/EventSheet.tsx`); the old inline textareas are gone. A
   member still only reads. The sheet also carries the type-library editor

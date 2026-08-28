@@ -44,6 +44,8 @@ import {
   setBidStates,
   moveCells,
   movableCells,
+  moveProblem,
+  setViewer,
 } from './store'
 import { makeWar, seedRequirements } from '../engine'
 import { localBackend, memoryBackend } from './storage'
@@ -201,14 +203,31 @@ describe('bids', () => {
     expect(getState().states.ramp?.['2026-02-04']).toBeUndefined()
   })
 
+  // The medical markers are management's vocabulary — only an admin writes
+  // one (owner, 17 Aug 26), and since the 27 Aug overnight pass the store
+  // refuses it too, not just the sheets.
   it('drops the state when a bid is overwritten by a non-bid code', () => {
+    setRole('admin')
     setCell('ramp', '2026-02-05', 'LL')
     setCell('ramp', '2026-02-05', 'OML')
     expect(getState().states.ramp?.['2026-02-05']).toBeUndefined()
   })
 
+  it('refuses a medical code from a member — the write path, not just the sheet', () => {
+    setCell('ramp', '2026-02-05', 'OML')
+    expect(getState().grid.ramp?.['2026-02-05']).toBeUndefined()
+    setRole('admin')
+    setCell('ramp', '2026-02-05', 'OML')
+    expect(getState().grid.ramp['2026-02-05']).toBe('OML')
+  })
+
+  // Decisions are made by an admin once bidding is no longer open —
+  // setBidState re-checks canDecide since the 27 Aug overnight pass, so each
+  // of these earns its decision the way the sheet does: close the war first.
   it('keeps a decision when the same code is rewritten', () => {
     setCell('ramp', '2026-02-06', 'LL')
+    setRole('admin')
+    advanceStage()
     setBidState('ramp', '2026-02-06', 'approved')
     setCell('ramp', '2026-02-06', 'LL')
     expect(getState().states.ramp['2026-02-06']?.state).toBe('approved')
@@ -219,6 +238,8 @@ describe('bids', () => {
   // nobody approved a week overseas.
   it('resets the decision when the bid is changed to different leave', () => {
     setCell('ramp', '2026-02-06', 'LL')
+    setRole('admin')
+    advanceStage()
     setBidState('ramp', '2026-02-06', 'approved')
     setCell('ramp', '2026-02-06', 'OL')
     expect(getState().states.ramp['2026-02-06']?.state).toBe('pending')
@@ -226,14 +247,37 @@ describe('bids', () => {
 
   it('records a decision', () => {
     setCell('ramp', '2026-02-07', 'LL')
+    setRole('admin')
+    advanceStage()
     setBidState('ramp', '2026-02-07', 'refused')
     expect(getState().states.ramp['2026-02-07']?.state).toBe('refused')
+  })
+
+  // The store refuses the decision itself when the ROLE or the STAGE is
+  // wrong — the same canDecide the sheet renders by, checked where it
+  // counts (owner doctrine: the interface hides, the store makes it true).
+  it('refuses a decision from a member, and from anyone while bidding is open', () => {
+    setCell('ramp', '2026-02-07', 'LL')
+    setBidState('ramp', '2026-02-07', 'approved')           // member, open
+    expect(getState().states.ramp['2026-02-07']?.state).toBe('pending')
+    setRole('admin')
+    setBidState('ramp', '2026-02-07', 'approved')           // admin, still open
+    expect(getState().states.ramp['2026-02-07']?.state).toBe('pending')
+    advanceStage()
+    setRole('member')
+    setBidState('ramp', '2026-02-07', 'approved')           // member, closed
+    expect(getState().states.ramp['2026-02-07']?.state).toBe('pending')
+    setRole('admin')
+    setBidState('ramp', '2026-02-07', 'approved')           // admin, closed
+    expect(getState().states.ramp['2026-02-07']?.state).toBe('approved')
   })
 
   // The one invariant the parallel map exists to keep: a state never lives
   // on a cell nobody bid for. setCell enforces it; so must setBidState.
   it('refuses to decide a cell nobody bid for', () => {
+    setRole('admin')
     setCell('ramp', '2026-02-12', 'CSE')
+    advanceStage()
     setBidState('ramp', '2026-02-12', 'approved')
     expect(getState().states.ramp?.['2026-02-12']).toBeUndefined()
     setBidState('ramp', '2026-02-13', 'approved')
@@ -242,6 +286,8 @@ describe('bids', () => {
 
   it('bumps the version so the interface re-reads', () => {
     setCell('ramp', '2026-02-08', 'LL')
+    setRole('admin')
+    advanceStage()
     const before = getVersion()
     setBidState('ramp', '2026-02-08', 'approved')
     expect(getVersion()).toBe(before + 1)
@@ -251,6 +297,8 @@ describe('bids', () => {
     const backend = memoryBackend()
     initStore(backend)
     setCell('ramp', '2026-02-09', 'LL')
+    setRole('admin')
+    advanceStage()
     setBidState('ramp', '2026-02-09', 'approved')
     initStore(backend)
     expect(getState().states.ramp['2026-02-09']?.state).toBe('approved')
@@ -506,6 +554,8 @@ describe('the stored bid record', () => {
       jaguar: { '2026-01-20': { state: 'pending', source: 'bid', shiftedFrom: '2026-01-21' } },
     }))
     initStore(backend)
+    setRole('admin')
+    advanceStage()
     setBidState('jaguar', '2026-01-20', 'approved')
     expect(getState().states.jaguar['2026-01-20']).toEqual({
       state: 'approved', source: 'bid', shiftedFrom: '2026-01-21',
@@ -657,6 +707,9 @@ describe('shifting a bid', () => {
   // A shift is a PROPOSAL with a paper trail, not a silent re-approval.
   // Management still has to approve the date they moved it to.
   it('lands pending, recording the date it came from', () => {
+    // A management shift is a CLOSED-war action, and only then does it leave a
+    // trail (owner, 27 Aug 26) — close the war before shifting.
+    setRole('admin'); advanceStage()
     setCell('dusk', '2026-02-11', 'LL')
     setBidState('dusk', '2026-02-11', 'approved')
     shiftBid('dusk', '2026-02-11', '2026-02-18')
@@ -673,11 +726,28 @@ describe('shifting a bid', () => {
   })
 
   it('approving afterwards keeps the trail', () => {
+    setRole('admin'); advanceStage()   // a management shift once bidding closed
     setCell('dusk', '2026-02-11', 'LL')
     shiftBid('dusk', '2026-02-11', '2026-02-18')
     setBidState('dusk', '2026-02-18', 'approved')
     expect(getState().states.dusk['2026-02-18']).toEqual({
       state: 'approved', source: 'bid', shiftedFrom: '2026-02-11',
+    })
+  })
+
+  // While bidding is OPEN a shift is ordinary shuffling and leaves NO trail —
+  // the moved stripe must not appear on a bid the squadron simply tidied
+  // (owner, 27 Aug 26). It records the trace only once bidding has closed.
+  it('an OPEN-bidding shift records no moved trail; a closed one does', () => {
+    setCell('dusk', '2026-02-11', 'LL')            // seed stage is OPEN
+    expect(shiftBid('dusk', '2026-02-11', '2026-02-18')).toBe('shifted')
+    expect(getState().states.dusk['2026-02-18']).toEqual({ state: 'pending', source: 'bid' })
+    expect(getState().states.dusk['2026-02-18'].shiftedFrom).toBeUndefined()
+    // close the war and shift again → NOW the trail is recorded
+    setRole('admin'); advanceStage()
+    expect(shiftBid('dusk', '2026-02-18', '2026-02-25')).toBe('shifted')
+    expect(getState().states.dusk['2026-02-25']).toEqual({
+      state: 'pending', source: 'bid', shiftedFrom: '2026-02-18',
     })
   })
 
@@ -721,10 +791,44 @@ describe('shifting a bid', () => {
   it('persists across a reload', () => {
     const backend = memoryBackend()
     initStore(backend)
+    setRole('admin'); advanceStage()   // closed, so the shift leaves a trail
     setCell('dusk', '2026-02-11', 'LL')
     shiftBid('dusk', '2026-02-11', '2026-02-18')
     initStore(backend)
     expect(getState().states.dusk['2026-02-18'].shiftedFrom).toBe('2026-02-11')
+  })
+
+  // The single-cell mover obeys the same day law as the drag mover
+  // (moveCells). Before the 27 Aug overnight pass none of this was checked
+  // here: a member could slide their bid after bidding closed, and a typed
+  // date could land a bid on a day no column renders — gone from every
+  // screen, still draining the leave balance.
+  it('a member cannot shift a bid once bidding has closed', () => {
+    setCell('dusk', '2026-02-11', 'LL')
+    setRole('admin'); advanceStage(); setRole('member')
+    expect(shiftBid('dusk', '2026-02-11', '2026-02-18')).toBe('window')
+    expect(getState().grid.dusk['2026-02-11']).toBe('LL')
+    expect(getState().grid.dusk?.['2026-02-18']).toBeUndefined()
+  })
+
+  it('refuses a landing day the war has no column for', () => {
+    setRole('admin')
+    setCell('dusk', '2026-02-11', 'LL')
+    advanceStage()
+    expect(shiftBid('dusk', '2026-02-11', '2027-02-18')).toBe('window')
+    expect(getState().grid.dusk['2026-02-11']).toBe('LL')
+    expect(getState().grid.dusk?.['2027-02-18']).toBeUndefined()
+  })
+
+  // A bid moved 11 → 18 → 25 was still BID on the 11th; the trail answers
+  // exactly that. Overwriting the origin with each hop would trace a
+  // two-hop move to a date nobody asked for.
+  it('a chain of closed-war shifts keeps the ORIGINAL origin in the trail', () => {
+    setRole('admin'); advanceStage()
+    setCell('dusk', '2026-02-11', 'LL')
+    shiftBid('dusk', '2026-02-11', '2026-02-18')
+    shiftBid('dusk', '2026-02-18', '2026-02-25')
+    expect(getState().states.dusk['2026-02-25'].shiftedFrom).toBe('2026-02-11')
   })
 })
 
@@ -1810,6 +1914,28 @@ describe('the batch writers (drag-select)', () => {
     expect(getState().grid.ramp?.['2026-01-07']).toBeUndefined()
   })
 
+  // A loose delete-box sweeps up empty cells around the bids. They are not
+  // deletions and not refusals — the sheet's "N deleted" must count what was
+  // actually removed, and an all-empty box must not persist or notify at all.
+  it('clearCells counts only real deletions — swept-up empty cells count as neither', () => {
+    setCells(cells('ramp', '2026-01-06'), 'LL')
+    const r = clearCells(cells('ramp', '2026-01-06', '2026-01-07', '2026-01-08'))
+    expect(r).toEqual({ written: 1, skipped: 0 })
+    const fn = vi.fn()
+    subscribe(fn)
+    expect(clearCells(cells('ramp', '2026-01-07', '2026-01-08'))).toEqual({ written: 0, skipped: 0 })
+    expect(fn).not.toHaveBeenCalled()
+  })
+
+  // A member never writes a medical marker — the batch predicate reports the
+  // refusal in the count instead of silently absorbing it in setCell.
+  it('setCells refuses a medical code from a member, counted as skipped', () => {
+    setRole('member')
+    const r = setCells(cells('ramp', '2026-01-06', '2026-01-07'), 'HL')
+    expect(r).toEqual({ written: 0, skipped: 2 })
+    expect(getState().grid.ramp?.['2026-01-06']).toBeUndefined()
+  })
+
   it('a member can fill in the window but never batch-decide', () => {
     setRole('member')
     expect(setCells(cells('ramp', '2026-01-06'), 'LL').written).toBe(1)
@@ -1819,6 +1945,7 @@ describe('the batch writers (drag-select)', () => {
 
   it('setBidStates (admin) decides biddable cells and skips a Raptor cell', () => {
     setCells(cells('ramp', '2026-01-06', '2026-01-07'), 'LL')
+    advanceStage()  // decisions live at closed/published — canDecide, same as the single writer
     const r = setBidStates([...cells('ramp', '2026-01-06', '2026-01-07'), ...cells('tata', '2026-01-09')], 'approved')
     expect(r).toEqual({ decided: 2, skipped: 1 })
     expect(getState().states.ramp['2026-01-06'].state).toBe('approved')
@@ -1826,12 +1953,28 @@ describe('the batch writers (drag-select)', () => {
   })
 
   it('moveCells slides a block by a delta, landing pending with the moved trail', () => {
+    advanceStage()   // close the war: a move then leaves the moved trail (27 Aug 26)
     setCells(cells('ramp', '2026-01-06', '2026-01-07'), 'LL')
     expect(moveCells(cells('ramp', '2026-01-06', '2026-01-07'), 4)).toBe('moved')
     expect(getState().grid.ramp?.['2026-01-06']).toBeUndefined()
     expect(getState().grid.ramp['2026-01-10']).toBe('LL')
     expect(getState().states.ramp['2026-01-10']).toEqual({ state: 'pending', source: 'bid', shiftedFrom: '2026-01-06' })
     expect(getState().grid.ramp['2026-01-11']).toBe('LL')
+  })
+
+  // The moved stripe must not appear on a bid shuffled while bidding was OPEN,
+  // even after the war closes — the trail is recorded only for a move made once
+  // bidding has closed (owner, 27 Aug 26 — "only after bidding is closed AND the
+  // input is moved").
+  it('a move while OPEN records no moved trail; a move once CLOSED does', () => {
+    setCells(cells('ramp', '2026-01-06', '2026-01-07'), 'LL')       // seed stage is OPEN
+    expect(moveCells(cells('ramp', '2026-01-06', '2026-01-07'), 4)).toBe('moved')
+    expect(getState().states.ramp['2026-01-10']).toEqual({ state: 'pending', source: 'bid' })
+    expect(getState().states.ramp['2026-01-10'].shiftedFrom).toBeUndefined()
+    // close, then move again → the trail is recorded now
+    advanceStage()
+    expect(moveCells(cells('ramp', '2026-01-10', '2026-01-11'), 4)).toBe('moved')
+    expect(getState().states.ramp['2026-01-14']).toEqual({ state: 'pending', source: 'bid', shiftedFrom: '2026-01-10' })
   })
 
   it('moveCells allows a self-overlapping slide (the block moves over its own days)', () => {
@@ -1892,5 +2035,86 @@ describe('the batch writers (drag-select)', () => {
     expect(getState().grid.ramp['2026-01-16']).toBeUndefined()
     expect(getState().grid.ramp?.['2026-01-07']).toBeUndefined()   // sources vacated
     expect(getState().grid.ramp?.['2026-01-09']).toBeUndefined()
+  })
+
+  // The landing preview asks moveProblem BEFORE painting, so it can never
+  // show half a landing the atomic commit would wholly refuse — one body
+  // with moveCells' own guards, exercised here without writing anything.
+  it('moveProblem answers what moveCells would refuse, without writing', () => {
+    setCells(cells('ramp', '2026-01-06', '2026-01-07'), 'LL')
+    expect(moveProblem(cells('ramp', '2026-01-06', '2026-01-07'), 4)).toBeNull()
+    setCells(cells('ramp', '2026-01-10'), 'OL')
+    expect(moveProblem(cells('ramp', '2026-01-06', '2026-01-07'), 4)).toEqual({ reason: 'occupied', at: '2026-01-10' })
+    expect(moveProblem(cells('ramp', '2026-01-06'), -400)).toMatchObject({ reason: 'window' })
+    // nothing was written by any of that
+    expect(getState().grid.ramp['2026-01-06']).toBe('LL')
+  })
+
+  // A two-hop closed-war move traces to the day the man actually bid, not
+  // the intermediate hop (same rule as shiftBid).
+  it('a chain of closed-war moves keeps the ORIGINAL origin in the trail', () => {
+    advanceStage()
+    setCells(cells('ramp', '2026-01-06'), 'LL')
+    expect(moveCells(cells('ramp', '2026-01-06'), 4)).toBe('moved')
+    expect(moveCells(cells('ramp', '2026-01-10'), 4)).toBe('moved')
+    expect(getState().states.ramp['2026-01-14']).toEqual({
+      state: 'pending', source: 'bid', shiftedFrom: '2026-01-06',
+    })
+  })
+})
+
+// A member writes only their OWN row — the person they are viewing as (owner,
+// 27 Aug 26 — "if I am viewing as a member and I view as ranger on the leave
+// war, I shouldn't be able to input on other people's row except mine"). The
+// identity in this prototype IS the "View as" selection (`viewer`); an admin
+// is bound by neither the window nor the row.
+describe('a member edits only their own row', () => {
+  beforeEach(() => { initStore(memoryBackend()); setRole('member'); setViewer('ramp') })
+  const cells = (person: string, ...dates: string[]) => dates.map(date => ({ personId: person, date }))
+
+  it('setCell writes the viewer’s own row but refuses another', () => {
+    setCell('dusk', '2026-01-06', 'LL')          // not my row
+    expect(getState().grid.dusk?.['2026-01-06']).toBeUndefined()
+    setCell('ramp', '2026-01-06', 'LL')          // my row
+    expect(getState().grid.ramp['2026-01-06']).toBe('LL')
+  })
+
+  it('setCells writes my row and reports the other rows as skipped, not silently dropped', () => {
+    const r = setCells([...cells('ramp', '2026-01-06'), ...cells('dusk', '2026-01-06')], 'LL')
+    expect(r).toEqual({ written: 1, skipped: 1 })
+    expect(getState().grid.ramp['2026-01-06']).toBe('LL')
+    expect(getState().grid.dusk?.['2026-01-06']).toBeUndefined()
+  })
+
+  it('setCellRange stays on my row across a span', () => {
+    expect(setCellRange('dusk', '2026-01-06', '2026-01-08', 'LL')).toEqual({ written: 0, skipped: 3 })
+    expect(setCellRange('ramp', '2026-01-06', '2026-01-08', 'LL').written).toBe(3)
+  })
+
+  it('the viewing person is the row: switch to view as dusk and dusk becomes editable, ramp does not', () => {
+    setViewer('dusk')
+    setCell('ramp', '2026-01-06', 'LL')
+    expect(getState().grid.ramp?.['2026-01-06']).toBeUndefined()
+    setCell('dusk', '2026-01-06', 'LL')
+    expect(getState().grid.dusk['2026-01-06']).toBe('LL')
+  })
+
+  it('a member may move only their own row’s bids', () => {
+    // bids planted as admin on two rows, then viewed as ramp
+    setRole('admin'); setCells(cells('ramp', '2026-01-06'), 'LL'); setCells(cells('dusk', '2026-01-06'), 'LL')
+    setRole('member'); setViewer('ramp')
+    // movableCells keeps only my row
+    expect(movableCells([...cells('ramp', '2026-01-06'), ...cells('dusk', '2026-01-06')]))
+      .toEqual(cells('ramp', '2026-01-06'))
+    // a direct move of the other row is refused as nothing-to-move; my row slides
+    expect(moveCells(cells('dusk', '2026-01-06'), 3)).toMatchObject({ reason: 'nothing' })
+    expect(getState().grid.dusk['2026-01-06']).toBe('LL')     // untouched
+    expect(moveCells(cells('ramp', '2026-01-06'), 3)).toBe('moved')
+  })
+
+  it('an admin is bound by neither window nor row — every row stays editable', () => {
+    setRole('admin'); setViewer('ramp')
+    const r = setCells([...cells('ramp', '2026-01-06'), ...cells('dusk', '2026-01-06')], 'LL')
+    expect(r).toEqual({ written: 2, skipped: 0 })
   })
 })

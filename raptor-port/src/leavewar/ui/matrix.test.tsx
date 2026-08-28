@@ -1,7 +1,7 @@
-import { act, render, screen, within } from '@testing-library/react'
+import { act, fireEvent, render, screen, within } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
 import type { Person } from '../engine'
-import { getState, initStore, setBidState, setCell, setPersLabel } from '../state/store'
+import { advanceStage, getState, initStore, setBidState, setCell, setPersLabel, setRole } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { Matrix } from './Matrix'
 
@@ -25,6 +25,32 @@ describe('Matrix', () => {
     // colour, under the IP group.
     expect(within(screen.getByTestId('row-tata')).getByText('IP')).toBeTruthy()
     expect(screen.getByTestId('group-IP')).toBeTruthy()
+  })
+
+  // Minimising a category (owner, 28 Aug 26 — "allow me to minimise categories
+  // on leave war"). A view preference, either role, nothing folded by default.
+  it('folds a category away on its heading, and reopens it', () => {
+    render(<Matrix />)
+    expect(screen.getByTestId('row-ramp')).toBeTruthy()   // RAMP is the seed's SXO
+    fireEvent.click(screen.getByTestId('groupfold-SXO'))
+    // the heading survives — it is how the group is reopened — but its rows go
+    expect(screen.getByTestId('group-SXO')).toBeTruthy()
+    expect(screen.queryByTestId('row-ramp')).toBeNull()
+    // another group is untouched
+    expect(screen.getByTestId('row-tata')).toBeTruthy()
+    fireEvent.click(screen.getByTestId('groupfold-SXO'))
+    expect(screen.getByTestId('row-ramp')).toBeTruthy()
+  })
+
+  // A folded group still says how many people it is hiding, so the count is
+  // built from the unfiltered roster, not from what is left on screen.
+  it('keeps the heading count truthful while folded', () => {
+    render(<Matrix />)
+    // the count only — the caret beside it flips ▾/▸ on purpose
+    const count = () => screen.getByTestId('group-SXO').querySelector('.gcount')!.textContent
+    const before = count()
+    fireEvent.click(screen.getByTestId('groupfold-SXO'))
+    expect(count()).toBe(before)
   })
 
   it('the frozen column heads CS/Name — it holds callsigns and ground-crew names alike (owner, 26 Aug 26)', () => {
@@ -261,7 +287,7 @@ describe('bid state on a cell', () => {
     render(<Matrix />)
     const cls = () => screen.getByTestId('cell-asics-2026-01-23').querySelector('.c')!.className
     expect(cls()).not.toContain('appr')
-    act(() => setBidState('asics', '2026-01-23', 'approved'))
+    act(() => { setRole('admin'); advanceStage(); setBidState('asics', '2026-01-23', 'approved') })
     expect(cls()).toContain('appr')
   })
 
@@ -274,7 +300,7 @@ describe('bid state on a cell', () => {
     const cls = () => screen.getByTestId('cell-asics-2026-01-23').querySelector('.c')!.className
     expect(cls()).not.toContain('tbc')
     const before = screen.getByTestId('count-opsp-2026-01-23').textContent
-    act(() => setBidState('asics', '2026-01-23', 'acknowledged'))
+    act(() => { setRole('admin'); advanceStage(); setBidState('asics', '2026-01-23', 'acknowledged') })
     expect(cls()).toContain('tbc')
     expect(screen.getByTestId('count-opsp-2026-01-23').textContent).toBe(before)
   })
@@ -285,7 +311,7 @@ describe('bid state on a cell', () => {
   it('counts a refused bid as a man at work', () => {
     render(<Matrix />)
     const before = screen.getByTestId('count-opsp-2026-01-23').textContent
-    act(() => setBidState('asics', '2026-01-23', 'refused'))
+    act(() => { setRole('admin'); advanceStage(); setBidState('asics', '2026-01-23', 'refused') })
     expect(screen.getByTestId('count-opsp-2026-01-23').textContent).not.toBe(before)
   })
 })

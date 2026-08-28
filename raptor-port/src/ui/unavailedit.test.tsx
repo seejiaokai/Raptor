@@ -91,7 +91,7 @@ describe('the dialog — a Person field, admin only', () => {
 
   it('a member never sees it, even with the dialog forced open on their own row (defence in depth — no button reaches them today)', async () => {
     const inp = divot()
-    await act(async () => { setSession({ user: 'user', role: 'member' }); setInpEdit(inp); notify() })
+    await act(async () => { setSession({ user: 'user', role: 'main' }); setInpEdit(inp); notify() })
     expect($('#inpEditPerson')).toBe(null)
     expect($('.inped-hint').textContent).toBe('The person and the dates are changed on the Inputs page.')
     await act(async () => { setInpEdit(null); setSession({ user: 'a', role: 'admin' }); notify() })
@@ -168,7 +168,7 @@ describe('reassignInput — the shared write both the dialog and the puck use', 
     const inp: any = plant({ person: 'bane', date: MON, allday: false, s: 600, e: 660, type: 'Meeting', remarks: 'role backstop', mod: '' })
     expect(acceptInput(0, inp, 'u')).toBe(true)
     afterSchedMutate()
-    setSession({ user: 'user', role: 'member' })   // a member may edit their own inputs, not reassign whose day this is
+    setSession({ user: 'user', role: 'main' })   // a member may edit their own inputs, not reassign whose day this is
     expect(reassignInput(inp.iid, 'stiff')).toBe(false)
     expect(inp.person).toBe('bane')                // unchanged
     setSession({ user: 'a', role: 'admin' })

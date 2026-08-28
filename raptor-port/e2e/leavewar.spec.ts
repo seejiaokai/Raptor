@@ -20,7 +20,7 @@
    unchanged because the map preserves seat and band and the mapped
    people's own SXO flags match the seed's. */
 import { expect, test, type Page } from '@playwright/test'
-import { lwRole, openLeaveWar } from './app'
+import { lwRole, lwView, openLeaveWar } from './app'
 
 const CAL_MONTHS = [
   'JANUARY', 'FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE',
@@ -622,12 +622,16 @@ test('the Raptor mark is painted, and an ordinary bid carries none', async ({ pa
   expect(parseFloat(raptor.width)).toBeGreaterThan(0)
   expect(raptor.style).toBe('solid')
 
-  // The dotted "moved" edge only shows once bidding has closed (owner, 27 Aug
-  // 26 — while a war is open, people shuffle their own bids and a moved mark
-  // is just noise). Close the war as an admin, then it paints.
+  // The dotted "moved" edge exists only for a move made once bidding has
+  // closed (owner, 27 Aug 26 — an open-war shuffle stores no trail, so the
+  // seed no longer plants one). Close the war as an admin and MOVE a bid —
+  // the landed cell paints the dotted edge.
   await lwRole(page, 'admin')
   await page.locator('[data-testid="stage-advance"]').click()
-  const moved = await edge('[data-testid="cell-slash-2026-02-03"] .c')
+  await page.locator('[data-testid="cell-slash-2026-02-03"]').click()
+  await page.locator('[data-testid="shift-date"]').fill('2026-02-06')
+  await page.locator('[data-testid="decide-shift"]').click()
+  const moved = await edge('[data-testid="cell-slash-2026-02-06"] .c')
   expect(parseFloat(moved.width)).toBeGreaterThan(0)
   expect(moved.style).toBe('dotted')
 
@@ -710,6 +714,41 @@ test('drag-selecting a row fills the leave across the whole span', async ({ page
   await page.locator('[data-testid="sel-LL"]').click()
   for (const d of ['2026-01-06', '2026-01-07', '2026-01-08'])
     await expect(page.locator(`[data-testid="cell-slipway-${d}"] .c`)).toBeVisible()
+})
+
+// A member edits ONLY their own row — the person they are viewing as (owner,
+// 27 Aug 26 — "if I am viewing as a member and I view as ranger, I shouldn't be
+// able to input on other people's row except mine"). Here the member is scoped
+// to slipway; ammo is somebody else. The store rule (canEditRow) is unit-tested;
+// this proves the GRID honours it — the tap opens the picker on the own row and
+// nothing on another.
+test('a member scoped to one person can input on that row only', async ({ page }) => {
+  await lwView(page, 'slipway')
+  // another person's row: a tap opens nothing
+  await page.locator('[data-testid="cell-ammo-2026-02-11"]').click()
+  await expect(page.locator('[data-testid="bid-picker"]')).toHaveCount(0)
+  // own row (viewing as slipway): the tap opens the bid picker
+  await page.locator('[data-testid="cell-slipway-2026-02-11"]').click()
+  await expect(page.locator('[data-testid="bid-picker"]')).toBeVisible()
+})
+
+// The same rule on the DRAG: a scoped member's selection can only ever cover
+// their own row (the drag's row list is the viewer alone), so a drag straying
+// down onto another person's row is clamped to the viewer's row — a fill from it
+// writes the OWN row and never the other. And a drag along the own row still
+// spans dates, so scoping does not cost a member their batch fill.
+test('a member scoped to one person drag-fills their own row only', async ({ page }) => {
+  desktopOnly()
+  await lwView(page, 'slipway')
+  // strays straight down onto ammo's cell: the selection stays on slipway
+  await dragSelect(page, 'cell-slipway-2026-01-06', 'cell-ammo-2026-01-06')
+  await expect(page.locator('[data-testid="select-sheet"]')).toBeVisible()
+  await page.locator('[data-testid="sel-LL"]').click()
+  await expect(page.locator('[data-testid="cell-slipway-2026-01-06"] .c')).toBeVisible()
+  await expect(page.locator('[data-testid="cell-ammo-2026-01-06"] .c')).toHaveCount(0)
+  // and a normal along-the-row drag still selects a whole span
+  await dragSelect(page, 'cell-slipway-2026-01-10', 'cell-slipway-2026-01-12')
+  await expect(page.locator('[data-testid="select-sheet"]')).toBeVisible()
 })
 
 test('a drag-selection offers Move, and the move banner appears on entering it', async ({ page }) => {
@@ -800,7 +839,12 @@ test('the date header freezes on desktop when the page scrolls down', async ({ p
 // lives on the Raptor input, so this proves the cross-app save in a real
 // browser.
 test('at published, a tap on an approved leave edits its note, and it sticks', async ({ page }) => {
-  await lwRole(page, 'admin')
+  // A REAL admin login, not just the war-role bridge: the note saves through
+  // Raptor's commitInputEdit, whose member-own gate genuinely fires since the
+  // 27 Aug overnight pass — a member session editing prowler's record is
+  // refused there, and production's war admin IS the Raptor admin (the war
+  // role mirrors the login), so the realistic session is the admin one.
+  await openLeaveWar(page, 'a')
   await page.locator('[data-testid="stage-advance"]').click()   // open -> closed
   await page.locator('[data-testid="stage-advance"]').click()   // closed -> published
   const cell = page.locator('[data-testid="cell-prowler-2026-01-09"]')  // a Raptor-owned leave
@@ -1016,40 +1060,46 @@ test('a scrolled sheet keeps its header and its close button', async ({ page }) 
   await expect(sheet).toHaveCount(0)
 })
 
-// One scroll while a sheet is up (owner, 17 Aug 26 — "I think it's cause by
-// having 2 scrolls... on the phone"): a swipe that bottoms the sheet's list
-// out must not fall through and scroll the page behind it, and a finger on
-// the scrim must not scroll the page either. The wheel drives the chaining
-// half for real; the scrim's touch refusal resolves only as computed style
-// here, because a synthetic touch sequence is the old jsdom hit-test trap in
-// browser clothes.
-test('an open sheet is the only thing that scrolls', async ({ page }) => {
-  await page.evaluate(() => window.scrollTo(0, 120))
+// The page scrolls FREELY behind an open sheet (owner, 28 Aug 26 — "enable me
+// to still scroll up and down when this window is opened"). This REVERSES the
+// 17 Aug one-scroll body lock: the body is no longer frozen, so the page scrolls
+// up-down while the sheet stays up, and the scrim yields the vertical axis to
+// the browser (`touch-action: pan-y`) rather than refusing every gesture. The
+// panel is position:fixed, so only the grid behind it moves — the sheet does not
+// ride the page down. (The sheet's OWN list still keeps its scroll to itself via
+// `overscroll-behavior: contain` in bidpicker.css — unchanged, not re-asserted
+// here since it only bites when the list overflows, which a fitting sheet does
+// not.)
+test('the page scrolls behind an open sheet, and the panel stays put', async ({ page }) => {
+  await page.evaluate(() => window.scrollTo(0, 0))
   await page.locator('[data-testid="counter-pick"]').click()
   const sheet = page.locator('[data-testid="counter-sheet"]')
   await expect(sheet).toBeVisible()
-  const before = await page.evaluate(() => window.scrollY)
-  const box = (await sheet.boundingBox())!
-  await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2)
-  await sheet.evaluate(el => { el.scrollTop = el.scrollHeight })
-  await page.mouse.wheel(0, 600)
-  await page.waitForTimeout(200)
-  expect(await page.evaluate(() => window.scrollY)).toBe(before)
+  const topBefore = (await sheet.boundingBox())!.y
+
+  // The page is not locked: it scrolls up-down while the sheet stays up.
+  // (Under the old body lock, overflow:hidden refused this and scrollY held.)
+  await page.evaluate(() => window.scrollBy(0, 300))
+  await page.waitForTimeout(100)
+  expect(await page.evaluate(() => window.scrollY)).toBeGreaterThan(0)
+
+  // The panel is fixed, so it does not travel down with the page.
+  const topAfter = (await sheet.boundingBox())!.y
+  expect(Math.abs(topAfter - topBefore)).toBeLessThan(1.5)
+
   const ta = await page.locator('[data-testid="sheet-scrim"]').evaluate(el => getComputedStyle(el).touchAction)
-  expect(ta).toBe('none')
-  // While the sheet is up the page itself is locked (a sheet that FITS the
-  // screen has nothing to contain, so containment alone cannot stop the
-  // fall-through); closing it unlocks the page with its position intact.
-  expect(await page.evaluate(() => getComputedStyle(document.body).overflow)).toBe('hidden')
-  await page.locator('[data-testid="counter-cancel"]').click()
+  expect(ta).toBe('pan-y')
   expect(await page.evaluate(() => getComputedStyle(document.body).overflow)).not.toBe('hidden')
-  expect(await page.evaluate(() => window.scrollY)).toBe(before)
 })
 
 // The viewer — Raptor's "View as" person, Bane on a fresh login — is lit on
 // the grid, the title sheet answers with THEIR numbers, and any callsign
 // opens that person's all-figures sheet, member included (owner, 17 Aug 26).
 test('the viewer\'s row is lit and the title sheet answers with their numbers', async ({ page }) => {
+  // openLeaveWar leaves the war unscoped so the mechanics tests edit any row;
+  // this test is specifically about the viewer, so scope it to Bane (Ranger) —
+  // the person a fresh Raptor login views as.
+  await lwView(page, 'bane')
   const mine = page.locator('[data-testid="row-bane"]')
   await expect(mine).toHaveClass('me')
   // Painted, not merely classed — the frozen pair carries a solid tint.
@@ -1057,9 +1107,16 @@ test('the viewer\'s row is lit and the title sheet answers with their numbers', 
   const other = await page.locator('[data-testid="row-prowler"] .who').evaluate(el => getComputedStyle(el).backgroundColor)
   expect(bg).not.toBe(other)
 
+  // The persistent viewer badge names whose page this is (owner, 28 Aug 26).
+  await expect(page.locator('[data-testid="lw-viewing"]')).toContainText('Ranger')
+
   await page.locator('[data-testid="counter-pick"]').click()
-  await expect(page.locator('[data-testid="counter-sheet"]')).toContainText('your numbers — Ranger')
-  await expect(page.locator('[data-testid="counter-lvebal"]')).toContainText('yours')
+  // The picker leads with VIEWING AS <callsign> (28 Aug 26), not a grey aside.
+  await expect(page.locator('[data-testid="counter-viewer"]')).toContainText('VIEWING AS')
+  await expect(page.locator('[data-testid="counter-viewer"]')).toContainText('Ranger')
+  // The row still answers with the viewer's own number; "left" is the balance's
+  // word (the per-row "yours" was dropped for the header, 28 Aug 26).
+  await expect(page.locator('[data-testid="counter-lvebal"]')).toContainText('left')
   await page.locator('[data-testid="counter-cancel"]').click()
 
   await page.locator('[data-testid="person-prowler"]').click()
@@ -1388,13 +1445,15 @@ test('the counter control is a real tap target on a phone', async ({ page }) => 
 
   await page.locator('[data-testid="counter-pick"]').click()
   await expect(page.locator('[data-testid="counter-sheet"]')).toBeVisible()
-  // And every row in the sheet clears the 44px a thumb needs: the wrap spans
-  // the sheet, and the select button inside it is tall enough to hit.
+  // The picker was compressed on 28 Aug 26 (owner — "much smaller and compress
+  // the data"): the generic captions are gone and the rows pull down to a
+  // dense-but-tappable height, below the 44px action-sheet floor on purpose.
+  // Still a real target — a scannable list of the viewer's own figures.
   for (const c of ['ll', 'lvebal', 'lvecon']) {
     const wrap = (await page.locator(`[data-testid="figrow-${c}"]`).boundingBox())!
-    expect(wrap.width).toBeGreaterThanOrEqual(240)
+    expect(wrap.width).toBeGreaterThanOrEqual(220)
     const crow = (await page.locator(`[data-testid="counter-${c}"]`).boundingBox())!
-    expect(crow.height).toBeGreaterThanOrEqual(44)
+    expect(crow.height).toBeGreaterThanOrEqual(28)
   }
 })
 
@@ -1982,27 +2041,17 @@ test('an admin auto-sorts and hand-drags the roster; a member gets neither tool'
   await expect(page.locator('[data-testid="roster-arrange"]')).toHaveCount(0)
 })
 
-test('an admin gives a personnel body a free-text label', async ({ page }) => {
-  // The personnel label is an EDITING aid only since 26 Aug 26 (owner —
-  // "just indicate the callsign/name for the left column. No need to
-  // indicate initials or flight"): its edit box appears while Rearranging,
-  // and the roster at rest shows callsign + chip and nothing else, at every
-  // width. The edit path is desktop-only, as before; on a phone assert the
-  // at-rest absence instead.
-  if (page.viewportSize()!.width < 700) {
-    await expect(page.locator('[data-testid="perslabel-torque"]')).toHaveCount(0)
-    return
-  }
+test('a personnel row shows its callsign, with no edit box, in Rearrange', async ({ page }) => {
+  // The free-text label editor was REMOVED (owner, 28 Aug 26 — "i can edit
+  // personnel, dont need to show that, just leave it as the callsign/name").
+  // A ground-crew row shows the same callsign + chip as every other row, in
+  // Rearrange too — no edit box in either mode, at every width.
   await lwRole(page, 'admin')
+  await expect(page.locator('[data-testid="perslabel-in-torque"]')).toHaveCount(0)
   await page.locator('[data-testid="roster-arrange"]').click()
-  const inp = page.locator('[data-testid="perslabel-in-torque"]')
-  await inp.fill('Avionics')
-  await inp.press('Enter')
-  await page.locator('[data-testid="roster-arrange"]').click() // leave arrange → callsign only
-  await expect(page.locator('[data-testid="perslabel-torque"]')).toHaveCount(0)
-  // the text still SAVED — re-entering Rearrange offers it back in the box
-  await page.locator('[data-testid="roster-arrange"]').click()
-  await expect(page.locator('[data-testid="perslabel-in-torque"]')).toHaveValue('Avionics')
+  await expect(page.locator('[data-testid="perslabel-in-torque"]')).toHaveCount(0)
+  // the callsign is what the name column shows
+  await expect(page.locator('[data-testid="row-torque"] .cs')).toHaveText('Ratchet')
   await page.locator('[data-testid="roster-arrange"]').click() // leave arrange mode
 })
 
@@ -2101,14 +2150,23 @@ test('on a phone the header freezes under the top bar and thaws on the way back'
   const bar = (await page.locator('.topbar').first().boundingBox())!
   const mb = (await mirror.boundingBox())!
   expect(Math.abs(mb.y - (bar.y + bar.height))).toBeLessThan(2)
-  // it follows the grid's horizontal scroll
+  // it follows the grid's horizontal scroll — on the compositor by TRANSFORM
+  // where CSS scroll-driven animations exist (`.mxfixed-anim`, the glued path),
+  // else by the JS mirror's own scrollLeft (the fallback).
   await page.evaluate(() => { document.querySelector('.mx-wrap')!.scrollLeft = 400 })
   await page.waitForTimeout(200)
-  expect(await page.evaluate(() => document.querySelector('.mxfixed-scroll')!.scrollLeft)).toBe(400)
-  // and its columns sit exactly over the grid's
+  const followed = await page.evaluate(() => {
+    const anim = document.querySelector('.mxfixed-anim') as HTMLElement | null
+    if (anim) return { mode: 'sda', tx: new DOMMatrixReadOnly(getComputedStyle(anim).transform).m41 }
+    return { mode: 'js', sl: (document.querySelector('.mxfixed-scroll') as HTMLElement).scrollLeft }
+  })
+  if (followed.mode === 'sda') expect(Math.abs((followed.tx as number) + 400)).toBeLessThan(3)
+  else expect(followed.sl).toBe(400)
+  // and its columns sit exactly over the grid's (scoped to the scrolling layer,
+  // so the scroll-driven path's static frozen-column overlay is not picked)
   const real = (await page.locator('[data-testid="head-2026-01-20"]').boundingBox())!
   const ghost = await page.evaluate(() => {
-    const cells = document.querySelectorAll('.mxfixed .mxhead tr:last-child th')
+    const cells = document.querySelectorAll('.mxfixed-scroll .mxhead tr:last-child th')
     for (const c of cells) {
       if (c.textContent!.includes('20')) return c.getBoundingClientRect().x
     }

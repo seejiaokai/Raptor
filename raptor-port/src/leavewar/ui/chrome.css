@@ -110,6 +110,42 @@
   flex-wrap: wrap;
 }
 
+/* WHOSE view this is — the persistent viewer badge (owner, 28 Aug 26 — "make
+   it obvious that im viewing as for example RANGER"). Pushed to the far right
+   of the period row and accent-tinted so it stands apart from the neutral
+   period picker and reads as status, not another control. */
+.lw-viewing {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 11px;
+  border-radius: 11px;
+  background: rgba(59, 198, 232, .12);
+  border: 1px solid rgba(59, 198, 232, .45);
+  white-space: nowrap;
+}
+
+.lw-viewing .eye {
+  color: var(--accent);
+  flex: 0 0 auto;
+}
+
+.lw-viewing .vlab {
+  color: var(--ink-3);
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.lw-viewing .vwho {
+  color: var(--accent);
+  font-weight: 800;
+  letter-spacing: .04em;
+  font-size: 12.5px;
+}
+
 .wk {
   background: var(--panel-2);
   border: 1px solid var(--edge);
@@ -424,17 +460,20 @@
    Fixed rather than absolute for the same reason `.bidsheet` is — see the
    note on WarSheet in Chrome.tsx about `backdrop-filter` making an ancestor
    the containing block. */
+/* 69/70, not the old 40/41: the frozen date-header mirror is fixed at 55
+   (matrix.css .mxfixed) and, once the page scrolled, painted OVER these
+   popovers; they sit above it now and still under the sheets' 79/80. */
 .umscrim {
   position: fixed;
   inset: 0;
-  z-index: 40;
+  z-index: 69;
 }
 
 .umlist {
   position: fixed;
   top: 96px;
   left: 8px;
-  z-index: 41;
+  z-index: 70;
   width: 244px;
   background: var(--panel);
   border: 1px solid var(--edge);
@@ -509,7 +548,7 @@
   position: fixed;
   top: 96px;
   left: 8px;
-  z-index: 41;
+  z-index: 70;   /* above the frozen header mirror (55) — see .umlist */
   width: 272px;
   background: var(--panel);
   border: 1px solid var(--edge);
@@ -560,5 +599,13 @@
 .leg-sw.ref  { background: rgba(240, 85, 95, .16); color: #FFA6AD; box-shadow: inset 0 0 0 1px rgba(240, 85, 95, .5); }
 .leg-sw.raptor { border-left: 2px solid var(--accent); padding-left: 4px; }
 .leg-sw.moved  { border-left: 2px dotted #F2C879; padding-left: 4px; }
+/* the code-glossary swatches take the grid's OWN duty / marker colours
+   (mirrors matrix.css `.c.sc` / `.c.info`), so the legend can't drift from
+   the cells and doubles as a key to those two colours */
+.leg-sw.sc   { background: rgba(231, 193, 58, .16); color: #F0DC8E; box-shadow: inset 0 0 0 1px rgba(231, 193, 58, .5); }
+.leg-sw.info { color: var(--ink-3); }
+/* the FS/HS heading — the codes that live ONLY here — reads in the accent so
+   the "not on Inputs" group stands out from the mirror-of-Inputs groups below */
+.leg-sec-here { color: var(--accent); }
 
 }

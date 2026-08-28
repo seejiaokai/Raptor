@@ -1295,17 +1295,107 @@ Pending on expiry" is arithmetic, the `isLateInput` doctrine.
 `applyMedPlan` in `ui/inputedit.tsx`, inside the SAME `writeInputsBatch` as
 the input that caused them — one undo step):
 
-- An **upchit on X** cuts every downchit of that person still running past X
-  to end ON X (down 10–13 Jul, upchit 12 Jul → 10–12 Jul); on/before the
-  start it deletes the row. The remarks "till …" token is rewritten
+- An **upchit on X marks the man FIT ON X ITSELF** (owner, 27 Aug 26 —
+  "upchit on 14 Jul means fit for full duty after the moment upchit was
+  selected"): every downchit of that person COVERING X (started on/before
+  it, ending on or past it) is cut to end the DAY BEFORE (down 10–13 Jul,
+  upchit 12 Jul → 10–11 Jul); a row left covering only fit days (it started
+  ON X) is removed, visibly, via the save-time sheet below. A row that
+  STARTS AFTER X is untouched (27 Aug 26 overnight pass) — it is the "newer
+  entry" that replaces the pending nag (a future surgery already filed), not
+  part of the episode being closed — and instead surfaces as a LEFTOVER of
+  `upchitEffects(person, x, except)`, the one body the save-time summary
+  sheet and the write both read. The remarks "till …" token is rewritten
   (`withRemarksTail`), `retractLwRow` runs first on an lw-tagged row, and the
-  Leave War's freed days clear on the next reconcile.
-- A **different-type medical overlap** wins its days: the older row is cut to
-  end the day before the new one starts, deleted when nothing remains (a tail
-  past the new end is deliberately lost — "the latest input overwrites").
+  Leave War's freed days clear on the next reconcile. The canonical closer of
+  an EXPIRED episode is dated the day AFTER its end; `pendingUpchits`' `>=`
+  covering test admits it and still tolerates old ends-on-the-date records.
+- A **different-type medical overlap is ASKED ABOUT, never resolved
+  silently** (owner, 27 Aug 26 — the clash sheet, below). The programmatic
+  default — what `newMedTrimPlan` still does when a caller applies it, and
+  what the sheet's "<new type> replaces" chooses — is that the new entry wins its
+  days and ONLY its days (27 Aug 26 overnight pass): the older row is cut to
+  end the day before the new one starts (deleted when nothing remains before
+  it), and when it also ran PAST the new one's end the surviving tail
+  (`medTailBeyond` — one body, read by the sheet and the planner) is minted as
+  a second same-type row in the same plan (same person, year anchor and
+  document). When applied DIRECTLY (no sheet — `caldrag.ts`, hand-made commit
+  calls, the tests) that tail is ALWAYS kept: a short entry landing mid-way
+  through a long downchit must never silently mark the man fit for its
+  remainder. From the CLASH SHEET the tail is the filer's call — a per-leftover
+  **Remove (default) / Keep** (owner, 28 Aug 26): `newMedTrimPlan`'s `keepTail`
+  argument carries the rows whose tail to keep, and a removed leftover simply
+  never mints, its days reading fit — but shown on the sheet before the save,
+  never silent. The row is still cut to its head either way; only the tail
+  turns on the answer. `newMedTrimPlan` selects its rows through `medClashes`
+  — the same body the clash sheet lists — so the question and the cut cannot
+  disagree.
 - A **same-type overlap is REFUSED**, never trimmed (`medOverlapRefusal`, the
   `sansOverlapRefusal` shape): the person is told to edit the entry on file
-  and attach the new document to it. Upchit-vs-upchit same day likewise.
+  and attach the new document to it. Upchit-vs-upchit same day likewise. Three
+  more refusals joined 27 Aug 26 (all in `normalizeInputDraft`/`upchitRefusal`,
+  shared by every editor): a downchit may not run over — or END ON — one of
+  the person's upchits (`downOverUpchitRefusal`; the upchit day is a fit day,
+  so ending the day BEFORE is the trimmed convention and stays editable,
+  and STARTING on it stays allowed as a new same-day episode); an upchit for
+  an episode ALREADY answered by a later upchit is refused; and a cleared
+  date box is refused, never silently defaulted to the loaded week's Monday.
+  A medical row also KEEPS ITS FAMILY at the write path — downchit stays
+  downchit, upchit stays upchit — and a `docId` is written only for a type
+  that `needsDoc`, so a certificate cannot ride a type switch onto leave.
+  Every trim/delete/tail the plan applies writes an edit-log line, with the
+  HONEST reason: an upchit's cuts log "closed by the upchit", a leftover the
+  filer ticked logs "removed with the upchit" (`applyMedPlan`'s `why`).
+
+**The upchit save-time summary** (owner, 27 Aug 26 — "ask at save time").
+An upchit is NEVER saved silently from a form: the Inputs page's add form,
+its row editor and the shared `InputEditor` dialog all open
+`ui/UpchitConfirm.tsx` before writing. The sheet lists exactly what the
+upchit will trim or remove (from `upchitEffects` — the same body the write
+runs, so sheet and save cannot disagree) and puts every LEFTOVER — a
+later-dated downchit, the tail of a split entry or a filed future one — to
+the filer as an explicit **Keep / Remove with NO default**: Save stays
+disabled until each has an answer (owner — "if the owner doesn't select …
+can't move forward"). Save commits the upchit, its trims and the ticked
+removals as ONE `writeInputsBatch` undo step; Cancel writes nothing. The
+calendar re-date drag (`caldrag.ts`) stays direct — an explicit logged
+gesture on the upchit itself; leftovers simply stay.
+
+**The medical clash sheet** (owner, 27 Aug 26 — "ask at save time", the
+upchit sheet's sibling, `ui/MedClashConfirm.tsx`). Saving a medical entry
+that overlaps a DIFFERENT-type one — new or edited, from any of the same
+three form paths — opens a sheet listing every clash (`medClashes`) with a
+forced per-clash choice, no default: the new entry **replaces** the shared
+days (the old row is trimmed/split exactly as the default rule above), or the
+existing status is **kept till its end** — then the new entry is filed AROUND
+it: its
+kept day segments come from `subtractSpans` via `medKeptSegments`
+(`ui/inputedit.tsx`), the first segment is the row saved, later segments are
+minted as sibling rows (`mintMedSegments`, same document — the applyMedPlan
+tail idiom), each trimmed only against rows the filer chose to overwrite. A
+kept row is never trimmed BY CONSTRUCTION — the segments cannot touch it.
+Choices that leave the new entry no days at all are refused ("nothing left
+to file") and nothing is written — a backstop only, since 28 Aug 26 (owner —
+"no ATT C keeps them button"): a clash whose row COVERS the whole new entry
+is FORCED to 'new' by the sheet itself, its keep option not offered, so the
+single-clash route to that refusal no longer exists (only a multi-clash
+combination can still jointly swallow the entry). **The LEFTOVER** (owner,
+28 Aug 26): when the
+new entry TAKES the days of a status that ran past it — ATT C 10–15, a new
+ATT B 12–13 → an ATT C tail 14–15 — the sheet asks a second question under that
+clash, **Remove those days (default) or Keep them**. This is the ONE choice on
+the sheet that carries a default (the who-holds-them choice above still forces
+an answer); the owner chose Remove because a status filed mid-way usually means
+the old plan changed, and the pending removal is shown plainly (the red seg,
+"will be removed") so a straight Save is a seen decision, never silent. Its
+answer rides the `keepTail` list into `newMedTrimPlan`/`mintMedSegments`, so the
+sheet and the write cut the same tail. The whole resolution is one
+`writeInputsBatch` undo step. The invariant this protects: **each person
+holds exactly ONE medical status per day** — overlaps are resolved at the
+write, never stored and re-interpreted at display time. Same-type overlap
+stays refused outright (edit that entry), and the programmatic callers
+(`caldrag.ts`, hand-made `commitNewInput`/`commitInputEdit` calls) keep the
+silent new-wins default, documented.
 
 **The mandatory document.** `needsDoc(t)` (= downchit or upchit, ONE body in
 `engine/inputs.ts`) decides both the upload control's visibility and the
@@ -2115,8 +2205,13 @@ control is hidden from a member).
 (owner, 27 Aug 26).** `setCells` / `clearCells` fill or empty many cells and
 ride `canEditCell` per cell — a member fills what they could fill one cell at
 a time (open stage, in window), skipping Raptor-owned/locked/out-of-squadron
-days (PARTIAL by design, like `setCellRange`). `setBidStates` is admin-only
-(a decision is management's, as the single `setBidState`'s sheet already is).
+days (PARTIAL by design, like `setCellRange`). `setBidStates` AND the single
+`setBidState` both check `canDecide` at the write (27 Aug 26 overnight pass —
+the single writer's "no login in this prototype" rationale pre-dated the
+merge and had left it wholly ungated: a member could self-approve through
+the store). A medical code is refused from a member in `setCell` itself (the
+sheets only ever offered it to an admin; the store now agrees), and the batch
+predicates carry the same term so the refusal lands in the COUNT.
 `moveCells` is `shiftBid` for a whole selection: role-gated by `canEditCell`,
 ATOMIC (every source and every landing day validated before any write — a
 half-moved block is worse than a refused one, and there is no undo), landing
@@ -2124,9 +2219,16 @@ half-moved block is worse than a refused one, and there is no undo), landing
 occupied by a non-selected cell, Raptor-owned, or outside the war refuses the
 whole move. All batch to ONE save-and-notify under the store's `quiet`
 suppression. A batch API growing its OWN guard would be the drift-seam to
-avoid — they must always call through the same per-cell checks. Pinned in
-`store.test.ts` §the batch writers. On screen: `docs/ui-contracts.md`
-§Selecting on the Leave War grid.
+avoid — they must always call through the same per-cell checks. Since the
+27 Aug overnight pass that cuts BOTH ways: `shiftBid`, the single-cell mover,
+carries `moveCells`' whole day law (stage/window via `canEditCell` on both
+ends, the landing on a real war day the person is still in the squadron for —
+a typed off-war date used to land a bid on a day no column renders, silently
+draining the balance), the validation half of `moveCells` is factored as
+`moveProblem` (the grid's landing preview asks it, so the preview and the
+commit cannot disagree), and a CHAIN of closed-war moves keeps the ORIGINAL
+`shiftedFrom`. Pinned in `store.test.ts` §the batch writers. On screen:
+`docs/ui-contracts.md` §Selecting on the Leave War grid.
 
 **An admin keeps the bid decision after PUBLISHING (owner, 27 Aug 26 — "if
 leave war is published, the admin can still have these functions").**
@@ -2134,9 +2236,10 @@ leave war is published, the admin can still have these functions").**
 only: publication freezes the picture for the SQUADRON, but the admin still
 runs the war, so a late change tapped in after publication is approved /
 refused / moved exactly as at closed — via the drag-selection sheet's Decide
-row, and the single-cell decision sheet. The store's `setBidStates` was
-already stage-agnostic (admin-only, no stage check), so this is a UI-gate
-widening only. `canDecide` and `canEdit` are still disjoint per stage (a
+row, and the single-cell decision sheet. Since the 27 Aug overnight pass BOTH
+store writers (`setBidState` and `setBidStates`) check this same `canDecide`
+body at the write, so the store and the sheets cannot disagree about who
+decides or when. `canDecide` and `canEdit` are still disjoint per stage (a
 member never edits at closed or published), so the "no stage lets a member
 bid and an admin decide at once" invariant holds. Pinned in `stages.test.ts`
 and `deciding.test.tsx` (the admin decision survives into published). The
@@ -2154,10 +2257,18 @@ for a member, `all` for a scheduler) with "Everyone" one pick away; on every
 other person's row the ✎ and ✕ are not rendered, but the document paperclip
 stays (anyone may VIEW any attachment — owner, same day). The write-path
 backstop behind the hidden controls is in `commitInputEdit` / `removeInput`,
-gated on an ACTUAL member session (`SESSION?.role === 'member' && r.person
-!== ME`) rather than "not admin" — the app's own edit cascades (sync
-retraction, medical trims, the accepted-row relink) and every scheduler edit
-run with no member session, so they must not be caught. This SITS BESIDE the
+gated on a signed-in session that CANNOT edit the schedule (`SESSION &&
+!canEditSched() && r.person !== ME`) — the render gate's own predicate.
+NOT the role literal `'member'`: the first cut compared against that string,
+which no account ever carries (the member login is role `'main'`, auth.ts),
+so the gate never fired in production while its tests logged in with the
+fabricated shape and stayed green (27 Aug 26 overnight find — the fixtures
+now use the real role). The app's own edit cascades (sync retraction,
+medical trims, the accepted-row relink) stay person-scoped to the row's own
+person, and a sessionless test/boot context is not gated. `resetSession`
+also resets `ME` to the boot default now — the "View as" identity every
+member gate keys on used to survive a logout, handing the next login the
+previous session's person. This SITS BESIDE the
 existing 22 Aug person-MOVE guard (a member may not reassign an input to
 another person), which stays. Pinned in `audit-guards-inputs.test.ts`
 (a member is refused another's edit and delete, allowed their own, a

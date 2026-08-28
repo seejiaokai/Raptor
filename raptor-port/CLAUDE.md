@@ -16,6 +16,28 @@ mean two different things, or a choice would materially change the result,
 ask follow-up questions until it wouldn't. Small, unambiguous asks clear
 that bar on their own — don't manufacture questions for them.
 
+**STANDING ORDER — weigh the whole ecosystem, and surface what you find
+(owner, 28 Aug 26 — "Whenever u create or edit or change a feature. Make sure
+u think how does it affect the whole ecosystem in the app, other areas.
+Potential bugs u may face. Questions u may face. Ask me").** On EVERY feature
+you create, edit or change — before building and again before calling it done
+— reason out loud about how it lands across the WHOLE app, not just the file
+in front of you: which other surfaces read the same data or rule, what could
+break downstream, the drift-seams it might open (§Architecture, the
+robustness doctrine below), the edge cases and user errors it invites.
+`docs/feature-impact.md` is the map for that walk. Then TELL the owner what
+you found in your report — the ripple effects, the risks you are carrying,
+the assumptions you made — and ASK him wherever the change raises a genuine
+question that is his to answer (a product-direction fork, a behaviour that
+could go two ways, a trade-off he'd want a say in). This does NOT reopen the
+7 Aug rule that pure implementation choices stay yours — keep deciding the
+technical *how* yourself, and don't manufacture questions. What it adds is
+that cross-feature impact, real risks and product-affecting ambiguities are
+RAISED, never quietly absorbed: a concern he can wave off costs a sentence, a
+silent one costs a bug. When in doubt whether something is "implementation"
+(decide) or "his call" (ask), lean toward a one-line heads-up that states
+your call and invites a correction.
+
 **`/brainstorming` overrides this section, and usually should not.** That
 skill mandates a committed spec document and then a task-by-task
 implementation plan — the HEAVY path. For a list of concrete asks ("rename
@@ -1150,4 +1172,4 @@ subscribers.
 | The rules engine | `src/engine/` — `validate.ts` is the heart |
 | Store / UI state / undo | `src/state/` |
 | Components + HTML builders | `src/ui/` |
-| **The Leave War tab** (vendored app: engine, store, UI, tests) | `src/leavewar/` — its own store and `leavewar:` storage keys; role written only by `resetSession` + the admin's `toggleRole`; stage-advance is admin-only (27 Aug 26, members still bid); an admin decides bids at closed OR published (`canDecide`, 27 Aug 26); a drag selects a block to batch fill/decide/move/delete and a plain click still opens the single-cell sheet (`select.ts`, capture taken in `arm()`); the dotted "moved" mark shows only once bidding is closed; the colour pop-out is "Legend"; at PUBLISHED a tap on an approved leave opens the remarks editor (`RemarksSheet` → `sync.ts:leaveInputAt` + `inputedit.ts:setLeaveRemarks`, member edits own / admin any); CSS scoped under `#page-leavewar`; gaps in `docs/leavewar/known-gaps.md`, future sync in `docs/superpowers/specs/leavewar-sync.md` |
+| **The Leave War tab** (vendored app: engine, store, UI, tests) | `src/leavewar/` — its own store and `leavewar:` storage keys; role written only by `resetSession` + the admin's `toggleRole`; stage-advance is admin-only (27 Aug 26, members still bid); a member bids only on their OWN row — the "View as" person, mirrored to `viewer` — while an admin edits any row (`canEditRow`, 27 Aug 26; enforced at the write path and the grid affordance alike); an admin decides bids at closed OR published (`canDecide`, 27 Aug 26 — since the 27 Aug overnight pass the STORE enforces it too: `setBidState`/`setBidStates` refuse anyone else, `shiftBid` carries `moveCells`' whole stage/window/war-day law, `moveProblem` is the one validation body the landing preview and the commit share, a chain of closed moves keeps the ORIGINAL `shiftedFrom`, and a member cannot write a medical mark); a drag selects a block to batch fill/decide/move/delete and a plain click still opens the single-cell sheet (`select.ts`, capture taken in `arm()`); the dotted "moved" mark is recorded AND shown only for a move made once bidding is closed (`biddingClosed`, 27 Aug 26 — an open-bidding shuffle stores no `shiftedFrom`, so it never sprouts the stripe when the war later closes); the colour pop-out is "Legend"; at PUBLISHED a tap on an approved leave opens the remarks editor (`RemarksSheet` → `sync.ts:leaveInputAt` + `inputedit.ts:setLeaveRemarks`, member edits own / admin any); CSS scoped under `#page-leavewar`; gaps in `docs/leavewar/known-gaps.md`, future sync in `docs/superpowers/specs/leavewar-sync.md` |

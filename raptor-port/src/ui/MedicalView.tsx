@@ -20,7 +20,7 @@
    your own puck or an admin, and on a Pending card the Upchit path itself.
    This view deliberately ignores the table's filter bar: it is the
    squadron's medical state, not a filtered list (docs/ui-contracts.md). */
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { PEOPLE, byCrew } from '../engine/people'
 import { inpType } from '../engine/inputs'
 import { medDownAsOf, pendingUpchits, upchitsWithin } from '../engine/medical'
@@ -52,8 +52,18 @@ const STOP = new Set(['medically', 'medical', 'down', 'leave', 'till', 'until', 
 function remarkNote(remark: any): string {
   const s = String(remark || '').trim()
   if (!s) return ''
-  const left = s.toLowerCase().replace(/[0-9]/g, ' ').split(/[^a-z]+/).filter(w => w && !STOP.has(w))
-  return left.length ? s : ''
+  /* strip digits, dates and the boilerplate words; if anything is left the
+     remark carries a real note. The survivors test counts NON-boilerplate
+     content, not a–z words: a note written in another script or in symbols
+     ('复诊 15/7') has no Latin letters at all, and the first cut — which
+     demanded a surviving a–z word — hid exactly those real notes. */
+  const scrubbed = s.toLowerCase().replace(/[0-9]/g, ' ')
+  const words = scrubbed.split(/[^a-z]+/).filter(Boolean)
+  if (words.some(w => !STOP.has(w))) return s
+  /* every Latin word was boilerplate — anything beyond letters, digits and
+     ordinary punctuation left standing is a real note in another script */
+  const residue = scrubbed.replace(/[a-z]/g, '').replace(/[\s.,;:!?()'"/\-–—*]+/g, '')
+  return residue.length ? s : ''
 }
 
 /* one section's card: puck + what the section says about him + his remarks.
@@ -96,6 +106,16 @@ export function MedicalView({ onClose }: { onClose: () => void }) {
 
   const open = (row: any, up?: boolean) => { setDocView({ row, up: !!up }); notify() }
   const pick = (iso: string) => { setMedAsOf(iso === todayIso ? null : iso); setCalOpen(false); notify() }
+
+  /* Escape closes the as-of picker, in the capture-phase manner the sibling
+     popups (DocViewer, the input dialog) already use — the keyboard must not
+     be the one door this popover ignores. */
+  useEffect(() => {
+    if (!calOpen) return
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') { e.stopPropagation(); setCalOpen(false) } }
+    document.addEventListener('keydown', onKey, true)
+    return () => document.removeEventListener('keydown', onKey, true)
+  }, [calOpen])
 
   return (
     <div className="inpcal medview" id="medView">

@@ -5,7 +5,17 @@
 
 import {
   addDays,
+  assignGroup,
+  biddingClosed,
+  canDecide,
   canEditCell,
+  canEditRow,
+  DEFAULT_GROUPS,
+  offerableGroups,
+  orderedGroupIds,
+  pruneGroups,
+  readGroupDefs,
+  type GroupDef,
   inSquadron,
   isBiddable,
   isMedical,
@@ -156,6 +166,17 @@ interface State {
    *  a hidden row at all; an admin sees it dimmed in Rearrange mode, so it can
    *  be brought back. ADMIN-gated at the write path. */
   manningHidden: string[]
+  /** WHICH GROUPS the roster is drawn in, top to bottom (owner, 28 Aug 26 —
+   *  the admin group editor). The seven built-ins by default; an admin may add
+   *  a group per QUALIFICATION and drag the order. ADMIN-gated, same rule as
+   *  `manningOrder`. Read leniently and pruned against the live qual catalogue,
+   *  so a group pinned to a deleted Quals column cannot strand an empty
+   *  heading. */
+  groupDefs: GroupDef[]
+  /** WHO CLAIMS someone matching several groups — a SEPARATE order from the
+   *  display one above (the owner's explicit choice): a person shows exactly
+   *  once, and this decides where. Empty means "use the display order". */
+  groupPriority: string[]
 
   /** How many EVENT rows the matrix draws (owner, 18 Aug 26 — "add more event
    *  rows if needed"). Two by default; an admin can add up to `MAX_EVENT_ROWS`.
@@ -233,6 +254,8 @@ function blank(): State {
     persLabels: {},
     manningOrder: [],
     manningHidden: [],
+    groupDefs: [...DEFAULT_GROUPS],
+    groupPriority: [],
     eventRows: DEFAULT_EVENT_ROWS,
     showSans: false,
     // The squadron is the common case, so the app opens as one. An admin
@@ -689,6 +712,11 @@ export function initStore(b?: StorageBackend): void {
   const persLabels = readStored('perslabels', readLabelMap) ?? {}
   const manningOrder = readStored('manningorder', readIdList) ?? []
   const manningHidden = readStored('manninghidden', readIdList) ?? []
+  /* Untrusted storage: keep only structurally sound entries, then PRUNE against
+     the catalogue we have at boot (the seed's three keys; the projection
+     re-prunes as soon as Raptor's real catalogue lands — see setQualCatalog). */
+  const groupDefs = pruneGroups(readStored('groupdefs', readGroupDefs) ?? [...DEFAULT_GROUPS], state.qualCatalog)
+  const groupPriority = readStored('grouppriority', readIdList) ?? []
   // The squadron's own rule set, or — for a browser from before rules were
   // data — the seed with its old numbers-only overlay migrated in.
   const storedRules = readStored('manningdefs', readManningRules)
@@ -711,7 +739,7 @@ export function initStore(b?: StorageBackend): void {
      boot, so a stored copy could only ever disagree with the roster Raptor
      is actually flying. Boot leaves the seed — the vendored unit suite reads
      it pristine — and the projection that follows replaces it. */
-  state = withCurrent({ ...state, wars, currentId, openings, ledger, eventDefs, figureOrder, rosterOrder, persLabels, manningOrder, manningHidden, requirements, eventRows, showSans })
+  state = withCurrent({ ...state, wars, currentId, openings, ledger, eventDefs, figureOrder, rosterOrder, persLabels, manningOrder, manningHidden, groupDefs, groupPriority, requirements, eventRows, showSans })
 
   version = 0
   listeners.clear()
@@ -774,6 +802,8 @@ function persist(): void {
   backend.write('perslabels', JSON.stringify(state.persLabels))
   backend.write('manningorder', JSON.stringify(state.manningOrder))
   backend.write('manninghidden', JSON.stringify(state.manningHidden))
+  backend.write('groupdefs', JSON.stringify(state.groupDefs))
+  backend.write('grouppriority', JSON.stringify(state.groupPriority))
   backend.write('manningdefs', JSON.stringify(state.requirements.default.rules))
   backend.write('eventrows', JSON.stringify(state.eventRows))
   backend.write('showsans', JSON.stringify(state.showSans))
@@ -920,14 +950,100 @@ export function displayRoster(): Person[] {
   const order = state.rosterOrder.length ? state.rosterOrder : autoOrder(state.people)
   const pos = new Map(order.map((id, i) => [id, i]))
   const out: Person[] = []
-  for (const g of GROUP_ORDER) {
-    const members = state.people.filter(p => groupOf(p) === g)
+  /* The groups the ADMIN configured, in their display order, and the separate
+     priority order that decides who claims a person matching several (owner,
+     28 Aug 26). With the default list this is byte-identical to the old
+     GROUP_ORDER walk — the built-ins are mutually exclusive and cover everyone. */
+  const defs = groupsInOrder()
+  const priority = groupPriorityIds()
+  const home = new Map(state.people.map(p => [p.id, assignGroup(p, defs, priority)]))
+  for (const d of defs) {
+    const members = state.people.filter(p => home.get(p.id) === d.id)
     // A body missing from the saved order (just arrived) sinks to the end of
     // its group rather than jumping to the top.
     members.sort((a, b) => (pos.get(a.id) ?? Infinity) - (pos.get(b.id) ?? Infinity))
     out.push(...members)
   }
+  /* Anyone no configured group claims still gets a row — under "Everyone else",
+     always last. Without this an admin whose list is all qualifications would
+     drop people off the grid entirely. */
+  const rest = state.people.filter(p => !defs.some(d => home.get(p.id) === d.id))
+  rest.sort((a, b) => (pos.get(a.id) ?? Infinity) - (pos.get(b.id) ?? Infinity))
+  out.push(...rest)
   return out
+}
+
+/** The configured group list, pruned to the live qual catalogue and in the
+ *  admin's display order. One body, so every reader agrees. */
+export function groupsInOrder(): GroupDef[] {
+  const defs = pruneGroups(state.groupDefs.length ? state.groupDefs : DEFAULT_GROUPS, state.qualCatalog)
+  const ids = orderedGroupIds(defs, state.groupDefs.map(d => d.id))
+  return ids.map(id => defs.find(d => d.id === id)!).filter(Boolean)
+}
+
+/** The tie-break order — the admin's priority list, healed against the groups
+ *  that exist. Empty priority falls back to the display order. */
+export function groupPriorityIds(): string[] {
+  return orderedGroupIds(groupsInOrder(), state.groupPriority)
+}
+
+/** Which group a person is drawn under, for callers that need the answer
+ *  without walking the whole roster (the group editor's counts, the matrix). */
+export function groupIdOf(p: Person): string {
+  return assignGroup(p, groupsInOrder(), groupPriorityIds())
+}
+
+/** Every group an admin can pick from — the seven built-ins plus one per
+ *  qualification the squadron currently has. Grows on its own. */
+export function offerableGroupList(): GroupDef[] {
+  return offerableGroups(state.qualCatalog)
+}
+
+/** Replace the group list (add / remove / reorder). ADMIN-gated, like every
+ *  other arrangement writer. Pruned on the way in so a stale qualification
+ *  cannot be stored back. */
+export function setGroupDefs(defs: GroupDef[]): void {
+  if (state.role !== 'admin') return
+  state = withCurrent({ ...state, groupDefs: pruneGroups(defs, state.qualCatalog) })
+  persist()
+  notify()
+}
+
+/** Move one group before another in the DISPLAY order (the drag). Mirrors
+ *  `moveRosterRow` / `moveManningRowTo`, guard included. ADMIN-gated. */
+export function moveGroupTo(id: string, beforeId: string | null): void {
+  if (state.role !== 'admin') return
+  if (beforeId === id) return
+  const defs = groupsInOrder()
+  const from = defs.findIndex(d => d.id === id)
+  if (from < 0) return
+  const [moved] = defs.splice(from, 1)
+  const at = beforeId ? defs.findIndex(d => d.id === beforeId) : defs.length
+  defs.splice(at < 0 ? defs.length : at, 0, moved!)
+  setGroupDefs(defs)
+}
+
+/** Move one group in the PRIORITY order — the separate who-wins list. */
+export function moveGroupPriorityTo(id: string, beforeId: string | null): void {
+  if (state.role !== 'admin') return
+  if (beforeId === id) return
+  const ids = groupPriorityIds()
+  const from = ids.indexOf(id)
+  if (from < 0) return
+  ids.splice(from, 1)
+  const at = beforeId ? ids.indexOf(beforeId) : ids.length
+  ids.splice(at < 0 ? ids.length : at, 0, id)
+  state = withCurrent({ ...state, groupPriority: ids })
+  persist()
+  notify()
+}
+
+/** Put the roster grouping back to the seven built-ins. ADMIN-gated. */
+export function resetGroups(): void {
+  if (state.role !== 'admin') return
+  state = withCurrent({ ...state, groupDefs: [...DEFAULT_GROUPS], groupPriority: [] })
+  persist()
+  notify()
 }
 
 /** A ground-crew body's label: the admin's override if set, else the projected
@@ -1050,8 +1166,18 @@ export function setCell(personId: string, date: string, code: string): void {
   // reason `createWar` re-checks the role: the interface hides what a person
   // may not do, but the store is what makes it true.
   if (!canEditCell(state.period, state.role, date)) return
+  // ...and the ROW: a member writes only their own row (the person they are
+  // viewing as), an admin any. The grid stops offering another row's cell, but
+  // this is the backstop that makes it true — a stray write path can never
+  // put one member's leave onto another man's row (owner, 27 Aug 26).
+  if (!canEditRow(state.role, state.viewer, personId)) return
 
   const clean = code.trim().toUpperCase()
+  // ...and the VOCABULARY: the medical markers are management's (owner,
+  // 17 Aug 26 — "for management only"). Every sheet already offers them to
+  // an admin alone, but until this line the store took an HL from anyone —
+  // the one vocabulary the affordance gated that the write path did not.
+  if (isMedical(clean) && state.role !== 'admin') return
   const previous = state.grid[personId]?.[date]
   const row = { ...(state.grid[personId] ?? {}) }
   const srow = { ...(state.states[personId] ?? {}) }
@@ -1109,6 +1235,10 @@ export function setCellRange(
   let written = 0
   let skipped = 0
   const person = state.people.find(p => p.id === personId)
+  // the vocabulary gate setCell carries — evaluated once out here, and kept in
+  // the predicate below so the count reports the refusal instead of silently
+  // absorbing it
+  const medBlocked = isMedical(code.trim().toUpperCase()) && state.role !== 'admin'
 
   // Suppressed for the run, then released once. Without this a fortnight is
   // fourteen persists and fourteen re-renders, and every subscriber sees the
@@ -1119,6 +1249,8 @@ export function setCellRange(
       const allowed =
         !raptorOwns(state.states, personId, d) &&
         canEditCell(state.period, state.role, d) &&
+        canEditRow(state.role, state.viewer, personId) &&
+        !medBlocked &&
         (!person || inSquadron(person, d))
       if (!allowed) {
         skipped++
@@ -1157,13 +1289,23 @@ export function setCells(cells: { personId: string; date: string }[], code: stri
   let written = 0
   let skipped = 0
   const wasQuiet = quiet
+  // the vocabulary gate setCell carries, reported by the count rather than
+  // silently absorbed (see setCellRange)
+  const medBlocked = isMedical(code.trim().toUpperCase()) && state.role !== 'admin'
   quiet = true
   try {
     for (const { personId, date } of cells) {
+      // Clearing an EMPTY cell is not a write and not a refusal — a loose
+      // delete-box sweeps up empty cells around the bids, and counting them
+      // as "deleted" made the sheet report deletions that never existed.
+      // They simply don't count either way.
+      if (!code && state.grid[personId]?.[date] === undefined) continue
       const person = state.people.find(p => p.id === personId)
       const allowed =
         !raptorOwns(state.states, personId, date) &&
         canEditCell(state.period, state.role, date) &&
+        canEditRow(state.role, state.viewer, personId) &&
+        !medBlocked &&
         (!person || inSquadron(person, date))
       if (!allowed) { skipped++; continue }
       setCell(personId, date, code)
@@ -1187,7 +1329,7 @@ export function clearCells(cells: { personId: string; date: string }[]): RangeWr
  *  sheet). Per cell it needs a biddable, non-Raptor cell, so a mixed
  *  selection decides the bids and skips the rest. */
 export function setBidStates(cells: { personId: string; date: string }[], bid: BidState): { decided: number; skipped: number } {
-  if (state.role !== 'admin') return { decided: 0, skipped: cells.length }
+  if (!canDecide(state.period.stage, state.role)) return { decided: 0, skipped: cells.length }
   let decided = 0
   let skipped = 0
   const wasQuiet = quiet
@@ -1205,10 +1347,15 @@ export function setBidStates(cells: { personId: string; date: string }[], bid: B
   return { decided, skipped }
 }
 
-/** Record a decision on a bid. Deliberately not role-gated: there is no
- *  login in this prototype, so anyone can decide anything — see
- *  `docs/known-gaps.md`. */
+/** Record a decision on a bid — ADMIN ONLY, once bidding is no longer open
+ *  (`canDecide`, the same body the sheet renders by). The old "deliberately
+ *  not role-gated: there is no login" note pre-dated the Raptor merge; there
+ *  IS a login now, the role rides it with a ceiling a member cannot climb,
+ *  and this batch's own doctrine is that the store is what makes a rule true
+ *  — the batch sibling `setBidStates` above was already gated, and a gate
+ *  the single writer didn't share was a drift seam, not a decision. */
 export function setBidState(personId: string, date: string, bid: BidState): void {
+  if (!canDecide(state.period.stage, state.role)) return
   // A decision on a cell nobody bid for would be a state with no bid behind
   // it, which is exactly the drift `setCell` exists to prevent. Ignore it
   // rather than write it.
@@ -1571,6 +1718,29 @@ export function moveManningRow(id: string, dir: -1 | 1): boolean {
   return true
 }
 
+/**
+ * Move one manning row to sit before `beforeId` (or to the end when null) — the
+ * drag-and-drop reorder (owner, 28 Aug 26, replacing the ▲▼ arrows with the
+ * same drag the roster rows already use). Same shape as `moveRosterRow`:
+ * materialise the current display order, splice `id` out, reinsert before the
+ * target, write the whole order. ADMIN-gated. */
+export function moveManningRowTo(id: string, beforeId: string | null): void {
+  if (state.role !== 'admin') return
+  // "before itself" is where it already is — and the splice removes `id` first,
+  // so without this guard indexOf would miss and the row would jump to the end
+  // (the same trap moveRosterRow guards).
+  if (beforeId === id) return
+  const ids = orderedManningIds()
+  const from = ids.indexOf(id)
+  if (from < 0) return
+  ids.splice(from, 1)
+  const at = beforeId ? ids.indexOf(beforeId) : ids.length
+  ids.splice(at < 0 ? ids.length : at, 0, id)
+  state = withCurrent({ ...state, manningOrder: ids })
+  persist()
+  notify()
+}
+
 /** Hide or show one manning row. ADMIN-gated. */
 export function toggleManningRow(id: string): void {
   if (state.role !== 'admin') return
@@ -1676,7 +1846,15 @@ export function resetManningRules(): void {
  *  roster itself. Not persisted and not admin-gated: it is derived squadron
  *  vocabulary, not a decision. */
 export function setQualCatalog(catalog: QualDef[]): void {
-  state = withCurrent({ ...state, qualCatalog: catalog })
+  /* A group pinned to a qualification the squadron has since deleted would
+     draw an empty heading nobody could remove, so the group list is re-pruned
+     whenever the catalogue moves (28 Aug 26). This is not an admin write — it
+     is the catalogue's own consequence — so it carries no role gate; it only
+     ever REMOVES a group whose qualification no longer exists. */
+  const groupDefs = pruneGroups(state.groupDefs, catalog)
+  const changed = groupDefs.length !== state.groupDefs.length
+  state = withCurrent({ ...state, qualCatalog: catalog, ...(changed ? { groupDefs } : {}) })
+  if (changed) persist()
   notify()
 }
 
@@ -1894,8 +2072,11 @@ export function withdrawLeaveCell(personId: string, date: string, code: string):
   return true
 }
 
-/** What a shift did, or why it did nothing. */
-export type ShiftResult = 'shifted' | 'occupied' | 'raptor' | 'nothing'
+/** What a shift did, or why it did nothing. `window` covers every "not an
+ *  editable day" refusal: outside the stage/window this role may write, off
+ *  the war's own calendar (a typed date the war has no column for), or on a
+ *  day the person has left the squadron. */
+export type ShiftResult = 'shifted' | 'occupied' | 'raptor' | 'nothing' | 'window'
 
 /**
  * Move a bid to a different date.
@@ -1914,7 +2095,25 @@ export type ShiftResult = 'shifted' | 'occupied' | 'raptor' | 'nothing'
 export function shiftBid(personId: string, from: string, to: string): ShiftResult {
   const code = state.grid[personId]?.[from]
   if (!isBiddable(code)) return 'nothing'
+  // A member moves only their own row's bids (owner, 27 Aug 26). The sheet
+  // that reaches here already only opens on the member's own row, but the
+  // write path is what makes it true.
+  if (!canEditRow(state.role, state.viewer, personId)) return 'nothing'
   if (raptorOwns(state.states, personId, from)) return 'raptor'
+  // The same day law `moveCells` enforces per cell, which this single-cell
+  // sibling was missing: both ends must be days this role may write (a member
+  // cannot slide a bid once the war closes, nor outside the bid window), and
+  // the LANDING day must exist on the war's own calendar and inside the
+  // person's time in the squadron. Without the calendar check a typed date —
+  // the Move field is a keyed input, and min/max on a date input are advisory
+  // — could land a bid on a day no column renders: gone from every screen,
+  // still draining the leave balance. That is `setBidWindow`'s wrong-year
+  // typo, and the answer is the same: refuse, never absorb.
+  if (!canEditCell(state.period, state.role, from)) return 'window'
+  if (!canEditCell(state.period, state.role, to)) return 'window'
+  if (!state.period.days.some((d: any) => d.date === to)) return 'window'
+  const person = state.people.find(p => p.id === personId)
+  if (person && !inSquadron(person, to)) return 'window'
   // Never overwrite. Moving one man's leave onto a day he already has
   // something booked would destroy the second booking to save the first.
   // Shifting onto its own date lands here too, which is right: it is not a
@@ -1926,8 +2125,18 @@ export function shiftBid(personId: string, from: string, to: string): ShiftResul
   row[to] = code
 
   const srow = { ...(state.states[personId] ?? {}) }
+  // The ORIGIN survives a chain of moves: a bid moved 23 → 30 → Feb 6 was
+  // still BID on the 23rd, and the trail exists so the ledger can answer
+  // exactly that — "moved from the 30th" would trace to a date nobody asked
+  // for. Read before the delete below takes the old record with it.
+  const origin = srow[from]?.shiftedFrom ?? from
   delete srow[from]
-  srow[to] = { state: 'pending', source: 'bid', shiftedFrom: from }
+  // Record the moved-from trace ONLY once bidding has closed — the same rule as
+  // moveCells: a shift while the war is OPEN is ordinary shuffling and leaves no
+  // stripe (owner, 27 Aug 26).
+  srow[to] = biddingClosed(state.period.stage)
+    ? { state: 'pending', source: 'bid', shiftedFrom: origin }
+    : { state: 'pending', source: 'bid' }
 
   updateCurrent(w => ({
     ...w,
@@ -1937,16 +2146,21 @@ export function shiftBid(personId: string, from: string, to: string): ShiftResul
   return 'shifted'
 }
 
-/** Does this cell hold a bid THIS role may move? The same three conditions
+/** Does this cell hold a bid THIS role may move? The same conditions
  *  `moveCells` guards each source by (below): not Raptor-owned, a real
- *  biddable bid, and editable in the current stage/window. Kept as one body so
- *  the sheet (whether to offer Move at all), the anchor (which day is the
- *  block's first input) and the mover all read the SAME rule — a second copy
- *  would be a drift seam. */
+ *  biddable bid, editable in the current stage/window, and on a row this role
+ *  owns (a member's own, an admin's any). Kept as one body so the sheet
+ *  (whether to offer Move at all), the anchor (which day is the block's first
+ *  input) and the mover all read the SAME rule — a second copy would be a
+ *  drift seam. */
 function isMovableSource(personId: string, date: string): boolean {
   return !raptorOwns(state.states, personId, date)
     && isBiddable(state.grid[personId]?.[date])
     && canEditCell(state.period, state.role, date)
+    // A member slides only their OWN bids (owner, 27 Aug 26). Folding the row
+    // rule in here carries it to every reader of this one body at once: the
+    // sheet (whether to offer Move), the anchor and the mover's source guard.
+    && canEditRow(state.role, state.viewer, personId)
 }
 
 /** The cells of a selection that actually hold a movable bid — the drag-move
@@ -1970,12 +2184,23 @@ export type MoveResult = 'moved' | { reason: 'nothing' | 'raptor' | 'occupied' |
  *  so the occupied check excludes the selection's own sources. Role-gated by
  *  `canEditCell` like `shiftBid` — a member may slide bids they could shift
  *  one at a time; medical/PO never reach here (not biddable / admin-only). */
-export function moveCells(cells: { personId: string; date: string }[], dayDelta: number): MoveResult {
+/** The validation half of `moveCells`, held apart so the grid's landing
+ *  preview can ask "would this move actually go?" BEFORE painting it — a
+ *  preview that shows half a landing the atomic commit then wholly refuses is
+ *  a lie, and a second copy of these guards in the UI would be the drift seam
+ *  this store exists to prevent. Returns null when the move is clear, else
+ *  the same `{reason, at}` the commit reports. */
+export function moveProblem(cells: { personId: string; date: string }[], dayDelta: number): Exclude<MoveResult, 'moved'> | null {
   if (!dayDelta || cells.length === 0) return { reason: 'nothing' }
   const dayset = new Set(state.period.days.map((d: any) => d.date))
   const sources = new Set(cells.map(c => `${c.personId}|${c.date}`))
-  // every source must be a movable bid this role may edit
+  // every source must be a movable bid this role may edit — the same guards
+  // `isMovableSource` carries, kept inline here only to name a precise reason
+  // per cell. A member may slide only their OWN row's bids: another row is
+  // "nothing you may move" (owner, 27 Aug 26). The affordance already filters
+  // through `movableCells`, so this is the backstop against a direct call.
   for (const c of cells) {
+    if (!canEditRow(state.role, state.viewer, c.personId)) return { reason: 'nothing', at: c.date }
     if (raptorOwns(state.states, c.personId, c.date)) return { reason: 'raptor', at: c.date }
     if (!isBiddable(state.grid[c.personId]?.[c.date])) return { reason: 'nothing', at: c.date }
     if (!canEditCell(state.period, state.role, c.date)) return { reason: 'window', at: c.date }
@@ -1992,6 +2217,12 @@ export function moveCells(cells: { personId: string; date: string }[], dayDelta:
     const occ = state.grid[c.personId]?.[to]
     if (occ && !sources.has(`${c.personId}|${to}`)) return { reason: 'occupied', at: to }
   }
+  return null
+}
+
+export function moveCells(cells: { personId: string; date: string }[], dayDelta: number): MoveResult {
+  const problem = moveProblem(cells, dayDelta)
+  if (problem) return problem
   // apply as ONE write: clone the touched rows, drop every source, then land
   // every target (all deletes before any set, so a self-overlapping slide
   // never deletes a day it has just filled)
@@ -2001,9 +2232,32 @@ export function moveCells(cells: { personId: string; date: string }[], dayDelta:
     grid[pid] = { ...(state.grid[pid] ?? {}) }
     states[pid] = { ...(state.states[pid] ?? {}) }
   }
-  const moves = cells.map(c => ({ pid: c.personId, from: c.date, to: addDays(c.date, dayDelta), code: state.grid[c.personId][c.date] }))
+  // A move only leaves a "moved" trail (shiftedFrom) once bidding has CLOSED —
+  // that is a management shift, the thing the mark and the OIL audit exist to
+  // trace. While bidding is OPEN people shuffle their own bids freely, so an
+  // open-bidding move is a clean re-place with NO provenance: without this the
+  // trail was recorded on every open move and surfaced the moment the war
+  // closed, painting an orange stripe on a bid the squadron had simply tidied
+  // (owner, 27 Aug 26 — "I shouldn't see the stripes… only after bidding is
+  // closed AND the input is moved"). Clearing shiftedFrom on the open re-place
+  // also drops any stale trail a prior closed-era move had left.
+  const tracked = biddingClosed(state.period.stage)
+  // `origin` rather than `from`: the trail survives a CHAIN of moves — a bid
+  // moved 23 → 30 → Feb 6 was still bid on the 23rd, and that is the date the
+  // ledger exists to answer with (same rule as shiftBid). Read here, before
+  // the delete loop takes the old records with it.
+  const moves = cells.map(c => ({
+    pid: c.personId, from: c.date, to: addDays(c.date, dayDelta),
+    code: state.grid[c.personId][c.date],
+    origin: state.states[c.personId]?.[c.date]?.shiftedFrom ?? c.date,
+  }))
   for (const m of moves) { delete grid[m.pid][m.from]; delete states[m.pid][m.from] }
-  for (const m of moves) { grid[m.pid][m.to] = m.code; states[m.pid][m.to] = { state: 'pending', source: 'bid', shiftedFrom: m.from } }
+  for (const m of moves) {
+    grid[m.pid][m.to] = m.code
+    states[m.pid][m.to] = tracked
+      ? { state: 'pending', source: 'bid', shiftedFrom: m.origin }
+      : { state: 'pending', source: 'bid' }
+  }
   updateCurrent(w => ({ ...w, grid: { ...w.grid, ...grid }, states: { ...w.states, ...states } }))
   return 'moved'
 }

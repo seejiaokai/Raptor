@@ -238,7 +238,7 @@ function dayCodeFor(cell: Cell): DayCode {
   const leave = LEAVE_TYPE_BY_CODE[type]
   if (leave) {
     const amount = portionAmount(portion)
-    const suffix = portion === 'am' ? ' (morning)' : portion === 'pm' ? ' (afternoon)' : ''
+    const suffix = portion === 'am' ? ' (AM)' : portion === 'pm' ? ' (PM)' : ''
     return {
       code: formatCell(cell),
       label: `${leave.label}${suffix}`,
@@ -255,7 +255,7 @@ function dayCodeFor(cell: Cell): DayCode {
 
   const medicalLabel = MEDICAL_LABELS[type]
   if (medicalLabel) {
-    const suffix = portion === 'am' ? ' (morning)' : portion === 'pm' ? ' (afternoon)' : ''
+    const suffix = portion === 'am' ? ' (AM)' : portion === 'pm' ? ' (PM)' : ''
     return {
       code: formatCell(cell),
       label: `${medicalLabel}${suffix}`,
@@ -299,3 +299,42 @@ export function codeOf(code: string | undefined | null): DayCode | undefined {
 export function isDuty(code: string | undefined | null): boolean {
   return codeOf(code)?.duty ?? false
 }
+
+// A plain-English key to the LETTERS the grid can show, grouped for the
+// Legend pop-out (owner, 28 Aug 26 — "include what FS HS etc mean … things
+// that reflect only on the leave war. Because it's not stated on inputs").
+// Built straight from the label tables above so the legend can never name a
+// code the catalogue doesn't, and never drift from what a cell parses to —
+// the same one-source rule the swatch classes already follow.
+//
+// FS/HS lead, in their own group, because they are the ONLY codes that live
+// here and are never typed on the Inputs page: they are credited
+// automatically from a published weekend / public-holiday duty on the
+// schedule (the OIL pass), so a reader who only knows the Inputs vocabulary
+// has nowhere else to look them up. Everything else mirrors an Inputs entry
+// and is here only so the grid's two-letter shorthand has a key.
+export interface GlossaryRow { show: string; mean: string }
+export interface GlossaryGroup { group: string; onlyHere?: boolean; rows: GlossaryRow[] }
+const cap = (s: string): string => s.charAt(0).toUpperCase() + s.slice(1)
+export const CODE_GLOSSARY: GlossaryGroup[] = [
+  {
+    group: 'Shown here only — not on the Inputs page',
+    onlyHere: true,
+    rows: [
+      { show: 'FS', mean: cap(SC_DUTY_LABELS.FS) + ' — earns a full day off in lieu. Credited automatically from a weekend or public-holiday duty on the schedule, not typed here.' },
+      { show: 'HS', mean: cap(SC_DUTY_LABELS.HS) + ' — earns half a day off in lieu, the same way.' },
+    ],
+  },
+  {
+    group: 'Medical',
+    rows: MEDICAL_TYPES.map(m => ({ show: displayCell(m.type), mean: cap(m.label.replace(/^medical — /, '')) })),
+  },
+  {
+    group: 'Leave',
+    rows: LEAVE_TYPES.map(t => ({ show: t.type, mean: cap(t.label) })),
+  },
+  {
+    group: 'Other duty',
+    rows: Object.entries(NON_LEAVE_LABELS).map(([code, label]) => ({ show: code, mean: cap(label) })),
+  },
+]

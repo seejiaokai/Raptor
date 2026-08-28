@@ -1,7 +1,7 @@
 import { act, fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
 
-import { getState, initStore, moveFigure, resetFigureOrder, setBidState, setCell, setPeople, setRole, setViewer } from '../state/store'
+import { advanceStage, getState, initStore, moveFigure, resetFigureOrder, setBidState, setCell, setPeople, setRole, setViewer } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { Matrix } from './Matrix'
 
@@ -152,7 +152,8 @@ describe('the counter column', () => {
     const before = Number(screen.getByTestId('bal-dusk').textContent)
     act(() => setCell('dusk', '2026-02-11', 'LL'))
     expect(Number(screen.getByTestId('bal-dusk').textContent)).toBe(before - 1)
-    act(() => setBidState('dusk', '2026-02-11', 'refused'))
+    // the refusal is management's, once bidding is closed (canDecide)
+    act(() => { setRole('admin'); advanceStage(); setBidState('dusk', '2026-02-11', 'refused') })
     expect(Number(screen.getByTestId('bal-dusk').textContent)).toBe(before)
   })
 
@@ -403,12 +404,15 @@ describe('the picker answers with the viewer\'s own numbers (owner, 17 Aug 26)',
     setViewer('ramp')
     render(<Matrix />)
     fireEvent.click(screen.getByTestId('counter-pick'))
-    // RAMP's own LVE BAL is 25; the squadron-wide sum is not.
-    expect(screen.getByTestId('counter-lvebal').textContent).toContain('25 left, yours')
+    // RAMP's own LVE BAL is 25; the squadron-wide sum is not. ("yours" is gone
+    // from the rows now — the VIEWING AS header says whose once, 28 Aug 26.)
+    expect(screen.getByTestId('counter-lvebal').textContent).toContain('25 left')
+    expect(screen.getByTestId('counter-lvebal').textContent).not.toContain('yours')
     // RAMP's *OIL half-day: 0.5 taken.
-    expect(screen.getByTestId('counter-oil').textContent).toContain('0.5 taken, yours')
-    // The header names whose numbers these are.
-    expect(screen.getByTestId('counter-sheet').textContent).toContain('your numbers — RAMP')
+    expect(screen.getByTestId('counter-oil').textContent).toContain('0.5 taken')
+    // The header names whose numbers these are, and prominently (28 Aug 26).
+    expect(screen.getByTestId('counter-viewer').textContent).toContain('VIEWING AS')
+    expect(screen.getByTestId('counter-viewer').textContent).toContain('RAMP')
   })
 
   it('shows a dash, not a squadron-wide sum, when nobody (or an unknown id) is viewing', () => {

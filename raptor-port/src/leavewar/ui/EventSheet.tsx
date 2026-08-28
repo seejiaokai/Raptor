@@ -5,7 +5,8 @@
 // It carries the whole surface the two inline textareas used to be:
 //   · open text for the day (or a range);
 //   · a range, chosen on the same calendar the bid window uses;
-//   · for a range, MERGE (one bar) or REPEAT (the word in each day);
+//   · for a range, MERGE (one bar, the default) or REPEAT (the word in each
+//     day);
 //   · a TAG (off / no-leave / work) for THIS event — held on the event itself
 //     and saved with it (owner, 18 Aug 26: "I don't want u to save it as a
 //     type"). It used to mint the typed word into the type library; now the
@@ -60,7 +61,14 @@ export function EventSheet({ line, date, to, onClose }: { line: number; date: st
 
   const [text, setText] = useState(band ? band.text : (day?.events[line] ?? ''))
   const [scope, setScope] = useState<'day' | 'range'>(band || dragged ? 'range' : 'day')
-  const [mode, setMode] = useState<'merge' | 'repeat'>(band ? 'merge' : 'repeat')
+  // A RANGE opens on ONE MERGED BAR (owner, 28 Aug 26 — "can the default
+  // selection be one merged bar instead of repeat each day"). A span of days
+  // that share a name is nearly always one thing — an exercise, a detachment,
+  // a stand-down — so the bar is the shape a scheduler wants; repeating the
+  // word into each cell is the exception, and it is one tap away. An existing
+  // band already opened merged, so this only changes the fresh-range case (a
+  // plain click that is then ranged, or a drag-swept span).
+  const [mode, setMode] = useState<'merge' | 'repeat'>('merge')
   const [range, setRange] = useState<Range | null>(
     band ? { from: band.from, to: band.to } : { from: date, to: to ?? date },
   )

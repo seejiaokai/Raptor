@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { getState, initStore, setCell, setRole } from '../state/store'
+import { advanceStage, getState, initStore, setCell, setRole } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { SelectSheet } from './SelectSheet'
 import type { Selection } from './select'
@@ -81,6 +81,10 @@ describe('the selection sheet', () => {
     setCell('ramp', '2026-01-06', 'LL')
     setCell('ramp', '2026-01-07', 'LL')
     expect(screen.queryByTestId('sel-approve')).toBeNull() // canDecide false by default
+    // the store itself now refuses a decision unless an admin holds it at
+    // closed/published (canDecide) — put the war in the state the sheet's
+    // canDecide prop claims
+    setRole('admin'); advanceStage()
     mount(rampTwo, { canDecide: true })
     fireEvent.click(screen.getByTestId('sel-approve'))
     expect(getState().states.ramp['2026-01-06'].state).toBe('approved')

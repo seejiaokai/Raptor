@@ -3927,9 +3927,23 @@ list. Three sections, each a `.medcard` grid on the `.sanscard` contract
 **Pending Upchit** (`--adv` amber, "was down till <end>"), **Upchit
 Complete** (`--ok` green, "upchitted <date>", trailing 30 days newest
 first). Every section has a real empty state. Cards SIZE TO CONTENT and
-pack from the left (`.medcards` — capped `minmax` columns +
-`justify-content:start`; owner, 27 Aug 26: a stretch-to-fill column wasted
-the right half of every box), and a card's remark line draws only when it
+pack from the left — **a wrapping flex row, not a grid** (`.medcards`;
+owner, 27 Aug 26: a stretch-to-fill column wasted the right half of every
+box, then 28 Aug 26: "the box around the puck doesn't look compact
+enough"). The first cut expressed that intent as `repeat(auto-fill,
+minmax(176px, 200px))`, but a grid TRACK is one width for the whole column,
+so every card was still drawn at the 200px cap however short its contents —
+measured on the seeded data, 99–117px of ink in a 200px box, 65–83px of
+dead air apiece. Wrapping flex items size to their own content, so a card
+now ends where its longest line ends and the phone fits two chits per row
+where it fitted one. The 200px cap survives as `max-width` (a long remark
+wraps rather than running away), `flex:0 1 auto` + `min-width:0` keeps a
+single over-wide card inside the section, and the default
+`align-items:stretch` levels each row's card heights so the rows still read
+as rows. Pinned in `e2e/medical.spec.ts`, which measures the slack past a
+card's last word — LINE BY LINE off the text run (`Range.getClientRects`),
+because a span inside a column flex is stretched to the card's full width
+and its own box proves nothing. And a card's remark line draws only when it
 says MORE than the derived date line (`MedicalView.tsx:remarkNote` strips
 dates and medical boilerplate; the auto "till …" tail was doubling the
 status line on every card). The header's as-of control (`#medCalBtn`)
@@ -3938,6 +3952,27 @@ opens a FLOATING rounded dropdown month grid hanging off the header
 closes it on an outside tap — it overlays the sections rather than pushing
 them down; owner, 27 Aug 26) writing `MEDASOF` (`state/view.ts`, null =
 the notional today, reset by the Today chip and on session change).
+
+**A LABELLED ICON BUTTON DECLARES ITS OWN GAP — the space in the JSX is
+not the space on screen** (owner, 28 Aug 26 — "there's no spacing between
+the calendar and the word 'as'"). `.ic-head .abtn` is `inline-flex`, and a
+flex container drops the whitespace either side of an anonymous text item,
+so `<CalIcon /> as of {date}` painted as `[cal]as of 13 Jul` until the rule
+carried `gap:6px`. The same rule gives the glyph `color:currentColor`, so
+it reads at the label's brightness (and turns accent with it when the
+button is `.on`) instead of `.btnglyph`'s own `--ink-2`, which is the
+default for a BARE icon button. Both halves are pinned in
+`e2e/medical.spec.ts` — measured off the text run with a Range, because
+jsdom reports every rect as 0×0 and cannot see either fault.
+
+**The named drift-seam this exposes**: that pairing — 6px and
+`currentColor` — is the app-wide convention for an icon-plus-label button,
+but it is restated per surface rather than declared once: `.docbtn`,
+`#inMedBtn`, `.sb-actions .abtn`/`.sb-calbtn`, `.filters .abtn .btnglyph`,
+and now `.ic-head .abtn`. A NEW labelled icon button in a header that has
+never had one inherits neither, and the fault is invisible to every gate
+but the browser. Either add the two properties with the button, or fold
+the five into one selector list the next time this area is touched.
 
 **A card tap opens the DOCUMENT VIEWER** (`ui/DocViewer.tsx`,
 `#docViewPop`, airpop chassis, `DOCVIEW` in `ui/pops.ts` holding the input
@@ -3949,6 +3984,52 @@ carries the gated actions: **Edit input** (own puck or admin → the shared
 ctx `'up'` (person and type fixed as VALUES, a single plain date defaulting
 to today, the mandatory `DocField`). Both upchit paths — the pending card
 and typing an Upchit on the Inputs form — are one write path.
+
+**The upchit save-time summary sheet** (`ui/UpchitConfirm.tsx`, owner,
+27 Aug 26). Saving an upchit from ANY form — the Inputs add form, the
+in-table row editor, or the shared `InputEditor` (where it paints one layer
+above the dialog, `.upconf-pop` z 470 over airpop's 460) — opens this sheet
+before anything is written. Top section: what the save will do, one boxed
+line per trim ("ATT B … → now ends 13 Jul") or removal, then the green "Fit
+for full duty from <date>". Below, every LATER-dated medical entry renders
+with a **Keep / Remove** pair that has NO resting state — Save is disabled
+and the footer says "Choose Keep or Remove for each entry above" until all
+are answered; Keep lights accent, Remove lights the warning red. Cancel (or
+Escape, or the scrim) closes just the sheet — the form under it keeps
+everything typed. Escape inside `InputEditor` peels one layer: the sheet
+first, the dialog second.
+
+**The medical clash sheet** (`ui/MedClashConfirm.tsx`, owner, 27 Aug 26)
+is its sibling, same recipe and layer (`.upconf-*` classes). It opens when a
+saved medical entry overlaps a different-type one, from the same three form
+paths. **Its rows are FLAT, not boxed** (owner, 28 Aug 26 — "remove the box
+around the buttons. It looks unclean"): the `.medclash-row`/`.medclash-tail`
+overrides strip the shared card fill/border, each clash a plain wrapping line
+— "ATT C Jul 10 – Jul 15 · both cover **Jul 13 – Jul 15**" — with its pills
+right-aligned (the upchit sheet keeps its boxes). The two choice buttons read
+"**<new type> replaces**" / "**Keep <old type> till <its end date>**" (owner's
+wording, 28 Aug 26; plain "Keep <type>" for a single-day row). Both light
+accent when picked (peers, neither destructive); no resting state, Save
+disabled until every clash is answered, footer hint "Choose for each clash
+above" — EXCEPT the forced case: **a clash whose row covers the WHOLE new
+entry draws no keep button** (owner, 28 Aug 26 — keeping it whole would
+swallow the entry, the old "nothing left to file" dead end), just the pre-lit
+"replaces" pill, and that clash never blocks Save — the leftover row below is
+its real decision. A body note says the outcome plainly: every day holds one
+status, and the new entry is filed around whatever is kept.
+Cancel/Escape/scrim close only the sheet.
+
+**The leftover row** (owner, 28 Aug 26). When "<new> replaces" is the live
+choice (picked, or forced) on a clash whose existing row runs PAST the new
+entry's end (`medTailBeyond`), a second line hangs off that clash — indented
+and a step quieter (`.medclash-tail`) so it reads as a follow-up, not a new
+clash: "Left over after it: **ATT C Jul 14 – Jul 15** — will be removed" with
+**Remove those days** / **Keep them**. Unlike the who-holds-them choice, this
+one has a DEFAULT — Remove, shown in the red `.on-rem` seg, the note flipping
+to "kept on file" when Keep is picked — so a straight Save cuts those days,
+plainly and never silently. Where the keep button exists, switching to it
+takes the leftover row away (the old status stays whole). Save is NOT gated
+on it; the answer rides `keepTail` into the write.
 
 **The upload control** (`DocField` in `ui/inputedit.tsx`: `UploadIcon`
 button + hidden file input + filename chip, `.docbtn.has` turning the ok
@@ -3987,6 +4068,20 @@ Press-and-drag across day-cells to select a rectangle — one row or many
 people's rows — then act on the whole block at once. It is built AROUND the
 BidPicker's look and vocabulary, not instead of it.
 
+- **A member's reach is their OWN row; an admin's is every row** (owner,
+  27 Aug 26 — "if I am viewing as a member and I view as ranger on the leave
+  war, I shouldn't be able to input on other people's row except mine"). The
+  "own" row is the person the session is viewing as (`viewer`, mirrored from
+  Raptor's "View as"). For a member the drag's row list is that one row, so the
+  rectangle only ever covers their own row — a date RANGE along it still selects
+  freely — and a single tap opens the editing sheet only on their own row
+  (`Matrix.tsx` `openable` / the drag `order`). An admin's selection spans
+  everyone. This is not just an affordance: `canEditRow` (engine/stages.ts)
+  refuses another row at the WRITE path too (`setCell`, the batch writers, move
+  and shift), so nothing — not a batch, not a keyboard path — can put one
+  member's leave on another man's row. It is still not a security boundary while
+  the app is client-side and a console can forge the role — see
+  `docs/leavewar/known-gaps.md` §The role is an affordance.
 - **The gesture** (`ui/select.ts`, `wireSelect`) is ONE delegated
   `pointerdown` on `.mx-wrap` — never per-cell (the grid is ~28k nodes) —
   hit-testing with `elementFromPoint().closest('[data-testid^="cell-"]')`. It
@@ -4039,7 +4134,17 @@ BidPicker's look and vocabulary, not instead of it.
   - **Landing preview** (`.mvland`, a warm-amber wash + ring — deliberately NOT
     the accent-blue of the selection or the viewer's own row, so it reads as
     "will land here" over whatever it covers). Painted straight onto the cells
-    (`paintLanding`/`clearLanding`, no React state).
+    (`paintLanding`/`clearLanding`, no React state). **It paints only what the
+    commit would accept** (27 Aug 26 overnight pass): `Matrix.previewAt` asks
+    `moveProblem` — the validation half of `moveCells` itself, one body — and a
+    refused hover/stage clears the paint and puts the reason in the banner
+    (on the phone a refused tap stages NO Confirm; the reason stands where the
+    button would be). The first cut painted the in-range half of an off-grid
+    landing, a legal-looking partial drop the click then wholly refused. Hover
+    re-fires only when the hovered DAY changes (`wireMove` keeps the last
+    date), never per mousemove — the 28k-node grid's per-frame law. The ghost
+    chip exists only where hover does (`(hover: none)` suppresses it — a
+    phone's compatibility mousemove used to strand it at the tap point).
   - **Desktop:** a faded ghost follows the mouse and the landing highlights live
     under it; a CLICK lands the block (the hover WAS the preview). **A RIGHT-CLICK
     cancels** the move (owner, 27 Aug 26 — the mouse equivalent of Escape;
@@ -4053,12 +4158,19 @@ BidPicker's look and vocabulary, not instead of it.
   - The move itself is `moveCells(movers, delta)`, atomic — an occupied / Raptor
     / out-of-window landing refuses the whole move and says why in the banner.
   The `moved` dotted-orange edge marks the landed cells via
-  the existing `shiftedFrom` state — but **only once bidding has CLOSED**
+  the `shiftedFrom` state — but **only for a move made once bidding has CLOSED**
   (owner, 27 Aug 26): while a war is still OPEN people shuffle their own bids
-  freely, so a moved mark then is noise; `Matrix.tsx`'s `movedShown`
-  (`stage === 'closed' || 'published'`) gates the class, the `shiftedFrom`
-  data is untouched. Pinned in `deciding.test.tsx` (hidden at open, shown at
-  closed, hidden again on reopen).
+  freely, so such a move is ordinary tidying, not a management shift. This is
+  gated in TWO places behind one `biddingClosed(stage)` body (engine/stages.ts,
+  `stage === 'closed' || 'published'`): the store RECORDS `shiftedFrom` only on a
+  closed/published move (`moveCells`/`shiftBid`) — an open-bidding move stores a
+  clean `{state:'pending', source:'bid'}` and clears any stale trail — and
+  `Matrix.tsx`'s `movedShown` gates the DISPLAY. The earlier build gated only the
+  display, so a bid shuffled while open sprouted the stripe the moment the war
+  closed (the reported bug); recording it only when closed fixes that at the
+  source. Pinned in `store.test.ts` (open move → no trail, closed move → trail)
+  and `deciding.test.tsx` (a seeded trail: hidden at open, shown at closed,
+  hidden again on reopen).
 - **Dragging an EVENT row** (owner, 27 Aug 26 — "drag and select grids in the
   events column to input events. Just like what we recently implemented"). The
   same `wireSelect` gesture also claims the `event-<line>-<date>` day cells (not
@@ -4072,6 +4184,286 @@ BidPicker's look and vocabulary, not instead of it.
   (`eventsEnabled` — the store refuses a member event write anyway). Pins:
   `parseEventCell` / `eventRange` in `select.test.ts`; the sheet seed reads
   `EventSheet`'s new optional `to` prop.
+## The page stays fully usable behind an open sheet — scroll both ways, movable, compact (owner, 28 Aug 26)
+
+Every Leave War decision opens in a `Sheet` over a full-page `.sheetscrim`
+(`ui/Sheet.tsx`). Over two owner asks (28 Aug 26) the sheet went from a modal
+that froze everything behind it to a panel you can read the grid around:
+
+- **LEFT-RIGHT** ("I want to be able to still scroll left and right … on the
+  grids … while the page is still up"). The scrim has to keep SWALLOWING
+  gestures on the grid — a tap dismisses, and a bare grid tap behind an open
+  sheet would otherwise open a second cell sheet or start a drag-select under
+  the one already up — so it cannot simply become `pointer-events: none`.
+  Instead it keeps capturing and FORWARDS the sideways ones by hand
+  (`useGridPan`): a horizontal drag moves the grid's one horizontal scroller
+  (`.mx-wrap`) 1:1, and a horizontal (or shift-) wheel does the same.
+  Everything the frozen date bar tracks is driven off `.mx-wrap.scrollLeft`,
+  so the mirror follows for free.
+- **UP-DOWN** ("enable me to still scroll up and down when this window is
+  opened"). This REVERSES the 17 Aug "one-scroll" body lock. The page used to
+  be frozen (`body.lw-sheet-lock { overflow:hidden }`) so a swipe could never
+  jump the grid under a reader; the owner now wants exactly that jump — to read
+  the grid behind the panel. The lock is GONE. The scrim carries
+  `touch-action: pan-y`, so the browser pans the page vertically from a finger
+  on it; a vertical wheel is left un-prevented, so it scrolls the page too.
+  Pointer capture is taken LAZILY (only once a drag commits to the horizontal
+  axis), or it would stop the browser's own vertical pan. The panel is
+  `position: fixed`, so only the grid behind it moves; the sheet's own inner
+  list keeps `overscroll-behavior: contain` so scrolling to the end of the list
+  still does not chain into the page — that was never the complaint.
+- **DESKTOP SCROLLBARS** ("on the desktop if i decide to use the horizontal bar
+  or vertical bar to scroll, this is allowed as well"). The page's native
+  vertical bar works the moment the body lock is gone. The grid's pinned
+  horizontal proxy (`.mx-hbar`, `Matrix.tsx`) was z-index 50, UNDER the scrim
+  (79), so the scrim covered and killed it; it now sits at z-index 81, over the
+  scrim, grabbable while a panel is open. It is a 15px strip at the very foot of
+  the viewport and the panels anchor 14px up, so it never paints over one.
+- **MOVABLE** ("make this window movable, so that it doesnt block my view").
+  The title strip (`.bidsheet-hd`, on every sheet) is a drag handle
+  (`useSheetDrag`): pressing anywhere on it but a button and dragging slides the
+  whole panel via a `--lw-dx`/`--lw-dy` translate offset, clamped so at least
+  48px of the handle stays on screen (never lost behind the top bar or an edge).
+  A `⠿` grip + `move` cursor say it is draggable. The offset lives in CSS custom
+  properties so a pointer frame does not re-render the sheet, and resets to zero
+  on remount (a fresh open lands where it always did, then you move it).
+- **SMALLER** ("make all the window smaller … theres alot of empty space"). The
+  read-only info panels (a figure's breakdown, `narrow` prop on `Sheet`) pull in
+  to `min(360px, …)` and drop the action sheets' 44px tap rows — those rows are
+  read, not tapped. The action sheets (bid, decision, counter picker, person
+  editor) keep their 44px targets, which the geometry gate holds.
+
+A gesture that never crossed the ~6px threshold is a tap and still dismisses (a
+drag's trailing click is swallowed via `movedRef` so a scroll never closes the
+sheet). My CALL, flagged to the owner: a tap on the empty area still CLOSES the
+panel, so the grid behind scrolls but is not clickable — if he wants it clickable
+too, drop the tap-to-close. Verified live at 1440px and 402px, sheet up: page
+scrolls both ways with the panel fixed, the panel drags anywhere, the desktop
+proxy bar sits above the scrim, zero console errors. The small legend / manning
+pop-outs use a different, lighter overlay (`.umscrim`, `ui/Chrome.tsx`) and are
+OUT of scope. Pinned in `scrim.test.tsx` (drag-forward, no lock, movable) and
+`e2e/leavewar.spec.ts` ("the page scrolls behind an open sheet, and the panel
+stays put").
+
+## Leave War Rearrange + the counter picker (owner, 28 Aug 26)
+
+Four asks from the same sitting, all on the Leave War grid:
+
+- **The counter picker is COMPACT** ("much smaller and compress the data"). It
+  takes the `Sheet` `narrow` variant (min 360px), and each row lost the caption
+  that merely restated the top `USED = days taken · BAL = balance left` key —
+  only the AGGREGATES keep a caption, because theirs is the composition
+  (`= ATT C + HL + OML`) the owner asked for. The per-row ", yours" is gone too:
+  the header says whose numbers these are, once, instead of twelve times. The
+  real height floor turned out to be the ▲▼ figure-reorder arrows (two stacked
+  20px buttons pinned every row at ~42px however tight the text), so those are
+  shrunk in narrow mode. Rows now measure 30px and the sheet 587px (was 701).
+  The e2e floor moved 44 → 28 deliberately: these are the viewer's own figures,
+  a list you SCAN, not the action sheets' tap rows (those keep their 44px).
+- **Whose view it is, said out loud** ("make it obvious that im viewing as for
+  example RANGER"). The whole grid — the lit row, the counter column, the figure
+  sheets — answers for the viewing person (Raptor's "View as", mirrored in), and
+  nothing said so. Now: a persistent accent chip in the Leave War topbar
+  (`lw-viewing`, `ui/Chrome.tsx`) and the picker header leads with **VIEWING AS
+  &lt;callsign&gt;**. Both are ABSENT when nobody in the roster is being viewed —
+  there is no "you" to name, mirroring the picker's existing dash rule.
+- **No personnel label editor** ("i can edit personnel, dont need to show that,
+  just leave it as the callsign/name"). In Rearrange a ground-crew row used to
+  turn its name column into a "Maint / Line" edit box; `PersLabel` is deleted, so
+  the row shows the same callsign + chip as every other row in BOTH modes. The
+  stored labels and the store's `personLabel`/`setPersLabel` seam are untouched
+  (`roster.test.ts` still covers them) — only the on-grid editor is gone.
+- **Manning rows reorder by DRAG, and the ▲▼ arrows are gone** ("the rearrange
+  could u do drag and drop … remove the arrow function … the drag and drop rows
+  function is already designed on other areas of the app"). Rather than a second
+  drag machine, `Matrix.tsx`'s `startRowDrag` is now driven by a `RowDragCfg`
+  (`sel` / `idOf` / `move`) and serves BOTH row kinds: `ROSTER_DRAG` (people) and
+  `MANNING_DRAG` (counts). The count rows carry `data-mrow` for the hit-test
+  rather than a `data-testid` prefix — their day cells are `count-<id>-<date>`
+  and a prefix `closest()` would catch a CELL, not the row. The commit is
+  `store.ts:moveManningRowTo(id, beforeId)`, mirroring `moveRosterRow` (same
+  before-itself guard, same splice-then-reinsert). The step-wise
+  `moveManningRow(id, ±1)` stays as a tested store primitive with no UI caller.
+  The hide (eye) control is unchanged.
+
+Verified live at 1440px: picker rows 30px, the viewer chip reads "Viewing as
+Ranger", a ground-crew row shows "Cotter" with no edit box, and a count-row drag
+moved a row from first to third with the arrows absent — zero console errors.
+Pinned in `counters.test.tsx`, `chrome.test.tsx`, `counts.test.tsx`,
+`roster.test.ts`, and e2e ("a personnel row shows its callsign, with no edit box,
+in Rearrange").
+
+## Leave War roster groups: minimise, and the admin group editor (owner, 28 Aug 26)
+
+**Minimising a category.** Every group heading is a fold control — the sticky
+`td.grphd` is the target (NOT `.grphd-in`, which is deliberately `width: 0` so it
+adds no min-width to the frozen callsign column; a zero-width control cannot be
+tapped). Folding keeps the heading — it is the way back — and drops its rows; the
+`· N` count is built from the UNFILTERED roster, so a folded group still says how
+many it is hiding. The filter lives in `rosterSequence()` (`Matrix.tsx`), the one
+sequence BOTH the real grid and the frozen overlay read, and the inline `<tbody>`
+render applies the identical skip — the two must never fold out of step, which is
+what `frozencols.test.tsx` and the e2e overlay test catch. Session-only and open
+to EITHER role, the same doctrine as the manning-block collapse: it hides nothing
+anyone is entitled to see. Nothing is folded by default. `folded` rides the two
+measuring effects' deps and the frozen-header mirror's, because removing rows lets
+auto-layout re-narrow columns exactly as a row-window change does.
+
+**The group editor** (`ui/GroupSheet.tsx`, opened from the ⚙ button in the corner
+cell above CS/Name — the empty space the owner circled; admin only). The seven
+built-in groups were a closed union (`Group`), a fixed `GROUP_ORDER` and a
+`GROUP_LABEL` record; they are now the DEFAULT value of an admin-owned list
+(`engine/groups.ts`). A group is `{kind:'cat', g}` or `{kind:'qual', k}`, and a
+built-in's id IS its old `Group` string — so every stored order, `group-SXO`
+testid and `g-sxo` CSS class is untouched, and an untouched squadron groups
+exactly as before (pinned: the default list reproduces `groupOf` for every kind
+of person).
+
+- **The qualification list grows on its own.** Quals already crossed the Leave War
+  seam — `raptorRoster.ts` projects `xq` (every held key) and `qualCatalogue()`
+  unions every key any live body carries, refreshed by `reprojectRoster` on every
+  notify. `heldQuals(p)` (`availability.ts`) is the membership predicate, the same
+  one the counter filters use, so "qualified" means one thing in this app.
+- **TWO orders, deliberately** (the owner's choice when asked): `groupDefs` is the
+  top-to-bottom display order he drags, and `groupPriority` is a SEPARATE list
+  deciding who claims a person matching several. Tying them would make reordering
+  the page silently re-home people.
+- **"Shows up once" is not bolted on**: `assignGroup` walks the priority order and
+  takes the first match — the same shape `groupOf` always had. Ranking a
+  qualification above a CAT group is all it takes to get the owner's "if theres a
+  cat c column, but there is also a SC D column. They should always show up in the
+  qualifications column instead of CAT".
+- **"Everyone else" is always last and cannot be removed** — an admin whose list is
+  all qualifications would otherwise strand people with no row at all.
+- **Tap a group to see who is in it** (owner: "allow me to click to highlight the
+  applicable pucks … so I can see like who's qualified"), with a live member count
+  on every row.
+- **Untrusted load + a live prune**: stored entries are read structurally and
+  de-duped, and `pruneGroups` runs on load AND whenever the catalogue moves
+  (`setQualCatalog`) — a group pinned to a Quals column the squadron later deletes
+  would otherwise draw an empty heading nobody could remove.
+- **Manning counts do NOT follow the grouping** (owner's explicit answer, and
+  verified: `countsFor` never calls `groupOf`). Grouping is display only. NAMED
+  DRIFT-SEAM: the group editor and the manning count rows are two independent
+  admin configurations over overlapping vocabulary — changing one does not move
+  the other, by design.
+- CAT sub-headings are emitted for the two built-in OPS groups only; a person drawn
+  under a qualification is not "in CAT B" for display purposes.
+
+Verified live at 1440px: the editor offers all ten real qualifications with true
+member counts, tapping IP lights its eight people, ranking Scheduler top moves all
+fifteen schedulers into it (SXO's heading disappears — its people were claimed),
+and the roster still holds all 50 people with zero duplicates. Pinned in
+`engine/groups.test.ts`, `roster.test.ts` and `matrix.test.tsx`.
+
+## The Inputs date window is a squadron setting (owner, 28 Aug 26)
+
+"Can i set the default duration how many weeks to look ahead by default … weeks,
+or weeks plus till that week's sunday … create an edit icon for admin users … i am
+able to change the button function to show the set duration i can click by default
+by everyone."
+
+`engine/lookahead.ts`, on the STD → CFG → save/load/reset idiom (`engine/stores.ts`
+is the template; boot-loaded in `initStore` beside `storesLoad()`). Two shapes,
+both asked for: plain `N` weeks, or `N` weeks then run on to that week's SUNDAY so
+the window always ends on a week boundary. **`LOOK_STD` is 2 weeks / no Sunday =
+exactly the old hard-coded today+14**, so the page opens on the same window it
+always did until an admin changes it.
+
+The page's opening range (`initialRange`) and the popover's quick button
+(`#inRangeDef`) now BOTH derive from the one setting, so what the page opens on and
+what the button offers cannot disagree — the button also SAYS the setting ("Next 4
+weeks, to Sunday"). The admin's pencil (`#inRangeEdit`) sits under the two quick
+buttons: a bounded weeks field and the Sunday toggle, saved immediately, and a
+refused value is put back to the live one on screen rather than left looking saved
+(the standing rule for every edited threshold). Storage is untrusted on load and
+nothing is written at all while the squadron is on the standard, so a later change
+to that standard is picked up rather than frozen in a browser.
+
+`#inRangeDef` used to be a fixed "Next 2 months"; `DEFAULT_SPAN_MONTHS` and
+`plusMonths` remain (exported and read elsewhere). The inputs test that named
+"+2 months" was renamed to name the default window instead — its assertions were
+already about what falls inside, and they still hold.
+
+Verified live: default 28 Aug → 11 Sep with "Next 2 weeks"; set to 4 weeks + Sunday
+gives "Next 4 weeks, to Sunday" and 28 Aug → Sun 27 Sep; survives a reload. Pinned
+in `engine/lookahead.test.ts` (both modes, month/year rollover, bounds, untrusted
+storage).
+
+## The frozen date bar — the reusable recipe (owner, 28 Aug 26 — "make sure u remember how to create such a frozen top bar in the future. This is the expectation")
+
+This is the pattern the owner signed off on the preview and asked kept for
+reuse. It works IDENTICALLY on desktop and phone (verified live at 1440px and
+402px, 28 Aug 26 — same freeze point, the bar tracks the grid with zero drift
+across the whole scroll range). The dated entries below are the fix-by-fix
+history; THIS block is the recipe to copy. Six pieces, in order:
+
+1. **Why sticky can't do it.** The PAGE owns the one vertical scroll (the
+   owner's standing "one vertical scroll" rule); the grid's own wrapper
+   (`.mx-wrap`) scrolls HORIZONTALLY only. So `position: sticky; top: 0` on the
+   header has no vertical scroller of its OWN to pin against — it never
+   freezes. Every piece below exists because of this one constraint. If a
+   future surface DOES give the header its own vertical scroll box, plain
+   sticky is simpler — use it. This recipe is for the one-vertical-scroll case.
+
+2. **The freeze is a JS-driven MIRROR, not the real header.** A `position:
+   fixed` copy of the date row (`.mxfixed`, z-index below the app top bar) is
+   rendered only once the real header scrolls up under the top bar (`stuck`
+   state, flipped by an IntersectionObserver / scroll measure). It pins just
+   below the app top bar's lower edge. The real header stays in the grid; the
+   mirror is a throwaway overlay that appears on freeze and unmounts on
+   scroll-back up.
+
+3. **The horizontal follow is COMPOSITOR-driven where the browser can, JS
+   where it can't** — feature-gated, so nothing regresses on old browsers or in
+   jsdom. Detect once (`sdaActive` = `CSS.supports('scroll-timeline: --x x')` &&
+   `CSS.supports('timeline-scope: --x')`) and branch:
+   - **Modern path (`.lw-sda`).** The scroller names its horizontal scroll as a
+     timeline (`.mx-wrap { scroll-timeline: --lwx x }`); an ancestor that is NOT
+     the scroller hoists that name into scope (`.mx-outer { timeline-scope:
+     --lwx }`, because the fixed bar is not a descendant of the scroller); the
+     mirror's day columns are TRANSLATED from 0 to the grid's max scrollLeft
+     across the grid's whole range (`animation: lwx-follow linear both;
+     animation-timeline: --lwx`), so `grid.scrollLeft ↦ translateX(−scrollLeft)`
+     runs ON THE COMPOSITOR — glued, nothing to catch up. `--lwx-max` (the max
+     scroll distance) is set from JS on LAYOUT changes only, never per frame.
+   - **Fallback path.** A rAF pump copies `grid.scrollLeft` onto the mirror's
+     own scrollLeft each frame (main thread, a frame behind a fling). GPU it
+     (`transform: translateZ(0)` on the bar, `will-change: scroll-position` on
+     the scroll layer) so the per-frame write recomposites instead of
+     repainting — that alone cut the dropped frames that read as "lag."
+
+4. **A translated table can't keep `position: sticky`, so the frozen LEFT
+   columns become a static clipped COPY in the modern path.** In the fallback
+   path the mirror reuses the grid's own left-sticky columns. In the `.lw-sda`
+   path the whole day table is translated, which kills sticky — so the frozen
+   name/counter columns are drawn as a separate static, opaque, clipped overlay
+   pinned over the left (`.mxfixed-frozen`), and IT carries any interactive
+   control (the counter picker); the translated layer under it is
+   `pointer-events:none` + aria-hidden so the accessible/clickable set stays
+   single.
+
+5. **The `@keyframes` must live at the FILE'S TOP LEVEL.** This file wraps
+   everything in a `#page-leavewar { … }` native-nesting block; a `@keyframes`
+   at-rule is invalid inside CSS nesting and the minifier (lightningcss) rejects
+   the whole build. Keyframe names are global, so a top-level `@keyframes
+   lwx-follow` still binds from inside the nested rule. Don't move it in.
+
+6. **The day-column headers are `position: static`, NOT sticky — perf.** A
+   blanket `sticky` on every one of the ~365 day headers makes the scroll engine
+   re-evaluate all of them every frame, for a `top: 0` that pins NOTHING (no
+   vertical scroll to stick over). Overriding the day cells to `static` cut the
+   scroller's sticky-element count ~425→~60 and, under a 6× CPU throttle, the
+   median scroll frame ~283ms→~17ms. Only the day headers change; the frozen
+   LEFT columns keep their own left-sticky. Do NOT restore sticky on the day
+   headers.
+
+The whole thing is gated so the fallback runs unchanged where the feature is
+missing, and header↔body column alignment stays pixel-exact (`dx = 0`, verified
+at 402px and 1300px). The alternative — a real inner scroll box that CSS sticky
+pins for free — was declined by the owner (it reintroduces the nested-scroller
+feel he rejected on 10 Aug 26). The fix-by-fix history follows.
+
 - **The date header FREEZES on desktop too** (owner, 27 Aug 26 — "freeze top
   panel for leave war on desktop … when I scroll down the top bar that has the
   dates goes out of view, the top bar will freeze just like how the mobile does
@@ -4082,9 +4474,80 @@ BidPicker's look and vocabulary, not instead of it.
   60 over the mirror's 55), tracks the grid's horizontal scroll one-way via the
   rAF pump, and reuses the same `.who`/`.bal` sticky-left CSS to keep its lead
   columns frozen. Desktop keeps its own real-`sticky` frozen-left columns
-  untouched; only the header path widened.
+  untouched; only the header path widened. **The mirror is GPU-composited**
+  (owner, 28 Aug 26 — "the lag on the frozen bar … 0 latency … when u scroll
+  horizontally"): `.mxfixed` carries `transform: translateZ(0)` and
+  `.mxfixed-scroll` carries `will-change: scroll-position`, so a per-frame
+  `scrollLeft` write recomposites a layer instead of repainting the header. The
+  residual lag was dropped frames (the mirror repaint missing a busy frame the
+  compositor already slid the grid on); the layer makes that repaint cheap
+  enough to land every frame. This is a paint-cost change only — the JS sync,
+  the one-way follow, and the sticky lead columns are all unchanged. True zero
+  latency is not reached (a JS-followed element cannot be frame-locked to a
+  compositor fling on every device); the honest gain is far fewer dropped
+  frames. The alternative — a real inner scroll box that CSS `sticky` could pin
+  for free — was declined by the owner (it reintroduces the nested-scroller feel
+  he rejected on 10 Aug).
+- **On browsers with CSS scroll-driven animations, the bar's horizontal follow
+  is COMPOSITOR-driven, not JS** (owner, 28 Aug 26 — a screenshot showing the
+  date bar trailing the grid mid-fling: "the top bar not catching up … glue it,
+  keep the feel"). This supersedes the "true zero latency is not reached" caveat
+  above FOR THOSE BROWSERS: the JS mirror only *follows* the grid (main thread,
+  a frame behind the compositor fling — which is the trailing he saw at rest in
+  a caught frame, ~2 columns, snapping back on stop). Instead `.mx-wrap` names
+  its horizontal scroll as a `scroll-timeline` (`--lwx`), `.mx-outer` hoists that
+  name into scope with `timeline-scope` (the fixed bar is not a descendant of
+  the scroller), and the bar's day columns are TRANSLATED from 0 to the grid's
+  max scrollLeft (`--lwx-max`, set from JS on layout changes only) across the
+  grid's whole scroll range — so grid.scrollLeft ↦ translateX(−scrollLeft) on
+  the compositor, glued with nothing to catch up (measured drift 0→~3px across a
+  ~10,000px range, the same sub-pixel rounding the JS path has at rest). A
+  translated table can't keep `position: sticky`, so in this path the frozen
+  callsign+counter columns are a static, opaque, clipped COPY pinned over the
+  left (`.mxfixed-frozen`); the scrolling layer's own who/bal are
+  `pointer-events:none` so the copy carries the (still-working) counter picker,
+  and the copy is aria-hidden so the scrolling layer stays the one accessible
+  set. Gated by `.lw-sda` (JS `sdaActive` feature-detects `scroll-timeline` +
+  `timeline-scope`); when absent — older browsers, and jsdom — the JS mirror
+  above is used UNCHANGED, so nothing regresses where the feature is missing.
+  `@keyframes lwx-follow` lives at the file's TOP LEVEL (a keyframes at-rule is
+  invalid inside this file's `#page-leavewar { … }` nesting wrapper; the minifier
+  rejects it — keyframe names are global, so the binding still resolves).
+- **The day-column headers are `position: static`, NOT sticky** (owner, 28 Aug
+  26 — a second recording, "seems pretty laggy still": the sideways swipe felt
+  janky). Diagnosis: the recording was NOT the frozen mirror at all — the whole
+  roster fits on his phone, so the header never slides under the top bar and the
+  mirror never activates; what lagged was the ordinary horizontal scroll of the
+  grid. The header and body are one `<table>` inside `.mx-wrap`, so they cannot
+  drift apart — but the blanket `.mx .mxhead th { position: sticky; top: 0 }`
+  rule made every one of the ~365 day headers a sticky element, and the engine
+  re-evaluated all of them on every scroll frame. That `top: 0` pins NOTHING
+  (`.mx-wrap` has no vertical scroll for it to stick over — the very reason the
+  JS mirror exists), so it was pure per-frame cost. Overriding the day cells to
+  `position: static` (in `matrix.css`, right under the blanket rule) cut the
+  scroller's sticky-element count from ~425 to ~60 and, under a 6× CPU throttle,
+  took the median scroll frame from ~283 ms to ~17 ms (a clean 60 fps). Nothing
+  that actually freezes is touched: the frozen LEFT columns keep their own
+  `.who`/`.bal` left-sticky, the month labels keep `.brakl`, the mirror still
+  tracks in lockstep, and header↔body column alignment is pixel-exact
+  (`dx = 0`, verified live at 402 px and 1300 px). Do NOT restore `sticky` on
+  the day headers — it re-adds the jank for a freeze that sticky can't do.
 - **The colour/mark pop-out is labelled "Legend"** (owner, 27 Aug 26 — renamed
-  from "Key"; `Chrome.tsx`, testid `legend-open` unchanged).
+  from "Key"; `Chrome.tsx`, testid `legend-open` unchanged). **It also keys the
+  LETTERS, not just the colours** (owner, 28 Aug 26 — "include what FS HS etc
+  mean … things that reflect only on the leave war. Because it's not stated on
+  inputs"). Below the state/edge/asterisk sections, `Chrome.tsx` renders
+  `CODE_GLOSSARY` from `engine/codes.ts` — a plain-English key to every grid
+  code, grouped: **"Shown here only — not on the Inputs page"** (FS = full day
+  SC duty, HS = half day, each earning off-in-lieu, credited from a published
+  weekend/PH duty — the only codes never typed on Inputs, so the accent-tinted
+  `.leg-sec-here` heading marks them out), then Medical (the grid's `B`/`C`
+  shorthand + HL/OML), Leave (LL…OFF) and Other duty (CSE/OD). The glossary is
+  built straight from the catalogue's own label tables (one source, no drift),
+  and each swatch takes the grid's own colour by the SAME rule the cell does
+  (`isDuty` → `sc`, non-bid marker → `info`, leave → plain — mirrored into
+  `.leg-sw.sc`/`.leg-sw.info`), so it doubles as a key to the two colours the
+  state section doesn't cover.
 - **The word "Acknowledge" became "Pending"** on the decision controls
   (single and batch) — the same word the colour legend already gives the
   purple state. The stored token stays `'acknowledged'`; only the label moved.
@@ -4095,6 +4558,19 @@ BidPicker's look and vocabulary, not instead of it.
   §Auth / roles. `movableCells` factors those same guards into "which cells of a
   selection hold a movable bid" — the ONE body the sheet (offer Move?), the
   anchor (first input), and the mover all read, so "what moves" can't drift.
+  Since the 27 Aug overnight pass the counting is honest too: an empty cell
+  swept into a delete-box counts as neither written nor skipped (the sheet's
+  "N deleted" names real deletions, and an all-empty clear neither persists
+  nor notifies), and a PARTIAL write keeps the sheet OPEN so its "N written,
+  M skipped" note is actually read (`onDone`'s `keepOpen`; closing on the
+  same tap killed the note it had just set). The single-cell writers carry
+  the batch writers' whole law now as well: `setBidState` checks `canDecide`
+  exactly as `setBidStates` does, `shiftBid` checks the stage/window/war-day/
+  in-squadron law exactly as `moveCells` does (a typed off-war date used to
+  make a bid vanish from every screen while still draining the balance), a
+  medical code is refused from a member at `setCell` itself, and a chain of
+  closed-war moves keeps the ORIGINAL origin in `shiftedFrom` — the trail
+  answers "when did he bid this", not "where was it last hop".
   Pinned in `store.test.ts`, `selectsheet.test.tsx`.
 
 ### Published-stage remarks editing (owner, 27 Aug 26)
@@ -4107,15 +4583,26 @@ member editing their own leave) or an admin (anyone). It takes precedence in
 (a block of runs has no one note). The note lives on the Raptor INPUT the cell
 derives from — a leave FILED on Inputs (Raptor-owned) or BID in the war (the
 lw-tagged row `runOutbound` mints at publish), both found by
-`sync.ts:leaveInputAt`. The save runs through Raptor's one commit path
+`sync.ts:leaveInputAt` — which since the 27 Aug overnight pass is handed the
+CELL'S OWN code, so under a leave clash (two inputs covering one day) it opens
+the record that actually derives the tapped cell: same leave type, exact
+portion preferred, the lw-tagged (war-minted) row outranking a plain one, and
+a non-leave code (an FS/HS credit) matching nothing. The save runs through
+Raptor's one commit path
 (`inputedit.ts:setLeaveRemarks → commitInputEdit`): a remarks-only edit leaves
 the leave's `rowSig` unchanged, so the lw tag and the war cells do not move —
 only the note the Inputs page reads is rewritten, and the member-own /
 scheduler-any gate comes free from `commitInputEdit`. To make the cell tappable
 at published for a member's own war-bid leave, `openable` gains a CHEAP branch
-(a code exists on the viewer's own row, or any row for an admin) — the precise
-"is there a backing leave" test stays in `canRemark`, run once per opened cell,
-never per drawn cell. Pinned in `remarks.test.tsx` (own → editor, admin → any,
+— since the overnight pass it is the viewer's own APPROVED biddable cell (code
++ state truthiness only; an admin's cells are already openable via
+`canEditCell`): a refused or pending bid at published opens NOTHING for a
+member, and the first cut still painted it tappable — a dead tap exactly where
+the stakes are highest. The precise "is there a backing leave" test stays in
+`canRemark`, run once per opened cell, never per drawn cell. Exactly ONE sheet
+renders per opened cell — the decision sheet and the post-out sheet carry the
+same exclusion terms the others always did (a posted-out day holding a bid
+used to stack both). Pinned in `remarks.test.tsx` (own → editor, admin → any,
 member-other → the read-only Raptor sheet, not-published → neither) and the
 scrim table; e2e drives the admin round trip in a real browser.
 

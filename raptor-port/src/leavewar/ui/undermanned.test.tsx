@@ -1,6 +1,6 @@
 import { act, fireEvent, render, screen, within } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
-import { getState, getVersion, initStore, selectWar, setBidState, setCell } from '../state/store'
+import { advanceStage, getState, getVersion, initStore, selectWar, setBidState, setCell, setRole } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { StageBar } from './Chrome'
 import { Matrix } from './Matrix'
@@ -58,7 +58,7 @@ describe('the under-manned list', () => {
     render(<StageBar />)
     fireEvent.click(screen.getByTestId('undermanned'))
     expect(screen.getByTestId('undermanned-day-2026-01-01')).toBeTruthy()
-    act(() => setBidState('ramp', '2026-01-01', 'refused'))
+    act(() => { setRole('admin'); advanceStage(); setBidState('ramp', '2026-01-01', 'refused') })
     expect(screen.queryByTestId('undermanned-day-2026-01-01')).toBeNull()
     expect(within(screen.getByTestId('undermanned-list')).getAllByTestId(/^undermanned-day-/)).toHaveLength(RED.length - 1)
   })

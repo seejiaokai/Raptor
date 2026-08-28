@@ -4,7 +4,8 @@
 // the engine does not model. See CLAUDE-facing restyle brief for why.
 
 import { useLayoutEffect, useRef, useState, useSyncExternalStore } from 'react'
-import { canReopen, evaluatePeriod, nextStage, previousStage, stageLabel } from '../engine'
+import { biddingClosed, canReopen, evaluatePeriod, isBiddable, isDuty, nextStage, previousStage, stageLabel } from '../engine'
+import { CODE_GLOSSARY } from '../engine/codes'
 import { getClashes, getClashVersion, subscribeClashes } from '../sync'
 import {
   advanceStage,
@@ -30,8 +31,15 @@ const LEGEND_WIDTH = 272
 
 export function Topbar() {
   useVersion()
-  const { period, wars, role } = getState()
+  const { period, wars, role, people, viewer } = getState()
   const [making, setMaking] = useState(false)
+  // WHOSE view this is (owner, 28 Aug 26 — "make it obvious that im viewing as
+  // for example RANGER"). The whole grid — the lit row, the counter column, the
+  // figure sheets — answers for the viewing person (Raptor's "View as",
+  // mirrored in), and nothing on the page said so out loud. This chip does, at
+  // the top of the page where it is always in view. Absent when nobody is being
+  // viewed (an admin off any one person), where there is no "you" to name.
+  const me = viewer ? people.find(p => p.id === viewer) ?? null : null
   return (
     <>
     {/* The Leave War page's own "142 SQN / LEAVE WAR" mark and "Leave war" nav
@@ -73,6 +81,20 @@ export function Topbar() {
           <button className="warnew" data-testid="war-new" onClick={() => setMaking(true)}>
             + New
           </button>
+        )}
+        {me && (
+          <span
+            className="lw-viewing"
+            data-testid="lw-viewing"
+            title={`Every number on this page is ${me.callsign}'s. Change whose with "View as" in the top bar.`}
+          >
+            <svg className="eye" viewBox="0 0 24 24" width="13" height="13" aria-hidden="true">
+              <path d="M12 5c-5 0-8.5 4.5-9.5 7 1 2.5 4.5 7 9.5 7s8.5-4.5 9.5-7c-1-2.5-4.5-7-9.5-7Z" fill="none" stroke="currentColor" strokeWidth="1.7" />
+              <circle cx="12" cy="12" r="2.6" fill="currentColor" />
+            </svg>
+            <span className="vlab">Viewing as</span>
+            <b className="vwho">{me.callsign}</b>
+          </span>
         )}
       </div>
     </div>
@@ -381,10 +403,34 @@ export function StageBar() {
               <div className="leg-row"><span className="leg-sw ref">LL</span><span className="leg-t">Refused</span></div>
               <div className="leg-sec">The left edge — where it came from</div>
               <div className="leg-row"><span className="leg-sw raptor">LL</span><span className="leg-t">Filed on the Inputs page — change it there, not here</span></div>
-              <div className="leg-row"><span className="leg-sw moved">LL</span><span className="leg-t">Moved here from another day</span></div>
+              {/* The moved stripe exists only once bidding has closed
+                  (movedShown, one biddingClosed body with the store) — while
+                  the war is open the legend must not advertise a mark no cell
+                  can wear, sending readers hunting for it. */}
+              {biddingClosed(period.stage) && (
+                <div className="leg-row"><span className="leg-sw moved">LL</span><span className="leg-t">Moved here from another day</span></div>
+              )}
               <div className="leg-sec">The <b>*</b> — a half day</div>
-              <div className="leg-row"><span className="leg-sw plain">*LL</span><span className="leg-t">Morning (before the code)</span></div>
-              <div className="leg-row"><span className="leg-sw plain">LL*</span><span className="leg-t">Afternoon (after the code)</span></div>
+              <div className="leg-row"><span className="leg-sw plain">*LL</span><span className="leg-t">AM (before the code)</span></div>
+              <div className="leg-row"><span className="leg-sw plain">LL*</span><span className="leg-t">PM (after the code)</span></div>
+              {/* What the LETTERS mean (owner, 28 Aug 26). The grid shows codes
+                  the Inputs page never explains — FS/HS above all, which are not
+                  even typed there. Each swatch takes the grid's OWN colour by
+                  the same rule the cell does (duty → sc, non-bid marker → info,
+                  leave → plain), so it doubles as a key to those two colours the
+                  sections above don't cover. Data is CODE_GLOSSARY in codes.ts,
+                  built from the catalogue — one source, no drift. */}
+              {CODE_GLOSSARY.map(g => (
+                <div key={g.group}>
+                  <div className={'leg-sec' + (g.onlyHere ? ' leg-sec-here' : '')}>{g.group}</div>
+                  {g.rows.map(r => (
+                    <div className="leg-row" key={r.show}>
+                      <span className={'leg-sw ' + (isDuty(r.show) ? 'sc' : !isBiddable(r.show) ? 'info' : 'plain')}>{r.show}</span>
+                      <span className="leg-t">{r.mean}</span>
+                    </div>
+                  ))}
+                </div>
+              ))}
             </div>
           </div>
         </>

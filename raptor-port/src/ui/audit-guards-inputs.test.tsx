@@ -184,7 +184,7 @@ describe('a member edits and deletes only their own inputs', () => {
 
   it("refuses a member editing someone else's input", () => {
     const { mine, other } = twoPeople()
-    setSession({ user: 'us', role: 'member' }); setMe(mine.person)
+    setSession({ user: 'us', role: 'main' }); setMe(mine.person)
     const d: any = draftOf(other); d.remarks = 'not mine to touch'
     expect(commitInputEdit(other, d)).toBe(false)
     expect(said.join(' ')).toMatch(/your own/i)
@@ -192,7 +192,7 @@ describe('a member edits and deletes only their own inputs', () => {
 
   it("refuses a member deleting someone else's input", () => {
     const { mine, other } = twoPeople()
-    setSession({ user: 'us', role: 'member' }); setMe(mine.person)
+    setSession({ user: 'us', role: 'main' }); setMe(mine.person)
     const n = INPUTS.length
     expect(removeInput(other)).toBe(false)
     expect(INPUTS.length, 'nothing was removed').toBe(n)
@@ -201,7 +201,7 @@ describe('a member edits and deletes only their own inputs', () => {
 
   it('lets a member edit their OWN input', () => {
     const { mine } = twoPeople()
-    setSession({ user: 'us', role: 'member' }); setMe(mine.person)
+    setSession({ user: 'us', role: 'main' }); setMe(mine.person)
     const d: any = draftOf(mine); d.remarks = 'mine to edit'
     expect(commitInputEdit(mine, d)).toBe(true)
     expect(mine.remarks).toBe('mine to edit')

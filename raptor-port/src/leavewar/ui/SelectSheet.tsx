@@ -25,8 +25,8 @@ import './bidpicker.css'
 
 const PORTIONS: { portion: Portion; label: string; testid: string }[] = [
   { portion: 'full', label: 'Whole day', testid: 'sel-portion-full' },
-  { portion: 'am', label: 'Morning', testid: 'sel-portion-am' },
-  { portion: 'pm', label: 'Afternoon', testid: 'sel-portion-pm' },
+  { portion: 'am', label: 'AM', testid: 'sel-portion-am' },
+  { portion: 'pm', label: 'PM', testid: 'sel-portion-pm' },
 ]
 
 export function SelectSheet({
@@ -48,8 +48,11 @@ export function SelectSheet({
   canDecide: boolean
   /** admin — the medical markers */
   medical: boolean
-  /** report counts back so the matrix can snap the counter column + close */
-  onDone: (changed: boolean) => void
+  /** Report the write back. `keepOpen` says a PARTIAL write left a note on the
+   *  sheet the person still has to read ("3 written. 4 skipped — locked…") —
+   *  the matrix closes the sheet only when it is absent, or the note died
+   *  with the sheet in the same tap that set it (27 Aug 26 overnight find). */
+  onDone: (changed: boolean, keepOpen?: boolean) => void
   /** enter move-mode (the matrix owns the ghost + the drop) */
   onMove: (sel: Selection) => void
   /** admin, single-person selections only: post that one person out */
@@ -85,7 +88,7 @@ export function SelectSheet({
     const { written, skipped } = code ? setCells(sel.cells, code) : clearCells(sel.cells)
     if (skipped === 0) { onDone(written > 0); return }
     setNote(skipNote(code ? 'written' : 'cleared', written, skipped))
-    if (written > 0) onDone(true) // refresh counts but keep the sheet to show the note
+    if (written > 0) onDone(true, true) // refresh counts but keep the sheet to show the note
   }
 
   const del = () => {
@@ -93,7 +96,7 @@ export function SelectSheet({
     const { written, skipped } = clearCells(sel.cells)
     if (skipped === 0) return onDone(written > 0)
     setNote(skipNote('deleted', written, skipped))
-    if (written > 0) onDone(true)
+    if (written > 0) onDone(true, true)
   }
 
   const decide = (bid: BidState) => {
@@ -102,7 +105,7 @@ export function SelectSheet({
     setNote(decided === 0
       ? 'None of those could be decided — a decision needs a bid that is not Raptor-owned.'
       : `${decided} decided. ${skipped} skipped (no bid, or Raptor-owned).`)
-    if (decided > 0) onDone(true)
+    if (decided > 0) onDone(true, true)
   }
 
   const canFill = role === 'admin' || !canDecide // members fill while open; the sheet only opens for them then

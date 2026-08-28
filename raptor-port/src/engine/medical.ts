@@ -58,10 +58,12 @@ export function medDownAsOf(asOf:any){
    down), (b) any downchit STARTS after that end — a newer entry replaces the
    nag even future-dated (owner: "his puck from pending upchit will disappear
    and the updated input will show instead"), or (c) an upchit is dated on or
-   after that end — after a trim the downchit's end IS the upchit date, so >=
-   is the covering test, while an earlier episode's upchit sits below it and
-   keeps nagging. Unbounded into the past on purpose: an owed upchit does not
-   age out. */
+   after that end — an earlier episode's upchit sits below the end and keeps
+   nagging. The canonical closer is dated the DAY AFTER the end — fit
+   on the upchit day (owner, 27 Aug 26), so a trim leaves the downchit ending
+   the day before — and >= also tolerates rows written under the older
+   ends-on-the-upchit-day convention. Unbounded into the past on purpose: an
+   owed upchit does not age out. */
 export function pendingUpchits(asOf:any){
   const by:any={};
   for(const r of medRows()){const a=medStartOrd(r),b=medEndOrd(r);
@@ -92,26 +94,50 @@ export function upchitsWithin(asOf:any,days:any=30){
 /* THE TRIM PLANS. One primitive decides trim-vs-delete; both flows use it. */
 const trimTo=(r:any,newEnd:any)=>{const a=medStartOrd(r);
   return newEnd<a?{row:r,action:'delete'}:{row:r,action:'trim',newEndOrd:newEnd};};
-/* an upchit on X: every downchit of the person still running past X is cut
-   to end ON X (down 10–13, upchit 12 → 10–12); one on or before the start
-   cancels the row outright. Rows already ended are left alone — the pending
-   nag clears through pendingUpchits, no mutation needed. */
+/* an upchit on X marks the man FIT ON X ITSELF (owner, 27 Aug 26 — "upchit
+   on 14 Jul means fit for full duty after the moment upchit was selected"):
+   every downchit of the person COVERING X (started on or before it, ending
+   on or past it) is cut to end the day BEFORE (down 10–13, upchit 12 →
+   10–11). Rows already ended before X are left alone — the pending nag
+   clears through pendingUpchits, no mutation needed. Rows that START AFTER
+   X are left alone too, deliberately: they are the "newer entry" the owner
+   said replaces the nag (a future surgery already filed, with its own
+   document), not part of the episode this upchit closes — they surface as
+   the LEFTOVERS of upchitEffects below, and the save-time sheet makes the
+   filer keep or remove each one explicitly (owner, 27 Aug 26 — nothing
+   silent, and no default either way). A row STARTING ON X reaches trimTo's
+   delete branch on purpose: a status left covering only fit days is void,
+   and the sheet shows the removal before it happens. */
 export function upchitTrimPlan(person:any,xOrd:any,except?:any){
   const out:any=[];
   if(xOrd==null)return out;
   for(const r of medRows(person)){if(r===except)continue;
     const a=medStartOrd(r),b=medEndOrd(r);
-    if(a==null||b==null||b<=xOrd)continue;
-    out.push(trimTo(r,xOrd));}
+    if(a==null||b==null||b<xOrd||a>xOrd)continue;
+    out.push(trimTo(r,ordShift(xOrd,-1)));}
   return out;
 }
-/* a NEW medical input of a DIFFERENT type wins its days (owner: "the latest
-   input ... overwrites the previous input thats conflicting"): every
-   overlapping other-type downchit is cut to end the day BEFORE the new one
-   starts, and deleted when nothing remains — including one that starts
-   inside the new range, whose tail past the new end is deliberately lost.
-   Same-type overlap never reaches here; it is refused at the form. */
-export function newMedTrimPlan(person:any,type:any,aOrd:any,bOrd:any,except?:any){
+/* Everything a saved upchit on X would do — and deliberately NOT do — in
+   one read. The save-time confirm sheet renders exactly this, so the
+   summary the filer approves and the write that follows cannot disagree
+   (one body, the drift-seam rule). `plan` is the trim/delete list above;
+   `leftovers` are the person's downchits dated entirely AFTER X, which the
+   plan leaves standing on purpose and the sheet puts to the filer as an
+   explicit keep-or-remove, one by one. */
+export function upchitEffects(person:any,xOrd:any,except?:any){
+  const leftovers:any=[];
+  if(xOrd==null)return {plan:[] as any[],leftovers};
+  for(const r of medRows(person)){if(r===except)continue;
+    const a=medStartOrd(r);
+    if(a!=null&&a>xOrd)leftovers.push(r);}
+  return {plan:upchitTrimPlan(person,xOrd,except),leftovers};
+}
+/* the DIFFERENT-type rows a new medical span would CLASH with, each with the
+   shared window. The save-time clash sheet renders exactly this list, and
+   newMedTrimPlan below trims off the same selection — one body, so what the
+   sheet asks about and what a commit would cut can never disagree. Same-type
+   overlap never reaches here; it is refused at the form. */
+export function medClashes(person:any,type:any,aOrd:any,bOrd:any,except?:any){
   const out:any=[];
   if(aOrd==null)return out;
   const b=bOrd==null?aOrd:bOrd, t=inpType(type);
@@ -120,6 +146,77 @@ export function newMedTrimPlan(person:any,type:any,aOrd:any,bOrd:any,except?:any
     const s=medStartOrd(r),e=medEndOrd(r);
     if(s==null||e==null)continue;
     if(s>b||e<aOrd)continue;
-    out.push(trimTo(r,ordShift(aOrd,-1)));}
+    out.push({row:r,loOrd:s<aOrd?aOrd:s,hiOrd:e>b?b:e});}
+  return out;
+}
+/* the LEFTOVER of a clashing row that runs PAST a new entry ending on `bOrd`
+   — the piece {bOrd+1 .. rowEnd} the takeover would leave standing. This is
+   the ONE body the clash sheet reads to offer its Keep/Remove and the planner
+   below reads to decide whether to mint the tail, so the sheet can never show
+   a different leftover than the write acts on (the drift-seam rule). Returns
+   null when the row ends on or before bOrd — no leftover to decide. */
+export function medTailBeyond(row:any,bOrd:any){
+  const e=medEndOrd(row);
+  if(bOrd==null||e==null||e<=bOrd)return null;
+  return {startOrd:ordShift(bOrd,1),endOrd:e};
+}
+/* a NEW medical input of a DIFFERENT type wins its days (owner: "the latest
+   input ... overwrites the previous input thats conflicting") — and ONLY its
+   days: every clashing row is cut to end the day BEFORE the new one starts
+   (deleted when nothing remains before it), and when the old row also ran
+   PAST the new one's end, the surviving tail rides the plan as a second
+   same-type row for the applier to mint. The first cut dropped that tail
+   wholesale, so a two-day ATT B dropped mid-way through a long
+   hospitalisation silently marked the man fit for the rest of it — days the
+   new input never claimed, the exact silent availability error the tracker
+   exists to prevent. Since 27 Aug 26 this is the PROGRAMMATIC default only:
+   the forms put every clash to the filer first (medClashes + the clash
+   sheet), and a row the filer chose to KEEP never reaches this planner
+   because the new entry's kept segments (subtractSpans) avoid it.
+   `keepTail` (owner, 28 Aug 26) is the clash sheet's per-leftover answer: the
+   list of clashing ROWS whose tail the filer chose to KEEP. Omitted (every
+   direct caller — the edit dialog, the calendar drag, the tests) keeps EVERY
+   tail, the safety default above. Supplied — the clash sheet always supplies
+   it — mints a tail only for a listed row, so a leftover the filer removed
+   (the default, one tap to keep) simply never mints and those days read fit,
+   shown on the sheet before the save, never silent. The row is still cut to
+   its head either way; only the tail turns on the answer.
+   `entryEnd` (28 Aug 26) is the WHOLE new entry's end, and the leftover is
+   measured past IT — not past `bOrd`. The two differ only when the entry was
+   split into SEGMENTS around a kept status (`medKeptSegments`): each segment
+   calls this with its own end as `bOrd`, but the tail a takeover leaves is the
+   part past the entry, not past one segment. Measured per-segment it minted a
+   tail reaching into a LATER segment, which that segment re-trimmed — and the
+   minted row being a fresh object outside `keepTail`, its kept days were then
+   silently dropped. Omitted, it falls back to `bOrd`, the entry end for every
+   single-segment and direct caller, so nothing else moves. */
+export function newMedTrimPlan(person:any,type:any,aOrd:any,bOrd:any,except?:any,keepTail?:any,entryEnd?:any){
+  const out:any=[];
+  if(aOrd==null)return out;
+  const b=bOrd==null?aOrd:bOrd;
+  const te=entryEnd==null?b:entryEnd;
+  for(const c of medClashes(person,type,aOrd,b,except)){
+    const p:any=trimTo(c.row,ordShift(aOrd,-1));
+    const tl=medTailBeyond(c.row,te);
+    if(tl&&(keepTail==null||keepTail.indexOf(c.row)>=0))p.tail=tl;
+    out.push(p);}
+  return out;
+}
+/* [aOrd,bOrd] minus the given spans — the day segments a new entry KEEPS
+   after the filer chose which existing statuses win their shared days.
+   Steps through real dates (ordShift), so month edges subtract cleanly. */
+export function subtractSpans(aOrd:any,bOrd:any,spans:any[]){
+  const out:any=[];
+  if(aOrd==null)return out;
+  const b=bOrd==null?aOrd:bOrd;
+  const sp=(spans||[]).filter((x:any)=>x&&x.s!=null&&x.e!=null&&x.s<=b&&x.e>=aOrd)
+    .sort((x:any,y:any)=>x.s-y.s);
+  let cur=aOrd;
+  for(const x of sp){
+    if(cur>b)break;
+    if(x.s>cur)out.push({startOrd:cur,endOrd:ordShift(x.s,-1)});
+    const next=ordShift(x.e,1);
+    if(next!=null&&next>cur)cur=next;}
+  if(cur<=b)out.push({startOrd:cur,endOrd:b});
   return out;
 }

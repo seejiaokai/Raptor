@@ -450,11 +450,32 @@ check the other):
   move): "which cells of a selection hold a movable bid" is read in THREE places
   — the sheet (offer Move at all), the anchor (`earliestDate` of the movers, so
   the first input lands on the tapped day), and the mover itself. It is one
-  exported body over the same `!raptorOwns && isBiddable && canEditCell` triple
-  `moveCells` guards each source by; a second copy is the seam. The move now
+  exported body over the same `!raptorOwns && isBiddable && canEditCell &&
+  canEditRow` guards `moveCells` guards each source by; a second copy is the
+  seam. The move now
   ignores the empty cells swept up around the inputs (a loose box no longer
   refuses as "nothing") — but the ATOMIC target guards still refuse an occupied
   / Raptor / out-of-window landing, so nothing is overwritten.
+  **The ROW guard `canEditRow` is the fourth face** (27 Aug 26 — "viewing as
+  ranger, I shouldn't be able to input on other people's row except mine"). A
+  member writes only their own row (the `viewer`/"View as" person), an admin
+  any; `canEditRow(role, viewer, personId)` (engine/stages.ts) is read at the
+  write path (`setCell`, the range/batch writers, `moveCells`/`isMovableSource`,
+  `shiftBid`) AND the grid affordance (`Matrix.tsx` `openable`, the drag `order`
+  restricted to the viewer, the BidPicker's edit gate) — the same drift-seam
+  rule as `canEditCell`: whatever the grid stops offering, the store must
+  independently refuse. `viewer === null` (raw store / tests only — production
+  always mirrors a real `ME`) imposes no row rule. Pinned in `store.test.ts`
+  §a member edits only their own row.
+- **The 27 Aug overnight pass added three more one-body seams to watch.**
+  `canDecide` is now read by the DecisionSheet/SelectSheet AND both store
+  decision writers (`setBidState`/`setBidStates`) — a decision gate grown in
+  only one of those places is the seam. `moveProblem` is the validation half
+  of `moveCells`, read by the commit AND the landing preview (`previewAt`) —
+  a preview that stopped asking it would show landings the commit refuses.
+  And the member-own Inputs backstop reads `canEditSched()` (the render
+  gate's predicate), never a role literal — the literal `'member'` matched
+  no real session and left the gate inert while its fixtures matched it.
 - **The two role reads: `LOGINROLE` (the ceiling) vs `SESSION.role` (the
   effective role)** (27 Aug 26, the admin's view toggle). DELIBERATELY two
   values, not a drift bug — but a seam to respect: every PERMISSION gate
@@ -650,6 +671,33 @@ agree — name it here so the next session knows to check both.
     `writeInputsBatch` from all three creation funnels and both edit paths.
     A new input-creation path that skips the planner silently un-invents the
     overwrite rule.
+  - `upchitEffects` (`engine/medical.ts`) is the ONE body behind the upchit
+    save-time summary sheet (`ui/UpchitConfirm.tsx`, 27 Aug 26): what the
+    sheet shows and what the save then trims come from the same call, and
+    ALL THREE form paths (Inputs add, its row editor, `InputEditor`) gate an
+    upchit save through the sheet — a fourth form path that saves an upchit
+    without it re-opens the silent-save hole; the calendar re-date drag
+    (`caldrag.ts`) is the one documented direct path.
+  - `medClashes` (`engine/medical.ts`) is the same pattern for the clash
+    sheet (`ui/MedClashConfirm.tsx`, 27 Aug 26): it selects the rows BOTH
+    for the sheet's questions and for `newMedTrimPlan`'s knife, and the
+    "keep the old status" answer resolves through `medKeptSegments` /
+    `mintMedSegments` (`ui/inputedit.tsx`) — kept rows are protected by
+    segment construction, not by a second guard, so a new writer that
+    bypasses the segments silently reverts to new-always-wins. Same
+    three-form-paths rule, same caldrag exception. The clash sheet also
+    carries a LEFTOVER decision (28 Aug 26): when the new entry takes the
+    days of a row running PAST it, `medTailBeyond` (one body for sheet and
+    planner) surfaces the tail as Remove (default) / Keep, whose answer
+    threads through `newMedTrimPlan`/`mintMedSegments` as `keepTail`. The tail
+    is measured past the WHOLE entry's end (`newMedTrimPlan`'s `entryEnd` arg,
+    defaulting to the segment end for single-segment and direct callers) —
+    measuring it per-segment let a kept leftover reach into a later segment
+    that then re-trimmed and dropped it, once a kept MIDDLE status had split
+    the entry (28 Aug review). A new write path that resolves a clash but
+    forgets to pass the filer's `keepTail` reverts to tail-always-kept — safe,
+    but it drops the owner's Remove default and the sheet's promise silently,
+    so pass it (and `entryEnd` with it).
   Plus one known demo wrinkle, documented in `state/demoseed.ts`: reloading
   week 1 restores the pristine INPUTS snapshot and drops the seeded demo
   docIds — the viewer's "No document on file" state covers it; not a bug to

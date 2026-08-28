@@ -2,8 +2,10 @@ import { Fragment, useEffect, useLayoutEffect, useMemo, useRef, useState, type T
 import {
   addDays,
   balanceOf,
+  biddingClosed,
   canDecide,
   canEditCell,
+  canEditRow,
   catClass,
   catText,
   codeOf,
@@ -11,7 +13,10 @@ import {
   displayCell,
   evaluatePeriod,
   groupOf,
-  GROUP_LABEL,
+  assignGroup,
+  groupLabel,
+  OTHER_ID,
+  OTHER_LABEL,
   inSquadron,
   isBiddable,
   isDuty,
@@ -28,7 +33,7 @@ import {
   type Group,
   type Person,
 } from '../engine'
-import { addEventRow, autoSortRoster, DEFAULT_EVENT_ROWS, displayRoster, eventRowUsed, getState, MAX_EVENT_ROWS, moveCells, movableCells, moveRosterRow, orderedManningIds, personLabel, removeEventRow, resetManningRules, setPersLabel, setPostOut, setShowSans, type MoveResult } from '../state/store'
+import { groupsInOrder, groupPriorityIds, moveGroupTo, moveGroupPriorityTo, addEventRow, autoSortRoster, DEFAULT_EVENT_ROWS, displayRoster, eventRowUsed, getState, MAX_EVENT_ROWS, moveCells, movableCells, moveManningRowTo, moveProblem, moveRosterRow, orderedManningIds, removeEventRow, resetManningRules, setPostOut, setShowSans, type MoveResult } from '../state/store'
 import { BidPicker, DecisionSheet, PostOutSheet, RaptorSheet } from './BidPicker'
 import { CounterSheet, FigureBreakdownSheet, PersonFiguresSheet } from './CounterSheet'
 import { PersonSheet } from './PersonSheet'
@@ -39,6 +44,7 @@ import { EventRows } from './EventRows'
 import { EventSheet } from './EventSheet'
 import { monthInView } from './monthview'
 import { wireSelect, wireMove, daysBetween, paintLanding, clearLanding, earliestDate, type Cell, type Selection, type SelectCtx } from './select'
+import { GroupSheet } from './GroupSheet'
 import { SelectSheet } from './SelectSheet'
 import { RemarksSheet } from './RemarksSheet'
 import { leaveInputAt } from '../sync'
@@ -85,31 +91,54 @@ function rowInWindow(p: Person, win: string): boolean {
   return true
 }
 
-/** A ground-crew body's free-text label — read-only text, or an edit box while
- *  the roster is being rearranged. Uncontrolled (defaultValue + commit on blur)
- *  so typing does not repaint the grid on every keystroke. */
-function PersLabel({ p, editable }: { p: Person; editable: boolean }) {
-  const val = personLabel(p)
-  if (!editable) {
-    return val ? <span className="pers-lbl" data-testid={`perslabel-${p.id}`}>{val}</span> : null
-  }
-  return (
-    <input
-      key={val}
-      className="pers-in"
-      data-testid={`perslabel-in-${p.id}`}
-      defaultValue={val}
-      placeholder="label…"
-      aria-label={`${p.callsign} — role label`}
-      onBlur={e => setPersLabel(p.id, e.target.value)}
-      onKeyDown={e => { if (e.key === 'Enter') (e.target as HTMLInputElement).blur() }}
-    />
-  )
+/* The ground-crew free-text role-label editor (`PersLabel`) was REMOVED
+   (owner, 28 Aug 26 — "i can edit personnel, dont need to show that, just leave
+   it as the callsign/name"). In Rearrange, a ground-crew row used to turn its
+   name column into a "Maint / Line" edit box; the owner does not want that
+   editing, so the row now shows the same callsign + category chip as every
+   other row, in both modes. The stored labels and the store's
+   `personLabel`/`setPersLabel` seam are untouched (roster.test.ts still covers
+   them) — only the on-grid editor is gone. */
+
+/* The two kinds of row the one drag machine (startRowDrag) can reorder. */
+type RowDragCfg = {
+  /** querySelector for a draggable row (and for the ordered list at drop). */
+  sel: string
+  /** read a row element's id (null if it isn't one). */
+  idOf: (el: Element) => string | null
+  /** commit: move `from` to sit before `beforeId` (end when null). */
+  move: (from: string, beforeId: string | null) => void
+}
+const ROSTER_DRAG: RowDragCfg = {
+  sel: '[data-testid^="row-"]',
+  idOf: el => el.getAttribute('data-testid')?.slice(4) ?? null,
+  move: moveRosterRow,
+}
+const MANNING_DRAG: RowDragCfg = {
+  sel: '[data-mrow]',
+  idOf: el => el.getAttribute('data-mrow'),
+  move: moveManningRowTo,
+}
+/* The group editor's two lists reorder with the SAME machine — display order
+   and the separate who-wins priority (owner, 28 Aug 26). */
+const GROUP_DRAG: RowDragCfg = {
+  sel: '[data-grow]',
+  idOf: el => el.getAttribute('data-grow'),
+  move: moveGroupTo,
+}
+const GROUP_PRIO_DRAG: RowDragCfg = {
+  sel: '[data-gprio]',
+  idOf: el => el.getAttribute('data-gprio'),
+  move: moveGroupPriorityTo,
 }
 
 export function Matrix() {
-  useVersion()
-  const { people, period, grid, states, requirements, role, viewer, eventDefs, openings, ledger, wars, figureOrder, manningHidden, eventRows, showSans, focusDate, focusSeq } = getState()
+  /* kept in a name (not just subscribed) so store-reading memos below can
+     re-derive on every store change — `movers` reads live grid state, and a
+     memo keyed only on the selection went stale when a sync pass changed a
+     selected cell under an armed move */
+  const version = useVersion()
+  const { people, period, grid, states, requirements, role, viewer, eventDefs, openings, ledger, wars, figureOrder, manningHidden, eventRows, showSans, focusDate, focusSeq, qualCatalog } = getState()
   const dates = period.days.map(d => d.date)
   // Memoized on the store objects (the store replaces what it writes, so
   // identity IS change): rules-as-data made a day's evaluation walk every
@@ -195,6 +224,9 @@ export function Matrix() {
   // NEW counter, an id editing that one. Reached from + Counter in the
   // Rearrange tools and from the explainer sheet's Edit counter… button.
   const [counterEdit, setCounterEdit] = useState<string | null | false>(false)
+  // The admin group editor (owner, 28 Aug 26) — opened from the corner cell
+  // above CS/Name.
+  const [groupEdit, setGroupEdit] = useState(false)
   // Edit-mode roster rearranging (owner, 18 Aug 26). Admin-only view state: it
   // turns the drag handles on, so an admin reading the grid does not nudge a
   // row by accident. Auto-sort stays available without it.
@@ -225,15 +257,22 @@ export function Matrix() {
   const [dragOver, setDragOver] = useState<string | null>(null)
   const [dragAfter, setDragAfter] = useState(false)
 
-  function startRowDrag(e: React.PointerEvent, id: string) {
+  /* ONE drag machine, two kinds of row (owner, 28 Aug 26 — "the drag and drop
+     rows function is already designed on other areas of the app"). The roster
+     rows and the manning count rows now reorder by the SAME pointer drag; a
+     `cfg` says which DOM rows to hit-test, how to read a row's id, and which
+     store move to commit. Manning rows are hit-tested by `data-mrow` rather
+     than a `data-testid` prefix, because their day CELLS are `count-<id>-<date>`
+     and a `[data-testid^="count-"]` closest() would catch a cell, not the row. */
+  function startRowDrag(e: React.PointerEvent, id: string, cfg: RowDragCfg) {
     if (e.button != null && e.button !== 0) return // primary pointer only
     e.preventDefault()
     dragId.current = id
     setDraggingId(id)
     const move = (ev: PointerEvent) => {
       const el = document.elementFromPoint(ev.clientX, ev.clientY)
-      const row = el && (el as Element).closest ? (el as Element).closest('[data-testid^="row-"]') : null
-      const overId = row?.getAttribute('data-testid')?.slice(4) ?? null
+      const row = el && (el as Element).closest ? (el as Element).closest(cfg.sel) : null
+      const overId = row ? cfg.idOf(row) : null
       /* which half decides before/after; a zero-height rect (jsdom) reads as
          "before", keeping the old semantics where layout cannot answer */
       let after = false
@@ -273,12 +312,12 @@ export function Matrix() {
            store's before-itself guard would have to save us. */
         let beforeId: string | null = over.id
         if (over.after) {
-          const rows = [...document.querySelectorAll('[data-testid^="row-"]')]
-            .map(el => el.getAttribute('data-testid')!.slice(4))
+          const rows = [...document.querySelectorAll(cfg.sel)]
+            .map(el => cfg.idOf(el)).filter((x): x is string => x != null)
           const ix = rows.indexOf(over.id)
           beforeId = ix >= 0 ? (rows[ix + 1] ?? null) : over.id
         }
-        if (beforeId !== from) moveRosterRow(from, beforeId)
+        if (beforeId !== from) cfg.move(from, beforeId)
       }
     }
     const up = () => end(true)
@@ -365,10 +404,26 @@ export function Matrix() {
   // the day tapped, the rest shifting with it (gaps between inputs kept). The
   // landing is previewed live on desktop (hover) and staged before a Confirm on
   // phone (no undo). `daysBetween(moveAnchor, target)` is the shared delta.
-  const movers = useMemo<Cell[]>(() => (moveSel ? movableCells(moveSel.cells) : []), [moveSel])
+  const movers = useMemo<Cell[]>(() => (moveSel ? movableCells(moveSel.cells) : []), [moveSel, version])
   const moveAnchor = useMemo(() => earliestDate(movers), [movers])
   const landingFor = (targetDate: string): Cell[] =>
     moveAnchor === null ? [] : movers.map(c => ({ personId: c.personId, date: addDays(c.date, daysBetween(moveAnchor, targetDate)) }))
+  /* Paint the landing ONLY when the atomic commit would accept it —
+     `moveProblem` is the validation half of `moveCells` itself, so the
+     preview cannot show half a landing (the off-grid cells simply not
+     painting) that the commit then wholly refuses. A refused hover/stage
+     clears the paint and says why in the banner instead. */
+  const previewAt = (targetDate: string): boolean => {
+    const w = wrapRef.current
+    if (!w || moveAnchor === null) return false
+    const delta = daysBetween(moveAnchor, targetDate)
+    if (delta === 0) { setMoveErr(''); paintLanding(w, landingFor(targetDate)); return true }
+    const problem = moveProblem(movers, delta)
+    if (problem) { clearLanding(w); setMoveErr(moveReason(problem)); return false }
+    setMoveErr('')
+    paintLanding(w, landingFor(targetDate))
+    return true
+  }
   const commitMove = (targetDate: string) => {
     const w = wrapRef.current
     if (moveAnchor === null) { setMoveSel(null); setMovePreview(null); return }
@@ -383,11 +438,13 @@ export function Matrix() {
     setMoveErr(''); setMovePreview(null)
     const cleanup = wireMove(w, {
       count: movers.length,
-      onHover: date => paintLanding(w, landingFor(date)),   // desktop live preview
+      onHover: date => previewAt(date),                     // desktop live preview
       onPick: date => {
         // Desktop lands on the click (the hover WAS the preview); a phone has no
-        // hover, so a tap stages the landing and waits for Confirm.
-        if (phone) { paintLanding(w, landingFor(date)); setMovePreview(date) }
+        // hover, so a tap stages the landing and waits for Confirm — but only a
+        // landing the store would accept stages (a refused one shows its reason
+        // where the Confirm button would be, never a Confirm under an error).
+        if (phone) setMovePreview(previewAt(date) ? date : null)
         else commitMove(date)
       },
       onCancel: () => { clearLanding(w); setMoveSel(null); setMovePreview(null) },
@@ -509,6 +566,38 @@ export function Matrix() {
   // hide controls stay reachable.
   const [countsOpen, setCountsOpen] = useState(true)
 
+  /* WHICH CATEGORY GROUPS ARE FOLDED AWAY (owner, 28 Aug 26 — "allow me to
+     minimise categories on leave war"). Same doctrine as the manning collapse
+     above: a VIEW preference, session-only and open to EITHER role — it hides
+     nothing anyone is entitled to see, it just gets a group's rows out of the
+     way while reading another. Nothing is folded by default, so the grid opens
+     exactly as it always did. The fold is applied in `rosterSequence` (below),
+     the one place both the real grid and the frozen overlay read. */
+  const [folded, setFolded] = useState<Set<string>>(() => new Set())
+  const toggleFold = (g: string) => setFolded(prev => {
+    const next = new Set(prev)
+    next.has(g) ? next.delete(g) : next.add(g)
+    return next
+  })
+
+  /* THE CONFIGURED GROUPS (owner, 28 Aug 26 — the admin group editor). With the
+     default list these answer exactly as the old `groupOf` / `GROUP_LABEL` did,
+     so an untouched squadron is unchanged. Read once per render and shared by
+     both the real grid and the frozen overlay, so the two cannot disagree about
+     who sits where. */
+  const groupDefs = groupsInOrder()
+  const groupPriority = groupPriorityIds()
+  const homeOf = (p: Person) => assignGroup(p, groupDefs, groupPriority)
+  const labelOfGroup = (id: string) =>
+    id === OTHER_ID ? OTHER_LABEL : (() => {
+      const d = groupDefs.find(x => x.id === id)
+      return d ? groupLabel(d, qualCatalog) : id
+    })()
+  /* The per-group swatch class. Built-in ids give back the same `g-sxo`,
+     `g-ip`… classes the stylesheet already paints; a qualification id is
+     slugged so a colon or space can never break the class. */
+  const groupClass = (id: string) => `g-${id.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`
+
   // The month strip's buttons are ABSOLUTELY positioned (they must not widen
   // the frozen columns — see matrix.css), so the sticky cell they sit in has to
   // RESERVE their height by hand. That height was a hardcoded 72px (two wrapped
@@ -543,6 +632,24 @@ export function Matrix() {
   const headRef = useRef<HTMLTableSectionElement>(null)
   const mirrorRef = useRef<HTMLDivElement>(null)
   const [stuck, setStuck] = useState<{ top: number; left: number; width: number; cols: number[] } | null>(null)
+
+  // Can this browser drive the frozen bar's horizontal follow on the COMPOSITOR
+  // via a CSS scroll-driven animation (owner, 28 Aug 26 — "the top bar not
+  // catching up to the horizontal scroll … glue it, keep the feel")? When yes,
+  // the bar's day columns are TRANSLATED by the grid's own scroll timeline, so
+  // they stay locked to the grid during a fling instead of the main-thread JS
+  // follow lagging a frame or two behind (which is what he saw). When no (older
+  // browsers, and jsdom — where CSS.supports is absent/false), we fall back to
+  // the JS mirror below, unchanged. Detected once: support does not change mid
+  // session. `scroll-timeline` + `timeline-scope` together are the two features
+  // the approach needs (a named timeline on the scroller, hoisted into scope for
+  // the fixed bar, which is not a descendant of the scroller).
+  const [sdaActive] = useState(() => {
+    try {
+      return typeof CSS !== 'undefined' && typeof CSS.supports === 'function' &&
+        CSS.supports('scroll-timeline: --x x') && CSS.supports('timeline-scope: --x')
+    } catch { return false }
+  })
 
   // ---- the desktop horizontal scrollbar, pinned to the foot of the SCREEN
   // (owner, 22 Aug 26: "on desktop the horizontal scroll is not tagged to the
@@ -600,7 +707,9 @@ export function Matrix() {
     // `visWindow` too (19 Aug 26): a row-set change lets auto layout re-narrow
     // the columns a removed row's chips had widened, and a stuck mirror
     // pinning the OLD widths would sit misaligned over the new ones.
-  }, [period.id, dates.length, zoom, visWindow])
+    // `folded` (28 Aug 26) is the same kind of row-set change — minimising a
+    // category takes its rows (and their chips) out of the table.
+  }, [period.id, dates.length, zoom, visWindow, folded])
 
   // The mirror starts life at the grid's current horizontal position, and the
   // two scrollers keep each other in lockstep from then on. Assigning an
@@ -608,8 +717,20 @@ export function Matrix() {
   // ping-ponging.
   useEffect(() => {
     if (stuck && mirrorRef.current && wrapRef.current) {
-      mirrorRef.current.scrollLeft = wrapRef.current.scrollLeft
+      const w = wrapRef.current
+      if (sdaActive) {
+        // Scroll-driven path: the track must NOT be scrolled (the inner table is
+        // translated instead — a scrollLeft here would double the travel). Just
+        // make sure the bar knows the grid's travel the instant it appears, so
+        // its very first painted frame is already in step; a stale or zero
+        // --lwx-max would pin the day columns at the left until the next layout.
+        mxOuterRef.current?.style.setProperty('--lwx-max', String(Math.max(0, (w.scrollWidth - w.clientWidth) / zoom)))
+      } else {
+        // JS-mirror fallback: start the mirror at the grid's position.
+        mirrorRef.current.scrollLeft = w.scrollLeft
+      }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stuck])
 
   // The bottom scrollbar starts at the grid's current position the moment it
@@ -629,7 +750,7 @@ export function Matrix() {
       window.removeEventListener('resize', measureHbar)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [phone, zoom, visWindow, period.id, dates.length, countsOpen])
+  }, [phone, zoom, visWindow, period.id, dates.length, countsOpen, folded])
   // The mirror FOLLOWS the grid and never drives it (owner, 20 Aug 26 — the
   // sixth report, and the one that found it: "when the top bar freezes the
   // sideways scroll can only move a bit and halts quickly"). It used to be a
@@ -643,6 +764,11 @@ export function Matrix() {
   // (grid → mirror) is all that remains, and setting the mirror's own scrollLeft
   // never touches the grid.
   const syncMirror = () => {
+    // In the scroll-driven path the bar's inner table is TRANSLATED by the grid's
+    // scroll timeline (compositor). Writing the track's scrollLeft here too would
+    // move it a SECOND time — the day columns would travel double and shoot off
+    // the left. The animation owns the follow; there is nothing to sync.
+    if (sdaActive) return
     const m = mirrorRef.current, w = wrapRef.current
     if (m && w && m.scrollLeft !== w.scrollLeft) m.scrollLeft = w.scrollLeft
   }
@@ -724,7 +850,24 @@ export function Matrix() {
   // answering one id would break every query that expects the real one.
   const bracketRow = (testids: boolean) => (
     <tr className="mbrak" data-testid={testids ? 'month-bracket' : undefined}>
-      <th className="brakhd" colSpan={2} />
+      {/* The corner cell above CS/Name was empty (owner circled it, 28 Aug 26).
+          It now carries the admin's GROUP EDITOR opener — the control belongs
+          beside the column it configures, and this is the only spare space in
+          the frozen pair. Admin only; the store refuses a member's write
+          anyway, and a control that does nothing is worse than none. The
+          mirror copy carries no testid, like every other mirrored cell. */}
+      <th className="brakhd" colSpan={2}>
+        {role === 'admin' && (
+          <button
+            className="grpedit"
+            data-testid={testids ? 'group-edit' : undefined}
+            tabIndex={testids ? 0 : -1}
+            title="Choose which groups the left column shows"
+            aria-label="Choose which groups the left column shows"
+            onClick={() => setGroupEdit(true)}
+          >⚙ Groups</button>
+        )}
+      </th>
       {brackets.map(b => (
         <th key={b.key} className="brakm" data-testid={testids ? `bracket-${b.key}` : undefined} colSpan={b.count}>
           <div className="brakin">
@@ -860,6 +1003,15 @@ export function Matrix() {
   const measureStripGeo = () => {
     const wrap = wrapRef.current
     if (!wrap || months.length === 0 || dates.length === 0) { stripGeoRef.current = null; return }
+    // The scroll-driven frozen bar (sdaActive) translates its day columns from 0
+    // to -(--lwx-max)px across the grid's whole scroll range, so --lwx-max must
+    // equal the grid's max scrollLeft — divided back out of the mirror table's
+    // own zoom, since the transform lands in that table's zoomed local space
+    // (mirror render below). It only shifts on a real layout change (resize,
+    // zoom, row-window, war), which is exactly when this runs; never per frame.
+    if (sdaActive) {
+      mxOuterRef.current?.style.setProperty('--lwx-max', String(Math.max(0, (wrap.scrollWidth - wrap.clientWidth) / zoom)))
+    }
     const wr = wrap.getBoundingClientRect()
     const sl = wrap.scrollLeft
     // viewport px -> content px: constant across any scroll position
@@ -1153,7 +1305,7 @@ export function Matrix() {
     window.addEventListener('resize', measure)
     return () => { ro?.disconnect(); window.removeEventListener('resize', measure) }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [bandActive, zoom, visWindow, period.id, dates.length, countsOpen])
+  }, [bandActive, zoom, visWindow, period.id, dates.length, countsOpen, folded])
 
   // Re-pinned on EVERY render, not on a dependency list: a bid placed, a
   // decision made or a figure switched can put a chip into a day cell or take
@@ -1171,22 +1323,34 @@ export function Matrix() {
   // pins the two together. This mirrors the inline logic in the roster <tbody>
   // render below on purpose — change one and the test catches the other.
   type RSeq =
-    | { kind: 'group'; g: Group; n: number }
-    | { kind: 'catsub'; g: Group; cat: string }
+    | { kind: 'group'; g: string; label: string; n: number }
+    | { kind: 'catsub'; g: string; cat: string }
     | { kind: 'person'; p: Person }
   const rosterSequence = (): RSeq[] => {
     const roster = displayRoster().filter(p => rowInWindow(p, visWindow))
     const out: RSeq[] = []
-    let prevG: Group | null = null
+    let prevG: string | null = null
     let prevCat = ''
     for (const p of roster) {
-      const g = groupOf(p)
+      const g = homeOf(p)
       if (g !== prevG) {
-        out.push({ kind: 'group', g, n: roster.filter(x => groupOf(x) === g).length })
+        out.push({ kind: 'group', g, label: labelOfGroup(g), n: roster.filter(x => homeOf(x) === g).length })
         prevG = g
         prevCat = ''
       }
-      const cat = opsCatOf(p)
+      /* A FOLDED group keeps its heading and drops everything under it (owner,
+         28 Aug 26 — "allow me to minimise categories on leave war"). The filter
+         lives HERE, in the one sequence both the real grid and the frozen
+         overlay read, so the two cannot fold out of step — the failure the
+         frozen-column order test exists to catch. The heading's `· N` count is
+         built from the unfiltered roster above, so a folded group still says
+         how many people it is hiding. */
+      if (folded.has(g)) continue
+      /* CAT sub-headings belong to the two built-in OPS groups only — a person
+         drawn under a QUALIFICATION group is not "in CAT B" for display
+         purposes, and a CAT rule inside a qual heading would read as a claim
+         about the qualification. */
+      const cat = (g === 'OPSP' || g === 'OPSW') ? opsCatOf(p) : ''
       if (cat && cat !== prevCat) { out.push({ kind: 'catsub', g, cat }); prevCat = cat }
       out.push({ kind: 'person', p })
     }
@@ -1216,8 +1380,11 @@ export function Matrix() {
   // (owner, 27 Aug 26). While a war is still open for bidding, people shuffle
   // their own bids around freely — a moved mark on every re-placed bid is just
   // noise. It becomes worth showing only after close, when a shift is the
-  // admin deliberately moving someone's input off the date they bid.
-  const movedShown = period.stage === 'closed' || period.stage === 'published'
+  // admin deliberately moving someone's input off the date they bid. This gates
+  // the DISPLAY; the store gates the RECORD (an open move stores no shiftedFrom
+  // at all, so a bid moved while open stays clean even after the war closes) —
+  // one `biddingClosed` body behind both so the two cannot disagree.
+  const movedShown = biddingClosed(period.stage)
 
   // Published-stage remarks editor (owner, 27 Aug 26 — "after the leave war is
   // published … click on their inputs … and edit the remarks. but the admin
@@ -1227,7 +1394,9 @@ export function Matrix() {
   // "view as" — the member's own person. It takes precedence over the
   // read-only Raptor sheet and the bid/decision sheets below, and exists only
   // at published; `leaveInputAt` runs once per open cell, never per grid cell.
-  const remarkRow = open && period.stage === 'published' ? leaveInputAt(open.id, open.date) : null
+  const remarkRow = open && period.stage === 'published'
+    ? leaveInputAt(open.id, open.date, grid[open.id]?.[open.date])
+    : null
   const canRemark = !!remarkRow && (role === 'admin' || (!!open && open.id === viewer))
 
   // Which sheet a click opens follows from three things: the stage, the role,
@@ -1242,15 +1411,24 @@ export function Matrix() {
   // empty cell are all things nobody asked for.
   const openable = (personId: string, date: string): boolean =>
     raptorOwns(states, personId, date) ||
-    canEditCell(period, role, date) ||
+    // A member may open a cell to EDIT only on their own row (the person they
+    // are viewing as); an admin, any row. Without the row half a member could
+    // tap an empty cell on anyone's row and bid it (owner, 27 Aug 26). The
+    // date/window half is `canEditCell`; both must pass.
+    (canEditCell(period, role, date) && canEditRow(role, viewer, personId)) ||
     (deciding && isBiddable(grid[personId]?.[date])) ||
-    // Published remarks editor (owner, 27 Aug 26): any filled cell of the
-    // viewer's own row (or every row, for an admin) is tappable to edit its
-    // note. Kept CHEAP — a truthiness check on the code, never leaveInputAt —
-    // because this runs for every drawn cell; the precise "is there a backing
-    // leave input" test is `canRemark`, computed once when a cell is opened.
-    (period.stage === 'published' && (role === 'admin' || personId === viewer)
-      && !!grid[personId]?.[date])
+    // Published remarks editor (owner, 27 Aug 26): the viewer's own APPROVED
+    // leave is tappable to edit its note (an admin's every cell is already
+    // openable through the canEditCell branch above). Kept CHEAP — code and
+    // state truthiness, never leaveInputAt, because this runs for every drawn
+    // cell; the precise "is there a backing leave input" test is `canRemark`,
+    // computed once when a cell is opened. Approved-only on purpose: a
+    // member's refused or pending bid at published opens NOTHING (no editor,
+    // no decision sheet), and the first cut still painted it tappable — a
+    // dead-feeling tap exactly where the stakes are highest, a refusal.
+    (period.stage === 'published' && personId === viewer
+      && isBiddable(grid[personId]?.[date])
+      && states[personId]?.[date]?.state === 'approved')
 
   // A day the squadron may not bid on, drawn as such. Without this the window
   // is invisible: a member taps an October cell, nothing happens, and the app
@@ -1263,7 +1441,16 @@ export function Matrix() {
   // click, not a drag — a block of runs has no one note to edit — so a member
   // still cannot drag at published. An admin may drag at every stage.
   selCtxRef.current = {
-    order: () => rosterSequence().filter(r => r.kind === 'person').map(r => (r as { p: Person }).p.id),
+    // A member drags only WITHIN their own row: the rectangle's rows come from
+    // this list, so limiting it to the viewer keeps a member's drag on their
+    // own row (a date range still selects freely along it) while an admin
+    // drags across everyone (owner, 27 Aug 26). The write path refuses other
+    // rows regardless; this is what keeps the SELECTION itself from spanning
+    // rows a member could never fill, so no confusing "skipped" appears.
+    order: () => rosterSequence()
+      .filter(r => r.kind === 'person')
+      .map(r => (r as { p: Person }).p.id)
+      .filter(id => canEditRow(role, viewer, id)),
     dates: () => dates,
     enabled: () => !arranging && !moveSel && (role === 'admin' || period.stage === 'open'),
     onSelect: s => setSel(s),
@@ -1390,7 +1577,7 @@ export function Matrix() {
           )}
         </div>
         <div
-          className={`mx-outer${bandActive && bandTop != null ? ' mx-banded' : ''}`}
+          className={`mx-outer${bandActive && bandTop != null ? ' mx-banded' : ''}${sdaActive ? ' lw-sda' : ''}`}
           ref={mxOuterRef}
         >
         <div
@@ -1419,6 +1606,10 @@ export function Matrix() {
                 arranging={arranging}
                 admin={role === 'admin'}
                 onInfo={setManningInfo}
+                onRowDragStart={(e, ruleId) => startRowDrag(e, ruleId, MANNING_DRAG)}
+                draggingId={draggingId}
+                dragOver={dragOver}
+                dragAfter={dragAfter}
               />
             )}
             {/* The month strip, now a row of the grid so it sits between the
@@ -1498,25 +1689,45 @@ export function Matrix() {
                 // it. visWindow '' (jsdom, first paint) shows everyone.
                 const roster = displayRoster().filter(p => rowInWindow(p, visWindow))
                 const span = 2 + dates.length
-                let prevG: Group | null = null
+                let prevG: string | null = null
                 let prevCat = ''
                 return roster.map(p => {
-                  const g = groupOf(p)
+                  const g = homeOf(p)
                   const heads: any[] = []
                   if (g !== prevG) {
-                    const n = roster.filter(x => groupOf(x) === g).length
+                    const n = roster.filter(x => homeOf(x) === g).length
                     heads.push(
-                      <tr key={`grp-${g}`} className={`grp g-${g.toLowerCase()}`} data-testid={`group-${g}`}>
+                      <tr key={`grp-${g}`} className={`grp ${groupClass(g)}${folded.has(g) ? ' folded' : ''}`} data-testid={`group-${g}`}>
                         {/* The label sits in a sticky td spanning only the two
                             frozen columns — the SAME technique .who/.bal use —
                             so it stays pinned to the left as the year scrolls;
                             its text overflows visibly over the empty fill cell
                             beside it. (A sticky div inside a full-width colSpan
-                            td does not stick — it rides off to the right.) */}
-                        <td className="grphd" colSpan={2}>
+                            td does not stick — it rides off to the right.)
+
+                            The TD is the fold target, not the div inside it:
+                            `.grphd-in` is deliberately `width: 0` (it must add
+                            no min-width, or the frozen callsign column grows to
+                            fit "Personnel · N"), and a zero-width control cannot
+                            be tapped. Same reasoning as the balance cell, where
+                            the td is the target so a nested button cannot cost
+                            the column its number. */}
+                        <td
+                          className="grphd"
+                          colSpan={2}
+                          data-testid={`groupfold-${g}`}
+                          role="button"
+                          tabIndex={0}
+                          aria-expanded={!folded.has(g)}
+                          aria-label={`${labelOfGroup(g)} — ${folded.has(g) ? 'show' : 'hide'} these rows`}
+                          title={folded.has(g) ? `Show the ${labelOfGroup(g)} rows` : `Hide the ${labelOfGroup(g)} rows`}
+                          onClick={() => toggleFold(g)}
+                          onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleFold(g) } }}
+                        >
                           <div className="grphd-in">
                             <span className="gsw" aria-hidden="true" />
-                            <span className="gname">{GROUP_LABEL[g]}</span>
+                            <span className="gcar" aria-hidden="true">{folded.has(g) ? '▸' : '▾'}</span>
+                            <span className="gname">{labelOfGroup(g)}</span>
                             <span className="gcount">· {n}</span>
                           </div>
                         </td>
@@ -1526,7 +1737,15 @@ export function Matrix() {
                     prevG = g
                     prevCat = ''
                   }
-                  const cat = opsCatOf(p)
+                  /* Folded: the heading stands alone and everything under it is
+                     dropped (owner, 28 Aug 26). The first person of the group
+                     still emits the heading collected above; the rest emit
+                     nothing. `rosterSequence` applies the identical filter, so
+                     the frozen overlay folds in lockstep. */
+                  if (folded.has(g)) {
+                    return heads.length ? <Fragment key={p.id}>{heads}</Fragment> : null
+                  }
+                  const cat = (g === 'OPSP' || g === 'OPSW') ? opsCatOf(p) : ''
                   if (cat && cat !== prevCat) {
                     heads.push(
                       <tr key={`sub-${g}-${cat}`} className="catsub" data-testid={`subcat-${g}-${cat}`}>
@@ -1561,7 +1780,7 @@ export function Matrix() {
                                 data-testid={`drag-${p.id}`}
                                 title="Drag to move this row"
                                 style={{ touchAction: 'none' }}
-                                onPointerDown={e => startRowDrag(e, p.id)}
+                                onPointerDown={e => startRowDrag(e, p.id, ROSTER_DRAG)}
                               >⠿</span>
                             )}
                             {/* The callsign opens the person's all-figures
@@ -1579,16 +1798,11 @@ export function Matrix() {
                               <span className="cs">{p.callsign}</span>
                               <span className={`catchip ${catClass(p)}`} data-testid={`cat-${p.id}`}>{catText(p) || 'GND'}</span>
                             </button>
-                            {/* The free-text role label is an EDITING aid only
-                                (owner, 26 Aug 26 — "just indicate the
-                                callsign/name for the left column. No need to
-                                indicate initials or flight"): the roster at
-                                rest shows callsign + chip and nothing else —
-                                the read-only label was what truncated the
-                                personnel callsigns — and the label's edit box
-                                still appears while Rearranging, so the stored
-                                text survives for anything that later wants it. */}
-                            {p.pers && arranging && <PersLabel p={p} editable={arranging} />}
+                            {/* The free-text role-label edit box is GONE (owner,
+                                28 Aug 26 — "i can edit personnel, dont need to
+                                show that, just leave it as the callsign/name").
+                                A ground-crew row now shows the same callsign +
+                                chip as every other row, in Rearrange too. */}
                           </div>
                         </td>
                   {/* The selected figure's value for this person, derived on
@@ -1755,38 +1969,64 @@ export function Matrix() {
             sticky machinery. Sits under the top bar (z 55 < the bar's 60 and
             the sheets' 79/80) and never renders in jsdom, where nothing has
             a height to scroll past. */}
-        {stuck && (
-          <div
-            className="mxfixed"
-            data-testid="sticky-head"
-            style={{ top: stuck.top, left: stuck.left, width: stuck.width }}
-          >
-            <div className="mxfixed-scroll" ref={mirrorRef}>
-              {/* The measured widths are visual px (they include the zoom),
-                  and the mirror table wears the same zoom so its text sizes
-                  match — so its layout widths are the measurements divided
-                  back out, or the zoom would apply twice. */}
-              <table
-                className="mx"
-                style={{
-                  tableLayout: 'fixed',
-                  width: stuck.cols.reduce((a, b) => a + b, 0) / zoom,
-                  ...(zoom !== 1 ? { zoom } : null),
-                }}
-              >
-                <colgroup>
-                  {stuck.cols.map((w, i) => (
-                    <col key={i} style={{ width: w / zoom }} />
-                  ))}
-                </colgroup>
-                <tbody className="mxhead">
-                  {bracketRow(false)}
-                  {headerRow(false)}
-                </tbody>
-              </table>
+        {stuck && ((s: { top: number; left: number; width: number; cols: number[] }) => {
+          // The measured widths are visual px (they include the zoom), and the
+          // mirror table wears the same zoom so its text sizes match — so its
+          // layout widths are the measurements divided back out, or the zoom
+          // would apply twice.
+          const totalW = s.cols.reduce((a, b) => a + b, 0) / zoom
+          const table = (extra: string) => (
+            <table
+              className={`mx${extra ? ' ' + extra : ''}`}
+              style={{ tableLayout: 'fixed', width: totalW, ...(zoom !== 1 ? { zoom } : null) }}
+            >
+              <colgroup>
+                {s.cols.map((w, i) => (
+                  <col key={i} style={{ width: w / zoom }} />
+                ))}
+              </colgroup>
+              <tbody className="mxhead">
+                {bracketRow(false)}
+                {headerRow(false)}
+              </tbody>
+            </table>
+          )
+          return (
+            <div
+              className="mxfixed"
+              data-testid="sticky-head"
+              style={{ top: s.top, left: s.left, width: s.width }}
+            >
+              {/* The scrolling layer. In the JS-mirror fallback this is a real
+                  horizontal scroller (matrix.css) and `syncMirror` writes its
+                  scrollLeft. In the scroll-driven path (`.lw-sda`) it does not
+                  scroll — the `.mxfixed-anim` table inside is TRANSLATED by the
+                  grid's scroll timeline on the compositor, so it stays glued to
+                  the grid during a fling with no main-thread follow. */}
+              <div className={`mxfixed-scroll${sdaActive ? ' mxfixed-track' : ''}`} ref={mirrorRef}>
+                {table(sdaActive ? 'mxfixed-anim' : '')}
+              </div>
+              {/* The bar's frozen LEFT columns, in the scroll-driven path only.
+                  A translated table cannot keep `position: sticky`, so the
+                  callsign + counter columns are drawn as a static copy pinned
+                  over the left and clipped to their own width; the day columns
+                  translate UNDER it. It is the tappable/opaque copy (the counter
+                  picker still works while scrolled); the scrolling layer's own
+                  who/bal are made pointer-events:none in matrix.css so taps land
+                  here, and this copy is aria-hidden so the scrolling layer stays
+                  the single accessible one. */}
+              {sdaActive && (
+                <div
+                  className="mxfixed-frozen"
+                  aria-hidden="true"
+                  style={{ width: (s.cols[0] || 0) / zoom + (s.cols[1] || 0) / zoom }}
+                >
+                  {table('')}
+                </div>
+              )}
             </div>
-          </div>
-        )}
+          )
+        })(stuck)}
         {/* The frozen roster columns, drawn once. Sibling of `.mx-wrap`, not a
             child — a child would ride the sideways scroll it exists to sit out.
             aria-hidden and its buttons out of the tab order: the REAL columns
@@ -1805,11 +2045,19 @@ export function Matrix() {
               <tbody className="mxbody">
                 {rosterSequence().map(item => {
                   if (item.kind === 'group') return (
-                    <tr key={`b-grp-${item.g}`} data-band-key={`group-${item.g}`} className={`grp g-${item.g.toLowerCase()}`}>
-                      <td className="grphd" colSpan={2}>
+                    /* The overlay's own copy of the heading, and it carries the
+                       fold handler too: once the year has scrolled sideways the
+                       overlay is `pointer-events: auto` and is the copy the
+                       reader can actually tap (the real heading has slid away
+                       under it). No role/tabIndex here — the whole band is
+                       aria-hidden and the real heading above is the accessible
+                       control. */
+                    <tr key={`b-grp-${item.g}`} data-band-key={`group-${item.g}`} className={`grp ${groupClass(item.g)}${folded.has(item.g) ? ' folded' : ''}`}>
+                      <td className="grphd" colSpan={2} onClick={() => toggleFold(item.g)}>
                         <div className="grphd-in">
                           <span className="gsw" />
-                          <span className="gname">{GROUP_LABEL[item.g]}</span>
+                          <span className="gcar">{folded.has(item.g) ? '▸' : '▾'}</span>
+                          <span className="gname">{item.label}</span>
                           <span className="gcount">· {item.n}</span>
                         </div>
                       </td>
@@ -1914,7 +2162,10 @@ export function Matrix() {
           medical={role === 'admin'}
           onPostOut={role === 'admin' ? (pid, from, archive) => setPostOut(pid, from, archive) : undefined}
           onMove={s => setMoveSel(s)}
-          onDone={() => setSel(null)}
+          /* a PARTIAL write keeps the sheet up (keepOpen) so its "N written,
+             M skipped" note is actually read — closing here killed the note
+             in the same tap that set it (27 Aug 26 overnight find) */
+          onDone={(_changed, keepOpen) => { if (!keepOpen) setSel(null) }}
           onClose={() => setSel(null)}
         />
       )}
@@ -1946,7 +2197,7 @@ export function Matrix() {
       {/* A posted-out cell an admin tapped: the ONE control it offers is Undo,
           and it short-circuits every bid/decision sheet below (owner, 18 Aug
           26). */}
-      {open && openPostedOut && role === 'admin' && (
+      {open && !canRemark && openPostedOut && role === 'admin' && (
         <PostOutSheet
           callsign={open.callsign}
           date={open.date}
@@ -2024,8 +2275,19 @@ export function Matrix() {
       {counterEdit !== false && (
         <CounterForm key={counterEdit ?? 'new'} ruleId={counterEdit} onClose={() => setCounterEdit(false)} />
       )}
+      {/* The group editor. Admin only at the affordance AND at every store
+          writer it calls — the standing role doctrine. */}
+      {groupEdit && role === 'admin' && (
+        <GroupSheet
+          onClose={() => setGroupEdit(false)}
+          onRowDragStart={(e, id) => startRowDrag(e, id, GROUP_DRAG)}
+          onPriorityDragStart={(e, id) => startRowDrag(e, id, GROUP_PRIO_DRAG)}
+          draggingId={draggingId}
+          dragOver={dragOver}
+        />
+      )}
       {open && !canRemark && !openPostedOut && !raptorOwns(states, open.id, open.date)
-        && canEditCell(period, role, open.date)
+        && canEditCell(period, role, open.date) && canEditRow(role, viewer, open.id)
         && !(deciding && isBiddable(grid[open.id]?.[open.date])) && (
         <BidPicker
           key={`${open.id}-${open.date}`}
@@ -2072,7 +2334,12 @@ export function Matrix() {
           onClose={close}
         />
       )}
-      {open && !canRemark && !raptorOwns(states, open.id, open.date) && deciding
+      {/* `!openPostedOut` for the same reason BidPicker carries it: the PO
+          sheet's comment promises it short-circuits every bid/decision sheet,
+          and without the term here BOTH mounted on a posted-out day that
+          still held a bid — the decision sheet painting on top of the Undo
+          the admin actually tapped for. One `open`, one sheet. */}
+      {open && !canRemark && !openPostedOut && !raptorOwns(states, open.id, open.date) && deciding
         && isBiddable(grid[open.id]?.[open.date]) && (
         <DecisionSheet
           key={`${open.id}-${open.date}`}

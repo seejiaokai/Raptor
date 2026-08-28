@@ -1,6 +1,6 @@
 import { act, fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
-import { getState, initStore, setBidState, setRole } from '../state/store'
+import { advanceStage, getState, initStore, setBidState, setRole, setViewer } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { StageBar, Topbar } from './Chrome'
 
@@ -43,7 +43,9 @@ describe('the stage strip', () => {
   it('counts under-manned days against the live bid states', () => {
     render(<StageBar />)
     const before = screen.getByTestId('undermanned').textContent
-    act(() => setBidState('ramp', '2026-01-01', 'refused'))
+    // deciding is the admin's, once bidding is closed (canDecide — the store
+    // refuses it otherwise since the 27 Aug overnight pass)
+    act(() => { setRole('admin'); advanceStage(); setBidState('ramp', '2026-01-01', 'refused') })
     const after = screen.getByTestId('undermanned').textContent
     expect(after).not.toBe(before)
     expect(Number(after!.split(' ')[0])).toBe(Number(before!.split(' ')[0]) - 1)
@@ -63,14 +65,69 @@ describe('the colour/mark legend', () => {
     expect(text).toContain('Approved')
     expect(text).toContain('Pending')
     expect(text).toContain('Refused')
-    expect(text).toContain('Moved here from another day')
     expect(text).toContain('Filed on the Inputs page')
-    expect(text).toContain('Morning')
-    expect(text).toContain('Afternoon')
+    expect(text).toContain('AM (before the code)')
+    expect(text).toContain('PM (after the code)')
+    // The moved row appears only once bidding has closed — at `open` no cell
+    // can wear the stripe (movedShown), and a legend advertising a mark the
+    // grid cannot show sends readers hunting for it (27 Aug 26).
+    expect(text).not.toContain('Moved here from another day')
     // the swatches reuse the grid's own classes, so the key cannot drift from
-    // the cells (the dotted-orange 'moved' and the blue 'raptor' edge marks)
-    expect(leg.querySelector('.leg-sw.moved')).toBeTruthy()
+    // the cells (the blue 'raptor' edge mark; the dotted-orange 'moved' below)
     expect(leg.querySelector('.leg-sw.raptor')).toBeTruthy()
+  })
+
+  it('the moved row joins the key once bidding is closed', () => {
+    setRole('admin')
+    advanceStage()
+    render(<StageBar />)
+    fireEvent.click(screen.getByTestId('legend-open'))
+    const leg = screen.getByTestId('legend')
+    expect(leg.textContent).toContain('Moved here from another day')
+    expect(leg.querySelector('.leg-sw.moved')).toBeTruthy()
+  })
+
+  // Owner, 28 Aug 26: the legend must also explain the LETTERS — above all
+  // FS/HS, which appear only on the war grid and are never typed on Inputs.
+  it('explains the grid codes, FS/HS first and marked as war-only', () => {
+    render(<StageBar />)
+    fireEvent.click(screen.getByTestId('legend-open'))
+    const leg = screen.getByTestId('legend')
+    const text = leg.textContent || ''
+    // the two codes the owner named — with their meanings, not just the letters
+    expect(text).toContain('full day SC duty'.replace(/^./, c => c.toUpperCase()))
+    expect(text).toContain('half day SC duty'.replace(/^./, c => c.toUpperCase()))
+    expect(text).toContain('off in lieu')
+    // flagged as the group that lives only here, and given the grid's duty colour
+    expect(text).toContain('not on the Inputs page')
+    expect(leg.querySelector('.leg-sec-here')).toBeTruthy()
+    const fs = Array.from(leg.querySelectorAll('.leg-sw')).find(s => s.textContent === 'FS')
+    expect(fs, 'FS has a swatch').toBeTruthy()
+    expect(fs!.classList.contains('sc'), 'FS wears the grid duty colour').toBe(true)
+    // the medical shorthand the grid shows (B / C) and the leave codes are keyed too
+    expect(Array.from(leg.querySelectorAll('.leg-sw')).some(s => s.textContent === 'B')).toBe(true)
+    expect(Array.from(leg.querySelectorAll('.leg-sw')).some(s => s.textContent === 'LL')).toBe(true)
+    expect(text).toContain('Local leave')
+  })
+})
+
+describe('the viewer badge (owner, 28 Aug 26)', () => {
+  // The whole page answers for the viewing person; the badge says so out loud,
+  // at the top, so nobody wonders whose numbers the counter column shows.
+  it('names whose page this is, prominently, when a viewer is set', () => {
+    act(() => setViewer('ramp'))
+    render(<Topbar />)
+    const chip = screen.getByTestId('lw-viewing')
+    expect(chip.textContent).toContain('Viewing as')
+    expect(chip.textContent).toContain('RAMP')
+  })
+
+  // Nobody in the roster being viewed → no "you" to name, so the badge is
+  // absent rather than showing an empty or dashed one (mirrors the picker).
+  it('is absent when nobody in the roster is being viewed', () => {
+    act(() => setViewer('nobody'))
+    render(<Topbar />)
+    expect(screen.queryByTestId('lw-viewing')).toBeNull()
   })
 })
 

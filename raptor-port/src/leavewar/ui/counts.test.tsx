@@ -137,13 +137,16 @@ describe('the manning rows can be reordered and hidden (admin)', () => {
     const row = screen.getByTestId('count-ip')
     expect(row.className).toContain('mrow-hidden')
     expect(screen.getByTestId('manning-hide-ip').getAttribute('aria-pressed')).toBe('true')
-    // the reorder controls are only there while arranging
-    expect(screen.getByTestId('manning-up-ip')).toBeTruthy()
+    // the reorder grip (drag-and-drop, replacing the ▲▼ arrows) is only there
+    // while arranging; the old arrows are gone (owner, 28 Aug 26)
+    expect(screen.getByTestId('manning-drag-ip')).toBeTruthy()
+    expect(screen.queryByTestId('manning-up-ip')).toBeNull()
+    expect(screen.queryByTestId('manning-down-ip')).toBeNull()
   })
 
   it('a member never gets the reorder controls even for a visible row', () => {
     draw({ arranging: true, admin: false })
-    expect(screen.queryByTestId('manning-up-ip')).toBeNull()
+    expect(screen.queryByTestId('manning-drag-ip')).toBeNull()
   })
 
   it('honours the given display order', () => {
@@ -173,6 +176,6 @@ describe('collapsing the manning block', () => {
     expect(screen.queryByTestId('count-sets')).toBeNull()
     fireEvent.click(screen.getByTestId('roster-arrange'))       // enter Rearrange
     expect(screen.getByTestId('count-sets')).toBeTruthy()
-    expect(screen.getByTestId('manning-up-sets')).toBeTruthy()  // and its controls
+    expect(screen.getByTestId('manning-drag-sets')).toBeTruthy()  // and its controls
   })
 })

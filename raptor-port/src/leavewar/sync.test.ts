@@ -11,9 +11,11 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import { INPUTS } from '../engine/inputs'
 import { HIST, initStore as raptorInitStore, writeInputs } from '../state/store'
+import { histApply } from '../state/history'
 import { balanceOf, figureParts, FIGURES } from './engine'
 import { projectPeople } from './state/raptorRoster'
 import {
+  advanceStage,
   getState,
   getVersion,
   initStore as lwInitStore,
@@ -23,7 +25,7 @@ import {
   setRole,
 } from './state/store'
 import { memoryBackend } from './state/storage'
-import { getClashes, retractLwRow, runInbound, runOutbound } from './sync'
+import { getClashes, leaveInputAt, retractLwRow, runInbound, runOutbound } from './sync'
 import { applyMedPlan, commitInputEdit, draftOf, removeInput } from '../ui/inputedit'
 import { upchitTrimPlan } from '../engine/medical'
 
@@ -37,12 +39,19 @@ beforeEach(() => {
   setPeople(projectPeople())
 })
 
-/** Approve a run of LL days the way the app does: bid, then decide. */
+/** Approve a run of LL days the way the app does: bid, then close the war and
+ *  decide. `setBidState` refuses a decision unless an ADMIN holds it once
+ *  bidding is no longer open (canDecide, 27 Aug overnight pass), so the
+ *  helper does the whole management half as the admin — including the writes,
+ *  since an admin may write at any stage, which keeps a second call working
+ *  after the first has closed the war. */
 function approve(person: string, dates: string[], code = 'LL') {
-  for (const d of dates) {
-    setCell(person, d, code)
-    setBidState(person, d, 'approved')
-  }
+  const wasRole = getState().role
+  setRole('admin')
+  for (const d of dates) setCell(person, d, code)
+  if (getState().period.stage === 'open') advanceStage()
+  for (const d of dates) setBidState(person, d, 'approved')
+  setRole(wasRole)
 }
 
 const lwInputs = () => INPUTS.filter((r: any) => r.lw)
@@ -99,6 +108,7 @@ describe('outbound: Leave War approvals become Raptor inputs', () => {
     expect(lwInputs()).toHaveLength(2)
     const kept = lwInputs().find((r: any) => r.person === 'ammo')
 
+    setRole('admin')   // refusing is management's, at the closed stage the helper left
     setBidState('rocky', '2026-02-10', 'refused')
     runOutbound()
     const rows = lwInputs()
@@ -111,6 +121,7 @@ describe('outbound: Leave War approvals become Raptor inputs', () => {
   it('refusing a mid-span day splits the spanned input in two', () => {
     approve('ammo', ['2026-02-02', '2026-02-03', '2026-02-04'])
     runOutbound()
+    setRole('admin')
     setBidState('ammo', '2026-02-03', 'refused')
     runOutbound()
     const spans = lwInputs().map((r: any) => [r.date, r.endDate])
@@ -331,11 +342,15 @@ describe('medical crosses both ways (owner, 17 Aug 26)', () => {
     runInbound()
     expect(getState().grid.ammo['2026-02-12']).toBe('ATTC')
     const med = INPUTS.find((r: any) => r.person === 'ammo' && r.type === 'ATT C')!
+    /* the upchit day is a FIT day (owner, 27 Aug 26): upchit 11 Feb ends the
+       row on the 10th — start == end collapses to the single-day form */
     writeInputs(() => { applyMedPlan(upchitTrimPlan('ammo', 20260211)) })
-    expect(med.endDate).toBe('Feb 11')
+    expect(med.endDate).toBeUndefined()
+    expect(med.date).toBe('Feb 10')
     runInbound()
-    expect(getState().grid.ammo['2026-02-12'], 'the freed day clears').toBeUndefined()
-    expect(getState().grid.ammo['2026-02-11'], 'the kept days stay').toBe('ATTC')
+    expect(getState().grid.ammo['2026-02-12'], 'the freed days clear').toBeUndefined()
+    expect(getState().grid.ammo['2026-02-11'], 'the upchit day clears too').toBeUndefined()
+    expect(getState().grid.ammo['2026-02-10'], 'the kept day stays').toBe('ATTC')
   })
 
   /* An UPCHIT never crosses (owner, 27 Aug 26 — "the leave war will not show
@@ -650,7 +665,9 @@ describe('two-way: edits and deletes on the Inputs page carry back into the war'
     approve('ammo', ['2026-02-02'])
     runOutbound()
     const row = lwInputs()[0]
-    // The squadron rewrites the cell before the row is deleted — a newer ask.
+    // The cell is rewritten before the row is deleted — a newer ask. The
+    // helper left the war closed, so it is the admin holding the pen.
+    setRole('admin')
     setCell('ammo', '2026-02-02', 'OL')
     expect(getState().grid.ammo['2026-02-02']).toBe('OL')
     removeInput(row)
@@ -673,5 +690,101 @@ describe('two-way: a medical grid mark follows its input out', () => {
     expect(getState().grid.ammo?.['2026-02-11']).toBeUndefined()
     runOutbound(); runInbound()
     expect(lwInputs().filter((r: any) => r.type === 'ATT C')).toHaveLength(0)
+  })
+})
+
+/* ---- The 27 Aug 26 overnight pass: the seam holes the adversarial sweep
+   found, each pinned through the real reconcile. ---- */
+
+describe('undo vs the war (27 Aug 26)', () => {
+  it('undoing an edit of a synced leave brings the leave BACK — demoted to Raptor-owned, never re-spliced', () => {
+    approve('ammo', ['2026-02-02', '2026-02-03'])
+    runOutbound()
+    const row = lwInputs()[0]
+    // the member moves the leave on the Inputs page: retraction + re-land
+    const d = draftOf(row); d.start = '2026-02-09'; d.end = '2026-02-10'
+    expect(commitInputEdit(row, d)).toBe(true)
+    runOutbound(); runInbound()
+    // Undo. The snapshot restores the OLD row with its lw tag, but the war
+    // (no history of its own) still lacks the cells — the reconcile used to
+    // read that as "revoked in the war" and delete the row AGAIN, turning
+    // Undo into a double delete on both sides.
+    histApply(HIST.ix - 1)
+    runOutbound()
+    const back = INPUTS.find((r: any) => r.person === 'ammo' && r.type === 'LL' && r.date === 'Feb 2')
+    expect(back, 'the leave survived the undo').toBeTruthy()
+    expect(back.lw, 'demoted to an ordinary Raptor input').toBeUndefined()
+    runInbound()
+    expect(getState().grid.ammo['2026-02-02']).toBe('LL')
+    expect(getState().states.ammo['2026-02-02'].source).toBe('raptor')
+  })
+
+  it('a WAR-side revocation still deletes the row — the demote is only for what Raptor itself retracted', () => {
+    approve('ammo', ['2026-02-05'])
+    runOutbound()
+    expect(lwInputs()).toHaveLength(1)
+    setRole('admin')
+    setBidState('ammo', '2026-02-05', 'refused')
+    runOutbound()
+    expect(lwInputs()).toHaveLength(0)
+    expect(INPUTS.some((r: any) => r.person === 'ammo' && r.date === 'Feb 5')).toBe(false)
+  })
+})
+
+describe('what a re-mint carries (27 Aug 26)', () => {
+  it('refuse then re-approve keeps the member\'s refined remark', () => {
+    approve('ammo', ['2026-02-02', '2026-02-03'])
+    runOutbound()
+    const row = lwInputs()[0]
+    const d = draftOf(row); d.remarks = 'in Bali till 3 Feb'
+    expect(commitInputEdit(row, d), 'remarks-only edit keeps the row synced').toBe(true)
+    setRole('admin')
+    setBidState('ammo', '2026-02-02', 'refused')
+    setBidState('ammo', '2026-02-03', 'refused')
+    runOutbound()
+    expect(lwInputs()).toHaveLength(0)          // revoked, row gone
+    setBidState('ammo', '2026-02-02', 'approved')
+    setBidState('ammo', '2026-02-03', 'approved')
+    runOutbound()                                // a SECOND pass — the in-pass carry is empty
+    const re = lwInputs()[0]
+    expect(re, 'the leave re-minted').toBeTruthy()
+    expect(re.remarks, 'the member\'s own words survive the flip-flop').toContain('Bali')
+  })
+
+  it('a war-side date change on a synced medical row carries the document id', () => {
+    setRole('admin')
+    setCell('ammo', '2026-02-11', 'ATTC')
+    runOutbound()
+    const row = lwInputs().find((r: any) => r.type === 'ATT C')
+    const d = draftOf(row); d.docId = 'doc-cert'
+    expect(commitInputEdit(row, d), 'attaching the certificate keeps the row synced').toBe(true)
+    expect(row.lw, 'doc-only edit did not retract').toBeTruthy()
+    setCell('ammo', '2026-02-12', 'ATTC')       // the admin extends the run on the grid
+    runOutbound()                                // old row stale, longer run minted
+    const re = lwInputs().find((r: any) => r.type === 'ATT C')
+    expect(re.endDate).toBe('Feb 12')
+    expect(re.docId, 'the certificate followed its record').toBe('doc-cert')
+  })
+})
+
+describe('leaveInputAt answers for the CELL, not the first covering row (27 Aug 26)', () => {
+  it('under a leave clash the cell\'s own code picks the record that derives it', () => {
+    approve('ammo', ['2026-02-02'])
+    runOutbound()
+    // an OL filed on the Inputs page over the same day — inbound raises the
+    // clash and the cell keeps the LL bid
+    writeInputs(() => INPUTS.unshift({
+      person: 'ammo', date: 'Feb 2', allday: true, type: 'OL', remarks: 'course make-up', mod: 'now', yr: 2026,
+    }))
+    runInbound()
+    expect(getState().grid.ammo['2026-02-02']).toBe('LL')
+    const hit = leaveInputAt('ammo', '2026-02-02', 'LL')
+    expect(hit, 'the LL cell opens the LL record').toBeTruthy()
+    expect(hit.type).toBe('LL')
+    expect(hit.lw, 'the war-minted row outranks the plain one').toBeTruthy()
+    // a code that is no leave at all opens nothing
+    expect(leaveInputAt('ammo', '2026-02-02', 'FS')).toBeNull()
+    // no code in hand keeps the old date-only answer
+    expect(leaveInputAt('ammo', '2026-02-02')).toBeTruthy()
   })
 })

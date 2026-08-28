@@ -111,6 +111,40 @@ export function canEditCell(period: Period, role: Role, date: string): boolean {
   return role === 'admin' || inBidWindow(period, date)
 }
 
+/**
+ * Whether this role may write THIS PERSON'S row.
+ *
+ * A member edits only their OWN row — the person they are viewing as, which
+ * the war mirrors from Raptor's "View as" into `viewer`. An admin edits any
+ * row. This is the ROW half of the permission, the companion to
+ * `canEditCell`'s stage/window/date half: a cell is writable only when BOTH
+ * pass, and it is checked at the store's write path as well as the grid's
+ * affordance, because the interface hiding a control is not the same as the
+ * store refusing the write.
+ *
+ * A separate pure predicate rather than folding the row into `canEditCell`,
+ * for the same reasons `canEditCell` is itself separate from `canEdit`: it
+ * answers a different question ("whose row", not "which day"), it reads state
+ * — `viewer` — the date check never needed, and one body keeps the grid and
+ * the store from drifting apart. In this prototype the identity IS the "View
+ * as" selection (there is no login); the future server replaces `viewer` with
+ * the real account and this rule is unchanged.
+ *
+ * `viewer === null` means the session is NOT scoped to any person — an
+ * un-scoped view, which imposes no "other people's rows" to protect, so the
+ * row rule does not bite. Production never reaches it for a real user: the
+ * "View as" picker is a person selector with no empty option, and the war
+ * boot mirrors that selection (Raptor's `ME`, itself always a person) into
+ * `viewer` before the grid renders. It is only the raw-store / test state.
+ *
+ * Owner, 27 Aug 26 — "if I am viewing as a member and I view as ranger on the
+ * leave war, I shouldn't be able to input on other people's row except mine"
+ * (there, `viewer` is 'ranger' — non-null — so the rule bites).
+ */
+export function canEditRow(role: Role, viewer: string | null, personId: string): boolean {
+  return role === 'admin' || viewer === null || personId === viewer
+}
+
 /** Decisions are made once bidding has closed and the picture has frozen —
  *  not while bids are still arriving underneath them — and only by an
  *  admin. A member watching the same screen sees the outcome, not the
@@ -122,7 +156,16 @@ export function canEditCell(period: Period, role: Role, date: string): boolean {
  *  publication can be approved/refused/moved exactly as at closed. The gate is
  *  "bidding is no longer open", not "the stage is closed". */
 export function canDecide(stage: Stage, role: Role): boolean {
-  return role === 'admin' && (stage === 'closed' || stage === 'published')
+  return role === 'admin' && biddingClosed(stage)
+}
+
+/** "Bidding is no longer open" — the squadron can no longer freely place and
+ *  shuffle bids, so a decision, and a MOVE that leaves a permanent trace, both
+ *  become meaningful. Closed and published are one state for this purpose (see
+ *  canDecide). One body so the decision gate, the move-provenance record and
+ *  the grid's "moved" mark cannot drift apart on when a move counts. */
+export function biddingClosed(stage: Stage): boolean {
+  return stage === 'closed' || stage === 'published'
 }
 
 export function stageLabel(stage: Stage): string {
