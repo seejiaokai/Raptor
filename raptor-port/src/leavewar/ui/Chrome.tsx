@@ -3,7 +3,7 @@
 // yet (My leave, Ledger, Rules, Roster) and no "closes in N days", which
 // the engine does not model. See CLAUDE-facing restyle brief for why.
 
-import { useLayoutEffect, useRef, useState, useSyncExternalStore } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore } from 'react'
 import { biddingClosed, canReopen, evaluatePeriod, isBiddable, isDuty, nextStage, previousStage, stageLabel } from '../engine'
 import { CODE_GLOSSARY } from '../engine/codes'
 import { getClashes, getClashVersion, subscribeClashes } from '../sync'
@@ -226,6 +226,24 @@ export function StageBar() {
   const [legOpen, setLegOpen] = useState(false)
   const legRef = useRef<HTMLButtonElement>(null)
   const [legAt, setLegAt] = useState<{ left: number; top: number } | null>(null)
+  /* ESCAPE CLOSES BOTH POP-OUTS (bug sweep, 28 Aug 26). These two hang off
+     their chip over a full-page scrim, so a pointer always had a way out — but
+     a keyboard had none, and every sibling surface in the app closes on Escape.
+     One handler for the pair: the Legend is the upper layer when both are
+     somehow open, so it peels first, exactly the way the input editor peels its
+     own sheets. `Sheet` carries the same rule for the panels it wraps; these
+     two use a different overlay, which is why it is restated here. */
+  useEffect(() => {
+    if (!legOpen && !listOpen) return
+    const esc = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return
+      e.stopPropagation()
+      if (legOpen) setLegOpen(false)
+      else setListOpen(false)
+    }
+    document.addEventListener('keydown', esc, true)
+    return () => document.removeEventListener('keydown', esc, true)
+  }, [legOpen, listOpen])
   useLayoutEffect(() => {
     if (!legOpen) { setLegAt(null); return }
     const r = legRef.current?.getBoundingClientRect()

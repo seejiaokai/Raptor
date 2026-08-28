@@ -77,6 +77,19 @@ describe('the colour/mark legend', () => {
     expect(leg.querySelector('.leg-sw.raptor')).toBeTruthy()
   })
 
+  /* ESCAPE CLOSES IT (bug sweep, 28 Aug 26). The legend and the under-manned
+     list hang over a full-page scrim, so a pointer always had a way out — but a
+     keyboard had none, while the input editor and the Medical as-of picker both
+     answered Escape. These two use their own overlay rather than `Sheet`, which
+     is why they need their own pin. */
+  it('closes on Escape, not only on a scrim tap', () => {
+    render(<StageBar />)
+    fireEvent.click(screen.getByTestId('legend-open'))
+    expect(screen.getByTestId('legend')).toBeTruthy()
+    fireEvent.keyDown(document, { key: 'Escape' })
+    expect(screen.queryByTestId('legend')).toBeNull()
+  })
+
   it('the moved row joins the key once bidding is closed', () => {
     setRole('admin')
     advanceStage()

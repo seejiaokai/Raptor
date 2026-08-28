@@ -203,6 +203,32 @@ export function Sheet({
     if (movedRef.current) { movedRef.current = false; return }
     onClose()
   }
+  /* ESCAPE CLOSES IT (bug sweep, 28 Aug 26). Every other dismissible surface in
+     the app already answers Escape — the input editor peels one layer at a
+     time, the Medical as-of picker closes — but no Leave War sheet did: its ✕
+     and a scrim tap were the only ways out. That leaves anyone on a keyboard
+     stuck inside a `role="dialog"`, and it reads as broken next to the sibling
+     surfaces. Fixed HERE, in the one wrapper every sheet is built from, for the
+     same reason the scrim lives here: a sheet cannot then be written without it.
+     Only the TOPMOST sheet acts. Today that guard never fires — Leave War
+     sheets REPLACE one another (the person editor takes the figures sheet's
+     place, a decision sheet yields to the remarks editor), so there is only
+     ever one — but the day two are mounted at once, one press must peel one
+     layer rather than clearing the pile. The listener captures so a field's own
+     Escape handler cannot swallow it first. */
+  const closeRef = useRef(onClose)
+  closeRef.current = onClose
+  useEffect(() => {
+    const esc = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return
+      const all = document.querySelectorAll('.bidsheet')
+      if (all.length && all[all.length - 1] !== panelRef.current) return
+      e.stopPropagation()
+      closeRef.current()
+    }
+    document.addEventListener('keydown', esc, true)
+    return () => document.removeEventListener('keydown', esc, true)
+  }, [panelRef])
   return (
     <>
       {/* Not a button and not focusable: it carries nothing a screen reader

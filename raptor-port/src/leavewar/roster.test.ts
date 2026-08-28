@@ -31,6 +31,7 @@ import {
   moveRosterRow,
   moveGroupTo,
   moveGroupPriorityTo,
+  addGroup,
   groupsInOrder,
   groupPriorityIds,
   groupIdOf,
@@ -506,6 +507,51 @@ describe('the roster group editor', () => {
 
     moveGroupPriorityTo(qid, null)                          // rank it last
     expect(groupIdOf(opsC())).toBe('OPSP')
+  })
+
+  /* ADDING A GROUP HAS TO DO SOMETHING (bug sweep, 28 Aug 26). The test above
+     ranks the qualification by hand, which is exactly why this went unseen: the
+     editor's own "+ SC Day" only appended to the DISPLAY list, an unranked id
+     sorts to the BOTTOM of the priority walk, and `groupOf` always returns one
+     of the seven built-ins — so every person was claimed before the walk ever
+     reached the new group. On the grid, adding a qualification changed nothing
+     at all, while the editor beside it reported 44 people in it. `addGroup` is
+     the editor's path: it ranks the new group first, which is the owner's own
+     case ("they should always show up in the qualifications column instead of
+     CAT"). Nothing here may need a hand-made re-rank. */
+  it('a group added through the editor claims its people with no re-ranking', () => {
+    const qid = qualGroupId('scDay')
+    const opsC = () => getState().people.find(p => p.id === 'ops_c')!
+    expect(groupIdOf(opsC())).toBe('OPSP')
+    addGroup({ id: qid, kind: 'qual', k: 'scDay' })
+    expect(groupsInOrder().some(d => d.id === qid)).toBe(true)
+    expect(groupPriorityIds()[0]).toBe(qid)
+    expect(groupIdOf(opsC())).toBe(qid)                     // moved, unaided
+    expect(displayRoster().filter(p => p.id === 'ops_c')).toHaveLength(1)
+    // and the roster still holds everyone, exactly once
+    const roster = displayRoster()
+    expect(roster.length).toBe(getState().people.length)
+    expect(new Set(roster.map(p => p.id)).size).toBe(roster.length)
+  })
+
+  /* Add order survives. A new group is ranked above the CATEGORIES, not flatly
+     at the front — otherwise each addition would quietly demote the one before
+     it, and an admin adding SC Day then SC Night would find SC Night had taken
+     SC Day's people. */
+  it('a second added group ranks below the first, still above the categories', () => {
+    const day = qualGroupId('scDay'), night = qualGroupId('scNight')
+    setQualCatalog([{ k: 'scDay', label: 'SC DAY' }, { k: 'scNight', label: 'SC NIGHT' }])
+    addGroup({ id: day, kind: 'qual', k: 'scDay' })
+    addGroup({ id: night, kind: 'qual', k: 'scNight' })
+    const prio = groupPriorityIds()
+    expect(prio.indexOf(day)).toBeLessThan(prio.indexOf(night))          // add order kept
+    expect(prio.indexOf(night)).toBeLessThan(prio.indexOf('SXO'))        // both above the categories
+  })
+
+  it('addGroup is admin-gated like every other group writer', () => {
+    setRole('member')
+    addGroup({ id: qualGroupId('scDay'), kind: 'qual', k: 'scDay' })
+    expect(groupsInOrder().some(d => d.id === qualGroupId('scDay'))).toBe(false)
   })
 
   it('shows everyone exactly once, whatever the configuration', () => {
