@@ -4,10 +4,12 @@
    member view-only, and both go through writeInputs so they join the undo
    stack and re-validate the week. */
 import { useEffect, useRef, useState } from 'react'
-import { INPUTS, INPUT_TYPES, TYPE_GROUPS, inpMeta, inpId, typeGroup, isLateInput, lateNote, isSansAvail, isDownchit, isUpchit, needsDoc, sansLetters, defaultAllday, withRemarksTail, baseYear, dateOrd } from '../engine/inputs'
+import { INPUTS, INPUT_TYPES, TYPE_GROUPS, inpMeta, inpId, typeGroup, isLateInput, lateNote, isSansAvail, isDownchit, isUpchit, needsDoc, sansLetters, defaultAllday, withRemarksTail, baseYear, dateOrd, oilAsks } from '../engine/inputs'
 import { upchitTrimPlan, upchitEffects, newMedTrimPlan, medClashes, ordLabel } from '../engine/medical'
 import { UpchitConfirm } from './UpchitConfirm'
 import { MedClashConfirm } from './MedClashConfirm'
+import { OilConfirm } from './OilConfirm'
+import { oilAskPlan } from '../leavewar/sync'
 import { PEOPLE } from '../engine/people'
 import { hhmm, parseHM } from '../engine/time'
 import { HOOKS } from '../engine/hooks'
@@ -28,7 +30,7 @@ import {
   fmt, fmtDay, fmtDMY, unfmt, hasHalf, spanOf, spanFields, SpanPicker, typeOptions,
   draftOf, commitInputEdit, removeInput, SansPicker, sansRefusal, sansOverlapRefusal, sansFlags,
   medOverlapRefusal, upchitRefusal, downOverUpchitRefusal, applyMedPlan, normalizeInputDraft,
-  medKeptSegments, mintMedSegments, ordISO, DocField,
+  medKeptSegments, mintMedSegments, ordISO, DocField, oilGate,
   rosterOptions as people, inputTone,
 } from './inputedit'
 import { useVersion } from './useStore'
@@ -257,6 +259,9 @@ export function InputsPage() {
   /* the medical clash sheet (owner, 27 Aug 26) — same shape, same one
      render site for the add form and the row editor */
   const [medConf, setMedConf] = useState<any>(null)
+  /* the OIL ask (owner, 28 Aug 26) — the oilGate payload plus the commit to
+     run on Save; one state, one render site, both editors */
+  const [oilConf, setOilConf] = useState<any>(null)
   const [pinned, setPinned] = useState<any[]>([])
   const [flash, setFlash] = useState<any[]>([])
   const timers = useRef<any[]>([])
@@ -414,9 +419,12 @@ export function InputsPage() {
       setRemarks(withTill('', start, end))
       setDocId(null)
     }
-    const commit = (removals: any[]) => {
+    const commit = (removals: any[], oilDec?: Record<string, number>) => {
       writeInputsBatch(() => {
         INPUTS.unshift(rowBody(date, endDate, remarks.trim()))
+        /* the OIL answers land on the just-unshifted row inside the same
+           batch — add plus acknowledgment is ONE undo step (owner, 28 Aug 26) */
+        if (oilDec) INPUTS[0].oil = oilDec
         /* a new medical input wins its overlapping days from a different-type
            downchit (no clash reached the sheet on this path); an upchit cuts
            everything covering its date to end the day before — the upchit
@@ -476,6 +484,21 @@ export function InputsPage() {
             })
             finishAdd()
           },
+        })
+        return
+      }
+    }
+    /* a duty-&-commitments input over a weekend/PH asks before it writes
+       (owner, 28 Aug 26). This path validated by hand above rather than via
+       normalizeInputDraft, so the plan is computed off the same values the
+       row body will carry — disjoint from the two medical branches by type. */
+    if (oilAsks(type)) {
+      const plan = oilAskPlan({ person: filedFor(), date, endDate, yr: baseYear(), allday, s, e })
+      if (plan.length) {
+        setOilConf({
+          who: PEOPLE[filedFor()] ? PEOPLE[filedFor()].cs : filedFor(),
+          typeLabel: type, plan, prev: {},
+          commit: (dec: Record<string, number>) => commit([], dec),
         })
         return
       }
@@ -564,6 +587,23 @@ export function InputsPage() {
         })
         return
       }
+    }
+    /* the OIL ask on an EDIT (owner, 28 Aug 26) — oilGate runs the shared
+       refusals first (a bad draft toasts at once) and re-asks only when the
+       plan went stale; its Save commits edit + decisions as one batch */
+    const g = oilGate(draft, editRow)
+    if (g.kind === 'refused') return
+    if (g.kind === 'ask') {
+      setOilConf({
+        ...g,
+        commit: (dec: Record<string, number>) => {
+          let ok = false
+          writeInputsBatch(() => { ok = commitInputEdit(editRow, draft); if (ok) editRow.oil = dec })
+          if (ok) { setEditRow(null); setDraft(null); HOOKS.toast('Input updated', 'ok') }
+          else if (INPUTS.indexOf(editRow) < 0) { setEditRow(null); setDraft(null) }
+        },
+      })
+      return
     }
     if (commitInputEdit(editRow, draft)) { setEditRow(null); setDraft(null); HOOKS.toast('Input updated', 'ok') }
     else if (editRow && INPUTS.indexOf(editRow) < 0) { setEditRow(null); setDraft(null) }
@@ -1016,6 +1056,12 @@ export function InputsPage() {
         clashes={medConf.clashes} aOrd={medConf.a} bOrd={medConf.b}
         onCancel={() => setMedConf(null)}
         onSave={(choices, keepTail) => { const c = medConf.commit; setMedConf(null); c(choices, keepTail) }} />}
+      {/* the OIL ask (owner, 28 Aug 26) — same contract again: Save runs the
+          stashed commit with the day decisions, Cancel writes nothing */}
+      {oilConf && <OilConfirm who={oilConf.who} typeLabel={oilConf.typeLabel}
+        plan={oilConf.plan} prev={oilConf.prev}
+        onCancel={() => setOilConf(null)}
+        onSave={dec => { const c = oilConf.commit; setOilConf(null); c(dec) }} />}
     </>
   )
 }

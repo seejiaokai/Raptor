@@ -27,7 +27,7 @@ import { ME } from '../state/auth'
 import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
 import { dayApproved, dayCurVer, daySnapOf } from '../engine/publish'
-import { dayOilCredits } from '../engine/oil'
+import { dayOilCredits, inputOilAmt } from '../engine/oil'
 import { validate } from '../engine/validate'
 import { notify as raptorNotify, subscribe as raptorSubscribe, writeInputsBatch } from '../state/store'
 import {
@@ -618,8 +618,10 @@ export function runInbound(): void {
    flag, or an event word typed on it whose type is tagged "off day" (the
    owner's own input path for holidays, seeded as `PH`). A date no war holds
    can still be a weekend, but never a holiday: there is nowhere to have
-   filed one. */
-function isNonWorkingISO(date: string): boolean {
+   filed one. EXPORTED since 28 Aug 26 — the input ask-flow (oilAskPlan
+   below, the OilConfirm sheet, the bell's pending scan) all read the SAME
+   answer, so "is this day applicable" can never fork. */
+export function isNonWorkingISO(date: string): boolean {
   if (isWeekend(date)) return true
   const war = warHolding(getState().wars, date)
   if (!war) return false
@@ -627,6 +629,30 @@ function isNonWorkingISO(date: string): boolean {
   if (!day) return false
   if (day.ph) return true
   return columnKindFor(getState().eventDefs, day, war.period.bands ?? []) === 'off'
+}
+
+/* THE INPUT ASK-FLOW'S PLAN (owner, 28 Aug 26): which of a duty-&-commitments
+   input's covered days are non-working, and what the input's own hours would
+   earn on each — the pure body BOTH the OilConfirm sheet and the save gate
+   read, so what is asked and what is credited cannot disagree (the
+   upchitEffects precedent). One entry per applicable day; the amount is the
+   input's own standing (all-day = FO, else its length under oilFullMin) —
+   the CELL finally posted may still upgrade when published schedule work on
+   the same day pools with it (desiredOilCells). Walks label→ISO exactly as
+   runInbound does, same 400-day cap. */
+export function oilAskPlan(row: { person?: any; date: string; endDate?: string; yr?: any; allday?: any; s?: any; e?: any }): { iso: string; amt: 0.5 | 1 }[] {
+  const out: { iso: string; amt: 0.5 | 1 }[] = []
+  const amt = inputOilAmt(row.allday, row.s, row.e)
+  if (amt == null) return out
+  const start = labelToISO(row.date, row.yr)
+  if (!start) return out
+  let end = row.endDate ? labelToISO(row.endDate, row.yr) ?? start : start
+  if (end < start) end = start
+  let n = 0
+  for (let d = start; d <= end && n < 400; d = addDays(d, 1), n++) {
+    if (isNonWorkingISO(d)) out.push({ iso: d, amt })
+  }
+  return out
 }
 
 /** The credits a published, non-working day earns right now: person|isoDate
