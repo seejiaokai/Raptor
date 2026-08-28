@@ -25,8 +25,8 @@ import './bidpicker.css'
 
 const PORTIONS: { portion: Portion; label: string; testid: string }[] = [
   { portion: 'full', label: 'Whole day', testid: 'sel-portion-full' },
-  { portion: 'am', label: 'Morning', testid: 'sel-portion-am' },
-  { portion: 'pm', label: 'Afternoon', testid: 'sel-portion-pm' },
+  { portion: 'am', label: 'AM', testid: 'sel-portion-am' },
+  { portion: 'pm', label: 'PM', testid: 'sel-portion-pm' },
 ]
 
 export function SelectSheet({

@@ -390,8 +390,8 @@ export function StageBar() {
                 <div className="leg-row"><span className="leg-sw moved">LL</span><span className="leg-t">Moved here from another day</span></div>
               )}
               <div className="leg-sec">The <b>*</b> — a half day</div>
-              <div className="leg-row"><span className="leg-sw plain">*LL</span><span className="leg-t">Morning (before the code)</span></div>
-              <div className="leg-row"><span className="leg-sw plain">LL*</span><span className="leg-t">Afternoon (after the code)</span></div>
+              <div className="leg-row"><span className="leg-sw plain">*LL</span><span className="leg-t">AM (before the code)</span></div>
+              <div className="leg-row"><span className="leg-sw plain">LL*</span><span className="leg-t">PM (after the code)</span></div>
               {/* What the LETTERS mean (owner, 28 Aug 26). The grid shows codes
                   the Inputs page never explains — FS/HS above all, which are not
                   even typed there. Each swatch takes the grid's OWN colour by

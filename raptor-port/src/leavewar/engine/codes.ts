@@ -238,7 +238,7 @@ function dayCodeFor(cell: Cell): DayCode {
   const leave = LEAVE_TYPE_BY_CODE[type]
   if (leave) {
     const amount = portionAmount(portion)
-    const suffix = portion === 'am' ? ' (morning)' : portion === 'pm' ? ' (afternoon)' : ''
+    const suffix = portion === 'am' ? ' (AM)' : portion === 'pm' ? ' (PM)' : ''
     return {
       code: formatCell(cell),
       label: `${leave.label}${suffix}`,
@@ -255,7 +255,7 @@ function dayCodeFor(cell: Cell): DayCode {
 
   const medicalLabel = MEDICAL_LABELS[type]
   if (medicalLabel) {
-    const suffix = portion === 'am' ? ' (morning)' : portion === 'pm' ? ' (afternoon)' : ''
+    const suffix = portion === 'am' ? ' (AM)' : portion === 'pm' ? ' (PM)' : ''
     return {
       code: formatCell(cell),
       label: `${medicalLabel}${suffix}`,

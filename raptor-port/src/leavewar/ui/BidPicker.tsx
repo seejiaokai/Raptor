@@ -23,8 +23,8 @@ import './bidpicker.css'
 
 const PORTIONS: { portion: Portion; label: string; testid: string }[] = [
   { portion: 'full', label: 'Whole day', testid: 'portion-full' },
-  { portion: 'am', label: 'Morning', testid: 'portion-am' },
-  { portion: 'pm', label: 'Afternoon', testid: 'portion-pm' },
+  { portion: 'am', label: 'AM', testid: 'portion-am' },
+  { portion: 'pm', label: 'PM', testid: 'portion-pm' },
 ]
 
 export function BidPicker({

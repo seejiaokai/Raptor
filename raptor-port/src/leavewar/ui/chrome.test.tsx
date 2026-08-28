@@ -66,8 +66,8 @@ describe('the colour/mark legend', () => {
     expect(text).toContain('Pending')
     expect(text).toContain('Refused')
     expect(text).toContain('Filed on the Inputs page')
-    expect(text).toContain('Morning')
-    expect(text).toContain('Afternoon')
+    expect(text).toContain('AM (before the code)')
+    expect(text).toContain('PM (after the code)')
     // The moved row appears only once bidding has closed — at `open` no cell
     // can wear the stripe (movedShown), and a legend advertising a mark the
     // grid cannot show sends readers hunting for it (27 Aug 26).
