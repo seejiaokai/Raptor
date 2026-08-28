@@ -312,6 +312,28 @@
   min-width: 24px;
 }
 
+/* ...but the DAY-column headers must NOT be sticky. The header's vertical
+   freeze is done by the fixed JS mirror (.mxfixed), never by CSS sticky —
+   `.mx-wrap` scrolls horizontally only, so a `top: 0` sticky here pins
+   NOTHING (see the top-of-file note and the Matrix mirror comment: "CSS
+   sticky cannot pin the header — its scrollport never moves vertically").
+   Left sticky, all ~365 day headers were re-evaluated as sticky constraints
+   by the engine on every horizontal-scroll frame, and on a phone that
+   main-thread work is exactly what made a sideways swipe stutter — the grid
+   read as "laggy" though nothing was actually being held in place (owner,
+   28 Aug 26, screen recording). Making them `static` drops the per-frame
+   sticky cost from ~365 cells to a handful; the day headers now ride the
+   grid natively, like the body cells directly beneath them. Nothing that
+   ACTUALLY freezes is touched: the frozen left columns keep their own
+   left-sticky (`.mx .who, .mx .bal` above), the month labels keep theirs
+   (`.brakl` below), and the fixed mirror is unchanged. `z-index: 1` from the
+   rule above goes inert on a static cell, which is correct — the positioned
+   frozen columns (z-index 2/3) must, and still do, paint over the day cells
+   sliding under them. */
+.mx .mxhead th.day {
+  position: static;
+}
+
 /* Square the date cells (owner, Aug 26 — "make the dates at the top a
    square"). They were reading as rounded green bubbles, and the cause was a
    LEAK, not a rule of this file: the header cells carry `className="day"`, and

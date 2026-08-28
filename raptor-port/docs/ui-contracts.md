@@ -4173,6 +4173,25 @@ BidPicker's look and vocabulary, not instead of it.
   frames. The alternative — a real inner scroll box that CSS `sticky` could pin
   for free — was declined by the owner (it reintroduces the nested-scroller feel
   he rejected on 10 Aug).
+- **The day-column headers are `position: static`, NOT sticky** (owner, 28 Aug
+  26 — a second recording, "seems pretty laggy still": the sideways swipe felt
+  janky). Diagnosis: the recording was NOT the frozen mirror at all — the whole
+  roster fits on his phone, so the header never slides under the top bar and the
+  mirror never activates; what lagged was the ordinary horizontal scroll of the
+  grid. The header and body are one `<table>` inside `.mx-wrap`, so they cannot
+  drift apart — but the blanket `.mx .mxhead th { position: sticky; top: 0 }`
+  rule made every one of the ~365 day headers a sticky element, and the engine
+  re-evaluated all of them on every scroll frame. That `top: 0` pins NOTHING
+  (`.mx-wrap` has no vertical scroll for it to stick over — the very reason the
+  JS mirror exists), so it was pure per-frame cost. Overriding the day cells to
+  `position: static` (in `matrix.css`, right under the blanket rule) cut the
+  scroller's sticky-element count from ~425 to ~60 and, under a 6× CPU throttle,
+  took the median scroll frame from ~283 ms to ~17 ms (a clean 60 fps). Nothing
+  that actually freezes is touched: the frozen LEFT columns keep their own
+  `.who`/`.bal` left-sticky, the month labels keep `.brakl`, the mirror still
+  tracks in lockstep, and header↔body column alignment is pixel-exact
+  (`dx = 0`, verified live at 402 px and 1300 px). Do NOT restore `sticky` on
+  the day headers — it re-adds the jank for a freeze that sticky can't do.
 - **The colour/mark pop-out is labelled "Legend"** (owner, 27 Aug 26 — renamed
   from "Key"; `Chrome.tsx`, testid `legend-open` unchanged). **It also keys the
   LETTERS, not just the colours** (owner, 28 Aug 26 — "include what FS HS etc
