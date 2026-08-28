@@ -3939,6 +3939,27 @@ closes it on an outside tap — it overlays the sections rather than pushing
 them down; owner, 27 Aug 26) writing `MEDASOF` (`state/view.ts`, null =
 the notional today, reset by the Today chip and on session change).
 
+**A LABELLED ICON BUTTON DECLARES ITS OWN GAP — the space in the JSX is
+not the space on screen** (owner, 28 Aug 26 — "there's no spacing between
+the calendar and the word 'as'"). `.ic-head .abtn` is `inline-flex`, and a
+flex container drops the whitespace either side of an anonymous text item,
+so `<CalIcon /> as of {date}` painted as `[cal]as of 13 Jul` until the rule
+carried `gap:6px`. The same rule gives the glyph `color:currentColor`, so
+it reads at the label's brightness (and turns accent with it when the
+button is `.on`) instead of `.btnglyph`'s own `--ink-2`, which is the
+default for a BARE icon button. Both halves are pinned in
+`e2e/medical.spec.ts` — measured off the text run with a Range, because
+jsdom reports every rect as 0×0 and cannot see either fault.
+
+**The named drift-seam this exposes**: that pairing — 6px and
+`currentColor` — is the app-wide convention for an icon-plus-label button,
+but it is restated per surface rather than declared once: `.docbtn`,
+`#inMedBtn`, `.sb-actions .abtn`/`.sb-calbtn`, `.filters .abtn .btnglyph`,
+and now `.ic-head .abtn`. A NEW labelled icon button in a header that has
+never had one inherits neither, and the fault is invisible to every gate
+but the browser. Either add the two properties with the button, or fold
+the five into one selector list the next time this area is touched.
+
 **A card tap opens the DOCUMENT VIEWER** (`ui/DocViewer.tsx`,
 `#docViewPop`, airpop chassis, `DOCVIEW` in `ui/pops.ts` holding the input
 OBJECT + an `up` flag): image inline, PDF in a frame, "No document on file

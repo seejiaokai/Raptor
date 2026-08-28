@@ -41,6 +41,27 @@ test.describe('the medical view renders and fits', () => {
       })
       expect(bad).toBe('')
 
+      /* THE AS-OF BUTTON'S ICON DOES NOT TOUCH ITS LABEL (owner, 28 Aug 26 —
+         "there's no spacing between the calendar and the word 'as'"). The
+         button is a flex box, which drops the whitespace around an anonymous
+         text item, so the space written in the JSX is not the one on screen —
+         only a real gap keeps them apart, and only a laid-out browser can see
+         it. Measured off the text run itself (a Range), not the button box. */
+      const cal = await page.evaluate(() => {
+        const btn = document.querySelector('#medCalBtn') as HTMLElement
+        const svg = btn.querySelector('svg') as SVGElement
+        const txt = [...btn.childNodes].find(n => n.nodeType === 3 && n.textContent!.trim())
+        const rng = document.createRange(); rng.selectNodeContents(txt!)
+        return {
+          gap: rng.getBoundingClientRect().left - svg.getBoundingClientRect().right,
+          /* and the glyph reads at the label's own brightness, not the dimmer
+             bare-icon-button grey — the same rule .filters/.sb-actions follow */
+          sameInk: getComputedStyle(svg).color === getComputedStyle(btn).color,
+        }
+      })
+      expect(cal.gap, 'calendar icon to "as of" label').toBeGreaterThanOrEqual(4)
+      expect(cal.sameInk, 'glyph takes the label colour').toBe(true)
+
       /* a card opens the document viewer; the demo seed put real paperwork
          behind it, so an image (not the no-document state) shows */
       await page.click('.medsec.med-down .medcard')

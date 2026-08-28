@@ -2148,7 +2148,18 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
   background:var(--panel);flex-wrap:wrap}
 /* every nav/action button here rides .abtn's own look, just enlarged to a
    real touch target — no separate button skin to keep in step with it */
-.ic-head .abtn{min-width:44px;min-height:44px;display:inline-flex;align-items:center;justify-content:center}
+.ic-head .abtn{min-width:44px;min-height:44px;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+/* the gap above is load-bearing, not decoration (owner, 28 Aug 26 — "there's no
+   spacing between the calendar and the word 'as'"): a flex container drops the
+   whitespace either side of an anonymous text item, so the space written in the
+   JSX between <CalIcon/> and its label was being eaten and the medical as-of
+   button read "[cal]as of 13 Jul". 6px is the icon-and-label rhythm the rest of
+   the app already uses (.docbtn, #inMedBtn, .sb-actions .abtn). It is inert on
+   the text-only buttons here (Today, ‹ ›, ✕ List) — one item, no gap to draw.
+   The glyph takes the LABEL's colour for the same reason .filters .abtn and
+   .sb-actions do: .btnglyph's own --ink-2 is for a bare icon button, and left
+   alone it prints the calendar a shade dimmer than the words beside it. */
+.ic-head .abtn .btnglyph{color:currentColor}
 #icClose{margin-left:auto}
 .ic-mon{font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;letter-spacing:.05em;
   font-size:18px;font-weight:700;color:var(--ink);padding:0 2px}
