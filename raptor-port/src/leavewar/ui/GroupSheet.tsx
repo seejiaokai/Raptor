@@ -31,7 +31,9 @@ import {
   type GroupDef,
 } from '../engine'
 import {
+  addGroup,
   getState,
+  groupIdOf,
   groupsInOrder,
   groupPriorityIds,
   moveGroupPriorityTo,
@@ -67,9 +69,17 @@ export function GroupSheet({
   const [lit, setLit] = useState<string | null>(null)
 
   const label = (d: GroupDef) => groupLabel(d, qualCatalog)
+  /* TWO DIFFERENT QUESTIONS, and the sheet used to answer only the first (bug
+     sweep, 28 Aug 26). `matchesGroup` is "does this person QUALIFY for the
+     group"; `groupIdOf` is "which group actually DRAWS them", after priority
+     has decided between the groups they match. The row's headline number is now
+     the second — the count the grid will agree with — because reporting 44 for
+     a group the grid shows nobody in is a promise the page does not keep. The
+     first is still worth saying, so where they differ the row says both. */
   const membersOf = (d: GroupDef) => people.filter(p => matchesGroup(p, d))
+  const shownIn = (d: GroupDef) => people.filter(p => groupIdOf(p) === d.id)
 
-  const add = (d: GroupDef) => setGroupDefs([...chosen, d])
+  const add = (d: GroupDef) => addGroup(d)
   const drop = (id: string) => setGroupDefs(chosen.filter(d => d.id !== id))
 
   const litDef = lit ? offered.find(d => d.id === lit) : null
@@ -86,7 +96,8 @@ export function GroupSheet({
       <div className="gs-sec">Shown, top to bottom</div>
       <div className="clist" data-testid="group-chosen">
         {chosen.map(d => {
-          const n = membersOf(d).length
+          const shown = shownIn(d).length
+          const elsewhere = membersOf(d).length - shown
           return (
             <div
               key={d.id}
@@ -109,9 +120,12 @@ export function GroupSheet({
               >
                 <span className="crow-top">
                   <span className="cn">{label(d)}</span>
-                  <span className="ct">{n} {n === 1 ? 'person' : 'people'}</span>
+                  <span className="ct">{shown} {shown === 1 ? 'person' : 'people'}</span>
                 </span>
-                <span className="csub">{d.kind === 'qual' ? 'qualification' : 'category'}</span>
+                <span className="csub">
+                  {d.kind === 'qual' ? 'qualification' : 'category'}
+                  {elsewhere > 0 && ` · ${elsewhere} more fit it, shown higher up`}
+                </span>
               </button>
               {/* A built-in can be taken off the grid too — anyone it held falls
                   to "Everyone else", which is always drawn last, so nobody is
@@ -131,18 +145,41 @@ export function GroupSheet({
         Anyone no group above claims is shown under <b>{OTHER_LABEL}</b>, always last.
       </div>
 
-      {/* ---- who is in the tapped group ------------------------------------- */}
-      {litDef && (
-        <div className="gs-who" data-testid="group-members">
-          <div className="gs-sec">In {label(litDef)}</div>
-          <div className="gs-chips">
-            {membersOf(litDef).map(p => (
-              <span key={p.id} className="gs-chip" data-testid={`gmem-${p.id}`}>{p.callsign}</span>
-            ))}
-            {membersOf(litDef).length === 0 && <span className="gs-empty">nobody yet</span>}
+      {/* ---- who is in the tapped group -------------------------------------
+           Split in two (bug sweep, 28 Aug 26): the people this group actually
+           DRAWS, and the ones who fit it but are drawn higher up. One flat list
+           of everyone who qualified read as a promise about the grid, and a
+           group ranked below an exhaustive category could keep that promise for
+           nobody at all. The second list is also the explanation for the first
+           being short, right where the admin is looking. */}
+      {litDef && (() => {
+        const here = shownIn(litDef)
+        const above = membersOf(litDef).filter(p => groupIdOf(p) !== litDef.id)
+        return (
+          <div className="gs-who" data-testid="group-members">
+            <div className="gs-sec">Shown in {label(litDef)}</div>
+            <div className="gs-chips">
+              {here.map(p => (
+                <span key={p.id} className="gs-chip" data-testid={`gmem-${p.id}`}>{p.callsign}</span>
+              ))}
+              {here.length === 0 && <span className="gs-empty">nobody — every one of them is claimed higher up</span>}
+            </div>
+            {above.length > 0 && (
+              <>
+                <div className="gs-sec">Also fit it, but shown higher up</div>
+                <div className="gs-chips">
+                  {above.map(p => (
+                    <span key={p.id} className="gs-chip muted" data-testid={`gelse-${p.id}`}>{p.callsign}</span>
+                  ))}
+                </div>
+                <div className="gs-note">
+                  Drag {label(litDef)} up under <b>Who wins</b> to draw them here instead.
+                </div>
+              </>
+            )}
           </div>
-        </div>
-      )}
+        )
+      })()}
 
       {/* ---- 1: what can be added ------------------------------------------- */}
       <div className="gs-sec">Add a group</div>

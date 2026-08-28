@@ -577,6 +577,15 @@
   font-weight: 700;
   letter-spacing: .04em;
 }
+/* The people who fit a group but are DRAWN somewhere higher up (bug sweep, 28
+   Aug 26). Same chip, stated a step back: they are context for why the list
+   above is short, not members of it, and reading them at the accent weight
+   would put them on the same footing as the group's real rows. */
+.bidsheet .gs-chip.muted {
+  background: var(--panel-2);
+  border-color: var(--edge);
+  color: var(--ink-3);
+}
 .bidsheet .gs-empty {
   font-size: 11px;
   color: var(--ink-3);

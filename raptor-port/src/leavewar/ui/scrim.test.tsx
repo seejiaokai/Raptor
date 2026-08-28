@@ -100,6 +100,48 @@ const SHEETS: { name: string; testid: string; open: () => void }[] = [
   },
 ]
 
+/* ESCAPE CLOSES EVERY SHEET (bug sweep, 28 Aug 26). Not one Leave War sheet
+   answered Escape — the ✕ and a scrim tap were the only ways out — while the
+   input editor and the Medical as-of picker both did, so the tab read as broken
+   on a keyboard and left anyone there stuck inside a `role="dialog"`. Driven
+   over the SAME table as the scrim, for the same reason: a per-sheet test would
+   pass while an eighth sheet shipped without it. */
+describe('Escape closes a sheet', () => {
+  for (const sheet of SHEETS) {
+    it(`closes ${sheet.name}`, () => {
+      sheet.open()
+      expect(screen.getByTestId(sheet.testid)).toBeTruthy()
+      fireEvent.keyDown(document, { key: 'Escape' })
+      expect(screen.queryByTestId(sheet.testid)).toBeNull()
+    })
+  }
+
+  /* Leave War sheets REPLACE one another rather than stacking (the person
+     editor takes the figures sheet's place; a decision sheet yields to the
+     remarks editor), so one press closes the one sheet there is and the grid is
+     left clear — no orphan scrim, nothing to tab into. */
+  it('leaves no sheet and no scrim behind', () => {
+    setRole('admin')
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId('person-ramp'))
+    fireEvent.click(screen.getByTestId('person-edit'))
+    expect(screen.getByTestId('person-sheet')).toBeTruthy()
+    fireEvent.keyDown(document, { key: 'Escape' })
+    expect(screen.queryByTestId('person-sheet')).toBeNull()
+    expect(screen.queryByTestId('person-figures')).toBeNull()
+    expect(screen.queryByTestId('sheet-scrim')).toBeNull()
+  })
+
+  /* And no listener outlives its sheet: an Escape with nothing open must not
+     reach into the grid or throw. */
+  it('does nothing when no sheet is open', () => {
+    render(<Matrix />)
+    fireEvent.keyDown(document, { key: 'Escape' })
+    expect(screen.queryByTestId('sheet-scrim')).toBeNull()
+    expect(screen.getByTestId('counter-pick')).toBeTruthy()
+  })
+})
+
 describe('clicking outside a sheet closes it', () => {
   for (const sheet of SHEETS) {
     it(`closes ${sheet.name}`, () => {

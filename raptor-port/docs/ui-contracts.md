@@ -4190,6 +4190,21 @@ Every Leave War decision opens in a `Sheet` over a full-page `.sheetscrim`
 (`ui/Sheet.tsx`). Over two owner asks (28 Aug 26) the sheet went from a modal
 that froze everything behind it to a panel you can read the grid around:
 
+- **ESCAPE CLOSES IT** (bug sweep, 28 Aug 26). Not one Leave War sheet answered
+  Escape — its ✕ and a scrim tap were the only ways out — while the input editor
+  peels its layers on Escape and the Medical as-of picker closes on it, so the
+  tab read as broken on a keyboard and left anyone there shut inside a
+  `role="dialog"`. The handler lives in the WRAPPER, for the same reason the
+  scrim does: a sheet cannot then be written without it. It listens in capture
+  (a field's own Escape must not swallow it) and only the TOPMOST `.bidsheet`
+  acts — a guard that never fires today, since Leave War sheets REPLACE one
+  another rather than stacking, but that keeps one press peeling one layer if two
+  are ever mounted at once. The Legend and the under-manned list use their own
+  overlay rather than `Sheet`, so `Chrome.tsx` restates the rule for the pair
+  (Legend first when both are open). Pinned in `scrim.test.tsx` over the same
+  eight-sheet table the scrim uses — a per-sheet test would pass while a ninth
+  sheet shipped without it — and in `chrome.test.tsx` for the Legend.
+
 - **LEFT-RIGHT** ("I want to be able to still scroll left and right … on the
   grids … while the page is still up"). The scrim has to keep SWALLOWING
   gestures on the grid — a tap dismisses, and a bare grid tap behind an open
@@ -4335,9 +4350,30 @@ of person).
   qualifications column instead of CAT".
 - **"Everyone else" is always last and cannot be removed** — an admin whose list is
   all qualifications would otherwise strand people with no row at all.
+- **ADDING a group ranks it above the CATEGORIES** (`store.ts:addGroup`; bug
+  sweep, 28 Aug 26). This is not cosmetic — without it the control did nothing at
+  all. `orderedGroupIds` sorts an unranked id to the BOTTOM of the priority walk,
+  and `groupOf` is total (every person matches one of the seven built-ins), so a
+  newly added qualification was reached only after someone had already been
+  claimed: the grid did not change by one row, while the editor beside it
+  reported 44 people in the group. `addGroup` inserts the new id just before the
+  first `cat` group in the priority order — ABOVE the categories, which is the
+  owner's own rule, but NOT flatly at the front, so add order survives (front
+  insertion would make each addition demote the one before it, and adding SC Day
+  then SC Night would silently take SC Day's people). It writes the priority ONCE,
+  at the moment of adding; every later change is the admin's drag. Consequence
+  worth knowing: adding a near-universal qualification empties most category
+  headings at a stroke — reversible with ✕, Reset, or a drag down the who-wins
+  list. Pinned in `roster.test.ts` (claims its people unaided · add order kept ·
+  admin-gated).
 - **Tap a group to see who is in it** (owner: "allow me to click to highlight the
-  applicable pucks … so I can see like who's qualified"), with a live member count
-  on every row.
+  applicable pucks … so I can see like who's qualified"). Two lists, not one, and
+  a count that matches the grid: `groupIdOf` (who the group actually DRAWS) is the
+  headline number and the first list; `matchesGroup` (who merely QUALIFIES) fills
+  a second, quieter list headed "Also fit it, but shown higher up", with the way
+  to change it. The row previously showed the qualifying count alone, which read
+  as a promise about the grid that a group ranked below an exhaustive category
+  could keep for nobody.
 - **Untrusted load + a live prune**: stored entries are read structurally and
   de-duped, and `pruneGroups` runs on load AND whenever the catalogue moves
   (`setQualCatalog`) — a group pinned to a Quals column the squadron later deletes

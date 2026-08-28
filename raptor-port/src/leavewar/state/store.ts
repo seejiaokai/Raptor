@@ -1009,6 +1009,42 @@ export function setGroupDefs(defs: GroupDef[]): void {
   notify()
 }
 
+/**
+ * Add a group to the roster AND rank it FIRST in the who-wins order.
+ *
+ * Appending it to the display list alone made the control dead (bug sweep, 28
+ * Aug 26): `orderedGroupIds` puts an unranked id at the BOTTOM of the priority
+ * list, and the seven built-ins are exhaustive — `groupOf` always returns one
+ * of them — so every person was already claimed before the walk ever reached
+ * the new group. Adding "SC Day" changed nothing on the grid at all, while the
+ * editor beside it reported 44 people in it.
+ *
+ * So a new group is ranked ABOVE THE CATEGORIES — inserted just before the
+ * first `cat` group in the priority order, not flatly at the front. Both halves
+ * of that matter. Above the categories is the owner's own rule ("if theres a cat
+ * c column, but there is also a SC D column. They should always show up in the
+ * qualifications column instead of CAT"). Not at the front is what keeps ADD
+ * ORDER intact: front-insertion would make each new group outrank the one added
+ * before it, so adding SC Day then SC Night would silently demote SC Day.
+ *
+ * This sets the priority ONCE, at the moment of adding; the admin drags it
+ * anywhere afterwards and nothing here touches it again. Removing a group and
+ * adding it back is therefore not a no-op — it promotes it, which is the only
+ * reading of "add" that does anything at all.
+ */
+export function addGroup(d: GroupDef): void {
+  if (state.role !== 'admin') return
+  const defs = pruneGroups([...groupsInOrder(), d], state.qualCatalog)
+  if (!defs.some(x => x.id === d.id)) return    // a qual key the catalogue lost
+  const byId = new Map(defs.map(x => [x.id, x]))
+  const rest = groupPriorityIds().filter(id => id !== d.id)
+  const at = rest.findIndex(id => byId.get(id)?.kind === 'cat')
+  const priority = at < 0 ? [...rest, d.id] : [...rest.slice(0, at), d.id, ...rest.slice(at)]
+  state = withCurrent({ ...state, groupDefs: defs, groupPriority: priority })
+  persist()
+  notify()
+}
+
 /** Move one group before another in the DISPLAY order (the drag). Mirrors
  *  `moveRosterRow` / `moveManningRowTo`, guard included. ADMIN-gated. */
 export function moveGroupTo(id: string, beforeId: string | null): void {
