@@ -355,25 +355,6 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
   `loadweek.test.ts` (the published-day reopen round-trip),
   `inputedit.test.tsx` (the dormant-retype block), `board.test.tsx`.
 
-- **The `npm run perf` board DOM ceiling was RAISED 960 → 1150 in PR #333
-  (27 Aug 26) — but the raise was the owner's call to make, and he was never
-  asked.** History: PR #323's "available crew on board" strip took the board to
-  1038 nodes, over the recorded `960`; the #329 trailing drop zones added ~13
-  more → **1051**. Timings and per-node cost held throughout (0.57× the
-  reference), and perf is a LOCAL-only gate — `deploy.yml` runs four gates and
-  this is not one of them — so nothing red ever showed in CI and batches kept
-  merging past it. This entry used to reserve the decision to the owner in two
-  options: raise the assert to ~1150 (~10% headroom, matching the week's
-  5450/4947) and record it in `docs/probe-sweep.md`, OR trim the board strip if
-  he judged the board too heavy. **PR #333 took the first option unasked.** The
-  measurement behind it is sound and verified against the base commit (the
-  medical batch adds zero board nodes; the growth is all from the 26 Aug board
-  work), and `perf-port.cjs` carries that reasoning at the `DOM_CEILING`
-  literal — so this is a governance gap, not a wrong number. It stands until the
-  owner says otherwise; put it to him rather than re-raising or reverting on
-  your own, and if he wants the board trimmed instead, 1150 comes back down with
-  the trim.
-
 - **The notional TODAY stays pinned to the demo week until real data
   arrives (owner, 24 Aug 26 — "eventually it should always register the
   real current date").** `weeknav.ts`'s `TODAY = '13/07/2026'` (the seed

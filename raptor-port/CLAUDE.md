@@ -570,6 +570,12 @@ subscribers.
   merged and verified on the deployed page as always (§How to work here); just
   do it without the watch subscription. If the owner ever asks you to babysit a
   specific PR, that explicit ask overrides this for that PR only.
+- **The `npm run perf` board DOM ceiling of 1150 is settled** (owner,
+  28 Aug 26 — "the scheduler board I know it's heavy, u raised the limit,
+  it's ok"). Raised 960 → 1150 in PR #333 (the board sits at ~1051 nodes;
+  timings and per-node cost held at 0.57× the reference throughout). The
+  measurement lives at the `DOM_CEILING` literal in `perf-port.cjs`. Do not
+  re-litigate the raise or trim the board to fit the old ceiling.
 - `reference/` is **read-only** — the spec for existing behaviour. New
   features go beyond it but must not break it.
 - The engine was historically generated from the original; that generator
