@@ -549,3 +549,18 @@ hunts what was not.
 the failure space; a reviewer instructed to refute, working from the diff
 plus the system's known drift seams, samples outside that model — which is
 exactly where the surviving bugs live.
+
+### Observation 37: Store the decision, derive the amount — a pattern for user-acknowledged derived credit
+
+**Status:** OPEN
+**Date:** 2026-08-28
+**Session context:** RAPTOR OIL crediting rework (FS/HS→FO/HO, uniform hours rule, input ask-flow)
+**Skill:** New skill candidate: none — cross-cutting principle
+**Type:** open-source
+**Phase/Area:** feature design (Phase C/D split)
+
+**Issue:** The owner's spec said "store whether the input deserves HO or FO". Storing the AMOUNT would have gone stale on every time edit and forked from the pooled-hours credit. The design that held: store only the user's per-day yes/no (with the shown amount as a staleness fingerprint), and always DERIVE the credited amount live from current data at credit time, re-checking applicability (coverage + non-working) live too — so moved inputs and revoked holidays self-heal with zero invalidation code.
+
+**Suggested improvement:** When a spec asks to persist a user-approved value computed from mutable data, persist the APPROVAL (plus a fingerprint of what was shown, to know when to re-ask) and re-derive the value at read time. Pair it with derived, self-healing pending-predicates (scan-based, like this repo's bugAlert) instead of stored notification flags.
+
+**Principle:** Consent is data; amounts are derivations. Store what only the user can produce, derive everything else at read time, and staleness handling collapses into one re-ask check.
