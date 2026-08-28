@@ -16,6 +16,28 @@ mean two different things, or a choice would materially change the result,
 ask follow-up questions until it wouldn't. Small, unambiguous asks clear
 that bar on their own — don't manufacture questions for them.
 
+**STANDING ORDER — weigh the whole ecosystem, and surface what you find
+(owner, 28 Aug 26 — "Whenever u create or edit or change a feature. Make sure
+u think how does it affect the whole ecosystem in the app, other areas.
+Potential bugs u may face. Questions u may face. Ask me").** On EVERY feature
+you create, edit or change — before building and again before calling it done
+— reason out loud about how it lands across the WHOLE app, not just the file
+in front of you: which other surfaces read the same data or rule, what could
+break downstream, the drift-seams it might open (§Architecture, the
+robustness doctrine below), the edge cases and user errors it invites.
+`docs/feature-impact.md` is the map for that walk. Then TELL the owner what
+you found in your report — the ripple effects, the risks you are carrying,
+the assumptions you made — and ASK him wherever the change raises a genuine
+question that is his to answer (a product-direction fork, a behaviour that
+could go two ways, a trade-off he'd want a say in). This does NOT reopen the
+7 Aug rule that pure implementation choices stay yours — keep deciding the
+technical *how* yourself, and don't manufacture questions. What it adds is
+that cross-feature impact, real risks and product-affecting ambiguities are
+RAISED, never quietly absorbed: a concern he can wave off costs a sentence, a
+silent one costs a bug. When in doubt whether something is "implementation"
+(decide) or "his call" (ask), lean toward a one-line heads-up that states
+your call and invites a correction.
+
 **`/brainstorming` overrides this section, and usually should not.** That
 skill mandates a committed spec document and then a task-by-task
 implementation plan — the HEAVY path. For a list of concrete asks ("rename
