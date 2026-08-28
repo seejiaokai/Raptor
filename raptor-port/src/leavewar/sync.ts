@@ -655,6 +655,30 @@ export function oilAskPlan(row: { person?: any; date: string; endDate?: string; 
   return out
 }
 
+/* THE BELL'S PENDING SCAN (owner, 28 Aug 26 — "it will notify the applicable
+   user based on the notification tab to review if the input deserves an
+   applicable HO or FO"): every duty-&-commitments input of this person with
+   at least one applicable (non-working) covered day the owner has NOT
+   answered yet — a missing key in row.oil; an explicit 0 IS an answer. A
+   DERIVED predicate on purpose (the bugAlert shape): it self-heals — answer
+   the days, or move the input, and the row stops matching with no clearing
+   discipline — and it recomputes the moment Leave War marks a PH after the
+   fact, which is the whole point. Dormant rows ask nothing: the scheduler
+   removed that commitment. Returns the first pending day per row so the
+   bell's tap can land the editor on the exact question (iid, never the row
+   object — undo re-mints rows). */
+export function oilPendingFor(personId: any): { iid: string; iso: string }[] {
+  const out: { iid: string; iso: string }[] = []
+  if (!personId) return out
+  for (const row of INPUTS) {
+    if (row.person !== personId || !oilAsks(row.type) || row.acc === 'r') continue
+    const answered = (row.oil ?? {}) as Record<string, number>
+    const hit = oilAskPlan(row).find(p => answered[p.iso] == null)
+    if (hit && row.iid) out.push({ iid: row.iid, iso: hit.iso })
+  }
+  return out
+}
+
 /* Everyone an ALL / ALL AVAIL puck stands for on a non-working day's event
    (owner, 28 Aug 26 — "it will count everyone who is available for that
    event"): AIRCREW MINUS SANS, the owner's pick — no ground crew Personnel,
@@ -998,5 +1022,25 @@ export function wireLeaveWarSync(): void {
        "off day", a war created over the loaded week — so a Leave War change
        can change what a published Saturday earns. */
     runOilPass()
+    /* And the same change can create a PENDING OIL QUESTION out of thin air
+       (owner, 28 Aug 26): mark a PH after an input already covers that day
+       and the applicable user must be told. Nothing on the RAPTOR side
+       repaints on a Leave War write, so the bell would stay dark until an
+       unrelated schedule edit happened along — the confirmed missing-notify
+       gap. A raptor notify is fired ONLY when the pending picture actually
+       changed (a signature over every person's pending iid|iso pairs, the
+       reprojectRoster change-guard idiom), so this lane's own echo finds an
+       unchanged signature and the loop terminates. */
+    const sig = INPUTS
+      .filter((r: any) => oilAsks(r.type) && r.acc !== 'r' && r.iid)
+      .flatMap((r: any) => {
+        const answered = (r.oil ?? {}) as Record<string, number>
+        return oilAskPlan(r).filter(p => answered[p.iso] == null).map(p => `${r.iid}|${p.iso}`)
+      })
+      .sort().join(';')
+    if (sig !== lastPendingSig) { lastPendingSig = sig; raptorNotify() }
   })
 }
+/* the last pending-OIL signature the lw lane saw — module state, compared
+   before the cross-lane notify above so it can never ping-pong */
+let lastPendingSig: string | null = null

@@ -12,9 +12,10 @@ import { act } from 'react'
 import { createRoot } from 'react-dom/client'
 import { App } from './App'
 import { initStore, setSession, notify, writeInputsBatch, HIST } from '../state/store'
-import { INPUTS, oilAsks } from '../engine/inputs'
+import { INPUTS, oilAsks, inpId } from '../engine/inputs'
 import { HOOKS } from '../engine/hooks'
 import { setInpEdit, INPEDIT } from './pops'
+import { CURPAGE } from '../state/view'
 import { commitInputEdit, draftOf, oilGate } from './inputedit'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
@@ -155,5 +156,30 @@ describe('the answers belong to the acknowledged commitment', () => {
     const d2 = draftOf(r); d2.eTime = '1800'                 // 10h → FO now
     const g: any = oilGate(d2, r)
     expect(g.kind).toBe('ask')
+  })
+})
+
+describe('the bell (owner, 28 Aug 26 — the retro notification)', () => {
+  it('lights for a pending OIL question, and the tap lands the editor + sheet on the exact input', async () => {
+    const row: any = { person: 'bane', type: 'Duty', date: 'Jul 18', allday: true, s: 0, e: 1439, remarks: 'oiltest', mod: 'now', yr: 2026 }
+    inpId(row)
+    await act(async () => { writeInputsBatch(() => { INPUTS.unshift(row) }) })
+    expect($('#notifyBell')!.className, 'the bell glows for the unanswered question').toContain('on')
+    await click($('#notifyBell'))
+    expect(CURPAGE, 'the tap lands on the Inputs page').toBe('inputs')
+    expect(INPEDIT, 'the editor opened on the exact input').toBe(row)
+    expect($('[data-testid="oilconf"]'), 'the OIL sheet is already up').toBeTruthy()
+    /* answering puts the bell out — the predicate is derived, nothing to clear */
+    await click($('[data-testid="oil-yes"]'))
+    await click($('[data-testid="oilconf-save"]'))
+    expect(row.oil).toEqual({ '2026-07-18': 1 })
+    expect($('#notifyBell')!.className, 'answered — the bell is dark').not.toContain('on')
+  })
+
+  it('stays dark for someone ELSE\'s pending question — it is the view-as person\'s bell', async () => {
+    const row: any = { person: 'stiff', type: 'Duty', date: 'Jul 18', allday: true, s: 0, e: 1439, remarks: 'oiltest', mod: 'now', yr: 2026 }
+    inpId(row)
+    await act(async () => { writeInputsBatch(() => { INPUTS.unshift(row) }) })
+    expect($('#notifyBell')!.className).not.toContain('on')   // ME is bane
   })
 })

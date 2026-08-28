@@ -25,7 +25,7 @@ import {
   setRole,
 } from './state/store'
 import { memoryBackend } from './state/storage'
-import { getClashes, runInbound, runOilPass, runOutbound } from './sync'
+import { getClashes, oilPendingFor, runInbound, runOilPass, runOutbound } from './sync'
 
 const ISNAP = JSON.stringify(INPUTS)
 const DSNAP = JSON.stringify(DAYS)
@@ -296,5 +296,31 @@ describe('the ALL / ALL AVAIL expansion on a published non-working day', () => {
     const sanId = Object.keys(PEOPLE).find((id: any) => (PEOPLE as any)[id].san && !(PEOPLE as any)[id].archived)
     expect(sanId, 'the roster holds a SANS body').toBeTruthy()
     expect(cellOf(sanId as string, SAT)).toBeUndefined() // SANS — excluded from ALL events
+  })
+})
+
+describe('oilPendingFor — the bell\'s derived scan', () => {
+  const plant = (r: any) => {
+    const row: any = { allday: true, s: 0, e: 1439, remarks: '', mod: 'now', yr: 2026, ...r }
+    row.iid = row.iid || 'oiltest-' + Math.random().toString(36).slice(2)
+    INPUTS.unshift(row)
+    return row
+  }
+
+  it('a weekday input asks nothing — until Leave War marks the day a holiday after the fact', () => {
+    const r = plant({ person: 'bane', type: 'Duty', date: 'Jul 15' })
+    expect(oilPendingFor('bane')).toEqual([])
+    setRole('admin')
+    setDayEvent('2026-07-15', 0, 'PH')                  // the retro case — the whole feature
+    expect(oilPendingFor('bane')).toEqual([{ iid: r.iid, iso: '2026-07-15' }])
+    r.oil = { '2026-07-15': 0 }                          // an explicit No IS an answer
+    expect(oilPendingFor('bane')).toEqual([])
+  })
+
+  it('dormant rows and other people never ring', () => {
+    plant({ person: 'bane', type: 'Duty', date: 'Jul 18', acc: 'r' })
+    plant({ person: 'stiff', type: 'Duty', date: 'Jul 18' })
+    expect(oilPendingFor('bane')).toEqual([])
+    expect(oilPendingFor('stiff').length).toBe(1)
   })
 })
