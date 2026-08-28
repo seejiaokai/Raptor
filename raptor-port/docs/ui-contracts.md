@@ -3965,28 +3965,36 @@ everything typed. Escape inside `InputEditor` peels one layer: the sheet
 first, the dialog second.
 
 **The medical clash sheet** (`ui/MedClashConfirm.tsx`, owner, 27 Aug 26)
-is its sibling, same recipe and layer (`.upconf-*` classes, `.medclash-row`
-wraps on a phone). It opens when a saved medical entry overlaps a
-different-type one, from the same three form paths. Each clash renders one
-boxed line — "ATT C Jul 10 – Jul 15 · both cover **Jul 13 – Jul 15**" —
-with two choice buttons: "<new type> takes them" / "<old type> keeps them".
-Both light accent when picked (they are peers, neither is destructive); no
-resting state, Save disabled until every clash is answered, footer hint
-"Choose for each clash above". A body note says the outcome plainly: every
-day holds one status, and the new entry is filed around whatever is kept.
+is its sibling, same recipe and layer (`.upconf-*` classes). It opens when a
+saved medical entry overlaps a different-type one, from the same three form
+paths. **Its rows are FLAT, not boxed** (owner, 28 Aug 26 — "remove the box
+around the buttons. It looks unclean"): the `.medclash-row`/`.medclash-tail`
+overrides strip the shared card fill/border, each clash a plain wrapping line
+— "ATT C Jul 10 – Jul 15 · both cover **Jul 13 – Jul 15**" — with its pills
+right-aligned (the upchit sheet keeps its boxes). The two choice buttons read
+"**<new type> replaces**" / "**Keep <old type> till <its end date>**" (owner's
+wording, 28 Aug 26; plain "Keep <type>" for a single-day row). Both light
+accent when picked (peers, neither destructive); no resting state, Save
+disabled until every clash is answered, footer hint "Choose for each clash
+above" — EXCEPT the forced case: **a clash whose row covers the WHOLE new
+entry draws no keep button** (owner, 28 Aug 26 — keeping it whole would
+swallow the entry, the old "nothing left to file" dead end), just the pre-lit
+"replaces" pill, and that clash never blocks Save — the leftover row below is
+its real decision. A body note says the outcome plainly: every day holds one
+status, and the new entry is filed around whatever is kept.
 Cancel/Escape/scrim close only the sheet.
 
-**The leftover row** (owner, 28 Aug 26). When "<new> takes them" is chosen on a
-clash whose existing row runs PAST the new entry's end (`medTailBeyond`), a
-second line hangs off that clash — indented, quieter panel, an accent left
-spine (`.medclash-tail`) so it reads as a follow-up, not a new clash: "Left
-over after it: **ATT C Jul 14 – Jul 15** — will be removed" with **Remove those
-days** / **Keep them**. Unlike the who-holds-them choice, this one has a DEFAULT
-— Remove, shown in the red `.on-rem` seg, the note flipping to "kept on file"
-when Keep is picked — so a straight Save cuts those days, plainly and never
-silently. It appears only while "<new> takes them" is the live choice for that
-clash (switch to "<old> keeps them" and it disappears, the old status staying
-whole). Save is NOT gated on it; the answer rides `keepTail` into the write.
+**The leftover row** (owner, 28 Aug 26). When "<new> replaces" is the live
+choice (picked, or forced) on a clash whose existing row runs PAST the new
+entry's end (`medTailBeyond`), a second line hangs off that clash — indented
+and a step quieter (`.medclash-tail`) so it reads as a follow-up, not a new
+clash: "Left over after it: **ATT C Jul 14 – Jul 15** — will be removed" with
+**Remove those days** / **Keep them**. Unlike the who-holds-them choice, this
+one has a DEFAULT — Remove, shown in the red `.on-rem` seg, the note flipping
+to "kept on file" when Keep is picked — so a straight Save cuts those days,
+plainly and never silently. Where the keep button exists, switching to it
+takes the leftover row away (the old status stays whole). Save is NOT gated
+on it; the answer rides `keepTail` into the write.
 
 **The upload control** (`DocField` in `ui/inputedit.tsx`: `UploadIcon`
 button + hidden file input + filename chip, `.docbtn.has` turning the ok

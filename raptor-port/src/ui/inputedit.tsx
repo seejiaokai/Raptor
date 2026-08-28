@@ -1430,7 +1430,7 @@ export function InputEditor() {
       {/* the medical clash sheet, same layer and same contract — Save
           resolves the choices, Cancel returns to the untouched form */}
       {medConf && <MedClashConfirm who={medConf.who} newType={medConf.newType} span={medConf.span}
-        clashes={medConf.clashes} bOrd={medConf.b}
+        clashes={medConf.clashes} aOrd={medConf.a} bOrd={medConf.b}
         onCancel={() => setMedConf(null)}
         onSave={(choices, keepTail) => { setMedConf(null); doMedSave(choices, keepTail) }} />}
     </div>

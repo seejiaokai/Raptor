@@ -8,6 +8,16 @@
    one status per person per day and nobody chose it by accident. Cancel writes
    nothing.
 
+   THE ONE EXCEPTION to "no default" (owner, 28 Aug 26 — "no ATT C keeps them
+   button"): a clash whose row covers the WHOLE new entry is FORCED to 'new'.
+   Keeping that status whole would swallow the new entry completely — the old
+   "nothing left to file" dead end, reached only after the filer had already
+   picked the unworkable answer. A choice with one possible answer is not a
+   choice, so the sheet shows just the pre-lit "<new> replaces" pill and the
+   real decision moves to the leftover Remove/Keep below it. Multi-clash
+   combinations can still jointly swallow the entry, so the commit-side
+   refusal stays as the backstop.
+
    THE LEFTOVER (owner, 28 Aug 26). When the new entry takes the shared days of
    a status that ran PAST it — ATT C 10–15, a new ATT B 12–13 → an ATT C tail
    14–15 — that tail used to be kept silently. Now it is a second, explicit
@@ -26,11 +36,12 @@
 import { useEffect, useState } from 'react'
 import { ordLabel, medTailBeyond } from '../engine/medical'
 
-export function MedClashConfirm({ who, newType, span, clashes, bOrd, onSave, onCancel }: {
+export function MedClashConfirm({ who, newType, span, clashes, aOrd, bOrd, onSave, onCancel }: {
   who: string
   newType: string
   span: string                       // the new entry's dates, as typed
   clashes: any[]                     // {row, loOrd, hiOrd} from medClashes
+  aOrd: any                          // the new entry's START ordinal — with bOrd, decides when keeping is even possible
   bOrd: any                          // the new entry's END ordinal — the leftover starts the day after
   onSave: (choices: string[], keepTail: any[]) => void
   onCancel: () => void
@@ -39,11 +50,19 @@ export function MedClashConfirm({ who, newType, span, clashes, bOrd, onSave, onC
   const [choice, setChoice] = useState<Record<number, 'new' | 'old'>>({})
   /* keyed by clash index — the leftover's Remove/Keep, DEFAULT 'remove' (unset reads as remove) */
   const [tail, setTail] = useState<Record<number, 'remove' | 'keep'>>({})
-  const ready = clashes.every((_: any, i: number) => !!choice[i])
+  /* the old row covers the whole new entry — its overlap window IS the entry.
+     Keeping it whole would leave nothing to file, so the choice is forced to
+     'new' and the keep button is not offered (the header comment's exception) */
+  const forced = (c: any) => c.loOrd === aOrd && c.hiOrd === bOrd
+  const choiceOf = (i: number) => forced(clashes[i]) ? 'new' : choice[i]
+  const ready = clashes.every((_: any, i: number) => !!choiceOf(i))
   const rowSpan = (r: any) => r.date + (r.endDate ? ' – ' + r.endDate : '')
   const win = (c: any) => ordLabel(c.loOrd, c.row.yr) + (c.hiOrd > c.loOrd ? ' – ' + ordLabel(c.hiOrd, c.row.yr) : '')
+  /* the keep button's label, the owner's wording — the date names what "keep"
+     leaves standing, since the kept status always survives to its own end */
+  const keepLabel = (r: any) => 'Keep ' + r.type + (r.endDate ? ' till ' + r.endDate : '')
   /* the leftover span past the new entry, only when the new entry takes the days */
-  const leftover = (c: any, i: number) => choice[i] === 'new' ? medTailBeyond(c.row, bOrd) : null
+  const leftover = (c: any, i: number) => choiceOf(i) === 'new' ? medTailBeyond(c.row, bOrd) : null
   const tailLabel = (c: any, tl: any) => ordLabel(tl.startOrd, c.row.yr) + (tl.endOrd > tl.startOrd ? ' – ' + ordLabel(tl.endOrd, c.row.yr) : '')
   /* its own Escape = cancel THIS sheet only; a parent dialog's handler
      branches on the sheet being open (the upchit sheet's idiom) */
@@ -53,7 +72,7 @@ export function MedClashConfirm({ who, newType, span, clashes, bOrd, onSave, onC
     return () => document.removeEventListener('keydown', esc, true)
   })
   const save = () => onSave(
-    clashes.map((_: any, i: number) => choice[i]),
+    clashes.map((_: any, i: number) => choiceOf(i)),
     /* the rows the filer chose to KEEP the tail for — everything else has its
        leftover removed (the default), so keepTail carries only the exceptions */
     clashes.filter((c: any, i: number) => leftover(c, i) && (tail[i] || 'remove') === 'keep').map((c: any) => c.row))
@@ -73,10 +92,11 @@ export function MedClashConfirm({ who, newType, span, clashes, bOrd, onSave, onC
                 <div className="upconf-left medclash-row" data-testid={`medclash-${i}`}>
                   <span>{c.row.type} {rowSpan(c.row)} · both cover <b>{win(c)}</b></span>
                   <span className="seg">
-                    <button className={'upconf-seg' + (choice[i] === 'new' ? ' on-keep' : '')}
-                      onClick={() => setChoice(ch => ({ ...ch, [i]: 'new' }))}>{newType} takes them</button>
-                    <button className={'upconf-seg' + (choice[i] === 'old' ? ' on-keep' : '')}
-                      onClick={() => setChoice(ch => ({ ...ch, [i]: 'old' }))}>{c.row.type} keeps them</button>
+                    <button className={'upconf-seg' + (choiceOf(i) === 'new' ? ' on-keep' : '')}
+                      onClick={() => setChoice(ch => ({ ...ch, [i]: 'new' }))}>{newType} replaces</button>
+                    {!forced(c) &&
+                      <button className={'upconf-seg' + (choiceOf(i) === 'old' ? ' on-keep' : '')}
+                        onClick={() => setChoice(ch => ({ ...ch, [i]: 'old' }))}>{keepLabel(c.row)}</button>}
                   </span>
                 </div>
                 {tl && (

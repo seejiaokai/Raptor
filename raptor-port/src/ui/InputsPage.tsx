@@ -443,7 +443,7 @@ export function InputsPage() {
           who: PEOPLE[filedFor()] ? PEOPLE[filedFor()].cs : filedFor(),
           newType: type,
           span: date + (endDate ? ' – ' + endDate : ''),
-          clashes, b: bOrd,
+          clashes, a: aOrd, b: bOrd,
           commit: (choices: string[], keepTail: any[]) => {
             const segs = medKeptSegments(aOrd, bOrd, clashes, choices)
             if (!segs.length) return          // toasted; nothing written
@@ -525,7 +525,7 @@ export function InputsPage() {
           who: PEOPLE[draft.person] ? PEOPLE[draft.person].cs : draft.person,
           newType: draft.type,
           span: fmt(draft.start) + (draft.end && draft.end !== draft.start ? ' – ' + fmt(draft.end) : ''),
-          clashes, b: bOrd,
+          clashes, a: aOrd, b: bOrd,
           commit: (choices: string[], keepTail: any[]) => {
             const segs = medKeptSegments(aOrd, bOrd, clashes, choices)
             if (!segs.length) return
@@ -955,7 +955,7 @@ export function InputsPage() {
         onSave={removals => { const c = upConf.commit; setUpConf(null); c(removals) }} />}
       {/* the medical clash sheet — same contract as the upchit one */}
       {medConf && <MedClashConfirm who={medConf.who} newType={medConf.newType} span={medConf.span}
-        clashes={medConf.clashes} bOrd={medConf.b}
+        clashes={medConf.clashes} aOrd={medConf.a} bOrd={medConf.b}
         onCancel={() => setMedConf(null)}
         onSave={(choices, keepTail) => { const c = medConf.commit; setMedConf(null); c(choices, keepTail) }} />}
     </>

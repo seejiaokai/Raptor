@@ -1313,7 +1313,7 @@ the input that caused them — one undo step):
 - A **different-type medical overlap is ASKED ABOUT, never resolved
   silently** (owner, 27 Aug 26 — the clash sheet, below). The programmatic
   default — what `newMedTrimPlan` still does when a caller applies it, and
-  what "the new entry takes them" chooses — is that the new entry wins its
+  what the sheet's "<new type> replaces" chooses — is that the new entry wins its
   days and ONLY its days (27 Aug 26 overnight pass): the older row is cut to
   end the day before the new one starts (deleted when nothing remains before
   it), and when it also ran PAST the new one's end the surviving tail
@@ -1365,16 +1365,22 @@ gesture on the upchit itself; leftovers simply stay.
 upchit sheet's sibling, `ui/MedClashConfirm.tsx`). Saving a medical entry
 that overlaps a DIFFERENT-type one — new or edited, from any of the same
 three form paths — opens a sheet listing every clash (`medClashes`) with a
-forced per-clash choice, no default: the new entry **takes** the shared days
-(the old row is trimmed/split exactly as the default rule above), or the
-existing status **keeps** them — then the new entry is filed AROUND it: its
+forced per-clash choice, no default: the new entry **replaces** the shared
+days (the old row is trimmed/split exactly as the default rule above), or the
+existing status is **kept till its end** — then the new entry is filed AROUND
+it: its
 kept day segments come from `subtractSpans` via `medKeptSegments`
 (`ui/inputedit.tsx`), the first segment is the row saved, later segments are
 minted as sibling rows (`mintMedSegments`, same document — the applyMedPlan
 tail idiom), each trimmed only against rows the filer chose to overwrite. A
 kept row is never trimmed BY CONSTRUCTION — the segments cannot touch it.
 Choices that leave the new entry no days at all are refused ("nothing left
-to file") and nothing is written. **The LEFTOVER** (owner, 28 Aug 26): when the
+to file") and nothing is written — a backstop only, since 28 Aug 26 (owner —
+"no ATT C keeps them button"): a clash whose row COVERS the whole new entry
+is FORCED to 'new' by the sheet itself, its keep option not offered, so the
+single-clash route to that refusal no longer exists (only a multi-clash
+combination can still jointly swallow the entry). **The LEFTOVER** (owner,
+28 Aug 26): when the
 new entry TAKES the days of a status that ran past it — ATT C 10–15, a new
 ATT B 12–13 → an ATT C tail 14–15 — the sheet asks a second question under that
 clash, **Remove those days (default) or Keep them**. This is the ONE choice on
