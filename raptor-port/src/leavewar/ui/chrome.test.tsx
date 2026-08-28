@@ -86,6 +86,29 @@ describe('the colour/mark legend', () => {
     expect(leg.textContent).toContain('Moved here from another day')
     expect(leg.querySelector('.leg-sw.moved')).toBeTruthy()
   })
+
+  // Owner, 28 Aug 26: the legend must also explain the LETTERS — above all
+  // FS/HS, which appear only on the war grid and are never typed on Inputs.
+  it('explains the grid codes, FS/HS first and marked as war-only', () => {
+    render(<StageBar />)
+    fireEvent.click(screen.getByTestId('legend-open'))
+    const leg = screen.getByTestId('legend')
+    const text = leg.textContent || ''
+    // the two codes the owner named — with their meanings, not just the letters
+    expect(text).toContain('full day SC duty'.replace(/^./, c => c.toUpperCase()))
+    expect(text).toContain('half day SC duty'.replace(/^./, c => c.toUpperCase()))
+    expect(text).toContain('off in lieu')
+    // flagged as the group that lives only here, and given the grid's duty colour
+    expect(text).toContain('not on the Inputs page')
+    expect(leg.querySelector('.leg-sec-here')).toBeTruthy()
+    const fs = Array.from(leg.querySelectorAll('.leg-sw')).find(s => s.textContent === 'FS')
+    expect(fs, 'FS has a swatch').toBeTruthy()
+    expect(fs!.classList.contains('sc'), 'FS wears the grid duty colour').toBe(true)
+    // the medical shorthand the grid shows (B / C) and the leave codes are keyed too
+    expect(Array.from(leg.querySelectorAll('.leg-sw')).some(s => s.textContent === 'B')).toBe(true)
+    expect(Array.from(leg.querySelectorAll('.leg-sw')).some(s => s.textContent === 'LL')).toBe(true)
+    expect(text).toContain('Local leave')
+  })
 })
 
 describe('the leave war picker', () => {

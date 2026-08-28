@@ -563,5 +563,13 @@
 .leg-sw.ref  { background: rgba(240, 85, 95, .16); color: #FFA6AD; box-shadow: inset 0 0 0 1px rgba(240, 85, 95, .5); }
 .leg-sw.raptor { border-left: 2px solid var(--accent); padding-left: 4px; }
 .leg-sw.moved  { border-left: 2px dotted #F2C879; padding-left: 4px; }
+/* the code-glossary swatches take the grid's OWN duty / marker colours
+   (mirrors matrix.css `.c.sc` / `.c.info`), so the legend can't drift from
+   the cells and doubles as a key to those two colours */
+.leg-sw.sc   { background: rgba(231, 193, 58, .16); color: #F0DC8E; box-shadow: inset 0 0 0 1px rgba(231, 193, 58, .5); }
+.leg-sw.info { color: var(--ink-3); }
+/* the FS/HS heading — the codes that live ONLY here — reads in the accent so
+   the "not on Inputs" group stands out from the mirror-of-Inputs groups below */
+.leg-sec-here { color: var(--accent); }
 
 }

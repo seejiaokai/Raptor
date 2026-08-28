@@ -4161,7 +4161,21 @@ BidPicker's look and vocabulary, not instead of it.
   columns frozen. Desktop keeps its own real-`sticky` frozen-left columns
   untouched; only the header path widened.
 - **The colour/mark pop-out is labelled "Legend"** (owner, 27 Aug 26 — renamed
-  from "Key"; `Chrome.tsx`, testid `legend-open` unchanged).
+  from "Key"; `Chrome.tsx`, testid `legend-open` unchanged). **It also keys the
+  LETTERS, not just the colours** (owner, 28 Aug 26 — "include what FS HS etc
+  mean … things that reflect only on the leave war. Because it's not stated on
+  inputs"). Below the state/edge/asterisk sections, `Chrome.tsx` renders
+  `CODE_GLOSSARY` from `engine/codes.ts` — a plain-English key to every grid
+  code, grouped: **"Shown here only — not on the Inputs page"** (FS = full day
+  SC duty, HS = half day, each earning off-in-lieu, credited from a published
+  weekend/PH duty — the only codes never typed on Inputs, so the accent-tinted
+  `.leg-sec-here` heading marks them out), then Medical (the grid's `B`/`C`
+  shorthand + HL/OML), Leave (LL…OFF) and Other duty (CSE/OD). The glossary is
+  built straight from the catalogue's own label tables (one source, no drift),
+  and each swatch takes the grid's own colour by the SAME rule the cell does
+  (`isDuty` → `sc`, non-bid marker → `info`, leave → plain — mirrored into
+  `.leg-sw.sc`/`.leg-sw.info`), so it doubles as a key to the two colours the
+  state section doesn't cover.
 - **The word "Acknowledge" became "Pending"** on the decision controls
   (single and batch) — the same word the colour legend already gives the
   purple state. The stored token stays `'acknowledged'`; only the label moved.

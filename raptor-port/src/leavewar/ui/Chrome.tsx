@@ -4,7 +4,8 @@
 // the engine does not model. See CLAUDE-facing restyle brief for why.
 
 import { useLayoutEffect, useRef, useState, useSyncExternalStore } from 'react'
-import { biddingClosed, canReopen, evaluatePeriod, nextStage, previousStage, stageLabel } from '../engine'
+import { biddingClosed, canReopen, evaluatePeriod, isBiddable, isDuty, nextStage, previousStage, stageLabel } from '../engine'
+import { CODE_GLOSSARY } from '../engine/codes'
 import { getClashes, getClashVersion, subscribeClashes } from '../sync'
 import {
   advanceStage,
@@ -391,6 +392,24 @@ export function StageBar() {
               <div className="leg-sec">The <b>*</b> — a half day</div>
               <div className="leg-row"><span className="leg-sw plain">*LL</span><span className="leg-t">Morning (before the code)</span></div>
               <div className="leg-row"><span className="leg-sw plain">LL*</span><span className="leg-t">Afternoon (after the code)</span></div>
+              {/* What the LETTERS mean (owner, 28 Aug 26). The grid shows codes
+                  the Inputs page never explains — FS/HS above all, which are not
+                  even typed there. Each swatch takes the grid's OWN colour by
+                  the same rule the cell does (duty → sc, non-bid marker → info,
+                  leave → plain), so it doubles as a key to those two colours the
+                  sections above don't cover. Data is CODE_GLOSSARY in codes.ts,
+                  built from the catalogue — one source, no drift. */}
+              {CODE_GLOSSARY.map(g => (
+                <div key={g.group}>
+                  <div className={'leg-sec' + (g.onlyHere ? ' leg-sec-here' : '')}>{g.group}</div>
+                  {g.rows.map(r => (
+                    <div className="leg-row" key={r.show}>
+                      <span className={'leg-sw ' + (isDuty(r.show) ? 'sc' : !isBiddable(r.show) ? 'info' : 'plain')}>{r.show}</span>
+                      <span className="leg-t">{r.mean}</span>
+                    </div>
+                  ))}
+                </div>
+              ))}
             </div>
           </div>
         </>
