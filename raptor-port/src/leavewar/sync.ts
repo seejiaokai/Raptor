@@ -22,12 +22,12 @@
 // reaches a fixed point. A SYNCING flag guards re-entrancy on top — every
 // store write notifies subscribers synchronously, and this module is one.
 
-import { INPUTS, DATES, baseYear, dateOrd, inpId, inpWin, isDownchit, isLeave, withRemarksTail } from '../engine/inputs'
+import { INPUTS, DATES, baseYear, dateOrd, inpId, inpWin, isAway, isDownchit, isLeave, oilAsks, withRemarksTail } from '../engine/inputs'
 import { ME } from '../state/auth'
 import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
 import { dayApproved, dayCurVer, daySnapOf } from '../engine/publish'
-import { dayOilCredits, inputOilAmt } from '../engine/oil'
+import { dayOilSpans, inputOilAmt, mergeMin, uniformOil } from '../engine/oil'
 import { validate } from '../engine/validate'
 import { notify as raptorNotify, subscribe as raptorSubscribe, writeInputsBatch } from '../state/store'
 import {
@@ -655,30 +655,97 @@ export function oilAskPlan(row: { person?: any; date: string; endDate?: string; 
   return out
 }
 
-/** The credits a published, non-working day earns right now: person|isoDate
- *  -> FO/HO. Computed from the ISSUED snapshot, not the live day — an issued
- *  day is the squadron's word that the duty stood, so a draft edit after
- *  publish moves nothing until it is published too (the AL/reissue paths),
- *  which is also where reverse-and-replace naturally lives: the snapshot
- *  changes, the diff below follows it. */
+/* Everyone an ALL / ALL AVAIL puck stands for on a non-working day's event
+   (owner, 28 Aug 26 — "it will count everyone who is available for that
+   event"): AIRCREW MINUS SANS, the owner's pick — no ground crew Personnel,
+   no SANS aircrew, never a sentinel or an archived body — minus anyone an
+   away-making input (leave, medical, OD — the palette's own isAway) takes
+   out of the event's window. The war grid needs no separate read: an
+   approved war-side leave exists as an outbound-minted input too, so INPUTS
+   is the one absence record this consults. */
+function availableFor(iso: string, win: [number, number]): string[] {
+  const out: string[] = []
+  const isoOrd = +iso.replace(/-/g, '')
+  for (const id of Object.keys(PEOPLE)) {
+    const p: any = (PEOPLE as any)[id]
+    if (!p || p.special || p.archived || p.pers || p.san) continue
+    const away = INPUTS.some((inp: any) => {
+      if (inp.person !== id || !isAway(inp)) return false
+      const a = dateOrd(inp.date, inp.yr)
+      if (a == null) return false
+      const b = inp.endDate ? dateOrd(inp.endDate, inp.yr) ?? a : a
+      if (isoOrd < a || isoOrd > b) return false
+      const w = inpWin(inp)
+      return !!w && w[0] < win[1] && win[0] < w[1]
+    })
+    if (!away) out.push(id)
+  }
+  return out
+}
+
+/** The credits a non-working day earns right now: person|isoDate -> FO/HO,
+ *  ONE pooled ≤6h/>6h test per person per day across BOTH sources (owner,
+ *  28 Aug 26 — hours SUM, overlapping minutes counted once):
+ *  - the PUBLISHED schedule, from the ISSUED snapshot — an issued day is the
+ *    squadron's word that the work stood, so a draft edit after publish
+ *    moves nothing until it is published too (the AL/reissue paths), which
+ *    is also where reverse-and-replace naturally lives: the snapshot
+ *    changes, the diff below follows it;
+ *  - ACKNOWLEDGED duty-&-commitments inputs (row.oil — the ask-flow's
+ *    answers). Publication does not gate these: the owner's acknowledgment
+ *    is their gate. An answer only counts while its day is still covered by
+ *    the row's dates AND still reads non-working — a moved input or a
+ *    revoked PH leaves the old yes inert, and the reverse sweep collects
+ *    the cell. Nothing acknowledged = nothing credited, structurally. */
 function desiredOilCells(): Map<string, 'FO' | 'HO'> {
-  const out = new Map<string, 'FO' | 'HO'>()
   const { people, wars } = getState()
   const known = new Set(people.map(p => p.id))
+  /* person|iso -> pooled work spans; the union is what faces the threshold */
+  const pool = new Map<string, [number, number][]>()
+  const add = (person: string, iso: string, spans: [number, number][]) => {
+    /* The same unknown-person guard both leave directions carry: a row
+       naming someone the roster does not hold (ground crew, a sentinel)
+       must not become a grid row no matrix draws. */
+    if (!known.has(person) || !spans.length) return
+    const k = `${person}|${iso}`
+    const arr = pool.get(k) ?? []
+    arr.push(...spans)
+    pool.set(k, arr)
+  }
   for (let di = 0; di < DAYS.length; di++) {
     if (!dayApproved(di)) continue
     const iso = labelToISO(DATES[di])
     if (!iso || !warHolding(wars, iso)) continue
     if (!isNonWorkingISO(iso)) continue
     const snap = daySnapOf(di, dayCurVer(di))
-    const credits = dayOilCredits(snap ? snap.d : DAYS[di])
-    for (const [person, amt] of Object.entries(credits)) {
-      /* The same unknown-person guard both leave directions carry: a duty row
-         naming someone the roster does not hold (ground crew, a sentinel)
-         must not become a grid row no matrix draws. */
-      if (!known.has(person)) continue
-      out.set(`${person}|${iso}`, amt === 1 ? 'FO' : 'HO')
+    const spans = dayOilSpans(snap ? snap.d : DAYS[di], { expandAll: win => availableFor(iso, win) })
+    for (const [person, sp] of Object.entries(spans)) add(person, iso, sp)
+  }
+  for (const row of INPUTS) {
+    if (!row.oil || !oilAsks(row.type) || row.acc === 'r') continue
+    const a = dateOrd(row.date, row.yr)
+    if (a == null) continue
+    const b = row.endDate ? dateOrd(row.endDate, row.yr) ?? a : a
+    /* the acknowledged window, one span per answered day: all-day is the
+       whole day, a timed row its rolled length — the same reading the ask's
+       own suggestion (inputOilAmt) priced */
+    const win: [number, number] = row.allday || row.s == null || row.e == null
+      ? [0, 1439]
+      : [row.s, row.e < row.s ? row.e + 1440 : row.e]
+    if (win[1] <= win[0]) continue
+    for (const [iso, amt] of Object.entries(row.oil as Record<string, number>)) {
+      if (!(typeof amt === 'number' && amt > 0)) continue
+      const o = +String(iso).replace(/-/g, '')
+      if (!(o >= a && o <= b)) continue                    // moved dates → stale yes is inert
+      if (!warHolding(wars, iso)) continue
+      if (!isNonWorkingISO(iso)) continue                  // a day that stopped being PH stops crediting
+      add(row.person, iso, [win])
     }
+  }
+  const out = new Map<string, 'FO' | 'HO'>()
+  for (const [k, spans] of pool) {
+    const amt = uniformOil(mergeMin(spans))
+    if (amt) out.set(k, amt === 1 ? 'FO' : 'HO')
   }
   return out
 }

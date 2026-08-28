@@ -18,6 +18,7 @@ import {
   type GroupDef,
   inSquadron,
   isBiddable,
+  isDuty,
   isMedical,
   windowFits,
   canReopen,
@@ -674,20 +675,25 @@ function readStored<T>(key: string, parse: (x: unknown) => T | null): T | null {
 // written by a build that predates bid states. So every stored state is
 // checked against the cell it names and dropped if that cell no longer
 // holds a code that legitimately carries one: a bid code (any record), or a
-// medical cell's raptor OWNERSHIP record — that one is what keeps a synced
-// medical cell read-only and reverse-clearable across a reload, and dropping
-// it here would let the outbound pass re-mint an input for a row Raptor
-// itself wrote (the loop the source model exists to prevent). A BID-sourced
-// record on a medical cell stays drift — `setCell` never writes one — and an
-// 'approved' left on a cell that no longer holds any such code would colour
-// it wrong, so both are still dropped.
+// medical OR OIL-credit cell's raptor OWNERSHIP record — those are what keep
+// a synced cell read-only and reverse-clearable across a reload. Dropping a
+// medical one here would let the outbound pass re-mint an input for a row
+// Raptor itself wrote (the loop the source model exists to prevent);
+// dropping an OIL one (FO/HO — a pre-existing gap, found and closed
+// 28 Aug 26 while this store still boots on the memory backend) would
+// orphan the credit — the reverse sweep clears only source:'raptor' cells,
+// so a no-longer-earned credit would sit uncollectable forever once real
+// persistence (the DB era) makes this load path live. A BID-sourced record
+// on either stays drift — `setCell` never writes one — and an 'approved'
+// left on a cell that no longer holds any such code would colour it wrong,
+// so both are still dropped.
 function reconcile(grid: Grid, states: States): States {
   const out: States = {}
   for (const [id, row] of Object.entries(states)) {
     const kept: Record<string, BidRecord> = {}
     for (const [date, record] of Object.entries(row)) {
       const code = grid[id]?.[date]
-      if (isBiddable(code) || (isMedical(code) && record.source === 'raptor')) kept[date] = record
+      if (isBiddable(code) || ((isMedical(code) || isDuty(code)) && record.source === 'raptor')) kept[date] = record
     }
     if (Object.keys(kept).length > 0) out[id] = kept
   }

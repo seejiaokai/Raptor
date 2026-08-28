@@ -11,6 +11,7 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import { INPUTS } from '../engine/inputs'
 import { DAYS } from '../engine/data'
+import { PEOPLE } from '../engine/people'
 import { SCHED, signOf, setDayApproved } from '../engine/publish'
 import { initStore as raptorInitStore } from '../state/store'
 import { projectPeople } from './state/raptorRoster'
@@ -187,5 +188,113 @@ describe('the ownership partition against wires 1+2', () => {
     runOilPass()
     expect(getClashes().some(c => c.kind === 'duty')).toBe(true)
     expect(getClashes().some(c => !c.kind)).toBe(true)
+  })
+})
+
+/* ---- the input ask-flow's credits (owner, 28 Aug 26) ---------------------
+   An acknowledged duty-&-commitments input joins the SAME desired map the
+   published schedule feeds, so the reverse sweep protects and collects both
+   identically, and one pooled ≤6h/>6h test per person per day decides the
+   cell (hours SUM across sources, overlaps counted once). */
+describe('an acknowledged input credits — the ask-flow half of the wire', () => {
+  const plant = (r: any) => {
+    INPUTS.unshift({ allday: true, s: 0, e: 1439, remarks: '', mod: 'now', yr: 2026, ...r })
+    return INPUTS[0]
+  }
+
+  it('an answered yes mints the cell, raptor-owned, no publish needed', () => {
+    plant({ person: 'bane', type: 'Duty', date: 'Jul 18', oil: { [SAT]: 1 } })
+    runOilPass()
+    expect(cellOf('bane', SAT)).toBe('FO')
+    expect(ownedBy('bane', SAT)).toMatchObject({ state: 'approved', source: 'raptor' })
+  })
+
+  it('unanswered and declined mint nothing — no acknowledgment, no credit', () => {
+    plant({ person: 'bane', type: 'Duty', date: 'Jul 18' })                 // never asked/answered
+    plant({ person: 'stiff', type: 'Duty', date: 'Jul 18', oil: { [SAT]: 0 } })  // explicit No
+    runOilPass()
+    expect(cellOf('bane', SAT)).toBeUndefined()
+    expect(cellOf('stiff', SAT)).toBeUndefined()
+  })
+
+  it('a dormant (scheduler-removed) input mints nothing even when answered', () => {
+    plant({ person: 'bane', type: 'Duty', date: 'Jul 18', acc: 'r', oil: { [SAT]: 1 } })
+    runOilPass()
+    expect(cellOf('bane', SAT)).toBeUndefined()
+  })
+
+  it('deleting the input collects its cell on the next pass', () => {
+    const r = plant({ person: 'bane', type: 'Duty', date: 'Jul 18', oil: { [SAT]: 1 } })
+    runOilPass()
+    expect(cellOf('bane', SAT)).toBe('FO')
+    INPUTS.splice(INPUTS.indexOf(r), 1)
+    runOilPass()
+    expect(cellOf('bane', SAT)).toBeUndefined()
+  })
+
+  it('a stale yes is inert once the dates move off the day — and the cell goes with it', () => {
+    const r = plant({ person: 'bane', type: 'Duty', date: 'Jul 18', oil: { [SAT]: 1 } })
+    runOilPass()
+    expect(cellOf('bane', SAT)).toBe('FO')
+    r.date = 'Jul 20'                                   // moved; the answer's day is uncovered now
+    runOilPass()
+    expect(cellOf('bane', SAT)).toBeUndefined()
+  })
+
+  it('the owner\'s worked example: 4h published duty + 4h acknowledged input pool to FO', () => {
+    DAYS[5].dutywaves[0].rows[0].str = '0800'
+    DAYS[5].dutywaves[0].rows[0].end = '1200'           // plasma: 4h published — HO alone
+    publish(5)
+    plant({ person: 'plasma', type: 'Training', date: 'Jul 18', allday: false, s: 13 * 60, e: 17 * 60, oil: { [SAT]: 0.5 } })
+    runOilPass()
+    expect(cellOf('plasma', SAT)).toBe('FO')            // 4h + 4h pooled = 8h
+  })
+
+  it('two answered inputs on one day pool as a UNION — overlap never pays twice', () => {
+    plant({ person: 'bane', type: 'Duty', date: 'Jul 18', allday: false, s: 8 * 60, e: 12 * 60, oil: { [SAT]: 0.5 } })
+    plant({ person: 'bane', type: 'Meeting', date: 'Jul 18', allday: false, s: 10 * 60, e: 14 * 60, oil: { [SAT]: 0.5 } })
+    runOilPass()
+    expect(cellOf('bane', SAT)).toBe('HO')              // union 0800–1400 = 6h exactly — still a half
+  })
+
+  it('a PH revoked after the answer stops the credit — the yes stays, inert', () => {
+    setRole('admin')
+    setDayEvent('2026-07-15', 0, 'PH')
+    const r = plant({ person: 'bane', type: 'Duty', date: 'Jul 15', oil: { '2026-07-15': 1 } })
+    runOilPass()
+    expect(cellOf('bane', '2026-07-15')).toBe('FO')
+    setDayEvent('2026-07-15', 0, '')                    // the holiday is un-typed
+    runOilPass()
+    expect(cellOf('bane', '2026-07-15')).toBeUndefined()
+    expect(r.oil).toEqual({ '2026-07-15': 1 })          // the record keeps the answer; the day just is not a holiday
+  })
+
+  it('a raptor-owned credit survives a storage round-trip — reconcile keeps FO/HO ownership', () => {
+    const be = memoryBackend()
+    lwInitStore(be)
+    setPeople(projectPeople())
+    plant({ person: 'bane', type: 'Duty', date: 'Jul 18', oil: { [SAT]: 1 } })
+    runOilPass()
+    expect(ownedBy('bane', SAT)).toMatchObject({ source: 'raptor' })
+    lwInitStore(be)                                      // reload from the SAME backend — the reconcile path
+    expect(cellOf('bane', SAT)).toBe('FO')
+    expect(ownedBy('bane', SAT), 'ownership survived the load — the reverse sweep can still collect it').toMatchObject({ source: 'raptor' })
+  })
+})
+
+describe('the ALL / ALL AVAIL expansion on a published non-working day', () => {
+  it('credits every available regular aircrew body; leave, SANS and ground crew are out', () => {
+    DAYS[5].allhands = DAYS[5].allhands || []
+    DAYS[5].allhands.push({ prog: 'SQN EVENT', str: '0800', end: '1500', who: 'ALL' })  // 7h → FO
+    /* stiff is away — an all-day leave over the event window */
+    INPUTS.unshift({ person: 'stiff', type: 'LL', date: 'Jul 18', allday: true, s: 0, e: 1439, remarks: '', mod: 'now', yr: 2026 })
+    publish(5)
+    runOilPass()
+    expect(cellOf('bane', SAT)).toBe('FO')               // a present regular body earns
+    expect(cellOf('stiff', SAT)).toBeUndefined()         // on leave — not available
+    expect(cellOf('torque', SAT)).toBeUndefined()        // ground crew Personnel — excluded
+    const sanId = Object.keys(PEOPLE).find((id: any) => (PEOPLE as any)[id].san && !(PEOPLE as any)[id].archived)
+    expect(sanId, 'the roster holds a SANS body').toBeTruthy()
+    expect(cellOf(sanId as string, SAT)).toBeUndefined() // SANS — excluded from ALL events
   })
 })
