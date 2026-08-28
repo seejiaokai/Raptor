@@ -4149,6 +4149,80 @@ BidPicker's look and vocabulary, not instead of it.
   (`eventsEnabled` — the store refuses a member event write anyway). Pins:
   `parseEventCell` / `eventRange` in `select.test.ts`; the sheet seed reads
   `EventSheet`'s new optional `to` prop.
+## The frozen date bar — the reusable recipe (owner, 28 Aug 26 — "make sure u remember how to create such a frozen top bar in the future. This is the expectation")
+
+This is the pattern the owner signed off on the preview and asked kept for
+reuse. It works IDENTICALLY on desktop and phone (verified live at 1440px and
+402px, 28 Aug 26 — same freeze point, the bar tracks the grid with zero drift
+across the whole scroll range). The dated entries below are the fix-by-fix
+history; THIS block is the recipe to copy. Six pieces, in order:
+
+1. **Why sticky can't do it.** The PAGE owns the one vertical scroll (the
+   owner's standing "one vertical scroll" rule); the grid's own wrapper
+   (`.mx-wrap`) scrolls HORIZONTALLY only. So `position: sticky; top: 0` on the
+   header has no vertical scroller of its OWN to pin against — it never
+   freezes. Every piece below exists because of this one constraint. If a
+   future surface DOES give the header its own vertical scroll box, plain
+   sticky is simpler — use it. This recipe is for the one-vertical-scroll case.
+
+2. **The freeze is a JS-driven MIRROR, not the real header.** A `position:
+   fixed` copy of the date row (`.mxfixed`, z-index below the app top bar) is
+   rendered only once the real header scrolls up under the top bar (`stuck`
+   state, flipped by an IntersectionObserver / scroll measure). It pins just
+   below the app top bar's lower edge. The real header stays in the grid; the
+   mirror is a throwaway overlay that appears on freeze and unmounts on
+   scroll-back up.
+
+3. **The horizontal follow is COMPOSITOR-driven where the browser can, JS
+   where it can't** — feature-gated, so nothing regresses on old browsers or in
+   jsdom. Detect once (`sdaActive` = `CSS.supports('scroll-timeline: --x x')` &&
+   `CSS.supports('timeline-scope: --x')`) and branch:
+   - **Modern path (`.lw-sda`).** The scroller names its horizontal scroll as a
+     timeline (`.mx-wrap { scroll-timeline: --lwx x }`); an ancestor that is NOT
+     the scroller hoists that name into scope (`.mx-outer { timeline-scope:
+     --lwx }`, because the fixed bar is not a descendant of the scroller); the
+     mirror's day columns are TRANSLATED from 0 to the grid's max scrollLeft
+     across the grid's whole range (`animation: lwx-follow linear both;
+     animation-timeline: --lwx`), so `grid.scrollLeft ↦ translateX(−scrollLeft)`
+     runs ON THE COMPOSITOR — glued, nothing to catch up. `--lwx-max` (the max
+     scroll distance) is set from JS on LAYOUT changes only, never per frame.
+   - **Fallback path.** A rAF pump copies `grid.scrollLeft` onto the mirror's
+     own scrollLeft each frame (main thread, a frame behind a fling). GPU it
+     (`transform: translateZ(0)` on the bar, `will-change: scroll-position` on
+     the scroll layer) so the per-frame write recomposites instead of
+     repainting — that alone cut the dropped frames that read as "lag."
+
+4. **A translated table can't keep `position: sticky`, so the frozen LEFT
+   columns become a static clipped COPY in the modern path.** In the fallback
+   path the mirror reuses the grid's own left-sticky columns. In the `.lw-sda`
+   path the whole day table is translated, which kills sticky — so the frozen
+   name/counter columns are drawn as a separate static, opaque, clipped overlay
+   pinned over the left (`.mxfixed-frozen`), and IT carries any interactive
+   control (the counter picker); the translated layer under it is
+   `pointer-events:none` + aria-hidden so the accessible/clickable set stays
+   single.
+
+5. **The `@keyframes` must live at the FILE'S TOP LEVEL.** This file wraps
+   everything in a `#page-leavewar { … }` native-nesting block; a `@keyframes`
+   at-rule is invalid inside CSS nesting and the minifier (lightningcss) rejects
+   the whole build. Keyframe names are global, so a top-level `@keyframes
+   lwx-follow` still binds from inside the nested rule. Don't move it in.
+
+6. **The day-column headers are `position: static`, NOT sticky — perf.** A
+   blanket `sticky` on every one of the ~365 day headers makes the scroll engine
+   re-evaluate all of them every frame, for a `top: 0` that pins NOTHING (no
+   vertical scroll to stick over). Overriding the day cells to `static` cut the
+   scroller's sticky-element count ~425→~60 and, under a 6× CPU throttle, the
+   median scroll frame ~283ms→~17ms. Only the day headers change; the frozen
+   LEFT columns keep their own left-sticky. Do NOT restore sticky on the day
+   headers.
+
+The whole thing is gated so the fallback runs unchanged where the feature is
+missing, and header↔body column alignment stays pixel-exact (`dx = 0`, verified
+at 402px and 1300px). The alternative — a real inner scroll box that CSS sticky
+pins for free — was declined by the owner (it reintroduces the nested-scroller
+feel he rejected on 10 Aug 26). The fix-by-fix history follows.
+
 - **The date header FREEZES on desktop too** (owner, 27 Aug 26 — "freeze top
   panel for leave war on desktop … when I scroll down the top bar that has the
   dates goes out of view, the top bar will freeze just like how the mobile does
