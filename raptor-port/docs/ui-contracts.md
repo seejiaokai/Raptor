@@ -4149,25 +4149,66 @@ BidPicker's look and vocabulary, not instead of it.
   (`eventsEnabled` — the store refuses a member event write anyway). Pins:
   `parseEventCell` / `eventRange` in `select.test.ts`; the sheet seed reads
   `EventSheet`'s new optional `to` prop.
-## The grid keeps scrolling sideways under an open sheet (owner, 28 Aug 26 — "I want to be able to still scroll left and right … on the grids … while the page is still up")
+## The page stays fully usable behind an open sheet — scroll both ways, movable, compact (owner, 28 Aug 26)
 
-Every Leave War decision opens in a bottom `Sheet` over a full-page `.sheetscrim`
-(`ui/Sheet.tsx`). The scrim has to keep SWALLOWING gestures on the grid — a tap
-dismisses, and a bare grid tap behind an open sheet would otherwise open a
-second cell sheet or start a drag-select under the one already up — so it cannot
-simply become `pointer-events: none`. Instead it keeps capturing and FORWARDS
-the sideways ones by hand (`useGridPan`): a horizontal drag moves the grid's one
-horizontal scroller (`.mx-wrap`) 1:1, and on desktop a horizontal (or shift-)
-wheel does the same. Everything the frozen date bar tracks is driven off
-`.mx-wrap.scrollLeft`, so the mirror follows for free — verified live at 1440px
-and 402px, sheet up, drag AND wheel, including while the header is frozen (28 Aug
-26). What stays: UP-DOWN is still locked (the one-scroll rule — the page must not
-jump under a reader; the owner asked only for left-right), so a vertical drag
-moves nothing; a gesture that never crossed the ~6px threshold is a tap and still
-dismisses (a drag's trailing click is swallowed via `movedRef` so a scroll never
-closes the sheet). The small legend / manning pop-outs use a different, lighter
-overlay (`.umscrim`, `ui/Chrome.tsx`) and are OUT of scope — they are quick
-toggles, not a sheet you read the grid behind. Pinned in `scrim.test.tsx`.
+Every Leave War decision opens in a `Sheet` over a full-page `.sheetscrim`
+(`ui/Sheet.tsx`). Over two owner asks (28 Aug 26) the sheet went from a modal
+that froze everything behind it to a panel you can read the grid around:
+
+- **LEFT-RIGHT** ("I want to be able to still scroll left and right … on the
+  grids … while the page is still up"). The scrim has to keep SWALLOWING
+  gestures on the grid — a tap dismisses, and a bare grid tap behind an open
+  sheet would otherwise open a second cell sheet or start a drag-select under
+  the one already up — so it cannot simply become `pointer-events: none`.
+  Instead it keeps capturing and FORWARDS the sideways ones by hand
+  (`useGridPan`): a horizontal drag moves the grid's one horizontal scroller
+  (`.mx-wrap`) 1:1, and a horizontal (or shift-) wheel does the same.
+  Everything the frozen date bar tracks is driven off `.mx-wrap.scrollLeft`,
+  so the mirror follows for free.
+- **UP-DOWN** ("enable me to still scroll up and down when this window is
+  opened"). This REVERSES the 17 Aug "one-scroll" body lock. The page used to
+  be frozen (`body.lw-sheet-lock { overflow:hidden }`) so a swipe could never
+  jump the grid under a reader; the owner now wants exactly that jump — to read
+  the grid behind the panel. The lock is GONE. The scrim carries
+  `touch-action: pan-y`, so the browser pans the page vertically from a finger
+  on it; a vertical wheel is left un-prevented, so it scrolls the page too.
+  Pointer capture is taken LAZILY (only once a drag commits to the horizontal
+  axis), or it would stop the browser's own vertical pan. The panel is
+  `position: fixed`, so only the grid behind it moves; the sheet's own inner
+  list keeps `overscroll-behavior: contain` so scrolling to the end of the list
+  still does not chain into the page — that was never the complaint.
+- **DESKTOP SCROLLBARS** ("on the desktop if i decide to use the horizontal bar
+  or vertical bar to scroll, this is allowed as well"). The page's native
+  vertical bar works the moment the body lock is gone. The grid's pinned
+  horizontal proxy (`.mx-hbar`, `Matrix.tsx`) was z-index 50, UNDER the scrim
+  (79), so the scrim covered and killed it; it now sits at z-index 81, over the
+  scrim, grabbable while a panel is open. It is a 15px strip at the very foot of
+  the viewport and the panels anchor 14px up, so it never paints over one.
+- **MOVABLE** ("make this window movable, so that it doesnt block my view").
+  The title strip (`.bidsheet-hd`, on every sheet) is a drag handle
+  (`useSheetDrag`): pressing anywhere on it but a button and dragging slides the
+  whole panel via a `--lw-dx`/`--lw-dy` translate offset, clamped so at least
+  48px of the handle stays on screen (never lost behind the top bar or an edge).
+  A `⠿` grip + `move` cursor say it is draggable. The offset lives in CSS custom
+  properties so a pointer frame does not re-render the sheet, and resets to zero
+  on remount (a fresh open lands where it always did, then you move it).
+- **SMALLER** ("make all the window smaller … theres alot of empty space"). The
+  read-only info panels (a figure's breakdown, `narrow` prop on `Sheet`) pull in
+  to `min(360px, …)` and drop the action sheets' 44px tap rows — those rows are
+  read, not tapped. The action sheets (bid, decision, counter picker, person
+  editor) keep their 44px targets, which the geometry gate holds.
+
+A gesture that never crossed the ~6px threshold is a tap and still dismisses (a
+drag's trailing click is swallowed via `movedRef` so a scroll never closes the
+sheet). My CALL, flagged to the owner: a tap on the empty area still CLOSES the
+panel, so the grid behind scrolls but is not clickable — if he wants it clickable
+too, drop the tap-to-close. Verified live at 1440px and 402px, sheet up: page
+scrolls both ways with the panel fixed, the panel drags anywhere, the desktop
+proxy bar sits above the scrim, zero console errors. The small legend / manning
+pop-outs use a different, lighter overlay (`.umscrim`, `ui/Chrome.tsx`) and are
+OUT of scope. Pinned in `scrim.test.tsx` (drag-forward, no lock, movable) and
+`e2e/leavewar.spec.ts` ("the page scrolls behind an open sheet, and the panel
+stays put").
 
 ## The frozen date bar — the reusable recipe (owner, 28 Aug 26 — "make sure u remember how to create such a frozen top bar in the future. This is the expectation")
 

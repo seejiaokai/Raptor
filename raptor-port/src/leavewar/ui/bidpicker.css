@@ -25,21 +25,25 @@
   position: fixed;
   inset: 0;
   z-index: 79;
-  /* `none`, because Sheet.tsx drives the gesture BY HAND (see useGridPan):
-     the browser must not also try to scroll on the scrim's behalf. A finger
-     landing here still cannot scroll the page UP-DOWN behind the sheet (the
-     one-scroll rule, owner 17 Aug 26 — "2 scrolls"), but a SIDEWAYS drag is
-     now forwarded onto the grid so the dates keep scrolling left-right while
-     the sheet stays up (owner, 28 Aug 26). A gesture that never moved is a
-     tap and still closes. */
-  touch-action: none;
+  /* `pan-y`, so the browser scrolls the page UP-DOWN natively from a finger
+     that lands on the scrim (owner, 28 Aug 26 — "enable me to still scroll up
+     and down when this window is opened"). This reverses the 17 Aug lock: the
+     page is no longer frozen under a sheet. A SIDEWAYS drag is not allowed to
+     the browser (pan-y owns only the vertical axis), so it reaches Sheet.tsx's
+     own handler, which forwards it onto the grid's `.mx-wrap` scroller — the
+     dates keep scrolling left-right while the sheet stays up. A gesture that
+     never moved is a tap and still closes. */
+  touch-action: pan-y;
 }
 
 .bidsheet {
   position: fixed;
   z-index: 80;
   left: 50%;
-  transform: translateX(-50%);
+  /* translateX(-50%) centres it; the --lw-dx/--lw-dy pair is the DRAG offset
+     (owner, 28 Aug 26 — the panel is movable, Sheet.tsx:useSheetDrag). Both
+     default to 0, so an untouched panel opens exactly where it always did. */
+  transform: translateX(-50%) translate(var(--lw-dx, 0px), var(--lw-dy, 0px));
   bottom: 14px;
   width: min(560px, calc(100vw - 24px));
   background: var(--panel);
@@ -91,6 +95,28 @@
   z-index: 2;
   background: var(--panel);
   padding-top: 10px;
+  /* The title strip is the DRAG HANDLE (owner, 28 Aug 26 — the panel is
+     movable). `move` cursor + a grip glyph say so; `touch-action: none` keeps
+     a drag on the handle from also scrolling the sheet's own list, and
+     `user-select: none` stops the title text selecting while dragging. The ✕
+     and any header control keep working — Sheet.tsx ignores a press on a
+     button. */
+  cursor: move;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* The grip: two rows of dots at the head of the strip, the universal "drag
+   me" mark. aria-hidden by being pure content — it names nothing. */
+.bidsheet-hd::before {
+  content: '⠿';
+  align-self: center;
+  color: var(--ink-3);
+  font-size: 13px;
+  line-height: 1;
+  margin-right: 2px;
+  cursor: move;
 }
 
 .bidsheet-hd .who {
@@ -480,8 +506,32 @@
 /* The total, ruled off from the parts above it the way a sum is. */
 .crow-wrap.bdtotal {
   border-top: 1px solid var(--edge);
-  margin-top: 4px;
-  padding-top: 10px;
+  margin-top: 3px;
+  padding-top: 7px;
+}
+
+/* ---- the compact, read-only info panels (owner, 28 Aug 26) ----------------
+   "make all the window smaller … theres alot of empty space." A figure's
+   breakdown and a person's all-figures list are READ, not tapped, so they do
+   not owe the action sheets' 44px rows or their 560px width. `.narrow` pulls
+   the panel in and the padding down; the breakdown's statement rows lose the
+   tall tap-target minimum they never needed. The action sheets (bid, decision,
+   counter picker, person editor) are untouched — their rows ARE tap targets
+   the geometry gate holds at 44px. */
+.bidsheet.narrow {
+  width: min(360px, calc(100vw - 24px));
+  padding: 8px 10px 10px;
+}
+
+.bidsheet.narrow .clist {
+  gap: 4px;
+}
+
+/* Statement rows (a breakdown's parts, and its total) read at a glance, so
+   they close right up — a line of text and its number, not a card of air. */
+.bidsheet.narrow .crow.bdrow {
+  min-height: 0;
+  padding: 5px 12px;
 }
 
 .crow-wrap.bdtotal .cn {
@@ -573,13 +623,10 @@
 }
 }
 
-/* DELIBERATELY OUTSIDE the #page-leavewar wrapper above — this rule targets
-   the BODY, which no page-scoped selector can reach. The class is namespaced
-   (`lw-`) so it collides with nothing of Raptor's; Sheet.tsx adds and
-   removes it. See the one-scroll comments on .sheetscrim / .bidsheet. */
-body.lw-sheet-lock {
-  overflow: hidden;
-}
+/* The body-scroll lock (`body.lw-sheet-lock { overflow:hidden }`) is GONE
+   (owner, 28 Aug 26 — "enable me to still scroll up and down when this window
+   is opened"). The page now scrolls freely behind a sheet on both axes; see
+   the reversed one-scroll note at the top of Sheet.tsx. */
 
 /* ---- The counter form (owner, 19 Aug 26) ----------------------------------
    Guided pickers inside the standard sheet. Slots box their filter rows so a

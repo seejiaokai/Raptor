@@ -191,3 +191,42 @@ describe('a sideways drag scrolls the grid, it does not dismiss', () => {
     expect(wrap.scrollLeft).toBe(600)
   })
 })
+
+// The page is no longer frozen behind a sheet (owner, 28 Aug 26 — reversing
+// the 17 Aug one-scroll lock), and the panel can be dragged out of the way.
+describe('the page stays live behind a sheet, and the panel moves', () => {
+  it('never locks the page scroll behind the sheet', () => {
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId('counter-pick'))
+    // The old lock added this body class; removing it is the reversal.
+    expect(document.body.classList.contains('lw-sheet-lock')).toBe(false)
+  })
+
+  it('slides the panel when its title strip is dragged', () => {
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId('counter-pick'))
+    const panel = screen.getByTestId('counter-sheet')
+    const hd = panel.querySelector('.bidsheet-hd') as HTMLElement
+    expect(hd).toBeTruthy()
+    // jsdom reports every rect 0×0, so the panel starts at (0,0) and the clamp
+    // (keep 48px on screen, inside the default 1024×768 window) leaves this
+    // move untouched: dx/dy come through as the raw drag distance.
+    fireEvent.pointerDown(hd, { clientX: 100, clientY: 100, pointerId: 2 })
+    fireEvent.pointerMove(hd, { clientX: 180, clientY: 140, pointerId: 2 })
+    fireEvent.pointerUp(hd, { clientX: 180, clientY: 140, pointerId: 2 })
+    expect(panel.style.getPropertyValue('--lw-dx')).toBe('80px')
+    expect(panel.style.getPropertyValue('--lw-dy')).toBe('40px')
+  })
+
+  it('does not start a drag from a control on the title strip', () => {
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId('counter-pick'))
+    const panel = screen.getByTestId('counter-sheet')
+    // Pressing the ✕ (a button in the strip) must not move the panel — it
+    // closes. A press that begins on a button is ignored by the drag handler.
+    const x = screen.getByTestId('counter-cancel')
+    fireEvent.pointerDown(x, { clientX: 100, clientY: 100, pointerId: 3 })
+    fireEvent.pointerMove(x, { clientX: 180, clientY: 140, pointerId: 3 })
+    expect(panel.style.getPropertyValue('--lw-dx')).toBe('')
+  })
+})

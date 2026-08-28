@@ -1060,34 +1060,36 @@ test('a scrolled sheet keeps its header and its close button', async ({ page }) 
   await expect(sheet).toHaveCount(0)
 })
 
-// One scroll while a sheet is up (owner, 17 Aug 26 — "I think it's cause by
-// having 2 scrolls... on the phone"): a swipe that bottoms the sheet's list
-// out must not fall through and scroll the page behind it, and a finger on
-// the scrim must not scroll the page either. The wheel drives the chaining
-// half for real; the scrim's touch refusal resolves only as computed style
-// here, because a synthetic touch sequence is the old jsdom hit-test trap in
-// browser clothes.
-test('an open sheet is the only thing that scrolls', async ({ page }) => {
-  await page.evaluate(() => window.scrollTo(0, 120))
+// The page scrolls FREELY behind an open sheet (owner, 28 Aug 26 — "enable me
+// to still scroll up and down when this window is opened"). This REVERSES the
+// 17 Aug one-scroll body lock: the body is no longer frozen, so the page scrolls
+// up-down while the sheet stays up, and the scrim yields the vertical axis to
+// the browser (`touch-action: pan-y`) rather than refusing every gesture. The
+// panel is position:fixed, so only the grid behind it moves — the sheet does not
+// ride the page down. (The sheet's OWN list still keeps its scroll to itself via
+// `overscroll-behavior: contain` in bidpicker.css — unchanged, not re-asserted
+// here since it only bites when the list overflows, which a fitting sheet does
+// not.)
+test('the page scrolls behind an open sheet, and the panel stays put', async ({ page }) => {
+  await page.evaluate(() => window.scrollTo(0, 0))
   await page.locator('[data-testid="counter-pick"]').click()
   const sheet = page.locator('[data-testid="counter-sheet"]')
   await expect(sheet).toBeVisible()
-  const before = await page.evaluate(() => window.scrollY)
-  const box = (await sheet.boundingBox())!
-  await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2)
-  await sheet.evaluate(el => { el.scrollTop = el.scrollHeight })
-  await page.mouse.wheel(0, 600)
-  await page.waitForTimeout(200)
-  expect(await page.evaluate(() => window.scrollY)).toBe(before)
+  const topBefore = (await sheet.boundingBox())!.y
+
+  // The page is not locked: it scrolls up-down while the sheet stays up.
+  // (Under the old body lock, overflow:hidden refused this and scrollY held.)
+  await page.evaluate(() => window.scrollBy(0, 300))
+  await page.waitForTimeout(100)
+  expect(await page.evaluate(() => window.scrollY)).toBeGreaterThan(0)
+
+  // The panel is fixed, so it does not travel down with the page.
+  const topAfter = (await sheet.boundingBox())!.y
+  expect(Math.abs(topAfter - topBefore)).toBeLessThan(1.5)
+
   const ta = await page.locator('[data-testid="sheet-scrim"]').evaluate(el => getComputedStyle(el).touchAction)
-  expect(ta).toBe('none')
-  // While the sheet is up the page itself is locked (a sheet that FITS the
-  // screen has nothing to contain, so containment alone cannot stop the
-  // fall-through); closing it unlocks the page with its position intact.
-  expect(await page.evaluate(() => getComputedStyle(document.body).overflow)).toBe('hidden')
-  await page.locator('[data-testid="counter-cancel"]').click()
+  expect(ta).toBe('pan-y')
   expect(await page.evaluate(() => getComputedStyle(document.body).overflow)).not.toBe('hidden')
-  expect(await page.evaluate(() => window.scrollY)).toBe(before)
 })
 
 // The viewer — Raptor's "View as" person, Bane on a fresh login — is lit on

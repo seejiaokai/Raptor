@@ -1457,14 +1457,18 @@
    JS to overlay the grid; the inner spacer is as wide as the grid's content, so
    the browser sizes the thumb for free. The webkit rules force a visible,
    grabbable thumb even where the OS uses hover-only overlay scrollbars — the
-   whole point is that it is always THERE. z below the sheets (79/80) and the
-   phone frozen header (55); above the grid. Phone gets none of this (Matrix only
-   mounts it off a desktop measurement). */
+   whole point is that it is always THERE. z ABOVE the sheets (79/80) now
+   (owner, 28 Aug 26 — "on the desktop if i decide to use the horizontal bar …
+   to scroll, this is allowed as well"): a sheet's scrim used to cover this
+   strip and kill it, so the bar sits over the scrim to stay grabbable while a
+   panel is open. It is a 15px strip at the very foot of the viewport and the
+   panels are anchored 14px up, so it never paints over a panel's content.
+   Phone gets none of this (Matrix only mounts it off a desktop measurement). */
 .mx-hbar {
   position: fixed;
   bottom: 0;
   height: 15px;
-  z-index: 50;
+  z-index: 81;
   overflow-x: auto;
   overflow-y: hidden;
   background: var(--panel-2);

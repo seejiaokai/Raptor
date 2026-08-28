@@ -172,7 +172,7 @@ export function FigureBreakdownSheet({
   const total = figure.value(ctx, person.id)
 
   return (
-    <Sheet testid="figure-breakdown" label={`${figure.label} breakdown`} onClose={onClose}>
+    <Sheet testid="figure-breakdown" label={`${figure.label} breakdown`} onClose={onClose} narrow>
       <div className="bidsheet-hd">
         <span className="who">{person.callsign}</span>
         <span className="dt">{figure.label}</span>
