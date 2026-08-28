@@ -443,8 +443,8 @@ export function InputsPage() {
           who: PEOPLE[filedFor()] ? PEOPLE[filedFor()].cs : filedFor(),
           newType: type,
           span: date + (endDate ? ' – ' + endDate : ''),
-          clashes,
-          commit: (choices: string[]) => {
+          clashes, b: bOrd,
+          commit: (choices: string[], keepTail: any[]) => {
             const segs = medKeptSegments(aOrd, bOrd, clashes, choices)
             if (!segs.length) return          // toasted; nothing written
             writeInputsBatch(() => {
@@ -453,8 +453,8 @@ export function InputsPage() {
                 ordLabel(g0.startOrd, baseYear()),
                 g0.endOrd > g0.startOrd ? ordLabel(g0.endOrd, baseYear()) : undefined,
                 withRemarksTail(remarks.trim(), ordISO(g0.startOrd), ordISO(g0.endOrd), 'till')))
-              applyMedPlan(newMedTrimPlan(INPUTS[0].person, type, g0.startOrd, g0.endOrd, INPUTS[0]))
-              mintMedSegments(INPUTS[0], segs.slice(1))
+              applyMedPlan(newMedTrimPlan(INPUTS[0].person, type, g0.startOrd, g0.endOrd, INPUTS[0], keepTail, bOrd))
+              mintMedSegments(INPUTS[0], segs.slice(1), keepTail, bOrd)
               autoAcceptInput(INPUTS[0])
             })
             finishAdd()
@@ -525,8 +525,8 @@ export function InputsPage() {
           who: PEOPLE[draft.person] ? PEOPLE[draft.person].cs : draft.person,
           newType: draft.type,
           span: fmt(draft.start) + (draft.end && draft.end !== draft.start ? ' – ' + fmt(draft.end) : ''),
-          clashes,
-          commit: (choices: string[]) => {
+          clashes, b: bOrd,
+          commit: (choices: string[], keepTail: any[]) => {
             const segs = medKeptSegments(aOrd, bOrd, clashes, choices)
             if (!segs.length) return
             const g0 = segs[0]
@@ -538,8 +538,8 @@ export function InputsPage() {
             }
             let ok = false
             writeInputsBatch(() => {
-              ok = commitInputEdit(editRow, d2)
-              if (ok) mintMedSegments(editRow, segs.slice(1))
+              ok = commitInputEdit(editRow, d2, keepTail, bOrd)
+              if (ok) mintMedSegments(editRow, segs.slice(1), keepTail, bOrd)
             })
             if (ok) { setEditRow(null); setDraft(null); HOOKS.toast('Input updated', 'ok') }
             else if (INPUTS.indexOf(editRow) < 0) { setEditRow(null); setDraft(null) }
@@ -955,9 +955,9 @@ export function InputsPage() {
         onSave={removals => { const c = upConf.commit; setUpConf(null); c(removals) }} />}
       {/* the medical clash sheet — same contract as the upchit one */}
       {medConf && <MedClashConfirm who={medConf.who} newType={medConf.newType} span={medConf.span}
-        clashes={medConf.clashes}
+        clashes={medConf.clashes} bOrd={medConf.b}
         onCancel={() => setMedConf(null)}
-        onSave={choices => { const c = medConf.commit; setMedConf(null); c(choices) }} />}
+        onSave={(choices, keepTail) => { const c = medConf.commit; setMedConf(null); c(choices, keepTail) }} />}
     </>
   )
 }

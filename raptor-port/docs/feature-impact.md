@@ -685,7 +685,19 @@ agree — name it here so the next session knows to check both.
     `mintMedSegments` (`ui/inputedit.tsx`) — kept rows are protected by
     segment construction, not by a second guard, so a new writer that
     bypasses the segments silently reverts to new-always-wins. Same
-    three-form-paths rule, same caldrag exception.
+    three-form-paths rule, same caldrag exception. The clash sheet also
+    carries a LEFTOVER decision (28 Aug 26): when the new entry takes the
+    days of a row running PAST it, `medTailBeyond` (one body for sheet and
+    planner) surfaces the tail as Remove (default) / Keep, whose answer
+    threads through `newMedTrimPlan`/`mintMedSegments` as `keepTail`. The tail
+    is measured past the WHOLE entry's end (`newMedTrimPlan`'s `entryEnd` arg,
+    defaulting to the segment end for single-segment and direct callers) —
+    measuring it per-segment let a kept leftover reach into a later segment
+    that then re-trimmed and dropped it, once a kept MIDDLE status had split
+    the entry (28 Aug review). A new write path that resolves a clash but
+    forgets to pass the filer's `keepTail` reverts to tail-always-kept — safe,
+    but it drops the owner's Remove default and the sheet's promise silently,
+    so pass it (and `entryEnd` with it).
   Plus one known demo wrinkle, documented in `state/demoseed.ts`: reloading
   week 1 restores the pristine INPUTS snapshot and drops the seeded demo
   docIds — the viewer's "No document on file" state covers it; not a bug to

@@ -228,3 +228,45 @@ describe('the owner\'s layered-status scenarios (27 Aug 26)', () => {
     expect(c.endDate).toBeUndefined()
   })
 })
+
+/* The leftover Remove/Keep on the clash sheet (owner, 28 Aug 26). commitNewInput
+   takes the same keepTail the sheet builds — the rows whose leftover to KEEP;
+   everything else has its tail dropped (the Remove default). A direct caller
+   passes nothing and keeps every tail (the safety default above still holds —
+   the mid-span split test proves it). */
+describe('the leftover Remove/Keep past a middle takeover (owner, 28 Aug 26)', () => {
+  const tailOf = (c: any) => INPUTS.find((r: any) => r !== c && r.person === 'bane' && r.type === 'ATT C')
+  it('the Remove default drops the leftover — head only, fit on the days past it', () => {
+    const c = plant({ person: 'bane', type: 'ATT C', date: 'Jul 10', endDate: 'Jul 15', docId: 'doc-c' })
+    // an empty keepTail is the sheet's default: nothing kept, the 14–15 leftover goes
+    expect(commitNewInput(newDraft({ type: 'ATT B', start: '2026-07-12', end: '2026-07-13' }), false, [])).toBe(true)
+    expect(c.endDate, 'the head still ends the day before the new input').toBe('Jul 11')
+    expect(tailOf(c), 'the leftover was never minted').toBeFalsy()
+  })
+  it('keeping the leftover mints it in full — both days survive', () => {
+    const c = plant({ person: 'bane', type: 'ATT C', date: 'Jul 10', endDate: 'Jul 15', docId: 'doc-c' })
+    expect(commitNewInput(newDraft({ type: 'ATT B', start: '2026-07-12', end: '2026-07-13' }), false, [c])).toBe(true)
+    expect(c.endDate).toBe('Jul 11')
+    const tail = tailOf(c)
+    expect(tail && tail.date).toBe('Jul 14')
+    expect(tail.endDate, 'the last day is there, not lost').toBe('Jul 15')
+    expect(tail.docId, 'the certificate covers the whole episode').toBe('doc-c')
+  })
+  it('an EDIT that lands mid-span honours the same Remove default', () => {
+    const c = plant({ person: 'bane', type: 'ATT C', date: 'Jul 10', endDate: 'Jul 15', docId: 'doc-c' })
+    const b = plant({ person: 'bane', type: 'ATT B', date: 'Jul 25', endDate: 'Jul 26', docId: 'doc-b' })
+    const d = draftOf(b); d.start = '2026-07-12'; d.end = '2026-07-13'
+    expect(commitInputEdit(b, d, [])).toBe(true)
+    expect(c.endDate).toBe('Jul 11')
+    expect(tailOf(c), 'removed on the edit path too').toBeFalsy()
+  })
+  it('identical whether the middle status is ATT B or HL', () => {
+    for (const mid of ['ATT B', 'HL']) {
+      INPUTS.length = 0; JSON.parse(ISNAP).forEach((r: any) => INPUTS.push(r)); initStore()
+      const c = plant({ person: 'bane', type: 'ATT C', date: 'Jul 10', endDate: 'Jul 15', docId: 'doc-c' })
+      expect(commitNewInput(newDraft({ type: mid, start: '2026-07-12', end: '2026-07-13' }), false, [])).toBe(true)
+      expect(c.endDate, `${mid}: head only`).toBe('Jul 11')
+      expect(tailOf(c), `${mid}: leftover removed the same way`).toBeFalsy()
+    }
+  })
+})

@@ -4764,6 +4764,14 @@ button.sbi-ty.inpedit:hover{text-decoration:none;filter:brightness(1.3)}
    the two choice buttons together on their own line when the phone runs out */
 .upconf-left.medclash-row{flex-wrap:wrap}
 .upconf-left.medclash-row .seg{margin-left:auto;flex-wrap:wrap;justify-content:flex-end}
+/* the leftover question hangs OFF the clash above it — indented, quieter panel,
+   an accent spine on the left so it reads as a follow-up to that clash, not a
+   new one. Its default (Remove) shows in the red 'on-rem' seg so a straight
+   Save is plainly cutting those days, never a silent drop (owner, 28 Aug 26) */
+.upconf-left.medclash-tail{flex-wrap:wrap;margin:-2px 0 8px 14px;background:var(--bg);
+  border-color:var(--edge-2);border-left:3px solid var(--accent);font-size:12px}
+.upconf-left.medclash-tail .seg{margin-left:auto;flex-wrap:wrap;justify-content:flex-end}
+.medclash-tailnote{font-style:normal;font-weight:700;color:var(--ink-2)}
 .upconf-foot .abtn{flex:0 0 auto}
 .airpop-box.inpedbox{width:min(94vw,430px)}
 .inped-body{display:flex;flex-direction:column;gap:11px}

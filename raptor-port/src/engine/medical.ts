@@ -149,6 +149,17 @@ export function medClashes(person:any,type:any,aOrd:any,bOrd:any,except?:any){
     out.push({row:r,loOrd:s<aOrd?aOrd:s,hiOrd:e>b?b:e});}
   return out;
 }
+/* the LEFTOVER of a clashing row that runs PAST a new entry ending on `bOrd`
+   — the piece {bOrd+1 .. rowEnd} the takeover would leave standing. This is
+   the ONE body the clash sheet reads to offer its Keep/Remove and the planner
+   below reads to decide whether to mint the tail, so the sheet can never show
+   a different leftover than the write acts on (the drift-seam rule). Returns
+   null when the row ends on or before bOrd — no leftover to decide. */
+export function medTailBeyond(row:any,bOrd:any){
+  const e=medEndOrd(row);
+  if(bOrd==null||e==null||e<=bOrd)return null;
+  return {startOrd:ordShift(bOrd,1),endOrd:e};
+}
 /* a NEW medical input of a DIFFERENT type wins its days (owner: "the latest
    input ... overwrites the previous input thats conflicting") — and ONLY its
    days: every clashing row is cut to end the day BEFORE the new one starts
@@ -161,15 +172,33 @@ export function medClashes(person:any,type:any,aOrd:any,bOrd:any,except?:any){
    exists to prevent. Since 27 Aug 26 this is the PROGRAMMATIC default only:
    the forms put every clash to the filer first (medClashes + the clash
    sheet), and a row the filer chose to KEEP never reaches this planner
-   because the new entry's kept segments (subtractSpans) avoid it. */
-export function newMedTrimPlan(person:any,type:any,aOrd:any,bOrd:any,except?:any){
+   because the new entry's kept segments (subtractSpans) avoid it.
+   `keepTail` (owner, 28 Aug 26) is the clash sheet's per-leftover answer: the
+   list of clashing ROWS whose tail the filer chose to KEEP. Omitted (every
+   direct caller — the edit dialog, the calendar drag, the tests) keeps EVERY
+   tail, the safety default above. Supplied — the clash sheet always supplies
+   it — mints a tail only for a listed row, so a leftover the filer removed
+   (the default, one tap to keep) simply never mints and those days read fit,
+   shown on the sheet before the save, never silent. The row is still cut to
+   its head either way; only the tail turns on the answer.
+   `entryEnd` (28 Aug 26) is the WHOLE new entry's end, and the leftover is
+   measured past IT — not past `bOrd`. The two differ only when the entry was
+   split into SEGMENTS around a kept status (`medKeptSegments`): each segment
+   calls this with its own end as `bOrd`, but the tail a takeover leaves is the
+   part past the entry, not past one segment. Measured per-segment it minted a
+   tail reaching into a LATER segment, which that segment re-trimmed — and the
+   minted row being a fresh object outside `keepTail`, its kept days were then
+   silently dropped. Omitted, it falls back to `bOrd`, the entry end for every
+   single-segment and direct caller, so nothing else moves. */
+export function newMedTrimPlan(person:any,type:any,aOrd:any,bOrd:any,except?:any,keepTail?:any,entryEnd?:any){
   const out:any=[];
   if(aOrd==null)return out;
   const b=bOrd==null?aOrd:bOrd;
+  const te=entryEnd==null?b:entryEnd;
   for(const c of medClashes(person,type,aOrd,b,except)){
-    const e=medEndOrd(c.row);
     const p:any=trimTo(c.row,ordShift(aOrd,-1));
-    if(e>b)p.tail={startOrd:ordShift(b,1),endOrd:e};
+    const tl=medTailBeyond(c.row,te);
+    if(tl&&(keepTail==null||keepTail.indexOf(c.row)>=0))p.tail=tl;
     out.push(p);}
   return out;
 }

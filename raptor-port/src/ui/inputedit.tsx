@@ -370,7 +370,7 @@ export function medKeptSegments(aOrd: any, bOrd: any, clashes: any[], choices: s
    overlaps — only rows the filer chose to overwrite, since kept rows are
    outside every segment by construction. Runs INSIDE the caller's
    writeInputsBatch so the whole resolution is one undo step. */
-export function mintMedSegments(base: any, segs: any[]) {
+export function mintMedSegments(base: any, segs: any[], keepTail?: any, entryEnd?: any) {
   const cs = PEOPLE[base.person] ? PEOPLE[base.person].cs : base.person
   for (const g of segs) {
     const t: any = { ...base, date: ordLabel(g.startOrd, base.yr), mod: 'now' }
@@ -383,7 +383,7 @@ export function mintMedSegments(base: any, segs: any[]) {
     inpId(t)
     INPUTS.push(t)
     logAction(null, `Input added — ${cs}, ${t.type}, ${t.date}${t.endDate ? '–' + t.endDate : ''} (a kept piece of a split medical entry)`)
-    applyMedPlan(newMedTrimPlan(t.person, t.type, g.startOrd, g.endOrd, t))
+    applyMedPlan(newMedTrimPlan(t.person, t.type, g.startOrd, g.endOrd, t, keepTail, entryEnd))
   }
 }
 
@@ -599,7 +599,7 @@ export const TYPE_ALLOW: any = {
    the button on that panel puts the item where the button is. One undo step
    still — writeInputsBatch swallows acceptInput's own history pushes exactly
    as commitInputEdit's relink already relies on. */
-export function commitNewInput(draft: any, toGround?: boolean): boolean {
+export function commitNewInput(draft: any, toGround?: boolean, keepTail?: any, entryEnd?: any): boolean {
   if (!draft) return false
   /* write-path role backstop (owner, 22 Aug 26 — a member files inputs only
      for whoever they are viewing as; the Person choice is a scheduler's).
@@ -638,7 +638,7 @@ export function commitNewInput(draft: any, toGround?: boolean): boolean {
        day before — the upchit day is a fit day (owner, 27 Aug 26) — planned
        pure, applied here so the add and its trims are ONE undo step */
     if (isDownchit(row.type))
-      applyMedPlan(newMedTrimPlan(row.person, row.type, dateOrd(date, row.yr), dateOrd(endDate || date, row.yr), row))
+      applyMedPlan(newMedTrimPlan(row.person, row.type, dateOrd(date, row.yr), dateOrd(endDate || date, row.yr), row, keepTail, entryEnd))
     if (isUpchit(row.type))
       applyMedPlan(upchitTrimPlan(row.person, dateOrd(date, row.yr), row).map((p: any) => ({ ...p, why: 'closed by the upchit' })))
     if (toGround) {
@@ -669,7 +669,7 @@ export function commitNewInput(draft: any, toGround?: boolean): boolean {
    the caller keeps its editor open on a false, so nothing typed is lost.
    Runs through writeInputsBatch like every other mutation, so an edit joins
    the undo stack as ONE step and re-validates the week. */
-export function commitInputEdit(r: any, draft: any) {
+export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: any) {
   if (!r || !draft) return false
   if (INPUTS.indexOf(r) < 0) {                 // deleted or undone underneath us
     HOOKS.toast('That input is no longer there — nothing was saved', 'warn')
@@ -799,7 +799,7 @@ export function commitInputEdit(r: any, draft: any) {
     /* an EDIT restates the span, so the same medical rules run against the
        person's other rows — the row itself is excluded (except-style) */
     if (isDownchit(r.type))
-      applyMedPlan(newMedTrimPlan(r.person, r.type, dateOrd(r.date, r.yr), dateOrd(r.endDate || r.date, r.yr), r))
+      applyMedPlan(newMedTrimPlan(r.person, r.type, dateOrd(r.date, r.yr), dateOrd(r.endDate || r.date, r.yr), r, keepTail, entryEnd))
     if (isUpchit(r.type))
       applyMedPlan(upchitTrimPlan(r.person, dateOrd(r.date, r.yr), r).map((p: any) => ({ ...p, why: 'closed by the upchit' })))
     if (wasAcc) {
@@ -1197,7 +1197,7 @@ export function InputEditor() {
   }
   /* the clash sheet's Save — resolve the choices into kept segments, file
      the draft as the first and mint the rest, all one undo step */
-  const doMedSave = (choices: string[]) => {
+  const doMedSave = (choices: string[], keepTail: any[]) => {
     const segs = medKeptSegments(medConf.a, medConf.b, medConf.clashes, choices)
     if (!segs.length) return          // toasted; the form stays open, unwritten
     const g0 = segs[0]
@@ -1209,12 +1209,13 @@ export function InputEditor() {
     }
     let ok = false
     writeInputsBatch(() => {
-      ok = isNew ? commitNewInput(d2, ctx === 'g') : commitInputEdit(r, d2)
+      ok = isNew ? commitNewInput(d2, ctx === 'g', keepTail, medConf.b) : commitInputEdit(r, d2, keepTail, medConf.b)
       /* the commit's own trim only cuts rows the first segment overlaps —
          all of them chosen losers, since kept rows sit outside every
          segment; the later segments land as sibling rows, each trimmed the
-         same way */
-      if (ok) mintMedSegments(isNew ? INPUTS[0] : r, segs.slice(1))
+         same way. keepTail carries the filer's per-leftover Remove/Keep so a
+         tail is minted only where kept (owner, 28 Aug 26) */
+      if (ok) mintMedSegments(isNew ? INPUTS[0] : r, segs.slice(1), keepTail, medConf.b)
     })
     if (ok) { HOOKS.toast(isNew ? 'Input added' : 'Input updated', 'ok'); close() }
     else if (!isNew && INPUTS.indexOf(r) < 0) close()
@@ -1429,9 +1430,9 @@ export function InputEditor() {
       {/* the medical clash sheet, same layer and same contract — Save
           resolves the choices, Cancel returns to the untouched form */}
       {medConf && <MedClashConfirm who={medConf.who} newType={medConf.newType} span={medConf.span}
-        clashes={medConf.clashes}
+        clashes={medConf.clashes} bOrd={medConf.b}
         onCancel={() => setMedConf(null)}
-        onSave={choices => { setMedConf(null); doMedSave(choices) }} />}
+        onSave={(choices, keepTail) => { setMedConf(null); doMedSave(choices, keepTail) }} />}
     </div>
   )
 }

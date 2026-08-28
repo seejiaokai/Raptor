@@ -3976,6 +3976,18 @@ resting state, Save disabled until every clash is answered, footer hint
 day holds one status, and the new entry is filed around whatever is kept.
 Cancel/Escape/scrim close only the sheet.
 
+**The leftover row** (owner, 28 Aug 26). When "<new> takes them" is chosen on a
+clash whose existing row runs PAST the new entry's end (`medTailBeyond`), a
+second line hangs off that clash — indented, quieter panel, an accent left
+spine (`.medclash-tail`) so it reads as a follow-up, not a new clash: "Left
+over after it: **ATT C Jul 14 – Jul 15** — will be removed" with **Remove those
+days** / **Keep them**. Unlike the who-holds-them choice, this one has a DEFAULT
+— Remove, shown in the red `.on-rem` seg, the note flipping to "kept on file"
+when Keep is picked — so a straight Save cuts those days, plainly and never
+silently. It appears only while "<new> takes them" is the live choice for that
+clash (switch to "<old> keeps them" and it disappears, the old status staying
+whole). Save is NOT gated on it; the answer rides `keepTail` into the write.
+
 **The upload control** (`DocField` in `ui/inputedit.tsx`: `UploadIcon`
 button + hidden file input + filename chip, `.docbtn.has` turning the ok
 green once attached) renders in all three editors — the Inputs add form,

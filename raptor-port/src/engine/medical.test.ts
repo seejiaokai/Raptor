@@ -5,7 +5,7 @@
    anchor so nothing here leans on the loaded week. */
 import { afterEach, describe, expect, it } from 'vitest'
 import { INPUTS } from './inputs'
-import { ordShift, ordLabel, medStartOrd, medEndOrd, medDownAsOf, pendingUpchits, upchitsWithin, upchitTrimPlan, upchitEffects, newMedTrimPlan, medClashes, subtractSpans } from './medical'
+import { ordShift, ordLabel, medStartOrd, medEndOrd, medDownAsOf, pendingUpchits, upchitsWithin, upchitTrimPlan, upchitEffects, newMedTrimPlan, medClashes, medTailBeyond, subtractSpans } from './medical'
 
 const ISNAP = JSON.stringify(INPUTS)
 afterEach(() => { INPUTS.length = 0; JSON.parse(ISNAP).forEach((r: any) => INPUTS.push(r)) })
@@ -204,6 +204,66 @@ describe('newMedTrimPlan — a different-type overlap wins its days', () => {
   it('cross-year: a row anchored 2027 is untouched by a 2026 span on the same words', () => {
     med('t1', 'ATT C', 'Jul 10', 'Jul 13', 2027)
     expect(newMedTrimPlan('t1', 'ATT B', 20260712, 20260715)).toEqual([])
+  })
+})
+
+// The leftover (owner, 28 Aug 26): a status overtaken in the MIDDLE leaves a
+// tail past the new entry. medTailBeyond is the one body the clash sheet and
+// the planner read, and keepTail is the filer's per-leftover answer.
+describe('medTailBeyond — the leftover the clash sheet offers Keep/Remove', () => {
+  it('is the piece past the new end, the day after to the row\'s end', () => {
+    const r = med('t1', 'ATT C', 'Jul 10', 'Jul 15')
+    expect(medTailBeyond(r, 20260713)).toEqual({ startOrd: 20260714, endOrd: 20260715 })
+  })
+  it('is null when the row ends on or before the new end — no leftover to decide', () => {
+    const r = med('t1', 'ATT C', 'Jul 10', 'Jul 15')
+    expect(medTailBeyond(r, 20260715)).toBe(null)
+    expect(medTailBeyond(r, 20260718)).toBe(null)
+    expect(medTailBeyond(r, null)).toBe(null)
+  })
+})
+
+describe('newMedTrimPlan keepTail — the tail is minted only where the filer kept it', () => {
+  // A middle drop: ATT B 12–13 over ATT C 10–15 → head 10–11, leftover 14–15.
+  it('OMITTED keeps every tail — the safety default for direct callers', () => {
+    const r = med('t1', 'ATT C', 'Jul 10', 'Jul 15')
+    expect(newMedTrimPlan('t1', 'ATT B', 20260712, 20260713))
+      .toEqual([{ row: r, action: 'trim', newEndOrd: 20260711, tail: { startOrd: 20260714, endOrd: 20260715 } }])
+  })
+  it('an EMPTY keepTail removes the tail — the clash sheet\'s Remove default', () => {
+    const r = med('t1', 'ATT C', 'Jul 10', 'Jul 15')
+    expect(newMedTrimPlan('t1', 'ATT B', 20260712, 20260713, undefined, []))
+      .toEqual([{ row: r, action: 'trim', newEndOrd: 20260711 }])   // head only, no tail
+  })
+  it('a LISTED row keeps its tail; the row is still cut to its head either way', () => {
+    const r = med('t1', 'ATT C', 'Jul 10', 'Jul 15')
+    expect(newMedTrimPlan('t1', 'ATT B', 20260712, 20260713, undefined, [r]))
+      .toEqual([{ row: r, action: 'trim', newEndOrd: 20260711, tail: { startOrd: 20260714, endOrd: 20260715 } }])
+  })
+  // When the new entry was split into segments around a kept status, each
+  // segment calls the planner with its OWN end, but the leftover is the part
+  // past the WHOLE entry — measured per-segment it minted a tail into a later
+  // segment that then dropped it (28 Aug 26 review). entryEnd fixes it.
+  it('the leftover is measured past the whole ENTRY end, not the segment end', () => {
+    const r = med('t1', 'ATT C', 'Jul 10', 'Jul 25')
+    // segment [10,12] of an entry whose real end is Jul 20: tail is 21–25, not 13–25
+    expect(newMedTrimPlan('t1', 'ATT B', 20260710, 20260712, undefined, [r], 20260720))
+      .toEqual([{ row: r, action: 'delete', tail: { startOrd: 20260721, endOrd: 20260725 } }])
+    // omitted entryEnd still falls back to the segment end — direct callers unmoved
+    expect(newMedTrimPlan('t1', 'ATT B', 20260710, 20260712, undefined, [r])[0].tail)
+      .toEqual({ startOrd: 20260713, endOrd: 20260725 })
+  })
+  it('is identical across all four down-types as the middle status', () => {
+    for (const mid of ['ATT B', 'ATT C', 'HL', 'OML']) {
+      INPUTS.length = 0; JSON.parse(ISNAP).forEach((x: any) => INPUTS.push(x))
+      // the existing row is a DIFFERENT down-type so it always clashes
+      const base = mid === 'ATT C' ? 'HL' : 'ATT C'
+      const r = med('t1', base, 'Jul 10', 'Jul 15')
+      expect(newMedTrimPlan('t1', mid, 20260712, 20260713, undefined, []))
+        .toEqual([{ row: r, action: 'trim', newEndOrd: 20260711 }])              // removed: head only
+      expect(newMedTrimPlan('t1', mid, 20260712, 20260713, undefined, [r]))
+        .toEqual([{ row: r, action: 'trim', newEndOrd: 20260711, tail: { startOrd: 20260714, endOrd: 20260715 } }])  // kept
+    }
   })
 })
 

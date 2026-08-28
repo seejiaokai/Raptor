@@ -1316,12 +1316,20 @@ the input that caused them — one undo step):
   what "the new entry takes them" chooses — is that the new entry wins its
   days and ONLY its days (27 Aug 26 overnight pass): the older row is cut to
   end the day before the new one starts (deleted when nothing remains before
-  it), and when it also ran PAST the new one's end the surviving tail is
-  minted as a second same-type row in the same plan (same person, year
-  anchor and document). A short entry landing mid-way through a long
-  downchit no longer silently marks the man fit for its remainder.
-  `newMedTrimPlan` selects its rows through `medClashes` — the same body the
-  clash sheet lists — so the question and the cut cannot disagree.
+  it), and when it also ran PAST the new one's end the surviving tail
+  (`medTailBeyond` — one body, read by the sheet and the planner) is minted as
+  a second same-type row in the same plan (same person, year anchor and
+  document). When applied DIRECTLY (no sheet — `caldrag.ts`, hand-made commit
+  calls, the tests) that tail is ALWAYS kept: a short entry landing mid-way
+  through a long downchit must never silently mark the man fit for its
+  remainder. From the CLASH SHEET the tail is the filer's call — a per-leftover
+  **Remove (default) / Keep** (owner, 28 Aug 26): `newMedTrimPlan`'s `keepTail`
+  argument carries the rows whose tail to keep, and a removed leftover simply
+  never mints, its days reading fit — but shown on the sheet before the save,
+  never silent. The row is still cut to its head either way; only the tail
+  turns on the answer. `newMedTrimPlan` selects its rows through `medClashes`
+  — the same body the clash sheet lists — so the question and the cut cannot
+  disagree.
 - A **same-type overlap is REFUSED**, never trimmed (`medOverlapRefusal`, the
   `sansOverlapRefusal` shape): the person is told to edit the entry on file
   and attach the new document to it. Upchit-vs-upchit same day likewise. Three
@@ -1366,7 +1374,16 @@ minted as sibling rows (`mintMedSegments`, same document — the applyMedPlan
 tail idiom), each trimmed only against rows the filer chose to overwrite. A
 kept row is never trimmed BY CONSTRUCTION — the segments cannot touch it.
 Choices that leave the new entry no days at all are refused ("nothing left
-to file") and nothing is written. The whole resolution is one
+to file") and nothing is written. **The LEFTOVER** (owner, 28 Aug 26): when the
+new entry TAKES the days of a status that ran past it — ATT C 10–15, a new
+ATT B 12–13 → an ATT C tail 14–15 — the sheet asks a second question under that
+clash, **Remove those days (default) or Keep them**. This is the ONE choice on
+the sheet that carries a default (the who-holds-them choice above still forces
+an answer); the owner chose Remove because a status filed mid-way usually means
+the old plan changed, and the pending removal is shown plainly (the red seg,
+"will be removed") so a straight Save is a seen decision, never silent. Its
+answer rides the `keepTail` list into `newMedTrimPlan`/`mintMedSegments`, so the
+sheet and the write cut the same tail. The whole resolution is one
 `writeInputsBatch` undo step. The invariant this protects: **each person
 holds exactly ONE medical status per day** — overlaps are resolved at the
 write, never stored and re-interpreted at display time. Same-type overlap
