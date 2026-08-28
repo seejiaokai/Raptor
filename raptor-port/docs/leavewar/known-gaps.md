@@ -501,6 +501,13 @@ What is a contract, and what is deliberately still open:
   merged label never hides stray words a later delete would resurrect. Bands on
   one line never overlap (refused, not trimmed). `period.bands` is read
   leniently in `readWar`, so a war stored before the feature loads with none.
+  **MERGE is the default a fresh range opens on** (owner, 28 Aug 26 — "can the
+  default selection be one merged bar instead of repeat each day"), including a
+  drag-swept span; reopening an existing band already opened merged. One
+  consequence worth knowing: merge refuses an empty label and refuses a span
+  crossing another band on the line, where repeat silently skips banded days —
+  so the common mistake now gets a message instead of a partial write. Pinned
+  in `eventsheet.test.tsx` ("defaults a fresh range to one merged bar").
 - **Editing is a sheet, not inline.** An admin taps an event cell to open the
   Event sheet (`ui/EventSheet.tsx`); the old inline textareas are gone. A
   member still only reads. The sheet also carries the type-library editor

@@ -55,6 +55,25 @@ describe('a range', () => {
     expect(dayEvents('2026-01-08')[0]).toBe('')
   })
 
+  /* A FRESH RANGE OPENS ON ONE MERGED BAR (owner, 28 Aug 26 — "can the
+     default selection be one merged bar instead of repeat each day"). The
+     mode chips are deliberately never touched here: pressing Save alone must
+     leave a bar, not the word copied into every covered day. */
+  it('defaults a fresh range to one merged bar', () => {
+    openEvent(0, '2026-01-05')
+    fireEvent.change(screen.getByTestId('event-text'), { target: { value: 'Exercise' } })
+    fireEvent.click(screen.getByTestId('event-scope-range'))
+    expect(screen.getByTestId('event-mode-merge').className).toContain('approve')
+    expect(screen.getByTestId('event-mode-repeat').className).not.toContain('approve')
+    fireEvent.click(screen.getByTestId('event-day-2026-01-05'))
+    fireEvent.click(screen.getByTestId('event-day-2026-01-07'))
+    fireEvent.click(screen.getByTestId('event-apply'))
+    expect(getState().period.bands.find(b => b.line === 0))
+      .toMatchObject({ from: '2026-01-05', to: '2026-01-07', text: 'Exercise' })
+    // and nothing was repeated into the days underneath it
+    expect(dayEvents('2026-01-06')[0]).toBe('')
+  })
+
   it('makes one merged bar', () => {
     openEvent(0, '2026-01-05')
     fireEvent.change(screen.getByTestId('event-text'), { target: { value: 'Exercise' } })
