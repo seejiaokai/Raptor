@@ -4149,6 +4149,26 @@ BidPicker's look and vocabulary, not instead of it.
   (`eventsEnabled` — the store refuses a member event write anyway). Pins:
   `parseEventCell` / `eventRange` in `select.test.ts`; the sheet seed reads
   `EventSheet`'s new optional `to` prop.
+## The grid keeps scrolling sideways under an open sheet (owner, 28 Aug 26 — "I want to be able to still scroll left and right … on the grids … while the page is still up")
+
+Every Leave War decision opens in a bottom `Sheet` over a full-page `.sheetscrim`
+(`ui/Sheet.tsx`). The scrim has to keep SWALLOWING gestures on the grid — a tap
+dismisses, and a bare grid tap behind an open sheet would otherwise open a
+second cell sheet or start a drag-select under the one already up — so it cannot
+simply become `pointer-events: none`. Instead it keeps capturing and FORWARDS
+the sideways ones by hand (`useGridPan`): a horizontal drag moves the grid's one
+horizontal scroller (`.mx-wrap`) 1:1, and on desktop a horizontal (or shift-)
+wheel does the same. Everything the frozen date bar tracks is driven off
+`.mx-wrap.scrollLeft`, so the mirror follows for free — verified live at 1440px
+and 402px, sheet up, drag AND wheel, including while the header is frozen (28 Aug
+26). What stays: UP-DOWN is still locked (the one-scroll rule — the page must not
+jump under a reader; the owner asked only for left-right), so a vertical drag
+moves nothing; a gesture that never crossed the ~6px threshold is a tap and still
+dismisses (a drag's trailing click is swallowed via `movedRef` so a scroll never
+closes the sheet). The small legend / manning pop-outs use a different, lighter
+overlay (`.umscrim`, `ui/Chrome.tsx`) and are OUT of scope — they are quick
+toggles, not a sheet you read the grid behind. Pinned in `scrim.test.tsx`.
+
 ## The frozen date bar — the reusable recipe (owner, 28 Aug 26 — "make sure u remember how to create such a frozen top bar in the future. This is the expectation")
 
 This is the pattern the owner signed off on the preview and asked kept for

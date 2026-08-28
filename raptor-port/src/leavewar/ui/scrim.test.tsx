@@ -148,3 +148,46 @@ describe('clicking outside a sheet closes it', () => {
     expect(getState().states.asics['2026-01-23']?.state).toBe(before)
   })
 })
+
+// The grid keeps scrolling sideways while a sheet is up (owner, 28 Aug 26).
+// A horizontal DRAG on the scrim forwards onto the grid and leaves the sheet
+// up; only a plain TAP (no movement) still dismisses.
+describe('a sideways drag scrolls the grid, it does not dismiss', () => {
+  it('keeps the sheet up when the scrim is dragged left-right', () => {
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId('counter-pick'))
+    expect(screen.getByTestId('counter-sheet')).toBeTruthy()
+    const s = scrim()
+    fireEvent.pointerDown(s, { clientX: 260, clientY: 300, pointerId: 1 })
+    fireEvent.pointerMove(s, { clientX: 160, clientY: 302, pointerId: 1 }) // 100px left, ~horizontal
+    fireEvent.pointerUp(s, { clientX: 160, clientY: 302, pointerId: 1 })
+    fireEvent.click(s) // the trailing click a mouse drag produces
+    expect(screen.queryByTestId('counter-sheet')).toBeTruthy()
+  })
+
+  it('still closes on a plain tap with no drag', () => {
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId('counter-pick'))
+    const s = scrim()
+    fireEvent.pointerDown(s, { clientX: 260, clientY: 300, pointerId: 1 })
+    fireEvent.pointerUp(s, { clientX: 260, clientY: 300, pointerId: 1 })
+    fireEvent.click(s)
+    expect(screen.queryByTestId('counter-sheet')).toBeNull()
+  })
+
+  it('forwards the drag distance onto the grid scroller', () => {
+    render(<Matrix />)
+    const wrap = document.querySelector('.mx-wrap') as HTMLElement
+    // jsdom has no layout, so scrollLeft is inert — make it a real number for
+    // the length of this test so the forwarding can be observed.
+    let sl = 0
+    Object.defineProperty(wrap, 'scrollLeft', { configurable: true, get: () => sl, set: v => { sl = v } })
+    wrap.scrollLeft = 500
+    fireEvent.click(screen.getByTestId('counter-pick'))
+    const s = scrim()
+    fireEvent.pointerDown(s, { clientX: 300, clientY: 300, pointerId: 1 })
+    fireEvent.pointerMove(s, { clientX: 200, clientY: 300, pointerId: 1 }) // dragged 100px left
+    // started at 500, dragged 100px left → scrollLeft = 500 − (−100) = 600
+    expect(wrap.scrollLeft).toBe(600)
+  })
+})
