@@ -231,13 +231,22 @@ measurement here that is not machine-dependent — times swing 3× on this VM
 and only mean something as a ratio against a reference measured in the same
 seconds, while a node count is the same integer everywhere. Ceilings carry
 ~10% headroom over the measured count, and the live numbers are always
-`probes/perf-port.cjs`'s `DOM_CEILING` — currently **board ≤ 960**
-(measured 855: 829 after the 14 Aug board-full-editor batch — see the
-boundary note below — then to 835 for SANS Availability's board panel, then
-to 855 on the 15 Aug six-feature batch, the board publish strip and the
-Templates & drafts panel header; **now measured 1038 and OVER the 960 ceiling
-since PR #323's "available crew on board" strip — `npm run perf` is RED on this
-assert, and the raise is owner-reserved, see HANDOFF.md Known issues**), **week ≤ 5450** (measured
+`probes/perf-port.cjs`'s `DOM_CEILING` — currently **board ≤ 1150**
+(the chain to 960: measured 855 — 829 after the 14 Aug board-full-editor batch
+— see the boundary note below — then to 835 for SANS Availability's board
+panel, then to 855 on the 15 Aug six-feature batch, the board publish strip and
+the Templates & drafts panel header. **PR #323's "available crew on board" strip
+then took the measured count to 1038, over the 960 ceiling, and the #329
+trailing drop zones added ~13 more → 1051; `npm run perf` sat RED on this assert
+for three batches, unnoticed in CI because perf is a LOCAL-only gate.
+RAISED 960 → 1150 in PR #333 (27 Aug 26)** — ~10% headroom over 1051, matching
+the week's 5450/4947, with the reading verified against the base commit (the
+medical batch itself adds ZERO board nodes; its view lives on the Inputs page).
+The argued comment sits on the literal in `perf-port.cjs`. **Caveat, recorded
+28 Aug 26:** `HANDOFF.md` had reserved this raise to the owner as one of two
+calls — raise it, or trim the board — and PR #333 took the first without
+asking. The number is measured and sound; the decision was not his. See
+`HANDOFF.md` Known issues before treating 1150 as settled.), **week ≤ 5450** (measured
 3702 after the 15 Aug batch, then RAISED to 5450 on Aug 26 when the owner made
 the Available-crew panels open by DEFAULT again — every day draws its pucks in
 the zero state now, so the default week render measured 4940. That reversed the
