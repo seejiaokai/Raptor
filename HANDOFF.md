@@ -24,24 +24,37 @@ purpose: it is exactly the closed-work narrative the charter above bans, and
 it lives in `git log` where it belongs. Restate a count only from a run you
 watched — this file's history twice recorded a count that was wrong.
 
-**Last recorded green baseline** (28 Aug 26, the medical-tracker → bug-sweep
-session, PRs #333/#334/#335 — the Upchit lifecycle with mandatory documents
-and the Medical view, the two medical confirm sheets, Leave-War drag-select
-with its batch writers, the published remarks editor, the Leave War group
-editor / category fold / Legend glossary, the configurable Inputs look-ahead,
-and the closing bug sweep; all six gates re-run and watched at the handoff):
+**Last recorded green baseline** (28 Aug 26, overnight — the OIL rework
+session: FS/HS → FO/HO, the uniform pooled-hours rule, the widened
+auto-credit set, the ALL puck, the input ask-flow + retro bell, the docs
+pass and the closing fresh-eyes bug pass; all six gates re-run and watched
+at the close):
 
 | gate | reading |
 |---|---|
-| `npm test` | 3433 across 199 files — two vitest projects: raptor + leavewar |
+| `npm test` | 3468 across 200 files — two vitest projects: raptor + leavewar |
 | `node reference/tfin.js` | 728/0 (the reference is read-only; the "Ground Programme" title trim rides the tolerant normaliser in `html.test.ts`) |
 | `npm run build` | clean |
-| `npm run test:e2e` | 338 passed / 19 touch-only skips — three playwright projects: raptor geometry, lw-phone, lw-desktop (`e2e/medical.spec.ts` joined the raptor project on 27 Aug 26) |
-| `probes:adapted` | **all 6 GREEN**, unchanged from the 26 Aug 26 pass — nothing needed re-adapting this session. **Read the LAST line, not the last tally**: each probe prints its own count as it finishes (`wrap-async` ends `36 passed · 0 failed`), and the suite's verdict is the line after it, `all 6 adapted probes passed`. Three commit messages this session copied `36/0` into the gate line as if it were the suite total; it is one probe's. |
-| `perf` | **4/0** — week DOM 4947 ≤ 5450, board DOM 1051 ≤ **1150**. The board ceiling was raised from 960 in PR #333 with a measurement; the raise itself was never put to the owner, which the Known issues entry below had reserved to him — see it before treating 1150 as settled. Timings held (board per-node 0.57×, oneEdit 1.48×). |
+| `npm run test:e2e` | 338 passed / 19 touch-only skips — three playwright projects: raptor geometry, lw-phone, lw-desktop. NOTE: a mid-session chain run showed 2 lw-phone reds against a build that predated the bug-pass fixes (the un-gated cross-lane notify repainting mid-gesture); both passed individually and the full suite passed whole against the fixed build — if they ever red again, suspect a stray repaint mid-tap first. |
+| `probes:adapted` | **all 6 GREEN** — `aar-async` was re-adapted this session (its palette sentinel filter matched ids by SUBSTRING, so the new ALL puck read as a currency-less pilot; whole-id match now). **Read the LAST line, not the last tally**: each probe prints its own count as it finishes (`wrap-async` ends `36 passed · 0 failed`), and the suite's verdict is the line after it, `all 6 adapted probes passed`. |
+| `perf` | **4/0** — board DOM 1051 ≤ **1150** (the ceiling is a SETTLED owner decision since 28 Aug 26 — CLAUDE.md §Stable decisions; the ALL puck's one extra rpuck is noise against it). |
 
-Reconciles against the 3170/184, 324/12 reading this replaces (the 26 Aug 26
-handoff): +263 vitest pins across +15 files, and e2e 324 → 338 / 12 → 19.
+Reconciles against the 3433/199, 338/19 reading this replaces (the same
+day's medical-tracker → bug-sweep session): +35 vitest pins across +1 file —
+`ui/oilconfirm.test.tsx` (15: the ask gates every save, one undo step, the
+some-days grid, the void rules, the bell flow), `leavewar/oilsync.test.ts`
+13 → 25 (input credits, pooling, GC, the PH revoke, the storage round-trip,
+the ALL expansion exclusions), `engine/oil.test.ts` reshaped for the uniform
+rule (the scShiftCredit block deleted, flying-earns inverted, union pins
+added), plus singles in `ruleflex` (the oilFullMin knob via dayOilCredits),
+`palette.test.ts` (both sentinels) and `scshift-inputs.test.ts` (the ALL
+puck raises nothing). E2e unchanged at 338/19 — the feature ships no new
+e2e (jsdom pins + the probe path cover it; the OilConfirm sheet is
+unreachable from every existing spec, verified in the bug pass).
+
+The chain before this reconciled the 3433/199 against the 3170/184, 324/12
+reading (the 26 Aug 26 handoff): +263 vitest pins across +15 files, and
+e2e 324 → 338 / 12 → 19.
 The bulk is the medical tracker (#333) — `medical.test.ts`, `medwrite.test.ts`,
 `upchit.test.ts`, `upconfirm.test.tsx`, `docs.test.ts`, `docviewer.test.tsx`,
 `medicalview.test.tsx`, `demomed.test.ts`, `roletoggle.test.tsx`, plus the new
