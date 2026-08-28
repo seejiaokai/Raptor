@@ -2149,14 +2149,23 @@ test('on a phone the header freezes under the top bar and thaws on the way back'
   const bar = (await page.locator('.topbar').first().boundingBox())!
   const mb = (await mirror.boundingBox())!
   expect(Math.abs(mb.y - (bar.y + bar.height))).toBeLessThan(2)
-  // it follows the grid's horizontal scroll
+  // it follows the grid's horizontal scroll — on the compositor by TRANSFORM
+  // where CSS scroll-driven animations exist (`.mxfixed-anim`, the glued path),
+  // else by the JS mirror's own scrollLeft (the fallback).
   await page.evaluate(() => { document.querySelector('.mx-wrap')!.scrollLeft = 400 })
   await page.waitForTimeout(200)
-  expect(await page.evaluate(() => document.querySelector('.mxfixed-scroll')!.scrollLeft)).toBe(400)
-  // and its columns sit exactly over the grid's
+  const followed = await page.evaluate(() => {
+    const anim = document.querySelector('.mxfixed-anim') as HTMLElement | null
+    if (anim) return { mode: 'sda', tx: new DOMMatrixReadOnly(getComputedStyle(anim).transform).m41 }
+    return { mode: 'js', sl: (document.querySelector('.mxfixed-scroll') as HTMLElement).scrollLeft }
+  })
+  if (followed.mode === 'sda') expect(Math.abs((followed.tx as number) + 400)).toBeLessThan(3)
+  else expect(followed.sl).toBe(400)
+  // and its columns sit exactly over the grid's (scoped to the scrolling layer,
+  // so the scroll-driven path's static frozen-column overlay is not picked)
   const real = (await page.locator('[data-testid="head-2026-01-20"]').boundingBox())!
   const ghost = await page.evaluate(() => {
-    const cells = document.querySelectorAll('.mxfixed .mxhead tr:last-child th')
+    const cells = document.querySelectorAll('.mxfixed-scroll .mxhead tr:last-child th')
     for (const c of cells) {
       if (c.textContent!.includes('20')) return c.getBoundingClientRect().x
     }

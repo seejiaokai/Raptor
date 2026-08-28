@@ -1340,6 +1340,68 @@
   display: none;
 }
 
+/* ---- the scroll-DRIVEN frozen bar (owner, 28 Aug 26 — "the top bar not
+   catching up to the horizontal scroll … glue it, keep the feel") -----------
+
+   The JS mirror above FOLLOWS the grid one frame behind, because the grid
+   scrolls on the compositor while the follow runs on the main thread — on a
+   fast fling that gap reads as the date bar trailing the columns by a column
+   or two, then snapping into place when you stop. These rules remove the
+   follow entirely on browsers that can drive an animation from a scroll
+   position (CSS scroll-driven animations): the grid's own horizontal scroll
+   IS the timeline, and the bar's day columns are translated by it on the
+   compositor, so the two move as one with nothing to catch up. Gated by
+   `.lw-sda`, added to `.mx-outer` only when the JS feature-detect passes
+   (Matrix.tsx `sdaActive`); without it, the JS mirror above is used unchanged.
+
+   `.mx-wrap` names its horizontal scroll `--lwx`; `.mx-outer` (the nearest
+   common ancestor of the scroller and the fixed bar, which is NOT a
+   descendant of the scroller) hoists that name into scope with `timeline-scope`
+   so the bar can bind to it. The travel distance `--lwx-max` is the grid's max
+   scrollLeft, set from JS on layout changes (Matrix.tsx measureStripGeo). */
+.mx-outer.lw-sda { timeline-scope: --lwx; }
+.mx-outer.lw-sda .mx-wrap { scroll-timeline: --lwx x; }
+
+/* In the scroll-driven path the layer is TRANSLATED, not scrolled — so it must
+   not be a scroller (an overflow scroller would clip/scroll instead). */
+.lw-sda .mxfixed-track {
+  overflow: hidden;
+  touch-action: auto;
+}
+.lw-sda .mxfixed-anim {
+  animation: lwx-follow linear both;
+  animation-timeline: --lwx;
+  will-change: transform;
+  /* keep the translated layer crisp during an iOS momentum fling */
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+/* @keyframes lwx-follow is defined at the FILE'S TOP LEVEL, past the closing
+   brace below — a keyframes at-rule cannot live inside this file's
+   `#page-leavewar { … }` nesting wrapper (invalid CSS; the minifier rejects
+   it). Keyframe names are global, so `animation: lwx-follow` here still binds
+   to it. */
+/* The scrolling layer's own frozen columns are covered by the static overlay
+   below and must not steal its taps — the overlay carries the live counter
+   picker while the grid is scrolled sideways. */
+.lw-sda .mxfixed-anim .who,
+.lw-sda .mxfixed-anim .bal { pointer-events: none; }
+
+/* The bar's frozen LEFT columns, drawn as a static copy pinned over the left
+   and clipped to their own width (set inline), so the translated day columns
+   pass UNDER them. Opaque and above the scrolling layer; aria-hidden (the
+   scrolling layer stays the one accessible copy — see the render note). Only
+   ever present under `.lw-sda`. */
+.mxfixed-frozen {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  overflow: hidden;
+  z-index: 4;
+  background: var(--panel-2);
+}
+
 /* ---- the frozen roster columns, drawn once (owner, 20 Aug 26 — the third
    look at the sideways stutter) --------------------------------------------
 
@@ -1459,4 +1521,14 @@
   border-color: rgba(59, 198, 232, .55);
 }
 
+}
+
+/* TOP LEVEL — outside the #page-leavewar nesting wrapper above (a @keyframes
+   at-rule is invalid nested inside a style rule). Drives the scroll-linked
+   frozen bar: the .lw-sda .mxfixed-anim table translates from 0 to the grid's
+   max scrollLeft (--lwx-max, set from JS) across the grid's whole scroll range,
+   so the bar's day columns ride the grid's own compositor scroll. See the
+   `.lw-sda` rules above. */
+@keyframes lwx-follow {
+  to { transform: translateX(calc(-1 * var(--lwx-max, 0) * 1px)); }
 }

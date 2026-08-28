@@ -568,6 +568,24 @@ export function Matrix() {
   const mirrorRef = useRef<HTMLDivElement>(null)
   const [stuck, setStuck] = useState<{ top: number; left: number; width: number; cols: number[] } | null>(null)
 
+  // Can this browser drive the frozen bar's horizontal follow on the COMPOSITOR
+  // via a CSS scroll-driven animation (owner, 28 Aug 26 — "the top bar not
+  // catching up to the horizontal scroll … glue it, keep the feel")? When yes,
+  // the bar's day columns are TRANSLATED by the grid's own scroll timeline, so
+  // they stay locked to the grid during a fling instead of the main-thread JS
+  // follow lagging a frame or two behind (which is what he saw). When no (older
+  // browsers, and jsdom — where CSS.supports is absent/false), we fall back to
+  // the JS mirror below, unchanged. Detected once: support does not change mid
+  // session. `scroll-timeline` + `timeline-scope` together are the two features
+  // the approach needs (a named timeline on the scroller, hoisted into scope for
+  // the fixed bar, which is not a descendant of the scroller).
+  const [sdaActive] = useState(() => {
+    try {
+      return typeof CSS !== 'undefined' && typeof CSS.supports === 'function' &&
+        CSS.supports('scroll-timeline: --x x') && CSS.supports('timeline-scope: --x')
+    } catch { return false }
+  })
+
   // ---- the desktop horizontal scrollbar, pinned to the foot of the SCREEN
   // (owner, 22 Aug 26: "on desktop the horizontal scroll is not tagged to the
   // screen. I need to scroll all the way down to scroll") ---------------------
@@ -632,8 +650,20 @@ export function Matrix() {
   // ping-ponging.
   useEffect(() => {
     if (stuck && mirrorRef.current && wrapRef.current) {
-      mirrorRef.current.scrollLeft = wrapRef.current.scrollLeft
+      const w = wrapRef.current
+      if (sdaActive) {
+        // Scroll-driven path: the track must NOT be scrolled (the inner table is
+        // translated instead — a scrollLeft here would double the travel). Just
+        // make sure the bar knows the grid's travel the instant it appears, so
+        // its very first painted frame is already in step; a stale or zero
+        // --lwx-max would pin the day columns at the left until the next layout.
+        mxOuterRef.current?.style.setProperty('--lwx-max', String(Math.max(0, (w.scrollWidth - w.clientWidth) / zoom)))
+      } else {
+        // JS-mirror fallback: start the mirror at the grid's position.
+        mirrorRef.current.scrollLeft = w.scrollLeft
+      }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stuck])
 
   // The bottom scrollbar starts at the grid's current position the moment it
@@ -667,6 +697,11 @@ export function Matrix() {
   // (grid → mirror) is all that remains, and setting the mirror's own scrollLeft
   // never touches the grid.
   const syncMirror = () => {
+    // In the scroll-driven path the bar's inner table is TRANSLATED by the grid's
+    // scroll timeline (compositor). Writing the track's scrollLeft here too would
+    // move it a SECOND time — the day columns would travel double and shoot off
+    // the left. The animation owns the follow; there is nothing to sync.
+    if (sdaActive) return
     const m = mirrorRef.current, w = wrapRef.current
     if (m && w && m.scrollLeft !== w.scrollLeft) m.scrollLeft = w.scrollLeft
   }
@@ -884,6 +919,15 @@ export function Matrix() {
   const measureStripGeo = () => {
     const wrap = wrapRef.current
     if (!wrap || months.length === 0 || dates.length === 0) { stripGeoRef.current = null; return }
+    // The scroll-driven frozen bar (sdaActive) translates its day columns from 0
+    // to -(--lwx-max)px across the grid's whole scroll range, so --lwx-max must
+    // equal the grid's max scrollLeft — divided back out of the mirror table's
+    // own zoom, since the transform lands in that table's zoomed local space
+    // (mirror render below). It only shifts on a real layout change (resize,
+    // zoom, row-window, war), which is exactly when this runs; never per frame.
+    if (sdaActive) {
+      mxOuterRef.current?.style.setProperty('--lwx-max', String(Math.max(0, (wrap.scrollWidth - wrap.clientWidth) / zoom)))
+    }
     const wr = wrap.getBoundingClientRect()
     const sl = wrap.scrollLeft
     // viewport px -> content px: constant across any scroll position
@@ -1437,7 +1481,7 @@ export function Matrix() {
           )}
         </div>
         <div
-          className={`mx-outer${bandActive && bandTop != null ? ' mx-banded' : ''}`}
+          className={`mx-outer${bandActive && bandTop != null ? ' mx-banded' : ''}${sdaActive ? ' lw-sda' : ''}`}
           ref={mxOuterRef}
         >
         <div
@@ -1802,38 +1846,64 @@ export function Matrix() {
             sticky machinery. Sits under the top bar (z 55 < the bar's 60 and
             the sheets' 79/80) and never renders in jsdom, where nothing has
             a height to scroll past. */}
-        {stuck && (
-          <div
-            className="mxfixed"
-            data-testid="sticky-head"
-            style={{ top: stuck.top, left: stuck.left, width: stuck.width }}
-          >
-            <div className="mxfixed-scroll" ref={mirrorRef}>
-              {/* The measured widths are visual px (they include the zoom),
-                  and the mirror table wears the same zoom so its text sizes
-                  match — so its layout widths are the measurements divided
-                  back out, or the zoom would apply twice. */}
-              <table
-                className="mx"
-                style={{
-                  tableLayout: 'fixed',
-                  width: stuck.cols.reduce((a, b) => a + b, 0) / zoom,
-                  ...(zoom !== 1 ? { zoom } : null),
-                }}
-              >
-                <colgroup>
-                  {stuck.cols.map((w, i) => (
-                    <col key={i} style={{ width: w / zoom }} />
-                  ))}
-                </colgroup>
-                <tbody className="mxhead">
-                  {bracketRow(false)}
-                  {headerRow(false)}
-                </tbody>
-              </table>
+        {stuck && ((s: { top: number; left: number; width: number; cols: number[] }) => {
+          // The measured widths are visual px (they include the zoom), and the
+          // mirror table wears the same zoom so its text sizes match — so its
+          // layout widths are the measurements divided back out, or the zoom
+          // would apply twice.
+          const totalW = s.cols.reduce((a, b) => a + b, 0) / zoom
+          const table = (extra: string) => (
+            <table
+              className={`mx${extra ? ' ' + extra : ''}`}
+              style={{ tableLayout: 'fixed', width: totalW, ...(zoom !== 1 ? { zoom } : null) }}
+            >
+              <colgroup>
+                {s.cols.map((w, i) => (
+                  <col key={i} style={{ width: w / zoom }} />
+                ))}
+              </colgroup>
+              <tbody className="mxhead">
+                {bracketRow(false)}
+                {headerRow(false)}
+              </tbody>
+            </table>
+          )
+          return (
+            <div
+              className="mxfixed"
+              data-testid="sticky-head"
+              style={{ top: s.top, left: s.left, width: s.width }}
+            >
+              {/* The scrolling layer. In the JS-mirror fallback this is a real
+                  horizontal scroller (matrix.css) and `syncMirror` writes its
+                  scrollLeft. In the scroll-driven path (`.lw-sda`) it does not
+                  scroll — the `.mxfixed-anim` table inside is TRANSLATED by the
+                  grid's scroll timeline on the compositor, so it stays glued to
+                  the grid during a fling with no main-thread follow. */}
+              <div className={`mxfixed-scroll${sdaActive ? ' mxfixed-track' : ''}`} ref={mirrorRef}>
+                {table(sdaActive ? 'mxfixed-anim' : '')}
+              </div>
+              {/* The bar's frozen LEFT columns, in the scroll-driven path only.
+                  A translated table cannot keep `position: sticky`, so the
+                  callsign + counter columns are drawn as a static copy pinned
+                  over the left and clipped to their own width; the day columns
+                  translate UNDER it. It is the tappable/opaque copy (the counter
+                  picker still works while scrolled); the scrolling layer's own
+                  who/bal are made pointer-events:none in matrix.css so taps land
+                  here, and this copy is aria-hidden so the scrolling layer stays
+                  the single accessible one. */}
+              {sdaActive && (
+                <div
+                  className="mxfixed-frozen"
+                  aria-hidden="true"
+                  style={{ width: (s.cols[0] || 0) / zoom + (s.cols[1] || 0) / zoom }}
+                >
+                  {table('')}
+                </div>
+              )}
             </div>
-          </div>
-        )}
+          )
+        })(stuck)}
         {/* The frozen roster columns, drawn once. Sibling of `.mx-wrap`, not a
             child — a child would ride the sideways scroll it exists to sit out.
             aria-hidden and its buttons out of the tab order: the REAL columns

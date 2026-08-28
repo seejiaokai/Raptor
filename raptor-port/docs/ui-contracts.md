@@ -4173,6 +4173,31 @@ BidPicker's look and vocabulary, not instead of it.
   frames. The alternative — a real inner scroll box that CSS `sticky` could pin
   for free — was declined by the owner (it reintroduces the nested-scroller feel
   he rejected on 10 Aug).
+- **On browsers with CSS scroll-driven animations, the bar's horizontal follow
+  is COMPOSITOR-driven, not JS** (owner, 28 Aug 26 — a screenshot showing the
+  date bar trailing the grid mid-fling: "the top bar not catching up … glue it,
+  keep the feel"). This supersedes the "true zero latency is not reached" caveat
+  above FOR THOSE BROWSERS: the JS mirror only *follows* the grid (main thread,
+  a frame behind the compositor fling — which is the trailing he saw at rest in
+  a caught frame, ~2 columns, snapping back on stop). Instead `.mx-wrap` names
+  its horizontal scroll as a `scroll-timeline` (`--lwx`), `.mx-outer` hoists that
+  name into scope with `timeline-scope` (the fixed bar is not a descendant of
+  the scroller), and the bar's day columns are TRANSLATED from 0 to the grid's
+  max scrollLeft (`--lwx-max`, set from JS on layout changes only) across the
+  grid's whole scroll range — so grid.scrollLeft ↦ translateX(−scrollLeft) on
+  the compositor, glued with nothing to catch up (measured drift 0→~3px across a
+  ~10,000px range, the same sub-pixel rounding the JS path has at rest). A
+  translated table can't keep `position: sticky`, so in this path the frozen
+  callsign+counter columns are a static, opaque, clipped COPY pinned over the
+  left (`.mxfixed-frozen`); the scrolling layer's own who/bal are
+  `pointer-events:none` so the copy carries the (still-working) counter picker,
+  and the copy is aria-hidden so the scrolling layer stays the one accessible
+  set. Gated by `.lw-sda` (JS `sdaActive` feature-detects `scroll-timeline` +
+  `timeline-scope`); when absent — older browsers, and jsdom — the JS mirror
+  above is used UNCHANGED, so nothing regresses where the feature is missing.
+  `@keyframes lwx-follow` lives at the file's TOP LEVEL (a keyframes at-rule is
+  invalid inside this file's `#page-leavewar { … }` nesting wrapper; the minifier
+  rejects it — keyframe names are global, so the binding still resolves).
 - **The day-column headers are `position: static`, NOT sticky** (owner, 28 Aug
   26 — a second recording, "seems pretty laggy still": the sideways swipe felt
   janky). Diagnosis: the recording was NOT the frozen mirror at all — the whole
