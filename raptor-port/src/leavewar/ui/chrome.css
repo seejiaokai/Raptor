@@ -110,6 +110,42 @@
   flex-wrap: wrap;
 }
 
+/* WHOSE view this is — the persistent viewer badge (owner, 28 Aug 26 — "make
+   it obvious that im viewing as for example RANGER"). Pushed to the far right
+   of the period row and accent-tinted so it stands apart from the neutral
+   period picker and reads as status, not another control. */
+.lw-viewing {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 11px;
+  border-radius: 11px;
+  background: rgba(59, 198, 232, .12);
+  border: 1px solid rgba(59, 198, 232, .45);
+  white-space: nowrap;
+}
+
+.lw-viewing .eye {
+  color: var(--accent);
+  flex: 0 0 auto;
+}
+
+.lw-viewing .vlab {
+  color: var(--ink-3);
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.lw-viewing .vwho {
+  color: var(--accent);
+  font-weight: 800;
+  letter-spacing: .04em;
+  font-size: 12.5px;
+}
+
 .wk {
   background: var(--panel-2);
   border: 1px solid var(--edge);

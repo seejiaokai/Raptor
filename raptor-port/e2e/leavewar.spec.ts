@@ -1107,9 +1107,16 @@ test('the viewer\'s row is lit and the title sheet answers with their numbers', 
   const other = await page.locator('[data-testid="row-prowler"] .who').evaluate(el => getComputedStyle(el).backgroundColor)
   expect(bg).not.toBe(other)
 
+  // The persistent viewer badge names whose page this is (owner, 28 Aug 26).
+  await expect(page.locator('[data-testid="lw-viewing"]')).toContainText('Ranger')
+
   await page.locator('[data-testid="counter-pick"]').click()
-  await expect(page.locator('[data-testid="counter-sheet"]')).toContainText('your numbers — Ranger')
-  await expect(page.locator('[data-testid="counter-lvebal"]')).toContainText('yours')
+  // The picker leads with VIEWING AS <callsign> (28 Aug 26), not a grey aside.
+  await expect(page.locator('[data-testid="counter-viewer"]')).toContainText('VIEWING AS')
+  await expect(page.locator('[data-testid="counter-viewer"]')).toContainText('Ranger')
+  // The row still answers with the viewer's own number; "left" is the balance's
+  // word (the per-row "yours" was dropped for the header, 28 Aug 26).
+  await expect(page.locator('[data-testid="counter-lvebal"]')).toContainText('left')
   await page.locator('[data-testid="counter-cancel"]').click()
 
   await page.locator('[data-testid="person-prowler"]').click()
@@ -1438,13 +1445,15 @@ test('the counter control is a real tap target on a phone', async ({ page }) => 
 
   await page.locator('[data-testid="counter-pick"]').click()
   await expect(page.locator('[data-testid="counter-sheet"]')).toBeVisible()
-  // And every row in the sheet clears the 44px a thumb needs: the wrap spans
-  // the sheet, and the select button inside it is tall enough to hit.
+  // The picker was compressed on 28 Aug 26 (owner — "much smaller and compress
+  // the data"): the generic captions are gone and the rows pull down to a
+  // dense-but-tappable height, below the 44px action-sheet floor on purpose.
+  // Still a real target — a scannable list of the viewer's own figures.
   for (const c of ['ll', 'lvebal', 'lvecon']) {
     const wrap = (await page.locator(`[data-testid="figrow-${c}"]`).boundingBox())!
-    expect(wrap.width).toBeGreaterThanOrEqual(240)
+    expect(wrap.width).toBeGreaterThanOrEqual(220)
     const crow = (await page.locator(`[data-testid="counter-${c}"]`).boundingBox())!
-    expect(crow.height).toBeGreaterThanOrEqual(44)
+    expect(crow.height).toBeGreaterThanOrEqual(28)
   }
 })
 
@@ -2032,27 +2041,17 @@ test('an admin auto-sorts and hand-drags the roster; a member gets neither tool'
   await expect(page.locator('[data-testid="roster-arrange"]')).toHaveCount(0)
 })
 
-test('an admin gives a personnel body a free-text label', async ({ page }) => {
-  // The personnel label is an EDITING aid only since 26 Aug 26 (owner —
-  // "just indicate the callsign/name for the left column. No need to
-  // indicate initials or flight"): its edit box appears while Rearranging,
-  // and the roster at rest shows callsign + chip and nothing else, at every
-  // width. The edit path is desktop-only, as before; on a phone assert the
-  // at-rest absence instead.
-  if (page.viewportSize()!.width < 700) {
-    await expect(page.locator('[data-testid="perslabel-torque"]')).toHaveCount(0)
-    return
-  }
+test('a personnel row shows its callsign, with no edit box, in Rearrange', async ({ page }) => {
+  // The free-text label editor was REMOVED (owner, 28 Aug 26 — "i can edit
+  // personnel, dont need to show that, just leave it as the callsign/name").
+  // A ground-crew row shows the same callsign + chip as every other row, in
+  // Rearrange too — no edit box in either mode, at every width.
   await lwRole(page, 'admin')
+  await expect(page.locator('[data-testid="perslabel-in-torque"]')).toHaveCount(0)
   await page.locator('[data-testid="roster-arrange"]').click()
-  const inp = page.locator('[data-testid="perslabel-in-torque"]')
-  await inp.fill('Avionics')
-  await inp.press('Enter')
-  await page.locator('[data-testid="roster-arrange"]').click() // leave arrange → callsign only
-  await expect(page.locator('[data-testid="perslabel-torque"]')).toHaveCount(0)
-  // the text still SAVED — re-entering Rearrange offers it back in the box
-  await page.locator('[data-testid="roster-arrange"]').click()
-  await expect(page.locator('[data-testid="perslabel-in-torque"]')).toHaveValue('Avionics')
+  await expect(page.locator('[data-testid="perslabel-in-torque"]')).toHaveCount(0)
+  // the callsign is what the name column shows
+  await expect(page.locator('[data-testid="row-torque"] .cs')).toHaveText('Ratchet')
   await page.locator('[data-testid="roster-arrange"]').click() // leave arrange mode
 })
 

@@ -4210,6 +4210,54 @@ OUT of scope. Pinned in `scrim.test.tsx` (drag-forward, no lock, movable) and
 `e2e/leavewar.spec.ts` ("the page scrolls behind an open sheet, and the panel
 stays put").
 
+## Leave War Rearrange + the counter picker (owner, 28 Aug 26)
+
+Four asks from the same sitting, all on the Leave War grid:
+
+- **The counter picker is COMPACT** ("much smaller and compress the data"). It
+  takes the `Sheet` `narrow` variant (min 360px), and each row lost the caption
+  that merely restated the top `USED = days taken · BAL = balance left` key —
+  only the AGGREGATES keep a caption, because theirs is the composition
+  (`= ATT C + HL + OML`) the owner asked for. The per-row ", yours" is gone too:
+  the header says whose numbers these are, once, instead of twelve times. The
+  real height floor turned out to be the ▲▼ figure-reorder arrows (two stacked
+  20px buttons pinned every row at ~42px however tight the text), so those are
+  shrunk in narrow mode. Rows now measure 30px and the sheet 587px (was 701).
+  The e2e floor moved 44 → 28 deliberately: these are the viewer's own figures,
+  a list you SCAN, not the action sheets' tap rows (those keep their 44px).
+- **Whose view it is, said out loud** ("make it obvious that im viewing as for
+  example RANGER"). The whole grid — the lit row, the counter column, the figure
+  sheets — answers for the viewing person (Raptor's "View as", mirrored in), and
+  nothing said so. Now: a persistent accent chip in the Leave War topbar
+  (`lw-viewing`, `ui/Chrome.tsx`) and the picker header leads with **VIEWING AS
+  &lt;callsign&gt;**. Both are ABSENT when nobody in the roster is being viewed —
+  there is no "you" to name, mirroring the picker's existing dash rule.
+- **No personnel label editor** ("i can edit personnel, dont need to show that,
+  just leave it as the callsign/name"). In Rearrange a ground-crew row used to
+  turn its name column into a "Maint / Line" edit box; `PersLabel` is deleted, so
+  the row shows the same callsign + chip as every other row in BOTH modes. The
+  stored labels and the store's `personLabel`/`setPersLabel` seam are untouched
+  (`roster.test.ts` still covers them) — only the on-grid editor is gone.
+- **Manning rows reorder by DRAG, and the ▲▼ arrows are gone** ("the rearrange
+  could u do drag and drop … remove the arrow function … the drag and drop rows
+  function is already designed on other areas of the app"). Rather than a second
+  drag machine, `Matrix.tsx`'s `startRowDrag` is now driven by a `RowDragCfg`
+  (`sel` / `idOf` / `move`) and serves BOTH row kinds: `ROSTER_DRAG` (people) and
+  `MANNING_DRAG` (counts). The count rows carry `data-mrow` for the hit-test
+  rather than a `data-testid` prefix — their day cells are `count-<id>-<date>`
+  and a prefix `closest()` would catch a CELL, not the row. The commit is
+  `store.ts:moveManningRowTo(id, beforeId)`, mirroring `moveRosterRow` (same
+  before-itself guard, same splice-then-reinsert). The step-wise
+  `moveManningRow(id, ±1)` stays as a tested store primitive with no UI caller.
+  The hide (eye) control is unchanged.
+
+Verified live at 1440px: picker rows 30px, the viewer chip reads "Viewing as
+Ranger", a ground-crew row shows "Cotter" with no edit box, and a count-row drag
+moved a row from first to third with the arrows absent — zero console errors.
+Pinned in `counters.test.tsx`, `chrome.test.tsx`, `counts.test.tsx`,
+`roster.test.ts`, and e2e ("a personnel row shows its callsign, with no edit box,
+in Rearrange").
+
 ## The frozen date bar — the reusable recipe (owner, 28 Aug 26 — "make sure u remember how to create such a frozen top bar in the future. This is the expectation")
 
 This is the pattern the owner signed off on the preview and asked kept for

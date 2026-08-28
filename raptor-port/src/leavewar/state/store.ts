@@ -1605,6 +1605,29 @@ export function moveManningRow(id: string, dir: -1 | 1): boolean {
   return true
 }
 
+/**
+ * Move one manning row to sit before `beforeId` (or to the end when null) — the
+ * drag-and-drop reorder (owner, 28 Aug 26, replacing the ▲▼ arrows with the
+ * same drag the roster rows already use). Same shape as `moveRosterRow`:
+ * materialise the current display order, splice `id` out, reinsert before the
+ * target, write the whole order. ADMIN-gated. */
+export function moveManningRowTo(id: string, beforeId: string | null): void {
+  if (state.role !== 'admin') return
+  // "before itself" is where it already is — and the splice removes `id` first,
+  // so without this guard indexOf would miss and the row would jump to the end
+  // (the same trap moveRosterRow guards).
+  if (beforeId === id) return
+  const ids = orderedManningIds()
+  const from = ids.indexOf(id)
+  if (from < 0) return
+  ids.splice(from, 1)
+  const at = beforeId ? ids.indexOf(beforeId) : ids.length
+  ids.splice(at < 0 ? ids.length : at, 0, id)
+  state = withCurrent({ ...state, manningOrder: ids })
+  persist()
+  notify()
+}
+
 /** Hide or show one manning row. ADMIN-gated. */
 export function toggleManningRow(id: string): void {
   if (state.role !== 'admin') return

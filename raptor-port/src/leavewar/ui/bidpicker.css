@@ -125,6 +125,12 @@
   letter-spacing: .1em;
 }
 
+/* The viewing person's callsign in the counter picker header — accented so
+   "VIEWING AS RANGER" reads at a glance (owner, 28 Aug 26). */
+.bidsheet-hd .who .vwname {
+  color: var(--accent);
+}
+
 .bidsheet-hd .dt {
   font-size: 11px;
   color: var(--ink-3);
@@ -532,6 +538,31 @@
 .bidsheet.narrow .crow.bdrow {
   min-height: 0;
   padding: 5px 12px;
+}
+
+/* The counter PICKER in narrow mode (owner, 28 Aug 26 — "much smaller and
+   compress the data"). Its rows are `.crow-wrap > .crow` (a stacked select
+   button). Most are single-line now — the redundant "days taken" caption is
+   gone — so they pull down to a dense-but-tappable height; the three
+   aggregates keep their composition caption and grow to fit it. This is below
+   the 44px action-sheet floor on purpose: these are the viewer's own figures,
+   a list you scan, and twelve of them at 44px was the "alot of empty space"
+   the owner flagged. */
+.bidsheet.narrow .crow-wrap .crow {
+  min-height: 30px;
+  padding: 5px 12px;
+  gap: 2px;
+}
+
+/* The ▲▼ figure-reorder arrows were the real height floor — two stacked 20px
+   buttons held every row at ~42px however tight the text (owner, 28 Aug 26,
+   "much smaller"). Shrunk here so the single-line rows can actually close up;
+   they stay a mouse target for the admin reordering the column. */
+.bidsheet.narrow .cmv {
+  min-height: 13px;
+}
+.bidsheet.narrow .cmove {
+  gap: 1px;
 }
 
 .crow-wrap.bdtotal .cn {

@@ -52,12 +52,20 @@ export function CounterSheet({
   const arranging = role === 'admin'
 
   return (
-    <Sheet testid="counter-sheet" label="Which figure" onClose={onClose}>
+    <Sheet testid="counter-sheet" label="Which figure" onClose={onClose} narrow>
       <div className="bidsheet-hd">
-        <span className="who">WHAT THIS COLUMN SHOWS</span>
+        {/* Lead with WHOSE numbers these are (owner, 28 Aug 26 — "make it
+            obvious that im viewing as for example RANGER"). The counter column
+            answers for the viewing person, and a grey aside said so too
+            quietly; the viewer is now the headline, accented so it reads at a
+            glance. When nobody is being viewed the sheet falls back to naming
+            its own job. */}
+        <span className="who" data-testid="counter-viewer">
+          {me ? <>VIEWING AS <b className="vwname">{me.callsign}</b></> : 'WHAT THIS COLUMN SHOWS'}
+        </span>
         <span className="dt">
-          {me ? `your numbers — ${me.callsign}` : 'view a callsign to see numbers'}
-          {arranging ? ' · tap to show it · ▲▼ to reorder' : ' · tap to show it beside every callsign'}
+          {me ? 'your numbers' : 'view a callsign to see numbers'}
+          {arranging ? ' · tap a figure · ▲▼ to reorder' : ' · tap a figure to show it in the column'}
         </span>
         <button className="x" data-testid="counter-cancel" onClick={onClose} aria-label="Cancel">
           ✕
@@ -78,8 +86,15 @@ export function CounterSheet({
           // meaning without a person — and a squadron total here only invited
           // the aircrew/ground-crew mixing the owner did not want either.
           const val = me ? f.value(ctx, me.id) : null
-          const caption = f.legend ? `= ${f.legend}` : f.desc
-          const totalNote = f.kind === 'bal' ? 'left, yours' : 'taken, yours'
+          // Only the aggregates carry a caption now (their composition — the
+          // legend the owner asked for). The generic "days taken" / "balance
+          // available to take" line was the same words as the top USED/BAL
+          // key on every simple row, pure height for no information — dropped
+          // to compress the sheet (owner, 28 Aug 26 — "compress the data").
+          const caption = f.legend ? `= ${f.legend}` : null
+          // "yours" is gone from every row — the VIEWING AS header now says
+          // whose numbers these are, once, instead of twelve times.
+          const totalNote = f.kind === 'bal' ? 'left' : 'taken'
           return (
             <div
               key={f.id}
@@ -97,8 +112,10 @@ export function CounterSheet({
                   <span className={`ct${val != null && val < 0 ? ' neg' : ''}`}>{val == null ? '—' : `${show(val)} ${totalNote}`}</span>
                 </span>
                 {/* Its own full-width line so an aggregate's composition — the
-                    legend the owner wanted — is never truncated on a phone. */}
-                <span className="csub" data-testid={`figsub-${f.id}`}>{caption}</span>
+                    legend the owner wanted — is never truncated on a phone.
+                    Only aggregates have one now (simple rows dropped the
+                    redundant caption, 28 Aug 26). */}
+                {caption && <span className="csub" data-testid={`figsub-${f.id}`}>{caption}</span>}
               </button>
               {/* Their own hit target, outside the select button — a button
                   cannot nest a button, and tapping ▲ must reorder, not

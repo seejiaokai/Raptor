@@ -1,5 +1,6 @@
+import type { PointerEvent as ReactPointerEvent } from 'react'
 import type { DayVerdict } from '../engine'
-import { moveManningRow, toggleManningRow } from '../state/store'
+import { toggleManningRow } from '../state/store'
 
 /** Rounds for display only — 4.5 stays 4.5, 4 does not become "4.0". */
 const show = (n: number) => String(Math.round(n * 10) / 10)
@@ -12,6 +13,10 @@ export function CountRows({
   arranging,
   admin,
   onInfo,
+  onRowDragStart,
+  draggingId,
+  dragOver,
+  dragAfter,
 }: {
   verdicts: Record<string, DayVerdict>
   dates: string[]
@@ -26,6 +31,14 @@ export function CountRows({
   /** A tap on a row's NAME opens its explainer sheet (owner, 19 Aug 26 —
    *  "create a bubble when I tap on the individual crew counter"). */
   onInfo: (ruleId: string) => void
+  /** Begin a drag-to-reorder from this row's grip (owner, 28 Aug 26 — the same
+   *  drag the roster rows use, replacing the ▲▼ arrows). Wired by Matrix. */
+  onRowDragStart?: (e: ReactPointerEvent, ruleId: string) => void
+  /** The row id currently being dragged, and the row hovered over + which half —
+   *  for the drag highlight, mirrored from Matrix's drag state. */
+  draggingId?: string | null
+  dragOver?: string | null
+  dragAfter?: boolean
 }) {
   // `requirementFor` can swap in a wholly different rule set per date via
   // `overrides[date]` — nothing constrains an override's rules to the same
@@ -60,10 +73,23 @@ export function CountRows({
 
   return (
     <tbody className="counts">
-      {rows.map((ruleId, i) => {
+      {rows.map(ruleId => {
         const isHidden = hiddenSet.has(ruleId)
+        const cls = [
+          isHidden ? 'mrow-hidden' : '',
+          draggingId === ruleId ? 'dragging' : '',
+          draggingId && dragOver === ruleId && draggingId !== ruleId ? (dragAfter ? 'dragover after' : 'dragover') : '',
+        ].filter(Boolean).join(' ')
         return (
-          <tr key={ruleId} data-testid={`count-${ruleId}`} className={isHidden ? 'mrow-hidden' : ''}>
+          <tr
+            key={ruleId}
+            data-testid={`count-${ruleId}`}
+            /* the drag machine hit-tests this attribute, not the testid — the
+               day cells are `count-<id>-<date>` and would shadow a testid
+               prefix match (Matrix: MANNING_DRAG) */
+            data-mrow={editing ? ruleId : undefined}
+            className={cls || undefined}
+          >
             {/* The name is the tap target for the row's explainer sheet — the
                 whole 76px frozen cell, not a glyph inside it, because a glyph
                 in that column is not a tap target (the counter-arrows lesson).
@@ -85,20 +111,18 @@ export function CountRows({
             <td className="bal" data-testid={`counter-count-${ruleId}`}>
               {editing && (
                 <span className="mrow-tools">
-                  <button
-                    className="mrow-btn"
-                    data-testid={`manning-up-${ruleId}`}
-                    aria-label={`Move ${label.get(ruleId)} up`}
-                    disabled={i === 0}
-                    onClick={() => moveManningRow(ruleId, -1)}
-                  >▲</button>
-                  <button
-                    className="mrow-btn"
-                    data-testid={`manning-down-${ruleId}`}
-                    aria-label={`Move ${label.get(ruleId)} down`}
-                    disabled={i === rows.length - 1}
-                    onClick={() => moveManningRow(ruleId, 1)}
-                  >▼</button>
+                  {/* Reorder is DRAG now (owner, 28 Aug 26 — "the rearrange
+                      could u do drag and drop … remove the arrow function"): the
+                      same grip and machine the roster rows use. The ▲▼ arrows
+                      are gone; the hide (eye) stays. */}
+                  <span
+                    className="drag"
+                    data-testid={`manning-drag-${ruleId}`}
+                    title={`Drag to move ${label.get(ruleId)}`}
+                    aria-label={`Drag to move ${label.get(ruleId)}`}
+                    style={{ touchAction: 'none' }}
+                    onPointerDown={e => onRowDragStart?.(e, ruleId)}
+                  >⠿</span>
                   <button
                     className={`mrow-btn eye${isHidden ? ' off' : ''}`}
                     data-testid={`manning-hide-${ruleId}`}

@@ -30,7 +30,7 @@ import {
   type Group,
   type Person,
 } from '../engine'
-import { addEventRow, autoSortRoster, DEFAULT_EVENT_ROWS, displayRoster, eventRowUsed, getState, MAX_EVENT_ROWS, moveCells, movableCells, moveProblem, moveRosterRow, orderedManningIds, personLabel, removeEventRow, resetManningRules, setPersLabel, setPostOut, setShowSans, type MoveResult } from '../state/store'
+import { addEventRow, autoSortRoster, DEFAULT_EVENT_ROWS, displayRoster, eventRowUsed, getState, MAX_EVENT_ROWS, moveCells, movableCells, moveManningRowTo, moveProblem, moveRosterRow, orderedManningIds, removeEventRow, resetManningRules, setPostOut, setShowSans, type MoveResult } from '../state/store'
 import { BidPicker, DecisionSheet, PostOutSheet, RaptorSheet } from './BidPicker'
 import { CounterSheet, FigureBreakdownSheet, PersonFiguresSheet } from './CounterSheet'
 import { PersonSheet } from './PersonSheet'
@@ -87,26 +87,33 @@ function rowInWindow(p: Person, win: string): boolean {
   return true
 }
 
-/** A ground-crew body's free-text label — read-only text, or an edit box while
- *  the roster is being rearranged. Uncontrolled (defaultValue + commit on blur)
- *  so typing does not repaint the grid on every keystroke. */
-function PersLabel({ p, editable }: { p: Person; editable: boolean }) {
-  const val = personLabel(p)
-  if (!editable) {
-    return val ? <span className="pers-lbl" data-testid={`perslabel-${p.id}`}>{val}</span> : null
-  }
-  return (
-    <input
-      key={val}
-      className="pers-in"
-      data-testid={`perslabel-in-${p.id}`}
-      defaultValue={val}
-      placeholder="label…"
-      aria-label={`${p.callsign} — role label`}
-      onBlur={e => setPersLabel(p.id, e.target.value)}
-      onKeyDown={e => { if (e.key === 'Enter') (e.target as HTMLInputElement).blur() }}
-    />
-  )
+/* The ground-crew free-text role-label editor (`PersLabel`) was REMOVED
+   (owner, 28 Aug 26 — "i can edit personnel, dont need to show that, just leave
+   it as the callsign/name"). In Rearrange, a ground-crew row used to turn its
+   name column into a "Maint / Line" edit box; the owner does not want that
+   editing, so the row now shows the same callsign + category chip as every
+   other row, in both modes. The stored labels and the store's
+   `personLabel`/`setPersLabel` seam are untouched (roster.test.ts still covers
+   them) — only the on-grid editor is gone. */
+
+/* The two kinds of row the one drag machine (startRowDrag) can reorder. */
+type RowDragCfg = {
+  /** querySelector for a draggable row (and for the ordered list at drop). */
+  sel: string
+  /** read a row element's id (null if it isn't one). */
+  idOf: (el: Element) => string | null
+  /** commit: move `from` to sit before `beforeId` (end when null). */
+  move: (from: string, beforeId: string | null) => void
+}
+const ROSTER_DRAG: RowDragCfg = {
+  sel: '[data-testid^="row-"]',
+  idOf: el => el.getAttribute('data-testid')?.slice(4) ?? null,
+  move: moveRosterRow,
+}
+const MANNING_DRAG: RowDragCfg = {
+  sel: '[data-mrow]',
+  idOf: el => el.getAttribute('data-mrow'),
+  move: moveManningRowTo,
 }
 
 export function Matrix() {
@@ -231,15 +238,22 @@ export function Matrix() {
   const [dragOver, setDragOver] = useState<string | null>(null)
   const [dragAfter, setDragAfter] = useState(false)
 
-  function startRowDrag(e: React.PointerEvent, id: string) {
+  /* ONE drag machine, two kinds of row (owner, 28 Aug 26 — "the drag and drop
+     rows function is already designed on other areas of the app"). The roster
+     rows and the manning count rows now reorder by the SAME pointer drag; a
+     `cfg` says which DOM rows to hit-test, how to read a row's id, and which
+     store move to commit. Manning rows are hit-tested by `data-mrow` rather
+     than a `data-testid` prefix, because their day CELLS are `count-<id>-<date>`
+     and a `[data-testid^="count-"]` closest() would catch a cell, not the row. */
+  function startRowDrag(e: React.PointerEvent, id: string, cfg: RowDragCfg) {
     if (e.button != null && e.button !== 0) return // primary pointer only
     e.preventDefault()
     dragId.current = id
     setDraggingId(id)
     const move = (ev: PointerEvent) => {
       const el = document.elementFromPoint(ev.clientX, ev.clientY)
-      const row = el && (el as Element).closest ? (el as Element).closest('[data-testid^="row-"]') : null
-      const overId = row?.getAttribute('data-testid')?.slice(4) ?? null
+      const row = el && (el as Element).closest ? (el as Element).closest(cfg.sel) : null
+      const overId = row ? cfg.idOf(row) : null
       /* which half decides before/after; a zero-height rect (jsdom) reads as
          "before", keeping the old semantics where layout cannot answer */
       let after = false
@@ -279,12 +293,12 @@ export function Matrix() {
            store's before-itself guard would have to save us. */
         let beforeId: string | null = over.id
         if (over.after) {
-          const rows = [...document.querySelectorAll('[data-testid^="row-"]')]
-            .map(el => el.getAttribute('data-testid')!.slice(4))
+          const rows = [...document.querySelectorAll(cfg.sel)]
+            .map(el => cfg.idOf(el)).filter((x): x is string => x != null)
           const ix = rows.indexOf(over.id)
           beforeId = ix >= 0 ? (rows[ix + 1] ?? null) : over.id
         }
-        if (beforeId !== from) moveRosterRow(from, beforeId)
+        if (beforeId !== from) cfg.move(from, beforeId)
       }
     }
     const up = () => end(true)
@@ -1510,6 +1524,10 @@ export function Matrix() {
                 arranging={arranging}
                 admin={role === 'admin'}
                 onInfo={setManningInfo}
+                onRowDragStart={(e, ruleId) => startRowDrag(e, ruleId, MANNING_DRAG)}
+                draggingId={draggingId}
+                dragOver={dragOver}
+                dragAfter={dragAfter}
               />
             )}
             {/* The month strip, now a row of the grid so it sits between the
@@ -1652,7 +1670,7 @@ export function Matrix() {
                                 data-testid={`drag-${p.id}`}
                                 title="Drag to move this row"
                                 style={{ touchAction: 'none' }}
-                                onPointerDown={e => startRowDrag(e, p.id)}
+                                onPointerDown={e => startRowDrag(e, p.id, ROSTER_DRAG)}
                               >⠿</span>
                             )}
                             {/* The callsign opens the person's all-figures
@@ -1670,16 +1688,11 @@ export function Matrix() {
                               <span className="cs">{p.callsign}</span>
                               <span className={`catchip ${catClass(p)}`} data-testid={`cat-${p.id}`}>{catText(p) || 'GND'}</span>
                             </button>
-                            {/* The free-text role label is an EDITING aid only
-                                (owner, 26 Aug 26 — "just indicate the
-                                callsign/name for the left column. No need to
-                                indicate initials or flight"): the roster at
-                                rest shows callsign + chip and nothing else —
-                                the read-only label was what truncated the
-                                personnel callsigns — and the label's edit box
-                                still appears while Rearranging, so the stored
-                                text survives for anything that later wants it. */}
-                            {p.pers && arranging && <PersLabel p={p} editable={arranging} />}
+                            {/* The free-text role-label edit box is GONE (owner,
+                                28 Aug 26 — "i can edit personnel, dont need to
+                                show that, just leave it as the callsign/name").
+                                A ground-crew row now shows the same callsign +
+                                chip as every other row, in Rearrange too. */}
                           </div>
                         </td>
                   {/* The selected figure's value for this person, derived on

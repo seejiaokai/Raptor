@@ -25,6 +25,7 @@ import {
   initStore as lwInitStore,
   manningRowIds,
   moveManningRow,
+  moveManningRowTo,
   moveRosterRow,
   orderedManningIds,
   personLabel,
@@ -254,6 +255,22 @@ describe('the manning count rows are admin-arrangeable and hideable', () => {
     moveManningRow('flp', -1)
     // whatever the hand order, orderedManningIds is a permutation of the full set
     expect([...orderedManningIds()].sort()).toEqual([...manningRowIds()].sort())
+  })
+
+  // Drag-and-drop reorder (owner, 28 Aug 26 — replaced the ▲▼ arrows). Same
+  // before-semantics as the roster's moveRosterRow.
+  it('drag-moves a row before another and to the end; a member cannot', () => {
+    moveManningRowTo('sxo', 'sets')                 // drop SXO before the top row
+    expect(orderedManningIds()[0]).toBe('sxo')
+    moveManningRowTo('sxo', null)                   // drop it at the very end
+    expect(orderedManningIds().at(-1)).toBe('sxo')
+    // nothing dropped — still a permutation of the full set
+    expect([...orderedManningIds()].sort()).toEqual([...manningRowIds()].sort())
+    // and a member is refused (the write is admin-gated)
+    setRole('member')
+    const before = orderedManningIds()
+    moveManningRowTo('scd', 'sets')
+    expect(orderedManningIds()).toEqual(before)
   })
 })
 

@@ -289,6 +289,19 @@
   border-style: dashed;
   color: var(--muted, #8a94a6);
 }
+/* The reorder GRIP (owner, 28 Aug 26 — drag-and-drop replaced the ▲▼ arrows).
+   The same ⠿ the roster rows use, sized to the count row's narrow tools column
+   and sitting beside the hide (eye). */
+.mx .counts .mrow-tools .drag {
+  color: var(--edge-2);
+  font-size: 12px;
+  line-height: 1;
+  cursor: grab;
+  padding: 0 1px;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.mx .counts .mrow-tools .drag:active { cursor: grabbing; }
 /* A hidden row, shown dimmed WHILE arranging so an admin can bring it back. */
 .mx .counts tr.mrow-hidden td {
   opacity: .45;

@@ -31,8 +31,15 @@ const LEGEND_WIDTH = 272
 
 export function Topbar() {
   useVersion()
-  const { period, wars, role } = getState()
+  const { period, wars, role, people, viewer } = getState()
   const [making, setMaking] = useState(false)
+  // WHOSE view this is (owner, 28 Aug 26 — "make it obvious that im viewing as
+  // for example RANGER"). The whole grid — the lit row, the counter column, the
+  // figure sheets — answers for the viewing person (Raptor's "View as",
+  // mirrored in), and nothing on the page said so out loud. This chip does, at
+  // the top of the page where it is always in view. Absent when nobody is being
+  // viewed (an admin off any one person), where there is no "you" to name.
+  const me = viewer ? people.find(p => p.id === viewer) ?? null : null
   return (
     <>
     {/* The Leave War page's own "142 SQN / LEAVE WAR" mark and "Leave war" nav
@@ -74,6 +81,20 @@ export function Topbar() {
           <button className="warnew" data-testid="war-new" onClick={() => setMaking(true)}>
             + New
           </button>
+        )}
+        {me && (
+          <span
+            className="lw-viewing"
+            data-testid="lw-viewing"
+            title={`Every number on this page is ${me.callsign}'s. Change whose with "View as" in the top bar.`}
+          >
+            <svg className="eye" viewBox="0 0 24 24" width="13" height="13" aria-hidden="true">
+              <path d="M12 5c-5 0-8.5 4.5-9.5 7 1 2.5 4.5 7 9.5 7s8.5-4.5 9.5-7c-1-2.5-4.5-7-9.5-7Z" fill="none" stroke="currentColor" strokeWidth="1.7" />
+              <circle cx="12" cy="12" r="2.6" fill="currentColor" />
+            </svg>
+            <span className="vlab">Viewing as</span>
+            <b className="vwho">{me.callsign}</b>
+          </span>
         )}
       </div>
     </div>

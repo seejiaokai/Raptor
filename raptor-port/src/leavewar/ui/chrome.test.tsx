@@ -1,6 +1,6 @@
 import { act, fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
-import { advanceStage, getState, initStore, setBidState, setRole } from '../state/store'
+import { advanceStage, getState, initStore, setBidState, setRole, setViewer } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { StageBar, Topbar } from './Chrome'
 
@@ -108,6 +108,26 @@ describe('the colour/mark legend', () => {
     expect(Array.from(leg.querySelectorAll('.leg-sw')).some(s => s.textContent === 'B')).toBe(true)
     expect(Array.from(leg.querySelectorAll('.leg-sw')).some(s => s.textContent === 'LL')).toBe(true)
     expect(text).toContain('Local leave')
+  })
+})
+
+describe('the viewer badge (owner, 28 Aug 26)', () => {
+  // The whole page answers for the viewing person; the badge says so out loud,
+  // at the top, so nobody wonders whose numbers the counter column shows.
+  it('names whose page this is, prominently, when a viewer is set', () => {
+    act(() => setViewer('ramp'))
+    render(<Topbar />)
+    const chip = screen.getByTestId('lw-viewing')
+    expect(chip.textContent).toContain('Viewing as')
+    expect(chip.textContent).toContain('RAMP')
+  })
+
+  // Nobody in the roster being viewed → no "you" to name, so the badge is
+  // absent rather than showing an empty or dashed one (mirrors the picker).
+  it('is absent when nobody in the roster is being viewed', () => {
+    act(() => setViewer('nobody'))
+    render(<Topbar />)
+    expect(screen.queryByTestId('lw-viewing')).toBeNull()
   })
 })
 
