@@ -2979,11 +2979,17 @@ except where noted:
   deliberately NOT the removed week-wide count pills — OR when an ADMIN has
   unseen bug reports (`bugAlert()`, `state/reports.ts` — the owner's first
   wired trigger, 25 Aug 26; `markBell(page, who)` stays the seam for the
-  rest). A tap with a bug alert live toasts the count and goes straight to
+  rest), OR when the view-as person has an unanswered weekend/PH OIL
+  question (`oilPendingFor(ME)` — the third wired trigger, 28 Aug 26; §The
+  bell's OIL trigger carries its contract). A tap with a bug alert live
+  toasts the count and goes straight to
   the Help page, whose admin view is the acknowledgement (§The Help page);
-  otherwise the tap acknowledges the current view's alert as before. The
+  with an OIL question pending it lands the Inputs page on the exact input,
+  sheet up; otherwise the tap acknowledges the current view's alert as
+  before. The
   per-view registry is session-only, wiped on login/logout; the bug-report
-  glow derives from the reports themselves, which SURVIVE a login switch.
+  glow derives from the reports themselves, which SURVIVE a login switch,
+  and the OIL glow is derived live from `INPUTS` + the war's calendar.
 - **Undo / redo / Edit history** (`.tb-hist`, `#undoBtn`/`#redoBtn`/`#histBtn`)
   moved OUT of the edit page's scroll-away `.filters` row INTO the sticky bar,
   shown only on the edit page, so they stay in view while the page scrolls
@@ -3136,6 +3142,18 @@ empty column. A personnel puck is **white** (`.puck.pers`) with no CAT chip. It
 is struck the moment a FRONT seat is armed (via `slotBar`) and offered for a
 rear seat, a duty desk, a ground row or a sim. Rules: `docs/engine-rules.md`
 §Personnel.
+
+**The palette's Placeholders strip carries TWO sentinel pucks since 28 Aug 26
+— ALL beside ALL AVAIL** (`people.ts` `all`, cs 'ALL'; drawn by
+`specialRowHTML`, `palette-html.ts`). Byte-for-byte the ALL AVAIL semantics:
+`special:true` + `archived:true`, so it is never validated, raises no warning
+anywhere, and plants like any placeholder. What the new one MEANS is wire
+4's: on a ground or Common-Programme row on a weekend/PH, ALL or ALL AVAIL
+expands (sync-side `availableFor`) to everyone available for the event's
+window — regular aircrew only: no SANS, no ground-crew Personnel, no
+sentinels or archived bodies, minus anyone an away input (`isAway`) overlaps
+— and each of them earns the row's OIL. Spec:
+`docs/superpowers/specs/leavewar-sync.md` §The 28 Aug 26 rework.
 
 **Every CSV opens as UTF-8 because `csvText()` writes a BOM** (owner, 5 Aug
 26). Excel does not sniff a `.csv`: with no byte-order mark it decodes the
@@ -4031,6 +4049,54 @@ plainly and never silently. Where the keep button exists, switching to it
 takes the leftover row away (the old status stays whole). Save is NOT gated
 on it; the answer rides `keepTail` into the write.
 
+**The OIL ask** (`ui/OilConfirm.tsx`, owner, 28 Aug 26 — "it will ask the
+user if the duty and commitment deserves an applicable OIL") is the third
+sibling in this recipe — same `.upconf-*` layer classes plus `.oilconf-pop`.
+Saving a duty-&-commitments input (`oilAsks` — exactly the `restsInput`
+eight: Training, CSE, Meeting, Fly with, Appointment, Duty, OD, Other;
+Personal and SANS Availability excluded) whose span covers a weekend or
+public holiday opens it from all three form paths — `InputEditor.save()`,
+`InputsPage.add()` and `InputsPage.saveEdit()` — through ONE gate body,
+`inputedit.tsx:oilGate`, which runs the shared refusals first (a bad draft
+toasts at once) and asks only when the plan is unanswered or went stale.
+Nothing is written before the answer, there is NO resting default (the
+UpchitConfirm doctrine — the decision is real), Save stays disabled until a
+choice is made, and Cancel/Escape/scrim close only the sheet with the
+form's typing intact. A single applicable day asks **Yes / No OIL**, the
+sheet naming the worth — 'HO — half a day' or 'FO — a full day', from
+`inputOilAmt` (all-day = FO, the owner's pick; timed ≤6h = HO, >6h = FO). A
+multi-day span asks **All days / Only some days… / No OIL**; 'some' opens a
+month grid (the RangeCal arithmetic, testid `oilcal`) where ONLY the
+applicable days are tappable — tap to select, tap again to deselect (the
+owner's exact ask), then Save — and every other day is inert. The offered
+days come from `leavewar/sync.ts:oilAskPlan`, which reads the exported
+`isNonWorkingISO` — the same applicability answer the credit pass uses, so
+what is asked and what is credited cannot disagree. Save stamps the
+decisions into `row.oil` (`{iso: amount}`, 0 = an explicit decline) INSIDE
+the same `writeInputsBatch` as the save itself — ONE undo step, the answer
+and the input it answers never separating in history. Pinned in
+`ui/oilconfirm.test.tsx`.
+
+**The bell's OIL trigger** (owner, 28 Aug 26 — "it will notify the
+applicable user based on the notification tab to review if the input
+deserves an applicable HO or FO"). `#notifyBell` also glows when the
+VIEW-AS person has an unanswered OIL question —
+`leavewar/sync.ts:oilPendingFor(ME)`, a DERIVED predicate (the `bugAlert`
+shape, never a stored flag): that person's duty-&-commitments inputs with
+an applicable covered day missing from `row.oil` (an explicit 0 counts as
+answered; dormant `acc:'r'` rows never ring — the scheduler removed that
+commitment). Derived means it self-heals: answer the days, move the input,
+or retype it, and the glow goes out with no clearing discipline. The tap
+toasts 'Weekend/PH work — confirm your OIL', lands on the Inputs page and
+opens `InputEditor` on the exact input (iid via `inpById` — never the row
+object, undo re-mints rows) with the OIL sheet already up (`pops.OILASK`, a
+one-shot consumed as `InputEditor` reads it). And a PH marked in Leave War
+AFTER the input exists lights the bell at once: the lwSubscribe lane in
+`wireLeaveWarSync` fires ONE signature-guarded raptor notify when the
+pending picture changes — this closed a confirmed missing-repaint gap,
+since nothing on the Raptor side repaints on a Leave War write otherwise.
+No acknowledgment = no credit, structurally.
+
 **The upload control** (`DocField` in `ui/inputedit.tsx`: `UploadIcon`
 button + hidden file input + filename chip, `.docbtn.has` turning the ok
 green once attached) renders in all three editors — the Inputs add form,
@@ -4572,18 +4638,24 @@ feel he rejected on 10 Aug 26). The fix-by-fix history follows.
   from "Key"; `Chrome.tsx`, testid `legend-open` unchanged). **It also keys the
   LETTERS, not just the colours** (owner, 28 Aug 26 — "include what FS HS etc
   mean … things that reflect only on the leave war. Because it's not stated on
-  inputs"). Below the state/edge/asterisk sections, `Chrome.tsx` renders
+  inputs"; the codes he named were renamed FO/HO later that same day). Below
+  the state/edge/asterisk sections, `Chrome.tsx` renders
   `CODE_GLOSSARY` from `engine/codes.ts` — a plain-English key to every grid
-  code, grouped: **"Shown here only — not on the Inputs page"** (FS = full day
-  SC duty, HS = half day, each earning off-in-lieu, credited from a published
-  weekend/PH duty — the only codes never typed on Inputs, so the accent-tinted
+  code, grouped: **"Shown here only — not on the Inputs page"** (FO = full day
+  OIL, earned by more than 6 hours worked on a weekend/PH; HO = half day OIL,
+  6 hours or less — credited automatically from the published schedule or
+  confirmed on a Duty & commitments input, never typed here, so the
+  accent-tinted
   `.leg-sec-here` heading marks them out), then Medical (the grid's `B`/`C`
   shorthand + HL/OML), Leave (LL…OFF) and Other duty (CSE/OD). The glossary is
   built straight from the catalogue's own label tables (one source, no drift),
   and each swatch takes the grid's own colour by the SAME rule the cell does
   (`isDuty` → `sc`, non-bid marker → `info`, leave → plain — mirrored into
   `.leg-sw.sc`/`.leg-sw.info`), so it doubles as a key to the two colours the
-  state section doesn't cover.
+  state section doesn't cover. **The `sc` chip and its swatch are CYAN since
+  28 Aug 26** (`rgba(59,198,232,…)`, Raptor's `--q-c` family — matrix.css
+  `.c.sc` mirrored into `.leg-sw.sc`), not the old amber: the OIL-credit
+  marker reads as its own family, apart from every bid state.
 - **The word "Acknowledge" became "Pending"** on the decision controls
   (single and batch) — the same word the colour legend already gives the
   purple state. The stored token stays `'acknowledged'`; only the label moved.
@@ -4623,7 +4695,7 @@ lw-tagged row `runOutbound` mints at publish), both found by
 CELL'S OWN code, so under a leave clash (two inputs covering one day) it opens
 the record that actually derives the tapped cell: same leave type, exact
 portion preferred, the lw-tagged (war-minted) row outranking a plain one, and
-a non-leave code (an FS/HS credit) matching nothing. The save runs through
+a non-leave code (an FO/HO credit) matching nothing. The save runs through
 Raptor's one commit path
 (`inputedit.ts:setLeaveRemarks → commitInputEdit`): a remarks-only edit leaves
 the leave's `rowSig` unchanged, so the lw tag and the war cells do not move —

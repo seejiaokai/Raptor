@@ -109,16 +109,25 @@ rule, which is why the tests still bid on whichever row they name.)
 
 Balances are computed and on screen. Two parts of §Counters are not built:
 
-- **Earned OIL is BUILT (sync wire 4, 17 Aug 26)** — and not the way this
+- **Earned OIL is BUILT (sync wire 4, 17 Aug 26; REWORKED 28 Aug 26)** —
+  and not the way this
   bullet used to describe. The old spec's knock-off-time rule (later than
-  14:30 credits 1.0) is superseded by the owner's scheduled-hours rule,
-  computed on the Raptor side from the published schedule (`engine/oil.ts`:
-  SC AM/PM shift = 0.5, more = 1.0; a duty row's summed written hours ≥
-  `VCONF.oilFullMin` = 1.0, under = 0.5, on weekends and days this app calls
-  a holiday — `DayInfo.ph` or an 'off'-tagged event). The credit lands as a
-  raptor-owned FS/HS cell, and the OIL balance is
+  14:30 credits 1.0) is superseded, twice over: first by the owner's 17 Aug
+  scheduled-hours rule (an SC shift-window split beside a duty-hours sum),
+  then by his 28 Aug uniform rule, which DELETED the SC shift-window half
+  (`scShiftCredit` is gone — do not resurrect it). What runs now
+  (`engine/oil.ts`): pool each person's worked minutes for the day as an
+  interval union (`mergeMin`), one threshold — under `VCONF.oilFullMin`
+  (361) is HO (0.5), at or over it FO (1.0) — across SC MAIN shifts, flying
+  seats (report→debrief), sims, duty rows, ground and Common Programme
+  rows, on weekends and days this app calls
+  a holiday — `DayInfo.ph` or an 'off'-tagged event. Acknowledged
+  duty-&-commitments input claims (`row.oil`, the OilConfirm ask-flow) pool
+  into the same union. The credit lands as a
+  raptor-owned FO/HO cell (FS/HS until the 28 Aug 26 rename), and the OIL
+  balance is
   `opening + grants + earned − drawn`, `earned` derived straight from the
-  FS/HS cells' `earnsOil` (`counters.ts:earnedOil`) — a ledger entry for the
+  FO/HO cells' `earnsOil` (`counters.ts:earnedOil`) — a ledger entry for the
   same fact would be the two-records-of-one-fact this engine refuses. The
   **OIL BAL figure** joined the counter column as its landing strip. The
   wire itself: `src/leavewar/sync.ts` `runOilPass`, tested in
@@ -414,8 +423,10 @@ accounts land and the roles stop being an affordance.
   ratio does not catch it.
 
 - **`DayCounts.duty` counts heads, not availability.** It increments by one for
-  a half-day SC duty exactly as for a full day. This is deliberate — it answers
-  "how many people are on SC today", which is a head count, not a fraction of a
+  a half-day OIL credit (`HO` — 'half day SC duty' under the code's pre-28-Aug-26
+  name) exactly as for a full day. This is deliberate — it answers
+  "how many people hold a duty-credit cell today" (at work, off the flying
+  programme), which is a head count, not a fraction of a
   person. Every *availability* figure in the same module is fractional; this one
   is not, on purpose.
 - **A cleared cell deletes its key rather than storing an empty string**, so a
@@ -629,7 +640,8 @@ not "fix" either without reading this first:
   only for a hand-written or imported rule storing a lower-case CAT, which
   would silently match nobody. Left as-is (no reachable bug); if a non-form
   import path is ever added, upper-case the CAT there or normalise on read.
-- **A half-day SC duty (`HS`) counts as a WHOLE present body** in a
+- **A half-day OIL credit (`HO` — `HS` before the 28 Aug 26 rename) counts
+  as a WHOLE present body** in a
   `presence` team and the duty tally (`availability.ts` — `weightOf` returns a
   flat 1 for any duty code). Deliberate, and load-bearing: the old hard-coded
   `scTeams` did the same, so the migration parity pin in
