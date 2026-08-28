@@ -3927,9 +3927,23 @@ list. Three sections, each a `.medcard` grid on the `.sanscard` contract
 **Pending Upchit** (`--adv` amber, "was down till <end>"), **Upchit
 Complete** (`--ok` green, "upchitted <date>", trailing 30 days newest
 first). Every section has a real empty state. Cards SIZE TO CONTENT and
-pack from the left (`.medcards` — capped `minmax` columns +
-`justify-content:start`; owner, 27 Aug 26: a stretch-to-fill column wasted
-the right half of every box), and a card's remark line draws only when it
+pack from the left — **a wrapping flex row, not a grid** (`.medcards`;
+owner, 27 Aug 26: a stretch-to-fill column wasted the right half of every
+box, then 28 Aug 26: "the box around the puck doesn't look compact
+enough"). The first cut expressed that intent as `repeat(auto-fill,
+minmax(176px, 200px))`, but a grid TRACK is one width for the whole column,
+so every card was still drawn at the 200px cap however short its contents —
+measured on the seeded data, 99–117px of ink in a 200px box, 65–83px of
+dead air apiece. Wrapping flex items size to their own content, so a card
+now ends where its longest line ends and the phone fits two chits per row
+where it fitted one. The 200px cap survives as `max-width` (a long remark
+wraps rather than running away), `flex:0 1 auto` + `min-width:0` keeps a
+single over-wide card inside the section, and the default
+`align-items:stretch` levels each row's card heights so the rows still read
+as rows. Pinned in `e2e/medical.spec.ts`, which measures the slack past a
+card's last word — LINE BY LINE off the text run (`Range.getClientRects`),
+because a span inside a column flex is stretched to the card's full width
+and its own box proves nothing. And a card's remark line draws only when it
 says MORE than the derived date line (`MedicalView.tsx:remarkNote` strips
 dates and medical boilerplate; the auto "till …" tail was doubling the
 status line on every card). The header's as-of control (`#medCalBtn`)

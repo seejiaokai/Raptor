@@ -4990,9 +4990,21 @@ button.sbi-ty.inpedit:hover{text-decoration:none;filter:brightness(1.3)}
 /* compact cards that size to their content and pack from the LEFT — a
    downchit line is short, so a stretch-to-fill column wasted the right half
    of every box (owner, 27 Aug). Capped width, leftover space falls at the
-   row's end, not inside each card. */
-.medcards{display:grid;grid-template-columns:repeat(auto-fill,minmax(176px,200px));justify-content:start;gap:6px;padding:8px}
-.medcard{display:flex;flex-direction:column;gap:3px;min-width:0;padding:7px 9px;
+   row's end, not inside each card.
+   THAT INTENT IS A FLEX WRAP, NOT A GRID (owner, 28 Aug 26 — "the box around
+   the puck doesn't look compact enough"). A grid track sets ONE width for the
+   whole column, so every card was drawn at the 200px cap however short its
+   contents: measured on the seeded data, 99–117px of painted content inside a
+   200px box, i.e. 65–83px of dead air in each — the very waste the 27 Aug
+   note set out to remove, moved from the column to the card. Wrapping flex
+   items size to their own content, so each card ends where its longest line
+   ends and the phone now fits two chits per row where it fitted one. The cap
+   stays as a max-width (a long remark wraps instead of running away), the
+   shrink+min-width:0 pair keeps a single over-wide card inside the section,
+   and the default align-items:stretch keeps every card in a row the same
+   height so the rows still read as rows. */
+.medcards{display:flex;flex-wrap:wrap;gap:6px;padding:8px}
+.medcard{display:flex;flex-direction:column;gap:3px;flex:0 1 auto;min-width:0;max-width:200px;padding:7px 9px;
   border:1px solid var(--edge);border-left:1px solid var(--sec);border-radius:8px;background:var(--panel-2);
   text-align:left;font:inherit;color:inherit;appearance:none;cursor:pointer}
 .medcard:hover{border-color:var(--accent)}

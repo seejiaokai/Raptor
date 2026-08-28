@@ -37,6 +37,37 @@ test.describe('the medical view renders and fits', () => {
         if (!pk) return 'no puck rendered'
         const r = pk.getBoundingClientRect()
         if (Math.round(r.width) !== 74 || Math.round(r.height) !== 15) return `puck ${r.width}x${r.height}`
+
+        /* EVERY CARD HUGS ITS OWN CONTENT (owner, 28 Aug 26 — "the box around
+           the puck doesn't look compact enough"). The cards used to sit in a
+           fixed 200px grid track, so a short chit was drawn in a box with
+           65–83px of dead air to the right of its last word. A card is now a
+           wrapping flex item, so its box should exceed its painted content by
+           the padding and borders and nothing more. Measured off the text run
+           with a Range: a span inside a column flex is stretched to the card's
+           full width, so its own box proves nothing. The Range is read LINE BY
+           LINE (getClientRects), not as one box — a wrapped remark on a card
+           at the 200px cap has a widest line that reaches the edge, so it
+           needs no exemption, and an exemption is what would have let this
+           very regression through. */
+        for (const c of document.querySelectorAll('.medcard')) {
+          const box = c.getBoundingClientRect()
+          const runRight = (el: Element | null) => {
+            if (!el) return -1e9
+            const rg = document.createRange(); rg.selectNodeContents(el)
+            let right = -1e9
+            for (const b of rg.getClientRects()) if (b.width) right = Math.max(right, b.right)
+            return right
+          }
+          const top = c.querySelector('.medcard-top')
+          const inkRight = Math.max(
+            top ? top.lastElementChild!.getBoundingClientRect().right : -1e9,
+            runRight(c.querySelector('.medcard-t')), runRight(c.querySelector('.medcard-r')))
+          const slack = box.right - inkRight
+          /* 9px padding + 1px border = 10; anything past ~16 is a box that
+             stopped following its content */
+          if (slack > 16) return `a card wastes ${Math.round(slack)}px past its last word`
+        }
         return ''
       })
       expect(bad).toBe('')
