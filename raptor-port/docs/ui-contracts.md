@@ -4159,7 +4159,20 @@ BidPicker's look and vocabulary, not instead of it.
   60 over the mirror's 55), tracks the grid's horizontal scroll one-way via the
   rAF pump, and reuses the same `.who`/`.bal` sticky-left CSS to keep its lead
   columns frozen. Desktop keeps its own real-`sticky` frozen-left columns
-  untouched; only the header path widened.
+  untouched; only the header path widened. **The mirror is GPU-composited**
+  (owner, 28 Aug 26 — "the lag on the frozen bar … 0 latency … when u scroll
+  horizontally"): `.mxfixed` carries `transform: translateZ(0)` and
+  `.mxfixed-scroll` carries `will-change: scroll-position`, so a per-frame
+  `scrollLeft` write recomposites a layer instead of repainting the header. The
+  residual lag was dropped frames (the mirror repaint missing a busy frame the
+  compositor already slid the grid on); the layer makes that repaint cheap
+  enough to land every frame. This is a paint-cost change only — the JS sync,
+  the one-way follow, and the sticky lead columns are all unchanged. True zero
+  latency is not reached (a JS-followed element cannot be frame-locked to a
+  compositor fling on every device); the honest gain is far fewer dropped
+  frames. The alternative — a real inner scroll box that CSS `sticky` could pin
+  for free — was declined by the owner (it reintroduces the nested-scroller feel
+  he rejected on 10 Aug).
 - **The colour/mark pop-out is labelled "Legend"** (owner, 27 Aug 26 — renamed
   from "Key"; `Chrome.tsx`, testid `legend-open` unchanged). **It also keys the
   LETTERS, not just the colours** (owner, 28 Aug 26 — "include what FS HS etc

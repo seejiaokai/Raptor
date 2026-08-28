@@ -1276,6 +1276,19 @@
   overflow: hidden;
   background: var(--panel-2);
   box-shadow: 0 2px 10px rgba(0, 0, 0, .4);
+  /* Tighten the sideways follow (owner, 28 Aug 26 — "the lag on the frozen
+     bar … 0 latency … the top bar sticks to it when u scroll horizontally").
+     The header is a JS-driven mirror (it must be — the page owns the vertical
+     scroll, so `position: sticky` cannot pin it; see the top-of-file note), and
+     the residual lag is DROPPED FRAMES: on a busy frame the compositor slides
+     the grid but the main thread is too late to repaint the mirror, so it falls
+     a frame behind. Promoting the whole bar to its own compositor layer makes
+     that repaint cheap enough to land every frame. `translateZ(0)` (no offset —
+     it does not move the bar, only lifts it onto GPU) is the reliable promoter;
+     the layer lives only while the mirror is mounted (freeze state), so it is
+     not a standing cost. This does not touch the JS sync or the sticky columns
+     inside — it only changes how the bar is painted. */
+  transform: translateZ(0);
 }
 
 .mxfixed-scroll {
@@ -1292,6 +1305,13 @@
   overflow-y: hidden;
   touch-action: none;
   scrollbar-width: none;
+  /* Composite the scroller itself so a JS `scrollLeft` write moves a GPU layer
+     instead of forcing a main-thread repaint of the header (owner, 28 Aug 26).
+     This is the exact case `will-change: scroll-position` names — a scroller
+     whose position code changes — and it is what turns each rAF sync from a
+     paint into a cheap recomposite, which is what keeps the bar on the grid
+     during a fast flick. Paired with the layer promotion on `.mxfixed` above. */
+  will-change: scroll-position;
 }
 
 .mxfixed-scroll::-webkit-scrollbar {
