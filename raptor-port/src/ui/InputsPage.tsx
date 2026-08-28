@@ -12,7 +12,8 @@ import { PEOPLE } from '../engine/people'
 import { hhmm, parseHM } from '../engine/time'
 import { HOOKS } from '../engine/hooks'
 import { autoAcceptInput } from '../engine/slots'
-import { ME, canEditSched } from '../state/auth'
+import { LOOK_CFG, LOOK_MAX, LOOK_MIN, lookaheadLabel, lookaheadRange, setLookahead } from '../engine/lookahead'
+import { ME, SESSION, canEditSched } from '../state/auth'
 import { writeInputsBatch, notify } from '../state/store'
 import { INPVIEW, setInpView } from '../state/view'
 import { setDocView } from './pops'
@@ -60,7 +61,13 @@ const isoOf = (d: Date) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.
    not 31 Feb — which is the behaviour a "two months from now" window wants */
 const plusMonths = (d: Date, n: number) => new Date(d.getFullYear(), d.getMonth() + n, d.getDate())
 export const DEFAULT_SPAN_MONTHS = 2
-const defaultRange = (now = new Date()) => ({ from: isoOf(now), to: isoOf(plusMonths(now, DEFAULT_SPAN_MONTHS)) })
+/* The quick button now applies the SQUADRON'S look-ahead rather than a fixed
+   two months (owner, 28 Aug 26 — "i am able to change the button function to
+   show the set duration i can click by default by everyone"). One setting, so
+   what the page opens on and what this button offers cannot disagree.
+   `plusMonths` and DEFAULT_SPAN_MONTHS are kept: the month arithmetic is still
+   the reference's, and the constant is exported and read elsewhere. */
+const defaultRange = (now = new Date()) => lookaheadRange(now)
 
 /* THE TABLE OPENS ON TODAY → TWO WEEKS, AND ONLY ON THAT (owner, 12 Aug 26 —
    "it is ok to show any inputs from the today's date to 2 weeks down the
@@ -79,8 +86,13 @@ const defaultRange = (now = new Date()) => ({ from: isoOf(now), to: isoOf(plusMo
    a scheduler wants on opening, while `#inRangeDef` stays the wider sweep. */
 export const DEFAULT_SPAN_DAYS = 14
 const plusDays = (d: Date, n: number) => new Date(d.getFullYear(), d.getMonth(), d.getDate() + n)
+/* The fortnight is now the DEFAULT of a squadron setting rather than a literal
+   (owner, 28 Aug 26): `LOOK_STD` is 2 weeks with no Sunday extension, which is
+   exactly the today+14 above, so an untouched squadron opens on the same window
+   it always did. An admin can make it any number of weeks, optionally running
+   on to that week's Sunday. */
 export function initialRange(now = new Date()) {
-  return { from: isoOf(now), to: isoOf(plusDays(now, DEFAULT_SPAN_DAYS)) }
+  return lookaheadRange(now)
 }
 
 /* The sort key per column. Dates sort on the ISO date the label implies, with
@@ -228,6 +240,11 @@ export function InputsPage() {
   const [editRow, setEditRow] = useState<any>(null)
   const [draft, setDraft] = useState<any>(null)
   const [range, setRange] = useState(initialRange)
+  /* The admin's default-window editor (owner, 28 Aug 26). Draft values while
+     open, so a half-typed number never becomes the squadron's setting. */
+  const [lookEdit, setLookEdit] = useState(false)
+  const [lookWeeks, setLookWeeks] = useState(String(LOOK_CFG.weeks))
+  const [lookSun, setLookSun] = useState(LOOK_CFG.toSunday)
   const [calOpen, setCalOpen] = useState(false)
   const [sort, setSort] = useState({ key: 'start', dir: 1 })
   /* Rows just added, newest first, and rows still flashing. Both hold the input
@@ -748,9 +765,50 @@ export function InputsPage() {
                 ? fmtDay(range.from) + (range.to ? ' → ' + fmtDay(range.to) : ' → pick an end date')
                 : 'showing every date'}</div>
               <div className="inrange-btns">
-                <button className="abtn" id="inRangeDef" onClick={() => { unpin(); setRange(defaultRange()); setCalOpen(false) }}>Next {DEFAULT_SPAN_MONTHS} months</button>
+                {/* The quick button SAYS the squadron's setting and applies it
+                    — everyone gets the same default, an admin decides what it
+                    is (owner, 28 Aug 26). */}
+                <button className="abtn" id="inRangeDef" onClick={() => { unpin(); setRange(defaultRange()); setCalOpen(false) }}>{lookaheadLabel()}</button>
                 <button className="abtn" id="inRangeAll" onClick={() => { unpin(); setRange({ from: '', to: '' }); setCalOpen(false) }}>{RANGE_ALL}</button>
               </div>
+              {/* The admin's pencil: how far ahead the page looks by default.
+                  Admin only, and re-checked at the write (`setLookahead` is the
+                  one path) rather than merely hidden here. */}
+              {SESSION && SESSION.role === 'admin' && (
+                <div className="inrange-cfg" id="inRangeCfg">
+                  {!lookEdit && (
+                    <button className="abtn ghost" id="inRangeEdit" onClick={() => { setLookWeeks(String(LOOK_CFG.weeks)); setLookSun(LOOK_CFG.toSunday); setLookEdit(true) }}>
+                      ✎ Default window
+                    </button>
+                  )}
+                  {lookEdit && (
+                    <>
+                      <label className="la-lbl" htmlFor="inLookWeeks">Weeks ahead</label>
+                      <input id="inLookWeeks" className="la-in" inputMode="numeric" value={lookWeeks}
+                        aria-label="Weeks ahead" onChange={e => setLookWeeks(e.target.value)} />
+                      <label className="la-sun">
+                        <input type="checkbox" id="inLookSun" checked={lookSun} onChange={e => setLookSun(e.target.checked)} />
+                        run to that week&rsquo;s Sunday
+                      </label>
+                      <button className="abtn primary" id="inLookSave" onClick={() => {
+                        if (!SESSION || SESSION.role !== 'admin') return
+                        if (!setLookahead(lookWeeks, lookSun)) {
+                          // a refused value goes back to the live one on screen,
+                          // never left looking saved
+                          setLookWeeks(String(LOOK_CFG.weeks))
+                          HOOKS.toast(`Give a number of weeks between ${LOOK_MIN} and ${LOOK_MAX}`)
+                          return
+                        }
+                        setLookEdit(false)
+                        setRange(defaultRange())
+                        HOOKS.toast(`Everyone now opens on ${lookaheadLabel().toLowerCase()}`, 'ok')
+                        notify()
+                      }}>Save</button>
+                      <button className="abtn ghost" id="inLookCancel" onClick={() => setLookEdit(false)}>Cancel</button>
+                    </>
+                  )}
+                </div>
+              )}
             </div>
           )}
         </div>

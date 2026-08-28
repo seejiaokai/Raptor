@@ -146,7 +146,12 @@ export function LogicPage() {
   return (
     <>
       <div className="title"><h1>Logic</h1>
-        <span className="sub">every rule the engine applies — read-only</span></div>
+        {/* The subtitle said "read-only" to everyone, which is untrue for an
+            admin — this page is where the thresholds are edited (owner, 28 Aug
+            26 — "not true for read only. because admin can edit"). It now says
+            what the READER can do, the same split the off-standard note below
+            already makes. */}
+        <span className="sub">every rule the engine applies{admin ? ' — “Edit rules” to change a threshold' : ' — read-only'}</span></div>
       <div className="lgbar">
         <div className="searchbox">🔍<input id="lgSearch" placeholder="search the rules — “crew rest”, “brief”, “spare”"
           value={LGQ} onChange={e => setLGQ(e.target.value)} /></div>

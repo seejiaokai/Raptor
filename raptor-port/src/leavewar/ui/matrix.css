@@ -1059,6 +1059,18 @@
   width: 0;
   overflow: visible;
 }
+/* The heading is the FOLD control (owner, 28 Aug 26 — "allow me to minimise
+   categories on leave war"). The sticky td is the target, not the zero-width
+   `.grphd-in` inside it, so the whole frozen-column width is tappable. */
+.mx tbody tr.grp td.grphd { cursor: pointer; }
+.mx tbody tr.grp td.grphd:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.grphd-in .gcar {
+  font-size: 9px;
+  color: var(--ink-3);
+  flex: none;
+  width: 7px;
+  line-height: 1;
+}
 .grphd-in .gsw { width: 10px; height: 10px; border-radius: 3px; flex: none; background: var(--edge-2); }
 .grphd-in .gname { font-size: 11px; font-weight: 800; letter-spacing: .09em; color: var(--ink); }
 .grphd-in .gcount { font-size: 10px; color: var(--ink-3); font-weight: 600; }
@@ -1268,6 +1280,35 @@
   left: 0;
   z-index: 3;
   background: var(--panel-2);
+  padding: 2px 4px;
+}
+
+/* The admin's GROUP EDITOR opener, in the corner cell above CS/Name (owner,
+   28 Aug 26 — he circled that empty space). Sized to the frozen pair's width
+   so it can never widen the callsign column; the label ellipses rather than
+   pushing the column out on a phone. */
+.mx .mxhead th.brakhd .grpedit {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  max-width: 100%;
+  padding: 3px 7px;
+  background: var(--panel-2);
+  border: 1px solid var(--edge);
+  border-radius: 7px;
+  color: var(--ink-2);
+  font-family: inherit;
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: .06em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+}
+.mx .mxhead th.brakhd .grpedit:hover {
+  border-color: rgba(59, 198, 232, .5);
+  color: var(--ink);
 }
 
 .mx .mxhead th.brakm {

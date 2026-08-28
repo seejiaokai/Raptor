@@ -1900,6 +1900,17 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
 /* nowrap, or "Next 2 months" breaks across two lines and the two buttons stop
    matching heights */
 .inrange-btns .abtn{flex:1 1 0;min-width:0;white-space:nowrap;padding:7px 8px}
+/* The admin's default-window row, under the two quick buttons (owner, 28 Aug 26
+   — "create an edit icon for admin users"). Ruled off so it reads as a SETTING
+   rather than a third thing to pick; wraps on a phone. */
+.inrange-cfg{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-top:8px;
+  padding-top:8px;border-top:1px solid var(--edge)}
+.inrange-cfg .la-lbl{font-size:10px;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--ink-3);font-weight:700}
+.inrange-cfg .la-in{width:56px;min-height:32px;background:var(--panel-2);
+  border:1px solid var(--edge);color:var(--ink);border-radius:8px;padding:4px 8px;
+  font:inherit;font-size:13px;text-align:center}
+.inrange-cfg .la-sun{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--ink-2)}
 /* on a phone the filter bar wraps, so the popover must not hang off the edge */
 @media (max-width:700px){.inrange{position:static}.inrange-pop{left:8px;right:8px}}
 /* the two-click range calendar — its grid placement lives with the .ingrid

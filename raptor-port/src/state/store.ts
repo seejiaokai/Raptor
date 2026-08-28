@@ -15,6 +15,7 @@
 import { HOOKS } from '../engine/hooks'
 import { slotVal, setSlotVal, fillSlot, txtSet } from '../engine/slots'
 import { validate } from '../engine/validate'
+import { lookaheadLoad } from '../engine/lookahead'
 import { rulesLoad } from '../engine/rules'
 import { mintInpIds, INPUTS, DATES, isPersonal, baseYear, dateIx } from '../engine/inputs'
 import { DAYS } from '../engine/data'
@@ -498,6 +499,7 @@ export function initStore() {
   wireStore()
   rulesLoad()
   storesLoad()
+  lookaheadLoad()
   cxReasonsLoad()
   dutyTplLoad()
   waveTplLoad()

@@ -5,10 +5,17 @@
 
 import {
   addDays,
+  assignGroup,
   biddingClosed,
   canDecide,
   canEditCell,
   canEditRow,
+  DEFAULT_GROUPS,
+  offerableGroups,
+  orderedGroupIds,
+  pruneGroups,
+  readGroupDefs,
+  type GroupDef,
   inSquadron,
   isBiddable,
   isMedical,
@@ -159,6 +166,17 @@ interface State {
    *  a hidden row at all; an admin sees it dimmed in Rearrange mode, so it can
    *  be brought back. ADMIN-gated at the write path. */
   manningHidden: string[]
+  /** WHICH GROUPS the roster is drawn in, top to bottom (owner, 28 Aug 26 —
+   *  the admin group editor). The seven built-ins by default; an admin may add
+   *  a group per QUALIFICATION and drag the order. ADMIN-gated, same rule as
+   *  `manningOrder`. Read leniently and pruned against the live qual catalogue,
+   *  so a group pinned to a deleted Quals column cannot strand an empty
+   *  heading. */
+  groupDefs: GroupDef[]
+  /** WHO CLAIMS someone matching several groups — a SEPARATE order from the
+   *  display one above (the owner's explicit choice): a person shows exactly
+   *  once, and this decides where. Empty means "use the display order". */
+  groupPriority: string[]
 
   /** How many EVENT rows the matrix draws (owner, 18 Aug 26 — "add more event
    *  rows if needed"). Two by default; an admin can add up to `MAX_EVENT_ROWS`.
@@ -236,6 +254,8 @@ function blank(): State {
     persLabels: {},
     manningOrder: [],
     manningHidden: [],
+    groupDefs: [...DEFAULT_GROUPS],
+    groupPriority: [],
     eventRows: DEFAULT_EVENT_ROWS,
     showSans: false,
     // The squadron is the common case, so the app opens as one. An admin
@@ -692,6 +712,11 @@ export function initStore(b?: StorageBackend): void {
   const persLabels = readStored('perslabels', readLabelMap) ?? {}
   const manningOrder = readStored('manningorder', readIdList) ?? []
   const manningHidden = readStored('manninghidden', readIdList) ?? []
+  /* Untrusted storage: keep only structurally sound entries, then PRUNE against
+     the catalogue we have at boot (the seed's three keys; the projection
+     re-prunes as soon as Raptor's real catalogue lands — see setQualCatalog). */
+  const groupDefs = pruneGroups(readStored('groupdefs', readGroupDefs) ?? [...DEFAULT_GROUPS], state.qualCatalog)
+  const groupPriority = readStored('grouppriority', readIdList) ?? []
   // The squadron's own rule set, or — for a browser from before rules were
   // data — the seed with its old numbers-only overlay migrated in.
   const storedRules = readStored('manningdefs', readManningRules)
@@ -714,7 +739,7 @@ export function initStore(b?: StorageBackend): void {
      boot, so a stored copy could only ever disagree with the roster Raptor
      is actually flying. Boot leaves the seed — the vendored unit suite reads
      it pristine — and the projection that follows replaces it. */
-  state = withCurrent({ ...state, wars, currentId, openings, ledger, eventDefs, figureOrder, rosterOrder, persLabels, manningOrder, manningHidden, requirements, eventRows, showSans })
+  state = withCurrent({ ...state, wars, currentId, openings, ledger, eventDefs, figureOrder, rosterOrder, persLabels, manningOrder, manningHidden, groupDefs, groupPriority, requirements, eventRows, showSans })
 
   version = 0
   listeners.clear()
@@ -777,6 +802,8 @@ function persist(): void {
   backend.write('perslabels', JSON.stringify(state.persLabels))
   backend.write('manningorder', JSON.stringify(state.manningOrder))
   backend.write('manninghidden', JSON.stringify(state.manningHidden))
+  backend.write('groupdefs', JSON.stringify(state.groupDefs))
+  backend.write('grouppriority', JSON.stringify(state.groupPriority))
   backend.write('manningdefs', JSON.stringify(state.requirements.default.rules))
   backend.write('eventrows', JSON.stringify(state.eventRows))
   backend.write('showsans', JSON.stringify(state.showSans))
@@ -923,14 +950,100 @@ export function displayRoster(): Person[] {
   const order = state.rosterOrder.length ? state.rosterOrder : autoOrder(state.people)
   const pos = new Map(order.map((id, i) => [id, i]))
   const out: Person[] = []
-  for (const g of GROUP_ORDER) {
-    const members = state.people.filter(p => groupOf(p) === g)
+  /* The groups the ADMIN configured, in their display order, and the separate
+     priority order that decides who claims a person matching several (owner,
+     28 Aug 26). With the default list this is byte-identical to the old
+     GROUP_ORDER walk — the built-ins are mutually exclusive and cover everyone. */
+  const defs = groupsInOrder()
+  const priority = groupPriorityIds()
+  const home = new Map(state.people.map(p => [p.id, assignGroup(p, defs, priority)]))
+  for (const d of defs) {
+    const members = state.people.filter(p => home.get(p.id) === d.id)
     // A body missing from the saved order (just arrived) sinks to the end of
     // its group rather than jumping to the top.
     members.sort((a, b) => (pos.get(a.id) ?? Infinity) - (pos.get(b.id) ?? Infinity))
     out.push(...members)
   }
+  /* Anyone no configured group claims still gets a row — under "Everyone else",
+     always last. Without this an admin whose list is all qualifications would
+     drop people off the grid entirely. */
+  const rest = state.people.filter(p => !defs.some(d => home.get(p.id) === d.id))
+  rest.sort((a, b) => (pos.get(a.id) ?? Infinity) - (pos.get(b.id) ?? Infinity))
+  out.push(...rest)
   return out
+}
+
+/** The configured group list, pruned to the live qual catalogue and in the
+ *  admin's display order. One body, so every reader agrees. */
+export function groupsInOrder(): GroupDef[] {
+  const defs = pruneGroups(state.groupDefs.length ? state.groupDefs : DEFAULT_GROUPS, state.qualCatalog)
+  const ids = orderedGroupIds(defs, state.groupDefs.map(d => d.id))
+  return ids.map(id => defs.find(d => d.id === id)!).filter(Boolean)
+}
+
+/** The tie-break order — the admin's priority list, healed against the groups
+ *  that exist. Empty priority falls back to the display order. */
+export function groupPriorityIds(): string[] {
+  return orderedGroupIds(groupsInOrder(), state.groupPriority)
+}
+
+/** Which group a person is drawn under, for callers that need the answer
+ *  without walking the whole roster (the group editor's counts, the matrix). */
+export function groupIdOf(p: Person): string {
+  return assignGroup(p, groupsInOrder(), groupPriorityIds())
+}
+
+/** Every group an admin can pick from — the seven built-ins plus one per
+ *  qualification the squadron currently has. Grows on its own. */
+export function offerableGroupList(): GroupDef[] {
+  return offerableGroups(state.qualCatalog)
+}
+
+/** Replace the group list (add / remove / reorder). ADMIN-gated, like every
+ *  other arrangement writer. Pruned on the way in so a stale qualification
+ *  cannot be stored back. */
+export function setGroupDefs(defs: GroupDef[]): void {
+  if (state.role !== 'admin') return
+  state = withCurrent({ ...state, groupDefs: pruneGroups(defs, state.qualCatalog) })
+  persist()
+  notify()
+}
+
+/** Move one group before another in the DISPLAY order (the drag). Mirrors
+ *  `moveRosterRow` / `moveManningRowTo`, guard included. ADMIN-gated. */
+export function moveGroupTo(id: string, beforeId: string | null): void {
+  if (state.role !== 'admin') return
+  if (beforeId === id) return
+  const defs = groupsInOrder()
+  const from = defs.findIndex(d => d.id === id)
+  if (from < 0) return
+  const [moved] = defs.splice(from, 1)
+  const at = beforeId ? defs.findIndex(d => d.id === beforeId) : defs.length
+  defs.splice(at < 0 ? defs.length : at, 0, moved!)
+  setGroupDefs(defs)
+}
+
+/** Move one group in the PRIORITY order — the separate who-wins list. */
+export function moveGroupPriorityTo(id: string, beforeId: string | null): void {
+  if (state.role !== 'admin') return
+  if (beforeId === id) return
+  const ids = groupPriorityIds()
+  const from = ids.indexOf(id)
+  if (from < 0) return
+  ids.splice(from, 1)
+  const at = beforeId ? ids.indexOf(beforeId) : ids.length
+  ids.splice(at < 0 ? ids.length : at, 0, id)
+  state = withCurrent({ ...state, groupPriority: ids })
+  persist()
+  notify()
+}
+
+/** Put the roster grouping back to the seven built-ins. ADMIN-gated. */
+export function resetGroups(): void {
+  if (state.role !== 'admin') return
+  state = withCurrent({ ...state, groupDefs: [...DEFAULT_GROUPS], groupPriority: [] })
+  persist()
+  notify()
 }
 
 /** A ground-crew body's label: the admin's override if set, else the projected
@@ -1733,7 +1846,15 @@ export function resetManningRules(): void {
  *  roster itself. Not persisted and not admin-gated: it is derived squadron
  *  vocabulary, not a decision. */
 export function setQualCatalog(catalog: QualDef[]): void {
-  state = withCurrent({ ...state, qualCatalog: catalog })
+  /* A group pinned to a qualification the squadron has since deleted would
+     draw an empty heading nobody could remove, so the group list is re-pruned
+     whenever the catalogue moves (28 Aug 26). This is not an admin write — it
+     is the catalogue's own consequence — so it carries no role gate; it only
+     ever REMOVES a group whose qualification no longer exists. */
+  const groupDefs = pruneGroups(state.groupDefs, catalog)
+  const changed = groupDefs.length !== state.groupDefs.length
+  state = withCurrent({ ...state, qualCatalog: catalog, ...(changed ? { groupDefs } : {}) })
+  if (changed) persist()
   notify()
 }
 

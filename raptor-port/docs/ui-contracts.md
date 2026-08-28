@@ -4258,6 +4258,103 @@ Pinned in `counters.test.tsx`, `chrome.test.tsx`, `counts.test.tsx`,
 `roster.test.ts`, and e2e ("a personnel row shows its callsign, with no edit box,
 in Rearrange").
 
+## Leave War roster groups: minimise, and the admin group editor (owner, 28 Aug 26)
+
+**Minimising a category.** Every group heading is a fold control — the sticky
+`td.grphd` is the target (NOT `.grphd-in`, which is deliberately `width: 0` so it
+adds no min-width to the frozen callsign column; a zero-width control cannot be
+tapped). Folding keeps the heading — it is the way back — and drops its rows; the
+`· N` count is built from the UNFILTERED roster, so a folded group still says how
+many it is hiding. The filter lives in `rosterSequence()` (`Matrix.tsx`), the one
+sequence BOTH the real grid and the frozen overlay read, and the inline `<tbody>`
+render applies the identical skip — the two must never fold out of step, which is
+what `frozencols.test.tsx` and the e2e overlay test catch. Session-only and open
+to EITHER role, the same doctrine as the manning-block collapse: it hides nothing
+anyone is entitled to see. Nothing is folded by default. `folded` rides the two
+measuring effects' deps and the frozen-header mirror's, because removing rows lets
+auto-layout re-narrow columns exactly as a row-window change does.
+
+**The group editor** (`ui/GroupSheet.tsx`, opened from the ⚙ button in the corner
+cell above CS/Name — the empty space the owner circled; admin only). The seven
+built-in groups were a closed union (`Group`), a fixed `GROUP_ORDER` and a
+`GROUP_LABEL` record; they are now the DEFAULT value of an admin-owned list
+(`engine/groups.ts`). A group is `{kind:'cat', g}` or `{kind:'qual', k}`, and a
+built-in's id IS its old `Group` string — so every stored order, `group-SXO`
+testid and `g-sxo` CSS class is untouched, and an untouched squadron groups
+exactly as before (pinned: the default list reproduces `groupOf` for every kind
+of person).
+
+- **The qualification list grows on its own.** Quals already crossed the Leave War
+  seam — `raptorRoster.ts` projects `xq` (every held key) and `qualCatalogue()`
+  unions every key any live body carries, refreshed by `reprojectRoster` on every
+  notify. `heldQuals(p)` (`availability.ts`) is the membership predicate, the same
+  one the counter filters use, so "qualified" means one thing in this app.
+- **TWO orders, deliberately** (the owner's choice when asked): `groupDefs` is the
+  top-to-bottom display order he drags, and `groupPriority` is a SEPARATE list
+  deciding who claims a person matching several. Tying them would make reordering
+  the page silently re-home people.
+- **"Shows up once" is not bolted on**: `assignGroup` walks the priority order and
+  takes the first match — the same shape `groupOf` always had. Ranking a
+  qualification above a CAT group is all it takes to get the owner's "if theres a
+  cat c column, but there is also a SC D column. They should always show up in the
+  qualifications column instead of CAT".
+- **"Everyone else" is always last and cannot be removed** — an admin whose list is
+  all qualifications would otherwise strand people with no row at all.
+- **Tap a group to see who is in it** (owner: "allow me to click to highlight the
+  applicable pucks … so I can see like who's qualified"), with a live member count
+  on every row.
+- **Untrusted load + a live prune**: stored entries are read structurally and
+  de-duped, and `pruneGroups` runs on load AND whenever the catalogue moves
+  (`setQualCatalog`) — a group pinned to a Quals column the squadron later deletes
+  would otherwise draw an empty heading nobody could remove.
+- **Manning counts do NOT follow the grouping** (owner's explicit answer, and
+  verified: `countsFor` never calls `groupOf`). Grouping is display only. NAMED
+  DRIFT-SEAM: the group editor and the manning count rows are two independent
+  admin configurations over overlapping vocabulary — changing one does not move
+  the other, by design.
+- CAT sub-headings are emitted for the two built-in OPS groups only; a person drawn
+  under a qualification is not "in CAT B" for display purposes.
+
+Verified live at 1440px: the editor offers all ten real qualifications with true
+member counts, tapping IP lights its eight people, ranking Scheduler top moves all
+fifteen schedulers into it (SXO's heading disappears — its people were claimed),
+and the roster still holds all 50 people with zero duplicates. Pinned in
+`engine/groups.test.ts`, `roster.test.ts` and `matrix.test.tsx`.
+
+## The Inputs date window is a squadron setting (owner, 28 Aug 26)
+
+"Can i set the default duration how many weeks to look ahead by default … weeks,
+or weeks plus till that week's sunday … create an edit icon for admin users … i am
+able to change the button function to show the set duration i can click by default
+by everyone."
+
+`engine/lookahead.ts`, on the STD → CFG → save/load/reset idiom (`engine/stores.ts`
+is the template; boot-loaded in `initStore` beside `storesLoad()`). Two shapes,
+both asked for: plain `N` weeks, or `N` weeks then run on to that week's SUNDAY so
+the window always ends on a week boundary. **`LOOK_STD` is 2 weeks / no Sunday =
+exactly the old hard-coded today+14**, so the page opens on the same window it
+always did until an admin changes it.
+
+The page's opening range (`initialRange`) and the popover's quick button
+(`#inRangeDef`) now BOTH derive from the one setting, so what the page opens on and
+what the button offers cannot disagree — the button also SAYS the setting ("Next 4
+weeks, to Sunday"). The admin's pencil (`#inRangeEdit`) sits under the two quick
+buttons: a bounded weeks field and the Sunday toggle, saved immediately, and a
+refused value is put back to the live one on screen rather than left looking saved
+(the standing rule for every edited threshold). Storage is untrusted on load and
+nothing is written at all while the squadron is on the standard, so a later change
+to that standard is picked up rather than frozen in a browser.
+
+`#inRangeDef` used to be a fixed "Next 2 months"; `DEFAULT_SPAN_MONTHS` and
+`plusMonths` remain (exported and read elsewhere). The inputs test that named
+"+2 months" was renamed to name the default window instead — its assertions were
+already about what falls inside, and they still hold.
+
+Verified live: default 28 Aug → 11 Sep with "Next 2 weeks"; set to 4 weeks + Sunday
+gives "Next 4 weeks, to Sunday" and 28 Aug → Sun 27 Sep; survives a reload. Pinned
+in `engine/lookahead.test.ts` (both modes, month/year rollover, bounds, untrusted
+storage).
+
 ## The frozen date bar — the reusable recipe (owner, 28 Aug 26 — "make sure u remember how to create such a frozen top bar in the future. This is the expectation")
 
 This is the pattern the owner signed off on the preview and asked kept for

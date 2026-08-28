@@ -13,7 +13,10 @@ import {
   displayCell,
   evaluatePeriod,
   groupOf,
-  GROUP_LABEL,
+  assignGroup,
+  groupLabel,
+  OTHER_ID,
+  OTHER_LABEL,
   inSquadron,
   isBiddable,
   isDuty,
@@ -30,7 +33,7 @@ import {
   type Group,
   type Person,
 } from '../engine'
-import { addEventRow, autoSortRoster, DEFAULT_EVENT_ROWS, displayRoster, eventRowUsed, getState, MAX_EVENT_ROWS, moveCells, movableCells, moveManningRowTo, moveProblem, moveRosterRow, orderedManningIds, removeEventRow, resetManningRules, setPostOut, setShowSans, type MoveResult } from '../state/store'
+import { groupsInOrder, groupPriorityIds, moveGroupTo, moveGroupPriorityTo, addEventRow, autoSortRoster, DEFAULT_EVENT_ROWS, displayRoster, eventRowUsed, getState, MAX_EVENT_ROWS, moveCells, movableCells, moveManningRowTo, moveProblem, moveRosterRow, orderedManningIds, removeEventRow, resetManningRules, setPostOut, setShowSans, type MoveResult } from '../state/store'
 import { BidPicker, DecisionSheet, PostOutSheet, RaptorSheet } from './BidPicker'
 import { CounterSheet, FigureBreakdownSheet, PersonFiguresSheet } from './CounterSheet'
 import { PersonSheet } from './PersonSheet'
@@ -41,6 +44,7 @@ import { EventRows } from './EventRows'
 import { EventSheet } from './EventSheet'
 import { monthInView } from './monthview'
 import { wireSelect, wireMove, daysBetween, paintLanding, clearLanding, earliestDate, type Cell, type Selection, type SelectCtx } from './select'
+import { GroupSheet } from './GroupSheet'
 import { SelectSheet } from './SelectSheet'
 import { RemarksSheet } from './RemarksSheet'
 import { leaveInputAt } from '../sync'
@@ -115,6 +119,18 @@ const MANNING_DRAG: RowDragCfg = {
   idOf: el => el.getAttribute('data-mrow'),
   move: moveManningRowTo,
 }
+/* The group editor's two lists reorder with the SAME machine — display order
+   and the separate who-wins priority (owner, 28 Aug 26). */
+const GROUP_DRAG: RowDragCfg = {
+  sel: '[data-grow]',
+  idOf: el => el.getAttribute('data-grow'),
+  move: moveGroupTo,
+}
+const GROUP_PRIO_DRAG: RowDragCfg = {
+  sel: '[data-gprio]',
+  idOf: el => el.getAttribute('data-gprio'),
+  move: moveGroupPriorityTo,
+}
 
 export function Matrix() {
   /* kept in a name (not just subscribed) so store-reading memos below can
@@ -122,7 +138,7 @@ export function Matrix() {
      memo keyed only on the selection went stale when a sync pass changed a
      selected cell under an armed move */
   const version = useVersion()
-  const { people, period, grid, states, requirements, role, viewer, eventDefs, openings, ledger, wars, figureOrder, manningHidden, eventRows, showSans, focusDate, focusSeq } = getState()
+  const { people, period, grid, states, requirements, role, viewer, eventDefs, openings, ledger, wars, figureOrder, manningHidden, eventRows, showSans, focusDate, focusSeq, qualCatalog } = getState()
   const dates = period.days.map(d => d.date)
   // Memoized on the store objects (the store replaces what it writes, so
   // identity IS change): rules-as-data made a day's evaluation walk every
@@ -208,6 +224,9 @@ export function Matrix() {
   // NEW counter, an id editing that one. Reached from + Counter in the
   // Rearrange tools and from the explainer sheet's Edit counter… button.
   const [counterEdit, setCounterEdit] = useState<string | null | false>(false)
+  // The admin group editor (owner, 28 Aug 26) — opened from the corner cell
+  // above CS/Name.
+  const [groupEdit, setGroupEdit] = useState(false)
   // Edit-mode roster rearranging (owner, 18 Aug 26). Admin-only view state: it
   // turns the drag handles on, so an admin reading the grid does not nudge a
   // row by accident. Auto-sort stays available without it.
@@ -547,6 +566,38 @@ export function Matrix() {
   // hide controls stay reachable.
   const [countsOpen, setCountsOpen] = useState(true)
 
+  /* WHICH CATEGORY GROUPS ARE FOLDED AWAY (owner, 28 Aug 26 — "allow me to
+     minimise categories on leave war"). Same doctrine as the manning collapse
+     above: a VIEW preference, session-only and open to EITHER role — it hides
+     nothing anyone is entitled to see, it just gets a group's rows out of the
+     way while reading another. Nothing is folded by default, so the grid opens
+     exactly as it always did. The fold is applied in `rosterSequence` (below),
+     the one place both the real grid and the frozen overlay read. */
+  const [folded, setFolded] = useState<Set<string>>(() => new Set())
+  const toggleFold = (g: string) => setFolded(prev => {
+    const next = new Set(prev)
+    next.has(g) ? next.delete(g) : next.add(g)
+    return next
+  })
+
+  /* THE CONFIGURED GROUPS (owner, 28 Aug 26 — the admin group editor). With the
+     default list these answer exactly as the old `groupOf` / `GROUP_LABEL` did,
+     so an untouched squadron is unchanged. Read once per render and shared by
+     both the real grid and the frozen overlay, so the two cannot disagree about
+     who sits where. */
+  const groupDefs = groupsInOrder()
+  const groupPriority = groupPriorityIds()
+  const homeOf = (p: Person) => assignGroup(p, groupDefs, groupPriority)
+  const labelOfGroup = (id: string) =>
+    id === OTHER_ID ? OTHER_LABEL : (() => {
+      const d = groupDefs.find(x => x.id === id)
+      return d ? groupLabel(d, qualCatalog) : id
+    })()
+  /* The per-group swatch class. Built-in ids give back the same `g-sxo`,
+     `g-ip`… classes the stylesheet already paints; a qualification id is
+     slugged so a colon or space can never break the class. */
+  const groupClass = (id: string) => `g-${id.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`
+
   // The month strip's buttons are ABSOLUTELY positioned (they must not widen
   // the frozen columns — see matrix.css), so the sticky cell they sit in has to
   // RESERVE their height by hand. That height was a hardcoded 72px (two wrapped
@@ -656,7 +707,9 @@ export function Matrix() {
     // `visWindow` too (19 Aug 26): a row-set change lets auto layout re-narrow
     // the columns a removed row's chips had widened, and a stuck mirror
     // pinning the OLD widths would sit misaligned over the new ones.
-  }, [period.id, dates.length, zoom, visWindow])
+    // `folded` (28 Aug 26) is the same kind of row-set change — minimising a
+    // category takes its rows (and their chips) out of the table.
+  }, [period.id, dates.length, zoom, visWindow, folded])
 
   // The mirror starts life at the grid's current horizontal position, and the
   // two scrollers keep each other in lockstep from then on. Assigning an
@@ -697,7 +750,7 @@ export function Matrix() {
       window.removeEventListener('resize', measureHbar)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [phone, zoom, visWindow, period.id, dates.length, countsOpen])
+  }, [phone, zoom, visWindow, period.id, dates.length, countsOpen, folded])
   // The mirror FOLLOWS the grid and never drives it (owner, 20 Aug 26 — the
   // sixth report, and the one that found it: "when the top bar freezes the
   // sideways scroll can only move a bit and halts quickly"). It used to be a
@@ -797,7 +850,24 @@ export function Matrix() {
   // answering one id would break every query that expects the real one.
   const bracketRow = (testids: boolean) => (
     <tr className="mbrak" data-testid={testids ? 'month-bracket' : undefined}>
-      <th className="brakhd" colSpan={2} />
+      {/* The corner cell above CS/Name was empty (owner circled it, 28 Aug 26).
+          It now carries the admin's GROUP EDITOR opener — the control belongs
+          beside the column it configures, and this is the only spare space in
+          the frozen pair. Admin only; the store refuses a member's write
+          anyway, and a control that does nothing is worse than none. The
+          mirror copy carries no testid, like every other mirrored cell. */}
+      <th className="brakhd" colSpan={2}>
+        {role === 'admin' && (
+          <button
+            className="grpedit"
+            data-testid={testids ? 'group-edit' : undefined}
+            tabIndex={testids ? 0 : -1}
+            title="Choose which groups the left column shows"
+            aria-label="Choose which groups the left column shows"
+            onClick={() => setGroupEdit(true)}
+          >⚙ Groups</button>
+        )}
+      </th>
       {brackets.map(b => (
         <th key={b.key} className="brakm" data-testid={testids ? `bracket-${b.key}` : undefined} colSpan={b.count}>
           <div className="brakin">
@@ -1235,7 +1305,7 @@ export function Matrix() {
     window.addEventListener('resize', measure)
     return () => { ro?.disconnect(); window.removeEventListener('resize', measure) }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [bandActive, zoom, visWindow, period.id, dates.length, countsOpen])
+  }, [bandActive, zoom, visWindow, period.id, dates.length, countsOpen, folded])
 
   // Re-pinned on EVERY render, not on a dependency list: a bid placed, a
   // decision made or a figure switched can put a chip into a day cell or take
@@ -1253,22 +1323,34 @@ export function Matrix() {
   // pins the two together. This mirrors the inline logic in the roster <tbody>
   // render below on purpose — change one and the test catches the other.
   type RSeq =
-    | { kind: 'group'; g: Group; n: number }
-    | { kind: 'catsub'; g: Group; cat: string }
+    | { kind: 'group'; g: string; label: string; n: number }
+    | { kind: 'catsub'; g: string; cat: string }
     | { kind: 'person'; p: Person }
   const rosterSequence = (): RSeq[] => {
     const roster = displayRoster().filter(p => rowInWindow(p, visWindow))
     const out: RSeq[] = []
-    let prevG: Group | null = null
+    let prevG: string | null = null
     let prevCat = ''
     for (const p of roster) {
-      const g = groupOf(p)
+      const g = homeOf(p)
       if (g !== prevG) {
-        out.push({ kind: 'group', g, n: roster.filter(x => groupOf(x) === g).length })
+        out.push({ kind: 'group', g, label: labelOfGroup(g), n: roster.filter(x => homeOf(x) === g).length })
         prevG = g
         prevCat = ''
       }
-      const cat = opsCatOf(p)
+      /* A FOLDED group keeps its heading and drops everything under it (owner,
+         28 Aug 26 — "allow me to minimise categories on leave war"). The filter
+         lives HERE, in the one sequence both the real grid and the frozen
+         overlay read, so the two cannot fold out of step — the failure the
+         frozen-column order test exists to catch. The heading's `· N` count is
+         built from the unfiltered roster above, so a folded group still says
+         how many people it is hiding. */
+      if (folded.has(g)) continue
+      /* CAT sub-headings belong to the two built-in OPS groups only — a person
+         drawn under a QUALIFICATION group is not "in CAT B" for display
+         purposes, and a CAT rule inside a qual heading would read as a claim
+         about the qualification. */
+      const cat = (g === 'OPSP' || g === 'OPSW') ? opsCatOf(p) : ''
       if (cat && cat !== prevCat) { out.push({ kind: 'catsub', g, cat }); prevCat = cat }
       out.push({ kind: 'person', p })
     }
@@ -1607,25 +1689,45 @@ export function Matrix() {
                 // it. visWindow '' (jsdom, first paint) shows everyone.
                 const roster = displayRoster().filter(p => rowInWindow(p, visWindow))
                 const span = 2 + dates.length
-                let prevG: Group | null = null
+                let prevG: string | null = null
                 let prevCat = ''
                 return roster.map(p => {
-                  const g = groupOf(p)
+                  const g = homeOf(p)
                   const heads: any[] = []
                   if (g !== prevG) {
-                    const n = roster.filter(x => groupOf(x) === g).length
+                    const n = roster.filter(x => homeOf(x) === g).length
                     heads.push(
-                      <tr key={`grp-${g}`} className={`grp g-${g.toLowerCase()}`} data-testid={`group-${g}`}>
+                      <tr key={`grp-${g}`} className={`grp ${groupClass(g)}${folded.has(g) ? ' folded' : ''}`} data-testid={`group-${g}`}>
                         {/* The label sits in a sticky td spanning only the two
                             frozen columns — the SAME technique .who/.bal use —
                             so it stays pinned to the left as the year scrolls;
                             its text overflows visibly over the empty fill cell
                             beside it. (A sticky div inside a full-width colSpan
-                            td does not stick — it rides off to the right.) */}
-                        <td className="grphd" colSpan={2}>
+                            td does not stick — it rides off to the right.)
+
+                            The TD is the fold target, not the div inside it:
+                            `.grphd-in` is deliberately `width: 0` (it must add
+                            no min-width, or the frozen callsign column grows to
+                            fit "Personnel · N"), and a zero-width control cannot
+                            be tapped. Same reasoning as the balance cell, where
+                            the td is the target so a nested button cannot cost
+                            the column its number. */}
+                        <td
+                          className="grphd"
+                          colSpan={2}
+                          data-testid={`groupfold-${g}`}
+                          role="button"
+                          tabIndex={0}
+                          aria-expanded={!folded.has(g)}
+                          aria-label={`${labelOfGroup(g)} — ${folded.has(g) ? 'show' : 'hide'} these rows`}
+                          title={folded.has(g) ? `Show the ${labelOfGroup(g)} rows` : `Hide the ${labelOfGroup(g)} rows`}
+                          onClick={() => toggleFold(g)}
+                          onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleFold(g) } }}
+                        >
                           <div className="grphd-in">
                             <span className="gsw" aria-hidden="true" />
-                            <span className="gname">{GROUP_LABEL[g]}</span>
+                            <span className="gcar" aria-hidden="true">{folded.has(g) ? '▸' : '▾'}</span>
+                            <span className="gname">{labelOfGroup(g)}</span>
                             <span className="gcount">· {n}</span>
                           </div>
                         </td>
@@ -1635,7 +1737,15 @@ export function Matrix() {
                     prevG = g
                     prevCat = ''
                   }
-                  const cat = opsCatOf(p)
+                  /* Folded: the heading stands alone and everything under it is
+                     dropped (owner, 28 Aug 26). The first person of the group
+                     still emits the heading collected above; the rest emit
+                     nothing. `rosterSequence` applies the identical filter, so
+                     the frozen overlay folds in lockstep. */
+                  if (folded.has(g)) {
+                    return heads.length ? <Fragment key={p.id}>{heads}</Fragment> : null
+                  }
+                  const cat = (g === 'OPSP' || g === 'OPSW') ? opsCatOf(p) : ''
                   if (cat && cat !== prevCat) {
                     heads.push(
                       <tr key={`sub-${g}-${cat}`} className="catsub" data-testid={`subcat-${g}-${cat}`}>
@@ -1935,11 +2045,19 @@ export function Matrix() {
               <tbody className="mxbody">
                 {rosterSequence().map(item => {
                   if (item.kind === 'group') return (
-                    <tr key={`b-grp-${item.g}`} data-band-key={`group-${item.g}`} className={`grp g-${item.g.toLowerCase()}`}>
-                      <td className="grphd" colSpan={2}>
+                    /* The overlay's own copy of the heading, and it carries the
+                       fold handler too: once the year has scrolled sideways the
+                       overlay is `pointer-events: auto` and is the copy the
+                       reader can actually tap (the real heading has slid away
+                       under it). No role/tabIndex here — the whole band is
+                       aria-hidden and the real heading above is the accessible
+                       control. */
+                    <tr key={`b-grp-${item.g}`} data-band-key={`group-${item.g}`} className={`grp ${groupClass(item.g)}${folded.has(item.g) ? ' folded' : ''}`}>
+                      <td className="grphd" colSpan={2} onClick={() => toggleFold(item.g)}>
                         <div className="grphd-in">
                           <span className="gsw" />
-                          <span className="gname">{GROUP_LABEL[item.g]}</span>
+                          <span className="gcar">{folded.has(item.g) ? '▸' : '▾'}</span>
+                          <span className="gname">{item.label}</span>
                           <span className="gcount">· {item.n}</span>
                         </div>
                       </td>
@@ -2156,6 +2274,17 @@ export function Matrix() {
           Keyed so switching counters resets every draft field. */}
       {counterEdit !== false && (
         <CounterForm key={counterEdit ?? 'new'} ruleId={counterEdit} onClose={() => setCounterEdit(false)} />
+      )}
+      {/* The group editor. Admin only at the affordance AND at every store
+          writer it calls — the standing role doctrine. */}
+      {groupEdit && role === 'admin' && (
+        <GroupSheet
+          onClose={() => setGroupEdit(false)}
+          onRowDragStart={(e, id) => startRowDrag(e, id, GROUP_DRAG)}
+          onPriorityDragStart={(e, id) => startRowDrag(e, id, GROUP_PRIO_DRAG)}
+          draggingId={draggingId}
+          dragOver={dragOver}
+        />
       )}
       {open && !canRemark && !openPostedOut && !raptorOwns(states, open.id, open.date)
         && canEditCell(period, role, open.date) && canEditRow(role, viewer, open.id)

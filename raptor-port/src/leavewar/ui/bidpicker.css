@@ -498,6 +498,91 @@
   color: var(--ink);
 }
 
+/* ---- the roster GROUP editor (owner, 28 Aug 26) --------------------------
+   Which groups the left column shows, their order, and the separate who-wins
+   list. Rows reuse the counter sheet's `.crow-wrap`/`.crow` recipe so the two
+   admin sheets read as one family; the grip and the ✕ flank the row. */
+.bidsheet .gs-sec {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 12px 2px 6px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.bidsheet .gs-sec .gs-hint {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: .02em;
+  text-transform: none;
+  color: var(--ink-3);
+  opacity: .8;
+}
+.bidsheet .gs-note {
+  padding: 6px 2px 2px;
+  font-size: 11px;
+  line-height: 1.45;
+  color: var(--ink-3);
+}
+.bidsheet .gs-note b { color: var(--ink-2); }
+.bidsheet .gs-row { align-items: center; }
+.bidsheet .gs-row .drag {
+  color: var(--edge-2);
+  font-size: 13px;
+  line-height: 1;
+  cursor: grab;
+  padding: 0 2px;
+  flex: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.bidsheet .gs-row .drag:active { cursor: grabbing; }
+/* The drag feedback matches the roster's: the row being carried fades, the row
+   it would land on takes an accent edge. */
+.bidsheet .gs-row.dragging { opacity: .5; }
+.bidsheet .gs-row.dragover .crow { box-shadow: inset 0 2px 0 var(--accent); }
+.bidsheet .gs-pick.on {
+  background: rgba(59, 198, 232, .14);
+  border-color: var(--accent);
+}
+/* A fixed little square, NOT the figure-arrow recipe: `.cmv` is `flex: 1 1
+   auto` (it stacks two arrows up a row's height), which here stretched the ✕
+   into a wide empty box and left every row ragged down the right edge. */
+.bidsheet .cmv.gs-del {
+  flex: 0 0 auto;
+  width: 28px;
+  min-width: 0;
+  min-height: 28px;
+  align-self: center;
+  color: var(--ink-3);
+}
+.bidsheet .cmv.gs-del:hover { border-color: rgba(255, 92, 92, .6); color: #ff5c5c; }
+/* Who is in the tapped group — the owner's "highlight the applicable pucks". */
+.bidsheet .gs-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  padding: 2px 0 4px;
+}
+.bidsheet .gs-chip {
+  background: rgba(59, 198, 232, .14);
+  border: 1px solid rgba(59, 198, 232, .45);
+  color: var(--accent);
+  border-radius: 8px;
+  padding: 3px 8px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .04em;
+}
+.bidsheet .gs-empty {
+  font-size: 11px;
+  color: var(--ink-3);
+  font-style: italic;
+}
+
 /* The per-person breakdown sheet's rows are STATEMENTS, not choices — same
    card shape as the picker's rows so the two sheets read as one family, but
    no pointer and no hover invitation, because tapping one does nothing. */

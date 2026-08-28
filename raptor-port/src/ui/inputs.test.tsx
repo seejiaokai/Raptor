@@ -989,7 +989,10 @@ const seed = (o: any) => { INPUTS.unshift({ allday: true, s: 0, e: 1439, type: '
 const startsShown = () => $$('#inBody tr td:nth-child(2)').map(td => td.textContent!.trim())
 
 describe('the date window', () => {
-  it('opens on today → +2 months, and hides what is outside it', async () => {
+  /* The quick button applies the SQUADRON'S look-ahead since 28 Aug 26 (an
+     admin sets it; the standard is the same fortnight as before), so this
+     no longer says "+2 months" — it says "the default window". */
+  it('opens on today → the default window, and hides what is outside it', async () => {
     const n = INPUTS.length
     await act(async () => {
       seed({ person: 'bane', date: lbl(isoIn(-40)), remarks: 'WELL BEHIND' })
@@ -1000,7 +1003,7 @@ describe('the date window', () => {
     const shown = () => $$('#inBody tr').map(tr => tr.textContent || '')
     expect(shown().some(t => t.includes('THIS WEEK')), 'inside the window').toBe(true)
     expect(shown().some(t => t.includes('WELL BEHIND')), 'before today').toBe(false)
-    expect(shown().some(t => t.includes('FAR AHEAD')), 'beyond two months').toBe(false)
+    expect(shown().some(t => t.includes('FAR AHEAD')), 'beyond the window').toBe(false)
 
     /* the readout names the window rather than leaving the user to guess */
     expect($('#inRangeBtn').textContent).toContain(lblDay(isoIn(0)))

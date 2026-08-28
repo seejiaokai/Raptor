@@ -8,6 +8,8 @@ import { initStore as raptorInitStore, notify as raptorNotify } from '../state/s
 import {
   autoOrder,
   catClass,
+  qualGroupId,
+  OTHER_ID,
   catText,
   countsFor,
   groupOf,
@@ -27,6 +29,14 @@ import {
   moveManningRow,
   moveManningRowTo,
   moveRosterRow,
+  moveGroupTo,
+  moveGroupPriorityTo,
+  groupsInOrder,
+  groupPriorityIds,
+  groupIdOf,
+  setGroupDefs,
+  resetGroups,
+  setQualCatalog,
   orderedManningIds,
   personLabel,
   resetManning,
@@ -443,5 +453,86 @@ describe('the roster stays a live projection of Raptor\'s PEOPLE', () => {
     expect(getState().people.find(p => p.id === other.id)!.to).toBe('2026-05-31')
     // the archive choice is Leave War's own alongside the window — preserved too
     expect(getState().people.find(p => p.id === other.id)!.poArchive).toBe(false)
+  })
+})
+
+
+// THE ADMIN GROUP EDITOR (owner, 28 Aug 26): which groups the left column
+// shows, their order, and the separate who-wins list. The default must be
+// invisible — an untouched squadron groups exactly as it always did.
+describe('the roster group editor', () => {
+  /* A known roster, so a group's membership is a fact of the test rather than
+     of the demo seed (which carries no ground crew at all). OPS_C also holds
+     the SC Day qualification — the owner's own worked example. */
+  const QCREW: Person[] = [
+    ...CREW.filter(p => p.id !== 'ops_c'),
+    person('ops_c', { seat: 'pilot', band: 'ops', q: 'C', xq: ['scDay'] } as any),
+  ]
+  beforeEach(() => {
+    lwInitStore(memoryBackend())
+    setRole('admin')
+    setPeople(QCREW)
+    setQualCatalog([{ k: 'scDay', label: 'SC DAY' }])
+  })
+
+  it('defaults to the seven built-ins, in the owner\'s order', () => {
+    expect(groupsInOrder().map(d => d.id)).toEqual([...GROUP_ORDER])
+    // and every person lands where groupOf would have put them
+    for (const p of getState().people) expect(groupIdOf(p)).toBe(groupOf(p))
+  })
+
+  it('drags a group up the display order, and the roster follows', () => {
+    const before = groupsInOrder().map(d => d.id)
+    moveGroupTo('PERS', before[0]!)                 // ground crew to the top
+    expect(groupsInOrder().map(d => d.id)[0]).toBe('PERS')
+    // displayRoster leads with that group now
+    const first = displayRoster()[0]!
+    expect(groupIdOf(first)).toBe('PERS')
+  })
+
+  // The owner's worked example: a CAT C pilot who is ALSO SC Day shows under
+  // the qualification, not the CAT — and the separate priority list is what
+  // decides it, so pushing the qualification down puts them back.
+  it('a qualification group claims its people, and the priority list decides ties', () => {
+    const qid = qualGroupId('scDay')
+    const opsC = () => getState().people.find(p => p.id === 'ops_c')!
+    expect(groupIdOf(opsC())).toBe('OPSP')                  // CAT group, before
+    setGroupDefs([...groupsInOrder(), { id: qid, kind: 'qual', k: 'scDay' }])
+
+    moveGroupPriorityTo(qid, groupPriorityIds()[0]!)        // rank it top
+    expect(groupIdOf(opsC())).toBe(qid)
+    // …and the person shows exactly once, under that group only
+    expect(displayRoster().filter(p => p.id === 'ops_c')).toHaveLength(1)
+
+    moveGroupPriorityTo(qid, null)                          // rank it last
+    expect(groupIdOf(opsC())).toBe('OPSP')
+  })
+
+  it('shows everyone exactly once, whatever the configuration', () => {
+    setGroupDefs([{ id: qualGroupId('scDay'), kind: 'qual', k: 'scDay' }])
+    const roster = displayRoster()
+    expect(new Set(roster.map(p => p.id)).size).toBe(roster.length)
+    // nobody is lost: people no group claims fall to "Everyone else"
+    expect(roster.length).toBe(getState().people.length)
+    expect(roster.some(p => groupIdOf(p) === OTHER_ID)).toBe(true)
+  })
+
+  it('drops a group whose qualification leaves the catalogue', () => {
+    setQualCatalog([{ k: 'scDay', label: 'SC DAY' }])
+    setGroupDefs([...groupsInOrder(), { id: qualGroupId('scDay'), kind: 'qual', k: 'scDay' }])
+    expect(groupsInOrder().some(d => d.id === qualGroupId('scDay'))).toBe(true)
+    setQualCatalog([])                                    // the column is deleted in Quals
+    expect(groupsInOrder().some(d => d.id === qualGroupId('scDay'))).toBe(false)
+  })
+
+  it('is admin-gated, and resets to the standard groups', () => {
+    moveGroupTo('PERS', 'SXO')
+    expect(groupsInOrder().map(d => d.id)[0]).toBe('PERS')
+    resetGroups()
+    expect(groupsInOrder().map(d => d.id)).toEqual([...GROUP_ORDER])
+    setRole('member')
+    moveGroupTo('PERS', 'SXO')
+    setGroupDefs([])
+    expect(groupsInOrder().map(d => d.id)).toEqual([...GROUP_ORDER])   // refused
   })
 })
