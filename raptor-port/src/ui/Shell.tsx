@@ -200,6 +200,10 @@ export function Shell() {
   const hlSig = [...HLSET].sort().join(',')
   const rulesOff = rulesOffCount()
 
+  /* computed ONCE per render — the bell's class and the memo deps both read
+     it (bug pass, 28 Aug 26: two full INPUTS scans per render was waste);
+     the tap handler re-derives its own fresh copy at click time. */
+  const oilPend = oilPendingFor(ME).length
   const topbar = useMemo(() => (
       /* The top bar wears a blue-tinted gradient while on Edit Schedule (owner,
          22 Aug 26) so it is unmistakable from the near-identical View-only mode
@@ -284,7 +288,7 @@ export function Shell() {
               answering the question puts the bell out by itself). The tap
               lands on the Inputs page with the editor open on the exact input
               and the OIL sheet already up (OILASK, pops.ts). */}
-          <button className={'bellbtn' + (bellLit() || bugAlert() || oilPendingFor(ME).length ? ' on' : '')} id="notifyBell" aria-label="Notifications" title="Notifications"
+          <button className={'bellbtn' + (bellLit() || bugAlert() || oilPend ? ' on' : '')} id="notifyBell" aria-label="Notifications" title="Notifications"
             onClick={() => {
               if (bugAlert()) {
                 const n = unseenReports()
@@ -332,7 +336,7 @@ export function Shell() {
             : <span className={'abtn rolechip' + (admin ? ' admin' : '')} id="roleBadge">{admin ? 'Admin' : 'Member'}</span>}
         </div>
       </div>
-  ), [page, admin, ME, fast, HIST.ix, HIST.stack.length, bellLit(), bugAlert(), oilPendingFor(ME).length])
+  ), [page, admin, ME, fast, HIST.ix, HIST.stack.length, bellLit(), bugAlert(), oilPend])
 
   const viewPage = useMemo(() => (
       <section className={'page' + (page === 'viewsched' ? ' on' : '')} id="page-viewsched">

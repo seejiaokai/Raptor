@@ -33,6 +33,7 @@ import { notify as raptorNotify, subscribe as raptorSubscribe, writeInputsBatch 
 import {
   addDays,
   columnKindFor,
+  inSquadron,
   isWeekend,
   outboundToRaptor,
   parseCell,
@@ -690,9 +691,17 @@ export function oilPendingFor(personId: any): { iid: string; iso: string }[] {
 function availableFor(iso: string, win: [number, number]): string[] {
   const out: string[] = []
   const isoOrd = +iso.replace(/-/g, '')
+  /* the Leave War body, for the posting window (bug pass, 28 Aug 26): a
+     person posted out WITHOUT the archive switch — or not yet posted in —
+     still holds a Raptor body, and expanding them under an ALL puck would
+     mint a credit the matrix hides behind its not-yet-arrived blank. The
+     same inSquadron read the manning counts make. */
+  const lwById = new Map(getState().people.map(p => [p.id, p]))
   for (const id of Object.keys(PEOPLE)) {
     const p: any = (PEOPLE as any)[id]
     if (!p || p.special || p.archived || p.pers || p.san) continue
+    const lw = lwById.get(id)
+    if (lw && !inSquadron(lw, iso)) continue
     const away = INPUTS.some((inp: any) => {
       if (inp.person !== id || !isAway(inp)) return false
       const a = dateOrd(inp.date, inp.yr)
@@ -1031,6 +1040,12 @@ export function wireLeaveWarSync(): void {
        changed (a signature over every person's pending iid|iso pairs, the
        reprojectRoster change-guard idiom), so this lane's own echo finds an
        unchanged signature and the loop terminates. */
+    /* Skipped mid-pass (bug pass, 28 Aug 26): the reconcilers' own per-cell
+       store notifies re-fire this callback while SYNCING holds — the passes
+       above all return at the door, and recomputing the signature once per
+       ingested cell of a long leave span is pure waste. The top-level
+       notify that follows the writer's finish runs it exactly once. */
+    if (SYNCING) return
     const sig = INPUTS
       .filter((r: any) => oilAsks(r.type) && r.acc !== 'r' && r.iid)
       .flatMap((r: any) => {

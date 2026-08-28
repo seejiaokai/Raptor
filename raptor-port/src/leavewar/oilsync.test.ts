@@ -22,6 +22,7 @@ import {
   setCell,
   setDayEvent,
   setPeople,
+  setPostOut,
   setRole,
 } from './state/store'
 import { memoryBackend } from './state/storage'
@@ -322,5 +323,32 @@ describe('oilPendingFor — the bell\'s derived scan', () => {
     plant({ person: 'stiff', type: 'Duty', date: 'Jul 18' })
     expect(oilPendingFor('bane')).toEqual([])
     expect(oilPendingFor('stiff').length).toBe(1)
+  })
+})
+
+describe('bug-pass hardening (28 Aug 26)', () => {
+  it('a war stored with the LEGACY FS/HS letters loads renamed, ownership intact', () => {
+    const be = memoryBackend()
+    lwInitStore(be)
+    setPeople(projectPeople())
+    INPUTS.unshift({ person: 'bane', type: 'Duty', date: 'Jul 18', allday: true, s: 0, e: 1439, remarks: '', mod: 'now', yr: 2026, iid: 'mig1', oil: { [SAT]: 1 } })
+    runOilPass()
+    expect(cellOf('bane', SAT)).toBe('FO')
+    /* tamper the STORED blob back to the pre-rename letters, then reload */
+    be.write('wars', (be.read('wars') as string).replace(/"FO"/g, '"FS"').replace(/"HO"/g, '"HS"'))
+    lwInitStore(be)
+    expect(cellOf('bane', SAT), 'renamed at the one load door').toBe('FO')
+    expect(ownedBy('bane', SAT), 'the ownership record survived — the sweep can still collect it').toMatchObject({ source: 'raptor' })
+  })
+
+  it('a body posted out before the day never expands under ALL — even unarchived', () => {
+    setRole('admin')
+    expect(setPostOut('pump', '2026-07-01', false)).toBe(true)
+    DAYS[5].allhands = DAYS[5].allhands || []
+    DAYS[5].allhands.push({ prog: 'SQN EVENT', str: '0800', end: '1500', who: 'ALL' })
+    publish(5)
+    runOilPass()
+    expect(cellOf('bane', SAT)).toBe('FO')                   // present bodies still earn
+    expect(cellOf('pump', SAT), 'posted out — not in the squadron that day').toBeUndefined()
   })
 })

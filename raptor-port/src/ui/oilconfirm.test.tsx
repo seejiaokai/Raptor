@@ -147,6 +147,17 @@ describe('the answers belong to the acknowledged commitment', () => {
     expect(r.oil).toBeUndefined()
   })
 
+  it('an in-place time edit that REPRICES a positive answer voids that day (bug pass, 28 Aug 26)', () => {
+    /* the board's and week's cells commit straight through commitInputEdit —
+       no oilGate — so a stretched window must not silently turn an
+       acknowledged HO cell into FO: the repriced day reads unanswered again
+       (the bell re-asks); an explicit decline is not hours-dependent and stays */
+    const r = plant({ person: 'bane', type: 'Duty', date: 'Jul 18', endDate: 'Jul 19', allday: false, s: 8 * 60, e: 10 * 60, oil: { '2026-07-18': 0.5, '2026-07-19': 0 } })
+    const d = draftOf(r); d.eTime = '1800'                   // 2h → 10h: the HO answer no longer prices it
+    expect(commitInputEdit(r, d)).toBe(true)
+    expect(r.oil).toEqual({ '2026-07-19': 0 })
+  })
+
   it('a time-only edit keeps them — the gate re-asks when the plan goes stale', () => {
     const r = plant({ person: 'bane', type: 'Duty', date: 'Jul 18', allday: false, s: 8 * 60, e: 12 * 60, oil: { '2026-07-18': 0.5 } })
     const d = draftOf(r); d.remarks = 'refined'

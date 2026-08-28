@@ -475,7 +475,7 @@ export function StageBar() {
             // tiebreak, not a reorder hazard.
             <span className="row" key={`${c.kind ?? 'leave'}-${c.person}-${c.date}-${c.inputCode}-${c.bidCode}-${i}`}>
               {c.kind === 'duty'
-                ? <>{(people.find(p => p.id === c.person)?.callsign ?? c.person)}: published duty
+                ? <>{(people.find(p => p.id === c.person)?.callsign ?? c.person)}: weekend/PH work
                     earns {c.inputCode} but {shortDate(c.date)} holds {c.bidCode} — resolve on the sheet</>
                 : <>{(people.find(p => p.id === c.person)?.callsign ?? c.person)}: input {c.inputCode} vs
                     bid {c.bidCode} on {shortDate(c.date)} — resolve on the sheet</>}

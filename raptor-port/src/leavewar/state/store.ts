@@ -612,6 +612,24 @@ function readWar(x: unknown): LeaveWar | null {
     }
   }
 
+  /* LEGACY OIL-CREDIT MIGRATION (bug pass, 28 Aug 26): a war stored before
+     the FS/HS → FO/HO rename holds the old letters, which parseCell no
+     longer recognises — reconcile below would drop their ownership records
+     and strand dead grid strings neither reverse sweep can collect, and
+     `ingestDutyCredit` would clash on those dates forever. Renamed in place
+     at the one load door (the seedGrid HO→*OIL migration precedent). No
+     live path hits this today — main.tsx boots the memory backend — but the
+     DB era makes this load path real, and the migration must already be
+     standing when it does. */
+  if (isPlainObject(grid)) {
+    for (const row of Object.values(grid as Record<string, unknown>)) {
+      if (!isPlainObject(row)) continue
+      for (const [d, c] of Object.entries(row as Record<string, unknown>)) {
+        if (c === 'FS') (row as Record<string, unknown>)[d] = 'FO'
+        else if (c === 'HS') (row as Record<string, unknown>)[d] = 'HO'
+      }
+    }
+  }
   if (!isValidGrid(grid)) return null
   const readStatesOrNull = readStates(states)
   if (!readStatesOrNull) return null

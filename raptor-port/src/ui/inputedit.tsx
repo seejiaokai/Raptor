@@ -30,6 +30,7 @@ import { writeInputsBatch, notify } from '../state/store'
    War tab): retracting a synced row's war cells when it is edited or deleted
    here — not a new seam, a Raptor-side caller of the existing one. */
 import { retractLwRow, rowSig, oilAskPlan } from '../leavewar/sync'
+import { inputOilAmt } from '../engine/oil'
 import { PLANPUCKS, DAYRMK } from '../state/plan'
 import { stashKeys, stashDrop } from '../engine/weekstash'
 import { canEditSched, ME, SESSION } from '../state/auth'
@@ -822,12 +823,28 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
     /* The OIL answers (owner, 28 Aug 26) belong to the commitment as it was
        acknowledged: retyped out of the ask set, or moved to ANOTHER person,
        they are void — the new shape (or the new person) must be asked again
-       (the delete half/sans precedent). A date or time change deliberately
-       KEEPS them: the save gate (oilGate) re-asks whenever the plan went
-       stale, and an entry for a day the row no longer covers is inert to the
-       credit pass, which re-checks coverage live. reassignInput and the
-       calendar drag both land here, so they inherit the person rule. */
+       (the delete half/sans precedent). Date-only moves KEEP them: an entry
+       for a day the row no longer covers is inert to the credit pass, which
+       re-checks coverage live. reassignInput and the calendar drag both land
+       here, so they inherit the person rule. */
     if (r.oil && (!oilAsks(r.type) || r.person !== wasPerson)) delete r.oil
+    /* AND a positive answer whose HOURS no longer price what was approved is
+       void per day (bug pass, 28 Aug 26): the three gated editors re-ask via
+       oilGate, but the board's and week's IN-PLACE cells commit straight
+       through here — a scheduler stretching a confirmed 2h Saturday
+       appointment to all-day would otherwise silently reprice an
+       acknowledged HO into an FO cell, the exact silence the feature exists
+       to prevent. Dropping the entry makes the day read UNANSWERED again, so
+       the bell lights and the owner re-confirms; an explicit 0 (a decline)
+       stays — hours cannot change a No. Gate saves are unaffected: they
+       write their fresh decisions after this commit, in the same batch. */
+    if (r.oil) {
+      const now = inputOilAmt(r.allday, r.s, r.e)
+      for (const k of Object.keys(r.oil)) {
+        if (r.oil[k] > 0 && r.oil[k] !== now) delete r.oil[k]
+      }
+      if (!Object.keys(r.oil).length) delete r.oil
+    }
     /* A DORMANT record whose TYPE changes COUNTS AGAIN (26 Aug 26 bug pass).
        Dormancy marks "the scheduler removed THIS commitment"; retype it and it
        is a different commitment, so it fails CLOSED — it flags — rather than

@@ -249,6 +249,23 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
 
 ## Known issues / open work
 
+- **OPEN, two deliberate deferrals from the 28 Aug 26 OIL-rework bug pass
+  (put both to the owner before building).** (1) **The schedule half of the
+  OIL credit is still loaded-week-scoped** — the pre-existing wire-4
+  limitation ("reads duties for the LOADED WEEK only"; more weeks fix it for
+  free) now has a sharper edge: a day pooled from published work PLUS an
+  acknowledged input (FO) *degrades to HO* while another week is loaded (the
+  input half is global, the schedule half is not), instead of merely
+  vanishing and returning — the OIL BAL a Leave War reader sees depends on
+  which Raptor week is open. The fix direction (derive from stashed weeks,
+  or stop reverse-sweeping days outside the loaded week) is a real design
+  choice, not a patch. (2) **A recorded OIL decision has no revise
+  affordance** — an accidental "No OIL" writes 0 for every day, which IS an
+  answer, so the bell never re-lights and the gate never re-asks unless the
+  input's shape changes; nothing on any surface renders `row.oil`. Wants a
+  small "OIL: HO on 18 Jul — change" control in the editors, owner's call
+  on the shape.
+
 - **QUEUED, deferred by the owner — MULTIPLE documents per medical input
   (28 Aug 26).** Today `state/docs.ts` holds exactly one document per input
   (`docId` is a single string on the record) and the upload field replaces
