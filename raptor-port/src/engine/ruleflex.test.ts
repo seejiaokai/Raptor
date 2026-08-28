@@ -26,7 +26,7 @@ import { slotRules } from './avail'
 import { storeBackend } from './hooks'
 import { INPUT_TYPES, inpMeta, typeGroup, restsInput } from './inputs'
 import { PEOPLE, scShiftKind, scQualOK } from './people'
-import { scShiftCredit } from './oil'
+import { dayOilCredits } from './oil'
 import { makeStandalone, isStandalone } from './waves'
 import { setSlotVal, txtSet } from './slots'
 
@@ -233,12 +233,13 @@ describe('one knob, every reader — an edited number reaches every rule that le
   const flatForms = (di: number) =>
     (DAYS[di] as any).waves.filter((w: any) => !isStandalone(w)).flatMap((w: any) => w.formations || [])
 
-  it('the SC day window drives the currency check, the crew picker and the OIL halves from one pair of keys', () => {
+  it('the SC day window drives the currency check and the crew picker from one pair of keys', () => {
     /* scDayFrom/scDayTo are read by scShiftKind (the SC_QUAL check AND the
-       picker call the same function — no second copy) and by scShiftCredit's
-       midpoint in oil.ts. Widen the window and all three answers move. */
+       picker call the same function — no second copy). Widen the window and
+       both answers move. (The OIL credit stopped reading this window on
+       28 Aug 26 — the uniform pooled-hours rule replaced the SC halves, and
+       its own knob is exercised in the oilFullMin test below.) */
     expect(scShiftKind(13 * 60, 21 * 60)).toBe('night')       // reaches past 19:00
-    expect(scShiftCredit(6 * 60, 13 * 60)).toBe(1)            // starts before 07:00 — not one half
 
     /* the validator's own reading: a day-only body on a 13:00–21:00 shift */
     const dayOnly = Object.keys(PEOPLE).filter(id => !PEOPLE[id].special)
@@ -256,7 +257,13 @@ describe('one knob, every reader — an edited number reaches every rule that le
     validate()
     expect(scShiftKind(13 * 60, 21 * 60), 'the same shift is a DAY shift now').toBe('day')
     expect(warnsFor(0, dayOnly, 'SC_QUAL'), 'and the currency check read the new window').toEqual([])
-    expect(scShiftCredit(6 * 60, 13 * 60), 'and the OIL midpoint moved with it').toBe(0.5)
+  })
+
+  it('the OIL full-day threshold is one knob read live by the pooled-hours rule', () => {
+    const d = { waves: [], dutywaves: [{ label: 'Duty', rows: [{ role: 'SDO', id: 'waldo', str: '0800', end: '1500' }] }], sims: { amt: [], oft: [] }, ground: [], allhands: [] }
+    expect(dayOilCredits(d)).toEqual({ waldo: 1 })            // 7h over the standard 6h01
+    VCONF.oilFullMin = 8 * 60
+    expect(dayOilCredits(d)).toEqual({ waldo: 0.5 })          // the same day reads the new line
   })
 
   it('the tight-turn floor is max(threshold, dekit+step) — live on BOTH arms, and the message quotes the live numbers', () => {

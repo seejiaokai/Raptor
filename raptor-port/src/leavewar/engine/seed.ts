@@ -170,16 +170,19 @@ export function seedRequirements(): Requirements {
   }
 }
 
-// `HO` (half OIL) becomes `*OIL` — the morning reading, picked arbitrarily
-// since the old code carried no time-of-day information to preserve. A bare
-// `AM`/`PM` in the source sheet meant half a day of ordinary leave, so those
-// become `*LL`/`LL*` respectively: same leave type, the portion the old code
-// name was already naming. All three keep removing exactly 0.5 of a person,
-// so the manning figures this grid produces are unchanged.
+// The ORIGINAL sheet's `HO` (then meaning half OIL TAKEN) became `*OIL` —
+// the morning reading, picked arbitrarily since the old code carried no
+// time-of-day information to preserve. (28 Aug 26: the letters `HO` were
+// later re-minted as the half-day OIL EARNED credit beside `FO` — a
+// different meaning; no stored data ever carried both.) A bare `AM`/`PM` in
+// the source sheet meant half a day of ordinary leave, so those become
+// `*LL`/`LL*` respectively: same leave type, the portion the old code name
+// was already naming. All three keep removing exactly 0.5 of a person, so
+// the manning figures this grid produces are unchanged.
 export function seedGrid(): Grid {
   return {
-    ramp: { '2026-01-01': 'OL', '2026-01-03': 'FS', '2026-02-10': '*OIL' },
-    tata: { '2026-01-01': 'FS', '2026-01-04': 'FS', '2026-01-09': 'OIL' },
+    ramp: { '2026-01-01': 'OL', '2026-01-03': 'FO', '2026-02-10': '*OIL' },
+    tata: { '2026-01-01': 'FO', '2026-01-04': 'FO', '2026-01-09': 'OIL' },
     // The two `M` days become two of the three medical markers — `ATTC` and
     // `OML` — so MED USED reads 2 and OML USED reads 1 on this demo run (they
     // replaced the single `M`, owner Aug 26). Both remove a whole day exactly
@@ -193,7 +196,7 @@ export function seedGrid(): Grid {
     miles: { '2026-02-02': 'LL', '2026-02-03': 'LL*' },
     roulette: { '2026-01-15': 'CCL' },
     cross: { '2026-03-10': 'LL' },
-    skin: { '2026-01-03': 'HS' },
+    skin: { '2026-01-03': 'HO' },
   }
 }
 

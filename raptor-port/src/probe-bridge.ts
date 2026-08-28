@@ -14,7 +14,7 @@ import { ELOG, elogRows, elogFor, elogWhen, elogClear, elogRemap, keyLabel } fro
 import { STORE_CFG, STORE_STD, storeKey, addStore, delStore, renameStore, moveStore, storesSave, storesLoad, storesReset, storesAreStandard, storesText } from './engine/stores'
 import { CXR_CFG, CXR_STD, addCxReason, delCxReason, renameCxReason, moveCxReason, cxReasonsSave, cxReasonsLoad, cxReasonsReset, cxrAreStandard } from './engine/cxreasons'
 import { DAYTPL_CFG, DAYTPL_STD, tplFromDay, addDayTpl, delDayTpl, renameDayTpl, moveDayTpl, applyDayTpl, dayTplSave, dayTplLoad, dayTplReset, dayTplAreStandard } from './engine/daytpl'
-import { dayOilCredits, scShiftCredit } from './engine/oil'
+import { dayOilCredits, dayOilSpans, mergeMin, uniformOil, inputOilAmt } from './engine/oil'
 import { SCHED, SIGN_ROLES, markEdit, publishALDay, setDayApproved, signOf, dayApproved, alColor, alCount, alDays, signMissing, unpublishAL, pendDays, pendCount, approvedDays, daysLabel, daySnapOf, dayVersions, verLabel, dayCurVer } from './engine/publish'
 import { restoreDayVersion, dayKeys } from './engine/restore'
 import { dayDrafts, curDraftId, draftDup, draftSelect, draftRename, draftDelete, draftVerLabel, isDraftVer, rebaseDayPending, loadVersionToWorkingCopy, reconcileIssuedMarks } from './engine/drafts'
@@ -169,8 +169,10 @@ export function installProbeBridge() {
   w.addDayTpl = addDayTpl; w.delDayTpl = delDayTpl; w.renameDayTpl = renameDayTpl; w.moveDayTpl = moveDayTpl
   w.applyDayTpl = applyDayTpl; w.dayTplSave = dayTplSave; w.dayTplLoad = dayTplLoad; w.dayTplReset = dayTplReset
   w.dayTplAreStandard = dayTplAreStandard
-  /* weekend/PH duty OIL credit (Leave War wire 4) */
-  w.dayOilCredits = dayOilCredits; w.scShiftCredit = scShiftCredit
+  /* weekend/PH work OIL credit (Leave War wire 4 — the uniform ≤6h/>6h rule
+     since 28 Aug 26; scShiftCredit is deleted with the SC-window rule) */
+  w.dayOilCredits = dayOilCredits; w.dayOilSpans = dayOilSpans
+  w.mergeMin = mergeMin; w.uniformOil = uniformOil; w.inputOilAmt = inputOilAmt
   /* the edit log. ELOG is a const object mutated in place (rows.push /
      splice), never reassigned, so a plain reference is enough — unlike
      STORE_CFG above, which needs a getter because storesLoad swaps it whole. */

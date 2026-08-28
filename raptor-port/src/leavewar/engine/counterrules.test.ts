@@ -96,7 +96,7 @@ describe('ruleHave', () => {
 
   it('presence counts a man standing SC duty; availability does not', () => {
     const duo = [p('p1', 'pilot', 'ops', { scd: true }), p('w1', 'wso', 'ops', { scd: true })]
-    const grid: Grid = { p1: { [D]: 'FS' } }
+    const grid: Grid = { p1: { [D]: 'FO' } }
     const slots = [{ count: 1, filter: { seats: ['pilot' as const], quals: ['scDay'] } }, { count: 1, filter: { seats: ['wso' as const], quals: ['scDay'] } }]
     expect(ruleHave({ kind: 'team', slots, presence: true }, duo, grid, {}, D)).toBe(1)
     expect(ruleHave({ kind: 'team', slots }, duo, grid, {}, D)).toBe(0)

@@ -35,7 +35,7 @@ describe('isBiddable', () => {
   })
 
   it('is false for medical, courses and duty — nobody bids for those', () => {
-    for (const c of ['M', 'CSE', 'OD', 'FS', 'HS']) expect(isBiddable(c)).toBe(false)
+    for (const c of ['M', 'CSE', 'OD', 'FO', 'HO']) expect(isBiddable(c)).toBe(false)
   })
 
   it('is false for an unknown or empty code', () => {
@@ -45,12 +45,12 @@ describe('isBiddable', () => {
     expect(isBiddable(null)).toBe(false)
   })
 
-  // `*M` and `FS*` parse to null rather than to a portioned marker, so they
+  // `*M` and `FO*` parse to null rather than to a portioned marker, so they
   // are unknown codes, not biddable ones. Asserted because the opposite —
   // an asterisk quietly promoting a marker into a bid — is exactly the class
   // of bug the leave-code rework existed to end.
   it('is false for an asterisk stuck on something that is not leave', () => {
-    for (const c of ['*M', 'CSE*', '*FS']) expect(isBiddable(c)).toBe(false)
+    for (const c of ['*M', 'CSE*', '*FO']) expect(isBiddable(c)).toBe(false)
   })
 })
 

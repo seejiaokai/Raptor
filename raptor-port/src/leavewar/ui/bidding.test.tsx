@@ -55,7 +55,7 @@ describe('placing a bid', () => {
   it('offers only codes a person actually bids for', () => {
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(CELL))
-    expect(screen.queryByTestId('bid-FS')).toBeNull()
+    expect(screen.queryByTestId('bid-FO')).toBeNull()
     expect(screen.queryByTestId('bid-CSE')).toBeNull()
     expect(screen.queryByTestId('bid-M')).toBeNull()
     expect(screen.getByTestId('bid-OL')).toBeTruthy()

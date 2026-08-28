@@ -5,7 +5,7 @@ import { outboundToRaptor } from './raptor'
 
 const grid: Grid = {
   ramp: { '2026-01-05': 'LL', '2026-01-06': 'OL', '2026-01-07': '*LL' },
-  tata: { '2026-01-05': 'OIL', '2026-01-08': 'CSE', '2026-01-09': 'FS' },
+  tata: { '2026-01-05': 'OIL', '2026-01-08': 'CSE', '2026-01-09': 'FO' },
   dusk: { '2026-01-05': 'LL' },
 }
 

@@ -32,7 +32,7 @@ describe('count rows', () => {
 
   it('shows the available figure for a day', () => {
     render(<Matrix />)
-    // Three IPs seeded (TATA, MILES, RESET). TATA is on FS on 1 Jan, and SC
+    // Three IPs seeded (TATA, MILES, RESET). TATA is on FO on 1 Jan, and OIL-credit
     // duty is at work but off the flying programme, so two remain available.
     expect(screen.getByTestId('count-ip-2026-01-01').textContent).toBe('2')
   })

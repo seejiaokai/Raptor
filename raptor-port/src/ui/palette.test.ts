@@ -11,7 +11,7 @@ import { PEOPLE } from '../engine/people'
 import { dayEngaged, dayOff, dayStandby, slotRules } from '../engine/avail'
 import { validate } from '../engine/validate'
 import { SCHED } from '../engine/publish'
-import { rosterPuck, paletteHTML, sansAvailHTML } from './palette-html'
+import { rosterPuck, paletteHTML, sansAvailHTML, specialRowHTML } from './palette-html'
 
 const DSNAP = JSON.stringify(DAYS)
 const ISNAP = JSON.stringify(INPUTS)
@@ -171,5 +171,17 @@ describe('the SANS Availability palette section', () => {
     const row = rowFor(html, 'ipman')!
     expect(row).not.toContain('haswhy')
     expect(row).not.toContain('rpuck no')
+  })
+})
+
+describe('the Placeholders strip', () => {
+  it('carries BOTH sentinels — ALL AVAIL and the ALL puck (owner, 28 Aug 26), same idiom', () => {
+    const html = specialRowHTML(0)
+    expect(html).toContain('data-person="allavail"')
+    expect(html).toContain('data-person="all"')
+    expect(html).toContain('>ALL AVAIL<')
+    expect(html).toContain('>ALL<')
+    /* both render the sentinel puck shape — never a seat/qual-decorated person puck */
+    expect((html.match(/puck allavail/g) || []).length).toBe(2)
   })
 })

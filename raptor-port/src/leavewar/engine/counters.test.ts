@@ -104,7 +104,7 @@ describe('drawnFrom', () => {
   })
 
   it('draws nothing for codes that spend no counter', () => {
-    for (const code of ['CSE', 'ATTC', 'HL', 'OML', 'OD', 'FS', 'HS']) {
+    for (const code of ['CSE', 'ATTC', 'HL', 'OML', 'OD', 'FO', 'HO']) {
       const grid: Grid = { ramp: { '2026-01-09': code } }
       for (const c of COUNTERS) expect(drawnFrom([{ grid: grid, states: {} }], 'ramp', c)).toBe(0)
     }
@@ -194,21 +194,21 @@ describe('balanceOf', () => {
 })
 
 describe('earnedOil — duty stood on a non-working day (wire 4)', () => {
-  it('sums FS as a full day and HS as a half into the OIL balance', () => {
-    const grid: Grid = { ramp: { '2026-01-10': 'FS', '2026-01-11': 'HS' } }
+  it('sums FO as a full day and HO as a half into the OIL balance', () => {
+    const grid: Grid = { ramp: { '2026-01-10': 'FO', '2026-01-11': 'HO' } }
     expect(earnedOil([{ grid, states: {} }], 'ramp')).toBe(1.5)
     // opening 1 + earned 1.5 − nothing taken = 2.5
     expect(balanceOf({ ramp: { oil: 1 } }, [], [{ grid, states: {} }], 'ramp', 'oil')).toBe(2.5)
   })
 
   it('earns across every war, like drawnFrom — December duty is January\'s balance', () => {
-    const a: Grid = { ramp: { '2025-12-27': 'FS' } }
-    const b: Grid = { ramp: { '2026-01-10': 'HS' } }
+    const a: Grid = { ramp: { '2025-12-27': 'FO' } }
+    const b: Grid = { ramp: { '2026-01-10': 'HO' } }
     expect(earnedOil([{ grid: a, states: {} }, { grid: b, states: {} }], 'ramp')).toBe(1.5)
   })
 
   it('feeds ONLY the OIL balance — leave codes earn nothing, other counters see no earned term', () => {
-    const grid: Grid = { ramp: { '2026-01-10': 'FS', '2026-01-11': 'LL' } }
+    const grid: Grid = { ramp: { '2026-01-10': 'FO', '2026-01-11': 'LL' } }
     expect(earnedOil([{ grid, states: {} }], 'ramp')).toBe(1)
     expect(balanceOf({ ramp: { annual: 5 } }, [], [{ grid, states: {} }], 'ramp', 'annual')).toBe(4)
   })
@@ -217,9 +217,9 @@ describe('earnedOil — duty stood on a non-working day (wire 4)', () => {
     const ctx = {
       openings: {},
       ledger: [{ id: 'g1', personId: 'ramp', counter: 'oil' as const, amount: 0.5, date: '2026-01-01', reason: 'award', approvedBy: 'SQNCDR' }],
-      sources: [{ grid: { ramp: { '2026-01-10': 'FS', '2026-01-20': 'OIL' } }, states: {} }],
+      sources: [{ grid: { ramp: { '2026-01-10': 'FO', '2026-01-20': 'OIL' } }, states: {} }],
     }
-    // earned 1 (FS) + granted 0.5 − taken 1 (OIL) = 0.5
+    // earned 1 (FO) + granted 0.5 − taken 1 (OIL) = 0.5
     expect(FIGURES.find(f => f.id === 'oilbal')!.value(ctx, 'ramp')).toBe(0.5)
   })
 })
@@ -419,7 +419,7 @@ describe('figureParts — the tap-a-counter breakdown (owner, 17 Aug 26)', () =>
     ledger: [{ id: 'g1', personId: 'ramp', counter: 'oil', amount: 1, date: '2026-01-01', reason: 'grant', approvedBy: 'boss' }] as Ledger,
     sources: [{ grid: { ramp: {
       '2026-01-05': 'ATTC', '2026-01-06': '*HL', '2026-01-07': 'OML', '2026-01-08': 'LL',
-      '2026-01-09': 'OIL', '2026-01-10': 'FS',
+      '2026-01-09': 'OIL', '2026-01-10': 'FO',
     } }, states: {} }],
   }
 
@@ -444,7 +444,7 @@ describe('figureParts — the tap-a-counter breakdown (owner, 17 Aug 26)', () =>
     expect(oil).toEqual([
       { label: 'opening figure', value: 2 },
       { label: 'granted', value: 1 },
-      { label: 'earned by weekend/PH duty', value: 1 },
+      { label: 'earned by weekend/PH work', value: 1 },
       { label: 'taken', value: -1 },
     ])
     expect(oil.reduce((s, p) => s + p.value, 0)).toBe(f('oilbal').value(ctx, 'ramp'))

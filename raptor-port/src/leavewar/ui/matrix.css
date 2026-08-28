@@ -526,10 +526,11 @@
 }
 
 /* cells — chip idiom: tint + ink + hairline, never a solid block. Five
-   states are emitted: `.sc` for duty, `.info` for the codes nobody bids for,
-   and `.appr` / `.tbc` / `.ref` for an approved, pending and refused bid.
-   The three bid colours sat here unused until the bidding plan lit them up;
-   the values are unchanged from that original definition. */
+   states are emitted: `.sc` for an OIL credit (FO/HO — cyan since the
+   28 Aug 26 rename; the class name predates it), `.info` for the codes
+   nobody bids for, and `.appr` / `.tbc` / `.ref` for an approved, pending
+   and refused bid. The three bid colours sat here unused until the bidding
+   plan lit them up; the values are unchanged from that original definition. */
 .mx td .c {
   display: inline-block;
   min-width: 20px;
@@ -560,9 +561,9 @@
 }
 
 .c.sc {
-  background: rgba(231, 193, 58, .16);
-  color: #F0DC8E;
-  box-shadow: inset 0 0 0 1px rgba(231, 193, 58, .5);
+  background: rgba(59, 198, 232, .16);
+  color: #9FDCEE;
+  box-shadow: inset 0 0 0 1px rgba(59, 198, 232, .5);
 }
 
 .c.info {

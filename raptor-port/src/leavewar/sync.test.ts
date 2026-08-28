@@ -783,7 +783,7 @@ describe('leaveInputAt answers for the CELL, not the first covering row (27 Aug 
     expect(hit.type).toBe('LL')
     expect(hit.lw, 'the war-minted row outranks the plain one').toBeTruthy()
     // a code that is no leave at all opens nothing
-    expect(leaveInputAt('ammo', '2026-02-02', 'FS')).toBeNull()
+    expect(leaveInputAt('ammo', '2026-02-02', 'FO')).toBeNull()
     // no code in hand keeps the old date-only answer
     expect(leaveInputAt('ammo', '2026-02-02')).toBeTruthy()
   })

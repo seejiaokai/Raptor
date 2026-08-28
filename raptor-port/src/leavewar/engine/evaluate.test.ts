@@ -142,7 +142,7 @@ describe('evaluateDay and the bid state', () => {
 // as gone too" — and it was already true, because `OD` is a non-leave marker
 // and every non-leave marker removes the whole day. This test exists so that
 // stays true rather than being true by luck: a change that treated OD as
-// "present but not flying" (which is what FS and HS genuinely are) would pass
+// "present but not flying" (which is what FO and HO genuinely are) would pass
 // every other test in this file.
 describe('overseas duty', () => {
   const people: Person[] = [
@@ -162,13 +162,13 @@ describe('overseas duty', () => {
     expect(away.counts.byCategory.IP).toBe(1)
     expect(away.counts.sets).toBe(0)
 
-    // The contrast that gives this its teeth. FS also leaves the flying
+    // The contrast that gives this its teeth. FO also leaves the flying
     // count — someone on SC duty is not available to fly — but he IS at work,
     // so he appears on the separate duty line that explains why the day looks
     // thin. A man overseas is simply gone, and must never be counted there:
     // a day thin because half the squadron is on SC reads very differently
     // from one thin because half the squadron is abroad.
-    const scDuty = evaluateDay(people, { ip1: { [D]: 'FS' } }, {}, reqs, D)
+    const scDuty = evaluateDay(people, { ip1: { [D]: 'FO' } }, {}, reqs, D)
     expect(scDuty.counts.byCategory.IP).toBe(1)
     expect(scDuty.counts.duty).toBe(1)
     expect(away.counts.duty).toBe(0)

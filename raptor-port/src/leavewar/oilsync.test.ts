@@ -51,10 +51,10 @@ const cellOf = (person: string, date: string) => getState().wars[0].grid[person]
 const ownedBy = (person: string, date: string) => getState().wars[0].states[person]?.[date]
 
 describe('publish drives the credit', () => {
-  it('publishing the seed Saturday lands plasma an FS cell, raptor-owned', () => {
+  it('publishing the seed Saturday lands plasma an FO cell, raptor-owned', () => {
     publish(5)
     runOilPass()
-    expect(cellOf('plasma', SAT)).toBe('FS')
+    expect(cellOf('plasma', SAT)).toBe('FO')
     expect(ownedBy('plasma', SAT)).toMatchObject({ state: 'approved', source: 'raptor' })
   })
 
@@ -66,21 +66,21 @@ describe('publish drives the credit', () => {
   it('a published WEEKDAY earns nothing: Monday has duty rows but is a working day', () => {
     publish(0)
     runOilPass()
-    // The seed grid carries hand-typed FS/HS demo cells of its own; the wire's
+    // The seed grid carries hand-typed FO/HO demo cells of its own; the wire's
     // work is exactly the raptor-OWNED ones, and there must be none.
     const { grid, states } = getState().wars[0]
     const owned = Object.entries(grid).flatMap(([p, row]) =>
       Object.entries(row).filter(([d, c]) =>
-        (c === 'FS' || c === 'HS') && states[p]?.[d]?.source === 'raptor'))
+        (c === 'FO' || c === 'HO') && states[p]?.[d]?.source === 'raptor'))
     expect(owned).toEqual([])
   })
 
-  it('under six written hours the credit is HS, not FS', () => {
+  it('under six written hours the credit is HO, not FO', () => {
     DAYS[5].dutywaves[0].rows[0].str = '0800'
     DAYS[5].dutywaves[0].rows[0].end = '1200'
     publish(5)
     runOilPass()
-    expect(cellOf('plasma', SAT)).toBe('HS')
+    expect(cellOf('plasma', SAT)).toBe('HO')
   })
 
   it('a weekday the war calls a holiday earns like a weekend — the owner\'s event input path', () => {
@@ -89,10 +89,10 @@ describe('publish drives the credit', () => {
     publish(0)
     runOilPass()
     // Monday's SDO earns exactly as Saturday's would; the seed staffs the
-    // desk with a real person on every day, so somebody holds an FS/HS cell.
+    // desk with a real person on every day, so somebody holds an FO/HO cell.
     const { grid } = getState().wars[0]
     const dutyCells = Object.entries(grid).filter(([, row]) =>
-      Object.entries(row).some(([d, c]) => d === '2026-07-13' && (c === 'FS' || c === 'HS')))
+      Object.entries(row).some(([d, c]) => d === '2026-07-13' && (c === 'FO' || c === 'HO')))
     expect(dutyCells.length).toBeGreaterThan(0)
   })
 })
@@ -101,22 +101,22 @@ describe('reverse-and-replace — the credit follows the issued document', () =>
   it('reopening the day takes the credit back', () => {
     publish(5)
     runOilPass()
-    expect(cellOf('plasma', SAT)).toBe('FS')
+    expect(cellOf('plasma', SAT)).toBe('FO')
     setDayApproved(5, false)
     runOilPass()
     expect(cellOf('plasma', SAT)).toBeUndefined()
     expect(ownedBy('plasma', SAT)).toBeUndefined()
   })
 
-  it('a reissue with shorter hours replaces FS with HS', () => {
+  it('a reissue with shorter hours replaces FO with HO', () => {
     publish(5)
     runOilPass()
-    expect(cellOf('plasma', SAT)).toBe('FS')
+    expect(cellOf('plasma', SAT)).toBe('FO')
     setDayApproved(5, false)                      // reopen
     DAYS[5].dutywaves[0].rows[0].end = '1200'     // the duty shrank to 4h
     publish(5)                                    // re-publish reissues the snapshot
     runOilPass()
-    expect(cellOf('plasma', SAT)).toBe('HS')
+    expect(cellOf('plasma', SAT)).toBe('HO')
   })
 
   it('a draft edit AFTER publish moves nothing — the issued snapshot is the source', () => {
@@ -124,18 +124,18 @@ describe('reverse-and-replace — the credit follows the issued document', () =>
     runOilPass()
     DAYS[5].dutywaves[0].rows[0].end = '1200'     // live edit, never issued
     runOilPass()
-    expect(cellOf('plasma', SAT)).toBe('FS')      // still the document's ten hours
+    expect(cellOf('plasma', SAT)).toBe('FO')      // still the document's ten hours
   })
 })
 
 describe('the ownership partition against wires 1+2', () => {
-  it('runInbound\'s reverse-clear leaves the credit alone — no input ever covers an FS cell', () => {
+  it('runInbound\'s reverse-clear leaves the credit alone — no input ever covers an FO cell', () => {
     publish(5)
     runOilPass()
     runInbound()
     runOutbound()
-    expect(cellOf('plasma', SAT)).toBe('FS')
-    // and the credit never becomes an lw-tagged input: FS is not biddable
+    expect(cellOf('plasma', SAT)).toBe('FO')
+    // and the credit never becomes an lw-tagged input: FO is not biddable
     expect(INPUTS.filter((r: any) => r.lw)).toEqual([])
   })
 
@@ -147,7 +147,7 @@ describe('the ownership partition against wires 1+2', () => {
     runOilPass()
     expect(cellOf('plasma', SAT)).toBe('LL')
     expect(getClashes()).toContainEqual(
-      { person: 'plasma', date: SAT, inputCode: 'FS', bidCode: 'LL', kind: 'duty' })
+      { person: 'plasma', date: SAT, inputCode: 'FO', bidCode: 'LL', kind: 'duty' })
   })
 
   it('leave WINS an owned cell and the passes stay stable — no flip-flop', () => {
@@ -165,10 +165,10 @@ describe('the ownership partition against wires 1+2', () => {
 
   it('a hand-typed cell matching the verdict is taken over in place, not clashed', () => {
     setRole('admin')                               // July sits outside the seed bid window
-    setCell('plasma', SAT, 'FS')                   // the squadron recorded it first
+    setCell('plasma', SAT, 'FO')                   // the squadron recorded it first
     publish(5)
     runOilPass()
-    expect(cellOf('plasma', SAT)).toBe('FS')
+    expect(cellOf('plasma', SAT)).toBe('FO')
     expect(ownedBy('plasma', SAT)).toMatchObject({ source: 'raptor' })
     expect(getClashes()).toEqual([])
   })

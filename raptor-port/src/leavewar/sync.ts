@@ -420,7 +420,7 @@ export function retractLwRow(row: any): void {
    SAVED, the wrong record under the tapped cell's header. With the code the
    match is the row that actually derives the cell: same leave type, exact
    portion when one matches, and the lw-tagged row (the one the war minted)
-   outranking a plain one. A code that is not a leave at all (an FS/HS duty
+   outranking a plain one. A code that is not a leave at all (an FO/HO duty
    credit) matches nothing — that cell has no note to edit. Callers without
    a cell in hand keep the date-only walk. */
 export function leaveInputAt(personId: string, iso: string, code?: string): any | null {
@@ -587,16 +587,17 @@ export function runInbound(): void {
 
     /* Reverse: a Raptor-owned cell no live input still covers was DELETED on
        the Inputs page — clear it (and only it: clearRaptorCell refuses
-       anything Leave War has taken back over). An owned FS/HS cell is NOT
-       ours to garbage-collect: the OIL pass wrote it from a published duty,
-       not from an input, so no input covering it is its normal state — the
-       ownership marker is shared, the vocabulary is the partition. */
+       anything Leave War has taken back over). An owned FO/HO cell is NOT
+       ours to garbage-collect: the OIL pass wrote it from published work or
+       an acknowledged input claim, not from a leave input, so no leave input
+       covering it is its normal state — the ownership marker is shared, the
+       vocabulary is the partition. */
     for (const war of getState().wars) {
       for (const [person, row] of Object.entries(war.states)) {
         for (const [date, rec] of Object.entries(row)) {
           if (rec.source !== 'raptor') continue
           const code = war.grid[person]?.[date]
-          if (code === 'FS' || code === 'HS') continue
+          if (code === 'FO' || code === 'HO') continue
           if (desired.has(`${person}|${date}`)) continue
           clearRaptorCell(person, date)
         }
@@ -629,13 +630,13 @@ function isNonWorkingISO(date: string): boolean {
 }
 
 /** The credits a published, non-working day earns right now: person|isoDate
- *  -> FS/HS. Computed from the ISSUED snapshot, not the live day — an issued
+ *  -> FO/HO. Computed from the ISSUED snapshot, not the live day — an issued
  *  day is the squadron's word that the duty stood, so a draft edit after
  *  publish moves nothing until it is published too (the AL/reissue paths),
  *  which is also where reverse-and-replace naturally lives: the snapshot
  *  changes, the diff below follows it. */
-function desiredOilCells(): Map<string, 'FS' | 'HS'> {
-  const out = new Map<string, 'FS' | 'HS'>()
+function desiredOilCells(): Map<string, 'FO' | 'HO'> {
+  const out = new Map<string, 'FO' | 'HO'>()
   const { people, wars } = getState()
   const known = new Set(people.map(p => p.id))
   for (let di = 0; di < DAYS.length; di++) {
@@ -650,7 +651,7 @@ function desiredOilCells(): Map<string, 'FS' | 'HS'> {
          naming someone the roster does not hold (ground crew, a sentinel)
          must not become a grid row no matrix draws. */
       if (!known.has(person)) continue
-      out.set(`${person}|${iso}`, amt === 1 ? 'FS' : 'HS')
+      out.set(`${person}|${iso}`, amt === 1 ? 'FO' : 'HO')
     }
   }
   return out
@@ -679,17 +680,17 @@ export function runOilPass(): void {
       }
     }
 
-    /* Reverse-and-replace: an owned FS/HS cell no published duty still earns
+    /* Reverse-and-replace: an owned FO/HO cell no published work still earns
        — the day was reopened, the man came off the roster, the times shrank,
        an AL moved him — goes, and the forward half above has already written
-       whatever replaces it. Only FS/HS: the leave cells under the same
+       whatever replaces it. Only FO/HO: the leave cells under the same
        ownership marker are inbound's, the mirror of its skip. */
     for (const war of getState().wars) {
       for (const [person, row] of Object.entries(war.states)) {
         for (const [date, rec] of Object.entries(row)) {
           if (rec.source !== 'raptor') continue
           const code = war.grid[person]?.[date]
-          if (code !== 'FS' && code !== 'HS') continue
+          if (code !== 'FO' && code !== 'HO') continue
           if (desired.has(`${person}|${date}`)) continue
           clearRaptorCell(person, date)
         }
