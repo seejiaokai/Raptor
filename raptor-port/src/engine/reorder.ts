@@ -41,6 +41,28 @@ export let REORDERED_DI:any=null
 export function popReorderedDay(){const d=REORDERED_DI; REORDERED_DI=null; return d;}
 const done=(key:any,di?:any)=>{markEdit(key); if(di!=null)REORDERED_DI=di; return true;};
 
+/* MANUAL WAVE-BLOCK REORDER (owner, 29 Aug 26 — "within the waves I also want the
+   option to reorder … put SC at the top, then 1st wave 2nd wave"). Until now the
+   wave BLOCKS themselves could only be resequenced by Auto sort (sortWaves, by the
+   earliest time in each); this is the manual sibling, so a scheduler can put a wave
+   exactly where they want it. It moves the SAME nine key-space heads sortWaves
+   permutes (that list is shiftWave's verbatim, keys.ts — a wave carries its label,
+   in-times, traffic and every formation/jet/remark/store/area beneath it), the
+   only difference being a single splice (moveKeys) rather than a whole permutation,
+   exactly as moveFormation is the manual sibling of sortWave. The bare `${di}.`
+   head is the flying-seat address and must ride at position 0 like the rest, or a
+   wave that moves leaves every name on it addressed to whichever wave took its
+   place. A wave move counts as an amendment, the same rule every mover here
+   follows — the wave's position IS the change. Rule inputs are untouched in
+   SUBSTANCE (the same clashes exist whichever wave is drawn first); only the index
+   in each key changes, and the remap keeps it all attached. */
+export function moveWave(di:any,from:any,to:any){
+  const ws=(DAYS[di]||{}).waves; if(!ok(ws,from,to))return false;
+  slide(ws,from,to);
+  [`wl:${di}.`,`ff:${di}.`,`fr:${di}.`,`st:${di}.`,`ar:${di}.`,`at:${di}.`,`it:${di}.`,
+   `tr:${di}.`,`${di}.`].forEach((h:any)=>moveKeys(h,0,from,to,ws.length));
+  return done(`wl:${di}.${to}`,di);
+}
 export function moveFormation(di:any,gi:any,from:any,to:any){
   const w=(DAYS[di]||{}).waves&&DAYS[di].waves[gi]; if(!w||!ok(w.formations,from,to))return false;
   slide(w.formations,from,to);
@@ -135,6 +157,10 @@ export function applyMove(fromAddr:any,toAddr:any){
     return moveFormation(di,gi,n(a[3]),n(b[3]));
   }
   if(!sameBut(a.length-1))return false;
+  /* a wave block resequences among the day's other waves — `mv:w.di.gi`, two
+     addresses matching on the day (checked by sameBut above) and differing only
+     on the wave index. The outermost move on the flying side. */
+  if(kind==='w')return moveWave(n(a[1]),n(a[2]),n(b[2]));
   if(kind==='d')return moveDutyRow(n(a[1]),n(a[2]),n(a[3]),n(b[3]));
   if(kind==='s')return moveSimRow(n(a[1]),a[2],n(a[3]),n(b[3]));
   if(kind==='g')return moveGroundRow(n(a[1]),n(a[2]),n(b[2]));

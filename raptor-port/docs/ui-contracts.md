@@ -2115,6 +2115,31 @@ is `state/store.ts moveSection` / `applySecOrderToWeek` — `histPush` + `notify
 **no `markEdit`**: a re-arrange is one undo step and is NOT an amendment. Admin +
 edit-surface gated at the write path, not only in the UI.
 
+**The same sheet also arranges the flying WAVES within the day** (owner, 29 Aug 26
+— "within the waves I also want the option to reorder … put SC at the top, then
+1st wave 2nd wave"). Below the sections list, when a day carries two or more waves,
+the sheet lists them by their board titles (`labelToTitle` — SC / AVALON / "1st
+wave"…) with the same ▲▼ nudges. Putting it in the shared sheet is what makes it
+work identically on **both** surfaces at once and stay in sync — the modal reads
+`d.waves` directly, so it needs no per-surface DOM or handler (the edit week has no
+inline row-reorder machinery at all; drag and the board's ▲▼ nudges are board-only).
+
+**Unlike a section move, a wave move IS a real model reorder and an amendment.**
+Its write path is `state/store.ts moveWaveBlock` → `engine/reorder.ts moveWave`
+(via `applyMove` kind `w`) → `afterSchedMutate` + `notify`. `moveWave` is the
+manual sibling of Auto sort's `sortWaves`: it splices `d.waves` and remaps the SAME
+nine key-space heads (`wl: ff: fr: st: ar: at: it: tr:` and the bare seat head) with
+`moveKeys`, marking the moved wave — so the wave carries its whole key space to the
+new index and every crew name stays attached (pinned in `engine/reorder.test.ts`).
+Wave order can't be a parallel "display" order like `secOrder`, because `sortWaves`
+already reorders the real model; a second order would fight it. So reordering a wave
+on a **published** day records an AL row (correct — moving a flying wave is a
+schedule change), while on a draft day it is silent (25 Aug amendment-marks rule).
+The **day template remembers wave order for free** — wave order IS the `d.waves`
+array order, which `daytpl.ts mintBlob` deep-clones, so no `secOrder`-style capture
+is needed on the flying side (pinned in `engine/daytpl.test.ts`). Wave arrange is
+per-day only (no "apply to all days" — a day may have no SC to place).
+
 ## Selection highlight (`ui/highlights.ts`)
 
 **A click on blank schedule clears EVERYTHING that lights a puck** (owner,

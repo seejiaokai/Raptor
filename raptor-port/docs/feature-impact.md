@@ -732,3 +732,19 @@ agree — name it here so the next session knows to check both.
   so it is invisible to `validate()`/publish/history (the guard is
   `engine/secorder.test.ts`); the write path is `store.moveSection` (histPush,
   no markEdit), and a whole-day template carries it (`engine/daytpl.ts`).
+
+- **Wave-block order (29 Aug 26) — the Arrange sheet's second list, a REAL
+  reorder not a display order.** The same `ui/ArrangeSections.tsx` sheet lists the
+  day's flying waves (when ≥2) with ▲▼; because the modal reads `d.waves` directly,
+  the control works on BOTH surfaces with no per-surface DOM (the edit week has no
+  inline row-reorder at all — drag/nudge are board-only). Unlike section order, a
+  wave move mutates the real model and IS an amendment: `store.moveWaveBlock` →
+  `engine/reorder.ts moveWave` (via `applyMove` kind `w`) → `afterSchedMutate`, the
+  manual sibling of `sortWaves` sharing its nine-head key remap. **Drift-seam to
+  mind:** that nine-head list appears in `moveWave`, `sortWaves` and `keys.ts
+  shiftWave` — a wave gaining a tenth key head must reach all three, or a moved/
+  sorted/deleted wave leaves an orphaned key. Wave order rides `d.waves` itself, so
+  undo, the week-stash and the day template capture it with no extra field. It is
+  the one write path in the sheet that touches rule KEYS — but only their indices,
+  never their substance, so `validate()`'s warning set is invariant under a wave
+  move (`engine/reorder.test.ts`).

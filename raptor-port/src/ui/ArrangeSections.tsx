@@ -14,7 +14,8 @@
    sheet otherwise. */
 import { DAYS } from '../engine/data'
 import { secOrder, SECTIONS } from '../engine'
-import { moveSection, applySecOrderToWeek, notify } from '../state/store'
+import { moveSection, moveWaveBlock, applySecOrderToWeek, notify } from '../state/store'
+import { labelToTitle } from './board-html'
 import { ARRANGESEC, setArrangeSec } from './pops'
 import { useVersion } from './useStore'
 
@@ -23,6 +24,10 @@ import { useVersion } from './useStore'
 const SEC_LABEL: Record<string, string> = {
   prog: 'Programme', waves: 'Flying waves', duty: 'Duties', sims: 'Sims', ground: 'Ground Programme',
 }
+/* the wave's own on-screen name — the same title the board's wave header shows
+   (labelToTitle: SC / AVALON / "1st wave"…), so the sheet reads in the squadron's
+   own words. */
+const waveName = (w: any) => labelToTitle(w) || 'Wave'
 
 export function ArrangeSections() {
   useVersion()
@@ -33,13 +38,18 @@ export function ArrangeSections() {
   /* the day could have gone (a week switch under an open sheet) — fail safe */
   if (!d) { return <div className="modal" id="arrSecModal" hidden /> }
   const order = secOrder(d)
+  /* the day's flying waves, in model order — that IS the order they render in, so a
+     ±1 nudge maps straight to store.moveWaveBlock. Only offered when there are two
+     or more to reorder. */
+  const waves: any[] = d.waves || []
 
   return (
     <div className="modal" id="arrSecModal" onClick={e => { if ((e.target as HTMLElement).id === 'arrSecModal') close() }}>
       <div className="modal-box" style={{ width: 380 }}>
-        <div className="modal-head"><b>Arrange sections</b><span className="arrsec-day">{d.dow} {d.dt}</span><button className="x" id="arrSecClose" onClick={close}>✕</button></div>
+        <div className="modal-head"><b>Arrange</b><span className="arrsec-day">{d.dow} {d.dt}</span><button className="x" id="arrSecClose" onClick={close}>✕</button></div>
         <div className="modal-body">
           <div className="arrsec-hint">Move a section up or down to change the order it shows in — on Edit Schedule and the Scheduler Board alike.</div>
+          <div className="arrsec-subh">Sections</div>
           <div className="arrsec-list">
             {order.map((key, i) => (
               <div className="arrsec-row" key={key} data-arrsecrow={key}>
@@ -54,6 +64,23 @@ export function ArrangeSections() {
               </div>
             ))}
           </div>
+          {waves.length >= 2 && (<>
+            <div className="arrsec-subh" style={{ marginTop: 14 }}>Flying waves</div>
+            <div className="arrsec-list">
+              {waves.map((w, i) => (
+                <div className="arrsec-row" key={i} data-arrwaverow={i}>
+                  <span className="grip">
+                    <button className="tnudge" aria-label={`Move ${waveName(w)} up`} disabled={i === 0}
+                      onClick={() => { if (i > 0) moveWaveBlock(di, i, i - 1) }}>▲</button>
+                    <button className="tnudge" aria-label={`Move ${waveName(w)} down`} disabled={i === waves.length - 1}
+                      onClick={() => { if (i < waves.length - 1) moveWaveBlock(di, i, i + 1) }}>▼</button>
+                  </span>
+                  <span className="arrsec-name">{waveName(w)}</span>
+                  <span className="arrsec-pos">{i + 1}</span>
+                </div>
+              ))}
+            </div>
+          </>)}
         </div>
         <div className="modal-foot">
           {/* set the whole week to this day's order in one step, so the owner

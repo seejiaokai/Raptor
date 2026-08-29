@@ -6,7 +6,7 @@ import { beforeEach, describe, expect, it } from 'vitest'
 import { DAYS } from './data'
 import { SCHED } from './publish'
 import {
-  moveFormation, moveAircraft, moveDutyRow, moveSimRow,
+  moveWave, moveFormation, moveAircraft, moveDutyRow, moveSimRow,
   moveGroundRow, moveProgRow, moveNote, applyMove,
 } from './reorder'
 import { groundOrder } from './order'
@@ -15,6 +15,64 @@ const DSNAP = JSON.stringify(DAYS)
 beforeEach(() => {
   DAYS.length = 0; JSON.parse(DSNAP).forEach((d: any) => DAYS.push(d))
   SCHED.pending = {}; SCHED.changes = {}; SCHED.als = []
+})
+
+/* The wave BLOCKS themselves, put where the scheduler wants them (owner, 29 Aug 26).
+   The manual sibling of Auto sort's sortWaves — same nine-head key remap, single
+   splice instead of a whole permutation. The half that fails silently is the same:
+   the wave must carry its whole key space to the new index, or a name lands on the
+   wave that took its place. A two-wave day is built here, the same way sort.test.ts
+   builds one, because the seed's day 0 need not carry two. */
+describe('moveWave', () => {
+  const twoWaves = () => {
+    DAYS[0].waves = [
+      { label: 'SC', kind: 'sc', standalone: true, formations: [
+        { cs: 'SC', msn: 'AM', to: '07:00', ld: '13:00', aircraft: [{ p: 'p1', w: 'w1' }] }] },
+      { label: 'WAVE 1', formations: [
+        { cs: 'VIPER', msn: 'BFM', to: '10:00', ld: '11:00', aircraft: [{ p: 'p2', w: 'w2' }] }] },
+    ]
+  }
+  it('resequences the wave blocks, each carrying its own lines and crews', () => {
+    twoWaves()
+    expect(moveWave(0, 1, 0)).toBe(true)
+    expect(DAYS[0].waves.map((w: any) => w.label)).toEqual(['WAVE 1', 'SC'])
+    /* WAVE 1's jet is now wave 0's; SC's jet is now wave 1's — contents intact */
+    expect(DAYS[0].waves[0].formations[0].aircraft[0].p).toBe('p2')
+    expect(DAYS[0].waves[1].formations[0].aircraft[0].p).toBe('p1')
+  })
+  it('carries a pending mark, a changes entry and an issued AL key with the wave', () => {
+    twoWaves()
+    /* keys addressed at the wave that will MOVE (index 1 → 0): its label, a
+       seat, remarks/stores/area — all must renumber to index 0 */
+    SCHED.pending = { 'wl:0.1': 1 }
+    SCHED.changes = { '0.1.0.0.p': 1, 'fr:0.1.0.0': 1 }
+    SCHED.als = [{ n: 1, keys: ['st:0.1.0.0', 'it:0.1'], sign: {} }]
+    moveWave(0, 1, 0)
+    expect(SCHED.pending['wl:0.0']).toBe(1)
+    expect(SCHED.changes['0.0.0.0.p']).toBe(1)
+    expect(SCHED.changes['fr:0.0.0.0']).toBe(1)
+    expect(SCHED.als[0].keys).toEqual(['st:0.0.0.0', 'it:0.0'])
+  })
+  it('marks the moved wave at its NEW address so the day goes out amended', () => {
+    twoWaves()
+    moveWave(0, 0, 1)
+    expect(SCHED.pending['wl:0.1']).toBe(1)
+  })
+  it('refuses an out-of-range index and a no-op, changing nothing', () => {
+    twoWaves()
+    const was = JSON.stringify(DAYS[0].waves)
+    expect(moveWave(0, 0, 0)).toBe(false)
+    expect(moveWave(0, 0, 9)).toBe(false)
+    expect(moveWave(0, 9, 0)).toBe(false)
+    expect(moveWave(9, 0, 1)).toBe(false)
+    expect(JSON.stringify(DAYS[0].waves)).toBe(was)
+  })
+  it('applyMove routes mv:w to it and refuses a cross-day drop', () => {
+    twoWaves()
+    expect(applyMove('mv:w.0.0', 'mv:w.0.1')).toBe(true)
+    expect(DAYS[0].waves.map((w: any) => w.label)).toEqual(['WAVE 1', 'SC'])
+    expect(applyMove('mv:w.0.0', 'mv:w.1.0')).toBe(false)   // different day
+  })
 })
 
 describe('moveFormation', () => {

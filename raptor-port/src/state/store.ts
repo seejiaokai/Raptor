@@ -23,7 +23,7 @@ import { CURWEEK, setCurWeek } from '../engine/waves'
 import { weekBundle, otherWeekInputs } from '../engine/weeks-data'
 import { seedDemoSans, seedDemoMedical } from './demoseed'
 import { docAdd } from './docs'
-import { storesLoad, cxReasonsLoad, dutyTplLoad, waveTplLoad, dayTplLoad, autoAcceptSeedInputs, autoAcceptInput, inpKey, secOrder, moveSectionModel } from '../engine'
+import { storesLoad, cxReasonsLoad, dutyTplLoad, waveTplLoad, dayTplLoad, autoAcceptSeedInputs, autoAcceptInput, inpKey, secOrder, moveSectionModel, applyMove } from '../engine'
 import { elogClear } from '../engine/editlog'
 import { markDeletion, resetSched, SCHED, dayApproved } from '../engine/publish'
 import { stashPut, stashGet, stashHas } from '../engine/weekstash'
@@ -113,6 +113,21 @@ export function writeInputsBatch(fn: () => void) {
 export function moveSection(di: number, key: string, dir: number) {
   if (!canEditSched()) return
   if (moveSectionModel(DAYS[di], key, dir)) { histPush(); notify() }
+}
+
+/* THE FLYING-WAVE ORDER — the write path for the Arrange sheet's waves list (owner,
+   29 Aug 26 — "within the waves I also want the option to reorder"). Unlike
+   moveSection (pure DISPLAY layout, no amendment), a wave move is a REAL model
+   reorder: engine/reorder.ts moveWave remaps the wave key space (the same nine
+   heads Auto sort permutes) and marks the moved wave, so afterSchedMutate
+   re-validates and records it exactly as dragging a line on the board already does —
+   moving a whole flying wave IS a schedule change, and a wave order can't be a
+   parallel "display" order without fighting Auto sort's real model reorder. Indices
+   are model indices (the sheet lists waves in d.waves order), so a plain ±1 nudge
+   maps straight through. Gated at the write path per the role doctrine. */
+export function moveWaveBlock(di: number, from: number, to: number) {
+  if (!canEditSched()) return
+  if (applyMove(`mv:w.${di}.${from}`, `mv:w.${di}.${to}`)) { afterSchedMutate(); notify() }
 }
 
 /* copy one day's section order onto every OTHER loaded day, so the owner arranges

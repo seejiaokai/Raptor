@@ -176,6 +176,24 @@ describe('applyDayTpl', () => {
     expect(DAYS[0].waves[0].formations[0].cs).toBe('VL')   // structure came from the template
   })
 
+  /* the wave-block order is captured by the template too (owner, 29 Aug 26 —
+     "the template saved will remember the order"). Wave order IS the d.waves
+     array order, which mintBlob deep-clones, so a template minted with SC on top
+     applies SC on top — no explicit secOrder-style field needed on the flying side. */
+  it('remembers the flying-wave order (SC put on top comes back on top)', () => {
+    DAYS[0].waves = [
+      { label: 'WAVE 1', formations: [{ cs: 'VIPER', msn: 'BFM', to: '10:00', ld: '11:00', aircraft: [] }] },
+      { label: 'SC', kind: 'sc', standalone: true, formations: [{ cs: 'SC', msn: 'AM', to: '07:00', ld: '13:00', aircraft: [] }] },
+    ]
+    const t = tplFromDay(0, 'WAVE1-then-SC')
+    DAYTPL_CFG.push(t)
+    /* scramble the live day the other way before applying, so the order can only
+       come from the template */
+    DAYS[0].waves = [{ label: 'SC', kind: 'sc', standalone: true, formations: [] }, { label: 'WAVE 1', formations: [] }]
+    expect(applyDayTpl(0, t.id)).toBe(true)
+    expect(DAYS[0].waves.map((w: any) => w.label)).toEqual(['WAVE 1', 'SC'])
+  })
+
   it('drops the day’s pending and structural-add marks, leaves other days alone', () => {
     SCHED.pending['dn:0.0'] = 1
     SCHED.pending['dn:1.0'] = 1

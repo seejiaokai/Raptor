@@ -2523,6 +2523,9 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
    the .grip/.tnudge ▲▼ the template editors use; only its own rows are new. */
 .arrsec-day{color:var(--ink-3);font-size:11px;font-weight:600;margin-left:8px}
 .arrsec-hint{color:var(--ink-3);font-size:11px;line-height:1.4;margin-bottom:10px}
+/* a small section label above each list — the sheet arranges the day's big
+   sections AND, when there are two or more, the flying waves within them. */
+.arrsec-subh{color:var(--ink-2);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}
 .arrsec-list{display:flex;flex-direction:column;gap:6px}
 .arrsec-row{display:grid;grid-template-columns:22px 1fr 20px;gap:10px;align-items:center;
   background:var(--bg);border:1px solid var(--edge);border-radius:8px;padding:7px 10px}

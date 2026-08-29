@@ -26,13 +26,13 @@ import { slotBar, dayEngaged, slotRules, dayOff, dayAway, sansGate, SANS_LABEL }
 import { isStandalone, makeStandalone, waveDutyBlock, saDutyIx, DUTY_PICK, SAWAVE, dayCount, saExempt } from './engine/waves'
 import * as waves from './engine/waves'
 import { keyDay, shiftKeys, shiftAircraft, shiftFormation, shiftWave, uniqDays, permuteKeys, moveKeys } from './engine/keys'
-import { applyMove } from './engine/reorder'
+import { applyMove, moveWave } from './engine/reorder'
 import { hhmm, parseHM, hmOK, minus, overlap, hm24 } from './engine/time'
 import { HIST, histApply, histSnap, histPush } from './state/history'
 import { HOOKS } from './engine/hooks'
 import * as view from './state/view'
 import { setLgEdit } from './state/auth'
-import { notify, undo, redo, loadWeek, moveSection, applySecOrderToWeek } from './state/store'
+import { notify, undo, redo, loadWeek, moveSection, moveWaveBlock, applySecOrderToWeek } from './state/store'
 import { secOrder, SECTIONS } from './engine/order'
 import { setRole as lwSetRole, setViewer as lwSetViewer, loadWars as lwLoadWars } from './leavewar/state/store'
 
@@ -123,6 +123,7 @@ export function installProbeBridge() {
   w.shiftFormation = shiftFormation; w.shiftWave = shiftWave; w.uniqDays = uniqDays
   w.permuteKeys = permuteKeys; w.moveKeys = moveKeys; w.applyMove = applyMove
   w.secOrder = secOrder; w.SECTIONS = SECTIONS; w.moveSection = moveSection; w.applySecOrderToWeek = applySecOrderToWeek
+  w.moveWave = moveWave; w.moveWaveBlock = moveWaveBlock
   w.hhmm = hhmm; w.parseHM = parseHM; w.hmOK = hmOK; w.minus = minus
   w.dayApproved = dayApproved; w.alColor = alColor; w.signMissing = signMissing; w.unpublishAL = unpublishAL
   w.isScheduler = isScheduler; w.isLead = isLead; w.isInstr = isInstr; w.isInstrPilot = isInstrPilot; w.isOcu = isOcu; w.isPersonnel = isPersonnel
