@@ -23,7 +23,7 @@ import { CURWEEK, setCurWeek } from '../engine/waves'
 import { weekBundle, otherWeekInputs } from '../engine/weeks-data'
 import { seedDemoSans, seedDemoMedical } from './demoseed'
 import { docAdd } from './docs'
-import { storesLoad, cxReasonsLoad, dutyTplLoad, waveTplLoad, dayTplLoad, autoAcceptSeedInputs, autoAcceptInput, inpKey } from '../engine'
+import { storesLoad, cxReasonsLoad, dutyTplLoad, waveTplLoad, dayTplLoad, autoAcceptSeedInputs, autoAcceptInput, inpKey, secOrder, moveSectionModel } from '../engine'
 import { elogClear } from '../engine/editlog'
 import { markDeletion, resetSched, SCHED, dayApproved } from '../engine/publish'
 import { stashPut, stashGet, stashHas } from '../engine/weekstash'
@@ -100,6 +100,32 @@ export function writeInputsBatch(fn: () => void) {
   HOOKS.histPush = () => {}
   try { fn() } finally { HOOKS.histPush = push }
   HOOKS.renderInputs(); HOOKS.reflow(); HOOKS.histPush()
+}
+
+/* THE SCHEDULE SECTION ORDER — its one write path (owner, 29 Aug 26). Re-arrange
+   a day's big section panels (engine/order.ts SECTIONS/secOrder). This is LAYOUT,
+   not an amendment: it mutates only d.secOrder and takes ONE undo snapshot
+   (histSnap serialises DAYS, so d.secOrder rides undo and the week-stash), and
+   deliberately does NOT run afterSchedMutate/markEdit — no pending mark, no AL,
+   no re-validate, because the rule inputs are byte-identical (see order.ts). It
+   never touches a slot key, which is exactly why reordering can't corrupt the
+   rules. Gated at the write path too, per the role doctrine, not only in the UI. */
+export function moveSection(di: number, key: string, dir: number) {
+  if (!canEditSched()) return
+  if (moveSectionModel(DAYS[di], key, dir)) { histPush(); notify() }
+}
+
+/* copy one day's section order onto every OTHER loaded day, so the owner arranges
+   the week once rather than day by day (owner ask). One undo step for the batch. */
+export function applySecOrderToWeek(di: number) {
+  if (!canEditSched()) return
+  const src = secOrder(DAYS[di]); const sig = JSON.stringify(src)
+  let any = false
+  DAYS.forEach((d: any, i: number) => {
+    if (i === di || !d) return
+    if (JSON.stringify(secOrder(d)) !== sig) { d.secOrder = src.slice(); any = true }
+  })
+  if (any) { histPush(); notify() }
 }
 
 /* the ONE session-reset path. Login.tsx and Shell.tsx's logout both called

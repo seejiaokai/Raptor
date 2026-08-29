@@ -720,3 +720,15 @@ agree — name it here so the next session knows to check both.
   chase. The Medical view itself is DERIVED (`engine/medical.ts` over
   `INPUTS` + an as-of ordinal, default the notional `weeknav.TODAY`), so it
   cannot drift from the table; anything stored would be the seam.
+
+- **Section display order (29 Aug 26) — one order, two builders.** A day's
+  `d.secOrder` (Programme · Flying waves · Duties · Sims · Ground Programme)
+  is read by BOTH `ui/board.ts boardHTML` and `ui/html.ts dayHTML` through the
+  one `engine/order.ts secOrder(d)`, so the two surfaces cannot disagree on the
+  order. The drift-seam to mind if the CANONICAL SET ever grows: a new section
+  key must be added to `SECTIONS` AND mapped to a panel string in BOTH builders
+  AND labelled in `ui/ArrangeSections.tsx` `SEC_LABEL` — four places for one
+  section. It is display-only: it never enters a slot key, `SCHED.*`, or an AL,
+  so it is invisible to `validate()`/publish/history (the guard is
+  `engine/secorder.test.ts`); the write path is `store.moveSection` (histPush,
+  no markEdit), and a whole-day template carries it (`engine/daytpl.ts`).

@@ -281,3 +281,36 @@ describe('persistence, like dutytpl', () => {
     expect(mem['sqn142_daytpl'] ? JSON.parse(mem['sqn142_daytpl']) : null).toBe(null)
   })
 })
+
+describe('a day template remembers the section order (owner, 29 Aug 26)', () => {
+  it('captures a re-arranged day\'s order and restores it on apply', () => {
+    DAYS[0].secOrder = ['ground', 'sims', 'prog', 'waves', 'duty']
+    const t = addDayTpl(0, 'reordered')!
+    expect(t.d.secOrder, 'the order travels into the template').toEqual(['ground', 'sims', 'prog', 'waves', 'duty'])
+    delete DAYS[0].secOrder                                  // back to default before applying
+    expect(applyDayTpl(0, t.id)).toBe(true)
+    expect(DAYS[0].secOrder, 'and comes back on the applied day').toEqual(['ground', 'sims', 'prog', 'waves', 'duty'])
+  })
+
+  it('a default-order day mints a CLEAN template — no secOrder field', () => {
+    delete DAYS[0].secOrder
+    const t = addDayTpl(0, 'plain')!
+    expect(t.d.secOrder).toBeUndefined()
+    /* and applying it leaves the day with no custom order (renders default) */
+    DAYS[0].secOrder = ['ground', 'prog', 'waves', 'duty', 'sims']
+    expect(applyDayTpl(0, t.id)).toBe(true)
+    expect(DAYS[0].secOrder).toBeUndefined()
+  })
+
+  it('a hand-edited storage file has its secOrder cleaned (unknowns and repeats dropped)', () => {
+    mem['sqn142_daytpl'] = JSON.stringify([{
+      id: 'dt1', title: 'junk', d: {
+        notes: [], allhands: [], waves: [], sims: {}, dutywaves: [], ground: [],
+        simnotes: '', prognotes: '', dutynotes: '', grndnotes: '',
+        secOrder: ['nope', 'waves', 'waves', 'prog'],
+      },
+    }])
+    dayTplLoad()
+    expect(DAYTPL_CFG[0]!.d.secOrder, 'junk and the duplicate are stripped').toEqual(['waves', 'prog'])
+  })
+})

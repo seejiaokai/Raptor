@@ -2083,6 +2083,38 @@ bar still sorts. Browser-only — jsdom has no layout, so the mirror never mount
 there (`quals.test.tsx` pins its absence); the freeze is verified on the live
 view at desktop and phone widths.
 
+## Arranging the schedule sections (owner, 29 Aug 26)
+
+A scheduler can re-arrange the order the big section panels show in — **Programme
+· Flying waves · Duties · Sims · Ground Programme** — on both Edit Schedule and
+the Scheduler Board, and a saved **whole-day template** remembers it.
+
+**It is display order only.** The order lives on the day as `d.secOrder` (an
+array of the five section keys; absent ⇒ the default order), resolved by
+`engine/order.ts secOrder(d)`. It never enters a slot key, `SCHED.*`, or an AL:
+re-arranging a panel moves no row inside any array, so every `di.gi.li.ai` / `d:`
+/ `s:` / `g:` / `a:` key is unchanged and `validate()`/publish/history read
+exactly what they did — which is how the owner's "don't corrupt the rules"
+requirement is met (pinned in `engine/secorder.test.ts`). Both builders emit their
+sections through `secOrder`: `ui/board.ts boardHTML` assembles a `{prog,waves,
+duty,sims,ground}` map (the Templates head stays pinned above, the inputs/SANS/
+Unavail group below), and `ui/html.ts dayHTML` slices its accumulator at five
+boundary marks and re-emits — so the **default order is byte-identical** to before
+(reference parity stays 728/0). `prog` is the Programme unit: the Common
+Programme panel on the week, the Notes + Common-Programme panels moved together
+on the board.
+
+**The control** is a compact per-day sheet, `ui/ArrangeSections.tsx` (state
+`ARRANGESEC` in `pops.ts`), opened by a `⇅ Arrange` button on each surface — in
+the board's Templates & drafts bar (`data-arrangesec`, routed in `boardMbtn`) and
+the edit week's `.dhtpl` day-head span (routed in `interactions.ts`; that span is
+already excised from the reference byte-compare by `noDhTpl`, so the button costs
+no parity). The sheet lists the sections in order with ▲▼ nudges (the template
+editors' `.tnudge` idiom) and an **Apply to all days** button. The one write path
+is `state/store.ts moveSection` / `applySecOrderToWeek` — `histPush` + `notify`,
+**no `markEdit`**: a re-arrange is one undo step and is NOT an amendment. Admin +
+edit-surface gated at the write path, not only in the UI.
+
 ## Selection highlight (`ui/highlights.ts`)
 
 **A click on blank schedule clears EVERYTHING that lights a puck** (owner,

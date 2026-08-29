@@ -17,7 +17,7 @@ import { esc, SBDAY, WFOCUS, PFOCUS, DWOPEN, DPREV, AVSHUT, PIOPEN, VWORK, CURPA
 import { canEditSched } from '../state/auth'
 import { ME } from '../state/auth'
 import { HOOKS } from '../engine/hooks'
-import { STORE_CFG, groundOrder } from '../engine'
+import { STORE_CFG, groundOrder, secOrder } from '../engine'
 
 const editMode=()=>HOOKS.editMode()
 
@@ -927,7 +927,7 @@ export function dayHTML(di:any,ed:any,vsel?:any){
     let h=`<section class="day ${d.today?'today':''} ${ok?'dok':''}${PV?(PVQ?' issued':' preview'):''}" data-day="${di}">
       <div class="day-head">${ed
         ? `<span class="dow crewday" data-crewday="${di}" title="Show this day's crew in the aircrew panel">${d.dow}</span><span class="dt sb-open" data-sbday="${di}" title="Open scheduler board">${d.dt}${d.today?' · Today':''}</span>`
-        : `<span class="dow di-open" data-dayinfo="${di}" title="Day details">${d.dow}</span><span class="dt di-open" data-dayinfo="${di}" title="Day details">${d.dt}${d.today?' · Today':''}</span>`}${ed?`<span class="dhtpl"><button class="dhbtn" data-daytplopen="${di}" title="Save this day, or apply a saved template">Templates</button><button class="dhbtn" data-draftsopen="${di}" title="Duplicate this day into drafts, switch between them, or manage them — the selected draft is what publishes">Drafts</button></span>`:''}
+        : `<span class="dow di-open" data-dayinfo="${di}" title="Day details">${d.dow}</span><span class="dt di-open" data-dayinfo="${di}" title="Day details">${d.dt}${d.today?' · Today':''}</span>`}${ed?`<span class="dhtpl"><button class="dhbtn" data-arrangesec="${di}" title="Arrange the order the sections show in">⇅ Arrange</button><button class="dhbtn" data-daytplopen="${di}" title="Save this day, or apply a saved template">Templates</button><button class="dhbtn" data-draftsopen="${di}" title="Duplicate this day into drafts, switch between them, or manage them — the selected draft is what publishes">Drafts</button></span>`:''}
       <span class="badge" title="Aircraft per wave · standalone lines after the slash">${dayCount(d)}</span>
       <span class="dstat">${vsel?verSelHTML(di):(ed?'':viewVerSelHTML(di))}${dayStatHTML(di,ed)}</span></div>`
       +pvBar
@@ -954,6 +954,13 @@ export function dayHTML(di:any,ed:any,vsel?:any){
       +`<div class="day-body">`;
     /* warnings are live-model state — a snapshot is never validated */
     if(!PV)h+=dayWarnHTML(di);
+    /* THE SCHEDULE SECTIONS are captured by slicing `h` at these boundary marks
+       and re-emitted in the day's own order (owner, 29 Aug 26 — engine/order.ts
+       secOrder), so a re-arrange costs no churn in the dense builders below and
+       the DEFAULT order slices back together byte-identical. The warnings above
+       and the input-derived blocks (Personal Inputs · Unavailable · SANS ·
+       Available) below stay pinned — neither is a schedule section. */
+    const secM0=h.length;
     // ---- all-hands header: EP/ORDERS notes + squadron-wide items ----
     const hasNotes=!!(d.notes&&d.notes.length), hasAH=!!(d.allhands&&d.allhands.length);
     if(hasNotes||hasAH||ed){
@@ -982,6 +989,7 @@ export function dayHTML(di:any,ed:any,vsel?:any){
       h+=blkNoteHTML(di,d,ed,'pn','prognotes');
       h+=`</div>`;
     }
+    const secM1=h.length;
     if(!d.waves||!d.waves.length)
       h+=`<div class="nobox" style="background:rgba(138,150,163,.08);border-color:var(--edge);border-left-color:var(--edge-2);color:var(--ink-3)">No flying — ground day.</div>`;
     // ---- waves ----
@@ -1106,6 +1114,7 @@ export function dayHTML(di:any,ed:any,vsel?:any){
       });
       h+=`</div>`;
     });
+    const secM2=h.length;
     // ---- duties by wave (directly below the last flying wave) ----
     /* `|| ed` so a day with no duty rows still offers its scheduler-notes box —
        otherwise deleting the last row would strand text already in the model. */
@@ -1136,6 +1145,7 @@ export function dayHTML(di:any,ed:any,vsel?:any){
       h+=blkNoteHTML(di,d,ed,'dtn','dutynotes');
       h+=`</div>`;
     }
+    const secM3=h.length;
     // ---- SIMS category (AMT + OFT), after duties ----
     const sims=d.sims||{};
     if((sims.amt&&sims.amt.length)||(sims.oft&&sims.oft.length)||ed){
@@ -1162,6 +1172,7 @@ export function dayHTML(di:any,ed:any,vsel?:any){
       h+=blkNoteHTML(di,d,ed,'sn','simnotes');
       h+=`</div>`;
     }
+    const secM4=h.length;
     /* ---- ground programme (scheduler-entered) ----
        On the scheduler's side it is one of TWO ground blocks, so it says which
        one it is. The view-only page sees no personal inputs at all, so there is
@@ -1182,6 +1193,13 @@ export function dayHTML(di:any,ed:any,vsel?:any){
         h+=plRow(x.prog,x.str,x.end,lCell(inner,key+'.+',ed,n<=1?'one':''),`gr:${di}.${ri}`,'prog',ed,x);});
       h+=blkNoteHTML(di,d,ed,'gn','grndnotes');
       h+=`</div>`;
+    }
+    /* re-emit the five captured sections in the day's own order. secOrder yields
+       the plain canonical order for an un-arranged day, so this slices back to a
+       byte-identical string; only a re-arranged day differs. */
+    {
+      const secBits:any={prog:h.slice(secM0,secM1),waves:h.slice(secM1,secM2),duty:h.slice(secM2,secM3),sims:h.slice(secM3,secM4),ground:h.slice(secM4)};
+      h=h.slice(0,secM0)+secOrder(d).map((k:string)=>secBits[k]||'').join('');
     }
     /* ---- the two input-derived blocks -------------------------------------
        PERSONAL INPUTS is what aircrew submitted and the scheduler has not yet

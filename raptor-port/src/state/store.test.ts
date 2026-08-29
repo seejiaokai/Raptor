@@ -11,7 +11,8 @@ import { slotVal, txtGet } from '../engine/slots'
 import { shiftKeys } from '../engine/keys'
 import { moveDutyRow, applyMove, sortDutyBlock } from '../engine/reorder'
 import { validate, WARN } from '../engine/validate'
-import { initStore, subscribe, getVersion, writeSlot, writeFill, writeText, writeDelete, writeInputs, undo, redo, HIST } from './store'
+import { initStore, subscribe, getVersion, writeSlot, writeFill, writeText, writeDelete, writeInputs, undo, redo, HIST, moveSection, applySecOrderToWeek } from './store'
+import { secOrder } from '../engine/order'
 import { armSlot, disarmSlot, armedKey, placeArmed, selectPerson, SELID, ARM } from './view'
 import * as view from './view'
 import { setSession } from './auth'
@@ -342,5 +343,34 @@ describe('store bookkeeping', () => {
   it('ARM state is exposed for the UI', () => {
     expect(ARM).toBe(null)
     expect(SELID).toBe(null)
+  })
+})
+
+describe('moveSection — the section display order (owner, 29 Aug 26)', () => {
+  it('re-orders a day and is undoable in one step, marking nothing pending', () => {
+    expect(secOrder(DAYS[0])).toEqual(['prog', 'waves', 'duty', 'sims', 'ground'])
+    moveSection(0, 'ground', -1)
+    expect(secOrder(DAYS[0])).toEqual(['prog', 'waves', 'duty', 'ground', 'sims'])
+    /* layout, not an amendment — no pending mark, no AL, no changes entry */
+    expect(Object.keys(SCHED.pending)).toEqual([])
+    expect(Object.keys(SCHED.changes)).toEqual([])
+    undo()
+    expect(secOrder(DAYS[0]), 'undo restores the previous order in one step').toEqual(['prog', 'waves', 'duty', 'sims', 'ground'])
+  })
+
+  it('is refused off the write path for a non-admin (role gate, not just the UI)', () => {
+    setSession({ user: 'u', role: 'member' })
+    moveSection(0, 'ground', -1)
+    expect(DAYS[0].secOrder, 'a member cannot re-order the schedule').toBeUndefined()
+    setSession({ user: 'a', role: 'admin' })
+  })
+
+  it('applySecOrderToWeek copies one day\'s order onto every other loaded day, in one step', () => {
+    moveSection(0, 'ground', -1); moveSection(0, 'ground', -1)   // ground up two on day 0
+    const want = secOrder(DAYS[0])
+    applySecOrderToWeek(0)
+    DAYS.forEach((d: any) => expect(secOrder(d)).toEqual(want))
+    undo()   // the batch is one undo step, so this rolls back the whole-week apply
+    expect(secOrder(DAYS[1])).not.toEqual(want)
   })
 })

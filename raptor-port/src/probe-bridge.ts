@@ -32,7 +32,8 @@ import { HIST, histApply, histSnap, histPush } from './state/history'
 import { HOOKS } from './engine/hooks'
 import * as view from './state/view'
 import { setLgEdit } from './state/auth'
-import { notify, undo, redo, loadWeek } from './state/store'
+import { notify, undo, redo, loadWeek, moveSection, applySecOrderToWeek } from './state/store'
+import { secOrder, SECTIONS } from './engine/order'
 import { setRole as lwSetRole, setViewer as lwSetViewer, loadWars as lwLoadWars } from './leavewar/state/store'
 
 export function installProbeBridge() {
@@ -121,6 +122,7 @@ export function installProbeBridge() {
   w.keyDay = keyDay; w.shiftKeys = shiftKeys; w.shiftAircraft = shiftAircraft
   w.shiftFormation = shiftFormation; w.shiftWave = shiftWave; w.uniqDays = uniqDays
   w.permuteKeys = permuteKeys; w.moveKeys = moveKeys; w.applyMove = applyMove
+  w.secOrder = secOrder; w.SECTIONS = SECTIONS; w.moveSection = moveSection; w.applySecOrderToWeek = applySecOrderToWeek
   w.hhmm = hhmm; w.parseHM = parseHM; w.hmOK = hmOK; w.minus = minus
   w.dayApproved = dayApproved; w.alColor = alColor; w.signMissing = signMissing; w.unpublishAL = unpublishAL
   w.isScheduler = isScheduler; w.isLead = isLead; w.isInstr = isInstr; w.isInstrPilot = isInstrPilot; w.isOcu = isOcu; w.isPersonnel = isPersonnel

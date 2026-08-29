@@ -1682,6 +1682,24 @@ longer touches any duty block (owner, 13 Aug 26 — duties are decoupled from
 waves; see §the duty block, and `CLAUDE.md` §Stable decisions). `saDutyIx`
 survives in `waves.ts` but the wave-delete path no longer calls it.
 
+## Re-ordering the SECTIONS (display order, owner 29 Aug 26)
+
+Distinct in kind from re-ordering a list's rows (below): a scheduler can also
+re-arrange the big section PANELS themselves — Programme · Flying waves ·
+Duties · Sims · Ground Programme — on both surfaces. That order is a pure
+DISPLAY sequence held on the day as `d.secOrder`, resolved by
+`engine/order.ts secOrder(d)` (absent ⇒ the default `['prog','waves','duty',
+'sims','ground']`; unknown keys and repeats dropped; missing ones appended).
+It is **never a slot key, never in `SCHED.*`, never an AL amendment** — a
+section move touches no row inside any array, so every `di.gi.li.ai`/`d:`/`s:`/
+`g:`/`a:` key and everything `validate()` and publishing read is byte-identical
+(pinned, `engine/secorder.test.ts`). Its one write path is `state/store.ts
+moveSection` (`histPush` + `notify`, no `markEdit` — one undo step, not an
+amendment); it rides undo and the week-stash because `histSnap`/`weekStashSnap`
+serialise `DAYS` wholesale, and a whole-day template carries it (`engine/
+daytpl.ts` `secOrder` on the blob). Contrast the row reorder below, which IS a
+key-remapping amendment.
+
 ## Reordering a board list
 
 Every list on the board — flying lines, jets inside a formation, Duties,
@@ -2056,7 +2074,10 @@ day field now needs a `dayKeys` line or the rebase will be blind to it.
 A whole-day master template: `{id, title, d}` — `dutytpl.ts`'s single duty
 block, one level up. `d` (`DayTplBlob`) is an explicit ALLOWLIST of
 `DAYS[di]`'s sections — `notes`/`allhands`/`waves`/`sims`/`dutywaves`/
-`ground`, plus each section's own note field — never the day's calendar
+`ground`, plus each section's own note field, and (owner, 29 Aug 26) the
+optional `secOrder` — the day's section arrangement, so a saved template
+remembers the order (absent = default; `cleanSecOrder` strips unknowns and
+repeats on mint AND on the untrusted load) — never the day's calendar
 identity. `dow`/`dt`/`today` stay off the blob on purpose: a template is
 reusable across days, and baking in "Monday, Jul 13" would make every apply
 silently rewrite the target day's own date. `wc` stays off it too, for a
