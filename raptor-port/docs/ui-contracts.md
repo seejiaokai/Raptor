@@ -3629,6 +3629,23 @@ type — no times (the popover has them) — with a SANS record reading its
 **F/O/A letters on the purple chip, never the words** (`sansLetters`; the
 colour is the label).
 
+**The body scrolls when a day is packed (owner report, 29 Aug 26 — "calendar
+filled with many data I cannot scroll down to view").** Because the sections
+draw in FULL, a day can outgrow its cell; the month must then be reachable, not
+clipped. Each WEEK is its own flex row (`.ic-week`), and the grid
+(`.ic-grid`) is a scrolling flex column of them. A week is held at ≥ one
+viewport share tall (`min-height`, dividing the body's own height by `--ic-rows`,
+the live week count handed in from the JSX) so a normal month fills the screen
+exactly; a week carrying a packed day GROWS to its content and the body scrolls
+to reach it, its cells stretching square so the gridlines hold. The flex row is
+load-bearing over the old flat 7-column grid: a grid track measures a
+wrapping-flex cell at infinite width (one line), so it could never size the
+packed cell and its pucks spilled over the weeks below — a flex row resolves the
+seven widths first, then takes its height from the tallest cell's real wrapped
+content. `flex-shrink:0` on the week is what stops the column squeezing a packed
+week back to fit. Input chips stay capped at `MAX_CHIPS` + `+N more` regardless
+— this reaches the FULL-drawn sections, it does not uncap the inputs.
+
 **Chips and tones.** Every input covering a day draws a chip in that day's
 cell — multi-day spans chip on every covered day. The colour code is decided
 in ONE place, `inputTone` (`ui/inputedit.tsx`): red `--hard` = an absence

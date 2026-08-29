@@ -2170,14 +2170,42 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
 .ic-dow{display:grid;grid-template-columns:repeat(7,1fr);padding-top:4px;background:var(--edge)}
 .ic-dow span{text-align:center;font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;
   color:var(--ink-3);background:var(--bg);padding:3px 0}
-/* the 1px gap on an --edge background draws every gridline for free — no
+/* the 1px gaps on an --edge background draw every gridline for free — no
    per-cell borders to keep aligned across up to 42 cells */
-.ic-grid{flex:1;display:grid;grid-template-columns:repeat(7,1fr);grid-auto-rows:1fr;gap:1px;background:var(--edge)}
+/* THE MONTH BODY SCROLLS when a day outgrows its share (owner report, 29 Aug 26
+   — "calendar filled with many data I cannot scroll down to view"). Before this
+   it was a flat 7-col grid of 1fr rows: every week an equal slice of the fixed
+   viewport, each cell clipped, so a day packed with pucks/sections (drawn in
+   FULL by the owner's 22 Aug call — "if it fills up the whole day box, so be
+   it") clipped its overflow away with no way to reach it, and once one week
+   grew it shoved the lower weeks off the bottom of the fixed shell.
+   Now .ic-grid is a SCROLLING flex column of week rows. Each .ic-week is a flex
+   ROW, not a grid track, on purpose: a grid track sizes a wrapping-flex cell at
+   infinite width (one line), so it could never measure the packed cell's real
+   height and the pucks spilled OVER the weeks below; a flex row resolves the 7
+   cell widths first, then takes its height from the tallest cell's actual
+   wrapped content — so a packed week GROWS and the body scrolls to it. Each
+   week is at LEAST one viewport share tall (min-height below) so a normal month
+   still fills the screen exactly; --ic-rows is the live week count from the JSX,
+   and the `100%` resolves against this column's own definite flex height, so the
+   share stays right whatever the header wraps to — no magic pixel constant to
+   drift. Input chips stay capped at MAX_CHIPS + a "+N more" regardless (the
+   owner's lesser-priority call) — this reaches the FULL-drawn sections, it
+   doesn't uncap the inputs. */
+.ic-grid{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:1px;background:var(--edge)}
+/* flex-shrink:0 is load-bearing: without it the column would SHRINK a packed
+   week back to fit the fixed body height (its siblings can't give more room),
+   clipping the very content this is meant to reveal. Held at ≥ one viewport
+   share by min-height, the week keeps its full content height instead and the
+   body scrolls to it; the cells stretch (align-items default) to that height so
+   the gridlines stay square. */
+.ic-week{display:flex;flex-shrink:0;gap:1px;background:var(--edge);
+  min-height:calc((100% - (var(--ic-rows,6) - 1)*1px)/var(--ic-rows,6))}
 /* position:relative is the +N more anchor (below): the title + sections may
    legitimately fill the cell (the owner's call), so the overflow trim must
    never be able to carry the one "there is more here" affordance away with
    the inputs it stands for. */
-.ic-day,.ic-x{background:var(--panel);overflow:hidden;padding:2px 3px;min-height:0;position:relative}
+.ic-day,.ic-x{flex:1 1 0;min-width:0;background:var(--panel);overflow:hidden;padding:2px 3px;position:relative}
 .ic-num{font-size:11px;font-weight:700;color:var(--ink-2);width:18px;height:18px;line-height:18px;text-align:center}
 .ic-today .ic-num{border-radius:50%;background:var(--accent);color:var(--accent-ink)}
 .ic-wk .ic-num{color:var(--ink-3)}

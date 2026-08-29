@@ -194,6 +194,20 @@ describe('chips (seeded demo data)', () => {
     }
   })
 
+  /* a dense day is drawn in full (the owner's 22 Aug call) and can outgrow its
+     cell; the grid must be able to SCROLL to it rather than clip the lower
+     weeks off the bottom (owner report, 29 Aug 26). jsdom paints no layout, so
+     the scroll itself can't be asserted here — but the wiring that drives it
+     can: --ic-rows is handed to the grid as the live week count, and it is what
+     divides the per-row minimum so the rows fill the viewport yet grow-and-
+     scroll past it. If this var is missing or wrong the CSS falls back to a flat
+     6-share and the clip-with-no-scroll bug is back. */
+  it('the grid carries --ic-rows = its real week count (drives the scroll-when-dense rows)', () => {
+    const rows = monthCells(2026, 7).length / 7   // July 2026 spans 5 weeks
+    expect(rows).toBe(5)
+    expect($('.ic-grid')!.style.getPropertyValue('--ic-rows')).toBe(String(rows))
+  })
+
   it('a day remark shows as .ic-rmk (display only)', async () => {
     await act(async () => { DAYRMK['2026-07-14'] = 'CO visiting — keep it tidy'; notify() })
     try {
