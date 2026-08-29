@@ -17,7 +17,7 @@ import { isStandalone } from '../engine/waves'
 import { DUTYTPL_CFG } from '../engine/dutytpl'
 import { SBDAY, afterSchedMutate } from '../state/view'
 import * as view from '../state/view'
-import { cxText } from './html'
+import { cxText, dayHTML } from './html'
 import { openScheduler, closeScheduler, boardArmClick, boardChange, boardMbtn, boardHTML, askSortAll, sortAllCommit, SORTALL, addLine, addWave, askCx, cxCommit, CXT } from './board'
 import { applyMove } from '../engine/reorder'
 import { WARN } from '../engine/validate'
@@ -1123,6 +1123,26 @@ describe('reorder grips and nudge buttons (owner, 8 Aug 26)', () => {
     const grips = h.match(/<span class="sb-grip"[^>]*>/g) || []
     expect(grips.length, 'grips actually render').toBeGreaterThan(0)
     expect(grips.every(g => !g.includes('data-move')), 'no grip carries an address').toBe(true)
+  })
+
+  it('a re-arranged day emits the section panels in secOrder, on both surfaces (owner, 29 Aug 26)', () => {
+    /* default order: Programme · Flying waves · Duties · Sims · Ground */
+    const bDef = boardHTML(0)
+    expect(bDef.indexOf('Flying waves')).toBeLessThan(bDef.indexOf('>Duties '))
+    expect(bDef.indexOf('>Duties ')).toBeLessThan(bDef.indexOf('Ground Programme'))
+    DAYS[0].secOrder = ['ground', 'sims', 'duty', 'waves', 'prog']
+    try {
+      const b = boardHTML(0)
+      expect(b.indexOf('Ground Programme'), 'board: ground now leads').toBeLessThan(b.indexOf('>Duties '))
+      expect(b.indexOf('>Duties ')).toBeLessThan(b.indexOf('Flying waves'))
+      expect(b.indexOf('Flying waves')).toBeLessThan(b.indexOf('Common Programme'))
+      /* the Edit Schedule week builder reads the SAME order */
+      const w = dayHTML(0, true)
+      expect(w.indexOf('sec-grnd'), 'week: ground before duty').toBeLessThan(w.indexOf('sec-duty'))
+      expect(w.indexOf('sec-duty')).toBeLessThan(w.indexOf('sec-prog'))
+    } finally { delete DAYS[0].secOrder }
+    /* and with it gone the default order is back, byte-for-byte */
+    expect(boardHTML(0)).toBe(bDef)
   })
 
   it('the duty, sim, ground, programme and note rows all carry one, on the row itself', () => {

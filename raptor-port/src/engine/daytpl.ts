@@ -2,6 +2,15 @@ import { DAYS } from './data'
 import { SCHED, dayApproved } from './publish'
 import { keyDay } from './keys'
 import { store } from './hooks'
+import { SECTIONS } from './order'
+/* a captured section order, cleaned to known keys with no repeats — used both
+   when minting a template off a live day and when loading a hand-edited file. */
+const cleanSecOrder = (v: any): string[] | undefined => {
+  if (!Array.isArray(v)) return undefined
+  const seen = new Set<string>(), out: string[] = []
+  for (const k of v) if (typeof k === 'string' && SECTIONS.indexOf(k) >= 0 && !seen.has(k)) { seen.add(k); out.push(k) }
+  return out.length ? out : undefined
+}
 
 /* WHOLE-DAY SCHEDULE TEMPLATES (owner ask, 15 Aug 26 — "allow me to create
    master templates to be selected for scheduler board and edit schedule").
@@ -41,6 +50,11 @@ export type DayTplBlob = {
   prognotes: string
   dutynotes: string
   grndnotes: string
+  /* the day's SECTION ORDER (owner, 29 Aug 26 — engine/order.ts secOrder), so a
+     saved whole-day template remembers how the sections were arranged. Absent =
+     the default canonical order, so old templates and default-order days carry
+     nothing extra. It is display order only, never crew or content. */
+  secOrder?: string[]
 }
 export type DayTpl = { id: string; title: string; d: DayTplBlob }
 
@@ -136,6 +150,9 @@ function mintBlob(d: any): DayTplBlob {
     prognotes: String(d.prognotes || ''),
     dutynotes: String(d.dutynotes || ''),
     grndnotes: String(d.grndnotes || ''),
+    /* a custom section arrangement travels with the template; a default-order
+       day carries no d.secOrder, so this stays absent and the template is clean. */
+    secOrder: cleanSecOrder(d.secOrder),
   }
 }
 
@@ -207,6 +224,9 @@ export function applyDayTpl(di: number, id: string): boolean {
     ground: JSON.parse(JSON.stringify(t.d.ground)),
     simnotes: t.d.simnotes, prognotes: t.d.prognotes, dutynotes: t.d.dutynotes, grndnotes: t.d.grndnotes,
   }
+  /* restore the section arrangement the template captured; absent ⇒ the new day
+     has no d.secOrder and renders in the default order (secOrder handles both). */
+  const so = cleanSecOrder(t.d.secOrder); if (so) nd.secOrder = so
   DAYS[di] = nd
   /* Every address the old day's marks pointed at may now name something else
      entirely (the swap does not try to line up old and new row indices), so
@@ -264,6 +284,7 @@ function sanitiseBlob(raw: any): DayTplBlob {
     prognotes: str(raw && raw.prognotes),
     dutynotes: str(raw && raw.dutynotes),
     grndnotes: str(raw && raw.grndnotes),
+    secOrder: cleanSecOrder(raw && raw.secOrder),
   }
 }
 

@@ -13,11 +13,11 @@ import { SCHED, alAttr, dayApproved, dayCurVer, dayPendCount, alColor, signOf, s
 import { dayDrafts, curDraftId, isDraftVer, draftVerLabel } from '../engine/drafts'
 import { keyDay } from '../engine/keys'
 import { VCONF } from '../engine/rules'
-import { esc, SBDAY, WFOCUS, PFOCUS, DWOPEN, DPREV, AVSHUT, PIOPEN, VWORK, CURPAGE, lateShown, restArmed, notePub, stSavedOn } from '../state/view'
+import { esc, SBDAY, WFOCUS, PFOCUS, DWOPEN, DPREV, AVSHUT, PIOPEN, VWORK, CURPAGE, lateShown, restArmed, notePub, stSavedOn, warnShown, WMOPEN } from '../state/view'
 import { canEditSched } from '../state/auth'
 import { ME } from '../state/auth'
 import { HOOKS } from '../engine/hooks'
-import { STORE_CFG, groundOrder } from '../engine'
+import { STORE_CFG, groundOrder, secOrder } from '../engine'
 
 const editMode=()=>HOOKS.editMode()
 
@@ -598,6 +598,10 @@ export function dayWarnHTML(di:any){
   const items=pf?personWarns(di,pf):all.map((w:any,ix:any)=>({w,ix}));
   if(pf&&!items.length)return soloTrace(di,pf);
   const dw=items.map((x:any)=>x.w);
+  /* the header count stays the TRUE total — muting a check declutters the
+     list, it does not change what the day is (the board does the same). So
+     worst / nh / the issue count all read `dw`, the full set including any
+     muted rows; only the LIST below drops them. */
   const worst=dw.some((w:any)=>w.sev==='hard')?'hard':dw.some((w:any)=>w.sev==='adv')?'adv':'note';
   const nh=dw.filter((w:any)=>w.sev==='hard').length;
   const open=DWOPEN.has(di);
@@ -609,22 +613,47 @@ export function dayWarnHTML(di:any){
    +`${nh?` · ${nh} warning`:''} · <span class="dwcue">${open?'tap to collapse':'tap to review'}</span>`
    +`<span class="dwcar">${open?'▲':'▼'}</span></div>`;
   if(open){
-    const row=({w,ix}:any)=>{
+    /* MUTING A CHECK IS AVAILABLE ON EDIT SCHEDULE TOO (owner, 29 Aug 26 —
+       "the hide warning option should be available on edit schedule too …
+       and both are in sync"). The board already lets a scheduler hide one
+       check; the mute set (view.WARNOFF) is keyed by the warning's CONTENT,
+       not by which surface it was hidden from, so rendering the same ✕ / ↺
+       controls here shares that one set — a check hidden on the board is
+       hidden on the week and vice versa, no extra wiring. Gated to Edit
+       Schedule (editMode()) exactly like the board's canEditSched(): the
+       View-only week stays the honest full record with no controls, so its
+       markup is byte-identical to before. The ✕/↺ clicks (data-woff) and the
+       reveal (data-wmtog) route through the SAME delegated handlers the board
+       uses — see interactions.ts. */
+    const ed=editMode();
+    const row=({w,ix}:any,muted?:boolean)=>{
       const names=(w.who||[]).map((id:any)=>PEOPLE[id]?PEOPLE[id].cs:id).join(', ');
       const on=WFOCUS&&WFOCUS.di===di&&WFOCUS.ix===ix;
-      return `<div class="witem ${w.sev}${on?' on':''}" data-wdi="${di}" data-wix="${ix}" title="Jump to the puck that caused this">`
-        +`<span class="wbar"></span><span><span class="wcode">${esc(wlbl(WCODE[w.code]||w.code))}</span>`
-        +`<b>${esc(names)}</b>${names?' — ':''}${esc(w.msg||'')}</span></div>`;
+      return `<div class="witem ${w.sev}${on?' on':''}${muted?' muted':''}" data-wdi="${di}" data-wix="${ix}" title="Jump to the puck that caused this">`
+        +`<span class="wbar"></span><span${ed?' class="wtx"':''}><span class="wcode">${esc(wlbl(WCODE[w.code]||w.code))}</span>`
+        +`<b>${esc(names)}</b>${names?' — ':''}${esc(w.msg||'')}</span>`
+        +(ed?`<button class="witem-mute" data-woff="${di}.${ix}" title="${muted?'Show this check again':'Hide this check — it comes back if the situation changes'}">${muted?'↺':'✕'}</button>`:'')
+        +`</div>`;
     };
+    /* split the muted checks out of the visible list (edit only). warnShown
+       reads the shared WARNOFF; the hidden ones gather under a "N hidden"
+       reveal so they stay reachable to un-mute, the board's shape. */
+    const shown=ed?items.filter((x:any)=>warnShown(x.w)):items;
+    const hidden=ed?items.filter((x:any)=>!warnShown(x.w)):[];
     /* the cross-day row ranks below this day's warnings and above its
        advisories (owner, 7 Aug 26): it is red business, but tomorrow's.
        items are already severity-sorted (validate.ts), so the seam is the
        first non-hard row. */
-    const cut=items.findIndex((x:any)=>x.w.sev!=='hard');
-    const hards=cut<0?items:items.slice(0,cut), rest=cut<0?[]:items.slice(cut);
-    h+=`<div class="dwlist">`+hards.map(row).join('')
+    const cut=shown.findIndex((x:any)=>x.w.sev!=='hard');
+    const hards=cut<0?shown:shown.slice(0,cut), rest=cut<0?[]:shown.slice(cut);
+    const mopen=WMOPEN.has(di);
+    h+=`<div class="dwlist">`+hards.map((x:any)=>row(x)).join('')
      +dayTraceHTML(di,pf)
-     +rest.map(row).join('')
+     +rest.map((x:any)=>row(x)).join('')
+     +(hidden.length
+        ? `<div class="wmuted-h${mopen?' open':''}" data-wmtog="${di}" title="Show or hide the checks you have muted">`
+          +`<span class="dwcar">${mopen?'▲':'▼'}</span>${hidden.length} hidden</div>`
+          +(mopen?hidden.map((x:any)=>row(x,true)).join(''):''):'')
      +(pf&&PFOCUS.days.length>1
         ? `<div class="dwecho">${esc(cs)} is also flagged on ${esc(PFOCUS.days.filter((x:any)=>x!==di).map(dowShort).join(', '))}</div>`:'')
      +(WFOCUS&&WFOCUS.di===di
@@ -927,7 +956,7 @@ export function dayHTML(di:any,ed:any,vsel?:any){
     let h=`<section class="day ${d.today?'today':''} ${ok?'dok':''}${PV?(PVQ?' issued':' preview'):''}" data-day="${di}">
       <div class="day-head">${ed
         ? `<span class="dow crewday" data-crewday="${di}" title="Show this day's crew in the aircrew panel">${d.dow}</span><span class="dt sb-open" data-sbday="${di}" title="Open scheduler board">${d.dt}${d.today?' · Today':''}</span>`
-        : `<span class="dow di-open" data-dayinfo="${di}" title="Day details">${d.dow}</span><span class="dt di-open" data-dayinfo="${di}" title="Day details">${d.dt}${d.today?' · Today':''}</span>`}${ed?`<span class="dhtpl"><button class="dhbtn" data-daytplopen="${di}" title="Save this day, or apply a saved template">Templates</button><button class="dhbtn" data-draftsopen="${di}" title="Duplicate this day into drafts, switch between them, or manage them — the selected draft is what publishes">Drafts</button></span>`:''}
+        : `<span class="dow di-open" data-dayinfo="${di}" title="Day details">${d.dow}</span><span class="dt di-open" data-dayinfo="${di}" title="Day details">${d.dt}${d.today?' · Today':''}</span>`}${ed?`<span class="dhtpl"><button class="dhbtn" data-arrangesec="${di}" title="Arrange the order the sections show in">⇅ Arrange</button><button class="dhbtn" data-daytplopen="${di}" title="Save this day, or apply a saved template">Templates</button><button class="dhbtn" data-draftsopen="${di}" title="Duplicate this day into drafts, switch between them, or manage them — the selected draft is what publishes">Drafts</button></span>`:''}
       <span class="badge" title="Aircraft per wave · standalone lines after the slash">${dayCount(d)}</span>
       <span class="dstat">${vsel?verSelHTML(di):(ed?'':viewVerSelHTML(di))}${dayStatHTML(di,ed)}</span></div>`
       +pvBar
@@ -954,6 +983,13 @@ export function dayHTML(di:any,ed:any,vsel?:any){
       +`<div class="day-body">`;
     /* warnings are live-model state — a snapshot is never validated */
     if(!PV)h+=dayWarnHTML(di);
+    /* THE SCHEDULE SECTIONS are captured by slicing `h` at these boundary marks
+       and re-emitted in the day's own order (owner, 29 Aug 26 — engine/order.ts
+       secOrder), so a re-arrange costs no churn in the dense builders below and
+       the DEFAULT order slices back together byte-identical. The warnings above
+       and the input-derived blocks (Personal Inputs · Unavailable · SANS ·
+       Available) below stay pinned — neither is a schedule section. */
+    const secM0=h.length;
     // ---- all-hands header: EP/ORDERS notes + squadron-wide items ----
     const hasNotes=!!(d.notes&&d.notes.length), hasAH=!!(d.allhands&&d.allhands.length);
     if(hasNotes||hasAH||ed){
@@ -982,6 +1018,7 @@ export function dayHTML(di:any,ed:any,vsel?:any){
       h+=blkNoteHTML(di,d,ed,'pn','prognotes');
       h+=`</div>`;
     }
+    const secM1=h.length;
     if(!d.waves||!d.waves.length)
       h+=`<div class="nobox" style="background:rgba(138,150,163,.08);border-color:var(--edge);border-left-color:var(--edge-2);color:var(--ink-3)">No flying — ground day.</div>`;
     // ---- waves ----
@@ -1106,6 +1143,7 @@ export function dayHTML(di:any,ed:any,vsel?:any){
       });
       h+=`</div>`;
     });
+    const secM2=h.length;
     // ---- duties by wave (directly below the last flying wave) ----
     /* `|| ed` so a day with no duty rows still offers its scheduler-notes box —
        otherwise deleting the last row would strand text already in the model. */
@@ -1136,6 +1174,7 @@ export function dayHTML(di:any,ed:any,vsel?:any){
       h+=blkNoteHTML(di,d,ed,'dtn','dutynotes');
       h+=`</div>`;
     }
+    const secM3=h.length;
     // ---- SIMS category (AMT + OFT), after duties ----
     const sims=d.sims||{};
     if((sims.amt&&sims.amt.length)||(sims.oft&&sims.oft.length)||ed){
@@ -1162,6 +1201,7 @@ export function dayHTML(di:any,ed:any,vsel?:any){
       h+=blkNoteHTML(di,d,ed,'sn','simnotes');
       h+=`</div>`;
     }
+    const secM4=h.length;
     /* ---- ground programme (scheduler-entered) ----
        On the scheduler's side it is one of TWO ground blocks, so it says which
        one it is. The view-only page sees no personal inputs at all, so there is
@@ -1182,6 +1222,13 @@ export function dayHTML(di:any,ed:any,vsel?:any){
         h+=plRow(x.prog,x.str,x.end,lCell(inner,key+'.+',ed,n<=1?'one':''),`gr:${di}.${ri}`,'prog',ed,x);});
       h+=blkNoteHTML(di,d,ed,'gn','grndnotes');
       h+=`</div>`;
+    }
+    /* re-emit the five captured sections in the day's own order. secOrder yields
+       the plain canonical order for an un-arranged day, so this slices back to a
+       byte-identical string; only a re-arranged day differs. */
+    {
+      const secBits:any={prog:h.slice(secM0,secM1),waves:h.slice(secM1,secM2),duty:h.slice(secM2,secM3),sims:h.slice(secM3,secM4),ground:h.slice(secM4)};
+      h=h.slice(0,secM0)+secOrder(d).map((k:string)=>secBits[k]||'').join('');
     }
     /* ---- the two input-derived blocks -------------------------------------
        PERSONAL INPUTS is what aircrew submitted and the scheduler has not yet

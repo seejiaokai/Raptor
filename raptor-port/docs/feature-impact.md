@@ -32,7 +32,7 @@ the rest are the ones the code actually has.
 
 | Surface | What it is | Where it lives | Fed by |
 |---|---|---|---|
-| **Warnings** | The day's checks list, the puck rings, the board issue list | `validate.ts` → `WARN`/`REST`/`EVD`; drawn in `html.ts` (day warnings), `board.ts` (issue list), `highlights.ts` (rings) | every `validate()` run; re-read, never cached. Since 23 Aug 26 the run counter and Monday's crew rest also seed from the adjacent week via `engine/weekctx.ts` (Flow F), and a loaded week's Sunday that busts NEXT week's Monday draws a forward "Breaks Monday" trace box on Sunday itself (`validate.ts`'s `crewRestDay` phantom pass, `weekctx.ts:nextMondaySeed`, rendered by `html.ts:dayTraceHTML`) — a pointer only, `di:null`, no click target; the real breach warning still lands on Monday when next week loads |
+| **Warnings** | The day's checks list, the puck rings, the board issue list | `validate.ts` → `WARN`/`REST`/`EVD`; drawn in `html.ts` (day warnings), `board.ts` (issue list), `highlights.ts` (rings) | every `validate()` run; re-read, never cached. Since 23 Aug 26 the run counter and Monday's crew rest also seed from the adjacent week via `engine/weekctx.ts` (Flow F), and a loaded week's Sunday that busts NEXT week's Monday draws a forward "Breaks Monday" trace box on Sunday itself (`validate.ts`'s `crewRestDay` phantom pass, `weekctx.ts:nextMondaySeed`, rendered by `html.ts:dayTraceHTML`) — a pointer only, `di:null`, no click target; the real breach warning still lands on Monday when next week loads. Since 29 Aug 26 a scheduler can MUTE one check from BOTH the board issue list and the edit week's day-issue list — the two share one `view.WARNOFF` set (keyed by warning content, `warnMuteKey`), so a hide on either surface hides on both and undo restores it from either; gated on `editMode()`/`canEditSched()` so View-only shows the full honest list |
 | **Layout / geometry** | Row heights, column widths, board node count, overflow | `scheduler.css` (measured contracts), the string builders | gated by `e2e/geometry.spec.ts` + `perf-port.cjs` DOM ceilings |
 | **History (edit log)** | The list is NAMED "Edit history" on every surface since 23 Aug 26 (was "Changes"), newest first; the board bubble; opened from the topbar's `#histBtn` as well as the board | `editlog.ts` (`ELOG`), `HistoryModal.tsx`, `histbubble.ts` | `markEdit`/`logEdit`/`logAction`, only when BOTH from/to values are passed |
 | **Undo / redo** | Step back/forward through snapshots | `state/history.ts` (`HIST`, `histPush`/`histApply`) | every mutation batch pushes one snapshot |
@@ -720,3 +720,31 @@ agree — name it here so the next session knows to check both.
   chase. The Medical view itself is DERIVED (`engine/medical.ts` over
   `INPUTS` + an as-of ordinal, default the notional `weeknav.TODAY`), so it
   cannot drift from the table; anything stored would be the seam.
+
+- **Section display order (29 Aug 26) — one order, two builders.** A day's
+  `d.secOrder` (Programme · Flying waves · Duties · Sims · Ground Programme)
+  is read by BOTH `ui/board.ts boardHTML` and `ui/html.ts dayHTML` through the
+  one `engine/order.ts secOrder(d)`, so the two surfaces cannot disagree on the
+  order. The drift-seam to mind if the CANONICAL SET ever grows: a new section
+  key must be added to `SECTIONS` AND mapped to a panel string in BOTH builders
+  AND labelled in `ui/ArrangeSections.tsx` `SEC_LABEL` — four places for one
+  section. It is display-only: it never enters a slot key, `SCHED.*`, or an AL,
+  so it is invisible to `validate()`/publish/history (the guard is
+  `engine/secorder.test.ts`); the write path is `store.moveSection` (histPush,
+  no markEdit), and a whole-day template carries it (`engine/daytpl.ts`).
+
+- **Wave-block order (29 Aug 26) — the Arrange sheet's second list, a REAL
+  reorder not a display order.** The same `ui/ArrangeSections.tsx` sheet lists the
+  day's flying waves (when ≥2) with ▲▼; because the modal reads `d.waves` directly,
+  the control works on BOTH surfaces with no per-surface DOM (the edit week has no
+  inline row-reorder at all — drag/nudge are board-only). Unlike section order, a
+  wave move mutates the real model and IS an amendment: `store.moveWaveBlock` →
+  `engine/reorder.ts moveWave` (via `applyMove` kind `w`) → `afterSchedMutate`, the
+  manual sibling of `sortWaves` sharing its nine-head key remap. **Drift-seam to
+  mind:** that nine-head list appears in `moveWave`, `sortWaves` and `keys.ts
+  shiftWave` — a wave gaining a tenth key head must reach all three, or a moved/
+  sorted/deleted wave leaves an orphaned key. Wave order rides `d.waves` itself, so
+  undo, the week-stash and the day template capture it with no extra field. It is
+  the one write path in the sheet that touches rule KEYS — but only their indices,
+  never their substance, so `validate()`'s warning set is invariant under a wave
+  move (`engine/reorder.test.ts`).

@@ -419,6 +419,12 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose }:
   }, [cur.y, cur.m])
 
   const cells = monthCells(cur.y, cur.m)
+  /* the flat cell list chunked into weeks of 7 — each renders as its own flex
+     row (.ic-week) so a packed day grows its week's height instead of spilling
+     over the weeks below; see the body's own comment. monthCells always pads to
+     a multiple of 7, so every chunk is a full week. */
+  const weeks: (string | null)[][] = []
+  for (let i = 0; i < cells.length; i += 7) weeks.push(cells.slice(i, i + 7))
   const todayIso = isoToday()
 
   /* a month emptied by a filter has to say WHY — the product bar's "real
@@ -848,10 +854,25 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose }:
         <button type="button" className="abtn" id="icClose" onClick={onClose}>✕ List</button>
       </div>
       <div className="ic-dow">{DOW.map(d => <span key={d}>{d}</span>)}</div>
-      <div className="ic-grid" ref={gridRef}>
-        {cells.map((iso, i) => {
+      {/* THE MONTH BODY scrolls when a day is packed. --ic-rows is the live week
+          count: each week's MINIMUM height is one viewport share of it (see
+          .ic-grid / .ic-week in scheduler.css), so a normal month fills the
+          screen exactly, while a week holding a day drawn in FULL (the owner's
+          22 Aug call) grows past that share and the body scrolls to reach it —
+          it no longer clips the lower weeks off the bottom (owner report, 29 Aug
+          26 — "calendar filled with many data I cannot scroll down to view").
+          Each WEEK is its own flex row rather than the old flat 7-col grid: a
+          grid track can't measure a wrapping-flex cell's real height (it reads
+          it at infinite width, as a single line), so the packed row never grew
+          and its pucks spilled OVER the weeks below; a flex row resolves the
+          cell widths first and then its height from the tallest cell's actual
+          wrapped content, so the row grows and pushes the rest down. */}
+      <div className="ic-grid" ref={gridRef} style={{ ['--ic-rows']: cells.length / 7 } as React.CSSProperties}>
+        {weeks.map((week, wi) => (
+          <div key={wi} className="ic-week">{week.map((iso, ci) => {
+          const i = wi * 7 + ci
           if (!iso) return <div key={i} className="ic-x" />
-          const wk = i % 7 >= 5
+          const wk = ci >= 5
           const isToday = iso === todayIso
           const { inputs, pucks } = dayEntries(iso, { fPerson, fType, fSearch })
           /* THE CELL'S PRIORITY ORDER (owner, 22 Aug 26): the day TITLE, then
@@ -912,7 +933,8 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose }:
                 onClick={() => { setPopIso(iso); setPopPuckEdit(null) }}>+{extra} more</button>}
             </div>
           )
-        })}
+        })}</div>
+        ))}
       </div>
       {popIso != null && renderPop(popIso)}
       {pickFor != null && renderPicker()}

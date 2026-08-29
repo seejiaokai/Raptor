@@ -2060,6 +2060,86 @@ right-edge `box-shadow` marks the freeze boundary so a half-scrolled column
 reads as content passing under a pinned column, not a stray fragment. Gated in
 `e2e/geometry.spec.ts` (jsdom has no sticky), not jsdom.
 
+## The Quals HEADER freezes on scroll (owner, 29 Aug 26)
+
+The column headings (CALLSIGN … REMARKS) and the group row (`Assigned pilots ·
+N`) stay put when the page scrolls down — "freeze like the leave war top bar …
+desktop and mobile … same mechanism". It IS the Leave War mechanism
+(`src/leavewar/ui/Matrix.tsx` `.mxfixed`, and its `.mx-wrap` preamble spells out
+why): `.qwrap` scrolls the table sideways so it owns the horizontal axis, the
+PAGE owns the vertical, and no `position:sticky` can freeze a header against the
+page while its own scrollport owns the other axis (the `thead` already carries a
+`top:0` sticky that pins nothing for exactly this reason). So `QualsPage` mounts
+a **fixed mirror** (`.qfixed`/`.qfixed-scroll`, `data-testid="qsticky-head"`) of
+the heading + group row the instant the real header's top passes the app top
+bar's lower edge, pinned there, and unmounts it when the header comes back. The
+mirror reuses `qualsHead`/`qualsGrpRow` (one source for the markup — no drift
+seam), sizes its columns from a colgroup of the live-measured header widths
+(`table-layout:fixed`) so they land over the grid's, and is its own thin
+horizontal scroller kept in lockstep with `.qwrap` (one-way grid → mirror, the
+Leave War fling lesson) so the frozen callsign column's own sticky-left works
+inside it. `z-index:55` sits under the top bar's 60. A click on a heading in the
+bar still sorts. Browser-only — jsdom has no layout, so the mirror never mounts
+there (`quals.test.tsx` pins its absence); the freeze is verified on the live
+view at desktop and phone widths.
+
+## Arranging the schedule sections (owner, 29 Aug 26)
+
+A scheduler can re-arrange the order the big section panels show in — **Programme
+· Flying waves · Duties · Sims · Ground Programme** — on both Edit Schedule and
+the Scheduler Board, and a saved **whole-day template** remembers it.
+
+**It is display order only.** The order lives on the day as `d.secOrder` (an
+array of the five section keys; absent ⇒ the default order), resolved by
+`engine/order.ts secOrder(d)`. It never enters a slot key, `SCHED.*`, or an AL:
+re-arranging a panel moves no row inside any array, so every `di.gi.li.ai` / `d:`
+/ `s:` / `g:` / `a:` key is unchanged and `validate()`/publish/history read
+exactly what they did — which is how the owner's "don't corrupt the rules"
+requirement is met (pinned in `engine/secorder.test.ts`). Both builders emit their
+sections through `secOrder`: `ui/board.ts boardHTML` assembles a `{prog,waves,
+duty,sims,ground}` map (the Templates head stays pinned above, the inputs/SANS/
+Unavail group below), and `ui/html.ts dayHTML` slices its accumulator at five
+boundary marks and re-emits — so the **default order is byte-identical** to before
+(reference parity stays 728/0). `prog` is the Programme unit: the Common
+Programme panel on the week, the Notes + Common-Programme panels moved together
+on the board.
+
+**The control** is a compact per-day sheet, `ui/ArrangeSections.tsx` (state
+`ARRANGESEC` in `pops.ts`), opened by a `⇅ Arrange` button on each surface — in
+the board's Templates & drafts bar (`data-arrangesec`, routed in `boardMbtn`) and
+the edit week's `.dhtpl` day-head span (routed in `interactions.ts`; that span is
+already excised from the reference byte-compare by `noDhTpl`, so the button costs
+no parity). The sheet lists the sections in order with ▲▼ nudges (the template
+editors' `.tnudge` idiom) and an **Apply to all days** button. The one write path
+is `state/store.ts moveSection` / `applySecOrderToWeek` — `histPush` + `notify`,
+**no `markEdit`**: a re-arrange is one undo step and is NOT an amendment. Admin +
+edit-surface gated at the write path, not only in the UI.
+
+**The same sheet also arranges the flying WAVES within the day** (owner, 29 Aug 26
+— "within the waves I also want the option to reorder … put SC at the top, then
+1st wave 2nd wave"). Below the sections list, when a day carries two or more waves,
+the sheet lists them by their board titles (`labelToTitle` — SC / AVALON / "1st
+wave"…) with the same ▲▼ nudges. Putting it in the shared sheet is what makes it
+work identically on **both** surfaces at once and stay in sync — the modal reads
+`d.waves` directly, so it needs no per-surface DOM or handler (the edit week has no
+inline row-reorder machinery at all; drag and the board's ▲▼ nudges are board-only).
+
+**Unlike a section move, a wave move IS a real model reorder and an amendment.**
+Its write path is `state/store.ts moveWaveBlock` → `engine/reorder.ts moveWave`
+(via `applyMove` kind `w`) → `afterSchedMutate` + `notify`. `moveWave` is the
+manual sibling of Auto sort's `sortWaves`: it splices `d.waves` and remaps the SAME
+nine key-space heads (`wl: ff: fr: st: ar: at: it: tr:` and the bare seat head) with
+`moveKeys`, marking the moved wave — so the wave carries its whole key space to the
+new index and every crew name stays attached (pinned in `engine/reorder.test.ts`).
+Wave order can't be a parallel "display" order like `secOrder`, because `sortWaves`
+already reorders the real model; a second order would fight it. So reordering a wave
+on a **published** day records an AL row (correct — moving a flying wave is a
+schedule change), while on a draft day it is silent (25 Aug amendment-marks rule).
+The **day template remembers wave order for free** — wave order IS the `d.waves`
+array order, which `daytpl.ts mintBlob` deep-clones, so no `secOrder`-style capture
+is needed on the flying side (pinned in `engine/daytpl.test.ts`). Wave arrange is
+per-day only (no "apply to all days" — a day may have no SC to place).
+
 ## Selection highlight (`ui/highlights.ts`)
 
 **A click on blank schedule clears EVERYTHING that lights a puck** (owner,
@@ -3007,18 +3087,30 @@ except where noted:
 ## Muting a check, and resizing the checks panel (owner, Aug 26)
 
 Both are board-side, admin-only, session-only, and DESKTOP-scoped for the resize.
-- **Mute a specific check.** Each `.wln` row in the board's checks panel
-  (`board.ts:boardWarnHTML`) carries a `✕` (`data-woff`). Tapping it hides that
-  check; the muted ones gather under a "N hidden" line (`data-wmtog`, `WMOPEN`)
-  that reveals them dimmed with a `↺` to restore. The mute is keyed by the
-  warning's CONTENT — `warnMuteKey` = day|code|people|message, the identity the
-  validator itself dedups on — so it AUTO-RE-ARMS: a check that persists unchanged
-  stays hidden (the scheduler acknowledged it), but the moment the situation
-  changes and `validate()` rebuilds a different warning the key no longer matches
-  and it shows again (owner: "if things change that warning will appear again").
+- **Mute a specific check — on the board AND the edit week, in sync.** Each
+  `.wln` row in the board's checks panel (`board.ts:boardWarnHTML`) and each
+  `.witem` row in the edit week's day-issue list (`html.ts:dayWarnHTML`) carries
+  a `✕` (`data-woff`). Tapping it hides that check; the muted ones gather under a
+  "N hidden" line (`data-wmtog`, `WMOPEN`) that reveals them dimmed with a `↺` to
+  restore. The mute is keyed by the warning's CONTENT — `warnMuteKey` =
+  day|code|people|message, the identity the validator itself dedups on — so it
+  AUTO-RE-ARMS: a check that persists unchanged stays hidden (the scheduler
+  acknowledged it), but the moment the situation changes and `validate()`
+  rebuilds a different warning the key no longer matches and it shows again
+  (owner: "if things change that warning will appear again").
   The day's HEADER keeps its true count and colour — muting declutters the list,
   it does not change what the day IS. Admin-gated at the write path
   (`view.toggleWarnOff`), cleared on login/logout — the LATEOFF precedent.
+  **The board and the edit week are one control, not two** (owner, 29 Aug 26 —
+  "the hide warning option should be available on edit schedule too … and both
+  are in sync"): the two surfaces read and write the SAME `view.WARNOFF` set,
+  so a check hidden on either is hidden on both with no extra wiring, and undo
+  (which snapshots `WARNOFF`) walks over the mute the same way from either. The
+  edit week gates the `✕`/`↺` and the reveal on `editMode()` (exactly the board's
+  `canEditSched()`), so the **View-only week shows no controls and the full,
+  honest list** — its markup is byte-identical to before, and the read-only
+  record is never quietly trimmed. The day-info popup (`dip-list`, `data-adv`)
+  is a separate readout and deliberately keeps the whole list too.
 - **Resize the checks panel.** On desktop a grip (`.sb-wsplit`) sits on the
   border between the checks panel and the roster below it; dragging it sets an
   explicit height on `.sb-warn` (`wireWarnSplit`, a CSS var + `.sb-warn-sized`
@@ -3628,6 +3720,23 @@ the **inputs** as side-by-side mini chips (`.ic-inrow`) reading callsign +
 type — no times (the popover has them) — with a SANS record reading its
 **F/O/A letters on the purple chip, never the words** (`sansLetters`; the
 colour is the label).
+
+**The body scrolls when a day is packed (owner report, 29 Aug 26 — "calendar
+filled with many data I cannot scroll down to view").** Because the sections
+draw in FULL, a day can outgrow its cell; the month must then be reachable, not
+clipped. Each WEEK is its own flex row (`.ic-week`), and the grid
+(`.ic-grid`) is a scrolling flex column of them. A week is held at ≥ one
+viewport share tall (`min-height`, dividing the body's own height by `--ic-rows`,
+the live week count handed in from the JSX) so a normal month fills the screen
+exactly; a week carrying a packed day GROWS to its content and the body scrolls
+to reach it, its cells stretching square so the gridlines hold. The flex row is
+load-bearing over the old flat 7-column grid: a grid track measures a
+wrapping-flex cell at infinite width (one line), so it could never size the
+packed cell and its pucks spilled over the weeks below — a flex row resolves the
+seven widths first, then takes its height from the tallest cell's real wrapped
+content. `flex-shrink:0` on the week is what stops the column squeezing a packed
+week back to fit. Input chips stay capped at `MAX_CHIPS` + `+N more` regardless
+— this reaches the FULL-drawn sections, it does not uncap the inputs.
 
 **Chips and tones.** Every input covering a day draws a chip in that day's
 cell — multi-day spans chip on every covered day. The colour code is decided

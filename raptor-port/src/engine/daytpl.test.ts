@@ -176,6 +176,24 @@ describe('applyDayTpl', () => {
     expect(DAYS[0].waves[0].formations[0].cs).toBe('VL')   // structure came from the template
   })
 
+  /* the wave-block order is captured by the template too (owner, 29 Aug 26 —
+     "the template saved will remember the order"). Wave order IS the d.waves
+     array order, which mintBlob deep-clones, so a template minted with SC on top
+     applies SC on top — no explicit secOrder-style field needed on the flying side. */
+  it('remembers the flying-wave order (SC put on top comes back on top)', () => {
+    DAYS[0].waves = [
+      { label: 'WAVE 1', formations: [{ cs: 'VIPER', msn: 'BFM', to: '10:00', ld: '11:00', aircraft: [] }] },
+      { label: 'SC', kind: 'sc', standalone: true, formations: [{ cs: 'SC', msn: 'AM', to: '07:00', ld: '13:00', aircraft: [] }] },
+    ]
+    const t = tplFromDay(0, 'WAVE1-then-SC')
+    DAYTPL_CFG.push(t)
+    /* scramble the live day the other way before applying, so the order can only
+       come from the template */
+    DAYS[0].waves = [{ label: 'SC', kind: 'sc', standalone: true, formations: [] }, { label: 'WAVE 1', formations: [] }]
+    expect(applyDayTpl(0, t.id)).toBe(true)
+    expect(DAYS[0].waves.map((w: any) => w.label)).toEqual(['WAVE 1', 'SC'])
+  })
+
   it('drops the day’s pending and structural-add marks, leaves other days alone', () => {
     SCHED.pending['dn:0.0'] = 1
     SCHED.pending['dn:1.0'] = 1
@@ -279,5 +297,38 @@ describe('persistence, like dutytpl', () => {
     dayTplReset()
     expect(DAYTPL_CFG).toEqual([])
     expect(mem['sqn142_daytpl'] ? JSON.parse(mem['sqn142_daytpl']) : null).toBe(null)
+  })
+})
+
+describe('a day template remembers the section order (owner, 29 Aug 26)', () => {
+  it('captures a re-arranged day\'s order and restores it on apply', () => {
+    DAYS[0].secOrder = ['ground', 'sims', 'prog', 'waves', 'duty']
+    const t = addDayTpl(0, 'reordered')!
+    expect(t.d.secOrder, 'the order travels into the template').toEqual(['ground', 'sims', 'prog', 'waves', 'duty'])
+    delete DAYS[0].secOrder                                  // back to default before applying
+    expect(applyDayTpl(0, t.id)).toBe(true)
+    expect(DAYS[0].secOrder, 'and comes back on the applied day').toEqual(['ground', 'sims', 'prog', 'waves', 'duty'])
+  })
+
+  it('a default-order day mints a CLEAN template — no secOrder field', () => {
+    delete DAYS[0].secOrder
+    const t = addDayTpl(0, 'plain')!
+    expect(t.d.secOrder).toBeUndefined()
+    /* and applying it leaves the day with no custom order (renders default) */
+    DAYS[0].secOrder = ['ground', 'prog', 'waves', 'duty', 'sims']
+    expect(applyDayTpl(0, t.id)).toBe(true)
+    expect(DAYS[0].secOrder).toBeUndefined()
+  })
+
+  it('a hand-edited storage file has its secOrder cleaned (unknowns and repeats dropped)', () => {
+    mem['sqn142_daytpl'] = JSON.stringify([{
+      id: 'dt1', title: 'junk', d: {
+        notes: [], allhands: [], waves: [], sims: {}, dutywaves: [], ground: [],
+        simnotes: '', prognotes: '', dutynotes: '', grndnotes: '',
+        secOrder: ['nope', 'waves', 'waves', 'prog'],
+      },
+    }])
+    dayTplLoad()
+    expect(DAYTPL_CFG[0]!.d.secOrder, 'junk and the duplicate are stripped').toEqual(['waves', 'prog'])
   })
 })

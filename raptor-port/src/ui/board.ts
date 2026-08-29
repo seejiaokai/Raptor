@@ -19,9 +19,9 @@ import { applyMove, sortWave, sortDutyBlock, sortSims, sortGround, sortProg, sor
 import { HIST } from '../state/history'
 import { signoffHTML, cxText, storesView, intimesInner, areaText, atimeText, dayStatHTML, verSelBoardHTML, srcInput, saRoleHTML, availHTML } from './html'
 import { setInpField } from './inputedit'
-import { STORE_CFG, DUTYTPL_CFG, blockFromTpl, DAYTPL_CFG, applyDayTpl, addDayTpl, dayTplSave, dayTplSummary } from '../engine'
+import { STORE_CFG, DUTYTPL_CFG, blockFromTpl, DAYTPL_CFG, applyDayTpl, addDayTpl, dayTplSave, dayTplSummary, secOrder } from '../engine'
 import { dayDrafts, curDraftId, draftDup, draftSelect } from '../engine/drafts'
-import { setTplEdit, setDayTplEdit, setDraftsEdit, setWaveEdit } from './pops'
+import { setTplEdit, setDayTplEdit, setDraftsEdit, setWaveEdit, setArrangeSec } from './pops'
 import { shownBuiltins, shownTemplates, waveFromTpl, kindLabel } from '../engine/wavetpl'
 import { HOOKS } from '../engine/hooks'
 import { canEditSched } from '../state/auth'
@@ -81,8 +81,10 @@ export function boardHTML(di: number, pv?: boolean) {
      content. Handled by boardMbtn's data-draftsadd branch (the week's copy
      of this button is data-draftsopen through routeClick — split attributes,
      same double-handling reason as data-daytpladd/data-daytplopen). */
-  const dayTplHead = mvRO ? '' : `<div class="sb-panel dtpl"><div class="sb-ph">Templates &amp; drafts <span class="sub">save or apply this day's structure · plan alternatives</span><span class="gctl"><button class="mbtn add" data-daytpladd="${di}" title="Save this day, or apply a saved one">Templates</button><button class="mbtn add" data-draftsadd="${di}" title="Duplicate this day into drafts, switch between them, or manage them — the selected draft is what publishes">Drafts</button></span></div></div>`
-  let b = dayTplHead + sbNotesPanel(d, di, pv, mvRO) + sbProgPanel(d, di, pv, mvRO)
+  const dayTplHead = mvRO ? '' : `<div class="sb-panel dtpl"><div class="sb-ph">Templates &amp; drafts <span class="sub">save or apply this day's structure · plan alternatives</span><span class="gctl"><button class="mbtn add" data-arrangesec="${di}" title="Arrange the order the sections show in">⇅<span class="mbl"> Arrange</span></button><button class="mbtn add" data-daytpladd="${di}" title="Save this day, or apply a saved one">Templates</button><button class="mbtn add" data-draftsadd="${di}" title="Duplicate this day into drafts, switch between them, or manage them — the selected draft is what publishes">Drafts</button></span></div></div>`
+  /* the Programme unit — day notes + Common Programme, moved together when the
+     owner re-arranges the sections (engine/order.ts secOrder). */
+  const progPanel = sbNotesPanel(d, di, pv, mvRO) + sbProgPanel(d, di, pv, mvRO)
   let fly = ''
   ;(d.waves || []).forEach((w: any, gi: number) => {
     /* SC / AVALON / BB carry no store config on the week (html.ts's `sa`
@@ -243,12 +245,19 @@ export function boardHTML(di: number, pv?: boolean) {
      Withheld on mvRO (a frozen preview or a read-only board), which is what the
      top-bar button's `disabled={DPREV.has(SBDAY)}` guard used to do. */
   const wvHead = mvRO ? '' : `<div class="sb-panel wv"><div class="sb-ph">Flying waves <span class="sub">go times, formations, crews</span><span class="gctl"><button class="mbtn add" data-wvadd="${di}" title="Add a flying wave">+ Wave</button></span></div></div>`
-  b += wvHead + (fly || `<div class="sb-empty" style="padding:14px 11px">No flying waves yet${mvRO ? '' : ' — “+ Wave” above adds the first'}.</div>`)
-  /* the four sections the board was missing (owner request, Aug 26): same
-     order as the week day, with the sim planning notes staying last */
-  /* the sim note used to be a panel of its own at the very bottom; it now sits
-     inside the Sims panel, so the board reads the same way the week does. */
-  b += sbDutyPanel(d, di, pv, mvRO) + sbSimRowsPanel(d, di, pv, mvRO) + sbGroundPanel(d, di, pv, mvRO)
+  const wavesPanel = wvHead + (fly || `<div class="sb-empty" style="padding:14px 11px">No flying waves yet${mvRO ? '' : ' — “+ Wave” above adds the first'}.</div>`)
+  /* THE SCHEDULE SECTIONS, emitted in the day's own order (owner, 29 Aug 26 —
+     engine/order.ts secOrder). The Templates head stays pinned above and the
+     inputs/available/SANS/Unavail group pinned below — neither is a schedule
+     section. With the default order this join is byte-identical to the old fixed
+     sequence (prog · waves · duty · sims · ground); only a re-arranged day differs.
+     The sim planning notes still sit inside the Sims panel, so the board reads the
+     way the week does. */
+  const sect: Record<string, string> = {
+    prog: progPanel, waves: wavesPanel,
+    duty: sbDutyPanel(d, di, pv, mvRO), sims: sbSimRowsPanel(d, di, pv, mvRO), ground: sbGroundPanel(d, di, pv, mvRO),
+  }
+  let b = dayTplHead + secOrder(d).map((k: string) => sect[k] || '').join('')
   /* one pass over INPUTS for both blocks — the board rebuilds on every edit */
   const dayInp = INPUTS.filter((i: any) => inputCoversDate(i, d.dt))
   /* the available-crew strip the week already carries, now on the board too
@@ -620,6 +629,10 @@ export function boardMbtn(e: MouseEvent) {
   if (!canEditSched() || !HOOKS.editMode()) return
   const t = (e.target as HTMLElement).closest('.mbtn') as HTMLElement | null; if (!t) return
   const ds = t.dataset
+  /* ⇅ Arrange — open the per-day section-order sheet (ArrangeSections.tsx). A
+     pure display re-order, so it just opens the sheet; the sheet's own controls
+     are the write path (store.moveSection). */
+  if (ds.arrangesec != null) { setArrangeSec(+ds.arrangesec); notify(); return }
   /* ▲/▼ — the phone's reorder gesture. The target is read off the NEIGHBOURING
      ROW IN THE DOM rather than computed as index±1, because one list (Ground)
      renders time-sorted: "one place down" is a question about what the

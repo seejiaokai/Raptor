@@ -17,7 +17,7 @@ import { scrollToWarnFocus, queueHold, warnWeekId } from './highlights'
 import { STORE_CFG, addStore, delStore, renameStore, moveStore, storesSave, storesText } from '../engine'
 import { logAction } from '../engine/editlog'
 import { esc } from '../state/view'
-import { setDayPop, setAirKey, setDrawer, setInpEdit, setHistList, closeHistList } from './pops'
+import { setDayPop, setAirKey, setDrawer, setInpEdit, setHistList, closeHistList, setArrangeSec } from './pops'
 import { reassignInput, rosterOptions, firstPersonalType, firstUnavailType, firstSansType, unfmt } from './inputedit'
 import { openScheduler, toggleSbwarn, boardTab, dayTplMenu, draftsMenu } from './board'
 import { hideHistBub, pinHistBubAt, findHistCell } from './histbubble'
@@ -882,6 +882,19 @@ export function routeClick(e: MouseEvent) {
     e.stopPropagation()
     if (!canEditSched() || view.CURPAGE !== 'editsched') return
     draftsMenu(drOpen, +drOpen.dataset.draftsopen!)
+    return
+  }
+
+  /* the edit week's "⇅ Arrange" button (owner, 29 Aug 26) — opens the same
+     per-day section-order sheet (ArrangeSections.tsx) the board's own ⇅ Arrange
+     opens, so re-ordering behaves identically from either surface. Its own
+     controls (store.moveSection) are the write path; this only opens the sheet. */
+  const arrOpen = t.closest('[data-arrangesec]') as HTMLElement | null
+  if (arrOpen) {
+    e.stopPropagation()
+    if (!canEditSched() || view.CURPAGE !== 'editsched') return
+    setArrangeSec(+arrOpen.dataset.arrangesec!)
+    notify()
     return
   }
 
