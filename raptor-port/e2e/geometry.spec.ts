@@ -4281,12 +4281,14 @@ test.describe('the Inputs month calendar', () => {
       expect(Math.abs(box.w - box.iw)).toBeLessThan(1)
       expect(Math.abs(box.h - box.ih)).toBeLessThan(1)
 
-      /* seven equal columns — the first grid row, blanks included, and no
-         horizontal spill past the overlay's own right edge */
+      /* seven equal columns — the first WEEK's cells, blanks included, and no
+         horizontal spill past the overlay's own right edge. Each week is its own
+         flex row now (the scroll-when-packed fix, 29 Aug 26), so the columns are
+         a week's children, not the grid's direct children (which are the weeks). */
       const cols = await page.evaluate(() => {
-        const cells = [...document.querySelectorAll('.ic-grid>*')].slice(0, 7)
+        const cells = [...document.querySelectorAll('.ic-week:first-child > *')]
         const ws = cells.map(el => +el.getBoundingClientRect().width.toFixed(1))
-        const right = Math.max(...[...document.querySelectorAll('.ic-grid>*')].map(el => el.getBoundingClientRect().right))
+        const right = Math.max(...[...document.querySelectorAll('.ic-week > *')].map(el => el.getBoundingClientRect().right))
         return { n: cells.length, ws, right, iw: innerWidth }
       })
       expect(cols.n).toBe(7)
