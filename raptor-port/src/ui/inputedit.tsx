@@ -12,10 +12,11 @@
    `till` remarks tail, the pins and the flashes. Those belong to a page that
    is a list; the dialog is a single row, opened from a day. */
 import { useEffect, useRef, useState } from 'react'
-import { INPUTS, INPUT_TYPES, TYPE_GROUPS, DATES, inpId, inpMeta, inpType, typeGroup, inputCoversDate, isPersonal, isUnavail, isSansAvail, isUpchit, isDownchit, needsDoc, defaultAllday, dateOrd, dateIx, baseYear, withRemarksTail } from '../engine/inputs'
+import { INPUTS, INPUT_TYPES, TYPE_GROUPS, DATES, inpId, inpMeta, inpType, typeGroup, inputCoversDate, isPersonal, isUnavail, isSansAvail, isUpchit, isDownchit, needsDoc, defaultAllday, dateOrd, dateIx, baseYear, withRemarksTail, oilAsks } from '../engine/inputs'
 import { upchitTrimPlan, upchitEffects, newMedTrimPlan, medClashes, subtractSpans, medStartOrd, medEndOrd, ordLabel } from '../engine/medical'
 import { UpchitConfirm } from './UpchitConfirm'
 import { MedClashConfirm } from './MedClashConfirm'
+import { OilConfirm } from './OilConfirm'
 import { docAdd, docGet } from '../state/docs'
 import { UploadIcon } from './icons'
 import { acceptInput, autoAcceptInput, unacceptInput, acceptedDay, inpKey } from '../engine/slots'
@@ -28,11 +29,12 @@ import { writeInputsBatch, notify } from '../state/store'
 /* The Leave War seam (sync.ts is the one crossing point, CLAUDE.md §The Leave
    War tab): retracting a synced row's war cells when it is edited or deleted
    here — not a new seam, a Raptor-side caller of the existing one. */
-import { retractLwRow, rowSig } from '../leavewar/sync'
+import { retractLwRow, rowSig, oilAskPlan } from '../leavewar/sync'
+import { inputOilAmt } from '../engine/oil'
 import { PLANPUCKS, DAYRMK } from '../state/plan'
 import { stashKeys, stashDrop } from '../engine/weekstash'
 import { canEditSched, ME, SESSION } from '../state/auth'
-import { INPEDIT, setInpEdit } from './pops'
+import { INPEDIT, setInpEdit, OILASK, setOilAsk } from './pops'
 import { useVersion } from './useStore'
 import { RangeCal } from './RangeCal'
 
@@ -560,6 +562,66 @@ export function normalizeInputDraft(draft: any, except: any):
   return { s: s as number, e: e as number, date, endDate, half }
 }
 
+/* THE OIL ASK GATE (owner, 28 Aug 26) — one decision body for every save
+   path that can write a duty-&-commitments input, so the predicate cannot
+   drift between the three editors (the withOilAsk doctrine). Given the
+   draft about to be saved and the row it replaces (null for an add):
+   - 'none'    — no sheet needed, save straight through (not an ask-set
+                 type, no applicable days, or the standing answers already
+                 cover the plan — an untouched remarks edit re-asks nothing);
+   - 'refused' — normalizeInputDraft toasted; the caller aborts the save
+                 exactly as the upchit/medical gates do on a bad draft;
+   - 'ask'     — open OilConfirm with this payload; its Save writes the
+                 decisions onto the row INSIDE the caller's own batch.
+   The prior answers count as covering a day only when they exist and,
+   where positive, still promise the amount the current times derive — a
+   moved or re-timed input asks again rather than riding a stale yes.
+   `force` (the revise button, owner 29 Aug 26 — "change my OIL answer")
+   skips that covered-already bailout so the sheet re-opens over EVERY
+   applicable day with the standing answers pre-loaded; everything else —
+   the normalize, the toast on a refused draft, the plan — is the same
+   body, so a revise can never price a day differently than a save. */
+export function oilGate(draft: any, prevRow: any, force = false):
+  { kind: 'none' } | { kind: 'refused' } |
+  { kind: 'ask', who: string, typeLabel: string, plan: { iso: string, amt: 0.5 | 1 }[], prev: Record<string, number> } {
+  if (!draft || !oilAsks(draft.type)) return { kind: 'none' }
+  const n = normalizeInputDraft(draft, prevRow)
+  if (!n) return { kind: 'refused' }
+  const plan = oilAskPlan({ person: draft.person, date: n.date, endDate: n.endDate, yr: baseYear(), allday: !!draft.allday, s: n.s, e: n.e })
+  if (!plan.length) return { kind: 'none' }
+  const prev = (prevRow && prevRow.oil) || {}
+  const stale = plan.some(p => prev[p.iso] == null || (prev[p.iso] !== 0 && prev[p.iso] !== p.amt))
+  if (!force && prevRow && !stale) return { kind: 'none' }
+  return {
+    kind: 'ask',
+    who: PEOPLE[draft.person] ? PEOPLE[draft.person].cs : String(draft.person || ''),
+    typeLabel: String(draft.type || ''), plan, prev,
+  }
+}
+
+/* WHETHER THE REVISE BUTTON SHOWS, off the SAVED row alone (owner, 29 Aug 26
+   — the button follows the question: it appears exactly where an OIL
+   decision exists to change). Read raw the way oilPendingFor reads rows —
+   NEVER through normalizeInputDraft, which toasts on a refused draft and
+   this runs per render. Unanswered days alone stay the bell's business:
+   this affordance only ever REVISES. */
+export function oilAnswered(row: any): boolean {
+  if (!row || !oilAsks(row.type) || row.acc === 'r') return false
+  const prev = (row.oil || {}) as Record<string, number>
+  return oilAskPlan(row).some(p => prev[p.iso] != null)
+}
+/* the one-line standing beside the button: how many applicable days the
+   record currently credits */
+export function oilSummary(row: any): string {
+  const plan = oilAskPlan(row)
+  const prev = (row.oil || {}) as Record<string, number>
+  const yes = plan.filter(p => (prev[p.iso] ?? 0) > 0).length
+  const n = plan.length
+  if (!yes) return n === 1 ? 'no OIL on its non-working day' : `no OIL on its ${n} non-working days`
+  if (n === 1) return 'credited on its non-working day'
+  return `credited on ${yes} of ${n} non-working days`
+}
+
 /* The default type a board panel's + Add opens on — a personal (activity) type
    for the Personal Inputs panel, a leave/medical type for Unavailable, so the
    new row lands in the panel it was added from. The scheduler can change it in
@@ -738,7 +800,7 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
        Accept button re-lands it (owner, 26 Aug 26). */
     const wasAcc = r.acc === 'r' ? undefined : r.acc
     /* captured for the dormant-retype clear below — the writes overwrite r.type */
-    const wasDormant = r.acc === 'r', wasType = r.type
+    const wasDormant = r.acc === 'r', wasType = r.type, wasPerson = r.person
     /* the row may sit on any day the input spans, not its start date */
     const wasDi = wasAcc === 'g' ? acceptedDay(r) : -1
     /* what a SCHEDULER added to the promoted row by hand — extra crew in
@@ -786,6 +848,31 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
        once above the write (the Leave-War check needs it too). */
     if (half) r.half = half; else delete r.half
     if (endDate) r.endDate = endDate; else delete r.endDate
+    /* The OIL answers (owner, 28 Aug 26) belong to the commitment as it was
+       acknowledged: retyped out of the ask set, or moved to ANOTHER person,
+       they are void — the new shape (or the new person) must be asked again
+       (the delete half/sans precedent). Date-only moves KEEP them: an entry
+       for a day the row no longer covers is inert to the credit pass, which
+       re-checks coverage live. reassignInput and the calendar drag both land
+       here, so they inherit the person rule. */
+    if (r.oil && (!oilAsks(r.type) || r.person !== wasPerson)) delete r.oil
+    /* AND a positive answer whose HOURS no longer price what was approved is
+       void per day (bug pass, 28 Aug 26): the three gated editors re-ask via
+       oilGate, but the board's and week's IN-PLACE cells commit straight
+       through here — a scheduler stretching a confirmed 2h Saturday
+       appointment to all-day would otherwise silently reprice an
+       acknowledged HO into an FO cell, the exact silence the feature exists
+       to prevent. Dropping the entry makes the day read UNANSWERED again, so
+       the bell lights and the owner re-confirms; an explicit 0 (a decline)
+       stays — hours cannot change a No. Gate saves are unaffected: they
+       write their fresh decisions after this commit, in the same batch. */
+    if (r.oil) {
+      const now = inputOilAmt(r.allday, r.s, r.e)
+      for (const k of Object.keys(r.oil)) {
+        if (r.oil[k] > 0 && r.oil[k] !== now) delete r.oil[k]
+      }
+      if (!Object.keys(r.oil).length) delete r.oil
+    }
     /* A DORMANT record whose TYPE changes COUNTS AGAIN (26 Aug 26 bug pass).
        Dormancy marks "the scheduler removed THIS commitment"; retype it and it
        is a different commitment, so it fails CLOSED — it flags — rather than
@@ -1152,34 +1239,50 @@ export function InputEditor() {
   /* the medical clash sheet (owner, 27 Aug 26) — the clashes to put to the
      filer plus the span ordinals its Save resolves against */
   const [medConf, setMedConf] = useState<any>(null)
+  /* the OIL ask (owner, 28 Aug 26) — the oilGate payload; null = no sheet */
+  const [oilConf, setOilConf] = useState<any>(null)
   const box = useRef<HTMLDivElement>(null)
   /* re-seed whenever a different row is opened, never on a repaint — a
-     re-seed mid-edit would throw away what has been typed */
-  useEffect(() => { setDraft(r ? draftOf(r) : null); setUpConf(null); setMedConf(null) }, [r])
+     re-seed mid-edit would throw away what has been typed. The bell's
+     hand-off (pops.OILASK) is consumed HERE: opened on the flagged row, the
+     OIL sheet comes straight up over the dialog so the tap lands on the
+     question itself — one-shot, cleared as it is read. */
+  useEffect(() => {
+    setDraft(r ? draftOf(r) : null); setUpConf(null); setMedConf(null); setOilConf(null)
+    if (r && !r._new && OILASK && r.iid === OILASK) {
+      setOilAsk(null)
+      const g = oilGate(draftOf(r), r)
+      if (g.kind === 'ask') setOilConf(g)
+    } else if (OILASK && !r) setOilAsk(null)
+  }, [r])
   useEffect(() => {
     if (!open) return
     /* Escape peels one layer: whichever sheet is up first, then the dialog —
-       both are deps so the handler never closes the dialog under a sheet */
+       all are deps so the handler never closes the dialog under a sheet */
     const esc = (e: KeyboardEvent) => {
       if (e.key !== 'Escape') return
       e.stopPropagation()
       if (upConf) setUpConf(null)
       else if (medConf) setMedConf(null)
+      else if (oilConf) setOilConf(null)
       else close()
     }
     document.addEventListener('keydown', esc, true)
     return () => document.removeEventListener('keydown', esc, true)
-  }, [open, upConf, medConf])
+  }, [open, upConf, medConf, oilConf])
 
   const close = () => { setInpEdit(null); notify() }
   /* a refusal KEEPS the dialog open, so nothing typed is lost — bar the one
      refusal there is no way back from: the row went (an undo under the modal),
      and there is nothing left to hold the typing for */
-  const doSave = (removals: any[]) => {
+  const doSave = (removals: any[], oilDec?: Record<string, number>) => {
     if (isNew) {
       let ok = false
       writeInputsBatch(() => {
         ok = commitNewInput(draft, ctx === 'g')
+        /* the OIL answers land on the just-unshifted row, inside the same
+           batch, so the add and its acknowledgment are ONE undo step */
+        if (ok && oilDec) INPUTS[0].oil = oilDec
         if (ok && removals.length)
           applyMedPlan(removals.map((lr: any) => ({ row: lr, action: 'delete', why: 'removed with the upchit' })))
       })
@@ -1189,6 +1292,7 @@ export function InputEditor() {
     let ok = false
     writeInputsBatch(() => {
       ok = commitInputEdit(r, draft)
+      if (ok && oilDec) r.oil = oilDec
       if (ok && removals.length)
         applyMedPlan(removals.map((lr: any) => ({ row: lr, action: 'delete', why: 'removed with the upchit' })))
     })
@@ -1256,6 +1360,13 @@ export function InputEditor() {
         return
       }
     }
+    /* a duty-&-commitments input over a weekend/PH is never credited — or
+       skipped — silently (owner, 28 Aug 26): the OIL ask runs before the
+       write, and its decisions ride doSave's batch. Disjoint from the two
+       medical branches by type, so at most one sheet ever gates a save. */
+    const g = oilGate(draft, isNew ? null : r)
+    if (g.kind === 'refused') return
+    if (g.kind === 'ask') { setOilConf(g); return }
     doSave([])
   }
   const del = () => { if (removeInput(r)) { HOOKS.toast('Input deleted', 'ok'); close() } }
@@ -1400,6 +1511,20 @@ export function InputEditor() {
               onChange={e => setDraft({ ...draft, remarks: e.target.value })}
               onKeyDown={e => { if (e.key === 'Enter') save() }} />
           </label>
+          {/* REVISE A RECORDED OIL ANSWER (owner, 29 Aug 26 — a mistaken "No
+              OIL" used to be revisable only by nudging the input's times).
+              Drawn off the SAVED row (oilAnswered — no per-render normalize),
+              priced off the CURRENT draft (oilGate force — a half-edited time
+              asks what the save would credit); the sheet's Save runs the same
+              doSave as the gate, one batch, one undo step. */}
+          {!isNew && r && oilAnswered(r) && <div className="inped-f">
+            <span className="inped-k">OIL</span>
+            <div className="inped-oil">
+              <span className="inped-oilsum">{oilSummary(r)}</span>
+              <button type="button" className="abtn ghost" data-testid="oil-revise"
+                onClick={() => { const g = oilGate(draft, r, true); if (g.kind === 'ask') setOilConf(g) }}>Change…</button>
+            </div>
+          </div>}
           <div className="inped-hint">{isNew
             ? ctx === 'up'
               ? 'Pick the day he is fit for full duty and attach the upchit document — the medical entry ends the day before, and a summary asks before anything is changed.'
@@ -1433,6 +1558,12 @@ export function InputEditor() {
         clashes={medConf.clashes} aOrd={medConf.a} bOrd={medConf.b}
         onCancel={() => setMedConf(null)}
         onSave={(choices, keepTail) => { setMedConf(null); doMedSave(choices, keepTail) }} />}
+      {/* the OIL ask, same layer and same contract — Save commits the input
+          with the day decisions in one batch, Cancel returns to the form */}
+      {oilConf && <OilConfirm who={oilConf.who} typeLabel={oilConf.typeLabel}
+        plan={oilConf.plan} prev={oilConf.prev}
+        onCancel={() => setOilConf(null)}
+        onSave={dec => { setOilConf(null); doSave([], dec) }} />}
     </div>
   )
 }

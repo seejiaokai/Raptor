@@ -30,7 +30,7 @@ import { routeClick } from './interactions'
 import { routeFocusOut, routeKeyDown } from './textedit'
 import { DayPop, InsightsModal, AirPop } from './Modals'
 import { WeekCal } from './WeekCal'
-import { setInsights, setDrawer, setWeekCal, setHistList } from './pops'
+import { setInsights, setDrawer, setWeekCal, setHistList, setInpEdit, setOilAsk } from './pops'
 import { Drawer } from './Drawer'
 import { exportCSV, schedRows } from './export'
 import { printSchedPDF } from './printpdf'
@@ -40,6 +40,8 @@ import { QualsPage } from './QualsPage'
 import { EditWeek, EditRoster } from './EditWeek'
 import { ALPanel } from './ALPanel'
 import { LeaveWarPage } from '../leavewar/LeaveWarPage'
+import { oilPendingFor } from '../leavewar/sync'
+import { inpById } from '../engine/inputs'
 import { AdminPage } from './AdminPage'
 import { HelpPage } from './HelpPage'
 import { bugAlert, unseenReports } from '../state/reports'
@@ -198,6 +200,10 @@ export function Shell() {
   const hlSig = [...HLSET].sort().join(',')
   const rulesOff = rulesOffCount()
 
+  /* computed ONCE per render — the bell's class and the memo deps both read
+     it (bug pass, 28 Aug 26: two full INPUTS scans per render was waste);
+     the tap handler re-derives its own fresh copy at click time. */
+  const oilPend = oilPendingFor(ME).length
   const topbar = useMemo(() => (
       /* The top bar wears a blue-tinted gradient while on Edit Schedule (owner,
          22 Aug 26) so it is unmistakable from the near-identical View-only mode
@@ -274,13 +280,30 @@ export function Shell() {
               Otherwise the tap acknowledges the current view's alert, as
               before. NOT the removed week-wide count pills: this is a
               per-person indicator, not a sum, so the 20 Aug decision does not
-              touch it. */}
-          <button className={'bellbtn' + (bellLit() || bugAlert() ? ' on' : '')} id="notifyBell" aria-label="Notifications" title="Notifications"
+              touch it.
+              THE THIRD TRIGGER (owner, 28 Aug 26): a duty-&-commitments input
+              of the view-as person with an UNANSWERED OIL question — filed
+              over a weekend, or a PH marked in Leave War after the fact
+              (oilPendingFor, leavewar/sync.ts — derived like bugAlert, so
+              answering the question puts the bell out by itself). The tap
+              lands on the Inputs page with the editor open on the exact input
+              and the OIL sheet already up (OILASK, pops.ts). */}
+          <button className={'bellbtn' + (bellLit() || bugAlert() || oilPend ? ' on' : '')} id="notifyBell" aria-label="Notifications" title="Notifications"
             onClick={() => {
               if (bugAlert()) {
                 const n = unseenReports()
                 HOOKS.toast(`${n} new bug report${n === 1 ? '' : 's'}`)
                 nav('help'); return
+              }
+              const oilHit = oilPendingFor(ME)[0]
+              if (oilHit) {
+                const row = inpById(oilHit.iid)
+                if (row) {
+                  HOOKS.toast('Weekend/PH work — confirm your OIL')
+                  setOilAsk(oilHit.iid)
+                  setInpEdit(row)
+                  nav('inputs'); return
+                }
               }
               const was = bellLit(); clearBell(); HOOKS.toast(was ? 'Notifications cleared' : 'No new notifications for this view'); notify()
             }}>
@@ -313,7 +336,7 @@ export function Shell() {
             : <span className={'abtn rolechip' + (admin ? ' admin' : '')} id="roleBadge">{admin ? 'Admin' : 'Member'}</span>}
         </div>
       </div>
-  ), [page, admin, ME, fast, HIST.ix, HIST.stack.length, bellLit(), bugAlert()])
+  ), [page, admin, ME, fast, HIST.ix, HIST.stack.length, bellLit(), bugAlert(), oilPend])
 
   const viewPage = useMemo(() => (
       <section className={'page' + (page === 'viewsched' ? ' on' : '')} id="page-viewsched">

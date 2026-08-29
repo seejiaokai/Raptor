@@ -510,9 +510,14 @@ viewer's row and personalises the counter picker — a rider on this seam, not
 a fifth): Leave War's roster is a boot-time PROJECTION of
 Raptor's PEOPLE, approved leave crosses both ways as DERIVED
 RECONCILIATION (outbound skips Raptor-owned cells, inbound skips lw-tagged
-inputs — that pairing is the loop-breaker), and a PUBLISHED weekend/holiday
-duty credits OIL as a third derived pass (wire 4, `runOilPass` +
-`engine/oil.ts` — the ownership partition is by cell vocabulary, FS/HS vs
+inputs — that pairing is the loop-breaker), and weekend/holiday WORK — the
+PUBLISHED schedule plus acknowledged Duty-&-commitments input claims
+(`row.oil`, the OilConfirm ask-flow, 28 Aug 26) — credits OIL as a third
+derived pass (wire 4, `runOilPass` +
+`engine/oil.ts`, one ≤6h/>6h test on the day's start-to-finish ENVELOPE
+since 29 Aug 26 — gaps between events count, and the schedule half reads
+every visited week via the session stash, not just the loaded one — the
+ownership partition is by cell vocabulary, FO/HO vs
 leave codes; details in `docs/superpowers/specs/leavewar-sync.md`). Editing
 or deleting an lw-tagged input on the Inputs page carries back INTO the war
 (owner, 17 Aug 26 — full two-way): `commitInputEdit`/`removeInput` call
@@ -570,6 +575,12 @@ subscribers.
   merged and verified on the deployed page as always (§How to work here); just
   do it without the watch subscription. If the owner ever asks you to babysit a
   specific PR, that explicit ask overrides this for that PR only.
+- **The `npm run perf` board DOM ceiling of 1150 is settled** (owner,
+  28 Aug 26 — "the scheduler board I know it's heavy, u raised the limit,
+  it's ok"). Raised 960 → 1150 in PR #333 (the board sits at ~1051 nodes;
+  timings and per-node cost held at 0.57× the reference throughout). The
+  measurement lives at the `DOM_CEILING` literal in `perf-port.cjs`. Do not
+  re-litigate the raise or trim the board to fit the old ceiling.
 - `reference/` is **read-only** — the spec for existing behaviour. New
   features go beyond it but must not break it.
 - The engine was historically generated from the original; that generator

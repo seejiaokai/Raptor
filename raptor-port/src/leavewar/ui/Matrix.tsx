@@ -1865,7 +1865,7 @@ export function Matrix() {
                     // B / C on the grid while everything else prints as
                     // stored (displayCell is identity for it).
                     const text = here ? displayCell(code) : notYetArrived ? '' : 'PO'
-                    // Duty first for the reader — FS/HS are work, not a bid.
+                    // Duty first for the reader — FO/HO are work, not a bid.
                     // (They carry `bid: false`, so they could not reach a
                     // bid branch anyway; the order is legibility, not a
                     // guard.) Then the bid state, but only where the code is

@@ -432,7 +432,7 @@ export function StageBar() {
               <div className="leg-row"><span className="leg-sw plain">*LL</span><span className="leg-t">AM (before the code)</span></div>
               <div className="leg-row"><span className="leg-sw plain">LL*</span><span className="leg-t">PM (after the code)</span></div>
               {/* What the LETTERS mean (owner, 28 Aug 26). The grid shows codes
-                  the Inputs page never explains — FS/HS above all, which are not
+                  the Inputs page never explains — FO/HO above all, which are not
                   even typed there. Each swatch takes the grid's OWN colour by
                   the same rule the cell does (duty → sc, non-bid marker → info,
                   leave → plain), so it doubles as a key to those two colours the
@@ -475,7 +475,7 @@ export function StageBar() {
             // tiebreak, not a reorder hazard.
             <span className="row" key={`${c.kind ?? 'leave'}-${c.person}-${c.date}-${c.inputCode}-${c.bidCode}-${i}`}>
               {c.kind === 'duty'
-                ? <>{(people.find(p => p.id === c.person)?.callsign ?? c.person)}: published duty
+                ? <>{(people.find(p => p.id === c.person)?.callsign ?? c.person)}: weekend/PH work
                     earns {c.inputCode} but {shortDate(c.date)} holds {c.bidCode} — resolve on the sheet</>
                 : <>{(people.find(p => p.id === c.person)?.callsign ?? c.person)}: input {c.inputCode} vs
                     bid {c.bidCode} on {shortDate(c.date)} — resolve on the sheet</>}

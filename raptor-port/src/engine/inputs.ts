@@ -352,6 +352,13 @@ export function defaultAllday(t:any){return !(typeGroup(t)==='other'&&!isSansAva
 export function restsInput(t:any){const m=inpMeta(t);
   if(!m||m.grp==='leave'||m.grp==='med'||m.grp==='upchit')return false;
   const c=inpType(t); return c!=='Personal'&&c!=='SANS Availability';}
+/* DOES THIS INPUT TYPE ASK FOR OIL? (owner, 28 Aug 26 — a duty-&-commitments
+   input landing on a weekend/PH is never credited silently: the app asks its
+   owner whether it deserves the HO/FO credit). The owner picked EXACTLY the
+   crew-rest set — Training, CSE, Meeting, Fly with, Appointment, Duty, OD,
+   Other — with 'Personal' and SANS Availability excluded again. Its own name
+   so the two rules can diverge later without a hunt; today one delegates. */
+export function oilAsks(t:any){return restsInput(t);}
 export function isOther(t:any){return /^Other$/i.test(String(t==null?'':t).trim());}
 /* "Other" is the catch-all: the TYPE says nothing, so what the person actually
    typed is the name of the thing (owner, Aug 26). Everywhere an input is

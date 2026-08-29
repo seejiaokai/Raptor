@@ -37,9 +37,9 @@ describe('parseCell', () => {
     }
   })
 
-  it('parses SC duty markers the same way, since they carry no portion either', () => {
-    expect(parseCell('FS')).toEqual({ type: 'FS', portion: 'full' })
-    expect(parseCell('HS')).toEqual({ type: 'HS', portion: 'full' })
+  it('parses OIL-credit markers the same way, since they carry no portion either', () => {
+    expect(parseCell('FO')).toEqual({ type: 'FO', portion: 'full' })
+    expect(parseCell('HO')).toEqual({ type: 'HO', portion: 'full' })
   })
 
   it('is tolerant of surrounding whitespace and of case', () => {
@@ -72,9 +72,9 @@ describe('parseCell', () => {
     expect(parseCell('c*')).toEqual({ type: 'ATTC', portion: 'pm' })
   })
 
-  it('rejects a portion on an SC duty marker', () => {
-    expect(parseCell('*FS')).toBeNull()
-    expect(parseCell('HS*')).toBeNull()
+  it('rejects a portion on an OIL-credit marker — credits never carry portions', () => {
+    expect(parseCell('*FO')).toBeNull()
+    expect(parseCell('HO*')).toBeNull()
   })
 
   it('rejects an unknown type', () => {
@@ -93,10 +93,15 @@ describe('parseCell', () => {
     expect(parseCell('PO')).toBeNull()
   })
 
-  it('has no standalone AM, PM or HO code — a portion belongs to a leave type, not on its own', () => {
+  it('has no standalone AM or PM code — a portion belongs to a leave type, not on its own', () => {
     expect(parseCell('AM')).toBeNull()
     expect(parseCell('PM')).toBeNull()
-    expect(parseCell('HO')).toBeNull()
+    // `HO` used to be pinned null here too, as the retired taken-half legacy
+    // code (migrated to `*OIL` long ago). The owner resurrected the letters on
+    // 28 Aug 26 with the OPPOSITE meaning — the half-day OIL EARNED credit,
+    // beside `FO` — and the two meanings never coexisted in stored data, so
+    // `HO` now parses as the credit marker.
+    expect(parseCell('HO')).toEqual({ type: 'HO', portion: 'full' })
   })
 
   it('parses the four medical markers, and no longer the old M', () => {
@@ -116,7 +121,7 @@ describe('displayCell', () => {
   })
 
   it('leaves every other code exactly as stored', () => {
-    for (const raw of ['LL', '*OIL', 'HL*', 'OML', 'CSE', 'FS', 'PO', 'NOPE']) {
+    for (const raw of ['LL', '*OIL', 'HL*', 'OML', 'CSE', 'FO', 'PO', 'NOPE']) {
       expect(displayCell(raw)).toBe(raw)
     }
   })
@@ -128,7 +133,7 @@ describe('isMedical', () => {
   })
 
   it('says no to leave, duty, courses and junk', () => {
-    for (const raw of ['LL', '*OIL', 'FS', 'CSE', 'OD', 'NOPE', '', undefined]) {
+    for (const raw of ['LL', '*OIL', 'FO', 'CSE', 'OD', 'NOPE', '', undefined]) {
       expect(isMedical(raw as any)).toBe(false)
     }
   })
@@ -154,13 +159,13 @@ describe('formatCell', () => {
   })
 
   it('round-trips a non-leave marker unchanged', () => {
-    const cell = { type: 'FS', portion: 'full' } as const
-    expect(formatCell(cell)).toBe('FS')
+    const cell = { type: 'FO', portion: 'full' } as const
+    expect(formatCell(cell)).toBe('FO')
     expect(parseCell(formatCell(cell))).toEqual(cell)
   })
 
   it('throws rather than emit a portion on a duty or course marker, which parseCell would only reject', () => {
-    expect(() => formatCell({ type: 'FS', portion: 'am' })).toThrow()
+    expect(() => formatCell({ type: 'FO', portion: 'am' })).toThrow()
     expect(() => formatCell({ type: 'CSE', portion: 'am' })).toThrow()
   })
 
@@ -214,32 +219,32 @@ describe('codeOf', () => {
     expect(codeOf('*OFF')!.spends).toBeNull()
   })
 
-  it('earns OIL only for SC duty', () => {
-    expect(codeOf('FS')!.earnsOil).toBe(1)
-    expect(codeOf('HS')!.earnsOil).toBe(0.5)
+  it('earns OIL only for the OIL-credit markers', () => {
+    expect(codeOf('FO')!.earnsOil).toBe(1)
+    expect(codeOf('HO')!.earnsOil).toBe(0.5)
     expect(codeOf('LL')!.earnsOil).toBe(0)
   })
 
-  it('marks SC duty as duty and never as a bid', () => {
-    expect(isDuty('FS')).toBe(true)
-    expect(isDuty('HS')).toBe(true)
+  it('marks the OIL-credit markers as duty and never as a bid', () => {
+    expect(isDuty('FO')).toBe(true)
+    expect(isDuty('HO')).toBe(true)
     expect(isDuty('LL')).toBe(false)
-    expect(codeOf('FS')!.bid).toBe(false)
+    expect(codeOf('FO')!.bid).toBe(false)
     expect(codeOf('LL')!.bid).toBe(true)
   })
 
-  it('removes nobody for SC duty by itself — `duty` is what excludes them, not `removes`', () => {
+  it('removes nobody for an OIL credit by itself — `duty` is what excludes them, not `removes`', () => {
     // availabilityOf returns on the `c.duty` branch before ever reading
-    // `removes` for FS/HS, and the catalogue now says plainly what that
-    // branch already assumes: SC duty removes 0 on its own account. Someone
-    // on SC duty is at work, not absent — it is `duty: true`, checked on its
-    // own line, that keeps them out of the flying count.
-    expect(codeOf('FS')!.removes).toBe(0)
-    expect(codeOf('HS')!.removes).toBe(0)
+    // `removes` for FO/HO, and the catalogue now says plainly what that
+    // branch already assumes: an OIL credit removes 0 on its own account.
+    // Someone earning it is at work, not absent — it is `duty: true`, checked
+    // on its own line, that keeps them out of the flying count.
+    expect(codeOf('FO')!.removes).toBe(0)
+    expect(codeOf('HO')!.removes).toBe(0)
   })
 
   it('does not treat medical, courses or duty as bids', () => {
-    for (const c of ['ATTC', 'HL', 'OML', 'CSE', 'OD', 'FS', 'HS']) {
+    for (const c of ['ATTC', 'HL', 'OML', 'CSE', 'OD', 'FO', 'HO']) {
       expect(codeOf(c)!.bid).toBe(false)
     }
   })
@@ -257,10 +262,16 @@ describe('codeOf', () => {
     expect(codeOf('')).toBeUndefined()
   })
 
-  it('no longer recognises AM, PM or HO as codes in their own right', () => {
+  it('no longer recognises AM or PM as codes in their own right — but HO is back as the credit', () => {
     expect(codeOf('AM')).toBeUndefined()
     expect(codeOf('PM')).toBeUndefined()
-    expect(codeOf('HO')).toBeUndefined()
+    // `HO` was pinned undefined here as the retired taken-half legacy code.
+    // Resurrected 28 Aug 26 by the owner as the half-day OIL EARNED credit —
+    // the old and new meanings never coexisted in stored data (the legacy
+    // spelling was migrated to `*OIL` long before), so it now resolves to the
+    // credit marker: at work, off flying, earning half a day.
+    expect(codeOf('HO')!.earnsOil).toBe(0.5)
+    expect(codeOf('HO')!.duty).toBe(true)
   })
 
   it('recognises the medical markers, whole and half days, and no longer M', () => {
@@ -282,9 +293,10 @@ describe('codeOf', () => {
     expect(codeOf('ATTB')!.duty).toBe(false)
   })
 
-  it('rejects a portion on a course or SC-duty marker end to end', () => {
+  it('rejects a portion on a course or OIL-credit marker end to end', () => {
     expect(codeOf('CSE*')).toBeUndefined()
-    expect(codeOf('*FS')).toBeUndefined()
+    expect(codeOf('*FO')).toBeUndefined()
+    expect(codeOf('HO*')).toBeUndefined()
   })
 
   it('rejects an asterisk on both sides end to end', () => {

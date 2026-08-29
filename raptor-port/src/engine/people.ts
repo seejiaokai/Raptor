@@ -127,6 +127,12 @@ export const PEOPLE:any={
      column, quals table and view-as list. They still resolve through PEOPLE[id]
      so puck(), lSeat(), slotVal() and setSlotVal() work unchanged. ---- */
   allavail:{cs:'ALL AVAIL',seat:'FCP',q:'A',special:true,archived:true},
+  /* ALL (owner, 28 Aug 26) — a second sentinel, byte-for-byte the same
+     semantics as ALL AVAIL: "only those available will attend". It raises no
+     warning anywhere (isSpecial excludes it from every validation and
+     availability path) and, on a weekend/PH Common-Programme or ground row,
+     the OIL pass expands it to everyone available for the event's window. */
+  all:{cs:'ALL',seat:'FCP',q:'A',special:true,archived:true},
 };
 
 /* derive LoX qualification flags from level (editable later) */

@@ -25,8 +25,8 @@ describe('availabilityOf', () => {
   })
 
   it('does not count someone on SC duty toward flying, though they are at work', () => {
-    expect(availabilityOf(someone, '2026-01-05', 'FS')).toBe(0)
-    expect(availabilityOf(someone, '2026-01-05', 'HS')).toBe(0)
+    expect(availabilityOf(someone, '2026-01-05', 'FO')).toBe(0)
+    expect(availabilityOf(someone, '2026-01-05', 'HO')).toBe(0)
   })
 
   it('does not count someone who has been posted out', () => {
@@ -73,7 +73,7 @@ describe('countsFor', () => {
   })
 
   it('reports people on SC duty separately from people on leave', () => {
-    const grid: Grid = { ip1: { '2026-01-05': 'FS' }, op1: { '2026-01-05': 'LL' } }
+    const grid: Grid = { ip1: { '2026-01-05': 'FO' }, op1: { '2026-01-05': 'LL' } }
     const c = countsFor(people, grid, {}, '2026-01-05')
     expect(c.duty).toBe(1)
     expect(c.byCategory.IP).toBe(1)
@@ -95,12 +95,12 @@ describe('countsFor', () => {
   it('does not count posted-out people in duty tally even if they carry an SC duty code', () => {
     const postedOut = p('gone', 'pilot', 'instructor', { to: '2026-01-04' })
     const withPostedOutDuty = [...people, postedOut]
-    const grid: Grid = { gone: { '2026-01-05': 'FS' } }
+    const grid: Grid = { gone: { '2026-01-05': 'FO' } }
     expect(countsFor(withPostedOutDuty, grid, {}, '2026-01-05').duty).toBe(0)
   })
 
-  it('counts HS duty code in the duty tally like FS', () => {
-    const grid: Grid = { ip1: { '2026-01-05': 'HS' } }
+  it('counts the HO credit code in the duty tally like FO', () => {
+    const grid: Grid = { ip1: { '2026-01-05': 'HO' } }
     const c = countsFor(people, grid, {}, '2026-01-05')
     expect(c.duty).toBe(1)
   })
@@ -170,7 +170,7 @@ describe('availability and the bid state', () => {
   it('does not resurrect a posted-out man, or put a duty man back on the programme', () => {
     const gone = p('b', 'pilot', 'ops', { to: '2026-01-04' })
     expect(availabilityOf(gone, '2026-01-05', 'LL', 'refused')).toBe(0)
-    expect(availabilityOf(someone, '2026-01-05', 'FS', 'refused')).toBe(0)
+    expect(availabilityOf(someone, '2026-01-05', 'FO', 'refused')).toBe(0)
   })
 
   it('puts a refused person back into the counts', () => {
@@ -261,7 +261,7 @@ describe('the SC D / SC N team counts', () => {
   // other figure but they are AT WORK — a fully-manned duty day must not go
   // red for being manned.
   it('someone standing SC duty still counts toward the team', () => {
-    const grid: Grid = { p1: { [D]: 'FS' }, sx: { [D]: 'HS' } }
+    const grid: Grid = { p1: { [D]: 'FO' }, sx: { [D]: 'HO' } }
     expect(countsFor(team, grid, {}, D).scd).toBe(1)
   })
 })

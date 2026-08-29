@@ -45,15 +45,18 @@ export const VCONF:any={briefLead:140, dur:85, step:60, dekit:30, minTurn:20, ti
      owner's next ruling: night AAR is the wave's nightness (or an explicit
      NAAR), never a landing-time line — don't reintroduce a clock for it. */
   simLen:90,        // a sim row with no end time is assumed to run this long
-  /* WEEKEND / PUBLIC-HOLIDAY DUTY EARNS OIL (owner, 16-17 Aug 26 — Leave War
-     sync wire 4). A duty stood on a non-working day credits OIL in Leave War:
-     an SC AM or PM shift is half a day, a whole-day shift a full one, and a
-     plain duty row goes by its written hours — this many minutes or more is a
-     FULL day (1.0 OIL), under it a HALF (0.5). "6 hours 1 min or more" is the
-     owner's own line (17 Aug 26, corrected from a plain 6h the same day):
-     exactly six hours is still a HALF day. Like inputLead this grades no
-     flying — engine/oil.ts is its only reader, at publish time. */
-  oilFullMin:6*60+1}; // scheduled duty minutes that make a FULL day of OIL
+  /* WEEKEND / PUBLIC-HOLIDAY WORK EARNS OIL (owner, 16-17 Aug 26; the ONE
+     uniform rule since 28 Aug 26 — Leave War sync wire 4). Work stood on a
+     non-working day credits OIL in Leave War by hours alone, measured
+     START TO FINISH across the person's whole day (envelope, gaps included
+     — owner, 29 Aug 26): this
+     many worked minutes or more is a FULL day (FO, 1.0), under it a HALF
+     (HO, 0.5) — regardless of time of day or shift shape (the old SC
+     AM/PM-window rule is deleted). "6 hours 1 min or more" is the owner's
+     own line (17 Aug 26, corrected from a plain 6h the same day): exactly
+     six hours is still a HALF day. engine/oil.ts is its reader, at publish
+     time and in the Duty & commitments input ask. */
+  oilFullMin:6*60+1}; // worked minutes that make a FULL day of OIL
 /* SC currency. A shift that sits wholly inside 07:00–19:00 is a DAY shift and
    needs SC DAY; anything reaching outside it is a NIGHT shift and needs SC
    NIGHT. Crew change times move, so the window is read off the shift as
@@ -109,7 +112,7 @@ export const RULE_SPEC:any={
   scDayFrom: {t:'SC day window opens',       u:'time',lo:0,  hi:1439},
   scDayTo:   {t:'SC day window closes',      u:'time',lo:0,  hi:1439},
   simLen:    {t:'Assumed sim length, no end time',u:'min',lo:15,hi:480},
-  oilFullMin:{t:'Weekend duty full day (OIL)',u:'min',lo:60, hi:720},
+  oilFullMin:{t:'Full-day OIL threshold (worked mins)',u:'min',lo:60, hi:720},
   maxRun:    {t:'Max days worked in a row',  u:'days',lo:1,  hi:14},
   inputLead: {t:'Member input deadline before the week',u:'days',lo:0,hi:60},
   minTurn:   {t:'Minimum turn (unused)',     u:'min', lo:0,  hi:480},

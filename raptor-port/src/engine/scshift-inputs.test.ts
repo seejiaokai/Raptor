@@ -196,6 +196,14 @@ describe('what does NOT change', () => {
     expect(nameToId('ALL AVAIL')).toBe('allavail')
     expect(validate().all.filter((x: any) => (x.who || []).includes('allavail')).length).toBe(0)
   })
+  it('the ALL sentinel (owner, 28 Aug 26) is byte-for-byte the same: no warning anywhere', () => {
+    addSC(P)
+    ;(DAYS[TUE] as any).ground.push({ prog: 'TRAINING', who: 'ALL', str: '0800', end: '0900' })
+    ;(DAYS[TUE] as any).allhands.push({ prog: 'SQN EVENT', str: '0800', end: '0900', who: 'ALL' })
+    expect(nameToId('ALL')).toBe('all')
+    expect(PEOPLE.all.special, 'a sentinel, not a person').toBe(true)
+    expect(validate().all.filter((x: any) => (x.who || []).includes('all')).length).toBe(0)
+  })
   it('SC SPARE stays uncrosschecked — a Training input raises nothing on him', () => {
     addSC(P, true); inp('Training')
     expect(mine().filter((x: any) => ['INPUT_FLY', 'SHIFT_SOFT', 'DOUBLE_BOOK'].includes(x.code)).length).toBe(0)

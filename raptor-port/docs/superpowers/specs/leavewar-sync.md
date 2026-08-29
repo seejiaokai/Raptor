@@ -11,15 +11,19 @@ grid); the seed's two Raptor-owned cells are backed by boot-time demo inputs
 other side does not know. **Wire 4 (weekend/PH OIL) is BUILT too (17 Aug 26)**
 — `engine/oil.ts` (the credit computation) + `sync.ts:runOilPass` (the
 reconciler) — with five build-time divergences from the sketch below, each
-argued where it lives:
+argued where it lives. **Wire 4 was then REWORKED by the owner on 28 Aug 26**
+(the block after the divergences is the shipped shape); the five divergences
+stay as the 17 Aug record, each marked in place where the rework superseded
+it:
 
-- **The credit is DERIVED, not a cell-plus-ledger-entry.** The FS/HS cell IS
-  the record the duty stood; the OIL balance derives `+ earned` straight from
+- **The credit is DERIVED, not a cell-plus-ledger-entry.** The FO/HO cell
+  (spelled FS/HS until the 28 Aug 26 rename) IS the record the work stood;
+  the OIL balance derives `+ earned` straight from
   the cells' `earnsOil` (`counters.ts:earnedOil`). A ledger entry for the
   same fact would be the two-records-of-one-fact the counters module refuses,
   and reverse-and-replace comes free: the cell changes, the balance follows.
   The demanded distinguishability holds — only the wire mints raptor-owned
-  FS/HS — and an **OIL BAL** figure joined the counter column so the credit
+  FO/HO — and an **OIL BAL** figure joined the counter column so the credit
   lands somewhere visible.
 - **No publish hook; a third reconciler pass.** Rather than a fifth
   cross-app seam on `setDayApproved`, `runOilPass` runs beside
@@ -28,7 +32,10 @@ argued where it lives:
   that moves the issued document — publish, reopen, AL, reissue, undo,
   restore — is covered by construction, and "on publish, not on every
   keystroke" still holds: an unpublished edit changes no snapshot, so the
-  pass finds an empty diff.
+  pass finds an empty diff. (Since 28 Aug 26 this gate covers the SCHEDULE
+  half only: an acknowledged INPUT claim — `row.oil`, the ask-flow's answer
+  — is deliberately NOT publish-gated; the owner's acknowledgment is its
+  gate.)
 - **The non-working-day answer grew the event half.** Weekend from the date
   (`isWeekend`, UTC), holiday from the war holding the date — `DayInfo.ph`
   OR an event classified **'off'** by `columnKindFor`, which wires in the
@@ -36,23 +43,151 @@ argued where it lives:
   per-event tags, `columnKindFor` reads an event's own instance tag first
   and falls back to the type-library word match — so a one-off event tagged
   'off' in the sheet makes the day a holiday here exactly as a library word
-  does.
-- **The SC/duty split is the owner's 17 Aug refinement**, superseding plain
-  scheduled-hours for SC: an SC AM/PM shift (wholly inside one half of the
-  SC day window) is 0.5, anything more 1.0; other duty rows go by summed
-  written hours against `VCONF.oilFullMin` (default 361 — the owner's "6
-  hours 1 min or more"; exactly 6h is a half — Logic-editable);
-  SC spares and time-less rows earn nothing; per-person cap 1.0/day.
+  does. (`isNonWorkingISO` is EXPORTED since 28 Aug 26: the ask-flow's plan,
+  the OilConfirm sheet and the bell's pending scan all read this same
+  answer, so "is this day applicable" can never fork from the credit pass.)
+- **The SC/duty split is the owner's 17 Aug refinement** — **DELETED
+  28 Aug 26**, kept here only as the record it was: an SC AM/PM shift
+  (wholly inside one half of the SC day window) was 0.5, anything more 1.0,
+  with a midpoint tiebreak and a night clause (`scShiftCredit`); other duty
+  rows went by summed written hours against `VCONF.oilFullMin`. The owner
+  removed the shift-window rule by name ("It will just use the same rule as
+  all I mentioned"), and `scShiftCredit` is gone from `engine/oil.ts` and
+  the probe bridge — do not resurrect it. The uniform replacement is in the
+  28 Aug block below; `oilFullMin` (default 361 — the owner's "6 hours 1
+  min or more"; exactly 6h is a half — Logic-editable, its `RULE_SPEC`
+  label now 'Full-day OIL threshold (worked mins)') survives as the ONE
+  threshold, and spares and time-less rows still earn nothing.
 - **The ownership partition is by vocabulary.** Wire 4's cells wear the same
   `{approved, raptor}` marker as wire 2's (every existing guard protects
   them for free), so each reverse sweep clears only its OWN codes — inbound
-  skips FS/HS, the OIL pass clears nothing else — and on a contested cell
+  skips FO/HO, the OIL pass clears nothing else — and on a contested cell
   **leave wins** while the duty credit raises a `kind:'duty'` clash on the
   strip. Without the partition each wire would garbage-collect the other's
   writes.
 
-Rules: `docs/engine-rules.md` §Weekend/PH duty earns OIL. Tests:
-`src/engine/oil.test.ts`, `src/leavewar/oilsync.test.ts`. The §Wire 4
+### The 28 Aug 26 rework (owner) — the shipped wire 4
+
+The owner's word: *"It will just use the same rule as all I mentioned … they
+see if the person works 6 hours or less, it's auto HO credited. If it's more
+than 6 hours, it's FO. Regardless of time or shift in that day."* What
+shipped:
+
+- **FS/HS became FO/HO** — 'full day OIL' (earns 1) / 'half day OIL' (earns
+  0.5); the chip and its legend swatch are CYAN (`rgba(59,198,232,…)`, the
+  `--q-c` family), not amber. NOTE: `HO` is a RESURRECTED retired code — it
+  once meant half a day of OIL TAKEN (long since migrated to `*OIL`), and
+  the owner reused the letters with the new EARNED meaning; the negative
+  parse pins were flipped and the history is commented in
+  `leavewar/engine/codes.ts`.
+- **ONE uniform rule, every source.** A person's worked minutes for the day
+  are the ENVELOPE of everything they did — FIRST start to LAST end, the
+  gaps between events included (`engine/oil.ts:envMin`; owner, 29 Aug 26:
+  "the in between timing, even tho there's nothing, they are still in
+  squadron" — this replaced the 28 Aug interval-union sum, do not bring the
+  sum back). Then the one threshold (`uniformOil`): under
+  `VCONF.oilFullMin` (361) is HO, at or over it is FO — exactly six hours
+  is still HO, re-confirmed by the owner for the envelope reading. The
+  1.0/day cap stays structural: one envelope per day cannot pay twice.
+- **The auto-credit set WIDENED** (`dayOilSpans`): SC MAIN shifts by their
+  written shift times; ordinary FLYING seats by the working day the sortie
+  costs — T-O − `reportLead` through LD + `debrief`, the owner's
+  report-to-debrief pick, with typed in-time lines deliberately NOT
+  consulted (a stated simplification that keeps the read snapshot-pure);
+  sims (amt + oft) by written str→end; duty rows; ground-programme rows;
+  and Common Programme (`day.allhands`). EXCLUDED, deliberately: SC SPARE;
+  AVALON and BB — the seats AND the `sa` desk blocks they bring; cancelled
+  (`cx`) structures at any level; rows without both written times (no
+  invented `openEnd`/`simLen` defaults — display may guess, money may not);
+  and ground rows carrying `src` (input-derived — the ask-flow owns those;
+  a Saturday dental must not auto-mint).
+- **The ALL sentinel puck** (`people.ts` `all`, cs 'ALL') joined ALL AVAIL
+  — byte-for-byte the same semantics: palette Placeholders strip, never
+  validated, no warnings anywhere. On a ground/Common-Programme row on a
+  non-working day, ALL or ALL AVAIL expands (sync-side `availableFor`,
+  injected as `opts.expandAll` so `engine/oil.ts` stays Leave-War-free) to
+  everyone available for the event's window: REGULAR AIRCREW ONLY — no
+  SANS, no ground-crew Personnel, no sentinels or archived bodies — minus
+  anyone an away input (`isAway`) overlaps.
+- **The input ask-flow.** A duty-&-commitments input (`oilAsks(t)` —
+  exactly the `restsInput` 8: Training, CSE, Meeting, Fly with,
+  Appointment, Duty, OD, Other; Personal and SANS Availability excluded)
+  whose span covers a weekend/PH is NEVER credited or skipped silently.
+  Saving one opens **OilConfirm** (`ui/OilConfirm.tsx` — the UpchitConfirm
+  recipe: nothing written before the answer, no default, Save disabled
+  until a choice, Cancel writes nothing). A single day asks Yes (showing
+  'HO — half a day' or 'FO — a full day', from `inputOilAmt`: all-day = FO
+  per the owner; timed ≤6h = HO, >6h = FO) / No OIL; a multi-day span asks
+  All days / Only some days… / No OIL, where 'some' opens a month grid (the
+  RangeCal arithmetic) with only the applicable days tappable — tap to
+  select, tap again to deselect, Save. The one gate body is `oilGate`
+  (`ui/inputedit.tsx`), used by `InputEditor.save()`, `InputsPage.add()`
+  and `InputsPage.saveEdit()`; decisions ride the same `writeInputsBatch`
+  as the save — ONE undo step. The per-day plan body is `oilAskPlan`
+  (`leavewar/sync.ts`), reading the exported `isNonWorkingISO` — the same
+  applicability answer the credit pass uses.
+- **The decision field**: `row.oil = { "2026-09-05": 1, "2026-09-06": 0.5,
+  "2026-09-12": 0 }` — answered ISO day → granted amount; 0 = an explicit
+  decline; an ABSENT key on an applicable day = unanswered → no credit plus
+  the bell. Plain JSON, rides histSnap (undo) for free. VOIDED (deleted)
+  when the type is retyped OUT of the ask set or the input moves to ANOTHER
+  person (`commitInputEdit`; `reassignInput` and the calendar drag
+  inherit); KEPT on time/remark edits — the save gate re-asks when the plan
+  goes stale, and the credit pass re-checks coverage and non-working LIVE,
+  so a moved input or a revoked PH leaves a stale yes inert.
+- **A recorded answer is REVISABLE in place** (owner, 29 Aug 26 — closing
+  the "no way back from a mistaken No" gap; a revise button was his pick
+  over a dedicated undo/redo, with the global undo stack covering the
+  immediate-regret case). `oilAnswered(row)` (`ui/inputedit.tsx`) decides
+  where the affordance draws — an ask-set, non-dormant row with ≥1
+  applicable day answered; unanswered-only stays the bell's business — and
+  it reads the raw row, never `normalizeInputDraft` (which toasts). Two
+  surfaces: the InputEditor's "OIL … Change…" row (prices off the CURRENT
+  draft via `oilGate(draft, row, force)` and saves through the same
+  `doSave` batch) and the Inputs-page row's cyan `.roil` chip
+  (`reviseOil` — rewrites `row.oil` alone inside one `writeInputsBatch`,
+  no field edit). Both re-open OilConfirm over EVERY applicable day with
+  the standing answers pre-loaded; Save replaces the answer set wholesale.
+- **One envelope across BOTH sources.** `desiredOilCells` (`leavewar/sync.ts`)
+  gathers per person|iso the published schedule (publish gate KEPT: issued
+  snapshot, `dayApproved`) AND acknowledged input claims (NOT publish-gated
+  — the owner's acknowledgment is their gate), then applies the ONE
+  `uniformOil(envMin)` threshold to their combined envelope (his worked
+  example: a 4h morning duty published + a 4h afternoon input acknowledged
+  is one 0800→1700 day → FO; even 1h + 1h across a gap counts the whole
+  span). The reverse sweep / never-overwrite-leave clash behaviour is
+  unchanged, and covers input credits for free.
+- **The schedule half reads EVERY week, not just the loaded one** (owner,
+  29 Aug 26 — "pull the full day schedule regardless of what's on screen").
+  The live `DAYS`/`SCHED` for the loaded week, plus every OTHER visited
+  week's session stash (`engine/weekstash.ts`), whose snapshot carries the
+  publish state under `schedFields`' short keys — read through the
+  parameterized `dayCurVerIn`/`daySnapIn` (`engine/publish.ts`) and cached
+  per blob by string identity (`stashOilWeek`). A never-visited week has
+  published nothing, so live + stash IS the whole session. This closed the
+  known issue where navigating away from a published weekend let the
+  reverse sweep collect its credits.
+- **The bell.** `oilPendingFor(person)` (`leavewar/sync.ts`) is a DERIVED
+  predicate (the bugAlert shape): that person's inputs with an applicable
+  covered day missing from `row.oil` (0 counts as answered; dormant
+  `acc:'r'` rows never ring). The Shell's `#notifyBell` glows for the
+  view-as person's pending question; the tap toasts 'Weekend/PH work —
+  confirm your OIL', lands on the Inputs page and opens InputEditor on the
+  exact input (iid via `inpById`) with the OIL sheet already up
+  (`pops.OILASK`, one-shot). The lwSubscribe lane fires ONE
+  signature-guarded Raptor notify when the pending picture changes, so a PH
+  marked AFTER an input exists lights the bell at once (this closed a
+  confirmed missing-repaint gap). No acknowledgment = no credit,
+  structurally.
+- **A pre-existing bug fixed in passing**: `leavewar/state/store.ts
+  reconcile()` now keeps FO/HO (`isDuty`) raptor-ownership records through
+  the storage load path — it previously listed only biddable + medical
+  codes, so once the DB era makes that load path live, a credit's ownership
+  record would have been dropped and the cell left an uncollectable orphan.
+
+Rules: `docs/engine-rules.md` §Weekend/PH work earns OIL. Tests:
+`src/engine/oil.test.ts`, `src/leavewar/oilsync.test.ts`,
+`src/ui/oilconfirm.test.tsx`. The §Wire 4
 section below is kept as the design record.
 
 Written at the merge (16 Aug 26), when Leave War became the sixth tab
@@ -175,6 +310,13 @@ never blocked — the squadron's own workbook runs negative).
 
 ## Wire 4 — weekend/PH work earns OIL (the owner's rule, 16 Aug 26)
 
+**This section is the 16 Aug DESIGN record, kept as history.** The build
+diverged from it five ways (the status block), and the 28 Aug 26 rework
+(also in the status block) then renamed FS/HS → FO/HO, deleted the SC
+shift-window categorisation for the one pooled threshold, widened the
+earning set well past SC/duty rows, and added the input ask-flow. Read what
+follows as what was DESIGNED, not what runs.
+
 The owner's words: *"use SC shift, but also the duties follow for that day
 itself, based on what timing was written — take note these can be editable
 in the rules engine too. Categorise them into Leave War."*
@@ -186,7 +328,8 @@ in the rules engine too. Categorise them into Leave War."*
   the shift's own `to`/`ld`, the duty row's `str`/`end`, exactly as
   scheduled, not a fixed grant.
 - **How much**: full-day vs half-day duty, categorised into Leave War as
-  its own codes — `FS` (1.0 OIL) / `HS` (0.5). The boundary between them
+  its own codes — `FS` (1.0 OIL) / `HS` (0.5) as designed; renamed
+  `FO`/`HO` 28 Aug 26. The boundary between them
   is a VCONF rule (`RULE_SPEC` entry, Logic-page editable like `scDayFrom`
   / `scDayTo`), NOT a hard-coded clock time: the natural default is
   "scheduled hours ≥ N ⇒ FS, under it ⇒ HS" with N editable. The
@@ -194,7 +337,7 @@ in the rules engine too. Categorise them into Leave War."*
   scheduled-hours shape; pin the exact default with the owner in the
   building PR.
 - **Where the credit lives**: posted into Leave War as an auto-marked
-  FS/HS cell + a ledger entry tagged as schedule-earned (its spec §
+  FS/HS (now FO/HO) cell + a ledger entry tagged as schedule-earned (its spec §
   Automatic OIL already demands: distinguishable from granted OIL,
   reversed-and-replaced visibly when the schedule changes after the fact,
   and NEVER overwriting a bid — an SC-vs-bid clash goes to a human).
@@ -242,7 +385,7 @@ own word ("these will be connected to the inputs"):
   names the other three) and removes nothing from manning (he is at work).
 - **Clash/deletion/ownership**: identical to wire 2 — a different existing
   bid raises the clash and nothing is overwritten; deleting the input
-  reverse-clears only still-raptor-owned cells; the FS/HS-vs-rest
+  reverse-clears only still-raptor-owned cells; the FO/HO-vs-rest
   vocabulary partition with wire 4's sweep is unchanged (medical belongs
   to inbound's side of it).
 
@@ -263,8 +406,11 @@ own word ("these will be connected to the inputs"):
   the future shared database backend replaces together.
 - **Raptor loads ONE week; Leave War holds years.** Outbound (wire 1)
   writes inputs for any date (inputs already live off-week via
-  `endDate`/`dateOrd`); wire 4 can only read duties for the loaded week.
-  Fixes itself the day Raptor carries more data — the same first bullet.
+  `endDate`/`dateOrd`); wire 4's schedule half reads every VISITED week
+  since 29 Aug 26 (the session stash — see §Wire 4), so within a session
+  nothing is week-scoped any more; a week never opened this session still
+  holds no session data at all, which the future shared database fixes for
+  everything at once — the same first bullet.
 - **No per-person identity on either side.** Raptor's ME is a view
   filter; members may edit anyone's inputs (owner-accepted prototype
   state). Ownership rules in these wires are honest bookkeeping, not

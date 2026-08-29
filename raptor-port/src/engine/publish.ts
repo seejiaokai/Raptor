@@ -58,12 +58,20 @@ export function dayALs(di:any){return SCHED.als.filter((a:any)=>alDays(a).includ
    for this day — array order, not max-n, because publishAL can legally issue
    a lower number after a higher one was freed — then the Original, then null
    (never published). This derivation IS the orphan guard: a stale SCHED.cur
-   entry after unpublishAL or an undo is inert, no cleanup pass exists. */
-export function dayCurVer(di:any){di=+di;
-  const v=(SCHED.cur||{})[di];
-  if(v!=null&&daySnapOf(di,v))return v;
-  for(let i=SCHED.als.length-1;i>=0;i--){const a=SCHED.als[i];if(a.snap&&a.snap[di])return a.n;}
-  return (SCHED.orig||{})[di]?'orig':null;}
+   entry after unpublishAL or an undo is inert, no cleanup pass exists.
+   PARAMETERIZED 29 Aug 26 (one body, two callers — the forward-trace
+   precedent): the *In forms take any SCHED-shaped object {cur,als,orig,
+   drafts}, which is how the Leave War OIL wire reads publish state out of a
+   STASHED week's snapshot (state/store.ts weekStashSnap carries these under
+   schedFields' short keys) without loading that week; the bare forms are
+   the live-SCHED wrappers every existing caller keeps using. */
+export function dayCurVerIn(sc:any,di:any){di=+di;
+  const v=((sc&&sc.cur)||{})[di];
+  if(v!=null&&daySnapIn(sc,di,v))return v;
+  const als=(sc&&sc.als)||[];
+  for(let i=als.length-1;i>=0;i--){const a=als[i];if(a&&a.snap&&a.snap[di])return a.n;}
+  return ((sc&&sc.orig)||{})[di]?'orig':null;}
+export function dayCurVer(di:any){return dayCurVerIn(SCHED,di);}
 export function dayPendCount(di:any){return Object.keys(SCHED.pending).filter((k:any)=>keyDay(k)===di).length;}
 export function pendDays(){return uniqDays(Object.keys(SCHED.pending));}
 /* pending edits only become publishable amendments once their day is published —
@@ -130,8 +138,8 @@ function reissueReopened(di:any){di=+di;
 export function daySnap(di:any){di=+di;
   const c:any={}; Object.keys(SCHED.changes).forEach((k:any)=>{if(keyDay(k)===di)c[k]=SCHED.changes[k];});
   return {d:JSON.parse(JSON.stringify(DAYS[di])),c};}
-export function daySnapOf(di:any,ver:any){di=+di;
-  if(ver==='orig')return (SCHED.orig||{})[di]||null;
+export function daySnapIn(sc:any,di:any,ver:any){di=+di;
+  if(ver==='orig')return ((sc&&sc.orig)||{})[di]||null;
   /* 'd:<id>' — a pre-publish DRAFT blob (engine/drafts.ts; SCHED.drafts rides
      this object so it undoes with everything else). Resolved here so the whole
      preview machinery — withDaySnap, dayPreviewHTML, DPREV, prunePreviews —
@@ -140,10 +148,11 @@ export function daySnapOf(di:any,ver:any){di=+di;
      the draft is deleted (or undone away) is what lets prunePreviews drop a
      stale draft preview exactly like a stale AL one. */
   if(typeof ver==='string'&&ver.slice(0,2)==='d:'){
-    const t=(((SCHED.drafts||{})[di])||[]).find((x:any)=>'d:'+x.id===ver);
+    const t=((((sc&&sc.drafts)||{})[di])||[]).find((x:any)=>'d:'+x.id===ver);
     return t?{d:t.d,c:{}}:null;}
-  const r=SCHED.als.find((a:any)=>a.n===+ver);
+  const r=((sc&&sc.als)||[]).find((a:any)=>a.n===+ver);
   return (r&&r.snap&&r.snap[di])||null;}   // records from before snapshots carry none
+export function daySnapOf(di:any,ver:any){return daySnapIn(SCHED,di,ver);}
 export function dayVersions(di:any){di=+di;
   const v:any[]=['live'];
   if((SCHED.orig||{})[di])v.push('orig');

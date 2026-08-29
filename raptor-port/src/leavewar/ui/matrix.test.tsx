@@ -122,9 +122,9 @@ describe('Matrix', () => {
   })
 
   it('suppresses the duty class for a code left on a day outside the roster window', () => {
-    // A stale FS on a posted-out member's row must not read as "at work" —
+    // A stale FO on a posted-out member's row must not read as "at work" —
     // they are gone, full stop, regardless of what code sits under them.
-    setCell('switcher', '2026-01-13', 'FS')
+    setCell('switcher', '2026-01-13', 'FO')
     render(<Matrix />)
     const cell = screen.getByTestId('cell-switcher-2026-01-13')
     expect(cell.className).toContain('gone')
@@ -177,13 +177,13 @@ describe('Matrix', () => {
 
   it('gives a duty cell the sc chip class and a non-bid code the info chip class', () => {
     render(<Matrix />)
-    // Seed: TATA is on FS (a duty code) on 1 Jan; SPLICE is on ATTC (a medical
+    // Seed: TATA is on FO (a duty code) on 1 Jan; SPLICE is on ATTC (a medical
     // marker) on 5 Jan. This asserted TATA's OIL on 9 Jan as the `.info` case
     // until bid states landed — OIL is leave someone asked for, so it now
     // carries a bid colour instead. `.info` is what remains: the codes nobody
     // bids for, which is medical (ATT C / HL / OML), courses and overseas duty.
     const dutyCell = screen.getByTestId('cell-tata-2026-01-01')
-    expect(dutyCell.querySelector('.c.sc')?.textContent).toBe('FS')
+    expect(dutyCell.querySelector('.c.sc')?.textContent).toBe('FO')
     const ordinaryCell = screen.getByTestId('cell-splice-2026-01-05')
     // Stored ATTC, PRINTED as the owner's bare C since 17 Aug 26
     // (displayCell) — the info class is unchanged.

@@ -8,11 +8,13 @@
 // publish machinery: SCHED reset to draft and DAYS restored pristine, since
 // these tests publish days and edit duty rows.
 
-import { beforeEach, describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { INPUTS } from '../engine/inputs'
 import { DAYS } from '../engine/data'
+import { PEOPLE } from '../engine/people'
 import { SCHED, signOf, setDayApproved } from '../engine/publish'
-import { initStore as raptorInitStore } from '../state/store'
+import { stashClear, stashPut } from '../engine/weekstash'
+import { initStore as raptorInitStore, loadWeek } from '../state/store'
 import { projectPeople } from './state/raptorRoster'
 import {
   getState,
@@ -21,10 +23,11 @@ import {
   setCell,
   setDayEvent,
   setPeople,
+  setPostOut,
   setRole,
 } from './state/store'
 import { memoryBackend } from './state/storage'
-import { getClashes, runInbound, runOilPass, runOutbound } from './sync'
+import { getClashes, oilPendingFor, runInbound, runOilPass, runOutbound } from './sync'
 
 const ISNAP = JSON.stringify(INPUTS)
 const DSNAP = JSON.stringify(DAYS)
@@ -37,6 +40,9 @@ beforeEach(() => {
   JSON.parse(DSNAP).forEach((d: any) => DAYS.push(d))
   SCHED.pending = {}; SCHED.changes = {}; SCHED.added = {}; SCHED.als = []
   SCHED.al = 0; SCHED.dayOK = {}; SCHED.sign = {}; SCHED.orig = {}; SCHED.cur = {}
+  /* the stash is module-level session state (loadweek.test.ts's own rule) —
+     the all-weeks credit pull reads it, so each test starts with none */
+  stashClear()
   raptorInitStore()
   lwInitStore(memoryBackend())
   setPeople(projectPeople())
@@ -51,10 +57,10 @@ const cellOf = (person: string, date: string) => getState().wars[0].grid[person]
 const ownedBy = (person: string, date: string) => getState().wars[0].states[person]?.[date]
 
 describe('publish drives the credit', () => {
-  it('publishing the seed Saturday lands plasma an FS cell, raptor-owned', () => {
+  it('publishing the seed Saturday lands plasma an FO cell, raptor-owned', () => {
     publish(5)
     runOilPass()
-    expect(cellOf('plasma', SAT)).toBe('FS')
+    expect(cellOf('plasma', SAT)).toBe('FO')
     expect(ownedBy('plasma', SAT)).toMatchObject({ state: 'approved', source: 'raptor' })
   })
 
@@ -66,21 +72,21 @@ describe('publish drives the credit', () => {
   it('a published WEEKDAY earns nothing: Monday has duty rows but is a working day', () => {
     publish(0)
     runOilPass()
-    // The seed grid carries hand-typed FS/HS demo cells of its own; the wire's
+    // The seed grid carries hand-typed FO/HO demo cells of its own; the wire's
     // work is exactly the raptor-OWNED ones, and there must be none.
     const { grid, states } = getState().wars[0]
     const owned = Object.entries(grid).flatMap(([p, row]) =>
       Object.entries(row).filter(([d, c]) =>
-        (c === 'FS' || c === 'HS') && states[p]?.[d]?.source === 'raptor'))
+        (c === 'FO' || c === 'HO') && states[p]?.[d]?.source === 'raptor'))
     expect(owned).toEqual([])
   })
 
-  it('under six written hours the credit is HS, not FS', () => {
+  it('under six written hours the credit is HO, not FO', () => {
     DAYS[5].dutywaves[0].rows[0].str = '0800'
     DAYS[5].dutywaves[0].rows[0].end = '1200'
     publish(5)
     runOilPass()
-    expect(cellOf('plasma', SAT)).toBe('HS')
+    expect(cellOf('plasma', SAT)).toBe('HO')
   })
 
   it('a weekday the war calls a holiday earns like a weekend — the owner\'s event input path', () => {
@@ -89,10 +95,10 @@ describe('publish drives the credit', () => {
     publish(0)
     runOilPass()
     // Monday's SDO earns exactly as Saturday's would; the seed staffs the
-    // desk with a real person on every day, so somebody holds an FS/HS cell.
+    // desk with a real person on every day, so somebody holds an FO/HO cell.
     const { grid } = getState().wars[0]
     const dutyCells = Object.entries(grid).filter(([, row]) =>
-      Object.entries(row).some(([d, c]) => d === '2026-07-13' && (c === 'FS' || c === 'HS')))
+      Object.entries(row).some(([d, c]) => d === '2026-07-13' && (c === 'FO' || c === 'HO')))
     expect(dutyCells.length).toBeGreaterThan(0)
   })
 })
@@ -101,22 +107,22 @@ describe('reverse-and-replace — the credit follows the issued document', () =>
   it('reopening the day takes the credit back', () => {
     publish(5)
     runOilPass()
-    expect(cellOf('plasma', SAT)).toBe('FS')
+    expect(cellOf('plasma', SAT)).toBe('FO')
     setDayApproved(5, false)
     runOilPass()
     expect(cellOf('plasma', SAT)).toBeUndefined()
     expect(ownedBy('plasma', SAT)).toBeUndefined()
   })
 
-  it('a reissue with shorter hours replaces FS with HS', () => {
+  it('a reissue with shorter hours replaces FO with HO', () => {
     publish(5)
     runOilPass()
-    expect(cellOf('plasma', SAT)).toBe('FS')
+    expect(cellOf('plasma', SAT)).toBe('FO')
     setDayApproved(5, false)                      // reopen
     DAYS[5].dutywaves[0].rows[0].end = '1200'     // the duty shrank to 4h
     publish(5)                                    // re-publish reissues the snapshot
     runOilPass()
-    expect(cellOf('plasma', SAT)).toBe('HS')
+    expect(cellOf('plasma', SAT)).toBe('HO')
   })
 
   it('a draft edit AFTER publish moves nothing — the issued snapshot is the source', () => {
@@ -124,18 +130,57 @@ describe('reverse-and-replace — the credit follows the issued document', () =>
     runOilPass()
     DAYS[5].dutywaves[0].rows[0].end = '1200'     // live edit, never issued
     runOilPass()
-    expect(cellOf('plasma', SAT)).toBe('FS')      // still the document's ten hours
+    expect(cellOf('plasma', SAT)).toBe('FO')      // still the document's ten hours
+  })
+})
+
+describe('the credit reads EVERY week, not just the loaded one (owner, 29 Aug 26)', () => {
+  /* CURWEEK and DATES are module state the shared beforeEach does not touch
+     (it hand-restores DAYS/SCHED without loadWeek), so ride the real door
+     back to the seed week — the re-seeded fixtures ARE that week's. */
+  afterEach(() => loadWeek('13/07/2026'))
+
+  it('navigating to another week no longer collects a published weekend\'s credit', () => {
+    publish(5)
+    runOilPass()
+    expect(cellOf('plasma', SAT)).toBe('FO')
+    loadWeek('20/07/2026')                        // the seed Saturday is off screen now…
+    runOilPass()
+    expect(cellOf('plasma', SAT)).toBe('FO')      // …and the credit stands, read from the week's stash
+    expect(ownedBy('plasma', SAT)).toMatchObject({ state: 'approved', source: 'raptor' })
+  })
+
+  it('coming back and reopening the day still takes the credit back', () => {
+    publish(5)
+    runOilPass()
+    loadWeek('20/07/2026')
+    runOilPass()
+    loadWeek('13/07/2026')                        // stash restored — the day is still published
+    setDayApproved(5, false)
+    runOilPass()
+    expect(cellOf('plasma', SAT)).toBeUndefined()
+  })
+
+  it('a corrupt stash blob contributes nothing and throws nothing', () => {
+    publish(5)
+    runOilPass()
+    loadWeek('20/07/2026')
+    stashPut('13/07/2026', '{broken')             // truncated write / foreign data
+    expect(() => runOilPass()).not.toThrow()
+    /* unreadable = as if never stashed, so the reverse sweep collects the
+       cell — degraded, never wrong-way-round or crashed */
+    expect(cellOf('plasma', SAT)).toBeUndefined()
   })
 })
 
 describe('the ownership partition against wires 1+2', () => {
-  it('runInbound\'s reverse-clear leaves the credit alone — no input ever covers an FS cell', () => {
+  it('runInbound\'s reverse-clear leaves the credit alone — no input ever covers an FO cell', () => {
     publish(5)
     runOilPass()
     runInbound()
     runOutbound()
-    expect(cellOf('plasma', SAT)).toBe('FS')
-    // and the credit never becomes an lw-tagged input: FS is not biddable
+    expect(cellOf('plasma', SAT)).toBe('FO')
+    // and the credit never becomes an lw-tagged input: FO is not biddable
     expect(INPUTS.filter((r: any) => r.lw)).toEqual([])
   })
 
@@ -147,7 +192,7 @@ describe('the ownership partition against wires 1+2', () => {
     runOilPass()
     expect(cellOf('plasma', SAT)).toBe('LL')
     expect(getClashes()).toContainEqual(
-      { person: 'plasma', date: SAT, inputCode: 'FS', bidCode: 'LL', kind: 'duty' })
+      { person: 'plasma', date: SAT, inputCode: 'FO', bidCode: 'LL', kind: 'duty' })
   })
 
   it('leave WINS an owned cell and the passes stay stable — no flip-flop', () => {
@@ -165,10 +210,10 @@ describe('the ownership partition against wires 1+2', () => {
 
   it('a hand-typed cell matching the verdict is taken over in place, not clashed', () => {
     setRole('admin')                               // July sits outside the seed bid window
-    setCell('plasma', SAT, 'FS')                   // the squadron recorded it first
+    setCell('plasma', SAT, 'FO')                   // the squadron recorded it first
     publish(5)
     runOilPass()
-    expect(cellOf('plasma', SAT)).toBe('FS')
+    expect(cellOf('plasma', SAT)).toBe('FO')
     expect(ownedBy('plasma', SAT)).toMatchObject({ source: 'raptor' })
     expect(getClashes()).toEqual([])
   })
@@ -187,5 +232,178 @@ describe('the ownership partition against wires 1+2', () => {
     runOilPass()
     expect(getClashes().some(c => c.kind === 'duty')).toBe(true)
     expect(getClashes().some(c => !c.kind)).toBe(true)
+  })
+})
+
+/* ---- the input ask-flow's credits (owner, 28 Aug 26) ---------------------
+   An acknowledged duty-&-commitments input joins the SAME desired map the
+   published schedule feeds, so the reverse sweep protects and collects both
+   identically, and one pooled ≤6h/>6h test per person per day decides the
+   cell (hours SUM across sources, overlaps counted once). */
+describe('an acknowledged input credits — the ask-flow half of the wire', () => {
+  const plant = (r: any) => {
+    INPUTS.unshift({ allday: true, s: 0, e: 1439, remarks: '', mod: 'now', yr: 2026, ...r })
+    return INPUTS[0]
+  }
+
+  it('an answered yes mints the cell, raptor-owned, no publish needed', () => {
+    plant({ person: 'bane', type: 'Duty', date: 'Jul 18', oil: { [SAT]: 1 } })
+    runOilPass()
+    expect(cellOf('bane', SAT)).toBe('FO')
+    expect(ownedBy('bane', SAT)).toMatchObject({ state: 'approved', source: 'raptor' })
+  })
+
+  it('unanswered and declined mint nothing — no acknowledgment, no credit', () => {
+    plant({ person: 'bane', type: 'Duty', date: 'Jul 18' })                 // never asked/answered
+    plant({ person: 'stiff', type: 'Duty', date: 'Jul 18', oil: { [SAT]: 0 } })  // explicit No
+    runOilPass()
+    expect(cellOf('bane', SAT)).toBeUndefined()
+    expect(cellOf('stiff', SAT)).toBeUndefined()
+  })
+
+  it('a dormant (scheduler-removed) input mints nothing even when answered', () => {
+    plant({ person: 'bane', type: 'Duty', date: 'Jul 18', acc: 'r', oil: { [SAT]: 1 } })
+    runOilPass()
+    expect(cellOf('bane', SAT)).toBeUndefined()
+  })
+
+  it('deleting the input collects its cell on the next pass', () => {
+    const r = plant({ person: 'bane', type: 'Duty', date: 'Jul 18', oil: { [SAT]: 1 } })
+    runOilPass()
+    expect(cellOf('bane', SAT)).toBe('FO')
+    INPUTS.splice(INPUTS.indexOf(r), 1)
+    runOilPass()
+    expect(cellOf('bane', SAT)).toBeUndefined()
+  })
+
+  it('a stale yes is inert once the dates move off the day — and the cell goes with it', () => {
+    const r = plant({ person: 'bane', type: 'Duty', date: 'Jul 18', oil: { [SAT]: 1 } })
+    runOilPass()
+    expect(cellOf('bane', SAT)).toBe('FO')
+    r.date = 'Jul 20'                                   // moved; the answer's day is uncovered now
+    runOilPass()
+    expect(cellOf('bane', SAT)).toBeUndefined()
+  })
+
+  it('the owner\'s worked example: 4h published duty + 4h acknowledged input make one FO day', () => {
+    DAYS[5].dutywaves[0].rows[0].str = '0800'
+    DAYS[5].dutywaves[0].rows[0].end = '1200'           // plasma: 4h published — HO alone
+    publish(5)
+    plant({ person: 'plasma', type: 'Training', date: 'Jul 18', allday: false, s: 13 * 60, e: 17 * 60, oil: { [SAT]: 0.5 } })
+    runOilPass()
+    expect(cellOf('plasma', SAT)).toBe('FO')            // envelope 0800→1700 = 9h
+  })
+
+  it('two answered inputs on one day share one envelope — overlap never pays twice', () => {
+    plant({ person: 'bane', type: 'Duty', date: 'Jul 18', allday: false, s: 8 * 60, e: 12 * 60, oil: { [SAT]: 0.5 } })
+    plant({ person: 'bane', type: 'Meeting', date: 'Jul 18', allday: false, s: 10 * 60, e: 14 * 60, oil: { [SAT]: 0.5 } })
+    runOilPass()
+    expect(cellOf('bane', SAT)).toBe('HO')              // envelope 0800→1400 = 6h exactly — still a half
+  })
+
+  it('the gap between a morning duty and an afternoon input COUNTS — the day runs start to finish (owner, 29 Aug 26)', () => {
+    // one written hour each side of a five-hour gap: two hours of bookings,
+    // but a 0800→1500 day in squadron — seven hours, a FULL day. This is the
+    // pin that keeps the envelope from regressing to a summed union.
+    DAYS[5].dutywaves[0].rows[0].str = '0800'
+    DAYS[5].dutywaves[0].rows[0].end = '0900'           // plasma: 1h published
+    publish(5)
+    plant({ person: 'plasma', type: 'Meeting', date: 'Jul 18', allday: false, s: 14 * 60, e: 15 * 60, oil: { [SAT]: 0.5 } })
+    runOilPass()
+    expect(cellOf('plasma', SAT)).toBe('FO')
+  })
+
+  it('a PH revoked after the answer stops the credit — the yes stays, inert', () => {
+    setRole('admin')
+    setDayEvent('2026-07-15', 0, 'PH')
+    const r = plant({ person: 'bane', type: 'Duty', date: 'Jul 15', oil: { '2026-07-15': 1 } })
+    runOilPass()
+    expect(cellOf('bane', '2026-07-15')).toBe('FO')
+    setDayEvent('2026-07-15', 0, '')                    // the holiday is un-typed
+    runOilPass()
+    expect(cellOf('bane', '2026-07-15')).toBeUndefined()
+    expect(r.oil).toEqual({ '2026-07-15': 1 })          // the record keeps the answer; the day just is not a holiday
+  })
+
+  it('a raptor-owned credit survives a storage round-trip — reconcile keeps FO/HO ownership', () => {
+    const be = memoryBackend()
+    lwInitStore(be)
+    setPeople(projectPeople())
+    plant({ person: 'bane', type: 'Duty', date: 'Jul 18', oil: { [SAT]: 1 } })
+    runOilPass()
+    expect(ownedBy('bane', SAT)).toMatchObject({ source: 'raptor' })
+    lwInitStore(be)                                      // reload from the SAME backend — the reconcile path
+    expect(cellOf('bane', SAT)).toBe('FO')
+    expect(ownedBy('bane', SAT), 'ownership survived the load — the reverse sweep can still collect it').toMatchObject({ source: 'raptor' })
+  })
+})
+
+describe('the ALL / ALL AVAIL expansion on a published non-working day', () => {
+  it('credits every available regular aircrew body; leave, SANS and ground crew are out', () => {
+    DAYS[5].allhands = DAYS[5].allhands || []
+    DAYS[5].allhands.push({ prog: 'SQN EVENT', str: '0800', end: '1500', who: 'ALL' })  // 7h → FO
+    /* stiff is away — an all-day leave over the event window */
+    INPUTS.unshift({ person: 'stiff', type: 'LL', date: 'Jul 18', allday: true, s: 0, e: 1439, remarks: '', mod: 'now', yr: 2026 })
+    publish(5)
+    runOilPass()
+    expect(cellOf('bane', SAT)).toBe('FO')               // a present regular body earns
+    expect(cellOf('stiff', SAT)).toBeUndefined()         // on leave — not available
+    expect(cellOf('torque', SAT)).toBeUndefined()        // ground crew Personnel — excluded
+    const sanId = Object.keys(PEOPLE).find((id: any) => (PEOPLE as any)[id].san && !(PEOPLE as any)[id].archived)
+    expect(sanId, 'the roster holds a SANS body').toBeTruthy()
+    expect(cellOf(sanId as string, SAT)).toBeUndefined() // SANS — excluded from ALL events
+  })
+})
+
+describe('oilPendingFor — the bell\'s derived scan', () => {
+  const plant = (r: any) => {
+    const row: any = { allday: true, s: 0, e: 1439, remarks: '', mod: 'now', yr: 2026, ...r }
+    row.iid = row.iid || 'oiltest-' + Math.random().toString(36).slice(2)
+    INPUTS.unshift(row)
+    return row
+  }
+
+  it('a weekday input asks nothing — until Leave War marks the day a holiday after the fact', () => {
+    const r = plant({ person: 'bane', type: 'Duty', date: 'Jul 15' })
+    expect(oilPendingFor('bane')).toEqual([])
+    setRole('admin')
+    setDayEvent('2026-07-15', 0, 'PH')                  // the retro case — the whole feature
+    expect(oilPendingFor('bane')).toEqual([{ iid: r.iid, iso: '2026-07-15' }])
+    r.oil = { '2026-07-15': 0 }                          // an explicit No IS an answer
+    expect(oilPendingFor('bane')).toEqual([])
+  })
+
+  it('dormant rows and other people never ring', () => {
+    plant({ person: 'bane', type: 'Duty', date: 'Jul 18', acc: 'r' })
+    plant({ person: 'stiff', type: 'Duty', date: 'Jul 18' })
+    expect(oilPendingFor('bane')).toEqual([])
+    expect(oilPendingFor('stiff').length).toBe(1)
+  })
+})
+
+describe('bug-pass hardening (28 Aug 26)', () => {
+  it('a war stored with the LEGACY FS/HS letters loads renamed, ownership intact', () => {
+    const be = memoryBackend()
+    lwInitStore(be)
+    setPeople(projectPeople())
+    INPUTS.unshift({ person: 'bane', type: 'Duty', date: 'Jul 18', allday: true, s: 0, e: 1439, remarks: '', mod: 'now', yr: 2026, iid: 'mig1', oil: { [SAT]: 1 } })
+    runOilPass()
+    expect(cellOf('bane', SAT)).toBe('FO')
+    /* tamper the STORED blob back to the pre-rename letters, then reload */
+    be.write('wars', (be.read('wars') as string).replace(/"FO"/g, '"FS"').replace(/"HO"/g, '"HS"'))
+    lwInitStore(be)
+    expect(cellOf('bane', SAT), 'renamed at the one load door').toBe('FO')
+    expect(ownedBy('bane', SAT), 'the ownership record survived — the sweep can still collect it').toMatchObject({ source: 'raptor' })
+  })
+
+  it('a body posted out before the day never expands under ALL — even unarchived', () => {
+    setRole('admin')
+    expect(setPostOut('pump', '2026-07-01', false)).toBe(true)
+    DAYS[5].allhands = DAYS[5].allhands || []
+    DAYS[5].allhands.push({ prog: 'SQN EVENT', str: '0800', end: '1500', who: 'ALL' })
+    publish(5)
+    runOilPass()
+    expect(cellOf('bane', SAT)).toBe('FO')                   // present bodies still earn
+    expect(cellOf('pump', SAT), 'posted out — not in the squadron that day').toBeUndefined()
   })
 })

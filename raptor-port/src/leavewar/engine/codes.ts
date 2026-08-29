@@ -13,8 +13,12 @@
 // carry, not a leave type in itself. The owner's own notation says where the
 // portion goes: `OIL` is a whole day, `*OIL` is the morning, `OIL*` is the
 // afternoon. The asterisk sits where the time sits, and that notation — not
-// an abbreviation like the old `HO` — is what is stored, typed and read back
-// from a CSV.
+// an abbreviation like the old `HO` (which then meant half a day of OIL
+// TAKEN) — is what is stored, typed and read back from a CSV. NOTE: `HO` was
+// resurrected on 28 Aug 26 by the owner with the OPPOSITE meaning — half a
+// day of OIL EARNED (the credit marker, beside `FO` for a full day). The two
+// never coexisted in stored data: the old spelling was migrated to `*OIL`
+// long before the credit marker took the letters.
 
 export type CounterName = 'annual' | 'oil' | 'ccl' | 'fcl' | 'pl' | 'el'
 
@@ -114,16 +118,19 @@ const NON_LEAVE_LABELS: Record<string, string> = {
   OD: 'overseas duty',
 }
 
-// SC duty: at work, but off the flying programme. This is a different axis
-// from leave entirely — the codes arrive from Raptor's schedule rather than
-// being typed here — so they stay literal two-letter markers rather than
-// being folded into the type-plus-portion model. They never carry a
+// OIL credit: at work, but off the flying programme. This is a different
+// axis from leave entirely — the codes arrive from Raptor's schedule (and,
+// since 28 Aug 26, from an acknowledged duty-&-commitments input) rather
+// than being typed here — so they stay literal two-letter markers rather
+// than being folded into the type-plus-portion model. They never carry a
 // portion; `earnsOil` is the only place "half" appears for these two.
+// Renamed FS/HS → FO/HO on 28 Aug 26 (owner): the marker names the OIL
+// earned, not the SC shift that used to be its only source.
 const SC_DUTY_LABELS: Record<string, string> = {
-  FS: 'full day SC duty',
-  HS: 'half day SC duty',
+  FO: 'full day OIL',
+  HO: 'half day OIL',
 }
-const SC_DUTY_EARNS: Record<string, 0.5 | 1> = { FS: 1, HS: 0.5 }
+const SC_DUTY_EARNS: Record<string, 0.5 | 1> = { FO: 1, HO: 0.5 }
 
 /** full costs a whole day, am/pm cost half — the only two amounts a cell ever removes. */
 export function portionAmount(portion: Portion): number {
@@ -138,7 +145,7 @@ export function portionAmount(portion: Portion): number {
  * screen:
  * - an asterisk on BOTH sides (`*LL*`) — the notation only ever carries one
  *   time marker, so this is not "a valid portion", it is malformed input.
- * - an asterisk on a course, overseas-duty or SC-duty marker (`CSE*`, `*FS`)
+ * - an asterisk on a course, overseas-duty or OIL-credit marker (`CSE*`, `*FO`)
  *   — those do not come in halves in this squadron's vocabulary. Medical
  *   USED to be in this list; the owner's half-day medical inputs (17 Aug 26)
  *   moved it to the portioned side.
@@ -171,10 +178,10 @@ export function parseCell(raw: string | undefined | null): Cell | null {
  * The canonical notation for a cell — the asterisk sits where the time sits.
  *
  * Mirrors `parseCell`'s strictness rather than only its happy path: that
- * parser refuses to read `*FS` back as a portioned non-leave marker, so a
+ * parser refuses to read `*FO` back as a portioned non-leave marker, so a
  * caller that hands `formatCell` a non-'full' portion on a non-leave type is
  * not writing a rare cell, it is holding a `Cell` that could never have come
- * from `parseCell` in the first place. Emitting `'*FS'` for it would be a
+ * from `parseCell` in the first place. Emitting `'*FO'` for it would be a
  * string that looks legitimate right up until it round-trips through
  * `parseCell` and silently vanishes to `null` — a corrupt leave balance
  * discovered nowhere near the bug that caused it. Throwing at the point the
@@ -230,8 +237,10 @@ export interface DayCode {
 }
 
 // Everything below derives a `DayCode` from a parsed `Cell` rather than
-// having one hand-written per row, which is what let `AM`/`PM`/`HO` sneak in
-// as if they were codes of their own rather than a leave type's portion.
+// having one hand-written per row, which is what let `AM`/`PM`/the old
+// taken-half `HO` sneak in as if they were codes of their own rather than a
+// leave type's portion. (Today's `HO` is the earned-credit marker — see the
+// header note — and lives in SC_DUTY_LABELS, not here.)
 function dayCodeFor(cell: Cell): DayCode {
   const { type, portion } = cell
 
@@ -276,10 +285,11 @@ function dayCodeFor(cell: Cell): DayCode {
     return { code: type, label: nonLeaveLabel, removes: 1, spends: null, earnsOil: 0, bid: false, duty: false }
   }
 
-  // Only FS/HS remain, guaranteed by parseCell already having rejected
-  // anything else. SC duty removes nobody from flying by itself — `duty:
-  // true` is what excludes them, on their own line, rather than `removes`
-  // hiding them inside the leave shortfall the way the old sheet did.
+  // Only FO/HO remain, guaranteed by parseCell already having rejected
+  // anything else. An OIL credit removes nobody from flying by itself —
+  // `duty: true` is what excludes them, on their own line, rather than
+  // `removes` hiding them inside the leave shortfall the way the old sheet
+  // did.
   return {
     code: type,
     label: SC_DUTY_LABELS[type],
@@ -307,12 +317,13 @@ export function isDuty(code: string | undefined | null): boolean {
 // code the catalogue doesn't, and never drift from what a cell parses to —
 // the same one-source rule the swatch classes already follow.
 //
-// FS/HS lead, in their own group, because they are the ONLY codes that live
+// FO/HO lead, in their own group, because they are the ONLY codes that live
 // here and are never typed on the Inputs page: they are credited
-// automatically from a published weekend / public-holiday duty on the
-// schedule (the OIL pass), so a reader who only knows the Inputs vocabulary
-// has nowhere else to look them up. Everything else mirrors an Inputs entry
-// and is here only so the grid's two-letter shorthand has a key.
+// automatically from published weekend / public-holiday work on the
+// schedule, or claimed on a Duty & commitments input (the OIL pass), so a
+// reader who only knows the Inputs vocabulary has nowhere else to look them
+// up. Everything else mirrors an Inputs entry and is here only so the
+// grid's two-letter shorthand has a key.
 export interface GlossaryRow { show: string; mean: string }
 export interface GlossaryGroup { group: string; onlyHere?: boolean; rows: GlossaryRow[] }
 const cap = (s: string): string => s.charAt(0).toUpperCase() + s.slice(1)
@@ -321,8 +332,8 @@ export const CODE_GLOSSARY: GlossaryGroup[] = [
     group: 'Shown here only — not on the Inputs page',
     onlyHere: true,
     rows: [
-      { show: 'FS', mean: cap(SC_DUTY_LABELS.FS) + ' — earns a full day off in lieu. Credited automatically from a weekend or public-holiday duty on the schedule, not typed here.' },
-      { show: 'HS', mean: cap(SC_DUTY_LABELS.HS) + ' — earns half a day off in lieu, the same way.' },
+      { show: 'FO', mean: cap(SC_DUTY_LABELS.FO) + ' — more than 6 hours worked on a weekend or public holiday earns a full day off in lieu. Credited automatically from the published schedule, or confirmed on a Duty & commitments input — not typed here.' },
+      { show: 'HO', mean: cap(SC_DUTY_LABELS.HO) + ' — 6 hours or less worked earns half a day off in lieu, the same way.' },
     ],
   },
   {

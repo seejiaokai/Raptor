@@ -14,14 +14,14 @@
 // leave visible on the person's own row.
 //
 // OIL EARNED by working IS here now (sync wire 4, 17 Aug 26) — and it is
-// derived, not posted: an FS/HS cell on the grid is the record that the
+// derived, not posted: an FO/HO cell on the grid is the record that the
 // duty stood, and each one's `earnsOil` (codes.ts) is summed straight into
 // the OIL balance below. A ledger entry for the same fact would be the
 // second record this header warns against. The standalone spec's
 // knock-off-time sketch (later than 14:30 credits 1.0) is superseded by the
 // owner's scheduled-hours rule, which lives on the Raptor side
 // (`engine/oil.ts`, VCONF.oilFullMin) — this module only ever sees the
-// FS or HS verdict, wherever the cell came from: the sync wire at publish,
+// FO or HO verdict, wherever the cell came from: the sync wire at publish,
 // a hand-typed cell, or the seed.
 
 import type { Grid } from './availability'
@@ -125,12 +125,12 @@ export function drawnFrom(
 }
 
 /**
- * OIL earned by duty stood on a non-working day, **across every leave war**
- * — the credit side of the FS/HS cells the sync wire (or a hand) writes.
+ * OIL earned by work stood on a non-working day, **across every leave war**
+ * — the credit side of the FO/HO cells the sync wire (or a hand) writes.
  * A list of sources for the same reason `drawnFrom` takes one: OIL earned
  * standing a December weekend still belongs to the man in January. No state
- * gate — FS/HS are not bid (`bid: false`), so there is no refused state to
- * exclude; the cell existing is the duty having stood.
+ * gate — FO/HO are not bid (`bid: false`), so there is no refused state to
+ * exclude; the cell existing is the work having stood.
  */
 export function earnedOil(sources: LeaveSource[], personId: string): number {
   let total = 0
@@ -256,7 +256,7 @@ const balParts = (counter: CounterName, earns: boolean) => (c: FigureCtx, p: str
     { label: 'opening figure', value: c.openings[p]?.[counter] ?? 0 },
     { label: 'granted', value: grantedTo(c.ledger, p, counter) },
   ]
-  if (earns) parts.push({ label: 'earned by weekend/PH duty', value: earnedOil(c.sources, p) })
+  if (earns) parts.push({ label: 'earned by weekend/PH work', value: earnedOil(c.sources, p) })
   parts.push({ label: 'taken', value: -drawnFrom(c.sources, p, counter) })
   return parts
 }
@@ -288,7 +288,7 @@ export const FIGURES: readonly Figure[] = Object.freeze([
   // move nothing anyone can see in the frozen column. A saved figure order
   // from before this id existed shows it appended at the end (orderedFigures'
   // tail rule) rather than losing it.
-  { id: 'oilbal', label: 'OIL BAL', kind: 'bal', desc: 'balance available to take', legend: 'earned by weekend/PH duty + granted − taken', value: (c, p) => balanceOf(c.openings, c.ledger, c.sources, p, 'oil'), parts: balParts('oil', true) },
+  { id: 'oilbal', label: 'OIL BAL', kind: 'bal', desc: 'balance available to take', legend: 'earned by weekend/PH work + granted − taken', value: (c, p) => balanceOf(c.openings, c.ledger, c.sources, p, 'oil'), parts: balParts('oil', true) },
   { id: 'off', label: 'OFF USED', kind: 'con', desc: 'days taken', value: (c, p) => takenOf(c.sources, p, 'OFF') },
   { id: 'ccl', label: 'CCL USED', kind: 'con', desc: 'days taken', value: (c, p) => takenOf(c.sources, p, 'CCL') },
   { id: 'pl',  label: 'PL USED',  kind: 'con', desc: 'days taken', value: (c, p) => takenOf(c.sources, p, 'PL') },

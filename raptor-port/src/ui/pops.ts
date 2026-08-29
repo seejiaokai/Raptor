@@ -44,6 +44,13 @@ export function setDraftsEdit(v: null | { di: number, id?: string }) { DRAFTSEDI
    the very fields the dialog exists to change. */
 export let INPEDIT: any = null
 export function setInpEdit(r: any) { INPEDIT = r }
+/* The OIL-ask hand-off (owner, 28 Aug 26 — the bell's "review your weekend/PH
+   input" tap): the IID of the input whose OIL question should open as soon as
+   the editor mounts on that row. The iid, never the row object — the tap may
+   land after an undo reminted every row, and InputEditor re-resolves through
+   inpById at open. One-shot: the editor clears it as it consumes it. */
+export let OILASK: string | null = null
+export function setOilAsk(iid: string | null) { OILASK = iid }
 /* The supporting-document viewer (owner, 27 Aug 26) — every user may view
    every input's document, so this carries only WHICH input's paperwork is on
    screen: the INPUT OBJECT, for the same reason INPEDIT holds the object —

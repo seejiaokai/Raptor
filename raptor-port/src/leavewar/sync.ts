@@ -22,17 +22,20 @@
 // reaches a fixed point. A SYNCING flag guards re-entrancy on top — every
 // store write notifies subscribers synchronously, and this module is one.
 
-import { INPUTS, DATES, baseYear, dateOrd, inpId, inpWin, isDownchit, isLeave, withRemarksTail } from '../engine/inputs'
+import { INPUTS, DATES, baseYear, dateOrd, inpId, inpWin, isAway, isDownchit, isLeave, oilAsks, withRemarksTail } from '../engine/inputs'
 import { ME } from '../state/auth'
 import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
-import { dayApproved, dayCurVer, daySnapOf } from '../engine/publish'
-import { dayOilCredits } from '../engine/oil'
+import { dayApproved, dayCurVer, dayCurVerIn, daySnapIn, daySnapOf } from '../engine/publish'
+import { dayOilSpans, inputOilAmt, envMin, uniformOil } from '../engine/oil'
+import { stashKeys, stashGet } from '../engine/weekstash'
+import { CURWEEK } from '../engine/waves'
 import { validate } from '../engine/validate'
 import { notify as raptorNotify, subscribe as raptorSubscribe, writeInputsBatch } from '../state/store'
 import {
   addDays,
   columnKindFor,
+  inSquadron,
   isWeekend,
   outboundToRaptor,
   parseCell,
@@ -420,7 +423,7 @@ export function retractLwRow(row: any): void {
    SAVED, the wrong record under the tapped cell's header. With the code the
    match is the row that actually derives the cell: same leave type, exact
    portion when one matches, and the lw-tagged row (the one the war minted)
-   outranking a plain one. A code that is not a leave at all (an FS/HS duty
+   outranking a plain one. A code that is not a leave at all (an FO/HO duty
    credit) matches nothing — that cell has no note to edit. Callers without
    a cell in hand keep the date-only walk. */
 export function leaveInputAt(personId: string, iso: string, code?: string): any | null {
@@ -587,16 +590,17 @@ export function runInbound(): void {
 
     /* Reverse: a Raptor-owned cell no live input still covers was DELETED on
        the Inputs page — clear it (and only it: clearRaptorCell refuses
-       anything Leave War has taken back over). An owned FS/HS cell is NOT
-       ours to garbage-collect: the OIL pass wrote it from a published duty,
-       not from an input, so no input covering it is its normal state — the
-       ownership marker is shared, the vocabulary is the partition. */
+       anything Leave War has taken back over). An owned FO/HO cell is NOT
+       ours to garbage-collect: the OIL pass wrote it from published work or
+       an acknowledged input claim, not from a leave input, so no leave input
+       covering it is its normal state — the ownership marker is shared, the
+       vocabulary is the partition. */
     for (const war of getState().wars) {
       for (const [person, row] of Object.entries(war.states)) {
         for (const [date, rec] of Object.entries(row)) {
           if (rec.source !== 'raptor') continue
           const code = war.grid[person]?.[date]
-          if (code === 'FS' || code === 'HS') continue
+          if (code === 'FO' || code === 'HO') continue
           if (desired.has(`${person}|${date}`)) continue
           clearRaptorCell(person, date)
         }
@@ -617,8 +621,10 @@ export function runInbound(): void {
    flag, or an event word typed on it whose type is tagged "off day" (the
    owner's own input path for holidays, seeded as `PH`). A date no war holds
    can still be a weekend, but never a holiday: there is nowhere to have
-   filed one. */
-function isNonWorkingISO(date: string): boolean {
+   filed one. EXPORTED since 28 Aug 26 — the input ask-flow (oilAskPlan
+   below, the OilConfirm sheet, the bell's pending scan) all read the SAME
+   answer, so "is this day applicable" can never fork. */
+export function isNonWorkingISO(date: string): boolean {
   if (isWeekend(date)) return true
   const war = warHolding(getState().wars, date)
   if (!war) return false
@@ -628,30 +634,222 @@ function isNonWorkingISO(date: string): boolean {
   return columnKindFor(getState().eventDefs, day, war.period.bands ?? []) === 'off'
 }
 
-/** The credits a published, non-working day earns right now: person|isoDate
- *  -> FS/HS. Computed from the ISSUED snapshot, not the live day — an issued
- *  day is the squadron's word that the duty stood, so a draft edit after
- *  publish moves nothing until it is published too (the AL/reissue paths),
- *  which is also where reverse-and-replace naturally lives: the snapshot
- *  changes, the diff below follows it. */
-function desiredOilCells(): Map<string, 'FS' | 'HS'> {
-  const out = new Map<string, 'FS' | 'HS'>()
+/* THE INPUT ASK-FLOW'S PLAN (owner, 28 Aug 26): which of a duty-&-commitments
+   input's covered days are non-working, and what the input's own hours would
+   earn on each — the pure body BOTH the OilConfirm sheet and the save gate
+   read, so what is asked and what is credited cannot disagree (the
+   upchitEffects precedent). One entry per applicable day; the amount is the
+   input's own standing (all-day = FO, else its length under oilFullMin) —
+   the CELL finally posted may still upgrade when published schedule work on
+   the same day stretches its envelope (desiredOilCells). Walks label→ISO exactly as
+   runInbound does, same 400-day cap. */
+export function oilAskPlan(row: { person?: any; date: string; endDate?: string; yr?: any; allday?: any; s?: any; e?: any }): { iso: string; amt: 0.5 | 1 }[] {
+  const out: { iso: string; amt: 0.5 | 1 }[] = []
+  const amt = inputOilAmt(row.allday, row.s, row.e)
+  if (amt == null) return out
+  const start = labelToISO(row.date, row.yr)
+  if (!start) return out
+  let end = row.endDate ? labelToISO(row.endDate, row.yr) ?? start : start
+  if (end < start) end = start
+  let n = 0
+  for (let d = start; d <= end && n < 400; d = addDays(d, 1), n++) {
+    if (isNonWorkingISO(d)) out.push({ iso: d, amt })
+  }
+  return out
+}
+
+/* THE BELL'S PENDING SCAN (owner, 28 Aug 26 — "it will notify the applicable
+   user based on the notification tab to review if the input deserves an
+   applicable HO or FO"): every duty-&-commitments input of this person with
+   at least one applicable (non-working) covered day the owner has NOT
+   answered yet — a missing key in row.oil; an explicit 0 IS an answer. A
+   DERIVED predicate on purpose (the bugAlert shape): it self-heals — answer
+   the days, or move the input, and the row stops matching with no clearing
+   discipline — and it recomputes the moment Leave War marks a PH after the
+   fact, which is the whole point. Dormant rows ask nothing: the scheduler
+   removed that commitment. Returns the first pending day per row so the
+   bell's tap can land the editor on the exact question (iid, never the row
+   object — undo re-mints rows). */
+export function oilPendingFor(personId: any): { iid: string; iso: string }[] {
+  const out: { iid: string; iso: string }[] = []
+  if (!personId) return out
+  for (const row of INPUTS) {
+    if (row.person !== personId || !oilAsks(row.type) || row.acc === 'r') continue
+    const answered = (row.oil ?? {}) as Record<string, number>
+    const hit = oilAskPlan(row).find(p => answered[p.iso] == null)
+    if (hit && row.iid) out.push({ iid: row.iid, iso: hit.iso })
+  }
+  return out
+}
+
+/* Everyone an ALL / ALL AVAIL puck stands for on a non-working day's event
+   (owner, 28 Aug 26 — "it will count everyone who is available for that
+   event"): AIRCREW MINUS SANS, the owner's pick — no ground crew Personnel,
+   no SANS aircrew, never a sentinel or an archived body — minus anyone an
+   away-making input (leave, medical, OD — the palette's own isAway) takes
+   out of the event's window. The war grid needs no separate read: an
+   approved war-side leave exists as an outbound-minted input too, so INPUTS
+   is the one absence record this consults. */
+function availableFor(iso: string, win: [number, number]): string[] {
+  const out: string[] = []
+  const isoOrd = +iso.replace(/-/g, '')
+  /* the Leave War body, for the posting window (bug pass, 28 Aug 26): a
+     person posted out WITHOUT the archive switch — or not yet posted in —
+     still holds a Raptor body, and expanding them under an ALL puck would
+     mint a credit the matrix hides behind its not-yet-arrived blank. The
+     same inSquadron read the manning counts make. */
+  const lwById = new Map(getState().people.map(p => [p.id, p]))
+  for (const id of Object.keys(PEOPLE)) {
+    const p: any = (PEOPLE as any)[id]
+    if (!p || p.special || p.archived || p.pers || p.san) continue
+    const lw = lwById.get(id)
+    if (lw && !inSquadron(lw, iso)) continue
+    const away = INPUTS.some((inp: any) => {
+      if (inp.person !== id || !isAway(inp)) return false
+      const a = dateOrd(inp.date, inp.yr)
+      if (a == null) return false
+      const b = inp.endDate ? dateOrd(inp.endDate, inp.yr) ?? a : a
+      if (isoOrd < a || isoOrd > b) return false
+      const w = inpWin(inp)
+      return !!w && w[0] < win[1] && win[0] < w[1]
+    })
+    if (!away) out.push(id)
+  }
+  return out
+}
+
+/* The ISO date of day di in the week whose Monday is v (dd/mm/yyyy — the
+   stash's own key). Pure calendar arithmetic on the key, so a stashed
+   week's dates can never disagree with the key it is filed under. */
+function weekDayISO(v: string, di: number): string | null {
+  const m = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/.exec(v)
+  if (!m) return null
+  return new Date(Date.UTC(+m[3], +m[2] - 1, +m[1] + di)).toISOString().slice(0, 10)
+}
+
+/* A stashed week's model + publish state, parsed ONCE per stored blob —
+   runOilPass runs on every notify and must not re-parse unchanged weeks
+   each time. Cached by the blob string's own REFERENCE identity (stashPut
+   replaces the string, so a hit is proof nothing changed; a generation
+   counter would collide across the tests' stashClear, which resets GEN).
+   The publish fields ride the snapshot under schedFields' short keys
+   (state/history.ts): ok=dayOK, cv=cur, a=als, o=orig, dr=drafts — mapped
+   here into the SCHED shape the parameterized publish readers take.
+   null = nothing usable stashed. */
+const STASH_OIL_CACHE = new Map<string, { src: string, wk: { days: any[], sc: any } | null }>()
+function stashOilWeek(v: string): { days: any[], sc: any } | null {
+  const src = stashGet(v)
+  if (!src) return null
+  const hit = STASH_OIL_CACHE.get(v)
+  if (hit && hit.src === src) return hit.wk
+  let wk: { days: any[], sc: any } | null = null
+  try {
+    const s = JSON.parse(src)
+    if (s && Array.isArray(s.d))
+      wk = { days: s.d, sc: { dayOK: s.ok, cur: s.cv, als: s.a, orig: s.o, drafts: s.dr } }
+  } catch (_e) { /* a bad blob reads as never stashed — never throw in a pass */ }
+  STASH_OIL_CACHE.set(v, { src, wk })
+  return wk
+}
+
+/** The credits a non-working day earns right now: person|isoDate -> FO/HO,
+ *  ONE ≤6h/>6h test per person per day over the ENVELOPE of BOTH sources —
+ *  first start to last end, gaps included (owner, 29 Aug 26: between two
+ *  commitments "they are still in squadron"; this replaced the 28 Aug
+ *  interval-union sum):
+ *  - the PUBLISHED schedule, from the ISSUED snapshot — an issued day is the
+ *    squadron's word that the work stood, so a draft edit after publish
+ *    moves nothing until it is published too (the AL/reissue paths), which
+ *    is also where reverse-and-replace naturally lives: the snapshot
+ *    changes, the diff below follows it;
+ *  - ACKNOWLEDGED duty-&-commitments inputs (row.oil — the ask-flow's
+ *    answers). Publication does not gate these: the owner's acknowledgment
+ *    is their gate. An answer only counts while its day is still covered by
+ *    the row's dates AND still reads non-working — a moved input or a
+ *    revoked PH leaves the old yes inert, and the reverse sweep collects
+ *    the cell. Nothing acknowledged = nothing credited, structurally.
+ *
+ *  The schedule half reads EVERY week, not just the loaded one (owner,
+ *  29 Aug 26 — "pull the full day schedule regardless of what's on
+ *  screen"): the live DAYS/SCHED for the loaded week, and the per-week
+ *  session stash (engine/weekstash.ts) for every other week the user has
+ *  visited, whose snapshot carries the same publish state under
+ *  schedFields' short keys. A never-visited week has published nothing, so
+ *  live + stash IS the whole session. Before this, the reverse sweep
+ *  quietly COLLECTED a published weekend's credits the moment the user
+ *  navigated to another week — the recorded known-issue, now closed. */
+function desiredOilCells(): Map<string, 'FO' | 'HO'> {
   const { people, wars } = getState()
   const known = new Set(people.map(p => p.id))
+  /* person|iso -> that day's work spans; their ENVELOPE faces the threshold */
+  const pool = new Map<string, [number, number][]>()
+  const add = (person: string, iso: string, spans: [number, number][]) => {
+    /* The same unknown-person guard both leave directions carry: a row
+       naming someone the roster does not hold (ground crew, a sentinel)
+       must not become a grid row no matrix draws. */
+    if (!known.has(person) || !spans.length) return
+    const k = `${person}|${iso}`
+    const arr = pool.get(k) ?? []
+    arr.push(...spans)
+    pool.set(k, arr)
+  }
   for (let di = 0; di < DAYS.length; di++) {
     if (!dayApproved(di)) continue
     const iso = labelToISO(DATES[di])
     if (!iso || !warHolding(wars, iso)) continue
     if (!isNonWorkingISO(iso)) continue
     const snap = daySnapOf(di, dayCurVer(di))
-    const credits = dayOilCredits(snap ? snap.d : DAYS[di])
-    for (const [person, amt] of Object.entries(credits)) {
-      /* The same unknown-person guard both leave directions carry: a duty row
-         naming someone the roster does not hold (ground crew, a sentinel)
-         must not become a grid row no matrix draws. */
-      if (!known.has(person)) continue
-      out.set(`${person}|${iso}`, amt === 1 ? 'FS' : 'HS')
+    const spans = dayOilSpans(snap ? snap.d : DAYS[di], { expandAll: win => availableFor(iso, win) })
+    for (const [person, sp] of Object.entries(spans)) add(person, iso, sp)
+  }
+  /* every OTHER week, out of its stash entry — the loaded week is skipped
+     (its stash is at best a stale copy of the live model read above) and a
+     blob that fails to parse reads as never stashed, the stashDays rule.
+     The ISO comes from the week key + day index directly (v is the Monday,
+     dd/mm/yyyy) — no label parsing, no year-convention trap. */
+  for (const v of stashKeys()) {
+    if (String(v) === String(CURWEEK)) continue
+    const wk = stashOilWeek(String(v))
+    if (!wk) continue
+    for (let di = 0; di < 7; di++) {
+      if (!(wk.sc.dayOK || {})[di]) continue
+      const iso = weekDayISO(String(v), di)
+      if (!iso || !warHolding(wars, iso)) continue
+      if (!isNonWorkingISO(iso)) continue
+      const snap = daySnapIn(wk.sc, di, dayCurVerIn(wk.sc, di))
+      /* same fallback rule as the live loop: an approved day without a
+         snapshot (legacy/session data) reads its stashed model */
+      const d = snap ? snap.d : wk.days[di]
+      if (!d) continue
+      const spans = dayOilSpans(d, { expandAll: win => availableFor(iso, win) })
+      for (const [person, sp] of Object.entries(spans)) add(person, iso, sp)
     }
+  }
+  for (const row of INPUTS) {
+    if (!row.oil || !oilAsks(row.type) || row.acc === 'r') continue
+    const a = dateOrd(row.date, row.yr)
+    if (a == null) continue
+    const b = row.endDate ? dateOrd(row.endDate, row.yr) ?? a : a
+    /* the acknowledged window, one span per answered day: all-day is the
+       whole day, a timed row its rolled length — the same reading the ask's
+       own suggestion (inputOilAmt) priced */
+    const win: [number, number] = row.allday || row.s == null || row.e == null
+      ? [0, 1439]
+      : [row.s, row.e < row.s ? row.e + 1440 : row.e]
+    if (win[1] <= win[0]) continue
+    for (const [iso, amt] of Object.entries(row.oil as Record<string, number>)) {
+      if (!(typeof amt === 'number' && amt > 0)) continue
+      const o = +String(iso).replace(/-/g, '')
+      if (!(o >= a && o <= b)) continue                    // moved dates → stale yes is inert
+      if (!warHolding(wars, iso)) continue
+      if (!isNonWorkingISO(iso)) continue                  // a day that stopped being PH stops crediting
+      add(row.person, iso, [win])
+    }
+  }
+  const out = new Map<string, 'FO' | 'HO'>()
+  for (const [k, spans] of pool) {
+    const amt = uniformOil(envMin(spans))
+    if (amt) out.set(k, amt === 1 ? 'FO' : 'HO')
   }
   return out
 }
@@ -679,17 +877,17 @@ export function runOilPass(): void {
       }
     }
 
-    /* Reverse-and-replace: an owned FS/HS cell no published duty still earns
+    /* Reverse-and-replace: an owned FO/HO cell no published work still earns
        — the day was reopened, the man came off the roster, the times shrank,
        an AL moved him — goes, and the forward half above has already written
-       whatever replaces it. Only FS/HS: the leave cells under the same
+       whatever replaces it. Only FO/HO: the leave cells under the same
        ownership marker are inbound's, the mirror of its skip. */
     for (const war of getState().wars) {
       for (const [person, row] of Object.entries(war.states)) {
         for (const [date, rec] of Object.entries(row)) {
           if (rec.source !== 'raptor') continue
           const code = war.grid[person]?.[date]
-          if (code !== 'FS' && code !== 'HS') continue
+          if (code !== 'FO' && code !== 'HO') continue
           if (desired.has(`${person}|${date}`)) continue
           clearRaptorCell(person, date)
         }
@@ -904,5 +1102,31 @@ export function wireLeaveWarSync(): void {
        "off day", a war created over the loaded week — so a Leave War change
        can change what a published Saturday earns. */
     runOilPass()
+    /* And the same change can create a PENDING OIL QUESTION out of thin air
+       (owner, 28 Aug 26): mark a PH after an input already covers that day
+       and the applicable user must be told. Nothing on the RAPTOR side
+       repaints on a Leave War write, so the bell would stay dark until an
+       unrelated schedule edit happened along — the confirmed missing-notify
+       gap. A raptor notify is fired ONLY when the pending picture actually
+       changed (a signature over every person's pending iid|iso pairs, the
+       reprojectRoster change-guard idiom), so this lane's own echo finds an
+       unchanged signature and the loop terminates. */
+    /* Skipped mid-pass (bug pass, 28 Aug 26): the reconcilers' own per-cell
+       store notifies re-fire this callback while SYNCING holds — the passes
+       above all return at the door, and recomputing the signature once per
+       ingested cell of a long leave span is pure waste. The top-level
+       notify that follows the writer's finish runs it exactly once. */
+    if (SYNCING) return
+    const sig = INPUTS
+      .filter((r: any) => oilAsks(r.type) && r.acc !== 'r' && r.iid)
+      .flatMap((r: any) => {
+        const answered = (r.oil ?? {}) as Record<string, number>
+        return oilAskPlan(r).filter(p => answered[p.iso] == null).map(p => `${r.iid}|${p.iso}`)
+      })
+      .sort().join(';')
+    if (sig !== lastPendingSig) { lastPendingSig = sig; raptorNotify() }
   })
 }
+/* the last pending-OIL signature the lw lane saw — module state, compared
+   before the cross-lane notify above so it can never ping-pong */
+let lastPendingSig: string | null = null

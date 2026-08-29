@@ -155,7 +155,10 @@ const URL = process.env.PORT_URL || 'http://localhost:4173/'
     const r = await p.evaluate(k => {
       const pk = [...document.querySelectorAll('#eRoster .rpuck[data-person]')]
       const ok = pk.filter(x => !x.classList.contains('no')).map(x => x.dataset.person)
-        .filter(id => !/allavail|allsans/i.test(id))
+        /* sentinel placeholders are never validated men — ALL joined ALL
+           AVAIL on 28 Aug 26, so the filter matches the whole id, not a
+           substring, or the new puck reads as a currency-less pilot */
+        .filter(id => !/^(allavail|allsans|all)$/i.test(id))
       const rules = slotRules(k)
       return {
         aar: rules.aar || '-',
