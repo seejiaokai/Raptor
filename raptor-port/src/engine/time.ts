@@ -2,6 +2,19 @@ import { VCONF } from './rules'
 export const toMin=(t:any)=>{const[h,m]=t.split(':').map(Number);return h*60+m};
 export const fromMin=(m:any)=>String(Math.floor(m/60)%24).padStart(2,'0')+':'+String(m%60).padStart(2,'0');
 export function hhmm(m:any){return String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0');}
+/* THE 4-DIGIT DISPLAY CLOCK (owner, 29 Aug 26 — "no : between numbers. Just
+   0800 for e.g in 24 hour format"). The model stores a time either way: a
+   template mints '0700' (dutytpl.tplTime), while an edit through txtSet writes
+   '07:00' (hhmm) — so the same duty block prints one row '08:00' and the next
+   '0900', which is exactly what the owner photographed. The reference-parity
+   gate pins hhmm / fmtT / fmtTxt to the COLON form (they carry the engine's
+   computed text — warnings, brief, the CSV), so the fix is a DISPLAY-only
+   formatter the Scheduler Board's own renderers wrap their time cells in; the
+   stored value and every engine reader are untouched (parseHM takes either
+   form). hhmm4 takes minutes like hhmm; fmtHM4 takes a stored time string and
+   blanks a non-time so an empty cell stays empty rather than reading '0000'. */
+export const hhmm4=(m:any)=>hhmm(m).replace(':','');
+export function fmtHM4(s:any){const m=parseHM(s);return m==null?'':hhmm4(m);}
 /* A window whose end reads EARLIER than its start has crossed midnight — an
    overnight duty, a night sortie landing after 00:00. Left as-is the interval
    is inverted and `overlap` can never match it, which silently switched every

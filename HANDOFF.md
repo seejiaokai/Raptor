@@ -363,6 +363,20 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
 
 ## Known issues / open work
 
+- **The WEEK view + warnings + CSV still print colon times, by design (29 Aug 26).**
+  The owner asked for 4-digit (`0800`, no colon) "throughout the app" and the Scheduler
+  Board now does that for every time cell (see CLAUDE.md §Stable decisions, and
+  `docs/ui-contracts.md` §the board reads 4-digit). But the Edit/View Schedule WEEK,
+  the warning/advisory/note text, and the CSV export still render through
+  `fmtT`/`fmtTxt`/`hhmm`, which the read-only reference gate PINS to colon
+  (`reference/tfin.js`: `fmtT('0745')==='07:45'`, `hhmm(760)==='12:40'`,
+  `fmtTxt('0930')===fmtT('0930')`, plus the source-text of the week's `heal()` call).
+  Converting them means deliberately editing those reference assertions — the safety-net
+  that guards the whole flagging engine — so it needs owner sign-off, not a silent flip.
+  If he wants it: flip `fmtT`+`fmtTxt` to 4-digit (leaves `hhmm` alone → week cells go
+  4-digit but warnings/CSV stay colon) and update the two `tfin.js` clauses that assert
+  their colon output; a full "no colon anywhere including warnings/CSV" also needs `hhmm`
+  and its many parity-checked warning-string assertions changed — a much larger pass.
 - **The design fonts are still NOT loaded — deferred, must be SELF-HOSTED (29 Aug 26
   pt.3).** `scheduler.css` names Inter Tight / Barlow Condensed / JetBrains Mono in ~130
   places but nothing ever loaded them, so every browser falls back to system fonts and

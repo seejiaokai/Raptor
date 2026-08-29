@@ -2,7 +2,7 @@
    sbProgPanel, sbSimPanel, sbSlot, labelToTitle/titleToLabel — verbatim. */
 import { INPUTS, inpMeta, inputCoversDate, inpLabel, inpId, inpTimeText, isPersonal, isUnavail, isSansAvail, isUpchit, sansBadge } from '../engine/inputs'
 import { PEOPLE, nameToId } from '../engine/people'
-import { hhmm } from '../engine/time'
+import { hhmm4, fmtHM4 } from '../engine/time'
 import { sevOf, chipOf } from '../engine/validate'
 import { whoArr } from '../engine/slots'
 import { alAttr } from '../engine/publish'
@@ -11,15 +11,20 @@ import { esc, PIOPEN, notePub } from '../state/view'
 import { canEditSched } from '../state/auth'
 import { ORD, puck, rowCls, accCtl, inpEditLabel, lateTag, lateChip, lateRowCls, lateRowTitle, dormRowCls, dormRowTitle, sansCardsHTML, notePubTog, ADDZ } from './html'
 
-/* ONE CLOCK ON THE BOARD (owner, 16 Aug 26). Aircrew-submitted input times
-   arrive as minutes and format with a colon (hhmm → "09:00"), but every
-   scheduler-typed time on this board — brief, take-off, land, duty and ground
-   start/end — reads 4-digit ("0900"). Printing the input rows the board's way
-   keeps one screen on one clock. The edit box still ACCEPTS either form
-   (setInpField's hmOK), so typing is unchanged; only the printed value differs.
-   Scoped to the board — the week's input rows and the aircrew Inputs page keep
-   their own colon format (both a different surface, neither the ask). */
-const hm4 = (m: any) => hhmm(m).replace(':', '')
+/* ONE CLOCK ON THE BOARD (owner, 16 Aug 26; completed 29 Aug 26). Every time
+   this board prints reads 4-digit ("0900"), no colon — brief, take-off, land,
+   duty / sim / ground / programme start-end, the wave in-time note and the
+   aircrew input rows alike. The 16 Aug pass only reached the input rows (hm4,
+   below); the scheduler-typed cells still echoed the raw stored string, and
+   the model stores a duty time BOTH ways — a template mints '0700', an edit
+   through txtSet writes '07:00' — so one duty block printed '08:00' beside
+   '0900' (owner's photo, 29 Aug 26). The board renderers now wrap every time
+   cell in engine/time's fmtHM4 / hhmm4 (the shared display clock); the STORED
+   value and every engine reader are untouched (parseHM takes either form), and
+   the edit box still ACCEPTS either form (hmOK), so typing is unchanged.
+   The DESKTOP week keeps colon: fmtT / fmtTxt (its cell + heal formatters) are
+   pinned to the colon form by the read-only reference-parity gate, so flipping
+   the week is a deliberate change to that safety-net, not a board wrap. */
 const inpHM = (inp: any, field: any) => inpTimeText(inp, field).replace(':', '')
 
 /* ---- reorder grip + nudge buttons (owner, 8 Aug 26) -----------------------
@@ -125,7 +130,7 @@ export function sbInputsHTML(d:any,di:any){
       ? `<span class="seat">${puck(inp.person,sevOf(di,inp.person),true,chipOf(di,inp.person))}</span>`
       : `<span class="itxt">${esc(inp.person)}</span>`;
     const t=inp.allday?(inp.endDate?`all day · till ${esc(inp.endDate)}`:'all day')
-                      :`${hm4(inp.s)} – ${hm4(inp.e)}`;
+                      :`${hhmm4(inp.s)} – ${hhmm4(inp.e)}`;
     return `<div class="sbi-row"><span class="sbi-t">${t}</span>${pk}`
       +`<span class="sbi-ty ${inTypeCls(inp.type)}" title="${esc(inp.type)}">${esc(inpLabel(inp))}</span>`
       +sbiRmk(inp)+`</div>`;
@@ -196,8 +201,8 @@ export function sbProgPanel(d:any,di:any,pv?:any,ro?:any){
         return String(nm||'').trim()?`<span class="itxt">${esc(nm)}</span>`:'';}).join('');
       s+=`<div class="sb-arow c6r${rowCls(x)}"${rowMove(`mv:p.${di}.${ri}`,ro)}>`+sbGrip(ro)
         +`<input class="ain" data-bfld="ap:${di}.${ri}.prog"${alAttr(`ap:${di}.${ri}.prog`)}${ro?' disabled':''} value="${esc(x.prog||'')}">`
-        +`<input class="atm" data-bfld="ap:${di}.${ri}.str"${alAttr(`ap:${di}.${ri}.str`)}${ro?' disabled':''} value="${esc(x.str||'')}">`
-        +`<input class="atm" data-bfld="ap:${di}.${ri}.end"${alAttr(`ap:${di}.${ri}.end`)}${ro?' disabled':''} value="${esc(x.end||'')}">`
+        +`<input class="atm" data-bfld="ap:${di}.${ri}.str"${alAttr(`ap:${di}.${ri}.str`)}${ro?' disabled':''} value="${esc(fmtHM4(x.str))}">`
+        +`<input class="atm" data-bfld="ap:${di}.${ri}.end"${alAttr(`ap:${di}.${ri}.end`)}${ro?' disabled':''} value="${esc(fmtHM4(x.end))}">`
         /* no "all" ghost on an empty people cell (owner, 26 Aug 26 — "if no
            puck is there, just assume that no one is planned for that line").
            The engine already reads it that way (whoArr matches named people
@@ -283,7 +288,7 @@ function sbTxt(cls:any,path:any,v:any,ph:any,pv:any,extra?:any){
    hand-typed break cannot get in — a paste is the only way one arrives. */
 export function boxHTML(cls:any,attrs:any,v:any,ph:any){
   const p=ph?` placeholder="${ph}"`:'';
-  if(/(^|\s)(atm|tm)(\s|$)/.test(cls))return `<input class="${cls}" ${attrs} value="${esc(v||'')}"${p}>`;
+  if(/(^|\s)(atm|tm)(\s|$)/.test(cls))return `<input class="${cls}" ${attrs} value="${esc(fmtHM4(v))}"${p}>`;
   return `<textarea rows="1" class="${cls}" ${attrs}${p}>\n${esc(v||'')}</textarea>`;
 }
 /* a duty / sim / ground / programme remarks input, shown at ALL times now
@@ -486,7 +491,7 @@ function sbInpRow(di:any,inp:any,acc:any,pv:any,ro?:any,dt?:any){
     ? `<span class="seat"${seatable?` data-inpseat="${esc(inpId(inp))}"`:''}>${puck(inp.person,sevOf(di,inp.person),true,chipOf(di,inp.person))}</span>`
     : `<span class="itxt">${esc(inp.person)}</span>`;
   if(RO){
-    const t=inp.allday?'all day':`${hm4(inp.s)} – ${hm4(inp.e)}`;
+    const t=inp.allday?'all day':`${hhmm4(inp.s)} – ${hhmm4(inp.e)}`;
     return `<div class="sbi-row${acc&&inp.acc&&inp.acc!=='r'?' accd':''}${acc?dormRowCls(inp):''}"${acc?dormRowTitle(inp):''}><span class="sbi-t">${t}</span>${pk}`
       +inpEditLabel(inp,false,inpLabel(inp),`sbi-ty ${inTypeCls(inp.type)}`)
       +sbiRmk(inp,dt)+`</div>`;

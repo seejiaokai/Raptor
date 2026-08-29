@@ -1108,6 +1108,28 @@ subscribers.
   stay always-visible on a phone. The four sibling touches from that batch —
   the aircrew-tab gutter, board 4-digit input times, plural warnings, and the
   week's faded `Remarks` placeholder — STAND; only the ⋯ collapse was undone.
+- **The Scheduler Board reads 4-digit (`0800`), no colon — EVERY time cell**
+  (owner, 29 Aug 26 — "fix the inconsistent timing format throughout the app …
+  no : between numbers. Just 0800"). The 16 Aug "board 4-digit input times" pass
+  only reached the aircrew INPUT rows; the scheduler-typed cells still echoed the
+  raw stored string, and the model stores a time BOTH ways — a duty/sim/ground
+  template mints `0700` (`dutytpl.tplTime`), but an edit through `txtSet` writes
+  `07:00` (`hhmm`) — so one duty block printed `08:00` beside `0900` (owner's
+  photo). Fixed as DISPLAY-only: the board renderers wrap every time cell in
+  `engine/time.ts`'s shared `fmtHM4` (string) / `hhmm4` (minutes) — flying
+  br/to/ld (`board.ts`), duty/sim/ground/programme str-end + the wave in-time
+  note + the brief ghost (`board.ts`/`board-html.ts`, the `boxHTML` atm/tm
+  chokepoint). The STORED value, `hhmm`, `parseHM` and `txtSet` are UNCHANGED, so
+  parity stays **728/0** and the edit box still accepts either form.
+  **The DESKTOP/phone WEEK, the warning/advisory text, and the CSV export stay
+  colon on purpose** — they render through `fmtT`/`fmtTxt`/`hhmm`, which the
+  read-only reference gate PINS to the colon form (`reference/tfin.js`:
+  `fmtT('0745')==='07:45'`, `hhmm(760)==='12:40'`, `fmtTxt('0930')===fmtT('0930')`,
+  and the source-text of the week's `heal()` call). Flipping those is a deliberate
+  change to that safety-net, not a board wrap — do NOT change `fmtT`/`fmtTxt`/
+  `hhmm` to chase "no colon" without owner sign-off to touch the reference gate.
+  Don't add a second time formatter either — `fmtHM4`/`hhmm4` is the one display
+  clock. Placement: `docs/ui-contracts.md` §The board reads 4-digit.
 - **The flagging engine reads across week boundaries** (owner, 23 Aug 26 —
   "It is a continuous reading of the flagging engine. It doesn't just stay
   within a week"). Two rules used to compute strictly inside the loaded

@@ -672,13 +672,24 @@ by a test; pv-suppressed) · overall notes · overall programme · flying waves
 · **Duties** (`.sb-panel.duty`) · **Sims** (`.simr`, AMT/OFT rows, its
 planning note inside the panel) · **Ground Programme** (`.grnd`; the `· scheduler` qualifier was dropped 22 Aug 26)
 · **Personal Inputs** (`.pinp`, with the accept controls) · **Unavailable**
-(`.unav`). **Input times read 4-digit on the board** (owner, 16 Aug 26): the
-aircrew's submitted times are minutes and format with a colon everywhere else
-(`hhmm` → `09:00`), but the board's own scheduler-typed times are 4-digit, so
-`board-html.ts`'s `hm4`/`inpHM` strip the colon for the `.pinp`/`.unav`/`.sansav`
-rows (and the inputs summary) — display only; `setInpField`'s `hmOK` still
-accepts either form when typing, and the board revert/compare (`board.ts`) strip
-to match. The week's input rows and the aircrew Inputs page keep colon.
+(`.unav`). **Every time on the board reads 4-digit** (`0800`, no colon — owner,
+16 Aug 26 for the input rows; extended to all cells 29 Aug 26 — "no : between
+numbers. Just 0800"). The model stores a time either way (a duty/sim/ground
+template mints `0700` via `dutytpl.tplTime`; an edit through `txtSet` writes
+`07:00` via `hhmm`), and the 16 Aug pass only reformatted the aircrew INPUT rows
+— so the scheduler-typed cells still echoed the raw stored string and one duty
+block printed `08:00` beside `0900`. Now every board time cell wraps its value in
+`engine/time.ts`'s shared `fmtHM4` (stored string → `HHMM`) / `hhmm4` (minutes):
+the flying `.tm` br/to/ld (`board.ts`), the duty/sim/ground/programme `.atm`
+str-end (the `boxHTML` atm/tm branch + the `ap:` inline cells, `board-html.ts`),
+the wave in-time note and the brief-suggestion ghost. Display only — the STORED
+value, `hhmm`, `parseHM` and `txtSet` are untouched (so parity stays 728/0), and
+`hmOK` still accepts either form when typing. `inpHM` stays for the input rows.
+**Still colon by design:** the WEEK view (`html.ts` `fmtT`/`fmtTxt`), the
+warning/advisory/note text and the CSV export — all render through
+`fmtT`/`fmtTxt`/`hhmm`, which the read-only reference gate pins to the colon form
+(`reference/tfin.js`), so they cannot flip without a deliberate change to that
+safety-net. Don't add a second display formatter — `fmtHM4`/`hhmm4` is the one.
 The duty/sim/ground panels (added Aug 26) share the `c6r` grid
 (Item | Start | End | People | Rmks | ctl — **Duties says ROLE** where the
 other two say Item, its own `C6_DUTY` header, owner 10 Aug 26: a duty row
