@@ -303,6 +303,16 @@ in what this repo actually has rather than a generic checklist:
 
 Run from `raptor-port/`, not the repo root. All four, after any change:
 
+> **Background commands start at the REPO ROOT, not `raptor-port/`.** A
+> foreground command inherits the session's `raptor-port/` cwd, but a
+> `run_in_background` job launches a fresh shell at `/home/user/Raptor`, where
+> there is no `package.json` — so a bare `npm run test:e2e` (or any `npm`
+> script) fails INSTANTLY with `ENOENT … package.json`, and the wrapper's own
+> exit code can read 0, masking it. ALWAYS prefix a backgrounded gate with
+> `cd /home/user/Raptor/raptor-port && …`. This bit twice (test:e2e, 30 Aug 26)
+> and each miss wastes a full ~10-minute re-run.
+
+
 ```
 npm test                    # Vitest — must stay green
 npm run build               # typecheck + build

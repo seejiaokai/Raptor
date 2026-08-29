@@ -125,8 +125,41 @@ describe('intimeFold — the colon appears, the words stay', () => {
     expect(intimeFold('')).toBe('')
     expect(intimeFold(null)).toBe('')
   })
-  it('what the reader sees never moves across the fold', () => {
-    for (const s of ['0900H: IN TIME', 'RU 0845, VL 0915H', '900 show', 'FL240 at 1030'])
-      expect(intimeTime(intimeFold(s)), s).toBe(intimeTime(s))
+  /* the adversarial corpus for the free-text rewriter — every shape a phone
+     keyboard could produce in an in-time line */
+  const CORPUS = [
+    '0900H: IN TIME', 'RU 0845, VL 0915H', '900 show', 'FL240 at 1030',
+    '0900H: RU IN TIME, BRIEF 1000H', 'SHOW AT 1745H FOR WX',
+    '2590 THEN 0900 IN TIME', '2590: bad clock', '12:75 IN TIME',
+    '100 rounds', '245 pax', '2400H: IN TIME', '0000: IN TIME',
+    '0800hrs report', '0800-0900 window', '0800  0900', '0800 0900 1000',
+    '12345 block', 'A0900 glued', '0900A glued', 'brief 30 prior',
+    '', '   ', 'no digits here', '0900H:0930H', 'in at 9', 'at 60',
+  ]
+  it('SAFETY: what the reader reads never moves across the fold', () => {
+    /* the invariant the whole rules engine leans on — the fold may re-spell a
+       token but must never create, destroy or shift the report time */
+    for (const s of CORPUS)
+      expect(intimeTime(intimeFold(s)), JSON.stringify(s)).toBe(intimeTime(s))
+  })
+  it('is idempotent — a second fold is a no-op (guards the phantom-edit compare)', () => {
+    /* textedit.ts refuses a commit when nv === intimeFold(stored); that guard
+       only holds if folding twice equals folding once */
+    for (const s of CORPUS)
+      expect(intimeFold(intimeFold(s)), JSON.stringify(s)).toBe(intimeFold(s))
+  })
+  it('documents the fold on the edges a 3–4 digit token creates', () => {
+    /* an in-time line is a TIME carrier, so a bare 3-digit number gains a colon
+       (the reader already reads "100" as 01:00) — surprising for a count, but
+       consistent with what the engine does with the same line */
+    expect(intimeFold('100 rounds')).toBe('01:00 rounds')
+    /* a range in the prose folds both ends; both spaces of a double space survive */
+    expect(intimeFold('0800-0900 window')).toBe('08:00-09:00 window')
+    expect(intimeFold('0800  0900')).toBe('08:00  09:00')
+    /* 24:00 is left compact (the reader rejects hour 24), 5+ digits untouched,
+       a token glued to a letter untouched */
+    expect(intimeFold('2400H: IN TIME')).toBe('2400H: IN TIME')
+    expect(intimeFold('12345 block')).toBe('12345 block')
+    expect(intimeFold('0800hrs report')).toBe('0800hrs report')
   })
 })

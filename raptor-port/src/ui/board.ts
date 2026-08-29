@@ -9,7 +9,7 @@ import { waveInTime } from '../engine/events'
 import { WARN, validate, WCODE, wlbl } from '../engine/validate'
 import { hhmm, fmtHM, minus, parseHM } from '../engine/time'
 import { VCONF } from '../engine/rules'
-import { slotVal, txtGet, txtSet, acRef, rollCx, whoArr, unacceptInput } from '../engine/slots'
+import { slotVal, txtGet, txtSet, acRef, rollCx, whoArr, unacceptInput, TIME_TXT } from '../engine/slots'
 import { markEdit, markDeletion, deletionWasIssued, markStructuralAdd, alAttr, dayApproved, dayCurVer, dayPendCount, verLabel, nextAL } from '../engine/publish'
 import { logAction, ELOG } from '../engine/editlog'
 import { hideHistBub } from './histbubble'
@@ -1478,7 +1478,18 @@ export function boardTab(n: number) {
         const inp = inpById(id)
         if (inp) want = field === 'rmks' ? (inp.remarks || '') : inpTimeText(inp, field)
       }
-      if (iv !== want) ae.dispatchEvent(new Event('change', { bubbles: true }))
+      /* a TIME box SHOWS fmtHM(model) — a legacy compact '0900' reads '09:00' —
+         so compare the field to what the model would DISPLAY, not to its raw
+         stored form. Without the fold, stepping the day with an untouched legacy
+         box focused makes iv ('09:00') differ from want ('0900') and synthesises
+         a no-op `change`: it rewrites the model and logs a phantom History row
+         nobody typed (owner adversarial pass, 30 Aug 26). An untouched box then
+         reads iv === fmtHM(want) exactly, so it stays silent, while a real typed
+         value (raw iv) still differs and still commits on the way out. The
+         data-ifld branch needs none of this — inpTimeText already returns colon
+         off stored minutes, so its want matches the field. */
+      const shows = (ae.dataset.bfld != null && TIME_TXT.test(ae.dataset.bfld)) ? fmtHM(want) : want
+      if (iv !== shows) ae.dispatchEvent(new Event('change', { bubbles: true }))
     }
     document.querySelectorAll('.stmenu').forEach(x => {
       const off = (x as any)._offClick

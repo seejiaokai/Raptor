@@ -694,6 +694,16 @@ what keeps parity at 728/0). Typing accepts `800`/`0800`/`8:00`/`08:00`
 deliberate 4-digit survivor is the AREA window token (`0800-0900`,
 `atimeText`) — the reference app prints it compact and `tfin.js` pins that.
 Don't add a second display formatter — `fmtHM` is the one.
+**The day-step commit compares the box to the model's DISPLAY** (owner
+adversarial pass, 30 Aug 26): `board.ts boardTab` commits a still-focused time
+box when you navigate away, and it used to synthesise that `change` whenever the
+field text differed from the raw model. A folded box shows `09:00` over a legacy
+compact `0900`, so an *untouched* box then looked changed and minted a phantom
+History row on a step. It now compares the field to `fmtHM(model)` for a
+`TIME_TXT` cell, so an untouched legacy value stays silent while a real typed
+value still commits. The `data-ifld` (personal-input) branch needs no fold —
+`inpTimeText` reads colon off stored minutes already. Pinned in
+`audit-b-daystep.test.tsx` §Scenario 8.
 The duty/sim/ground panels (added Aug 26) share the `c6r` grid
 (Item | Start | End | People | Rmks | ctl — **Duties says ROLE** where the
 other two say Item, its own `C6_DUTY` header, owner 10 Aug 26: a duty row
