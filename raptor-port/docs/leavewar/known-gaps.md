@@ -116,14 +116,17 @@ Balances are computed and on screen. Two parts of §Counters are not built:
   scheduled-hours rule (an SC shift-window split beside a duty-hours sum),
   then by his 28 Aug uniform rule, which DELETED the SC shift-window half
   (`scShiftCredit` is gone — do not resurrect it). What runs now
-  (`engine/oil.ts`): pool each person's worked minutes for the day as an
-  interval union (`mergeMin`), one threshold — under `VCONF.oilFullMin`
+  (`engine/oil.ts`): a person's worked minutes for the day are the ENVELOPE
+  of everything they did — first start to last end, gaps included
+  (`envMin`; owner, 29 Aug 26 — between events "they are still in
+  squadron"; this replaced the 28 Aug interval-union sum), one threshold —
+  under `VCONF.oilFullMin`
   (361) is HO (0.5), at or over it FO (1.0) — across SC MAIN shifts, flying
   seats (report→debrief), sims, duty rows, ground and Common Programme
   rows, on weekends and days this app calls
   a holiday — `DayInfo.ph` or an 'off'-tagged event. Acknowledged
-  duty-&-commitments input claims (`row.oil`, the OilConfirm ask-flow) pool
-  into the same union. The credit lands as a
+  duty-&-commitments input claims (`row.oil`, the OilConfirm ask-flow)
+  stretch the same envelope. The credit lands as a
   raptor-owned FO/HO cell (FS/HS until the 28 Aug 26 rename), and the OIL
   balance is
   `opening + grants + earned − drawn`, `earned` derived straight from the

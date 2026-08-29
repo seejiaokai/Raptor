@@ -47,7 +47,9 @@ export const VCONF:any={briefLead:140, dur:85, step:60, dekit:30, minTurn:20, ti
   simLen:90,        // a sim row with no end time is assumed to run this long
   /* WEEKEND / PUBLIC-HOLIDAY WORK EARNS OIL (owner, 16-17 Aug 26; the ONE
      uniform rule since 28 Aug 26 — Leave War sync wire 4). Work stood on a
-     non-working day credits OIL in Leave War by pooled hours alone: this
+     non-working day credits OIL in Leave War by hours alone, measured
+     START TO FINISH across the person's whole day (envelope, gaps included
+     — owner, 29 Aug 26): this
      many worked minutes or more is a FULL day (FO, 1.0), under it a HALF
      (HO, 0.5) — regardless of time of day or shift shape (the old SC
      AM/PM-window rule is deleted). "6 hours 1 min or more" is the owner's

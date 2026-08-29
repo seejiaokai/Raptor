@@ -15,8 +15,8 @@ import { initStore, setSession, notify, writeInputsBatch, HIST } from '../state/
 import { INPUTS, oilAsks, inpId } from '../engine/inputs'
 import { HOOKS } from '../engine/hooks'
 import { setInpEdit, INPEDIT } from './pops'
-import { CURPAGE } from '../state/view'
-import { commitInputEdit, draftOf, oilGate } from './inputedit'
+import { CURPAGE, setPage } from '../state/view'
+import { commitInputEdit, draftOf, oilGate, oilAnswered } from './inputedit'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
@@ -167,6 +167,79 @@ describe('the answers belong to the acknowledged commitment', () => {
     const d2 = draftOf(r); d2.eTime = '1800'                 // 10h → FO now
     const g: any = oilGate(d2, r)
     expect(g.kind).toBe('ask')
+  })
+})
+
+describe('the revise button (owner, 29 Aug 26 — change a recorded OIL answer in place)', () => {
+  const plant = (r: any) => {
+    const row: any = { allday: true, remarks: 'oiltest', mod: 'now', yr: 2026, ...r }
+    inpId(row)                       // the page keys its rows by iid
+    writeInputsBatch(() => { INPUTS.unshift(row) })
+    return INPUTS[0]
+  }
+
+  it('oilAnswered draws it exactly where a decision exists', () => {
+    const yes = plant({ person: 'bane', type: 'Duty', date: 'Jul 18', s: 0, e: 1439, oil: { '2026-07-18': 1 } })
+    const no = plant({ person: 'bane', type: 'Duty', date: 'Jul 18', s: 0, e: 1439, oil: { '2026-07-18': 0 } })
+    const unasked = plant({ person: 'bane', type: 'Duty', date: 'Jul 18', s: 0, e: 1439 })
+    const weekday = plant({ person: 'bane', type: 'Duty', date: 'Jul 15', s: 0, e: 1439, oil: { '2026-07-15': 1 } })
+    const leave = plant({ person: 'bane', type: 'LL', date: 'Jul 18', s: 0, e: 1439, oil: { '2026-07-18': 1 } })
+    const dormant = plant({ person: 'bane', type: 'Duty', date: 'Jul 18', s: 0, e: 1439, acc: 'r', oil: { '2026-07-18': 1 } })
+    expect(oilAnswered(yes)).toBe(true)
+    expect(oilAnswered(no), 'an explicit decline IS a decision to revise').toBe(true)
+    expect(oilAnswered(unasked), 'unanswered stays the bell\'s business').toBe(false)
+    expect(oilAnswered(weekday), 'no applicable day, nothing to revise').toBe(false)
+    expect(oilAnswered(leave), 'not an ask-set type').toBe(false)
+    expect(oilAnswered(dormant), 'a dormant row asks nothing').toBe(false)
+  })
+
+  it('the editor\'s Change… re-opens the sheet, and a yes can become a no', async () => {
+    const r = plant({ person: 'bane', type: 'Duty', date: 'Jul 18', s: 0, e: 1439, oil: { '2026-07-18': 1 } })
+    await act(async () => { setInpEdit(r); notify() })
+    expect($('[data-testid="oil-revise"]'), 'the button is drawn on an answered row').toBeTruthy()
+    expect(document.body.textContent).toContain('credited on its non-working day')
+    await click($('[data-testid="oil-revise"]'))
+    expect($('[data-testid="oilconf"]'), 'the sheet is up over the editor').toBeTruthy()
+    await click($('[data-testid="oil-no"]'))
+    await click($('[data-testid="oilconf-save"]'))
+    expect(r.oil, 'the yes became an explicit decline').toEqual({ '2026-07-18': 0 })
+  })
+
+  it('…and a mistaken No becomes a credit — one ordinary undo step', async () => {
+    const r = plant({ person: 'bane', type: 'Duty', date: 'Jul 18', s: 0, e: 1439, oil: { '2026-07-18': 0 } })
+    await act(async () => { setInpEdit(r); notify() })
+    expect(document.body.textContent).toContain('no OIL on its non-working day')
+    const ix0 = HIST.ix
+    await click($('[data-testid="oil-revise"]'))
+    await click($('[data-testid="oil-yes"]'))
+    await click($('[data-testid="oilconf-save"]'))
+    expect(r.oil).toEqual({ '2026-07-18': 1 })
+    expect(HIST.ix, 'the revise is one undo step').toBe(ix0 + 1)
+  })
+
+  it('an UNANSWERED row draws no button — that question is the bell\'s to land', async () => {
+    const r = plant({ person: 'bane', type: 'Duty', date: 'Jul 18', s: 0, e: 1439 })
+    await act(async () => { setInpEdit(r); notify() })
+    expect($('[data-testid="oil-revise"]')).toBeFalsy()
+    await act(async () => { setInpEdit(null); notify() })
+  })
+
+  it('the Inputs page row wears an OIL chip that revises without touching the fields', async () => {
+    const r = plant({ person: 'bane', type: 'Duty', date: 'Jul 18', endDate: 'Jul 19', s: 0, e: 1439, oil: { '2026-07-18': 1, '2026-07-19': 0 } })
+    await act(async () => { setPage('inputs'); notify() })
+    /* the table opens on a today → +2-months window; the July rows need "All
+       dates" (the inputs.test.tsx showAllDates idiom) */
+    if (!$('#inRangePop')) await click($('#inRangeBtn'))
+    await click($('#inRangeAll'))
+    const chip = document.querySelector(`tr[data-iid="${r.iid}"] .roil`)
+    expect(chip, 'the row wears the OIL chip').toBeTruthy()
+    await click(chip)
+    expect($('[data-testid="oilconf"]'), 'the sheet opened straight off the row').toBeTruthy()
+    await click($('[data-testid="oil-all"]'))
+    await click($('[data-testid="oilconf-save"]'))
+    expect(r.oil, 'both days credited now — the fields untouched').toEqual({ '2026-07-18': 1, '2026-07-19': 1 })
+    expect(r.type).toBe('Duty')
+    expect(TOASTS.join('|')).toContain('OIL decision updated')
   })
 })
 

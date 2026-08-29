@@ -30,7 +30,7 @@ import {
   fmt, fmtDay, fmtDMY, unfmt, hasHalf, spanOf, spanFields, SpanPicker, typeOptions,
   draftOf, commitInputEdit, removeInput, SansPicker, sansRefusal, sansOverlapRefusal, sansFlags,
   medOverlapRefusal, upchitRefusal, downOverUpchitRefusal, applyMedPlan, normalizeInputDraft,
-  medKeptSegments, mintMedSegments, ordISO, DocField, oilGate,
+  medKeptSegments, mintMedSegments, ordISO, DocField, oilGate, oilAnswered,
   rosterOptions as people, inputTone,
 } from './inputedit'
 import { useVersion } from './useStore'
@@ -617,6 +617,25 @@ export function InputsPage() {
     }
   }
 
+  /* REVISE A RECORDED OIL ANSWER from the row itself (owner, 29 Aug 26 — a
+     mistaken "No OIL" used to be revisable only by nudging the input's
+     times). No field edit rides along: the sheet re-opens over every
+     applicable day with the standing answers pre-loaded (oilGate's force),
+     priced off the saved row's own fields (draftOf), and Save rewrites
+     row.oil alone — one batch, one undo step. The sync pass reads the new
+     answers off the notify like any other write. */
+  const reviseOil = (r: any) => {
+    const g = oilGate(draftOf(r), r, true)
+    if (g.kind !== 'ask') return
+    setOilConf({
+      ...g,
+      commit: (dec: Record<string, number>) => {
+        writeInputsBatch(() => { r.oil = dec })
+        HOOKS.toast('OIL decision updated', 'ok')
+      },
+    })
+  }
+
   let rows = INPUTS.slice()
   if (fPerson !== 'all') rows = rows.filter((r: any) => r.person === fPerson)
   if (fType !== 'all') rows = rows.filter((r: any) => r.type === fType)
@@ -1021,6 +1040,11 @@ export function InputsPage() {
                         only (the document clip above stays, so they can still
                         read the paperwork). The write path repeats this gate. */}
                     {(canEditSched() || r.person === ME) && <>
+                      {/* revise a recorded OIL answer in place (owner, 29 Aug
+                          26) — shown exactly where a decision exists to
+                          change (oilAnswered), same right as editing the row */}
+                      {oilAnswered(r) && <span className="roil" data-oilrev={inx} title="Change the OIL decision"
+                        onClick={() => reviseOil(r)}>OIL</span>}
                       <span className="red" data-edit={inx} title="Edit this input" onClick={() => startEdit(inx)}>✎</span>
                       <span className="rmx" data-inx={inx} onClick={() => del(inx)}>✕</span>
                     </>}

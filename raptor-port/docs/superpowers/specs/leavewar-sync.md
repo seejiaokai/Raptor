@@ -80,11 +80,15 @@ shipped:
   the owner reused the letters with the new EARNED meaning; the negative
   parse pins were flipped and the history is commented in
   `leavewar/engine/codes.ts`.
-- **ONE uniform rule, every source.** Pool each person's worked minutes for
-  the day as an interval UNION (`engine/oil.ts:mergeMin` — overlapping rows
-  count once; the 1.0/day cap now falls out structurally, a union cannot pay
-  twice for one hour), then apply the one threshold (`uniformOil`): under
-  `VCONF.oilFullMin` (361) is HO, at or over it is FO.
+- **ONE uniform rule, every source.** A person's worked minutes for the day
+  are the ENVELOPE of everything they did — FIRST start to LAST end, the
+  gaps between events included (`engine/oil.ts:envMin`; owner, 29 Aug 26:
+  "the in between timing, even tho there's nothing, they are still in
+  squadron" — this replaced the 28 Aug interval-union sum, do not bring the
+  sum back). Then the one threshold (`uniformOil`): under
+  `VCONF.oilFullMin` (361) is HO, at or over it is FO — exactly six hours
+  is still HO, re-confirmed by the owner for the envelope reading. The
+  1.0/day cap stays structural: one envelope per day cannot pay twice.
 - **The auto-credit set WIDENED** (`dayOilSpans`): SC MAIN shifts by their
   written shift times; ordinary FLYING seats by the working day the sortie
   costs — T-O − `reportLead` through LD + `debrief`, the owner's
@@ -131,14 +135,38 @@ shipped:
   inherit); KEPT on time/remark edits — the save gate re-asks when the plan
   goes stale, and the credit pass re-checks coverage and non-working LIVE,
   so a moved input or a revoked PH leaves a stale yes inert.
-- **Pooling across BOTH sources.** `desiredOilCells` (`leavewar/sync.ts`)
-  pools per person|iso the published schedule (publish gate KEPT: issued
+- **A recorded answer is REVISABLE in place** (owner, 29 Aug 26 — closing
+  the "no way back from a mistaken No" gap; a revise button was his pick
+  over a dedicated undo/redo, with the global undo stack covering the
+  immediate-regret case). `oilAnswered(row)` (`ui/inputedit.tsx`) decides
+  where the affordance draws — an ask-set, non-dormant row with ≥1
+  applicable day answered; unanswered-only stays the bell's business — and
+  it reads the raw row, never `normalizeInputDraft` (which toasts). Two
+  surfaces: the InputEditor's "OIL … Change…" row (prices off the CURRENT
+  draft via `oilGate(draft, row, force)` and saves through the same
+  `doSave` batch) and the Inputs-page row's cyan `.roil` chip
+  (`reviseOil` — rewrites `row.oil` alone inside one `writeInputsBatch`,
+  no field edit). Both re-open OilConfirm over EVERY applicable day with
+  the standing answers pre-loaded; Save replaces the answer set wholesale.
+- **One envelope across BOTH sources.** `desiredOilCells` (`leavewar/sync.ts`)
+  gathers per person|iso the published schedule (publish gate KEPT: issued
   snapshot, `dayApproved`) AND acknowledged input claims (NOT publish-gated
   — the owner's acknowledgment is their gate), then applies the ONE
-  `uniformOil(mergeMin)` threshold (owner: hours SUM across sources; his
-  worked example: 4h published duty + 4h acknowledged input = 8h → FO). The
-  reverse sweep / never-overwrite-leave clash behaviour is unchanged, and
-  now covers input credits for free.
+  `uniformOil(envMin)` threshold to their combined envelope (his worked
+  example: a 4h morning duty published + a 4h afternoon input acknowledged
+  is one 0800→1700 day → FO; even 1h + 1h across a gap counts the whole
+  span). The reverse sweep / never-overwrite-leave clash behaviour is
+  unchanged, and covers input credits for free.
+- **The schedule half reads EVERY week, not just the loaded one** (owner,
+  29 Aug 26 — "pull the full day schedule regardless of what's on screen").
+  The live `DAYS`/`SCHED` for the loaded week, plus every OTHER visited
+  week's session stash (`engine/weekstash.ts`), whose snapshot carries the
+  publish state under `schedFields`' short keys — read through the
+  parameterized `dayCurVerIn`/`daySnapIn` (`engine/publish.ts`) and cached
+  per blob by string identity (`stashOilWeek`). A never-visited week has
+  published nothing, so live + stash IS the whole session. This closed the
+  known issue where navigating away from a published weekend let the
+  reverse sweep collect its credits.
 - **The bell.** `oilPendingFor(person)` (`leavewar/sync.ts`) is a DERIVED
   predicate (the bugAlert shape): that person's inputs with an applicable
   covered day missing from `row.oil` (0 counts as answered; dormant
@@ -378,8 +406,11 @@ own word ("these will be connected to the inputs"):
   the future shared database backend replaces together.
 - **Raptor loads ONE week; Leave War holds years.** Outbound (wire 1)
   writes inputs for any date (inputs already live off-week via
-  `endDate`/`dateOrd`); wire 4 can only read duties for the loaded week.
-  Fixes itself the day Raptor carries more data — the same first bullet.
+  `endDate`/`dateOrd`); wire 4's schedule half reads every VISITED week
+  since 29 Aug 26 (the session stash — see §Wire 4), so within a session
+  nothing is week-scoped any more; a week never opened this session still
+  holds no session data at all, which the future shared database fixes for
+  everything at once — the same first bullet.
 - **No per-person identity on either side.** Raptor's ME is a view
   filter; members may edit anyone's inputs (owner-accepted prototype
   state). Ownership rules in these wires are honest bookkeeping, not

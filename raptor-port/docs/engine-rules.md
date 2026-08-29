@@ -1503,16 +1503,21 @@ were `FS`/`HS` until the 28 Aug 26 rename.
 - **ONE rule, every source (the 28 Aug 26 rewrite** — owner: "It will just
   use the same rule as all I mentioned … 6 hours or less, it's auto HO
   credited. If it's more than 6 hours, it's FO. Regardless of time or shift
-  in that day"**).** Pool each person's worked minutes for the day as an
-  interval UNION (`mergeMin` — overlapping rows count once: a man on a
-  flying seat and its ground brief has not worked the hour twice), then one
+  in that day"**; the MEASURE corrected 29 Aug 26).** A person's worked
+  minutes for the day are the ENVELOPE of everything they did — FIRST start
+  to LAST end, the gaps between events included (`envMin`; owner, 29 Aug
+  26: "the in between timing, even tho there's nothing, they are still in
+  squadron" — his own example: 7-8am plus 12-1pm is a six-hour day at
+  work, not two hours; this REPLACED the 28 Aug interval-union sum, do not
+  bring the sum back). Then one
   threshold (`uniformOil`): under `VCONF.oilFullMin` minutes ⇒ **HO
   (0.5)**, at or over ⇒ **FO (1.0)**. Default 361 — "6 hours 1 min or more"
-  is the owner's line (17 Aug 26, corrected from a plain 6h the same day:
+  is the owner's line (17 Aug 26, corrected from a plain 6h the same day,
+  and RE-CONFIRMED 29 Aug 26 for the envelope reading:
   exactly six hours is still a half) — a `RULE_SPEC` entry, Logic-page
   editable, labelled 'Full-day OIL threshold (worked mins)'. The old
-  1.0/day cap falls out structurally: a union cannot pay twice for one
-  hour. **The 17 Aug SC shift-window rule — AM/PM halves of the SC day
+  1.0/day cap stays structural: one envelope per day cannot pay twice for
+  an hour. **The 17 Aug SC shift-window rule — AM/PM halves of the SC day
   window, the midpoint, the night clause (`scShiftCredit`) — is DELETED
   from `engine/oil.ts` and the probe bridge**; the owner removed it by
   name, do not resurrect it.
@@ -1563,16 +1568,36 @@ were `FS`/`HS` until the 28 Aug 26 rename.
   inherit); kept on time/remark edits — the save gate re-asks when the plan
   goes stale, and the credit pass re-checks coverage and non-working LIVE,
   so a moved input or a revoked PH leaves a stale yes inert.
-- **Two sources, one pooled test, a split publish gate.** `desiredOilCells`
-  pools per person|date the PUBLISHED schedule — `daySnapOf(di,
-  dayCurVer(di))` on days where `dayApproved(di)`, so a draft edit after
+- **A recorded answer is revisable in place** (owner, 29 Aug 26 — his pick
+  over a dedicated undo/redo; the global undo stack covers immediate
+  regret). `oilAnswered(row)` (`ui/inputedit.tsx`) gates the affordance:
+  an ask-set, non-dormant row with ≥1 applicable day answered — a decline
+  counts, unanswered-only stays the bell's. The InputEditor draws an
+  "OIL … Change…" row (priced off the current draft via `oilGate`'s
+  `force`, saved through the same batch as a gated save) and the Inputs
+  page a cyan `.roil` chip (`reviseOil` — rewrites `row.oil` alone, one
+  `writeInputsBatch`). Both re-open OilConfirm over every applicable day
+  with the standing answers pre-loaded; Save replaces the set wholesale.
+- **Two sources, one envelope, a split publish gate.** `desiredOilCells`
+  gathers per person|date the PUBLISHED schedule — the issued snapshot on
+  approved days, so a draft edit after
   publish moves nothing until an AL/reissue publishes it, reopening a day
   takes its credit back, and re-publishing replaces it (reverse-and-replace
   is the diff against the refreshed snapshot, free) — AND acknowledged
   input claims, which are deliberately NOT publish-gated: the owner's
-  acknowledgment is their gate. Then ONE `uniformOil(mergeMin)` verdict
-  across both (owner: hours SUM across sources — his worked example: 4h
-  published duty + 4h acknowledged input = 8h → FO).
+  acknowledgment is their gate. Then ONE `uniformOil(envMin)` verdict
+  across both (his worked example: a 4h morning duty published + a 4h
+  afternoon input acknowledged is one 0800→1700 day → FO; the gap counts).
+  **And the schedule half reads EVERY week, not just the loaded one**
+  (owner, 29 Aug 26 — "pull the full day schedule regardless of what's on
+  screen"): the loaded week live, every other visited week out of its
+  session stash (`engine/weekstash.ts`), whose snapshot carries the publish
+  state — read through the parameterized `dayCurVerIn`/`daySnapIn`
+  (`engine/publish.ts`, one body with the live wrappers) and parsed once
+  per blob (`stashOilWeek`, string-identity cache). A never-visited week
+  has published nothing, so live + stash is the whole session; before
+  this, navigating off a published weekend let the reverse sweep collect
+  its credits.
 - **Never overwrites.** A date already holding anything else — a leave bid,
   a synced leave cell, a hand-typed marker — is left alone and raised on
   Leave War's clash strip (`kind:'duty'`) for a human; where the same date

@@ -4807,6 +4807,20 @@ button.sbi-ty.inpedit:hover{text-decoration:none;filter:brightness(1.3)}
 .oilconf-count{font-size:11.5px;color:var(--ink-2);margin:8px 0 2px}
 .oilconf-note{font-size:11px;color:var(--ink-3);margin:10px 0 0}
 .rangecal.oilcal{margin:10px auto 0}
+/* the OIL revise chip on an inputs-table row (owner, 29 Aug 26): a recorded
+   weekend/PH OIL decision is changed here, in place — the chip only draws
+   where such a decision exists (oilAnswered). Cyan, the FO/HO family's own
+   colour on the Leave War grid; wider than the square action icons because
+   it is a word, not a glyph. */
+.inact .roil{width:auto;padding:0 8px;font-size:11px;font-weight:800;
+  letter-spacing:.4px;color:#9FDCEE;cursor:pointer;
+  border:1px solid rgba(59,198,232,.45);border-radius:6px}
+.inact .roil:hover{background:rgba(59,198,232,.14)}
+/* the input editor's own OIL row (same ask): the current standing beside a
+   Change… button that re-opens the OilConfirm sheet over every applicable day */
+.inped-oil{display:flex;align-items:center;gap:10px}
+.inped-oilsum{font-size:12px;color:var(--ink-2)}
+.inped-oil .abtn{padding:4px 10px;font-size:12px}
 .oilcal .rc-d.oc-off{color:var(--ink-3);opacity:.4;cursor:default;display:inline-flex;
   align-items:center;justify-content:center}
 .oilcal .rc-d.oc-off:hover{border-color:transparent}  /* inert days do not light */

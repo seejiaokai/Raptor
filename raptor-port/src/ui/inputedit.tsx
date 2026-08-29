@@ -575,8 +575,13 @@ export function normalizeInputDraft(draft: any, except: any):
                  decisions onto the row INSIDE the caller's own batch.
    The prior answers count as covering a day only when they exist and,
    where positive, still promise the amount the current times derive — a
-   moved or re-timed input asks again rather than riding a stale yes. */
-export function oilGate(draft: any, prevRow: any):
+   moved or re-timed input asks again rather than riding a stale yes.
+   `force` (the revise button, owner 29 Aug 26 — "change my OIL answer")
+   skips that covered-already bailout so the sheet re-opens over EVERY
+   applicable day with the standing answers pre-loaded; everything else —
+   the normalize, the toast on a refused draft, the plan — is the same
+   body, so a revise can never price a day differently than a save. */
+export function oilGate(draft: any, prevRow: any, force = false):
   { kind: 'none' } | { kind: 'refused' } |
   { kind: 'ask', who: string, typeLabel: string, plan: { iso: string, amt: 0.5 | 1 }[], prev: Record<string, number> } {
   if (!draft || !oilAsks(draft.type)) return { kind: 'none' }
@@ -586,12 +591,35 @@ export function oilGate(draft: any, prevRow: any):
   if (!plan.length) return { kind: 'none' }
   const prev = (prevRow && prevRow.oil) || {}
   const stale = plan.some(p => prev[p.iso] == null || (prev[p.iso] !== 0 && prev[p.iso] !== p.amt))
-  if (prevRow && !stale) return { kind: 'none' }
+  if (!force && prevRow && !stale) return { kind: 'none' }
   return {
     kind: 'ask',
     who: PEOPLE[draft.person] ? PEOPLE[draft.person].cs : String(draft.person || ''),
     typeLabel: String(draft.type || ''), plan, prev,
   }
+}
+
+/* WHETHER THE REVISE BUTTON SHOWS, off the SAVED row alone (owner, 29 Aug 26
+   — the button follows the question: it appears exactly where an OIL
+   decision exists to change). Read raw the way oilPendingFor reads rows —
+   NEVER through normalizeInputDraft, which toasts on a refused draft and
+   this runs per render. Unanswered days alone stay the bell's business:
+   this affordance only ever REVISES. */
+export function oilAnswered(row: any): boolean {
+  if (!row || !oilAsks(row.type) || row.acc === 'r') return false
+  const prev = (row.oil || {}) as Record<string, number>
+  return oilAskPlan(row).some(p => prev[p.iso] != null)
+}
+/* the one-line standing beside the button: how many applicable days the
+   record currently credits */
+export function oilSummary(row: any): string {
+  const plan = oilAskPlan(row)
+  const prev = (row.oil || {}) as Record<string, number>
+  const yes = plan.filter(p => (prev[p.iso] ?? 0) > 0).length
+  const n = plan.length
+  if (!yes) return n === 1 ? 'no OIL on its non-working day' : `no OIL on its ${n} non-working days`
+  if (n === 1) return 'credited on its non-working day'
+  return `credited on ${yes} of ${n} non-working days`
 }
 
 /* The default type a board panel's + Add opens on — a personal (activity) type
@@ -1483,6 +1511,20 @@ export function InputEditor() {
               onChange={e => setDraft({ ...draft, remarks: e.target.value })}
               onKeyDown={e => { if (e.key === 'Enter') save() }} />
           </label>
+          {/* REVISE A RECORDED OIL ANSWER (owner, 29 Aug 26 — a mistaken "No
+              OIL" used to be revisable only by nudging the input's times).
+              Drawn off the SAVED row (oilAnswered — no per-render normalize),
+              priced off the CURRENT draft (oilGate force — a half-edited time
+              asks what the save would credit); the sheet's Save runs the same
+              doSave as the gate, one batch, one undo step. */}
+          {!isNew && r && oilAnswered(r) && <div className="inped-f">
+            <span className="inped-k">OIL</span>
+            <div className="inped-oil">
+              <span className="inped-oilsum">{oilSummary(r)}</span>
+              <button type="button" className="abtn ghost" data-testid="oil-revise"
+                onClick={() => { const g = oilGate(draft, r, true); if (g.kind === 'ask') setOilConf(g) }}>Change…</button>
+            </div>
+          </div>}
           <div className="inped-hint">{isNew
             ? ctx === 'up'
               ? 'Pick the day he is fit for full duty and attach the upchit document — the medical entry ends the day before, and a summary asks before anything is changed.'

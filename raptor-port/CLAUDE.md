@@ -514,8 +514,10 @@ inputs — that pairing is the loop-breaker), and weekend/holiday WORK — the
 PUBLISHED schedule plus acknowledged Duty-&-commitments input claims
 (`row.oil`, the OilConfirm ask-flow, 28 Aug 26) — credits OIL as a third
 derived pass (wire 4, `runOilPass` +
-`engine/oil.ts`, one pooled ≤6h/>6h rule since 28 Aug 26 — the ownership
-partition is by cell vocabulary, FO/HO vs
+`engine/oil.ts`, one ≤6h/>6h test on the day's start-to-finish ENVELOPE
+since 29 Aug 26 — gaps between events count, and the schedule half reads
+every visited week via the session stash, not just the loaded one — the
+ownership partition is by cell vocabulary, FO/HO vs
 leave codes; details in `docs/superpowers/specs/leavewar-sync.md`). Editing
 or deleting an lw-tagged input on the Inputs page carries back INTO the war
 (owner, 17 Aug 26 — full two-way): `commitInputEdit`/`removeInput` call

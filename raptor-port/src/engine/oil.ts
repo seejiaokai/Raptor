@@ -20,14 +20,18 @@ import { whoArr } from './slots'
    snapshot, which is what the sync wire actually feeds it: an ISSUED day is
    the squadron's word that the work stood.
 
-   THE RULE (one law, every source — the 28 Aug 26 rewrite): pool each
-   person's worked minutes for the day as an interval UNION (overlapping
-   rows count once — a man on a flying seat and its ground brief has not
-   worked the hour twice), then apply ONE threshold: under VCONF.oilFullMin
-   (361 — "6 hours 1 min or more is full", so exactly six hours is still a
-   half) is HO, at or over it is FO. The old SC shift-window rule (AM/PM
-   halves of the SC day window, the midpoint, the night-shift clause) is
-   DELETED — do not resurrect it; the owner removed it by name.
+   THE RULE (one law, every source — the 28 Aug 26 rewrite; the measure
+   corrected 29 Aug 26): a person's worked minutes for the day are the
+   ENVELOPE of everything they did — FIRST start to LAST end, the gaps
+   between events included (owner, 29 Aug 26: "the in between timing, even
+   tho there's nothing, they are still in squadron") — then ONE threshold:
+   under VCONF.oilFullMin (361 — "6 hours 1 min or more is full", so exactly
+   six hours is still a half, re-confirmed by the owner 29 Aug 26 for the
+   envelope reading) is HO, at or over it is FO. The first cut summed an
+   interval union instead; do not bring the sum back — 7-8am plus 12-1pm is
+   a six-hour day at work, not a two-hour one. The old SC shift-window rule
+   (AM/PM halves of the SC day window, the midpoint, the night-shift clause)
+   stays DELETED — do not resurrect it; the owner removed it by name.
 
    What pools, exactly:
    - An SC MAIN seat, by its shift's written times (to→ld).
@@ -38,7 +42,7 @@ import { whoArr } from './slots'
      consulted here (a stated simplification; the snapshot-pure read keeps
      this file free of the events.ts machinery).
    - A sim row (AMT and OFT), by its written str→end.
-   - A duty row, by its written str→end — summed with everything else.
+   - A duty row, by its written str→end — stretching the same envelope.
    - A ground-programme row, by its written str→end — EXCEPT a row carrying
      `src` (an accepted personal input): those are the ask-flow's to credit
      (row.oil on the input), never auto — a Saturday dental appointment must
@@ -57,16 +61,16 @@ import { whoArr } from './slots'
      was written", and inventing openEnd/simLen defaults here would mint
      OIL from a guess (events.ts may guess for display; money may not). */
 
-/* union of [s,e) spans in minutes — sort, sweep, sum. The cap-at-one-day
-   falls out of this structurally: a day pooled as one union can never pay
-   twice for the same hour. */
-export function mergeMin(spans:[number,number][]){
+/* the ENVELOPE of [s,e) spans in minutes — first start to last end, gaps
+   included (owner, 29 Aug 26: between two events the person is still in
+   squadron, so the day at work runs report to release, not the sum of the
+   bookings). The cap-at-one-day is structural: one envelope per day can
+   never pay twice for the same hour. */
+export function envMin(spans:[number,number][]){
   if(!spans.length)return 0;
-  const s=spans.slice().sort((a,b)=>a[0]-b[0]);
-  let tot=0,cs=s[0][0],ce=s[0][1];
-  for(let i=1;i<s.length;i++){const [a,b]=s[i];
-    if(a>ce){tot+=ce-cs;cs=a;ce=b;} else if(b>ce)ce=b;}
-  return tot+(ce-cs);
+  let lo=spans[0][0],hi=spans[0][1];
+  for(const [a,b] of spans){ if(a<lo)lo=a; if(b>hi)hi=b; }
+  return hi-lo;
 }
 /* the one threshold: 0 for no measured work, HO under the line, FO at it */
 export function uniformOil(min:number){
@@ -83,7 +87,8 @@ export function inputOilAmt(allday:any,s:any,e:any){
   return d<=0?null:(d>=VCONF.oilFullMin?1:0.5);
 }
 
-/* every person's pooled work spans for one day blob: id -> [s,e][].
+/* every person's work spans for one day blob (their envelope is the day's
+   measure): id -> [s,e][].
    opts.expandAll resolves a sentinel puck (ALL / ALL AVAIL) on a ground or
    Common Programme row into the people it stands for at that window. */
 export function dayOilSpans(day:any,opts?:{expandAll?:(win:[number,number])=>string[]}){
@@ -156,7 +161,7 @@ export function dayOilCredits(day:any,opts?:{expandAll?:(win:[number,number])=>s
   const out:any={};
   const spans=dayOilSpans(day,opts);
   Object.keys(spans).forEach((id:any)=>{
-    const v=uniformOil(mergeMin(spans[id]));
+    const v=uniformOil(envMin(spans[id]));
     if(v)out[id]=v;
   });
   return out;

@@ -8,12 +8,13 @@
 // publish machinery: SCHED reset to draft and DAYS restored pristine, since
 // these tests publish days and edit duty rows.
 
-import { beforeEach, describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { INPUTS } from '../engine/inputs'
 import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
 import { SCHED, signOf, setDayApproved } from '../engine/publish'
-import { initStore as raptorInitStore } from '../state/store'
+import { stashClear, stashPut } from '../engine/weekstash'
+import { initStore as raptorInitStore, loadWeek } from '../state/store'
 import { projectPeople } from './state/raptorRoster'
 import {
   getState,
@@ -39,6 +40,9 @@ beforeEach(() => {
   JSON.parse(DSNAP).forEach((d: any) => DAYS.push(d))
   SCHED.pending = {}; SCHED.changes = {}; SCHED.added = {}; SCHED.als = []
   SCHED.al = 0; SCHED.dayOK = {}; SCHED.sign = {}; SCHED.orig = {}; SCHED.cur = {}
+  /* the stash is module-level session state (loadweek.test.ts's own rule) —
+     the all-weeks credit pull reads it, so each test starts with none */
+  stashClear()
   raptorInitStore()
   lwInitStore(memoryBackend())
   setPeople(projectPeople())
@@ -127,6 +131,45 @@ describe('reverse-and-replace — the credit follows the issued document', () =>
     DAYS[5].dutywaves[0].rows[0].end = '1200'     // live edit, never issued
     runOilPass()
     expect(cellOf('plasma', SAT)).toBe('FO')      // still the document's ten hours
+  })
+})
+
+describe('the credit reads EVERY week, not just the loaded one (owner, 29 Aug 26)', () => {
+  /* CURWEEK and DATES are module state the shared beforeEach does not touch
+     (it hand-restores DAYS/SCHED without loadWeek), so ride the real door
+     back to the seed week — the re-seeded fixtures ARE that week's. */
+  afterEach(() => loadWeek('13/07/2026'))
+
+  it('navigating to another week no longer collects a published weekend\'s credit', () => {
+    publish(5)
+    runOilPass()
+    expect(cellOf('plasma', SAT)).toBe('FO')
+    loadWeek('20/07/2026')                        // the seed Saturday is off screen now…
+    runOilPass()
+    expect(cellOf('plasma', SAT)).toBe('FO')      // …and the credit stands, read from the week's stash
+    expect(ownedBy('plasma', SAT)).toMatchObject({ state: 'approved', source: 'raptor' })
+  })
+
+  it('coming back and reopening the day still takes the credit back', () => {
+    publish(5)
+    runOilPass()
+    loadWeek('20/07/2026')
+    runOilPass()
+    loadWeek('13/07/2026')                        // stash restored — the day is still published
+    setDayApproved(5, false)
+    runOilPass()
+    expect(cellOf('plasma', SAT)).toBeUndefined()
+  })
+
+  it('a corrupt stash blob contributes nothing and throws nothing', () => {
+    publish(5)
+    runOilPass()
+    loadWeek('20/07/2026')
+    stashPut('13/07/2026', '{broken')             // truncated write / foreign data
+    expect(() => runOilPass()).not.toThrow()
+    /* unreadable = as if never stashed, so the reverse sweep collects the
+       cell — degraded, never wrong-way-round or crashed */
+    expect(cellOf('plasma', SAT)).toBeUndefined()
   })
 })
 
@@ -242,20 +285,32 @@ describe('an acknowledged input credits — the ask-flow half of the wire', () =
     expect(cellOf('bane', SAT)).toBeUndefined()
   })
 
-  it('the owner\'s worked example: 4h published duty + 4h acknowledged input pool to FO', () => {
+  it('the owner\'s worked example: 4h published duty + 4h acknowledged input make one FO day', () => {
     DAYS[5].dutywaves[0].rows[0].str = '0800'
     DAYS[5].dutywaves[0].rows[0].end = '1200'           // plasma: 4h published — HO alone
     publish(5)
     plant({ person: 'plasma', type: 'Training', date: 'Jul 18', allday: false, s: 13 * 60, e: 17 * 60, oil: { [SAT]: 0.5 } })
     runOilPass()
-    expect(cellOf('plasma', SAT)).toBe('FO')            // 4h + 4h pooled = 8h
+    expect(cellOf('plasma', SAT)).toBe('FO')            // envelope 0800→1700 = 9h
   })
 
-  it('two answered inputs on one day pool as a UNION — overlap never pays twice', () => {
+  it('two answered inputs on one day share one envelope — overlap never pays twice', () => {
     plant({ person: 'bane', type: 'Duty', date: 'Jul 18', allday: false, s: 8 * 60, e: 12 * 60, oil: { [SAT]: 0.5 } })
     plant({ person: 'bane', type: 'Meeting', date: 'Jul 18', allday: false, s: 10 * 60, e: 14 * 60, oil: { [SAT]: 0.5 } })
     runOilPass()
-    expect(cellOf('bane', SAT)).toBe('HO')              // union 0800–1400 = 6h exactly — still a half
+    expect(cellOf('bane', SAT)).toBe('HO')              // envelope 0800→1400 = 6h exactly — still a half
+  })
+
+  it('the gap between a morning duty and an afternoon input COUNTS — the day runs start to finish (owner, 29 Aug 26)', () => {
+    // one written hour each side of a five-hour gap: two hours of bookings,
+    // but a 0800→1500 day in squadron — seven hours, a FULL day. This is the
+    // pin that keeps the envelope from regressing to a summed union.
+    DAYS[5].dutywaves[0].rows[0].str = '0800'
+    DAYS[5].dutywaves[0].rows[0].end = '0900'           // plasma: 1h published
+    publish(5)
+    plant({ person: 'plasma', type: 'Meeting', date: 'Jul 18', allday: false, s: 14 * 60, e: 15 * 60, oil: { [SAT]: 0.5 } })
+    runOilPass()
+    expect(cellOf('plasma', SAT)).toBe('FO')
   })
 
   it('a PH revoked after the answer stops the credit — the yes stays, inert', () => {

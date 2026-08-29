@@ -11,7 +11,8 @@
    credit pass reads — so what this sheet offers and what the wire then
    posts cannot disagree. The suggested amount is the INPUT's own standing
    (all-day = FO, ≤6h = HO, >6h = FO); the cell finally posted may still
-   upgrade where published schedule work pools onto the same day.
+   upgrade where published schedule work stretches the same day's
+   start-to-finish envelope (owner, 29 Aug 26).
 
    A single-day plan is a plain Yes / No. A multi-day plan offers All days /
    Only some days… / No OIL — "some" opens a month grid (the RangeCal
@@ -139,7 +140,7 @@ export function OilConfirm({ who, typeLabel, plan, prev, onSave, onCancel }: {
               </span>
             </div>
           </>}
-          <div className="oilconf-note">The credit lands on the Leave War as {amt === 1 ? 'an FO' : 'an HO'} cell and moves the OIL balance. Published schedule work on the same day pools with it.</div>
+          <div className="oilconf-note">The credit lands on the Leave War as {amt === 1 ? 'an FO' : 'an HO'} cell and moves the OIL balance. Hours count start to finish for the whole day, so published schedule work on the same day can raise it.</div>
         </div>
         <div className="airpop-foot upconf-foot">
           {!ready && <span className="upconf-need">Choose an option above</span>}

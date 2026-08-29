@@ -24,23 +24,36 @@ purpose: it is exactly the closed-work narrative the charter above bans, and
 it lives in `git log` where it belongs. Restate a count only from a run you
 watched — this file's history twice recorded a count that was wrong.
 
-**Last recorded green baseline** (28 Aug 26, overnight — the OIL rework
-session: FS/HS → FO/HO, the uniform pooled-hours rule, the widened
-auto-credit set, the ALL puck, the input ask-flow + retro bell, the docs
-pass and the closing fresh-eyes bug pass; all six gates re-run and watched
-at the close):
+**Last recorded green baseline** (29 Aug 26 — the OIL follow-up session:
+the worked-hours measure corrected to the start-to-finish ENVELOPE
+(`envMin`), the schedule credit reading EVERY visited week via the session
+stash, and the revise-OIL affordance in both editors; on top of the 28 Aug
+overnight rework (FS/HS → FO/HO, the uniform rule, the widened set, the
+ALL puck, the ask-flow + retro bell). All six gates re-run and watched at
+the close, plus a live-view drive of the revise flow at 1500 and 390 px):
 
 | gate | reading |
 |---|---|
-| `npm test` | 3468 across 200 files — two vitest projects: raptor + leavewar |
+| `npm test` | 3478 across 200 files — two vitest projects: raptor + leavewar |
 | `node reference/tfin.js` | 728/0 (the reference is read-only; the "Ground Programme" title trim rides the tolerant normaliser in `html.test.ts`) |
 | `npm run build` | clean |
 | `npm run test:e2e` | 338 passed / 19 touch-only skips — three playwright projects: raptor geometry, lw-phone, lw-desktop. NOTE: a mid-session chain run showed 2 lw-phone reds against a build that predated the bug-pass fixes (the un-gated cross-lane notify repainting mid-gesture); both passed individually and the full suite passed whole against the fixed build — if they ever red again, suspect a stray repaint mid-tap first. |
 | `probes:adapted` | **all 6 GREEN** — `aar-async` was re-adapted this session (its palette sentinel filter matched ids by SUBSTRING, so the new ALL puck read as a currency-less pilot; whole-id match now). **Read the LAST line, not the last tally**: each probe prints its own count as it finishes (`wrap-async` ends `36 passed · 0 failed`), and the suite's verdict is the line after it, `all 6 adapted probes passed`. |
 | `perf` | **4/0** — board DOM 1051 ≤ **1150** (the ceiling is a SETTLED owner decision since 28 Aug 26 — CLAUDE.md §Stable decisions; the ALL puck's one extra rpuck is noise against it). |
 
-Reconciles against the 3433/199, 338/19 reading this replaces (the same
-day's medical-tracker → bug-sweep session): +35 vitest pins across +1 file —
+Reconciles against the 3468/200 reading this replaces (the 28 Aug
+overnight rework): +10 vitest pins, no new file — `engine/oil.test.ts`
++1 (the gap-counts envelope, the owner's own 7-8am + 12-1pm example),
+`leavewar/oilsync.test.ts` +4 (the cross-source gap pin; the three
+all-weeks pins: navigation keeps a published weekend's credit, reopening
+after returning still collects it, a corrupt stash blob degrades safely),
+`ui/oilconfirm.test.tsx` +5 (the revise flow: oilAnswered's exact
+visibility, editor Change… yes→no, no→yes as one undo step, no button on
+an unanswered row, the Inputs-page chip round trip). E2e unchanged at
+338/19.
+
+That 3468/200 reconciled against the 3433/199, 338/19 reading before it
+(the same day's medical-tracker → bug-sweep session): +35 vitest pins across +1 file —
 `ui/oilconfirm.test.tsx` (15: the ask gates every save, one undo step, the
 some-days grid, the void rules, the bell flow), `leavewar/oilsync.test.ts`
 13 → 25 (input credits, pooling, GC, the PH revoke, the storage round-trip,
@@ -262,22 +275,23 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
 
 ## Known issues / open work
 
-- **OPEN, two deliberate deferrals from the 28 Aug 26 OIL-rework bug pass
-  (put both to the owner before building).** (1) **The schedule half of the
-  OIL credit is still loaded-week-scoped** — the pre-existing wire-4
-  limitation ("reads duties for the LOADED WEEK only"; more weeks fix it for
-  free) now has a sharper edge: a day pooled from published work PLUS an
-  acknowledged input (FO) *degrades to HO* while another week is loaded (the
-  input half is global, the schedule half is not), instead of merely
-  vanishing and returning — the OIL BAL a Leave War reader sees depends on
-  which Raptor week is open. The fix direction (derive from stashed weeks,
-  or stop reverse-sweeping days outside the loaded week) is a real design
-  choice, not a patch. (2) **A recorded OIL decision has no revise
-  affordance** — an accidental "No OIL" writes 0 for every day, which IS an
-  answer, so the bell never re-lights and the gate never re-asks unless the
-  input's shape changes; nothing on any surface renders `row.oil`. Wants a
-  small "OIL: HO on 18 Jul — change" control in the editors, owner's call
-  on the shape.
+- **CLOSED 29 Aug 26 — both 28 Aug OIL deferrals, by owner decision, plus a
+  rule correction.** (1) The schedule half of the OIL credit now reads
+  EVERY visited week (owner: "pull the full day schedule regardless of
+  what's on screen") — `desiredOilCells` walks the loaded week live plus
+  every other week's session stash, whose snapshot carries the publish
+  state, through the parameterized `dayCurVerIn`/`daySnapIn`
+  (`engine/publish.ts`); the navigate-away-and-lose-the-credit edge (and
+  its FO-degrades-to-HO variant) is gone, pinned in `oilsync.test.ts`.
+  (2) A recorded OIL decision is revisable in place — the InputEditor's
+  "OIL … Change…" row and the Inputs-page row's cyan `.roil` chip
+  (`oilAnswered` gates both) re-open OilConfirm with the standing answers
+  pre-loaded; the owner chose this over dedicated undo/redo. (3) The
+  worked-minutes MEASURE was corrected from an interval-union sum to the
+  day's START-TO-FINISH ENVELOPE (`envMin` — 7-8am plus 12-1pm is a
+  six-hour day, "they are still in squadron"); exactly six hours is still
+  HO, re-confirmed. Docs: `docs/superpowers/specs/leavewar-sync.md`,
+  `docs/engine-rules.md`.
 
 - **QUEUED, deferred by the owner — MULTIPLE documents per medical input
   (28 Aug 26).** Today `state/docs.ts` holds exactly one document per input
@@ -1235,11 +1249,15 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
   path) lands each worker a raptor-owned FO/HO cell (FS/HS until the 28 Aug
   rename; the chip is cyan now, not amber) and moves the new
   OIL BAL figure. The 28 Aug rework replaced the 17 Aug SC-shift-window /
-  duty-hours split with ONE uniform rule — pool the person's worked minutes
-  for the day as an interval union (`mergeMin`, overlaps counted once),
+  duty-hours split with ONE uniform rule — the person's worked minutes for
+  the day are the START-TO-FINISH ENVELOPE of everything they did, gaps
+  included (`envMin`, corrected 29 Aug 26 from an interval-union sum —
+  "the in between timing, even tho there's nothing, they are still in
+  squadron"; 7-8am plus 12-1pm is a six-hour day),
   then ≤6h = HO (0.5), >6h = FO (1) via `VCONF.oilFullMin` (361,
   Logic-page editable, the
-  owner's "6 hours 1 min or more" — exactly 6h is a half) — across a
+  owner's "6 hours 1 min or more" — exactly 6h is a half, re-confirmed
+  29 Aug for the envelope reading) — across a
   WIDENED set: SC MAIN shifts, ordinary flying seats (report→debrief:
   T-O − `reportLead` to LD + `debrief`), sims, duty rows, ground-programme
   rows and Common Programme, with the ALL / ALL AVAIL sentinel expanding to
@@ -1249,10 +1267,13 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
   ask-flow below owns those). **A Duty-&-commitments input covering a
   weekend/PH now ASKS its owner** (`oilGate` → `ui/OilConfirm.tsx`, no
   default, one undo step; answers in `row.oil`, an unanswered day lights
-  the bell via `oilPendingFor`) and the acknowledged claim pools into the
-  same union WITHOUT a publish gate — the owner's acknowledgment is its
-  gate (his worked example: 4h published duty + 4h acknowledged input = 8h
-  → FO). Leave still
+  the bell via `oilPendingFor`; a RECORDED answer is revisable in place
+  since 29 Aug 26 — the editor's "OIL … Change…" row and the Inputs-page
+  row's cyan `.roil` chip re-open the sheet with the standing answers) and
+  the acknowledged claim stretches the
+  same envelope WITHOUT a publish gate — the owner's acknowledgment is its
+  gate (his worked example: a 4h morning duty published + a 4h afternoon
+  input acknowledged is one 0800→1700 day → FO). Leave still
   wins a contested cell and the duty credit reads as a `kind:'duty'` clash
   on the strip. Rules in `docs/engine-rules.md` §Weekend/PH work earns OIL;
   the five 17 Aug build-time divergences from the design sketch (derived
@@ -1260,11 +1281,12 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
   not cell+ledger, reconciler pass not publish hook, the event-'off' half,
   the since-deleted SC/duty split, the vocabulary partition) and the full
   28 Aug rework block are argued at the top of
-  `raptor-port/docs/superpowers/specs/leavewar-sync.md`. **What wire 4
-  deliberately leaves open**: it reads the SCHEDULE for the LOADED WEEK only
-  (the
-  one-dataset bullet below — more weeks fix it for free; an input claim is
-  week-free, inputs being global); the demo seed
+  `raptor-port/docs/superpowers/specs/leavewar-sync.md`. **The schedule
+  half reads EVERY visited week since 29 Aug 26** (owner: "pull the full
+  day schedule regardless of what's on screen") — the loaded week live plus
+  every other week's session stash, whose snapshot carries the publish
+  state (`dayCurVerIn`/`daySnapIn`, `stashOilWeek`); an input claim was
+  always week-free, inputs being global. What remains true: the demo seed
   publishes nothing at boot, so on the demo data a schedule-side credit
   appears only
   after a scheduler actually signs and publishes a weekend day (by design —
@@ -2320,7 +2342,7 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | `publish.ts` | SCHED, **`resetSched()`** (in-place reset of every day-index-keyed field — the seam `loadWeek` uses so one week's approvals/AL/pending never bleed onto another), sign-offs (SIGN_ROLES), `setDayApproved`, `publishALDay`/`alIssue`/`unpublishAL`, `markEdit`, inert structural-removal/input-action amendment keys, AL colours, per-day version snapshots (`daySnap`/`daySnapOf`/`dayVersions`), `dayCurVer` (the day-head chip). |
 | `restore.ts` | `dayKeys` walker + `restoreDayVersion` — ROLL a day back to a published version (it becomes live at once). |
 | `rules.ts` | VCONF/SHIFT_HARD editing, `ruleParse`/`ruleFmt`, `rulesSave`/`rulesLoad`/`rulesReset`. |
-| `oil.ts` | **Wire 4's engine half** (17 Aug 26; REWRITTEN 28 Aug 26 — the SC shift-window rule `scShiftCredit` is DELETED, do not resurrect it) — ONE uniform rule: `dayOilSpans(day, {expandAll})` pools each person's worked spans (SC MAIN shifts by written times; ordinary flying seats by report→debrief, T-O − `reportLead` to LD + `debrief`; sims amt/oft, duty rows, ground rows and Common Programme by written `str`→`end`; the ALL / ALL AVAIL sentinel on ground/allhands expands via the injected `expandAll`), `mergeMin` unions them (overlaps counted once — the one-day cap falls out structurally), `uniformOil` applies the threshold (< `VCONF.oilFullMin` = 0.5 HO, ≥ = 1 FO), `dayOilCredits` composes them; `inputOilAmt` prices an input's own claim for the ask-flow (all-day = FO, timed by length). Earning NOTHING, deliberately: SC spares, AVALON/BB seats and their `sa` desks, cancelled (`cx`) rows, rows without both written times (no `openEnd`/`simLen` guessing — money may not), `src`-carrying ground rows (input-derived — the ask-flow's, never auto), unknown names. Pure and Leave-War-blind — the non-working-day question and the credit posting live in `src/leavewar/sync.ts`. Rules: `docs/engine-rules.md` §Weekend/PH work earns OIL. |
+| `oil.ts` | **Wire 4's engine half** (17 Aug 26; REWRITTEN 28 Aug 26 — the SC shift-window rule `scShiftCredit` is DELETED, do not resurrect it) — ONE uniform rule: `dayOilSpans(day, {expandAll})` pools each person's worked spans (SC MAIN shifts by written times; ordinary flying seats by report→debrief, T-O − `reportLead` to LD + `debrief`; sims amt/oft, duty rows, ground rows and Common Programme by written `str`→`end`; the ALL / ALL AVAIL sentinel on ground/allhands expands via the injected `expandAll`), `envMin` takes their START-TO-FINISH envelope (gaps included, 29 Aug 26 — the one-day cap stays structural), `uniformOil` applies the threshold (< `VCONF.oilFullMin` = 0.5 HO, ≥ = 1 FO), `dayOilCredits` composes them; `inputOilAmt` prices an input's own claim for the ask-flow (all-day = FO, timed by length). Earning NOTHING, deliberately: SC spares, AVALON/BB seats and their `sa` desks, cancelled (`cx`) rows, rows without both written times (no `openEnd`/`simLen` guessing — money may not), `src`-carrying ground rows (input-derived — the ask-flow's, never auto), unknown names. Pure and Leave-War-blind — the non-working-day question and the credit posting live in `src/leavewar/sync.ts`. Rules: `docs/engine-rules.md` §Weekend/PH work earns OIL. |
 | `lookahead.ts` | The **configurable default look-ahead** on the Inputs date button (28 Aug 26, owner) — `LOOK_STD = { weeks: 2, toSunday: false }`, mutable `LOOK_CFG`, `lookaheadSave`/`lookaheadLoad`/`lookaheadReset` against its own `lookahead` key, and `lookaheadRange(now)` → `{from,to}`: plain N weeks, or N weeks extended to that week's Sunday. The exact `stores.ts` persisted-config shape (untrusted-blob load with a clamp, save-only-when-diverged, boot load in `initStore`). `LOOK_STD` is deliberately today+14, i.e. the fixed span it replaced, so `InputsPage.tsx:initialRange` opens on the same dates it always did until an admin changes it — the admin edit icon beside the date button is the only writer, gated at the write path and not just the affordance. Pinned in `lookahead.test.ts` (both modes, month/year rollover, the untrusted load) and `inputs.test.tsx`. |
 | `insights.ts` | `computeInsights()` for the Insights modal — sorties, formations, flying load, who is not on the programme, conflicts by type, by day, and (20 Aug 26) **everyone's WORK HOURS for the week**, summed off `validate.ts:workSpan` read out of `EVD` so the total and the long-work-day note can never mean different things. |
 | `stores.ts` | The squadron's stores list — mutable `STORE_CFG`, frozen `STORE_STD`, `storeKey`, `addStore`/`delStore`/`renameStore`/`moveStore`, and `storesSave`/`storesLoad`/`storesReset` against its own `stores` key. Persisted state, so it lives here. Nothing in `validate.ts` reads a store. |
@@ -2397,7 +2419,7 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | `state/storage.ts` | The storage seam — `memoryBackend` and `localBackend` (the `leavewar:`-prefixed localStorage backend, still the store's default fallback). `main.tsx` boots `lwInitStore` on `memoryBackend`, so the WHOLE war — manning counters included (owner, 19 Aug 26: no persistence wanted) — is session-only like Raptor's `INPUTS`. Deliberately NOT `HOOKS.storeBackend`; the future shared database backend replaces this seam. |
 | `state/raptorRoster.ts` | Wire 0 — `projectPeople()`: the LW roster as a projection of Raptor's `PEOPLE` (skips ground crew + sentinels; band from `isInstr`; sxo carried). Installed at boot, never persisted. |
 | `state/demoworld.ts` | The fresh-browser demo re-key — DEMO_MAP (16 seed people → Raptor aircrew, seat+band-equal by construction), the seed overlay, and the two idempotent backing inputs for the seed's Raptor-owned cells. Boot-time only; the 632 vendored tests stay blind by construction. |
-| `sync.ts` | Wires 1+2+4 — three DERIVED reconcilers (outbound: approved cells → span-collapsed lw-tagged `INPUTS` rows, one `writeInputsBatch`, only on a non-empty diff; inbound: leave inputs → Raptor-owned cells per day, portions both ways, custom rounds OUT, reverse-clear, the clash list + its own subscription; **`runOilPass`** (REWORKED 28 Aug 26): weekend/PH work → raptor-owned FO/HO cells — `desiredOilCells` pools per person|date the PUBLISHED schedule (issued snapshot, `dayApproved`) AND acknowledged Duty-&-commitments input claims (`row.oil` — NOT publish-gated, the owner's acknowledgment is the gate; coverage + non-working re-checked live so a moved input or revoked PH leaves a stale yes inert), one `uniformOil(mergeMin)` threshold across both (hours SUM: 4h published + 4h acknowledged = 8h → FO), the exported `isNonWorkingISO` reading weekends + `DayInfo.ph` + 'off'-tagged events, `availableFor` expanding the ALL / ALL AVAIL sentinels to available regular aircrew minus away-input overlaps, reverse sweeps partitioned by cell vocabulary, leave wins a contested cell with a `kind:'duty'` clash; **the ask-flow's sync-side bodies live here too**: `oilAskPlan` (the per-day plan OilConfirm and the save gate read) and `oilPendingFor` (the bell's derived pending scan — unanswered applicable day, 0 counts as answered, dormant rows never ring), with the lwSubscribe lane firing ONE signature-guarded raptor notify when the pending picture changes so a PH marked after the input exists lights the bell at once), the SYNCING flag, `wireLeaveWarSync()`. **Wire 5 (17 Aug 26) rides wires 1+2 rather than adding a pass**: the four MEDICAL markers cross both ways — `medRowPortion` (AM/PM exact, a custom window ≤6h a half sided by its midpoint, >6h full; NOT leave's round-OUT), `lwTypeOf`/`INPUT_FOR_LW` bridging Raptor's `ATT B`/`ATT C` to the spaceless store form, and no approval gate outbound because medical is assigned, not bid. `wireLeaveWarSync` also mirrors Raptor's `ME` into `viewer` on every notify. The loop-breaker pair is documented at the top of the file. **`retractLwRow` (17 Aug 26, full two-way)**: called by `ui/inputedit.tsx`'s `commitInputEdit`/`removeInput` on an lw-tagged row — withdraws the row's war cells (`withdrawLeaveCell`, exact-notation, never Raptor-owned) under the SYNCING flag; an edit that CHANGES THE LEAVE also drops the `lw` tag so inbound re-lands the new shape Raptor-owned, but a REMARKS-ONLY edit keeps the tag (18 Aug 26 — `commitInputEdit` compares the exported `rowSig` before and after; an unchanged signature means the leave is the same, so Leave War keeps it). **Minted remarks are the date tail now, not "Leave War" (18 Aug 26)**: `withRemarksTail(prior, start, end, 'on')` → "till 17 Jul" for a span, "on 15 Jul" for a single day — the same helper (`engine/inputs.ts`) the Inputs-page calendar's `withTill` uses; `prior` carries a member's own detail across a DATE change (person\|type\|portion keyed), moving only the date token. A synced leave says how long it runs and the type column carries the code. **`runPoArchive` + `restoreArchivedPerson` (19 Aug 26)**: the post-out auto-archive pass (PO date arrived + `poArchive === true` → Raptor `archived = true`; real local clock; runs at boot and on both lanes) and the Quals drawer's restore (clears the LW posting FIRST, then un-archives) — plus `reprojectRoster`'s keep rule (an archived body WITH a posting window stays, identity frozen). Tested in `sync.test.ts` + `oilsync.test.ts` + `viewer.test.ts` + `poarchive.test.ts` (the last two are their own files because wiring the sync leaves a live Raptor subscription behind). |
+| `sync.ts` | Wires 1+2+4 — three DERIVED reconcilers (outbound: approved cells → span-collapsed lw-tagged `INPUTS` rows, one `writeInputsBatch`, only on a non-empty diff; inbound: leave inputs → Raptor-owned cells per day, portions both ways, custom rounds OUT, reverse-clear, the clash list + its own subscription; **`runOilPass`** (REWORKED 28 Aug 26): weekend/PH work → raptor-owned FO/HO cells — `desiredOilCells` pools per person|date the PUBLISHED schedule (issued snapshot, `dayApproved`) AND acknowledged Duty-&-commitments input claims (`row.oil` — NOT publish-gated, the owner's acknowledgment is the gate; coverage + non-working re-checked live so a moved input or revoked PH leaves a stale yes inert), one `uniformOil(envMin)` threshold on the combined start-to-finish envelope (29 Aug 26 — gaps count; 4h morning published + 4h afternoon acknowledged = one 0800→1700 day → FO), the schedule half reading EVERY visited week (the loaded week live, the rest out of the session stash via `stashOilWeek` + the parameterized publish readers, 29 Aug 26), the exported `isNonWorkingISO` reading weekends + `DayInfo.ph` + 'off'-tagged events, `availableFor` expanding the ALL / ALL AVAIL sentinels to available regular aircrew minus away-input overlaps, reverse sweeps partitioned by cell vocabulary, leave wins a contested cell with a `kind:'duty'` clash; **the ask-flow's sync-side bodies live here too**: `oilAskPlan` (the per-day plan OilConfirm and the save gate read) and `oilPendingFor` (the bell's derived pending scan — unanswered applicable day, 0 counts as answered, dormant rows never ring), with the lwSubscribe lane firing ONE signature-guarded raptor notify when the pending picture changes so a PH marked after the input exists lights the bell at once), the SYNCING flag, `wireLeaveWarSync()`. **Wire 5 (17 Aug 26) rides wires 1+2 rather than adding a pass**: the four MEDICAL markers cross both ways — `medRowPortion` (AM/PM exact, a custom window ≤6h a half sided by its midpoint, >6h full; NOT leave's round-OUT), `lwTypeOf`/`INPUT_FOR_LW` bridging Raptor's `ATT B`/`ATT C` to the spaceless store form, and no approval gate outbound because medical is assigned, not bid. `wireLeaveWarSync` also mirrors Raptor's `ME` into `viewer` on every notify. The loop-breaker pair is documented at the top of the file. **`retractLwRow` (17 Aug 26, full two-way)**: called by `ui/inputedit.tsx`'s `commitInputEdit`/`removeInput` on an lw-tagged row — withdraws the row's war cells (`withdrawLeaveCell`, exact-notation, never Raptor-owned) under the SYNCING flag; an edit that CHANGES THE LEAVE also drops the `lw` tag so inbound re-lands the new shape Raptor-owned, but a REMARKS-ONLY edit keeps the tag (18 Aug 26 — `commitInputEdit` compares the exported `rowSig` before and after; an unchanged signature means the leave is the same, so Leave War keeps it). **Minted remarks are the date tail now, not "Leave War" (18 Aug 26)**: `withRemarksTail(prior, start, end, 'on')` → "till 17 Jul" for a span, "on 15 Jul" for a single day — the same helper (`engine/inputs.ts`) the Inputs-page calendar's `withTill` uses; `prior` carries a member's own detail across a DATE change (person\|type\|portion keyed), moving only the date token. A synced leave says how long it runs and the type column carries the code. **`runPoArchive` + `restoreArchivedPerson` (19 Aug 26)**: the post-out auto-archive pass (PO date arrived + `poArchive === true` → Raptor `archived = true`; real local clock; runs at boot and on both lanes) and the Quals drawer's restore (clears the LW posting FIRST, then un-archives) — plus `reprojectRoster`'s keep rule (an archived body WITH a posting window stays, identity frozen). Tested in `sync.test.ts` + `oilsync.test.ts` + `viewer.test.ts` + `poarchive.test.ts` (the last two are their own files because wiring the sync leaves a live Raptor subscription behind). |
 | `ui/` | Matrix (the 365-column grid; now paints the event column colours + mounts the Event sheet), Chrome (its topbar + stage strip; the role toggle is deleted — see the comment there; the Legend pop-out keys the grid's colours/marks AND, since 28 Aug 26, its letter codes via `CODE_GLOSSARY` in `engine/codes.ts` — FO/HO flagged as the only war-only codes (their chip and swatch CYAN, the `--q-c` family, since the same-day rename from FS/HS), the rest a key to the grid's shorthand), the sheets (incl. `ManningSheet.tsx`, 19 Aug 26 — tap a count row's name: what it counts + the admin-editable amber/red lines + `Edit counter…`, and **`CounterForm.tsx`, same day — the guided build/edit/delete form for the manning counters, testids `cform-*`; tests `counterform.test.tsx`, engine maths in `engine/counterrules.test.ts`**), RangePicker, **`EventRows.tsx` (the two event lines — merged bands as colspan, red work text, tap-to-edit), `EventSheet.tsx` (the admin event editor + type library, on `Sheet`+`RangePicker`; `eventsheet.css`)**. `Sheet.tsx` is the shared shell every sheet is built on — scrim + the PAGE LOCK (17 Aug 26: `body.lw-sheet-lock`, counted so one sheet closing as another opens cannot unlock the page under the survivor), and `CounterSheet.tsx` now holds three: the figure picker (viewer's own numbers; admin-only ▲▼/Reset), `FigureBreakdownSheet` and `PersonFiguresSheet`. All stylesheets scoped under `#page-leavewar` (theme.css deleted as pure duplication) **with ONE deliberate exception: `body.lw-sheet-lock` at the foot of `bidpicker.css`, which is outside the wrapper because no page-scoped selector can reach `body` — do not "fix" it inwards, that silently kills the scroll lock; the class is `lw-`-namespaced instead.** Both `matrix.css` and `bidpicker.css` are WHOLLY wrapped, so an append after the closing brace lands outside the scope and loses to its +1 id specificity — insert inside (this bit twice in one session). Cascade note at the top of each file — the event column colours in `matrix.css` are ordered after weekend/blocked deliberately. |
 
 ### Tooling
@@ -2411,7 +2433,7 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | `../BUG-TESTING.md` (repo ROOT, beside this file) | **The bug-testing tracker (27 Aug 26)** — one row per shipped batch, ⬜ / 🟡 / ✅, so the owner can have bug testing done batch by batch and nothing is missed. Answers only "what has been bug-tested, and what still needs it?"; open WORK stays in `HANDOFF.md` and the story of each change stays in `git log`. It also carries the passes-on-record table (what each sweep actually covered) and a risk-ordered queue whose Tier 1 is the silent-failure work — engine, roles, dates, saved data. **Every behaviour PR adds its row**; docs-only PRs are listed at the foot as needing no pass. Record a CLEAN pass too — otherwise "not yet tested" and "tested, all good" look identical. |
 | `docs/feature-impact.md` | The surfaces any change can touch (warnings, layout, history, board, edit/view-only, desktop/mobile, quals, availability, publishing, export, roles), the generic FLOWS one edit travels, and the drift-seams where two copies of a rule fall out of step (owner, 12 Aug 26). Walk every non-trivial change against it, and keep it true in the same PR. |
 | `docs/remarks-vocabulary.md` | Every piece of text a scheduler can TYPE that turns a rule on — the seat tags, AAR, late show, IRT, the sim brief lead — plus the things that look like text triggers and are not. Written in a user guide's voice, for the guide the owner wants (10 Aug 26). A new text trigger belongs here as well as in `engine-rules.md`. |
-| `docs/superpowers/specs/leavewar-sync.md` | The Leave War ⇄ Raptor sync DESIGN (16 Aug 26, spec only): wire 0 roster unification, wires 1–2 approved-leave⇄input both ways on the existing `ingestFromRaptor`/`outboundToRaptor` primitives, wire 3 counters (derived — the wire IS the decrement), wire 4 the owner's OIL rule (as designed: SC lines + duty rows from written timings, VCONF-editable thresholds, FS/HS credits — since renamed FO/HO and reworked 28 Aug 26 to one pooled union threshold over a widened set plus the input ask-flow; the file's status block carries the built shape and the rework record). Build sync work FROM this file. |
+| `docs/superpowers/specs/leavewar-sync.md` | The Leave War ⇄ Raptor sync DESIGN (16 Aug 26, spec only): wire 0 roster unification, wires 1–2 approved-leave⇄input both ways on the existing `ingestFromRaptor`/`outboundToRaptor` primitives, wire 3 counters (derived — the wire IS the decrement), wire 4 the owner's OIL rule (as designed: SC lines + duty rows from written timings, VCONF-editable thresholds, FS/HS credits — since renamed FO/HO and reworked 28 Aug 26 to one uniform threshold over a widened set plus the input ask-flow, the measure corrected 29 Aug 26 to the day's start-to-finish envelope; the file's status block carries the built shape and the rework record). Build sync work FROM this file. |
 | `docs/leavewar/known-gaps.md` | The vendored app's own limitations, carried over WITH a merge preamble that names what is superseded (the role toggle) and what is stale (its claims about Raptor). |
 | `e2e/leavewar.spec.ts` | The vendored 69-test Leave War geometry/behaviour suite, run at two viewports (`lw-phone`/`lw-desktop` playwright projects). Boundary adaptations only (openLeaveWar login, `w.lwSetRole`, scoped selectors, the `#page-leavewar` DOM band) — its assertions are the standalone app's own, and its DOM band is the Leave War page's only size gate. |
 | `docs/session-state.md` | The last session's leftovers — **often absent, and absent is meaningful**: it exists only while something is genuinely pending, and the session that clears the last item deletes it. This file holds the durable state; that one holds what a session could not finish. Written by `.claude/skills/session-handoff`. |

@@ -26,8 +26,10 @@ import { INPUTS, DATES, baseYear, dateOrd, inpId, inpWin, isAway, isDownchit, is
 import { ME } from '../state/auth'
 import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
-import { dayApproved, dayCurVer, daySnapOf } from '../engine/publish'
-import { dayOilSpans, inputOilAmt, mergeMin, uniformOil } from '../engine/oil'
+import { dayApproved, dayCurVer, dayCurVerIn, daySnapIn, daySnapOf } from '../engine/publish'
+import { dayOilSpans, inputOilAmt, envMin, uniformOil } from '../engine/oil'
+import { stashKeys, stashGet } from '../engine/weekstash'
+import { CURWEEK } from '../engine/waves'
 import { validate } from '../engine/validate'
 import { notify as raptorNotify, subscribe as raptorSubscribe, writeInputsBatch } from '../state/store'
 import {
@@ -639,7 +641,7 @@ export function isNonWorkingISO(date: string): boolean {
    upchitEffects precedent). One entry per applicable day; the amount is the
    input's own standing (all-day = FO, else its length under oilFullMin) —
    the CELL finally posted may still upgrade when published schedule work on
-   the same day pools with it (desiredOilCells). Walks label→ISO exactly as
+   the same day stretches its envelope (desiredOilCells). Walks label→ISO exactly as
    runInbound does, same 400-day cap. */
 export function oilAskPlan(row: { person?: any; date: string; endDate?: string; yr?: any; allday?: any; s?: any; e?: any }): { iso: string; amt: 0.5 | 1 }[] {
   const out: { iso: string; amt: 0.5 | 1 }[] = []
@@ -716,9 +718,45 @@ function availableFor(iso: string, win: [number, number]): string[] {
   return out
 }
 
+/* The ISO date of day di in the week whose Monday is v (dd/mm/yyyy — the
+   stash's own key). Pure calendar arithmetic on the key, so a stashed
+   week's dates can never disagree with the key it is filed under. */
+function weekDayISO(v: string, di: number): string | null {
+  const m = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/.exec(v)
+  if (!m) return null
+  return new Date(Date.UTC(+m[3], +m[2] - 1, +m[1] + di)).toISOString().slice(0, 10)
+}
+
+/* A stashed week's model + publish state, parsed ONCE per stored blob —
+   runOilPass runs on every notify and must not re-parse unchanged weeks
+   each time. Cached by the blob string's own REFERENCE identity (stashPut
+   replaces the string, so a hit is proof nothing changed; a generation
+   counter would collide across the tests' stashClear, which resets GEN).
+   The publish fields ride the snapshot under schedFields' short keys
+   (state/history.ts): ok=dayOK, cv=cur, a=als, o=orig, dr=drafts — mapped
+   here into the SCHED shape the parameterized publish readers take.
+   null = nothing usable stashed. */
+const STASH_OIL_CACHE = new Map<string, { src: string, wk: { days: any[], sc: any } | null }>()
+function stashOilWeek(v: string): { days: any[], sc: any } | null {
+  const src = stashGet(v)
+  if (!src) return null
+  const hit = STASH_OIL_CACHE.get(v)
+  if (hit && hit.src === src) return hit.wk
+  let wk: { days: any[], sc: any } | null = null
+  try {
+    const s = JSON.parse(src)
+    if (s && Array.isArray(s.d))
+      wk = { days: s.d, sc: { dayOK: s.ok, cur: s.cv, als: s.a, orig: s.o, drafts: s.dr } }
+  } catch (_e) { /* a bad blob reads as never stashed — never throw in a pass */ }
+  STASH_OIL_CACHE.set(v, { src, wk })
+  return wk
+}
+
 /** The credits a non-working day earns right now: person|isoDate -> FO/HO,
- *  ONE pooled ≤6h/>6h test per person per day across BOTH sources (owner,
- *  28 Aug 26 — hours SUM, overlapping minutes counted once):
+ *  ONE ≤6h/>6h test per person per day over the ENVELOPE of BOTH sources —
+ *  first start to last end, gaps included (owner, 29 Aug 26: between two
+ *  commitments "they are still in squadron"; this replaced the 28 Aug
+ *  interval-union sum):
  *  - the PUBLISHED schedule, from the ISSUED snapshot — an issued day is the
  *    squadron's word that the work stood, so a draft edit after publish
  *    moves nothing until it is published too (the AL/reissue paths), which
@@ -729,11 +767,21 @@ function availableFor(iso: string, win: [number, number]): string[] {
  *    is their gate. An answer only counts while its day is still covered by
  *    the row's dates AND still reads non-working — a moved input or a
  *    revoked PH leaves the old yes inert, and the reverse sweep collects
- *    the cell. Nothing acknowledged = nothing credited, structurally. */
+ *    the cell. Nothing acknowledged = nothing credited, structurally.
+ *
+ *  The schedule half reads EVERY week, not just the loaded one (owner,
+ *  29 Aug 26 — "pull the full day schedule regardless of what's on
+ *  screen"): the live DAYS/SCHED for the loaded week, and the per-week
+ *  session stash (engine/weekstash.ts) for every other week the user has
+ *  visited, whose snapshot carries the same publish state under
+ *  schedFields' short keys. A never-visited week has published nothing, so
+ *  live + stash IS the whole session. Before this, the reverse sweep
+ *  quietly COLLECTED a published weekend's credits the moment the user
+ *  navigated to another week — the recorded known-issue, now closed. */
 function desiredOilCells(): Map<string, 'FO' | 'HO'> {
   const { people, wars } = getState()
   const known = new Set(people.map(p => p.id))
-  /* person|iso -> pooled work spans; the union is what faces the threshold */
+  /* person|iso -> that day's work spans; their ENVELOPE faces the threshold */
   const pool = new Map<string, [number, number][]>()
   const add = (person: string, iso: string, spans: [number, number][]) => {
     /* The same unknown-person guard both leave directions carry: a row
@@ -753,6 +801,29 @@ function desiredOilCells(): Map<string, 'FO' | 'HO'> {
     const snap = daySnapOf(di, dayCurVer(di))
     const spans = dayOilSpans(snap ? snap.d : DAYS[di], { expandAll: win => availableFor(iso, win) })
     for (const [person, sp] of Object.entries(spans)) add(person, iso, sp)
+  }
+  /* every OTHER week, out of its stash entry — the loaded week is skipped
+     (its stash is at best a stale copy of the live model read above) and a
+     blob that fails to parse reads as never stashed, the stashDays rule.
+     The ISO comes from the week key + day index directly (v is the Monday,
+     dd/mm/yyyy) — no label parsing, no year-convention trap. */
+  for (const v of stashKeys()) {
+    if (String(v) === String(CURWEEK)) continue
+    const wk = stashOilWeek(String(v))
+    if (!wk) continue
+    for (let di = 0; di < 7; di++) {
+      if (!(wk.sc.dayOK || {})[di]) continue
+      const iso = weekDayISO(String(v), di)
+      if (!iso || !warHolding(wars, iso)) continue
+      if (!isNonWorkingISO(iso)) continue
+      const snap = daySnapIn(wk.sc, di, dayCurVerIn(wk.sc, di))
+      /* same fallback rule as the live loop: an approved day without a
+         snapshot (legacy/session data) reads its stashed model */
+      const d = snap ? snap.d : wk.days[di]
+      if (!d) continue
+      const spans = dayOilSpans(d, { expandAll: win => availableFor(iso, win) })
+      for (const [person, sp] of Object.entries(spans)) add(person, iso, sp)
+    }
   }
   for (const row of INPUTS) {
     if (!row.oil || !oilAsks(row.type) || row.acc === 'r') continue
@@ -777,7 +848,7 @@ function desiredOilCells(): Map<string, 'FO' | 'HO'> {
   }
   const out = new Map<string, 'FO' | 'HO'>()
   for (const [k, spans] of pool) {
-    const amt = uniformOil(mergeMin(spans))
+    const amt = uniformOil(envMin(spans))
     if (amt) out.set(k, amt === 1 ? 'FO' : 'HO')
   }
   return out

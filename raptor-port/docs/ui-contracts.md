@@ -4077,6 +4077,30 @@ the same `writeInputsBatch` as the save itself — ONE undo step, the answer
 and the input it answers never separating in history. Pinned in
 `ui/oilconfirm.test.tsx`.
 
+**The revise-OIL affordance** (owner, 29 Aug 26 — a mistaken "No OIL" used
+to be revisable only by nudging the input's times; he chose a revise button
+over dedicated undo/redo, the global undo stack covering immediate regret).
+Where a decision EXISTS to change — `inputedit.tsx:oilAnswered(row)`: an
+ask-set, non-dormant row with at least one applicable day answered (a 0
+counts; unanswered-only stays the bell's business) — two surfaces draw it,
+both re-opening the same OilConfirm over EVERY applicable day with the
+standing answers pre-loaded, Save replacing the answer set wholesale:
+- the **InputEditor form** grows an `OIL` row — the standing in words
+  (`oilSummary`: "credited on 2 of 3 non-working days" / "no OIL on its
+  non-working day") beside a **Change…** button (testid `oil-revise`). It
+  prices off the CURRENT draft (`oilGate(draft, row, force)` — the same
+  normalize, toast and plan as a save, so a revise can never price a day
+  differently than the save that follows), and the sheet's Save runs the
+  ordinary gated `doSave` — commit + decisions, one batch.
+- the **Inputs-page row** wears a cyan `OIL` chip (`.roil`, the FO/HO
+  family's colour) in its actions cell, same right as editing the row.
+  `reviseOil` opens the sheet off the SAVED row's own fields and its Save
+  rewrites `row.oil` alone inside one `writeInputsBatch` — no field edit
+  rides along; the toast says 'OIL decision updated'.
+Visibility reads the raw row, never `normalizeInputDraft` (which toasts —
+this runs per render). Pinned in `ui/oilconfirm.test.tsx` §the revise
+button.
+
 **The bell's OIL trigger** (owner, 28 Aug 26 — "it will notify the
 applicable user based on the notification tab to review if the input
 deserves an applicable HO or FO"). `#notifyBell` also glows when the
