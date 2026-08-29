@@ -651,6 +651,22 @@ not "fix" either without reading this first:
   `counterrules.test.ts` requires it. A team seat is filled or it is not —
   there is no half a body in a Hall count. Changing it would break parity;
   raise it with the owner as a product question, never as a silent fix.
+- **A SANS qualification group is empty until "Show SANS" is on — INTENDED, do
+  not "fix" it (owner, 29 Aug 26).** Roster groups (`engine/groups.ts`) offer a
+  qualification group per Quals column, SANS included. But SANS is the one qual
+  whose held-state also HIDES the person: ticking SANS on the Quals page sets
+  `PEOPLE[id].san` (not `p.quals.san` — `ui/QualsPage.tsx`), and
+  `state/raptorRoster.ts projectPeople` excludes `p.san` bodies unless
+  `includeSans`. So the exact people who hold SANS are the ones off the roster by
+  default, and a SANS group shows 0 people — while every OTHER qual group works,
+  because no other qual hides its holder. Turning on **"Show SANS"** (the 18 Aug
+  enable switch, `store.showSans` → `projectPeople(showSans)`, admin/Rearrange
+  mode) puts all SANS crew on the roster and the SANS group fills (verified: 0
+  → 11). The owner was shown this and chose to KEEP the two controls separate
+  rather than auto-couple them (add-a-SANS-group would NOT auto-enable Show
+  SANS): the hide-by-default is deliberate and he wants it under his own switch.
+  Do not link the two, do not drop SANS from the offerable groups, and do not
+  read this empty group as a bug.
 
 The custom shapes the seed never exercises — a slot count above 1 still
 demanding distinct bodies, `quals` + `notQuals` on one filter, `show:'people'`
