@@ -363,20 +363,21 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
 
 ## Known issues / open work
 
-- **The WEEK view + warnings + CSV still print colon times, by design (29 Aug 26).**
-  The owner asked for 4-digit (`0800`, no colon) "throughout the app" and the Scheduler
-  Board now does that for every time cell (see CLAUDE.md §Stable decisions, and
-  `docs/ui-contracts.md` §the board reads 4-digit). But the Edit/View Schedule WEEK,
-  the warning/advisory/note text, and the CSV export still render through
-  `fmtT`/`fmtTxt`/`hhmm`, which the read-only reference gate PINS to colon
-  (`reference/tfin.js`: `fmtT('0745')==='07:45'`, `hhmm(760)==='12:40'`,
-  `fmtTxt('0930')===fmtT('0930')`, plus the source-text of the week's `heal()` call).
-  Converting them means deliberately editing those reference assertions — the safety-net
-  that guards the whole flagging engine — so it needs owner sign-off, not a silent flip.
-  If he wants it: flip `fmtT`+`fmtTxt` to 4-digit (leaves `hhmm` alone → week cells go
-  4-digit but warnings/CSV stay colon) and update the two `tfin.js` clauses that assert
-  their colon output; a full "no colon anywhere including warnings/CSV" also needs `hhmm`
-  and its many parity-checked warning-string assertions changed — a much larger pass.
+- **Times are hh:mm (`08:00`) everywhere — the 29 Aug 4-digit board pass was REVERSED
+  by the owner on 30 Aug 26** ("I saw wrongly … most of the timing format is 08:00.
+  Change it back and make sure everything follows that format consistently"). hh:mm is
+  the app's parity-pinned native form, so the reversal direction was the safe one; the
+  work was swapping the board's display fold to `engine/time.ts fmtHM` (colon) and
+  retiring the compact MINTERS (`dutytpl.tplTime` + `DUTYTPL_STD` seeds,
+  `waves.ts waveDutyBlock`, the "+ In time" mint, plus a commit-time
+  `events.ts intimeFold` for hand-typed IN TIME prose). Typing accepts
+  `800`/`0800`/`8:00`/`08:00` and the colon appears on commit. Full decision +
+  placements: CLAUDE.md §Stable decisions ("EVERY time in the app reads 08:00"),
+  `docs/ui-contracts.md` §Every time reads hh:mm. The one deliberate 4-digit survivor
+  is the AREA window token (`0800-0900`, `atimeText`) — the reference app prints it
+  compact and `tfin.js` pins it (`atimeText(f)===f.to.replace(':','')+'-'+…`), so
+  flipping it means editing the safety-net: owner sign-off first. This entry was the
+  earlier "WEEK/warnings/CSV stay colon" known issue — now moot, everything is colon.
 - **The design fonts are still NOT loaded — deferred, must be SELF-HOSTED (29 Aug 26
   pt.3).** `scheduler.css` names Inter Tight / Barlow Condensed / JetBrains Mono in ~130
   places but nothing ever loaded them, so every browser falls back to system fonts and

@@ -118,7 +118,8 @@ describe('the duty block a wave brings', () => {
   /* times only where the wave HAS fixed hours to give */
   it('AVALON stamps its overnight hours, SC and an ordinary wave leave them blank', () => {
     const av = waveDutyBlock(makeStandalone('avalon'))!.rows[0]
-    expect(av.str + '-' + av.end).toBe('1900-0700')
+    /* hh:mm since 30 Aug 26 — every time mints in the app's one colon form */
+    expect(av.str + '-' + av.end).toBe('19:00-07:00')
     for (const w of [makeStandalone('sc'), { label: 'WAVE 1' }])
       expect(waveDutyBlock(w)!.rows.every((r: any) => r.str === '' && r.end === '')).toBe(true)
   })

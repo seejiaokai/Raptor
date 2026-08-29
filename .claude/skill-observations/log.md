@@ -564,3 +564,18 @@ exactly where the surviving bugs live.
 **Suggested improvement:** When a spec asks to persist a user-approved value computed from mutable data, persist the APPROVAL (plus a fingerprint of what was shown, to know when to re-ask) and re-derive the value at read time. Pair it with derived, self-healing pending-predicates (scan-based, like this repo's bugAlert) instead of stored notification flags.
 
 **Principle:** Consent is data; amounts are derivations. Store what only the user can produce, derive everything else at read time, and staleness handling collapses into one re-ask check.
+
+### Observation 38: An owner reversal is cheapest when the change was display-only
+
+**Status:** OPEN
+**Date:** 2026-08-30
+**Session context:** RAPTOR — owner reversed the previous day's "4-digit times everywhere" ask back to "08:00 everywhere" after realising they had misread the app's dominant format.
+**Skill:** New skill candidate: none — CLAUDE.md conventions
+**Type:** open-source
+**Phase/Area:** Change design / decision records
+
+**Issue:** The 4-digit change had been built as a display-only wrapper (storage and parsers untouched) because the storage format was parity-pinned. When the owner reversed the decision a day later, the reversal was a handful of formatter swaps instead of a data migration — the display-only discipline is what made the U-turn cheap.
+
+**Suggested improvement:** When recording a format/presentation decision in a project's CLAUDE.md, also record WHERE the decision is implemented (display layer vs storage) so a future reversal knows its blast radius immediately.
+
+**Principle:** Implement owner-taste decisions at the shallowest layer that satisfies them; taste reverses more often than data contracts, and a shallow implementation makes reversal a diff, not a migration.

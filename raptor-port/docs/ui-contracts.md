@@ -672,24 +672,28 @@ by a test; pv-suppressed) · overall notes · overall programme · flying waves
 · **Duties** (`.sb-panel.duty`) · **Sims** (`.simr`, AMT/OFT rows, its
 planning note inside the panel) · **Ground Programme** (`.grnd`; the `· scheduler` qualifier was dropped 22 Aug 26)
 · **Personal Inputs** (`.pinp`, with the accept controls) · **Unavailable**
-(`.unav`). **Every time on the board reads 4-digit** (`0800`, no colon — owner,
-16 Aug 26 for the input rows; extended to all cells 29 Aug 26 — "no : between
-numbers. Just 0800"). The model stores a time either way (a duty/sim/ground
-template mints `0700` via `dutytpl.tplTime`; an edit through `txtSet` writes
-`07:00` via `hhmm`), and the 16 Aug pass only reformatted the aircrew INPUT rows
-— so the scheduler-typed cells still echoed the raw stored string and one duty
-block printed `08:00` beside `0900`. Now every board time cell wraps its value in
-`engine/time.ts`'s shared `fmtHM4` (stored string → `HHMM`) / `hhmm4` (minutes):
-the flying `.tm` br/to/ld (`board.ts`), the duty/sim/ground/programme `.atm`
-str-end (the `boxHTML` atm/tm branch + the `ap:` inline cells, `board-html.ts`),
-the wave in-time note and the brief-suggestion ghost. Display only — the STORED
-value, `hhmm`, `parseHM` and `txtSet` are untouched (so parity stays 728/0), and
-`hmOK` still accepts either form when typing. `inpHM` stays for the input rows.
-**Still colon by design:** the WEEK view (`html.ts` `fmtT`/`fmtTxt`), the
-warning/advisory/note text and the CSV export — all render through
-`fmtT`/`fmtTxt`/`hhmm`, which the read-only reference gate pins to the colon form
-(`reference/tfin.js`), so they cannot flip without a deliberate change to that
-safety-net. Don't add a second display formatter — `fmtHM4`/`hhmm4` is the one.
+(`.unav`). **Every time reads hh:mm** (`08:00` — owner, 30 Aug 26, reversing
+the short-lived 16/29 Aug 4-digit passes: "most of the timing format is 08:00 …
+make sure everything follows that format consistently"). hh:mm is the app's
+native form (the read-only reference gate pins `fmtT`/`fmtTxt`/`hhmm` to it;
+`txtSet` commits through `hhmm`; the week/warnings/CSV never left it) — the
+mixed look came from compact-minted legacy data (duty templates minted `0700`).
+Every board time cell wraps its stored string in `engine/time.ts fmtHM` (the
+ONE display fold — either form in, hh:mm out, non-time → blank): the flying
+`.tm` br/to/ld + the brief-suggestion ghost (`board.ts`), the
+duty/sim/ground/programme `.atm` str-end (the `boxHTML` atm/tm branch + the
+`ap:` inline cells, `board-html.ts`), the wave in-time note and the input rows
+(`inpTimeText`, already colon). The WEEK folds identically through `fmtT`
+(`ted`/`plRow`). The compact MINTERS are gone too: `dutytpl.tplTime`,
+`DUTYTPL_STD`, `engine/waves.ts waveDutyBlock` and the "+ In time" line all
+mint `07:00` now (old stored templates refold on load), and a committed IN
+TIME line folds just its recognised time tokens via `events.ts intimeFold`
+(commit-time only — stored/seed lines are never rewritten at render, which is
+what keeps parity at 728/0). Typing accepts `800`/`0800`/`8:00`/`08:00`
+(`parseHM`/`hmOK`) and the colon appears on commit — nobody types `:`. The one
+deliberate 4-digit survivor is the AREA window token (`0800-0900`,
+`atimeText`) — the reference app prints it compact and `tfin.js` pins that.
+Don't add a second display formatter — `fmtHM` is the one.
 The duty/sim/ground panels (added Aug 26) share the `c6r` grid
 (Item | Start | End | People | Rmks | ctl — **Duties says ROLE** where the
 other two say Item, its own `C6_DUTY` header, owner 10 Aug 26: a duty row

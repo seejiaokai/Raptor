@@ -1,23 +1,25 @@
 import { store } from './hooks'
-import { parseHM, hmOK } from './time'
+import { parseHM, hmOK, hhmm } from './time'
 
 /* A duty time is a clock time or nothing — the same question txtSet asks of a
    schedule time cell (slots.ts). A malformed value ('2500', 'morning') drops to
    '' (a duty role with no start is legal — many seeded rows carry blank times);
-   a valid one is canonicalised to the compact HHMM the whole model stores duty,
-   sim and ground times in (`0700`, not `07:00` — see data.ts and DUTYTPL_STD),
-   so `700`/`7:00`/`07:00` all land as `0700` and a minted block reads like a
-   seeded one. Kept here as one helper so the two places a template's time
-   crosses out of the editor — minted into a real day (blockFromTpl) and
-   reloaded from untrusted storage (dutyTplLoad) — fold the same way, and
-   neither can carry a nonsense time into the schedule. The editor itself
-   refuses on commit with a toast (DutyTplModal); this is the silent net under
-   it. */
+   a valid one is canonicalised to hh:mm — the app's ONE time form (owner,
+   30 Aug 26: "everything follows 08:00 consistently"; this used to be the one
+   deliberate compact-HHMM minter, which is exactly why a template desk printed
+   '0900' beside a hand-edited '08:00') — so `700`/`0700`/`7:00` all land as
+   `07:00` and a minted block reads like an edited one. Legacy compact values
+   (older saved templates, data.ts seeds) still parse fine everywhere
+   (parseHM), and re-fold to hh:mm the next time they cross this helper. Kept
+   here as one helper so the two places a template's time crosses out of the
+   editor — minted into a real day (blockFromTpl) and reloaded from untrusted
+   storage (dutyTplLoad) — fold the same way, and neither can carry a nonsense
+   time into the schedule. The editor itself refuses on commit with a toast
+   (DutyTplModal); this is the silent net under it. */
 export function tplTime(v: any): string {
   const s = String(v == null ? '' : v).trim()
   const m = s && hmOK(s) ? parseHM(s) : null
-  if (m == null) return ''
-  return String(Math.floor(m / 60)).padStart(2, '0') + String(m % 60).padStart(2, '0')
+  return m == null ? '' : hhmm(m)
 }
 
 /* THE SQUADRON'S DUTY-BLOCK TEMPLATES (owner, 13 Aug 26). "+ Block" offers
@@ -51,12 +53,15 @@ const mk = (id: string, title: string, rows: [string, string, string][]): DutyTp
    ordinary desk, SC's per-shift desk, and AVALON's overnight desk. BB's desk
    WAS the ordinary one, so it is not seeded a second time. The role vocabulary
    is DUTY_PICK's (engine/waves.ts), spaced the owner's way (OPS O, LOG CELL). */
+/* seed times in hh:mm — the app's one time form (owner, 30 Aug 26). The
+   editor's boxes show the stored string raw, so the seed itself must carry
+   the colon; a pre-fix library in storage refolds on load (tplTime). */
 export const DUTYTPL_STD: readonly DutyTpl[] = Object.freeze([
   mk('std', 'Standard', [['SDO', '', ''], ['SXO', '', ''], ['OPS O', '', '']]),
-  mk('sc', 'SC Shift', [['SXO AM', '0700', '1300'], ['OPS O AM', '0700', '1300'],
-    ['SXO PM', '1300', '1900'], ['OPS O PM', '1300', '1900']]),
-  mk('avalon', 'AVALON', [['SXO', '1900', '0700'], ['OPS O', '1900', '0700'],
-    ['RUNNER', '1900', '0700'], ['LOG CELL', '1900', '0700']]),
+  mk('sc', 'SC Shift', [['SXO AM', '07:00', '13:00'], ['OPS O AM', '07:00', '13:00'],
+    ['SXO PM', '13:00', '19:00'], ['OPS O PM', '13:00', '19:00']]),
+  mk('avalon', 'AVALON', [['SXO', '19:00', '07:00'], ['OPS O', '19:00', '07:00'],
+    ['RUNNER', '19:00', '07:00'], ['LOG CELL', '19:00', '07:00']]),
 ])
 
 const clone = (t: DutyTpl): DutyTpl => ({ id: t.id, title: t.title, rows: t.rows.map(r => ({ ...r })) })

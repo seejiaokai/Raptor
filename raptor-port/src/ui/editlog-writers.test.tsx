@@ -124,7 +124,8 @@ describe('the five fields that write their own model', () => {
 
     const row = elogFor(`it:${di}.${gi}`)
     expect(row, 'the change reached the log').toBeTruthy()
-    expect(row!.to).toContain('1200H: TEST LINE')
+    /* the commit folds the typed 1200H to 12:00H (owner, 30 Aug 26) */
+    expect(row!.to).toContain('12:00H: TEST LINE')
     expect(row!.to, 'the untouched second line rides the list').toContain(was[1])
     w.intimes = was
   })

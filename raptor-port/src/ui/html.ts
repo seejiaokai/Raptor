@@ -2,6 +2,7 @@ import { DAYS } from '../engine/data'
 import { PEOPLE, isSpecial, nameToId, QCHIP, QCLASS, LEVELNAME, byCrew } from '../engine/people'
 import { INPUTS, inputCoversDate, inpLabel, inpId, inpTimeText, isOffType, offWord, isLeave, isDownchit, isPersonal, isUnavail, isSansAvail, isUpchit, sansBadge, sansAvailOn, sansWindow, sansLetters, isLateInput, lateNote } from '../engine/inputs'
 import { isStandalone, scSpare, dayCount, mColor, saExempt, SAWAVE } from '../engine/waves'
+import { intimeFold } from '../engine/events'
 import { parseHM, hhmm, hm24, minus } from '../engine/time'
 import { slotVal, txtGet, TIME_TXT, whoArr, rowCrew, rowRef, inpKey } from '../engine/slots'
 /* RANK left with the focus-scoped trace: ranking the CR chip against the day's
@@ -663,13 +664,18 @@ export function dayWarnHTML(di:any){
   }
   return h+`</div>`;
 }
-/* One line's display markup — the leading time bolded. The bold pattern
-   matches the whole grammar intimeTime accepts (0900 / 09:00, H/L suffix);
-   on the seed's own NNNNH lines it emits byte-identically to the reference's
-   narrower \d{3,4}H pattern, which is what keeps the read-only parity
-   compare untouched. */
+/* One line's display markup — the leading time bolded AND display-folded to
+   hh:mm (owner, 30 Aug 26: every time reads 08:00). The pattern matches the
+   whole grammar intimeTime accepts (0900 / 09:00, H/L suffix), and the fold
+   is intimeFold — the reader's own twin — so a token the reader skips (2590)
+   is left as typed and the fold can never change what a line means. DISPLAY
+   only: the model string is untouched here, which is what keeps the seed's
+   stored lines byte-identical for parity (the html.test dayHTML compare
+   folds the reference's own <b>NNNNH</b> the same way before comparing —
+   its noItTime normaliser, a no-op on the port's already-folded output). */
 export function intimeLineHTML(t:any){
-  return esc(t).replace(/^(\s*(?:\d{1,2}:\d{2}|\d{3,4})\s*[HL]?)(?![0-9A-Za-z])/i,'<b>$1</b>');}
+  return esc(t).replace(/^(\s*)((?:\d{1,2}:\d{2}|\d{3,4})\s*[HL]?)(?![0-9A-Za-z])/i,
+    (_,sp,tok)=>`${sp}<b>${intimeFold(tok)}</b>`);}
 /* ek — the edit surfaces pass `${di}|${gi}` and the block renders PER-LINE:
    each line its own contenteditable span, each with an ordinary ✕ button
    BESIDE it (owner's iPhone, 21 Aug 26 — a button inside a contenteditable

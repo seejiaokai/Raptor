@@ -17,7 +17,7 @@
        "<CS> IN TIME" grammar resolves them, which is what keeps parity
        untouched where data exercises it. */
 import { describe, expect, it } from 'vitest'
-import { intimeTime, intimeMap, waveInTime } from './events'
+import { intimeTime, intimeFold, intimeMap, waveInTime } from './events'
 import { DAYS } from './data'
 
 const wave = (intimes: string[], css: string[] = ['VL', 'RU']) => ({
@@ -102,5 +102,31 @@ describe('waveInTime — same grammar', () => {
     const w: any = wave(['IN TIME TBD'])
     w.formations[0].to = '11:30'
     expect(waveInTime(w)).toBe(11 * 60 + 30)
+  })
+})
+
+/* THE COMMIT-TIME FOLD (owner, 30 Aug 26 — every time reads 08:00, and a
+   hand-typed line gains its colon on its own). One grammar with intimeTime:
+   the fold may only reformat a token the reader accepts, never change what a
+   line means. */
+describe('intimeFold — the colon appears, the words stay', () => {
+  it('folds every spelling the reader accepts, keeping the suffix', () => {
+    expect(intimeFold('0900: IN TIME + WX/NOTAMS')).toBe('09:00: IN TIME + WX/NOTAMS')
+    expect(intimeFold('0900H: IN TIME')).toBe('09:00H: IN TIME')
+    expect(intimeFold('0900l stand-to')).toBe('09:00l stand-to')
+    expect(intimeFold('900 show')).toBe('09:00 show')
+    expect(intimeFold('9:00 show')).toBe('09:00 show')
+    expect(intimeFold('RU 0845, VL 0915H')).toBe('RU 08:45, VL 09:15H')
+  })
+  it('a token the reader skips is left exactly as typed', () => {
+    expect(intimeFold('FL240 block')).toBe('FL240 block')          // glued to letters
+    expect(intimeFold('2590: bad clock')).toBe('2590: bad clock')  // out of range
+    expect(intimeFold('IN TIME TBD')).toBe('IN TIME TBD')
+    expect(intimeFold('')).toBe('')
+    expect(intimeFold(null)).toBe('')
+  })
+  it('what the reader sees never moves across the fold', () => {
+    for (const s of ['0900H: IN TIME', 'RU 0845, VL 0915H', '900 show', 'FL240 at 1030'])
+      expect(intimeTime(intimeFold(s)), s).toBe(intimeTime(s))
   })
 })

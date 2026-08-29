@@ -1105,31 +1105,39 @@ subscribers.
   open at a time); the owner asked to undo it. The full implementation is one
   `git revert` away (the "collapse each row's control strip behind a ⋯" commit),
   so don't rebuild it from scratch or re-propose it unprompted. The row strips
-  stay always-visible on a phone. The four sibling touches from that batch —
-  the aircrew-tab gutter, board 4-digit input times, plural warnings, and the
-  week's faded `Remarks` placeholder — STAND; only the ⋯ collapse was undone.
-- **The Scheduler Board reads 4-digit (`0800`), no colon — EVERY time cell**
-  (owner, 29 Aug 26 — "fix the inconsistent timing format throughout the app …
-  no : between numbers. Just 0800"). The 16 Aug "board 4-digit input times" pass
-  only reached the aircrew INPUT rows; the scheduler-typed cells still echoed the
-  raw stored string, and the model stores a time BOTH ways — a duty/sim/ground
-  template mints `0700` (`dutytpl.tplTime`), but an edit through `txtSet` writes
-  `07:00` (`hhmm`) — so one duty block printed `08:00` beside `0900` (owner's
-  photo). Fixed as DISPLAY-only: the board renderers wrap every time cell in
-  `engine/time.ts`'s shared `fmtHM4` (string) / `hhmm4` (minutes) — flying
-  br/to/ld (`board.ts`), duty/sim/ground/programme str-end + the wave in-time
-  note + the brief ghost (`board.ts`/`board-html.ts`, the `boxHTML` atm/tm
-  chokepoint). The STORED value, `hhmm`, `parseHM` and `txtSet` are UNCHANGED, so
-  parity stays **728/0** and the edit box still accepts either form.
-  **The DESKTOP/phone WEEK, the warning/advisory text, and the CSV export stay
-  colon on purpose** — they render through `fmtT`/`fmtTxt`/`hhmm`, which the
-  read-only reference gate PINS to the colon form (`reference/tfin.js`:
-  `fmtT('0745')==='07:45'`, `hhmm(760)==='12:40'`, `fmtTxt('0930')===fmtT('0930')`,
-  and the source-text of the week's `heal()` call). Flipping those is a deliberate
-  change to that safety-net, not a board wrap — do NOT change `fmtT`/`fmtTxt`/
-  `hhmm` to chase "no colon" without owner sign-off to touch the reference gate.
-  Don't add a second time formatter either — `fmtHM4`/`hhmm4` is the one display
-  clock. Placement: `docs/ui-contracts.md` §The board reads 4-digit.
+  stay always-visible on a phone. The sibling touches from that batch — the
+  aircrew-tab gutter, plural warnings, and the week's faded `Remarks`
+  placeholder — STAND; only the ⋯ collapse was undone (and the batch's board
+  4-digit input times were later reversed by the 30 Aug hh:mm decision below).
+- **EVERY time in the app reads `08:00` — colon, 24-hour, everywhere** (owner,
+  30 Aug 26, REVERSING their own 29 Aug "no colon, just 0800" ask: "I saw
+  wrongly … most of the timing format is 08:00. Change it back and make sure
+  everything follows that format consistently"). hh:mm is the app's native
+  form — the read-only reference gate PINS it (`reference/tfin.js`:
+  `fmtT('0745')==='07:45'`, `hhmm(760)==='12:40'`, `fmtTxt('0930')===fmtT('0930')`),
+  `txtSet` commits through `hhmm`, and the week/warnings/CSV never left it.
+  What broke ranks was compact-minted legacy data (duty templates minted
+  `0700`). The fix, three layers:
+  · **Display**: board renderers wrap every stored time string in
+    `engine/time.ts fmtHM` (the ONE display fold — compact or colon in, hh:mm
+    out, non-time → blank): flying br/to/ld + brief ghost (`board.ts`),
+    duty/sim/ground/programme str-end + ap rows + input rows (`board-html.ts`,
+    the `boxHTML` atm/tm chokepoint). The week already folds via `fmtT` (`ted`).
+  · **Minting**: `dutytpl.tplTime`, `DUTYTPL_STD`, `waveDutyBlock` and the
+    "+ In time" line now mint `07:00` (they were the compact minters);
+    `waveTime` always did. Old stored templates refold on load.
+  · **Typing**: every time box accepts `800`/`0800`/`8:00`/`08:00` (parseHM)
+    and shows hh:mm after commit — the user never types the colon. Hand-typed
+    IN TIME prose folds only the tokens `intimeTime`'s grammar recognises
+    (`events.ts intimeFold`, commit-time only — never at render, so the seed
+    week's model text stays byte-identical for parity).
+  The rules engine is untouched by construction: every reader goes through
+  `parseHM`, which takes both forms. Parity stays **728/0**. The ONE deliberate
+  4-digit survivor is the AREA window token (`0800-0900`, `atimeText`) — the
+  reference app prints it compact and `tfin.js` pins that; changing it means
+  editing the safety-net, owner sign-off required. Don't add a second display
+  formatter — `fmtHM` is the one. Placement: `docs/ui-contracts.md` §Every
+  time reads hh:mm.
 - **The flagging engine reads across week boundaries** (owner, 23 Aug 26 —
   "It is a continuous reading of the flagging engine. It doesn't just stay
   within a week"). Two rules used to compute strictly inside the loaded

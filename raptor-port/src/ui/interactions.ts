@@ -559,7 +559,9 @@ export function routeClick(e: MouseEvent) {
        the phrase that sets a formation's report time (intimeMap), and this
        button must not pick a jet nobody chose. */
     const t0 = waveInTime(w)
-    const line = (t0 != null ? hhmm(t0).replace(':', '') + 'H: ' : '') + 'IN TIME + WX/NOTAMS'
+    /* hh:mm since 30 Aug 26 — the minted line states its time in the app's one
+       colon form, exactly as an edited line commits (intimeFold) */
+    const line = (t0 != null ? hhmm(t0) + 'H: ' : '') + 'IN TIME + WX/NOTAMS'
     w.intimes = [...(w.intimes || []), line]
     markEdit(`it:${di}.${gi}`, was, w.intimes.join(', '))
     view.afterSchedMutate(); notify()

@@ -7,7 +7,7 @@ import { PEOPLE, nameToId, isSpecial } from '../engine/people'
 import { isStandalone, makeStandalone, DUTY_PICK, SAWAVE } from '../engine/waves'
 import { waveInTime } from '../engine/events'
 import { WARN, validate, WCODE, wlbl } from '../engine/validate'
-import { hhmm4, fmtHM4, minus, parseHM } from '../engine/time'
+import { hhmm, fmtHM, minus, parseHM } from '../engine/time'
 import { VCONF } from '../engine/rules'
 import { slotVal, txtGet, txtSet, acRef, rollCx, whoArr, unacceptInput } from '../engine/slots'
 import { markEdit, markDeletion, deletionWasIssued, markStructuralAdd, alAttr, dayApproved, dayCurVer, dayPendCount, verLabel, nextAL } from '../engine/publish'
@@ -123,7 +123,7 @@ export function boardHTML(di: number, pv?: boolean) {
          data-air click is handled globally (interactions.ts setAirKey → AirPop),
          which already reaches the board, so no board-side wiring is needed. */
       + `${sa || mvRO ? '' : `<button class="airbtn" data-air="${di}|${gi}">Traffic</button>`}`
-      + (sc ? '' : `<span class="asd">in-time ${inT != null ? hhmm4(inT) : '—'} · ${asd} ac</span>`)
+      + (sc ? '' : `<span class="asd">in-time ${inT != null ? hhmm(inT) : '—'} · ${asd} ac</span>`)
       + (mvRO ? '' : `<span class="gctl">${sbSortBtn(`w.${di}.${gi}`, mvRO)}${sa ? '' : `<button class="mbtn add" data-itadd="${di}|${gi}" title="Add an in-time line to this wave">+ In time</button>`}<button class="mbtn add" data-gline="${di}.${gi}" title="Add a line to this wave">+ Line</button>`
       + `<button class="mbtn del" data-gdel="${di}.${gi}" title="Remove this whole wave">✕ Wave</button></span>`) + `</div>`
     /* The IN TIME + WX/NOTAMS lines edit exactly as the week's do (html.ts):
@@ -165,7 +165,7 @@ export function boardHTML(di: number, pv?: boolean) {
          have a brief time"). The box itself stays, so a real in-time can be
          entered; only the blue suggestion goes. */
       const brSug = (!stoRO && !sc && parseHM(f.br) == null)
-        ? `<span class="bsug" data-bacc="${fp}.br" data-bval="${brief}" title="Click to accept the suggested brief time">${fmtHM4(brief)}</span>`
+        ? `<span class="bsug" data-bacc="${fp}.br" data-bval="${brief}" title="Click to accept the suggested brief time">${fmtHM(brief)}</span>`
         : ''
       /* sbSlot's own `pv` param means "read-only" to that function, not
          literally "preview" — widened to stoRO below for the same reason
@@ -190,9 +190,9 @@ export function boardHTML(di: number, pv?: boolean) {
         ${sbGrip(mvRO)}
         ${boxHTML('lin', `data-bfld="${fp}.cs"${alAttr(`${fp}.cs`)}${dis}`, f.cs, '')}
         ${boxHTML('msn', `data-bfld="${fp}.msn"${alAttr(`${fp}.msn`)}${dis}`, f.msn, '')}
-        <div class="sb-bcell">${brSug}<input class="tm" data-bfld="${fp}.br"${alAttr(`${fp}.br`)}${dis} value="${esc(fmtHM4(f.br))}"></div>
-        <input class="tm" data-bfld="${fp}.to"${alAttr(`${fp}.to`)}${dis} value="${esc(fmtHM4(f.to))}">
-        <input class="tm" data-bfld="${fp}.ld"${alAttr(`${fp}.ld`)}${dis} value="${esc(fmtHM4(f.ld))}">
+        <div class="sb-bcell">${brSug}<input class="tm" data-bfld="${fp}.br"${alAttr(`${fp}.br`)}${dis} value="${esc(fmtHM(f.br))}"></div>
+        <input class="tm" data-bfld="${fp}.to"${alAttr(`${fp}.to`)}${dis} value="${esc(fmtHM(f.to))}">
+        <input class="tm" data-bfld="${fp}.ld"${alAttr(`${fp}.ld`)}${dis} value="${esc(fmtHM(f.ld))}">
         <div class="sb-seatpair">${sbSlot(di, key + '.p', 'p', a.p, stoRO)}${sbSlot(di, key + '.w', 'w', a.w, stoRO)}</div>
         <div class="sb-rcell"${alAttr(`st:${key}`)}>
           ${sa ? saRoleHTML(key, a, !stoRO) : ''}
@@ -975,7 +975,7 @@ export function boardChange(e: Event) {
     const [id, field] = inf.dataset.ifld!.split('.')
     const inp = inpById(id)
     if (!inp) return notify()                    // deleted or undone underneath it
-    const back = () => { inf.value = field === 'rmks' ? (inp.remarks || '') : inpTimeText(inp, field).replace(':', '') }
+    const back = () => { inf.value = field === 'rmks' ? (inp.remarks || '') : inpTimeText(inp, field) }
     if (RO) return back()
     if (setInpField(inp, field as any, inf.value)) notify()
     else back()
@@ -1476,7 +1476,7 @@ export function boardTab(n: number) {
       else {
         const [id, field] = ae.dataset.ifld.split('.')
         const inp = inpById(id)
-        if (inp) want = field === 'rmks' ? (inp.remarks || '') : inpTimeText(inp, field).replace(':', '')
+        if (inp) want = field === 'rmks' ? (inp.remarks || '') : inpTimeText(inp, field)
       }
       if (iv !== want) ae.dispatchEvent(new Event('change', { bubbles: true }))
     }

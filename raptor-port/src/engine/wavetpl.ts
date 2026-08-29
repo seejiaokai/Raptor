@@ -50,9 +50,10 @@ export function kindNote(k: WaveKind): string {
 }
 
 /* a flying/duty time is a clock time or nothing; a malformed value drops to ''.
-   Wave times are stored with the colon (07:00, matching makeStandalone and the
-   board's own to/ld cells), where a DUTY template stores the compact 0700 — the
-   one deliberate difference from tplTime. Folded here so both crossings out of the
+   Stored with the colon (07:00, matching makeStandalone and the board's own
+   to/ld cells) — and since 30 Aug 26 tplTime folds the same way, so wave and
+   duty templates share one form and there is no deliberate difference left.
+   Folded here so both crossings out of the
    editor — minted into a day (waveFromTpl) and reloaded from untrusted storage
    (waveTplLoad) — normalise the same way, and neither can carry a nonsense time
    onto the schedule. */

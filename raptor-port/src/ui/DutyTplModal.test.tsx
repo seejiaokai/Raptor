@@ -125,26 +125,26 @@ describe('time-cell guard rails', () => {
   }
 
   it('a malformed time is refused on blur, reverts to what was there, and toasts', async () => {
-    await click($$('.tpl-tab:not(.new)')[1]!)     // SC Shift — first row is SXO AM 0700/1300
+    await click($$('.tpl-tab:not(.new)')[1]!)     // SC Shift — first row is SXO AM 07:00/13:00
     const strIn = $$('.trow .tm')[0]!              // the row's start cell
-    expect((strIn as HTMLInputElement).value).toBe('0700')
+    expect((strIn as HTMLInputElement).value).toBe('07:00')
     const toasts = await withToasts(async () => {
-      await focusIn(strIn)                          // captures 0700
+      await focusIn(strIn)                          // captures 07:00
       await type(strIn, '2500')                     // types freely — not refused mid-keystroke
       expect(DUTYTPL_CFG[1]!.rows[0]!.str).toBe('2500')   // raw value while editing
       await focusOut(strIn)                          // commit — refused
     })
-    expect(DUTYTPL_CFG[1]!.rows[0]!.str).toBe('0700')     // reverted
+    expect(DUTYTPL_CFG[1]!.rows[0]!.str).toBe('07:00')    // reverted
     expect(toasts.some(t => t.includes('is not a time'))).toBe(true)
   })
 
-  it('a valid time is canonicalised to compact HHMM on blur', async () => {
+  it('a valid time is canonicalised to hh:mm on blur — the colon appears on its own', async () => {
     await click($$('.tpl-tab:not(.new)')[1]!)
     const endIn = $$('.trow .tm')[1]!              // the row's end cell
     await focusIn(endIn)
-    await type(endIn, '7:00')
+    await type(endIn, '700')
     await focusOut(endIn)
-    expect(DUTYTPL_CFG[1]!.rows[0]!.end).toBe('0700')
+    expect(DUTYTPL_CFG[1]!.rows[0]!.end).toBe('07:00')
   })
 
   it('clearing a time to empty stays legal — that is how a row is left open', async () => {
