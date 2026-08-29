@@ -24,7 +24,23 @@ purpose: it is exactly the closed-work narrative the charter above bans, and
 it lives in `git log` where it belongs. Restate a count only from a run you
 watched — this file's history twice recorded a count that was wrong.
 
-**Last recorded green baseline** (29 Aug 26 — ARRANGE THE SECTION ORDER: a
+**Last recorded green baseline** (29 Aug 26 — DEFAULT ARRANGEMENT IN ADMIN: an
+admin sets the house order of the schedule sections AND the flying-wave types
+once, on Admin → Squadron config (`ui/AdminPage.tsx ArrangeDefaults`). The
+section default (`engine/order.ts SEC_DEFAULT`, key `secdefault`) is the fallback
+`secOrder(d)` fills un-arranged sections from — display-only, canonical baseline
+keeps parity 728/0; a hand-arranged day still wins. The wave default
+(`engine/reorder.ts WAVE_DEFAULT`, key `wavedefault`, OFF by default) orders the
+built-in kinds and is applied ONLY at wave-add time on a not-signed-off day
+(`board.ts placeAddedWave` → `waveInsertSlot` → the tested `moveWave`), so a new
+wave lands SC-on-top without re-ordering or amending any existing/published day
+("new schedules only", owner's call). Both persist on the `wavehide` footing
+(null at baseline), boot-loaded in `initStore`. Pins:
+`engine/arrdefaults.test.ts`, `ui/wavedefault-add.test.tsx`, +1
+`ui/admin.test.tsx`. Verified live at 1280 and 390 px: the panel renders both
+lists, a nudge re-orders the house default and an un-arranged day picks it up, a
+new SC lands on top of a draft day — no console errors.
+Built on the earlier same-day ARRANGE THE SECTION ORDER: a
 scheduler can re-order the day's section panels (Programme · Flying waves ·
 Duties · Sims · Ground Programme) on both Edit Schedule and the Scheduler Board
 via a per-day `⇅ Arrange` sheet, and a whole-day template remembers it. It is
@@ -40,12 +56,30 @@ close):
 
 | gate | reading |
 |---|---|
-| `npm test` | 3512 across 203 files — two vitest projects: raptor + leavewar |
+| `npm test` | 3529 across 205 files — two vitest projects: raptor + leavewar |
 | `node reference/tfin.js` | 728/0 (the reference is read-only; the "Ground Programme" title trim rides the tolerant normaliser in `html.test.ts`) |
 | `npm run build` | clean |
 | `npm run test:e2e` | 338 passed / 19 touch-only skips — three playwright projects: raptor geometry, lw-phone, lw-desktop. NOTE: a mid-session chain run showed 2 lw-phone reds against a build that predated the bug-pass fixes (the un-gated cross-lane notify repainting mid-gesture); both passed individually and the full suite passed whole against the fixed build — if they ever red again, suspect a stray repaint mid-tap first. |
 | `probes:adapted` | **all 6 GREEN** — `aar-async` was re-adapted this session (its palette sentinel filter matched ids by SUBSTRING, so the new ALL puck read as a currency-less pilot; whole-id match now). **Read the LAST line, not the last tally**: each probe prints its own count as it finishes (`wrap-async` ends `36 passed · 0 failed`), and the suite's verdict is the line after it, `all 6 adapted probes passed`. |
 | `perf` | **4/0** — board DOM 1053 ≤ **1150** (the ceiling is a SETTLED owner decision since 28 Aug 26 — CLAUDE.md §Stable decisions; the `⇅ Arrange` button's one node is noise against it). |
+
+Reconciles against the 3512/203 reading before it (arrange the flying WAVES):
++17 vitest pins across +2 files — **the DEFAULT arrangement, configurable in
+Admin** (owner, 29 Aug 26 pt.2 — "allow the default arrangement of a schedule to
+be configured in admin … even to the arrangement of the waves under display").
+New file `engine/arrdefaults.test.ts` (13: section default order/nudge/clamp,
+`secOrder` fallback + own-order-wins, save-null-at-canonical + sanitise, the
+RULES-SAFETY guard that a house-order change moves no `validate()` warning; wave
+default off-by-default, `waveKindOf`, `waveInsertSlot` places-by-kind, save/load)
+and `ui/wavedefault-add.test.tsx` (3: a new SC lands on top of a draft day
+keeping the old waves attached, appends on a signed-off day, appends when unset);
++1 `ui/admin.test.tsx` (both lists render, a section nudge re-orders the house
+default). Parity stays 728/0 because both defaults sit at their un-customised
+baseline headless (canonical sections / empty wave order = append), and the
+never-booting reference never loads them. The wave default reuses the tested
+`moveWave` and only ever fires on a not-signed-off day, so it can add no
+amendment to a published schedule. Verified live at 1280 and 390 px (see the
+baseline note above).
 
 Reconciles against the 3502/203 reading before it (the hide-check-on-edit-week
 feature): +10 vitest pins, no new file — **arrange the flying WAVES within a day**

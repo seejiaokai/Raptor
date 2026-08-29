@@ -2140,6 +2140,30 @@ array order, which `daytpl.ts mintBlob` deep-clones, so no `secOrder`-style capt
 is needed on the flying side (pinned in `engine/daytpl.test.ts`). Wave arrange is
 per-day only (no "apply to all days" — a day may have no SC to place).
 
+## The Default arrangement (Admin → Squadron config)
+
+The per-day Arrange sheet above sets ONE day's order; the **Default arrangement**
+panel (owner, 29 Aug 26 pt.2 — "allow the default arrangement of a schedule to be
+configured in admin … even to the arrangement of the waves under display") sets the
+GLOBAL house order once. It is `ui/AdminPage.tsx ArrangeDefaults`, at the top of the
+Squadron-config pane, reusing the sheet's `.arrsec` rows and `.tnudge` ▲▼ so it
+reads the same. Admin + `canEditSched()` gated at every nudge (write path, not only
+the UI). Two lists:
+- **Section order** — the five blocks, `engine/order.ts secDefault`/`moveSecDefault`.
+  It is the fallback every un-arranged day renders in on Edit Schedule and the
+  Scheduler Board (a hand-arranged day keeps its own order). Display-only; a **Reset
+  to standard order** button returns it to canonical. `#admSecDefault`.
+- **Flying-wave order** — the built-in kinds (Flying wave / SC / AVALON / BB),
+  `engine/reorder.ts waveDefaultView`/`moveWaveDefault`. It starts **off** (the panel
+  shows the canonical kinds as a starting point); once set, a NEW wave added to a
+  not-signed-off day lands in this order (SC on top, etc.) and never re-orders a
+  planned or published day (`board.ts placeAddedWave`). A **Turn off wave order**
+  button clears it back to append-at-bottom. `#admWaveDefault`.
+
+Each nudge persists immediately (`secDefaultSave` / `waveDefaultSave`, both writing
+`null` at the un-customised baseline). Pinned in `ui/admin.test.tsx`,
+`engine/arrdefaults.test.ts`, `ui/wavedefault-add.test.tsx`.
+
 ## Selection highlight (`ui/highlights.ts`)
 
 **A click on blank schedule clears EVERYTHING that lights a puck** (owner,

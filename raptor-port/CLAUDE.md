@@ -764,6 +764,23 @@ subscribers.
   kinds are the baseline; the library starts empty), don't make `validate` read a
   template, and don't move the show/hide gate off `WAVEHIDE`. Pinned in
   `wavetpl.test.ts`, `WaveTplModal.test.tsx`, `wavepicker.test.tsx`.
+- **The DEFAULT arrangement is admin-set, and the wave half is "new schedules
+  only"** (owner, 29 Aug 26 pt.2 — "allow the default arrangement of a schedule to
+  be configured in admin … even to the arrangement of the waves under display").
+  Admin → Squadron config carries a **Default arrangement** panel
+  (`ui/AdminPage.tsx ArrangeDefaults`) with two ▲▼ lists persisted on the `wavehide`
+  footing: **section order** (`engine/order.ts SEC_DEFAULT`, key `secdefault`,
+  default canonical) is the fallback `secOrder(d)` uses for un-arranged sections —
+  display-only, so a hand-arranged day still wins and the canonical baseline keeps
+  parity 728/0; **wave order** (`engine/reorder.ts WAVE_DEFAULT`, key `wavedefault`,
+  default OFF) orders the built-in kinds and is applied ONLY at wave-add time on a
+  not-signed-off day (`board.ts placeAddedWave` in `addWave`/`addWaveFromTpl` →
+  `waveInsertSlot` → the tested `moveWave`). The owner chose new-schedules-only over
+  re-shuffling every day, because a wave move is a real amendment: DON'T make the
+  wave default re-order existing or published days, and DON'T give the wave default a
+  "display-only" layer (it would fight `sortWaves`). Unset wave order = append as
+  before. Pinned: `engine/arrdefaults.test.ts`, `ui/wavedefault-add.test.tsx`,
+  `ui/admin.test.tsx`.
 - **The highlight MENUS must read apart from their CHIPS** (owner, 25 Aug 26 —
   the CAT / Type / Quals tabs looked so like the chips inside them that, with one
   menu open, the next shut menu read as another selectable chip). A `.hl-gtab` is

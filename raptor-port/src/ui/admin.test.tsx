@@ -9,6 +9,7 @@ import { act } from 'react'
 import { createRoot } from 'react-dom/client'
 import { App } from './App'
 import { initStore, setSession, notify, setPage } from '../state/store'
+import { secDefault, waveDefault } from '../engine'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
@@ -64,5 +65,21 @@ describe('the Admin page', () => {
   it('the Admin tab is the LAST nav entry', () => {
     const tabs = $$('#topnav a[data-page]')
     expect(tabs[tabs.length - 1]!.dataset.page).toBe('admin')
+  })
+
+  /* THE DEFAULT ARRANGEMENT panel (owner, 29 Aug 26 pt.2). Both lists render on the
+     Squadron-config pane, and a section nudge updates the global default at once. */
+  it('the Default arrangement lists render and a nudge re-orders the house default', async () => {
+    await click($$('.nav a[data-page]').find(a => a.dataset.page === 'admin')!)
+    expect($$('#admSecDefault .arrsec-row').length, 'five sections').toBe(5)
+    expect($$('#admWaveDefault .arrsec-row').length, 'four wave kinds').toBe(4)
+    expect(secDefault()[0]).toBe('prog')
+    /* nudge Programme down one — the house default now leads with Flying waves */
+    await click($('#admSecDefault .arrsec-row .tnudge[aria-label="Move Programme down"]'))
+    expect(secDefault()[0]).toBe('waves')
+    /* wave order starts OFF (empty) — the panel shows the canonical kinds as a start */
+    expect(waveDefault()).toEqual([])
+    await click($('#admWaveDefault .arrsec-row .tnudge[aria-label="Move SC up"]'))
+    expect(waveDefault()).toEqual(['sc', 'fly', 'avalon', 'bb'])
   })
 })

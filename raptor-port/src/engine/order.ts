@@ -1,4 +1,5 @@
 import { parseHM } from './time'
+import { store } from './hooks'
 /* duty display order: SDO, then SXO, then OPS-O, then anything else. Moved
    out of ui/html.ts alongside groundOrder (8 Aug 26) — engine/reorder.ts's
    sortDutyBlock needs this table to sort a duty block itself, and the
@@ -54,16 +55,61 @@ export function groundOrder(grd:any[],man?:any){
    on Edit Schedule, the notes + prog panels moved together on the board). */
 export const SECTIONS:string[]=['prog','waves','duty','sims','ground'];
 
-/* the day's section order: its own arrangement first (unknown keys dropped),
-   then any canonical section it did not list, appended in default order so the
-   list is robust if SECTIONS ever grows. An absent/empty d.secOrder yields the
-   plain canonical order, so a pristine day — and the read-only reference — render
-   exactly as they did before this feature (parity stays 728/0). */
+/* THE ADMIN-SET DEFAULT SECTION ORDER (owner, 29 Aug 26 pt.2 — "allow the default
+   arrangement of a schedule to be configured in admin"). A single GLOBAL fallback:
+   a day that has no secOrder of its own renders in THIS order, so an admin sets the
+   squadron's house order once instead of arranging every week by hand. It is still
+   DISPLAY ONLY — it only reorders the same panels secOrder already reorders, never a
+   slot key / SCHED.* / AL — so the rules read byte-identically (the owner's "don't
+   corrupt the rules" line, same guarantee as the per-day order above).
+   It defaults to the canonical SECTIONS, so an un-customised squadron — and the
+   read-only reference, which never boots this loader — stay byte-identical (parity
+   728/0). Persisted like the wave-hide set (engine/wavetpl.ts): store key
+   'secdefault', written null while it equals canonical, sanitised on load because
+   localStorage is hand-editable. A day's OWN secOrder still wins over this — an
+   explicitly-arranged day keeps its arrangement; only un-arranged days follow the
+   house default (see secOrder below). */
+let SEC_DEFAULT:string[]=SECTIONS.slice();
+/* keep only known section keys, no repeats, then append any canonical section the
+   input left out — so the stored default is always a full, valid five. */
+function cleanSecList(order:any):string[]{
+  const seen=new Set<string>(); const out:string[]=[];
+  if(Array.isArray(order))for(const k of order)if(typeof k==='string'&&SECTIONS.indexOf(k)>=0&&!seen.has(k)){seen.add(k);out.push(k);}
+  for(const k of SECTIONS)if(!seen.has(k))out.push(k);
+  return out;
+}
+function isCanonicalSec(o:string[]):boolean{return o.length===SECTIONS.length&&o.every((k,i)=>k===SECTIONS[i]);}
+export function secDefault():string[]{return SEC_DEFAULT.slice();}
+export function setSecDefault(order:any){SEC_DEFAULT=cleanSecList(order);}
+/* move one section up (dir<0) / down (dir>0) in the GLOBAL default (the Admin
+   panel's ▲▼). Pure state — the caller persists (secDefaultSave) and repaints.
+   Returns false on a no-op, mirroring moveSectionModel. */
+export function moveSecDefault(key:string,dir:number):boolean{
+  const from=SEC_DEFAULT.indexOf(key);
+  if(from<0)return false;
+  const to=from+(dir<0?-1:1);
+  if(to<0||to>=SEC_DEFAULT.length)return false;
+  const next=SEC_DEFAULT.slice();
+  next.splice(to,0,next.splice(from,1)[0]);
+  SEC_DEFAULT=next;
+  return true;
+}
+export function secDefaultSave(){store.set('secdefault',isCanonicalSec(SEC_DEFAULT)?null:SEC_DEFAULT.slice());}
+export function secDefaultLoad(){const raw=store.get('secdefault',null);SEC_DEFAULT=(raw==null)?SECTIONS.slice():cleanSecList(raw);}
+export function secDefaultReset(){SEC_DEFAULT=SECTIONS.slice();}
+
+/* the day's section order: its own arrangement first (unknown keys dropped), then
+   the ADMIN DEFAULT order for any section it did not list, then any remaining
+   canonical section as a final safety net. So an explicitly-arranged day keeps its
+   own order, an un-arranged day follows the admin's house default, and — when that
+   default is the canonical SECTIONS (the un-customised baseline) — a pristine day
+   and the read-only reference render exactly as before (parity stays 728/0). */
 export function secOrder(d:any):string[]{
   const raw=(d&&Array.isArray(d.secOrder))?d.secOrder:[];
   const seen=new Set<string>(); const out:string[]=[];
   for(const k of raw)if(typeof k==='string'&&SECTIONS.indexOf(k)>=0&&!seen.has(k)){seen.add(k);out.push(k);} // stored order, unknowns and repeats dropped
-  for(const k of SECTIONS)if(!seen.has(k))out.push(k);                                                     // then any section it didn't list
+  for(const k of SEC_DEFAULT)if(SECTIONS.indexOf(k)>=0&&!seen.has(k)){seen.add(k);out.push(k);}             // then the admin house default
+  for(const k of SECTIONS)if(!seen.has(k))out.push(k);                                                     // safety: any canonical the default lacks
   return out;
 }
 

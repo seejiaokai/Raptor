@@ -27,6 +27,7 @@ import { notify } from '../state/store'
 import { HOOKS } from '../engine/hooks'
 import { setTplEdit, setDayTplEdit, setWaveEdit } from './pops'
 import { WAVE_BUILTIN, WAVETPL_CFG, isWaveHidden, setWaveHidden, waveTplSave, kindLabel } from '../engine/wavetpl'
+import { secDefault, moveSecDefault, secDefaultSave, secDefaultReset, waveDefault, waveDefaultView, moveWaveDefault, waveDefaultSave, waveDefaultReset } from '../engine'
 import { clearHistoryData, clearEditHistory, type ClearMode } from './inputedit'
 import { useVersion } from './useStore'
 import { UsersIcon, SlidersIcon, DatabaseIcon } from './icons'
@@ -126,6 +127,66 @@ function WaveVisibility() {
   )
 }
 
+/* THE DEFAULT ARRANGEMENT (owner, 29 Aug 26 pt.2 — "allow the default arrangement
+   of a schedule to be configured in admin … even to the arrangement of the waves
+   under display"). Two ordered lists an admin sets ONCE:
+   • Section order — the house order the five schedule blocks show in on Edit
+     Schedule and the Scheduler Board (engine/order.ts secDefault → secOrder). A day
+     someone has arranged by hand keeps its own order; every other day follows this.
+     Pure display — it moves no data and cannot touch the rules.
+   • Flying-wave order — the house order NEW waves are placed in (engine/reorder.ts
+     waveDefault → board.ts addWave), applied only as a wave is added to a schedule
+     that has not been signed off, so a fresh week builds up SC-on-top (or whatever
+     the admin chose). It never re-orders a planned day and never touches a signed
+     -off one. Off by default: with no order set, a new wave is added at the bottom,
+     exactly as before.
+   Same ▲▼ nudge idiom as the per-day Arrange sheet, reusing its .arrsec and .tnudge
+   styles. Each nudge persists at once (secDefaultSave / waveDefaultSave). */
+const ADEF_SEC_LABEL: Record<string, string> = {
+  prog: 'Programme', waves: 'Flying waves', duty: 'Duties', sims: 'Sims', ground: 'Ground Programme',
+}
+function ArrangeDefaults() {
+  const sec = secDefault()
+  const wav = waveDefaultView()
+  const waveOn = waveDefault().length > 0
+  const nudgeSec = (key: string, dir: number) => { if (!canEditSched()) return; if (moveSecDefault(key, dir)) { secDefaultSave(); notify() } }
+  const nudgeWav = (key: string, dir: number) => { if (!canEditSched()) return; if (moveWaveDefault(key, dir)) { waveDefaultSave(); notify() } }
+  const resetSec = () => { if (!canEditSched()) return; secDefaultReset(); secDefaultSave(); notify() }
+  const resetWav = () => { if (!canEditSched()) return; waveDefaultReset(); waveDefaultSave(); notify() }
+  const row = (key: string, i: number, len: number, label: string, up: () => void, down: () => void) => (
+    <div className="arrsec-row" key={key} data-adefrow={key}>
+      <span className="grip">
+        <button className="tnudge" aria-label={`Move ${label} up`} disabled={i === 0} onClick={up}>▲</button>
+        <button className="tnudge" aria-label={`Move ${label} down`} disabled={i === len - 1} onClick={down}>▼</button>
+      </span>
+      <span className="arrsec-name">{label}</span>
+      <span className="arrsec-pos">{i + 1}</span>
+    </div>
+  )
+  return (
+    <div className="adm-arrdef">
+      <div className="arrsec-subh">Section order</div>
+      <div className="arrsec-list" id="admSecDefault">
+        {sec.map((key, i) => row(key, i, sec.length, ADEF_SEC_LABEL[key] || key,
+          () => nudgeSec(key, -1), () => nudgeSec(key, 1)))}
+      </div>
+      <p className="adm-note">The order the schedule’s sections show in, on Edit Schedule and the Scheduler Board. A day arranged on its own keeps its own order.</p>
+      <button className="abtn" id="admSecDefReset" onClick={resetSec} style={{ marginTop: 2 }}>Reset to standard order</button>
+      <div className="arrsec-subh" style={{ marginTop: 16 }}>Flying-wave order</div>
+      <div className="arrsec-list" id="admWaveDefault">
+        {wav.map((key, i) => row(key, i, wav.length, kindLabel(key as any),
+          () => nudgeWav(key, -1), () => nudgeWav(key, 1)))}
+      </div>
+      <p className="adm-note">
+        {waveOn
+          ? 'A new wave added to a schedule that isn’t signed off lands in this order (e.g. SC on top). It never re-orders a day already planned, or a signed-off day.'
+          : 'Off — a new wave is added at the bottom. Move a wave type to set the order new waves are placed in on a fresh schedule.'}
+      </p>
+      {waveOn && <button className="abtn" id="admWaveDefOff" onClick={resetWav} style={{ marginTop: 2 }}>Turn off wave order</button>}
+    </div>
+  )
+}
+
 export function AdminPage() {
   useVersion()
   const nameRef = useRef<HTMLInputElement>(null)
@@ -206,6 +267,9 @@ export function AdminPage() {
                 paint over this page exactly as they do over any other; these
                 buttons just set the same pops.ts flags the picker pencils set. ---- */}
             <section className={'adm-panel' + (cat === 'config' ? ' on' : '')} id="admConfig">
+              <h4 className="adm-sub">Default arrangement</h4>
+              <ArrangeDefaults />
+              <hr className="adm-sep" />
               <button className="abtn" id="admDutyTpl" onClick={() => { setTplEdit(true); notify() }}>Duty templates…</button>
               <p className="adm-note">A duty template is a saved duty block — its rows and times — that "+ Block" copies onto any day as a plain, conflict-checked desk.</p>
               <button className="abtn" id="admDayTpl" onClick={() => { setDayTplEdit(true); notify() }}>Day templates…</button>

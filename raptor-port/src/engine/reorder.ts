@@ -3,6 +3,9 @@ import { markEdit } from './publish'
 import { permuteKeys, moveKeys } from './keys'
 import { groundOrder } from './order'
 import { parseHM } from './time'
+import { store } from './hooks'
+import { isStandalone } from './waves'
+import { WAVE_KINDS } from './wavetpl'
 /* ---------------------------------------------------------------------------
    REORDERING A BOARD LIST (owner, 8 Aug 26)
    Every list on the board is drawn in model order and a new row lands at the
@@ -63,6 +66,66 @@ export function moveWave(di:any,from:any,to:any){
    `tr:${di}.`,`${di}.`].forEach((h:any)=>moveKeys(h,0,from,to,ws.length));
   return done(`wl:${di}.${to}`,di);
 }
+
+/* THE ADMIN-SET DEFAULT WAVE ORDER (owner, 29 Aug 26 pt.2 — "allow the default
+   arrangement of a schedule to be configured in admin … even to the arrangement of
+   the waves under display"). A GLOBAL order over the built-in wave KINDS (Flying
+   wave / SC / AVALON / BB). The owner chose "new schedules only": it is applied
+   ONLY when a wave is ADDED to a day that is not signed off (ui/board.ts addWave) —
+   the new wave lands in its kind's slot instead of at the bottom, so a fresh
+   schedule builds up in the house order. It NEVER re-shuffles an existing day and
+   NEVER touches a published day (a wave move is a real amendment, and the placement
+   rides the same tested moveWave used by the per-day Arrange sheet). Unset (empty)
+   ⇒ an added wave appends exactly as before — so an un-customised squadron behaves
+   identically to today. Persisted like the wave-hide set (engine/wavetpl.ts): store
+   key 'wavedefault', written null while unset, sanitised on load (untrusted). */
+let WAVE_DEFAULT:string[]=[];   // empty = no house order set → append as today
+function cleanWaveList(order:any):string[]{
+  const seen=new Set<string>(); const out:string[]=[];
+  if(Array.isArray(order))for(const k of order)if(typeof k==='string'&&(WAVE_KINDS as readonly string[]).indexOf(k)>=0&&!seen.has(k)){seen.add(k);out.push(k);}
+  return out;   // deliberately NOT auto-completed: an empty/garbage value stays "unset"
+}
+/* the built-in wave kinds in their canonical order — the list the Admin panel shows
+   (and moveWaveDefault materialises from) when no house order has been set yet. */
+const WAVE_CANON:string[]=(WAVE_KINDS as readonly string[]).slice();
+export function waveDefault():string[]{return WAVE_DEFAULT.slice();}
+/* the order the Admin panel DISPLAYS: the set house order, else the canonical kinds
+   as a starting point (still "unset" until the admin nudges one). */
+export function waveDefaultView():string[]{return WAVE_DEFAULT.length?WAVE_DEFAULT.slice():WAVE_CANON.slice();}
+export function setWaveDefault(order:any){WAVE_DEFAULT=cleanWaveList(order);}
+/* move one wave kind up (dir<0) / down (dir>0) in the house order (the Admin
+   panel's ▲▼). Materialises the full kind list from the canonical view on the
+   first nudge, so from then on the order is explicit and placement is active.
+   Caller persists (waveDefaultSave) and repaints. False on a no-op. */
+export function moveWaveDefault(key:string,dir:number):boolean{
+  const cur=waveDefaultView();
+  const from=cur.indexOf(key);
+  if(from<0)return false;
+  const to=from+(dir<0?-1:1);
+  if(to<0||to>=cur.length)return false;
+  cur.splice(to,0,cur.splice(from,1)[0]);
+  WAVE_DEFAULT=cur;
+  return true;
+}
+export function waveDefaultSave(){store.set('wavedefault',WAVE_DEFAULT.length?WAVE_DEFAULT.slice():null);}
+export function waveDefaultLoad(){const raw=store.get('wavedefault',null);WAVE_DEFAULT=Array.isArray(raw)?cleanWaveList(raw):[];}
+export function waveDefaultReset(){WAVE_DEFAULT=[];}
+/* the sorting kind of a placed wave: a standalone reads its own kind (sc/avalon/bb),
+   an ordinary flying wave is 'fly'. This is what the house order ranks. */
+export function waveKindOf(w:any):string{return isStandalone(w)?((w&&w.kind)||'fly'):'fly';}
+/* the slot a newly-added wave of `newKind` should take among the `existing` waves to
+   sit in the house order, WITHOUT disturbing the existing waves' relative order: it
+   lands just before the first existing wave whose kind ranks after it. Returns
+   existing.length (append) when no house order is set, so an un-customised squadron
+   is untouched. An unknown kind ranks last (appends). */
+export function waveInsertSlot(existing:any[],newKind:string):number{
+  if(!WAVE_DEFAULT.length||!Array.isArray(existing))return (existing||[]).length;
+  const rank=(k:string)=>{const i=WAVE_DEFAULT.indexOf(k);return i<0?WAVE_DEFAULT.length:i;};
+  const nr=rank(newKind);
+  for(let i=0;i<existing.length;i++)if(rank(waveKindOf(existing[i]))>nr)return i;
+  return existing.length;
+}
+
 export function moveFormation(di:any,gi:any,from:any,to:any){
   const w=(DAYS[di]||{}).waves&&DAYS[di].waves[gi]; if(!w||!ok(w.formations,from,to))return false;
   slide(w.formations,from,to);

@@ -19,7 +19,7 @@ import { applyMove, sortWave, sortDutyBlock, sortSims, sortGround, sortProg, sor
 import { HIST } from '../state/history'
 import { signoffHTML, cxText, storesView, intimesInner, areaText, atimeText, dayStatHTML, verSelBoardHTML, srcInput, saRoleHTML, availHTML } from './html'
 import { setInpField } from './inputedit'
-import { STORE_CFG, DUTYTPL_CFG, blockFromTpl, DAYTPL_CFG, applyDayTpl, addDayTpl, dayTplSave, dayTplSummary, secOrder } from '../engine'
+import { STORE_CFG, DUTYTPL_CFG, blockFromTpl, DAYTPL_CFG, applyDayTpl, addDayTpl, dayTplSave, dayTplSummary, secOrder, waveInsertSlot, waveKindOf, moveWave } from '../engine'
 import { dayDrafts, curDraftId, draftDup, draftSelect } from '../engine/drafts'
 import { setTplEdit, setDayTplEdit, setDraftsEdit, setWaveEdit, setArrangeSec } from './pops'
 import { shownBuiltins, shownTemplates, waveFromTpl, kindLabel } from '../engine/wavetpl'
@@ -1068,6 +1068,22 @@ export function addLine(di: number) {
   afterSchedMutate(); notify(); toast('Line added')
 }
 
+/* Slot a freshly-appended wave into the admin's house wave order (owner, 29 Aug 26
+   pt.2 — "new schedules only"). The wave has just been pushed to the END of
+   d.waves; if a house order is set and the day is NOT signed off, slide it up into
+   its kind's slot with the same tested moveWave the Arrange sheet uses, and return
+   its final index (for markStructuralAdd). A signed-off day is left untouched — the
+   owner's rule that the default never amends an existing schedule — and an unset
+   house order returns the end index, so nothing moves. `newKind` is 'fly' for an
+   ordinary wave, else the standalone kind. */
+function placeAddedWave(di: number, newKind: string): number {
+  const d = DAYS[di]; const end = d.waves.length - 1
+  if (dayApproved(di)) return end
+  const slot = waveInsertSlot(d.waves.slice(0, end), newKind)
+  if (slot < end) moveWave(di, end, slot)
+  return slot < end ? slot : end
+}
+
 /* + Wave, verbatim. Same in-function role check as addLine above — the
    direct mutator, so this is the one that actually has to refuse, whether
    it is reached through waveMenu's picker or (as the smaller-item test
@@ -1083,7 +1099,8 @@ export function addWave(di: number, kind: any) {
        NEW / 12:00 / 13:00 reads as a line somebody filled in when nobody did,
        and the suggested-brief time then paints a green in-time off it. */
     d.waves.push({ label: 'WAVE ' + (d.waves.filter((w: any) => !isStandalone(w)).length + 1), night: false, intimes: [], traffic: [], formations: [{ cs: '', msn: '', to: '', ld: '', aircraft: [{ p: '', w: '', area: '', rmks: '', opts: {} }] }] })
-    markStructuralAdd(`wl:${di}.${d.waves.length - 1}`); afterSchedMutate(); notify(); return act(di, 'Wave added')
+    const fi = placeAddedWave(di, 'fly')
+    markStructuralAdd(`wl:${di}.${fi}`); afterSchedMutate(); notify(); return act(di, 'Wave added')
   }
   const w = makeStandalone(kind); if (!w) return
   d.waves.push(w)
@@ -1093,7 +1110,8 @@ export function addWave(di: number, kind: any) {
      AVALON used to bring its desk up with the wave; now every desk, AVALON's
      included, is added from the "+ Block" template picker like any other.
      Adding a wave creates only the wave. */
-  markStructuralAdd(`wl:${di}.${d.waves.length - 1}`); afterSchedMutate(); notify()
+  const fi = placeAddedWave(di, kind)
+  markStructuralAdd(`wl:${di}.${fi}`); afterSchedMutate(); notify()
   toast(S.label + ' added — standalone, ' + (kind === 'avalon' ? 'checked for availability only' : S.all ? 'nothing on it is cross-checked' : 'SPARE is checked for availability and SC currency only'))
 }
 
@@ -1388,7 +1406,11 @@ export function addWaveFromTpl(di: any, id: string) {
   const w = waveFromTpl(id); if (!w) return
   d.waves = d.waves || []
   d.waves.push(w)
-  markStructuralAdd(`wl:${di}.${d.waves.length - 1}`); afterSchedMutate(); notify()
+  /* a template wave follows the house order too — by the kind it mints as (a
+     standby template mints a standalone, so waveKindOf reads its kind; a fly
+     template is ordinary → 'fly') */
+  const fi = placeAddedWave(di, waveKindOf(w))
+  markStructuralAdd(`wl:${di}.${fi}`); afterSchedMutate(); notify()
   return act(di, `"${w.label || 'Wave'}" added`)
 }
 

@@ -748,3 +748,21 @@ agree — name it here so the next session knows to check both.
   the one write path in the sheet that touches rule KEYS — but only their indices,
   never their substance, so `validate()`'s warning set is invariant under a wave
   move (`engine/reorder.test.ts`).
+
+- **The DEFAULT arrangement (29 Aug 26 pt.2) — admin-set global defaults for both
+  orders.** `ui/AdminPage.tsx ArrangeDefaults` (Squadron config) sets two persisted
+  singletons, each on the `wavehide` footing (in-memory value, `*Save` writes `null`
+  at the baseline, `*Load` sanitises, boot-loaded in `initStore`):
+  - `engine/order.ts SEC_DEFAULT` (key `secdefault`) is the fallback `secOrder(d)`
+    fills un-arranged sections from — so the whole week follows the house order
+    without per-day arranging, while a hand-arranged day still wins. Display-only;
+    canonical baseline ⇒ parity 728/0 untouched. **Drift-seam:** `secOrder` now
+    reads this global, so anything that clones a day and expects raw-canonical
+    default order must go through `secOrder`, not re-implement the fallback.
+  - `engine/reorder.ts WAVE_DEFAULT` (key `wavedefault`, off by default) orders the
+    built-in wave kinds and is applied at ADD time on not-signed-off days only
+    (`board.ts placeAddedWave`, in BOTH `addWave` and `addWaveFromTpl`), reusing the
+    tested `moveWave`. It never re-orders an existing day and never amends a
+    published one ("new schedules only", owner). **Drift-seam:** any NEW wave-add
+    path must call `placeAddedWave` too, or template/built-in adds would place
+    inconsistently. Guards: `engine/arrdefaults.test.ts`, `ui/wavedefault-add.test.tsx`.
