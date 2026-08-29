@@ -40,14 +40,23 @@ close):
 
 | gate | reading |
 |---|---|
-| `npm test` | 3498 across 202 files — two vitest projects: raptor + leavewar |
+| `npm test` | 3502 across 203 files — two vitest projects: raptor + leavewar |
 | `node reference/tfin.js` | 728/0 (the reference is read-only; the "Ground Programme" title trim rides the tolerant normaliser in `html.test.ts`) |
 | `npm run build` | clean |
 | `npm run test:e2e` | 338 passed / 19 touch-only skips — three playwright projects: raptor geometry, lw-phone, lw-desktop. NOTE: a mid-session chain run showed 2 lw-phone reds against a build that predated the bug-pass fixes (the un-gated cross-lane notify repainting mid-gesture); both passed individually and the full suite passed whole against the fixed build — if they ever red again, suspect a stray repaint mid-tap first. |
 | `probes:adapted` | **all 6 GREEN** — `aar-async` was re-adapted this session (its palette sentinel filter matched ids by SUBSTRING, so the new ALL puck read as a currency-less pilot; whole-id match now). **Read the LAST line, not the last tally**: each probe prints its own count as it finishes (`wrap-async` ends `36 passed · 0 failed`), and the suite's verdict is the line after it, `all 6 adapted probes passed`. |
 | `perf` | **4/0** — board DOM 1053 ≤ **1150** (the ceiling is a SETTLED owner decision since 28 Aug 26 — CLAUDE.md §Stable decisions; the `⇅ Arrange` button's one node is noise against it). |
 
-Reconciles against the 3481/200 reading this replaces (the frozen Quals header):
+Reconciles against the 3498/202 reading this replaces (the section-order
+feature): +4 vitest pins across +1 file — the "hide a check on the edit week
+too" feature. New file `ui/warnmute-week.test.ts` (4: `dayWarnHTML` draws the
+`✕` in edit mode, drops a muted check into the "N hidden" reveal with the header
+count unchanged, view-only shows no controls and the full list, and it reads the
+same `view.WARNOFF` the board's mute writes). No engine/parity change — the mute
+UI is gated on `editMode()`, so the View-only week markup is byte-identical and
+reference stays 728/0. E2e/probes/perf unmoved.
+
+Before that, reconciles against the 3481/200 reading (the frozen Quals header):
 +17 vitest pins across +2 files — the section-order feature. New files
 `engine/secorder.test.ts` (2: the rules-safety guard — validate/SCHED/content
 byte-identical after a re-order) and `ui/ArrangeSections.test.tsx` (4: the sheet
@@ -490,22 +499,31 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
     `HIST.stack.length`); desktop-facing (`.tb-hist` hidden under 820px — the
     phone board already carries its own pair). No new stack. `editweek.test.tsx`
     still drives `#undoBtn`/`#redoBtn`, now in the bar.
-  - **Board warnings: mute one + resize the panel** (`state/view.ts`
-    `WARNOFF`/`WMOPEN`, `ui/board.ts` `boardWarnHTML` + `wireWarnSplit`,
+  - **Warnings: mute one — on the board AND the edit week, in sync — + resize
+    the panel** (`state/view.ts` `WARNOFF`/`WMOPEN`, `ui/board.ts`
+    `boardWarnHTML` + `wireWarnSplit`, `ui/html.ts` `dayWarnHTML`,
     `interactions.ts`). A scheduler MUTES a specific check (the ✕ on a `.wln`
-    row): keyed by the warning's CONTENT (`warnMuteKey` = day|code|people|
+    row on the board, or a `.witem` row in the edit week's day-issue list):
+    keyed by the warning's CONTENT (`warnMuteKey` = day|code|people|
     message, the identity the validator itself dedups on), so it AUTO-RE-ARMS the
     instant the situation changes — a persisting check stays hidden, a changed
     one returns (owner: "if things change that warning will appear again"). The
     day's header keeps its TRUE count/colour — muting declutters the list, it
     does not lie about the day; muted checks gather under a "N hidden" reveal
     (`WMOPEN`) so they stay reachable to un-mute. Admin-gated, session-only (the
-    LATEOFF precedent). And the DESKTOP checks panel is RESIZABLE: a grip
+    LATEOFF precedent). **The two surfaces are ONE control** (owner, 29 Aug 26 —
+    "the hide warning option should be available on edit schedule too … and both
+    are in sync"): both read/write the SAME `WARNOFF`, so a hide on either shows
+    on both and undo restores it from either; the edit week gates its ✕/↺ and
+    reveal on `editMode()` (the board's own `canEditSched()`), so the View-only
+    week keeps the full honest list and its markup is byte-identical. And the
+    DESKTOP checks panel is RESIZABLE: a grip
     (`.sb-wsplit`) between the checks and the roster drags `.sb-warn` to an
     explicit height (owner: "move the border to reduce the amount of warning
     shown"). No-op until dragged — the default 38% content-sizing is untouched,
     so the board's geometry holds — and desktop-only (the phone board is one
-    scroller). Tests: `state/warnmute.test.ts`, a delete round-trip in
+    scroller). Tests: `state/warnmute.test.ts`, `ui/warnmute-week.test.ts` (the
+    edit-week mute UI + the shared-set sync), a delete round-trip in
     `board.test.tsx`, a desktop-grip drag in `e2e/geometry.spec.ts`. Contract:
     `docs/ui-contracts.md` §Muting a check, §The checks panel resizes.
   - **The devil's-advocate pass closed two REAL drifts in the auto-land feature**

@@ -13,7 +13,7 @@ import { SCHED, alAttr, dayApproved, dayCurVer, dayPendCount, alColor, signOf, s
 import { dayDrafts, curDraftId, isDraftVer, draftVerLabel } from '../engine/drafts'
 import { keyDay } from '../engine/keys'
 import { VCONF } from '../engine/rules'
-import { esc, SBDAY, WFOCUS, PFOCUS, DWOPEN, DPREV, AVSHUT, PIOPEN, VWORK, CURPAGE, lateShown, restArmed, notePub, stSavedOn } from '../state/view'
+import { esc, SBDAY, WFOCUS, PFOCUS, DWOPEN, DPREV, AVSHUT, PIOPEN, VWORK, CURPAGE, lateShown, restArmed, notePub, stSavedOn, warnShown, WMOPEN } from '../state/view'
 import { canEditSched } from '../state/auth'
 import { ME } from '../state/auth'
 import { HOOKS } from '../engine/hooks'
@@ -598,6 +598,10 @@ export function dayWarnHTML(di:any){
   const items=pf?personWarns(di,pf):all.map((w:any,ix:any)=>({w,ix}));
   if(pf&&!items.length)return soloTrace(di,pf);
   const dw=items.map((x:any)=>x.w);
+  /* the header count stays the TRUE total — muting a check declutters the
+     list, it does not change what the day is (the board does the same). So
+     worst / nh / the issue count all read `dw`, the full set including any
+     muted rows; only the LIST below drops them. */
   const worst=dw.some((w:any)=>w.sev==='hard')?'hard':dw.some((w:any)=>w.sev==='adv')?'adv':'note';
   const nh=dw.filter((w:any)=>w.sev==='hard').length;
   const open=DWOPEN.has(di);
@@ -609,22 +613,47 @@ export function dayWarnHTML(di:any){
    +`${nh?` · ${nh} warning`:''} · <span class="dwcue">${open?'tap to collapse':'tap to review'}</span>`
    +`<span class="dwcar">${open?'▲':'▼'}</span></div>`;
   if(open){
-    const row=({w,ix}:any)=>{
+    /* MUTING A CHECK IS AVAILABLE ON EDIT SCHEDULE TOO (owner, 29 Aug 26 —
+       "the hide warning option should be available on edit schedule too …
+       and both are in sync"). The board already lets a scheduler hide one
+       check; the mute set (view.WARNOFF) is keyed by the warning's CONTENT,
+       not by which surface it was hidden from, so rendering the same ✕ / ↺
+       controls here shares that one set — a check hidden on the board is
+       hidden on the week and vice versa, no extra wiring. Gated to Edit
+       Schedule (editMode()) exactly like the board's canEditSched(): the
+       View-only week stays the honest full record with no controls, so its
+       markup is byte-identical to before. The ✕/↺ clicks (data-woff) and the
+       reveal (data-wmtog) route through the SAME delegated handlers the board
+       uses — see interactions.ts. */
+    const ed=editMode();
+    const row=({w,ix}:any,muted?:boolean)=>{
       const names=(w.who||[]).map((id:any)=>PEOPLE[id]?PEOPLE[id].cs:id).join(', ');
       const on=WFOCUS&&WFOCUS.di===di&&WFOCUS.ix===ix;
-      return `<div class="witem ${w.sev}${on?' on':''}" data-wdi="${di}" data-wix="${ix}" title="Jump to the puck that caused this">`
-        +`<span class="wbar"></span><span><span class="wcode">${esc(wlbl(WCODE[w.code]||w.code))}</span>`
-        +`<b>${esc(names)}</b>${names?' — ':''}${esc(w.msg||'')}</span></div>`;
+      return `<div class="witem ${w.sev}${on?' on':''}${muted?' muted':''}" data-wdi="${di}" data-wix="${ix}" title="Jump to the puck that caused this">`
+        +`<span class="wbar"></span><span${ed?' class="wtx"':''}><span class="wcode">${esc(wlbl(WCODE[w.code]||w.code))}</span>`
+        +`<b>${esc(names)}</b>${names?' — ':''}${esc(w.msg||'')}</span>`
+        +(ed?`<button class="witem-mute" data-woff="${di}.${ix}" title="${muted?'Show this check again':'Hide this check — it comes back if the situation changes'}">${muted?'↺':'✕'}</button>`:'')
+        +`</div>`;
     };
+    /* split the muted checks out of the visible list (edit only). warnShown
+       reads the shared WARNOFF; the hidden ones gather under a "N hidden"
+       reveal so they stay reachable to un-mute, the board's shape. */
+    const shown=ed?items.filter((x:any)=>warnShown(x.w)):items;
+    const hidden=ed?items.filter((x:any)=>!warnShown(x.w)):[];
     /* the cross-day row ranks below this day's warnings and above its
        advisories (owner, 7 Aug 26): it is red business, but tomorrow's.
        items are already severity-sorted (validate.ts), so the seam is the
        first non-hard row. */
-    const cut=items.findIndex((x:any)=>x.w.sev!=='hard');
-    const hards=cut<0?items:items.slice(0,cut), rest=cut<0?[]:items.slice(cut);
-    h+=`<div class="dwlist">`+hards.map(row).join('')
+    const cut=shown.findIndex((x:any)=>x.w.sev!=='hard');
+    const hards=cut<0?shown:shown.slice(0,cut), rest=cut<0?[]:shown.slice(cut);
+    const mopen=WMOPEN.has(di);
+    h+=`<div class="dwlist">`+hards.map((x:any)=>row(x)).join('')
      +dayTraceHTML(di,pf)
-     +rest.map(row).join('')
+     +rest.map((x:any)=>row(x)).join('')
+     +(hidden.length
+        ? `<div class="wmuted-h${mopen?' open':''}" data-wmtog="${di}" title="Show or hide the checks you have muted">`
+          +`<span class="dwcar">${mopen?'▲':'▼'}</span>${hidden.length} hidden</div>`
+          +(mopen?hidden.map((x:any)=>row(x,true)).join(''):''):'')
      +(pf&&PFOCUS.days.length>1
         ? `<div class="dwecho">${esc(cs)} is also flagged on ${esc(PFOCUS.days.filter((x:any)=>x!==di).map(dowShort).join(', '))}</div>`:'')
      +(WFOCUS&&WFOCUS.di===di

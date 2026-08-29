@@ -3062,18 +3062,30 @@ except where noted:
 ## Muting a check, and resizing the checks panel (owner, Aug 26)
 
 Both are board-side, admin-only, session-only, and DESKTOP-scoped for the resize.
-- **Mute a specific check.** Each `.wln` row in the board's checks panel
-  (`board.ts:boardWarnHTML`) carries a `✕` (`data-woff`). Tapping it hides that
-  check; the muted ones gather under a "N hidden" line (`data-wmtog`, `WMOPEN`)
-  that reveals them dimmed with a `↺` to restore. The mute is keyed by the
-  warning's CONTENT — `warnMuteKey` = day|code|people|message, the identity the
-  validator itself dedups on — so it AUTO-RE-ARMS: a check that persists unchanged
-  stays hidden (the scheduler acknowledged it), but the moment the situation
-  changes and `validate()` rebuilds a different warning the key no longer matches
-  and it shows again (owner: "if things change that warning will appear again").
+- **Mute a specific check — on the board AND the edit week, in sync.** Each
+  `.wln` row in the board's checks panel (`board.ts:boardWarnHTML`) and each
+  `.witem` row in the edit week's day-issue list (`html.ts:dayWarnHTML`) carries
+  a `✕` (`data-woff`). Tapping it hides that check; the muted ones gather under a
+  "N hidden" line (`data-wmtog`, `WMOPEN`) that reveals them dimmed with a `↺` to
+  restore. The mute is keyed by the warning's CONTENT — `warnMuteKey` =
+  day|code|people|message, the identity the validator itself dedups on — so it
+  AUTO-RE-ARMS: a check that persists unchanged stays hidden (the scheduler
+  acknowledged it), but the moment the situation changes and `validate()`
+  rebuilds a different warning the key no longer matches and it shows again
+  (owner: "if things change that warning will appear again").
   The day's HEADER keeps its true count and colour — muting declutters the list,
   it does not change what the day IS. Admin-gated at the write path
   (`view.toggleWarnOff`), cleared on login/logout — the LATEOFF precedent.
+  **The board and the edit week are one control, not two** (owner, 29 Aug 26 —
+  "the hide warning option should be available on edit schedule too … and both
+  are in sync"): the two surfaces read and write the SAME `view.WARNOFF` set,
+  so a check hidden on either is hidden on both with no extra wiring, and undo
+  (which snapshots `WARNOFF`) walks over the mute the same way from either. The
+  edit week gates the `✕`/`↺` and the reveal on `editMode()` (exactly the board's
+  `canEditSched()`), so the **View-only week shows no controls and the full,
+  honest list** — its markup is byte-identical to before, and the read-only
+  record is never quietly trimmed. The day-info popup (`dip-list`, `data-adv`)
+  is a separate readout and deliberately keeps the whole list too.
 - **Resize the checks panel.** On desktop a grip (`.sb-wsplit`) sits on the
   border between the checks panel and the roster below it; dragging it sets an
   explicit height on `.sb-warn` (`wireWarnSplit`, a CSS var + `.sb-warn-sized`
