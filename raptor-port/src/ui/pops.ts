@@ -44,6 +44,13 @@ export function setDraftsEdit(v: null | { di: number, id?: string }) { DRAFTSEDI
    a button on either surface; the sheet reorders live behind itself. */
 export let ARRANGESEC: number | null = null
 export function setArrangeSec(v: number | null) { ARRANGESEC = v }
+/* The wave MANAGE sheet (owner, 29 Aug 26 pt.3 — "make flying wave templates more
+   intuitive with the functions to hide/delete and remove it in admin"). Opened from
+   the + Wave menu; lists every built-in kind and saved template with a show/hide eye
+   and, for templates, a delete — the show/hide list that used to live on the Admin
+   page. A plain on/off flag; the sheet reads WAVEHIDE / WAVETPL_CFG live. */
+export let WAVEMANAGE = false
+export function setWaveManage(on: boolean) { WAVEMANAGE = on }
 /* The one personal input being edited from the week or the board (owner,
    10 Aug 26). The INPUT OBJECT, never its index or its content key: undo is
    still live under the modal and renumbers INPUTS, and the key is built from

@@ -758,12 +758,24 @@ subscribers.
   standby mint to 1:1. Times store raw in the editor and normalise on blur
   / mint / load (`waveTime`, colon form `07:00` — the one difference from duty
   `tplTime`'s `0700`). Show/hide: a `WAVEHIDE` set (built-in key or template id),
-  toggled on **Admin → Squadron config**, default all-shown; a deleted template drops
+  default all-shown; a deleted template drops
   its flag. Persisted like the stores/duty lists (`wavetpl` + `wavehide`), boot-loaded
   in `initStore`, untrusted storage clamped. Don't seed built-in templates (the four
   kinds are the baseline; the library starts empty), don't make `validate` read a
   template, and don't move the show/hide gate off `WAVEHIDE`. Pinned in
   `wavetpl.test.ts`, `WaveTplModal.test.tsx`, `wavepicker.test.tsx`.
+  **The show/hide list (and a template DELETE) moved off Admin into the + Wave menu's
+  own MANAGE sheet** (owner, 29 Aug 26 pt.3 — "make flying wave templates more intuitive
+  with the functions to hide/delete and remove it in admin"). Managing a wave's
+  visibility now happens where a wave is added: `board.ts waveMenu` carries a ⚙ Manage
+  button and a "N hidden · Manage" line, both opening `ui/WaveManageSheet.tsx` (an EYE
+  per built-in kind and template toggling `setWaveHidden`, a TRASH deleting a saved
+  template behind a confirm — built-ins can be hidden but never deleted). The Admin
+  `WaveVisibility` list is REMOVED, with no pointer left behind (owner: keep Admin
+  clean); Admin keeps only the wave-template EDITOR button. Same admin-only gate
+  either way (`canEditSched` === admin), so no permission widened. Don't re-add the
+  Admin list, and don't leave a wave hidden with no way back — the "N hidden" line is
+  the way back. Pinned in `WaveManageSheet.test.tsx`.
 - **The DEFAULT arrangement is admin-set, and the wave half is "new schedules
   only"** (owner, 29 Aug 26 pt.2 — "allow the default arrangement of a schedule to
   be configured in admin … even to the arrangement of the waves under display").

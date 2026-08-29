@@ -26,7 +26,7 @@ import { esc } from '../state/view'
 import { notify } from '../state/store'
 import { HOOKS } from '../engine/hooks'
 import { setTplEdit, setDayTplEdit, setWaveEdit } from './pops'
-import { WAVE_BUILTIN, WAVETPL_CFG, isWaveHidden, setWaveHidden, waveTplSave, kindLabel } from '../engine/wavetpl'
+import { kindLabel } from '../engine/wavetpl'
 import { secDefault, moveSecDefault, secDefaultSave, secDefaultReset, waveDefault, waveDefaultView, moveWaveDefault, waveDefaultSave, waveDefaultReset } from '../engine'
 import { clearHistoryData, clearEditHistory, type ClearMode } from './inputedit'
 import { useVersion } from './useStore'
@@ -98,34 +98,11 @@ function ClearControl(props: {
   </div>)
 }
 
-/* Show / hide each "+ Wave" entry (owner, 25 Aug 26 — "the admin page should
-   update as well so the waves or templates can be toggled to hide or open by
-   default"). One row per built-in kind and per saved template; a switch flips its
-   WAVEHIDE flag and persists at once, so the picker updates the next time it opens.
-   The list is live — a template added or deleted in the editor shows or drops here
-   on the next render, because both read the same WAVETPL_CFG. */
-function WaveVisibility() {
-  const items = [
-    ...WAVE_BUILTIN.map(b => ({ key: b.key as string, label: b.label, sub: 'Built-in kind' })),
-    ...WAVETPL_CFG.map(t => ({ key: t.id, label: t.title || 'Untitled', sub: `Template · ${kindLabel(t.kind)}` })),
-  ]
-  const flip = (key: string, hidden: boolean) => { setWaveHidden(key, !hidden); waveTplSave(); notify() }
-  return (
-    <div className="adm-wavevis" role="group" aria-label="Which waves appear in + Wave">
-      {items.map(it => {
-        const hidden = isWaveHidden(it.key)
-        return (
-          <div className="wv-item" key={it.key}>
-            <span className="wv-lbl">{it.label}<span className="wv-sub">{it.sub}</span></span>
-            <button className={'wv-tog' + (hidden ? '' : ' on')} role="switch" aria-checked={!hidden}
-              title={hidden ? 'Hidden from + Wave — tap to show' : 'Shown in + Wave — tap to hide'}
-              onClick={() => flip(it.key, hidden)}>{hidden ? 'Hidden' : 'Shown'}</button>
-          </div>
-        )
-      })}
-    </div>
-  )
-}
+/* The "Show / hide each + Wave entry" list used to live here (owner, 25 Aug 26).
+   It moved to the + Wave menu's own Manage sheet (ui/WaveManageSheet.tsx) on 29 Aug
+   26 pt.3 — managing a wave's visibility now happens where a wave is added, and Admin
+   keeps only the wave-template EDITOR button below. Same admin-only gate either way
+   (canEditSched === admin). */
 
 /* THE DEFAULT ARRANGEMENT (owner, 29 Aug 26 pt.2 — "allow the default arrangement
    of a schedule to be configured in admin … even to the arrangement of the waves
@@ -275,8 +252,7 @@ export function AdminPage() {
               <button className="abtn" id="admDayTpl" onClick={() => { setDayTplEdit(true); notify() }}>Day templates…</button>
               <p className="adm-note">A day template is a whole captured day — waves, duties, sims and ground rows — recaptured off a real day and re-applied from the day-templates picker.</p>
               <button className="abtn" id="admWaveTpl" onClick={() => { setWaveEdit(true); notify() }}>Wave templates…</button>
-              <p className="adm-note">A wave template is a saved flying wave — its rule-set and lines — that "+ Wave" drops onto any day. Choose below which wave types and templates appear in that picker.</p>
-              <WaveVisibility />
+              <p className="adm-note">A wave template is a saved flying wave — its rule-set and lines — that "+ Wave" drops onto any day.</p>
             </section>
             {/* ---- Data & persistence — the honesty card. This page is where the
                 real controls land when the shared database arrives; until then the

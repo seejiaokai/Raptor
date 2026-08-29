@@ -21,8 +21,8 @@ import { signoffHTML, cxText, storesView, intimesInner, areaText, atimeText, day
 import { setInpField } from './inputedit'
 import { STORE_CFG, DUTYTPL_CFG, blockFromTpl, DAYTPL_CFG, applyDayTpl, addDayTpl, dayTplSave, dayTplSummary, secOrder, waveInsertSlot, waveKindOf, moveWave } from '../engine'
 import { dayDrafts, curDraftId, draftDup, draftSelect } from '../engine/drafts'
-import { setTplEdit, setDayTplEdit, setDraftsEdit, setWaveEdit, setArrangeSec } from './pops'
-import { shownBuiltins, shownTemplates, waveFromTpl, kindLabel } from '../engine/wavetpl'
+import { setTplEdit, setDayTplEdit, setDraftsEdit, setWaveEdit, setArrangeSec, setWaveManage } from './pops'
+import { shownBuiltins, shownTemplates, waveFromTpl, kindLabel, WAVE_BUILTIN, WAVETPL_CFG } from '../engine/wavetpl'
 import { HOOKS } from '../engine/hooks'
 import { canEditSched } from '../state/auth'
 import * as view from '../state/view'
@@ -1354,8 +1354,12 @@ export function waveMenu(anchor: HTMLElement, di: any) {
      only relocated: it rides the Day header when the board's generic add shows
      one, else the Add header. */
   const pen = `<button class="wm-pen" data-wvedit="1" title="Edit the wave templates">✎</button>`
+  /* MANAGE — show / hide / delete what appears here (owner, 29 Aug 26 pt.3). The
+     hide/delete that used to live on the Admin page now opens from the wave menu
+     itself (ui/WaveManageSheet.tsx), so a hidden wave is managed where it is added. */
+  const mng = `<button class="wm-pen wm-mng" data-wvmanage="1" title="Show, hide or delete waves">⚙</button>`
   const dayBtns = (di == null)
-    ? `<h5 class="wm-hpen">Day${pen}</h5><div class="wm-row" id="wmDays">`
+    ? `<h5 class="wm-hpen">Day${mng}${pen}</h5><div class="wm-row" id="wmDays">`
       + DAYS.map((x: any, i: number) => `<button class="wm ${i === 0 ? 'on' : ''}" data-wmday="${i}" style="padding:6px 9px;font-size:11.5px">${esc(x.dow.slice(0, 3))}</button>`).join('')
       + `</div>` : ''
   /* the built-in kinds are the four rule-sets, minus any an admin has hidden
@@ -1372,12 +1376,19 @@ export function waveMenu(anchor: HTMLElement, di: any) {
     ? `<h5>Templates</h5><div class="wm-row" style="flex-direction:column;align-items:stretch">`
       + tpls.map((t: any) => `<button class="wm" data-wmtpl="${esc(t.id)}">${esc(t.title || 'Untitled')}<span class="wm-sub">${esc(kindLabel(t.kind))}${t.lines.length ? ` \u00b7 ${t.lines.length} line${t.lines.length === 1 ? '' : 's'}` : ''}</span></button>`).join('')
       + `</div>` : ''
+  /* a hidden wave never silently vanishes: this line says how many are tucked away
+     and opens Manage to bring them back, right where their absence is noticed. */
+  const hiddenN = (WAVE_BUILTIN.length + WAVETPL_CFG.length) - (builtins.length + tpls.length)
+  const hiddenLine = hiddenN > 0
+    ? `<div class="wm-hidden"><b>${hiddenN} hidden</b> \u00b7 <button class="wm-mnglink" data-wvmanage="1">Manage</button></div>` : ''
   const html = dayBtns
-    + `<h5${di == null ? '' : ' class="wm-hpen"'}>Add${di == null ? '' : pen}</h5><div class="wm-row">` + kindRow + `</div>`
+    + `<h5${di == null ? '' : ' class="wm-hpen"'}>Add${di == null ? '' : mng + pen}</h5><div class="wm-row">` + kindRow + `</div>`
     + tplRow
     + (anyStandby ? `<div class="wm-note">SC \u00b7 AVALON \u00b7 BB sit outside the day's flying count \u2014 two waves of four plus an SC reads <b>4 X 4 / 2</b>.</div>` : '')
+    + hiddenLine
   let day = (di == null) ? 0 : di
   const box = popMenu(anchor, html, (e: any, close: () => void) => {
+    if (e.target.closest('[data-wvmanage]')) { close(); setWaveManage(true); notify(); e.stopPropagation(); return }
     if (e.target.closest('[data-wvedit]')) { close(); setWaveEdit(true); notify(); e.stopPropagation(); return }
     const dbtn = e.target.closest('[data-wmday]')
     if (dbtn) {

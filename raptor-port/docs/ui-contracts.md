@@ -3909,7 +3909,17 @@ The three category panels:
   open the duty-template and day-template editors by setting the SAME
   `pops.ts` flags the picker pencils set (`setTplEdit` / `setDayTplEdit`).
   Front doors, not new surfaces: the modals stay App-level siblings and
-  paint over this page like any other.
+  paint over this page like any other. `#admWaveTpl` still opens the wave
+  CONTENT editor here, but the wave **show/hide list was removed** (29 Aug 26
+  pt.3): managing a wave's visibility — and deleting a saved template — moved
+  to the `+ Wave` menu's own **Manage** sheet (`ui/WaveManageSheet.tsx`,
+  `WAVEMANAGE`), reached by its ⚙ button or its "N hidden · Manage" line. An
+  EYE per built-in kind / template toggles `setWaveHidden` (the flag the
+  picker filters on); a TRASH deletes a template behind a confirm; a built-in
+  can be hidden but never deleted. Same admin-only gate as the old list. On a
+  phone every `.modal` (this sheet included) now slides up as a **bottom
+  sheet** rather than a centred card — the reachable-one-thumb pattern
+  `.ic-pop` already uses.
 - **`#admData` Data** — the storage-and-cleanup panel. **The screen reads
   PRODUCTION (owner, 25 Aug 26)**: the old session-only/no-server honesty
   paragraphs are gone from the UI and live as code comments in
