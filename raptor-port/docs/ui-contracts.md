@@ -2060,6 +2060,29 @@ right-edge `box-shadow` marks the freeze boundary so a half-scrolled column
 reads as content passing under a pinned column, not a stray fragment. Gated in
 `e2e/geometry.spec.ts` (jsdom has no sticky), not jsdom.
 
+## The Quals HEADER freezes on scroll (owner, 29 Aug 26)
+
+The column headings (CALLSIGN … REMARKS) and the group row (`Assigned pilots ·
+N`) stay put when the page scrolls down — "freeze like the leave war top bar …
+desktop and mobile … same mechanism". It IS the Leave War mechanism
+(`src/leavewar/ui/Matrix.tsx` `.mxfixed`, and its `.mx-wrap` preamble spells out
+why): `.qwrap` scrolls the table sideways so it owns the horizontal axis, the
+PAGE owns the vertical, and no `position:sticky` can freeze a header against the
+page while its own scrollport owns the other axis (the `thead` already carries a
+`top:0` sticky that pins nothing for exactly this reason). So `QualsPage` mounts
+a **fixed mirror** (`.qfixed`/`.qfixed-scroll`, `data-testid="qsticky-head"`) of
+the heading + group row the instant the real header's top passes the app top
+bar's lower edge, pinned there, and unmounts it when the header comes back. The
+mirror reuses `qualsHead`/`qualsGrpRow` (one source for the markup — no drift
+seam), sizes its columns from a colgroup of the live-measured header widths
+(`table-layout:fixed`) so they land over the grid's, and is its own thin
+horizontal scroller kept in lockstep with `.qwrap` (one-way grid → mirror, the
+Leave War fling lesson) so the frozen callsign column's own sticky-left works
+inside it. `z-index:55` sits under the top bar's 60. A click on a heading in the
+bar still sorts. Browser-only — jsdom has no layout, so the mirror never mounts
+there (`quals.test.tsx` pins its absence); the freeze is verified on the live
+view at desktop and phone widths.
+
 ## Selection highlight (`ui/highlights.ts`)
 
 **A click on blank schedule clears EVERYTHING that lights a puck** (owner,

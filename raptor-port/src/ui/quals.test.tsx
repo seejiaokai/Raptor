@@ -939,3 +939,22 @@ describe('the Archived section (owner, 19 Aug 26)', () => {
     expect($(`[data-testid="qarchrow-${id}"]`)).toBeFalsy()
   })
 })
+
+/* THE FROZEN HEADER MIRROR (owner, 29 Aug 26) — the same fixed-mirror
+   mechanism Leave War uses, and, like Leave War's own matrix.test, jsdom can
+   only pin its ABSENCE: the mirror is a browser-only creature that activates
+   off a real scroll past a laid-out header, and jsdom reports every rect as
+   0×0, so it must never mount here. The freeze itself is verified on the live
+   view. What jsdom CAN pin is that the group row the mirror also carries still
+   reads correctly after the head/grp were pulled out of qualsTable into their
+   own reusable builders — the refactor that fed the mirror. */
+describe('the frozen quals header', () => {
+  it('never mounts the fixed mirror in jsdom (no layout to scroll past)', () => {
+    expect($('[data-testid="qsticky-head"]'), 'browser-only; verified on the live view').toBeFalsy()
+  })
+  it('the group row still names the roster after the head/grp were extracted', () => {
+    const grp = $('#qtbl tbody tr.grp td')
+    expect(grp, 'the group row survives the refactor').toBeTruthy()
+    expect(grp!.textContent).toMatch(/Assigned pilots · \d+/)
+  })
+})

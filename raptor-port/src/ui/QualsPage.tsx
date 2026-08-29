@@ -125,9 +125,11 @@ function qualsIds(qSeatView: string, qSort: any, qSearch: string) {
   return ids
 }
 
-/* renderQuals' head + rows, verbatim strings */
-function qualsTable(cols: any[], qSeatView: string, qSort: any, qEditing: boolean, qSearch: string, qualsEdit: boolean, armDel: string) {
-  const ids = qualsIds(qSeatView, qSort, qSearch)
+/* renderQuals' HEAD — pulled out of qualsTable so the frozen header mirror
+   (see the QualsPage effect) can draw the SAME markup from one source: a
+   second copy of the heading cells would be exactly the drift seam this app
+   keeps warning about. Verbatim strings, like the rest of this builder. */
+function qualsHead(cols: any[], qSeatView: string, qSort: any, qualsEdit: boolean, armDel: string) {
   /* the heading cell for a sortable column. The arrow box is rendered at a
      fixed width whether or not it holds an arrow, so switching the sorted
      column never shifts the headings sideways. */
@@ -143,7 +145,7 @@ function qualsTable(cols: any[], qSeatView: string, qSort: any, qEditing: boolea
      Callsign/Name (owner, 26 Aug 26): ground crew go by name as much as by
      callsign, and the cell is where either is typed. The aircrew views keep
      the plain word — a pilot's identity here is the callsign, full stop. */
-  const head = `<thead><tr>`
+  return `<thead><tr>`
     + sortTh('cs', qSeatView === 'GND' ? 'Callsign/Name' : 'Callsign', '', 'Sort by callsign', ' style="text-align:left"')
     + sortTh('initials', 'Initials', '', 'Sort by initials')
     + sortTh('flight', 'Flight', '', 'Sort by flight — groups each flight together')
@@ -172,6 +174,19 @@ function qualsTable(cols: any[], qSeatView: string, qSort: any, qEditing: boolea
       return sortTh(c.k, esc(c.h), cls, what + ' · click to bring the qualified to the top')
     }).join('') +
     `<th>Remarks</th><th></th></tr></thead>`
+}
+
+/* the group-header row ("Assigned pilots · N") — also pulled out so the frozen
+   mirror can carry it: the owner circled it together with the column headings,
+   so it freezes with them (it names WHICH roster the rows below belong to). */
+function qualsGrpRow(qSeatView: string, n: number, colsLen: number) {
+  const grp = qSeatView === 'FCP' ? 'Assigned pilots' : qSeatView === 'RCP' ? 'Assigned WSOs' : qSeatView === 'GND' ? 'Personnel (ground crew)' : 'Assigned aircrew'
+  return `<tr class="grp"><td colspan="${5 + colsLen + 1}">${grp} · ${n}</td></tr>`
+}
+
+/* renderQuals' head + rows, verbatim strings */
+function qualsTable(cols: any[], qSeatView: string, qSort: any, qEditing: boolean, qSearch: string, qualsEdit: boolean, armDel: string) {
+  const ids = qualsIds(qSeatView, qSort, qSearch)
   const rows = ids.map(id => {
     const p = PEOPLE[id]
     /* Personnel (ground crew) hold no CAT and no qualifications, so every column
@@ -234,8 +249,8 @@ function qualsTable(cols: any[], qSeatView: string, qSort: any, qEditing: boolea
       : esc(p.flight || '')
     return `<tr><td class="qname" data-person="${id}" title="${esc(p.name || '')}">${cs}</td><td class="qinitc">${init}</td><td class="qfltc">${flt}</td><td>${lvl}</td>${cells}<td style="text-align:left;color:var(--ink-3)">${LEVELNAME[p.q]}</td><td><span class="qarch" data-arch="${id}" title="Archive">✕</span></td></tr>`
   }).join('')
-  const grp = qSeatView === 'FCP' ? 'Assigned pilots' : qSeatView === 'RCP' ? 'Assigned WSOs' : qSeatView === 'GND' ? 'Personnel (ground crew)' : 'Assigned aircrew'
-  return head + `<tbody><tr class="grp"><td colspan="${5 + cols.length + 1}">${grp} · ${ids.length}</td></tr>${rows}</tbody>`
+  return qualsHead(cols, qSeatView, qSort, qualsEdit, armDel)
+    + `<tbody>${qualsGrpRow(qSeatView, ids.length, cols.length)}${rows}</tbody>`
 }
 
 export function QualsPage() {
@@ -261,6 +276,12 @@ export function QualsPage() {
      count by default — it is a records drawer, not the roster */
   const [showArch, setShowArch] = useState(false)
   const tblRef = useRef<HTMLTableElement>(null)
+  /* the frozen-header mirror (see the effect below): the scroll wrap it pins
+     over, the mirror's own horizontal scroller, and the activation state
+     carrying where to pin it and the live column widths to size it. */
+  const wrapRef = useRef<HTMLDivElement>(null)
+  const mirrorRef = useRef<HTMLDivElement>(null)
+  const [stuck, setStuck] = useState<{ top: number; left: number; width: number; cols: number[] } | null>(null)
   const admin = !!SESSION && SESSION.role === 'admin'
 
   /* WHO MAY EDIT WHAT HERE (owner, 5 Aug 26). `Enable editing` is open to a
@@ -478,7 +499,14 @@ export function QualsPage() {
        (owner, 16 Aug 26). The wrap is stable across the table's innerHTML
        rebuilds, so this listener survives them. */
     const wrap = tbl.parentElement as HTMLElement
-    const onXScroll = () => wrap.classList.toggle('xscroll', wrap.scrollLeft > 0)
+    /* the frozen-header mirror FOLLOWS the grid's sideways scroll and never
+       drives it (the Leave War lesson, syncMirror there): a write-back would
+       fight an iOS fling. One-way grid → mirror, and only when it is mounted. */
+    const onXScroll = () => {
+      wrap.classList.toggle('xscroll', wrap.scrollLeft > 0)
+      const m = mirrorRef.current
+      if (m && m.scrollLeft !== wrap.scrollLeft) m.scrollLeft = wrap.scrollLeft
+    }
     wrap.addEventListener('scroll', onXScroll, { passive: true })
     onXScroll()
     return () => {
@@ -488,6 +516,63 @@ export function QualsPage() {
       wrap.removeEventListener('scroll', onXScroll)
     }
   }, [])
+
+  /* THE FROZEN HEADER — the same fixed-mirror mechanism Leave War uses
+     (src/leavewar/ui/Matrix.tsx), and for the same reason. `.qwrap` scrolls the
+     table SIDEWAYS (overflow-x), which makes IT the sticky scrollport — but the
+     PAGE owns the vertical scroll, so the `position:sticky;top:0` already on the
+     thead pins nothing (its scrollport never moves vertically; there is no CSS
+     that scrolls one axis here and lets a descendant stick to the page's other
+     axis). Instead a fixed MIRROR of the header + group row appears the moment
+     the real header slides under the app top bar, pinned just below it, and
+     disappears when it comes back. The mirror is its own tiny horizontal scroller
+     kept in lockstep with the grid (onXScroll above), so the frozen callsign
+     column's own sticky-left keeps working inside it. Desktop AND phone (owner,
+     29 Aug 26 — "freeze like the leave war top bar … on desktop and mobile").
+     jsdom has no layout, so a 0-height header never activates it there. */
+  useEffect(() => {
+    setStuck(null)
+    if (typeof window.matchMedia !== 'function') return
+    const onScroll = () => {
+      const head = tblRef.current?.tHead
+      if (!head) { setStuck(prev => (prev ? null : prev)); return }
+      const r = head.getBoundingClientRect()
+      if (r.height === 0) return // jsdom, or not laid out yet — never activate
+      /* the app top bar stays pinned (sticky, z-index 60), so "the top" is its
+         LOWER edge: the mirror freezes there the instant the real header would
+         slide under it. Measured live, so it is right whatever the bar wrapped to. */
+      const topEdge = document.querySelector('.topbar')?.getBoundingClientRect().bottom ?? 0
+      if (r.top >= topEdge) { setStuck(prev => (prev ? null : prev)); return }
+      setStuck(prev => {
+        if (prev) return prev
+        const wrap = wrapRef.current
+        if (!wrap) return prev
+        const wr = wrap.getBoundingClientRect()
+        const cells = Array.from(head.querySelectorAll('tr:last-child > th')) as HTMLElement[]
+        const cols = cells.map(c => c.getBoundingClientRect().width)
+        if (cols.length === 0 || cols.some(w => !w)) return prev
+        return { top: topEdge, left: wr.left, width: wr.width, cols }
+      })
+    }
+    window.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('resize', onScroll)
+    onScroll()
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('resize', onScroll)
+    }
+    /* re-measure (drop the stuck bar so the next scroll re-pins with fresh
+       widths) whenever the column set, the view, the filter, or either edit mode
+       could have changed a column's width or the header's own markup. */
+  }, [cols, qSeatView, qSearch, qEditing, qualsEdit])
+
+  /* start the mirror at the grid's current sideways position the instant it
+     mounts, so its first painted frame is already in step (Leave War's own
+     on-show sync); from then on onXScroll keeps the two locked. */
+  useEffect(() => {
+    if (stuck && mirrorRef.current && wrapRef.current) mirrorRef.current.scrollLeft = wrapRef.current.scrollLeft
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [stuck])
 
   const addPerson = () => {
     const cs = addP.cs.trim()
@@ -615,10 +700,37 @@ export function QualsPage() {
         {addP.seat !== 'GND' && <select id="qLevel" aria-label="Cat" value={addP.level} onChange={e => setAddP({ ...addP, level: e.target.value })}>{catsFor(addP.seat).map(k => <option key={k}>{k}</option>)}</select>}
         <button className="abtn primary" id="qAddPerson" onClick={addPerson}>Add</button>
       </div>}
-      <div className="qwrap">
+      <div className="qwrap" ref={wrapRef}>
         <table className={'qtbl' + (qEditing ? ' editing' : '') + (canEditQuals() ? ' qediting' : '')} id="qtbl" ref={tblRef}
           dangerouslySetInnerHTML={{ __html: qualsTable(cols, qSeatView, qSort, qEditing, qSearch, canEditQuals(), armDel) }} />
       </div>
+      {/* THE FROZEN HEADER MIRROR (see the effect above). A fixed clone of the
+          heading row + the group row, pinned just under the app top bar while the
+          real header is scrolled past. Its own horizontal scroller (.qfixed-scroll)
+          tracks the grid, so the callsign column's sticky-left freezes inside it
+          too. It reuses qualsHead / qualsGrpRow so there is ONE source for the
+          heading markup; a colgroup of the live-measured widths (table-layout:fixed)
+          lands each column exactly over the grid's. aria-hidden — the real table
+          under it stays the single accessible/interactive copy — except that a
+          click on a heading still sorts, so the frozen bar is usable while scrolled. */}
+      {stuck && (
+        <div className="qfixed" data-testid="qsticky-head"
+          style={{ top: stuck.top, left: stuck.left, width: stuck.width }}
+          onClick={e => {
+            const th = (e.target as HTMLElement).closest?.('th[data-sort]') as HTMLElement | null
+            if (th) { const key = th.dataset.sort!; setSort(s => ({ key, dir: s.key === key ? -s.dir : 1 })) }
+          }}>
+          <div className="qfixed-scroll" ref={mirrorRef}>
+            <table className={'qtbl' + (qEditing ? ' editing' : '') + (canEditQuals() ? ' qediting' : '')}
+              style={{ tableLayout: 'fixed', width: stuck.cols.reduce((a, b) => a + b, 0), minWidth: 0 }}
+              aria-hidden="true"
+              dangerouslySetInnerHTML={{ __html:
+                `<colgroup>${stuck.cols.map(w => `<col style="width:${w}px">`).join('')}</colgroup>`
+                + qualsHead(cols, qSeatView, qSort, canEditQuals(), armDel)
+                + `<tbody>${qualsGrpRow(qSeatView, qualsIds(qSeatView, qSort, qSearch).length, cols.length)}</tbody>` }} />
+          </div>
+        </div>
+      )}
       {/* ---- the Archived section (owner, 19 Aug 26) ------------------------
           Where a body lands when it is archived — by the red ✕ above, or by
           the Leave War post-out's "Archive on PO date" switch the day the PO

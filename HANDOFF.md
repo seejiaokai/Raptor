@@ -24,32 +24,46 @@ purpose: it is exactly the closed-work narrative the charter above bans, and
 it lives in `git log` where it belongs. Restate a count only from a run you
 watched — this file's history twice recorded a count that was wrong.
 
-**Last recorded green baseline** (29 Aug 26 — the calendar-scroll fix: the
-Inputs month calendar's body now SCROLLS when a day is drawn in full and
-outgrows its cell, so a packed day (and the weeks below it) is reachable
-instead of clipped — each week is its own flex row that grows to content and
-the grid scrolls, `flex-shrink:0` holding a packed week open; verified live at
-1280 and 390 px on a day loaded with 180+ pucks. On top of the OIL follow-up
-session: the worked-hours measure corrected to the start-to-finish ENVELOPE
-(`envMin`), the schedule credit reading EVERY visited week via the session
-stash, and the revise-OIL affordance in both editors; itself on top of the
-28 Aug overnight rework (FS/HS → FO/HO, the uniform rule, the widened set, the
-ALL puck, the ask-flow + retro bell). Vitest re-run and watched at the close):
+**Last recorded green baseline** (29 Aug 26 — the frozen Quals header: the
+Quals table's column headings + group row now FREEZE just below the app top
+bar on page scroll, on desktop and phone, via the SAME fixed-mirror mechanism
+Leave War uses (`.qfixed`/`.qfixed-scroll`, a fixed clone pinned when the real
+header scrolls under the top bar, its own horizontal scroller kept in lockstep
+with the grid); verified live at 1280 and 390 px, horizontal-sync included. On
+top of the calendar-scroll fix: the Inputs month calendar's body now SCROLLS
+when a day is drawn in full and outgrows its cell, so a packed day (and the
+weeks below it) is reachable instead of clipped — each week is its own flex row
+that grows to content and the grid scrolls, `flex-shrink:0` holding a packed
+week open; verified live at 1280 and 390 px on a day loaded with 180+ pucks.
+Itself on top of the OIL follow-up session: the worked-hours measure corrected
+to the start-to-finish ENVELOPE (`envMin`), the schedule credit reading EVERY
+visited week via the session stash, and the revise-OIL affordance in both
+editors. All six gates re-run and watched at the close):
 
 | gate | reading |
 |---|---|
-| `npm test` | 3479 across 200 files — two vitest projects: raptor + leavewar |
+| `npm test` | 3481 across 200 files — two vitest projects: raptor + leavewar |
 | `node reference/tfin.js` | 728/0 (the reference is read-only; the "Ground Programme" title trim rides the tolerant normaliser in `html.test.ts`) |
 | `npm run build` | clean |
 | `npm run test:e2e` | 338 passed / 19 touch-only skips — three playwright projects: raptor geometry, lw-phone, lw-desktop. NOTE: a mid-session chain run showed 2 lw-phone reds against a build that predated the bug-pass fixes (the un-gated cross-lane notify repainting mid-gesture); both passed individually and the full suite passed whole against the fixed build — if they ever red again, suspect a stray repaint mid-tap first. |
 | `probes:adapted` | **all 6 GREEN** — `aar-async` was re-adapted this session (its palette sentinel filter matched ids by SUBSTRING, so the new ALL puck read as a currency-less pilot; whole-id match now). **Read the LAST line, not the last tally**: each probe prints its own count as it finishes (`wrap-async` ends `36 passed · 0 failed`), and the suite's verdict is the line after it, `all 6 adapted probes passed`. |
 | `perf` | **4/0** — board DOM 1051 ≤ **1150** (the ceiling is a SETTLED owner decision since 28 Aug 26 — CLAUDE.md §Stable decisions; the ALL puck's one extra rpuck is noise against it). |
 
-Reconciles against the 3478/200 reading this replaces (the OIL follow-up):
-+1 vitest pin, no new file — `ui/inputscal.test.tsx` +1 (the calendar grid
-carries `--ic-rows` = its real week count, the wiring that drives the
+Reconciles against the 3479/200 reading this replaces (the calendar-scroll fix):
++2 vitest pins, no new file — `ui/quals.test.tsx` +2 (the frozen-header mirror
+never mounts in jsdom, and the group row still names the roster after the
+head/grp builders were pulled out of `qualsTable` to feed the mirror; the freeze
+itself is jsdom-invisible and was verified on the live view). E2e stays
+338/19 — the Inputs-calendar geometry spec's "7 equal columns" check now reads a
+WEEK's cells, not the grid's direct children (which are the flex week rows since
+the calendar-scroll fix); the assertion is unchanged, only its selector. Perf,
+probes and reference unmoved.
+
+That 3479/200 reading reconciled against the 3478/200 reading before it (the OIL
+follow-up): +1 vitest pin, no new file — `ui/inputscal.test.tsx` +1 (the calendar
+grid carries `--ic-rows` = its real week count, the wiring that drives the
 grow-and-scroll rows; the scroll itself is jsdom-invisible and was verified on
-the live view). E2e, reference, probes and perf unmoved.
+the live view).
 
 That 3478/200 reading reconciled against the 3468/200 reading before it (the 28
 Aug overnight rework): +10 vitest pins, no new file — `engine/oil.test.ts`
