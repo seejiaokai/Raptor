@@ -579,3 +579,5 @@ exactly where the surviving bugs live.
 **Suggested improvement:** When recording a format/presentation decision in a project's CLAUDE.md, also record WHERE the decision is implemented (display layer vs storage) so a future reversal knows its blast radius immediately.
 
 **Principle:** Implement owner-taste decisions at the shallowest layer that satisfies them; taste reverses more often than data contracts, and a shallow implementation makes reversal a diff, not a migration.
+
+<!-- checkpoint (2026-08-30, session 2e630780, 6th todo completion): no new observations — the hh:mm reversal pass surfaced nothing beyond Observation 38. -->
