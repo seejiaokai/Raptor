@@ -2396,3 +2396,74 @@ test('every Rearrange control is reachable within the viewport', async ({ page }
     expect(box.x + box.width, `${id} runs off the right edge`).toBeLessThanOrEqual(vw + 1)
   }
 })
+
+// --- undo / redo UI-interaction bug test (owner, 30 Aug 26) -----------------
+// The store/sync logic is covered in undoaudit.test.ts; these cover what only a
+// real browser can — the buttons driving real edits, and undo fired while a
+// sheet or move-mode is open (the stale-state class the scheduler guards).
+test('undo/redo drive a real grid edit: fill, clear, restore', async ({ page }) => {
+  desktopOnly()
+  await lwRole(page, 'admin')
+  const undo = page.locator('[data-testid="lw-undo"]')
+  const redo = page.locator('[data-testid="lw-redo"]')
+  await expect(undo).toBeDisabled()
+  await dragSelect(page, 'cell-slipway-2026-01-06', 'cell-slipway-2026-01-06')
+  await page.locator('[data-testid="sel-LL"]').click()
+  await expect(page.locator('[data-testid="cell-slipway-2026-01-06"] .c')).toBeVisible()
+  await expect(undo).toBeEnabled()
+  await undo.click()
+  await expect(page.locator('[data-testid="cell-slipway-2026-01-06"] .c')).toHaveCount(0)
+  await expect(undo).toBeDisabled()
+  await expect(redo).toBeEnabled()
+  await redo.click()
+  await expect(page.locator('[data-testid="cell-slipway-2026-01-06"] .c')).toBeVisible()
+  await expect(redo).toBeDisabled()
+})
+
+test('undo fired in MOVE mode does not corrupt: the grid stays usable', async ({ page }) => {
+  desktopOnly()
+  await lwRole(page, 'admin')
+  await dragSelect(page, 'cell-slipway-2026-01-06', 'cell-slipway-2026-01-07')
+  await page.locator('[data-testid="sel-LL"]').click()
+  await expect(page.locator('[data-testid="cell-slipway-2026-01-06"] .c')).toBeVisible()
+  await dragSelect(page, 'cell-slipway-2026-01-06', 'cell-slipway-2026-01-07')
+  await page.locator('[data-testid="sel-move"]').click()
+  await expect(page.locator('[data-testid="move-banner"]')).toBeVisible()
+  const errors: string[] = []
+  page.on('pageerror', e => errors.push(e.message))
+  await page.locator('[data-testid="lw-undo"]').click()   // undo mid-move
+  // the grid is still alive: a fresh drag-select still opens the sheet
+  await dragSelect(page, 'cell-slipway-2026-01-10', 'cell-slipway-2026-01-11')
+  await expect(page.locator('[data-testid="select-sheet"]')).toBeVisible()
+  await page.locator('[data-testid="sel-cancel"]').click()
+  expect(errors, 'no page error from undo during move mode').toEqual([])
+})
+
+test('the select sheet still works, and undo acts on the committed edit', async ({ page }) => {
+  desktopOnly()
+  await lwRole(page, 'admin')
+  await dragSelect(page, 'cell-slipway-2026-01-06', 'cell-slipway-2026-01-06')
+  await expect(page.locator('[data-testid="select-sheet"]')).toBeVisible()
+  await page.locator('[data-testid="sel-LL"]').click()
+  await expect(page.locator('[data-testid="cell-slipway-2026-01-06"] .c')).toBeVisible()
+  await page.locator('[data-testid="lw-undo"]').click()
+  await expect(page.locator('[data-testid="cell-slipway-2026-01-06"] .c')).toHaveCount(0)
+})
+
+test('rapid undo/redo settle to a consistent grid', async ({ page }) => {
+  desktopOnly()
+  await lwRole(page, 'admin')
+  await dragSelect(page, 'cell-slipway-2026-01-06', 'cell-slipway-2026-01-06')
+  await page.locator('[data-testid="sel-LL"]').click()
+  await dragSelect(page, 'cell-slipway-2026-01-08', 'cell-slipway-2026-01-08')
+  await page.locator('[data-testid="sel-LL"]').click()
+  const undo = page.locator('[data-testid="lw-undo"]')
+  const redo = page.locator('[data-testid="lw-redo"]')
+  for (let i = 0; i < 5; i++) if (await undo.isEnabled()) await undo.click()
+  await expect(undo).toBeDisabled()
+  await expect(page.locator('[data-testid="cell-slipway-2026-01-06"] .c')).toHaveCount(0)
+  for (let i = 0; i < 5; i++) if (await redo.isEnabled()) await redo.click()
+  await expect(redo).toBeDisabled()
+  await expect(page.locator('[data-testid="cell-slipway-2026-01-06"] .c')).toBeVisible()
+  await expect(page.locator('[data-testid="cell-slipway-2026-01-08"] .c')).toBeVisible()
+})

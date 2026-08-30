@@ -33,7 +33,7 @@ import {
   type Group,
   type Person,
 } from '../engine'
-import { groupsInOrder, groupPriorityIds, moveGroupTo, moveGroupPriorityTo, addEventRow, autoSortRoster, DEFAULT_EVENT_ROWS, displayRoster, eventRowUsed, getState, MAX_EVENT_ROWS, moveCells, movableCells, moveManningRowTo, moveProblem, moveRosterRow, orderedManningIds, removeEventRow, resetManningRules, setPostOut, setShowSans, type MoveResult } from '../state/store'
+import { groupsInOrder, groupPriorityIds, lwHistEpoch, moveGroupTo, moveGroupPriorityTo, addEventRow, autoSortRoster, DEFAULT_EVENT_ROWS, displayRoster, eventRowUsed, getState, MAX_EVENT_ROWS, moveCells, movableCells, moveManningRowTo, moveProblem, moveRosterRow, orderedManningIds, removeEventRow, resetManningRules, setPostOut, setShowSans, type MoveResult } from '../state/store'
 import { BidPicker, DecisionSheet, PostOutSheet, RaptorSheet } from './BidPicker'
 import { CounterSheet, FigureBreakdownSheet, PersonFiguresSheet } from './CounterSheet'
 import { PersonSheet } from './PersonSheet'
@@ -401,8 +401,14 @@ export function Matrix() {
     })
   }, [])
   // A stage or war change drops any open selection or in-flight move, so a
-  // block picked on one screen can never act on another.
-  useEffect(() => { setSel(null); setMoveSel(null); setMovePreview(null) }, [period.stage, period.id])
+  // block picked on one screen can never act on another. An UNDO/REDO does the
+  // same (lwHistEpoch, bumped on every restore): a restore can clear the very
+  // cells a move or an open sheet was acting on, and leaving that gesture live
+  // stranded the grid in move mode — the next drag read as a landing and no
+  // sheet opened (bug test, 30 Aug 26). moveErr goes too, so no stale banner
+  // message lingers.
+  const histEpoch = lwHistEpoch()
+  useEffect(() => { setSel(null); setMoveSel(null); setMovePreview(null); setMoveErr('') }, [period.stage, period.id, histEpoch])
   // MOVE MODE is wired further down, after the `phone` breakpoint state it
   // reads to choose commit-on-click (desktop) vs preview-then-Confirm (phone).
   // The frozen-column overlay's own anchors (see the .mxband block below and

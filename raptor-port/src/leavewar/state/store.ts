@@ -934,6 +934,19 @@ export function lwCanRedo(): boolean {
   return HIST.ix < HIST.stack.length - 1
 }
 
+/** Bumped on every restore (undo OR redo). The matrix watches it to drop any
+ *  transient gesture state a restore would otherwise strand — an in-progress
+ *  MOVE, an open selection, a landing preview — the way the schedule's undo
+ *  calls armDrop/prunePreviews. Without it, undoing mid-move left the grid in
+ *  move mode with a selection whose cells the undo had just cleared, so the
+ *  next drag was read as a move-landing and no sheet opened (bug test, 30 Aug
+ *  26). A plain notify is too broad to key off — a sync pass mid-move would
+ *  cancel it — so this fires for a restore and nothing else. */
+let historyEpoch = 0
+export function lwHistEpoch(): number {
+  return historyEpoch
+}
+
 /** Restore snapshot `i`. Locked across the whole apply so neither the restore
  *  itself nor the sync reconcilers `notify()` wakes push a new step; the
  *  `notify()` inside the lock is what lets sync converge the Raptor side to the
@@ -945,6 +958,7 @@ function historyApply(i: number): void {
     | 'persLabels' | 'manningOrder' | 'manningHidden' | 'groupDefs'
     | 'groupPriority' | 'requirements' | 'eventRows' | 'showSans'>
   HIST.ix = i
+  historyEpoch++   // signal the matrix to drop any in-flight gesture (see above)
   locked(() => {
     // withCurrent republishes period/grid/states from the restored wars and
     // the CURRENT currentId — the war on screen does not change, only its data.
