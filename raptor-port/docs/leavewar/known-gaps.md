@@ -342,29 +342,47 @@ they are not re-tried:**
    overflow to need it, so no reason to carry it; just not THE cause here.)
 3. Both of the above off **together** — still dead, and the bar broke. Reverted.
 
-**Currently being tested: `-webkit-overflow-scrolling: touch`.** It was the one
-scroll-relevant property `.mx-wrap` carried that the gliding `.qwrap` does not.
-The property is a documented no-op on iOS ≥ 13, but the direct same-page A/B
-outranks that, and on some iOS builds an explicit `touch` value drops a scroller
-into a legacy scrolling mode with buggy momentum. Removed so `.mx-wrap` now
-matches `.qwrap` exactly (`overflow-x: auto`, nothing else). Awaiting the owner's
-phone verdict.
+**`-webkit-overflow-scrolling: touch` was also removed and was NOT the cause.**
+It was the one scroll-relevant property `.mx-wrap` carried that the gliding
+`.qwrap` does not, a documented no-op on iOS ≥ 13 but worth ruling out. Removed
+(so `.mx-wrap` now matches `.qwrap`: `overflow-x: auto`, nothing else); the flick
+still died. Left off anyway — no reason to carry a no-op — but it was not it.
 
-**If that too fails:** stop shipping single-property guesses to the phone (this
-is the fourth). The momentum feel cannot be reproduced in any headless engine on
-the Linux CI box — inertial fling is the phone's own touch hardware, not the
-browser engine (confirmed: real WebKit installed and driven here shows the
-mechanism but never coasts). The next move is a small in-app diagnostic the owner
-can flick — a few sideways strips each varying ONE property (raw `overflow-x`,
-inside a `transform`ed ancestor, year-tall vs short, with/without the scroll
-handler) — to isolate it in a single device round instead of N full deploys.
-Other unexcluded suspects to vary there: an ancestor `transform`/`will-change`
-creating a compositing layer that steals the fling, and the scroller being many
-viewports TALL (a horizontal scroller taller than the screen may be handled
-differently from the short `.qwrap`).
+**ROOT CAUSE FOUND, and fixed (owner's own diagnosis, 30 Aug 26 — "is it because
+in horizontal mode the nudge restarts every time I scroll horizontally?").** He
+was right. The row-window feature (19 Aug 26) hides a posted-out person's roster
+row once you scroll sideways into the months they are gone; hiding a row shrinks
+the day columns (their leave content had widened them), so the grid re-lays-out
+mid-scroll. To keep the column you were looking at from jumping under your finger,
+a layout effect re-centred the scroller by WRITING to it (`wrap.scrollLeft +=
+shift`). **That programmatic scroll write, landing in the middle of a finger's
+fling, is what killed the iOS momentum dead** — every horizontal flick that
+crossed a posting-out boundary hit the re-centre and stopped. This is why it was
+Leave War only (Quals has no row-window reflow) and why every single-property CSS
+guess above failed: the killer was in the JavaScript, not the CSS.
 
-Do NOT re-add `overflow-y: hidden`, and do NOT re-enable the glue expecting it to
-fix momentum — both are settled dead ends above.
+**The fix (`Matrix.tsx`):** skip that re-centre write during a genuine finger
+flick on a touch device (`matchMedia('(pointer: coarse)')`), so the fling runs to
+its natural stop with momentum intact. The tiny column-shift it no longer corrects
+is invisible in practice — a posted-out row hiding shifts things by a few pixels,
+far less than a flick travels. On a mouse/trackpad the correction still runs (no
+fling to protect there).
+
+**One exception the re-centre MUST keep: a month/day JUMP.** Tapping a month
+button or a day in the under-manned list scrolls the grid programmatically, and a
+jump can cross many posting-out boundaries at once — without the re-centre its
+target lands far off the frozen edge. A jump has no fling to protect, so it wants
+the correction even on touch. `jumpTo` stamps a timestamp (`jumpAtRef`); the
+re-centre effect treats any reflow within a short window (1200 ms) as a jump and
+applies the correction, and skips it only for a bare finger flick outside that
+window. The window auto-expires, so a later ordinary flick can never be mistaken
+for a jump. (The e2e "a month button scrolls the grid to that month" test pins
+this — a blanket skip broke it, the jump exception fixed it.)
+
+Do NOT re-add `overflow-y: hidden`, do NOT re-enable the glue expecting it to fix
+momentum, and do NOT remove the jump exception (`jumpAtRef`) — all three are
+settled: the first two dead ends above, the third load-bearing for month
+navigation.
 
 ## Deliberately deferred to later plans
 

@@ -501,6 +501,11 @@ export function Matrix() {
     const wrap = wrapRef.current
     const cell = wrap?.querySelector<HTMLElement>(`[data-testid="head-${date}"]`)
     if (!wrap || !cell) return
+    // Mark this as a jump so the anchor correction below re-centres it even on
+    // touch (see jumpAtRef): a jump can cross many month boundaries at once,
+    // hiding rows and shrinking columns enough to leave the target far off the
+    // frozen edge if the re-centre is skipped.
+    jumpAtRef.current = Date.now()
     // Scrolling BY a delta rather than TO an absolute keeps this correct
     // wherever the grid happens to be scrolled already.
     wrap.scrollLeft += cell.getBoundingClientRect().left - wrap.getBoundingClientRect().left - frozenWidth(wrap)
@@ -563,6 +568,14 @@ export function Matrix() {
   // the reader and lands a month jump short (measured 165px off at SEP, from
   // the demo's one posted-out man leaving the roster).
   const anchorRef = useRef<{ date: string; left: number } | null>(null)
+  // When the last scrollLeft move was a programmatic month/day JUMP, not a
+  // finger flick. The anchor correction below is skipped on touch to protect a
+  // fling's momentum, but a jump has no fling to protect and MUST re-centre or
+  // it lands the wrong column at the frozen edge once posted-out rows hide. A
+  // timestamp, not a boolean, so it auto-expires: a jump fires one or two
+  // reflows within a fraction of a second, and a later flick can never be
+  // mistaken for the jump once the window has passed.
+  const jumpAtRef = useRef(0)
 
   // The phone ZOOM (owner, 18 Aug 26 — "a zoom function for mobile leave
   // war"). Stepped +/− buttons rather than pinch: pinch fights the browser's
@@ -1207,11 +1220,31 @@ export function Matrix() {
 
   // Put the anchored column back after a row-set repaint (see anchorRef).
   // Layout effect, not effect: the correction must land in the same frame as
-  // the narrowed columns or the reader sees the grid jump and snap back. It
-  // only ever fires now at scroll REST (the window is deferred there), so the
-  // scrollLeft it writes has no fling momentum left to interrupt. The scroll
-  // it makes re-fires the strip/window measure; the signature compare then
-  // finds the same row set and stops — no loop.
+  // the narrowed columns or the reader sees the grid jump and snap back. The
+  // scroll it makes re-fires the strip/window measure; the signature compare
+  // then finds the same row set and stops — no loop.
+  //
+  // BUT NOT DURING A FINGER FLICK (owner, 30 Aug 26 — "the nudge restarts every
+  // time I scroll horizontally"; his own diagnosis, confirmed). When a person
+  // posts out and their roster row disappears crossing into a new month, that
+  // row's leave content was widening some day columns, so they shrink and this
+  // WRITES `wrap.scrollLeft` to keep the same column in place. On iOS (all
+  // iPhone browsers are WebKit) ANY programmatic scrollLeft write kills the
+  // inertial fling stone dead — even one meant for "scroll rest", because the
+  // coalesced coast leaves a lull the 120ms idle mistakes for a stop. So on a
+  // coarse pointer, when the reflow was triggered by a FLICK, we skip the
+  // re-centre and let the coast run: the row still hides (the feature and the
+  // manning counts are unchanged — only the visual re-centre is dropped), and
+  // the worst case is a small one-time shift as a post-out boundary passes,
+  // far better than the scroll dying on every flick.
+  //
+  // A programmatic JUMP is the exception (jumpAtRef): it has no fling to
+  // protect and MUST re-centre, or a month button that crosses several post-out
+  // boundaries lands its target well off the frozen edge. The two are
+  // indistinguishable here — both arrive at scroll-rest — so jumpTo timestamps
+  // itself and we treat a reflow inside that short window as a jump. A
+  // mouse/trackpad (fine pointer, no touch inertia to protect) always
+  // re-centres, so desktop is unchanged.
   useLayoutEffect(() => {
     const a = anchorRef.current
     anchorRef.current = null
@@ -1219,6 +1252,12 @@ export function Matrix() {
     const wrap = wrapRef.current
     const cell = wrap?.querySelector<HTMLElement>(`[data-testid="head-${a.date}"]`)
     if (!wrap || !cell) return
+    const coarse = typeof window.matchMedia === 'function' && window.matchMedia('(pointer: coarse)').matches
+    // The window has to hold the programmatic scroll, the 120ms rest debounce
+    // and the grid's repaint; 1200ms is comfortably clear of all three and
+    // still far shorter than the gap before a deliberate follow-up flick.
+    const fromJump = Date.now() - jumpAtRef.current < 1200
+    if (coarse && !fromJump) return
     const shift = cell.getBoundingClientRect().left - a.left
     if (Math.abs(shift) > 1) wrap.scrollLeft += shift
   }, [visWindow])
