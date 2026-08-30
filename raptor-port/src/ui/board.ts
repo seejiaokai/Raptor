@@ -21,7 +21,7 @@ import { signoffHTML, cxText, storesView, intimesInner, areaText, atimeText, day
 import { setInpField } from './inputedit'
 import { STORE_CFG, DUTYTPL_CFG, blockFromTpl, DAYTPL_CFG, applyDayTpl, addDayTpl, dayTplSave, dayTplSummary, secOrder, waveInsertSlot, waveKindOf, moveWave } from '../engine'
 import { dayDrafts, curDraftId, draftDup, draftSelect } from '../engine/drafts'
-import { setTplEdit, setDayTplEdit, setDraftsEdit, setWaveEdit, setArrangeSec } from './pops'
+import { setTplEdit, setDayTplEdit, setDraftsEdit, setWaveEdit } from './pops'
 import { shownBuiltins, shownTemplates, waveFromTpl, kindLabel, WAVE_BUILTIN, WAVETPL_CFG } from '../engine/wavetpl'
 import { HOOKS } from '../engine/hooks'
 import { canEditSched } from '../state/auth'
@@ -81,7 +81,7 @@ export function boardHTML(di: number, pv?: boolean) {
      content. Handled by boardMbtn's data-draftsadd branch (the week's copy
      of this button is data-draftsopen through routeClick — split attributes,
      same double-handling reason as data-daytpladd/data-daytplopen). */
-  const dayTplHead = mvRO ? '' : `<div class="sb-panel dtpl"><div class="sb-ph">Templates &amp; drafts <span class="sub">save or apply this day's structure · plan alternatives</span><span class="gctl"><button class="mbtn add" data-arrangesec="${di}" title="Arrange the order the sections show in">⇅<span class="mbl"> Arrange</span></button><button class="mbtn add" data-daytpladd="${di}" title="Save this day, or apply a saved one">Templates</button><button class="mbtn add" data-draftsadd="${di}" title="Duplicate this day into drafts, switch between them, or manage them — the selected draft is what publishes">Drafts</button></span></div></div>`
+  const dayTplHead = mvRO ? '' : `<div class="sb-panel dtpl"><div class="sb-ph">Templates &amp; drafts <span class="sub">save or apply this day's structure · plan alternatives</span><span class="gctl"><button class="mbtn add" data-daytpladd="${di}" title="Save this day, or apply a saved one">Templates</button><button class="mbtn add" data-draftsadd="${di}" title="Duplicate this day into drafts, switch between them, or manage them — the selected draft is what publishes">Drafts</button></span></div></div>`
   /* the Programme unit — day notes + Common Programme, moved together when the
      owner re-arranges the sections (engine/order.ts secOrder). */
   const progPanel = sbNotesPanel(d, di, pv, mvRO) + sbProgPanel(d, di, pv, mvRO)
@@ -112,7 +112,10 @@ export function boardHTML(di: number, pv?: boolean) {
        (a session that may not edit it, board still legitimately open on
        its own page) left the whole-wave rename and delete live even
        after the flying line's own rows went inert. */
-    fly += `<div class="sb-go${w.night ? ' night' : ''}"><div class="sb-go-h"><span>Go ${gi + 1}</span>`
+    /* the wave BLOCK carries data-move so the wave grip in its header can drag it
+       into a new place among the day's waves (mv:w → engine/reorder.ts moveWave,
+       a real amendment) — edit board only, like every other write control here. */
+    fly += `<div class="sb-go${w.night ? ' night' : ''}"${mvRO ? '' : ` data-move="mv:w.${di}.${gi}"`}><div class="sb-go-h">${mvRO ? '' : '<span class="wvgrip" title="Drag to reorder this wave" aria-label="Reorder this wave">⠿</span>'}<span>Go ${gi + 1}</span>`
       /* esc(o): `cur` can be a template/typed wave title — user-entered text
          reaching an HTML sink, so it is escaped at the builder like every other
          (26 Aug 26 bug pass; an unescaped `<` swallowed the option outright) */
@@ -257,7 +260,12 @@ export function boardHTML(di: number, pv?: boolean) {
     prog: progPanel, waves: wavesPanel,
     duty: sbDutyPanel(d, di, pv, mvRO), sims: sbSimRowsPanel(d, di, pv, mvRO), ground: sbGroundPanel(d, di, pv, mvRO),
   }
-  let b = dayTplHead + secOrder(d).map((k: string) => sect[k] || '').join('')
+  /* each section is wrapped so its grip can drag the whole panel into a new place
+     (data-secmove → store.moveSectionTo, DISPLAY order only — see engine/order.ts).
+     Edit board only: a read-only board wraps nothing, staying lean and undraggable. */
+  const secGrip = '<span class="secgrip" title="Drag to reorder this section" aria-label="Reorder this section">⠿</span>'
+  let b = dayTplHead + secOrder(d).map((k: string) =>
+    mvRO ? (sect[k] || '') : `<div class="sb-sec" data-secmove="${di}.${k}">${secGrip}${sect[k] || ''}</div>`).join('')
   /* one pass over INPUTS for both blocks — the board rebuilds on every edit */
   const dayInp = INPUTS.filter((i: any) => inputCoversDate(i, d.dt))
   /* the available-crew strip the week already carries, now on the board too
@@ -629,10 +637,6 @@ export function boardMbtn(e: MouseEvent) {
   if (!canEditSched() || !HOOKS.editMode()) return
   const t = (e.target as HTMLElement).closest('.mbtn') as HTMLElement | null; if (!t) return
   const ds = t.dataset
-  /* ⇅ Arrange — open the per-day section-order sheet (ArrangeSections.tsx). A
-     pure display re-order, so it just opens the sheet; the sheet's own controls
-     are the write path (store.moveSection). */
-  if (ds.arrangesec != null) { setArrangeSec(+ds.arrangesec); notify(); return }
   /* ▲/▼ — the phone's reorder gesture. The target is read off the NEIGHBOURING
      ROW IN THE DOM rather than computed as index±1, because one list (Ground)
      renders time-sorted: "one place down" is a question about what the

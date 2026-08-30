@@ -2567,25 +2567,54 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
 .addrow{margin-top:2px;background:none;border:1px dashed var(--edge-2);border-radius:7px;color:var(--ink-3);
   padding:8px;width:100%;font-family:'Barlow Condensed','Inter Tight',sans-serif;font-size:10px;font-weight:700;
   text-transform:uppercase;letter-spacing:.05em;cursor:pointer}
-/* ---- Arrange sections sheet (owner, 29 Aug 26; ui/ArrangeSections.tsx) — the
-   per-day section-order re-order. Rides the shared .modal / .modal-* shell and
-   the .grip/.tnudge ▲▼ the template editors use; only its own rows are new. */
-.arrsec-day{color:var(--ink-3);font-size:11px;font-weight:600;margin-left:8px}
-.arrsec-hint{color:var(--ink-3);font-size:11px;line-height:1.4;margin-bottom:10px}
-/* a small section label above each list — the sheet arranges the day's big
-   sections AND, when there are two or more, the flying waves within them. */
-.arrsec-subh{color:var(--ink-2);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}
-.arrsec-list{display:flex;flex-direction:column;gap:6px}
-.arrsec-row{display:grid;grid-template-columns:22px 1fr 20px;gap:10px;align-items:center;
-  background:var(--bg);border:1px solid var(--edge);border-radius:8px;padding:7px 10px}
-.arrsec-row .grip{display:flex;flex-direction:column;gap:1px}
-.arrsec-name{font-weight:600;color:var(--ink);font-size:12px}
-.arrsec-pos{color:var(--ink-3);font-size:11px;font-weight:700;text-align:center}
-/* the board's ⇅ Arrange button drops its label to the bare ⇅ icon on a phone —
-   the phone board's own "icon-only under 820px" convention — so the Templates &
-   drafts header row still fits its width (owner report caught it at 390px). The
-   ⇅ alone reads as reorder, matching the ⇅ Sort all button beside it. */
-@media(max-width:820px){.sb-panel.dtpl .gctl .mbl{display:none}}
+/* ---- in-place drag to reorder sections & waves (owner, 29 Aug 26 pt.3) --------
+   Replaced the per-day Arrange sheet with drag handles on the panels themselves.
+   A grip on each section wrapper (.sb-sec on the board, .dsec on the edit week) and
+   on each wave header (.wvgrip) drags the whole panel / wave into a new place;
+   ui/rowdrag.ts is the machine. Unlike the dense board ROW grip (.sb-grip, hidden
+   on a phone in favour of ▲▼ because a packed row has no room to grab), a section
+   or a wave is a big target, so these grips stay draggable at EVERY width — the
+   owner's "drag, no arrows" design. */
+/* the wrapper adds NO layout — the grip is an absolute OVERLAY sitting in the
+   panel's own left border+padding gutter, so no section shifts and every measured
+   register/alignment contract (edit-vs-read-only notes width, input row vs ground
+   row tracks) is byte-for-byte what it was. */
+.sb-sec,.dsec{position:relative}
+/* the handle sits over the panel header's leading gutter — the board header's
+   title starts at 14px (3px border + 11px pad), so a 14px grip clears it exactly;
+   touch-action:none so a thumb-drag reorders instead of scrolling the surface. */
+.secgrip{position:absolute;left:0;top:0;width:14px;height:31px;display:flex;align-items:center;justify-content:center;
+  cursor:grab;color:var(--ink-3);font-size:12px;line-height:1;touch-action:none;user-select:none;z-index:3}
+.secgrip:hover{color:var(--accent)}
+.secgrip:active{cursor:grabbing}
+/* the WEEK sections start their title nearer the edge (`.sec` padding-left 6px,
+   `.go` margin-left 10px), so nudge just the TITLE header clear of the grip — the
+   column header (`.pl-cols`) and the rows stay put, so nothing about row alignment
+   moves. */
+.dsec>.sec>.sub-h,.dsec>.allhands>.ah-h{padding-left:16px}
+.dsec>.go>.go-tab{padding-left:8px}
+/* the wave grip sits inline at the head of the wave block, before "Go N" / the
+   label — same always-draggable rule and touch-action as the section grip. */
+.wvgrip{cursor:grab;color:var(--ink-3);font-size:12px;line-height:1;padding:0 2px;touch-action:none;user-select:none;flex:0 0 auto}
+.wvgrip:hover{color:var(--accent)}
+.wvgrip:active{cursor:grabbing}
+/* the carried section and the drop line; a dragged WAVE block reuses .rowdrag /
+   .rowdrop (defined with the row grip) since it is the same kind of move. */
+.secdrag{outline:1px solid var(--accent);outline-offset:-1px;border-radius:9px}
+.secdrag .secgrip{color:var(--accent);cursor:grabbing}
+.secdrop{box-shadow:inset 0 3px 0 0 var(--accent)}
+/* ---- the "Set default order?" snackbar (ui/SecDefaultSnackbar.tsx) — an
+   ACTIONABLE bottom bar (the plain toast can't carry a button), shown after a
+   section drag to offer that order as the squadron's house default. Sits above the
+   toast's own layer. */
+.secdef-snack{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:80;
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center;max-width:calc(100vw - 24px);
+  background:var(--panel-2);border:1px solid var(--edge);border-radius:12px;padding:10px 14px;box-shadow:0 8px 30px rgba(0,0,0,.4)}
+.secdef-msg{color:var(--ink);font-size:13px;font-weight:600}
+.secdef-btn{border:1px solid var(--edge);background:var(--bg);color:var(--ink-2);border-radius:8px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer}
+.secdef-btn:hover{border-color:var(--ink-3);color:var(--ink)}
+.secdef-btn.yes{background:var(--accent);border-color:var(--accent);color:#05222b}
+.secdef-btn.yes:hover{filter:brightness(1.06)}
 .addrow:hover{border-color:var(--ok);color:#9BE3B4}
 /* ---- the Flying-wave-templates editor (owner, 25 Aug 26). Reuses the duty
    editor's modal/tab/name/nudge/del/addrow chrome above; these are the parts a

@@ -834,6 +834,26 @@ subscribers.
   "display-only" layer (it would fight `sortWaves`). Unset wave order = append as
   before. Pinned: `engine/arrdefaults.test.ts`, `ui/wavedefault-add.test.tsx`,
   `ui/admin.test.tsx`.
+- **Sections and waves are re-ordered by IN-PLACE DRAG, not a sheet** (owner, 30 Aug
+  26 — replacing the 29 Aug `⇅ Arrange` sheet, which is DELETED). A grip on each
+  section's left gutter (`.sb-sec[data-secmove]` on the board, `.dsec` on the edit
+  week — edit-mode only) and in each wave header (`.wvgrip` + `data-move="mv:w…"` on
+  the block) drags the whole panel / wave into a new place, on both surfaces. One
+  machine, `ui/rowdrag.ts` (wired on the board wrap AND the edit-week root), tells the
+  three draggables apart by the grip pressed and validates the drop with `applyMove`'s
+  own same-container rule. These grips stay draggable at EVERY width — a section/wave
+  is a big target — unlike the dense row grip (`.sb-grip`, phone-hidden in favour of
+  ▲▼); don't hide them on a phone or add arrows (the owner's "drag, no arrows"). A
+  SECTION drag is display-only (`store.moveSectionTo` → `engine/order.ts
+  reorderSectionTo`, histPush, no markEdit) and then offers the **"Set default
+  order?"** snackbar (`ui/SecDefaultSnackbar.tsx`, `SECDEFOFFER`) that promotes it to
+  the house default via the SAME `setSecDefault`/`secDefaultSave` the Admin panel uses.
+  A WAVE drag is unchanged — a real amendment via `applyMove('mv:w…')` → `moveWave`.
+  The old one-week "Apply to all days" is GONE (the henceforth default supersedes it);
+  don't re-add it, the Arrange sheet, or a phone nudge for sections/waves. Edit-only
+  grips keep the view week byte-identical (parity 728/0). Pinned: `ui/rowdrag.test.tsx`,
+  `ui/SecDefaultSnackbar.test.tsx`, `ui/board.test.tsx`, `ui/html.test.ts`. Contract:
+  `docs/ui-contracts.md` §Dragging sections and waves.
 - **The highlight MENUS must read apart from their CHIPS** (owner, 25 Aug 26 —
   the CAT / Type / Quals tabs looked so like the chips inside them that, with one
   menu open, the next shut menu read as another selectable chip). A `.hl-gtab` is

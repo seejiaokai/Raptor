@@ -23,7 +23,7 @@ import { CURWEEK, setCurWeek } from '../engine/waves'
 import { weekBundle, otherWeekInputs } from '../engine/weeks-data'
 import { seedDemoSans, seedDemoMedical } from './demoseed'
 import { docAdd } from './docs'
-import { storesLoad, cxReasonsLoad, dutyTplLoad, waveTplLoad, dayTplLoad, autoAcceptSeedInputs, autoAcceptInput, inpKey, secOrder, moveSectionModel, applyMove, secDefaultLoad, waveDefaultLoad } from '../engine'
+import { storesLoad, cxReasonsLoad, dutyTplLoad, waveTplLoad, dayTplLoad, autoAcceptSeedInputs, autoAcceptInput, inpKey, secOrder, moveSectionModel, reorderSectionTo, secDefaultLoad, waveDefaultLoad } from '../engine'
 import { elogClear } from '../engine/editlog'
 import { markDeletion, resetSched, SCHED, dayApproved } from '../engine/publish'
 import { stashPut, stashGet, stashHas } from '../engine/weekstash'
@@ -115,32 +115,17 @@ export function moveSection(di: number, key: string, dir: number) {
   if (moveSectionModel(DAYS[di], key, dir)) { histPush(); notify() }
 }
 
-/* THE FLYING-WAVE ORDER — the write path for the Arrange sheet's waves list (owner,
-   29 Aug 26 — "within the waves I also want the option to reorder"). Unlike
-   moveSection (pure DISPLAY layout, no amendment), a wave move is a REAL model
-   reorder: engine/reorder.ts moveWave remaps the wave key space (the same nine
-   heads Auto sort permutes) and marks the moved wave, so afterSchedMutate
-   re-validates and records it exactly as dragging a line on the board already does —
-   moving a whole flying wave IS a schedule change, and a wave order can't be a
-   parallel "display" order without fighting Auto sort's real model reorder. Indices
-   are model indices (the sheet lists waves in d.waves order), so a plain ±1 nudge
-   maps straight through. Gated at the write path per the role doctrine. */
-export function moveWaveBlock(di: number, from: number, to: number) {
-  if (!canEditSched()) return
-  if (applyMove(`mv:w.${di}.${from}`, `mv:w.${di}.${to}`)) { afterSchedMutate(); notify() }
-}
-
-/* copy one day's section order onto every OTHER loaded day, so the owner arranges
-   the week once rather than day by day (owner ask). One undo step for the batch. */
-export function applySecOrderToWeek(di: number) {
-  if (!canEditSched()) return
-  const src = secOrder(DAYS[di]); const sig = JSON.stringify(src)
-  let any = false
-  DAYS.forEach((d: any, i: number) => {
-    if (i === di || !d) return
-    if (JSON.stringify(secOrder(d)) !== sig) { d.secOrder = src.slice(); any = true }
-  })
-  if (any) { histPush(); notify() }
+/* THE SECTION DISPLAY ORDER, dragged (owner, 29 Aug 26 pt.3 — the in-place drag
+   that replaced the Arrange sheet). Same layout-only contract as moveSection: it
+   mutates only d.secOrder, takes one undo snapshot, and never runs
+   afterSchedMutate/markEdit — a section order is display, not an amendment (see
+   engine/order.ts). The difference is only the reach: a drop can span several
+   positions, so it routes through reorderSectionTo (fromKey → toKey) rather than a
+   ±1 step. Gated at the write path per the role doctrine. */
+export function moveSectionTo(di: number, fromKey: string, toKey: string): boolean {
+  if (!canEditSched()) return false
+  if (reorderSectionTo(DAYS[di], fromKey, toKey)) { histPush(); notify(); return true }
+  return false
 }
 
 /* the ONE session-reset path. Login.tsx and Shell.tsx's logout both called

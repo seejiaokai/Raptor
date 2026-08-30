@@ -282,11 +282,51 @@ describe('view-week markup parity with the reference', () => {
     const normDow = (s: string) => s.replace(
       /<span class="dow crewday" data-crewday="(\d+)" title="Show this day's crew in the aircrew panel">/g,
       '<span class="dow sb-open" data-sbday="$1" title="Open scheduler board">')
-    const E = (s: string) => normDow(noItTime(noItCtl(noAhRmk(noRmkPh(noTrace(noBrief(noStores(sortGrnd(grndTitle(noInpGrp(noNotes(noDhTpl(noSign(s))))))))))))))
+    /* Divergence (owner, 29 Aug 26 pt.3, the in-place drag): edit mode wraps each
+       section in a draggable `.dsec[data-secmove]` carrying a grip, and each wave
+       carries an edit-only `data-move="mv:w…"` + a `.wvgrip`. The reference has
+       none, so strip the grips and the wave data-move, then UNWRAP the `.dsec`
+       divs. The wrappers are flat and each holds a balanced section, so a `<div>`
+       depth walk finds each wrapper's own close — the same "lift a divergence off
+       both sides" idiom as noSign, just balanced rather than lazy. A no-op on the
+       reference; the drag markup is pinned positively in rowdrag / builder specs. */
+    const noDsec = (s: string) => {
+      s = s.replace(/<span class="(?:secgrip|wvgrip)"[^>]*>⠿<\/span>/g, '')
+           .replace(/ data-move="mv:w\.\d+\.\d+"/g, '')
+      let idx: number
+      while ((idx = s.indexOf('<div class="dsec" ')) >= 0) {
+        const tagEnd = s.indexOf('>', idx) + 1
+        const re = /<div\b|<\/div>/g; re.lastIndex = tagEnd
+        let depth = 1, m: RegExpExecArray | null = null
+        while ((m = re.exec(s))) { if (m[0] === '</div>') { if (--depth === 0) break } else depth++ }
+        s = s.slice(0, idx) + s.slice(tagEnd, m!.index) + s.slice(m!.index + 6)
+      }
+      return s
+    }
+    const E = (s: string) => normDow(noItTime(noItCtl(noAhRmk(noRmkPh(noTrace(noBrief(noStores(sortGrnd(grndTitle(noInpGrp(noNotes(noDhTpl(noSign(noDsec(s)))))))))))))))
     DAYS.slice(0, REFN).forEach((_: any, di: number) => {
       const ref = w.eval(`dayHTML(${di},true)`)
       expect(E(dayHTML(di, true)), 'day ' + di).toBe(E(ref))
     })
+  })
+
+  /* the in-place section/wave drag (owner, 29 Aug 26 pt.3): EDIT mode wraps each
+     section in a `.dsec[data-secmove]` with a grip and marks each wave draggable;
+     VIEW mode adds NONE of it, which is what keeps the view week — and the parity
+     gate — byte-identical. Pinned both ways so a future edit can't leak the grips
+     into the view page. */
+  it('the edit week carries section + wave drag handles; the view week carries none', () => {
+    const di = DAYS.findIndex((d: any) => (d.waves || []).length > 0)
+    const ed = dayHTML(di, true), vw = dayHTML(di, false)
+    expect(ed).toContain('class="dsec" data-secmove="' + di + '.prog"')
+    expect(ed).toContain('class="dsec" data-secmove="' + di + '.ground"')
+    expect(ed).toContain('class="secgrip"')
+    expect(ed).toContain(' data-move="mv:w.' + di + '.0"')
+    expect(ed).toContain('class="wvgrip"')
+    expect(vw).not.toContain('dsec')
+    expect(vw).not.toContain('secgrip')
+    expect(vw).not.toContain('wvgrip')
+    expect(vw).not.toContain('data-move="mv:w')
   })
 
   /* the positive half of the day-name divergence above: edit mode makes the

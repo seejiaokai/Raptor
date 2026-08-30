@@ -10,7 +10,7 @@ import { DutyTplModal } from './DutyTplModal'
 import { WaveTplModal } from './WaveTplModal'
 import { DayTplModal } from './DayTplModal'
 import { DraftsModal } from './DraftsModal'
-import { ArrangeSections } from './ArrangeSections'
+import { SecDefaultSnackbar } from './SecDefaultSnackbar'
 
 export function App() {
   useVersion()
@@ -19,5 +19,5 @@ export function App() {
      BOARD for the same reason the board is one of the shell: it opens from
      the board's own bar and must paint over it, and the board is a
      full-screen modal that a child dialog would be trapped inside. */
-  return SESSION ? <><Shell /><SchedBoard /><CxDialog /><SortAllDialog /><HistoryModal /><InputEditor /><DocViewer /><DutyTplModal /><WaveTplModal /><DayTplModal /><DraftsModal /><ArrangeSections /></> : <Login />
+  return SESSION ? <><Shell /><SchedBoard /><CxDialog /><SortAllDialog /><HistoryModal /><InputEditor /><DocViewer /><DutyTplModal /><WaveTplModal /><DayTplModal /><DraftsModal /><SecDefaultSnackbar /></> : <Login />
 }

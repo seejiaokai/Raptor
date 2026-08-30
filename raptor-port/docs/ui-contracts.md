@@ -2108,66 +2108,69 @@ bar still sorts. Browser-only — jsdom has no layout, so the mirror never mount
 there (`quals.test.tsx` pins its absence); the freeze is verified on the live
 view at desktop and phone widths.
 
-## Arranging the schedule sections (owner, 29 Aug 26)
+## Dragging sections and waves (owner, 29 Aug 26; in-place drag 30 Aug 26)
 
-A scheduler can re-arrange the order the big section panels show in — **Programme
-· Flying waves · Duties · Sims · Ground Programme** — on both Edit Schedule and
-the Scheduler Board, and a saved **whole-day template** remembers it.
+A scheduler drags the big section panels — **Programme · Flying waves · Duties ·
+Sims · Ground Programme** — and the flying WAVES within a day into whatever order
+they want, on both Edit Schedule and the Scheduler Board, and a saved **whole-day
+template** remembers it. This REPLACED the per-day `⇅ Arrange` sheet (deleted 30 Aug
+26): the owner asked for handles on the blocks themselves, not a modal.
 
-**It is display order only.** The order lives on the day as `d.secOrder` (an
-array of the five section keys; absent ⇒ the default order), resolved by
-`engine/order.ts secOrder(d)`. It never enters a slot key, `SCHED.*`, or an AL:
-re-arranging a panel moves no row inside any array, so every `di.gi.li.ai` / `d:`
-/ `s:` / `g:` / `a:` key is unchanged and `validate()`/publish/history read
-exactly what they did — which is how the owner's "don't corrupt the rules"
-requirement is met (pinned in `engine/secorder.test.ts`). Both builders emit their
-sections through `secOrder`: `ui/board.ts boardHTML` assembles a `{prog,waves,
-duty,sims,ground}` map (the Templates head stays pinned above, the inputs/SANS/
-Unavail group below), and `ui/html.ts dayHTML` slices its accumulator at five
-boundary marks and re-emits — so the **default order is byte-identical** to before
-(reference parity stays 728/0). `prog` is the Programme unit: the Common
-Programme panel on the week, the Notes + Common-Programme panels moved together
-on the board.
+**The handles.** Every reorderable section is wrapped in a draggable unit carrying a
+grip on its left gutter — `.sb-sec[data-secmove="di.key"]` on the board, `.dsec`
+(edit mode only) on the week — and every wave block carries a grip in its header
+(`.wvgrip`) plus `data-move="mv:w.di.gi"` on the block (`.sb-go` / `.go`). Unlike
+the dense board ROW grip (`.sb-grip`, hidden on a phone in favour of ▲▼ because a
+packed row has no room to grab), a section or a wave is a big target, so these grips
+**stay draggable at every width** (the "drag, no arrows" design). The machine is
+`ui/rowdrag.ts`, wired on both the board wrap and the edit-week root; it tells the
+three draggables apart by the grip pressed, walks up to the enclosing wave block for
+a wave drag (so a wave drops onto another wave, not a line inside it), and validates
+the drop against `applyMove`'s own same-container rule so only a legal target
+highlights. Grips are **edit-mode only** on the week, so the view week — and the
+reference byte-compare — carry none (parity stays 728/0; pinned in `html.test.ts`).
 
-**The control** is a compact per-day sheet, `ui/ArrangeSections.tsx` (state
-`ARRANGESEC` in `pops.ts`), opened by a `⇅ Arrange` button on each surface — in
-the board's Templates & drafts bar (`data-arrangesec`, routed in `boardMbtn`) and
-the edit week's `.dhtpl` day-head span (routed in `interactions.ts`; that span is
-already excised from the reference byte-compare by `noDhTpl`, so the button costs
-no parity). The sheet lists the sections in order with ▲▼ nudges (the template
-editors' `.tnudge` idiom) and an **Apply to all days** button. The one write path
-is `state/store.ts moveSection` / `applySecOrderToWeek` — `histPush` + `notify`,
-**no `markEdit`**: a re-arrange is one undo step and is NOT an amendment. Admin +
-edit-surface gated at the write path, not only in the UI.
+**A section move is display order only.** The order lives on the day as `d.secOrder`
+(absent ⇒ the default order), resolved by `engine/order.ts secOrder(d)`. It never
+enters a slot key, `SCHED.*`, or an AL: re-arranging a panel moves no row inside any
+array, so every `di.gi.li.ai` / `d:` / `s:` / `g:` / `a:` key is unchanged and
+`validate()`/publish/history read exactly what they did — the owner's "don't corrupt
+the rules" requirement (pinned in `engine/secorder.test.ts`). Both builders emit
+sections through `secOrder`: `ui/board.ts boardHTML` assembles a `{prog,waves,duty,
+sims,ground}` map, `ui/html.ts dayHTML` slices its accumulator at five boundary
+marks and re-emits — the **default order is byte-identical** to before. The drop
+routes through `state/store.ts moveSectionTo` → `engine/order.ts reorderSectionTo`
+(a drop can span several positions, so it moves fromKey→toKey, not ±1), `histPush` +
+`notify`, **no `markEdit`**: one undo step, not an amendment. Admin + edit-surface
+gated at the write path. `prog` is the Programme unit (Common Programme on the week;
+Notes + Common Programme moved together on the board).
 
-**The same sheet also arranges the flying WAVES within the day** (owner, 29 Aug 26
-— "within the waves I also want the option to reorder … put SC at the top, then
-1st wave 2nd wave"). Below the sections list, when a day carries two or more waves,
-the sheet lists them by their board titles (`labelToTitle` — SC / AVALON / "1st
-wave"…) with the same ▲▼ nudges. Putting it in the shared sheet is what makes it
-work identically on **both** surfaces at once and stay in sync — the modal reads
-`d.waves` directly, so it needs no per-surface DOM or handler (the edit week has no
-inline row-reorder machinery at all; drag and the board's ▲▼ nudges are board-only).
+**After a section drag, the admin is offered a house default.** `ui/SecDefaultSnackbar.tsx`
+(state `SECDEFOFFER` in `pops.ts`) — an actionable bar (the plain `toast()` can't
+carry a button) reading *"Use this section order as the default for every day?"*.
+"Set as default" writes that day's order through `engine/order.ts setSecDefault` +
+`secDefaultSave` — the SAME default the Admin → Squadron config panel edits, so the
+two never drift — making every un-arranged day follow it henceforth. This replaced
+the old sheet's one-week "Apply to all days" (dropped: the henceforth default
+supersedes it). No prompt after a WAVE drag — the wave house default is a separate,
+new-schedules-only, kind-based thing (below).
 
-**Unlike a section move, a wave move IS a real model reorder and an amendment.**
-Its write path is `state/store.ts moveWaveBlock` → `engine/reorder.ts moveWave`
-(via `applyMove` kind `w`) → `afterSchedMutate` + `notify`. `moveWave` is the
+**Unlike a section move, a wave move IS a real model reorder and an amendment.** The
+drop routes through `applyMove('mv:w.di.gi', 'mv:w.di.gj')` → `engine/reorder.ts
+moveWave` → `afterSchedMutate` + `notify` — unchanged from before. `moveWave` is the
 manual sibling of Auto sort's `sortWaves`: it splices `d.waves` and remaps the SAME
-nine key-space heads (`wl: ff: fr: st: ar: at: it: tr:` and the bare seat head) with
-`moveKeys`, marking the moved wave — so the wave carries its whole key space to the
-new index and every crew name stays attached (pinned in `engine/reorder.test.ts`).
-Wave order can't be a parallel "display" order like `secOrder`, because `sortWaves`
-already reorders the real model; a second order would fight it. So reordering a wave
-on a **published** day records an AL row (correct — moving a flying wave is a
-schedule change), while on a draft day it is silent (25 Aug amendment-marks rule).
-The **day template remembers wave order for free** — wave order IS the `d.waves`
-array order, which `daytpl.ts mintBlob` deep-clones, so no `secOrder`-style capture
-is needed on the flying side (pinned in `engine/daytpl.test.ts`). Wave arrange is
-per-day only (no "apply to all days" — a day may have no SC to place).
+nine key-space heads (`wl: ff: fr: st: ar: at: it: tr:` and the bare seat head), so
+the wave carries its whole key space and every crew name stays attached (pinned in
+`engine/reorder.test.ts`). Reordering a wave on a **published** day records an AL row
+(correct — moving a flying wave is a schedule change), silent on a draft day (25 Aug
+amendment-marks rule). The **day template remembers wave order for free** — wave
+order IS the `d.waves` array order, deep-cloned by `daytpl.ts mintBlob` (pinned in
+`engine/daytpl.test.ts`).
 
 ## The Default arrangement (Admin → Squadron config)
 
-The per-day Arrange sheet above sets ONE day's order; the **Default arrangement**
+The per-day drag above sets ONE day's order (and its snackbar can promote that to
+the house default); the **Default arrangement**
 panel (owner, 29 Aug 26 pt.2 — "allow the default arrangement of a schedule to be
 configured in admin … even to the arrangement of the waves under display") sets the
 GLOBAL house order once. It is `ui/AdminPage.tsx ArrangeDefaults`, at the top of the

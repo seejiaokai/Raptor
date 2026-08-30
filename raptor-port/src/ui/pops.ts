@@ -41,12 +41,16 @@ export function setDayTplEdit(v: false | true | string) { DAYTPLEDIT = v }
    pre-selected idiom DAYTPLEDIT's string form carries. */
 export let DRAFTSEDIT: null | { di: number, id?: string } = null
 export function setDraftsEdit(v: null | { di: number, id?: string }) { DRAFTSEDIT = v }
-/* The Arrange-sections sheet (owner, 29 Aug 26 — "arrange the order in which the
-   schedule shows … edit schedule and scheduler board"). Per-day like DRAFTSEDIT:
-   it re-orders THIS day's section panels (engine/order.ts secOrder). Opened from
-   a button on either surface; the sheet reorders live behind itself. */
-export let ARRANGESEC: number | null = null
-export function setArrangeSec(v: number | null) { ARRANGESEC = v }
+/* The "Set default order?" snackbar (owner, 29 Aug 26 pt.3 — the in-place drag
+   that replaced the Arrange sheet). After an admin drags a section into a new
+   place, an actionable snackbar offers to make that day's order the squadron's
+   house default (engine/order.ts SEC_DEFAULT) so every un-arranged day follows
+   it henceforth. Holds the DAY INDEX that was just re-ordered — accept reads that
+   day's current secOrder as the new default. null = no offer showing. Session
+   view state only, like every other pops flag; a page/day change or the timer
+   clears it. */
+export let SECDEFOFFER: number | null = null
+export function setSecDefOffer(v: number | null) { SECDEFOFFER = v }
 /* The one personal input being edited from the week or the board (owner,
    10 Aug 26). The INPUT OBJECT, never its index or its content key: undo is
    still live under the modal and renumbers INPUTS, and the key is built from

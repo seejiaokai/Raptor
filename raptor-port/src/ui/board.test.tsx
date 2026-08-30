@@ -379,7 +379,11 @@ describe('duty / sim / ground panels on the board (owner request, Aug 26)', () =
      so the rows this block inspects render. */
   beforeAll(async () => { await act(async () => { view.PIOPEN.add(0); notify() }) })
   it('the four new panels render, in week order, before the sim-notes panel', () => {
-    const kids = [...$('#sbBoard').children].map(x => x.className)
+    /* the reorderable sections (prog/waves/duty/sims/ground) are each wrapped in a
+       draggable .sb-sec now (owner, 29 Aug 26 pt.3, the in-place drag), so read the
+       panels/waves in DOCUMENT order rather than as direct children of #sbBoard —
+       the visual order is what this test is about. */
+    const kids = [...document.querySelectorAll('#sbBoard .sb-panel, #sbBoard .sb-go')].map(x => x.className)
     const ix = (m: string) => kids.findIndex(c => c.includes(m))
     expect(ix('sb-panel duty')).toBeGreaterThan(ix('sb-go'))
     expect(ix('sb-panel simr')).toBeGreaterThan(ix('sb-panel duty'))
@@ -395,6 +399,19 @@ describe('duty / sim / ground panels on the board (owner request, Aug 26)', () =
   it('the panel headers carry the owner labels', () => {
     expect($('#sbBoard .sb-panel.grnd .sb-ph').textContent).toContain('Ground Programme')
     expect($('#sbBoard .sb-panel.pinp .sb-ph').textContent).toContain('Personal Inputs')
+  })
+
+  /* the in-place drag (owner, 29 Aug 26 pt.3) replaced the ⇅ Arrange sheet: each
+     reorderable section is wrapped in a draggable .sb-sec[data-secmove] with a
+     grip, every wave block carries a grip + mv:w address, and the old Arrange
+     button is gone from the Templates & drafts header. */
+  it('carries section + wave drag handles and no longer shows the Arrange button', () => {
+    const secs = [...document.querySelectorAll('#sbBoard .sb-sec[data-secmove]')].map(x => (x as HTMLElement).dataset.secmove)
+    expect(secs).toContain('0.prog')
+    expect(secs).toContain('0.ground')
+    expect(document.querySelectorAll('#sbBoard .sb-sec .secgrip').length).toBe(secs.length)
+    expect(document.querySelector('#sbBoard .sb-go[data-move="mv:w.0.0"] .wvgrip')).toBeTruthy()
+    expect(document.querySelector('#sbBoard [data-arrangesec]')).toBeNull()
   })
 
   /* THE "+ ADD" OVERFLOW STRIP (owner, 26 Aug 26 — a full people cell swapped a

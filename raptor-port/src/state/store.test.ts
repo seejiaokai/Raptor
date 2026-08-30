@@ -11,7 +11,7 @@ import { slotVal, txtGet } from '../engine/slots'
 import { shiftKeys } from '../engine/keys'
 import { moveDutyRow, applyMove, sortDutyBlock } from '../engine/reorder'
 import { validate, WARN } from '../engine/validate'
-import { initStore, subscribe, getVersion, writeSlot, writeFill, writeText, writeDelete, writeInputs, undo, redo, HIST, moveSection, applySecOrderToWeek } from './store'
+import { initStore, subscribe, getVersion, writeSlot, writeFill, writeText, writeDelete, writeInputs, undo, redo, HIST, moveSection, moveSectionTo } from './store'
 import { secOrder } from '../engine/order'
 import { armSlot, disarmSlot, armedKey, placeArmed, selectPerson, SELID, ARM } from './view'
 import * as view from './view'
@@ -365,12 +365,22 @@ describe('moveSection — the section display order (owner, 29 Aug 26)', () => {
     setSession({ user: 'a', role: 'admin' })
   })
 
-  it('applySecOrderToWeek copies one day\'s order onto every other loaded day, in one step', () => {
-    moveSection(0, 'ground', -1); moveSection(0, 'ground', -1)   // ground up two on day 0
-    const want = secOrder(DAYS[0])
-    applySecOrderToWeek(0)
-    DAYS.forEach((d: any) => expect(secOrder(d)).toEqual(want))
-    undo()   // the batch is one undo step, so this rolls back the whole-week apply
-    expect(secOrder(DAYS[1])).not.toEqual(want)
+  it('moveSectionTo drags one section to where another sits, spanning several positions, undoable in one step', () => {
+    expect(secOrder(DAYS[0])).toEqual(['prog', 'waves', 'duty', 'sims', 'ground'])
+    /* drop 'ground' (last) onto 'prog' (first) — a multi-position move the ±1
+       nudge could not do in one gesture */
+    moveSectionTo(0, 'ground', 'prog')
+    expect(secOrder(DAYS[0])).toEqual(['ground', 'prog', 'waves', 'duty', 'sims'])
+    expect(Object.keys(SCHED.pending)).toEqual([])   // display, not an amendment
+    expect(Object.keys(SCHED.changes)).toEqual([])
+    undo()
+    expect(secOrder(DAYS[0])).toEqual(['prog', 'waves', 'duty', 'sims', 'ground'])
+  })
+
+  it('moveSectionTo is refused off the write path for a non-admin', () => {
+    setSession({ user: 'u', role: 'member' })
+    moveSectionTo(0, 'ground', 'prog')
+    expect(DAYS[0].secOrder).toBeUndefined()
+    setSession({ user: 'a', role: 'admin' })
   })
 })

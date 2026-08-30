@@ -721,33 +721,39 @@ agree — name it here so the next session knows to check both.
   `INPUTS` + an as-of ordinal, default the notional `weeknav.TODAY`), so it
   cannot drift from the table; anything stored would be the seam.
 
-- **Section display order (29 Aug 26) — one order, two builders.** A day's
-  `d.secOrder` (Programme · Flying waves · Duties · Sims · Ground Programme)
-  is read by BOTH `ui/board.ts boardHTML` and `ui/html.ts dayHTML` through the
-  one `engine/order.ts secOrder(d)`, so the two surfaces cannot disagree on the
-  order. The drift-seam to mind if the CANONICAL SET ever grows: a new section
-  key must be added to `SECTIONS` AND mapped to a panel string in BOTH builders
-  AND labelled in `ui/ArrangeSections.tsx` `SEC_LABEL` — four places for one
-  section. It is display-only: it never enters a slot key, `SCHED.*`, or an AL,
-  so it is invisible to `validate()`/publish/history (the guard is
-  `engine/secorder.test.ts`); the write path is `store.moveSection` (histPush,
-  no markEdit), and a whole-day template carries it (`engine/daytpl.ts`).
+- **Section display order (29 Aug 26; dragged in place 30 Aug 26) — one order, two
+  builders.** A day's `d.secOrder` (Programme · Flying waves · Duties · Sims · Ground
+  Programme) is read by BOTH `ui/board.ts boardHTML` and `ui/html.ts dayHTML` through
+  the one `engine/order.ts secOrder(d)`, so the two surfaces cannot disagree. The
+  drift-seam to mind if the CANONICAL SET ever grows: a new section key must be added
+  to `SECTIONS` AND mapped to a panel string in BOTH builders — the section grip is a
+  bare `⠿` reading `data-secmove="di.key"`, so there is no label list to keep in step
+  any more (the old `ArrangeSections.tsx` `SEC_LABEL` is gone). It is display-only: it
+  never enters a slot key, `SCHED.*`, or an AL, so it is invisible to `validate()`/
+  publish/history (guard: `engine/secorder.test.ts`); the write path is a DRAG on the
+  section grip (`.sb-sec`/`.dsec[data-secmove]`, `ui/rowdrag.ts` → `store.moveSectionTo`
+  → `engine/order.ts reorderSectionTo`, histPush, no markEdit), and a whole-day
+  template carries it (`engine/daytpl.ts`). After a section drag an admin is offered
+  the house default (`ui/SecDefaultSnackbar.tsx` → `setSecDefault`/`secDefaultSave`).
+  **Parity seam:** the grip + `.dsec` wrapper are EDIT-MODE ONLY on the week, so the
+  view builder is byte-identical (`html.test.ts` pins both directions; the byte-compare
+  unwraps `.dsec` via `noDsec`).
 
-- **Wave-block order (29 Aug 26) — the Arrange sheet's second list, a REAL
-  reorder not a display order.** The same `ui/ArrangeSections.tsx` sheet lists the
-  day's flying waves (when ≥2) with ▲▼; because the modal reads `d.waves` directly,
-  the control works on BOTH surfaces with no per-surface DOM (the edit week has no
-  inline row-reorder at all — drag/nudge are board-only). Unlike section order, a
-  wave move mutates the real model and IS an amendment: `store.moveWaveBlock` →
-  `engine/reorder.ts moveWave` (via `applyMove` kind `w`) → `afterSchedMutate`, the
-  manual sibling of `sortWaves` sharing its nine-head key remap. **Drift-seam to
+- **Wave-block order (29 Aug 26; dragged in place 30 Aug 26) — a REAL reorder, not a
+  display order.** Each wave block carries a header grip (`.wvgrip`) + `data-move=
+  "mv:w.di.gi"`; `ui/rowdrag.ts` walks up to the enclosing block, so a wave drops onto
+  another wave (not a line inside it), on BOTH surfaces (wired on the board wrap and
+  the edit-week root — the edit week has no inline ROW reorder; only section/wave
+  grips exist there). Unlike section order, a wave move mutates the real model and IS
+  an amendment: `applyMove` kind `w` → `engine/reorder.ts moveWave` → `afterSchedMutate`,
+  the manual sibling of `sortWaves` sharing its nine-head key remap. **Drift-seam to
   mind:** that nine-head list appears in `moveWave`, `sortWaves` and `keys.ts
   shiftWave` — a wave gaining a tenth key head must reach all three, or a moved/
   sorted/deleted wave leaves an orphaned key. Wave order rides `d.waves` itself, so
-  undo, the week-stash and the day template capture it with no extra field. It is
-  the one write path in the sheet that touches rule KEYS — but only their indices,
-  never their substance, so `validate()`'s warning set is invariant under a wave
-  move (`engine/reorder.test.ts`).
+  undo, the week-stash and the day template capture it with no extra field. A wave
+  move touches rule KEYS — but only their indices, never their substance, so
+  `validate()`'s warning set is invariant under it (`engine/reorder.test.ts`,
+  `ui/rowdrag.test.tsx`).
 
 - **The DEFAULT arrangement (29 Aug 26 pt.2) — admin-set global defaults for both
   orders.** `ui/AdminPage.tsx ArrangeDefaults` (Squadron config) sets two persisted

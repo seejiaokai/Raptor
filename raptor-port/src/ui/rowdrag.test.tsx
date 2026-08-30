@@ -9,6 +9,8 @@ import { wireRowDrag } from './rowdrag'
 import { setSession } from '../state/auth'
 import { boardHTML } from './board'
 import { HOOKS } from '../engine/hooks'
+import { secOrder } from '../engine'
+import { SECDEFOFFER, setSecDefOffer } from './pops'
 
 const DSNAP = JSON.stringify(DAYS)
 let host: HTMLElement, off: () => void
@@ -130,5 +132,76 @@ describe('wireRowDrag', () => {
     } finally {
       HOOKS.editMode = origEditMode
     }
+  })
+
+  /* SECTIONS + WAVES drag in place now (owner, 29 Aug 26 pt.3, replacing the
+     Arrange sheet). All driven through the real board markup so the fixtures
+     can't drift from the builders. */
+  describe('sections and waves (the in-place Arrange replacement)', () => {
+    const withEdit = (fn: () => void) => {
+      const o = HOOKS.editMode; HOOKS.editMode = () => true
+      try { fn() } finally { HOOKS.editMode = o }
+    }
+    beforeEach(() => setSecDefOffer(null))
+
+    it('drags a section to another section\'s place (display order, spanning positions)', () => withEdit(() => {
+      host.innerHTML = boardHTML(0)
+      const grip = host.querySelector('[data-secmove="0.prog"] .secgrip') as HTMLElement
+      const target = host.querySelector('[data-secmove="0.duty"]') as HTMLElement
+      expect(grip && target).toBeTruthy()
+      down(grip); over(target); up()
+      /* prog moves to where duty sat; the rest keep their relative order */
+      expect(secOrder(DAYS[0])).toEqual(['waves', 'duty', 'prog', 'sims', 'ground'])
+    }))
+
+    it('a section drag offers the "set as default?" snackbar on a real move', () => withEdit(() => {
+      host.innerHTML = boardHTML(0)
+      const grip = host.querySelector('[data-secmove="0.ground"] .secgrip') as HTMLElement
+      const target = host.querySelector('[data-secmove="0.prog"]') as HTMLElement
+      down(grip); over(target); up()
+      expect(SECDEFOFFER).toBe(0)
+    }))
+
+    it('a section drag is DISPLAY only — no pending edit, no amendment', () => withEdit(() => {
+      host.innerHTML = boardHTML(0)
+      const before = JSON.stringify(DAYS[0].waves)   // model rows untouched by a section move
+      const grip = host.querySelector('[data-secmove="0.sims"] .secgrip') as HTMLElement
+      const target = host.querySelector('[data-secmove="0.prog"]') as HTMLElement
+      down(grip); over(target); up()
+      expect(JSON.stringify(DAYS[0].waves)).toBe(before)
+    }))
+
+    it('drags a whole WAVE block onto another, reordering the model (a real amendment)', () => withEdit(() => {
+      const di = DAYS.findIndex((d: any) => (d.waves || []).length > 1)
+      expect(di).toBeGreaterThanOrEqual(0)
+      host.innerHTML = boardHTML(di)
+      const was = DAYS[di].waves.map((w: any) => w.label)
+      const grip = host.querySelector(`.sb-go[data-move="mv:w.${di}.0"] .wvgrip`) as HTMLElement
+      const target = host.querySelector(`.sb-go[data-move="mv:w.${di}.1"]`) as HTMLElement
+      down(grip); over(target); up()
+      expect(DAYS[di].waves.map((w: any) => w.label)).toEqual([was[1], was[0], ...was.slice(2)])
+    }))
+
+    it('a wave drag targets the BLOCK even when the pointer is over a line inside it', () => withEdit(() => {
+      const di = DAYS.findIndex((d: any) => (d.waves || []).length > 1)
+      host.innerHTML = boardHTML(di)
+      const was = DAYS[di].waves.map((w: any) => w.label)
+      const grip = host.querySelector(`.sb-go[data-move="mv:w.${di}.0"] .wvgrip`) as HTMLElement
+      /* a flying LINE inside wave 1 — the drag must still resolve to wave 1's block */
+      const innerRow = host.querySelector(`.sb-go[data-move="mv:w.${di}.1"] .sb-line[data-move^="mv:ac."]`) as HTMLElement
+      expect(innerRow).toBeTruthy()
+      down(grip); over(innerRow); up()
+      expect(DAYS[di].waves.map((w: any) => w.label)).toEqual([was[1], was[0], ...was.slice(2)])
+    }))
+
+    it('a member cannot drag a section', () => withEdit(() => {
+      host.innerHTML = boardHTML(0)
+      setSession({ user: 'user', role: 'main' } as any)
+      const grip = host.querySelector('[data-secmove="0.prog"] .secgrip') as HTMLElement
+      const target = host.querySelector('[data-secmove="0.duty"]') as HTMLElement
+      down(grip); over(target); up()
+      expect(DAYS[0].secOrder).toBeUndefined()
+      expect(SECDEFOFFER).toBe(null)
+    }))
   })
 })

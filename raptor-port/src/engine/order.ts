@@ -131,3 +131,22 @@ export function moveSectionModel(d:any,key:string,dir:number):boolean{
   d.secOrder=next;
   return true;
 }
+/* move fromKey to where toKey currently sits — the DRAG sibling of
+   moveSectionModel (which only steps ±1). A drop can span several positions, so
+   the sheet's ±1 nudge is not enough. Same splice semantics as engine/reorder.ts
+   slide() (the row-drag path), so a section drag reads the same as a row drag:
+   remove fromKey, re-insert at toKey's index in the CURRENT resolved order.
+   Materialises a full d.secOrder from the first move. Pure display mutation —
+   the caller does histPush + notify (state/store.ts:moveSectionTo); no markEdit,
+   no slot key, so the rules stay byte-identical (see secOrder above). Returns
+   false on a no-op or an unknown key. */
+export function reorderSectionTo(d:any,fromKey:string,toKey:string):boolean{
+  if(!d||fromKey===toKey)return false;
+  const cur=secOrder(d);
+  const from=cur.indexOf(fromKey), to=cur.indexOf(toKey);
+  if(from<0||to<0)return false;
+  const next=cur.slice();
+  next.splice(to,0,next.splice(from,1)[0]);
+  d.secOrder=next;
+  return true;
+}
