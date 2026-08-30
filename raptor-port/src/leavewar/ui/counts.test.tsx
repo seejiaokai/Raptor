@@ -1,7 +1,7 @@
-import { fireEvent, render, screen } from '@testing-library/react'
+import { act, fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
 import type { DayVerdict, RuleResult } from '../engine'
-import { initStore, setCell, setRole } from '../state/store'
+import { initStore, moveManningRowTo, orderedManningIds, setCell, setRole } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { CountRows } from './CountRows'
 import { Matrix } from './Matrix'
@@ -153,6 +153,32 @@ describe('the manning rows can be reordered and hidden (admin)', () => {
     draw({ order: ['sxo', 'sets', 'ip'] })
     const rows = screen.getAllByTestId(/^count-(sets|ip|sxo)$/).map(r => r.getAttribute('data-testid'))
     expect(rows).toEqual(['count-sxo', 'count-sets', 'count-ip'])
+  })
+
+  // A reorder must never leave a row without its grip/eye tools. On the phone the
+  // frozen tools column could paint stale after a drag (the iOS sticky-repaint
+  // glitch the Matrix drag machine now kicks a redraw for); this pins the DOM
+  // invariant behind it — every visible row keeps BOTH tools across a real move.
+  it('every count row keeps its grip and eye after a manning reorder', () => {
+    setRole('admin')
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId('roster-arrange'))            // enter Rearrange
+    const toolCount = () => ({
+      rows: document.querySelectorAll('tbody.counts tr').length,
+      grips: document.querySelectorAll('[data-testid^="manning-drag-"]').length,
+      eyes: document.querySelectorAll('[data-testid^="manning-hide-"]').length,
+    })
+    const before = toolCount()
+    expect(before.rows).toBeGreaterThan(1)
+    expect(before.grips).toBe(before.rows)
+    expect(before.eyes).toBe(before.rows)
+    // move the last manning row to the front — a genuine store reorder
+    const ids = orderedManningIds()
+    act(() => { moveManningRowTo(ids[ids.length - 1]!, ids[0]!) })
+    const after = toolCount()
+    expect(after.rows).toBe(before.rows)          // nothing dropped
+    expect(after.grips).toBe(after.rows)          // every row still has its grip
+    expect(after.eyes).toBe(after.rows)           // and its eye
   })
 })
 

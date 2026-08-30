@@ -190,9 +190,20 @@ const noItCtl = (s: string) => s
   .replace(/ (?:contenteditable="true" spellcheck="false" )?data-intimes="[^"]*"/g, '')
   .replace(/class="intimes iedit"/g, 'class="intimes"')
 
+/* Divergence (owner, 30 Aug 26 — every time reads 08:00): the port DISPLAY-folds
+   an in-time line's leading bolded time to hh:mm (intimeLineHTML via intimeFold;
+   the model string is untouched). Fold the reference's own <b>1200H</b> the same
+   way before the compare — a no-op on the port's already-folded output, and only
+   a token intimeTime would accept is folded, exactly as in the app. Pinned
+   positively in intimesadd.test.tsx / intimes.test.ts. */
+const noItTime = (s: string) => s.replace(/<b>(\d{3,4})(\s*[HLhl]?)<\/b>/g, (all, d, suf) => {
+  const h = +d.slice(0, d.length - 2), m = +d.slice(-2)
+  return h < 24 && m < 60 ? `<b>${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}${suf}</b>` : all
+})
+
 describe('view-week markup parity with the reference', () => {
   it('every day of the read-only week is byte-identical (minus the input blocks)', () => {
-    const V = (s: string) => noAhRmk(noTrace(noBrief(noStores(sortGrnd(grndTitle(noInpGrp(noAvailPuck(noNotes(s)))))))))
+    const V = (s: string) => noItTime(noAhRmk(noTrace(noBrief(noStores(sortGrnd(grndTitle(noInpGrp(noAvailPuck(noNotes(s))))))))))
     DAYS.slice(0, REFN).forEach((_: any, di: number) => {
       const ref = w.eval(`dayHTML(${di},false)`)
       expect(V(dayHTML(di, false)), 'day ' + di).toBe(V(ref))
@@ -271,7 +282,7 @@ describe('view-week markup parity with the reference', () => {
     const normDow = (s: string) => s.replace(
       /<span class="dow crewday" data-crewday="(\d+)" title="Show this day's crew in the aircrew panel">/g,
       '<span class="dow sb-open" data-sbday="$1" title="Open scheduler board">')
-    const E = (s: string) => normDow(noItCtl(noAhRmk(noRmkPh(noTrace(noBrief(noStores(sortGrnd(grndTitle(noInpGrp(noNotes(noDhTpl(noSign(s)))))))))))))
+    const E = (s: string) => normDow(noItTime(noItCtl(noAhRmk(noRmkPh(noTrace(noBrief(noStores(sortGrnd(grndTitle(noInpGrp(noNotes(noDhTpl(noSign(s))))))))))))))
     DAYS.slice(0, REFN).forEach((_: any, di: number) => {
       const ref = w.eval(`dayHTML(${di},true)`)
       expect(E(dayHTML(di, true)), 'day ' + di).toBe(E(ref))

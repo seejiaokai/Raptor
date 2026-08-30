@@ -7,9 +7,9 @@ import { PEOPLE, nameToId, isSpecial } from '../engine/people'
 import { isStandalone, makeStandalone, DUTY_PICK, SAWAVE } from '../engine/waves'
 import { waveInTime } from '../engine/events'
 import { WARN, validate, WCODE, wlbl } from '../engine/validate'
-import { hhmm, minus, parseHM } from '../engine/time'
+import { hhmm, fmtHM, minus, parseHM } from '../engine/time'
 import { VCONF } from '../engine/rules'
-import { slotVal, txtGet, txtSet, acRef, rollCx, whoArr, unacceptInput } from '../engine/slots'
+import { slotVal, txtGet, txtSet, acRef, rollCx, whoArr, unacceptInput, TIME_TXT } from '../engine/slots'
 import { markEdit, markDeletion, deletionWasIssued, markStructuralAdd, alAttr, dayApproved, dayCurVer, dayPendCount, verLabel, nextAL } from '../engine/publish'
 import { logAction, ELOG } from '../engine/editlog'
 import { hideHistBub } from './histbubble'
@@ -19,10 +19,10 @@ import { applyMove, sortWave, sortDutyBlock, sortSims, sortGround, sortProg, sor
 import { HIST } from '../state/history'
 import { signoffHTML, cxText, storesView, intimesInner, areaText, atimeText, dayStatHTML, verSelBoardHTML, srcInput, saRoleHTML, availHTML } from './html'
 import { setInpField } from './inputedit'
-import { STORE_CFG, DUTYTPL_CFG, blockFromTpl, DAYTPL_CFG, applyDayTpl, addDayTpl, dayTplSave, dayTplSummary, secOrder } from '../engine'
+import { STORE_CFG, DUTYTPL_CFG, blockFromTpl, DAYTPL_CFG, applyDayTpl, addDayTpl, dayTplSave, dayTplSummary, secOrder, waveInsertSlot, waveKindOf, moveWave } from '../engine'
 import { dayDrafts, curDraftId, draftDup, draftSelect } from '../engine/drafts'
 import { setTplEdit, setDayTplEdit, setDraftsEdit, setWaveEdit, setArrangeSec } from './pops'
-import { shownBuiltins, shownTemplates, waveFromTpl, kindLabel } from '../engine/wavetpl'
+import { shownBuiltins, shownTemplates, waveFromTpl, kindLabel, WAVE_BUILTIN, WAVETPL_CFG } from '../engine/wavetpl'
 import { HOOKS } from '../engine/hooks'
 import { canEditSched } from '../state/auth'
 import * as view from '../state/view'
@@ -165,7 +165,7 @@ export function boardHTML(di: number, pv?: boolean) {
          have a brief time"). The box itself stays, so a real in-time can be
          entered; only the blue suggestion goes. */
       const brSug = (!stoRO && !sc && parseHM(f.br) == null)
-        ? `<span class="bsug" data-bacc="${fp}.br" data-bval="${brief}" title="Click to accept the suggested brief time">${brief}</span>`
+        ? `<span class="bsug" data-bacc="${fp}.br" data-bval="${brief}" title="Click to accept the suggested brief time">${fmtHM(brief)}</span>`
         : ''
       /* sbSlot's own `pv` param means "read-only" to that function, not
          literally "preview" — widened to stoRO below for the same reason
@@ -190,9 +190,9 @@ export function boardHTML(di: number, pv?: boolean) {
         ${sbGrip(mvRO)}
         ${boxHTML('lin', `data-bfld="${fp}.cs"${alAttr(`${fp}.cs`)}${dis}`, f.cs, '')}
         ${boxHTML('msn', `data-bfld="${fp}.msn"${alAttr(`${fp}.msn`)}${dis}`, f.msn, '')}
-        <div class="sb-bcell">${brSug}<input class="tm" data-bfld="${fp}.br"${alAttr(`${fp}.br`)}${dis} value="${esc(f.br || '')}"></div>
-        <input class="tm" data-bfld="${fp}.to"${alAttr(`${fp}.to`)}${dis} value="${esc(f.to)}">
-        <input class="tm" data-bfld="${fp}.ld"${alAttr(`${fp}.ld`)}${dis} value="${esc(f.ld)}">
+        <div class="sb-bcell">${brSug}<input class="tm" data-bfld="${fp}.br"${alAttr(`${fp}.br`)}${dis} value="${esc(fmtHM(f.br))}"></div>
+        <input class="tm" data-bfld="${fp}.to"${alAttr(`${fp}.to`)}${dis} value="${esc(fmtHM(f.to))}">
+        <input class="tm" data-bfld="${fp}.ld"${alAttr(`${fp}.ld`)}${dis} value="${esc(fmtHM(f.ld))}">
         <div class="sb-seatpair">${sbSlot(di, key + '.p', 'p', a.p, stoRO)}${sbSlot(di, key + '.w', 'w', a.w, stoRO)}</div>
         <div class="sb-rcell"${alAttr(`st:${key}`)}>
           ${sa ? saRoleHTML(key, a, !stoRO) : ''}
@@ -975,7 +975,7 @@ export function boardChange(e: Event) {
     const [id, field] = inf.dataset.ifld!.split('.')
     const inp = inpById(id)
     if (!inp) return notify()                    // deleted or undone underneath it
-    const back = () => { inf.value = field === 'rmks' ? (inp.remarks || '') : inpTimeText(inp, field).replace(':', '') }
+    const back = () => { inf.value = field === 'rmks' ? (inp.remarks || '') : inpTimeText(inp, field) }
     if (RO) return back()
     if (setInpField(inp, field as any, inf.value)) notify()
     else back()
@@ -1068,6 +1068,22 @@ export function addLine(di: number) {
   afterSchedMutate(); notify(); toast('Line added')
 }
 
+/* Slot a freshly-appended wave into the admin's house wave order (owner, 29 Aug 26
+   pt.2 — "new schedules only"). The wave has just been pushed to the END of
+   d.waves; if a house order is set and the day is NOT signed off, slide it up into
+   its kind's slot with the same tested moveWave the Arrange sheet uses, and return
+   its final index (for markStructuralAdd). A signed-off day is left untouched — the
+   owner's rule that the default never amends an existing schedule — and an unset
+   house order returns the end index, so nothing moves. `newKind` is 'fly' for an
+   ordinary wave, else the standalone kind. */
+function placeAddedWave(di: number, newKind: string): number {
+  const d = DAYS[di]; const end = d.waves.length - 1
+  if (dayApproved(di)) return end
+  const slot = waveInsertSlot(d.waves.slice(0, end), newKind)
+  if (slot < end) moveWave(di, end, slot)
+  return slot < end ? slot : end
+}
+
 /* + Wave, verbatim. Same in-function role check as addLine above — the
    direct mutator, so this is the one that actually has to refuse, whether
    it is reached through waveMenu's picker or (as the smaller-item test
@@ -1083,7 +1099,8 @@ export function addWave(di: number, kind: any) {
        NEW / 12:00 / 13:00 reads as a line somebody filled in when nobody did,
        and the suggested-brief time then paints a green in-time off it. */
     d.waves.push({ label: 'WAVE ' + (d.waves.filter((w: any) => !isStandalone(w)).length + 1), night: false, intimes: [], traffic: [], formations: [{ cs: '', msn: '', to: '', ld: '', aircraft: [{ p: '', w: '', area: '', rmks: '', opts: {} }] }] })
-    markStructuralAdd(`wl:${di}.${d.waves.length - 1}`); afterSchedMutate(); notify(); return act(di, 'Wave added')
+    const fi = placeAddedWave(di, 'fly')
+    markStructuralAdd(`wl:${di}.${fi}`); afterSchedMutate(); notify(); return act(di, 'Wave added')
   }
   const w = makeStandalone(kind); if (!w) return
   d.waves.push(w)
@@ -1093,7 +1110,8 @@ export function addWave(di: number, kind: any) {
      AVALON used to bring its desk up with the wave; now every desk, AVALON's
      included, is added from the "+ Block" template picker like any other.
      Adding a wave creates only the wave. */
-  markStructuralAdd(`wl:${di}.${d.waves.length - 1}`); afterSchedMutate(); notify()
+  const fi = placeAddedWave(di, kind)
+  markStructuralAdd(`wl:${di}.${fi}`); afterSchedMutate(); notify()
   toast(S.label + ' added — standalone, ' + (kind === 'avalon' ? 'checked for availability only' : S.all ? 'nothing on it is cross-checked' : 'SPARE is checked for availability and SC currency only'))
 }
 
@@ -1329,21 +1347,21 @@ export function rolePickMenu(anchor: HTMLElement, addr: string) {
 export function waveMenu(anchor: HTMLElement, di: any) {
   // same SBDAY-scoped editMode() gate as addLine/addWave above, same reason.
   if (!canEditSched() || (view.SBDAY != null && !HOOKS.editMode())) return
-  /* the template editor is a pencil at the top-right of the popup's first
-     header, matching the stores Config popup (owner, 26 Aug 26 — "how the
-     config places the edit icon on the top right … do the same for flying wave
-     templates … not how it is at the bottom currently"). Same data-wvedit hook,
-     only relocated: it rides the Day header when the board's generic add shows
-     one, else the Add header. */
-  const pen = `<button class="wm-pen" data-wvedit="1" title="Edit the wave templates">✎</button>`
+  /* ONE gear at the top-right of the popup's first header opens the Flying-waves
+     sheet (owner, 30 Aug 26 — "ugly to have the settings and edit buttons separate
+     … combine them through 1 button"). That one sheet now both EDITS the templates
+     and shows / hides / deletes what appears here, so the old separate ✎ editor and
+     ⚙ Manage buttons collapse into this single data-wvedit opener. It rides the Day
+     header when the board's generic add shows one, else the Add header. */
+  const pen = `<button class="wm-pen wm-mng" data-wvedit="1" title="Manage flying waves">⚙</button>`
   const dayBtns = (di == null)
     ? `<h5 class="wm-hpen">Day${pen}</h5><div class="wm-row" id="wmDays">`
       + DAYS.map((x: any, i: number) => `<button class="wm ${i === 0 ? 'on' : ''}" data-wmday="${i}" style="padding:6px 9px;font-size:11.5px">${esc(x.dow.slice(0, 3))}</button>`).join('')
       + `</div>` : ''
   /* the built-in kinds are the four rule-sets, minus any an admin has hidden
      (WAVEHIDE); 'fly' carries the empty data-wmkind the plain add already uses.
-     Saved TEMPLATES (owner, 25 Aug 26) follow in their own group, and the pencil
-     opens the wave-template editor \u2014 the same shape blockMenu gives + Block. */
+     Saved TEMPLATES (owner, 25 Aug 26) follow in their own group, and the gear
+     opens the Flying-waves sheet \u2014 the same shape blockMenu gives + Block. */
   const builtins = shownBuiltins()
   const tpls = shownTemplates()
   const anyStandby = builtins.some(b => b.key !== 'fly')
@@ -1354,10 +1372,17 @@ export function waveMenu(anchor: HTMLElement, di: any) {
     ? `<h5>Templates</h5><div class="wm-row" style="flex-direction:column;align-items:stretch">`
       + tpls.map((t: any) => `<button class="wm" data-wmtpl="${esc(t.id)}">${esc(t.title || 'Untitled')}<span class="wm-sub">${esc(kindLabel(t.kind))}${t.lines.length ? ` \u00b7 ${t.lines.length} line${t.lines.length === 1 ? '' : 's'}` : ''}</span></button>`).join('')
       + `</div>` : ''
+  /* a hidden wave never silently vanishes: this line says how many are tucked away
+     and opens the Flying-waves sheet to bring them back, right where their absence
+     is noticed. */
+  const hiddenN = (WAVE_BUILTIN.length + WAVETPL_CFG.length) - (builtins.length + tpls.length)
+  const hiddenLine = hiddenN > 0
+    ? `<div class="wm-hidden"><b>${hiddenN} hidden</b> \u00b7 <button class="wm-mnglink" data-wvedit="1">Manage</button></div>` : ''
   const html = dayBtns
     + `<h5${di == null ? '' : ' class="wm-hpen"'}>Add${di == null ? '' : pen}</h5><div class="wm-row">` + kindRow + `</div>`
     + tplRow
     + (anyStandby ? `<div class="wm-note">SC \u00b7 AVALON \u00b7 BB sit outside the day's flying count \u2014 two waves of four plus an SC reads <b>4 X 4 / 2</b>.</div>` : '')
+    + hiddenLine
   let day = (di == null) ? 0 : di
   const box = popMenu(anchor, html, (e: any, close: () => void) => {
     if (e.target.closest('[data-wvedit]')) { close(); setWaveEdit(true); notify(); e.stopPropagation(); return }
@@ -1388,7 +1413,11 @@ export function addWaveFromTpl(di: any, id: string) {
   const w = waveFromTpl(id); if (!w) return
   d.waves = d.waves || []
   d.waves.push(w)
-  markStructuralAdd(`wl:${di}.${d.waves.length - 1}`); afterSchedMutate(); notify()
+  /* a template wave follows the house order too — by the kind it mints as (a
+     standby template mints a standalone, so waveKindOf reads its kind; a fly
+     template is ordinary → 'fly') */
+  const fi = placeAddedWave(di, waveKindOf(w))
+  markStructuralAdd(`wl:${di}.${fi}`); afterSchedMutate(); notify()
   return act(di, `"${w.label || 'Wave'}" added`)
 }
 
@@ -1443,9 +1472,20 @@ export function boardTab(n: number) {
       else {
         const [id, field] = ae.dataset.ifld.split('.')
         const inp = inpById(id)
-        if (inp) want = field === 'rmks' ? (inp.remarks || '') : inpTimeText(inp, field).replace(':', '')
+        if (inp) want = field === 'rmks' ? (inp.remarks || '') : inpTimeText(inp, field)
       }
-      if (iv !== want) ae.dispatchEvent(new Event('change', { bubbles: true }))
+      /* a TIME box SHOWS fmtHM(model) — a legacy compact '0900' reads '09:00' —
+         so compare the field to what the model would DISPLAY, not to its raw
+         stored form. Without the fold, stepping the day with an untouched legacy
+         box focused makes iv ('09:00') differ from want ('0900') and synthesises
+         a no-op `change`: it rewrites the model and logs a phantom History row
+         nobody typed (owner adversarial pass, 30 Aug 26). An untouched box then
+         reads iv === fmtHM(want) exactly, so it stays silent, while a real typed
+         value (raw iv) still differs and still commits on the way out. The
+         data-ifld branch needs none of this — inpTimeText already returns colon
+         off stored minutes, so its want matches the field. */
+      const shows = (ae.dataset.bfld != null && TIME_TXT.test(ae.dataset.bfld)) ? fmtHM(want) : want
+      if (iv !== shows) ae.dispatchEvent(new Event('change', { bubbles: true }))
     }
     document.querySelectorAll('.stmenu').forEach(x => {
       const off = (x as any)._offClick

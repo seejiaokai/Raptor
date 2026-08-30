@@ -8,6 +8,9 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:e2e": "playwright test",
+    "e2e:board": "playwright test e2e/geometry.spec.ts e2e/medical.spec.ts",
+    "e2e:leave": "playwright test e2e/leavewar.spec.ts --project=lw-desktop",
+    "e2e:quick": "playwright test --project=raptor --project=lw-desktop",
     "test:reference": "node reference/tfin.js",
     "probes:adapted": "node probes/adapted/run-all.cjs",
     "perf": "node probes/perf-port.cjs"

@@ -321,6 +321,65 @@ own machinery) and the DESKTOP's still-sticky columns. Still worth the WebKit
 pass, but the riskiest surface — sticky cells on 80 scrolling rows — is off the
 phone now.
 
+## The sideways-flick momentum on `.mx-wrap` — UNSOLVED, and abandoned by owner (30 Aug 26)
+
+The Leave War grid scroller (`.mx-wrap`) has no iOS inertial (flick) momentum —
+a sideways scroll stops dead the instant the finger lifts, while the vertical
+page scroll AND the Quals grid (`.qwrap`) both glide. On the owner's iPhone
+Chrome, Edge and Safari all share WebKit, so this is a WebKit behaviour, not a
+Safari-only one. After several rounds on his actual device the cause is still
+NOT identified, and the owner has chosen to STOP (30 Aug 26 — "this is the last
+try. If not I'll just skip it. Since more ppl may use the view vertically in
+portrait"). The last try failed, so the feature is dropped and the code is back
+to the glued-bar baseline. **The glue STAYS ON — the sticky date bar is the
+thing that matters in portrait, which is the main view.**
+
+**Everything tried on the device, and DISPROVED — do not re-try any of these:**
+
+1. **The row-window re-centre "nudge"** (`wrap.scrollLeft += shift` when a
+   posted-out row hides and the columns re-narrow). Skipped on a touch flick
+   (`Matrix.tsx`, coarse pointer + the `jumpAtRef` jump exception). Did NOT
+   restore the glide — the flick is dead even at the TOP of the list, where no
+   row hides and the nudge never runs. So the nudge is not the (only) cause.
+   The skip + jump exception are KEPT anyway (a `scrollLeft` write mid-fling
+   would stall momentum, so the guard is correct belt-and-braces; the jump
+   exception is load-bearing for month navigation — the e2e "a month button
+   scrolls the grid to that month" test pins it). Just not the fix.
+2. **The scroll-timeline glue** (`sdaActive`/`.lw-sda`, `scroll-timeline: --lwx x`
+   on `.mx-wrap`). The plausible WebKit theory was that a scroll-timeline SOURCE
+   loses its fling. DISPROVED on device 30 Aug 26: gating `sdaActive` to
+   fine-pointer only (glue off on touch) did NOT bring the glide back in
+   landscape AND it BROKE the portrait sticky bar ("now the portrait doesn't
+   stick and landscape still the same"). This matches the 28 Aug reason the glue
+   was built: the JS-mirror fallback bar does not read as "stuck" on the real
+   iPhone, it needs the compositor glue. So the glue is exonerated as the killer
+   and REQUIRED for the sticky bar. **Do NOT drop the glue on touch again — it
+   is a double regression.**
+3. **`overflow-y: hidden`.** Removing it changed nothing on device. (Left off —
+   with no height cap there is no vertical overflow to need it; the geometry gate
+   pins zero vertical scroll room. Just not the cause.)
+4. **`-webkit-overflow-scrolling: touch`.** Removed so `.mx-wrap` matches the
+   gliding `.qwrap` exactly (`overflow-x: auto`, nothing else). A no-op on modern
+   iOS; the flick still died. Not the cause.
+
+**Ruled out by code-tracing, not device (so lower-cost to trust):** the
+drag-select machinery (`select.ts`) is fully passive on a quick flick — its
+non-passive `touchmove` and `touch-action: none` are attached only inside
+`arm()`, which a flick never reaches; the rAF pump (`syncMirror`) reads
+`wrap.scrollLeft` and writes the BAR's, never the wrap's; the bottom-scrollbar
+sync is desktop-only. During a top-of-list finger coast nothing JS writes
+`wrap.scrollLeft`.
+
+**Still unexplained — the open lead for any future attempt.** `.qwrap` (Quals)
+is asserted to glide and `.mx-wrap` does not, yet after the above they carry the
+same scroll properties. The difference must be structural and NOT yet examined:
+the ANCESTOR chain (`.mx-outer` → `.card`/`.stage` → `#page-leavewar` → the app
+shell) — an ancestor with `overflow`/`overflow-x: hidden`, a `transform`, or its
+own scroll container can disable inertia on a nested iOS scroller. That
+comparison (`.mx-wrap`'s ancestors vs `.qwrap`'s, on the real device) was never
+done and is where a next attempt should start — but only if the owner re-opens
+this. As of 30 Aug 26 he has closed it.
+
 ## Deliberately deferred to later plans
 
 - **The day's overall verdict is computed and not shown.** `evaluateDay`
@@ -673,3 +732,30 @@ demanding distinct bodies, `quals` + `notQuals` on one filter, `show:'people'`
 keeping a fractional team, ATT B counting while ATT C does not, and the
 Quals-tick-lifts-the-count integration — are pinned in
 `engine/counterrules.test.ts` §custom counter shapes and `roster.test.ts`.
+
+- **Undo / redo scope (owner, 30 Aug 26 — "Add undo and redo on leave war").**
+  The buttons live in Leave War's own top row (`ui/Chrome.tsx` Topbar), shown to
+  everyone. The stack is a snapshot of the DURABLE state — the same fields
+  `persist()` writes (every war's grid / states / period, the counter ledger and
+  openings, and all of the admin arrangement/config: figure & roster & manning
+  order, hidden rows, group defs & priority, manning rules, event types & rows,
+  Show SANS). The push lives INSIDE `persist()` (a save is the edit), so no
+  writer can add an undoable change and forget to record it. Deliberately NOT
+  undoable, do not "fix":
+  - **Navigation and identity** — which war is on screen, who you are viewing
+    as, the role, the focused day. An undo must not move you, and switching wars
+    RE-BASELINES the stack (undo is scoped to the war in front of you, the same
+    way the schedule re-baselines per week).
+  - **Post-out / a person's seat-band-SXO edit** (`setPostOut` / `setPerson`).
+    These write `people`, a live PROJECTION of Raptor's roster owned by the
+    Quals page; they carry their own explicit undo (clear the PO date, flip the
+    field back) and are re-projected on every Raptor notify, so putting them in
+    the snapshot would only let an undo fight Raptor.
+  - **Raptor-driven grid changes** — a leave/duty cell that arrived by sync
+    (`ingestFromRaptor` / `ingestDutyCredit` / `clearRaptorCell` /
+    `withdrawLeaveCell`, all held under the history `locked`). Undoing one would
+    only be re-applied by the next reconcile pass. The mirror of this is what
+    makes undo of a Leave War approval CLEAN: the restore notifies, sync
+    re-derives, and the Raptor input the approval had minted is retracted — the
+    behaviour `sync.ts`'s wiring note already anticipated. Pinned in
+    `state/store.test.ts` §undo / redo and `ui/chrome.test.tsx`.

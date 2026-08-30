@@ -380,6 +380,51 @@
   color: var(--accent);
 }
 
+/* Undo / redo (owner, 30 Aug 26). Pushed to the right of the period row with
+   `margin-left:auto`, so the two actions sit at the top-right where the owner
+   circled — the same corner the schedule shell puts its own undo/redo. The
+   `.lw-viewing` badge (its own `margin-left:auto`) follows them, taking no
+   extra space once this group has claimed the gap. The control language is
+   `.warnew`'s: a quiet outline that lights accent on hover. */
+.lw-hist {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.lw-hbtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: transparent;
+  border: 1px solid var(--edge);
+  color: var(--ink-2);
+  padding: 6px 11px;
+  border-radius: 11px;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.lw-hbtn .bi {
+  font-size: 15px;
+  line-height: 1;
+}
+
+.lw-hbtn:hover:not(:disabled) {
+  border-color: rgba(59, 198, 232, .5);
+  color: var(--accent);
+}
+
+/* Nothing left to undo (or redo): the button stays in place so the pair never
+   jumps, but reads plainly inert — not a control you can press right now. */
+.lw-hbtn:disabled {
+  opacity: .38;
+  cursor: default;
+}
+
 /* The bidding-window chip. Reads as a value when a member looks at it and as
    a control when an admin does — same chip, because it is the same fact and
    only one of them can change it. */
@@ -445,6 +490,22 @@
     padding: 4px 8px;
     font-size: 11px;
     min-width: 0;
+  }
+
+  /* Undo / redo go icon-only on a phone — the glyph carries the meaning and the
+     word is the accessible name, the same split the schedule's pair uses. Kept
+     on the row, not hidden: undo is exactly the safety net a fat-fingered phone
+     edit wants within reach. */
+  .lw-hbtn {
+    padding: 5px 8px;
+  }
+
+  .lw-hbtn .bl {
+    display: none;
+  }
+
+  .lw-hbtn .bi {
+    font-size: 16px;
   }
 
   .stage {

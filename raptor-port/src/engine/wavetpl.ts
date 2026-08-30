@@ -41,18 +41,34 @@ export const WAVE_BUILTIN: readonly { key: WaveKind; label: string }[] = [
    not, so its editor hides the flip and every minted line is a plain MAIN. */
 export function kindIsStandby(k: WaveKind) { return k === 'sc' || k === 'avalon' || k === 'bb' }
 export function kindLabel(k: WaveKind) { return WAVE_BUILTIN.find(b => b.key === k)?.label || 'Flying wave' }
-/* the one-line rule-set note the editor prints under the kind picker — the SAME
-   words the "+ Wave" popup already shows for the standby kinds (engine/waves.ts
-   SAWAVE.note), so the two never drift. */
+/* the one-line rule-set note the editor prints under the kind picker. It USED to
+   reuse the "+ Wave" popup's SAWAVE.note verbatim, but the two describe different
+   things and were deliberately split (owner, 30 Aug 26 — "that's misleading … MAIN
+   SC and SPARE SC will just use those existing rules independently despite how many
+   lines I create"): the popup's built-in wave really does come up 2 MAIN + 2 SPARE
+   (makeStandalone), so its note names that count; a TEMPLATE's line count is
+   whatever the owner builds, so a fixed count here read as a limit. These notes
+   describe only the RULE each kind applies per line, count-free, verified against
+   validate.ts / events.ts — fly: counts toward the tally, fully cross-checked;
+   sc: a SPARE is canSpare (overseas + the medical group) + SC currency only, a MAIN
+   in full; avalon: every seat canSpare only (the one look, MAIN and SPARE alike, no
+   currency/rest/clash); bb: nothing checked at all (not even collected into sacrew).
+   SAWAVE.note keeps its count for the popup; when a kind's checking rule changes,
+   update BOTH. */
 export function kindNote(k: WaveKind): string {
-  if (k === 'fly') return 'An ordinary flying wave — it counts toward the day’s flying tally and every line is cross-checked.'
-  return SAWAVE[k]?.note || ''
+  switch (k) {
+    case 'sc': return 'A SPARE line is only checked for overseas / medically down and SC currency — nothing else. A MAIN line is checked in full. Add as many of each as you need.'
+    case 'avalon': return 'Overnight. Every line — MAIN or SPARE — is only checked for overseas / medically down, nothing else. Add as many as you need.'
+    case 'bb': return 'Times are yours to set. Nothing on a BB line is cross-checked at all. Add as many as you need.'
+    default: return 'An ordinary flying wave — it counts toward the day’s flying tally, and every line is fully cross-checked.'
+  }
 }
 
 /* a flying/duty time is a clock time or nothing; a malformed value drops to ''.
-   Wave times are stored with the colon (07:00, matching makeStandalone and the
-   board's own to/ld cells), where a DUTY template stores the compact 0700 — the
-   one deliberate difference from tplTime. Folded here so both crossings out of the
+   Stored with the colon (07:00, matching makeStandalone and the board's own
+   to/ld cells) — and since 30 Aug 26 tplTime folds the same way, so wave and
+   duty templates share one form and there is no deliberate difference left.
+   Folded here so both crossings out of the
    editor — minted into a day (waveFromTpl) and reloaded from untrusted storage
    (waveTplLoad) — normalise the same way, and neither can carry a nonsense time
    onto the schedule. */

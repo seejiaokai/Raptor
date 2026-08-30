@@ -24,7 +24,23 @@ purpose: it is exactly the closed-work narrative the charter above bans, and
 it lives in `git log` where it belongs. Restate a count only from a run you
 watched — this file's history twice recorded a count that was wrong.
 
-**Last recorded green baseline** (29 Aug 26 — ARRANGE THE SECTION ORDER: a
+**Last recorded green baseline** (29 Aug 26 — DEFAULT ARRANGEMENT IN ADMIN: an
+admin sets the house order of the schedule sections AND the flying-wave types
+once, on Admin → Squadron config (`ui/AdminPage.tsx ArrangeDefaults`). The
+section default (`engine/order.ts SEC_DEFAULT`, key `secdefault`) is the fallback
+`secOrder(d)` fills un-arranged sections from — display-only, canonical baseline
+keeps parity 728/0; a hand-arranged day still wins. The wave default
+(`engine/reorder.ts WAVE_DEFAULT`, key `wavedefault`, OFF by default) orders the
+built-in kinds and is applied ONLY at wave-add time on a not-signed-off day
+(`board.ts placeAddedWave` → `waveInsertSlot` → the tested `moveWave`), so a new
+wave lands SC-on-top without re-ordering or amending any existing/published day
+("new schedules only", owner's call). Both persist on the `wavehide` footing
+(null at baseline), boot-loaded in `initStore`. Pins:
+`engine/arrdefaults.test.ts`, `ui/wavedefault-add.test.tsx`, +1
+`ui/admin.test.tsx`. Verified live at 1280 and 390 px: the panel renders both
+lists, a nudge re-orders the house default and an un-arranged day picks it up, a
+new SC lands on top of a draft day — no console errors.
+Built on the earlier same-day ARRANGE THE SECTION ORDER: a
 scheduler can re-order the day's section panels (Programme · Flying waves ·
 Duties · Sims · Ground Programme) on both Edit Schedule and the Scheduler Board
 via a per-day `⇅ Arrange` sheet, and a whole-day template remembers it. It is
@@ -40,12 +56,30 @@ close):
 
 | gate | reading |
 |---|---|
-| `npm test` | 3512 across 203 files — two vitest projects: raptor + leavewar |
+| `npm test` | 3529 across 205 files — two vitest projects: raptor + leavewar |
 | `node reference/tfin.js` | 728/0 (the reference is read-only; the "Ground Programme" title trim rides the tolerant normaliser in `html.test.ts`) |
 | `npm run build` | clean |
 | `npm run test:e2e` | 338 passed / 19 touch-only skips — three playwright projects: raptor geometry, lw-phone, lw-desktop. NOTE: a mid-session chain run showed 2 lw-phone reds against a build that predated the bug-pass fixes (the un-gated cross-lane notify repainting mid-gesture); both passed individually and the full suite passed whole against the fixed build — if they ever red again, suspect a stray repaint mid-tap first. |
 | `probes:adapted` | **all 6 GREEN** — `aar-async` was re-adapted this session (its palette sentinel filter matched ids by SUBSTRING, so the new ALL puck read as a currency-less pilot; whole-id match now). **Read the LAST line, not the last tally**: each probe prints its own count as it finishes (`wrap-async` ends `36 passed · 0 failed`), and the suite's verdict is the line after it, `all 6 adapted probes passed`. |
 | `perf` | **4/0** — board DOM 1053 ≤ **1150** (the ceiling is a SETTLED owner decision since 28 Aug 26 — CLAUDE.md §Stable decisions; the `⇅ Arrange` button's one node is noise against it). |
+
+Reconciles against the 3512/203 reading before it (arrange the flying WAVES):
++17 vitest pins across +2 files — **the DEFAULT arrangement, configurable in
+Admin** (owner, 29 Aug 26 pt.2 — "allow the default arrangement of a schedule to
+be configured in admin … even to the arrangement of the waves under display").
+New file `engine/arrdefaults.test.ts` (13: section default order/nudge/clamp,
+`secOrder` fallback + own-order-wins, save-null-at-canonical + sanitise, the
+RULES-SAFETY guard that a house-order change moves no `validate()` warning; wave
+default off-by-default, `waveKindOf`, `waveInsertSlot` places-by-kind, save/load)
+and `ui/wavedefault-add.test.tsx` (3: a new SC lands on top of a draft day
+keeping the old waves attached, appends on a signed-off day, appends when unset);
++1 `ui/admin.test.tsx` (both lists render, a section nudge re-orders the house
+default). Parity stays 728/0 because both defaults sit at their un-customised
+baseline headless (canonical sections / empty wave order = append), and the
+never-booting reference never loads them. The wave default reuses the tested
+`moveWave` and only ever fires on a not-signed-off day, so it can add no
+amendment to a published schedule. Verified live at 1280 and 390 px (see the
+baseline note above).
 
 Reconciles against the 3502/203 reading before it (the hide-check-on-edit-week
 feature): +10 vitest pins, no new file — **arrange the flying WAVES within a day**
@@ -328,6 +362,46 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
   are still there.
 
 ## Known issues / open work
+
+- **Times are hh:mm (`08:00`) everywhere — the 29 Aug 4-digit board pass was REVERSED
+  by the owner on 30 Aug 26** ("I saw wrongly … most of the timing format is 08:00.
+  Change it back and make sure everything follows that format consistently"). hh:mm is
+  the app's parity-pinned native form, so the reversal direction was the safe one; the
+  work was swapping the board's display fold to `engine/time.ts fmtHM` (colon) and
+  retiring the compact MINTERS (`dutytpl.tplTime` + `DUTYTPL_STD` seeds,
+  `waves.ts waveDutyBlock`, the "+ In time" mint, plus a commit-time
+  `events.ts intimeFold` for hand-typed IN TIME prose). Typing accepts
+  `800`/`0800`/`8:00`/`08:00` and the colon appears on commit. Full decision +
+  placements: CLAUDE.md §Stable decisions ("EVERY time in the app reads 08:00"),
+  `docs/ui-contracts.md` §Every time reads hh:mm. The one deliberate 4-digit survivor
+  is the AREA window token (`0800-0900`, `atimeText`) — the reference app prints it
+  compact and `tfin.js` pins it (`atimeText(f)===f.to.replace(':','')+'-'+…`), so
+  flipping it means editing the safety-net: owner sign-off first. This entry was the
+  earlier "WEEK/warnings/CSV stay colon" known issue — now moot, everything is colon.
+- **The design fonts are still NOT loaded — deferred, must be SELF-HOSTED (29 Aug 26
+  pt.3).** `scheduler.css` names Inter Tight / Barlow Condensed / JetBrains Mono in ~130
+  places but nothing ever loaded them, so every browser falls back to system fonts and
+  the intended condensed-header / mono-numeric look never renders. A Google-Fonts
+  `<link>` was tried and REMOVED: an external, render-blocking stylesheet to
+  `fonts.googleapis.com` is unreachable behind the agent proxy, which hangs the page
+  `load` event and times out the e2e login `goto('/')` — proven: the exact e2e failures
+  cleared the moment the link was removed (a full rebuild's 5 goto-timeout failures went
+  to 5/5 pass in 17s). CI runs the same restricted network, so the link would flake the
+  gate too. The fix is **self-hosted `@font-face` woff2 under `public/fonts/`** (ships
+  with the app, no third-party request, nothing to block) — it needs the three families'
+  woff2 files (Inter Tight 400/500/600/700, Barlow Condensed 600/700, JetBrains Mono
+  400/500) added as assets. Until then the app keeps the system-font fallback.
+- **In-place drag to reorder sections/waves is NOT built yet — deliberately deferred
+  (29 Aug 26 pt.3).** The owner approved replacing the per-day Arrange sheet
+  (`ui/ArrangeSections.tsx`) with drag handles directly on the blocks and waves, on
+  both Edit Schedule and the board, plus a "Set default order?" prompt. On building it,
+  it proved much larger than the plan conveyed — TWO levels of drag (whole sections AND
+  waves within the flying block) across the two densest string builders (the week's
+  "waves" isn't even a single container), under the parity / perf / one-row-geometry
+  gates. It was split OUT of this PR to avoid rushing a HEAVY change onto the core
+  screen; the Arrange sheet stays live and working meanwhile. The design is
+  prototype-approved (drag-only, no toggle/arrows/reset; the "Set default order?"
+  snackbar sets the house default). This is the next focused pass.
 
 - **CLOSED 29 Aug 26 — both 28 Aug OIL deferrals, by owner decision, plus a
   rule correction.** (1) The schedule half of the OIL credit now reads
@@ -2452,7 +2526,8 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | `Modals.tsx` | DayPop (read-only day details), Insights, Airspace/traffic popup. (Manage-users moved to `AdminPage.tsx` whole, 23 Aug 26.) |
 | `AdminPage.tsx` | **The Admin page** (23 Aug 26; settings-console layout 25 Aug 26) — the seventh tab, always last, admin-hidden in both navs but gated at the PAGE (`#admDeny` for a forced member). A category rail (`CATS`) + one content pane: side-by-side on desktop, list→detail drill-in with a `‹` back arrow on a phone; every panel stays mounted (`.adm-panel.on` shows the active one). Carries the moved Manage-users section (same ids/store as the old modal), the two template-editor openers (`#admDutyTpl`/`#admDayTpl` set the same `pops.ts` flags as the picker pencils) and the Data panel — TWO clearing controls sharing one `ClearControl` component and one period grammar (25 Aug 26: older-than / specific date / date range, `#admWipeMode`+`#admWipeDate`(+`Date2`) and `#admLogMode`+`#admLogDate`(+`Date2`), each with a two-tap dry-count confirm): **Clear old data** (`#admWipe` → `inputedit.tsx:clearHistoryData`; fail-closed selection, one undo step, stashed weeks dropped via `stashDrop` only when their whole span sits inside the period) and **Clear edit history** (`#admLog` → `clearEditHistory` → `editlog.ts:elogSweep`; clears by the LOCAL date the edit was made, schedule untouched, permanent — never in the undo snapshot — and the clear logs itself after the sweep). Both DB-era: they become server-side deletes behind the same buttons. Pinned in `admin.test.tsx` + `wipe.test.tsx`. |
 | `DutyTplModal.tsx` | The **duty-template editor** (13 Aug 26) — opened from the `+ Block` picker's pencil (`TPLEDIT` in `pops.ts`). Tabs per template + New, an editable title, rows with role (a `DUTY_PICK` datalist) / start / end / ▲▼ reorder / delete, + Add role, and Reset / Delete / Done. Mirrors the old Manage-users modal's shape; drives `engine/dutytpl.ts` and persists on every edit. |
-| `WaveTplModal.tsx` | The **flying-wave-template editor** (25 Aug 26) — opened from the `+ Wave` picker's pencil and Admin → Squadron config (`WAVEEDIT` in `pops.ts`). Tabs per template + New (with an empty state when the library is bare), an editable title, a rule-set picker (Flying / SC / AVALON / BB) with its one-line note, and per-line cards — callsign over mission / T-O / LD / a MAIN/SPARE flip (shown only on a standby kind) / ▲▼ reorder / delete — plus + Add line and Clear all / Delete template / Done. Drives `engine/wavetpl.ts` and persists on every edit; times validate on blur like the duty editor. The `+ Wave` picker (`board.ts:waveMenu`) lists `shownTemplates()` beside the non-hidden built-ins and `addWaveFromTpl` places one; Admin's `WaveVisibility` (`AdminPage.tsx`) toggles `WAVEHIDE`. Pinned in `WaveTplModal.test.tsx` + `wavepicker.test.tsx`. |
+| `WaveTplModal.tsx` | The **flying-wave-template editor** (25 Aug 26) — opened from the `+ Wave` picker's pencil and Admin → Squadron config (`WAVEEDIT` in `pops.ts`). Tabs per template + New (with an empty state when the library is bare), an editable title, a rule-set picker (Flying / SC / AVALON / BB) with its one-line note, and per-line cards — callsign over mission / T-O / LD / a MAIN/SPARE flip (shown only on a standby kind) / ▲▼ reorder / delete — plus + Add line and Clear all / Delete template / Done. Drives `engine/wavetpl.ts` and persists on every edit; times validate on blur like the duty editor. The `+ Wave` picker (`board.ts:waveMenu`) lists `shownTemplates()` beside the non-hidden built-ins and `addWaveFromTpl` places one; the picker's ⚙ Manage button and its "N hidden · Manage" line open `WaveManageSheet.tsx` for show/hide/delete (the Admin `WaveVisibility` list was removed 29 Aug 26 pt.3). Pinned in `WaveTplModal.test.tsx` + `wavepicker.test.tsx`. |
+| `WaveManageSheet.tsx` | The **wave Manage sheet** (29 Aug 26 pt.3, `WAVEMANAGE` in `pops.ts`) — opened from the `+ Wave` menu's ⚙ Manage button and its "N hidden · Manage" line. Lists every built-in kind and saved template with an EYE (show/hide → `setWaveHidden` + `waveTplSave`, the flag the picker filters on) and, for templates only, a TRASH (delete → `delWaveTpl`, behind a "can't be undone" confirm). Built-ins can be hidden but never deleted. This is the show/hide list that used to live on the Admin page; same admin-only gate (`canEditSched`). On a phone it opens as a bottom sheet (the shared `.modal` phone rule). Pinned in `WaveManageSheet.test.tsx`. |
 | `DayTplModal.tsx` | The **day-template library editor** (15 Aug 26) — opened from the Templates picker's pencil, on either surface (`DAYTPLEDIT` in `pops.ts`, a `false\|true\|string` open-pre-selected flag). Tabs per template, an editable title, a read-only structure summary; deliberately no row editor (a day template's content is edited on the board/week themselves, which already own that surface) and no "+ New" (a template is always recaptured off a real day, never started blank). Reset / Delete / Done, all toasting. |
 | `ArrangeSections.tsx` | The **Arrange** sheet (29 Aug 26) — a per-day sheet (`ARRANGESEC` in `pops.ts`) that re-orders the day's section panels (Programme · Flying waves · Duties · Sims · Ground Programme) with ▲▼ nudges + "Apply to all days", AND (below, when a day has ≥2 waves) the day's flying WAVES by their board titles. Opened by a `⇅ Arrange` button on both surfaces (board Templates bar via `boardMbtn`, edit-week `.dhtpl` via `interactions.ts`); the modal reads `d.waves`/`secOrder` directly, so both lists work on both surfaces with no per-surface DOM. Sections are display order (`store.moveSection`/`applySecOrderToWeek`, histPush, no markEdit); a WAVE move is a real model reorder + amendment (`store.moveWaveBlock` → `reorder.ts moveWave`, afterSchedMutate). The whole-day template remembers both. Contract: `docs/ui-contracts.md` §Arranging the schedule sections. |
 | `DraftsModal.tsx` | The **drafts manager** (15 Aug 26) — opened from the Drafts picker's pencils (`DRAFTSEDIT` in `pops.ts`, carrying the day since drafts are per-day), scoped to the one day whose menu opened it. Tabs per draft (selected one marked ●), a name field that commits on blur/Enter (`draftRename` refuses empty/duplicate names, and refusing mid-keystroke would fight the typist), Select (make it live) / Delete (disabled on the selected entry, with a title saying why) / Done. |

@@ -11,6 +11,10 @@ import {
   advanceStage,
   clearBidWindow,
   focusDay,
+  lwCanRedo,
+  lwCanUndo,
+  lwRedo,
+  lwUndo,
   reopenStage,
   getState,
   selectWar,
@@ -82,6 +86,37 @@ export function Topbar() {
             + New
           </button>
         )}
+        {/* Undo / redo (owner, 30 Aug 26 — circled the top bar: "Add undo and
+            redo on leave war here"). Placed in Leave War's OWN top row — the
+            equivalent spot to the schedule's undo/redo, which the app shell only
+            shows on the Edit Schedule page — rather than reaching up into the
+            shared shell bar (that would cross the Leave War app boundary for a
+            button). Shown to everyone: a member undoes their own bids, an admin
+            anything. The .bi/.bl split matches the schedule's pair so the label
+            drops to an icon on a narrow phone; the accessible name stays the
+            word. Disabled state reads the store, and this bar re-renders on
+            every store change (useVersion above), so the buttons grey out the
+            instant there is nothing left to undo. */}
+        <div className="lw-hist" data-testid="lw-hist">
+          <button
+            className="lw-hbtn"
+            data-testid="lw-undo"
+            title="Undo the last change"
+            disabled={!lwCanUndo()}
+            onClick={lwUndo}
+          >
+            <span className="bi" aria-hidden="true">↶</span><span className="bl"> Undo</span>
+          </button>
+          <button
+            className="lw-hbtn"
+            data-testid="lw-redo"
+            title="Redo"
+            disabled={!lwCanRedo()}
+            onClick={lwRedo}
+          >
+            <span className="bi" aria-hidden="true">↷</span><span className="bl"> Redo</span>
+          </button>
+        </div>
         {me && (
           <span
             className="lw-viewing"

@@ -34,8 +34,27 @@ const GIVEUP = 26       // a pre-arm slide past this is a scroll, not a select
                         // (any smaller wobble during the dwell is simply
                         // tolerated — there is no second, tighter threshold)
 const MOUSE_SLOP = 4    // a mouse arms on this move, no dwell
-const EDGE = 36         // px from a wrap edge that auto-scrolls during a drag
-const EDGE_STEP = 18    // px per frame of edge auto-scroll
+const EDGE = 36         // px from an edge that auto-scrolls during a MOUSE drag
+const EDGE_STEP = 18    // px per frame of a mouse edge auto-scroll (constant)
+const TOUCH_EDGE = 48   // wider edge band for a finger, which is a fatter target
+const TOUCH_STEP_MAX = 15 // px per frame at the very edge; RAMPED down to 0 across
+                        // the band so the finger throttles the speed by how far it
+                        // pushes — the fix for the 27 Aug "columns slid away" feel
+
+/* The grid scrolls SIDEWAYS inside `.mx-wrap` (its `overflow-x`) but UP/DOWN
+   with the page — `.mx-wrap` has no height cap, so its vertical overflow lives
+   on an ancestor or the document (matrix.css). So a sideways edge-scroll moves
+   `wrap.scrollLeft`, but a vertical one moves whatever actually scrolls the
+   rows: the nearest scrollable ancestor, else the document. Resolved once per
+   armed drag (the DOM doesn't restructure mid-gesture). */
+type VScroll = { el: Element; isDoc: boolean }
+const findVScroll = (wrap: HTMLElement): VScroll => {
+  for (let n = wrap.parentElement; n && n !== document.body; n = n.parentElement) {
+    const oy = getComputedStyle(n).overflowY
+    if ((oy === 'auto' || oy === 'scroll') && n.scrollHeight > n.clientHeight + 1) return { el: n, isDoc: false }
+  }
+  return { el: document.scrollingElement || document.documentElement, isDoc: true }
+}
 
 /* testid is `cell-<person>-<YYYY-MM-DD>`; the date is always the last 10
    chars, so a person id may hold anything and this still splits cleanly */
@@ -120,6 +139,9 @@ export function wireSelect(wrap: HTMLElement, ctx: SelectCtx): () => void {
   let raf = 0
   let lastX = 0, lastY = 0
   let touchGesture = false   // this drag started from a finger, not a mouse
+  let vscroll: VScroll | null = null  // the vertical scroller, resolved in arm()
+  let lastFocus: Cell | null = null      // last roster cell the finger was over
+  let lastFocusDate: string | null = null // last event date the finger was over
 
   const clearPaint = () => {
     for (const id of painted) wrap.querySelector(`[data-testid="${id}"]`)?.classList.remove('selcell')
@@ -137,14 +159,30 @@ export function wireSelect(wrap: HTMLElement, ctx: SelectCtx): () => void {
   // axes: a roster drag is a people×days rectangle; an event drag is a date span
   // on the anchor's own line (the focus supplies only the COLUMN — its row is
   // ignored, so a finger straying onto another row still extends the span).
+  //   When the finger is NOT over a cell — a gap between rows, or the empty area
+  // an edge auto-scroll runs the grid past — we HOLD the last cell it was over
+  // rather than collapsing to the anchor. Without this a drag to the bottom edge
+  // vanished the moment the auto-scroll ran the last row above the finger.
   const current = (): { ids: string[]; roster?: Selection; event?: EventSelection } | null => {
     if (!anchor) return null
     if (anchor.kind === 'roster') {
-      const f = cellAt(lastX, lastY) ?? anchor.cell
+      const hit = cellAt(lastX, lastY)
+      if (hit) lastFocus = hit
+      const raw = hit ?? lastFocus ?? anchor.cell
+      // The focus may land on a row OUTSIDE the selectable order — a scoped
+      // member's drag straying onto another person (the row list is the viewer
+      // alone), or a held focus (below) left pointing at a row the order no
+      // longer carries. Clamp its PERSON to the anchor's row, keeping the DATE,
+      // so the selection stays on a valid row and still spans the days dragged.
+      // Without this the stray produced an empty rect (rectCells → null) and the
+      // sheet never opened — a scoped member could not drag-fill at all.
+      const f = ctx.order().includes(raw.personId) ? raw : { personId: anchor.cell.personId, date: raw.date }
       const sel = rectCells(ctx.order(), ctx.dates(), anchor.cell, f)
       return sel ? { ids: sel.cells.map(c => `cell-${c.personId}-${c.date}`), roster: sel } : null
     }
-    const fd = cellAt(lastX, lastY)?.date ?? eventAt(lastX, lastY)?.date ?? anchor.cell.date
+    const hitDate = cellAt(lastX, lastY)?.date ?? eventAt(lastX, lastY)?.date
+    if (hitDate) lastFocusDate = hitDate
+    const fd = hitDate ?? lastFocusDate ?? anchor.cell.date
     const sel = eventRange(ctx.dates(), anchor.cell.line, anchor.cell.date, fd)
     return sel ? { ids: sel.dates.map(d => `event-${sel.line}-${d}`), event: sel } : null
   }
@@ -155,21 +193,46 @@ export function wireSelect(wrap: HTMLElement, ctx: SelectCtx): () => void {
     paintIds(s ? s.ids : [])
   }
 
-  // Auto-scroll the grid when a MOUSE drag reaches a wrap edge, so a desktop
-  // selection can run past the visible columns. NOT on touch (owner, 27 Aug 26
-  // — "the calendar also follows my drag … only for phone"): on a ~390px phone
-  // the 36px edge band is a big slice of the screen and the finger occludes the
-  // cells, so the day columns slid away under the drag and the selection felt
-  // out of control. A phone selects exactly the days it can see; edge scroll is
-  // never started for a touch gesture (see arm()).
+  // Auto-scroll the grid when a drag reaches an edge, so a selection can run
+  // PAST what the screen shows — SIDEWAYS onto more days, and UP/DOWN onto more
+  // people (owner, 30 Aug 26 — "auto scroll to the edge to continue selecting
+  // more grids … in case I want to put longer inputs" → "up down scroller too").
+  // It runs ONLY during an armed drag-select, never during a normal scroll (that
+  // scroll never arms), so the grid's sacred sideways fling is untouched.
+  //   Touch was turned OFF here on 27 Aug 26 because the mouse's CONSTANT speed
+  // made the day columns "slide away under the finger" — out of control on a
+  // ~390px phone. It is back on for touch with a RAMP: the speed grows the
+  // closer the finger is to the true edge and is zero at the band's inner lip,
+  // so a light push creeps and a firm push at the very edge runs — the finger
+  // throttles it, which is exactly what the constant speed lacked. The mouse
+  // keeps its original constant step (desktop has the room and the precision).
+  //   The horizontal axis moves `wrap.scrollLeft` against the wrap's own rect;
+  // the vertical axis moves the page (the resolved `vscroll`) against the
+  // VIEWPORT, since the rows scroll with the page and the wrap is taller than
+  // the screen. As the page scrolls under a held finger, elementFromPoint at the
+  // same point returns the new row, so the selection extends onto it.
+  const ramp = (into: number) => TOUCH_STEP_MAX * Math.min(1, into / TOUCH_EDGE)
   const edgeScroll = () => {
     raf = 0
     if (!armed) return
     const r = wrap.getBoundingClientRect()
-    let dx = 0
-    if (lastX > r.right - EDGE) dx = EDGE_STEP
-    else if (lastX < r.left + EDGE) dx = -EDGE_STEP
-    if (dx) { wrap.scrollLeft += dx; repaint() }
+    let dx = 0, dy = 0
+    // vertical bounds: the viewport for the page, else the ancestor's own rect
+    const vs = vscroll ?? (vscroll = findVScroll(wrap))
+    const vTop = vs.isDoc ? 0 : vs.el.getBoundingClientRect().top
+    const vBot = vs.isDoc ? (window.innerHeight || vs.el.clientHeight) : vs.el.getBoundingClientRect().bottom
+    if (touchGesture) {
+      const intoR = lastX - (r.right - TOUCH_EDGE), intoL = (r.left + TOUCH_EDGE) - lastX
+      if (intoR > 0) dx = ramp(intoR); else if (intoL > 0) dx = -ramp(intoL)
+      const intoB = lastY - (vBot - TOUCH_EDGE), intoT = (vTop + TOUCH_EDGE) - lastY
+      if (intoB > 0) dy = ramp(intoB); else if (intoT > 0) dy = -ramp(intoT)
+    } else {
+      if (lastX > r.right - EDGE) dx = EDGE_STEP; else if (lastX < r.left + EDGE) dx = -EDGE_STEP
+      if (lastY > vBot - EDGE) dy = EDGE_STEP; else if (lastY < vTop + EDGE) dy = -EDGE_STEP
+    }
+    if (dx) wrap.scrollLeft += dx
+    if (dy) vs.el.scrollTop += dy
+    if (dx || dy) repaint()
     if (armed) raf = requestAnimationFrame(edgeScroll)
   }
 
@@ -200,9 +263,10 @@ export function wireSelect(wrap: HTMLElement, ctx: SelectCtx): () => void {
     wrap.addEventListener('touchmove', onTouchMove, { passive: false })
     document.addEventListener('contextmenu', onCtxMenu, true)
     repaint()
-    // Edge auto-scroll is a desktop-only convenience — a phone drag keeps the
-    // grid still (see edgeScroll).
-    if (!touchGesture && !raf) raf = requestAnimationFrame(edgeScroll)
+    // Edge auto-scroll runs for both a mouse and a finger now (owner, 30 Aug 26):
+    // touch ramps its speed by finger depth (see edgeScroll). The rAF is stopped
+    // in teardown(), so it can never outlive the armed drag.
+    if (!raf) raf = requestAnimationFrame(edgeScroll)
   }
 
   const onMove = (e: PointerEvent) => {
@@ -273,7 +337,8 @@ export function wireSelect(wrap: HTMLElement, ctx: SelectCtx): () => void {
     wrap.removeEventListener('touchmove', onTouchMove)
     wrap.style.touchAction = ''
     wrap.classList.remove('selecting')
-    anchor = null; armed = false; pid = -1
+    anchor = null; armed = false; pid = -1; vscroll = null   // re-resolve next drag
+    lastFocus = null; lastFocusDate = null
   }
   const onCancel = (e: PointerEvent) => {
     if (e.pointerId !== pid) return   // a second pointer's cancel is not ours

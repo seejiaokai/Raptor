@@ -5,6 +5,10 @@ import {
   getVersion,
   ingestFromRaptor,
   initStore,
+  lwCanRedo,
+  lwCanUndo,
+  lwRedo,
+  lwUndo,
   setBidState,
   setCell,
   createWar,
@@ -2116,5 +2120,106 @@ describe('a member edits only their own row', () => {
     setRole('admin'); setViewer('ramp')
     const r = setCells([...cells('ramp', '2026-01-06'), ...cells('dusk', '2026-01-06')], 'LL')
     expect(r).toEqual({ written: 2, skipped: 0 })
+  })
+})
+
+describe('undo / redo', () => {
+  // initStore (the shared beforeEach) baselines the history, so a fresh store
+  // starts with nothing to undo.
+  it('has nothing to undo or redo at the baseline', () => {
+    expect(lwCanUndo()).toBe(false)
+    expect(lwCanRedo()).toBe(false)
+  })
+
+  it('undoes a cell write and redoes it', () => {
+    setCell('ramp', '2026-01-20', 'LL')
+    expect(getState().grid.ramp['2026-01-20']).toBe('LL')
+    expect(lwCanUndo()).toBe(true)
+
+    lwUndo()
+    expect(getState().grid.ramp?.['2026-01-20']).toBeUndefined()
+    expect(lwCanUndo()).toBe(false)
+    expect(lwCanRedo()).toBe(true)
+
+    lwRedo()
+    expect(getState().grid.ramp['2026-01-20']).toBe('LL')
+    expect(lwCanRedo()).toBe(false)
+  })
+
+  it('walks back through several edits one at a time', () => {
+    setCell('ramp', '2026-01-20', 'LL')
+    setCell('ramp', '2026-01-21', 'OL')
+    setCell('ramp', '2026-01-22', 'LL')
+
+    lwUndo()
+    expect(getState().grid.ramp?.['2026-01-22']).toBeUndefined()
+    expect(getState().grid.ramp['2026-01-21']).toBe('OL')
+    lwUndo()
+    expect(getState().grid.ramp?.['2026-01-21']).toBeUndefined()
+    expect(getState().grid.ramp['2026-01-20']).toBe('LL')
+    lwUndo()
+    expect(getState().grid.ramp?.['2026-01-20']).toBeUndefined()
+    expect(lwCanUndo()).toBe(false)
+  })
+
+  it('treats a whole range write as ONE undo step', () => {
+    setCellRange('ramp', '2026-01-06', '2026-01-12', 'LL')
+    expect(getState().grid.ramp['2026-01-09']).toBe('LL')
+
+    lwUndo()
+    // the entire fortnight comes back out on one press, not day by day
+    for (let n = 6; n <= 12; n++) {
+      const d = `2026-01-${String(n).padStart(2, '0')}`
+      expect(getState().grid.ramp?.[d]).toBeUndefined()
+    }
+    expect(lwCanUndo()).toBe(false)
+  })
+
+  it('drops the redo tail when a new edit follows an undo', () => {
+    setCell('ramp', '2026-01-20', 'LL')
+    lwUndo()
+    expect(lwCanRedo()).toBe(true)
+    setCell('ramp', '2026-01-25', 'OL')      // a fresh edit past the undone one
+    expect(lwCanRedo()).toBe(false)          // the old redo is gone
+    expect(getState().grid.ramp['2026-01-25']).toBe('OL')
+  })
+
+  it('does NOT make an undo step for a Raptor-driven ingest', () => {
+    // ingestFromRaptor is a sync writer — a Raptor input landing here must not
+    // become a Leave War undo step (undo would only be re-applied by the next
+    // reconcile pass). The cell is written; the stack stays empty.
+    expect(ingestFromRaptor('dusk', '2026-02-11', 'LL')).toBe('written')
+    expect(getState().grid.dusk['2026-02-11']).toBe('LL')
+    expect(lwCanUndo()).toBe(false)
+  })
+
+  it('undoes an admin decision on a bid', () => {
+    setCell('ramp', '2026-01-20', 'LL')
+    setRole('admin')
+    advanceStage()                            // open -> closed, so a bid can be decided
+    setBidState('ramp', '2026-01-20', 'approved')
+    expect(getState().states.ramp['2026-01-20'].state).toBe('approved')
+
+    lwUndo()
+    expect(getState().states.ramp['2026-01-20'].state).toBe('pending')
+  })
+
+  it('undoes an admin arrangement change (manning row hidden)', () => {
+    setRole('admin')
+    const id = orderedManningIds()[0]
+    toggleManningRow(id)
+    expect(getState().manningHidden).toContain(id)
+    lwUndo()
+    expect(getState().manningHidden).not.toContain(id)
+  })
+
+  it('re-baselines the stack when a different war comes on screen', () => {
+    setRole('admin')
+    expect(createWar('2035', '2035-01-01', '2035-12-31')).toBe('created')
+    setCell('ramp', '2026-01-20', 'LL')       // an edit in the current war
+    expect(lwCanUndo()).toBe(true)
+
+    selectWar(getState().wars[1].period.id)    // switch to the new war
+    expect(lwCanUndo()).toBe(false)            // fresh scope — nothing to undo here
   })
 })

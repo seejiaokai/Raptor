@@ -2,6 +2,19 @@ import { VCONF } from './rules'
 export const toMin=(t:any)=>{const[h,m]=t.split(':').map(Number);return h*60+m};
 export const fromMin=(m:any)=>String(Math.floor(m/60)%24).padStart(2,'0')+':'+String(m%60).padStart(2,'0');
 export function hhmm(m:any){return String(Math.floor(m/60)).padStart(2,'0')+':'+String(m%60).padStart(2,'0');}
+/* ONE CLOCK, WITH THE COLON (owner, 30 Aug 26, reversing the previous day's
+   4-digit ask — "I saw wrongly … most of the timing format is 08:00. Change it
+   back and make sure everything follows that format consistently"). hh:mm IS
+   the app's native form: the reference-parity gate pins hhmm / fmtT / fmtTxt
+   to it, txtSet commits through hhmm, and the week/warnings/CSV never left it.
+   What broke ranks was legacy data — duty templates minted compact '0700'
+   strings that the board then echoed raw beside '07:00' cells. fmtHM is the
+   display fold for exactly that: it takes a STORED time string (either form —
+   parseHM reads both, which is also why the rules engine never cares) and
+   prints the one canonical hh:mm, blanking a non-time so an empty cell stays
+   empty rather than reading '00:00'. Renderers wrap stored time strings in it;
+   values already produced by hhmm/fmtT need nothing. */
+export function fmtHM(s:any){const m=parseHM(s);return m==null?'':hhmm(m);}
 /* A window whose end reads EARLIER than its start has crossed midnight — an
    overnight duty, a night sortie landing after 00:00. Left as-is the interval
    is inverted and `overlap` can never match it, which silently switched every

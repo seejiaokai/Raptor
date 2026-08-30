@@ -1688,17 +1688,39 @@ Distinct in kind from re-ordering a list's rows (below): a scheduler can also
 re-arrange the big section PANELS themselves — Programme · Flying waves ·
 Duties · Sims · Ground Programme — on both surfaces. That order is a pure
 DISPLAY sequence held on the day as `d.secOrder`, resolved by
-`engine/order.ts secOrder(d)` (absent ⇒ the default `['prog','waves','duty',
-'sims','ground']`; unknown keys and repeats dropped; missing ones appended).
-It is **never a slot key, never in `SCHED.*`, never an AL amendment** — a
-section move touches no row inside any array, so every `di.gi.li.ai`/`d:`/`s:`/
-`g:`/`a:` key and everything `validate()` and publishing read is byte-identical
-(pinned, `engine/secorder.test.ts`). Its one write path is `state/store.ts
-moveSection` (`histPush` + `notify`, no `markEdit` — one undo step, not an
-amendment); it rides undo and the week-stash because `histSnap`/`weekStashSnap`
-serialise `DAYS` wholesale, and a whole-day template carries it (`engine/
-daytpl.ts` `secOrder` on the blob). Contrast the row reorder below, which IS a
-key-remapping amendment.
+`engine/order.ts secOrder(d)` (a day's own arrangement first, then the ADMIN
+HOUSE DEFAULT for anything it did not list, then the canonical
+`['prog','waves','duty','sims','ground']` as a final safety net; unknown keys
+and repeats dropped). It is **never a slot key, never in `SCHED.*`, never an AL
+amendment** — a section move touches no row inside any array, so every
+`di.gi.li.ai`/`d:`/`s:`/`g:`/`a:` key and everything `validate()` and publishing
+read is byte-identical (pinned, `engine/secorder.test.ts`). Its one write path is
+`state/store.ts moveSection` (`histPush` + `notify`, no `markEdit` — one undo
+step, not an amendment); it rides undo and the week-stash because
+`histSnap`/`weekStashSnap` serialise `DAYS` wholesale, and a whole-day template
+carries it (`engine/daytpl.ts` `secOrder` on the blob). Contrast the row reorder
+below, which IS a key-remapping amendment.
+
+**The DEFAULT arrangement is admin-set (29 Aug 26 pt.2).** Two GLOBAL defaults an
+admin configures on the Admin → Squadron config page (`ui/AdminPage.tsx
+ArrangeDefaults`), each a persisted-config singleton on the `wavehide` footing —
+in-memory value, `*Save` writes `null` while at the un-customised baseline,
+`*Load` sanitises untrusted storage, boot-loaded in `initStore`:
+- **`SEC_DEFAULT`** (`engine/order.ts`, key `secdefault`, default the canonical
+  five) is the fallback `secOrder(d)` uses for any section a day did not arrange
+  itself — so an un-arranged day follows the house order and an explicitly
+  arranged day still wins. Display-only, exactly like `d.secOrder`; when it equals
+  canonical (the baseline) every render is byte-identical, so parity stays 728/0
+  and the never-booting reference is untouched.
+- **`WAVE_DEFAULT`** (`engine/reorder.ts`, key `wavedefault`, default EMPTY = off)
+  is an order over the built-in wave kinds (`fly`/`sc`/`avalon`/`bb`). It is
+  applied ONLY at wave-ADD time, and only on a day that is not signed off
+  (`ui/board.ts addWave`/`addWaveFromTpl` → `waveInsertSlot` → the tested
+  `moveWave`): the new wave lands in its kind's slot instead of at the bottom,
+  never re-ordering an existing day and never touching a published one (a wave
+  move is a real amendment — "new schedules only", owner). Unset ⇒ a new wave
+  appends exactly as before. Pinned: `engine/arrdefaults.test.ts`,
+  `ui/wavedefault-add.test.tsx`.
 
 ## Reordering a board list
 

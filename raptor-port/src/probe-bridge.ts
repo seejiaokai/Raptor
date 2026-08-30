@@ -26,14 +26,14 @@ import { slotBar, dayEngaged, slotRules, dayOff, dayAway, sansGate, SANS_LABEL }
 import { isStandalone, makeStandalone, waveDutyBlock, saDutyIx, DUTY_PICK, SAWAVE, dayCount, saExempt } from './engine/waves'
 import * as waves from './engine/waves'
 import { keyDay, shiftKeys, shiftAircraft, shiftFormation, shiftWave, uniqDays, permuteKeys, moveKeys } from './engine/keys'
-import { applyMove, moveWave } from './engine/reorder'
+import { applyMove, moveWave, waveInsertSlot, waveDefault, waveDefaultView, setWaveDefault, moveWaveDefault } from './engine/reorder'
 import { hhmm, parseHM, hmOK, minus, overlap, hm24 } from './engine/time'
 import { HIST, histApply, histSnap, histPush } from './state/history'
 import { HOOKS } from './engine/hooks'
 import * as view from './state/view'
 import { setLgEdit } from './state/auth'
 import { notify, undo, redo, loadWeek, moveSection, moveWaveBlock, applySecOrderToWeek } from './state/store'
-import { secOrder, SECTIONS } from './engine/order'
+import { secOrder, SECTIONS, secDefault, setSecDefault, moveSecDefault } from './engine/order'
 import { setRole as lwSetRole, setViewer as lwSetViewer, loadWars as lwLoadWars } from './leavewar/state/store'
 
 export function installProbeBridge() {
@@ -124,6 +124,11 @@ export function installProbeBridge() {
   w.permuteKeys = permuteKeys; w.moveKeys = moveKeys; w.applyMove = applyMove
   w.secOrder = secOrder; w.SECTIONS = SECTIONS; w.moveSection = moveSection; w.applySecOrderToWeek = applySecOrderToWeek
   w.moveWave = moveWave; w.moveWaveBlock = moveWaveBlock
+  /* the admin-set DEFAULT arrangement (owner, 29 Aug 26 pt.2): the global section
+     fallback secOrder uses, and the global wave order a new wave is placed by. */
+  w.secDefault = secDefault; w.setSecDefault = setSecDefault; w.moveSecDefault = moveSecDefault
+  w.waveDefault = waveDefault; w.waveDefaultView = waveDefaultView; w.setWaveDefault = setWaveDefault
+  w.moveWaveDefault = moveWaveDefault; w.waveInsertSlot = waveInsertSlot
   w.hhmm = hhmm; w.parseHM = parseHM; w.hmOK = hmOK; w.minus = minus
   w.dayApproved = dayApproved; w.alColor = alColor; w.signMissing = signMissing; w.unpublishAL = unpublishAL
   w.isScheduler = isScheduler; w.isLead = isLead; w.isInstr = isInstr; w.isInstrPilot = isInstrPilot; w.isOcu = isOcu; w.isPersonnel = isPersonnel

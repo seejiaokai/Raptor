@@ -73,7 +73,10 @@ export const DUTY_PICK=['SDO','SXO','OPS O','RUNNER','LOG CELL'];
 export function waveDutyBlock(w:any){
   if(!w)return null;
   const kind=w.standalone?w.kind:'', S=kind?SAWAVE[kind]:null;
-  const t=(x:any)=>String(x||'').replace(':','');
+  /* the desk times mint in the app's one hh:mm form (owner, 30 Aug 26 — every
+     time reads 08:00). SAWAVE's shifts already store '07:00'; the old strip
+     here was what turned them compact on the way onto the schedule. */
+  const t=(x:any)=>String(x||'');
   let rows:any[], str='', end='';
   if(S&&S.perShiftDuties)
     rows=(S.shifts||[]).flatMap(([nm]:any)=>(S.duties||[]).map((r:any)=>`${r} ${nm}`));

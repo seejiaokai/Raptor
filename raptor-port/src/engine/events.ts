@@ -82,6 +82,25 @@ export function intimeTime(s:any){
   }
   return null;
 }
+/* THE SAME grammar, folding instead of reading (owner, 30 Aug 26 — every time
+   reads 08:00, and a hand-typed line auto-gains the colon). Rewrites each token
+   the reader above would accept into hh:mm, keeping any H/L suffix ("0900H" →
+   "09:00H") and every other word exactly as typed; a token the reader skips
+   (2590, FL240) is left alone, so the fold can never change what the line MEANS
+   — the two must share one grammar or a fold could create/destroy a report
+   time. Applied only where an edited line COMMITS (textedit.ts) and where the
+   "+ In time" button mints one (interactions.ts) — never to stored lines at
+   render, so the seed week's model text stays byte-identical for parity. */
+export function intimeFold(s:any){
+  return String(s==null?'':s).replace(
+    /(^|[^A-Za-z0-9])(?:(\d{1,2}):(\d{2})|(\d{3,4}))(\s*[HLhl]?)(?![A-Za-z0-9])/g,
+    (all,lead,ch,cm,d4,suf)=>{
+      const h=ch!=null?+ch:+d4.slice(0,d4.length-2);
+      const mi=ch!=null?+cm:+d4.slice(-2);
+      if(!(h<24&&mi<60))return all;
+      return lead+String(h).padStart(2,'0')+':'+String(mi).padStart(2,'0')+suf;
+    });
+}
 /* WHICH formations a line's time applies to (owner, 21 Aug 26): a line that
    names one of THIS WAVE's formation callsigns is that formation's in-time;
    a line naming none is the WHOLE WAVE's, standing in for every formation

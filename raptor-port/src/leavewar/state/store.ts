@@ -767,6 +767,11 @@ export function initStore(b?: StorageBackend): void {
 
   version = 0
   listeners.clear()
+  // Baseline undo/redo to the freshly loaded world. main.tsx re-baselines once
+  // more after the demo world and the first sync pass are in (so those boot
+  // writes fold into the baseline rather than becoming undo steps); this keeps
+  // the stack sane for the standalone unit suite, which boots the store alone.
+  lwHistInit()
 }
 
 /**
@@ -837,6 +842,139 @@ function persist(): void {
      the personnel LABELS are kept instead: they are the admin's arrangement
      of that projection, keyed by id, so they survive a roster that gains or
      loses a body. */
+
+  // A save IS an undo step: record the durable snapshot now that the backend
+  // holds it (the UNDO / REDO block below). Skipped while a restore or a
+  // sync-driven write holds the lock, and a no-op when nothing durable moved.
+  recordHistory()
+}
+
+/* =====================================================================
+   UNDO / REDO (owner, 30 Aug 26 — "Add undo and redo on leave war")
+   ---------------------------------------------------------------------
+   A snapshot stack over the DURABLE state — precisely the fields persist()
+   writes. The push lives inside persist(), because in this store a save and a
+   user edit are the same event: every path that changes the war ends in
+   persist()+notify(), and the pure-view notifiers (setRole / setViewer /
+   focusDay / setPeople) call notify() WITHOUT persist, so they make no step.
+
+   NOT in the snapshot, on purpose:
+   - currentId / focus / role / viewer — navigation and who-is-looking, not
+     edits; an undo must not switch wars or change the viewer. Switching wars
+     instead RE-BASELINES the stack (selectWar), so undo is scoped to the war
+     on screen — the same rule the scheduler follows per week.
+   - people / qualCatalog / personEdits — a live PROJECTION of Raptor's roster
+     (sync.ts), owned by Raptor's Quals page; undo here must not fight it.
+
+   Raptor-DRIVEN grid writes (the four sync writers: ingestFromRaptor,
+   ingestDutyCredit, clearRaptorCell, withdrawLeaveCell) run under `locked`, so
+   a change Raptor pushed never becomes a Leave War undo step — undoing a cell
+   Raptor still holds an input for would only be re-applied by the next
+   reconcile pass, growing the stack forever. A restore (historyApply) is
+   locked for the same reason AND so the sync reconcilers it wakes — which
+   converge the Raptor side to the restored grid, retracting or re-minting
+   inputs exactly as sync.ts's wiring note anticipates ("an Undo that removes
+   an lw-tagged row") — do not themselves push a step.
+   ===================================================================== */
+const HIST: { stack: string[]; ix: number; lock: boolean; cap: number } =
+  { stack: [], ix: -1, lock: false, cap: 60 }
+
+/** Run `fn` with history recording suppressed, re-entrancy safe: a nested
+ *  lock restores to the OUTER value, so an inner `finally` can never unlock a
+ *  restore (or an outer sync pass) that is still in flight. */
+function locked<T>(fn: () => T): T {
+  const was = HIST.lock
+  HIST.lock = true
+  try {
+    return fn()
+  } finally {
+    HIST.lock = was
+  }
+}
+
+/** The durable state, serialised — the same field set persist() writes, minus
+ *  `current` (which war is on screen is navigation, not an edit). */
+function historySnap(): string {
+  const s = state
+  return JSON.stringify({
+    wars: s.wars, openings: s.openings, ledger: s.ledger, eventDefs: s.eventDefs,
+    figureOrder: s.figureOrder, rosterOrder: s.rosterOrder, persLabels: s.persLabels,
+    manningOrder: s.manningOrder, manningHidden: s.manningHidden,
+    groupDefs: s.groupDefs, groupPriority: s.groupPriority,
+    requirements: s.requirements, eventRows: s.eventRows, showSans: s.showSans,
+  })
+}
+
+/** Push a snapshot after a durable change: drop the redo tail, cap the stack,
+ *  and treat an identical snapshot (nothing durable moved — a same-value write,
+ *  or a bare war-switch whose only change was `current`) as a no-op. */
+function recordHistory(): void {
+  if (HIST.lock) return
+  const snap = historySnap()
+  if (HIST.stack[HIST.ix] === snap) return
+  HIST.stack.splice(HIST.ix + 1)
+  HIST.stack.push(snap)
+  if (HIST.stack.length > HIST.cap) HIST.stack.shift()
+  HIST.ix = HIST.stack.length - 1
+}
+
+/** Baseline the stack to the state on screen — called once at boot (main.tsx,
+ *  after the demo world and the first sync pass are installed) and again
+ *  whenever a different war comes on screen (selectWar). */
+export function lwHistInit(): void {
+  HIST.stack = [historySnap()]
+  HIST.ix = 0
+  HIST.lock = false
+}
+
+export function lwCanUndo(): boolean {
+  return HIST.ix > 0
+}
+export function lwCanRedo(): boolean {
+  return HIST.ix < HIST.stack.length - 1
+}
+
+/** Bumped on every restore (undo OR redo). The matrix watches it to drop any
+ *  transient gesture state a restore would otherwise strand — an in-progress
+ *  MOVE, an open selection, a landing preview — the way the schedule's undo
+ *  calls armDrop/prunePreviews. Without it, undoing mid-move left the grid in
+ *  move mode with a selection whose cells the undo had just cleared, so the
+ *  next drag was read as a move-landing and no sheet opened (bug test, 30 Aug
+ *  26). A plain notify is too broad to key off — a sync pass mid-move would
+ *  cancel it — so this fires for a restore and nothing else. */
+let historyEpoch = 0
+export function lwHistEpoch(): number {
+  return historyEpoch
+}
+
+/** Restore snapshot `i`. Locked across the whole apply so neither the restore
+ *  itself nor the sync reconcilers `notify()` wakes push a new step; the
+ *  `notify()` inside the lock is what lets sync converge the Raptor side to the
+ *  restored grid. */
+function historyApply(i: number): void {
+  if (i < 0 || i >= HIST.stack.length) return
+  const snap = JSON.parse(HIST.stack[i]) as Pick<State,
+    'wars' | 'openings' | 'ledger' | 'eventDefs' | 'figureOrder' | 'rosterOrder'
+    | 'persLabels' | 'manningOrder' | 'manningHidden' | 'groupDefs'
+    | 'groupPriority' | 'requirements' | 'eventRows' | 'showSans'>
+  HIST.ix = i
+  historyEpoch++   // signal the matrix to drop any in-flight gesture (see above)
+  locked(() => {
+    // withCurrent republishes period/grid/states from the restored wars and
+    // the CURRENT currentId — the war on screen does not change, only its data.
+    state = withCurrent({ ...state, ...snap })
+    persist()
+    notify()
+  })
+}
+
+/** Step back / forward one edit. No-ops (not errors) at the ends, so the
+ *  buttons may call them freely and read lwCanUndo / lwCanRedo for disabled. */
+export function lwUndo(): void {
+  if (lwCanUndo()) historyApply(HIST.ix - 1)
+}
+export function lwRedo(): void {
+  if (lwCanRedo()) historyApply(HIST.ix + 1)
 }
 
 /**
@@ -1975,6 +2113,11 @@ export type IngestResult = 'written' | 'confirmed' | 'clash' | 'ignored'
  * elsewhere".
  */
 export function ingestFromRaptor(personId: string, date: string, code: string): IngestResult {
+  // Held under `locked`: a Raptor-driven write is never a Leave War undo step
+  // (see the UNDO / REDO block). The body is otherwise untouched.
+  return locked(() => ingestFromRaptorImpl(personId, date, code))
+}
+function ingestFromRaptorImpl(personId: string, date: string, code: string): IngestResult {
   const clean = code.trim().toUpperCase()
   // Raptor sends more than leave. Leave is bid for and medical is assigned
   // (owner, 17 Aug 26 — the four markers cross from the Inputs page too);
@@ -2037,6 +2180,10 @@ export function ingestFromRaptor(personId: string, date: string, code: string): 
  * taken over in place, exactly like ingest's confirming upgrade.
  */
 export function ingestDutyCredit(personId: string, date: string, code: 'FO' | 'HO'): IngestResult {
+  // Locked like ingestFromRaptor — a sync-driven credit is not an undo step.
+  return locked(() => ingestDutyCreditImpl(personId, date, code))
+}
+function ingestDutyCreditImpl(personId: string, date: string, code: 'FO' | 'HO'): IngestResult {
   if (code !== 'FO' && code !== 'HO') return 'ignored'
   const war = warHolding(state.wars, date)
   if (!war) return 'ignored'
@@ -2081,6 +2228,10 @@ export function ingestDutyCredit(personId: string, date: string, code: 'FO' | 'H
  * does: Raptor's word arrives already decided.
  */
 export function clearRaptorCell(personId: string, date: string): boolean {
+  // Locked: a sync-driven delete is not a Leave War undo step.
+  return locked(() => clearRaptorCellImpl(personId, date))
+}
+function clearRaptorCellImpl(personId: string, date: string): boolean {
   const war = warHolding(state.wars, date)
   if (!war) return false
   if (!raptorOwns(war.states, personId, date)) return false
@@ -2116,6 +2267,11 @@ export function clearRaptorCell(personId: string, date: string): boolean {
  * `clearRaptorCell` do: Raptor's word arrives already decided.
  */
 export function withdrawLeaveCell(personId: string, date: string, code: string): boolean {
+  // Locked: this fires only when a synced input is edited/deleted on Raptor's
+  // Inputs page — a Raptor-driven change, not a Leave War undo step.
+  return locked(() => withdrawLeaveCellImpl(personId, date, code))
+}
+function withdrawLeaveCellImpl(personId: string, date: string, code: string): boolean {
   const war = warHolding(state.wars, date)
   if (!war) return false
   if (raptorOwns(war.states, personId, date)) return false
@@ -2347,6 +2503,11 @@ export function selectWar(id: string): void {
   state = withCurrent({ ...state, currentId: id, focusDate: null })
   persist()
   notify()
+  // Undo is scoped to the war on screen: switching wars starts a fresh stack,
+  // so an undo can never reach back and silently rewrite the war just left
+  // (the same per-context re-baseline the scheduler does on loadWeek). The
+  // persist() above made no step of its own — only `current` changed.
+  lwHistInit()
 }
 
 /**
@@ -2370,6 +2531,9 @@ export function loadWars(raw: unknown, currentId: string): boolean {
   const id = wars.some(w => w.period.id === currentId) ? currentId : wars[0].period.id
   state = withCurrent({ ...state, wars, currentId: id })
   notify()
+  // A wholesale world swap re-baselines undo — an undo must not reach back to
+  // the world that was here before the injection (same rule as selectWar).
+  lwHistInit()
   return true
 }
 

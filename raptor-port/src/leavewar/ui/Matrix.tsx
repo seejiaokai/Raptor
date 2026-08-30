@@ -33,7 +33,7 @@ import {
   type Group,
   type Person,
 } from '../engine'
-import { groupsInOrder, groupPriorityIds, moveGroupTo, moveGroupPriorityTo, addEventRow, autoSortRoster, DEFAULT_EVENT_ROWS, displayRoster, eventRowUsed, getState, MAX_EVENT_ROWS, moveCells, movableCells, moveManningRowTo, moveProblem, moveRosterRow, orderedManningIds, removeEventRow, resetManningRules, setPostOut, setShowSans, type MoveResult } from '../state/store'
+import { groupsInOrder, groupPriorityIds, lwHistEpoch, moveGroupTo, moveGroupPriorityTo, addEventRow, autoSortRoster, DEFAULT_EVENT_ROWS, displayRoster, eventRowUsed, getState, MAX_EVENT_ROWS, moveCells, movableCells, moveManningRowTo, moveProblem, moveRosterRow, orderedManningIds, removeEventRow, resetManningRules, setPostOut, setShowSans, type MoveResult } from '../state/store'
 import { BidPicker, DecisionSheet, PostOutSheet, RaptorSheet } from './BidPicker'
 import { CounterSheet, FigureBreakdownSheet, PersonFiguresSheet } from './CounterSheet'
 import { PersonSheet } from './PersonSheet'
@@ -317,7 +317,24 @@ export function Matrix() {
           const ix = rows.indexOf(over.id)
           beforeId = ix >= 0 ? (rows[ix + 1] ?? null) : over.id
         }
-        if (beforeId !== from) cfg.move(from, beforeId)
+        if (beforeId !== from) {
+          cfg.move(from, beforeId)
+          /* A manning reorder shuffles the rows of the frozen LEFT column, whose
+             grip/eye tools live in a `position: sticky` cell. iOS Safari does not
+             reliably repaint a sticky column after that DOM churn, so the just
+             -moved rows can sit drawn WITHOUT their tools until something forces a
+             redraw (owner, 30 Aug 26 — "sometimes I see these showing, sometimes I
+             do not … after I tried to drag and drop multiple times"). A one-frame
+             self-assignment of the scroller's own scrollLeft re-solves every sticky
+             offset in the scrollport and repaints them; it moves nothing, and —
+             unlike a transform on the sticky cell itself — cannot break the
+             stickiness. Manning kind only; the roster/group drags don't touch this
+             column. */
+          if (cfg === MANNING_DRAG) {
+            const w = wrapRef.current
+            if (w) requestAnimationFrame(() => { w.scrollLeft = w.scrollLeft })
+          }
+        }
       }
     }
     const up = () => end(true)
@@ -384,8 +401,14 @@ export function Matrix() {
     })
   }, [])
   // A stage or war change drops any open selection or in-flight move, so a
-  // block picked on one screen can never act on another.
-  useEffect(() => { setSel(null); setMoveSel(null); setMovePreview(null) }, [period.stage, period.id])
+  // block picked on one screen can never act on another. An UNDO/REDO does the
+  // same (lwHistEpoch, bumped on every restore): a restore can clear the very
+  // cells a move or an open sheet was acting on, and leaving that gesture live
+  // stranded the grid in move mode — the next drag read as a landing and no
+  // sheet opened (bug test, 30 Aug 26). moveErr goes too, so no stale banner
+  // message lingers.
+  const histEpoch = lwHistEpoch()
+  useEffect(() => { setSel(null); setMoveSel(null); setMovePreview(null); setMoveErr('') }, [period.stage, period.id, histEpoch])
   // MOVE MODE is wired further down, after the `phone` breakpoint state it
   // reads to choose commit-on-click (desktop) vs preview-then-Confirm (phone).
   // The frozen-column overlay's own anchors (see the .mxband block below and
@@ -484,6 +507,11 @@ export function Matrix() {
     const wrap = wrapRef.current
     const cell = wrap?.querySelector<HTMLElement>(`[data-testid="head-${date}"]`)
     if (!wrap || !cell) return
+    // Mark this as a jump so the anchor correction below re-centres it even on
+    // touch (see jumpAtRef): a jump can cross many month boundaries at once,
+    // hiding rows and shrinking columns enough to leave the target far off the
+    // frozen edge if the re-centre is skipped.
+    jumpAtRef.current = Date.now()
     // Scrolling BY a delta rather than TO an absolute keeps this correct
     // wherever the grid happens to be scrolled already.
     wrap.scrollLeft += cell.getBoundingClientRect().left - wrap.getBoundingClientRect().left - frozenWidth(wrap)
@@ -546,6 +574,14 @@ export function Matrix() {
   // the reader and lands a month jump short (measured 165px off at SEP, from
   // the demo's one posted-out man leaving the roster).
   const anchorRef = useRef<{ date: string; left: number } | null>(null)
+  // When the last scrollLeft move was a programmatic month/day JUMP, not a
+  // finger flick. The anchor correction below is skipped on touch to protect a
+  // fling's momentum, but a jump has no fling to protect and MUST re-centre or
+  // it lands the wrong column at the frozen edge once posted-out rows hide. A
+  // timestamp, not a boolean, so it auto-expires: a jump fires one or two
+  // reflows within a fraction of a second, and a later flick can never be
+  // mistaken for the jump once the window has passed.
+  const jumpAtRef = useRef(0)
 
   // The phone ZOOM (owner, 18 Aug 26 — "a zoom function for mobile leave
   // war"). Stepped +/− buttons rather than pinch: pinch fights the browser's
@@ -674,19 +710,25 @@ export function Matrix() {
     // jsdom has no layout — the mirror is a browser-only creature, and a
     // 0-height header (jsdom, or not yet laid out) never activates.
     if (typeof window.matchMedia !== 'function') return
-    const onScroll = () => {
+    // `force` re-measures the pinned widths even while already stuck. A plain
+    // scroll keeps them (cheap, and the widths don't change as you scroll), but a
+    // rotate/resize changes EVERY column width — and without a fresh measurement
+    // the mirror kept the old orientation's widths until a scroll un-stuck and
+    // re-pinned it (owner, 30 Aug 26 — "flip my screen horizontally … the top bar
+    // is cut off to what the vertical view was … I need to scroll up then back
+    // down to reset the frozen bar").
+    const pin = (force: boolean) => {
       const head = headRef.current
       if (!head) { setStuck(prev => (prev ? null : prev)); return }
       const r = head.getBoundingClientRect()
       if (r.height === 0) return // jsdom, or not laid out yet — never activate
       // The app top bar stays pinned (sticky, both widths), so "the top" is its
       // LOWER edge: the mirror freezes there the instant the real header would
-      // slide under it. The bar's height is constant, so the pinned `top` needs
-      // no per-tick update. Both phone and desktop now (owner, 27 Aug 26).
+      // slide under it. Both phone and desktop now (owner, 27 Aug 26).
       const topEdge = document.querySelector('.topbar')?.getBoundingClientRect().bottom ?? 0
       if (r.top >= topEdge) { setStuck(prev => (prev ? null : prev)); return }
       setStuck(prev => {
-        if (prev) return prev
+        if (prev && !force) return prev
         const wrap = wrapRef.current
         if (!wrap) return prev
         const wr = wrap.getBoundingClientRect()
@@ -696,12 +738,28 @@ export function Matrix() {
         return { top: topEdge, left: wr.left, width: wr.width, cols }
       })
     }
+    const onScroll = () => pin(false)
+    // A rotate/resize fires BEFORE iOS has settled the new viewport, so an
+    // immediate read would take the OLD geometry — re-measure on the next two
+    // frames AND once more after a beat, forcing fresh widths each time.
+    let raf = 0
+    let t: ReturnType<typeof setTimeout> | undefined
+    const remeasure = () => {
+      cancelAnimationFrame(raf)
+      raf = requestAnimationFrame(() => requestAnimationFrame(() => pin(true)))
+      clearTimeout(t); t = setTimeout(() => pin(true), 300)
+    }
     window.addEventListener('scroll', onScroll, { passive: true })
-    window.addEventListener('resize', onScroll)
+    window.addEventListener('resize', remeasure)
+    window.addEventListener('orientationchange', remeasure)
+    window.visualViewport?.addEventListener('resize', remeasure)
     onScroll()
     return () => {
       window.removeEventListener('scroll', onScroll)
-      window.removeEventListener('resize', onScroll)
+      window.removeEventListener('resize', remeasure)
+      window.removeEventListener('orientationchange', remeasure)
+      window.visualViewport?.removeEventListener('resize', remeasure)
+      cancelAnimationFrame(raf); clearTimeout(t)
     }
     // `zoom` is a dep because it changes every measured width the mirror pins.
     // `visWindow` too (19 Aug 26): a row-set change lets auto layout re-narrow
@@ -1168,11 +1226,31 @@ export function Matrix() {
 
   // Put the anchored column back after a row-set repaint (see anchorRef).
   // Layout effect, not effect: the correction must land in the same frame as
-  // the narrowed columns or the reader sees the grid jump and snap back. It
-  // only ever fires now at scroll REST (the window is deferred there), so the
-  // scrollLeft it writes has no fling momentum left to interrupt. The scroll
-  // it makes re-fires the strip/window measure; the signature compare then
-  // finds the same row set and stops — no loop.
+  // the narrowed columns or the reader sees the grid jump and snap back. The
+  // scroll it makes re-fires the strip/window measure; the signature compare
+  // then finds the same row set and stops — no loop.
+  //
+  // BUT NOT DURING A FINGER FLICK (owner, 30 Aug 26 — "the nudge restarts every
+  // time I scroll horizontally"; his own diagnosis, confirmed). When a person
+  // posts out and their roster row disappears crossing into a new month, that
+  // row's leave content was widening some day columns, so they shrink and this
+  // WRITES `wrap.scrollLeft` to keep the same column in place. On iOS (all
+  // iPhone browsers are WebKit) ANY programmatic scrollLeft write kills the
+  // inertial fling stone dead — even one meant for "scroll rest", because the
+  // coalesced coast leaves a lull the 120ms idle mistakes for a stop. So on a
+  // coarse pointer, when the reflow was triggered by a FLICK, we skip the
+  // re-centre and let the coast run: the row still hides (the feature and the
+  // manning counts are unchanged — only the visual re-centre is dropped), and
+  // the worst case is a small one-time shift as a post-out boundary passes,
+  // far better than the scroll dying on every flick.
+  //
+  // A programmatic JUMP is the exception (jumpAtRef): it has no fling to
+  // protect and MUST re-centre, or a month button that crosses several post-out
+  // boundaries lands its target well off the frozen edge. The two are
+  // indistinguishable here — both arrive at scroll-rest — so jumpTo timestamps
+  // itself and we treat a reflow inside that short window as a jump. A
+  // mouse/trackpad (fine pointer, no touch inertia to protect) always
+  // re-centres, so desktop is unchanged.
   useLayoutEffect(() => {
     const a = anchorRef.current
     anchorRef.current = null
@@ -1180,6 +1258,12 @@ export function Matrix() {
     const wrap = wrapRef.current
     const cell = wrap?.querySelector<HTMLElement>(`[data-testid="head-${a.date}"]`)
     if (!wrap || !cell) return
+    const coarse = typeof window.matchMedia === 'function' && window.matchMedia('(pointer: coarse)').matches
+    // The window has to hold the programmatic scroll, the 120ms rest debounce
+    // and the grid's repaint; 1200ms is comfortably clear of all three and
+    // still far shorter than the gap before a deliberate follow-up flick.
+    const fromJump = Date.now() - jumpAtRef.current < 1200
+    if (coarse && !fromJump) return
     const shift = cell.getBoundingClientRect().left - a.left
     if (Math.abs(shift) > 1) wrap.scrollLeft += shift
   }, [visWindow])

@@ -79,11 +79,11 @@ export function DutyTplModal() {
               </span>
               <input list="dutyRoles" value={row.role}
                 onChange={e => { setTplRow(tpl.id, ri, 'role', e.target.value); save() }} />
-              <input className="tm" value={row.str} inputMode="numeric" placeholder="0700"
+              <input className="tm" value={row.str} inputMode="numeric" placeholder="07:00"
                 onFocus={e => { timeBuf.current = e.target.value }}
                 onChange={e => { setTplRow(tpl.id, ri, 'str', e.target.value); save() }}
                 onBlur={e => commitTime(tpl.id, ri, 'str', e.target.value)} />
-              <input className="tm" value={row.end} inputMode="numeric" placeholder="1300"
+              <input className="tm" value={row.end} inputMode="numeric" placeholder="13:00"
                 onFocus={e => { timeBuf.current = e.target.value }}
                 onChange={e => { setTplRow(tpl.id, ri, 'end', e.target.value); save() }}
                 onBlur={e => commitTime(tpl.id, ri, 'end', e.target.value)} />

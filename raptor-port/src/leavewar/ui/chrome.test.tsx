@@ -1,6 +1,6 @@
 import { act, fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
-import { advanceStage, getState, initStore, setBidState, setRole, setViewer } from '../state/store'
+import { advanceStage, getState, initStore, setBidState, setCell, setRole, setViewer } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { StageBar, Topbar } from './Chrome'
 
@@ -154,5 +154,37 @@ describe('the leave war picker', () => {
     // The label has to name the control for a screen reader too, not just
     // sit beside it — `aria-label` was carrying a different word entirely.
     expect(screen.getByTestId('war-picker').getAttribute('aria-label')).toContain('Period')
+  })
+})
+
+describe('the undo / redo buttons', () => {
+  it('sit disabled with nothing to undo, then drive undo and redo', () => {
+    render(<Topbar />)
+    const undo = screen.getByTestId('lw-undo') as HTMLButtonElement
+    const redo = screen.getByTestId('lw-redo') as HTMLButtonElement
+    expect(undo.disabled).toBe(true)
+    expect(redo.disabled).toBe(true)
+
+    act(() => setCell('ramp', '2026-01-20', 'LL'))
+    expect(undo.disabled).toBe(false)
+    expect(getState().grid.ramp['2026-01-20']).toBe('LL')
+
+    fireEvent.click(undo)
+    expect(getState().grid.ramp?.['2026-01-20']).toBeUndefined()
+    expect(undo.disabled).toBe(true)
+    expect(redo.disabled).toBe(false)
+
+    fireEvent.click(redo)
+    expect(getState().grid.ramp['2026-01-20']).toBe('LL')
+    expect(redo.disabled).toBe(true)
+  })
+
+  // Undo is for everyone: a member fills their own bids and wants the same
+  // safety net (owner circled the whole top bar, not an admin-only control).
+  it('are shown to a member too', () => {
+    act(() => setRole('member'))
+    render(<Topbar />)
+    expect(screen.getByTestId('lw-undo')).toBeTruthy()
+    expect(screen.getByTestId('lw-redo')).toBeTruthy()
   })
 })

@@ -26,7 +26,7 @@ describe('the seeded library', () => {
     expect(DUTYTPL_CFG[0]!.rows.map(r => r.role)).toEqual(['SDO', 'SXO', 'OPS O'])
     expect(DUTYTPL_CFG[1]!.rows.map(r => r.role)).toEqual(['SXO AM', 'OPS O AM', 'SXO PM', 'OPS O PM'])
     expect(DUTYTPL_CFG[2]!.rows.map(r => r.role)).toEqual(['SXO', 'OPS O', 'RUNNER', 'LOG CELL'])
-    expect(DUTYTPL_CFG[2]!.rows[0]).toEqual({ role: 'SXO', str: '1900', end: '0700' })
+    expect(DUTYTPL_CFG[2]!.rows[0]).toEqual({ role: 'SXO', str: '19:00', end: '07:00' })
     expect(tplAreStandard()).toBe(true)
   })
   it('DUTYTPL_STD cannot be mutated through the live library', () => {
@@ -69,11 +69,13 @@ describe('minting a block from a template', () => {
     expect(blk.label).toBe('SC Shift')
     expect(blk.sa).toBeUndefined()
     expect(blk.noconf).toBeUndefined()
+    /* the seed stores compact ('0700'); the mint folds to hh:mm, the app's one
+       time form (owner, 30 Aug 26) — so a placed block always reads 07:00 */
     expect(blk.rows).toEqual([
-      { role: 'SXO AM', id: '', str: '0700', end: '1300' },
-      { role: 'OPS O AM', id: '', str: '0700', end: '1300' },
-      { role: 'SXO PM', id: '', str: '1300', end: '1900' },
-      { role: 'OPS O PM', id: '', str: '1300', end: '1900' },
+      { role: 'SXO AM', id: '', str: '07:00', end: '13:00' },
+      { role: 'OPS O AM', id: '', str: '07:00', end: '13:00' },
+      { role: 'SXO PM', id: '', str: '13:00', end: '19:00' },
+      { role: 'OPS O PM', id: '', str: '13:00', end: '19:00' },
     ])
     /* editing the placed block must not reach back into the library */
     blk.rows[0]!.role = 'CHANGED'
@@ -88,21 +90,21 @@ describe('minting a block from a template', () => {
      on commit (DutyTplModal); these two choke points are the silent net, so a
      value from stale storage or a pre-fix session can never reach the schedule.
      A malformed time drops to '' (a duty role with no start is legal); a valid
-     one canonicalises to the compact HHMM the model stores. */
+     one canonicalises to hh:mm, the app's one time form (owner, 30 Aug 26). */
   it('minting drops a malformed time and canonicalises a valid one', () => {
     const t = addTpl('Nights')!
     setTplRow(t.id, 0, 'str', '2500')     // not a clock time
-    setTplRow(t.id, 0, 'end', '7:00')     // valid, but not the stored compact form
+    setTplRow(t.id, 0, 'end', '700')      // valid, but typed without the colon
     const blk = blockFromTpl(t.id)
     expect(blk.rows[0].str).toBe('')      // nonsense cleared
-    expect(blk.rows[0].end).toBe('0700')  // 7:00 → 0700
+    expect(blk.rows[0].end).toBe('07:00') // 700 → 07:00, the colon appears on its own
   })
 
-  it('tplTime is the shared fold: clock time or nothing, compact form', () => {
-    expect(tplTime('0700')).toBe('0700')
-    expect(tplTime('7:00')).toBe('0700')
-    expect(tplTime('700')).toBe('0700')
-    expect(tplTime('2400')).toBe('2400')  // the midnight tail hmOK allows, as on the schedule
+  it('tplTime is the shared fold: clock time or nothing, hh:mm form', () => {
+    expect(tplTime('0700')).toBe('07:00')
+    expect(tplTime('7:00')).toBe('07:00')
+    expect(tplTime('700')).toBe('07:00')
+    expect(tplTime('2400')).toBe('24:00') // the midnight tail hmOK allows, as on the schedule
     expect(tplTime('2500')).toBe('')      // hour out of range
     expect(tplTime('0961')).toBe('')      // minute out of range
     expect(tplTime('morning')).toBe('')   // not a time at all
@@ -132,7 +134,7 @@ describe('persistence, like the stores list', () => {
     dutyTplLoad()
     expect(DUTYTPL_CFG.map(t => t.title)).toEqual(['Ok'])
     expect(DUTYTPL_CFG[0]!.rows).toEqual([
-      { role: 'SDO', str: '0700', end: '1300' },
+      { role: 'SDO', str: '07:00', end: '13:00' },  // load folds to hh:mm
       { role: '', str: '', end: '' },   // {role:42} coerced to a blank-role row
     ])
   })
@@ -149,7 +151,7 @@ describe('persistence, like the stores list', () => {
       { id: 'x', title: 'Ok', rows: [{ role: 'SDO', str: '2500', end: '7:00' }] },
     ])
     dutyTplLoad()
-    expect(DUTYTPL_CFG[0]!.rows[0]).toEqual({ role: 'SDO', str: '', end: '0700' })
+    expect(DUTYTPL_CFG[0]!.rows[0]).toEqual({ role: 'SDO', str: '', end: '07:00' })
   })
 
   it('an id-less entry does not mint a uN a later entry already claims', () => {

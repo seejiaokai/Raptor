@@ -15,6 +15,7 @@ import { WARN } from '../engine/validate'
 import { slotVal } from '../engine/slots'
 import * as view from '../state/view'
 import { openScheduler, closeScheduler, toggleWide, SBWIDE, boardTab, boardDayStep, askSortAll, cancelSortAll, askCx, cxCommit, SORTALL, CXT } from './board'
+import { ELOG } from '../engine/editlog'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
@@ -161,6 +162,48 @@ describe('boardTab is view-only, and the first real mutation repaints everything
     expect($('#eWeek')!.innerHTML, 'the hidden week repainted with the write').not.toBe(weekHTML)
     expect($('#sbDay').textContent, 'the board panels repainted on the stepped-to day').toBe(DAYS[3].dow)
     await act(async () => { writeSlot('d:3.0.0', was) })      // put it back
+  })
+})
+
+/* SCENARIO 8 (owner adversarial pass, 30 Aug 26): the display fold means a
+   stored compact '0900' now READS '09:00' in the box. Stepping the day with a
+   merely-focused, untouched legacy box must not become a phantom edit — boardTab
+   compares the field to the model's DISPLAY, so an untouched legacy value
+   neither rewrites the model nor logs a History row, while a real typed value
+   still commits on the way out. */
+describe('a day step past an untouched legacy compact time box logs nothing', () => {
+  it('stepping away from a focused-but-untouched 0900 box mints no model write and no History row', async () => {
+    await act(async () => { openScheduler(0); notify() })
+    const f: any = DAYS[0].waves[0].formations[0]
+    expect(f, 'day 0 wave 1 carries a flying line').toBeTruthy()
+    const keep = f.to
+    f.to = '0900'                                   // as an old save (or last week's 4-digit spell) holds it
+    await act(async () => { notify() })
+    const box = $('#sbBoard input.tm[data-bfld$=".to"]') as HTMLInputElement
+    expect(box, 'the take-off box rendered').toBeTruthy()
+    expect(box.value, 'and shows the folded colon form').toBe('09:00')
+    const elogBefore = ELOG.rows.length
+    box.focus()                                     // focused, but NOT edited
+    await act(async () => { boardTab(3); notify() })
+    expect(f.to, 'the untouched legacy value is left exactly as stored').toBe('0900')
+    expect(ELOG.rows.length, 'no phantom History row was minted').toBe(elogBefore)
+    f.to = keep
+    await act(async () => { notify() })
+  })
+
+  it('a genuinely typed value still commits on the way out (the guard does not swallow edits)', async () => {
+    await act(async () => { openScheduler(0); notify() })
+    const f: any = DAYS[0].waves[0].formations[0]
+    const keep = f.to
+    f.to = '0900'
+    await act(async () => { notify() })
+    const box = $('#sbBoard input.tm[data-bfld$=".to"]') as HTMLInputElement
+    box.focus()
+    box.value = '1015'                              // a real keystroke, not blurred before the step
+    await act(async () => { boardTab(3); notify() })
+    expect(f.to, 'the typed take-off committed on the day step, folded to colon').toBe('10:15')
+    f.to = keep
+    await act(async () => { notify() })
   })
 })
 

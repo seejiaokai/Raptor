@@ -676,15 +676,15 @@ describe('duty / sim / ground panels on the board (owner request, Aug 26)', () =
     expect(p.querySelectorAll('[data-slot],[data-fill],[draggable="true"],.mbtn,[data-txt],[data-bfld]').length).toBe(0)
   })
 
-  /* ONE CLOCK ON THE BOARD (owner, 16 Aug 26). Aircrew-submitted input times
-     format with a colon everywhere else (hhmm → "09:00"), but the board prints
-     them 4-digit to match its own scheduler-typed times. The edit box still
-     accepts either form; this pins the DISPLAY only. */
-  it('a board personal-input time reads 4-digit, never with a colon', () => {
+  /* ONE CLOCK ON THE BOARD — hh:mm (owner, 30 Aug 26, reversing the 16/29 Aug
+     4-digit passes: every time in the app reads 08:00). Aircrew-submitted
+     input times print with the colon like every other cell. The edit box
+     still accepts either form; this pins the DISPLAY only. */
+  it('a board personal-input time reads hh:mm, like every other time', () => {
     const times = [...document.querySelectorAll('#sbBoard .sb-panel.pinp input.atm, #sbBoard .sb-panel.unav input.atm')]
       .map(e => (e as HTMLInputElement).value).filter(Boolean)
     expect(times.length, 'the seed day carries a timed personal input').toBeGreaterThan(0)
-    expect(times.every(v => /^\d{3,4}$/.test(v)), `every board input time is 4-digit military: ${times.join(',')}`).toBe(true)
+    expect(times.every(v => /^\d{2}:\d{2}$/.test(v)), `every board input time reads hh:mm: ${times.join(',')}`).toBe(true)
   })
 
   /* "N warning" pluralizes with its count, the same way "N issue" already did

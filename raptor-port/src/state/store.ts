@@ -23,7 +23,7 @@ import { CURWEEK, setCurWeek } from '../engine/waves'
 import { weekBundle, otherWeekInputs } from '../engine/weeks-data'
 import { seedDemoSans, seedDemoMedical } from './demoseed'
 import { docAdd } from './docs'
-import { storesLoad, cxReasonsLoad, dutyTplLoad, waveTplLoad, dayTplLoad, autoAcceptSeedInputs, autoAcceptInput, inpKey, secOrder, moveSectionModel, applyMove } from '../engine'
+import { storesLoad, cxReasonsLoad, dutyTplLoad, waveTplLoad, dayTplLoad, autoAcceptSeedInputs, autoAcceptInput, inpKey, secOrder, moveSectionModel, applyMove, secDefaultLoad, waveDefaultLoad } from '../engine'
 import { elogClear } from '../engine/editlog'
 import { markDeletion, resetSched, SCHED, dayApproved } from '../engine/publish'
 import { stashPut, stashGet, stashHas } from '../engine/weekstash'
@@ -545,6 +545,13 @@ export function initStore() {
   dutyTplLoad()
   waveTplLoad()
   dayTplLoad()
+  /* the admin-set DEFAULT arrangement (owner, 29 Aug 26 pt.2) — the global section
+     order secOrder falls back to, and the global wave order a new wave is placed by.
+     Both default to "un-customised" (canonical sections / no wave order = append),
+     so a squadron that never touches the Admin panel behaves exactly as before, and
+     the never-booting parity harness stays blind to them. */
+  secDefaultLoad()
+  waveDefaultLoad()
   /* GLOBAL INPUTS (owner, 22 Aug 26 — "show all inputs regardless of which week
      I am selected on"). The module-load INPUTS array is week 1's; merge every
      OTHER authored week's inputs in ONCE here so the Inputs page carries them

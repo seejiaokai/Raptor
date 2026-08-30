@@ -8,6 +8,7 @@ import { txtGet, txtSet, TIME_TXT } from '../engine/slots'
 import { inpById, inpTimeText } from '../engine/inputs'
 import { setInpField } from './inputedit'
 import { markEdit } from '../engine/publish'
+import { intimeFold } from '../engine/events'
 import { storesText } from '../engine/stores'
 import { validate } from '../engine/validate'
 import { afterSchedMutate } from '../state/view'
@@ -92,7 +93,10 @@ export function routeFocusOut(e: FocusEvent) {
     const w = DAYS[+di!].waves[+gi!]
     const lines = w.intimes || []
     if (lines[ix] == null) return              // deleted or undone from under the caret
-    const nv = (il.textContent || '').trim()
+    /* the fold gives every typed time the colon (0900H → 09:00H) while leaving
+       the rest of the prose as typed — intimeFold shares intimeTime's grammar,
+       so it can only reformat a token the reader already understood */
+    const nv = intimeFold((il.textContent || '').trim())
     const itWas = lines.join(', ')
     if (!nv) {
       /* clearing a line's text still deletes it, as the old block did — and
@@ -107,7 +111,13 @@ export function routeFocusOut(e: FocusEvent) {
       txtCommit()
       return
     }
-    if (nv !== lines[ix]) {
+    /* the SECOND compare guards against a phantom edit: the DISPLAY is folded
+       (intimeLineHTML shows a legacy '1200H' as '12:00H'), so merely focusing
+       and leaving an untouched line reads back the folded text — different
+       string, same meaning. Writing it would mint an amendment on a published
+       day for a tab-through. Only a difference that survives folding BOTH
+       sides is a real edit. */
+    if (nv !== lines[ix] && nv !== intimeFold(lines[ix])) {
       w.intimes = lines.map((v: any, i: number) => i === ix ? nv : v)
       markEdit(`it:${di}.${gi}`, itWas, w.intimes.join(', '))
       txtCommit()

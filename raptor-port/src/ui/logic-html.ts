@@ -2,8 +2,9 @@
    of the live engine objects at render time, so the page cannot drift. */
 import { VCONF, SHIFT_HARD, kindOff, ruleFmt } from '../engine/rules'
 import { RANK, CHIP_LABEL, WCODE, chipText, wlbl } from '../engine/validate'
-import { INPUT_TYPES, inpMeta, canSpare, isLeave, isDownchit, shiftHardInput } from '../engine/inputs'
+import { INPUT_TYPES, inpMeta, canSpare, isLeave, isDownchit, shiftHardInput, inputRuleText } from '../engine/inputs'
 import { lgT, hm24, hhmm } from '../engine/time'
+import { WAVE_BUILTIN, kindNote } from '../engine/wavetpl'
 import { esc } from '../state/view'
 import { lgCanEdit } from '../state/auth'
 
@@ -34,13 +35,11 @@ export function lgRules(){
      INPUT_META (10 Aug 26) rather than the old three-entry LEAVE_TYPES, and
      the cell's severity follows canSpare — so this matrix cannot describe a
      rule the engine does not apply, and a new type appears here the day it is
-     added to the table. Same source as the Inputs page's type legend. */
-  const rule=(t:any)=>{const m=inpMeta(t);
-    return !m?'':m.work?'no flying — may still stand a duty, sit a sim or take a ground slot; an SC MAIN shift is a Warning, because it may require him to fly'
-      :!m.local?'out of reach — cannot be planned for anything, an SC SPARE included'
-      :m.grp==='med'?'cannot be planned, and cannot stand an SC SPARE'
-      :shiftHardInput(t)?'cannot be planned, but may still stand an SC SPARE; across an SC MAIN shift this is a Warning — a real commitment, not academics'
-      :'cannot be planned, but may still stand an SC SPARE';};
+     added to the table. The cost sentence itself is inputRuleText — the SAME
+     source the Inputs "?" legend reads, so the two can no longer drift; a guard
+     test pins both. (The two used to hand-write their own copies: this matrix
+     had no SANS / Upchit line, the Inputs gloss no SC-MAIN Warning nuance.) */
+  const rule=(t:any)=>inputRuleText(t);
   /* a code only earns a spelt-out name when it IS an abbreviation — "Training
      — training" says nothing twice. Same test offWord and the Inputs page's
      type legend make. */
@@ -192,7 +191,27 @@ export function lgRules(){
      t:()=>`Leave and medical absences can be booked <b>AM</b> (00:00–12:00), <b>PM</b> (12:01 onwards) or all day, and a half-day only closes its own half — a man on AM leave can still be planned for an afternoon wave.<span class="why">Each slot is judged against its own hours, and a sortie's hours run from the <b>step</b>, not the take-off. So a morning absence does not free a wave that starts walking before noon: Monday's first VL takes off 12:40 and steps at 11:40, which is still the morning. A row with no times on it at all is treated as covering the whole day rather than none of it — an unknown never clears an absence.</span>`},
    ]},
 
+  /* WAVE TYPES — the one-line summary of each "+ Wave" kind, rendered from the
+     SAME engine/wavetpl.ts kindNote the template editor prints under its kind
+     picker, so the picker and this page can never show different words (owner,
+     30 Aug 26 — "make sure these word summaries are updated when I change the
+     rules concerning them … and the logic page should be updated as well").
+     kindNote is the ONE source of the one-liner; the per-kind DETAIL is "The
+     standby lines" group just below (and the flying-wave rules above). When a
+     kind's CHECKING rule changes in validate.ts / events.ts, update all three in
+     step: the rule, kindNote (both the picker and the row here follow it), and
+     the matching detail row below. logic.test.tsx pins that every kind's kindNote
+     shows on this page, so a dropped wire fails a gate rather than drifting. */
+  {g:'Wave types at a glance',
+   sub:'The same one-line summary shown under each type in the “+ Wave” template editor. The detailed rules for each follow below.',
+   rows:WAVE_BUILTIN.map((b:any)=>({sev:'note',src:()=>`kindNote('${b.key}')`,
+     t:()=>`<b>${esc(b.label)}</b> — ${esc(kindNote(b.key))}`})),
+  },
+
   {g:'The standby lines',
+   /* the DETAILED per-kind rules; the one-line summaries are the "Wave types at a
+      glance" group above, sourced from engine/wavetpl.ts kindNote. Keep both, plus
+      the rule in validate.ts / events.ts, in step when a kind's checking changes. */
    sub:'SC, AVALON and BB sit outside the day’s flying count — and mostly outside the engine.',
    rows:[
     {sev:'set',src:()=>`saExempt · isStandalone`,

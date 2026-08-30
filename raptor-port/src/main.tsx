@@ -5,7 +5,7 @@ import { initStore, setToast, histInit } from './state/store'
 import { storeBackend } from './engine/hooks'
 import { toast } from './ui/toast'
 import { App } from './ui/App'
-import { initStore as lwInitStore } from './leavewar/state/store'
+import { initStore as lwInitStore, lwHistInit } from './leavewar/state/store'
 import { memoryBackend } from './leavewar/state/storage'
 import { installDemoWorld } from './leavewar/state/demoworld'
 import { wireLeaveWarSync } from './leavewar/sync'
@@ -43,11 +43,13 @@ lwInitStore(memoryBackend())
    time. See leavewar/state/demoworld.ts. */
 installDemoWorld(false)
 /* Wires 1+2: one reconciliation pass each way (inbound first), then both
-   stores stay subscribed. After it, re-take the history baseline: the boot
-   sync's writes are the world the session STARTS in, and Undo must not be
-   able to peel them away as if a person had made them. */
+   stores stay subscribed. After it, re-take BOTH history baselines: the boot
+   sync's writes are the world the session STARTS in, and Undo — on either the
+   schedule or the Leave War — must not be able to peel them away as if a
+   person had made them. */
 wireLeaveWarSync()
 histInit()
+lwHistInit()
 installProbeBridge()
 
 createRoot(document.getElementById('root')!).render(

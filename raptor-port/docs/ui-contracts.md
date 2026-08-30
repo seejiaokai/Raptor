@@ -672,13 +672,38 @@ by a test; pv-suppressed) · overall notes · overall programme · flying waves
 · **Duties** (`.sb-panel.duty`) · **Sims** (`.simr`, AMT/OFT rows, its
 planning note inside the panel) · **Ground Programme** (`.grnd`; the `· scheduler` qualifier was dropped 22 Aug 26)
 · **Personal Inputs** (`.pinp`, with the accept controls) · **Unavailable**
-(`.unav`). **Input times read 4-digit on the board** (owner, 16 Aug 26): the
-aircrew's submitted times are minutes and format with a colon everywhere else
-(`hhmm` → `09:00`), but the board's own scheduler-typed times are 4-digit, so
-`board-html.ts`'s `hm4`/`inpHM` strip the colon for the `.pinp`/`.unav`/`.sansav`
-rows (and the inputs summary) — display only; `setInpField`'s `hmOK` still
-accepts either form when typing, and the board revert/compare (`board.ts`) strip
-to match. The week's input rows and the aircrew Inputs page keep colon.
+(`.unav`). **Every time reads hh:mm** (`08:00` — owner, 30 Aug 26, reversing
+the short-lived 16/29 Aug 4-digit passes: "most of the timing format is 08:00 …
+make sure everything follows that format consistently"). hh:mm is the app's
+native form (the read-only reference gate pins `fmtT`/`fmtTxt`/`hhmm` to it;
+`txtSet` commits through `hhmm`; the week/warnings/CSV never left it) — the
+mixed look came from compact-minted legacy data (duty templates minted `0700`).
+Every board time cell wraps its stored string in `engine/time.ts fmtHM` (the
+ONE display fold — either form in, hh:mm out, non-time → blank): the flying
+`.tm` br/to/ld + the brief-suggestion ghost (`board.ts`), the
+duty/sim/ground/programme `.atm` str-end (the `boxHTML` atm/tm branch + the
+`ap:` inline cells, `board-html.ts`), the wave in-time note and the input rows
+(`inpTimeText`, already colon). The WEEK folds identically through `fmtT`
+(`ted`/`plRow`). The compact MINTERS are gone too: `dutytpl.tplTime`,
+`DUTYTPL_STD`, `engine/waves.ts waveDutyBlock` and the "+ In time" line all
+mint `07:00` now (old stored templates refold on load), and a committed IN
+TIME line folds just its recognised time tokens via `events.ts intimeFold`
+(commit-time only — stored/seed lines are never rewritten at render, which is
+what keeps parity at 728/0). Typing accepts `800`/`0800`/`8:00`/`08:00`
+(`parseHM`/`hmOK`) and the colon appears on commit — nobody types `:`. The one
+deliberate 4-digit survivor is the AREA window token (`0800-0900`,
+`atimeText`) — the reference app prints it compact and `tfin.js` pins that.
+Don't add a second display formatter — `fmtHM` is the one.
+**The day-step commit compares the box to the model's DISPLAY** (owner
+adversarial pass, 30 Aug 26): `board.ts boardTab` commits a still-focused time
+box when you navigate away, and it used to synthesise that `change` whenever the
+field text differed from the raw model. A folded box shows `09:00` over a legacy
+compact `0900`, so an *untouched* box then looked changed and minted a phantom
+History row on a step. It now compares the field to `fmtHM(model)` for a
+`TIME_TXT` cell, so an untouched legacy value stays silent while a real typed
+value still commits. The `data-ifld` (personal-input) branch needs no fold —
+`inpTimeText` reads colon off stored minutes already. Pinned in
+`audit-b-daystep.test.tsx` §Scenario 8.
 The duty/sim/ground panels (added Aug 26) share the `c6r` grid
 (Item | Start | End | People | Rmks | ctl — **Duties says ROLE** where the
 other two say Item, its own `C6_DUTY` header, owner 10 Aug 26: a duty row
@@ -2139,6 +2164,30 @@ The **day template remembers wave order for free** — wave order IS the `d.wave
 array order, which `daytpl.ts mintBlob` deep-clones, so no `secOrder`-style capture
 is needed on the flying side (pinned in `engine/daytpl.test.ts`). Wave arrange is
 per-day only (no "apply to all days" — a day may have no SC to place).
+
+## The Default arrangement (Admin → Squadron config)
+
+The per-day Arrange sheet above sets ONE day's order; the **Default arrangement**
+panel (owner, 29 Aug 26 pt.2 — "allow the default arrangement of a schedule to be
+configured in admin … even to the arrangement of the waves under display") sets the
+GLOBAL house order once. It is `ui/AdminPage.tsx ArrangeDefaults`, at the top of the
+Squadron-config pane, reusing the sheet's `.arrsec` rows and `.tnudge` ▲▼ so it
+reads the same. Admin + `canEditSched()` gated at every nudge (write path, not only
+the UI). Two lists:
+- **Section order** — the five blocks, `engine/order.ts secDefault`/`moveSecDefault`.
+  It is the fallback every un-arranged day renders in on Edit Schedule and the
+  Scheduler Board (a hand-arranged day keeps its own order). Display-only; a **Reset
+  to standard order** button returns it to canonical. `#admSecDefault`.
+- **Flying-wave order** — the built-in kinds (Flying wave / SC / AVALON / BB),
+  `engine/reorder.ts waveDefaultView`/`moveWaveDefault`. It starts **off** (the panel
+  shows the canonical kinds as a starting point); once set, a NEW wave added to a
+  not-signed-off day lands in this order (SC on top, etc.) and never re-orders a
+  planned or published day (`board.ts placeAddedWave`). A **Turn off wave order**
+  button clears it back to append-at-bottom. `#admWaveDefault`.
+
+Each nudge persists immediately (`secDefaultSave` / `waveDefaultSave`, both writing
+`null` at the un-customised baseline). Pinned in `ui/admin.test.tsx`,
+`engine/arrdefaults.test.ts`, `ui/wavedefault-add.test.tsx`.
 
 ## Selection highlight (`ui/highlights.ts`)
 
@@ -3885,7 +3934,17 @@ The three category panels:
   open the duty-template and day-template editors by setting the SAME
   `pops.ts` flags the picker pencils set (`setTplEdit` / `setDayTplEdit`).
   Front doors, not new surfaces: the modals stay App-level siblings and
-  paint over this page like any other.
+  paint over this page like any other. `#admWaveTpl` still opens the wave
+  CONTENT editor here, but the wave **show/hide list was removed** (29 Aug 26
+  pt.3): managing a wave's visibility — and deleting a saved template — moved
+  to the `+ Wave` menu's own **Manage** sheet (`ui/WaveManageSheet.tsx`,
+  `WAVEMANAGE`), reached by its ⚙ button or its "N hidden · Manage" line. An
+  EYE per built-in kind / template toggles `setWaveHidden` (the flag the
+  picker filters on); a TRASH deletes a template behind a confirm; a built-in
+  can be hidden but never deleted. Same admin-only gate as the old list. On a
+  phone every `.modal` (this sheet included) now slides up as a **bottom
+  sheet** rather than a centred card — the reachable-one-thumb pattern
+  `.ic-pop` already uses.
 - **`#admData` Data** — the storage-and-cleanup panel. **The screen reads
   PRODUCTION (owner, 25 Aug 26)**: the old session-only/no-server honesty
   paragraphs are gone from the UI and live as code comments in

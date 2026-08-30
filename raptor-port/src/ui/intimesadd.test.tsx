@@ -27,7 +27,7 @@ import { createRoot } from 'react-dom/client'
 import { App } from './App'
 import { initStore, setSession, notify } from '../state/store'
 import { DAYS } from '../engine/data'
-import { waveInTime } from '../engine/events'
+import { waveInTime, intimeFold } from '../engine/events'
 import { hhmm } from '../engine/time'
 import { makeStandalone } from '../engine/waves'
 import { HOOKS } from '../engine/hooks'
@@ -93,7 +93,9 @@ describe('adding and removing in-time lines', () => {
       line.parentElement!.appendChild(ghost)
       line.textContent = '0930H: EDITED LINE'
       await act(async () => { line.dispatchEvent(new Event('focusout', { bubbles: true })) })
-      expect(w.intimes[0]).toBe('0930H: EDITED LINE')
+      /* the commit folds the typed time to hh:mm (owner, 30 Aug 26) — the
+         colon appears on its own; the words stay as typed */
+      expect(w.intimes[0]).toBe('09:30H: EDITED LINE')
       expect(w.intimes[1], 'the second line untouched').toBe(keep[1])
       expect(w.intimes.join('|'), 'no ghost committed').not.toContain('GHOST')
       expect(w.intimes.length).toBe(keep.length)
@@ -112,7 +114,9 @@ describe('adding and removing in-time lines', () => {
       const line = $(`#eWeek [data-itline="0|0|0"]`)
       line.textContent = 'MANGLED MID-TYPE'
       await act(async () => { line.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true })) })
-      expect(line.textContent).toBe(keep[0])
+      /* the restore repaints the DISPLAY, which folds the leading time to
+         hh:mm (owner, 30 Aug 26); the model line stays exactly keep[0] */
+      expect(line.textContent).toBe(intimeFold(keep[0]))
       expect(w.intimes[0], 'the model never took the mangle').toBe(keep[0])
     } finally {
       w.intimes = keep.slice()
@@ -155,7 +159,8 @@ describe('adding and removing in-time lines', () => {
     await click($(`#eWeek [data-itadd="0|0"]`))
     expect(w.intimes.length, 'one line added').toBe(before + 1)
     const line = w.intimes[w.intimes.length - 1]
-    expect(line).toBe(hhmm(t0).replace(':', '') + 'H: IN TIME + WX/NOTAMS')
+    /* hh:mm since 30 Aug 26 — the mint states its time in the one colon form */
+    expect(line).toBe(hhmm(t0) + 'H: IN TIME + WX/NOTAMS')
     /* engine-neutral: the seeded time IS the wave's derived in-time, so the
        number the engine reads has not moved */
     expect(waveInTime(w), 'derived in-time unmoved by the seed').toBe(t0)

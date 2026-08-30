@@ -1,7 +1,7 @@
 /* Ported from reference/tfin.js — groups K (time helpers) and F (overlap).
    Source-text pins are re-expressed as behaviour where possible. */
 import { describe, expect, it } from 'vitest'
-import { parseHM, hhmm, hm24, minus, overlap, win, lgT } from './time'
+import { parseHM, hhmm, hm24, minus, overlap, win, lgT, fmtHM } from './time'
 
 describe('time helpers (tfin K)', () => {
   it('time helpers round-trip', () => {
@@ -59,5 +59,27 @@ describe('time helpers (tfin K)', () => {
     expect(lgT(720)).toBe('12h')
     expect(lgT(140)).toBe('2h20')
     expect(lgT(30)).toBe('30 min')
+  })
+})
+
+/* fmtHM — the ONE display fold (owner, 30 Aug 26, every time reads 08:00). It
+   takes a stored time in EITHER form and prints the single hh:mm, blanking a
+   non-time so an empty cell stays empty. Adversarial pins because it now wraps
+   every board time cell — a regression here mixes the clock formats again. */
+describe('fmtHM — the one display fold', () => {
+  it('folds a compact or colon time to hh:mm', () => {
+    expect(fmtHM('0900')).toBe('09:00')
+    expect(fmtHM('09:00')).toBe('09:00')   // idempotent — already-colon in, same out
+    expect(fmtHM('900')).toBe('09:00')     // 3-digit
+    expect(fmtHM('0000')).toBe('00:00')
+    expect(fmtHM('0745H')).toBe('07:45')   // strips the H suffix like parseHM
+  })
+  it('blanks a non-time rather than printing 00:00 or NaN', () => {
+    for (const junk of ['', '   ', 'borked', null, undefined, '9:5', 'FL240'])
+      expect(fmtHM(junk), JSON.stringify(junk)).toBe('')
+  })
+  it('preserves the stored minute for every readable time (display never shifts the clock)', () => {
+    for (const s of ['0900', '09:00', '2400', '0000', '0745', '1959', '900'])
+      expect(parseHM(fmtHM(s)), s).toBe(parseHM(s))
   })
 })

@@ -303,6 +303,16 @@ in what this repo actually has rather than a generic checklist:
 
 Run from `raptor-port/`, not the repo root. All four, after any change:
 
+> **Background commands start at the REPO ROOT, not `raptor-port/`.** A
+> foreground command inherits the session's `raptor-port/` cwd, but a
+> `run_in_background` job launches a fresh shell at `/home/user/Raptor`, where
+> there is no `package.json` — so a bare `npm run test:e2e` (or any `npm`
+> script) fails INSTANTLY with `ENOENT … package.json`, and the wrapper's own
+> exit code can read 0, masking it. ALWAYS prefix a backgrounded gate with
+> `cd /home/user/Raptor/raptor-port && …`. This bit twice (test:e2e, 30 Aug 26)
+> and each miss wastes a full ~10-minute re-run.
+
+
 ```
 npm test                    # Vitest — must stay green
 npm run build               # typecheck + build
@@ -758,12 +768,72 @@ subscribers.
   standby mint to 1:1. Times store raw in the editor and normalise on blur
   / mint / load (`waveTime`, colon form `07:00` — the one difference from duty
   `tplTime`'s `0700`). Show/hide: a `WAVEHIDE` set (built-in key or template id),
-  toggled on **Admin → Squadron config**, default all-shown; a deleted template drops
+  default all-shown; a deleted template drops
   its flag. Persisted like the stores/duty lists (`wavetpl` + `wavehide`), boot-loaded
   in `initStore`, untrusted storage clamped. Don't seed built-in templates (the four
   kinds are the baseline; the library starts empty), don't make `validate` read a
   template, and don't move the show/hide gate off `WAVEHIDE`. Pinned in
   `wavetpl.test.ts`, `WaveTplModal.test.tsx`, `wavepicker.test.tsx`.
+  **The manage + edit surfaces are ONE sheet, opened by ONE gear** (owner, 30 Aug 26 —
+  "quite an ugly design to have the settings and edit buttons separate … combine them
+  through 1 button"; folds in the 29 Aug pt.3 ask to take show/hide/delete off Admin —
+  "make flying wave templates more intuitive … remove it in admin"). The "+ Wave" menu
+  (`board.ts waveMenu`) carries a SINGLE ⚙ (`data-wvedit`, title "Manage flying waves")
+  plus a "N hidden · Manage" line, both opening `ui/WaveTplModal.tsx` — the unified
+  "Flying waves" sheet that BOTH edits templates AND shows/hides/deletes what the picker
+  offers: a "Wave types" list with an EYE per built-in kind (`setWaveHidden`), and per
+  template an EYE beside its name plus the footer Delete (built-ins can be hidden but
+  never deleted). The old separate ⚙-Manage sheet (`WaveManageSheet.tsx`, the `WAVEMANAGE`
+  flag) is DELETED and folded in — don't re-add it or the second button. The Admin
+  `WaveVisibility` list stays REMOVED (owner: keep Admin clean); Admin keeps only the
+  wave-template editor button, which opens the same sheet. Same admin-only gate
+  (`canEditSched` === admin), no permission widened. Don't leave a wave hidden with no way
+  back — the "N hidden" line and the sheet's eyes are the way back. Pinned in
+  `WaveTplModal.test.tsx`, `wavepicker.test.tsx`.
+  **The kind-picker's one-line rule notes have ONE source, shown on the picker AND the
+  Logic page** (owner, 30 Aug 26 — "make sure these word summaries are updated when I
+  change the rules concerning them … and the logic page should be updated as well").
+  `engine/wavetpl.ts kindNote(k)` is the single, count-free summary of each kind's
+  CHECKING rule (fly/sc/avalon/bb), verified against `validate.ts` / `events.ts`: the
+  template editor prints it under the kind picker, and the Logic page's "Wave types at a
+  glance" group (`ui/logic-html.ts`) renders the SAME strings, so the two can't drift.
+  It deliberately no longer reuses `SAWAVE.note` — that keeps its "2 MAIN + 2 SPARE" count
+  for the built-in + Wave popup, where the count is real (`makeStandalone` mints exactly
+  that); a template's line count is the owner's, so a count read as a limit there. When a
+  kind's checking rule changes, update the rule, `kindNote`, and the detailed "standby
+  lines" row on the Logic page together — `logic.test.tsx` pins that every kind's
+  `kindNote` shows on the page, so a dropped wire fails a gate.
+- **The leave/absence "what each type costs" sentence has ONE source too, shared by the
+  Inputs "?" legend AND the Logic page's type matrix** (owner, 30 Aug 26 — "can u make
+  sure these word summaries are updated when change the rules … the logic page should be
+  updated as well"). `engine/inputs.ts inputRuleText(t)` is that single sentence, derived
+  from the same flags the engine enforces (`canSpare` / `shiftHardInput` / `grp` / `work`
+  / `local`). `InputsPage.tsx typeRule` and `logic-html.ts` `leaves()` both read it — they
+  used to hand-write their own copies and had drifted (the Inputs gloss missed the SC-MAIN
+  Warning nuance; the Logic matrix had no SANS / Upchit line). `inputs.test.tsx` and
+  `logic.test.tsx` each guard that every `INPUT_TYPES` entry's `inputRuleText` shows on its
+  surface, so a dropped wire fails a gate. When a type's rule changes, edit `inputRuleText`
+  once. DELIBERATELY still separate, and NOT to be "helpfully" merged into this: `SAWAVE.note`
+  (keeps its 2+2 count for the built-in popup), the `satag` caption in `html.ts`, and the
+  OIL confirm sheet's prose (it walks a decision; the Logic page states the rule) — different
+  jobs, different voices.
+- **The DEFAULT arrangement is admin-set, and the wave half is "new schedules
+  only"** (owner, 29 Aug 26 pt.2 — "allow the default arrangement of a schedule to
+  be configured in admin … even to the arrangement of the waves under display").
+  Admin → Squadron config carries a **Default arrangement** panel
+  (`ui/AdminPage.tsx ArrangeDefaults`) with two ▲▼ lists persisted on the `wavehide`
+  footing: **section order** (`engine/order.ts SEC_DEFAULT`, key `secdefault`,
+  default canonical) is the fallback `secOrder(d)` uses for un-arranged sections —
+  display-only, so a hand-arranged day still wins and the canonical baseline keeps
+  parity 728/0; **wave order** (`engine/reorder.ts WAVE_DEFAULT`, key `wavedefault`,
+  default OFF) orders the built-in kinds and is applied ONLY at wave-add time on a
+  not-signed-off day (`board.ts placeAddedWave` in `addWave`/`addWaveFromTpl` →
+  `waveInsertSlot` → the tested `moveWave`). The owner chose new-schedules-only over
+  re-shuffling every day, because a wave move is a real amendment: DON'T make the
+  wave default re-order existing or published days, and DON'T give the wave default a
+  "display-only" layer (it would fight `sortWaves`). Unset wave order = append as
+  before. Pinned: `engine/arrdefaults.test.ts`, `ui/wavedefault-add.test.tsx`,
+  `ui/admin.test.tsx`.
 - **The highlight MENUS must read apart from their CHIPS** (owner, 25 Aug 26 —
   the CAT / Type / Quals tabs looked so like the chips inside them that, with one
   menu open, the next shut menu read as another selectable chip). A `.hl-gtab` is
@@ -1076,9 +1146,39 @@ subscribers.
   open at a time); the owner asked to undo it. The full implementation is one
   `git revert` away (the "collapse each row's control strip behind a ⋯" commit),
   so don't rebuild it from scratch or re-propose it unprompted. The row strips
-  stay always-visible on a phone. The four sibling touches from that batch —
-  the aircrew-tab gutter, board 4-digit input times, plural warnings, and the
-  week's faded `Remarks` placeholder — STAND; only the ⋯ collapse was undone.
+  stay always-visible on a phone. The sibling touches from that batch — the
+  aircrew-tab gutter, plural warnings, and the week's faded `Remarks`
+  placeholder — STAND; only the ⋯ collapse was undone (and the batch's board
+  4-digit input times were later reversed by the 30 Aug hh:mm decision below).
+- **EVERY time in the app reads `08:00` — colon, 24-hour, everywhere** (owner,
+  30 Aug 26, REVERSING their own 29 Aug "no colon, just 0800" ask: "I saw
+  wrongly … most of the timing format is 08:00. Change it back and make sure
+  everything follows that format consistently"). hh:mm is the app's native
+  form — the read-only reference gate PINS it (`reference/tfin.js`:
+  `fmtT('0745')==='07:45'`, `hhmm(760)==='12:40'`, `fmtTxt('0930')===fmtT('0930')`),
+  `txtSet` commits through `hhmm`, and the week/warnings/CSV never left it.
+  What broke ranks was compact-minted legacy data (duty templates minted
+  `0700`). The fix, three layers:
+  · **Display**: board renderers wrap every stored time string in
+    `engine/time.ts fmtHM` (the ONE display fold — compact or colon in, hh:mm
+    out, non-time → blank): flying br/to/ld + brief ghost (`board.ts`),
+    duty/sim/ground/programme str-end + ap rows + input rows (`board-html.ts`,
+    the `boxHTML` atm/tm chokepoint). The week already folds via `fmtT` (`ted`).
+  · **Minting**: `dutytpl.tplTime`, `DUTYTPL_STD`, `waveDutyBlock` and the
+    "+ In time" line now mint `07:00` (they were the compact minters);
+    `waveTime` always did. Old stored templates refold on load.
+  · **Typing**: every time box accepts `800`/`0800`/`8:00`/`08:00` (parseHM)
+    and shows hh:mm after commit — the user never types the colon. Hand-typed
+    IN TIME prose folds only the tokens `intimeTime`'s grammar recognises
+    (`events.ts intimeFold`, commit-time only — never at render, so the seed
+    week's model text stays byte-identical for parity).
+  The rules engine is untouched by construction: every reader goes through
+  `parseHM`, which takes both forms. Parity stays **728/0**. The ONE deliberate
+  4-digit survivor is the AREA window token (`0800-0900`, `atimeText`) — the
+  reference app prints it compact and `tfin.js` pins that; changing it means
+  editing the safety-net, owner sign-off required. Don't add a second display
+  formatter — `fmtHM` is the one. Placement: `docs/ui-contracts.md` §Every
+  time reads hh:mm.
 - **The flagging engine reads across week boundaries** (owner, 23 Aug 26 —
   "It is a continuous reading of the flagging engine. It doesn't just stay
   within a week"). Two rules used to compute strictly inside the loaded

@@ -19,6 +19,8 @@ import {
   getState,
   getVersion,
   initStore as lwInitStore,
+  lwRedo,
+  lwUndo,
   setBidState,
   setCell,
   setPeople,
@@ -786,5 +788,33 @@ describe('leaveInputAt answers for the CELL, not the first covering row (27 Aug 
     expect(leaveInputAt('ammo', '2026-02-02', 'FO')).toBeNull()
     // no code in hand keeps the old date-only answer
     expect(leaveInputAt('ammo', '2026-02-02')).toBeTruthy()
+  })
+})
+
+describe('undo / redo reconcile the Raptor side', () => {
+  // The cross-app half of undo: an approved war cell mints a Raptor input, so
+  // undoing the approval must take that input back out — otherwise the two
+  // systems disagree, the exact failure the sync exists to prevent. It works
+  // because a restore just notifies and the reconcile re-derives from the grid
+  // (approved-only outbound retracts a no-longer-approved cell). In the live
+  // app wireLeaveWarSync fires runOutbound automatically on that notify; this
+  // harness runs the pass by hand, as its other tests do.
+  it('undoing an approval retracts its outbound input; redo re-mints it', () => {
+    setRole('admin')
+    setCell('rocky', '2026-02-10', 'LL')
+    advanceStage()                                // open -> closed
+    setBidState('rocky', '2026-02-10', 'approved')
+    runOutbound()
+    expect(lwInputs()).toHaveLength(1)
+
+    lwUndo()                                      // approved -> pending
+    expect(getState().states.rocky['2026-02-10'].state).toBe('pending')
+    runOutbound()
+    expect(lwInputs()).toHaveLength(0)            // the input followed the undo out
+
+    lwRedo()                                      // pending -> approved
+    expect(getState().states.rocky['2026-02-10'].state).toBe('approved')
+    runOutbound()
+    expect(lwInputs()).toHaveLength(1)            // and back on redo
   })
 })

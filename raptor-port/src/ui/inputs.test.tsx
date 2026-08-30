@@ -7,7 +7,7 @@ import { act } from 'react'
 import { createRoot } from 'react-dom/client'
 import { App } from './App'
 import { initStore, setSession, notify, undo } from '../state/store'
-import { INPUTS, INPUT_TYPES, DATES } from '../engine/inputs'
+import { INPUTS, INPUT_TYPES, DATES, inputRuleText } from '../engine/inputs'
 import { DAYS } from '../engine/data'
 import { acceptInput, inpKey, acceptedDay } from '../engine/slots'
 import { canEditSched } from '../state/auth'
@@ -206,11 +206,24 @@ describe('the Inputs page (tfin)', () => {
     expect(pop, 'opens on the ?').toBeTruthy()
     for (const t of INPUT_TYPES) expect(pop.textContent, t).toContain(t)
     /* and it says what each one DOES, not just what it stands for */
-    expect(pop.textContent).toContain('may still stand an SC spare')
+    expect(pop.textContent).toContain('may still stand an SC SPARE')
     expect(pop.textContent).toContain('no flying')
     expect(pop.textContent).toContain('overseas')
     await act(async () => { document.dispatchEvent(new MouseEvent('mousedown', { bubbles: true })) })
     expect($('#inTypePop'), 'closes on a press outside').toBeFalsy()
+  })
+
+  it('every type in the legend shows the shared inputRuleText — the same source the Logic page reads', async () => {
+    /* the drift seam the owner flagged (30 Aug 26): this "?" legend and the
+       Logic page's type matrix must not tell different stories. Both render
+       engine/inputs.ts inputRuleText, so this guard fails a gate the moment
+       either surface stops reading the shared source — the same shape as the
+       wave-kind guard in logic.test. */
+    await click($('#inTypeHelp'))
+    const pop = $('#inTypePop')!
+    const missing = INPUT_TYPES.filter((t: string) => pop.textContent!.indexOf(inputRuleText(t)) < 0)
+    expect(missing, missing.join(',')).toEqual([])
+    await act(async () => { document.dispatchEvent(new MouseEvent('mousedown', { bubbles: true })) })
   })
 
   /* The "all people" option used to read "Personnel"; that word now names the

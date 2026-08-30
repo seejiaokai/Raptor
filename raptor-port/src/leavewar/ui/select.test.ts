@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { clearLanding, earliestDate, eventRange, paintLanding, parseCellId, parseEventCell, rectCells, wireSelect } from './select'
+import { clearLanding, earliestDate, eventRange, paintLanding, parseCellId, parseEventCell, rectCells, wireSelect, type Selection } from './select'
 
 // The gesture controller (wireSelect) needs a real browser (elementFromPoint,
 // pointer capture, layout) and is covered by e2e/leavewar.spec.ts. Here we pin
@@ -239,42 +239,172 @@ describe('wireSelect slow-arm rescues a drag begun without a pause', () => {
   })
 })
 
-// Edge auto-scroll runs the grid sideways when a MOUSE drag reaches a wrap
-// edge, so a desktop selection can extend past the visible columns. On a phone
-// it made the day columns slide away under the finger (owner, 27 Aug 26 — "the
-// calendar also follows my drag … only for phone"), so a touch drag must never
-// start it. arm() schedules the scroll via requestAnimationFrame, so a spy on
-// rAF reads exactly whether it was started.
-describe('wireSelect edge auto-scroll is desktop-only', () => {
-  let wrap: HTMLElement, cell: HTMLElement, teardown: () => void
+// Edge auto-scroll runs when a drag reaches an edge, so a selection can extend
+// past what the screen shows — SIDEWAYS onto more days (moves the wrap) and
+// UP/DOWN onto more people (moves the page). It runs for a mouse AND a finger
+// (owner, 30 Aug 26 — "auto scroll to the edge to continue selecting more grids"
+// → "up down scroller too"); touch RAMPS its speed by how deep the finger sits
+// in the edge band, the fix for the 27 Aug "columns slid away under the finger"
+// feel that had it turned off for touch. A spy on requestAnimationFrame reads
+// whether it started, and driving one captured frame reads the ramp on each axis.
+describe('wireSelect edge auto-scroll (mouse and touch, both axes)', () => {
+  let outer: HTMLElement, wrap: HTMLElement, cell: HTMLElement, teardown: () => void
   let rafSpy: ReturnType<typeof vi.spyOn>
+  let sl: number, st: number      // backing fields for scrollLeft (wrap) / scrollTop (page)
   const origEFP = document.elementFromPoint
+  const rect = (o: Partial<DOMRect>) => ({ left: 0, right: 300, top: 0, bottom: 400, width: 300, height: 400, x: 0, y: 0, toJSON() {}, ...o }) as DOMRect
   beforeEach(() => {
     document.elementFromPoint = () => null
     rafSpy = vi.spyOn(window, 'requestAnimationFrame').mockImplementation(() => 1 as unknown as number)
+    // The vertical scroller is an ancestor here (findVScroll picks the nearest
+    // overflow-y:auto ancestor whose content overflows), standing in for the
+    // page. jsdom moves neither scrollLeft nor scrollTop on its own, so back
+    // both with plain fields the `+=` in edgeScroll can actually change.
+    outer = document.createElement('div')
+    outer.style.overflowY = 'auto'
+    Object.defineProperty(outer, 'scrollHeight', { configurable: true, value: 2000 })
+    Object.defineProperty(outer, 'clientHeight', { configurable: true, value: 400 })
+    st = 0
+    Object.defineProperty(outer, 'scrollTop', { configurable: true, get: () => st, set: v => { st = v } })
+    outer.getBoundingClientRect = () => rect({})
     wrap = document.createElement('div')
     cell = document.createElement('div')
     cell.setAttribute('data-testid', 'cell-ramp-2026-01-06')
     wrap.appendChild(cell)
-    document.body.appendChild(wrap)
+    outer.appendChild(wrap)
+    document.body.appendChild(outer)
+    sl = 0
+    Object.defineProperty(wrap, 'scrollLeft', { configurable: true, get: () => sl, set: v => { sl = v } })
+    wrap.getBoundingClientRect = () => rect({})
     teardown = wireSelect(wrap, {
       order: () => ['ramp'], dates: () => ['2026-01-06'],
       enabled: () => true, onSelect: () => {},
     })
   })
-  afterEach(() => { teardown(); wrap.remove(); document.elementFromPoint = origEFP; rafSpy.mockRestore(); vi.useRealTimers() })
+  afterEach(() => { teardown(); outer.remove(); document.elementFromPoint = origEFP; rafSpy.mockRestore(); vi.useRealTimers() })
 
   it('a mouse drag starts it (desktop keeps selecting past the edge)', () => {
-    cell.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, pointerId: 1, pointerType: 'mouse', clientX: 5, clientY: 5, button: 0 }))
-    window.dispatchEvent(new PointerEvent('pointermove', { bubbles: true, pointerId: 1, pointerType: 'mouse', clientX: 12, clientY: 5 }))  // > MOUSE_SLOP → arm
+    cell.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, pointerId: 1, pointerType: 'mouse', clientX: 5, clientY: 200, button: 0 }))
+    window.dispatchEvent(new PointerEvent('pointermove', { bubbles: true, pointerId: 1, pointerType: 'mouse', clientX: 12, clientY: 200 }))  // > MOUSE_SLOP → arm
     expect(rafSpy).toHaveBeenCalled()
   })
 
-  it('a touch drag never starts it — the phone grid stays put under the finger', () => {
-    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] })   // leave rAF real so the spy still reads it
-    cell.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, pointerId: 1, pointerType: 'touch', clientX: 5, clientY: 5, button: 0 }))
+  // Arm a touch drag and hand back the captured rAF callback, so a test can
+  // drive one frame at a chosen finger position and read how far each axis moved.
+  const armTouchFrame = () => {
+    let cb: FrameRequestCallback | null = null
+    rafSpy.mockImplementation((fn: FrameRequestCallback) => { cb = fn; return 1 as unknown as number })
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] })
+    cell.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, pointerId: 1, pointerType: 'touch', clientX: 5, clientY: 200, button: 0 }))
+    vi.advanceTimersByTime(200)   // hold → arm, which schedules the first frame
+    expect(cb).not.toBeNull()
+    return () => cb!(0)
+  }
+  const move = (x: number, y: number) =>
+    window.dispatchEvent(new PointerEvent('pointermove', { bubbles: true, pointerId: 1, pointerType: 'touch', clientX: x, clientY: y }))
+
+  it('a touch drag scrolls SIDEWAYS at the right edge and ramps by depth', () => {
+    const frame = armTouchFrame()
+    move(299, 200); sl = 0; frame(); const deep = sl        // deep in the 48px band
+    expect(deep).toBeGreaterThan(0)
+    move(260, 200); sl = 0; frame(); const shallow = sl     // just inside the lip (252)
+    expect(shallow).toBeGreaterThan(0)
+    expect(shallow).toBeLessThan(deep)                      // less push, less scroll
+  })
+
+  it('a touch drag scrolls UP/DOWN at the bottom edge and ramps by depth', () => {
+    const frame = armTouchFrame()
+    move(150, 399); st = 0; frame(); const deep = st        // deep in the bottom band
+    expect(deep).toBeGreaterThan(0)
+    move(150, 360); st = 0; frame(); const shallow = st     // just inside the lip (352)
+    expect(shallow).toBeGreaterThan(0)
+    expect(shallow).toBeLessThan(deep)
+  })
+})
+
+// When the finger leaves every cell — a gap, or the empty area an edge
+// auto-scroll runs the grid past — the selection HOLDS the last cell it was
+// over instead of collapsing back to the anchor. Without this a drag to the
+// bottom edge vanished the instant the auto-scroll ran the last row above the
+// finger (owner, 30 Aug 26 "up down scroller too").
+describe('wireSelect holds the last focus when the finger leaves the grid', () => {
+  let wrap: HTMLElement, teardown: () => void
+  const origEFP = document.elementFromPoint
+  const cellEls: Record<string, HTMLElement> = {}
+  beforeEach(() => {
+    vi.useFakeTimers()
+    wrap = document.createElement('div')
+    for (const [id, y] of [['a', 50], ['b', 150], ['c', 250]] as const) {
+      const el = document.createElement('div')
+      el.setAttribute('data-testid', `cell-${id}-2026-01-06`)
+      wrap.appendChild(el); cellEls[id] = el
+    }
+    document.body.appendChild(wrap)
+    // map a clientY band to a cell; below the grid (y >= 300) is empty → null
+    document.elementFromPoint = ((_x: number, y: number) =>
+      y < 100 ? cellEls.a : y < 200 ? cellEls.b : y < 300 ? cellEls.c : null) as typeof document.elementFromPoint
+    teardown = wireSelect(wrap, {
+      order: () => ['a', 'b', 'c'], dates: () => ['2026-01-06'],
+      enabled: () => true, onSelect: () => {},
+    })
+  })
+  afterEach(() => { teardown(); wrap.remove(); document.elementFromPoint = origEFP; vi.useRealTimers() })
+
+  const painted = () => wrap.querySelectorAll('.selcell').length
+
+  it('keeps the span reached when the finger drops off the grid, not just the anchor', () => {
+    wrap.querySelector('[data-testid="cell-a-2026-01-06"]')!
+      .dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, pointerId: 1, pointerType: 'touch', clientX: 10, clientY: 50, button: 0 }))
     vi.advanceTimersByTime(200)   // hold → arm
-    expect(rafSpy).not.toHaveBeenCalled()
+    window.dispatchEvent(new PointerEvent('pointermove', { bubbles: true, pointerId: 1, pointerType: 'touch', clientX: 10, clientY: 250 }))  // over cell c
+    expect(painted()).toBe(3)     // a, b, c
+    window.dispatchEvent(new PointerEvent('pointermove', { bubbles: true, pointerId: 1, pointerType: 'touch', clientX: 10, clientY: 500 }))  // below the grid → no cell
+    expect(painted(), 'the a–c span holds instead of collapsing to a').toBe(3)
+  })
+})
+
+// A member scoped to one person has a one-row `order()`; the grid still RENDERS
+// every row, so a drag straying onto another person's cell (or an edge scroll
+// running one under the pointer) hands `current()` a focus outside the order.
+// It must clamp to the anchor's row — a valid selection the fill then writes to
+// the own row — never resolve to an empty rectangle (which left the select
+// sheet unopened, so a scoped member could not drag-fill at all).
+describe('wireSelect clamps a focus outside the scoped order to the anchor row', () => {
+  let wrap: HTMLElement, teardown: () => void
+  const origEFP = document.elementFromPoint
+  const cellEls: Record<string, HTMLElement> = {}
+  const selections: Selection[] = []
+  beforeEach(() => {
+    vi.useFakeTimers()
+    selections.length = 0
+    wrap = document.createElement('div')
+    for (const [id, y] of [['a', 50], ['b', 150]] as const) {
+      const el = document.createElement('div')
+      el.setAttribute('data-testid', `cell-${id}-2026-01-06`)
+      wrap.appendChild(el); cellEls[id] = el
+    }
+    document.body.appendChild(wrap)
+    document.elementFromPoint = ((_x: number, y: number) =>
+      y < 100 ? cellEls.a : y < 200 ? cellEls.b : null) as typeof document.elementFromPoint
+    teardown = wireSelect(wrap, {
+      // scoped: only 'a' is selectable, though 'b' is on screen
+      order: () => ['a'], dates: () => ['2026-01-06'],
+      enabled: () => true, onSelect: s => selections.push(s),
+    })
+  })
+  afterEach(() => { teardown(); wrap.remove(); document.elementFromPoint = origEFP; vi.useRealTimers() })
+
+  it('paints and commits the anchor row when the drag strays onto an unlisted person', () => {
+    wrap.querySelector('[data-testid="cell-a-2026-01-06"]')!
+      .dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, pointerId: 1, pointerType: 'touch', clientX: 10, clientY: 50, button: 0 }))
+    vi.advanceTimersByTime(200)   // hold → arm
+    // stray down onto b (not in the scoped order)
+    window.dispatchEvent(new PointerEvent('pointermove', { bubbles: true, pointerId: 1, pointerType: 'touch', clientX: 10, clientY: 150 }))
+    expect(wrap.querySelectorAll('.selcell').length, 'clamps to a — not an empty rect').toBe(1)
+    window.dispatchEvent(new PointerEvent('pointerup', { bubbles: true, pointerId: 1, pointerType: 'touch', clientX: 10, clientY: 150, button: 0 }))
+    // the sheet opens: onSelect fired, covering the anchor's own row only
+    expect(selections).toHaveLength(1)
+    expect(selections[0].people).toEqual(['a'])
   })
 })
 

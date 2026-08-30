@@ -4,7 +4,7 @@
    member view-only, and both go through writeInputs so they join the undo
    stack and re-validate the week. */
 import { useEffect, useRef, useState } from 'react'
-import { INPUTS, INPUT_TYPES, TYPE_GROUPS, inpMeta, inpId, typeGroup, isLateInput, lateNote, isSansAvail, isDownchit, isUpchit, needsDoc, sansLetters, defaultAllday, withRemarksTail, baseYear, dateOrd, oilAsks } from '../engine/inputs'
+import { INPUTS, INPUT_TYPES, TYPE_GROUPS, inpMeta, inputRuleText, inpId, typeGroup, isLateInput, lateNote, isSansAvail, isDownchit, isUpchit, needsDoc, sansLetters, defaultAllday, withRemarksTail, baseYear, dateOrd, oilAsks } from '../engine/inputs'
 import { upchitTrimPlan, upchitEffects, newMedTrimPlan, medClashes, ordLabel } from '../engine/medical'
 import { UpchitConfirm } from './UpchitConfirm'
 import { MedClashConfirm } from './MedClashConfirm'
@@ -147,16 +147,12 @@ const inWindow = (r: any, from: string, to: string) => {
    the engine does not apply — which is the whole reason the table exists.
    It reuses the anchored-popover pattern already on this page (#inRangeBtn),
    rather than a modal: it is a reference card, not a task. */
+/* The cost sentence is inputRuleText (engine/inputs) — the SAME source the
+   Logic page's type matrix reads, so this legend and the rule book cannot tell
+   different stories. It used to hand-write its own shorter copy here; a guard
+   test now fails if either surface stops reading the shared source. */
 function typeRule(t: string) {
-  const m = inpMeta(t); if (!m) return ''
-  /* not an absence — the other three branches all describe a man who is
-     unavailable in one way or another, which SANS Availability is not */
-  if (m.grp === 'sans') return 'not an absence — the boxes ticked say which events he is available for, and when'
-  if (m.grp === 'upchit') return 'closes a medical-down period — records the date he is fit to fly again; needs the medical document attached'
-  if (m.work) return 'no flying — may still stand a duty, sit a sim or take a ground slot'
-  if (!m.local) return 'out of reach — cannot be planned for anything, an SC spare included'
-  if (m.grp === 'med') return 'cannot be planned, and cannot stand an SC spare'
-  return 'cannot be planned, but may still stand an SC spare'
+  return inputRuleText(t)
 }
 /* "Training — training" says nothing twice. A code only earns a spelt-out
    name when it IS an abbreviation, the same test offWord makes. */

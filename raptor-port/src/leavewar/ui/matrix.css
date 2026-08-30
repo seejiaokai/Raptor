@@ -18,21 +18,33 @@
    never be sure which one would move.
    So the wrapper scrolls HORIZONTALLY only and has no height cap: it grows to
    whatever the roster needs and the page carries the vertical scrolling for
-   all of it. `overflow-y: hidden` never actually clips anything, because with
-   no cap there is no vertical overflow to clip; it is there to stop the
-   browser giving back the second scrollbar.
+   all of it. With no cap there is no vertical overflow to scroll, so the grid
+   still contributes no vertical scroller of its own (the geometry gate pins
+   this) — the page carries it all.
 
-   The cost, stated plainly because it is a real loss: the date header no
-   longer sticks. `position: sticky` resolves against the nearest scrollport,
-   which is still this wrapper, and this wrapper no longer scrolls vertically —
-   so scrolling the PAGE carries the header away with it. There is no CSS that
-   both scrolls one axis here and lets a descendant stick to the page's other
-   axis. The frozen callsign and counter columns are unaffected: they stick on
-   `left`, and this wrapper still owns the horizontal axis. */
+   The sideways flick had NO iOS inertial momentum here — it stopped dead the
+   instant the finger lifted, while the vertical page scroll and the Quals grid
+   (`.qwrap`) both glided (owner, 30 Aug 26). Two theories were tried and BOTH
+   disproved on the owner's actual iPhone (Chrome/Edge/Safari all share WebKit
+   there): removing `overflow-y: hidden` changed nothing, and turning the
+   scroll-timeline glue off changed nothing (and broke the sticky bar, so it was
+   reverted — the glue stays). What was left was the ONE scroll property the
+   gliding `.qwrap` does NOT carry and this scroller did: `-webkit-overflow-
+   scrolling: touch`. It is a no-op on modern iOS in theory, but the empirical
+   A/B — same page, same gesture, `.qwrap` without it glides, `.mx-wrap` with it
+   dies — outranks the theory, and on some iOS builds an explicit `touch` value
+   reverts a scroller to a legacy mode whose momentum is buggy. Removed, so this
+   scroller now matches `.qwrap` exactly (`overflow-x: auto`, nothing else).
+   `overflow-y` is still deliberately NOT `hidden` (that property is a separate
+   known momentum killer, and with no height cap there is no vertical overflow to
+   need it — the geometry gate pins zero vertical scroll room, so no second bar).
+
+   The date header still does not stick by CSS (`position: sticky` resolves
+   against this wrapper, which owns the horizontal axis and never scrolls
+   vertically) — the `.mxfixed` JS mirror carries the freeze instead. The frozen
+   callsign and counter columns stick on `left` and are unaffected. */
 .mx-wrap {
   overflow-x: auto;
-  overflow-y: hidden;
-  -webkit-overflow-scrolling: touch;
 }
 
 .mx {
