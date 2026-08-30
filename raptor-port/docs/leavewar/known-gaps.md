@@ -732,3 +732,30 @@ demanding distinct bodies, `quals` + `notQuals` on one filter, `show:'people'`
 keeping a fractional team, ATT B counting while ATT C does not, and the
 Quals-tick-lifts-the-count integration — are pinned in
 `engine/counterrules.test.ts` §custom counter shapes and `roster.test.ts`.
+
+- **Undo / redo scope (owner, 30 Aug 26 — "Add undo and redo on leave war").**
+  The buttons live in Leave War's own top row (`ui/Chrome.tsx` Topbar), shown to
+  everyone. The stack is a snapshot of the DURABLE state — the same fields
+  `persist()` writes (every war's grid / states / period, the counter ledger and
+  openings, and all of the admin arrangement/config: figure & roster & manning
+  order, hidden rows, group defs & priority, manning rules, event types & rows,
+  Show SANS). The push lives INSIDE `persist()` (a save is the edit), so no
+  writer can add an undoable change and forget to record it. Deliberately NOT
+  undoable, do not "fix":
+  - **Navigation and identity** — which war is on screen, who you are viewing
+    as, the role, the focused day. An undo must not move you, and switching wars
+    RE-BASELINES the stack (undo is scoped to the war in front of you, the same
+    way the schedule re-baselines per week).
+  - **Post-out / a person's seat-band-SXO edit** (`setPostOut` / `setPerson`).
+    These write `people`, a live PROJECTION of Raptor's roster owned by the
+    Quals page; they carry their own explicit undo (clear the PO date, flip the
+    field back) and are re-projected on every Raptor notify, so putting them in
+    the snapshot would only let an undo fight Raptor.
+  - **Raptor-driven grid changes** — a leave/duty cell that arrived by sync
+    (`ingestFromRaptor` / `ingestDutyCredit` / `clearRaptorCell` /
+    `withdrawLeaveCell`, all held under the history `locked`). Undoing one would
+    only be re-applied by the next reconcile pass. The mirror of this is what
+    makes undo of a Leave War approval CLEAN: the restore notifies, sync
+    re-derives, and the Raptor input the approval had minted is retracted — the
+    behaviour `sync.ts`'s wiring note already anticipated. Pinned in
+    `state/store.test.ts` §undo / redo and `ui/chrome.test.tsx`.

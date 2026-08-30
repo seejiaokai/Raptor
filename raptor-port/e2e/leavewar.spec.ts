@@ -93,6 +93,26 @@ test.beforeEach(async ({ page }) => {
   await openLeaveWar(page)
 })
 
+// Undo / redo (owner, 30 Aug 26). The click LOGIC is unit-tested in the store
+// and chrome suites; this pins the LAYOUT jsdom can't — the pair renders inside
+// the Leave War top row, disabled with nothing to undo yet, on both widths.
+test('the undo/redo pair sits in the Leave War top bar, disabled at rest', async ({ page }) => {
+  const undo = page.locator('[data-testid="lw-undo"]')
+  const redo = page.locator('[data-testid="lw-redo"]')
+  await expect(undo).toBeVisible()
+  await expect(redo).toBeVisible()
+  await expect(undo).toBeDisabled()   // a freshly loaded war has no history to walk
+  await expect(redo).toBeDisabled()
+  const u = (await undo.boundingBox())!
+  const r = (await redo.boundingBox())!
+  const bar = (await page.locator('#page-leavewar .topbar').boundingBox())!
+  // inside the top bar, and redo immediately after undo (a tidy pair)
+  expect(u.y).toBeGreaterThanOrEqual(bar.y - 1)
+  expect(u.y).toBeLessThan(bar.y + bar.height + 1)
+  expect(r.x).toBeGreaterThan(u.x)
+  expect(r.x - (u.x + u.width)).toBeLessThan(40)
+})
+
 // THE FROZEN CALLSIGN/COUNTER COLUMNS on a phone are no longer the real cells
 // (20 Aug 26 — the third look at the sideways stutter). The real cells were
 // `position: sticky` on every one of ~80 rows and a sideways drag re-solved
