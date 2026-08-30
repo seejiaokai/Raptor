@@ -1,26 +1,44 @@
-/* The Flying-wave-templates editor (owner, 25 Aug 26) — opened from the "+ Wave"
-   picker's pencil (WAVEEDIT in pops.ts), the sibling of DutyTplModal. Same shape:
-   a store-subscribed component that returns a hidden shell when closed and the
-   real modal otherwise, with the SELECTED template held as local view state.
+/* THE FLYING-WAVES SHEET (owner, 25 Aug 26; unified 30 Aug 26 — "ugly to have the
+   settings and edit buttons separate … combine them through 1 button"). One sheet
+   opened by ONE button on the "+ Wave" picker (WAVEEDIT in pops.ts): it both EDITS
+   the wave templates and manages what shows in the picker. The separate ⚙ Manage
+   sheet (the old WaveManageSheet) is retired — its show/hide/delete list folded in
+   here, so a wave is edited, shown, hidden or binned all in the one place a wave is
+   added from.
 
-   Two things the duty editor does not have. A KIND picker — the rule-set the placed
-   wave follows (Flying / SC / AVALON / BB), with the same one-line note the "+ Wave"
-   popup shows — and, on a standby kind, a MAIN/SPARE flip per line (it is inert and
-   hidden on Flying, where every line is a plain MAIN). A wave line also carries more
-   fields than a duty row, too many for one phone row, so each line is a small
-   two-tier card: callsign on top, mission/times/role beneath. */
+   Shape, still the sibling of DutyTplModal: a store-subscribed component that
+   returns a hidden shell when closed and the real modal otherwise, with the SELECTED
+   template held as local view state.
+
+   Two zones:
+     • WAVE TYPES — the four built-in rule-sets (Flying / SC / AVALON / BB). They can
+       be hidden from the picker (WAVEHIDE) but never edited or deleted, so SC can't
+       be lost for good. An eye per row is their only control.
+     • TEMPLATES — the editor proper. A KIND picker (the rule-set the placed wave
+       follows, with the same one-line note the "+ Wave" popup shows), a MAIN/SPARE
+       flip per line on a standby kind (inert and hidden on Flying), each line a small
+       two-tier card (callsign on top, mission/times/role beneath). Each template also
+       carries its own show/hide eye beside its name and a Delete in the footer, so a
+       template is shown, hidden or removed from the same panel that edits it. */
 import { useState, useRef } from 'react'
 import { notify } from '../state/store'
 import {
   WAVETPL_CFG, WAVE_BUILTIN, MAX_WLINES, kindIsStandby, kindNote,
   addWaveTpl, delWaveTpl, renameWaveTpl, setWaveTplKind, addWaveTplLine,
   delWaveTplLine, setWaveTplLine, moveWaveTplLine, waveTplSave, waveTplReset, waveTime,
+  isWaveHidden, setWaveHidden,
 } from '../engine/wavetpl'
 import type { WaveKind } from '../engine/wavetpl'
 import { hmOK } from '../engine/time'
+import { canEditSched } from '../state/auth'
 import { WAVEEDIT, setWaveEdit } from './pops'
 import { useVersion } from './useStore'
 import { HOOKS } from '../engine/hooks'
+
+/* inline glyphs — crisp at any size and theme-safe (stroke:currentColor), the same
+   reason the board's own icons are inline SVG (moved here from WaveManageSheet). */
+const EyeOn = () => <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M1.5 12S5 5 12 5s10.5 7 10.5 7S19 19 12 19 1.5 12 1.5 12Z" /><circle cx="12" cy="12" r="3.2" /></svg>
+const EyeOff = () => <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 5.4A10.6 10.6 0 0 1 12 5c7 0 10.5 7 10.5 7a18 18 0 0 1-3.2 4M6 7.1A17.6 17.6 0 0 0 1.5 12S5 19 12 19a10.7 10.7 0 0 0 3.4-.55" /><path d="M9.9 9.9a3.2 3.2 0 0 0 4.3 4.3" /><line x1="3" y1="3" x2="21" y2="21" /></svg>
 
 export function WaveTplModal() {
   useVersion()
@@ -28,12 +46,14 @@ export function WaveTplModal() {
   const timeBuf = useRef('')
   if (!WAVEEDIT) return <div className="modal" id="waveTplModal" hidden />
 
+  const canEdit = canEditSched()
   /* the selected id can go stale (a delete, or first open), so fall back to the
      first template every render rather than trusting it survived */
   const tpl = WAVETPL_CFG.find(t => t.id === sel) || WAVETPL_CFG[0] || null
   const close = () => { setWaveEdit(false); notify() }
   const save = () => { waveTplSave(); notify() }
   const addNew = () => { const t = addWaveTpl(); if (t) setSel(t.id); save() }
+  const toggleHide = (key: string) => { if (!canEdit) return; setWaveHidden(key, !isWaveHidden(key)); save() }
 
   /* a time cell takes a clock time or nothing, validated on COMMIT (blur), the
      same rule the duty editor and the schedule cells enforce: onChange writes raw
@@ -50,14 +70,41 @@ export function WaveTplModal() {
     save()
   }
 
+  const tplHidden = tpl ? isWaveHidden(tpl.id) : false
+
   return (
     <div className="modal" id="waveTplModal" onClick={e => { if ((e.target as HTMLElement).id === 'waveTplModal') close() }}>
       <div className="modal-box" style={{ width: 480 }}>
-        <div className="modal-head"><b>Flying-wave templates</b><button className="x" id="waveTplClose" onClick={close}>✕</button></div>
+        <div className="modal-head"><b>Flying waves</b><button className="x" id="waveTplClose" onClick={close}>✕</button></div>
         <div className="modal-body">
+          {/* WAVE TYPES — show / hide the four built-in rule-sets (folded in from the
+              retired Manage sheet). Hidden is one tap from coming back, right here. */}
+          <div className="wtpl-types">
+            <h5 className="wtpl-h">Wave types</h5>
+            <p className="wtpl-hint">Show or hide what appears in <b>+ Wave</b>. Built-in types can be hidden but not deleted.</p>
+            <ul className="wvmng-list">
+              {WAVE_BUILTIN.map(b => {
+                const hidden = isWaveHidden(b.key)
+                return (
+                  <li className={'wvmng-row' + (hidden ? ' off' : '')} key={b.key} data-wvrow={b.key}>
+                    <span className="wvmng-name">{b.label}<span className="wvmng-sub">Built-in type</span></span>
+                    <div className="wvmng-acts">
+                      <button className={'wvmng-eye' + (hidden ? ' off' : '')} disabled={!canEdit} data-wveye={b.key}
+                        aria-pressed={!hidden}
+                        title={hidden ? 'Hidden from + Wave — tap to show' : 'Shown in + Wave — tap to hide'}
+                        onClick={() => toggleHide(b.key)}>{hidden ? <EyeOff /> : <EyeOn />}<span>{hidden ? 'Hidden' : 'Shown'}</span></button>
+                    </div>
+                  </li>
+                )
+              })}
+            </ul>
+          </div>
+
+          <h5 className="wtpl-h wtpl-h-tpl">Templates</h5>
           <div className="tpl-tabs">
             {WAVETPL_CFG.map(t => (
-              <button key={t.id} className={'tpl-tab' + (tpl && t.id === tpl.id ? ' on' : '')}
+              <button key={t.id} className={'tpl-tab' + (tpl && t.id === tpl.id ? ' on' : '') + (isWaveHidden(t.id) ? ' hid' : '')}
+                title={isWaveHidden(t.id) ? 'Hidden from + Wave' : undefined}
                 onClick={() => setSel(t.id)}>{t.title || 'Untitled'}</button>
             ))}
             <button className="tpl-tab new" onClick={addNew}>+ New</button>
@@ -71,8 +118,15 @@ export function WaveTplModal() {
             </div>
           ) : (
             <>
-              <input className="tpl-name" value={tpl.title} maxLength={24} placeholder="Template name"
-                onChange={e => { renameWaveTpl(tpl.id, e.target.value); save() }} />
+              {/* name + this template's own show/hide eye, side by side */}
+              <div className="tpl-namerow">
+                <input className="tpl-name" value={tpl.title} maxLength={24} placeholder="Template name"
+                  onChange={e => { renameWaveTpl(tpl.id, e.target.value); save() }} />
+                <button className={'wvmng-eye' + (tplHidden ? ' off' : '')} disabled={!canEdit} data-wveye={tpl.id}
+                  aria-pressed={!tplHidden}
+                  title={tplHidden ? 'Hidden from + Wave — tap to show' : 'Shown in + Wave — tap to hide'}
+                  onClick={() => toggleHide(tpl.id)}>{tplHidden ? <EyeOff /> : <EyeOn />}<span>{tplHidden ? 'Hidden' : 'Shown'}</span></button>
+              </div>
 
               <div className="wkind" role="group" aria-label="Rule-set">
                 {WAVE_BUILTIN.map(b => (

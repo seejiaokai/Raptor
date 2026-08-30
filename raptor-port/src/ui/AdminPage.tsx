@@ -99,10 +99,10 @@ function ClearControl(props: {
 }
 
 /* The "Show / hide each + Wave entry" list used to live here (owner, 25 Aug 26).
-   It moved to the + Wave menu's own Manage sheet (ui/WaveManageSheet.tsx) on 29 Aug
-   26 pt.3 — managing a wave's visibility now happens where a wave is added, and Admin
-   keeps only the wave-template EDITOR button below. Same admin-only gate either way
-   (canEditSched === admin). */
+   It moved to the + Wave menu on 29 Aug 26 pt.3, and on 30 Aug 26 folded into the
+   one Flying-waves sheet (ui/WaveTplModal.tsx) — editing a wave and showing/hiding/
+   deleting it now happen in the single sheet, opened where a wave is added and from
+   the button below. Same admin-only gate either way (canEditSched === admin). */
 
 /* THE DEFAULT ARRANGEMENT (owner, 29 Aug 26 pt.2 — "allow the default arrangement
    of a schedule to be configured in admin … even to the arrangement of the waves

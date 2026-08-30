@@ -2489,10 +2489,10 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
 .urow .ub.admin{background:rgba(59,198,232,.16);color:var(--accent)}
 .urow .ub.main{background:rgba(138,150,163,.16);color:var(--ink-2)}
 .modal-foot{padding:12px 16px;border-top:1px solid var(--edge);display:flex;gap:8px;justify-content:flex-end}
-/* ---- the wave MANAGE sheet (owner, 29 Aug 26 pt.3; ui/WaveManageSheet.tsx) —
-   show/hide (eye) and delete (trash) what appears in + Wave, where a wave is added.
-   Reuses the .modal shell; only the rows are new. 44px targets — this is a
-   touch-first list. ---- */
+/* ---- wave show/hide rows (owner, 29 Aug 26 pt.3) — the eye (show/hide) and trash
+   (delete) list for what appears in + Wave. Folded 30 Aug 26 into the one Flying-
+   waves sheet (ui/WaveTplModal.tsx), which reuses these row/eye styles. 44px
+   targets — this is a touch-first list. ---- */
 .wvmng-intro{font-size:12px;color:var(--ink-3);line-height:1.5;margin-bottom:12px}
 .wvmng-intro b{color:var(--ink-2)}
 .wvmng-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
@@ -2537,6 +2537,18 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
 .tpl-name{width:100%;box-sizing:border-box;background:var(--bg);border:1px solid var(--edge);border-radius:8px;
   color:var(--ink);font-size:14px;font-weight:700;padding:8px 10px;margin-bottom:10px}
 .tpl-name:focus{outline:none;border-color:var(--accent)}
+/* ---- Flying-waves sheet: the show/hide zone folded in from the retired Manage
+   sheet (owner, 30 Aug 26 — one button for edit + manage). Reuses the .wvmng-*
+   row/eye styles that already sit by the modal above. ---- */
+.wtpl-h{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-3);margin:0 0 6px}
+.wtpl-h-tpl{margin-top:16px;padding-top:14px;border-top:1px solid var(--edge)}
+.wtpl-hint{font-size:12px;color:var(--ink-3);line-height:1.5;margin:0 0 10px}
+.wtpl-hint b{color:var(--ink-2)}
+.wtpl-types .wvmng-list{gap:6px}
+.tpl-namerow{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.tpl-namerow .tpl-name{margin-bottom:0}
+.tpl-namerow .wvmng-eye{flex:none}
+.tpl-tab.hid{opacity:.5;text-decoration:line-through}
 .tcols,.trow{display:grid;grid-template-columns:22px 1fr 58px 58px 30px;gap:7px;align-items:center}
 .tcols{font-family:'Barlow Condensed','Inter Tight',sans-serif;font-size:8px;font-weight:700;text-transform:uppercase;
   letter-spacing:.06em;color:var(--ink-3);padding:0 2px 4px}
@@ -5034,7 +5046,8 @@ button.sbi-ty.inpedit:hover{text-decoration:none;filter:brightness(1.3)}
 #page-admin #admConfig .abtn{display:block;width:100%;text-align:left;margin-top:2px}
 #page-admin #admConfig .adm-note{margin-bottom:12px}
 /* (the Admin + Wave show/hide list was removed 29 Aug 26 pt.3 — show/hide/delete
-   moved to the + Wave menu's Manage sheet; its .wvmng styles live by the modal.) */
+   moved to the + Wave menu, and on 30 Aug 26 folded into the one Flying-waves sheet;
+   its .wvmng-* row/eye styles live by the modal and are reused there.) */
 /* the forced-member render — a member cannot reach this page from the nav,
    so this is the page-gate's own answer, styled as a quiet centred panel */
 .adm-deny{max-width:520px;margin:60px auto;padding:22px 24px;text-align:center;color:var(--ink-2);

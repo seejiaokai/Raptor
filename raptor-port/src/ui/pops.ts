@@ -15,9 +15,12 @@ export function setAirKey(k: string | null) { AIRKEY = k }
    template locally, because that is ephemeral view state, not schedule state. */
 export let TPLEDIT = false
 export function setTplEdit(on: boolean) { TPLEDIT = on }
-/* the Flying-wave-templates editor (owner, 25 Aug 26) — the sibling of TPLEDIT,
-   opened from the "+ Wave" picker's pencil. Same shape and same reasoning: a
-   plain on/off flag, the component keeps its own selected template locally. */
+/* the Flying-waves sheet (owner, 25 Aug 26; unified 30 Aug 26) — opened from the
+   "+ Wave" picker's single gear (and the Admin config button). One sheet that both
+   edits the wave templates and shows / hides / deletes what appears in the picker,
+   so the old separate ⚙ Manage sheet (WAVEMANAGE, retired 30 Aug 26) is folded in.
+   Same shape as TPLEDIT: a plain on/off flag, the component keeps its own selected
+   template locally. */
 export let WAVEEDIT = false
 export function setWaveEdit(on: boolean) { WAVEEDIT = on }
 /* The Day-templates editor (owner, 15 Aug 26) — opened from the day-templates
@@ -44,13 +47,6 @@ export function setDraftsEdit(v: null | { di: number, id?: string }) { DRAFTSEDI
    a button on either surface; the sheet reorders live behind itself. */
 export let ARRANGESEC: number | null = null
 export function setArrangeSec(v: number | null) { ARRANGESEC = v }
-/* The wave MANAGE sheet (owner, 29 Aug 26 pt.3 — "make flying wave templates more
-   intuitive with the functions to hide/delete and remove it in admin"). Opened from
-   the + Wave menu; lists every built-in kind and saved template with a show/hide eye
-   and, for templates, a delete — the show/hide list that used to live on the Admin
-   page. A plain on/off flag; the sheet reads WAVEHIDE / WAVETPL_CFG live. */
-export let WAVEMANAGE = false
-export function setWaveManage(on: boolean) { WAVEMANAGE = on }
 /* The one personal input being edited from the week or the board (owner,
    10 Aug 26). The INPUT OBJECT, never its index or its content key: undo is
    still live under the modal and renumbers INPUTS, and the key is built from
