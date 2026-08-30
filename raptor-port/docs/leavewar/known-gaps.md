@@ -321,79 +321,64 @@ own machinery) and the DESKTOP's still-sticky columns. Still worth the WebKit
 pass, but the riskiest surface — sticky cells on 80 scrolling rows — is off the
 phone now.
 
-## The sideways-flick momentum on `.mx-wrap` — ROOT CAUSE and the touch-scoped fix (owner, 30 Aug 26)
+## The sideways-flick momentum on `.mx-wrap` — UNSOLVED, and abandoned by owner (30 Aug 26)
 
-The Leave War grid scroller (`.mx-wrap`) had no iOS inertial (flick) momentum —
-a sideways scroll stopped dead the instant the finger lifted, while the vertical
-page scroll AND the Quals grid (`.qwrap`) both glided. On the owner's iPhone
+The Leave War grid scroller (`.mx-wrap`) has no iOS inertial (flick) momentum —
+a sideways scroll stops dead the instant the finger lifts, while the vertical
+page scroll AND the Quals grid (`.qwrap`) both glide. On the owner's iPhone
 Chrome, Edge and Safari all share WebKit, so this is a WebKit behaviour, not a
-Safari-only one.
+Safari-only one. After several rounds on his actual device the cause is still
+NOT identified, and the owner has chosen to STOP (30 Aug 26 — "this is the last
+try. If not I'll just skip it. Since more ppl may use the view vertically in
+portrait"). The last try failed, so the feature is dropped and the code is back
+to the glued-bar baseline. **The glue STAYS ON — the sticky date bar is the
+thing that matters in portrait, which is the main view.**
 
-**ROOT CAUSE: the scroll-timeline glue itself.** `.mx-wrap` carries
-`scroll-timeline: --lwx x` (via `.lw-sda`, gated by `Matrix.tsx sdaActive`) so
-the frozen date bar can be TRANSLATED on the compositor by the grid's own scroll
-(the 28 Aug "glue the bar to the grid" work). On iOS Safari a scroller that is a
-`scroll-timeline` SOURCE loses its inertial fling — naming the timeline is the
-killer. It is always on, at EVERY scroll position, so the flick was dead
-everywhere, including the very top of the list. That "dead even at the top" is
-the tell: it rules out anything that only fires on a reflow.
+**Everything tried on the device, and DISPROVED — do not re-try any of these:**
 
-Everything else on the scroller was ruled out by tracing every writer/handler:
-the drag-select machinery (`select.ts`) is fully passive on a quick flick — it
-only adds its non-passive `touchmove` and `touch-action: none` inside `arm()`,
-which a flick never reaches; the rAF pump (`syncMirror`) reads `wrap.scrollLeft`
-and writes the BAR's, never the wrap's; and the bottom-scrollbar sync is
-desktop-only. During a top-of-list finger coast NOTHING writes `wrap.scrollLeft`
-— only the `scroll-timeline` property is present to disable inertia. The clean
-A/B seals it: `.qwrap` follows its bar with a JS mirror on scroll events, has NO
-scroll-timeline, and glides.
+1. **The row-window re-centre "nudge"** (`wrap.scrollLeft += shift` when a
+   posted-out row hides and the columns re-narrow). Skipped on a touch flick
+   (`Matrix.tsx`, coarse pointer + the `jumpAtRef` jump exception). Did NOT
+   restore the glide — the flick is dead even at the TOP of the list, where no
+   row hides and the nudge never runs. So the nudge is not the (only) cause.
+   The skip + jump exception are KEPT anyway (a `scrollLeft` write mid-fling
+   would stall momentum, so the guard is correct belt-and-braces; the jump
+   exception is load-bearing for month navigation — the e2e "a month button
+   scrolls the grid to that month" test pins it). Just not the fix.
+2. **The scroll-timeline glue** (`sdaActive`/`.lw-sda`, `scroll-timeline: --lwx x`
+   on `.mx-wrap`). The plausible WebKit theory was that a scroll-timeline SOURCE
+   loses its fling. DISPROVED on device 30 Aug 26: gating `sdaActive` to
+   fine-pointer only (glue off on touch) did NOT bring the glide back in
+   landscape AND it BROKE the portrait sticky bar ("now the portrait doesn't
+   stick and landscape still the same"). This matches the 28 Aug reason the glue
+   was built: the JS-mirror fallback bar does not read as "stuck" on the real
+   iPhone, it needs the compositor glue. So the glue is exonerated as the killer
+   and REQUIRED for the sticky bar. **Do NOT drop the glue on touch again — it
+   is a double regression.**
+3. **`overflow-y: hidden`.** Removing it changed nothing on device. (Left off —
+   with no height cap there is no vertical overflow to need it; the geometry gate
+   pins zero vertical scroll room. Just not the cause.)
+4. **`-webkit-overflow-scrolling: touch`.** Removed so `.mx-wrap` matches the
+   gliding `.qwrap` exactly (`overflow-x: auto`, nothing else). A no-op on modern
+   iOS; the flick still died. Not the cause.
 
-**Why the earlier "glue off changed nothing" entry was wrong.** Turning the glue
-off was tried twice and reverted — once for the looser bar ("owner's choice"),
-and a later note recorded it as "changed nothing", most likely a stale preview /
-confounded by-feel test on the phone. The mechanism above and the `.qwrap` A/B
-both say the glue IS the cause; that older pessimistic note is superseded.
+**Ruled out by code-tracing, not device (so lower-cost to trust):** the
+drag-select machinery (`select.ts`) is fully passive on a quick flick — its
+non-passive `touchmove` and `touch-action: none` are attached only inside
+`arm()`, which a flick never reaches; the rAF pump (`syncMirror`) reads
+`wrap.scrollLeft` and writes the BAR's, never the wrap's; the bottom-scrollbar
+sync is desktop-only. During a top-of-list finger coast nothing JS writes
+`wrap.scrollLeft`.
 
-**The fix (`Matrix.tsx sdaActive`): drop the glue on TOUCH devices only.** A
-finger has inertia to lose; a mouse / trackpad does not. So `sdaActive` now also
-requires a FINE pointer (`!matchMedia('(pointer: coarse)')`): a desktop keeps the
-tighter compositor glue exactly as before, and a phone falls to the JS-mirror bar
-below — no `scroll-timeline` on `.mx-wrap`, so native momentum returns, and the
-bar follows via the composited `.mxfixed-scroll` mirror (`will-change:
-scroll-position` + a `translateZ(0)` layer — the same recipe that keeps Quals'
-bar on its grid, and Quals glides). The trade on the phone is that the bar tracks
-a hair looser on a very fast fling; the glide is the thing the owner asked back.
-
-**Do NOT drop the `coarse` gate to "re-enable on a newer Safari".** scroll-timeline
-SUPPORT is exactly what the broken iOS advertises, so a support probe cannot tell
-"composites momentum WITH a timeline" from "kills momentum" — only a deliberate
-hand edit should ever turn the glue on for touch again.
-
-**Belt-and-braces, KEPT: the row-window re-centre is still skipped on a touch
-flick, and its month/day JUMP exception stays.** The row-window feature (19 Aug)
-hides a posted-out person's roster row as you scroll into the months they are
-gone; hiding a row narrows the day columns, so a layout effect re-centres the
-scroller by writing `wrap.scrollLeft += shift`. That programmatic write in the
-middle of a fling would ALSO stall momentum, so it is skipped during a genuine
-finger flick (`matchMedia('(pointer: coarse)')`) — independent of the glue fix
-above, and still correct. The one exception: a month/day JUMP (`jumpTo` stamps
-`jumpAtRef`; a reflow within 1200 ms is treated as a jump and re-centred even on
-touch) — a jump can cross many posting-out boundaries at once and would otherwise
-land far off the frozen edge, and it has no fling to protect. Do NOT remove the
-jump exception (`jumpAtRef`); the e2e "a month button scrolls the grid to that
-month" test pins it.
-
-**Owner's framing, 30 Aug 26 — this is the last try.** "If not I'll just skip it.
-Since more ppl may use the view vertically in portrait." So if the phone's
-JS-mirror bar reads too loose on a fast flick, the fallback is to keep the
-desktop-only glue and accept dead sideways momentum on touch — the sideways
-flick is a minority gesture next to the vertical/portrait read. Judge it on the
-phone; iOS inertia cannot be reproduced in the headless (Chromium) e2e.
-
-Do NOT re-add `overflow-y: hidden` (a separate real momentum killer, tried and
-not the cause here — `.mx-wrap` deliberately matches `.qwrap`: `overflow-x: auto`
-and nothing else), and do NOT re-add `-webkit-overflow-scrolling: touch` (a no-op
-on modern iOS, also ruled out).
+**Still unexplained — the open lead for any future attempt.** `.qwrap` (Quals)
+is asserted to glide and `.mx-wrap` does not, yet after the above they carry the
+same scroll properties. The difference must be structural and NOT yet examined:
+the ANCESTOR chain (`.mx-outer` → `.card`/`.stage` → `#page-leavewar` → the app
+shell) — an ancestor with `overflow`/`overflow-x: hidden`, a `transform`, or its
+own scroll container can disable inertia on a nested iOS scroller. That
+comparison (`.mx-wrap`'s ancestors vs `.qwrap`'s, on the real device) was never
+done and is where a next attempt should start — but only if the owner re-opens
+this. As of 30 Aug 26 he has closed it.
 
 ## Deliberately deferred to later plans
 

@@ -674,29 +674,9 @@ export function Matrix() {
   // session. `scroll-timeline` + `timeline-scope` together are the two features
   // the approach needs (a named timeline on the scroller, hoisted into scope for
   // the fixed bar, which is not a descendant of the scroller).
-  //
-  // TOUCH DEVICES ARE EXCLUDED, and that is the sideways-momentum fix (owner,
-  // 30 Aug 26 — three reports; the last: "the horizontal view side scroll still
-  // facing the same issue … more ppl may use the view vertically in portrait").
-  // On iOS Safari a scroller that is a `scroll-timeline` SOURCE loses its
-  // inertial fling entirely: the sideways flick on `.mx-wrap` stopped dead the
-  // instant the finger lifted, at EVERY scroll position — including the top of
-  // the list, where no row-window reflow ever runs, which is why the earlier
-  // "re-centre nudge" guard could not reach it. Naming the timeline is itself
-  // the killer. A finger has inertia to lose; a mouse / trackpad does not — a
-  // fine-pointer device has no fling, so it keeps the tighter compositor glue,
-  // while a coarse (touch) device drops to the JS-mirror pump below and gets
-  // native momentum back (the bar follows a hair looser on a fast fling — the
-  // accepted price of the glide). Do NOT drop the `coarse` gate to "re-enable
-  // on a newer Safari": scroll-timeline SUPPORT is exactly what the broken iOS
-  // advertises, so support cannot tell composites-momentum from kills-momentum
-  // — only a deliberate hand edit should ever turn the glue on for touch again.
   const [sdaActive] = useState(() => {
     try {
-      if (typeof CSS === 'undefined' || typeof CSS.supports !== 'function') return false
-      const coarse = typeof window.matchMedia === 'function' &&
-        window.matchMedia('(pointer: coarse)').matches
-      return !coarse &&
+      return typeof CSS !== 'undefined' && typeof CSS.supports === 'function' &&
         CSS.supports('scroll-timeline: --x x') && CSS.supports('timeline-scope: --x')
     } catch { return false }
   })
