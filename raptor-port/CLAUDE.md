@@ -774,18 +774,35 @@ subscribers.
   kinds are the baseline; the library starts empty), don't make `validate` read a
   template, and don't move the show/hide gate off `WAVEHIDE`. Pinned in
   `wavetpl.test.ts`, `WaveTplModal.test.tsx`, `wavepicker.test.tsx`.
-  **The show/hide list (and a template DELETE) moved off Admin into the + Wave menu's
-  own MANAGE sheet** (owner, 29 Aug 26 pt.3 — "make flying wave templates more intuitive
-  with the functions to hide/delete and remove it in admin"). Managing a wave's
-  visibility now happens where a wave is added: `board.ts waveMenu` carries a ⚙ Manage
-  button and a "N hidden · Manage" line, both opening `ui/WaveManageSheet.tsx` (an EYE
-  per built-in kind and template toggling `setWaveHidden`, a TRASH deleting a saved
-  template behind a confirm — built-ins can be hidden but never deleted). The Admin
-  `WaveVisibility` list is REMOVED, with no pointer left behind (owner: keep Admin
-  clean); Admin keeps only the wave-template EDITOR button. Same admin-only gate
-  either way (`canEditSched` === admin), so no permission widened. Don't re-add the
-  Admin list, and don't leave a wave hidden with no way back — the "N hidden" line is
-  the way back. Pinned in `WaveManageSheet.test.tsx`.
+  **The manage + edit surfaces are ONE sheet, opened by ONE gear** (owner, 30 Aug 26 —
+  "quite an ugly design to have the settings and edit buttons separate … combine them
+  through 1 button"; folds in the 29 Aug pt.3 ask to take show/hide/delete off Admin —
+  "make flying wave templates more intuitive … remove it in admin"). The "+ Wave" menu
+  (`board.ts waveMenu`) carries a SINGLE ⚙ (`data-wvedit`, title "Manage flying waves")
+  plus a "N hidden · Manage" line, both opening `ui/WaveTplModal.tsx` — the unified
+  "Flying waves" sheet that BOTH edits templates AND shows/hides/deletes what the picker
+  offers: a "Wave types" list with an EYE per built-in kind (`setWaveHidden`), and per
+  template an EYE beside its name plus the footer Delete (built-ins can be hidden but
+  never deleted). The old separate ⚙-Manage sheet (`WaveManageSheet.tsx`, the `WAVEMANAGE`
+  flag) is DELETED and folded in — don't re-add it or the second button. The Admin
+  `WaveVisibility` list stays REMOVED (owner: keep Admin clean); Admin keeps only the
+  wave-template editor button, which opens the same sheet. Same admin-only gate
+  (`canEditSched` === admin), no permission widened. Don't leave a wave hidden with no way
+  back — the "N hidden" line and the sheet's eyes are the way back. Pinned in
+  `WaveTplModal.test.tsx`, `wavepicker.test.tsx`.
+  **The kind-picker's one-line rule notes have ONE source, shown on the picker AND the
+  Logic page** (owner, 30 Aug 26 — "make sure these word summaries are updated when I
+  change the rules concerning them … and the logic page should be updated as well").
+  `engine/wavetpl.ts kindNote(k)` is the single, count-free summary of each kind's
+  CHECKING rule (fly/sc/avalon/bb), verified against `validate.ts` / `events.ts`: the
+  template editor prints it under the kind picker, and the Logic page's "Wave types at a
+  glance" group (`ui/logic-html.ts`) renders the SAME strings, so the two can't drift.
+  It deliberately no longer reuses `SAWAVE.note` — that keeps its "2 MAIN + 2 SPARE" count
+  for the built-in + Wave popup, where the count is real (`makeStandalone` mints exactly
+  that); a template's line count is the owner's, so a count read as a limit there. When a
+  kind's checking rule changes, update the rule, `kindNote`, and the detailed "standby
+  lines" row on the Logic page together — `logic.test.tsx` pins that every kind's
+  `kindNote` shows on the page, so a dropped wire fails a gate.
 - **The DEFAULT arrangement is admin-set, and the wave half is "new schedules
   only"** (owner, 29 Aug 26 pt.2 — "allow the default arrangement of a schedule to
   be configured in admin … even to the arrangement of the waves under display").

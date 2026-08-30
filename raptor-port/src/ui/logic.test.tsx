@@ -10,6 +10,7 @@ import { initStore, setSession, notify } from '../state/store'
 import { VCONF, SHIFT_HARD, RULE_SPEC, rulesReset } from '../engine/rules'
 import { WCODE, WARN, validate } from '../engine/validate'
 import { LEAVE_TYPES } from '../engine/inputs'
+import { WAVE_BUILTIN, kindNote } from '../engine/wavetpl'
 import { setLgEdit } from '../state/auth'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
@@ -71,6 +72,16 @@ describe('the Logic tab, read-only (tfin B50)', () => {
   it('every warning code the engine can raise is documented', () => {
     const shown = $$('#lgBody .lgsev .code').map(x => x.textContent)
     const missing = Object.keys(WCODE).filter(c => shown.indexOf(c) < 0)
+    expect(missing, missing.join(',')).toEqual([])
+  })
+
+  it('every wave kind carries its one-line summary, from the same wavetpl.kindNote the picker uses', () => {
+    /* the drift seam the owner flagged (30 Aug 26): the "+ Wave" picker note and
+       this page must not tell different stories. Both render engine/wavetpl.ts
+       kindNote, so this guard fails a gate the moment the Logic wiring is dropped
+       — the same shape as the setting / warning-code / leave-taxonomy guards. */
+    const t = text()
+    const missing = WAVE_BUILTIN.filter(b => t.indexOf(kindNote(b.key)) < 0).map(b => b.label)
     expect(missing, missing.join(',')).toEqual([])
   })
 
