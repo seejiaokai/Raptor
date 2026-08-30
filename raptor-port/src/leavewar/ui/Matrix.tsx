@@ -650,23 +650,25 @@ export function Matrix() {
   const mirrorRef = useRef<HTMLDivElement>(null)
   const [stuck, setStuck] = useState<{ top: number; left: number; width: number; cols: number[] } | null>(null)
 
-  // Can this browser drive the frozen bar's horizontal follow on the COMPOSITOR
-  // via a CSS scroll-driven animation (owner, 28 Aug 26 — "the top bar not
-  // catching up to the horizontal scroll … glue it, keep the feel")? When yes,
-  // the bar's day columns are TRANSLATED by the grid's own scroll timeline, so
-  // they stay locked to the grid during a fling instead of the main-thread JS
-  // follow lagging a frame or two behind (which is what he saw). When no (older
-  // browsers, and jsdom — where CSS.supports is absent/false), we fall back to
-  // the JS mirror below, unchanged. Detected once: support does not change mid
-  // session. `scroll-timeline` + `timeline-scope` together are the two features
-  // the approach needs (a named timeline on the scroller, hoisted into scope for
-  // the fixed bar, which is not a descendant of the scroller).
-  const [sdaActive] = useState(() => {
-    try {
-      return typeof CSS !== 'undefined' && typeof CSS.supports === 'function' &&
-        CSS.supports('scroll-timeline: --x x') && CSS.supports('timeline-scope: --x')
-    } catch { return false }
-  })
+  // The scroll-driven-animation path (28 Aug 26 — "the top bar not catching up
+  // to the horizontal scroll … glue it, keep the feel") translated the frozen
+  // bar's day columns from the grid's own scroll timeline, so the bar stayed
+  // locked to the grid on a fling with no main-thread follow to lag. It is OFF.
+  //
+  // Naming a `scroll-timeline` on `.mx-wrap` DISABLES iOS Safari's inertial
+  // scrolling on that element: a sideways flick stopped dead the instant the
+  // finger lifted, EVERYWHERE on the page (not only once the bar froze), while
+  // the vertical PAGE scroll — which carries no timeline — kept its glide
+  // (owner, 30 Aug 26 — "the horizontal scroll … abruptly stops. By vertical
+  // it's nice, it slowly decelerates"). The Quals frozen header, which never
+  // used this path, stayed smooth — the tell that isolated it here. Losing the
+  // whole sideways momentum is far worse than the frozen bar trailing a frame
+  // on a fast fling, so the JS rAF mirror below does the follow instead — the
+  // same mechanism the smooth Quals page uses. Kept behind the flag rather than
+  // deleted, so it can return if a future Safari composites momentum together
+  // with a scroll timeline; force it true only to test that path on a browser
+  // that does.
+  const [sdaActive] = useState(false)
 
   // ---- the desktop horizontal scrollbar, pinned to the foot of the SCREEN
   // (owner, 22 Aug 26: "on desktop the horizontal scroll is not tagged to the

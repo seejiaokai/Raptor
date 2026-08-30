@@ -321,6 +321,20 @@ own machinery) and the DESKTOP's still-sticky columns. Still worth the WebKit
 pass, but the riskiest surface — sticky cells on 80 scrolling rows — is off the
 phone now.
 
+**The scroll-driven-animation frozen-bar path is OFF (owner, 30 Aug 26).** The
+28 Aug "glue it, keep the feel" work drove the frozen date bar from a CSS
+`scroll-timeline` named on `.mx-wrap`. That named timeline DISABLES iOS Safari's
+inertial scrolling on the scroller: a sideways flick stopped dead on finger-lift
+everywhere on the page, while the vertical page scroll (no timeline) kept its
+glide. The Quals frozen header, which never used this path, stayed smooth — the
+tell. `Matrix.tsx sdaActive` is now hard-`false`, so `.mx-wrap` carries no
+timeline and regains native momentum; the frozen bar follows via the JS rAF
+mirror instead (the same mechanism the smooth Quals page uses), at the cost of
+the bar possibly trailing a frame on a very fast fling. Do NOT re-enable
+`sdaActive` by re-detecting `scroll-timeline` support — that reintroduces the
+dead-inertia bug — until a Safari ships that composites momentum together with a
+scroll timeline.
+
 ## Deliberately deferred to later plans
 
 - **The day's overall verdict is computed and not shown.** `evaluateDay`
