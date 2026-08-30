@@ -691,19 +691,25 @@ export function Matrix() {
     // jsdom has no layout — the mirror is a browser-only creature, and a
     // 0-height header (jsdom, or not yet laid out) never activates.
     if (typeof window.matchMedia !== 'function') return
-    const onScroll = () => {
+    // `force` re-measures the pinned widths even while already stuck. A plain
+    // scroll keeps them (cheap, and the widths don't change as you scroll), but a
+    // rotate/resize changes EVERY column width — and without a fresh measurement
+    // the mirror kept the old orientation's widths until a scroll un-stuck and
+    // re-pinned it (owner, 30 Aug 26 — "flip my screen horizontally … the top bar
+    // is cut off to what the vertical view was … I need to scroll up then back
+    // down to reset the frozen bar").
+    const pin = (force: boolean) => {
       const head = headRef.current
       if (!head) { setStuck(prev => (prev ? null : prev)); return }
       const r = head.getBoundingClientRect()
       if (r.height === 0) return // jsdom, or not laid out yet — never activate
       // The app top bar stays pinned (sticky, both widths), so "the top" is its
       // LOWER edge: the mirror freezes there the instant the real header would
-      // slide under it. The bar's height is constant, so the pinned `top` needs
-      // no per-tick update. Both phone and desktop now (owner, 27 Aug 26).
+      // slide under it. Both phone and desktop now (owner, 27 Aug 26).
       const topEdge = document.querySelector('.topbar')?.getBoundingClientRect().bottom ?? 0
       if (r.top >= topEdge) { setStuck(prev => (prev ? null : prev)); return }
       setStuck(prev => {
-        if (prev) return prev
+        if (prev && !force) return prev
         const wrap = wrapRef.current
         if (!wrap) return prev
         const wr = wrap.getBoundingClientRect()
@@ -713,12 +719,28 @@ export function Matrix() {
         return { top: topEdge, left: wr.left, width: wr.width, cols }
       })
     }
+    const onScroll = () => pin(false)
+    // A rotate/resize fires BEFORE iOS has settled the new viewport, so an
+    // immediate read would take the OLD geometry — re-measure on the next two
+    // frames AND once more after a beat, forcing fresh widths each time.
+    let raf = 0
+    let t: ReturnType<typeof setTimeout> | undefined
+    const remeasure = () => {
+      cancelAnimationFrame(raf)
+      raf = requestAnimationFrame(() => requestAnimationFrame(() => pin(true)))
+      clearTimeout(t); t = setTimeout(() => pin(true), 300)
+    }
     window.addEventListener('scroll', onScroll, { passive: true })
-    window.addEventListener('resize', onScroll)
+    window.addEventListener('resize', remeasure)
+    window.addEventListener('orientationchange', remeasure)
+    window.visualViewport?.addEventListener('resize', remeasure)
     onScroll()
     return () => {
       window.removeEventListener('scroll', onScroll)
-      window.removeEventListener('resize', onScroll)
+      window.removeEventListener('resize', remeasure)
+      window.removeEventListener('orientationchange', remeasure)
+      window.visualViewport?.removeEventListener('resize', remeasure)
+      cancelAnimationFrame(raf); clearTimeout(t)
     }
     // `zoom` is a dep because it changes every measured width the mirror pins.
     // `visWindow` too (19 Aug 26): a row-set change lets auto layout re-narrow

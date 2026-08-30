@@ -204,6 +204,29 @@ test('the frozen overlay callsign opens the sheet once the year has scrolled', a
   await expect(page.locator('[data-testid="person-figures"]')).toBeVisible()
 })
 
+// THE FROZEN HEADER FOLLOWS A ROTATION (owner, 30 Aug 26 — "flip my screen
+// horizontally … the top bar is cut off to what the vertical view was … to fix
+// it I need to scroll up then back down to reset the frozen bar"). The mirror
+// pins the measured column widths; a rotate/resize changes every width, but the
+// pin used to KEEP the portrait ones until a scroll re-pinned it. It now
+// re-measures on resize/orientation, so the mirror tracks the grid at once.
+test('the frozen header re-measures its width when the screen rotates', async ({ page }) => {
+  const size = page.viewportSize()!
+  // scroll the page down so the real header slides under the top bar and the
+  // mirror appears
+  await page.evaluate(() => window.scrollTo(0, 700))
+  const mirror = page.locator('[data-testid="sticky-head"]')
+  await expect(mirror).toBeVisible()
+  // rotate — swap width and height, the phone flip
+  await page.setViewportSize({ width: size.height, height: size.width })
+  // the re-measure runs on the next frames and once more after a beat
+  await page.waitForTimeout(500)
+  await expect(mirror).toBeVisible()
+  const mW = (await mirror.boundingBox())!.width
+  const gW = await page.locator('.mx-wrap').evaluate(el => el.getBoundingClientRect().width)
+  expect(Math.abs(mW - gW), 'the frozen bar spans the grid, not the old orientation').toBeLessThan(2)
+})
+
 // Replaced the sticky-date-header test on 10 Aug 26, when the owner asked for
 // ONE vertical scroll. That test asserted the header held still while
 // `.mx-wrap` scrolled down; the wrapper no longer scrolls down at all, so it

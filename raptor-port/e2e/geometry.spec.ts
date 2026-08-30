@@ -3966,6 +3966,28 @@ test.describe('the frozen callsign column', () => {
     expect(Math.abs(m.nameMoved), 'the callsign column stays put while the table scrolls').toBeLessThan(3)
     expect(m.otherMoved, 'a normal cell scrolled away with the table').toBeLessThan(-200)
   })
+
+  /* THE FROZEN HEADER FOLLOWS A ROTATION (owner, 30 Aug 26 — the same bug he hit
+     on Leave War: "this applies to quals as well … if I view in vertical then
+     flip my screen horizontally the top bar is cut off … to fix it I need to
+     scroll up then back down"). The header mirror pins measured column widths; a
+     rotate/resize changes every width, but the pin used to KEEP the portrait ones
+     until a scroll re-pinned it. It now re-measures on resize/orientation. */
+  test('phone: the frozen header re-measures its width when the screen rotates', async ({ page }) => {
+    await page.setViewportSize(PHONE)
+    await login(page)
+    await go(page, 'quals')
+    await page.waitForSelector('#qtbl td.qname')
+    await page.evaluate(() => window.scrollTo(0, 700))   // slide the real header under the top bar
+    const mirror = page.locator('[data-testid="qsticky-head"]')
+    await expect(mirror).toBeVisible()
+    await page.setViewportSize({ width: PHONE.height, height: PHONE.width })  // flip to landscape
+    await page.waitForTimeout(500)                        // the re-measure runs on the next frames + a beat
+    await expect(mirror).toBeVisible()
+    const mW = (await mirror.boundingBox())!.width
+    const gW = await page.locator('.qwrap').evaluate(el => el.getBoundingClientRect().width)
+    expect(Math.abs(mW - gW), 'the frozen bar spans the grid, not the old orientation').toBeLessThan(2)
+  })
 })
 
 test.describe('the collapsible legend', () => {

@@ -533,7 +533,13 @@ export function QualsPage() {
   useEffect(() => {
     setStuck(null)
     if (typeof window.matchMedia !== 'function') return
-    const onScroll = () => {
+    /* `force` re-measures the pinned widths even while already stuck. A plain
+       scroll keeps them (cheap, and they don't change as you scroll), but a
+       rotate/resize changes EVERY column width — without a fresh measurement the
+       mirror kept the old orientation's widths until a scroll un-stuck and
+       re-pinned it (owner, 30 Aug 26 — flipping the phone left the frozen bar cut
+       off to the portrait view "to fix it I need to scroll up then back down"). */
+    const pin = (force: boolean) => {
       const head = tblRef.current?.tHead
       if (!head) { setStuck(prev => (prev ? null : prev)); return }
       const r = head.getBoundingClientRect()
@@ -544,7 +550,7 @@ export function QualsPage() {
       const topEdge = document.querySelector('.topbar')?.getBoundingClientRect().bottom ?? 0
       if (r.top >= topEdge) { setStuck(prev => (prev ? null : prev)); return }
       setStuck(prev => {
-        if (prev) return prev
+        if (prev && !force) return prev
         const wrap = wrapRef.current
         if (!wrap) return prev
         const wr = wrap.getBoundingClientRect()
@@ -554,12 +560,28 @@ export function QualsPage() {
         return { top: topEdge, left: wr.left, width: wr.width, cols }
       })
     }
+    const onScroll = () => pin(false)
+    /* a rotate/resize fires BEFORE iOS settles the new viewport, so an immediate
+       read takes the OLD geometry — re-measure on the next two frames AND once
+       more after a beat, forcing fresh widths each time. */
+    let raf = 0
+    let t: ReturnType<typeof setTimeout> | undefined
+    const remeasure = () => {
+      cancelAnimationFrame(raf)
+      raf = requestAnimationFrame(() => requestAnimationFrame(() => pin(true)))
+      clearTimeout(t); t = setTimeout(() => pin(true), 300)
+    }
     window.addEventListener('scroll', onScroll, { passive: true })
-    window.addEventListener('resize', onScroll)
+    window.addEventListener('resize', remeasure)
+    window.addEventListener('orientationchange', remeasure)
+    window.visualViewport?.addEventListener('resize', remeasure)
     onScroll()
     return () => {
       window.removeEventListener('scroll', onScroll)
-      window.removeEventListener('resize', onScroll)
+      window.removeEventListener('resize', remeasure)
+      window.removeEventListener('orientationchange', remeasure)
+      window.visualViewport?.removeEventListener('resize', remeasure)
+      cancelAnimationFrame(raf); clearTimeout(t)
     }
     /* re-measure (drop the stuck bar so the next scroll re-pins with fresh
        widths) whenever the column set, the view, the filter, or either edit mode
