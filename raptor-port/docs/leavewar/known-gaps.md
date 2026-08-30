@@ -321,26 +321,30 @@ own machinery) and the DESKTOP's still-sticky columns. Still worth the WebKit
 pass, but the riskiest surface — sticky cells on 80 scrolling rows — is off the
 phone now.
 
-## The frozen date bar keeps its glue; the sideways flick has no momentum (owner, 30 Aug 26)
+## The sideways-flick momentum killer was `overflow-y: hidden`, not the glue (owner, 30 Aug 26)
 
-The 28 Aug scroll-driven-animation path (`sdaActive`/`.lw-sda`) glues the frozen
-date bar to the grid by naming a CSS `scroll-timeline` on `.mx-wrap`. That named
-timeline **disables iOS Safari's inertial scrolling** on the scroller — so the
-sideways scroll stops dead on finger-lift instead of gliding (the vertical page
-scroll, which carries no timeline, keeps its momentum; the Quals frozen header,
-which uses the JS rAF mirror and no timeline, scrolls smooth). The two cannot both
-be on for the same scroller on today's iOS Safari.
+The Leave War grid scroller (`.mx-wrap`) had no iOS inertial (flick) momentum —
+a sideways scroll stopped dead the instant the finger lifted, while the vertical
+page scroll kept its glide. A first guess blamed the 28 Aug scroll-driven-animation
+glue (`sdaActive`/`.lw-sda`, the CSS `scroll-timeline` on `.mx-wrap`) and turned it
+off; on the owner's iPhone that changed **nothing** — the flick still died. That
+ruled the glue OUT.
 
-Offered the owner the choice after he felt both on the preview: a momentum build
-(scroll-timeline off, bar follows via the rAF pump — smooth flick, bar a hair
-looser) vs the glued build (current). **He chose the glue** — "I prefer the
-previous one, the date bar is more locked vertically" — accepting no sideways
-momentum. So `sdaActive` stays the live feature-detect and the glue stays on.
-Do NOT re-apply the momentum fix (forcing `sdaActive` false) as a "fix" for the
-missing sideways glide — it was built, shown, and rejected in favour of the lock.
-If it is ever revisited, the only "both" left to try is a hybrid that keeps the
-timeline only while a finger is actively dragging and drops it on `touchend` so
-the flick runs with momentum — untested, and only worth it if the owner reopens it.
+The real cause is **`overflow-y: hidden` on `.mx-wrap`**. On iOS Safari a
+horizontal scroller carrying `overflow-y: hidden` loses its inertial momentum. It
+was there only to suppress a spurious second scrollbar — but with no height cap
+there is no vertical overflow anyway (measured: `scrollHeight - clientHeight` is 0
+at phone and desktop widths, the geometry gate pins it), and iOS's overlay
+scrollbars add no second bar. The Quals scroller (`.qwrap`), which never set
+`overflow-y: hidden`, always kept its glide — the A/B that isolated it. Dropping
+the property (leaving `overflow-x: auto`, `overflow-y` computing to `auto`)
+restores the momentum.
+
+Because the glue was innocent, it stays ON (`sdaActive` = live feature-detect), so
+the owner keeps the tightly-locked date bar AND gets the sideways glide — the
+"both" the earlier either-or framing wrongly ruled out. Do NOT re-add
+`overflow-y: hidden` to `.mx-wrap` to "tidy" the overflow or chase a second
+scrollbar that does not appear — it silently kills the flick again.
 
 ## Deliberately deferred to later plans
 

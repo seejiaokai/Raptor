@@ -18,20 +18,27 @@
    never be sure which one would move.
    So the wrapper scrolls HORIZONTALLY only and has no height cap: it grows to
    whatever the roster needs and the page carries the vertical scrolling for
-   all of it. `overflow-y: hidden` never actually clips anything, because with
-   no cap there is no vertical overflow to clip; it is there to stop the
-   browser giving back the second scrollbar.
+   all of it. With no cap there is no vertical overflow to scroll, so the grid
+   still contributes no vertical scroller of its own (the geometry gate pins
+   this) — the page carries it all.
 
-   The cost, stated plainly because it is a real loss: the date header no
-   longer sticks. `position: sticky` resolves against the nearest scrollport,
-   which is still this wrapper, and this wrapper no longer scrolls vertically —
-   so scrolling the PAGE carries the header away with it. There is no CSS that
-   both scrolls one axis here and lets a descendant stick to the page's other
-   axis. The frozen callsign and counter columns are unaffected: they stick on
-   `left`, and this wrapper still owns the horizontal axis. */
+   `overflow-y` is deliberately NOT `hidden` (owner, 30 Aug 26 — "the horizontal
+   scroll abruptly stops … by vertical it slowly decelerates"). On iOS Safari a
+   horizontal scroller carrying `overflow-y: hidden` LOSES its inertial (flick)
+   momentum — the sideways scroll stopped dead the instant the finger lifted,
+   everywhere on the page. The Quals frozen-header scroller (`.qwrap`), which
+   never set `overflow-y: hidden`, kept its glide — the A/B that isolated it,
+   after turning the scroll-timeline off changed nothing. It is left to compute
+   to `auto` from the horizontal axis; iOS's overlay scrollbars add no second
+   bar, so the reason `overflow-y: hidden` was added (suppressing a spurious
+   second scrollbar) does not bite on the phone this is for.
+
+   The date header still does not stick by CSS (`position: sticky` resolves
+   against this wrapper, which owns the horizontal axis and never scrolls
+   vertically) — the `.mxfixed` JS mirror carries the freeze instead. The frozen
+   callsign and counter columns stick on `left` and are unaffected. */
 .mx-wrap {
   overflow-x: auto;
-  overflow-y: hidden;
   -webkit-overflow-scrolling: touch;
 }
 
