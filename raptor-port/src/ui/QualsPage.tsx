@@ -176,9 +176,10 @@ function qualsHead(cols: any[], qSeatView: string, qSort: any, qualsEdit: boolea
     `<th>Remarks</th><th></th></tr></thead>`
 }
 
-/* the group-header row ("Assigned pilots · N") — also pulled out so the frozen
-   mirror can carry it: the owner circled it together with the column headings,
-   so it freezes with them (it names WHICH roster the rows below belong to). */
+/* the group-header row ("Assigned pilots · N"), pulled out so it has one source.
+   It lives in the LIVE table only and scrolls away with its rows — it is
+   deliberately NOT in the frozen mirror (owner, 30 Aug 26 — "there isn't a need
+   to freeze this bar"); only the column headers freeze. */
 function qualsGrpRow(qSeatView: string, n: number, colsLen: number) {
   const grp = qSeatView === 'FCP' ? 'Assigned pilots' : qSeatView === 'RCP' ? 'Assigned WSOs' : qSeatView === 'GND' ? 'Personnel (ground crew)' : 'Assigned aircrew'
   return `<tr class="grp"><td colspan="${5 + colsLen + 1}">${grp} · ${n}</td></tr>`
@@ -523,9 +524,10 @@ export function QualsPage() {
      PAGE owns the vertical scroll, so the `position:sticky;top:0` already on the
      thead pins nothing (its scrollport never moves vertically; there is no CSS
      that scrolls one axis here and lets a descendant stick to the page's other
-     axis). Instead a fixed MIRROR of the header + group row appears the moment
-     the real header slides under the app top bar, pinned just below it, and
-     disappears when it comes back. The mirror is its own tiny horizontal scroller
+     axis). Instead a fixed MIRROR of the header row appears the moment the real
+     header slides under the app top bar, pinned just below it, and disappears
+     when it comes back. The "Assigned pilots · N" group row is NOT mirrored
+     (owner, 30 Aug 26) — it scrolls away with its rows. The mirror is its own tiny horizontal scroller
      kept in lockstep with the grid (onXScroll above), so the frozen callsign
      column's own sticky-left keeps working inside it. Desktop AND phone (owner,
      29 Aug 26 — "freeze like the leave war top bar … on desktop and mobile").
@@ -748,8 +750,12 @@ export function QualsPage() {
               aria-hidden="true"
               dangerouslySetInnerHTML={{ __html:
                 `<colgroup>${stuck.cols.map(w => `<col style="width:${w}px">`).join('')}</colgroup>`
-                + qualsHead(cols, qSeatView, qSort, canEditQuals(), armDel)
-                + `<tbody>${qualsGrpRow(qSeatView, qualsIds(qSeatView, qSort, qSearch).length, cols.length)}</tbody>` }} />
+                /* Only the COLUMN HEADERS freeze — NOT the "Assigned pilots · N"
+                   group row (owner, 30 Aug 26 — "there isn't a need to freeze this
+                   bar. Applicable to the rest as well", covering every seat view's
+                   roster label). The group row stays in the live table below, so
+                   it scrolls away with its rows and the mirror is header-only. */
+                + qualsHead(cols, qSeatView, qSort, canEditQuals(), armDel) }} />
           </div>
         </div>
       )}

@@ -140,6 +140,8 @@ export function wireSelect(wrap: HTMLElement, ctx: SelectCtx): () => void {
   let lastX = 0, lastY = 0
   let touchGesture = false   // this drag started from a finger, not a mouse
   let vscroll: VScroll | null = null  // the vertical scroller, resolved in arm()
+  let lastFocus: Cell | null = null      // last roster cell the finger was over
+  let lastFocusDate: string | null = null // last event date the finger was over
 
   const clearPaint = () => {
     for (const id of painted) wrap.querySelector(`[data-testid="${id}"]`)?.classList.remove('selcell')
@@ -157,14 +159,22 @@ export function wireSelect(wrap: HTMLElement, ctx: SelectCtx): () => void {
   // axes: a roster drag is a people×days rectangle; an event drag is a date span
   // on the anchor's own line (the focus supplies only the COLUMN — its row is
   // ignored, so a finger straying onto another row still extends the span).
+  //   When the finger is NOT over a cell — a gap between rows, or the empty area
+  // an edge auto-scroll runs the grid past — we HOLD the last cell it was over
+  // rather than collapsing to the anchor. Without this a drag to the bottom edge
+  // vanished the moment the auto-scroll ran the last row above the finger.
   const current = (): { ids: string[]; roster?: Selection; event?: EventSelection } | null => {
     if (!anchor) return null
     if (anchor.kind === 'roster') {
-      const f = cellAt(lastX, lastY) ?? anchor.cell
+      const hit = cellAt(lastX, lastY)
+      if (hit) lastFocus = hit
+      const f = hit ?? lastFocus ?? anchor.cell
       const sel = rectCells(ctx.order(), ctx.dates(), anchor.cell, f)
       return sel ? { ids: sel.cells.map(c => `cell-${c.personId}-${c.date}`), roster: sel } : null
     }
-    const fd = cellAt(lastX, lastY)?.date ?? eventAt(lastX, lastY)?.date ?? anchor.cell.date
+    const hitDate = cellAt(lastX, lastY)?.date ?? eventAt(lastX, lastY)?.date
+    if (hitDate) lastFocusDate = hitDate
+    const fd = hitDate ?? lastFocusDate ?? anchor.cell.date
     const sel = eventRange(ctx.dates(), anchor.cell.line, anchor.cell.date, fd)
     return sel ? { ids: sel.dates.map(d => `event-${sel.line}-${d}`), event: sel } : null
   }
@@ -320,6 +330,7 @@ export function wireSelect(wrap: HTMLElement, ctx: SelectCtx): () => void {
     wrap.style.touchAction = ''
     wrap.classList.remove('selecting')
     anchor = null; armed = false; pid = -1; vscroll = null   // re-resolve next drag
+    lastFocus = null; lastFocusDate = null
   }
   const onCancel = (e: PointerEvent) => {
     if (e.pointerId !== pid) return   // a second pointer's cancel is not ours

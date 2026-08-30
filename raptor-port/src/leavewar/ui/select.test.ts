@@ -322,6 +322,47 @@ describe('wireSelect edge auto-scroll (mouse and touch, both axes)', () => {
   })
 })
 
+// When the finger leaves every cell — a gap, or the empty area an edge
+// auto-scroll runs the grid past — the selection HOLDS the last cell it was
+// over instead of collapsing back to the anchor. Without this a drag to the
+// bottom edge vanished the instant the auto-scroll ran the last row above the
+// finger (owner, 30 Aug 26 "up down scroller too").
+describe('wireSelect holds the last focus when the finger leaves the grid', () => {
+  let wrap: HTMLElement, teardown: () => void
+  const origEFP = document.elementFromPoint
+  const cellEls: Record<string, HTMLElement> = {}
+  beforeEach(() => {
+    vi.useFakeTimers()
+    wrap = document.createElement('div')
+    for (const [id, y] of [['a', 50], ['b', 150], ['c', 250]] as const) {
+      const el = document.createElement('div')
+      el.setAttribute('data-testid', `cell-${id}-2026-01-06`)
+      wrap.appendChild(el); cellEls[id] = el
+    }
+    document.body.appendChild(wrap)
+    // map a clientY band to a cell; below the grid (y >= 300) is empty → null
+    document.elementFromPoint = ((_x: number, y: number) =>
+      y < 100 ? cellEls.a : y < 200 ? cellEls.b : y < 300 ? cellEls.c : null) as typeof document.elementFromPoint
+    teardown = wireSelect(wrap, {
+      order: () => ['a', 'b', 'c'], dates: () => ['2026-01-06'],
+      enabled: () => true, onSelect: () => {},
+    })
+  })
+  afterEach(() => { teardown(); wrap.remove(); document.elementFromPoint = origEFP; vi.useRealTimers() })
+
+  const painted = () => wrap.querySelectorAll('.selcell').length
+
+  it('keeps the span reached when the finger drops off the grid, not just the anchor', () => {
+    wrap.querySelector('[data-testid="cell-a-2026-01-06"]')!
+      .dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, pointerId: 1, pointerType: 'touch', clientX: 10, clientY: 50, button: 0 }))
+    vi.advanceTimersByTime(200)   // hold → arm
+    window.dispatchEvent(new PointerEvent('pointermove', { bubbles: true, pointerId: 1, pointerType: 'touch', clientX: 10, clientY: 250 }))  // over cell c
+    expect(painted()).toBe(3)     // a, b, c
+    window.dispatchEvent(new PointerEvent('pointermove', { bubbles: true, pointerId: 1, pointerType: 'touch', clientX: 10, clientY: 500 }))  // below the grid → no cell
+    expect(painted(), 'the a–c span holds instead of collapsing to a').toBe(3)
+  })
+})
+
 // The gesture belongs to ONE pointer (27 Aug 26 overnight pass). A second
 // finger brushing the grid used to re-enter onDown and reset the state, so an
 // armed selection silently evaporated on lift; and any pointerup — a second
