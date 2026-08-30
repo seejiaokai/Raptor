@@ -321,30 +321,50 @@ own machinery) and the DESKTOP's still-sticky columns. Still worth the WebKit
 pass, but the riskiest surface — sticky cells on 80 scrolling rows — is off the
 phone now.
 
-## The sideways-flick momentum killer was `overflow-y: hidden`, not the glue (owner, 30 Aug 26)
+## The sideways-flick momentum on `.mx-wrap` — what has been ruled out (owner, 30 Aug 26)
 
 The Leave War grid scroller (`.mx-wrap`) had no iOS inertial (flick) momentum —
 a sideways scroll stopped dead the instant the finger lifted, while the vertical
-page scroll kept its glide. A first guess blamed the 28 Aug scroll-driven-animation
-glue (`sdaActive`/`.lw-sda`, the CSS `scroll-timeline` on `.mx-wrap`) and turned it
-off; on the owner's iPhone that changed **nothing** — the flick still died. That
-ruled the glue OUT.
+page scroll AND the Quals grid (`.qwrap`) both glided. On the owner's iPhone
+Chrome, Edge and Safari all share WebKit, so this is a WebKit behaviour, not a
+Safari-only one.
 
-The real cause is **`overflow-y: hidden` on `.mx-wrap`**. On iOS Safari a
-horizontal scroller carrying `overflow-y: hidden` loses its inertial momentum. It
-was there only to suppress a spurious second scrollbar — but with no height cap
-there is no vertical overflow anyway (measured: `scrollHeight - clientHeight` is 0
-at phone and desktop widths, the geometry gate pins it), and iOS's overlay
-scrollbars add no second bar. The Quals scroller (`.qwrap`), which never set
-`overflow-y: hidden`, always kept its glide — the A/B that isolated it. Dropping
-the property (leaving `overflow-x: auto`, `overflow-y` computing to `auto`)
-restores the momentum.
+**Three things were tried and DISPROVED on the actual device — record them so
+they are not re-tried:**
 
-Because the glue was innocent, it stays ON (`sdaActive` = live feature-detect), so
-the owner keeps the tightly-locked date bar AND gets the sideways glide — the
-"both" the earlier either-or framing wrongly ruled out. Do NOT re-add
-`overflow-y: hidden` to `.mx-wrap` to "tidy" the overflow or chase a second
-scrollbar that does not appear — it silently kills the flick again.
+1. **The scroll-timeline glue** (`sdaActive`/`.lw-sda`, the CSS `scroll-timeline`
+   on `.mx-wrap`). Forcing it off changed nothing for the flick AND broke the
+   sticky date bar (the JS-mirror fallback did not read as "stuck" on device), so
+   it was reverted. The glue STAYS ON. A scroll timeline being a momentum killer
+   was a plausible WebKit theory but the device said no.
+2. **`overflow-y: hidden`.** Removing it changed nothing on device. (Still left
+   off — it is a separate, real momentum killer elsewhere and there is no vertical
+   overflow to need it, so no reason to carry it; just not THE cause here.)
+3. Both of the above off **together** — still dead, and the bar broke. Reverted.
+
+**Currently being tested: `-webkit-overflow-scrolling: touch`.** It was the one
+scroll-relevant property `.mx-wrap` carried that the gliding `.qwrap` does not.
+The property is a documented no-op on iOS ≥ 13, but the direct same-page A/B
+outranks that, and on some iOS builds an explicit `touch` value drops a scroller
+into a legacy scrolling mode with buggy momentum. Removed so `.mx-wrap` now
+matches `.qwrap` exactly (`overflow-x: auto`, nothing else). Awaiting the owner's
+phone verdict.
+
+**If that too fails:** stop shipping single-property guesses to the phone (this
+is the fourth). The momentum feel cannot be reproduced in any headless engine on
+the Linux CI box — inertial fling is the phone's own touch hardware, not the
+browser engine (confirmed: real WebKit installed and driven here shows the
+mechanism but never coasts). The next move is a small in-app diagnostic the owner
+can flick — a few sideways strips each varying ONE property (raw `overflow-x`,
+inside a `transform`ed ancestor, year-tall vs short, with/without the scroll
+handler) — to isolate it in a single device round instead of N full deploys.
+Other unexcluded suspects to vary there: an ancestor `transform`/`will-change`
+creating a compositing layer that steals the fling, and the scroller being many
+viewports TALL (a horizontal scroller taller than the screen may be handled
+differently from the short `.qwrap`).
+
+Do NOT re-add `overflow-y: hidden`, and do NOT re-enable the glue expecting it to
+fix momentum — both are settled dead ends above.
 
 ## Deliberately deferred to later plans
 
