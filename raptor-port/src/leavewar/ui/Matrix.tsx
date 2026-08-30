@@ -317,7 +317,24 @@ export function Matrix() {
           const ix = rows.indexOf(over.id)
           beforeId = ix >= 0 ? (rows[ix + 1] ?? null) : over.id
         }
-        if (beforeId !== from) cfg.move(from, beforeId)
+        if (beforeId !== from) {
+          cfg.move(from, beforeId)
+          /* A manning reorder shuffles the rows of the frozen LEFT column, whose
+             grip/eye tools live in a `position: sticky` cell. iOS Safari does not
+             reliably repaint a sticky column after that DOM churn, so the just
+             -moved rows can sit drawn WITHOUT their tools until something forces a
+             redraw (owner, 30 Aug 26 — "sometimes I see these showing, sometimes I
+             do not … after I tried to drag and drop multiple times"). A one-frame
+             self-assignment of the scroller's own scrollLeft re-solves every sticky
+             offset in the scrollport and repaints them; it moves nothing, and —
+             unlike a transform on the sticky cell itself — cannot break the
+             stickiness. Manning kind only; the roster/group drags don't touch this
+             column. */
+          if (cfg === MANNING_DRAG) {
+            const w = wrapRef.current
+            if (w) requestAnimationFrame(() => { w.scrollLeft = w.scrollLeft })
+          }
+        }
       }
     }
     const up = () => end(true)
