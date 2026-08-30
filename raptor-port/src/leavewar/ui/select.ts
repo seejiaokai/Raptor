@@ -168,7 +168,15 @@ export function wireSelect(wrap: HTMLElement, ctx: SelectCtx): () => void {
     if (anchor.kind === 'roster') {
       const hit = cellAt(lastX, lastY)
       if (hit) lastFocus = hit
-      const f = hit ?? lastFocus ?? anchor.cell
+      const raw = hit ?? lastFocus ?? anchor.cell
+      // The focus may land on a row OUTSIDE the selectable order — a scoped
+      // member's drag straying onto another person (the row list is the viewer
+      // alone), or a held focus (below) left pointing at a row the order no
+      // longer carries. Clamp its PERSON to the anchor's row, keeping the DATE,
+      // so the selection stays on a valid row and still spans the days dragged.
+      // Without this the stray produced an empty rect (rectCells → null) and the
+      // sheet never opened — a scoped member could not drag-fill at all.
+      const f = ctx.order().includes(raw.personId) ? raw : { personId: anchor.cell.personId, date: raw.date }
       const sel = rectCells(ctx.order(), ctx.dates(), anchor.cell, f)
       return sel ? { ids: sel.cells.map(c => `cell-${c.personId}-${c.date}`), roster: sel } : null
     }

@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { clearLanding, earliestDate, eventRange, paintLanding, parseCellId, parseEventCell, rectCells, wireSelect } from './select'
+import { clearLanding, earliestDate, eventRange, paintLanding, parseCellId, parseEventCell, rectCells, wireSelect, type Selection } from './select'
 
 // The gesture controller (wireSelect) needs a real browser (elementFromPoint,
 // pointer capture, layout) and is covered by e2e/leavewar.spec.ts. Here we pin
@@ -360,6 +360,51 @@ describe('wireSelect holds the last focus when the finger leaves the grid', () =
     expect(painted()).toBe(3)     // a, b, c
     window.dispatchEvent(new PointerEvent('pointermove', { bubbles: true, pointerId: 1, pointerType: 'touch', clientX: 10, clientY: 500 }))  // below the grid → no cell
     expect(painted(), 'the a–c span holds instead of collapsing to a').toBe(3)
+  })
+})
+
+// A member scoped to one person has a one-row `order()`; the grid still RENDERS
+// every row, so a drag straying onto another person's cell (or an edge scroll
+// running one under the pointer) hands `current()` a focus outside the order.
+// It must clamp to the anchor's row — a valid selection the fill then writes to
+// the own row — never resolve to an empty rectangle (which left the select
+// sheet unopened, so a scoped member could not drag-fill at all).
+describe('wireSelect clamps a focus outside the scoped order to the anchor row', () => {
+  let wrap: HTMLElement, teardown: () => void
+  const origEFP = document.elementFromPoint
+  const cellEls: Record<string, HTMLElement> = {}
+  const selections: Selection[] = []
+  beforeEach(() => {
+    vi.useFakeTimers()
+    selections.length = 0
+    wrap = document.createElement('div')
+    for (const [id, y] of [['a', 50], ['b', 150]] as const) {
+      const el = document.createElement('div')
+      el.setAttribute('data-testid', `cell-${id}-2026-01-06`)
+      wrap.appendChild(el); cellEls[id] = el
+    }
+    document.body.appendChild(wrap)
+    document.elementFromPoint = ((_x: number, y: number) =>
+      y < 100 ? cellEls.a : y < 200 ? cellEls.b : null) as typeof document.elementFromPoint
+    teardown = wireSelect(wrap, {
+      // scoped: only 'a' is selectable, though 'b' is on screen
+      order: () => ['a'], dates: () => ['2026-01-06'],
+      enabled: () => true, onSelect: s => selections.push(s),
+    })
+  })
+  afterEach(() => { teardown(); wrap.remove(); document.elementFromPoint = origEFP; vi.useRealTimers() })
+
+  it('paints and commits the anchor row when the drag strays onto an unlisted person', () => {
+    wrap.querySelector('[data-testid="cell-a-2026-01-06"]')!
+      .dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, pointerId: 1, pointerType: 'touch', clientX: 10, clientY: 50, button: 0 }))
+    vi.advanceTimersByTime(200)   // hold → arm
+    // stray down onto b (not in the scoped order)
+    window.dispatchEvent(new PointerEvent('pointermove', { bubbles: true, pointerId: 1, pointerType: 'touch', clientX: 10, clientY: 150 }))
+    expect(wrap.querySelectorAll('.selcell').length, 'clamps to a — not an empty rect').toBe(1)
+    window.dispatchEvent(new PointerEvent('pointerup', { bubbles: true, pointerId: 1, pointerType: 'touch', clientX: 10, clientY: 150, button: 0 }))
+    // the sheet opens: onSelect fired, covering the anchor's own row only
+    expect(selections).toHaveLength(1)
+    expect(selections[0].people).toEqual(['a'])
   })
 })
 
