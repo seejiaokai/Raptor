@@ -239,42 +239,86 @@ describe('wireSelect slow-arm rescues a drag begun without a pause', () => {
   })
 })
 
-// Edge auto-scroll runs the grid sideways when a MOUSE drag reaches a wrap
-// edge, so a desktop selection can extend past the visible columns. On a phone
-// it made the day columns slide away under the finger (owner, 27 Aug 26 — "the
-// calendar also follows my drag … only for phone"), so a touch drag must never
-// start it. arm() schedules the scroll via requestAnimationFrame, so a spy on
-// rAF reads exactly whether it was started.
-describe('wireSelect edge auto-scroll is desktop-only', () => {
-  let wrap: HTMLElement, cell: HTMLElement, teardown: () => void
+// Edge auto-scroll runs when a drag reaches an edge, so a selection can extend
+// past what the screen shows — SIDEWAYS onto more days (moves the wrap) and
+// UP/DOWN onto more people (moves the page). It runs for a mouse AND a finger
+// (owner, 30 Aug 26 — "auto scroll to the edge to continue selecting more grids"
+// → "up down scroller too"); touch RAMPS its speed by how deep the finger sits
+// in the edge band, the fix for the 27 Aug "columns slid away under the finger"
+// feel that had it turned off for touch. A spy on requestAnimationFrame reads
+// whether it started, and driving one captured frame reads the ramp on each axis.
+describe('wireSelect edge auto-scroll (mouse and touch, both axes)', () => {
+  let outer: HTMLElement, wrap: HTMLElement, cell: HTMLElement, teardown: () => void
   let rafSpy: ReturnType<typeof vi.spyOn>
+  let sl: number, st: number      // backing fields for scrollLeft (wrap) / scrollTop (page)
   const origEFP = document.elementFromPoint
+  const rect = (o: Partial<DOMRect>) => ({ left: 0, right: 300, top: 0, bottom: 400, width: 300, height: 400, x: 0, y: 0, toJSON() {}, ...o }) as DOMRect
   beforeEach(() => {
     document.elementFromPoint = () => null
     rafSpy = vi.spyOn(window, 'requestAnimationFrame').mockImplementation(() => 1 as unknown as number)
+    // The vertical scroller is an ancestor here (findVScroll picks the nearest
+    // overflow-y:auto ancestor whose content overflows), standing in for the
+    // page. jsdom moves neither scrollLeft nor scrollTop on its own, so back
+    // both with plain fields the `+=` in edgeScroll can actually change.
+    outer = document.createElement('div')
+    outer.style.overflowY = 'auto'
+    Object.defineProperty(outer, 'scrollHeight', { configurable: true, value: 2000 })
+    Object.defineProperty(outer, 'clientHeight', { configurable: true, value: 400 })
+    st = 0
+    Object.defineProperty(outer, 'scrollTop', { configurable: true, get: () => st, set: v => { st = v } })
+    outer.getBoundingClientRect = () => rect({})
     wrap = document.createElement('div')
     cell = document.createElement('div')
     cell.setAttribute('data-testid', 'cell-ramp-2026-01-06')
     wrap.appendChild(cell)
-    document.body.appendChild(wrap)
+    outer.appendChild(wrap)
+    document.body.appendChild(outer)
+    sl = 0
+    Object.defineProperty(wrap, 'scrollLeft', { configurable: true, get: () => sl, set: v => { sl = v } })
+    wrap.getBoundingClientRect = () => rect({})
     teardown = wireSelect(wrap, {
       order: () => ['ramp'], dates: () => ['2026-01-06'],
       enabled: () => true, onSelect: () => {},
     })
   })
-  afterEach(() => { teardown(); wrap.remove(); document.elementFromPoint = origEFP; rafSpy.mockRestore(); vi.useRealTimers() })
+  afterEach(() => { teardown(); outer.remove(); document.elementFromPoint = origEFP; rafSpy.mockRestore(); vi.useRealTimers() })
 
   it('a mouse drag starts it (desktop keeps selecting past the edge)', () => {
-    cell.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, pointerId: 1, pointerType: 'mouse', clientX: 5, clientY: 5, button: 0 }))
-    window.dispatchEvent(new PointerEvent('pointermove', { bubbles: true, pointerId: 1, pointerType: 'mouse', clientX: 12, clientY: 5 }))  // > MOUSE_SLOP → arm
+    cell.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, pointerId: 1, pointerType: 'mouse', clientX: 5, clientY: 200, button: 0 }))
+    window.dispatchEvent(new PointerEvent('pointermove', { bubbles: true, pointerId: 1, pointerType: 'mouse', clientX: 12, clientY: 200 }))  // > MOUSE_SLOP → arm
     expect(rafSpy).toHaveBeenCalled()
   })
 
-  it('a touch drag never starts it — the phone grid stays put under the finger', () => {
-    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] })   // leave rAF real so the spy still reads it
-    cell.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, pointerId: 1, pointerType: 'touch', clientX: 5, clientY: 5, button: 0 }))
-    vi.advanceTimersByTime(200)   // hold → arm
-    expect(rafSpy).not.toHaveBeenCalled()
+  // Arm a touch drag and hand back the captured rAF callback, so a test can
+  // drive one frame at a chosen finger position and read how far each axis moved.
+  const armTouchFrame = () => {
+    let cb: FrameRequestCallback | null = null
+    rafSpy.mockImplementation((fn: FrameRequestCallback) => { cb = fn; return 1 as unknown as number })
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] })
+    cell.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, pointerId: 1, pointerType: 'touch', clientX: 5, clientY: 200, button: 0 }))
+    vi.advanceTimersByTime(200)   // hold → arm, which schedules the first frame
+    expect(cb).not.toBeNull()
+    return () => cb!(0)
+  }
+  const move = (x: number, y: number) =>
+    window.dispatchEvent(new PointerEvent('pointermove', { bubbles: true, pointerId: 1, pointerType: 'touch', clientX: x, clientY: y }))
+
+  it('a touch drag scrolls SIDEWAYS at the right edge and ramps by depth', () => {
+    const frame = armTouchFrame()
+    move(299, 200); sl = 0; frame(); const deep = sl        // deep in the 48px band
+    expect(deep).toBeGreaterThan(0)
+    move(260, 200); sl = 0; frame(); const shallow = sl     // just inside the lip (252)
+    expect(shallow).toBeGreaterThan(0)
+    expect(shallow).toBeLessThan(deep)                      // less push, less scroll
+  })
+
+  it('a touch drag scrolls UP/DOWN at the bottom edge and ramps by depth', () => {
+    const frame = armTouchFrame()
+    move(150, 399); st = 0; frame(); const deep = st        // deep in the bottom band
+    expect(deep).toBeGreaterThan(0)
+    move(150, 360); st = 0; frame(); const shallow = st     // just inside the lip (352)
+    expect(shallow).toBeGreaterThan(0)
+    expect(shallow).toBeLessThan(deep)
   })
 })
 
