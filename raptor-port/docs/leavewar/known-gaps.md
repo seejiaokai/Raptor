@@ -321,19 +321,26 @@ own machinery) and the DESKTOP's still-sticky columns. Still worth the WebKit
 pass, but the riskiest surface — sticky cells on 80 scrolling rows — is off the
 phone now.
 
-**The scroll-driven-animation frozen-bar path is OFF (owner, 30 Aug 26).** The
-28 Aug "glue it, keep the feel" work drove the frozen date bar from a CSS
-`scroll-timeline` named on `.mx-wrap`. That named timeline DISABLES iOS Safari's
-inertial scrolling on the scroller: a sideways flick stopped dead on finger-lift
-everywhere on the page, while the vertical page scroll (no timeline) kept its
-glide. The Quals frozen header, which never used this path, stayed smooth — the
-tell. `Matrix.tsx sdaActive` is now hard-`false`, so `.mx-wrap` carries no
-timeline and regains native momentum; the frozen bar follows via the JS rAF
-mirror instead (the same mechanism the smooth Quals page uses), at the cost of
-the bar possibly trailing a frame on a very fast fling. Do NOT re-enable
-`sdaActive` by re-detecting `scroll-timeline` support — that reintroduces the
-dead-inertia bug — until a Safari ships that composites momentum together with a
-scroll timeline.
+## The frozen date bar keeps its glue; the sideways flick has no momentum (owner, 30 Aug 26)
+
+The 28 Aug scroll-driven-animation path (`sdaActive`/`.lw-sda`) glues the frozen
+date bar to the grid by naming a CSS `scroll-timeline` on `.mx-wrap`. That named
+timeline **disables iOS Safari's inertial scrolling** on the scroller — so the
+sideways scroll stops dead on finger-lift instead of gliding (the vertical page
+scroll, which carries no timeline, keeps its momentum; the Quals frozen header,
+which uses the JS rAF mirror and no timeline, scrolls smooth). The two cannot both
+be on for the same scroller on today's iOS Safari.
+
+Offered the owner the choice after he felt both on the preview: a momentum build
+(scroll-timeline off, bar follows via the rAF pump — smooth flick, bar a hair
+looser) vs the glued build (current). **He chose the glue** — "I prefer the
+previous one, the date bar is more locked vertically" — accepting no sideways
+momentum. So `sdaActive` stays the live feature-detect and the glue stays on.
+Do NOT re-apply the momentum fix (forcing `sdaActive` false) as a "fix" for the
+missing sideways glide — it was built, shown, and rejected in favour of the lock.
+If it is ever revisited, the only "both" left to try is a hybrid that keeps the
+timeline only while a finger is actively dragging and drops it on `touchend` so
+the flick runs with momentum — untested, and only worth it if the owner reopens it.
 
 ## Deliberately deferred to later plans
 
