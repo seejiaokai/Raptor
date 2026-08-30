@@ -2,7 +2,7 @@
    of the live engine objects at render time, so the page cannot drift. */
 import { VCONF, SHIFT_HARD, kindOff, ruleFmt } from '../engine/rules'
 import { RANK, CHIP_LABEL, WCODE, chipText, wlbl } from '../engine/validate'
-import { INPUT_TYPES, inpMeta, canSpare, isLeave, isDownchit, shiftHardInput } from '../engine/inputs'
+import { INPUT_TYPES, inpMeta, canSpare, isLeave, isDownchit, shiftHardInput, inputRuleText } from '../engine/inputs'
 import { lgT, hm24, hhmm } from '../engine/time'
 import { WAVE_BUILTIN, kindNote } from '../engine/wavetpl'
 import { esc } from '../state/view'
@@ -35,13 +35,11 @@ export function lgRules(){
      INPUT_META (10 Aug 26) rather than the old three-entry LEAVE_TYPES, and
      the cell's severity follows canSpare — so this matrix cannot describe a
      rule the engine does not apply, and a new type appears here the day it is
-     added to the table. Same source as the Inputs page's type legend. */
-  const rule=(t:any)=>{const m=inpMeta(t);
-    return !m?'':m.work?'no flying — may still stand a duty, sit a sim or take a ground slot; an SC MAIN shift is a Warning, because it may require him to fly'
-      :!m.local?'out of reach — cannot be planned for anything, an SC SPARE included'
-      :m.grp==='med'?'cannot be planned, and cannot stand an SC SPARE'
-      :shiftHardInput(t)?'cannot be planned, but may still stand an SC SPARE; across an SC MAIN shift this is a Warning — a real commitment, not academics'
-      :'cannot be planned, but may still stand an SC SPARE';};
+     added to the table. The cost sentence itself is inputRuleText — the SAME
+     source the Inputs "?" legend reads, so the two can no longer drift; a guard
+     test pins both. (The two used to hand-write their own copies: this matrix
+     had no SANS / Upchit line, the Inputs gloss no SC-MAIN Warning nuance.) */
+  const rule=(t:any)=>inputRuleText(t);
   /* a code only earns a spelt-out name when it IS an abbreviation — "Training
      — training" says nothing twice. Same test offWord and the Inputs page's
      type legend make. */

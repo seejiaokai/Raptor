@@ -803,6 +803,20 @@ subscribers.
   kind's checking rule changes, update the rule, `kindNote`, and the detailed "standby
   lines" row on the Logic page together — `logic.test.tsx` pins that every kind's
   `kindNote` shows on the page, so a dropped wire fails a gate.
+- **The leave/absence "what each type costs" sentence has ONE source too, shared by the
+  Inputs "?" legend AND the Logic page's type matrix** (owner, 30 Aug 26 — "can u make
+  sure these word summaries are updated when change the rules … the logic page should be
+  updated as well"). `engine/inputs.ts inputRuleText(t)` is that single sentence, derived
+  from the same flags the engine enforces (`canSpare` / `shiftHardInput` / `grp` / `work`
+  / `local`). `InputsPage.tsx typeRule` and `logic-html.ts` `leaves()` both read it — they
+  used to hand-write their own copies and had drifted (the Inputs gloss missed the SC-MAIN
+  Warning nuance; the Logic matrix had no SANS / Upchit line). `inputs.test.tsx` and
+  `logic.test.tsx` each guard that every `INPUT_TYPES` entry's `inputRuleText` shows on its
+  surface, so a dropped wire fails a gate. When a type's rule changes, edit `inputRuleText`
+  once. DELIBERATELY still separate, and NOT to be "helpfully" merged into this: `SAWAVE.note`
+  (keeps its 2+2 count for the built-in popup), the `satag` caption in `html.ts`, and the
+  OIL confirm sheet's prose (it walks a decision; the Logic page states the rule) — different
+  jobs, different voices.
 - **The DEFAULT arrangement is admin-set, and the wave half is "new schedules
   only"** (owner, 29 Aug 26 pt.2 — "allow the default arrangement of a schedule to
   be configured in admin … even to the arrangement of the waves under display").

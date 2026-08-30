@@ -162,6 +162,25 @@ export function inpType(t:any){const u=String(t==null?'':t).trim().toUpperCase()
    Written against "a standalone spare" on purpose: SC is the only kind
    enforced today, and the owner's AVALON rule drops in without re-cutting. */
 export function canSpare(t:any){const m=inpMeta(t); return !!m&&m.local&&m.grp!=='med';}
+/* WHAT DOES THIS TYPE COST? — the one plain-English sentence describing what a
+   man on this input may and may not be planned for. The SINGLE SOURCE for both
+   the Inputs "?" legend (InputsPage typeRule) and the Logic page's type matrix
+   (logic-html leaves): they used to hand-write their own copies and had drifted
+   — the Inputs gloss missed the SC-MAIN Warning nuance, the Logic matrix missed
+   the SANS / Upchit lines. Both now read HERE, so a rule change lands once and a
+   guard test (logic.test / inputs.test) fails if either surface stops using it.
+   Derived from the same flags the engine enforces (canSpare / shiftHardInput /
+   grp / work / local), so it cannot describe a rule the engine does not apply. */
+export function inputRuleText(t:any):string{
+  const m=inpMeta(t); if(!m)return '';
+  if(m.grp==='sans')  return 'not an absence — the boxes ticked say which events he is available for, and when';
+  if(m.grp==='upchit')return 'closes a medical-down period — records the date he is fit to fly again; needs the medical document attached';
+  if(m.work)          return 'no flying — may still stand a duty, sit a sim or take a ground slot; an SC MAIN shift is a Warning, because it may require him to fly';
+  if(!m.local)        return 'out of reach — cannot be planned for anything, an SC SPARE included';
+  if(m.grp==='med')   return 'cannot be planned, and cannot stand an SC SPARE';
+  if(shiftHardInput(t))return 'cannot be planned, but may still stand an SC SPARE; across an SC MAIN shift this is a Warning — a real commitment, not academics';
+  return 'cannot be planned, but may still stand an SC SPARE';
+}
 /* LEAVE_TYPES is kept — the Logic page builds its leave matrix from it, and
    the reference suite reaches for it by name — but it is now a VIEW of the
    table above rather than a second list to keep true. */
