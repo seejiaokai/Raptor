@@ -581,3 +581,18 @@ exactly where the surviving bugs live.
 **Principle:** Implement owner-taste decisions at the shallowest layer that satisfies them; taste reverses more often than data contracts, and a shallow implementation makes reversal a diff, not a migration.
 
 <!-- checkpoint (2026-08-30, session 2e630780, 6th todo completion): no new observations — the hh:mm reversal pass surfaced nothing beyond Observation 38. -->
+
+### Observation 39: A display-only change opens a phantom-edit seam at every shown-vs-stored comparison
+
+**Status:** OPEN
+**Date:** 2026-08-30
+**Session context:** Owner asked for an adversarial bug-hunt on the just-shipped "every time reads 08:00" change (a display fold: stored compact `0900` now renders `09:00`). The hunt found one real regression.
+**Skill:** General engineering practice (surfaced during a task-observer session; no single skill owns it)
+**Type:** open-source
+**Phase/Area:** Verifying a presentation-layer change
+
+**Issue:** Introducing a display transform (fold `0900`→`09:00` at render, storage unchanged) was reasoned to be safe because "the engine reads through a format-agnostic parser." True for reads — but a separate hazard was missed: any code that detects a change by comparing WHAT IS SHOWN against WHAT IS STORED now sees a false positive on legacy data. A day-step handler committed a still-focused box by comparing the field's folded display (`09:00`) to the raw model (`0900`); they differ only in format, so an untouched box synthesised a no-op write and logged a phantom edit-history row. The commit-level compare had no fold guard; only the higher amendment layer happened to reconcile by parsed value. Separately, the pinning test asserted `ELOG.length` where `ELOG` is `{rows,cap}` — `undefined===undefined` passed vacuously in the runner and was caught only by the typecheck gate.
+
+**Suggested improvement:** When a change adds or alters a display transform, explicitly enumerate every site that compares a displayed value to a stored one (change-detection, dirty flags, "did the user edit this", amendment/history diffing) and fold BOTH sides — or compare by parsed value. Treat "reads are safe through the parser" as answering only half the question; writes-back are the other half. And run the typecheck/build gate even for test-only additions — a vacuous assertion on a mistyped shape passes the test runner but fails the compiler.
+
+**Principle:** A presentation transform is not side-effect-free: it silently desynchronises every equality check that mixes the shown form with the stored form. Audit the write-back and change-detection paths, not just the read paths, whenever display formatting changes.
