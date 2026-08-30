@@ -661,12 +661,22 @@ export function Matrix() {
   // session. `scroll-timeline` + `timeline-scope` together are the two features
   // the approach needs (a named timeline on the scroller, hoisted into scope for
   // the fixed bar, which is not a descendant of the scroller).
-  const [sdaActive] = useState(() => {
-    try {
-      return typeof CSS !== 'undefined' && typeof CSS.supports === 'function' &&
-        CSS.supports('scroll-timeline: --x x') && CSS.supports('timeline-scope: --x')
-    } catch { return false }
-  })
+  // FORCED OFF (owner, 30 Aug 26 — "it abruptly stops when I let go", sideways).
+  // The scroll-timeline glue and momentum cannot both be on for the SAME scroller
+  // on today's iOS Safari: naming a scroll timeline on `.mx-wrap` makes it a
+  // timeline SOURCE, and WebKit runs that on the main thread / disables the
+  // scroller's inertial fling — so the tight bar was bought with the flick's
+  // glide. This was masked twice: `overflow-y: hidden` ALSO killed the fling, so
+  // removing only one killer at a time never restored it (the Quals grid, which
+  // has NEITHER, kept its glide throughout — the A/B that isolated both). With
+  // the glue off the frozen bar follows on the JS rAF pump below (still tighter
+  // than Quals, which only re-syncs on scroll events). The feature-detect is kept
+  // as a comment, NOT live: do not re-enable by re-detecting `scroll-timeline`
+  // support — a future Safari that composites momentum alongside a scroll
+  // timeline is the only thing that should flip this back, and that needs a
+  // fresh real-device check, not a capability probe. Was:
+  //   CSS.supports('scroll-timeline: --x x') && CSS.supports('timeline-scope: --x')
+  const [sdaActive] = useState(false)
 
   // ---- the desktop horizontal scrollbar, pinned to the foot of the SCREEN
   // (owner, 22 Aug 26: "on desktop the horizontal scroll is not tagged to the
