@@ -21,6 +21,7 @@ import {
 import { DAYTPLEDIT, setDayTplEdit } from './pops'
 import { useVersion } from './useStore'
 import { HOOKS } from '../engine/hooks'
+import { SESSION } from '../state/auth'
 
 export function DayTplModal() {
   useVersion()
@@ -32,7 +33,13 @@ export function DayTplModal() {
   useEffect(() => {
     if (typeof DAYTPLEDIT === 'string') setSel(DAYTPLEDIT)
   }, [DAYTPLEDIT])
-  if (!DAYTPLEDIT) return <div className="modal" id="daytplModal" hidden />
+  /* self-hide for a non-admin, not just at the admin-gated opener (bug hunt,
+     31 Aug 26 — point-2 authority sweep): DAYTPLEDIT survives toggleRole's
+     admin→member peek, so without this an admin who opened the day-template
+     manager and flipped to member view kept live rename/delete/reset controls
+     (renameDayTpl/delDayTpl/dayTplReset) that carry no write-path gate. The test
+     is `SESSION && role !== 'admin'`, so a sessionless test/boot is not a member. */
+  if (!DAYTPLEDIT || (SESSION && SESSION.role !== 'admin')) return <div className="modal" id="daytplModal" hidden />
 
   /* the selected id can go stale — a delete elsewhere, the modal opening for
      the first time, or a library that has nothing in it at all yet */

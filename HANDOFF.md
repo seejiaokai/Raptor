@@ -544,6 +544,32 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
   Inputs page's own-row-only rule; if he wants own-row-only quals too, the
   gate belongs in the same three places this fix touched.
 
+- **RESOLVED 31 Aug 26 (point-2 authority sweep, completed) — the four admin
+  editor sheets no longer stay editable through the "View as member" peek.**
+  The systematic walk of every recent admin power came back otherwise CLEAN:
+  the board's write delegators (`boardMbtn` etc.), the week/quals click
+  delegator, the Admin page (page `#admDeny` + every handler re-checks), the
+  Set-default snackbar (render + apply, fixed d73c9ac), the Leave War store
+  (dozens of `role !== 'admin'` write-path guards, medical via `setBidState` →
+  `canDecide`), the manning/counter sheet, and section/roster arrangement are
+  all gated at the write, not just the nav. The ONE gap: the Duty-, Day-,
+  Flying-waves and per-day Drafts editor sheets (`DutyTplModal`, `DayTplModal`,
+  `WaveTplModal`, `DraftsModal`) gated only their two admin-only OPENERS, not
+  their own render, and their store mutators carry no write-path guard — so an
+  admin who opened one and then hit **View as member** (`toggleRole`, which
+  does not clear the pop flag) kept a fully live template/draft editor on
+  screen, the preview lying about member capability. A plain member (us/us)
+  can never reach these (both openers refuse one), so this was not a
+  member-reachable hole like the archive one — but it broke the "View as
+  member" feature's whole promise. Fix: each modal returns its hidden shell
+  when `SESSION && SESSION.role !== 'admin'` (same idiom as the archive /
+  inputedit backstops, so a sessionless test/boot still renders); the role
+  flip's `notify()` closes it and flipping back restores it with context
+  intact — the render gate is now the write gate. Pins in
+  `WaveTplModal.test.tsx`; the rights table + a self-hide note in
+  `docs/engine-rules.md` §Auth/roles. Files: `ui/{DutyTplModal,DayTplModal,
+  WaveTplModal,DraftsModal}.tsx`.
+
 - **The Leave War ↔ Raptor sync + OIL crediting passed a dedicated adversarial
   hunt CLEAN (31 Aug 26, bug hunt #1).** Every wire read end-to-end (0 roster
   projection, 1+2 leave/medical both directions, 4 OIL, post-out archival, the

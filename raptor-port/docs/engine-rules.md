@@ -2345,10 +2345,28 @@ the squadron's programme*, not read vs write:
 | Quals — archive a person (the row's ✕) / Restore from the Archived drawer | no | yes |
 | Accepting an input into the issued programme | no | yes |
 | The Edit Schedule page at all (`canEditSched()`) | no | yes |
+| Duty / day / flying-wave templates & per-day drafts (the four editor sheets) | no | yes |
 | Logic — editing VCONF / SHIFT_HARD | no | yes |
 | Leave War — advancing the cycle stage (→ BIDDING CLOSED / → PUBLISHED) | no | yes |
 | Leave War — deciding a bid (Pending / Approve / Refuse), at closed OR published | no | yes |
 | Editing or deleting ANOTHER person's personal input (own inputs: either role) | no | yes |
+
+**The four admin editor sheets self-hide for a non-admin, not just at their
+opener (bug hunt, 31 Aug 26 — the point-2 authority sweep).** The Duty-,
+Day-template, Flying-waves and per-day Drafts editors (`DutyTplModal`,
+`DayTplModal`, `WaveTplModal`, `DraftsModal`) are opened only from admin-gated
+affordances (the board's edit-mode menus and the Admin page), so a plain member
+can never reach them. But the pop flag each sets (`TPLEDIT` / `DAYTPLEDIT` /
+`WAVEEDIT` / `DRAFTSEDIT`) is NOT cleared by `toggleRole`'s admin→member "View
+as member" peek, and their store mutators carry no write-path guard of their
+own — so an admin who opened one and then flipped to member view used to keep a
+fully live editor on screen, the preview lying about what a member can do. Each
+modal now returns its hidden shell when `SESSION && SESSION.role !== 'admin'`
+(the same idiom the archive / inputedit write-path backstops use, so a
+sessionless test/boot context still renders); a `notify()` on the role flip
+re-renders and closes it, and flipping back to admin restores it with its
+context intact. This makes the render gate the write gate. Pinned in
+`WaveTplModal.test.tsx`.
 
 **In the Leave War, moving the cycle FORWARD is admin-only (owner, 27 Aug 26
 — "for a member i shouldnt be able to click on bidding closed or published,
