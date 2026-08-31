@@ -519,6 +519,31 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
 
 ## Known issues / open work
 
+- **RESOLVED 31 Aug 26 (Leave War event sheet fits a phone keyboard) — owner ask.**
+  Owner (on his phone): the event sheet's calendar and Save/Delete were hidden
+  behind the on-screen keyboard, and "I want to see the full window … the
+  calendar can be smaller". A phone can't show the keyboard AND a full month
+  calendar at once, but the keyboard is only ever needed to type the NAME. Three
+  small changes, together, verified live at 390 px (compact day cell 30 px, the
+  whole range sheet fits with no scroll) and pinned:
+  1. **Opens showing the full window.** `EventSheet.tsx` autofocuses the name
+     field only for a fresh single-day tap (short sheet, lifted clear of the
+     keys); a sheet that opens already ranged (a band or a drag-swept span, the
+     tall case) opens with NO keyboard, so the whole window shows.
+  2. **A smaller calendar in the event sheet.** `RangePicker` took a `compact`
+     prop (`.rpick.compact` in `rangepicker.css`, 30 px cells vs 36 — still above
+     the geometry gate's ≥30 floor); the event sheet passes it, the bid/war/
+     bidding-window sheets don't.
+  3. **The sheet lifts above the keyboard while typing.** `Sheet.tsx:useKeyboardInset`
+     mirrors `ui/histbubble.ts:place()` — when the on-screen keyboard shrinks the
+     `visualViewport`, the panel re-anchors to the top of the visible slice and
+     caps its height, then restores the bottom-anchor when it drops. A strict
+     no-op with no keyboard, so every geometry-gate spec (all keyboard-less) is
+     untouched; the drag clamp now reads the visual viewport too (innerHeight
+     fallback keeps jsdom identical). Pin: `leavewar/ui/sheet-keyboard.test.tsx`
+     (stubs `visualViewport`, since headless can't raise an iOS keyboard).
+     Screen: `docs/ui-contracts.md` §The event sheet on a phone keyboard.
+
 - **RESOLVED 31 Aug 26 (Leave War event sheet + event move) — three owner asks.**
   Verified live, all Leave War tests green:
   1. **Save/Delete moved to the right of the event sheet, Save recoloured cyan**

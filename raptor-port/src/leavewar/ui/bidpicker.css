@@ -63,7 +63,12 @@
      with no way to scroll to it. `dvh` is the VISIBLE viewport, so the ✕ stays
      on screen. The extra margin (72, not 28) leaves a strip of scrim above the
      tallest sheet, which is the owner's other ask — somewhere to tap OUTSIDE
-     to close. The plain-vh line is the fallback for anything without dvh. */
+     to close. The plain-vh line is the fallback for anything without dvh.
+     `dvh` handles the URL bar; the on-screen KEYBOARD is a separate signal it
+     does NOT track, handled in JS by Sheet.tsx:useKeyboardInset, which lifts
+     the panel to the top of the visible slice while a keyboard is up (owner,
+     31 Aug 26). The two are complementary; this bottom-anchor is what the
+     keyboard-down state falls back to. */
   max-height: calc(100vh - 72px);
   max-height: calc(100dvh - 72px);
   overflow-y: auto;

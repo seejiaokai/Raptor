@@ -4630,6 +4630,41 @@ OUT of scope. Pinned in `scrim.test.tsx` (drag-forward, no lock, movable) and
 `e2e/leavewar.spec.ts` ("the page scrolls behind an open sheet, and the panel
 stays put").
 
+## The event sheet on a phone keyboard (owner, 31 Aug 26)
+
+The event sheet autofocused its name field, so a phone raised the on-screen
+keyboard and — because the panel is `position:fixed; bottom:14px` (LAYOUT
+coordinates) while the keyboard shrinks and pans the VISUAL viewport — its lower
+half (the range calendar, Save/Delete) sat behind the keys. Owner: "I want to
+see the full window … the calendar can be smaller." A phone cannot show the
+keyboard AND a whole month calendar at once, but the keyboard is only ever
+needed to type the NAME, never to pick dates. Three parts, together:
+
+- **Opens showing the full window.** `EventSheet.tsx` autofocuses the name field
+  only for a fresh single-day tap (`!(band || dragged)`) — a short sheet the
+  lift below keeps clear of the keys. A sheet that opens already ranged (an
+  existing band, or a drag-swept span — the tall case) opens with NO keyboard,
+  so the whole window shows. Tapping "A range" is a button, which drops the
+  keyboard on its own, so switching a day to a range reveals the full window too.
+- **A smaller calendar, event-sheet only.** `RangePicker` takes a `compact`
+  prop → `.rpick.compact` (`rangepicker.css`): 30px day cells (vs 36), tighter
+  gaps and smaller month arrows — still at the ≥30px calendar tap-target floor
+  the geometry gate holds. The event sheet passes it; the bid, war and
+  bidding-window pickers stay full size. Measured live: the compact range sheet
+  fits a 390×844 phone with no scroll and Save on screen.
+- **Lifts above the keyboard while typing.** `Sheet.tsx:useKeyboardInset` mirrors
+  `ui/histbubble.ts:place()` — when the on-screen keyboard shrinks the
+  `visualViewport` (a signal `dvh` does NOT track and that fires only on
+  `visualViewport`, not a document scroll/resize), the panel re-anchors to the
+  top of the visible slice (below the top bar) and caps its height to it, then
+  clears back to the CSS bottom-anchor when the keyboard drops. It is a strict
+  no-op with no keyboard, so the `.bidsheet` bottom-anchor and every geometry
+  spec (all keyboard-less) are untouched; `useSheetDrag`'s clamp now reads the
+  visual viewport too (an `innerHeight` fallback keeps jsdom identical). Guarded
+  `if (!window.visualViewport)` (jsdom has none). Pinned in
+  `sheet-keyboard.test.tsx` (a `visualViewport` stub, since a headless browser
+  can't raise an iOS keyboard) and the autofocus split in the same file.
+
 ## Leave War Rearrange + the counter picker (owner, 28 Aug 26)
 
 Four asks from the same sitting, all on the Leave War grid:

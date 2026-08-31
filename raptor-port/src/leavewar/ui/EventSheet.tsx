@@ -227,7 +227,18 @@ export function EventSheet({ line, date, to, onClose, onMove }: { line: number; 
           data-testid="event-text"
           placeholder="Type an event…"
           value={text}
-          autoFocus
+          /* AUTOFOCUS ONLY A FRESH SINGLE-DAY TAP (owner, 31 Aug 26 — "I want
+             to see the full window … the calendar takes a lot of vertical
+             space"). A phone can't show the keyboard AND the whole calendar at
+             once, but the keyboard is only ever needed to type the NAME, never
+             to pick dates. So a plain day tap still focuses the field to type
+             at once (the sheet is short and Sheet.tsx lifts it clear of the
+             keys); a sheet that opens already ranged — a drag-swept span or an
+             existing band, the tall case — opens with NO keyboard, so the full
+             window (calendar + Save/Delete) shows. Tapping "A range" is a
+             button, which drops the keyboard on its own, so switching a day to
+             a range reveals the full window too. */
+          autoFocus={!(band || dragged)}
           onChange={e => setText(e.target.value)}
         />
       </div>
@@ -309,6 +320,7 @@ export function EventSheet({ line, date, to, onClose, onMove }: { line: number; 
           <div className="bidsheet-row">
             <RangePicker
               testid="event"
+              compact
               min={period.start}
               max={period.end}
               value={range}

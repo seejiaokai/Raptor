@@ -146,12 +146,19 @@ function useSheetDrag() {
       const rawDy = dy0 + (e.clientY - py)
       // Clamp against the viewport so at least a strip of the handle always
       // stays reachable — never lose the panel behind the top bar or an edge.
+      // Prefer the VISUAL viewport when there is one: a phone keyboard shrinks
+      // and pans it while innerWidth/innerHeight stay the layout size, so a
+      // keyboard-up drag clamped to the layout size could still shove the panel
+      // behind the keys. jsdom has no visualViewport, so this falls straight
+      // back to the layout size and the drag-clamp tests are byte-identical.
       const KEEP = 48
       const topbar = document.querySelector('.topbar')?.getBoundingClientRect().bottom ?? 0
-      const vw = window.innerWidth, vh = window.innerHeight
+      const vv = window.visualViewport
+      const vLeft = vv ? vv.offsetLeft : 0, vTop = vv ? vv.offsetTop : 0
+      const vw = vv ? vv.width : window.innerWidth, vh = vv ? vv.height : window.innerHeight
       const left0 = rect0.left, top0 = rect0.top
-      const minLeft = KEEP - rect0.width, maxLeft = vw - KEEP
-      const minTop = topbar, maxTop = vh - KEEP
+      const minLeft = vLeft + KEEP - rect0.width, maxLeft = vLeft + vw - KEEP
+      const minTop = Math.max(topbar, vTop), maxTop = vTop + vh - KEEP
       const clampedLeft = Math.min(Math.max(left0 + (rawDx - dx0), minLeft), maxLeft)
       const clampedTop = Math.min(Math.max(top0 + (rawDy - dy0), minTop), maxTop)
       dx = dx0 + (clampedLeft - left0)
@@ -177,6 +184,60 @@ function useSheetDrag() {
   return panelRef
 }
 
+/* KEYBOARD-AWARE ANCHORING (owner, 31 Aug 26 — "can this fit the top area of
+   the screen [so] the save buttons and calendar don't get blocked by the
+   keyboard"). A sheet with a focused field raises a phone's on-screen keyboard;
+   because the panel is `position:fixed` with `bottom:14px` — LAYOUT coordinates
+   — while the keyboard shrinks and pans the VISUAL viewport, the panel's lower
+   half (calendar, Save/Delete) lands behind the keys. When the visual viewport
+   is shrunk by a keyboard, re-anchor the panel to the top of the visible slice
+   and cap its height to that slice, so the whole sheet sits above the keyboard
+   and scrolls inside. Mirrors histbubble.ts:place() — the same visual-viewport
+   idiom, the same resize+scroll signals (a keyboard pan fires neither a
+   document scroll nor a resize on `window`, only on `visualViewport`), the same
+   jsdom guard (jsdom has no visualViewport at all). It is a strict no-op
+   whenever no keyboard is up, so the default bottom-anchor — and every geometry
+   assertion, which all run without a keyboard — is untouched. */
+function useKeyboardInset(panelRef: { current: HTMLDivElement | null }) {
+  useEffect(() => {
+    const vv = window.visualViewport
+    const panel = panelRef.current
+    if (!vv || !panel) return
+    const GAP = 8
+    // The viewport must lose more than a chunk before we call it a keyboard —
+    // the URL bar showing/hiding shifts it a little and must not re-anchor.
+    const KEY = 120
+    const place = () => {
+      if (window.innerHeight - vv.height <= KEY) {
+        // No keyboard: drop the overrides, the CSS bottom-anchor + dvh cap
+        // take back over.
+        panel.style.top = ''
+        panel.style.bottom = ''
+        panel.style.maxHeight = ''
+        return
+      }
+      // Zero any drag offset so the top anchor composes cleanly with the
+      // panel's own translateX(-50%) centering.
+      panel.style.setProperty('--lw-dx', '0px')
+      panel.style.setProperty('--lw-dy', '0px')
+      // Sit just below the app top bar, but never above the visible slice's
+      // own top (a pinch-zoom pan moves it down); cap the height to the slice.
+      const bar = document.querySelector('.topbar')?.getBoundingClientRect().bottom ?? 0
+      const top = Math.round(Math.max(vv.offsetTop + GAP, bar + GAP))
+      panel.style.top = `${top}px`
+      panel.style.bottom = 'auto'
+      panel.style.maxHeight = `${Math.round(vv.offsetTop + vv.height - top - GAP)}px`
+    }
+    place()
+    vv.addEventListener('resize', place)
+    vv.addEventListener('scroll', place)
+    return () => {
+      vv.removeEventListener('resize', place)
+      vv.removeEventListener('scroll', place)
+    }
+  }, [panelRef])
+}
+
 export function Sheet({
   testid,
   label,
@@ -199,6 +260,7 @@ export function Sheet({
   const movedRef = useRef(false)
   const scrimRef = useGridPan(movedRef)
   const panelRef = useSheetDrag()
+  useKeyboardInset(panelRef)
   const onScrimClick = () => {
     if (movedRef.current) { movedRef.current = false; return }
     onClose()

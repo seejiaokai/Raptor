@@ -60,6 +60,7 @@ export function RangePicker({
   value,
   onChange,
   testid = 'range',
+  compact = false,
 }: {
   /** Earliest selectable date, inclusive. Days before it are shown but dead. */
   min?: string
@@ -73,6 +74,11 @@ export function RangePicker({
   value: Range | null
   onChange: (range: Range | null) => void
   testid?: string
+  /** Draw the month grid smaller (shorter cells, tighter gaps). The event
+   *  sheet asks for it so the whole sheet fits above a phone keyboard
+   *  (owner, 31 Aug 26 — "the calendar can be smaller … it takes up a lot of
+   *  vertical space"); the bid / war / bidding-window sheets leave it off. */
+  compact?: boolean
 }) {
   // Opens on the month the selection is in, or the month the bounds start in,
   // or — failing both — January of the min year. Never on "today": this app
@@ -101,7 +107,7 @@ export function RangePicker({
   const lead = column(days[0])
 
   return (
-    <div className="rpick" data-testid={`${testid}-picker`}>
+    <div className={`rpick${compact ? ' compact' : ''}`} data-testid={`${testid}-picker`}>
       <div className="rpick-hd">
         <button
           className="rnav"
