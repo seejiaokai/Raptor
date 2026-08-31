@@ -2130,6 +2130,24 @@ the drop against `applyMove`'s own same-container rule so only a legal target
 highlights. Grips are **edit-mode only** on the week, so the view week — and the
 reference byte-compare — carry none (parity stays 728/0; pinned in `html.test.ts`).
 
+**A held drag auto-scrolls at the screen edges (owner, 31 Aug 26).** A day is far
+taller than a phone, and the grips carry `touch-action:none` (so the finger holding
+a drag never scrolls the page itself) — which left a section far above or below out
+of reach. So while a drag is live and the finger sits in the top/bottom 72px margin,
+`rowdrag.ts` scrolls the surface under it at a distance-ramped speed (up to 22px a
+frame) via `requestAnimationFrame`, and after each step re-reads what is now under
+the still finger (`elementFromPoint`) so the drop target keeps updating without a
+pointer move. The surface it scrolls is found by walking up from the carried element
+to the nearest thing that actually overflows — the board's `.sb-board` / `.sb-main`,
+or the **window** for the edit week — so it is right on either page. For this to
+track to the very edge, `pointermove` is bound to the **document, not the surface**
+(the same reason `pointerup` already was): the drag releases pointer capture so the
+target follows the finger, so once the finger leaves the surface — off the bottom, or
+up over the app header — a container-bound handler would stop firing and the velocity
+would freeze; on the document it keeps tracking, and the loop stops the instant the
+drag ends. Both wirings' handlers early-return until their own instance owns a live
+drag, so board and week don't collide.
+
 **The section handle looks different from a row/wave handle, on purpose.** A section
 grip (`.secgrip`) paints a **drawn vertical grab-rail** in the panel's left spine —
 CSS `::before`, the `⠿` glyph kept in the markup but hidden (`font-size:0`) so the

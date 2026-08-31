@@ -43,10 +43,65 @@ export function wireRowDrag(el: HTMLElement) {
   let carry: HTMLElement | null = null
   let over: HTMLElement | null = null
 
+  /* edge auto-scroll (owner, 31 Aug 26): a day is far taller than the phone, and
+     the grips carry `touch-action:none` so the finger holding a drag can't scroll
+     the page itself — leaving no way to reach a section far above or below. So
+     while a drag is live and the finger sits in the top/bottom margin, we scroll
+     the surface under it. The surface differs per page: the board scrolls its own
+     `.sb-board` (or `.sb-main` on phone), the edit week scrolls the window — so we
+     walk up from the carried element to the nearest thing that actually overflows
+     and fall back to the document. lastX/lastY are the last pointer position, kept
+     so the loop can re-read what's now under the still finger after each scroll
+     step (no pointermove fires while the finger holds still). */
+  let lastX = 0, lastY = 0
+  let vel = 0                                   // px/frame, sign = direction, 0 = idle
+  let raf = 0
+  let scroller: HTMLElement | null = null
+  const EDGE = 72, MAXV = 22                    // margin that triggers, top speed
+
+  const isWin = (s: HTMLElement) =>
+    s === document.scrollingElement || s === document.documentElement
+  const findScroller = (node: HTMLElement | null): HTMLElement => {
+    let n: HTMLElement | null = node
+    while (n && n !== document.body) {
+      const oy = getComputedStyle(n).overflowY
+      if ((oy === 'auto' || oy === 'scroll') && n.scrollHeight > n.clientHeight + 1) return n
+      n = n.parentElement
+    }
+    return (document.scrollingElement as HTMLElement) || document.documentElement
+  }
+  const edgeVel = (y: number): number => {
+    if (!scroller) return 0
+    const win = isWin(scroller)
+    const r = win ? null : scroller.getBoundingClientRect()
+    const top = win ? 0 : r!.top
+    const bot = win ? window.innerHeight : r!.bottom
+    if (y < top + EDGE) return -Math.ceil(((top + EDGE - y) / EDGE) * MAXV)
+    if (y > bot - EDGE) return Math.ceil(((y - (bot - EDGE)) / EDGE) * MAXV)
+    return 0
+  }
+  const tick = () => {
+    raf = 0
+    if (!from && !fromSec) return               // drag ended between frames
+    if (vel && scroller) {
+      const before = scroller.scrollTop
+      scroller.scrollTop = before + vel
+      /* only if the content actually moved does what's under the finger change */
+      if (scroller.scrollTop !== before)
+        hoverAt(document.elementFromPoint(lastX, lastY) as HTMLElement | null)
+    }
+    raf = requestAnimationFrame(tick)
+  }
+  const stopScroll = () => {
+    if (raf) cancelAnimationFrame(raf)
+    raf = 0; vel = 0; scroller = null
+  }
+
   const clear = () => {
     if (carry) carry.classList.remove('rowdrag', 'secdrag')
     if (over) over.classList.remove('rowdrop', 'secdrop')
     carry = null; over = null; from = ''; fromSec = ''; kind = ''
+    stopScroll()
   }
   /* the acceptance rule, identical to engine/reorder.ts applyMove: same kind,
      same length, and the same container (everything but the last index) — so
@@ -80,21 +135,29 @@ export function wireRowDrag(el: HTMLElement) {
       carry = row; row.classList.add('rowdrag')
     }
     try { grip.releasePointerCapture?.(e.pointerId) } catch { /* mouse: nothing to release */ }
+    /* the surface this drag can reach off-screen ends of, and the loop that
+       scrolls it while the finger holds an edge */
+    scroller = findScroller(carry)
+    lastX = e.clientX; lastY = e.clientY; vel = 0
+    if (!raf && typeof requestAnimationFrame === 'function') raf = requestAnimationFrame(tick)
     e.preventDefault()
   }
-  const onMove = (e: any) => {
+  /* resolve and highlight the drop target under a given element — shared by a
+     real pointermove (e.target) and the auto-scroll loop (elementFromPoint under
+     the held-still finger). */
+  const hoverAt = (t0: HTMLElement | null) => {
     if (!from && !fromSec) return
     let tgt: HTMLElement | null = null
     if (fromSec) {
       /* a section drops onto another section OF THE SAME DAY (the edit week shows
          seven days at once, so the day prefix must match) */
-      const sec = (e.target as HTMLElement).closest?.('[data-secmove]') as HTMLElement | null
+      const sec = t0?.closest?.('[data-secmove]') as HTMLElement | null
       const v = sec?.dataset.secmove
       if (sec && sec !== carry && v && v !== fromSec && v.split('.')[0] === fromSec.split('.')[0]) tgt = sec
     } else {
       /* find the nearest ancestor of the SAME kind — for a wave carry this walks
          up past the lines inside a wave to the `.sb-go`/`.go` block itself */
-      const row = (e.target as HTMLElement).closest?.(`[data-move^="mv:${kind}."]`) as HTMLElement | null
+      const row = t0?.closest?.(`[data-move^="mv:${kind}."]`) as HTMLElement | null
       const v = row?.dataset.move
       if (row && row !== carry && v && v !== from && sameContainer(from, v)) tgt = row
     }
@@ -102,6 +165,12 @@ export function wireRowDrag(el: HTMLElement) {
     if (over) over.classList.remove('rowdrop', 'secdrop')
     over = tgt
     if (over) over.classList.add(fromSec ? 'secdrop' : 'rowdrop')
+  }
+  const onMove = (e: any) => {
+    if (!from && !fromSec) return
+    lastX = e.clientX; lastY = e.clientY
+    vel = edgeVel(lastY)                         // arm/disarm the edge scroll
+    hoverAt(e.target as HTMLElement)
   }
   const onUp = () => {
     const sec = fromSec, src = from, dst = over?.dataset
@@ -127,15 +196,23 @@ export function wireRowDrag(el: HTMLElement) {
   }
 
   el.addEventListener('pointerdown', onDown)
-  el.addEventListener('pointermove', onMove)
-  /* on the document, not the container: a finger that lifts off the edge of the
-     surface must still end the drag rather than leave it armed */
+  /* pointermove/up on the document, not the container: the drag deliberately
+     releases pointer capture (see the header) so the target tracks the finger,
+     which means once the finger leaves the surface — off the bottom, or up over
+     the app header while the edge auto-scroll runs — events land elsewhere. On
+     the container onMove would stop firing there and the scroll velocity would
+     freeze at its last value; on the document it keeps tracking to the very edge,
+     and a lift outside the surface still ends the drag. Both handlers early-return
+     until this instance owns a live drag, so the board's and the week's wirings
+     don't collide. */
+  document.addEventListener('pointermove', onMove)
   document.addEventListener('pointerup', onUp)
   document.addEventListener('pointercancel', onUp)
   return () => {
     el.removeEventListener('pointerdown', onDown)
-    el.removeEventListener('pointermove', onMove)
+    document.removeEventListener('pointermove', onMove)
     document.removeEventListener('pointerup', onUp)
     document.removeEventListener('pointercancel', onUp)
+    stopScroll()
   }
 }

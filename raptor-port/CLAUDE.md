@@ -857,6 +857,13 @@ subscribers.
   order?"** snackbar (`ui/SecDefaultSnackbar.tsx`, `SECDEFOFFER`) that promotes it to
   the house default via the SAME `setSecDefault`/`secDefaultSave` the Admin panel uses.
   A WAVE drag is unchanged — a real amendment via `applyMove('mv:w…')` → `moveWave`.
+  A held drag AUTO-SCROLLS at the top/bottom screen edges (owner, 31 Aug 26): a day is
+  taller than a phone and the grips are `touch-action:none`, so `rowdrag.ts` scrolls
+  the nearest overflowing surface (board's `.sb-board`/`.sb-main`, or the window on the
+  week) via rAF while the finger holds an edge, re-reading the drop target under the
+  still finger each step. `pointermove` is on the DOCUMENT, not the surface (like
+  `pointerup`), so the finger tracks to the very edge and over the app header without
+  the velocity freezing; don't move it back onto the container.
   The old one-week "Apply to all days" is GONE (the henceforth default supersedes it);
   don't re-add it, the Arrange sheet, or a phone nudge for sections/waves. Edit-only
   grips keep the view week byte-identical (parity 728/0). Pinned: `ui/rowdrag.test.tsx`,

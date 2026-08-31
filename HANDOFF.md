@@ -83,6 +83,27 @@ specs re-counted whole (no new e2e file; the drag's geometry is covered by the
 register/alignment pins that caught the indent trap). Verified live (see the baseline
 note above).
 
+31 Aug 26 EDGE AUTO-SCROLL while dragging (owner ask — "when I drag an item to the top
+or bottom edge of the screen, can you auto-scroll? the schedule is so big I can't reach
+the other sections"): while a section/wave/row drag is live and the finger sits in the
+top/bottom 72px margin, `ui/rowdrag.ts` scrolls the surface under it (rAF, distance-ramped
+to 22px/frame) and re-reads the drop target under the still finger via `elementFromPoint`.
+The scrolled surface is the nearest overflowing ancestor of the carried element — the
+board's `.sb-board`/`.sb-main`, or the WINDOW on the edit week — so it is correct on both
+pages. Fixing this surfaced a latent bug: `pointermove` was bound to the surface element,
+so the moment the finger reached the very top edge (over the app header, outside the week
+root) `onMove` stopped firing and the scroll velocity froze — the exact case auto-scroll
+lives in. Moved `pointermove` to the DOCUMENT (the same fix `pointerup` already carried),
+so the finger tracks to the very edge; both wirings' handlers early-return until their own
+instance owns a live drag. Logic-only in `rowdrag.ts` — no markup change, so parity holds
+728/0, DOM counts unchanged, geometry contracts untouched. Verified live at 390px on both
+surfaces: week scrolls the window (0→645 down, back to 0 up, stops on release), board
+scrolls `.sb-main` (0→660), no console errors. All six gates green: `npm test` 3587/3587,
+build clean, parity 728/0, e2e 347 passed / 23 skipped / 0 failed, probes 6/6, perf 4/0
+(week DOM 5032, board DOM 1063 — both UNCHANGED, confirming logic-only). Pinned:
+`ui/rowdrag.test.tsx` (state machine; auto-scroll is a layout behaviour proven live per
+this suite's jsdom/e2e split).
+
 Before that, reconciled against the 3512/203 reading before it (arrange the flying WAVES):
 +17 vitest pins across +2 files — **the DEFAULT arrangement, configurable in
 Admin** (owner, 29 Aug 26 pt.2 — "allow the default arrangement of a schedule to
