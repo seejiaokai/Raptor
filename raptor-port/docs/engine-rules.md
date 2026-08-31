@@ -2342,6 +2342,7 @@ the squadron's programme*, not read vs write:
 | Quals — `Enable editing`: tick a qualification, edit initials / flight / CAT | **yes** | yes |
 | Quals — `Edit quals` (which columns the LoX carries) | no | yes |
 | Quals — `Add person` (put someone on the roster) | no | yes |
+| Quals — archive a person (the row's ✕) / Restore from the Archived drawer | no | yes |
 | Accepting an input into the issued programme | no | yes |
 | The Edit Schedule page at all (`canEditSched()`) | no | yes |
 | Logic — editing VCONF / SHIFT_HARD | no | yes |

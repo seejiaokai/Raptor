@@ -519,6 +519,41 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
 
 ## Known issues / open work
 
+- **RESOLVED 31 Aug 26 (bug hunt #2, the authority sweep) — a MEMBER could
+  ARCHIVE anyone off the roster from the Quals page.** Enable editing is open
+  to members by design (owner, 5 Aug 26 — they tick their quals and fill in
+  initials/flight/CAT), but the row's archive ✕ rendered in that same editing
+  mode with no role check anywhere: one member click set `PEOPLE[id].archived`,
+  taking the person off the Quals roster, the crew palette and the Leave War
+  projection — and Restore is admin-only, so the member could not even undo
+  it. Verified live (us/us archived a pilot with one click), then fixed on the
+  house pattern: the ✕ renders only for an admin (`QualsPage.tsx qualsTable`'s
+  `canArch`), the click handler carries the commitInputEdit-style write-path
+  refusal, and `sync.ts restoreArchivedPerson` gets the symmetric backstop.
+  Roster MEMBERSHIP (archive/restore, like Add person) is the admin's; table
+  CONTENTS stay member-editable exactly as the 5 Aug decision says. Pins in
+  `ui/quals.test.tsx`; the rights table in `docs/engine-rules.md` §Auth/roles
+  now carries the archive/restore row. Same sweep found the rest of the
+  member-reachable writes properly gated (inputs own-row, Logic rules, Leave
+  War store, schedule editMode, section/roster arrangement). One OPEN QUESTION
+  for the owner from the same sweep, deliberately not changed: a member in
+  Quals editing mode can tick/edit ANY row's table contents — including
+  another person's callsign, CAT, SXO and SANS — which the 5 Aug decision
+  reads as intended ("the line is their own record vs the squadron's
+  programme" grants the table's contents), but it sits oddly beside the
+  Inputs page's own-row-only rule; if he wants own-row-only quals too, the
+  gate belongs in the same three places this fix touched.
+
+- **The Leave War ↔ Raptor sync + OIL crediting passed a dedicated adversarial
+  hunt CLEAN (31 Aug 26, bug hunt #1).** Every wire read end-to-end (0 roster
+  projection, 1+2 leave/medical both directions, 4 OIL, post-out archival, the
+  clash strip, counters arithmetic) plus a live browser drive of the full OIL
+  loop: publish seed Saturday → FO cell lands raptor-owned; navigate away and
+  back → survives (the stash half); unpublish → collected; the Inputs-page
+  Duty ask-flow → OilConfirm suggests HO for 5h → Yes lands HO; console clean.
+  No defects found — the 27–29 Aug overnight passes hold. Recorded so the next
+  hunt starts elsewhere.
+
 - **RESOLVED 31 Aug 26 (owner said "fix it") — a reorder on a PUBLISHED day no
   longer skips its amendment record.** The old bug: every reorder mover
   (`engine/reorder.ts`) marked ONE field-value key at the destination index as the
