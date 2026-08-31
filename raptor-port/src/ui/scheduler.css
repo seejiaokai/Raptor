@@ -2584,8 +2584,19 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
    title starts at 14px (3px border + 11px pad), so a 14px grip clears it exactly;
    touch-action:none so a thumb-drag reorders instead of scrolling the surface. */
 .secgrip{position:absolute;left:0;top:0;width:14px;height:31px;display:flex;align-items:center;justify-content:center;
-  cursor:grab;color:var(--ink-3);font-size:12px;line-height:1;touch-action:none;user-select:none;z-index:3}
+  cursor:grab;color:var(--ink-3);font-size:0;touch-action:none;user-select:none;z-index:3}
+/* the handle is a DRAWN vertical grab-rail, not the ⠿ the row/wave grips carry — a
+   different FORM, so "move this whole section" never reads as "move this one row /
+   wave". That collision is what the owner flagged on the week, where the Flying
+   waves section opens straight onto a wave's own inline ⠿ with no header between:
+   a rail in the panel's left spine sits clear of, and looks nothing like, that
+   inline grip. font-size:0 hides the ⠿ kept in the markup (the drag machine,
+   the pin tests and the aria-label all still read it) and the rail is painted
+   here — still a zero-layout overlay, so every geometry/parity contract holds. */
+.secgrip::before{content:"";width:6px;height:15px;border-radius:1px;opacity:.8;
+  background:linear-gradient(90deg,currentColor 0 2px,transparent 2px 4px,currentColor 4px 6px)}
 .secgrip:hover{color:var(--accent)}
+.secgrip:hover::before{opacity:1}
 .secgrip:active{cursor:grabbing}
 /* the WEEK sections start their title nearer the edge (`.sec` padding-left 6px,
    `.go` margin-left 10px), so nudge just the TITLE header clear of the grip — the
@@ -2593,6 +2604,11 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
    moves. */
 .dsec>.sec>.sub-h,.dsec>.allhands>.ah-h{padding-left:16px}
 .dsec>.go>.go-tab{padding-left:8px}
+/* the week's Flying-waves header (edit-only, html.ts) — the section header this
+   block never had. Coloured and cased like every other week section header
+   (.sub-h + var(--sec)); its box lines up with the wave blocks below (both
+   margin-left 10px) and its text clears the drag-rail sitting in the gutter. */
+.wv-sech{color:var(--sec);margin:10px 10px 0;padding-left:10px}
 /* the wave grip sits inline at the head of the wave block, before "Go N" / the
    label — same always-draggable rule and touch-action as the section grip. */
 .wvgrip{cursor:grab;color:var(--ink-3);font-size:12px;line-height:1;padding:0 2px;touch-action:none;user-select:none;flex:0 0 auto}

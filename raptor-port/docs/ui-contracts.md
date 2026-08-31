@@ -2130,6 +2130,21 @@ the drop against `applyMove`'s own same-container rule so only a legal target
 highlights. Grips are **edit-mode only** on the week, so the view week — and the
 reference byte-compare — carry none (parity stays 728/0; pinned in `html.test.ts`).
 
+**The section handle looks different from a row/wave handle, on purpose.** A section
+grip (`.secgrip`) paints a **drawn vertical grab-rail** in the panel's left spine —
+CSS `::before`, the `⠿` glyph kept in the markup but hidden (`font-size:0`) so the
+drag machine, the pin tests and the aria-label still read it — while a row grip
+(`.sb-grip`) and a wave grip (`.wvgrip`) stay the inline `⠿` dots. The taxonomy is
+"**rail = move the whole panel · dots = move this one row/wave**", so where a section
+opens straight onto a row or wave the two handles never read as the same control. It
+stays a **zero-layout overlay** (absolute, in the gutter), so every measured
+register/alignment contract is byte-for-byte unchanged. For that taxonomy to hold on
+the week, the **Flying-waves section — the one week section that had no header of its
+own — now gets an edit-only `.wv-sech` "Flying waves" header** (like the board's, and
+like every other week section), so its rail anchors on a header line clear of the
+first wave's grip instead of colliding with it. Edit-only, so the view week and the
+reference stay byte-identical (stripped in `html.test.ts`'s compare).
+
 **A section move is display order only.** The order lives on the day as `d.secOrder`
 (absent ⇒ the default order), resolved by `engine/order.ts secOrder(d)`. It never
 enters a slot key, `SCHED.*`, or an AL: re-arranging a panel moves no row inside any

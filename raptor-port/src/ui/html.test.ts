@@ -293,6 +293,10 @@ describe('view-week markup parity with the reference', () => {
     const noDsec = (s: string) => {
       s = s.replace(/<span class="(?:secgrip|wvgrip)"[^>]*>⠿<\/span>/g, '')
            .replace(/ data-move="mv:w\.\d+\.\d+"/g, '')
+           /* edit mode also gives the Flying-waves section the header it never had,
+              so its drag-rail has an anchor clear of the first wave's grip; the
+              reference has no such header, so strip it (a no-op on the reference). */
+           .replace(/<div class="sub-h wv-sech">Flying waves<\/div>/g, '')
       let idx: number
       while ((idx = s.indexOf('<div class="dsec" ')) >= 0) {
         const tagEnd = s.indexOf('>', idx) + 1

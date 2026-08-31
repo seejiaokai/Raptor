@@ -1025,6 +1025,12 @@ export function dayHTML(di:any,ed:any,vsel?:any){
       h+=`</div>`;
     }
     const secM1=h.length;
+    /* the section header the week's Flying-waves block never had — the one section
+       that opened straight onto its first wave, so its drag-rail landed right beside
+       that wave's own grip (owner flag, 31 Aug 26). Edit-only, so the view week and
+       the read-only reference stay byte-identical (parity 728/0); it gives the rail
+       the same header anchor every other week section already has, clear of the wave. */
+    if(ed) h+=`<div class="sub-h wv-sech">Flying waves</div>`;
     if(!d.waves||!d.waves.length)
       h+=`<div class="nobox" style="background:rgba(138,150,163,.08);border-color:var(--edge);border-left-color:var(--edge-2);color:var(--ink-3)">No flying — ground day.</div>`;
     // ---- waves ----

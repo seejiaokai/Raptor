@@ -843,7 +843,15 @@ subscribers.
   three draggables apart by the grip pressed and validates the drop with `applyMove`'s
   own same-container rule. These grips stay draggable at EVERY width — a section/wave
   is a big target — unlike the dense row grip (`.sb-grip`, phone-hidden in favour of
-  ▲▼); don't hide them on a phone or add arrows (the owner's "drag, no arrows"). A
+  ▲▼); don't hide them on a phone or add arrows (the owner's "drag, no arrows"). The
+  SECTION grip is a DRAWN vertical grab-rail (`.secgrip::before`; the `⠿` stays in the
+  markup but `font-size:0` hides it, so tests/aria still read it), visually distinct
+  from the inline `⠿` dots the row/wave grips keep — "rail = move the panel, dots =
+  move the row/wave" — a zero-layout overlay, so no geometry contract moves. For that
+  to hold on the week, the Flying-waves section (the one week section with no header of
+  its own) gets an edit-only `.wv-sech` "Flying waves" header so its rail anchors clear
+  of the first wave's grip (stripped in `html.test.ts`'s reference compare, so parity
+  holds); don't drop it, don't turn the section grip back into a bare `⠿`. A
   SECTION drag is display-only (`store.moveSectionTo` → `engine/order.ts
   reorderSectionTo`, histPush, no markEdit) and then offers the **"Set default
   order?"** snackbar (`ui/SecDefaultSnackbar.tsx`, `SECDEFOFFER`) that promotes it to

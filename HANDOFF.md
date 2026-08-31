@@ -44,8 +44,20 @@ old one-week "Apply to all days" was dropped (henceforth default supersedes it).
 `ui/rowdrag.test.tsx` (+6), `ui/SecDefaultSnackbar.test.tsx` (new), `ui/board.test.tsx`,
 `ui/html.test.ts`, `state/store.test.ts`. Verified live at 1280 and 390 px: grips
 render on both surfaces and both widths, the Arrange button is gone, dragging a section
-reorders it and raises the snackbar, no console errors. All six gates re-run and
-watched at the close):
+reorders it and raises the snackbar, no console errors.
+
+31 Aug 26 DESIGN POLISH on the section grab bars (owner /impeccable ask — "make sure
+the placement of the section grab bars are nicely placed"): the section grip is now a
+DRAWN vertical grab-rail (`.secgrip::before`, the `⠿` kept in markup but `font-size:0`),
+visually distinct from the inline `⠿` dots the row/wave grips keep — rail = move the
+whole panel, dots = move the row/wave — so the two never read as the same control. And
+the week's Flying-waves section (the one week section with no header) gained an edit-only
+`.wv-sech` "Flying waves" header so its rail anchors on a header line clear of the first
+wave's grip (the adjacency the owner flagged). Both are edit-only / zero-layout-overlay,
+so parity 728/0 and every geometry contract hold; week DOM 5025 → 5032 (+7, one header
+per day). CSS-plus-one-line-of-html.ts; normalizer in `ui/html.test.ts` strips the
+edit-only header from the reference compare. All six gates re-run and watched at the
+close):
 
 | gate | reading |
 |---|---|
