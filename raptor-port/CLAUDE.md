@@ -834,6 +834,108 @@ subscribers.
   "display-only" layer (it would fight `sortWaves`). Unset wave order = append as
   before. Pinned: `engine/arrdefaults.test.ts`, `ui/wavedefault-add.test.tsx`,
   `ui/admin.test.tsx`.
+- **Sections and waves are re-ordered by IN-PLACE DRAG, not a sheet** (owner, 30 Aug
+  26 — replacing the 29 Aug `⇅ Arrange` sheet, which is DELETED). A grip on each
+  section (`.sb-sec[data-secmove]` on the board, `.dsec` on the edit
+  week — edit-mode only) and in each wave header (`.wvgrip` + `data-move="mv:w…"` on
+  the block) drags the whole panel / wave into a new place, on both surfaces. One
+  machine, `ui/rowdrag.ts` (wired on the board wrap AND the edit-week root), tells the
+  three draggables apart by the grip pressed and validates the drop with `applyMove`'s
+  own same-container rule. These grips stay draggable at EVERY width — a section/wave
+  is a big target — and since 31 Aug 26 the dense ROW grip is too (the ▲▼ row nudge
+  was removed and each row's first box shortened to seat the grip; see the row-grip
+  entry below). Don't add arrows back to any of them (the owner's "drag, no arrows"). The
+  SECTION grip is the SAME dotted `⠿` the row/wave grips carry (owner, 31 Aug 26 —
+  reversing the 30 Aug drawn-rail: "the drag markers should all follow the old design
+  in which it's dotted"), placed INLINE at the head of the panel's own header (board
+  `.sb-ph`, week `.ah-h`/`.sub-h`/`.wv-sech`) — NOT as an overlay rail in the gutter.
+  Inline, it aligns with the wave grip's column (the owner's "align with GO 1"), pushes
+  its title clear of itself, and centres on the title line (`align-items:center`); the
+  board header's gap is tightened to 6px so the added grip borrows from the header's own
+  spacing, not from the sub-text / buttons on the right (owner — "make sure the text or
+  buttons on the right aren't squeezed"; measured 16px clearance). The headers set
+  `user-select:none` so a thumb holding the grip never paints the title blue. Don't
+  turn the section grip back into a rail/overlay, and don't drop the no-select.
+  **Overall Notes and Common Programme are two SEPARATE draggable sections on the
+  board** (owner, 31 Aug 26 — "split them apart"; `SECTIONS=['notes','prog',…]`, each
+  its own `.sb-sec[data-secmove]` card). On the EDIT WEEK the day notes still print as
+  lines inside the Common Programme block (they never had a card of their own there), so
+  the week keeps them in the 'prog' slice and its 'notes' slice is EMPTY and skipped —
+  which is exactly what keeps the view week and the reference byte-identical (the empty
+  slice adds nothing). The week's Flying-waves section still gets its edit-only
+  `.wv-sech` "Flying waves" header (stripped in `html.test.ts`'s reference compare) so
+  its inline grip has a header to sit in; don't drop it.
+  **The four CREW WORKING-AID panels join the SAME draggable list on the board**
+  (owner, 31 Aug 26 — "one list, drag anywhere"): Personal Inputs, Available crew,
+  SANS availability and Unavailable are ordinary section keys now
+  (`SECTIONS=[…,'inputs','avail','sans','unav']`), each wrapped in its own
+  `.sb-sec[data-secmove]` card with the same dotted grip, so any card can be dragged to
+  any position (Available crew up next to the flying waves, say). They take effect on
+  the SCHEDULER BOARD only: `ui/html.ts`'s week APPENDS these panels separately (they
+  are working aids, and SANS/Unavailable are parity-locked on the view week), so their
+  week slice bits are empty and reordering them changes NOTHING on either week — the
+  same empty-slice mechanism that keeps 'notes' parity-safe. This is a scheduler
+  WORKSPACE arrangement, not a published property; the squadron's view week is
+  untouched. Being ordinary section keys they ride the per-day order, the admin house
+  default (Admin's Default-arrangement list shows all ten now, with a note that the
+  crew four are board-only) and the "Set default?" snackbar for free. The grip is
+  injected by a loose `sb-ph`|`ap-h` header match in `board.ts wrapSec` (Available
+  crew's header is `.ap-h`, re-laid to flex-start so the grip rides with its title);
+  Personal Inputs' foldable header is centred for the grip (`.sb-sec .sb-ph.pl-fold`,
+  it was baseline — the 7px "grip too high" the owner flagged), and a grip-tap on the
+  two foldable headers is guarded in `interactions.ts` so it starts a drag, not a fold.
+  Don't fold the crew panels back into a fixed tail, and don't make their order reach
+  the week. A
+  SECTION drag is display-only (`store.moveSectionTo` → `engine/order.ts
+  reorderSectionTo`, histPush, no markEdit) and then offers the **"Set default
+  order?"** snackbar (`ui/SecDefaultSnackbar.tsx`, `SECDEFOFFER`) that promotes it to
+  the house default via the SAME `setSecDefault`/`secDefaultSave` the Admin panel uses.
+  A WAVE drag is unchanged — a real amendment via `applyMove('mv:w…')` → `moveWave`.
+  A held drag AUTO-SCROLLS at the top/bottom screen edges (owner, 31 Aug 26): a day is
+  taller than a phone and the grips are `touch-action:none`, so `rowdrag.ts` scrolls
+  the nearest overflowing surface (board's `.sb-board`/`.sb-main`, or the window on the
+  week) via rAF while the finger holds an edge, re-reading the drop target under the
+  still finger each step. `pointermove` is on the DOCUMENT, not the surface (like
+  `pointerup`), so the finger tracks to the very edge and over the app header without
+  the velocity freezing; don't move it back onto the container.
+  The old one-week "Apply to all days" is GONE (the henceforth default supersedes it);
+  don't re-add it, the Arrange sheet, or a phone nudge for sections/waves. Edit-only
+  grips keep the view week byte-identical (parity 728/0). Pinned: `ui/rowdrag.test.tsx`,
+  `ui/SecDefaultSnackbar.test.tsx`, `ui/board.test.tsx`, `ui/html.test.ts`. Contract:
+  `docs/ui-contracts.md` §Dragging sections and waves.
+- **Dense ROW reorder is by DRAG too — the ▲▼ nudge is GONE** (owner, 31 Aug 26 —
+  "remove up and down arrow and add a drag marker to those lines … align it vertically
+  with the rest of the text boxes … make sure all the alignment is considered for all
+  drag markers"). This REVERSES the 8 Aug "phone hides `.sb-grip`, shows ▲▼" split:
+  every dense row (flying line, duty, sim, ground, Common Programme, Overall-note) now
+  shows its dotted `⠿` grip at ALL widths and reorders by dragging it. `sbNudge` returns
+  '' (no ▲▼ renders — also ~2 nodes/row off the board DOM budget); the phone grid
+  templates gain a LEADING MARKER TRACK, the header's leading placeholder is
+  un-hidden so the column titles shift with it (each box stays UNDER its own heading),
+  and the first box shortens by the track. The right-hand tracks are untouched, so the
+  remarks box stays 154px right-anchored and still lines up with the flying line's.
+  **A same-week follow-up widened the lane 13px → 20px and shifted the pucks flush-left**
+  (owner — "the text box just starts right of the drag marker … not inside the text box";
+  "the pucks can shift it back to the left so that it holds 2 pucks not blocked … make
+  sure the rest are placed back to the same area"): the glyph is left-aligned in the wider
+  lane so the handle sits clear of the first box (measured gap 8px → 17px), and the puck
+  containers span from track 1 (`.sb-line .sb-seatpair` `1/4`, `.sb-arow.c6r>.ppl` `1/3`)
+  to reclaim the marker lane on their OWN line (the grip bottom-aligns to the first line,
+  so that lane is empty there) — every crew puck goes flush-left (measured delta 0, the
+  old layout's spot) and a two-wide box's second puck clears the remarks instead of
+  clipping under it. No puck resized (the AMT droppable-hole spec holds); marker width
+  doesn't affect puck fit, so widening the lane was free. Don't return the puck spans to
+  track 2 or the glyph to centre. ui-contracts §Dense row reorder carries the measurements.
+  ALIGNMENT is a HARD RULE now (owner — "I don't want to keep repeating this"): every
+  grip's centre is MEASURED against the box beside it to delta 0 — the flying line's grip
+  bottom-aligns (`.sb-line>.sb-grip{align-self:end;height:24px}`) because its first-row
+  boxes bottom-align under the tall B cell; the c6r/notes rows sit in a box-height first
+  row so their grip centres naturally; the section/wave/crew grips were already
+  box-centred. Don't re-add the ▲▼, don't hide the row grip on a phone, and don't move a
+  grip's placement without re-measuring delta-0 against its neighbour box. The boardMbtn
+  mv:up/dn branch stays as an inert guard for a stale element. Pinned:
+  `ui/rowdrag.test.tsx` (drag machine), `ui/board.test.tsx` (grip present, no ▲▼).
+  Contract: `docs/ui-contracts.md` §Dense row reorder.
 - **The highlight MENUS must read apart from their CHIPS** (owner, 25 Aug 26 —
   the CAT / Type / Quals tabs looked so like the chips inside them that, with one
   menu open, the next shut menu read as another selectable chip). A `.hl-gtab` is

@@ -21,7 +21,7 @@ import { signoffHTML, cxText, storesView, intimesInner, areaText, atimeText, day
 import { setInpField } from './inputedit'
 import { STORE_CFG, DUTYTPL_CFG, blockFromTpl, DAYTPL_CFG, applyDayTpl, addDayTpl, dayTplSave, dayTplSummary, secOrder, waveInsertSlot, waveKindOf, moveWave } from '../engine'
 import { dayDrafts, curDraftId, draftDup, draftSelect } from '../engine/drafts'
-import { setTplEdit, setDayTplEdit, setDraftsEdit, setWaveEdit, setArrangeSec } from './pops'
+import { setTplEdit, setDayTplEdit, setDraftsEdit, setWaveEdit } from './pops'
 import { shownBuiltins, shownTemplates, waveFromTpl, kindLabel, WAVE_BUILTIN, WAVETPL_CFG } from '../engine/wavetpl'
 import { HOOKS } from '../engine/hooks'
 import { canEditSched } from '../state/auth'
@@ -81,10 +81,9 @@ export function boardHTML(di: number, pv?: boolean) {
      content. Handled by boardMbtn's data-draftsadd branch (the week's copy
      of this button is data-draftsopen through routeClick — split attributes,
      same double-handling reason as data-daytpladd/data-daytplopen). */
-  const dayTplHead = mvRO ? '' : `<div class="sb-panel dtpl"><div class="sb-ph">Templates &amp; drafts <span class="sub">save or apply this day's structure · plan alternatives</span><span class="gctl"><button class="mbtn add" data-arrangesec="${di}" title="Arrange the order the sections show in">⇅<span class="mbl"> Arrange</span></button><button class="mbtn add" data-daytpladd="${di}" title="Save this day, or apply a saved one">Templates</button><button class="mbtn add" data-draftsadd="${di}" title="Duplicate this day into drafts, switch between them, or manage them — the selected draft is what publishes">Drafts</button></span></div></div>`
-  /* the Programme unit — day notes + Common Programme, moved together when the
-     owner re-arranges the sections (engine/order.ts secOrder). */
-  const progPanel = sbNotesPanel(d, di, pv, mvRO) + sbProgPanel(d, di, pv, mvRO)
+  const dayTplHead = mvRO ? '' : `<div class="sb-panel dtpl"><div class="sb-ph">Templates &amp; drafts <span class="sub">save or apply this day's structure · plan alternatives</span><span class="gctl"><button class="mbtn add" data-daytpladd="${di}" title="Save this day, or apply a saved one">Templates</button><button class="mbtn add" data-draftsadd="${di}" title="Duplicate this day into drafts, switch between them, or manage them — the selected draft is what publishes">Drafts</button></span></div></div>`
+  /* Overall Notes and Common Programme are two separate sections now (owner, 31 Aug
+     26 — "split them apart"); each is built and wrapped on its own below (sect). */
   let fly = ''
   ;(d.waves || []).forEach((w: any, gi: number) => {
     /* SC / AVALON / BB carry no store config on the week (html.ts's `sa`
@@ -112,7 +111,10 @@ export function boardHTML(di: number, pv?: boolean) {
        (a session that may not edit it, board still legitimately open on
        its own page) left the whole-wave rename and delete live even
        after the flying line's own rows went inert. */
-    fly += `<div class="sb-go${w.night ? ' night' : ''}"><div class="sb-go-h"><span>Go ${gi + 1}</span>`
+    /* the wave BLOCK carries data-move so the wave grip in its header can drag it
+       into a new place among the day's waves (mv:w → engine/reorder.ts moveWave,
+       a real amendment) — edit board only, like every other write control here. */
+    fly += `<div class="sb-go${w.night ? ' night' : ''}"${mvRO ? '' : ` data-move="mv:w.${di}.${gi}"`}><div class="sb-go-h">${mvRO ? '' : '<span class="wvgrip" title="Drag to reorder this wave" aria-label="Reorder this wave">⠿</span>'}<span>Go ${gi + 1}</span>`
       /* esc(o): `cur` can be a template/typed wave title — user-entered text
          reaching an HTML sink, so it is escaped at the builder like every other
          (26 Aug 26 bug pass; an unescaped `<` swallowed the option outright) */
@@ -246,27 +248,49 @@ export function boardHTML(di: number, pv?: boolean) {
      top-bar button's `disabled={DPREV.has(SBDAY)}` guard used to do. */
   const wvHead = mvRO ? '' : `<div class="sb-panel wv"><div class="sb-ph">Flying waves <span class="sub">go times, formations, crews</span><span class="gctl"><button class="mbtn add" data-wvadd="${di}" title="Add a flying wave">+ Wave</button></span></div></div>`
   const wavesPanel = wvHead + (fly || `<div class="sb-empty" style="padding:14px 11px">No flying waves yet${mvRO ? '' : ' — “+ Wave” above adds the first'}.</div>`)
-  /* THE SCHEDULE SECTIONS, emitted in the day's own order (owner, 29 Aug 26 —
-     engine/order.ts secOrder). The Templates head stays pinned above and the
-     inputs/available/SANS/Unavail group pinned below — neither is a schedule
-     section. With the default order this join is byte-identical to the old fixed
-     sequence (prog · waves · duty · sims · ground); only a re-arranged day differs.
-     The sim planning notes still sit inside the Sims panel, so the board reads the
-     way the week does. */
-  const sect: Record<string, string> = {
-    prog: progPanel, waves: wavesPanel,
-    duty: sbDutyPanel(d, di, pv, mvRO), sims: sbSimRowsPanel(d, di, pv, mvRO), ground: sbGroundPanel(d, di, pv, mvRO),
-  }
-  let b = dayTplHead + secOrder(d).map((k: string) => sect[k] || '').join('')
-  /* one pass over INPUTS for both blocks — the board rebuilds on every edit */
+  /* THE BOARD PANELS, emitted in the day's own order (owner, 29 Aug 26 —
+     engine/order.ts secOrder). The Templates head stays pinned above; everything
+     below it — the six schedule sections AND the four crew working-aid panels — is
+     ONE draggable list now (owner, 31 Aug 26 — "one list, drag anywhere"). The
+     canonical order is notes · prog · waves · duty · sims · ground · inputs · avail ·
+     sans · unav, which is exactly the old layout (the schedule sections, then the
+     crew group), so a pristine day is byte-identical; only a re-arranged day differs.
+     Overall Notes and Common Programme are two separate cards (owner, 31 Aug 26
+     "split them apart"); the sim planning notes still sit inside the Sims panel, so
+     the board reads the way the week does. */
+  /* one pass over INPUTS for the three input-backed crew panels — the board
+     rebuilds on every edit */
   const dayInp = INPUTS.filter((i: any) => inputCoversDate(i, d.dt))
-  /* the available-crew strip the week already carries, now on the board too
-     (owner, 24 Aug 26 — "show available crew in scheduler board as well"). Same
-     builder, same position as the week (Personal Inputs → Available crew → SANS
-     → Unavailable), so both surfaces read the same. Live board only — withheld
-     on mvRO like every other computed/write panel, since "who is free" is a
-     live read, meaningless on a frozen past version. */
-  b += sbInputsGroupPanel(d, di, pv, dayInp, mvRO) + (mvRO ? '' : availHTML(d, di, true)) + sbSansPanel(d, di, dayInp, mvRO) + sbUnavailPanel(d, di, dayInp, mvRO)
+  const sect: Record<string, string> = {
+    notes: sbNotesPanel(d, di, pv, mvRO), prog: sbProgPanel(d, di, pv, mvRO), waves: wavesPanel,
+    duty: sbDutyPanel(d, di, pv, mvRO), sims: sbSimRowsPanel(d, di, pv, mvRO), ground: sbGroundPanel(d, di, pv, mvRO),
+    /* the crew working-aid panels — same builders and, by the canonical order above,
+       the same starting position as before (Personal Inputs → Available crew → SANS →
+       Unavailable). availHTML is withheld on a read-only board like every other
+       computed/write panel ("who is free" is a live read, meaningless on a frozen past
+       version); the other three keep their own mvRO read-only shape. They reorder on
+       the BOARD only — the week appends these panels separately (engine/order.ts). */
+    inputs: sbInputsGroupPanel(d, di, pv, dayInp, mvRO),
+    avail: mvRO ? '' : availHTML(d, di, true),
+    sans: sbSansPanel(d, di, dayInp, mvRO),
+    unav: sbUnavailPanel(d, di, dayInp, mvRO),
+  }
+  /* each panel is wrapped so its grip can drag the whole card into a new place
+     (data-secmove → store.moveSectionTo, DISPLAY order only — see engine/order.ts).
+     The dotted ⠿ grip is injected as the FIRST child of the panel's own header, so it
+     reads on the card it moves, aligns with the wave grip's column, and pushes the
+     title clear of itself — the owner's "align with Go 1, dotted, beside the title,
+     centred" (scheduler.css). The match is loose (`sb-ph` OR `ap-h`) so it lands
+     whatever header the panel carries: the schedule cards' `<div class="sb-ph">`, the
+     foldable Personal Inputs header (`sb-ph pl-fold` + data-pitog) and Available crew's
+     own `<div class="ap-h">` fold header all take it. Only the first header is matched
+     (no /g), so a nested header inside a panel is never hit. Edit board only: a
+     read-only board wraps nothing, staying lean and undraggable. */
+  const secGrip = '<span class="secgrip" title="Drag to reorder this section" aria-label="Reorder this section">⠿</span>'
+  const wrapSec = (html: string, k: string) =>
+    `<div class="sb-sec" data-secmove="${di}.${k}">${html.replace(/(<div class="(?:sb-ph|ap-h)\b[^>]*>)/, `$1${secGrip}`)}</div>`
+  let b = dayTplHead + secOrder(d).map((k: string) =>
+    mvRO ? (sect[k] || '') : (sect[k] ? wrapSec(sect[k], k) : '')).join('')
   return b
 }
 
@@ -618,9 +642,9 @@ export function boardMbtn(e: MouseEvent) {
      LOAD-BEARING for tests that predate this consolidation, not just the
      ones added alongside it: the nudge, per-section-sort and delete-line
      branches lost their OWN copy of this check when it moved up here
-     (board.test.tsx's "a stale nudge button does nothing", "a stale
-     per-section Auto sort button does nothing" and "the delete-line (✕)
-     button does nothing" all still pass, but only because THIS line still
+     (the ▲▼ nudge and its "stale nudge button" test are gone since 31 Aug 26,
+     but board.test.tsx's "a stale per-section Auto sort button does nothing" and
+     "the delete-line (✕) button does nothing" still pass, but only because THIS line still
      runs before their branch — narrowing or removing this guard without
      giving those three branches their own check back would silently
      reopen the exact gap those tests were written to catch, even though
@@ -629,10 +653,6 @@ export function boardMbtn(e: MouseEvent) {
   if (!canEditSched() || !HOOKS.editMode()) return
   const t = (e.target as HTMLElement).closest('.mbtn') as HTMLElement | null; if (!t) return
   const ds = t.dataset
-  /* ⇅ Arrange — open the per-day section-order sheet (ArrangeSections.tsx). A
-     pure display re-order, so it just opens the sheet; the sheet's own controls
-     are the write path (store.moveSection). */
-  if (ds.arrangesec != null) { setArrangeSec(+ds.arrangesec); notify(); return }
   /* ▲/▼ — the phone's reorder gesture. The target is read off the NEIGHBOURING
      ROW IN THE DOM rather than computed as index±1, because one list (Ground)
      renders time-sorted: "one place down" is a question about what the

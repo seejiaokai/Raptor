@@ -1556,10 +1556,11 @@ window... in the same modality as ground programme"). On the week they are
 `contenteditable` cells beside the ground rows' own; on a live board the two
 input panels draw their rows as `sb-arow c6r` — literally the ground
 programme's row, same seven tracks under the same header, including the
-leading GRIP track, which an input row keeps even though it cannot be dragged
-(the phone rule hides `.sb-grip` specifically, so a bare `<span>` standing in
-for it ate the phone's 1fr ITEM column and shunted every field one track
-left). A read-only board keeps the compact `.sbi-row`.
+leading MARKER track, which an input row keeps for register even though it
+cannot be dragged — its grip is `sbGrip(true)` → `.sb-grip.ro`
+(`visibility:hidden`), so it holds the track but paints nothing while the
+reorderable rows' grips paint (§Dense row reorder). A read-only board keeps
+the compact `.sbi-row`.
 
 They carry `data-inp` (week) and `data-ifld` (board), NOT `data-txt` /
 `data-bfld`: an input is not schedule data, has no funnel key, and commits
@@ -1889,51 +1890,79 @@ more section. The WEEK copy is deliberately left tinted: there its neighbours
 are tinted too, so the green card matches. Markup is unchanged, so the fold and
 drop-to-unassign contracts above are untouched.
 
-## Reordering rows on the board
+## Reordering rows on the board (§Dense row reorder)
 
-A grip (`⠿`, `board-html.ts`'s `sbGrip`) sits at the far left of every
-movable board row on desktop; below 820px it is `display:none` and the
-row's own control cluster (`.lctl`) shows ▲/▼ instead (`.mbtn.nudge`,
-`sbNudge`). **Both are always emitted — CSS alone decides which paints.**
-Rendering the grip or the buttons conditionally on viewport width would
-make the panel's string-diff depend on window size, and would not survive
-a resize: a board built at 900px and then resized to 700px would still be
-carrying whichever markup it happened to be built with, not the one the
-new width wants.
+A dotted grip (`⠿`, `board-html.ts`'s `sbGrip`) sits at the start of every movable
+board row and reorders it by DRAG at ALL widths (owner, 31 Aug 26 — "remove up and
+down arrow and add a drag marker to those lines"). This REPLACED the 8 Aug split where
+the phone hid `.sb-grip` and showed a ▲▼ nudge (`.mbtn.nudge`, `sbNudge`) instead:
+`sbNudge` now returns '' (no ▲▼ renders at any width — and ~2 nodes/row come off the
+board DOM budget), and the grip paints everywhere. The grip is still ALWAYS emitted
+(`.ro` alone hides it on a read-only board), never conditionally on viewport width, so
+the panel's string-diff stays width-independent and survives a resize.
 
-**The address lives on the ROW, never on the grip** —
-`data-move="mv:…"` (`rowMove`) is an attribute of `.sb-line` / `.sb-arow` /
-`.sb-nrow` itself, not of the `.sb-grip` span sitting inside it.
-`rowdrag.ts`'s pointer machine depends on this directly: a `pointermove`
-finds the row under the moving finger with `closest('[data-move]')`, and a
-pointer spends far more of a drag hovering the row's middle than its 18px
-handle. If the address lived on the grip instead, a drag could only ever
-recognise a landing target the instant the pointer happened to be back over
-a handle — which is not a drag at all.
+**The address lives on the ROW, never on the grip** — `data-move="mv:…"` (`rowMove`)
+is an attribute of `.sb-line` / `.sb-arow` / `.sb-nrow` itself, not the `.sb-grip` span
+inside it. `rowdrag.ts`'s pointer machine finds the row under the moving finger with
+`closest('[data-move]')`, and a pointer spends far more of a drag over the row's body
+than its ~13px handle; if the address lived on the grip a drop could only land while the
+pointer was back over the handle, which is not a drag. The grip carries
+`touch-action:none`, so a thumb-drag reorders instead of scrolling the page.
 
-**The grip's 18px track is a measured contract, and its phone treatment is
-the single most breakage-prone part of this change.** `.sb-lcols/.sb-line`
-and `.sb-acols/.sb-arow` both prepend one `18px` column for it on desktop.
-Below 820px the grip is `display:none`, so it claims no grid track — but it
-is *still a DOM child*, and every `:nth-child()` rule in the phone block,
-and in its mirror `.schedboard.sb-wide` (the block that restates the
-desktop layout at phone width), counts it whether or not it paints. Every
-column index in both blocks shifted by one the moment the grip was added;
-a future column change to either row template has to shift them again in
-lockstep or a phone or `.sb-wide` layout silently picks up the wrong cell.
+**The phone grid gains a 20px LEADING MARKER TRACK, and the header shifts with it.**
+`.sb-lcols/.sb-line` (flying line), `.sb-acols/.sb-arow.c6r` (duty / sim / ground /
+Common Programme) and `.sb-nrow` (notes) each prepend a marker column on the phone; the
+header's leading placeholder (`.sb-lcols/.sb-acols > :nth-child(1)`) is un-hidden so the
+column TITLES shift right by the same track — every box stays UNDER its own heading
+(owner, 31 Aug 26 — "the box must align with the title"). The first (name / callsign) box
+shortens by the track; the right-hand tracks are untouched, so the c6r remarks box stays
+154px right-anchored and still lines up with the flying line's. The track was widened
+13px → 20px in the same-week follow-up (owner — "the text box just starts right of the
+drag marker … not inside the text box"), and the row glyph is left-aligned in its lane
+(`.schedboard:not(.sb-wide) .sb-grip{justify-content:flex-start}`), so the handle sits in
+its own lane clear of the first box — MEASURED handle-to-box gap 8px → 17px. Widening the
+track does not affect puck fit (see below), and the row grip still lines up horizontally
+with the section / wave grips (all within a 2px band — the owner's "align with GO 1").
+The grip was ALWAYS a DOM child (display:none before, shown now), so every `:nth-child`
+index in the phone block and its `.sb-wide` mirror already counted it; the c6r cell spans
+are name `2/4`, rmkin `3/-1`, and the flying line's rcell `4/-1`. A future column change
+to either template must shift these together or a phone / `.sb-wide` layout silently
+picks up the wrong cell.
 
-**`.sb-nrow` needed its own phone template when no other row did**, and
-that gap was found live, not in review (fix round 1, 8 Aug 26). Every
-other row already carried a phone override; with the grip hidden, the
-notes row is down to three real grid children — `nx`, `nin`, `.lctl` — and
-without a restated template it fell through to the unconditional desktop
-grid (`18px 22px 1fr 62px`, four tracks): `nx` landed in the 18px track
-(harmless — it is just "1."), `nin` — the note text itself — squeezed into
-the 22px track meant for `nx`, and `.lctl` (▲, ▼, ✕) inflated its first
-button to fill the `1fr` track meant for the note, the last 62px track
-going unused. The phone override is `22px 1fr 74px`, the 74px measured
-against the phone build for ▲ ▼ ✕ at `.mbtn.nudge`'s own size plus
-`.lctl`'s gap, with a few px to spare.
+**The two-puck rows shift FLUSH-LEFT — the puck container reclaims the marker lane on its
+own line** (owner, 31 Aug 26 follow-up — "the pucks can shift it back to the left so that
+it holds 2 pucks not blocked"; "all the pucks were further towards the left … make sure
+the rest are placed back to the same area"). A flying line's FCP+RCP seatpair and every
+c6r crew cell (single-puck duty / ground AND the AMT/sim two-wide `fcprcp` box) carry
+fixed 74px pucks (never resized — "pucks never wrap" + the AMT droppable-hole geometry
+spec). Two 74px pucks + the 6px gap need 154px, and with the 154px right-anchored remarks
+box that is a tight fit; the leading marker track pushed them 17–20px right and the
+SECOND puck's flag clipped under the remarks. Because the row grip bottom-aligns to the
+FIRST line, the marker lane is empty on the SECOND line where the pucks sit, so the puck
+container spans from track 1, not 2 — `.sb-line .sb-seatpair{grid-column:1/4}` and
+`.sb-arow.c6r>.ppl{grid-column:1/3}`. MEASURED: every puck moves from 17–20px right of the
+marker to flush with it (delta 0 — the old layout's position), and the clip fully clears
+at 390px+ (the sub-~383px residual is the accepted-tight zone — the puck pair + 154px
+remarks simply exceeds the row there). No puck is resized, so the droppable-hole spec is
+untouched; puck clearance depends only on row width, so the marker-track width is free.
+The `.sb-wide` desktop layout resets these spans (display:contents / grid-column:auto),
+so it is unaffected.
+
+**Grip vertical alignment is a MEASURED contract — grip-centre = box-centre, delta 0**
+(owner, 31 Aug 26 — "align it vertically with the rest of the text boxes … make sure all
+the alignment is considered for all drag markers … I don't want to keep repeating this").
+The flying line's first-row boxes bottom-align under the tall B cell (which stacks the
+blue brief time above their line), so its grip bottom-aligns too at the box height
+(`.sb-line>.sb-grip{align-self:end;height:24px}`); the c6r and notes rows sit in a
+box-height first grid row, so their grip centres there with no override; the section /
+wave / crew grips are box-centred in their headers. All were verified delta 0 with a
+browser measurement pass. Don't move a grip's placement without re-measuring it to delta
+0 against its neighbour box.
+
+`.sb-nrow` still needs its own phone template — the note row is grip + `nx` ("1.") +
+`nin` + `.lctl`, so its phone grid is `20px 22px 1fr 74px` (marker, number, note,
+controls). The `boardMbtn` `mv:up/dn` handler is kept as an inert guard for a stale
+element; nothing emits its address now.
 
 **The landing mark is a border on the row being dropped onto, not an
 inserted element** — `.rowdrop{box-shadow:inset 0 2px 0 0 var(--accent)}`.
@@ -2108,76 +2137,155 @@ bar still sorts. Browser-only — jsdom has no layout, so the mirror never mount
 there (`quals.test.tsx` pins its absence); the freeze is verified on the live
 view at desktop and phone widths.
 
-## Arranging the schedule sections (owner, 29 Aug 26)
+## Dragging sections and waves (owner, 29 Aug 26; in-place drag 30 Aug 26)
 
-A scheduler can re-arrange the order the big section panels show in — **Programme
-· Flying waves · Duties · Sims · Ground Programme** — on both Edit Schedule and
-the Scheduler Board, and a saved **whole-day template** remembers it.
+A scheduler drags the big section panels — **Overall Notes · Common Programme ·
+Flying waves · Duties · Sims · Ground Programme** (Overall Notes and Common Programme
+are one combined block on the edit week) — and the flying WAVES within a day into whatever order
+they want, on both Edit Schedule and the Scheduler Board, and a saved **whole-day
+template** remembers it. This REPLACED the per-day `⇅ Arrange` sheet (deleted 30 Aug
+26): the owner asked for handles on the blocks themselves, not a modal.
 
-**It is display order only.** The order lives on the day as `d.secOrder` (an
-array of the five section keys; absent ⇒ the default order), resolved by
-`engine/order.ts secOrder(d)`. It never enters a slot key, `SCHED.*`, or an AL:
-re-arranging a panel moves no row inside any array, so every `di.gi.li.ai` / `d:`
-/ `s:` / `g:` / `a:` key is unchanged and `validate()`/publish/history read
-exactly what they did — which is how the owner's "don't corrupt the rules"
-requirement is met (pinned in `engine/secorder.test.ts`). Both builders emit their
-sections through `secOrder`: `ui/board.ts boardHTML` assembles a `{prog,waves,
-duty,sims,ground}` map (the Templates head stays pinned above, the inputs/SANS/
-Unavail group below), and `ui/html.ts dayHTML` slices its accumulator at five
-boundary marks and re-emits — so the **default order is byte-identical** to before
-(reference parity stays 728/0). `prog` is the Programme unit: the Common
-Programme panel on the week, the Notes + Common-Programme panels moved together
-on the board.
+**The handles.** Every reorderable section is wrapped in a draggable unit carrying a
+dotted grip inline in its own header — `.sb-sec[data-secmove="di.key"]` on the board,
+`.dsec` (edit mode only) on the week — and every wave block carries a grip in its header
+(`.wvgrip`) plus `data-move="mv:w.di.gi"` on the block (`.sb-go` / `.go`). The dense
+board ROW grip (`.sb-grip`) is shown at every width too since 31 Aug 26 (the ▲▼ nudge it
+used to defer to on a phone is gone — §Dense row reorder); a section or a wave is an even
+bigger target, so these grips
+**stay draggable at every width** (the "drag, no arrows" design). The machine is
+`ui/rowdrag.ts`, wired on both the board wrap and the edit-week root; it tells the
+three draggables apart by the grip pressed, walks up to the enclosing wave block for
+a wave drag (so a wave drops onto another wave, not a line inside it), and validates
+the drop against `applyMove`'s own same-container rule so only a legal target
+highlights. Grips are **edit-mode only** on the week, so the view week — and the
+reference byte-compare — carry none (parity stays 728/0; pinned in `html.test.ts`).
 
-**The control** is a compact per-day sheet, `ui/ArrangeSections.tsx` (state
-`ARRANGESEC` in `pops.ts`), opened by a `⇅ Arrange` button on each surface — in
-the board's Templates & drafts bar (`data-arrangesec`, routed in `boardMbtn`) and
-the edit week's `.dhtpl` day-head span (routed in `interactions.ts`; that span is
-already excised from the reference byte-compare by `noDhTpl`, so the button costs
-no parity). The sheet lists the sections in order with ▲▼ nudges (the template
-editors' `.tnudge` idiom) and an **Apply to all days** button. The one write path
-is `state/store.ts moveSection` / `applySecOrderToWeek` — `histPush` + `notify`,
-**no `markEdit`**: a re-arrange is one undo step and is NOT an amendment. Admin +
-edit-surface gated at the write path, not only in the UI.
+**A held drag auto-scrolls at the screen edges (owner, 31 Aug 26).** A day is far
+taller than a phone, and the grips carry `touch-action:none` (so the finger holding
+a drag never scrolls the page itself) — which left a section far above or below out
+of reach. So while a drag is live and the finger sits in the top/bottom 72px margin,
+`rowdrag.ts` scrolls the surface under it at a distance-ramped speed (up to 22px a
+frame) via `requestAnimationFrame`, and after each step re-reads what is now under
+the still finger (`elementFromPoint`) so the drop target keeps updating without a
+pointer move. The surface it scrolls is found by walking up from the carried element
+to the nearest thing that actually overflows — the board's `.sb-board` / `.sb-main`,
+or the **window** for the edit week — so it is right on either page. For this to
+track to the very edge, `pointermove` is bound to the **document, not the surface**
+(the same reason `pointerup` already was): the drag releases pointer capture so the
+target follows the finger, so once the finger leaves the surface — off the bottom, or
+up over the app header — a container-bound handler would stop firing and the velocity
+would freeze; on the document it keeps tracking, and the loop stops the instant the
+drag ends. Both wirings' handlers early-return until their own instance owns a live
+drag, so board and week don't collide.
 
-**The same sheet also arranges the flying WAVES within the day** (owner, 29 Aug 26
-— "within the waves I also want the option to reorder … put SC at the top, then
-1st wave 2nd wave"). Below the sections list, when a day carries two or more waves,
-the sheet lists them by their board titles (`labelToTitle` — SC / AVALON / "1st
-wave"…) with the same ▲▼ nudges. Putting it in the shared sheet is what makes it
-work identically on **both** surfaces at once and stay in sync — the modal reads
-`d.waves` directly, so it needs no per-surface DOM or handler (the edit week has no
-inline row-reorder machinery at all; drag and the board's ▲▼ nudges are board-only).
+**Every handle is the same dotted `⠿`, inline in the section's own header (owner,
+31 Aug 26).** This REVERSED the 30 Aug drawn-rail: the owner asked that "the drag
+markers should all follow the old design in which it's dotted" and be reachable on a
+phone. So the section grip (`.secgrip`) is now the same inline `⠿` the row (`.sb-grip`)
+and wave (`.wvgrip`) grips carry, placed as the FIRST child of the panel's own header
+— board `.sb-ph`, week `.ah-h` / `.sub-h` / `.wv-sech` — not as an overlay rail in
+the gutter. Inline, it **lines up with the wave grip's column** (the owner's "align
+with GO 1"), **pushes its title clear of itself**, and **centres on the title line**
+(`align-items:center` on the header). On the board the header's flex `gap` is tightened
+to 6px (`.sb-sec .sb-ph`) so the added grip borrows from the header's own spacing, not
+from the sub-text or the right-side buttons — measured on a 390px phone, a 16px gap to
+the buttons remains, nothing overlaps (owner — "make sure any text or buttons on the
+right aren't too close or overlapping"). The headers set `user-select:none` so a thumb
+holding the grip never paints the title blue (owner — "as you hold on the track marker
+it tends to select the text beside it"). The week's Flying-waves section still gets its
+edit-only `.wv-sech` "Flying waves" header so the inline grip has a header to sit in;
+edit-only, so the view week and the reference stay byte-identical (stripped in
+`html.test.ts`'s compare). Don't return the section grip to a rail/overlay, drop the
+no-select, or drop the `.wv-sech` header.
 
-**Unlike a section move, a wave move IS a real model reorder and an amendment.**
-Its write path is `state/store.ts moveWaveBlock` → `engine/reorder.ts moveWave`
-(via `applyMove` kind `w`) → `afterSchedMutate` + `notify`. `moveWave` is the
+**Overall Notes and Common Programme are two separate sections on the board (owner,
+31 Aug 26 — "split them apart").** Each is its own `.sb-sec[data-secmove]` card with
+its own dotted handle, independently draggable — the board flagged Common Programme as
+"missing" its handle because the old combined 'prog' unit carried a single handle that
+sat up on the Overall Notes panel. On the EDIT WEEK the day notes still print as lines
+inside the Common Programme block (they never had a card of their own there), so the
+week keeps them in the 'prog' slice and its 'notes' slice is empty and skipped — which
+is what keeps the view week and reference byte-identical (the empty slice adds nothing).
+
+**The four crew working-aid panels join the board's one draggable list (owner, 31 Aug
+26 — "one list, drag anywhere").** Personal Inputs, Available crew, SANS availability
+and Unavailable are ordinary section keys now
+(`SECTIONS=['notes','prog','waves','duty','sims','ground','inputs','avail','sans','unav']`),
+each wrapped in its own `.sb-sec[data-secmove]` card with the same dotted grip — so on
+the Scheduler Board any card can be dragged to any position (Available crew up next to
+the flying waves, say), not only among the crew group. It is a scheduler WORKSPACE
+arrangement, not a published property: it takes effect on the BOARD only, because
+`ui/html.ts`'s week APPENDS these four panels separately (they are working aids, and
+SANS/Unavailable are parity-locked on the view week). So their week slice bits are empty
+and reordering them changes NOTHING on either week — the same empty-slice mechanism that
+keeps `notes` parity-safe (pinned: a crew reorder leaves `dayHTML` byte-identical,
+`ui/board.test.tsx`). The grip is injected by a loose `sb-ph`|`ap-h` header match in
+`board.ts wrapSec`, since Available crew's header is `.ap-h` (re-laid to flex-start with
+`.n` floated right so the grip rides with its title); Personal Inputs' foldable header is
+centred for the grip (`.sb-sec .sb-ph.pl-fold` — it was `baseline`, which sat the grip
+~7px above the title, the owner's "some are slightly higher than the title"); and a
+grip-tap on the two foldable headers (`data-pitog`, `data-avtog`) is guarded in
+`interactions.ts` so it starts a drag, not a fold. Don't fold the crew panels back into
+a fixed tail, and don't let their order reach the week.
+
+**A section move is display order only.** The order lives on the day as `d.secOrder`
+(absent ⇒ the default order), resolved by `engine/order.ts secOrder(d)`. It never
+enters a slot key, `SCHED.*`, or an AL: re-arranging a panel moves no row inside any
+array, so every `di.gi.li.ai` / `d:` / `s:` / `g:` / `a:` key is unchanged and
+`validate()`/publish/history read exactly what they did — the owner's "don't corrupt
+the rules" requirement (pinned in `engine/secorder.test.ts`). Both builders emit
+sections through `secOrder`: `ui/board.ts boardHTML` assembles a `{notes,prog,waves,
+duty,sims,ground,inputs,avail,sans,unav}` map (notes and programme are separate cards
+there, and the last four are the crew working-aid panels), `ui/html.ts
+dayHTML` slices its accumulator at the boundary marks and re-emits — the **default
+order is byte-identical** to before, and the week's empty `notes` slice is skipped so
+it adds nothing. The drop routes through `state/store.ts moveSectionTo` →
+`engine/order.ts reorderSectionTo` (a drop can span several positions, so it moves
+fromKey→toKey, not ±1), `histPush` + `notify`, **no `markEdit`**: one undo step, not an
+amendment. Admin + edit-surface gated at the write path. `notes` is Overall Notes and
+`prog` the Common Programme — two draggable cards on the board; on the week the day
+notes print as lines inside the Common Programme block, so the week's `notes` slice is
+empty.
+
+**After a section drag, the admin is offered a house default.** `ui/SecDefaultSnackbar.tsx`
+(state `SECDEFOFFER` in `pops.ts`) — an actionable bar (the plain `toast()` can't
+carry a button) reading *"Use this section order as the default for every day?"*.
+"Set as default" writes that day's order through `engine/order.ts setSecDefault` +
+`secDefaultSave` — the SAME default the Admin → Squadron config panel edits, so the
+two never drift — making every un-arranged day follow it henceforth. This replaced
+the old sheet's one-week "Apply to all days" (dropped: the henceforth default
+supersedes it). No prompt after a WAVE drag — the wave house default is a separate,
+new-schedules-only, kind-based thing (below).
+
+**Unlike a section move, a wave move IS a real model reorder and an amendment.** The
+drop routes through `applyMove('mv:w.di.gi', 'mv:w.di.gj')` → `engine/reorder.ts
+moveWave` → `afterSchedMutate` + `notify` — unchanged from before. `moveWave` is the
 manual sibling of Auto sort's `sortWaves`: it splices `d.waves` and remaps the SAME
-nine key-space heads (`wl: ff: fr: st: ar: at: it: tr:` and the bare seat head) with
-`moveKeys`, marking the moved wave — so the wave carries its whole key space to the
-new index and every crew name stays attached (pinned in `engine/reorder.test.ts`).
-Wave order can't be a parallel "display" order like `secOrder`, because `sortWaves`
-already reorders the real model; a second order would fight it. So reordering a wave
-on a **published** day records an AL row (correct — moving a flying wave is a
-schedule change), while on a draft day it is silent (25 Aug amendment-marks rule).
-The **day template remembers wave order for free** — wave order IS the `d.waves`
-array order, which `daytpl.ts mintBlob` deep-clones, so no `secOrder`-style capture
-is needed on the flying side (pinned in `engine/daytpl.test.ts`). Wave arrange is
-per-day only (no "apply to all days" — a day may have no SC to place).
+nine key-space heads (`wl: ff: fr: st: ar: at: it: tr:` and the bare seat head), so
+the wave carries its whole key space and every crew name stays attached (pinned in
+`engine/reorder.test.ts`). Reordering a wave on a **published** day records an AL row
+(correct — moving a flying wave is a schedule change), silent on a draft day (25 Aug
+amendment-marks rule). The **day template remembers wave order for free** — wave
+order IS the `d.waves` array order, deep-cloned by `daytpl.ts mintBlob` (pinned in
+`engine/daytpl.test.ts`).
 
 ## The Default arrangement (Admin → Squadron config)
 
-The per-day Arrange sheet above sets ONE day's order; the **Default arrangement**
+The per-day drag above sets ONE day's order (and its snackbar can promote that to
+the house default); the **Default arrangement**
 panel (owner, 29 Aug 26 pt.2 — "allow the default arrangement of a schedule to be
 configured in admin … even to the arrangement of the waves under display") sets the
 GLOBAL house order once. It is `ui/AdminPage.tsx ArrangeDefaults`, at the top of the
 Squadron-config pane, reusing the sheet's `.arrsec` rows and `.tnudge` ▲▼ so it
 reads the same. Admin + `canEditSched()` gated at every nudge (write path, not only
 the UI). Two lists:
-- **Section order** — the five blocks, `engine/order.ts secDefault`/`moveSecDefault`.
-  It is the fallback every un-arranged day renders in on Edit Schedule and the
-  Scheduler Board (a hand-arranged day keeps its own order). Display-only; a **Reset
-  to standard order** button returns it to canonical. `#admSecDefault`.
+- **Section order** — the ten panels (six schedule + four crew), `engine/order.ts
+  secDefault`/`moveSecDefault`. It is the fallback every un-arranged day renders in;
+  the six schedule sections apply on both Edit Schedule and the Scheduler Board, the
+  four crew lists (Personal Inputs, Available crew, SANS, Unavailable) reorder on the
+  Scheduler Board only (a hand-arranged day keeps its own order). Display-only; a
+  **Reset to standard order** button returns it to canonical. `#admSecDefault`.
 - **Flying-wave order** — the built-in kinds (Flying wave / SC / AVALON / BB),
   `engine/reorder.ts waveDefaultView`/`moveWaveDefault`. It starts **off** (the panel
   shows the canonical kinds as a starting point); once set, a NEW wave added to a

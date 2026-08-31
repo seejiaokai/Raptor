@@ -51,9 +51,28 @@ export function groundOrder(grd:any[],man?:any){
    markEdit). Persistence of a chosen order is via the DAY TEMPLATE
    (engine/daytpl.ts), not localStorage of the live day — session-only like the
    rest of the schedule model. */
-/* 'prog' is the Programme unit (day notes + Common/Ground Programme — one panel
-   on Edit Schedule, the notes + prog panels moved together on the board). */
-export const SECTIONS:string[]=['prog','waves','duty','sims','ground'];
+/* 'notes' is the day's Overall Notes and 'prog' the Common Programme. On the
+   BOARD they are two separate, independently draggable panels (owner, 31 Aug 26 —
+   "split them apart"): each renders its own card with its own drag handle. On the
+   EDIT WEEK the day notes still print as lines inside the Common Programme block
+   (they never had a card of their own there), so the week keeps them in the 'prog'
+   slice and its 'notes' slice is empty — which is exactly why the view week and the
+   read-only reference stay byte-identical (the empty slice adds nothing, parity
+   728/0). Splitting is a display concern only: no slot key, SCHED.* or AL reads a
+   section key, so the rules are byte-identical before and after. */
+/* The last four keys are the board's CREW WORKING-AID panels — Personal Inputs,
+   Available crew, SANS availability, Unavailable — folded into the SAME draggable
+   list so the scheduler can arrange the whole board as one (owner, 31 Aug 26 — "one
+   list, drag anywhere"). They take effect on the SCHEDULER BOARD only: ui/html.ts's
+   week appends these panels separately (they are working aids, and two of them are
+   parity-locked on the view week), so their week slice bits are empty and reordering
+   them changes nothing there — the same empty-slice mechanism that keeps 'notes'
+   byte-identical on the week keeps all four parity-safe (728/0). Being ordinary
+   section keys they ride the per-day order, the admin house default and the
+   "set default?" snackbar for free; none is a slot key / SCHED.* / AL, so the rules
+   read byte-identically before and after (the owner's "don't corrupt the rules"
+   guarantee). */
+export const SECTIONS:string[]=['notes','prog','waves','duty','sims','ground','inputs','avail','sans','unav'];
 
 /* THE ADMIN-SET DEFAULT SECTION ORDER (owner, 29 Aug 26 pt.2 — "allow the default
    arrangement of a schedule to be configured in admin"). A single GLOBAL fallback:
@@ -71,7 +90,7 @@ export const SECTIONS:string[]=['prog','waves','duty','sims','ground'];
    house default (see secOrder below). */
 let SEC_DEFAULT:string[]=SECTIONS.slice();
 /* keep only known section keys, no repeats, then append any canonical section the
-   input left out — so the stored default is always a full, valid five. */
+   input left out — so the stored default is always a full, valid list. */
 function cleanSecList(order:any):string[]{
   const seen=new Set<string>(); const out:string[]=[];
   if(Array.isArray(order))for(const k of order)if(typeof k==='string'&&SECTIONS.indexOf(k)>=0&&!seen.has(k)){seen.add(k);out.push(k);}
@@ -126,6 +145,25 @@ export function moveSectionModel(d:any,key:string,dir:number):boolean{
   if(from<0)return false;
   const to=from+(dir<0?-1:1);
   if(to<0||to>=cur.length)return false;
+  const next=cur.slice();
+  next.splice(to,0,next.splice(from,1)[0]);
+  d.secOrder=next;
+  return true;
+}
+/* move fromKey to where toKey currently sits — the DRAG sibling of
+   moveSectionModel (which only steps ±1). A drop can span several positions, so
+   the sheet's ±1 nudge is not enough. Same splice semantics as engine/reorder.ts
+   slide() (the row-drag path), so a section drag reads the same as a row drag:
+   remove fromKey, re-insert at toKey's index in the CURRENT resolved order.
+   Materialises a full d.secOrder from the first move. Pure display mutation —
+   the caller does histPush + notify (state/store.ts:moveSectionTo); no markEdit,
+   no slot key, so the rules stay byte-identical (see secOrder above). Returns
+   false on a no-op or an unknown key. */
+export function reorderSectionTo(d:any,fromKey:string,toKey:string):boolean{
+  if(!d||fromKey===toKey)return false;
+  const cur=secOrder(d);
+  const from=cur.indexOf(fromKey), to=cur.indexOf(toKey);
+  if(from<0||to<0)return false;
   const next=cur.slice();
   next.splice(to,0,next.splice(from,1)[0]);
   d.secOrder=next;

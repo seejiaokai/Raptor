@@ -379,7 +379,11 @@ describe('duty / sim / ground panels on the board (owner request, Aug 26)', () =
      so the rows this block inspects render. */
   beforeAll(async () => { await act(async () => { view.PIOPEN.add(0); notify() }) })
   it('the four new panels render, in week order, before the sim-notes panel', () => {
-    const kids = [...$('#sbBoard').children].map(x => x.className)
+    /* the reorderable sections (prog/waves/duty/sims/ground) are each wrapped in a
+       draggable .sb-sec now (owner, 29 Aug 26 pt.3, the in-place drag), so read the
+       panels/waves in DOCUMENT order rather than as direct children of #sbBoard —
+       the visual order is what this test is about. */
+    const kids = [...document.querySelectorAll('#sbBoard .sb-panel, #sbBoard .sb-go')].map(x => x.className)
     const ix = (m: string) => kids.findIndex(c => c.includes(m))
     expect(ix('sb-panel duty')).toBeGreaterThan(ix('sb-go'))
     expect(ix('sb-panel simr')).toBeGreaterThan(ix('sb-panel duty'))
@@ -395,6 +399,19 @@ describe('duty / sim / ground panels on the board (owner request, Aug 26)', () =
   it('the panel headers carry the owner labels', () => {
     expect($('#sbBoard .sb-panel.grnd .sb-ph').textContent).toContain('Ground Programme')
     expect($('#sbBoard .sb-panel.pinp .sb-ph').textContent).toContain('Personal Inputs')
+  })
+
+  /* the in-place drag (owner, 29 Aug 26 pt.3) replaced the ⇅ Arrange sheet: each
+     reorderable section is wrapped in a draggable .sb-sec[data-secmove] with a
+     grip, every wave block carries a grip + mv:w address, and the old Arrange
+     button is gone from the Templates & drafts header. */
+  it('carries section + wave drag handles and no longer shows the Arrange button', () => {
+    const secs = [...document.querySelectorAll('#sbBoard .sb-sec[data-secmove]')].map(x => (x as HTMLElement).dataset.secmove)
+    expect(secs).toContain('0.prog')
+    expect(secs).toContain('0.ground')
+    expect(document.querySelectorAll('#sbBoard .sb-sec .secgrip').length).toBe(secs.length)
+    expect(document.querySelector('#sbBoard .sb-go[data-move="mv:w.0.0"] .wvgrip')).toBeTruthy()
+    expect(document.querySelector('#sbBoard [data-arrangesec]')).toBeNull()
   })
 
   /* THE "+ ADD" OVERFLOW STRIP (owner, 26 Aug 26 — a full people cell swapped a
@@ -847,14 +864,9 @@ describe('board mutation handlers also refuse on a read-only board (re-review, 9
     expect(DAYS[0].waves.length).toBe(before)
   })
 
-  it('a stale nudge button does nothing once editMode() is false', async () => {
-    const btn = document.querySelector('#sbBoard [data-mvdn]') as HTMLElement
-    expect(btn).toBeTruthy()
-    const before = JSON.stringify(DAYS[SBDAY as any])
-    HOOKS.editMode = () => false
-    await click(btn)
-    expect(JSON.stringify(DAYS[SBDAY as any])).toBe(before)
-  })
+  /* the "a stale nudge button does nothing" test went with the ▲▼ arrows
+     themselves (owner, 31 Aug 26). The top-level editMode guard it exercised
+     is still covered by the stale per-section-sort and delete-line tests. */
 
   it('a stale per-section Auto sort button does nothing once editMode() is false', async () => {
     /* Ground specifically, not the first [data-sortsec] match: the overall
@@ -1097,7 +1109,7 @@ describe('board lifecycle', () => {
   })
 })
 
-describe('reorder grips and nudge buttons (owner, 8 Aug 26)', () => {
+describe('reorder grips — the ▲▼ nudge was removed 31 Aug 26 (owner, 8 Aug 26)', () => {
   /* an earlier test in this file logs out (resetSession), which parks
      CURPAGE back on 'viewsched' — HOOKS.editMode() gates on CURPAGE===
      'editsched', so these boardHTML(0) calls need the page put back or
@@ -1118,8 +1130,10 @@ describe('reorder grips and nudge buttons (owner, 8 Aug 26)', () => {
   it('every flying row carries its full aircraft address, on the row — never the grip', () => {
     const h = boardHTML(0)
     expect(h).toMatch(/<div class="sb-line[^"]*" data-move="mv:ac\.0\.0\.0\.0">/)
-    expect(h).toContain('data-mvup="mv:ac.0.0.0.0"')
-    expect(h).toContain('data-mvdn="mv:ac.0.0.0.0"')
+    /* the ▲▼ nudge was removed 31 Aug 26 (owner) — every dense row reorders by
+       dragging its grip now, so no data-mvup/mvdn renders anywhere */
+    expect(h).not.toContain('data-mvup=')
+    expect(h).not.toContain('data-mvdn=')
     const grips = h.match(/<span class="sb-grip"[^>]*>/g) || []
     expect(grips.length, 'grips actually render').toBeGreaterThan(0)
     expect(grips.every(g => !g.includes('data-move')), 'no grip carries an address').toBe(true)
@@ -1143,6 +1157,21 @@ describe('reorder grips and nudge buttons (owner, 8 Aug 26)', () => {
     } finally { delete DAYS[0].secOrder }
     /* and with it gone the default order is back, byte-for-byte */
     expect(boardHTML(0)).toBe(bDef)
+  })
+
+  it('the crew panels join the board\'s one draggable list, but reordering them never touches the week (owner, 31 Aug 26 — "one list, drag anywhere")', () => {
+    const secs = [...boardHTML(0).matchAll(/data-secmove="0\.(\w+)"/g)].map(m => m[1])
+    for (const k of ['inputs', 'avail', 'sans', 'unav']) expect(secs, `${k} is draggable on the board`).toContain(k)
+    const wDef = dayHTML(0, true)
+    /* move ONLY a crew key (Available crew) to the head; the schedule keys keep their
+       canonical relative order, so the week — which appends the crew panels
+       separately — must be byte-identical (the parity-safe, board-only guarantee) */
+    DAYS[0].secOrder = ['avail', 'notes', 'prog', 'waves', 'duty', 'sims', 'ground']
+    try {
+      const b = boardHTML(0)
+      expect(b.indexOf('Available crew'), 'board: Available crew now leads').toBeLessThan(b.indexOf('Common Programme'))
+      expect(dayHTML(0, true), 'the week is untouched by a crew reorder').toBe(wDef)
+    } finally { delete DAYS[0].secOrder }
   })
 
   it('the duty, sim, ground, programme and note rows all carry one, on the row itself', () => {

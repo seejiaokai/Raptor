@@ -32,7 +32,7 @@ import { HIST, histApply, histSnap, histPush } from './state/history'
 import { HOOKS } from './engine/hooks'
 import * as view from './state/view'
 import { setLgEdit } from './state/auth'
-import { notify, undo, redo, loadWeek, moveSection, moveWaveBlock, applySecOrderToWeek } from './state/store'
+import { notify, undo, redo, loadWeek, moveSection, moveSectionTo } from './state/store'
 import { secOrder, SECTIONS, secDefault, setSecDefault, moveSecDefault } from './engine/order'
 import { setRole as lwSetRole, setViewer as lwSetViewer, loadWars as lwLoadWars } from './leavewar/state/store'
 
@@ -122,8 +122,8 @@ export function installProbeBridge() {
   w.keyDay = keyDay; w.shiftKeys = shiftKeys; w.shiftAircraft = shiftAircraft
   w.shiftFormation = shiftFormation; w.shiftWave = shiftWave; w.uniqDays = uniqDays
   w.permuteKeys = permuteKeys; w.moveKeys = moveKeys; w.applyMove = applyMove
-  w.secOrder = secOrder; w.SECTIONS = SECTIONS; w.moveSection = moveSection; w.applySecOrderToWeek = applySecOrderToWeek
-  w.moveWave = moveWave; w.moveWaveBlock = moveWaveBlock
+  w.secOrder = secOrder; w.SECTIONS = SECTIONS; w.moveSection = moveSection; w.moveSectionTo = moveSectionTo
+  w.moveWave = moveWave
   /* the admin-set DEFAULT arrangement (owner, 29 Aug 26 pt.2): the global section
      fallback secOrder uses, and the global wave order a new wave is placed by. */
   w.secDefault = secDefault; w.setSecDefault = setSecDefault; w.moveSecDefault = moveSecDefault

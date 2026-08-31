@@ -40,44 +40,44 @@ beforeEach(() => {
 })
 
 describe('the default SECTION order', () => {
-  it('defaults to the canonical five', () => {
-    expect(secDefault()).toEqual(['prog', 'waves', 'duty', 'sims', 'ground'])
+  it('defaults to the canonical ten', () => {
+    expect(secDefault()).toEqual(['notes', 'prog', 'waves', 'duty', 'sims', 'ground', 'inputs', 'avail', 'sans', 'unav'])
     expect(secDefault()).toEqual(SECTIONS)
   })
 
   it('nudges up and down, clamped at the ends', () => {
     expect(moveSecDefault('ground', -1)).toBe(true)   // ground up one
-    expect(secDefault()).toEqual(['prog', 'waves', 'duty', 'ground', 'sims'])
-    expect(moveSecDefault('prog', -1)).toBe(false)    // already top — no-op
-    expect(moveSecDefault('sims', 1)).toBe(false)     // already bottom — no-op
+    expect(secDefault()).toEqual(['notes', 'prog', 'waves', 'duty', 'ground', 'sims', 'inputs', 'avail', 'sans', 'unav'])
+    expect(moveSecDefault('notes', -1)).toBe(false)   // already top — no-op
+    expect(moveSecDefault('unav', 1)).toBe(false)     // already bottom — no-op
     expect(moveSecDefault('nope', -1)).toBe(false)    // unknown key — no-op
   })
 
-  it('setSecDefault drops junk and completes a partial list to the full five', () => {
-    setSecDefault(['ground', 'ground', 'junk', 'prog'])   // repeat + unknown, missing waves/duty/sims
-    expect(secDefault()).toEqual(['ground', 'prog', 'waves', 'duty', 'sims'])
+  it('setSecDefault drops junk and completes a partial list to the full ten', () => {
+    setSecDefault(['ground', 'ground', 'junk', 'prog'])   // repeat + unknown, missing the rest
+    expect(secDefault()).toEqual(['ground', 'prog', 'notes', 'waves', 'duty', 'sims', 'inputs', 'avail', 'sans', 'unav'])
   })
 
   it('an un-arranged day follows the house default; a day with its own order wins', () => {
-    setSecDefault(['ground', 'prog', 'waves', 'duty', 'sims'])
+    setSecDefault(['ground', 'notes', 'prog', 'waves', 'duty', 'sims'])
     const plain = { waves: [], ground: [] }                 // no secOrder of its own
-    expect(secOrder(plain)).toEqual(['ground', 'prog', 'waves', 'duty', 'sims'])
+    expect(secOrder(plain)).toEqual(['ground', 'notes', 'prog', 'waves', 'duty', 'sims', 'inputs', 'avail', 'sans', 'unav'])
     const arranged = { secOrder: ['sims', 'prog'] }         // explicitly arranged
     // its own picks lead, then the HOUSE default fills the rest (not raw canonical)
-    expect(secOrder(arranged)).toEqual(['sims', 'prog', 'ground', 'waves', 'duty'])
+    expect(secOrder(arranged)).toEqual(['sims', 'prog', 'ground', 'notes', 'waves', 'duty', 'inputs', 'avail', 'sans', 'unav'])
   })
 
   it('persists only when it differs from canonical, and sanitises a hand-edited value', () => {
     secDefaultSave()
     expect(store.get('secdefault', 'X')).toBe(null)          // canonical writes nothing
-    setSecDefault(['duty', 'prog', 'waves', 'sims', 'ground'])
+    setSecDefault(['duty', 'notes', 'prog', 'waves', 'sims', 'ground'])
     secDefaultSave()
-    expect(store.get('secdefault', null)).toEqual(['duty', 'prog', 'waves', 'sims', 'ground'])
+    expect(store.get('secdefault', null)).toEqual(['duty', 'notes', 'prog', 'waves', 'sims', 'ground', 'inputs', 'avail', 'sans', 'unav'])
     secDefaultReset(); secDefaultLoad()                      // reload the saved value
-    expect(secDefault()).toEqual(['duty', 'prog', 'waves', 'sims', 'ground'])
+    expect(secDefault()).toEqual(['duty', 'notes', 'prog', 'waves', 'sims', 'ground', 'inputs', 'avail', 'sans', 'unav'])
     mem['sqn142_secdefault'] = JSON.stringify(['junk', 42, 'ground'])   // garbage in storage
     secDefaultLoad()
-    expect(secDefault()).toEqual(['ground', 'prog', 'waves', 'duty', 'sims'])  // salvaged + completed
+    expect(secDefault()).toEqual(['ground', 'notes', 'prog', 'waves', 'duty', 'sims', 'inputs', 'avail', 'sans', 'unav'])  // salvaged + completed
   })
 
   it('RULES-SAFETY: changing the house default cannot move a single validate() warning', () => {

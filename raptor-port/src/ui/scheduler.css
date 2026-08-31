@@ -2567,25 +2567,85 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
 .addrow{margin-top:2px;background:none;border:1px dashed var(--edge-2);border-radius:7px;color:var(--ink-3);
   padding:8px;width:100%;font-family:'Barlow Condensed','Inter Tight',sans-serif;font-size:10px;font-weight:700;
   text-transform:uppercase;letter-spacing:.05em;cursor:pointer}
-/* ---- Arrange sections sheet (owner, 29 Aug 26; ui/ArrangeSections.tsx) — the
-   per-day section-order re-order. Rides the shared .modal / .modal-* shell and
-   the .grip/.tnudge ▲▼ the template editors use; only its own rows are new. */
-.arrsec-day{color:var(--ink-3);font-size:11px;font-weight:600;margin-left:8px}
-.arrsec-hint{color:var(--ink-3);font-size:11px;line-height:1.4;margin-bottom:10px}
-/* a small section label above each list — the sheet arranges the day's big
-   sections AND, when there are two or more, the flying waves within them. */
-.arrsec-subh{color:var(--ink-2);font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}
-.arrsec-list{display:flex;flex-direction:column;gap:6px}
-.arrsec-row{display:grid;grid-template-columns:22px 1fr 20px;gap:10px;align-items:center;
-  background:var(--bg);border:1px solid var(--edge);border-radius:8px;padding:7px 10px}
-.arrsec-row .grip{display:flex;flex-direction:column;gap:1px}
-.arrsec-name{font-weight:600;color:var(--ink);font-size:12px}
-.arrsec-pos{color:var(--ink-3);font-size:11px;font-weight:700;text-align:center}
-/* the board's ⇅ Arrange button drops its label to the bare ⇅ icon on a phone —
-   the phone board's own "icon-only under 820px" convention — so the Templates &
-   drafts header row still fits its width (owner report caught it at 390px). The
-   ⇅ alone reads as reorder, matching the ⇅ Sort all button beside it. */
-@media(max-width:820px){.sb-panel.dtpl .gctl .mbl{display:none}}
+/* ---- in-place drag to reorder sections & waves (owner, 29 Aug 26 pt.3) --------
+   Replaced the per-day Arrange sheet with drag handles on the panels themselves.
+   A grip on each section wrapper (.sb-sec on the board, .dsec on the edit week) and
+   on each wave header (.wvgrip) drags the whole panel / wave into a new place;
+   ui/rowdrag.ts is the machine. Unlike the dense board ROW grip (.sb-grip, hidden
+   on a phone in favour of ▲▼ because a packed row has no room to grab), a section
+   or a wave is a big target, so these grips stay draggable at EVERY width — the
+   owner's "drag, no arrows" design. */
+/* the wrapper adds NO layout — the grip is an absolute OVERLAY sitting in the
+   panel's own left border+padding gutter, so no section shifts and every measured
+   register/alignment contract (edit-vs-read-only notes width, input row vs ground
+   row tracks) is byte-for-byte what it was. */
+.sb-sec,.dsec{position:relative}
+/* the section handle is the same dotted ⠿ the row and wave grips carry (owner, 31
+   Aug 26 — "the drag markers should all follow the old design in which it's
+   dotted"), sitting INLINE at the head of the panel's own header rather than as a
+   rail in the left gutter. Inline, it lines up with the wave grip's column, pushes
+   the title clear of itself, and centres on the title line (the header is a centred
+   flex row). touch-action:none so a thumb-drag reorders instead of scrolling; the
+   headers below kill text-selection so holding the grip never paints the title blue
+   (owner, 31 Aug 26 — "as you hold on the track marker it tends to select the text
+   beside it"). */
+.secgrip{cursor:grab;color:var(--ink-3);font-size:12px;line-height:1;padding:0;
+  display:inline-flex;align-items:center;flex:0 0 auto;touch-action:none;
+  user-select:none;-webkit-user-select:none}
+.secgrip:hover{color:var(--accent)}
+.secgrip:active{cursor:grabbing}
+/* the board header already centres its children; tighten its gap so the added grip
+   borrows from the header's own spacing, not from the sub-text / buttons on the
+   right (owner, 31 Aug 26 — "make sure any text or buttons on the right aren't too
+   close or overlapping"). Measured on a 390px phone: a 16px gap to the buttons
+   remains, no overlap. */
+.sb-sec .sb-ph{gap:6px}
+/* Available crew's own fold header (.ap-h) is a space-between row — title left,
+   "by wave · close" right. When the panel joins the draggable list (owner, 31 Aug 26
+   — "one list, drag anywhere") the injected grip must ride WITH the title on the left,
+   not be spread to the far edge, so switch it to flex-start and push the right-hand
+   summary back over with an auto margin. Same 6px grip gap as the .sb-ph cards. */
+.sb-sec .ap-h{justify-content:flex-start;gap:6px}
+.sb-sec .ap-h>.n{margin-left:auto}
+/* Personal Inputs' foldable header is baseline-aligned (.sb-ph.pl-fold, line ~1155),
+   which sat the grip on the title's FIRST line — ~7px above the centre of the
+   two-line title (measured). In the draggable list its grip must sit level with the
+   title like every other card, so centre it here (wrapped board header only; the
+   week's unwrapped copy keeps its baseline). Its .sub already floats right via
+   margin-left:auto, so only the vertical axis changes. */
+.sb-sec .sb-ph.pl-fold{align-items:center}
+.sb-ph,.sb-go-h,.go-tab,.sub-h,.ah-h,.wv-sech,.ap-h{user-select:none;-webkit-user-select:none}
+/* on the WEEK the grip goes inline in each section's own title header, so make those
+   headers a centred flex row for it and drop the old gutter-clearing indents (there
+   is no overlay in the gutter any more). Edit-only (.dsec), so parity is untouched. */
+.dsec>.allhands>.ah-h,.dsec>.sec>.sub-h,.dsec .wv-sech{display:flex;align-items:center;gap:6px}
+/* the week's Flying-waves header (edit-only, html.ts) — the section header this
+   block never had. Coloured and cased like every other week section header
+   (.sub-h + var(--sec)); its box lines up with the wave blocks below (both
+   margin-left 10px). */
+.wv-sech{color:var(--sec);margin:10px 10px 0;padding-left:10px}
+/* the wave grip sits inline at the head of the wave block, before "Go N" / the
+   label — same always-draggable rule and touch-action as the section grip. */
+.wvgrip{cursor:grab;color:var(--ink-3);font-size:12px;line-height:1;padding:0 2px;touch-action:none;user-select:none;flex:0 0 auto}
+.wvgrip:hover{color:var(--accent)}
+.wvgrip:active{cursor:grabbing}
+/* the carried section and the drop line; a dragged WAVE block reuses .rowdrag /
+   .rowdrop (defined with the row grip) since it is the same kind of move. */
+.secdrag{outline:1px solid var(--accent);outline-offset:-1px;border-radius:9px}
+.secdrag .secgrip{color:var(--accent);cursor:grabbing}
+.secdrop{box-shadow:inset 0 3px 0 0 var(--accent)}
+/* ---- the "Set default order?" snackbar (ui/SecDefaultSnackbar.tsx) — an
+   ACTIONABLE bottom bar (the plain toast can't carry a button), shown after a
+   section drag to offer that order as the squadron's house default. Sits above the
+   toast's own layer. */
+.secdef-snack{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);z-index:80;
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center;max-width:calc(100vw - 24px);
+  background:var(--panel-2);border:1px solid var(--edge);border-radius:12px;padding:10px 14px;box-shadow:0 8px 30px rgba(0,0,0,.4)}
+.secdef-msg{color:var(--ink);font-size:13px;font-weight:600}
+.secdef-btn{border:1px solid var(--edge);background:var(--bg);color:var(--ink-2);border-radius:8px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer}
+.secdef-btn:hover{border-color:var(--ink-3);color:var(--ink)}
+.secdef-btn.yes{background:var(--accent);border-color:var(--accent);color:#05222b}
+.secdef-btn.yes:hover{filter:brightness(1.06)}
 .addrow:hover{border-color:var(--ok);color:#9BE3B4}
 /* ---- the Flying-wave-templates editor (owner, 25 Aug 26). Reuses the duty
    editor's modal/tab/name/nudge/del/addrow chrome above; these are the parts a
@@ -4379,10 +4439,10 @@ button.sanscard:hover{border-color:var(--accent)}
      with four inputs and another puck at any track maths), which is also a
      finger-sized drop target. MSN takes the slack (1fr) so row 1 fills the
      width. */
-  /* the grip is display:none here, so it takes no grid track — but it is still
-     a DOM child, so every nth-child index below counts it (8 Aug 26) */
-  .sb-grip{display:none}
-  .mbtn.nudge{display:inline-flex}
+  /* the row grip is SHOWN on the phone now (owner, 31 Aug 26): the ▲▼ nudge it used
+     to defer to is gone (board-html.ts sbNudge returns ''), and each dense row's grid
+     below carries a leading marker track for it. It has always been a DOM child, so
+     the nth-child indices below still count it. */
   /* the wave header's .gctl grew a third button (Auto sort) — Go N + the
      wave-title select + the in-time/aircraft-count text already filled a
      390px row, and none of .mbtn/<select>/the label spans opt out of the
@@ -4528,7 +4588,10 @@ button.sanscard:hover{border-color:var(--accent)}
      fit and are unaffected: flex-wrap only acts on the row that needs it. */
   .sb-psub{flex-wrap:wrap}
   .sb-psub .gctl{flex:1 0 100%;margin-left:0;justify-content:flex-end}
-  .sb-lcols>:nth-child(1),.sb-acols>:nth-child(1){display:none}
+  /* the header's leading placeholder is SHOWN on the phone now, so the column
+     headings shift right with the marker track and every box stays under its own
+     title (owner, 31 Aug 26 — "the box must align with the title") */
+  .sb-lcols>:nth-child(1),.sb-acols>:nth-child(1){display:block}
   /* .sb-nrow is the one row template that was never restated down here
      (found live, fix round 1, 8 Aug 26). With the grip hidden above, the
      row is down to three real grid children — nx, nin, .lctl — but
@@ -4543,7 +4606,7 @@ button.sanscard:hover{border-color:var(--accent)}
      an implicit second row. 74px is measured against the phone build:
      ▲ ▼ ✕ at .mbtn.nudge's own size plus the .lctl gap, with a few px to
      spare. */
-  .sb-nrow{grid-template-columns:22px 1fr 74px}
+  .sb-nrow{grid-template-columns:20px 22px 1fr 74px}
   /* The brief sits INLINE between MSN and TO on the phone now (owner, 16 Aug
      26 — "arrange the board like the edit schedule: brief then TO then LD"),
      the same order the desktop board and the week already carry. It used to
@@ -4554,19 +4617,40 @@ button.sanscard:hover{border-color:var(--accent)}
      column needs); the three time tracks are fixed and equal so B/TO/LD line up
      as a block. The B HEADER is no longer hidden (it was in the nth-child list
      below), so the row still matches its own headings. */
-  .sb-lcols,.sb-line{grid-template-columns:48px minmax(0,1fr) 46px 46px 46px;font-size:10px}
+  .sb-lcols,.sb-line{grid-template-columns:20px 36px minmax(0,1fr) 46px 46px 46px;font-size:10px}
+  /* the flying line's first row is tall — the B cell stacks the blue brief time above
+     its box, and the input boxes bottom-align to it — so the marker bottom-aligns too,
+     at the boxes' own height, giving a measured grip-centre = box-centre (owner, 31 Aug
+     26 — "align the marker vertically with the boxes; don't make me repeat it"). */
+  .sb-line>.sb-grip{align-self:end;height:24px}
+  /* The leading marker lane was widened 13px → 20px (owner, 31 Aug 26 follow-up
+     — "the text box just starts right of the drag marker … not inside the text
+     box"): left-align the dotted glyph within its lane so it sits clear of the
+     first box (measured handle-to-box gap 8px → 17px) instead of centred and
+     crowding it. It still lines up horizontally with the section/wave grips (all
+     within a 2px band — the owner's "align with GO 1"), and the vertical centre
+     is unchanged (this is horizontal-only, so the delta-0 grip alignment holds).
+     Row grips only — .wvgrip/.secgrip are their own classes; stack layout only,
+     so the .sb-wide desktop grip keeps its centred column. */
+  .schedboard:not(.sb-wide) .sb-grip{justify-content:flex-start;padding-left:1px}
   /* FCP | RCP pack TIGHT on the left, and the remarks + stores cell rides up
      to their right on the SAME row (owner, 16 Aug 26 — "the 2 pucks side by
      side and the remarks row will go up to the right of the pucks"). A puck is
      only 74px, so two side by side use ~154px of a 334px row — the remarks used
      to sit on its own strip below while that right half sat empty. Now the seat
-     pair spans the two left tracks (CS + MSN width) as a fixed 74+74 pair, and
-     the remarks cell takes the three time tracks on the right; grid auto-flow
-     lands them on one row with no explicit grid-row, so `.sb-wide`'s
-     display:contents / grid-column:auto resets still fully undo it on a tablet.
-     One fewer strip per flying line again. */
-  .sb-line .sb-seatpair{grid-column:1 / 3;display:grid;grid-template-columns:74px 74px;gap:6px;align-items:center;align-self:start}
-  .sb-line .sb-rcell{grid-column:3 / -1}
+     pair spans the left tracks as a fixed 74+74 pair, and the remarks cell takes
+     the three time tracks on the right; grid auto-flow lands them on one row with
+     no explicit grid-row, so `.sb-wide`'s display:contents / grid-column:auto
+     resets still fully undo it on a tablet. One fewer strip per flying line again.
+     The span starts at track 1, NOT 2 (owner, 31 Aug 26 follow-up — "the pucks
+     can shift it back to the left so that it holds 2 pucks not blocked"): the row
+     grip bottom-aligns to the FIRST line, so the 20px marker lane is empty on
+     this SECOND line, and reclaiming it shifts the pair flush-left (measured 20px
+     right of the marker → delta 0) so both 74px pucks clear the 154px remarks box
+     instead of the second one clipping under it. Measured: fully clears at 390px+,
+     the sub-~383px residual is the accepted-tight zone below. */
+  .sb-line .sb-seatpair{grid-column:1 / 4;display:grid;grid-template-columns:74px 74px;gap:6px;align-items:center;align-self:start}
+  .sb-line .sb-rcell{grid-column:4 / -1}
   .sb-lcols>:nth-child(7),.sb-lcols>:nth-child(8),
   .sb-lcols>:nth-child(9),.sb-lcols>:nth-child(10){display:none}
   .sb-line .lctl{grid-column:1 / -1;justify-content:flex-start;margin-top:2px}
@@ -4637,7 +4721,12 @@ button.sanscard:hover{border-color:var(--accent)}
      remarks box at those widths, which is the misalignment this change exists
      to remove. The flying line already squeezes its own seat pair at 360px
      for the same reason. */
-  .sb-acols.c6r,.sb-arow.c6r{grid-template-columns:1fr 50px 46px 46px}
+  /* a 20px leading MARKER track (owner, 31 Aug 26 — the ▲▼ replaced by a drag grip;
+     widened 13px → 20px in the same-week follow-up so the dotted handle sits in its
+     own lane, clear of the name box — measured gap 8px → 17px): the name box shortens
+     by it, the three right-hand tracks are untouched, so the remarks box stays 154px
+     right-anchored and still lines up with the flying line's. */
+  .sb-acols.c6r,.sb-arow.c6r{grid-template-columns:20px 1fr 50px 46px 46px}
   /* Role/Item spans the first pair, so Start and End auto-place into tracks
      3 and 4 exactly where they sat before.
      BY POSITION, not by class, and that is load-bearing: every c6r row
@@ -4649,18 +4738,27 @@ button.sanscard:hover{border-color:var(--accent)}
      50px spacer track, misaligned with the ground programme's rows directly
      above them — caught by the e2e that pins those two row shapes together,
      which is exactly why it exists. */
-  .sb-arow.c6r>:nth-child(2),.sb-acols.c6r>:nth-child(2){grid-column:1 / 3}
+  .sb-arow.c6r>:nth-child(2),.sb-acols.c6r>:nth-child(2){grid-column:2 / 4}
   .sb-acols.c6r>:nth-child(3){display:revert}
   .sb-acols.c6r>:nth-child(5){display:none}
   /* THE REMARKS BOX RIDES THE PUCKS' ROW, ALIGNED UNDER START (owner, 16 Aug
      26 — "beside the pucks on the right, same row, aligned with the B", the
-     shape the flying line already uses). People take the left (Role/Item)
-     track; remarks fill the two time tracks on the right and align to the top
-     of a tall crew (an AMT box). It is shown at ALL times now — the empty-hide
-     and its "+" reveal are gone (board-html.ts) — because sharing the pucks'
-     row costs no extra line, which is the row this change gives back. */
-  .sb-arow.c6r>.ppl{grid-column:1 / 2}
-  .sb-arow.c6r .rmkin{grid-column:2 / -1;align-self:start}
+     shape the flying line already uses). People take the left track; remarks
+     fill the two time tracks on the right and align to the top of a tall crew
+     (an AMT box). It is shown at ALL times now — the empty-hide and its "+"
+     reveal are gone (board-html.ts) — because sharing the pucks' row costs no
+     extra line, which is the row this change gives back.
+     The People span starts at track 1, NOT 2 (owner, 31 Aug 26 follow-up — "the
+     pucks … back to the left … 2 pucks not blocked"; "make sure the rest are
+     placed back to the same area"): the row grip bottom-aligns to the first line,
+     so the 20px marker lane is empty on this pucks' line, and reclaiming it shifts
+     every crew cell — single-puck duty/ground AND the AMT/sim two-wide box —
+     flush-left (measured 17px right of the marker → delta 0, matching the old
+     layout), so a two-wide box's second puck clears the 154px remarks instead of
+     clipping under it. Fixed 74px pucks untouched, so the AMT droppable-hole
+     geometry spec is unaffected. */
+  .sb-arow.c6r>.ppl{grid-column:1 / 3}
+  .sb-arow.c6r .rmkin{grid-column:3 / -1;align-self:start}
   .sb-inputs{max-height:none;overflow:visible}
   .sbi-row{grid-template-columns:84px var(--puck-w) 1fr;gap:7px}
   .sbi-row .sbi-rm{grid-column:1 / -1;font-size:10.5px;color:var(--ink-3)}

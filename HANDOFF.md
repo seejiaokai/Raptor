@@ -24,46 +24,170 @@ purpose: it is exactly the closed-work narrative the charter above bans, and
 it lives in `git log` where it belongs. Restate a count only from a run you
 watched — this file's history twice recorded a count that was wrong.
 
-**Last recorded green baseline** (29 Aug 26 — DEFAULT ARRANGEMENT IN ADMIN: an
-admin sets the house order of the schedule sections AND the flying-wave types
-once, on Admin → Squadron config (`ui/AdminPage.tsx ArrangeDefaults`). The
-section default (`engine/order.ts SEC_DEFAULT`, key `secdefault`) is the fallback
-`secOrder(d)` fills un-arranged sections from — display-only, canonical baseline
-keeps parity 728/0; a hand-arranged day still wins. The wave default
-(`engine/reorder.ts WAVE_DEFAULT`, key `wavedefault`, OFF by default) orders the
-built-in kinds and is applied ONLY at wave-add time on a not-signed-off day
-(`board.ts placeAddedWave` → `waveInsertSlot` → the tested `moveWave`), so a new
-wave lands SC-on-top without re-ordering or amending any existing/published day
-("new schedules only", owner's call). Both persist on the `wavehide` footing
-(null at baseline), boot-loaded in `initStore`. Pins:
-`engine/arrdefaults.test.ts`, `ui/wavedefault-add.test.tsx`, +1
-`ui/admin.test.tsx`. Verified live at 1280 and 390 px: the panel renders both
-lists, a nudge re-orders the house default and an un-arranged day picks it up, a
-new SC lands on top of a draft day — no console errors.
-Built on the earlier same-day ARRANGE THE SECTION ORDER: a
-scheduler can re-order the day's section panels (Programme · Flying waves ·
-Duties · Sims · Ground Programme) on both Edit Schedule and the Scheduler Board
-via a per-day `⇅ Arrange` sheet, and a whole-day template remembers it. It is
-DISPLAY order only (`d.secOrder` → `engine/order.ts secOrder`), never a slot
-key / SCHED.* / AL, so the rules read byte-identically — the owner's "don't
-corrupt the rules" requirement, pinned in `engine/secorder.test.ts`; both
-builders re-emit through `secOrder` with the DEFAULT order byte-identical, so
-parity stays 728/0. Verified live at 1280 and 390 px (the board reorders behind
-the sheet, warnings unchanged; the board `⇅` label drops to the icon on a phone
-so the header still fits). On top of the frozen Quals header + the Inputs
-calendar-scroll fix + the OIL follow-up. All six gates re-run and watched at the
-close):
+**Last recorded green baseline** (30 Aug 26 — IN-PLACE DRAG TO REORDER SECTIONS
+& WAVES, replacing the per-day `⇅ Arrange` sheet, which is DELETED. A scheduler
+drags a whole SECTION by a grip on its panel (`.sb-sec`/`.dsec[data-secmove]`) or a
+whole WAVE by a grip in its header (`.wvgrip` + `data-move="mv:w…"` on `.sb-go`/`.go`),
+on both Edit Schedule and the Scheduler Board. One machine, `ui/rowdrag.ts`, wired on
+BOTH surfaces, tells the three draggables apart by the grip pressed and validates a
+drop with `applyMove`'s own same-container rule. A SECTION drag is display-only
+(`store.moveSectionTo` → `engine/order.ts reorderSectionTo`, no markEdit) and then
+offers the **"Set default order?"** snackbar (`ui/SecDefaultSnackbar.tsx`, `SECDEFOFFER`)
+that promotes it to the house default via the same `setSecDefault`/`secDefaultSave`
+Admin uses. A WAVE drag is unchanged — a real amendment via `applyMove('mv:w…')` →
+`moveWave`. The grips are an ABSOLUTE OVERLAY (no layout shift), sitting in each
+panel's existing border/padding gutter, so the board's row-register and input-vs-ground
+alignment contracts are byte-for-byte unchanged (that was the trap: an earlier 16px
+left indent narrowed the Ground panel's flexible column and broke both — caught by
+e2e). Edit-only on the week, so the view week — and parity — stay byte-identical. The
+old one-week "Apply to all days" was dropped (henceforth default supersedes it). Pins:
+`ui/rowdrag.test.tsx` (+6), `ui/SecDefaultSnackbar.test.tsx` (new), `ui/board.test.tsx`,
+`ui/html.test.ts`, `state/store.test.ts`. Verified live at 1280 and 390 px: grips
+render on both surfaces and both widths, the Arrange button is gone, dragging a section
+reorders it and raises the snackbar, no console errors.
+
+31 Aug 26 DENSE ROW REORDER BY DRAG — the ▲▼ nudge removed, a dotted marker added to
+every row (owner /impeccable — "remove up and down arrow and add a drag marker to those
+lines … place it aligned with the start of the text box and shorten the first text boxes
+… align it vertically with the rest of the text boxes … all alignment considered for all
+drag markers"). REVERSES the 8 Aug "phone hides the grip, shows ▲▼" split: every dense row
+(flying line, duty, sim, ground, Common Programme, Overall-note) shows its `⠿` grip at ALL
+widths and reorders by dragging it; `sbNudge` returns '' (no ▲▼, ~2 nodes/row off the
+board DOM). The phone grids gain a 13px leading marker track, the header's leading
+placeholder is un-hidden so column titles shift with it (each box stays under its title),
+the first box shortens by the track, and the right-hand tracks are untouched so the c6r
+remarks box stays 154px right-anchored (still aligned with the flying line's). Grip
+vertical alignment is a MEASURED contract now (owner — "don't want to keep repeating
+this"): every grip centre = its neighbour box's centre, delta 0 — the flying line grip
+bottom-aligns (`align-self:end;height:24px`, its boxes sit low under the tall B cell),
+c6r/notes centre naturally in a box-height first row, section/wave/crew already centred.
+Input rows keep the track but paint no grip (`sbGrip(true)` → `.sb-grip.ro`
+visibility:hidden — they can't be dragged). Files: `board-html.ts` (sbNudge → ''),
+`scheduler.css` (phone leading marker track + c6r/flying span shifts + flying-line grip
+align + show grip / drop nudge / un-hide header placeholder). Tests: `board.test.tsx`
+(no ▲▼, grip present), `interact.test.tsx` (nudge-click describe removed — drag covers
+it), `state/store.test.ts` wording. Verified live at 390 px: every row grip measured
+delta 0 and reads level; dragging a ground row reorders it (gman set); no row overflows
+390px; zero ▲▼ in the DOM; no console errors. Contract: `docs/ui-contracts.md` §Dense row
+reorder; decision: `raptor-port/CLAUDE.md` §Stable decisions.
+  FOLLOW-UP (same week): the marker lane was widened 13px → 20px and the crew pucks
+  shifted flush-left (owner — "the text box just starts right of the drag marker … not
+  inside the text box"; "the pucks can shift it back to the left so that it holds 2 pucks
+  not blocked … make sure the rest are placed back to the same area"). The dotted glyph
+  left-aligns in the wider lane so the handle clears the first box (measured gap 8 → 17px),
+  and the puck containers span from track 1 — `.sb-line .sb-seatpair` `1/4`,
+  `.sb-arow.c6r>.ppl` `1/3` — to reclaim the marker lane on their own (second) line, so a
+  flying seatpair AND every c6r crew cell (single-puck duty/ground + the AMT/sim two-wide
+  box) sits flush with the marker (measured 17–20px right → delta 0) and a two-wide box's
+  second puck clears the 154px remarks instead of clipping under it at 390px+. No puck
+  resized (the AMT droppable-hole geometry spec still passes); the sub-~383px residual is
+  the accepted-tight zone. Files: `scheduler.css` only. Verified live at 390px (all pucks
+  delta 0, gap 17px, headers delta 0, grips aligned 28–30px band); six gates green.
+
+31 Aug 26 CREW PANELS JOIN THE BOARD'S ONE DRAGGABLE LIST (owner /impeccable follow-up,
+mockup-approved — "one list, drag anywhere"). The four crew working-aid panels — Personal
+Inputs, Available crew, SANS, Unavailable — are ordinary section keys now
+(`SECTIONS=['notes','prog','waves','duty','sims','ground','inputs','avail','sans','unav']`),
+each wrapped in its own `.sb-sec[data-secmove]` card with the same dotted grip, so on the
+Scheduler Board any panel can be dragged to any position (Available crew up beside the
+flying waves, say). BOARD-ONLY by design: `ui/html.ts`'s week APPENDS these four
+separately, so their week slice bits are empty and reordering them changes nothing on
+either week — parity stays 728/0 (the same empty-slice trick that keeps `notes` safe). A
+crew arrangement is a scheduler WORKSPACE preference, not a published property; the
+squadron's view week is untouched. Grip injected by a loose `sb-ph`|`ap-h` header match
+(`board.ts wrapSec`); Available crew's `.ap-h` re-laid to flex-start with `.n` floated
+right so the grip rides with its title; Personal Inputs' foldable header centred for the
+grip (`.sb-sec .sb-ph.pl-fold` — was `baseline`, the ~7px "grip too high" the owner
+flagged); grip-taps on the two foldable headers (`data-pitog`/`data-avtog`) guarded in
+`interactions.ts` so they drag, not fold. The Admin Default-arrangement list shows all
+ten now (crew four noted board-only). Files: `engine/order.ts` (SECTIONS 6→10),
+`ui/board.ts` (crew in the ordered map + regex grip inject), `ui/scheduler.css`
+(`.ap-h`/`.pl-fold` layout + grip alignment), `ui/AdminPage.tsx` (+4 crew labels + note),
+`ui/interactions.ts` (grip-tap guard). Tests: `engine/order.test.ts`,
+`engine/secorder.test.ts`, `engine/arrdefaults.test.ts`, `state/store.test.ts`,
+`ui/admin.test.tsx` (6→10 canonical), `ui/rowdrag.test.tsx`, and a new `ui/board.test.tsx`
+pin (crew draggable + `dayHTML` byte-identical after a crew reorder). Verified live at
+390 px: dragging SANS onto Available crew swaps them, the drop target highlights, a
+grip-tap does NOT fold Personal Inputs, no console errors; the grip measures delta-0
+(centred on the title) on all four panels.
+
+31 Aug 26 DESIGN POLISH on the section grab bars — the drawn vertical grab-rail was
+SUPERSEDED the same day by the DRAG-HANDLE PLACEMENT REDO below (owner reverted it to
+the dotted inline `⠿`; see that entry for the current design). What SURVIVES from this
+pass is the week's edit-only `.wv-sech` "Flying waves" header (the one week section with
+no header of its own), still stripped from the `ui/html.test.ts` reference compare so
+parity holds. The gate table below was the green baseline read at this pass's close:
 
 | gate | reading |
 |---|---|
-| `npm test` | 3529 across 205 files — two vitest projects: raptor + leavewar |
+| `npm test` | 3587 across 206 files — two vitest projects: raptor + leavewar |
 | `node reference/tfin.js` | 728/0 (the reference is read-only; the "Ground Programme" title trim rides the tolerant normaliser in `html.test.ts`) |
 | `npm run build` | clean |
-| `npm run test:e2e` | 338 passed / 19 touch-only skips — three playwright projects: raptor geometry, lw-phone, lw-desktop. NOTE: a mid-session chain run showed 2 lw-phone reds against a build that predated the bug-pass fixes (the un-gated cross-lane notify repainting mid-gesture); both passed individually and the full suite passed whole against the fixed build — if they ever red again, suspect a stray repaint mid-tap first. |
-| `probes:adapted` | **all 6 GREEN** — `aar-async` was re-adapted this session (its palette sentinel filter matched ids by SUBSTRING, so the new ALL puck read as a currency-less pilot; whole-id match now). **Read the LAST line, not the last tally**: each probe prints its own count as it finishes (`wrap-async` ends `36 passed · 0 failed`), and the suite's verdict is the line after it, `all 6 adapted probes passed`. |
-| `perf` | **4/0** — board DOM 1053 ≤ **1150** (the ceiling is a SETTLED owner decision since 28 Aug 26 — CLAUDE.md §Stable decisions; the `⇅ Arrange` button's one node is noise against it). |
+| `npm run test:e2e` | 347 passed / 23 touch-only skips / 0 failed — three playwright projects: raptor geometry, lw-phone, lw-desktop. NOTE: a mid-session chain run showed 2 lw-phone reds against a build that predated the bug-pass fixes (the un-gated cross-lane notify repainting mid-gesture); both passed individually and the full suite passed whole against the fixed build — if they ever red again, suspect a stray repaint mid-tap first. |
+| `probes:adapted` | **all 6 GREEN**. **Read the LAST line, not the last tally**: each probe prints its own count as it finishes (`wrap-async` ends `36 passed · 0 failed`), and the suite's verdict is the line after it, `all 6 adapted probes passed`. |
+| `perf` | **4/0** — board DOM 1063 ≤ **1150** (the ceiling is a SETTLED owner decision since 28 Aug 26 — CLAUDE.md §Stable decisions; the section/wave grips added ~10 nodes, noise against it). |
 
-Reconciles against the 3512/203 reading before it (arrange the flying WAVES):
+Reconciles against the 3529/205, 338/19 reading before it (the DEFAULT ARRANGEMENT
+in Admin — its lead is folded into `CLAUDE.md` §Stable decisions now): +58 vitest
+pins across +1 file — the in-place drag replacing the Arrange sheet. New file
+`ui/SecDefaultSnackbar.test.tsx` (3: hidden/shown, "Set as default" saves the house
+default, "Not now" dismisses); +6 `ui/rowdrag.test.tsx` (section drag reorders /
+offers the snackbar / stays display-only, wave drag reorders and targets the block
+through an inner line, a member is refused); +pins in `ui/board.test.tsx`,
+`ui/html.test.ts` (edit carries the handles, view carries none — parity safety) and
+`state/store.test.ts` (`moveSectionTo`); minus `ui/ArrangeSections.test.tsx` (deleted
+with the sheet). Parity stays 728/0 because the grips are edit-only on the week and
+the board's default section order is unchanged. e2e +9 pass / +4 skip is the same
+specs re-counted whole (no new e2e file; the drag's geometry is covered by the
+register/alignment pins that caught the indent trap). Verified live (see the baseline
+note above).
+
+31 Aug 26 EDGE AUTO-SCROLL while dragging (owner ask — "when I drag an item to the top
+or bottom edge of the screen, can you auto-scroll? the schedule is so big I can't reach
+the other sections"): while a section/wave/row drag is live and the finger sits in the
+top/bottom 72px margin, `ui/rowdrag.ts` scrolls the surface under it (rAF, distance-ramped
+to 22px/frame) and re-reads the drop target under the still finger via `elementFromPoint`.
+The scrolled surface is the nearest overflowing ancestor of the carried element — the
+board's `.sb-board`/`.sb-main`, or the WINDOW on the edit week — so it is correct on both
+pages. Fixing this surfaced a latent bug: `pointermove` was bound to the surface element,
+so the moment the finger reached the very top edge (over the app header, outside the week
+root) `onMove` stopped firing and the scroll velocity froze — the exact case auto-scroll
+lives in. Moved `pointermove` to the DOCUMENT (the same fix `pointerup` already carried),
+so the finger tracks to the very edge; both wirings' handlers early-return until their own
+instance owns a live drag. Logic-only in `rowdrag.ts` — no markup change, so parity holds
+728/0, DOM counts unchanged, geometry contracts untouched. Verified live at 390px on both
+surfaces: week scrolls the window (0→645 down, back to 0 up, stops on release), board
+scrolls `.sb-main` (0→660), no console errors. All six gates green: `npm test` 3587/3587,
+build clean, parity 728/0, e2e 347 passed / 23 skipped / 0 failed, probes 6/6, perf 4/0
+(week DOM 5032, board DOM 1063 — both UNCHANGED, confirming logic-only). Pinned:
+`ui/rowdrag.test.tsx` (state machine; auto-scroll is a layout behaviour proven live per
+this suite's jsdom/e2e split).
+
+31 Aug 26 DRAG-HANDLE PLACEMENT REDO (owner /impeccable ask, mockup-approved — the phone
+board's markers were too far left to reach, the rail was reverted to dots, and Common
+Programme "looked like it had no handle"). Three linked changes, all display-only:
+(1) The section grip is the SAME dotted `⠿` the row/wave grips carry (REVERSING the 30 Aug
+drawn-rail), placed INLINE at the head of the panel's own header (board `.sb-ph`, week
+`.ah-h`/`.sub-h`/`.wv-sech`) — not an overlay rail. Inline, it aligns with the wave grip's
+column ("align with GO 1"), pushes the title clear, and centres on the title line. The
+board header's flex gap is tightened to 6px (`.sb-sec .sb-ph`) so the added grip borrows
+from the header's own spacing, not the sub-text/buttons on the right (measured 16px
+clearance, no overlap). Headers set `user-select:none` so a held grip never paints the
+title blue. (2) Overall Notes and Common Programme are now TWO separate draggable sections
+on the board (`SECTIONS=['notes','prog',…]`, each its own `.sb-sec[data-secmove]` card) —
+that is what gives Common Programme its own handle. (3) On the edit week the day notes
+still print inside the Common Programme block, so the week's `notes` slice is EMPTY and
+skipped — the view week and reference stay byte-identical, parity 728/0. Files:
+`engine/order.ts` (SECTIONS +notes), `ui/board.ts` (split + inline grip inject),
+`ui/html.ts` (inline grip inject + skip empty bit), `ui/scheduler.css` (dotted inline
+grip, header flex/no-select, drop the rail + gutter indents), `ui/AdminPage.tsx`
+(default-order labels +Overall notes). Tests updated: `engine/arrdefaults.test.ts`,
+`ui/admin.test.tsx`, `ui/rowdrag.test.tsx` (six-section canonical order). Verified live at
+390 px: board renders six cards, both grips at x=28 (aligned with the wave grip, centred
+on the header line), no console errors; edit week shows 5 draggable sections/day (notes
+merged) each with an inline dotted grip, view week carries none.
+
+Before that, reconciled against the 3512/203 reading before it (arrange the flying WAVES):
 +17 vitest pins across +2 files — **the DEFAULT arrangement, configurable in
 Admin** (owner, 29 Aug 26 pt.2 — "allow the default arrangement of a schedule to
 be configured in admin … even to the arrangement of the waves under display").
@@ -391,17 +515,18 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
   with the app, no third-party request, nothing to block) — it needs the three families'
   woff2 files (Inter Tight 400/500/600/700, Barlow Condensed 600/700, JetBrains Mono
   400/500) added as assets. Until then the app keeps the system-font fallback.
-- **In-place drag to reorder sections/waves is NOT built yet — deliberately deferred
-  (29 Aug 26 pt.3).** The owner approved replacing the per-day Arrange sheet
-  (`ui/ArrangeSections.tsx`) with drag handles directly on the blocks and waves, on
-  both Edit Schedule and the board, plus a "Set default order?" prompt. On building it,
-  it proved much larger than the plan conveyed — TWO levels of drag (whole sections AND
-  waves within the flying block) across the two densest string builders (the week's
-  "waves" isn't even a single container), under the parity / perf / one-row-geometry
-  gates. It was split OUT of this PR to avoid rushing a HEAVY change onto the core
-  screen; the Arrange sheet stays live and working meanwhile. The design is
-  prototype-approved (drag-only, no toggle/arrows/reset; the "Set default order?"
-  snackbar sets the house default). This is the next focused pass.
+- **CLOSED 30 Aug 26 — in-place drag to reorder sections/waves SHIPPED, replacing
+  the Arrange sheet.** The per-day `⇅ Arrange` sheet is gone; a scheduler now drags
+  a whole SECTION (a grip on each panel's left gutter) or a whole WAVE (a grip in the
+  wave header) into a new place, on both Edit Schedule and the board. A section move
+  is display-only (`store.moveSectionTo` → `engine/order.ts reorderSectionTo`), and
+  after one an admin gets a "Set default order?" snackbar that makes it the house
+  default. A wave move is a real amendment (`applyMove('mv:w…')` → `moveWave`,
+  unchanged). The owner's one-week "Apply to all days" was dropped — the henceforth
+  default supersedes it. Contract: `CLAUDE.md` §Stable decisions ("in-place drag"),
+  `docs/ui-contracts.md` §Dragging sections and waves. Files: `ui/rowdrag.ts` (the
+  machine, now on both surfaces), `ui/SecDefaultSnackbar.tsx` (the prompt);
+  `ui/ArrangeSections.tsx` deleted.
 
 - **CLOSED 29 Aug 26 — both 28 Aug OIL deferrals, by owner decision, plus a
   rule correction.** (1) The schedule half of the OIL credit now reads
@@ -2512,7 +2637,7 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | `weekglide.ts` | **Glide across weeks (23 Aug 26)**: `beginGlide(root)` clones the outgoing week into a throwaway fixed overlay and slides it off in the swipe direction while the freshly-loaded week slides in from the other edge — a phone-only cross-week transition fired from the WEEKJUMP branch of ViewWeek/EditWeek. Gated to ≤820px, a Monday/Sunday landing only (never a within-week scroll), and reduced-motion; no-ops without layout so vitest is untouched, and clones pure DOM (no engine recompute, no second week held live). Does NOT lock the swipe to one day — the owner kept the free multi-day flick. **Clone `z-index:40`, below the sticky `.topbar` (60)** (23 Aug 26): at 60 it tied the bar and, being a fixed clone from the week's `rect.top` (above the bar once the page is scrolled) appended last, painted the sliding week OVER the bar ("bleeding at the top bar when swiping"). Keep it under the chrome. Pinned in `weekglide.test.ts`. |
 | `SchedBoard.tsx` | The full-screen day board: panels with per-panel string diff; subscribes to both the global store and the board-only view lane; CxDialog (cancel-with-reason — its chips read the editable `CXR_CFG` now, plus an admin `✎ Edit` inline template editor) and the Sort-all confirm, both wired to `HOOKS.closeBoardDialogs`. Mounts the desktop checks-panel resize grip (`.sb-wsplit`, wired by `board.ts:wireWarnSplit`). |
 | `board.ts` | Board HTML assembly + delegated handlers: line/wave and duty/sim/ground row add/delete (with key renumbering), the ▲/▼ nudge handler, per-section and whole-day sorts, CX flow, red-box flag, `waveMenu`, `openScheduler`/`closeScheduler`. `boardHTML` now renders the in-time block, per-formation area strip and Traffic button (14 Aug 26 — week-only before); `boardSignHTML` is the sign-off as its own `#sbSign` element (so the checks bar can sit below it); `boardWarnHTML` reads the "N issues · N warning" severity-coloured bar. Also `boardDayStep`, the day arrows' one call (12 Aug 26 — the swipe and its whole carousel are deleted; do not rebuild them, the tombstone comment in this file says why), and **`boardWeekStep`** (23 Aug 26) — the whole-week jump behind the desktop board's `‹ ›` week chips (`dayTabsHTML` renders them inside `#sbDays` with `data-sbweek`; keeps the open weekday), the fix for "in scheduler board i cant go between weeks except through the calendar"; phone board still steps days with its own edge arrows. Pinned in `boardnav.test.tsx`. `boardWarnHTML` now also draws a per-check MUTE ✕ and a "N hidden" reveal for muted checks (Aug 26, `view.warnShown`/`WMOPEN`); `grdel` routes a `src`-bearing ground delete through `unacceptInput` (the auto-land round-trip, Aug 26 audit); and **`wireWarnSplit`** is the desktop grip that resizes `.sb-warn` against the roster (a no-op until dragged, so the default geometry holds). |
-| `rowdrag.ts` | The board row-reorder pointer machine — its own small machine, deliberately not `drag.ts` (which stays scoped to pucks): pointer events so a finger works, releases implicit pointer capture on the way down, writes the lifted row and the drop bar straight onto the DOM, delegated on the board wrap so it survives every panel repaint. |
+| `rowdrag.ts` | The reorder pointer machine — its own small machine, deliberately not `drag.ts` (which stays scoped to pucks): pointer events so a finger works, releases implicit pointer capture on the way down, writes the lifted element and the drop bar straight onto the DOM, delegated on the surface wrap so it survives every repaint. Handles THREE draggables, told apart by the grip pressed: a board ROW (`.sb-grip` → `applyMove`), a whole WAVE block (`.wvgrip`, walks up to `.sb-go`/`.go` carrying `data-move="mv:w…"` → `applyMove`/`moveWave`, a real amendment), and a whole SECTION (`.secgrip` on `.sb-sec`/`.dsec[data-secmove]` → `store.moveSectionTo`, display order, then the "Set default order?" snackbar). Same-container validation (applyMove's own rule) so only a valid drop highlights. Wired on BOTH the board wrap (`SchedBoard`) and the edit-week root (`EditWeek`); on the week only wave/section grips exist. |
 | `html.ts` | THE builder library: `dayHTML`, `puck`, `slotCell`, `signoffHTML`, day warnings, day-info panel, legend, cx/flag tags, and the derived `areaText`/`atimeText`. `dayTraceHTML` draws the crew-rest cross-day trace row; since 23 Aug 26 it also renders the FORWARD (cross-week) trace — `t.di==null` — with no `data-wdi`/`data-wix` (nothing on this week's DOM to focus) and a title naming next week's Monday instead of a jump instruction. |
 | `board-html.ts` / `palette-html.ts` / `logic-html.ts` | Board panels (inputs bands, notes, programme, duties, sim rows, ground, personal-inputs group, sim notes), the aircrew palette, the Logic tab's rule text. |
 | `interactions.ts` | `routeClick` — the delegated click router: select/arm/plant (a puck's flag chip falls through to selection — the chip is the puck), publish/AL/sign-clear, day-info, warning boxes, the board's issue list (via `jumpToWarn`), week chips, stores remove + the config picker (`openStoresMenu`). Also the board-check MUTE/reveal (`[data-woff]` → `view.toggleWarnOff(view.warnMuteKey(w))`, `[data-wmtog]` → `view.toggleWarnMuted`, both above the `.wln` jump so muting never also pans, Aug 26), and — checked FIRST, ahead of every other branch (23 Aug 26) — the next-week preview's `.day.peek` click-to-land, which records the clicked position (`view.setPeekLand`) and calls the ordinary `loadWeek` (`ui/peek.ts`). |
@@ -2529,7 +2654,7 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | `WaveTplModal.tsx` | The **flying-wave-template editor** (25 Aug 26) — opened from the `+ Wave` picker's pencil and Admin → Squadron config (`WAVEEDIT` in `pops.ts`). Tabs per template + New (with an empty state when the library is bare), an editable title, a rule-set picker (Flying / SC / AVALON / BB) with its one-line note, and per-line cards — callsign over mission / T-O / LD / a MAIN/SPARE flip (shown only on a standby kind) / ▲▼ reorder / delete — plus + Add line and Clear all / Delete template / Done. Drives `engine/wavetpl.ts` and persists on every edit; times validate on blur like the duty editor. The `+ Wave` picker (`board.ts:waveMenu`) lists `shownTemplates()` beside the non-hidden built-ins and `addWaveFromTpl` places one; the picker's ⚙ Manage button and its "N hidden · Manage" line open `WaveManageSheet.tsx` for show/hide/delete (the Admin `WaveVisibility` list was removed 29 Aug 26 pt.3). Pinned in `WaveTplModal.test.tsx` + `wavepicker.test.tsx`. |
 | `WaveManageSheet.tsx` | The **wave Manage sheet** (29 Aug 26 pt.3, `WAVEMANAGE` in `pops.ts`) — opened from the `+ Wave` menu's ⚙ Manage button and its "N hidden · Manage" line. Lists every built-in kind and saved template with an EYE (show/hide → `setWaveHidden` + `waveTplSave`, the flag the picker filters on) and, for templates only, a TRASH (delete → `delWaveTpl`, behind a "can't be undone" confirm). Built-ins can be hidden but never deleted. This is the show/hide list that used to live on the Admin page; same admin-only gate (`canEditSched`). On a phone it opens as a bottom sheet (the shared `.modal` phone rule). Pinned in `WaveManageSheet.test.tsx`. |
 | `DayTplModal.tsx` | The **day-template library editor** (15 Aug 26) — opened from the Templates picker's pencil, on either surface (`DAYTPLEDIT` in `pops.ts`, a `false\|true\|string` open-pre-selected flag). Tabs per template, an editable title, a read-only structure summary; deliberately no row editor (a day template's content is edited on the board/week themselves, which already own that surface) and no "+ New" (a template is always recaptured off a real day, never started blank). Reset / Delete / Done, all toasting. |
-| `ArrangeSections.tsx` | The **Arrange** sheet (29 Aug 26) — a per-day sheet (`ARRANGESEC` in `pops.ts`) that re-orders the day's section panels (Programme · Flying waves · Duties · Sims · Ground Programme) with ▲▼ nudges + "Apply to all days", AND (below, when a day has ≥2 waves) the day's flying WAVES by their board titles. Opened by a `⇅ Arrange` button on both surfaces (board Templates bar via `boardMbtn`, edit-week `.dhtpl` via `interactions.ts`); the modal reads `d.waves`/`secOrder` directly, so both lists work on both surfaces with no per-surface DOM. Sections are display order (`store.moveSection`/`applySecOrderToWeek`, histPush, no markEdit); a WAVE move is a real model reorder + amendment (`store.moveWaveBlock` → `reorder.ts moveWave`, afterSchedMutate). The whole-day template remembers both. Contract: `docs/ui-contracts.md` §Arranging the schedule sections. |
+| `SecDefaultSnackbar.tsx` | The **"Set default order?"** snackbar (30 Aug 26) — an actionable bottom bar (`SECDEFOFFER` in `pops.ts`) the section-drag opens after a real move (`rowdrag.ts`). "Set as default" makes that day's section order the squadron house default (`engine/order.ts setSecDefault`/`secDefaultSave`, the same default the Admin panel edits, so the two can't drift); "Not now" / a 7 s timer dismisses. Admin-only by construction (the drag that opens it is `canEditSched`). Built as a bar, not a `toast()`, because the toast is a fading, un-clickable bubble. Replaced `ArrangeSections.tsx` (the per-day Arrange sheet, deleted 30 Aug 26 with the in-place drag). Contract: `docs/ui-contracts.md` §Dragging sections and waves. |
 | `DraftsModal.tsx` | The **drafts manager** (15 Aug 26) — opened from the Drafts picker's pencils (`DRAFTSEDIT` in `pops.ts`, carrying the day since drafts are per-day), scoped to the one day whose menu opened it. Tabs per draft (selected one marked ●), a name field that commits on blur/Enter (`draftRename` refuses empty/duplicate names, and refusing mid-keystroke would fight the typist), Select (make it live) / Delete (disabled on the selected entry, with a title saying why) / Done. |
 | `InputsPage.tsx` / `QualsPage.tsx` / `LogicPage.tsx` | The three secondary pages (inputs CRUD + CSV, quals grid, rules doc + admin editing). The Inputs table carries a date window and heading sort, so **its DOM row order is not `INPUTS` order** — address a row by the model index its buttons carry (`data-edit`/`data-inx`/`data-save`), never by position. Its dates read **day-first** and Last-modified reads **day month year** (21 Aug 26, `fmtDay`/`fmtDMY` in `inputedit.tsx`; a same-day timed span sits in one cell, the `✎ ✕` actions are pinned so every card is one compact shape). **The phone card is a grid of ALIGNED columns since 22 Aug 26** (callsign / type / date at fixed x on every card, remarks below the callsign — `scheduler.css` ≤820px block, CSS-only so td order holds) and the two spaceless chips wear `.bl` split-span short forms there (SANS AVAIL / APPOINT); the desktop table carries per-column `th` widths. Contracts: `docs/ui-contracts.md` §The Inputs table's view state, §The Inputs page speaks one day-first date voice. |
 | `InputsCal.tsx` / `caldrag.ts` / `state/plan.ts` | **The Inputs month calendar (22 Aug 26; cell + popover REDESIGNED the same evening)** — the page's full-screen Google-style month view (`INPVIEW`/`CALMONTH` in `state/view.ts`). The CELL reads title-first (owner: sections outrank inputs): the free-text **day TITLE** (`DAYRMK`, bold, wraps, both widths), the note/pucks **sections** in full, then the inputs as SIDE-BY-SIDE mini chips off `inputTone` (callsign + type, no times; a SANS chip prints its F/O/A letters, never the words), capped at `MAX_CHIPS` (6, inputs only) → `+N more`. The DAY POPOVER: the title edited beside the date in the head (`#icRmkEdit`), small `+ Note`/`+ Pucks` buttons (scheduler), full-width sections with an admin ⠿ **drag-reorder** (`movePlanSection`, same-day, half-rule), and the inputs at the BOTTOM led by a small `+ Input` (everyone). `state/plan.ts` holds `PLANPUCKS` (notes + `kind:'pucks'` person-rows: `addPuckRow`/`togglePuckPerson`/`movePlanSection`) and `DAYRMK`: session-only by owner choice, scheduler-gated at the write path, riding the undo snapshot (`pp`/`dm`). `caldrag.ts` is the calendar's OWN chip-drag machine — `commitChipMove` slides a span by the day-delta from the GRABBED cell through `commitInputEdit`; it moves sections between days too. Contract: `docs/ui-contracts.md` §The Inputs month calendar; the copied-filter drift-seam is named in `docs/feature-impact.md` §4. |
@@ -2610,7 +2735,7 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | `src/ui/unavailedit.test.tsx` | Unavailable rows fully editable from the schedule (14 Aug 26, 16 tests) — the shared dialog's Person select (`canEditSched` only), the `iu:<iid>` arm-then-tap and drag-to-reassign paths on the week and the board, `reassignInput`'s relink on `commitInputEdit`, `rosterOptions` shared by all three editors, plus the Inputs-page sort-tie regression guards the same audit found (the stable-sort no-op on a second heading click, the `s`/`e` minute-0 `??` fix). |
 | `src/engine/daytpl.test.ts` | Whole-day master templates' engine half (15 Aug 26) — the allowlist blob, crew-blanking and cx/flag/src stripping, `applyDayTpl`'s refuse-on-published and its direct-write/pending-added-retirement shape, persistence and untrusted-load field-by-field sanitising; +3 (29 Aug 26) for `secOrder` capture/apply and its cleaned untrusted load. |
 | `src/engine/secorder.test.ts` | The **section-order rules-safety guard** (29 Aug 26) — after a `moveSectionModel` re-arrange, every `validate()` warning, all `SCHED.*` amendment state, and every section-content array is byte-identical; only `d.secOrder` changes and the section arrays are the same objects. This is the "don't corrupt the rules" proof. (`secOrder`/`moveSectionModel`'s own unit cases live in `order.test.ts`.) |
-| `src/ui/ArrangeSections.test.tsx` | The Arrange sections sheet (29 Aug 26) — lists the five sections in order, the ▲▼ wire to `store.moveSection`, the ends' buttons are disabled, and "Apply to all days" copies the order across the week. |
+| `src/ui/SecDefaultSnackbar.test.tsx` | The "Set default order?" snackbar (30 Aug 26) — hidden with no offer, shows on one, "Set as default" saves that day's order as the house default and clears the offer, "Not now" dismisses without changing it. (The section/wave DRAG itself is pinned in `rowdrag.test.tsx`.) |
 | `src/ui/daytplui.test.tsx` | Day templates' UI half (15 Aug 26, 15 tests) — the `dayTplMenu` picker reached from both the board's button and the week's sign-off strip, `DayTplModal.tsx`'s tabs/rename/delete/reset, and the published-day "Reopen the day first" refusal toast. |
 | `src/engine/drafts.test.ts` | Per-day drafts' engine half (15 Aug 26, 16 tests) — the stow model (`draftDup`/`draftSelect`, the live day IS the selected draft), the refusal rules (published day, already-selected id, the selected entry on delete, empty/duplicate names on rename), and the `'d:<id>'` shape `daySnapOf` resolves. |
 | `src/ui/draftsui.test.tsx` | Drafts' UI half (15 Aug 26, 18 tests) — the `draftsMenu` picker on both surfaces, `DraftsModal.tsx`'s blur/Enter-commit rename and delete/select gating, and the view-only week's drafts-only picker (rendered only when a day has drafts; AL/ORIG previews never reach it). |

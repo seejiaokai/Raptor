@@ -962,7 +962,7 @@ export function dayHTML(di:any,ed:any,vsel?:any){
     let h=`<section class="day ${d.today?'today':''} ${ok?'dok':''}${PV?(PVQ?' issued':' preview'):''}" data-day="${di}">
       <div class="day-head">${ed
         ? `<span class="dow crewday" data-crewday="${di}" title="Show this day's crew in the aircrew panel">${d.dow}</span><span class="dt sb-open" data-sbday="${di}" title="Open scheduler board">${d.dt}${d.today?' · Today':''}</span>`
-        : `<span class="dow di-open" data-dayinfo="${di}" title="Day details">${d.dow}</span><span class="dt di-open" data-dayinfo="${di}" title="Day details">${d.dt}${d.today?' · Today':''}</span>`}${ed?`<span class="dhtpl"><button class="dhbtn" data-arrangesec="${di}" title="Arrange the order the sections show in">⇅ Arrange</button><button class="dhbtn" data-daytplopen="${di}" title="Save this day, or apply a saved template">Templates</button><button class="dhbtn" data-draftsopen="${di}" title="Duplicate this day into drafts, switch between them, or manage them — the selected draft is what publishes">Drafts</button></span>`:''}
+        : `<span class="dow di-open" data-dayinfo="${di}" title="Day details">${d.dow}</span><span class="dt di-open" data-dayinfo="${di}" title="Day details">${d.dt}${d.today?' · Today':''}</span>`}${ed?`<span class="dhtpl"><button class="dhbtn" data-daytplopen="${di}" title="Save this day, or apply a saved template">Templates</button><button class="dhbtn" data-draftsopen="${di}" title="Duplicate this day into drafts, switch between them, or manage them — the selected draft is what publishes">Drafts</button></span>`:''}
       <span class="badge" title="Aircraft per wave · standalone lines after the slash">${dayCount(d)}</span>
       <span class="dstat">${vsel?verSelHTML(di):(ed?'':viewVerSelHTML(di))}${dayStatHTML(di,ed)}</span></div>`
       +pvBar
@@ -1025,6 +1025,12 @@ export function dayHTML(di:any,ed:any,vsel?:any){
       h+=`</div>`;
     }
     const secM1=h.length;
+    /* the section header the week's Flying-waves block never had — the one section
+       that opened straight onto its first wave, so its drag-rail landed right beside
+       that wave's own grip (owner flag, 31 Aug 26). Edit-only, so the view week and
+       the read-only reference stay byte-identical (parity 728/0); it gives the rail
+       the same header anchor every other week section already has, clear of the wave. */
+    if(ed) h+=`<div class="sub-h wv-sech">Flying waves</div>`;
     if(!d.waves||!d.waves.length)
       h+=`<div class="nobox" style="background:rgba(138,150,163,.08);border-color:var(--edge);border-left-color:var(--edge-2);color:var(--ink-3)">No flying — ground day.</div>`;
     // ---- waves ----
@@ -1034,8 +1040,8 @@ export function dayHTML(di:any,ed:any,vsel?:any){
       const f0=(w.formations||[])[0];
       const sa=isStandalone(w);
       const edge=sa?'var(--san)':`var(--${mColor(f0?f0.msn:'')})`;
-      h+=`<div class="go ${w.night?'night':''} ${sa?'sa sa-'+(w.kind||'x'):''}" style="border-left-color:${sa?'var(--san)':(w.night?'var(--hard)':edge)}">
-        <div class="go-tab"><span class="asd">${ted(`wl:${di}.${gi}`,w.label,ed,'ntx')}${!sa&&w.night&&!/night/i.test(w.label)?' · NIGHT':''}`
+      h+=`<div class="go ${w.night?'night':''} ${sa?'sa sa-'+(w.kind||'x'):''}"${ed?` data-move="mv:w.${di}.${gi}"`:''} style="border-left-color:${sa?'var(--san)':(w.night?'var(--hard)':edge)}">
+        <div class="go-tab">${ed?'<span class="wvgrip" title="Drag to reorder this wave" aria-label="Reorder this wave">⠿</span>':''}<span class="asd">${ted(`wl:${di}.${gi}`,w.label,ed,'ntx')}${!sa&&w.night&&!/night/i.test(w.label)?' · NIGHT':''}`
         +`${sa?`<span class="satag" title="${esc((SAWAVE[w.kind]||{}).note||'Standalone — outside the day\u2019s flying count')}">standalone${w.noconf?(w.kind==='avalon'?' · availability check only':' · not cross-checked'):''}</span>`:''}</span>
         ${sa?'':`<button class="airbtn" data-air="${di}|${gi}">Traffic</button>`}${sa||!ed?'':`<button class="airbtn" data-itadd="${di}|${gi}" title="Add an in-time line to this wave">+ In time</button>`}</div>`;
       /* "+ In time" renders whether or not the wave has lines — the always-there
@@ -1231,10 +1237,28 @@ export function dayHTML(di:any,ed:any,vsel?:any){
     }
     /* re-emit the five captured sections in the day's own order. secOrder yields
        the plain canonical order for an un-arranged day, so this slices back to a
-       byte-identical string; only a re-arranged day differs. */
+       byte-identical string; only a re-arranged day differs.
+       In EDIT mode each section is wrapped in a `.dsec[data-secmove]` carrying a
+       drag grip, so a scheduler can drag a whole section into a new place (the
+       in-place replacement for the old Arrange sheet — store.moveSectionTo, pure
+       display order). VIEW mode wraps nothing, so the view week — and the
+       read-only reference the parity gate pins — is byte-identical (728/0). */
     {
+      /* the week keeps day notes as lines inside the Common Programme block (they
+         never had a card of their own here — see engine/order.ts), so the 'notes'
+         section is empty on the week and its slice adds nothing: the view week and
+         the reference stay byte-identical (parity 728/0). The BOARD is where notes
+         and programme are two separate draggable cards. */
       const secBits:any={prog:h.slice(secM0,secM1),waves:h.slice(secM1,secM2),duty:h.slice(secM2,secM3),sims:h.slice(secM3,secM4),ground:h.slice(secM4)};
-      h=h.slice(0,secM0)+secOrder(d).map((k:string)=>secBits[k]||'').join('');
+      /* the dotted ⠿ grip sits INLINE at the head of each section's own header (the
+         .ah-h / .sub-h / .wv-sech title), not as a rail in the .dsec gutter — so it
+         reads dotted like the wave/row grips, sits beside its title and centres on
+         the title line (owner, 31 Aug 26). Edit-only, so parity is untouched. */
+      const secGrip='<span class="secgrip" title="Drag to reorder this section" aria-label="Reorder this section">⠿</span>';
+      const gripIn=(bit:string,k:string)=>k==='prog'?bit.replace('<div class="ah-h">',`<div class="ah-h">${secGrip}`)
+        :k==='waves'?bit.replace('<div class="sub-h wv-sech">',`<div class="sub-h wv-sech">${secGrip}`)
+        :bit.replace('<div class="sub-h">',`<div class="sub-h">${secGrip}`);
+      h=h.slice(0,secM0)+secOrder(d).map((k:string)=>{const bit=secBits[k]||'';if(!bit)return'';return ed?`<div class="dsec" data-secmove="${di}.${k}">${gripIn(bit,k)}</div>`:bit;}).join('');
     }
     /* ---- the two input-derived blocks -------------------------------------
        PERSONAL INPUTS is what aircrew submitted and the scheduler has not yet

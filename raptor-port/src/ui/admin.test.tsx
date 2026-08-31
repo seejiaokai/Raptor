@@ -71,12 +71,12 @@ describe('the Admin page', () => {
      Squadron-config pane, and a section nudge updates the global default at once. */
   it('the Default arrangement lists render and a nudge re-orders the house default', async () => {
     await click($$('.nav a[data-page]').find(a => a.dataset.page === 'admin')!)
-    expect($$('#admSecDefault .arrsec-row').length, 'five sections').toBe(5)
+    expect($$('#admSecDefault .arrsec-row').length, 'ten panels (six schedule + four crew)').toBe(10)
     expect($$('#admWaveDefault .arrsec-row').length, 'four wave kinds').toBe(4)
+    expect(secDefault()[0]).toBe('notes')
+    /* nudge Overall notes down one — the house default now leads with Common Programme */
+    await click($('#admSecDefault .arrsec-row .tnudge[aria-label="Move Overall notes down"]'))
     expect(secDefault()[0]).toBe('prog')
-    /* nudge Programme down one — the house default now leads with Flying waves */
-    await click($('#admSecDefault .arrsec-row .tnudge[aria-label="Move Programme down"]'))
-    expect(secDefault()[0]).toBe('waves')
     /* wave order starts OFF (empty) — the panel shows the canonical kinds as a start */
     expect(waveDefault()).toEqual([])
     await click($('#admWaveDefault .arrsec-row .tnudge[aria-label="Move SC up"]'))

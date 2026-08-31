@@ -15,6 +15,7 @@ import { beginGlide } from './weekglide'
 import { weekScrollMax, panHold } from './pan'
 import { mountPeek } from './peek'
 import { editingText } from './textedit'
+import { wireRowDrag } from './rowdrag'
 import { useVersion } from './useStore'
 
 export function EditWeek() {
@@ -98,6 +99,12 @@ export function EditWeek() {
     /* now the new week is written and landed on its near edge — slide it in */
     if (runGlide) runGlide()
   }, [version])
+
+  /* drag-to-reorder, attached ONCE and delegated on the week root so it survives
+     every per-day repaint underneath it (same reason as the board's wiring). On
+     the week only the section (.dsec) and wave (.go) grips exist — line reorder
+     stays board-only — so the row branch of the machine simply never fires here. */
+  useEffect(() => wireRowDrag(ref.current!), [])
 
   return <div className="week" id="eWeek" ref={ref} />
 }

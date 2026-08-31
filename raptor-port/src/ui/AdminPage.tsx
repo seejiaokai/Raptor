@@ -120,7 +120,8 @@ function ClearControl(props: {
    Same ▲▼ nudge idiom as the per-day Arrange sheet, reusing its .arrsec and .tnudge
    styles. Each nudge persists at once (secDefaultSave / waveDefaultSave). */
 const ADEF_SEC_LABEL: Record<string, string> = {
-  prog: 'Programme', waves: 'Flying waves', duty: 'Duties', sims: 'Sims', ground: 'Ground Programme',
+  notes: 'Overall notes', prog: 'Common Programme', waves: 'Flying waves', duty: 'Duties', sims: 'Sims', ground: 'Ground Programme',
+  inputs: 'Personal Inputs', avail: 'Available crew', sans: 'SANS availability', unav: 'Unavailable',
 }
 function ArrangeDefaults() {
   const sec = secDefault()
@@ -147,7 +148,7 @@ function ArrangeDefaults() {
         {sec.map((key, i) => row(key, i, sec.length, ADEF_SEC_LABEL[key] || key,
           () => nudgeSec(key, -1), () => nudgeSec(key, 1)))}
       </div>
-      <p className="adm-note">The order the schedule’s sections show in, on Edit Schedule and the Scheduler Board. A day arranged on its own keeps its own order.</p>
+      <p className="adm-note">The order the day’s panels show in. The schedule sections apply on both Edit Schedule and the Scheduler Board; the crew lists (Personal Inputs, Available crew, SANS, Unavailable) reorder on the Scheduler Board only. A day arranged on its own keeps its own order.</p>
       <button className="abtn" id="admSecDefReset" onClick={resetSec} style={{ marginTop: 2 }}>Reset to standard order</button>
       <div className="arrsec-subh" style={{ marginTop: 16 }}>Flying-wave order</div>
       <div className="arrsec-list" id="admWaveDefault">
