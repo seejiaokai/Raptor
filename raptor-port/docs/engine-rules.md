@@ -2032,6 +2032,24 @@ derived from pending, issued and historical AL keys, so no separate counter can
 drift across undo. Tombstones travel unchanged through publish, unpublish,
 history and version snapshots; the AL panel counts them as removals, while the
 schedule CSV naturally contains only the rows that still exist.
+**Reorders on a published day are real AL items too, recorded like removals**
+(owner, 31 Aug 26). A move changes a row's POSITION, not the value at the head
+field the mover would otherwise mark, so on a published day where two swapped
+rows read the same at that head (two blank-label waves, two same-role duty rows)
+`reconcileIssuedMarks` — a value differ — used to reconcile the proxy mark away
+and the move reached no AL. A reorder of an ISSUED row now records an inert
+`mov:di.seq.kind` tombstone instead (the same shape and lifecycle as `del:`),
+which the reconcile sweep skips by name, so a move always counts. It is minted
+only on a published day and only for an issued row: `reorder.ts`'s `done` gates
+on `SCHED.added` — the head key it is handed IS that row's structural-add-key
+form — so a still-draft added row reordered before its AL mints no tombstone and
+stays cancellable, and a draft-day reorder keeps the ordinary field mark. The AL
+panel counts tombstones as reorders beside removals. Two deliberate consequences:
+a published-day reorder no longer tints one arbitrary moved row (it shows as a
+reorder in the panel, like a deletion), and a move of an AL-tagged block keeps
+that tag at the block's new position rather than retiring it. A reorder-and-back
+shows two reorders (each move counts).
+
 Draft structural additions carry an identity key that is remapped with the row
 through drag, nudge and Sort. Issue clears that identity; unpublish restores it.
 Therefore a row added after issue, reordered, and deleted again before its AL is

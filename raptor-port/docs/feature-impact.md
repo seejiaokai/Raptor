@@ -85,7 +85,13 @@ gesture (drag / type)
   → if the day is PUBLISHED: the pending key reaches the next AL → PUBLISHING/AL
 ```
 Deletes renumber the live key space FIRST, then drop an inert `del:` tombstone
-(`markDeletion`) — see `docs/engine-rules.md` §Key renumbering.
+(`markDeletion`) — see `docs/engine-rules.md` §Key renumbering. Reorders
+(`engine/reorder.ts`) remap the key space too, then record the move: on a
+published day a move of an ISSUED row drops an inert `mov:` tombstone
+(`markMove`, gated on `dayApproved` && not `SCHED.added`) that `reconcileIssuedMarks`
+skips by name, so a move of two same-valued rows is no longer value-reconciled
+away; a draft-day move, or a move of a still-draft added row, keeps the ordinary
+field mark — see `docs/engine-rules.md` §Publishing.
 
 ### Flow B — a personal input added or edited (the owner's example)
 ```
@@ -198,6 +204,7 @@ Flow E entry point too (loads the tapped day's week, then opens that day).
 sign off a day          → setDayApproved / SCHED
 edit a signed day       → the pending keys become an AL issue (alIssue)
 edit back to issued     → reconcileIssuedMarks (afterSchedMutate) drops the now-matching pending key
+                          (skips inert del:/mov:/inp: keys by name — a reorder's mov: tombstone survives)
 load a version onto WC   → loadVersionToWorkingCopy (16 Aug 26; NOT a rollback — leaves SCHED.cur, so
                             viewers keep the issued AL; rebases pending vs issued, like a draft switch)
 apply a day template     → applyDayTpl          (same direct-write + refuse-on-published shape)

@@ -11,8 +11,10 @@
      sort.test.ts (DAYS snapshot). */
 import { beforeEach, describe, expect, it } from 'vitest'
 import { DAYS } from './data'
-import { SCHED, signOf, setDayApproved, publishAL, markEdit, pendCount } from './publish'
-import { sortDay, sortDutyBlocks, applyMove, popReorderedDay } from './reorder'
+import { SCHED, signOf, setDayApproved, publishAL, markEdit, pendCount, moveCount, markStructuralAdd, markDeletion, deletionWasIssued } from './publish'
+import { sortDay, sortDutyBlocks, applyMove, moveNote, popReorderedDay } from './reorder'
+import { reconcileIssuedMarks } from './drafts'
+import { shiftKeys } from './keys'
 import { dayKeys } from './restore'
 
 const DSNAP = JSON.stringify(DAYS)
@@ -93,10 +95,12 @@ describe('pending marks follow their rows (scenario 2a)', () => {
        rows — that would tint someone else's sortie in the next AL */
     expect(SCHED.pending['0.0.1.0.p']).toBeUndefined()
     expect(SCHED.pending['dr:0.0.1.rmks']).toBeUndefined()
-    /* sr:0.amt.0.label IS pending — but as sortSims's own head mark on the
-       row now at index 0 (AMT-AM), the documented "mark the NEW address"
-       idiom, not a stranded copy of the ridden edit mark */
-    expect(SCHED.pending['sr:0.amt.0.label']).toBe(1)
+    /* the ridden sim EDIT rode to amt.1 (asserted above); the sort's OWN record
+       of the sim move is now an inert mov: tombstone (published-day reorders of
+       issued rows, owner 31 Aug 26), NOT a field mark at the new head — so amt.0
+       carries nothing, and a sim reorder tombstone is present instead */
+    expect(SCHED.pending['sr:0.amt.0.label']).toBeUndefined()
+    expect(Object.keys(SCHED.pending).some(k => /^mov:0\.\d+\.sim$/.test(k))).toBe(true)
     /* and the AL that goes out addresses the edited rows, not the addresses */
     sign(0)
     publishAL(1)
@@ -114,43 +118,38 @@ describe('pending marks follow their rows (scenario 2a)', () => {
     expect(applyMove('mv:d.0.0.1', 'mv:d.0.0.0')).toBe(true)
     expect(SCHED.pending['dr:0.0.0.rmks'], 'the mark rode the row to index 0').toBe(1)
     expect(DAYS[0].dutywaves[0].rows[0].rmks).toBe('dragged-row')
-    /* the drag itself marks the row at its new address — same key here, so
-       pending stays a two-key set: the ridden mark + the mover's role mark */
-    expect(SCHED.pending['dr:0.0.0.role']).toBe(1)
-    expect(Object.keys(SCHED.pending).sort()).toEqual(['dr:0.0.0.rmks', 'dr:0.0.0.role'])
+    /* the drag itself now records the move as an inert mov: tombstone rather than
+       a field mark at the row's new head (published-day reorder of an issued row,
+       owner 31 Aug 26) — so pending is the ridden edit plus one duty reorder */
+    expect(SCHED.pending['dr:0.0.0.role']).toBeUndefined()
+    expect(Object.keys(SCHED.pending).filter(k => /^mov:0\.\d+\.duty$/.test(k))).toHaveLength(1)
+    expect(Object.keys(SCHED.pending)).toHaveLength(2)
   })
 })
 
 describe('Sort all on a published day with NO other edits is a sane diff (scenario 2b)', () => {
-  it('pends one head mark per section that moved — never one key per cell — and the AL carries exactly those', () => {
+  it('records one inert reorder per section that moved — never one key per cell — and the AL carries exactly those', () => {
     scramble()
     publishDay0()
     expect(pendCount(), 'publishing cleared the draft marks').toBe(0)
     expect(sortDay(0)).toBe(true)
     const pend = Object.keys(SCHED.pending).sort()
-    /* every mark is a section-head mark (index 0 of the list it sorted) —
-       the documented "mark the NEW address" idiom, one line per section */
-    const headShapes = [
-      /^ff:0\.\d+\.0\.cs$/,   // each wave whose formations moved
-      /^wl:0\.0$/,            // the wave list itself
-      /^dr:0\.\d+\.0\.role$/, // each duty block whose rows moved
-      /^dl:0\.0$/,            // the block list itself
-      /^sr:0\.amt\.0\.label$/,
-      /^gr:0\.0\.prog$/,
-      /^ap:0\.0\.prog$/,
-    ]
-    pend.forEach(k => expect(headShapes.some(rx => rx.test(k)), `${k} is a section-head mark`).toBe(true))
-    /* the exact set, not a loose ceiling: wave 0's formations were the only
-       out-of-order rows inside a block (ff:, remapped to gi=1 by the outer
-       sort), then the two lists themselves (wl:/dl:), the sims, ground and
-       programme — the duty ROWS were built in order, so no dr: mark */
-    expect(pend).toEqual(['ap:0.0.prog', 'dl:0.0', 'ff:0.1.0.cs',
-      'gr:0.0.prog', 'sr:0.amt.0.label', 'wl:0.0'].sort())
-    /* and that is the whole AL */
+    /* every pending item is an inert mov: reorder tombstone (owner, 31 Aug 26) —
+       one RECORD per section that actually moved, never one key per cell and
+       never a field mark that a value-coincidence could reconcile away */
+    pend.forEach(k => expect(/^mov:0\.\d+\.[a-z]+$/.test(k), `${k} is a reorder tombstone`).toBe(true))
+    /* the exact set of KINDS, not a loose ceiling: wave 0's formations moved
+       (formation), the wave list itself (wave), the duty-block list (dutyblock),
+       the sims, ground and programme — the duty ROWS were built in order, so no
+       duty-row reorder */
+    const kinds = pend.map(k => k.split('.').pop()).sort()
+    expect(kinds).toEqual(['dutyblock', 'formation', 'ground', 'programme', 'sim', 'wave'])
+    /* and that is the whole AL — six reorders, nothing else */
     sign(0)
     publishAL(1)
     expect(SCHED.als[0].keys.slice().sort()).toEqual(pend)
     expect(SCHED.als[0].n0).toBe(pend.length)
+    expect(moveCount(SCHED.als[0].keys)).toBe(6)
   })
 
   it('a second Sort all right after is a pure no-op: nothing new pends', () => {
@@ -163,22 +162,73 @@ describe('Sort all on a published day with NO other edits is a sane diff (scenar
   })
 })
 
-describe('an issued AL key retired by the sort mark (documented idiom, pinned so nobody trips on it)', () => {
-  it('the sort mark at a section head REPLACES an issued AL tag already at that key — pending wins, the AL record keeps the key', () => {
+describe('a sort that moves an AL-tinted block keeps the tint and records the move apart (owner, 31 Aug 26)', () => {
+  it('the block keeps its "changed at AL1" tint at its new position; the reorder is an inert tombstone beside it', () => {
     scramble()
     publishDay0()
     /* AL1 changed the AM desk's label; the sort then moves the AM desk to
-       index 0 and marks dl:0.0 — the exact key AL1 holds after the remap */
+       index 0. permuteKeys remaps the changes tag and the AL record 1 → 0. */
     SCHED.changes['dl:0.1'] = 1
     SCHED.als = [{ n: 1, keys: ['dl:0.1'], sign: {} }]
     expect(sortDutyBlocks(0)).toBe(true)
     /* the AL record followed the block (1 → 0) … */
     expect(SCHED.als[0].keys).toEqual(['dl:0.0'])
-    /* … and the sorter's own mark at the head retired the on-screen AL tint
-       for the pending one, the same way any re-edit of an AL'd cell does
-       (publish.ts markEdit deletes changes[key]). Deliberate; documented in
-       reorder.test.ts's moveAircraft comment. */
-    expect(SCHED.changes['dl:0.0']).toBeUndefined()
-    expect(SCHED.pending['dl:0.0']).toBe(1)
+    /* … and unlike the old field-head proxy — which re-marked dl:0.0 and thereby
+       retired the AL1 tint — the reorder is now an inert mov: tombstone, so the
+       block KEEPS its "changed at AL1" tint at its new position (a move no longer
+       masquerades as a re-edit of the moved cell). The move is recorded alongside
+       it, not on the block's own key. */
+    expect(SCHED.changes['dl:0.0']).toBe(1)
+    expect(SCHED.pending['dl:0.0']).toBeUndefined()
+    expect(Object.keys(SCHED.pending).filter(k => /^mov:0\.\d+\.dutyblock$/.test(k))).toHaveLength(1)
+  })
+})
+
+/* THE BUG THIS TOMBSTONE FIXES (owner, 31 Aug 26). Reordering two rows that read
+   the SAME at every head the mover marks — two unnamed waves, two same-role duty
+   rows — on a signed-off day used to leave NO record: the mover's field-head mark
+   was value-reconciled away, the day read "no changes", and the move reached no
+   AL. A structural mov: key can't be value-reconciled, so a move of an issued row
+   always counts; a still-draft added row reordered then deleted before its AL is
+   still the net no-op it always was. */
+describe('a reorder of identical-looking issued rows still records on a published day', () => {
+  it('two same-value duty rows swapped mint a durable reorder that reconcile keeps and the AL carries', () => {
+    const d = scramble()
+    d.dutywaves = [{ label: 'DESK', rows: [
+      { role: 'SDO', id: 'a', str: '0700', end: '1300', rmks: 'alpha' },
+      { role: 'SDO', id: 'b', str: '0700', end: '1300', rmks: 'bravo' },
+    ] }]
+    publishDay0()
+    expect(pendCount(), 'publishing cleared the draft marks').toBe(0)
+    /* both rows read 'SDO' / 0700 / 1300 — the old dr:…role head proxy would be
+       reconciled away the instant the values matched the issued day */
+    expect(applyMove('mv:d.0.0.1', 'mv:d.0.0.0')).toBe(true)
+    expect(d.dutywaves[0].rows.map((r: any) => r.rmks)).toEqual(['bravo', 'alpha'])
+    reconcileIssuedMarks()                                     // the funnel's sweep must NOT drop it
+    const mov = Object.keys(SCHED.pending).filter(k => /^mov:0\.\d+\.duty$/.test(k))
+    expect(mov, 'the move is recorded as a durable reorder tombstone').toHaveLength(1)
+    expect(pendCount()).toBe(1)
+    sign(0)
+    publishAL(1)
+    expect(SCHED.als[0].keys).toEqual(mov)
+    expect(moveCount(SCHED.als[0].keys)).toBe(1)
+  })
+
+  it('a draft-added row reordered then deleted before its AL is still a net no-op — no reorder minted', () => {
+    const d = scramble()
+    d.notes = ['issued note']                                  // an issued row for the draft to move past
+    publishDay0()
+    const ni = d.notes.length
+    d.notes.push('temp'); markStructuralAdd(`dn:0.${ni}`)
+    expect(moveNote(0, ni, 0)).toBe(true)
+    /* the moved row is a pending draft ADD (its head sits in SCHED.added), so the
+       mover keeps the ordinary field mark and mints NO tombstone — the add/delete
+       net-no-op path can still cancel it */
+    expect(Object.keys(SCHED.pending).some(k => /^mov:/.test(k))).toBe(false)
+    const issued = deletionWasIssued(0, 'note', 0)             // read the row's identity BEFORE the splice
+    d.notes.splice(0, 1); shiftKeys('dn:0.', 0, 0)
+    markDeletion(0, 'note', issued)
+    expect(SCHED.pending).toEqual({})
+    expect(SCHED.added).toEqual({})
   })
 })

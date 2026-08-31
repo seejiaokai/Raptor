@@ -519,32 +519,32 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
 
 ## Known issues / open work
 
-- **OPEN, FLAGGED to the owner 31 Aug 26 (bug pass) — a reorder on a PUBLISHED day
-  can silently skip its amendment mark.** Every reorder mover (`engine/reorder.ts`
-  `moveWave`/`moveDutyRow`/`moveSimRow`/`moveProgRow`/`moveNote`/`moveGroundRow`/
-  formation/aircraft) marks ONE field-value key at the destination index as the
-  amendment proxy (`done(\`wl:${di}.${to}\`,di)` etc.) — the design intent
-  (reorder.ts:16-20) being "a move always counts as an amendment." But
-  `afterSchedMutate` → `drafts.ts reconcileIssuedMarks` is a VALUE differ: it drops
-  a pending field key whose live value equals the issued snapshot's
-  (`drafts.ts:370`). A reorder changes POSITION, not the marked field's value, so
-  when the two swapped rows share that field's value (two blank-label waves; two
-  same-role duty rows; two equal-text notes/programme/ground rows) the proxy mark
-  is reconciled away: the move takes effect and re-publishes correctly, but the day
-  reads "no pending changes" and the reorder never reaches the AL. CONFIRMED by a
-  throwaway repro (two blank-label waves published then swapped → pending drops to
-  0; two distinct-label waves keep the mark). PRE-EXISTING — hits the old ▲▼ nudge
-  and Sort-all too, not just the 30–31 Aug drag family; the published-audit tests
-  miss it because they assert `SCHED.pending` right after `applyMove` and never run
-  the `afterSchedMutate`/reconcile step the live `rowdrag.onUp` path always does.
-  **Not fixed on purpose** — the fix touches the reconcile/amendment core (the
-  archetypal silent-defect area), so it wants owner sign-off per the HEAVY-care
-  doctrine. **Recommended fix:** represent a reorder-on-published-day like a
-  DELETION — mark a structural key `reconcileIssuedMarks` skips by name (the
-  `del:`/`inp:` precedent, `drafts.ts:356`), so a move always counts, consistent
-  with how deletes already behave. Needs the AL-carry/pendCount/publishAL wiring
-  for the new structural key checked, and reorder-and-back semantics decided
-  (a move netting to zero vs. showing the churn, as deletes do).
+- **RESOLVED 31 Aug 26 (owner said "fix it") — a reorder on a PUBLISHED day no
+  longer skips its amendment record.** The old bug: every reorder mover
+  (`engine/reorder.ts`) marked ONE field-value key at the destination index as the
+  amendment proxy, and `afterSchedMutate` → `drafts.ts reconcileIssuedMarks` (a
+  VALUE differ) dropped that key whenever the swapped rows shared the field's value
+  (two blank-label waves, two same-role duty rows), so the move reached no AL and
+  the day read "no changes." **Fix (the recommended deletion-style path):** a reorder
+  of an ISSUED row on a published day now records an inert synthetic `mov:DAY.SEQ.KIND`
+  tombstone (`publish.ts` `markMove`/`moveKey`/`isMoveKey`/`moveCount`, the exact
+  `del:`/`inp:` shape) that `reconcileIssuedMarks` skips by name (`drafts.ts:356`), so
+  a move always counts. `reorder.ts`'s `done` gates it on `dayApproved(di) &&
+  !SCHED.added[key]` — the head key the mover hands `done` IS that row's
+  structural-add-key form, so a still-draft added row reordered then deleted before its
+  AL stays the net no-op it always was (no tombstone), while draft-day reorders keep
+  the ordinary field mark unchanged. The tombstone rides every day filter / snapshot /
+  publish / undo path like `del:` (no `keys.ts` remap needed — it holds no live index),
+  and the AL panel counts it as "N reorders" beside removals/filings (`ui/ALPanel.tsx`).
+  Two consequences, deliberate and documented: on a published day a reorder no longer
+  paints a per-row dotted tint on one arbitrary moved row (it shows as a reorder in the
+  AL panel instead, like a deletion), and a move that once carried an AL tag now KEEPS
+  that tag at the block's new position rather than retiring it. Accepted simplifications:
+  a reorder-and-reorder-back shows two reorders (each move counts, as the owner's "a
+  move always counts" implies), and swapping two byte-identical rows still mints one
+  (a genuinely invisible case, extraordinarily rare). Pins: `engine/audit-d-published.test.ts`
+  (rewritten to the tombstone design + two new regression cases). Rules:
+  `docs/engine-rules.md` §Publishing; flow `docs/feature-impact.md`.
 
 - **Times are hh:mm (`08:00`) everywhere — the 29 Aug 4-digit board pass was REVERSED
   by the owner on 30 Aug 26** ("I saw wrongly … most of the timing format is 08:00.
