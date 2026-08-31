@@ -519,6 +519,34 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
 
 ## Known issues / open work
 
+- **RESOLVED 31 Aug 26 (Leave War event sheet + event move) — three owner asks.**
+  Verified live, all Leave War tests green:
+  1. **Save/Delete moved to the right of the event sheet, Save recoloured cyan**
+     (owner: "make it blue cyan like how it is usually"). `.evactions` row is
+     `justify-content:flex-end`; Save is a solid-accent `dchip save`, apart from
+     the green scope toggles and red Delete. A problem note keeps the left.
+  2. **An existing event can now be MOVED by dragging, like a leave block**
+     (owner: "drag an existing event to move it, just like LL"). The event sheet
+     grew a **Move…** button (for a placed event/band); it hands the event's own
+     span to the matrix, which runs the SAME drag-to-a-day move mode the roster
+     uses — a banner ("Tap a day to move this event"), a live desktop landing
+     preview, a phone stage-then-Confirm, and a refusal that says why (off the
+     war, or the days already carry an event). One store call, `moveEvent` (with
+     `moveEventProblem` as the preview's validation half, mirroring
+     `moveCells`/`moveProblem`), does it atomically as one undo step — a merged
+     band shifts whole, a single-day event carries its tag along. `wireMove` is
+     shared, not copied: it took an optional `dateAt` resolver so the event move
+     reads the event line's own cells (`eventMoveDateAt`) while the roster path
+     stays byte-identical; `paintEventLanding` is the event landing painter.
+  · Note (event drag-to-SELECT-a-range already worked before this — admin
+     hold-then-drag along an event line opens the sheet ranged; the owner wanted
+     MOVING an existing one, which is the new part).
+  · Files: `leavewar/state/store.ts` (moveEvent/moveEventProblem),
+     `leavewar/ui/select.ts` (wireMove dateAt + paintEventLanding + eventMoveDateAt),
+     `leavewar/ui/EventSheet.tsx` (onMove + Move… button),
+     `leavewar/ui/Matrix.tsx` (event move mode + banner). Pins:
+     `leavewar/state/store.test.ts`, `leavewar/ui/eventsheet.test.tsx`.
+
 - **RESOLVED 31 Aug 26 (four owner UI asks, one pass) — scheduler-board text
   wrap, sim seat labels, board deselect, edit-scheduler crew drag markers.**
   Four independent fixes, each verified live at 1280 and 390 px with no console

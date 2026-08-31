@@ -48,7 +48,7 @@ const KIND_LABEL: Record<EventKind, string> = {
   work: 'Work',
 }
 
-export function EventSheet({ line, date, to, onClose }: { line: number; date: string; to?: string; onClose: () => void }) {
+export function EventSheet({ line, date, to, onClose, onMove }: { line: number; date: string; to?: string; onClose: () => void; onMove?: (m: { line: number; from: string; to: string }) => void }) {
   useVersion()
   const { period, eventDefs: defs } = getState()
   // The band (if any) that owns this cell. Editing it means replacing it, so
@@ -326,6 +326,20 @@ export function EventSheet({ line, date, to, onClose }: { line: number; date: st
           :auto) so the error never shoves the buttons around. */}
       <div className="bidsheet-row evactions">
         {problem && <span className="note warn" data-testid="event-problem">{problem}</span>}
+        {/* MOVE an existing event (owner, 31 Aug 26 — "drag an existing event to
+            move it, like LL"). Shown only for a placed event/band; it hands the
+            event's own span to the matrix, which runs the same drag-to-a-day move
+            mode the roster uses. Closes the sheet first, exactly like the roster
+            Move button. */}
+        {onMove && (band || (day && day.events[line])) && (
+          <button
+            className="dchip move"
+            data-testid="event-move"
+            onClick={() => { onClose(); onMove({ line, from: band ? band.from : date, to: band ? band.to : date }) }}
+          >
+            Move…
+          </button>
+        )}
         <button className="dchip save" data-testid="event-apply" onClick={apply}>
           Save
         </button>

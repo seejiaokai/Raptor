@@ -1728,6 +1728,78 @@ function bandCoversDate(bands: EventBand[], line: number, date: string): boolean
   return bands.some(b => b.line === line && b.from <= date && date <= b.to)
 }
 
+/** Why an event move was refused. Mirrors `MoveResult` for the roster. */
+export type EventMoveResult = 'moved' | { reason: 'nothing' | 'outside' | 'overlap' }
+
+/** The validation half of `moveEvent`, held apart so the grid's landing preview
+ *  can ask "would this move go?" BEFORE painting it — the same split (and the
+ *  same drift-seam reason) `moveProblem`/`moveCells` keep for the roster.
+ *  `from`/`to` are the event's own span: `from === to` for a plain single-day
+ *  event, the band's two ends for a merged bar. Returns null when the move is
+ *  clear, else the reason. Admin-only, like every event mutator. */
+export function moveEventProblem(line: number, from: string, to: string, dayDelta: number): Exclude<EventMoveResult, 'moved'> | null {
+  if (state.role !== 'admin') return { reason: 'nothing' }
+  if (!dayDelta) return { reason: 'nothing' }
+  const nFrom = addDays(from, dayDelta), nTo = addDays(to, dayDelta)
+  if (nFrom < state.period.start || nTo > state.period.end) return { reason: 'outside' }
+  const band = state.period.bands.find(b => b.line === line && b.from === from && b.to === to)
+  if (band) {
+    // the shifted span must not overlap ANOTHER band on this line (itself excluded)
+    if (state.period.bands.some(b => b !== band && b.line === line && nFrom <= b.to && b.from <= nTo)) return { reason: 'overlap' }
+  } else {
+    // a plain single-day event: there must be one to move, and its one landing
+    // day must be free of a band and of another day's event on this line
+    const sday = state.period.days.find(d => d.date === from)
+    if (!sday || !sday.events[line]) return { reason: 'nothing' }
+    if (bandCoversDate(state.period.bands, line, nFrom)) return { reason: 'overlap' }
+    const tday = state.period.days.find(d => d.date === nFrom)
+    if (tday && tday.events[line]) return { reason: 'overlap' }
+  }
+  return null
+}
+
+/** Move a whole event — a merged band OR a single-day event — by a day-delta:
+ *  the event-line counterpart of `moveCells` (owner, 31 Aug 26 — "drag an
+ *  existing event to move it, just like LL"). ONE atomic write, so it is one
+ *  undo step and never leaves a half-moved event; validated by
+ *  `moveEventProblem` first, so a refused move changes nothing. A band keeps its
+ *  text and instance tag; a single-day event carries its stored `eventKinds`
+ *  tag along. Admin-only. */
+export function moveEvent(line: number, from: string, to: string, dayDelta: number): EventMoveResult {
+  const problem = moveEventProblem(line, from, to, dayDelta)
+  if (problem) return problem
+  const nFrom = addDays(from, dayDelta), nTo = addDays(to, dayDelta)
+  const band = state.period.bands.find(b => b.line === line && b.from === from && b.to === to)
+  if (band) {
+    updateCurrent(w => ({
+      ...w,
+      period: {
+        ...w.period,
+        bands: [...w.period.bands.filter(b => b !== band), { line, from: nFrom, to: nTo, text: band.text, kind: band.kind ?? null }],
+        // clear any stray per-day text under the new span, the same rule addEventBand applies
+        days: w.period.days.map(d => (d.date >= nFrom && d.date <= nTo && d.events[line]) ? writeDayEvent(d, line, '', null) : d),
+      },
+    }))
+  } else {
+    const src = state.period.days.find(d => d.date === from)
+    const text = src?.events[line]
+    if (!text) return { reason: 'nothing' }
+    const kind = (src?.eventKinds?.[line] ?? null) as EventKind | null
+    updateCurrent(w => ({
+      ...w,
+      period: {
+        ...w.period,
+        days: w.period.days.map(d => {
+          if (d.date === from) return writeDayEvent(d, line, '', null)   // clear the source
+          if (d.date === nFrom) return writeDayEvent(d, line, text, kind) // land the target
+          return d
+        }),
+      },
+    }))
+  }
+  return 'moved'
+}
+
 /** Add one more EVENT row (owner, 18 Aug 26 — "add more event rows if needed"),
  *  up to `MAX_EVENT_ROWS`. ADMIN-gated; returns whether it grew so a control
  *  can disable at the cap. Nothing to migrate — a day's `events` array grows

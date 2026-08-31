@@ -33,7 +33,7 @@ import {
   type Group,
   type Person,
 } from '../engine'
-import { groupsInOrder, groupPriorityIds, lwHistEpoch, moveGroupTo, moveGroupPriorityTo, addEventRow, autoSortRoster, DEFAULT_EVENT_ROWS, displayRoster, eventRowUsed, getState, MAX_EVENT_ROWS, moveCells, movableCells, moveManningRowTo, moveProblem, moveRosterRow, orderedManningIds, removeEventRow, resetManningRules, setPostOut, setShowSans, type MoveResult } from '../state/store'
+import { groupsInOrder, groupPriorityIds, lwHistEpoch, moveGroupTo, moveGroupPriorityTo, addEventRow, autoSortRoster, DEFAULT_EVENT_ROWS, displayRoster, eventRowUsed, getState, MAX_EVENT_ROWS, moveCells, movableCells, moveManningRowTo, moveProblem, moveEvent, moveEventProblem, moveRosterRow, orderedManningIds, removeEventRow, resetManningRules, setPostOut, setShowSans, type MoveResult, type EventMoveResult } from '../state/store'
 import { BidPicker, DecisionSheet, PostOutSheet, RaptorSheet } from './BidPicker'
 import { CounterSheet, FigureBreakdownSheet, PersonFiguresSheet } from './CounterSheet'
 import { PersonSheet } from './PersonSheet'
@@ -43,7 +43,7 @@ import { ManningSheet } from './ManningSheet'
 import { EventRows } from './EventRows'
 import { EventSheet } from './EventSheet'
 import { monthInView } from './monthview'
-import { wireSelect, wireMove, daysBetween, paintLanding, clearLanding, earliestDate, type Cell, type Selection, type SelectCtx } from './select'
+import { wireSelect, wireMove, daysBetween, paintLanding, clearLanding, paintEventLanding, eventMoveDateAt, earliestDate, type Cell, type Selection, type SelectCtx } from './select'
 import { GroupSheet } from './GroupSheet'
 import { SelectSheet } from './SelectSheet'
 import { RemarksSheet } from './RemarksSheet'
@@ -189,6 +189,13 @@ export function Matrix() {
   // undo, so a phone drop is a two-step — preview then commit, owner 27 Aug 26).
   // Desktop lands on the click and never sets this.
   const [movePreview, setMovePreview] = useState<string | null>(null)
+  // The EVENT counterpart of moveSel (owner, 31 Aug 26 — "drag an existing event
+  // to move it"): the event span being moved (its own line + from/to), waiting
+  // for a drop onto a day. Same phone stage/desktop-commit split, same
+  // clear-on-stage-change guard below.
+  const [eventMoveSel, setEventMoveSel] = useState<{ line: number; from: string; to: string } | null>(null)
+  const [eventMoveErr, setEventMoveErr] = useState('')
+  const [eventMovePreview, setEventMovePreview] = useState<string | null>(null)
   // Whether the open cell is a POSTED-OUT day (admin tapped a greyed cell to
   // undo it, owner 18 Aug 26). A day before the person joined is blank, not a
   // post-out, so it is excluded — there is nothing to undo there.
@@ -408,7 +415,7 @@ export function Matrix() {
   // sheet opened (bug test, 30 Aug 26). moveErr goes too, so no stale banner
   // message lingers.
   const histEpoch = lwHistEpoch()
-  useEffect(() => { setSel(null); setMoveSel(null); setMovePreview(null); setMoveErr('') }, [period.stage, period.id, histEpoch])
+  useEffect(() => { setSel(null); setMoveSel(null); setMovePreview(null); setMoveErr(''); setEventMoveSel(null); setEventMovePreview(null); setEventMoveErr('') }, [period.stage, period.id, histEpoch])
   // MOVE MODE is wired further down, after the `phone` breakpoint state it
   // reads to choose commit-on-click (desktop) vs preview-then-Confirm (phone).
   // The frozen-column overlay's own anchors (see the .mxband block below and
@@ -475,6 +482,58 @@ export function Matrix() {
     return () => { clearLanding(w); cleanup() }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [moveSel])
+
+  // ---- EVENT move mode (owner, 31 Aug 26 — "drag an existing event to move it,
+  // like LL") — the event-line twin of the roster move above. `wireMove` is
+  // shared; only the target-date resolver (`eventMoveDateAt`, which reads the
+  // event line's own cells) and the landing painter (`paintEventLanding`)
+  // differ. The event's own start (`from`) is the anchor, so the day tapped
+  // becomes the new start and the whole band/day slides with it. Previewed live
+  // on desktop, staged before a Confirm on a phone — exactly like the roster.
+  const eventMoveReason = (r: Exclude<EventMoveResult, 'moved'>): string =>
+    r.reason === 'outside' ? 'That would run off this leave war.'
+      : r.reason === 'overlap' ? 'Those days already carry an event on this line.'
+        : 'Nothing to move.'
+  const eventSpanDates = (from: string, to: string): string[] => {
+    const out: string[] = []
+    for (let d = from; d <= to; d = addDays(d, 1)) out.push(d)
+    return out
+  }
+  const previewEventAt = (targetDate: string): boolean => {
+    const w = wrapRef.current
+    if (!w || !eventMoveSel) return false
+    const { line, from, to } = eventMoveSel
+    const delta = daysBetween(from, targetDate)
+    if (delta === 0) { setEventMoveErr(''); paintEventLanding(w, line, eventSpanDates(from, to)); return true }
+    const problem = moveEventProblem(line, from, to, delta)
+    if (problem) { clearLanding(w); setEventMoveErr(eventMoveReason(problem)); return false }
+    setEventMoveErr('')
+    paintEventLanding(w, line, eventSpanDates(from, to).map(d => addDays(d, delta)))
+    return true
+  }
+  const commitEventMove = (targetDate: string) => {
+    const w = wrapRef.current
+    if (!eventMoveSel) return
+    const { line, from, to } = eventMoveSel
+    const r = moveEvent(line, from, to, daysBetween(from, targetDate))
+    if (w) clearLanding(w)
+    if (r === 'moved') { setEventMoveSel(null); setEventMovePreview(null); setEventMoveErr('') }
+    else { setEventMoveErr(eventMoveReason(r)); setEventMovePreview(null) }   // keep the mode, say why
+  }
+  useEffect(() => {
+    const w = wrapRef.current
+    if (!eventMoveSel || !w) return
+    setEventMoveErr(''); setEventMovePreview(null)
+    const cleanup = wireMove(w, {
+      count: 1,
+      dateAt: eventMoveDateAt,
+      onHover: date => previewEventAt(date),
+      onPick: date => { if (phone) setEventMovePreview(previewEventAt(date) ? date : null); else commitEventMove(date) },
+      onCancel: () => { clearLanding(w); setEventMoveSel(null); setEventMovePreview(null) },
+    })
+    return () => { clearLanding(w); cleanup() }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [eventMoveSel])
 
   const months = monthsIn(period.start, period.end)
 
@@ -1536,12 +1595,12 @@ export function Matrix() {
       .map(r => (r as { p: Person }).p.id)
       .filter(id => canEditRow(role, viewer, id)),
     dates: () => dates,
-    enabled: () => !arranging && !moveSel && (role === 'admin' || period.stage === 'open'),
+    enabled: () => !arranging && !moveSel && !eventMoveSel && (role === 'admin' || period.stage === 'open'),
     onSelect: s => setSel(s),
     // Events are the admin's (the store refuses a member write anyway); a drag
     // along one event line opens the event sheet pre-set to that date span
     // (owner, 27 Aug 26). from === to (a one-cell drag) opens on the single day.
-    eventsEnabled: () => role === 'admin' && !arranging && !moveSel,
+    eventsEnabled: () => role === 'admin' && !arranging && !moveSel && !eventMoveSel,
     onEventSelect: s => setEventEdit({ line: s.line, date: s.from, to: s.from === s.to ? undefined : s.to }),
   }
   const csOf = (id: string): string => displayRoster().find(p => p.id === id)?.callsign ?? id
@@ -2278,6 +2337,27 @@ export function Matrix() {
           >Cancel</button>
         </div>
       )}
+      {/* The EVENT move banner (owner, 31 Aug 26) — the same slim bar as the
+          roster move, for the event picked up from its sheet's "Move…" button. */}
+      {eventMoveSel && (
+        <div className="mv-banner" data-testid="event-move-banner">
+          <span className="mv-msg">
+            {eventMoveErr
+              ? eventMoveErr
+              : eventMovePreview
+                ? 'Move this event here?'
+                : 'Tap a day to move this event'}
+          </span>
+          {eventMovePreview && (
+            <button className="dchip confirm" data-testid="event-move-confirm" onClick={() => commitEventMove(eventMovePreview)}>Confirm</button>
+          )}
+          <button
+            className="dchip"
+            data-testid="event-move-cancel"
+            onClick={() => { const w = wrapRef.current; if (w) clearLanding(w); setEventMoveSel(null); setEventMovePreview(null) }}
+          >Cancel</button>
+        </div>
+      )}
       {/* A posted-out cell an admin tapped: the ONE control it offers is Undo,
           and it short-circuits every bid/decision sheet below (owner, 18 Aug
           26). */}
@@ -2340,6 +2420,7 @@ export function Matrix() {
           date={eventEdit.date}
           to={eventEdit.to}
           onClose={() => setEventEdit(null)}
+          onMove={m => { setEventEdit(null); setEventMoveSel(m) }}
         />
       )}
       {/* A manning row's explainer — every role's way in from the row's name;
