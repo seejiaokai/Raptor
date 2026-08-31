@@ -46,18 +46,12 @@ old one-week "Apply to all days" was dropped (henceforth default supersedes it).
 render on both surfaces and both widths, the Arrange button is gone, dragging a section
 reorders it and raises the snackbar, no console errors.
 
-31 Aug 26 DESIGN POLISH on the section grab bars (owner /impeccable ask — "make sure
-the placement of the section grab bars are nicely placed"): the section grip is now a
-DRAWN vertical grab-rail (`.secgrip::before`, the `⠿` kept in markup but `font-size:0`),
-visually distinct from the inline `⠿` dots the row/wave grips keep — rail = move the
-whole panel, dots = move the row/wave — so the two never read as the same control. And
-the week's Flying-waves section (the one week section with no header) gained an edit-only
-`.wv-sech` "Flying waves" header so its rail anchors on a header line clear of the first
-wave's grip (the adjacency the owner flagged). Both are edit-only / zero-layout-overlay,
-so parity 728/0 and every geometry contract hold; week DOM 5025 → 5032 (+7, one header
-per day). CSS-plus-one-line-of-html.ts; normalizer in `ui/html.test.ts` strips the
-edit-only header from the reference compare. All six gates re-run and watched at the
-close):
+31 Aug 26 DESIGN POLISH on the section grab bars — the drawn vertical grab-rail was
+SUPERSEDED the same day by the DRAG-HANDLE PLACEMENT REDO below (owner reverted it to
+the dotted inline `⠿`; see that entry for the current design). What SURVIVES from this
+pass is the week's edit-only `.wv-sech` "Flying waves" header (the one week section with
+no header of its own), still stripped from the `ui/html.test.ts` reference compare so
+parity holds. The gate table below was the green baseline read at this pass's close:
 
 | gate | reading |
 |---|---|
@@ -103,6 +97,30 @@ build clean, parity 728/0, e2e 347 passed / 23 skipped / 0 failed, probes 6/6, p
 (week DOM 5032, board DOM 1063 — both UNCHANGED, confirming logic-only). Pinned:
 `ui/rowdrag.test.tsx` (state machine; auto-scroll is a layout behaviour proven live per
 this suite's jsdom/e2e split).
+
+31 Aug 26 DRAG-HANDLE PLACEMENT REDO (owner /impeccable ask, mockup-approved — the phone
+board's markers were too far left to reach, the rail was reverted to dots, and Common
+Programme "looked like it had no handle"). Three linked changes, all display-only:
+(1) The section grip is the SAME dotted `⠿` the row/wave grips carry (REVERSING the 30 Aug
+drawn-rail), placed INLINE at the head of the panel's own header (board `.sb-ph`, week
+`.ah-h`/`.sub-h`/`.wv-sech`) — not an overlay rail. Inline, it aligns with the wave grip's
+column ("align with GO 1"), pushes the title clear, and centres on the title line. The
+board header's flex gap is tightened to 6px (`.sb-sec .sb-ph`) so the added grip borrows
+from the header's own spacing, not the sub-text/buttons on the right (measured 16px
+clearance, no overlap). Headers set `user-select:none` so a held grip never paints the
+title blue. (2) Overall Notes and Common Programme are now TWO separate draggable sections
+on the board (`SECTIONS=['notes','prog',…]`, each its own `.sb-sec[data-secmove]` card) —
+that is what gives Common Programme its own handle. (3) On the edit week the day notes
+still print inside the Common Programme block, so the week's `notes` slice is EMPTY and
+skipped — the view week and reference stay byte-identical, parity 728/0. Files:
+`engine/order.ts` (SECTIONS +notes), `ui/board.ts` (split + inline grip inject),
+`ui/html.ts` (inline grip inject + skip empty bit), `ui/scheduler.css` (dotted inline
+grip, header flex/no-select, drop the rail + gutter indents), `ui/AdminPage.tsx`
+(default-order labels +Overall notes). Tests updated: `engine/arrdefaults.test.ts`,
+`ui/admin.test.tsx`, `ui/rowdrag.test.tsx` (six-section canonical order). Verified live at
+390 px: board renders six cards, both grips at x=28 (aligned with the wave grip, centred
+on the header line), no console errors; edit week shows 5 draggable sections/day (notes
+merged) each with an inline dotted grip, view week carries none.
 
 Before that, reconciled against the 3512/203 reading before it (arrange the flying WAVES):
 +17 vitest pins across +2 files — **the DEFAULT arrangement, configurable in

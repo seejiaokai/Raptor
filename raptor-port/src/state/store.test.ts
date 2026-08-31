@@ -348,14 +348,14 @@ describe('store bookkeeping', () => {
 
 describe('moveSection — the section display order (owner, 29 Aug 26)', () => {
   it('re-orders a day and is undoable in one step, marking nothing pending', () => {
-    expect(secOrder(DAYS[0])).toEqual(['prog', 'waves', 'duty', 'sims', 'ground'])
+    expect(secOrder(DAYS[0])).toEqual(['notes', 'prog', 'waves', 'duty', 'sims', 'ground'])
     moveSection(0, 'ground', -1)
-    expect(secOrder(DAYS[0])).toEqual(['prog', 'waves', 'duty', 'ground', 'sims'])
+    expect(secOrder(DAYS[0])).toEqual(['notes', 'prog', 'waves', 'duty', 'ground', 'sims'])
     /* layout, not an amendment — no pending mark, no AL, no changes entry */
     expect(Object.keys(SCHED.pending)).toEqual([])
     expect(Object.keys(SCHED.changes)).toEqual([])
     undo()
-    expect(secOrder(DAYS[0]), 'undo restores the previous order in one step').toEqual(['prog', 'waves', 'duty', 'sims', 'ground'])
+    expect(secOrder(DAYS[0]), 'undo restores the previous order in one step').toEqual(['notes', 'prog', 'waves', 'duty', 'sims', 'ground'])
   })
 
   it('is refused off the write path for a non-admin (role gate, not just the UI)', () => {
@@ -366,15 +366,15 @@ describe('moveSection — the section display order (owner, 29 Aug 26)', () => {
   })
 
   it('moveSectionTo drags one section to where another sits, spanning several positions, undoable in one step', () => {
-    expect(secOrder(DAYS[0])).toEqual(['prog', 'waves', 'duty', 'sims', 'ground'])
+    expect(secOrder(DAYS[0])).toEqual(['notes', 'prog', 'waves', 'duty', 'sims', 'ground'])
     /* drop 'ground' (last) onto 'prog' (first) — a multi-position move the ±1
        nudge could not do in one gesture */
     moveSectionTo(0, 'ground', 'prog')
-    expect(secOrder(DAYS[0])).toEqual(['ground', 'prog', 'waves', 'duty', 'sims'])
+    expect(secOrder(DAYS[0])).toEqual(['notes', 'ground', 'prog', 'waves', 'duty', 'sims'])
     expect(Object.keys(SCHED.pending)).toEqual([])   // display, not an amendment
     expect(Object.keys(SCHED.changes)).toEqual([])
     undo()
-    expect(secOrder(DAYS[0])).toEqual(['prog', 'waves', 'duty', 'sims', 'ground'])
+    expect(secOrder(DAYS[0])).toEqual(['notes', 'prog', 'waves', 'duty', 'sims', 'ground'])
   })
 
   it('moveSectionTo is refused off the write path for a non-admin', () => {

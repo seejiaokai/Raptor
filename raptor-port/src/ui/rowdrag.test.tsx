@@ -150,8 +150,9 @@ describe('wireRowDrag', () => {
       const target = host.querySelector('[data-secmove="0.duty"]') as HTMLElement
       expect(grip && target).toBeTruthy()
       down(grip); over(target); up()
-      /* prog moves to where duty sat; the rest keep their relative order */
-      expect(secOrder(DAYS[0])).toEqual(['waves', 'duty', 'prog', 'sims', 'ground'])
+      /* prog moves to where duty sat; the rest keep their relative order (notes,
+         a separate section now, stays put at the head) */
+      expect(secOrder(DAYS[0])).toEqual(['notes', 'waves', 'duty', 'prog', 'sims', 'ground'])
     }))
 
     it('a section drag offers the "set as default?" snackbar on a real move', () => withEdit(() => {

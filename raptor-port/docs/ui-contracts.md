@@ -2110,15 +2110,16 @@ view at desktop and phone widths.
 
 ## Dragging sections and waves (owner, 29 Aug 26; in-place drag 30 Aug 26)
 
-A scheduler drags the big section panels — **Programme · Flying waves · Duties ·
-Sims · Ground Programme** — and the flying WAVES within a day into whatever order
+A scheduler drags the big section panels — **Overall Notes · Common Programme ·
+Flying waves · Duties · Sims · Ground Programme** (Overall Notes and Common Programme
+are one combined block on the edit week) — and the flying WAVES within a day into whatever order
 they want, on both Edit Schedule and the Scheduler Board, and a saved **whole-day
 template** remembers it. This REPLACED the per-day `⇅ Arrange` sheet (deleted 30 Aug
 26): the owner asked for handles on the blocks themselves, not a modal.
 
 **The handles.** Every reorderable section is wrapped in a draggable unit carrying a
-grip on its left gutter — `.sb-sec[data-secmove="di.key"]` on the board, `.dsec`
-(edit mode only) on the week — and every wave block carries a grip in its header
+dotted grip inline in its own header — `.sb-sec[data-secmove="di.key"]` on the board,
+`.dsec` (edit mode only) on the week — and every wave block carries a grip in its header
 (`.wvgrip`) plus `data-move="mv:w.di.gi"` on the block (`.sb-go` / `.go`). Unlike
 the dense board ROW grip (`.sb-grip`, hidden on a phone in favour of ▲▼ because a
 packed row has no room to grab), a section or a wave is a big target, so these grips
@@ -2148,20 +2149,34 @@ would freeze; on the document it keeps tracking, and the loop stops the instant 
 drag ends. Both wirings' handlers early-return until their own instance owns a live
 drag, so board and week don't collide.
 
-**The section handle looks different from a row/wave handle, on purpose.** A section
-grip (`.secgrip`) paints a **drawn vertical grab-rail** in the panel's left spine —
-CSS `::before`, the `⠿` glyph kept in the markup but hidden (`font-size:0`) so the
-drag machine, the pin tests and the aria-label still read it — while a row grip
-(`.sb-grip`) and a wave grip (`.wvgrip`) stay the inline `⠿` dots. The taxonomy is
-"**rail = move the whole panel · dots = move this one row/wave**", so where a section
-opens straight onto a row or wave the two handles never read as the same control. It
-stays a **zero-layout overlay** (absolute, in the gutter), so every measured
-register/alignment contract is byte-for-byte unchanged. For that taxonomy to hold on
-the week, the **Flying-waves section — the one week section that had no header of its
-own — now gets an edit-only `.wv-sech` "Flying waves" header** (like the board's, and
-like every other week section), so its rail anchors on a header line clear of the
-first wave's grip instead of colliding with it. Edit-only, so the view week and the
-reference stay byte-identical (stripped in `html.test.ts`'s compare).
+**Every handle is the same dotted `⠿`, inline in the section's own header (owner,
+31 Aug 26).** This REVERSED the 30 Aug drawn-rail: the owner asked that "the drag
+markers should all follow the old design in which it's dotted" and be reachable on a
+phone. So the section grip (`.secgrip`) is now the same inline `⠿` the row (`.sb-grip`)
+and wave (`.wvgrip`) grips carry, placed as the FIRST child of the panel's own header
+— board `.sb-ph`, week `.ah-h` / `.sub-h` / `.wv-sech` — not as an overlay rail in
+the gutter. Inline, it **lines up with the wave grip's column** (the owner's "align
+with GO 1"), **pushes its title clear of itself**, and **centres on the title line**
+(`align-items:center` on the header). On the board the header's flex `gap` is tightened
+to 6px (`.sb-sec .sb-ph`) so the added grip borrows from the header's own spacing, not
+from the sub-text or the right-side buttons — measured on a 390px phone, a 16px gap to
+the buttons remains, nothing overlaps (owner — "make sure any text or buttons on the
+right aren't too close or overlapping"). The headers set `user-select:none` so a thumb
+holding the grip never paints the title blue (owner — "as you hold on the track marker
+it tends to select the text beside it"). The week's Flying-waves section still gets its
+edit-only `.wv-sech` "Flying waves" header so the inline grip has a header to sit in;
+edit-only, so the view week and the reference stay byte-identical (stripped in
+`html.test.ts`'s compare). Don't return the section grip to a rail/overlay, drop the
+no-select, or drop the `.wv-sech` header.
+
+**Overall Notes and Common Programme are two separate sections on the board (owner,
+31 Aug 26 — "split them apart").** Each is its own `.sb-sec[data-secmove]` card with
+its own dotted handle, independently draggable — the board flagged Common Programme as
+"missing" its handle because the old combined 'prog' unit carried a single handle that
+sat up on the Overall Notes panel. On the EDIT WEEK the day notes still print as lines
+inside the Common Programme block (they never had a card of their own there), so the
+week keeps them in the 'prog' slice and its 'notes' slice is empty and skipped — which
+is what keeps the view week and reference byte-identical (the empty slice adds nothing).
 
 **A section move is display order only.** The order lives on the day as `d.secOrder`
 (absent ⇒ the default order), resolved by `engine/order.ts secOrder(d)`. It never
@@ -2169,14 +2184,17 @@ enters a slot key, `SCHED.*`, or an AL: re-arranging a panel moves no row inside
 array, so every `di.gi.li.ai` / `d:` / `s:` / `g:` / `a:` key is unchanged and
 `validate()`/publish/history read exactly what they did — the owner's "don't corrupt
 the rules" requirement (pinned in `engine/secorder.test.ts`). Both builders emit
-sections through `secOrder`: `ui/board.ts boardHTML` assembles a `{prog,waves,duty,
-sims,ground}` map, `ui/html.ts dayHTML` slices its accumulator at five boundary
-marks and re-emits — the **default order is byte-identical** to before. The drop
-routes through `state/store.ts moveSectionTo` → `engine/order.ts reorderSectionTo`
-(a drop can span several positions, so it moves fromKey→toKey, not ±1), `histPush` +
-`notify`, **no `markEdit`**: one undo step, not an amendment. Admin + edit-surface
-gated at the write path. `prog` is the Programme unit (Common Programme on the week;
-Notes + Common Programme moved together on the board).
+sections through `secOrder`: `ui/board.ts boardHTML` assembles a `{notes,prog,waves,
+duty,sims,ground}` map (notes and programme are separate cards there), `ui/html.ts
+dayHTML` slices its accumulator at the boundary marks and re-emits — the **default
+order is byte-identical** to before, and the week's empty `notes` slice is skipped so
+it adds nothing. The drop routes through `state/store.ts moveSectionTo` →
+`engine/order.ts reorderSectionTo` (a drop can span several positions, so it moves
+fromKey→toKey, not ±1), `histPush` + `notify`, **no `markEdit`**: one undo step, not an
+amendment. Admin + edit-surface gated at the write path. `notes` is Overall Notes and
+`prog` the Common Programme — two draggable cards on the board; on the week the day
+notes print as lines inside the Common Programme block, so the week's `notes` slice is
+empty.
 
 **After a section drag, the admin is offered a house default.** `ui/SecDefaultSnackbar.tsx`
 (state `SECDEFOFFER` in `pops.ts`) — an actionable bar (the plain `toast()` can't

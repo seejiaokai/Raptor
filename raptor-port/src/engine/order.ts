@@ -51,9 +51,16 @@ export function groundOrder(grd:any[],man?:any){
    markEdit). Persistence of a chosen order is via the DAY TEMPLATE
    (engine/daytpl.ts), not localStorage of the live day — session-only like the
    rest of the schedule model. */
-/* 'prog' is the Programme unit (day notes + Common/Ground Programme — one panel
-   on Edit Schedule, the notes + prog panels moved together on the board). */
-export const SECTIONS:string[]=['prog','waves','duty','sims','ground'];
+/* 'notes' is the day's Overall Notes and 'prog' the Common Programme. On the
+   BOARD they are two separate, independently draggable panels (owner, 31 Aug 26 —
+   "split them apart"): each renders its own card with its own drag handle. On the
+   EDIT WEEK the day notes still print as lines inside the Common Programme block
+   (they never had a card of their own there), so the week keeps them in the 'prog'
+   slice and its 'notes' slice is empty — which is exactly why the view week and the
+   read-only reference stay byte-identical (the empty slice adds nothing, parity
+   728/0). Splitting is a display concern only: no slot key, SCHED.* or AL reads a
+   section key, so the rules are byte-identical before and after. */
+export const SECTIONS:string[]=['notes','prog','waves','duty','sims','ground'];
 
 /* THE ADMIN-SET DEFAULT SECTION ORDER (owner, 29 Aug 26 pt.2 — "allow the default
    arrangement of a schedule to be configured in admin"). A single GLOBAL fallback:

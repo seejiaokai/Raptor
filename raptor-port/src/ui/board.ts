@@ -82,9 +82,8 @@ export function boardHTML(di: number, pv?: boolean) {
      of this button is data-draftsopen through routeClick — split attributes,
      same double-handling reason as data-daytpladd/data-daytplopen). */
   const dayTplHead = mvRO ? '' : `<div class="sb-panel dtpl"><div class="sb-ph">Templates &amp; drafts <span class="sub">save or apply this day's structure · plan alternatives</span><span class="gctl"><button class="mbtn add" data-daytpladd="${di}" title="Save this day, or apply a saved one">Templates</button><button class="mbtn add" data-draftsadd="${di}" title="Duplicate this day into drafts, switch between them, or manage them — the selected draft is what publishes">Drafts</button></span></div></div>`
-  /* the Programme unit — day notes + Common Programme, moved together when the
-     owner re-arranges the sections (engine/order.ts secOrder). */
-  const progPanel = sbNotesPanel(d, di, pv, mvRO) + sbProgPanel(d, di, pv, mvRO)
+  /* Overall Notes and Common Programme are two separate sections now (owner, 31 Aug
+     26 — "split them apart"); each is built and wrapped on its own below (sect). */
   let fly = ''
   ;(d.waves || []).forEach((w: any, gi: number) => {
     /* SC / AVALON / BB carry no store config on the week (html.ts's `sa`
@@ -252,20 +251,29 @@ export function boardHTML(di: number, pv?: boolean) {
   /* THE SCHEDULE SECTIONS, emitted in the day's own order (owner, 29 Aug 26 —
      engine/order.ts secOrder). The Templates head stays pinned above and the
      inputs/available/SANS/Unavail group pinned below — neither is a schedule
-     section. With the default order this join is byte-identical to the old fixed
-     sequence (prog · waves · duty · sims · ground); only a re-arranged day differs.
+     section. The default order is notes · prog · waves · duty · sims · ground
+     (Overall Notes and Common Programme are two separate cards on the board now —
+     owner, 31 Aug 26 "split them apart"); only a re-arranged day differs.
      The sim planning notes still sit inside the Sims panel, so the board reads the
      way the week does. */
   const sect: Record<string, string> = {
-    prog: progPanel, waves: wavesPanel,
+    notes: sbNotesPanel(d, di, pv, mvRO), prog: sbProgPanel(d, di, pv, mvRO), waves: wavesPanel,
     duty: sbDutyPanel(d, di, pv, mvRO), sims: sbSimRowsPanel(d, di, pv, mvRO), ground: sbGroundPanel(d, di, pv, mvRO),
   }
   /* each section is wrapped so its grip can drag the whole panel into a new place
      (data-secmove → store.moveSectionTo, DISPLAY order only — see engine/order.ts).
-     Edit board only: a read-only board wraps nothing, staying lean and undraggable. */
+     Overall Notes and Common Programme are two separate sections now (owner, 31 Aug
+     26 — "split them apart"), each its own draggable card.
+     The dotted ⠿ grip sits INLINE at the head of the panel's own header (.sb-ph),
+     so it reads on the card it moves, aligns with the wave grip's column, and pushes
+     the title clear of itself — the owner's "align with Go 1, dotted, beside the
+     title, centred" (scheduler.css). Edit board only: a read-only board wraps
+     nothing, staying lean and undraggable. */
   const secGrip = '<span class="secgrip" title="Drag to reorder this section" aria-label="Reorder this section">⠿</span>'
+  const wrapSec = (html: string, k: string) =>
+    `<div class="sb-sec" data-secmove="${di}.${k}">${html.replace('<div class="sb-ph">', `<div class="sb-ph">${secGrip}`)}</div>`
   let b = dayTplHead + secOrder(d).map((k: string) =>
-    mvRO ? (sect[k] || '') : `<div class="sb-sec" data-secmove="${di}.${k}">${secGrip}${sect[k] || ''}</div>`).join('')
+    mvRO ? (sect[k] || '') : (sect[k] ? wrapSec(sect[k], k) : '')).join('')
   /* one pass over INPUTS for both blocks — the board rebuilds on every edit */
   const dayInp = INPUTS.filter((i: any) => inputCoversDate(i, d.dt))
   /* the available-crew strip the week already carries, now on the board too

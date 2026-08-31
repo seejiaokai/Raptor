@@ -120,7 +120,7 @@ function ClearControl(props: {
    Same ▲▼ nudge idiom as the per-day Arrange sheet, reusing its .arrsec and .tnudge
    styles. Each nudge persists at once (secDefaultSave / waveDefaultSave). */
 const ADEF_SEC_LABEL: Record<string, string> = {
-  prog: 'Programme', waves: 'Flying waves', duty: 'Duties', sims: 'Sims', ground: 'Ground Programme',
+  notes: 'Overall notes', prog: 'Common Programme', waves: 'Flying waves', duty: 'Duties', sims: 'Sims', ground: 'Ground Programme',
 }
 function ArrangeDefaults() {
   const sec = secDefault()

@@ -836,7 +836,7 @@ subscribers.
   `ui/admin.test.tsx`.
 - **Sections and waves are re-ordered by IN-PLACE DRAG, not a sheet** (owner, 30 Aug
   26 — replacing the 29 Aug `⇅ Arrange` sheet, which is DELETED). A grip on each
-  section's left gutter (`.sb-sec[data-secmove]` on the board, `.dsec` on the edit
+  section (`.sb-sec[data-secmove]` on the board, `.dsec` on the edit
   week — edit-mode only) and in each wave header (`.wvgrip` + `data-move="mv:w…"` on
   the block) drags the whole panel / wave into a new place, on both surfaces. One
   machine, `ui/rowdrag.ts` (wired on the board wrap AND the edit-week root), tells the
@@ -844,14 +844,26 @@ subscribers.
   own same-container rule. These grips stay draggable at EVERY width — a section/wave
   is a big target — unlike the dense row grip (`.sb-grip`, phone-hidden in favour of
   ▲▼); don't hide them on a phone or add arrows (the owner's "drag, no arrows"). The
-  SECTION grip is a DRAWN vertical grab-rail (`.secgrip::before`; the `⠿` stays in the
-  markup but `font-size:0` hides it, so tests/aria still read it), visually distinct
-  from the inline `⠿` dots the row/wave grips keep — "rail = move the panel, dots =
-  move the row/wave" — a zero-layout overlay, so no geometry contract moves. For that
-  to hold on the week, the Flying-waves section (the one week section with no header of
-  its own) gets an edit-only `.wv-sech` "Flying waves" header so its rail anchors clear
-  of the first wave's grip (stripped in `html.test.ts`'s reference compare, so parity
-  holds); don't drop it, don't turn the section grip back into a bare `⠿`. A
+  SECTION grip is the SAME dotted `⠿` the row/wave grips carry (owner, 31 Aug 26 —
+  reversing the 30 Aug drawn-rail: "the drag markers should all follow the old design
+  in which it's dotted"), placed INLINE at the head of the panel's own header (board
+  `.sb-ph`, week `.ah-h`/`.sub-h`/`.wv-sech`) — NOT as an overlay rail in the gutter.
+  Inline, it aligns with the wave grip's column (the owner's "align with GO 1"), pushes
+  its title clear of itself, and centres on the title line (`align-items:center`); the
+  board header's gap is tightened to 6px so the added grip borrows from the header's own
+  spacing, not from the sub-text / buttons on the right (owner — "make sure the text or
+  buttons on the right aren't squeezed"; measured 16px clearance). The headers set
+  `user-select:none` so a thumb holding the grip never paints the title blue. Don't
+  turn the section grip back into a rail/overlay, and don't drop the no-select.
+  **Overall Notes and Common Programme are two SEPARATE draggable sections on the
+  board** (owner, 31 Aug 26 — "split them apart"; `SECTIONS=['notes','prog',…]`, each
+  its own `.sb-sec[data-secmove]` card). On the EDIT WEEK the day notes still print as
+  lines inside the Common Programme block (they never had a card of their own there), so
+  the week keeps them in the 'prog' slice and its 'notes' slice is EMPTY and skipped —
+  which is exactly what keeps the view week and the reference byte-identical (the empty
+  slice adds nothing). The week's Flying-waves section still gets its edit-only
+  `.wv-sech` "Flying waves" header (stripped in `html.test.ts`'s reference compare) so
+  its inline grip has a header to sit in; don't drop it. A
   SECTION drag is display-only (`store.moveSectionTo` → `engine/order.ts
   reorderSectionTo`, histPush, no markEdit) and then offers the **"Set default
   order?"** snackbar (`ui/SecDefaultSnackbar.tsx`, `SECDEFOFFER`) that promotes it to

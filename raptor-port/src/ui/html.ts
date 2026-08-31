@@ -1244,9 +1244,21 @@ export function dayHTML(di:any,ed:any,vsel?:any){
        display order). VIEW mode wraps nothing, so the view week — and the
        read-only reference the parity gate pins — is byte-identical (728/0). */
     {
+      /* the week keeps day notes as lines inside the Common Programme block (they
+         never had a card of their own here — see engine/order.ts), so the 'notes'
+         section is empty on the week and its slice adds nothing: the view week and
+         the reference stay byte-identical (parity 728/0). The BOARD is where notes
+         and programme are two separate draggable cards. */
       const secBits:any={prog:h.slice(secM0,secM1),waves:h.slice(secM1,secM2),duty:h.slice(secM2,secM3),sims:h.slice(secM3,secM4),ground:h.slice(secM4)};
+      /* the dotted ⠿ grip sits INLINE at the head of each section's own header (the
+         .ah-h / .sub-h / .wv-sech title), not as a rail in the .dsec gutter — so it
+         reads dotted like the wave/row grips, sits beside its title and centres on
+         the title line (owner, 31 Aug 26). Edit-only, so parity is untouched. */
       const secGrip='<span class="secgrip" title="Drag to reorder this section" aria-label="Reorder this section">⠿</span>';
-      h=h.slice(0,secM0)+secOrder(d).map((k:string)=>{const bit=secBits[k]||'';return ed?`<div class="dsec" data-secmove="${di}.${k}">${secGrip}${bit}</div>`:bit;}).join('');
+      const gripIn=(bit:string,k:string)=>k==='prog'?bit.replace('<div class="ah-h">',`<div class="ah-h">${secGrip}`)
+        :k==='waves'?bit.replace('<div class="sub-h wv-sech">',`<div class="sub-h wv-sech">${secGrip}`)
+        :bit.replace('<div class="sub-h">',`<div class="sub-h">${secGrip}`);
+      h=h.slice(0,secM0)+secOrder(d).map((k:string)=>{const bit=secBits[k]||'';if(!bit)return'';return ed?`<div class="dsec" data-secmove="${di}.${k}">${gripIn(bit,k)}</div>`:bit;}).join('');
     }
     /* ---- the two input-derived blocks -------------------------------------
        PERSONAL INPUTS is what aircrew submitted and the scheduler has not yet
