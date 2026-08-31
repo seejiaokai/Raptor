@@ -318,8 +318,15 @@ export function EventSheet({ line, date, to, onClose }: { line: number; date: st
         </>
       )}
 
-      <div className="bidsheet-row">
-        <button className="dchip approve" data-testid="event-apply" onClick={apply}>
+      {/* Save + Delete sit at the RIGHT of the footer, Save in the app's cyan
+          (owner, 31 Aug 26 — "move the save and delete buttons to the right …
+          Save … make it blue cyan like how it is usually"). Save is `dchip save`,
+          not the green `approve` the scope toggles use, so it reads as the one
+          commit button. A problem note keeps its place on the LEFT (margin-right
+          :auto) so the error never shoves the buttons around. */}
+      <div className="bidsheet-row evactions">
+        {problem && <span className="note warn" data-testid="event-problem">{problem}</span>}
+        <button className="dchip save" data-testid="event-apply" onClick={apply}>
           Save
         </button>
         {(band || (day && day.events[line])) && (
@@ -327,7 +334,6 @@ export function EventSheet({ line, date, to, onClose }: { line: number; date: st
             Delete
           </button>
         )}
-        {problem && <span className="note warn" data-testid="event-problem">{problem}</span>}
       </div>
     </Sheet>
   )
