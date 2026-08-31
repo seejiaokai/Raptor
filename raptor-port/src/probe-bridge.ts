@@ -20,7 +20,7 @@ import { restoreDayVersion, dayKeys } from './engine/restore'
 import { dayDrafts, curDraftId, draftDup, draftSelect, draftRename, draftDelete, draftVerLabel, isDraftVer, rebaseDayPending, loadVersionToWorkingCopy, reconcileIssuedMarks } from './engine/drafts'
 import * as V from './engine/validate'
 import { validate, WCODE, wlbl, chipOf, sevOf, CHIP_LABEL, RANK, restClear, dayEvents, traceOf, traceLeads, traceIx } from './engine/validate'
-import { collectEvents } from './engine/events'
+import { collectEvents, scSeatHit } from './engine/events'
 import { slotVal, setSlotVal, fillSlot, txtGet, txtSet, rowCrew, acRef, rollCx, whoArr, rowRef, acceptInput, unacceptInput, inpKey, acceptedDay, renameCallsign } from './engine/slots'
 import { slotBar, dayEngaged, slotRules, dayOff, dayAway, sansGate, SANS_LABEL } from './engine/avail'
 import { isStandalone, makeStandalone, waveDutyBlock, saDutyIx, DUTY_PICK, SAWAVE, dayCount, saExempt } from './engine/waves'
@@ -203,6 +203,7 @@ export function installProbeBridge() {
   w.findGo = (key: any) => { const [di, gi] = String(key).split('|'); return DAYS[+di!] && DAYS[+di!].waves[+gi!] }
   w.histApply = histApply; w.histSnap = histSnap; w.histPush = histPush
   w.dayEngaged = dayEngaged; w.scShiftKind = scShiftKind; w.hm24 = hm24; w.rowRef = rowRef
+  w.scSeatHit = scSeatHit
   w.armedKey = () => view.armedKey()
   w.placeArmed = (id: any) => { view.placeArmed(id); notify() }
   w.reflow = () => HOOKS.reflow()

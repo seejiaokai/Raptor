@@ -5,7 +5,7 @@ import { parseHM, win, overlap, hm24 } from './time'
 import { SHIFT_HARD, VCONF } from './rules'
 import { isStandalone, scSpare } from './waves'
 import { WARN, restClear, dayEvents } from './validate'
-import { waveWindows, inpShow, shiftEvHard, seatIntime } from './events'
+import { waveWindows, inpShow, shiftEvHard, seatIntime, scSeatHit } from './events'
 import { whoArr, rowRef, XKEY } from './slots'
 import { keyDay } from './keys'
 /* busy windows [s,e] for one person on a day (fly/duty/sim/ground) */
@@ -286,6 +286,16 @@ export function slotBar(id:any,key:any,rules?:any){
      open to any pilot (owner, 14 Aug 26), matching the engine's Q (sims) */
   if(r.seat==='w'&&!r.sim&&p.seat==='FCP'&&!isInstrPilot(p.q))return 'pilot, not an instructor — only IP / IR / FI may fly rear seat';
   if(r.sc&&!scQualOK(id,r.sc))return `not ${r.sc==='day'?'SC DAY':'SC NIGHT'} current`;
+  /* TWO SC SEATS IN THE SAME HOURS bar the plant (owner, 31 Aug 26) — the
+     same scSeatHit body the validator reads, so what bars here and what
+     reds after a drag-drop can never disagree. Spares are absent from EVD,
+     which is why the inside-this-shift scan below cannot answer this; runs
+     for MAIN and SPARE slots alike. Abutting shifts pass (overlap is
+     half-open) — a man on SC AM is still offered normally for SC PM. */
+  if(r.sc&&r.scStart!=null&&r.scEnd!=null&&r.di>=0){
+    const hit=scSeatHit(r.di,id,r.scStart,r.scEnd,String(key).replace(/\.\+$/,''));
+    if(hit)return `already on ${hit.label} ${hit.role} ${hm24(hit.s)}–${hm24(hit.e)}`;
+  }
   /* SC is treated as flying for crew rest: 12h clear of yesterday or he cannot
      be planned onto the shift at all. Read off the map validate() builds. */
   if(r.scStart!=null&&r.di>=0&&!r.scSpare){

@@ -2,7 +2,7 @@ import { PEOPLE, isSpecial, realP, isOcu, isInstr, isInstrPilot, aarOK, aarInstr
 import { isDownchit, isLeave, isUnavail, canSpare, canWork, shiftHardInput, restsInput, inpLabel, inpMeta } from './inputs'
 import { VCONF, SHIFT_HARD } from './rules'
 import { overlap, hm24, lgT } from './time'
-import { collectEvents, shiftEvHard } from './events'
+import { collectEvents, shiftEvHard, scSeatHit } from './events'
 import { HOOKS } from './hooks'
 import { sansGate, SANS_LABEL } from './avail'
 import { seedRunIn, prevSundaySeed, nextMondaySeed } from './weekctx'
@@ -716,6 +716,9 @@ export function validate(){
     const prevSeed:any=idx>0?ev[idx-1]:prevSundaySeed(CURWEEK);
     crewRestDay(prevSeed,day,di,false,add);
     // crew combination matrix + OCU without IP — shown as puck rings
+    /* a SPARE+SPARE overlap is seen from both formations' loops below, so the
+       pair is remembered and printed once — day-scoped, like the day loop */
+    const scPairSeen:any=new Set();
     day.forms.forEach((f:any)=>{
       f.acs.forEach((ac:any)=>{ const p=realP(ac.p),w=realP(ac.w);
         /* ---- combination matrix (F-15SG Table 1.5-2, owner Aug 5 '26) ----
@@ -857,6 +860,42 @@ export function validate(){
             add('hard',dn?'DNIF_FLY':'LEAVE_FLY',[id],
               `${inp.type} but standing SC SPARE — ${dn?'medically down':'overseas'}`
               +`, ${f.label}${why}`,f.key); }); });
+        /* TWO SC SEATS IN THE SAME HOURS (owner, 31 Aug 26 — "give a warning
+           conflict if u are planned for MAIN and SPARE in the same time
+           framing … the 1300 is not a conflict"; SPARE+SPARE ruled the same
+           red). A spare is deliberately absent from EVD, so the ordinary
+           DOUBLE_BOOK loop cannot see him — this asks the model instead,
+           through the same scSeatHit body the crew picker's slotBar reads,
+           so what bars a plant and what reds after a drag-drop cannot drift.
+           MAIN+MAIN needs nothing here: main shifts are events and the clash
+           loop already reds them. Abutting shifts never fire — overlap() is
+           half-open, AM into PM at 13:00 stays two clean halves. Reuses the
+           DOUBLE_BOOK code (the DNIF/LEAVE precedent above): the label "two
+           events at once" is exactly the fault, and the message carries the
+           spare-specific wording. Anchored on the SPARE seat so the week's
+           exempt-line ring (html.ts) finds it; the MAIN copy rings off the
+           ordinary per-person chip. */
+        (f.spareAcs||[]).forEach((sa:any)=>{
+          [['p',sa.p],['w',sa.w]].forEach(([seat,id]:any)=>{ if(!id||!PEOPLE[id]||isSpecial(id))return;
+            const own=`${sa.key}.${seat}`;
+            const hit=scSeatHit(di,id,f.s,f.e,own); if(!hit)return;
+            const pk=[own,hit.key].sort().join('|')+'·'+id;
+            if(scPairSeen.has(pk))return; scPairSeen.add(pk);
+            markChip(di,id,'C'); markRing(di,id,'hard');
+            add('hard','DOUBLE_BOOK',[id],
+              `${PEOPLE[id].cs} is standing SC SPARE (${f.label} ${hm24(f.s)}–${hm24(f.e)})`
+              +` and also on ${hit.label} ${hit.role} (${hm24(hit.s)}–${hm24(hit.e)})`,own); }); });
+        /* THE SPARE FRONT SEAT IS PILOTS-ONLY (owner, 31 Aug 26 — "a wso
+           can't be planned for FCP"; the pilot-in-rear-seat mirror was
+           offered and DECLINED, so the rear spare seat stays unruled here).
+           Spare rows never reach f.acs, so the flying seat rules above
+           cannot see them; the two WSO predicates are mirrored from there
+           byte-for-byte. The crew picker already refuses the seat (slotBar's
+           seat rules carry no spare gate) — this closes the drag-drop
+           bypass, the one silent path. */
+        (f.spareAcs||[]).forEach((sa:any)=>{ const sp=realP(sa.p); if(!sp)return;
+          if(sp.seat==='RCP'){markChip(di,sa.p,'Q');markRing(di,sa.p,'hard');add('hard','QUAL',[sa.p],`${sp.cs} is a WSO — cannot fly FCP (${f.label} SPARE)`,sa.key+'.p');}
+          else if(sp.q==='IW'&&sp.seat==='FCP'){markChip(di,sa.p,'Q');markRing(di,sa.p,'hard');add('hard','QUAL',[sa.p],`${sp.cs} is CAT IW — a WSO category, cannot fly FCP (${f.label} SPARE)`,sa.key+'.p');}});
       }
     });
     /* SANS AVAILABILITY (owner, 14 Aug 26) — a SANS body planted into a

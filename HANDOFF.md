@@ -187,6 +187,38 @@ grip, header flex/no-select, drop the rail + gutter indents), `ui/AdminPage.tsx`
 on the header line), no console errors; edit week shows 5 draggable sections/day (notes
 merged) each with an inline dotted grip, view week carries none.
 
+31 Aug 26 THE TWO SC SPARE RULES (owner — "give a warning conflict if u are planned
+for MAIN and SPARE in the same time framing … the 1300 is not a conflict. Same thing
+for SC SPARE, a wso can't be planned for FCP"; clarified same session: SPARE+SPARE
+overlap is the SAME red, the seat rule is WSO-in-FCP ONLY — the pilot-in-rear mirror
+was offered and DECLINED; three further spare-rule ideas were offered, owner chose
+"none for now"). Two checks join the spare seat's canSpare + SC_QUAL: (1) TWO SC
+SEATS IN THE SAME HOURS — a man on a SPARE line who also holds any other SC seat
+(MAIN or SPARE, any wave) with genuinely overlapping shift hours is a hard
+DOUBLE_BOOK ("standing SC SPARE … and also on …"), said once per pair, anchored on
+the spare seat; abutting shifts (AM into PM at 13:00) never fire — `overlap` is
+half-open. Spares are absent from EVD by design, so the ONE body is a model walk,
+`events.ts scSeatHit`, read by the validator AND `slotBar` ("already on SC AM MAIN
+07:00–13:00") — palette and warning list cannot drift; MAIN+MAIN stays with the
+ordinary clash loop. (2) THE SPARE FRONT SEAT IS PILOTS-ONLY — a WSO (seat RCP, plus
+the CAT-IW variant) in a spare FCP raises the flying path's hard QUAL, "(… SPARE)"
+suffixed; the picker already refused the seat, so this closes the drag-drop bypass,
+the one silent path. Carrier shape: `f.spareAcs` (raw spare rows beside the deduped
+`spareCrew` — seat identity + the same-man-twice case the Set collapsed), excised
+from the parity compare (`parity.test.ts noPortOnly`) like sacrew/nx/pv. The week's
+exempt-line ring whitelist (`ui/html.ts own()`) carries DOUBLE_BOOK→C and QUAL→Q now
+(four codes total). Prose moved in step: SAWAVE.sc.note, `wavetpl kindNote('sc')`,
+the Logic page's standby-lines + canSpare rows, the board's SC add-toast. Files:
+`engine/events.ts` (spareAcs + scSeatHit), `engine/validate.ts` (both rules in the
+f.sc block), `engine/avail.ts` (slotBar), `ui/html.ts`, `ui/board.ts`,
+`engine/waves.ts`, `engine/wavetpl.ts`, `ui/logic-html.ts`, `probe-bridge.ts`
+(scSeatHit). Pins: `engine/scspare-rules.test.ts` (NEW — 10: overlap red once/
+abutting clean/two waves/same shift twice/sortie still free/scSeatHit half-open+self,
+WSO-FCP red + rear clean + declined-mirror absence, empty-wave rot guard),
+`engine/slotrules.test.ts` (+2 picker), `ui/sarole.test.tsx` (+1 exempt-ring C/Q).
+Parity 728/0 by construction (no seeded standalone wave; the one reference fixture
+seats MAIN only — keep it that way).
+
 Before that, reconciled against the 3512/203 reading before it (arrange the flying WAVES):
 +17 vitest pins across +2 files — **the DEFAULT arrangement, configurable in
 Admin** (owner, 29 Aug 26 pt.2 — "allow the default arrangement of a schedule to

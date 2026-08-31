@@ -1,7 +1,7 @@
 import { DAYS } from './data'
 import { INPUTS, inputCoversDate, inputFlags, inputDormant, inpWin, isSansAvail, inpMeta, shiftHardInput, shiftHardLabel } from './inputs'
 import { PEOPLE, isSpecial, nameToId, aarNeed } from './people'
-import { toMin, parseHM, win } from './time'
+import { toMin, parseHM, win, overlap } from './time'
 import { VCONF, SHIFT_HARD } from './rules'
 import { isStandalone, saExempt, CURWEEK } from './waves'
 import { whoArr, acceptedDay } from './slots'
@@ -65,6 +65,32 @@ export function shiftHardGround(e:any){
   return shiftHardLabel(e.label);
 }
 export function shiftEvHard(e:any){return !!SHIFT_HARD[e.kind]||shiftHardGround(e);}
+/* DOES HE ALREADY HOLD ANOTHER SC SEAT IN THESE HOURS? (owner, 31 Aug 26 —
+   "give a warning conflict if u are planned for MAIN and SPARE in the same
+   time framing … the 1300 is not a conflict"; SPARE+SPARE ruled the same red
+   the same day.) A spare seat never becomes an event, so EVD cannot answer
+   this — the walk reads the day MODEL, which also lets the crew picker ask
+   the identical question BEFORE a plant (slotBar) and the validator after
+   it, off this one body, so the two can never drift. overlap() is half-open:
+   SC AM 07:00–13:00 and PM 13:00–19:00 share only the 13:00 instant and stay
+   two clean shifts — the owner's own example. selfKey excludes the seat
+   being asked about (a re-arm, or the seat a warning is being raised FOR).
+   SC only on purpose: the AVALON rule stays owner-reserved (10 Aug 26). */
+export function scSeatHit(di:any,id:any,s:any,e:any,selfKey:any){
+  const d=DAYS[di]; if(!d||!id||s==null||e==null)return null;
+  let hit:any=null;
+  (d.waves||[]).forEach((w:any,gi:any)=>{ if(hit||!isStandalone(w)||w.kind!=='sc')return;
+    (w.formations||[]).forEach((f:any,li:any)=>{ if(hit||f.cx)return;
+      const st=parseHM(f.to); let en=parseHM(f.ld||f.to);
+      if(st==null||en==null)return; if(en<st)en+=1440;
+      if(!overlap(s,e,st,en))return;
+      (f.aircraft||[]).forEach((a:any,ai:any)=>{ if(hit||a.cx)return;
+        [['p',a.p],['w',a.w]].forEach(([seat,pid]:any)=>{ if(hit||pid!==id||!PEOPLE[pid]||isSpecial(pid))return;
+          const k=`${di}.${gi}.${li}.${ai}.${seat}`;
+          if(k===selfKey)return;
+          hit={label:`${f.cs} ${f.msn}`,role:saExempt(w,f,a)?'SPARE':'MAIN',s:st,e:en,key:k};});});});});
+  return hit;
+}
 /* The time WRITTEN in an in-time line (owner, 21 Aug 26 — "can u accept any
    form of combination"): 0900 · 09:00 · 0900H · 09:00H · 0900L · 09:00L, any
    case on the suffix. The FIRST token that reads as a real clock time wins;
@@ -240,7 +266,7 @@ export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
            midnight roll. */
         const intime=seatIntime(w,f,toM,im);
         const report=(intime!=null)?intime:stepM;
-        const fcps:any[]=[],acs:any[]=[],allCrew:any[]=[],spareCrew:any[]=[];
+        const fcps:any[]=[],acs:any[]=[],allCrew:any[]=[],spareCrew:any[]=[],spareAcs:any[]=[];
         f.aircraft.forEach((a:any,ai:any)=>{ if(a.cx)return;
           /* collected BEFORE the spare exemption: a spare crew is not checked
              against other commitments, but their SC currency still is */
@@ -249,6 +275,11 @@ export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
             /* ...but still kept, because "not cross-checked against other tasks"
                is not the same as "may be anywhere on earth" */
             [a.p,a.w].forEach((id:any)=>{if(id&&PEOPLE[id]&&!isSpecial(id))spareCrew.push(id);});
+            /* the RAW rows too, beside the deduped id set (31 Aug 26): the
+               spare seat rule needs to know WHICH seat holds the man, and the
+               two-SC-seats conflict needs the same man on two spare rows to
+               stay two rows — the Set above collapses him to one id */
+            spareAcs.push({p:a.p,w:a.w,key:`${di}.${gi}.${li}.${ai}`});
             return;}
           /* night for AAR purposes: the wave says so, or the sortie itself runs
              past 19:00 between take-off and landing */
@@ -280,7 +311,7 @@ export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
            currency can be checked against it */
         forms.push({label:`${f.cs} ${f.msn}`,cs:f.cs,fcps,acs,
           sc:isStandalone(w)&&w.kind==='sc', shift:f.msn||f.shift||'', s:toM, e:ldM,
-          allCrew:[...new Set(allCrew)], spareCrew:[...new Set(spareCrew)],key:`${di}.${gi}.${li}`});
+          allCrew:[...new Set(allCrew)], spareCrew:[...new Set(spareCrew)],spareAcs,key:`${di}.${gi}.${li}`});
       });
     });
     ['amt','oft'].forEach((k:any)=>((d.sims&&d.sims[k])||[]).forEach((s:any,ri:any)=>{ if(s.cx)return;

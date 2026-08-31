@@ -1132,7 +1132,7 @@ export function addWave(di: number, kind: any) {
      Adding a wave creates only the wave. */
   const fi = placeAddedWave(di, kind)
   markStructuralAdd(`wl:${di}.${fi}`); afterSchedMutate(); notify()
-  toast(S.label + ' added — standalone, ' + (kind === 'avalon' ? 'checked for availability only' : S.all ? 'nothing on it is cross-checked' : 'SPARE is checked for availability and SC currency only'))
+  toast(S.label + ' added — standalone, ' + (kind === 'avalon' ? 'checked for availability only' : S.all ? 'nothing on it is cross-checked' : 'SPARE is checked for availability, SC currency, front seat and overlapping SC seats only'))
 }
 
 /* the Add-a-wave chooser, verbatim (a body-level popup, just as the reference

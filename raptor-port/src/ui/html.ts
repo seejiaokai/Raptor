@@ -1129,17 +1129,20 @@ export function dayHTML(di:any,ed:any,vsel?:any){
              to stop — a spare routinely flies elsewhere the same day. So the
              exempt copy reads the day's warning list for entries ANCHORED TO
              THIS LINE and naming this man: the availability check (DNIF_FLY /
-             LEAVE_FLY — the red C) and SC currency, which is checked for MAIN
-             and SPARE alike (SC_QUAL — the red Q). Nothing else can anchor to
-             an exempt line, and both rules are hard, so these pucks ring red
-             or not at all — the owner confirmed no amber rule lives here. BB
-             can anchor nothing and so never rings, with no special case. */
+             LEAVE_FLY — the red C), SC currency, which is checked for MAIN
+             and SPARE alike (SC_QUAL — the red Q), and — 31 Aug 26 — the two
+             SC-SPARE rules: another SC seat in the same hours (DOUBLE_BOOK —
+             the red C) and a WSO in the spare front seat (QUAL — the red Q).
+             Only these four codes can anchor to an exempt line, and all are
+             hard, so these pucks ring red or not at all — the owner confirmed
+             no amber rule lives here. BB can anchor nothing and so never
+             rings, with no special case. */
           const chk=!saExempt(w,f,a), fkey=`${di}.${gi}.${li}`;
           const own=(id:any)=>{ if(PV||!id)return null;
             const g=WARN.byDay[di];
-            const hit=((g&&g.warns)||[]).find((x:any)=>(x.code==='DNIF_FLY'||x.code==='LEAVE_FLY'||x.code==='SC_QUAL')
+            const hit=((g&&g.warns)||[]).find((x:any)=>(x.code==='DNIF_FLY'||x.code==='LEAVE_FLY'||x.code==='SC_QUAL'||x.code==='DOUBLE_BOOK'||x.code==='QUAL')
               &&(x.who||[]).includes(id)&&(x.key===fkey||String(x.key||'').indexOf(fkey+'.')===0));
-            return hit?(hit.code==='SC_QUAL'?'Q':'C'):null; };
+            return hit?((hit.code==='SC_QUAL'||hit.code==='QUAL')?'Q':'C'):null; };
           const sv=(id:any)=>chk?sev(di,id):(own(id)?'hard':null), cp=(id:any)=>chk?chip(di,id):own(id), dh=(id:any)=>chk?dsh(di,id):false,
                 tr=(id:any)=>chk?traceHit(di,id):null;
           h+=`<div class="acrow${ai?'':' r1'}${acx}" style="--gr:${ai+1}"><span class="pucks">${slotCell(a.p,sv(a.p),key+'.p','FCP',ed,cp(a.p),dh(a.p),tr(a.p))}${slotCell(a.w,sv(a.w),key+'.w','RCP',ed,cp(a.w),dh(a.w),tr(a.w))}</span></div>

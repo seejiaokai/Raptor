@@ -15,7 +15,7 @@
 export const SAWAVE:any={
   sc:    {label:'SC',    all:false, main:2, spare:2, shifts:[['AM','07:00','13:00'],['PM','13:00','19:00']],
           duties:['SXO','OPS O'], perShiftDuties:true,
-          note:'Two MAIN and two SPARE per shift. A SPARE is checked for availability and SC currency, nothing else.'},
+          note:'Two MAIN and two SPARE per shift. A SPARE is checked for availability, SC currency, a pilots-only front seat and not holding another SC seat in the same hours — nothing else.'},
   avalon:{label:'AVALON',cs:'AV',all:true,  main:2, spare:2, shifts:[['NIGHT','19:00','07:00']],
           duties:['SXO','OPS O','RUNNER','LOG CELL'], autoDuty:true,
           note:'Overnight, two MAIN and two SPARE. Every man on it is checked for availability — overseas or medically down — and nothing else.'},

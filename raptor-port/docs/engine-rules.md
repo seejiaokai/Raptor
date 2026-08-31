@@ -645,7 +645,35 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   are otherwise `saExempt`, and the message says which of the two it is. SC
   SPARE carries no crew rest either way. SC currency is checked for MAIN and
   SPARE. SC NIGHT ⊂ SC DAY.
-- Standalone waves: SC (spares uncrosschecked), AVALON/BB (`noconf`).
+- **The two SC SPARE rules of 31 Aug 26 (owner)** — on top of `canSpare` and
+  currency, an SC spare seat now carries exactly two more checks, both hard:
+  - **Two SC seats in the same hours** — a man on a SPARE line who also holds
+    ANY other SC seat (MAIN or SPARE, same wave or another) whose shift hours
+    genuinely overlap is one man in two places: a hard `DOUBLE_BOOK`, worded
+    "standing SC SPARE … and also on …", anchored on the spare seat and said
+    once per pair. Abutting shifts are NOT a conflict — `overlap` is
+    half-open, so SC AM 07:00–13:00 into SC PM 13:00–19:00 (the owner's own
+    example, "the 1300 is not a conflict") stay two clean shifts. MAIN+MAIN
+    needs no new rule (main shifts are events; the ordinary clash loop reds
+    them). One body, `events.ts:scSeatHit` (a model walk — spares are absent
+    from EVD by design), read by the validator AND the crew picker's
+    `slotBar` ("already on SC AM MAIN 07:00–13:00"), so the palette refuses
+    exactly what the warning list would flag after a drag-drop.
+  - **The spare front seat is pilots-only** — a WSO (`seat==='RCP'`, plus the
+    CAT-IW data-consistency variant) planted in a spare line's FCP raises the
+    same hard `QUAL` the flying seat rules raise, suffixed "(… SPARE)" and
+    anchored on the seat. The rear spare seat is deliberately unruled: the
+    pilot-in-RCP mirror was offered and DECLINED (owner, 31 Aug 26) — the
+    picker's seat rules still refuse those seats at arm time, so the only
+    silent path was a drag-drop, and only the WSO-in-FCP half closes it.
+  Deliberately NOT rules, unchanged: a spare against his own sortie, sim or
+  duty raises nothing (spares stay free — the owner declined a call-up
+  advisory the same day), and AVALON/BB are untouched (the AVALON rule stays
+  owner-reserved). Pins: `scspare-rules.test.ts` (validator),
+  `slotrules.test.ts` (picker); the parity compare excises the port-only
+  `spareAcs` field (`parity.test.ts noPortOnly`).
+- Standalone waves: SC (spares uncrosschecked beyond the four checks above),
+  AVALON/BB (`noconf`).
 - **AVALON's one check (owner, 11 Aug 26).** AVALON and its desk keep
   `noconf` — nothing on them is cross-checked against tasks, rest or
   qualifications — but every man on the wave now gets ONE look, the SC-spare

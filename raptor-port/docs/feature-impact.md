@@ -554,6 +554,11 @@ check the other):
   only ever disagree with the palette by a stale repaint, never by a diverged
   rule. Keep it that way: a ring rule that does not go through `slotBar` is a
   new drift-seam. (`selrings.test.tsx` pins DOM-agrees-with-slotBar directly.)
+  The 31 Aug 26 two-SC-seats rule follows the same law from the other side:
+  `events.ts:scSeatHit` is the ONE body — the validator's spare-overlap
+  warning and `slotBar`'s "already on …" refusal both call it (spares are
+  absent from EVD, so neither could have read the shared event stream). A
+  future SC-seat rule goes through it, not beside it.
 - **Three editors over one list.** The Inputs page, the week cell and the board
   cell all edit `INPUTS`; they are kept from drifting only because all three
   funnel through `commitInputEdit`/`setInpField`. Add a fourth the same way.
