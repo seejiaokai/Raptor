@@ -70,6 +70,19 @@ it), `state/store.test.ts` wording. Verified live at 390 px: every row grip meas
 delta 0 and reads level; dragging a ground row reorders it (gman set); no row overflows
 390px; zero ▲▼ in the DOM; no console errors. Contract: `docs/ui-contracts.md` §Dense row
 reorder; decision: `raptor-port/CLAUDE.md` §Stable decisions.
+  FOLLOW-UP (same week): the marker lane was widened 13px → 20px and the crew pucks
+  shifted flush-left (owner — "the text box just starts right of the drag marker … not
+  inside the text box"; "the pucks can shift it back to the left so that it holds 2 pucks
+  not blocked … make sure the rest are placed back to the same area"). The dotted glyph
+  left-aligns in the wider lane so the handle clears the first box (measured gap 8 → 17px),
+  and the puck containers span from track 1 — `.sb-line .sb-seatpair` `1/4`,
+  `.sb-arow.c6r>.ppl` `1/3` — to reclaim the marker lane on their own (second) line, so a
+  flying seatpair AND every c6r crew cell (single-puck duty/ground + the AMT/sim two-wide
+  box) sits flush with the marker (measured 17–20px right → delta 0) and a two-wide box's
+  second puck clears the 154px remarks instead of clipping under it at 390px+. No puck
+  resized (the AMT droppable-hole geometry spec still passes); the sub-~383px residual is
+  the accepted-tight zone. Files: `scheduler.css` only. Verified live at 390px (all pucks
+  delta 0, gap 17px, headers delta 0, grips aligned 28–30px band); six gates green.
 
 31 Aug 26 CREW PANELS JOIN THE BOARD'S ONE DRAGGABLE LIST (owner /impeccable follow-up,
 mockup-approved — "one list, drag anywhere"). The four crew working-aid panels — Personal

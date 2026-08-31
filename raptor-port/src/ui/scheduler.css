@@ -4606,7 +4606,7 @@ button.sanscard:hover{border-color:var(--accent)}
      an implicit second row. 74px is measured against the phone build:
      ▲ ▼ ✕ at .mbtn.nudge's own size plus the .lctl gap, with a few px to
      spare. */
-  .sb-nrow{grid-template-columns:13px 22px 1fr 74px}
+  .sb-nrow{grid-template-columns:20px 22px 1fr 74px}
   /* The brief sits INLINE between MSN and TO on the phone now (owner, 16 Aug
      26 — "arrange the board like the edit schedule: brief then TO then LD"),
      the same order the desktop board and the week already carry. It used to
@@ -4617,23 +4617,39 @@ button.sanscard:hover{border-color:var(--accent)}
      column needs); the three time tracks are fixed and equal so B/TO/LD line up
      as a block. The B HEADER is no longer hidden (it was in the nth-child list
      below), so the row still matches its own headings. */
-  .sb-lcols,.sb-line{grid-template-columns:13px 36px minmax(0,1fr) 46px 46px 46px;font-size:10px}
+  .sb-lcols,.sb-line{grid-template-columns:20px 36px minmax(0,1fr) 46px 46px 46px;font-size:10px}
   /* the flying line's first row is tall — the B cell stacks the blue brief time above
      its box, and the input boxes bottom-align to it — so the marker bottom-aligns too,
      at the boxes' own height, giving a measured grip-centre = box-centre (owner, 31 Aug
      26 — "align the marker vertically with the boxes; don't make me repeat it"). */
   .sb-line>.sb-grip{align-self:end;height:24px}
+  /* The leading marker lane was widened 13px → 20px (owner, 31 Aug 26 follow-up
+     — "the text box just starts right of the drag marker … not inside the text
+     box"): left-align the dotted glyph within its lane so it sits clear of the
+     first box (measured handle-to-box gap 8px → 17px) instead of centred and
+     crowding it. It still lines up horizontally with the section/wave grips (all
+     within a 2px band — the owner's "align with GO 1"), and the vertical centre
+     is unchanged (this is horizontal-only, so the delta-0 grip alignment holds).
+     Row grips only — .wvgrip/.secgrip are their own classes; stack layout only,
+     so the .sb-wide desktop grip keeps its centred column. */
+  .schedboard:not(.sb-wide) .sb-grip{justify-content:flex-start;padding-left:1px}
   /* FCP | RCP pack TIGHT on the left, and the remarks + stores cell rides up
      to their right on the SAME row (owner, 16 Aug 26 — "the 2 pucks side by
      side and the remarks row will go up to the right of the pucks"). A puck is
      only 74px, so two side by side use ~154px of a 334px row — the remarks used
      to sit on its own strip below while that right half sat empty. Now the seat
-     pair spans the two left tracks (CS + MSN width) as a fixed 74+74 pair, and
-     the remarks cell takes the three time tracks on the right; grid auto-flow
-     lands them on one row with no explicit grid-row, so `.sb-wide`'s
-     display:contents / grid-column:auto resets still fully undo it on a tablet.
-     One fewer strip per flying line again. */
-  .sb-line .sb-seatpair{grid-column:2 / 4;display:grid;grid-template-columns:74px 74px;gap:6px;align-items:center;align-self:start}
+     pair spans the left tracks as a fixed 74+74 pair, and the remarks cell takes
+     the three time tracks on the right; grid auto-flow lands them on one row with
+     no explicit grid-row, so `.sb-wide`'s display:contents / grid-column:auto
+     resets still fully undo it on a tablet. One fewer strip per flying line again.
+     The span starts at track 1, NOT 2 (owner, 31 Aug 26 follow-up — "the pucks
+     can shift it back to the left so that it holds 2 pucks not blocked"): the row
+     grip bottom-aligns to the FIRST line, so the 20px marker lane is empty on
+     this SECOND line, and reclaiming it shifts the pair flush-left (measured 20px
+     right of the marker → delta 0) so both 74px pucks clear the 154px remarks box
+     instead of the second one clipping under it. Measured: fully clears at 390px+,
+     the sub-~383px residual is the accepted-tight zone below. */
+  .sb-line .sb-seatpair{grid-column:1 / 4;display:grid;grid-template-columns:74px 74px;gap:6px;align-items:center;align-self:start}
   .sb-line .sb-rcell{grid-column:4 / -1}
   .sb-lcols>:nth-child(7),.sb-lcols>:nth-child(8),
   .sb-lcols>:nth-child(9),.sb-lcols>:nth-child(10){display:none}
@@ -4705,10 +4721,12 @@ button.sanscard:hover{border-color:var(--accent)}
      remarks box at those widths, which is the misalignment this change exists
      to remove. The flying line already squeezes its own seat pair at 360px
      for the same reason. */
-  /* a 13px leading MARKER track (owner, 31 Aug 26 — the ▲▼ replaced by a drag grip):
-     the name box shortens by it, the three right-hand tracks are untouched, so the
-     remarks box stays 154px right-anchored and still lines up with the flying line's. */
-  .sb-acols.c6r,.sb-arow.c6r{grid-template-columns:13px 1fr 50px 46px 46px}
+  /* a 20px leading MARKER track (owner, 31 Aug 26 — the ▲▼ replaced by a drag grip;
+     widened 13px → 20px in the same-week follow-up so the dotted handle sits in its
+     own lane, clear of the name box — measured gap 8px → 17px): the name box shortens
+     by it, the three right-hand tracks are untouched, so the remarks box stays 154px
+     right-anchored and still lines up with the flying line's. */
+  .sb-acols.c6r,.sb-arow.c6r{grid-template-columns:20px 1fr 50px 46px 46px}
   /* Role/Item spans the first pair, so Start and End auto-place into tracks
      3 and 4 exactly where they sat before.
      BY POSITION, not by class, and that is load-bearing: every c6r row
@@ -4725,12 +4743,21 @@ button.sanscard:hover{border-color:var(--accent)}
   .sb-acols.c6r>:nth-child(5){display:none}
   /* THE REMARKS BOX RIDES THE PUCKS' ROW, ALIGNED UNDER START (owner, 16 Aug
      26 — "beside the pucks on the right, same row, aligned with the B", the
-     shape the flying line already uses). People take the left (Role/Item)
-     track; remarks fill the two time tracks on the right and align to the top
-     of a tall crew (an AMT box). It is shown at ALL times now — the empty-hide
-     and its "+" reveal are gone (board-html.ts) — because sharing the pucks'
-     row costs no extra line, which is the row this change gives back. */
-  .sb-arow.c6r>.ppl{grid-column:2 / 3}
+     shape the flying line already uses). People take the left track; remarks
+     fill the two time tracks on the right and align to the top of a tall crew
+     (an AMT box). It is shown at ALL times now — the empty-hide and its "+"
+     reveal are gone (board-html.ts) — because sharing the pucks' row costs no
+     extra line, which is the row this change gives back.
+     The People span starts at track 1, NOT 2 (owner, 31 Aug 26 follow-up — "the
+     pucks … back to the left … 2 pucks not blocked"; "make sure the rest are
+     placed back to the same area"): the row grip bottom-aligns to the first line,
+     so the 20px marker lane is empty on this pucks' line, and reclaiming it shifts
+     every crew cell — single-puck duty/ground AND the AMT/sim two-wide box —
+     flush-left (measured 17px right of the marker → delta 0, matching the old
+     layout), so a two-wide box's second puck clears the 154px remarks instead of
+     clipping under it. Fixed 74px pucks untouched, so the AMT droppable-hole
+     geometry spec is unaffected. */
+  .sb-arow.c6r>.ppl{grid-column:1 / 3}
   .sb-arow.c6r .rmkin{grid-column:3 / -1;align-self:start}
   .sb-inputs{max-height:none;overflow:visible}
   .sbi-row{grid-template-columns:84px var(--puck-w) 1fr;gap:7px}

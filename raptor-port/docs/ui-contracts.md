@@ -1909,19 +1909,44 @@ than its ~13px handle; if the address lived on the grip a drop could only land w
 pointer was back over the handle, which is not a drag. The grip carries
 `touch-action:none`, so a thumb-drag reorders instead of scrolling the page.
 
-**The phone grid gains a 13px LEADING MARKER TRACK, and the header shifts with it.**
+**The phone grid gains a 20px LEADING MARKER TRACK, and the header shifts with it.**
 `.sb-lcols/.sb-line` (flying line), `.sb-acols/.sb-arow.c6r` (duty / sim / ground /
-Common Programme) and `.sb-nrow` (notes) each prepend a small marker column on the
-phone; the header's leading placeholder (`.sb-lcols/.sb-acols > :nth-child(1)`) is
-un-hidden so the column TITLES shift right by the same track — every box stays UNDER its
-own heading (owner, 31 Aug 26 — "the box must align with the title"). The first
-(name / callsign) box shortens by the track; the right-hand tracks are untouched, so the
-c6r remarks box stays 154px right-anchored and still lines up with the flying line's.
+Common Programme) and `.sb-nrow` (notes) each prepend a marker column on the phone; the
+header's leading placeholder (`.sb-lcols/.sb-acols > :nth-child(1)`) is un-hidden so the
+column TITLES shift right by the same track — every box stays UNDER its own heading
+(owner, 31 Aug 26 — "the box must align with the title"). The first (name / callsign) box
+shortens by the track; the right-hand tracks are untouched, so the c6r remarks box stays
+154px right-anchored and still lines up with the flying line's. The track was widened
+13px → 20px in the same-week follow-up (owner — "the text box just starts right of the
+drag marker … not inside the text box"), and the row glyph is left-aligned in its lane
+(`.schedboard:not(.sb-wide) .sb-grip{justify-content:flex-start}`), so the handle sits in
+its own lane clear of the first box — MEASURED handle-to-box gap 8px → 17px. Widening the
+track does not affect puck fit (see below), and the row grip still lines up horizontally
+with the section / wave grips (all within a 2px band — the owner's "align with GO 1").
 The grip was ALWAYS a DOM child (display:none before, shown now), so every `:nth-child`
-index in the phone block and its `.sb-wide` mirror already counted it; the explicit c6r
-spans shifted +1 in lockstep (name `2/4`, ppl `2/3`, rmkin `3/-1`; the flying line's
-seatpair `2/4`, rcell `4/-1`). A future column change to either template must shift them
-again together or a phone / `.sb-wide` layout silently picks up the wrong cell.
+index in the phone block and its `.sb-wide` mirror already counted it; the c6r cell spans
+are name `2/4`, rmkin `3/-1`, and the flying line's rcell `4/-1`. A future column change
+to either template must shift these together or a phone / `.sb-wide` layout silently
+picks up the wrong cell.
+
+**The two-puck rows shift FLUSH-LEFT — the puck container reclaims the marker lane on its
+own line** (owner, 31 Aug 26 follow-up — "the pucks can shift it back to the left so that
+it holds 2 pucks not blocked"; "all the pucks were further towards the left … make sure
+the rest are placed back to the same area"). A flying line's FCP+RCP seatpair and every
+c6r crew cell (single-puck duty / ground AND the AMT/sim two-wide `fcprcp` box) carry
+fixed 74px pucks (never resized — "pucks never wrap" + the AMT droppable-hole geometry
+spec). Two 74px pucks + the 6px gap need 154px, and with the 154px right-anchored remarks
+box that is a tight fit; the leading marker track pushed them 17–20px right and the
+SECOND puck's flag clipped under the remarks. Because the row grip bottom-aligns to the
+FIRST line, the marker lane is empty on the SECOND line where the pucks sit, so the puck
+container spans from track 1, not 2 — `.sb-line .sb-seatpair{grid-column:1/4}` and
+`.sb-arow.c6r>.ppl{grid-column:1/3}`. MEASURED: every puck moves from 17–20px right of the
+marker to flush with it (delta 0 — the old layout's position), and the clip fully clears
+at 390px+ (the sub-~383px residual is the accepted-tight zone — the puck pair + 154px
+remarks simply exceeds the row there). No puck is resized, so the droppable-hole spec is
+untouched; puck clearance depends only on row width, so the marker-track width is free.
+The `.sb-wide` desktop layout resets these spans (display:contents / grid-column:auto),
+so it is unaffected.
 
 **Grip vertical alignment is a MEASURED contract — grip-centre = box-centre, delta 0**
 (owner, 31 Aug 26 — "align it vertically with the rest of the text boxes … make sure all
@@ -1935,7 +1960,7 @@ browser measurement pass. Don't move a grip's placement without re-measuring it 
 0 against its neighbour box.
 
 `.sb-nrow` still needs its own phone template — the note row is grip + `nx` ("1.") +
-`nin` + `.lctl`, so its phone grid is `13px 22px 1fr 74px` (marker, number, note,
+`nin` + `.lctl`, so its phone grid is `20px 22px 1fr 74px` (marker, number, note,
 controls). The `boardMbtn` `mv:up/dn` handler is kept as an inert guard for a stale
 element; nothing emits its address now.
 

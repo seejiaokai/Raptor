@@ -910,10 +910,22 @@ subscribers.
   every dense row (flying line, duty, sim, ground, Common Programme, Overall-note) now
   shows its dotted `⠿` grip at ALL widths and reorders by dragging it. `sbNudge` returns
   '' (no ▲▼ renders — also ~2 nodes/row off the board DOM budget); the phone grid
-  templates gain a 13px LEADING MARKER TRACK, the header's leading placeholder is
+  templates gain a LEADING MARKER TRACK, the header's leading placeholder is
   un-hidden so the column titles shift with it (each box stays UNDER its own heading),
   and the first box shortens by the track. The right-hand tracks are untouched, so the
   remarks box stays 154px right-anchored and still lines up with the flying line's.
+  **A same-week follow-up widened the lane 13px → 20px and shifted the pucks flush-left**
+  (owner — "the text box just starts right of the drag marker … not inside the text box";
+  "the pucks can shift it back to the left so that it holds 2 pucks not blocked … make
+  sure the rest are placed back to the same area"): the glyph is left-aligned in the wider
+  lane so the handle sits clear of the first box (measured gap 8px → 17px), and the puck
+  containers span from track 1 (`.sb-line .sb-seatpair` `1/4`, `.sb-arow.c6r>.ppl` `1/3`)
+  to reclaim the marker lane on their OWN line (the grip bottom-aligns to the first line,
+  so that lane is empty there) — every crew puck goes flush-left (measured delta 0, the
+  old layout's spot) and a two-wide box's second puck clears the remarks instead of
+  clipping under it. No puck resized (the AMT droppable-hole spec holds); marker width
+  doesn't affect puck fit, so widening the lane was free. Don't return the puck spans to
+  track 2 or the glyph to centre. ui-contracts §Dense row reorder carries the measurements.
   ALIGNMENT is a HARD RULE now (owner — "I don't want to keep repeating this"): every
   grip's centre is MEASURED against the box beside it to delta 0 — the flying line's grip
   bottom-aligns (`.sb-line>.sb-grip{align-self:end;height:24px}`) because its first-row
