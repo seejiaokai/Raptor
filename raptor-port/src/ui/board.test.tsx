@@ -1045,14 +1045,16 @@ describe('board lifecycle', () => {
     await act(async () => { const { closeScheduler } = await import('./board'); closeScheduler(); notify() })
   })
 
-  /* The AMT box crew reads FCP (left) / RCP (right), paired down, on a fixed
-     two-column grid; Brief and Debrief are times only (owner, 13 Aug 26). */
-  it('the AMT BOX crew is a two-column FCP/RCP grid, and Brief/Debrief carry no crew', async () => {
+  /* The AMT box crew sits front-seat left / rear-seat right, paired down, on a
+     fixed two-column grid; Brief and Debrief are times only (owner, 13 Aug 26).
+     The visible FCP/RCP column WORDS were dropped (owner, 31 Aug 26) — the
+     two-column layout carries the seat identity now — so no .hd header renders. */
+  it('the AMT BOX crew is a two-column seat grid with no FCP/RCP words, and Brief/Debrief carry no crew', async () => {
     await act(async () => { openScheduler(0) })
     const cell = $('#sbBoard .sb-panel.simr .ppl.fcprcp')
     expect(cell, 'the box people cell is the fixed two-column grid').toBeTruthy()
-    expect([...cell.querySelectorAll('.hd')].map((h: any) => h.textContent),
-      'FCP left, RCP right').toEqual(['FCP', 'RCP'])
+    expect(cell.querySelector('.hd'),
+      'the FCP/RCP column words are gone (owner, 31 Aug 26)').toBeFalsy()
     expect(cell.querySelectorAll('.seat').length, 'the seed box seats its eight pax').toBe(8)
     const amtRows = [...document.querySelectorAll('#sbBoard .sb-panel.simr .sb-arow.c6r')]
       .filter(r => /BRIEF|DEBRIEF/i.test((r.querySelector('.ain') as HTMLInputElement)?.value || ''))
@@ -1159,18 +1161,25 @@ describe('reorder grips — the ▲▼ nudge was removed 31 Aug 26 (owner, 8 Aug
     expect(boardHTML(0)).toBe(bDef)
   })
 
-  it('the crew panels join the board\'s one draggable list, but reordering them never touches the week (owner, 31 Aug 26 — "one list, drag anywhere")', () => {
+  it('the crew panels join the one draggable list on the board AND the edit week, but never the view week (owner, 31 Aug 26 — "one list, drag anywhere" + "drag markers on edit scheduler")', () => {
     const secs = [...boardHTML(0).matchAll(/data-secmove="0\.(\w+)"/g)].map(m => m[1])
     for (const k of ['inputs', 'avail', 'sans', 'unav']) expect(secs, `${k} is draggable on the board`).toContain(k)
-    const wDef = dayHTML(0, true)
-    /* move ONLY a crew key (Available crew) to the head; the schedule keys keep their
-       canonical relative order, so the week — which appends the crew panels
-       separately — must be byte-identical (the parity-safe, board-only guarantee) */
+    /* they carry a draggable .dsec on the EDIT week too now (owner, 31 Aug 26 —
+       "drag markers on edit scheduler"); the VIEW week stays parity-locked */
+    const eSecs = [...dayHTML(0, true).matchAll(/data-secmove="0\.(\w+)"/g)].map(m => m[1])
+    for (const k of ['inputs', 'avail', 'sans', 'unav']) expect(eSecs, `${k} is draggable on the edit week`).toContain(k)
+    const vDef = dayHTML(0, false)
+    /* move ONLY a crew key (Available crew) to the head */
     DAYS[0].secOrder = ['avail', 'notes', 'prog', 'waves', 'duty', 'sims', 'ground']
     try {
       const b = boardHTML(0)
       expect(b.indexOf('Available crew'), 'board: Available crew now leads').toBeLessThan(b.indexOf('Common Programme'))
-      expect(dayHTML(0, true), 'the week is untouched by a crew reorder').toBe(wDef)
+      /* the EDIT week reflects the same reorder now — the crew panels drag there too */
+      const w = dayHTML(0, true)
+      expect(w.indexOf('sec-avail'), 'edit week: Available crew now leads').toBeLessThan(w.indexOf('sec-prog'))
+      /* but the VIEW week is byte-identical: its crew panels are edit-only / parity-locked,
+         and moving a crew key never changes the schedule sections' own relative order */
+      expect(dayHTML(0, false), 'the view week is untouched by a crew reorder').toBe(vDef)
     } finally { delete DAYS[0].secOrder }
   })
 
@@ -1946,9 +1955,9 @@ describe('the OFT seat grid and its extras (14 Aug 26)', () => {
   beforeAll(async () => {
     await act(async () => { setSession({ user: 'a', role: 'admin' }); view.setPage('editsched'); openScheduler(0); notify() })
   })
-  it('an OFT crew row renders the AMT seat grid, FCP and RCP named', () => {
+  it('an OFT crew row renders the AMT seat grid, with no FCP/RCP words', () => {
     expect(cell().classList.contains('fcprcp'), 'the .fcprcp grid, like the AMT box').toBe(true)
-    expect([...cell().querySelectorAll('.hd')].map(h => h.textContent)).toEqual(['FCP', 'RCP'])
+    expect(cell().querySelector('.hd'), 'the FCP/RCP words are gone (owner, 31 Aug 26)').toBeFalsy()
   })
   it('an empty OFT seat is a droppable slot now, not nothing', async () => {
     /* Monday's EP-6 has a pilot and no WSO — before this build the empty seat

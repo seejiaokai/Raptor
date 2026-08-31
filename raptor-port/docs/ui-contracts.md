@@ -2214,20 +2214,24 @@ and Unavailable are ordinary section keys now
 (`SECTIONS=['notes','prog','waves','duty','sims','ground','inputs','avail','sans','unav']`),
 each wrapped in its own `.sb-sec[data-secmove]` card with the same dotted grip — so on
 the Scheduler Board any card can be dragged to any position (Available crew up next to
-the flying waves, say), not only among the crew group. It is a scheduler WORKSPACE
-arrangement, not a published property: it takes effect on the BOARD only, because
-`ui/html.ts`'s week APPENDS these four panels separately (they are working aids, and
-SANS/Unavailable are parity-locked on the view week). So their week slice bits are empty
-and reordering them changes NOTHING on either week — the same empty-slice mechanism that
-keeps `notes` parity-safe (pinned: a crew reorder leaves `dayHTML` byte-identical,
-`ui/board.test.tsx`). The grip is injected by a loose `sb-ph`|`ap-h` header match in
-`board.ts wrapSec`, since Available crew's header is `.ap-h` (re-laid to flex-start with
-`.n` floated right so the grip rides with its title); Personal Inputs' foldable header is
-centred for the grip (`.sb-sec .sb-ph.pl-fold` — it was `baseline`, which sat the grip
-~7px above the title, the owner's "some are slightly higher than the title"); and a
-grip-tap on the two foldable headers (`data-pitog`, `data-avtog`) is guarded in
-`interactions.ts` so it starts a drag, not a fold. Don't fold the crew panels back into
-a fixed tail, and don't let their order reach the week.
+the flying waves, say), not only among the crew group. **They drag on the EDIT SCHEDULER
+too since 31 Aug 26** (owner — "drag markers on edit scheduler … follow the same
+formatting as the rest of the sections"): in EDIT mode `ui/html.ts dayHTML` emits all
+ten sections — the crew four included — through the SAME `secOrder` loop as the board,
+each wrapped in a `.dsec[data-secmove]` with a grip, so a drag on either surface drives
+the ONE per-day order (no second copy to drift). It is a scheduler WORKSPACE arrangement,
+not a published property: the **VIEW week is untouched and parity-locked** — there the
+four are not draggable and only Unavailable prints, appended in its fixed tail exactly as
+before, so the whole change is gated on `ed` and `dayHTML(view)` (with the reference)
+stays byte-identical, 728/0 (pinned: the parity gate and `ui/html.test.ts`). The grip is
+injected on the board by a loose `sb-ph`|`ap-h` header match in `board.ts wrapSec`, and
+on the edit week by a first-header regex (`ah-h`|`sub-h`|`ap-h`) in `dayHTML`'s `gripIn`;
+Available crew's header is `.ap-h` (re-laid to flex-start with `.n` floated right so the
+grip rides with its title — `.sb-sec .ap-h` on the board, `.dsec .ap-h` on the week);
+Personal Inputs' foldable header centres the grip; and a grip-tap on the two foldable
+headers (`data-pitog`, `data-avtog`) is guarded in `interactions.ts` so it starts a drag,
+not a fold. Don't fold the crew panels back into a fixed tail, and don't let their order
+reach the VIEW week (the edit week now shares the board's, gated on `ed`).
 
 **A section move is display order only.** The order lives on the day as `d.secOrder`
 (absent ⇒ the default order), resolved by `engine/order.ts secOrder(d)`. It never

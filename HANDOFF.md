@@ -519,6 +519,46 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
 
 ## Known issues / open work
 
+- **RESOLVED 31 Aug 26 (four owner UI asks, one pass) — scheduler-board text
+  wrap, sim seat labels, board deselect, edit-scheduler crew drag markers.**
+  Four independent fixes, each verified live at 1280 and 390 px with no console
+  errors, parity held 728/0:
+  1. **Common Programme text was cut off on the board.** Its Item box (and the
+     Overall-note line) were the two board free-text fields still raw `<input>`s
+     — they never got the 20 Aug growing-`<textarea>` treatment the duty/sim/
+     ground rows have — so a long value scrolled out of sight. Both are the
+     growing textarea now (`board-html.ts` via `boxHTML`; `.sb-nrow textarea` CSS
+     added). Measured growing 24→60/72 px with no clipping. Those two were the
+     ONLY board boxes still affected.
+  2. **FCP/RCP column words removed from the sims** (owner — "not reflected
+     elsewhere but only in the sims"). The `.hd` header spans are gone from the
+     AMT/OFT seat grid; the fixed two-column pairing STAYS (owner's choice —
+     empty seats keep their place), and dropping the header row aligns the pucks
+     with the row's text boxes like every other section. Heads-up left for the
+     owner: the FLYING-wave lines also carry a "FCP / RCP" column header — a
+     different, more load-bearing place — left as-is since the ask was scoped to
+     sims. Pins updated in `ui/board.test.tsx`.
+  3. **Tapping empty space on the board didn't deselect.** The sign-off strip
+     (`.sb-sign`, `#sbSign`) was still in the blank-clear exclusion list — a big
+     grey panel that is mostly empty width, the same dead-zone the 15 Aug fix
+     removed for the week's `.day-head`/`.schedbanner`/`.signoff`. Dropped it
+     from the exclusion (`interactions.ts`); its controls (the stretched
+     `<select>`s, Publish, ⓘ, `.sgn`) stay guarded by the base list. Live-drive:
+     a click on the strip's blank area now clears 16 lit pucks → 0. Pin in
+     `ui/interact.test.tsx`.
+  4. **Drag markers on the four crew panels in Edit Schedule** (owner — "follow
+     the same formatting as the rest of the sections"). Personal Inputs,
+     Available crew, SANS Avail and Unavailable now carry the same dotted `⠿`
+     grip and drag on the EDIT WEEK, extending the board's "one list, drag
+     anywhere" (31 Aug): `dayHTML` in EDIT mode emits all ten sections through
+     the SAME `secOrder` loop, each in a `.dsec[data-secmove]`, so a drag on
+     either surface drives the ONE per-day order. The VIEW week is untouched and
+     parity-locked (change gated on `ed`; Unavailable still appended in its fixed
+     tail). Grips measured delta-0 against their titles; a live pointer-drag
+     moved Available crew above Personal Inputs. Contract in
+     `docs/ui-contracts.md` §Dragging sections and waves; stable decision updated
+     in `CLAUDE.md`.
+
 - **RESOLVED 31 Aug 26 (bug hunt #2, the authority sweep) — a MEMBER could
   ARCHIVE anyone off the roster from the Quals page.** Enable editing is open
   to members by design (owner, 5 Aug 26 — they tick their quals and fill in

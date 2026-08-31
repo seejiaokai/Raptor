@@ -1246,23 +1246,18 @@ export function dayHTML(di:any,ed:any,vsel?:any){
        in-place replacement for the old Arrange sheet — store.moveSectionTo, pure
        display order). VIEW mode wraps nothing, so the view week — and the
        read-only reference the parity gate pins — is byte-identical (728/0). */
-    {
-      /* the week keeps day notes as lines inside the Common Programme block (they
-         never had a card of their own here — see engine/order.ts), so the 'notes'
-         section is empty on the week and its slice adds nothing: the view week and
-         the reference stay byte-identical (parity 728/0). The BOARD is where notes
-         and programme are two separate draggable cards. */
-      const secBits:any={prog:h.slice(secM0,secM1),waves:h.slice(secM1,secM2),duty:h.slice(secM2,secM3),sims:h.slice(secM3,secM4),ground:h.slice(secM4)};
-      /* the dotted ⠿ grip sits INLINE at the head of each section's own header (the
-         .ah-h / .sub-h / .wv-sech title), not as a rail in the .dsec gutter — so it
-         reads dotted like the wave/row grips, sits beside its title and centres on
-         the title line (owner, 31 Aug 26). Edit-only, so parity is untouched. */
-      const secGrip='<span class="secgrip" title="Drag to reorder this section" aria-label="Reorder this section">⠿</span>';
-      const gripIn=(bit:string,k:string)=>k==='prog'?bit.replace('<div class="ah-h">',`<div class="ah-h">${secGrip}`)
-        :k==='waves'?bit.replace('<div class="sub-h wv-sech">',`<div class="sub-h wv-sech">${secGrip}`)
-        :bit.replace('<div class="sub-h">',`<div class="sub-h">${secGrip}`);
-      h=h.slice(0,secM0)+secOrder(d).map((k:string)=>{const bit=secBits[k]||'';if(!bit)return'';return ed?`<div class="dsec" data-secmove="${di}.${k}">${gripIn(bit,k)}</div>`:bit;}).join('');
-    }
+    /* the week keeps day notes as lines inside the Common Programme block (they
+       never had a card of their own here — see engine/order.ts), so the 'notes'
+       section is empty on the week and its slice adds nothing: the view week and
+       the reference stay byte-identical (parity 728/0). The BOARD is where notes
+       and programme are two separate draggable cards.
+       secBits is CAPTURED here — before the reorder loop rewrites h — but the loop
+       itself runs further down, AFTER the four crew working-aid panels are built,
+       so in EDIT mode those panels can join the SAME draggable list (owner, 31 Aug
+       26 — "drag markers on edit scheduler … follow the same formatting as the rest
+       of the sections", extending the board's one-list model onto the edit week).
+       Held at function scope, not inside a block, for exactly that reason. */
+    const secBits:any={prog:h.slice(secM0,secM1),waves:h.slice(secM1,secM2),duty:h.slice(secM2,secM3),sims:h.slice(secM3,secM4),ground:h.slice(secM4)};
     /* ---- the two input-derived blocks -------------------------------------
        PERSONAL INPUTS is what aircrew submitted and the scheduler has not yet
        acted on, so it is scheduler-side only — it never reaches the view page.
@@ -1324,17 +1319,39 @@ export function dayHTML(di:any,ed:any,vsel?:any){
           +`<div class="ppl one">${pk}</div>${inpRmkCell(inp,ed,d.dt)}`
           +(acc?accCtl(di,inp):'')+`</div>`; });
       return s+`</div>`; };
-    if(ed)h+=inGrp('Personal Inputs',(inp:any)=>isPersonal(inp.type)&&inp.acc!=='u','sec-inp',false,true);
-    // ---- available crew (computed, not an input type) stays scheduler-side ----
-    if(ed)h+=availHTML(d,di,ed);
-    /* SANS AVAILABILITY IS ITS OWN GROUP, drawn as a card grid rather than
-       through inGrp's row builder (owner rework, 14 Aug 26 — see
-       sansSectionHTML/sansCardsHTML above for why). Scheduler-side only, like
-       Personal Inputs: a member files it on the Inputs page, a scheduler
-       reads it here. */
-    h+=sansSectionHTML(d,di,ed);
+    /* THE FOUR CREW WORKING-AID PANELS. In EDIT mode they join the SAME draggable
+       section list as the schedule cards above (owner, 31 Aug 26 — "drag markers on
+       edit scheduler … follow the same formatting as the rest of the sections",
+       extending the board's 31 Aug "one list, drag anywhere" onto the edit week):
+       each goes into secBits under its own section key and the reorder loop below
+       places it in the day's own order, wrapped in a draggable .dsec with a grip,
+       so an arrangement made here and one made on the board drive the ONE per-day
+       order (engine/order.ts) — no second copy to drift.
+       In VIEW mode nothing here is draggable and only Unavailable prints, appended
+       in its fixed tail position exactly as before, so the view week (and the parity
+       gate) stay byte-identical (728/0). Personal Inputs and Available crew are
+       scheduler-side (edit only); SANS prints nothing when empty (sansSectionHTML).
+       Available crew stays computed (not an input type); SANS is its own card grid
+       (owner rework, 14 Aug 26); Unavailable is an offer's opposite and always
+       prints, "Nil" and all. */
+    const crewInputs=ed?inGrp('Personal Inputs',(inp:any)=>isPersonal(inp.type)&&inp.acc!=='u','sec-inp',false,true):'';
+    const crewAvail=ed?availHTML(d,di,ed):'';
+    const crewSans=sansSectionHTML(d,di,ed);
     // SANS Availability is an offer, not an absence — it reads isUnavail (no Accept controls) but does not belong in this block
-    h+=inGrp('Unavailable',(inp:any)=>(isUnavail(inp.type)||inp.acc==='u')&&!isSansAvail(inp.type)&&!isUpchit(inp.type),'sec-unav',true);
+    const crewUnav=inGrp('Unavailable',(inp:any)=>(isUnavail(inp.type)||inp.acc==='u')&&!isSansAvail(inp.type)&&!isUpchit(inp.type),'sec-unav',true);
+    if(ed){secBits.inputs=crewInputs;secBits.avail=crewAvail;secBits.sans=crewSans;secBits.unav=crewUnav;}
+    /* the dotted ⠿ grip sits INLINE at the head of each section's own header (the
+       .ah-h / .sub-h / .ap-h / .wv-sech title), not as a rail in the .dsec gutter —
+       so it reads dotted like the wave/row grips, sits beside its title and centres
+       on the title line (owner, 31 Aug 26). Edit-only, so parity is untouched. ONE
+       robust regex handles every header the ten sections carry — the schedule cards'
+       ah-h / sub-h / sub-h.wv-sech, Personal Inputs' foldable sub-h.pl-fold and
+       Available crew's ap-h — matching the FIRST such header in each section's own
+       bit, so a nested header is never hit. */
+    const secGrip='<span class="secgrip" title="Drag to reorder this section" aria-label="Reorder this section">⠿</span>';
+    const gripIn=(bit:string)=>bit.replace(/(<div class="(?:ah-h|sub-h|ap-h)\b[^>]*>)/,`$1${secGrip}`);
+    h=h.slice(0,secM0)+secOrder(d).map((k:string)=>{const bit=secBits[k]||'';if(!bit)return'';return ed?`<div class="dsec" data-secmove="${di}.${k}">${gripIn(bit)}</div>`:bit;}).join('');
+    if(!ed)h+=crewUnav;
     h+=`</div>`; // /day-body
     return h+`</section>`;
 }

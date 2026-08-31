@@ -2619,6 +2619,13 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
    headers a centred flex row for it and drop the old gutter-clearing indents (there
    is no overlay in the gutter any more). Edit-only (.dsec), so parity is untouched. */
 .dsec>.allhands>.ah-h,.dsec>.sec>.sub-h,.dsec .wv-sech{display:flex;align-items:center;gap:6px}
+/* Available crew's fold header (.ap-h) on the WEEK joins the draggable list too
+   (owner, 31 Aug 26 — the crew working-aid panels are draggable on the edit
+   scheduler now, not just the board): the same flex-start + auto-margin move as the
+   board's copy (.sb-sec .ap-h above), so the injected grip rides with the title and
+   the "by wave · close" summary stays at the right edge. Edit-only, parity untouched. */
+.dsec .ap-h{display:flex;align-items:center;justify-content:flex-start;gap:6px}
+.dsec .ap-h>.n{margin-left:auto}
 /* the week's Flying-waves header (edit-only, html.ts) — the section header this
    block never had. Coloured and cased like every other week section header
    (.sub-h + var(--sec)); its box lines up with the wave blocks below (both
@@ -4183,10 +4190,10 @@ button.sanscard:hover{border-color:var(--accent)}
    prose boxes restate the app font by hand. `.lin`/`.msn` are deliberately
    NOT in that list: their own rule gives them JetBrains Mono and should keep
    winning, which it does — this file sets no font on them here. */
-.sb-arow textarea,.sb-line textarea,.sb-psub textarea{
+.sb-arow textarea,.sb-line textarea,.sb-psub textarea,.sb-nrow textarea{
   field-sizing:content;resize:none;overflow:hidden;white-space:pre-wrap;
   overflow-wrap:anywhere;display:block;min-height:0}
-.sb-arow textarea.ain,.sb-line textarea.nts,.sb-psub textarea.ain{
+.sb-arow textarea.ain,.sb-line textarea.nts,.sb-psub textarea.ain,.sb-nrow textarea.nin{
   font-family:'Inter Tight',system-ui,sans-serif}
 /* 12px, and it is a MEASURED number rather than a taste: an <input> at
    font-size 11px lays its content box out at exactly 12px, so a one-line
@@ -4195,7 +4202,7 @@ button.sanscard:hover{border-color:var(--accent)}
    taller and the day grew 6543px→6658px — 115px of scroll bought for rows
    that are not wrapping at all, which is most of them. Wrapped lines are
    correspondingly tight; that is the trade and it favours the common case. */
-.sb-arow textarea,.sb-line textarea,.sb-psub textarea{line-height:12px}
+.sb-arow textarea,.sb-line textarea,.sb-psub textarea,.sb-nrow textarea{line-height:12px}
 /* the c6r grid — Common Programme / duty / sim / ground / input rows all share it:
    Item | Start | End | People | Rmks | ctl. The Common Programme used to carry an
    extra DETAIL column (its own `cprog` grid), but the owner dropped it (22 Aug 26)
@@ -4206,10 +4213,14 @@ button.sanscard:hover{border-color:var(--accent)}
    1..n down; an emptied seat keeps its slot (the pax-hole rule) so the pairing
    never reshuffles. Two puck-widths wide, which the People column already holds
    — the 8-crew box laid out four-of-two here before this made it explicit. */
+/* the fixed two-column FCP|RCP seat grid — the visible column WORDS were dropped
+   (owner, 31 Aug 26 — "remove the FCP and RCP words in sims"; board-html.ts), so
+   the grid's first row is the top pair of seats now, not a header. align-content
+   :start keeps that top pair flush with the row's Item / time boxes (the row is
+   align-items:center, so a single-pair box centres like every other section's
+   people cell — the alignment the owner asked to match). */
 .ppl.fcprcp{display:grid;grid-template-columns:var(--puck-w) var(--puck-w);gap:3px 6px;
   align-content:start;justify-content:start}
-.ppl.fcprcp .hd{font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;
-  letter-spacing:.05em;font-size:8px;font-weight:700;color:var(--ink-3);line-height:1;margin-bottom:1px}
 .ppl.fcprcp .sb-slot.empty{width:var(--puck-w);height:var(--puck-h);border:1px dashed var(--edge-2);
   border-radius:3px;display:flex;align-items:center;justify-content:center;color:var(--ink-3);font-size:11px}
 /* a duty-block / AMT / OFT sub-head inside a panel body */
