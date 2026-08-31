@@ -888,13 +888,17 @@ export function validate(){
         /* THE SPARE FRONT SEAT IS PILOTS-ONLY (owner, 31 Aug 26 — "a wso
            can't be planned for FCP"; the pilot-in-rear-seat mirror was
            offered and DECLINED, so the rear spare seat stays unruled here).
-           Spare rows never reach f.acs, so the flying seat rules above
-           cannot see them; the two WSO predicates are mirrored from there
-           byte-for-byte. The crew picker already refuses the seat (slotBar's
-           seat rules carry no spare gate) — this closes the drag-drop
-           bypass, the one silent path. */
+           Spare rows never reach f.acs, so the flying seat rules above cannot
+           see them; the front-seat predicates are mirrored from there so the
+           crew PICKER and the warning list agree — slotBar's seat rules carry
+           no spare gate (avail.ts), so the picker already refuses a WSO AND a
+           ground-crew body from a spare front seat; the validator must red the
+           same drag-drop or it re-opens the very picker/validator drift this
+           whole rule closes (ground crew hold no flying qualification at all,
+           the stricter case of "not a pilot"). */
         (f.spareAcs||[]).forEach((sa:any)=>{ const sp=realP(sa.p); if(!sp)return;
-          if(sp.seat==='RCP'){markChip(di,sa.p,'Q');markRing(di,sa.p,'hard');add('hard','QUAL',[sa.p],`${sp.cs} is a WSO — cannot fly FCP (${f.label} SPARE)`,sa.key+'.p');}
+          if(sp.pers){markChip(di,sa.p,'Q');markRing(di,sa.p,'hard');add('hard','QUAL',[sa.p],`${sp.cs} is ground crew — cannot fly a front seat (${f.label} SPARE)`,sa.key+'.p');}
+          else if(sp.seat==='RCP'){markChip(di,sa.p,'Q');markRing(di,sa.p,'hard');add('hard','QUAL',[sa.p],`${sp.cs} is a WSO — cannot fly FCP (${f.label} SPARE)`,sa.key+'.p');}
           else if(sp.q==='IW'&&sp.seat==='FCP'){markChip(di,sa.p,'Q');markRing(di,sa.p,'hard');add('hard','QUAL',[sa.p],`${sp.cs} is CAT IW — a WSO category, cannot fly FCP (${f.label} SPARE)`,sa.key+'.p');}});
       }
     });

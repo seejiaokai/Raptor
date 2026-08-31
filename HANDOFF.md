@@ -519,6 +519,33 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
 
 ## Known issues / open work
 
+- **OPEN, FLAGGED to the owner 31 Aug 26 (bug pass) — a reorder on a PUBLISHED day
+  can silently skip its amendment mark.** Every reorder mover (`engine/reorder.ts`
+  `moveWave`/`moveDutyRow`/`moveSimRow`/`moveProgRow`/`moveNote`/`moveGroundRow`/
+  formation/aircraft) marks ONE field-value key at the destination index as the
+  amendment proxy (`done(\`wl:${di}.${to}\`,di)` etc.) — the design intent
+  (reorder.ts:16-20) being "a move always counts as an amendment." But
+  `afterSchedMutate` → `drafts.ts reconcileIssuedMarks` is a VALUE differ: it drops
+  a pending field key whose live value equals the issued snapshot's
+  (`drafts.ts:370`). A reorder changes POSITION, not the marked field's value, so
+  when the two swapped rows share that field's value (two blank-label waves; two
+  same-role duty rows; two equal-text notes/programme/ground rows) the proxy mark
+  is reconciled away: the move takes effect and re-publishes correctly, but the day
+  reads "no pending changes" and the reorder never reaches the AL. CONFIRMED by a
+  throwaway repro (two blank-label waves published then swapped → pending drops to
+  0; two distinct-label waves keep the mark). PRE-EXISTING — hits the old ▲▼ nudge
+  and Sort-all too, not just the 30–31 Aug drag family; the published-audit tests
+  miss it because they assert `SCHED.pending` right after `applyMove` and never run
+  the `afterSchedMutate`/reconcile step the live `rowdrag.onUp` path always does.
+  **Not fixed on purpose** — the fix touches the reconcile/amendment core (the
+  archetypal silent-defect area), so it wants owner sign-off per the HEAVY-care
+  doctrine. **Recommended fix:** represent a reorder-on-published-day like a
+  DELETION — mark a structural key `reconcileIssuedMarks` skips by name (the
+  `del:`/`inp:` precedent, `drafts.ts:356`), so a move always counts, consistent
+  with how deletes already behave. Needs the AL-carry/pendCount/publishAL wiring
+  for the new structural key checked, and reorder-and-back semantics decided
+  (a move netting to zero vs. showing the churn, as deletes do).
+
 - **Times are hh:mm (`08:00`) everywhere — the 29 Aug 4-digit board pass was REVERSED
   by the owner on 30 Aug 26** ("I saw wrongly … most of the timing format is 08:00.
   Change it back and make sure everything follows that format consistently"). hh:mm is

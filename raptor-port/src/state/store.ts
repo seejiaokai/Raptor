@@ -438,6 +438,7 @@ export function loadWeek(v: any) {
   view.armDrop()
   view.selDrop()
   view.clearOtherHL()
+  view.setSecDefOffer(null)   // a "set default?" offer keyed by day index must not outlive its week
   view.DPREV.clear()
   view.VWORK.clear()
   view.AVSHUT.clear()

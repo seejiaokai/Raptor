@@ -105,6 +105,19 @@ describe('the spare front seat is pilots-only', () => {
     expect(warns('glass', 'QUAL')).toEqual([])
   })
 
+  it('ground crew in a spare FRONT seat is barred too — the picker already refuses it, so the validator must agree', () => {
+    const gnd = Object.keys(PEOPLE).find(id => PEOPLE[id].pers)!
+    expect(gnd, 'the roster carries a ground-crew body').toBeTruthy()
+    AM().aircraft[2].p = gnd
+    const hits = warns(gnd, 'QUAL')
+    expect(hits.length).toBe(1)
+    expect(hits[0].msg).toContain('ground crew — cannot fly a front seat')
+    /* but the rear seat is their proper place (incentive ride), no QUAL */
+    AM().aircraft[2].p = ''
+    AM().aircraft[3].w = gnd
+    expect(warns(gnd, 'QUAL')).toEqual([])
+  })
+
   it('a plain pilot in a spare REAR seat raises nothing — the mirror was offered and declined (owner, 31 Aug 26)', () => {
     const plain = Object.keys(PEOPLE).find(id =>
       !PEOPLE[id].special && !PEOPLE[id].pers && PEOPLE[id].seat === 'FCP' && !isInstrPilot(PEOPLE[id].q))!

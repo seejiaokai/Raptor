@@ -118,6 +118,7 @@ export function wireRowDrag(el: HTMLElement) {
   }
 
   const onDown = (e: any) => {
+    if (from || fromSec) return          // a drag is already live — a second finger on another grip must not orphan the first's highlight
     if (!canEditSched()) return
     if (view.DPREV.has(view.SBDAY as any)) return
     /* the GRIP only — a press on the element itself is a click on a field, and a
