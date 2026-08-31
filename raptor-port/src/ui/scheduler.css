@@ -4439,10 +4439,10 @@ button.sanscard:hover{border-color:var(--accent)}
      with four inputs and another puck at any track maths), which is also a
      finger-sized drop target. MSN takes the slack (1fr) so row 1 fills the
      width. */
-  /* the grip is display:none here, so it takes no grid track — but it is still
-     a DOM child, so every nth-child index below counts it (8 Aug 26) */
-  .sb-grip{display:none}
-  .mbtn.nudge{display:inline-flex}
+  /* the row grip is SHOWN on the phone now (owner, 31 Aug 26): the ▲▼ nudge it used
+     to defer to is gone (board-html.ts sbNudge returns ''), and each dense row's grid
+     below carries a leading marker track for it. It has always been a DOM child, so
+     the nth-child indices below still count it. */
   /* the wave header's .gctl grew a third button (Auto sort) — Go N + the
      wave-title select + the in-time/aircraft-count text already filled a
      390px row, and none of .mbtn/<select>/the label spans opt out of the
@@ -4588,7 +4588,10 @@ button.sanscard:hover{border-color:var(--accent)}
      fit and are unaffected: flex-wrap only acts on the row that needs it. */
   .sb-psub{flex-wrap:wrap}
   .sb-psub .gctl{flex:1 0 100%;margin-left:0;justify-content:flex-end}
-  .sb-lcols>:nth-child(1),.sb-acols>:nth-child(1){display:none}
+  /* the header's leading placeholder is SHOWN on the phone now, so the column
+     headings shift right with the marker track and every box stays under its own
+     title (owner, 31 Aug 26 — "the box must align with the title") */
+  .sb-lcols>:nth-child(1),.sb-acols>:nth-child(1){display:block}
   /* .sb-nrow is the one row template that was never restated down here
      (found live, fix round 1, 8 Aug 26). With the grip hidden above, the
      row is down to three real grid children — nx, nin, .lctl — but
@@ -4603,7 +4606,7 @@ button.sanscard:hover{border-color:var(--accent)}
      an implicit second row. 74px is measured against the phone build:
      ▲ ▼ ✕ at .mbtn.nudge's own size plus the .lctl gap, with a few px to
      spare. */
-  .sb-nrow{grid-template-columns:22px 1fr 74px}
+  .sb-nrow{grid-template-columns:13px 22px 1fr 74px}
   /* The brief sits INLINE between MSN and TO on the phone now (owner, 16 Aug
      26 — "arrange the board like the edit schedule: brief then TO then LD"),
      the same order the desktop board and the week already carry. It used to
@@ -4614,7 +4617,12 @@ button.sanscard:hover{border-color:var(--accent)}
      column needs); the three time tracks are fixed and equal so B/TO/LD line up
      as a block. The B HEADER is no longer hidden (it was in the nth-child list
      below), so the row still matches its own headings. */
-  .sb-lcols,.sb-line{grid-template-columns:48px minmax(0,1fr) 46px 46px 46px;font-size:10px}
+  .sb-lcols,.sb-line{grid-template-columns:13px 36px minmax(0,1fr) 46px 46px 46px;font-size:10px}
+  /* the flying line's first row is tall — the B cell stacks the blue brief time above
+     its box, and the input boxes bottom-align to it — so the marker bottom-aligns too,
+     at the boxes' own height, giving a measured grip-centre = box-centre (owner, 31 Aug
+     26 — "align the marker vertically with the boxes; don't make me repeat it"). */
+  .sb-line>.sb-grip{align-self:end;height:24px}
   /* FCP | RCP pack TIGHT on the left, and the remarks + stores cell rides up
      to their right on the SAME row (owner, 16 Aug 26 — "the 2 pucks side by
      side and the remarks row will go up to the right of the pucks"). A puck is
@@ -4625,8 +4633,8 @@ button.sanscard:hover{border-color:var(--accent)}
      lands them on one row with no explicit grid-row, so `.sb-wide`'s
      display:contents / grid-column:auto resets still fully undo it on a tablet.
      One fewer strip per flying line again. */
-  .sb-line .sb-seatpair{grid-column:1 / 3;display:grid;grid-template-columns:74px 74px;gap:6px;align-items:center;align-self:start}
-  .sb-line .sb-rcell{grid-column:3 / -1}
+  .sb-line .sb-seatpair{grid-column:2 / 4;display:grid;grid-template-columns:74px 74px;gap:6px;align-items:center;align-self:start}
+  .sb-line .sb-rcell{grid-column:4 / -1}
   .sb-lcols>:nth-child(7),.sb-lcols>:nth-child(8),
   .sb-lcols>:nth-child(9),.sb-lcols>:nth-child(10){display:none}
   .sb-line .lctl{grid-column:1 / -1;justify-content:flex-start;margin-top:2px}
@@ -4697,7 +4705,10 @@ button.sanscard:hover{border-color:var(--accent)}
      remarks box at those widths, which is the misalignment this change exists
      to remove. The flying line already squeezes its own seat pair at 360px
      for the same reason. */
-  .sb-acols.c6r,.sb-arow.c6r{grid-template-columns:1fr 50px 46px 46px}
+  /* a 13px leading MARKER track (owner, 31 Aug 26 — the ▲▼ replaced by a drag grip):
+     the name box shortens by it, the three right-hand tracks are untouched, so the
+     remarks box stays 154px right-anchored and still lines up with the flying line's. */
+  .sb-acols.c6r,.sb-arow.c6r{grid-template-columns:13px 1fr 50px 46px 46px}
   /* Role/Item spans the first pair, so Start and End auto-place into tracks
      3 and 4 exactly where they sat before.
      BY POSITION, not by class, and that is load-bearing: every c6r row
@@ -4709,7 +4720,7 @@ button.sanscard:hover{border-color:var(--accent)}
      50px spacer track, misaligned with the ground programme's rows directly
      above them — caught by the e2e that pins those two row shapes together,
      which is exactly why it exists. */
-  .sb-arow.c6r>:nth-child(2),.sb-acols.c6r>:nth-child(2){grid-column:1 / 3}
+  .sb-arow.c6r>:nth-child(2),.sb-acols.c6r>:nth-child(2){grid-column:2 / 4}
   .sb-acols.c6r>:nth-child(3){display:revert}
   .sb-acols.c6r>:nth-child(5){display:none}
   /* THE REMARKS BOX RIDES THE PUCKS' ROW, ALIGNED UNDER START (owner, 16 Aug
@@ -4719,8 +4730,8 @@ button.sanscard:hover{border-color:var(--accent)}
      of a tall crew (an AMT box). It is shown at ALL times now — the empty-hide
      and its "+" reveal are gone (board-html.ts) — because sharing the pucks'
      row costs no extra line, which is the row this change gives back. */
-  .sb-arow.c6r>.ppl{grid-column:1 / 2}
-  .sb-arow.c6r .rmkin{grid-column:2 / -1;align-self:start}
+  .sb-arow.c6r>.ppl{grid-column:2 / 3}
+  .sb-arow.c6r .rmkin{grid-column:3 / -1;align-self:start}
   .sb-inputs{max-height:none;overflow:visible}
   .sbi-row{grid-template-columns:84px var(--puck-w) 1fr;gap:7px}
   .sbi-row .sbi-rm{grid-column:1 / -1;font-size:10.5px;color:var(--ink-3)}

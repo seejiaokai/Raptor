@@ -1556,10 +1556,11 @@ window... in the same modality as ground programme"). On the week they are
 `contenteditable` cells beside the ground rows' own; on a live board the two
 input panels draw their rows as `sb-arow c6r` — literally the ground
 programme's row, same seven tracks under the same header, including the
-leading GRIP track, which an input row keeps even though it cannot be dragged
-(the phone rule hides `.sb-grip` specifically, so a bare `<span>` standing in
-for it ate the phone's 1fr ITEM column and shunted every field one track
-left). A read-only board keeps the compact `.sbi-row`.
+leading MARKER track, which an input row keeps for register even though it
+cannot be dragged — its grip is `sbGrip(true)` → `.sb-grip.ro`
+(`visibility:hidden`), so it holds the track but paints nothing while the
+reorderable rows' grips paint (§Dense row reorder). A read-only board keeps
+the compact `.sbi-row`.
 
 They carry `data-inp` (week) and `data-ifld` (board), NOT `data-txt` /
 `data-bfld`: an input is not schedule data, has no funnel key, and commits
@@ -1889,51 +1890,54 @@ more section. The WEEK copy is deliberately left tinted: there its neighbours
 are tinted too, so the green card matches. Markup is unchanged, so the fold and
 drop-to-unassign contracts above are untouched.
 
-## Reordering rows on the board
+## Reordering rows on the board (§Dense row reorder)
 
-A grip (`⠿`, `board-html.ts`'s `sbGrip`) sits at the far left of every
-movable board row on desktop; below 820px it is `display:none` and the
-row's own control cluster (`.lctl`) shows ▲/▼ instead (`.mbtn.nudge`,
-`sbNudge`). **Both are always emitted — CSS alone decides which paints.**
-Rendering the grip or the buttons conditionally on viewport width would
-make the panel's string-diff depend on window size, and would not survive
-a resize: a board built at 900px and then resized to 700px would still be
-carrying whichever markup it happened to be built with, not the one the
-new width wants.
+A dotted grip (`⠿`, `board-html.ts`'s `sbGrip`) sits at the start of every movable
+board row and reorders it by DRAG at ALL widths (owner, 31 Aug 26 — "remove up and
+down arrow and add a drag marker to those lines"). This REPLACED the 8 Aug split where
+the phone hid `.sb-grip` and showed a ▲▼ nudge (`.mbtn.nudge`, `sbNudge`) instead:
+`sbNudge` now returns '' (no ▲▼ renders at any width — and ~2 nodes/row come off the
+board DOM budget), and the grip paints everywhere. The grip is still ALWAYS emitted
+(`.ro` alone hides it on a read-only board), never conditionally on viewport width, so
+the panel's string-diff stays width-independent and survives a resize.
 
-**The address lives on the ROW, never on the grip** —
-`data-move="mv:…"` (`rowMove`) is an attribute of `.sb-line` / `.sb-arow` /
-`.sb-nrow` itself, not of the `.sb-grip` span sitting inside it.
-`rowdrag.ts`'s pointer machine depends on this directly: a `pointermove`
-finds the row under the moving finger with `closest('[data-move]')`, and a
-pointer spends far more of a drag hovering the row's middle than its 18px
-handle. If the address lived on the grip instead, a drag could only ever
-recognise a landing target the instant the pointer happened to be back over
-a handle — which is not a drag at all.
+**The address lives on the ROW, never on the grip** — `data-move="mv:…"` (`rowMove`)
+is an attribute of `.sb-line` / `.sb-arow` / `.sb-nrow` itself, not the `.sb-grip` span
+inside it. `rowdrag.ts`'s pointer machine finds the row under the moving finger with
+`closest('[data-move]')`, and a pointer spends far more of a drag over the row's body
+than its ~13px handle; if the address lived on the grip a drop could only land while the
+pointer was back over the handle, which is not a drag. The grip carries
+`touch-action:none`, so a thumb-drag reorders instead of scrolling the page.
 
-**The grip's 18px track is a measured contract, and its phone treatment is
-the single most breakage-prone part of this change.** `.sb-lcols/.sb-line`
-and `.sb-acols/.sb-arow` both prepend one `18px` column for it on desktop.
-Below 820px the grip is `display:none`, so it claims no grid track — but it
-is *still a DOM child*, and every `:nth-child()` rule in the phone block,
-and in its mirror `.schedboard.sb-wide` (the block that restates the
-desktop layout at phone width), counts it whether or not it paints. Every
-column index in both blocks shifted by one the moment the grip was added;
-a future column change to either row template has to shift them again in
-lockstep or a phone or `.sb-wide` layout silently picks up the wrong cell.
+**The phone grid gains a 13px LEADING MARKER TRACK, and the header shifts with it.**
+`.sb-lcols/.sb-line` (flying line), `.sb-acols/.sb-arow.c6r` (duty / sim / ground /
+Common Programme) and `.sb-nrow` (notes) each prepend a small marker column on the
+phone; the header's leading placeholder (`.sb-lcols/.sb-acols > :nth-child(1)`) is
+un-hidden so the column TITLES shift right by the same track — every box stays UNDER its
+own heading (owner, 31 Aug 26 — "the box must align with the title"). The first
+(name / callsign) box shortens by the track; the right-hand tracks are untouched, so the
+c6r remarks box stays 154px right-anchored and still lines up with the flying line's.
+The grip was ALWAYS a DOM child (display:none before, shown now), so every `:nth-child`
+index in the phone block and its `.sb-wide` mirror already counted it; the explicit c6r
+spans shifted +1 in lockstep (name `2/4`, ppl `2/3`, rmkin `3/-1`; the flying line's
+seatpair `2/4`, rcell `4/-1`). A future column change to either template must shift them
+again together or a phone / `.sb-wide` layout silently picks up the wrong cell.
 
-**`.sb-nrow` needed its own phone template when no other row did**, and
-that gap was found live, not in review (fix round 1, 8 Aug 26). Every
-other row already carried a phone override; with the grip hidden, the
-notes row is down to three real grid children — `nx`, `nin`, `.lctl` — and
-without a restated template it fell through to the unconditional desktop
-grid (`18px 22px 1fr 62px`, four tracks): `nx` landed in the 18px track
-(harmless — it is just "1."), `nin` — the note text itself — squeezed into
-the 22px track meant for `nx`, and `.lctl` (▲, ▼, ✕) inflated its first
-button to fill the `1fr` track meant for the note, the last 62px track
-going unused. The phone override is `22px 1fr 74px`, the 74px measured
-against the phone build for ▲ ▼ ✕ at `.mbtn.nudge`'s own size plus
-`.lctl`'s gap, with a few px to spare.
+**Grip vertical alignment is a MEASURED contract — grip-centre = box-centre, delta 0**
+(owner, 31 Aug 26 — "align it vertically with the rest of the text boxes … make sure all
+the alignment is considered for all drag markers … I don't want to keep repeating this").
+The flying line's first-row boxes bottom-align under the tall B cell (which stacks the
+blue brief time above their line), so its grip bottom-aligns too at the box height
+(`.sb-line>.sb-grip{align-self:end;height:24px}`); the c6r and notes rows sit in a
+box-height first grid row, so their grip centres there with no override; the section /
+wave / crew grips are box-centred in their headers. All were verified delta 0 with a
+browser measurement pass. Don't move a grip's placement without re-measuring it to delta
+0 against its neighbour box.
+
+`.sb-nrow` still needs its own phone template — the note row is grip + `nx` ("1.") +
+`nin` + `.lctl`, so its phone grid is `13px 22px 1fr 74px` (marker, number, note,
+controls). The `boardMbtn` `mv:up/dn` handler is kept as an inert guard for a stale
+element; nothing emits its address now.
 
 **The landing mark is a border on the row being dropped onto, not an
 inserted element** — `.rowdrop{box-shadow:inset 0 2px 0 0 var(--accent)}`.
@@ -2120,9 +2124,10 @@ template** remembers it. This REPLACED the per-day `⇅ Arrange` sheet (deleted 
 **The handles.** Every reorderable section is wrapped in a draggable unit carrying a
 dotted grip inline in its own header — `.sb-sec[data-secmove="di.key"]` on the board,
 `.dsec` (edit mode only) on the week — and every wave block carries a grip in its header
-(`.wvgrip`) plus `data-move="mv:w.di.gi"` on the block (`.sb-go` / `.go`). Unlike
-the dense board ROW grip (`.sb-grip`, hidden on a phone in favour of ▲▼ because a
-packed row has no room to grab), a section or a wave is a big target, so these grips
+(`.wvgrip`) plus `data-move="mv:w.di.gi"` on the block (`.sb-go` / `.go`). The dense
+board ROW grip (`.sb-grip`) is shown at every width too since 31 Aug 26 (the ▲▼ nudge it
+used to defer to on a phone is gone — §Dense row reorder); a section or a wave is an even
+bigger target, so these grips
 **stay draggable at every width** (the "drag, no arrows" design). The machine is
 `ui/rowdrag.ts`, wired on both the board wrap and the edit-week root; it tells the
 three draggables apart by the grip pressed, walks up to the enclosing wave block for

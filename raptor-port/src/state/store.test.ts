@@ -290,7 +290,7 @@ describe('a reorder disarms a stale-armed slot, not just a deleted one (finding 
     expect(armedKey()).toBe('')
   })
 
-  it('a nudge (the phone gesture, same applyMove path) disarms it too', () => {
+  it('a row reorder (the drag gesture, same applyMove path) disarms it too', () => {
     const rows = DAYS[0].dutywaves[0].rows
     if (rows.length < 2) rows.push({ role: 'TEST', id: '', str: '0800', end: '1700' })
     armSlot('d:0.0.0')

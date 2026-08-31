@@ -411,10 +411,10 @@ test('the board\'s duty rows keep a readable ITEM column on a phone', async ({ p
     }
   })
   test.skip(!m, 'no named duty row on the seed board')
-  /* FOUR since 20 Aug 26 — the remarks-alignment spacer track; see the
-     column-layout test further down. The point of this assertion is that the
-     DESKTOP six-track template is not winning here, which it still makes. */
-  expect(m!.columns, 'the phone template is not the desktop six').toBe(4)
+  /* FIVE since 31 Aug 26 — the leading MARKER track added with the drag grip (was
+     FOUR: the 20 Aug remarks-alignment spacer). The point of this assertion is that
+     the DESKTOP template is not winning here, which it still makes. */
+  expect(m!.columns, 'the phone template is not the desktop one').toBe(5)
   expect(m!.worstOverflow, 'the item name is not clipped by its own box').toBeLessThanOrEqual(0)
   expect(m!.narrowest, 'and the item column is actually readable').toBeGreaterThan(80)
 })
@@ -1944,7 +1944,9 @@ test('the board flying line carries the brief inline between MSN and TO at phone
   await page.waitForSelector('#schedBoard .sb-line')
   const m = await page.evaluate(() => {
     const head = document.querySelector('#schedBoard .sb-lcols') as HTMLElement
-    const heads = [...head.children].filter(c => getComputedStyle(c).display !== 'none').map(c => c.textContent)
+    /* the leading MARKER placeholder is shown now (empty text) so the titles shift
+       with the grip column — drop it to read the real column labels (31 Aug 26) */
+    const heads = [...head.children].filter(c => getComputedStyle(c).display !== 'none').map(c => c.textContent).filter(t => t && t.trim())
     const line = document.querySelector('#schedBoard .sb-line') as HTMLElement
     const cs = line.querySelector('.lin') as HTMLElement
     const bcell = line.querySelector('.sb-bcell') as HTMLElement
@@ -1965,28 +1967,28 @@ test('the board flying line carries the brief inline between MSN and TO at phone
   expect(m.order, 'columns run MSN → B → TO → LD left to right').toBe(true)
 })
 
-test('the grip shows on desktop and the nudge buttons on a phone', async ({ page }) => {
+/* the ▲▼ row nudge was removed 31 Aug 26 (owner) — the grip now shows and drags at
+   EVERY width, and no `.mbtn.nudge` renders anywhere */
+test('the row grip shows at every width and the ▲▼ nudge is gone', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 })
   await login(page); await go(page, 'editsched')
   await page.evaluate(() => (window as any).openScheduler(0))
   await page.waitForSelector('#sbBoard .sb-line[data-move]')
   const wide = await page.evaluate(() => {
     const g = document.querySelector('#sbBoard .sb-line .sb-grip') as HTMLElement
-    const n = document.querySelector('#sbBoard .sb-line .mbtn.nudge') as HTMLElement
-    return { grip: getComputedStyle(g).display, nudge: getComputedStyle(n).display, w: g.getBoundingClientRect().width }
+    return { grip: getComputedStyle(g).display, nudge: !!document.querySelector('#sbBoard .mbtn.nudge'), w: g.getBoundingClientRect().width }
   })
   expect(wide.grip).not.toBe('none')
-  expect(wide.nudge).toBe('none')
-  expect(Math.round(wide.w)).toBe(18)
+  expect(wide.nudge, 'no ▲▼ nudge renders anywhere').toBe(false)
+  expect(Math.round(wide.w)).toBe(18)   // desktop keeps its 18px grip track
 
   await page.setViewportSize({ width: 390, height: 780 })
   const narrow = await page.evaluate(() => {
     const g = document.querySelector('#sbBoard .sb-line .sb-grip') as HTMLElement
-    const n = document.querySelector('#sbBoard .sb-line .mbtn.nudge') as HTMLElement
-    return { grip: getComputedStyle(g).display, nudge: getComputedStyle(n).display }
+    return { grip: getComputedStyle(g).display, nudge: !!document.querySelector('#sbBoard .mbtn.nudge') }
   })
-  expect(narrow.grip).toBe('none')
-  expect(narrow.nudge).not.toBe('none')
+  expect(narrow.grip, 'the grip shows on a phone now too').not.toBe('none')
+  expect(narrow.nudge).toBe(false)
 })
 
 /* the nth-child re-index is the breakage-prone half of this change and jsdom
@@ -2014,6 +2016,7 @@ test('the phone board keeps its column layout after the grip is added', async ({
     const visible = (el: HTMLElement) => [...el.children]
       .filter(c => getComputedStyle(c as HTMLElement).display !== 'none')
       .map(c => c.textContent)
+      .filter(t => t && t.trim())   // drop the empty leading marker placeholder (31 Aug 26)
     return {
       tracks: getComputedStyle(row).gridTemplateColumns.split(' ').length,
       item: item.getBoundingClientRect().width,
@@ -2022,15 +2025,13 @@ test('the phone board keeps its column layout after the grip is added', async ({
       flyLabels: visible(flyHdr),
     }
   })
-  /* FOUR since 20 Aug 26, and the change is deliberate: a 50px spacer track
-     was inserted so the remarks box could start where the flying line's does
-     (the owner's ringed screenshot — see the alignment test at the foot of
-     this file). Row 1 is unmoved by it, because the name cell spans the first
-     PAIR of tracks; that is what the item-width and label assertions below
-     still pin, and they are the ones that actually catch a mis-indexed
-     column. Common Programme keeps three. */
-  expect(m.tracks).toBe(4)
-  expect(m.hdrTracks).toBe(4)
+  /* FIVE since 31 Aug 26 (a 13px leading MARKER track was added when the ▲▼ nudge
+     became a drag grip); FOUR before that (a 50px spacer track inserted 20 Aug 26 so
+     the remarks box starts where the flying line's does). Row 1 is unmoved by the
+     marker: the name cell spans the first pair of DATA tracks after it, which the
+     item-width and label assertions below still pin. */
+  expect(m.tracks).toBe(5)
+  expect(m.hdrTracks).toBe(5)
   /* the 6 Aug regression: the ITEM column collapsed to a 14px stub */
   expect(m.item).toBeGreaterThan(150)
   /* the labels that survive the nth-child hide, in DOM order, must be
@@ -2118,16 +2119,26 @@ test('dragging a grip reorders the wave and keeps a pair together', async ({ pag
   expect(new Set(runs).size).toBe(runs.length)
 })
 
-test('a phone nudge moves a row and the board still reads correctly', async ({ page }) => {
+/* the ▲▼ nudge is gone (owner, 31 Aug 26) — a row reorders by DRAGGING its grip, on
+   a phone too. This pins the phone drag end to end in a real browser. */
+test('a phone row DRAG reorders a row and the board still reads correctly', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 780 })
   await login(page); await go(page, 'editsched')
   await page.evaluate(() => (window as any).openScheduler(0))
-  await page.waitForSelector('#sbBoard .sb-arow [data-mvdn]')
-  const first = () => page.evaluate(() =>
-    (document.querySelector('#sbBoard .sb-panel.prog .sb-arow .ain') as HTMLInputElement)?.value)
-  const was = await first()
-  await clickHere(page, '#sbBoard .sb-panel.prog .sb-arow [data-mvdn]')
-  expect(await first()).not.toBe(was)
+  await page.waitForSelector('#sbBoard .sb-panel.grnd .sb-arow .sb-grip')
+  const names = () => page.evaluate(() =>
+    [...document.querySelectorAll('#sbBoard .sb-panel.grnd .sb-arow [data-bfld$=".prog"]')].map(i => (i as HTMLInputElement).value))
+  const before = await names()
+  const grips = page.locator('#sbBoard .sb-panel.grnd .sb-arow .sb-grip')
+  const rows = page.locator('#sbBoard .sb-panel.grnd .sb-arow')
+  await grips.first().scrollIntoViewIfNeeded()
+  const a = await grips.first().boundingBox()
+  const b = await rows.nth(2).boundingBox()
+  await page.mouse.move(a!.x + a!.width / 2, a!.y + a!.height / 2)
+  await page.mouse.down()
+  await page.mouse.move(b!.x + b!.width / 2, b!.y + 8, { steps: 12 })
+  await page.mouse.up()
+  expect(await names(), 'the dragged ground row moved (gman set, re-rendered in model order)').not.toEqual(before)
 })
 
 /* ---- the 22 Aug 26 chrome batch — five geometry/paint contracts jsdom

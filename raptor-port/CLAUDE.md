@@ -842,8 +842,9 @@ subscribers.
   machine, `ui/rowdrag.ts` (wired on the board wrap AND the edit-week root), tells the
   three draggables apart by the grip pressed and validates the drop with `applyMove`'s
   own same-container rule. These grips stay draggable at EVERY width — a section/wave
-  is a big target — unlike the dense row grip (`.sb-grip`, phone-hidden in favour of
-  ▲▼); don't hide them on a phone or add arrows (the owner's "drag, no arrows"). The
+  is a big target — and since 31 Aug 26 the dense ROW grip is too (the ▲▼ row nudge
+  was removed and each row's first box shortened to seat the grip; see the row-grip
+  entry below). Don't add arrows back to any of them (the owner's "drag, no arrows"). The
   SECTION grip is the SAME dotted `⠿` the row/wave grips carry (owner, 31 Aug 26 —
   reversing the 30 Aug drawn-rail: "the drag markers should all follow the old design
   in which it's dotted"), placed INLINE at the head of the panel's own header (board
@@ -902,6 +903,27 @@ subscribers.
   grips keep the view week byte-identical (parity 728/0). Pinned: `ui/rowdrag.test.tsx`,
   `ui/SecDefaultSnackbar.test.tsx`, `ui/board.test.tsx`, `ui/html.test.ts`. Contract:
   `docs/ui-contracts.md` §Dragging sections and waves.
+- **Dense ROW reorder is by DRAG too — the ▲▼ nudge is GONE** (owner, 31 Aug 26 —
+  "remove up and down arrow and add a drag marker to those lines … align it vertically
+  with the rest of the text boxes … make sure all the alignment is considered for all
+  drag markers"). This REVERSES the 8 Aug "phone hides `.sb-grip`, shows ▲▼" split:
+  every dense row (flying line, duty, sim, ground, Common Programme, Overall-note) now
+  shows its dotted `⠿` grip at ALL widths and reorders by dragging it. `sbNudge` returns
+  '' (no ▲▼ renders — also ~2 nodes/row off the board DOM budget); the phone grid
+  templates gain a 13px LEADING MARKER TRACK, the header's leading placeholder is
+  un-hidden so the column titles shift with it (each box stays UNDER its own heading),
+  and the first box shortens by the track. The right-hand tracks are untouched, so the
+  remarks box stays 154px right-anchored and still lines up with the flying line's.
+  ALIGNMENT is a HARD RULE now (owner — "I don't want to keep repeating this"): every
+  grip's centre is MEASURED against the box beside it to delta 0 — the flying line's grip
+  bottom-aligns (`.sb-line>.sb-grip{align-self:end;height:24px}`) because its first-row
+  boxes bottom-align under the tall B cell; the c6r/notes rows sit in a box-height first
+  row so their grip centres naturally; the section/wave/crew grips were already
+  box-centred. Don't re-add the ▲▼, don't hide the row grip on a phone, and don't move a
+  grip's placement without re-measuring delta-0 against its neighbour box. The boardMbtn
+  mv:up/dn branch stays as an inert guard for a stale element. Pinned:
+  `ui/rowdrag.test.tsx` (drag machine), `ui/board.test.tsx` (grip present, no ▲▼).
+  Contract: `docs/ui-contracts.md` §Dense row reorder.
 - **The highlight MENUS must read apart from their CHIPS** (owner, 25 Aug 26 —
   the CAT / Type / Quals tabs looked so like the chips inside them that, with one
   menu open, the next shut menu read as another selectable chip). A `.hl-gtab` is

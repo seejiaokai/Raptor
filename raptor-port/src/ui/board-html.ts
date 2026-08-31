@@ -63,10 +63,15 @@ export function sbGrip(ro?:any){
 export function rowMove(addr:any,ro?:any){
   return ro?'':` data-move="${addr}"`;
 }
-export function sbNudge(addr:any,ro?:any){
-  return ro?'':`<button class="mbtn nudge" data-mvup="${addr}" title="Move up">▲</button>`
-    +`<button class="mbtn nudge" data-mvdn="${addr}" title="Move down">▼</button>`;
-}
+/* THE ▲▼ ROW NUDGE IS GONE (owner, 31 Aug 26 — "remove up and down arrow and add a
+   drag marker to those lines"). Every dense row now reorders by DRAGGING its dotted
+   grip (.sb-grip), shown at ALL widths — the phone used to hide the grip and show ▲▼
+   because a packed row had no room to grab; the first box is shortened to make that
+   room now (scheduler.css §board row grip). Returns '' so no button renders (which
+   also drops ~2 nodes per row from the board's DOM budget). Kept as a function, and
+   its call sites left in place, so the removal is one edit; the boardMbtn mv:up/dn
+   branch stays as an inert safety net for any stale element. */
+export function sbNudge(_addr:any,_ro?:any){ return ''; }
 /* Auto sort — a way back to a sensible order that isn't Undo (owner, 8 Aug
    26). One button per section, beside its own + Row / + Line, gated on the
    same ro flag as the grip and the nudge buttons: a preview or read-only

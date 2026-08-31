@@ -864,14 +864,9 @@ describe('board mutation handlers also refuse on a read-only board (re-review, 9
     expect(DAYS[0].waves.length).toBe(before)
   })
 
-  it('a stale nudge button does nothing once editMode() is false', async () => {
-    const btn = document.querySelector('#sbBoard [data-mvdn]') as HTMLElement
-    expect(btn).toBeTruthy()
-    const before = JSON.stringify(DAYS[SBDAY as any])
-    HOOKS.editMode = () => false
-    await click(btn)
-    expect(JSON.stringify(DAYS[SBDAY as any])).toBe(before)
-  })
+  /* the "a stale nudge button does nothing" test went with the ▲▼ arrows
+     themselves (owner, 31 Aug 26). The top-level editMode guard it exercised
+     is still covered by the stale per-section-sort and delete-line tests. */
 
   it('a stale per-section Auto sort button does nothing once editMode() is false', async () => {
     /* Ground specifically, not the first [data-sortsec] match: the overall
@@ -1114,7 +1109,7 @@ describe('board lifecycle', () => {
   })
 })
 
-describe('reorder grips and nudge buttons (owner, 8 Aug 26)', () => {
+describe('reorder grips — the ▲▼ nudge was removed 31 Aug 26 (owner, 8 Aug 26)', () => {
   /* an earlier test in this file logs out (resetSession), which parks
      CURPAGE back on 'viewsched' — HOOKS.editMode() gates on CURPAGE===
      'editsched', so these boardHTML(0) calls need the page put back or
@@ -1135,8 +1130,10 @@ describe('reorder grips and nudge buttons (owner, 8 Aug 26)', () => {
   it('every flying row carries its full aircraft address, on the row — never the grip', () => {
     const h = boardHTML(0)
     expect(h).toMatch(/<div class="sb-line[^"]*" data-move="mv:ac\.0\.0\.0\.0">/)
-    expect(h).toContain('data-mvup="mv:ac.0.0.0.0"')
-    expect(h).toContain('data-mvdn="mv:ac.0.0.0.0"')
+    /* the ▲▼ nudge was removed 31 Aug 26 (owner) — every dense row reorders by
+       dragging its grip now, so no data-mvup/mvdn renders anywhere */
+    expect(h).not.toContain('data-mvup=')
+    expect(h).not.toContain('data-mvdn=')
     const grips = h.match(/<span class="sb-grip"[^>]*>/g) || []
     expect(grips.length, 'grips actually render').toBeGreaterThan(0)
     expect(grips.every(g => !g.includes('data-move')), 'no grip carries an address').toBe(true)

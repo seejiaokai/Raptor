@@ -642,9 +642,9 @@ export function boardMbtn(e: MouseEvent) {
      LOAD-BEARING for tests that predate this consolidation, not just the
      ones added alongside it: the nudge, per-section-sort and delete-line
      branches lost their OWN copy of this check when it moved up here
-     (board.test.tsx's "a stale nudge button does nothing", "a stale
-     per-section Auto sort button does nothing" and "the delete-line (✕)
-     button does nothing" all still pass, but only because THIS line still
+     (the ▲▼ nudge and its "stale nudge button" test are gone since 31 Aug 26,
+     but board.test.tsx's "a stale per-section Auto sort button does nothing" and
+     "the delete-line (✕) button does nothing" still pass, but only because THIS line still
      runs before their branch — narrowing or removing this guard without
      giving those three branches their own check back would silently
      reopen the exact gap those tests were written to catch, even though

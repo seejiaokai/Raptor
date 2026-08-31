@@ -537,58 +537,13 @@ describe('text edits carry amendment marks (area/atime commit + AL colouring)', 
   })
 })
 
-describe('the nudge buttons move a row one place as rendered', () => {
-  it('▼ on the first programme item swaps it with the second', () => {
-    const di = DAYS.findIndex((d: any) => (d.allhands || []).length > 1)
-    const was = DAYS[di].allhands.map((x: any) => x.prog)
-    mountBoard(di)
-    clickAttr(`[data-mvdn="mv:p.${di}.0"]`)
-    expect(DAYS[di].allhands.map((x: any) => x.prog)).toEqual([was[1], was[0], ...was.slice(2)])
-  })
-
-  it('▲ on the first row is a no-op rather than an error', () => {
-    const di = DAYS.findIndex((d: any) => (d.allhands || []).length > 1)
-    const was = JSON.stringify(DAYS[di].allhands)
-    mountBoard(di)
-    clickAttr(`[data-mvup="mv:p.${di}.0"]`)
-    expect(JSON.stringify(DAYS[di].allhands)).toBe(was)
-  })
-
-  /* the ground list renders time-sorted, so "one place down/up" is a question
-     about the DOM, not about model indices — and a nudge test on a sorted
-     list only PROVES that if it picks a row whose on-screen neighbour is NOT
-     also its numeric neighbour. With this fixture (C=model0/1000, A=model1/
-     0800, B=model2/0900) the render order is A, B, C. Nudging A (model 1)
-     down targets B (model 2) — and index+1 from 1 is ALSO 2, so a naive
-     index±1 implementation lands on the same answer by coincidence and the
-     test would pass either way, proving nothing. C is the row that exposes
-     it: rendered LAST (position 2) but stored at model index 0, so its
-     on-screen neighbour above is B (model 2) while index-1 from 0 is -1 — the
-     two implementations now disagree, and only the correct one can pass. */
-  it('▲ on a ground row moves it past the row rendered above it, even though its model index is 0', () => {
-    DAYS[0].ground = [
-      { prog: 'C', str: '1000' }, { prog: 'A', str: '0800' }, { prog: 'B', str: '0900' },
-    ]
-    /* the panel is only ever repainted by a notify() (SchedBoard's own
-       version-diffed effect) — a raw fixture assignment above bypasses the
-       mutation funnel entirely, so without this the board would still be
-       showing whatever ground rows an earlier test in this block left it on */
-    act(() => notify())
-    mountBoard(0)
-    clickAttr('[data-mvup="mv:g.0.0"]')     // model 0 is 'C', rendered last
-    expect(DAYS[0].gman).toBe(true)
-    expect(DAYS[0].ground.map((r: any) => r.prog)).toEqual(['A', 'C', 'B'])
-  })
-
-  it('a member cannot nudge', () => {
-    setSession({ user: 'user', role: 'main' } as any)
-    const di = DAYS.findIndex((d: any) => (d.allhands || []).length > 1)
-    const was = JSON.stringify(DAYS[di].allhands)
-    mountBoard(di)
-    clickAttr(`[data-mvdn="mv:p.${di}.0"]`)
-    expect(JSON.stringify(DAYS[di].allhands)).toBe(was)
-  })
-})
+/* The ▲▼ row nudge was removed 31 Aug 26 (owner — "remove up and down arrow and
+   add a drag marker to those lines"), so its four click-to-reorder tests went with
+   it. Row reorder is by DRAGGING the grip now: the drag machine (including a flying
+   line and a programme row, and the no-edit gate) is covered in `ui/rowdrag.test.tsx`,
+   and `applyMove`'s ground time-sort translation — the thing the old ▲ ground test
+   pinned — is covered in `engine/audit-d-applymove.test.ts`. The live integration
+   (real board grip → drag → reorder, gman set) is exercised by the Playwright pass. */
 
 describe('the Auto sort buttons put a section back in order', () => {
   /* capture toasts without repainting anything, same idiom as drag.test.tsx */

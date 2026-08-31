@@ -46,6 +46,31 @@ old one-week "Apply to all days" was dropped (henceforth default supersedes it).
 render on both surfaces and both widths, the Arrange button is gone, dragging a section
 reorders it and raises the snackbar, no console errors.
 
+31 Aug 26 DENSE ROW REORDER BY DRAG — the ▲▼ nudge removed, a dotted marker added to
+every row (owner /impeccable — "remove up and down arrow and add a drag marker to those
+lines … place it aligned with the start of the text box and shorten the first text boxes
+… align it vertically with the rest of the text boxes … all alignment considered for all
+drag markers"). REVERSES the 8 Aug "phone hides the grip, shows ▲▼" split: every dense row
+(flying line, duty, sim, ground, Common Programme, Overall-note) shows its `⠿` grip at ALL
+widths and reorders by dragging it; `sbNudge` returns '' (no ▲▼, ~2 nodes/row off the
+board DOM). The phone grids gain a 13px leading marker track, the header's leading
+placeholder is un-hidden so column titles shift with it (each box stays under its title),
+the first box shortens by the track, and the right-hand tracks are untouched so the c6r
+remarks box stays 154px right-anchored (still aligned with the flying line's). Grip
+vertical alignment is a MEASURED contract now (owner — "don't want to keep repeating
+this"): every grip centre = its neighbour box's centre, delta 0 — the flying line grip
+bottom-aligns (`align-self:end;height:24px`, its boxes sit low under the tall B cell),
+c6r/notes centre naturally in a box-height first row, section/wave/crew already centred.
+Input rows keep the track but paint no grip (`sbGrip(true)` → `.sb-grip.ro`
+visibility:hidden — they can't be dragged). Files: `board-html.ts` (sbNudge → ''),
+`scheduler.css` (phone leading marker track + c6r/flying span shifts + flying-line grip
+align + show grip / drop nudge / un-hide header placeholder). Tests: `board.test.tsx`
+(no ▲▼, grip present), `interact.test.tsx` (nudge-click describe removed — drag covers
+it), `state/store.test.ts` wording. Verified live at 390 px: every row grip measured
+delta 0 and reads level; dragging a ground row reorders it (gman set); no row overflows
+390px; zero ▲▼ in the DOM; no console errors. Contract: `docs/ui-contracts.md` §Dense row
+reorder; decision: `raptor-port/CLAUDE.md` §Stable decisions.
+
 31 Aug 26 CREW PANELS JOIN THE BOARD'S ONE DRAGGABLE LIST (owner /impeccable follow-up,
 mockup-approved — "one list, drag anywhere"). The four crew working-aid panels — Personal
 Inputs, Available crew, SANS, Unavailable — are ordinary section keys now
