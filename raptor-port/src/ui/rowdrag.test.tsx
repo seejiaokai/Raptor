@@ -152,7 +152,7 @@ describe('wireRowDrag', () => {
       down(grip); over(target); up()
       /* prog moves to where duty sat; the rest keep their relative order (notes,
          a separate section now, stays put at the head) */
-      expect(secOrder(DAYS[0])).toEqual(['notes', 'waves', 'duty', 'prog', 'sims', 'ground'])
+      expect(secOrder(DAYS[0])).toEqual(['notes', 'waves', 'duty', 'prog', 'sims', 'ground', 'inputs', 'avail', 'sans', 'unav'])
     }))
 
     it('a section drag offers the "set as default?" snackbar on a real move', () => withEdit(() => {

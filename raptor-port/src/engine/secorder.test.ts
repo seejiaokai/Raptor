@@ -60,6 +60,6 @@ describe('re-ordering sections cannot corrupt the rules', () => {
     expect(d.secOrder, 'the order is recorded').toEqual(secOrder(d))
     expect(d.waves, 'the waves array is the very same object').toBe(wavesRef)
     expect(d.ground, 'the ground array is the very same object').toBe(groundRef)
-    expect(secOrder(d)).toEqual(['notes', 'prog', 'waves', 'duty', 'ground', 'sims'])
+    expect(secOrder(d)).toEqual(['notes', 'prog', 'waves', 'duty', 'ground', 'sims', 'inputs', 'avail', 'sans', 'unav'])
   })
 })

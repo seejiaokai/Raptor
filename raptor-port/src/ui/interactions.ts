@@ -737,6 +737,9 @@ export function routeClick(e: MouseEvent) {
      collapsed one-liner is the default). Edit page only, like the panel. */
   const avt = t.closest('[data-avtog]') as HTMLElement | null
   if (avt) {
+    /* a press on the drag grip starts a section drag (rowdrag.ts), not a fold — the
+       grip lives inside this header now the crew panels reorder (owner, 31 Aug 26) */
+    if ((e.target as HTMLElement).closest?.('.secgrip')) return
     e.stopPropagation()
     if (!canEditSched() || view.CURPAGE !== 'editsched') return
     view.toggleAvail(+avt.dataset.avtog!); notify(); return
@@ -749,6 +752,9 @@ export function routeClick(e: MouseEvent) {
      alone, not CURPAGE — the board is an overlay, not the editsched page. */
   const pit = t.closest('[data-pitog]') as HTMLElement | null
   if (pit) {
+    /* a press on the drag grip starts a section drag (rowdrag.ts), not a fold — the
+       grip lives inside this header now the crew panels reorder (owner, 31 Aug 26) */
+    if ((e.target as HTMLElement).closest?.('.secgrip')) return
     e.stopPropagation()
     if (!canEditSched()) return
     view.togglePInputs(+pit.dataset.pitog!); notify(); return

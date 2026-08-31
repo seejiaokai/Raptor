@@ -2178,6 +2178,27 @@ inside the Common Programme block (they never had a card of their own there), so
 week keeps them in the 'prog' slice and its 'notes' slice is empty and skipped — which
 is what keeps the view week and reference byte-identical (the empty slice adds nothing).
 
+**The four crew working-aid panels join the board's one draggable list (owner, 31 Aug
+26 — "one list, drag anywhere").** Personal Inputs, Available crew, SANS availability
+and Unavailable are ordinary section keys now
+(`SECTIONS=['notes','prog','waves','duty','sims','ground','inputs','avail','sans','unav']`),
+each wrapped in its own `.sb-sec[data-secmove]` card with the same dotted grip — so on
+the Scheduler Board any card can be dragged to any position (Available crew up next to
+the flying waves, say), not only among the crew group. It is a scheduler WORKSPACE
+arrangement, not a published property: it takes effect on the BOARD only, because
+`ui/html.ts`'s week APPENDS these four panels separately (they are working aids, and
+SANS/Unavailable are parity-locked on the view week). So their week slice bits are empty
+and reordering them changes NOTHING on either week — the same empty-slice mechanism that
+keeps `notes` parity-safe (pinned: a crew reorder leaves `dayHTML` byte-identical,
+`ui/board.test.tsx`). The grip is injected by a loose `sb-ph`|`ap-h` header match in
+`board.ts wrapSec`, since Available crew's header is `.ap-h` (re-laid to flex-start with
+`.n` floated right so the grip rides with its title); Personal Inputs' foldable header is
+centred for the grip (`.sb-sec .sb-ph.pl-fold` — it was `baseline`, which sat the grip
+~7px above the title, the owner's "some are slightly higher than the title"); and a
+grip-tap on the two foldable headers (`data-pitog`, `data-avtog`) is guarded in
+`interactions.ts` so it starts a drag, not a fold. Don't fold the crew panels back into
+a fixed tail, and don't let their order reach the week.
+
 **A section move is display order only.** The order lives on the day as `d.secOrder`
 (absent ⇒ the default order), resolved by `engine/order.ts secOrder(d)`. It never
 enters a slot key, `SCHED.*`, or an AL: re-arranging a panel moves no row inside any
@@ -2185,7 +2206,8 @@ array, so every `di.gi.li.ai` / `d:` / `s:` / `g:` / `a:` key is unchanged and
 `validate()`/publish/history read exactly what they did — the owner's "don't corrupt
 the rules" requirement (pinned in `engine/secorder.test.ts`). Both builders emit
 sections through `secOrder`: `ui/board.ts boardHTML` assembles a `{notes,prog,waves,
-duty,sims,ground}` map (notes and programme are separate cards there), `ui/html.ts
+duty,sims,ground,inputs,avail,sans,unav}` map (notes and programme are separate cards
+there, and the last four are the crew working-aid panels), `ui/html.ts
 dayHTML` slices its accumulator at the boundary marks and re-emits — the **default
 order is byte-identical** to before, and the week's empty `notes` slice is skipped so
 it adds nothing. The drop routes through `state/store.ts moveSectionTo` →
@@ -2228,10 +2250,12 @@ GLOBAL house order once. It is `ui/AdminPage.tsx ArrangeDefaults`, at the top of
 Squadron-config pane, reusing the sheet's `.arrsec` rows and `.tnudge` ▲▼ so it
 reads the same. Admin + `canEditSched()` gated at every nudge (write path, not only
 the UI). Two lists:
-- **Section order** — the five blocks, `engine/order.ts secDefault`/`moveSecDefault`.
-  It is the fallback every un-arranged day renders in on Edit Schedule and the
-  Scheduler Board (a hand-arranged day keeps its own order). Display-only; a **Reset
-  to standard order** button returns it to canonical. `#admSecDefault`.
+- **Section order** — the ten panels (six schedule + four crew), `engine/order.ts
+  secDefault`/`moveSecDefault`. It is the fallback every un-arranged day renders in;
+  the six schedule sections apply on both Edit Schedule and the Scheduler Board, the
+  four crew lists (Personal Inputs, Available crew, SANS, Unavailable) reorder on the
+  Scheduler Board only (a hand-arranged day keeps its own order). Display-only; a
+  **Reset to standard order** button returns it to canonical. `#admSecDefault`.
 - **Flying-wave order** — the built-in kinds (Flying wave / SC / AVALON / BB),
   `engine/reorder.ts waveDefaultView`/`moveWaveDefault`. It starts **off** (the panel
   shows the canonical kinds as a starting point); once set, a NEW wave added to a

@@ -1162,6 +1162,21 @@ describe('reorder grips and nudge buttons (owner, 8 Aug 26)', () => {
     expect(boardHTML(0)).toBe(bDef)
   })
 
+  it('the crew panels join the board\'s one draggable list, but reordering them never touches the week (owner, 31 Aug 26 — "one list, drag anywhere")', () => {
+    const secs = [...boardHTML(0).matchAll(/data-secmove="0\.(\w+)"/g)].map(m => m[1])
+    for (const k of ['inputs', 'avail', 'sans', 'unav']) expect(secs, `${k} is draggable on the board`).toContain(k)
+    const wDef = dayHTML(0, true)
+    /* move ONLY a crew key (Available crew) to the head; the schedule keys keep their
+       canonical relative order, so the week — which appends the crew panels
+       separately — must be byte-identical (the parity-safe, board-only guarantee) */
+    DAYS[0].secOrder = ['avail', 'notes', 'prog', 'waves', 'duty', 'sims', 'ground']
+    try {
+      const b = boardHTML(0)
+      expect(b.indexOf('Available crew'), 'board: Available crew now leads').toBeLessThan(b.indexOf('Common Programme'))
+      expect(dayHTML(0, true), 'the week is untouched by a crew reorder').toBe(wDef)
+    } finally { delete DAYS[0].secOrder }
+  })
+
   it('the duty, sim, ground, programme and note rows all carry one, on the row itself', () => {
     const h = boardHTML(0)
     expect(h).toMatch(/<div class="sb-arow c6r[^"]*" data-move="mv:d\.0\.0\.0">/)

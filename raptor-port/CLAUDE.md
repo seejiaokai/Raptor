@@ -863,7 +863,28 @@ subscribers.
   which is exactly what keeps the view week and the reference byte-identical (the empty
   slice adds nothing). The week's Flying-waves section still gets its edit-only
   `.wv-sech` "Flying waves" header (stripped in `html.test.ts`'s reference compare) so
-  its inline grip has a header to sit in; don't drop it. A
+  its inline grip has a header to sit in; don't drop it.
+  **The four CREW WORKING-AID panels join the SAME draggable list on the board**
+  (owner, 31 Aug 26 — "one list, drag anywhere"): Personal Inputs, Available crew,
+  SANS availability and Unavailable are ordinary section keys now
+  (`SECTIONS=[…,'inputs','avail','sans','unav']`), each wrapped in its own
+  `.sb-sec[data-secmove]` card with the same dotted grip, so any card can be dragged to
+  any position (Available crew up next to the flying waves, say). They take effect on
+  the SCHEDULER BOARD only: `ui/html.ts`'s week APPENDS these panels separately (they
+  are working aids, and SANS/Unavailable are parity-locked on the view week), so their
+  week slice bits are empty and reordering them changes NOTHING on either week — the
+  same empty-slice mechanism that keeps 'notes' parity-safe. This is a scheduler
+  WORKSPACE arrangement, not a published property; the squadron's view week is
+  untouched. Being ordinary section keys they ride the per-day order, the admin house
+  default (Admin's Default-arrangement list shows all ten now, with a note that the
+  crew four are board-only) and the "Set default?" snackbar for free. The grip is
+  injected by a loose `sb-ph`|`ap-h` header match in `board.ts wrapSec` (Available
+  crew's header is `.ap-h`, re-laid to flex-start so the grip rides with its title);
+  Personal Inputs' foldable header is centred for the grip (`.sb-sec .sb-ph.pl-fold`,
+  it was baseline — the 7px "grip too high" the owner flagged), and a grip-tap on the
+  two foldable headers is guarded in `interactions.ts` so it starts a drag, not a fold.
+  Don't fold the crew panels back into a fixed tail, and don't make their order reach
+  the week. A
   SECTION drag is display-only (`store.moveSectionTo` → `engine/order.ts
   reorderSectionTo`, histPush, no markEdit) and then offers the **"Set default
   order?"** snackbar (`ui/SecDefaultSnackbar.tsx`, `SECDEFOFFER`) that promotes it to

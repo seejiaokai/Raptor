@@ -46,6 +46,33 @@ old one-week "Apply to all days" was dropped (henceforth default supersedes it).
 render on both surfaces and both widths, the Arrange button is gone, dragging a section
 reorders it and raises the snackbar, no console errors.
 
+31 Aug 26 CREW PANELS JOIN THE BOARD'S ONE DRAGGABLE LIST (owner /impeccable follow-up,
+mockup-approved — "one list, drag anywhere"). The four crew working-aid panels — Personal
+Inputs, Available crew, SANS, Unavailable — are ordinary section keys now
+(`SECTIONS=['notes','prog','waves','duty','sims','ground','inputs','avail','sans','unav']`),
+each wrapped in its own `.sb-sec[data-secmove]` card with the same dotted grip, so on the
+Scheduler Board any panel can be dragged to any position (Available crew up beside the
+flying waves, say). BOARD-ONLY by design: `ui/html.ts`'s week APPENDS these four
+separately, so their week slice bits are empty and reordering them changes nothing on
+either week — parity stays 728/0 (the same empty-slice trick that keeps `notes` safe). A
+crew arrangement is a scheduler WORKSPACE preference, not a published property; the
+squadron's view week is untouched. Grip injected by a loose `sb-ph`|`ap-h` header match
+(`board.ts wrapSec`); Available crew's `.ap-h` re-laid to flex-start with `.n` floated
+right so the grip rides with its title; Personal Inputs' foldable header centred for the
+grip (`.sb-sec .sb-ph.pl-fold` — was `baseline`, the ~7px "grip too high" the owner
+flagged); grip-taps on the two foldable headers (`data-pitog`/`data-avtog`) guarded in
+`interactions.ts` so they drag, not fold. The Admin Default-arrangement list shows all
+ten now (crew four noted board-only). Files: `engine/order.ts` (SECTIONS 6→10),
+`ui/board.ts` (crew in the ordered map + regex grip inject), `ui/scheduler.css`
+(`.ap-h`/`.pl-fold` layout + grip alignment), `ui/AdminPage.tsx` (+4 crew labels + note),
+`ui/interactions.ts` (grip-tap guard). Tests: `engine/order.test.ts`,
+`engine/secorder.test.ts`, `engine/arrdefaults.test.ts`, `state/store.test.ts`,
+`ui/admin.test.tsx` (6→10 canonical), `ui/rowdrag.test.tsx`, and a new `ui/board.test.tsx`
+pin (crew draggable + `dayHTML` byte-identical after a crew reorder). Verified live at
+390 px: dragging SANS onto Available crew swaps them, the drop target highlights, a
+grip-tap does NOT fold Personal Inputs, no console errors; the grip measures delta-0
+(centred on the title) on all four panels.
+
 31 Aug 26 DESIGN POLISH on the section grab bars — the drawn vertical grab-rail was
 SUPERSEDED the same day by the DRAG-HANDLE PLACEMENT REDO below (owner reverted it to
 the dotted inline `⠿`; see that entry for the current design). What SURVIVES from this

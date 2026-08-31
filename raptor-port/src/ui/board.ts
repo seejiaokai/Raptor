@@ -248,41 +248,49 @@ export function boardHTML(di: number, pv?: boolean) {
      top-bar button's `disabled={DPREV.has(SBDAY)}` guard used to do. */
   const wvHead = mvRO ? '' : `<div class="sb-panel wv"><div class="sb-ph">Flying waves <span class="sub">go times, formations, crews</span><span class="gctl"><button class="mbtn add" data-wvadd="${di}" title="Add a flying wave">+ Wave</button></span></div></div>`
   const wavesPanel = wvHead + (fly || `<div class="sb-empty" style="padding:14px 11px">No flying waves yet${mvRO ? '' : ' — “+ Wave” above adds the first'}.</div>`)
-  /* THE SCHEDULE SECTIONS, emitted in the day's own order (owner, 29 Aug 26 —
-     engine/order.ts secOrder). The Templates head stays pinned above and the
-     inputs/available/SANS/Unavail group pinned below — neither is a schedule
-     section. The default order is notes · prog · waves · duty · sims · ground
-     (Overall Notes and Common Programme are two separate cards on the board now —
-     owner, 31 Aug 26 "split them apart"); only a re-arranged day differs.
-     The sim planning notes still sit inside the Sims panel, so the board reads the
-     way the week does. */
+  /* THE BOARD PANELS, emitted in the day's own order (owner, 29 Aug 26 —
+     engine/order.ts secOrder). The Templates head stays pinned above; everything
+     below it — the six schedule sections AND the four crew working-aid panels — is
+     ONE draggable list now (owner, 31 Aug 26 — "one list, drag anywhere"). The
+     canonical order is notes · prog · waves · duty · sims · ground · inputs · avail ·
+     sans · unav, which is exactly the old layout (the schedule sections, then the
+     crew group), so a pristine day is byte-identical; only a re-arranged day differs.
+     Overall Notes and Common Programme are two separate cards (owner, 31 Aug 26
+     "split them apart"); the sim planning notes still sit inside the Sims panel, so
+     the board reads the way the week does. */
+  /* one pass over INPUTS for the three input-backed crew panels — the board
+     rebuilds on every edit */
+  const dayInp = INPUTS.filter((i: any) => inputCoversDate(i, d.dt))
   const sect: Record<string, string> = {
     notes: sbNotesPanel(d, di, pv, mvRO), prog: sbProgPanel(d, di, pv, mvRO), waves: wavesPanel,
     duty: sbDutyPanel(d, di, pv, mvRO), sims: sbSimRowsPanel(d, di, pv, mvRO), ground: sbGroundPanel(d, di, pv, mvRO),
+    /* the crew working-aid panels — same builders and, by the canonical order above,
+       the same starting position as before (Personal Inputs → Available crew → SANS →
+       Unavailable). availHTML is withheld on a read-only board like every other
+       computed/write panel ("who is free" is a live read, meaningless on a frozen past
+       version); the other three keep their own mvRO read-only shape. They reorder on
+       the BOARD only — the week appends these panels separately (engine/order.ts). */
+    inputs: sbInputsGroupPanel(d, di, pv, dayInp, mvRO),
+    avail: mvRO ? '' : availHTML(d, di, true),
+    sans: sbSansPanel(d, di, dayInp, mvRO),
+    unav: sbUnavailPanel(d, di, dayInp, mvRO),
   }
-  /* each section is wrapped so its grip can drag the whole panel into a new place
+  /* each panel is wrapped so its grip can drag the whole card into a new place
      (data-secmove → store.moveSectionTo, DISPLAY order only — see engine/order.ts).
-     Overall Notes and Common Programme are two separate sections now (owner, 31 Aug
-     26 — "split them apart"), each its own draggable card.
-     The dotted ⠿ grip sits INLINE at the head of the panel's own header (.sb-ph),
-     so it reads on the card it moves, aligns with the wave grip's column, and pushes
-     the title clear of itself — the owner's "align with Go 1, dotted, beside the
-     title, centred" (scheduler.css). Edit board only: a read-only board wraps
-     nothing, staying lean and undraggable. */
+     The dotted ⠿ grip is injected as the FIRST child of the panel's own header, so it
+     reads on the card it moves, aligns with the wave grip's column, and pushes the
+     title clear of itself — the owner's "align with Go 1, dotted, beside the title,
+     centred" (scheduler.css). The match is loose (`sb-ph` OR `ap-h`) so it lands
+     whatever header the panel carries: the schedule cards' `<div class="sb-ph">`, the
+     foldable Personal Inputs header (`sb-ph pl-fold` + data-pitog) and Available crew's
+     own `<div class="ap-h">` fold header all take it. Only the first header is matched
+     (no /g), so a nested header inside a panel is never hit. Edit board only: a
+     read-only board wraps nothing, staying lean and undraggable. */
   const secGrip = '<span class="secgrip" title="Drag to reorder this section" aria-label="Reorder this section">⠿</span>'
   const wrapSec = (html: string, k: string) =>
-    `<div class="sb-sec" data-secmove="${di}.${k}">${html.replace('<div class="sb-ph">', `<div class="sb-ph">${secGrip}`)}</div>`
+    `<div class="sb-sec" data-secmove="${di}.${k}">${html.replace(/(<div class="(?:sb-ph|ap-h)\b[^>]*>)/, `$1${secGrip}`)}</div>`
   let b = dayTplHead + secOrder(d).map((k: string) =>
     mvRO ? (sect[k] || '') : (sect[k] ? wrapSec(sect[k], k) : '')).join('')
-  /* one pass over INPUTS for both blocks — the board rebuilds on every edit */
-  const dayInp = INPUTS.filter((i: any) => inputCoversDate(i, d.dt))
-  /* the available-crew strip the week already carries, now on the board too
-     (owner, 24 Aug 26 — "show available crew in scheduler board as well"). Same
-     builder, same position as the week (Personal Inputs → Available crew → SANS
-     → Unavailable), so both surfaces read the same. Live board only — withheld
-     on mvRO like every other computed/write panel, since "who is free" is a
-     live read, meaningless on a frozen past version. */
-  b += sbInputsGroupPanel(d, di, pv, dayInp, mvRO) + (mvRO ? '' : availHTML(d, di, true)) + sbSansPanel(d, di, dayInp, mvRO) + sbUnavailPanel(d, di, dayInp, mvRO)
   return b
 }
 

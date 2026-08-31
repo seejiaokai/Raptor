@@ -721,14 +721,24 @@ agree — name it here so the next session knows to check both.
   `INPUTS` + an as-of ordinal, default the notional `weeknav.TODAY`), so it
   cannot drift from the table; anything stored would be the seam.
 
-- **Section display order (29 Aug 26; dragged in place 30 Aug 26) — one order, two
-  builders.** A day's `d.secOrder` (Programme · Flying waves · Duties · Sims · Ground
-  Programme) is read by BOTH `ui/board.ts boardHTML` and `ui/html.ts dayHTML` through
-  the one `engine/order.ts secOrder(d)`, so the two surfaces cannot disagree. The
-  drift-seam to mind if the CANONICAL SET ever grows: a new section key must be added
-  to `SECTIONS` AND mapped to a panel string in BOTH builders — the section grip is a
-  bare `⠿` reading `data-secmove="di.key"`, so there is no label list to keep in step
-  any more (the old `ArrangeSections.tsx` `SEC_LABEL` is gone). It is display-only: it
+- **Section display order (29 Aug 26; dragged in place 30 Aug 26; crew panels folded in
+  31 Aug 26) — one order, two builders.** A day's `d.secOrder` is read by BOTH
+  `ui/board.ts boardHTML` and `ui/html.ts dayHTML` through the one `engine/order.ts
+  secOrder(d)`, so the two surfaces cannot disagree. `SECTIONS` has TEN keys now: the
+  six schedule panels (`notes prog waves duty sims ground`) PLUS the four crew
+  working-aid panels (`inputs avail sans unav` — Personal Inputs, Available crew, SANS,
+  Unavailable) that joined the board's one draggable list (owner, 31 Aug 26 — "one list,
+  drag anywhere"). **The crew four are BOARD-ONLY:** `board.ts` maps all ten to panel
+  strings, but `html.ts`'s week slices bits only for the schedule keys with content
+  (`notes` is merged into `prog`), so the crew keys — like any key with no week bit —
+  are skipped there and the week APPENDS its crew panels separately; reordering a crew
+  key changes the board and nothing on the week. The drift-seam to mind if the set grows
+  again: a new SCHEDULE key must be added to `SECTIONS` AND mapped to a panel string in
+  BOTH builders AND given a week slice bit; a new BOARD-ONLY key needs only the
+  `board.ts` map (and must stay bit-less on the week, or it stops being board-only). The
+  section grip is a bare `⠿` reading `data-secmove="di.key"`, so there is no per-grip
+  label to keep in step (though Admin's Default-arrangement carries one label per key,
+  `ADEF_SEC_LABEL`, all ten). It is display-only: it
   never enters a slot key, `SCHED.*`, or an AL, so it is invisible to `validate()`/
   publish/history (guard: `engine/secorder.test.ts`); the write path is a DRAG on the
   section grip (`.sb-sec`/`.dsec[data-secmove]`, `ui/rowdrag.ts` → `store.moveSectionTo`
@@ -737,7 +747,9 @@ agree — name it here so the next session knows to check both.
   the house default (`ui/SecDefaultSnackbar.tsx` → `setSecDefault`/`secDefaultSave`).
   **Parity seam:** the grip + `.dsec` wrapper are EDIT-MODE ONLY on the week, so the
   view builder is byte-identical (`html.test.ts` pins both directions; the byte-compare
-  unwraps `.dsec` via `noDsec`).
+  unwraps `.dsec` via `noDsec`). A crew reorder is byte-safe on the week too — the crew
+  keys carry no week slice bit, so `dayHTML` is unchanged after one (pinned in
+  `ui/board.test.tsx`).
 
 - **Wave-block order (29 Aug 26; dragged in place 30 Aug 26) — a REAL reorder, not a
   display order.** Each wave block carries a header grip (`.wvgrip`) + `data-move=

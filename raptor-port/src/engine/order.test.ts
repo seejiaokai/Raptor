@@ -37,32 +37,32 @@ describe('secOrder / moveSectionModel (the section display order)', () => {
   it('an un-arranged day reads the plain canonical order', () => {
     expect(secOrder({})).toEqual(SECTIONS)
     expect(secOrder({ secOrder: undefined })).toEqual(SECTIONS)
-    expect(SECTIONS).toEqual(['notes', 'prog', 'waves', 'duty', 'sims', 'ground'])
+    expect(SECTIONS).toEqual(['notes', 'prog', 'waves', 'duty', 'sims', 'ground', 'inputs', 'avail', 'sans', 'unav'])
   })
 
   it('a stored order stands, with any missing canonical section appended and unknowns dropped', () => {
     /* the owner put ground first, dropped nothing → the rest follow in default order */
-    expect(secOrder({ secOrder: ['ground'] })).toEqual(['ground', 'notes', 'prog', 'waves', 'duty', 'sims'])
+    expect(secOrder({ secOrder: ['ground'] })).toEqual(['ground', 'notes', 'prog', 'waves', 'duty', 'sims', 'inputs', 'avail', 'sans', 'unav'])
     /* a hand-edited file with junk keys: junk is ignored, the real ones honoured */
-    expect(secOrder({ secOrder: ['sims', 'nope', 'prog'] })).toEqual(['sims', 'prog', 'notes', 'waves', 'duty', 'ground'])
+    expect(secOrder({ secOrder: ['sims', 'nope', 'prog'] })).toEqual(['sims', 'prog', 'notes', 'waves', 'duty', 'ground', 'inputs', 'avail', 'sans', 'unav'])
     /* a duplicate cannot double a section */
-    expect(secOrder({ secOrder: ['waves', 'waves'] })).toEqual(['waves', 'notes', 'prog', 'duty', 'sims', 'ground'])
+    expect(secOrder({ secOrder: ['waves', 'waves'] })).toEqual(['waves', 'notes', 'prog', 'duty', 'sims', 'ground', 'inputs', 'avail', 'sans', 'unav'])
   })
 
   it('moveSectionModel nudges a section and materialises a full, sanitised order', () => {
     const d: any = {}
     expect(moveSectionModel(d, 'duty', -1)).toBe(true)       // duty up one
-    expect(d.secOrder).toEqual(['notes', 'prog', 'duty', 'waves', 'sims', 'ground'])
+    expect(d.secOrder).toEqual(['notes', 'prog', 'duty', 'waves', 'sims', 'ground', 'inputs', 'avail', 'sans', 'unav'])
     expect(moveSectionModel(d, 'prog', 1)).toBe(true)        // prog down one
-    expect(d.secOrder).toEqual(['notes', 'duty', 'prog', 'waves', 'sims', 'ground'])
+    expect(d.secOrder).toEqual(['notes', 'duty', 'prog', 'waves', 'sims', 'ground', 'inputs', 'avail', 'sans', 'unav'])
   })
 
   it('is a no-op at the ends and for an unknown key (returns false, order untouched)', () => {
-    const d: any = { secOrder: ['notes', 'prog', 'waves', 'duty', 'sims', 'ground'] }
+    const d: any = { secOrder: ['notes', 'prog', 'waves', 'duty', 'sims', 'ground', 'inputs', 'avail', 'sans', 'unav'] }
     expect(moveSectionModel(d, 'notes', -1)).toBe(false)     // already first
-    expect(moveSectionModel(d, 'ground', 1)).toBe(false)     // already last
+    expect(moveSectionModel(d, 'unav', 1)).toBe(false)       // already last
     expect(moveSectionModel(d, 'nope', -1)).toBe(false)      // not a section
-    expect(d.secOrder).toEqual(['notes', 'prog', 'waves', 'duty', 'sims', 'ground'])
+    expect(d.secOrder).toEqual(['notes', 'prog', 'waves', 'duty', 'sims', 'ground', 'inputs', 'avail', 'sans', 'unav'])
     expect(moveSectionModel(null, 'prog', 1)).toBe(false)    // no day
   })
 })

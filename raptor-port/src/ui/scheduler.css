@@ -2600,7 +2600,21 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
    close or overlapping"). Measured on a 390px phone: a 16px gap to the buttons
    remains, no overlap. */
 .sb-sec .sb-ph{gap:6px}
-.sb-ph,.sb-go-h,.go-tab,.sub-h,.ah-h,.wv-sech{user-select:none;-webkit-user-select:none}
+/* Available crew's own fold header (.ap-h) is a space-between row — title left,
+   "by wave · close" right. When the panel joins the draggable list (owner, 31 Aug 26
+   — "one list, drag anywhere") the injected grip must ride WITH the title on the left,
+   not be spread to the far edge, so switch it to flex-start and push the right-hand
+   summary back over with an auto margin. Same 6px grip gap as the .sb-ph cards. */
+.sb-sec .ap-h{justify-content:flex-start;gap:6px}
+.sb-sec .ap-h>.n{margin-left:auto}
+/* Personal Inputs' foldable header is baseline-aligned (.sb-ph.pl-fold, line ~1155),
+   which sat the grip on the title's FIRST line — ~7px above the centre of the
+   two-line title (measured). In the draggable list its grip must sit level with the
+   title like every other card, so centre it here (wrapped board header only; the
+   week's unwrapped copy keeps its baseline). Its .sub already floats right via
+   margin-left:auto, so only the vertical axis changes. */
+.sb-sec .sb-ph.pl-fold{align-items:center}
+.sb-ph,.sb-go-h,.go-tab,.sub-h,.ah-h,.wv-sech,.ap-h{user-select:none;-webkit-user-select:none}
 /* on the WEEK the grip goes inline in each section's own title header, so make those
    headers a centred flex row for it and drop the old gutter-clearing indents (there
    is no overlay in the gutter any more). Edit-only (.dsec), so parity is untouched. */
