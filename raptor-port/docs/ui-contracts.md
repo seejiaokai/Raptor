@@ -5162,3 +5162,48 @@ programme, never checked against the rules (the engine seams are in
 
 Pinned in `ui/board.test.tsx` (toggle + read-only mark) and
 `engine/infoflag.test.ts`.
+
+## The Leave War tab is kept alive between visits (owner, 1 Sep 26)
+
+"The leave war tab is slow to open" → keep-alive chosen over rebuild-and-memoise
+(the grid's cost is the DRAWING — ~28k nodes — not the maths). The contract:
+
+- **Built once per session.** The first visit builds the grid exactly as
+  before; leaving the tab HIDES the section (`Shell.tsx lwEverRef` → the
+  `.doze` class), never unmounts it. Only Leave War gets this — every other
+  page is a cheap rebuild and stays one.
+- **`.page.doze` = `display:block` + `content-visibility:hidden`**
+  (`scheduler.css`, @supports-guarded; a browser without it falls back to the
+  base `.page` display:none — correct, just slower to re-show). Measured on
+  the built bundle: re-showing from display:none relays the whole grid out,
+  411–863ms at 1280px / ~260ms at 390px; the content-visibility layout cache
+  re-shows in 1–2ms. A dozing section sizes as EMPTY (height 0), so it
+  never adds scroll height under the active page, and its descendants
+  measure 0×0 — the same zeros every Matrix measurement guard already
+  handles for display:none/jsdom.
+- **The memo firewall** (`LeaveWarPage.tsx LwBody`, memo, no props): a Raptor
+  notify re-renders the Shell, and without the firewall React would re-walk
+  the hidden 28k-node tree on every board keystroke. Topbar/StageBar/Matrix
+  each subscribe to the LW store themselves, and every rendered fact crosses
+  the seam THROUGH that store (roster reprojection, role, viewer — all end in
+  a LW notify), so the firewall can never hide a real change. Don't hand
+  LwBody props, and don't render Raptor module state inside it — either
+  reopens the wall or the staleness it guards against.
+- **Show side**: the `active` effect restores the window scroll (tracked live
+  while the tab is up — reading scrollY on the way out sees the clamp the
+  hide already caused) and dispatches ONE window `resize`, which is the one
+  wiring every Matrix measurement already listens on (frozen header/columns,
+  month strip, strip height, bottom scrollbar). The grid's own sideways
+  scroll and zoom survive because the DOM never went away — a return lands
+  on the same month, same spot.
+- **Hide side**: the effect cleanup dispatches the same `resize`; measured
+  at 0×0 it unmounts the FIXED bottom proxy scrollbar (`.mx-hbar` is React
+  state fed by a rect), which keeps the geometry gate's "nothing leaks onto
+  the Raptor pages" pin byte-true with the grid still in the DOM.
+- **First open is unchanged by design.** Making THAT faster means
+  virtualising the grid — only if the owner still feels it.
+
+Pinned in `ui/lwkeepalive.test.tsx` (mount once / doze / same-DOM return /
+scroll restore / resize kick) and the `e2e/leavewar.spec.ts` keep-alive spec
+(real-browser: sideways position survives the round trip, a month jump still
+works after the hidden spell, no page error).

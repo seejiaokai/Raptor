@@ -20,7 +20,7 @@
    unchanged because the map preserves seat and band and the mapped
    people's own SXO flags match the seed's. */
 import { expect, test, type Page } from '@playwright/test'
-import { lwRole, lwView, openLeaveWar } from './app'
+import { go, lwRole, lwView, openLeaveWar } from './app'
 
 const CAL_MONTHS = [
   'JANUARY', 'FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE',
@@ -2466,4 +2466,40 @@ test('rapid undo/redo settle to a consistent grid', async ({ page }) => {
   await expect(redo).toBeDisabled()
   await expect(page.locator('[data-testid="cell-slipway-2026-01-06"] .c')).toBeVisible()
   await expect(page.locator('[data-testid="cell-slipway-2026-01-08"] .c')).toBeVisible()
+})
+
+// The tab is KEPT ALIVE between visits (owner, 1 Sep 26 — "the leave war tab
+// is slow to open"): a tab switch hides the section instead of unmounting it,
+// so the year grid is built once per session and a return is near-instant.
+// jsdom pins the mount/hide/show shape (src/ui/lwkeepalive.test.tsx); this
+// pins what only a layout engine can see — the grid REALLY is the same one
+// (its sideways scroll survives the round trip), and its measurements are
+// still live afterwards (a month jump still moves the grid and lights its
+// button), with no page error across the switch.
+test('a tab switch keeps the grid alive: same sideways spot on return, measurements still live', async ({ page }) => {
+  const errors: string[] = []
+  page.on('pageerror', e => errors.push(e.message))
+  await page.evaluate(() => { document.querySelector<HTMLElement>('#page-leavewar .mx-wrap')!.scrollLeft = 600 })
+  await page.waitForTimeout(250)
+  const before = await page.evaluate(() => Math.round(document.querySelector('#page-leavewar .mx-wrap')!.scrollLeft))
+  expect(before).toBeGreaterThan(0)
+
+  await go(page, 'viewsched')
+  // hidden, not torn down
+  await expect(page.locator('#page-leavewar')).toBeHidden()
+  expect(await page.evaluate(() => !!document.querySelector('#page-leavewar .mx-wrap'))).toBe(true)
+
+  await go(page, 'leavewar')
+  await expect(page.locator('[data-testid="row-slipway"]')).toBeVisible()
+  // the same grid: its sideways position survived the round trip
+  const after = await page.evaluate(() => Math.round(document.querySelector('#page-leavewar .mx-wrap')!.scrollLeft))
+  expect(Math.abs(after - before)).toBeLessThanOrEqual(2)
+
+  // measurements are still live after the hidden spell: a month jump moves
+  // the grid and the readout follows it
+  await page.locator('[data-testid="month-strip"] .mjump').nth(4).click()
+  await page.waitForTimeout(400)
+  const jumped = await page.evaluate(() => Math.round(document.querySelector('#page-leavewar .mx-wrap')!.scrollLeft))
+  expect(jumped).not.toBe(after)
+  expect(errors, 'no page error across the tab switch').toEqual([])
 })

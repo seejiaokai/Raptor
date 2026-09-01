@@ -298,36 +298,6 @@ resolved statuses always carry their resolution date
 
 **Principle:** A full-command-line process match can always match the process doing the matching; neutralise the pattern (bracket class) or run the kill as its own minimal command.
 
-### Observation 22: Checkpoint — no new skill observation
-
-**Status:** ACTIONED (2026-08-22) — checkpoint marker, no change needed
-**Date:** 2026-08-22
-**Session context:** Shipping the calendar day-popover remark line (3rd deliverable of the session)
-**Skill:** task-observer
-**Type:** internal
-**Phase/Area:** mandatory 3rd-completion checkpoint
-
-**Issue:** Checkpoint reached after completing three deliverables (member person-scope, repeat-weeks removal, calendar remarks). Observations #20 (capture full-suite output) and #21 (pkill self-match) already cover the friction seen; nothing further accumulated.
-
-**Suggested improvement:** None — marker only.
-
-**Principle:** Writing an explicit no-new-observation marker at the checkpoint keeps the enforcement honest without inventing low-signal entries.
-
-### Observation 23: CI-only flake — unstubbed browser API + abandoned timer in jsdom
-
-**Status:** ACTIONED (2026-08-22) — stubbed document.elementFromPoint in the affected test file
-**Date:** 2026-08-22
-**Session context:** Shipping calendar changes; a PR gate failed on a test the local suite passed
-**Skill:** New rule candidate for raptor-port/CLAUDE.md §Build & verify (the "green on PR, red on CI" hazard section)
-**Type:** internal
-**Phase/Area:** verification / CI-vs-local test isolation
-
-**Issue:** A test that arms a gesture machine which calls a browser-only DOM API (document.elementFromPoint) via a setTimeout hold-timer passed locally but failed on the ~30% slower CI runner: the abandoned timer fired mid-test, threw "elementFromPoint is not a function" (jsdom does not define it), and the uncaught async error poisoned an unrelated assertion (SBDAY expected 6 got 2). Local timing cleared the timer before it fired, masking the gap. The fix already existed as a pattern in a sibling test file (caldrag.test.tsx stubs the same API) but had not been applied to the newer file.
-
-**Suggested improvement:** When a test drives code that hit-tests through document.elementFromPoint (or any jsdom-absent browser API) on a timer, stub it in beforeAll — null return = "nothing under the pointer". Better: a global vitest setup stub so no future touch-drag test can regress. Diagnose a PR-passed/main-failed (or intermittent) failure by reading for the uncaught async error FIRST, not the assertion it corrupts.
-
-**Principle:** A jsdom-absent browser API called from an abandoned timer is a latent CI flake that hides behind local timing; stub the API at the environment boundary rather than chasing the corrupted assertion downstream, and apply the stub wherever the pattern recurs — precedent in one test file is a checklist item for the next.
-
 ### Observation 24: Stop-hook "commit and push" fires while a background agent owns the working tree
 
 **Status:** OPEN
@@ -621,3 +591,63 @@ for pins about actual distances.
 **Principle:** A test tolerance that happens to pass under today's rendering
 encodes today's rendering as a hidden dependency; pin the invariant that
 MEANS the requirement, and the test survives legitimate visual change.
+
+### Observation 41: Profile show/hide cost by phase — layout caches beat keep-alive alone
+
+**Status:** OPEN
+**Date:** 2026-09-01
+**Session context:** Leave War tab slow-to-open fix (keep the ~28k-node grid mounted between tab visits)
+**Skill:** New skill candidate: frontend-perf-diagnosis (or a cross-cutting principle)
+**Type:** open-source
+**Phase/Area:** choosing the mechanism for a "keep it alive" performance fix
+
+**Issue:** The stored diagnosis framed the fix as "keep the built DOM mounted
+vs memoise the computation", and the first build did exactly that (mount kept,
+hidden via display:none, plus a React memo firewall) — yet the desktop return
+barely improved (1.6s → 1.5s). A 10-line phase experiment then showed the
+dominant cost was neither React build nor reconciliation but RELAYOUT on
+re-show: display:none discards the subtree's layout, and re-showing re-laid
+the giant table out (411–863ms); `content-visibility:hidden` preserves the
+layout cache and re-showed in 1–2ms. The memo mattered too, but for a
+different bill (hidden re-renders on every unrelated store tick).
+
+**Suggested improvement:** When a perf fix hides/shows a heavy subtree,
+measure the three phases separately BEFORE picking a mechanism: (1) build
+(framework render), (2) layout on re-show, (3) paint — a trivial
+`style.display` / `style.contentVisibility` toggle timed around a forced
+`offsetHeight` read isolates (2) in minutes. Prefer `content-visibility:
+hidden` (with an `@supports` fallback to display:none) as the hiding
+primitive for kept-alive subtrees, and a props-less memo boundary at the
+mount seam to stop unrelated parent renders.
+
+**Principle:** "Keep it mounted" only removes the build phase; the re-show
+relayout can dwarf it. Hiding primitives differ in WHICH caches they
+preserve — pick by measured phase, not by the first mechanism that matches
+the feature's name.
+
+### Observation 42: The background-cwd trap bit again despite bold docs — needs structural enforcement
+
+**Status:** OPEN
+**Date:** 2026-09-01
+**Session context:** Leave War keep-alive fix; launching `npm run test:e2e` as a background task
+**Skill:** repo working rules (raptor-port/CLAUDE.md §Build & verify) / harness usage
+**Type:** internal
+**Phase/Area:** running gates in the background
+
+**Issue:** CLAUDE.md carries a bold, blockquoted warning (added after this
+bit twice on 30 Aug 26) that background commands start at the REPO ROOT and
+must be prefixed with `cd /home/user/Raptor/raptor-port &&`. It still bit a
+third time this session: a backgrounded `npm run test:e2e` died instantly
+(exit 144), and only an explicit post-launch check (`/proc/<pid>/cwd`)
+confirmed the retry was in the right place. A rule that keeps failing in the
+same way is a structural-enforcement candidate, not a louder-docs candidate.
+
+**Suggested improvement:** Enforce structurally instead of textually — e.g. a
+root-level `package.json` whose scripts just `cd raptor-port && npm run …`
+(making the bare command work from anywhere), or a hook that rejects
+backgrounded `npm` commands lacking the cd prefix. Either removes the
+failure mode instead of documenting it.
+
+**Principle:** When the same documented rule is violated repeatedly, stop
+strengthening the wording and change the environment so the wrong command
+cannot fail silently — make the bare form work, or make it refuse loudly.

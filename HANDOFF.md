@@ -120,12 +120,12 @@ parity holds. The gate table below was the green baseline read at this pass's cl
 
 | gate | reading |
 |---|---|
-| `npm test` | 3654 across 209 files — two vitest projects: raptor + leavewar |
+| `npm test` | 3658 across 210 files (1 Sep 26, the Leave War keep-alive pass: +4 in the new `ui/lwkeepalive.test.tsx`) — two vitest projects: raptor + leavewar |
 | `node reference/tfin.js` | 728/0 (the reference is read-only; the "Ground Programme" title trim rides the tolerant normaliser in `html.test.ts`) |
 | `npm run build` | clean |
-| `npm run test:e2e` | 347 passed / 23 touch-only skips / 0 failed — three playwright projects: raptor geometry, lw-phone, lw-desktop. NOTE: a mid-session chain run showed 2 lw-phone reds against a build that predated the bug-pass fixes (the un-gated cross-lane notify repainting mid-gesture); both passed individually and the full suite passed whole against the fixed build — if they ever red again, suspect a stray repaint mid-tap first. |
+| `npm run test:e2e` | 349 passed / 23 touch-only skips / 0 failed (1 Sep 26: +1 keep-alive spec × the two Leave War projects) — three playwright projects: raptor geometry, lw-phone, lw-desktop. NOTE: a mid-session chain run showed 2 lw-phone reds against a build that predated the bug-pass fixes (the un-gated cross-lane notify repainting mid-gesture); both passed individually and the full suite passed whole against the fixed build — if they ever red again, suspect a stray repaint mid-tap first. |
 | `probes:adapted` | **all 6 GREEN**. **Read the LAST line, not the last tally**: each probe prints its own count as it finishes (`wrap-async` ends `36 passed · 0 failed`), and the suite's verdict is the line after it, `all 6 adapted probes passed`. |
-| `perf` | **4/0** — board DOM 1063 ≤ **1150** (the ceiling is a SETTLED owner decision since 28 Aug 26 — CLAUDE.md §Stable decisions; the section/wave grips added ~10 nodes, noise against it). |
+| `perf` | **4/0** — board DOM 1023 ≤ **1150** (read 1 Sep 26) (the ceiling is a SETTLED owner decision since 28 Aug 26 — CLAUDE.md §Stable decisions; the section/wave grips added ~10 nodes, noise against it). |
 
 Reconciles against the 3529/205, 338/19 reading before it (the DEFAULT ARRANGEMENT
 in Admin — its lead is folded into `CLAUDE.md` §Stable decisions now): +58 vitest
@@ -772,15 +772,36 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
   when it is built. Nothing is half-built: the single-document path is whole
   and shipped.
 
-- **OPEN, the owner never answered — the Leave War tab is slow to open
-  (28 Aug 26).** Diagnosed, not built. The whole year-grid is rebuilt on every
-  visit to the tab and thrown away on leaving it, so the cost is paid again
-  each time rather than once. Two fixes were offered and neither was chosen:
-  keep the built grid mounted and hidden between visits (fastest, costs memory
-  and a stale-state risk on the sync wires), or build it once and memoise the
-  column work off the war/period identity (cheaper to reason about, a smaller
-  win). Put it to him before building either — it is a real trade, not an
-  implementation detail.
+- **RESOLVED 1 Sep 26 (the 28 Aug "Leave War tab is slow to open" open item —
+  owner picked keep-alive: "ok fix it").** The tab's ~28k-node year grid was
+  rebuilt on every visit and torn down on every leave; now it is built ONCE per
+  session and KEPT between visits. Three parts, each measured:
+  1. **The Shell keeps the section mounted once visited** (`Shell.tsx
+     lwEverRef`) and hides it with a `.doze` class instead of unmounting — a
+     Leave-War-only treatment; the other pages stay cheap rebuilds.
+  2. **`.page.doze` hides with `content-visibility:hidden`, not display:none**
+     (`scheduler.css`, @supports-guarded so older browsers fall back to
+     display:none — correct, just slower). Measured: re-showing the grid from
+     display:none forces a 411–863ms relayout at 1280px (~260ms at 390px);
+     the content-visibility layout cache re-shows in 1–2ms.
+  3. **`LeaveWarPage` took an `active` prop + a memo firewall** (`LwBody`):
+     memo stops every Raptor notify from re-walking the hidden 28k-node tree
+     (all three children self-subscribe to the LW store, and every rendered
+     fact crosses the seam THROUGH that store, so nothing can go stale); the
+     `active` effect restores the page scroll on show (tracked live — reading
+     it on the way out sees the browser's clamp), dispatches one window
+     `resize` each way so the Matrix re-measures what hiding zeroed (show
+     side) and drops its FIXED bottom scrollbar from the DOM (hide side —
+     the geometry gate's "nothing leaks onto the Raptor pages" pin holds
+     unchanged). The grid's sideways scroll and zoom survive for free.
+  Return measured on the built bundle: ~3ms commit + two frames' paint
+  (~0.1s at 390px, ~0.2s at 1280px) vs a ~1s first build; scroll spot and
+  month position come back exactly; console clean at both widths. First open
+  is unchanged by design — making THAT faster means virtualising the grid
+  (draw only the visible months), a separate job, only if the owner still
+  feels it. Pins: `ui/lwkeepalive.test.tsx` (mount/doze/restore/resize),
+  `e2e/leavewar.spec.ts` keep-alive spec (real-browser scroll survival +
+  live measurements after the hidden spell).
 
 - **QUEUED, awaiting the owner's go-ahead — an Admin "Display" area (owner,
   26 Aug 26; do NOT build without his confirmation).** His ask: remove the
@@ -2888,7 +2909,7 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 ### `raptor-port/src/leavewar/` — the Leave War tab (a second app, vendored 16 Aug 26)
 | file | what it does |
 |---|---|
-| `LeaveWarPage.tsx` | The ONE seam: renders the standalone app's Topbar/StageBar/Matrix inside `#page-leavewar`, scrolls the window to top on mount (Raptor keeps scroll across tab switches). Boot is NOT here — `main.tsx` calls its `initStore` once. |
+| `LeaveWarPage.tsx` | The ONE seam: renders the standalone app's Topbar/StageBar/Matrix inside `#page-leavewar`. KEPT MOUNTED between visits since 1 Sep 26 (`active` prop from the Shell + the `LwBody` memo firewall; scroll restore + resize kicks — see the header comment). Boot is NOT here — `main.tsx` calls its `initStore` once. |
 | `engine/` | The vendored DOM-free rules engine: `codes.ts` (day codes — 8 leave types + the FOUR medical markers `ATTB`/`ATTC`/`HL`/`OML` (replaced `M`, Aug 26; `ATTB` joined 17 Aug 26) + `CSE`/`OD` + the FO/HO OIL-credit markers (FS/HS until the 28 Aug 26 rename — NOTE `HO` is a resurrected RETIRED code, once "half OIL taken" migrated to `*OIL`, now "half day OIL earned"; the flipped negative parse pins and the history are commented in the file), portions `*X`/`X*` — **carried by leave AND medical since 17 Aug 26**, courses/OD/OIL-credit still refusing one; plus `isMedical`, `MEDICAL_TYPES` (the admin picker's list) and `displayCell`, which prints ATTB/ATTC as the owner's bare `B`/`C` while `parseCell` accepts either spelling), `counters.ts` (derived balances + ledger, **plus the counter-column figures: `takenOf` per-type consumed, `medConOf`/`lveConOf` aggregates, the 12-figure `FIGURES` catalogue — `OIL BAL` joined with wire 4, fed by `earnedOil` summing FO/HO cells straight into the OIL balance; its breakdown label and legend read 'earned by weekend/PH work' since 28 Aug 26 — `orderedFigures`, and `figureParts`, the signed per-person breakdown rows the tap-a-counter sheet shows (they always sum to the figure, pinned by test); see the open-work counter-column bullet**), `stages.ts` (draft→open→closed→published, `canEdit`/`canDecide`), `wars.ts`/`period.ts` (year-long wars, UTC date maths, `DayInfo.ph`, **`EventBand` merged-event spans on the period + `bandAt`/`bandOverlaps`**), **`eventdefs.ts` (the EVENT-TYPE library — `EventKind` off/nolv/work, `EVENTDEF_STD`, `classifyEvent`, `columnKindFor`, the untrusted `readEventDefs`, and the add/update/remove helpers; squadron-wide config, persisted under `eventdefs`)**, `availability.ts`/`requirements.ts`/`evaluate.ts` (fractional manning vs thresholds; **rules are DATA since 19 Aug 26** — `CrewFilter`/`RuleCount`, `matchesFilter`/`ruleHave`/`teamsOf` the Hall walk, `describeRule` self-writing sheet words; see the top counters bullet), `raptor.ts` (`outboundToRaptor` — the sync stub), `bids.ts` (`BidState`/`source:'raptor'` ownership), `seed.ts`. |
 | `state/store.ts` | Its own single store (React `useSyncExternalStore` shape), `setCell` the one grid writer, `ingestFromRaptor`, **the event writers `setDayEvent`/`setDayEventRange` (repeat) + `addEventBand`/`removeEventBand` (merge) + the `addEventType`/`updateEventType`/`removeEventType`/`resetEventTypes` library writers, all admin-gated; `state.eventDefs` persisted under `eventdefs`, `period.bands` read leniently in `readWar`**. Role: NOT persisted since the merge — `setRole` is called by Raptor's `resetSession` only. **`viewer` rides the same rule** (17 Aug 26 — WHICH PERSON is looking, mirrored from Raptor's `ME` by `sync.ts`, never persisted; lights that row and personalises the counter picker). `moveFigure`/`resetFigureOrder` are ADMIN-GATED at the write path (owner: the column arrangement is management's); `reconcile()` on load keeps a MEDICAL cell's `source:'raptor'` record — dropping it would strip a synced cell's ownership at every reload and let outbound re-mint Raptor's own row — **and, since 28 Aug 26, an FO/HO cell's too (`isDuty`)**: it previously listed only biddable + medical, so in the DB era (when this load path goes live) a credit's ownership record would have been dropped and the cell left an orphan the reverse sweep could never collect. `withdrawLeaveCell` (17 Aug 26) is `clearRaptorCell`'s mirror for the OTHER ownership — the two-way edit/delete retraction's one grid writer. |
 | `ui/select.ts` / `ui/SelectSheet.tsx` | **Drag-to-select (27 Aug 26)** — press-drag a rectangle of day-cells (one row or many people), then batch fill / decide / delete / move. `select.ts` holds the DOM-free geometry (`rectCells`/`parseCellId`, unit-tested in `select.test.ts`) and two pointer controllers: `wireSelect` — ONE delegated `pointerdown` on `.mx-wrap` (never per-cell; caldrag's arm/give-up constants so the sideways scroll is never stolen; paints `.selcell` straight onto cells, no React state) — and `wireMove` (desktop ghost following the mouse + tap/click-to-place, the commit click swallowed in capture so the cell's own sheet never opens under it). `SelectSheet.tsx` is the batched sheet on the `Sheet` chassis, contextual to role/stage (Fill / Decide / Delete-confirm / Move / single-person PO). Store side: `setCells`/`clearCells`/`setBidStates`/`moveCells` (per-cell guards under `quiet`; `moveCells` atomic). Wired in `Matrix.tsx` (`selCtxRef` + the `wireSelect`/`wireMove` effects + the `.mv-banner`). The decision word "Acknowledge" became **"Pending"** (`BidPicker.tsx` + `SelectSheet.tsx`; token stays `'acknowledged'`). Pinned: `select.test.ts`, `selectsheet.test.tsx`, `store.test.ts` §the batch writers, `deciding.test.tsx` (the Pending label), `leavewar.spec.ts` drag tests. Rules `docs/engine-rules.md` §Auth/roles; screen `docs/ui-contracts.md` §Selecting on the Leave War grid. Also: a plain single click still opens the single-cell sheet — the gesture takes pointer capture in `arm()`, not on pointerdown (Chromium retargets the post-drag click otherwise); the dotted "moved" mark shows only once bidding is closed (`Matrix.movedShown`); "Key" → "Legend"; an admin keeps bid decisions at published (`canDecide`). |

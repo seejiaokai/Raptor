@@ -2,7 +2,7 @@
    reference (#shell, .topbar, .page sections). Only the view-only schedule
    page is live in this slice; the other pages are placeholders that arrive
    surface by surface. */
-import { useEffect, useMemo, useState, type KeyboardEvent as ReactKeyboardEvent } from 'react'
+import { useEffect, useMemo, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from 'react'
 import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
 import { CURWEEK } from '../engine/waves'
@@ -75,6 +75,19 @@ export function Shell() {
      truth. A nav click writes it and notifies; this component re-reads it on
      every store tick, so no parallel React state is needed. */
   const page = CURPAGE
+  /* The Leave War tab STAYS MOUNTED once it has been visited (owner, 1 Sep 26
+     — "the leave war tab is slow to open" → "ok fix it"). Its year grid is
+     ~28k DOM nodes; unmount-on-leave meant every visit rebuilt the lot from
+     scratch, so the full first-open price was paid again and again. After the
+     first visit the section is only HIDDEN (`.page` without `.on` is
+     display:none), and returning just shows the already-built grid — the
+     component keeps its own store subscription while hidden, so it repaints
+     itself on roster/leave changes and can never show stale data on return.
+     Leave War ONLY: the other pages are cheap to rebuild and keeping them all
+     would hold DOM for no gain. The perf gate is untouched — its ceilings
+     measure the week/board containers, never the whole document. */
+  const lwEverRef = useRef(false)
+  if (page === 'leavewar') lwEverRef.current = true
   /* fast sync (demo) — the toggle only demonstrates itself, as the reference
      notes: no server in the prototype */
   const [fast, setFast] = useState(false)
@@ -510,8 +523,11 @@ export function Shell() {
       <section className={'page' + (page === 'logic' ? ' on' : '')} id="page-logic">
         {page === 'logic' && <LogicPage />}
       </section>
-      <section className={'page' + (page === 'leavewar' ? ' on' : '')} id="page-leavewar">
-        {page === 'leavewar' && <LeaveWarPage />}
+      {/* once visited, the section DOZES (content-visibility) rather than
+          display:none — scheduler.css `.page.doze` carries the measurement
+          and the why; the keep-alive comment sits at lwEverRef above */}
+      <section className={'page' + (page === 'leavewar' ? ' on' : lwEverRef.current ? ' doze' : '')} id="page-leavewar">
+        {(page === 'leavewar' || lwEverRef.current) && <LeaveWarPage active={page === 'leavewar'} />}
       </section>
       <section className={'page' + (page === 'help' ? ' on' : '')} id="page-help">
         {page === 'help' && <HelpPage />}
