@@ -715,19 +715,19 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
   compact and `tfin.js` pins it (`atimeText(f)===f.to.replace(':','')+'-'+…`), so
   flipping it means editing the safety-net: owner sign-off first. This entry was the
   earlier "WEEK/warnings/CSV stay colon" known issue — now moot, everything is colon.
-- **CLOSED 1 Sep 26 — the design fonts now LOAD, self-hosted.** `scheduler.css` named
-  Inter Tight / Barlow Condensed / JetBrains Mono in ~130 places with nothing loading
-  them (29 Aug 26 pt.3); eight latin-subset woff2 files (Inter Tight 400/500/600/700,
-  Barlow Condensed 600/700, JetBrains Mono 400/500, ~22 KB each) now live in
-  `src/ui/fonts/` with `@font-face` rules at the top of `scheduler.css`. IN `src/`, NOT
-  `public/fonts/`, deliberately: the css is imported by `main.tsx`, so Vite fingerprints
-  the files and rewrites the relative `url('./fonts/…')` against `base:'./'` — a
-  `public/` absolute `/fonts/` path would 404 under the GitHub Pages `/Raptor/` sub-path.
-  `font-display:swap` keeps first paint on the fallback stack. The earlier Google-Fonts
-  `<link>` stays REMOVED and must never return: an external render-blocking stylesheet is
-  unreachable behind the agent proxy and hung the page `load` event (proved by 5
-  goto-timeout e2e failures clearing the moment the link was removed). The one stray
-  `font-family:'Inter'` (`.medsec-sub`) was aligned to `'Inter Tight'`.
+- **The design fonts are still NOT loaded — deferred, must be SELF-HOSTED (29 Aug 26
+  pt.3).** `scheduler.css` names Inter Tight / Barlow Condensed / JetBrains Mono in ~130
+  places but nothing ever loaded them, so every browser falls back to system fonts and
+  the intended condensed-header / mono-numeric look never renders. A Google-Fonts
+  `<link>` was tried and REMOVED: an external, render-blocking stylesheet to
+  `fonts.googleapis.com` is unreachable behind the agent proxy, which hangs the page
+  `load` event and times out the e2e login `goto('/')` — proven: the exact e2e failures
+  cleared the moment the link was removed (a full rebuild's 5 goto-timeout failures went
+  to 5/5 pass in 17s). CI runs the same restricted network, so the link would flake the
+  gate too. The fix is **self-hosted `@font-face` woff2 under `public/fonts/`** (ships
+  with the app, no third-party request, nothing to block) — it needs the three families'
+  woff2 files (Inter Tight 400/500/600/700, Barlow Condensed 600/700, JetBrains Mono
+  400/500) added as assets. Until then the app keeps the system-font fallback.
 - **CLOSED 30 Aug 26 — in-place drag to reorder sections/waves SHIPPED, replacing
   the Arrange sheet.** The per-day `⇅ Arrange` sheet is gone; a scheduler now drags
   a whole SECTION (a grip on each panel's left gutter) or a whole WAVE (a grip in the
