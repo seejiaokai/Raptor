@@ -140,6 +140,30 @@ describe('Escape closes a sheet', () => {
     expect(screen.queryByTestId('sheet-scrim')).toBeNull()
     expect(screen.getByTestId('counter-pick')).toBeTruthy()
   })
+
+  /* KEPT-MOUNTED guard (bug-hunt fix, 1 Sep 26). Inside Raptor the tab stays
+     mounted behind a tab switch, so a sheet left open keeps this capture
+     listener alive on a RAPTOR page — where it used to swallow the Escape
+     Raptor's cell editing restores on, and close the hidden sheet unseen.
+     The listener acts only while `#page-leavewar` carries `.on` (no wrapper —
+     the standalone app — means always, which the suite above already runs). */
+  it('ignores Escape while the Leave War section is hidden, acts once it shows', () => {
+    const pg = document.createElement('section')
+    pg.id = 'page-leavewar'; pg.className = 'page doze'
+    document.body.appendChild(pg)
+    try {
+      setRole('admin')
+      render(<Matrix />)
+      fireEvent.click(screen.getByTestId('person-ramp'))
+      fireEvent.click(screen.getByTestId('person-edit'))
+      expect(screen.getByTestId('person-sheet')).toBeTruthy()
+      fireEvent.keyDown(document, { key: 'Escape' })
+      expect(screen.getByTestId('person-sheet'), 'a hidden tab must not answer Escape').toBeTruthy()
+      pg.className = 'page on'
+      fireEvent.keyDown(document, { key: 'Escape' })
+      expect(screen.queryByTestId('person-sheet')).toBeNull()
+    } finally { pg.remove() }
+  })
 })
 
 describe('clicking outside a sheet closes it', () => {

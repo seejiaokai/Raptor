@@ -1400,8 +1400,16 @@ export function Matrix() {
     measureBidBox()
     window.addEventListener('resize', measureBidBox)
     return () => window.removeEventListener('resize', measureBidBox)
+    // `version` is here because the box's HEIGHT is the whole table's: any
+    // store change that adds or removes a ROW while a war is open — a counter
+    // built or deleted, a member joining the roster, a CAT sub-heading
+    // appearing — changes the table's height with every other dep unchanged,
+    // and the box read one row short/long until the next zoom or resize
+    // (bug-hunt fix, 1 Sep 26). Re-measuring on every store commit is four
+    // rect reads against an identity-guarded setState — nothing next to the
+    // repaint that same commit already paid for.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [period.id, period.stage, period.bidFrom, period.bidTo, zoom, visWindow, dates.length, countsOpen, folded])
+  }, [version, period.id, period.stage, period.bidFrom, period.bidTo, zoom, visWindow, dates.length, countsOpen, folded])
 
   // ---- the frozen roster columns, drawn ONCE (owner, 20 Aug 26 — the third
   // look at the sideways stutter) --------------------------------------------

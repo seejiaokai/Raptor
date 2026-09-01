@@ -272,6 +272,11 @@ export function StageBar() {
     if (!legOpen && !listOpen) return
     const esc = (e: KeyboardEvent) => {
       if (e.key !== 'Escape') return
+      /* Same kept-mounted guard as Sheet.tsx (bug-hunt fix, 1 Sep 26): the
+         legend/list overlay left open behind a tab switch must not swallow
+         Escape on a Raptor page nor close itself unseen. */
+      const pg = document.getElementById('page-leavewar')
+      if (pg && !pg.classList.contains('on')) return
       e.stopPropagation()
       if (legOpen) setLegOpen(false)
       else setListOpen(false)

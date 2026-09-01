@@ -2179,6 +2179,16 @@ would freeze; on the document it keeps tracking, and the loop stops the instant 
 drag ends. Both wirings' handlers early-return until their own instance owns a live
 drag, so board and week don't collide.
 
+**The frozen-preview guard is per dragged DAY, not per board day (bug-hunt fix,
+1 Sep 26).** `onDown` used to refuse a pickup whenever the BOARD's selected day
+was previewing (`DPREV.has(SBDAY)`) — but the machine is wired on the edit week
+too, where seven days render live and editable at once, so a preview left open
+on the board silently killed every drag on the week. The guard now reads the day
+off the grip's own address (`mv:<kind>.di…` / `secmove "di.key"`), the same
+per-day reading `armSlot` uses. A previewing day emits no grips at all
+(`dayPreviewHTML` renders with `ed=false`), so the guard only catches a stale
+element from the pre-preview render. Pinned three ways in `rowdrag.test.tsx`.
+
 **Every handle is the same dotted `⠿`, inline in the section's own header (owner,
 31 Aug 26).** This REVERSED the 30 Aug drawn-rail: the owner asked that "the drag
 markers should all follow the old design in which it's dotted" and be reachable on a
@@ -5200,6 +5210,14 @@ Pinned in `ui/board.test.tsx` (toggle + read-only mark) and
   at 0×0 it unmounts the FIXED bottom proxy scrollbar (`.mx-hbar` is React
   state fed by a rect), which keeps the geometry gate's "nothing leaks onto
   the Raptor pages" pin byte-true with the grid still in the DOM.
+- **Global listeners must check they're the page showing** (bug-hunt fix,
+  1 Sep 26). A document/window listener owned by a Leave War overlay now
+  SURVIVES a tab switch — `Sheet.tsx`'s and `Chrome.tsx`'s capture-phase
+  Escape handlers used to swallow the Escape Raptor's cell editing restores
+  on, and close the hidden sheet unseen. Any such listener must bail unless
+  `#page-leavewar` carries `.on` (no wrapper — the standalone app — means
+  always act). The Matrix's scroll/resize measurers are exempt only because
+  they already bail on the 0-width rects a hidden section measures.
 - **First open is unchanged by design.** Making THAT faster means
   virtualising the grid — only if the owner still feels it.
 
@@ -5229,7 +5247,13 @@ no label. It marks which columns the squadron may bid on. The contract:
   horizontal scroll with no handler and none of the fling-killing scrollLeft
   writes the rest of Matrix guards against. Measured in the same layout signals
   as the month strip (period/stage/window, zoom, row-window, counts fold,
-  resize); jsdom leaves it null, so geometry-free tests are unaffected.
+  resize) — PLUS the store `version` (bug-hunt fix, 1 Sep 26): the box's height
+  is the whole table's, so any commit that adds or removes a row (a counter
+  built/deleted, a member joining via the Quals sync, a CAT sub-heading
+  appearing) must re-measure or the box reads a row short until the next
+  zoom/resize. Four identity-guarded rect reads per commit — noise next to the
+  repaint that commit already paid for. jsdom leaves it null, so geometry-free
+  tests are unaffected.
 - **Layering.** `z-index: 1` — above the day cells, BELOW the frozen
   callsign/counter columns (z 2/3) and the scrolled-in band overlay (z 4). So
   when the year scrolls under the frozen columns the box's left edge hides

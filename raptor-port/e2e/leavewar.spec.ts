@@ -2521,6 +2521,20 @@ test('a glowing green box frames the open-bidding window and clears when bidding
   expect(geo.bw).toBeGreaterThan(100)   // spans the ~90-day window
   expect(geo.bh).toBeGreaterThan(100)   // full grid height
   expect(Math.abs(geo.bl - geo.jl)).toBeLessThanOrEqual(4)  // left edge at 1 Jan
+  // A row added while the war is open grows the box in the same commit: build
+  // a counter (bug-hunt fix, 1 Sep 26 — the measure rides the store version,
+  // so a taller table can no longer leave the box a row short until the next
+  // zoom or resize happened to re-measure it).
+  await page.locator('[data-testid="roster-arrange"]').click()
+  await page.locator('[data-testid="counter-add"]').click()
+  await page.locator('[data-testid="cform-name"]').fill('SXO CREW')
+  await page.locator('[data-testid="cf-qual-sxo"]').click()
+  await page.locator('[data-testid="cform-save"]').click()
+  await expect(page.locator('[data-testid="count-sxo-crew"]')).toHaveCount(1)
+  await page.locator('[data-testid="roster-arrange"]').click() // leave arrange mode
+  const grown = await page.evaluate(() =>
+    document.querySelector('#page-leavewar .lw-bidbox').getBoundingClientRect().height)
+  expect(grown).toBeGreaterThan(geo.bh)
   // Closing bidding removes it — a closed / published / draft war shows none.
   await page.locator('[data-testid="stage-advance"]').click()
   await expect(page.locator('[data-testid="stage-now"]')).toHaveText('BIDDING CLOSED')

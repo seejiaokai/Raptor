@@ -612,6 +612,78 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
      `docs/ui-contracts.md` §Dragging sections and waves; stable decision updated
      in `CLAUDE.md`.
 
+- **RESOLVED 1 Sep 26 (bug hunt #4, the fresh-features sweep) — the two
+  features shipped earlier this session (Leave War keep-alive + the
+  open-bidding box) hunted adversarially; two defects fixed, the seams read
+  clean.**
+  1. **The bidding box went a row short/long when the roster changed.** The
+     box's height is the whole table's (`tr.bottom - hr.top`), but the measure
+     effect's deps carried no term for the ROW COUNT — build or delete a
+     counter, gain a member from the Quals sync, or grow a CAT sub-heading
+     while a war is open and the table's height changed with every dep
+     unchanged, leaving the box stale until the next zoom/resize. The store
+     `version` now rides the dep list (Matrix.tsx): four rect reads against an
+     identity-guarded setState per commit, self-healing for every data-driven
+     height change. Pinned in the e2e bidding-box spec (build a counter → the
+     box grows the same commit).
+  2. **A sheet/legend left open behind a tab switch swallowed Escape on
+     Raptor pages.** Keep-alive keeps the whole tab mounted, so `Sheet.tsx`'s
+     and `Chrome.tsx`'s capture-phase Escape listeners survive a switch away
+     — where their `stopPropagation` ran BEFORE Raptor's own cell editing
+     (textedit.ts's Escape-restores) and closed the hidden overlay unseen.
+     Both handlers now act only while `#page-leavewar` carries `.on` (absent
+     wrapper = standalone app = always). Pinned in `scrim.test.tsx` +
+     `chrome.test.tsx` (both fail pre-fix).
+  Read clean, deliberately: the Raptor→LW roster projection is wired at boot
+  in `main.tsx` (`wireLeaveWarSync` — store-to-store, remount-free), so the
+  memo firewall cannot starve it; the Matrix's window scroll/resize measurers
+  all bail on 0-width rects while dozed; the page's scroll-save is gated on
+  `active` (listener removed on hide); the Matrix's roster-drag pointer wires
+  live only during an armed drag. Contract updates in `docs/ui-contracts.md`
+  (the bidding-box + keep-alive sections).
+
+- **RESOLVED 1 Sep 26 (bug hunt #3, the reorder/drag machinery sweep) — two
+  defects fixed, the rest of the machine read clean.** A dedicated adversarial
+  pass over `engine/reorder.ts` (movers + sorters + the mov: tombstone gate),
+  `engine/keys.ts` (moveKeys/permuteKeys remaps), `publish.ts` markMove,
+  `drafts.ts` reconcile, and `ui/rowdrag.ts` (the 30–31 Aug drag machine).
+  1. **A preview left open on the BOARD killed every drag on the edit week.**
+     `rowdrag.ts onDown` gated on `DPREV.has(SBDAY)` — the board's selected
+     day — but the machine is wired on the edit week too, where seven days
+     render live and editable at once: preview any AL on the board, switch to
+     Edit Schedule, and every section/wave drag on every day silently refused.
+     Fixed to the per-DRAGGED-day reading armSlot already uses (the day off the
+     grip's own `mv:`/`secmove` address); a previewing day emits no grips at
+     all (`dayPreviewHTML` renders `ed=false`), so like armSlot's guard the
+     check now only catches stale pre-preview markup. Three pins in
+     `ui/rowdrag.test.tsx` — all three FAIL on the old gate (it also never
+     refused the previewing day itself while SBDAY was null, i.e. the belt had
+     holes both ways).
+  2. **A draft ADD that sorted to the top swallowed its section's reorder
+     tombstone.** The sorters handed `done` a FIXED key — the row at index 0
+     post-sort — so on a published day with an added early wave, Sort all put
+     the add at 0, the added-gate saw `SCHED.added` and marked the add's field
+     instead, and any resequencing of the ISSUED rows beneath (published
+     out of time order, then sorted) reached no AL: the exact hole the 31 Aug
+     mov: tombstone closed for movers, alive in the sorter corner of the same
+     fix. `sortedKey` (reorder.ts) now asks the real question — "did an issued
+     row OVERTAKE another issued row" — and hands `done` the first moved
+     issued row when yes; a pure displacement (rows sliding down under an add,
+     relative order kept) stays the add's own business with no tombstone,
+     matching the movers' owner-decided net no-op rule. All seven sorters
+     routed through it; draft-day pins hold (in an all-issued swap the first
+     moved issued row IS the old index-0 choice). Two pins in
+     `engine/audit-d-published.test.ts` (overtake ⇒ tombstone fails on the old
+     code; no-overtake ⇒ no tombstone pins the preserved semantics).
+  Read clean, deliberately: every mover/sorter head list matches its
+  `keys.ts` shift* sibling verbatim; `SCHED.added` rides both remaps so the
+  net-no-op gate reads post-remap addresses; ground drags speak model indices
+  end-to-end (`groundOrder` carries `ri`); `keyDay` parses `mov:` for the AL
+  day filter; `histSnap` carries the tombstones through undo; `moveSectionTo`
+  stays display-only; reconcile skips `mov:` by name. Rules note added to
+  `docs/engine-rules.md` §Publishing; contract line in `docs/ui-contracts.md`
+  §Dragging sections and waves.
+
 - **RESOLVED 31 Aug 26 (bug hunt #2, the authority sweep) — a MEMBER could
   ARCHIVE anyone off the roster from the Quals page.** Enable editing is open
   to members by design (owner, 5 Aug 26 — they tick their quals and fill in

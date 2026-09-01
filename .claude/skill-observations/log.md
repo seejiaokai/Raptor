@@ -651,3 +651,29 @@ failure mode instead of documenting it.
 **Principle:** When the same documented rule is violated repeatedly, stop
 strengthening the wording and change the environment so the wrong command
 cannot fail silently — make the bare form work, or make it refuse loudly.
+
+### Observation 43: Design hook scans engine and test files where design rules cannot apply
+
+**Status:** OPEN
+**Date:** 2026-09-01
+**Session context:** Bug hunt #3 (reorder/drag machinery) — edits to src/engine/reorder.ts and two test files
+**Skill:** impeccable (hooks)
+**Type:** open-source
+**Phase/Area:** hooks — file filtering
+
+**Issue:** The impeccable design-detector hook fired on every edit to
+`src/engine/reorder.ts` (a pure TypeScript engine file) and `*.test.tsx`
+files, each time reporting "no deterministic design-quality issues found",
+then suppressed itself after 6 edits on the engine file and suggested
+`/impeccable audit` — on a file with no UI in it. Pure noise: no design rule
+can apply to an engine module or a test file.
+
+**Suggested improvement:** The hook's default file filter should exclude
+`*.test.*` and paths matching engine/data layers (or include only files that
+emit markup/styles — `.css`, `.tsx` components, html-emitting `.ts`). The
+skill's `hooks ignore-file` verb exists; the improvement is shipping sensible
+default exclusions so users don't need to discover it.
+
+**Principle:** A hook that watches file edits should scope itself to files
+its rules can possibly apply to; firing "no issues" on out-of-scope files
+trains the reader to ignore it on in-scope ones.
