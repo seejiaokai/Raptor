@@ -3209,6 +3209,15 @@ Three things stay decided:
   standing as stores. Do NOT change the RENDERED shape of a cancelled row
   (`cxText` → "CX DUE <reason>", the `.cx`/`.cxtag` markup): that markup IS in
   the parity-compared path even though the seed never triggers it.
+- **A cancelled row is faded by OPACITY, not by grayscale on the row** (owner,
+  1 Sep 26 — "can I still see pilot and wso colours of the pucks?"). The
+  `filter:grayscale` used to sit on the row container and washed the olive FCP
+  and green RCP pucks into one grey; it now lives only on the store pills
+  (`.cx .stchip` et al.), so the crew pucks keep their seat colour through the
+  `.55` fade while the red rail + struck words still read cancelled. The
+  parity check `cancelled rows greyed` (`tfin.js`) matches the pills' own
+  `opacity:.X;filter:grayscale`, so 728/0 holds — but don't move the grayscale
+  back onto the row (`.form.cx`/`.sb-line.cx`): it re-greys the pucks.
 
 ## The top bar carries the bell and, while editing, undo/redo (owner, Aug 26)
 
@@ -3865,7 +3874,14 @@ surface; the string-builder discipline is for the dense parity-bound ones).
 **The month grid.** Monday-first, seven equal columns on BOTH phone and
 desktop (the owner picked the grid over a phone day-list). Opens on the
 month of the table's own window (`CALMONTH`, seeded once, then carried for
-the session); `‹ ›` step months, `Today` jumps home. Each day cell is
+the session); `‹ ›` step months, `Today` jumps home. The close control
+(`#icClose`) is a bare **✕** — no "List" label — with an `aria-label`/`title`
+of "Back to list" (owner, 1 Sep 26 — "put just a cross in the same row"). On a
+phone `.ic-head` no longer wraps (`flex-wrap:nowrap`, gap 4px), and the month
+label shrinks to 15px and ellipses only on a truly narrow screen, so the
+`‹ month › Today ✕` controls stay on ONE row (the cross beside Today, never on
+its own second line) and the touch targets keep their 44px. The Medical view's
+`.ic-head` close (`#medClose`) is the same bare ✕ for consistency. Each day cell is
 `[data-icday="yyyy-mm-dd"]`.
 
 **The cell's priority order (owner, 22 Aug 26 — "if it fills up the whole

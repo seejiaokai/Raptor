@@ -889,7 +889,7 @@ body.ros-open .eroster .ros-tab{background:var(--accent);color:var(--accent-ink)
 .form{display:grid;grid-template-columns:52px 48px 48px calc(var(--puck-w)*2 + 16px) minmax(0,1fr);align-items:stretch;border-bottom:1px solid rgba(42,49,58,.55)}
 .form:last-child{border-bottom:none}
 .form:hover{background:rgba(255,255,255,.018)}
-.form.cx{opacity:.5;filter:grayscale(.7)}
+.form.cx{opacity:.5}
 .fcell{display:flex;flex-direction:column;justify-content:flex-start;padding:4px 3px;border-right:1px solid rgba(42,49,58,.4);overflow:hidden}
 /* placement comes from the custom properties the renderer stamps on each cell, so
    the phone block can re-map the same markup onto a taller row grid */
@@ -2305,8 +2305,19 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
   .ic-chip.plan{background:var(--edge-2)}
   .ic-more{font-size:9px}
   /* the bar gets tighter horizontal padding, but the buttons in it keep
-     their 44px touch target from the desktop rule above */
-  .ic-head{padding:8px 10px;gap:6px}
+     their 44px touch target from the desktop rule above. It also stops
+     WRAPPING on a phone (owner, 1 Sep 26 — "put just a cross in the same
+     row"): the ‹ month › Today ✕ controls used to spill the close cross onto
+     its own second line once the wide month label + full-size buttons
+     overran ~370px. nowrap + a tighter gap keeps them on one line, and the
+     month label (below) gives up the last few px instead of the buttons —
+     so the cross stays beside Today, never below it. */
+  .ic-head{padding:8px 10px;gap:4px;flex-wrap:nowrap}
+  /* the Inputs month label is the widest thing in that row ("September 2026"),
+     so it shrinks a touch on a phone and ellipses only if a truly narrow
+     screen still can't seat the whole row — never the touch targets. Scoped
+     to #inpCal so the Medical as-of dropdown's own month label is untouched. */
+  #inpCal .ic-mon{font-size:15px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 }
 
 /* ---- THE DAY POPOVER (hold-to-add / tap-to-open / .ic-more / a puck or
@@ -3844,10 +3855,10 @@ body.dnd .availpuck::after,body.dnd .eroster::after{content:'drop to unassign';p
 .page.editing .pl-row .t.txed,.page.editing .ah-row .t.txed{display:inline-block;min-width:28px}
 
 /* ---- cancelled (CX) rows ------------------------------------------------
-   "greyed out faded with a line striking through it" — the fade is opacity +
-   grayscale, the strike is BOTH a text-decoration (for the words) and a 1px
-   overlay rule (because pucks paint their own background and would otherwise
-   hide the line). */
+   "greyed out faded with a line striking through it" — the fade is opacity on
+   the row (grayscale is NOT on the row any more, so crew pucks keep their
+   pilot/RCP colour — see the .cx .puck note below), the strike is a
+   text-decoration on the words. Store pills carry their own grayscale. */
 /* ---- cancelled (CX) ----------------------------------------------------------
    ONE mechanism, not three. A cancelled row used to get a strike-through on the
    row box AND a 1px rule drawn edge-to-edge at 50% of its height: on a wrapped
@@ -3868,7 +3879,7 @@ body.dnd .availpuck::after,body.dnd .eroster::after{content:'drop to unassign';p
 .pl-row.gr-frominput,.sb-arow.gr-frominput{
   box-shadow:inset 2px 0 0 rgba(59,198,232,.42);background:rgba(59,198,232,.05)}
 .form.cx,.acrow.cx,.rmkcell.cx,.pl-row.cx,.ah-row.cx,.sb-line.cx,.sb-arow.cx{
-  position:relative;opacity:.55;filter:grayscale(.7)}
+  position:relative;opacity:.55}
 .pl-row.cx,.ah-row.cx,.sb-line.cx,.sb-arow.cx,.form.cx{
   box-shadow:inset 2px 0 0 rgba(240,85,95,.55);background:rgba(240,85,95,.045)}
 .acrow.cx,.rmkcell.cx{background:rgba(240,85,95,.045)}
@@ -3878,9 +3889,18 @@ body.dnd .availpuck::after,body.dnd .eroster::after{content:'drop to unassign';p
 .form.cx .fcell i,.form.cx .fcell b{
   text-decoration:line-through;text-decoration-color:rgba(240,85,95,.85);
   text-decoration-thickness:1px;text-decoration-skip-ink:none}
-/* boxes keep their shape — they read as cancelled by being greyed back */
-.cx .puck{opacity:.62}
-.cx .stores,.cx .stchip,.cx .bombs{opacity:.5}
+/* boxes keep their shape — they read as cancelled by being greyed back. The
+   fade above is now opacity ONLY (no row-level grayscale), so the CREW PUCKS
+   keep their pilot/RCP hue on a cancelled line (owner, 1 Sep 26 — "can I still
+   see pilot and wso colours of the pucks?"): olive FCP vs green RCP are the
+   whole reason to grey the seat, not hide it, and grayscale washed them into
+   one grey. The row still reads cancelled by the red left rail, the struck
+   words and the .55 fade — the pucks just carry their colour through it, so a
+   scheduler can still read WHO was crewed where. The store pills keep the old
+   desaturated look by carrying their OWN grayscale (below), the one place it
+   still belongs. */
+.cx .puck{opacity:1}
+.cx .stores,.cx .stchip,.cx .bombs{opacity:.5;filter:grayscale(.7)}
 .form.cx .fcell b .mdot{text-decoration:none}
 .airpop-box.cxbox{width:min(94vw,420px)}
 .cxbody{padding:13px 15px 4px}
