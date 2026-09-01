@@ -723,6 +723,13 @@ agree — name it here so the next session knows to check both.
     connect rule (overlap OR touch, closer folded in), which lives in that one
     function and is pinned in `medical.test.ts`. It is DISPLAY layered on the
     derived reads, not a fourth data path.
+  - A record's DOCUMENTS are a pair `docId`/`docIds` since 1 Sep 26 (several
+    files on one entry): minted ONLY by `state/docs.ts:docFields`, read ONLY
+    through `rowDocIds` — a new writer that sets either field by hand, or a
+    reader that looks at `r.docId` alone, reopens the drift this pair-rule
+    closes. The Leave-War retain (`sync.ts` RETAINED/prior maps) carries the
+    FULL list across a war-side date change for the same reason. The rules
+    engine never reads either field, so parity is untouched by construction.
   Plus one known demo wrinkle, documented in `state/demoseed.ts`: reloading
   week 1 restores the pristine INPUTS snapshot and drops the seeded demo
   docIds — the viewer's "No document on file" state covers it; not a bug to

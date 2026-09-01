@@ -191,3 +191,32 @@ describe('the clash sheet gates a different-type overlap', () => {
     expect(TOASTS.join(' ')).toContain('already filed over these days')
   })
 })
+
+/* The upload control manages SEVERAL files (owner, 1 Sep 26): one chip per
+   attached file with its own ✕, an Add button for more — all draft-only
+   until Save, through the real InputEditor. */
+describe('the upload control with several files', () => {
+  it('shows a chip per file, removes one on its ✕, and the removal saves', async () => {
+    const a = freshDoc(), b = freshDoc()
+    const row = plant({ person: 'bane', type: 'ATT C', date: 'Jul 10', endDate: 'Jul 13', docId: a, docIds: [a, b] })
+    await act(async () => { setInpEdit(row); notify() })
+    expect(document.querySelectorAll('.docfield .docchip').length, 'one chip per attached file').toBe(2)
+    expect($('.docfield .docbtn')!.textContent).toContain('Add')
+    await click(document.querySelectorAll('.docfield .docdel')[0])
+    expect(document.querySelectorAll('.docfield .docchip').length, 'the ✕ dropped its file from the draft').toBe(1)
+    await click($('#inpEditSave'))
+    expect(rows('ATT C')[0].docId, 'the remaining file is the record now').toBe(b)
+    expect(rows('ATT C')[0].docIds, 'one file folds back to the single shape').toBeUndefined()
+  })
+  it('removing the last chip refuses the save and keeps the dialog open', async () => {
+    const a = freshDoc()
+    const row = plant({ person: 'bane', type: 'OML', date: 'Jul 20', endDate: 'Jul 22', docId: a })
+    await act(async () => { setInpEdit(row); notify() })
+    expect(document.querySelectorAll('.docfield .docchip').length).toBe(1)
+    await click(document.querySelectorAll('.docfield .docdel')[0])
+    await click($('#inpEditSave'))
+    expect(TOASTS.join(' ')).toContain('Keep at least one document')
+    expect($('#inpEditSave'), 'the dialog stayed open, nothing typed is lost').toBeTruthy()
+    expect(rows('OML')[0].docId, 'the record keeps its file').toBe(a)
+  })
+})

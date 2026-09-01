@@ -108,8 +108,8 @@ export function upchitsWithin(asOf:any,days:any=30){
    date sits within the down span or the day after it. Members are returned
    oldest-first; a member with no readable date is skipped, never guessed
    (the missing-input doctrine), and an unreadable seed row answers with just
-   itself. Each returned row still carries its own `docId`; picking which to
-   show is the view's job. */
+   itself. Each returned row still carries its own document ids (rowDocIds
+   reads them); picking which to show is the view's job. */
 export function medEpisode(row:any){
   if(!row)return [] as any[];
   const person=row.person, a0=medStartOrd(row), b0=medEndOrd(row);

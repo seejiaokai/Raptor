@@ -4302,6 +4302,32 @@ true" clash sheet untouched, parity intact. Pinned in `medical.test.ts`
 (`medEpisode`), `medicalview.test.tsx` (the pill + the episode hand-off) and
 `docviewer.test.tsx` (the pager steps; a lone document keeps no nav bar).
 
+**One entry holds SEVERAL files** (owner, 1 Sep 26 — "upload several files
+into a single entry and delete or reupload"). The record shape:
+`state/docs.ts:docFields(ids)` mints `docId` = the FIRST file (unchanged, so
+the Leave-War retain, demoseed, the Inputs-page paperclip and every legacy
+reader keep working) plus `docIds` = the full list only when >1, and
+`rowDocIds(r)` is the ONE reader of the pair (rows and drafts alike — it
+falls back to the bare `docId` old callers still hand in). **No other code
+writes either field** — that is what keeps them from drifting. `DocField`
+(`ui/inputedit.tsx`, all three editor homes) draws one **chip per file**
+(`.docchip`, name + its own ✕ `.docdel`) and an **Add** button (`multiple`
+file input; each pick stores at once, refusals toast per file); the ✕ edits
+the DRAFT only, so Cancel stays a real cancel and the append-only store
+keeps every file for undo. The write path (`normalizeInputDraft` + both
+commits) refuses a NEW/retyped medical entry with no file as before, and
+now also refuses saving an entry that HAD files with none — "Keep at least
+one document" — while pre-feature bare rows stay freely editable. The
+VIEWER expands whatever it is handed — episode rows or a single-row puck
+tap — into one page per FILE (`DocViewer`'s `els`; the caller's `idx` still
+counts ROWS, seated at that row's first page), the "N documents" pill
+counts FILES (`episodeDocN`), and a multi-file entry shows the current
+file's name beside the sub line (`.docview-fname`) so two scans of one
+certificate are tellable apart. Pinned in `docs.test.ts` (the shape pair),
+`medwrite.test.ts` (first-on-docId, fold-back to single, last-file
+refusal), `medclash.test.tsx` (the chips through the real editor) and
+`docviewer.test.tsx`/`medicalview.test.tsx` (file-counted pager + badge).
+
 **The upchit save-time summary sheet** (`ui/UpchitConfirm.tsx`, owner,
 27 Aug 26). Saving an upchit from ANY form — the Inputs add form, the
 in-table row editor, or the shared `InputEditor` (where it paints one layer

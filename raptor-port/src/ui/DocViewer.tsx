@@ -13,7 +13,7 @@ import { PEOPLE } from '../engine/people'
 import { inpMeta, baseYear } from '../engine/inputs'
 import { fmt } from './inputedit'
 import { TODAY, keyToIso } from './weeknav'
-import { docGet } from '../state/docs'
+import { docGet, rowDocIds } from '../state/docs'
 import { ME, canEditSched } from '../state/auth'
 import { notify } from '../state/store'
 import { DOCVIEW, setDocView, setInpEdit } from './pops'
@@ -25,21 +25,30 @@ export function DocViewer() {
   /* one document or an episode. A single-row caller (a puck tap, a pending
      card) gives { row, up }; the Medical page gives { rows, idx } for a
      person's overlapping medical documents (owner, 1 Sep 26), paged in place.
-     Either way `list` is the rows to step through, so the single-row path is
-     just a list of one — nothing about it changes. */
+     Either way `list` is the ROWS to step through — and each row EXPANDS to
+     one page per attached file (owner, 1 Sep 26 — several files on one
+     entry), so the pager walks documents, not entries. A row with no file
+     keeps its one page (the "no document on file" statement). */
   const list = v ? (v.rows && v.rows.length ? v.rows : (v.row ? [{ row: v.row, up: v.up }] : [])) : []
+  const els = list.flatMap((e: any) => {
+    const ids = rowDocIds(e.row)
+    return ids.length ? ids.map((id: string) => ({ ...e, docId: id })) : [e]
+  })
   const [i, setI] = useState(0)
   /* seat the page index when a NEW viewer opens — DOCVIEW is a fresh object on
      every setDocView, so its identity change is the "opened again" signal. Set
      in render (guarded), not an effect, so the first frame already shows the
-     tapped document rather than flashing doc 0 and re-minting its URL. */
+     tapped document rather than flashing doc 0 and re-minting its URL. The
+     caller's idx counts ROWS; the seat is that row's first page, so the sum
+     of the page counts of every row before it. */
+  const seatOf = (ri: number) => list.slice(0, ri).reduce((n: number, e: any) => n + Math.max(1, rowDocIds(e.row).length), 0)
   const [seenV, setSeenV] = useState<any>(null)
-  if (v !== seenV) { setSeenV(v); setI(v && v.idx ? v.idx : 0) }
-  const idx = list.length ? Math.min(i, list.length - 1) : 0
-  const cur = list.length ? list[idx] : null
+  if (v !== seenV) { setSeenV(v); setI(v && v.idx ? seatOf(v.idx) : 0) }
+  const idx = els.length ? Math.min(i, els.length - 1) : 0
+  const cur = els.length ? els[idx] : null
   const r = cur && cur.row
   const up = !!(cur && cur.up)
-  const doc = r ? docGet(r.docId) : null
+  const doc = cur ? docGet(cur.docId) : null
   const [url, setUrl] = useState('')
   useEffect(() => {
     if (!doc) { setUrl(''); return }
@@ -82,16 +91,19 @@ export function DocViewer() {
           <button className="x" id="docViewClose" aria-label="Close" onClick={close}>✕</button>
         </div>
         {r && <div className="airpop-body docview-body">
-          {m && <div className="docview-sub">{m.name}{r.remarks ? ` — ${r.remarks}` : ''}</div>}
+          {m && <div className="docview-sub">{m.name}{r.remarks ? ` — ${r.remarks}` : ''}
+            {/* the file's own name, but only when this ENTRY holds several —
+                two scans of one certificate are otherwise identical pages */}
+            {doc && rowDocIds(r).length > 1 ? <span className="docview-fname"> · {doc.name}</span> : null}</div>}
           {/* the episode pager (owner, 1 Sep 26) — only when a person's
               overlapping documents are shown together; a lone document has no
               nav bar, so the single-doc view is unchanged */}
-          {list.length > 1 && <div className="docview-nav">
+          {els.length > 1 && <div className="docview-nav">
             <button type="button" className="abtn" id="docViewPrev" aria-label="Previous document"
               disabled={idx === 0} onClick={() => setI(idx - 1)}>‹</button>
-            <span className="docview-count">{idx + 1} of {list.length}</span>
+            <span className="docview-count">{idx + 1} of {els.length}</span>
             <button type="button" className="abtn" id="docViewNext" aria-label="Next document"
-              disabled={idx === list.length - 1} onClick={() => setI(idx + 1)}>›</button>
+              disabled={idx === els.length - 1} onClick={() => setI(idx + 1)}>›</button>
           </div>}
           {doc && url
             ? (doc.mime === 'application/pdf'

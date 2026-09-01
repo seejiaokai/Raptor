@@ -41,3 +41,24 @@ export function docAdd(file: { name?: any, type?: any, size?: any } & Blob): { i
 }
 export function docGet(id: any) { return (id && docBackend.impl.get(String(id))) || null }
 export function docHas(id: any) { return !!docGet(id) }
+
+/* ---- SEVERAL FILES ON ONE ENTRY (owner, 1 Sep 26 — "upload several files
+   into a single entry and delete or reupload") ----------------------------
+   A record carries `docId` = the FIRST file, exactly as it always has (so
+   the Leave-War retain, demoseed, the Inputs-page paperclip and every old
+   test keep reading it), plus `docIds` = the full list, present only when
+   there is more than one. The pair is minted ONLY by docFields and read
+   ONLY through rowDocIds, so the two fields cannot drift apart — no other
+   code writes either. Deleting a file edits the RECORD's list; the store
+   above stays append-only, because undo can resurrect the record and must
+   find its paperwork still here. */
+export function rowDocIds(r: any): string[] {
+  if (!r) return []
+  if (Array.isArray(r.docIds) && r.docIds.length) return r.docIds.map(String)
+  return r.docId ? [String(r.docId)] : []
+}
+export function docFields(ids: any): { docId?: string, docIds?: string[] } {
+  const a = (Array.isArray(ids) ? ids : []).map(String).filter(Boolean)
+  if (!a.length) return {}
+  return a.length === 1 ? { docId: a[0] } : { docId: a[0], docIds: [...a] }
+}

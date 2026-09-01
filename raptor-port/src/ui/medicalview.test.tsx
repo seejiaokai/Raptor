@@ -91,6 +91,21 @@ describe('the Medical view', () => {
     expect(DOCVIEW.rows && DOCVIEW.rows.length, 'opening hands the viewer the whole episode').toBe(2)
     await act(async () => { setDocView(null); notify() })
   })
+  // Several files on ONE entry (owner, 1 Sep 26): the badge counts FILES, so
+  // a lone two-file entry reads "2 documents" and opens the same pager the
+  // episode card does — the viewer expands the row itself.
+  it('a single entry with two files says "2 documents" on its card', async () => {
+    const f1 = docAdd(new Blob(['s1'], { type: 'image/png' }) as any).id
+    const f2 = docAdd(new Blob(['s2'], { type: 'image/png' }) as any).id
+    await plant({ person: 'dj', type: 'ATT C', date: 'Jul 11', endDate: 'Jul 15', docId: f1, docIds: [f1, f2] })
+    const card = cardsIn('med-down').find(c => c.textContent!.includes('Ace'))
+    expect(card, 'the two-file entry lists as down today').toBeTruthy()
+    expect(card!.querySelector('.medcard-docn')!.textContent).toContain('2 documents')
+    await act(async () => { setDocView(null); notify() })
+    await click(card!)
+    expect(DOCVIEW.row && DOCVIEW.row.docIds && DOCVIEW.row.docIds.length, 'the tapped row carries both files for the viewer to page').toBe(2)
+    await act(async () => { setDocView(null); notify() })
+  })
   it('picking an as-of date replays history, and Today returns', async () => {
     /* on 3 Jul shrek was DOWN (1–5 Jul) and yeti still on his ATT B; bane not yet */
     await act(async () => { setMedAsOf('2026-07-03'); notify() })
