@@ -2503,3 +2503,26 @@ test('a tab switch keeps the grid alive: same sideways spot on return, measureme
   expect(jumped).not.toBe(after)
   expect(errors, 'no page error across the tab switch').toEqual([])
 })
+
+// The open-bidding box (owner, 1 Sep 26): a glowing deep-faded-green rectangle
+// around the columns open for bidding, so it is obvious which dates are open.
+// jsdom cannot see it (it is measured from real rects), so the pin is here.
+// It tracks the window (seed: 1 Jan – 31 Mar) and clears the moment bidding
+// closes — the box means "open right now".
+test('a glowing green box frames the open-bidding window and clears when bidding closes', async ({ page }) => {
+  await openLeaveWar(page, 'a')   // admin, so the stage can be advanced
+  const box = page.locator('#page-leavewar .lw-bidbox')
+  await expect(box).toHaveCount(1)
+  const geo = await page.evaluate(() => {
+    const b = document.querySelector('#page-leavewar .lw-bidbox').getBoundingClientRect()
+    const jan1 = document.querySelector('[data-testid="head-2026-01-01"]').getBoundingClientRect()
+    return { bw: b.width, bh: b.height, bl: b.left, jl: jan1.left }
+  })
+  expect(geo.bw).toBeGreaterThan(100)   // spans the ~90-day window
+  expect(geo.bh).toBeGreaterThan(100)   // full grid height
+  expect(Math.abs(geo.bl - geo.jl)).toBeLessThanOrEqual(4)  // left edge at 1 Jan
+  // Closing bidding removes it — a closed / published / draft war shows none.
+  await page.locator('[data-testid="stage-advance"]').click()
+  await expect(page.locator('[data-testid="stage-now"]')).toHaveText('BIDDING CLOSED')
+  await expect(box).toHaveCount(0)
+})

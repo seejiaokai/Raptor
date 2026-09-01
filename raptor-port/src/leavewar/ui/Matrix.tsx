@@ -24,6 +24,7 @@ import {
   orderedFigures,
   DEFAULT_FIGURE_ID,
   dayName,
+  inBidWindow,
   isWeekend,
   monthsIn,
   parseCell,
@@ -1350,6 +1351,58 @@ export function Matrix() {
     return () => window.removeEventListener('resize', measure)
   }, [zoom, period.id, dates.length])
 
+  // ---- the OPEN-BIDDING box (owner, 1 Sep 26) -----------------------------
+  // A glowing dark-green rectangle around the columns open for bidding, so it
+  // is obvious at a glance which dates the squadron may bid on. Shown ONLY
+  // while bidding is OPEN (stage 'open'); a draft / closed / published war
+  // shows none — the box means "open right NOW". The span is the period's
+  // bidFrom..bidTo (null bounds = the whole war open, so the box wraps every
+  // column). The owner chose the deeper, more faded green over a brighter one.
+  //
+  // ONE absolutely-positioned overlay inside `.mx-wrap` (which is
+  // position:relative), NOT per-cell borders: a single element gives the clean
+  // continuous glow the owner approved, and — being part of the scroller's
+  // own content — it tracks the horizontal scroll for FREE, so there is no
+  // scroll handler and none of the fling-killing scrollLeft writes the rest of
+  // this file guards against. Its z-index (1, matrix.css) sits it ABOVE the
+  // day cells but BELOW the frozen callsign/counter columns (z 2/3) and the
+  // scrolled-in band overlay (z 4), so its left edge hides behind them exactly
+  // as a day cell does when the year scrolls under the frozen columns.
+  // Measured in the same layout signals as the month strip; jsdom (every rect
+  // 0×0) leaves it null, which also keeps every geometry-free test honest.
+  const [bidBox, setBidBox] = useState<{ left: number; top: number; width: number; height: number } | null>(null)
+  const measureBidBox = () => {
+    const wrap = wrapRef.current, head = headRef.current
+    if (!wrap || !head) return
+    if (period.stage !== 'open') { setBidBox(prev => (prev ? null : prev)); return }
+    const open = period.days.filter(d => inBidWindow(period, d.date))
+    if (open.length === 0) { setBidBox(prev => (prev ? null : prev)); return }
+    const fh = wrap.querySelector<HTMLElement>(`[data-testid="head-${open[0]!.date}"]`)
+    const lh = wrap.querySelector<HTMLElement>(`[data-testid="head-${open[open.length - 1]!.date}"]`)
+    const table = wrap.querySelector<HTMLElement>('table.mx')
+    if (!fh || !lh || !table) return
+    const wr = wrap.getBoundingClientRect()
+    if (wr.width === 0) return // jsdom / not laid out — leave it null
+    const fr = fh.getBoundingClientRect(), lr = lh.getBoundingClientRect()
+    if (fr.width === 0) return
+    const hr = head.getBoundingClientRect(), tr = table.getBoundingClientRect()
+    // Content coordinates (add scrollLeft so the value is stable wherever the
+    // grid is scrolled — the browser re-offsets the absolute child as it
+    // scrolls). The header tbody top is the month-bracket row; the box runs
+    // from there to the foot of the roster.
+    const left = fr.left - wr.left + wrap.scrollLeft
+    const right = lr.right - wr.left + wrap.scrollLeft
+    const top = hr.top - wr.top
+    const next = { left, top, width: right - left, height: tr.bottom - hr.top }
+    setBidBox(prev => (prev && prev.left === next.left && prev.top === next.top && prev.width === next.width && prev.height === next.height ? prev : next))
+  }
+  useLayoutEffect(() => {
+    measureBidBox()
+    window.addEventListener('resize', measureBidBox)
+    return () => window.removeEventListener('resize', measureBidBox)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [period.id, period.stage, period.bidFrom, period.bidTo, zoom, visWindow, dates.length, countsOpen, folded])
+
   // ---- the frozen roster columns, drawn ONCE (owner, 20 Aug 26 — the third
   // look at the sideways stutter) --------------------------------------------
   //
@@ -2107,6 +2160,17 @@ export function Matrix() {
               })()}
             </tbody>
           </table>
+          {/* The open-bidding box (see measureBidBox). A sibling of the table
+              inside `.mx-wrap`, so it scrolls sideways with the grid; null
+              unless bidding is open and laid out. */}
+          {bidBox && (
+            <div
+              className="lw-bidbox"
+              data-testid="bid-box"
+              aria-hidden="true"
+              style={{ left: bidBox.left, top: bidBox.top, width: bidBox.width, height: bidBox.height }}
+            />
+          )}
         </div>
         {/* The phone's frozen header — the fixed mirror described above the
             sticky machinery. Sits under the top bar (z 55 < the bar's 60 and
