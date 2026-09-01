@@ -5212,6 +5212,11 @@ button.sbi-ty.inpedit:hover{text-decoration:none;filter:brightness(1.3)}
 .docviewbox{width:min(720px,94vw)}
 .docview-body{display:flex;flex-direction:column;gap:10px;min-height:0}
 .docview-sub{color:var(--ink-2);font-size:12px}
+/* the episode pager (owner, 1 Sep 26) — steps a person's overlapping documents
+   in place; only drawn when there is more than one, so a lone document is
+   unchanged. The ‹ › are ordinary .abtn buttons. */
+.docview-nav{display:flex;align-items:center;justify-content:center;gap:12px}
+.docview-count{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--ink-2)}
 .docview-img{max-width:100%;max-height:58vh;object-fit:contain;border-radius:10px;border:1px solid var(--edge);background:var(--bg)}
 .docview-frame{width:100%;height:58vh;border:1px solid var(--edge);border-radius:10px;background:#fff}
 .docview-none{color:var(--ink-3);font-size:13px;padding:22px 0;text-align:center}
@@ -5260,6 +5265,11 @@ button.sbi-ty.inpedit:hover{text-decoration:none;filter:brightness(1.3)}
 .medcard-top{display:flex;align-items:center;gap:6px;min-width:0}
 .medcard-type{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:var(--sec);white-space:nowrap}
 .medcard-t{font-family:'JetBrains Mono',monospace;font-size:9.5px;color:var(--ink-3)}
+/* "N documents" when the person's overlapping entries form one episode (owner,
+   1 Sep 26) — a small pill in the section's own colour, hugging the left so a
+   short line does not stretch it across the card */
+.medcard-docn{align-self:flex-start;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;
+  color:var(--sec);background:var(--panel);border:1px solid var(--sec);border-radius:999px;padding:0 6px;line-height:15px}
 .medcard-r{font-size:9.5px;line-height:1.35;color:var(--ink-2);white-space:normal;overflow-wrap:anywhere;min-width:0}
 .med-empty{padding:16px 12px;font-size:12px;color:var(--ink-3)}
 /* the Medical button's count badges on the Inputs title row — TWO, in the

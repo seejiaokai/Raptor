@@ -22,7 +22,23 @@ import { useVersion } from './useStore'
 export function DocViewer() {
   useVersion()
   const v = DOCVIEW
-  const r = v && v.row
+  /* one document or an episode. A single-row caller (a puck tap, a pending
+     card) gives { row, up }; the Medical page gives { rows, idx } for a
+     person's overlapping medical documents (owner, 1 Sep 26), paged in place.
+     Either way `list` is the rows to step through, so the single-row path is
+     just a list of one — nothing about it changes. */
+  const list = v ? (v.rows && v.rows.length ? v.rows : (v.row ? [{ row: v.row, up: v.up }] : [])) : []
+  const [i, setI] = useState(0)
+  /* seat the page index when a NEW viewer opens — DOCVIEW is a fresh object on
+     every setDocView, so its identity change is the "opened again" signal. Set
+     in render (guarded), not an effect, so the first frame already shows the
+     tapped document rather than flashing doc 0 and re-minting its URL. */
+  const [seenV, setSeenV] = useState<any>(null)
+  if (v !== seenV) { setSeenV(v); setI(v && v.idx ? v.idx : 0) }
+  const idx = list.length ? Math.min(i, list.length - 1) : 0
+  const cur = list.length ? list[idx] : null
+  const r = cur && cur.row
+  const up = !!(cur && cur.up)
   const doc = r ? docGet(r.docId) : null
   const [url, setUrl] = useState('')
   useEffect(() => {
@@ -67,6 +83,16 @@ export function DocViewer() {
         </div>
         {r && <div className="airpop-body docview-body">
           {m && <div className="docview-sub">{m.name}{r.remarks ? ` — ${r.remarks}` : ''}</div>}
+          {/* the episode pager (owner, 1 Sep 26) — only when a person's
+              overlapping documents are shown together; a lone document has no
+              nav bar, so the single-doc view is unchanged */}
+          {list.length > 1 && <div className="docview-nav">
+            <button type="button" className="abtn" id="docViewPrev" aria-label="Previous document"
+              disabled={idx === 0} onClick={() => setI(idx - 1)}>‹</button>
+            <span className="docview-count">{idx + 1} of {list.length}</span>
+            <button type="button" className="abtn" id="docViewNext" aria-label="Next document"
+              disabled={idx === list.length - 1} onClick={() => setI(idx + 1)}>›</button>
+          </div>}
           {doc && url
             ? (doc.mime === 'application/pdf'
               ? <iframe className="docview-frame" title={doc.name} src={url} />
@@ -74,7 +100,7 @@ export function DocViewer() {
             : <div className="docview-none">No document on file for this entry</div>}
         </div>}
         <div className="airpop-foot">
-          {mine && v && v.up && <button className="abtn" id="docViewUpchit" onClick={upchit}>Upchit</button>}
+          {mine && up && <button className="abtn" id="docViewUpchit" onClick={upchit}>Upchit</button>}
           {mine && <button className="abtn ghost" id="docViewEdit" onClick={edit}>Edit input</button>}
           <span style={{ flex: 1 }}></span>
           <button className="abtn" id="docViewDone" onClick={close}>Close</button>

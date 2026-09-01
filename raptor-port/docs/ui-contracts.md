@@ -4279,6 +4279,29 @@ ctx `'up'` (person and type fixed as VALUES, a single plain date defaulting
 to today, the mandatory `DocField`). Both upchit paths — the pending card
 and typing an Upchit on the Inputs form — are one write path.
 
+**Overlapping documents show together — the episode card + the viewer pager**
+(owner, 1 Sep 26 — "see the documents together if they overlap in terms of the
+dates"). A person's medical status evolves — an ATT C that changes or extends
+to ATT B / HL / OML, each entry with its own document — and the card shows
+whoever's status holds ON THE AS-OF DATE, so the earlier document was only
+reachable by scrubbing the date back. Now `engine/medical.ts:medEpisode(row)`
+gathers, at READ TIME, the person's medical rows whose date ranges OVERLAP OR
+TOUCH one evolving episode (touching counts, because the clash sheet usually
+leaves the winner and loser ADJACENT, not overlapping; the closing upchit is
+folded in), and `MedicalView.tsx` counts the documented ones per card. When a
+card's episode has more than one document it wears a small **"N documents"**
+pill (`.medcard-docn`, the section's own colour) and, on tap, hands the viewer
+the WHOLE episode instead of the one row. `DOCVIEW` grows an optional
+`{ rows, idx }` beside its `{ row, up }` — purely additive, so every single-row
+caller (a puck tap, a Pending card) is unchanged — and `DocViewer` draws a
+**‹ 1 of N ›** pager (`.docview-nav`, `#docViewPrev`/`#docViewNext`) that steps
+the documents in place, the title, remark and footer following the current
+page; the `[doc]` object-URL effect re-mints one file at a time as you page.
+This is DISPLAY only: no rule changed, no state added, the "which status holds
+true" clash sheet untouched, parity intact. Pinned in `medical.test.ts`
+(`medEpisode`), `medicalview.test.tsx` (the pill + the episode hand-off) and
+`docviewer.test.tsx` (the pager steps; a lone document keeps no nav bar).
+
 **The upchit save-time summary sheet** (`ui/UpchitConfirm.tsx`, owner,
 27 Aug 26). Saving an upchit from ANY form — the Inputs add form, the
 in-table row editor, or the shared `InputEditor` (where it paints one layer

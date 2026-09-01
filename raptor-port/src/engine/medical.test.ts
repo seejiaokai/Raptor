@@ -5,7 +5,7 @@
    anchor so nothing here leans on the loaded week. */
 import { afterEach, describe, expect, it } from 'vitest'
 import { INPUTS } from './inputs'
-import { ordShift, ordLabel, medStartOrd, medEndOrd, medDownAsOf, pendingUpchits, upchitsWithin, upchitTrimPlan, upchitEffects, newMedTrimPlan, medClashes, medTailBeyond, subtractSpans } from './medical'
+import { ordShift, ordLabel, medStartOrd, medEndOrd, medDownAsOf, pendingUpchits, upchitsWithin, upchitTrimPlan, upchitEffects, newMedTrimPlan, medClashes, medTailBeyond, subtractSpans, medEpisode } from './medical'
 
 const ISNAP = JSON.stringify(INPUTS)
 afterEach(() => { INPUTS.length = 0; JSON.parse(ISNAP).forEach((r: any) => INPUTS.push(r)) })
@@ -308,5 +308,52 @@ describe('subtractSpans — the days a new entry keeps after the filer\'s choice
         { startOrd: 20260711, endOrd: 20260715 }])
     expect(subtractSpans(20260701, 20260710, [{ s: 20260703, e: 20260706 }, { s: 20260705, e: 20260708 }]))
       .toEqual([{ startOrd: 20260701, endOrd: 20260702 }, { startOrd: 20260709, endOrd: 20260710 }])
+  })
+})
+
+// medEpisode (owner, 1 Sep 26): the person's overlapping-or-touching medical
+// rows as one evolving episode, so the Medical page shows every document
+// together. A pure partition over existing rows — oldest-first, own person
+// only, the closing upchit folded in, fail-closed on a bad date.
+describe('medEpisode — one evolving episode\'s rows, for showing its documents together', () => {
+  it('groups an overlapping change of status, oldest first, from either end', () => {
+    const c = med('t1', 'ATT C', 'Jul 10', 'Jul 13')
+    const b = med('t1', 'ATT B', 'Jul 12', 'Jul 16')      // overlaps the C
+    expect(medEpisode(c)).toEqual([c, b])
+    expect(medEpisode(b)).toEqual([c, b])                 // symmetric
+  })
+  it('groups statuses that merely TOUCH — the common shape after the clash sheet trims', () => {
+    const c = med('t1', 'ATT C', 'Jul 10', 'Jul 13')
+    const b = med('t1', 'ATT B', 'Jul 14', 'Jul 18')      // starts the day after C ends
+    expect(medEpisode(c)).toEqual([c, b])
+  })
+  it('does NOT bridge a real gap — a separate later episode stays separate', () => {
+    const c = med('t1', 'ATT C', 'Jul 10', 'Jul 13')
+    med('t1', 'ATT B', 'Jul 20', 'Jul 25')                // a week clear — its own episode
+    expect(medEpisode(c)).toEqual([c])
+  })
+  it('folds in the closing upchit (owner: see the whole episode\'s paperwork)', () => {
+    const c = med('t1', 'ATT C', 'Jul 10', 'Jul 13')
+    const u = up('t1', 'Jul 14')                          // the day-after closer
+    expect(medEpisode(c)).toEqual([c, u])
+    expect(medEpisode(u)).toEqual([c, u])                 // from the upchit too, no duplicate
+  })
+  it('is one person\'s own rows only', () => {
+    const c = med('t1', 'ATT C', 'Jul 10', 'Jul 13')
+    med('t2', 'ATT B', 'Jul 12', 'Jul 16')               // someone else, same days
+    expect(medEpisode(c)).toEqual([c])
+  })
+  it('a lone entry is its own episode; a bad-date row answers with just itself', () => {
+    const c = med('t1', 'OML', 'Jul 10', 'Jul 12')
+    expect(medEpisode(c)).toEqual([c])
+    const bad = med('t3', 'HL', 'garbage')
+    expect(medEpisode(bad)).toEqual([bad])
+    expect(medEpisode(null)).toEqual([])
+  })
+  it('chains a three-status episode into one, oldest first', () => {
+    const c = med('t1', 'ATT C', 'Jul 10', 'Jul 12')
+    const b = med('t1', 'ATT B', 'Jul 13', 'Jul 16')
+    const h = med('t1', 'HL', 'Jul 15', 'Jul 20')         // overlaps the B, which touches the C
+    expect(medEpisode(c)).toEqual([c, b, h])
   })
 })

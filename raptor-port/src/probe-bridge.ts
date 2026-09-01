@@ -8,7 +8,7 @@
 import { DAYS } from './engine/data'
 import { PEOPLE, isScheduler, isLead, isInstr, isInstrPilot, isOcu, isPersonnel, sanStatus, nameToId, aarNeed, aarOK, scShiftKind } from './engine/people'
 import { INPUTS, INPUT_TYPES, INPUT_META, TYPE_GROUPS, DATES, inpMeta, inpType, canSpare, canWork, awayAllDay, inpWin, typeGroup, isLeave, isLocalLeave, isDownchit, isOffType, isPersonal, isUnavail, isFly, isAway, isSansAvail, isUpchit, sansAvailOn, sansWindow, sansLetters, sansBadge, inputFlags, inputDormant, inputCoversDate, inpLabel, isOther, restsInput, dateOrd, dateIx, baseYear, isLateInput, lateNote, inputDueISO, inputOwnDueISO, inputWeekStartISO, weekStartISO, inputStampISO } from './engine/inputs'
-import { medDownAsOf, pendingUpchits, upchitsWithin, upchitTrimPlan, newMedTrimPlan, ordShift, ordLabel } from './engine/medical'
+import { medDownAsOf, pendingUpchits, upchitsWithin, medEpisode, upchitTrimPlan, newMedTrimPlan, ordShift, ordLabel } from './engine/medical'
 import { VCONF, SHIFT_HARD, RULE_STD, RULE_SPEC, ruleParse, rulesOffCount, rulesReset, rulesLoad, rulesSave, ruleFmt, ruleOff, kindOff, KIND_LABEL } from './engine/rules'
 import { ELOG, elogRows, elogFor, elogWhen, elogClear, elogRemap, keyLabel } from './engine/editlog'
 import { STORE_CFG, STORE_STD, storeKey, addStore, delStore, renameStore, moveStore, storesSave, storesLoad, storesReset, storesAreStandard, storesText } from './engine/stores'
@@ -151,7 +151,7 @@ export function installProbeBridge() {
   /* SANS AVAILABILITY (owner, 14 Aug 26) — the one gate every consumer calls */
   w.isSansAvail = isSansAvail; w.sansAvailOn = sansAvailOn; w.sansBadge = sansBadge
   w.isUpchit = isUpchit
-  w.medDownAsOf = medDownAsOf; w.pendingUpchits = pendingUpchits; w.upchitsWithin = upchitsWithin
+  w.medDownAsOf = medDownAsOf; w.pendingUpchits = pendingUpchits; w.upchitsWithin = upchitsWithin; w.medEpisode = medEpisode
   w.upchitTrimPlan = upchitTrimPlan; w.newMedTrimPlan = newMedTrimPlan; w.ordShift = ordShift; w.ordLabel = ordLabel
   w.sansGate = sansGate; w.SANS_LABEL = SANS_LABEL
   w.sansWindow = sansWindow; w.sansLetters = sansLetters

@@ -91,6 +91,40 @@ export function upchitsWithin(asOf:any,days:any=30){
     out.push({person:r.person,row:r,ord:o});}
   return out.sort((x:any,y:any)=>y.ord-x.ord||String(x.person).localeCompare(String(y.person)));
 }
+/* ONE MEDICAL EPISODE'S PAPERWORK (owner, 1 Sep 26 — "see the documents
+   together if they overlap in terms of the dates"). Given any medical row,
+   the person's other medical rows that belong to the SAME evolving episode —
+   an ATT C that changed or extended to ATT B / HL / OML — so the Medical page
+   can show every document at once instead of only the one holding on the
+   as-of date. PURELY DERIVED and read-only: it partitions existing INPUT rows,
+   mints nothing, adds no rule, so parity is untouched.
+
+   Connected by OVERLAP OR TOUCH: after the "which status holds true" sheet
+   trims a clash, the winner and the loser usually end up ADJACENT (ATT C ends
+   Jul 13, ATT B starts Jul 14), not overlapping — so a strict-overlap chain
+   would miss the common case. Two downchits join the episode when one starts
+   no more than a day after the other ends (`ordShift(±1)`), grown until the
+   window is stable. The closing UPCHIT is folded in too (owner) — its single
+   date sits within the down span or the day after it. Members are returned
+   oldest-first; a member with no readable date is skipped, never guessed
+   (the missing-input doctrine), and an unreadable seed row answers with just
+   itself. Each returned row still carries its own `docId`; picking which to
+   show is the view's job. */
+export function medEpisode(row:any){
+  if(!row)return [] as any[];
+  const person=row.person, a0=medStartOrd(row), b0=medEndOrd(row);
+  if(a0==null||b0==null)return [row];
+  const downs=medRows(person).map((r:any)=>({r,a:medStartOrd(r),b:medEndOrd(r)}))
+    .filter((x:any)=>x.a!=null&&x.b!=null);
+  const inEp=new Set<any>([row]); let lo=a0,hi=b0,grew=true;
+  while(grew){grew=false;
+    for(const x of downs){if(inEp.has(x.r))continue;
+      if(x.a<=ordShift(hi,1)!&&x.b>=ordShift(lo,-1)!){inEp.add(x.r);if(x.a<lo)lo=x.a;if(x.b>hi)hi=x.b;grew=true;}}}
+  const members:any[]=[...inEp];
+  for(const u of upRows(person)){if(inEp.has(u))continue;const o=medStartOrd(u);
+    if(o!=null&&o>=lo&&o<=ordShift(hi,1)!)members.push(u);}
+  return members.sort((p:any,q:any)=>(medStartOrd(p)??0)-(medStartOrd(q)??0));
+}
 /* THE TRIM PLANS. One primitive decides trim-vs-delete; both flows use it. */
 const trimTo=(r:any,newEnd:any)=>{const a=medStartOrd(r);
   return newEnd<a?{row:r,action:'delete'}:{row:r,action:'trim',newEndOrd:newEnd};};

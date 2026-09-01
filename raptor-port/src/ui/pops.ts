@@ -67,7 +67,14 @@ export function setOilAsk(iid: string | null) { OILASK = iid }
 /* The supporting-document viewer (owner, 27 Aug 26) — every user may view
    every input's document, so this carries only WHICH input's paperwork is on
    screen: the INPUT OBJECT, for the same reason INPEDIT holds the object —
-   undo renumbers INPUTS under an open modal. */
+   undo renumbers INPUTS under an open modal.
+   Single-row shape `{ row, up }` (the puck-tap and pending-card callers). The
+   Medical page ADDS an optional `{ rows, idx }` when a person's overlapping
+   medical documents form one episode (owner, 1 Sep 26): `rows` is a list of
+   `{ row, up }` oldest-first and `idx` the one tapped, so the viewer opens
+   there and pages the rest. The `row`/`up` fields stay set to the tapped
+   entry, so a caller that ignores `rows` (and DocViewer's own single-row
+   fallback) is unchanged. */
 export let DOCVIEW: any = null
 export function setDocView(r: any) { DOCVIEW = r }
 /* the mobile drawer */

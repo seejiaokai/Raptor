@@ -714,6 +714,15 @@ agree — name it here so the next session knows to check both.
     forgets to pass the filer's `keepTail` reverts to tail-always-kept — safe,
     but it drops the owner's Remove default and the sheet's promise silently,
     so pass it (and `entryEnd` with it).
+  - `medEpisode` (`engine/medical.ts`, 1 Sep 26) is a THIRD read of the same
+    rows — the person's overlapping-or-touching medical entries as one episode,
+    so the Medical card can show every document together and the viewer can
+    page them (`ui/DocViewer.tsx`'s optional `{rows,idx}`, additive to the
+    single-row `{row,up}`). It mints nothing and adds no rule — a pure
+    partition — so it cannot open a seam; the only thing to keep true is the
+    connect rule (overlap OR touch, closer folded in), which lives in that one
+    function and is pinned in `medical.test.ts`. It is DISPLAY layered on the
+    derived reads, not a fourth data path.
   Plus one known demo wrinkle, documented in `state/demoseed.ts`: reloading
   week 1 restores the pristine INPUTS snapshot and drops the seeded demo
   docIds — the viewer's "No document on file" state covers it; not a bug to
