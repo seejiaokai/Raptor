@@ -702,14 +702,20 @@ body.ros-open .eroster .ros-tab{background:var(--accent);color:var(--accent-ink)
    .no      — may NOT be planned into the armed slot, or is on leave / downchit
    The first two used to sit at .36 and .20 opacity, which on a phone read as
    the same grey — so anyone already tasked looked un-selectable. They are now
-   told apart by KIND of mark, not by a shade: busy keeps its colour and wears a
-   left bar, barred loses its colour entirely and is struck through. */
+   told apart by KIND of mark, not by a shade: busy wears a left bar, barred is
+   struck through. BOTH keep their seat colour (owner, 1 Sep 26 — "can I still
+   see pilot and wso colours of the pucks?"): the barred puck used to be fully
+   grayscaled, which washed olive FCP and green RCP into one grey so a barred
+   pilot and a barred WSO were indistinguishable. It now keeps its hue (a light
+   desaturation only) and rides a fainter-but-visible opacity; the STRIKE and
+   the not-allowed cursor still say "can't plan this one", so busy and barred
+   stay distinct by mark, not by colour loss. */
 .rpuck.standby{opacity:.82}
 .rpuck.standby .puck{box-shadow:inset 2px 0 0 var(--ok)}
 .rpuck.busy{opacity:.62}
 .rpuck.busy .puck{filter:saturate(.55);box-shadow:inset 2px 0 0 var(--ink-3)}
-.rpuck.no{opacity:.26;position:relative}
-.rpuck.no .puck{filter:grayscale(1) brightness(.6)}
+.rpuck.no{opacity:.5;position:relative}
+.rpuck.no .puck{filter:saturate(.7)}
 .rpuck.no::after{content:'';position:absolute;left:3px;right:3px;top:50%;height:1px;
   background:var(--ink-3);transform:translateY(-.5px);pointer-events:none}
 .rpuck.no,.rpuck.no:active{cursor:not-allowed}
