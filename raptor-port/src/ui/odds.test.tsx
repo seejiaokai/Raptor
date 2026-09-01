@@ -76,6 +76,22 @@ describe('the mobile drawer', () => {
     await click($('#weekCal .x'))
   })
 
+  it('the calendar header carries a Today button that jumps to the notional today and closes', async () => {
+    /* page a fortnight away so "today" is a real jump, then open the picker */
+    await act(async () => { loadWeek('27/07/2026') })
+    await click($('#burger'))
+    await click($('#drawerPickWeek'))
+    expect($('#weekCal').hasAttribute('hidden')).toBe(false)
+    const today = $('#weekCal .wc-today')
+    expect(today).toBeTruthy()
+    /* the glyph shows the fixed notional-today date number (13, from weeknav TODAY) */
+    expect(today.textContent).toContain('13')
+    await click(today)
+    /* it loaded the 13 Jul week and closed the popover — no day-tap needed */
+    expect((await import('../engine/waves')).CURWEEK).toBe('13/07/2026')
+    expect($('#weekCal').hasAttribute('hidden')).toBe(true)
+  })
+
   it('a member drawer hides the Edit tab', async () => {
     await act(async () => { setSession({ user: 'user', role: 'main' }); notify() })
     await click($('#burger'))

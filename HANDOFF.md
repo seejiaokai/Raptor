@@ -187,6 +187,38 @@ grip, header flex/no-select, drop the rail + gutter indents), `ui/AdminPage.tsx`
 on the header line), no console errors; edit week shows 5 draggable sections/day (notes
 merged) each with an inline dotted grip, view week carries none.
 
+31 Aug 26 THE TWO SC SPARE RULES (owner — "give a warning conflict if u are planned
+for MAIN and SPARE in the same time framing … the 1300 is not a conflict. Same thing
+for SC SPARE, a wso can't be planned for FCP"; clarified same session: SPARE+SPARE
+overlap is the SAME red, the seat rule is WSO-in-FCP ONLY — the pilot-in-rear mirror
+was offered and DECLINED; three further spare-rule ideas were offered, owner chose
+"none for now"). Two checks join the spare seat's canSpare + SC_QUAL: (1) TWO SC
+SEATS IN THE SAME HOURS — a man on a SPARE line who also holds any other SC seat
+(MAIN or SPARE, any wave) with genuinely overlapping shift hours is a hard
+DOUBLE_BOOK ("standing SC SPARE … and also on …"), said once per pair, anchored on
+the spare seat; abutting shifts (AM into PM at 13:00) never fire — `overlap` is
+half-open. Spares are absent from EVD by design, so the ONE body is a model walk,
+`events.ts scSeatHit`, read by the validator AND `slotBar` ("already on SC AM MAIN
+07:00–13:00") — palette and warning list cannot drift; MAIN+MAIN stays with the
+ordinary clash loop. (2) THE SPARE FRONT SEAT IS PILOTS-ONLY — a WSO (seat RCP, plus
+the CAT-IW variant) in a spare FCP raises the flying path's hard QUAL, "(… SPARE)"
+suffixed; the picker already refused the seat, so this closes the drag-drop bypass,
+the one silent path. Carrier shape: `f.spareAcs` (raw spare rows beside the deduped
+`spareCrew` — seat identity + the same-man-twice case the Set collapsed), excised
+from the parity compare (`parity.test.ts noPortOnly`) like sacrew/nx/pv. The week's
+exempt-line ring whitelist (`ui/html.ts own()`) carries DOUBLE_BOOK→C and QUAL→Q now
+(four codes total). Prose moved in step: SAWAVE.sc.note, `wavetpl kindNote('sc')`,
+the Logic page's standby-lines + canSpare rows, the board's SC add-toast. Files:
+`engine/events.ts` (spareAcs + scSeatHit), `engine/validate.ts` (both rules in the
+f.sc block), `engine/avail.ts` (slotBar), `ui/html.ts`, `ui/board.ts`,
+`engine/waves.ts`, `engine/wavetpl.ts`, `ui/logic-html.ts`, `probe-bridge.ts`
+(scSeatHit). Pins: `engine/scspare-rules.test.ts` (NEW — 10: overlap red once/
+abutting clean/two waves/same shift twice/sortie still free/scSeatHit half-open+self,
+WSO-FCP red + rear clean + declined-mirror absence, empty-wave rot guard),
+`engine/slotrules.test.ts` (+2 picker), `ui/sarole.test.tsx` (+1 exempt-ring C/Q).
+Parity 728/0 by construction (no seeded standalone wave; the one reference fixture
+seats MAIN only — keep it that way).
+
 Before that, reconciled against the 3512/203 reading before it (arrange the flying WAVES):
 +17 vitest pins across +2 files — **the DEFAULT arrangement, configurable in
 Admin** (owner, 29 Aug 26 pt.2 — "allow the default arrangement of a schedule to
@@ -487,6 +519,187 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
 
 ## Known issues / open work
 
+- **RESOLVED 31 Aug 26 (Leave War event sheet fits a phone keyboard) — owner ask.**
+  Owner (on his phone): the event sheet's calendar and Save/Delete were hidden
+  behind the on-screen keyboard, and "I want to see the full window … the
+  calendar can be smaller". A phone can't show the keyboard AND a full month
+  calendar at once, but the keyboard is only ever needed to type the NAME. Three
+  small changes, together, verified live at 390 px (compact day cell 30 px, the
+  whole range sheet fits with no scroll) and pinned:
+  1. **Opens showing the full window.** `EventSheet.tsx` autofocuses the name
+     field only for a fresh single-day tap (short sheet, lifted clear of the
+     keys); a sheet that opens already ranged (a band or a drag-swept span, the
+     tall case) opens with NO keyboard, so the whole window shows.
+  2. **A smaller calendar in the event sheet.** `RangePicker` took a `compact`
+     prop (`.rpick.compact` in `rangepicker.css`, 30 px cells vs 36 — still above
+     the geometry gate's ≥30 floor); the event sheet passes it, the bid/war/
+     bidding-window sheets don't.
+  3. **The sheet lifts above the keyboard while typing.** `Sheet.tsx:useKeyboardInset`
+     mirrors `ui/histbubble.ts:place()` — when the on-screen keyboard shrinks the
+     `visualViewport`, the panel re-anchors to the top of the visible slice and
+     caps its height, then restores the bottom-anchor when it drops. A strict
+     no-op with no keyboard, so every geometry-gate spec (all keyboard-less) is
+     untouched; the drag clamp now reads the visual viewport too (innerHeight
+     fallback keeps jsdom identical). Pin: `leavewar/ui/sheet-keyboard.test.tsx`
+     (stubs `visualViewport`, since headless can't raise an iOS keyboard).
+     Screen: `docs/ui-contracts.md` §The event sheet on a phone keyboard.
+
+- **RESOLVED 31 Aug 26 (Leave War event sheet + event move) — three owner asks.**
+  Verified live, all Leave War tests green:
+  1. **Save/Delete moved to the right of the event sheet, Save recoloured cyan**
+     (owner: "make it blue cyan like how it is usually"). `.evactions` row is
+     `justify-content:flex-end`; Save is a solid-accent `dchip save`, apart from
+     the green scope toggles and red Delete. A problem note keeps the left.
+  2. **An existing event can now be MOVED by dragging, like a leave block**
+     (owner: "drag an existing event to move it, just like LL"). The event sheet
+     grew a **Move…** button (for a placed event/band); it hands the event's own
+     span to the matrix, which runs the SAME drag-to-a-day move mode the roster
+     uses — a banner ("Tap a day to move this event"), a live desktop landing
+     preview, a phone stage-then-Confirm, and a refusal that says why (off the
+     war, or the days already carry an event). One store call, `moveEvent` (with
+     `moveEventProblem` as the preview's validation half, mirroring
+     `moveCells`/`moveProblem`), does it atomically as one undo step — a merged
+     band shifts whole, a single-day event carries its tag along. `wireMove` is
+     shared, not copied: it took an optional `dateAt` resolver so the event move
+     reads the event line's own cells (`eventMoveDateAt`) while the roster path
+     stays byte-identical; `paintEventLanding` is the event landing painter.
+  · Note (event drag-to-SELECT-a-range already worked before this — admin
+     hold-then-drag along an event line opens the sheet ranged; the owner wanted
+     MOVING an existing one, which is the new part).
+  · Files: `leavewar/state/store.ts` (moveEvent/moveEventProblem),
+     `leavewar/ui/select.ts` (wireMove dateAt + paintEventLanding + eventMoveDateAt),
+     `leavewar/ui/EventSheet.tsx` (onMove + Move… button),
+     `leavewar/ui/Matrix.tsx` (event move mode + banner). Pins:
+     `leavewar/state/store.test.ts`, `leavewar/ui/eventsheet.test.tsx`.
+
+- **RESOLVED 31 Aug 26 (four owner UI asks, one pass) — scheduler-board text
+  wrap, sim seat labels, board deselect, edit-scheduler crew drag markers.**
+  Four independent fixes, each verified live at 1280 and 390 px with no console
+  errors, parity held 728/0:
+  1. **Common Programme text was cut off on the board.** Its Item box (and the
+     Overall-note line) were the two board free-text fields still raw `<input>`s
+     — they never got the 20 Aug growing-`<textarea>` treatment the duty/sim/
+     ground rows have — so a long value scrolled out of sight. Both are the
+     growing textarea now (`board-html.ts` via `boxHTML`; `.sb-nrow textarea` CSS
+     added). Measured growing 24→60/72 px with no clipping. Those two were the
+     ONLY board boxes still affected.
+  2. **FCP/RCP column words removed from the sims** (owner — "not reflected
+     elsewhere but only in the sims"). The `.hd` header spans are gone from the
+     AMT/OFT seat grid; the fixed two-column pairing STAYS (owner's choice —
+     empty seats keep their place), and dropping the header row aligns the pucks
+     with the row's text boxes like every other section. Heads-up left for the
+     owner: the FLYING-wave lines also carry a "FCP / RCP" column header — a
+     different, more load-bearing place — left as-is since the ask was scoped to
+     sims. Pins updated in `ui/board.test.tsx`.
+  3. **Tapping empty space on the board didn't deselect.** The sign-off strip
+     (`.sb-sign`, `#sbSign`) was still in the blank-clear exclusion list — a big
+     grey panel that is mostly empty width, the same dead-zone the 15 Aug fix
+     removed for the week's `.day-head`/`.schedbanner`/`.signoff`. Dropped it
+     from the exclusion (`interactions.ts`); its controls (the stretched
+     `<select>`s, Publish, ⓘ, `.sgn`) stay guarded by the base list. Live-drive:
+     a click on the strip's blank area now clears 16 lit pucks → 0. Pin in
+     `ui/interact.test.tsx`.
+  4. **Drag markers on the four crew panels in Edit Schedule** (owner — "follow
+     the same formatting as the rest of the sections"). Personal Inputs,
+     Available crew, SANS Avail and Unavailable now carry the same dotted `⠿`
+     grip and drag on the EDIT WEEK, extending the board's "one list, drag
+     anywhere" (31 Aug): `dayHTML` in EDIT mode emits all ten sections through
+     the SAME `secOrder` loop, each in a `.dsec[data-secmove]`, so a drag on
+     either surface drives the ONE per-day order. The VIEW week is untouched and
+     parity-locked (change gated on `ed`; Unavailable still appended in its fixed
+     tail). Grips measured delta-0 against their titles; a live pointer-drag
+     moved Available crew above Personal Inputs. Contract in
+     `docs/ui-contracts.md` §Dragging sections and waves; stable decision updated
+     in `CLAUDE.md`.
+
+- **RESOLVED 31 Aug 26 (bug hunt #2, the authority sweep) — a MEMBER could
+  ARCHIVE anyone off the roster from the Quals page.** Enable editing is open
+  to members by design (owner, 5 Aug 26 — they tick their quals and fill in
+  initials/flight/CAT), but the row's archive ✕ rendered in that same editing
+  mode with no role check anywhere: one member click set `PEOPLE[id].archived`,
+  taking the person off the Quals roster, the crew palette and the Leave War
+  projection — and Restore is admin-only, so the member could not even undo
+  it. Verified live (us/us archived a pilot with one click), then fixed on the
+  house pattern: the ✕ renders only for an admin (`QualsPage.tsx qualsTable`'s
+  `canArch`), the click handler carries the commitInputEdit-style write-path
+  refusal, and `sync.ts restoreArchivedPerson` gets the symmetric backstop.
+  Roster MEMBERSHIP (archive/restore, like Add person) is the admin's; table
+  CONTENTS stay member-editable exactly as the 5 Aug decision says. Pins in
+  `ui/quals.test.tsx`; the rights table in `docs/engine-rules.md` §Auth/roles
+  now carries the archive/restore row. Same sweep found the rest of the
+  member-reachable writes properly gated (inputs own-row, Logic rules, Leave
+  War store, schedule editMode, section/roster arrangement). One OPEN QUESTION
+  for the owner from the same sweep, deliberately not changed: a member in
+  Quals editing mode can tick/edit ANY row's table contents — including
+  another person's callsign, CAT, SXO and SANS — which the 5 Aug decision
+  reads as intended ("the line is their own record vs the squadron's
+  programme" grants the table's contents), but it sits oddly beside the
+  Inputs page's own-row-only rule; if he wants own-row-only quals too, the
+  gate belongs in the same three places this fix touched.
+
+- **RESOLVED 31 Aug 26 (point-2 authority sweep, completed) — the four admin
+  editor sheets no longer stay editable through the "View as member" peek.**
+  The systematic walk of every recent admin power came back otherwise CLEAN:
+  the board's write delegators (`boardMbtn` etc.), the week/quals click
+  delegator, the Admin page (page `#admDeny` + every handler re-checks), the
+  Set-default snackbar (render + apply, fixed d73c9ac), the Leave War store
+  (dozens of `role !== 'admin'` write-path guards, medical via `setBidState` →
+  `canDecide`), the manning/counter sheet, and section/roster arrangement are
+  all gated at the write, not just the nav. The ONE gap: the Duty-, Day-,
+  Flying-waves and per-day Drafts editor sheets (`DutyTplModal`, `DayTplModal`,
+  `WaveTplModal`, `DraftsModal`) gated only their two admin-only OPENERS, not
+  their own render, and their store mutators carry no write-path guard — so an
+  admin who opened one and then hit **View as member** (`toggleRole`, which
+  does not clear the pop flag) kept a fully live template/draft editor on
+  screen, the preview lying about member capability. A plain member (us/us)
+  can never reach these (both openers refuse one), so this was not a
+  member-reachable hole like the archive one — but it broke the "View as
+  member" feature's whole promise. Fix: each modal returns its hidden shell
+  when `SESSION && SESSION.role !== 'admin'` (same idiom as the archive /
+  inputedit backstops, so a sessionless test/boot still renders); the role
+  flip's `notify()` closes it and flipping back restores it with context
+  intact — the render gate is now the write gate. Pins in
+  `WaveTplModal.test.tsx`; the rights table + a self-hide note in
+  `docs/engine-rules.md` §Auth/roles. Files: `ui/{DutyTplModal,DayTplModal,
+  WaveTplModal,DraftsModal}.tsx`.
+
+- **The Leave War ↔ Raptor sync + OIL crediting passed a dedicated adversarial
+  hunt CLEAN (31 Aug 26, bug hunt #1).** Every wire read end-to-end (0 roster
+  projection, 1+2 leave/medical both directions, 4 OIL, post-out archival, the
+  clash strip, counters arithmetic) plus a live browser drive of the full OIL
+  loop: publish seed Saturday → FO cell lands raptor-owned; navigate away and
+  back → survives (the stash half); unpublish → collected; the Inputs-page
+  Duty ask-flow → OilConfirm suggests HO for 5h → Yes lands HO; console clean.
+  No defects found — the 27–29 Aug overnight passes hold. Recorded so the next
+  hunt starts elsewhere.
+
+- **RESOLVED 31 Aug 26 (owner said "fix it") — a reorder on a PUBLISHED day no
+  longer skips its amendment record.** The old bug: every reorder mover
+  (`engine/reorder.ts`) marked ONE field-value key at the destination index as the
+  amendment proxy, and `afterSchedMutate` → `drafts.ts reconcileIssuedMarks` (a
+  VALUE differ) dropped that key whenever the swapped rows shared the field's value
+  (two blank-label waves, two same-role duty rows), so the move reached no AL and
+  the day read "no changes." **Fix (the recommended deletion-style path):** a reorder
+  of an ISSUED row on a published day now records an inert synthetic `mov:DAY.SEQ.KIND`
+  tombstone (`publish.ts` `markMove`/`moveKey`/`isMoveKey`/`moveCount`, the exact
+  `del:`/`inp:` shape) that `reconcileIssuedMarks` skips by name (`drafts.ts:356`), so
+  a move always counts. `reorder.ts`'s `done` gates it on `dayApproved(di) &&
+  !SCHED.added[key]` — the head key the mover hands `done` IS that row's
+  structural-add-key form, so a still-draft added row reordered then deleted before its
+  AL stays the net no-op it always was (no tombstone), while draft-day reorders keep
+  the ordinary field mark unchanged. The tombstone rides every day filter / snapshot /
+  publish / undo path like `del:` (no `keys.ts` remap needed — it holds no live index),
+  and the AL panel counts it as "N reorders" beside removals/filings (`ui/ALPanel.tsx`).
+  Two consequences, deliberate and documented: on a published day a reorder no longer
+  paints a per-row dotted tint on one arbitrary moved row (it shows as a reorder in the
+  AL panel instead, like a deletion), and a move that once carried an AL tag now KEEPS
+  that tag at the block's new position rather than retiring it. Accepted simplifications:
+  a reorder-and-reorder-back shows two reorders (each move counts, as the owner's "a
+  move always counts" implies), and swapping two byte-identical rows still mints one
+  (a genuinely invisible case, extraordinarily rare). Pins: `engine/audit-d-published.test.ts`
+  (rewritten to the tombstone design + two new regression cases). Rules:
+  `docs/engine-rules.md` §Publishing; flow `docs/feature-impact.md`.
+
 - **Times are hh:mm (`08:00`) everywhere — the 29 Aug 4-digit board pass was REVERSED
   by the owner on 30 Aug 26** ("I saw wrongly … most of the timing format is 08:00.
   Change it back and make sure everything follows that format consistently"). hh:mm is
@@ -502,19 +715,20 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
   compact and `tfin.js` pins it (`atimeText(f)===f.to.replace(':','')+'-'+…`), so
   flipping it means editing the safety-net: owner sign-off first. This entry was the
   earlier "WEEK/warnings/CSV stay colon" known issue — now moot, everything is colon.
-- **The design fonts are still NOT loaded — deferred, must be SELF-HOSTED (29 Aug 26
-  pt.3).** `scheduler.css` names Inter Tight / Barlow Condensed / JetBrains Mono in ~130
-  places but nothing ever loaded them, so every browser falls back to system fonts and
-  the intended condensed-header / mono-numeric look never renders. A Google-Fonts
-  `<link>` was tried and REMOVED: an external, render-blocking stylesheet to
-  `fonts.googleapis.com` is unreachable behind the agent proxy, which hangs the page
-  `load` event and times out the e2e login `goto('/')` — proven: the exact e2e failures
-  cleared the moment the link was removed (a full rebuild's 5 goto-timeout failures went
-  to 5/5 pass in 17s). CI runs the same restricted network, so the link would flake the
-  gate too. The fix is **self-hosted `@font-face` woff2 under `public/fonts/`** (ships
-  with the app, no third-party request, nothing to block) — it needs the three families'
-  woff2 files (Inter Tight 400/500/600/700, Barlow Condensed 600/700, JetBrains Mono
-  400/500) added as assets. Until then the app keeps the system-font fallback.
+- **The design fonts stay on the SYSTEM-FONT FALLBACK, by owner's choice (1 Sep 26) —
+  do NOT re-attempt loading them.** `scheduler.css` names Inter Tight / Barlow Condensed
+  / JetBrains Mono in ~130 places but nothing loads them, so every browser renders the
+  named families' system fallback. This was tried and REVERTED at the owner's request:
+  the three families WERE self-hosted (eight latin-subset woff2 in `src/ui/fonts`, Vite-
+  fingerprinted, `@font-face` at the top of `scheduler.css`, verified loading and applied
+  on a preview) and the owner, seeing it, said he prefers the previous system-font look
+  for the whole app — so the woff2, the `@font-face` block and the lone `.medsec-sub`
+  tweak were reverted (PR #344, 1 Sep 26). The look he wants is the fallback that ships
+  now; treat "load the design fonts" as a CLOSED decision, not deferred work, unless he
+  reopens it. Historical note, still true: an external Google-Fonts `<link>` must never
+  be reintroduced — it is unreachable behind the agent proxy, hangs the page `load` event
+  and times out the e2e login (proven: 5 goto-timeout failures cleared the moment the
+  link was removed); if the fonts are ever wanted again it is self-hosting or nothing.
 - **CLOSED 30 Aug 26 — in-place drag to reorder sections/waves SHIPPED, replacing
   the Arrange sheet.** The per-day `⇅ Arrange` sheet is gone; a scheduler now drags
   a whole SECTION (a grip on each panel's left gutter) or a whole WAVE (a grip in the
@@ -2659,10 +2873,10 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | `InputsPage.tsx` / `QualsPage.tsx` / `LogicPage.tsx` | The three secondary pages (inputs CRUD + CSV, quals grid, rules doc + admin editing). The Inputs table carries a date window and heading sort, so **its DOM row order is not `INPUTS` order** — address a row by the model index its buttons carry (`data-edit`/`data-inx`/`data-save`), never by position. Its dates read **day-first** and Last-modified reads **day month year** (21 Aug 26, `fmtDay`/`fmtDMY` in `inputedit.tsx`; a same-day timed span sits in one cell, the `✎ ✕` actions are pinned so every card is one compact shape). **The phone card is a grid of ALIGNED columns since 22 Aug 26** (callsign / type / date at fixed x on every card, remarks below the callsign — `scheduler.css` ≤820px block, CSS-only so td order holds) and the two spaceless chips wear `.bl` split-span short forms there (SANS AVAIL / APPOINT); the desktop table carries per-column `th` widths. Contracts: `docs/ui-contracts.md` §The Inputs table's view state, §The Inputs page speaks one day-first date voice. |
 | `InputsCal.tsx` / `caldrag.ts` / `state/plan.ts` | **The Inputs month calendar (22 Aug 26; cell + popover REDESIGNED the same evening)** — the page's full-screen Google-style month view (`INPVIEW`/`CALMONTH` in `state/view.ts`). The CELL reads title-first (owner: sections outrank inputs): the free-text **day TITLE** (`DAYRMK`, bold, wraps, both widths), the note/pucks **sections** in full, then the inputs as SIDE-BY-SIDE mini chips off `inputTone` (callsign + type, no times; a SANS chip prints its F/O/A letters, never the words), capped at `MAX_CHIPS` (6, inputs only) → `+N more`. The DAY POPOVER: the title edited beside the date in the head (`#icRmkEdit`), small `+ Note`/`+ Pucks` buttons (scheduler), full-width sections with an admin ⠿ **drag-reorder** (`movePlanSection`, same-day, half-rule), and the inputs at the BOTTOM led by a small `+ Input` (everyone). `state/plan.ts` holds `PLANPUCKS` (notes + `kind:'pucks'` person-rows: `addPuckRow`/`togglePuckPerson`/`movePlanSection`) and `DAYRMK`: session-only by owner choice, scheduler-gated at the write path, riding the undo snapshot (`pp`/`dm`). `caldrag.ts` is the calendar's OWN chip-drag machine — `commitChipMove` slides a span by the day-delta from the GRABBED cell through `commitInputEdit`; it moves sections between days too. Contract: `docs/ui-contracts.md` §The Inputs month calendar; the copied-filter drift-seam is named in `docs/feature-impact.md` §4. |
 | `inputedit.tsx` | Editing ONE personal input AND adding one, shared by the Inputs page, the week and the board: the AM/PM halves (`HALF_AM`/`HALF_PM`), the span picker, the draft shape, **`normalizeInputDraft`** (every input write's shared refusals+derivations, extracted so add and edit cannot drift), `commitInputEdit` (including the accepted-row relink), **`commitNewInput`** (the board's + Add — unshifts a new row through the one funnel, Aug 26), `removeInput`, `setInpField` (one cell typed in place, and the clear-a-time-means-all-day rule), `firstPersonalType`/`firstUnavailType` (the panel defaults the board's + Add seeds), `InputEditor` itself (an `_new` seed row opens it in add mode), and the Inputs-page date display helpers **`fmtDay`** (ISO → day-first '13 Jul') and **`fmtDMY`** (ISO → '6 Jul 26'; `fmt`/`unfmt` still round-trip the stored month-first labels — these are display only). Three editors over one list is how they drift apart. |
-| `RangeCal.tsx` | The Inputs date picker: ONE calendar taking a range in two clicks, Monday-first grid, `yyyy-mm-dd` strings so the add/edit paths are unchanged. Used by the add form and by the table's `#inRangeBtn` window. |
+| `RangeCal.tsx` | The Inputs date picker: ONE calendar taking a range in two clicks, Monday-first grid, `yyyy-mm-dd` strings so the add/edit paths are unchanged. Used by the add form, the edit form, the table's `#inRangeBtn` window, and OilConfirm's `OilDayCal`. Its header carries a **"Go to today" button** (`.rc-today`, the same design-B calendar-page glyph as WeekCal, owner 1 Sep 26) that pages the view to the notional today's month and rings that day (`.rc-d.today`) — it does NOT pick, so jumping the view never wipes a range being built or a consumer's filter. (Not added to the Leave War pickers: today falls outside the leave-war cycle, so it would land on an empty month. MedicalView already has its own text "Today" button.) |
 | `MedicalView.tsx` / `DocViewer.tsx` / `UpchitConfirm.tsx` / `MedClashConfirm.tsx` / `engine/medical.ts` | **The medical tracker (27 Aug 26)** — the Inputs page's third view (`INPVIEW 'med'`, `#inMedBtn` on the title row with a down+pending count badge). Three DERIVED sections over `INPUTS` + an as-of ordinal (`MEDASOF`, null = the notional `weeknav.TODAY`): Medically Down / Pending Upchit / Upchit Complete (trailing 30 days), all from `engine/medical.ts` (`medDownAsOf`/`pendingUpchits`/`upchitsWithin` — pure, nothing stored, nothing runs at boot) plus the two TRIM planners (`upchitTrimPlan`, `newMedTrimPlan`) applied by `inputedit.tsx:applyMedPlan` inside the caller's batch. The new `Upchit` type (grp `'upchit'`, the SANS marker pattern) closes a down period; same-type overlaps are REFUSED (`medOverlapRefusal`), different-type overlaps trim the older row, and every medical input demands a document (`needsDoc` + `DocField` + `state/docs.ts`). `DocViewer.tsx` (`DOCVIEW` in `pops.ts`) shows any row's paperwork to EVERYONE; its footer carries the gated Edit/Upchit actions (ctx `'up'` in the shared editor). Rules: `docs/engine-rules.md` §The medical tracker; on screen: `docs/ui-contracts.md` §The Medical view. **The upchit day is a FIT day since 27 Aug 26 (owner)** — `upchitTrimPlan` cuts covering rows to end the day BEFORE the upchit — and an upchit is never saved silently: every form path gates through `UpchitConfirm.tsx` (the save-time summary off `upchitEffects`, forced Keep/Remove on each later-dated leftover, one-batch commit). A DIFFERENT-type overlap is asked about the same way (`MedClashConfirm.tsx` off `medClashes`; the per-clash pills read "<new> replaces" / "Keep <old> till <end>" since 28 Aug 26 — keeping files the new entry around the kept status via `medKeptSegments`/`mintMedSegments`, splitting where needed — one status per person per day, always; the sheet's rows are FLAT, un-boxed, owner's 28 Aug ask, scoped CSS so the upchit sheet keeps its cards). **A clash whose row covers the WHOLE new entry offers no keep button** (28 Aug 26) — keeping it would swallow the entry ("nothing left to file", now a commit-side backstop only), so replace is forced/pre-lit and the leftover row is the decision. **When replacing leaves a tail past the new entry (28 Aug 26), the sheet asks a per-leftover Remove (default) / Keep** — `medTailBeyond` is the one body it and `newMedTrimPlan` read, the answer riding `keepTail` into the write; direct callers omit it and keep every tail (the safety default). Pinned in `medical.test.ts`, `medwrite.test.ts`, `medclash.test.tsx`, `upchit.test.ts`, `upconfirm.test.tsx`, `docs.test.ts`, `docviewer.test.tsx`, `medicalview.test.tsx`, `demomed.test.ts`, `e2e/medical.spec.ts`. |
 | `OilConfirm.tsx` | **The OIL ask sheet (28 Aug 26)** — the UpchitConfirm recipe (`.upconf-*` layer + `.oilconf-pop`): saving a Duty-&-commitments input whose span covers a weekend/PH opens it BEFORE anything is written, from all three editors through the ONE gate `inputedit.tsx:oilGate` (`InputEditor.save()`, `InputsPage.add()`, `InputsPage.saveEdit()`); no resting default, Save disabled until a choice, Cancel writes nothing, decisions ride the caller's `writeInputsBatch` (one undo step) into `row.oil`. Single day = Yes ('HO — half a day' / 'FO — a full day' from `inputOilAmt`) / No OIL; multi-day = All days / Only some days… / No OIL, 'some' opening the multi-select month grid — **`OilDayCal`, which lives INSIDE this file** (the RangeCal arithmetic, testid `oilcal`), only applicable days tappable, tap to select / tap again to deselect. The offered days are `leavewar/sync.ts:oilAskPlan` off the exported `isNonWorkingISO` — the credit pass's own applicability answer. Pinned in `oilconfirm.test.tsx`; contract `docs/ui-contracts.md` §The OIL ask. |
-| `WeekCal.tsx` / `weeknav.ts` / `icons.tsx` | **The date-jump calendar (22 Aug 26)** — `WeekCal` is the app's `.rc-*` month picker as a DAY picker (the week is transparent): the single current day is lit (`.sel`) + the notional today ringed (`.today`), and tapping a day loads its week and lands the view on that exact day (schedule carousel via `WEEKJUMP` day-index; board via `boardTab`). Opened via the `WEEKCAL` flag (`pops.ts`) from the schedule seg, the mobile calendar icon, and the board's `#sbCal`. `weeknav.ts` is the one place for week math: `mondayOf`, `shiftWeek` (continuous ±7 days), `weekWindow` (the desktop rolling prev·current·+1·+2 buttons + labels + today mark), `dayIndexInWeek`, iso⇄key converters, `TODAY_WEEK`. `icons.tsx` holds the shared inline-SVG glyphs (`CalIcon`, `HistIcon`, `XlsIcon`, `PdfIcon`) for the toolbar buttons, sized by `.btnglyph`. |
+| `WeekCal.tsx` / `weeknav.ts` / `icons.tsx` | **The date-jump calendar (22 Aug 26)** — `WeekCal` is the app's `.rc-*` month picker as a DAY picker (the week is transparent): the single current day is lit (`.sel`) + the notional today ringed (`.today`), and tapping a day loads its week and lands the view on that exact day (schedule carousel via `WEEKJUMP` day-index; board via `boardTab`). Opened via the `WEEKCAL` flag (`pops.ts`) from the schedule seg, the mobile calendar icon, and the board's `#sbCal`. Its header carries a **"Go to today" button** (`.wc-today`, owner 1 Sep 26) — a calendar-page glyph showing the notional today's date number (13) beside the ✕ — that reuses `pick(todayIso)`, so one tap lands on the 13 Jul week from any context; the number is fixed because "today" is `TODAY` (no clock). `weeknav.ts` is the one place for week math: `mondayOf`, `shiftWeek` (continuous ±7 days), `weekWindow` (the desktop rolling prev·current·+1·+2 buttons + labels + today mark), `dayIndexInWeek`, iso⇄key converters, `TODAY_WEEK`. `icons.tsx` holds the shared inline-SVG glyphs (`CalIcon`, `HistIcon`, `XlsIcon`, `PdfIcon`) for the toolbar buttons, sized by `.btnglyph`. |
 | `hlchips.tsx` | The ONE Highlight chip strip (23 Aug 26) — `HlChips`, rendered on the view week, the edit week and the board bar off the same `HLSET`/`SEARCH` state, with the phone fold behind the highlighter toggle (`HLOPEN`, its `HlIcon` glyph in `icons.tsx`). One definition, three surfaces — the drift-seam doctrine. Pinned in `hlfold.test.tsx`. |
 | `ALPanel.tsx` / `Drawer.tsx` / `Login.tsx` | Amendment panel, phone drawer (its week chips became a single "Pick a week…" calendar opener, 22 Aug 26; carries the Help tab for everyone, 25 Aug 26), login. |
 | `HelpPage.tsx` + `state/reports.ts` | **The Help tab** (25 Aug 26) — the eighth tab, for EVERYONE, before Admin (which stays last). Bug reports: anyone files with a category (`BUG_CATS`) + description (blank Send toasts); a member sees their own receipts; the ADMIN list is newest-first with date/who/category chip, and OPENING it is the acknowledgement (`markReportsSeen` + NEW badges captured first). The top-bar bell (`#notifyBell`) lights for an admin with unseen reports (`bugAlert` — the bell seam's first wired trigger) and a tap lands on Help. `REPORTS` is DATA: survives login switches (NOT wiped by resetSession), outside the undo snapshot; DB-era it becomes a table + realtime push, shape already right. Pinned in `help.test.tsx`. |
@@ -2727,6 +2941,7 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | `src/ui/notepub.test.tsx` | Public scheduler notes (Aug 26, 4 tests) — the edit-week header/toggle flip with the flag (`Scheduler notes`+`Make public` → `Public notes`+`On view-only ✓`); the view-only week shows nothing unless the note is public AND has text, then heads it "Notes" with no toggle; the board header mirrors the flag and neither a read-only board nor a member gets the control; the flag is per-note (`pn:0` public leaves `gn:0` alone). |
 | `src/ui/latemark.test.tsx` | The per-input LATE dismissal (21 Aug 26, 8 tests — replaced the 20 Aug global switch) — a live board input row carries a clickable `data-lateoff` chip and the old header switch is gone, the chip is solid while shown and a pressed ghost once dropped, dropping ONE clears only that input's badge while its chip stays as the way back, the WEEK goes with it (one `lateShown` read, every read surface), the ENGINE is untouched (`isLateInput` still answers true while `lateTag` prints nothing — which is what keeps the Inputs page's own mark honest), a member is refused at `routeClick` even with a hand-made chip, and a session change brings every dropped mark back. |
 | `src/ui/inputsfmt.test.tsx` | The Inputs page's day-first date voice (21 Aug 26, 6 tests since the 22 Aug alignment pass) — `fmtDay` (day-first, this-year's-year implicit) and `fmtDMY` ('6 Jul 26', 'now'/blank pass through), a rendered row of each shape: a same-day timed input carries '14 Jul 10:00–11:00' in Start with an empty `data-same` End, an all-day one-day reads just '14 Jul', a span keeps both cells, Last-modified reads the day-month-year stamp — and the `.bl` chip splits (SANS Availability / Appointment carry a hideable tail, a short chip none). The card GRID itself is measured by the page's first e2e ("the phone Inputs cards align their type and date columns", geometry.spec.ts) — jsdom is 0×0. |
+| `src/engine/infoflag.test.ts` | The ⓘ info-only flag on Ground / Common Programme items (1 Sep 26, 7 tests) — an `info:true` row leaves the event stream (and with it every validator rule; the seed clash on pump goes quiet and returns when flipped back), occupies no time (`personBusy`), greys nobody (`dayEngaged`), mints no OIL (`dayOilSpans`), and stands the crew picker down (`slotRules().infoRow` → `slotBar` ''); `personCount` deliberately still counts it (ink on the week, like cx). The board toggle + read-only ⓘ mark are pinned in `board.test.tsx`. |
 | `src/engine/inputground.test.ts` | Activity inputs auto-land on the Ground Programme + the picker warns first (Aug 26, 10 tests) — the picker (`slotBar`) and the validator (`INPUT_FLY`) agree about an unaccepted activity input, incl. a tomorrow-midnight-tail case, that an ACCEPTED one is not double-reported, and (Aug 26 audit) that a MULTI-DAY accept still bars the man on its OTHER covered days and an ORPHANED accept (row gone, `acc` left) still warns — the two drifts the day-blind gate reopened, now pinned via the shared `inpShow`; `autoAcceptInput`'s gate (activity type lands, leave/med refused, published day refused); the land→remove→re-add ground round-trip; and that `autoAcceptSeedInputs` leaves no amendment marks (a clean zero-state). The board's own ✕ round-trip (`grdel`→`unacceptInput`) is pinned in `board.test.tsx`. |
 | `src/engine/cxreasons.test.ts` | Cancel-reason templates (Aug 26, 20 tests) — the shipped seven, `CXR_STD` immutability, add/rename/reorder/delete with their guards (empty, case-folded duplicate, over-long, the 24-cap), the save/load round-trip (null while standard, the list once diverged), the untrusted-blob sanitising (non-string/empty/over-long/case-duplicate dropped, 24-cap, corrupt JSON, fallback to standard) and reset. Mirrors `stores.test.ts`. |
 | `src/state/bell.test.ts` | The notification bell's seam (Aug 26, 3 tests) — a glow is specific to the current page AND view-as person (`markBell`/`bellLit`), a different person does not inherit it, `clearBell` acknowledges only the current view/person, and `markBell(…,false)` turns one off. |

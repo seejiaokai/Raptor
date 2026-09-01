@@ -30,7 +30,7 @@ import {
 } from '../engine/wavetpl'
 import type { WaveKind } from '../engine/wavetpl'
 import { hmOK } from '../engine/time'
-import { canEditSched } from '../state/auth'
+import { canEditSched, SESSION } from '../state/auth'
 import { WAVEEDIT, setWaveEdit } from './pops'
 import { useVersion } from './useStore'
 import { HOOKS } from '../engine/hooks'
@@ -44,7 +44,20 @@ export function WaveTplModal() {
   useVersion()
   const [sel, setSel] = useState<string | null>(null)
   const timeBuf = useRef('')
-  if (!WAVEEDIT) return <div className="modal" id="waveTplModal" hidden />
+  /* GATE THE WHOLE EDITOR ON THE ROLE, not just the two admin-gated openers
+     (bug hunt, 31 Aug 26 — point-2 authority sweep). The + Wave ⚙ and the Admin
+     button both refuse a member, but the flag they set (WAVEEDIT) is NOT cleared
+     by toggleRole's admin→member "View as member" peek, so an admin who opened
+     this sheet and then flipped to member view kept a fully live template editor
+     on screen — the preview lying about what a member can do, and every store
+     mutator below (addWaveTpl/setWaveTplLine/delWaveTpl/waveTplReset) ungated at
+     the write. Self-hiding here is the write-path gate the doctrine asks for: a
+     non-admin sees the sheet as closed, exactly as a member (who can never open
+     it) does. notify() on the role flip re-renders this, so the peek closes it.
+     The test is `SESSION && role !== 'admin'`, NOT `!canEditSched()`, so a
+     sessionless test/boot context is not mistaken for a member (the same idiom
+     the archive and inputedit write-path backstops use). */
+  if (!WAVEEDIT || (SESSION && SESSION.role !== 'admin')) return <div className="modal" id="waveTplModal" hidden />
 
   const canEdit = canEditSched()
   /* the selected id can go stale (a delete, or first open), so fall back to the

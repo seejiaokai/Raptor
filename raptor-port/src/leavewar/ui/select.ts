@@ -411,6 +411,12 @@ export function wireMove(
     // there is no undo and no hover to preview with (owner, 27 Aug 26).
     onPick: (targetDate: string) => void
     onCancel: () => void
+    // How to read the target DATE from the pointer's element. Defaults to the
+    // roster cell parser (`cell-<person>-<date>`), unchanged; the EVENT move
+    // (owner, 31 Aug 26 — "drag an existing event to move it") passes one that
+    // also reads an `event-<line>-<date>` cell, so a tap on the event LINE lands
+    // it. Only the date is ever used, so one resolver serves both axes.
+    dateAt?: (t: EventTarget | null) => string | null
   },
 ): () => void {
   // The ghost is a HOVER decoration, so it exists only where hover exists: a
@@ -440,6 +446,9 @@ export function wireMove(
 
   const cellAtTarget = (t: EventTarget | null): Cell | null =>
     parseCellId((t as HTMLElement)?.closest?.('[data-testid^="cell-"]')?.getAttribute('data-testid'))
+  // Resolve the target DATE — the caller's own resolver (event move) or the
+  // default roster-cell one (unchanged behaviour for the roster move).
+  const dateAt = opts.dateAt ?? ((t: EventTarget | null) => cellAtTarget(t)?.date ?? null)
 
   // The hover preview re-fires only when the hovered DAY changes. Mousemove
   // arrives per pixel (~60-120/s), and the first cut repainted the landing —
@@ -453,14 +462,14 @@ export function wireMove(
       ghost.style.top = `${e.clientY + 14}px`
     }
     if (!hasHover) return
-    const cell = cellAtTarget(e.target)
-    if (cell && cell.date !== lastHover) { lastHover = cell.date; opts.onHover(cell.date) }
+    const date = dateAt(e.target)
+    if (date && date !== lastHover) { lastHover = date; opts.onHover(date) }
   }
   const onClick = (e: MouseEvent) => {
-    const cell = cellAtTarget(e.target)
-    if (!cell) return
+    const date = dateAt(e.target)
+    if (!date) return
     e.stopPropagation(); e.preventDefault()   // never open the cell's own sheet
-    opts.onPick(cell.date)
+    opts.onPick(date)
   }
   const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') { e.stopPropagation(); opts.onCancel() } }
   // Right-click cancels the move on a desktop (owner, 27 Aug 26 — "if I want to
@@ -491,6 +500,26 @@ export function paintLanding(wrap: HTMLElement, cells: Cell[]): void {
 }
 export function clearLanding(wrap: HTMLElement): void {
   wrap.querySelectorAll('.mvland').forEach(el => el.classList.remove('mvland'))
+}
+
+/** Paint the move-mode LANDING preview onto an EVENT line — the days the moved
+ *  event will cover if dropped now (owner, 31 Aug 26). Shares the `.mvland`
+ *  class and `clearLanding` with the roster painter, so a move is only ever one
+ *  kind at a time and one clearer wipes either. */
+export function paintEventLanding(wrap: HTMLElement, line: number, dates: string[]): void {
+  clearLanding(wrap)
+  for (const d of dates) wrap.querySelector(`[data-testid="event-${line}-${d}"]`)?.classList.add('mvland')
+}
+
+/** Read the target DATE for an EVENT move from a pointer element — the event
+ *  line's own `event-<line>-<date>` cell, or a roster cell in the same column as
+ *  a fallback (a tap just below the event row still lands on the day). A merged
+ *  `event-band-…` cell resolves to null: you land on a free day, not on another
+ *  band. Only the date matters for a move, so either precise cell resolves it. */
+export function eventMoveDateAt(t: EventTarget | null): string | null {
+  const el = (t as HTMLElement)?.closest?.('[data-testid^="event-"], [data-testid^="cell-"]')
+  const id = el?.getAttribute('data-testid')
+  return parseEventCell(id)?.date ?? parseCellId(id)?.date ?? null
 }
 
 /** The earliest day among a set of cells (min YYYY-MM-DD, which sorts as date

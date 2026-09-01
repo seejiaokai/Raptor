@@ -145,4 +145,17 @@
   font-family: inherit;
 }
 
+/* COMPACT — a shorter month grid (owner, 31 Aug 26 — "the calendar can be
+   smaller … it takes up a lot of vertical space"). Only the event sheet asks
+   for it, so the whole sheet clears a phone keyboard. Day cells drop from 36
+   to 30px (still above the calendar tap-target floor the geometry gate holds
+   at 30 — see the bid sheet's own `.rday`), gaps tighten, and the month arrows
+   shrink to match. Everything else — the span run, the weekend tint, the
+   selection ends — is inherited unchanged. */
+.rpick.compact { gap: 5px; }
+.rpick.compact .rnav { width: 30px; height: 30px; font-size: 15px; }
+.rpick.compact .rpick-grid { gap: 2px; }
+.rpick.compact .rdow { font-size: 8.5px; padding-bottom: 1px; }
+.rpick.compact .rday { height: 30px; border-radius: 6px; }
+
 }

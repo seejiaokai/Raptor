@@ -2214,20 +2214,24 @@ and Unavailable are ordinary section keys now
 (`SECTIONS=['notes','prog','waves','duty','sims','ground','inputs','avail','sans','unav']`),
 each wrapped in its own `.sb-sec[data-secmove]` card with the same dotted grip — so on
 the Scheduler Board any card can be dragged to any position (Available crew up next to
-the flying waves, say), not only among the crew group. It is a scheduler WORKSPACE
-arrangement, not a published property: it takes effect on the BOARD only, because
-`ui/html.ts`'s week APPENDS these four panels separately (they are working aids, and
-SANS/Unavailable are parity-locked on the view week). So their week slice bits are empty
-and reordering them changes NOTHING on either week — the same empty-slice mechanism that
-keeps `notes` parity-safe (pinned: a crew reorder leaves `dayHTML` byte-identical,
-`ui/board.test.tsx`). The grip is injected by a loose `sb-ph`|`ap-h` header match in
-`board.ts wrapSec`, since Available crew's header is `.ap-h` (re-laid to flex-start with
-`.n` floated right so the grip rides with its title); Personal Inputs' foldable header is
-centred for the grip (`.sb-sec .sb-ph.pl-fold` — it was `baseline`, which sat the grip
-~7px above the title, the owner's "some are slightly higher than the title"); and a
-grip-tap on the two foldable headers (`data-pitog`, `data-avtog`) is guarded in
-`interactions.ts` so it starts a drag, not a fold. Don't fold the crew panels back into
-a fixed tail, and don't let their order reach the week.
+the flying waves, say), not only among the crew group. **They drag on the EDIT SCHEDULER
+too since 31 Aug 26** (owner — "drag markers on edit scheduler … follow the same
+formatting as the rest of the sections"): in EDIT mode `ui/html.ts dayHTML` emits all
+ten sections — the crew four included — through the SAME `secOrder` loop as the board,
+each wrapped in a `.dsec[data-secmove]` with a grip, so a drag on either surface drives
+the ONE per-day order (no second copy to drift). It is a scheduler WORKSPACE arrangement,
+not a published property: the **VIEW week is untouched and parity-locked** — there the
+four are not draggable and only Unavailable prints, appended in its fixed tail exactly as
+before, so the whole change is gated on `ed` and `dayHTML(view)` (with the reference)
+stays byte-identical, 728/0 (pinned: the parity gate and `ui/html.test.ts`). The grip is
+injected on the board by a loose `sb-ph`|`ap-h` header match in `board.ts wrapSec`, and
+on the edit week by a first-header regex (`ah-h`|`sub-h`|`ap-h`) in `dayHTML`'s `gripIn`;
+Available crew's header is `.ap-h` (re-laid to flex-start with `.n` floated right so the
+grip rides with its title — `.sb-sec .ap-h` on the board, `.dsec .ap-h` on the week);
+Personal Inputs' foldable header centres the grip; and a grip-tap on the two foldable
+headers (`data-pitog`, `data-avtog`) is guarded in `interactions.ts` so it starts a drag,
+not a fold. Don't fold the crew panels back into a fixed tail, and don't let their order
+reach the VIEW week (the edit week now shares the board's, gated on `ed`).
 
 **A section move is display order only.** The order lives on the day as `d.secOrder`
 (absent ⇒ the default order), resolved by `engine/order.ts secOrder(d)`. It never
@@ -3205,6 +3209,15 @@ Three things stay decided:
   standing as stores. Do NOT change the RENDERED shape of a cancelled row
   (`cxText` → "CX DUE <reason>", the `.cx`/`.cxtag` markup): that markup IS in
   the parity-compared path even though the seed never triggers it.
+- **A cancelled row is faded by OPACITY, not by grayscale on the row** (owner,
+  1 Sep 26 — "can I still see pilot and wso colours of the pucks?"). The
+  `filter:grayscale` used to sit on the row container and washed the olive FCP
+  and green RCP pucks into one grey; it now lives only on the store pills
+  (`.cx .stchip` et al.), so the crew pucks keep their seat colour through the
+  `.55` fade while the red rail + struck words still read cancelled. The
+  parity check `cancelled rows greyed` (`tfin.js`) matches the pills' own
+  `opacity:.X;filter:grayscale`, so 728/0 holds — but don't move the grayscale
+  back onto the row (`.form.cx`/`.sb-line.cx`): it re-greys the pucks.
 
 ## The top bar carries the bell and, while editing, undo/redo (owner, Aug 26)
 
@@ -3861,7 +3874,14 @@ surface; the string-builder discipline is for the dense parity-bound ones).
 **The month grid.** Monday-first, seven equal columns on BOTH phone and
 desktop (the owner picked the grid over a phone day-list). Opens on the
 month of the table's own window (`CALMONTH`, seeded once, then carried for
-the session); `‹ ›` step months, `Today` jumps home. Each day cell is
+the session); `‹ ›` step months, `Today` jumps home. The close control
+(`#icClose`) is a bare **✕** — no "List" label — with an `aria-label`/`title`
+of "Back to list" (owner, 1 Sep 26 — "put just a cross in the same row"). On a
+phone `.ic-head` no longer wraps (`flex-wrap:nowrap`, gap 4px), and the month
+label shrinks to 15px and ellipses only on a truly narrow screen, so the
+`‹ month › Today ✕` controls stay on ONE row (the cross beside Today, never on
+its own second line) and the touch targets keep their 44px. The Medical view's
+`.ic-head` close (`#medClose`) is the same bare ✕ for consistency. Each day cell is
 `[data-icday="yyyy-mm-dd"]`.
 
 **The cell's priority order (owner, 22 Aug 26 — "if it fills up the whole
@@ -4675,6 +4695,41 @@ OUT of scope. Pinned in `scrim.test.tsx` (drag-forward, no lock, movable) and
 `e2e/leavewar.spec.ts` ("the page scrolls behind an open sheet, and the panel
 stays put").
 
+## The event sheet on a phone keyboard (owner, 31 Aug 26)
+
+The event sheet autofocused its name field, so a phone raised the on-screen
+keyboard and — because the panel is `position:fixed; bottom:14px` (LAYOUT
+coordinates) while the keyboard shrinks and pans the VISUAL viewport — its lower
+half (the range calendar, Save/Delete) sat behind the keys. Owner: "I want to
+see the full window … the calendar can be smaller." A phone cannot show the
+keyboard AND a whole month calendar at once, but the keyboard is only ever
+needed to type the NAME, never to pick dates. Three parts, together:
+
+- **Opens showing the full window.** `EventSheet.tsx` autofocuses the name field
+  only for a fresh single-day tap (`!(band || dragged)`) — a short sheet the
+  lift below keeps clear of the keys. A sheet that opens already ranged (an
+  existing band, or a drag-swept span — the tall case) opens with NO keyboard,
+  so the whole window shows. Tapping "A range" is a button, which drops the
+  keyboard on its own, so switching a day to a range reveals the full window too.
+- **A smaller calendar, event-sheet only.** `RangePicker` takes a `compact`
+  prop → `.rpick.compact` (`rangepicker.css`): 30px day cells (vs 36), tighter
+  gaps and smaller month arrows — still at the ≥30px calendar tap-target floor
+  the geometry gate holds. The event sheet passes it; the bid, war and
+  bidding-window pickers stay full size. Measured live: the compact range sheet
+  fits a 390×844 phone with no scroll and Save on screen.
+- **Lifts above the keyboard while typing.** `Sheet.tsx:useKeyboardInset` mirrors
+  `ui/histbubble.ts:place()` — when the on-screen keyboard shrinks the
+  `visualViewport` (a signal `dvh` does NOT track and that fires only on
+  `visualViewport`, not a document scroll/resize), the panel re-anchors to the
+  top of the visible slice (below the top bar) and caps its height to it, then
+  clears back to the CSS bottom-anchor when the keyboard drops. It is a strict
+  no-op with no keyboard, so the `.bidsheet` bottom-anchor and every geometry
+  spec (all keyboard-less) are untouched; `useSheetDrag`'s clamp now reads the
+  visual viewport too (an `innerHeight` fallback keeps jsdom identical). Guarded
+  `if (!window.visualViewport)` (jsdom has none). Pinned in
+  `sheet-keyboard.test.tsx` (a `visualViewport` stub, since a headless browser
+  can't raise an iOS keyboard) and the autofocus split in the same file.
+
 ## Leave War Rearrange + the counter picker (owner, 28 Aug 26)
 
 Four asks from the same sitting, all on the Leave War grid:
@@ -5074,3 +5129,36 @@ on every row — anyone may VIEW any attachment, gated nowhere. The write-path
 backstop behind the hidden controls lives in `commitInputEdit` / `removeInput`
 and is in `docs/engine-rules.md` §Auth / roles. Pinned in
 `audit-guards-inputs.test.ts`.
+
+## The ⓘ info-only switch on programme items (owner, 1 Sep 26)
+
+A Ground / Common Programme item can be flipped **info only**: printed on the
+programme, never checked against the rules (the engine seams are in
+`docs/engine-rules.md`). On screen:
+
+- **The switch** is a fourth `mbtn` in the board row's control cluster —
+  CX · ⓘ · ■ · ✕ — on both `sbProgPanel` and `sbGroundPanel` (`data-pinfo` /
+  `data-grinfo`; the shared `sbRowCtl` grows an `fyi` param that ONLY the
+  ground rows pass, so duty/sim rows never draw it). Lit state is accent on
+  accent (`.mbtn.nfo.on`), the glyph bumped to 11px so ⓘ stays legible.
+- **The row look** is the `fyi` class from `rowCls` (board `.sb-arow`, week
+  `.ah-row`/`.pl-row`): opacity .75 — quieter than live, clearly livelier
+  than cancelled (.cx .55, which wins when both are set) — and NO
+  strikethrough, which is cancel's language. Crew pucks keep their seat
+  colours (the 1 Sep 26 rule: greyed states keep colour).
+- **Read-only surfaces** (view week, read-only board) show a static accent
+  `ⓘ` instead of the button. On the week and the peek it rides in the
+  REMARKS cell (owner, 1 Sep 26 — moved out of the name column so the ⓘ
+  shares the one column the late mark already uses): `plRmk` emits `fyiTag`
+  as a leading badge, floated left via `.rmk.has-late` so a remark wraps
+  beside it, and the peek's own remarks spans do the same. On the read-only
+  board it stays in the row's control track (`sbRowCtl`/`sbProgPanel` emit a
+  bare `.fyitag` beside where CX/flag sit), because that row's remarks is a
+  bare `<input>` with nowhere to nest a chip — the same exception the late
+  mark carries. Everything emits '' when the flag is unset, so the seed
+  week's view markup — and the reference compare — stays byte-identical.
+- The crew picker raises no reasons while an info row's people cell is armed
+  (see engine-rules) — by design, not an omission.
+
+Pinned in `ui/board.test.tsx` (toggle + read-only mark) and
+`engine/infoflag.test.ts`.

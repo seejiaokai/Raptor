@@ -1,5 +1,5 @@
 import { DAYS } from './data'
-import { SCHED, dayApproved, approvedDays, verLabel, dayCurVer, daySnapOf, deletionKey, trackStructuralAdd, isDeleteKey } from './publish'
+import { SCHED, dayApproved, approvedDays, verLabel, dayCurVer, daySnapOf, deletionKey, trackStructuralAdd, isDeleteKey, isMoveKey } from './publish'
 import { dayKeys } from './restore'
 import { keyDay } from './keys'
 
@@ -353,7 +353,7 @@ export function reconcileIssuedMarks() {
     const iss = dayKeys(snap.d, di)
     let live: any = null
     pend.forEach((k: any) => {
-      if (isDeleteKey(k) || /^inp:/.test(String(k))) return   // inert marks — never field diffs
+      if (isDeleteKey(k) || isMoveKey(k) || /^inp:/.test(String(k))) return   // inert marks — never field diffs
       if (!live) live = dayKeys(DAYS[di], di)
       if (!iss.has(k)) {
         /* A key the issued day never had. If the live day no longer has it

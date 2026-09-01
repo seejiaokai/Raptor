@@ -48,7 +48,7 @@ const KIND_LABEL: Record<EventKind, string> = {
   work: 'Work',
 }
 
-export function EventSheet({ line, date, to, onClose }: { line: number; date: string; to?: string; onClose: () => void }) {
+export function EventSheet({ line, date, to, onClose, onMove }: { line: number; date: string; to?: string; onClose: () => void; onMove?: (m: { line: number; from: string; to: string }) => void }) {
   useVersion()
   const { period, eventDefs: defs } = getState()
   // The band (if any) that owns this cell. Editing it means replacing it, so
@@ -227,8 +227,26 @@ export function EventSheet({ line, date, to, onClose }: { line: number; date: st
           data-testid="event-text"
           placeholder="Type an event…"
           value={text}
-          autoFocus
+          /* AUTOFOCUS ONLY A FRESH SINGLE-DAY TAP (owner, 31 Aug 26 — "I want
+             to see the full window … the calendar takes a lot of vertical
+             space"). A phone can't show the keyboard AND the whole calendar at
+             once, but the keyboard is only ever needed to type the NAME, never
+             to pick dates. So a plain day tap still focuses the field to type
+             at once (the sheet is short and Sheet.tsx lifts it clear of the
+             keys); a sheet that opens already ranged — a drag-swept span or an
+             existing band, the tall case — opens with NO keyboard, so the full
+             window (calendar + Save/Delete) shows. Tapping "A range" is a
+             button, which drops the keyboard on its own, so switching a day to
+             a range reveals the full window too. */
+          autoFocus={!(band || dragged)}
           onChange={e => setText(e.target.value)}
+          /* Enter/Return closes the keyboard (owner, 1 Sep 26 — "when I press
+             enter the keyboard should close"). It blurs the field rather than
+             saving: the sheet still has the scope, tag and dates to set, so
+             Enter means "done typing the name", the same as the type-name row
+             above. Dropping focus dismisses the keyboard, and useKeyboardInset
+             then lets the panel fall back to the full window. */
+          onKeyDown={e => { if (e.key === 'Enter') e.currentTarget.blur() }}
         />
       </div>
 
@@ -309,6 +327,7 @@ export function EventSheet({ line, date, to, onClose }: { line: number; date: st
           <div className="bidsheet-row">
             <RangePicker
               testid="event"
+              compact
               min={period.start}
               max={period.end}
               value={range}
@@ -318,8 +337,29 @@ export function EventSheet({ line, date, to, onClose }: { line: number; date: st
         </>
       )}
 
-      <div className="bidsheet-row">
-        <button className="dchip approve" data-testid="event-apply" onClick={apply}>
+      {/* Save + Delete sit at the RIGHT of the footer, Save in the app's cyan
+          (owner, 31 Aug 26 — "move the save and delete buttons to the right …
+          Save … make it blue cyan like how it is usually"). Save is `dchip save`,
+          not the green `approve` the scope toggles use, so it reads as the one
+          commit button. A problem note keeps its place on the LEFT (margin-right
+          :auto) so the error never shoves the buttons around. */}
+      <div className="bidsheet-row evactions">
+        {problem && <span className="note warn" data-testid="event-problem">{problem}</span>}
+        {/* MOVE an existing event (owner, 31 Aug 26 — "drag an existing event to
+            move it, like LL"). Shown only for a placed event/band; it hands the
+            event's own span to the matrix, which runs the same drag-to-a-day move
+            mode the roster uses. Closes the sheet first, exactly like the roster
+            Move button. */}
+        {onMove && (band || (day && day.events[line])) && (
+          <button
+            className="dchip move"
+            data-testid="event-move"
+            onClick={() => { onClose(); onMove({ line, from: band ? band.from : date, to: band ? band.to : date }) }}
+          >
+            Move…
+          </button>
+        )}
+        <button className="dchip save" data-testid="event-apply" onClick={apply}>
           Save
         </button>
         {(band || (day && day.events[line])) && (
@@ -327,7 +367,6 @@ export function EventSheet({ line, date, to, onClose }: { line: number; date: st
             Delete
           </button>
         )}
-        {problem && <span className="note warn" data-testid="event-problem">{problem}</span>}
       </div>
     </Sheet>
   )

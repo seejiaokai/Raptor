@@ -187,6 +187,28 @@ function syntheticKey(prefix:any,di:any,kind:any){di=+di;
   let n=0;keys.forEach((k:any)=>{if(String(k).indexOf(p)!==0)return;const x=+String(k).slice(p.length).split('.')[0];if(isFinite(x)&&x>n)n=x;});
   return `${p}${n+1}.${kind}`;}
 export function deletionKey(di:any,kind:any){kind=DELETE_LABELS[kind]?String(kind):'programme';return syntheticKey('del',di,kind);}
+/* REORDERS ON A PUBLISHED DAY use an inert synthetic key too — mov:DAY.SEQ.KIND
+   — for the same reason deletions do, plus one specific to reordering (owner,
+   31 Aug 26 — a reported bug). Every mover in engine/reorder.ts used to record a
+   move by marking the moved row's own head FIELD key (wl:di.to, dr:di.wi.to.role
+   …) pending. That works while the swapped rows carry DIFFERENT values there, but
+   reconcileIssuedMarks (engine/drafts.ts) then drops any pending field key whose
+   live value equals the issued value — so reordering two rows that happen to read
+   the SAME at that head (two unnamed waves, two same-role duty rows) had its only
+   mark reconciled away: the day read "no changes" and the move reached no AL, even
+   though the printed order really had changed. A structural mov: key sidesteps the
+   value comparison entirely (reconcile skips it by name, like del:/inp:), so a move
+   of an ISSUED row always counts. It is minted ONLY on a published day and ONLY for
+   a row that was actually issued — a still-draft added row reordered then deleted
+   before its AL is the same net no-op it always was (reorder.ts's `done` gates on
+   SCHED.added, so no mov: is minted there). Rides every day filter, snapshot, AL
+   and undo path as an ordinary key, exactly as del: does. */
+export const MOVE_LABELS:any={wave:'wave',formation:'formation',aircraft:'aircraft',duty:'duty row',dutyblock:'duty block',sim:'sim row',ground:'ground item',programme:'programme item',note:'note'};
+export function isMoveKey(key:any){return /^mov:\d+\.\d+\.[a-z]+$/.test(String(key));}
+export function moveLabel(key:any){const k=String(key).split('.').pop()||'';return MOVE_LABELS[k]||'item';}
+export function moveCount(keys:any){return (keys||[]).filter(isMoveKey).length;}
+export function moveKey(di:any,kind:any){kind=MOVE_LABELS[kind]?String(kind):'item';return syntheticKey('mov',di,kind);}
+export function markMove(di:any,kind:any){const key=moveKey(di,kind);markEdit(key);return key;}
 export function trackStructuralAdd(key:any){if(!key)return '';SCHED.added=SCHED.added||{};SCHED.added[String(key)]=1;return String(key);}
 export function markStructuralAdd(key:any){trackStructuralAdd(key);markEdit(key);HOOKS.flashAdded(key);return String(key);}
 export function structuralAddExists(key:any){

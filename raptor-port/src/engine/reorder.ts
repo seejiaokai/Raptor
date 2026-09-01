@@ -1,5 +1,5 @@
 import { DAYS } from './data'
-import { markEdit } from './publish'
+import { markEdit, markMove, dayApproved, SCHED } from './publish'
 import { permuteKeys, moveKeys } from './keys'
 import { groundOrder } from './order'
 import { parseHM } from './time'
@@ -42,7 +42,24 @@ const slide=(a:any,from:any,to:any)=>{a.splice(to,0,a.splice(from,1)[0]);};
    read-once shape SORTALL and CXT already use. */
 export let REORDERED_DI:any=null
 export function popReorderedDay(){const d=REORDERED_DI; REORDERED_DI=null; return d;}
-const done=(key:any,di?:any)=>{markEdit(key); if(di!=null)REORDERED_DI=di; return true;};
+/* Which mov: KIND a move belongs to, read from the head FIELD key each mover
+   hands `done` — the same key it would otherwise mark pending. One prefix, one
+   kind; an unknown prefix falls to a generic 'item' (moveKey clamps it anyway). */
+const MOVE_KIND:any={wl:'wave',ff:'formation',fr:'aircraft',dr:'duty',dl:'dutyblock',sr:'sim',ap:'programme',dn:'note',gr:'ground'};
+const moveKindOf=(key:any)=>{const s=String(key),c=s.indexOf(':');return MOVE_KIND[c<0?'':s.slice(0,c)]||'item';};
+/* Record a move. On a PUBLISHED day a move of an ISSUED row is a structural
+   amendment recorded with an inert mov: key (see publish.ts) so it survives the
+   reconcile that value-drops an ordinary field mark; on a draft day, or when the
+   moved row is still a pending draft ADD (its head key sits in SCHED.added — the
+   `done` key IS that row's structural-add-key form, so this reads generically), the
+   old behaviour stands: mark the head field pending, which keys.ts remaps and the
+   add/delete net-no-op path (SCHED.added) can still cancel. `di` is passed only for
+   a real permutation; the ground flag-only clear path passes none and stays a plain
+   field mark. */
+const done=(key:any,di?:any)=>{
+  if(di!=null && dayApproved(di) && !SCHED.added[String(key)]) markMove(di,moveKindOf(key));
+  else markEdit(key);
+  if(di!=null)REORDERED_DI=di; return true;};
 
 /* MANUAL WAVE-BLOCK REORDER (owner, 29 Aug 26 — "within the waves I also want the
    option to reorder … put SC at the top, then 1st wave 2nd wave"). Until now the

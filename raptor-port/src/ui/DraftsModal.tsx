@@ -19,6 +19,7 @@ import { dayDrafts, curDraftId, draftRename, draftDelete, MAX_DRAFT_NAME } from 
 import { switchDraft } from './board'
 import { DRAFTSEDIT, setDraftsEdit } from './pops'
 import { useVersion } from './useStore'
+import { SESSION } from '../state/auth'
 
 export function DraftsModal() {
   useVersion()
@@ -32,7 +33,13 @@ export function DraftsModal() {
     if (open && open.id) setSel(open.id)
     setNm(null)
   }, [open && open.di, open && open.id])
-  if (!open) return <div className="modal" id="draftsModal" hidden />
+  /* self-hide for a non-admin, not just at the admin-gated opener (bug hunt,
+     31 Aug 26 — point-2 authority sweep): DRAFTSEDIT survives toggleRole's
+     admin→member peek, so without this an admin who opened the drafts manager
+     and flipped to member view kept live rename/delete controls (draftRename/
+     draftDelete) that carry no write-path gate. The test is `SESSION && role !==
+     'admin'`, so a sessionless test/boot is not mistaken for a member. */
+  if (!open || (SESSION && SESSION.role !== 'admin')) return <div className="modal" id="draftsModal" hidden />
 
   const di = open.di
   const d: any = DAYS[di]

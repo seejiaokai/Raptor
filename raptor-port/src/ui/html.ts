@@ -340,7 +340,12 @@ export function plRow(name:any,str:any,end:any,pplHtml:any,base:any,nf:any,ed:an
    take a line of its own and grow a fixed-height list row. */
 export function plRmk(base:any,ed:any,o:any,rmkTxt:any,late?:any){
   const live=ed&&canEditSched();
-  const lt=late||'', lc=lt?' has-late':'';
+  /* leading badges in the REMARKS cell: the ⓘ info-only mark (owner, 1 Sep 26 —
+     moved here from beside the name, so it shares the one column the late mark
+     already uses — remarks is where a reader looks for "why is this line like
+     this") then the LATE badge. Both float left via .rmk.has-late so a remark
+     wraps beside them; an info item usually has no remark, so the ⓘ sits alone. */
+  const lt=fyiTag(o)+(late||''), lc=lt?' has-late':'';
   if(base&&rmkTxt===undefined){
     const v=(o&&o.rmks)||'';
     if(!v&&!live)return `<span class="rmk rk-e${lc}">${lt}</span>`;
@@ -731,12 +736,23 @@ export let TXTQ=0;
    promoted ground row (slots.ts) — no aircraft, formation or plain input row
    carries it — so this reads true for exactly the input-derived rows on both
    the week (plRow) and the board (sb-arow), and nothing else. */
-export function rowCls(o:any){return (o&&o.cx?' cx':'')+(o&&o.flag?' redbox':'')+(o&&o.src?' gr-frominput':'');}
+/* fyi = the ⓘ info-only flag (owner, 1 Sep 26): quiet styling, never a strike —
+   the strike is cancel's language. Emitted only when the flag is set, so the
+   seed week's markup — and the view-week reference compare — is untouched. */
+export function rowCls(o:any){return (o&&o.cx?' cx':'')+(o&&o.info?' fyi':'')+(o&&o.flag?' redbox':'')+(o&&o.src?' gr-frominput':'');}
 /* CX carries its reason: "CX DUE WX" rather than a bare CX, so the next
    scheduler reading the day knows why the line went. */
 export function cxText(o:any){const r=o&&o.cxr?String(o.cxr).trim():'';return r?('CX DUE '+r):'CX';}
 export function cxTag(o:any){return o&&o.cx?`<span class="cxtag" title="${esc(cxText(o))}">${esc(cxText(o))}</span>`:'';}
 export function flagTag(o:any){return o&&o.flag?'<span class="flagtag" title="Flagged for the next scheduler">!</span>':'';}
+/* the ⓘ info-only chip (owner, 1 Sep 26): a ground/programme item flagged info
+   is shown for information and never checked — the chip says so wherever the
+   row prints without its board toggle. It rides in the REMARKS cell (owner,
+   1 Sep 26 — moved out of the name column, the same one-column rule the late
+   mark follows); plRmk / the peek remarks spans are the callers. '' when unset,
+   so the seed week's markup (and the view-week reference compare) is
+   byte-identical. */
+export function fyiTag(o:any){return o&&o.info?'<span class="fyitag" title="Info only — not checked against the rules">ⓘ</span>':'';}
 /* THE MAIN/SPARE BADGE ON A STANDALONE LINE (owner, 24 Aug 26 — "for SC, can
    I have the option to change the line to SPARE from MAIN, vice versa. Either
    a button that goes into remarks. Rather than a default main or spare faded
@@ -1129,17 +1145,20 @@ export function dayHTML(di:any,ed:any,vsel?:any){
              to stop — a spare routinely flies elsewhere the same day. So the
              exempt copy reads the day's warning list for entries ANCHORED TO
              THIS LINE and naming this man: the availability check (DNIF_FLY /
-             LEAVE_FLY — the red C) and SC currency, which is checked for MAIN
-             and SPARE alike (SC_QUAL — the red Q). Nothing else can anchor to
-             an exempt line, and both rules are hard, so these pucks ring red
-             or not at all — the owner confirmed no amber rule lives here. BB
-             can anchor nothing and so never rings, with no special case. */
+             LEAVE_FLY — the red C), SC currency, which is checked for MAIN
+             and SPARE alike (SC_QUAL — the red Q), and — 31 Aug 26 — the two
+             SC-SPARE rules: another SC seat in the same hours (DOUBLE_BOOK —
+             the red C) and a WSO in the spare front seat (QUAL — the red Q).
+             Only these four codes can anchor to an exempt line, and all are
+             hard, so these pucks ring red or not at all — the owner confirmed
+             no amber rule lives here. BB can anchor nothing and so never
+             rings, with no special case. */
           const chk=!saExempt(w,f,a), fkey=`${di}.${gi}.${li}`;
           const own=(id:any)=>{ if(PV||!id)return null;
             const g=WARN.byDay[di];
-            const hit=((g&&g.warns)||[]).find((x:any)=>(x.code==='DNIF_FLY'||x.code==='LEAVE_FLY'||x.code==='SC_QUAL')
+            const hit=((g&&g.warns)||[]).find((x:any)=>(x.code==='DNIF_FLY'||x.code==='LEAVE_FLY'||x.code==='SC_QUAL'||x.code==='DOUBLE_BOOK'||x.code==='QUAL')
               &&(x.who||[]).includes(id)&&(x.key===fkey||String(x.key||'').indexOf(fkey+'.')===0));
-            return hit?(hit.code==='SC_QUAL'?'Q':'C'):null; };
+            return hit?((hit.code==='SC_QUAL'||hit.code==='QUAL')?'Q':'C'):null; };
           const sv=(id:any)=>chk?sev(di,id):(own(id)?'hard':null), cp=(id:any)=>chk?chip(di,id):own(id), dh=(id:any)=>chk?dsh(di,id):false,
                 tr=(id:any)=>chk?traceHit(di,id):null;
           h+=`<div class="acrow${ai?'':' r1'}${acx}" style="--gr:${ai+1}"><span class="pucks">${slotCell(a.p,sv(a.p),key+'.p','FCP',ed,cp(a.p),dh(a.p),tr(a.p))}${slotCell(a.w,sv(a.w),key+'.w','RCP',ed,cp(a.w),dh(a.w),tr(a.w))}</span></div>
@@ -1243,23 +1262,18 @@ export function dayHTML(di:any,ed:any,vsel?:any){
        in-place replacement for the old Arrange sheet — store.moveSectionTo, pure
        display order). VIEW mode wraps nothing, so the view week — and the
        read-only reference the parity gate pins — is byte-identical (728/0). */
-    {
-      /* the week keeps day notes as lines inside the Common Programme block (they
-         never had a card of their own here — see engine/order.ts), so the 'notes'
-         section is empty on the week and its slice adds nothing: the view week and
-         the reference stay byte-identical (parity 728/0). The BOARD is where notes
-         and programme are two separate draggable cards. */
-      const secBits:any={prog:h.slice(secM0,secM1),waves:h.slice(secM1,secM2),duty:h.slice(secM2,secM3),sims:h.slice(secM3,secM4),ground:h.slice(secM4)};
-      /* the dotted ⠿ grip sits INLINE at the head of each section's own header (the
-         .ah-h / .sub-h / .wv-sech title), not as a rail in the .dsec gutter — so it
-         reads dotted like the wave/row grips, sits beside its title and centres on
-         the title line (owner, 31 Aug 26). Edit-only, so parity is untouched. */
-      const secGrip='<span class="secgrip" title="Drag to reorder this section" aria-label="Reorder this section">⠿</span>';
-      const gripIn=(bit:string,k:string)=>k==='prog'?bit.replace('<div class="ah-h">',`<div class="ah-h">${secGrip}`)
-        :k==='waves'?bit.replace('<div class="sub-h wv-sech">',`<div class="sub-h wv-sech">${secGrip}`)
-        :bit.replace('<div class="sub-h">',`<div class="sub-h">${secGrip}`);
-      h=h.slice(0,secM0)+secOrder(d).map((k:string)=>{const bit=secBits[k]||'';if(!bit)return'';return ed?`<div class="dsec" data-secmove="${di}.${k}">${gripIn(bit,k)}</div>`:bit;}).join('');
-    }
+    /* the week keeps day notes as lines inside the Common Programme block (they
+       never had a card of their own here — see engine/order.ts), so the 'notes'
+       section is empty on the week and its slice adds nothing: the view week and
+       the reference stay byte-identical (parity 728/0). The BOARD is where notes
+       and programme are two separate draggable cards.
+       secBits is CAPTURED here — before the reorder loop rewrites h — but the loop
+       itself runs further down, AFTER the four crew working-aid panels are built,
+       so in EDIT mode those panels can join the SAME draggable list (owner, 31 Aug
+       26 — "drag markers on edit scheduler … follow the same formatting as the rest
+       of the sections", extending the board's one-list model onto the edit week).
+       Held at function scope, not inside a block, for exactly that reason. */
+    const secBits:any={prog:h.slice(secM0,secM1),waves:h.slice(secM1,secM2),duty:h.slice(secM2,secM3),sims:h.slice(secM3,secM4),ground:h.slice(secM4)};
     /* ---- the two input-derived blocks -------------------------------------
        PERSONAL INPUTS is what aircrew submitted and the scheduler has not yet
        acted on, so it is scheduler-side only — it never reaches the view page.
@@ -1321,17 +1335,39 @@ export function dayHTML(di:any,ed:any,vsel?:any){
           +`<div class="ppl one">${pk}</div>${inpRmkCell(inp,ed,d.dt)}`
           +(acc?accCtl(di,inp):'')+`</div>`; });
       return s+`</div>`; };
-    if(ed)h+=inGrp('Personal Inputs',(inp:any)=>isPersonal(inp.type)&&inp.acc!=='u','sec-inp',false,true);
-    // ---- available crew (computed, not an input type) stays scheduler-side ----
-    if(ed)h+=availHTML(d,di,ed);
-    /* SANS AVAILABILITY IS ITS OWN GROUP, drawn as a card grid rather than
-       through inGrp's row builder (owner rework, 14 Aug 26 — see
-       sansSectionHTML/sansCardsHTML above for why). Scheduler-side only, like
-       Personal Inputs: a member files it on the Inputs page, a scheduler
-       reads it here. */
-    h+=sansSectionHTML(d,di,ed);
+    /* THE FOUR CREW WORKING-AID PANELS. In EDIT mode they join the SAME draggable
+       section list as the schedule cards above (owner, 31 Aug 26 — "drag markers on
+       edit scheduler … follow the same formatting as the rest of the sections",
+       extending the board's 31 Aug "one list, drag anywhere" onto the edit week):
+       each goes into secBits under its own section key and the reorder loop below
+       places it in the day's own order, wrapped in a draggable .dsec with a grip,
+       so an arrangement made here and one made on the board drive the ONE per-day
+       order (engine/order.ts) — no second copy to drift.
+       In VIEW mode nothing here is draggable and only Unavailable prints, appended
+       in its fixed tail position exactly as before, so the view week (and the parity
+       gate) stay byte-identical (728/0). Personal Inputs and Available crew are
+       scheduler-side (edit only); SANS prints nothing when empty (sansSectionHTML).
+       Available crew stays computed (not an input type); SANS is its own card grid
+       (owner rework, 14 Aug 26); Unavailable is an offer's opposite and always
+       prints, "Nil" and all. */
+    const crewInputs=ed?inGrp('Personal Inputs',(inp:any)=>isPersonal(inp.type)&&inp.acc!=='u','sec-inp',false,true):'';
+    const crewAvail=ed?availHTML(d,di,ed):'';
+    const crewSans=sansSectionHTML(d,di,ed);
     // SANS Availability is an offer, not an absence — it reads isUnavail (no Accept controls) but does not belong in this block
-    h+=inGrp('Unavailable',(inp:any)=>(isUnavail(inp.type)||inp.acc==='u')&&!isSansAvail(inp.type)&&!isUpchit(inp.type),'sec-unav',true);
+    const crewUnav=inGrp('Unavailable',(inp:any)=>(isUnavail(inp.type)||inp.acc==='u')&&!isSansAvail(inp.type)&&!isUpchit(inp.type),'sec-unav',true);
+    if(ed){secBits.inputs=crewInputs;secBits.avail=crewAvail;secBits.sans=crewSans;secBits.unav=crewUnav;}
+    /* the dotted ⠿ grip sits INLINE at the head of each section's own header (the
+       .ah-h / .sub-h / .ap-h / .wv-sech title), not as a rail in the .dsec gutter —
+       so it reads dotted like the wave/row grips, sits beside its title and centres
+       on the title line (owner, 31 Aug 26). Edit-only, so parity is untouched. ONE
+       robust regex handles every header the ten sections carry — the schedule cards'
+       ah-h / sub-h / sub-h.wv-sech, Personal Inputs' foldable sub-h.pl-fold and
+       Available crew's ap-h — matching the FIRST such header in each section's own
+       bit, so a nested header is never hit. */
+    const secGrip='<span class="secgrip" title="Drag to reorder this section" aria-label="Reorder this section">⠿</span>';
+    const gripIn=(bit:string)=>bit.replace(/(<div class="(?:ah-h|sub-h|ap-h)\b[^>]*>)/,`$1${secGrip}`);
+    h=h.slice(0,secM0)+secOrder(d).map((k:string)=>{const bit=secBits[k]||'';if(!bit)return'';return ed?`<div class="dsec" data-secmove="${di}.${k}">${gripIn(bit)}</div>`:bit;}).join('');
+    if(!ed)h+=crewUnav;
     h+=`</div>`; // /day-body
     return h+`</section>`;
 }

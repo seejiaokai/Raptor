@@ -96,7 +96,7 @@ describe('the Inputs page calendar toggle', () => {
     expect(INPVIEW).toBe('cal')
 
     await click($('#icClose'))
-    expect($('#inpCal'), 'closes on ✕ List').toBeFalsy()
+    expect($('#inpCal'), 'closes on ✕').toBeFalsy()
     expect(INPVIEW).toBe('table')
   })
 

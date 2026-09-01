@@ -310,4 +310,34 @@ describe('the picker knows who is already committed at this hour', () => {
     validate()
     expect(slotBar('split', `${0}.${wi}.0.${spare}.p`)).not.toContain('already on')
   })
+
+  /* THE TWO-SC-SEATS RULE, PICKER SIDE (owner, 31 Aug 26) — the same
+     scSeatHit body the validator reads, so the palette refuses exactly what
+     the warning list would red after a drag-drop. scspare-rules.test.ts pins
+     the validator half. */
+  it('a man on SC MAIN is refused the overlapping SPARE seat, and offered the abutting one', () => {
+    const w = makeStandalone('sc')
+    DAYS[0].waves.push(w)
+    const wi = DAYS[0].waves.length - 1
+    w.formations[0].aircraft[0].p = 'split'      // MAIN AM 07:00–13:00
+    validate()
+    const why = slotBar('split', `0.${wi}.0.2.p`)   // SPARE AM
+    expect(why, why).toContain('already on')
+    expect(why).toContain('MAIN')
+    /* SC AM into SC PM touch only at 13:00 — two clean shifts, owner's example */
+    expect(slotBar('split', `0.${wi}.1.2.p`)).not.toContain('already on')
+    /* re-arming the very seat he holds is a swap, not a clash */
+    expect(slotBar('split', `0.${wi}.0.0.p`)).not.toContain('already on')
+  })
+
+  it('a man standing SPARE is refused a MAIN seat in the same hours — the rule reads both ways', () => {
+    const w = makeStandalone('sc')
+    DAYS[0].waves.push(w)
+    const wi = DAYS[0].waves.length - 1
+    w.formations[0].aircraft[2].p = 'split'      // SPARE AM
+    validate()
+    const why = slotBar('split', `0.${wi}.0.0.p`)   // MAIN AM
+    expect(why, why).toContain('already on')
+    expect(why).toContain('SPARE')
+  })
 })

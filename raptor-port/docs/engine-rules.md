@@ -645,7 +645,35 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   are otherwise `saExempt`, and the message says which of the two it is. SC
   SPARE carries no crew rest either way. SC currency is checked for MAIN and
   SPARE. SC NIGHT ⊂ SC DAY.
-- Standalone waves: SC (spares uncrosschecked), AVALON/BB (`noconf`).
+- **The two SC SPARE rules of 31 Aug 26 (owner)** — on top of `canSpare` and
+  currency, an SC spare seat now carries exactly two more checks, both hard:
+  - **Two SC seats in the same hours** — a man on a SPARE line who also holds
+    ANY other SC seat (MAIN or SPARE, same wave or another) whose shift hours
+    genuinely overlap is one man in two places: a hard `DOUBLE_BOOK`, worded
+    "standing SC SPARE … and also on …", anchored on the spare seat and said
+    once per pair. Abutting shifts are NOT a conflict — `overlap` is
+    half-open, so SC AM 07:00–13:00 into SC PM 13:00–19:00 (the owner's own
+    example, "the 1300 is not a conflict") stay two clean shifts. MAIN+MAIN
+    needs no new rule (main shifts are events; the ordinary clash loop reds
+    them). One body, `events.ts:scSeatHit` (a model walk — spares are absent
+    from EVD by design), read by the validator AND the crew picker's
+    `slotBar` ("already on SC AM MAIN 07:00–13:00"), so the palette refuses
+    exactly what the warning list would flag after a drag-drop.
+  - **The spare front seat is pilots-only** — a WSO (`seat==='RCP'`, plus the
+    CAT-IW data-consistency variant) planted in a spare line's FCP raises the
+    same hard `QUAL` the flying seat rules raise, suffixed "(… SPARE)" and
+    anchored on the seat. The rear spare seat is deliberately unruled: the
+    pilot-in-RCP mirror was offered and DECLINED (owner, 31 Aug 26) — the
+    picker's seat rules still refuse those seats at arm time, so the only
+    silent path was a drag-drop, and only the WSO-in-FCP half closes it.
+  Deliberately NOT rules, unchanged: a spare against his own sortie, sim or
+  duty raises nothing (spares stay free — the owner declined a call-up
+  advisory the same day), and AVALON/BB are untouched (the AVALON rule stays
+  owner-reserved). Pins: `scspare-rules.test.ts` (validator),
+  `slotrules.test.ts` (picker); the parity compare excises the port-only
+  `spareAcs` field (`parity.test.ts noPortOnly`).
+- Standalone waves: SC (spares uncrosschecked beyond the four checks above),
+  AVALON/BB (`noconf`).
 - **AVALON's one check (owner, 11 Aug 26).** AVALON and its desk keep
   `noconf` — nothing on them is cross-checked against tasks, rest or
   qualifications — but every man on the wave now gets ONE look, the SC-spare
@@ -2004,6 +2032,24 @@ derived from pending, issued and historical AL keys, so no separate counter can
 drift across undo. Tombstones travel unchanged through publish, unpublish,
 history and version snapshots; the AL panel counts them as removals, while the
 schedule CSV naturally contains only the rows that still exist.
+**Reorders on a published day are real AL items too, recorded like removals**
+(owner, 31 Aug 26). A move changes a row's POSITION, not the value at the head
+field the mover would otherwise mark, so on a published day where two swapped
+rows read the same at that head (two blank-label waves, two same-role duty rows)
+`reconcileIssuedMarks` — a value differ — used to reconcile the proxy mark away
+and the move reached no AL. A reorder of an ISSUED row now records an inert
+`mov:di.seq.kind` tombstone instead (the same shape and lifecycle as `del:`),
+which the reconcile sweep skips by name, so a move always counts. It is minted
+only on a published day and only for an issued row: `reorder.ts`'s `done` gates
+on `SCHED.added` — the head key it is handed IS that row's structural-add-key
+form — so a still-draft added row reordered before its AL mints no tombstone and
+stays cancellable, and a draft-day reorder keeps the ordinary field mark. The AL
+panel counts tombstones as reorders beside removals. Two deliberate consequences:
+a published-day reorder no longer tints one arbitrary moved row (it shows as a
+reorder in the panel, like a deletion), and a move of an AL-tagged block keeps
+that tag at the block's new position rather than retiring it. A reorder-and-back
+shows two reorders (each move counts).
+
 Draft structural additions carry an identity key that is remapped with the row
 through drag, nudge and Sort. Issue clears that identity; unpublish restores it.
 Therefore a row added after issue, reordered, and deleted again before its AL is
@@ -2296,12 +2342,31 @@ the squadron's programme*, not read vs write:
 | Quals — `Enable editing`: tick a qualification, edit initials / flight / CAT | **yes** | yes |
 | Quals — `Edit quals` (which columns the LoX carries) | no | yes |
 | Quals — `Add person` (put someone on the roster) | no | yes |
+| Quals — archive a person (the row's ✕) / Restore from the Archived drawer | no | yes |
 | Accepting an input into the issued programme | no | yes |
 | The Edit Schedule page at all (`canEditSched()`) | no | yes |
+| Duty / day / flying-wave templates & per-day drafts (the four editor sheets) | no | yes |
 | Logic — editing VCONF / SHIFT_HARD | no | yes |
 | Leave War — advancing the cycle stage (→ BIDDING CLOSED / → PUBLISHED) | no | yes |
 | Leave War — deciding a bid (Pending / Approve / Refuse), at closed OR published | no | yes |
 | Editing or deleting ANOTHER person's personal input (own inputs: either role) | no | yes |
+
+**The four admin editor sheets self-hide for a non-admin, not just at their
+opener (bug hunt, 31 Aug 26 — the point-2 authority sweep).** The Duty-,
+Day-template, Flying-waves and per-day Drafts editors (`DutyTplModal`,
+`DayTplModal`, `WaveTplModal`, `DraftsModal`) are opened only from admin-gated
+affordances (the board's edit-mode menus and the Admin page), so a plain member
+can never reach them. But the pop flag each sets (`TPLEDIT` / `DAYTPLEDIT` /
+`WAVEEDIT` / `DRAFTSEDIT`) is NOT cleared by `toggleRole`'s admin→member "View
+as member" peek, and their store mutators carry no write-path guard of their
+own — so an admin who opened one and then flipped to member view used to keep a
+fully live editor on screen, the preview lying about what a member can do. Each
+modal now returns its hidden shell when `SESSION && SESSION.role !== 'admin'`
+(the same idiom the archive / inputedit write-path backstops use, so a
+sessionless test/boot context still renders); a `notify()` on the role flip
+re-renders and closes it, and flipping back to admin restores it with its
+context intact. This makes the render gate the write gate. Pinned in
+`WaveTplModal.test.tsx`.
 
 **In the Leave War, moving the cycle FORWARD is admin-only (owner, 27 Aug 26
 — "for a member i shouldnt be able to click on bidding closed or published,
@@ -2581,3 +2646,32 @@ apart, so a single-ship reads as it always did, and the bubble was never
 affected: it matches on the key, not on the words. `state/view.ts`'s `slotTitle()` answers a
 similar question for the arm picker and is deliberately separate: it emits
 HTML, covers only the crew keys, and lives where the engine cannot reach it.
+
+## The ⓘ info-only flag on Ground / Common Programme items (owner, 1 Sep 26)
+
+A `ground[]` or `allhands[]` row with `info:true` is shown on the programme
+but NEVER checked. One boolean on the row (it rides weekstash, day templates
+and history snapshots for free), silenced at exactly these seams — each a
+SEPARATE `if(x.info)return` beside the row's cx guard, never merged into it:
+
+- `events.ts` buildDay (the ground and allhands pushes): the row never enters
+  `day.events`, which alone removes it from every validator rule
+  (DOUBLE_BOOK, crew rest, DAYS_RUN, LONGDAY, brief-eating,
+  unavailable-vs-tasking), from `EVD`, from Insights work-hours and from the
+  cross-week seed reads — they all consume the event stream.
+- `avail.ts personBusy`: no busy window (palette hours, availByWave free).
+- `avail.ts dayEngaged`: crew on only an info item stay un-greyed.
+- `oil.ts dayOilSpans`: mints no OIL (keeps Leave War's ledger honest).
+- `avail.ts slotRules/slotBar`: `slotRules` sets `infoRow` for a `g:`/`a:`
+  key whose row carries the flag, and `slotBar` returns '' at once — the
+  picker must never bar what the validator will not flag (the standing
+  no-drift rule). Anyone may be listed on an FYI item.
+
+Deliberately NOT excluded: `personCount` — it counts every place a person is
+WRITTEN into the week (cancelled rows included), and an info row still writes
+him in. An item can be both cx and info; the engine skips it either way and
+the cx look wins on screen. The flip itself is `ds.pinfo`/`ds.grinfo` in
+`ui/board.ts` — through the funnel, `markEdit` on the row's own `ap:`/`gr:`
+key so a flip on a published day rides the next AL. Prose lives once on the
+Logic page (a note row beside DOUBLE_BOOK). Pinned in
+`engine/infoflag.test.ts` and the two board toggle tests.

@@ -3,7 +3,7 @@
    the sibling of DutyTplModal.test.tsx and built the same way: the component
    mounted standalone, a fake storeBackend so waveTplSave()/waveTplReset() never
    touch real localStorage. */
-import { beforeAll, beforeEach, describe, expect, it } from 'vitest'
+import { afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { act } from 'react'
 import { createRoot } from 'react-dom/client'
 import { WaveTplModal } from './WaveTplModal'
@@ -11,6 +11,7 @@ import { storeBackend } from '../engine/hooks'
 import { WAVETPL_CFG, waveTplReset } from '../engine/wavetpl'
 import { notify } from '../state/store'
 import { setWaveEdit } from './pops'
+import { setSession, setEffectiveRole } from '../state/auth'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
@@ -46,6 +47,11 @@ beforeEach(async () => {
   waveTplReset()
   await act(async () => { setWaveEdit(true); notify() })
 })
+
+/* the role tests below sign a session in; every other test in this file relies
+   on SESSION being null (a sessionless test context, which the guard treats as
+   not-a-member), so always hand it back null afterwards. */
+afterEach(() => { setSession(null) })
 
 describe('the wave-templates editor', () => {
   it('opens on the empty state with no templates', () => {
@@ -121,6 +127,27 @@ describe('the wave-templates editor', () => {
 
   it('Done closes the modal', async () => {
     await click(btnByText('.modal-foot .abtn', 'Done'))
+    expect($('#waveTplModal')?.hasAttribute('hidden')).toBeTruthy()
+  })
+
+  /* AUTHORITY (bug hunt, 31 Aug 26 — point-2 sweep): the editor self-hides for a
+     member even with WAVEEDIT set, so an admin's "View as member" peek — which
+     does NOT clear the flag — cannot leave the template editor live for a member.
+     Every store mutator here is ungated, so the render gate IS the write gate. */
+  it('an admin sees the editor; a member (or admin peeking as member) sees it closed', async () => {
+    await act(async () => { setSession({ user: 'ad', role: 'admin' }); notify() })
+    expect($('#waveTplModal')?.hasAttribute('hidden')).toBeFalsy()
+    /* the admin flips to member view (toggleRole keeps WAVEEDIT set) */
+    await act(async () => { setEffectiveRole('main'); notify() })
+    expect($('#waveTplModal')?.hasAttribute('hidden')).toBeTruthy()
+    expect($('.tpl-tabs')).toBeFalsy()
+    /* back to admin and it returns — the context was preserved, not lost */
+    await act(async () => { setEffectiveRole('admin'); notify() })
+    expect($('#waveTplModal')?.hasAttribute('hidden')).toBeFalsy()
+  })
+
+  it('a real member session never sees the editor', async () => {
+    await act(async () => { setSession({ user: 'us', role: 'main' }); notify() })
     expect($('#waveTplModal')?.hasAttribute('hidden')).toBeTruthy()
   })
 })

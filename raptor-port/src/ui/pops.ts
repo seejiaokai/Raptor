@@ -46,11 +46,12 @@ export function setDraftsEdit(v: null | { di: number, id?: string }) { DRAFTSEDI
    place, an actionable snackbar offers to make that day's order the squadron's
    house default (engine/order.ts SEC_DEFAULT) so every un-arranged day follows
    it henceforth. Holds the DAY INDEX that was just re-ordered — accept reads that
-   day's current secOrder as the new default. null = no offer showing. Session
-   view state only, like every other pops flag; a page/day change or the timer
-   clears it. */
-export let SECDEFOFFER: number | null = null
-export function setSecDefOffer(v: number | null) { SECDEFOFFER = v }
+   day's current secOrder as the new default. null = no offer showing.
+   DEFINED IN state/view.ts and re-exported here (31 Aug 26 bug pass): it is
+   keyed by day index, so it must be cleared when the week/session/page changes
+   or it would apply to the wrong day — those reset paths live in state and
+   cannot reach into ui/pops, so the flag moved to view.ts where they sweep it. */
+export { SECDEFOFFER, setSecDefOffer } from '../state/view'
 /* The one personal input being edited from the week or the board (owner,
    10 Aug 26). The INPUT OBJECT, never its index or its content key: undo is
    still live under the modal and renumbers INPUTS, and the key is built from

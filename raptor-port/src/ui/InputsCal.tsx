@@ -851,7 +851,8 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose }:
         <button type="button" className="abtn" id="icNext" aria-label="Next month" onClick={() => step(1)}>›</button>
         <button type="button" className="abtn" id="icToday" onClick={goToday}>Today</button>
         {active && <span className="ic-filterpill">filtered: {pillParts.join(' · ')}</span>}
-        <button type="button" className="abtn" id="icClose" onClick={onClose}>✕ List</button>
+        <button type="button" className="abtn" id="icClose" aria-label="Back to list"
+          title="Back to list" onClick={onClose}>✕</button>
       </div>
       <div className="ic-dow">{DOW.map(d => <span key={d}>{d}</span>)}</div>
       {/* THE MONTH BODY scrolls when a day is packed. --ic-rows is the live week

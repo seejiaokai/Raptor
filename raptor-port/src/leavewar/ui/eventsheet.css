@@ -185,4 +185,28 @@
   border-top: 1px solid var(--edge);
 }
 
+/* Save + Delete sit at the RIGHT of the footer (owner, 31 Aug 26 — "move the
+   save and delete buttons to the right"). A problem note keeps the LEFT via
+   margin-right:auto, so an error never shoves the two buttons around. */
+.bidsheet .evactions {
+  justify-content: flex-end;
+}
+
+.bidsheet .evactions .note {
+  margin-right: auto;
+}
+
+/* Save is the one commit button, in the app's cyan accent (owner, 31 Aug 26 —
+   "Save … make it blue cyan like how it is usually") — a solid primary, so it
+   reads apart from the green scope toggles and the red Delete beside it. */
+.bidsheet .dchip.save {
+  background: var(--accent);
+  color: #05222b;
+  border: 1px solid var(--accent);
+}
+
+.bidsheet .dchip.save:hover {
+  filter: brightness(1.06);
+}
+
 }

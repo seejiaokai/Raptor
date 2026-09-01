@@ -185,9 +185,18 @@ function qualsGrpRow(qSeatView: string, n: number, colsLen: number) {
   return `<tr class="grp"><td colspan="${5 + colsLen + 1}">${grp} · ${n}</td></tr>`
 }
 
-/* renderQuals' head + rows, verbatim strings */
-function qualsTable(cols: any[], qSeatView: string, qSort: any, qEditing: boolean, qSearch: string, qualsEdit: boolean, armDel: string) {
+/* renderQuals' head + rows, verbatim strings.
+   `canArch` — whether the row's archive ✕ is drawn at all. Archiving is
+   roster MEMBERSHIP, the same class as Add person and Restore ("stays with
+   the admin", the owner's 5 Aug line), NOT table contents a member may edit.
+   The reference never had to say so — only a scheduler could enable editing
+   there — but opening Enable editing to members (5 Aug 26) silently opened
+   the ✕ with it: a member could archive anyone off every roster surface,
+   with Restore admin-only, so they could not even undo it (bug hunt,
+   31 Aug 26). The cell itself stays so the column count matches the head. */
+function qualsTable(cols: any[], qSeatView: string, qSort: any, qEditing: boolean, qSearch: string, qualsEdit: boolean, armDel: string, canArch: boolean) {
   const ids = qualsIds(qSeatView, qSort, qSearch)
+  const archCell = (id: string) => `<td>${canArch ? `<span class="qarch" data-arch="${id}" title="Archive">✕</span>` : ''}</td>`
   const rows = ids.map(id => {
     const p = PEOPLE[id]
     /* Personnel (ground crew) hold no CAT and no qualifications, so every column
@@ -210,7 +219,7 @@ function qualsTable(cols: any[], qSeatView: string, qSort: any, qEditing: boolea
         ? `<input class="qinit qrmk" data-prmk="${id}" value="${esc(p.remarks || '')}" maxlength="80" aria-label="Remarks for ${esc(p.cs)}" />`
         : esc(p.remarks || '')
       const blanks = cols.map(() => `<td class="qcell na"></td>`).join('')
-      return `<tr class="persrow"><td class="qname" data-person="${id}" title="${esc(p.name || '')}">${cs}</td><td class="qinitc">${init}</td><td class="qfltc">${flt}</td><td class="qcell na"></td>${blanks}<td class="qprmk" style="text-align:left">${rmk}</td><td><span class="qarch" data-arch="${id}" title="Archive">✕</span></td></tr>`
+      return `<tr class="persrow"><td class="qname" data-person="${id}" title="${esc(p.name || '')}">${cs}</td><td class="qinitc">${init}</td><td class="qfltc">${flt}</td><td class="qcell na"></td>${blanks}<td class="qprmk" style="text-align:left">${rmk}</td>${archCell(id)}</tr>`
     }
     const lvl = qEditing
       ? `<select class="qlvlsel" data-lvl="${id}" aria-label="CAT for ${esc(p.cs)}">${catsFor(p.seat).map(k => `<option ${k === p.q ? 'selected' : ''}>${k}</option>`).join('')}</select>`
@@ -248,7 +257,7 @@ function qualsTable(cols: any[], qSeatView: string, qSort: any, qEditing: boolea
     const flt = qEditing
       ? `<input class="qinit qflt" data-flt="${id}" value="${esc(p.flight || '')}" maxlength="10" aria-label="Flight for ${esc(p.cs)}" />`
       : esc(p.flight || '')
-    return `<tr><td class="qname" data-person="${id}" title="${esc(p.name || '')}">${cs}</td><td class="qinitc">${init}</td><td class="qfltc">${flt}</td><td>${lvl}</td>${cells}<td style="text-align:left;color:var(--ink-3)">${LEVELNAME[p.q]}</td><td><span class="qarch" data-arch="${id}" title="Archive">✕</span></td></tr>`
+    return `<tr><td class="qname" data-person="${id}" title="${esc(p.name || '')}">${cs}</td><td class="qinitc">${init}</td><td class="qfltc">${flt}</td><td>${lvl}</td>${cells}<td style="text-align:left;color:var(--ink-3)">${LEVELNAME[p.q]}</td>${archCell(id)}</tr>`
   }).join('')
   return qualsHead(cols, qSeatView, qSort, qualsEdit, armDel)
     + `<tbody>${qualsGrpRow(qSeatView, ids.length, cols.length)}${rows}</tbody>`
@@ -417,9 +426,16 @@ export function QualsPage() {
         validate(); notify(); return
       }
       /* archiving takes a body off the roster, which can change what the
-         warnings say about the lines he was on */
+         warnings say about the lines he was on. Write-path role backstop
+         (bug hunt, 31 Aug 26): roster membership is the admin's — the ✕ no
+         longer renders for a member, so a real gesture cannot reach this;
+         it refuses a stale element or a hand-made call, the commitInputEdit
+         idiom (a sessionless test/boot context is not a member). */
       const arch = t.closest('[data-arch]') as HTMLElement | null
-      if (arch) { PEOPLE[arch.dataset.arch!].archived = true; validate(); notify() }
+      if (arch) {
+        if (SESSION && SESSION.role !== 'admin') return HOOKS.toast('Only an admin can archive someone', 'warn')
+        PEOPLE[arch.dataset.arch!].archived = true; validate(); notify()
+      }
     }
     const onChange = (e: Event) => {
       const s = (e.target as HTMLElement).closest('[data-lvl]') as HTMLSelectElement | null
@@ -726,7 +742,7 @@ export function QualsPage() {
       </div>}
       <div className="qwrap" ref={wrapRef}>
         <table className={'qtbl' + (qEditing ? ' editing' : '') + (canEditQuals() ? ' qediting' : '')} id="qtbl" ref={tblRef}
-          dangerouslySetInnerHTML={{ __html: qualsTable(cols, qSeatView, qSort, qEditing, qSearch, canEditQuals(), armDel) }} />
+          dangerouslySetInnerHTML={{ __html: qualsTable(cols, qSeatView, qSort, qEditing, qSearch, canEditQuals(), armDel, admin) }} />
       </div>
       {/* THE FROZEN HEADER MIRROR (see the effect above). A fixed clone of the
           heading row + the group row, pinned just under the app top bar while the

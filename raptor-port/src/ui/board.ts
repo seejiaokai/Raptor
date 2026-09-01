@@ -792,6 +792,15 @@ export function boardMbtn(e: MouseEvent) {
     x.flag = !x.flag; markEdit(`ap:${di}.${ri}.prog`); afterSchedMutate(); notify()
     return toast(x.flag ? 'Red box — flagged for the next scheduler' : 'Red box cleared')
   }
+  /* the ⓘ info-only flip (owner, 1 Sep 26) rides the same shape as the red box:
+     through the funnel, marked on the row's own key so a flip on a published
+     day rides the next AL. afterSchedMutate re-validates, which is the whole
+     point — the item's warnings appear/vanish the moment it is flipped. */
+  if (ds.pinfo != null) {
+    const [di, ri] = ds.pinfo.split('.').map(Number); const x = DAYS[di].allhands[ri]
+    x.info = !x.info; markEdit(`ap:${di}.${ri}.prog`); afterSchedMutate(); notify()
+    return toast(x.info ? 'Info only — this item is no longer checked against the rules' : 'This item is checked against the rules again')
+  }
   /* ---- duty / sim / ground rows (the panels added Aug 26) ---------------
      Same shapes as the p* programme branches: adds mark the new row's name
      key, deletes renumber the surviving keys and add an inert deletion
@@ -921,6 +930,12 @@ export function boardMbtn(e: MouseEvent) {
     const [di, ri] = ds.grflag.split('.').map(Number); const x = DAYS[di].ground[ri]
     x.flag = !x.flag; markEdit(`gr:${di}.${ri}.prog`); afterSchedMutate(); notify()
     return toast(x.flag ? 'Red box — flagged for the next scheduler' : 'Red box cleared')
+  }
+  /* ⓘ info-only, ground twin of ds.pinfo above */
+  if (ds.grinfo != null) {
+    const [di, ri] = ds.grinfo.split('.').map(Number); const x = DAYS[di].ground[ri]
+    x.info = !x.info; markEdit(`gr:${di}.${ri}.prog`); afterSchedMutate(); notify()
+    return toast(x.info ? 'Info only — this item is no longer checked against the rules' : 'This item is checked against the rules again')
   }
 }
 
@@ -1132,7 +1147,7 @@ export function addWave(di: number, kind: any) {
      Adding a wave creates only the wave. */
   const fi = placeAddedWave(di, kind)
   markStructuralAdd(`wl:${di}.${fi}`); afterSchedMutate(); notify()
-  toast(S.label + ' added — standalone, ' + (kind === 'avalon' ? 'checked for availability only' : S.all ? 'nothing on it is cross-checked' : 'SPARE is checked for availability and SC currency only'))
+  toast(S.label + ' added — standalone, ' + (kind === 'avalon' ? 'checked for availability only' : S.all ? 'nothing on it is cross-checked' : 'SPARE is checked for availability, SC currency, front seat and overlapping SC seats only'))
 }
 
 /* the Add-a-wave chooser, verbatim (a body-level popup, just as the reference
