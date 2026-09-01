@@ -1950,20 +1950,15 @@ test('the board flying line carries the brief inline between MSN and TO at phone
     const line = document.querySelector('#schedBoard .sb-line') as HTMLElement
     const cs = line.querySelector('.lin') as HTMLElement
     const bcell = line.querySelector('.sb-bcell') as HTMLElement
+    const y = (el: HTMLElement) => Math.round(el.getBoundingClientRect().top)
     const cx = (el: HTMLElement) => Math.round(el.getBoundingClientRect().left)
     const msn = line.querySelector('.msn') as HTMLElement
     // the two visible time inputs after the brief input are TO then LD
     const times = [...line.querySelectorAll('.tm')] as HTMLElement[]
     const to = times[1], ld = times[2]   // times[0] is the brief's own .tm input
-    /* "shares row 1" is span overlap, not top alignment: the bcell stacks a
-       suggestion hint above its input, so with the design fonts loaded its
-       top rides ~13px above the CS input's while both sit on the same grid
-       row — the strip-below layout this pins against put the whole cell
-       BENEATH the CS row, with no vertical overlap at all */
-    const csB = cs.getBoundingClientRect(), bcB = bcell.getBoundingClientRect()
     return {
       heads,
-      briefInlineWithCs: bcB.top < csB.bottom && bcB.bottom > csB.top,
+      briefInlineWithCs: Math.abs(y(bcell) - y(cs)) < 12,
       order: cx(msn) < cx(bcell) && cx(bcell) < cx(to) && cx(to) < cx(ld),
     }
   })
