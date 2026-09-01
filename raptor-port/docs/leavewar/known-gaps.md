@@ -545,7 +545,10 @@ What is a contract, and what is deliberately still open:
 - **The tag is invisible; only colour shows.** An event is classified off /
   no-leave / work. Typing `PH` shows `PH`, never `PH (off)` — the kind
   surfaces ONLY as colour: a green column for an off day, an orange column
-  for no-leave, red text for a work word (the column left alone).
+  for no-leave, red text for a work word (the column left alone). The `off`
+  kind's LABEL in the sheet reads **PH** since 1 Sep 26 (owner ask — it was
+  "Off day"); the kind value, its colour class and the OIL non-working test
+  are unchanged.
   `columnKindFor` lets `off` win over `nolv` on one day; `work` never
   colours the column.
 - **The tag lives ON the event, not in the library (owner, 18 Aug 26 — "I

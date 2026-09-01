@@ -43,7 +43,7 @@ import { useVersion } from './useStore'
 import './eventsheet.css'
 
 const KIND_LABEL: Record<EventKind, string> = {
-  off: 'Off day',
+  off: 'PH',
   nolv: 'No leave',
   work: 'Work',
 }
@@ -143,7 +143,7 @@ export function EventSheet({ line, date, to, onClose, onMove }: { line: number; 
       <Sheet testid="event-types-sheet" label="Event types" onClose={onClose}>
         <div className="bidsheet-hd">
           <span className="who">EVENT TYPES</span>
-          <span className="dt">off day · no leave · work</span>
+          <span className="dt">PH · no leave · work</span>
           <button className="x" data-testid="types-back" onClick={() => setView('event')} aria-label="Back">
             ‹
           </button>

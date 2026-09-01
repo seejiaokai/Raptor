@@ -144,7 +144,7 @@ describe('tagging a word', () => {
   it('shows the tag of a known word, and tags a new one WITHOUT saving a type', () => {
     openEvent(0, '2026-01-05')
     fireEvent.change(screen.getByTestId('event-text'), { target: { value: 'PH' } })
-    expect(screen.getByTestId('event-tag-current').textContent).toBe('Off day')
+    expect(screen.getByTestId('event-tag-current').textContent).toBe('PH')
 
     fireEvent.change(screen.getByTestId('event-text'), { target: { value: 'Standby' } })
     expect(screen.getByTestId('event-tag-current').textContent).toBe('untagged')
