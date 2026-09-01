@@ -5207,3 +5207,45 @@ Pinned in `ui/lwkeepalive.test.tsx` (mount once / doze / same-DOM return /
 scroll restore / resize kick) and the `e2e/leavewar.spec.ts` keep-alive spec
 (real-browser: sideways position survives the round trip, a month jump still
 works after the hidden spell, no page error).
+
+## The open-bidding box on the Leave War grid (owner, 1 Sep 26)
+
+"Can u make the border of the dates open for bidding green … the exterior box
+of the entire period" → refined to a glowing, deeper, more faded green border,
+no label. It marks which columns the squadron may bid on. The contract:
+
+- **When.** Only while `period.stage === 'open'`. A draft / closed / published
+  war shows no box — the box means "open for bidding RIGHT NOW", the same thing
+  the OPEN FOR BIDDING stage chip says. It re-measures on stage change, so
+  advancing or reopening bidding shows/hides it at once.
+- **Where.** Around the columns in the bidding window — the period's
+  `bidFrom..bidTo` (`inBidWindow`). Null bounds (the whole war open, the state
+  a war starts in) wrap every day column. The box runs from the month-bracket
+  row (the `.mxhead` top) down to the foot of the roster.
+- **How it's drawn.** ONE absolutely-positioned overlay, `.lw-bidbox`, inside
+  `.mx-wrap` (which is now `position: relative`), sized in JS by
+  `Matrix.tsx measureBidBox`. NOT per-cell borders: a single element gives the
+  continuous glow, and — being part of the scroller's content — it tracks the
+  horizontal scroll with no handler and none of the fling-killing scrollLeft
+  writes the rest of Matrix guards against. Measured in the same layout signals
+  as the month strip (period/stage/window, zoom, row-window, counts fold,
+  resize); jsdom leaves it null, so geometry-free tests are unaffected.
+- **Layering.** `z-index: 1` — above the day cells, BELOW the frozen
+  callsign/counter columns (z 2/3) and the scrolled-in band overlay (z 4). So
+  when the year scrolls under the frozen columns the box's left edge hides
+  behind them exactly as a day cell does; it never floats over the frozen
+  column. `pointer-events: none`, so it never intercepts a bid tap or a
+  drag-select.
+- **Colour.** `rgba(56,104,76,.78)` border with a low-opacity green halo
+  (`box-shadow` outer + faint inset), the owner's pick — deeper and more
+  desaturated than the app's bright `--ok`, chosen over a brighter glow across
+  two rounds of comps. Don't swap it back to `--ok` or brighten the halo
+  without asking.
+- **Known trade-off, deliberate.** Outline only, no fill (the owner did not
+  take the faint-wash option): scrolled into the MIDDLE of a long open window
+  both edges are off-screen and nothing marks it until you reach an edge. The
+  faint green wash is the layer to add if he ever wants it obvious everywhere;
+  the wash variant was built and shown, so it is a one-line add, not a redesign.
+
+Pinned in `e2e/leavewar.spec.ts` (real-browser: the box frames 1 Jan – 31 Mar
+with its left edge on the Jan 1 column, and clears when bidding closes).

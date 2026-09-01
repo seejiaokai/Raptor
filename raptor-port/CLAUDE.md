@@ -1378,6 +1378,19 @@ subscribers.
     session-only** — this stash is additive to both, not a replacement for
     either.
   Flow: `docs/feature-impact.md` Flow E. File map: `HANDOFF.md`.
+- **The open-bidding dates wear a glowing dark-green border on the Leave War
+  grid** (owner, 1 Sep 26 — "make the border of the dates open for bidding
+  green … the exterior box of the entire period", then "a bit darker and more
+  faded", picking the deeper of two comps). One overlay (`.lw-bidbox`,
+  `Matrix.tsx measureBidBox`) around the `bidFrom..bidTo` columns, shown ONLY
+  while `stage === 'open'`. The colour is `rgba(56,104,76,.78)` with a
+  low-opacity halo — deliberately deeper and more faded than `--ok`; don't
+  brighten it or swap it to `--ok` without asking. It is OUTLINE ONLY — the
+  owner declined the faint-green wash, so a long window shows nothing mid-scroll
+  until an edge; the wash was built and shown and is a one-line add if he asks,
+  so don't re-pitch it unprompted. Placement + layering (z-index 1, under the
+  frozen columns): `docs/ui-contracts.md` §The open-bidding box. Pin:
+  `e2e/leavewar.spec.ts`.
 
 ## Where things live
 
