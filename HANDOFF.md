@@ -715,19 +715,20 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
   compact and `tfin.js` pins it (`atimeText(f)===f.to.replace(':','')+'-'+…`), so
   flipping it means editing the safety-net: owner sign-off first. This entry was the
   earlier "WEEK/warnings/CSV stay colon" known issue — now moot, everything is colon.
-- **The design fonts are still NOT loaded — deferred, must be SELF-HOSTED (29 Aug 26
-  pt.3).** `scheduler.css` names Inter Tight / Barlow Condensed / JetBrains Mono in ~130
-  places but nothing ever loaded them, so every browser falls back to system fonts and
-  the intended condensed-header / mono-numeric look never renders. A Google-Fonts
-  `<link>` was tried and REMOVED: an external, render-blocking stylesheet to
-  `fonts.googleapis.com` is unreachable behind the agent proxy, which hangs the page
-  `load` event and times out the e2e login `goto('/')` — proven: the exact e2e failures
-  cleared the moment the link was removed (a full rebuild's 5 goto-timeout failures went
-  to 5/5 pass in 17s). CI runs the same restricted network, so the link would flake the
-  gate too. The fix is **self-hosted `@font-face` woff2 under `public/fonts/`** (ships
-  with the app, no third-party request, nothing to block) — it needs the three families'
-  woff2 files (Inter Tight 400/500/600/700, Barlow Condensed 600/700, JetBrains Mono
-  400/500) added as assets. Until then the app keeps the system-font fallback.
+- **The design fonts stay on the SYSTEM-FONT FALLBACK, by owner's choice (1 Sep 26) —
+  do NOT re-attempt loading them.** `scheduler.css` names Inter Tight / Barlow Condensed
+  / JetBrains Mono in ~130 places but nothing loads them, so every browser renders the
+  named families' system fallback. This was tried and REVERTED at the owner's request:
+  the three families WERE self-hosted (eight latin-subset woff2 in `src/ui/fonts`, Vite-
+  fingerprinted, `@font-face` at the top of `scheduler.css`, verified loading and applied
+  on a preview) and the owner, seeing it, said he prefers the previous system-font look
+  for the whole app — so the woff2, the `@font-face` block and the lone `.medsec-sub`
+  tweak were reverted (PR #344, 1 Sep 26). The look he wants is the fallback that ships
+  now; treat "load the design fonts" as a CLOSED decision, not deferred work, unless he
+  reopens it. Historical note, still true: an external Google-Fonts `<link>` must never
+  be reintroduced — it is unreachable behind the agent proxy, hangs the page `load` event
+  and times out the e2e login (proven: 5 goto-timeout failures cleared the moment the
+  link was removed); if the fonts are ever wanted again it is self-hosting or nothing.
 - **CLOSED 30 Aug 26 — in-place drag to reorder sections/waves SHIPPED, replacing
   the Arrange sheet.** The per-day `⇅ Arrange` sheet is gone; a scheduler now drags
   a whole SECTION (a grip on each panel's left gutter) or a whole WAVE (a grip in the
