@@ -117,7 +117,7 @@ describe('the mandatory document', () => {
     const d = draftOf(r); d.type = 'ATT C'
     expect(commitInputEdit(r, d)).toBe(false)
     expect(TOASTS.join(' ')).toContain('Attach the medical document')
-    d.docId = freshDoc()
+    d.docIds = [freshDoc()]
     expect(commitInputEdit(r, d)).toBe(true)
   })
   it('history snapshots carry the id, never the file', () => {
@@ -268,5 +268,43 @@ describe('the leftover Remove/Keep past a middle takeover (owner, 28 Aug 26)', (
       expect(c.endDate, `${mid}: head only`).toBe('Jul 11')
       expect(tailOf(c), `${mid}: leftover removed the same way`).toBeFalsy()
     }
+  })
+})
+
+/* Several files on one entry (owner, 1 Sep 26 — "upload several files into a
+   single entry and delete or reupload"): docId stays the first file, docIds
+   carries the list only when >1, and an entry that HAS paperwork can never
+   be saved with none. */
+describe('several files on one entry', () => {
+  it('a new entry files with several documents — first on docId, all on docIds', () => {
+    const a = freshDoc(), b = freshDoc()
+    expect(commitNewInput(newDraft({ docId: null, docIds: [a, b] }))).toBe(true)
+    const r = INPUTS[0]
+    expect(r.docId, 'the legacy field reads the first file').toBe(a)
+    expect(r.docIds).toEqual([a, b])
+  })
+  it('deleting one of two files saves, and the record folds back to the single shape', () => {
+    const a = freshDoc(), b = freshDoc()
+    expect(commitNewInput(newDraft({ docId: null, docIds: [a, b] }))).toBe(true)
+    const r = INPUTS[0]
+    const d = draftOf(r)
+    expect(d.docIds, 'the draft seeds the full list').toEqual([a, b])
+    d.docIds = [b]
+    expect(commitInputEdit(r, d)).toBe(true)
+    expect(r.docId).toBe(b)
+    expect(r.docIds, 'one file keeps the legacy single shape').toBeUndefined()
+  })
+  it('deleting the LAST file is refused — replace it instead', () => {
+    expect(commitNewInput(newDraft({}))).toBe(true)
+    const r = INPUTS[0]
+    const d = draftOf(r); d.docIds = []
+    expect(commitInputEdit(r, d)).toBe(false)
+    expect(TOASTS.join(' ')).toContain('Keep at least one document')
+  })
+  it('a pre-feature row with no file still edits freely bare', () => {
+    const r = plant({ person: 'bane', type: 'ATT C', date: 'Jul 10', endDate: 'Jul 13' })
+    const d = draftOf(r); d.remarks = 'ward 4'
+    expect(commitInputEdit(r, d)).toBe(true)
+    expect(r.remarks).toBe('ward 4')
   })
 })

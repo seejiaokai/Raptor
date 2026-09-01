@@ -24,6 +24,7 @@
 
 import { INPUTS, DATES, baseYear, dateOrd, inpId, inpWin, isAway, isDownchit, isLeave, oilAsks, withRemarksTail } from '../engine/inputs'
 import { ME, SESSION } from '../state/auth'
+import { docFields, rowDocIds } from '../state/docs'
 import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
 import { dayApproved, dayCurVer, dayCurVerIn, daySnapIn, daySnapOf } from '../engine/publish'
@@ -208,7 +209,7 @@ const RETRACTED = new Set<string>()
    ACROSS passes keyed by the exact leave. The in-pass carry below handles a
    date change; this survives a refuse-then-re-approve, where the splice and
    the re-mint happen in different passes and the in-pass maps are empty. */
-const RETAINED = new Map<string, { remarks: string; docId?: string }>()
+const RETAINED = new Map<string, { remarks: string; docIds?: string[] }>()
 
 /* One dispatcher so every reader of a row's portion picks the right rule by
    the row's own type — a medical row must never be read with leave's
@@ -264,7 +265,7 @@ export function runOutbound(): void {
          18 Aug 26 — the same "the note remains, the date moves" rule the Inputs
          calendar now follows). withRemarksTail rewrites just the date token in
          whatever the member wrote. */
-      const priorRemark = new Map<string, { remarks: string; docId?: string }>()
+      const priorRemark = new Map<string, { remarks: string; docIds?: string[] }>()
       /* keyed WITHOUT the portion, as the fallback (review fix, 19 Aug 26):
          converting a full-day leave to a half day moves the exact key from
          'p|OL|full' to 'p|OL|am', so the lookup missed and the member's own
@@ -273,7 +274,7 @@ export function runOutbound(): void {
          matches, so two same-type leaves with different portions carry their
          own remarks; only an unmatched portion falls back to the person+type's
          first stale remark, which beats losing the words. */
-      const priorLoose = new Map<string, { remarks: string; docId?: string }>()
+      const priorLoose = new Map<string, { remarks: string; docIds?: string[] }>()
       for (const row of stale) {
         const sig = rowSig(row)
         /* the undo case — see RETRACTED above: Raptor retracted this row's
@@ -286,10 +287,13 @@ export function runOutbound(): void {
           continue
         }
         const t = lwTypeOf(row.type)
-        /* the document id rides the carry with the remarks (27 Aug 26
+        /* the document ids ride the carry with the remarks (27 Aug 26
            overnight find: a war-side date change on a synced medical row
-           spliced the old row and minted afresh — certificate gone) */
-        const kept = { remarks: String(row.remarks ?? ''), ...(row.docId ? { docId: row.docId } : {}) }
+           spliced the old row and minted afresh — certificate gone). The
+           FULL list since 1 Sep 26 — an entry holds several files now, and
+           a date change must not thin them to one. */
+        const keptIds = rowDocIds(row)
+        const kept = { remarks: String(row.remarks ?? ''), ...(keptIds.length ? { docIds: keptIds } : {}) }
         const key = `${row.person}|${t}|${portionOfRow(row)}`
         if (!priorRemark.has(key)) priorRemark.set(key, kept)
         const lk = `${row.person}|${t}`
@@ -334,9 +338,10 @@ export function runOutbound(): void {
              nothing downstream reads fields it does not know. */
           lw: r.warId,
         }
-        /* the carried document follows its record (medical rows only ever
-           have one; a leave's `prior` never carries the field) */
-        if (prior?.docId) row.docId = prior.docId
+        /* the carried documents follow their record (a leave's `prior`
+           never carries the field) — through docFields, the one minter of
+           the docId/docIds pair */
+        if (prior?.docIds) Object.assign(row, docFields(prior.docIds))
         if (r.end !== r.start) row.endDate = isoToLabel(r.end)
         if (r.portion === 'full') row.allday = true
         else {

@@ -17,7 +17,7 @@ import { upchitTrimPlan, upchitEffects, newMedTrimPlan, medClashes, subtractSpan
 import { UpchitConfirm } from './UpchitConfirm'
 import { MedClashConfirm } from './MedClashConfirm'
 import { OilConfirm } from './OilConfirm'
-import { docAdd, docGet } from '../state/docs'
+import { docAdd, docFields, docGet, rowDocIds } from '../state/docs'
 import { UploadIcon } from './icons'
 import { acceptInput, autoAcceptInput, unacceptInput, acceptedDay, inpKey } from '../engine/slots'
 import { DAYS } from '../engine/data'
@@ -412,8 +412,10 @@ export const draftOf = (r: any) => ({
   remarks: r.remarks || '',
   // SANS Availability's own Fly/AMT/OFT payload — a plain object, not derived from s/e/half
   sans: r.sans ? { ...r.sans } : null,
-  // the supporting document's id (medical types) — the blob lives in state/docs
-  docId: r.docId || null,
+  /* the supporting documents' ids (medical types) — the blobs live in
+     state/docs. A LIST since 1 Sep 26 (several files on one entry);
+     rowDocIds reads the legacy single-docId rows into it. */
+  docIds: rowDocIds(r),
 })
 
 /* Edit ONLY the remarks of an existing input, through the one commit path
@@ -429,27 +431,43 @@ export function setLeaveRemarks(row: any, remarks: string): boolean {
 
 /* THE UPLOAD CONTROL every editor renders when needsDoc(type) — one
    component so the add form, the in-table row editor and the modal cannot
-   grow three file inputs with three behaviours. Picking a file stores it at
-   once (state/docs) and hands the caller the id to carry on its draft; a
-   refused file (wrong kind, over the cap) toasts and keeps the old one. The
-   control never REMOVES a document — paperwork is replaced, not withdrawn. */
-export function DocField({ docId, onDoc }: { docId: any, onDoc: (id: string) => void }) {
+   grow three file inputs with three behaviours. An entry holds SEVERAL
+   files now (owner, 1 Sep 26 — "upload several files into a single entry
+   and delete or reupload"): each attached file is a chip with a ✕ that
+   drops it from the DRAFT list (nothing changes until Save — Cancel stays
+   a real cancel, and the store keeps every stored file either way, because
+   undo can resurrect a record), and the button appends more. Picking files
+   stores each at once (state/docs); a refused file (wrong kind, over the
+   cap) toasts and the rest still land. */
+export function DocField({ ids, onIds }: { ids: string[], onIds: (ids: string[]) => void }) {
   const ref = useRef<HTMLInputElement>(null)
-  const doc = docGet(docId)
+  const have = ids || []
   return <span className="docfield">
-    <input ref={ref} type="file" accept="image/*,application/pdf" hidden
+    <input ref={ref} type="file" accept="image/*,application/pdf" multiple hidden
       onChange={e => {
-        const f = e.target.files && e.target.files[0]
+        const fs = e.target.files ? [...e.target.files] : []
         e.target.value = ''
-        if (!f) return
-        const { id, why } = docAdd(f)
-        if (!id) { HOOKS.toast(why, 'warn'); return }
-        onDoc(id)
+        if (!fs.length) return
+        const fresh: string[] = []
+        fs.forEach(f => {
+          const { id, why } = docAdd(f)
+          if (!id) { HOOKS.toast(why, 'warn'); return }
+          fresh.push(id)
+        })
+        if (fresh.length) onIds([...have, ...fresh])
       }} />
-    <button type="button" className={'abtn docbtn' + (doc ? ' has' : '')}
-      title={doc ? `Document attached — ${doc.name}. Tap to replace it.` : 'Attach the supporting document (photo or PDF)'}
+    {have.map(id => {
+      const doc = docGet(id)
+      return <span key={id} className="docchip" title={doc ? doc.name : 'Document'}>
+        <span className="docname">{doc ? doc.name : 'document'}</span>
+        <button type="button" className="docdel" aria-label={`Remove ${doc ? doc.name : 'document'}`}
+          onClick={() => onIds(have.filter(x => x !== id))}>✕</button>
+      </span>
+    })}
+    <button type="button" className={'abtn docbtn' + (have.length ? ' has' : '')}
+      title={have.length ? 'Attach another file (photo or PDF)' : 'Attach the supporting document (photo or PDF)'}
       onClick={() => ref.current && ref.current.click()}>
-      <UploadIcon />{doc ? <span className="docname">{doc.name}</span> : <span>Document</span>}
+      <UploadIcon /><span>{have.length ? 'Add' : 'Document'}</span>
     </button>
   </span>
 }
@@ -536,9 +554,20 @@ export function normalizeInputDraft(draft: any, except: any):
      New rows and rows retyped INTO the medical group are refused bare; a row
      that was already medical keeps whatever it has — the pre-feature records
      carry no document, and refusing every edit of them would brick the
-     paperwork this exists to keep. */
-  if (needsDoc(draft.type) && !draft.docId && !(except && needsDoc(except.type))) {
-    HOOKS.toast('Attach the medical document first — use the upload button', 'warn'); return null
+     paperwork this exists to keep. rowDocIds reads the draft's list and the
+     bare docId some callers still hand in, alike. */
+  if (needsDoc(draft.type) && !rowDocIds(draft).length) {
+    if (!(except && needsDoc(except.type))) {
+      HOOKS.toast('Attach the medical document first — use the upload button', 'warn'); return null
+    }
+    /* ...and an already-medical row that HAS paperwork cannot be saved with
+       none (owner, 1 Sep 26 — files are deletable now, but deleting the
+       LAST one would strip an entry of the proof it went in on; replace it
+       instead). Only rows that never had a file — the pre-feature records —
+       stay freely editable bare. */
+    if (rowDocIds(except).length) {
+      HOOKS.toast('Keep at least one document on this entry — add the replacement before removing the last file', 'warn'); return null
+    }
   }
   /* the medical refusals (owner, 27 Aug 26) — same-type overlap says "edit
      that entry"; an upchit has to be a single date closing something real */
@@ -683,12 +712,12 @@ export function commitNewInput(draft: any, toGround?: boolean, keepTail?: any, e
     ...(endDate ? { endDate } : {}),
     ...(half ? { half } : {}),
     ...(Object.keys(flags).length ? { sans: flags } : {}),
-    /* the supporting document's id only — the blob stays in state/docs, so
+    /* the supporting documents' ids only — the blobs stay in state/docs, so
        history snapshots (JSON of INPUTS) never copy a file. Gated on the type
        actually needing one: a certificate uploaded under a medical pick and
        left behind by a switch to leave must not ride onto the leave row and
        draw a paperclip nothing explains. */
-    ...(draft.docId && needsDoc(draft.type) ? { docId: draft.docId } : {}),
+    ...(needsDoc(draft.type) ? docFields(rowDocIds(draft)) : {}),
   }
   /* the row's own address, minted before the write so the snapshot this add
      pushes already carries it — the Inputs page add's own withId precedent */
@@ -829,12 +858,18 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
        only — which events are offered, never a shape of its own. */
     const flags = sansFlags(draft.sans)
     if (Object.keys(flags).length) r.sans = flags; else delete r.sans
-    /* a fresh upload REPLACES the document reference; an edit that touched
-       nothing else keeps the old one (paperwork is never silently dropped).
+    /* the draft's file list REPLACES the record's reference pair — an edit
+       that touched nothing else re-applies the same list (draftOf seeded it
+       from the row), so paperwork is never silently dropped, while an
+       explicit ✕ or an added file lands exactly as shown. The refusals
+       above already stopped the list going empty on a row that had files.
        Only on a type that KEEPS documents — the family guard above stops a
-       medical row leaving the group, so this bites only on a stray docId a
+       medical row leaving the group, so this bites only on stray ids a
        dialog carried while the type was flipped among non-medical picks. */
-    if (draft.docId && needsDoc(draft.type)) r.docId = draft.docId
+    if (needsDoc(draft.type) && rowDocIds(draft).length) {
+      delete (r as any).docIds
+      Object.assign(r, docFields(rowDocIds(draft)))
+    }
     /* DERIVED from the times, never copied from the draft (audit, 12 Aug 26).
        The in-place cells already derived it (halfOf), but the Inputs page's own
        two time boxes did not: press AM, then type 08:00 over the start, and the
@@ -1503,7 +1538,7 @@ export function InputEditor() {
               not wanted and never hides where it is */}
           {needsDoc(draft.type) && <div className="inped-f">
             <span className="inped-k">Document</span>
-            <DocField docId={draft.docId} onDoc={id => setDraft({ ...draft, docId: id })} />
+            <DocField ids={draft.docIds} onIds={ids => setDraft({ ...draft, docIds: ids })} />
           </div>}
           <label className="inped-f">
             <span className="inped-k">Remarks</span>

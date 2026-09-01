@@ -596,3 +596,28 @@ exactly where the surviving bugs live.
 **Suggested improvement:** When a change adds or alters a display transform, explicitly enumerate every site that compares a displayed value to a stored one (change-detection, dirty flags, "did the user edit this", amendment/history diffing) and fold BOTH sides — or compare by parsed value. Treat "reads are safe through the parser" as answering only half the question; writes-back are the other half. And run the typecheck/build gate even for test-only additions — a vacuous assertion on a mistyped shape passes the test runner but fails the compiler.
 
 **Principle:** A presentation transform is not side-effect-free: it silently desynchronises every equality check that mixes the shown form with the stored form. Audit the write-back and change-detection paths, not just the read paths, whenever display formatting changes.
+
+### Observation 40: Geometry pins must assert meaning, not metric-tuned pixel tolerances
+
+**Status:** OPEN
+**Date:** 2026-09-01
+**Session context:** Loading the self-hosted design fonts (PR #344)
+**Skill:** Raptor gate doctrine (e2e geometry pins)
+**Type:** open-source
+**Phase/Area:** e2e/geometry.spec.ts
+
+**Issue:** A phone-width pin asserted "the brief cell shares row 1 with the
+callsign" as |topA − topB| < 12px. The tolerance was silently calibrated to
+SYSTEM-font metrics; the moment the real design fonts loaded, a stacked
+hint's line-height moved the delta to 13px and the pin failed with the
+layout fully correct.
+
+**Suggested improvement:** When a geometry pin exists to distinguish layout
+STATES (same row vs a strip below), assert the distinguishing predicate —
+vertical-span overlap, grid-row membership, ordering — never a pixel delta
+whose safe margin depends on current font metrics. Reserve pixel tolerances
+for pins about actual distances.
+
+**Principle:** A test tolerance that happens to pass under today's rendering
+encodes today's rendering as a hidden dependency; pin the invariant that
+MEANS the requirement, and the test survives legitimate visual change.

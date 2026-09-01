@@ -9,6 +9,7 @@ import { createRoot } from 'react-dom/client'
 import { App } from './App'
 import { initStore, setSession, notify, writeInputsBatch } from '../state/store'
 import { INPUTS, inpId } from '../engine/inputs'
+import { docAdd } from '../state/docs'
 import { DOCVIEW, setDocView } from './pops'
 import { setMedAsOf } from '../state/view'
 
@@ -72,6 +73,37 @@ describe('the Medical view', () => {
     const pend = $$('.medsec.med-pend .medcard').find(c => c.textContent!.includes('5 Jul'))!
     await click(pend)
     expect(DOCVIEW.up).toBe(true)
+    await act(async () => { setDocView(null); notify() })
+  })
+  // The overlapping-episode grouping (owner, 1 Sep 26): when a person's
+  // documented medical entries run into each other, ONE card carries them all
+  // and opening it hands the viewer the whole episode to page.
+  it('overlapping documented statuses group into one card that opens a pager', async () => {
+    const d1 = docAdd(new Blob(['1'], { type: 'image/png' }) as any).id
+    const d2 = docAdd(new Blob(['2'], { type: 'image/png' }) as any).id
+    await plant({ person: 'ogre', type: 'ATT C', date: 'Jul 10', endDate: 'Jul 12', docId: d1 })
+    await plant({ person: 'ogre', type: 'ATT B', date: 'Jul 13', endDate: 'Jul 16', docId: d2 })
+    const card = cardsIn('med-down').find(c => c.querySelector('.medcard-docn'))
+    expect(card, 'the episode card carries a document count').toBeTruthy()
+    expect(card!.querySelector('.medcard-docn')!.textContent).toContain('2 documents')
+    await act(async () => { setDocView(null); notify() })
+    await click(card!)
+    expect(DOCVIEW.rows && DOCVIEW.rows.length, 'opening hands the viewer the whole episode').toBe(2)
+    await act(async () => { setDocView(null); notify() })
+  })
+  // Several files on ONE entry (owner, 1 Sep 26): the badge counts FILES, so
+  // a lone two-file entry reads "2 documents" and opens the same pager the
+  // episode card does — the viewer expands the row itself.
+  it('a single entry with two files says "2 documents" on its card', async () => {
+    const f1 = docAdd(new Blob(['s1'], { type: 'image/png' }) as any).id
+    const f2 = docAdd(new Blob(['s2'], { type: 'image/png' }) as any).id
+    await plant({ person: 'dj', type: 'ATT C', date: 'Jul 11', endDate: 'Jul 15', docId: f1, docIds: [f1, f2] })
+    const card = cardsIn('med-down').find(c => c.textContent!.includes('Ace'))
+    expect(card, 'the two-file entry lists as down today').toBeTruthy()
+    expect(card!.querySelector('.medcard-docn')!.textContent).toContain('2 documents')
+    await act(async () => { setDocView(null); notify() })
+    await click(card!)
+    expect(DOCVIEW.row && DOCVIEW.row.docIds && DOCVIEW.row.docIds.length, 'the tapped row carries both files for the viewer to page').toBe(2)
     await act(async () => { setDocView(null); notify() })
   })
   it('picking an as-of date replays history, and Today returns', async () => {

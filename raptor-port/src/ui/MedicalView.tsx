@@ -23,7 +23,8 @@
 import { useEffect, useState } from 'react'
 import { PEOPLE, byCrew } from '../engine/people'
 import { inpType } from '../engine/inputs'
-import { medDownAsOf, pendingUpchits, upchitsWithin } from '../engine/medical'
+import { medDownAsOf, pendingUpchits, upchitsWithin, medEpisode } from '../engine/medical'
+import { docHas, rowDocIds } from '../state/docs'
 import { MEDASOF, setMedAsOf } from '../state/view'
 import { notify } from '../state/store'
 import { setDocView } from './pops'
@@ -70,17 +71,22 @@ function remarkNote(remark: any): string {
    The puck sits inside the row-direction top line and the texts are its
    SIBLINGS — the sanscard flex contract (scheduler.css), where nesting them
    in the puck's own box is the documented trap. */
-function Card({ e, line, up, onOpen }: { e: any, line: string, up?: boolean, onOpen: (row: any, up?: boolean) => void }) {
+function Card({ e, line, up, docs, onOpen }: { e: any, line: string, up?: boolean, docs?: number, onOpen: (row: any, up?: boolean) => void }) {
   const r = e.row
+  /* when this person's overlapping medical entries form one episode, the card
+     says how many documents are behind it so a checker knows to page through
+     them (owner, 1 Sep 26); one document shows the plain title as before */
+  const n = docs || 1
   return (
     <button type="button" className="medcard" data-medcard={r.iid || ''}
-      title="Tap to view the document"
+      title={n > 1 ? `Tap to view ${n} documents` : 'Tap to view the document'}
       onClick={() => onOpen(r, up)}>
       <span className="medcard-top">
         <span className="seat" dangerouslySetInnerHTML={{ __html: puck(r.person, 0, true, '') }} />
         <span className="medcard-type">{inpType(r.type)}</span>
       </span>
       <span className="medcard-t">{line}</span>
+      {n > 1 ? <span className="medcard-docn">{n} documents</span> : null}
       {remarkNote(r.remarks) ? <span className="medcard-r" title={r.remarks}>{r.remarks}</span> : null}
     </button>
   )
@@ -104,7 +110,21 @@ export function MedicalView({ onClose }: { onClose: () => void }) {
   const pend = pendingUpchits(ord).sort(crew)
   const done = upchitsWithin(ord, 30)          // newest first, its own order
 
-  const open = (row: any, up?: boolean) => { setDocView({ row, up: !!up }); notify() }
+  /* this person's overlapping-episode documents that are actually on file.
+     ROWS feed the pager; the card's "N documents" badge counts FILES (an
+     entry holds several since 1 Sep 26) — both read the same per-row lists,
+     so what the card promises and the viewer pages cannot disagree */
+  const episodeDocs = (row: any) => medEpisode(row).filter((x: any) => rowDocIds(x).some(docHas))
+  const episodeDocN = (row: any) => medEpisode(row).reduce((n: number, x: any) => n + rowDocIds(x).filter(docHas).length, 0)
+  const open = (row: any, up?: boolean) => {
+    const eps = episodeDocs(row)
+    if (eps.length > 1) {
+      const rows = eps.map((x: any) => ({ row: x, up: !!up && x === row }))
+      const idx = Math.max(0, rows.findIndex((p: any) => p.row === row))
+      setDocView({ row, up: !!up, rows, idx })
+    } else setDocView({ row, up: !!up })
+    notify()
+  }
   const pick = (iso: string) => { setMedAsOf(iso === todayIso ? null : iso); setCalOpen(false); notify() }
 
   /* Escape closes the as-of picker, in the capture-phase manner the sibling
@@ -165,7 +185,7 @@ export function MedicalView({ onClose }: { onClose: () => void }) {
             <span className="medsec-sub">cannot fly as of {fmtDay(asOf)}</span></div>
           {down.length
             ? <div className="medcards">{down.map((e: any, i: number) =>
-              <Card key={(e.row.iid || '') + i} e={e} onOpen={open}
+              <Card key={(e.row.iid || '') + i} e={e} onOpen={open} docs={episodeDocN(e.row)}
                 line={`till ${lblDay(e.row.endDate || e.row.date, e.row.yr)}`} />)}</div>
             : <div className="med-empty">Nobody is medically down on this date.</div>}
         </section>
@@ -174,7 +194,7 @@ export function MedicalView({ onClose }: { onClose: () => void }) {
             <span className="medsec-sub">the down period has ended — the upchit document is still owed</span></div>
           {pend.length
             ? <div className="medcards">{pend.map((e: any, i: number) =>
-              <Card key={(e.row.iid || '') + i} e={e} up onOpen={open}
+              <Card key={(e.row.iid || '') + i} e={e} up onOpen={open} docs={episodeDocN(e.row)}
                 line={`was down till ${lblDay(e.row.endDate || e.row.date, e.row.yr)}`} />)}</div>
             : <div className="med-empty">Nobody is owing an upchit.</div>}
         </section>
@@ -183,7 +203,7 @@ export function MedicalView({ onClose }: { onClose: () => void }) {
             <span className="medsec-sub">the past 30 days, newest first</span></div>
           {done.length
             ? <div className="medcards">{done.map((e: any, i: number) =>
-              <Card key={(e.row.iid || '') + i} e={e} onOpen={open}
+              <Card key={(e.row.iid || '') + i} e={e} onOpen={open} docs={episodeDocN(e.row)}
                 line={`upchitted ${lblDay(e.row.date, e.row.yr)}`} />)}</div>
             : <div className="med-empty">No upchits in the past 30 days.</div>}
         </section>

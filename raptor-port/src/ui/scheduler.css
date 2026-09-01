@@ -5286,13 +5286,24 @@ button.sbi-ty.inpedit:hover{text-decoration:none;filter:brightness(1.3)}
    documented row wears, and the document viewer. The viewer rides the airpop
    chassis; only its body needs shape — an image or PDF must scale INSIDE the
    box, never grow it past the 80vh contract. */
-.docfield{display:inline-flex;align-items:center;min-width:0;max-width:100%}
+.docfield{display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap;min-width:0;max-width:100%}
 .docbtn{display:inline-flex;align-items:center;gap:6px;min-width:0;max-width:100%}
 .docbtn .btnglyph{flex:0 0 auto}
-/* an attached document reads DONE — the ok green the gates already speak */
+/* attached files read DONE — the ok green the gates already speak. Each is
+   its own chip with a ✕ (several files per entry, 1 Sep 26): removing edits
+   the draft only, so the chip row must survive wrapping in the narrow
+   in-table editor without growing the control's height contract. */
 .docbtn.has{border-color:rgba(87,201,122,.55);color:var(--ok)}
-.docbtn.has .docname{color:var(--ink-2)}
 .docname{font-weight:500;max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.docchip{display:inline-flex;align-items:center;gap:4px;min-width:0;padding:2px 4px 2px 8px;
+  border:1px solid rgba(87,201,122,.55);border-radius:8px;font-size:11px;color:var(--ink-2);background:transparent}
+.docchip .docname{max-width:110px}
+.docdel{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;padding:0;
+  border:0;border-radius:6px;background:transparent;color:var(--ink-3);font-size:10px;line-height:1;cursor:pointer}
+.docdel:hover{color:var(--warn);background:var(--panel-2)}
+/* the current file's name beside the pager count — only when one ENTRY
+   holds several files (DocViewer) */
+.docview-fname{color:var(--ink-3);font-weight:500}
 /* the row paperclip sits with the row's other small actions (.red/.rmx) */
 .rclip{cursor:pointer;display:inline-flex;align-items:center;padding:2px;border-radius:6px;color:var(--ink-3)}
 .rclip:hover{color:var(--ink);background:var(--panel-2)}
@@ -5301,6 +5312,11 @@ button.sbi-ty.inpedit:hover{text-decoration:none;filter:brightness(1.3)}
 .docviewbox{width:min(720px,94vw)}
 .docview-body{display:flex;flex-direction:column;gap:10px;min-height:0}
 .docview-sub{color:var(--ink-2);font-size:12px}
+/* the episode pager (owner, 1 Sep 26) — steps a person's overlapping documents
+   in place; only drawn when there is more than one, so a lone document is
+   unchanged. The ‹ › are ordinary .abtn buttons. */
+.docview-nav{display:flex;align-items:center;justify-content:center;gap:12px}
+.docview-count{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--ink-2)}
 .docview-img{max-width:100%;max-height:58vh;object-fit:contain;border-radius:10px;border:1px solid var(--edge);background:var(--bg)}
 .docview-frame{width:100%;height:58vh;border:1px solid var(--edge);border-radius:10px;background:#fff}
 .docview-none{color:var(--ink-3);font-size:13px;padding:22px 0;text-align:center}
@@ -5349,6 +5365,11 @@ button.sbi-ty.inpedit:hover{text-decoration:none;filter:brightness(1.3)}
 .medcard-top{display:flex;align-items:center;gap:6px;min-width:0}
 .medcard-type{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;color:var(--sec);white-space:nowrap}
 .medcard-t{font-family:'JetBrains Mono',monospace;font-size:9.5px;color:var(--ink-3)}
+/* "N documents" when the person's overlapping entries form one episode (owner,
+   1 Sep 26) — a small pill in the section's own colour, hugging the left so a
+   short line does not stretch it across the card */
+.medcard-docn{align-self:flex-start;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;
+  color:var(--sec);background:var(--panel);border:1px solid var(--sec);border-radius:999px;padding:0 6px;line-height:15px}
 .medcard-r{font-size:9.5px;line-height:1.35;color:var(--ink-2);white-space:normal;overflow-wrap:anywhere;min-width:0}
 .med-empty{padding:16px 12px;font-size:12px;color:var(--ink-3)}
 /* the Medical button's count badges on the Inputs title row — TWO, in the

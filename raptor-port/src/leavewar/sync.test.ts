@@ -758,7 +758,7 @@ describe('what a re-mint carries (27 Aug 26)', () => {
     setCell('ammo', '2026-02-11', 'ATTC')
     runOutbound()
     const row = lwInputs().find((r: any) => r.type === 'ATT C')
-    const d = draftOf(row); d.docId = 'doc-cert'
+    const d = draftOf(row); d.docIds = ['doc-cert']
     expect(commitInputEdit(row, d), 'attaching the certificate keeps the row synced').toBe(true)
     expect(row.lw, 'doc-only edit did not retract').toBeTruthy()
     setCell('ammo', '2026-02-12', 'ATTC')       // the admin extends the run on the grid

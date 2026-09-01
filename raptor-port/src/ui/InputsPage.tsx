@@ -33,6 +33,7 @@ import {
   medKeptSegments, mintMedSegments, ordISO, DocField, oilGate, oilAnswered,
   rosterOptions as people, inputTone,
 } from './inputedit'
+import { docFields, rowDocIds } from '../state/docs'
 import { useVersion } from './useStore'
 import { exportCSV } from './export'
 import { RangeCal } from './RangeCal'
@@ -225,10 +226,11 @@ export function InputsPage() {
   /* SANS Availability's own Fly/AMT/OFT payload — see SansPicker/sansRefusal
      in ui/inputedit.tsx. Only read by add() when `type` is the SANS type. */
   const [sans, setSans] = useState<any>(null)
-  /* the supporting document a medical input is filed with (owner, 27 Aug 26)
-     — the id into state/docs; cleared after a successful add because the
-     file belongs to the input just filed, not to the next one */
-  const [docId, setDocId] = useState<string | null>(null)
+  /* the supporting documents a medical input is filed with (owner, 27 Aug
+     26; several files per entry since 1 Sep 26) — ids into state/docs;
+     cleared after a successful add because the files belong to the input
+     just filed, not to the next one */
+  const [docIds, setDocIds] = useState<string[]>([])
   /* A member lands on THEIR OWN inputs (owner, 27 Aug 26) — the page is their
      paperwork first — with "Everyone" one pick away in the same filter. A
      scheduler (admin) still opens on the whole squadron. */
@@ -351,7 +353,7 @@ export function InputsPage() {
     }
     /* a medical input does not go in without its document (owner, 27 Aug 26)
        — needsDoc is the same body that draws the upload button below */
-    if (needsDoc(type) && !docId)
+    if (needsDoc(type) && !docIds.length)
       return HOOKS.toast('Attach the medical document first — use the upload button', 'warn')
     /* the medical refusals (owner, 27 Aug 26) — one shared check per rule so
        this form, the row editor and the board dialog can never disagree */
@@ -393,11 +395,11 @@ export function InputsPage() {
       ...(!allday && half ? { half } : {}),
       /* SANS's own Fly/AMT/OFT flags — never carried by a non-SANS type */
       ...(isSansAvail(type) ? { sans: sansFlags(sans) } : {}),
-      /* the id only — the blob lives in state/docs, outside every snapshot.
+      /* the ids only — the blobs live in state/docs, outside every snapshot.
          Gated on the type needing one: a certificate uploaded under a
          medical pick, then the type switched to leave, must not ride onto
          the leave row */
-      ...(docId && needsDoc(type) ? { docId } : {}),
+      ...(needsDoc(type) ? docFields(docIds) : {}),
       type, remarks: rem, mod: 'now',
     })
     /* the row INPUTS.unshift just made — pin it to the top of the table and
@@ -413,7 +415,7 @@ export function InputsPage() {
       setJustAddedIid(row.iid)
       timers.current.push(setTimeout(() => setFlash(f => f.filter(x => x !== row)), FLASH_MS))
       setRemarks(withTill('', start, end))
-      setDocId(null)
+      setDocIds([])
     }
     const commit = (removals: any[], oilDec?: Record<string, number>) => {
       writeInputsBatch(() => {
@@ -792,7 +794,7 @@ export function InputsPage() {
           {/* the mandatory supporting document — drawn for exactly the types
               whose add() refuses without one (needsDoc, one body) */}
           {needsDoc(type) && <div className="ifield"><label>Document</label>
-            <DocField docId={docId} onDoc={setDocId} /></div>}
+            <DocField ids={docIds} onIds={setDocIds} /></div>}
           <div className="ifield"><label>Remarks</label><input id="inRemarks" placeholder={isSansAvail(type) ? '' : 'e.g. medical appt'} maxLength={200} value={remarks} onChange={e => setRemarks(e.target.value)} /></div>
           <div className="ifield"><label>&nbsp;</label><button className="abtn primary" id="inAdd" onClick={add}>Add input</button></div>
         </div>
@@ -970,9 +972,9 @@ export function InputsPage() {
                         cross-group list is kept for every other row. */}
                     {typeOptions(isDownchit(r.type) ? isDownchit : isUpchit(r.type) ? isUpchit : undefined)}
                   </select>
-                    {/* replace (or first-attach, on a retype into medical) the
-                        supporting document without leaving the row */}
-                    {needsDoc(draft.type) && <DocField docId={draft.docId} onDoc={id => setDraft({ ...draft, docId: id })} />}</td>
+                    {/* manage (or first-attach, on a retype into medical) the
+                        supporting documents without leaving the row */}
+                    {needsDoc(draft.type) && <DocField ids={draft.docIds} onIds={ids => setDraft({ ...draft, docIds: ids })} />}</td>
                   <td data-fld="Remarks"><input aria-label="Remarks" data-ed="remarks" maxLength={200} value={draft.remarks}
                     onChange={e => setDraft({ ...draft, remarks: e.target.value })} /></td>
                   <td className="mono ined-sec" style={{ color: 'var(--ink-3)' }}>{fmtDMY(r.mod)}</td>
@@ -1028,7 +1030,7 @@ export function InputsPage() {
                     {/* the paperwork behind a medical row — EVERY account may
                         view it (owner, 27 Aug 26), so this sits ungated where
                         the row's other actions live */}
-                    {r.docId && <span className="rclip" data-doc={inx} title="View the document"
+                    {rowDocIds(r).length > 0 && <span className="rclip" data-doc={inx} title="View the document"
                       onClick={() => { setDocView({ row: r }); notify() }}><ClipIcon /></span>}
                     {/* Edit and delete are the owner's OWN-INPUT rights for a
                         member (owner, 27 Aug 26): a scheduler works every row,

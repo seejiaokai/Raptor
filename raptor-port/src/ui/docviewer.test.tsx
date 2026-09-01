@@ -48,4 +48,60 @@ describe('the document viewer', () => {
     expect($('#docViewEdit')).toBeTruthy()
     expect($('#docViewUpchit'), 'the pending card offers the upchit path').toBeTruthy()
   })
+  // The episode pager (owner, 1 Sep 26): a person's overlapping documents
+  // shown together, paged in place. The title follows the page and the ends
+  // clamp; a lone document has no pager, so the single-doc view is unchanged.
+  it('pages an episode\'s documents, titling each and clamping the ends', async () => {
+    await act(async () => { setSession({ user: 'a', role: 'admin' }); notify() })
+    const a = docAdd(new Blob(['a'], { type: 'image/png' }) as any).id
+    const b = docAdd(new Blob(['b'], { type: 'image/png' }) as any).id
+    const rows = [
+      { row: { person: 'bane', type: 'ATT C', date: 'Jul 10', endDate: 'Jul 13', docId: a }, up: false },
+      { row: { person: 'bane', type: 'ATT B', date: 'Jul 14', endDate: 'Jul 18', docId: b }, up: false },
+    ]
+    await act(async () => { setDocView({ row: rows[0].row, up: false, rows, idx: 0 }); notify() })
+    expect($('.docview-nav'), 'the pager shows for an episode').toBeTruthy()
+    expect($('.docview-count').textContent).toContain('1 of 2')
+    expect($('#docViewTitle').textContent).toContain('ATT C')
+    expect(($('#docViewPrev') as HTMLButtonElement).disabled).toBe(true)
+    await act(async () => { ($('#docViewNext') as HTMLButtonElement).click() })
+    expect($('.docview-count').textContent).toContain('2 of 2')
+    expect($('#docViewTitle').textContent, 'the title follows the page').toContain('ATT B')
+    expect(($('#docViewNext') as HTMLButtonElement).disabled).toBe(true)
+  })
+  it('a lone document shows no pager', async () => {
+    const id = docAdd(new Blob(['x'], { type: 'image/png' }) as any).id
+    await open({ person: 'bane', type: 'ATT C', date: 'Jul 10', docId: id })
+    expect($('.docview-nav')).toBeNull()
+  })
+  // Several files on ONE entry (owner, 1 Sep 26): a row expands to one page
+  // per file, from a bare puck tap and inside an episode alike; the caller's
+  // idx still counts rows, seated at that row's first page.
+  it('a single entry with two files pages both, naming the current file', async () => {
+    await act(async () => { setSession({ user: 'a', role: 'admin' }); notify() })
+    const a = docAdd(new Blob(['a'], { type: 'image/png' }) as any).id
+    const b = docAdd(new Blob(['b'], { type: 'image/png' }) as any).id
+    await open({ person: 'bane', type: 'ATT C', date: 'Jul 10', endDate: 'Jul 13', docId: a, docIds: [a, b] })
+    expect($('.docview-count').textContent).toContain('1 of 2')
+    expect($('.docview-fname'), 'the file name separates two pages of one entry').toBeTruthy()
+    await act(async () => { ($('#docViewNext') as HTMLButtonElement).click() })
+    expect($('.docview-count').textContent).toContain('2 of 2')
+    expect($('#docViewTitle').textContent, 'both pages belong to the one entry').toContain('ATT C')
+  })
+  it('an episode with a two-file entry counts files, and the tapped row seats past them', async () => {
+    await act(async () => { setSession({ user: 'a', role: 'admin' }); notify() })
+    const a = docAdd(new Blob(['a'], { type: 'image/png' }) as any).id
+    const b = docAdd(new Blob(['b'], { type: 'image/png' }) as any).id
+    const c = docAdd(new Blob(['c'], { type: 'image/png' }) as any).id
+    const rows = [
+      { row: { person: 'bane', type: 'ATT C', date: 'Jul 10', endDate: 'Jul 13', docId: a, docIds: [a, b] }, up: false },
+      { row: { person: 'bane', type: 'ATT B', date: 'Jul 14', endDate: 'Jul 18', docId: c }, up: false },
+    ]
+    await act(async () => { setDocView({ row: rows[1].row, up: false, rows, idx: 1 }); notify() })
+    expect($('.docview-count').textContent, 'three files across two entries').toContain('3 of 3')
+    expect($('#docViewTitle').textContent, 'opened at the tapped entry, past the two-file one').toContain('ATT B')
+    await act(async () => { ($('#docViewPrev') as HTMLButtonElement).click() })
+    expect($('#docViewTitle').textContent, 'paging back lands on the earlier entry\'s second file').toContain('ATT C')
+    expect($('.docview-count').textContent).toContain('2 of 3')
+  })
 })
