@@ -120,7 +120,7 @@ parity holds. The gate table below was the green baseline read at this pass's cl
 
 | gate | reading |
 |---|---|
-| `npm test` | 3587 across 206 files — two vitest projects: raptor + leavewar |
+| `npm test` | 3654 across 209 files — two vitest projects: raptor + leavewar |
 | `node reference/tfin.js` | 728/0 (the reference is read-only; the "Ground Programme" title trim rides the tolerant normaliser in `html.test.ts`) |
 | `npm run build` | clean |
 | `npm run test:e2e` | 347 passed / 23 touch-only skips / 0 failed — three playwright projects: raptor geometry, lw-phone, lw-desktop. NOTE: a mid-session chain run showed 2 lw-phone reds against a build that predated the bug-pass fixes (the un-gated cross-lane notify repainting mid-gesture); both passed individually and the full suite passed whole against the fixed build — if they ever red again, suspect a stray repaint mid-tap first. |
