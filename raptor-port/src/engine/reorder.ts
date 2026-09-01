@@ -60,6 +60,39 @@ const done=(key:any,di?:any)=>{
   if(di!=null && dayApproved(di) && !SCHED.added[String(key)]) markMove(di,moveKindOf(key));
   else markEdit(key);
   if(di!=null)REORDERED_DI=di; return true;};
+/* Which row a SORTER hands `done`. A mover hands the one row it dragged, so
+   `done`'s added-gate reads exactly the right key — but a sorter permutes MANY
+   rows at once and used to hand a FIXED choice, the row at index 0 post-sort.
+   That let a draft ADD swallow a whole section's tombstone (bug-hunt fix,
+   1 Sep 26): add an early wave to a published day, hit Sort all, the new wave
+   sorts to the top, its key sits in SCHED.added — and the resequencing of the
+   ISSUED waves beneath it reached no AL, the very hole the mov: tombstone was
+   built to close. The question the gate is really asking is "did an issued row
+   OVERTAKE another issued row": rows merely displaced down by an add sliding
+   above them keep their relative order, and the movers' owner-decided rule
+   (add-then-drag stays a net no-op — moveNote's draft-add case) already treats
+   that displacement as part of the add. So: when the issued rows' relative
+   order changed, hand `done` the first moved ISSUED row (on a draft day the
+   ordinary field mark then lands on a row that visibly moved — the same row
+   the old index-0 choice picked in every all-issued swap); when it did not,
+   hand the first moved row, which is then an add and keeps the net no-op.
+   Called AFTER permuteKeys, so SCHED.added is already remapped to the new
+   indices keyAt addresses. Sorters return false on identity before reaching
+   this, so a moved row always exists; keyAt(0) is a pure type guard — and an
+   all-issued non-identity permutation always contains an overtake, so the
+   fallback only ever fires with a draft add in the mix. */
+const sortedKey=(oldOf:any,keyAt:(n:number)=>string)=>{
+  let mv=-1, mvIss=-1, prev=-1, overtake=false;
+  for(let n=0;n<oldOf.length;n++){
+    const moved=oldOf[n]!==n;
+    if(moved&&mv<0)mv=n;
+    if((SCHED.added||{})[keyAt(n)])continue;   // a pending draft add — not issued
+    if(moved&&mvIss<0)mvIss=n;
+    if(oldOf[n]<prev)overtake=true;            // issued rows changed relative order
+    prev=oldOf[n];
+  }
+  return keyAt(overtake&&mvIss>=0?mvIss:(mv<0?0:mv));
+};
 
 /* MANUAL WAVE-BLOCK REORDER (owner, 29 Aug 26 — "within the waves I also want the
    option to reorder … put SC at the top, then 1st wave 2nd wave"). Until now the
@@ -279,7 +312,7 @@ export function sortWave(di:any,gi:any){
   w.formations=oldOf.map((o:any)=>fs[o]);
   [`ff:${di}.${gi}.`,`fr:${di}.${gi}.`,`st:${di}.${gi}.`,`ar:${di}.${gi}.`,`at:${di}.${gi}.`,`${di}.${gi}.`]
     .forEach((h:any)=>permuteKeys(h,0,oldOf));
-  return done(`ff:${di}.${gi}.0.cs`,di);
+  return done(sortedKey(oldOf,n=>`ff:${di}.${gi}.${n}.cs`),di);
 }
 /* THE BLOCKS THEMSELVES, ORDERED BY THE EARLIEST TIME INSIDE THEM (owner,
    11 Aug 26). Until now Sort all tidied the rows INSIDE each wave and each
@@ -329,7 +362,7 @@ export function sortWaves(di:any){
   d.waves=oldOf.map((o:any)=>ws[o]);
   [`wl:${di}.`,`ff:${di}.`,`fr:${di}.`,`st:${di}.`,`ar:${di}.`,`at:${di}.`,`it:${di}.`,
    `tr:${di}.`,`${di}.`].forEach((h:any)=>permuteKeys(h,0,oldOf));
-  return done(`wl:${di}.0`,di);
+  return done(sortedKey(oldOf,n=>`wl:${di}.${n}`),di);
 }
 /* The duty side of the same rule (owner, 11 Aug 26 — "apply this logic to
    duties as well for their start time"): rows inside a block sort by start
@@ -347,7 +380,7 @@ export function sortDutyBlocks(di:any){
   d.dutywaves=oldOf.map((o:any)=>dws[o]);
   /* the same three heads the block DELETE path in ui/board.ts renumbers */
   [`d:${di}.`,`dr:${di}.`,`dl:${di}.`].forEach((h:any)=>permuteKeys(h,0,oldOf));
-  return done(`dl:${di}.0`,di);
+  return done(sortedKey(oldOf,n=>`dl:${di}.${n}`),di);
 }
 export function sortDutyBlock(di:any,wi:any){
   const dw=(DAYS[di]||{}).dutywaves&&DAYS[di].dutywaves[wi]; if(!dw||!Array.isArray(dw.rows))return false;
@@ -363,7 +396,7 @@ export function sortDutyBlock(di:any,wi:any){
   if(isIdentity(oldOf))return false;
   dw.rows=oldOf.map((o:any)=>rows[o]);
   [`d:${di}.${wi}.`,`dr:${di}.${wi}.`].forEach((h:any)=>permuteKeys(h,0,oldOf));
-  return done(`dr:${di}.${wi}.0.role`,di);
+  return done(sortedKey(oldOf,n=>`dr:${di}.${wi}.${n}.role`),di);
 }
 export function sortSims(di:any,kind:any){
   const d=DAYS[di]; const rows=d&&d.sims&&d.sims[kind]; if(!Array.isArray(rows))return false;
@@ -371,7 +404,7 @@ export function sortSims(di:any,kind:any){
   if(isIdentity(oldOf))return false;
   d.sims[kind]=oldOf.map((o:any)=>rows[o]);
   [`s:${di}.${kind}.`,`sr:${di}.${kind}.`].forEach((h:any)=>permuteKeys(h,0,oldOf));
-  return done(`sr:${di}.${kind}.0.label`,di);
+  return done(sortedKey(oldOf,n=>`sr:${di}.${kind}.${n}.label`),di);
 }
 /* Ground also clears gman — Auto sort IS the way back to time-sorted
    rendering, so calling it must switch manual mode off even on the one day
@@ -395,7 +428,7 @@ export function sortGround(di:any){
   if(isIdentity(oldOf))return wasMan?done(`gr:${di}.0.prog`):false;
   d.ground=oldOf.map((o:any)=>rows[o]);
   [`g:${di}.`,`gr:${di}.`].forEach((h:any)=>permuteKeys(h,0,oldOf));
-  return done(`gr:${di}.0.prog`,di);
+  return done(sortedKey(oldOf,n=>`gr:${di}.${n}.prog`),di);
 }
 export function sortProg(di:any){
   const d=DAYS[di]; const rows=d&&d.allhands; if(!Array.isArray(rows))return false;
@@ -403,7 +436,7 @@ export function sortProg(di:any){
   if(isIdentity(oldOf))return false;
   d.allhands=oldOf.map((o:any)=>rows[o]);
   [`ap:${di}.`,`a:${di}.`].forEach((h:any)=>permuteKeys(h,0,oldOf));
-  return done(`ap:${di}.0.prog`,di);
+  return done(sortedKey(oldOf,n=>`ap:${di}.${n}.prog`),di);
 }
 /* every section of one day, notes excluded — the primitive Task 10's
    `Sort all` composes over every day in the week.

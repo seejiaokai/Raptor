@@ -12,7 +12,7 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import { DAYS } from './data'
 import { SCHED, signOf, setDayApproved, publishAL, markEdit, pendCount, moveCount, markStructuralAdd, markDeletion, deletionWasIssued } from './publish'
-import { sortDay, sortDutyBlocks, applyMove, moveNote, popReorderedDay } from './reorder'
+import { sortDay, sortDutyBlocks, sortWaves, applyMove, moveNote, popReorderedDay } from './reorder'
 import { reconcileIssuedMarks } from './drafts'
 import { shiftKeys } from './keys'
 import { dayKeys } from './restore'
@@ -230,5 +230,44 @@ describe('a reorder of identical-looking issued rows still records on a publishe
     markDeletion(0, 'note', issued)
     expect(SCHED.pending).toEqual({})
     expect(SCHED.added).toEqual({})
+  })
+})
+
+/* A draft ADD that sorts to the TOP must not swallow the section's tombstone
+   (bug-hunt fix, 1 Sep 26). The sorters used to hand `done` the row at index 0
+   post-sort; when that row was a pending draft add, the added-gate fired and the
+   resequencing of the ISSUED rows beneath it reached no AL — the exact hole the
+   mov: key closed for movers. The gate now asks "did an issued row overtake
+   another issued row": overtake ⇒ tombstone even with an add on top; a pure
+   displacement (the add slides above rows that keep their relative order) stays
+   the add's own business, no tombstone — the movers' net-no-op rule. */
+describe('a sort with a draft add on top still records the issued reorder', () => {
+  it('issued waves published out of order + an added early wave: Sort mints the wave tombstone', () => {
+    const d = scramble()                                       // W-LATE above W-EARLY — issued OUT of time order
+    publishDay0()
+    d.waves.push({ label: 'W-NEW', formations: [{ cs: 'NEW', to: '0500', ld: '0600', aircraft: [] }] })
+    markStructuralAdd('wl:0.2')
+    expect(sortWaves(0)).toBe(true)
+    /* the add sorted to the top… */
+    expect(d.waves.map((w: any) => w.label)).toEqual(['W-NEW', 'W-EARLY', 'W-LATE'])
+    expect(SCHED.added['wl:0.0']).toBe(1)
+    /* …and the issued waves ALSO swapped (EARLY overtook LATE): that reorder is
+       a durable tombstone, not the add's field mark the old index-0 gate left */
+    expect(Object.keys(SCHED.pending).filter(k => /^mov:0\.\d+\.wave$/.test(k))).toHaveLength(1)
+  })
+
+  it('issued waves published IN order + an added early wave: no overtake, no tombstone — the add owns the shift', () => {
+    const d = scramble()
+    d.waves.reverse()                                          // W-EARLY above W-LATE — issued in time order
+    publishDay0()
+    d.waves.push({ label: 'W-NEW', formations: [{ cs: 'NEW', to: '0500', ld: '0600', aircraft: [] }] })
+    markStructuralAdd('wl:0.2')
+    expect(sortWaves(0)).toBe(true)
+    expect(d.waves.map((w: any) => w.label)).toEqual(['W-NEW', 'W-EARLY', 'W-LATE'])
+    /* the issued waves kept their relative order — they were only displaced down
+       by the add, which is the add's own business exactly as in a mover drag */
+    expect(Object.keys(SCHED.pending).some(k => /^mov:/.test(k))).toBe(false)
+    /* the sort still counted: the add's head (now on top) wears the field mark */
+    expect(SCHED.pending['wl:0.0']).toBe(1)
   })
 })

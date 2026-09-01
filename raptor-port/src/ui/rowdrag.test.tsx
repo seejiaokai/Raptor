@@ -7,6 +7,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { DAYS } from '../engine/data'
 import { wireRowDrag } from './rowdrag'
 import { setSession } from '../state/auth'
+import { setBoardDay, DPREV } from '../state/view'
 import { boardHTML } from './board'
 import { HOOKS } from '../engine/hooks'
 import { secOrder } from '../engine'
@@ -85,6 +86,44 @@ describe('wireRowDrag', () => {
     const [a, b] = [...host.querySelectorAll('.sb-grip')]
     down(a); over(b); up()
     expect(JSON.stringify(DAYS[di].allhands)).toBe(was)
+  })
+
+  /* The frozen-preview guard is per DRAGGED day (bug-hunt fix, 1 Sep 26). The
+     machine is wired on the edit week too, where seven days render at once —
+     the old gate read the BOARD's selected day (SBDAY), so a preview left
+     open on the board silently killed every drag on the week, previewing or
+     not. The first test fails on that old gate; the other two pin the
+     per-day refusal on both address shapes (mv: rows, secmove sections). */
+  it('a preview open on the BOARD day does not block dragging another day', () => {
+    const di = DAYS.findIndex((d: any) => (d.allhands || []).length > 1)
+    const dj = (di + 1) % DAYS.length
+    setBoardDay(dj); DPREV.set(dj, 'orig')
+    const was = DAYS[di].allhands.map((x: any) => x.prog)
+    host.innerHTML = rowsHTML([`mv:p.${di}.0`, `mv:p.${di}.1`])
+    const [a, b] = [...host.querySelectorAll('.sb-grip')]
+    down(a); over(b); up()
+    DPREV.delete(dj); setBoardDay(null)
+    expect(DAYS[di].allhands.map((x: any) => x.prog)).toEqual([was[1], was[0], ...was.slice(2)])
+  })
+
+  it('a row drag on the previewing day itself is refused (stale markup)', () => {
+    const di = DAYS.findIndex((d: any) => (d.allhands || []).length > 1)
+    DPREV.set(di, 'orig')
+    const was = JSON.stringify(DAYS[di].allhands)
+    host.innerHTML = rowsHTML([`mv:p.${di}.0`, `mv:p.${di}.1`])
+    const [a, b] = [...host.querySelectorAll('.sb-grip')]
+    down(a); over(b); up()
+    DPREV.delete(di)
+    expect(JSON.stringify(DAYS[di].allhands)).toBe(was)
+    expect(host.querySelectorAll('.rowdrag,.rowdrop').length).toBe(0)
+  })
+
+  it('a section grip on the previewing day cannot pick up either', () => {
+    DPREV.set(0, 'orig')
+    host.innerHTML = '<div class="sb-sec" data-secmove="0.grnd"><span class="secgrip">⠿</span></div>'
+    down(host.querySelector('.secgrip')!)
+    DPREV.delete(0)
+    expect(host.querySelectorAll('.secdrag').length).toBe(0)
   })
 
   it('a pointer that lifts outside the container still ends the drag', () => {
