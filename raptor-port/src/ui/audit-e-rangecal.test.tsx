@@ -84,6 +84,19 @@ describe('RangeCal', () => {
     expect(picked).toEqual({ s: '2026-07-18', e: '' })
   })
 
+  it('the "go to today" button pages to the notional today month and rings it, without picking', async () => {
+    /* walk away from the demo month first */
+    for (let i = 0; i < 4; i++) await click($('#auCal .rc-nav[aria-label="Next month"]'))
+    expect($('#auCal .rc-mon').textContent).toBe('Nov 2026')
+    await click($('#auCal .rc-today'))
+    /* back on the notional today month (weeknav TODAY = 13 Jul 2026), 13 ringed */
+    expect($('#auCal .rc-mon').textContent).toBe('Jul 2026')
+    expect(day('2026-07-13').classList.contains('today')).toBe(true)
+    /* it did NOT pick — no range was set */
+    expect(picked).toEqual({ s: '', e: '' })
+    expect($$('#auCal .rc-d.s')).toHaveLength(0)
+  })
+
   it('year rollover: stepping back from January lands on December of the year before', async () => {
     for (let i = 0; i < 7; i++) await click($('#auCal .rc-nav[aria-label="Previous month"]'))
     expect($('#auCal .rc-mon').textContent).toBe('Dec 2025')
