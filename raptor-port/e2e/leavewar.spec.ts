@@ -20,7 +20,7 @@
    unchanged because the map preserves seat and band and the mapped
    people's own SXO flags match the seed's. */
 import { expect, test, type Page } from '@playwright/test'
-import { lwRole, lwView, openLeaveWar } from './app'
+import { go, lwRole, lwView, openLeaveWar } from './app'
 
 const CAL_MONTHS = [
   'JANUARY', 'FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE',
@@ -2466,4 +2466,79 @@ test('rapid undo/redo settle to a consistent grid', async ({ page }) => {
   await expect(redo).toBeDisabled()
   await expect(page.locator('[data-testid="cell-slipway-2026-01-06"] .c')).toBeVisible()
   await expect(page.locator('[data-testid="cell-slipway-2026-01-08"] .c')).toBeVisible()
+})
+
+// The tab is KEPT ALIVE between visits (owner, 1 Sep 26 — "the leave war tab
+// is slow to open"): a tab switch hides the section instead of unmounting it,
+// so the year grid is built once per session and a return is near-instant.
+// jsdom pins the mount/hide/show shape (src/ui/lwkeepalive.test.tsx); this
+// pins what only a layout engine can see — the grid REALLY is the same one
+// (its sideways scroll survives the round trip), and its measurements are
+// still live afterwards (a month jump still moves the grid and lights its
+// button), with no page error across the switch.
+test('a tab switch keeps the grid alive: same sideways spot on return, measurements still live', async ({ page }) => {
+  const errors: string[] = []
+  page.on('pageerror', e => errors.push(e.message))
+  await page.evaluate(() => { document.querySelector<HTMLElement>('#page-leavewar .mx-wrap')!.scrollLeft = 600 })
+  await page.waitForTimeout(250)
+  const before = await page.evaluate(() => Math.round(document.querySelector('#page-leavewar .mx-wrap')!.scrollLeft))
+  expect(before).toBeGreaterThan(0)
+
+  await go(page, 'viewsched')
+  // hidden, not torn down
+  await expect(page.locator('#page-leavewar')).toBeHidden()
+  expect(await page.evaluate(() => !!document.querySelector('#page-leavewar .mx-wrap'))).toBe(true)
+
+  await go(page, 'leavewar')
+  await expect(page.locator('[data-testid="row-slipway"]')).toBeVisible()
+  // the same grid: its sideways position survived the round trip
+  const after = await page.evaluate(() => Math.round(document.querySelector('#page-leavewar .mx-wrap')!.scrollLeft))
+  expect(Math.abs(after - before)).toBeLessThanOrEqual(2)
+
+  // measurements are still live after the hidden spell: a month jump moves
+  // the grid and the readout follows it
+  await page.locator('[data-testid="month-strip"] .mjump').nth(4).click()
+  await page.waitForTimeout(400)
+  const jumped = await page.evaluate(() => Math.round(document.querySelector('#page-leavewar .mx-wrap')!.scrollLeft))
+  expect(jumped).not.toBe(after)
+  expect(errors, 'no page error across the tab switch').toEqual([])
+})
+
+// The open-bidding box (owner, 1 Sep 26): a glowing deep-faded-green rectangle
+// around the columns open for bidding, so it is obvious which dates are open.
+// jsdom cannot see it (it is measured from real rects), so the pin is here.
+// It tracks the window (seed: 1 Jan – 31 Mar) and clears the moment bidding
+// closes — the box means "open right now".
+test('a glowing green box frames the open-bidding window and clears when bidding closes', async ({ page }) => {
+  await openLeaveWar(page, 'a')   // admin, so the stage can be advanced
+  const box = page.locator('#page-leavewar .lw-bidbox')
+  await expect(box).toHaveCount(1)
+  const geo = await page.evaluate(() => {
+    const b = document.querySelector('#page-leavewar .lw-bidbox').getBoundingClientRect()
+    const jan1 = document.querySelector('[data-testid="head-2026-01-01"]').getBoundingClientRect()
+    return { bw: b.width, bh: b.height, bl: b.left, jl: jan1.left }
+  })
+  expect(geo.bw).toBeGreaterThan(100)   // spans the ~90-day window
+  expect(geo.bh).toBeGreaterThan(100)   // full grid height
+  expect(Math.abs(geo.bl - geo.jl)).toBeLessThanOrEqual(4)  // left edge at 1 Jan
+  // ROSTER rows joining re-size the box the same commit (bug-hunt fix,
+  // 1 Sep 26 — the measure rides the store version, so a row-count change
+  // with every other dep unchanged can no longer leave the box a row short
+  // until the next zoom or resize). The SANS switch is the cleanest such
+  // change: a pure Leave War store write that adds the SANS aircrew's rows
+  // BELOW the header the box hangs from, touching no zoom/fold/window dep —
+  // and it happens without leaving the tab, so no show-side resize kick can
+  // re-measure for us. (A COUNTER row would prove nothing here: counts render
+  // ABOVE the header row, outside the boxed region; and a PO'd body's row
+  // deliberately stays for the months they served — the owner's 19 Aug rule.)
+  await page.locator('[data-testid="roster-arrange"]').click()
+  await page.locator('[data-testid="sans-toggle"]').click()
+  await page.locator('[data-testid="roster-arrange"]').click() // leave arrange mode
+  const grown = await page.evaluate(() =>
+    document.querySelector('#page-leavewar .lw-bidbox').getBoundingClientRect().height)
+  expect(grown).toBeGreaterThan(geo.bh)
+  // Closing bidding removes it — a closed / published / draft war shows none.
+  await page.locator('[data-testid="stage-advance"]').click()
+  await expect(page.locator('[data-testid="stage-now"]')).toHaveText('BIDDING CLOSED')
+  await expect(box).toHaveCount(0)
 })

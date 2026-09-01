@@ -120,17 +120,28 @@ export function wireRowDrag(el: HTMLElement) {
   const onDown = (e: any) => {
     if (from || fromSec) return          // a drag is already live — a second finger on another grip must not orphan the first's highlight
     if (!canEditSched()) return
-    if (view.DPREV.has(view.SBDAY as any)) return
+    /* the frozen-preview guard is PER DRAGGED DAY, never per SBDAY (bug-hunt
+       fix, 1 Sep 26). This machine is wired on the edit week too, where seven
+       days show at once — gating on the BOARD's selected day let a preview
+       left open on the board kill every drag on the week (all seven days
+       render live and editable, yet onDown refused them all). The day is read
+       off the grip's own address — mv:<kind>.DI…. / secmove "DI.key" — the
+       same per-day reading armSlot already uses. A previewing day emits no
+       grips at all (dayPreviewHTML renders with ed=false), so like armSlot's
+       guard this only catches a stale element from the pre-preview render. */
+    const dayPrev = (di: any) => view.DPREV.has(+di)
     /* the GRIP only — a press on the element itself is a click on a field, and a
        row full of inputs has almost no blank space to spare */
     const grip = (e.target as HTMLElement).closest?.('.sb-grip, .wvgrip, .secgrip') as HTMLElement | null
     if (!grip) return
     if (grip.classList.contains('secgrip')) {
       const sec = grip.closest('[data-secmove]') as HTMLElement | null; if (!sec) return
+      if (dayPrev(sec.dataset.secmove!.split('.')[0])) return
       fromSec = sec.dataset.secmove!
       carry = sec; sec.classList.add('secdrag')
     } else {
       const row = grip.closest('[data-move]') as HTMLElement | null; if (!row) return
+      if (dayPrev(row.dataset.move!.slice(3).split('.')[1])) return
       from = row.dataset.move!
       kind = from.slice(3).split('.')[0]
       carry = row; row.classList.add('rowdrag')

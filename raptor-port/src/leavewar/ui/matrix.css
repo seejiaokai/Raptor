@@ -45,6 +45,33 @@
    callsign and counter columns stick on `left` and are unaffected. */
 .mx-wrap {
   overflow-x: auto;
+  /* Containing block for the open-bidding box below. position:relative with
+     no z-index does NOT open a stacking context, so the box's z-index still
+     resolves against the same context as the frozen columns — which is what
+     lets the frozen columns (z 2/3) paint over the box's left edge. It also
+     does not disturb the sticky callsign/counter columns (sticky resolves
+     against this scroller either way). */
+  position: relative;
+}
+
+/* The OPEN-BIDDING box (owner, 1 Sep 26) — a glowing, deep, faded green
+   rectangle around the columns open for bidding. Drawn only while bidding is
+   open; positioned and sized in JS (Matrix.tsx measureBidBox). z-index 1 so
+   it paints over the day cells but UNDER the frozen callsign/counter columns
+   (z 2/3) and the scrolled-in band overlay (z 4): its left edge then hides
+   behind them just as the day cells do. pointer-events:none so it never
+   intercepts a bid tap or a drag-select. The colour is the owner's pick —
+   the deeper, more desaturated green of the two comps, with a low-opacity
+   halo — not the app's bright --ok, on purpose. */
+.mx-wrap .lw-bidbox {
+  position: absolute;
+  z-index: 1;
+  pointer-events: none;
+  border: 2px solid rgba(74, 140, 100, .80);
+  border-radius: 6px;
+  box-shadow:
+    0 0 8px 1px rgba(74, 140, 100, .30),
+    inset 0 0 6px rgba(74, 140, 100, .08);
 }
 
 .mx {

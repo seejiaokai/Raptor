@@ -2179,6 +2179,16 @@ would freeze; on the document it keeps tracking, and the loop stops the instant 
 drag ends. Both wirings' handlers early-return until their own instance owns a live
 drag, so board and week don't collide.
 
+**The frozen-preview guard is per dragged DAY, not per board day (bug-hunt fix,
+1 Sep 26).** `onDown` used to refuse a pickup whenever the BOARD's selected day
+was previewing (`DPREV.has(SBDAY)`) — but the machine is wired on the edit week
+too, where seven days render live and editable at once, so a preview left open
+on the board silently killed every drag on the week. The guard now reads the day
+off the grip's own address (`mv:<kind>.di…` / `secmove "di.key"`), the same
+per-day reading `armSlot` uses. A previewing day emits no grips at all
+(`dayPreviewHTML` renders with `ed=false`), so the guard only catches a stale
+element from the pre-preview render. Pinned three ways in `rowdrag.test.tsx`.
+
 **Every handle is the same dotted `⠿`, inline in the section's own header (owner,
 31 Aug 26).** This REVERSED the 30 Aug drawn-rail: the owner asked that "the drag
 markers should all follow the old design in which it's dotted" and be reachable on a
@@ -5162,3 +5172,105 @@ programme, never checked against the rules (the engine seams are in
 
 Pinned in `ui/board.test.tsx` (toggle + read-only mark) and
 `engine/infoflag.test.ts`.
+
+## The Leave War tab is kept alive between visits (owner, 1 Sep 26)
+
+"The leave war tab is slow to open" → keep-alive chosen over rebuild-and-memoise
+(the grid's cost is the DRAWING — ~28k nodes — not the maths). The contract:
+
+- **Built once per session.** The first visit builds the grid exactly as
+  before; leaving the tab HIDES the section (`Shell.tsx lwEverRef` → the
+  `.doze` class), never unmounts it. Only Leave War gets this — every other
+  page is a cheap rebuild and stays one.
+- **`.page.doze` = `display:block` + `content-visibility:hidden`**
+  (`scheduler.css`, @supports-guarded; a browser without it falls back to the
+  base `.page` display:none — correct, just slower to re-show). Measured on
+  the built bundle: re-showing from display:none relays the whole grid out,
+  411–863ms at 1280px / ~260ms at 390px; the content-visibility layout cache
+  re-shows in 1–2ms. A dozing section sizes as EMPTY (height 0), so it
+  never adds scroll height under the active page, and its descendants
+  measure 0×0 — the same zeros every Matrix measurement guard already
+  handles for display:none/jsdom.
+- **The memo firewall** (`LeaveWarPage.tsx LwBody`, memo, no props): a Raptor
+  notify re-renders the Shell, and without the firewall React would re-walk
+  the hidden 28k-node tree on every board keystroke. Topbar/StageBar/Matrix
+  each subscribe to the LW store themselves, and every rendered fact crosses
+  the seam THROUGH that store (roster reprojection, role, viewer — all end in
+  a LW notify), so the firewall can never hide a real change. Don't hand
+  LwBody props, and don't render Raptor module state inside it — either
+  reopens the wall or the staleness it guards against.
+- **Show side**: the `active` effect restores the window scroll (tracked live
+  while the tab is up — reading scrollY on the way out sees the clamp the
+  hide already caused) and dispatches ONE window `resize`, which is the one
+  wiring every Matrix measurement already listens on (frozen header/columns,
+  month strip, strip height, bottom scrollbar). The grid's own sideways
+  scroll and zoom survive because the DOM never went away — a return lands
+  on the same month, same spot.
+- **Hide side**: the effect cleanup dispatches the same `resize`; measured
+  at 0×0 it unmounts the FIXED bottom proxy scrollbar (`.mx-hbar` is React
+  state fed by a rect), which keeps the geometry gate's "nothing leaks onto
+  the Raptor pages" pin byte-true with the grid still in the DOM.
+- **Global listeners must check they're the page showing** (bug-hunt fix,
+  1 Sep 26). A document/window listener owned by a Leave War overlay now
+  SURVIVES a tab switch — `Sheet.tsx`'s and `Chrome.tsx`'s capture-phase
+  Escape handlers used to swallow the Escape Raptor's cell editing restores
+  on, and close the hidden sheet unseen. Any such listener must bail unless
+  `#page-leavewar` carries `.on` (no wrapper — the standalone app — means
+  always act). The Matrix's scroll/resize measurers are exempt only because
+  they already bail on the 0-width rects a hidden section measures.
+- **First open is unchanged by design.** Making THAT faster means
+  virtualising the grid — only if the owner still feels it.
+
+Pinned in `ui/lwkeepalive.test.tsx` (mount once / doze / same-DOM return /
+scroll restore / resize kick) and the `e2e/leavewar.spec.ts` keep-alive spec
+(real-browser: sideways position survives the round trip, a month jump still
+works after the hidden spell, no page error).
+
+## The open-bidding box on the Leave War grid (owner, 1 Sep 26)
+
+"Can u make the border of the dates open for bidding green … the exterior box
+of the entire period" → refined to a glowing, deeper, more faded green border,
+no label. It marks which columns the squadron may bid on. The contract:
+
+- **When.** Only while `period.stage === 'open'`. A draft / closed / published
+  war shows no box — the box means "open for bidding RIGHT NOW", the same thing
+  the OPEN FOR BIDDING stage chip says. It re-measures on stage change, so
+  advancing or reopening bidding shows/hides it at once.
+- **Where.** Around the columns in the bidding window — the period's
+  `bidFrom..bidTo` (`inBidWindow`). Null bounds (the whole war open, the state
+  a war starts in) wrap every day column. The box runs from the month-bracket
+  row (the `.mxhead` top) down to the foot of the roster.
+- **How it's drawn.** ONE absolutely-positioned overlay, `.lw-bidbox`, inside
+  `.mx-wrap` (which is now `position: relative`), sized in JS by
+  `Matrix.tsx measureBidBox`. NOT per-cell borders: a single element gives the
+  continuous glow, and — being part of the scroller's content — it tracks the
+  horizontal scroll with no handler and none of the fling-killing scrollLeft
+  writes the rest of Matrix guards against. Measured in the same layout signals
+  as the month strip (period/stage/window, zoom, row-window, counts fold,
+  resize) — PLUS the store `version` (bug-hunt fix, 1 Sep 26): the box's height
+  is the whole table's, so any commit that adds or removes a row (a counter
+  built/deleted, a member joining via the Quals sync, a CAT sub-heading
+  appearing) must re-measure or the box reads a row short until the next
+  zoom/resize. Four identity-guarded rect reads per commit — noise next to the
+  repaint that commit already paid for. jsdom leaves it null, so geometry-free
+  tests are unaffected.
+- **Layering.** `z-index: 1` — above the day cells, BELOW the frozen
+  callsign/counter columns (z 2/3) and the scrolled-in band overlay (z 4). So
+  when the year scrolls under the frozen columns the box's left edge hides
+  behind them exactly as a day cell does; it never floats over the frozen
+  column. `pointer-events: none`, so it never intercepts a bid tap or a
+  drag-select.
+- **Colour.** `rgba(74,140,100,.80)` border with a low-opacity green halo
+  (`box-shadow` outer + faint inset) — the owner's final pick, the lighter of
+  two faded greens compared live (the deeper `rgba(56,104,76,.78)` was the
+  other). Still darker and more desaturated than the app's bright `--ok`, and
+  chosen over a brighter glow across two earlier rounds of comps. Don't swap it
+  to `--ok` or brighten the halo without asking.
+- **Known trade-off, deliberate.** Outline only, no fill (the owner did not
+  take the faint-wash option): scrolled into the MIDDLE of a long open window
+  both edges are off-screen and nothing marks it until you reach an edge. The
+  faint green wash is the layer to add if he ever wants it obvious everywhere;
+  the wash variant was built and shown, so it is a one-line add, not a redesign.
+
+Pinned in `e2e/leavewar.spec.ts` (real-browser: the box frames 1 Jan – 31 Mar
+with its left edge on the Jan 1 column, and clears when bidding closes).

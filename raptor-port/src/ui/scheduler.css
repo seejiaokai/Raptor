@@ -329,6 +329,21 @@ a{color:var(--accent)}
 /* ============ PAGE SHELL ============ */
 .page{display:none}
 .page.on{display:block}
+/* A KEPT-ALIVE page DOZES instead of going display:none (1 Sep 26 — the
+   Leave War keep-alive; the Shell puts .doze on that section once visited).
+   The distinction is MEASURED, not stylistic: re-showing the ~28k-node year
+   grid from display:none forces a full relayout — 411–863ms at 1280px,
+   ~260ms at 390px — because display:none discards the subtree's layout,
+   while content-visibility:hidden keeps it cached and both flips measured
+   1–2ms. The dozing section keeps display:block but renders no content and
+   sizes as empty (height 0), so the active page above it is untouched;
+   descendant rects read 0×0 exactly as under display:none, which is what
+   every Matrix measurement guard already checks for. @supports so a browser
+   without content-visibility falls back to the base display:none — correct,
+   just slower to re-show. */
+@supports (content-visibility: hidden) {
+  .page.doze{display:block;content-visibility:hidden}
+}
 /* THE MOTION SET (owner, 25 Aug 26 — critique follow-up, approved scope:
    "only do the motion"). Three entrances and nothing else: pages fade in,
    the scheduler board slides up (its rule sits beside .schedboard), toasts

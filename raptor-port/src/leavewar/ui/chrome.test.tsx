@@ -90,6 +90,24 @@ describe('the colour/mark legend', () => {
     expect(screen.queryByTestId('legend')).toBeNull()
   })
 
+  /* KEPT-MOUNTED guard (bug-hunt fix, 1 Sep 26) — same rule as Sheet.tsx: a
+     legend left open behind a Raptor tab switch must not answer (or swallow)
+     an Escape pressed on a Raptor page. */
+  it('ignores Escape while the Leave War section is hidden', () => {
+    const pg = document.createElement('section')
+    pg.id = 'page-leavewar'; pg.className = 'page doze'
+    document.body.appendChild(pg)
+    try {
+      render(<StageBar />)
+      fireEvent.click(screen.getByTestId('legend-open'))
+      fireEvent.keyDown(document, { key: 'Escape' })
+      expect(screen.getByTestId('legend'), 'a hidden tab must not answer Escape').toBeTruthy()
+      pg.className = 'page on'
+      fireEvent.keyDown(document, { key: 'Escape' })
+      expect(screen.queryByTestId('legend')).toBeNull()
+    } finally { pg.remove() }
+  })
+
   it('the moved row joins the key once bidding is closed', () => {
     setRole('admin')
     advanceStage()

@@ -283,6 +283,16 @@ export function Sheet({
   useEffect(() => {
     const esc = (e: KeyboardEvent) => {
       if (e.key !== 'Escape') return
+      /* KEPT-MOUNTED guard (bug-hunt fix, 1 Sep 26): since the Leave War tab
+         stays mounted behind a tab switch (LeaveWarPage), a sheet left open
+         when the reader switched away keeps this capture listener alive on a
+         RAPTOR page — where its stopPropagation used to swallow the Escape
+         that Raptor's own cell editing (textedit.ts) restores on, and close
+         the hidden sheet behind the reader's back. Act only while the Leave
+         War section is the one showing; no wrapper (the standalone app) means
+         always. */
+      const pg = document.getElementById('page-leavewar')
+      if (pg && !pg.classList.contains('on')) return
       const all = document.querySelectorAll('.bidsheet')
       if (all.length && all[all.length - 1] !== panelRef.current) return
       e.stopPropagation()

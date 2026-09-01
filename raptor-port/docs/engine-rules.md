@@ -2049,6 +2049,17 @@ a published-day reorder no longer tints one arbitrary moved row (it shows as a
 reorder in the panel, like a deletion), and a move of an AL-tagged block keeps
 that tag at the block's new position rather than retiring it. A reorder-and-back
 shows two reorders (each move counts).
+**A SORTER's gate row is chosen, not fixed** (bug-hunt fix, 1 Sep 26). A mover
+hands `done` the one row it dragged, so the added-gate reads exactly the right
+key — but a sorter permutes many rows at once, and the old fixed choice (index 0
+post-sort) let a draft ADD that sorted to the top swallow the whole section's
+tombstone: the issued rows beneath resequenced with no record, the movers' bug
+alive in the sorter corner. `sortedKey` now asks "did an issued row OVERTAKE
+another issued row" — yes ⇒ `done` gets the first moved issued row and the
+tombstone mints; no (rows merely displaced down under an add, relative order
+kept) ⇒ `done` gets the add itself and the movers' net-no-op rule holds, the
+displacement being the add's own business. Pinned both ways in
+`audit-d-published.test.ts`.
 
 Draft structural additions carry an identity key that is remapped with the row
 through drag, nudge and Sort. Issue clears that identity; unpublish restores it.
