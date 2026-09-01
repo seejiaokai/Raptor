@@ -5236,11 +5236,12 @@ no label. It marks which columns the squadron may bid on. The contract:
   behind them exactly as a day cell does; it never floats over the frozen
   column. `pointer-events: none`, so it never intercepts a bid tap or a
   drag-select.
-- **Colour.** `rgba(56,104,76,.78)` border with a low-opacity green halo
-  (`box-shadow` outer + faint inset), the owner's pick — deeper and more
-  desaturated than the app's bright `--ok`, chosen over a brighter glow across
-  two rounds of comps. Don't swap it back to `--ok` or brighten the halo
-  without asking.
+- **Colour.** `rgba(74,140,100,.80)` border with a low-opacity green halo
+  (`box-shadow` outer + faint inset) — the owner's final pick, the lighter of
+  two faded greens compared live (the deeper `rgba(56,104,76,.78)` was the
+  other). Still darker and more desaturated than the app's bright `--ok`, and
+  chosen over a brighter glow across two earlier rounds of comps. Don't swap it
+  to `--ok` or brighten the halo without asking.
 - **Known trade-off, deliberate.** Outline only, no fill (the owner did not
   take the faint-wash option): scrolled into the MIDDLE of a long open window
   both edges are off-screen and nothing marks it until you reach an edge. The
