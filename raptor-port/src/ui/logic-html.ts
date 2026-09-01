@@ -88,6 +88,10 @@ export function lgRules(){
      t:()=>`A man on an <b>SC MAIN</b> shift is graded by what he runs into — ${SH.length} kinds are hard, the rest are advisory:<span class="why">With one overlay (26 Aug 26): a personal-input commitment across the shift is graded by its TYPE — ${INPUT_TYPES.filter(shiftHardInput).join(', ')} are a <b>Warning</b>, because the shift may launch him; a Meeting stays an <b>Advisory</b>. A type the engine does not recognise — a typo, or a record from an older store — reads as the <b>Warning</b> too, never the advisory: when in doubt the engine assumes the serious case. A ground row carrying one of those words — lifted from an input or typed by hand — grades as the commitment it is, not as academics. A programme item always stays advisory.</span>`},
     {sev:'set',src:()=>`isPersonal / isUnavail`,
      t:()=>`Every personal input is a <b>real commitment</b>, <b>“Fly”</b> included — it clashes with a sortie and eats brief/debrief time exactly like an appointment.<span class="why">There used to be an “offer” exemption for “Available fly”, “Available duty” and “Fly”. Those first two types are gone, and a man who says he is flying elsewhere is not available for this sortie.</span>`},
+    /* no `code`: ⓘ is a per-item switch, not a validator code — the engine
+       emits nothing for an info item, which is the whole point */
+    {sev:'note',src:()=>`row.info · events.ts / avail.ts / oil.ts`,
+     t:()=>`A Ground or Common Programme item marked <b>ⓘ info only</b> is shown on the programme but <b>never checked</b>: it raises no clash, occupies nobody's time, keeps nobody busy in the crew palette and earns no OIL.<span class="why">For the mass brief or all-call that overlaps everything on purpose: the squadron still wants it printed, but an engine ringing over it would teach everyone to ignore the bell. The crew picker stands down too — arming an info item bars no one, so the picker and the warning list stay in step. Flip the ⓘ on the item's row on the scheduler board; flip it again and the checks return.</span>`},
    ]},
 
   {g:'Crew rest',

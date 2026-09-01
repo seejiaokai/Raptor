@@ -3968,6 +3968,21 @@ button.sarole:hover{border-color:var(--accent);color:var(--accent);opacity:1}
 .flagtag{font-family:'Barlow Condensed','Inter Tight',sans-serif;font-size:8.5px;font-weight:800;
   letter-spacing:.08em;color:#fff;background:var(--hard);border-radius:3px;padding:0 4px;margin-right:4px;text-decoration:none}
 
+/* ---- ⓘ info-only item (owner, 1 Sep 26) --------------------------------
+   A ground / Common Programme item flagged ⓘ is shown on the programme but
+   never checked against the rules (skipped in events.ts/avail.ts/oil.ts).
+   The look says "passive, still readable": a mild fade — clearly quieter
+   than a live item, clearly livelier than cancelled (.cx sits at .55) — and
+   NO strikethrough, which is cancel's language. The chip is the mark's
+   read-only voice (week rows, read-only board); the board's .mbtn.nfo
+   button is its live voice. A cancelled info item keeps the cx fade. */
+.sb-arow.fyi,.ah-row.fyi,.pl-row.fyi{opacity:.75}
+.sb-arow.fyi.cx,.ah-row.fyi.cx,.pl-row.fyi.cx{opacity:.55}
+.fyitag{display:inline-block;vertical-align:middle;font-size:11px;font-weight:700;line-height:1.3;
+  color:var(--accent);margin-right:4px;text-decoration:none;white-space:nowrap;flex:none}
+.mbtn.nfo{font-size:11px;line-height:1;padding-top:2px;padding-bottom:2px}
+.mbtn.nfo.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+
 /* ---- LATE INPUT (owner, 9 Aug 26) --------------------------------------
    An input last changed after the week's deadline. Same shape as .flagtag so
    the two read as one family, but AMBER: it is an advisory about paperwork,

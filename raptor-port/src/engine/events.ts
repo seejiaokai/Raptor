@@ -390,14 +390,18 @@ export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
       const st=parseHM(r.str),en=parseHM(r.end);
       push(r.id,st,en,r.role+' duty','duty',`d:${di}.${dwi}.${ri}`);
       extras(r).forEach((x:any)=>push(x,st,en,r.role+' duty','duty',`d:${di}.${dwi}.${ri}`)); }));
-    (d.ground||[]).forEach((g:any,ri:any)=>{ if(g.cx)return;
+    /* a row flagged ⓘ info-only (owner, 1 Sep 26) is shown but never checked:
+       it must not enter the event stream — that one skip keeps it out of every
+       validator rule, the palette's clash checks and the Insights hours, which
+       all read day.events. Kept as a SEPARATE guard beside cx, not merged. */
+    (d.ground||[]).forEach((g:any,ri:any)=>{ if(g.cx)return; if(g.info)return;
       const st=parseHM(g.str),en=parseHM(g.end);
       push(nameToId(g.who),st,en,g.prog,'ground',`g:${di}.${ri}`);
       extras(g).forEach((x:any)=>push(x,st,en,g.prog,'ground',`g:${di}.${ri}`)); });
     /* the squadron-wide Programme was never read here at all — a man booked to
        a 0845–1630 engagement could be scheduled to fly at 1245 with nothing
        said about it */
-    (d.allhands||[]).forEach((x:any,ri:any)=>{ if(x.cx)return;
+    (d.allhands||[]).forEach((x:any,ri:any)=>{ if(x.cx)return; if(x.info)return;
       const st=parseHM(x.str),en=parseHM(x.end);
       whoArr(x).forEach((nm:any)=>push(nameToId(nm),st,en,x.prog||'programme','prog',`a:${di}.${ri}`));
       extras(x).forEach((v:any)=>push(v,st,en,x.prog||'programme','prog',`a:${di}.${ri}`)); });

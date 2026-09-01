@@ -679,6 +679,36 @@ describe('duty / sim / ground panels on the board (owner request, Aug 26)', () =
     expect(!!x.flag).toBe(false)
   })
 
+  /* the ⓘ info-only switch (owner, 1 Sep 26) — same shape as the red box just
+     above: flips the row field through the funnel, paints the quiet .fyi row,
+     flips back. The engine seams it silences are pinned in
+     engine/infoflag.test.ts; this is the toggle's own wiring. */
+  it('the ⓘ info-only switch toggles on a ground row', async () => {
+    const btn = document.querySelector('#sbBoard [data-grinfo]') as HTMLElement
+    expect(btn).toBeTruthy()
+    const [di, ri] = btn.dataset.grinfo!.split('.').map(Number)
+    const x = DAYS[di!].ground[ri!]
+    expect(!!x.info).toBe(false)
+    await click(btn)
+    expect(x.info).toBe(true)
+    expect(document.querySelector('#sbBoard .sb-panel.grnd .sb-arow.fyi')).toBeTruthy()
+    await click(document.querySelector(`#sbBoard [data-grinfo="${di}.${ri}"]`))
+    expect(!!x.info).toBe(false)
+  })
+
+  it('the ⓘ info-only switch toggles on a Common Programme item', async () => {
+    const btn = document.querySelector('#sbBoard [data-pinfo]') as HTMLElement
+    expect(btn).toBeTruthy()
+    const [di, ri] = btn.dataset.pinfo!.split('.').map(Number)
+    const x = DAYS[di!].allhands[ri!]
+    expect(!!x.info).toBe(false)
+    await click(btn)
+    expect(x.info).toBe(true)
+    expect(document.querySelector('#sbBoard .sb-panel.prog .sb-arow.fyi')).toBeTruthy()
+    await click(document.querySelector(`#sbBoard [data-pinfo="${di}.${ri}"]`))
+    expect(!!x.info).toBe(false)
+  })
+
   /* This used to read "the personal-inputs panel is inert even on the live
      board", and asserted no `input` existed in it at all. The owner asked for
      the opposite on 10 Aug 26 — "they can be editable in the same modality as
@@ -1699,6 +1729,19 @@ describe('the OTHER panels honour the read-only flag too, not just the flying li
     expect(h).toContain('data-padd=')
     expect(h).toContain('data-dwadd=')
     expect(h).toContain('data-dradd=')
+  })
+
+  it('a read-only board drops the ⓘ button but still shows the static ⓘ mark on an info item', () => {
+    DAYS[0].ground[0].info = true
+    DAYS[0].allhands[0].info = true
+    HOOKS.editMode = () => false
+    const h = boardHTML(0)
+    expect(h).not.toContain('data-grinfo=')
+    expect(h).not.toContain('data-pinfo=')
+    expect((h.match(/class="fyitag"/g) || []).length).toBeGreaterThanOrEqual(2)
+    expect(h).toContain('sb-arow c6r fyi')
+    DAYS[0].ground[0].info = false
+    DAYS[0].allhands[0].info = false
   })
 
   it('a duty row\'s seat carries no data-slot and no draggable once editMode() is false', () => {

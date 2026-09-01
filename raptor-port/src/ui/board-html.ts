@@ -223,8 +223,10 @@ export function sbProgPanel(d:any,di:any,pv?:any,ro?:any){
            only); the word said otherwise. Empty cell, same data-fill target. */
         +`<div class="ppl"${ro?'':` data-fill="a:${di}.${ri}.+"`}>${inner}${ro?'':ADDZ}</div>`
         +sbRmk(`ap:${di}.${ri}.rmks`,x.rmks,ro)
-        +(ro?'':`<span class="lctl">`+sbNudge(`mv:p.${di}.${ri}`,ro)
+        +(ro?(x.info?`<span class="lctl"><span class="fyitag" title="Info only — not checked against the rules">ⓘ</span></span>`:'')
+        :`<span class="lctl">`+sbNudge(`mv:p.${di}.${ri}`,ro)
         +`<button class="mbtn${x.cx?' on':''}" data-pcx="${di}.${ri}" title="${x.cx?'Restore this item':'Cancel this item (CX)'}">CX</button>`
+        +`<button class="mbtn nfo${x.info?' on':''}" data-pinfo="${di}.${ri}" title="${x.info?'Info only — tap to check this item against the rules again':'Info only — show this item on the programme but never check it against the rules'}">ⓘ</button>`
         +`<button class="mbtn red${x.flag?' on':''}" data-pflag="${di}.${ri}" title="${x.flag?'Clear the red box':'Red box — flag for the next scheduler'}">■</button>`
         +`<button class="mbtn del" data-pdel="${di}.${ri}" title="Remove this item">✕</button></span>`)+`</div>`;
     });
@@ -315,9 +317,15 @@ export function boxHTML(cls:any,attrs:any,v:any,ph:any){
 function sbRmk(path:any,v:any,pv:any){
   return sbTxt('ain rmkin',path,v,'Remarks',pv);
 }
-function sbRowCtl(pv:any,o:any,addr:any,pre:any,what:any,mv?:any){
-  return pv?'':`<span class="lctl">`+(mv||'')
+/* fyi (7th param): only the GROUND rows pass it — the ⓘ info-only toggle is a
+   ground/Common-Programme thing (owner, 1 Sep 26), so the duty and sim rows
+   sharing this builder never draw it. On a read-only surface the button gives
+   way to a static ⓘ tag, so a reader still sees which items are FYI. */
+function sbRowCtl(pv:any,o:any,addr:any,pre:any,what:any,mv?:any,fyi?:any){
+  return pv?(fyi&&o&&o.info?`<span class="lctl"><span class="fyitag" title="Info only — not checked against the rules">ⓘ</span></span>`:'')
+    :`<span class="lctl">`+(mv||'')
     +`<button class="mbtn${o.cx?' on':''}" data-${pre}cx="${addr}" title="${o.cx?'Restore '+what:'Cancel '+what+' (CX)'}">CX</button>`
+    +(fyi?`<button class="mbtn nfo${o.info?' on':''}" data-${pre}info="${addr}" title="${o.info?'Info only — tap to check this item against the rules again':'Info only — show this item on the programme but never check it against the rules'}">ⓘ</button>`:'')
     +`<button class="mbtn red${o.flag?' on':''}" data-${pre}flag="${addr}" title="${o.flag?'Clear the red box':'Red box — flag for the next scheduler'}">■</button>`
     +`<button class="mbtn del" data-${pre}del="${addr}" title="Remove ${what}">✕</button></span>`;
 }
@@ -466,7 +474,7 @@ export function sbGroundPanel(d:any,di:any,pv?:any,ro?:any){
         +sbTxt('ain',`${t}.prog`,x.prog,'OCU PROGRESS REVIEW',ro)+sbTxt('atm',`${t}.str`,x.str,'',ro)+sbTxt('atm',`${t}.end`,x.end,'',ro)
         +`<div class="ppl"${ro?'':` data-fill="${base}.+"`}>${inner}${ro?'':ADDZ}</div>`
         +sbRmk(`${t}.rmks`,x.rmks,ro)
-        +sbRowCtl(ro,x,`${di}.${ri}`,'gr','this item',sbNudge(`mv:g.${di}.${ri}`,ro))+`</div>`;
+        +sbRowCtl(ro,x,`${di}.${ri}`,'gr','this item',sbNudge(`mv:g.${di}.${ri}`,ro),true)+`</div>`;
     });
   }
   return s+sbNote(d,di,'gn','grndnotes','e.g. Two medicals already at 1030 — keep the next one clear of the wave brief.',ro)+`</div></div>`;

@@ -31,8 +31,10 @@ export function personBusy(d:any,id:any){
     if(o.p===id||o.w===id||nameToId(o.who)===id||(o.pax||[]).includes(id)||has(o))
       add(parseHM(o.str),parseHM(o.end),VCONF.simLen); }));
   (d.dutywaves||[]).forEach((dw:any)=>dw.rows.forEach((r:any)=>{ if(r.cx)return; if(has(r,r.id))add(parseHM(r.str),parseHM(r.end)); }));
-  (d.ground||[]).forEach((g:any)=>{ if(g.cx)return; if(has(g,nameToId(g.who)))add(parseHM(g.str),parseHM(g.end)); });
-  (d.allhands||[]).forEach((x:any)=>{ if(x.cx)return;
+  /* an ⓘ info-only row never occupies anyone's time — same reasoning as its
+     skip in events.ts: shown, never checked (owner, 1 Sep 26) */
+  (d.ground||[]).forEach((g:any)=>{ if(g.cx)return; if(g.info)return; if(has(g,nameToId(g.who)))add(parseHM(g.str),parseHM(g.end)); });
+  (d.allhands||[]).forEach((x:any)=>{ if(x.cx)return; if(x.info)return;
     if(whoArr(x).some((nm:any)=>nameToId(nm)===id)||has(x))add(parseHM(x.str),parseHM(x.end)); });
   return out;
 }
@@ -52,8 +54,10 @@ export function dayEngaged(d:any){const s=new Set(),add=(id:any)=>{if(id&&PEOPLE
      its primary seat — they used to be counted as free all day */
   const more=(r:any)=>((r&&r.more)||[]).forEach(add);
   (d.dutywaves||[]).forEach((dw:any)=>dw.rows.forEach((r:any)=>{if(!r.cx){add(r.id);more(r);}}));
-  (d.ground||[]).forEach((g:any)=>{if(!g.cx){add(nameToId(g.who));more(g);}});
-  (d.allhands||[]).forEach((x:any)=>{if(x.cx)return;(Array.isArray(x.who)?x.who:(x.who?[x.who]:[])).forEach((w:any)=>add(nameToId(w)));more(x);});
+  /* crew on ONLY an ⓘ info-only row stay un-greyed in the palette — being
+     listed for information is not being tasked (owner, 1 Sep 26) */
+  (d.ground||[]).forEach((g:any)=>{if(!g.cx&&!g.info){add(nameToId(g.who));more(g);}});
+  (d.allhands||[]).forEach((x:any)=>{if(x.cx)return;if(x.info)return;(Array.isArray(x.who)?x.who:(x.who?[x.who]:[])).forEach((w:any)=>add(nameToId(w)));more(x);});
   ['amt','oft'].forEach((k:any)=>((d.sims||{})[k]||[]).forEach((o:any)=>{if(!o.cx)more(o);}));
   return s;}
 /* AWAY, split by whether the absence closes the DAY or only some HOURS
@@ -137,7 +141,7 @@ export function slotRules(key:any){
   /* an append target and an overflow body both sit on the row they hang off,
      so they carry its hours — strip both before looking the row up */
   const k=String(key).replace(/\.\+$/,'').replace(XKEY,'');
-  const out:any={seat:null,sim:false,simKind:null,sc:null,scStart:null,scEnd:null,scSpare:false,aar:null,di:-1,slotStart:null,slotEnd:null,sansStart:null,avJet:false,avDuty:false};
+  const out:any={seat:null,sim:false,simKind:null,sc:null,scStart:null,scEnd:null,scSpare:false,aar:null,di:-1,slotStart:null,slotEnd:null,sansStart:null,avJet:false,avDuty:false,infoRow:false};
   out.di=keyDay(k);
   /* THE SLOT'S OWN HOURS (10 Aug 26, for the AM/PM half-days). Only an SC
      shift carried a window before, which is the whole reason a personal input
@@ -161,6 +165,9 @@ export function slotRules(key:any){
        win() does by default */
     const w2=r&&win(parseHM(r.str),parseHM(r.end),kk==='s'?VCONF.simLen:undefined);
     if(w2){out.slotStart=w2[0]; out.slotEnd=w2[1];}
+    /* an ⓘ info-only ground/programme row (owner, 1 Sep 26): the flag rides out
+       so slotBar can stand down — see its early return */
+    if((kk==='g'||kk==='a')&&r&&r.info)out.infoRow=true;
   }
   /* a SIM box has the same two seats as the jet and the engine checks its
      FRONT one (day.simcrew). The picker used to skip the seat rules for
@@ -275,6 +282,11 @@ export function sansGate(id:any,dt:any,domain:any,s:any,e:any):any{
 export function slotBar(id:any,key:any,rules?:any){
   const p=PEOPLE[id]; if(!p||p.special)return '';
   const r=rules||slotRules(key);
+  /* an ⓘ info-only row raises nothing after planting (it never enters the event
+     stream), so the picker must raise nothing before it — the standing rule that
+     the picker and the warning list may not drift. Anyone may be listed on an
+     FYI item, absences and clashes included. */
+  if(r.infoRow)return '';
   /* Personnel (ground crew) may ride a REAR seat (an incentive ride) and do
      ground work, but never a front seat — flying or sim. Their seat is 'GND',
      so the FCP/RCP checks below never catch them; this is the whole front-seat

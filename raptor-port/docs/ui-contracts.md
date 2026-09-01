@@ -5080,3 +5080,30 @@ on every row — anyone may VIEW any attachment, gated nowhere. The write-path
 backstop behind the hidden controls lives in `commitInputEdit` / `removeInput`
 and is in `docs/engine-rules.md` §Auth / roles. Pinned in
 `audit-guards-inputs.test.ts`.
+
+## The ⓘ info-only switch on programme items (owner, 1 Sep 26)
+
+A Ground / Common Programme item can be flipped **info only**: printed on the
+programme, never checked against the rules (the engine seams are in
+`docs/engine-rules.md`). On screen:
+
+- **The switch** is a fourth `mbtn` in the board row's control cluster —
+  CX · ⓘ · ■ · ✕ — on both `sbProgPanel` and `sbGroundPanel` (`data-pinfo` /
+  `data-grinfo`; the shared `sbRowCtl` grows an `fyi` param that ONLY the
+  ground rows pass, so duty/sim rows never draw it). Lit state is accent on
+  accent (`.mbtn.nfo.on`), the glyph bumped to 11px so ⓘ stays legible.
+- **The row look** is the `fyi` class from `rowCls` (board `.sb-arow`, week
+  `.ah-row`/`.pl-row`): opacity .75 — quieter than live, clearly livelier
+  than cancelled (.cx .55, which wins when both are set) — and NO
+  strikethrough, which is cancel's language. Crew pucks keep their seat
+  colours (the 1 Sep 26 rule: greyed states keep colour).
+- **Read-only surfaces** (view week, read-only board) show a static accent
+  `ⓘ` instead of the button: `fyiTag` beside `cxTag`/`flagTag` on the week
+  rows, and `sbRowCtl`/`sbProgPanel` emit a bare `.fyitag` in the control
+  track. Everything emits '' when the flag is unset, so the seed week's
+  view markup — and the reference compare — stays byte-identical.
+- The crew picker raises no reasons while an info row's people cell is armed
+  (see engine-rules) — by design, not an omission.
+
+Pinned in `ui/board.test.tsx` (toggle + read-only mark) and
+`engine/infoflag.test.ts`.

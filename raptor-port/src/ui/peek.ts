@@ -37,7 +37,7 @@ import { weekBundle } from '../engine/weeks-data'
 import { stashDays, stashGenOf } from '../engine/weekstash'
 import { shiftWeek } from './weeknav'
 import { esc } from '../state/view'
-import { fmtT, storesView, rowCls, cxTag, flagTag, plCols, areaText, atimeText, lCell, saRoleText } from './html'
+import { fmtT, storesView, rowCls, cxTag, flagTag, fyiTag, plCols, areaText, atimeText, lCell, saRoleText } from './html'
 
 /* a plain, non-interactive puck — the same visual identity (qual chip, RCP
    tint, SANS line) as html.ts's `puck()`, minus everything that function
@@ -64,7 +64,7 @@ function peekPucks(a: any): string { return `<span class="pucks">${peekSeat(a.p)
    straight off the object handed in (rowCls/cxTag/flagTag are pure). */
 function peekRow(name: any, str: any, end: any, peopleHtml: string, rmks: any, o: any): string {
   const t = (v: any) => v ? esc(fmtT(v)) : ''
-  return `<div class="pl-row${rowCls(o)}"><span class="nm">${cxTag(o)}${flagTag(o)}<span class="ntx">${esc(name || '')}</span></span>`
+  return `<div class="pl-row${rowCls(o)}"><span class="nm">${cxTag(o)}${fyiTag(o)}${flagTag(o)}<span class="ntx">${esc(name || '')}</span></span>`
     + `<span class="t t-s">${t(str)}</span><span class="t t-e">${t(end)}</span>`
     + `${peopleHtml || '<div class="ppl one"></div>'}`
     + `<span class="rmk${rmks ? '' : ' rk-e'}"><span class="ntx">${esc(rmks || '')}</span></span></div>`
@@ -132,7 +132,7 @@ function peekCommon(d: any): string {
     d.allhands.forEach((x: any) => {
       const ids = whoArr(x).map((nm: any) => nameToId(nm))
       const ppl = peekCrewCell(ids, '')
-      h += `<div class="ah-row${rowCls(x)}"><span class="nm">${cxTag(x)}${flagTag(x)}<span class="ntx">${esc(x.prog || '')}</span>${x.sub ? `<span class="sub">${esc(x.sub)}</span>` : ''}</span>`
+      h += `<div class="ah-row${rowCls(x)}"><span class="nm">${cxTag(x)}${fyiTag(x)}${flagTag(x)}<span class="ntx">${esc(x.prog || '')}</span>${x.sub ? `<span class="sub">${esc(x.sub)}</span>` : ''}</span>`
         + `<span class="t t-s">${x.str ? esc(fmtT(x.str)) : ''}</span><span class="t t-e">${x.end ? esc(fmtT(x.end)) : ''}</span>${ppl}`
         + `<span class="rmk${x.rmks ? '' : ' rk-e'}"><span class="ntx">${esc(x.rmks || '')}</span></span></div>`
     })

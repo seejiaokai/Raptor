@@ -145,10 +145,12 @@ export function dayOilSpans(day:any,opts?:{expandAll?:(win:[number,number])=>str
   });
   (day.ground||[]).forEach((g:any)=>{
     if(g.cx||g.src)return;                               // src = an accepted input: the ask-flow's
+    if(g.info)return;                                    // ⓘ info-only: shown, never worked — mints no OIL
     putWho(g.who,w2(parseHM(g.str),parseHM(g.end)),g.more);
   });
   (day.allhands||[]).forEach((x:any)=>{
     if(x.cx)return;
+    if(x.info)return;                                    // ⓘ info-only: mints no OIL
     const win=w2(parseHM(x.str),parseHM(x.end));
     if(!win)return;
     whoArr(x).forEach((v:any)=>putWho(v,win));

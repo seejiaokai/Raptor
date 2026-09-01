@@ -418,6 +418,15 @@ ON these, don't route around them):
   — the week's day-head and the board's sign-off panel both call it for the
   version chip, pending count, ⓘ and Publish controls, so "the board should
   edit everything the week does" cannot drift into two copies of that strip.
+- **The ⓘ info-only flag reads through the engine's own primitives** (1 Sep
+  26) — a `ground`/`allhands` row with `info:true` is skipped once in
+  `events.ts` (so every `day.events` consumer — validator, EVD, Insights,
+  cross-week seeds — follows for free) plus the three raw-model readers
+  (`personBusy`, `dayEngaged`, `dayOilSpans`), and the crew picker stands
+  down via `slotRules().infoRow` → `slotBar` '' — the picker mirrors the
+  validator's silence rather than keeping a second copy of the rule. The
+  prose lives once on the Logic page. `personCount` deliberately still
+  counts it (ink on the week, like cx). Pins: `engine/infoflag.test.ts`.
 - **`rosterOptions` (`inputedit.tsx`) is the one roster list** (14 Aug 26) —
   the Inputs page's add form, its row editor and the schedule's
   Unavailable-reassign dialog all call it, so the three can never disagree

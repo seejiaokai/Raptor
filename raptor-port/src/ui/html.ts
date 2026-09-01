@@ -325,7 +325,7 @@ export function plRow(name:any,str:any,end:any,pplHtml:any,base:any,nf:any,ed:an
   /* t-s / t-e let the phone stack the two times into a single TIME column */
   const t=(v:any,f:any)=>{const c='t t-'+(f==='str'?'s':'e');
     return base?ted(base+'.'+f,v,ed,c):`<span class="${c}">${v?esc(fmtT(v)):''}</span>`;};
-  return `<div class="pl-row${rowCls(o)}"><span class="nm">${cxTag(o)}${flagTag(o)}${nmi}</span>${t(str,'str')}${t(end,'end')}${pplHtml||'<div class="ppl one"></div>'}${plRmk(base,ed,o,rmkTxt,lateTagOf(o))}</div>`;}
+  return `<div class="pl-row${rowCls(o)}"><span class="nm">${cxTag(o)}${fyiTag(o)}${flagTag(o)}${nmi}</span>${t(str,'str')}${t(end,'end')}${pplHtml||'<div class="ppl one"></div>'}${plRmk(base,ed,o,rmkTxt,lateTagOf(o))}</div>`;}
 /* RMKS cell — column 5 on desktop, a full-width strip under the row on a phone.
    Rows addressable through a text key (duties / sims / ground) get an editable cell;
    read-only rows (personal inputs) get a plain one. An empty cell is dropped on the
@@ -731,12 +731,20 @@ export let TXTQ=0;
    promoted ground row (slots.ts) — no aircraft, formation or plain input row
    carries it — so this reads true for exactly the input-derived rows on both
    the week (plRow) and the board (sb-arow), and nothing else. */
-export function rowCls(o:any){return (o&&o.cx?' cx':'')+(o&&o.flag?' redbox':'')+(o&&o.src?' gr-frominput':'');}
+/* fyi = the ⓘ info-only flag (owner, 1 Sep 26): quiet styling, never a strike —
+   the strike is cancel's language. Emitted only when the flag is set, so the
+   seed week's markup — and the view-week reference compare — is untouched. */
+export function rowCls(o:any){return (o&&o.cx?' cx':'')+(o&&o.info?' fyi':'')+(o&&o.flag?' redbox':'')+(o&&o.src?' gr-frominput':'');}
 /* CX carries its reason: "CX DUE WX" rather than a bare CX, so the next
    scheduler reading the day knows why the line went. */
 export function cxText(o:any){const r=o&&o.cxr?String(o.cxr).trim():'';return r?('CX DUE '+r):'CX';}
 export function cxTag(o:any){return o&&o.cx?`<span class="cxtag" title="${esc(cxText(o))}">${esc(cxText(o))}</span>`:'';}
 export function flagTag(o:any){return o&&o.flag?'<span class="flagtag" title="Flagged for the next scheduler">!</span>':'';}
+/* the ⓘ info-only chip (owner, 1 Sep 26): a ground/programme item flagged info
+   is shown for information and never checked — the chip says so wherever the
+   row prints without its board toggle. '' when unset, so the seed week's
+   markup (and the view-week reference compare) is byte-identical. */
+export function fyiTag(o:any){return o&&o.info?'<span class="fyitag" title="Info only — not checked against the rules">ⓘ</span>':'';}
 /* THE MAIN/SPARE BADGE ON A STANDALONE LINE (owner, 24 Aug 26 — "for SC, can
    I have the option to change the line to SPARE from MAIN, vice versa. Either
    a button that goes into remarks. Rather than a default main or spare faded
@@ -1016,7 +1024,7 @@ export function dayHTML(di:any,ed:any,vsel?:any){
             return String(nm||'').trim()?`<span class="itxt">${esc(nm)}</span>`:'';}).join('');
           const ppl=lCell(inner,`a:${di}.${ri}.+`,ed,arr.length===1?'one':'');
           const sub=(x.sub||ed)?ted(`ap:${di}.${ri}.sub`,x.sub,ed,'sub'):'';
-          h+=`<div class="ah-row${rowCls(x)}"><span class="nm">${cxTag(x)}${flagTag(x)}${ted(`ap:${di}.${ri}.prog`,x.prog,ed,'ntx')}${sub}</span>`
+          h+=`<div class="ah-row${rowCls(x)}"><span class="nm">${cxTag(x)}${fyiTag(x)}${flagTag(x)}${ted(`ap:${di}.${ri}.prog`,x.prog,ed,'ntx')}${sub}</span>`
             +`${ted(`ap:${di}.${ri}.str`,x.str,ed,'t')}${ted(`ap:${di}.${ri}.end`,x.end,ed,'t')}${ppl}${plRmk(`ap:${di}.${ri}`,ed,x,undefined)}</div>`;
         });
       }

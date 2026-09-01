@@ -2646,3 +2646,32 @@ apart, so a single-ship reads as it always did, and the bubble was never
 affected: it matches on the key, not on the words. `state/view.ts`'s `slotTitle()` answers a
 similar question for the arm picker and is deliberately separate: it emits
 HTML, covers only the crew keys, and lives where the engine cannot reach it.
+
+## The ⓘ info-only flag on Ground / Common Programme items (owner, 1 Sep 26)
+
+A `ground[]` or `allhands[]` row with `info:true` is shown on the programme
+but NEVER checked. One boolean on the row (it rides weekstash, day templates
+and history snapshots for free), silenced at exactly these seams — each a
+SEPARATE `if(x.info)return` beside the row's cx guard, never merged into it:
+
+- `events.ts` buildDay (the ground and allhands pushes): the row never enters
+  `day.events`, which alone removes it from every validator rule
+  (DOUBLE_BOOK, crew rest, DAYS_RUN, LONGDAY, brief-eating,
+  unavailable-vs-tasking), from `EVD`, from Insights work-hours and from the
+  cross-week seed reads — they all consume the event stream.
+- `avail.ts personBusy`: no busy window (palette hours, availByWave free).
+- `avail.ts dayEngaged`: crew on only an info item stay un-greyed.
+- `oil.ts dayOilSpans`: mints no OIL (keeps Leave War's ledger honest).
+- `avail.ts slotRules/slotBar`: `slotRules` sets `infoRow` for a `g:`/`a:`
+  key whose row carries the flag, and `slotBar` returns '' at once — the
+  picker must never bar what the validator will not flag (the standing
+  no-drift rule). Anyone may be listed on an FYI item.
+
+Deliberately NOT excluded: `personCount` — it counts every place a person is
+WRITTEN into the week (cancelled rows included), and an info row still writes
+him in. An item can be both cx and info; the engine skips it either way and
+the cx look wins on screen. The flip itself is `ds.pinfo`/`ds.grinfo` in
+`ui/board.ts` — through the funnel, `markEdit` on the row's own `ap:`/`gr:`
+key so a flip on a published day rides the next AL. Prose lives once on the
+Logic page (a note row beside DOUBLE_BOOK). Pinned in
+`engine/infoflag.test.ts` and the two board toggle tests.
