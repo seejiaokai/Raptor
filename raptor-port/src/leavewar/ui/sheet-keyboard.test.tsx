@@ -92,6 +92,18 @@ describe('opening the full window vs typing at once', () => {
     expect(document.activeElement).toBe(screen.getByTestId('event-text'))
   })
 
+  it('closes the keyboard on Enter by blurring the name field', () => {
+    // Pressing Return means "done typing the name" — it drops focus (which is
+    // what dismisses the phone keyboard), it does not save.
+    openDay(0, '2026-01-05')
+    const input = screen.getByTestId('event-text')
+    expect(document.activeElement).toBe(input)
+    fireEvent.keyDown(input, { key: 'Enter' })
+    expect(document.activeElement).not.toBe(input)
+    // and the sheet is still open — Enter did not commit
+    expect(screen.getByTestId('event-sheet')).toBeTruthy()
+  })
+
   it('opens a placed range with the field NOT focused, so the full window shows', () => {
     render(<Matrix />)
     // place a merged band 05→09 on line 0

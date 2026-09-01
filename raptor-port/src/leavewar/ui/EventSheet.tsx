@@ -240,6 +240,13 @@ export function EventSheet({ line, date, to, onClose, onMove }: { line: number; 
              a range reveals the full window too. */
           autoFocus={!(band || dragged)}
           onChange={e => setText(e.target.value)}
+          /* Enter/Return closes the keyboard (owner, 1 Sep 26 — "when I press
+             enter the keyboard should close"). It blurs the field rather than
+             saving: the sheet still has the scope, tag and dates to set, so
+             Enter means "done typing the name", the same as the type-name row
+             above. Dropping focus dismisses the keyboard, and useKeyboardInset
+             then lets the panel fall back to the full window. */
+          onKeyDown={e => { if (e.key === 'Enter') e.currentTarget.blur() }}
         />
       </div>
 
