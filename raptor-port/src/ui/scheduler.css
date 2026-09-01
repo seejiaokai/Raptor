@@ -2807,7 +2807,21 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
 .airpop-box{background:var(--panel);border:1px solid var(--edge);border-radius:14px;width:520px;max-width:100%;max-height:80vh;overflow:auto}
 .airpop-head{padding:12px 15px;border-bottom:1px solid var(--edge);display:flex;align-items:center}
 .airpop-head b{font-size:15px;font-weight:700}
-.airpop-head .x{margin-left:auto;background:none;border:none;color:var(--ink-2);cursor:pointer;font-size:18px}
+.airpop-head .x{background:none;border:none;color:var(--ink-2);cursor:pointer;font-size:18px}
+/* The "Go to today" button in the "Jump to a date" header (WeekCal). It and
+   the ✕ cluster at the right — margin-left:auto is on the today button now, so
+   the ✕ that used to carry it follows on the today button's own right margin.
+   Design B (owner, 1 Sep 26): a calendar-page glyph — a bordered box with a
+   filled top bar (::before) — holding the notional today's date number. */
+.wc-today{margin-left:auto;margin-right:6px;display:inline-flex;align-items:center;justify-content:center;
+  background:var(--panel-2);border:1px solid var(--edge);color:var(--ink-2);border-radius:9px;
+  width:38px;height:32px;cursor:pointer}
+.wc-today:hover,.wc-today:active{border-color:var(--accent);color:var(--accent)}
+.wc-pg{position:relative;width:21px;height:21px;border:1.8px solid currentColor;border-radius:5px}
+.wc-pg::before{content:'';position:absolute;top:-1.8px;left:-1.8px;right:-1.8px;height:6px;
+  background:currentColor;border-radius:4px 4px 0 0}
+.wc-n{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding-top:4px;
+  font-size:9.5px;font-weight:800;color:var(--ink)}
 .airpop-body{padding:12px 15px}
 .airrow{display:flex;gap:8px;align-items:center;margin-bottom:6px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--ink)}
 .airrow .adot{width:7px;height:7px;border-radius:50%;background:var(--accent);flex:0 0 7px}
