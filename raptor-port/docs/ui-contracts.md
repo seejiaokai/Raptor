@@ -5098,10 +5098,16 @@ programme, never checked against the rules (the engine seams are in
   strikethrough, which is cancel's language. Crew pucks keep their seat
   colours (the 1 Sep 26 rule: greyed states keep colour).
 - **Read-only surfaces** (view week, read-only board) show a static accent
-  `ⓘ` instead of the button: `fyiTag` beside `cxTag`/`flagTag` on the week
-  rows, and `sbRowCtl`/`sbProgPanel` emit a bare `.fyitag` in the control
-  track. Everything emits '' when the flag is unset, so the seed week's
-  view markup — and the reference compare — stays byte-identical.
+  `ⓘ` instead of the button. On the week and the peek it rides in the
+  REMARKS cell (owner, 1 Sep 26 — moved out of the name column so the ⓘ
+  shares the one column the late mark already uses): `plRmk` emits `fyiTag`
+  as a leading badge, floated left via `.rmk.has-late` so a remark wraps
+  beside it, and the peek's own remarks spans do the same. On the read-only
+  board it stays in the row's control track (`sbRowCtl`/`sbProgPanel` emit a
+  bare `.fyitag` beside where CX/flag sit), because that row's remarks is a
+  bare `<input>` with nowhere to nest a chip — the same exception the late
+  mark carries. Everything emits '' when the flag is unset, so the seed
+  week's view markup — and the reference compare — stays byte-identical.
 - The crew picker raises no reasons while an info row's people cell is armed
   (see engine-rules) — by design, not an omission.
 

@@ -1147,7 +1147,7 @@ body.ros-open .eroster .ros-tab{background:var(--accent);color:var(--accent-ink)
 .allhands .ah-row .rmk{grid-column:5;font-size:9.5px;color:var(--ink-2);line-height:1.3;padding-top:3px;min-width:0;overflow-wrap:anywhere}
 .allhands .ah-row .rmk .ntx{display:block}
 .allhands .ah-row .rmk.has-late{display:flow-root}
-.allhands .ah-row .rmk.has-late .latetag{float:left}
+.allhands .ah-row .rmk.has-late .latetag,.allhands .ah-row .rmk.has-late .fyitag{float:left}
 .allhands .ah-row:last-child{padding-bottom:6px}
 /* All-available pucks */
 .availpuck{margin:8px 10px;border:1px solid var(--edge);border-radius:10px;background:rgba(87,201,122,.05);overflow:hidden}
@@ -1253,7 +1253,7 @@ body.dnd .schedboard .ppl[data-fill].dragover .addz{border-color:var(--accent);c
    flow-root is what contains the float when the remark is empty and the badge
    is the cell's only content — without it the badge escapes a zero-height cell. */
 .plist .pl-row .rmk.has-late{display:flow-root}
-.plist .pl-row .rmk.has-late .latetag{float:left}
+.plist .pl-row .rmk.has-late .latetag,.plist .pl-row .rmk.has-late .fyitag{float:left}
 /* wave in-times note block */
 .intimes{margin:0;padding:5px 11px;border-bottom:1px solid var(--edge);background:rgba(229,201,74,.05);display:flex;flex-direction:column;gap:2px}
 .intimes span{font-family:'JetBrains Mono',monospace;font-size:9.5px;color:#F2D699;line-height:1.4;display:block}
@@ -3974,8 +3974,12 @@ button.sarole:hover{border-color:var(--accent);color:var(--accent);opacity:1}
    The look says "passive, still readable": a mild fade — clearly quieter
    than a live item, clearly livelier than cancelled (.cx sits at .55) — and
    NO strikethrough, which is cancel's language. The chip is the mark's
-   read-only voice (week rows, read-only board); the board's .mbtn.nfo
-   button is its live voice. A cancelled info item keeps the cx fade. */
+   read-only voice; the board's .mbtn.nfo button is its live voice. On the
+   week (and the peek) the chip rides in the REMARKS cell, floated left like
+   the late mark (owner, 1 Sep 26 — one column, out of the name); on the
+   read-only board it stays in the row's control column beside CX/flag, whose
+   remarks is a bare input with nowhere to nest a chip. A cancelled info item
+   keeps the cx fade. */
 .sb-arow.fyi,.ah-row.fyi,.pl-row.fyi{opacity:.75}
 .sb-arow.fyi.cx,.ah-row.fyi.cx,.pl-row.fyi.cx{opacity:.55}
 .fyitag{display:inline-block;vertical-align:middle;font-size:11px;font-weight:700;line-height:1.3;
