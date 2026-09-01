@@ -677,3 +677,28 @@ default exclusions so users don't need to discover it.
 **Principle:** A hook that watches file edits should scope itself to files
 its rules can possibly apply to; firing "no issues" on out-of-scope files
 trains the reader to ignore it on in-scope ones.
+
+### Observation 44: Piping a test runner through tail masks its exit code
+
+**Status:** OPEN
+**Date:** 2026-09-01
+**Session context:** Bug hunt #4 — full e2e run reported exit 0 while 2 specs failed
+**Skill:** New skill candidate: none — cross-cutting principle
+**Type:** open-source
+**Phase/Area:** gate-running / shell habits
+
+**Issue:** `npm run test:e2e 2>&1 | tail -8` exits with tail's status (0), so
+a run with 2 failed specs surfaced as "completed (exit code 0)" in the
+background-task notification. The failure was only caught because the tail
+happened to include the "2 failed" line — read minutes later. The same
+pattern repeated on the next run (`| grep` also masked it).
+
+**Suggested improvement:** When running a gate whose EXIT CODE is the
+verdict, never pipe it: run bare and read the output file afterwards, or use
+`set -o pipefail` in the same command. For background runs, redirect to the
+output file without a pipe (`cmd > out 2>&1`) — the harness captures output
+anyway.
+
+**Principle:** A pipeline's exit status is its last command's; any gate
+command piped through a formatter reports the formatter's success, not the
+gate's. Keep verdict-bearing commands unpiped.
