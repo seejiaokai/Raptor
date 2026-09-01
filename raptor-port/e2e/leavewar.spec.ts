@@ -2521,16 +2521,18 @@ test('a glowing green box frames the open-bidding window and clears when bidding
   expect(geo.bw).toBeGreaterThan(100)   // spans the ~90-day window
   expect(geo.bh).toBeGreaterThan(100)   // full grid height
   expect(Math.abs(geo.bl - geo.jl)).toBeLessThanOrEqual(4)  // left edge at 1 Jan
-  // A row added while the war is open grows the box in the same commit: build
-  // a counter (bug-hunt fix, 1 Sep 26 — the measure rides the store version,
-  // so a taller table can no longer leave the box a row short until the next
-  // zoom or resize happened to re-measure it).
+  // ROSTER rows joining re-size the box the same commit (bug-hunt fix,
+  // 1 Sep 26 — the measure rides the store version, so a row-count change
+  // with every other dep unchanged can no longer leave the box a row short
+  // until the next zoom or resize). The SANS switch is the cleanest such
+  // change: a pure Leave War store write that adds the SANS aircrew's rows
+  // BELOW the header the box hangs from, touching no zoom/fold/window dep —
+  // and it happens without leaving the tab, so no show-side resize kick can
+  // re-measure for us. (A COUNTER row would prove nothing here: counts render
+  // ABOVE the header row, outside the boxed region; and a PO'd body's row
+  // deliberately stays for the months they served — the owner's 19 Aug rule.)
   await page.locator('[data-testid="roster-arrange"]').click()
-  await page.locator('[data-testid="counter-add"]').click()
-  await page.locator('[data-testid="cform-name"]').fill('SXO CREW')
-  await page.locator('[data-testid="cf-qual-sxo"]').click()
-  await page.locator('[data-testid="cform-save"]').click()
-  await expect(page.locator('[data-testid="count-sxo-crew"]')).toHaveCount(1)
+  await page.locator('[data-testid="sans-toggle"]').click()
   await page.locator('[data-testid="roster-arrange"]').click() // leave arrange mode
   const grown = await page.evaluate(() =>
     document.querySelector('#page-leavewar .lw-bidbox').getBoundingClientRect().height)
