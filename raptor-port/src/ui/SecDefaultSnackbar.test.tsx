@@ -6,7 +6,7 @@ import { beforeEach, describe, expect, it } from 'vitest'
 import { act } from 'react'
 import { createRoot } from 'react-dom/client'
 import { SecDefaultSnackbar } from './SecDefaultSnackbar'
-import { initStore, setSession, notify, moveSectionTo } from '../state/store'
+import { initStore, setSession, notify, moveSectionTo, loadWeek, setPage } from '../state/store'
 import { DAYS } from '../engine/data'
 import { secOrder, secDefault, secDefaultReset, SECTIONS } from '../engine'
 import { setSecDefOffer, SECDEFOFFER } from './pops'
@@ -56,6 +56,38 @@ describe('SecDefaultSnackbar', () => {
     mount()
     click('.secdef-btn:not(.yes)')
     expect(secDefault()).toEqual(SECTIONS)   // untouched
+    expect(SECDEFOFFER).toBe(null)
+  })
+
+  /* AUTHORITY: promoting a house default is admin-only at the WRITE path, not
+     only at the drag that raised the offer (31 Aug 26 bug pass — an offer can
+     outlive its admin context across a logout/login inside the 7s window). */
+  it('a non-admin never sees the bar, and the save is a no-op if reached', () => {
+    moveSectionTo(0, 'ground', 'prog')          // arrange a non-canonical day as admin
+    const before = secOrder(DAYS[0])
+    setSession({ user: 'us', role: 'member' } as any)
+    act(() => { setSecDefOffer(0); notify() })
+    mount()
+    expect(host.querySelector('.secdef-snack[hidden]'), 'bar withheld for a member').toBeTruthy()
+    expect(host.querySelector('.secdef-btn.yes'), 'no Set-as-default button rendered').toBeFalsy()
+    /* even if the write is reached directly it refuses */
+    expect(secDefault()).toEqual(SECTIONS)       // house default untouched
+    expect(before).not.toEqual(SECTIONS)          // (the day really was re-arranged)
+  })
+
+  /* STALENESS: an offer is keyed by day index, so it must not survive a week or
+     page change or "Set as default" would save the wrong day. */
+  it('a week switch clears the offer', () => {
+    act(() => { setSecDefOffer(0); notify() })
+    expect(SECDEFOFFER).toBe(0)
+    loadWeek('Jul 20')
+    expect(SECDEFOFFER).toBe(null)
+  })
+
+  it('a page change clears the offer', () => {
+    act(() => { setSecDefOffer(0); notify() })
+    expect(SECDEFOFFER).toBe(0)
+    setPage('viewsched')
     expect(SECDEFOFFER).toBe(null)
   })
 })

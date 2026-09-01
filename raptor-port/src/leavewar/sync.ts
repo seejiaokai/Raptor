@@ -23,7 +23,7 @@
 // store write notifies subscribers synchronously, and this module is one.
 
 import { INPUTS, DATES, baseYear, dateOrd, inpId, inpWin, isAway, isDownchit, isLeave, oilAsks, withRemarksTail } from '../engine/inputs'
-import { ME } from '../state/auth'
+import { ME, SESSION } from '../state/auth'
 import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
 import { dayApproved, dayCurVer, dayCurVerIn, daySnapIn, daySnapOf } from '../engine/publish'
@@ -1044,6 +1044,13 @@ export function runPoArchive(): void {
  * archiving, so they come back exactly as they left.
  */
 export function restoreArchivedPerson(id: string): boolean {
+  /* Write-path role backstop (bug hunt, 31 Aug 26): roster membership —
+     archive and restore alike — is the admin's (the Quals page renders
+     Restore for an admin only, and now draws the archive ✕ the same way).
+     The commitInputEdit idiom: a signed-in non-admin is refused here too,
+     so a hand-made call cannot do what the page will not offer; a
+     sessionless test/boot context is not a member and passes. */
+  if (SESSION && SESSION.role !== 'admin') return false
   const body = (PEOPLE as any)[id]
   if (!body || !body.archived || body.special) return false
   setPostOut(id, null)

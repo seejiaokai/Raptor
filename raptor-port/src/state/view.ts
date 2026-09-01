@@ -309,9 +309,28 @@ export function closeBoardState(){
   if(typeof document!=='undefined')document.body.classList.remove('ros-open');
   HOOKS.closeBoardDialogs();
 }
+/* THE "SET DEFAULT ORDER?" SNACKBAR OFFER (owner, 29 Aug 26 pt.3 — the in-place
+   drag that replaced the Arrange sheet). Holds the DAY INDEX a section drag just
+   re-ordered; the snackbar (ui/SecDefaultSnackbar.tsx) reads that day's current
+   secOrder as the house default when accepted. null = no offer. It lives HERE,
+   with the other session-view flags, RATHER THAN in ui/pops.ts (which re-exports
+   it) SO THAT the context-reset paths can clear it: an offer keyed by day index
+   must not outlive its week/session/page, or "Set as default" would save the
+   wrong week's day, or a member logging in inside the 7s window could promote a
+   house default (both real before 31 Aug 26). Cleared in setPage (below),
+   loadWeek and resetSession (store.ts). secDefSeq bumps on every raise so the
+   snackbar's auto-dismiss timer restarts even when the SAME day is dragged
+   twice. */
+export let SECDEFOFFER: number | null = null
+let secDefSeq = 0
+export function setSecDefOffer(v: number | null){ SECDEFOFFER = v; if(v!=null) secDefSeq++ }
+export function secDefOfferSeq(){ return secDefSeq }
 /* the two pages that ARE a week, and the scroller each one owns */
 export const WEEK_EL:any={viewsched:'vWeek',editsched:'eWeek'}
 export function setPage(p:any){
+  /* a page navigation dismisses the transient "set default?" offer — it belongs
+     to the drag that raised it on the page being left (31 Aug 26 bug pass). */
+  SECDEFOFFER=null;
   /* A page change closes any body-level popup (owner, 8 Aug 26 — the stores
      box used to ride along to View-only Sched, floating over a page with no C
      button on it). These popups live outside the React tree, so no component

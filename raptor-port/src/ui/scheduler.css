@@ -702,14 +702,20 @@ body.ros-open .eroster .ros-tab{background:var(--accent);color:var(--accent-ink)
    .no      — may NOT be planned into the armed slot, or is on leave / downchit
    The first two used to sit at .36 and .20 opacity, which on a phone read as
    the same grey — so anyone already tasked looked un-selectable. They are now
-   told apart by KIND of mark, not by a shade: busy keeps its colour and wears a
-   left bar, barred loses its colour entirely and is struck through. */
+   told apart by KIND of mark, not by a shade: busy wears a left bar, barred is
+   struck through. BOTH keep their seat colour (owner, 1 Sep 26 — "can I still
+   see pilot and wso colours of the pucks?"): the barred puck used to be fully
+   grayscaled, which washed olive FCP and green RCP into one grey so a barred
+   pilot and a barred WSO were indistinguishable. It now keeps its hue (a light
+   desaturation only) and rides a fainter-but-visible opacity; the STRIKE and
+   the not-allowed cursor still say "can't plan this one", so busy and barred
+   stay distinct by mark, not by colour loss. */
 .rpuck.standby{opacity:.82}
 .rpuck.standby .puck{box-shadow:inset 2px 0 0 var(--ok)}
 .rpuck.busy{opacity:.62}
 .rpuck.busy .puck{filter:saturate(.55);box-shadow:inset 2px 0 0 var(--ink-3)}
-.rpuck.no{opacity:.26;position:relative}
-.rpuck.no .puck{filter:grayscale(1) brightness(.6)}
+.rpuck.no{opacity:.5;position:relative}
+.rpuck.no .puck{filter:saturate(.7)}
 .rpuck.no::after{content:'';position:absolute;left:3px;right:3px;top:50%;height:1px;
   background:var(--ink-3);transform:translateY(-.5px);pointer-events:none}
 .rpuck.no,.rpuck.no:active{cursor:not-allowed}
@@ -889,7 +895,7 @@ body.ros-open .eroster .ros-tab{background:var(--accent);color:var(--accent-ink)
 .form{display:grid;grid-template-columns:52px 48px 48px calc(var(--puck-w)*2 + 16px) minmax(0,1fr);align-items:stretch;border-bottom:1px solid rgba(42,49,58,.55)}
 .form:last-child{border-bottom:none}
 .form:hover{background:rgba(255,255,255,.018)}
-.form.cx{opacity:.5;filter:grayscale(.7)}
+.form.cx{opacity:.5}
 .fcell{display:flex;flex-direction:column;justify-content:flex-start;padding:4px 3px;border-right:1px solid rgba(42,49,58,.4);overflow:hidden}
 /* placement comes from the custom properties the renderer stamps on each cell, so
    the phone block can re-map the same markup onto a taller row grid */
@@ -1141,7 +1147,7 @@ body.ros-open .eroster .ros-tab{background:var(--accent);color:var(--accent-ink)
 .allhands .ah-row .rmk{grid-column:5;font-size:9.5px;color:var(--ink-2);line-height:1.3;padding-top:3px;min-width:0;overflow-wrap:anywhere}
 .allhands .ah-row .rmk .ntx{display:block}
 .allhands .ah-row .rmk.has-late{display:flow-root}
-.allhands .ah-row .rmk.has-late .latetag{float:left}
+.allhands .ah-row .rmk.has-late .latetag,.allhands .ah-row .rmk.has-late .fyitag{float:left}
 .allhands .ah-row:last-child{padding-bottom:6px}
 /* All-available pucks */
 .availpuck{margin:8px 10px;border:1px solid var(--edge);border-radius:10px;background:rgba(87,201,122,.05);overflow:hidden}
@@ -1247,7 +1253,7 @@ body.dnd .schedboard .ppl[data-fill].dragover .addz{border-color:var(--accent);c
    flow-root is what contains the float when the remark is empty and the badge
    is the cell's only content — without it the badge escapes a zero-height cell. */
 .plist .pl-row .rmk.has-late{display:flow-root}
-.plist .pl-row .rmk.has-late .latetag{float:left}
+.plist .pl-row .rmk.has-late .latetag,.plist .pl-row .rmk.has-late .fyitag{float:left}
 /* wave in-times note block */
 .intimes{margin:0;padding:5px 11px;border-bottom:1px solid var(--edge);background:rgba(229,201,74,.05);display:flex;flex-direction:column;gap:2px}
 .intimes span{font-family:'JetBrains Mono',monospace;font-size:9.5px;color:#F2D699;line-height:1.4;display:block}
@@ -1937,11 +1943,27 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
    what forced the implicit second column on phones. */
 .rangecal{background:var(--panel-2);border:1px solid var(--edge);border-radius:10px;padding:6px 7px;width:212px}
 .rc-h{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+/* the month nav sits CENTRED between an empty left pad and the right-hand "go to
+   today" button — equal widths keep ‹ Mon › centred (the WeekCal spacer trick,
+   here because RangeCal's header is too narrow for a fourth loose child) */
+.rc-hmid{display:flex;align-items:center;gap:6px}
+.rc-hpad{width:26px;flex:0 0 auto}
 .rc-mon{font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;
   letter-spacing:.08em;font-size:11px;font-weight:700;color:var(--ink-2)}
 .rc-nav{background:transparent;border:1px solid var(--edge);color:var(--ink-2);border-radius:6px;
   width:20px;height:20px;line-height:1;cursor:pointer;font-size:12px;padding:0}
 .rc-nav:hover{border-color:var(--accent);color:var(--accent)}
+/* "Go to today" — the same calendar-page-with-a-date glyph as the WeekCal header
+   button (design B, owner 1 Sep 26), sized down to the RangeCal header. Pages the
+   view to today's month; it does not pick. */
+.rc-today{width:26px;height:20px;flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;
+  background:transparent;border:1px solid var(--edge);color:var(--ink-2);border-radius:6px;cursor:pointer;padding:0}
+.rc-today:hover{border-color:var(--accent);color:var(--accent)}
+.rc-pg{position:relative;width:15px;height:15px;border:1.5px solid currentColor;border-radius:4px}
+.rc-pg::before{content:'';position:absolute;top:-1.5px;left:-1.5px;right:-1.5px;height:4px;
+  background:currentColor;border-radius:3px 3px 0 0}
+.rc-n{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding-top:3px;
+  font-size:7.5px;font-weight:800;color:var(--ink)}
 .rc-dow,.rc-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
 .rc-dow span{text-align:center;font-size:8.5px;color:var(--ink-3);font-weight:700;letter-spacing:.04em}
 .rc-d{background:transparent;border:1px solid transparent;color:var(--ink);border-radius:6px;
@@ -1950,6 +1972,9 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
 .rc-d.wk{color:var(--ink-3)}
 .rc-d.mid{background:rgba(59,198,232,.13)}
 .rc-d.s,.rc-d.e{background:var(--accent);color:#04222b;font-weight:800}
+/* the notional today wears a ring (matches WeekCal), unless it is a selected
+   endpoint — then the solid fill already marks it */
+.rc-d.today:not(.s):not(.e){box-shadow:inset 0 0 0 1.5px var(--accent)}
 .rc-x{padding:3px 0}
 /* THE DATE-JUMP CALENDAR (WeekCal.tsx) — a DAY picker. Same `.rc-*` grid, sized
    up for a modal and a thumb: `.sel` is the day the user is currently on (a
@@ -2286,8 +2311,19 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
   .ic-chip.plan{background:var(--edge-2)}
   .ic-more{font-size:9px}
   /* the bar gets tighter horizontal padding, but the buttons in it keep
-     their 44px touch target from the desktop rule above */
-  .ic-head{padding:8px 10px;gap:6px}
+     their 44px touch target from the desktop rule above. It also stops
+     WRAPPING on a phone (owner, 1 Sep 26 — "put just a cross in the same
+     row"): the ‹ month › Today ✕ controls used to spill the close cross onto
+     its own second line once the wide month label + full-size buttons
+     overran ~370px. nowrap + a tighter gap keeps them on one line, and the
+     month label (below) gives up the last few px instead of the buttons —
+     so the cross stays beside Today, never below it. */
+  .ic-head{padding:8px 10px;gap:4px;flex-wrap:nowrap}
+  /* the Inputs month label is the widest thing in that row ("September 2026"),
+     so it shrinks a touch on a phone and ellipses only if a truly narrow
+     screen still can't seat the whole row — never the touch targets. Scoped
+     to #inpCal so the Medical as-of dropdown's own month label is untouched. */
+  #inpCal .ic-mon{font-size:15px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 }
 
 /* ---- THE DAY POPOVER (hold-to-add / tap-to-open / .ic-more / a puck or
@@ -2619,6 +2655,13 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
    headers a centred flex row for it and drop the old gutter-clearing indents (there
    is no overlay in the gutter any more). Edit-only (.dsec), so parity is untouched. */
 .dsec>.allhands>.ah-h,.dsec>.sec>.sub-h,.dsec .wv-sech{display:flex;align-items:center;gap:6px}
+/* Available crew's fold header (.ap-h) on the WEEK joins the draggable list too
+   (owner, 31 Aug 26 — the crew working-aid panels are draggable on the edit
+   scheduler now, not just the board): the same flex-start + auto-margin move as the
+   board's copy (.sb-sec .ap-h above), so the injected grip rides with the title and
+   the "by wave · close" summary stays at the right edge. Edit-only, parity untouched. */
+.dsec .ap-h{display:flex;align-items:center;justify-content:flex-start;gap:6px}
+.dsec .ap-h>.n{margin-left:auto}
 /* the week's Flying-waves header (edit-only, html.ts) — the section header this
    block never had. Coloured and cased like every other week section header
    (.sub-h + var(--sec)); its box lines up with the wave blocks below (both
@@ -2800,7 +2843,21 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
 .airpop-box{background:var(--panel);border:1px solid var(--edge);border-radius:14px;width:520px;max-width:100%;max-height:80vh;overflow:auto}
 .airpop-head{padding:12px 15px;border-bottom:1px solid var(--edge);display:flex;align-items:center}
 .airpop-head b{font-size:15px;font-weight:700}
-.airpop-head .x{margin-left:auto;background:none;border:none;color:var(--ink-2);cursor:pointer;font-size:18px}
+.airpop-head .x{background:none;border:none;color:var(--ink-2);cursor:pointer;font-size:18px}
+/* The "Go to today" button in the "Jump to a date" header (WeekCal). It and
+   the ✕ cluster at the right — margin-left:auto is on the today button now, so
+   the ✕ that used to carry it follows on the today button's own right margin.
+   Design B (owner, 1 Sep 26): a calendar-page glyph — a bordered box with a
+   filled top bar (::before) — holding the notional today's date number. */
+.wc-today{margin-left:auto;margin-right:6px;display:inline-flex;align-items:center;justify-content:center;
+  background:var(--panel-2);border:1px solid var(--edge);color:var(--ink-2);border-radius:9px;
+  width:38px;height:32px;cursor:pointer}
+.wc-today:hover,.wc-today:active{border-color:var(--accent);color:var(--accent)}
+.wc-pg{position:relative;width:21px;height:21px;border:1.8px solid currentColor;border-radius:5px}
+.wc-pg::before{content:'';position:absolute;top:-1.8px;left:-1.8px;right:-1.8px;height:6px;
+  background:currentColor;border-radius:4px 4px 0 0}
+.wc-n{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding-top:4px;
+  font-size:9.5px;font-weight:800;color:var(--ink)}
 .airpop-body{padding:12px 15px}
 .airrow{display:flex;gap:8px;align-items:center;margin-bottom:6px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--ink)}
 .airrow .adot{width:7px;height:7px;border-radius:50%;background:var(--accent);flex:0 0 7px}
@@ -3804,10 +3861,10 @@ body.dnd .availpuck::after,body.dnd .eroster::after{content:'drop to unassign';p
 .page.editing .pl-row .t.txed,.page.editing .ah-row .t.txed{display:inline-block;min-width:28px}
 
 /* ---- cancelled (CX) rows ------------------------------------------------
-   "greyed out faded with a line striking through it" — the fade is opacity +
-   grayscale, the strike is BOTH a text-decoration (for the words) and a 1px
-   overlay rule (because pucks paint their own background and would otherwise
-   hide the line). */
+   "greyed out faded with a line striking through it" — the fade is opacity on
+   the row (grayscale is NOT on the row any more, so crew pucks keep their
+   pilot/RCP colour — see the .cx .puck note below), the strike is a
+   text-decoration on the words. Store pills carry their own grayscale. */
 /* ---- cancelled (CX) ----------------------------------------------------------
    ONE mechanism, not three. A cancelled row used to get a strike-through on the
    row box AND a 1px rule drawn edge-to-edge at 50% of its height: on a wrapped
@@ -3828,7 +3885,7 @@ body.dnd .availpuck::after,body.dnd .eroster::after{content:'drop to unassign';p
 .pl-row.gr-frominput,.sb-arow.gr-frominput{
   box-shadow:inset 2px 0 0 rgba(59,198,232,.42);background:rgba(59,198,232,.05)}
 .form.cx,.acrow.cx,.rmkcell.cx,.pl-row.cx,.ah-row.cx,.sb-line.cx,.sb-arow.cx{
-  position:relative;opacity:.55;filter:grayscale(.7)}
+  position:relative;opacity:.55}
 .pl-row.cx,.ah-row.cx,.sb-line.cx,.sb-arow.cx,.form.cx{
   box-shadow:inset 2px 0 0 rgba(240,85,95,.55);background:rgba(240,85,95,.045)}
 .acrow.cx,.rmkcell.cx{background:rgba(240,85,95,.045)}
@@ -3838,9 +3895,18 @@ body.dnd .availpuck::after,body.dnd .eroster::after{content:'drop to unassign';p
 .form.cx .fcell i,.form.cx .fcell b{
   text-decoration:line-through;text-decoration-color:rgba(240,85,95,.85);
   text-decoration-thickness:1px;text-decoration-skip-ink:none}
-/* boxes keep their shape — they read as cancelled by being greyed back */
-.cx .puck{opacity:.62}
-.cx .stores,.cx .stchip,.cx .bombs{opacity:.5}
+/* boxes keep their shape — they read as cancelled by being greyed back. The
+   fade above is now opacity ONLY (no row-level grayscale), so the CREW PUCKS
+   keep their pilot/RCP hue on a cancelled line (owner, 1 Sep 26 — "can I still
+   see pilot and wso colours of the pucks?"): olive FCP vs green RCP are the
+   whole reason to grey the seat, not hide it, and grayscale washed them into
+   one grey. The row still reads cancelled by the red left rail, the struck
+   words and the .55 fade — the pucks just carry their colour through it, so a
+   scheduler can still read WHO was crewed where. The store pills keep the old
+   desaturated look by carrying their OWN grayscale (below), the one place it
+   still belongs. */
+.cx .puck{opacity:1}
+.cx .stores,.cx .stchip,.cx .bombs{opacity:.5;filter:grayscale(.7)}
 .form.cx .fcell b .mdot{text-decoration:none}
 .airpop-box.cxbox{width:min(94vw,420px)}
 .cxbody{padding:13px 15px 4px}
@@ -3901,6 +3967,25 @@ button.sarole:hover{border-color:var(--accent);color:var(--accent);opacity:1}
 .pl-row.redbox,.ah-row.redbox,.sb-line.redbox{box-shadow:inset 0 0 0 2px var(--hard)}
 .flagtag{font-family:'Barlow Condensed','Inter Tight',sans-serif;font-size:8.5px;font-weight:800;
   letter-spacing:.08em;color:#fff;background:var(--hard);border-radius:3px;padding:0 4px;margin-right:4px;text-decoration:none}
+
+/* ---- ⓘ info-only item (owner, 1 Sep 26) --------------------------------
+   A ground / Common Programme item flagged ⓘ is shown on the programme but
+   never checked against the rules (skipped in events.ts/avail.ts/oil.ts).
+   The look says "passive, still readable": a mild fade — clearly quieter
+   than a live item, clearly livelier than cancelled (.cx sits at .55) — and
+   NO strikethrough, which is cancel's language. The chip is the mark's
+   read-only voice; the board's .mbtn.nfo button is its live voice. On the
+   week (and the peek) the chip rides in the REMARKS cell, floated left like
+   the late mark (owner, 1 Sep 26 — one column, out of the name); on the
+   read-only board it stays in the row's control column beside CX/flag, whose
+   remarks is a bare input with nowhere to nest a chip. A cancelled info item
+   keeps the cx fade. */
+.sb-arow.fyi,.ah-row.fyi,.pl-row.fyi{opacity:.75}
+.sb-arow.fyi.cx,.ah-row.fyi.cx,.pl-row.fyi.cx{opacity:.55}
+.fyitag{display:inline-block;vertical-align:middle;font-size:11px;font-weight:700;line-height:1.3;
+  color:var(--accent);margin-right:4px;text-decoration:none;white-space:nowrap;flex:none}
+.mbtn.nfo{font-size:11px;line-height:1;padding-top:2px;padding-bottom:2px}
+.mbtn.nfo.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
 
 /* ---- LATE INPUT (owner, 9 Aug 26) --------------------------------------
    An input last changed after the week's deadline. Same shape as .flagtag so
@@ -4183,10 +4268,10 @@ button.sanscard:hover{border-color:var(--accent)}
    prose boxes restate the app font by hand. `.lin`/`.msn` are deliberately
    NOT in that list: their own rule gives them JetBrains Mono and should keep
    winning, which it does — this file sets no font on them here. */
-.sb-arow textarea,.sb-line textarea,.sb-psub textarea{
+.sb-arow textarea,.sb-line textarea,.sb-psub textarea,.sb-nrow textarea{
   field-sizing:content;resize:none;overflow:hidden;white-space:pre-wrap;
   overflow-wrap:anywhere;display:block;min-height:0}
-.sb-arow textarea.ain,.sb-line textarea.nts,.sb-psub textarea.ain{
+.sb-arow textarea.ain,.sb-line textarea.nts,.sb-psub textarea.ain,.sb-nrow textarea.nin{
   font-family:'Inter Tight',system-ui,sans-serif}
 /* 12px, and it is a MEASURED number rather than a taste: an <input> at
    font-size 11px lays its content box out at exactly 12px, so a one-line
@@ -4195,7 +4280,7 @@ button.sanscard:hover{border-color:var(--accent)}
    taller and the day grew 6543px→6658px — 115px of scroll bought for rows
    that are not wrapping at all, which is most of them. Wrapped lines are
    correspondingly tight; that is the trade and it favours the common case. */
-.sb-arow textarea,.sb-line textarea,.sb-psub textarea{line-height:12px}
+.sb-arow textarea,.sb-line textarea,.sb-psub textarea,.sb-nrow textarea{line-height:12px}
 /* the c6r grid — Common Programme / duty / sim / ground / input rows all share it:
    Item | Start | End | People | Rmks | ctl. The Common Programme used to carry an
    extra DETAIL column (its own `cprog` grid), but the owner dropped it (22 Aug 26)
@@ -4206,10 +4291,14 @@ button.sanscard:hover{border-color:var(--accent)}
    1..n down; an emptied seat keeps its slot (the pax-hole rule) so the pairing
    never reshuffles. Two puck-widths wide, which the People column already holds
    — the 8-crew box laid out four-of-two here before this made it explicit. */
+/* the fixed two-column FCP|RCP seat grid — the visible column WORDS were dropped
+   (owner, 31 Aug 26 — "remove the FCP and RCP words in sims"; board-html.ts), so
+   the grid's first row is the top pair of seats now, not a header. align-content
+   :start keeps that top pair flush with the row's Item / time boxes (the row is
+   align-items:center, so a single-pair box centres like every other section's
+   people cell — the alignment the owner asked to match). */
 .ppl.fcprcp{display:grid;grid-template-columns:var(--puck-w) var(--puck-w);gap:3px 6px;
   align-content:start;justify-content:start}
-.ppl.fcprcp .hd{font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;
-  letter-spacing:.05em;font-size:8px;font-weight:700;color:var(--ink-3);line-height:1;margin-bottom:1px}
 .ppl.fcprcp .sb-slot.empty{width:var(--puck-w);height:var(--puck-h);border:1px dashed var(--edge-2);
   border-radius:3px;display:flex;align-items:center;justify-content:center;color:var(--ink-3);font-size:11px}
 /* a duty-block / AMT / OFT sub-head inside a panel body */

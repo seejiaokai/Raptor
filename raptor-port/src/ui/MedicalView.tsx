@@ -130,7 +130,8 @@ export function MedicalView({ onClose }: { onClose: () => void }) {
         </button>
         {MEDASOF && <button type="button" className="abtn" id="medToday" onClick={() => pick(todayIso)}>Today</button>}
         <span style={{ flex: 1 }}></span>
-        <button type="button" className="abtn" id="medClose" onClick={onClose}>✕ List</button>
+        <button type="button" className="abtn" id="medClose" aria-label="Back to list"
+          title="Back to list" onClick={onClose}>✕</button>
         {/* the as-of picker is a FLOATING dropdown, not an in-flow band — it
             overlays the sections rather than shoving them down (owner, 27 Aug).
             Anchored to the header (position:relative) so it hangs from the bar

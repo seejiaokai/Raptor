@@ -18,6 +18,7 @@ import { initStore, setSession, notify, setPage } from '../state/store'
 import { DAYS } from '../engine/data'
 import { makeStandalone, scSpare } from '../engine/waves'
 import { SCHED } from '../engine/publish'
+import { validate } from '../engine/validate'
 import { dayHTML } from './html'
 import { openScheduler } from './board'
 
@@ -94,5 +95,32 @@ describe('the MAIN/SPARE badge on an SC line', () => {
     const h = dayHTML(0, true)
     /* wave 0 is a seeded flying wave — its keys must carry no badge */
     expect(h).not.toMatch(new RegExp(`data-sarole="0\\.0\\.`))
+  })
+
+  /* THE EXEMPT-LINE RING WHITELIST CARRIES THE TWO 31 AUG 26 SPARE RULES.
+     An exempt puck only rings for codes html.ts names one by one (the 11 Aug
+     26 own() gate) — a new spare rule that is not added there warns in the
+     list while the puck stays clean, exactly the fault the gate was built to
+     fix. So: the two-SC-seats DOUBLE_BOOK rings the spare copy red with the
+     C chip, and the WSO-in-front-seat QUAL rings red with the Q chip. */
+  it('the spare copy rings red C for a seat overlap and red Q for a WSO in its front seat', () => {
+    const f = DAYS[0].waves[WI].formations[0]
+    const keep = JSON.stringify(f.aircraft)
+    try {
+      f.aircraft[0].p = 'split'      // MAIN AM
+      f.aircraft[2].p = 'split'      // SPARE AM — the same 07:00–13:00
+      f.aircraft[3].p = 'glass'      // a WSO in a spare FRONT seat
+      validate()
+      const div = document.createElement('div')
+      div.innerHTML = dayHTML(0, true)
+      expect(div.querySelector(`[data-slot="0.${WI}.0.2.p"] .puck.hard .lchip.l-c`),
+        'the overlap rings the spare copy red with the C chip').toBeTruthy()
+      expect(div.querySelector(`[data-slot="0.${WI}.0.3.p"] .puck.hard .lchip.l-q`),
+        'the seat fault rings red with the Q chip').toBeTruthy()
+    } finally {
+      const back = JSON.parse(keep)
+      f.aircraft.forEach((a: any, i: number) => Object.assign(a, back[i]))
+      validate()
+    }
   })
 })

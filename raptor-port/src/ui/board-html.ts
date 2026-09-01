@@ -170,8 +170,13 @@ export function sbNotesPanel(d:any,di:any,pv?:any,ro?:any){
      other row (sbRowCtl / board.ts's prog row) — an unwrapped ▲▼✕ is three
      flat grid children, not one, and the phone template below is written
      for four items (grip-gone, nx, nin, lctl), not five */
+  /* the note line WRAPS AND GROWS too (owner, 31 Aug 26 — the sibling of the
+     Common Programme fix: it was the other free-text box on the board still a raw
+     <input>, so a long overall note scrolled out of sight). boxHTML mints the
+     growing `<textarea rows="1" class="nin">`; the .sb-nrow textarea CSS grows it.
+     The placeholder stays — an Overall note line has always shown one. */
   n.forEach((t:any,ni:any)=>{ s+=`<div class="sb-nrow"${rowMove(`mv:n.${di}.${ni}`,ro)}>`+sbGrip(ro)+`<span class="nx">${ni+1}.</span>`
-    +`<input class="nin" data-bfld="dn:${di}.${ni}"${alAttr(`dn:${di}.${ni}`)}${ro?' disabled':''} value="${esc(t)}" placeholder="e.g. EP, ORDERS, NO FLY, SQN OFF">`
+    +boxHTML('nin',`data-bfld="dn:${di}.${ni}"${alAttr(`dn:${di}.${ni}`)}${ro?' disabled':''}`,t,'e.g. EP, ORDERS, NO FLY, SQN OFF')
     +(ro?'':`<span class="lctl">`+sbNudge(`mv:n.${di}.${ni}`,ro)+`<button class="mbtn del" data-ndel="${di}.${ni}" title="Remove this note">✕</button></span>`)+`</div>`; });
   return s+`</div></div>`;
 }
@@ -203,7 +208,13 @@ export function sbProgPanel(d:any,di:any,pv?:any,ro?:any){
         if(id&&PEOPLE[id])return `<span class="seat"${ro?'':` data-slot="a:${di}.${ri}.${k}"`}${alAttr(`a:${di}.${ri}.${k}`)}${ro?'':' draggable="true"'}>${puck(id,ro?null:sevOf(di,id),true,ro?null:chipOf(di,id))}</span>`;
         return String(nm||'').trim()?`<span class="itxt">${esc(nm)}</span>`:'';}).join('');
       s+=`<div class="sb-arow c6r${rowCls(x)}"${rowMove(`mv:p.${di}.${ri}`,ro)}>`+sbGrip(ro)
-        +`<input class="ain" data-bfld="ap:${di}.${ri}.prog"${alAttr(`ap:${di}.${ri}.prog`)}${ro?' disabled':''} value="${esc(x.prog||'')}">`
+        /* the Item box WRAPS AND GROWS like every other free-text board box
+           (owner, 31 Aug 26 — the Common Programme Item was the one field that
+           never got the 20 Aug growing-textarea treatment, so a long item name
+           scrolled out of sight). sbTxt → boxHTML mints the `<textarea rows="1">`
+           the duty/sim/ground rows already use; the .sb-arow textarea CSS grows
+           it. Same funnel key, so nothing downstream changes. */
+        +sbTxt('ain',`ap:${di}.${ri}.prog`,x.prog,'',ro)
         +`<input class="atm" data-bfld="ap:${di}.${ri}.str"${alAttr(`ap:${di}.${ri}.str`)}${ro?' disabled':''} value="${esc(fmtHM(x.str))}">`
         +`<input class="atm" data-bfld="ap:${di}.${ri}.end"${alAttr(`ap:${di}.${ri}.end`)}${ro?' disabled':''} value="${esc(fmtHM(x.end))}">`
         /* no "all" ghost on an empty people cell (owner, 26 Aug 26 — "if no
@@ -212,8 +223,10 @@ export function sbProgPanel(d:any,di:any,pv?:any,ro?:any){
            only); the word said otherwise. Empty cell, same data-fill target. */
         +`<div class="ppl"${ro?'':` data-fill="a:${di}.${ri}.+"`}>${inner}${ro?'':ADDZ}</div>`
         +sbRmk(`ap:${di}.${ri}.rmks`,x.rmks,ro)
-        +(ro?'':`<span class="lctl">`+sbNudge(`mv:p.${di}.${ri}`,ro)
+        +(ro?(x.info?`<span class="lctl"><span class="fyitag" title="Info only — not checked against the rules">ⓘ</span></span>`:'')
+        :`<span class="lctl">`+sbNudge(`mv:p.${di}.${ri}`,ro)
         +`<button class="mbtn${x.cx?' on':''}" data-pcx="${di}.${ri}" title="${x.cx?'Restore this item':'Cancel this item (CX)'}">CX</button>`
+        +`<button class="mbtn nfo${x.info?' on':''}" data-pinfo="${di}.${ri}" title="${x.info?'Info only — tap to check this item against the rules again':'Info only — show this item on the programme but never check it against the rules'}">ⓘ</button>`
         +`<button class="mbtn red${x.flag?' on':''}" data-pflag="${di}.${ri}" title="${x.flag?'Clear the red box':'Red box — flag for the next scheduler'}">■</button>`
         +`<button class="mbtn del" data-pdel="${di}.${ri}" title="Remove this item">✕</button></span>`)+`</div>`;
     });
@@ -304,9 +317,15 @@ export function boxHTML(cls:any,attrs:any,v:any,ph:any){
 function sbRmk(path:any,v:any,pv:any){
   return sbTxt('ain rmkin',path,v,'Remarks',pv);
 }
-function sbRowCtl(pv:any,o:any,addr:any,pre:any,what:any,mv?:any){
-  return pv?'':`<span class="lctl">`+(mv||'')
+/* fyi (7th param): only the GROUND rows pass it — the ⓘ info-only toggle is a
+   ground/Common-Programme thing (owner, 1 Sep 26), so the duty and sim rows
+   sharing this builder never draw it. On a read-only surface the button gives
+   way to a static ⓘ tag, so a reader still sees which items are FYI. */
+function sbRowCtl(pv:any,o:any,addr:any,pre:any,what:any,mv?:any,fyi?:any){
+  return pv?(fyi&&o&&o.info?`<span class="lctl"><span class="fyitag" title="Info only — not checked against the rules">ⓘ</span></span>`:'')
+    :`<span class="lctl">`+(mv||'')
     +`<button class="mbtn${o.cx?' on':''}" data-${pre}cx="${addr}" title="${o.cx?'Restore '+what:'Cancel '+what+' (CX)'}">CX</button>`
+    +(fyi?`<button class="mbtn nfo${o.info?' on':''}" data-${pre}info="${addr}" title="${o.info?'Info only — tap to check this item against the rules again':'Info only — show this item on the programme but never check it against the rules'}">ⓘ</button>`:'')
     +`<button class="mbtn red${o.flag?' on':''}" data-${pre}flag="${addr}" title="${o.flag?'Clear the red box':'Red box — flag for the next scheduler'}">■</button>`
     +`<button class="mbtn del" data-${pre}del="${addr}" title="Remove ${what}">✕</button></span>`;
 }
@@ -368,11 +387,17 @@ export function sbSimRowsPanel(d:any,di:any,pv?:any,ro?:any){
          read-only board both keep rendering nothing here.
          AMT IS A THREE-ROW BLOCK (BRIEF / BOX / DEBRIEF) and the crew rides the
          BOX row ONLY (owner, 13 Aug 26): BRIEF and DEBRIEF are times, so they
-         show no seats. On the box the crew reads FCP (left) / RCP (right),
-         paired top-to-bottom (positions 1..n down) on a fixed two-column grid
-         (.fcprcp) — so a removed puck leaves its own seat empty in place and the
-         pairing never reshuffles. Not capped: the grid grows a pair at a time.
-         OFT (and any other sim) keeps the plain wrap it always had. */
+         show no seats. On the box the crew still sits front-seat left / rear-seat
+         right, paired top-to-bottom (positions 1..n down) on a fixed two-column
+         grid (.fcprcp) — so a removed puck leaves its own seat empty in place and
+         the pairing never reshuffles. The visible FCP / RCP column WORDS were
+         dropped (owner, 31 Aug 26 — "remove the FCP and RCP words in sims … it's
+         not reflected elsewhere"): the two-column pairing carries the seat
+         identity by POSITION now, so the labels were saying twice what the
+         layout already says. The empty-seat tooltip still names the seat, which
+         is the one place the word earns its keep once the header is gone. Not
+         capped: the grid grows a pair at a time. OFT (and any other sim) keeps
+         the plain wrap it always had. */
       const isAmt=kind==='amt', isBriefR=/^\s*BRIEF/i.test(r.label||''), isDebR=/DEBRIEF/i.test(r.label||'');
       /* a who-only row ("SIMS (149)", "ALL PILOTS") keeps its free text; the
          moment a real body sits in a seat the text yields, as it always has */
@@ -388,7 +413,7 @@ export function sbSimRowsPanel(d:any,di:any,pv?:any,ro?:any){
           const cells=Array.from({length:n},(_:any,pi:any)=>{const k=`${base}.pax.${pi}`, id=r.pax[pi];
             return (id&&PEOPLE[id])?sbSeat(di,k,id,ro)
               :(ro?'':`<span class="sb-slot empty pax" data-slot="${k}" title="Empty seat — tap or drop a puck to fill">+</span>`);}).join('');
-          pplCell=`<div class="ppl fcprcp"${ro?'':` data-fill="${base}.+"`}><span class="hd">FCP</span><span class="hd">RCP</span>${cells}${sbMore(di,base,r,ro)}${ro?'':ADDZ}</div>`;
+          pplCell=`<div class="ppl fcprcp"${ro?'':` data-fill="${base}.+"`}>${cells}${sbMore(di,base,r,ro)}${ro?'':ADDZ}</div>`;
         }else{
           const seats=r.pax.map((id:any,pi:any)=>{
             const k=`${base}.pax.${pi}`;
@@ -415,7 +440,7 @@ export function sbSimRowsPanel(d:any,di:any,pv?:any,ro?:any){
         for(let i=0;i<n;i++){const id=more[i];
           cells+=(id&&PEOPLE[id])?sbSeat(di,`${base}.x${i}`,id,ro)
             :(ro?'':`<span class="sb-slot empty pax" data-slot="${base}.x${i}" title="Instructor / observer — tap or drop a puck to fill">+</span>`);}
-        pplCell=`<div class="ppl fcprcp"${ro?'':` data-fill="${base}.+"`}><span class="hd">FCP</span><span class="hd">RCP</span>${cells}${ro?'':ADDZ}</div>`;
+        pplCell=`<div class="ppl fcprcp"${ro?'':` data-fill="${base}.+"`}>${cells}${ro?'':ADDZ}</div>`;
       }else{
         pplCell=`<div class="ppl"${ro?'':` data-fill="${base}.+"`}><span class="itxt">${esc(r.who)}</span>${sbMore(di,base,r,ro)}${ro?'':ADDZ}</div>`;
       }
@@ -449,7 +474,7 @@ export function sbGroundPanel(d:any,di:any,pv?:any,ro?:any){
         +sbTxt('ain',`${t}.prog`,x.prog,'OCU PROGRESS REVIEW',ro)+sbTxt('atm',`${t}.str`,x.str,'',ro)+sbTxt('atm',`${t}.end`,x.end,'',ro)
         +`<div class="ppl"${ro?'':` data-fill="${base}.+"`}>${inner}${ro?'':ADDZ}</div>`
         +sbRmk(`${t}.rmks`,x.rmks,ro)
-        +sbRowCtl(ro,x,`${di}.${ri}`,'gr','this item',sbNudge(`mv:g.${di}.${ri}`,ro))+`</div>`;
+        +sbRowCtl(ro,x,`${di}.${ri}`,'gr','this item',sbNudge(`mv:g.${di}.${ri}`,ro),true)+`</div>`;
     });
   }
   return s+sbNote(d,di,'gn','grndnotes','e.g. Two medicals already at 1030 — keep the next one clear of the wave brief.',ro)+`</div></div>`;

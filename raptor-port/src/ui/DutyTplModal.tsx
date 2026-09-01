@@ -14,6 +14,7 @@ import { hmOK } from '../engine/time'
 import { TPLEDIT, setTplEdit } from './pops'
 import { useVersion } from './useStore'
 import { HOOKS } from '../engine/hooks'
+import { SESSION } from '../state/auth'
 
 export function DutyTplModal() {
   useVersion()
@@ -21,7 +22,13 @@ export function DutyTplModal() {
   /* the value a time cell held when it was focused, so a rejected commit can
      put it back rather than clear it (only one cell is focused at a time) */
   const timeBuf = useRef('')
-  if (!TPLEDIT) return <div className="modal" id="tplModal" hidden />
+  /* self-hide for a non-admin, not just at the admin-gated opener (bug hunt,
+     31 Aug 26 — point-2 authority sweep): TPLEDIT is not cleared by toggleRole's
+     admin→member peek, so without this an admin who opened the duty-template
+     editor and flipped to member view kept a live editor whose store mutators
+     (addTpl/setTplRow/delTpl/dutyTplReset) carry no write-path gate. The test is
+     `SESSION && role !== 'admin'`, so a sessionless test/boot is not a member. */
+  if (!TPLEDIT || (SESSION && SESSION.role !== 'admin')) return <div className="modal" id="tplModal" hidden />
 
   /* the selected id can go stale — a delete elsewhere, or the modal opening
      for the first time — so every render falls back to the first template

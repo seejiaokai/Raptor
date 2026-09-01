@@ -202,6 +202,38 @@ describe('blank areas of the week chrome clear the selection', () => {
   })
 })
 
+/* owner, 31 Aug 26: on the SCHEDULER BOARD, "click on an empty space … it
+   doesnt deselect all pucks". The board's sign-off strip (#sbSign / .sb-sign) is
+   the board's own copy of the week sign-off dead-zone above — a big grey panel
+   excluded from the blank-clear as a whole block, so its empty area did nothing.
+   It clears now; the stretched <select>s and Publish button inside it still
+   don't. */
+describe('a blank click on the board sign-off strip clears the selection', () => {
+  const selOnBoard = async () => {
+    mountBoard(0)
+    const pk = $('#sbBoard .puck[data-person]')
+    expect(pk, 'the board day has a puck to select').toBeTruthy()
+    await click(pk)
+    expect($$('#schedBoard .puck.sel').length, 'the person is lit on the board').toBeGreaterThan(0)
+  }
+  it('the empty sign-off strip clears', async () => {
+    await selOnBoard()
+    await click($('#sbSign'))
+    expect($$('#schedBoard .puck.sel').length, 'the board sign-off strip clears').toBe(0)
+  })
+  it('but a sign-off control inside it does NOT clear', async () => {
+    await selOnBoard()
+    const ctl = $('#sbSign select') || $('#sbSign button')
+    expect(ctl, 'the sign-off strip carries its own controls').toBeTruthy()
+    await click(ctl)
+    expect($$('#schedBoard .puck.sel').length, 'a sign-off control survives the click').toBeGreaterThan(0)
+    /* leave the app back on the view week for the blocks below */
+    const { closeScheduler } = await import('./board')
+    await act(async () => { closeScheduler(); view.selDrop(); notify() })
+    clickSync($('.nav a[data-page="viewsched"]'))
+  })
+})
+
 describe('warning strips (tfin B14)', () => {
   it('strips start collapsed', () => {
     expect($$('#vWeek .dwlist').length).toBe(0)

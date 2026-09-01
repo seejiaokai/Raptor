@@ -38,15 +38,18 @@ const stripKeys = (o: any): any => {
   return o
 }
 
-/* The port carries two port-only additions the reference has never had:
-   `day.sacrew` (AVALON's one check) and the shifted copies of the NEIGHBOURING
+/* The port carries three port-only additions the reference has never had:
+   `day.sacrew` (AVALON's one check), the shifted copies of the NEIGHBOURING
    days' inputs appended to `day.input` — `nx` for tomorrow's (a window running
    past midnight) and `pv` for yesterday's (a small-hours take-off whose brief
-   and step run back before minute 0). Same idiom as stripKeys above — excise
-   from BOTH sides — and pinned positively in overnight.test.ts ("positive pins
-   for the parity excision"). */
+   and step run back before minute 0) — and each form's `spareAcs` (the RAW
+   spare rows beside the reference's own deduped spareCrew, feeding the 31 Aug
+   26 SC SPARE rules). Same idiom as stripKeys above — excise from BOTH
+   sides — and pinned positively in overnight.test.ts ("positive pins for the
+   parity excision") and scspare-rules.test.ts. */
 const noPortOnly = (days: any) => days.map(({ sacrew, ...d }: any) =>
-  ({ ...d, input: (d.input || []).filter((i: any) => !i.nx && !i.pv) }))
+  ({ ...d, input: (d.input || []).filter((i: any) => !i.nx && !i.pv),
+     forms: (d.forms || []).map(({ spareAcs, ...f }: any) => f) }))
 
 describe('engine parity with the reference', () => {
   it('the reference is the 5-day week this comparison is bounded to', () => {

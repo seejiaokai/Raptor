@@ -1183,14 +1183,24 @@ export function routeClick(e: MouseEvent) {
      already listed), every sign-off pill (`.sgn` — its `<select>` is stretched
      over the whole label, so the tap target is usually the select, but the
      label's own padding is guarded here too), and the buttons/selects the base
-     list already covers. The board is untouched: its own sign-off sits inside
-     `.sb-sign` and its bar inside `.sb-top`, both still listed, and it draws no
-     `.day-head` or `.schedbanner` at all. */
+     list already covers.
+     THE BOARD'S SIGN-OFF STRIP (`.sb-sign`) LEFT THE LIST TOO (owner, 31 Aug 26 —
+     "click on an empty space [on the scheduler board] … it doesnt deselect all
+     pucks"). It is the board's own version of the exact same dead-zone the three
+     week containers above had: a big grey panel that is mostly empty width around a
+     few stretched `<select>`s and the Publish / ⓘ buttons, so excluding the whole
+     container turned its empty area — the largest expanse of blank space on the
+     board — into a place a tap did nothing. The controls inside it are each guarded
+     on their own: the four `<select>`s (base `select`), Publish and the AL button
+     (`button`), the ⓘ (`.dinfobtn` / `[data-dayinfo]`) and the pill labels
+     (`.sgn`). The board's TOP BAR (`.sb-top`) stays listed — it is a dense 43px
+     action strip with no real empty expanse, and its search box and day chips carry
+     their own tap semantics. The board still draws no `.day-head`/`.schedbanner`. */
   const pg = t.closest('#shell,#schedBoard')
   if (pg && !t.closest('a,button,input,select,textarea,[contenteditable="true"],'
     + '.fchip,.puck,.seat,.rpuck,.ros-tab,.ros-arm,.sb-slot,[data-fill],[data-slot],'
     + '.dwbox,.pillbtn,.sb-open,.dinfobtn,.airpop,.alpanel,'
-    + '.sb-top,.sb-sign,.hscroll,.week-nav,.modal,.drawer,'
+    + '.sb-top,.hscroll,.week-nav,.modal,.drawer,'
     + '[data-crewday],[data-dayinfo],.sgn')) {
     let any = false
     if (view.ARM) { view.disarmSlot(); any = true }

@@ -870,22 +870,30 @@ subscribers.
   SANS availability and Unavailable are ordinary section keys now
   (`SECTIONS=[…,'inputs','avail','sans','unav']`), each wrapped in its own
   `.sb-sec[data-secmove]` card with the same dotted grip, so any card can be dragged to
-  any position (Available crew up next to the flying waves, say). They take effect on
-  the SCHEDULER BOARD only: `ui/html.ts`'s week APPENDS these panels separately (they
-  are working aids, and SANS/Unavailable are parity-locked on the view week), so their
-  week slice bits are empty and reordering them changes NOTHING on either week — the
-  same empty-slice mechanism that keeps 'notes' parity-safe. This is a scheduler
+  any position (Available crew up next to the flying waves, say). **Since 31 Aug 26 they
+  drag on the EDIT SCHEDULER too** (owner — "drag markers on edit scheduler … follow the
+  same formatting as the rest of the sections"): `ui/html.ts dayHTML` in EDIT mode emits
+  all ten sections — the crew four included — through the SAME `secOrder` loop as the
+  board, each in a `.dsec[data-secmove]` with a grip, so a drag on either surface drives
+  the ONE per-day order (no second copy to drift). The VIEW week is UNTOUCHED and
+  parity-locked: there the four are not draggable and only Unavailable prints, appended in
+  its fixed tail exactly as before, so `dayHTML(view)` and the reference stay
+  byte-identical (728/0 — the whole change is gated on `ed`). This is a scheduler
   WORKSPACE arrangement, not a published property; the squadron's view week is
   untouched. Being ordinary section keys they ride the per-day order, the admin house
   default (Admin's Default-arrangement list shows all ten now, with a note that the
-  crew four are board-only) and the "Set default?" snackbar for free. The grip is
+  crew four are scheduler-workspace only — board + edit week, never the view week) and
+  the "Set default?" snackbar for free. The grip is
   injected by a loose `sb-ph`|`ap-h` header match in `board.ts wrapSec` (Available
   crew's header is `.ap-h`, re-laid to flex-start so the grip rides with its title);
   Personal Inputs' foldable header is centred for the grip (`.sb-sec .sb-ph.pl-fold`,
   it was baseline — the 7px "grip too high" the owner flagged), and a grip-tap on the
   two foldable headers is guarded in `interactions.ts` so it starts a drag, not a fold.
-  Don't fold the crew panels back into a fixed tail, and don't make their order reach
-  the week. A
+  On the EDIT WEEK the same grip is injected by a first-header regex
+  (`ah-h`|`sub-h`|`ap-h`) in `dayHTML`'s `gripIn`, and Available crew's `.ap-h` gets the
+  same flex-start re-lay (`.dsec .ap-h`). Don't fold the crew panels back into a fixed
+  tail, and don't let their order reach the VIEW week (the edit week now shares the
+  board's order, gated strictly on `ed`, so parity holds). A
   SECTION drag is display-only (`store.moveSectionTo` → `engine/order.ts
   reorderSectionTo`, histPush, no markEdit) and then offers the **"Set default
   order?"** snackbar (`ui/SecDefaultSnackbar.tsx`, `SECDEFOFFER`) that promotes it to

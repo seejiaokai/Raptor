@@ -40,6 +40,38 @@ describe('writing one day', () => {
   })
 })
 
+// MOVING an existing event (owner, 31 Aug 26 — "drag an existing event to move
+// it, like LL"). The sheet's Move… button hands the span to the matrix, which
+// runs the same drag-to-a-day move mode the roster uses.
+describe('moving an event', () => {
+  it('the Move… button moves the event onto the day tapped', () => {
+    render(<Matrix />)
+    // place a single-day event on line 0 at 05 Jan
+    fireEvent.click(screen.getByTestId('event-0-2026-01-05'))
+    fireEvent.change(screen.getByTestId('event-text'), { target: { value: 'MOVEME' } })
+    fireEvent.click(screen.getByTestId('event-apply'))
+    // reopen it — now the Move… button is offered
+    fireEvent.click(screen.getByTestId('event-0-2026-01-05'))
+    expect(screen.getByTestId('event-move')).toBeTruthy()
+    fireEvent.click(screen.getByTestId('event-move'))
+    // the sheet closed and the move banner is up
+    expect(screen.queryByTestId('event-sheet')).toBeNull()
+    expect(screen.getByTestId('event-move-banner')).toBeTruthy()
+    // tap the target day: desktop commits on the click, a phone stages then Confirm
+    fireEvent.click(screen.getByTestId('event-0-2026-01-10'))
+    const confirm = screen.queryByTestId('event-move-confirm')
+    if (confirm) fireEvent.click(confirm)
+    expect(dayEvents('2026-01-05')[0]).toBe('')
+    expect(dayEvents('2026-01-10')[0]).toBe('MOVEME')
+    expect(screen.queryByTestId('event-move-banner')).toBeNull()
+  })
+
+  it('offers no Move… on an empty event cell — there is nothing to move', () => {
+    openEvent(0, '2026-01-05') // an empty cell, nothing placed
+    expect(screen.queryByTestId('event-move')).toBeNull()
+  })
+})
+
 describe('a range', () => {
   it('repeats the word into each day', () => {
     openEvent(0, '2026-01-05')

@@ -14,7 +14,8 @@
 import { useEffect } from 'react'
 import { DAYS } from '../engine/data'
 import { secOrder, setSecDefault, secDefaultSave } from '../engine'
-import { SECDEFOFFER, setSecDefOffer } from './pops'
+import { SECDEFOFFER, setSecDefOffer, secDefOfferSeq } from '../state/view'
+import { canEditSched } from '../state/auth'
 import { notify } from '../state/store'
 import { toast } from './toast'
 import { useVersion } from './useStore'
@@ -23,18 +24,25 @@ export function SecDefaultSnackbar() {
   useVersion()
   const di = SECDEFOFFER
   /* a prompt should never linger — clear it after a few seconds if untouched.
-     Keyed on the day so a fresh drag restarts the timer rather than inheriting
-     the previous one. */
+     Keyed on the RAISE SEQUENCE, not the day, so re-dragging the SAME day
+     restarts the timer instead of inheriting the previous drag's countdown
+     (the [di] key left the second offer running out the first's clock). */
+  const seq = di == null ? -1 : secDefOfferSeq()
   useEffect(() => {
     if (di == null) return
     const t = setTimeout(() => { setSecDefOffer(null); notify() }, 7000)
     return () => clearTimeout(t)
-  }, [di])
+  }, [seq])
 
-  /* the day could have gone (a week switch under an open offer) — fail safe */
-  if (di == null || !DAYS[di]) return <div className="secdef-snack" hidden />
+  /* Withheld for a non-admin (the write below promotes the squadron house
+     default, so it is gated at the write path per the role doctrine, not only
+     at the drag that raised it — an offer can outlive its admin context across
+     a logout/login inside the 7s window) and when the day has gone (a week
+     switch clears the offer, but fail safe anyway). */
+  if (di == null || !DAYS[di] || !canEditSched()) return <div className="secdef-snack" hidden />
   const close = () => { setSecDefOffer(null); notify() }
   const apply = () => {
+    if (!canEditSched()) { setSecDefOffer(null); notify(); return }
     setSecDefault(secOrder(DAYS[di]))
     secDefaultSave()
     setSecDefOffer(null)

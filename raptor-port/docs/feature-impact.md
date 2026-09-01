@@ -85,7 +85,13 @@ gesture (drag / type)
   → if the day is PUBLISHED: the pending key reaches the next AL → PUBLISHING/AL
 ```
 Deletes renumber the live key space FIRST, then drop an inert `del:` tombstone
-(`markDeletion`) — see `docs/engine-rules.md` §Key renumbering.
+(`markDeletion`) — see `docs/engine-rules.md` §Key renumbering. Reorders
+(`engine/reorder.ts`) remap the key space too, then record the move: on a
+published day a move of an ISSUED row drops an inert `mov:` tombstone
+(`markMove`, gated on `dayApproved` && not `SCHED.added`) that `reconcileIssuedMarks`
+skips by name, so a move of two same-valued rows is no longer value-reconciled
+away; a draft-day move, or a move of a still-draft added row, keeps the ordinary
+field mark — see `docs/engine-rules.md` §Publishing.
 
 ### Flow B — a personal input added or edited (the owner's example)
 ```
@@ -198,6 +204,7 @@ Flow E entry point too (loads the tapped day's week, then opens that day).
 sign off a day          → setDayApproved / SCHED
 edit a signed day       → the pending keys become an AL issue (alIssue)
 edit back to issued     → reconcileIssuedMarks (afterSchedMutate) drops the now-matching pending key
+                          (skips inert del:/mov:/inp: keys by name — a reorder's mov: tombstone survives)
 load a version onto WC   → loadVersionToWorkingCopy (16 Aug 26; NOT a rollback — leaves SCHED.cur, so
                             viewers keep the issued AL; rebases pending vs issued, like a draft switch)
 apply a day template     → applyDayTpl          (same direct-write + refuse-on-published shape)
@@ -411,6 +418,15 @@ ON these, don't route around them):
   — the week's day-head and the board's sign-off panel both call it for the
   version chip, pending count, ⓘ and Publish controls, so "the board should
   edit everything the week does" cannot drift into two copies of that strip.
+- **The ⓘ info-only flag reads through the engine's own primitives** (1 Sep
+  26) — a `ground`/`allhands` row with `info:true` is skipped once in
+  `events.ts` (so every `day.events` consumer — validator, EVD, Insights,
+  cross-week seeds — follows for free) plus the three raw-model readers
+  (`personBusy`, `dayEngaged`, `dayOilSpans`), and the crew picker stands
+  down via `slotRules().infoRow` → `slotBar` '' — the picker mirrors the
+  validator's silence rather than keeping a second copy of the rule. The
+  prose lives once on the Logic page. `personCount` deliberately still
+  counts it (ink on the week, like cx). Pins: `engine/infoflag.test.ts`.
 - **`rosterOptions` (`inputedit.tsx`) is the one roster list** (14 Aug 26) —
   the Inputs page's add form, its row editor and the schedule's
   Unavailable-reassign dialog all call it, so the three can never disagree
@@ -554,6 +570,11 @@ check the other):
   only ever disagree with the palette by a stale repaint, never by a diverged
   rule. Keep it that way: a ring rule that does not go through `slotBar` is a
   new drift-seam. (`selrings.test.tsx` pins DOM-agrees-with-slotBar directly.)
+  The 31 Aug 26 two-SC-seats rule follows the same law from the other side:
+  `events.ts:scSeatHit` is the ONE body — the validator's spare-overlap
+  warning and `slotBar`'s "already on …" refusal both call it (spares are
+  absent from EVD, so neither could have read the shared event stream). A
+  future SC-seat rule goes through it, not beside it.
 - **Three editors over one list.** The Inputs page, the week cell and the board
   cell all edit `INPUTS`; they are kept from drifting only because all three
   funnel through `commitInputEdit`/`setInpField`. Add a fourth the same way.

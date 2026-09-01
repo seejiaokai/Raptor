@@ -10,6 +10,7 @@ import { DAYS } from '../engine/data'
 import { validate, WARN } from '../engine/validate'
 import { PEOPLE, isScheduler, isInstr, isInstrPilot, deriveQuals, ID_BY_CS, QCHIP, QCOLOR, QORDER, LEVELNAME } from '../engine/people'
 import { sansGate } from '../engine/avail'
+import { restoreArchivedPerson } from '../leavewar/sync'
 import { HOOKS } from '../engine/hooks'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
@@ -283,8 +284,29 @@ describe('the Quals page (tfin)', () => {
     expect(PEOPLE[id].quals.tf, 'a member can record a qualification').toBe(true)
     await click($(`#qtbl td[data-q="${id}|tf"]`))
     expect(PEOPLE[id].quals.tf).toBe(false)
+    /* roster MEMBERSHIP stays the admin's (bug hunt, 31 Aug 26): the archive
+       ✕ used to render for a member in editing mode — one click took anyone
+       off every roster surface, with Restore admin-only, so they could not
+       even undo it. No ✕ for a member, and the restore write refuses too. */
+    expect($('#qtbl [data-arch]'), 'no archive ✕ for a member').toBeFalsy()
+    PEOPLE[id].archived = true
+    expect(restoreArchivedPerson(id), 'restore refuses a member').toBe(false)
+    PEOPLE[id].archived = false
     await click($('#qSave'))
     await act(async () => { setSession({ user: 'a', role: 'admin' }); notify() })
+  })
+
+  it('an admin in editing mode gets the archive ✕, and it archives', async () => {
+    await click($('#qEdit'))
+    const x = $('#qtbl [data-arch]')
+    expect(x, 'the ✕ renders for an admin').toBeTruthy()
+    const id = x.dataset.arch!
+    await click(x)
+    expect(PEOPLE[id].archived).toBe(true)
+    /* and the admin's Restore puts them back — the full round trip */
+    expect(restoreArchivedPerson(id)).toBe(true)
+    expect(PEOPLE[id].archived).toBe(false)
+    await click($('#qSave'))
   })
 })
 

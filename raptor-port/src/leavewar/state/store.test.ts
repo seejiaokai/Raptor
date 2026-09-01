@@ -20,6 +20,8 @@ import {
   setDayEventRange,
   addEventBand,
   removeEventBand,
+  moveEvent,
+  moveEventProblem,
   addEventType,
   updateEventType,
   removeEventType,
@@ -1624,6 +1626,62 @@ describe('events — ranged repeat, merged bands, and the type library', () => {
     expect(removeEventBand(0, '2026-01-07')).toBe(true)
     expect(getState().period.bands).toHaveLength(0)
     expect(removeEventBand(0, '2026-01-07')).toBe(false)
+  })
+
+  // MOVING an existing event (owner, 31 Aug 26 — "drag an existing event to move
+  // it, like LL"). One atomic write, validated first, admin only.
+  it('moves a single-day event to another day, tag and all', () => {
+    setRole('admin')
+    setDayEvent('2026-01-05', 0, 'TRIAL', 'nolv')
+    expect(moveEvent(0, '2026-01-05', '2026-01-05', 5)).toBe('moved') // → 10 Jan
+    const day = (d: string) => getState().period.days.find(x => x.date === d)!
+    expect(day('2026-01-05').events[0]).toBe('')
+    expect(day('2026-01-10').events[0]).toBe('TRIAL')
+    expect(day('2026-01-10').eventKinds?.[0]).toBe('nolv') // the tag rode along
+  })
+
+  it('shifts a whole merged band by the delta, keeping its length', () => {
+    setRole('admin')
+    expect(addEventBand(0, '2026-01-05', '2026-01-09', 'EX')).toBe('set')
+    expect(moveEvent(0, '2026-01-05', '2026-01-09', 3)).toBe('moved') // → 08–12 Jan
+    const bands = getState().period.bands.filter(b => b.line === 0)
+    expect(bands).toHaveLength(1)
+    expect(bands[0]).toMatchObject({ from: '2026-01-08', to: '2026-01-12', text: 'EX' })
+  })
+
+  it('refuses a move that runs off the war, leaving the event put', () => {
+    setRole('admin')
+    setDayEvent('2026-01-05', 0, 'X')
+    expect(moveEvent(0, '2026-01-05', '2026-01-05', -1000)).toMatchObject({ reason: 'outside' })
+    expect(getState().period.days.find(x => x.date === '2026-01-05')!.events[0]).toBe('X')
+  })
+
+  it('refuses a move onto a day already carrying an event on that line', () => {
+    setRole('admin')
+    setDayEvent('2026-01-05', 0, 'A')
+    setDayEvent('2026-01-07', 0, 'B')
+    expect(moveEvent(0, '2026-01-05', '2026-01-05', 2)).toMatchObject({ reason: 'overlap' }) // 07 Jan taken
+    expect(getState().period.days.find(x => x.date === '2026-01-05')!.events[0]).toBe('A')
+    expect(getState().period.days.find(x => x.date === '2026-01-07')!.events[0]).toBe('B')
+  })
+
+  it('refuses a band move that would overlap another band on the line', () => {
+    setRole('admin')
+    addEventBand(0, '2026-01-05', '2026-01-07', 'A')
+    addEventBand(0, '2026-01-10', '2026-01-12', 'B')
+    expect(moveEvent(0, '2026-01-05', '2026-01-07', 5)).toMatchObject({ reason: 'overlap' }) // → 10–12, collides
+    expect(getState().period.bands.find(b => b.line === 0 && b.text === 'A')).toMatchObject({ from: '2026-01-05', to: '2026-01-07' })
+  })
+
+  it('refuses an event move from a member, and previews the same verdict the commit reaches', () => {
+    setRole('admin')
+    setDayEvent('2026-01-05', 0, 'X')
+    expect(moveEventProblem(0, '2026-01-05', '2026-01-05', 5)).toBeNull()
+    expect(moveEventProblem(0, '2026-01-05', '2026-01-05', -1000)).toMatchObject({ reason: 'outside' })
+    expect(moveEventProblem(0, '2026-01-05', '2026-01-05', 0)).toMatchObject({ reason: 'nothing' })
+    setRole('member')
+    expect(moveEvent(0, '2026-01-05', '2026-01-05', 5)).toMatchObject({ reason: 'nothing' })
+    expect(getState().period.days.find(x => x.date === '2026-01-05')!.events[0]).toBe('X')
   })
 
   it('bands and event types survive a reload', () => {

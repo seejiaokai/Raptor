@@ -472,7 +472,10 @@ function onDotsScroll(e: Event) {
 function onDotsClick(e: MouseEvent) {
   const b = (e.target as HTMLElement).closest('#vDots [data-day]') as HTMLElement | null; if (!b) return
   const el = $('vWeek')!.querySelectorAll('.day')[+b.dataset.day!]
-  el && el.scrollIntoView({ behavior: 'smooth', inline: 'start', block: 'nearest' })
+  // jsdom has no scrollIntoView (nothing to scroll), so guard the call the way
+  // InputsPage already does — a real browser always has it; a headless test is
+  // a no-op instead of a throw.
+  if (el && typeof el.scrollIntoView === 'function') el.scrollIntoView({ behavior: 'smooth', inline: 'start', block: 'nearest' })
 }
 /* ---- CONTINUOUS SWIPE ACROSS WEEKS (owner, 22 Aug 26) ----
    The view/edit week is a scroll-snap carousel, one day per snap on a phone.
@@ -613,8 +616,12 @@ export function initPan() {
   if (trk) trk.addEventListener('pointerdown', onTrackGrab)
   window.addEventListener('resize', onResize)
   updateWeekNav()
-  /* on a phone, jump to today's column, as bootApp does */
-  if (window.innerWidth <= 820) setTimeout(() => { const t = document.querySelector('#vWeek .day.today'); if (t) t.scrollIntoView({ inline: 'start', block: 'nearest' }) }, 120)
+  /* on a phone, jump to today's column, as bootApp does. Guard scrollIntoView:
+     jsdom has none, and this is a DEFERRED call (120ms) that can land after the
+     week has unmounted — under the full test suite that stray call surfaced as
+     an unhandled error. The guard makes it a no-op there; a real browser always
+     has it. */
+  if (window.innerWidth <= 820) setTimeout(() => { const t = document.querySelector('#vWeek .day.today'); if (t && typeof t.scrollIntoView === 'function') t.scrollIntoView({ inline: 'start', block: 'nearest' }) }, 120)
   return () => {
     clearTimeout(ROSDAY_T)
     document.removeEventListener('wheel', onWheel)

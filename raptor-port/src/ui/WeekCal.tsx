@@ -100,13 +100,24 @@ export function WeekCal() {
 
   const curIso = currentDayIso()
   const todayIso = keyToIso(TODAY)
+  // The header "Today" button reads the notional today's date number (the app
+  // has no real clock — TODAY is the fixed planning day, weeknav.ts), so the
+  // little calendar glyph always shows the same number. It reuses pick(), which
+  // closes the popover and lands the view on that day in whichever context
+  // (board / week) opened the calendar.
+  const todayNum = +TODAY.slice(0, 2)
 
   return (
     <div className="airpop" id="weekCal" role="dialog" aria-label="Jump to a date"
       onKeyDown={e => { if (e.key === 'Escape') { e.stopPropagation(); close() } }}
       onClick={e => { if ((e.target as HTMLElement).id === 'weekCal') close() }}>
       <div className="airpop-box weekcal-box" ref={boxRef}>
-        <div className="airpop-head"><b>Jump to a date</b><button className="x" aria-label="Close" onClick={close}>✕</button></div>
+        <div className="airpop-head"><b>Jump to a date</b>
+          <button className="wc-today" aria-label="Go to today" title="Go to today"
+            onClick={() => pick(todayIso)}>
+            <span className="wc-pg"><span className="wc-n">{todayNum}</span></span>
+          </button>
+          <button className="x" aria-label="Close" onClick={close}>✕</button></div>
         <div className="airpop-body weekcal-body">
           <div className="rangecal weekcal">
             <div className="rc-h">
