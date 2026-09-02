@@ -661,7 +661,18 @@ subscribers.
   ⚙ list opens a 12-dot palette (`PALETTE`) under the row the moment a qualification
   group is added, and again from the row's swatch button; built-ins/SANS keep their
   CSS-class CAT colours and have no button. Pill text colour is by luminance
-  (`inkFor`).
+  (`inkFor`). The palette CLOSES the moment a dot is picked and on a click outside
+  it (owner, 4 Sep 26) — per the standing popup rule below.
+- **A click-open popup closes on a click outside it — standing UI rule** (owner,
+  4 Sep 26 — "build pop up windows to have auto close feature if i click outside of
+  it"). Any transient panel/menu/palette a tap OPENS must dismiss on an outside
+  pointer-down (and, where it makes sense, right after the choice that finished it).
+  The full-screen `Sheet` already does this (its scrim + Escape, `Sheet.tsx`); a
+  smaller inline popup adds a capturing `pointerdown` document listener while it is
+  open, treating a press on the popup itself — or on the control that toggles it —
+  as "inside" so the toggle isn't fought (the ⚙ colour palette is the worked
+  example, `SettingsSheet.tsx`). The quals popover already followed this (dismissed
+  by pointer-leave / outside pointer-down / scroll).
 - **The ⚙ groups list drags too** (owner, 3 Sep 26 — "allow me to drag and drop to
   rearrange the groups"): its rows carry `data-grow` and a `⠿` grip wired to the
   same `GROUP_DRAG` → `moveGroupTo` as the grid's heading grip, so the two never
@@ -672,9 +683,15 @@ subscribers.
   `people.ts rankCompare` sorts seat (`seatRank`: pilot, wso, gnd) before `CAT_RANK`;
   `displayRoster` partitions each block by seat around the hand-order, so a drag
   can never carry a WSO above the pilots. Single-seat blocks are untouched. The
-  callsign wears the seat as a small puck (`.cs.seat-pilot/.seat-wso/.seat-gnd`,
-  Raptor's `--fcp/--rcp/--pers` fills + inks) so a pilot reads olive and a WSO green
-  in both apps.
+  callsign wears the seat colour as a FULL-WIDTH bar across the frozen column
+  (`.cs.seat-pilot/.seat-wso/.seat-gnd`, `flex:1` up to the CAT chip — owner, 4 Sep
+  26: "make the entire bar of the cs/name to be filled … not only based on how long
+  the name is"), a pilot olive and a WSO green so it reads the same in both apps.
+  The Leave War bars are DARKER than Raptor's flight-line pucks (owner, 4 Sep 26 —
+  "make the colour darker … still able to see the pilot or wso colour"): explicit
+  deep-olive/deep-green hex in `matrix.css`, NOT `var(--fcp/--rcp)`, so the flight
+  line keeps its own tone (never darken it via scheduler.css); ground crew keep a
+  light bar, softened off pure white so a full-width run doesn't glare.
 - **Leave War's qualification catalogue is Raptor's LoX column list, not the
   holders** (owner, 3 Sep 26 — "when i add a new qualification, i cant see that new
   qualification added in the settings page of leave war"). The Quals page's column

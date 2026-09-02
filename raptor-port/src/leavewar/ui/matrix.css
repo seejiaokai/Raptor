@@ -1252,21 +1252,37 @@
   min-width: 0;
 }
 /* The callsign wears the SEAT colour Raptor's pucks wear (owner, 3 Sep 26 —
-   "have the pucks pilot and wso colour to it as well"): the same `--fcp` /
-   `--rcp` fills and inks the flight line paints, so a pilot reads olive and a
-   WSO green in both apps without a legend. Ground crew keep Raptor's white
-   personnel puck. Padded like a small puck, not just tinted text — the fills
-   are dark and would vanish as ink on the dark panel. */
+   "have the pucks pilot and wso colour to it as well"), the same olive (pilot)
+   / green (WSO) the flight line uses, so a seat reads the same in both apps
+   without a legend.
+
+   IT FILLS THE WHOLE NAME BAR, not just the name (owner, 4 Sep 26 — "make the
+   entire bar of the cs/name to be filled … not only based on how long the name
+   is"): `flex: 1` grows the puck across the frozen column up to the CAT chip, so
+   every row shows a solid seat bar of the same length whatever the callsign.
+   A long name still ellipsises inside it (the nowrap/overflow above) rather
+   than pushing the chip.
+
+   THE FILLS ARE DEEPER than the flight-line pucks (owner, 4 Sep 26 — "make the
+   colour darker … still able to see the pilot or wso colour"): a full-width bar
+   in the mid-tone read too loud across every row, so these are darker takes of
+   the same hues — still plainly olive and green, easier on the eye as a solid
+   run, and the light ink pops. Explicit hex, NOT `var(--fcp/--rcp)`: this is a
+   Leave-War-only darkening and Raptor's flight line keeps its own tone (this
+   file's preamble — never darken it by editing scheduler.css). Ground crew keep
+   the light personnel bar, softened off pure white so a full-width run of it
+   does not glare next to the dark aircrew bars. */
 .mx .who .whoedit .cs.seat-pilot,
 .mx .who .whoedit .cs.seat-wso,
 .mx .who .whoedit .cs.seat-gnd {
-  padding: 1px 6px;
+  flex: 1 1 auto;
+  padding: 2px 8px;
   border-radius: 4px;
   line-height: 1.3;
 }
-.mx .who .whoedit .cs.seat-pilot { background: var(--fcp, #6E6A2E); color: var(--fcp-ink, #FBFAF0); }
-.mx .who .whoedit .cs.seat-wso   { background: var(--rcp, #1F6E52); color: var(--rcp-ink, #EAFBF3); }
-.mx .who .whoedit .cs.seat-gnd   { background: var(--pers, #FFFFFF); color: var(--pers-ink, #18202C); box-shadow: inset 0 0 0 1px var(--pers-line, #7C8AA0); }
+.mx .who .whoedit .cs.seat-pilot { background: #423F1C; color: var(--fcp-ink, #FBFAF0); }
+.mx .who .whoedit .cs.seat-wso   { background: #13402F; color: var(--rcp-ink, #EAFBF3); }
+.mx .who .whoedit .cs.seat-gnd   { background: #E7EBF0; color: #18202C; box-shadow: inset 0 0 0 1px var(--pers-line, #7C8AA0); }
 .catchip {
   flex: none;
   font-size: 9px;

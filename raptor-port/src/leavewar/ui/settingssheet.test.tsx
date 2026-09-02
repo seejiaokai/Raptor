@@ -102,15 +102,35 @@ describe('group colours in ⚙', () => {
     expect(screen.getByTestId(`gpalette-${SCD}`)).toBeTruthy()
     fireEvent.click(screen.getByTestId(`gdot-${SCD}-7bc043`))
     expect(getState().groupColors[SCD]).toBe('#7BC043')
+    // picking a colour closes the palette (owner, 4 Sep 26 — "after i selected a
+    // colour it will auto close")
+    expect(screen.queryByTestId(`gpalette-${SCD}`)).toBeNull()
     // the swatch on the row wears it, and the grid heading's swatch too
     expect((screen.getByTestId(`gcolor-${SCD}`) as HTMLElement).style.background.toLowerCase()).toBe('rgb(123, 192, 67)')
     const heading = screen.getByTestId(`group-${SCD}`)
     expect((heading.querySelector('.gsw') as HTMLElement).style.background.toLowerCase()).toBe('rgb(123, 192, 67)')
-    // the swatch toggles the palette shut and open again
-    fireEvent.click(screen.getByTestId(`gcolor-${SCD}`))
-    expect(screen.queryByTestId(`gpalette-${SCD}`)).toBeNull()
+    // the swatch reopens the palette, and toggles it shut again
     fireEvent.click(screen.getByTestId(`gcolor-${SCD}`))
     expect(screen.getByTestId(`gpalette-${SCD}`)).toBeTruthy()
+    fireEvent.click(screen.getByTestId(`gcolor-${SCD}`))
+    expect(screen.queryByTestId(`gpalette-${SCD}`)).toBeNull()
+  })
+
+  /* A click-open popup closes when you click outside it (owner, 4 Sep 26 — the
+     app's standing rule; here the colour palette). A press on the palette or on
+     a colour swatch is NOT outside — the swatch owns its own toggle. */
+  it('a click outside the open palette closes it', () => {
+    setRole('admin')
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId('settings-open'))
+    fireEvent.click(screen.getByTestId(`gadd-${SCD}`))
+    expect(screen.getByTestId(`gpalette-${SCD}`)).toBeTruthy()
+    // a press inside the palette leaves it open
+    fireEvent.pointerDown(screen.getByTestId(`gpalette-${SCD}`))
+    expect(screen.getByTestId(`gpalette-${SCD}`)).toBeTruthy()
+    // a press anywhere else in the sheet shuts it
+    fireEvent.pointerDown(screen.getByTestId('settings-sheet'))
+    expect(screen.queryByTestId(`gpalette-${SCD}`)).toBeNull()
   })
 
   it('a built-in category has no colour button — it wears its CAT colour', () => {

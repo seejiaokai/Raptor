@@ -18,7 +18,7 @@
    order"); the "Who wins" list is tucked behind a disclosure, opened only when
    someone wants a different order. */
 
-import { Fragment, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import {
   groupLabel,
   matchesGroup,
@@ -86,8 +86,26 @@ export function SettingsSheet({
   // The who-wins override is tucked away — rarely touched (owner, 3 Sep 26).
   const [whoOpen, setWhoOpen] = useState(false)
   // Which qualification group's colour palette is open under its row. Opened by
-  // the add (pick straight after adding) and by the row's swatch.
+  // the add (pick straight after adding) and by the row's swatch. It closes the
+  // moment a colour is picked (see the dot below), and closes on a click outside
+  // it — the app's standing rule for a click-open popup (owner, 4 Sep 26 — "if i
+  // close outside the box … it should close the colour pallete. or after i
+  // selected a colour it will auto close … build pop up windows to have auto
+  // close feature if i click outside of it").
   const [colorFor, setColorFor] = useState<string | null>(null)
+  useEffect(() => {
+    if (!colorFor) return
+    const onDown = (e: PointerEvent) => {
+      const t = e.target as HTMLElement | null
+      // A press on the palette itself, or on any group's colour swatch, is not
+      // "outside": the swatch owns its own open/close toggle, so leaving it to
+      // that button avoids a close-then-reopen fight on the same tap.
+      if (t && (t.closest('.set-palette') || t.closest('.set-swbtn'))) return
+      setColorFor(null)
+    }
+    document.addEventListener('pointerdown', onDown, true)
+    return () => document.removeEventListener('pointerdown', onDown, true)
+  }, [colorFor])
 
   const label = (d: GroupDef) => groupLabel(d, qualCatalog)
   const shownIn = (d: GroupDef) => people.filter(p => groupIdOf(p) === d.id)
@@ -240,7 +258,7 @@ export function SettingsSheet({
                         aria-checked={colour === c}
                         aria-label={c}
                         style={{ background: c }}
-                        onClick={() => setGroupColor(d.id, c)}
+                        onClick={() => { setGroupColor(d.id, c); setColorFor(null) }}
                       />
                     ))}
                   </div>
