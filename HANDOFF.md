@@ -669,6 +669,17 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
      prop (`.rpick.compact` in `rangepicker.css`, 30 px cells vs 36 — still above
      the geometry gate's ≥30 floor); the event sheet passes it, the bid/war/
      bidding-window sheets don't.
+     - **(2 Sep 26) The month grid is a CONSTANT six rows.** Every month is
+       padded with trailing `.rblank` cells to 42 day-cells, and `.rblank`
+       carries the row's height (36 px, 30 px compact) so a trailing row that is
+       ALL blanks still holds its height rather than collapsing. Without both
+       halves the grid was 4–6 rows tall by month, and since the new-war / bid /
+       bidding-window sheets are bottom-anchored, paging months slid the whole
+       sheet — its ‹ › arrows included — up and down (owner: "the arrows keep
+       jumping … design it so they stay put"). Constant height = arrows hold
+       still. The unit test only proved the 42-cell count (jsdom has no layout);
+       the collapsed-blank-row bug was caught in the live pass. See CLAUDE.md
+       §"A control the user TAPS REPEATEDLY must not move under them".
   3. **The sheet lifts above the keyboard while typing.** `Sheet.tsx:useKeyboardInset`
      mirrors `ui/histbubble.ts:place()` — when the on-screen keyboard shrinks the
      `visualViewport`, the panel re-anchors to the top of the visible slice and

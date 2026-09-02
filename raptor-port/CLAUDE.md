@@ -1417,6 +1417,26 @@ subscribers.
   so don't re-pitch it unprompted. Placement + layering (z-index 1, under the
   frozen columns): `docs/ui-contracts.md` §The open-bidding box. Pin:
   `e2e/leavewar.spec.ts`.
+- **A control the user TAPS REPEATEDLY must not move under them — standing
+  design rule** (owner, 2 Sep 26 — "as I toggle left and right on the calendar,
+  because the number of days change between months, the left and right arrow
+  keeps jumping up and down … design it such that the arrows remain at the same
+  spot so I don't need to keep chasing it. Remember this for design interface
+  and fix the rest that you saw the same"). A month spans 4–6 week-rows, so a
+  calendar whose height tracks the month shifts everything anchored to its far
+  edge as you page it. The Leave War new-period / bid / bidding-window
+  calendars sit in a BOTTOM-anchored sheet, so a short month let the whole
+  sheet (its ‹ › month arrows included) drop and a tall one pushed it up.
+  `RangePicker` now pads EVERY month to a constant six rows (trailing `.rblank`
+  cells), so the grid is one fixed height and the arrows — and the sheet — hold
+  still. The Raptor page/popover calendars (`InputsCal`, `WeekCal`) are
+  TOP-anchored — their grid grows DOWNWARD from a fixed top, so their own
+  arrows never move; they pad to whole rows only and were left unchanged
+  (checked, not assumed). The general rule for any repeated-tap control (a
+  calendar pager, a stepper, a reveal toggle, a segmented control that grows
+  a panel): keep the CONTROL's own screen position invariant to the content it
+  changes — reserve the space, or anchor the growth away from the control.
+  Pin: `rangepicker.test.tsx` (constant row count across months).
 
 ## Where things live
 

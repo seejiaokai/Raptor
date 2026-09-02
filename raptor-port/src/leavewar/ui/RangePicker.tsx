@@ -105,6 +105,17 @@ export function RangePicker({
   const inRange = (d: string) => !!value && d >= value.from && d <= value.to
   const days = daysOfMonth(cursor)
   const lead = column(days[0])
+  // Reserve a CONSTANT six week-rows, every month (owner, 2 Sep 26 — "the
+  // left and right arrow keeps jumping up and down … design it such that the
+  // arrows remain at the same spot so I don't need to keep chasing it"). A
+  // month spans 4, 5 or 6 rows, so the grid's height used to change as you
+  // paged — and because the sheet is anchored to the bottom of the screen, a
+  // shorter month let the whole sheet (its ‹ › month arrows included) drop,
+  // and a taller one pushed it back up. Padding every month out to 6 rows
+  // (42 day-cells: lead blanks + days + these trailing blanks) keeps the grid
+  // one fixed height, so nothing above or below it moves. 6 always fits: the
+  // most any month needs is a 31-day month starting Sunday (6 + 31 = 37 ≤ 42).
+  const trailing = 42 - lead - days.length
 
   return (
     <div className={`rpick${compact ? ' compact' : ''}`} data-testid={`${testid}-picker`}>
@@ -158,6 +169,10 @@ export function RangePicker({
             </button>
           )
         })}
+        {/* Trailing blanks pad the month out to a constant six rows — see the
+            `trailing` note above. They paint nothing, exactly like the lead
+            blanks, and only hold the grid's height steady. */}
+        {Array.from({ length: trailing }, (_, i) => <span className="rblank" key={`t${i}`} />)}
       </div>
 
       {/* The chosen span in words. The grid shows it too, but a person about

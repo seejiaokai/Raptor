@@ -114,9 +114,14 @@ describe('RangePicker', () => {
 
   // The month has to start under the right weekday or every date reads a
   // column out. 1 Jan 2026 is a Thursday, which is column 3 Monday-first.
+  // Counted as the blanks BEFORE the first day: there are trailing blanks now
+  // too (padding every month to a constant six rows), so a total-blank count
+  // would fold the two together — the LEAD is what positions the 1st.
   it('pads the first row so the 1st lands under its own weekday', () => {
     const { container } = render(<Harness min="2026-01-01" max="2026-12-31" />)
-    expect(container.querySelectorAll('.rblank')).toHaveLength(3)
+    const cells = Array.from(container.querySelectorAll('.rpick-grid .rday, .rpick-grid .rblank'))
+    const firstDay = cells.findIndex(c => c.classList.contains('rday'))
+    expect(firstDay).toBe(3)
   })
 
   // Monday-first, because leave is asked for in working weeks and a
@@ -147,5 +152,22 @@ describe('RangePicker', () => {
   it('opens on the month the bounds start in, not on today', () => {
     render(<Harness min="2026-07-01" max="2026-09-30" />)
     expect(screen.getByTestId('range-month').textContent).toBe('JULY 2026')
+  })
+
+  // The grid holds a CONSTANT six rows every month (owner, 2 Sep 26 — the
+  // arrows must not hop as the month length changes). The month cells (the
+  // real days plus lead/trailing blanks, but not the seven weekday headings)
+  // always number 42 = 6 × 7, so the grid is one fixed height and the sheet's
+  // ‹ › arrows never move. Walks a year, crossing 4-, 5- and 6-row months
+  // (Feb 2027 starts Monday = exactly four rows unpadded; an August starts
+  // Saturday = six).
+  it('keeps a constant six rows every month, so the arrows never move', () => {
+    const { container } = render(<Harness min="2026-01-01" max="2029-12-31" />)
+    const cellCount = () => container.querySelectorAll('.rpick-grid .rday, .rpick-grid .rblank').length
+    expect(cellCount()).toBe(42)
+    for (let i = 0; i < 13; i++) {
+      fireEvent.click(screen.getByTestId('range-next-month'))
+      expect(cellCount()).toBe(42)
+    }
   })
 })
