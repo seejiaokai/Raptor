@@ -70,7 +70,11 @@ export interface LedgerEntry {
   amount: number
   date: string
   reason: string
+  /** Who recorded it — the admin's callsign. */
   approvedBy: string
+  /** Who GAVE it, when that is someone else (owner, 2 Sep 26 — "who the
+   *  OIL is given by, that's optional"): a name or a post, free text. */
+  givenBy?: string
 }
 
 export type Ledger = LedgerEntry[]
@@ -182,8 +186,8 @@ export function balanceOf(
  * per-type twin of `drawnFrom` (which keys on the COUNTER, so it cannot tell
  * LL from OL, both of which spend `annual`). Portion-aware and gated by the
  * SAME `removesAvailability` the manning rows use, so a refused bid counts
- * nothing and a half day counts 0.5. Counts free/marker codes too (OFF, and
- * the medical markers), which spend no counter but are still days taken.
+ * nothing and a half day counts 0.5. Counts the medical markers too, which
+ * spend no counter but are still days taken.
  */
 export function takenOf(sources: LeaveSource[], personId: string, type: string): number {
   let total = 0
@@ -198,19 +202,20 @@ export function takenOf(sources: LeaveSource[], personId: string, type: string):
   return total
 }
 
-// The three medical markers that make up MED USED, and the seven leave codes
-// that make up LVE USED. Kept as literals here (not derived) because these two
+// The three medical markers that make up MED USED, and the six leave codes
+// that make up LVE USED (OFF left the list on 2 Sep 26 — it is a management
+// Off day event now, never a person's leave). Kept as literals here (not derived) because these two
 // aggregates are the owner's exact groupings — LVE USED deliberately excludes
 // OML/medical, and MED USED deliberately excludes everything else.
 const MED_CON_TYPES = ['ATTC', 'HL', 'OML'] as const
-const LVE_CON_TYPES = ['LL', 'OL', 'OIL', 'OFF', 'CCL', 'PL', 'FCL'] as const
+const LVE_CON_TYPES = ['LL', 'OL', 'OIL', 'CCL', 'PL', 'FCL'] as const
 
 /** Medical days consumed = ATT C + HL + OML taken. */
 export function medConOf(sources: LeaveSource[], personId: string): number {
   return MED_CON_TYPES.reduce((sum, t) => sum + takenOf(sources, personId, t), 0)
 }
 
-/** Total leave days consumed = LL + OL + OIL + OFF + CCL + PL + FCL taken
+/** Total leave days consumed = LL + OL + OIL + CCL + PL + FCL taken
  *  (medical is its own MED USED tally, so it is not in here). */
 export function lveConOf(sources: LeaveSource[], personId: string): number {
   return LVE_CON_TYPES.reduce((sum, t) => sum + takenOf(sources, personId, t), 0)
@@ -317,15 +322,15 @@ export const FIGURES: readonly Figure[] = Object.freeze([
   // policy has retired. With no policy the two are the same number.
   { id: 'oilbal', label: 'OIL BAL', kind: 'bal', desc: 'balance available to take', legend: 'earned by weekend/PH work + granted − taken − expired', value: (c, p) => oilLedgerOf(c, p).balance, parts: balParts('oil', true) },
   // `OFF USED` sat here until 2 Sep 26 (owner: "remove the OFF used
-  // counter"). OFF still counts inside LVE USED; it just has no row of its
-  // own. A saved figure order naming 'off' skips it (orderedFigures).
+  // counter"), and OFF itself stopped being a leave code the same day. A
+  // saved figure order naming 'off' skips it (orderedFigures).
   { id: 'ccl', label: 'CCL USED', kind: 'con', desc: 'days taken', value: (c, p) => takenOf(c.sources, p, 'CCL') },
   { id: 'pl',  label: 'PL USED',  kind: 'con', desc: 'days taken', value: (c, p) => takenOf(c.sources, p, 'PL') },
   { id: 'fcl', label: 'FCL USED', kind: 'con', desc: 'days taken', value: (c, p) => takenOf(c.sources, p, 'FCL') },
   { id: 'med', label: 'MED USED', kind: 'con', desc: 'days taken', legend: 'ATT C + HL + OML', value: (c, p) => medConOf(c.sources, p), parts: typeParts(MED_CON_TYPES) },
   { id: 'oml', label: 'OML USED', kind: 'con', desc: 'days taken', value: (c, p) => takenOf(c.sources, p, 'OML') },
   { id: 'lvebal', label: 'LVE BAL', kind: 'bal', desc: 'balance available to take', value: (c, p) => balanceOf(c.openings, c.ledger, c.sources, p, 'annual'), parts: balParts('annual', false) },
-  { id: 'lvecon', label: 'LVE USED', kind: 'con', desc: 'days taken', legend: 'LL + OL + OIL + OFF + CCL + PL + FCL', value: (c, p) => lveConOf(c.sources, p), parts: typeParts(LVE_CON_TYPES) },
+  { id: 'lvecon', label: 'LVE USED', kind: 'con', desc: 'days taken', legend: 'LL + OL + OIL + CCL + PL + FCL', value: (c, p) => lveConOf(c.sources, p), parts: typeParts(LVE_CON_TYPES) },
 ])
 
 /** The figure the column opens on: how much leave is left. */

@@ -1,40 +1,51 @@
-// The OIL TRACKER sheet (owner, 2 Sep 26).
+// The OIL TRACKER — one full-screen grid (owner, 2 Sep 26, second cut).
 //
-// "A button on the row where auto-sort is shown … an OIL tracker, a popup
-// list which shows each individual with an OIL BAL. Admin can only edit the
-// list, members can only view it. … on that tracker page on the right of the
-// balance I am able to credit and add OIL … set any number, with reason and
-// a date … a tracker sheet which shows when the OIL was credited and reason.
-// The system will auto show when the OIL was taken … struck out, and it will
-// automatically use the oldest OIL that was given. … drag and select all
-// WSOs to put OIL, date and reason … select which date ranges to look at …
-// admin can set a default duration … how long OIL can last."
+// "One row for each person … on top of the names put the category … right
+// of each name the balance … on the right side of the grids, show the data
+// from left to right, scrollable … each input is 1 column … remove the
+// second page … on the mobile the name of the pax is frozen to the left …
+// drag to select on the mobile too, the same mechanics as the leave war
+// grid … show how much was taken for that same box that was initially
+// given … eventually it cancels out entirely once it's all consumed on that
+// box … year as a header, the grids vertically aligned … given top-left,
+// taken below it, left bottom-right … who the OIL is given by, optional; if
+// auto credited put Auto."
 //
-// Two views in one sheet, plus the admin's settings:
+// So: a table. Two frozen columns (name over its CAT chip; BAL over a
+// `+earned −taken` line for the window), then one LANE per calendar year in
+// the window, each lane a strip of CREDIT BOXES for that person that year,
+// oldest first — every row's 2027 boxes start at the same x because a lane
+// is a table column. A box is one credit and reads as a small ledger:
 //
-//   EVERYONE — the roster in its grid order with group headings, one row per
-//              person: callsign, CAT, OIL BAL. A tap opens their ledger. An
-//              admin also gets a pick box per row, a Select-all per group,
-//              and a mouse/pen DRAG down the rows selects the run under it —
-//              the "drag and select all WSOs". Any selection opens the
-//              credit panel: one amount, one date, one reason, N people.
-//   ONE PERSON — the balance, an admin's "+ Add OIL" beside it, the window
-//              chips, and the ledger newest-first: every credit (earned day,
-//              grant, opening figure) with what became of it — used on which
-//              days (fully used = struck through), part left, or expired —
-//              and every day taken, with which credit it drew from.
+//     +7  20 Aug            OC Ops       ← given: amount, date, given by
+//     Late recovery                      ← the reason (FLT / SIM / Duty when
+//     −1 28 Aug · −1 30 Aug     6 left      earned; the box then says AUTO)
+//                                        ← the days taken FROM this credit
+//                                          (FIFO, oldest credit first), and
+//                                          what is left, bottom-right
+//
+// Used up: the amount and reason strike through and the box dims; the takes
+// stay legible (they are the audit trail). Expired: dimmed, "expired <date>".
+// A day taken with nothing left to draw from gets its own red box, so a
+// negative balance is never invisible.
+//
+// Selection (admin): a tap on a name toggles the row; a hold-then-drag (a
+// finger) or a plain drag (a mouse) down the NAMES selects the run —
+// select.ts's `wireRowSelect`, the grid's own gesture core, so one rhythm
+// serves both surfaces. The history strip never starts a selection, so it
+// keeps its sideways scroll. Any selection docks the credit bar under the
+// grid: one amount, one date, one reason, an optional "given by", N people.
 //
 // Everything shown is DERIVED by engine/oiltracker.ts from the store's
-// openings, ledger and grid; what an admin writes here is a ledger entry
-// (grantOil / updateLedgerEntry / removeLedgerEntry) or the policy
-// (setOilPolicy). Earned FO/HO days are read off the grid and are not
-// editable here — they are the publish wire's, and the schedule is their
-// record.
+// openings, ledger and grid (plus each FO/HO cell's note); what an admin
+// writes here is a ledger entry (grantOil / updateLedgerEntry /
+// removeLedgerEntry), a hand-typed credit's note (setCellNote), or the
+// policy (setOilPolicy).
 //
 // Role: the sheet DRAWS controls for an admin only (absent, not disabled —
 // the house rule), and the store refuses a member's write regardless.
 
-import { useRef, useState, type PointerEvent as RPointerEvent, type MouseEvent as RMouseEvent } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
 import {
   addMonths,
   assignGroup,
@@ -42,6 +53,7 @@ import {
   catText,
   groupLabel,
   inWindow,
+  MAX_CELL_NOTE,
   MAX_EXPIRY_DAYS,
   MAX_EXPIRY_MONTHS,
   MAX_HISTORY_MONTHS,
@@ -61,13 +73,16 @@ import {
   grantOil,
   groupsInOrder,
   groupPriorityIds,
+  MAX_GIVEN_BY,
   MAX_REASON,
   removeLedgerEntry,
+  setCellNote,
   setOilPolicy,
   updateLedgerEntry,
 } from '../state/store'
 import { shortDate, shortSpan } from './dates'
 import { RangePicker, type Range } from './RangePicker'
+import { wireRowSelect } from './select'
 import { Sheet } from './Sheet'
 import { useVersion } from './useStore'
 import './bidpicker.css'
@@ -76,107 +91,18 @@ import './oiltracker.css'
 /** Rounds for display only, the same rule every figure surface uses. */
 const show = (n: number) => String(Math.round(n * 10) / 10)
 const signed = (n: number) => (n < 0 ? `−${show(-n)}` : n > 0 ? `+${show(n)}` : '0')
-/** A taken total reads with a minus, and "0" rather than "−0" when nothing was. */
-const minus = (n: number) => (n ? `−${show(n)}` : '0')
+
+/** Day and month only — the lane header carries the year (owner, 2 Sep 26).
+ *  A draw in another year than its credit's lane says so with two digits. */
+const dm = (date: string) => shortDate(date).replace(/\s\d{2}$/, '')
+const dmy = (date: string, laneYear: string) => (date.slice(0, 4) === laneYear ? dm(date) : shortDate(date))
 
 type RangeMode = 'first' | 'months' | 'pick'
 
-/** How much of a credit has been drawn — for the status words. */
-const usedOf = (c: OilCredit) => c.used.reduce((s, u) => s + u.amount, 0)
+/** One BOX on a person's strip: a credit, or a debit no credit covered. */
+type Box = { year: string; date: string; c?: OilCredit; d?: OilDebit }
 
-/** The status words on a credit row: what became of it. */
-function creditStatus(c: OilCredit): string {
-  const used = c.used.map(u => shortDate(u.date)).join(', ')
-  if (c.expired) return `expired ${shortDate(c.expires!)}${c.used.length ? ` · ${show(usedOf(c))} used` : ''}`
-  if (c.left === 0 && c.used.length) return `used ${used}`
-  if (c.used.length) return `${show(c.left)} of ${show(c.amount)} left · used ${used}`
-  return c.expires ? `${show(c.left)} left · expires ${shortDate(c.expires)}` : `${show(c.left)} left`
-}
-
-/**
- * The credit panel — one amount, one date, one reason, for one or many
- * people. Its own component so its draft state resets with the people it
- * is for (the caller keys it), and so the everyone and one-person views
- * share the exact form.
- */
-function CreditPanel({ ids, names, today, onDone, onCancel }: {
-  ids: string[]
-  names: string
-  today: string
-  onDone: () => void
-  onCancel: () => void
-}) {
-  const [amt, setAmt] = useState('1')
-  const [date, setDate] = useState(today)
-  const [dateOpen, setDateOpen] = useState(false)
-  const [reason, setReason] = useState('')
-  const [err, setErr] = useState('')
-  const save = () => {
-    const problem = grantOil(ids, Number(amt), date, reason)
-    if (problem) { setErr(problem); return }
-    onDone()
-  }
-  return (
-    <div className="oil-credit" data-testid="oil-credit-panel">
-      <div className="bidsheet-row">
-        <span className="lab">Credit</span>
-        <span className="note" data-testid="oil-credit-who">
-          <b>{ids.length === 1 ? names : `${ids.length} people`}</b>{ids.length > 1 ? ` · ${names}` : ''}
-        </span>
-      </div>
-      <div className="bidsheet-row">
-        <span className="lab">Amount</span>
-        <input
-          type="number"
-          step="0.5"
-          className="oil-num"
-          data-testid="oil-amt"
-          value={amt}
-          onChange={e => setAmt(e.target.value)}
-          aria-label="Days of OIL"
-        />
-        <span className="note">days · a negative number is a correction</span>
-      </div>
-      <div className="bidsheet-row">
-        <span className="lab">Date</span>
-        <button className="tchip" data-testid="oil-date" aria-expanded={dateOpen} onClick={() => setDateOpen(o => !o)}>
-          {shortDate(date)} ▾
-        </button>
-        <span className="note">the day it counts from</span>
-      </div>
-      {dateOpen && (
-        <div className="bidsheet-row">
-          <RangePicker
-            compact
-            testid="oildate"
-            anchor={today}
-            value={{ from: date, to: date }}
-            // A single day: a tap on a later day than the one shown arrives
-            // as a range starting at the shown day, so take its far end.
-            onChange={r => { if (!r) return; setDate(r.to !== date ? r.to : r.from); setDateOpen(false) }}
-          />
-        </div>
-      )}
-      <div className="bidsheet-row">
-        <span className="lab">Reason</span>
-        <input
-          className="oil-text"
-          data-testid="oil-reason"
-          maxLength={MAX_REASON}
-          value={reason}
-          placeholder="Why — e.g. Det recovery, exercise weekend"
-          onChange={e => setReason(e.target.value)}
-          onKeyDown={e => { if (e.key === 'Enter') save() }}
-        />
-      </div>
-      <div className="bidsheet-row">
-        <button className="dchip approve" data-testid="oil-credit-save" onClick={save}>Credit</button>
-        <button className="tchip clear" data-testid="oil-credit-cancel" onClick={onCancel}>Cancel</button>
-        {err && <span className="note warn" data-testid="oil-credit-err">{err}</span>}
-      </div>
-    </div>
-  )
-}
+const yearOf = (date: string, fallback: string) => (date ? date.slice(0, 4) : fallback)
 
 /** A whole-number field that commits on blur or Enter, so a person can clear
  *  it and retype without the store refusing the empty moment. */
@@ -210,19 +136,121 @@ function IntField({ testid, value, min, max, onCommit }: {
   )
 }
 
-export function OilTracker({ person, onClose }: {
-  /** Open on one person's ledger, or `null` for everyone. */
+/** A single-day picker behind a chip: the chip shows the day, a tap opens the
+ *  calendar under it, a tap on a day closes it. */
+function DayChip({ testid, pickerId, value, today, onPick }: {
+  testid: string
+  pickerId: string
+  value: string
+  today: string
+  onPick: (d: string) => void
+}) {
+  const [open, setOpen] = useState(false)
+  return (
+    <span className="oil-daychip">
+      <button className="tchip" data-testid={testid} aria-expanded={open} onClick={() => setOpen(o => !o)}>
+        📅 {value ? shortDate(value) : 'date'} ▾
+      </button>
+      {open && (
+        <span className="oil-pop">
+          <RangePicker
+            compact
+            testid={pickerId}
+            anchor={value || today}
+            value={value ? { from: value, to: value } : null}
+            // A single day: a tap on a later day than the one shown arrives
+            // as a range starting at the shown day, so take its far end.
+            onChange={r => { if (!r) return; onPick(r.to !== value ? r.to : r.from); setOpen(false) }}
+          />
+        </span>
+      )}
+    </span>
+  )
+}
+
+/**
+ * The credit bar's form — one amount, one date, one reason, an optional
+ * "given by", for one or many people. Its own component so its draft state
+ * resets with the people it is for (the caller keys it).
+ */
+function CreditForm({ ids, names, today, onDone, onCancel }: {
+  ids: string[]
+  names: string
+  today: string
+  onDone: () => void
+  onCancel: () => void
+}) {
+  const [amt, setAmt] = useState('1')
+  const [date, setDate] = useState(today)
+  const [reason, setReason] = useState('')
+  const [given, setGiven] = useState('')
+  const [err, setErr] = useState('')
+  const save = () => {
+    const problem = grantOil(ids, Number(amt), date, reason, given)
+    if (problem) { setErr(problem); return }
+    onDone()
+  }
+  return (
+    <div className="oil-bar form" data-testid="oil-credit-panel">
+      <b className="oil-who" data-testid="oil-credit-who">Credit {names}</b>
+      <input
+        type="number"
+        step="0.5"
+        className="oil-num"
+        data-testid="oil-amt"
+        value={amt}
+        onChange={e => setAmt(e.target.value)}
+        aria-label="Days of OIL — a negative number is a correction"
+        title="days · a negative number is a correction"
+      />
+      <DayChip testid="oil-date" pickerId="oildate" value={date} today={today} onPick={setDate} />
+      <input
+        className="oil-text"
+        data-testid="oil-reason"
+        maxLength={MAX_REASON}
+        value={reason}
+        placeholder="reason"
+        aria-label="Reason"
+        onChange={e => setReason(e.target.value)}
+        onKeyDown={e => { if (e.key === 'Enter') save() }}
+      />
+      <input
+        className="oil-text given"
+        data-testid="oil-given"
+        maxLength={MAX_GIVEN_BY}
+        value={given}
+        placeholder="given by (optional)"
+        aria-label="Given by"
+        onChange={e => setGiven(e.target.value)}
+        onKeyDown={e => { if (e.key === 'Enter') save() }}
+      />
+      <button className="dchip approve" data-testid="oil-credit-save" onClick={save}>Save</button>
+      <button className="tchip clear" data-testid="oil-credit-cancel" onClick={onCancel}>Deselect</button>
+      {err && <span className="note warn" data-testid="oil-credit-err">{err}</span>}
+    </div>
+  )
+}
+
+export function OilTracker({ person, focus, onClose, onGranted }: {
+  /** Scroll to this person's row on open (the Cinch's OIL BAL, or a manual
+   *  OIL write on the grid); `null` opens at the top. */
   person: string | null
+  /** The day whose box to light, when opened from a grid write. */
+  focus?: string | null
   onClose: () => void
+  /** After an admin's credit, edit or delete lands — the matrix snaps its
+   *  counter column to OIL BAL (owner, 2 Sep 26). */
+  onGranted?: () => void
 }) {
   useVersion()
   const { people, role, oilPolicy, qualCatalog } = getState()
   const admin = role === 'admin'
   const ctx = figureCtxOf()
   const today = ctx.asOf!
+  const thisYear = today.slice(0, 4)
 
-  const [who, setWho] = useState<string | null>(person)
-  const [view, setView] = useState<'list' | 'settings'>('list')
+  const [view, setView] = useState<'grid' | 'settings'>('grid')
+  const [legend, setLegend] = useState(false)
 
   // The history window (owner: "select which date ranges to look at … can
   // also be shown from the beginning of the first input"). Opens on the
@@ -231,34 +259,22 @@ export function OilTracker({ person, onClose }: {
   const [pick, setPick] = useState<Range | null>(null)
   const [picking, setPicking] = useState(false)
   const months = oilPolicy.historyMonths ?? 6
-  const windowFor = (first: string | null): { from: string | null; to: string | null; label: string } => {
-    if (mode === 'pick' && pick) return { from: pick.from, to: pick.to, label: shortSpan(pick.from, pick.to) }
-    if (mode === 'months') {
-      const from = addMonths(today, -months)
-      return { from, to: null, label: `${shortDate(from)} – today` }
-    }
-    return { from: null, to: null, label: first ? `${shortDate(first)} – today` : 'everything on record' }
-  }
 
-  // The everyone view's selection (admin): picked ids, and the run a drag is
-  // previewing. A drag is mouse/pen only — a finger scrolls the panel, and
-  // taps the pick box or a group's Select all instead.
+  // Selection (admin): the picked ids. The drag itself lives in select.ts.
   const [sel, setSel] = useState<Set<string>>(() => new Set())
-  const [drag, setDrag] = useState<{ anchor: string; focus: string } | null>(null)
-  const listRef = useRef<HTMLDivElement>(null)
-  const gesture = useRef<{ anchor: string; x: number; y: number; armed: boolean; id: number } | null>(null)
-  const swallow = useRef(false)
+  const wrapRef = useRef<HTMLDivElement>(null)
 
-  // The one-person view's "+ Add OIL" panel, and the grant being edited /
-  // armed for deletion.
-  const [crediting, setCrediting] = useState(false)
+  // The grant being edited (its draft), the one armed for deletion, and the
+  // hand-typed credit whose note is being written.
   const [editId, setEditId] = useState<string | null>(null)
   const [eAmt, setEAmt] = useState('')
   const [eDate, setEDate] = useState('')
-  const [eDateOpen, setEDateOpen] = useState(false)
   const [eReason, setEReason] = useState('')
+  const [eGiven, setEGiven] = useState('')
   const [eErr, setEErr] = useState('')
   const [armDel, setArmDel] = useState<string | null>(null)
+  const [noteId, setNoteId] = useState<string | null>(null)
+  const [noteDraft, setNoteDraft] = useState('')
 
   const groupDefs = groupsInOrder()
   const priority = groupPriorityIds()
@@ -270,87 +286,71 @@ export function OilTracker({ person, onClose }: {
   }
   const roster = displayRoster()
   const orderIds = roster.map(p => p.id)
+  const ledgers = new Map<string, OilLedger>(roster.map(p => [p.id, oilLedgerOf(ctx, p.id)]))
 
-  /* ---- the drag-select gesture (admin, mouse/pen) ---------------------- */
-  const rowAt = (e: RPointerEvent): string | null => {
-    const hit = (document.elementFromPoint?.(e.clientX, e.clientY) ?? (e.target as Element | null)) as Element | null
-    return hit?.closest?.('[data-oilrow]')?.getAttribute('data-oilrow') ?? null
-  }
-  const runBetween = (a: string, b: string): string[] => {
-    const i = orderIds.indexOf(a), j = orderIds.indexOf(b)
-    if (i < 0 || j < 0) return []
-    return orderIds.slice(Math.min(i, j), Math.max(i, j) + 1)
-  }
-  const onPointerDown = (e: RPointerEvent) => {
-    if (!admin || e.pointerType === 'touch' || e.button !== 0) return
-    const id = (e.target as Element).closest?.('[data-oilrow]')?.getAttribute('data-oilrow')
-    if (!id) return
-    gesture.current = { anchor: id, x: e.clientX, y: e.clientY, armed: false, id: e.pointerId }
-  }
-  const onPointerMove = (e: RPointerEvent) => {
-    const g = gesture.current
-    if (!g) return
-    if (!g.armed) {
-      if (Math.hypot(e.clientX - g.x, e.clientY - g.y) < 4) return
-      g.armed = true
-      try { listRef.current?.setPointerCapture(g.id) } catch { /* jsdom */ }
+  // The earliest dated entry anyone has — "from the first input".
+  let first: string | null = null
+  for (const led of ledgers.values()) if (led.first && (!first || led.first < first)) first = led.first
+
+  const win: { from: string | null; to: string | null; label: string } = (() => {
+    if (mode === 'pick' && pick) return { from: pick.from, to: pick.to, label: shortSpan(pick.from, pick.to) }
+    if (mode === 'months') {
+      const from = addMonths(today, -months)
+      return { from, to: null, label: `${shortDate(from)} – today` }
     }
-    const f = rowAt(e)
-    if (f) setDrag({ anchor: g.anchor, focus: f })
-  }
-  const endDrag = (e: RPointerEvent) => {
-    const g = gesture.current
-    if (!g) return
-    gesture.current = null
-    if (!g.armed) return
-    const focus = rowAt(e) ?? drag?.focus ?? g.anchor
-    setSel(prev => new Set([...prev, ...runBetween(g.anchor, focus)]))
-    setDrag(null)
-    // The click that trails a drag would open the row it ended on.
-    swallow.current = true
-  }
-  const onClickCapture = (e: RMouseEvent) => {
-    if (!swallow.current) return
-    swallow.current = false
-    e.stopPropagation()
-    e.preventDefault()
-  }
-  const preview = drag ? new Set(runBetween(drag.anchor, drag.focus)) : null
-  const toggle = (id: string) => setSel(prev => { const n = new Set(prev); if (n.has(id)) n.delete(id); else n.add(id); return n })
-  const toggleGroup = (ids: string[]) => setSel(prev => {
-    const n = new Set(prev)
-    const allIn = ids.every(id => n.has(id))
-    for (const id of ids) { if (allIn) n.delete(id); else n.add(id) }
-    return n
-  })
-  const namesOf = (ids: string[]) => ids.map(id => people.find(p => p.id === id)?.callsign ?? id).join(', ')
+    return { from: null, to: null, label: first ? `${shortDate(first)} – today` : 'everything on record' }
+  })()
 
-  /* ---- the window chips, shared by both views ------------------------- */
-  const windowChips = (first: string | null) => {
-    const win = windowFor(first)
-    return (
-      <>
-        <div className="oil-tools">
-          <span className="lab">Show</span>
-          <button className={`tchip${mode === 'first' ? ' on' : ''}`} data-testid="oil-range-first" onClick={() => { setMode('first'); setPicking(false) }}>
-            From first entry
-          </button>
-          <button className={`tchip${mode === 'months' ? ' on' : ''}`} data-testid="oil-range-months" onClick={() => { setMode('months'); setPicking(false) }}>
-            Last {months} months
-          </button>
-          <button className={`tchip${mode === 'pick' ? ' on' : ''}`} data-testid="oil-range-pick" onClick={() => { setMode('pick'); setPicking(true) }}>
-            Pick dates
-          </button>
-          <span className="note oil-window" data-testid="oil-window">{win.label}</span>
-        </div>
-        {mode === 'pick' && picking && (
-          <div className="bidsheet-row oil-pickrow">
-            <RangePicker compact testid="oilrange" anchor={today} value={pick} onChange={setPick} />
-            <button className="tchip clear" data-testid="oilrange-done" onClick={() => setPicking(false)}>Done</button>
-          </div>
-        )}
-      </>
-    )
+  /* ---- the drag-select gesture, bound once ------------------------------ */
+  const selCtxRef = useRef<{ order: () => string[]; enabled: () => boolean; onSelect: (ids: string[]) => void }>({ order: () => [], enabled: () => false, onSelect: () => {} })
+  selCtxRef.current = {
+    order: () => orderIds,
+    enabled: () => admin && view === 'grid',
+    onSelect: ids => setSel(prev => new Set([...prev, ...ids])),
+  }
+  useEffect(() => {
+    const wrap = wrapRef.current
+    if (!wrap) return
+    return wireRowSelect(wrap, {
+      order: () => selCtxRef.current.order(),
+      enabled: () => selCtxRef.current.enabled(),
+      onSelect: ids => selCtxRef.current.onSelect(ids),
+    })
+  }, [view])
+
+  // Opened on someone: bring their row into view once.
+  useEffect(() => {
+    if (!person) return
+    const row = wrapRef.current?.querySelector<HTMLElement>(`[data-oilrow="${person}"]`)
+    row?.scrollIntoView?.({ block: 'center' })
+  }, [person])
+
+  const toggle = (id: string) => setSel(prev => { const n = new Set(prev); if (n.has(id)) n.delete(id); else n.add(id); return n })
+  const callsignOf = (id: string) => people.find(p => p.id === id)?.callsign ?? id
+  const namesOf = (ids: string[]) => {
+    const names = ids.map(callsignOf)
+    return names.length > 3 ? `${names.slice(0, 2).join(', ')} +${names.length - 2}` : names.join(', ')
+  }
+  const done = () => { onGranted?.() }
+
+  /* ---- editing a grant / a hand-typed credit's note --------------------- */
+  const startEdit = (c: OilCredit) => {
+    setEditId(c.ledgerId!); setEAmt(String(c.amount)); setEDate(c.date); setEReason(c.reason); setEGiven(c.givenBy ?? ''); setEErr(''); setArmDel(null); setNoteId(null)
+  }
+  const saveEdit = () => {
+    const problem = updateLedgerEntry(editId!, { amount: Number(eAmt), date: eDate, reason: eReason, givenBy: eGiven })
+    if (problem) { setEErr(problem); return }
+    setEditId(null)
+    done()
+  }
+  const startNote = (c: OilCredit, personId: string) => {
+    setNoteId(`${personId}|${c.date}`); setNoteDraft(c.manual && c.reason !== 'weekend duty' && c.reason !== 'PH duty' ? c.reason : ''); setEditId(null)
+  }
+  const saveNote = (personId: string, date: string) => {
+    const problem = setCellNote(personId, date, noteDraft)
+    if (problem) { setEErr(problem); return }
+    setNoteId(null); setEErr('')
+    done()
   }
 
   /* ---- SETTINGS (admin) ------------------------------------------------ */
@@ -359,7 +359,7 @@ export function OilTracker({ person, onClose }: {
     const setUnit = (unit: OilExpiryUnit) =>
       setOilPolicy({ expiry: { n: exp?.unit === unit ? exp.n : unit === 'days' ? 90 : 6, unit } })
     return (
-      <Sheet testid="oil-sheet" label="OIL tracker settings" onClose={onClose}>
+      <Sheet testid="oil-sheet" label="OIL tracker settings" onClose={onClose} full>
         <div className="bidsheet-hd">
           <span className="who">OIL TRACKER</span>
           <span className="dt">settings · squadron-wide</span>
@@ -397,226 +397,303 @@ export function OilTracker({ person, onClose }: {
           </div>
           <span className="note">The window the tracker opens on. Anyone can widen or narrow it while looking.</span>
           <div className="bidsheet-row">
-            <button className="tchip" data-testid="oil-settings-done" onClick={() => setView('list')}>‹ Back to the tracker</button>
+            <button className="tchip" data-testid="oil-settings-done" onClick={() => setView('grid')}>‹ Back to the tracker</button>
           </div>
         </div>
       </Sheet>
     )
   }
 
-  /* ---- ONE PERSON ------------------------------------------------------ */
-  const me = who ? people.find(p => p.id === who) : undefined
-  if (who && me) {
-    const led: OilLedger = oilLedgerOf(ctx, who)
-    const win = windowFor(led.first)
-    const creditById = new Map(led.credits.map(c => [c.id, c]))
-    type Row = { date: string; c?: OilCredit; d?: OilDebit }
-    const rows: Row[] = [
-      ...led.credits.filter(c => inWindow(c.date, win.from, win.to)).map(c => ({ date: c.date, c })),
-      ...led.debits.filter(d => inWindow(d.date, win.from, win.to)).map(d => ({ date: d.date, d })),
-    ].sort((a, b) => (a.date > b.date ? -1 : a.date < b.date ? 1 : 0))
-    let wEarned = 0, wGranted = 0, wTaken = 0, wExpired = 0
-    for (const r of rows) {
-      if (r.c) { if (r.c.source === 'auto') wEarned += r.c.amount; else if (r.c.source === 'grant') wGranted += r.c.amount; wExpired += r.c.expired }
-      if (r.d) { if (r.d.source === 'taken') wTaken += r.d.amount; else if (r.d.source === 'correction') wGranted -= r.d.amount }
+  /* ---- THE GRID -------------------------------------------------------- */
+  // Every person's boxes in the window, and the set of years they span.
+  const boxesOf = new Map<string, Box[]>()
+  const years = new Set<string>()
+  let anyBox = false
+  for (const p of roster) {
+    const led = ledgers.get(p.id)!
+    const boxes: Box[] = []
+    for (const c of led.credits) {
+      // A credit shows when its own day is in the window, or any day taken
+      // from it is — a March credit drawn on in August belongs to August's
+      // reader too.
+      if (!(inWindow(c.date, win.from, win.to) || c.used.some(u => inWindow(u.date, win.from, win.to)))) continue
+      boxes.push({ year: yearOf(c.date, first?.slice(0, 4) ?? thisYear), date: c.date, c })
     }
-    const startEdit = (c: OilCredit) => {
-      setEditId(c.ledgerId!); setEAmt(String(c.amount)); setEDate(c.date); setEReason(c.reason); setEErr(''); setEDateOpen(false); setArmDel(null)
+    for (const d of led.debits) {
+      // A take nothing covered, or an admin's correction (its own record,
+      // editable) — the rest of a debit lives inside the credit it drew from.
+      if (!(d.unbacked > 0 || d.source === 'correction')) continue
+      if (!inWindow(d.date, win.from, win.to)) continue
+      boxes.push({ year: yearOf(d.date, thisYear), date: d.date, d })
     }
-    const saveEdit = () => {
-      const problem = updateLedgerEntry(editId!, { amount: Number(eAmt), date: eDate, reason: eReason })
-      if (problem) { setEErr(problem); return }
-      setEditId(null)
-    }
-    const grantActs = (id: string) => (
-      <span className="acts">
-        <button className="tchip" data-testid={`oil-edit-${id}`} onClick={() => startEdit(creditById.get(id)!)}>Edit</button>
-        <button
-          className={`tchip${armDel === id ? ' arm' : ' clear'}`}
-          data-testid={`oil-del-${id}`}
-          onClick={() => { if (armDel === id) { removeLedgerEntry(id); setArmDel(null) } else setArmDel(id) }}
-        >
-          {armDel === id ? 'Really delete?' : 'Delete'}
-        </button>
-      </span>
-    )
-    return (
-      <Sheet testid="oil-sheet" label={`${me.callsign}'s OIL ledger`} onClose={onClose}>
-        <div className="bidsheet-hd">
-          <span className="who">{me.callsign}</span>
-          <span className="dt">OIL ledger · the oldest credit is used first</span>
-          <button className="x" data-testid="oil-close" onClick={onClose} aria-label="Close">✕</button>
-        </div>
-        <div className="oil-tools">
-          <button className="tchip" data-testid="oil-back" onClick={() => { setWho(null); setCrediting(false); setEditId(null) }}>‹ Everyone</button>
-          {admin && <button className="tchip" data-testid="oil-settings" onClick={() => setView('settings')}>⚙ Settings</button>}
-        </div>
-        <div className="oil-bal">
-          <span className="oil-balk">
-            <span className="k">OIL BAL</span>
-            <span className={`big${led.balance < 0 ? ' neg' : ''}`} data-testid="oil-person-bal">{show(led.balance)}</span>
-            <span className="k">left</span>
-          </span>
-          <span className="oil-balsub">
-            {led.overdrawn ? <span className="warnk">{show(led.overdrawn)} taken beyond credit</span> : null}
-            {led.expired ? <span>{show(led.expired)} expired</span> : null}
-          </span>
-          {admin && !crediting && (
-            <button className="dchip approve" data-testid="oil-add" onClick={() => { setCrediting(true); setEditId(null) }}>+ Add OIL</button>
-          )}
-        </div>
-        {crediting && (
-          <CreditPanel key={who} ids={[who]} names={me.callsign} today={today} onDone={() => setCrediting(false)} onCancel={() => setCrediting(false)} />
-        )}
-        {windowChips(led.first)}
-        <div className="oil-entries" data-testid="oil-entries">
-          {rows.length === 0 && <span className="note" data-testid="oil-empty">Nothing in this window.</span>}
-          {rows.map(r => {
-            if (r.c) {
-              const c = r.c
-              const fullyUsed = c.left === 0 && !c.expired && c.used.length > 0
-              const editing = editId !== null && c.ledgerId === editId
-              return (
-                <div
-                  key={c.id}
-                  className={`oil-e credit${fullyUsed ? ' used' : ''}${c.expired ? ' expired' : ''}`}
-                  data-testid={`oil-entry-${c.id}`}
+    boxes.sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : 0))
+    for (const b of boxes) years.add(b.year)
+    if (boxes.length) anyBox = true
+    boxesOf.set(p.id, boxes)
+  }
+  const lanes = [...years].sort()
+  const span = 2 + Math.max(1, lanes.length) + 1   // name, bal, lanes (or one filler), filler
+
+  const selIds = orderIds.filter(id => sel.has(id))
+
+  const renderBox = (p: Person, b: Box, lane: string): ReactNode => {
+    // A ledger id is unique on its own; an earned / opening id is per war and
+    // date, shared across people, so the test id carries the person too.
+    const tid = (id: string, ledgerId?: string) => (ledgerId ? id : `${p.id}-${id}`)
+    if (b.c) {
+      const c = b.c
+      const usedUp = c.left === 0 && !c.expired && c.used.length > 0
+      const editing = editId !== null && c.ledgerId === editId
+      const noting = noteId === `${p.id}|${c.date}`
+      const here = !!focus && p.id === person && c.date === focus
+      const cls = `oil-e credit${c.source === 'grant' ? ' grant' : ''}${usedUp ? ' used' : ''}${c.expired ? ' expired' : ''}${here ? ' here' : ''}${editing || noting ? ' editing' : ''}`
+      const canEdit = admin && c.source === 'grant'
+      const canNote = admin && c.source === 'auto' && c.manual
+      if (editing) {
+        return (
+          <div key={c.id} className={cls} data-testid={`oil-entry-${tid(c.id, c.ledgerId)}`}>
+            <div className="oil-edit">
+              <input type="number" step="0.5" className="oil-num" data-testid="oil-edit-amt" value={eAmt} onChange={e => setEAmt(e.target.value)} aria-label="Days" />
+              <DayChip testid="oil-edit-date" pickerId="oileditdate" value={eDate} today={today} onPick={setEDate} />
+              <input className="oil-text" data-testid="oil-edit-reason" maxLength={MAX_REASON} value={eReason} onChange={e => setEReason(e.target.value)} aria-label="Reason" placeholder="reason" />
+              <input className="oil-text given" data-testid="oil-edit-given" maxLength={MAX_GIVEN_BY} value={eGiven} onChange={e => setEGiven(e.target.value)} aria-label="Given by" placeholder="given by (optional)" />
+              <span className="acts">
+                <button className="dchip approve" data-testid="oil-edit-save" onClick={saveEdit}>Save</button>
+                <button className="tchip clear" data-testid="oil-edit-cancel" onClick={() => setEditId(null)}>Cancel</button>
+                <button
+                  className={`tchip${armDel === c.ledgerId ? ' arm' : ' clear'}`}
+                  data-testid={`oil-del-${c.ledgerId}`}
+                  onClick={() => { if (armDel === c.ledgerId) { removeLedgerEntry(c.ledgerId!); setArmDel(null); setEditId(null); done() } else setArmDel(c.ledgerId!) }}
                 >
-                  <span className="d">{c.date ? shortDate(c.date) : '—'}</span>
-                  <span className="a">{signed(c.amount)}</span>
-                  <span className="r">
-                    {c.reason}
-                    {c.source === 'auto' && <span className="tag" title="From the published schedule">auto</span>}
-                    {c.source === 'grant' && c.approvedBy && <span className="tag">by {c.approvedBy}</span>}
-                  </span>
-                  <span className="s" data-testid={`oil-status-${c.id}`}>{creditStatus(c)}</span>
-                  {admin && c.source === 'grant' && !editing && grantActs(c.ledgerId!)}
-                  {editing && (
-                    <span className="acts oil-editrow">
-                      <input type="number" step="0.5" className="oil-num" data-testid="oil-edit-amt" value={eAmt} onChange={e => setEAmt(e.target.value)} aria-label="Days" />
-                      <button className="tchip" data-testid="oil-edit-date" onClick={() => setEDateOpen(o => !o)}>{eDate ? shortDate(eDate) : 'date'} ▾</button>
-                      <input className="oil-text" data-testid="oil-edit-reason" maxLength={MAX_REASON} value={eReason} onChange={e => setEReason(e.target.value)} aria-label="Reason" />
-                      <button className="dchip approve" data-testid="oil-edit-save" onClick={saveEdit}>Save</button>
-                      <button className="tchip clear" data-testid="oil-edit-cancel" onClick={() => setEditId(null)}>Cancel</button>
-                      {eErr && <span className="note warn">{eErr}</span>}
-                      {eDateOpen && (
-                        <RangePicker compact testid="oileditdate" anchor={eDate || today} value={eDate ? { from: eDate, to: eDate } : null}
-                          onChange={rr => { if (!rr) return; setEDate(rr.to !== eDate ? rr.to : rr.from); setEDateOpen(false) }} />
-                      )}
-                    </span>
-                  )}
-                </div>
-              )
-            }
-            const d = r.d!
-            const from = d.from.map(f => { const c = creditById.get(f.creditId); return c?.date ? shortDate(c.date) : 'opening' }).join(', ')
-            return (
-              <div key={d.id} className="oil-e take" data-testid={`oil-entry-${d.id}`}>
-                <span className="d">{d.date ? shortDate(d.date) : '—'}</span>
-                <span className="a">−{show(d.amount)}</span>
-                <span className="r">
-                  {d.reason}
-                  {d.source === 'correction' && <span className="tag">correction</span>}
-                </span>
-                <span className="s" data-testid={`oil-status-${d.id}`}>
-                  {d.unbacked ? `${show(d.unbacked)} not covered` : from ? `from ${from}` : ''}
-                </span>
-              </div>
-            )
-          })}
+                  {armDel === c.ledgerId ? 'Really delete?' : 'Delete'}
+                </button>
+              </span>
+              {eErr && <span className="note warn" data-testid="oil-edit-err">{eErr}</span>}
+            </div>
+          </div>
+        )
+      }
+      return (
+        <div
+          key={c.id}
+          className={cls}
+          data-testid={`oil-entry-${tid(c.id, c.ledgerId)}`}
+          role={canEdit ? 'button' : undefined}
+          tabIndex={canEdit ? 0 : undefined}
+          onClick={canEdit ? () => startEdit(c) : undefined}
+          onKeyDown={canEdit ? e => { if (e.key === 'Enter') startEdit(c) } : undefined}
+          title={canEdit ? 'Tap to edit this credit' : undefined}
+        >
+          <div className="l1">
+            <span className="amt">{signed(c.amount)}</span>
+            <span className="dt">{c.date ? dmy(c.date, lane) : 'carried in'}</span>
+            {c.source === 'auto' && !c.manual && <span className="by auto">Auto</span>}
+            {c.source === 'grant' && c.givenBy && <span className="by">{c.givenBy}</span>}
+          </div>
+          {noting ? (
+            <div className="l2 noting" onClick={e => e.stopPropagation()}>
+              <input
+                className="oil-text"
+                data-testid="oil-note-input"
+                maxLength={MAX_CELL_NOTE}
+                value={noteDraft}
+                placeholder="why — e.g. FLT, SIM, Duty"
+                aria-label="Reason"
+                autoFocus
+                onChange={e => setNoteDraft(e.target.value)}
+                onKeyDown={e => { if (e.key === 'Enter') saveNote(p.id, c.date); if (e.key === 'Escape') setNoteId(null) }}
+              />
+              <button className="dchip approve" data-testid="oil-note-save" onClick={() => saveNote(p.id, c.date)}>Save</button>
+              {eErr && <span className="note warn">{eErr}</span>}
+            </div>
+          ) : (
+            <div className="l2">
+              {canNote ? (
+                <button className="oil-notebtn" data-testid={`oil-note-${tid(c.id, c.ledgerId)}`} onClick={e => { e.stopPropagation(); startNote(c, p.id) }} title="Say why this credit was given">
+                  {c.manual && c.reason !== 'weekend duty' && c.reason !== 'PH duty' ? c.reason : '+ reason'}
+                </button>
+              ) : (
+                <span className="rt">{c.reason}</span>
+              )}
+            </div>
+          )}
+          <div className="l3">
+            <span className="tk">{c.used.map(u => `−${show(u.amount)} ${dmy(u.date, lane)}`).join(' · ')}</span>
+            <span className={`left${c.expired ? ' zero exp' : c.left === 0 ? ' zero' : ''}`} data-testid={`oil-status-${tid(c.id, c.ledgerId)}`}>
+              {c.expired ? `expired ${dmy(c.expires!, lane)}` : `${show(c.left)} left`}
+            </span>
+          </div>
         </div>
-        <div className="oil-foot" data-testid="oil-foot">
-          <span>in this window: {signed(wEarned)} earned · {signed(wGranted)} granted · {minus(wTaken)} taken{wExpired ? ` · ${show(wExpired)} expired` : ''}</span>
-          <span>balance <b className={led.balance < 0 ? 'neg' : ''}>{show(led.balance)}</b></span>
+      )
+    }
+    const d = b.d!
+    const editing = d.source === 'correction' && editId !== null && d.ledgerId === editId
+    if (editing) {
+      return (
+        <div key={d.id} className="oil-e take editing" data-testid={`oil-entry-${tid(d.id, d.ledgerId)}`}>
+          <div className="oil-edit">
+            <input type="number" step="0.5" className="oil-num" data-testid="oil-edit-amt" value={eAmt} onChange={e => setEAmt(e.target.value)} aria-label="Days" />
+            <DayChip testid="oil-edit-date" pickerId="oileditdate" value={eDate} today={today} onPick={setEDate} />
+            <input className="oil-text" data-testid="oil-edit-reason" maxLength={MAX_REASON} value={eReason} onChange={e => setEReason(e.target.value)} aria-label="Reason" placeholder="reason" />
+            <span className="acts">
+              <button className="dchip approve" data-testid="oil-edit-save" onClick={saveEdit}>Save</button>
+              <button className="tchip clear" data-testid="oil-edit-cancel" onClick={() => setEditId(null)}>Cancel</button>
+              <button
+                className={`tchip${armDel === d.ledgerId ? ' arm' : ' clear'}`}
+                data-testid={`oil-del-${d.ledgerId}`}
+                onClick={() => { if (armDel === d.ledgerId) { removeLedgerEntry(d.ledgerId!); setArmDel(null); setEditId(null); done() } else setArmDel(d.ledgerId!) }}
+              >
+                {armDel === d.ledgerId ? 'Really delete?' : 'Delete'}
+              </button>
+            </span>
+            {eErr && <span className="note warn" data-testid="oil-edit-err">{eErr}</span>}
+          </div>
         </div>
-      </Sheet>
+      )
+    }
+    const canEdit = admin && d.source === 'correction'
+    const startCorrEdit = () => { setEditId(d.ledgerId!); setEAmt(String(-d.amount)); setEDate(d.date); setEReason(d.reason); setEGiven(''); setEErr(''); setArmDel(null) }
+    return (
+      <div
+        key={d.id}
+        className={`oil-e take${d.source === 'correction' ? ' corr' : ''}`}
+        data-testid={`oil-entry-${tid(d.id, d.ledgerId)}`}
+        role={canEdit ? 'button' : undefined}
+        tabIndex={canEdit ? 0 : undefined}
+        onClick={canEdit ? startCorrEdit : undefined}
+        onKeyDown={canEdit ? e => { if (e.key === 'Enter') startCorrEdit() } : undefined}
+      >
+        <div className="l1">
+          <span className="amt">−{show(d.amount)}</span>
+          <span className="dt">{d.date ? dmy(d.date, lane) : 'carried in'}</span>
+        </div>
+        <div className="l2">
+          <span className="rt">
+            {d.source === 'correction' ? `${d.reason} · correction` : d.source === 'opening' ? 'opening figure' : 'taken'}
+            {d.unbacked ? ' · not covered' : ''}
+          </span>
+        </div>
+      </div>
     )
   }
 
-  /* ---- EVERYONE -------------------------------------------------------- */
-  const win = windowFor(null)
-  const selIds = orderIds.filter(id => sel.has(id))
+  const rows: ReactNode[] = []
   let prevG: string | null = null
-  const items: React.ReactNode[] = []
   for (const p of roster) {
     const g = homeOf(p)
     if (g !== prevG) {
       prevG = g
-      const ids = roster.filter(x => homeOf(x) === g).map(x => x.id)
-      const allIn = ids.every(id => sel.has(id))
-      items.push(
-        <div key={`g:${g}`} className="oil-grp" data-testid={`oil-grp-${g}`}>
-          <span className="gname">{labelOfGroup(g)}</span>
-          <span className="gcount">· {ids.length}</span>
-          {admin && (
-            <button className="oil-grpsel" data-testid={`oil-grpsel-${g}`} onClick={() => toggleGroup(ids)}>
-              {allIn ? 'Unselect all' : 'Select all'}
-            </button>
-          )}
-        </div>,
+      const n = roster.filter(x => homeOf(x) === g).length
+      rows.push(
+        <tr key={`g:${g}`} className="oil-grp" data-testid={`oil-grp-${g}`}>
+          <td colSpan={span}><span className="gl">{labelOfGroup(g)}<span className="gcount">· {n}</span></span></td>
+        </tr>,
       )
     }
-    const led = oilLedgerOf(ctx, p.id)
-    let e = 0, gr = 0, t = 0
-    for (const c of led.credits) if (inWindow(c.date, win.from, win.to)) { if (c.source === 'auto') e += c.amount; else if (c.source === 'grant') gr += c.amount }
-    for (const d of led.debits) if (inWindow(d.date, win.from, win.to)) { if (d.source === 'taken') t += d.amount; else if (d.source === 'correction') gr -= d.amount }
+    const led = ledgers.get(p.id)!
+    const boxes = boxesOf.get(p.id)!
+    let plus = 0, minus = 0
+    for (const c of led.credits) if (c.source !== 'opening' && inWindow(c.date, win.from, win.to)) plus += c.amount
+    for (const d of led.debits) if (d.source !== 'opening' && inWindow(d.date, win.from, win.to)) minus += d.amount
+    const idle = boxes.length === 0
     const on = sel.has(p.id)
-    const pre = !!preview?.has(p.id)
-    items.push(
-      <div key={p.id} className={`oil-row${on ? ' on' : ''}${pre ? ' pre' : ''}`} data-testid={`oil-row-${p.id}`} data-oilrow={p.id}>
-        {admin && (
-          <button className="oil-pick" data-testid={`oil-pick-${p.id}`} aria-pressed={on} aria-label={`Select ${p.callsign}`} onClick={() => toggle(p.id)}>
-            {on ? '✓' : ''}
-          </button>
-        )}
-        <button className="crow" data-testid={`oil-open-${p.id}`} onClick={() => setWho(p.id)}>
-          <span className="crow-top">
-            <span className="cn">
-              {p.callsign}
-              <span className={`catchip ${catClass(p)}`}>{catText(p)}</span>
+    rows.push(
+      <tr key={p.id} className={`oil-row${on ? ' on' : ''}${idle ? ' idle' : ''}${p.id === person ? ' here' : ''}`} data-testid={`oil-row-${p.id}`} data-oilrow={p.id}>
+        <td
+          className="oil-name f c1"
+          data-oilpick=""
+          data-testid={`oil-name-${p.id}`}
+          role={admin ? 'button' : undefined}
+          aria-pressed={admin ? on : undefined}
+          tabIndex={admin ? 0 : undefined}
+          onClick={admin ? () => toggle(p.id) : undefined}
+          onKeyDown={admin ? e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(p.id) } } : undefined}
+        >
+          <span className="who">{p.callsign}</span>
+          <span className={`catchip ${catClass(p)}`}>{catText(p)}</span>
+        </td>
+        <td className="oil-balc f c2">
+          <span className={`bal${led.balance < 0 ? ' neg' : led.balance > 0 ? ' pos' : ''}`} data-testid={`oil-bal-${p.id}`}>{show(led.balance)}</span>
+          {!idle && (plus > 0 || minus > 0) && (
+            <span className="pmline" data-testid={`oil-pm-${p.id}`}>
+              <span className={`sg${plus ? ' g' : ''}`}>{plus ? '+' : ''}</span><span className={`nm${plus ? ' g' : ''}`}>{show(plus)}</span>
+              <span className={`sg${minus ? ' r' : ''}`}>{minus ? '−' : ''}</span><span className={`nm${minus ? ' r' : ''}`}>{show(minus)}</span>
             </span>
-            <span className={`ct${led.balance < 0 ? ' neg' : ''}`} data-testid={`oil-bal-${p.id}`}>{show(led.balance)} left</span>
-          </span>
-          <span className="csub">
-            {signed(e)} earned · {signed(gr)} granted · {minus(t)} taken
-            {led.expired ? ` · ${show(led.expired)} expired` : ''}
-          </span>
-        </button>
-      </div>,
+          )}
+        </td>
+        {lanes.length === 0 ? <td className="lane" /> : lanes.map(y => (
+          <td key={y} className="lane">
+            <div className="ents">{boxes.filter(b => b.year === y).map(b => renderBox(p, b, y))}</div>
+          </td>
+        ))}
+        <td className="fill" />
+      </tr>,
     )
   }
 
   return (
-    <Sheet testid="oil-sheet" label="OIL tracker" onClose={onClose}>
+    <Sheet testid="oil-sheet" label="OIL tracker" onClose={onClose} full>
       <div className="bidsheet-hd">
         <span className="who">OIL TRACKER</span>
-        <span className="dt">{admin ? 'balance per person · tap one for their ledger · pick or drag to credit' : 'balance per person · tap one for their ledger'}</span>
+        <span className="dt">{admin ? 'one row per person · the oldest credit is used first' : 'one row per person'}</span>
         <button className="x" data-testid="oil-close" onClick={onClose} aria-label="Close">✕</button>
       </div>
-      {admin && (
-        <div className="oil-tools">
-          <button className="tchip" data-testid="oil-settings" onClick={() => setView('settings')}>⚙ Settings</button>
-          {selIds.length > 0 && (
-            <button className="tchip clear" data-testid="oil-sel-clear" onClick={() => setSel(new Set())}>Clear selection</button>
-          )}
+      <div className="oil-tools">
+        <span className="lab">Show</span>
+        <button className={`tchip${mode === 'first' ? ' on' : ''}`} data-testid="oil-range-first" onClick={() => { setMode('first'); setPicking(false) }}>
+          From first entry
+        </button>
+        <button className={`tchip${mode === 'months' ? ' on' : ''}`} data-testid="oil-range-months" onClick={() => { setMode('months'); setPicking(false) }}>
+          Last {months} months
+        </button>
+        <button className={`tchip${mode === 'pick' ? ' on' : ''}`} data-testid="oil-range-pick" onClick={() => { setMode('pick'); setPicking(true) }}>
+          Pick dates
+        </button>
+        <span className="note oil-window" data-testid="oil-window">{win.label}</span>
+        <span className="oil-right">
+          <button className={`tchip${legend ? ' on' : ''}`} data-testid="oil-legend" aria-expanded={legend} onClick={() => setLegend(l => !l)} title="What the boxes mean">?</button>
+          {admin && <button className="tchip" data-testid="oil-settings" onClick={() => setView('settings')}>⚙ Settings</button>}
+        </span>
+      </div>
+      {mode === 'pick' && picking && (
+        <div className="bidsheet-row oil-pickrow">
+          <RangePicker compact testid="oilrange" anchor={today} value={pick} onChange={setPick} />
+          <button className="tchip clear" data-testid="oilrange-done" onClick={() => setPicking(false)}>Done</button>
         </div>
       )}
-      {selIds.length > 0 && (
-        <CreditPanel key={selIds.join('|')} ids={selIds} names={namesOf(selIds)} today={today} onDone={() => setSel(new Set())} onCancel={() => setSel(new Set())} />
+      {legend && (
+        <div className="oil-legendbox note" data-testid="oil-legend-text">
+          One box per credit: what was given top-left, who gave it top-right (<b>Auto</b> = earned by working a weekend or PH — FLT, SIM or Duty), the reason under it,
+          the days taken from it in red, and what is left bottom-right. The oldest credit is used first. Struck through = used up; dimmed = expired; a red box = a day taken with nothing left to draw from.
+          {admin ? ' Tap a name to pick it, hold and drag down the names to pick several, then credit them all at once below. Tap a credit you gave to edit it.' : ''}
+        </div>
       )}
-      {windowChips(null)}
-      <div
-        ref={listRef}
-        className={`oil-list${drag ? ' dragging' : ''}`}
-        data-testid="oil-list"
-        onPointerDown={onPointerDown}
-        onPointerMove={onPointerMove}
-        onPointerUp={endDrag}
-        onPointerCancel={endDrag}
-        onClickCapture={onClickCapture}
-      >
-        {items}
+      <div ref={wrapRef} className="oil-wrap" data-testid="oil-list">
+        <table className="oil-grid">
+          <thead>
+            <tr className="yrs">
+              <th className="f c1" />
+              <th className="f c2" />
+              {lanes.length === 0 ? <th className="yl" /> : lanes.map(y => <th key={y} className="yl" data-testid={`oil-year-${y}`}>{y}</th>)}
+              <th className="fill" />
+            </tr>
+            <tr className="cols">
+              <th className="f c1">Name</th>
+              <th className="f c2">Bal</th>
+              <th className="yl" colSpan={Math.max(1, lanes.length)}>Credits · oldest first →</th>
+              <th className="fill" />
+            </tr>
+          </thead>
+          <tbody>{rows}</tbody>
+        </table>
+        {!anyBox && <div className="note oil-empty" data-testid="oil-empty">Nothing in this window.</div>}
       </div>
+      {admin && selIds.length > 0 && (
+        <CreditForm key={selIds.join('|')} ids={selIds} names={namesOf(selIds)} today={today} onDone={() => { setSel(new Set()); done() }} onCancel={() => setSel(new Set())} />
+      )}
+      {admin && selIds.length === 0 && (
+        <div className="oil-bar idle" data-testid="oil-bar-idle">Tap a name to credit OIL · hold and drag down the names to pick several</div>
+      )}
     </Sheet>
   )
 }

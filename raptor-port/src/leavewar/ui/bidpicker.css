@@ -628,6 +628,40 @@
   padding: 8px 10px 10px;
 }
 
+/* THE FULL-SCREEN SHEET (owner, 2 Sep 26 — the OIL tracker "fills the entire
+   screen"). Pinned to all four edges, a flex column, and NOT a scroller: its
+   content carries the one 2-D scroller (the tracker's `.oil-wrap`), so the
+   frozen name column and the sticky header resolve against that and nothing
+   else. No centring transform and no drag offset — it has nowhere to go. On a
+   phone the inset and the radius go too, so the grid gets every pixel. */
+.bidsheet.full {
+  top: 8px;
+  bottom: 8px;
+  left: 8px;
+  right: 8px;
+  width: auto;
+  max-height: none;
+  transform: none;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 8px 10px 0;
+}
+
+.bidsheet.full .bidsheet-hd {
+  position: static;
+  flex: 0 0 auto;
+}
+
+@media (max-width: 520px) {
+  .bidsheet.full {
+    inset: 0;
+    border-radius: 0;
+    border: 0;
+    padding: 6px 8px 0;
+  }
+}
+
 .bidsheet.narrow .clist {
   gap: 4px;
 }

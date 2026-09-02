@@ -164,9 +164,33 @@ Balances are computed and on screen. Two parts of §Counters are not built:
   Earned days are STILL not ledger entries — the FO/HO cell is the record
   and the tracker reads it; the grants the ledger holds are the only rows
   an admin can touch. Members see everything and edit nothing (absent
-  controls; the store refuses regardless). Only-just-still open: the drag
-  is mouse/pen (a finger scrolls, and taps the boxes / a group's Select
-  all), and there is no edge auto-scroll while dragging.
+  controls; the store refuses regardless).
+  **REBUILT the same day as ONE FULL-SCREEN GRID (owner, 2 Sep 26 — second
+  cut, after the first two-view sheet):** `Sheet full` (`bidpicker.css
+  .bidsheet.full`) pinned to the screen; the tracker's own `.oil-wrap` is the
+  one 2-D scroller (name + BAL frozen left, header rows sticky top). One row
+  per person under the roster's group headings; BAL over a `+earned −taken`
+  line for the window (digits aligned, signs hanging); then one LANE per
+  calendar year in the window (the year is a header row; every row's boxes
+  for a year start at the same x). A BOX is one credit and reads as a small
+  ledger — amount + date + **given by** top (`AUTO` for an earned day; the
+  admin's optional `givenBy` on a grant, `LedgerEntry.givenBy`), the reason
+  under it (the sync wire's `FLT` / `SIM` / `Duty` / an input's type name,
+  written to the FO/HO cell as `BidRecord.note` — `ingestDutyCredit(…, why)`;
+  an admin's own note on a hand-typed FO/HO via `setCellNote`), the days
+  TAKEN from it in red (its FIFO draws), and what is left bottom-right.
+  Used up → amount and reason struck, box dimmed, takes still legible;
+  expired → dimmed. A day taken with nothing left to draw from is its own red
+  box; an admin's correction (negative grant) is its own editable box. The
+  per-person page is GONE: the Cinch's OIL BAL tap scrolls to that row. An
+  admin taps a name to pick it, or hold-then-drags (finger) / drags (mouse)
+  down the NAMES to pick a run — `select.ts:wireRowSelect`, the grid's own
+  gesture core (`wireGesture`) — and the credit bar docks under the grid
+  (amount, date, reason, given by, Save, Deselect); idle it reads the tap-or-
+  hold hint. An admin's manual OIL / FO / HO write on the grid opens the
+  tracker on that person with the day's box lit, and any credit, edit or
+  delete snaps the counter column to OIL BAL. A `?` chip holds the legend.
+  Nothing on the page is under 11px.
 - **An admin can SET the LVE BAL (2 Sep 26, owner ask — "manually input and
   change LVE BAL … every time a LL or OL is taken it deducts from it").** A
   `Set` beside the Cinch sheet's LVE BAL row; `store.ts:setBalance` moves
@@ -185,9 +209,9 @@ the grid cannot know.
 
 The frozen column no longer cycles the six entitlement counters. It cycles
 ELEVEN named figures (owner's set; `OIL BAL` joined with wire 4; `OFF USED`
-was the twelfth until 2 Sep 26 — owner: "remove the OFF used counter" — OFF
-still counts inside LVE USED, it just has no row), each labelled `BAL` (a
-balance left) or `USED` (days taken):
+was the twelfth until 2 Sep 26 — owner: "remove the OFF used counter" — and
+OFF itself stopped being a leave code later that day), each labelled `BAL`
+(a balance left) or `USED` (days taken):
 
     LL USED · OL USED · OIL USED · OIL BAL · CCL USED · PL USED ·
     FCL USED · MED USED · OML USED · LVE BAL · LVE USED
@@ -195,7 +219,8 @@ balance left) or `USED` (days taken):
 - **Nine are consumed (`USED`)** — days of that type taken, read per-TYPE by
   `takenOf` (not the per-counter `drawnFrom`, which cannot tell LL from OL —
   both spend the one annual pool). Two are aggregates: `MED USED` = ATT C + HL +
-  OML, `LVE USED` = LL+OL+OIL+OFF+CCL+PL+FCL (medical deliberately excluded).
+  OML, `LVE USED` = LL+OL+OIL+CCL+PL+FCL (medical deliberately excluded; OFF
+  left the sum on 2 Sep 26 when it stopped being a leave code).
 - **Two are balances (`LVE BAL`, `OIL BAL`)** — the annual pool, `opening + grants −
   drawn` (admin-settable since 2 Sep 26, see above), and the OIL tracker's balance; both can go negative and red. The other entitlement
   balances (OIL/CCL/FCL/PL/EL) are still computed by `balanceOf` and used by
@@ -259,9 +284,19 @@ they SETTLED is here, so it is not relitigated:
   showed "JUL - SEP 26" being created inside a year-long 2026.
 - **A bid nobody has answered carries no colour.** Purple means management has
   acknowledged it. This is why `acknowledged` exists at all.
-- **`OFF` is leave, not a marker.** Free — no entitlement spent — but the
-  person is gone from the manning picture, so it is asked for and answered
-  like any other leave. The only leave type with a null counter.
+- **`OFF` is NOT a person's leave — it is a management OFF DAY event
+  (2 Sep 26, reversing 10 Aug 26).** The owner: "off is never credited to
+  individuals, it is only declared OFF to a period or a day … given by the
+  management for free". So the `OFF` leave code is gone from the catalogue,
+  the bid chips, the Inputs TYPE list and LVE USED; what replaced it is the
+  `free` EVENT KIND (`eventdefs.ts`, seeded as **Off day**): declared by an
+  admin on the event rows for a day or a band, it tints the whole column
+  light grey (`evfree`), and WORK ON IT EARNS NOTHING — only a weekend or a
+  PH (`off`) does (`sync.ts:isNonWorkingISO` is unchanged, `free` is not
+  `off`; precedence `off > free > nolv`). Like PH it only tints: a bid on an
+  Off day is still allowed, and manning is untouched. A legacy `OFF` cell in
+  a stored grid is an unknown code now — it draws from nothing and counts as
+  nothing.
 - **`OD` counts the manpower as gone**, and always did. Pinned at the count
   level now.
 - **There is no PCL.** See the leave-type section below.
@@ -580,13 +615,14 @@ What is a contract, and what is deliberately still open:
 
 - **The tag is invisible; only colour shows.** An event is classified off /
   no-leave / work. Typing `PH` shows `PH`, never `PH (off)` — the kind
-  surfaces ONLY as colour: a green column for an off day, an orange column
-  for no-leave, red text for a work word (the column left alone). The `off`
-  kind's LABEL in the sheet reads **PH** since 1 Sep 26 (owner ask — it was
-  "Off day"); the kind value, its colour class and the OIL non-working test
-  are unchanged.
-  `columnKindFor` lets `off` win over `nolv` on one day; `work` never
-  colours the column.
+  surfaces ONLY as colour: a green column for a PH, a GREY column for a
+  management Off day (`free`, 2 Sep 26), an orange column for no-leave, red
+  text for a work word (the column left alone). The `off` kind's LABEL in
+  the sheet reads **PH** since 1 Sep 26 (owner ask — it was "Off day"); the
+  kind value, its colour class and the OIL non-working test are unchanged —
+  and since 2 Sep 26 "Off day" is its OWN kind, `free`, which earns no OIL.
+  `columnKindFor` lets `off` win over `free` win over `nolv` on one day;
+  `work` never colours the column.
 - **The tag lives ON the event, not in the library (owner, 18 Aug 26 — "I
   don't want u to save it as a type").** Tapping a tag in the Event sheet
   used to silently mint the typed word into the type library; now it is held
@@ -626,8 +662,10 @@ What is a contract, and what is deliberately still open:
   (add / rename / reclassify / delete / reset), reached from its "Edit types"
   button.
 - **The type library is squadron-wide, not per-war** (a holiday is a holiday
-  in every war), so it lives on `state.eventDefs`, seeded PH=off / No Leave=
-  nolv / SC=work, and persists under its own `eventdefs` key.
+  in every war), so it lives on `state.eventDefs`, seeded PH=off / Off day=
+  free / No Leave=nolv / SC=work, and persists under its own `eventdefs` key
+  (a library stored before 2 Sep 26 keeps its three; the `free` chip is on
+  every type and Reset restores the four).
 - **The counter-picker header was squared** in the same batch (owner: "make it
   squarish, it's blocking the event box") — a contained bordered chip now, kept
   at a 40px tap target (the earlier "too small to hit" complaint still holds).

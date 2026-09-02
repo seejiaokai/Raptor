@@ -37,6 +37,32 @@ describe('addMonths', () => {
   })
 })
 
+describe('the credit\'s reason and who gave it', () => {
+  it('an earned credit reads the sync wire\'s note, else the day\'s kind; a hand-typed one is manual', () => {
+    const ctx: FigureCtx = { openings: {}, ledger: [], sources: [{
+      grid: { p: { '2026-01-03': 'FO', '2026-01-04': 'HO', '2026-01-05': 'FO' } },
+      states: { p: {
+        '2026-01-03': { state: 'approved', source: 'raptor', note: 'FLT + SIM' },
+        '2026-01-05': { state: 'approved', source: 'bid', note: 'typed' },
+      } },
+    }] }
+    const led = oilLedgerFor(ctx, 'p', NONE, '2026-02-01')
+    expect(led.credits.map(c => [c.date, c.reason, c.manual ?? false])).toEqual([
+      ['2026-01-03', 'FLT + SIM', false],
+      ['2026-01-04', 'weekend duty', true],
+      ['2026-01-05', 'typed', true],
+    ])
+  })
+  it('a grant carries givenBy through when the ledger has it', () => {
+    const ledger: Ledger = [
+      { id: 'l1', personId: 'p', counter: 'oil', amount: 2, date: '2026-01-10', reason: 'Late', approvedBy: 'ADMIN', givenBy: 'OC Ops' },
+      { id: 'l2', personId: 'p', counter: 'oil', amount: 1, date: '2026-01-11', reason: 'Plain', approvedBy: 'ADMIN' },
+    ]
+    const led = oilLedgerFor(ctxOf({}, ledger), 'p', NONE, '2026-02-01')
+    expect(led.credits.map(c => c.givenBy)).toEqual(['OC Ops', undefined])
+  })
+})
+
 describe('the policy', () => {
   it('reads a stored policy and refuses junk', () => {
     expect(readOilPolicy({ expiry: null, historyMonths: 6 })).toEqual({ expiry: null, historyMonths: 6 })

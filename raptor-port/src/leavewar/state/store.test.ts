@@ -24,6 +24,7 @@ import {
   moveEventProblem,
   addEventType,
   grantOil,
+  setCellNote,
   updateLedgerEntry,
   removeLedgerEntry,
   setOilPolicy,
@@ -1702,9 +1703,10 @@ describe('events — ranged repeat, merged bands, and the type library', () => {
     expect(getState().eventDefs.some(d => d.name === 'Standby')).toBe(true)
   })
 
-  it('boots with the three seeded event types', () => {
+  it('boots with the four seeded event types', () => {
     expect(getState().eventDefs).toEqual([
       { name: 'PH', kind: 'off' },
+      { name: 'Off day', kind: 'free' },
       { name: 'No Leave', kind: 'nolv' },
       { name: 'SC', kind: 'work' },
     ])
@@ -1713,22 +1715,22 @@ describe('events — ranged repeat, merged bands, and the type library', () => {
   it('adds, updates, removes and resets event types (admin only)', () => {
     setRole('admin')
     expect(addEventType('Standby', 'work')).toBeNull()
+    expect(getState().eventDefs).toHaveLength(5)
+    expect(updateEventType(4, { kind: 'off' })).toBeNull()
+    expect(getState().eventDefs[4]!.kind).toBe('off')
+    expect(removeEventType(4)).toBe(true)
     expect(getState().eventDefs).toHaveLength(4)
-    expect(updateEventType(3, { kind: 'off' })).toBeNull()
-    expect(getState().eventDefs[3]!.kind).toBe('off')
-    expect(removeEventType(3)).toBe(true)
-    expect(getState().eventDefs).toHaveLength(3)
     // reset restores the seed
     addEventType('Temp', 'off')
     resetEventTypes()
-    expect(getState().eventDefs).toHaveLength(3)
+    expect(getState().eventDefs).toHaveLength(4)
   })
 
   it('refuses type edits for a member', () => {
     setRole('member')
     expect(addEventType('Standby', 'work')).toContain('admin')
     expect(removeEventType(0)).toBe(false)
-    expect(getState().eventDefs).toHaveLength(3)
+    expect(getState().eventDefs).toHaveLength(4)
   })
 })
 
@@ -2301,6 +2303,49 @@ describe('the OIL tracker: grants, corrections and the policy', () => {
     expect(setBalance('ramp', 'annual', 30)).toBe(false)
     expect(getState().ledger.some(e => e.reason === 'Det recovery')).toBe(false)
     expect(getState().oilPolicy).toEqual({ expiry: null, historyMonths: 6 })
+  })
+
+  it('a grant may name who GAVE it; the field is optional and bounded', () => {
+    setRole('admin')
+    setViewer('ramp')
+    expect(grantOil(['dusk'], 1, '2026-03-02', 'Det recovery', ' OC Ops ')).toBeNull()
+    expect(getState().ledger.at(-1)).toMatchObject({ personId: 'dusk', reason: 'Det recovery', approvedBy: 'RAMP', givenBy: 'OC Ops' })
+    expect(grantOil(['dusk'], 1, '2026-03-02', 'Plain')).toBeNull()
+    expect('givenBy' in getState().ledger.at(-1)!).toBe(false)
+    expect(grantOil(['dusk'], 1, '2026-03-02', 'Long', 'x'.repeat(41))).toBe('Given by is at most 40 characters')
+    // Edit sets and clears it.
+    const id = getState().ledger.at(-1)!.id
+    expect(updateLedgerEntry(id, { givenBy: 'CO' })).toBeNull()
+    expect(getState().ledger.find(e => e.id === id)!.givenBy).toBe('CO')
+    expect(updateLedgerEntry(id, { givenBy: '  ' })).toBeNull()
+    expect('givenBy' in getState().ledger.find(e => e.id === id)!).toBe(false)
+    // And it survives a reload.
+    expect(grantOil(['dusk'], 1, '2026-03-02', 'Kept', 'Boss')).toBeNull()
+    const backend = memoryBackend()
+    initStore(backend)
+    setRole('admin'); setViewer('ramp')
+    grantOil(['dusk'], 1, '2026-03-02', 'Kept', 'Boss')
+    initStore(backend)
+    expect(getState().ledger.at(-1)).toMatchObject({ reason: 'Kept', givenBy: 'Boss' })
+  })
+
+  it('an FO/HO cell takes a reason note from an admin; the note survives a reload', () => {
+    const backend = memoryBackend()
+    initStore(backend)
+    const p = getState().people[0]!.id
+    const date = getState().wars[0]!.period.days[3]!.date
+    expect(setCellNote(p, date, 'FLT')).toBe('Only an admin can edit OIL')
+    setRole('admin')
+    expect(setCellNote(p, date, 'FLT')).toBe('Only an FO or HO credit takes a reason')
+    setCell(p, date, 'FO')
+    expect(setCellNote(p, date, ' FLT ')).toBeNull()
+    expect(getState().wars[0]!.states[p]![date]).toMatchObject({ note: 'FLT' })
+    expect(setCellNote(p, date, 'x'.repeat(41))).toBe('A reason is at most 40 characters')
+    initStore(backend)
+    expect(getState().wars[0]!.states[p]![date]!.note).toBe('FLT')
+    setRole('admin')
+    expect(setCellNote(p, date, '')).toBeNull()
+    expect('note' in getState().wars[0]!.states[p]![date]!).toBe(false)
   })
 
   it('credits one or many people in one batch, stamped with the viewer\'s callsign', () => {

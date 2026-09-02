@@ -5,8 +5,13 @@
 // "Range closure" — anything. This library is what turns some of those words
 // into a CLASSIFICATION the sheet can colour by:
 //
-//   off  — an off day (a public holiday). The whole day column reads light
-//          green.
+//   off  — a public holiday. The whole day column reads light green, and
+//          work on it earns OIL (sync.ts isNonWorkingISO).
+//   free — an Off day GIVEN by management for everyone (owner, 2 Sep 26:
+//          "off is never credited to individuals, it is only declared OFF
+//          to a period or a day … given by the management for free"). The
+//          column reads light grey. Work on it earns NOTHING — only a
+//          weekend or a PH does. This replaced the old `OFF` leave code.
 //   nolv — leave is discouraged that day. The column reads orange. It never
 //          blocks a bid — urgent leave still goes through; the colour is a
 //          heads-up, not a gate.
@@ -28,7 +33,7 @@
 import type { DayInfo } from './period'
 import type { EventBand } from './period'
 
-export type EventKind = 'off' | 'nolv' | 'work'
+export type EventKind = 'off' | 'free' | 'nolv' | 'work'
 
 export interface EventDef {
   /** The word as typed on a day, e.g. `PH`. Matched case- and spacing-folded
@@ -37,15 +42,17 @@ export interface EventDef {
   kind: EventKind
 }
 
-export const EVENT_KINDS: readonly EventKind[] = ['off', 'nolv', 'work']
+export const EVENT_KINDS: readonly EventKind[] = ['off', 'free', 'nolv', 'work']
 
 export const MAX_EVENTDEFS = 40, MAX_DEFNAME = 24
 
-/* The three the owner named, in the order the sheet lists them: the off day,
-   the no-leave day, then the working commitment. A squadron edits this list;
-   these are only the starting point. */
+/* The four seeded types, in the order the sheet lists them: the public
+   holiday, the management Off day (2 Sep 26), the no-leave day, then the
+   working commitment. A squadron edits this list; these are only the
+   starting point. */
 export const EVENTDEF_STD: readonly EventDef[] = Object.freeze([
   { name: 'PH', kind: 'off' },
+  { name: 'Off day', kind: 'free' },
   { name: 'No Leave', kind: 'nolv' },
   { name: 'SC', kind: 'work' },
 ] as EventDef[])
@@ -71,9 +78,11 @@ export function classifyEvent(defs: EventDef[], text: string): EventKind | null 
 }
 
 /** The colour a whole day COLUMN takes, from every event on it — both event
- *  lines and any band covering the date. `off` wins over `nolv` (a holiday is
- *  more than a discouraged day); `work` never colours the column, only its own
- *  word. `null` means no colour. */
+ *  lines and any band covering the date. `off` wins over `free` wins over
+ *  `nolv` (a holiday is more than a given Off day, which is more than a
+ *  discouraged day — and a PH on a declared Off day still earns OIL);
+ *  `work` never colours the column, only its own word. `null` means no
+ *  colour. */
 export function columnKindFor(defs: EventDef[], day: DayInfo, bands: EventBand[]): EventKind | null {
   // Every event row this day carries, not just the first two — an admin can
   // add rows now (18 Aug 26), and a tag on any of them tints the column.
@@ -86,12 +95,13 @@ export function columnKindFor(defs: EventDef[], day: DayInfo, bands: EventBand[]
   for (const b of bands) {
     if (b.from <= day.date && day.date <= b.to) kinds.push(b.kind ?? classifyEvent(defs, b.text))
   }
-  let sawNolv = false
+  let sawFree = false, sawNolv = false
   for (const k of kinds) {
     if (k === 'off') return 'off'
-    if (k === 'nolv') sawNolv = true
+    if (k === 'free') sawFree = true
+    else if (k === 'nolv') sawNolv = true
   }
-  return sawNolv ? 'nolv' : null
+  return sawFree ? 'free' : sawNolv ? 'nolv' : null
 }
 
 /** Read an untrusted stored list — hand-editable storage, so every field is

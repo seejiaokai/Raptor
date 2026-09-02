@@ -51,7 +51,16 @@ export interface BidRecord {
   /** The date management moved this bid from, when they shifted it. Absent
    *  on a bid that landed where it was asked for. */
   shiftedFrom?: string
+  /** WHY an FO/HO credit cell is here — the OIL tracker's reason for an
+   *  earned credit (owner, 2 Sep 26: "SIM, FLT, Duty"). The sync wire writes
+   *  `FLT`, `SIM + Duty`, or an acknowledged input's type name; an admin
+   *  types one on a hand-entered FO/HO (`setCellNote`). At most
+   *  `MAX_CELL_NOTE` characters. Absent on every other cell. */
+  note?: string
 }
+
+/** The longest cell note kept — a reason word or two, not a paragraph. */
+export const MAX_CELL_NOTE = 40
 
 /** `personId -> date -> record`. Sparse: only bid cells appear. */
 export type States = Record<string, Record<string, BidRecord>>

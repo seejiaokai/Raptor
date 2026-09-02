@@ -126,8 +126,40 @@ const eventAt = (x: number, y: number): EventCell | null =>
 /** Attach the one selection listener to `.mx-wrap`. Returns a teardown. */
 type Hit = { kind: 'roster'; cell: Cell } | { kind: 'event'; cell: EventCell }
 
-export function wireSelect(wrap: HTMLElement, ctx: SelectCtx): () => void {
-  let anchor: Hit | null = null
+/* ---- THE GESTURE CORE ------------------------------------------------------
+   Everything about ARMING a drag — the mouse slop, the finger's hold, the
+   slow-drag-arms rule, pointer capture, the non-passive touchmove scroll lock,
+   the context-menu swallow, edge auto-scroll and the one-shot click swallow on
+   release — lives here once, parameterised by WHAT is being selected. The grid
+   (`wireSelect`: people × days cells, or a date span on an event line) and the
+   OIL tracker (`wireRowSelect`: a run of people rows — owner, 2 Sep 26, "use
+   the same mechanics as the leave war grid") are two callers of the same
+   machine, so the phone learns one rhythm for both. */
+interface GestureSpec<A, P> {
+  enabled: () => boolean
+  /** The thing under the pointer on pointerdown, or null when the press is
+   *  not on something selectable (an ordinary click, then). */
+  hit: (target: HTMLElement) => A | null
+  /** The selection for the anchor with the pointer at (x, y): the ids to
+   *  paint and the payload to hand off on release. The caller holds its own
+   *  "last thing the finger was over" so a gap or an edge-scroll never
+   *  collapses the selection. `null` paints nothing. */
+  current: (anchor: A, x: number, y: number) => { ids: string[]; payload: P } | null
+  /** The node an id paints on, inside `wrap`. */
+  node: (id: string) => Element | null
+  /** The class a painted node wears. */
+  cls: string
+  onSelect: (payload: P) => void
+  /** Called on every teardown so the caller can drop its held focus. */
+  reset?: () => void
+  /** The element that scrolls the rows VERTICALLY. The grid resolves the
+   *  nearest scrolling ancestor (its wrap has no height cap); a modal whose
+   *  wrap scrolls both ways passes itself. */
+  vscroll?: (wrap: HTMLElement) => VScroll
+}
+
+function wireGesture<A, P>(wrap: HTMLElement, spec: GestureSpec<A, P>): () => void {
+  let anchor: A | null = null
   let armed = false
   let pid = -1
   let sx = 0, sy = 0
@@ -135,60 +167,27 @@ export function wireSelect(wrap: HTMLElement, ctx: SelectCtx): () => void {
   let slowTimer: any = null       // fires at SLOWARM; flips slowReady
   let slowReady = false           // the finger has been down long enough that a
                                   // slide now reads as a slow drag, not a flick
-  let painted = new Set<string>()  // testids currently wearing .selcell
+  let painted = new Set<string>()  // ids currently wearing spec.cls
   let raf = 0
   let lastX = 0, lastY = 0
   let touchGesture = false   // this drag started from a finger, not a mouse
   let vscroll: VScroll | null = null  // the vertical scroller, resolved in arm()
-  let lastFocus: Cell | null = null      // last roster cell the finger was over
-  let lastFocusDate: string | null = null // last event date the finger was over
 
   const clearPaint = () => {
-    for (const id of painted) wrap.querySelector(`[data-testid="${id}"]`)?.classList.remove('selcell')
+    for (const id of painted) spec.node(id)?.classList.remove(spec.cls)
     painted = new Set()
   }
   const paintIds = (ids: string[]) => {
     const want = new Set(ids)
-    for (const id of painted) if (!want.has(id)) wrap.querySelector(`[data-testid="${id}"]`)?.classList.remove('selcell')
-    for (const id of want) if (!painted.has(id)) wrap.querySelector(`[data-testid="${id}"]`)?.classList.add('selcell')
+    for (const id of painted) if (!want.has(id)) spec.node(id)?.classList.remove(spec.cls)
+    for (const id of want) if (!painted.has(id)) spec.node(id)?.classList.add(spec.cls)
     painted = want
   }
 
-  // The selection under the current focus point, as the ids to paint plus the
-  // typed payload to hand off on release. Roster and event anchors take separate
-  // axes: a roster drag is a people×days rectangle; an event drag is a date span
-  // on the anchor's own line (the focus supplies only the COLUMN — its row is
-  // ignored, so a finger straying onto another row still extends the span).
-  //   When the finger is NOT over a cell — a gap between rows, or the empty area
-  // an edge auto-scroll runs the grid past — we HOLD the last cell it was over
-  // rather than collapsing to the anchor. Without this a drag to the bottom edge
-  // vanished the moment the auto-scroll ran the last row above the finger.
-  const current = (): { ids: string[]; roster?: Selection; event?: EventSelection } | null => {
-    if (!anchor) return null
-    if (anchor.kind === 'roster') {
-      const hit = cellAt(lastX, lastY)
-      if (hit) lastFocus = hit
-      const raw = hit ?? lastFocus ?? anchor.cell
-      // The focus may land on a row OUTSIDE the selectable order — a scoped
-      // member's drag straying onto another person (the row list is the viewer
-      // alone), or a held focus (below) left pointing at a row the order no
-      // longer carries. Clamp its PERSON to the anchor's row, keeping the DATE,
-      // so the selection stays on a valid row and still spans the days dragged.
-      // Without this the stray produced an empty rect (rectCells → null) and the
-      // sheet never opened — a scoped member could not drag-fill at all.
-      const f = ctx.order().includes(raw.personId) ? raw : { personId: anchor.cell.personId, date: raw.date }
-      const sel = rectCells(ctx.order(), ctx.dates(), anchor.cell, f)
-      return sel ? { ids: sel.cells.map(c => `cell-${c.personId}-${c.date}`), roster: sel } : null
-    }
-    const hitDate = cellAt(lastX, lastY)?.date ?? eventAt(lastX, lastY)?.date
-    if (hitDate) lastFocusDate = hitDate
-    const fd = hitDate ?? lastFocusDate ?? anchor.cell.date
-    const sel = eventRange(ctx.dates(), anchor.cell.line, anchor.cell.date, fd)
-    return sel ? { ids: sel.dates.map(d => `event-${sel.line}-${d}`), event: sel } : null
-  }
+  const current = () => (anchor === null ? null : spec.current(anchor, lastX, lastY))
 
   const repaint = () => {
-    if (!armed || !anchor) return
+    if (!armed || anchor === null) return
     const s = current()
     paintIds(s ? s.ids : [])
   }
@@ -207,18 +206,19 @@ export function wireSelect(wrap: HTMLElement, ctx: SelectCtx): () => void {
   // throttles it, which is exactly what the constant speed lacked. The mouse
   // keeps its original constant step (desktop has the room and the precision).
   //   The horizontal axis moves `wrap.scrollLeft` against the wrap's own rect;
-  // the vertical axis moves the page (the resolved `vscroll`) against the
-  // VIEWPORT, since the rows scroll with the page and the wrap is taller than
-  // the screen. As the page scrolls under a held finger, elementFromPoint at the
-  // same point returns the new row, so the selection extends onto it.
+  // the vertical axis moves the resolved `vscroll` — the page for the grid,
+  // whose rows scroll with the page and whose wrap is taller than the screen —
+  // against the VIEWPORT (or the scroller's own rect). As the page scrolls
+  // under a held finger, elementFromPoint at the same point returns the new
+  // row, so the selection extends onto it.
   const ramp = (into: number) => TOUCH_STEP_MAX * Math.min(1, into / TOUCH_EDGE)
   const edgeScroll = () => {
     raf = 0
     if (!armed) return
     const r = wrap.getBoundingClientRect()
     let dx = 0, dy = 0
-    // vertical bounds: the viewport for the page, else the ancestor's own rect
-    const vs = vscroll ?? (vscroll = findVScroll(wrap))
+    // vertical bounds: the viewport for the page, else the scroller's own rect
+    const vs = vscroll ?? (vscroll = (spec.vscroll ?? findVScroll)(wrap))
     const vTop = vs.isDoc ? 0 : vs.el.getBoundingClientRect().top
     const vBot = vs.isDoc ? (window.innerHeight || vs.el.clientHeight) : vs.el.getBoundingClientRect().bottom
     if (touchGesture) {
@@ -270,7 +270,7 @@ export function wireSelect(wrap: HTMLElement, ctx: SelectCtx): () => void {
   }
 
   const onMove = (e: PointerEvent) => {
-    if (!anchor) return
+    if (anchor === null) return
     // Only the gesture's OWN pointer moves it — a second finger brushing the
     // grid mid-drag must not steer (or, worse, disarm) the selection.
     if (e.pointerId !== pid) return
@@ -297,7 +297,7 @@ export function wireSelect(wrap: HTMLElement, ctx: SelectCtx): () => void {
 
   const finish = (commit: boolean) => {
     // Read the selection BEFORE teardown nulls the anchor.
-    const s = commit && armed && anchor ? current() : null
+    const s = commit && armed && anchor !== null ? current() : null
     teardown()
     if (s) {
       // swallow the click the browser fires on the anchor cell after this
@@ -305,8 +305,7 @@ export function wireSelect(wrap: HTMLElement, ctx: SelectCtx): () => void {
       const swallow = (ev: Event) => { ev.stopPropagation(); ev.preventDefault() }
       document.addEventListener('click', swallow, { capture: true, once: true })
       setTimeout(() => document.removeEventListener('click', swallow, true), 0)
-      if (s.roster) ctx.onSelect(s.roster)
-      else if (s.event) ctx.onEventSelect?.(s.event)
+      spec.onSelect(s.payload)
     }
     clearPaint()
   }
@@ -338,7 +337,7 @@ export function wireSelect(wrap: HTMLElement, ctx: SelectCtx): () => void {
     wrap.style.touchAction = ''
     wrap.classList.remove('selecting')
     anchor = null; armed = false; pid = -1; vscroll = null   // re-resolve next drag
-    lastFocus = null; lastFocusDate = null
+    spec.reset?.()
   }
   const onCancel = (e: PointerEvent) => {
     if (e.pointerId !== pid) return   // a second pointer's cancel is not ours
@@ -360,19 +359,16 @@ export function wireSelect(wrap: HTMLElement, ctx: SelectCtx): () => void {
   const onTouchMove = (e: TouchEvent) => { if (armed) e.preventDefault() }
 
   const onDown = (e: PointerEvent) => {
-    if (!ctx.enabled()) return
+    if (!spec.enabled()) return
     if (e.button !== undefined && e.button !== 0) return   // left / primary only
     // One gesture at a time: a second finger landing mid-drag used to RESET
     // the state (anchor kept, armed dropped, pid re-aimed), so the armed
     // selection silently evaporated on lift. The first pointer owns the
     // gesture until it ends.
-    if (anchor) return
-    const el = e.target as HTMLElement
-    const roster = parseCellId(el?.closest?.('[data-testid^="cell-"]')?.getAttribute('data-testid'))
-    const event = roster ? null : parseEventCell(el?.closest?.('[data-testid^="event-"]')?.getAttribute('data-testid'))
-    if (roster) anchor = { kind: 'roster', cell: roster }
-    else if (event && (ctx.eventsEnabled?.() ?? false)) anchor = { kind: 'event', cell: event }
-    else return   // not a selectable cell (who / bal / handle / a band / events off)
+    if (anchor !== null) return
+    const a = spec.hit(e.target as HTMLElement)
+    if (a === null) return   // not a selectable thing (who / bal / handle / a band / events off)
+    anchor = a
     armed = false; pid = e.pointerId
     touchGesture = e.pointerType !== 'mouse'
     sx = e.clientX; sy = e.clientY; lastX = e.clientX; lastY = e.clientY
@@ -389,6 +385,105 @@ export function wireSelect(wrap: HTMLElement, ctx: SelectCtx): () => void {
 
   wrap.addEventListener('pointerdown', onDown)
   return () => { wrap.removeEventListener('pointerdown', onDown); teardown(); clearPaint() }
+}
+
+export function wireSelect(wrap: HTMLElement, ctx: SelectCtx): () => void {
+  let lastFocus: Cell | null = null      // last roster cell the finger was over
+  let lastFocusDate: string | null = null // last event date the finger was over
+  type Payload = { roster?: Selection; event?: EventSelection }
+
+  return wireGesture<Hit, Payload>(wrap, {
+    enabled: ctx.enabled,
+    cls: 'selcell',
+    node: id => wrap.querySelector(`[data-testid="${id}"]`),
+    reset: () => { lastFocus = null; lastFocusDate = null },
+    hit: el => {
+      const roster = parseCellId(el?.closest?.('[data-testid^="cell-"]')?.getAttribute('data-testid'))
+      const event = roster ? null : parseEventCell(el?.closest?.('[data-testid^="event-"]')?.getAttribute('data-testid'))
+      if (roster) return { kind: 'roster', cell: roster }
+      if (event && (ctx.eventsEnabled?.() ?? false)) return { kind: 'event', cell: event }
+      return null
+    },
+    // The selection under the current focus point, as the ids to paint plus the
+    // typed payload to hand off on release. Roster and event anchors take separate
+    // axes: a roster drag is a people×days rectangle; an event drag is a date span
+    // on the anchor's own line (the focus supplies only the COLUMN — its row is
+    // ignored, so a finger straying onto another row still extends the span).
+    //   When the finger is NOT over a cell — a gap between rows, or the empty area
+    // an edge auto-scroll runs the grid past — we HOLD the last cell it was over
+    // rather than collapsing to the anchor. Without this a drag to the bottom edge
+    // vanished the moment the auto-scroll ran the last row above the finger.
+    current: (anchor, x, y) => {
+      if (anchor.kind === 'roster') {
+        const hit = cellAt(x, y)
+        if (hit) lastFocus = hit
+        const raw = hit ?? lastFocus ?? anchor.cell
+        // The focus may land on a row OUTSIDE the selectable order — a scoped
+        // member's drag straying onto another person (the row list is the viewer
+        // alone), or a held focus (below) left pointing at a row the order no
+        // longer carries. Clamp its PERSON to the anchor's row, keeping the DATE,
+        // so the selection stays on a valid row and still spans the days dragged.
+        // Without this the stray produced an empty rect (rectCells → null) and the
+        // sheet never opened — a scoped member could not drag-fill at all.
+        const f = ctx.order().includes(raw.personId) ? raw : { personId: anchor.cell.personId, date: raw.date }
+        const sel = rectCells(ctx.order(), ctx.dates(), anchor.cell, f)
+        return sel ? { ids: sel.cells.map(c => `cell-${c.personId}-${c.date}`), payload: { roster: sel } } : null
+      }
+      const hitDate = cellAt(x, y)?.date ?? eventAt(x, y)?.date
+      if (hitDate) lastFocusDate = hitDate
+      const fd = hitDate ?? lastFocusDate ?? anchor.cell.date
+      const sel = eventRange(ctx.dates(), anchor.cell.line, anchor.cell.date, fd)
+      return sel ? { ids: sel.dates.map(d => `event-${sel.line}-${d}`), payload: { event: sel } } : null
+    },
+    onSelect: p => {
+      if (p.roster) ctx.onSelect(p.roster)
+      else if (p.event) ctx.onEventSelect?.(p.event)
+    },
+  })
+}
+
+/* ---- ROW SELECT (the OIL tracker, owner 2 Sep 26) -------------------------
+   A run of PEOPLE rows, one axis. The press must land on a row's PICK target
+   (`[data-oilpick]` — the name cell), so the history strip beside it keeps
+   its ordinary sideways scroll and never starts a selection; the drag then
+   extends over any part of the rows below or above (`[data-oilrow]`). Same
+   hold-then-drag on a finger, same slop on a mouse, same scroll lock. */
+export interface RowSelectCtx {
+  order: () => string[]     // selectable row ids, top → bottom
+  enabled: () => boolean
+  onSelect: (ids: string[]) => void
+}
+
+/** The run of rows between two ids in `order`; `null` off the list. */
+export function rowRun(order: string[], a: string, f: string): string[] | null {
+  const ai = order.indexOf(a), fi = order.indexOf(f)
+  if (ai < 0 || fi < 0) return null
+  return order.slice(Math.min(ai, fi), Math.max(ai, fi) + 1)
+}
+
+const rowAt = (x: number, y: number): string | null =>
+  (document.elementFromPoint(x, y) as HTMLElement | null)?.closest('[data-oilrow]')?.getAttribute('data-oilrow') ?? null
+
+export function wireRowSelect(wrap: HTMLElement, ctx: RowSelectCtx): () => void {
+  let lastFocus: string | null = null
+  return wireGesture<string, string[]>(wrap, {
+    enabled: ctx.enabled,
+    cls: 'selrow',
+    node: id => wrap.querySelector(`[data-oilrow="${id}"]`),
+    reset: () => { lastFocus = null },
+    vscroll: w => ({ el: w, isDoc: false }),
+    hit: el => {
+      const pick = el?.closest?.('[data-oilpick]')?.closest('[data-oilrow]')?.getAttribute('data-oilrow') ?? null
+      return pick && ctx.order().includes(pick) ? pick : null
+    },
+    current: (anchor, x, y) => {
+      const hit = rowAt(x, y)
+      if (hit && ctx.order().includes(hit)) lastFocus = hit
+      const run = rowRun(ctx.order(), anchor, lastFocus ?? anchor)
+      return run ? { ids: run, payload: run } : null
+    },
+    onSelect: ctx.onSelect,
+  })
 }
 
 /* ---- MOVE MODE (owner, 27 Aug 26) ----------------------------------------

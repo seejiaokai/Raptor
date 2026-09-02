@@ -172,6 +172,7 @@ export function Matrix() {
   for (const d of period.days) {
     const k = columnKindFor(eventDefs, d, period.bands)
     if (k === 'off') evKind.set(d.date, 'evoff')
+    else if (k === 'free') evKind.set(d.date, 'evfree')
     else if (k === 'nolv') evKind.set(d.date, 'evnolv')
   }
 
@@ -224,7 +225,9 @@ export function Matrix() {
   const [editingWho, setEditing] = useState<string | null>(null)
   // The OIL TRACKER (owner, 2 Sep 26): open on everyone (the toolbar button)
   // or on one person (the Cinch sheet's OIL BAL row). null = closed.
-  const [oilTracker, setOilTracker] = useState<{ person: string | null } | null>(null)
+  // The OIL tracker: open on a person (scrolled to their row) or at the top;
+  // `focus` lights the box for the day just written on the grid.
+  const [oilTracker, setOilTracker] = useState<{ person: string | null; focus?: string | null } | null>(null)
   // Which event cell the admin has tapped to edit, or null. Keyed by line +
   // day; the Event sheet reads the current text or band off the store.
   // `to` is set only when a DRAG selected a span (owner, 27 Aug 26) — the sheet
@@ -2506,7 +2509,10 @@ export function Matrix() {
         <OilTracker
           key={oilTracker.person ?? '*'}
           person={oilTracker.person}
+          focus={oilTracker.focus ?? null}
           onClose={() => setOilTracker(null)}
+          /* A credit lands → the column shows OIL BAL (owner, 2 Sep 26). */
+          onGranted={() => setShownId('oilbal')}
         />
       )}
       {editingWho && people.some(p => p.id === editingWho) && (
@@ -2584,10 +2590,24 @@ export function Matrix() {
              nothing (the owner's sum leaves it out) and does not snap. */
           onWrote={code => {
             const cell = parseCell(code)
-            if (!cell) return
-            const id = cell.type.toLowerCase()
-            if (figures.some(f => f.id === id)) setShownId(id)
-            else if (cell.type === 'ATTC' || cell.type === 'HL') setShownId('med')
+            const earns = (codeOf(code)?.earnsOil ?? 0) > 0
+            if (cell) {
+              const id = cell.type.toLowerCase()
+              if (figures.some(f => f.id === id)) setShownId(id)
+              else if (cell.type === 'ATTC' || cell.type === 'HL') setShownId('med')
+            }
+            /* An ADMIN's manual OIL-family write — OIL taken, or an FO/HO
+               credit typed by hand — opens the tracker on that person with
+               the day's box lit (owner, 2 Sep 26: "whenever I admin input
+               an OIL on the leave war manually, it will bring me to the OIL
+               tracker page to include the reason"). A member's own OIL bid
+               stays where it is. */
+            if (role === 'admin' && (cell?.type === 'OIL' || earns) && open) {
+              const who = open.id, when = open.date
+              close()
+              setShownId('oilbal')
+              setOilTracker({ person: who, focus: when })
+            }
           }}
           /* What the balance would read AFTER this write, so the sheet can
              ask before taking someone negative. Computed here because this

@@ -81,6 +81,25 @@ describe('publish drives the credit', () => {
     expect(owned).toEqual([])
   })
 
+  it('the credit carries WHY it was earned — the duty kind — as the cell\'s note', () => {
+    publish(5)
+    runOilPass()
+    // plasma's Saturday is an SDO desk: a duty row, so the note reads Duty.
+    expect(ownedBy('plasma', SAT)).toMatchObject({ state: 'approved', source: 'raptor', note: 'Duty' })
+  })
+
+  it('a day tagged Off day (management, free) earns nothing — only a weekend or PH does', () => {
+    setRole('admin')
+    setDayEvent('2026-07-13', 0, 'Off day') // the seeded Off day type, typed on Monday
+    publish(0)
+    runOilPass()
+    const { grid, states } = getState().wars[0]
+    const owned = Object.entries(grid).flatMap(([p, row]) =>
+      Object.entries(row).filter(([d, c]) =>
+        (c === 'FO' || c === 'HO') && states[p]?.[d]?.source === 'raptor'))
+    expect(owned).toEqual([])
+  })
+
   it('under six written hours the credit is HO, not FO', () => {
     DAYS[5].dutywaves[0].rows[0].str = '0800'
     DAYS[5].dutywaves[0].rows[0].end = '1200'

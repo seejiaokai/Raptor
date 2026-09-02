@@ -36,12 +36,12 @@ export interface LeaveType {
   /**
    * The counter this draws down, or `null` for leave that costs nothing.
    *
-   * `OFF` is the only free one (owner, 10 Aug 26): "free leave that doesn't
-   * consume any leave, but it will count that manpower as gone too". It is
-   * still LEAVE — the person asks for it and management answers, because it
-   * takes a man out of the manning picture exactly as annual leave does — so
-   * it is here rather than among the non-leave markers, which nobody bids
-   * for. What it is not is an entitlement, so it has no balance to draw.
+   * `OFF` held the `null` slot from 10 Aug 26 to 2 Sep 26 as "free leave".
+   * The owner then settled that OFF is never a person's leave at all: it is
+   * declared by management for a day or a period, for everyone, and lives
+   * as the `Off day` EVENT kind (eventdefs.ts `free`), not as a cell code.
+   * Every leave type here spends a counter now; the field stays nullable so
+   * a free type can return without re-shaping every caller.
    */
   counter: CounterName | null
 }
@@ -67,7 +67,6 @@ export const LEAVE_TYPES: LeaveType[] = [
   { type: 'FCL', label: 'family care leave', counter: 'fcl' },
   { type: 'PL', label: 'paternity leave', counter: 'pl' },
   { type: 'EL', label: 'embarkation leave', counter: 'el' },
-  { type: 'OFF', label: 'off — free leave, no entitlement spent', counter: null },
 ]
 
 const LEAVE_TYPE_BY_CODE: Record<string, LeaveType> = Object.fromEntries(

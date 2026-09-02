@@ -60,6 +60,7 @@ import {
   warHolding,
   STAGE_ORDER,
   type BidRecord,
+  MAX_CELL_NOTE,
   type BidSource,
   type BidState,
   type CounterName,
@@ -74,6 +75,7 @@ import {
   type Grid,
   type LeaveWar,
   type Ledger,
+  type LedgerEntry,
   type Openings,
   type Period,
   type Person,
@@ -324,12 +326,15 @@ function readRecord(leaf: unknown): BidRecord | null {
     return BID_STATES.has(leaf) ? { state: leaf as BidState, source: 'bid' } : null
   }
   if (!isPlainObject(leaf)) return null
-  const { state, source, shiftedFrom } = leaf
+  const { state, source, shiftedFrom, note } = leaf
   if (typeof state !== 'string' || !BID_STATES.has(state)) return null
   if (typeof source !== 'string' || !BID_SOURCES.has(source)) return null
   if (shiftedFrom !== undefined && typeof shiftedFrom !== 'string') return null
   const out: BidRecord = { state: state as BidState, source: source as BidSource }
   if (shiftedFrom !== undefined) out.shiftedFrom = shiftedFrom
+  // A note is decoration on the record, never the record: a bad one is
+  // dropped and the cell's state survives.
+  if (typeof note === 'string' && note.trim()) out.note = note.trim().slice(0, MAX_CELL_NOTE)
   return out
 }
 
@@ -388,7 +393,7 @@ function readLedger(x: unknown): Ledger | null {
   const out: Ledger = []
   for (const e of x) {
     if (!isPlainObject(e)) return null
-    const { id, personId, counter, amount, date, reason, approvedBy } = e
+    const { id, personId, counter, amount, date, reason, approvedBy, givenBy } = e
     if (typeof id !== 'string' || typeof personId !== 'string') return null
     if (typeof counter !== 'string' || !COUNTER_NAMES.has(counter)) return null
     if (typeof amount !== 'number' || !Number.isFinite(amount)) return null
@@ -396,7 +401,10 @@ function readLedger(x: unknown): Ledger | null {
     // A grant with no reason and no approver is the untraceable free text
     // the ledger exists to replace, so it is not a grant.
     if (typeof reason !== 'string' || typeof approvedBy !== 'string') return null
-    out.push({ id, personId, counter: counter as CounterName, amount, date, reason, approvedBy })
+    const entry: LedgerEntry = { id, personId, counter: counter as CounterName, amount, date, reason, approvedBy }
+    // `givenBy` is optional decoration (2 Sep 26); a bad one is dropped.
+    if (typeof givenBy === 'string' && givenBy.trim()) entry.givenBy = givenBy.trim().slice(0, MAX_GIVEN_BY)
+    out.push(entry)
   }
   return out
 }
@@ -725,7 +733,10 @@ function reconcile(grid: Grid, states: States): States {
     const kept: Record<string, BidRecord> = {}
     for (const [date, record] of Object.entries(row)) {
       const code = grid[id]?.[date]
-      if (isBiddable(code) || ((isMedical(code) || isDuty(code)) && record.source === 'raptor')) kept[date] = record
+      // A duty cell keeps its record when Raptor owns it, or when an admin
+      // wrote a reason on a hand-typed FO/HO (setCellNote, 2 Sep 26) — the
+      // note is the record's whole reason to exist there.
+      if (isBiddable(code) || ((isMedical(code) || isDuty(code)) && (record.source === 'raptor' || (isDuty(code) && !!record.note)))) kept[date] = record
     }
     if (Object.keys(kept).length > 0) out[id] = kept
   }
@@ -1929,6 +1940,8 @@ export function resetEventTypes(): void {
    refuses. */
 
 export const MAX_REASON = 120
+/** The optional "given by" on a grant (owner, 2 Sep 26) — a name or a post. */
+export const MAX_GIVEN_BY = 40
 const ISO_DAY = /^\d{4}-\d{2}-\d{2}$/
 
 /** Everything a figure needs to read a person's number, from the live state
@@ -1955,12 +1968,13 @@ export function setOilPolicy(patch: Partial<OilPolicy>): boolean {
  *  boot reader (which tolerates any string date and a zero amount, so an
  *  older stored ledger still loads): a NEW entry with no date or nothing in
  *  it is a mistake worth telling the admin about. */
-function ledgerProblem(amount: number, date: string, reason: string): string | null {
+function ledgerProblem(amount: number, date: string, reason: string, givenBy = ''): string | null {
   if (!Number.isFinite(amount) || amount === 0) return 'The amount must be a number other than 0'
   if (!ISO_DAY.test(date)) return 'Pick a date'
   const clean = reason.trim()
   if (!clean) return 'Give a reason'
   if (clean.length > MAX_REASON) return `A reason is at most ${MAX_REASON} characters`
+  if (givenBy.trim().length > MAX_GIVEN_BY) return `Given by is at most ${MAX_GIVEN_BY} characters`
   return null
 }
 
@@ -1988,16 +2002,18 @@ function approverName(): string {
  * Returns the error sentence for the sheet, or null on success. One state
  * write for the whole batch → one persist, one undo step.
  */
-export function grantOil(personIds: string[], amount: number, date: string, reason: string): string | null {
+export function grantOil(personIds: string[], amount: number, date: string, reason: string, givenBy = ''): string | null {
   if (state.role !== 'admin') return 'Only an admin can credit OIL'
   const ids = [...new Set(personIds)].filter(id => state.people.some(p => p.id === id))
   if (!ids.length) return 'Pick at least one person'
-  const problem = ledgerProblem(amount, date, reason)
+  const problem = ledgerProblem(amount, date, reason, givenBy)
   if (problem) return problem
   const approvedBy = approverName()
+  const by = givenBy.trim()
   let n = ledgerSeq()
   const entries: Ledger = ids.map(personId => ({
     id: `ol-${++n}`, personId, counter: 'oil' as const, amount, date, reason: reason.trim(), approvedBy,
+    ...(by ? { givenBy: by } : {}),
   }))
   state = withCurrent({ ...state, ledger: [...state.ledger, ...entries] })
   persist()
@@ -2007,16 +2023,24 @@ export function grantOil(personIds: string[], amount: number, date: string, reas
 
 /** Edit a grant in place — amount, date or reason. The approver stays who it
  *  was; the edit is visible in undo, which is the audit trail here. */
-export function updateLedgerEntry(id: string, patch: { amount?: number; date?: string; reason?: string }): string | null {
+export function updateLedgerEntry(id: string, patch: { amount?: number; date?: string; reason?: string; givenBy?: string }): string | null {
   if (state.role !== 'admin') return 'Only an admin can edit OIL'
   const cur = state.ledger.find(e => e.id === id)
   if (!cur) return 'That entry is gone'
   const amount = patch.amount ?? cur.amount
   const date = patch.date ?? cur.date
   const reason = patch.reason ?? cur.reason
-  const problem = ledgerProblem(amount, date, reason)
+  const givenBy = (patch.givenBy ?? cur.givenBy ?? '').trim()
+  const problem = ledgerProblem(amount, date, reason, givenBy)
   if (problem) return problem
-  state = withCurrent({ ...state, ledger: state.ledger.map(e => (e.id === id ? { ...e, amount, date, reason: reason.trim() } : e)) })
+  state = withCurrent({
+    ...state,
+    ledger: state.ledger.map(e => {
+      if (e.id !== id) return e
+      const { givenBy: _g, ...rest } = e
+      return { ...rest, amount, date, reason: reason.trim(), ...(givenBy ? { givenBy } : {}) }
+    }),
+  })
   persist()
   notify()
   return null
@@ -2404,11 +2428,11 @@ function ingestFromRaptorImpl(personId: string, date: string, code: string): Ing
  * not a clash, it is the squadron having recorded the same fact first —
  * taken over in place, exactly like ingest's confirming upgrade.
  */
-export function ingestDutyCredit(personId: string, date: string, code: 'FO' | 'HO'): IngestResult {
+export function ingestDutyCredit(personId: string, date: string, code: 'FO' | 'HO', why?: string): IngestResult {
   // Locked like ingestFromRaptor — a sync-driven credit is not an undo step.
-  return locked(() => ingestDutyCreditImpl(personId, date, code))
+  return locked(() => ingestDutyCreditImpl(personId, date, code, why))
 }
-function ingestDutyCreditImpl(personId: string, date: string, code: 'FO' | 'HO'): IngestResult {
+function ingestDutyCreditImpl(personId: string, date: string, code: 'FO' | 'HO', why?: string): IngestResult {
   if (code !== 'FO' && code !== 'HO') return 'ignored'
   const war = warHolding(state.wars, date)
   if (!war) return 'ignored'
@@ -2425,9 +2449,10 @@ function ingestDutyCreditImpl(personId: string, date: string, code: 'FO' | 'HO')
   const confirming = existing === code && !owned
 
   const row = { ...(war.grid[personId] ?? {}), [date]: code }
+  const note = (why ?? '').trim().slice(0, MAX_CELL_NOTE)
   const srow = {
     ...(war.states[personId] ?? {}),
-    [date]: { state: 'approved', source: 'raptor' } as BidRecord,
+    [date]: { state: 'approved', source: 'raptor', ...(note ? { note } : {}) } as BidRecord,
   }
   updateWar(war.period.id, w => ({
     ...w,
@@ -2435,6 +2460,32 @@ function ingestDutyCreditImpl(personId: string, date: string, code: 'FO' | 'HO')
     states: { ...w.states, [personId]: srow },
   }))
   return confirming ? 'confirmed' : 'written'
+}
+
+/**
+ * The REASON on a hand-entered FO/HO credit (owner, 2 Sep 26 — a manual OIL
+ * credit typed on the grid "will bring me to the OIL tracker page to
+ * include the reason"). Admin only; the cell must hold FO or HO. The note
+ * rides on the cell's record, the same field the sync wire fills for an
+ * earned credit, so the tracker reads both the same way. An empty note
+ * clears it. Undo covers it because `states` is in the snapshot.
+ */
+export function setCellNote(personId: string, date: string, note: string): string | null {
+  if (state.role !== 'admin') return 'Only an admin can edit OIL'
+  const war = warHolding(state.wars, date)
+  if (!war) return 'That day is in no war'
+  const code = war.grid[personId]?.[date]
+  if (code !== 'FO' && code !== 'HO') return 'Only an FO or HO credit takes a reason'
+  const clean = note.trim()
+  if (clean.length > MAX_CELL_NOTE) return `A reason is at most ${MAX_CELL_NOTE} characters`
+  const cur = war.states[personId]?.[date] ?? ({ state: 'approved', source: 'bid' } as BidRecord)
+  const { note: _old, ...rest } = cur
+  const rec: BidRecord = clean ? { ...rest, note: clean } : rest
+  updateWar(war.period.id, w => ({
+    ...w,
+    states: { ...w.states, [personId]: { ...(w.states[personId] ?? {}), [date]: rec } },
+  }))
+  return null
 }
 
 /**

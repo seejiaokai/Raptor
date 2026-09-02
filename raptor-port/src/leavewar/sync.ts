@@ -28,7 +28,7 @@ import { docFields, rowDocIds } from '../state/docs'
 import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
 import { dayApproved, dayCurVer, dayCurVerIn, daySnapIn, daySnapOf } from '../engine/publish'
-import { dayOilSpans, inputOilAmt, envMin, uniformOil } from '../engine/oil'
+import { dayOilWork, inputOilAmt, envMin, uniformOil, oilWorkWhy, type OilWork } from '../engine/oil'
 import { stashKeys, stashGet } from '../engine/weekstash'
 import { CURWEEK } from '../engine/waves'
 import { validate } from '../engine/validate'
@@ -784,12 +784,17 @@ function stashOilWeek(v: string): { days: any[], sc: any } | null {
  *  live + stash IS the whole session. Before this, the reverse sweep
  *  quietly COLLECTED a published weekend's credits the moment the user
  *  navigated to another week — the recorded known-issue, now closed. */
-function desiredOilCells(): Map<string, 'FO' | 'HO'> {
+/** What the sync wire wants a person's day to hold: the credit code and the
+ *  WHY that becomes the tracker's reason (`FLT`, `SIM + Duty`, an input's
+ *  type name — owner, 2 Sep 26). */
+export interface DesiredOil { code: 'FO' | 'HO'; why: string }
+
+function desiredOilCells(): Map<string, DesiredOil> {
   const { people, wars } = getState()
   const known = new Set(people.map(p => p.id))
   /* person|iso -> that day's work spans; their ENVELOPE faces the threshold */
-  const pool = new Map<string, [number, number][]>()
-  const add = (person: string, iso: string, spans: [number, number][]) => {
+  const pool = new Map<string, OilWork[]>()
+  const add = (person: string, iso: string, spans: OilWork[]) => {
     /* The same unknown-person guard both leave directions carry: a row
        naming someone the roster does not hold (ground crew, a sentinel)
        must not become a grid row no matrix draws. */
@@ -805,7 +810,7 @@ function desiredOilCells(): Map<string, 'FO' | 'HO'> {
     if (!iso || !warHolding(wars, iso)) continue
     if (!isNonWorkingISO(iso)) continue
     const snap = daySnapOf(di, dayCurVer(di))
-    const spans = dayOilSpans(snap ? snap.d : DAYS[di], { expandAll: win => availableFor(iso, win) })
+    const spans = dayOilWork(snap ? snap.d : DAYS[di], { expandAll: win => availableFor(iso, win) })
     for (const [person, sp] of Object.entries(spans)) add(person, iso, sp)
   }
   /* every OTHER week, out of its stash entry — the loaded week is skipped
@@ -827,7 +832,7 @@ function desiredOilCells(): Map<string, 'FO' | 'HO'> {
          snapshot (legacy/session data) reads its stashed model */
       const d = snap ? snap.d : wk.days[di]
       if (!d) continue
-      const spans = dayOilSpans(d, { expandAll: win => availableFor(iso, win) })
+      const spans = dayOilWork(d, { expandAll: win => availableFor(iso, win) })
       for (const [person, sp] of Object.entries(spans)) add(person, iso, sp)
     }
   }
@@ -849,13 +854,15 @@ function desiredOilCells(): Map<string, 'FO' | 'HO'> {
       if (!(o >= a && o <= b)) continue                    // moved dates → stale yes is inert
       if (!warHolding(wars, iso)) continue
       if (!isNonWorkingISO(iso)) continue                  // a day that stopped being PH stops crediting
-      add(row.person, iso, [win])
+      /* the reason is the input's own type name (Training, CSE, Duty…) —
+         the word the owner acknowledged, which is what the tracker shows */
+      add(row.person, iso, [{ s: win[0], e: win[1], src: String(row.type || 'Duty').trim() as OilWork['src'] }])
     }
   }
-  const out = new Map<string, 'FO' | 'HO'>()
+  const out = new Map<string, DesiredOil>()
   for (const [k, spans] of pool) {
-    const amt = uniformOil(envMin(spans))
-    if (amt) out.set(k, amt === 1 ? 'FO' : 'HO')
+    const amt = uniformOil(envMin(spans.map(w => [w.s, w.e] as [number, number])))
+    if (amt) out.set(k, { code: amt === 1 ? 'FO' : 'HO', why: oilWorkWhy(spans) })
   }
   return out
 }
@@ -869,15 +876,15 @@ export function runOilPass(): void {
     /* Forward: land what the published schedule earns. Already-landed cells
        are skipped so an unchanged world writes nothing. */
     const clashes: SyncClash[] = []
-    for (const [key, code] of desired) {
+    for (const [key, { code, why }] of desired) {
       const at = key.indexOf('|')
       const person = key.slice(0, at)
       const date = key.slice(at + 1)
       const war = warHolding(getState().wars, date)
       if (!war) continue
       const existing = war.grid[person]?.[date]
-      if (existing === code && raptorOwns(war.states, person, date)) continue
-      const result = ingestDutyCredit(person, date, code)
+      if (existing === code && raptorOwns(war.states, person, date) && war.states[person]?.[date]?.note === why) continue
+      const result = ingestDutyCredit(person, date, code, why)
       if (result === 'clash') {
         clashes.push({ person, date, inputCode: code, bidCode: existing ?? '', kind: 'duty' })
       }

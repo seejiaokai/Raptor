@@ -85,7 +85,7 @@ describe('the counter column', () => {
     expect(screen.getByTestId('counter-legend').textContent).toContain('BAL')
     expect(screen.getByTestId('counter-legend').textContent).toContain('USED')
     expect(screen.getByTestId('figsub-med').textContent).toBe('= ATT C + HL + OML')
-    expect(screen.getByTestId('figsub-lvecon').textContent).toBe('= LL + OL + OIL + OFF + CCL + PL + FCL')
+    expect(screen.getByTestId('figsub-lvecon').textContent).toBe('= LL + OL + OIL + CCL + PL + FCL')
   })
 
   // The figure is what makes the list answerable: each row previews the
@@ -213,15 +213,14 @@ describe('the counter follows the leave just entered', () => {
     expect(screen.getByTestId('counter-name').textContent).toBe('OL USED')
   })
 
-  // OFF USED was a figure of its own until 2 Sep 26 (owner: "remove the OFF
-  // used counter"), so entering OFF used to snap the column there. With no
-  // figure to snap to, free leave leaves the column where it was — it still
-  // counts inside LVE USED.
-  it('OFF has no figure of its own now, so entering it moves the column nowhere', () => {
+  // OFF stopped being a leave code on 2 Sep 26 (it is a management Off day
+  // event now), so the bid sheet offers no OFF chip at all.
+  it('offers no OFF chip — OFF is not a person\'s leave', () => {
     render(<Matrix />)
     expect(screen.getByTestId('counter-name').textContent).toBe('LVE BAL')
     fireEvent.click(screen.getByTestId('cell-dusk-2026-02-11'))
-    fireEvent.click(screen.getByTestId('bid-OFF'))
+    expect(screen.queryByTestId('bid-OFF')).toBeNull()
+    expect(screen.getByTestId('bid-EL')).toBeTruthy()
     expect(screen.getByTestId('counter-name').textContent).toBe('LVE BAL')
     fireEvent.click(screen.getByTestId('counter-pick'))
     expect(screen.queryByTestId('counter-off')).toBeNull()
@@ -362,13 +361,6 @@ describe('going negative is asked about, never refused', () => {
     expect(getState().grid.dusk?.['2026-02-09']).toBeUndefined()
   })
 
-  // Free leave has no balance to overdraw.
-  it('never asks about leave that spends nothing', () => {
-    render(<Matrix />)
-    fireEvent.click(screen.getByTestId('cell-reset-2026-02-11'))
-    fireEvent.click(screen.getByTestId('bid-OFF'))
-    expect(getState().grid.reset['2026-02-11']).toBe('OFF')
-  })
 })
 
 describe('the per-person breakdown sheet (owner, 17 Aug 26)', () => {

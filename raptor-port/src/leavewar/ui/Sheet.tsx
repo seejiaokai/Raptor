@@ -113,11 +113,11 @@ function useGridPan(movedRef: { current: boolean }) {
    without React re-rendering the sheet on every pointer frame. It resets to
    zero whenever the sheet remounts (a fresh open), which is the behaviour the
    owner expects — a panel opens where it always did, then he moves it. */
-function useSheetDrag() {
+function useSheetDrag(enabled = true) {
   const panelRef = useRef<HTMLDivElement>(null)
   useEffect(() => {
     const panel = panelRef.current
-    if (!panel) return
+    if (!panel || !enabled) return
     const handle = panel.querySelector<HTMLElement>('.bidsheet-hd')
     if (!handle) return
 
@@ -243,6 +243,7 @@ export function Sheet({
   label,
   onClose,
   narrow,
+  full,
   children,
 }: {
   testid: string
@@ -252,6 +253,11 @@ export function Sheet({
    *  narrower and tighter, since its rows are read, not tapped (owner,
    *  28 Aug 26: "make all the window smaller … theres alot of empty space"). */
   narrow?: boolean
+  /** A sheet that FILLS the screen (the OIL tracker grid — owner, 2 Sep 26:
+   *  "on the desktop it fills the entire screen"). It does not scroll
+   *  itself — its content owns a 2-D scroller (frozen columns, sticky
+   *  header) — and it is not movable, there being nowhere to move it to. */
+  full?: boolean
   children: ReactNode
 }) {
   // A drag that scrolled the grid ends in a trailing click on the scrim
@@ -259,7 +265,7 @@ export function Sheet({
   // A real tap sets this false at pointerdown, so it still closes.
   const movedRef = useRef(false)
   const scrimRef = useGridPan(movedRef)
-  const panelRef = useSheetDrag()
+  const panelRef = useSheetDrag(!full)
   useKeyboardInset(panelRef)
   const onScrimClick = () => {
     if (movedRef.current) { movedRef.current = false; return }
@@ -307,7 +313,7 @@ export function Sheet({
           needs, and every sheet already has a real labelled ✕. This is a
           pointer convenience on top of that, never the only way out. */}
       <div ref={scrimRef} className="sheetscrim" data-testid="sheet-scrim" aria-hidden="true" onClick={onScrimClick} />
-      <div ref={panelRef} className={`bidsheet${narrow ? ' narrow' : ''}`} data-testid={testid} role="dialog" aria-label={label}>
+      <div ref={panelRef} className={`bidsheet${narrow ? ' narrow' : ''}${full ? ' full' : ''}`} data-testid={testid} role="dialog" aria-label={label}>
         {children}
       </div>
     </>

@@ -64,6 +64,7 @@
 }
 
 .bidsheet .evchip.off { border-color: rgba(74, 201, 126, .55); }
+.bidsheet .evchip.free { border-color: rgba(180, 190, 200, .55); }
 .bidsheet .evchip.nolv { border-color: rgba(242, 139, 46, .6); }
 .bidsheet .evchip.work { border-color: rgba(240, 85, 95, .55); color: #FFA6AD; }
 
@@ -81,7 +82,7 @@
   text-transform: uppercase;
 }
 
-/* A kind button — off / no-leave / work. Neutral until chosen, then it lights
+/* A kind button — PH / Off day / no-leave / work. Neutral until chosen, then it lights
    in its own colour so a tag reads at a glance. Used both in the tag row and
    in the type-library list. */
 .bidsheet .evkind {
@@ -100,6 +101,14 @@
   background: rgba(74, 201, 126, .2);
   color: #9FE6BC;
   border-color: rgba(74, 201, 126, .6);
+}
+
+/* The management Off day (2 Sep 26): grey, the colour of a day nobody is
+   asked to work and nobody earns for. */
+.bidsheet .evkind.free.on {
+  background: rgba(180, 190, 200, .18);
+  color: #D3DAE1;
+  border-color: rgba(180, 190, 200, .6);
 }
 
 .bidsheet .evkind.nolv.on {

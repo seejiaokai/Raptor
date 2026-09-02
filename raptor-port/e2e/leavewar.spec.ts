@@ -1062,7 +1062,7 @@ test('the figure picker doubles as the legend, aggregates spelled out', async ({
   await expect(page.locator('[data-testid="counter-legend"]')).toContainText('USED')
   await expect(page.locator('[data-testid="figsub-med"]')).toHaveText('= ATT C + HL + OML')
   await expect(page.locator('[data-testid="figsub-lvecon"]'))
-    .toHaveText('= LL + OL + OIL + OFF + CCL + PL + FCL')
+    .toHaveText('= LL + OL + OIL + CCL + PL + FCL')
 })
 
 // The figures reorder through the ▲▼ each row carries — management's alone
@@ -1374,24 +1374,12 @@ test('a posted-out cell is hatched, and an ordinary cell is not', async ({ page 
   expect(Math.max(...alphas)).toBeGreaterThanOrEqual(0.6)
 })
 
-// OFF is free leave (owner, 10 Aug 26): the person is gone from the manning
-// picture and no entitlement is spent. It has to be offered like any other
-// leave, or it cannot be asked for at all.
-test('OFF can be bid, takes the day, and moves no balance', async ({ page }) => {
-  const balance = () => page.locator('[data-testid="bal-ammo"]').textContent()
-  const count = () => page.locator('[data-testid="count-opsw-2026-02-11"]').textContent()
-  const before = { bal: await balance(), manning: await count() }
-
+// OFF stopped being a person's leave on 2 Sep 26 (it is a management Off
+// day event now), so the bid sheet must not offer it.
+test('OFF is not offered as a leave to bid', async ({ page }) => {
   await page.locator('[data-testid="cell-ammo-2026-02-11"]').click()
-  await page.locator('[data-testid="bid-OFF"]').click()
-
-  await expect(page.locator('[data-testid="cell-ammo-2026-02-11"] .c')).toHaveText('OFF')
-  // The man is gone from the count...
-  expect(await count()).not.toBe(before.manning)
-  // ...and his leave balance has not moved, because OFF spends nothing.
-  // Entering OFF snaps the column to OFF CON, so read LVE BAL back explicitly.
-  await pickCounter(page, 'lvebal')
-  expect(await balance()).toBe(before.bal)
+  await expect(page.locator('[data-testid="bid-EL"]')).toBeVisible()
+  await expect(page.locator('[data-testid="bid-OFF"]')).toHaveCount(0)
 })
 
 // The owner's complaint, from a phone: the chrome ate the screen and left
@@ -2261,10 +2249,10 @@ test('tagging a typed event colours the day without minting a type', async ({ pa
   await expect(head).toHaveClass(/evnolv/)
   const bg = await head.evaluate(e => getComputedStyle(e).backgroundColor)
   expect(bg).toContain('242') // the orange channel of the nolv tint
-  // and the library holds only the three standard types
+  // and the library holds only the four standard types
   await page.locator('[data-testid="event-1-2026-01-21"]').click()
   await page.locator('[data-testid="event-edit-types"]').click()
-  await expect(page.locator('.evtype:not(.evtype-add)')).toHaveCount(3)
+  await expect(page.locator('.evtype:not(.evtype-add)')).toHaveCount(4)
 })
 
 // ---- Post out from any date + the month-window roster (owner, 19 Aug 26) --

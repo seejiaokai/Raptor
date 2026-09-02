@@ -732,3 +732,18 @@ gate's. Keep verdict-bearing commands unpiped.
 **Suggested improvement:** For any plan touching three or more modules, run one critique agent with a checklist of exactly these questions: cycles in the proposed import graph, every existing reader of a rule the plan changes, helpers the plan assumes exist, and any id/handle the UI will print. Keep it to one pass; a second rarely finds more.
 
 **Principle:** A plan is cheapest to fix before it is code; one adversarial read of the plan against the real code, with a fixed checklist, catches the class of defect that tests only reveal after the wiring is in.
+
+### Observation 47: Iterating a static mockup with the owner before building a UI rewrite pays for itself
+
+**Status:** OPEN
+**Date:** 2026-09-02
+**Session context:** Leave War OIL tracker — the first cut (a list sheet + per-person page) was rebuilt the same day as a full-screen grid after seven rounds of mockup feedback (year lanes, per-credit boxes, aligned digits, given-by, no select column), none of which had been in the original ask.
+**Skill:** impeccable (critique) / brainstorming
+**Type:** open-source
+**Phase/Area:** Design before build — "show a picture first"
+
+**Issue:** The owner asked for a screenshot before proceeding; a throwaway HTML mockup rendered with the app's own palette let seven layout decisions be settled in ~30 minutes of back-and-forth, at zero code cost. Running the impeccable critique on the MOCKUP (not the built page) surfaced three P0/P1 layout faults the owner then chose fixes for. Had the grid been built first, each round would have cost a component rewrite plus test churn.
+
+**Suggested improvement:** For any UI whose SHAPE is unsettled, make the mockup loop explicit in the plan: (1) static HTML in the app's tokens, desktop + phone renders; (2) owner feedback rounds on the picture; (3) a critique pass on the final mockup with the owner picking among the fixes; (4) only then the plan and build. Record the accepted mockup as the build's contract.
+
+**Principle:** A picture the client can react to is the cheapest prototype; iterate the picture until it stops changing, then build once.

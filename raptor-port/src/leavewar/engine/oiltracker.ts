@@ -108,7 +108,13 @@ export interface OilCredit {
   amount: number
   reason: string
   source: OilSource
+  /** Who recorded a grant (the admin's callsign). */
   approvedBy?: string
+  /** Who GAVE a grant, when the admin named someone (owner, 2 Sep 26). */
+  givenBy?: string
+  /** An `auto` credit an admin typed by hand (no Raptor-owned record behind
+   *  it), so its reason is theirs to write (`setCellNote`). */
+  manual?: boolean
   /** First day it can no longer be used; `null` = never. */
   expires: string | null
   /** FIFO draws against it, oldest debit first. */
@@ -180,7 +186,7 @@ export function oilLedgerFor(ctx: FigureCtx, personId: string, policy: OilPolicy
   for (const e of ctx.ledger) {
     if (e.personId !== personId || e.counter !== 'oil' || !e.amount) continue
     if (e.amount > 0) {
-      credits.push({ id: e.id, ledgerId: e.id, date: e.date, amount: e.amount, reason: e.reason, source: 'grant', approvedBy: e.approvedBy, expires: expiryOf(e.date, policy), used: [], left: e.amount, expired: 0 })
+      credits.push({ id: e.id, ledgerId: e.id, date: e.date, amount: e.amount, reason: e.reason, source: 'grant', approvedBy: e.approvedBy, ...(e.givenBy ? { givenBy: e.givenBy } : {}), expires: expiryOf(e.date, policy), used: [], left: e.amount, expired: 0 })
     } else {
       debits.push({ id: e.id, ledgerId: e.id, date: e.date, amount: -e.amount, reason: e.reason, source: 'correction', from: [], unbacked: 0 })
     }
@@ -190,7 +196,13 @@ export function oilLedgerFor(ctx: FigureCtx, personId: string, policy: OilPolicy
     for (const [date, code] of Object.entries(grid[personId] ?? {})) {
       const earns = codeOf(code)?.earnsOil ?? 0
       if (earns > 0) {
-        credits.push({ id: `auto:${wi}:${date}`, date, amount: earns, reason: isWeekend(date) ? 'weekend duty' : 'PH duty', source: 'auto', expires: expiryOf(date, policy), used: [], left: earns, expired: 0 })
+        // The reason is the sync wire's note (`FLT`, `SIM + Duty`, an input's
+        // type — owner, 2 Sep 26) or the admin's on a hand-typed cell; a cell
+        // with no note falls back to the day's kind.
+        const rec = states[personId]?.[date]
+        const manual = rec?.source !== 'raptor'
+        const reason = rec?.note ?? (isWeekend(date) ? 'weekend duty' : 'PH duty')
+        credits.push({ id: `auto:${wi}:${date}`, date, amount: earns, reason, source: 'auto', ...(manual ? { manual } : {}), expires: expiryOf(date, policy), used: [], left: earns, expired: 0 })
         continue
       }
       const cell = parseCell(code)
