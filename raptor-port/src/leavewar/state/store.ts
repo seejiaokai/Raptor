@@ -47,6 +47,7 @@ import {
   type RuleCount,
   type TeamSlot,
   autoOrder,
+  seatRank,
   groupOf,
   GROUP_ORDER,
   orderedPeople,
@@ -205,6 +206,12 @@ interface State {
    *  who-wins list is dragged; cleared by "Match the page order" and by
    *  `resetGroups`. Persisted (`grouppriocustom`), admin-gated like the orders. */
   groupPriorityCustom: boolean
+  /** The COLOUR the admin picked for a qualification group (owner, 3 Sep 26 —
+   *  "allow me to pick the colour i want"), by group id, `#rrggbb`. Only `q:`
+   *  groups take one (the built-ins wear their CAT colours); a group with no
+   *  entry falls back to a palette colour derived from its id (ui/groupColor.ts).
+   *  Persisted (`groupcolors`), admin-gated, dropped with the group. */
+  groupColors: Record<string, string>
 
   /** How many EVENT rows the matrix draws (owner, 18 Aug 26 — "add more event
    *  rows if needed"). Two by default; an admin can add up to `MAX_EVENT_ROWS`.
@@ -286,6 +293,7 @@ function blank(): State {
     groupDefs: [...DEFAULT_GROUPS],
     groupPriority: [],
     groupPriorityCustom: false,
+    groupColors: {},
     eventRows: DEFAULT_EVENT_ROWS,
     showSans: false,
     // The squadron is the common case, so the app opens as one. An admin
@@ -571,6 +579,16 @@ function readLabelMap(x: unknown): Record<string, string> | null {
   return out
 }
 
+/** The picked group colours: only `q:` ids, only `#rrggbb` values survive. */
+function readColorMap(x: unknown): Record<string, string> | null {
+  if (!isPlainObject(x)) return null
+  const out: Record<string, string> = {}
+  for (const [k, v] of Object.entries(x)) {
+    if (k.startsWith('q:') && typeof v === 'string' && /^#[0-9a-f]{6}$/i.test(v)) out[k] = v
+  }
+  return out
+}
+
 // A stored war is its period plus its grid and states. `days` is stored in
 // full rather than rebuilt from start/end, because a day carries events, a
 // blocked flag and its reason — facts the range cannot regenerate and a
@@ -781,6 +799,7 @@ export function initStore(b?: StorageBackend): void {
   const groupDefs = pruneGroups(readStored('groupdefs', readGroupDefs) ?? [...DEFAULT_GROUPS], state.qualCatalog)
   const groupPriority = readStored('grouppriority', readIdList) ?? []
   const groupPriorityCustom = readStored('grouppriocustom', x => (typeof x === 'boolean' ? x : null)) ?? false
+  const groupColors = readStored('groupcolors', readColorMap) ?? {}
   // The squadron's own rule set, or — for a browser from before rules were
   // data — the seed with its old numbers-only overlay migrated in.
   const storedRules = readStored('manningdefs', readManningRules)
@@ -803,7 +822,7 @@ export function initStore(b?: StorageBackend): void {
      boot, so a stored copy could only ever disagree with the roster Raptor
      is actually flying. Boot leaves the seed — the vendored unit suite reads
      it pristine — and the projection that follows replaces it. */
-  state = withCurrent({ ...state, wars, currentId, openings, ledger, oilPolicy, eventDefs, figureOrder, rosterOrder, persLabels, manningOrder, manningHidden, groupDefs, groupPriority, groupPriorityCustom, requirements, eventRows, showSans })
+  state = withCurrent({ ...state, wars, currentId, openings, ledger, oilPolicy, eventDefs, figureOrder, rosterOrder, persLabels, manningOrder, manningHidden, groupDefs, groupPriority, groupPriorityCustom, groupColors: colorsFor(groupDefs, groupColors), requirements, eventRows, showSans })
 
   version = 0
   listeners.clear()
@@ -875,6 +894,7 @@ function persist(): void {
   backend.write('groupdefs', JSON.stringify(state.groupDefs))
   backend.write('grouppriority', JSON.stringify(state.groupPriority))
   backend.write('grouppriocustom', JSON.stringify(state.groupPriorityCustom))
+  backend.write('groupcolors', JSON.stringify(state.groupColors))
   backend.write('manningdefs', JSON.stringify(state.requirements.default.rules))
   backend.write('eventrows', JSON.stringify(state.eventRows))
   backend.write('showsans', JSON.stringify(state.showSans))
@@ -1161,18 +1181,25 @@ export function displayRoster(): Person[] {
   const defs = groupsInOrder()
   const priority = groupPriorityIds()
   const home = new Map(state.people.map(p => [p.id, assignGroup(p, defs, priority)]))
+  /* Within a block: every pilot above every WSO, ALWAYS (owner, 3 Sep 26 —
+     "arrange all pilots at the top always and wso at the bottom of the same
+     section"), and inside each seat the hand-order (or the ranked default). A
+     drag that would carry a WSO up among the pilots lands them at the top of the
+     WSOs instead — the seat split is not something a drag can undo. A body
+     missing from the saved order (just arrived) sinks to the end of its seat
+     rather than jumping to the top. */
+  const within = (a: Person, b: Person) =>
+    seatRank(a) - seatRank(b) || (pos.get(a.id) ?? Infinity) - (pos.get(b.id) ?? Infinity)
   for (const d of defs) {
     const members = state.people.filter(p => home.get(p.id) === d.id)
-    // A body missing from the saved order (just arrived) sinks to the end of
-    // its group rather than jumping to the top.
-    members.sort((a, b) => (pos.get(a.id) ?? Infinity) - (pos.get(b.id) ?? Infinity))
+    members.sort(within)
     out.push(...members)
   }
   /* Anyone no configured group claims still gets a row — under "Everyone else",
      always last. Without this an admin whose list is all qualifications would
      drop people off the grid entirely. */
   const rest = state.people.filter(p => !defs.some(d => home.get(p.id) === d.id))
-  rest.sort((a, b) => (pos.get(a.id) ?? Infinity) - (pos.get(b.id) ?? Infinity))
+  rest.sort(within)
   out.push(...rest)
   return out
 }
@@ -1239,7 +1266,30 @@ export function setGroupDefs(defs: GroupDef[]): void {
   // SANS is auto-managed by the Show SANS switch — never let it into the stored
   // list, whatever a caller passes.
   const cleaned = defs.filter(d => d.id !== SANS_GROUP_ID)
-  state = withCurrent({ ...state, groupDefs: pruneGroups(cleaned, state.qualCatalog) })
+  const groupDefs = pruneGroups(cleaned, state.qualCatalog)
+  state = withCurrent({ ...state, groupDefs, groupColors: colorsFor(groupDefs, state.groupColors) })
+  persist()
+  notify()
+}
+
+/** A picked colour lives and dies with its group: keep only the entries whose
+ *  group is still in the list, so a removed-then-re-added group starts fresh
+ *  (its fallback colour) rather than resurrecting a pick nobody can see. */
+function colorsFor(defs: readonly GroupDef[], colors: Record<string, string>): Record<string, string> {
+  const keep: Record<string, string> = {}
+  for (const d of defs) if (colors[d.id]) keep[d.id] = colors[d.id]
+  return keep
+}
+
+/** Pick a qualification group's colour (owner, 3 Sep 26 — "allow me to pick the
+ *  colour i want"). ADMIN-gated; only a group currently shown, only a `q:` group
+ *  (the built-ins wear their CAT colours), only a `#rrggbb` value. */
+export function setGroupColor(id: string, hex: string): void {
+  if (state.role !== 'admin') return
+  if (!id.startsWith('q:') || !/^#[0-9a-f]{6}$/i.test(hex)) return
+  if (!groupsInOrder().some(d => d.id === id)) return
+  if (state.groupColors[id] === hex) return
+  state = withCurrent({ ...state, groupColors: { ...state.groupColors, [id]: hex } })
   persist()
   notify()
 }
@@ -1336,7 +1386,7 @@ export function clearGroupPriority(): void {
  *  ADMIN-gated. */
 export function resetGroups(): void {
   if (state.role !== 'admin') return
-  state = withCurrent({ ...state, groupDefs: [...DEFAULT_GROUPS], groupPriority: [], groupPriorityCustom: false })
+  state = withCurrent({ ...state, groupDefs: [...DEFAULT_GROUPS], groupPriority: [], groupPriorityCustom: false, groupColors: {} })
   persist()
   notify()
 }

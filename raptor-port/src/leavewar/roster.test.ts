@@ -98,11 +98,13 @@ describe('autoOrder — the categorised default', () => {
     }
   })
 
-  /* Within a MIXED group (SXO holds every grade) the order is most-qualified
-     first — FI, IR, IP, IW, then the ops grades A→D, then OCU (owner, 18 Aug
-     26: "look at my list of hierarchy"). Before this IP and IW shared a rank
-     and interleaved by callsign, which is the jumble the owner flagged. */
-  it('a mixed group sorts most-qualified first: FI, IR, IP, IW, A→D, OCU', () => {
+  /* Within a MIXED group (SXO holds every grade) every PILOT sits above every
+     WSO (owner, 3 Sep 26 — "arrange all pilots at the top always and wso at the
+     bottom of the same section"), and inside each seat the order is
+     most-qualified first — FI, IR, IP, then the ops grades A→D, then OCU
+     (owner, 18 Aug 26: "look at my list of hierarchy"). So the WSO IW, once
+     ranked between IP and A, now closes the block. */
+  it('a mixed group puts pilots first, then WSOs; each seat most-qualified first', () => {
     const sxo = (id: string, q: string, over: Partial<Person> = {}) =>
       person(id, { sxo: true, band: 'instructor', q, ...over })
     const mixed = [
@@ -113,8 +115,9 @@ describe('autoOrder — the categorised default', () => {
       sxo('s_ip', 'IP'),
       sxo('s_c', 'C', { band: 'ops' }),
       sxo('s_ir', 'IR'),
+      sxo('s_wb', 'B', { band: 'ops', seat: 'wso' }),
     ]
-    expect(autoOrder(mixed)).toEqual(['s_fi', 's_ir', 's_ip', 's_iw', 's_a', 's_c', 's_ocu'])
+    expect(autoOrder(mixed)).toEqual(['s_fi', 's_ir', 's_ip', 's_a', 's_c', 's_ocu', 's_iw', 's_wb'])
   })
 })
 
@@ -200,6 +203,21 @@ describe('roster order + labels are admin-gated writers', () => {
     moveRosterRow('ops_a', null)
     const ids = displayRoster().map(p => p.id)
     expect(ids.indexOf('ops_a')).toBeGreaterThan(ids.indexOf('ops_c'))
+  })
+
+  it('a hand-order cannot carry a WSO above the pilots of a mixed block (seat split is always on)', () => {
+    // Two SXOs, one pilot and one WSO, and a saved order that lists the WSO
+    // first: the block still shows the pilot on top.
+    setPeople([
+      person('sx_w', { seat: 'wso', band: 'instructor', q: 'IW', sxo: true }),
+      person('sx_p', { seat: 'pilot', band: 'ops', q: 'C', sxo: true }),
+      person('sx_p2', { seat: 'pilot', band: 'instructor', q: 'IP', sxo: true }),
+    ])
+    setRosterOrder(['sx_w', 'sx_p', 'sx_p2'])
+    expect(displayRoster().map(p => p.id)).toEqual(['sx_p', 'sx_p2', 'sx_w'])
+    // …and within the pilots the hand-order still holds (C above IP as saved)
+    moveRosterRow('sx_p2', 'sx_p')
+    expect(displayRoster().map(p => p.id)).toEqual(['sx_p2', 'sx_p', 'sx_w'])
   })
 
   it('autoSortRoster re-groups back to the categorised order', () => {

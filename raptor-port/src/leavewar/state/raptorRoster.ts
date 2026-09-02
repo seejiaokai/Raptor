@@ -6,6 +6,7 @@
 // drop in without a migration.
 
 import { PEOPLE, isInstr } from '../../engine/people'
+import { qualCols } from '../../engine/qualcols'
 import type { Person, QualDef } from '../engine'
 
 /**
@@ -85,30 +86,29 @@ export function projectPeople(includeSans = false): Person[] {
   return out
 }
 
-/** The headings Raptor's own Quals page gives its built-in columns. A copy of
- *  those labels rather than an import: the page is a component and this is a
- *  state file, and a heading is display vocabulary — a drifted label mislabels
- *  a chip, never a count. A key with no entry (a column the squadron added)
- *  shows as its key upper-cased, which is the key's own heading minus spaces. */
-const QUAL_LABELS: Record<string, string> = {
-  san: 'SANS', sxo: 'SXO', sched: 'Scheduler', scDay: 'SC DAY', scNight: 'SC NIGHT',
-  daar: 'DAAR', naar: 'NAAR', nvg: 'NVG', imc: 'IMC', tf: 'TF',
-}
-
 /**
- * The qualification chips the counter form offers: every key any Raptor body
- * carries (`deriveQuals` writes the full built-in set onto every aircrew, so
- * the ten standard columns are always here; a squadron-added column joins as
- * soon as anyone is ticked). Known keys first in the Quals page's own order,
- * additions after, alphabetically — a stable list, so the chips never jump.
+ * The qualification catalogue — the chips the counter form offers and the
+ * groups ⚙ can add: Raptor's OWN LoX column list, in its order and under its
+ * own headings (`engine/qualcols.ts`, the list the Quals page edits). So a
+ * column the admin has just added is here at once, held by nobody yet, and
+ * reads as the heading they typed (owner, 3 Sep 26 — "when i add a new
+ * qualification, i cant see that new qualification added in the settings page
+ * of leave war"). It used to be built from what people HELD, which is exactly
+ * why a fresh column was invisible until someone was ticked.
+ *
+ * A key somebody still holds that is no longer a column is appended,
+ * alphabetically: removing a column on the LoX keeps the ticks ("add it back
+ * and the ticks return"), so a Leave War group pinned to it keeps its people
+ * rather than being pruned out from under them.
  */
 export function qualCatalogue(): QualDef[] {
-  const keys = new Set<string>()
+  const out: QualDef[] = qualCols().map(c => ({ k: c.k, label: c.h }))
+  const listed = new Set(out.map(q => q.k))
+  const held = new Set<string>()
   for (const p of Object.values<any>(PEOPLE)) {
     if (p.special || p.archived) continue
-    for (const k of Object.keys(p.quals || {})) keys.add(k)
+    for (const k of Object.keys(p.quals || {})) if (p.quals[k] && !listed.has(k)) held.add(k)
   }
-  const known = Object.keys(QUAL_LABELS).filter(k => keys.has(k))
-  const extra = [...keys].filter(k => !(k in QUAL_LABELS)).sort()
-  return [...known, ...extra].map(k => ({ k, label: QUAL_LABELS[k] ?? k.toUpperCase() }))
+  for (const k of [...held].sort()) out.push({ k, label: k.toUpperCase() })
+  return out
 }

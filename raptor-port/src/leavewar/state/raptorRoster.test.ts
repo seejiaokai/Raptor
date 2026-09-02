@@ -6,9 +6,40 @@ import { INPUTS } from '../../engine/inputs'
 import { SANS_IDS } from '../../engine/people'
 import { seedPeople } from '../engine'
 import { DEMO_MAP, installDemoWorld } from './demoworld'
-import { projectPeople } from './raptorRoster'
+import { projectPeople, qualCatalogue } from './raptorRoster'
 import { getState, initStore } from './store'
 import { memoryBackend } from './storage'
+import { DEFAULT_QUAL_COLS, qualCols, resetQualCols, setQualCols } from '../../engine/qualcols'
+
+/* The catalogue is Raptor's OWN LoX column list (owner, 3 Sep 26 — a
+   qualification added on the Quals page was invisible to Leave War until
+   someone was ticked, because the catalogue was built from what people held). */
+describe('qualCatalogue — the LoX column list, not the holders', () => {
+  beforeEach(() => resetQualCols())
+
+  it('lists the ten standard columns in LoX order under their own headings', () => {
+    const cat = qualCatalogue()
+    expect(cat.slice(0, DEFAULT_QUAL_COLS.length)).toEqual(DEFAULT_QUAL_COLS.map(c => ({ k: c.k, label: c.h })))
+  })
+
+  it('a column added with nobody ticked is here at once, as the heading typed', () => {
+    expect(qualCatalogue().some(q => q.k === 'lowlevel')).toBe(false)
+    expect(setQualCols([...qualCols(), { k: 'lowlevel', h: 'LOW LEVEL', lav: true }])).toBe(true)
+    expect(qualCatalogue().find(q => q.k === 'lowlevel')).toEqual({ k: 'lowlevel', label: 'LOW LEVEL' })
+    // the same list again is no change — the page's mount pass stays silent
+    expect(setQualCols([...qualCols()])).toBe(false)
+  })
+
+  it('a removed column whose ticks remain is still catalogued, after the list', () => {
+    // TF is held by nobody by default, so removing it drops it entirely…
+    setQualCols(qualCols().filter(c => c.k !== 'tf'))
+    expect(qualCatalogue().some(q => q.k === 'tf')).toBe(false)
+    // …but a column somebody holds (IMC derives from CAT) survives its removal
+    setQualCols(qualCols().filter(c => c.k !== 'imc'))
+    const cat = qualCatalogue()
+    expect(cat[cat.length - 1]).toEqual({ k: 'imc', label: 'IMC' })
+  })
+})
 
 describe('projectPeople', () => {
   const people = projectPeople()

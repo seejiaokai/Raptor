@@ -637,22 +637,53 @@ subscribers.
   SXO category / the SANS group) and a stored one is pruned. Auto-sort buckets by
   the live grouping (`liveAutoOrder`), so a re-homed person ranks among their new
   block.
-- **A chip shows only the CAT; a hover/tap reveals the full quals** (owner, 3 Sep
-  26 — "hover the mouse over the person to see the qualifications they hold" /
-  "having a colour on the chip doesnt make sense … just the original colour of the
-  pucks for their CAT"). The chip stays CAT-coloured (`catClass`, off `groupOf` —
-  an SXO keeps gold wherever they sit); it never encodes a qualification. When the
-  person holds any (`heldQuals`), the chip gains `.has-quals` and becomes a live
-  control — a desktop hover / phone tap opens the `qualpop` (Matrix state, fixed to
-  screen coords so the frozen column cannot clip it), listing every qual in
-  catalogue order. The click is swallowed so it never also opens the figures sheet;
-  dismissed by pointer-leave, an outside pointer-down, or scroll — no full-screen
-  scrim (which would swallow the opening click and block the grid).
-- **Custom (qualification) groups get an auto marker colour, no picker** (owner, 3
-  Sep 26 — "its all black now" → "do we even need a colour?" — no). Built-ins/SANS
-  are painted by CSS class; a `q:`-prefixed group is handed a `--gq-N` token
-  deterministically by `ui/groupColor.ts qualSwatch`, applied inline at the grid
-  heading, phone mirror and the ⚙ list, so a custom group is never a black square.
+- **A chip shows only the CAT; a hover/tap reveals the DISPLAYED quals, in their
+  group colours** (owner, 3 Sep 26 — "hover the mouse over the person to see the
+  qualifications they hold" / "having a colour on the chip doesnt make sense … just
+  the original colour of the pucks for their CAT" / later "only the qualifications
+  that were added to display will be shown when i hover … in the colour code that i
+  selected for the group"). The chip stays CAT-coloured (`catClass`, off `groupOf` —
+  an SXO keeps gold wherever they sit); it never encodes a qualification. The
+  popover (`qualpop`, Matrix state, fixed to screen coords so the frozen column
+  cannot clip it) lists ONLY the qualification GROUPS on the page the person
+  matches (`Matrix.tsx shownQuals`: `groupsInOrder` × `matchesGroup`), each pill in
+  that group's colour, plus SXO in gold when the SXO group is on the page. A held
+  but undisplayed qual is not listed, and a chip with nothing displayable is inert
+  (no `.has-quals`). The click is swallowed so it never also opens the figures
+  sheet; dismissed by pointer-leave, an outside pointer-down, or scroll — no
+  full-screen scrim (which would swallow the opening click and block the grid).
+- **A qualification group's colour is the admin's PICK** (owner, 3 Sep 26 — first
+  "do we even need a colour?", then, having seen it, "allow me to pick the colour i
+  want"). `groupColors` (store, persisted `groupcolors`, admin-gated, `q:` ids and
+  `#rrggbb` only, dropped with the group, cleared by reset) holds the pick;
+  `ui/groupColor.ts groupColorOf` returns it, falling back to a deterministic
+  palette colour (`qualSwatch`) so an unpicked group is never a black square. The
+  ⚙ list opens a 12-dot palette (`PALETTE`) under the row the moment a qualification
+  group is added, and again from the row's swatch button; built-ins/SANS keep their
+  CSS-class CAT colours and have no button. Pill text colour is by luminance
+  (`inkFor`).
+- **The ⚙ groups list drags too** (owner, 3 Sep 26 — "allow me to drag and drop to
+  rearrange the groups"): its rows carry `data-grow` and a `⠿` grip wired to the
+  same `GROUP_DRAG` → `moveGroupTo` as the grid's heading grip, so the two never
+  disagree; SANS has no grip (auto-placed at the foot).
+- **Pilots above WSOs inside every block, ALWAYS** (owner, 3 Sep 26 — "arrange all
+  pilots at the top always and wso at the bottom of the same section. But within
+  pilot and wso we arrange them in accordance to the cat category of seniority").
+  `people.ts rankCompare` sorts seat (`seatRank`: pilot, wso, gnd) before `CAT_RANK`;
+  `displayRoster` partitions each block by seat around the hand-order, so a drag
+  can never carry a WSO above the pilots. Single-seat blocks are untouched. The
+  callsign wears the seat as a small puck (`.cs.seat-pilot/.seat-wso/.seat-gnd`,
+  Raptor's `--fcp/--rcp/--pers` fills + inks) so a pilot reads olive and a WSO green
+  in both apps.
+- **Leave War's qualification catalogue is Raptor's LoX column list, not the
+  holders** (owner, 3 Sep 26 — "when i add a new qualification, i cant see that new
+  qualification added in the settings page of leave war"). The Quals page's column
+  list lives in `src/engine/qualcols.ts` (`qualCols` / `setQualCols`; the page
+  mirrors its `cols` state there and fires `notify` only on a real change);
+  `raptorRoster.ts qualCatalogue` takes keys AND headings from it, appending any key
+  someone still holds after a column was removed (so ticks survive and a pinned
+  group is not pruned). Known gap, not fixed: like the ticks, the column list is not
+  saved across a reload.
 - **Show SANS = SANS as their own counted group at the foot** (owner, 3 Sep 26).
   The switch injects a SANS group (`SANS_GROUP`, auto-managed, never stored) LAST on
   the page and FIRST in who-wins, so shown SANS draw together at the foot rather than

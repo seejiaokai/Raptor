@@ -7,14 +7,18 @@
    window.
 
    The groups editor is folded in from the old GroupSheet, squeezed into tight rows
-   ("make use of the space and squeeze the data"). Reordering the page top-to-bottom
-   happens on the grid now, so the rows here carry no display-order grip — this sheet
-   ADDS/REMOVES groups, shows who is in each, and sets the OVERRIDE who-wins order.
-   Who-wins follows the page order by default (owner: "the priority order should also
-   change by default in accordance with the category order"); the "Who wins" list is
-   tucked behind a disclosure, opened only when someone wants a different order. */
+   ("make use of the space and squeeze the data"). This sheet ADDS/REMOVES groups,
+   REORDERS them (owner, 3 Sep 26 — "allow me to drag and drop to rearrange the
+   groups": the ⠿ grip, the same machine and the same write as the grid's heading
+   grip, so the two never disagree), PICKS a qualification group's colour ("allow me
+   to pick the colour i want" — a palette strip that opens under the row the moment
+   the group is added, and again from its swatch), shows who is in each, and sets the
+   OVERRIDE who-wins order. Who-wins follows the page order by default (owner: "the
+   priority order should also change by default in accordance with the category
+   order"); the "Who wins" list is tucked behind a disclosure, opened only when
+   someone wants a different order. */
 
-import { useState } from 'react'
+import { Fragment, useState } from 'react'
 import {
   groupLabel,
   matchesGroup,
@@ -37,11 +41,12 @@ import {
   offerableGroupList,
   removeEventRow,
   resetGroups,
+  setGroupColor,
   setGroupDefs,
   setShowSans,
 } from '../state/store'
 import { Sheet } from './Sheet'
-import { qualSwatch } from './groupColor'
+import { PALETTE, groupColorOf, isColourable } from './groupColor'
 import './bidpicker.css'
 
 export function SettingsSheet({
@@ -49,6 +54,7 @@ export function SettingsSheet({
   onAddCounter,
   armCounterReset,
   onResetCounters,
+  onGroupDragStart,
   onPriorityDragStart,
   draggingId,
   dragOver,
@@ -60,12 +66,15 @@ export function SettingsSheet({
    *  sheet closes); this sheet only shows the armed/unarmed label and forwards taps. */
   armCounterReset: boolean
   onResetCounters: () => void
-  /** Drag in the who-wins (priority) list — wired by Matrix to the one drag machine. */
+  /** Drag in the groups list (display order — the same write as the grid's heading
+   *  grip) and in the who-wins (priority) list — both wired by Matrix to the one
+   *  drag machine. */
+  onGroupDragStart?: (e: React.PointerEvent, id: string) => void
   onPriorityDragStart?: (e: React.PointerEvent, id: string) => void
   draggingId?: string | null
   dragOver?: string | null
 }) {
-  const { people, qualCatalog, eventRows, showSans } = getState()
+  const { people, qualCatalog, eventRows, showSans, groupColors } = getState()
   const chosen = groupsInOrder()
   const offered = offerableGroupList()
   const priority = groupPriorityIds()
@@ -76,6 +85,9 @@ export function SettingsSheet({
   const [lit, setLit] = useState<string | null>(null)
   // The who-wins override is tucked away — rarely touched (owner, 3 Sep 26).
   const [whoOpen, setWhoOpen] = useState(false)
+  // Which qualification group's colour palette is open under its row. Opened by
+  // the add (pick straight after adding) and by the row's swatch.
+  const [colorFor, setColorFor] = useState<string | null>(null)
 
   const label = (d: GroupDef) => groupLabel(d, qualCatalog)
   const shownIn = (d: GroupDef) => people.filter(p => groupIdOf(p) === d.id)
@@ -147,36 +159,94 @@ export function SettingsSheet({
         everyone else.
       </div>
 
-      {/* ---- the groups shown, top to bottom (reorder is on the grid) -------- */}
+      {/* ---- the groups shown, top to bottom ---------------------------------- */}
       <div className="gs-sec">
         Groups — shown, top to bottom
-        <span className="gs-hint">drag to reorder on the grid · tap a name to see who is in it</span>
+        <span className="gs-hint">drag ⠿ to reorder · tap a name for who is in it · tap a dot for its colour</span>
       </div>
       <div className="set-grows" data-testid="group-chosen">
         {chosen.map(d => {
           const isSans = d.kind === 'sans'
           const shown = shownIn(d).length
+          const colour = groupColorOf(d.id, groupColors)
+          const pickable = isColourable(d.id)
           return (
-            <div key={d.id} className={`set-grow${isSans ? ' sans' : ''}`} data-testid={`grow-${d.id}`}>
-              <span className={swClass(d.id)} style={qualSwatch(d.id) ? { background: qualSwatch(d.id) } : undefined} />
-              <button
-                className={`set-gname${lit === d.id ? ' on' : ''}`}
-                data-testid={`gpick-${d.id}`}
-                aria-pressed={lit === d.id}
-                onClick={() => setLit(v => (v === d.id ? null : d.id))}
-              >{label(d)}</button>
-              {isSans
-                ? <span className="set-badge">shown · counted</span>
-                : <span className="set-gkd">{d.kind === 'qual' ? 'qual' : 'cat'}</span>}
-              <span className="set-gct">{shown}</span>
-              <button
-                className="set-gdel"
-                data-testid={`gdrop-${d.id}`}
-                aria-label={isSans ? 'Hide SANS again' : `Remove the ${label(d)} group`}
-                title={isSans ? 'Hide SANS again' : `Remove the ${label(d)} group`}
-                onClick={() => drop(d)}
-              >✕</button>
-            </div>
+            <Fragment key={d.id}>
+              <div
+                className={`set-grow${isSans ? ' sans' : ''}${draggingId === d.id ? ' dragging' : ''}${dragOver === d.id && draggingId !== d.id ? ' dragover' : ''}`}
+                data-testid={`grow-${d.id}`}
+                data-grow={isSans ? undefined : d.id}
+              >
+                {/* The SANS row is auto-placed at the foot and never moves; every
+                    other row has the grip. Its pointerdown starts the drag; the
+                    machine hit-tests `[data-grow]` under the pointer, which while
+                    this sheet is up are these rows. */}
+                {isSans
+                  ? <span className="set-grip off" aria-hidden="true" />
+                  : (
+                    <span
+                      className="set-grip"
+                      data-testid={`gsdrag-${d.id}`}
+                      title={`Drag to move ${label(d)}`}
+                      style={{ touchAction: 'none' }}
+                      onPointerDown={e => onGroupDragStart?.(e, d.id)}
+                    >⠿</span>
+                  )}
+                {pickable
+                  ? (
+                    <button
+                      className={`set-sw set-swbtn${colorFor === d.id ? ' on' : ''}`}
+                      data-testid={`gcolor-${d.id}`}
+                      style={{ background: colour }}
+                      aria-label={`Pick a colour for ${label(d)}`}
+                      title={`Pick a colour for ${label(d)}`}
+                      aria-expanded={colorFor === d.id}
+                      onClick={() => setColorFor(v => (v === d.id ? null : d.id))}
+                    />
+                  )
+                  : <span className={swClass(d.id)} />}
+                <button
+                  className={`set-gname${lit === d.id ? ' on' : ''}`}
+                  data-testid={`gpick-${d.id}`}
+                  aria-pressed={lit === d.id}
+                  onClick={() => setLit(v => (v === d.id ? null : d.id))}
+                >{label(d)}</button>
+                {isSans
+                  ? <span className="set-badge">shown · counted</span>
+                  : <span className="set-gkd">{d.kind === 'qual' ? 'qual' : 'cat'}</span>}
+                <span className="set-gct">{shown}</span>
+                <button
+                  className="set-gdel"
+                  data-testid={`gdrop-${d.id}`}
+                  aria-label={isSans ? 'Hide SANS again' : `Remove the ${label(d)} group`}
+                  title={isSans ? 'Hide SANS again' : `Remove the ${label(d)} group`}
+                  onClick={() => { if (colorFor === d.id) setColorFor(null); drop(d) }}
+                >✕</button>
+              </div>
+              {/* The colour palette for THIS group (owner, 3 Sep 26 — "allow me to
+                  pick the colour i want"): twelve dots, the current one ringed. A
+                  tap stores the pick; the heading swatch and the quals popover pill
+                  both take it at once. */}
+              {pickable && colorFor === d.id && (
+                <div className="set-palette" data-testid={`gpalette-${d.id}`} role="radiogroup" aria-label={`Colour for ${label(d)}`}>
+                  <span className="set-plab">Colour for {label(d)}</span>
+                  <div className="set-dots">
+                    {PALETTE.map(c => (
+                      <button
+                        key={c}
+                        className={`set-dot${colour === c ? ' on' : ''}`}
+                        data-testid={`gdot-${d.id}-${c.slice(1).toLowerCase()}`}
+                        role="radio"
+                        aria-checked={colour === c}
+                        aria-label={c}
+                        style={{ background: c }}
+                        onClick={() => setGroupColor(d.id, c)}
+                      />
+                    ))}
+                  </div>
+                </div>
+              )}
+            </Fragment>
           )
         })}
       </div>
@@ -221,7 +291,14 @@ export function SettingsSheet({
       </div>
       <div className="gs-chips" data-testid="group-offer">
         {offered.filter(d => !chosenIds.has(d.id)).map(d => (
-          <button key={d.id} className="tchip" data-testid={`gadd-${d.id}`} onClick={() => addGroup(d)}>
+          <button
+            key={d.id}
+            className="tchip"
+            data-testid={`gadd-${d.id}`}
+            // Adding a qualification group opens its palette straight away, so the
+            // colour is picked as part of adding it (owner, 3 Sep 26).
+            onClick={() => { addGroup(d); setColorFor(isColourable(d.id) ? d.id : null) }}
+          >
             + {label(d)}
           </button>
         ))}

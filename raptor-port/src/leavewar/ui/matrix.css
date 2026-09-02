@@ -153,17 +153,9 @@
      A teal distinct from every CAT/qual colour above, so the SANS block reads as
      the separate, external pool it is. */
   --sans: #57C9A6;
-  /* Marker colours for admin-added QUALIFICATION groups (owner, 3 Sep 26 — "its
-     all black now", and later "do we even need a colour?" — no picker: a custom
-     group is handed one of these deterministically by `qualSwatch`). A distinct,
-     mid-tone spread so several custom groups read apart on the dark grid; the
-     group's NAME carries the meaning, the swatch is only a finished-looking dot. */
-  --gq-1: #E672A6;
-  --gq-2: #7BC043;
-  --gq-3: #E8823B;
-  --gq-4: #6C7BE0;
-  --gq-5: #B056C9;
-  --gq-6: #4FBFB0;
+  /* Admin-added QUALIFICATION groups carry a PICKED colour (owner, 3 Sep 26 —
+     "allow me to pick the colour i want"), painted inline from the palette in
+     ui/groupColor.ts, so there is no per-group rule here. */
 }
 
 .mx .who,
@@ -1259,6 +1251,22 @@
      cut off" gate reads scrollWidth vs clientWidth). */
   min-width: 0;
 }
+/* The callsign wears the SEAT colour Raptor's pucks wear (owner, 3 Sep 26 —
+   "have the pucks pilot and wso colour to it as well"): the same `--fcp` /
+   `--rcp` fills and inks the flight line paints, so a pilot reads olive and a
+   WSO green in both apps without a legend. Ground crew keep Raptor's white
+   personnel puck. Padded like a small puck, not just tinted text — the fills
+   are dark and would vanish as ink on the dark panel. */
+.mx .who .whoedit .cs.seat-pilot,
+.mx .who .whoedit .cs.seat-wso,
+.mx .who .whoedit .cs.seat-gnd {
+  padding: 1px 6px;
+  border-radius: 4px;
+  line-height: 1.3;
+}
+.mx .who .whoedit .cs.seat-pilot { background: var(--fcp, #6E6A2E); color: var(--fcp-ink, #FBFAF0); }
+.mx .who .whoedit .cs.seat-wso   { background: var(--rcp, #1F6E52); color: var(--rcp-ink, #EAFBF3); }
+.mx .who .whoedit .cs.seat-gnd   { background: var(--pers, #FFFFFF); color: var(--pers-ink, #18202C); box-shadow: inset 0 0 0 1px var(--pers-line, #7C8AA0); }
 .catchip {
   flex: none;
   font-size: 9px;
@@ -1305,6 +1313,8 @@
   margin-bottom: 6px;
 }
 .qualpop-list { display: flex; flex-wrap: wrap; gap: 4px; }
+/* Each pill wears its GROUP's colour, painted inline (owner, 3 Sep 26 — "the
+   qualifications will be in the colour code that i selected for the group"). */
 .qualpill {
   font-size: 10px;
   font-weight: 700;

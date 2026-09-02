@@ -1,6 +1,6 @@
-import { fireEvent, render, screen } from '@testing-library/react'
-import { beforeEach, describe, expect, it } from 'vitest'
-import { getState, initStore, setRole } from '../state/store'
+import { act, fireEvent, render, screen } from '@testing-library/react'
+import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { getState, groupsInOrder, initStore, setRole } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { Matrix } from './Matrix'
 
@@ -83,5 +83,73 @@ describe('on-grid rearrange', () => {
   it('a member has no rearrange corner', () => {
     render(<Matrix />)
     expect(screen.queryByTestId('roster-arrange')).toBeNull()
+  })
+})
+
+/* A qualification group's COLOUR is the admin's pick (owner, 3 Sep 26 — "allow
+   me to pick the colour i want"): adding the group opens a palette under its
+   row, a tap on a dot stores the pick, and the row's swatch reopens it. */
+describe('group colours in ⚙', () => {
+  const SCD = 'q:scDay'
+
+  it('adding a qualification group opens its palette; a dot picks the colour', () => {
+    setRole('admin')
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId('settings-open'))
+    expect(screen.queryByTestId(`gpalette-${SCD}`)).toBeNull()
+    fireEvent.click(screen.getByTestId(`gadd-${SCD}`))
+    expect(screen.getByTestId(`grow-${SCD}`)).toBeTruthy()
+    expect(screen.getByTestId(`gpalette-${SCD}`)).toBeTruthy()
+    fireEvent.click(screen.getByTestId(`gdot-${SCD}-7bc043`))
+    expect(getState().groupColors[SCD]).toBe('#7BC043')
+    // the swatch on the row wears it, and the grid heading's swatch too
+    expect((screen.getByTestId(`gcolor-${SCD}`) as HTMLElement).style.background.toLowerCase()).toBe('rgb(123, 192, 67)')
+    const heading = screen.getByTestId(`group-${SCD}`)
+    expect((heading.querySelector('.gsw') as HTMLElement).style.background.toLowerCase()).toBe('rgb(123, 192, 67)')
+    // the swatch toggles the palette shut and open again
+    fireEvent.click(screen.getByTestId(`gcolor-${SCD}`))
+    expect(screen.queryByTestId(`gpalette-${SCD}`)).toBeNull()
+    fireEvent.click(screen.getByTestId(`gcolor-${SCD}`))
+    expect(screen.getByTestId(`gpalette-${SCD}`)).toBeTruthy()
+  })
+
+  it('a built-in category has no colour button — it wears its CAT colour', () => {
+    setRole('admin')
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId('settings-open'))
+    expect(screen.queryByTestId('gcolor-SXO')).toBeNull()
+    expect(screen.getByTestId('grow-SXO').querySelector('.set-sw.g-sxo')).toBeTruthy()
+  })
+})
+
+/* The ⚙ list reorders by drag too (owner, 3 Sep 26 — "allow me to drag and drop
+   to rearrange the groups"), on the same machine and the same write as the
+   grid's heading grip, so the page follows. */
+describe('drag to reorder in ⚙', () => {
+  const origEFP = document.elementFromPoint
+  afterEach(async () => { document.elementFromPoint = origEFP; await new Promise(r => setTimeout(r, 0)) })
+  const pointer = (type: 'pointerdown' | 'pointermove' | 'pointerup', target: EventTarget, init: PointerEventInit) =>
+    act(() => { target.dispatchEvent(new PointerEvent(type, { bubbles: true, ...init })) })
+
+  it('dragging IP above SXO puts IP first on the page', () => {
+    setRole('admin')
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId('settings-open'))
+    expect(groupsInOrder().map(d => d.id).slice(0, 2)).toEqual(['SXO', 'IP'])
+    // jsdom has no layout: the hit-test answers with the row the pointer "is over"
+    document.elementFromPoint = () => screen.getByTestId('grow-SXO')
+    pointer('pointerdown', screen.getByTestId('gsdrag-IP'), { pointerType: 'mouse', button: 0, clientX: 10, clientY: 40, pointerId: 1 })
+    pointer('pointermove', window, { pointerType: 'mouse', clientX: 10, clientY: 10, pointerId: 1 })
+    pointer('pointerup', window, { pointerType: 'mouse', clientX: 10, clientY: 10, pointerId: 1, button: 0 })
+    expect(groupsInOrder().map(d => d.id).slice(0, 2)).toEqual(['IP', 'SXO'])
+  })
+
+  it('the SANS row has no grip — it is always at the foot', () => {
+    setRole('admin')
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId('settings-open'))
+    fireEvent.click(screen.getByTestId('sans-toggle'))
+    expect(screen.queryByTestId('gsdrag-SANS')).toBeNull()
+    expect(screen.getByTestId('gsdrag-IP')).toBeTruthy()
   })
 })

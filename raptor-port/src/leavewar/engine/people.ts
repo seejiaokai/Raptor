@@ -189,9 +189,21 @@ export function opsCatOf(p: Person): string {
   return (q === 'A' || q === 'B' || q === 'C' || q === 'D') ? q : ''
 }
 
-/** Most-qualified first within a group, then callsign — the one comparator
- *  Auto-sort uses inside every block. */
+/** Pilots before WSOs before ground crew (owner, 3 Sep 26 — "arrange all pilots
+ *  at the top always and wso at the bottom of the same section"). */
+const SEAT_RANK: Record<string, number> = { pilot: 0, wso: 1, gnd: 2 }
+export function seatRank(p: Person): number {
+  return SEAT_RANK[p.seat] ?? 3
+}
+
+/** Within a group: every pilot above every WSO, and inside each seat the
+ *  most-qualified first, then callsign — the one comparator Auto-sort uses
+ *  inside every block. The seat split only shows in a MIXED group (SXO, OCU, a
+ *  qualification group, SANS); IP / OPS P / IWSO / OPS W hold one seat each,
+ *  so their order is untouched. */
 export function rankCompare(a: Person, b: Person): number {
+  const sa = seatRank(a), sb = seatRank(b)
+  if (sa !== sb) return sa - sb
   const ra = CAT_RANK[(a.q || '').toUpperCase()] ?? 9
   const rb = CAT_RANK[(b.q || '').toUpperCase()] ?? 9
   if (ra !== rb) return ra - rb

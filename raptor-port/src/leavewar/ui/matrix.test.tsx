@@ -1,7 +1,7 @@
 import { act, fireEvent, render, screen, within } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
 import type { Person } from '../engine'
-import { advanceStage, getState, initStore, setBidState, setCell, setPersLabel, setRole } from '../state/store'
+import { addGroup, advanceStage, getState, initStore, setBidState, setCell, setGroupColor, setPersLabel, setRole } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { Matrix } from './Matrix'
 
@@ -75,20 +75,47 @@ describe('Matrix', () => {
 
   /* The quals popover (owner, 3 Sep 26 — "hover the mouse over the person to see
      the qualifications they hold"). The chip shows only the CAT; tapping it
-     reveals every qualification the person holds, and does NOT also open the
+     reveals the qualifications the person holds AMONG THOSE ON THE PAGE as
+     groups ("only the qualifications that were added to display will be
+     shown"), each in the group's picked colour, and does NOT also open the
      figures sheet the callsign owns. TATA is an instructor pilot: not an SXO,
-     but SC-DAY and SC-NIGHT qualified — exactly the "invisible" quals this
-     surfaces. */
-  it('a tap on the chip shows the held qualifications, not the figures sheet', () => {
+     but SC-DAY and SC-NIGHT qualified. */
+  it('a tap on the chip shows the displayed qualifications, in their group colours, not the figures sheet', () => {
+    setRole('admin')
+    addGroup({ id: 'q:scDay', kind: 'qual', k: 'scDay' })
+    setGroupColor('q:scDay', '#E672A6')
     render(<Matrix />)
     const chip = within(screen.getByTestId('row-tata')).getByTestId('cat-tata')
     expect(chip.className).toContain('has-quals')
     fireEvent.click(chip)
     const pop = screen.getByTestId('qualpop')
     expect(pop.textContent).toContain('SC DAY')
-    expect(pop.textContent).toContain('SC NIGHT')
+    // held, but not displayed as a group — so not listed
+    expect(pop.textContent).not.toContain('SC NIGHT')
+    // the pill wears the group's picked colour
+    const pill = within(pop).getByText('SC DAY')
+    expect(pill.style.background.toLowerCase()).toBe('rgb(230, 114, 166)')
     // the click was swallowed — the callsign's figures sheet stayed shut
     expect(screen.queryByTestId('person-figures')).toBeNull()
+  })
+
+  it('the chip is inert while none of the person\'s qualifications is on the page', () => {
+    // the default page has no qualification groups: TATA's SC quals stay hidden
+    render(<Matrix />)
+    const chip = within(screen.getByTestId('row-tata')).getByTestId('cat-tata')
+    expect(chip.className).not.toContain('has-quals')
+    fireEvent.click(chip)
+    expect(screen.queryByTestId('qualpop')).toBeNull()
+  })
+
+  it('an SXO on the page lists SXO in gold', () => {
+    render(<Matrix />)
+    // RAMP is the seed's SXO; the SXO group is on the default page
+    const chip = within(screen.getByTestId('row-ramp')).getByTestId('cat-ramp')
+    expect(chip.className).toContain('has-quals')
+    fireEvent.click(chip)
+    const pill = within(screen.getByTestId('qualpop')).getByText('SXO')
+    expect(pill.style.background.toLowerCase()).toBe('rgb(232, 178, 59)')
   })
 
   it('the chip of a person with no qualifications is inert', () => {

@@ -15,7 +15,7 @@ import {
   groupOf,
   assignGroup,
   groupLabel,
-  heldQuals,
+  matchesGroup,
   OTHER_ID,
   OTHER_LABEL,
   SANS_GROUP_ID,
@@ -50,7 +50,7 @@ import { EventSheet } from './EventSheet'
 import { monthInView } from './monthview'
 import { wireSelect, wireMove, daysBetween, paintLanding, clearLanding, paintEventLanding, eventMoveDateAt, earliestDate, type Cell, type Selection, type SelectCtx } from './select'
 import { SettingsSheet } from './SettingsSheet'
-import { qualSwatch } from './groupColor'
+import { groupColorOf, inkFor } from './groupColor'
 import { SelectSheet } from './SelectSheet'
 import { RemarksSheet } from './RemarksSheet'
 import { leaveInputAt } from '../sync'
@@ -144,7 +144,7 @@ export function Matrix() {
      memo keyed only on the selection went stale when a sync pass changed a
      selected cell under an armed move */
   const version = useVersion()
-  const { people, period, grid, states, requirements, role, viewer, eventDefs, openings, ledger, wars, figureOrder, manningHidden, eventRows, focusDate, focusSeq, qualCatalog } = getState()
+  const { people, period, grid, states, requirements, role, viewer, eventDefs, openings, ledger, wars, figureOrder, manningHidden, eventRows, focusDate, focusSeq, qualCatalog, groupColors } = getState()
   const dates = period.days.map(d => d.date)
   // Memoized on the store objects (the store replaces what it writes, so
   // identity IS change): rules-as-data made a day's evaluation walk every
@@ -703,15 +703,22 @@ export function Matrix() {
      slugged so a colon or space can never break the class. */
   const groupClass = (id: string) => `g-${id.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`
 
-  /* The qualification labels a person holds, in the catalogue's own order (SXO,
-     SC DAY, …) with any key the catalogue has not caught up with appended
-     upper-cased — the words the quals popover lists. */
-  const qualLabelsFor = (p: Person): string[] => {
-    const held = heldQuals(p)
-    const seen = new Set<string>()
-    const out: string[] = []
-    for (const q of qualCatalog) if (held.has(q.k)) { out.push(q.label); seen.add(q.k) }
-    for (const k of held) if (!seen.has(k)) out.push(k.toUpperCase())
+  /* What the quals popover lists for a person: ONLY the qualifications the
+     admin has put on the page as groups (owner, 3 Sep 26 — "only the
+     qualifications that were added to display will be shown when i hover"),
+     in page order, each in the colour picked for that group; plus SXO in its
+     gold whenever the SXO group is on the page (the owner counts SXO among
+     their quals). A qualification held but not displayed is not listed, so the
+     popover reads as the page's own legend. */
+  const shownQuals = (p: Person): { label: string; color: string }[] => {
+    const out: { label: string; color: string }[] = []
+    for (const d of groupsInOrder()) {
+      if (d.kind === 'qual' && matchesGroup(p, d)) {
+        out.push({ label: labelOfGroup(d.id), color: groupColorOf(d.id, groupColors) ?? '#39424D' })
+      } else if (d.kind === 'cat' && d.g === 'SXO' && p.sxo) {
+        out.push({ label: 'SXO', color: '#E8B23B' })
+      }
+    }
     return out
   }
   /* Open the quals popover anchored to the chip just interacted with. Placed in
@@ -726,16 +733,17 @@ export function Matrix() {
     setQualPop({ id, x, y })
   }
   /* The chip: the person's CAT, coloured by CAT (an SXO keeps gold wherever they
-     sit). When they hold any qualification it becomes a live control — hover
-     (desktop) or tap (phone) to list them; the click is swallowed so it never
-     also opens the figures sheet the callsign owns. */
+     sit). When they hold a displayed qualification it becomes a live control —
+     hover (desktop) or tap (phone) to list them; the click is swallowed so it
+     never also opens the figures sheet the callsign owns. */
   const catChip = (p: Person, testid?: string) => {
-    const has = heldQuals(p).size > 0
+    const quals = shownQuals(p)
+    const has = quals.length > 0
     return (
       <span
         className={`catchip ${catClass(p)}${has ? ' has-quals' : ''}`}
         data-testid={testid}
-        aria-label={has ? `${p.callsign} qualifications: ${qualLabelsFor(p).join(', ')}` : undefined}
+        aria-label={has ? `${p.callsign} qualifications: ${quals.map(q => q.label).join(', ')}` : undefined}
         onPointerEnter={has ? e => { if (e.pointerType === 'mouse') openQualsAt(p.id, e.currentTarget) } : undefined}
         onPointerLeave={has ? e => { if (e.pointerType === 'mouse') setQualPop(null) } : undefined}
         onClick={has ? e => { e.stopPropagation(); openQualsAt(p.id, e.currentTarget) } : undefined}
@@ -1976,7 +1984,7 @@ export function Matrix() {
                                 onClick={e => e.stopPropagation()}
                               >⠿</span>
                             )}
-                            <span className="gsw" aria-hidden="true" style={qualSwatch(g) ? { background: qualSwatch(g) } : undefined} />
+                            <span className="gsw" aria-hidden="true" style={groupColorOf(g, groupColors) ? { background: groupColorOf(g, groupColors) } : undefined} />
                             <span className="gcar" aria-hidden="true">{folded.has(g) ? '▸' : '▾'}</span>
                             <span className="gname">{labelOfGroup(g)}</span>
                             <span className="gcount">· {n}</span>
@@ -2046,7 +2054,7 @@ export function Matrix() {
                               title={`${p.callsign} — every figure`}
                               onClick={() => setWhoOpen(p.id)}
                             >
-                              <span className="cs">{p.callsign}</span>
+                              <span className={`cs seat-${p.seat}`}>{p.callsign}</span>
                               {catChip(p, `cat-${p.id}`)}
                             </button>
                             {/* The free-text role-label edit box is GONE (owner,
@@ -2317,7 +2325,7 @@ export function Matrix() {
                     <tr key={`b-grp-${item.g}`} data-band-key={`group-${item.g}`} className={`grp ${groupClass(item.g)}${folded.has(item.g) ? ' folded' : ''}`}>
                       <td className="grphd" colSpan={2} onClick={() => toggleFold(item.g)}>
                         <div className="grphd-in">
-                          <span className="gsw" style={qualSwatch(item.g) ? { background: qualSwatch(item.g) } : undefined} />
+                          <span className="gsw" style={groupColorOf(item.g, groupColors) ? { background: groupColorOf(item.g, groupColors) } : undefined} />
                           <span className="gcar">{folded.has(item.g) ? '▸' : '▾'}</span>
                           <span className="gname">{item.label}</span>
                           <span className="gcount">· {item.n}</span>
@@ -2342,7 +2350,7 @@ export function Matrix() {
                       <td className="who">
                         <div className="whorow">
                           <button className="whoedit" tabIndex={-1} onClick={() => setWhoOpen(p.id)}>
-                            <span className="cs">{p.callsign}</span>
+                            <span className={`cs seat-${p.seat}`}>{p.callsign}</span>
                             {catChip(p)}
                           </button>
                         </div>
@@ -2534,12 +2542,18 @@ export function Matrix() {
           a tap) and is dismissed by the outside-pointer listener above. */}
       {qualPop && people.some(p => p.id === qualPop.id) && (() => {
         const p = people.find(x => x.id === qualPop.id)!
-        const labels = qualLabelsFor(p)
+        const quals = shownQuals(p)
         return (
           <div className="qualpop" role="tooltip" data-testid="qualpop" style={{ left: qualPop.x, top: qualPop.y }}>
             <div className="qualpop-hd">{p.callsign} · quals</div>
-            {labels.length
-              ? <div className="qualpop-list">{labels.map(l => <span className="qualpill" key={l}>{l}</span>)}</div>
+            {quals.length
+              ? (
+                <div className="qualpop-list">
+                  {quals.map(q => (
+                    <span className="qualpill" key={q.label} style={{ background: q.color, color: inkFor(q.color) }}>{q.label}</span>
+                  ))}
+                </div>
+              )
               : <div className="qualpop-none">No qualifications recorded</div>}
           </div>
         )
@@ -2607,6 +2621,7 @@ export function Matrix() {
             setArmCounterReset(false)
             resetManningRules()
           }}
+          onGroupDragStart={(e, id) => startRowDrag(e, id, GROUP_DRAG)}
           onPriorityDragStart={(e, id) => startRowDrag(e, id, GROUP_PRIO_DRAG)}
           draggingId={draggingId}
           dragOver={dragOver}
