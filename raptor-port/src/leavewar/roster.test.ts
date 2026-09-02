@@ -10,6 +10,7 @@ import {
   catClass,
   qualGroupId,
   OTHER_ID,
+  SANS_GROUP_ID,
   catText,
   countsFor,
   groupOf,
@@ -32,6 +33,8 @@ import {
   moveGroupTo,
   moveGroupPriorityTo,
   addGroup,
+  clearGroupPriority,
+  isGroupPriorityCustom,
   groupsInOrder,
   groupPriorityIds,
   groupIdOf,
@@ -412,6 +415,36 @@ describe('the roster stays a live projection of Raptor\'s PEOPLE', () => {
     expect(getState().people.some(p => p.id === 'vinci')).toBe(false)
   })
 
+  /* SANS shown = their OWN group at the foot, and COUNTED (owner, 3 Sep 26 —
+     "SANS will appear and have a category of themselves at the bottom … then
+     they will be accounted in the counter"). A shown SANS body carries the `san`
+     flag through the projection; the SANS group is auto-injected LAST on the page
+     and FIRST in who-wins, so it claims a SANS pilot off their CAT and draws them
+     at the foot. Manning still counts them by seat+band — a group never moves a
+     count. */
+  it('shows SANS as their own group at the foot, claiming them off their CAT', () => {
+    setRole('admin')
+    setShowSans(true)
+    raptorNotify()
+    const vinci = getState().people.find(p => p.id === 'vinci')!
+    expect(vinci.san, 'the SANS flag rides the projection').toBe(true)
+    // the SANS group is the last group on the page, and exists only while shown
+    expect(groupsInOrder().at(-1)!.id).toBe(SANS_GROUP_ID)
+    expect(groupsInOrder().filter(d => d.id === SANS_GROUP_ID)).toHaveLength(1)
+    // it WINS its people despite sitting last, so a SANS pilot draws in SANS
+    expect(groupPriorityIds()[0]).toBe(SANS_GROUP_ID)
+    expect(groupIdOf(vinci)).toBe(SANS_GROUP_ID)
+    // on the grid the SANS block sits below every other defined group
+    const seq = displayRoster().map(p => groupIdOf(p))
+    const firstSans = seq.indexOf(SANS_GROUP_ID)
+    const lastOther = Math.max(-1, ...seq.map((g, i) => (g !== SANS_GROUP_ID && g !== OTHER_ID ? i : -1)))
+    expect(firstSans).toBeGreaterThan(lastOther)
+    // hidden again: the group leaves with the switch
+    setShowSans(false)
+    raptorNotify()
+    expect(groupsInOrder().some(d => d.id === SANS_GROUP_ID)).toBe(false)
+  })
+
   it('archiving a person on the Quals page removes them from Leave War', () => {
     ;(PEOPLE as any)[AIRID] = { cs: 'Testir', seat: 'FCP', q: 'IR' }
     raptorNotify()
@@ -552,6 +585,49 @@ describe('the roster group editor', () => {
     setRole('member')
     addGroup({ id: qualGroupId('scDay'), kind: 'qual', k: 'scDay' })
     expect(groupsInOrder().some(d => d.id === qualGroupId('scDay'))).toBe(false)
+  })
+
+  /* WHO-WINS FOLLOWS THE PAGE ORDER BY DEFAULT (owner, 3 Sep 26 — "the priority
+     order should also change by default in accordance with the category order").
+     The group higher on the page wins a tie, so dragging the page around reorders
+     who-wins with it — until the admin sets a custom order. */
+  it('who-wins follows the page order by default, so dragging a category re-homes a tie', () => {
+    const qid = qualGroupId('scDay')
+    const opsC = () => getState().people.find(p => p.id === 'ops_c')!
+    addGroup({ id: qid, kind: 'qual', k: 'scDay' })   // lands above the categories
+    expect(isGroupPriorityCustom()).toBe(false)
+    expect(groupIdOf(opsC())).toBe(qid)               // scDay above OPSP → it wins
+    // drag scDay BELOW OPSP on the page; who-wins follows, so OPSP takes ops_c back
+    moveGroupTo(qid, 'IWSO')
+    expect(isGroupPriorityCustom(), 'never touched who-wins by hand').toBe(false)
+    expect(groupIdOf(opsC())).toBe('OPSP')
+  })
+
+  /* THE OVERRIDE (owner: "only if the user is not satisfied then they change the
+     priority order in the settings"). A hand edit of who-wins detaches it from
+     the page; then the page can move without moving who-wins. */
+  it('a manual who-wins edit makes who-wins independent of the page', () => {
+    const qid = qualGroupId('scDay')
+    const opsC = () => getState().people.find(p => p.id === 'ops_c')!
+    addGroup({ id: qid, kind: 'qual', k: 'scDay' })
+    expect(groupIdOf(opsC())).toBe(qid)
+    moveGroupPriorityTo(qid, null)                    // rank scDay LAST by hand
+    expect(isGroupPriorityCustom()).toBe(true)
+    expect(groupIdOf(opsC())).toBe('OPSP')
+    moveGroupTo(qid, 'SXO')                           // scDay to the TOP of the page
+    expect(groupIdOf(opsC()), 'custom who-wins ignores the page move').toBe('OPSP')
+  })
+
+  it('Match the page order drops the custom who-wins and follows the page again', () => {
+    const qid = qualGroupId('scDay')
+    const opsC = () => getState().people.find(p => p.id === 'ops_c')!
+    addGroup({ id: qid, kind: 'qual', k: 'scDay' })
+    moveGroupPriorityTo(qid, null)
+    expect(isGroupPriorityCustom()).toBe(true)
+    expect(groupIdOf(opsC())).toBe('OPSP')
+    clearGroupPriority()
+    expect(isGroupPriorityCustom()).toBe(false)
+    expect(groupIdOf(opsC())).toBe(qid)              // scDay above the cats wins again
   })
 
   it('shows everyone exactly once, whatever the configuration', () => {

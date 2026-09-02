@@ -10,6 +10,8 @@ import {
   pruneGroups,
   qualGroupId,
   readGroupDefs,
+  SANS_GROUP,
+  SANS_GROUP_ID,
   type GroupDef,
 } from './groups'
 import { groupOf, type Person } from './people'
@@ -125,5 +127,35 @@ describe('storage is untrusted, and a deleted qualification cannot strand a grou
     expect(healed.slice(0, 2)).toEqual(['PERS', 'SXO'])
     expect(healed).toHaveLength(defs.length)          // nothing lost
     expect(new Set(healed).size).toBe(defs.length)    // nothing duplicated
+  })
+})
+
+/* THE SANS GROUP (owner, 3 Sep 26 — SANS as their own category at the foot). A
+   special kind matching the projected `san` flag, labelled SANS, and never
+   dropped by a catalogue prune (it does not depend on a Quals column). The store
+   auto-injects it while Show SANS is on; the engine only has to recognise it. */
+describe('the SANS group', () => {
+  it('matches a SANS body and nobody else', () => {
+    expect(matchesGroup(person({ san: true } as any), SANS_GROUP)).toBe(true)
+    expect(matchesGroup(person({ san: false } as any), SANS_GROUP)).toBe(false)
+    expect(matchesGroup(person({} as any), SANS_GROUP)).toBe(false)
+  })
+
+  it('is labelled SANS, whatever the catalogue holds', () => {
+    expect(groupLabel(SANS_GROUP, CATALOG)).toBe('SANS')
+    expect(groupLabel(SANS_GROUP, [])).toBe('SANS')
+  })
+
+  it('survives a catalogue prune (it is not a qualification)', () => {
+    const kept = pruneGroups([{ id: 'SXO', kind: 'cat', g: 'SXO' }, SANS_GROUP], [])
+    expect(kept.map(d => d.id)).toEqual(['SXO', SANS_GROUP_ID])
+  })
+
+  it('wins a tie when ranked first, drawing a SANS pilot off their CAT', () => {
+    const sansPilot = person({ san: true, q: 'C', seat: 'pilot', band: 'ops' } as any)
+    const catC: GroupDef = { id: 'OPSP', kind: 'cat', g: 'OPSP' }
+    const defs = [catC, SANS_GROUP]
+    expect(assignGroup(sansPilot, defs, [SANS_GROUP_ID, catC.id])).toBe(SANS_GROUP_ID)
+    expect(assignGroup(sansPilot, defs, [catC.id, SANS_GROUP_ID])).toBe('OPSP')
   })
 })

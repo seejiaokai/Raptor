@@ -15,6 +15,8 @@ import {
   orderedGroupIds,
   pruneGroups,
   readGroupDefs,
+  SANS_GROUP,
+  SANS_GROUP_ID,
   type GroupDef,
   inSquadron,
   isBiddable,
@@ -189,10 +191,20 @@ interface State {
    *  so a group pinned to a deleted Quals column cannot strand an empty
    *  heading. */
   groupDefs: GroupDef[]
-  /** WHO CLAIMS someone matching several groups — a SEPARATE order from the
-   *  display one above (the owner's explicit choice): a person shows exactly
-   *  once, and this decides where. Empty means "use the display order". */
+  /** WHO CLAIMS someone matching several groups — a person shows exactly once,
+   *  and this decides where. By DEFAULT it FOLLOWS the display order (owner,
+   *  3 Sep 26 — "the priority order should also change by default in accordance
+   *  with the category order"): the group higher on the page wins a tie, so
+   *  dragging the page around reorders who-wins with it. Only meaningful once
+   *  `groupPriorityCustom` is set — until then this list is ignored and the
+   *  display order is used. */
   groupPriority: string[]
+  /** Whether the admin has set a CUSTOM who-wins order, breaking the "follows the
+   *  display order" default (owner, 3 Sep 26 — "only if the user is not satisfied
+   *  then they change the priority order in the settings"). Set the first time the
+   *  who-wins list is dragged; cleared by "Match the page order" and by
+   *  `resetGroups`. Persisted (`grouppriocustom`), admin-gated like the orders. */
+  groupPriorityCustom: boolean
 
   /** How many EVENT rows the matrix draws (owner, 18 Aug 26 — "add more event
    *  rows if needed"). Two by default; an admin can add up to `MAX_EVENT_ROWS`.
@@ -273,6 +285,7 @@ function blank(): State {
     manningHidden: [],
     groupDefs: [...DEFAULT_GROUPS],
     groupPriority: [],
+    groupPriorityCustom: false,
     eventRows: DEFAULT_EVENT_ROWS,
     showSans: false,
     // The squadron is the common case, so the app opens as one. An admin
@@ -767,6 +780,7 @@ export function initStore(b?: StorageBackend): void {
      re-prunes as soon as Raptor's real catalogue lands — see setQualCatalog). */
   const groupDefs = pruneGroups(readStored('groupdefs', readGroupDefs) ?? [...DEFAULT_GROUPS], state.qualCatalog)
   const groupPriority = readStored('grouppriority', readIdList) ?? []
+  const groupPriorityCustom = readStored('grouppriocustom', x => (typeof x === 'boolean' ? x : null)) ?? false
   // The squadron's own rule set, or — for a browser from before rules were
   // data — the seed with its old numbers-only overlay migrated in.
   const storedRules = readStored('manningdefs', readManningRules)
@@ -789,7 +803,7 @@ export function initStore(b?: StorageBackend): void {
      boot, so a stored copy could only ever disagree with the roster Raptor
      is actually flying. Boot leaves the seed — the vendored unit suite reads
      it pristine — and the projection that follows replaces it. */
-  state = withCurrent({ ...state, wars, currentId, openings, ledger, oilPolicy, eventDefs, figureOrder, rosterOrder, persLabels, manningOrder, manningHidden, groupDefs, groupPriority, requirements, eventRows, showSans })
+  state = withCurrent({ ...state, wars, currentId, openings, ledger, oilPolicy, eventDefs, figureOrder, rosterOrder, persLabels, manningOrder, manningHidden, groupDefs, groupPriority, groupPriorityCustom, requirements, eventRows, showSans })
 
   version = 0
   listeners.clear()
@@ -860,6 +874,7 @@ function persist(): void {
   backend.write('manninghidden', JSON.stringify(state.manningHidden))
   backend.write('groupdefs', JSON.stringify(state.groupDefs))
   backend.write('grouppriority', JSON.stringify(state.groupPriority))
+  backend.write('grouppriocustom', JSON.stringify(state.groupPriorityCustom))
   backend.write('manningdefs', JSON.stringify(state.requirements.default.rules))
   backend.write('eventrows', JSON.stringify(state.eventRows))
   backend.write('showsans', JSON.stringify(state.showSans))
@@ -927,7 +942,7 @@ function historySnap(): string {
     wars: s.wars, openings: s.openings, ledger: s.ledger, oilPolicy: s.oilPolicy, eventDefs: s.eventDefs,
     figureOrder: s.figureOrder, rosterOrder: s.rosterOrder, persLabels: s.persLabels,
     manningOrder: s.manningOrder, manningHidden: s.manningHidden,
-    groupDefs: s.groupDefs, groupPriority: s.groupPriority,
+    groupDefs: s.groupDefs, groupPriority: s.groupPriority, groupPriorityCustom: s.groupPriorityCustom,
     requirements: s.requirements, eventRows: s.eventRows, showSans: s.showSans,
   })
 }
@@ -983,7 +998,7 @@ function historyApply(i: number): void {
   const snap = JSON.parse(HIST.stack[i]) as Pick<State,
     'wars' | 'openings' | 'ledger' | 'oilPolicy' | 'eventDefs' | 'figureOrder' | 'rosterOrder'
     | 'persLabels' | 'manningOrder' | 'manningHidden' | 'groupDefs'
-    | 'groupPriority' | 'requirements' | 'eventRows' | 'showSans'>
+    | 'groupPriority' | 'groupPriorityCustom' | 'requirements' | 'eventRows' | 'showSans'>
   HIST.ix = i
   historyEpoch++   // signal the matrix to drop any in-flight gesture (see above)
   locked(() => {
@@ -1163,17 +1178,45 @@ export function displayRoster(): Person[] {
 }
 
 /** The configured group list, pruned to the live qual catalogue and in the
- *  admin's display order. One body, so every reader agrees. */
+ *  admin's display order. One body, so every reader agrees.
+ *
+ *  While `showSans` is on, the SANS group is APPENDED at the foot (owner, 3 Sep
+ *  26 — SANS as their own category at the bottom). It is auto-injected here, never
+ *  stored, so it can never be dragged, removed or persisted like the rest — it
+ *  appears and leaves with the Show SANS switch alone. */
 export function groupsInOrder(): GroupDef[] {
   const defs = pruneGroups(state.groupDefs.length ? state.groupDefs : DEFAULT_GROUPS, state.qualCatalog)
   const ids = orderedGroupIds(defs, state.groupDefs.map(d => d.id))
-  return ids.map(id => defs.find(d => d.id === id)!).filter(Boolean)
+  const ordered = ids.map(id => defs.find(d => d.id === id)!).filter(Boolean)
+  return state.showSans ? [...ordered, SANS_GROUP] : ordered
 }
 
-/** The tie-break order — the admin's priority list, healed against the groups
- *  that exist. Empty priority falls back to the display order. */
+/**
+ * The tie-break order — who claims a person matching several groups.
+ *
+ * By DEFAULT it FOLLOWS the display order (owner, 3 Sep 26 — "the priority order
+ * should also change by default in accordance with the category order"): the group
+ * higher on the page wins. Only once the admin sets a CUSTOM order
+ * (`groupPriorityCustom`) does the stored `groupPriority` take over, healed against
+ * the groups that exist.
+ *
+ * SANS is forced to the FRONT whenever shown, independent of custom/auto: it sits
+ * LAST on the page but must still CLAIM its own people, or a SANS body would be
+ * drawn under its CAT instead of the SANS group at the foot.
+ */
 export function groupPriorityIds(): string[] {
-  return orderedGroupIds(groupsInOrder(), state.groupPriority)
+  const groups = groupsInOrder()
+  const base = state.groupPriorityCustom
+    ? orderedGroupIds(groups, state.groupPriority)
+    : groups.map(d => d.id)
+  if (!state.showSans) return base
+  return [SANS_GROUP_ID, ...base.filter(id => id !== SANS_GROUP_ID)]
+}
+
+/** Whether the admin has set a custom who-wins order (the settings sheet shows a
+ *  "Match the page order" reset only then). */
+export function isGroupPriorityCustom(): boolean {
+  return state.groupPriorityCustom
 }
 
 /** Which group a person is drawn under, for callers that need the answer
@@ -1193,80 +1236,107 @@ export function offerableGroupList(): GroupDef[] {
  *  cannot be stored back. */
 export function setGroupDefs(defs: GroupDef[]): void {
   if (state.role !== 'admin') return
-  state = withCurrent({ ...state, groupDefs: pruneGroups(defs, state.qualCatalog) })
+  // SANS is auto-managed by the Show SANS switch — never let it into the stored
+  // list, whatever a caller passes.
+  const cleaned = defs.filter(d => d.id !== SANS_GROUP_ID)
+  state = withCurrent({ ...state, groupDefs: pruneGroups(cleaned, state.qualCatalog) })
   persist()
   notify()
 }
 
 /**
- * Add a group to the roster AND rank it FIRST in the who-wins order.
+ * Add a group to the roster, landing it just ABOVE the first category in the
+ * DISPLAY order.
  *
- * Appending it to the display list alone made the control dead (bug sweep, 28
- * Aug 26): `orderedGroupIds` puts an unranked id at the BOTTOM of the priority
- * list, and the seven built-ins are exhaustive — `groupOf` always returns one
- * of them — so every person was already claimed before the walk ever reached
- * the new group. Adding "SC Day" changed nothing on the grid at all, while the
- * editor beside it reported 44 people in it.
+ * Since who-wins now FOLLOWS the display order by default (owner, 3 Sep 26 —
+ * "higher on the page wins"), placing a new qualification group above the
+ * categories is what makes it actually CLAIM its people: a qual group below the
+ * exhaustive built-ins would never draw anyone (they are all claimed first). Add
+ * order is preserved — it lands above the cats but after any qual groups already
+ * there — so adding SC Day then SC Night keeps SC Day higher.
  *
- * So a new group is ranked ABOVE THE CATEGORIES — inserted just before the
- * first `cat` group in the priority order, not flatly at the front. Both halves
- * of that matter. Above the categories is the owner's own rule ("if theres a cat
- * c column, but there is also a SC D column. They should always show up in the
- * qualifications column instead of CAT"). Not at the front is what keeps ADD
- * ORDER intact: front-insertion would make each new group outrank the one added
- * before it, so adding SC Day then SC Night would silently demote SC Day.
- *
- * This sets the priority ONCE, at the moment of adding; the admin drags it
- * anywhere afterwards and nothing here touches it again. Removing a group and
- * adding it back is therefore not a no-op — it promotes it, which is the only
- * reading of "add" that does anything at all.
+ * In CUSTOM who-wins mode the same "above the cats" insert is mirrored into the
+ * stored priority, so a new group claims its people there too. The SANS group is
+ * not addable here — it is the Show SANS switch.
  */
 export function addGroup(d: GroupDef): void {
   if (state.role !== 'admin') return
-  const defs = pruneGroups([...groupsInOrder(), d], state.qualCatalog)
-  if (!defs.some(x => x.id === d.id)) return    // a qual key the catalogue lost
-  const byId = new Map(defs.map(x => [x.id, x]))
-  const rest = groupPriorityIds().filter(id => id !== d.id)
-  const at = rest.findIndex(id => byId.get(id)?.kind === 'cat')
-  const priority = at < 0 ? [...rest, d.id] : [...rest.slice(0, at), d.id, ...rest.slice(at)]
-  state = withCurrent({ ...state, groupDefs: defs, groupPriority: priority })
+  if (d.id === SANS_GROUP_ID) return
+  const current = groupsInOrder().filter(x => x.id !== SANS_GROUP_ID)
+  if (current.some(x => x.id === d.id)) return    // already shown
+  const catAt = current.findIndex(x => x.kind === 'cat')
+  const insertAt = catAt < 0 ? current.length : catAt
+  const merged = pruneGroups([...current.slice(0, insertAt), d, ...current.slice(insertAt)], state.qualCatalog)
+  if (!merged.some(x => x.id === d.id)) return    // a qual key the catalogue lost
+  let priority = state.groupPriority
+  if (state.groupPriorityCustom) {
+    const byId = new Map(merged.map(x => [x.id, x]))
+    const pr = groupPriorityIds().filter(id => id !== d.id && id !== SANS_GROUP_ID)
+    const pAt = pr.findIndex(id => byId.get(id)?.kind === 'cat')
+    priority = pAt < 0 ? [...pr, d.id] : [...pr.slice(0, pAt), d.id, ...pr.slice(pAt)]
+  }
+  state = withCurrent({ ...state, groupDefs: merged, groupPriority: priority })
   persist()
   notify()
 }
 
-/** Move one group before another in the DISPLAY order (the drag). Mirrors
- *  `moveRosterRow` / `moveManningRowTo`, guard included. ADMIN-gated. */
+/** Move one group before another in the DISPLAY order (the grid drag, in
+ *  rearrange mode). Mirrors `moveRosterRow` / `moveManningRowTo`, guard included.
+ *  ADMIN-gated. The auto-placed SANS group at the foot is never movable; dropping
+ *  a group "before SANS" means to the end of the real groups. Because who-wins
+ *  follows the page by default, this drag also reorders who-wins unless the admin
+ *  has set a custom order. */
 export function moveGroupTo(id: string, beforeId: string | null): void {
   if (state.role !== 'admin') return
   if (beforeId === id) return
-  const defs = groupsInOrder()
+  if (id === SANS_GROUP_ID) return
+  const defs = groupsInOrder().filter(d => d.id !== SANS_GROUP_ID)
   const from = defs.findIndex(d => d.id === id)
   if (from < 0) return
   const [moved] = defs.splice(from, 1)
-  const at = beforeId ? defs.findIndex(d => d.id === beforeId) : defs.length
+  const target = beforeId === SANS_GROUP_ID ? null : beforeId
+  const at = target ? defs.findIndex(d => d.id === target) : defs.length
   defs.splice(at < 0 ? defs.length : at, 0, moved!)
   setGroupDefs(defs)
 }
 
-/** Move one group in the PRIORITY order — the separate who-wins list. */
+/** Move one group in the PRIORITY order — the separate who-wins list in ⚙. Doing
+ *  so switches who-wins to CUSTOM (owner, 3 Sep 26 — the override), so it stops
+ *  following the page order. Seeds from the effective order so the first drag
+ *  starts from what the admin currently sees; SANS is never part of it (it is
+ *  auto-forced first). ADMIN-gated. */
 export function moveGroupPriorityTo(id: string, beforeId: string | null): void {
   if (state.role !== 'admin') return
   if (beforeId === id) return
-  const ids = groupPriorityIds()
+  if (id === SANS_GROUP_ID) return
+  const ids = groupPriorityIds().filter(x => x !== SANS_GROUP_ID)
   const from = ids.indexOf(id)
   if (from < 0) return
   ids.splice(from, 1)
-  const at = beforeId ? ids.indexOf(beforeId) : ids.length
+  const target = beforeId === SANS_GROUP_ID ? null : beforeId
+  const at = target ? ids.indexOf(target) : ids.length
   ids.splice(at < 0 ? ids.length : at, 0, id)
-  state = withCurrent({ ...state, groupPriority: ids })
+  state = withCurrent({ ...state, groupPriority: ids, groupPriorityCustom: true })
   persist()
   notify()
 }
 
-/** Put the roster grouping back to the seven built-ins. ADMIN-gated. */
+/** Drop a custom who-wins order and go back to following the page order (owner,
+ *  3 Sep 26 — the "Match the page order" reset in ⚙). ADMIN-gated; a no-op when
+ *  already following the page. */
+export function clearGroupPriority(): void {
+  if (state.role !== 'admin') return
+  if (!state.groupPriorityCustom && state.groupPriority.length === 0) return
+  state = withCurrent({ ...state, groupPriority: [], groupPriorityCustom: false })
+  persist()
+  notify()
+}
+
+/** Put the roster grouping back to the seven built-ins, following the page order.
+ *  ADMIN-gated. */
 export function resetGroups(): void {
   if (state.role !== 'admin') return
-  state = withCurrent({ ...state, groupDefs: [...DEFAULT_GROUPS], groupPriority: [] })
+  state = withCurrent({ ...state, groupDefs: [...DEFAULT_GROUPS], groupPriority: [], groupPriorityCustom: false })
   persist()
   notify()
 }

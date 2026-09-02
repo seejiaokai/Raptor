@@ -32,16 +32,25 @@ import { heldQuals } from './availability'
 import { groupOf, GROUP_LABEL, GROUP_ORDER, type Group, type Person } from './people'
 import type { QualDef } from './requirements'
 
-/** A group is either one of the seven built-ins or a qualification. The id of a
- *  built-in IS its old `Group` string, so every stored order, test id and CSS
- *  class (`group-SXO`, `g-sxo`) is unchanged by this feature. */
+/** A group is either one of the seven built-ins, a qualification, or the special
+ *  SANS group. The id of a built-in IS its old `Group` string, so every stored
+ *  order, test id and CSS class (`group-SXO`, `g-sxo`) is unchanged by this
+ *  feature. */
 export type GroupDef =
   | { id: string; kind: 'cat'; g: Group }
   | { id: string; kind: 'qual'; k: string }
+  | { id: string; kind: 'sans' }
 
 /** The id a qualification group takes. Prefixed so it can never collide with a
  *  built-in's id, whatever a squadron calls a column. */
 export const qualGroupId = (k: string) => `q:${k}`
+
+/** The SANS group's id (owner, 3 Sep 26 — SANS shown as their own category at the
+ *  foot). It is NOT one of the offerable groups and is never stored: the store
+ *  injects it into the display/priority orders while `showSans` is on and drops it
+ *  when off, so it can never be dragged, removed or persisted like the others. */
+export const SANS_GROUP_ID = 'SANS'
+export const SANS_GROUP: GroupDef = { id: SANS_GROUP_ID, kind: 'sans' }
 
 /** Where people who match NOTHING land. Always last, never removable: an admin
  *  who builds a list of only qualification groups would otherwise strand
@@ -58,7 +67,10 @@ export const DEFAULT_GROUPS: GroupDef[] = GROUP_ORDER.map(g => ({ id: g, kind: '
 export function offerableGroups(catalog: readonly QualDef[]): GroupDef[] {
   return [
     ...DEFAULT_GROUPS,
-    ...catalog.map(q => ({ id: qualGroupId(q.k), kind: 'qual' as const, k: q.k })),
+    // SANS is surfaced as its own group by the Show SANS switch (`showSans` →
+    // SANS_GROUP), so the `san` qualification is NOT offered as an ordinary group
+    // too — two "SANS" chips would only confuse (owner, 3 Sep 26).
+    ...catalog.filter(q => q.k !== 'san').map(q => ({ id: qualGroupId(q.k), kind: 'qual' as const, k: q.k })),
   ]
 }
 
@@ -66,6 +78,7 @@ export function offerableGroups(catalog: readonly QualDef[]): GroupDef[] {
  *  heading (the Quals page's words), falling back to the key upper-cased for a
  *  column the catalogue has not caught up with. */
 export function groupLabel(d: GroupDef, catalog: readonly QualDef[]): string {
+  if (d.kind === 'sans') return 'SANS'
   if (d.kind === 'cat') return GROUP_LABEL[d.g]
   return catalog.find(q => q.k === d.k)?.label ?? d.k.toUpperCase()
 }
@@ -75,6 +88,7 @@ export function groupLabel(d: GroupDef, catalog: readonly QualDef[]): string {
  *  whether they hold the key (`heldQuals` — the same predicate the counter
  *  filters use, so "qualified" means one thing in this app). */
 export function matchesGroup(p: Person, d: GroupDef): boolean {
+  if (d.kind === 'sans') return !!p.san
   return d.kind === 'cat' ? groupOf(p) === d.g : heldQuals(p).has(d.k)
 }
 
@@ -121,7 +135,9 @@ export function orderedGroupIds(defs: readonly GroupDef[], order: readonly strin
  */
 export function pruneGroups(defs: readonly GroupDef[], catalog: readonly QualDef[]): GroupDef[] {
   const keys = new Set(catalog.map(q => q.k))
-  return defs.filter(d => d.kind === 'cat' || keys.has(d.k))
+  // A qualification group survives only while its column still exists; built-ins
+  // and the special SANS group do not depend on the catalogue.
+  return defs.filter(d => d.kind !== 'qual' || keys.has(d.k))
 }
 
 /** Read an unknown value from storage as a group list, keeping only entries

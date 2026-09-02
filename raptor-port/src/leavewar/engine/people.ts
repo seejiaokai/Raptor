@@ -48,6 +48,15 @@ export interface Person {
    *  filters (owner, 19 Aug 26). Like `q`, Raptor's to hold; absent on the
    *  raw seed, whose three boolean flags `heldQuals` folds in instead. */
   xq?: string[]
+  /** SANS aircrew, carried through the projection so a shown SANS body can be
+   *  drawn in its OWN group at the foot of the roster (owner, 3 Sep 26 — "SANS
+   *  will appear and have a category of themselves at the bottom"). Off the
+   *  roster entirely unless `showSans` is on (projectPeople drops them first),
+   *  so this is only ever set on bodies that are already meant to be shown.
+   *  NEVER read by manning: once projected a SANS body counts by seat + band
+   *  like any aircrew (which is the owner's "accounted in the counter") — this
+   *  flag is display grouping only, the same rule as `q`. */
+  san?: boolean
   /** Ground crew. Included in the roster since 18 Aug 26 (owner) so they can
    *  hold leave and be seen; excluded from every aircrew manning count. */
   pers?: boolean

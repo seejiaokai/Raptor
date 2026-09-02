@@ -76,6 +76,10 @@ export function projectPeople(includeSans = false): Person[] {
       // to instruct is still held. Sorted so an unchanged set compares equal
       // in reprojectRoster's change guard whatever order the object held.
       xq: Object.keys(p.quals || {}).filter(k => p.quals[k]).sort(),
+      // A SANS body only reaches here when includeSans is on (dropped above
+      // otherwise). Carry the flag so the display can draw them in their own
+      // group at the foot (owner, 3 Sep 26); manning never reads it.
+      san: !!p.san,
     })
   }
   return out
