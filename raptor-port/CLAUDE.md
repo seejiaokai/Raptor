@@ -637,6 +637,22 @@ subscribers.
   SXO category / the SANS group) and a stored one is pruned. Auto-sort buckets by
   the live grouping (`liveAutoOrder`), so a re-homed person ranks among their new
   block.
+- **A chip shows only the CAT; a hover/tap reveals the full quals** (owner, 3 Sep
+  26 — "hover the mouse over the person to see the qualifications they hold" /
+  "having a colour on the chip doesnt make sense … just the original colour of the
+  pucks for their CAT"). The chip stays CAT-coloured (`catClass`, off `groupOf` —
+  an SXO keeps gold wherever they sit); it never encodes a qualification. When the
+  person holds any (`heldQuals`), the chip gains `.has-quals` and becomes a live
+  control — a desktop hover / phone tap opens the `qualpop` (Matrix state, fixed to
+  screen coords so the frozen column cannot clip it), listing every qual in
+  catalogue order. The click is swallowed so it never also opens the figures sheet;
+  dismissed by pointer-leave, an outside pointer-down, or scroll — no full-screen
+  scrim (which would swallow the opening click and block the grid).
+- **Custom (qualification) groups get an auto marker colour, no picker** (owner, 3
+  Sep 26 — "its all black now" → "do we even need a colour?" — no). Built-ins/SANS
+  are painted by CSS class; a `q:`-prefixed group is handed a `--gq-N` token
+  deterministically by `ui/groupColor.ts qualSwatch`, applied inline at the grid
+  heading, phone mirror and the ⚙ list, so a custom group is never a black square.
 - **Show SANS = SANS as their own counted group at the foot** (owner, 3 Sep 26).
   The switch injects a SANS group (`SANS_GROUP`, auto-managed, never stored) LAST on
   the page and FIRST in who-wins, so shown SANS draw together at the foot rather than

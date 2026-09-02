@@ -153,6 +153,17 @@
      A teal distinct from every CAT/qual colour above, so the SANS block reads as
      the separate, external pool it is. */
   --sans: #57C9A6;
+  /* Marker colours for admin-added QUALIFICATION groups (owner, 3 Sep 26 — "its
+     all black now", and later "do we even need a colour?" — no picker: a custom
+     group is handed one of these deterministically by `qualSwatch`). A distinct,
+     mid-tone spread so several custom groups read apart on the dark grid; the
+     group's NAME carries the meaning, the swatch is only a finished-looking dot. */
+  --gq-1: #E672A6;
+  --gq-2: #7BC043;
+  --gq-3: #E8823B;
+  --gq-4: #6C7BE0;
+  --gq-5: #B056C9;
+  --gq-6: #4FBFB0;
 }
 
 .mx .who,
@@ -1266,6 +1277,45 @@
 .catchip.q-sxo { background: var(--sxo);   color: #2a1e02; }
 .catchip.q-pers{ background: var(--pers);  color: #12161b; }
 .catchip.q-ops { background: var(--edge-2); color: var(--ink); }
+/* The chip is a live control: hover it (desktop) or tap it (phone) to see the
+   qualifications the person holds (owner, 3 Sep 26 — "hover the mouse over the
+   person to see the qualifications they hold"). A cursor + focus ring say so;
+   the popover itself is `.qualpop`, positioned in JS so the frozen column's
+   overflow can never clip it. */
+.catchip.has-quals { cursor: help; }
+.catchip:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+.qualpop {
+  position: fixed;
+  z-index: 61;
+  max-width: 240px;
+  padding: 8px 9px 9px;
+  background: var(--panel, #12161b);
+  border: 1px solid var(--edge);
+  border-radius: 9px;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, .5);
+  pointer-events: none;               /* purely informational; never eats taps */
+}
+.qualpop-hd {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: 6px;
+}
+.qualpop-list { display: flex; flex-wrap: wrap; gap: 4px; }
+.qualpill {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .02em;
+  padding: 2px 6px;
+  border-radius: 5px;
+  background: var(--edge-2);
+  color: var(--ink);
+  white-space: nowrap;
+}
+.qualpop-none { font-size: 11px; color: var(--ink-3); font-style: italic; }
 .pers-lbl { font-size: 10.5px; color: var(--ink-3); font-style: italic; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
 .pers-in {
   width: 74px;

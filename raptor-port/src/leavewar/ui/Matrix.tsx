@@ -15,6 +15,7 @@ import {
   groupOf,
   assignGroup,
   groupLabel,
+  heldQuals,
   OTHER_ID,
   OTHER_LABEL,
   SANS_GROUP_ID,
@@ -49,6 +50,7 @@ import { EventSheet } from './EventSheet'
 import { monthInView } from './monthview'
 import { wireSelect, wireMove, daysBetween, paintLanding, clearLanding, paintEventLanding, eventMoveDateAt, earliestDate, type Cell, type Selection, type SelectCtx } from './select'
 import { SettingsSheet } from './SettingsSheet'
+import { qualSwatch } from './groupColor'
 import { SelectSheet } from './SelectSheet'
 import { RemarksSheet } from './RemarksSheet'
 import { leaveInputAt } from '../sync'
@@ -215,6 +217,12 @@ export function Matrix() {
   // name and see these logics").
   const [whoOpen, setWhoOpen] = useState<string | null>(null)
   const [editingWho, setEditing] = useState<string | null>(null)
+  // The QUALIFICATIONS popover (owner, 3 Sep 26 — "hover the mouse over the
+  // person to see the qualifications they hold"). A person wears only their CAT
+  // chip; every other qualification (SC DAY, TF, NVG…) lives here, shown on a
+  // desktop hover or a phone tap of the chip. Positioned in screen coordinates
+  // so the frozen callsign column's overflow can never clip it. null = hidden.
+  const [qualPop, setQualPop] = useState<{ id: string; x: number; y: number } | null>(null)
   // The OIL TRACKER (owner, 2 Sep 26): open on everyone (the toolbar button)
   // or on one person (the Cinch sheet's OIL BAL row). null = closed.
   // The OIL tracker: open on a person (scrolled to their row) or at the top;
@@ -694,6 +702,68 @@ export function Matrix() {
      `g-ip`… classes the stylesheet already paints; a qualification id is
      slugged so a colon or space can never break the class. */
   const groupClass = (id: string) => `g-${id.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`
+
+  /* The qualification labels a person holds, in the catalogue's own order (SXO,
+     SC DAY, …) with any key the catalogue has not caught up with appended
+     upper-cased — the words the quals popover lists. */
+  const qualLabelsFor = (p: Person): string[] => {
+    const held = heldQuals(p)
+    const seen = new Set<string>()
+    const out: string[] = []
+    for (const q of qualCatalog) if (held.has(q.k)) { out.push(q.label); seen.add(q.k) }
+    for (const k of held) if (!seen.has(k)) out.push(k.toUpperCase())
+    return out
+  }
+  /* Open the quals popover anchored to the chip just interacted with. Placed in
+     fixed (screen) coordinates read from the chip's rect, clamped to stay on
+     screen and flipped above the chip when it would fall off the bottom. */
+  const openQualsAt = (id: string, el: HTMLElement) => {
+    const r = el.getBoundingClientRect()
+    const W = 240, EST_H = 108
+    const x = Math.max(6, Math.min(r.left, window.innerWidth - W - 6))
+    const below = r.bottom + 6
+    const y = below + EST_H > window.innerHeight - 6 ? Math.max(6, r.top - EST_H - 6) : below
+    setQualPop({ id, x, y })
+  }
+  /* The chip: the person's CAT, coloured by CAT (an SXO keeps gold wherever they
+     sit). When they hold any qualification it becomes a live control — hover
+     (desktop) or tap (phone) to list them; the click is swallowed so it never
+     also opens the figures sheet the callsign owns. */
+  const catChip = (p: Person, testid?: string) => {
+    const has = heldQuals(p).size > 0
+    return (
+      <span
+        className={`catchip ${catClass(p)}${has ? ' has-quals' : ''}`}
+        data-testid={testid}
+        aria-label={has ? `${p.callsign} qualifications: ${qualLabelsFor(p).join(', ')}` : undefined}
+        onPointerEnter={has ? e => { if (e.pointerType === 'mouse') openQualsAt(p.id, e.currentTarget) } : undefined}
+        onPointerLeave={has ? e => { if (e.pointerType === 'mouse') setQualPop(null) } : undefined}
+        onClick={has ? e => { e.stopPropagation(); openQualsAt(p.id, e.currentTarget) } : undefined}
+      >{catText(p) || 'GND'}</span>
+    )
+  }
+  /* While the popover is up: it is anchored in screen coordinates, so any scroll
+     or resize leaves it stranded — close it. And a pointer-down anywhere that is
+     not a chip or the popover itself dismisses it (the phone's tap-away, and the
+     desktop's click-elsewhere) — done with a listener rather than a full-screen
+     scrim, which would sit over the chip and swallow the very click that opens
+     it, and block the grid while open. */
+  useEffect(() => {
+    if (!qualPop) return
+    const close = () => setQualPop(null)
+    const onDown = (e: PointerEvent) => {
+      const t = e.target as HTMLElement | null
+      if (t && !t.closest('.qualpop') && !t.closest('.catchip')) setQualPop(null)
+    }
+    window.addEventListener('scroll', close, true)
+    window.addEventListener('resize', close)
+    document.addEventListener('pointerdown', onDown, true)
+    return () => {
+      window.removeEventListener('scroll', close, true)
+      window.removeEventListener('resize', close)
+      document.removeEventListener('pointerdown', onDown, true)
+    }
+  }, [qualPop])
 
   // The month strip's buttons are ABSOLUTELY positioned (they must not widen
   // the frozen columns — see matrix.css), so the sticky cell they sit in has to
@@ -1906,7 +1976,7 @@ export function Matrix() {
                                 onClick={e => e.stopPropagation()}
                               >⠿</span>
                             )}
-                            <span className="gsw" aria-hidden="true" />
+                            <span className="gsw" aria-hidden="true" style={qualSwatch(g) ? { background: qualSwatch(g) } : undefined} />
                             <span className="gcar" aria-hidden="true">{folded.has(g) ? '▸' : '▾'}</span>
                             <span className="gname">{labelOfGroup(g)}</span>
                             <span className="gcount">· {n}</span>
@@ -1977,7 +2047,7 @@ export function Matrix() {
                               onClick={() => setWhoOpen(p.id)}
                             >
                               <span className="cs">{p.callsign}</span>
-                              <span className={`catchip ${catClass(p)}`} data-testid={`cat-${p.id}`}>{catText(p) || 'GND'}</span>
+                              {catChip(p, `cat-${p.id}`)}
                             </button>
                             {/* The free-text role-label edit box is GONE (owner,
                                 28 Aug 26 — "i can edit personnel, dont need to
@@ -2247,7 +2317,7 @@ export function Matrix() {
                     <tr key={`b-grp-${item.g}`} data-band-key={`group-${item.g}`} className={`grp ${groupClass(item.g)}${folded.has(item.g) ? ' folded' : ''}`}>
                       <td className="grphd" colSpan={2} onClick={() => toggleFold(item.g)}>
                         <div className="grphd-in">
-                          <span className="gsw" />
+                          <span className="gsw" style={qualSwatch(item.g) ? { background: qualSwatch(item.g) } : undefined} />
                           <span className="gcar">{folded.has(item.g) ? '▸' : '▾'}</span>
                           <span className="gname">{item.label}</span>
                           <span className="gcount">· {item.n}</span>
@@ -2273,7 +2343,7 @@ export function Matrix() {
                         <div className="whorow">
                           <button className="whoedit" tabIndex={-1} onClick={() => setWhoOpen(p.id)}>
                             <span className="cs">{p.callsign}</span>
-                            <span className={`catchip ${catClass(p)}`}>{catText(p) || 'GND'}</span>
+                            {catChip(p)}
                           </button>
                         </div>
                       </td>
@@ -2458,6 +2528,22 @@ export function Matrix() {
           onClose={() => setWhoOpen(null)}
         />
       )}
+      {/* The qualifications popover (owner, 3 Sep 26). A person wears only their
+          CAT chip; this is where every other qualification shows, on a desktop
+          hover or a phone tap of the chip. It ignores pointer events (never eats
+          a tap) and is dismissed by the outside-pointer listener above. */}
+      {qualPop && people.some(p => p.id === qualPop.id) && (() => {
+        const p = people.find(x => x.id === qualPop.id)!
+        const labels = qualLabelsFor(p)
+        return (
+          <div className="qualpop" role="tooltip" data-testid="qualpop" style={{ left: qualPop.x, top: qualPop.y }}>
+            <div className="qualpop-hd">{p.callsign} · quals</div>
+            {labels.length
+              ? <div className="qualpop-list">{labels.map(l => <span className="qualpill" key={l}>{l}</span>)}</div>
+              : <div className="qualpop-none">No qualifications recorded</div>}
+          </div>
+        )
+      })()}
       {/* The OIL tracker — everyone's balances, or one person's ledger. The
           person guard matches the sheets above: a row can go while it is up. */}
       {oilTracker && (oilTracker.person === null || people.some(p => p.id === oilTracker.person)) && (

@@ -73,6 +73,35 @@ describe('Matrix', () => {
     expect(within(row).queryByTestId('perslabel-gnd_t')).toBeNull()
   })
 
+  /* The quals popover (owner, 3 Sep 26 — "hover the mouse over the person to see
+     the qualifications they hold"). The chip shows only the CAT; tapping it
+     reveals every qualification the person holds, and does NOT also open the
+     figures sheet the callsign owns. TATA is an instructor pilot: not an SXO,
+     but SC-DAY and SC-NIGHT qualified — exactly the "invisible" quals this
+     surfaces. */
+  it('a tap on the chip shows the held qualifications, not the figures sheet', () => {
+    render(<Matrix />)
+    const chip = within(screen.getByTestId('row-tata')).getByTestId('cat-tata')
+    expect(chip.className).toContain('has-quals')
+    fireEvent.click(chip)
+    const pop = screen.getByTestId('qualpop')
+    expect(pop.textContent).toContain('SC DAY')
+    expect(pop.textContent).toContain('SC NIGHT')
+    // the click was swallowed — the callsign's figures sheet stayed shut
+    expect(screen.queryByTestId('person-figures')).toBeNull()
+  })
+
+  it('the chip of a person with no qualifications is inert', () => {
+    // mint a ground-crew body off an existing one: no seat colour, no quals
+    const st = getState() as any
+    st.people.push({ ...st.people[0], id: 'gnd_q', callsign: 'RIGGER', pers: true, seat: 'gnd', sxo: false, scd: false, scn: false, xq: [] })
+    render(<Matrix />)
+    const chip = within(screen.getByTestId('row-gnd_q')).getByTestId('cat-gnd_q')
+    expect(chip.className).not.toContain('has-quals')
+    fireEvent.click(chip)
+    expect(screen.queryByTestId('qualpop')).toBeNull()
+  })
+
   it('renders a column for every day of the year', () => {
     render(<Matrix />)
     expect(screen.getAllByTestId(/^head-/)).toHaveLength(365)

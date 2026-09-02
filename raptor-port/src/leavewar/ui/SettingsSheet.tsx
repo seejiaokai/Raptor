@@ -41,6 +41,7 @@ import {
   setShowSans,
 } from '../state/store'
 import { Sheet } from './Sheet'
+import { qualSwatch } from './groupColor'
 import './bidpicker.css'
 
 export function SettingsSheet({
@@ -157,7 +158,7 @@ export function SettingsSheet({
           const shown = shownIn(d).length
           return (
             <div key={d.id} className={`set-grow${isSans ? ' sans' : ''}`} data-testid={`grow-${d.id}`}>
-              <span className={swClass(d.id)} />
+              <span className={swClass(d.id)} style={qualSwatch(d.id) ? { background: qualSwatch(d.id) } : undefined} />
               <button
                 className={`set-gname${lit === d.id ? ' on' : ''}`}
                 data-testid={`gpick-${d.id}`}
