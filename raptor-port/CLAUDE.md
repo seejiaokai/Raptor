@@ -417,10 +417,21 @@ environment** (7 Aug 26 — a bare `chromium.launch()` fails with
 chromium.launch({
   executablePath: '/opt/pw-browsers/chromium',
   chromiumSandbox: false,                              // sandbox + proxy = instant exit
-  proxy: { server: process.env.HTTPS_PROXY },          // NOT inherited from the env var
+  proxy: { server: process.env.HTTPS_PROXY,            // NOT inherited from the env var
+           bypass: 'localhost,127.0.0.1' },            // see note below — local drives only
   args: ['--ssl-version-max=tls1.2'],                  // TLS 1.3 handshakes get reset
 })
 ```
+
+**When you drive the LOCAL `vite preview` (localhost:4173), add the
+`bypass: 'localhost,127.0.0.1'` shown above** (2 Sep 26). Without it Chromium
+routes the plain-HTTP localhost request through the agent proxy, which only
+accepts HTTPS CONNECT tunnels, so the page loads the relay's "this proxy only
+accepts HTTPS CONNECT" body (a 405) instead of the app — `#luser` never appears
+and the drive times out looking like the app is broken. The proxy itself is
+still needed for the DEPLOYED github.io page (external host); the bypass just
+keeps localhost direct. Simplest alternative for a local-only drive: omit the
+`proxy` key entirely.
 
 Those three are the whole recipe — `ignoreHTTPSErrors` is NOT needed despite
 the proxy re-signing TLS (measured both ways, 7 Aug 26: the CA is already in
