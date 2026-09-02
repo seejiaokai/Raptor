@@ -170,8 +170,12 @@ Balances are computed and on screen. Two parts of §Counters are not built:
   cut, after the first two-view sheet):** `Sheet full` (`bidpicker.css
   .bidsheet.full`) pinned to the screen; the tracker's own `.oil-wrap` is the
   one 2-D scroller (name + BAL frozen left, header rows sticky top). One row
-  per person under the roster's group headings; BAL over a `+earned −taken`
-  line for the window (digits aligned, signs hanging); then one LANE per
+  per person under the roster's group headings; BAL over a `+in −out` line
+  for the window — everything credited (the carried-in opening figure +
+  grants + earned) as `+`, everything drawn (taken + corrections + a negative
+  opening) as `−`, so `+ − − === BAL` in the default full-window view (owner,
+  2 Sep 26 — "shouldn't we count the opening balance? … as added"); a side
+  with nothing shows no number (digits aligned, signs hanging); then one LANE per
   calendar year in the window (the year is a header row; every row's boxes
   for a year start at the same x). A BOX is one credit and reads as a small
   ledger — amount + date + **given by** top (`AUTO` for an earned day; the

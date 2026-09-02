@@ -650,9 +650,15 @@ export function OilTracker({ person, focus, onClose, onGranted }: {
     }
     const led = ledgers.get(p.id)!
     const boxes = boxesOf.get(p.id)!
+    // The +/− line counts the carried-in opening figure too, so it reconciles
+    // to the balance (owner, 2 Sep 26 — "shouldn't we count the opening
+    // balance? … as added"): + is everything in (opening + grants + earned),
+    // − is everything out (taken + corrections + a negative opening). The
+    // undated opening is always in-window (see `inWindow`), so in the default
+    // "from first entry" view + − − === BAL.
     let plus = 0, minus = 0
-    for (const c of led.credits) if (c.source !== 'opening' && inWindow(c.date, win.from, win.to)) plus += c.amount
-    for (const d of led.debits) if (d.source !== 'opening' && inWindow(d.date, win.from, win.to)) minus += d.amount
+    for (const c of led.credits) if (inWindow(c.date, win.from, win.to)) plus += c.amount
+    for (const d of led.debits) if (inWindow(d.date, win.from, win.to)) minus += d.amount
     const idle = boxes.length === 0
     const archivedN = archivedOf.get(p.id) ?? 0
     const on = sel.has(p.id)
@@ -675,8 +681,8 @@ export function OilTracker({ person, focus, onClose, onGranted }: {
           <span className={`bal${led.balance < 0 ? ' neg' : led.balance > 0 ? ' pos' : ''}`} data-testid={`oil-bal-${p.id}`}>{show(led.balance)}</span>
           {!idle && (plus > 0 || minus > 0) && (
             <span className="pmline" data-testid={`oil-pm-${p.id}`}>
-              <span className={`sg${plus ? ' g' : ''}`}>{plus ? '+' : ''}</span><span className={`nm${plus ? ' g' : ''}`}>{show(plus)}</span>
-              <span className={`sg${minus ? ' r' : ''}`}>{minus ? '−' : ''}</span><span className={`nm${minus ? ' r' : ''}`}>{show(minus)}</span>
+              {plus > 0 && <><span className="sg g">+</span><span className="nm g">{show(plus)}</span></>}
+              {minus > 0 && <><span className="sg r">−</span><span className="nm r">{show(minus)}</span></>}
             </span>
           )}
         </td>

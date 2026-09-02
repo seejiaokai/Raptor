@@ -2,7 +2,7 @@ import { act, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 
 import { balanceOf } from '../engine'
-import { getState, ingestDutyCredit, initStore, setCell, setOilPolicy, setRole } from '../state/store'
+import { getState, ingestDutyCredit, initStore, setBalance, setCell, setOilPolicy, setRole } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { Matrix } from './Matrix'
 
@@ -106,6 +106,17 @@ describe('the credit boxes', () => {
     expect(screen.queryByTestId('oil-entry-slammed-auto:0:2026-01-03')).toBeNull()
     fireEvent.click(screen.getByTestId('oil-arch-slammed'))
     expect(screen.getByTestId('oil-entry-slammed-auto:0:2026-01-03')).toBeTruthy()
+  })
+
+  it('the +/− line counts the carried-in opening, and a one-sided line shows no stray 0', () => {
+    setRole('admin')
+    // slammed has oil 0 in the seed: a clean carry-in, nothing granted or taken.
+    setBalance('slammed', 'oil', 1.5)
+    openTracker()
+    // The opening is counted as "in" (owner, 2 Sep 26 — "count it as added"),
+    // and with no debit side the line is just "+1.5" — no trailing 0.
+    expect(screen.getByTestId('oil-pm-slammed').textContent).toBe('+1.5')
+    expect(screen.getByTestId('oil-bal-slammed').textContent).toBe('1.5')
   })
 
   it('every take is its own row and "n left" is the last thing in the box; a part-drawn credit is never archived', () => {

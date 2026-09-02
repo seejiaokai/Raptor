@@ -580,7 +580,9 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
   no longer anyone's leave.** (a) `Sheet full` (`Sheet.tsx` + `bidpicker.css
   .bidsheet.full` — pinned to the screen, not a scroller, not movable);
   `OilTracker.tsx` REWRITTEN: name + BAL frozen left (BAL over a
-  `+earned −taken` window line, digits aligned), one LANE per calendar year
+  `+in −out` window line — everything credited incl. the carried-in opening
+  as `+`, everything drawn as `−`, so it sums to BAL in the full window;
+  a zero side shows nothing — 2 Sep 26; digits aligned), one LANE per calendar year
   (a sticky year header row; every row's boxes for a year start at the same
   x), one BOX per credit reading as a small ledger — amount · date ·
   given-by top (`AUTO` for an earned day), reason under, the FIFO takes in
