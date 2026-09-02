@@ -172,6 +172,7 @@ function wireGesture<A, P>(wrap: HTMLElement, spec: GestureSpec<A, P>): () => vo
   let lastX = 0, lastY = 0
   let touchGesture = false   // this drag started from a finger, not a mouse
   let vscroll: VScroll | null = null  // the vertical scroller, resolved in arm()
+  let held = 0               // edge bands the PRESS sat inside (bitmask, see bandsAt)
 
   const clearPaint = () => {
     for (const id of painted) spec.node(id)?.classList.remove(spec.cls)
@@ -212,6 +213,29 @@ function wireGesture<A, P>(wrap: HTMLElement, spec: GestureSpec<A, P>): () => vo
   // under a held finger, elementFromPoint at the same point returns the new
   // row, so the selection extends onto it.
   const ramp = (into: number) => TOUCH_STEP_MAX * Math.min(1, into / TOUCH_EDGE)
+  // The four edge bands as a bitmask, and which of them a point sits inside —
+  // the mouse's fixed band or the finger's wider one, against the wrap
+  // sideways and the resolved vertical scroller (the viewport for the page,
+  // else the scroller's own rect) up and down.
+  const BL = 1, BR = 2, BT = 4, BB = 8
+  const bandsAt = (x: number, y: number): number => {
+    const r = wrap.getBoundingClientRect()
+    const vs = vscroll ?? (vscroll = (spec.vscroll ?? findVScroll)(wrap))
+    const vTop = vs.isDoc ? 0 : vs.el.getBoundingClientRect().top
+    const vBot = vs.isDoc ? (window.innerHeight || vs.el.clientHeight) : vs.el.getBoundingClientRect().bottom
+    const w = touchGesture ? TOUCH_EDGE : EDGE
+    return (x < r.left + w ? BL : 0) | (x > r.right - w ? BR : 0) | (y < vTop + w ? BT : 0) | (y > vBot - w ? BB : 0)
+  }
+  // A band the press STARTED inside must be LEFT before it scrolls. Without
+  // this a row at the bottom of the screen could not be drag-selected
+  // sideways: the pointer was already in the bottom band when the drag armed,
+  // so the page ran downward 18px a frame under a finger that never moved
+  // vertically, the rows slid up beneath it and the selection ballooned onto a
+  // dozen people — or, when a category heading was what slid under the release
+  // point, the last day column was dropped (the e2e "drag-selecting a row"
+  // flake, 2 Sep 26). `held` is the set of bands the press sat in; a band
+  // clears the moment the pointer is seen outside it and stays cleared.
+  const noteEdge = () => { if (held) held &= bandsAt(lastX, lastY) }
   const edgeScroll = () => {
     raf = 0
     if (!armed) return
@@ -230,6 +254,9 @@ function wireGesture<A, P>(wrap: HTMLElement, spec: GestureSpec<A, P>): () => vo
       if (lastX > r.right - EDGE) dx = EDGE_STEP; else if (lastX < r.left + EDGE) dx = -EDGE_STEP
       if (lastY > vBot - EDGE) dy = EDGE_STEP; else if (lastY < vTop + EDGE) dy = -EDGE_STEP
     }
+    noteEdge()
+    if ((dx > 0 && held & BR) || (dx < 0 && held & BL)) dx = 0
+    if ((dy > 0 && held & BB) || (dy < 0 && held & BT)) dy = 0
     if (dx) wrap.scrollLeft += dx
     if (dy) vs.el.scrollTop += dy
     if (dx || dy) repaint()
@@ -256,6 +283,9 @@ function wireGesture<A, P>(wrap: HTMLElement, spec: GestureSpec<A, P>): () => vo
     // iOS has no web vibrate, so the visual cue carries it there.
     wrap.classList.add('selecting')
     try { (navigator as { vibrate?: (ms: number) => void }).vibrate?.(12) } catch { /* unsupported */ }
+    // The bands the PRESS sat in (the press point, not the arming move — a
+    // mouse arms a few px on, a finger arms still). See noteEdge.
+    held = bandsAt(sx, sy)
     // Lock the scroll now, and ONLY now: the non-passive touchmove listener
     // exists for the life of an armed drag and nowhere else, so a normal
     // sideways scroll never runs JS per frame (that scroll is sacred). See the
@@ -292,6 +322,9 @@ function wireGesture<A, P>(wrap: HTMLElement, spec: GestureSpec<A, P>): () => vo
       return
     }
     e.preventDefault()
+    // Read on the move as well as per frame, so a band left and re-entered
+    // between two frames still counts as left.
+    noteEdge()
     repaint()
   }
 
@@ -336,7 +369,7 @@ function wireGesture<A, P>(wrap: HTMLElement, spec: GestureSpec<A, P>): () => vo
     wrap.removeEventListener('touchmove', onTouchMove)
     wrap.style.touchAction = ''
     wrap.classList.remove('selecting')
-    anchor = null; armed = false; pid = -1; vscroll = null   // re-resolve next drag
+    anchor = null; armed = false; pid = -1; vscroll = null; held = 0   // re-resolve next drag
     spec.reset?.()
   }
   const onCancel = (e: PointerEvent) => {

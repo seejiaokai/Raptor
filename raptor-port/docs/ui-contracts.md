@@ -4550,8 +4550,21 @@ BidPicker's look and vocabulary, not instead of it.
   click that follows a captured pointerup to `.mx-wrap` in Chromium, so the
   cell's own onClick — the single-cell input sheet — never fired on a real
   device. The window-level move/up listeners track a drag without the capture;
-  it is belt-and-braces for a fast touch drag only. Geometry is DOM-free and
-  unit-tested (`select.test.ts`); the gesture itself is e2e (`leavewar.spec.ts`).
+  it is belt-and-braces for a fast touch drag only. **An armed drag auto-scrolls
+  at the edges** (owner, 30 Aug 26 — "auto scroll to the edge to continue
+  selecting more grids" → "up down scroller too"): sideways it moves `.mx-wrap`,
+  up/down the nearest vertical scroller (the page, for the grid); a mouse steps
+  a constant 18px/frame inside a 36px band, a finger ramps 0→15px/frame across a
+  48px band so it throttles the speed by how far it pushes. **A band the press
+  STARTED in never scrolls until the pointer has left it** (2 Sep 26): a row at
+  the foot of the screen is already inside the bottom band when the drag arms,
+  and a sideways drag along it used to run the page downward every frame — the
+  rows slid up under a still pointer, the selection ballooned onto other
+  people, and when a heading was what slid under the release point the last
+  day was dropped (the e2e "drag-selecting a row" flake). Only the band(s) the
+  press sat in are held; the opposite edge scrolls as before. Geometry and the
+  edge rules are unit-tested (`select.test.ts`); the gesture itself is e2e
+  (`leavewar.spec.ts`, which also pins that the page stays put on that drag).
 - **The sheet** (`ui/SelectSheet.tsx`, `data-testid="select-sheet"`) is the
   BidPicker's sibling on the same `Sheet` chassis. Sections are contextual to
   role and stage: everyone Fills while the war is OPEN (portion + leave chips;

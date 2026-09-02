@@ -808,3 +808,18 @@ gate's. Keep verdict-bearing commands unpiped.
 **Suggested improvement:** Before designing any live persistence/reload check, read the app's boot wiring for which backend the store is mounted on; if it is memory-only, verify the fix at the unit level and say so in the report instead of a live reload.
 
 **Principle:** A live verification step is only as meaningful as the environment's ability to exhibit the behaviour — confirm the precondition (here: persistence exists) before treating a failed check as a failed fix.
+
+### Observation 52: Instrument the invariant, not the reproduction, when a flake will not reproduce
+
+**Status:** OPEN
+**Date:** 2026-09-02
+**Session context:** Fixing a Leave War drag-select e2e that failed 4/8 on the owner's machine but passed 20/20 here; the handoff listed two timing suspects.
+**Skill:** systematic-debugging
+**Type:** open-source
+**Phase/Area:** Reproduction / root-cause phase for timing-dependent (flaky) failures
+
+**Issue:** The flake did not reproduce locally (0/20), which would normally stall a "reproduce first" workflow. Instead of chasing reproduction, a replay script recorded the *invariants the assertion depends on* during the gesture — every scroll event on the container and the page, what `elementFromPoint` returned at the release point, and how many cells were painted. Even on passing runs those showed the mechanism plainly (the page scrolled 18px/frame under a purely horizontal drag; 36–39 cells painted for a 3-cell drag; a heading under the release point), which pinned the root cause in one run and ruled out the other suspect.
+
+**Suggested improvement:** In the reproduction phase, add a rule: when a timing-dependent failure will not reproduce, do not keep re-running it — instrument the passing path (log the state the assertion depends on at each step: what moved, what was under the pointer, what was painted) and read the mechanism off a passing run. A passing run that shows the wrong intermediate state is as good as a failure.
+
+**Principle:** A flake is a race between a mechanism and an assertion; the mechanism is present on every run, only the assertion outcome varies. Observe the mechanism directly rather than waiting for the outcome to vary.

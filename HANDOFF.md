@@ -120,7 +120,7 @@ parity holds. The gate table below was the green baseline read at this pass's cl
 
 | gate | reading |
 |---|---|
-| `npm test` | 3790 across 216 files (4 Sep 26 — the group-colour picker, full-width seat bars, LoX-catalogue and bug-hunt rounds added `groupcolors.test.ts`, `groupColor.test.ts`, `settingssheet.test.tsx`, `bootprune.test.ts` plus `roster`/`matrix`/`raptorRoster` cases; 2 Sep 26 — the tracker's THIRD CUT added +2 `oiltracker.test.tsx` + `raptorRoster.test.ts` demo-story cases, then the scrim press-guard +2; before that the OIL tracker GRID + Off-day batch: `ui/oiltracker.test.tsx` rewritten to 18, +7 `select.test.ts` row cases, +3 `oil.test.ts`, +2 `oilsync.test.ts`, +2 `store.test.ts`, +2 `oiltracker.test.ts`, +1 `eventdefs.test.ts`; the OFF pins flipped) — two vitest projects: raptor + leavewar |
+| `npm test` | 3791 across 216 files (the drag-select held-band fix added +1 `select.test.ts`; before it 3790 — 4 Sep 26 — the group-colour picker, full-width seat bars, LoX-catalogue and bug-hunt rounds added `groupcolors.test.ts`, `groupColor.test.ts`, `settingssheet.test.tsx`, `bootprune.test.ts` plus `roster`/`matrix`/`raptorRoster` cases; 2 Sep 26 — the tracker's THIRD CUT added +2 `oiltracker.test.tsx` + `raptorRoster.test.ts` demo-story cases, then the scrim press-guard +2; before that the OIL tracker GRID + Off-day batch: `ui/oiltracker.test.tsx` rewritten to 18, +7 `select.test.ts` row cases, +3 `oil.test.ts`, +2 `oilsync.test.ts`, +2 `store.test.ts`, +2 `oiltracker.test.ts`, +1 `eventdefs.test.ts`; the OFF pins flipped) — two vitest projects: raptor + leavewar |
 | `node reference/tfin.js` | 728/0 (the reference is read-only; the "Ground Programme" title trim rides the tolerant normaliser in `html.test.ts`) |
 | `npm run build` | clean |
 | `npm run test:e2e` | 349 passed / 23 touch-only skips / 0 failed (1 Sep 26: +1 keep-alive spec × the two Leave War projects) — three playwright projects: raptor geometry, lw-phone, lw-desktop. NOTE: a mid-session chain run showed 2 lw-phone reds against a build that predated the bug-pass fixes (the un-gated cross-lane notify repainting mid-gesture); both passed individually and the full suite passed whole against the fixed build — if they ever red again, suspect a stray repaint mid-tap first. |
@@ -533,21 +533,27 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
   keep every write through the store doorway (`HOOKS.storeBackend`, Leave War's
   `state/storage.ts`) so the backend swap stays bounded.
 
-- **OPEN 2 Sep 26 — the Leave War drag-select e2e is FLAKY locally, and was
-  before the OIL tracker batch.** `e2e/leavewar.spec.ts` "drag-selecting a
-  row fills the leave across the whole span" (lw-desktop) fails with the LAST
-  cell of the run (`cell-slipway-2026-01-08 .c`) unfilled: measured 1 of 3
-  re-runs red on dfc0dde and **4 of 8 red on c2e727a (the commit BEFORE the
-  batch, in a clean worktree)**, so it is the gesture/e2e geometry, not the
-  tracker. Not touched in that PR (out of scope). Suspects, in order: the
-  `dragSelect` helper's 6-step mouse move landing its final `pointermove`
-  before `elementFromPoint` sees the last cell, or the edge auto-scroll rAF
-  nudging the grid mid-drag. The rest of `npm run e2e:leave` was green
-  (113 passed / 8 touch-only skips / this 1).
-  Re-measured 2 Sep 26 after the select.ts gesture-core refactor: 4/6 fail
-  on the grid batch's build, same symptom (the span's last cell unfilled),
-  same order as before the refactor — so still the pre-existing flake, not a
-  regression; `wireRowSelect`'s own drag is pinned in jsdom and the live pass.
+- **RESOLVED 2 Sep 26 — the Leave War drag-select e2e flake was the edge
+  auto-scroll, and it was a real UX bug, not test geometry.** Instrumenting the
+  built bundle showed the cause: on the lw-desktop viewport slipway's row sits
+  at y≈871 of 900 — INSIDE the mouse drag's 36px bottom edge band — so the
+  moment the drag armed, `edgeScroll` ran the PAGE down 18px every frame under
+  a cursor that only ever moved sideways. The rows slid up beneath it, the
+  selection ballooned onto a dozen people (36–39 cells painted for a 3-cell
+  drag), and when a category heading (`subcat-OPSP-…`) was what lay under the
+  release point for the last two steps, the gesture held its last real focus —
+  column 07 — and dropped 08. How many frames elapse per Playwright step
+  decides which element ends up under the cursor, hence the flake (and the
+  higher red rate on a slower box). A real mouse user at the foot of the screen
+  would have hit the same. Fix in `select.ts wireGesture`: a band the press
+  STARTED in is held and scrolls only once the pointer has LEFT it (`held`
+  bitmask, `bandsAt`/`noteEdge`); the opposite edge is unaffected and every
+  existing edge test (all press outside the band they drive into) is untouched.
+  Pins: `select.test.ts` (+1, the held band on both axes), the e2e itself now
+  asserts `scrollY` stays 0 after the drag. Contract: `docs/ui-contracts.md`
+  §The gesture. The other suspect (the 6-step move's final `pointermove`
+  ordering) was ruled out — the release point read the right column whenever a
+  cell was under it.
 
 - **RESOLVED 2 Sep 26 (Leave War OIL TRACKER + admin-set LVE BAL + OFF USED
   removed) — owner ask, one batch.** (1) `OFF USED` figure gone (`counters.ts`

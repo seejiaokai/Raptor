@@ -320,6 +320,31 @@ describe('wireSelect edge auto-scroll (mouse and touch, both axes)', () => {
     expect(shallow).toBeGreaterThan(0)
     expect(shallow).toBeLessThan(deep)
   })
+
+  // A band the press STARTED in scrolls only once the pointer has LEFT it. A
+  // row at the foot of the screen is already inside the bottom band when the
+  // drag arms, and without this a purely sideways drag along it ran the page
+  // downward every frame — the rows slid up under a still pointer, the
+  // selection ballooned onto other people, and when a category heading was
+  // what slid under the release point the last day column was dropped (the
+  // e2e "drag-selecting a row" flake, 2 Sep 26). The opposite band is not
+  // held: only the one the press sat in.
+  it('a band the press started in does not scroll until the pointer has left it', () => {
+    let cb: FrameRequestCallback | null = null
+    rafSpy.mockImplementation((fn: FrameRequestCallback) => { cb = fn; return 1 as unknown as number })
+    const mouse = (type: string, x: number, y: number) =>
+      (type === 'pointerdown' ? cell : window).dispatchEvent(new PointerEvent(type, { bubbles: true, pointerId: 1, pointerType: 'mouse', clientX: x, clientY: y, button: 0 }))
+    mouse('pointerdown', 150, 380)                          // pressed INSIDE the bottom band (364..400)
+    mouse('pointermove', 160, 380)                          // > MOUSE_SLOP → arm; still in the band, still sideways
+    expect(cb).not.toBeNull()
+    st = 0; cb!(0); expect(st).toBe(0)                      // no page scroll on a sideways drag
+    mouse('pointermove', 200, 380); st = 0; cb!(0); expect(st).toBe(0)
+    mouse('pointermove', 200, 300)                          // leaves the band …
+    mouse('pointermove', 200, 390)                          // … and comes back: now it is a deliberate push
+    st = 0; cb!(0); expect(st).toBeGreaterThan(0)
+    // the RIGHT band was never held — a press at the bottom still scrolls sideways
+    mouse('pointermove', 299, 380); sl = 0; cb!(0); expect(sl).toBeGreaterThan(0)
+  })
 })
 
 // When the finger leaves every cell — a gap, or the empty area an edge
