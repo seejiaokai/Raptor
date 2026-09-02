@@ -110,10 +110,10 @@ barely more than one.
   (`send_later`) and let it fire, rather than reporting "still building".
 - **Ship ONCE PER SESSION, at the end — not once per idea** (owner, 10 Aug
   26, after a session that shipped three times). Build and verify everything
-  locally as you go, then make ONE PR carrying the lot. Still don't wait to be
-  asked: when the work is done and green, ship it without a prompt (unless a
-  gate is red, or the change was called an experiment, or the owner asks for
-  a piece sooner — he sometimes wants one thing on his phone now).
+  locally as you go, then make ONE PR carrying the lot. **Since 2 Sep 26 the
+  merge itself waits for his "merge live"** (§Vercel rule below): push each
+  change to the branch and hand him the preview link, but never merge to main
+  unprompted — the one PR stays open and accumulates until he says so.
   **Shipping is not how you test.** `npm run build && npx vite preview` is the
   same bundle that deploys, base path and all, so every check — including
   driving it in a browser and looking at it — happens before the PR. The
@@ -124,8 +124,21 @@ barely more than one.
   pure waiting, three times over in one session. Batching is worth more
   again on the build side: fifteen changes in one pass ran ~6 min each, where
   a single change shipped alone took an hour and a half.
-- **Always hand him the Vercel preview link; auto-merge is still the default,
-  hold only when critical** (owner, 24 Aug 26 — "always let me know once vercel
+- **SUPERSEDED 2 Sep 26 — NO AUTO-MERGE. Stack changes on the branch, hand
+  him the Vercel link after EACH one, and merge to main ONLY when he says
+  "merge live"** (owner: "dont automatically push to live next time. Intent to
+  work with multiple changes with vercel links then i will manually say merge
+  live then it will go to github with all the changes made"). So the loop is
+  now: change → gates green locally → commit + push to the session branch (one
+  open PR accumulates the lot) → reply with the Vercel preview link the moment
+  it is Ready (~1 min after the push — do NOT go quiet waiting on CI) → take the
+  next change. The "Done MEANS LIVE" chain (merge on green → Pages → live-verify
+  → one notification) runs ONLY on his explicit "merge live"; a green PR
+  sitting open is the intended resting state, not a thing to finish. The 24 Aug
+  rule below is kept for its mechanics (where the link is, SSO, no PR-watching);
+  its "auto-merge is the default" clause no longer applies.
+- **Always hand him the Vercel preview link; auto-merge WAS the default until
+  2 Sep 26 (see above)** (owner, 24 Aug 26 — "always let me know once vercel
   is ready to be tested so i can test it" → "u can auto merge unless u feel
   like it is very critical and needs me to test it before merging" → "always
   give me the preview link in vercel so that i can give u immediate feedback
@@ -437,7 +450,8 @@ trip felt like ~20 min per change and was unsustainable):
 - **GitHub Pages stays the OFFICIAL site** — the gated `deploy.yml`, published
   only on merge to `main`. Slower (gates + a Pages rollout of 2–10 min, the
   latter outside our control), so it is paid ONCE per session at the end, not
-  per change. The "done means live" chain still ends here.
+  per change — and since 2 Sep 26 only on the owner's explicit "merge live".
+  The "done means live" chain still ends here.
 
 So the loop is: iterate against the local `vite preview` (instant, what you
 drive), let the owner eyeball the Vercel preview when he wants to tap it

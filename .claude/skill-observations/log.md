@@ -702,3 +702,18 @@ anyway.
 **Principle:** A pipeline's exit status is its last command's; any gate
 command piped through a formatter reports the formatter's success, not the
 gate's. Keep verdict-bearing commands unpiped.
+
+### Observation 45: Owner reversed auto-merge — accumulate on the branch, merge only on "merge live"
+
+**Status:** OPEN
+**Date:** 2026-09-02
+**Session context:** A label-only rename (Off day → PH) took ~40 min wall clock because the session ran the full merge → Pages → live-verify chain; the owner asked "why is it taking so long" and then set a new rule: no automatic merge, stack changes with Vercel links, merge only on an explicit "merge live".
+**Skill:** Project house rules (raptor-port/CLAUDE.md §Vercel / §Ship once per session) — updated in the same commit
+**Type:** open-source
+**Phase/Area:** delivery loop / when to go quiet
+
+**Issue:** Two compounding misses. (1) The 24 Aug "auto-merge is default" rule made a trivial change pay the full CI + rollout cost before the owner heard anything. (2) The session went silent for the whole chain even though the fast feedback surface (the Vercel preview) was ready one minute after the push — the house rule already said to hand over the link the moment it is Ready, and the session waited for the slow chain to finish before replying at all.
+
+**Suggested improvement:** Treat the preview link as the reply-worthy event: push → reply with the link → keep going. Never block a user-visible reply on a multi-minute rollout when a faster verifiable surface exists. Recorded the new merge gate in CLAUDE.md.
+
+**Principle:** When a delivery pipeline has a fast preview stage and a slow publish stage, the user-facing reply belongs at the fast stage; the slow stage is background work, and whether it runs at all is the owner's call, not a default.
