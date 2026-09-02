@@ -149,7 +149,8 @@ Balances are computed and on screen. Two parts of §Counters are not built:
   edits or deletes a grant in place (`updateLedgerEntry`/`removeLedgerEntry`),
   and sets the POLICY (`setOilPolicy`, persisted `oilpolicy`): how long a
   credit lasts — N days / N months from its own date, or forever — and the
-  default history window (from the first entry, or N months back). The
+  default history window (from the first entry — the default since the
+  third cut — or N months back). The
   engine half is `engine/oiltracker.ts`, PURE and DERIVED: **a taken day
   draws the OLDEST credit first** (FIFO; a credit already expired on the
   taking day is skipped), whatever is left of a credit past its expiry is
@@ -191,6 +192,28 @@ Balances are computed and on screen. Two parts of §Counters are not built:
   tracker on that person with the day's box lit, and any credit, edit or
   delete snaps the counter column to OIL BAL. A `?` chip holds the legend.
   Nothing on the page is under 11px.
+  **THIRD CUT the same evening (owner, from the shipped grid):** every take
+  is its OWN ROW inside the box and `n left` is pinned bottom-right whatever
+  the row's height (the box's last line carries `margin-top:auto`; on a
+  narrow box it wraps under the takes rather than colliding); the CAT chip
+  sits UNDER the name on every row, 8px, idle rows 36px; the window opens
+  "from first entry" (`DEFAULT_OIL_POLICY.historyMonths: null` — "Last 6
+  months" stays a chip); and a DEAD credit — used up, or expired — is
+  ARCHIVED: it leaves the strip and is counted in the thin frozen ARCHIVE
+  column beside BAL (the word standing on end, bottom → top; a muted count
+  per row), one tap on which brings every archived box back into the lanes
+  in date order — ONE switch for the whole grid, session-only, opens closed.
+  A live credit with some draws never archives (it is still money); an
+  uncovered take and a correction never archive (they are what makes a
+  negative balance visible). "OIL lasts forever" is the shipped default
+  (`expiry: null`) and was verified, not changed. The demo carries a boot-only
+  OIL story (`state/demoworld.ts DEMO_OIL` through `store.ts installDemoOil`,
+  laid in BEFORE the re-key so DEMO_MAP dresses it) so the preview shows every
+  shape — an archived opening figure, a part-drawn credit with stacked takes,
+  a correction, an untouched grant with a giver, a 2027 lane, a row whose only
+  credit is in the archive; its earned days are HAND-TYPED FO/HO with a note,
+  because an owned FO/HO the schedule does not back is swept the moment the
+  wires run.
 - **An admin can SET the LVE BAL (2 Sep 26, owner ask — "manually input and
   change LVE BAL … every time a LL or OL is taken it deducts from it").** A
   `Set` beside the Cinch sheet's LVE BAL row; `store.ts:setBalance` moves

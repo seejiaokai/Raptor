@@ -763,3 +763,18 @@ gate's. Keep verdict-bearing commands unpiped.
 
 **Principle:** Hover is a move. A gesture that reads motion without proving a press will fire on a mouse that is only passing by, and the test suite that never sends a bare move will never see it.
 
+
+### Observation 49: A hidden-by-default filter is a test-suite-wide sweep, and a sticky offset is a measurement, not a constant
+
+**Status:** OPEN
+**Date:** 2026-09-02
+**Session context:** OIL tracker third cut — the ARCHIVE column hides used-up credits by default; a vertical word in the header.
+**Skill:** impeccable (craft-floor / live pass)
+**Type:** open-source
+**Phase/Area:** verification
+
+**Issue:** Two small things the unit suite could not see. (1) Making dead credits hidden by default silently invalidated every existing test that asserted a used-up box was PRESENT (four of them across two describe blocks) — each had to learn to open the archive first. (2) The header rows were sized 22 + 28 px and the group rows' sticky offset was written as the constant 50; a rotated word in a new header cell grew the header to 57 px and the sticky rows overlapped it by 7 px. Only the live drive (measuring thead height against the group row's top) caught it.
+
+**Suggested improvement:** In the live-pass checklist: whenever a change adds a default-hidden state, grep the tests for presence assertions on the now-hidden thing before running them; and whenever a sticky offset is a literal, measure the element it is supposed to match in the same pass (assert header height === offset).
+
+**Principle:** A default that hides something rewrites what every existing "it is there" test means; and a sticky offset copied from a sibling's height is a measurement that drifts the moment the sibling's content changes — pin both with a measurement, not a constant.

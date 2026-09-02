@@ -104,8 +104,9 @@
   .oil-grid thead th.f { z-index: 5; }
   .oil-grid thead th.yl { border-right: 2px solid var(--edge-2); }
 
-  /* The frozen columns. Fixed widths, because `.c2` anchors its `left` to
-     `.c1`'s width — the same rule the matrix's `.who/.bal` pair follows. */
+  /* The frozen columns: name, BAL, then the thin ARCHIVE column. Fixed
+     widths, because each `left` anchors to the widths before it — the same
+     rule the matrix's `.who/.bal` pair follows. */
   .oil-grid .f { position: sticky; background: var(--panel); z-index: 2; }
   .oil-grid .f.c1 { left: 0; width: 96px; min-width: 96px; max-width: 96px; overflow: hidden; }
   .oil-grid .f.c2 {
@@ -114,11 +115,54 @@
     min-width: 64px;
     max-width: 64px;
     text-align: center;
+  }
+  /* The ARCHIVE column (owner, 2 Sep 26): 18px, the word standing on end
+     reading bottom → top in the header, a muted count in a row that has
+     something folded away. The whole column is one switch. It is the last
+     frozen column, so it carries the thick rule and the soft shadow off its
+     right edge — a box half-hidden under the frozen block reads as overflow,
+     not as a cut-off fragment. */
+  .oil-grid .f.c3 {
+    left: 160px;
+    width: 18px;
+    min-width: 18px;
+    max-width: 18px;
+    padding: 0;
+    text-align: center;
+    vertical-align: middle;
+    cursor: pointer;
+    user-select: none;
     border-right: 2px solid var(--edge-2);
-    /* a soft shadow off its right edge, so a box half-hidden under the
-       frozen block reads as overflow, not as a cut-off fragment */
     box-shadow: 6px 0 10px -4px rgba(0, 0, 0, .55);
   }
+  .oil-grid thead th.oil-arch { padding: 0; background: #10141A; }
+  .oil-grid .oil-arch .vword {
+    display: inline-block;
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    /* sized to sit inside the two header rows' 50px — a taller word would
+       grow the thead and slide the group rows' sticky offset off it */
+    font-size: 8px;
+    letter-spacing: .1em;
+    max-height: 48px;
+    text-transform: uppercase;
+    font-weight: 800;
+    color: var(--ink-3);
+    line-height: 16px;
+  }
+  .oil-grid td.oil-arch .an {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--ink-3);
+    font-variant-numeric: tabular-nums;
+  }
+  .oil-grid .oil-arch:hover .vword,
+  .oil-grid .oil-arch:hover .an { color: var(--ink-2); }
+  .oil-grid .oil-arch.open { background: #183038; }
+  .oil-grid .oil-arch.open .vword,
+  .oil-grid .oil-arch.open .an { color: var(--accent); }
+  .oil-grid tr.oil-row.on td.oil-arch.open,
+  .oil-grid tr.oil-row.selrow td.oil-arch.open { background: #183038; }
 
   /* Group heading rows: the label is sticky-left INSIDE the spanning cell
      (a spanning cell cannot itself shift), so it stays readable scrolled. */
@@ -138,18 +182,15 @@
   .oil-grid tr.oil-grp td .gcount { font-weight: 600; letter-spacing: .06em; margin-left: 6px; }
 
   /* A person row. 50px min — a box is three lines; an IDLE person (nothing
-     in the window) folds to 28px with the chip beside the name. */
+     in the window) folds to 36px: still the name over its chip (owner,
+     2 Sep 26 — the chip goes UNDER the name on every row, and smaller; the
+     side-by-side idle layout truncated the callsign). */
   .oil-grid tr.oil-row td { height: 50px; vertical-align: middle; }
-  .oil-grid tr.oil-row.idle td { height: 28px; }
+  .oil-grid tr.oil-row.idle td { height: 36px; }
   .oil-grid td.oil-name { padding: 4px 8px; line-height: 1.2; cursor: default; }
   .oil-grid td.oil-name[role="button"] { cursor: pointer; }
   .oil-grid td.oil-name .who { display: block; font-weight: 800; font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .oil-grid td.oil-name .catchip { display: inline-block; margin-top: 3px; }
-  /* An idle row lays the name and chip side by side; a long callsign
-     ellipses rather than pushing the chip out of the cell. */
-  .oil-grid tr.oil-row.idle td.oil-name { display: flex; align-items: center; gap: 5px; }
-  .oil-grid tr.oil-row.idle td.oil-name .who { flex: 1 1 auto; min-width: 0; }
-  .oil-grid tr.oil-row.idle td.oil-name .catchip { flex: 0 0 auto; margin: 0; }
+  .oil-grid td.oil-name .catchip { display: inline-block; margin-top: 2px; font-size: 8px; padding: 1px 4px; line-height: 1.15; letter-spacing: 0; }
   .oil-grid tr.oil-row.here td.oil-name { box-shadow: inset 3px 0 0 var(--adv, #E5A83B); }
 
   /* Selected (picked, or under the drag): a wash across the row and an
@@ -194,7 +235,7 @@
   /* A year lane: a strip of boxes. The thick rule separates lanes. */
   .oil-grid td.lane { padding: 0; border-right: 2px solid var(--edge-2); vertical-align: top; }
   .oil-grid td.lane + td.fill { border-left: 0; }
-  .ents { display: flex; align-items: stretch; min-height: 100%; }
+  .ents { display: flex; align-items: stretch; height: 100%; min-height: 100%; }
 
   /* ---- a credit box ------------------------------------------------------ */
   .oil-e {
@@ -206,7 +247,7 @@
     border-right: 1px solid rgba(57, 66, 77, .5);
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: flex-start;
     gap: 1px;
     overflow: hidden;
@@ -221,8 +262,13 @@
   .oil-e .l2 { display: block; color: var(--ink-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; }
   .oil-e .l2.noting { display: flex; gap: 4px; align-items: center; white-space: normal; }
   .oil-e .l2.noting .oil-text { min-width: 0; flex: 1 1 60px; padding: 3px 6px; }
-  .oil-e .l3 { display: flex; align-items: baseline; gap: 6px; width: 100%; }
-  .oil-e .l3 .tk { color: #FFAAB0; white-space: normal; line-height: 1.25; min-width: 0; font-variant-numeric: tabular-nums; }
+  /* The last line sinks to the BOTTOM of the box (`margin-top:auto` — the
+     box is stretched to the row, so this is the row's bottom too), the takes
+     stack one per row on the left and `n left` sits bottom-right, always
+     (owner, 2 Sep 26). */
+  .oil-e .l3 { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 2px 6px; width: 100%; margin-top: auto; }
+  .oil-e .l3 .tk { display: flex; flex-direction: column; color: #FFAAB0; line-height: 1.25; min-width: 0; font-variant-numeric: tabular-nums; }
+  .oil-e .l3 .tk .tk1 { white-space: nowrap; }
   .oil-e .l3 .left { margin-left: auto; font-size: 13px; font-weight: 800; color: var(--ink); white-space: nowrap; font-variant-numeric: tabular-nums; }
   .oil-e .l3 .left.zero { color: #F2C879; }
   .oil-e .l3 .left.exp { font-size: 11px; }
@@ -325,6 +371,7 @@
   @media (max-width: 520px) {
     .oil-grid .f.c1 { width: 88px; min-width: 88px; max-width: 88px; }
     .oil-grid .f.c2 { left: 88px; width: 56px; min-width: 56px; max-width: 56px; }
+    .oil-grid .f.c3 { left: 144px; width: 16px; min-width: 16px; max-width: 16px; }
     .oil-e { width: 132px; min-width: 132px; max-width: 132px; }
     .oil-e .l1 { flex-wrap: wrap; row-gap: 0; }
     .oil-e.editing { width: 260px; min-width: 260px; max-width: 260px; }

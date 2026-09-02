@@ -1356,6 +1356,35 @@ export function remapPersonKeys(map: Record<string, string>): void {
   notify()
 }
 
+/**
+ * The demo OIL story (state/demoworld.ts), laid over the seed at boot — the
+ * second boot-only writer beside `remapPersonKeys` and under the same
+ * contract: no persist, no undo step, deterministic, and called BEFORE the
+ * re-key so its seed-id keys are re-keyed with everything else. Each cell
+ * lands in the war holding its date (a date no war holds is dropped — the
+ * seed's wars cover 2026 and 2027 whole); states and ledger entries merge in.
+ * The tests never see it — they build the store from the pristine seed.
+ */
+export function installDemoOil(extra: { grid: Grid; states: States; ledger: Ledger }): void {
+  const wars = state.wars.map(w => {
+    const grid: Grid = { ...w.grid }
+    const states: States = { ...w.states }
+    for (const [person, row] of Object.entries(extra.grid)) {
+      for (const [date, code] of Object.entries(row)) {
+        if (warHolding(state.wars, date) !== w) continue
+        grid[person] = { ...(grid[person] ?? {}), [date]: code }
+        const rec = extra.states[person]?.[date]
+        if (rec) states[person] = { ...(states[person] ?? {}), [date]: rec }
+      }
+    }
+    return { ...w, grid, states }
+  })
+  const have = new Set(state.ledger.map(e => e.id))
+  const ledger = [...state.ledger, ...extra.ledger.filter(e => !have.has(e.id))]
+  state = withCurrent({ ...state, wars, ledger })
+  notify()
+}
+
 /** Set which role the interface is being used as. Since the Raptor merge the
  *  one production caller is resetSession (../../state/store.ts), which
  *  derives it from the Raptor login on every login and logout — the

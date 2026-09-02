@@ -146,6 +146,26 @@ describe('installDemoWorld', () => {
     expect(people.find(p => p.id === DEMO_MAP.switcher)!.to).toBeNull()
   })
 
+  it('lays the demo OIL story over the seed, re-keyed with it, and only on a fresh boot', () => {
+    installDemoWorld(false)
+    const { wars, ledger } = getState()
+    // TATA's two March takes and two earned days ride his mapped person.
+    const row = wars[0]!.grid[DEMO_MAP.tata]!
+    expect(row['2026-03-02']).toBe('OIL')
+    expect(row['2026-02-07']).toBe('FO')
+    expect(wars[0]!.states[DEMO_MAP.tata]!['2026-02-07']).toMatchObject({ note: 'FLT' })
+    expect(wars[1]!.grid[DEMO_MAP.reset]!['2027-02-15']).toBe('OIL')
+    expect(ledger.find(e => e.id === 'dol-4')).toMatchObject({ personId: DEMO_MAP.reset, amount: 2, givenBy: 'OC Ops' })
+    expect(wars[0]!.grid.tata).toBeUndefined()
+  })
+
+  it('leaves stored wars without the demo OIL story', () => {
+    installDemoWorld(true)
+    const { wars, ledger } = getState()
+    expect(wars[0]!.grid.tata!['2026-03-02']).toBeUndefined()
+    expect(ledger.some(e => e.id.startsWith('dol-'))).toBe(false)
+  })
+
   it('backs the seed\'s Raptor-owned cells with live inputs, once', () => {
     installDemoWorld(false)
     installDemoWorld(false)

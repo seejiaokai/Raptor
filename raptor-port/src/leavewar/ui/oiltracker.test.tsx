@@ -76,9 +76,17 @@ describe('the credit boxes', () => {
     slammedStory()
     setRole('member')
     openTracker()
-    // The default window is the last six months, and January is outside it.
+    // The window opens on everything on record (owner, 2 Sep 26) — but a
+    // used-up credit sits in the ARCHIVE until that column is tapped: the
+    // row reads idle, its archive cell counts one.
+    expect(screen.getByTestId('oil-window').textContent).toMatch(/– today$/)
+    expect(screen.getByTestId('oil-range-first').className).toContain(' on')
     expect(screen.queryByTestId('oil-entry-slammed-auto:0:2026-01-03')).toBeNull()
-    fireEvent.click(screen.getByTestId('oil-range-first'))
+    expect(screen.getByTestId('oil-row-slammed').className).toContain('idle')
+    expect(screen.getByTestId('oil-arch-slammed').textContent).toBe('1')
+    expect(screen.getByTestId('oil-archive').getAttribute('aria-pressed')).toBe('false')
+    fireEvent.click(screen.getByTestId('oil-archive'))
+    expect(screen.getByTestId('oil-archive').getAttribute('aria-pressed')).toBe('true')
     const credit = screen.getByTestId('oil-entry-slammed-auto:0:2026-01-03')
     expect(credit.className).toContain('used')
     expect(credit.textContent).toContain('+1')
@@ -92,6 +100,45 @@ describe('the credit boxes', () => {
     expect(screen.queryByTestId('oil-entry-take:0:2026-01-12')).toBeNull()
     expect(screen.getByTestId('oil-bal-slammed').textContent).toBe('0')
     expect(screen.getByTestId('oil-pm-slammed').textContent).toBe('+1−1')
+    // A second tap folds the archive away again; a tap on the row's own
+    // archive cell is the same switch.
+    fireEvent.click(screen.getByTestId('oil-archive'))
+    expect(screen.queryByTestId('oil-entry-slammed-auto:0:2026-01-03')).toBeNull()
+    fireEvent.click(screen.getByTestId('oil-arch-slammed'))
+    expect(screen.getByTestId('oil-entry-slammed-auto:0:2026-01-03')).toBeTruthy()
+  })
+
+  it('every take is its own row and "n left" is the last thing in the box; a part-drawn credit is never archived', () => {
+    setRole('admin')
+    expect(ingestDutyCredit('slammed', '2026-01-03', 'FO', 'FLT')).toBe('written')
+    expect(ingestDutyCredit('slammed', '2026-01-10', 'FO', 'SIM')).toBe('written')
+    setCell('slammed', '2026-01-12', '*OIL')
+    setCell('slammed', '2026-01-13', 'OIL*')
+    setCell('slammed', '2026-01-20', '*OIL')
+    openTracker()
+    // 1.5 taken from the oldest credit (used up, archived) and the rest
+    // from the next (0.5 left — still on the strip, with its one take).
+    expect(screen.queryByTestId('oil-entry-slammed-auto:0:2026-01-03')).toBeNull()
+    const live = screen.getByTestId('oil-entry-slammed-auto:0:2026-01-10')
+    expect(live.className).not.toContain('used')
+    expect(live.querySelectorAll('.tk1')).toHaveLength(1)
+    fireEvent.click(screen.getByTestId('oil-archive'))
+    const used = screen.getByTestId('oil-entry-slammed-auto:0:2026-01-03')
+    const takes = [...used.querySelectorAll('.tk1')].map(x => x.textContent)
+    expect(takes).toEqual(['−0.5 12 Jan', '−0.5 13 Jan'])
+    const l3 = used.querySelector('.l3')!
+    expect(l3.lastElementChild!.getAttribute('data-testid')).toBe('oil-status-slammed-auto:0:2026-01-03')
+    expect(l3.lastElementChild!.textContent).toBe('0 left')
+  })
+
+  it('the CAT chip sits under the name on every row, idle ones included', () => {
+    openTracker()
+    for (const id of ['ramp', 'switcher']) {
+      const cell = screen.getByTestId(`oil-name-${id}`)
+      expect(cell.children[0]!.className).toBe('who')
+      expect(cell.children[1]!.className).toContain('catchip')
+    }
+    expect(screen.getByTestId('oil-row-switcher').className).toContain('idle')
   })
 
   it('a day taken with nothing to draw from is its own red box, and the balance reads negative', () => {
@@ -117,6 +164,7 @@ describe('the credit boxes', () => {
     fireEvent.click(screen.getByTestId('oilrange-day-2026-01-05'))
     fireEvent.click(screen.getByTestId('oilrange-day-2026-01-31'))
     expect(screen.getByTestId('oil-window').textContent).toBe('5 Jan 26 – 31 Jan 26')
+    fireEvent.click(screen.getByTestId('oil-archive'))   // the credit is used up
     expect(screen.getByTestId('oil-entry-slammed-auto:0:2026-01-03')).toBeTruthy()
     // 20 Jan – 31 Jan holds neither: the row is idle.
     fireEvent.click(screen.getByTestId('oilrange-day-2026-01-20'))
@@ -309,7 +357,10 @@ describe('the settings (admin): expiry and the default window', () => {
     expect(getState().oilPolicy.expiry).toEqual({ n: 30, unit: 'days' })
     fireEvent.click(screen.getByTestId('oil-settings-done'))
     expect(screen.getByTestId('oil-bal-slammed').textContent).toBe('0')
-    fireEvent.click(screen.getByTestId('oil-range-first'))
+    // Expired = dead, so it is in the archive like a used-up credit.
+    expect(screen.queryByTestId('oil-entry-slammed-auto:0:2026-01-03')).toBeNull()
+    expect(screen.getByTestId('oil-arch-slammed').textContent).toBe('1')
+    fireEvent.click(screen.getByTestId('oil-archive'))
     const credit = screen.getByTestId('oil-entry-slammed-auto:0:2026-01-03')
     expect(credit.className).toContain('expired')
     expect(screen.getByTestId('oil-status-slammed-auto:0:2026-01-03').textContent).toBe('expired 2 Feb')

@@ -52,11 +52,12 @@ export interface OilPolicy {
   /** How long a credit lasts from its own date; `null` = forever. */
   expiry: { n: number; unit: OilExpiryUnit } | null
   /** The history window the tracker opens on: this many months back from
-   *  today, or `null` for "from the first entry". */
+   *  today, or `null` for "from the first entry" — the default since 2 Sep
+   *  26 (owner: "by default show from the first entry"). */
   historyMonths: number | null
 }
 
-export const DEFAULT_OIL_POLICY: OilPolicy = Object.freeze({ expiry: null, historyMonths: 6 })
+export const DEFAULT_OIL_POLICY: OilPolicy = Object.freeze({ expiry: null, historyMonths: null })
 
 /** Sanity bounds for the policy numbers — ten years is already "forever". */
 export const MAX_EXPIRY_DAYS = 3660

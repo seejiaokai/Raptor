@@ -29,6 +29,16 @@
 // A day taken with nothing left to draw from gets its own red box, so a
 // negative balance is never invisible.
 //
+// Third cut (owner, 2 Sep 26, from the shipped grid): every take is its OWN
+// ROW inside the box and `n left` is pinned bottom-right whatever the row's
+// height; the CAT chip sits UNDER the name on every row; the window opens
+// "from first entry"; and a dead credit — used up, or expired — is ARCHIVED:
+// it leaves the strip and is counted in the thin ARCHIVE column beside BAL,
+// one tap on which brings every archived box back into the lanes (one switch
+// for the whole grid, session-only, opens closed). A live credit with some
+// draws, an uncovered take and a correction never archive — the first is
+// still money, the other two are what makes a negative balance visible.
+//
 // Selection (admin): a tap on a name toggles the row; a hold-then-drag (a
 // finger) or a plain drag (a mouse) down the NAMES selects the run —
 // select.ts's `wireRowSelect`, the grid's own gesture core, so one rhythm
@@ -100,7 +110,7 @@ const dmy = (date: string, laneYear: string) => (date.slice(0, 4) === laneYear ?
 type RangeMode = 'first' | 'months' | 'pick'
 
 /** One BOX on a person's strip: a credit, or a debit no credit covered. */
-type Box = { year: string; date: string; c?: OilCredit; d?: OilDebit }
+type Box = { year: string; date: string; c?: OilCredit; d?: OilDebit; archived?: true }
 
 const yearOf = (date: string, fallback: string) => (date ? date.slice(0, 4) : fallback)
 
@@ -251,6 +261,11 @@ export function OilTracker({ person, focus, onClose, onGranted }: {
 
   const [view, setView] = useState<'grid' | 'settings'>('grid')
   const [legend, setLegend] = useState(false)
+  // The ARCHIVE column's switch: closed hides every dead credit, open shows
+  // them all. One switch for the grid (owner: "all the archived data will
+  // expand").
+  const [archiveOpen, setArchiveOpen] = useState(false)
+  const toggleArchive = () => setArchiveOpen(o => !o)
 
   // The history window (owner: "select which date ranges to look at … can
   // also be shown from the beginning of the first input"). Opens on the
@@ -324,6 +339,11 @@ export function OilTracker({ person, focus, onClose, onGranted }: {
     const row = wrapRef.current?.querySelector<HTMLElement>(`[data-oilrow="${person}"]`)
     row?.scrollIntoView?.({ block: 'center' })
   }, [person])
+  // Opened on a day whose credit is already in the archive (a grid write
+  // that drew the last of it): open the archive, or the lit box is hidden.
+  const focusLed = person && focus ? ledgers.get(person) : undefined
+  const focusArchived = !!focusLed?.credits.some(c => c.date === focus && c.left === 0 && (c.used.length > 0 || c.expired > 0))
+  useEffect(() => { if (focusArchived) setArchiveOpen(true) }, [focusArchived])
 
   const toggle = (id: string) => setSel(prev => { const n = new Set(prev); if (n.has(id)) n.delete(id); else n.add(id); return n })
   const callsignOf = (id: string) => people.find(p => p.id === id)?.callsign ?? id
@@ -405,34 +425,40 @@ export function OilTracker({ person, focus, onClose, onGranted }: {
   }
 
   /* ---- THE GRID -------------------------------------------------------- */
-  // Every person's boxes in the window, and the set of years they span.
+  // Every person's boxes in the window, and the set of years they span. A
+  // dead credit is tagged `archived` and, with the archive closed, left out
+  // of the strip (but counted, so the row's archive cell can say how many).
   const boxesOf = new Map<string, Box[]>()
+  const archivedOf = new Map<string, number>()
   const years = new Set<string>()
   let anyBox = false
   for (const p of roster) {
     const led = ledgers.get(p.id)!
-    const boxes: Box[] = []
+    const all: Box[] = []
     for (const c of led.credits) {
       // A credit shows when its own day is in the window, or any day taken
       // from it is — a March credit drawn on in August belongs to August's
       // reader too.
       if (!(inWindow(c.date, win.from, win.to) || c.used.some(u => inWindow(u.date, win.from, win.to)))) continue
-      boxes.push({ year: yearOf(c.date, first?.slice(0, 4) ?? thisYear), date: c.date, c })
+      const dead = c.left === 0 && (c.used.length > 0 || c.expired > 0)
+      all.push({ year: yearOf(c.date, first?.slice(0, 4) ?? thisYear), date: c.date, c, ...(dead ? { archived: true as const } : {}) })
     }
     for (const d of led.debits) {
       // A take nothing covered, or an admin's correction (its own record,
       // editable) — the rest of a debit lives inside the credit it drew from.
       if (!(d.unbacked > 0 || d.source === 'correction')) continue
       if (!inWindow(d.date, win.from, win.to)) continue
-      boxes.push({ year: yearOf(d.date, thisYear), date: d.date, d })
+      all.push({ year: yearOf(d.date, thisYear), date: d.date, d })
     }
-    boxes.sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : 0))
+    all.sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : 0))
+    archivedOf.set(p.id, all.filter(b => b.archived).length)
+    const boxes = archiveOpen ? all : all.filter(b => !b.archived)
     for (const b of boxes) years.add(b.year)
     if (boxes.length) anyBox = true
     boxesOf.set(p.id, boxes)
   }
   const lanes = [...years].sort()
-  const span = 2 + Math.max(1, lanes.length) + 1   // name, bal, lanes (or one filler), filler
+  const span = 3 + Math.max(1, lanes.length) + 1   // name, bal, archive, lanes (or one filler), filler
 
   const selIds = orderIds.filter(id => sel.has(id))
 
@@ -518,7 +544,8 @@ export function OilTracker({ person, focus, onClose, onGranted }: {
             </div>
           )}
           <div className="l3">
-            <span className="tk">{c.used.map(u => `−${show(u.amount)} ${dmy(u.date, lane)}`).join(' · ')}</span>
+            {/* one row per take (owner, 2 Sep 26 — "subsequent inputs on a new row") */}
+            <span className="tk">{c.used.map((u, i) => <span key={i} className="tk1">−{show(u.amount)} {dmy(u.date, lane)}</span>)}</span>
             <span className={`left${c.expired ? ' zero exp' : c.left === 0 ? ' zero' : ''}`} data-testid={`oil-status-${tid(c.id, c.ledgerId)}`}>
               {c.expired ? `expired ${dmy(c.expires!, lane)}` : `${show(c.left)} left`}
             </span>
@@ -596,6 +623,7 @@ export function OilTracker({ person, focus, onClose, onGranted }: {
     for (const c of led.credits) if (c.source !== 'opening' && inWindow(c.date, win.from, win.to)) plus += c.amount
     for (const d of led.debits) if (d.source !== 'opening' && inWindow(d.date, win.from, win.to)) minus += d.amount
     const idle = boxes.length === 0
+    const archivedN = archivedOf.get(p.id) ?? 0
     const on = sel.has(p.id)
     rows.push(
       <tr key={p.id} className={`oil-row${on ? ' on' : ''}${idle ? ' idle' : ''}${p.id === person ? ' here' : ''}`} data-testid={`oil-row-${p.id}`} data-oilrow={p.id}>
@@ -620,6 +648,9 @@ export function OilTracker({ person, focus, onClose, onGranted }: {
               <span className={`sg${minus ? ' r' : ''}`}>{minus ? '−' : ''}</span><span className={`nm${minus ? ' r' : ''}`}>{show(minus)}</span>
             </span>
           )}
+        </td>
+        <td className={`oil-arch f c3${archiveOpen ? ' open' : ''}`} data-testid={`oil-arch-${p.id}`} onClick={toggleArchive} title={archivedN ? `${archivedN} used-up credit${archivedN === 1 ? '' : 's'} in the archive` : undefined}>
+          {archivedN > 0 && <span className="an">{archivedN}</span>}
         </td>
         {lanes.length === 0 ? <td className="lane" /> : lanes.map(y => (
           <td key={y} className="lane">
@@ -664,7 +695,7 @@ export function OilTracker({ person, focus, onClose, onGranted }: {
       {legend && (
         <div className="oil-legendbox note" data-testid="oil-legend-text">
           One box per credit: what was given top-left, who gave it top-right (<b>Auto</b> = earned by working a weekend or PH — FLT, SIM or Duty), the reason under it,
-          the days taken from it in red, and what is left bottom-right. The oldest credit is used first. Struck through = used up; dimmed = expired; a red box = a day taken with nothing left to draw from.
+          each day taken from it on its own red line, and what is left bottom-right. The oldest credit is used first. A used-up or expired credit folds into the <b>Archive</b> column beside BAL — tap it to show them all (struck through = used up; dimmed = expired). A red box = a day taken with nothing left to draw from.
           {admin ? ' Tap a name to pick it, hold and drag down the names to pick several, then credit them all at once below. Tap a credit you gave to edit it.' : ''}
         </div>
       )}
@@ -674,6 +705,19 @@ export function OilTracker({ person, focus, onClose, onGranted }: {
             <tr className="yrs">
               <th className="f c1" />
               <th className="f c2" />
+              <th
+                className={`oil-arch f c3${archiveOpen ? ' open' : ''}`}
+                rowSpan={2}
+                data-testid="oil-archive"
+                role="button"
+                aria-pressed={archiveOpen}
+                tabIndex={0}
+                title={archiveOpen ? 'Hide the used-up credits' : 'Show the used-up credits'}
+                onClick={toggleArchive}
+                onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleArchive() } }}
+              >
+                <span className="vword">Archive</span>
+              </th>
               {lanes.length === 0 ? <th className="yl" /> : lanes.map(y => <th key={y} className="yl" data-testid={`oil-year-${y}`}>{y}</th>)}
               <th className="fill" />
             </tr>

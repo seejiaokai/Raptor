@@ -2302,7 +2302,7 @@ describe('the OIL tracker: grants, corrections and the policy', () => {
     expect(setOilPolicy({ expiry: { n: 30, unit: 'days' } })).toBe(false)
     expect(setBalance('ramp', 'annual', 30)).toBe(false)
     expect(getState().ledger.some(e => e.reason === 'Det recovery')).toBe(false)
-    expect(getState().oilPolicy).toEqual({ expiry: null, historyMonths: 6 })
+    expect(getState().oilPolicy).toEqual({ expiry: null, historyMonths: null })
   })
 
   it('a grant may name who GAVE it; the field is optional and bounded', () => {
