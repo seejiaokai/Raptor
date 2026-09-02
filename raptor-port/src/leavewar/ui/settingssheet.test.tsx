@@ -133,6 +133,33 @@ describe('group colours in ⚙', () => {
     expect(screen.queryByTestId(`gpalette-${SCD}`)).toBeNull()
   })
 
+  /* Escape peels one layer: the palette first, the sheet only on the next press
+     (bug hunt, 4 Sep 26 — before, Escape with the palette open shut the whole
+     sheet). */
+  it('Escape closes the open palette and leaves the sheet up; a second Escape closes the sheet', () => {
+    setRole('admin')
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId('settings-open'))
+    fireEvent.click(screen.getByTestId(`gadd-${SCD}`))
+    expect(screen.getByTestId(`gpalette-${SCD}`)).toBeTruthy()
+    fireEvent.keyDown(document.body, { key: 'Escape' })
+    expect(screen.queryByTestId(`gpalette-${SCD}`)).toBeNull()
+    expect(screen.getByTestId('settings-sheet')).toBeTruthy()
+    fireEvent.keyDown(document.body, { key: 'Escape' })
+    expect(screen.queryByTestId('settings-sheet')).toBeNull()
+  })
+
+  it('a stored pick in lower-case still rings its dot', () => {
+    setRole('admin')
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId('settings-open'))
+    fireEvent.click(screen.getByTestId(`gadd-${SCD}`))
+    ;(getState() as any).groupColors[SCD] = '#7bc043'
+    fireEvent.click(screen.getByTestId(`gcolor-${SCD}`))   // close
+    fireEvent.click(screen.getByTestId(`gcolor-${SCD}`))   // reopen, re-read
+    expect(screen.getByTestId(`gdot-${SCD}-7bc043`).className).toContain('on')
+  })
+
   it('a built-in category has no colour button — it wears its CAT colour', () => {
     setRole('admin')
     render(<Matrix />)
@@ -162,6 +189,25 @@ describe('drag to reorder in ⚙', () => {
     pointer('pointermove', window, { pointerType: 'mouse', clientX: 10, clientY: 10, pointerId: 1 })
     pointer('pointerup', window, { pointerType: 'mouse', clientX: 10, clientY: 10, pointerId: 1, button: 0 })
     expect(groupsInOrder().map(d => d.id).slice(0, 2)).toEqual(['IP', 'SXO'])
+  })
+
+  /* The drop bar points at the seam the row will land in: top edge for the
+     upper half of the hovered row, bottom edge (`after`) for the lower half
+     (bug hunt, 4 Sep 26 — the list used to show only the top bar). */
+  it('the hovered row shows the after-bar when the pointer is in its lower half', () => {
+    setRole('admin')
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId('settings-open'))
+    const sxo = screen.getByTestId('grow-SXO')
+    document.elementFromPoint = () => sxo
+    sxo.getBoundingClientRect = () => ({ top: 0, height: 20, bottom: 20, left: 0, right: 100, width: 100, x: 0, y: 0, toJSON() {} }) as DOMRect
+    pointer('pointerdown', screen.getByTestId('gsdrag-IP'), { pointerType: 'mouse', button: 0, clientX: 10, clientY: 40, pointerId: 1 })
+    pointer('pointermove', window, { pointerType: 'mouse', clientX: 10, clientY: 15, pointerId: 1 })
+    expect(sxo.className).toContain('dragover after')
+    pointer('pointermove', window, { pointerType: 'mouse', clientX: 10, clientY: 5, pointerId: 1 })
+    expect(sxo.className).toContain('dragover')
+    expect(sxo.className).not.toContain('after')
+    pointer('pointerup', window, { pointerType: 'mouse', clientX: 10, clientY: 5, pointerId: 1, button: 0 })
   })
 
   it('the SANS row has no grip — it is always at the foot', () => {

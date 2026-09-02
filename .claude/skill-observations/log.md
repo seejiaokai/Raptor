@@ -793,3 +793,18 @@ gate's. Keep verdict-bearing commands unpiped.
 **Suggested improvement:** In the Operate/craft-floor guidance, add a reflex: for a touch-first or app-shell (non-document) UI, default `user-select:none` at the root and opt text selection back IN only for genuinely editable/copyable surfaces — do not add `user-select:none` per element. And before flipping the baseline, enumerate every editable surface (inputs, textareas, selects, AND contenteditable — grep for `contenteditable`/`getSelection`/`execCommand`), because a document-style editor hidden behind an app shell breaks invisibly if the opt-in misses it.
 
 **Principle:** A behavior that should hold for "everything except a named few" belongs at the root as a default plus explicit opt-ins, not as a growing list of per-element rules — the per-element approach never converges and each gap ships as a fresh annoyance. When inverting such a default, first enumerate the exceptions from the code (grep the actual mechanism), because the ones you can't see on screen are the ones that break silently.
+
+### Observation 51: A "survives a reload" live check must first confirm the app boots on a persistent backend
+
+**Status:** OPEN
+**Date:** 2026-09-04
+**Session context:** Leave War bug hunt #4 — verifying a store-level fix (saved qualification groups pruned at boot) in the live browser
+**Skill:** New skill candidate: live-verification pass (project)
+**Type:** open-source
+**Phase/Area:** Live verification design
+
+**Issue:** A unit-tested storage fix was "verified" live by adding a group, reloading, and looking for it — it was gone, which looked like the fix had failed. The live app deliberately boots that store on a MEMORY backend (nothing survives a reload by design), so the check could never pass and cost two extra live rounds and a debug trace before the boot file explained it.
+
+**Suggested improvement:** Before designing any live persistence/reload check, read the app's boot wiring for which backend the store is mounted on; if it is memory-only, verify the fix at the unit level and say so in the report instead of a live reload.
+
+**Principle:** A live verification step is only as meaningful as the environment's ability to exhibit the behaviour — confirm the precondition (here: persistence exists) before treating a failed check as a failed fix.

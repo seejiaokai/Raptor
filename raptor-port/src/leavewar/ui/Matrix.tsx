@@ -264,7 +264,13 @@ export function Matrix() {
      no-op), and the last position of the roster was unreachable — the store's
      move-to-end path (beforeId null) had no gesture that produced it. The
      lower half of a row now means "after this row", so both work. */
-  const dragOverRef = useRef<{ id: string, after: boolean } | null>(null)
+  /* `el` is the hovered row's own element, so the drop can read the ordered
+     list from ITS container (bug hunt, 4 Sep 26): the ⚙ groups list and the
+     grid's category headings share one `data-grow` vocabulary, so a
+     document-wide query while both were on screen (settings open in rearrange
+     mode) mixed the two lists and could land a "drop after the last group"
+     before the first. */
+  const dragOverRef = useRef<{ id: string, after: boolean, el: Element } | null>(null)
   // The teardown for a drag in flight, so an unmount (role change, war switch)
   // can end it — otherwise its window listeners leak and the row stays stuck
   // in the .dragging highlight.
@@ -298,7 +304,7 @@ export function Matrix() {
       }
       const cur = dragOverRef.current
       if (overId !== (cur?.id ?? null) || after !== (cur?.after ?? false)) {
-        dragOverRef.current = overId ? { id: overId, after } : null
+        dragOverRef.current = overId && row ? { id: overId, after, el: row } : null
         setDragOver(overId); setDragAfter(after)
       }
     }
@@ -328,7 +334,10 @@ export function Matrix() {
            store's before-itself guard would have to save us. */
         let beforeId: string | null = over.id
         if (over.after) {
-          const rows = [...document.querySelectorAll(cfg.sel)]
+          /* The follower comes from the hovered row's OWN list (its parent), not
+             the whole document — see dragOverRef. */
+          const scope: ParentNode = over.el.parentElement ?? document
+          const rows = [...scope.querySelectorAll(cfg.sel)]
             .map(el => cfg.idOf(el)).filter((x): x is string => x != null)
           const ix = rows.indexOf(over.id)
           beforeId = ix >= 0 ? (rows[ix + 1] ?? null) : over.id
@@ -712,7 +721,9 @@ export function Matrix() {
      popover reads as the page's own legend. */
   const shownQuals = (p: Person): { label: string; color: string }[] => {
     const out: { label: string; color: string }[] = []
-    for (const d of groupsInOrder()) {
+    // `groupDefs` is this render's one read of the page's groups (above) —
+    // asked per row, twice (grid + frozen overlay), so not re-derived here.
+    for (const d of groupDefs) {
       if (d.kind === 'qual' && matchesGroup(p, d)) {
         out.push({ label: labelOfGroup(d.id), color: groupColorOf(d.id, groupColors) ?? '#39424D' })
       } else if (d.kind === 'cat' && d.g === 'SXO' && p.sxo) {
@@ -746,7 +757,9 @@ export function Matrix() {
         aria-label={has ? `${p.callsign} qualifications: ${quals.map(q => q.label).join(', ')}` : undefined}
         onPointerEnter={has ? e => { if (e.pointerType === 'mouse') openQualsAt(p.id, e.currentTarget) } : undefined}
         onPointerLeave={has ? e => { if (e.pointerType === 'mouse') setQualPop(null) } : undefined}
-        onClick={has ? e => { e.stopPropagation(); openQualsAt(p.id, e.currentTarget) } : undefined}
+        // A second tap on the SAME chip closes it (the phone has no pointer to
+        // leave with); a tap on another chip moves it there.
+        onClick={has ? e => { e.stopPropagation(); if (qualPop?.id === p.id) setQualPop(null); else openQualsAt(p.id, e.currentTarget) } : undefined}
       >{catText(p) || 'GND'}</span>
     )
   }
@@ -763,13 +776,25 @@ export function Matrix() {
       const t = e.target as HTMLElement | null
       if (t && !t.closest('.qualpop') && !t.closest('.catchip')) setQualPop(null)
     }
+    /* Escape peels the popover first, before any sheet's own Escape (Sheet.tsx
+       listens on `document`; the window capture runs ahead of it). */
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return
+      // Kept-mounted guard (as Sheet.tsx): act only while Leave War is showing.
+      const pg = document.getElementById('page-leavewar')
+      if (pg && !pg.classList.contains('on')) return
+      e.stopPropagation()
+      setQualPop(null)
+    }
     window.addEventListener('scroll', close, true)
     window.addEventListener('resize', close)
     document.addEventListener('pointerdown', onDown, true)
+    window.addEventListener('keydown', onKey, true)
     return () => {
       window.removeEventListener('scroll', close, true)
       window.removeEventListener('resize', close)
       document.removeEventListener('pointerdown', onDown, true)
+      window.removeEventListener('keydown', onKey, true)
     }
   }, [qualPop])
 
@@ -1940,7 +1965,7 @@ export function Matrix() {
                   if (g !== prevG) {
                     const n = roster.filter(x => homeOf(x) === g).length
                     heads.push(
-                      <tr key={`grp-${g}`} className={`grp ${groupClass(g)}${folded.has(g) ? ' folded' : ''}${draggingId === g ? ' dragging' : ''}${dragOver === g && draggingId !== g ? ' dragover' : ''}`} data-testid={`group-${g}`} data-grow={arranging && g !== OTHER_ID && g !== SANS_GROUP_ID ? g : undefined}>
+                      <tr key={`grp-${g}`} className={`grp ${groupClass(g)}${folded.has(g) ? ' folded' : ''}${draggingId === g ? ' dragging' : ''}${dragOver === g && draggingId !== g ? (dragAfter ? ' dragover after' : ' dragover') : ''}`} data-testid={`group-${g}`} data-grow={arranging && g !== OTHER_ID && g !== SANS_GROUP_ID ? g : undefined}>
                         {/* The label sits in a sticky td spanning only the two
                             frozen columns — the SAME technique .who/.bal use —
                             so it stays pinned to the left as the year scrolls;
@@ -2625,6 +2650,7 @@ export function Matrix() {
           onPriorityDragStart={(e, id) => startRowDrag(e, id, GROUP_PRIO_DRAG)}
           draggingId={draggingId}
           dragOver={dragOver}
+          dragAfter={dragAfter}
         />
       )}
       {open && !canRemark && !openPostedOut && !raptorOwns(states, open.id, open.date)

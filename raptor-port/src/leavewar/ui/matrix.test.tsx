@@ -99,6 +99,23 @@ describe('Matrix', () => {
     expect(screen.queryByTestId('person-figures')).toBeNull()
   })
 
+  /* A second tap on the same chip closes the popover (a phone has no pointer to
+     leave with), and Escape closes it too (bug hunt, 4 Sep 26). */
+  it('a second tap on the same chip closes the popover; Escape closes it as well', () => {
+    setRole('admin')
+    addGroup({ id: 'q:scDay', kind: 'qual', k: 'scDay' })
+    render(<Matrix />)
+    const chip = within(screen.getByTestId('row-tata')).getByTestId('cat-tata')
+    fireEvent.click(chip)
+    expect(screen.getByTestId('qualpop')).toBeTruthy()
+    fireEvent.click(chip)
+    expect(screen.queryByTestId('qualpop')).toBeNull()
+    fireEvent.click(chip)
+    expect(screen.getByTestId('qualpop')).toBeTruthy()
+    fireEvent.keyDown(document.body, { key: 'Escape' })
+    expect(screen.queryByTestId('qualpop')).toBeNull()
+  })
+
   it('the chip is inert while none of the person\'s qualifications is on the page', () => {
     // the default page has no qualification groups: TATA's SC quals stay hidden
     render(<Matrix />)

@@ -20,6 +20,7 @@
 
 import { Fragment, useEffect, useState } from 'react'
 import {
+  assignGroup,
   groupLabel,
   matchesGroup,
   OTHER_LABEL,
@@ -33,7 +34,6 @@ import {
   DEFAULT_EVENT_ROWS,
   eventRowUsed,
   getState,
-  groupIdOf,
   groupsInOrder,
   groupPriorityIds,
   isGroupPriorityCustom,
@@ -58,6 +58,7 @@ export function SettingsSheet({
   onPriorityDragStart,
   draggingId,
   dragOver,
+  dragAfter,
 }: {
   onClose: () => void
   /** Open the counter builder (Matrix owns the form + its `counterEdit` state). */
@@ -73,12 +74,21 @@ export function SettingsSheet({
   onPriorityDragStart?: (e: React.PointerEvent, id: string) => void
   draggingId?: string | null
   dragOver?: string | null
+  /** The pointer is in the hovered row's LOWER half — the drop lands after it,
+   *  so the bar is drawn on its bottom edge (the roster rows' `.after`). */
+  dragAfter?: boolean
 }) {
   const { people, qualCatalog, eventRows, showSans, groupColors } = getState()
   const chosen = groupsInOrder()
   const offered = offerableGroupList()
   const priority = groupPriorityIds()
   const chosenIds = new Set(chosen.map(d => d.id))
+  // Which group draws each person — ONE walk per render, shared by every row's
+  // count and by the who-is-in list (`groupIdOf` per person per row re-derived
+  // the group order each call: groups × people × 3 reads, for nothing).
+  const homeOf = new Map(people.map(p => [p.id, assignGroup(p, chosen, priority)]))
+  const overClass = (id: string) =>
+    dragOver === id && draggingId !== id ? (dragAfter ? ' dragover after' : ' dragover') : ''
   const custom = isGroupPriorityCustom()
   const lastEventRowUsed = eventRowUsed(eventRows - 1)
   // Which group's people are lit (tap a name to show, tap again to clear).
@@ -103,12 +113,27 @@ export function SettingsSheet({
       if (t && (t.closest('.set-palette') || t.closest('.set-swbtn'))) return
       setColorFor(null)
     }
+    /* Escape peels the palette first, not the whole sheet: the Sheet's own
+       Escape listens on `document` (capture), and a `window` capture listener
+       runs ahead of it, so stopping the event here leaves the sheet up. */
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return
+      // Kept-mounted guard (as Sheet.tsx): act only while Leave War is showing.
+      const pg = document.getElementById('page-leavewar')
+      if (pg && !pg.classList.contains('on')) return
+      e.stopPropagation()
+      setColorFor(null)
+    }
     document.addEventListener('pointerdown', onDown, true)
-    return () => document.removeEventListener('pointerdown', onDown, true)
+    window.addEventListener('keydown', onKey, true)
+    return () => {
+      document.removeEventListener('pointerdown', onDown, true)
+      window.removeEventListener('keydown', onKey, true)
+    }
   }, [colorFor])
 
   const label = (d: GroupDef) => groupLabel(d, qualCatalog)
-  const shownIn = (d: GroupDef) => people.filter(p => groupIdOf(p) === d.id)
+  const shownIn = (d: GroupDef) => people.filter(p => homeOf.get(p.id) === d.id)
   const membersOf = (d: GroupDef) => people.filter(p => matchesGroup(p, d))
 
   // Remove a group. The SANS row is not a stored group — its ✕ just turns the
@@ -180,7 +205,7 @@ export function SettingsSheet({
       {/* ---- the groups shown, top to bottom ---------------------------------- */}
       <div className="gs-sec">
         Groups — shown, top to bottom
-        <span className="gs-hint">drag ⠿ to reorder · tap a name for who is in it · tap a dot for its colour</span>
+        <span className="gs-hint">drag ⠿ to reorder · tap a name for who is in it · tap a colour square to change it</span>
       </div>
       <div className="set-grows" data-testid="group-chosen">
         {chosen.map(d => {
@@ -191,7 +216,7 @@ export function SettingsSheet({
           return (
             <Fragment key={d.id}>
               <div
-                className={`set-grow${isSans ? ' sans' : ''}${draggingId === d.id ? ' dragging' : ''}${dragOver === d.id && draggingId !== d.id ? ' dragover' : ''}`}
+                className={`set-grow${isSans ? ' sans' : ''}${draggingId === d.id ? ' dragging' : ''}${overClass(d.id)}`}
                 data-testid={`grow-${d.id}`}
                 data-grow={isSans ? undefined : d.id}
               >
@@ -252,10 +277,11 @@ export function SettingsSheet({
                     {PALETTE.map(c => (
                       <button
                         key={c}
-                        className={`set-dot${colour === c ? ' on' : ''}`}
+                        // case-blind: a stored pick is read leniently, any case
+                        className={`set-dot${colour?.toUpperCase() === c ? ' on' : ''}`}
                         data-testid={`gdot-${d.id}-${c.slice(1).toLowerCase()}`}
                         role="radio"
-                        aria-checked={colour === c}
+                        aria-checked={colour?.toUpperCase() === c}
                         aria-label={c}
                         style={{ background: c }}
                         onClick={() => { setGroupColor(d.id, c); setColorFor(null) }}
@@ -275,7 +301,7 @@ export function SettingsSheet({
       {/* who is in the tapped group */}
       {litDef && (() => {
         const here = shownIn(litDef)
-        const above = membersOf(litDef).filter(p => groupIdOf(p) !== litDef.id)
+        const above = membersOf(litDef).filter(p => homeOf.get(p.id) !== litDef.id)
         return (
           <div className="gs-who" data-testid="group-members">
             <div className="gs-sec">Shown in {label(litDef)}</div>
@@ -348,7 +374,7 @@ export function SettingsSheet({
               return (
                 <div
                   key={id}
-                  className={`crow-wrap gs-row${draggingId === id ? ' dragging' : ''}${dragOver === id && draggingId !== id ? ' dragover' : ''}`}
+                  className={`crow-wrap gs-row${draggingId === id ? ' dragging' : ''}${overClass(id)}`}
                   data-gprio={id}
                   data-testid={`gprio-${id}`}
                 >

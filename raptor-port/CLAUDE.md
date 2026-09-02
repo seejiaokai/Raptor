@@ -650,8 +650,9 @@ subscribers.
   that group's colour, plus SXO in gold when the SXO group is on the page. A held
   but undisplayed qual is not listed, and a chip with nothing displayable is inert
   (no `.has-quals`). The click is swallowed so it never also opens the figures
-  sheet; dismissed by pointer-leave, an outside pointer-down, or scroll — no
-  full-screen scrim (which would swallow the opening click and block the grid).
+  sheet; dismissed by pointer-leave, an outside pointer-down, scroll, Escape, or a
+  second tap on the same chip (the phone's toggle) — no full-screen scrim (which
+  would swallow the opening click and block the grid).
 - **A qualification group's colour is the admin's PICK** (owner, 3 Sep 26 — first
   "do we even need a colour?", then, having seen it, "allow me to pick the colour i
   want"). `groupColors` (store, persisted `groupcolors`, admin-gated, `q:` ids and
@@ -661,8 +662,14 @@ subscribers.
   ⚙ list opens a 12-dot palette (`PALETTE`) under the row the moment a qualification
   group is added, and again from the row's swatch button; built-ins/SANS keep their
   CSS-class CAT colours and have no button. Pill text colour is by luminance
-  (`inkFor`). The palette CLOSES the moment a dot is picked and on a click outside
-  it (owner, 4 Sep 26) — per the standing popup rule below.
+  (`inkFor`). The palette CLOSES the moment a dot is picked, on a click outside
+  it (owner, 4 Sep 26) — per the standing popup rule below — and on Escape (which
+  peels the palette only; the sheet closes on the next press). The stored list is
+  NOT pruned at boot (bug hunt, 4 Sep 26): the boot catalogue is the seed's three
+  keys, so a boot-time prune threw away every saved TF / NVG / custom group and its
+  colour before Raptor's real column list landed. Pruning happens at read
+  (`groupsInOrder`) and when the catalogue arrives (`setQualCatalog`, which also
+  drops the pruned groups' colours and persists).
 - **A click-open popup closes on a click outside it — standing UI rule** (owner,
   4 Sep 26 — "build pop up windows to have auto close feature if i click outside of
   it"). Any transient panel/menu/palette a tap OPENS must dismiss on an outside
@@ -676,7 +683,13 @@ subscribers.
 - **The ⚙ groups list drags too** (owner, 3 Sep 26 — "allow me to drag and drop to
   rearrange the groups"): its rows carry `data-grow` and a `⠿` grip wired to the
   same `GROUP_DRAG` → `moveGroupTo` as the grid's heading grip, so the two never
-  disagree; SANS has no grip (auto-placed at the foot).
+  disagree; SANS has no grip (auto-placed at the foot). The drag machine resolves
+  "drop after row X" from the hovered row's OWN container (`dragOverRef.el`'s
+  parent), never a document-wide query — the ⚙ list and the grid headings share the
+  `data-grow` vocabulary, and a mixed list could land a drop in the wrong place (bug
+  hunt, 4 Sep 26). Every draggable list shows the bar on the hovered row's BOTTOM
+  edge for a lower-half hover (`.dragover.after`), on the grid headings and both ⚙
+  lists alike.
 - **Pilots above WSOs inside every block, ALWAYS** (owner, 3 Sep 26 — "arrange all
   pilots at the top always and wso at the bottom of the same section. But within
   pilot and wso we arrange them in accordance to the cat category of seniority").
@@ -691,7 +704,9 @@ subscribers.
   "make the colour darker … still able to see the pilot or wso colour"): explicit
   deep-olive/deep-green hex in `matrix.css`, NOT `var(--fcp/--rcp)`, so the flight
   line keeps its own tone (never darken it via scheduler.css); ground crew keep a
-  light bar, softened off pure white so a full-width run doesn't glare.
+  light bar, softened off pure white so a full-width run doesn't glare. On a phone
+  (≤430px) the bar's side padding tightens to 4px so the 76px column keeps more of
+  the callsign.
 - **Leave War's qualification catalogue is Raptor's LoX column list, not the
   holders** (owner, 3 Sep 26 — "when i add a new qualification, i cant see that new
   qualification added in the settings page of leave war"). The Quals page's column

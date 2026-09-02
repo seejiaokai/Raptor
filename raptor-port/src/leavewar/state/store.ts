@@ -793,10 +793,14 @@ export function initStore(b?: StorageBackend): void {
   const persLabels = readStored('perslabels', readLabelMap) ?? {}
   const manningOrder = readStored('manningorder', readIdList) ?? []
   const manningHidden = readStored('manninghidden', readIdList) ?? []
-  /* Untrusted storage: keep only structurally sound entries, then PRUNE against
-     the catalogue we have at boot (the seed's three keys; the projection
-     re-prunes as soon as Raptor's real catalogue lands — see setQualCatalog). */
-  const groupDefs = pruneGroups(readStored('groupdefs', readGroupDefs) ?? [...DEFAULT_GROUPS], state.qualCatalog)
+  /* Untrusted storage: keep only structurally sound entries. NOT pruned against
+     the catalogue here (bug hunt, 4 Sep 26): at boot the catalogue is still the
+     seed's three keys, so pruning now threw away every saved TF / NVG / custom
+     group — and its picked colour — before Raptor's real column list had a
+     chance to land. The list is pruned where the catalogue is real: at every
+     read (`groupsInOrder`) and when the catalogue arrives (`setQualCatalog`,
+     which also persists the pruned list). */
+  const groupDefs = readStored('groupdefs', readGroupDefs) ?? [...DEFAULT_GROUPS]
   const groupPriority = readStored('grouppriority', readIdList) ?? []
   const groupPriorityCustom = readStored('grouppriocustom', x => (typeof x === 'boolean' ? x : null)) ?? false
   const groupColors = readStored('groupcolors', readColorMap) ?? {}
@@ -2458,7 +2462,8 @@ export function setQualCatalog(catalog: QualDef[]): void {
      ever REMOVES a group whose qualification no longer exists. */
   const groupDefs = pruneGroups(state.groupDefs, catalog)
   const changed = groupDefs.length !== state.groupDefs.length
-  state = withCurrent({ ...state, qualCatalog: catalog, ...(changed ? { groupDefs } : {}) })
+  // A pruned group takes its picked colour with it, as a removed one does.
+  state = withCurrent({ ...state, qualCatalog: catalog, ...(changed ? { groupDefs, groupColors: colorsFor(groupDefs, state.groupColors) } : {}) })
   if (changed) persist()
   notify()
 }
