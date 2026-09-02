@@ -778,3 +778,18 @@ gate's. Keep verdict-bearing commands unpiped.
 **Suggested improvement:** In the live-pass checklist: whenever a change adds a default-hidden state, grep the tests for presence assertions on the now-hidden thing before running them; and whenever a sticky offset is a literal, measure the element it is supposed to match in the same pass (assert header height === offset).
 
 **Principle:** A default that hides something rewrites what every existing "it is there" test means; and a sticky offset copied from a sibling's height is a measurement that drifts the moment the sibling's content changes — pin both with a measurement, not a constant.
+
+### Observation 50: Text selection on a touch-first app is a global baseline, not a per-element cleanup
+
+**Status:** OPEN
+**Date:** 2026-09-02
+**Session context:** Owner reported (with a screenshot of a nav tab caret, and the recurring "the grid selects as blue text when I try to scroll on my phone") that click-only chrome should never be selectable as text; editable fields should.
+**Skill:** impeccable
+**Type:** open-source
+**Phase/Area:** craft-floor / Operate (touch-first app UI)
+
+**Issue:** The codebase had accumulated ~20 scattered per-element `user-select:none` declarations (grips, chips, some tabs, day buttons, drag bodies) added reactively over months, yet the user kept hitting NEW uncovered surfaces — the top nav tabs and the data grid both still painted a blue text range on a tap-hold. Chasing each element is whack-a-mole and never converges. The robust fix was one baseline: `html{user-select:none;-webkit-touch-callout:none}` with `input,textarea,select,[contenteditable]{user-select:text;-webkit-touch-callout:default}`. Before writing it I had to verify the app's editable text wasn't only `<input>` — this one edits via 662 `contenteditable` spans and even sets a selection range programmatically, which the `[contenteditable]` opt-in preserves. A naive "opt-in inputs only" baseline would have silently broken all in-place text editing.
+
+**Suggested improvement:** In the Operate/craft-floor guidance, add a reflex: for a touch-first or app-shell (non-document) UI, default `user-select:none` at the root and opt text selection back IN only for genuinely editable/copyable surfaces — do not add `user-select:none` per element. And before flipping the baseline, enumerate every editable surface (inputs, textareas, selects, AND contenteditable — grep for `contenteditable`/`getSelection`/`execCommand`), because a document-style editor hidden behind an app shell breaks invisibly if the opt-in misses it.
+
+**Principle:** A behavior that should hold for "everything except a named few" belongs at the root as a default plus explicit opt-ins, not as a growing list of per-element rules — the per-element approach never converges and each gap ships as a fresh annoyance. When inverting such a default, first enumerate the exceptions from the code (grep the actual mechanism), because the ones you can't see on screen are the ones that break silently.
