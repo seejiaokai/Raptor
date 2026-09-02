@@ -31,8 +31,8 @@
     line-height: 1;
     padding: 3px 11px;
   }
-  .oil-tools .oil-cal .ci { font-size: 15px; }
-  .oil-tools .oil-cal .cl { font-size: 9px; letter-spacing: .08em; text-transform: uppercase; margin-top: 2px; }
+  .oil-tools .oil-cal .ci { font-size: 12px; line-height: 1; }
+  .oil-tools .oil-cal .cl { font-size: 9px; letter-spacing: .08em; text-transform: uppercase; margin-top: 3px; }
   /* The settings gear is icon-only now — keep it a comfortable tap target. */
   .oil-tools .oil-gear { padding: 6px 9px; font-size: 14px; }
   .oil-pickrow {
