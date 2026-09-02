@@ -183,12 +183,11 @@ function DayChip({ testid, pickerId, value, today, onPick }: {
  * "given by", for one or many people. Its own component so its draft state
  * resets with the people it is for (the caller keys it).
  */
-function CreditForm({ ids, names, today, onDone, onCancel }: {
+function CreditForm({ ids, names, today, onDone }: {
   ids: string[]
   names: string
   today: string
   onDone: () => void
-  onCancel: () => void
 }) {
   const [amt, setAmt] = useState('1')
   const [date, setDate] = useState(today)
@@ -202,7 +201,7 @@ function CreditForm({ ids, names, today, onDone, onCancel }: {
   }
   return (
     <div className="oil-bar form" data-testid="oil-credit-panel">
-      <b className="oil-who" data-testid="oil-credit-who">Credit {names}</b>
+      <b className="oil-who" data-testid="oil-credit-who">OIL credits · {names}</b>
       <input
         type="number"
         step="0.5"
@@ -235,7 +234,6 @@ function CreditForm({ ids, names, today, onDone, onCancel }: {
         onKeyDown={e => { if (e.key === 'Enter') save() }}
       />
       <button className="dchip approve" data-testid="oil-credit-save" onClick={save}>Save</button>
-      <button className="tchip clear" data-testid="oil-credit-cancel" onClick={onCancel}>Deselect</button>
       {err && <span className="note warn" data-testid="oil-credit-err">{err}</span>}
     </div>
   )
@@ -344,6 +342,22 @@ export function OilTracker({ person, focus, onClose, onGranted }: {
   const focusLed = person && focus ? ledgers.get(person) : undefined
   const focusArchived = !!focusLed?.credits.some(c => c.date === focus && c.left === 0 && (c.used.length > 0 || c.expired > 0))
   useEffect(() => { if (focusArchived) setArchiveOpen(true) }, [focusArchived])
+
+  // A tap outside the open credit bar cancels it (no save) — the owner asked
+  // for this in place of a Deselect button (owner, 2 Sep 26). A tap on a name
+  // still (de)selects, and a tap inside the bar (its inputs, the date pop) is
+  // left alone; anything else clears the selection and folds the bar away.
+  const hasSel = admin && sel.size > 0
+  useEffect(() => {
+    if (!hasSel) return
+    const onDown = (e: PointerEvent) => {
+      const t = e.target as HTMLElement | null
+      if (t?.closest('[data-testid="oil-credit-panel"]') || t?.closest('[data-oilpick]')) return
+      setSel(new Set())
+    }
+    document.addEventListener('pointerdown', onDown, true)
+    return () => document.removeEventListener('pointerdown', onDown, true)
+  }, [hasSel])
 
   const toggle = (id: string) => setSel(prev => { const n = new Set(prev); if (n.has(id)) n.delete(id); else n.add(id); return n })
   const callsignOf = (id: string) => people.find(p => p.id === id)?.callsign ?? id
@@ -733,7 +747,7 @@ export function OilTracker({ person, focus, onClose, onGranted }: {
         {!anyBox && <div className="note oil-empty" data-testid="oil-empty">Nothing in this window.</div>}
       </div>
       {admin && selIds.length > 0 && (
-        <CreditForm key={selIds.join('|')} ids={selIds} names={namesOf(selIds)} today={today} onDone={() => { setSel(new Set()); done() }} onCancel={() => setSel(new Set())} />
+        <CreditForm key={selIds.join('|')} ids={selIds} names={namesOf(selIds)} today={today} onDone={() => { setSel(new Set()); done() }} />
       )}
       {admin && selIds.length === 0 && (
         <div className="oil-bar idle" data-testid="oil-bar-idle">Tap a name to credit OIL · hold and drag down the names to pick several</div>

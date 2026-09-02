@@ -222,7 +222,7 @@ describe('crediting OIL (admin)', () => {
     expect(screen.getByTestId('oil-bal-slammed').textContent).toBe('0')
     fireEvent.click(screen.getByTestId('oil-name-slammed'))
     expect(screen.getByTestId('oil-row-slammed').className).toContain(' on')
-    expect(screen.getByTestId('oil-credit-who').textContent).toBe('Credit SLAMMED')
+    expect(screen.getByTestId('oil-credit-who').textContent).toBe('OIL credits · SLAMMED')
     expect(screen.queryByTestId('oil-bar-idle')).toBeNull()
     fireEvent.change(screen.getByTestId('oil-amt'), { target: { value: '1.5' } })
     fireEvent.change(screen.getByTestId('oil-reason'), { target: { value: 'Det recovery' } })
@@ -249,15 +249,15 @@ describe('crediting OIL (admin)', () => {
     expect(getState().ledger).toHaveLength(n)
   })
 
-  it('several names picked make one batch; Deselect clears it', () => {
+  it('several names picked make one batch; a tap outside the bar clears it', () => {
     setRole('admin')
     openTracker()
     fireEvent.click(screen.getByTestId('oil-name-ramp'))
     fireEvent.click(screen.getByTestId('oil-name-dusk'))
-    expect(screen.getByTestId('oil-credit-who').textContent).toBe('Credit RAMP, DUSK')
+    expect(screen.getByTestId('oil-credit-who').textContent).toBe('OIL credits · RAMP, DUSK')
     // A second tap on a name un-picks it.
     fireEvent.click(screen.getByTestId('oil-name-dusk'))
-    expect(screen.getByTestId('oil-credit-who').textContent).toBe('Credit RAMP')
+    expect(screen.getByTestId('oil-credit-who').textContent).toBe('OIL credits · RAMP')
     fireEvent.click(screen.getByTestId('oil-name-dusk'))
     const n = getState().ledger.length
     fireEvent.change(screen.getByTestId('oil-amt'), { target: { value: '2' } })
@@ -269,8 +269,11 @@ describe('crediting OIL (admin)', () => {
       ['dusk', 2, 'Exercise weekend'],
     ])
     expect(screen.queryByTestId('oil-credit-panel')).toBeNull()
+    // No Deselect button now: a pointer-down outside the bar (not on a name,
+    // not in the bar) cancels the pick and folds the bar away with no save.
     fireEvent.click(screen.getByTestId('oil-name-ramp'))
-    fireEvent.click(screen.getByTestId('oil-credit-cancel'))
+    expect(screen.queryByTestId('oil-credit-panel')).not.toBeNull()
+    fireEvent.pointerDown(screen.getByTestId('oil-window'))
     expect(screen.queryByTestId('oil-credit-panel')).toBeNull()
   })
 
@@ -301,7 +304,7 @@ describe('crediting OIL (admin)', () => {
       // …and committed on release: three rows picked, the bar up.
       for (const r of [a, b, c]) expect(r!.className).toContain(' on')
       const who = screen.getByTestId('oil-credit-who').textContent!
-      expect(who.startsWith('Credit ')).toBe(true)
+      expect(who.startsWith('OIL credits · ')).toBe(true)
       expect(who.split(',')).toHaveLength(3)
     })
 

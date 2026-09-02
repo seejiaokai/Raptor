@@ -187,8 +187,9 @@ Balances are computed and on screen. Two parts of §Counters are not built:
   admin taps a name to pick it, or hold-then-drags (finger) / drags (mouse)
   down the NAMES to pick a run — `select.ts:wireRowSelect`, the grid's own
   gesture core (`wireGesture`) — and the credit bar docks under the grid
-  (amount, date, reason, given by, Save, Deselect); idle it reads the tap-or-
-  hold hint. An admin's manual OIL / FO / HO write on the grid opens the
+  (headed `OIL credits · <names>`; amount, date, reason, given by, Save; a tap
+  anywhere outside the bar cancels the pick with no save — there is no Deselect
+  button, owner 2 Sep 26); idle it reads the tap-or-hold hint. An admin's manual OIL / FO / HO write on the grid opens the
   tracker on that person with the day's box lit, and any credit, edit or
   delete snaps the counter column to OIL BAL. A `?` chip holds the legend.
   Nothing on the page is under 11px.

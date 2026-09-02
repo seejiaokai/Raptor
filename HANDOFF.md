@@ -601,9 +601,10 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
   or drag (mouse) down the names picks a run via **`select.ts:wireRowSelect`
   on the new shared `wireGesture` core** (the grid's `wireSelect` is a thin
   caller of the same machine — `select.test.ts` unchanged and green); the
-  credit bar docks under the grid (amount, calendar date, reason, optional
-  given by, Save, Deselect), idle it reads the tap-or-hold hint; a `?` chip
-  holds the legend. (b) **Reasons are specific**: `engine/oil.ts:dayOilWork`
+  credit bar docks under the grid (headed `OIL credits · <names>`; amount,
+  calendar date, reason, optional given by, Save — a tap outside the bar
+  cancels with no save, no Deselect button since 2 Sep 26), idle it reads the
+  tap-or-hold hint; a `?` chip holds the legend. (b) **Reasons are specific**: `engine/oil.ts:dayOilWork`
   tags every span `FLT`/`SIM`/`Duty` (`dayOilSpans` is now the bare view),
   `sync.ts:desiredOilCells` carries `why` (`FLT + SIM`, or an acknowledged
   input's type name), `store.ts:ingestDutyCredit(…, why)` writes it as
