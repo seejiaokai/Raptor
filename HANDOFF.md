@@ -533,6 +533,18 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
   keep every write through the store doorway (`HOOKS.storeBackend`, Leave War's
   `state/storage.ts`) so the backend swap stays bounded.
 
+- **OPEN 2 Sep 26 — the Leave War drag-select e2e is FLAKY locally, and was
+  before the OIL tracker batch.** `e2e/leavewar.spec.ts` "drag-selecting a
+  row fills the leave across the whole span" (lw-desktop) fails with the LAST
+  cell of the run (`cell-slipway-2026-01-08 .c`) unfilled: measured 1 of 3
+  re-runs red on dfc0dde and **4 of 8 red on c2e727a (the commit BEFORE the
+  batch, in a clean worktree)**, so it is the gesture/e2e geometry, not the
+  tracker. Not touched in that PR (out of scope). Suspects, in order: the
+  `dragSelect` helper's 6-step mouse move landing its final `pointermove`
+  before `elementFromPoint` sees the last cell, or the edge auto-scroll rAF
+  nudging the grid mid-drag. The rest of `npm run e2e:leave` was green
+  (113 passed / 8 touch-only skips / this 1).
+
 - **RESOLVED 2 Sep 26 (Leave War OIL TRACKER + admin-set LVE BAL + OFF USED
   removed) — owner ask, one batch.** (1) `OFF USED` figure gone (`counters.ts`
   FIGURES, eleven now; OFF still inside LVE USED; entering OFF no longer snaps
