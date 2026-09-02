@@ -57,7 +57,8 @@ by this). `localBackend` is still in `storage.ts` for reference and tests; the
 future shared backend that "pushes, not just persists" replaces the seam.
 
 Storage now holds five keys, not one: `wars` (each carrying its own period,
-grid and states), `current`, `role`, `openings` and `ledger`. They are written together by a single `persist()` so
+grid and states), `current`, `role`, `openings` and `ledger` (plus the admin
+config keys since — `oilpolicy` among them, 2 Sep 26). They are written together by a single `persist()` so
 no path can save one and forget another, and `initStore` reconciles each
 war's grid and states on load — a stored state whose cell no longer holds a
 bid is dropped rather than left to colour the wrong cell.
@@ -135,13 +136,121 @@ Balances are computed and on screen. Two parts of §Counters are not built:
   **OIL BAL figure** joined the counter column as its landing strip. The
   wire itself: `src/leavewar/sync.ts` `runOilPass`, tested in
   `src/leavewar/oilsync.test.ts`.
-- **No grant sheet.** The ledger is seeded and read; nothing can post a
-  top-up, an award or a correction through the interface.
-- **No ledger view.** §Counters promises that any number on screen can be
-  opened and explained. The breakdown sheet (17 Aug 26 — tap a person's
-  counter cell) now answers the first layer: the figure's composition, a
-  balance as opening + granted (+ earned) − taken. The individual LEDGER
-  ENTRIES behind "granted" are still not visible anywhere.
+- **RESOLVED 2 Sep 26 — the OIL TRACKER is both the grant sheet and the
+  ledger view (owner ask).** `ui/OilTracker.tsx`, opened from the toolbar
+  button beside Auto-sort (both roles) or from the Cinch sheet's OIL BAL row.
+  Everyone's OIL BAL in the roster's grouped order; one person's ledger
+  newest-first — every credit (an earned FO/HO day with its derived reason
+  `weekend duty`/`PH duty`, an admin's grant with its reason and approver,
+  the opening figure) and every OIL day taken. An ADMIN credits OIL (any
+  number — negative is a correction — a date from the calendar, an open-text
+  reason) to one person or to a picked/dragged/Select-all batch in one
+  write (`store.ts:grantOil`, ids `ol-N`, approver = the viewer's callsign),
+  edits or deletes a grant in place (`updateLedgerEntry`/`removeLedgerEntry`),
+  and sets the POLICY (`setOilPolicy`, persisted `oilpolicy`): how long a
+  credit lasts — N days / N months from its own date, or forever — and the
+  default history window (from the first entry — the default since the
+  third cut — or N months back). The
+  engine half is `engine/oiltracker.ts`, PURE and DERIVED: **a taken day
+  draws the OLDEST credit first** (FIFO; a credit already expired on the
+  taking day is skipped), whatever is left of a credit past its expiry is
+  `expired` and leaves the balance, the opening figure never expires, and
+  what no credit covers is overdraw (shown negative, never refused). With
+  NO expiry the tracker's balance is byte-identical to `balanceOf(…,'oil')`
+  (pinned for every seeded person) — so `OIL BAL` is now the tracker's
+  balance everywhere (`counters.ts:oilLedgerOf`), the breakdown grows an
+  `expired` row only when something did, and the bid-time "leaves you at −x"
+  warning reads OIL the same way (`Matrix.tsx:wouldLeave`). One
+  `store.ts:figureCtxOf()` feeds every figure surface so none can drift.
+  Earned days are STILL not ledger entries — the FO/HO cell is the record
+  and the tracker reads it; the grants the ledger holds are the only rows
+  an admin can touch. Members see everything and edit nothing (absent
+  controls; the store refuses regardless).
+  **REBUILT the same day as ONE FULL-SCREEN GRID (owner, 2 Sep 26 — second
+  cut, after the first two-view sheet):** `Sheet full` (`bidpicker.css
+  .bidsheet.full`) pinned to the screen; the tracker's own `.oil-wrap` is the
+  one 2-D scroller (name + BAL frozen left, header rows sticky top). One row
+  per person under the roster's group headings; BAL over a `+in −out` line
+  for the window — everything credited (the carried-in opening figure +
+  grants + earned) as `+`, everything drawn (taken + corrections + a negative
+  opening) as `−`, so `+ − − === BAL` in the default full-window view (owner,
+  2 Sep 26 — "shouldn't we count the opening balance? … as added"); a side
+  with nothing shows no number (digits aligned, signs hanging); then one LANE per
+  calendar year in the window (the year is a header row; every row's boxes
+  for a year start at the same x). A BOX is one credit and reads as a small
+  ledger — amount + date + **given by** top (`AUTO` for an earned day; the
+  admin's optional `givenBy` on a grant, `LedgerEntry.givenBy`), the reason
+  under it (the sync wire's `FLT` / `SIM` / `Duty` / an input's type name,
+  written to the FO/HO cell as `BidRecord.note` — `ingestDutyCredit(…, why)`;
+  an admin's own note on a hand-typed FO/HO via `setCellNote`), the days
+  TAKEN from it in red (its FIFO draws), and what is left bottom-right.
+  Used up → amount, date and reason struck; expired → the same, on a green
+  amount. Both sit on a dark-grey fill (`#21262d`, 2 Sep 26 — see the FIFTH
+  CUT note) that reads them apart from the flat live boxes, with the takes and
+  `n left` fully legible. A day taken with nothing left to draw from is its own red
+  box; an admin's correction (negative grant) is its own editable box. The
+  per-person page is GONE: the Cinch's OIL BAL tap scrolls to that row. An
+  admin taps a name to pick it, or hold-then-drags (finger) / drags (mouse)
+  down the NAMES to pick a run — `select.ts:wireRowSelect`, the grid's own
+  gesture core (`wireGesture`) — and the credit bar docks under the grid
+  (headed `OIL credits · <names>`; amount, date, reason, given by, Save; a tap
+  anywhere outside the bar cancels the pick with no save — there is no Deselect
+  button, owner 2 Sep 26); idle it reads the tap-or-hold hint. An admin's manual OIL / FO / HO write on the grid opens the
+  tracker on that person with the day's box lit, and any credit, edit or
+  delete snaps the counter column to OIL BAL. A `?` chip holds the legend.
+  Nothing on the page is under 11px.
+  **THIRD CUT the same evening (owner, from the shipped grid):** every take
+  is its OWN ROW inside the box and `n left` is pinned bottom-right whatever
+  the row's height (the box's last line carries `margin-top:auto`; on a
+  narrow box it wraps under the takes rather than colliding); the CAT chip
+  sits UNDER the name on every row, 8px, idle rows 36px; the window opens
+  "from first entry" (`DEFAULT_OIL_POLICY.historyMonths: null` — "Last 6
+  months" stays a chip); and a DEAD credit — used up, or expired — is
+  ARCHIVED: it leaves the strip and is counted in the thin frozen ARCHIVE
+  column beside BAL (the word standing on end, bottom → top; a muted count
+  per row), one tap on which brings every archived box back into the lanes
+  in date order — ONE switch for the whole grid, session-only, opens closed.
+  A live credit with some draws never archives (it is still money); an
+  uncovered take and a correction never archive (they are what makes a
+  negative balance visible). "OIL lasts forever" is the shipped default
+  (`expiry: null`) and was verified, not changed. The demo carries a boot-only
+  OIL story (`state/demoworld.ts DEMO_OIL` through `store.ts installDemoOil`,
+  laid in BEFORE the re-key so DEMO_MAP dresses it) so the preview shows every
+  shape — an archived opening figure, a part-drawn credit with stacked takes,
+  a correction, an untouched grant with a giver, a 2027 lane, a row whose only
+  credit is in the archive; its earned days are HAND-TYPED FO/HO with a note,
+  because an owned FO/HO the schedule does not back is swept the moment the
+  wires run.
+  **FOURTH CUT (owner, 2 Sep 26, from the shipped phone toolbar):** the tools
+  row is one line now — `From first entry`, a calendar button reading RANGE
+  (`.oil-cal`, the old "Pick dates"), then the `?` and an icon-only ⚙ (its
+  "Settings" word dropped) pushed right — with the window label (`1 Jan 26 –
+  today`) on its own thin line below, so the grid starts higher. The "Last N
+  months" chip is GONE from the everyday toolbar; it renders only when an
+  admin has made a months window the default in Settings
+  (`oilPolicy.historyMonths !== null`), which the settings default and its
+  test still exercise. The `?` legend was cut to a few lines.
+  Also from the shipped grid: the credit bar is headed `OIL credits · <names>`
+  (was `Credit …`) and a tap anywhere outside it cancels the pick with no save
+  — the Deselect button is gone. The RANGE date picker folds away the same way
+  (a tap outside it closes it, not just its Done button — owner, 2 Sep 26).
+  **FIFTH CUT (owner, 2 Sep 26 — "can archive boxes have a dark shade of
+  grey"):** the archived boxes (used-up / expired) now carry a dark-grey fill
+  (`#21262d`) so they read apart from the flat, unfilled live boxes. The old
+  whole-box `opacity` fade (was `.7` used / `.55` expired) is GONE — the fill
+  plus the existing strike-through carry "spent", and the fade was quietly
+  dragging the red takes (the audit trail) below legible contrast on the
+  expired boxes (WCAG 3.8:1). With no fade, every text on the box is lighter
+  than the fill, so a darker grey only raises contrast — the shade is safe to
+  tune (an `/impeccable` audit vetted it). If the owner ever wants archived
+  boxes faded as well as grey, a gentle `opacity: .9` is the dial.
+- **An admin can SET the LVE BAL (2 Sep 26, owner ask — "manually input and
+  change LVE BAL … every time a LL or OL is taken it deducts from it").** A
+  `Set` beside the Cinch sheet's LVE BAL row; `store.ts:setBalance` moves
+  the OPENING FIGURE by whatever makes `opening + granted − drawn` read the
+  typed number, so leave already on the grid stays counted and every LL/OL
+  after it deducts as before — no stored balance, the breakdown explains
+  the new opening. Any counter, though only `annual` has a control.
 
 Also note the derivation, because it narrows the spec deliberately: §Counters
 says every change to a counter is a ledger entry, and **leave taken is not
@@ -152,18 +261,21 @@ the grid cannot know.
 ## The counter column is figures, not raw counters (Aug 26)
 
 The frozen column no longer cycles the six entitlement counters. It cycles
-TWELVE named figures (owner's set; `OIL BAL` joined with wire 4), each
-labelled `BAL` (a balance left) or `USED` (days taken):
+ELEVEN named figures (owner's set; `OIL BAL` joined with wire 4; `OFF USED`
+was the twelfth until 2 Sep 26 — owner: "remove the OFF used counter" — and
+OFF itself stopped being a leave code later that day), each labelled `BAL`
+(a balance left) or `USED` (days taken):
 
-    LL USED · OL USED · OIL USED · OIL BAL · OFF USED · CCL USED · PL USED ·
+    LL USED · OL USED · OIL USED · OIL BAL · CCL USED · PL USED ·
     FCL USED · MED USED · OML USED · LVE BAL · LVE USED
 
-- **Ten are consumed (`USED`)** — days of that type taken, read per-TYPE by
+- **Nine are consumed (`USED`)** — days of that type taken, read per-TYPE by
   `takenOf` (not the per-counter `drawnFrom`, which cannot tell LL from OL —
   both spend the one annual pool). Two are aggregates: `MED USED` = ATT C + HL +
-  OML, `LVE USED` = LL+OL+OIL+OFF+CCL+PL+FCL (medical deliberately excluded).
-- **One is a balance (`LVE BAL`)** — the annual pool, `opening + grants −
-  drawn`, the only figure that can go negative and red. The other entitlement
+  OML, `LVE USED` = LL+OL+OIL+CCL+PL+FCL (medical deliberately excluded; OFF
+  left the sum on 2 Sep 26 when it stopped being a leave code).
+- **Two are balances (`LVE BAL`, `OIL BAL`)** — the annual pool, `opening + grants −
+  drawn` (admin-settable since 2 Sep 26, see above), and the OIL tracker's balance; both can go negative and red. The other entitlement
   balances (OIL/CCL/FCL/PL/EL) are still computed by `balanceOf` and used by
   the bid-warning path, but are NOT surfaced in the column — the owner asked
   for exactly the eleven above. EL is dropped from the column yet stays a valid
@@ -191,9 +303,11 @@ labelled `BAL` (a balance left) or `USED` (days taken):
   which is exactly the trap the file's header warns about.
 - **Any callsign tap opens that person's ALL-FIGURES sheet, for every role**
   (owner: "everyone should be able to click on that person's name and see
-  these logics") — the twelve figures with that person's numbers, each row
-  opening its parts breakdown; an admin reaches the person EDITOR through
-  the sheet's "Edit person" button (the old direct-to-editor tap).
+  these logics") — the eleven figures with that person's numbers, each row
+  opening its parts breakdown (the OIL BAL row opens the OIL TRACKER instead,
+  2 Sep 26); an admin reaches the person EDITOR through
+  the sheet's "Edit person" button (the old direct-to-editor tap), and sets
+  the LVE BAL from its row.
 - **Medical is FOUR markers now** — `ATTB` (shown as a bare "B" on the grid),
   `ATTC` (shown "C"), `HL`, `OML` — B joined 17 Aug 26 ("u can indicate,
   B (att b), C (att c), OML, HL"), and since the same day they TAKE PORTIONS
@@ -223,9 +337,19 @@ they SETTLED is here, so it is not relitigated:
   showed "JUL - SEP 26" being created inside a year-long 2026.
 - **A bid nobody has answered carries no colour.** Purple means management has
   acknowledged it. This is why `acknowledged` exists at all.
-- **`OFF` is leave, not a marker.** Free — no entitlement spent — but the
-  person is gone from the manning picture, so it is asked for and answered
-  like any other leave. The only leave type with a null counter.
+- **`OFF` is NOT a person's leave — it is a management OFF DAY event
+  (2 Sep 26, reversing 10 Aug 26).** The owner: "off is never credited to
+  individuals, it is only declared OFF to a period or a day … given by the
+  management for free". So the `OFF` leave code is gone from the catalogue,
+  the bid chips, the Inputs TYPE list and LVE USED; what replaced it is the
+  `free` EVENT KIND (`eventdefs.ts`, seeded as **Off day**): declared by an
+  admin on the event rows for a day or a band, it tints the whole column
+  light grey (`evfree`), and WORK ON IT EARNS NOTHING — only a weekend or a
+  PH (`off`) does (`sync.ts:isNonWorkingISO` is unchanged, `free` is not
+  `off`; precedence `off > free > nolv`). Like PH it only tints: a bid on an
+  Off day is still allowed, and manning is untouched. A legacy `OFF` cell in
+  a stored grid is an unknown code now — it draws from nothing and counts as
+  nothing.
 - **`OD` counts the manpower as gone**, and always did. Pinned at the count
   level now.
 - **There is no PCL.** See the leave-type section below.
@@ -459,6 +583,17 @@ accounts land and the roles stop being an affordance.
   places open a sheet; putting the click-outside in the wrapper means an
   eighth cannot be written without it. A per-sheet scrim would have passed its
   own test while the next sheet shipped without one.
+  - **Its sideways-pan handler acts only on a TRACKED PRESS** (2 Sep 26). A
+    mouse fires `pointermove` on a bare hover, and the scrim spans the whole
+    page behind a sheet, so the first mouse motion after a cell opened its
+    sheet was read as a drag from (0,0) and forwarded as `scrollLeft =
+    0 − clientX`: the grid snapped back to January the moment the pointer
+    moved (owner: "when I click on a date in September the month in the
+    background jumps back to JAN"). `useGridPan` now sets a `pressed` flag on
+    `pointerdown`, clears it on up/cancel, and a mouse whose `buttons` reads 0
+    ends the press on its next move (a release over the panel never reaches
+    the scrim). Pinned in `scrim.test.tsx`. Any pointer-drag handler that
+    listens to `pointermove` needs the same guard — hover is a move.
 
 - **`focusDate` is view state, and it lives in the domain store on purpose.**
   The stage strip and the matrix render independently of each other — neither
@@ -544,13 +679,14 @@ What is a contract, and what is deliberately still open:
 
 - **The tag is invisible; only colour shows.** An event is classified off /
   no-leave / work. Typing `PH` shows `PH`, never `PH (off)` — the kind
-  surfaces ONLY as colour: a green column for an off day, an orange column
-  for no-leave, red text for a work word (the column left alone). The `off`
-  kind's LABEL in the sheet reads **PH** since 1 Sep 26 (owner ask — it was
-  "Off day"); the kind value, its colour class and the OIL non-working test
-  are unchanged.
-  `columnKindFor` lets `off` win over `nolv` on one day; `work` never
-  colours the column.
+  surfaces ONLY as colour: a green column for a PH, a GREY column for a
+  management Off day (`free`, 2 Sep 26), an orange column for no-leave, red
+  text for a work word (the column left alone). The `off` kind's LABEL in
+  the sheet reads **PH** since 1 Sep 26 (owner ask — it was "Off day"); the
+  kind value, its colour class and the OIL non-working test are unchanged —
+  and since 2 Sep 26 "Off day" is its OWN kind, `free`, which earns no OIL.
+  `columnKindFor` lets `off` win over `free` win over `nolv` on one day;
+  `work` never colours the column.
 - **The tag lives ON the event, not in the library (owner, 18 Aug 26 — "I
   don't want u to save it as a type").** Tapping a tag in the Event sheet
   used to silently mint the typed word into the type library; now it is held
@@ -590,8 +726,10 @@ What is a contract, and what is deliberately still open:
   (add / rename / reclassify / delete / reset), reached from its "Edit types"
   button.
 - **The type library is squadron-wide, not per-war** (a holiday is a holiday
-  in every war), so it lives on `state.eventDefs`, seeded PH=off / No Leave=
-  nolv / SC=work, and persists under its own `eventdefs` key.
+  in every war), so it lives on `state.eventDefs`, seeded PH=off / Off day=
+  free / No Leave=nolv / SC=work, and persists under its own `eventdefs` key
+  (a library stored before 2 Sep 26 keeps its three; the `free` chip is on
+  every type and Reset restores the four).
 - **The counter-picker header was squared** in the same batch (owner: "make it
   squarish, it's blocking the event box") — a contained bordered chip now, kept
   at a 40px tap target (the earlier "too small to hit" complaint still holds).
@@ -742,7 +880,7 @@ Quals-tick-lifts-the-count integration — are pinned in
   `persist()` writes (every war's grid / states / period, the counter ledger and
   openings, and all of the admin arrangement/config: figure & roster & manning
   order, hidden rows, group defs & priority, manning rules, event types & rows,
-  Show SANS). The push lives INSIDE `persist()` (a save is the edit), so no
+  Show SANS, the OIL policy). The push lives INSIDE `persist()` (a save is the edit), so no
   writer can add an undoable change and forget to record it. Deliberately NOT
   undoable, do not "fix":
   - **Navigation and identity** — which war is on screen, who you are viewing

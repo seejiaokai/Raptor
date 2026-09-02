@@ -133,6 +133,38 @@ export function addDays(date: string, n: number): string {
   return fromUTC(toUTC(date) + n * DAY_MS)
 }
 
+/**
+ * The same calendar day `n` months on (or back, for a negative `n`), CLAMPED
+ * to the last day of the target month: 31 Jan + 1 month is 28 Feb (29 in a
+ * leap year), never "3 Mar" — `Date.UTC(y, m + 1, 31)` would roll over
+ * silently and an OIL credit dated the 31st would then outlive its neighbours
+ * by three days. Exists for the OIL tracker's expiry ("lasts N months") and
+ * its default history window; the day-walk in months.ts is a different job.
+ */
+export function addMonths(date: string, n: number): string {
+  const [y, m, d] = date.split('-').map(Number)
+  const total = y * 12 + (m - 1) + n
+  const ty = Math.floor(total / 12)
+  const tm = total - ty * 12
+  const last = new Date(Date.UTC(ty, tm + 1, 0)).getUTCDate()
+  return fromUTC(Date.UTC(ty, tm, Math.min(d, last)))
+}
+
+/**
+ * Today's calendar date as the person at the keyboard sees it — LOCAL time,
+ * the one deliberate exception to this file's UTC rule. Every other function
+ * here parses a `yyyy-mm-dd` it was GIVEN, where UTC keeps the day steady;
+ * this one names the day that is happening, and a squadron east of UTC
+ * whose "today" arrived at midnight would otherwise be told it is still
+ * yesterday until 08:00. Same convention as engine/inputs.ts's `now` and the
+ * post-out auto-archive (sync.ts). The OIL tracker reads expiry against it.
+ */
+export function localToday(): string {
+  const d = new Date()
+  const p = (n: number) => String(n).padStart(2, '0')
+  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`
+}
+
 export function isWeekend(date: string): boolean {
   const day = weekday(date)
   return day === 0 || day === 6

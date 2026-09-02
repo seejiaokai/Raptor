@@ -256,6 +256,43 @@ describe('a sideways drag scrolls the grid, it does not dismiss', () => {
     // started at 500, dragged 100px left → scrollLeft = 500 − (−100) = 600
     expect(wrap.scrollLeft).toBe(600)
   })
+
+  // Owner, 2 Sep 26: "when I click on a date in September the month in the
+  // background jumps back to JAN". A mouse fires pointermove on a bare hover,
+  // and the scrim spans the page behind a sheet — so the first motion after a
+  // cell opened its sheet was read as a drag from (0,0) and forwarded as a
+  // negative scrollLeft. No press, no pan.
+  it('never pans the grid on a bare mouse hover over the scrim', () => {
+    render(<Matrix />)
+    const wrap = document.querySelector('.mx-wrap') as HTMLElement
+    let sl = 0
+    Object.defineProperty(wrap, 'scrollLeft', { configurable: true, get: () => sl, set: v => { sl = v } })
+    wrap.scrollLeft = 6500
+    fireEvent.click(screen.getByTestId('counter-pick'))
+    const s = scrim()
+    fireEvent.pointerMove(s, { clientX: 900, clientY: 300, pointerId: 1, pointerType: 'mouse' })
+    fireEvent.pointerMove(s, { clientX: 700, clientY: 320, pointerId: 1, pointerType: 'mouse' })
+    expect(wrap.scrollLeft).toBe(6500)
+    expect(screen.queryByTestId('counter-sheet')).toBeTruthy()
+  })
+
+  it('stops panning once the mouse button has been released elsewhere', () => {
+    render(<Matrix />)
+    const wrap = document.querySelector('.mx-wrap') as HTMLElement
+    let sl = 0
+    Object.defineProperty(wrap, 'scrollLeft', { configurable: true, get: () => sl, set: v => { sl = v } })
+    wrap.scrollLeft = 500
+    fireEvent.click(screen.getByTestId('counter-pick'))
+    const s = scrim()
+    fireEvent.pointerDown(s, { clientX: 300, clientY: 300, pointerId: 1, pointerType: 'mouse', buttons: 1 })
+    fireEvent.pointerMove(s, { clientX: 200, clientY: 300, pointerId: 1, pointerType: 'mouse', buttons: 1 })
+    expect(wrap.scrollLeft).toBe(600)
+    // The button came up over the panel (no pointerup reaches the scrim); a
+    // later hover reports buttons 0 and must not keep dragging the grid.
+    fireEvent.pointerMove(s, { clientX: 100, clientY: 300, pointerId: 1, pointerType: 'mouse', buttons: 0 })
+    fireEvent.pointerMove(s, { clientX: 50, clientY: 300, pointerId: 1, pointerType: 'mouse', buttons: 0 })
+    expect(wrap.scrollLeft).toBe(600)
+  })
 })
 
 // The page is no longer frozen behind a sheet (owner, 28 Aug 26 — reversing

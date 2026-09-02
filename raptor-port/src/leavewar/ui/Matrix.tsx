@@ -15,8 +15,10 @@ import {
   groupOf,
   assignGroup,
   groupLabel,
+  matchesGroup,
   OTHER_ID,
   OTHER_LABEL,
+  SANS_GROUP_ID,
   inSquadron,
   isBiddable,
   isDuty,
@@ -27,6 +29,7 @@ import {
   inBidWindow,
   isWeekend,
   monthsIn,
+  oilLedgerOf,
   parseCell,
   raptorOwns,
   shiftedFrom,
@@ -34,10 +37,11 @@ import {
   type Group,
   type Person,
 } from '../engine'
-import { groupsInOrder, groupPriorityIds, lwHistEpoch, moveGroupTo, moveGroupPriorityTo, addEventRow, autoSortRoster, DEFAULT_EVENT_ROWS, displayRoster, eventRowUsed, getState, MAX_EVENT_ROWS, moveCells, movableCells, moveManningRowTo, moveProblem, moveEvent, moveEventProblem, moveRosterRow, orderedManningIds, removeEventRow, resetManningRules, setPostOut, setShowSans, type MoveResult, type EventMoveResult } from '../state/store'
+import { figureCtxOf, setBalance, groupsInOrder, groupPriorityIds, lwHistEpoch, moveGroupTo, moveGroupPriorityTo, autoSortRoster, displayRoster, getState, moveCells, movableCells, moveManningRowTo, moveProblem, moveEvent, moveEventProblem, moveRosterRow, orderedManningIds, resetManningRules, setPostOut, type MoveResult, type EventMoveResult } from '../state/store'
 import { BidPicker, DecisionSheet, PostOutSheet, RaptorSheet } from './BidPicker'
 import { CounterSheet, FigureBreakdownSheet, PersonFiguresSheet } from './CounterSheet'
 import { PersonSheet } from './PersonSheet'
+import { OilTracker } from './OilTracker'
 import { CountRows } from './CountRows'
 import { CounterForm } from './CounterForm'
 import { ManningSheet } from './ManningSheet'
@@ -45,7 +49,8 @@ import { EventRows } from './EventRows'
 import { EventSheet } from './EventSheet'
 import { monthInView } from './monthview'
 import { wireSelect, wireMove, daysBetween, paintLanding, clearLanding, paintEventLanding, eventMoveDateAt, earliestDate, type Cell, type Selection, type SelectCtx } from './select'
-import { GroupSheet } from './GroupSheet'
+import { SettingsSheet } from './SettingsSheet'
+import { groupColorOf, inkFor } from './groupColor'
 import { SelectSheet } from './SelectSheet'
 import { RemarksSheet } from './RemarksSheet'
 import { leaveInputAt } from '../sync'
@@ -139,7 +144,7 @@ export function Matrix() {
      memo keyed only on the selection went stale when a sync pass changed a
      selected cell under an armed move */
   const version = useVersion()
-  const { people, period, grid, states, requirements, role, viewer, eventDefs, openings, ledger, wars, figureOrder, manningHidden, eventRows, showSans, focusDate, focusSeq, qualCatalog } = getState()
+  const { people, period, grid, states, requirements, role, viewer, eventDefs, openings, ledger, wars, figureOrder, manningHidden, eventRows, focusDate, focusSeq, qualCatalog, groupColors } = getState()
   const dates = period.days.map(d => d.date)
   // Memoized on the store objects (the store replaces what it writes, so
   // identity IS change): rules-as-data made a day's evaluation walk every
@@ -151,15 +156,6 @@ export function Matrix() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [people, grid, states, requirements, period],
   )
-  // Whether the LAST event row still carries any text or band — the remove
-  // control is disabled while it does, so nothing is dropped unseen (owner,
-  // 18 Aug 26; the store refuses it too).
-  /* across EVERY war, not just the open one — eventRows is squadron-wide, so
-     the button must stay disabled while any year's war still uses the line
-     (review fix, 19 Aug 26; the store's removeEventRow guard is the same
-     check, this only keeps the button honest about it) */
-  const lastEventRowUsed = eventRowUsed(eventRows - 1)
-
   // The colour a whole day column takes from its events: light green for an
   // off day (a PH), orange for a no-leave day. Computed once per day and read
   // into both the header and the body cells, so a tag colours the whole
@@ -170,6 +166,7 @@ export function Matrix() {
   for (const d of period.days) {
     const k = columnKindFor(eventDefs, d, period.bands)
     if (k === 'off') evKind.set(d.date, 'evoff')
+    else if (k === 'free') evKind.set(d.date, 'evfree')
     else if (k === 'nolv') evKind.set(d.date, 'evnolv')
   }
 
@@ -220,6 +217,17 @@ export function Matrix() {
   // name and see these logics").
   const [whoOpen, setWhoOpen] = useState<string | null>(null)
   const [editingWho, setEditing] = useState<string | null>(null)
+  // The QUALIFICATIONS popover (owner, 3 Sep 26 — "hover the mouse over the
+  // person to see the qualifications they hold"). A person wears only their CAT
+  // chip; every other qualification (SC DAY, TF, NVG…) lives here, shown on a
+  // desktop hover or a phone tap of the chip. Positioned in screen coordinates
+  // so the frozen callsign column's overflow can never clip it. null = hidden.
+  const [qualPop, setQualPop] = useState<{ id: string; x: number; y: number } | null>(null)
+  // The OIL TRACKER (owner, 2 Sep 26): open on everyone (the toolbar button)
+  // or on one person (the Cinch sheet's OIL BAL row). null = closed.
+  // The OIL tracker: open on a person (scrolled to their row) or at the top;
+  // `focus` lights the box for the day just written on the grid.
+  const [oilTracker, setOilTracker] = useState<{ person: string | null; focus?: string | null } | null>(null)
   // Which event cell the admin has tapped to edit, or null. Keyed by line +
   // day; the Event sheet reads the current text or band off the store.
   // `to` is set only when a DRAG selected a span (owner, 27 Aug 26) — the sheet
@@ -232,17 +240,17 @@ export function Matrix() {
   // NEW counter, an id editing that one. Reached from + Counter in the
   // Rearrange tools and from the explainer sheet's Edit counter… button.
   const [counterEdit, setCounterEdit] = useState<string | null | false>(false)
-  // The admin group editor (owner, 28 Aug 26) — opened from the corner cell
-  // above CS/Name.
-  const [groupEdit, setGroupEdit] = useState(false)
+  // The ⚙ SETTINGS sheet (owner, 3 Sep 26) — all admin config (counters, event
+  // rows, Show SANS, the roster groups), opened from the top-row ⚙.
+  const [settings, setSettings] = useState(false)
   // Edit-mode roster rearranging (owner, 18 Aug 26). Admin-only view state: it
   // turns the drag handles on, so an admin reading the grid does not nudge a
-  // row by accident. Auto-sort stays available without it.
+  // row by accident. Started from the ⠿ in the grid corner (owner, 3 Sep 26).
   const [arranging, setArranging] = useState(false)
   // "Reset counters" arms rather than firing (it discards custom counters);
-  // disarmed whenever Rearrange closes so it never sits armed unseen.
+  // disarmed whenever the Settings sheet closes so it never sits armed unseen.
   const [armCounterReset, setArmCounterReset] = useState(false)
-  useEffect(() => { if (!arranging) setArmCounterReset(false) }, [arranging])
+  useEffect(() => { if (!settings) setArmCounterReset(false) }, [settings])
   // Pointer-based drag (owner, 18 Aug 26 — the roster rearranges on a phone
   // too, where HTML5 drag-and-drop does nothing). `dragId`/`dragOverRef` are
   // refs because they change many times a second during a drag and must not
@@ -256,7 +264,13 @@ export function Matrix() {
      no-op), and the last position of the roster was unreachable — the store's
      move-to-end path (beforeId null) had no gesture that produced it. The
      lower half of a row now means "after this row", so both work. */
-  const dragOverRef = useRef<{ id: string, after: boolean } | null>(null)
+  /* `el` is the hovered row's own element, so the drop can read the ordered
+     list from ITS container (bug hunt, 4 Sep 26): the ⚙ groups list and the
+     grid's category headings share one `data-grow` vocabulary, so a
+     document-wide query while both were on screen (settings open in rearrange
+     mode) mixed the two lists and could land a "drop after the last group"
+     before the first. */
+  const dragOverRef = useRef<{ id: string, after: boolean, el: Element } | null>(null)
   // The teardown for a drag in flight, so an unmount (role change, war switch)
   // can end it — otherwise its window listeners leak and the row stays stuck
   // in the .dragging highlight.
@@ -290,7 +304,7 @@ export function Matrix() {
       }
       const cur = dragOverRef.current
       if (overId !== (cur?.id ?? null) || after !== (cur?.after ?? false)) {
-        dragOverRef.current = overId ? { id: overId, after } : null
+        dragOverRef.current = overId && row ? { id: overId, after, el: row } : null
         setDragOver(overId); setDragAfter(after)
       }
     }
@@ -320,7 +334,10 @@ export function Matrix() {
            store's before-itself guard would have to save us. */
         let beforeId: string | null = over.id
         if (over.after) {
-          const rows = [...document.querySelectorAll(cfg.sel)]
+          /* The follower comes from the hovered row's OWN list (its parent), not
+             the whole document — see dragOverRef. */
+          const scope: ParentNode = over.el.parentElement ?? document
+          const rows = [...scope.querySelectorAll(cfg.sel)]
             .map(el => cfg.idOf(el)).filter((x): x is string => x != null)
           const ix = rows.indexOf(over.id)
           beforeId = ix >= 0 ? (rows[ix + 1] ?? null) : over.id
@@ -360,9 +377,10 @@ export function Matrix() {
   useEffect(() => { if (role !== 'admin' && arranging) setArranging(false) }, [role, arranging])
   const shownIx = Math.max(0, figures.findIndex(f => f.id === shownId))
   const shown = figures[shownIx]
-  // Everything a figure needs to read a person's number. `wars` is LeaveWar[],
-  // which satisfies LeaveSource[] structurally, so it passes straight in.
-  const figureCtx = { openings, ledger, sources: wars }
+  // Everything a figure needs to read a person's number — the store's one
+  // builder, so this column, the sheets and the tracker read the same OIL
+  // policy and the same "today" (a hand-built literal here used to drift).
+  const figureCtx = figureCtxOf()
   const cycle = (by: number) => setShownId(figures[(shownIx + by + figures.length) % figures.length].id)
 
   // Swipe across the counter column to cycle it — the fast path, beside the
@@ -694,6 +712,92 @@ export function Matrix() {
      slugged so a colon or space can never break the class. */
   const groupClass = (id: string) => `g-${id.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`
 
+  /* What the quals popover lists for a person: ONLY the qualifications the
+     admin has put on the page as groups (owner, 3 Sep 26 — "only the
+     qualifications that were added to display will be shown when i hover"),
+     in page order, each in the colour picked for that group; plus SXO in its
+     gold whenever the SXO group is on the page (the owner counts SXO among
+     their quals). A qualification held but not displayed is not listed, so the
+     popover reads as the page's own legend. */
+  const shownQuals = (p: Person): { label: string; color: string }[] => {
+    const out: { label: string; color: string }[] = []
+    // `groupDefs` is this render's one read of the page's groups (above) —
+    // asked per row, twice (grid + frozen overlay), so not re-derived here.
+    for (const d of groupDefs) {
+      if (d.kind === 'qual' && matchesGroup(p, d)) {
+        out.push({ label: labelOfGroup(d.id), color: groupColorOf(d.id, groupColors) ?? '#39424D' })
+      } else if (d.kind === 'cat' && d.g === 'SXO' && p.sxo) {
+        out.push({ label: 'SXO', color: '#E8B23B' })
+      }
+    }
+    return out
+  }
+  /* Open the quals popover anchored to the chip just interacted with. Placed in
+     fixed (screen) coordinates read from the chip's rect, clamped to stay on
+     screen and flipped above the chip when it would fall off the bottom. */
+  const openQualsAt = (id: string, el: HTMLElement) => {
+    const r = el.getBoundingClientRect()
+    const W = 240, EST_H = 108
+    const x = Math.max(6, Math.min(r.left, window.innerWidth - W - 6))
+    const below = r.bottom + 6
+    const y = below + EST_H > window.innerHeight - 6 ? Math.max(6, r.top - EST_H - 6) : below
+    setQualPop({ id, x, y })
+  }
+  /* The chip: the person's CAT, coloured by CAT (an SXO keeps gold wherever they
+     sit). When they hold a displayed qualification it becomes a live control —
+     hover (desktop) or tap (phone) to list them; the click is swallowed so it
+     never also opens the figures sheet the callsign owns. */
+  const catChip = (p: Person, testid?: string) => {
+    const quals = shownQuals(p)
+    const has = quals.length > 0
+    return (
+      <span
+        className={`catchip ${catClass(p)}${has ? ' has-quals' : ''}`}
+        data-testid={testid}
+        aria-label={has ? `${p.callsign} qualifications: ${quals.map(q => q.label).join(', ')}` : undefined}
+        onPointerEnter={has ? e => { if (e.pointerType === 'mouse') openQualsAt(p.id, e.currentTarget) } : undefined}
+        onPointerLeave={has ? e => { if (e.pointerType === 'mouse') setQualPop(null) } : undefined}
+        // A second tap on the SAME chip closes it (the phone has no pointer to
+        // leave with); a tap on another chip moves it there.
+        onClick={has ? e => { e.stopPropagation(); if (qualPop?.id === p.id) setQualPop(null); else openQualsAt(p.id, e.currentTarget) } : undefined}
+      >{catText(p) || 'GND'}</span>
+    )
+  }
+  /* While the popover is up: it is anchored in screen coordinates, so any scroll
+     or resize leaves it stranded — close it. And a pointer-down anywhere that is
+     not a chip or the popover itself dismisses it (the phone's tap-away, and the
+     desktop's click-elsewhere) — done with a listener rather than a full-screen
+     scrim, which would sit over the chip and swallow the very click that opens
+     it, and block the grid while open. */
+  useEffect(() => {
+    if (!qualPop) return
+    const close = () => setQualPop(null)
+    const onDown = (e: PointerEvent) => {
+      const t = e.target as HTMLElement | null
+      if (t && !t.closest('.qualpop') && !t.closest('.catchip')) setQualPop(null)
+    }
+    /* Escape peels the popover first, before any sheet's own Escape (Sheet.tsx
+       listens on `document`; the window capture runs ahead of it). */
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return
+      // Kept-mounted guard (as Sheet.tsx): act only while Leave War is showing.
+      const pg = document.getElementById('page-leavewar')
+      if (pg && !pg.classList.contains('on')) return
+      e.stopPropagation()
+      setQualPop(null)
+    }
+    window.addEventListener('scroll', close, true)
+    window.addEventListener('resize', close)
+    document.addEventListener('pointerdown', onDown, true)
+    window.addEventListener('keydown', onKey, true)
+    return () => {
+      window.removeEventListener('scroll', close, true)
+      window.removeEventListener('resize', close)
+      document.removeEventListener('pointerdown', onDown, true)
+      window.removeEventListener('keydown', onKey, true)
+    }
+  }, [qualPop])
+
   // The month strip's buttons are ABSOLUTELY positioned (they must not widen
   // the frozen columns — see matrix.css), so the sticky cell they sit in has to
   // RESERVE their height by hand. That height was a hardcoded 72px (two wrapped
@@ -968,22 +1072,23 @@ export function Matrix() {
   // answering one id would break every query that expects the real one.
   const bracketRow = (testids: boolean) => (
     <tr className="mbrak" data-testid={testids ? 'month-bracket' : undefined}>
-      {/* The corner cell above CS/Name was empty (owner circled it, 28 Aug 26).
-          It now carries the admin's GROUP EDITOR opener — the control belongs
-          beside the column it configures, and this is the only spare space in
-          the frozen pair. Admin only; the store refuses a member's write
-          anyway, and a control that does nothing is worse than none. The
-          mirror copy carries no testid, like every other mirrored cell. */}
+      {/* The corner cell above CS/Name carries the admin's ⠿ REARRANGE toggle
+          (owner, 3 Sep 26 — "rearrange could be done on the grid main page
+          itself"). It sits right at the head of the roster column it reorders;
+          tapping it turns on the on-grid drag handles (person rows AND category
+          headings) and shows the rearrange bar. The old ⚙ Groups editor moved
+          into the top-row ⚙ Settings. Admin only; the mirror copy carries no
+          testid, like every other mirrored cell. */}
       <th className="brakhd" colSpan={2}>
         {role === 'admin' && (
           <button
-            className="grpedit"
-            data-testid={testids ? 'group-edit' : undefined}
+            className={`grpedit${arranging ? ' on' : ''}`}
+            data-testid={testids ? 'roster-arrange' : undefined}
             tabIndex={testids ? 0 : -1}
-            title="Choose which groups the left column shows"
-            aria-label="Choose which groups the left column shows"
-            onClick={() => setGroupEdit(true)}
-          >⚙ Groups</button>
+            aria-pressed={arranging}
+            title={arranging ? 'Finish rearranging the roster' : 'Rearrange the roster — drag people and category blocks'}
+            onClick={() => setArranging(a => !a)}
+          >⠿ {arranging ? 'Rearranging' : 'Rearrange'}</button>
         )}
       </th>
       {brackets.map(b => (
@@ -1683,103 +1788,62 @@ export function Matrix() {
           >
             {countsOpen ? '▾' : '▸'} Manning
           </button>
-          {/* Roster arrangement (owner, 18 Aug 26), admin only: Auto-sort
-              re-groups everyone into the categorised order; Rearrange turns on
-              the edit-mode drag handles AND the manning rows' reorder/hide
-              controls (owner, 18 Aug 26 — one edit mode for both). A member
-              sees neither — the arrangement is management's (the figureOrder
-              rule). */}
+          {/* ONE ⚙ SETTINGS button (owner, 3 Sep 26 — "this row will just have a
+              settings icon and an OIL tracker"). Every admin CONFIG control —
+              counters, event rows, Show SANS, the roster groups — folds into the
+              sheet it opens. Rearranging is NOT here: that is a hands-on-the-grid
+              job, started from the ⠿ in the grid corner (see bracketRow). Admin
+              only; a member has no config to reach. */}
           {role === 'admin' && (
-            <div className="rostertools">
-              <button
-                className={`rtbtn${arranging ? ' on' : ''}`}
-                data-testid="roster-arrange"
-                aria-pressed={arranging}
-                title="Rearrange or hide the roster and the count rows"
-                onClick={() => setArranging(a => !a)}
-              >
-                ⠿ {arranging ? 'Done' : 'Rearrange'}
-              </button>
-              <button
-                className="rtbtn pri"
-                data-testid="roster-autosort"
-                title="Group everyone into SXO, IP, OPS P, IWSO, OPS W, OCU, Personnel"
-                onClick={autoSortRoster}
-              >
-                ⇅ Auto-sort
-              </button>
-              {/* Add / remove EVENT rows — only in Rearrange (edit) mode, so
-                  the normal view stays clean (owner, 18 Aug 26: "in edit mode
-                  for admin I should have the option to add more event rows").
-                  Remove is disabled while the last row still carries anything,
-                  so nothing is dropped unseen (the store refuses it anyway). */}
-              {arranging && (
-                <>
-                  <button
-                    className="rtbtn"
-                    data-testid="event-add"
-                    disabled={eventRows >= MAX_EVENT_ROWS}
-                    title={eventRows >= MAX_EVENT_ROWS ? `At most ${MAX_EVENT_ROWS} event rows` : 'Add another event row'}
-                    onClick={() => addEventRow()}
-                  >
-                    ＋ Event row
-                  </button>
-                  {eventRows > DEFAULT_EVENT_ROWS && (
-                    <button
-                      className="rtbtn"
-                      data-testid="event-remove"
-                      disabled={lastEventRowUsed}
-                      title={lastEventRowUsed ? 'Clear the last event row before removing it' : 'Remove the last event row'}
-                      onClick={() => removeEventRow()}
-                    >
-                      － Event row
-                    </button>
-                  )}
-                  {/* THE SANS ENABLE FUNCTION (owner, 18 Aug 26): SANS aircrew
-                      are off the roster by default; this puts them on (and
-                      takes them off again). Lives in Rearrange with the other
-                      roster-shape controls, admin by the same gate. */}
-                  <button
-                    className={`rtbtn${showSans ? ' on' : ''}`}
-                    data-testid="sans-toggle"
-                    aria-pressed={showSans}
-                    title={showSans ? 'Take SANS aircrew off the leave war roster' : 'Put SANS aircrew on the leave war roster'}
-                    onClick={() => setShowSans(!showSans)}
-                  >
-                    {showSans ? '✓ SANS shown' : 'Show SANS'}
-                  </button>
-                  {/* Build a counting rule from scratch (owner, 19 Aug 26 —
-                      the counters are fully customisable). Lives with the
-                      other manning-shape controls, same admin gate. */}
-                  <button
-                    className="rtbtn"
-                    data-testid="counter-add"
-                    title="Add a manning counter — pick who it counts and when it turns amber or red"
-                    onClick={() => setCounterEdit(null)}
-                  >
-                    ＋ Counter
-                  </button>
-                  {/* The road back after deleting or mangling a built-in row:
-                      the seeded counter set, whole. It DISCARDS custom
-                      counters, so it arms — first tap asks, second does it
-                      (the counter form's own delete idiom). */}
-                  <button
-                    className={`rtbtn${armCounterReset ? ' arm' : ''}`}
-                    data-testid="counter-reset-all"
-                    title="Put the built-in counters back — counters you built are discarded"
-                    onClick={() => {
-                      if (!armCounterReset) { setArmCounterReset(true); return }
-                      setArmCounterReset(false)
-                      resetManningRules()
-                    }}
-                  >
-                    {armCounterReset ? 'Really reset?' : 'Reset counters'}
-                  </button>
-                </>
-              )}
-            </div>
+            <button
+              className="rtbtn gear"
+              data-testid="settings-open"
+              title="Settings — counters, event rows and roster groups"
+              aria-label="Settings — counters, event rows and roster groups"
+              onClick={() => setSettings(true)}
+            >
+              ⚙
+            </button>
           )}
+          <span className="card-spring" />
+          {/* The OIL TRACKER (owner, 2 Sep 26): every person's OIL balance, the
+              ledger behind each, and the admin's crediting. BOTH roles — a member
+              reads, an admin edits; the sheet decides which controls to draw and
+              the store refuses a member's write. */}
+          <button
+            className="rtbtn"
+            data-testid="oil-tracker"
+            title="OIL balances, credits and history"
+            onClick={() => setOilTracker({ person: null })}
+          >
+            ◷ OIL tracker
+          </button>
         </div>
+        {/* THE ON-GRID REARRANGE BAR (owner, 3 Sep 26 — rearrange happens on the
+            grid, not in a window). Shown only while an admin is rearranging; it is
+            NOT a Sheet (a Sheet's scrim would swallow the very grid taps the drag
+            needs). Auto-sort and Done live here, beside the grid they act on. */}
+        {role === 'admin' && arranging && (
+          <div className="lw-rearrange-bar" data-testid="rearrange-bar">
+            <span className="rb-lead">⠿ Rearranging — drag people or a category heading to reorder</span>
+            <button
+              className="rtbtn"
+              data-testid="roster-autosort"
+              title="Group everyone into SXO, IP, OPS P, IWSO, OPS W, OCU, Personnel"
+              onClick={autoSortRoster}
+            >
+              ⇅ Auto-sort
+            </button>
+            <button
+              className="rtbtn on"
+              data-testid="roster-arrange-done"
+              title="Finish rearranging"
+              onClick={() => setArranging(false)}
+            >
+              ✓ Done
+            </button>
+          </div>
+        )}
         <div
           className={`mx-outer${bandActive && bandTop != null ? ' mx-banded' : ''}${sdaActive ? ' lw-sda' : ''}`}
           ref={mxOuterRef}
@@ -1901,7 +1965,7 @@ export function Matrix() {
                   if (g !== prevG) {
                     const n = roster.filter(x => homeOf(x) === g).length
                     heads.push(
-                      <tr key={`grp-${g}`} className={`grp ${groupClass(g)}${folded.has(g) ? ' folded' : ''}`} data-testid={`group-${g}`}>
+                      <tr key={`grp-${g}`} className={`grp ${groupClass(g)}${folded.has(g) ? ' folded' : ''}${draggingId === g ? ' dragging' : ''}${dragOver === g && draggingId !== g ? (dragAfter ? ' dragover after' : ' dragover') : ''}`} data-testid={`group-${g}`} data-grow={arranging && g !== OTHER_ID && g !== SANS_GROUP_ID ? g : undefined}>
                         {/* The label sits in a sticky td spanning only the two
                             frozen columns — the SAME technique .who/.bal use —
                             so it stays pinned to the left as the year scrolls;
@@ -1929,7 +1993,23 @@ export function Matrix() {
                           onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleFold(g) } }}
                         >
                           <div className="grphd-in">
-                            <span className="gsw" aria-hidden="true" />
+                            {/* The category-heading drag grip (owner, 3 Sep 26 —
+                                reorder the blocks on the grid). Only while
+                                rearranging, and only for a movable group (not the
+                                auto SANS group, not Everyone-else). Its pointerdown
+                                starts the drag and its click is swallowed, so a tap
+                                on the grip never folds the group. */}
+                            {arranging && g !== OTHER_ID && g !== SANS_GROUP_ID && (
+                              <span
+                                className="ghd-grip"
+                                data-testid={`gdrag-${g}`}
+                                title={`Drag to move ${labelOfGroup(g)}`}
+                                style={{ touchAction: 'none' }}
+                                onPointerDown={e => { e.stopPropagation(); startRowDrag(e, g, GROUP_DRAG) }}
+                                onClick={e => e.stopPropagation()}
+                              >⠿</span>
+                            )}
+                            <span className="gsw" aria-hidden="true" style={groupColorOf(g, groupColors) ? { background: groupColorOf(g, groupColors) } : undefined} />
                             <span className="gcar" aria-hidden="true">{folded.has(g) ? '▸' : '▾'}</span>
                             <span className="gname">{labelOfGroup(g)}</span>
                             <span className="gcount">· {n}</span>
@@ -1999,8 +2079,8 @@ export function Matrix() {
                               title={`${p.callsign} — every figure`}
                               onClick={() => setWhoOpen(p.id)}
                             >
-                              <span className="cs">{p.callsign}</span>
-                              <span className={`catchip ${catClass(p)}`} data-testid={`cat-${p.id}`}>{catText(p) || 'GND'}</span>
+                              <span className={`cs seat-${p.seat}`}>{p.callsign}</span>
+                              {catChip(p, `cat-${p.id}`)}
                             </button>
                             {/* The free-text role-label edit box is GONE (owner,
                                 28 Aug 26 — "i can edit personnel, dont need to
@@ -2270,7 +2350,7 @@ export function Matrix() {
                     <tr key={`b-grp-${item.g}`} data-band-key={`group-${item.g}`} className={`grp ${groupClass(item.g)}${folded.has(item.g) ? ' folded' : ''}`}>
                       <td className="grphd" colSpan={2} onClick={() => toggleFold(item.g)}>
                         <div className="grphd-in">
-                          <span className="gsw" />
+                          <span className="gsw" style={groupColorOf(item.g, groupColors) ? { background: groupColorOf(item.g, groupColors) } : undefined} />
                           <span className="gcar">{folded.has(item.g) ? '▸' : '▾'}</span>
                           <span className="gname">{item.label}</span>
                           <span className="gcount">· {item.n}</span>
@@ -2295,8 +2375,8 @@ export function Matrix() {
                       <td className="who">
                         <div className="whorow">
                           <button className="whoedit" tabIndex={-1} onClick={() => setWhoOpen(p.id)}>
-                            <span className="cs">{p.callsign}</span>
-                            <span className={`catchip ${catClass(p)}`}>{catText(p) || 'GND'}</span>
+                            <span className={`cs seat-${p.seat}`}>{p.callsign}</span>
+                            {catChip(p)}
                           </button>
                         </div>
                       </td>
@@ -2475,8 +2555,44 @@ export function Matrix() {
         <PersonFiguresSheet
           person={people.find(p => p.id === whoOpen)!}
           onOpenFigure={figureId => { setBalOpen({ person: whoOpen, figureId }); setWhoOpen(null) }}
+          onOpenOil={() => { setOilTracker({ person: whoOpen }); setWhoOpen(null) }}
+          onSetBalance={role === 'admin' ? (counter, target) => { setBalance(whoOpen, counter, target) } : undefined}
           onEdit={role === 'admin' ? () => { setEditing(whoOpen); setWhoOpen(null) } : undefined}
           onClose={() => setWhoOpen(null)}
+        />
+      )}
+      {/* The qualifications popover (owner, 3 Sep 26). A person wears only their
+          CAT chip; this is where every other qualification shows, on a desktop
+          hover or a phone tap of the chip. It ignores pointer events (never eats
+          a tap) and is dismissed by the outside-pointer listener above. */}
+      {qualPop && people.some(p => p.id === qualPop.id) && (() => {
+        const p = people.find(x => x.id === qualPop.id)!
+        const quals = shownQuals(p)
+        return (
+          <div className="qualpop" role="tooltip" data-testid="qualpop" style={{ left: qualPop.x, top: qualPop.y }}>
+            <div className="qualpop-hd">{p.callsign} · quals</div>
+            {quals.length
+              ? (
+                <div className="qualpop-list">
+                  {quals.map(q => (
+                    <span className="qualpill" key={q.label} style={{ background: q.color, color: inkFor(q.color) }}>{q.label}</span>
+                  ))}
+                </div>
+              )
+              : <div className="qualpop-none">No qualifications recorded</div>}
+          </div>
+        )
+      })()}
+      {/* The OIL tracker — everyone's balances, or one person's ledger. The
+          person guard matches the sheets above: a row can go while it is up. */}
+      {oilTracker && (oilTracker.person === null || people.some(p => p.id === oilTracker.person)) && (
+        <OilTracker
+          key={oilTracker.person ?? '*'}
+          person={oilTracker.person}
+          focus={oilTracker.focus ?? null}
+          onClose={() => setOilTracker(null)}
+          /* A credit lands → the column shows OIL BAL (owner, 2 Sep 26). */
+          onGranted={() => setShownId('oilbal')}
         />
       )}
       {editingWho && people.some(p => p.id === editingWho) && (
@@ -2512,15 +2628,29 @@ export function Matrix() {
       {counterEdit !== false && (
         <CounterForm key={counterEdit ?? 'new'} ruleId={counterEdit} onClose={() => setCounterEdit(false)} />
       )}
-      {/* The group editor. Admin only at the affordance AND at every store
-          writer it calls — the standing role doctrine. */}
-      {groupEdit && role === 'admin' && (
-        <GroupSheet
-          onClose={() => setGroupEdit(false)}
-          onRowDragStart={(e, id) => startRowDrag(e, id, GROUP_DRAG)}
+      {/* The ⚙ SETTINGS sheet — all admin config (counters, event rows, Show
+          SANS, the roster groups). Admin only at the affordance AND at every
+          store writer it calls — the standing role doctrine. The who-wins list
+          reorders through the one drag machine (the display order is dragged on
+          the grid instead, see the category headings below). */}
+      {settings && role === 'admin' && (
+        <SettingsSheet
+          onClose={() => setSettings(false)}
+          // + Counter opens the counter builder, a sheet of its own — close the
+          // settings sheet so the two do not stack (both `.bidsheet`, same z-index,
+          // so an open settings row would sit over the builder and eat its taps).
+          onAddCounter={() => { setSettings(false); setCounterEdit(null) }}
+          armCounterReset={armCounterReset}
+          onResetCounters={() => {
+            if (!armCounterReset) { setArmCounterReset(true); return }
+            setArmCounterReset(false)
+            resetManningRules()
+          }}
+          onGroupDragStart={(e, id) => startRowDrag(e, id, GROUP_DRAG)}
           onPriorityDragStart={(e, id) => startRowDrag(e, id, GROUP_PRIO_DRAG)}
           draggingId={draggingId}
           dragOver={dragOver}
+          dragAfter={dragAfter}
         />
       )}
       {open && !canRemark && !openPostedOut && !raptorOwns(states, open.id, open.date)
@@ -2554,10 +2684,24 @@ export function Matrix() {
              nothing (the owner's sum leaves it out) and does not snap. */
           onWrote={code => {
             const cell = parseCell(code)
-            if (!cell) return
-            const id = cell.type.toLowerCase()
-            if (figures.some(f => f.id === id)) setShownId(id)
-            else if (cell.type === 'ATTC' || cell.type === 'HL') setShownId('med')
+            const earns = (codeOf(code)?.earnsOil ?? 0) > 0
+            if (cell) {
+              const id = cell.type.toLowerCase()
+              if (figures.some(f => f.id === id)) setShownId(id)
+              else if (cell.type === 'ATTC' || cell.type === 'HL') setShownId('med')
+            }
+            /* An ADMIN's manual OIL-family write — OIL taken, or an FO/HO
+               credit typed by hand — opens the tracker on that person with
+               the day's box lit (owner, 2 Sep 26: "whenever I admin input
+               an OIL on the leave war manually, it will bring me to the OIL
+               tracker page to include the reason"). A member's own OIL bid
+               stays where it is. */
+            if (role === 'admin' && (cell?.type === 'OIL' || earns) && open) {
+              const who = open.id, when = open.date
+              close()
+              setShownId('oilbal')
+              setOilTracker({ person: who, focus: when })
+            }
           }}
           /* What the balance would read AFTER this write, so the sheet can
              ask before taking someone negative. Computed here because this
@@ -2565,7 +2709,12 @@ export function Matrix() {
           wouldLeave={(code, days) => {
             const spends = codeOf(code)?.spends
             if (!spends) return null
-            const left = balanceOf(openings, ledger, wars, open.id, spends.counter)
+            // OIL reads through the tracker (FIFO + expiry) so this warning
+            // and the OIL BAL figure never disagree; every other counter is
+            // the plain sum.
+            const left = spends.counter === 'oil'
+              ? oilLedgerOf(figureCtx, open.id).balance
+              : balanceOf(openings, ledger, wars, open.id, spends.counter)
             return { counter: spends.counter, after: left - spends.amount * days }
           }}
           onClose={close}

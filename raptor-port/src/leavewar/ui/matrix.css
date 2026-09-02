@@ -149,6 +149,13 @@
   --bal-w: 72px;
   --sxo: #E8B23B;
   --pers: #E7ECF1;
+  /* SANS group swatch (owner, 3 Sep 26 — SANS as their own category at the foot).
+     A teal distinct from every CAT/qual colour above, so the SANS block reads as
+     the separate, external pool it is. */
+  --sans: #57C9A6;
+  /* Admin-added QUALIFICATION groups carry a PICKED colour (owner, 3 Sep 26 —
+     "allow me to pick the colour i want"), painted inline from the palette in
+     ui/groupColor.ts, so there is no per-group rule here. */
 }
 
 .mx .who,
@@ -486,6 +493,15 @@
   box-shadow: inset 0 -2px 0 rgba(242, 139, 46, .75);
 }
 
+/* The management OFF DAY (owner, 2 Sep 26): light GREY down the column —
+   a day given to everyone, on which nobody earns OIL. Same specificity and
+   cascade position as the two above. */
+.mx .mxhead th.day.evfree {
+  background: rgba(180, 190, 200, .2);
+  color: #D3DAE1;
+  box-shadow: inset 0 -2px 0 rgba(180, 190, 200, .6);
+}
+
 /* Inside a tinted run every cell shares the same fill, so the border is the
    ONLY column separator — and a grey line sinks into a coloured fill however
    light it is (owner, 26 Aug 26, twice: the hairline was lifted a step and
@@ -505,6 +521,12 @@
   background: rgba(242, 139, 46, .14);
   border-right-color: rgba(242, 139, 46, .34);
   border-bottom-color: rgba(242, 139, 46, .34);
+}
+
+.mx td.evfree {
+  background: rgba(180, 190, 200, .12);
+  border-right-color: rgba(180, 190, 200, .3);
+  border-bottom-color: rgba(180, 190, 200, .3);
 }
 
 .mx .cat {
@@ -1041,6 +1063,10 @@
 .mx tbody tr.me .who {
   color: var(--accent);
 }
+/* The full-width seat bar (4 Sep 26) covers most of that tinted panel, so the
+   "this row is you" cue rides the bar itself as a thin accent ring (bug hunt,
+   4 Sep 26) — the seat colour and ink are untouched. */
+.mx tbody tr.me .who .whoedit .cs { box-shadow: inset 0 0 0 1px var(--accent); }
 
 /* ---- Categorised roster (owner, 18 Aug 26) ------------------------------ */
 
@@ -1049,7 +1075,6 @@
    card clips its overflow — so +Counter and Reset counters fell off the
    right edge with no way to reach them. Wrapping flows them onto as many
    lines as the width needs; desktop still fits them on one. */
-.rostertools { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 .rtbtn {
   background: var(--panel-2);
   border: 1px solid var(--edge-2);
@@ -1066,6 +1091,33 @@
 .rtbtn.on { background: var(--raised); border-color: var(--accent); color: var(--accent); }
 /* An armed destructive button (Reset counters): the first tap only asks. */
 .rtbtn.arm { border-color: rgba(255, 92, 92, .6); color: #ff5c5c; }
+/* The one ⚙ SETTINGS button (owner, 3 Sep 26) — icon only, the word dropped. */
+.rtbtn.gear { color: var(--accent); font-size: 15px; line-height: 1; padding: 5px 10px; }
+.rtbtn.gear:hover { border-color: var(--accent); }
+/* Pushes the OIL tracker to the far right of the top row, leaving Manning + ⚙ on
+   the left. On a phone the row wraps and this simply takes the slack on its line. */
+.card-spring { flex: 1 1 auto; }
+
+/* THE ON-GRID REARRANGE BAR (owner, 3 Sep 26 — rearrange happens on the grid).
+   A slim accent-tinted strip under the card header while an admin is rearranging;
+   Auto-sort and Done sit here, beside the grid they act on. NOT a sheet (a scrim
+   would swallow the drag). */
+.lw-rearrange-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 8px 14px;
+  background: rgba(59, 198, 232, .10);
+  border-bottom: 1px solid rgba(59, 198, 232, .45);
+}
+.lw-rearrange-bar .rb-lead {
+  flex: 1 1 auto;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: .02em;
+  color: var(--accent);
+}
 
 /* Group heading. The label rides a sticky td spanning the two frozen columns
    (the .who/.bal technique), pinned to the left as the year scrolls; its text
@@ -1124,6 +1176,29 @@
 .grp.g-opsw .gsw { background: linear-gradient(90deg, var(--q-a), var(--q-d)); }
 .grp.g-ocu  .gsw { background: var(--q-ocu); }
 .grp.g-pers .gsw { background: var(--pers); }
+.grp.g-sans .gsw { background: var(--sans); }
+
+/* The category-heading drag grip (owner, 3 Sep 26 — reorder the blocks on the
+   grid, in rearrange mode). Lives inside the width:0 `.grphd-in` beside the
+   swatch; it paints and is tappable where it sits even though its parent adds no
+   width (same trick the heading label uses). */
+.grphd-in .ghd-grip {
+  flex: none;
+  color: var(--accent);
+  font-size: 12px;
+  line-height: 1;
+  cursor: grab;
+  padding: 0 3px 0 0;
+  touch-action: none;
+}
+.grphd-in .ghd-grip:active { cursor: grabbing; }
+/* Drag feedback on a category block, mirroring the roster row: the block being
+   carried fades, the one it would land on takes an accent top edge. */
+.mx tbody tr.grp.dragging { opacity: .5; }
+.mx tbody tr.grp.dragover td.grphd { box-shadow: inset 0 2px 0 var(--accent); }
+/* …and the BOTTOM edge when the pointer is in the heading's lower half — the
+   drop lands after it (the roster rows' `.after` rule, bug hunt 4 Sep 26). */
+.mx tbody tr.grp.dragover.after td.grphd { box-shadow: inset 0 -2px 0 var(--accent); }
 
 /* The CAT sub-heading inside an ops group — DESKTOP ONLY. On a phone the
    coloured chip carries the CAT and these headings would only cost height
@@ -1183,6 +1258,38 @@
      cut off" gate reads scrollWidth vs clientWidth). */
   min-width: 0;
 }
+/* The callsign wears the SEAT colour Raptor's pucks wear (owner, 3 Sep 26 —
+   "have the pucks pilot and wso colour to it as well"), the same olive (pilot)
+   / green (WSO) the flight line uses, so a seat reads the same in both apps
+   without a legend.
+
+   IT FILLS THE WHOLE NAME BAR, not just the name (owner, 4 Sep 26 — "make the
+   entire bar of the cs/name to be filled … not only based on how long the name
+   is"): `flex: 1` grows the puck across the frozen column up to the CAT chip, so
+   every row shows a solid seat bar of the same length whatever the callsign.
+   A long name still ellipsises inside it (the nowrap/overflow above) rather
+   than pushing the chip.
+
+   THE FILLS ARE DEEPER than the flight-line pucks (owner, 4 Sep 26 — "make the
+   colour darker … still able to see the pilot or wso colour"): a full-width bar
+   in the mid-tone read too loud across every row, so these are darker takes of
+   the same hues — still plainly olive and green, easier on the eye as a solid
+   run, and the light ink pops. Explicit hex, NOT `var(--fcp/--rcp)`: this is a
+   Leave-War-only darkening and Raptor's flight line keeps its own tone (this
+   file's preamble — never darken it by editing scheduler.css). Ground crew keep
+   the light personnel bar, softened off pure white so a full-width run of it
+   does not glare next to the dark aircrew bars. */
+.mx .who .whoedit .cs.seat-pilot,
+.mx .who .whoedit .cs.seat-wso,
+.mx .who .whoedit .cs.seat-gnd {
+  flex: 1 1 auto;
+  padding: 2px 8px;
+  border-radius: 4px;
+  line-height: 1.3;
+}
+.mx .who .whoedit .cs.seat-pilot { background: #423F1C; color: var(--fcp-ink, #FBFAF0); }
+.mx .who .whoedit .cs.seat-wso   { background: #13402F; color: var(--rcp-ink, #EAFBF3); }
+.mx .who .whoedit .cs.seat-gnd   { background: #E7EBF0; color: #18202C; box-shadow: inset 0 0 0 1px var(--pers-line, #7C8AA0); }
 .catchip {
   flex: none;
   font-size: 9px;
@@ -1201,6 +1308,47 @@
 .catchip.q-sxo { background: var(--sxo);   color: #2a1e02; }
 .catchip.q-pers{ background: var(--pers);  color: #12161b; }
 .catchip.q-ops { background: var(--edge-2); color: var(--ink); }
+/* The chip is a live control: hover it (desktop) or tap it (phone) to see the
+   qualifications the person holds (owner, 3 Sep 26 — "hover the mouse over the
+   person to see the qualifications they hold"). A cursor + focus ring say so;
+   the popover itself is `.qualpop`, positioned in JS so the frozen column's
+   overflow can never clip it. */
+.catchip.has-quals { cursor: help; }
+.catchip:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+.qualpop {
+  position: fixed;
+  z-index: 61;
+  max-width: 240px;
+  padding: 8px 9px 9px;
+  background: var(--panel, #12161b);
+  border: 1px solid var(--edge);
+  border-radius: 9px;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, .5);
+  pointer-events: none;               /* purely informational; never eats taps */
+}
+.qualpop-hd {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: 6px;
+}
+.qualpop-list { display: flex; flex-wrap: wrap; gap: 4px; }
+/* Each pill wears its GROUP's colour, painted inline (owner, 3 Sep 26 — "the
+   qualifications will be in the colour code that i selected for the group"). */
+.qualpill {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .02em;
+  padding: 2px 6px;
+  border-radius: 5px;
+  background: var(--edge-2);
+  color: var(--ink);
+  white-space: nowrap;
+}
+.qualpop-none { font-size: 11px; color: var(--ink-3); font-style: italic; }
 .pers-lbl { font-size: 10.5px; color: var(--ink-3); font-style: italic; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
 .pers-in {
   width: 74px;
@@ -1233,6 +1381,13 @@
   .whorow { gap: 4px; }
   .catchip { padding: 1px 3px; font-size: 8px; letter-spacing: 0; }
   .pers-lbl, .pers-in { display: none; }
+  /* The seat bar's 8px side padding cost a third of the 76px column's name
+     room on a phone; tighter here so fewer callsigns ellipsise (bug hunt,
+     4 Sep 26). The bar still fills the column — only its inset shrinks. */
+  .mx .who .whoedit .cs.seat-pilot,
+  .mx .who .whoedit .cs.seat-wso,
+  .mx .who .whoedit .cs.seat-gnd { padding: 2px 4px; }
+  .mx .who .whoedit { gap: 4px; }
 }
 
 /* ---- the 18 Aug 26 row order: counts → months → header → events → roster ----
@@ -1349,6 +1504,13 @@
 .mx .mxhead th.brakhd .grpedit:hover {
   border-color: rgba(59, 198, 232, .5);
   color: var(--ink);
+}
+/* Rearranging on (owner, 3 Sep 26): the corner toggle lights up while the grid
+   is in rearrange mode, so it is obvious the handles are live and how to leave. */
+.mx .mxhead th.brakhd .grpedit.on {
+  background: rgba(59, 198, 232, .16);
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
 .mx .mxhead th.brakm {

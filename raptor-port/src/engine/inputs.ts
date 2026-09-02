@@ -72,7 +72,6 @@ export const INPUT_META:any={
   'LL':         {name:'local leave',              grp:'leave', work:false, local:true,  ground:false, half:true},
   'OL':         {name:'overseas leave',           grp:'leave', work:false, local:false, ground:false, half:true},
   'OIL':        {name:'off in lieu',              grp:'leave', work:false, local:true,  ground:false, half:true},
-  'OFF':        {name:'off — no leave counter',   grp:'leave', work:false, local:true,  ground:false, half:true},
   'CCL':        {name:'childcare leave',          grp:'leave', work:false, local:true,  ground:false, half:true},
   'PL':         {name:'paternity leave',          grp:'leave', work:false, local:true,  ground:false, half:true},
   'FCL':        {name:'family care leave',        grp:'leave', work:false, local:true,  ground:false, half:true},

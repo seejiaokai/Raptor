@@ -1,0 +1,424 @@
+/* The OIL tracker grid (owner, 2 Sep 26, second cut) and the Cinch sheet's
+   LVE BAL Set control. Scoped to the page like every Leave War stylesheet —
+   do not unwrap. Builds on bidpicker.css's sheet chassis (`.bidsheet.full`). */
+#page-leavewar {
+
+  /* ---- the tools row under the header ----------------------------------- */
+  .oil-tools {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+    margin: 6px 0;
+    flex: 0 0 auto;
+  }
+  .oil-tools .lab {
+    font-size: 10px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    font-weight: 600;
+  }
+  /* The window label sits on its own thin line below the controls, so the
+     chips, the calendar and the ?/⚙ buttons share one row (owner, 2 Sep 26). */
+  .oil-tools .oil-window { font-size: 11px; flex-basis: 100%; margin-top: 1px; }
+  .oil-tools .oil-right { margin-left: auto; display: inline-flex; gap: 6px; }
+  /* "Pick dates" is now a calendar with RANGE under it. */
+  .oil-tools .oil-cal {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    line-height: 1;
+    padding: 3px 11px;
+  }
+  .oil-tools .oil-cal .ci { font-size: 12px; line-height: 1; }
+  .oil-tools .oil-cal .cl { font-size: 9px; letter-spacing: .08em; text-transform: uppercase; margin-top: 3px; }
+  /* The settings gear is icon-only now — keep it a comfortable tap target. */
+  .oil-tools .oil-gear { padding: 6px 9px; font-size: 14px; }
+  .oil-pickrow {
+    flex-direction: column;
+    align-items: stretch;
+    flex: 0 0 auto;
+  }
+  .oil-pickrow .tchip.clear { align-self: flex-end; }
+  .oil-legendbox {
+    flex: 0 0 auto;
+    margin: 0 0 6px;
+    padding: 8px 10px;
+    border: 1px solid var(--edge);
+    border-radius: 10px;
+    background: var(--panel-2);
+    font-size: 11.5px;
+    line-height: 1.45;
+  }
+  .oil-legendbox b { color: var(--ink); }
+
+  /* ---- the one 2-D scroller ------------------------------------------- */
+  /* The sheet is `full` and does not scroll; this does, both ways, so the
+     frozen columns (sticky left) and the header rows (sticky top) resolve
+     against it. `pan-y pan-x`: a finger scrolls until the hold-then-drag
+     arms (select.ts locks it then and only then). A drag paints `.selrow`
+     on the rows it runs over. */
+  .oil-wrap {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: auto;
+    position: relative;
+    margin: 0 -10px;
+    border-top: 1px solid var(--edge);
+    overscroll-behavior: contain;
+  }
+  .oil-wrap.selecting { cursor: crosshair; user-select: none; }
+  .oil-empty { padding: 14px 12px; }
+
+  .oil-grid {
+    border-collapse: separate;
+    border-spacing: 0;
+    min-width: 100%;
+    font-size: 12px;
+  }
+  .oil-grid th,
+  .oil-grid td {
+    border-bottom: 1px solid var(--edge);
+    border-right: 1px solid rgba(57, 66, 77, .5);
+    padding: 0;
+    vertical-align: top;
+    white-space: nowrap;
+    text-align: left;
+  }
+  .oil-grid th.fill,
+  .oil-grid td.fill { border-right: 0; width: 100%; }
+
+  /* The two header rows: the years, then the column words. Both sticky to
+     the scroller's top; the corner cells out-rank both. */
+  .oil-grid thead th {
+    position: sticky;
+    z-index: 3;
+    background: var(--panel);
+    font-size: 11px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    font-weight: 700;
+    padding: 0 8px;
+    vertical-align: middle;
+  }
+  .oil-grid thead tr.yrs th {
+    top: 0;
+    height: 22px;
+    letter-spacing: .16em;
+    color: var(--ink-2);
+    background: #10141A;
+  }
+  .oil-grid thead tr.cols th {
+    top: 22px;
+    height: 28px;
+    border-bottom: 1px solid var(--edge-2);
+  }
+  .oil-grid thead th.f { z-index: 5; }
+  .oil-grid thead th.yl { border-right: 2px solid var(--edge-2); }
+
+  /* The frozen columns: name, BAL, then the thin ARCHIVE column. Fixed
+     widths, because each `left` anchors to the widths before it — the same
+     rule the matrix's `.who/.bal` pair follows. */
+  .oil-grid .f { position: sticky; background: var(--panel); z-index: 2; }
+  .oil-grid .f.c1 { left: 0; width: 96px; min-width: 96px; max-width: 96px; overflow: hidden; }
+  .oil-grid .f.c2 {
+    left: 96px;
+    width: 64px;
+    min-width: 64px;
+    max-width: 64px;
+    text-align: center;
+  }
+  /* The ARCHIVE column (owner, 2 Sep 26): 18px, the word standing on end
+     reading bottom → top in the header, a muted count in a row that has
+     something folded away. The whole column is one switch. It is the last
+     frozen column, so it carries the thick rule and the soft shadow off its
+     right edge — a box half-hidden under the frozen block reads as overflow,
+     not as a cut-off fragment. */
+  .oil-grid .f.c3 {
+    left: 160px;
+    width: 18px;
+    min-width: 18px;
+    max-width: 18px;
+    padding: 0;
+    text-align: center;
+    vertical-align: middle;
+    cursor: pointer;
+    user-select: none;
+    border-right: 2px solid var(--edge-2);
+    box-shadow: 6px 0 10px -4px rgba(0, 0, 0, .55);
+  }
+  .oil-grid thead th.oil-arch { padding: 0; background: #10141A; }
+  .oil-grid .oil-arch .vword {
+    display: inline-block;
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    /* sized to sit inside the two header rows' 50px — a taller word would
+       grow the thead and slide the group rows' sticky offset off it */
+    font-size: 8px;
+    letter-spacing: .1em;
+    max-height: 48px;
+    text-transform: uppercase;
+    font-weight: 800;
+    color: var(--ink-3);
+    line-height: 16px;
+  }
+  .oil-grid td.oil-arch .an {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--ink-3);
+    font-variant-numeric: tabular-nums;
+  }
+  .oil-grid .oil-arch:hover .vword,
+  .oil-grid .oil-arch:hover .an { color: var(--ink-2); }
+  .oil-grid .oil-arch.open { background: #183038; }
+  .oil-grid .oil-arch.open .vword,
+  .oil-grid .oil-arch.open .an { color: var(--accent); }
+  .oil-grid tr.oil-row.on td.oil-arch.open,
+  .oil-grid tr.oil-row.selrow td.oil-arch.open { background: #183038; }
+
+  /* Group heading rows: the label is sticky-left INSIDE the spanning cell
+     (a spanning cell cannot itself shift), so it stays readable scrolled. */
+  .oil-grid tr.oil-grp td {
+    position: sticky;
+    top: 50px;
+    z-index: 2;
+    background: #10141A;
+    color: var(--ink-3);
+    font-size: 11px;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    font-weight: 800;
+    border-right: 0;
+  }
+  .oil-grid tr.oil-grp td .gl { position: sticky; left: 0; display: inline-block; padding: 6px 10px; }
+  .oil-grid tr.oil-grp td .gcount { font-weight: 600; letter-spacing: .06em; margin-left: 6px; }
+
+  /* A person row. 50px min — a box is three lines; an IDLE person (nothing
+     in the window) folds to 36px: still the name over its chip (owner,
+     2 Sep 26 — the chip goes UNDER the name on every row, and smaller; the
+     side-by-side idle layout truncated the callsign). */
+  .oil-grid tr.oil-row td { height: 50px; vertical-align: middle; }
+  .oil-grid tr.oil-row.idle td { height: 36px; }
+  .oil-grid td.oil-name { padding: 4px 8px; line-height: 1.2; cursor: default; }
+  .oil-grid td.oil-name[role="button"] { cursor: pointer; }
+  .oil-grid td.oil-name .who { display: block; font-weight: 800; font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .oil-grid td.oil-name .catchip { display: inline-block; margin-top: 2px; font-size: 8px; padding: 1px 4px; line-height: 1.15; letter-spacing: 0; }
+  .oil-grid tr.oil-row.here td.oil-name { box-shadow: inset 3px 0 0 var(--adv, #E5A83B); }
+
+  /* Selected (picked, or under the drag): a wash across the row and an
+     accent bar on the name. `.selrow` is what select.ts paints mid-drag;
+     `.on` is the committed pick. */
+  .oil-grid tr.oil-row.on td,
+  .oil-grid tr.oil-row.selrow td { background: rgba(59, 198, 232, .12); }
+  .oil-grid tr.oil-row.on td.f,
+  .oil-grid tr.oil-row.selrow td.f { background: #183038; }
+  .oil-grid tr.oil-row.on td.oil-name,
+  .oil-grid tr.oil-row.selrow td.oil-name { box-shadow: inset 3px 0 0 var(--accent); }
+
+  /* BAL and the window's +earned −taken line under it: a four-column grid
+     (sign, digits, sign, digits) so the DIGITS align down the column and
+     the signs hang to their left (owner, 2 Sep 26). */
+  .oil-grid td.oil-balc .bal {
+    display: block;
+    line-height: 1.1;
+    font-weight: 800;
+    font-size: 14px;
+    font-variant-numeric: tabular-nums;
+    color: var(--ink);
+  }
+  .oil-grid td.oil-balc .bal.neg { color: #FFAAB0; }
+  .oil-grid td.oil-balc .bal.pos { color: #8FE0A8; }
+  .oil-grid td.oil-balc .pmline {
+    display: grid;
+    grid-template-columns: 8px 18px 8px 18px;
+    justify-content: center;
+    column-gap: 1px;
+    font-size: 10.5px;
+    color: var(--ink-3);
+    font-variant-numeric: tabular-nums;
+    line-height: 1.2;
+    margin-top: 1px;
+  }
+  .oil-grid td.oil-balc .pmline .sg { text-align: right; }
+  .oil-grid td.oil-balc .pmline .nm { text-align: left; padding-left: 1px; }
+  .oil-grid td.oil-balc .pmline .g { color: #8FE0A8; }
+  .oil-grid td.oil-balc .pmline .r { color: #FFAAB0; }
+
+  /* A year lane: a strip of boxes. The thick rule separates lanes. */
+  .oil-grid td.lane { padding: 0; border-right: 2px solid var(--edge-2); vertical-align: top; }
+  .oil-grid td.lane + td.fill { border-left: 0; }
+  .ents { display: flex; align-items: stretch; height: 100%; min-height: 100%; }
+
+  /* ---- a credit box ------------------------------------------------------ */
+  .oil-e {
+    width: 150px;
+    min-width: 150px;
+    max-width: 150px;
+    padding: 4px 8px;
+    line-height: 1.3;
+    border-right: 1px solid rgba(57, 66, 77, .5);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 1px;
+    overflow: hidden;
+    text-align: left;
+    font-size: 11px;
+  }
+  .oil-e .l1 { display: flex; align-items: baseline; gap: 5px; width: 100%; }
+  .oil-e .l1 .amt { font-size: 13px; font-weight: 800; color: #8FE0A8; font-variant-numeric: tabular-nums; }
+  .oil-e .l1 .dt { color: var(--ink-3); }
+  .oil-e .l1 .by { margin-left: auto; color: var(--ink-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 60%; }
+  .oil-e .l1 .by.auto { color: #7FB3C2; letter-spacing: .06em; font-size: 10.5px; text-transform: uppercase; }
+  .oil-e .l2 { display: block; color: var(--ink-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; }
+  .oil-e .l2.noting { display: flex; gap: 4px; align-items: center; white-space: normal; }
+  .oil-e .l2.noting .oil-text { min-width: 0; flex: 1 1 60px; padding: 3px 6px; }
+  /* The last line sinks to the BOTTOM of the box (`margin-top:auto` — the
+     box is stretched to the row, so this is the row's bottom too), the takes
+     stack one per row on the left and `n left` sits bottom-right, always
+     (owner, 2 Sep 26). */
+  .oil-e .l3 { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 2px 6px; width: 100%; margin-top: auto; }
+  .oil-e .l3 .tk { display: flex; flex-direction: column; color: #FFAAB0; line-height: 1.25; min-width: 0; font-variant-numeric: tabular-nums; }
+  .oil-e .l3 .tk .tk1 { white-space: nowrap; }
+  .oil-e .l3 .left { margin-left: auto; font-size: 13px; font-weight: 800; color: var(--ink); white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .oil-e .l3 .left.zero { color: #F2C879; }
+  .oil-e .l3 .left.exp { font-size: 11px; }
+  /* Archived (used up / expired): a recessed dark-grey card with the given,
+     date and reason struck through. The fill + the strike carry "spent" — we
+     do NOT fade the whole box. A whole-box opacity (was .7 used / .55 expired)
+     dimmed the box AND its text together, which dragged the red takes (the
+     audit trail) below legible contrast on the expired boxes; the takes must
+     stay readable (owner: "eventually it cancels out entirely" — but the takes
+     are the record of what was drawn, so they stay). Every text colour on the
+     box is lighter than this fill, so a DARKER grey only raises contrast — the
+     shade is safe to tune either way. WCAG on #21262d: takes 8.4:1, "n left"
+     9.6:1, the struck given/date still 5.0:1. */
+  .oil-e.used,
+  .oil-e.expired { background: #21262d; }
+  .oil-e.used .l1 .amt,
+  .oil-e.used .l1 .dt,
+  .oil-e.used .l2 { text-decoration: line-through; color: var(--ink-3); }
+  .oil-e.grant { outline: 1px dashed rgba(59, 198, 232, .35); outline-offset: -3px; border-radius: 6px; cursor: pointer; }
+  .oil-e.grant:hover { outline-color: rgba(59, 198, 232, .7); }
+  .oil-e.editing { outline: 2px solid var(--accent); outline-offset: -3px; background: rgba(59, 198, 232, .08); }
+  .oil-e.here { outline: 2px solid var(--adv, #E5A83B); outline-offset: -3px; }
+  .oil-e.take { background: rgba(240, 85, 95, .06); }
+  .oil-e.take .l1 .amt { color: #FFAAB0; }
+  .oil-e.take .l2 { color: #FFAAB0; }
+  .oil-e.take.corr { cursor: pointer; }
+  .oil-notebtn {
+    background: transparent;
+    border: 1px dashed rgba(59, 198, 232, .45);
+    border-radius: 6px;
+    color: var(--accent);
+    font-size: 11px;
+    padding: 1px 6px;
+    cursor: pointer;
+    font-family: inherit;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* The in-place editor a grant box turns into. */
+  .oil-e.editing { width: 300px; min-width: 300px; max-width: 300px; align-items: stretch; }
+  .oil-edit { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; width: 100%; }
+  .oil-edit .oil-num { width: 60px; padding: 4px 8px; }
+  .oil-edit .oil-text { flex: 1 1 100px; min-width: 80px; padding: 4px 8px; }
+  .oil-edit .acts { display: flex; gap: 4px; flex-wrap: wrap; width: 100%; }
+  .oil-edit .tchip.arm { border-color: rgba(255, 92, 92, .6); color: #ff5c5c; }
+
+  /* ---- the credit bar under the grid ------------------------------------ */
+  .oil-bar {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    padding: 8px 0 10px;
+    border-top: 1px solid var(--edge-2);
+    background: var(--panel);
+  }
+  .oil-bar.idle { color: var(--ink-3); font-size: 12px; min-height: 40px; }
+  .oil-bar .oil-who { font-size: 12px; color: var(--ink); }
+  .oil-bar .oil-num { width: 70px; }
+  .oil-bar .oil-text { flex: 1 1 180px; }
+  .oil-bar .oil-text.given { flex: 0 1 170px; }
+  .oil-bar .note.warn { flex-basis: 100%; }
+  .oil-daychip { position: relative; display: inline-block; }
+  .oil-pop {
+    position: absolute;
+    bottom: calc(100% + 6px);
+    left: 0;
+    z-index: 9;
+    background: var(--raised, #20262E);
+    border: 1px solid var(--edge-2);
+    border-radius: 12px;
+    padding: 6px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, .5);
+  }
+
+  /* ---- the settings panel, the number and text fields --------------------- */
+  .oil-set { display: flex; flex-direction: column; gap: 4px; }
+  .oil-set .note { flex-basis: 100%; margin: 2px 0 6px; }
+  .oil-num {
+    width: 84px;
+    background: var(--panel-2);
+    border: 1px solid var(--edge);
+    color: var(--ink);
+    border-radius: 9px;
+    padding: 6px 10px;
+    font-size: 12px;
+    font-family: inherit;
+    color-scheme: dark;
+  }
+  .oil-text {
+    flex: 1 1 200px;
+    min-width: 140px;
+    background: var(--panel-2);
+    border: 1px solid var(--edge);
+    color: var(--ink);
+    border-radius: 9px;
+    padding: 6px 10px;
+    font-size: 12px;
+    font-family: inherit;
+  }
+
+  /* ---- a phone ---------------------------------------------------------- */
+  @media (max-width: 520px) {
+    .oil-grid .f.c1 { width: 88px; min-width: 88px; max-width: 88px; }
+    .oil-grid .f.c2 { left: 88px; width: 56px; min-width: 56px; max-width: 56px; }
+    .oil-grid .f.c3 { left: 144px; width: 16px; min-width: 16px; max-width: 16px; }
+    .oil-e { width: 132px; min-width: 132px; max-width: 132px; }
+    .oil-e .l1 { flex-wrap: wrap; row-gap: 0; }
+    .oil-e.editing { width: 260px; min-width: 260px; max-width: 260px; }
+    /* The tools row must stay two lines on a phone: the subtitle goes, the
+       chips tighten (still ≥36px tall to tap). */
+    .bidsheet.full .bidsheet-hd .dt { display: none; }
+    .oil-tools { gap: 4px; margin: 4px 0; }
+    .oil-tools .tchip { min-height: 36px; display: inline-flex; align-items: center; padding: 4px 9px; font-size: 11.5px; }
+    .oil-tools .oil-window { flex-basis: 100%; }
+    .oil-bar .oil-text.given { flex: 1 1 140px; }
+  }
+
+  /* ---- the Cinch sheet's LVE BAL Set control (admin) --------------------- */
+  .cmv.setbal {
+    min-width: 44px;
+    min-height: 36px;
+    padding: 0 10px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .06em;
+  }
+  .cmv.setbal.dim { color: var(--ink-3); }
+  .cmove.setbal-edit {
+    flex-direction: row;
+    align-items: center;
+    gap: 4px;
+  }
+  .cmove.setbal-edit .oil-num { width: 72px; }
+}

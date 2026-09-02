@@ -23,6 +23,13 @@ import {
   moveEvent,
   moveEventProblem,
   addEventType,
+  grantOil,
+  setCellNote,
+  updateLedgerEntry,
+  removeLedgerEntry,
+  setOilPolicy,
+  setBalance,
+  figureCtxOf,
   updateEventType,
   removeEventType,
   resetEventTypes,
@@ -53,7 +60,7 @@ import {
   moveProblem,
   setViewer,
 } from './store'
-import { makeWar, seedRequirements } from '../engine'
+import { FIGURES, figureParts, makeWar, seedRequirements } from '../engine'
 import { localBackend, memoryBackend } from './storage'
 
 beforeEach(() => {
@@ -1696,9 +1703,10 @@ describe('events — ranged repeat, merged bands, and the type library', () => {
     expect(getState().eventDefs.some(d => d.name === 'Standby')).toBe(true)
   })
 
-  it('boots with the three seeded event types', () => {
+  it('boots with the four seeded event types', () => {
     expect(getState().eventDefs).toEqual([
       { name: 'PH', kind: 'off' },
+      { name: 'Off day', kind: 'free' },
       { name: 'No Leave', kind: 'nolv' },
       { name: 'SC', kind: 'work' },
     ])
@@ -1707,22 +1715,22 @@ describe('events — ranged repeat, merged bands, and the type library', () => {
   it('adds, updates, removes and resets event types (admin only)', () => {
     setRole('admin')
     expect(addEventType('Standby', 'work')).toBeNull()
+    expect(getState().eventDefs).toHaveLength(5)
+    expect(updateEventType(4, { kind: 'off' })).toBeNull()
+    expect(getState().eventDefs[4]!.kind).toBe('off')
+    expect(removeEventType(4)).toBe(true)
     expect(getState().eventDefs).toHaveLength(4)
-    expect(updateEventType(3, { kind: 'off' })).toBeNull()
-    expect(getState().eventDefs[3]!.kind).toBe('off')
-    expect(removeEventType(3)).toBe(true)
-    expect(getState().eventDefs).toHaveLength(3)
     // reset restores the seed
     addEventType('Temp', 'off')
     resetEventTypes()
-    expect(getState().eventDefs).toHaveLength(3)
+    expect(getState().eventDefs).toHaveLength(4)
   })
 
   it('refuses type edits for a member', () => {
     setRole('member')
     expect(addEventType('Standby', 'work')).toContain('admin')
     expect(removeEventType(0)).toBe(false)
-    expect(getState().eventDefs).toHaveLength(3)
+    expect(getState().eventDefs).toHaveLength(4)
   })
 })
 
@@ -2279,5 +2287,173 @@ describe('undo / redo', () => {
 
     selectWar(getState().wars[1].period.id)    // switch to the new war
     expect(lwCanUndo()).toBe(false)            // fresh scope — nothing to undo here
+  })
+})
+
+// --- the OIL tracker writers (owner, 2 Sep 26) -------------------------------
+
+describe('the OIL tracker: grants, corrections and the policy', () => {
+  beforeEach(() => {
+    initStore(memoryBackend())
+  })
+
+  it('a member cannot credit OIL, edit the policy, or set a balance', () => {
+    expect(grantOil(['ramp'], 1, '2026-03-02', 'Det recovery')).toBe('Only an admin can credit OIL')
+    expect(setOilPolicy({ expiry: { n: 30, unit: 'days' } })).toBe(false)
+    expect(setBalance('ramp', 'annual', 30)).toBe(false)
+    expect(getState().ledger.some(e => e.reason === 'Det recovery')).toBe(false)
+    expect(getState().oilPolicy).toEqual({ expiry: null, historyMonths: null })
+  })
+
+  it('a grant may name who GAVE it; the field is optional and bounded', () => {
+    setRole('admin')
+    setViewer('ramp')
+    expect(grantOil(['dusk'], 1, '2026-03-02', 'Det recovery', ' OC Ops ')).toBeNull()
+    expect(getState().ledger.at(-1)).toMatchObject({ personId: 'dusk', reason: 'Det recovery', approvedBy: 'RAMP', givenBy: 'OC Ops' })
+    expect(grantOil(['dusk'], 1, '2026-03-02', 'Plain')).toBeNull()
+    expect('givenBy' in getState().ledger.at(-1)!).toBe(false)
+    expect(grantOil(['dusk'], 1, '2026-03-02', 'Long', 'x'.repeat(41))).toBe('Given by is at most 40 characters')
+    // Edit sets and clears it.
+    const id = getState().ledger.at(-1)!.id
+    expect(updateLedgerEntry(id, { givenBy: 'CO' })).toBeNull()
+    expect(getState().ledger.find(e => e.id === id)!.givenBy).toBe('CO')
+    expect(updateLedgerEntry(id, { givenBy: '  ' })).toBeNull()
+    expect('givenBy' in getState().ledger.find(e => e.id === id)!).toBe(false)
+    // And it survives a reload.
+    expect(grantOil(['dusk'], 1, '2026-03-02', 'Kept', 'Boss')).toBeNull()
+    const backend = memoryBackend()
+    initStore(backend)
+    setRole('admin'); setViewer('ramp')
+    grantOil(['dusk'], 1, '2026-03-02', 'Kept', 'Boss')
+    initStore(backend)
+    expect(getState().ledger.at(-1)).toMatchObject({ reason: 'Kept', givenBy: 'Boss' })
+  })
+
+  it('an FO/HO cell takes a reason note from an admin; the note survives a reload', () => {
+    const backend = memoryBackend()
+    initStore(backend)
+    const p = getState().people[0]!.id
+    const date = getState().wars[0]!.period.days[3]!.date
+    expect(setCellNote(p, date, 'FLT')).toBe('Only an admin can edit OIL')
+    setRole('admin')
+    expect(setCellNote(p, date, 'FLT')).toBe('Only an FO or HO credit takes a reason')
+    setCell(p, date, 'FO')
+    expect(setCellNote(p, date, ' FLT ')).toBeNull()
+    expect(getState().wars[0]!.states[p]![date]).toMatchObject({ note: 'FLT' })
+    expect(setCellNote(p, date, 'x'.repeat(41))).toBe('A reason is at most 40 characters')
+    initStore(backend)
+    expect(getState().wars[0]!.states[p]![date]!.note).toBe('FLT')
+    setRole('admin')
+    expect(setCellNote(p, date, '')).toBeNull()
+    expect('note' in getState().wars[0]!.states[p]![date]!).toBe(false)
+  })
+
+  it('credits one or many people in one batch, stamped with the viewer\'s callsign', () => {
+    setRole('admin')
+    setViewer('ramp')
+    const before = getState().ledger.length
+    expect(grantOil(['dusk', 'miles', 'dusk', 'nobody'], 1.5, '2026-03-02', '  Det recovery ')).toBeNull()
+    const added = getState().ledger.slice(before)
+    expect(added.map(e => [e.personId, e.counter, e.amount, e.date, e.reason, e.approvedBy])).toEqual([
+      ['dusk', 'oil', 1.5, '2026-03-02', 'Det recovery', 'RAMP'],
+      ['miles', 'oil', 1.5, '2026-03-02', 'Det recovery', 'RAMP'],
+    ])
+    expect(added.map(e => e.id)).toEqual(['ol-1', 'ol-2'])
+    // A second batch continues the sequence — no clock, no collision.
+    expect(grantOil(['dusk'], -0.5, '2026-03-03', 'Correction')).toBeNull()
+    expect(getState().ledger.at(-1)!.id).toBe('ol-3')
+    // And the figure moves: dusk's OIL BAL rose by 1.5 − 0.5.
+    const ctx = figureCtxOf()
+    expect(FIGURES.find(f => f.id === 'oilbal')!.value(ctx, 'dusk')).toBe(
+      FIGURES.find(f => f.id === 'oilbal')!.value({ ...ctx, ledger: ctx.ledger.slice(0, before) }, 'dusk') + 1,
+    )
+  })
+
+  it('refuses a grant with nobody, no amount, no date or no reason — with the reason why', () => {
+    setRole('admin')
+    expect(grantOil([], 1, '2026-03-02', 'x')).toBe('Pick at least one person')
+    expect(grantOil(['ramp'], 0, '2026-03-02', 'x')).toBe('The amount must be a number other than 0')
+    expect(grantOil(['ramp'], NaN, '2026-03-02', 'x')).toBe('The amount must be a number other than 0')
+    expect(grantOil(['ramp'], 1, '2 Mar', 'x')).toBe('Pick a date')
+    expect(grantOil(['ramp'], 1, '2026-03-02', '   ')).toBe('Give a reason')
+    expect(grantOil(['ramp'], 1, '2026-03-02', 'x'.repeat(121))).toContain('120 characters')
+  })
+
+  it('edits and deletes a grant in place; an unknown id is refused', () => {
+    setRole('admin')
+    grantOil(['ramp'], 1, '2026-03-02', 'Det recovery')
+    const id = getState().ledger.at(-1)!.id
+    expect(updateLedgerEntry(id, { amount: 2, reason: 'Det recovery (two days)' })).toBeNull()
+    expect(getState().ledger.at(-1)).toMatchObject({ id, amount: 2, date: '2026-03-02', reason: 'Det recovery (two days)', approvedBy: 'admin' })
+    expect(updateLedgerEntry(id, { date: 'never' })).toBe('Pick a date')
+    expect(updateLedgerEntry('ol-999', { amount: 1 })).toBe('That entry is gone')
+    setRole('member')
+    expect(removeLedgerEntry(id)).toBe(false)
+    setRole('admin')
+    expect(removeLedgerEntry(id)).toBe(true)
+    expect(removeLedgerEntry(id)).toBe(false)
+    expect(getState().ledger.some(e => e.id === id)).toBe(false)
+  })
+
+  it('a grant and the policy survive a reload', () => {
+    const backend = memoryBackend()
+    initStore(backend)
+    setRole('admin')
+    grantOil(['ramp'], 1, '2026-03-02', 'Det recovery')
+    expect(setOilPolicy({ expiry: { n: 3, unit: 'months' }, historyMonths: null })).toBe(true)
+    initStore(backend)
+    expect(getState().ledger.at(-1)).toMatchObject({ personId: 'ramp', amount: 1, reason: 'Det recovery' })
+    expect(getState().oilPolicy).toEqual({ expiry: { n: 3, unit: 'months' }, historyMonths: null })
+  })
+
+  it('the policy is bounded through the same reader the boot uses', () => {
+    setRole('admin')
+    expect(setOilPolicy({ expiry: { n: 0, unit: 'days' } })).toBe(false)
+    expect(setOilPolicy({ historyMonths: 0 })).toBe(false)
+    expect(setOilPolicy({ historyMonths: 12 })).toBe(true)
+    expect(getState().oilPolicy).toEqual({ expiry: null, historyMonths: 12 })
+  })
+
+  it('an expiry policy retires old credit from OIL BAL, and the breakdown still sums', () => {
+    setRole('admin')
+    // jaguar: opening 2 + grant 2 (19 Jan 26) in the seed, nothing taken.
+    const oilbal = FIGURES.find(f => f.id === 'oilbal')!
+    const was = oilbal.value(figureCtxOf(), 'jaguar')
+    expect(setOilPolicy({ expiry: { n: 30, unit: 'days' } })).toBe(true)
+    const ctx = figureCtxOf()
+    const now = oilbal.value(ctx, 'jaguar')
+    expect(now).toBe(was - 2)                         // the grant is long gone; the opening never expires
+    const parts = figureParts(oilbal, ctx, 'jaguar')
+    expect(parts.find(p => p.label === 'expired')).toEqual({ label: 'expired', value: -2 })
+    expect(parts.reduce((s, p) => s + p.value, 0)).toBeCloseTo(now, 6)
+  })
+})
+
+describe('setBalance: an admin types the balance, LL and OL deduct from it', () => {
+  beforeEach(() => {
+    initStore(memoryBackend())
+    setRole('admin')
+  })
+
+  it('makes LVE BAL read the target now, by moving the opening figure', () => {
+    const lvebal = FIGURES.find(f => f.id === 'lvebal')!
+    // ramp: 12 opening + 14 top-up − 1 drawn = 25 in the seed.
+    expect(lvebal.value(figureCtxOf(), 'ramp')).toBe(25)
+    expect(setBalance('ramp', 'annual', 30)).toBe(true)
+    expect(lvebal.value(figureCtxOf(), 'ramp')).toBe(30)
+    expect(getState().openings.ramp.annual).toBe(17)     // 30 − 14 granted + 1 drawn
+    // The parts still explain it.
+    const parts = figureParts(lvebal, figureCtxOf(), 'ramp')
+    expect(parts.reduce((s, p) => s + p.value, 0)).toBe(30)
+    // And leave taken after this deducts from it.
+    setCell('ramp', '2026-01-20', 'OL')
+    expect(lvebal.value(figureCtxOf(), 'ramp')).toBe(29)
+  })
+
+  it('refuses an unknown person or a non-number, and other counters are untouched', () => {
+    expect(setBalance('nobody', 'annual', 10)).toBe(false)
+    expect(setBalance('ramp', 'annual', NaN)).toBe(false)
+    expect(setBalance('ramp', 'oil', 0)).toBe(true)
+    expect(getState().openings.ramp.annual).toBe(12)
   })
 })

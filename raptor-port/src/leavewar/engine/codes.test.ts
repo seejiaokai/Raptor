@@ -191,8 +191,9 @@ describe('codeOf', () => {
 
   it('spends the right counter, scaled by the portion', () => {
     // Same reasoning as above: every leave type's counter and amount, not
-    // just LL and OIL, so a wrongly special-cased type shows up here. `OFF`
-    // is excluded because it has no counter at all — its own case is below.
+    // just LL and OIL, so a wrongly special-cased type shows up here. Since
+    // 2 Sep 26 every leave type spends a counter (the filter is belt and
+    // braces for a future free type).
     for (const { type, counter } of LEAVE_TYPES.filter(t => t.counter !== null)) {
       expect(codeOf(type)!.spends).toEqual({ counter, amount: 1 })
       expect(codeOf(`*${type}`)!.spends).toEqual({ counter, amount: 0.5 })
@@ -204,19 +205,16 @@ describe('codeOf', () => {
     for (const c of ['ATTC', 'HL', 'OML', 'CSE', 'OD']) expect(codeOf(c)!.spends).toBeNull()
   })
 
-  // `OFF` is free leave (owner, 10 Aug 26): the person asks for it and it
-  // takes them out of the manning picture, but it draws no entitlement. That
-  // makes it the one leave type with NO counter, so it needs its own case —
-  // and `spends` must be absent rather than a zero-amount draw, because a
-  // zero would join a balance's arithmetic as if it were real.
-  it('takes the day for OFF and spends nothing at all', () => {
-    expect(codeOf('OFF')!.spends).toBeNull()
-    expect(codeOf('OFF')!.removes).toBe(1)
-    expect(codeOf('OFF')!.bid).toBe(true)
-    expect(codeOf('OFF')!.duty).toBe(false)
-    // Still a leave type, so it still comes in halves.
-    expect(codeOf('*OFF')!.removes).toBe(0.5)
-    expect(codeOf('*OFF')!.spends).toBeNull()
+  // `OFF` was free leave from 10 Aug 26 to 2 Sep 26. The owner then settled
+  // that OFF is never a person's leave — management declares an Off day for
+  // everyone (the `free` event kind) — so the code is gone from the
+  // catalogue: not biddable, not parseable, and every leave type spends.
+  it('no longer knows OFF as a code', () => {
+    expect(codeOf('OFF') ?? null).toBeNull()
+    expect(codeOf('*OFF') ?? null).toBeNull()
+    expect(parseCell('OFF')).toBeNull()
+    expect(LEAVE_TYPES.some(t => t.type === 'OFF')).toBe(false)
+    expect(LEAVE_TYPES.every(t => t.counter !== null)).toBe(true)
   })
 
   it('earns OIL only for the OIL-credit markers', () => {

@@ -72,7 +72,17 @@
 
 .rblank {
   /* Occupies its cell and paints nothing — the 1st has to land under the
-     right weekday or every date in the month reads one column out. */
+     right weekday or every date in the month reads one column out.
+
+     Its HEIGHT is load-bearing (owner, 2 Sep 26 — the arrows must not hop as
+     the month changes). Every month is padded to six rows of cells, but a
+     trailing row made up ENTIRELY of blanks would collapse to nothing unless
+     the blanks carry the row's height themselves — a grid row is only as tall
+     as its tallest cell, and an empty span is 0. So a February whose last row
+     is all blanks was 36px shorter than a January whose last row still holds
+     the 31st. Matching `.rday`'s height keeps every row a row, so the grid —
+     and the bottom-anchored sheet above it — stays one fixed height. */
+  height: 36px;
 }
 
 /* 36px square. A tap target, not a glyph: this is the control the owner will
@@ -157,5 +167,8 @@
 .rpick.compact .rpick-grid { gap: 2px; }
 .rpick.compact .rdow { font-size: 8.5px; padding-bottom: 1px; }
 .rpick.compact .rday { height: 30px; border-radius: 6px; }
+/* Blanks match the compact day height too, so an all-blank trailing row still
+   holds its 30px and the compact grid keeps its fixed six-row height. */
+.rpick.compact .rblank { height: 30px; }
 
 }

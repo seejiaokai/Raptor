@@ -247,7 +247,7 @@ describe('slotStart / slotEnd, and half-day absences', () => {
     const gi = DAYS[1].waves.length - 1
     validate()
     const spare = `1.${gi}.0.2.w`
-    for (const t of ['LL', 'OIL', 'OFF', 'CCL', 'Training']) {
+    for (const t of ['LL', 'OIL', 'CCL', 'Training']) {
       INPUTS.push({ person: 'nasty', date: 'Jul 14', allday: true, type: t, remarks: '', mod: '' })
       validate()
       expect(slotBar('nasty', spare), t).toBe('')

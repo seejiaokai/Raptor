@@ -15,6 +15,8 @@ import {
   orderedGroupIds,
   pruneGroups,
   readGroupDefs,
+  SANS_GROUP,
+  SANS_GROUP_ID,
   type GroupDef,
   inSquadron,
   isBiddable,
@@ -45,14 +47,23 @@ import {
   type RuleCount,
   type TeamSlot,
   autoOrder,
+  seatRank,
   groupOf,
   GROUP_ORDER,
   orderedPeople,
   readEventDefs,
+  DEFAULT_OIL_POLICY,
+  readOilPolicy,
+  type OilPolicy,
+  type FigureCtx,
+  grantedTo,
+  drawnFrom,
+  localToday,
   bandOverlaps,
   warHolding,
   STAGE_ORDER,
   type BidRecord,
+  MAX_CELL_NOTE,
   type BidSource,
   type BidState,
   type CounterName,
@@ -67,6 +78,7 @@ import {
   type Grid,
   type LeaveWar,
   type Ledger,
+  type LedgerEntry,
   type Openings,
   type Period,
   type Person,
@@ -122,6 +134,12 @@ interface State {
    *  version of a truth the grid already holds. */
   openings: Openings
   ledger: Ledger
+  /** The OIL TRACKER's policy (owner, 2 Sep 26): how long a credit lasts
+   *  before it expires (or forever) and the history window the tracker opens
+   *  on. Squadron-wide, ADMIN-gated, persisted under `oilpolicy`. Read by
+   *  every OIL BAL figure through `figureCtxOf`, so a change here re-reads
+   *  every balance at once (engine/oiltracker.ts). */
+  oilPolicy: OilPolicy
   /** Who the person at the keyboard says they are. Nothing verifies it —
    *  there is no login — so this decides which controls appear, not who is
    *  allowed to use them. See `docs/known-gaps.md`. */
@@ -174,10 +192,26 @@ interface State {
    *  so a group pinned to a deleted Quals column cannot strand an empty
    *  heading. */
   groupDefs: GroupDef[]
-  /** WHO CLAIMS someone matching several groups — a SEPARATE order from the
-   *  display one above (the owner's explicit choice): a person shows exactly
-   *  once, and this decides where. Empty means "use the display order". */
+  /** WHO CLAIMS someone matching several groups — a person shows exactly once,
+   *  and this decides where. By DEFAULT it FOLLOWS the display order (owner,
+   *  3 Sep 26 — "the priority order should also change by default in accordance
+   *  with the category order"): the group higher on the page wins a tie, so
+   *  dragging the page around reorders who-wins with it. Only meaningful once
+   *  `groupPriorityCustom` is set — until then this list is ignored and the
+   *  display order is used. */
   groupPriority: string[]
+  /** Whether the admin has set a CUSTOM who-wins order, breaking the "follows the
+   *  display order" default (owner, 3 Sep 26 — "only if the user is not satisfied
+   *  then they change the priority order in the settings"). Set the first time the
+   *  who-wins list is dragged; cleared by "Match the page order" and by
+   *  `resetGroups`. Persisted (`grouppriocustom`), admin-gated like the orders. */
+  groupPriorityCustom: boolean
+  /** The COLOUR the admin picked for a qualification group (owner, 3 Sep 26 —
+   *  "allow me to pick the colour i want"), by group id, `#rrggbb`. Only `q:`
+   *  groups take one (the built-ins wear their CAT colours); a group with no
+   *  entry falls back to a palette colour derived from its id (ui/groupColor.ts).
+   *  Persisted (`groupcolors`), admin-gated, dropped with the group. */
+  groupColors: Record<string, string>
 
   /** How many EVENT rows the matrix draws (owner, 18 Aug 26 — "add more event
    *  rows if needed"). Two by default; an admin can add up to `MAX_EVENT_ROWS`.
@@ -250,6 +284,7 @@ function blank(): State {
     currentId: wars[0].period.id,
     openings: seedOpenings(),
     ledger: seedLedger(),
+    oilPolicy: { ...DEFAULT_OIL_POLICY },
     figureOrder: [...DEFAULT_FIGURE_ORDER],
     rosterOrder: [],
     persLabels: {},
@@ -257,6 +292,8 @@ function blank(): State {
     manningHidden: [],
     groupDefs: [...DEFAULT_GROUPS],
     groupPriority: [],
+    groupPriorityCustom: false,
+    groupColors: {},
     eventRows: DEFAULT_EVENT_ROWS,
     showSans: false,
     // The squadron is the common case, so the app opens as one. An admin
@@ -310,12 +347,15 @@ function readRecord(leaf: unknown): BidRecord | null {
     return BID_STATES.has(leaf) ? { state: leaf as BidState, source: 'bid' } : null
   }
   if (!isPlainObject(leaf)) return null
-  const { state, source, shiftedFrom } = leaf
+  const { state, source, shiftedFrom, note } = leaf
   if (typeof state !== 'string' || !BID_STATES.has(state)) return null
   if (typeof source !== 'string' || !BID_SOURCES.has(source)) return null
   if (shiftedFrom !== undefined && typeof shiftedFrom !== 'string') return null
   const out: BidRecord = { state: state as BidState, source: source as BidSource }
   if (shiftedFrom !== undefined) out.shiftedFrom = shiftedFrom
+  // A note is decoration on the record, never the record: a bad one is
+  // dropped and the cell's state survives.
+  if (typeof note === 'string' && note.trim()) out.note = note.trim().slice(0, MAX_CELL_NOTE)
   return out
 }
 
@@ -374,7 +414,7 @@ function readLedger(x: unknown): Ledger | null {
   const out: Ledger = []
   for (const e of x) {
     if (!isPlainObject(e)) return null
-    const { id, personId, counter, amount, date, reason, approvedBy } = e
+    const { id, personId, counter, amount, date, reason, approvedBy, givenBy } = e
     if (typeof id !== 'string' || typeof personId !== 'string') return null
     if (typeof counter !== 'string' || !COUNTER_NAMES.has(counter)) return null
     if (typeof amount !== 'number' || !Number.isFinite(amount)) return null
@@ -382,7 +422,10 @@ function readLedger(x: unknown): Ledger | null {
     // A grant with no reason and no approver is the untraceable free text
     // the ledger exists to replace, so it is not a grant.
     if (typeof reason !== 'string' || typeof approvedBy !== 'string') return null
-    out.push({ id, personId, counter: counter as CounterName, amount, date, reason, approvedBy })
+    const entry: LedgerEntry = { id, personId, counter: counter as CounterName, amount, date, reason, approvedBy }
+    // `givenBy` is optional decoration (2 Sep 26); a bad one is dropped.
+    if (typeof givenBy === 'string' && givenBy.trim()) entry.givenBy = givenBy.trim().slice(0, MAX_GIVEN_BY)
+    out.push(entry)
   }
   return out
 }
@@ -533,6 +576,16 @@ function readLabelMap(x: unknown): Record<string, string> | null {
   if (!isPlainObject(x)) return null
   const out: Record<string, string> = {}
   for (const [k, v] of Object.entries(x)) if (typeof v === 'string') out[k] = v
+  return out
+}
+
+/** The picked group colours: only `q:` ids, only `#rrggbb` values survive. */
+function readColorMap(x: unknown): Record<string, string> | null {
+  if (!isPlainObject(x)) return null
+  const out: Record<string, string> = {}
+  for (const [k, v] of Object.entries(x)) {
+    if (k.startsWith('q:') && typeof v === 'string' && /^#[0-9a-f]{6}$/i.test(v)) out[k] = v
+  }
   return out
 }
 
@@ -711,7 +764,10 @@ function reconcile(grid: Grid, states: States): States {
     const kept: Record<string, BidRecord> = {}
     for (const [date, record] of Object.entries(row)) {
       const code = grid[id]?.[date]
-      if (isBiddable(code) || ((isMedical(code) || isDuty(code)) && record.source === 'raptor')) kept[date] = record
+      // A duty cell keeps its record when Raptor owns it, or when an admin
+      // wrote a reason on a hand-typed FO/HO (setCellNote, 2 Sep 26) — the
+      // note is the record's whole reason to exist there.
+      if (isBiddable(code) || ((isMedical(code) || isDuty(code)) && (record.source === 'raptor' || (isDuty(code) && !!record.note)))) kept[date] = record
     }
     if (Object.keys(kept).length > 0) out[id] = kept
   }
@@ -731,16 +787,23 @@ export function initStore(b?: StorageBackend): void {
   const openings = readStored('openings', readOpenings) ?? seedOpenings()
   const ledger = readStored('ledger', readLedger) ?? seedLedger()
   const eventDefs = readStored('eventdefs', readEventDefs) ?? seedEventDefs()
+  const oilPolicy = readStored('oilpolicy', readOilPolicy) ?? { ...DEFAULT_OIL_POLICY }
   const figureOrder = readStored('figorder', readFigureOrder) ?? [...DEFAULT_FIGURE_ORDER]
   const rosterOrder = readStored('rosterorder', readIdList) ?? []
   const persLabels = readStored('perslabels', readLabelMap) ?? {}
   const manningOrder = readStored('manningorder', readIdList) ?? []
   const manningHidden = readStored('manninghidden', readIdList) ?? []
-  /* Untrusted storage: keep only structurally sound entries, then PRUNE against
-     the catalogue we have at boot (the seed's three keys; the projection
-     re-prunes as soon as Raptor's real catalogue lands — see setQualCatalog). */
-  const groupDefs = pruneGroups(readStored('groupdefs', readGroupDefs) ?? [...DEFAULT_GROUPS], state.qualCatalog)
+  /* Untrusted storage: keep only structurally sound entries. NOT pruned against
+     the catalogue here (bug hunt, 4 Sep 26): at boot the catalogue is still the
+     seed's three keys, so pruning now threw away every saved TF / NVG / custom
+     group — and its picked colour — before Raptor's real column list had a
+     chance to land. The list is pruned where the catalogue is real: at every
+     read (`groupsInOrder`) and when the catalogue arrives (`setQualCatalog`,
+     which also persists the pruned list). */
+  const groupDefs = readStored('groupdefs', readGroupDefs) ?? [...DEFAULT_GROUPS]
   const groupPriority = readStored('grouppriority', readIdList) ?? []
+  const groupPriorityCustom = readStored('grouppriocustom', x => (typeof x === 'boolean' ? x : null)) ?? false
+  const groupColors = readStored('groupcolors', readColorMap) ?? {}
   // The squadron's own rule set, or — for a browser from before rules were
   // data — the seed with its old numbers-only overlay migrated in.
   const storedRules = readStored('manningdefs', readManningRules)
@@ -763,7 +826,7 @@ export function initStore(b?: StorageBackend): void {
      boot, so a stored copy could only ever disagree with the roster Raptor
      is actually flying. Boot leaves the seed — the vendored unit suite reads
      it pristine — and the projection that follows replaces it. */
-  state = withCurrent({ ...state, wars, currentId, openings, ledger, eventDefs, figureOrder, rosterOrder, persLabels, manningOrder, manningHidden, groupDefs, groupPriority, requirements, eventRows, showSans })
+  state = withCurrent({ ...state, wars, currentId, openings, ledger, oilPolicy, eventDefs, figureOrder, rosterOrder, persLabels, manningOrder, manningHidden, groupDefs, groupPriority, groupPriorityCustom, groupColors: colorsFor(groupDefs, groupColors), requirements, eventRows, showSans })
 
   version = 0
   listeners.clear()
@@ -825,6 +888,7 @@ function persist(): void {
   backend.write('current', state.currentId)
   backend.write('openings', JSON.stringify(state.openings))
   backend.write('ledger', JSON.stringify(state.ledger))
+  backend.write('oilpolicy', JSON.stringify(state.oilPolicy))
   backend.write('eventdefs', JSON.stringify(state.eventDefs))
   backend.write('figorder', JSON.stringify(state.figureOrder))
   backend.write('rosterorder', JSON.stringify(state.rosterOrder))
@@ -833,6 +897,8 @@ function persist(): void {
   backend.write('manninghidden', JSON.stringify(state.manningHidden))
   backend.write('groupdefs', JSON.stringify(state.groupDefs))
   backend.write('grouppriority', JSON.stringify(state.groupPriority))
+  backend.write('grouppriocustom', JSON.stringify(state.groupPriorityCustom))
+  backend.write('groupcolors', JSON.stringify(state.groupColors))
   backend.write('manningdefs', JSON.stringify(state.requirements.default.rules))
   backend.write('eventrows', JSON.stringify(state.eventRows))
   backend.write('showsans', JSON.stringify(state.showSans))
@@ -897,10 +963,10 @@ function locked<T>(fn: () => T): T {
 function historySnap(): string {
   const s = state
   return JSON.stringify({
-    wars: s.wars, openings: s.openings, ledger: s.ledger, eventDefs: s.eventDefs,
+    wars: s.wars, openings: s.openings, ledger: s.ledger, oilPolicy: s.oilPolicy, eventDefs: s.eventDefs,
     figureOrder: s.figureOrder, rosterOrder: s.rosterOrder, persLabels: s.persLabels,
     manningOrder: s.manningOrder, manningHidden: s.manningHidden,
-    groupDefs: s.groupDefs, groupPriority: s.groupPriority,
+    groupDefs: s.groupDefs, groupPriority: s.groupPriority, groupPriorityCustom: s.groupPriorityCustom,
     requirements: s.requirements, eventRows: s.eventRows, showSans: s.showSans,
   })
 }
@@ -954,9 +1020,9 @@ export function lwHistEpoch(): number {
 function historyApply(i: number): void {
   if (i < 0 || i >= HIST.stack.length) return
   const snap = JSON.parse(HIST.stack[i]) as Pick<State,
-    'wars' | 'openings' | 'ledger' | 'eventDefs' | 'figureOrder' | 'rosterOrder'
+    'wars' | 'openings' | 'ledger' | 'oilPolicy' | 'eventDefs' | 'figureOrder' | 'rosterOrder'
     | 'persLabels' | 'manningOrder' | 'manningHidden' | 'groupDefs'
-    | 'groupPriority' | 'requirements' | 'eventRows' | 'showSans'>
+    | 'groupPriority' | 'groupPriorityCustom' | 'requirements' | 'eventRows' | 'showSans'>
   HIST.ix = i
   historyEpoch++   // signal the matrix to drop any in-flight gesture (see above)
   locked(() => {
@@ -1109,44 +1175,79 @@ export function setPeople(people: Person[]): void {
  * them in) instead of stranding a row under a duplicated heading.
  */
 export function displayRoster(): Person[] {
-  const order = state.rosterOrder.length ? state.rosterOrder : autoOrder(state.people)
+  const order = state.rosterOrder.length ? state.rosterOrder : liveAutoOrder()
   const pos = new Map(order.map((id, i) => [id, i]))
   const out: Person[] = []
-  /* The groups the ADMIN configured, in their display order, and the separate
-     priority order that decides who claims a person matching several (owner,
-     28 Aug 26). With the default list this is byte-identical to the old
-     GROUP_ORDER walk — the built-ins are mutually exclusive and cover everyone. */
+  /* The groups the ADMIN configured, in their display order, and the priority
+     order that decides who claims a person fitting several (owner, 28 Aug 26;
+     following the page by default since 3 Sep 26). With the default list this is
+     byte-identical to the old GROUP_ORDER walk — `groupOf` is that same walk. */
   const defs = groupsInOrder()
   const priority = groupPriorityIds()
   const home = new Map(state.people.map(p => [p.id, assignGroup(p, defs, priority)]))
+  /* Within a block: every pilot above every WSO, ALWAYS (owner, 3 Sep 26 —
+     "arrange all pilots at the top always and wso at the bottom of the same
+     section"), and inside each seat the hand-order (or the ranked default). A
+     drag that would carry a WSO up among the pilots lands them at the top of the
+     WSOs instead — the seat split is not something a drag can undo. A body
+     missing from the saved order (just arrived) sinks to the end of its seat
+     rather than jumping to the top. */
+  const within = (a: Person, b: Person) =>
+    seatRank(a) - seatRank(b) || (pos.get(a.id) ?? Infinity) - (pos.get(b.id) ?? Infinity)
   for (const d of defs) {
     const members = state.people.filter(p => home.get(p.id) === d.id)
-    // A body missing from the saved order (just arrived) sinks to the end of
-    // its group rather than jumping to the top.
-    members.sort((a, b) => (pos.get(a.id) ?? Infinity) - (pos.get(b.id) ?? Infinity))
+    members.sort(within)
     out.push(...members)
   }
   /* Anyone no configured group claims still gets a row — under "Everyone else",
      always last. Without this an admin whose list is all qualifications would
      drop people off the grid entirely. */
   const rest = state.people.filter(p => !defs.some(d => home.get(p.id) === d.id))
-  rest.sort((a, b) => (pos.get(a.id) ?? Infinity) - (pos.get(b.id) ?? Infinity))
+  rest.sort(within)
   out.push(...rest)
   return out
 }
 
 /** The configured group list, pruned to the live qual catalogue and in the
- *  admin's display order. One body, so every reader agrees. */
+ *  admin's display order. One body, so every reader agrees.
+ *
+ *  While `showSans` is on, the SANS group is APPENDED at the foot (owner, 3 Sep
+ *  26 — SANS as their own category at the bottom). It is auto-injected here, never
+ *  stored, so it can never be dragged, removed or persisted like the rest — it
+ *  appears and leaves with the Show SANS switch alone. */
 export function groupsInOrder(): GroupDef[] {
   const defs = pruneGroups(state.groupDefs.length ? state.groupDefs : DEFAULT_GROUPS, state.qualCatalog)
   const ids = orderedGroupIds(defs, state.groupDefs.map(d => d.id))
-  return ids.map(id => defs.find(d => d.id === id)!).filter(Boolean)
+  const ordered = ids.map(id => defs.find(d => d.id === id)!).filter(Boolean)
+  return state.showSans ? [...ordered, SANS_GROUP] : ordered
 }
 
-/** The tie-break order — the admin's priority list, healed against the groups
- *  that exist. Empty priority falls back to the display order. */
+/**
+ * The tie-break order — who claims a person matching several groups.
+ *
+ * By DEFAULT it FOLLOWS the display order (owner, 3 Sep 26 — "the priority order
+ * should also change by default in accordance with the category order"): the group
+ * higher on the page wins. Only once the admin sets a CUSTOM order
+ * (`groupPriorityCustom`) does the stored `groupPriority` take over, healed against
+ * the groups that exist.
+ *
+ * SANS is forced to the FRONT whenever shown, independent of custom/auto: it sits
+ * LAST on the page but must still CLAIM its own people, or a SANS body would be
+ * drawn under its CAT instead of the SANS group at the foot.
+ */
 export function groupPriorityIds(): string[] {
-  return orderedGroupIds(groupsInOrder(), state.groupPriority)
+  const groups = groupsInOrder()
+  const base = state.groupPriorityCustom
+    ? orderedGroupIds(groups, state.groupPriority)
+    : groups.map(d => d.id)
+  if (!state.showSans) return base
+  return [SANS_GROUP_ID, ...base.filter(id => id !== SANS_GROUP_ID)]
+}
+
+/** Whether the admin has set a custom who-wins order (the settings sheet shows a
+ *  "Match the page order" reset only then). */
+export function isGroupPriorityCustom(): boolean {
+  return state.groupPriorityCustom
 }
 
 /** Which group a person is drawn under, for callers that need the answer
@@ -1166,80 +1267,130 @@ export function offerableGroupList(): GroupDef[] {
  *  cannot be stored back. */
 export function setGroupDefs(defs: GroupDef[]): void {
   if (state.role !== 'admin') return
-  state = withCurrent({ ...state, groupDefs: pruneGroups(defs, state.qualCatalog) })
+  // SANS is auto-managed by the Show SANS switch — never let it into the stored
+  // list, whatever a caller passes.
+  const cleaned = defs.filter(d => d.id !== SANS_GROUP_ID)
+  const groupDefs = pruneGroups(cleaned, state.qualCatalog)
+  state = withCurrent({ ...state, groupDefs, groupColors: colorsFor(groupDefs, state.groupColors) })
+  persist()
+  notify()
+}
+
+/** A picked colour lives and dies with its group: keep only the entries whose
+ *  group is still in the list, so a removed-then-re-added group starts fresh
+ *  (its fallback colour) rather than resurrecting a pick nobody can see. */
+function colorsFor(defs: readonly GroupDef[], colors: Record<string, string>): Record<string, string> {
+  const keep: Record<string, string> = {}
+  for (const d of defs) if (colors[d.id]) keep[d.id] = colors[d.id]
+  return keep
+}
+
+/** Pick a qualification group's colour (owner, 3 Sep 26 — "allow me to pick the
+ *  colour i want"). ADMIN-gated; only a group currently shown, only a `q:` group
+ *  (the built-ins wear their CAT colours), only a `#rrggbb` value. */
+export function setGroupColor(id: string, hex: string): void {
+  if (state.role !== 'admin') return
+  if (!id.startsWith('q:') || !/^#[0-9a-f]{6}$/i.test(hex)) return
+  if (!groupsInOrder().some(d => d.id === id)) return
+  if (state.groupColors[id] === hex) return
+  state = withCurrent({ ...state, groupColors: { ...state.groupColors, [id]: hex } })
   persist()
   notify()
 }
 
 /**
- * Add a group to the roster AND rank it FIRST in the who-wins order.
+ * Add a group to the roster, landing it just ABOVE the first category in the
+ * DISPLAY order.
  *
- * Appending it to the display list alone made the control dead (bug sweep, 28
- * Aug 26): `orderedGroupIds` puts an unranked id at the BOTTOM of the priority
- * list, and the seven built-ins are exhaustive — `groupOf` always returns one
- * of them — so every person was already claimed before the walk ever reached
- * the new group. Adding "SC Day" changed nothing on the grid at all, while the
- * editor beside it reported 44 people in it.
+ * Since who-wins now FOLLOWS the display order by default (owner, 3 Sep 26 —
+ * "higher on the page wins"), placing a new qualification group above the
+ * categories is what makes it actually CLAIM its people: a qual group below the
+ * exhaustive built-ins would never draw anyone (they are all claimed first). Add
+ * order is preserved — it lands above the cats but after any qual groups already
+ * there — so adding SC Day then SC Night keeps SC Day higher.
  *
- * So a new group is ranked ABOVE THE CATEGORIES — inserted just before the
- * first `cat` group in the priority order, not flatly at the front. Both halves
- * of that matter. Above the categories is the owner's own rule ("if theres a cat
- * c column, but there is also a SC D column. They should always show up in the
- * qualifications column instead of CAT"). Not at the front is what keeps ADD
- * ORDER intact: front-insertion would make each new group outrank the one added
- * before it, so adding SC Day then SC Night would silently demote SC Day.
- *
- * This sets the priority ONCE, at the moment of adding; the admin drags it
- * anywhere afterwards and nothing here touches it again. Removing a group and
- * adding it back is therefore not a no-op — it promotes it, which is the only
- * reading of "add" that does anything at all.
+ * In CUSTOM who-wins mode the same "above the cats" insert is mirrored into the
+ * stored priority, so a new group claims its people there too. The SANS group is
+ * not addable here — it is the Show SANS switch.
  */
 export function addGroup(d: GroupDef): void {
   if (state.role !== 'admin') return
-  const defs = pruneGroups([...groupsInOrder(), d], state.qualCatalog)
-  if (!defs.some(x => x.id === d.id)) return    // a qual key the catalogue lost
-  const byId = new Map(defs.map(x => [x.id, x]))
-  const rest = groupPriorityIds().filter(id => id !== d.id)
-  const at = rest.findIndex(id => byId.get(id)?.kind === 'cat')
-  const priority = at < 0 ? [...rest, d.id] : [...rest.slice(0, at), d.id, ...rest.slice(at)]
-  state = withCurrent({ ...state, groupDefs: defs, groupPriority: priority })
+  if (d.id === SANS_GROUP_ID) return
+  const current = groupsInOrder().filter(x => x.id !== SANS_GROUP_ID)
+  if (current.some(x => x.id === d.id)) return    // already shown
+  const catAt = current.findIndex(x => x.kind === 'cat')
+  const insertAt = catAt < 0 ? current.length : catAt
+  const merged = pruneGroups([...current.slice(0, insertAt), d, ...current.slice(insertAt)], state.qualCatalog)
+  if (!merged.some(x => x.id === d.id)) return    // a qual key the catalogue lost
+  let priority = state.groupPriority
+  if (state.groupPriorityCustom) {
+    const byId = new Map(merged.map(x => [x.id, x]))
+    const pr = groupPriorityIds().filter(id => id !== d.id && id !== SANS_GROUP_ID)
+    const pAt = pr.findIndex(id => byId.get(id)?.kind === 'cat')
+    priority = pAt < 0 ? [...pr, d.id] : [...pr.slice(0, pAt), d.id, ...pr.slice(pAt)]
+  }
+  state = withCurrent({ ...state, groupDefs: merged, groupPriority: priority })
   persist()
   notify()
 }
 
-/** Move one group before another in the DISPLAY order (the drag). Mirrors
- *  `moveRosterRow` / `moveManningRowTo`, guard included. ADMIN-gated. */
+/** Move one group before another in the DISPLAY order (the grid drag, in
+ *  rearrange mode). Mirrors `moveRosterRow` / `moveManningRowTo`, guard included.
+ *  ADMIN-gated. The auto-placed SANS group at the foot is never movable; dropping
+ *  a group "before SANS" means to the end of the real groups. Because who-wins
+ *  follows the page by default, this drag also reorders who-wins unless the admin
+ *  has set a custom order. */
 export function moveGroupTo(id: string, beforeId: string | null): void {
   if (state.role !== 'admin') return
   if (beforeId === id) return
-  const defs = groupsInOrder()
+  if (id === SANS_GROUP_ID) return
+  const defs = groupsInOrder().filter(d => d.id !== SANS_GROUP_ID)
   const from = defs.findIndex(d => d.id === id)
   if (from < 0) return
   const [moved] = defs.splice(from, 1)
-  const at = beforeId ? defs.findIndex(d => d.id === beforeId) : defs.length
+  const target = beforeId === SANS_GROUP_ID ? null : beforeId
+  const at = target ? defs.findIndex(d => d.id === target) : defs.length
   defs.splice(at < 0 ? defs.length : at, 0, moved!)
   setGroupDefs(defs)
 }
 
-/** Move one group in the PRIORITY order — the separate who-wins list. */
+/** Move one group in the PRIORITY order — the separate who-wins list in ⚙. Doing
+ *  so switches who-wins to CUSTOM (owner, 3 Sep 26 — the override), so it stops
+ *  following the page order. Seeds from the effective order so the first drag
+ *  starts from what the admin currently sees; SANS is never part of it (it is
+ *  auto-forced first). ADMIN-gated. */
 export function moveGroupPriorityTo(id: string, beforeId: string | null): void {
   if (state.role !== 'admin') return
   if (beforeId === id) return
-  const ids = groupPriorityIds()
+  if (id === SANS_GROUP_ID) return
+  const ids = groupPriorityIds().filter(x => x !== SANS_GROUP_ID)
   const from = ids.indexOf(id)
   if (from < 0) return
   ids.splice(from, 1)
-  const at = beforeId ? ids.indexOf(beforeId) : ids.length
+  const target = beforeId === SANS_GROUP_ID ? null : beforeId
+  const at = target ? ids.indexOf(target) : ids.length
   ids.splice(at < 0 ? ids.length : at, 0, id)
-  state = withCurrent({ ...state, groupPriority: ids })
+  state = withCurrent({ ...state, groupPriority: ids, groupPriorityCustom: true })
   persist()
   notify()
 }
 
-/** Put the roster grouping back to the seven built-ins. ADMIN-gated. */
+/** Drop a custom who-wins order and go back to following the page order (owner,
+ *  3 Sep 26 — the "Match the page order" reset in ⚙). ADMIN-gated; a no-op when
+ *  already following the page. */
+export function clearGroupPriority(): void {
+  if (state.role !== 'admin') return
+  if (!state.groupPriorityCustom && state.groupPriority.length === 0) return
+  state = withCurrent({ ...state, groupPriority: [], groupPriorityCustom: false })
+  persist()
+  notify()
+}
+
+/** Put the roster grouping back to the seven built-ins, following the page order.
+ *  ADMIN-gated. */
 export function resetGroups(): void {
   if (state.role !== 'admin') return
-  state = withCurrent({ ...state, groupDefs: [...DEFAULT_GROUPS], groupPriority: [] })
+  state = withCurrent({ ...state, groupDefs: [...DEFAULT_GROUPS], groupPriority: [], groupPriorityCustom: false, groupColors: {} })
   persist()
   notify()
 }
@@ -1262,9 +1413,18 @@ export function setRosterOrder(order: string[]): void {
   notify()
 }
 
+/** The categorised default order against the ADMIN's live grouping — each group
+ *  in page order, ranked within. Same shape as the engine's `autoOrder`, but
+ *  bucketed by `groupIdOf` rather than the fixed seven, so a person the page
+ *  order re-homes (an SXO IP under a lifted IP block) ranks among their new
+ *  block instead of carrying their old block's position (owner, 3 Sep 26). */
+function liveAutoOrder(): string[] {
+  return autoOrder(state.people, groupIdOf, groupsInOrder().map(d => d.id))
+}
+
 /** Re-group everyone into the categorised order — the Auto-sort button. */
 export function autoSortRoster(): void {
-  setRosterOrder(autoOrder(state.people))
+  setRosterOrder(liveAutoOrder())
 }
 
 /**
@@ -1326,6 +1486,35 @@ export function remapPersonKeys(map: Record<string, string>): void {
   const openings = rekey(state.openings)
   const ledger = state.ledger.map(e => ({ ...e, personId: map[e.personId] ?? e.personId }))
   state = withCurrent({ ...state, wars, openings, ledger })
+  notify()
+}
+
+/**
+ * The demo OIL story (state/demoworld.ts), laid over the seed at boot — the
+ * second boot-only writer beside `remapPersonKeys` and under the same
+ * contract: no persist, no undo step, deterministic, and called BEFORE the
+ * re-key so its seed-id keys are re-keyed with everything else. Each cell
+ * lands in the war holding its date (a date no war holds is dropped — the
+ * seed's wars cover 2026 and 2027 whole); states and ledger entries merge in.
+ * The tests never see it — they build the store from the pristine seed.
+ */
+export function installDemoOil(extra: { grid: Grid; states: States; ledger: Ledger }): void {
+  const wars = state.wars.map(w => {
+    const grid: Grid = { ...w.grid }
+    const states: States = { ...w.states }
+    for (const [person, row] of Object.entries(extra.grid)) {
+      for (const [date, code] of Object.entries(row)) {
+        if (warHolding(state.wars, date) !== w) continue
+        grid[person] = { ...(grid[person] ?? {}), [date]: code }
+        const rec = extra.states[person]?.[date]
+        if (rec) states[person] = { ...(states[person] ?? {}), [date]: rec }
+      }
+    }
+    return { ...w, grid, states }
+  })
+  const have = new Set(state.ledger.map(e => e.id))
+  const ledger = [...state.ledger, ...extra.ledger.filter(e => !have.has(e.id))]
+  state = withCurrent({ ...state, wars, ledger })
   notify()
 }
 
@@ -1902,6 +2091,156 @@ export function resetEventTypes(): void {
   notify()
 }
 
+/* THE OIL TRACKER writers (owner, 2 Sep 26 — "admin can only edit the list,
+   members can only view it"). ADMIN-GATED at the write path like every other
+   management surface. The tracker itself is DERIVED (engine/oiltracker.ts);
+   what an admin writes is the LEDGER (a grant, a correction, an edit or a
+   deletion of one — the first interface the ledger has ever had) and the
+   POLICY (expiry, default history window). Earned FO/HO days are never
+   written here: they are the publish wire's cells, read straight off the
+   grid, and a ledger copy would be the two-records-of-one-fact counters.ts
+   refuses. */
+
+export const MAX_REASON = 120
+/** The optional "given by" on a grant (owner, 2 Sep 26) — a name or a post. */
+export const MAX_GIVEN_BY = 40
+const ISO_DAY = /^\d{4}-\d{2}-\d{2}$/
+
+/** Everything a figure needs to read a person's number, from the live state
+ *  — ONE builder so the column, the picker, the breakdown, the Cinch sheet,
+ *  the bid-time warning and the tracker all read the same OIL policy and the
+ *  same "today". Four hand-built literals used to do this; they could drift. */
+export function figureCtxOf(): FigureCtx {
+  return { openings: state.openings, ledger: state.ledger, sources: state.wars, oilPolicy: state.oilPolicy, asOf: localToday() }
+}
+
+export function setOilPolicy(patch: Partial<OilPolicy>): boolean {
+  if (state.role !== 'admin') return false
+  // Through the untrusted reader on purpose: it is the one place the bounds
+  // live, so a sheet cannot store a policy the next boot would throw away.
+  const next = readOilPolicy({ ...state.oilPolicy, ...patch })
+  if (!next) return false
+  state = withCurrent({ ...state, oilPolicy: next })
+  persist()
+  notify()
+  return true
+}
+
+/** The sentence that stops a bad ledger write, or null. Stricter than the
+ *  boot reader (which tolerates any string date and a zero amount, so an
+ *  older stored ledger still loads): a NEW entry with no date or nothing in
+ *  it is a mistake worth telling the admin about. */
+function ledgerProblem(amount: number, date: string, reason: string, givenBy = ''): string | null {
+  if (!Number.isFinite(amount) || amount === 0) return 'The amount must be a number other than 0'
+  if (!ISO_DAY.test(date)) return 'Pick a date'
+  const clean = reason.trim()
+  if (!clean) return 'Give a reason'
+  if (clean.length > MAX_REASON) return `A reason is at most ${MAX_REASON} characters`
+  if (givenBy.trim().length > MAX_GIVEN_BY) return `Given by is at most ${MAX_GIVEN_BY} characters`
+  return null
+}
+
+/** Ids are `ol-N`, N past the highest one stored — deterministic (no clock),
+ *  so two grants in one batch, or one right after another, never collide. */
+function ledgerSeq(): number {
+  let max = 0
+  for (const e of state.ledger) {
+    const m = /^ol-(\d+)$/.exec(e.id)
+    if (m) max = Math.max(max, Number(m[1]))
+  }
+  return max
+}
+
+/** The approver stamped on a grant: the CALLSIGN of whoever is viewing
+ *  (`viewer` is a person id and would leak on screen), or "admin". */
+function approverName(): string {
+  return state.people.find(p => p.id === state.viewer)?.callsign ?? 'admin'
+}
+
+/**
+ * Credit OIL to one or many people at once — the tracker's "credit N
+ * people" (owner: "drag and select all WSOs to put OIL, date and reason").
+ * A NEGATIVE amount is a correction, not a second mechanism (§Counters).
+ * Returns the error sentence for the sheet, or null on success. One state
+ * write for the whole batch → one persist, one undo step.
+ */
+export function grantOil(personIds: string[], amount: number, date: string, reason: string, givenBy = ''): string | null {
+  if (state.role !== 'admin') return 'Only an admin can credit OIL'
+  const ids = [...new Set(personIds)].filter(id => state.people.some(p => p.id === id))
+  if (!ids.length) return 'Pick at least one person'
+  const problem = ledgerProblem(amount, date, reason, givenBy)
+  if (problem) return problem
+  const approvedBy = approverName()
+  const by = givenBy.trim()
+  let n = ledgerSeq()
+  const entries: Ledger = ids.map(personId => ({
+    id: `ol-${++n}`, personId, counter: 'oil' as const, amount, date, reason: reason.trim(), approvedBy,
+    ...(by ? { givenBy: by } : {}),
+  }))
+  state = withCurrent({ ...state, ledger: [...state.ledger, ...entries] })
+  persist()
+  notify()
+  return null
+}
+
+/** Edit a grant in place — amount, date or reason. The approver stays who it
+ *  was; the edit is visible in undo, which is the audit trail here. */
+export function updateLedgerEntry(id: string, patch: { amount?: number; date?: string; reason?: string; givenBy?: string }): string | null {
+  if (state.role !== 'admin') return 'Only an admin can edit OIL'
+  const cur = state.ledger.find(e => e.id === id)
+  if (!cur) return 'That entry is gone'
+  const amount = patch.amount ?? cur.amount
+  const date = patch.date ?? cur.date
+  const reason = patch.reason ?? cur.reason
+  const givenBy = (patch.givenBy ?? cur.givenBy ?? '').trim()
+  const problem = ledgerProblem(amount, date, reason, givenBy)
+  if (problem) return problem
+  state = withCurrent({
+    ...state,
+    ledger: state.ledger.map(e => {
+      if (e.id !== id) return e
+      const { givenBy: _g, ...rest } = e
+      return { ...rest, amount, date, reason: reason.trim(), ...(givenBy ? { givenBy } : {}) }
+    }),
+  })
+  persist()
+  notify()
+  return null
+}
+
+export function removeLedgerEntry(id: string): boolean {
+  if (state.role !== 'admin') return false
+  if (!state.ledger.some(e => e.id === id)) return false
+  state = withCurrent({ ...state, ledger: state.ledger.filter(e => e.id !== id) })
+  persist()
+  notify()
+  return true
+}
+
+/**
+ * Set a person's BALANCE of a counter to read exactly `target` now (owner,
+ * 2 Sep 26 — "enable me to manually input and change LVE BAL … every time a
+ * LL or OL is taken it deducts from it"). A balance is never stored
+ * (counters.ts), so this moves the OPENING FIGURE by whatever makes
+ * `opening + granted − drawn` equal the target; the leave already on the
+ * grid stays counted and every LL/OL after this deducts as before. The
+ * breakdown sheet shows the new opening, so the number is explained, not
+ * hidden.
+ */
+export function setBalance(personId: string, counter: CounterName, target: number): boolean {
+  if (state.role !== 'admin') return false
+  if (!state.people.some(p => p.id === personId)) return false
+  if (!Number.isFinite(target)) return false
+  const opening = target - grantedTo(state.ledger, personId, counter) + drawnFrom(state.wars, personId, counter)
+  state = withCurrent({
+    ...state,
+    openings: { ...state.openings, [personId]: { ...state.openings[personId], [counter]: Math.round(opening * 1e6) / 1e6 || 0 } },
+  })
+  persist()
+  notify()
+  return true
+}
+
 /* THE COUNTER-COLUMN FIGURE ORDER writers. ADMIN-GATED (owner, 17 Aug 26:
    "normal user should not have authority to change the leave war column
    arrangement") — the enforcement is in each writer below, mirroring the
@@ -2123,7 +2462,8 @@ export function setQualCatalog(catalog: QualDef[]): void {
      ever REMOVES a group whose qualification no longer exists. */
   const groupDefs = pruneGroups(state.groupDefs, catalog)
   const changed = groupDefs.length !== state.groupDefs.length
-  state = withCurrent({ ...state, qualCatalog: catalog, ...(changed ? { groupDefs } : {}) })
+  // A pruned group takes its picked colour with it, as a removed one does.
+  state = withCurrent({ ...state, qualCatalog: catalog, ...(changed ? { groupDefs, groupColors: colorsFor(groupDefs, state.groupColors) } : {}) })
   if (changed) persist()
   notify()
 }
@@ -2251,11 +2591,11 @@ function ingestFromRaptorImpl(personId: string, date: string, code: string): Ing
  * not a clash, it is the squadron having recorded the same fact first —
  * taken over in place, exactly like ingest's confirming upgrade.
  */
-export function ingestDutyCredit(personId: string, date: string, code: 'FO' | 'HO'): IngestResult {
+export function ingestDutyCredit(personId: string, date: string, code: 'FO' | 'HO', why?: string): IngestResult {
   // Locked like ingestFromRaptor — a sync-driven credit is not an undo step.
-  return locked(() => ingestDutyCreditImpl(personId, date, code))
+  return locked(() => ingestDutyCreditImpl(personId, date, code, why))
 }
-function ingestDutyCreditImpl(personId: string, date: string, code: 'FO' | 'HO'): IngestResult {
+function ingestDutyCreditImpl(personId: string, date: string, code: 'FO' | 'HO', why?: string): IngestResult {
   if (code !== 'FO' && code !== 'HO') return 'ignored'
   const war = warHolding(state.wars, date)
   if (!war) return 'ignored'
@@ -2272,9 +2612,10 @@ function ingestDutyCreditImpl(personId: string, date: string, code: 'FO' | 'HO')
   const confirming = existing === code && !owned
 
   const row = { ...(war.grid[personId] ?? {}), [date]: code }
+  const note = (why ?? '').trim().slice(0, MAX_CELL_NOTE)
   const srow = {
     ...(war.states[personId] ?? {}),
-    [date]: { state: 'approved', source: 'raptor' } as BidRecord,
+    [date]: { state: 'approved', source: 'raptor', ...(note ? { note } : {}) } as BidRecord,
   }
   updateWar(war.period.id, w => ({
     ...w,
@@ -2282,6 +2623,32 @@ function ingestDutyCreditImpl(personId: string, date: string, code: 'FO' | 'HO')
     states: { ...w.states, [personId]: srow },
   }))
   return confirming ? 'confirmed' : 'written'
+}
+
+/**
+ * The REASON on a hand-entered FO/HO credit (owner, 2 Sep 26 — a manual OIL
+ * credit typed on the grid "will bring me to the OIL tracker page to
+ * include the reason"). Admin only; the cell must hold FO or HO. The note
+ * rides on the cell's record, the same field the sync wire fills for an
+ * earned credit, so the tracker reads both the same way. An empty note
+ * clears it. Undo covers it because `states` is in the snapshot.
+ */
+export function setCellNote(personId: string, date: string, note: string): string | null {
+  if (state.role !== 'admin') return 'Only an admin can edit OIL'
+  const war = warHolding(state.wars, date)
+  if (!war) return 'That day is in no war'
+  const code = war.grid[personId]?.[date]
+  if (code !== 'FO' && code !== 'HO') return 'Only an FO or HO credit takes a reason'
+  const clean = note.trim()
+  if (clean.length > MAX_CELL_NOTE) return `A reason is at most ${MAX_CELL_NOTE} characters`
+  const cur = war.states[personId]?.[date] ?? ({ state: 'approved', source: 'bid' } as BidRecord)
+  const { note: _old, ...rest } = cur
+  const rec: BidRecord = clean ? { ...rest, note: clean } : rest
+  updateWar(war.period.id, w => ({
+    ...w,
+    states: { ...w.states, [personId]: { ...(w.states[personId] ?? {}), [date]: rec } },
+  }))
+  return null
 }
 
 /**

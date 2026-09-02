@@ -20,9 +20,10 @@ const day = (date: string, e0 = '', e1 = ''): DayInfo => ({
 })
 
 describe('the seed', () => {
-  it('is PH=off, No Leave=nolv, SC=work', () => {
+  it('is PH=off, Off day=free, No Leave=nolv, SC=work', () => {
     expect(seedEventDefs()).toEqual([
       { name: 'PH', kind: 'off' },
+      { name: 'Off day', kind: 'free' },
       { name: 'No Leave', kind: 'nolv' },
       { name: 'SC', kind: 'work' },
     ])
@@ -69,6 +70,15 @@ describe('columnKindFor — the whole-column colour', () => {
   it('lets off win over nolv on the same day', () => {
     expect(columnKindFor(defs, day('2026-01-01', 'No Leave', 'PH'), [])).toBe('off')
   })
+  // The management Off day (owner, 2 Sep 26): grey, between PH and No Leave
+  // in precedence. A PH on a declared Off day is still a PH — it earns.
+  it('is free for an Off day, under off and over nolv', () => {
+    expect(columnKindFor(defs, day('2026-01-01', 'Off day'), [])).toBe('free')
+    expect(columnKindFor(defs, day('2026-01-01', 'No Leave', 'Off day'), [])).toBe('free')
+    expect(columnKindFor(defs, day('2026-01-01', 'Off day', 'PH'), [])).toBe('off')
+    const bands: EventBand[] = [{ line: 0, from: '2026-01-01', to: '2026-01-05', text: 'x', kind: 'free' }]
+    expect(columnKindFor(defs, day('2026-01-03'), bands)).toBe('free')
+  })
   it('never colours the column for a work word', () => {
     expect(columnKindFor(defs, day('2026-01-01', 'SC'), [])).toBeNull()
   })
@@ -101,9 +111,10 @@ describe('addEventDef', () => {
 
 describe('updateEventDef', () => {
   it('renames and reclassifies', () => {
-    const out = updateEventDef(seedEventDefs(), 2, { name: 'Standing Charge', kind: 'off' })
+    const out = updateEventDef(seedEventDefs(), 3, { name: 'Standing Charge', kind: 'off' })
     expect(out).toEqual([
       { name: 'PH', kind: 'off' },
+      { name: 'Off day', kind: 'free' },
       { name: 'No Leave', kind: 'nolv' },
       { name: 'Standing Charge', kind: 'off' },
     ])
@@ -113,7 +124,7 @@ describe('updateEventDef', () => {
     expect((out as EventDef[])[0]).toEqual({ name: 'PH', kind: 'work' })
   })
   it('refuses a rename onto another type', () => {
-    expect(updateEventDef(seedEventDefs(), 2, { name: 'PH' })).toContain('already an event type')
+    expect(updateEventDef(seedEventDefs(), 3, { name: 'PH' })).toContain('already an event type')
   })
 })
 
@@ -121,6 +132,7 @@ describe('removeEventDef', () => {
   it('drops the entry', () => {
     expect(removeEventDef(seedEventDefs(), 1)).toEqual([
       { name: 'PH', kind: 'off' },
+      { name: 'No Leave', kind: 'nolv' },
       { name: 'SC', kind: 'work' },
     ])
   })

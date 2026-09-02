@@ -70,8 +70,8 @@ describe('leave is LL / OL / OIL (tfin B42)', () => {
     }
     /* the owner's order: the new types sit below OIL, Upchit closes the
        medical block (27 Aug 26) */
-    expect(INPUT_TYPES.slice(3, 13)).toEqual(
-      ['OFF', 'CCL', 'PL', 'FCL', 'EL', 'HL', 'OML', 'ATT C', 'ATT B', 'Upchit'])
+    expect(INPUT_TYPES.slice(3, 12)).toEqual(
+      ['CCL', 'PL', 'FCL', 'EL', 'HL', 'OML', 'ATT C', 'ATT B', 'Upchit'])
   })
 
   /* UPCHIT (owner, 27 Aug 26) — a paperwork record, not an absence. Inside
@@ -92,7 +92,7 @@ describe('leave is LL / OL / OIL (tfin B42)', () => {
   })
 
   it('isUnavail covers leave, medical and overseas duty; the rest are personal', () => {
-    for (const t of ['LL', 'OL', 'OIL', 'OFF', 'CCL', 'PL', 'FCL', 'EL', 'HL', 'OML', 'ATT C', 'ATT B', 'OD'])
+    for (const t of ['LL', 'OL', 'OIL', 'CCL', 'PL', 'FCL', 'EL', 'HL', 'OML', 'ATT C', 'ATT B', 'OD'])
       expect(isUnavail(t), t).toBe(true)
     expect(isUnavail('Meeting') || isUnavail('Fly with') || isUnavail('Other') || isUnavail('CSE')).toBe(false)
   })
@@ -110,7 +110,7 @@ describe('leave is LL / OL / OIL (tfin B42)', () => {
      no, with medical the single carve-out — on the island but not fit to walk.
      Derived rather than stored, so this is the whole of it. */
   it('local may stand a spare, overseas may not, medical never does', () => {
-    for (const t of ['LL', 'OIL', 'OFF', 'CCL', 'PL', 'FCL', 'EL', 'Training', 'CSE', 'Meeting', 'Fly with', 'Personal', 'Appointment', 'Other'])
+    for (const t of ['LL', 'OIL', 'CCL', 'PL', 'FCL', 'EL', 'Training', 'CSE', 'Meeting', 'Fly with', 'Personal', 'Appointment', 'Other'])
       expect(canSpare(t), t).toBe(true)
     for (const t of ['OL', 'OD', 'HL', 'OML', 'ATT C', 'ATT B'])
       expect(canSpare(t), t).toBe(false)

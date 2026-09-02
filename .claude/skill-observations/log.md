@@ -702,3 +702,109 @@ anyway.
 **Principle:** A pipeline's exit status is its last command's; any gate
 command piped through a formatter reports the formatter's success, not the
 gate's. Keep verdict-bearing commands unpiped.
+
+### Observation 45: Owner reversed auto-merge — accumulate on the branch, merge only on "merge live"
+
+**Status:** OPEN
+**Date:** 2026-09-02
+**Session context:** A label-only rename (Off day → PH) took ~40 min wall clock because the session ran the full merge → Pages → live-verify chain; the owner asked "why is it taking so long" and then set a new rule: no automatic merge, stack changes with Vercel links, merge only on an explicit "merge live".
+**Skill:** Project house rules (raptor-port/CLAUDE.md §Vercel / §Ship once per session) — updated in the same commit
+**Type:** open-source
+**Phase/Area:** delivery loop / when to go quiet
+
+**Issue:** Two compounding misses. (1) The 24 Aug "auto-merge is default" rule made a trivial change pay the full CI + rollout cost before the owner heard anything. (2) The session went silent for the whole chain even though the fast feedback surface (the Vercel preview) was ready one minute after the push — the house rule already said to hand over the link the moment it is Ready, and the session waited for the slow chain to finish before replying at all.
+
+**Suggested improvement:** Treat the preview link as the reply-worthy event: push → reply with the link → keep going. Never block a user-visible reply on a multi-minute rollout when a faster verifiable surface exists. Recorded the new merge gate in CLAUDE.md.
+
+**Principle:** When a delivery pipeline has a fast preview stage and a slow publish stage, the user-facing reply belongs at the fast stage; the slow stage is background work, and whether it runs at all is the owner's call, not a default.
+
+### Observation 46: A plan-critique agent pays for itself on a multi-module feature
+
+**Status:** OPEN
+**Date:** 2026-09-02
+**Session context:** Building the Leave War OIL tracker (engine + store + sheet + docs) from a plan written after three Explore-agent maps.
+**Skill:** task-observer (planning discipline; applies to any plan-mode workflow)
+**Type:** open-source
+**Phase/Area:** Plan mode, Phase 2 (design review before implementation)
+
+**Issue:** The first plan draft looked complete, but a single Plan-agent critique pass against the actual code found four real defects before a line was written: an import CYCLE the plan would have created (counters ↔ oiltracker), a second reader of the same rule that would have drifted (the bid-time balance warning vs the new OIL BAL), a missing date helper (no addMonths existed; end-of-month clamping had to be decided), and an id field that would have leaked on screen (viewer id vs callsign). Each would have surfaced late — as a vitest 'undefined' under a cycle, or as a visible bug.
+
+**Suggested improvement:** For any plan touching three or more modules, run one critique agent with a checklist of exactly these questions: cycles in the proposed import graph, every existing reader of a rule the plan changes, helpers the plan assumes exist, and any id/handle the UI will print. Keep it to one pass; a second rarely finds more.
+
+**Principle:** A plan is cheapest to fix before it is code; one adversarial read of the plan against the real code, with a fixed checklist, catches the class of defect that tests only reveal after the wiring is in.
+
+### Observation 47: Iterating a static mockup with the owner before building a UI rewrite pays for itself
+
+**Status:** OPEN
+**Date:** 2026-09-02
+**Session context:** Leave War OIL tracker — the first cut (a list sheet + per-person page) was rebuilt the same day as a full-screen grid after seven rounds of mockup feedback (year lanes, per-credit boxes, aligned digits, given-by, no select column), none of which had been in the original ask.
+**Skill:** impeccable (critique) / brainstorming
+**Type:** open-source
+**Phase/Area:** Design before build — "show a picture first"
+
+**Issue:** The owner asked for a screenshot before proceeding; a throwaway HTML mockup rendered with the app's own palette let seven layout decisions be settled in ~30 minutes of back-and-forth, at zero code cost. Running the impeccable critique on the MOCKUP (not the built page) surfaced three P0/P1 layout faults the owner then chose fixes for. Had the grid been built first, each round would have cost a component rewrite plus test churn.
+
+**Suggested improvement:** For any UI whose SHAPE is unsettled, make the mockup loop explicit in the plan: (1) static HTML in the app's tokens, desktop + phone renders; (2) owner feedback rounds on the picture; (3) a critique pass on the final mockup with the owner picking among the fixes; (4) only then the plan and build. Record the accepted mockup as the build's contract.
+
+**Principle:** A picture the client can react to is the cheapest prototype; iterate the picture until it stops changing, then build once.
+
+### Observation 48: A pointer-drag handler without a press guard turns hover into a drag
+
+**Status:** OPEN
+**Date:** 2026-09-02
+**Session context:** Leave War — owner reported the grid snapping back to January whenever a cell's sheet opened in a later month.
+**Skill:** impeccable (craft-floor / harden), and the Leave War bug-hunt habit
+**Type:** open-source
+**Phase/Area:** pointer gesture handlers
+
+**Issue:** The sheet scrim's sideways-pan handler listened to `pointermove` and committed to an axis from the last `pointerdown` origin — but a mouse fires `pointermove` on a bare hover, so the first motion after the sheet opened (origin still 0,0) was forwarded as `scrollLeft = 0 − clientX` and the grid jumped to the start. It had passed every test because the tests always fired a `pointerdown` first, and every live pass clicked without moving the mouse afterwards. Found by instrumenting the scroller's `scrollLeft` setter with a stack trace, not by reading the code.
+
+**Suggested improvement:** Add to the harden checklist: every `pointermove` handler must gate on a tracked press (set on down, cleared on up/cancel, and for a mouse also cleared when `buttons === 0`), and its tests must include a move with NO preceding down. In live passes, move the mouse after every click — a Playwright click leaves the pointer parked.
+
+**Principle:** Hover is a move. A gesture that reads motion without proving a press will fire on a mouse that is only passing by, and the test suite that never sends a bare move will never see it.
+
+
+### Observation 49: A hidden-by-default filter is a test-suite-wide sweep, and a sticky offset is a measurement, not a constant
+
+**Status:** OPEN
+**Date:** 2026-09-02
+**Session context:** OIL tracker third cut — the ARCHIVE column hides used-up credits by default; a vertical word in the header.
+**Skill:** impeccable (craft-floor / live pass)
+**Type:** open-source
+**Phase/Area:** verification
+
+**Issue:** Two small things the unit suite could not see. (1) Making dead credits hidden by default silently invalidated every existing test that asserted a used-up box was PRESENT (four of them across two describe blocks) — each had to learn to open the archive first. (2) The header rows were sized 22 + 28 px and the group rows' sticky offset was written as the constant 50; a rotated word in a new header cell grew the header to 57 px and the sticky rows overlapped it by 7 px. Only the live drive (measuring thead height against the group row's top) caught it.
+
+**Suggested improvement:** In the live-pass checklist: whenever a change adds a default-hidden state, grep the tests for presence assertions on the now-hidden thing before running them; and whenever a sticky offset is a literal, measure the element it is supposed to match in the same pass (assert header height === offset).
+
+**Principle:** A default that hides something rewrites what every existing "it is there" test means; and a sticky offset copied from a sibling's height is a measurement that drifts the moment the sibling's content changes — pin both with a measurement, not a constant.
+
+### Observation 50: Text selection on a touch-first app is a global baseline, not a per-element cleanup
+
+**Status:** OPEN
+**Date:** 2026-09-02
+**Session context:** Owner reported (with a screenshot of a nav tab caret, and the recurring "the grid selects as blue text when I try to scroll on my phone") that click-only chrome should never be selectable as text; editable fields should.
+**Skill:** impeccable
+**Type:** open-source
+**Phase/Area:** craft-floor / Operate (touch-first app UI)
+
+**Issue:** The codebase had accumulated ~20 scattered per-element `user-select:none` declarations (grips, chips, some tabs, day buttons, drag bodies) added reactively over months, yet the user kept hitting NEW uncovered surfaces — the top nav tabs and the data grid both still painted a blue text range on a tap-hold. Chasing each element is whack-a-mole and never converges. The robust fix was one baseline: `html{user-select:none;-webkit-touch-callout:none}` with `input,textarea,select,[contenteditable]{user-select:text;-webkit-touch-callout:default}`. Before writing it I had to verify the app's editable text wasn't only `<input>` — this one edits via 662 `contenteditable` spans and even sets a selection range programmatically, which the `[contenteditable]` opt-in preserves. A naive "opt-in inputs only" baseline would have silently broken all in-place text editing.
+
+**Suggested improvement:** In the Operate/craft-floor guidance, add a reflex: for a touch-first or app-shell (non-document) UI, default `user-select:none` at the root and opt text selection back IN only for genuinely editable/copyable surfaces — do not add `user-select:none` per element. And before flipping the baseline, enumerate every editable surface (inputs, textareas, selects, AND contenteditable — grep for `contenteditable`/`getSelection`/`execCommand`), because a document-style editor hidden behind an app shell breaks invisibly if the opt-in misses it.
+
+**Principle:** A behavior that should hold for "everything except a named few" belongs at the root as a default plus explicit opt-ins, not as a growing list of per-element rules — the per-element approach never converges and each gap ships as a fresh annoyance. When inverting such a default, first enumerate the exceptions from the code (grep the actual mechanism), because the ones you can't see on screen are the ones that break silently.
+
+### Observation 51: A "survives a reload" live check must first confirm the app boots on a persistent backend
+
+**Status:** OPEN
+**Date:** 2026-09-04
+**Session context:** Leave War bug hunt #4 — verifying a store-level fix (saved qualification groups pruned at boot) in the live browser
+**Skill:** New skill candidate: live-verification pass (project)
+**Type:** open-source
+**Phase/Area:** Live verification design
+
+**Issue:** A unit-tested storage fix was "verified" live by adding a group, reloading, and looking for it — it was gone, which looked like the fix had failed. The live app deliberately boots that store on a MEMORY backend (nothing survives a reload by design), so the check could never pass and cost two extra live rounds and a debug trace before the boot file explained it.
+
+**Suggested improvement:** Before designing any live persistence/reload check, read the app's boot wiring for which backend the store is mounted on; if it is memory-only, verify the fix at the unit level and say so in the report instead of a live reload.
+
+**Principle:** A live verification step is only as meaningful as the environment's ability to exhibit the behaviour — confirm the precondition (here: persistence exists) before treating a failed check as a failed fix.

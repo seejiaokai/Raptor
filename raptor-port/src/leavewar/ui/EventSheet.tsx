@@ -44,6 +44,7 @@ import './eventsheet.css'
 
 const KIND_LABEL: Record<EventKind, string> = {
   off: 'PH',
+  free: 'Off day',
   nolv: 'No leave',
   work: 'Work',
 }

@@ -37,12 +37,12 @@ describe('the two event lines', () => {
     expect(getState().period.days.find(d => d.date === '2026-01-05')!.events[2]).toBe('Range det')
   })
 
-  it('the add/remove-row controls show in Rearrange mode for an admin only', () => {
+  it('the add/remove-row controls show inside ⚙ Settings for an admin only', () => {
     setRole('admin')
     const { rerender } = render(<Matrix />)
-    // not in the normal view
+    // off the row entirely — reached only by opening ⚙ Settings (owner, 3 Sep 26)
     expect(screen.queryByTestId('event-add')).toBeNull()
-    fireEvent.click(screen.getByTestId('roster-arrange'))
+    fireEvent.click(screen.getByTestId('settings-open'))
     rerender(<Matrix />)
     expect(screen.getByTestId('event-add')).toBeTruthy()
     // remove only appears once above the default two rows
@@ -53,18 +53,18 @@ describe('the two event lines', () => {
     removeEventRow()
   })
 
-  /* The SANS enable switch (owner, 18 Aug 26) rides the same toolbar under the
-     same gate: Rearrange mode, admin only. The roster effect itself is pinned
-     in roster.test.ts — this pins where the control lives and that a click
-     lands on the store. */
-  it('the Show SANS switch shows in Rearrange mode for an admin only, and flips the store', () => {
+  /* The SANS enable switch (owner, 18 Aug 26) now lives inside ⚙ Settings, admin
+     only. The roster effect itself is pinned in roster.test.ts — this pins where
+     the control lives and that a click lands on the store. */
+  it('the Show SANS switch shows inside ⚙ Settings for an admin only, and flips the store', () => {
     const { rerender, unmount } = render(<Matrix />)
+    expect(screen.queryByTestId('settings-open'), 'a member has no settings').toBeNull()
     expect(screen.queryByTestId('sans-toggle'), 'a member never sees it').toBeNull()
     unmount()
     setRole('admin')
     const r2 = render(<Matrix />)
-    expect(screen.queryByTestId('sans-toggle'), 'not in the normal view').toBeNull()
-    fireEvent.click(screen.getByTestId('roster-arrange'))
+    expect(screen.queryByTestId('sans-toggle'), 'not until Settings is opened').toBeNull()
+    fireEvent.click(screen.getByTestId('settings-open'))
     r2.rerender(<Matrix />)
     const btn = screen.getByTestId('sans-toggle')
     expect(btn.textContent).toBe('Show SANS')

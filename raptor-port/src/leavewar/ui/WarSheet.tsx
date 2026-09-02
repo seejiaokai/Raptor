@@ -10,7 +10,7 @@
 
 import { useState } from 'react'
 import { addDays } from '../engine'
-import { clashingWar, createWar, getState } from '../state/store'
+import { clashingWar, createWar, focusDay, getState, selectWar } from '../state/store'
 import { RangePicker, type Range } from './RangePicker'
 import { shortSpan } from './dates'
 import './bidpicker.css'
@@ -45,7 +45,18 @@ export function WarSheet({ onClose }: { onClose: () => void }) {
 
   const create = () => {
     const result = createWar(name, start, end)
-    if (result === 'created') return onClose()
+    if (result === 'created') {
+      // Go straight to the war just made and land on its first day (owner,
+      // 2 Sep 26 — "when I create a new period it should snap me to the
+      // earliest date I created, and the period button will show the newly
+      // created period"). This REVERSES the earlier "a new war doesn't take
+      // the screen" rule: the owner's flow is now create-then-work-in-it, so
+      // selecting it and jumping to its start is the thing that saves the
+      // taps. Wars don't overlap, so start+end names exactly the new one.
+      const made = getState().wars.find(w => w.period.start === start && w.period.end === end)
+      if (made) { selectWar(made.period.id); focusDay(start) }
+      return onClose()
+    }
     // An overlap NAMES the war it hit. The generic sentence sent the owner
     // hunting: they typed 2027 dates, were told "overlap", and concluded the
     // rule was broken because nothing on screen mentioned the 2027 war that

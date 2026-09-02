@@ -48,6 +48,15 @@ export interface Person {
    *  filters (owner, 19 Aug 26). Like `q`, Raptor's to hold; absent on the
    *  raw seed, whose three boolean flags `heldQuals` folds in instead. */
   xq?: string[]
+  /** SANS aircrew, carried through the projection so a shown SANS body can be
+   *  drawn in its OWN group at the foot of the roster (owner, 3 Sep 26 — "SANS
+   *  will appear and have a category of themselves at the bottom"). Off the
+   *  roster entirely unless `showSans` is on (projectPeople drops them first),
+   *  so this is only ever set on bodies that are already meant to be shown.
+   *  NEVER read by manning: once projected a SANS body counts by seat + band
+   *  like any aircrew (which is the owner's "accounted in the counter") — this
+   *  flag is display grouping only, the same rule as `q`. */
+  san?: boolean
   /** Ground crew. Included in the roster since 18 Aug 26 (owner) so they can
    *  hold leave and be seen; excluded from every aircrew manning count. */
   pers?: boolean
@@ -103,14 +112,43 @@ export const GROUP_LABEL: Record<Group, string> = {
   SXO: 'SXO', IP: 'IP', OPSP: 'OPS P', IWSO: 'IWSO', OPSW: 'OPS W', OCU: 'OCU', PERS: 'Personnel',
 }
 
-/** Which display group a person belongs to. SXO wins over their flying
- *  category (an SXO IP shows once, at the top); ground crew are always PERS. */
+/**
+ * Whether a person FITS a category at all — before the page order decides which
+ * one draws them (owner, 3 Sep 26 — "whatever is at the top priority will
+ * supersede and put those people who are that cat or qualification in that
+ * order"). The categories are deliberately NOT exclusive: an SXO IP fits SXO
+ * AND IP, so with IP dragged above SXO on the grid they draw under IP, and with
+ * SXO on top (the default) they draw under SXO. `assignGroup` walks the page
+ * order and the first fit claims them.
+ *
+ * Two are kept exclusive on purpose, so an untouched page draws exactly as it
+ * always has: ground crew fit ONLY Personnel (they have no flying seat to fit
+ * anything else), and an OCU trainee fits OCU, not OPS P / OPS W — "ops" in
+ * those two means CAT A–D, and letting OCU fit them would pull every trainee
+ * into OPS P on the default order (OCU sits below it).
+ */
+export function fitsCategory(p: Person, g: Group): boolean {
+  const ground = !!p.pers || p.seat === 'gnd'
+  if (g === 'PERS') return ground
+  if (ground) return false
+  const ocu = (p.q || '').toUpperCase() === 'OCU'
+  switch (g) {
+    case 'SXO': return !!p.sxo
+    case 'OCU': return ocu
+    case 'IP': return p.seat === 'pilot' && p.band === 'instructor'
+    case 'IWSO': return p.seat === 'wso' && p.band === 'instructor'
+    case 'OPSP': return p.seat === 'pilot' && p.band !== 'instructor' && !ocu
+    case 'OPSW': return p.seat === 'wso' && p.band !== 'instructor' && !ocu
+  }
+}
+
+/** Which display group a person belongs to under the DEFAULT page order — the
+ *  first category in `GROUP_ORDER` they fit. SXO leads that order, so an SXO IP
+ *  shows once, at the top; ground crew fit only PERS. The admin-ordered grid
+ *  asks `assignGroup` instead, which walks the page's own order; this is the
+ *  chip colour / Auto-sort / default-order view of the same rule. */
 export function groupOf(p: Person): Group {
-  if (p.pers || p.seat === 'gnd') return 'PERS'
-  if (p.sxo) return 'SXO'
-  if ((p.q || '').toUpperCase() === 'OCU') return 'OCU'
-  if (p.seat === 'pilot') return p.band === 'instructor' ? 'IP' : 'OPSP'
-  return p.band === 'instructor' ? 'IWSO' : 'OPSW'
+  return GROUP_ORDER.find(g => fitsCategory(p, g)) ?? 'PERS'
 }
 
 /** Most-qualified first: FI, IR, IP, IW, then the ops grades A→D, then OCU
@@ -151,21 +189,48 @@ export function opsCatOf(p: Person): string {
   return (q === 'A' || q === 'B' || q === 'C' || q === 'D') ? q : ''
 }
 
-/** The default categorised order: every group in `GROUP_ORDER`, each sorted by
- *  CAT (A first) then callsign. This is what the Auto-sort button writes and
- *  what a roster with no manual order shows. Stable and pure. */
-export function autoOrder(people: Person[]): string[] {
+/** Pilots before WSOs before ground crew (owner, 3 Sep 26 — "arrange all pilots
+ *  at the top always and wso at the bottom of the same section"). */
+const SEAT_RANK: Record<string, number> = { pilot: 0, wso: 1, gnd: 2 }
+export function seatRank(p: Person): number {
+  return SEAT_RANK[p.seat] ?? 3
+}
+
+/** Within a group: every pilot above every WSO, and inside each seat the
+ *  most-qualified first, then callsign — the one comparator Auto-sort uses
+ *  inside every block. The seat split only shows in a MIXED group (SXO, OCU, a
+ *  qualification group, SANS); IP / OPS P / IWSO / OPS W hold one seat each,
+ *  so their order is untouched. */
+export function rankCompare(a: Person, b: Person): number {
+  const sa = seatRank(a), sb = seatRank(b)
+  if (sa !== sb) return sa - sb
+  const ra = CAT_RANK[(a.q || '').toUpperCase()] ?? 9
+  const rb = CAT_RANK[(b.q || '').toUpperCase()] ?? 9
+  if (ra !== rb) return ra - rb
+  return a.callsign.localeCompare(b.callsign)
+}
+
+/** The categorised order: every group in `order` (the seven built-ins by
+ *  default), each sorted by CAT (A first) then callsign. This is what the
+ *  Auto-sort button writes and what a roster with no manual order shows. Stable
+ *  and pure. `home` is which group a person draws in — `groupOf` for the default
+ *  page; the store passes its own admin-ordered grouping so that after IP is
+ *  dragged above SXO an SXO IP sorts by rank AMONG the IPs, not at the top of
+ *  them (owner, 3 Sep 26). Anyone whose home is not in `order` sinks to the end,
+ *  ranked — the "Everyone else" foot. */
+export function autoOrder(
+  people: Person[],
+  home: (p: Person) => string = groupOf,
+  order: readonly string[] = GROUP_ORDER,
+): string[] {
   const out: string[] = []
-  for (const g of GROUP_ORDER) {
-    const arr = people.filter(p => groupOf(p) === g)
-    arr.sort((a, b) => {
-      const ra = CAT_RANK[(a.q || '').toUpperCase()] ?? 9
-      const rb = CAT_RANK[(b.q || '').toUpperCase()] ?? 9
-      if (ra !== rb) return ra - rb
-      return a.callsign.localeCompare(b.callsign)
-    })
-    for (const p of arr) out.push(p.id)
+  const placed = new Set<string>()
+  for (const g of order) {
+    const arr = people.filter(p => home(p) === g).sort(rankCompare)
+    for (const p of arr) { out.push(p.id); placed.add(p.id) }
   }
+  const rest = people.filter(p => !placed.has(p.id)).sort(rankCompare)
+  for (const p of rest) out.push(p.id)
   return out
 }
 

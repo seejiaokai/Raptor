@@ -125,10 +125,10 @@ describe('editing and deleting', () => {
 })
 
 describe('the ways in', () => {
-  it('+ Counter sits in the admin Rearrange tools and opens the blank form', () => {
+  it('+ Counter sits inside ⚙ Settings and opens the blank form', () => {
     setRole('admin')
     render(<Matrix />)
-    fireEvent.click(screen.getByTestId('roster-arrange'))
+    fireEvent.click(screen.getByTestId('settings-open'))
     fireEvent.click(screen.getByTestId('counter-add'))
     expect(screen.getByTestId('counter-form')).toBeTruthy()
     expect((screen.getByTestId('cform-name') as HTMLInputElement).value).toBe('')
@@ -165,17 +165,19 @@ describe('Reset counters', () => {
   it('arms first, then puts the built-in set back — customs discarded', () => {
     setRole('admin')
     render(<Matrix />)
-    fireEvent.click(screen.getByTestId('roster-arrange'))
+    fireEvent.click(screen.getByTestId('settings-open'))
     // Break the world first: delete a built-in, add a custom.
     fireEvent.click(screen.getByTestId('manning-info-wmp'))
     fireEvent.click(screen.getByTestId('counter-edit-open'))
     const del = screen.getByTestId('cform-delete')
     fireEvent.click(del)
     fireEvent.click(del)
-    fireEvent.click(screen.getByTestId('counter-add'))
+    fireEvent.click(screen.getByTestId('counter-add'))   // closes ⚙ and opens the builder
     fireEvent.change(screen.getByTestId('cform-name'), { target: { value: 'TEMP' } })
     fireEvent.click(screen.getByTestId('cform-save'))
 
+    // Reset counters lives in ⚙ Settings — re-open it (the builder closed it).
+    fireEvent.click(screen.getByTestId('settings-open'))
     const reset = screen.getByTestId('counter-reset-all')
     fireEvent.click(reset)
     expect(reset.textContent).toBe('Really reset?')

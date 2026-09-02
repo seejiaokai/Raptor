@@ -10,6 +10,7 @@ import { HOOKS } from '../engine/hooks'
 import { SESSION } from '../state/auth'
 import { esc } from '../state/view'
 import { notify } from '../state/store'
+import { DEFAULT_QUAL_COLS, qualCols, setQualCols } from '../engine/qualcols'
 import { useVersion } from './useStore'
 /* this page used to carry its own copy of exportCSV — which is how it missed
    the UTF-8 BOM the shared one now writes. One exporter, one encoding. */
@@ -36,18 +37,9 @@ import { restoreArchivedPerson } from '../leavewar/sync'
    inputs.ts), which is what DNIF_FLY and the fade on the pucks actually key
    off. A permanent tick on the LoX said nothing the inputs did not, and
    could not say when. */
-const DEFAULT_QUAL_COLS: any[] = [
-  { k: 'san', h: 'SANS', lav: true }, { k: 'sxo', h: 'SXO', lav: true },
-  { k: 'sched', h: 'Scheduler', apt: true },
-  { k: 'scDay', h: 'SC DAY', scq: true }, { k: 'scNight', h: 'SC NIGHT', scq: true },
-  { k: 'daar', h: 'DAAR', aar: true, fcpOnly: true }, { k: 'naar', h: 'NAAR', aar: true, fcpOnly: true },
-  { k: 'nvg', h: 'NVG', lav: true }, { k: 'imc', h: 'IMC', lav: true },
-  /* TF is new (owner, 5 Aug 26) and starts UNHELD by everyone — nothing
-     derives it from CAT the way IMC and NVG are derived, because no one has
-     been signed off for it yet. Ticked by hand in edit mode, and no rule
-     reads it: it is a record, not a gate, until the squadron asks for one. */
-  { k: 'tf', h: 'TF', lav: true },
-]
+/* The column list itself lives in engine/qualcols.ts now (owner, 3 Sep 26) —
+   Leave War reads the same list, so a qualification added here is offered
+   there at once, held by anyone or not. */
 /* ---- EDIT QUALS: which columns the LoX carries (owner, 5 Aug 26) ---------
    A second mode inside edit mode, admin only: add a qualification, remove
    one, or drag a heading to move it. It is the page's own `Set which quals
@@ -63,7 +55,10 @@ const DEFAULT_QUAL_COLS: any[] = [
 
    Nothing here is persisted, exactly like the ticks, initials and flights it
    sits beside: reload and the LoX is the default set again. `rules` is still
-   the only thing this app writes to storage. */
+   the only thing this app writes to storage. The list IS shared, though: the
+   page's `cols` state is mirrored into the engine's `qualCols()` registry on
+   every change (the effect below), and Raptor's `notify` then carries it to
+   Leave War's projection. */
 const WIRED: any = {
   sched: 'the sign-off drop-downs — SKED CK, PLANNED BY and APPROVED BY',
   scDay: 'the SC shift rules', scNight: 'the SC shift rules',
@@ -269,8 +264,12 @@ export function QualsPage() {
   const [qSort, setSort] = useState({ key: 'cs', dir: 1 })
   const [qEditing, setEditing] = useState(false)
   const [qSearch, setQSearch] = useState('')
-  /* the LoX's own shape: which qualification columns, in which order */
-  const [cols, setCols] = useState<any[]>(DEFAULT_QUAL_COLS)
+  /* the LoX's own shape: which qualification columns, in which order — seeded
+     from the shared registry (so a list edited before this page last unmounted
+     comes back as it was), and written back to it on every change. `notify`
+     fires only when the list really changed, so the mount pass is silent. */
+  const [cols, setCols] = useState<any[]>(() => [...qualCols()])
+  useEffect(() => { if (setQualCols(cols)) notify() }, [cols])
   const [qualsEdit, setQualsEdit] = useState(false)
   const [newQual, setNewQual] = useState('')
   /* the column whose ✕ has been pressed once — see WIRED above */

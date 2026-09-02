@@ -87,14 +87,22 @@ export function inputOilAmt(allday:any,s:any,e:any){
   return d<=0?null:(d>=VCONF.oilFullMin?1:0.5);
 }
 
-/* every person's work spans for one day blob (their envelope is the day's
-   measure): id -> [s,e][].
+/* WHAT KIND of work a span was — the word the OIL tracker shows as the
+   credit's reason (owner, 2 Sep 26: "be slightly more specific, like SIM,
+   FLT, Duty"). FLT = a flying seat, SIM = a sim row, Duty = a duty row, the
+   Ground and Common Programme, and an ALL / ALL AVAIL puck on either. */
+export type OilWorkSrc='FLT'|'SIM'|'Duty';
+export interface OilWork{s:number;e:number;src:OilWorkSrc}
+
+/* every person's work for one day blob, each span tagged with its kind:
+   id -> {s,e,src}[]. The envelope of a person's spans is the day's measure.
    opts.expandAll resolves a sentinel puck (ALL / ALL AVAIL) on a ground or
    Common Programme row into the people it stands for at that window. */
-export function dayOilSpans(day:any,opts?:{expandAll?:(win:[number,number])=>string[]}){
-  const out:Record<string,[number,number][]>={};
+export function dayOilWork(day:any,opts?:{expandAll?:(win:[number,number])=>string[]}){
+  const out:Record<string,OilWork[]>={};
   const rid=(v:any)=>{const id=PEOPLE[v]?v:nameToId(v);return realP(id)?id:null;};
-  const put=(v:any,win:[number,number]|null)=>{if(!win)return;const id=rid(v);if(id)(out[id]=out[id]||[]).push(win);};
+  let src:OilWorkSrc='Duty';
+  const put=(v:any,win:[number,number]|null)=>{if(!win)return;const id=rid(v);if(id)(out[id]=out[id]||[]).push({s:win[0],e:win[1],src});};
   const w2=(st:any,en:any):[number,number]|null=>{
     if(st==null||en==null)return null;
     if(en<st)en+=1440;
@@ -109,6 +117,7 @@ export function dayOilSpans(day:any,opts?:{expandAll?:(win:[number,number])=>str
     }
     (more||[]).forEach((m:any)=>put(m,win));
   };
+  src='FLT';
   (day.waves||[]).forEach((wv:any)=>{
     if(isStandalone(wv)&&wv.kind!=='sc')return;          // AVALON / BB seats never earn
     const sc=isStandalone(wv);
@@ -126,6 +135,7 @@ export function dayOilSpans(day:any,opts?:{expandAll?:(win:[number,number])=>str
       });
     });
   });
+  src='SIM';
   ['amt','oft'].forEach((k:any)=>((day.sims||{})[k]||[]).forEach((r:any)=>{
     if(r.cx)return;
     const win=w2(parseHM(r.str),parseHM(r.end));
@@ -134,6 +144,7 @@ export function dayOilSpans(day:any,opts?:{expandAll?:(win:[number,number])=>str
     [r.p,r.w,r.who?nameToId(r.who):null].concat(r.pax||[]).concat(r.more||[])
       .forEach((v:any)=>put(v,win));
   }));
+  src='Duty';
   (day.dutywaves||[]).forEach((dw:any)=>{
     if(dw&&(dw.sa==='avalon'||dw.sa==='bb'))return;      // the excluded waves' own desks
     (dw.rows||[]).forEach((r:any)=>{
@@ -157,6 +168,21 @@ export function dayOilSpans(day:any,opts?:{expandAll?:(win:[number,number])=>str
     (x.more||[]).forEach((m:any)=>put(m,win));
   });
   return out;
+}
+/* the same work as bare [s,e] spans: id -> [s,e][] — the shape envMin takes
+   and the probe bridge exposes. */
+export function dayOilSpans(day:any,opts?:{expandAll?:(win:[number,number])=>string[]}){
+  const work=dayOilWork(day,opts);
+  const out:Record<string,[number,number][]>={};
+  Object.keys(work).forEach((id:any)=>{out[id]=work[id].map((w:OilWork)=>[w.s,w.e] as [number,number]);});
+  return out;
+}
+/* the distinct kinds in first-seen order, joined for a reason line:
+   "FLT", "FLT + SIM". */
+export function oilWorkWhy(work:OilWork[]){
+  const seen:OilWorkSrc[]=[];
+  work.forEach((w:OilWork)=>{if(seen.indexOf(w.src)<0)seen.push(w.src);});
+  return seen.join(' + ');
 }
 /* every person's OIL credit for one day blob: id -> 0.5 | 1 */
 export function dayOilCredits(day:any,opts?:{expandAll?:(win:[number,number])=>string[]}){

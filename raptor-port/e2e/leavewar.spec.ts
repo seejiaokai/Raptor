@@ -1062,7 +1062,7 @@ test('the figure picker doubles as the legend, aggregates spelled out', async ({
   await expect(page.locator('[data-testid="counter-legend"]')).toContainText('USED')
   await expect(page.locator('[data-testid="figsub-med"]')).toHaveText('= ATT C + HL + OML')
   await expect(page.locator('[data-testid="figsub-lvecon"]'))
-    .toHaveText('= LL + OL + OIL + OFF + CCL + PL + FCL')
+    .toHaveText('= LL + OL + OIL + CCL + PL + FCL')
 })
 
 // The figures reorder through the ▲▼ each row carries — management's alone
@@ -1165,7 +1165,7 @@ test('the viewer\'s row is lit and the title sheet answers with their numbers', 
   await page.locator('[data-testid="person-prowler"]').click()
   const figs = page.locator('[data-testid="person-figures"]')
   await expect(figs).toBeVisible()
-  await expect(figs.locator('.crow-wrap')).toHaveCount(12)
+  await expect(figs.locator('.crow-wrap')).toHaveCount(11)
   // A member reaches no editor from here.
   await expect(page.locator('[data-testid="person-edit"]')).toHaveCount(0)
 })
@@ -1374,24 +1374,12 @@ test('a posted-out cell is hatched, and an ordinary cell is not', async ({ page 
   expect(Math.max(...alphas)).toBeGreaterThanOrEqual(0.6)
 })
 
-// OFF is free leave (owner, 10 Aug 26): the person is gone from the manning
-// picture and no entitlement is spent. It has to be offered like any other
-// leave, or it cannot be asked for at all.
-test('OFF can be bid, takes the day, and moves no balance', async ({ page }) => {
-  const balance = () => page.locator('[data-testid="bal-ammo"]').textContent()
-  const count = () => page.locator('[data-testid="count-opsw-2026-02-11"]').textContent()
-  const before = { bal: await balance(), manning: await count() }
-
+// OFF stopped being a person's leave on 2 Sep 26 (it is a management Off
+// day event now), so the bid sheet must not offer it.
+test('OFF is not offered as a leave to bid', async ({ page }) => {
   await page.locator('[data-testid="cell-ammo-2026-02-11"]').click()
-  await page.locator('[data-testid="bid-OFF"]').click()
-
-  await expect(page.locator('[data-testid="cell-ammo-2026-02-11"] .c')).toHaveText('OFF')
-  // The man is gone from the count...
-  expect(await count()).not.toBe(before.manning)
-  // ...and his leave balance has not moved, because OFF spends nothing.
-  // Entering OFF snaps the column to OFF CON, so read LVE BAL back explicitly.
-  await pickCounter(page, 'lvebal')
-  expect(await balance()).toBe(before.bal)
+  await expect(page.locator('[data-testid="bid-EL"]')).toBeVisible()
+  await expect(page.locator('[data-testid="bid-OFF"]')).toHaveCount(0)
 })
 
 // The owner's complaint, from a phone: the chrome ate the screen and left
@@ -2074,9 +2062,12 @@ test('an admin auto-sorts and hand-drags the roster; a member gets neither tool'
     expect((await ids())[0]).toBe(before[0])
     await page.locator('[data-testid="roster-arrange"]').click() // leave arrange mode
   } else {
-    // On a phone at least prove Auto-sort is reachable and does not throw.
+    // On a phone at least prove Auto-sort is reachable and does not throw. It
+    // lives on the rearrange bar now, so enter rearrange first, then leave.
+    await page.locator('[data-testid="roster-arrange"]').click()
     await page.locator('[data-testid="roster-autosort"]').click()
     expect((await ids())[0]).toBe(before[0])
+    await page.locator('[data-testid="roster-arrange"]').click()
   }
 
   await lwRole(page, 'member')
@@ -2261,10 +2252,10 @@ test('tagging a typed event colours the day without minting a type', async ({ pa
   await expect(head).toHaveClass(/evnolv/)
   const bg = await head.evaluate(e => getComputedStyle(e).backgroundColor)
   expect(bg).toContain('242') // the orange channel of the nolv tint
-  // and the library holds only the three standard types
+  // and the library holds only the four standard types
   await page.locator('[data-testid="event-1-2026-01-21"]').click()
   await page.locator('[data-testid="event-edit-types"]').click()
-  await expect(page.locator('.evtype:not(.evtype-add)')).toHaveCount(3)
+  await expect(page.locator('.evtype:not(.evtype-add)')).toHaveCount(4)
 })
 
 // ---- Post out from any date + the month-window roster (owner, 19 Aug 26) --
@@ -2343,7 +2334,7 @@ test('the roster does not reflow mid-scroll, only once the scroll settles', asyn
 // this in a browser, on the phone project especially.
 test('an admin builds a counter in the form, and the new row counts', async ({ page }) => {
   await lwRole(page, 'admin')
-  await page.locator('[data-testid="roster-arrange"]').click()
+  await page.locator('[data-testid="settings-open"]').click()
   await page.locator('[data-testid="counter-add"]').click()
   const sheet = page.locator('[data-testid="counter-form"]')
   await expect(sheet).toBeVisible()
@@ -2379,22 +2370,32 @@ test('deleting a counter takes its row off the grid', async ({ page }) => {
   await expect(page.locator('[data-testid="count-wmp"]')).toHaveCount(0)
 })
 
-// Owner, 19 Aug 26 — on a phone the six Rearrange controls could not fit one
-// line and the card clips its overflow, so +Counter and Reset counters fell
-// off the right edge with no way to reach them. The toolbar wraps now; every
-// control must sit wholly within the viewport width on BOTH projects (the
-// phone is the real guard, the desktop proves the wrap costs it nothing).
-test('every Rearrange control is reachable within the viewport', async ({ page }) => {
+// Owner, 19 Aug 26 (kept through the 3 Sep 26 fold into ⚙): every admin control
+// must sit wholly within the viewport width, whatever its home now. The controls
+// live in three places — the top row (⚙ + OIL tracker), the ⚙ sheet (counters &
+// rows), and the on-grid rearrange bar (Auto-sort + Done) — so this checks each in
+// its place on BOTH projects (the phone is the real guard, the desktop proves it
+// costs nothing).
+test('every admin control is reachable within the viewport', async ({ page }) => {
   await lwRole(page, 'admin')
-  await page.locator('[data-testid="roster-arrange"]').click()
   const vw = page.viewportSize()!.width
-  for (const id of ['roster-autosort', 'event-add', 'sans-toggle', 'counter-add', 'counter-reset-all']) {
+  const within = async (id: string) => {
     const btn = page.locator(`[data-testid="${id}"]`)
     await expect(btn).toBeVisible()
     const box = (await btn.boundingBox())!
     expect(box.x, `${id} starts off the left edge`).toBeGreaterThanOrEqual(0)
     expect(box.x + box.width, `${id} runs off the right edge`).toBeLessThanOrEqual(vw + 1)
   }
+  // the top row: the OIL tracker and the ⚙ settings entry
+  await within('oil-tracker')
+  await within('settings-open')
+  // config controls, folded into ⚙ Settings
+  await page.locator('[data-testid="settings-open"]').click()
+  for (const id of ['event-add', 'sans-toggle', 'counter-add', 'counter-reset-all']) await within(id)
+  await page.locator('[data-testid="settings-close"]').click()
+  // rearrange controls, on the grid bar
+  await page.locator('[data-testid="roster-arrange"]').click()
+  for (const id of ['roster-autosort', 'roster-arrange-done']) await within(id)
 })
 
 // --- undo / redo UI-interaction bug test (owner, 30 Aug 26) -----------------
@@ -2531,9 +2532,9 @@ test('a glowing green box frames the open-bidding window and clears when bidding
   // re-measure for us. (A COUNTER row would prove nothing here: counts render
   // ABOVE the header row, outside the boxed region; and a PO'd body's row
   // deliberately stays for the months they served — the owner's 19 Aug rule.)
-  await page.locator('[data-testid="roster-arrange"]').click()
+  await page.locator('[data-testid="settings-open"]').click()
   await page.locator('[data-testid="sans-toggle"]').click()
-  await page.locator('[data-testid="roster-arrange"]').click() // leave arrange mode
+  await page.locator('[data-testid="settings-close"]').click() // close the sheet
   const grown = await page.evaluate(() =>
     document.querySelector('#page-leavewar .lw-bidbox').getBoundingClientRect().height)
   expect(grown).toBeGreaterThan(geo.bh)

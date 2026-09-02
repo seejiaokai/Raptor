@@ -120,7 +120,7 @@ parity holds. The gate table below was the green baseline read at this pass's cl
 
 | gate | reading |
 |---|---|
-| `npm test` | 3658 across 210 files (1 Sep 26, the Leave War keep-alive pass: +4 in the new `ui/lwkeepalive.test.tsx`) — two vitest projects: raptor + leavewar |
+| `npm test` | 3737 across 212 files (2 Sep 26 — the tracker's THIRD CUT added +2 `oiltracker.test.tsx` + `raptorRoster.test.ts` demo-story cases, then the scrim press-guard +2; before that the OIL tracker GRID + Off-day batch: `ui/oiltracker.test.tsx` rewritten to 18, +7 `select.test.ts` row cases, +3 `oil.test.ts`, +2 `oilsync.test.ts`, +2 `store.test.ts`, +2 `oiltracker.test.ts`, +1 `eventdefs.test.ts`; the OFF pins flipped) — two vitest projects: raptor + leavewar |
 | `node reference/tfin.js` | 728/0 (the reference is read-only; the "Ground Programme" title trim rides the tolerant normaliser in `html.test.ts`) |
 | `npm run build` | clean |
 | `npm run test:e2e` | 349 passed / 23 touch-only skips / 0 failed (1 Sep 26: +1 keep-alive spec × the two Leave War projects) — three playwright projects: raptor geometry, lw-phone, lw-desktop. NOTE: a mid-session chain run showed 2 lw-phone reds against a build that predated the bug-pass fixes (the un-gated cross-lane notify repainting mid-gesture); both passed individually and the full suite passed whole against the fixed build — if they ever red again, suspect a stray repaint mid-tap first. |
@@ -533,6 +533,119 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
   keep every write through the store doorway (`HOOKS.storeBackend`, Leave War's
   `state/storage.ts`) so the backend swap stays bounded.
 
+- **OPEN 2 Sep 26 — the Leave War drag-select e2e is FLAKY locally, and was
+  before the OIL tracker batch.** `e2e/leavewar.spec.ts` "drag-selecting a
+  row fills the leave across the whole span" (lw-desktop) fails with the LAST
+  cell of the run (`cell-slipway-2026-01-08 .c`) unfilled: measured 1 of 3
+  re-runs red on dfc0dde and **4 of 8 red on c2e727a (the commit BEFORE the
+  batch, in a clean worktree)**, so it is the gesture/e2e geometry, not the
+  tracker. Not touched in that PR (out of scope). Suspects, in order: the
+  `dragSelect` helper's 6-step mouse move landing its final `pointermove`
+  before `elementFromPoint` sees the last cell, or the edge auto-scroll rAF
+  nudging the grid mid-drag. The rest of `npm run e2e:leave` was green
+  (113 passed / 8 touch-only skips / this 1).
+  Re-measured 2 Sep 26 after the select.ts gesture-core refactor: 4/6 fail
+  on the grid batch's build, same symptom (the span's last cell unfilled),
+  same order as before the refactor — so still the pre-existing flake, not a
+  regression; `wireRowSelect`'s own drag is pinned in jsdom and the live pass.
+
+- **RESOLVED 2 Sep 26 (Leave War OIL TRACKER + admin-set LVE BAL + OFF USED
+  removed) — owner ask, one batch.** (1) `OFF USED` figure gone (`counters.ts`
+  FIGURES, eleven now; OFF still inside LVE USED; entering OFF no longer snaps
+  the column). (2) An admin SETS the LVE BAL from the Cinch sheet's row
+  (`CounterSheet.tsx` Set → `store.ts:setBalance`, which moves the opening
+  figure so the typed number reads now and LL/OL deduct after). (3) The **OIL
+  tracker**: toolbar button right of Auto-sort (both roles; `oil-tracker`),
+  also reached from the Cinch OIL BAL row — everyone's balance in grid order,
+  one person's ledger newest-first (earned FO/HO days with a derived
+  `weekend duty`/`PH duty` reason, grants with reason + approver, the opening
+  figure, days taken — a fully used credit struck through, expiry dimmed),
+  admin credits one or a picked/dragged/Select-all batch (amount, calendar
+  date, reason → `grantOil`, ids `ol-N`), edits/deletes grants, sets the policy
+  (`setOilPolicy` → `oilpolicy`: expiry N days/months or forever; default
+  history window N months or from the first entry). Engine
+  `engine/oiltracker.ts` is pure + derived: FIFO oldest-first, expiry from the
+  credit's own date (opening never expires), overdraw shown negative; with no
+  expiry it equals `balanceOf('oil')` for every seeded person (pinned). `OIL
+  BAL` everywhere is now the tracker's balance via one `store.ts:figureCtxOf()`
+  (column, picker, breakdown — gains an `expired` row only when non-zero —
+  Cinch, tracker, and the bid-time `wouldLeave` warning). `localToday` moved
+  from `sync.ts` into `engine/period.ts` beside a new clamped `addMonths`.
+  Pins: `engine/oiltracker.test.ts` (20), `ui/oiltracker.test.tsx` (15),
+  store/undo/counters tests updated. Docs: `docs/leavewar/known-gaps.md`
+  §What balances do not yet do + §figures, `docs/feature-impact.md` Leave War
+  row, the Logic page OIL row.
+  **SECOND CUT the same day (owner, after the mockup round + an
+  `/impeccable critique`): the tracker is ONE FULL-SCREEN GRID, and OFF is
+  no longer anyone's leave.** (a) `Sheet full` (`Sheet.tsx` + `bidpicker.css
+  .bidsheet.full` — pinned to the screen, not a scroller, not movable);
+  `OilTracker.tsx` REWRITTEN: name + BAL frozen left (BAL over a
+  `+in −out` window line — everything credited incl. the carried-in opening
+  as `+`, everything drawn as `−`, so it sums to BAL in the full window;
+  a zero side shows nothing — 2 Sep 26; digits aligned), one LANE per calendar year
+  (a sticky year header row; every row's boxes for a year start at the same
+  x), one BOX per credit reading as a small ledger — amount · date ·
+  given-by top (`AUTO` for an earned day), reason under, the FIFO takes in
+  red, `n left` bottom-right; used-up / expired = struck on a dark-grey fill
+  (see the FIFTH CUT note), the takes legible; uncovered takes and corrections as their own red
+  boxes; idle people a compact row. **THIRD CUT the same evening (owner,
+  from the shipped grid): each take on its OWN ROW with `n left` pinned
+  bottom-right (wrapping under the takes on a narrow box); the CAT chip UNDER
+  the name on every row (8px, idle rows 36px); the window opens "from first
+  entry" (`DEFAULT_OIL_POLICY.historyMonths: null`); a DEAD credit (used up
+  or expired) is ARCHIVED into the thin frozen ARCHIVE column beside BAL
+  (vertical word, per-row count) — one grid-wide switch shows them all; a
+  boot-only demo OIL story (`state/demoworld.ts DEMO_OIL` via
+  `store.ts:installDemoOil`, before the re-key) so the preview has every
+  shape to look at. `known-gaps.md` §RESOLVED 2 Sep carries the rules.**
+  **FOURTH CUT (owner, 2 Sep 26, from the phone toolbar): one tools row —
+  `From first entry`, a calendar button reading RANGE (`.oil-cal`, ex "Pick
+  dates"), the `?`, and an icon-only ⚙ pushed right; the window label on its
+  own line below so the grid starts higher. The "Last N months" chip renders
+  only when a months window is the Settings default (`historyMonths !== null`);
+  the `?` legend was trimmed.**
+  **FIFTH CUT (owner, 2 Sep 26 — "dark shade of grey" for archive boxes):
+  archived boxes (`.oil-e.used` / `.oil-e.expired`) get a dark-grey fill
+  (`#21262d`) and the whole-box `opacity` fade is dropped — the fill + the
+  existing strike carry "spent". The fade had put the red takes (the audit
+  trail) below WCAG on the expired boxes; with no fade all box text is lighter
+  than the fill, so the shade is safe to darken (an `/impeccable` audit vetted
+  it: takes 8.4:1). CSS-only, no test/DOM change.**
+  The per-person page is gone (Cinch OIL BAL
+  → scroll to the row). A tap on a name picks it; a hold-then-drag (finger)
+  or drag (mouse) down the names picks a run via **`select.ts:wireRowSelect`
+  on the new shared `wireGesture` core** (the grid's `wireSelect` is a thin
+  caller of the same machine — `select.test.ts` unchanged and green); the
+  credit bar docks under the grid (headed `OIL credits · <names>`; amount,
+  calendar date, reason, optional given by, Save — a tap outside the bar
+  cancels with no save, no Deselect button since 2 Sep 26), idle it reads the
+  tap-or-hold hint; a `?` chip holds the legend. (b) **Reasons are specific**: `engine/oil.ts:dayOilWork`
+  tags every span `FLT`/`SIM`/`Duty` (`dayOilSpans` is now the bare view),
+  `sync.ts:desiredOilCells` carries `why` (`FLT + SIM`, or an acknowledged
+  input's type name), `store.ts:ingestDutyCredit(…, why)` writes it as
+  `BidRecord.note` (≤ `MAX_CELL_NOTE` 40, read leniently, kept through
+  `reconcile` on a noted duty cell), the tracker's earned box reads the note;
+  an admin writes one on a hand-typed FO/HO through the new `setCellNote`
+  (the box reads "typed by admin" until then). (c) **`LedgerEntry.givenBy`**
+  (optional, ≤ `MAX_GIVEN_BY` 40) on `grantOil`/`updateLedgerEntry`. (d) An
+  ADMIN's manual OIL / FO / HO write on the grid opens the tracker on that
+  person with the day's box lit, and every credit/edit/delete snaps the
+  column to OIL BAL (`Matrix.tsx onWrote` + `onGranted`). (e) **OFF is
+  gone as a leave code** (`codes.ts` LEAVE_TYPES, `counters.ts`
+  LVE_CON_TYPES — LVE USED = LL+OL+OIL+CCL+PL+FCL — and Raptor's
+  `INPUT_META`): the owner settled that OFF is declared by management for
+  everyone, so it is the new **`free` EVENT KIND** ("Off day",
+  `eventdefs.ts`, seeded fourth; `EventSheet` chip; grey `evfree` column in
+  `Matrix.tsx`/`matrix.css`; precedence `off > free > nolv`) and it EARNS
+  NO OIL — `isNonWorkingISO` still reads only `off` (pinned in
+  `oilsync.test.ts`). A legacy OFF cell is an unknown code: draws nothing.
+  Pins: `ui/oiltracker.test.tsx` rewritten (18), `select.test.ts` +7 row
+  cases, `oil.test.ts` +3, `oilsync.test.ts` +2, `store.test.ts` +2,
+  `oiltracker.test.ts` +2, `eventdefs.test.ts` +1; the OFF pins across
+  codes/counters/leave/slotrules/lateinput/e2e flipped. Docs: known-gaps
+  (§tracker, §figures, the OFF decision, §event kinds), feature-impact Leave
+  War row, the Logic page OIL row (Off day sentence).
+
 - **RESOLVED 1 Sep 26 (Leave War event tag reads "PH", not "Off day") — owner
   ask.** Label-only: `EventSheet.tsx:KIND_LABEL.off` and the Edit-types
   sub-heading. The kind value `off`, its colours, storage and the OIL
@@ -556,6 +669,17 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
      prop (`.rpick.compact` in `rangepicker.css`, 30 px cells vs 36 — still above
      the geometry gate's ≥30 floor); the event sheet passes it, the bid/war/
      bidding-window sheets don't.
+     - **(2 Sep 26) The month grid is a CONSTANT six rows.** Every month is
+       padded with trailing `.rblank` cells to 42 day-cells, and `.rblank`
+       carries the row's height (36 px, 30 px compact) so a trailing row that is
+       ALL blanks still holds its height rather than collapsing. Without both
+       halves the grid was 4–6 rows tall by month, and since the new-war / bid /
+       bidding-window sheets are bottom-anchored, paging months slid the whole
+       sheet — its ‹ › arrows included — up and down (owner: "the arrows keep
+       jumping … design it so they stay put"). Constant height = arrows hold
+       still. The unit test only proved the 42-cell count (jsdom has no layout);
+       the collapsed-blank-row bug was caught in the live pass. See CLAUDE.md
+       §"A control the user TAPS REPEATEDLY must not move under them".
   3. **The sheet lifts above the keyboard while typing.** `Sheet.tsx:useKeyboardInset`
      mirrors `ui/histbubble.ts:place()` — when the on-screen keyboard shrinks the
      `visualViewport`, the panel re-anchors to the top of the visible slice and
@@ -1352,7 +1476,7 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
   The old standalone set rule folded in as the `sets` rule (two-slot team);
   `Requirement.sets`, `SETS_DESC`, the `RuleTarget` kinds and the
   `manningThresh` overlay are GONE — `manningthresh` is still read once at
-  boot as a migration. Admin UI: `+ Counter` in the Rearrange tools and
+  boot as a migration. Admin UI: `+ Counter` in ⚙ Settings and
   `Edit counter…` on the explainer sheet open `ui/CounterForm.tsx` (name,
   people/team pickers, live first-day sample, amber/red, armed two-tap
   delete; testids `cform-*` — `counter-name` was taken by the balance
@@ -1371,8 +1495,8 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
   boot reader and the `saveManningRule` validator, so nothing saveable is
   un-loadable within a session, and a corrupt blob falls back to the seeded
   eleven. `resetManningRules` is the
-  deliberate road back after deleting or mangling a built-in: the Rearrange
-  toolbar's armed "Reset counters" button (`counter-reset-all`) — it restores
+  deliberate road back after deleting or mangling a built-in: the ⚙ Settings
+  sheet's armed "Reset counters" button (`counter-reset-all`) — it restores
   the seeded set and DISCARDS custom counters, which is what the armed second
   tap is for. Tests: `counterrules.test.ts` (filters,
   Hall math, migration parity), `requirements.test.ts` (describeRule),
@@ -1659,13 +1783,15 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
   `ui/EventRows.tsx`, `ui/EventSheet.tsx`, and the "Event model" section of
   `docs/leavewar/known-gaps.md`.
 - **LEAVE WAR COUNTER COLUMN reworked to named figures (Aug 26).** The frozen
-  column no longer cycles the six entitlement counters; it cycles TWELVE named
-  figures (eleven at the rework; `OIL BAL` joined with wire 4 the same day),
+  column no longer cycles the six entitlement counters; it cycles ELEVEN named
+  figures (eleven at the rework; `OIL BAL` joined with wire 4 the same day;
+  `OFF USED` REMOVED 2 Sep 26 — see the resolved bullet),
   each labelled `BAL` (balance left) or `USED` (days taken): LL USED, OL
-  USED, OIL USED, OIL BAL, OFF USED, CCL USED, PL USED, FCL USED, MED USED, OML USED, LVE BAL, LVE
-  USED. Ten are per-type consumed (`takenOf`, which splits LL from OL where the
+  USED, OIL USED, OIL BAL, CCL USED, PL USED, FCL USED, MED USED, OML USED, LVE BAL, LVE
+  USED. Nine are per-type consumed (`takenOf`, which splits LL from OL where the
   per-counter `drawnFrom` cannot); `MED USED` = ATT C + HL + OML, `LVE USED` =
-  LL+OL+OIL+OFF+CCL+PL+FCL (medical excluded). `LVE BAL` is the annual-pool balance; `OIL BAL`
+  LL+OL+OIL+CCL+PL+FCL (medical excluded; OFF left it 2 Sep 26 when it stopped
+  being a leave code — it is the `free` Off-day EVENT now). `LVE BAL` is the annual-pool balance; `OIL BAL`
   (wire 4) is `earned by weekend/PH work + granted − taken` (the legend's
   wording since the 28 Aug 26 rework) — a negative value goes red
   on either, the paint being generic to `bal` figures. The picker sheet doubles as the
@@ -1818,7 +1944,7 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
   `string[]` now (was a 2-tuple) and `EventBand.line` a plain index; a squadron
   can have 2–`MAX_EVENT_ROWS` (6) rows via `store.ts` `eventRows` (persisted
   `eventrows`; admin `addEventRow`/`removeEventRow`, the add/remove buttons in
-  the Rearrange toolbar, remove refused while the last row carries anything).
+  ⚙ Settings, remove refused while the last row carries anything).
   `EventRows.tsx` draws `eventRows` lines; `dayEvent(day, line)` is the one
   bounds-checked reader; `columnKindFor` scans EVERY line now. Old wars (length-2
   arrays) load unchanged; the store reads `events.length >= 2`. Tests:
@@ -1956,7 +2082,7 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
   availability rather than being planned as manning, so they neither ride the
   grid nor count in its manning rows — and **the enable function is
   `setShowSans`** (`state/store.ts`, admin-gated, persisted `showsans`,
-  surfaced as the "Show SANS" button in the matrix's Rearrange toolbar; the
+  surfaced as the "Show SANS" button in the matrix's ⚙ Settings sheet; the
   flip re-projects at once via the sync's own Leave War subscription). The
   demo re-key moved `slammed` off vinci (SANS) onto pike so no demo cell keys
   onto a hidden body, and a test guards `DEMO_MAP` against SANS targets.
@@ -1980,9 +2106,10 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
   `flight`), EXCLUDED from every aircrew manning count (`countsFor` skips
   `pers` first — the one line that keeps SXO/IP/set thresholds reading the
   same squadron). An admin **Auto-sort** re-groups (`autoSortRoster` →
-  `autoOrder`); a **Rearrange** toggle turns on pointer-drag handles
-  (`moveRosterRow`, works touch + mouse — HTML5 DnD does nothing on a phone);
-  personnel labels are editable there (`setPersLabel`). Order and labels are
+  `autoOrder`, on the on-grid rearrange bar); the ⠿ **Rearrange** toggle in the
+  grid corner (owner, 3 Sep 26) turns on pointer-drag handles for person rows AND
+  category headings (`moveRosterRow` / `moveGroupTo`, touch + mouse — HTML5 DnD
+  does nothing on a phone); personnel labels are editable there (`setPersLabel`). Order and labels are
   admin-gated and keyed by id (`rosterOrder`/`persLabels`, the figureOrder
   precedent), so they survive a roster that gains or loses a body. **The
   roster stays LIVE**: `sync.ts:reprojectRoster` re-projects on every Raptor
@@ -2997,23 +3124,23 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | `HelpPage.tsx` + `state/reports.ts` | **The Help tab** (25 Aug 26) — the eighth tab, for EVERYONE, before Admin (which stays last). Bug reports: anyone files with a category (`BUG_CATS`) + description (blank Send toasts); a member sees their own receipts; the ADMIN list is newest-first with date/who/category chip, and OPENING it is the acknowledgement (`markReportsSeen` + NEW badges captured first). The top-bar bell (`#notifyBell`) lights for an admin with unseen reports (`bugAlert` — the bell seam's first wired trigger) and a tap lands on Help. `REPORTS` is DATA: survives login switches (NOT wiped by resetSession), outside the undo snapshot; DB-era it becomes a table + realtime push, shape already right. Pinned in `help.test.tsx`. |
 | `pops.ts` / `toast.ts` / `useStore.ts` / `export.ts` | Popup flags, the toast, the store hook, CSV export — `csvText` (UTF-8 BOM, so Excel stops mojibaking the en dash), `exportCSV` and `schedRows`. The ONE exporter: schedule, inputs and LoX all call it. |
 | `printpdf.ts` | The schedule's PDF export (23 Aug 26) — `schedPrintHTML` builds a standalone black-on-white printable document (own stylesheet, every cell escaped, layout deliberately basic for now); `printSchedPDF` prints it through a hidden iframe so "Save as PDF" in the browser dialog is the file. Pinned in `printpdf.test.ts` (the text half only, the csvText precedent). |
-| `scheduler.css` | The ported stylesheet — it carries MEASURED contracts, not preferences. |
+| `scheduler.css` | The ported stylesheet — it carries MEASURED contracts, not preferences. **App-wide text-selection baseline (2 Sep 26, owner ask): `html{user-select:none;-webkit-touch-callout:none}` near the top, with `input,textarea,select,[contenteditable]` handed `user-select:text` (and callout back) — so click-only chrome (nav tabs, buttons, pucks, grid cells, chips) never paints a blue text range on a tap-hold, while typed/edited text still selects. Leave War is in the same document, so this covers it too; its scoped editable-cell opt-ins keep winning. When you add a new EDITABLE surface or a block of real content that must be copyable, add a `user-select:text` opt-in for it — a new contenteditable/input is already covered.** |
 | `../probe-bridge.ts` | Window bridge for the browser probes. It deliberately mirrors the WHOLE engine API, not just what a probe uses today — keep it in sync when adding engine API. Since the merge it also carries `w.lwSetRole`, the Leave War e2e suite's mid-test role switch (same precedent as `w.setPage`). |
 
 ### `raptor-port/src/leavewar/` — the Leave War tab (a second app, vendored 16 Aug 26)
 | file | what it does |
 |---|---|
 | `LeaveWarPage.tsx` | The ONE seam: renders the standalone app's Topbar/StageBar/Matrix inside `#page-leavewar`. KEPT MOUNTED between visits since 1 Sep 26 (`active` prop from the Shell + the `LwBody` memo firewall; scroll restore + resize kicks — see the header comment). Boot is NOT here — `main.tsx` calls its `initStore` once. |
-| `engine/` | The vendored DOM-free rules engine: `codes.ts` (day codes — 8 leave types + the FOUR medical markers `ATTB`/`ATTC`/`HL`/`OML` (replaced `M`, Aug 26; `ATTB` joined 17 Aug 26) + `CSE`/`OD` + the FO/HO OIL-credit markers (FS/HS until the 28 Aug 26 rename — NOTE `HO` is a resurrected RETIRED code, once "half OIL taken" migrated to `*OIL`, now "half day OIL earned"; the flipped negative parse pins and the history are commented in the file), portions `*X`/`X*` — **carried by leave AND medical since 17 Aug 26**, courses/OD/OIL-credit still refusing one; plus `isMedical`, `MEDICAL_TYPES` (the admin picker's list) and `displayCell`, which prints ATTB/ATTC as the owner's bare `B`/`C` while `parseCell` accepts either spelling), `counters.ts` (derived balances + ledger, **plus the counter-column figures: `takenOf` per-type consumed, `medConOf`/`lveConOf` aggregates, the 12-figure `FIGURES` catalogue — `OIL BAL` joined with wire 4, fed by `earnedOil` summing FO/HO cells straight into the OIL balance; its breakdown label and legend read 'earned by weekend/PH work' since 28 Aug 26 — `orderedFigures`, and `figureParts`, the signed per-person breakdown rows the tap-a-counter sheet shows (they always sum to the figure, pinned by test); see the open-work counter-column bullet**), `stages.ts` (draft→open→closed→published, `canEdit`/`canDecide`), `wars.ts`/`period.ts` (year-long wars, UTC date maths, `DayInfo.ph`, **`EventBand` merged-event spans on the period + `bandAt`/`bandOverlaps`**), **`eventdefs.ts` (the EVENT-TYPE library — `EventKind` off/nolv/work, `EVENTDEF_STD`, `classifyEvent`, `columnKindFor`, the untrusted `readEventDefs`, and the add/update/remove helpers; squadron-wide config, persisted under `eventdefs`)**, `availability.ts`/`requirements.ts`/`evaluate.ts` (fractional manning vs thresholds; **rules are DATA since 19 Aug 26** — `CrewFilter`/`RuleCount`, `matchesFilter`/`ruleHave`/`teamsOf` the Hall walk, `describeRule` self-writing sheet words; see the top counters bullet), `raptor.ts` (`outboundToRaptor` — the sync stub), `bids.ts` (`BidState`/`source:'raptor'` ownership), `seed.ts`. |
-| `state/store.ts` | Its own single store (React `useSyncExternalStore` shape), `setCell` the one grid writer, `ingestFromRaptor`, **the event writers `setDayEvent`/`setDayEventRange` (repeat) + `addEventBand`/`removeEventBand` (merge) + the `addEventType`/`updateEventType`/`removeEventType`/`resetEventTypes` library writers, all admin-gated; `state.eventDefs` persisted under `eventdefs`, `period.bands` read leniently in `readWar`**. Role: NOT persisted since the merge — `setRole` is called by Raptor's `resetSession` only. **`viewer` rides the same rule** (17 Aug 26 — WHICH PERSON is looking, mirrored from Raptor's `ME` by `sync.ts`, never persisted; lights that row and personalises the counter picker). `moveFigure`/`resetFigureOrder` are ADMIN-GATED at the write path (owner: the column arrangement is management's); `reconcile()` on load keeps a MEDICAL cell's `source:'raptor'` record — dropping it would strip a synced cell's ownership at every reload and let outbound re-mint Raptor's own row — **and, since 28 Aug 26, an FO/HO cell's too (`isDuty`)**: it previously listed only biddable + medical, so in the DB era (when this load path goes live) a credit's ownership record would have been dropped and the cell left an orphan the reverse sweep could never collect. `withdrawLeaveCell` (17 Aug 26) is `clearRaptorCell`'s mirror for the OTHER ownership — the two-way edit/delete retraction's one grid writer. |
-| `ui/select.ts` / `ui/SelectSheet.tsx` | **Drag-to-select (27 Aug 26)** — press-drag a rectangle of day-cells (one row or many people), then batch fill / decide / delete / move. `select.ts` holds the DOM-free geometry (`rectCells`/`parseCellId`, unit-tested in `select.test.ts`) and two pointer controllers: `wireSelect` — ONE delegated `pointerdown` on `.mx-wrap` (never per-cell; caldrag's arm/give-up constants so the sideways scroll is never stolen; paints `.selcell` straight onto cells, no React state) — and `wireMove` (desktop ghost following the mouse + tap/click-to-place, the commit click swallowed in capture so the cell's own sheet never opens under it). `SelectSheet.tsx` is the batched sheet on the `Sheet` chassis, contextual to role/stage (Fill / Decide / Delete-confirm / Move / single-person PO). Store side: `setCells`/`clearCells`/`setBidStates`/`moveCells` (per-cell guards under `quiet`; `moveCells` atomic). Wired in `Matrix.tsx` (`selCtxRef` + the `wireSelect`/`wireMove` effects + the `.mv-banner`). The decision word "Acknowledge" became **"Pending"** (`BidPicker.tsx` + `SelectSheet.tsx`; token stays `'acknowledged'`). Pinned: `select.test.ts`, `selectsheet.test.tsx`, `store.test.ts` §the batch writers, `deciding.test.tsx` (the Pending label), `leavewar.spec.ts` drag tests. Rules `docs/engine-rules.md` §Auth/roles; screen `docs/ui-contracts.md` §Selecting on the Leave War grid. Also: a plain single click still opens the single-cell sheet — the gesture takes pointer capture in `arm()`, not on pointerdown (Chromium retargets the post-drag click otherwise); the dotted "moved" mark shows only once bidding is closed (`Matrix.movedShown`); "Key" → "Legend"; an admin keeps bid decisions at published (`canDecide`). |
+| `engine/` | The vendored DOM-free rules engine: `codes.ts` (day codes — 7 leave types (OFF left 2 Sep 26 — a management Off day is the `free` event kind, never a cell) + the FOUR medical markers `ATTB`/`ATTC`/`HL`/`OML` (replaced `M`, Aug 26; `ATTB` joined 17 Aug 26) + `CSE`/`OD` + the FO/HO OIL-credit markers (FS/HS until the 28 Aug 26 rename — NOTE `HO` is a resurrected RETIRED code, once "half OIL taken" migrated to `*OIL`, now "half day OIL earned"; the flipped negative parse pins and the history are commented in the file), portions `*X`/`X*` — **carried by leave AND medical since 17 Aug 26**, courses/OD/OIL-credit still refusing one; plus `isMedical`, `MEDICAL_TYPES` (the admin picker's list) and `displayCell`, which prints ATTB/ATTC as the owner's bare `B`/`C` while `parseCell` accepts either spelling), `counters.ts` (derived balances + ledger, **plus the counter-column figures: `takenOf` per-type consumed, `medConOf`/`lveConOf` aggregates, the 11-figure `FIGURES` catalogue (OFF USED removed 2 Sep 26; `OIL BAL` reads `oilLedgerOf` — the tracker's FIFO/expiry balance) — `OIL BAL` joined with wire 4, fed by `earnedOil` summing FO/HO cells straight into the OIL balance; its breakdown label and legend read 'earned by weekend/PH work' since 28 Aug 26 — `orderedFigures`, and `figureParts`, the signed per-person breakdown rows the tap-a-counter sheet shows (they always sum to the figure, pinned by test); see the open-work counter-column bullet**), `stages.ts` (draft→open→closed→published, `canEdit`/`canDecide`), `wars.ts`/`period.ts` (year-long wars, UTC date maths, `DayInfo.ph`, **`EventBand` merged-event spans on the period + `bandAt`/`bandOverlaps`**), **`eventdefs.ts` (the EVENT-TYPE library — `EventKind` off/free/nolv/work (`free` = the management Off day, 2 Sep 26: grey column, earns no OIL), `EVENTDEF_STD`, `classifyEvent`, `columnKindFor`, the untrusted `readEventDefs`, and the add/update/remove helpers; squadron-wide config, persisted under `eventdefs`)**, **`oiltracker.ts` (2 Sep 26 — the OIL TRACKER engine: `OilPolicy` + `readOilPolicy`/`DEFAULT_OIL_POLICY`, `expiryOf`, `oilLedgerFor`/`oilBalanceOf` — credits from the opening figure, OIL grants and FO/HO cells, debits from OIL days and negative entries, FIFO oldest-first, expiry as of `asOf`, `inWindow`/`defaultWindowFrom`; an earned credit's reason is the FO/HO cell's `BidRecord.note` (`manual` flags a hand-typed one), a grant carries `givenBy`; imports counters as TYPES only, counters imports it for OIL BAL)**, `period.ts` also carries `addMonths` (clamped) and `localToday` (local clock, moved from sync.ts) since 2 Sep 26, `availability.ts`/`requirements.ts`/`evaluate.ts` (fractional manning vs thresholds; **rules are DATA since 19 Aug 26** — `CrewFilter`/`RuleCount`, `matchesFilter`/`ruleHave`/`teamsOf` the Hall walk, `describeRule` self-writing sheet words; see the top counters bullet), `raptor.ts` (`outboundToRaptor` — the sync stub), `bids.ts` (`BidState`/`source:'raptor'` ownership), `seed.ts`. |
+| `state/store.ts` | Its own single store (React `useSyncExternalStore` shape), `setCell` the one grid writer, `ingestFromRaptor`, **the OIL tracker writers (2 Sep 26): `grantOil`/`updateLedgerEntry`/`removeLedgerEntry` (the ledger's first writers), `setOilPolicy` (`oilpolicy`, in undo), `setBalance` (LVE BAL → opening figure), and `figureCtxOf()` — the ONE figure-ctx builder every OIL BAL surface reads**, `installDemoOil` (the demo OIL story — a second boot-only writer beside `remapPersonKeys`, same contract: no persist, no undo, tests blind), **the event writers `setDayEvent`/`setDayEventRange` (repeat) + `addEventBand`/`removeEventBand` (merge) + the `addEventType`/`updateEventType`/`removeEventType`/`resetEventTypes` library writers, all admin-gated; `state.eventDefs` persisted under `eventdefs`, `period.bands` read leniently in `readWar`**. Role: NOT persisted since the merge — `setRole` is called by Raptor's `resetSession` only. **`viewer` rides the same rule** (17 Aug 26 — WHICH PERSON is looking, mirrored from Raptor's `ME` by `sync.ts`, never persisted; lights that row and personalises the counter picker). `moveFigure`/`resetFigureOrder` are ADMIN-GATED at the write path (owner: the column arrangement is management's); `reconcile()` on load keeps a MEDICAL cell's `source:'raptor'` record — dropping it would strip a synced cell's ownership at every reload and let outbound re-mint Raptor's own row — **and, since 28 Aug 26, an FO/HO cell's too (`isDuty`)**: it previously listed only biddable + medical, so in the DB era (when this load path goes live) a credit's ownership record would have been dropped and the cell left an orphan the reverse sweep could never collect. `withdrawLeaveCell` (17 Aug 26) is `clearRaptorCell`'s mirror for the OTHER ownership — the two-way edit/delete retraction's one grid writer. |
+| `ui/select.ts` / `ui/SelectSheet.tsx` | **Drag-to-select (27 Aug 26)** — press-drag a rectangle of day-cells (one row or many people), then batch fill / decide / delete / move. `select.ts` holds the DOM-free geometry (`rectCells`/`parseCellId`/`rowRun`, unit-tested in `select.test.ts`), the generic GESTURE CORE `wireGesture` (2 Sep 26 — arming, hold/slow-arm/give-up, capture, the non-passive touchmove lock, edge auto-scroll, the click swallow; parameterised by hit/current/paint/onSelect) and its callers: `wireSelect` — ONE delegated `pointerdown` on `.mx-wrap` (never per-cell; caldrag's arm/give-up constants so the sideways scroll is never stolen; paints `.selcell` straight onto cells, no React state) — `wireRowSelect` (the OIL tracker's run-of-rows select: a press on `[data-oilpick]`, a drag over `[data-oilrow]`, paints `.selrow`, the wrap is its own vertical scroller) and `wireMove` (desktop ghost following the mouse + tap/click-to-place, the commit click swallowed in capture so the cell's own sheet never opens under it). `SelectSheet.tsx` is the batched sheet on the `Sheet` chassis, contextual to role/stage (Fill / Decide / Delete-confirm / Move / single-person PO). Store side: `setCells`/`clearCells`/`setBidStates`/`moveCells` (per-cell guards under `quiet`; `moveCells` atomic). Wired in `Matrix.tsx` (`selCtxRef` + the `wireSelect`/`wireMove` effects + the `.mv-banner`). The decision word "Acknowledge" became **"Pending"** (`BidPicker.tsx` + `SelectSheet.tsx`; token stays `'acknowledged'`). Pinned: `select.test.ts`, `selectsheet.test.tsx`, `store.test.ts` §the batch writers, `deciding.test.tsx` (the Pending label), `leavewar.spec.ts` drag tests. Rules `docs/engine-rules.md` §Auth/roles; screen `docs/ui-contracts.md` §Selecting on the Leave War grid. Also: a plain single click still opens the single-cell sheet — the gesture takes pointer capture in `arm()`, not on pointerdown (Chromium retargets the post-drag click otherwise); the dotted "moved" mark shows only once bidding is closed (`Matrix.movedShown`); "Key" → "Legend"; an admin keeps bid decisions at published (`canDecide`). |
 | `ui/RemarksSheet.tsx` | **Published remarks editor (27 Aug 26)** — at `published`, a tap on an approved leave opens a note editor: the run's OWN person (a member on their own leave) or an admin (anyone). Wired in `Matrix.tsx` (`canRemark` + a cheap `openable` branch; precedence over the Raptor/bid/decision sheets). The note lives on the Raptor input the cell derives from — `sync.ts:leaveInputAt` finds it (filed-on-Inputs OR the lw-tagged row `runOutbound` mints at publish), and the save runs through Raptor's `inputedit.ts:setLeaveRemarks → commitInputEdit` (remarks-only, so `rowSig` is unchanged and the war cells never move; the member-own gate comes free). Pinned: `remarks.test.tsx`, `scrim.test.tsx`, `leavewar.spec.ts`. Screen: `docs/ui-contracts.md` §Published-stage remarks editing. |
-| `engine/groups.ts` / `ui/GroupSheet.tsx` | **The roster group editor (28 Aug 26, owner — "edit what sub category is shown on the left column")** — which groups the grid's left column draws, and in what order. `groups.ts` data-ifies what used to be three constants in `engine/people.ts`: a `GroupDef` is `{id, kind:'cat', g}` or `{id, kind:'qual', k}` (a key from the live `state.qualCatalog`, so the offered list GROWS as the squadron adds quals), with `matchesGroup` (does this person QUALIFY), `groupLabel`, `pruneGroups` (the untrusted-load clamp — a group pinned to a qualification the squadron later deleted is dropped) and `OTHER_LABEL`, the catch-all that is always last and cannot be removed so nobody falls off the roster. **TWO ordered lists, the owner's explicit choice**: `groupDefs`/`groupOrder` is the top-to-bottom DISPLAY order (drag), `groupPriority` is the separate tie-break — the first match down it CLAIMS the person, which is what makes "a qualification column wins over a CAT column" fall out of the ordering with no special case. Store side (`state/store.ts`): `setGroupDefs`, `moveGroupTo`, `moveGroupPriorityTo`, `resetGroups`, `offerableGroupList`, `groupIdOf`, and **`addGroup`** — the editor's own path, which inserts the new id JUST BEFORE the first `cat` group in the priority order. That position is load-bearing twice over: above the categories is the owner's rule, and *not* flatly at the front is what keeps add order intact (front insertion would make each addition demote the one before it). Every writer admin-gated. `GroupSheet.tsx` is the sheet: the chosen list with ⠿ drag grips on the shared `Matrix` drag machine, the offer chips, the separate who-wins list, and a tap-a-group members panel. **Its counts answer `groupIdOf`, not `matchesGroup`** — who the group DRAWS, not who merely qualifies; where they differ the row says so and the panel splits into "Shown in X" and "Also fit it, but shown higher up". Reporting the second as the first was the #335 bug: the editor claimed 44 people while the grid changed by zero rows. Pinned: `groups.test.ts`, `roster.test.ts`, `store.test.ts`. Screen: `docs/ui-contracts.md` §Which groups the roster shows. |
+| `engine/groups.ts` / `ui/SettingsSheet.tsx` | **The roster group editor, folded into ⚙ Settings (28 Aug 26, owner; consolidated 3 Sep 26)** — which groups the grid's left column draws, and in what order. `groups.ts` data-ifies what used to be three constants in `engine/people.ts`: a `GroupDef` is `{id, kind:'cat', g}`, `{id, kind:'qual', k}` (a key from the live `state.qualCatalog`, so the offered list GROWS as the squadron adds quals), or the special `{id:'SANS', kind:'sans'}` (`SANS_GROUP`), with `matchesGroup` (does this person QUALIFY — `sans` matches the projected `san` flag), `groupLabel`, `pruneGroups` (the untrusted-load clamp — a qual group pinned to a deleted column is dropped; built-ins and SANS survive) and `OTHER_LABEL`, the catch-all that is always last and cannot be removed so nobody falls off the roster. **TWO ordered lists**: `groupDefs` is the top-to-bottom DISPLAY order, `groupPriority` the tie-break (first match down it CLAIMS the person). **Who-wins FOLLOWS the display order by default (owner, 3 Sep 26 — reverses the old "fully separate" rule): `groupPriorityIds` returns the display order until `groupPriorityCustom` is set, so dragging a category on the grid reorders who-wins with it.** A hand edit of the ⚙ "Who wins" list sets `groupPriorityCustom` (independent of the page); `clearGroupPriority` ("Match the page order") clears it. **The standard categories OVERLAP (owner, 3 Sep 26): a `cat` group is a FIT check (`people.ts fitsCategory` — an SXO IP fits SXO and IP; ground crew fit only PERS; OCU never fits OPS P / OPS W), so the same higher-wins walk re-homes an SXO IP under IP once IP is dragged above SXO. `groupOf` is the first fit down `GROUP_ORDER`, which is what keeps the default page unchanged. The `sxo` / `san` qualifications are never offered as qualification groups (`BUILT_IN_QUALS`) and a stored one is pruned. Auto-sort / the no-order default bucket by the LIVE grouping (`liveAutoOrder` → `autoOrder(people, groupIdOf, pageIds)`).** Store side (`state/store.ts`): `setGroupDefs`, `moveGroupTo`, `moveGroupPriorityTo`, `resetGroups`, `clearGroupPriority`, `isGroupPriorityCustom`, `offerableGroupList`, `groupIdOf`, and **`addGroup`** — inserts the new group JUST ABOVE the first `cat` group in the DISPLAY order, so under "higher wins" it claims its people at once and add order is kept. **The SANS group is auto-injected, never stored**: while `showSans` is on, `groupsInOrder` appends it LAST and `groupPriorityIds` forces it FIRST, so shown SANS draw as their own block at the foot; every group writer ignores its id. Every writer admin-gated. `SettingsSheet.tsx` is the ⚙ sheet (the old `GroupSheet.tsx` was deleted, its content folded in): a config tray (+Counter, +/−Event row, Show SANS, Reset counters), then the compact group list (no display grip — reorder is on the grid), the offer chips, a tucked "Who wins" disclosure, and a tap-a-group members panel. **Its counts answer `groupIdOf`, not `matchesGroup`** — who the group DRAWS; the panel splits "Shown in X" / "Also fit it, but shown higher up" (the #335 bug). REORDERING the page (display order) is done ON THE GRID in rearrange mode — the ⠿ corner toggle + draggable category headings (`data-grow` on the `.grp` rows, `GROUP_DRAG`); see the Matrix entry. Pinned: `groups.test.ts`, `roster.test.ts`, `settingssheet.test.tsx`. Screen: `docs/ui-contracts.md` §Which groups the roster shows. |
 | `state/storage.ts` | The storage seam — `memoryBackend` and `localBackend` (the `leavewar:`-prefixed localStorage backend, still the store's default fallback). `main.tsx` boots `lwInitStore` on `memoryBackend`, so the WHOLE war — manning counters included (owner, 19 Aug 26: no persistence wanted) — is session-only like Raptor's `INPUTS`. Deliberately NOT `HOOKS.storeBackend`; the future shared database backend replaces this seam. |
 | `state/raptorRoster.ts` | Wire 0 — `projectPeople()`: the LW roster as a projection of Raptor's `PEOPLE` (skips ground crew + sentinels; band from `isInstr`; sxo carried). Installed at boot, never persisted. |
-| `state/demoworld.ts` | The fresh-browser demo re-key — DEMO_MAP (16 seed people → Raptor aircrew, seat+band-equal by construction), the seed overlay, and the two idempotent backing inputs for the seed's Raptor-owned cells. Boot-time only; the 632 vendored tests stay blind by construction. |
+| `state/demoworld.ts` | The fresh-browser demo re-key — DEMO_MAP (16 seed people → Raptor aircrew, seat+band-equal by construction), the seed overlay, `DEMO_OIL` (the tracker's demo story — hand-typed FO/HO days with notes, approved OIL days, four `dol-N` grants — installed BEFORE the re-key), and the two idempotent backing inputs for the seed's Raptor-owned cells. Boot-time only; the 632 vendored tests stay blind by construction. |
 | `sync.ts` | Wires 1+2+4 — three DERIVED reconcilers (outbound: approved cells → span-collapsed lw-tagged `INPUTS` rows, one `writeInputsBatch`, only on a non-empty diff; inbound: leave inputs → Raptor-owned cells per day, portions both ways, custom rounds OUT, reverse-clear, the clash list + its own subscription; **`runOilPass`** (REWORKED 28 Aug 26): weekend/PH work → raptor-owned FO/HO cells — `desiredOilCells` pools per person|date the PUBLISHED schedule (issued snapshot, `dayApproved`) AND acknowledged Duty-&-commitments input claims (`row.oil` — NOT publish-gated, the owner's acknowledgment is the gate; coverage + non-working re-checked live so a moved input or revoked PH leaves a stale yes inert), one `uniformOil(envMin)` threshold on the combined start-to-finish envelope (29 Aug 26 — gaps count; 4h morning published + 4h afternoon acknowledged = one 0800→1700 day → FO), the schedule half reading EVERY visited week (the loaded week live, the rest out of the session stash via `stashOilWeek` + the parameterized publish readers, 29 Aug 26), the exported `isNonWorkingISO` reading weekends + `DayInfo.ph` + 'off'-tagged events, `availableFor` expanding the ALL / ALL AVAIL sentinels to available regular aircrew minus away-input overlaps, reverse sweeps partitioned by cell vocabulary, leave wins a contested cell with a `kind:'duty'` clash; **the ask-flow's sync-side bodies live here too**: `oilAskPlan` (the per-day plan OilConfirm and the save gate read) and `oilPendingFor` (the bell's derived pending scan — unanswered applicable day, 0 counts as answered, dormant rows never ring), with the lwSubscribe lane firing ONE signature-guarded raptor notify when the pending picture changes so a PH marked after the input exists lights the bell at once), the SYNCING flag, `wireLeaveWarSync()`. **Wire 5 (17 Aug 26) rides wires 1+2 rather than adding a pass**: the four MEDICAL markers cross both ways — `medRowPortion` (AM/PM exact, a custom window ≤6h a half sided by its midpoint, >6h full; NOT leave's round-OUT), `lwTypeOf`/`INPUT_FOR_LW` bridging Raptor's `ATT B`/`ATT C` to the spaceless store form, and no approval gate outbound because medical is assigned, not bid. `wireLeaveWarSync` also mirrors Raptor's `ME` into `viewer` on every notify. The loop-breaker pair is documented at the top of the file. **`retractLwRow` (17 Aug 26, full two-way)**: called by `ui/inputedit.tsx`'s `commitInputEdit`/`removeInput` on an lw-tagged row — withdraws the row's war cells (`withdrawLeaveCell`, exact-notation, never Raptor-owned) under the SYNCING flag; an edit that CHANGES THE LEAVE also drops the `lw` tag so inbound re-lands the new shape Raptor-owned, but a REMARKS-ONLY edit keeps the tag (18 Aug 26 — `commitInputEdit` compares the exported `rowSig` before and after; an unchanged signature means the leave is the same, so Leave War keeps it). **Minted remarks are the date tail now, not "Leave War" (18 Aug 26)**: `withRemarksTail(prior, start, end, 'on')` → "till 17 Jul" for a span, "on 15 Jul" for a single day — the same helper (`engine/inputs.ts`) the Inputs-page calendar's `withTill` uses; `prior` carries a member's own detail across a DATE change (person\|type\|portion keyed), moving only the date token. A synced leave says how long it runs and the type column carries the code. **`runPoArchive` + `restoreArchivedPerson` (19 Aug 26)**: the post-out auto-archive pass (PO date arrived + `poArchive === true` → Raptor `archived = true`; real local clock; runs at boot and on both lanes) and the Quals drawer's restore (clears the LW posting FIRST, then un-archives) — plus `reprojectRoster`'s keep rule (an archived body WITH a posting window stays, identity frozen). Tested in `sync.test.ts` + `oilsync.test.ts` + `viewer.test.ts` + `poarchive.test.ts` (the last two are their own files because wiring the sync leaves a live Raptor subscription behind). |
-| `ui/` | Matrix (the 365-column grid; paints the event column colours, mounts the Event sheet, and since 1 Sep 26 draws the **open-bidding box** — `measureBidBox` + the `.lw-bidbox` overlay, a glowing deep-faded-green border around the `bidFrom..bidTo` columns shown only while `stage==='open'`; `docs/ui-contracts.md` §The open-bidding box), Chrome (its topbar + stage strip; the role toggle is deleted — see the comment there; the Legend pop-out keys the grid's colours/marks AND, since 28 Aug 26, its letter codes via `CODE_GLOSSARY` in `engine/codes.ts` — FO/HO flagged as the only war-only codes (their chip and swatch CYAN, the `--q-c` family, since the same-day rename from FS/HS), the rest a key to the grid's shorthand), the sheets (incl. `ManningSheet.tsx`, 19 Aug 26 — tap a count row's name: what it counts + the admin-editable amber/red lines + `Edit counter…`, and **`CounterForm.tsx`, same day — the guided build/edit/delete form for the manning counters, testids `cform-*`; tests `counterform.test.tsx`, engine maths in `engine/counterrules.test.ts`**), RangePicker, **`EventRows.tsx` (the two event lines — merged bands as colspan, red work text, tap-to-edit), `EventSheet.tsx` (the admin event editor + type library, on `Sheet`+`RangePicker`; `eventsheet.css`)**. `Sheet.tsx` is the shared shell every sheet is built on — scrim + the PAGE LOCK (17 Aug 26: `body.lw-sheet-lock`, counted so one sheet closing as another opens cannot unlock the page under the survivor), and `CounterSheet.tsx` now holds three: the figure picker (viewer's own numbers; admin-only ▲▼/Reset), `FigureBreakdownSheet` and `PersonFiguresSheet`. All stylesheets scoped under `#page-leavewar` (theme.css deleted as pure duplication) **with ONE deliberate exception: `body.lw-sheet-lock` at the foot of `bidpicker.css`, which is outside the wrapper because no page-scoped selector can reach `body` — do not "fix" it inwards, that silently kills the scroll lock; the class is `lw-`-namespaced instead.** Both `matrix.css` and `bidpicker.css` are WHOLLY wrapped, so an append after the closing brace lands outside the scope and loses to its +1 id specificity — insert inside (this bit twice in one session). Cascade note at the top of each file — the event column colours in `matrix.css` are ordered after weekend/blocked deliberately. |
+| `ui/` | Matrix (the 365-column grid; paints the event column colours, mounts the Event sheet, and since 1 Sep 26 draws the **open-bidding box** — `measureBidBox` + the `.lw-bidbox` overlay, a glowing deep-faded-green border around the `bidFrom..bidTo` columns shown only while `stage==='open'`; `docs/ui-contracts.md` §The open-bidding box), Chrome (its topbar + stage strip; the role toggle is deleted — see the comment there; the Legend pop-out keys the grid's colours/marks AND, since 28 Aug 26, its letter codes via `CODE_GLOSSARY` in `engine/codes.ts` — FO/HO flagged as the only war-only codes (their chip and swatch CYAN, the `--q-c` family, since the same-day rename from FS/HS), the rest a key to the grid's shorthand), the sheets (incl. `ManningSheet.tsx`, 19 Aug 26 — tap a count row's name: what it counts + the admin-editable amber/red lines + `Edit counter…`, and **`CounterForm.tsx`, same day — the guided build/edit/delete form for the manning counters, testids `cform-*`; tests `counterform.test.tsx`, engine maths in `engine/counterrules.test.ts`**), RangePicker, **`EventRows.tsx` (the two event lines — merged bands as colspan, red work text, tap-to-edit), `EventSheet.tsx` (the admin event editor + type library, on `Sheet`+`RangePicker`; `eventsheet.css`)**. `Sheet.tsx` is the shared shell every sheet is built on (`narrow` for read-only panels; **`full` since 2 Sep 26** — pinned to the screen, a flex column that does not scroll and is not movable, for the OIL tracker grid; **its scrim's sideways pan is press-guarded since 2 Sep 26** — a mouse hover used to be read as a drag from (0,0) and snapped the grid to January whenever a sheet opened, `known-gaps.md` §Rulings, pinned in `scrim.test.tsx`) — scrim + the PAGE LOCK (17 Aug 26: `body.lw-sheet-lock`, counted so one sheet closing as another opens cannot unlock the page under the survivor), and `CounterSheet.tsx` now holds three: the figure picker (viewer's own numbers; admin-only ▲▼/Reset), `FigureBreakdownSheet` and `PersonFiguresSheet` (whose OIL BAL row opens the tracker and whose LVE BAL row carries the admin's Set, 2 Sep 26). **`OilTracker.tsx` + `oiltracker.css` (2 Sep 26, second cut)** — the OIL tracker GRID on `Sheet full`: frozen name + BAL, year lanes, one credit box per credit with its FIFO takes inside, the admin's in-place grant editor and hand-typed-credit note, `wireRowSelect` tap/hold-drag selection, the docked credit bar (given by included), the `?` legend, the settings panel; testids `oil-*`; tests `oiltracker.test.tsx`). All stylesheets scoped under `#page-leavewar` (theme.css deleted as pure duplication) **with ONE deliberate exception: `body.lw-sheet-lock` at the foot of `bidpicker.css`, which is outside the wrapper because no page-scoped selector can reach `body` — do not "fix" it inwards, that silently kills the scroll lock; the class is `lw-`-namespaced instead.** Both `matrix.css` and `bidpicker.css` are WHOLLY wrapped, so an append after the closing brace lands outside the scope and loses to its +1 id specificity — insert inside (this bit twice in one session). Cascade note at the top of each file — the event column colours in `matrix.css` are ordered after weekend/blocked deliberately. |
 
 ### Tooling
 | file | what it does |

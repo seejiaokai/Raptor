@@ -58,7 +58,7 @@ describe('the counter column', () => {
     fireEvent.click(screen.getByTestId('counter-pick'))
     expect([...screen.getByTestId('counter-sheet').querySelectorAll('.crow .cn')].map(e => e.textContent))
       .toEqual([
-        'LL USED', 'OL USED', 'OIL USED', 'OIL BAL', 'OFF USED', 'CCL USED', 'PL USED',
+        'LL USED', 'OL USED', 'OIL USED', 'OIL BAL', 'CCL USED', 'PL USED',
         'FCL USED', 'MED USED', 'OML USED', 'LVE BAL', 'LVE USED',
       ])
     fireEvent.click(screen.getByTestId('counter-lvecon'))
@@ -85,7 +85,7 @@ describe('the counter column', () => {
     expect(screen.getByTestId('counter-legend').textContent).toContain('BAL')
     expect(screen.getByTestId('counter-legend').textContent).toContain('USED')
     expect(screen.getByTestId('figsub-med').textContent).toBe('= ATT C + HL + OML')
-    expect(screen.getByTestId('figsub-lvecon').textContent).toBe('= LL + OL + OIL + OFF + CCL + PL + FCL')
+    expect(screen.getByTestId('figsub-lvecon').textContent).toBe('= LL + OL + OIL + CCL + PL + FCL')
   })
 
   // The figure is what makes the list answerable: each row previews the
@@ -213,13 +213,17 @@ describe('the counter follows the leave just entered', () => {
     expect(screen.getByTestId('counter-name').textContent).toBe('OL USED')
   })
 
-  // OFF has its own consumed figure now (OFF CON), so entering it snaps there
-  // rather than being left where it was — free leave is still leave taken.
-  it('snaps to OFF CON for free leave', () => {
+  // OFF stopped being a leave code on 2 Sep 26 (it is a management Off day
+  // event now), so the bid sheet offers no OFF chip at all.
+  it('offers no OFF chip — OFF is not a person\'s leave', () => {
     render(<Matrix />)
+    expect(screen.getByTestId('counter-name').textContent).toBe('LVE BAL')
     fireEvent.click(screen.getByTestId('cell-dusk-2026-02-11'))
-    fireEvent.click(screen.getByTestId('bid-OFF'))
-    expect(screen.getByTestId('counter-name').textContent).toBe('OFF USED')
+    expect(screen.queryByTestId('bid-OFF')).toBeNull()
+    expect(screen.getByTestId('bid-EL')).toBeTruthy()
+    expect(screen.getByTestId('counter-name').textContent).toBe('LVE BAL')
+    fireEvent.click(screen.getByTestId('counter-pick'))
+    expect(screen.queryByTestId('counter-off')).toBeNull()
   })
 
   it('clearing a cell moves nothing', () => {
@@ -357,13 +361,6 @@ describe('going negative is asked about, never refused', () => {
     expect(getState().grid.dusk?.['2026-02-09']).toBeUndefined()
   })
 
-  // Free leave has no balance to overdraw.
-  it('never asks about leave that spends nothing', () => {
-    render(<Matrix />)
-    fireEvent.click(screen.getByTestId('cell-reset-2026-02-11'))
-    fireEvent.click(screen.getByTestId('bid-OFF'))
-    expect(getState().grid.reset['2026-02-11']).toBe('OFF')
-  })
 })
 
 describe('the per-person breakdown sheet (owner, 17 Aug 26)', () => {
@@ -451,8 +448,8 @@ describe('a callsign opens the all-figures sheet, for everyone (owner, 17 Aug 26
     fireEvent.click(screen.getByTestId('person-ramp'))
     const sheet = screen.getByTestId('person-figures')
     expect(sheet.textContent).toContain('RAMP')
-    // All twelve figures, in the column's own order.
-    expect(sheet.querySelectorAll('.crow-wrap')).toHaveLength(12)
+    // All eleven figures, in the column's own order (OFF USED went 2 Sep 26).
+    expect(sheet.querySelectorAll('.crow-wrap')).toHaveLength(11)
     expect(screen.getByTestId('pfig-lvebal').textContent).toContain('25 left')
     expect(screen.getByTestId('pfig-oil').textContent).toContain('0.5 taken')
     // A member gets no editor path.

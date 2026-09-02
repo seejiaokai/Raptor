@@ -110,10 +110,10 @@ barely more than one.
   (`send_later`) and let it fire, rather than reporting "still building".
 - **Ship ONCE PER SESSION, at the end — not once per idea** (owner, 10 Aug
   26, after a session that shipped three times). Build and verify everything
-  locally as you go, then make ONE PR carrying the lot. Still don't wait to be
-  asked: when the work is done and green, ship it without a prompt (unless a
-  gate is red, or the change was called an experiment, or the owner asks for
-  a piece sooner — he sometimes wants one thing on his phone now).
+  locally as you go, then make ONE PR carrying the lot. **Since 2 Sep 26 the
+  merge itself waits for his "merge live"** (§Vercel rule below): push each
+  change to the branch and hand him the preview link, but never merge to main
+  unprompted — the one PR stays open and accumulates until he says so.
   **Shipping is not how you test.** `npm run build && npx vite preview` is the
   same bundle that deploys, base path and all, so every check — including
   driving it in a browser and looking at it — happens before the PR. The
@@ -124,8 +124,21 @@ barely more than one.
   pure waiting, three times over in one session. Batching is worth more
   again on the build side: fifteen changes in one pass ran ~6 min each, where
   a single change shipped alone took an hour and a half.
-- **Always hand him the Vercel preview link; auto-merge is still the default,
-  hold only when critical** (owner, 24 Aug 26 — "always let me know once vercel
+- **SUPERSEDED 2 Sep 26 — NO AUTO-MERGE. Stack changes on the branch, hand
+  him the Vercel link after EACH one, and merge to main ONLY when he says
+  "merge live"** (owner: "dont automatically push to live next time. Intent to
+  work with multiple changes with vercel links then i will manually say merge
+  live then it will go to github with all the changes made"). So the loop is
+  now: change → gates green locally → commit + push to the session branch (one
+  open PR accumulates the lot) → reply with the Vercel preview link the moment
+  it is Ready (~1 min after the push — do NOT go quiet waiting on CI) → take the
+  next change. The "Done MEANS LIVE" chain (merge on green → Pages → live-verify
+  → one notification) runs ONLY on his explicit "merge live"; a green PR
+  sitting open is the intended resting state, not a thing to finish. The 24 Aug
+  rule below is kept for its mechanics (where the link is, SSO, no PR-watching);
+  its "auto-merge is the default" clause no longer applies.
+- **Always hand him the Vercel preview link; auto-merge WAS the default until
+  2 Sep 26 (see above)** (owner, 24 Aug 26 — "always let me know once vercel
   is ready to be tested so i can test it" → "u can auto merge unless u feel
   like it is very critical and needs me to test it before merging" → "always
   give me the preview link in vercel so that i can give u immediate feedback
@@ -404,10 +417,21 @@ environment** (7 Aug 26 — a bare `chromium.launch()` fails with
 chromium.launch({
   executablePath: '/opt/pw-browsers/chromium',
   chromiumSandbox: false,                              // sandbox + proxy = instant exit
-  proxy: { server: process.env.HTTPS_PROXY },          // NOT inherited from the env var
+  proxy: { server: process.env.HTTPS_PROXY,            // NOT inherited from the env var
+           bypass: 'localhost,127.0.0.1' },            // see note below — local drives only
   args: ['--ssl-version-max=tls1.2'],                  // TLS 1.3 handshakes get reset
 })
 ```
+
+**When you drive the LOCAL `vite preview` (localhost:4173), add the
+`bypass: 'localhost,127.0.0.1'` shown above** (2 Sep 26). Without it Chromium
+routes the plain-HTTP localhost request through the agent proxy, which only
+accepts HTTPS CONNECT tunnels, so the page loads the relay's "this proxy only
+accepts HTTPS CONNECT" body (a 405) instead of the app — `#luser` never appears
+and the drive times out looking like the app is broken. The proxy itself is
+still needed for the DEPLOYED github.io page (external host); the bypass just
+keeps localhost direct. Simplest alternative for a local-only drive: omit the
+`proxy` key entirely.
 
 Those three are the whole recipe — `ignoreHTTPSErrors` is NOT needed despite
 the proxy re-signing TLS (measured both ways, 7 Aug 26: the CA is already in
@@ -437,7 +461,8 @@ trip felt like ~20 min per change and was unsustainable):
 - **GitHub Pages stays the OFFICIAL site** — the gated `deploy.yml`, published
   only on merge to `main`. Slower (gates + a Pages rollout of 2–10 min, the
   latter outside our control), so it is paid ONCE per session at the end, not
-  per change. The "done means live" chain still ends here.
+  per change — and since 2 Sep 26 only on the owner's explicit "merge live".
+  The "done means live" chain still ends here.
 
 So the loop is: iterate against the local `vite preview` (instant, what you
 drive), let the owner eyeball the Vercel preview when he wants to tap it
@@ -585,6 +610,117 @@ subscribers.
   merged and verified on the deployed page as always (§How to work here); just
   do it without the watch subscription. If the owner ever asks you to babysit a
   specific PR, that explicit ask overrides this for that PR only.
+- **Leave War admin controls live in ONE ⚙ Settings; rearranging is on the grid**
+  (owner, 3 Sep 26). The matrix's top row carries only Manning · ⚙ · OIL tracker.
+  ⚙ opens `SettingsSheet` holding CONFIG — + Counter, +/− Event row, Show SANS,
+  Reset counters — then the roster GROUPS editor folded in (the old `⚙ Groups`
+  corner button is gone, the word "Groups" dropped; `GroupSheet.tsx` deleted).
+  REARRANGING the roster is a hands-on-the-grid action, started from the ⠿ toggle
+  in the grid corner above the callsigns: person rows AND category headings drag on
+  the grid, with a slim on-grid bar (`.lw-rearrange-bar`) for Auto-sort and Done.
+  Do not move config onto the grid, or rearrange into a sheet (a Sheet's scrim
+  swallows the grid taps the drag needs).
+- **Who-wins follows the page order by default** (owner, 3 Sep 26 — a deliberate
+  reversal of the 28 Aug "two fully separate orders" rule). The group higher on the
+  page wins a tie, so dragging a category on the grid reorders who-wins with it
+  (`groupPriorityIds` returns the display order until `groupPriorityCustom`). A hand
+  edit of the ⚙ "Who wins" list switches to a CUSTOM order, independent of the page;
+  "Match the page order" (`clearGroupPriority`) clears it. **The standard categories
+  OVERLAP and follow the same rule** (owner, 3 Sep 26 — "whatever that is at the top
+  priority will supersede and put those people who are that cat or qualification in
+  that order"): a category is a FIT check (`people.ts fitsCategory`), so an SXO IP
+  fits SXO and IP, and IP dragged above SXO draws them under IP. `groupOf` is the
+  first fit down `GROUP_ORDER`, so the untouched page is unchanged. Two fits stay
+  exclusive by design: ground crew fit only Personnel, and OCU fits OCU but never
+  OPS P / OPS W (else the default order would pull trainees into OPS P). The `sxo`
+  and `san` qualifications are never offered as qualification groups (they ARE the
+  SXO category / the SANS group) and a stored one is pruned. Auto-sort buckets by
+  the live grouping (`liveAutoOrder`), so a re-homed person ranks among their new
+  block.
+- **A chip shows only the CAT; a hover/tap reveals the DISPLAYED quals, in their
+  group colours** (owner, 3 Sep 26 — "hover the mouse over the person to see the
+  qualifications they hold" / "having a colour on the chip doesnt make sense … just
+  the original colour of the pucks for their CAT" / later "only the qualifications
+  that were added to display will be shown when i hover … in the colour code that i
+  selected for the group"). The chip stays CAT-coloured (`catClass`, off `groupOf` —
+  an SXO keeps gold wherever they sit); it never encodes a qualification. The
+  popover (`qualpop`, Matrix state, fixed to screen coords so the frozen column
+  cannot clip it) lists ONLY the qualification GROUPS on the page the person
+  matches (`Matrix.tsx shownQuals`: `groupsInOrder` × `matchesGroup`), each pill in
+  that group's colour, plus SXO in gold when the SXO group is on the page. A held
+  but undisplayed qual is not listed, and a chip with nothing displayable is inert
+  (no `.has-quals`). The click is swallowed so it never also opens the figures
+  sheet; dismissed by pointer-leave, an outside pointer-down, scroll, Escape, or a
+  second tap on the same chip (the phone's toggle) — no full-screen scrim (which
+  would swallow the opening click and block the grid).
+- **A qualification group's colour is the admin's PICK** (owner, 3 Sep 26 — first
+  "do we even need a colour?", then, having seen it, "allow me to pick the colour i
+  want"). `groupColors` (store, persisted `groupcolors`, admin-gated, `q:` ids and
+  `#rrggbb` only, dropped with the group, cleared by reset) holds the pick;
+  `ui/groupColor.ts groupColorOf` returns it, falling back to a deterministic
+  palette colour (`qualSwatch`) so an unpicked group is never a black square. The
+  ⚙ list opens a 12-dot palette (`PALETTE`) under the row the moment a qualification
+  group is added, and again from the row's swatch button; built-ins/SANS keep their
+  CSS-class CAT colours and have no button. Pill text colour is by luminance
+  (`inkFor`). The palette CLOSES the moment a dot is picked, on a click outside
+  it (owner, 4 Sep 26) — per the standing popup rule below — and on Escape (which
+  peels the palette only; the sheet closes on the next press). The stored list is
+  NOT pruned at boot (bug hunt, 4 Sep 26): the boot catalogue is the seed's three
+  keys, so a boot-time prune threw away every saved TF / NVG / custom group and its
+  colour before Raptor's real column list landed. Pruning happens at read
+  (`groupsInOrder`) and when the catalogue arrives (`setQualCatalog`, which also
+  drops the pruned groups' colours and persists).
+- **A click-open popup closes on a click outside it — standing UI rule** (owner,
+  4 Sep 26 — "build pop up windows to have auto close feature if i click outside of
+  it"). Any transient panel/menu/palette a tap OPENS must dismiss on an outside
+  pointer-down (and, where it makes sense, right after the choice that finished it).
+  The full-screen `Sheet` already does this (its scrim + Escape, `Sheet.tsx`); a
+  smaller inline popup adds a capturing `pointerdown` document listener while it is
+  open, treating a press on the popup itself — or on the control that toggles it —
+  as "inside" so the toggle isn't fought (the ⚙ colour palette is the worked
+  example, `SettingsSheet.tsx`). The quals popover already followed this (dismissed
+  by pointer-leave / outside pointer-down / scroll).
+- **The ⚙ groups list drags too** (owner, 3 Sep 26 — "allow me to drag and drop to
+  rearrange the groups"): its rows carry `data-grow` and a `⠿` grip wired to the
+  same `GROUP_DRAG` → `moveGroupTo` as the grid's heading grip, so the two never
+  disagree; SANS has no grip (auto-placed at the foot). The drag machine resolves
+  "drop after row X" from the hovered row's OWN container (`dragOverRef.el`'s
+  parent), never a document-wide query — the ⚙ list and the grid headings share the
+  `data-grow` vocabulary, and a mixed list could land a drop in the wrong place (bug
+  hunt, 4 Sep 26). Every draggable list shows the bar on the hovered row's BOTTOM
+  edge for a lower-half hover (`.dragover.after`), on the grid headings and both ⚙
+  lists alike.
+- **Pilots above WSOs inside every block, ALWAYS** (owner, 3 Sep 26 — "arrange all
+  pilots at the top always and wso at the bottom of the same section. But within
+  pilot and wso we arrange them in accordance to the cat category of seniority").
+  `people.ts rankCompare` sorts seat (`seatRank`: pilot, wso, gnd) before `CAT_RANK`;
+  `displayRoster` partitions each block by seat around the hand-order, so a drag
+  can never carry a WSO above the pilots. Single-seat blocks are untouched. The
+  callsign wears the seat colour as a FULL-WIDTH bar across the frozen column
+  (`.cs.seat-pilot/.seat-wso/.seat-gnd`, `flex:1` up to the CAT chip — owner, 4 Sep
+  26: "make the entire bar of the cs/name to be filled … not only based on how long
+  the name is"), a pilot olive and a WSO green so it reads the same in both apps.
+  The Leave War bars are DARKER than Raptor's flight-line pucks (owner, 4 Sep 26 —
+  "make the colour darker … still able to see the pilot or wso colour"): explicit
+  deep-olive/deep-green hex in `matrix.css`, NOT `var(--fcp/--rcp)`, so the flight
+  line keeps its own tone (never darken it via scheduler.css); ground crew keep a
+  light bar, softened off pure white so a full-width run doesn't glare. On a phone
+  (≤430px) the bar's side padding tightens to 4px so the 76px column keeps more of
+  the callsign.
+- **Leave War's qualification catalogue is Raptor's LoX column list, not the
+  holders** (owner, 3 Sep 26 — "when i add a new qualification, i cant see that new
+  qualification added in the settings page of leave war"). The Quals page's column
+  list lives in `src/engine/qualcols.ts` (`qualCols` / `setQualCols`; the page
+  mirrors its `cols` state there and fires `notify` only on a real change);
+  `raptorRoster.ts qualCatalogue` takes keys AND headings from it, appending any key
+  someone still holds after a column was removed (so ticks survive and a pinned
+  group is not pruned). Known gap, not fixed: like the ticks, the column list is not
+  saved across a reload.
+- **Show SANS = SANS as their own counted group at the foot** (owner, 3 Sep 26).
+  The switch injects a SANS group (`SANS_GROUP`, auto-managed, never stored) LAST on
+  the page and FIRST in who-wins, so shown SANS draw together at the foot rather than
+  scattering into their CATs; they still count in manning by seat+band like any
+  aircrew (a group never moves a count — the `groups.ts` invariant holds).
 - **The `npm run perf` board DOM ceiling of 1150 is settled** (owner,
   28 Aug 26 — "the scheduler board I know it's heavy, u raised the limit,
   it's ok"). Raised 960 → 1150 in PR #333 (the board sits at ~1051 nodes;
@@ -1392,6 +1528,26 @@ subscribers.
   so don't re-pitch it unprompted. Placement + layering (z-index 1, under the
   frozen columns): `docs/ui-contracts.md` §The open-bidding box. Pin:
   `e2e/leavewar.spec.ts`.
+- **A control the user TAPS REPEATEDLY must not move under them — standing
+  design rule** (owner, 2 Sep 26 — "as I toggle left and right on the calendar,
+  because the number of days change between months, the left and right arrow
+  keeps jumping up and down … design it such that the arrows remain at the same
+  spot so I don't need to keep chasing it. Remember this for design interface
+  and fix the rest that you saw the same"). A month spans 4–6 week-rows, so a
+  calendar whose height tracks the month shifts everything anchored to its far
+  edge as you page it. The Leave War new-period / bid / bidding-window
+  calendars sit in a BOTTOM-anchored sheet, so a short month let the whole
+  sheet (its ‹ › month arrows included) drop and a tall one pushed it up.
+  `RangePicker` now pads EVERY month to a constant six rows (trailing `.rblank`
+  cells), so the grid is one fixed height and the arrows — and the sheet — hold
+  still. The Raptor page/popover calendars (`InputsCal`, `WeekCal`) are
+  TOP-anchored — their grid grows DOWNWARD from a fixed top, so their own
+  arrows never move; they pad to whole rows only and were left unchanged
+  (checked, not assumed). The general rule for any repeated-tap control (a
+  calendar pager, a stepper, a reveal toggle, a segmented control that grows
+  a panel): keep the CONTROL's own screen position invariant to the content it
+  changes — reserve the space, or anchor the growth away from the control.
+  Pin: `rangepicker.test.tsx` (constant row count across months).
 
 ## Where things live
 

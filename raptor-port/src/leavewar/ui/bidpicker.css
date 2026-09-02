@@ -549,6 +549,7 @@
    it would land on takes an accent edge. */
 .bidsheet .gs-row.dragging { opacity: .5; }
 .bidsheet .gs-row.dragover .crow { box-shadow: inset 0 2px 0 var(--accent); }
+.bidsheet .gs-row.dragover.after .crow { box-shadow: inset 0 -2px 0 var(--accent); }
 .bidsheet .gs-pick.on {
   background: rgba(59, 198, 232, .14);
   border-color: var(--accent);
@@ -626,6 +627,40 @@
 .bidsheet.narrow {
   width: min(360px, calc(100vw - 24px));
   padding: 8px 10px 10px;
+}
+
+/* THE FULL-SCREEN SHEET (owner, 2 Sep 26 — the OIL tracker "fills the entire
+   screen"). Pinned to all four edges, a flex column, and NOT a scroller: its
+   content carries the one 2-D scroller (the tracker's `.oil-wrap`), so the
+   frozen name column and the sticky header resolve against that and nothing
+   else. No centring transform and no drag offset — it has nowhere to go. On a
+   phone the inset and the radius go too, so the grid gets every pixel. */
+.bidsheet.full {
+  top: 8px;
+  bottom: 8px;
+  left: 8px;
+  right: 8px;
+  width: auto;
+  max-height: none;
+  transform: none;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 8px 10px 0;
+}
+
+.bidsheet.full .bidsheet-hd {
+  position: static;
+  flex: 0 0 auto;
+}
+
+@media (max-width: 520px) {
+  .bidsheet.full {
+    inset: 0;
+    border-radius: 0;
+    border: 0;
+    padding: 6px 8px 0;
+  }
 }
 
 .bidsheet.narrow .clist {
@@ -843,3 +878,179 @@
 .bidsheet-row.rmk-actions {
   justify-content: flex-end;
 }
+
+/* ============================================================================
+   THE ⚙ SETTINGS SHEET (owner, 3 Sep 26 — every admin CONFIG control folds into
+   one sheet: counters and event rows up top in a tray, then the roster groups
+   squeezed into tight rows). Rearranging is NOT here — it happens on the grid.
+   ========================================================================== */
+
+/* Counters & rows tray — a raised panel that sets the action buttons apart from
+   the group list below. Reuses the `.rtbtn` chip from matrix.css. */
+.bidsheet .set-tray {
+  margin: 2px 2px 4px;
+  padding: 9px;
+  background: var(--panel-2);
+  border: 1px solid var(--edge);
+  border-radius: 9px;
+}
+.bidsheet .set-ctrls { display: flex; flex-wrap: wrap; gap: 7px; }
+.bidsheet .set-hint { margin-top: 8px; font-size: 10.5px; color: var(--ink-3); letter-spacing: .01em; }
+/* Reset counters is destructive — quiet at rest, and matrix.css `.rtbtn.arm`
+   turns it red once armed. */
+.bidsheet .rtbtn.set-danger { color: var(--ink-3); }
+
+/* The groups, squeezed into tight single-line rows (owner: "squeeze the data").
+   No display-order grip here — reordering is on the grid; this list is add /
+   remove / see-who / who-wins. */
+.bidsheet .set-grows { padding: 2px 2px 4px; }
+.bidsheet .set-grow {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 6px 6px;
+  border-radius: 7px;
+}
+.bidsheet .set-grow + .set-grow { border-top: 1px solid rgba(42, 49, 58, .55); }
+/* The drag grip (owner, 3 Sep 26 — "drag and drop to rearrange the groups"): the
+   same glyph as the grid's heading grip, the same drag machine underneath. The
+   SANS row keeps an empty slot so its swatch and name line up with the rest. */
+.bidsheet .set-grip {
+  flex: none;
+  width: 16px;
+  text-align: center;
+  color: var(--ink-3);
+  font-size: 13px;
+  line-height: 1;
+  cursor: grab;
+  user-select: none;
+}
+.bidsheet .set-grip:active { cursor: grabbing; }
+.bidsheet .set-grip.off { visibility: hidden; }
+.bidsheet .set-grow.dragging { opacity: .5; }
+.bidsheet .set-grow.dragover { box-shadow: inset 0 2px 0 var(--accent); }
+/* Lower half of a row = "after it": the bar moves to the bottom edge so it
+   points at the seam the row will actually land in (bug hunt, 4 Sep 26). */
+.bidsheet .set-grow.dragover.after { box-shadow: inset 0 -2px 0 var(--accent); }
+.bidsheet .set-sw { width: 10px; height: 10px; border-radius: 3px; flex: none; background: var(--edge-2); }
+/* A qualification group's swatch is a BUTTON — tap it to open the colour palette
+   (owner, 3 Sep 26 — "allow me to pick the colour i want"). A touch of extra
+   size and a ring on hover / while open, so it reads as something to press. */
+.bidsheet .set-swbtn {
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, .18);
+}
+.bidsheet .set-swbtn:hover,
+.bidsheet .set-swbtn.on { box-shadow: 0 0 0 2px var(--ink); }
+.bidsheet .set-palette {
+  margin: 0 6px 6px 31px;
+  padding: 7px 9px 8px;
+  border-radius: 7px;
+  background: rgba(255, 255, 255, .04);
+  border: 1px solid rgba(42, 49, 58, .8);
+}
+.bidsheet .set-plab {
+  display: block;
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: 6px;
+}
+.bidsheet .set-dots { display: flex; flex-wrap: wrap; gap: 7px; }
+.bidsheet .set-dot {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  padding: 0;
+  cursor: pointer;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, .35);
+}
+.bidsheet .set-dot:hover { transform: scale(1.12); }
+.bidsheet .set-dot.on { border-color: var(--ink); box-shadow: 0 0 0 2px var(--panel, #12161b); }
+/* Explicit colours mirroring the grid's group palette, so a swatch means the
+   same here as on the roster (kept literal to survive the sheet's var scope). */
+.bidsheet .set-sw.g-sxo  { background: #E8B23B; }
+.bidsheet .set-sw.g-ip,
+.bidsheet .set-sw.g-iwso { background: #9F4ADF; }
+.bidsheet .set-sw.g-opsp,
+.bidsheet .set-sw.g-opsw { background: linear-gradient(90deg, #CA4750, #3673DD); }
+.bidsheet .set-sw.g-ocu  { background: #7F65BF; }
+.bidsheet .set-sw.g-pers { background: #E7ECF1; }
+.bidsheet .set-sw.g-sans { background: #57C9A6; }
+.bidsheet .set-gname {
+  flex: 1;
+  text-align: left;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .06em;
+  color: var(--ink);
+  padding: 2px 4px;
+  border-radius: 6px;
+}
+.bidsheet .set-gname:hover { color: var(--accent); }
+.bidsheet .set-gname.on { color: var(--accent); background: rgba(59, 198, 232, .12); }
+.bidsheet .set-gkd { font-size: 9px; color: var(--ink-3); letter-spacing: .06em; text-transform: uppercase; }
+.bidsheet .set-gct { font-size: 11px; color: var(--ink-3); font-weight: 600; font-variant-numeric: tabular-nums; min-width: 16px; text-align: right; }
+.bidsheet .set-gdel {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  background: none;
+  border: 1px solid var(--edge);
+  border-radius: 5px;
+  color: var(--ink-3);
+  cursor: pointer;
+  font-size: 11px;
+}
+.bidsheet .set-gdel:hover { border-color: rgba(255, 92, 92, .6); color: #ff5c5c; }
+/* The SANS row is the odd one out — shown by the switch, not a stored group, and
+   counted. A tinted teal panel with a badge, its ✕ just hides SANS again. */
+.bidsheet .set-grow.sans {
+  background: rgba(87, 201, 166, .08);
+  border: 1px solid rgba(87, 201, 166, .40);
+  border-radius: 7px;
+  margin-top: 4px;
+}
+.bidsheet .set-grow.sans + .set-grow { border-top: none; }
+.bidsheet .set-grow.sans .set-gname { color: #9EE7CE; }
+.bidsheet .set-badge {
+  font-size: 8.5px;
+  font-weight: 800;
+  letter-spacing: .04em;
+  padding: 2px 7px;
+  border-radius: 10px;
+  background: rgba(87, 201, 166, .16);
+  color: #9EE7CE;
+}
+
+/* The who-wins override, tucked behind a disclosure (rarely needed). */
+.bidsheet .set-disc {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  margin: 8px 2px 2px;
+  padding: 9px 11px;
+  background: var(--panel-2);
+  border: 1px solid var(--edge);
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: inherit;
+  text-align: left;
+}
+.bidsheet .set-disc:hover { border-color: rgba(59, 198, 232, .5); }
+.bidsheet .set-disc .cv { color: var(--ink-3); font-size: 11px; }
+.bidsheet .set-disc .dl { font-size: 10px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2); }
+.bidsheet .set-disc .dh { margin-left: auto; font-size: 10px; font-weight: 500; color: var(--ink-3); letter-spacing: .01em; }

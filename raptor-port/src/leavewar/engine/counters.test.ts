@@ -267,11 +267,12 @@ describe('balances across more than one leave war', () => {
   })
 })
 
-// `OFF` is leave that costs nothing (owner, 10 Aug 26). It is the one leave
-// type with no counter, so the risk it carries is the opposite of every other
-// code's: not that it draws from the wrong pool, but that it draws from ANY.
-describe('free leave draws nothing', () => {
-  it('leaves every counter untouched however much OFF is taken', () => {
+// `OFF` was leave that cost nothing until 2 Sep 26; now it is not a code at
+// all (an Off day is a management EVENT). A stray `OFF` in a grid — legacy
+// data — must draw from nothing and count as nothing, exactly as any unknown
+// code does, rather than being guessed into some counter.
+describe('a legacy OFF cell draws nothing', () => {
+  it('leaves every counter untouched however much OFF is in the grid', () => {
     const sources = [{
       grid: { ramp: { '2026-01-05': 'OFF', '2026-01-06': 'OFF', '2026-01-07': '*OFF' } },
       states: {},
@@ -279,6 +280,7 @@ describe('free leave draws nothing', () => {
     for (const counter of COUNTERS) {
       expect(drawnFrom(sources, 'ramp', counter)).toBe(0)
     }
+    expect(takenOf(sources, 'ramp', 'OFF')).toBe(0)
   })
 
   it('keeps a balance exactly where it was', () => {
@@ -321,9 +323,8 @@ describe('takenOf — days of ONE type taken', () => {
     expect(takenOf(sources, 'ramp', 'OL')).toBe(1)
   })
 
-  it('counts OFF and the medical markers, which spend no counter at all', () => {
-    const sources = [{ grid: { ramp: { '2026-01-05': 'OFF', '2026-01-06': 'ATTC', '2026-01-07': 'OML' } }, states: {} }]
-    expect(takenOf(sources, 'ramp', 'OFF')).toBe(1)
+  it('counts the medical markers, which spend no counter at all', () => {
+    const sources = [{ grid: { ramp: { '2026-01-06': 'ATTC', '2026-01-07': 'OML' } }, states: {} }]
     expect(takenOf(sources, 'ramp', 'ATTC')).toBe(1)
     expect(takenOf(sources, 'ramp', 'OML')).toBe(1)
   })
@@ -353,33 +354,36 @@ describe('the two consumed aggregates', () => {
     expect(takenOf(sources, 'ramp', 'ATTB')).toBe(1)
   })
 
-  it('LVE CON sums the seven leave codes and deliberately excludes medical', () => {
+  it('LVE CON sums the six leave codes and deliberately excludes medical', () => {
     const sources = [{ grid: { ramp: {
-      '2026-01-05': 'LL', '2026-01-06': 'OL', '2026-01-07': 'OIL', '2026-01-08': 'OFF',
+      '2026-01-05': 'LL', '2026-01-06': 'OL', '2026-01-07': 'OIL',
       '2026-01-09': 'CCL', '2026-01-10': 'PL', '2026-01-11': 'FCL', '2026-01-12': 'OML',
     } }, states: {} }]
-    // Eight leave/medical days, but LVE CON counts only the seven — OML is
+    // Seven leave/medical days, but LVE CON counts only the six — OML is
     // medical and lives in MED CON.
-    expect(lveConOf(sources, 'ramp')).toBe(7)
+    expect(lveConOf(sources, 'ramp')).toBe(6)
   })
 })
 
 describe('FIGURES and orderedFigures', () => {
-  it('is the twelve figures in the owner\'s order — OIL BAL joined with wire 4', () => {
+  // Eleven since 2 Sep 26: OFF USED went (owner — "remove the OFF used
+  // counter"); OFF still counts inside LVE USED.
+  it('is the eleven figures in the owner\'s order — OIL BAL joined with wire 4, OFF USED removed', () => {
     expect(FIGURES.map(f => f.label)).toEqual([
-      'LL USED', 'OL USED', 'OIL USED', 'OIL BAL', 'OFF USED', 'CCL USED', 'PL USED',
+      'LL USED', 'OL USED', 'OIL USED', 'OIL BAL', 'CCL USED', 'PL USED',
       'FCL USED', 'MED USED', 'OML USED', 'LVE BAL', 'LVE USED',
     ])
+    expect(FIGURES.find(f => f.label === 'OFF USED')).toBeUndefined()
   })
 
   it('has exactly two balance figures — LVE BAL and OIL BAL (wire 4\'s landing strip); every other is consumed', () => {
     expect(FIGURES.filter(f => f.kind === 'bal').map(f => f.label)).toEqual(['OIL BAL', 'LVE BAL'])
-    expect(FIGURES.filter(f => f.kind === 'con')).toHaveLength(10)
+    expect(FIGURES.filter(f => f.kind === 'con')).toHaveLength(9)
   })
 
   it('carries each aggregate\'s composition as its legend', () => {
     expect(FIGURES.find(f => f.id === 'med')!.legend).toBe('ATT C + HL + OML')
-    expect(FIGURES.find(f => f.id === 'lvecon')!.legend).toBe('LL + OL + OIL + OFF + CCL + PL + FCL')
+    expect(FIGURES.find(f => f.id === 'lvecon')!.legend).toBe('LL + OL + OIL + CCL + PL + FCL')
   })
 
   it('computes a figure through its ctx — CON via takenOf, BAL via balanceOf', () => {
@@ -433,9 +437,9 @@ describe('figureParts — the tap-a-counter breakdown (owner, 17 Aug 26)', () =>
     expect(parts.reduce((s, p) => s + p.value, 0)).toBe(f('med').value(ctx, 'ramp'))
   })
 
-  it('LVE USED opens as its seven codes and sums to the figure', () => {
+  it('LVE USED opens as its six codes and sums to the figure', () => {
     const parts = figureParts(f('lvecon'), ctx, 'ramp')
-    expect(parts.map(p => p.label)).toEqual(['LL', 'OL', 'OIL', 'OFF', 'CCL', 'PL', 'FCL'])
+    expect(parts.map(p => p.label)).toEqual(['LL', 'OL', 'OIL', 'CCL', 'PL', 'FCL'])
     expect(parts.reduce((s, p) => s + p.value, 0)).toBe(f('lvecon').value(ctx, 'ramp'))
   })
 

@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { clearLanding, earliestDate, eventRange, paintLanding, parseCellId, parseEventCell, rectCells, wireSelect, type Selection } from './select'
+import { clearLanding, earliestDate, eventRange, paintLanding, parseCellId, parseEventCell, rectCells, rowRun, wireRowSelect, wireSelect, type Selection } from './select'
 
 // The gesture controller (wireSelect) needs a real browser (elementFromPoint,
 // pointer capture, layout) and is covered by e2e/leavewar.spec.ts. Here we pin
@@ -467,5 +467,106 @@ describe('wireSelect ignores pointers that are not the gesture\'s own', () => {
     window.dispatchEvent(new PointerEvent('pointerup',
       { bubbles: true, pointerId: 1, pointerType: 'mouse', button: 0 }))
     expect(selections).toHaveLength(1)
+  })
+})
+
+// ROW SELECT (the OIL tracker — owner, 2 Sep 26: "drag to select should also
+// be enabled on the mobile, use the same mechanics as the leave war grid").
+// The same gesture core drives it, so the same on/off conditions hold: a
+// mouse arms on a 4px move, a finger on the 180ms hold or the slow-arm
+// rescue, and a quick flick cedes. What differs is WHAT is hit: only a
+// row's pick target starts a drag (the history strip beside it keeps its
+// sideways scroll), and the selection is the run of rows between anchor and
+// focus in the given order.
+describe('rowRun', () => {
+  const order = ['a', 'b', 'c', 'd']
+  it('is the run between two ids whichever way you drag', () => {
+    expect(rowRun(order, 'b', 'd')).toEqual(['b', 'c', 'd'])
+    expect(rowRun(order, 'd', 'b')).toEqual(['b', 'c', 'd'])
+    expect(rowRun(order, 'c', 'c')).toEqual(['c'])
+  })
+  it('is null off the order', () => {
+    expect(rowRun(order, 'a', 'zz')).toBeNull()
+  })
+})
+
+describe('wireRowSelect', () => {
+  let wrap: HTMLElement, rows: HTMLElement[], picks: HTMLElement[], teardown: () => void, got: string[][]
+  const origEFP = document.elementFromPoint
+  beforeEach(() => {
+    vi.useFakeTimers()
+    got = []
+    wrap = document.createElement('div')
+    rows = []; picks = []
+    for (const id of ['a', 'b', 'c']) {
+      const r = document.createElement('div')
+      r.setAttribute('data-oilrow', id)
+      const p = document.createElement('div')
+      p.setAttribute('data-oilpick', '')
+      const strip = document.createElement('div')
+      strip.className = 'strip'
+      r.appendChild(p); r.appendChild(strip)
+      wrap.appendChild(r); rows.push(r); picks.push(p)
+    }
+    document.body.appendChild(wrap)
+    // jsdom has no layout: the hit-test answers by the y the test chooses —
+    // row a at y<100, b at 100..199, c at 200+.
+    document.elementFromPoint = (_x: number, y: number) => rows[Math.min(2, Math.max(0, Math.floor(y / 100)))]!
+    teardown = wireRowSelect(wrap, { order: () => ['a', 'b', 'c'], enabled: () => true, onSelect: ids => { got.push(ids) } })
+  })
+  afterEach(() => { teardown(); wrap.remove(); document.elementFromPoint = origEFP; vi.useRealTimers() })
+
+  const down = (el: HTMLElement, type: 'mouse' | 'touch', y = 50) => el.dispatchEvent(new PointerEvent('pointerdown',
+    { bubbles: true, pointerId: 1, pointerType: type, clientX: 5, clientY: y, button: 0 }))
+  const move = (type: 'mouse' | 'touch', y: number) => window.dispatchEvent(new PointerEvent('pointermove',
+    { bubbles: true, pointerId: 1, pointerType: type, clientX: 5, clientY: y }))
+  const up = () => window.dispatchEvent(new PointerEvent('pointerup', { bubbles: true, pointerId: 1, button: 0 }))
+  const touchmovePrevented = () => {
+    const ev = new TouchEvent('touchmove', { bubbles: true, cancelable: true })
+    wrap.dispatchEvent(ev)
+    return ev.defaultPrevented
+  }
+
+  it('a mouse drag down the names selects the run and paints it', () => {
+    down(picks[0]!, 'mouse')
+    move('mouse', 250)
+    expect(rows.map(r => r.classList.contains('selrow'))).toEqual([true, true, true])
+    expect(wrap.classList.contains('selecting')).toBe(true)
+    up()
+    expect(got).toEqual([['a', 'b', 'c']])
+    expect(rows.some(r => r.classList.contains('selrow'))).toBe(false)
+  })
+
+  it('a press on the history strip starts nothing — that strip scrolls', () => {
+    down(rows[0]!.querySelector('.strip') as HTMLElement, 'mouse')
+    move('mouse', 250)
+    up()
+    expect(got).toEqual([])
+  })
+
+  it('a finger must hold 180ms before the scroll locks; a quick flick cedes', () => {
+    down(picks[0]!, 'touch')
+    expect(touchmovePrevented()).toBe(false)
+    move('touch', 90)                // 40px, before SLOWARM → a flick → cede
+    vi.advanceTimersByTime(400)
+    expect(touchmovePrevented()).toBe(false)
+    up()
+    expect(got).toEqual([])
+  })
+
+  it('a held finger arms, then a drag selects the run', () => {
+    down(picks[1]!, 'touch', 150)
+    vi.advanceTimersByTime(200)      // past HOLD → armed with no movement
+    expect(touchmovePrevented()).toBe(true)
+    move('touch', 250)
+    up()
+    expect(got).toEqual([['b', 'c']])
+  })
+
+  it('an un-armed tap is left to the row\'s own click', () => {
+    down(picks[2]!, 'mouse', 250)
+    up()
+    expect(got).toEqual([])
+    expect(wrap.classList.contains('selecting')).toBe(false)
   })
 })

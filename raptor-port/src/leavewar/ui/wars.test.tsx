@@ -178,9 +178,12 @@ describe('creating a leave war', () => {
     expect(screen.getByTestId('war-create').hasAttribute('disabled')).toBe(false)
   })
 
-  // A new war does not take the screen. Creating next quarter's should not
-  // yank the admin out of the one they are working in.
-  it('leaves the current war on screen', () => {
+  // Creating a war now SWITCHES to it and lands on its first day (owner,
+  // 2 Sep 26 — "when I create a new period it should snap me to the earliest
+  // date I created, and the period button will show the newly created
+  // period"). This reverses the old "a new war doesn't take the screen" rule:
+  // the owner's flow is create-then-work-in-it.
+  it('switches to the new war and snaps to its first date', () => {
     setRole('admin')
     render(<Topbar />)
     const before = getState().currentId
@@ -188,6 +191,12 @@ describe('creating a leave war', () => {
     fireEvent.change(screen.getByTestId('war-name'), { target: { value: 'JUL 28' } })
     pickSpan('war', '2028-07-01', '2028-07-31')
     fireEvent.click(screen.getByTestId('war-create'))
-    expect(getState().currentId).toBe(before)
+    const made = getState().wars.find(w => w.period.name === 'JUL 28')!
+    expect(getState().currentId).not.toBe(before)
+    expect(getState().currentId).toBe(made.period.id)
+    // The Period button reads the new war, and the grid is asked to jump to
+    // its opening day.
+    expect(getState().period.name).toBe('JUL 28')
+    expect(getState().focusDate).toBe('2028-07-01')
   })
 })

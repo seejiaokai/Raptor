@@ -65,7 +65,7 @@ describe('what counts as late', () => {
     expect(isLateInput({ ...dnif, type: 'Upchit' })).toBe(false)
     /* and leave is still NOT exempt: it is applied for, which is the whole
        point of a deadline */
-    for (const t of ['LL', 'OL', 'OIL', 'OFF', 'CCL', 'EL', 'OD'])
+    for (const t of ['LL', 'OL', 'OIL', 'CCL', 'EL', 'OD'])
       expect(isLateInput({ ...dnif, type: t, mod: '2026-07-12' }), t).toBe(true)
   })
 

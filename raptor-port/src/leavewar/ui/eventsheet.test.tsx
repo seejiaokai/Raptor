@@ -201,9 +201,9 @@ describe('the type library', () => {
     fireEvent.click(screen.getByTestId('event-edit-types'))
     expect(screen.getByTestId('event-types-sheet')).toBeTruthy()
 
-    // reclassify SC (index 2) from work to off
-    fireEvent.click(screen.getByTestId('evtype-kind-2-off'))
-    expect(getState().eventDefs[2]!.kind).toBe('off')
+    // reclassify SC (index 3) from work to off
+    fireEvent.click(screen.getByTestId('evtype-kind-3-off'))
+    expect(getState().eventDefs[3]!.kind).toBe('off')
 
     // add a new type
     fireEvent.change(screen.getByTestId('evtype-add-name'), { target: { value: 'Standby' } })
@@ -211,10 +211,10 @@ describe('the type library', () => {
     fireEvent.click(screen.getByTestId('evtype-add-btn'))
     expect(getState().eventDefs.some(d => d.name === 'Standby' && d.kind === 'nolv')).toBe(true)
 
-    // reset restores the three seeded types
+    // reset restores the four seeded types
     fireEvent.click(screen.getByTestId('types-reset'))
-    expect(getState().eventDefs).toHaveLength(3)
-    expect(getState().eventDefs[2]!.kind).toBe('work')
+    expect(getState().eventDefs).toHaveLength(4)
+    expect(getState().eventDefs[3]!.kind).toBe('work')
   })
 
   it('deleting a middle type does not leave a stale name on the survivor', () => {
@@ -224,10 +224,10 @@ describe('the type library', () => {
     // WRONG type. Keying by name fixes it.
     openEvent(0, '2026-01-05')
     fireEvent.click(screen.getByTestId('event-edit-types'))
-    // seed: [PH, No Leave, SC]. Delete the middle one.
+    // seed: [PH, Off day, No Leave, SC]. Delete the second one.
     fireEvent.click(screen.getByTestId('evtype-del-1'))
-    expect(getState().eventDefs.map(d => d.name)).toEqual(['PH', 'SC'])
-    // The input now at position 1 shows the survivor SC, not the stale "No Leave".
-    expect((screen.getByTestId('evtype-name-1') as HTMLInputElement).value).toBe('SC')
+    expect(getState().eventDefs.map(d => d.name)).toEqual(['PH', 'No Leave', 'SC'])
+    // The input now at position 1 shows the survivor No Leave, not the stale "Off day".
+    expect((screen.getByTestId('evtype-name-1') as HTMLInputElement).value).toBe('No Leave')
   })
 })

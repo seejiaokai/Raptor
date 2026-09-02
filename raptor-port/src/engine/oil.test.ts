@@ -11,7 +11,7 @@
 // shift-window rule (AM/PM halves, midpoint, night clause) is deleted.
 
 import { afterEach, describe, expect, it } from 'vitest'
-import { dayOilCredits, dayOilSpans, envMin, uniformOil, inputOilAmt } from './oil'
+import { dayOilCredits, dayOilSpans, dayOilWork, envMin, uniformOil, inputOilAmt, oilWorkWhy } from './oil'
 import { VCONF } from './rules'
 import { PEOPLE } from './people'
 
@@ -52,6 +52,38 @@ describe('envMin / uniformOil / inputOilAmt — the shared arithmetic', () => {
     expect(inputOilAmt(false, 20 * 60, 2 * 60 + 1)).toBe(1)         // overnight rolls, 6h01
     expect(inputOilAmt(false, null, 14 * 60)).toBeNull()            // unreadable asks nothing
     expect(inputOilAmt(false, 8 * 60, 8 * 60)).toBeNull()           // zero length measures nothing
+  })
+})
+
+// The KIND of each span is what the OIL tracker shows as the reason (owner,
+// 2 Sep 26: "SIM, FLT, Duty"). A seat is FLT, a sim row SIM, everything on
+// the ground — duty rows, Ground and Common Programme — Duty.
+describe('dayOilWork — each span carries its kind', () => {
+  it('tags a flying seat FLT, a sim SIM, a duty row Duty', () => {
+    const d = day(
+      [flyWave({ cs: 'VL1', msn: 'X', to: '0900', ld: '1000', aircraft: [main('plasma')] })],
+      [duty('rocky', '0800', '1400')],
+      { sims: { amt: [{ label: 'S1', str: '1300', end: '1500', p: 'divot' }], oft: [] } },
+    )
+    const w = dayOilWork(d)
+    expect(w.plasma.map(x => x.src)).toEqual(['FLT'])
+    expect(w.rocky.map(x => x.src)).toEqual(['Duty'])
+    expect(w.divot.map(x => x.src)).toEqual(['SIM'])
+    // The bare-span view is the same work without the tags.
+    expect(dayOilSpans(d).rocky).toEqual([[480, 840]])
+  })
+  it('the Ground and Common Programme are Duty, ALL pucks included', () => {
+    const d = day([], [], {
+      ground: [{ prog: 'G', str: '0800', end: '1000', who: 'plasma' }],
+      allhands: [{ prog: 'Brief', str: '1000', end: '1100', who: 'all' }],
+    })
+    const w = dayOilWork(d, { expandAll: () => ['rocky'] })
+    expect(w.plasma.map(x => x.src)).toEqual(['Duty'])
+    expect(w.rocky.map(x => x.src)).toEqual(['Duty'])
+  })
+  it('oilWorkWhy joins the distinct kinds in first-seen order', () => {
+    expect(oilWorkWhy([{ s: 0, e: 1, src: 'FLT' }, { s: 1, e: 2, src: 'SIM' }, { s: 2, e: 3, src: 'FLT' }])).toBe('FLT + SIM')
+    expect(oilWorkWhy([{ s: 0, e: 1, src: 'Duty' }])).toBe('Duty')
   })
 })
 
