@@ -10,18 +10,24 @@
  * adds Quals-page columns ("take note when new qualifications are added this
  * list will also grow, to be selected").
  *
- * TWO ORDERS, deliberately (owner's choice when asked): `defs` is the
- * top-to-bottom DISPLAY order the admin drags into place, and `priority` is a
- * separate list deciding WHICH group claims someone who matches several. The
- * owner wanted them apart — how the grid reads and who-wins are different
- * questions, and tying them would make reordering the page silently re-home
- * people.
+ * TWO ORDERS: `defs` is the top-to-bottom DISPLAY order the admin drags into
+ * place on the grid, and `priority` decides WHICH group claims someone who fits
+ * several. Since 3 Sep 26 the priority FOLLOWS the display order by default
+ * (owner: "the priority order should also change by default in accordance with
+ * the category order") — the group higher on the page wins — and only a hand
+ * edit in ⚙ detaches it (the store's `groupPriorityCustom`).
  *
  * "A person shows up ONCE" is not a rule bolted on top: `assignGroup` walks the
- * priority order and takes the first match, exactly the shape `groupOf` already
- * had. So putting a qualification above a CAT group is all it takes to get the
- * owner's "if theres a cat c column, but there is also a SC D column. They
- * should always show up in the qualifications column instead of CAT".
+ * priority order and takes the first match. So putting a qualification above a
+ * CAT group is all it takes to get the owner's "if theres a cat c column, but
+ * there is also a SC D column. They should always show up in the qualifications
+ * column instead of CAT" — and, since 3 Sep 26, the SAME rule runs among the
+ * standard categories, which are now FIT checks rather than an exclusive
+ * partition (`fitsCategory`): an SXO IP fits SXO and IP, so IP dragged above
+ * SXO draws them under IP (owner: "whatever that is at the top priority will
+ * supersede and put those people who are that cat or qualification in that
+ * order"). The default order still leads with SXO, so an untouched page is
+ * byte-identical to the old exclusive grouping.
  *
  * Manning counts do NOT read any of this (`countsFor` never asks for a group) —
  * confirmed before building, and the owner confirmed he wants it that way. This
@@ -29,7 +35,7 @@
  */
 
 import { heldQuals } from './availability'
-import { groupOf, GROUP_LABEL, GROUP_ORDER, type Group, type Person } from './people'
+import { fitsCategory, GROUP_LABEL, GROUP_ORDER, type Group, type Person } from './people'
 import type { QualDef } from './requirements'
 
 /** A group is either one of the seven built-ins, a qualification, or the special
@@ -61,16 +67,20 @@ export const OTHER_LABEL = 'Everyone else'
 /** The default list: the seven built-ins, in the owner's own 18 Aug order. */
 export const DEFAULT_GROUPS: GroupDef[] = GROUP_ORDER.map(g => ({ id: g, kind: 'cat' as const, g }))
 
+/** Qualifications that already ARE a group by another name, so they are never
+ *  offered as a qualification group too (owner, 3 Sep 26 — "remove that extra
+ *  SXO, since its the same"): `sxo` is the SXO category, and `san` is the SANS
+ *  group the Show SANS switch injects. A stored one is pruned on load as well,
+ *  so two headings can never fight over the same people. */
+const BUILT_IN_QUALS = new Set(['sxo', 'san'])
+
 /** Every group an admin can choose from: the seven built-ins plus one per
  *  qualification in the live catalogue. Built fresh from the catalogue, so a
  *  new Quals column appears here the moment anyone is ticked for it. */
 export function offerableGroups(catalog: readonly QualDef[]): GroupDef[] {
   return [
     ...DEFAULT_GROUPS,
-    // SANS is surfaced as its own group by the Show SANS switch (`showSans` →
-    // SANS_GROUP), so the `san` qualification is NOT offered as an ordinary group
-    // too — two "SANS" chips would only confuse (owner, 3 Sep 26).
-    ...catalog.filter(q => q.k !== 'san').map(q => ({ id: qualGroupId(q.k), kind: 'qual' as const, k: q.k })),
+    ...catalog.filter(q => !BUILT_IN_QUALS.has(q.k)).map(q => ({ id: qualGroupId(q.k), kind: 'qual' as const, k: q.k })),
   ]
 }
 
@@ -84,21 +94,22 @@ export function groupLabel(d: GroupDef, catalog: readonly QualDef[]): string {
 }
 
 /** Whether a person belongs in this group AT ALL — before priority decides who
- *  claims them. A built-in asks the original `groupOf`; a qualification asks
- *  whether they hold the key (`heldQuals` — the same predicate the counter
- *  filters use, so "qualified" means one thing in this app). */
+ *  claims them. A built-in asks `fitsCategory` (overlapping on purpose — an SXO
+ *  IP fits both); a qualification asks whether they hold the key (`heldQuals` —
+ *  the same predicate the counter filters use, so "qualified" means one thing
+ *  in this app). */
 export function matchesGroup(p: Person, d: GroupDef): boolean {
   if (d.kind === 'sans') return !!p.san
-  return d.kind === 'cat' ? groupOf(p) === d.g : heldQuals(p).has(d.k)
+  return d.kind === 'cat' ? fitsCategory(p, d.g) : heldQuals(p).has(d.k)
 }
 
 /**
  * The ONE group a person is drawn in. Walks `priority` (ids, most-important
  * first), returns the first group they match; `OTHER_ID` when nothing does.
  *
- * With the default list this returns exactly what `groupOf` returned, because
- * the built-ins are mutually exclusive and cover everyone — so an untouched
- * squadron sees no change whatsoever.
+ * With the default list this returns exactly what `groupOf` returns — `groupOf`
+ * IS this walk over `GROUP_ORDER` — so an untouched squadron sees no change
+ * whatsoever.
  */
 export function assignGroup(p: Person, defs: readonly GroupDef[], priority: readonly string[]): string {
   for (const id of priority) {
@@ -135,9 +146,10 @@ export function orderedGroupIds(defs: readonly GroupDef[], order: readonly strin
  */
 export function pruneGroups(defs: readonly GroupDef[], catalog: readonly QualDef[]): GroupDef[] {
   const keys = new Set(catalog.map(q => q.k))
-  // A qualification group survives only while its column still exists; built-ins
-  // and the special SANS group do not depend on the catalogue.
-  return defs.filter(d => d.kind !== 'qual' || keys.has(d.k))
+  // A qualification group survives only while its column still exists (and is
+  // not one a built-in group already covers); built-ins and the special SANS
+  // group do not depend on the catalogue.
+  return defs.filter(d => d.kind !== 'qual' || (keys.has(d.k) && !BUILT_IN_QUALS.has(d.k)))
 }
 
 /** Read an unknown value from storage as a group list, keeping only entries

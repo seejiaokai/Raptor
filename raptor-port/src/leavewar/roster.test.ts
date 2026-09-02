@@ -618,6 +618,26 @@ describe('the roster group editor', () => {
     expect(groupIdOf(opsC()), 'custom who-wins ignores the page move').toBe('OPSP')
   })
 
+  /* THE STANDARD CATEGORIES FOLLOW THE SAME RULE (owner, 3 Sep 26 — "whatever
+     that is at the top priority will supersede and put those people who are that
+     cat or qualification in that order"). sxo_1 is an SXO IP; ins_p is IP only. */
+  it('dragging IP above SXO on the grid draws the SXO IP under IP; dragging back restores', () => {
+    const home = (id: string) => groupIdOf(getState().people.find(p => p.id === id)!)
+    expect(home('sxo_1')).toBe('SXO')
+    expect(home('ins_p')).toBe('IP')
+    moveGroupTo('IP', 'SXO')                          // IP block lifted above SXO
+    expect(home('sxo_1')).toBe('IP')                  // both under IP now
+    expect(home('ins_p')).toBe('IP')
+    expect(displayRoster().filter(p => p.id === 'sxo_1')).toHaveLength(1)
+    // Auto-sort ranks them AMONG the IPs rather than carrying the old SXO slot
+    autoSortRoster()
+    const ids = displayRoster().map(p => p.id)
+    expect(ids.indexOf('ins_p')).toBeLessThan(ids.indexOf('sxo_1'))   // same rank, callsign order
+    moveGroupTo('SXO', 'IP')                          // SXO back on top
+    expect(home('sxo_1')).toBe('SXO')
+    expect(home('ins_p')).toBe('IP')
+  })
+
   it('Match the page order drops the custom who-wins and follows the page again', () => {
     const qid = qualGroupId('scDay')
     const opsC = () => getState().people.find(p => p.id === 'ops_c')!

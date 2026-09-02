@@ -1151,13 +1151,13 @@ export function setPeople(people: Person[]): void {
  * them in) instead of stranding a row under a duplicated heading.
  */
 export function displayRoster(): Person[] {
-  const order = state.rosterOrder.length ? state.rosterOrder : autoOrder(state.people)
+  const order = state.rosterOrder.length ? state.rosterOrder : liveAutoOrder()
   const pos = new Map(order.map((id, i) => [id, i]))
   const out: Person[] = []
-  /* The groups the ADMIN configured, in their display order, and the separate
-     priority order that decides who claims a person matching several (owner,
-     28 Aug 26). With the default list this is byte-identical to the old
-     GROUP_ORDER walk — the built-ins are mutually exclusive and cover everyone. */
+  /* The groups the ADMIN configured, in their display order, and the priority
+     order that decides who claims a person fitting several (owner, 28 Aug 26;
+     following the page by default since 3 Sep 26). With the default list this is
+     byte-identical to the old GROUP_ORDER walk — `groupOf` is that same walk. */
   const defs = groupsInOrder()
   const priority = groupPriorityIds()
   const home = new Map(state.people.map(p => [p.id, assignGroup(p, defs, priority)]))
@@ -1359,9 +1359,18 @@ export function setRosterOrder(order: string[]): void {
   notify()
 }
 
+/** The categorised default order against the ADMIN's live grouping — each group
+ *  in page order, ranked within. Same shape as the engine's `autoOrder`, but
+ *  bucketed by `groupIdOf` rather than the fixed seven, so a person the page
+ *  order re-homes (an SXO IP under a lifted IP block) ranks among their new
+ *  block instead of carrying their old block's position (owner, 3 Sep 26). */
+function liveAutoOrder(): string[] {
+  return autoOrder(state.people, groupIdOf, groupsInOrder().map(d => d.id))
+}
+
 /** Re-group everyone into the categorised order — the Auto-sort button. */
 export function autoSortRoster(): void {
-  setRosterOrder(autoOrder(state.people))
+  setRosterOrder(liveAutoOrder())
 }
 
 /**

@@ -625,9 +625,18 @@ subscribers.
   page wins a tie, so dragging a category on the grid reorders who-wins with it
   (`groupPriorityIds` returns the display order until `groupPriorityCustom`). A hand
   edit of the ⚙ "Who wins" list switches to a CUSTOM order, independent of the page;
-  "Match the page order" (`clearGroupPriority`) clears it. Standard categories are
-  mutually exclusive, so a page-reorder only ever re-homes anyone once qualification
-  groups are added — where "higher wins" is the intuitive rule.
+  "Match the page order" (`clearGroupPriority`) clears it. **The standard categories
+  OVERLAP and follow the same rule** (owner, 3 Sep 26 — "whatever that is at the top
+  priority will supersede and put those people who are that cat or qualification in
+  that order"): a category is a FIT check (`people.ts fitsCategory`), so an SXO IP
+  fits SXO and IP, and IP dragged above SXO draws them under IP. `groupOf` is the
+  first fit down `GROUP_ORDER`, so the untouched page is unchanged. Two fits stay
+  exclusive by design: ground crew fit only Personnel, and OCU fits OCU but never
+  OPS P / OPS W (else the default order would pull trainees into OPS P). The `sxo`
+  and `san` qualifications are never offered as qualification groups (they ARE the
+  SXO category / the SANS group) and a stored one is pruned. Auto-sort buckets by
+  the live grouping (`liveAutoOrder`), so a re-homed person ranks among their new
+  block.
 - **Show SANS = SANS as their own counted group at the foot** (owner, 3 Sep 26).
   The switch injects a SANS group (`SANS_GROUP`, auto-managed, never stored) LAST on
   the page and FIRST in who-wins, so shown SANS draw together at the foot rather than
