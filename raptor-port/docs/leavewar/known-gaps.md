@@ -215,6 +215,18 @@ Balances are computed and on screen. Two parts of §Counters are not built:
   credit is in the archive; its earned days are HAND-TYPED FO/HO with a note,
   because an owned FO/HO the schedule does not back is swept the moment the
   wires run.
+  **FOURTH CUT (owner, 2 Sep 26, from the shipped phone toolbar):** the tools
+  row is one line now — `From first entry`, a calendar button reading RANGE
+  (`.oil-cal`, the old "Pick dates"), then the `?` and an icon-only ⚙ (its
+  "Settings" word dropped) pushed right — with the window label (`1 Jan 26 –
+  today`) on its own thin line below, so the grid starts higher. The "Last N
+  months" chip is GONE from the everyday toolbar; it renders only when an
+  admin has made a months window the default in Settings
+  (`oilPolicy.historyMonths !== null`), which the settings default and its
+  test still exercise. The `?` legend was cut to a few lines.
+  Also from the shipped grid: the credit bar is headed `OIL credits · <names>`
+  (was `Credit …`) and a tap anywhere outside it cancels the pick with no save
+  — the Deselect button is gone.
 - **An admin can SET the LVE BAL (2 Sep 26, owner ask — "manually input and
   change LVE BAL … every time a LL or OL is taken it deducts from it").** A
   `Set` beside the Cinch sheet's LVE BAL row; `store.ts:setBalance` moves

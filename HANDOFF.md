@@ -596,6 +596,12 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
   boot-only demo OIL story (`state/demoworld.ts DEMO_OIL` via
   `store.ts:installDemoOil`, before the re-key) so the preview has every
   shape to look at. `known-gaps.md` §RESOLVED 2 Sep carries the rules.**
+  **FOURTH CUT (owner, 2 Sep 26, from the phone toolbar): one tools row —
+  `From first entry`, a calendar button reading RANGE (`.oil-cal`, ex "Pick
+  dates"), the `?`, and an icon-only ⚙ pushed right; the window label on its
+  own line below so the grid starts higher. The "Last N months" chip renders
+  only when a months window is the Settings default (`historyMonths !== null`);
+  the `?` legend was trimmed.**
   The per-person page is gone (Cinch OIL BAL
   → scroll to the row). A tap on a name picks it; a hold-then-drag (finger)
   or drag (mouse) down the names picks a run via **`select.ts:wireRowSelect`

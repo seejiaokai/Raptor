@@ -19,8 +19,22 @@
     color: var(--ink-3);
     font-weight: 600;
   }
-  .oil-tools .oil-window { font-size: 11px; }
+  /* The window label sits on its own thin line below the controls, so the
+     chips, the calendar and the ?/⚙ buttons share one row (owner, 2 Sep 26). */
+  .oil-tools .oil-window { font-size: 11px; flex-basis: 100%; margin-top: 1px; }
   .oil-tools .oil-right { margin-left: auto; display: inline-flex; gap: 6px; }
+  /* "Pick dates" is now a calendar with RANGE under it. */
+  .oil-tools .oil-cal {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    line-height: 1;
+    padding: 3px 11px;
+  }
+  .oil-tools .oil-cal .ci { font-size: 15px; }
+  .oil-tools .oil-cal .cl { font-size: 9px; letter-spacing: .08em; text-transform: uppercase; margin-top: 2px; }
+  /* The settings gear is icon-only now — keep it a comfortable tap target. */
+  .oil-tools .oil-gear { padding: 6px 9px; font-size: 14px; }
   .oil-pickrow {
     flex-direction: column;
     align-items: stretch;

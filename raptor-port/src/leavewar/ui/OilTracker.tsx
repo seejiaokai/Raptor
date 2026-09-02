@@ -688,17 +688,23 @@ export function OilTracker({ person, focus, onClose, onGranted }: {
         <button className={`tchip${mode === 'first' ? ' on' : ''}`} data-testid="oil-range-first" onClick={() => { setMode('first'); setPicking(false) }}>
           From first entry
         </button>
-        <button className={`tchip${mode === 'months' ? ' on' : ''}`} data-testid="oil-range-months" onClick={() => { setMode('months'); setPicking(false) }}>
-          Last {months} months
+        {/* The "Last N months" chip only shows when an admin has made a
+           months window the default in Settings; the everyday toolbar is just
+           "From first entry" and the calendar (owner, 2 Sep 26). */}
+        {oilPolicy.historyMonths !== null && (
+          <button className={`tchip${mode === 'months' ? ' on' : ''}`} data-testid="oil-range-months" onClick={() => { setMode('months'); setPicking(false) }}>
+            Last {months} months
+          </button>
+        )}
+        <button className={`tchip oil-cal${mode === 'pick' ? ' on' : ''}`} data-testid="oil-range-pick" onClick={() => { setMode('pick'); setPicking(true) }} title="Pick a date range" aria-label="Pick a date range">
+          <span className="ci" aria-hidden="true">📅</span>
+          <span className="cl">Range</span>
         </button>
-        <button className={`tchip${mode === 'pick' ? ' on' : ''}`} data-testid="oil-range-pick" onClick={() => { setMode('pick'); setPicking(true) }}>
-          Pick dates
-        </button>
-        <span className="note oil-window" data-testid="oil-window">{win.label}</span>
         <span className="oil-right">
-          <button className={`tchip${legend ? ' on' : ''}`} data-testid="oil-legend" aria-expanded={legend} onClick={() => setLegend(l => !l)} title="What the boxes mean">?</button>
-          {admin && <button className="tchip" data-testid="oil-settings" onClick={() => setView('settings')}>⚙ Settings</button>}
+          <button className={`tchip${legend ? ' on' : ''}`} data-testid="oil-legend" aria-expanded={legend} onClick={() => setLegend(l => !l)} title="What the boxes mean" aria-label="What the boxes mean">?</button>
+          {admin && <button className="tchip oil-gear" data-testid="oil-settings" onClick={() => setView('settings')} title="Settings" aria-label="Settings">⚙</button>}
         </span>
+        <span className="note oil-window" data-testid="oil-window">{win.label}</span>
       </div>
       {mode === 'pick' && picking && (
         <div className="bidsheet-row oil-pickrow">
@@ -708,9 +714,8 @@ export function OilTracker({ person, focus, onClose, onGranted }: {
       )}
       {legend && (
         <div className="oil-legendbox note" data-testid="oil-legend-text">
-          One box per credit: what was given top-left, who gave it top-right (<b>Auto</b> = earned by working a weekend or PH — FLT, SIM or Duty), the reason under it,
-          each day taken from it on its own red line, and what is left bottom-right. The oldest credit is used first. A used-up or expired credit folds into the <b>Archive</b> column beside BAL — tap it to show them all (struck through = used up; dimmed = expired). A red box = a day taken with nothing left to draw from.
-          {admin ? ' Tap a name to pick it, hold and drag down the names to pick several, then credit them all at once below. Tap a credit you gave to edit it.' : ''}
+          One box = one credit: amount and date, who gave it (<b>Auto</b> = earned on a weekend or PH), and what's left, bottom-right. Days taken show as red lines — the oldest credit is used first. A red box is a day taken with none left. Used-up and expired credits fold into the <b>Archive</b> column by BAL — tap it to see them.
+          {admin ? ' Tap a name (or drag down several) to credit them below; tap a credit you gave to edit it.' : ''}
         </div>
       )}
       <div ref={wrapRef} className="oil-wrap" data-testid="oil-list">
