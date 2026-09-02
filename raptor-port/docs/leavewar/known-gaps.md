@@ -228,7 +228,8 @@ Balances are computed and on screen. Two parts of §Counters are not built:
   test still exercise. The `?` legend was cut to a few lines.
   Also from the shipped grid: the credit bar is headed `OIL credits · <names>`
   (was `Credit …`) and a tap anywhere outside it cancels the pick with no save
-  — the Deselect button is gone.
+  — the Deselect button is gone. The RANGE date picker folds away the same way
+  (a tap outside it closes it, not just its Done button — owner, 2 Sep 26).
   **FIFTH CUT (owner, 2 Sep 26 — "can archive boxes have a dark shade of
   grey"):** the archived boxes (used-up / expired) now carry a dark-grey fill
   (`#21262d`) so they read apart from the flat, unfilled live boxes. The old

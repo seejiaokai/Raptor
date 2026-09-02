@@ -173,6 +173,16 @@ describe('the credit boxes', () => {
     expect(screen.getByTestId('oil-row-slammed').className).toContain('idle')
   })
 
+  it('a tap outside the open date picker folds it away (like the credit bar)', () => {
+    openTracker()
+    fireEvent.click(screen.getByTestId('oil-range-pick'))
+    expect(screen.queryByTestId('oilrange-picker')).not.toBeNull()
+    // A tap on the window label — outside the picker and the RANGE button —
+    // closes it, no Done tap needed.
+    fireEvent.pointerDown(screen.getByTestId('oil-window'))
+    expect(screen.queryByTestId('oilrange-picker')).toBeNull()
+  })
+
   it('a grant box shows who gave it; an admin taps it to edit (given by too) and deletes with two taps', () => {
     setRole('admin')
     openTracker()

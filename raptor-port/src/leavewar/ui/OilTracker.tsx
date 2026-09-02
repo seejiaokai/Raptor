@@ -359,6 +359,23 @@ export function OilTracker({ person, focus, onClose, onGranted }: {
     return () => document.removeEventListener('pointerdown', onDown, true)
   }, [hasSel])
 
+  // A tap outside the open RANGE date picker folds it away, the same way the
+  // credit bar closes on an outside tap (owner, 2 Sep 26). Taps inside the
+  // picker or on the RANGE button that opens it are left alone. Tapping days
+  // updates the window live, so closing this way is the same as "Done" — there
+  // is nothing to discard.
+  const pickerOpen = mode === 'pick' && picking
+  useEffect(() => {
+    if (!pickerOpen) return
+    const onDown = (e: PointerEvent) => {
+      const t = e.target as HTMLElement | null
+      if (t?.closest('.oil-pickrow') || t?.closest('[data-testid="oil-range-pick"]')) return
+      setPicking(false)
+    }
+    document.addEventListener('pointerdown', onDown, true)
+    return () => document.removeEventListener('pointerdown', onDown, true)
+  }, [pickerOpen])
+
   const toggle = (id: string) => setSel(prev => { const n = new Set(prev); if (n.has(id)) n.delete(id); else n.add(id); return n })
   const callsignOf = (id: string) => people.find(p => p.id === id)?.callsign ?? id
   const namesOf = (ids: string[]) => {
