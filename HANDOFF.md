@@ -584,8 +584,8 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
   (a sticky year header row; every row's boxes for a year start at the same
   x), one BOX per credit reading as a small ledger — amount · date ·
   given-by top (`AUTO` for an earned day), reason under, the FIFO takes in
-  red, `n left` bottom-right; used-up = struck + dimmed with the takes
-  legible; expired dimmed; uncovered takes and corrections as their own red
+  red, `n left` bottom-right; used-up / expired = struck on a dark-grey fill
+  (see the FIFTH CUT note), the takes legible; uncovered takes and corrections as their own red
   boxes; idle people a compact row. **THIRD CUT the same evening (owner,
   from the shipped grid): each take on its OWN ROW with `n left` pinned
   bottom-right (wrapping under the takes on a narrow box); the CAT chip UNDER
@@ -602,6 +602,13 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
   own line below so the grid starts higher. The "Last N months" chip renders
   only when a months window is the Settings default (`historyMonths !== null`);
   the `?` legend was trimmed.**
+  **FIFTH CUT (owner, 2 Sep 26 — "dark shade of grey" for archive boxes):
+  archived boxes (`.oil-e.used` / `.oil-e.expired`) get a dark-grey fill
+  (`#21262d`) and the whole-box `opacity` fade is dropped — the fill + the
+  existing strike carry "spent". The fade had put the red takes (the audit
+  trail) below WCAG on the expired boxes; with no fade all box text is lighter
+  than the fill, so the shade is safe to darken (an `/impeccable` audit vetted
+  it: takes 8.4:1). CSS-only, no test/DOM change.**
   The per-person page is gone (Cinch OIL BAL
   → scroll to the row). A tap on a name picks it; a hold-then-drag (finger)
   or drag (mouse) down the names picks a run via **`select.ts:wireRowSelect`

@@ -286,14 +286,21 @@
   .oil-e .l3 .left { margin-left: auto; font-size: 13px; font-weight: 800; color: var(--ink); white-space: nowrap; font-variant-numeric: tabular-nums; }
   .oil-e .l3 .left.zero { color: #F2C879; }
   .oil-e .l3 .left.exp { font-size: 11px; }
-  /* Used up: the given and the reason strike, the box dims — the takes stay
-     legible (owner: "eventually it cancels out entirely"; critique: the
-     takes are the audit trail). */
-  .oil-e.used { opacity: .7; }
+  /* Archived (used up / expired): a recessed dark-grey card with the given,
+     date and reason struck through. The fill + the strike carry "spent" — we
+     do NOT fade the whole box. A whole-box opacity (was .7 used / .55 expired)
+     dimmed the box AND its text together, which dragged the red takes (the
+     audit trail) below legible contrast on the expired boxes; the takes must
+     stay readable (owner: "eventually it cancels out entirely" — but the takes
+     are the record of what was drawn, so they stay). Every text colour on the
+     box is lighter than this fill, so a DARKER grey only raises contrast — the
+     shade is safe to tune either way. WCAG on #21262d: takes 8.4:1, "n left"
+     9.6:1, the struck given/date still 5.0:1. */
+  .oil-e.used,
+  .oil-e.expired { background: #21262d; }
   .oil-e.used .l1 .amt,
   .oil-e.used .l1 .dt,
   .oil-e.used .l2 { text-decoration: line-through; color: var(--ink-3); }
-  .oil-e.expired { opacity: .55; }
   .oil-e.grant { outline: 1px dashed rgba(59, 198, 232, .35); outline-offset: -3px; border-radius: 6px; cursor: pointer; }
   .oil-e.grant:hover { outline-color: rgba(59, 198, 232, .7); }
   .oil-e.editing { outline: 2px solid var(--accent); outline-offset: -3px; background: rgba(59, 198, 232, .08); }

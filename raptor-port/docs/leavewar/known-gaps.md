@@ -180,8 +180,10 @@ Balances are computed and on screen. Two parts of §Counters are not built:
   written to the FO/HO cell as `BidRecord.note` — `ingestDutyCredit(…, why)`;
   an admin's own note on a hand-typed FO/HO via `setCellNote`), the days
   TAKEN from it in red (its FIFO draws), and what is left bottom-right.
-  Used up → amount and reason struck, box dimmed, takes still legible;
-  expired → dimmed. A day taken with nothing left to draw from is its own red
+  Used up → amount, date and reason struck; expired → the same, on a green
+  amount. Both sit on a dark-grey fill (`#21262d`, 2 Sep 26 — see the FIFTH
+  CUT note) that reads them apart from the flat live boxes, with the takes and
+  `n left` fully legible. A day taken with nothing left to draw from is its own red
   box; an admin's correction (negative grant) is its own editable box. The
   per-person page is GONE: the Cinch's OIL BAL tap scrolls to that row. An
   admin taps a name to pick it, or hold-then-drags (finger) / drags (mouse)
@@ -227,6 +229,16 @@ Balances are computed and on screen. Two parts of §Counters are not built:
   Also from the shipped grid: the credit bar is headed `OIL credits · <names>`
   (was `Credit …`) and a tap anywhere outside it cancels the pick with no save
   — the Deselect button is gone.
+  **FIFTH CUT (owner, 2 Sep 26 — "can archive boxes have a dark shade of
+  grey"):** the archived boxes (used-up / expired) now carry a dark-grey fill
+  (`#21262d`) so they read apart from the flat, unfilled live boxes. The old
+  whole-box `opacity` fade (was `.7` used / `.55` expired) is GONE — the fill
+  plus the existing strike-through carry "spent", and the fade was quietly
+  dragging the red takes (the audit trail) below legible contrast on the
+  expired boxes (WCAG 3.8:1). With no fade, every text on the box is lighter
+  than the fill, so a darker grey only raises contrast — the shade is safe to
+  tune (an `/impeccable` audit vetted it). If the owner ever wants archived
+  boxes faded as well as grey, a gentle `opacity: .9` is the dial.
 - **An admin can SET the LVE BAL (2 Sep 26, owner ask — "manually input and
   change LVE BAL … every time a LL or OL is taken it deducts from it").** A
   `Set` beside the Cinch sheet's LVE BAL row; `store.ts:setBalance` moves
