@@ -610,6 +610,29 @@ subscribers.
   merged and verified on the deployed page as always (§How to work here); just
   do it without the watch subscription. If the owner ever asks you to babysit a
   specific PR, that explicit ask overrides this for that PR only.
+- **Leave War admin controls live in ONE ⚙ Settings; rearranging is on the grid**
+  (owner, 3 Sep 26). The matrix's top row carries only Manning · ⚙ · OIL tracker.
+  ⚙ opens `SettingsSheet` holding CONFIG — + Counter, +/− Event row, Show SANS,
+  Reset counters — then the roster GROUPS editor folded in (the old `⚙ Groups`
+  corner button is gone, the word "Groups" dropped; `GroupSheet.tsx` deleted).
+  REARRANGING the roster is a hands-on-the-grid action, started from the ⠿ toggle
+  in the grid corner above the callsigns: person rows AND category headings drag on
+  the grid, with a slim on-grid bar (`.lw-rearrange-bar`) for Auto-sort and Done.
+  Do not move config onto the grid, or rearrange into a sheet (a Sheet's scrim
+  swallows the grid taps the drag needs).
+- **Who-wins follows the page order by default** (owner, 3 Sep 26 — a deliberate
+  reversal of the 28 Aug "two fully separate orders" rule). The group higher on the
+  page wins a tie, so dragging a category on the grid reorders who-wins with it
+  (`groupPriorityIds` returns the display order until `groupPriorityCustom`). A hand
+  edit of the ⚙ "Who wins" list switches to a CUSTOM order, independent of the page;
+  "Match the page order" (`clearGroupPriority`) clears it. Standard categories are
+  mutually exclusive, so a page-reorder only ever re-homes anyone once qualification
+  groups are added — where "higher wins" is the intuitive rule.
+- **Show SANS = SANS as their own counted group at the foot** (owner, 3 Sep 26).
+  The switch injects a SANS group (`SANS_GROUP`, auto-managed, never stored) LAST on
+  the page and FIRST in who-wins, so shown SANS draw together at the foot rather than
+  scattering into their CATs; they still count in manning by seat+band like any
+  aircrew (a group never moves a count — the `groups.ts` invariant holds).
 - **The `npm run perf` board DOM ceiling of 1150 is settled** (owner,
   28 Aug 26 — "the scheduler board I know it's heavy, u raised the limit,
   it's ok"). Raised 960 → 1150 in PR #333 (the board sits at ~1051 nodes;

@@ -17,6 +17,7 @@ import {
   groupLabel,
   OTHER_ID,
   OTHER_LABEL,
+  SANS_GROUP_ID,
   inSquadron,
   isBiddable,
   isDuty,
@@ -35,7 +36,7 @@ import {
   type Group,
   type Person,
 } from '../engine'
-import { figureCtxOf, setBalance, groupsInOrder, groupPriorityIds, lwHistEpoch, moveGroupTo, moveGroupPriorityTo, addEventRow, autoSortRoster, DEFAULT_EVENT_ROWS, displayRoster, eventRowUsed, getState, MAX_EVENT_ROWS, moveCells, movableCells, moveManningRowTo, moveProblem, moveEvent, moveEventProblem, moveRosterRow, orderedManningIds, removeEventRow, resetManningRules, setPostOut, setShowSans, type MoveResult, type EventMoveResult } from '../state/store'
+import { figureCtxOf, setBalance, groupsInOrder, groupPriorityIds, lwHistEpoch, moveGroupTo, moveGroupPriorityTo, autoSortRoster, displayRoster, getState, moveCells, movableCells, moveManningRowTo, moveProblem, moveEvent, moveEventProblem, moveRosterRow, orderedManningIds, resetManningRules, setPostOut, type MoveResult, type EventMoveResult } from '../state/store'
 import { BidPicker, DecisionSheet, PostOutSheet, RaptorSheet } from './BidPicker'
 import { CounterSheet, FigureBreakdownSheet, PersonFiguresSheet } from './CounterSheet'
 import { PersonSheet } from './PersonSheet'
@@ -47,7 +48,7 @@ import { EventRows } from './EventRows'
 import { EventSheet } from './EventSheet'
 import { monthInView } from './monthview'
 import { wireSelect, wireMove, daysBetween, paintLanding, clearLanding, paintEventLanding, eventMoveDateAt, earliestDate, type Cell, type Selection, type SelectCtx } from './select'
-import { GroupSheet } from './GroupSheet'
+import { SettingsSheet } from './SettingsSheet'
 import { SelectSheet } from './SelectSheet'
 import { RemarksSheet } from './RemarksSheet'
 import { leaveInputAt } from '../sync'
@@ -141,7 +142,7 @@ export function Matrix() {
      memo keyed only on the selection went stale when a sync pass changed a
      selected cell under an armed move */
   const version = useVersion()
-  const { people, period, grid, states, requirements, role, viewer, eventDefs, openings, ledger, wars, figureOrder, manningHidden, eventRows, showSans, focusDate, focusSeq, qualCatalog } = getState()
+  const { people, period, grid, states, requirements, role, viewer, eventDefs, openings, ledger, wars, figureOrder, manningHidden, eventRows, focusDate, focusSeq, qualCatalog } = getState()
   const dates = period.days.map(d => d.date)
   // Memoized on the store objects (the store replaces what it writes, so
   // identity IS change): rules-as-data made a day's evaluation walk every
@@ -153,15 +154,6 @@ export function Matrix() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [people, grid, states, requirements, period],
   )
-  // Whether the LAST event row still carries any text or band — the remove
-  // control is disabled while it does, so nothing is dropped unseen (owner,
-  // 18 Aug 26; the store refuses it too).
-  /* across EVERY war, not just the open one — eventRows is squadron-wide, so
-     the button must stay disabled while any year's war still uses the line
-     (review fix, 19 Aug 26; the store's removeEventRow guard is the same
-     check, this only keeps the button honest about it) */
-  const lastEventRowUsed = eventRowUsed(eventRows - 1)
-
   // The colour a whole day column takes from its events: light green for an
   // off day (a PH), orange for a no-leave day. Computed once per day and read
   // into both the header and the body cells, so a tag colours the whole
@@ -240,17 +232,17 @@ export function Matrix() {
   // NEW counter, an id editing that one. Reached from + Counter in the
   // Rearrange tools and from the explainer sheet's Edit counter… button.
   const [counterEdit, setCounterEdit] = useState<string | null | false>(false)
-  // The admin group editor (owner, 28 Aug 26) — opened from the corner cell
-  // above CS/Name.
-  const [groupEdit, setGroupEdit] = useState(false)
+  // The ⚙ SETTINGS sheet (owner, 3 Sep 26) — all admin config (counters, event
+  // rows, Show SANS, the roster groups), opened from the top-row ⚙.
+  const [settings, setSettings] = useState(false)
   // Edit-mode roster rearranging (owner, 18 Aug 26). Admin-only view state: it
   // turns the drag handles on, so an admin reading the grid does not nudge a
-  // row by accident. Auto-sort stays available without it.
+  // row by accident. Started from the ⠿ in the grid corner (owner, 3 Sep 26).
   const [arranging, setArranging] = useState(false)
   // "Reset counters" arms rather than firing (it discards custom counters);
-  // disarmed whenever Rearrange closes so it never sits armed unseen.
+  // disarmed whenever the Settings sheet closes so it never sits armed unseen.
   const [armCounterReset, setArmCounterReset] = useState(false)
-  useEffect(() => { if (!arranging) setArmCounterReset(false) }, [arranging])
+  useEffect(() => { if (!settings) setArmCounterReset(false) }, [settings])
   // Pointer-based drag (owner, 18 Aug 26 — the roster rearranges on a phone
   // too, where HTML5 drag-and-drop does nothing). `dragId`/`dragOverRef` are
   // refs because they change many times a second during a drag and must not
@@ -977,22 +969,23 @@ export function Matrix() {
   // answering one id would break every query that expects the real one.
   const bracketRow = (testids: boolean) => (
     <tr className="mbrak" data-testid={testids ? 'month-bracket' : undefined}>
-      {/* The corner cell above CS/Name was empty (owner circled it, 28 Aug 26).
-          It now carries the admin's GROUP EDITOR opener — the control belongs
-          beside the column it configures, and this is the only spare space in
-          the frozen pair. Admin only; the store refuses a member's write
-          anyway, and a control that does nothing is worse than none. The
-          mirror copy carries no testid, like every other mirrored cell. */}
+      {/* The corner cell above CS/Name carries the admin's ⠿ REARRANGE toggle
+          (owner, 3 Sep 26 — "rearrange could be done on the grid main page
+          itself"). It sits right at the head of the roster column it reorders;
+          tapping it turns on the on-grid drag handles (person rows AND category
+          headings) and shows the rearrange bar. The old ⚙ Groups editor moved
+          into the top-row ⚙ Settings. Admin only; the mirror copy carries no
+          testid, like every other mirrored cell. */}
       <th className="brakhd" colSpan={2}>
         {role === 'admin' && (
           <button
-            className="grpedit"
-            data-testid={testids ? 'group-edit' : undefined}
+            className={`grpedit${arranging ? ' on' : ''}`}
+            data-testid={testids ? 'roster-arrange' : undefined}
             tabIndex={testids ? 0 : -1}
-            title="Choose which groups the left column shows"
-            aria-label="Choose which groups the left column shows"
-            onClick={() => setGroupEdit(true)}
-          >⚙ Groups</button>
+            aria-pressed={arranging}
+            title={arranging ? 'Finish rearranging the roster' : 'Rearrange the roster — drag people and category blocks'}
+            onClick={() => setArranging(a => !a)}
+          >⠿ {arranging ? 'Rearranging' : 'Rearrange'}</button>
         )}
       </th>
       {brackets.map(b => (
@@ -1692,107 +1685,28 @@ export function Matrix() {
           >
             {countsOpen ? '▾' : '▸'} Manning
           </button>
-          {/* Roster arrangement (owner, 18 Aug 26), admin only: Auto-sort
-              re-groups everyone into the categorised order; Rearrange turns on
-              the edit-mode drag handles AND the manning rows' reorder/hide
-              controls (owner, 18 Aug 26 — one edit mode for both). A member
-              sees neither — the arrangement is management's (the figureOrder
-              rule). */}
+          {/* ONE ⚙ SETTINGS button (owner, 3 Sep 26 — "this row will just have a
+              settings icon and an OIL tracker"). Every admin CONFIG control —
+              counters, event rows, Show SANS, the roster groups — folds into the
+              sheet it opens. Rearranging is NOT here: that is a hands-on-the-grid
+              job, started from the ⠿ in the grid corner (see bracketRow). Admin
+              only; a member has no config to reach. */}
           {role === 'admin' && (
-            <div className="rostertools">
-              <button
-                className={`rtbtn${arranging ? ' on' : ''}`}
-                data-testid="roster-arrange"
-                aria-pressed={arranging}
-                title="Rearrange or hide the roster and the count rows"
-                onClick={() => setArranging(a => !a)}
-              >
-                ⠿ {arranging ? 'Done' : 'Rearrange'}
-              </button>
-              <button
-                className="rtbtn pri"
-                data-testid="roster-autosort"
-                title="Group everyone into SXO, IP, OPS P, IWSO, OPS W, OCU, Personnel"
-                onClick={autoSortRoster}
-              >
-                ⇅ Auto-sort
-              </button>
-              {/* Add / remove EVENT rows — only in Rearrange (edit) mode, so
-                  the normal view stays clean (owner, 18 Aug 26: "in edit mode
-                  for admin I should have the option to add more event rows").
-                  Remove is disabled while the last row still carries anything,
-                  so nothing is dropped unseen (the store refuses it anyway). */}
-              {arranging && (
-                <>
-                  <button
-                    className="rtbtn"
-                    data-testid="event-add"
-                    disabled={eventRows >= MAX_EVENT_ROWS}
-                    title={eventRows >= MAX_EVENT_ROWS ? `At most ${MAX_EVENT_ROWS} event rows` : 'Add another event row'}
-                    onClick={() => addEventRow()}
-                  >
-                    ＋ Event row
-                  </button>
-                  {eventRows > DEFAULT_EVENT_ROWS && (
-                    <button
-                      className="rtbtn"
-                      data-testid="event-remove"
-                      disabled={lastEventRowUsed}
-                      title={lastEventRowUsed ? 'Clear the last event row before removing it' : 'Remove the last event row'}
-                      onClick={() => removeEventRow()}
-                    >
-                      － Event row
-                    </button>
-                  )}
-                  {/* THE SANS ENABLE FUNCTION (owner, 18 Aug 26): SANS aircrew
-                      are off the roster by default; this puts them on (and
-                      takes them off again). Lives in Rearrange with the other
-                      roster-shape controls, admin by the same gate. */}
-                  <button
-                    className={`rtbtn${showSans ? ' on' : ''}`}
-                    data-testid="sans-toggle"
-                    aria-pressed={showSans}
-                    title={showSans ? 'Take SANS aircrew off the leave war roster' : 'Put SANS aircrew on the leave war roster'}
-                    onClick={() => setShowSans(!showSans)}
-                  >
-                    {showSans ? '✓ SANS shown' : 'Show SANS'}
-                  </button>
-                  {/* Build a counting rule from scratch (owner, 19 Aug 26 —
-                      the counters are fully customisable). Lives with the
-                      other manning-shape controls, same admin gate. */}
-                  <button
-                    className="rtbtn"
-                    data-testid="counter-add"
-                    title="Add a manning counter — pick who it counts and when it turns amber or red"
-                    onClick={() => setCounterEdit(null)}
-                  >
-                    ＋ Counter
-                  </button>
-                  {/* The road back after deleting or mangling a built-in row:
-                      the seeded counter set, whole. It DISCARDS custom
-                      counters, so it arms — first tap asks, second does it
-                      (the counter form's own delete idiom). */}
-                  <button
-                    className={`rtbtn${armCounterReset ? ' arm' : ''}`}
-                    data-testid="counter-reset-all"
-                    title="Put the built-in counters back — counters you built are discarded"
-                    onClick={() => {
-                      if (!armCounterReset) { setArmCounterReset(true); return }
-                      setArmCounterReset(false)
-                      resetManningRules()
-                    }}
-                  >
-                    {armCounterReset ? 'Really reset?' : 'Reset counters'}
-                  </button>
-                </>
-              )}
-            </div>
+            <button
+              className="rtbtn gear"
+              data-testid="settings-open"
+              title="Settings — counters, event rows and roster groups"
+              aria-label="Settings — counters, event rows and roster groups"
+              onClick={() => setSettings(true)}
+            >
+              ⚙
+            </button>
           )}
-          {/* The OIL TRACKER (owner, 2 Sep 26 — "a button on the row where
-              auto-sort is shown, on the right of it"): every person's OIL
-              balance, the ledger behind each, and the admin's crediting.
-              BOTH roles — a member reads, an admin edits; the sheet decides
-              which controls to draw and the store refuses a member's write. */}
+          <span className="card-spring" />
+          {/* The OIL TRACKER (owner, 2 Sep 26): every person's OIL balance, the
+              ledger behind each, and the admin's crediting. BOTH roles — a member
+              reads, an admin edits; the sheet decides which controls to draw and
+              the store refuses a member's write. */}
           <button
             className="rtbtn"
             data-testid="oil-tracker"
@@ -1802,6 +1716,31 @@ export function Matrix() {
             ◷ OIL tracker
           </button>
         </div>
+        {/* THE ON-GRID REARRANGE BAR (owner, 3 Sep 26 — rearrange happens on the
+            grid, not in a window). Shown only while an admin is rearranging; it is
+            NOT a Sheet (a Sheet's scrim would swallow the very grid taps the drag
+            needs). Auto-sort and Done live here, beside the grid they act on. */}
+        {role === 'admin' && arranging && (
+          <div className="lw-rearrange-bar" data-testid="rearrange-bar">
+            <span className="rb-lead">⠿ Rearranging — drag people or a category heading to reorder</span>
+            <button
+              className="rtbtn"
+              data-testid="roster-autosort"
+              title="Group everyone into SXO, IP, OPS P, IWSO, OPS W, OCU, Personnel"
+              onClick={autoSortRoster}
+            >
+              ⇅ Auto-sort
+            </button>
+            <button
+              className="rtbtn on"
+              data-testid="roster-arrange-done"
+              title="Finish rearranging"
+              onClick={() => setArranging(false)}
+            >
+              ✓ Done
+            </button>
+          </div>
+        )}
         <div
           className={`mx-outer${bandActive && bandTop != null ? ' mx-banded' : ''}${sdaActive ? ' lw-sda' : ''}`}
           ref={mxOuterRef}
@@ -1923,7 +1862,7 @@ export function Matrix() {
                   if (g !== prevG) {
                     const n = roster.filter(x => homeOf(x) === g).length
                     heads.push(
-                      <tr key={`grp-${g}`} className={`grp ${groupClass(g)}${folded.has(g) ? ' folded' : ''}`} data-testid={`group-${g}`}>
+                      <tr key={`grp-${g}`} className={`grp ${groupClass(g)}${folded.has(g) ? ' folded' : ''}${draggingId === g ? ' dragging' : ''}${dragOver === g && draggingId !== g ? ' dragover' : ''}`} data-testid={`group-${g}`} data-grow={arranging && g !== OTHER_ID && g !== SANS_GROUP_ID ? g : undefined}>
                         {/* The label sits in a sticky td spanning only the two
                             frozen columns — the SAME technique .who/.bal use —
                             so it stays pinned to the left as the year scrolls;
@@ -1951,6 +1890,22 @@ export function Matrix() {
                           onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleFold(g) } }}
                         >
                           <div className="grphd-in">
+                            {/* The category-heading drag grip (owner, 3 Sep 26 —
+                                reorder the blocks on the grid). Only while
+                                rearranging, and only for a movable group (not the
+                                auto SANS group, not Everyone-else). Its pointerdown
+                                starts the drag and its click is swallowed, so a tap
+                                on the grip never folds the group. */}
+                            {arranging && g !== OTHER_ID && g !== SANS_GROUP_ID && (
+                              <span
+                                className="ghd-grip"
+                                data-testid={`gdrag-${g}`}
+                                title={`Drag to move ${labelOfGroup(g)}`}
+                                style={{ touchAction: 'none' }}
+                                onPointerDown={e => { e.stopPropagation(); startRowDrag(e, g, GROUP_DRAG) }}
+                                onClick={e => e.stopPropagation()}
+                              >⠿</span>
+                            )}
                             <span className="gsw" aria-hidden="true" />
                             <span className="gcar" aria-hidden="true">{folded.has(g) ? '▸' : '▾'}</span>
                             <span className="gname">{labelOfGroup(g)}</span>
@@ -2548,12 +2503,24 @@ export function Matrix() {
       {counterEdit !== false && (
         <CounterForm key={counterEdit ?? 'new'} ruleId={counterEdit} onClose={() => setCounterEdit(false)} />
       )}
-      {/* The group editor. Admin only at the affordance AND at every store
-          writer it calls — the standing role doctrine. */}
-      {groupEdit && role === 'admin' && (
-        <GroupSheet
-          onClose={() => setGroupEdit(false)}
-          onRowDragStart={(e, id) => startRowDrag(e, id, GROUP_DRAG)}
+      {/* The ⚙ SETTINGS sheet — all admin config (counters, event rows, Show
+          SANS, the roster groups). Admin only at the affordance AND at every
+          store writer it calls — the standing role doctrine. The who-wins list
+          reorders through the one drag machine (the display order is dragged on
+          the grid instead, see the category headings below). */}
+      {settings && role === 'admin' && (
+        <SettingsSheet
+          onClose={() => setSettings(false)}
+          // + Counter opens the counter builder, a sheet of its own — close the
+          // settings sheet so the two do not stack (both `.bidsheet`, same z-index,
+          // so an open settings row would sit over the builder and eat its taps).
+          onAddCounter={() => { setSettings(false); setCounterEdit(null) }}
+          armCounterReset={armCounterReset}
+          onResetCounters={() => {
+            if (!armCounterReset) { setArmCounterReset(true); return }
+            setArmCounterReset(false)
+            resetManningRules()
+          }}
           onPriorityDragStart={(e, id) => startRowDrag(e, id, GROUP_PRIO_DRAG)}
           draggingId={draggingId}
           dragOver={dragOver}

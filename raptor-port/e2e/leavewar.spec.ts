@@ -2062,9 +2062,12 @@ test('an admin auto-sorts and hand-drags the roster; a member gets neither tool'
     expect((await ids())[0]).toBe(before[0])
     await page.locator('[data-testid="roster-arrange"]').click() // leave arrange mode
   } else {
-    // On a phone at least prove Auto-sort is reachable and does not throw.
+    // On a phone at least prove Auto-sort is reachable and does not throw. It
+    // lives on the rearrange bar now, so enter rearrange first, then leave.
+    await page.locator('[data-testid="roster-arrange"]').click()
     await page.locator('[data-testid="roster-autosort"]').click()
     expect((await ids())[0]).toBe(before[0])
+    await page.locator('[data-testid="roster-arrange"]').click()
   }
 
   await lwRole(page, 'member')
@@ -2331,7 +2334,7 @@ test('the roster does not reflow mid-scroll, only once the scroll settles', asyn
 // this in a browser, on the phone project especially.
 test('an admin builds a counter in the form, and the new row counts', async ({ page }) => {
   await lwRole(page, 'admin')
-  await page.locator('[data-testid="roster-arrange"]').click()
+  await page.locator('[data-testid="settings-open"]').click()
   await page.locator('[data-testid="counter-add"]').click()
   const sheet = page.locator('[data-testid="counter-form"]')
   await expect(sheet).toBeVisible()
@@ -2367,22 +2370,32 @@ test('deleting a counter takes its row off the grid', async ({ page }) => {
   await expect(page.locator('[data-testid="count-wmp"]')).toHaveCount(0)
 })
 
-// Owner, 19 Aug 26 — on a phone the six Rearrange controls could not fit one
-// line and the card clips its overflow, so +Counter and Reset counters fell
-// off the right edge with no way to reach them. The toolbar wraps now; every
-// control must sit wholly within the viewport width on BOTH projects (the
-// phone is the real guard, the desktop proves the wrap costs it nothing).
-test('every Rearrange control is reachable within the viewport', async ({ page }) => {
+// Owner, 19 Aug 26 (kept through the 3 Sep 26 fold into ⚙): every admin control
+// must sit wholly within the viewport width, whatever its home now. The controls
+// live in three places — the top row (⚙ + OIL tracker), the ⚙ sheet (counters &
+// rows), and the on-grid rearrange bar (Auto-sort + Done) — so this checks each in
+// its place on BOTH projects (the phone is the real guard, the desktop proves it
+// costs nothing).
+test('every admin control is reachable within the viewport', async ({ page }) => {
   await lwRole(page, 'admin')
-  await page.locator('[data-testid="roster-arrange"]').click()
   const vw = page.viewportSize()!.width
-  for (const id of ['roster-autosort', 'event-add', 'sans-toggle', 'counter-add', 'counter-reset-all', 'oil-tracker']) {
+  const within = async (id: string) => {
     const btn = page.locator(`[data-testid="${id}"]`)
     await expect(btn).toBeVisible()
     const box = (await btn.boundingBox())!
     expect(box.x, `${id} starts off the left edge`).toBeGreaterThanOrEqual(0)
     expect(box.x + box.width, `${id} runs off the right edge`).toBeLessThanOrEqual(vw + 1)
   }
+  // the top row: the OIL tracker and the ⚙ settings entry
+  await within('oil-tracker')
+  await within('settings-open')
+  // config controls, folded into ⚙ Settings
+  await page.locator('[data-testid="settings-open"]').click()
+  for (const id of ['event-add', 'sans-toggle', 'counter-add', 'counter-reset-all']) await within(id)
+  await page.locator('[data-testid="settings-close"]').click()
+  // rearrange controls, on the grid bar
+  await page.locator('[data-testid="roster-arrange"]').click()
+  for (const id of ['roster-autosort', 'roster-arrange-done']) await within(id)
 })
 
 // --- undo / redo UI-interaction bug test (owner, 30 Aug 26) -----------------
@@ -2519,9 +2532,9 @@ test('a glowing green box frames the open-bidding window and clears when bidding
   // re-measure for us. (A COUNTER row would prove nothing here: counts render
   // ABOVE the header row, outside the boxed region; and a PO'd body's row
   // deliberately stays for the months they served — the owner's 19 Aug rule.)
-  await page.locator('[data-testid="roster-arrange"]').click()
+  await page.locator('[data-testid="settings-open"]').click()
   await page.locator('[data-testid="sans-toggle"]').click()
-  await page.locator('[data-testid="roster-arrange"]').click() // leave arrange mode
+  await page.locator('[data-testid="settings-close"]').click() // close the sheet
   const grown = await page.evaluate(() =>
     document.querySelector('#page-leavewar .lw-bidbox').getBoundingClientRect().height)
   expect(grown).toBeGreaterThan(geo.bh)

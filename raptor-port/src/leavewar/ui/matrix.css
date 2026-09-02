@@ -149,6 +149,10 @@
   --bal-w: 72px;
   --sxo: #E8B23B;
   --pers: #E7ECF1;
+  /* SANS group swatch (owner, 3 Sep 26 — SANS as their own category at the foot).
+     A teal distinct from every CAT/qual colour above, so the SANS block reads as
+     the separate, external pool it is. */
+  --sans: #57C9A6;
 }
 
 .mx .who,
@@ -1064,7 +1068,6 @@
    card clips its overflow — so +Counter and Reset counters fell off the
    right edge with no way to reach them. Wrapping flows them onto as many
    lines as the width needs; desktop still fits them on one. */
-.rostertools { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 .rtbtn {
   background: var(--panel-2);
   border: 1px solid var(--edge-2);
@@ -1081,6 +1084,33 @@
 .rtbtn.on { background: var(--raised); border-color: var(--accent); color: var(--accent); }
 /* An armed destructive button (Reset counters): the first tap only asks. */
 .rtbtn.arm { border-color: rgba(255, 92, 92, .6); color: #ff5c5c; }
+/* The one ⚙ SETTINGS button (owner, 3 Sep 26) — icon only, the word dropped. */
+.rtbtn.gear { color: var(--accent); font-size: 15px; line-height: 1; padding: 5px 10px; }
+.rtbtn.gear:hover { border-color: var(--accent); }
+/* Pushes the OIL tracker to the far right of the top row, leaving Manning + ⚙ on
+   the left. On a phone the row wraps and this simply takes the slack on its line. */
+.card-spring { flex: 1 1 auto; }
+
+/* THE ON-GRID REARRANGE BAR (owner, 3 Sep 26 — rearrange happens on the grid).
+   A slim accent-tinted strip under the card header while an admin is rearranging;
+   Auto-sort and Done sit here, beside the grid they act on. NOT a sheet (a scrim
+   would swallow the drag). */
+.lw-rearrange-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 8px 14px;
+  background: rgba(59, 198, 232, .10);
+  border-bottom: 1px solid rgba(59, 198, 232, .45);
+}
+.lw-rearrange-bar .rb-lead {
+  flex: 1 1 auto;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: .02em;
+  color: var(--accent);
+}
 
 /* Group heading. The label rides a sticky td spanning the two frozen columns
    (the .who/.bal technique), pinned to the left as the year scrolls; its text
@@ -1139,6 +1169,26 @@
 .grp.g-opsw .gsw { background: linear-gradient(90deg, var(--q-a), var(--q-d)); }
 .grp.g-ocu  .gsw { background: var(--q-ocu); }
 .grp.g-pers .gsw { background: var(--pers); }
+.grp.g-sans .gsw { background: var(--sans); }
+
+/* The category-heading drag grip (owner, 3 Sep 26 — reorder the blocks on the
+   grid, in rearrange mode). Lives inside the width:0 `.grphd-in` beside the
+   swatch; it paints and is tappable where it sits even though its parent adds no
+   width (same trick the heading label uses). */
+.grphd-in .ghd-grip {
+  flex: none;
+  color: var(--accent);
+  font-size: 12px;
+  line-height: 1;
+  cursor: grab;
+  padding: 0 3px 0 0;
+  touch-action: none;
+}
+.grphd-in .ghd-grip:active { cursor: grabbing; }
+/* Drag feedback on a category block, mirroring the roster row: the block being
+   carried fades, the one it would land on takes an accent top edge. */
+.mx tbody tr.grp.dragging { opacity: .5; }
+.mx tbody tr.grp.dragover td.grphd { box-shadow: inset 0 2px 0 var(--accent); }
 
 /* The CAT sub-heading inside an ops group — DESKTOP ONLY. On a phone the
    coloured chip carries the CAT and these headings would only cost height
@@ -1364,6 +1414,13 @@
 .mx .mxhead th.brakhd .grpedit:hover {
   border-color: rgba(59, 198, 232, .5);
   color: var(--ink);
+}
+/* Rearranging on (owner, 3 Sep 26): the corner toggle lights up while the grid
+   is in rearrange mode, so it is obvious the handles are live and how to leave. */
+.mx .mxhead th.brakhd .grpedit.on {
+  background: rgba(59, 198, 232, .16);
+  border-color: var(--accent);
+  color: var(--accent);
 }
 
 .mx .mxhead th.brakm {
