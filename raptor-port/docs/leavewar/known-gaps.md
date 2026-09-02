@@ -530,6 +530,17 @@ accounts land and the roles stop being an affordance.
   places open a sheet; putting the click-outside in the wrapper means an
   eighth cannot be written without it. A per-sheet scrim would have passed its
   own test while the next sheet shipped without one.
+  - **Its sideways-pan handler acts only on a TRACKED PRESS** (2 Sep 26). A
+    mouse fires `pointermove` on a bare hover, and the scrim spans the whole
+    page behind a sheet, so the first mouse motion after a cell opened its
+    sheet was read as a drag from (0,0) and forwarded as `scrollLeft =
+    0 − clientX`: the grid snapped back to January the moment the pointer
+    moved (owner: "when I click on a date in September the month in the
+    background jumps back to JAN"). `useGridPan` now sets a `pressed` flag on
+    `pointerdown`, clears it on up/cancel, and a mouse whose `buttons` reads 0
+    ends the press on its next move (a release over the panel never reaches
+    the scrim). Pinned in `scrim.test.tsx`. Any pointer-drag handler that
+    listens to `pointermove` needs the same guard — hover is a move.
 
 - **`focusDate` is view state, and it lives in the domain store on purpose.**
   The stage strip and the matrix render independently of each other — neither

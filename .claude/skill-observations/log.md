@@ -747,3 +747,19 @@ gate's. Keep verdict-bearing commands unpiped.
 **Suggested improvement:** For any UI whose SHAPE is unsettled, make the mockup loop explicit in the plan: (1) static HTML in the app's tokens, desktop + phone renders; (2) owner feedback rounds on the picture; (3) a critique pass on the final mockup with the owner picking among the fixes; (4) only then the plan and build. Record the accepted mockup as the build's contract.
 
 **Principle:** A picture the client can react to is the cheapest prototype; iterate the picture until it stops changing, then build once.
+
+### Observation 48: A pointer-drag handler without a press guard turns hover into a drag
+
+**Status:** OPEN
+**Date:** 2026-09-02
+**Session context:** Leave War — owner reported the grid snapping back to January whenever a cell's sheet opened in a later month.
+**Skill:** impeccable (craft-floor / harden), and the Leave War bug-hunt habit
+**Type:** open-source
+**Phase/Area:** pointer gesture handlers
+
+**Issue:** The sheet scrim's sideways-pan handler listened to `pointermove` and committed to an axis from the last `pointerdown` origin — but a mouse fires `pointermove` on a bare hover, so the first motion after the sheet opened (origin still 0,0) was forwarded as `scrollLeft = 0 − clientX` and the grid jumped to the start. It had passed every test because the tests always fired a `pointerdown` first, and every live pass clicked without moving the mouse afterwards. Found by instrumenting the scroller's `scrollLeft` setter with a stack trace, not by reading the code.
+
+**Suggested improvement:** Add to the harden checklist: every `pointermove` handler must gate on a tracked press (set on down, cleared on up/cancel, and for a mouse also cleared when `buttons === 0`), and its tests must include a move with NO preceding down. In live passes, move the mouse after every click — a Playwright click leaves the pointer parked.
+
+**Principle:** Hover is a move. A gesture that reads motion without proving a press will fire on a mouse that is only passing by, and the test suite that never sends a bare move will never see it.
+
