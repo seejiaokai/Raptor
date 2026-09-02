@@ -27,6 +27,8 @@
 import type { Grid } from './availability'
 import { removesAvailability, stateOf, type States } from './bids'
 import { codeOf, LEAVE_TYPES, parseCell, portionAmount, type CounterName } from './codes'
+import { DEFAULT_OIL_POLICY, oilLedgerFor, type OilPolicy } from './oiltracker'
+import { localToday } from './period'
 
 /**
  * The counters, in the order the interface cycles them.
@@ -220,6 +222,20 @@ export interface FigureCtx {
   openings: Openings
   ledger: Ledger
   sources: LeaveSource[]
+  /** The admin's OIL expiry/history policy (oiltracker.ts). Absent reads as
+   *  the default — no expiry — so a caller that built the ctx before the
+   *  tracker existed sees exactly the sum it always saw. */
+  oilPolicy?: OilPolicy
+  /** "Today" for expiry, `yyyy-mm-dd`; absent reads the local clock. Tests
+   *  pin it so an OIL balance does not drift with the calendar. */
+  asOf?: string
+}
+
+/** The OIL ledger this ctx describes for one person — FIFO-allocated and
+ *  expiry-applied. The OIL BAL figure and its breakdown both read from here,
+ *  so the column and the tracker sheet cannot disagree. */
+export function oilLedgerOf(ctx: FigureCtx, personId: string) {
+  return oilLedgerFor(ctx, personId, ctx.oilPolicy ?? DEFAULT_OIL_POLICY, ctx.asOf ?? localToday())
 }
 
 export interface Figure {
@@ -258,6 +274,14 @@ const balParts = (counter: CounterName, earns: boolean) => (c: FigureCtx, p: str
   ]
   if (earns) parts.push({ label: 'earned by weekend/PH work', value: earnedOil(c.sources, p) })
   parts.push({ label: 'taken', value: -drawnFrom(c.sources, p, counter) })
+  // OIL alone can EXPIRE (the tracker's policy, 2 Sep 26). The row appears
+  // only when something did, so a squadron with no expiry sees the same four
+  // rows it always saw — and when it does appear the rows still sum to the
+  // figure, which is the whole contract of a breakdown.
+  if (counter === 'oil') {
+    const expired = oilLedgerOf(c, p).expired
+    if (expired) parts.push({ label: 'expired', value: -expired })
+  }
   return parts
 }
 
@@ -288,8 +312,13 @@ export const FIGURES: readonly Figure[] = Object.freeze([
   // move nothing anyone can see in the frozen column. A saved figure order
   // from before this id existed shows it appended at the end (orderedFigures'
   // tail rule) rather than losing it.
-  { id: 'oilbal', label: 'OIL BAL', kind: 'bal', desc: 'balance available to take', legend: 'earned by weekend/PH work + granted − taken', value: (c, p) => balanceOf(c.openings, c.ledger, c.sources, p, 'oil'), parts: balParts('oil', true) },
-  { id: 'off', label: 'OFF USED', kind: 'con', desc: 'days taken', value: (c, p) => takenOf(c.sources, p, 'OFF') },
+  // Since 2 Sep 26 the value is the TRACKER's balance (oiltracker.ts): the
+  // same opening + granted + earned − taken, less whatever the admin's expiry
+  // policy has retired. With no policy the two are the same number.
+  { id: 'oilbal', label: 'OIL BAL', kind: 'bal', desc: 'balance available to take', legend: 'earned by weekend/PH work + granted − taken − expired', value: (c, p) => oilLedgerOf(c, p).balance, parts: balParts('oil', true) },
+  // `OFF USED` sat here until 2 Sep 26 (owner: "remove the OFF used
+  // counter"). OFF still counts inside LVE USED; it just has no row of its
+  // own. A saved figure order naming 'off' skips it (orderedFigures).
   { id: 'ccl', label: 'CCL USED', kind: 'con', desc: 'days taken', value: (c, p) => takenOf(c.sources, p, 'CCL') },
   { id: 'pl',  label: 'PL USED',  kind: 'con', desc: 'days taken', value: (c, p) => takenOf(c.sources, p, 'PL') },
   { id: 'fcl', label: 'FCL USED', kind: 'con', desc: 'days taken', value: (c, p) => takenOf(c.sources, p, 'FCL') },

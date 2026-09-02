@@ -27,6 +27,7 @@ import {
   inBidWindow,
   isWeekend,
   monthsIn,
+  oilLedgerOf,
   parseCell,
   raptorOwns,
   shiftedFrom,
@@ -34,10 +35,11 @@ import {
   type Group,
   type Person,
 } from '../engine'
-import { groupsInOrder, groupPriorityIds, lwHistEpoch, moveGroupTo, moveGroupPriorityTo, addEventRow, autoSortRoster, DEFAULT_EVENT_ROWS, displayRoster, eventRowUsed, getState, MAX_EVENT_ROWS, moveCells, movableCells, moveManningRowTo, moveProblem, moveEvent, moveEventProblem, moveRosterRow, orderedManningIds, removeEventRow, resetManningRules, setPostOut, setShowSans, type MoveResult, type EventMoveResult } from '../state/store'
+import { figureCtxOf, setBalance, groupsInOrder, groupPriorityIds, lwHistEpoch, moveGroupTo, moveGroupPriorityTo, addEventRow, autoSortRoster, DEFAULT_EVENT_ROWS, displayRoster, eventRowUsed, getState, MAX_EVENT_ROWS, moveCells, movableCells, moveManningRowTo, moveProblem, moveEvent, moveEventProblem, moveRosterRow, orderedManningIds, removeEventRow, resetManningRules, setPostOut, setShowSans, type MoveResult, type EventMoveResult } from '../state/store'
 import { BidPicker, DecisionSheet, PostOutSheet, RaptorSheet } from './BidPicker'
 import { CounterSheet, FigureBreakdownSheet, PersonFiguresSheet } from './CounterSheet'
 import { PersonSheet } from './PersonSheet'
+import { OilTracker } from './OilTracker'
 import { CountRows } from './CountRows'
 import { CounterForm } from './CounterForm'
 import { ManningSheet } from './ManningSheet'
@@ -220,6 +222,9 @@ export function Matrix() {
   // name and see these logics").
   const [whoOpen, setWhoOpen] = useState<string | null>(null)
   const [editingWho, setEditing] = useState<string | null>(null)
+  // The OIL TRACKER (owner, 2 Sep 26): open on everyone (the toolbar button)
+  // or on one person (the Cinch sheet's OIL BAL row). null = closed.
+  const [oilTracker, setOilTracker] = useState<{ person: string | null } | null>(null)
   // Which event cell the admin has tapped to edit, or null. Keyed by line +
   // day; the Event sheet reads the current text or band off the store.
   // `to` is set only when a DRAG selected a span (owner, 27 Aug 26) — the sheet
@@ -360,9 +365,10 @@ export function Matrix() {
   useEffect(() => { if (role !== 'admin' && arranging) setArranging(false) }, [role, arranging])
   const shownIx = Math.max(0, figures.findIndex(f => f.id === shownId))
   const shown = figures[shownIx]
-  // Everything a figure needs to read a person's number. `wars` is LeaveWar[],
-  // which satisfies LeaveSource[] structurally, so it passes straight in.
-  const figureCtx = { openings, ledger, sources: wars }
+  // Everything a figure needs to read a person's number — the store's one
+  // builder, so this column, the sheets and the tracker read the same OIL
+  // policy and the same "today" (a hand-built literal here used to drift).
+  const figureCtx = figureCtxOf()
   const cycle = (by: number) => setShownId(figures[(shownIx + by + figures.length) % figures.length].id)
 
   // Swipe across the counter column to cycle it — the fast path, beside the
@@ -1779,6 +1785,19 @@ export function Matrix() {
               )}
             </div>
           )}
+          {/* The OIL TRACKER (owner, 2 Sep 26 — "a button on the row where
+              auto-sort is shown, on the right of it"): every person's OIL
+              balance, the ledger behind each, and the admin's crediting.
+              BOTH roles — a member reads, an admin edits; the sheet decides
+              which controls to draw and the store refuses a member's write. */}
+          <button
+            className="rtbtn"
+            data-testid="oil-tracker"
+            title="OIL balances, credits and history"
+            onClick={() => setOilTracker({ person: null })}
+          >
+            ◷ OIL tracker
+          </button>
         </div>
         <div
           className={`mx-outer${bandActive && bandTop != null ? ' mx-banded' : ''}${sdaActive ? ' lw-sda' : ''}`}
@@ -2475,8 +2494,19 @@ export function Matrix() {
         <PersonFiguresSheet
           person={people.find(p => p.id === whoOpen)!}
           onOpenFigure={figureId => { setBalOpen({ person: whoOpen, figureId }); setWhoOpen(null) }}
+          onOpenOil={() => { setOilTracker({ person: whoOpen }); setWhoOpen(null) }}
+          onSetBalance={role === 'admin' ? (counter, target) => { setBalance(whoOpen, counter, target) } : undefined}
           onEdit={role === 'admin' ? () => { setEditing(whoOpen); setWhoOpen(null) } : undefined}
           onClose={() => setWhoOpen(null)}
+        />
+      )}
+      {/* The OIL tracker — everyone's balances, or one person's ledger. The
+          person guard matches the sheets above: a row can go while it is up. */}
+      {oilTracker && (oilTracker.person === null || people.some(p => p.id === oilTracker.person)) && (
+        <OilTracker
+          key={oilTracker.person ?? '*'}
+          person={oilTracker.person}
+          onClose={() => setOilTracker(null)}
         />
       )}
       {editingWho && people.some(p => p.id === editingWho) && (
@@ -2565,7 +2595,12 @@ export function Matrix() {
           wouldLeave={(code, days) => {
             const spends = codeOf(code)?.spends
             if (!spends) return null
-            const left = balanceOf(openings, ledger, wars, open.id, spends.counter)
+            // OIL reads through the tracker (FIFO + expiry) so this warning
+            // and the OIL BAL figure never disagree; every other counter is
+            // the plain sum.
+            const left = spends.counter === 'oil'
+              ? oilLedgerOf(figureCtx, open.id).balance
+              : balanceOf(openings, ledger, wars, open.id, spends.counter)
             return { counter: spends.counter, after: left - spends.amount * days }
           }}
           onClose={close}

@@ -1,0 +1,277 @@
+/* The OIL tracker sheet (owner, 2 Sep 26) and the Cinch sheet's LVE BAL Set
+   control. Scoped to the page like every Leave War stylesheet — do not
+   unwrap. Builds on bidpicker.css's sheet chassis and card rows (.crow). */
+#page-leavewar {
+
+  /* The chip rows under the header: window chips, Settings, Back. */
+  .oil-tools {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+    margin: 8px 0 6px;
+  }
+  .oil-tools .lab {
+    font-size: 10px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    font-weight: 600;
+  }
+  .oil-tools .oil-window {
+    flex-basis: 100%;
+    font-size: 11px;
+  }
+  .oil-pickrow {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .oil-pickrow .tchip.clear { align-self: flex-end; }
+
+  /* ---- everyone: the roster list --------------------------------------- */
+  /* No inner scroll: the panel scrolls (bidpicker.css), and pan-y keeps a
+     finger's vertical drag as a scroll — the select-drag is mouse/pen. */
+  .oil-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    touch-action: pan-y;
+  }
+  .oil-list.dragging {
+    cursor: crosshair;
+    user-select: none;
+  }
+  .oil-grp {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 10px 2px 2px;
+    font-size: 10px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    font-weight: 700;
+  }
+  .oil-grp .gcount { font-weight: 600; }
+  .oil-grp .oil-grpsel {
+    margin-left: auto;
+    background: transparent;
+    border: 1px solid var(--edge);
+    border-radius: 7px;
+    color: var(--ink-3);
+    font-size: 10px;
+    letter-spacing: .06em;
+    text-transform: none;
+    padding: 3px 8px;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .oil-grp .oil-grpsel:hover { border-color: rgba(59, 198, 232, .5); color: var(--ink); }
+
+  .oil-row {
+    display: flex;
+    align-items: stretch;
+    gap: 6px;
+  }
+  .oil-row .crow {
+    flex: 1 1 auto;
+    width: auto;
+    min-width: 0;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 3px;
+  }
+  .oil-row .crow .cn { display: inline-flex; align-items: center; gap: 8px; }
+  .oil-row .crow .cn .catchip { font-weight: 700; letter-spacing: .04em; }
+  .oil-row.pre .crow { border-color: rgba(59, 198, 232, .55); background: rgba(59, 198, 232, .08); }
+  .oil-row.on .crow { background: rgba(59, 198, 232, .14); border-color: var(--accent); }
+  .oil-pick {
+    flex: 0 0 38px;
+    min-height: 44px;
+    border-radius: 10px;
+    border: 1px solid var(--edge);
+    background: var(--panel-2);
+    color: var(--accent-ink);
+    font-size: 15px;
+    font-weight: 800;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .oil-pick:hover { border-color: rgba(59, 198, 232, .5); }
+  .oil-row.on .oil-pick { background: var(--accent); border-color: transparent; }
+
+  /* ---- one person: the balance card ------------------------------------ */
+  .oil-bal {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px 14px;
+    padding: 10px 14px;
+    margin: 8px 0 2px;
+    background: var(--panel-2);
+    border: 1px solid var(--edge);
+    border-radius: 10px;
+  }
+  .oil-bal .oil-balk { display: inline-flex; align-items: baseline; gap: 8px; }
+  .oil-bal .k {
+    font-size: 10px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    font-weight: 700;
+  }
+  .oil-bal .big {
+    font-size: 24px;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    color: var(--ink);
+  }
+  .oil-bal .big.neg { color: #FFAAB0; }
+  .oil-bal .oil-balsub {
+    display: flex;
+    gap: 10px;
+    font-size: 11px;
+    color: var(--ink-3);
+  }
+  .oil-bal .oil-balsub .warnk { color: #FFAAB0; }
+  .oil-bal .dchip { margin-left: auto; }
+
+  /* ---- one person: the ledger rows ------------------------------------- */
+  .oil-entries {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-top: 4px;
+  }
+  .oil-e {
+    display: grid;
+    grid-template-columns: 62px 44px minmax(0, 1fr) auto;
+    gap: 6px 8px;
+    align-items: baseline;
+    padding: 8px 12px;
+    border: 1px solid var(--edge);
+    border-radius: 10px;
+    background: var(--panel-2);
+    font-size: 12px;
+  }
+  .oil-e .d {
+    color: var(--ink-3);
+    font-size: 11px;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .oil-e .a {
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .oil-e.credit .a { color: #8FE0A8; }
+  .oil-e.take .a { color: #FFAAB0; }
+  .oil-e .r {
+    color: var(--ink-2);
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+  .oil-e .s {
+    font-size: 10.5px;
+    color: var(--ink-3);
+    text-align: right;
+    white-space: nowrap;
+  }
+  /* Fully used: struck through (owner — "showing as used with a date, and
+     striked out"). */
+  .oil-e.used .a,
+  .oil-e.used .r { text-decoration: line-through; color: var(--ink-3); }
+  .oil-e.expired { opacity: .6; }
+  .oil-e.expired .s { color: #F2C879; }
+  /* A phone has no room for a status beside the reason: drop it under. */
+  @media (max-width: 520px) {
+    .oil-e { grid-template-columns: 62px 44px minmax(0, 1fr); }
+    .oil-e .s {
+      grid-column: 1 / -1;
+      text-align: left;
+      white-space: normal;
+    }
+  }
+  .oil-e .tag {
+    display: inline-block;
+    margin-left: 6px;
+    font-size: 9px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    border: 1px solid var(--edge-2);
+    border-radius: 6px;
+    padding: 1px 5px;
+    color: var(--ink-3);
+    text-decoration: none;
+    vertical-align: middle;
+  }
+  .oil-e .acts {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+  }
+  .oil-e .tchip.arm { border-color: rgba(255, 92, 92, .6); color: #ff5c5c; }
+  .oil-foot {
+    margin-top: 8px;
+    font-size: 11px;
+    color: var(--ink-3);
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .oil-foot b { color: var(--ink); }
+  .oil-foot b.neg { color: #FFAAB0; }
+
+  /* ---- the credit panel and the settings -------------------------------- */
+  .oil-credit {
+    border-top: 1px solid var(--edge);
+    margin-top: 8px;
+    padding-top: 6px;
+  }
+  .oil-credit .note b { color: var(--ink); }
+  .oil-set { display: flex; flex-direction: column; gap: 4px; }
+  .oil-set .note { flex-basis: 100%; margin: 2px 0 6px; }
+  .oil-num {
+    width: 84px;
+    background: var(--panel-2);
+    border: 1px solid var(--edge);
+    color: var(--ink);
+    border-radius: 9px;
+    padding: 6px 10px;
+    font-size: 12px;
+    font-family: inherit;
+    color-scheme: dark;
+  }
+  .oil-text {
+    flex: 1 1 200px;
+    min-width: 140px;
+    background: var(--panel-2);
+    border: 1px solid var(--edge);
+    color: var(--ink);
+    border-radius: 9px;
+    padding: 6px 10px;
+    font-size: 12px;
+    font-family: inherit;
+  }
+
+  /* ---- the Cinch sheet's LVE BAL Set control (admin) --------------------- */
+  .cmv.setbal {
+    min-width: 44px;
+    min-height: 36px;
+    padding: 0 10px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .06em;
+  }
+  .cmv.setbal.dim { color: var(--ink-3); }
+  .cmove.setbal-edit {
+    flex-direction: row;
+    align-items: center;
+    gap: 4px;
+  }
+  .cmove.setbal-edit .oil-num { width: 72px; }
+}

@@ -58,7 +58,7 @@ describe('the counter column', () => {
     fireEvent.click(screen.getByTestId('counter-pick'))
     expect([...screen.getByTestId('counter-sheet').querySelectorAll('.crow .cn')].map(e => e.textContent))
       .toEqual([
-        'LL USED', 'OL USED', 'OIL USED', 'OIL BAL', 'OFF USED', 'CCL USED', 'PL USED',
+        'LL USED', 'OL USED', 'OIL USED', 'OIL BAL', 'CCL USED', 'PL USED',
         'FCL USED', 'MED USED', 'OML USED', 'LVE BAL', 'LVE USED',
       ])
     fireEvent.click(screen.getByTestId('counter-lvecon'))
@@ -213,13 +213,18 @@ describe('the counter follows the leave just entered', () => {
     expect(screen.getByTestId('counter-name').textContent).toBe('OL USED')
   })
 
-  // OFF has its own consumed figure now (OFF CON), so entering it snaps there
-  // rather than being left where it was — free leave is still leave taken.
-  it('snaps to OFF CON for free leave', () => {
+  // OFF USED was a figure of its own until 2 Sep 26 (owner: "remove the OFF
+  // used counter"), so entering OFF used to snap the column there. With no
+  // figure to snap to, free leave leaves the column where it was — it still
+  // counts inside LVE USED.
+  it('OFF has no figure of its own now, so entering it moves the column nowhere', () => {
     render(<Matrix />)
+    expect(screen.getByTestId('counter-name').textContent).toBe('LVE BAL')
     fireEvent.click(screen.getByTestId('cell-dusk-2026-02-11'))
     fireEvent.click(screen.getByTestId('bid-OFF'))
-    expect(screen.getByTestId('counter-name').textContent).toBe('OFF USED')
+    expect(screen.getByTestId('counter-name').textContent).toBe('LVE BAL')
+    fireEvent.click(screen.getByTestId('counter-pick'))
+    expect(screen.queryByTestId('counter-off')).toBeNull()
   })
 
   it('clearing a cell moves nothing', () => {
@@ -451,8 +456,8 @@ describe('a callsign opens the all-figures sheet, for everyone (owner, 17 Aug 26
     fireEvent.click(screen.getByTestId('person-ramp'))
     const sheet = screen.getByTestId('person-figures')
     expect(sheet.textContent).toContain('RAMP')
-    // All twelve figures, in the column's own order.
-    expect(sheet.querySelectorAll('.crow-wrap')).toHaveLength(12)
+    // All eleven figures, in the column's own order (OFF USED went 2 Sep 26).
+    expect(sheet.querySelectorAll('.crow-wrap')).toHaveLength(11)
     expect(screen.getByTestId('pfig-lvebal').textContent).toContain('25 left')
     expect(screen.getByTestId('pfig-oil').textContent).toContain('0.5 taken')
     // A member gets no editor path.

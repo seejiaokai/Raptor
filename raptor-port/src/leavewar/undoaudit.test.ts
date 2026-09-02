@@ -20,6 +20,9 @@ import {
   deleteManningRule,
   focusDay,
   getState,
+  grantOil,
+  setOilPolicy,
+  setBalance,
   initStore as lwInitStore,
   lwCanRedo,
   lwCanUndo,
@@ -217,8 +220,36 @@ describe('undo/redo — full state coverage (every editable surface)', () => {
     lwUndo()        // back to closed
     expect(getState().period.stage).toBe('closed')
   })
-})
+  it('an OIL grant (the tracker\'s credit)', () => {
+    setRole('admin')
+    const n0 = getState().ledger.length
+    const [a, b] = getState().people.map(p => p.id)
+    expect(grantOil([a, b], 1, '2026-03-02', 'Det recovery')).toBeNull()
+    expect(getState().ledger.length).toBe(n0 + 2)
+    lwUndo()
+    expect(getState().ledger.length).toBe(n0)
+    lwRedo()
+    expect(getState().ledger.length).toBe(n0 + 2)
+  })
 
+  it('the OIL policy (expiry / history window)', () => {
+    setRole('admin')
+    expect(setOilPolicy({ expiry: { n: 90, unit: 'days' } })).toBe(true)
+    expect(getState().oilPolicy.expiry).toEqual({ n: 90, unit: 'days' })
+    lwUndo()
+    expect(getState().oilPolicy.expiry).toBeNull()
+  })
+
+  it('an admin-set balance (the opening figure it moves)', () => {
+    setRole('admin')
+    const who = getState().people[0].id
+    const o0 = getState().openings[who]?.annual
+    expect(setBalance(who, 'annual', 40)).toBe(true)
+    expect(getState().openings[who].annual).not.toBe(o0)
+    lwUndo()
+    expect(getState().openings[who]?.annual).toBe(o0)
+  })
+})
 describe('undo/redo — the deliberate exclusions (must NOT corrupt)', () => {
   it('a post-out is NOT undoable, and an undo near it does not disturb it', () => {
     setRole('admin')

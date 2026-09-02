@@ -38,6 +38,7 @@ import {
   columnKindFor,
   inSquadron,
   isWeekend,
+  localToday,
   outboundToRaptor,
   parseCell,
   raptorOwns,
@@ -989,14 +990,6 @@ function reprojectRoster(): void {
 
 /* ---- post-out auto-archive (owner, 19 Aug 26) ---------------------------- */
 
-/* Local calendar date, the same convention engine/inputs.ts's 'now' uses —
-   never UTC: a PO dated "today" must archive on the squadron's today. */
-function localTodayISO(): string {
-  const d = new Date()
-  const p2 = (n: number) => String(n).padStart(2, '0')
-  return `${d.getFullYear()}-${p2(d.getMonth() + 1)}-${p2(d.getDate())}`
-}
-
 /**
  * Archive the Raptor body of anyone whose posting-out date has ARRIVED
  * (owner, 19 Aug 26 — "on that live date itself… under quals, they will go
@@ -1022,7 +1015,7 @@ function localTodayISO(): string {
 export function runPoArchive(): void {
   if (SYNCING) return
   const st = getState()
-  const today = localTodayISO()
+  const today = localToday()   // local calendar date (engine/period.ts) — never UTC: a PO dated "today" must archive on the squadron's today
   const due = st.people.filter(p =>
     p.to !== null && p.poArchive === true && today > p.to &&
     (PEOPLE as any)[p.id] && !(PEOPLE as any)[p.id].archived && !(PEOPLE as any)[p.id].special)

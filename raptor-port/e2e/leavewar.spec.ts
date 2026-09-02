@@ -1165,7 +1165,7 @@ test('the viewer\'s row is lit and the title sheet answers with their numbers', 
   await page.locator('[data-testid="person-prowler"]').click()
   const figs = page.locator('[data-testid="person-figures"]')
   await expect(figs).toBeVisible()
-  await expect(figs.locator('.crow-wrap')).toHaveCount(12)
+  await expect(figs.locator('.crow-wrap')).toHaveCount(11)
   // A member reaches no editor from here.
   await expect(page.locator('[data-testid="person-edit"]')).toHaveCount(0)
 })
@@ -2388,7 +2388,7 @@ test('every Rearrange control is reachable within the viewport', async ({ page }
   await lwRole(page, 'admin')
   await page.locator('[data-testid="roster-arrange"]').click()
   const vw = page.viewportSize()!.width
-  for (const id of ['roster-autosort', 'event-add', 'sans-toggle', 'counter-add', 'counter-reset-all']) {
+  for (const id of ['roster-autosort', 'event-add', 'sans-toggle', 'counter-add', 'counter-reset-all', 'oil-tracker']) {
     const btn = page.locator(`[data-testid="${id}"]`)
     await expect(btn).toBeVisible()
     const box = (await btn.boundingBox())!

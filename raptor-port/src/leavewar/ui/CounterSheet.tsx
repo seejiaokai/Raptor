@@ -15,10 +15,12 @@
 // the figures are REORDERED: the ▲▼ on each row move it, persisted, so the
 // column cycles in the squadron's own preferred order.
 
-import { figureParts, orderedFigures, type Figure, type Person } from '../engine'
-import { getState, moveFigure, resetFigureOrder } from '../state/store'
+import { useState } from 'react'
+import { figureParts, orderedFigures, type CounterName, type Figure, type Person } from '../engine'
+import { figureCtxOf, getState, moveFigure, resetFigureOrder } from '../state/store'
 import { Sheet } from './Sheet'
 import './bidpicker.css'
+import './oiltracker.css'
 
 /** Rounds for display only, the same rule the grid and the count rows use. */
 const show = (n: number) => String(Math.round(n * 10) / 10)
@@ -32,9 +34,9 @@ export function CounterSheet({
   onPick: (id: string) => void
   onClose: () => void
 }) {
-  const { people, openings, ledger, wars, figureOrder, role, viewer } = getState()
+  const { people, figureOrder, role, viewer } = getState()
   const figures = orderedFigures(figureOrder)
-  const ctx = { openings, ledger, sources: wars }
+  const ctx = figureCtxOf()
   // The person LOOKING at the page, when the roster holds them — each row
   // then answers with THEIR number (owner, 17 Aug 26: the title tap should
   // show "what was used or balance of that individual"), because "how much
@@ -93,7 +95,7 @@ export function CounterSheet({
           // to compress the sheet (owner, 28 Aug 26 — "compress the data").
           const caption = f.legend ? `= ${f.legend}` : null
           // "yours" is gone from every row — the VIEWING AS header now says
-          // whose numbers these are, once, instead of twelve times.
+          // whose numbers these are, once, instead of eleven times.
           const totalNote = f.kind === 'bal' ? 'left' : 'taken'
           return (
             <div
@@ -183,8 +185,7 @@ export function FigureBreakdownSheet({
   person: Person
   onClose: () => void
 }) {
-  const { openings, ledger, wars } = getState()
-  const ctx = { openings, ledger, sources: wars }
+  const ctx = figureCtxOf()
   const parts = figureParts(figure, ctx, person.id)
   const total = figure.value(ctx, person.id)
 
@@ -229,27 +230,41 @@ export function FigureBreakdownSheet({
  * everyone (owner, 17 Aug 26: "everyone should be able to click on that
  * person's name and see these logics"). Where the column shows one figure at
  * a time and the breakdown sheet opens one figure's parts, this is the whole
- * picture: each of the twelve figures with this person's own number. Tapping
+ * picture: each of the eleven figures with this person's own number. Tapping
  * a row opens that figure's parts breakdown for this person, so the two
  * sheets chain into the full story. An admin also gets the Edit person
  * button here — the callsign tap used to be the edit shortcut for them, and
  * the edit surface must not become unreachable because the tap now informs.
+ *
+ * Two rows are special since 2 Sep 26 (owner): OIL BAL hands over to the
+ * OIL TRACKER (the ledger behind the number) instead of the flat breakdown,
+ * and an admin can SET the LVE BAL — "manually input and change LVE BAL …
+ * every time a LL or OL is taken it deducts from it" — through a Set button
+ * beside the row that moves the opening figure (store `setBalance`).
  */
 export function PersonFiguresSheet({
   person,
   onOpenFigure,
+  onOpenOil,
+  onSetBalance,
   onEdit,
   onClose,
 }: {
   person: Person
   onOpenFigure: (figureId: string) => void
+  /** Opens the OIL tracker on this person — the OIL BAL row's tap. */
+  onOpenOil?: () => void
+  /** Present for an admin only — the LVE BAL row grows a Set button. */
+  onSetBalance?: (counter: CounterName, target: number) => void
   /** Present for an admin only — opens the person EDITOR (PersonSheet). */
   onEdit?: () => void
   onClose: () => void
 }) {
-  const { openings, ledger, wars, figureOrder } = getState()
+  const { figureOrder } = getState()
   const figures = orderedFigures(figureOrder)
-  const ctx = { openings, ledger, sources: wars }
+  const ctx = figureCtxOf()
+  // The LVE BAL row's edit draft — the typed text, or null when not editing.
+  const [balDraft, setBalDraft] = useState<string | null>(null)
 
   return (
     <Sheet testid="person-figures" label={`${person.callsign}'s figures`} onClose={onClose}>
@@ -266,15 +281,55 @@ export function PersonFiguresSheet({
       <div className="clist">
         {figures.map(f => {
           const v = f.value(ctx, person.id)
+          const toOil = f.id === 'oilbal' && !!onOpenOil
+          const settable = f.id === 'lvebal' && !!onSetBalance
+          const editing = settable && balDraft !== null
+          const caption = toOil
+            ? 'tap to open the OIL tracker · oldest credit is used first'
+            : settable
+              ? 'set by admin · LL and OL deduct from it'
+              : f.legend ? `= ${f.legend}` : f.desc
+          const commit = () => {
+            const n = Number(balDraft)
+            if (balDraft === null || balDraft.trim() === '' || !Number.isFinite(n)) return
+            onSetBalance!(  'annual', n)
+            setBalDraft(null)
+          }
           return (
             <div key={f.id} className="crow-wrap" data-testid={`pfig-${f.id}`}>
-              <button className="crow" onClick={() => onOpenFigure(f.id)}>
+              <button className="crow" onClick={() => (toOil ? onOpenOil!() : onOpenFigure(f.id))}>
                 <span className="crow-top">
                   <span className="cn">{f.label}</span>
                   <span className={`ct${v < 0 ? ' neg' : ''}`}>{show(v)} {f.kind === 'bal' ? 'left' : 'taken'}</span>
                 </span>
-                <span className="csub">{f.legend ? `= ${f.legend}` : f.desc}</span>
+                <span className="csub">{caption}</span>
               </button>
+              {/* Its own hit target beside the row — a button cannot nest a
+                  button, and the row's tap opens the breakdown. */}
+              {settable && !editing && (
+                <span className="cmove">
+                  <button className="cmv setbal" data-testid="lvebal-edit" onClick={() => setBalDraft(show(v))} aria-label="Set the leave balance">
+                    Set
+                  </button>
+                </span>
+              )}
+              {editing && (
+                <span className="cmove setbal-edit">
+                  <input
+                    type="number"
+                    step="0.5"
+                    className="oil-num"
+                    data-testid="lvebal-input"
+                    value={balDraft}
+                    autoFocus
+                    onChange={e => setBalDraft(e.target.value)}
+                    onKeyDown={e => { if (e.key === 'Enter') commit(); if (e.key === 'Escape') setBalDraft(null) }}
+                    aria-label="Leave balance"
+                  />
+                  <button className="cmv setbal" data-testid="lvebal-save" onClick={commit}>Save</button>
+                  <button className="cmv setbal dim" data-testid="lvebal-cancel" onClick={() => setBalDraft(null)}>✕</button>
+                </span>
+              )}
             </div>
           )
         })}

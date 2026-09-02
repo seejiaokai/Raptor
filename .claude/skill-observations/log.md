@@ -717,3 +717,18 @@ gate's. Keep verdict-bearing commands unpiped.
 **Suggested improvement:** Treat the preview link as the reply-worthy event: push → reply with the link → keep going. Never block a user-visible reply on a multi-minute rollout when a faster verifiable surface exists. Recorded the new merge gate in CLAUDE.md.
 
 **Principle:** When a delivery pipeline has a fast preview stage and a slow publish stage, the user-facing reply belongs at the fast stage; the slow stage is background work, and whether it runs at all is the owner's call, not a default.
+
+### Observation 46: A plan-critique agent pays for itself on a multi-module feature
+
+**Status:** OPEN
+**Date:** 2026-09-02
+**Session context:** Building the Leave War OIL tracker (engine + store + sheet + docs) from a plan written after three Explore-agent maps.
+**Skill:** task-observer (planning discipline; applies to any plan-mode workflow)
+**Type:** open-source
+**Phase/Area:** Plan mode, Phase 2 (design review before implementation)
+
+**Issue:** The first plan draft looked complete, but a single Plan-agent critique pass against the actual code found four real defects before a line was written: an import CYCLE the plan would have created (counters ↔ oiltracker), a second reader of the same rule that would have drifted (the bid-time balance warning vs the new OIL BAL), a missing date helper (no addMonths existed; end-of-month clamping had to be decided), and an id field that would have leaked on screen (viewer id vs callsign). Each would have surfaced late — as a vitest 'undefined' under a cycle, or as a visible bug.
+
+**Suggested improvement:** For any plan touching three or more modules, run one critique agent with a checklist of exactly these questions: cycles in the proposed import graph, every existing reader of a rule the plan changes, helpers the plan assumes exist, and any id/handle the UI will print. Keep it to one pass; a second rarely finds more.
+
+**Principle:** A plan is cheapest to fix before it is code; one adversarial read of the plan against the real code, with a fixed checklist, catches the class of defect that tests only reveal after the wiring is in.

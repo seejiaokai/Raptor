@@ -49,6 +49,13 @@ import {
   GROUP_ORDER,
   orderedPeople,
   readEventDefs,
+  DEFAULT_OIL_POLICY,
+  readOilPolicy,
+  type OilPolicy,
+  type FigureCtx,
+  grantedTo,
+  drawnFrom,
+  localToday,
   bandOverlaps,
   warHolding,
   STAGE_ORDER,
@@ -122,6 +129,12 @@ interface State {
    *  version of a truth the grid already holds. */
   openings: Openings
   ledger: Ledger
+  /** The OIL TRACKER's policy (owner, 2 Sep 26): how long a credit lasts
+   *  before it expires (or forever) and the history window the tracker opens
+   *  on. Squadron-wide, ADMIN-gated, persisted under `oilpolicy`. Read by
+   *  every OIL BAL figure through `figureCtxOf`, so a change here re-reads
+   *  every balance at once (engine/oiltracker.ts). */
+  oilPolicy: OilPolicy
   /** Who the person at the keyboard says they are. Nothing verifies it —
    *  there is no login — so this decides which controls appear, not who is
    *  allowed to use them. See `docs/known-gaps.md`. */
@@ -250,6 +263,7 @@ function blank(): State {
     currentId: wars[0].period.id,
     openings: seedOpenings(),
     ledger: seedLedger(),
+    oilPolicy: { ...DEFAULT_OIL_POLICY },
     figureOrder: [...DEFAULT_FIGURE_ORDER],
     rosterOrder: [],
     persLabels: {},
@@ -731,6 +745,7 @@ export function initStore(b?: StorageBackend): void {
   const openings = readStored('openings', readOpenings) ?? seedOpenings()
   const ledger = readStored('ledger', readLedger) ?? seedLedger()
   const eventDefs = readStored('eventdefs', readEventDefs) ?? seedEventDefs()
+  const oilPolicy = readStored('oilpolicy', readOilPolicy) ?? { ...DEFAULT_OIL_POLICY }
   const figureOrder = readStored('figorder', readFigureOrder) ?? [...DEFAULT_FIGURE_ORDER]
   const rosterOrder = readStored('rosterorder', readIdList) ?? []
   const persLabels = readStored('perslabels', readLabelMap) ?? {}
@@ -763,7 +778,7 @@ export function initStore(b?: StorageBackend): void {
      boot, so a stored copy could only ever disagree with the roster Raptor
      is actually flying. Boot leaves the seed — the vendored unit suite reads
      it pristine — and the projection that follows replaces it. */
-  state = withCurrent({ ...state, wars, currentId, openings, ledger, eventDefs, figureOrder, rosterOrder, persLabels, manningOrder, manningHidden, groupDefs, groupPriority, requirements, eventRows, showSans })
+  state = withCurrent({ ...state, wars, currentId, openings, ledger, oilPolicy, eventDefs, figureOrder, rosterOrder, persLabels, manningOrder, manningHidden, groupDefs, groupPriority, requirements, eventRows, showSans })
 
   version = 0
   listeners.clear()
@@ -825,6 +840,7 @@ function persist(): void {
   backend.write('current', state.currentId)
   backend.write('openings', JSON.stringify(state.openings))
   backend.write('ledger', JSON.stringify(state.ledger))
+  backend.write('oilpolicy', JSON.stringify(state.oilPolicy))
   backend.write('eventdefs', JSON.stringify(state.eventDefs))
   backend.write('figorder', JSON.stringify(state.figureOrder))
   backend.write('rosterorder', JSON.stringify(state.rosterOrder))
@@ -897,7 +913,7 @@ function locked<T>(fn: () => T): T {
 function historySnap(): string {
   const s = state
   return JSON.stringify({
-    wars: s.wars, openings: s.openings, ledger: s.ledger, eventDefs: s.eventDefs,
+    wars: s.wars, openings: s.openings, ledger: s.ledger, oilPolicy: s.oilPolicy, eventDefs: s.eventDefs,
     figureOrder: s.figureOrder, rosterOrder: s.rosterOrder, persLabels: s.persLabels,
     manningOrder: s.manningOrder, manningHidden: s.manningHidden,
     groupDefs: s.groupDefs, groupPriority: s.groupPriority,
@@ -954,7 +970,7 @@ export function lwHistEpoch(): number {
 function historyApply(i: number): void {
   if (i < 0 || i >= HIST.stack.length) return
   const snap = JSON.parse(HIST.stack[i]) as Pick<State,
-    'wars' | 'openings' | 'ledger' | 'eventDefs' | 'figureOrder' | 'rosterOrder'
+    'wars' | 'openings' | 'ledger' | 'oilPolicy' | 'eventDefs' | 'figureOrder' | 'rosterOrder'
     | 'persLabels' | 'manningOrder' | 'manningHidden' | 'groupDefs'
     | 'groupPriority' | 'requirements' | 'eventRows' | 'showSans'>
   HIST.ix = i
@@ -1900,6 +1916,143 @@ export function resetEventTypes(): void {
   state = withCurrent({ ...state, eventDefs: seedEventDefs() })
   persist()
   notify()
+}
+
+/* THE OIL TRACKER writers (owner, 2 Sep 26 — "admin can only edit the list,
+   members can only view it"). ADMIN-GATED at the write path like every other
+   management surface. The tracker itself is DERIVED (engine/oiltracker.ts);
+   what an admin writes is the LEDGER (a grant, a correction, an edit or a
+   deletion of one — the first interface the ledger has ever had) and the
+   POLICY (expiry, default history window). Earned FO/HO days are never
+   written here: they are the publish wire's cells, read straight off the
+   grid, and a ledger copy would be the two-records-of-one-fact counters.ts
+   refuses. */
+
+export const MAX_REASON = 120
+const ISO_DAY = /^\d{4}-\d{2}-\d{2}$/
+
+/** Everything a figure needs to read a person's number, from the live state
+ *  — ONE builder so the column, the picker, the breakdown, the Cinch sheet,
+ *  the bid-time warning and the tracker all read the same OIL policy and the
+ *  same "today". Four hand-built literals used to do this; they could drift. */
+export function figureCtxOf(): FigureCtx {
+  return { openings: state.openings, ledger: state.ledger, sources: state.wars, oilPolicy: state.oilPolicy, asOf: localToday() }
+}
+
+export function setOilPolicy(patch: Partial<OilPolicy>): boolean {
+  if (state.role !== 'admin') return false
+  // Through the untrusted reader on purpose: it is the one place the bounds
+  // live, so a sheet cannot store a policy the next boot would throw away.
+  const next = readOilPolicy({ ...state.oilPolicy, ...patch })
+  if (!next) return false
+  state = withCurrent({ ...state, oilPolicy: next })
+  persist()
+  notify()
+  return true
+}
+
+/** The sentence that stops a bad ledger write, or null. Stricter than the
+ *  boot reader (which tolerates any string date and a zero amount, so an
+ *  older stored ledger still loads): a NEW entry with no date or nothing in
+ *  it is a mistake worth telling the admin about. */
+function ledgerProblem(amount: number, date: string, reason: string): string | null {
+  if (!Number.isFinite(amount) || amount === 0) return 'The amount must be a number other than 0'
+  if (!ISO_DAY.test(date)) return 'Pick a date'
+  const clean = reason.trim()
+  if (!clean) return 'Give a reason'
+  if (clean.length > MAX_REASON) return `A reason is at most ${MAX_REASON} characters`
+  return null
+}
+
+/** Ids are `ol-N`, N past the highest one stored — deterministic (no clock),
+ *  so two grants in one batch, or one right after another, never collide. */
+function ledgerSeq(): number {
+  let max = 0
+  for (const e of state.ledger) {
+    const m = /^ol-(\d+)$/.exec(e.id)
+    if (m) max = Math.max(max, Number(m[1]))
+  }
+  return max
+}
+
+/** The approver stamped on a grant: the CALLSIGN of whoever is viewing
+ *  (`viewer` is a person id and would leak on screen), or "admin". */
+function approverName(): string {
+  return state.people.find(p => p.id === state.viewer)?.callsign ?? 'admin'
+}
+
+/**
+ * Credit OIL to one or many people at once — the tracker's "credit N
+ * people" (owner: "drag and select all WSOs to put OIL, date and reason").
+ * A NEGATIVE amount is a correction, not a second mechanism (§Counters).
+ * Returns the error sentence for the sheet, or null on success. One state
+ * write for the whole batch → one persist, one undo step.
+ */
+export function grantOil(personIds: string[], amount: number, date: string, reason: string): string | null {
+  if (state.role !== 'admin') return 'Only an admin can credit OIL'
+  const ids = [...new Set(personIds)].filter(id => state.people.some(p => p.id === id))
+  if (!ids.length) return 'Pick at least one person'
+  const problem = ledgerProblem(amount, date, reason)
+  if (problem) return problem
+  const approvedBy = approverName()
+  let n = ledgerSeq()
+  const entries: Ledger = ids.map(personId => ({
+    id: `ol-${++n}`, personId, counter: 'oil' as const, amount, date, reason: reason.trim(), approvedBy,
+  }))
+  state = withCurrent({ ...state, ledger: [...state.ledger, ...entries] })
+  persist()
+  notify()
+  return null
+}
+
+/** Edit a grant in place — amount, date or reason. The approver stays who it
+ *  was; the edit is visible in undo, which is the audit trail here. */
+export function updateLedgerEntry(id: string, patch: { amount?: number; date?: string; reason?: string }): string | null {
+  if (state.role !== 'admin') return 'Only an admin can edit OIL'
+  const cur = state.ledger.find(e => e.id === id)
+  if (!cur) return 'That entry is gone'
+  const amount = patch.amount ?? cur.amount
+  const date = patch.date ?? cur.date
+  const reason = patch.reason ?? cur.reason
+  const problem = ledgerProblem(amount, date, reason)
+  if (problem) return problem
+  state = withCurrent({ ...state, ledger: state.ledger.map(e => (e.id === id ? { ...e, amount, date, reason: reason.trim() } : e)) })
+  persist()
+  notify()
+  return null
+}
+
+export function removeLedgerEntry(id: string): boolean {
+  if (state.role !== 'admin') return false
+  if (!state.ledger.some(e => e.id === id)) return false
+  state = withCurrent({ ...state, ledger: state.ledger.filter(e => e.id !== id) })
+  persist()
+  notify()
+  return true
+}
+
+/**
+ * Set a person's BALANCE of a counter to read exactly `target` now (owner,
+ * 2 Sep 26 — "enable me to manually input and change LVE BAL … every time a
+ * LL or OL is taken it deducts from it"). A balance is never stored
+ * (counters.ts), so this moves the OPENING FIGURE by whatever makes
+ * `opening + granted − drawn` equal the target; the leave already on the
+ * grid stays counted and every LL/OL after this deducts as before. The
+ * breakdown sheet shows the new opening, so the number is explained, not
+ * hidden.
+ */
+export function setBalance(personId: string, counter: CounterName, target: number): boolean {
+  if (state.role !== 'admin') return false
+  if (!state.people.some(p => p.id === personId)) return false
+  if (!Number.isFinite(target)) return false
+  const opening = target - grantedTo(state.ledger, personId, counter) + drawnFrom(state.wars, personId, counter)
+  state = withCurrent({
+    ...state,
+    openings: { ...state.openings, [personId]: { ...state.openings[personId], [counter]: Math.round(opening * 1e6) / 1e6 || 0 } },
+  })
+  persist()
+  notify()
+  return true
 }
 
 /* THE COUNTER-COLUMN FIGURE ORDER writers. ADMIN-GATED (owner, 17 Aug 26:

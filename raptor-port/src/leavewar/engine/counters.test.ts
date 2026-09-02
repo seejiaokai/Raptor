@@ -365,16 +365,19 @@ describe('the two consumed aggregates', () => {
 })
 
 describe('FIGURES and orderedFigures', () => {
-  it('is the twelve figures in the owner\'s order — OIL BAL joined with wire 4', () => {
+  // Eleven since 2 Sep 26: OFF USED went (owner — "remove the OFF used
+  // counter"); OFF still counts inside LVE USED.
+  it('is the eleven figures in the owner\'s order — OIL BAL joined with wire 4, OFF USED removed', () => {
     expect(FIGURES.map(f => f.label)).toEqual([
-      'LL USED', 'OL USED', 'OIL USED', 'OIL BAL', 'OFF USED', 'CCL USED', 'PL USED',
+      'LL USED', 'OL USED', 'OIL USED', 'OIL BAL', 'CCL USED', 'PL USED',
       'FCL USED', 'MED USED', 'OML USED', 'LVE BAL', 'LVE USED',
     ])
+    expect(FIGURES.find(f => f.label === 'OFF USED')).toBeUndefined()
   })
 
   it('has exactly two balance figures — LVE BAL and OIL BAL (wire 4\'s landing strip); every other is consumed', () => {
     expect(FIGURES.filter(f => f.kind === 'bal').map(f => f.label)).toEqual(['OIL BAL', 'LVE BAL'])
-    expect(FIGURES.filter(f => f.kind === 'con')).toHaveLength(10)
+    expect(FIGURES.filter(f => f.kind === 'con')).toHaveLength(9)
   })
 
   it('carries each aggregate\'s composition as its legend', () => {

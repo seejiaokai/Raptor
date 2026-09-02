@@ -57,7 +57,8 @@ by this). `localBackend` is still in `storage.ts` for reference and tests; the
 future shared backend that "pushes, not just persists" replaces the seam.
 
 Storage now holds five keys, not one: `wars` (each carrying its own period,
-grid and states), `current`, `role`, `openings` and `ledger`. They are written together by a single `persist()` so
+grid and states), `current`, `role`, `openings` and `ledger` (plus the admin
+config keys since — `oilpolicy` among them, 2 Sep 26). They are written together by a single `persist()` so
 no path can save one and forget another, and `initStore` reconciles each
 war's grid and states on load — a stored state whose cell no longer holds a
 bid is dropped rather than left to colour the wrong cell.
@@ -135,13 +136,44 @@ Balances are computed and on screen. Two parts of §Counters are not built:
   **OIL BAL figure** joined the counter column as its landing strip. The
   wire itself: `src/leavewar/sync.ts` `runOilPass`, tested in
   `src/leavewar/oilsync.test.ts`.
-- **No grant sheet.** The ledger is seeded and read; nothing can post a
-  top-up, an award or a correction through the interface.
-- **No ledger view.** §Counters promises that any number on screen can be
-  opened and explained. The breakdown sheet (17 Aug 26 — tap a person's
-  counter cell) now answers the first layer: the figure's composition, a
-  balance as opening + granted (+ earned) − taken. The individual LEDGER
-  ENTRIES behind "granted" are still not visible anywhere.
+- **RESOLVED 2 Sep 26 — the OIL TRACKER is both the grant sheet and the
+  ledger view (owner ask).** `ui/OilTracker.tsx`, opened from the toolbar
+  button beside Auto-sort (both roles) or from the Cinch sheet's OIL BAL row.
+  Everyone's OIL BAL in the roster's grouped order; one person's ledger
+  newest-first — every credit (an earned FO/HO day with its derived reason
+  `weekend duty`/`PH duty`, an admin's grant with its reason and approver,
+  the opening figure) and every OIL day taken. An ADMIN credits OIL (any
+  number — negative is a correction — a date from the calendar, an open-text
+  reason) to one person or to a picked/dragged/Select-all batch in one
+  write (`store.ts:grantOil`, ids `ol-N`, approver = the viewer's callsign),
+  edits or deletes a grant in place (`updateLedgerEntry`/`removeLedgerEntry`),
+  and sets the POLICY (`setOilPolicy`, persisted `oilpolicy`): how long a
+  credit lasts — N days / N months from its own date, or forever — and the
+  default history window (from the first entry, or N months back). The
+  engine half is `engine/oiltracker.ts`, PURE and DERIVED: **a taken day
+  draws the OLDEST credit first** (FIFO; a credit already expired on the
+  taking day is skipped), whatever is left of a credit past its expiry is
+  `expired` and leaves the balance, the opening figure never expires, and
+  what no credit covers is overdraw (shown negative, never refused). With
+  NO expiry the tracker's balance is byte-identical to `balanceOf(…,'oil')`
+  (pinned for every seeded person) — so `OIL BAL` is now the tracker's
+  balance everywhere (`counters.ts:oilLedgerOf`), the breakdown grows an
+  `expired` row only when something did, and the bid-time "leaves you at −x"
+  warning reads OIL the same way (`Matrix.tsx:wouldLeave`). One
+  `store.ts:figureCtxOf()` feeds every figure surface so none can drift.
+  Earned days are STILL not ledger entries — the FO/HO cell is the record
+  and the tracker reads it; the grants the ledger holds are the only rows
+  an admin can touch. Members see everything and edit nothing (absent
+  controls; the store refuses regardless). Only-just-still open: the drag
+  is mouse/pen (a finger scrolls, and taps the boxes / a group's Select
+  all), and there is no edge auto-scroll while dragging.
+- **An admin can SET the LVE BAL (2 Sep 26, owner ask — "manually input and
+  change LVE BAL … every time a LL or OL is taken it deducts from it").** A
+  `Set` beside the Cinch sheet's LVE BAL row; `store.ts:setBalance` moves
+  the OPENING FIGURE by whatever makes `opening + granted − drawn` read the
+  typed number, so leave already on the grid stays counted and every LL/OL
+  after it deducts as before — no stored balance, the breakdown explains
+  the new opening. Any counter, though only `annual` has a control.
 
 Also note the derivation, because it narrows the spec deliberately: §Counters
 says every change to a counter is a ledger entry, and **leave taken is not
@@ -152,18 +184,20 @@ the grid cannot know.
 ## The counter column is figures, not raw counters (Aug 26)
 
 The frozen column no longer cycles the six entitlement counters. It cycles
-TWELVE named figures (owner's set; `OIL BAL` joined with wire 4), each
-labelled `BAL` (a balance left) or `USED` (days taken):
+ELEVEN named figures (owner's set; `OIL BAL` joined with wire 4; `OFF USED`
+was the twelfth until 2 Sep 26 — owner: "remove the OFF used counter" — OFF
+still counts inside LVE USED, it just has no row), each labelled `BAL` (a
+balance left) or `USED` (days taken):
 
-    LL USED · OL USED · OIL USED · OIL BAL · OFF USED · CCL USED · PL USED ·
+    LL USED · OL USED · OIL USED · OIL BAL · CCL USED · PL USED ·
     FCL USED · MED USED · OML USED · LVE BAL · LVE USED
 
-- **Ten are consumed (`USED`)** — days of that type taken, read per-TYPE by
+- **Nine are consumed (`USED`)** — days of that type taken, read per-TYPE by
   `takenOf` (not the per-counter `drawnFrom`, which cannot tell LL from OL —
   both spend the one annual pool). Two are aggregates: `MED USED` = ATT C + HL +
   OML, `LVE USED` = LL+OL+OIL+OFF+CCL+PL+FCL (medical deliberately excluded).
-- **One is a balance (`LVE BAL`)** — the annual pool, `opening + grants −
-  drawn`, the only figure that can go negative and red. The other entitlement
+- **Two are balances (`LVE BAL`, `OIL BAL`)** — the annual pool, `opening + grants −
+  drawn` (admin-settable since 2 Sep 26, see above), and the OIL tracker's balance; both can go negative and red. The other entitlement
   balances (OIL/CCL/FCL/PL/EL) are still computed by `balanceOf` and used by
   the bid-warning path, but are NOT surfaced in the column — the owner asked
   for exactly the eleven above. EL is dropped from the column yet stays a valid
@@ -191,9 +225,11 @@ labelled `BAL` (a balance left) or `USED` (days taken):
   which is exactly the trap the file's header warns about.
 - **Any callsign tap opens that person's ALL-FIGURES sheet, for every role**
   (owner: "everyone should be able to click on that person's name and see
-  these logics") — the twelve figures with that person's numbers, each row
-  opening its parts breakdown; an admin reaches the person EDITOR through
-  the sheet's "Edit person" button (the old direct-to-editor tap).
+  these logics") — the eleven figures with that person's numbers, each row
+  opening its parts breakdown (the OIL BAL row opens the OIL TRACKER instead,
+  2 Sep 26); an admin reaches the person EDITOR through
+  the sheet's "Edit person" button (the old direct-to-editor tap), and sets
+  the LVE BAL from its row.
 - **Medical is FOUR markers now** — `ATTB` (shown as a bare "B" on the grid),
   `ATTC` (shown "C"), `HL`, `OML` — B joined 17 Aug 26 ("u can indicate,
   B (att b), C (att c), OML, HL"), and since the same day they TAKE PORTIONS
@@ -742,7 +778,7 @@ Quals-tick-lifts-the-count integration — are pinned in
   `persist()` writes (every war's grid / states / period, the counter ledger and
   openings, and all of the admin arrangement/config: figure & roster & manning
   order, hidden rows, group defs & priority, manning rules, event types & rows,
-  Show SANS). The push lives INSIDE `persist()` (a save is the edit), so no
+  Show SANS, the OIL policy). The push lives INSIDE `persist()` (a save is the edit), so no
   writer can add an undoable change and forget to record it. Deliberately NOT
   undoable, do not "fix":
   - **Navigation and identity** — which war is on screen, who you are viewing
