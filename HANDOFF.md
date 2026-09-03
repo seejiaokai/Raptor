@@ -630,8 +630,14 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
   `editweek`, `draftsui`, `textedit`, `peek`); and the real-browser pin in
   `e2e/geometry.spec.ts` asserts zero `draggable="true"` on the page before
   it drags. Cost: nothing new — what the third cut carried (no OS
-  not-allowed cursor, a drag cannot leave the window) is unchanged. Still
-  unverified on the SIS browser itself. If the white box shows after THIS,
+  not-allowed cursor, a drag cannot leave the window) is unchanged.
+  **CONFIRMED WORKING ON THE SIS BROWSER (owner, 3 Sep 26): "it works" —
+  tested on the Vercel branch preview (which the SIS browser CAN reach; that
+  is the fast loop, no merge-to-Pages needed to test a secured-browser fix)
+  with the fourth cut and belts. The white box is gone and drops land.** This
+  is the four-cut saga's resolution: the cure was removing every draggable
+  element so the browser never starts a drag, not any image handed to a drag
+  it does. Kept below for the record. If the white box ever shows again,
   the page has no draggable element left to blame, and the next question is
   whether that browser relays pointer events to the page at all — a photo
   plus "does the puck follow the mouse before you let go?" answers it, and
