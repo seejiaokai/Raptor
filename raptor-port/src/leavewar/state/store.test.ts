@@ -2437,11 +2437,12 @@ describe('setBalance: an admin types the balance, LL and OL deduct from it', () 
 
   it('makes LVE BAL read the target now, by moving the opening figure', () => {
     const lvebal = FIGURES.find(f => f.id === 'lvebal')!
-    // ramp: 12 opening + 14 top-up − 1 drawn = 25 in the seed.
-    expect(lvebal.value(figureCtxOf(), 'ramp')).toBe(25)
+    // ramp: 12 opening + 14 top-up − 0 drawn = 26 in the seed — his one OL
+    // sits on 1 Jan, a seeded PH, which charges nothing since 3 Sep 26.
+    expect(lvebal.value(figureCtxOf(), 'ramp')).toBe(26)
     expect(setBalance('ramp', 'annual', 30)).toBe(true)
     expect(lvebal.value(figureCtxOf(), 'ramp')).toBe(30)
-    expect(getState().openings.ramp.annual).toBe(17)     // 30 − 14 granted + 1 drawn
+    expect(getState().openings.ramp.annual).toBe(16)     // 30 − 14 granted + 0 drawn
     // The parts still explain it.
     const parts = figureParts(lvebal, figureCtxOf(), 'ramp')
     expect(parts.reduce((s, p) => s + p.value, 0)).toBe(30)

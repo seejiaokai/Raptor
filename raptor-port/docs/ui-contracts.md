@@ -5074,7 +5074,8 @@ feel he rejected on 10 Aug 26). The fix-by-fix history follows.
   confirmed on a Duty & commitments input, never typed here, so the
   accent-tinted
   `.leg-sec-here` heading marks them out), then Medical (the grid's `B`/`C`
-  shorthand + HL/OML), Leave (LL…OFF) and Other duty (CSE/OD). The glossary is
+  shorthand + HL/OML), Leave (LL…EL, CL — the catalogue's eight since 3 Sep 26;
+  OFF left it 2 Sep 26) and Other duty (CSE/OD). The glossary is
   built straight from the catalogue's own label tables (one source, no drift),
   and each swatch takes the grid's own colour by the SAME rule the cell does
   (`isDuty` → `sc`, non-bid marker → `info`, leave → plain — mirrored into

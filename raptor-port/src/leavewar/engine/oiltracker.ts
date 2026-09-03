@@ -37,12 +37,14 @@
 // then the breakdown gains an `expired` row so its parts still sum.
 //
 // Pure: no store, no clock. `asOf` (today) and the policy are passed in.
-// Imports values from bids/codes/period only, and counters as TYPES only —
+// Imports values from charge/codes/period only, and counters as TYPES only —
 // counters.ts imports THIS module for the OIL BAL figure, so a value import
-// back would be a cycle.
+// back would be a cycle. The weekend/PH charging rule (charge.ts, 3 Sep 26)
+// is read here for the debits, so OIL USED and the tracker's balance move
+// together: an OIL day on a Saturday takes nothing from either.
 
-import { removesAvailability, stateOf } from './bids'
-import { codeOf, parseCell, portionAmount } from './codes'
+import { chargedDays } from './charge'
+import { codeOf } from './codes'
 import type { FigureCtx } from './counters'
 import { addDays, addMonths, isWeekend } from './period'
 
@@ -193,6 +195,9 @@ export function oilLedgerFor(ctx: FigureCtx, personId: string, policy: OilPolicy
     }
   }
 
+  // Which OIL days actually charge — the weekend/PH rule, and the pilots'
+  // 15-day run rule, decided ONCE for the person across every war.
+  const charged = chargedDays(ctx.sources, personId, ctx)
   ctx.sources.forEach(({ grid, states }, wi) => {
     for (const [date, code] of Object.entries(grid[personId] ?? {})) {
       const earns = codeOf(code)?.earnsOil ?? 0
@@ -206,11 +211,12 @@ export function oilLedgerFor(ctx: FigureCtx, personId: string, policy: OilPolicy
         credits.push({ id: `auto:${wi}:${date}`, date, amount: earns, reason, source: 'auto', ...(manual ? { manual } : {}), expires: expiryOf(date, policy), used: [], left: earns, expired: 0 })
         continue
       }
-      const cell = parseCell(code)
-      if (!cell || cell.type !== 'OIL') continue
-      if (!removesAvailability(code, stateOf(states, personId, date))) continue
-      const amount = portionAmount(cell.portion)
-      debits.push({ id: `take:${wi}:${date}`, date, amount, reason: cell.portion === 'full' ? 'OIL taken' : `OIL taken (${cell.portion.toUpperCase()})`, source: 'taken', from: [], unbacked: 0 })
+      const cell = codeOf(code)
+      if (!cell || cell.spends?.counter !== 'oil') continue
+      const t = charged.get(date)
+      if (!t) continue
+      const half = cell.code.startsWith('*') ? 'AM' : cell.code.endsWith('*') ? 'PM' : null
+      debits.push({ id: `take:${wi}:${date}`, date, amount: t.amount, reason: half ? `OIL taken (${half})` : 'OIL taken', source: 'taken', from: [], unbacked: 0 })
     }
   })
 

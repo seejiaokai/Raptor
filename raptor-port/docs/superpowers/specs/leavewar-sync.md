@@ -203,8 +203,9 @@ is a separately shippable batch.**
 ## What is already true (verified at the merge, both codebases first-hand)
 
 - **The vocabularies match.** Raptor's `INPUT_META` carries all eight of
-  Leave War's leave types — LL, OL, OIL, OFF, CCL, PL, FCL, EL, every one
-  `grp:'leave'` — and both sides call OFF "no leave counter". Leave War's
+  Leave War's leave types — LL, OL, OIL, CCL, PL, FCL, EL and, since 3 Sep 26,
+  CL (compassionate leave; OFF left both sides 2 Sep 26), every one
+  `grp:'leave'`. Leave War's
   own `known-gaps.md` was written before Raptor caught up and still says
   Raptor holds three leave types and reads every absence as a whole day;
   **both claims are stale** — do not plan against them.

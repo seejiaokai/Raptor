@@ -34,7 +34,9 @@ describe('the counter column', () => {
   // Jan, approved) = 25.
   it('shows the leave balance: opening plus grants less what the grid has drawn', () => {
     render(<Matrix />)
-    expect(screen.getByTestId('bal-ramp').textContent).toBe('25')
+    // 12 opening + 14 granted − 0 taken: ramp's one OL sits on 1 Jan, a
+    // seeded public holiday, which charges nothing since 3 Sep 26 (charge.ts).
+    expect(screen.getByTestId('bal-ramp').textContent).toBe('26')
   })
 
   // The reason the panel cycles figures rather than showing all of them: every
@@ -59,7 +61,7 @@ describe('the counter column', () => {
     expect([...screen.getByTestId('counter-sheet').querySelectorAll('.crow .cn')].map(e => e.textContent))
       .toEqual([
         'LL USED', 'OL USED', 'OIL USED', 'OIL BAL', 'CCL USED', 'PL USED',
-        'FCL USED', 'MED USED', 'OML USED', 'LVE BAL', 'LVE USED',
+        'FCL USED', 'CL BAL', 'CL USED', 'MED USED', 'OML USED', 'LVE BAL', 'LVE USED',
       ])
     fireEvent.click(screen.getByTestId('counter-lvecon'))
     expect(screen.getByTestId('counter-name').textContent).toBe('LVE USED')
@@ -85,7 +87,7 @@ describe('the counter column', () => {
     expect(screen.getByTestId('counter-legend').textContent).toContain('BAL')
     expect(screen.getByTestId('counter-legend').textContent).toContain('USED')
     expect(screen.getByTestId('figsub-med').textContent).toBe('= ATT C + HL + OML')
-    expect(screen.getByTestId('figsub-lvecon').textContent).toBe('= LL + OL + OIL + CCL + PL + FCL')
+    expect(screen.getByTestId('figsub-lvecon').textContent).toBe('= LL + OL + OIL + CCL + PL + FCL + CL')
   })
 
   // The figure is what makes the list answerable: each row previews the
@@ -382,7 +384,8 @@ describe('the per-person breakdown sheet (owner, 17 Aug 26)', () => {
     fireEvent.click(screen.getByTestId('bal-ramp'))
     const sheet = screen.getByTestId('figure-breakdown')
     const rows = [...sheet.querySelectorAll('.crow-top')].map(r => r.textContent)
-    expect(rows).toEqual(['opening figure12', 'granted14', 'taken-1', 'Total25'])
+    // ramp's OL is on New Year's Day (a seeded PH) — taken reads 0 since 3 Sep 26.
+    expect(rows).toEqual(['opening figure12', 'granted14', 'taken0', 'Total26'])
     fireEvent.click(screen.getByTestId('breakdown-close'))
     expect(screen.queryByTestId('figure-breakdown')).toBeNull()
   })
@@ -403,7 +406,7 @@ describe('the picker answers with the viewer\'s own numbers (owner, 17 Aug 26)',
     fireEvent.click(screen.getByTestId('counter-pick'))
     // RAMP's own LVE BAL is 25; the squadron-wide sum is not. ("yours" is gone
     // from the rows now — the VIEWING AS header says whose once, 28 Aug 26.)
-    expect(screen.getByTestId('counter-lvebal').textContent).toContain('25 left')
+    expect(screen.getByTestId('counter-lvebal').textContent).toContain('26 left')
     expect(screen.getByTestId('counter-lvebal').textContent).not.toContain('yours')
     // RAMP's *OIL half-day: 0.5 taken.
     expect(screen.getByTestId('counter-oil').textContent).toContain('0.5 taken')
@@ -449,8 +452,8 @@ describe('a callsign opens the all-figures sheet, for everyone (owner, 17 Aug 26
     const sheet = screen.getByTestId('person-figures')
     expect(sheet.textContent).toContain('RAMP')
     // All eleven figures, in the column's own order (OFF USED went 2 Sep 26).
-    expect(sheet.querySelectorAll('.crow-wrap')).toHaveLength(11)
-    expect(screen.getByTestId('pfig-lvebal').textContent).toContain('25 left')
+    expect(sheet.querySelectorAll('.crow-wrap')).toHaveLength(13)
+    expect(screen.getByTestId('pfig-lvebal').textContent).toContain('26 left')
     expect(screen.getByTestId('pfig-oil').textContent).toContain('0.5 taken')
     // A member gets no editor path.
     expect(screen.queryByTestId('person-edit')).toBeNull()

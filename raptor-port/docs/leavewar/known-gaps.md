@@ -260,26 +260,64 @@ the grid cannot know.
 
 ## The counter column is figures, not raw counters (Aug 26)
 
-The frozen column no longer cycles the six entitlement counters. It cycles
-ELEVEN named figures (owner's set; `OIL BAL` joined with wire 4; `OFF USED`
+The frozen column no longer cycles the seven entitlement counters. It cycles
+THIRTEEN named figures (owner's set; `OIL BAL` joined with wire 4; `OFF USED`
 was the twelfth until 2 Sep 26 — owner: "remove the OFF used counter" — and
-OFF itself stopped being a leave code later that day), each labelled `BAL`
-(a balance left) or `USED` (days taken):
+OFF itself stopped being a leave code later that day; `CL BAL` and `CL USED`
+joined 3 Sep 26 with the compassionate-leave code), each labelled `BAL` (a
+balance left) or `USED` (days taken):
 
     LL USED · OL USED · OIL USED · OIL BAL · CCL USED · PL USED ·
-    FCL USED · MED USED · OML USED · LVE BAL · LVE USED
+    FCL USED · CL BAL · CL USED · MED USED · OML USED · LVE BAL · LVE USED
 
-- **Nine are consumed (`USED`)** — days of that type taken, read per-TYPE by
+- **Ten are consumed (`USED`)** — days of that type taken, read per-TYPE by
   `takenOf` (not the per-counter `drawnFrom`, which cannot tell LL from OL —
   both spend the one annual pool). Two are aggregates: `MED USED` = ATT C + HL +
-  OML, `LVE USED` = LL+OL+OIL+CCL+PL+FCL (medical deliberately excluded; OFF
-  left the sum on 2 Sep 26 when it stopped being a leave code).
-- **Two are balances (`LVE BAL`, `OIL BAL`)** — the annual pool, `opening + grants −
-  drawn` (admin-settable since 2 Sep 26, see above), and the OIL tracker's balance; both can go negative and red. The other entitlement
-  balances (OIL/CCL/FCL/PL/EL) are still computed by `balanceOf` and used by
-  the bid-warning path, but are NOT surfaced in the column — the owner asked
-  for exactly the eleven above. EL is dropped from the column yet stays a valid
-  biddable code.
+  OML, `LVE USED` = LL+OL+OIL+CCL+PL+FCL+CL (medical deliberately excluded; OFF
+  left the sum on 2 Sep 26 when it stopped being a leave code; CL joined it
+  3 Sep 26 — leave taken, from its own pool).
+- **Three are balances (`LVE BAL`, `CL BAL`, `OIL BAL`)** — the annual pool and
+  the compassionate pool, each `opening + grants − drawn` (admin-settable from
+  the Cinch sheet — LVE BAL since 2 Sep 26, CL BAL since 3 Sep 26; every
+  balance figure names its counter, `Figure.counter`, and that is what the Set
+  button keys on), and the OIL tracker's balance; all can go negative and red.
+  The other entitlement balances (CCL/FCL/PL/EL) are still computed by
+  `balanceOf` and used by the bid-warning path, but are NOT surfaced in the
+  column — the owner asked for exactly the figures above. EL is dropped from
+  the column yet stays a valid biddable code.
+- **A weekend or public-holiday day of leave CHARGES NOTHING (owner, 3 Sep 26
+  — "if they fall on a weekend or a PH … it won't deduct from the total
+  balance nor used").** `engine/charge.ts:chargedDays` decides which
+  counter-bearing cells draw: it walks a person's taken cells across EVERY war
+  in date order and excuses any that `isNonWorkingDay` (eventdefs.ts — a
+  weekend, the war's `ph` flag, or an event word tagged `off`, the admin's PH)
+  calls non-working. `drawnFrom`, `takenOf` (so every USED figure), the OIL
+  tracker's debits and `setBalance` all read that ONE map, so the column, the
+  breakdown, the bid-time warning and the Set control cannot disagree. The
+  cell itself still stands and still removes the man from manning
+  (`removesAvailability` is untouched) — he IS away on the Saturday, it just
+  costs him nothing. A PH marked AFTER the leave was approved excuses the day
+  the moment the tag lands, because nothing about a balance is stored.
+  Medical markers spend no counter and are untouched (hospitalisation over a
+  weekend is still hospitalisation — MED USED counts every day). **The one
+  exception is the pilots' 15-day rule** (owner: "for pilots only, if the
+  leave taken is 15 days or more, count every single day"): a RUN is
+  consecutive calendar days each holding a taken cell that spends the SAME
+  counter (LL → OL continues one — both are the annual pool; OIL/FCL/CCL/EL/
+  PL/CL, a medical day, a blank or a refused bid ends it), and a pilot's run of
+  `LONG_LEAVE_DAYS` (15) or more charges every day in it, weekends and PHs
+  included; a shorter run, or anyone whose `seat` is not `pilot`, charges
+  working days only. A run may cross a war boundary. The roster and the
+  event-type library reach the engine through `CountCtx` (`eventDefs`,
+  `people`), carried on `FigureCtx` by the store's `figureCtxOf()`; an engine
+  caller with neither still gets the weekend rule but never the pilot rule.
+  Pinned in `engine/charge.test.ts` and the Cinch-sheet cases in
+  `ui/oiltracker.test.tsx`.
+  **Open question, deliberately asked rather than decided:** the bid sheet's
+  "would leave you at −N" warning still counts every day of the span
+  (`wouldLeave` multiplies by the day count), so a span over a weekend warns
+  a little early; it is a warning, never a refusal, so it errs on the safe
+  side.
 - **The order is persisted (`figorder`) and ADMIN-GATED since 17 Aug 26**
   (owner: "normal user should not have authority to change the leave war
   column arrangement") — the ▲▼ and Reset render for an admin only and

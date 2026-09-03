@@ -1068,7 +1068,7 @@ test('the figure picker doubles as the legend, aggregates spelled out', async ({
   await expect(page.locator('[data-testid="counter-legend"]')).toContainText('USED')
   await expect(page.locator('[data-testid="figsub-med"]')).toHaveText('= ATT C + HL + OML')
   await expect(page.locator('[data-testid="figsub-lvecon"]'))
-    .toHaveText('= LL + OL + OIL + CCL + PL + FCL')
+    .toHaveText('= LL + OL + OIL + CCL + PL + FCL + CL')
 })
 
 // The figures reorder through the ▲▼ each row carries — management's alone
@@ -1171,7 +1171,7 @@ test('the viewer\'s row is lit and the title sheet answers with their numbers', 
   await page.locator('[data-testid="person-prowler"]').click()
   const figs = page.locator('[data-testid="person-figures"]')
   await expect(figs).toBeVisible()
-  await expect(figs.locator('.crow-wrap')).toHaveCount(11)
+  await expect(figs.locator('.crow-wrap')).toHaveCount(13)   // CL BAL + CL USED joined 3 Sep 26
   // A member reaches no editor from here.
   await expect(page.locator('[data-testid="person-edit"]')).toHaveCount(0)
 })

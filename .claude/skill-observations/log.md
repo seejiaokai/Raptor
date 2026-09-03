@@ -823,3 +823,18 @@ gate's. Keep verdict-bearing commands unpiped.
 **Suggested improvement:** In the reproduction phase, add a rule: when a timing-dependent failure will not reproduce, do not keep re-running it — instrument the passing path (log the state the assertion depends on at each step: what moved, what was under the pointer, what was painted) and read the mechanism off a passing run. A passing run that shows the wrong intermediate state is as good as a failure.
 
 **Principle:** A flake is a race between a mechanism and an assertion; the mechanism is present on every run, only the assertion outcome varies. Observe the mechanism directly rather than waiting for the outcome to vary.
+
+### Observation 53: Fan-out research before a cross-cutting feature turned a 3-file guess into a 20-touch map
+
+**Status:** OPEN
+**Date:** 2026-09-03
+**Session context:** Adding a new leave type (CL) plus a weekend/PH counting rule across two vendored apps in one repo
+**Skill:** dispatching-parallel-agents
+**Type:** open-source
+**Phase/Area:** Before building — scoping a feature that "affects everywhere leave is concerned"
+
+**Issue:** The owner's ask named three surfaces (counters, legend, rules engine). Three parallel read-only Explore agents — one per app plus one for the docs — came back with the real touch list (~20 places: derived tables that needed nothing, hand-written lists that needed edits, tests pinning exact lists, a silent-drop seam in the sync bridge, and the one pure predicate to extract). Building from the three-surface guess would have shipped a type that synced across and vanished silently on the far side.
+
+**Suggested improvement:** In dispatching-parallel-agents, add a pattern: for a feature the user describes as "everywhere X is concerned", split research by BOUNDARY (each vendored app / package, plus the docs) rather than by topic, and ask each agent to classify every hit as "derives automatically", "hand-written — must edit", or "test pins exact list". The classification is what turns the report into a checklist.
+
+**Principle:** When an ask says "everywhere", the deliverable of research is a classified touch list (auto / manual / pinned), split along the code's own boundaries, gathered in parallel before the first edit.

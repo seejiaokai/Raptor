@@ -2714,7 +2714,7 @@ export function Matrix() {
             // the plain sum.
             const left = spends.counter === 'oil'
               ? oilLedgerOf(figureCtx, open.id).balance
-              : balanceOf(openings, ledger, wars, open.id, spends.counter)
+              : balanceOf(openings, ledger, wars, open.id, spends.counter, figureCtx)
             return { counter: spends.counter, after: left - spends.amount * days }
           }}
           onClose={close}

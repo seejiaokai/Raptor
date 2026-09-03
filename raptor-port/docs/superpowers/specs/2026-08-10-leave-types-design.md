@@ -57,6 +57,7 @@ it and keep their place among the activity types.
 | PL | Paternity leave | leave | no | yes | yes | no | yes |
 | FCL | Family care leave | leave | no | yes | yes | no | yes |
 | EL | Embarkation leave | leave | no | yes | yes | no | yes |
+| CL | Compassionate leave (3 Sep 26) | leave | no | yes | yes | no | yes |
 | HL | Hospitalisation leave | med | no | **no** | yes | no | yes |
 | OML | Ordinary medical leave | med | no | **no** | yes | no | yes |
 | ATT C | Medically down — cannot report to work | med | no | **no** | yes | no | yes |

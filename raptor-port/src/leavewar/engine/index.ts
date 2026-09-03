@@ -2,6 +2,7 @@
 // wants a line here.
 export * from './availability'
 export * from './bids'
+export * from './charge'
 export * from './codes'
 export * from './counters'
 export * from './evaluate'
