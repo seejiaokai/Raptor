@@ -578,6 +578,15 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
   Leave War row, `docs/engine-rules.md` INPUT_META count, the leave-types spec
   table, `leavewar-sync.md` vocabulary line, ui-contracts §Legend.
 
+- **SHIPPED 3 Sep 26 — merge-to-live cut from ~17 min to the slowest gate
+  (owner: "Is it possible to shorten the time taken to merge live?" →
+  "Option 1").** No app code changed. `deploy.yml` runs the four CI gates as
+  six parallel jobs instead of one serial job, `deploy` needs all six. The
+  measurement that decided it, the options rejected, and the next cut if
+  Leave War units stay the long pole are in §Deploy. Record the first
+  measured parallel run there when it lands; the PR run is the only test a
+  workflow change gets, and the Actions API reads it 10–20 min stale.
+
 - **RESOLVED 3 Sep 26, THIRD cut — the white box under a dragged puck on the
   MINDEF secured browser (Edge, "SIS", the owner's work laptop on OSN):
   the mouse no longer starts a native drag at all.** Two drag-image fixes
@@ -3040,8 +3049,30 @@ routing every look through the gated Pages deploy.
   first `workers:'100%'` run on main starved the shared vite preview and
   flaked the desktop carry-day test, failing the publish; 3 keeps most of the
   ~30% win (~1.7min → ~1.2min at 4 cores) with headroom, and the retry
-  absorbs a residual flake visibly (the reporter logs retried passes). So the
-  build job's checking wait is ~2–3 min, not ~5.
+  absorbs a residual flake visibly (the reporter logs retried passes). That
+  made the checking wait ~2–3 min in August; by 3 Sep 26 the suites had grown
+  to 17 min serial, which is the next bullet.
+- **The gates run as PARALLEL JOBS since 3 Sep 26 (owner ask: "shorten the
+  time taken to merge live").** Measured on #354's publish, the last
+  single-job run: 17m26s end to end = install+build 20s, vitest 9m41s
+  (1563 s of test time over 4 workers), Playwright 6m29s (1071 s over 3
+  workers), Pages publish 5 s. So the wait was the two suites queued on one
+  runner, and Leave War was most of both: its ten heaviest jsdom files
+  (`src/leavewar/ui/*.test.tsx`, each test renders a 365-column year) were
+  two thirds of the unit time and its two browser projects three quarters of
+  the geometry time. The workflow now runs `build` (tsc + bundle + parity +
+  artifact), `unit (raptor|leavewar)` via `npx vitest run --project`, and
+  `geometry (raptor|lw-phone|lw-desktop)` via `npx playwright test --project`
+  as six parallel jobs; `deploy` needs all of them, so nothing publishes red
+  and the gate set is unchanged. Public repo, so the extra runners are free.
+  Expected critical path: the Leave War unit leg, ~5 min, then the publish.
+  If that leg stays the long pole the next cut is `--shard` on it (vitest
+  hashes file paths across shards, so balance is probabilistic, not
+  guaranteed — measure before trusting it). Making the Leave War jsdom tests
+  render less than a full year would cut the LOCAL gate too and is the deeper
+  fix. Rejected: publishing on main without re-running the gates (90 s, but
+  the owner merges before the PR gate finishes, so the main run is the only
+  CI that completes before publish) and paid larger runners.
 - **Docs-only PRs and pushes skip the workflow entirely** (`paths-ignore`:
   `**.md` + `.claude/**`, added the same day — nothing under those patterns
   is imported into the bundle, verified by grep). A session-handoff commit
@@ -3071,9 +3102,11 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
   `actions/deploy-pages` polls until Pages serves the artifact and aborts at
   600000 ms, CANCELLING a deployment that is still reporting progress — so a
   green build publishes nothing. Passing a bigger `timeout:` does not work;
-  the action clamps it and says so in the log. Pages normally takes about 8
-  minutes for this repo, which leaves roughly two minutes of margin against a
-  queue nobody here controls. Ruled out as causes before blaming the queue:
+  the action clamps it and says so in the log. Pages took about 8 minutes for
+  this repo in early August (two minutes of margin against a queue nobody here
+  controls) and 5 SECONDS on 3 Sep 26 — the ceiling is a trap for slow days,
+  not the daily cost; the daily cost is the gates, above. Ruled out as causes
+  before blaming the queue:
   the artifact is 0.15 MB over 5 files, the environment goes
   waiting→queued→in_progress in 1–3 s, and the repo sits at 2 deployments/hour
   against a soft limit of 10. If the wait becomes permanently over ten
@@ -3251,7 +3284,7 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | `reference/` | The original single-file app + its 728-assertion suite. **Read-only** — the spec for existing behaviour, and one of the four gates. |
 | `index.html` + `public/favicon.svg` | The Vite entry page and the **only** thing in `public/`. The favicon is the talon from `Login.tsx`/`Shell.tsx`, copied because a browser fetches it standalone before any bundle runs — edit the claw path in all three or the tab and the page disagree. It differs from the components on purpose: a tile and a same-colour stroke, because a tab paints it at 16px where bare thin claws vanish. `href="/favicon.svg"` in the page is rewritten to `./favicon.svg` by `base:'./'`, which is what makes it resolve under the Pages sub-path. |
 | `e2e/` | The geometry gate (`npm run test:e2e`): `geometry.spec.ts` measures the layout contracts in a real browser — including where a warning click leaves the week and the board, and where it deliberately does NOT — and `app.ts` holds login/nav/scroll-settle helpers (`settle` takes an axis, `settleBoth` waits for both) plus `clickHere`, a click that does not scroll the target into view first (`page.click` does, which would defeat any test that parks the week on purpose). `playwright.config.ts` builds and serves the port itself. |
-| `.github/workflows/deploy.yml` | Test-gated GitHub Pages deploy on push to main; four gates, geometry included. The same gates run on PRs into main, in a per-PR concurrency group so a PR run cannot cancel a live deploy. Browser download cached, geometry suite 3 workers + one CI retry (15 Aug 26). |
+| `.github/workflows/deploy.yml` | Test-gated GitHub Pages deploy on push to main; four gates, geometry included, as six PARALLEL jobs since 3 Sep 26 (build+parity, unit per vitest project, geometry per Playwright project) with `deploy` needing all of them. The same gates run on PRs into main, in a per-PR concurrency group so a PR run cannot cancel a live deploy. Browser download cached, geometry suite 3 workers + one CI retry (15 Aug 26). |
 | `vercel.json` (repo root) | The ungated fast-preview channel (15 Aug 26): builds `raptor-port` and serves every branch/PR its own Vercel URL in ~1 min, for the owner to tap mid-session and for iterating drives. Pages stays the official gated site. See §Deploy and `CLAUDE.md` §Build & verify. |
 | `src/ui/histlist.test.tsx` | The changes list's second pass (11 Aug 26) — the two entry points, a row jumping to its detail with the bubble pinned open, the grouped-by-detail view, and the phone's tap-to-expand control. The media-query split is in `e2e/geometry.spec.ts`, which is the only place it resolves (the day-carousel motion tests that used to sit beside it went with the swipe, 12 Aug 26). |
 | `src/ui/boardrmk.test.tsx` | The empty remarks box and the `+` that reveals it (12 Aug 26) — which input carries `.empty`, that the reveal clears it for its OWN row only and focuses it, that typing one drops it unaided, and that asking for the box back writes NOTHING to the edit log or the pending set. jsdom cannot measure the 109px→79px row it buys; `e2e/geometry.spec.ts` does that. |
