@@ -307,7 +307,17 @@ describe('view-week markup parity with the reference', () => {
       }
       return s
     }
-    const E = (s: string) => normDow(noItTime(noItCtl(noAhRmk(noRmkPh(noTrace(noBrief(noStores(sortGrnd(grndTitle(noInpGrp(noNotes(noDhTpl(noSign(noDsec(s)))))))))))))))
+    /* Divergence (owner, 3 Sep 26, the 4th drag cut): the port marks a drag
+       source with `data-drag="1"` where the reference wrote `draggable="true"`
+       — the MINDEF secured browser starts its own drag of any draggable="true"
+       element without asking the page, so the attribute is gone from every
+       surface and the pointer machine in drag.ts is the only drag. Same
+       positions, same edit-mode gates, so map the reference's attribute onto
+       the port's marker before the compare (a no-op on the port, which emits
+       no `draggable` at all — pinned in ui/drag.test.tsx "nothing on any
+       surface is draggable"). */
+    const normDrag = (s: string) => s.replace(/ draggable="true"/g, ' data-drag="1"')
+    const E = (s: string) => normDrag(normDow(noItTime(noItCtl(noAhRmk(noRmkPh(noTrace(noBrief(noStores(sortGrnd(grndTitle(noInpGrp(noNotes(noDhTpl(noSign(noDsec(s))))))))))))))))
     DAYS.slice(0, REFN).forEach((_: any, di: number) => {
       const ref = w.eval(`dayHTML(${di},true)`)
       expect(E(dayHTML(di, true)), 'day ' + di).toBe(E(ref))
