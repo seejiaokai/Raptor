@@ -1751,16 +1751,27 @@ persisted and never in a history snapshot. The toggle builder is `notePubTog`
   native drag whose dragstart handler reflows the page before the drag
   image is captured, which killed every desktop mouse drag. The touch
   machine keeps its synchronous `dndOn` — no native capture there.
-- The MOUSE drag image is ours, not the browser's snapshot (owner, 3 Sep 26
-  — "a white box follows the puck"). With selection off app-wide (the 2 Sep
-  `html{user-select:none}`), Chromium on Windows snapshots a draggable as an
-  opaque white card with the puck in one corner. `drag.ts setDragImage` hands
-  it a `.dragimg` clone of the PUCK alone (not the `.seat` shell a grid cell
-  can stretch), parked off-screen with selection handed back, sized from the
-  puck's rect and anchored where the cursor grabbed; removed by `dndOff`, so
-  a drop clears it too (the drop repaints the palette and detaches the
-  source before its dragend can bubble — seen on the built bundle). Never
-  `display:none` it — Chromium only paints a laid-out element.
+- The MOUSE drag image is ours, and the PAGE draws it — the browser is
+  handed a blank pixel and composes nothing (owner, 3 Sep 26 — "a white box
+  follows the puck"; still there after the first fix on Edge inside the MINDEF
+  secured browser). The first cut still asked the browser to paint an
+  off-screen puck clone, which is no fix where the drag image is composed
+  outside the page (a remote-rendered or sandboxed browser hands the OS a
+  bitmap it draws without transparency — an opaque white card around the
+  puck). So `drag.ts setDragImage` gives `setDragImage` a 1×1 transparent GIF
+  (`BLANK_IMG`, decoded at module load — an unloaded image makes Chromium fall
+  back to its own snapshot) and appends a `.dragimg` clone of the PUCK alone
+  (not the `.seat` shell a grid cell can stretch) to the body as a fixed,
+  `pointer-events:none`, z-index 520 ghost — the touch `.tdghost` recipe,
+  anchored where the cursor grabbed instead of centred — which `moveDragImage`
+  pins under the cursor on every document `dragover` (real coordinates in
+  every browser; Firefox's `drag` event reports zeros). Removed by `dndOff`,
+  so a drop clears it too (the drop repaints the palette and detaches the
+  source before its dragend can bubble — seen on the built bundle). A
+  dataTransfer without `setDragImage` gets no ghost — the browser then shows
+  its own image and a second would double up. Verified on the built bundle:
+  under a real intercepted Chromium drag the ghost sits at cursor-minus-grab
+  offset, the drop lands, and no ghost survives it.
 - Touch drag: 8px slop restarts the 180ms hold, >26px cancels; ghost
   follows finger; click-eater dies on next pointerdown.
 - Toast is `pointer-events:none`.
