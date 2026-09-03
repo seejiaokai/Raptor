@@ -548,6 +548,19 @@ this. As of 30 Aug 26 he has closed it.
 
 ## Deliberately deferred to later plans
 
+- **The grid is still drawn WHOLE — twelve months of columns for every row
+  (3 Sep 26).** Phase 1 of the speed work halved the first open and took the
+  grid out of every tap (the roster row is a memoised `PersonRow`; see
+  `HANDOFF.md` §Known issues, the Leave War speed entry, for the measured
+  before/after). What remains of the first open is the browser's one
+  style+layout of ~18k cells, and that only shrinks by drawing fewer of them:
+  a ~three-month column window is the deferred Phase 2. Until it lands, the
+  memo CONTRACT is the thing to keep: a row is a pure function of its props,
+  every prop is a primitive or an object whose identity changes only with the
+  store `version`, and event handlers reach the Matrix through the one
+  `rowApi` ref — a new per-render object or function prop silently brings
+  back the 18k-cell rebuild on every tap.
+
 - **The day's overall verdict is computed and not shown.** `evaluateDay`
   produces a worst-across-all-rules verdict per day, and the interface still
   renders only the per-rule count rows. This was marked "for the bidding

@@ -120,10 +120,10 @@ parity holds. The gate table below was the green baseline read at this pass's cl
 
 | gate | reading |
 |---|---|
-| `npm test` | 3843 across 220 files (3 Sep 26 — the slow-computer cut: +6 `ui/editwarm.test.tsx` (the idle warm + the calendar's no-measure tick), +2 `ui/css-invalidation.test.ts` (no root-class wildcard rules); before it 3835 across 218 — the FOURTH drag cut's belts, new `ui/dragdbg.test.tsx` (+6, the optional readout is inert unless flagged) and the two belts in `drag.ts`/`scheduler.css` need no new pin beyond it; before it 3829 — the FOURTH drag cut, nothing draggable, +4 `ui/drag.test.tsx` "nothing on any surface is draggable"; the edit-week parity compare in `ui/html.test.ts` maps the reference's `draggable="true"` onto the port's `data-drag="1"`; before it 3825 — the THIRD drag cut, the mouse on the pointer machine, +5 `ui/drag.test.tsx`; before it 3820 — the drag-image SECOND cut, the page-drawn ghost, re-pinned `ui/drag.test.tsx` at 6 (was 4, +2); before it 3818 — the mouse drag-image fix added +4 `ui/drag.test.tsx` (the off-screen `.dragimg` puck clone that replaces Chromium's white-card snapshot); before it 3814 — the pilots' 15-day run became continuous FULL days (a half day breaks it), +1 `engine/charge.test.ts`; before it 3813 — the weekend/PH charging rule + CL batch added `engine/charge.test.ts` (now +20 with the half-day pin), +2 Cinch cases in `ui/oiltracker.test.tsx`, +1 `src/engine/leave.test.ts`, and re-pinned the figure/counter/seed fixtures; before it 3791 across 216 — the drag-select held-band fix added +1 `select.test.ts`; before it 3790 — 4 Sep 26 — the group-colour picker, full-width seat bars, LoX-catalogue and bug-hunt rounds added `groupcolors.test.ts`, `groupColor.test.ts`, `settingssheet.test.tsx`, `bootprune.test.ts` plus `roster`/`matrix`/`raptorRoster` cases; 2 Sep 26 — the tracker's THIRD CUT added +2 `oiltracker.test.tsx` + `raptorRoster.test.ts` demo-story cases, then the scrim press-guard +2; before that the OIL tracker GRID + Off-day batch: `ui/oiltracker.test.tsx` rewritten to 18, +7 `select.test.ts` row cases, +3 `oil.test.ts`, +2 `oilsync.test.ts`, +2 `store.test.ts`, +2 `oiltracker.test.ts`, +1 `eventdefs.test.ts`; the OFF pins flipped) — two vitest projects: raptor + leavewar |
+| `npm test` | 3846 across 220 files (3 Sep 26 — the Leave War speed Phase 1: +1 `engine/availability.test.ts` (the heldQuals cache follows an in-place flag flip), +1 `engine/period.test.ts` (weekday arithmetic vs Date.getUTCDay over a leap year), the PersonRow memo needs no new pin — the 68 existing Leave War UI files exercise every row class and testid; before it 3843 — the slow-computer cut: +6 `ui/editwarm.test.tsx` (the idle warm + the calendar's no-measure tick), +2 `ui/css-invalidation.test.ts` (no root-class wildcard rules); before it 3835 across 218 — the FOURTH drag cut's belts, new `ui/dragdbg.test.tsx` (+6, the optional readout is inert unless flagged) and the two belts in `drag.ts`/`scheduler.css` need no new pin beyond it; before it 3829 — the FOURTH drag cut, nothing draggable, +4 `ui/drag.test.tsx` "nothing on any surface is draggable"; the edit-week parity compare in `ui/html.test.ts` maps the reference's `draggable="true"` onto the port's `data-drag="1"`; before it 3825 — the THIRD drag cut, the mouse on the pointer machine, +5 `ui/drag.test.tsx`; before it 3820 — the drag-image SECOND cut, the page-drawn ghost, re-pinned `ui/drag.test.tsx` at 6 (was 4, +2); before it 3818 — the mouse drag-image fix added +4 `ui/drag.test.tsx` (the off-screen `.dragimg` puck clone that replaces Chromium's white-card snapshot); before it 3814 — the pilots' 15-day run became continuous FULL days (a half day breaks it), +1 `engine/charge.test.ts`; before it 3813 — the weekend/PH charging rule + CL batch added `engine/charge.test.ts` (now +20 with the half-day pin), +2 Cinch cases in `ui/oiltracker.test.tsx`, +1 `src/engine/leave.test.ts`, and re-pinned the figure/counter/seed fixtures; before it 3791 across 216 — the drag-select held-band fix added +1 `select.test.ts`; before it 3790 — 4 Sep 26 — the group-colour picker, full-width seat bars, LoX-catalogue and bug-hunt rounds added `groupcolors.test.ts`, `groupColor.test.ts`, `settingssheet.test.tsx`, `bootprune.test.ts` plus `roster`/`matrix`/`raptorRoster` cases; 2 Sep 26 — the tracker's THIRD CUT added +2 `oiltracker.test.tsx` + `raptorRoster.test.ts` demo-story cases, then the scrim press-guard +2; before that the OIL tracker GRID + Off-day batch: `ui/oiltracker.test.tsx` rewritten to 18, +7 `select.test.ts` row cases, +3 `oil.test.ts`, +2 `oilsync.test.ts`, +2 `store.test.ts`, +2 `oiltracker.test.ts`, +1 `eventdefs.test.ts`; the OFF pins flipped) — two vitest projects: raptor + leavewar |
 | `node reference/tfin.js` | 728/0 (the reference is read-only; the "Ground Programme" title trim rides the tolerant normaliser in `html.test.ts`) |
 | `npm run build` | clean |
-| `npm run test:e2e` | 352 passed / 23 touch-only skips / 0 failed (3 Sep 26: +1 the first real-browser puck-drag pin — the mouse on the pointer machine, zero native drag events; earlier that day: the figure-picker legend and the Cinch-sheet count pins moved to the thirteen figures; 1 Sep 26: +1 keep-alive spec × the two Leave War projects) — three playwright projects: raptor geometry, lw-phone, lw-desktop. NOTE: a mid-session chain run showed 2 lw-phone reds against a build that predated the bug-pass fixes (the un-gated cross-lane notify repainting mid-gesture); both passed individually and the full suite passed whole against the fixed build — if they ever red again, suspect a stray repaint mid-tap first. |
+| `npm run test:e2e` | 354 passed / 23 touch-only skips / 0 failed (3 Sep 26, read whole at the Leave War speed Phase 1 — no e2e file changed; the DOM the memoised row emits is byte-identical, which is exactly what this suite's cell/testid pins prove; before it 352 — the first real-browser puck-drag pin — the mouse on the pointer machine, zero native drag events; earlier that day: the figure-picker legend and the Cinch-sheet count pins moved to the thirteen figures; 1 Sep 26: +1 keep-alive spec × the two Leave War projects) — three playwright projects: raptor geometry, lw-phone, lw-desktop. NOTE: a mid-session chain run showed 2 lw-phone reds against a build that predated the bug-pass fixes (the un-gated cross-lane notify repainting mid-gesture); both passed individually and the full suite passed whole against the fixed build — if they ever red again, suspect a stray repaint mid-tap first. |
 | `probes:adapted` | **all 6 GREEN**. **Read the LAST line, not the last tally**: each probe prints its own count as it finishes (`wrap-async` ends `36 passed · 0 failed`), and the suite's verdict is the line after it, `all 6 adapted probes passed`. |
 | `perf` | **4/0** — board DOM 1023 ≤ **1150** (read 1 Sep 26) (the ceiling is a SETTLED owner decision since 28 Aug 26 — CLAUDE.md §Stable decisions; the section/wave grips added ~10 nodes, noise against it). |
 
@@ -518,6 +518,78 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
   are still there.
 
 ## Known issues / open work
+
+- **LEAVE WAR SPEED, PHASE 1 SHIPPED / PHASE 2 OPEN (owner, 3 Sep 26 — "I'm
+  trying to fix the speed of the leave war … Measure").** MEASURED first, on
+  the built bundle in a real browser (Playwright + CDP CPU throttle, a
+  devtools-timeline trace for the style/layout/paint split, a CPU profile
+  mapped through sourcemaps for the JS split — the HANDOFF recipe above),
+  18,250 day cells / 79 rows / ~25k nodes. The earlier diagnosis in chat
+  ("the wait is downloading the chunk, or drawing 25,000 cells, one
+  unsplittable chunk") was WRONG on both counts: the chunk download was ~0
+  on the test and building the cells was ~a tenth of the open. The real
+  split of a 10.5 s first open at 4x: ~half was the grid MEASURING ITSELF
+  after the draw — every "header cell for date X" lookup walked all 25k
+  nodes from the grid wrapper (thirty-odd of them at mount), and each
+  measurement stored a React state that rebuilt all 18k cells again (the
+  grid was built ~3× per open); ~an eighth the manning-count engine parsing
+  the same ISO dates and rebuilding the same qualification Sets tens of
+  thousands of times; the rest the browser's one style+layout+paint of a
+  25k-cell table. Two more day-to-day costs found: EVERY tap (open a sheet,
+  close it, hover a chip) rebuilt all 18k cells because the sheet is Matrix
+  state; and coming BACK to the tab cost 4.0 s at 4x — the 1 Sep keep-alive
+  entry below measured the content-visibility un-park at 1–2 ms, but
+  click-to-painted it is a 22k-element style recalc plus the `resize`-driven
+  re-measure chain plus a paint; that entry's number was the commit alone.
+  **PHASE 1 (shipped, all display-side — no rule, no store write, no sync wire
+  touched):** (1) header lookups scoped to the header tbody (`Matrix.tsx
+  headCell`, ~370 nodes instead of 25k); (2) the war-change effect no longer
+  repeats the strip measure the layout effect just did; (3) `evKind`,
+  `lockedCols`, `figureCtx`, the chip quals are memoised ON THE STORE VERSION
+  (not on the period object — store writes may update in place; the version
+  is the one signal that never lies); (4) **the roster row is a memoised
+  component, `PersonRow`** — a pure function of its props, every prop a
+  primitive or an object whose identity changes only with `version`, event
+  callbacks through ONE ref (`rowApi`) so no fresh function prop ever defeats
+  the memo; DOM byte-identical to the inline `<tr>` it replaced (every class,
+  testid, title, handler position); `cellOpenable` is the one module-level
+  body Matrix and the row share; (5) `period.ts toUTC` caches the ISO parse
+  and `weekday` is arithmetic on it (pinned against `Date.getUTCDay` across a
+  leap year and the epoch week); `availability.ts heldQuals` caches per
+  Person object, re-validated on the four fields it derives from (an in-place
+  flag flip misses correctly — pinned). MEASURED before → after, same script,
+  same container (noisy ±20%):
+
+  | | 4x slower CPU | 1x |
+  |---|---|---|
+  | First open, click→painted | 10.5 s → 5.7 s | 2.3 s → 1.7 s |
+  | Tap a cell → sheet (JS part) | 0.59 s → 0.17 s | 0.11 s → 0.03 s |
+  | Close the sheet | 0.82 s → 0.50 s | 0.16 s → 0.14 s |
+  | Jump to a month | 4.9 s → 2.8 s | 1.1 s → 0.6 s |
+  | Come back to the tab | 4.0 s → 1.9 s | 0.7 s → 0.5 s |
+
+  After Phase 1 the profile's largest frame is `measureStripGeo`'s FIRST rect
+  read, i.e. the browser's one unavoidable style+layout of the whole table
+  (~1.9 s of the 5.7 s at 4x) — the tap profile no longer contains the grid
+  at all. **PHASE 2, OPEN — the real cure:** draw ~three months of COLUMNS
+  instead of twelve (the rows are only 79; the app already thinks in months,
+  the month strip and `monthInView` geometry are the natural window), which
+  cuts every row of that table by ~4×, the come-back cost and the month-jump
+  paint included. It is the invasive one: the frozen columns, the sticky
+  header mirror, the bid box and the row-window anchor all assume the whole
+  year is laid out — do it as its own change, owner-tested on the SIS laptop
+  before merge. Smaller Phase-2 candidates, each to be measured, not assumed:
+  the remaining mount thrash (6 full relayouts at ~32k dirty objects — a
+  `table-layout:fixed` would make each a row-local relayout but changes how
+  columns size to content, so it is a look-and-decide); parking the dozed
+  page the Edit-page way (in-flow, height 0, visibility hidden) instead of
+  `content-visibility:hidden` if the come-back still feels slow. Measuring
+  script recipe: as the slow-computer cut below, plus `Profiler` self-time by
+  frame mapped with `SourceMap.findEntry`; and TIME with the plain
+  `devtools.timeline` categories, ATTRIBUTE with the `.stack` /
+  `invalidationTracking` ones in a separate run — the tracking inflated one
+  style recalc 8× (2.5 s where the plain run read 0.3 s); never quote a
+  duration from the attributing run.
 
 - **THE SLOW-COMPUTER CUT (owner, 3 Sep 26 — "Is it possible to have this app
   work faster on a slow computer?" → "Do option 3 with option 1").** Measured

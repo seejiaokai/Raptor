@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useLayoutEffect, useMemo, useRef, useState, type TouchEvent } from 'react'
+import { Fragment, memo, useEffect, useLayoutEffect, useMemo, useRef, useState, type MutableRefObject, type PointerEvent as ReactPointerEvent, type TouchEvent } from 'react'
 import {
   addDays,
   balanceOf,
@@ -36,6 +36,12 @@ import {
   stateOf,
   type Group,
   type Person,
+  type Period,
+  type Grid,
+  type States,
+  type Role,
+  type Figure,
+  type FigureCtx,
 } from '../engine'
 import { figureCtxOf, setBalance, groupsInOrder, groupPriorityIds, lwHistEpoch, moveGroupTo, moveGroupPriorityTo, autoSortRoster, displayRoster, getState, moveCells, movableCells, moveManningRowTo, moveProblem, moveEvent, moveEventProblem, moveRosterRow, orderedManningIds, resetManningRules, setPostOut, type MoveResult, type EventMoveResult } from '../state/store'
 import { BidPicker, DecisionSheet, PostOutSheet, RaptorSheet } from './BidPicker'
@@ -138,6 +144,285 @@ const GROUP_PRIO_DRAG: RowDragCfg = {
   move: moveGroupPriorityTo,
 }
 
+// ---- one roster row, memoised (3 Sep 26) ----------------------------------
+//
+// MEASURED before this existed (built bundle, CPU throttled 4x, ~18,000 cells):
+// tapping a cell to open its sheet cost ~1.0s, of which ~0.6s was JS — the
+// Matrix rebuilding every cell's JSX because a sheet is Matrix STATE. The
+// first open paid the same rebuild ~3 times over as its mount-time
+// measurements (strip height, bid box, row window) each stored a result.
+// A memoised row repaints only when one of ITS inputs changes, so local UI
+// state — a sheet, the quals popover, a drag hover on another row — costs the
+// chrome, not the grid. Everything store-derived rides `version`: a bid, a
+// decision, a war change, a roster re-projection bumps it and every row
+// repaints exactly as before. So the contract is simple: a row is a pure
+// function of its props, and every prop is either a primitive or an object
+// whose identity changes only with the store version. Event-time callbacks
+// go through ONE ref (`api`) so the row never receives a fresh function prop.
+//
+// The DOM this renders is byte-identical to the inline <tr> it replaced —
+// every class, testid, title and handler position is unchanged, which is
+// what keeps the geometry gate and the drag-select machinery (which finds
+// cells by testid) honest.
+
+type QualPill = { label: string; color: string }
+const NO_QUALS: QualPill[] = []
+
+type RowApi = {
+  startRowDrag: (e: ReactPointerEvent, id: string, cfg: RowDragCfg) => void
+  setWhoOpen: (id: string) => void
+  setBalOpen: (v: { person: string; figureId: string }) => void
+  setOpen: (v: { id: string; callsign: string; date: string }) => void
+  chipEnter: (id: string, el: HTMLElement) => void
+  chipLeave: () => void
+  chipClick: (p: Person, el: HTMLElement) => void
+}
+
+/** Whether a tap on this cell opens SOMETHING — the one body Matrix and the
+ *  row share. Where a tap goes (bid / decide / read-only / remarks) is decided
+ *  in the sheet from the same facts; this only says "there is a sheet". */
+function cellOpenable(states: States, period: Period, role: Role, viewer: string | null, deciding: boolean, grid: Grid, personId: string, date: string): boolean {
+  return raptorOwns(states, personId, date) ||
+    // A member may open a cell to EDIT only on their own row (the person they
+    // are viewing as); an admin, any row. Without the row half a member could
+    // tap an empty cell on anyone's row and bid it (owner, 27 Aug 26). The
+    // date/window half is `canEditCell`; both must pass.
+    (canEditCell(period, role, date) && canEditRow(role, viewer, personId)) ||
+    (deciding && isBiddable(grid[personId]?.[date])) ||
+    // Published remarks editor (owner, 27 Aug 26): the viewer's own APPROVED
+    // leave is tappable to edit its note (an admin's every cell is already
+    // openable through the canEditCell branch above). Kept CHEAP — code and
+    // state truthiness, never leaveInputAt, because this runs for every drawn
+    // cell; the precise "is there a backing leave input" test is `canRemark`,
+    // computed once when a cell is opened. Approved-only on purpose: a
+    // member's refused or pending bid at published opens NOTHING (no editor,
+    // no decision sheet), and the first cut still painted it tappable — a
+    // dead-feeling tap exactly where the stakes are highest, a refusal.
+    (period.stage === 'published' && personId === viewer
+      && isBiddable(grid[personId]?.[date])
+      && states[personId]?.[date]?.state === 'approved')
+}
+
+type PersonRowProps = {
+  p: Person
+  version: number
+  period: Period
+  grid: Grid
+  states: States
+  role: Role
+  viewer: string | null
+  deciding: boolean
+  movedShown: boolean
+  shown: Figure
+  figureCtx: FigureCtx
+  evKind: Map<string, string>
+  lockedCols: Set<string>
+  quals: QualPill[]
+  me: boolean
+  arranging: boolean
+  dragging: boolean
+  over: '' | 'dragover' | 'dragover after'
+  api: MutableRefObject<RowApi>
+}
+
+const PersonRow = memo(function PersonRow({ p, period, grid, states, role, viewer, deciding, movedShown, shown, figureCtx, evKind, lockedCols, quals, me, arranging, dragging, over, api }: PersonRowProps) {
+  const has = quals.length > 0
+  // The selected figure's value for this person, derived on every render
+  // rather than cached: it has to move the instant a bid is placed, because a
+  // pending bid has been asked for and cannot be asked for twice. A balance
+  // can go negative (shown red, never refused — the squadron's balances
+  // already run negative, §Counters); a consumed figure never does. Every
+  // figure counts across EVERY war, not the one on screen — leave bid in
+  // Jan–Mar still spends against Apr–Jun.
+  const v = shown.value(figureCtx, p.id)
+  const suffix = shown.kind === 'bal' ? 'remaining, pending bids included' : 'taken'
+  return (
+    /* `me` lights the VIEWER's own row (owner, 17 Aug 26). While arranging the
+       row is a drop target the pointer drag reads by hit-test; the drag SOURCE
+       is the handle alone, so a tap on the personnel label box types rather
+       than starting a drag. */
+    <tr
+      data-testid={`row-${p.id}`}
+      className={[
+        me ? 'me' : '',
+        arranging ? 'arrange' : '',
+        dragging ? 'dragging' : '',
+        over,
+      ].filter(Boolean).join(' ') || undefined}
+    >
+      <td className="who">
+        <div className="whorow">
+          {arranging && (
+            <span
+              className="drag"
+              data-testid={`drag-${p.id}`}
+              title="Drag to move this row"
+              style={{ touchAction: 'none' }}
+              onPointerDown={e => api.current.startRowDrag(e, p.id, ROSTER_DRAG)}
+            >⠿</span>
+          )}
+          {/* The callsign opens the person's all-figures sheet, for everyone
+              (owner, 17 Aug 26). The CAT chip carries the person's colour,
+              reused from Raptor's Quals palette, and an SXO sits under the SXO
+              heading rather than wearing a second column. The chip: the
+              person's CAT, coloured by CAT (an SXO keeps gold wherever they
+              sit). When they hold a displayed qualification it becomes a live
+              control — hover (desktop) or tap (phone) to list them; the click
+              is swallowed so it never also opens the figures sheet the
+              callsign owns. A second tap on the SAME chip closes it (the phone
+              has no pointer to leave with); a tap on another chip moves it. */}
+          <button
+            className="whoedit"
+            data-testid={`person-${p.id}`}
+            title={`${p.callsign} — every figure`}
+            onClick={() => api.current.setWhoOpen(p.id)}
+          >
+            <span className={`cs seat-${p.seat}`}>{p.callsign}</span>
+            <span
+              className={`catchip ${catClass(p)}${has ? ' has-quals' : ''}`}
+              data-testid={`cat-${p.id}`}
+              aria-label={has ? `${p.callsign} qualifications: ${quals.map(q => q.label).join(', ')}` : undefined}
+              onPointerEnter={has ? e => { if (e.pointerType === 'mouse') api.current.chipEnter(p.id, e.currentTarget) } : undefined}
+              onPointerLeave={has ? e => { if (e.pointerType === 'mouse') api.current.chipLeave() } : undefined}
+              onClick={has ? e => { e.stopPropagation(); api.current.chipClick(p, e.currentTarget) } : undefined}
+            >{catText(p) || 'GND'}</span>
+          </button>
+          {/* The free-text role-label edit box is GONE (owner, 28 Aug 26 —
+              "i can edit personnel, dont need to show that, just leave it as
+              the callsign/name"). A ground-crew row now shows the same
+              callsign + chip as every other row, in Rearrange too. */}
+        </div>
+      </td>
+      <td
+        className={`bal act${v < 0 ? ' neg' : ''}`}
+        data-testid={`bal-${p.id}`}
+        title={`${p.callsign}: ${show(v)} ${shown.label} — ${suffix}. Tap for the breakdown`}
+        /* A tap opens the person's breakdown of the shown figure — the
+           owner's "click the individual personnel counter" (17 Aug 26). The
+           td is the target, like every grid cell here: a nested button would
+           cost the 44px column its number. */
+        onClick={() => api.current.setBalOpen({ person: p.id, figureId: shown.id })}
+      >
+        {show(v)}
+      </td>
+      {period.days.map(d => {
+        const code = grid[p.id]?.[d.date] ?? ''
+        const here = inSquadron(p, d.date)
+        // `here` is false on both sides of the roster window. Before `from`
+        // the person has not arrived yet — that is not the same fact as
+        // having been posted out, and must not read as one. Only the "after
+        // `to`" direction is a genuine PO.
+        const notYetArrived = !here && p.from !== null && d.date < p.from
+        const cls = [
+          here ? '' : 'gone',
+          here && isDuty(code) ? 'duty' : '',
+          // The band runs the whole column, not just the header — finding a
+          // Tuesday in 90 columns should not need counting. `.gone`'s hatch
+          // is declared after the weekend rule so a posted-out weekend still
+          // reads as posted out.
+          isWeekend(d.date) ? 'weekend' : '',
+          // The event column colour (off = green, no-leave = orange),
+          // declared after the weekend so a holiday Saturday reads as the
+          // holiday, not the weekend.
+          evKind.get(d.date) ?? '',
+          // Outside the bidding window, for this role. Declared after the
+          // event colour so a locked, tinted day still reads as locked — the
+          // same cascade care the .blocked/.weekend pair needs, and for the
+          // same reason.
+          lockedCols.has(d.date) ? 'locked' : '',
+        ].filter(Boolean).join(' ')
+        // The stored notation, printed through the one display mapping — the
+        // ATT markers read as the owner's bare B / C on the grid while
+        // everything else prints as stored (displayCell is identity for it).
+        const text = here ? displayCell(code) : notYetArrived ? '' : 'PO'
+        // Duty first for the reader — FO/HO are work, not a bid. (They carry
+        // `bid: false`, so they could not reach a bid branch anyway; the
+        // order is legibility, not a guard.) Then the bid state, but only
+        // where the code is one a person bids for. Everything else is plain
+        // information: medical, a course, overseas duty. A bare "PO" chip on
+        // a posted-out cell carries no state class at all.
+        //
+        // A bid with NO decision recorded reads as pending, and PENDING IS
+        // PLAIN — no colour class at all, so the chip renders as text on the
+        // ordinary cell background. It was purple until 10 Aug 26, when the
+        // owner pointed out what that cost: an input nobody had looked at and
+        // one already in management's hands were the same colour, so the
+        // sheet could not distinguish them. Purple now means acknowledged —
+        // somebody has seen this — and the absence of colour means the
+        // absence of news.
+        const bid = stateOf(states, p.id, d.date)
+        const chipState = !here || !code
+          ? ''
+          : isDuty(code) ? 'sc'
+          : !isBiddable(code) ? 'info'
+          : bid === 'approved' ? 'appr'
+          : bid === 'refused' ? 'ref'
+          : bid === 'acknowledged' ? 'tbc'
+          : ''
+        // The half-day fill is read off the stored string via `parseCell`,
+        // never kept as its own bit of state and never guessed by matching an
+        // asterisk here in the component. The asterisk in `text` stays the
+        // one source of truth; this is only a derived echo of it, so the two
+        // can never disagree.
+        const portion = here && code ? parseCell(code)?.portion : undefined
+        const portionClass = portion === 'am' || portion === 'pm' ? ` ${portion}` : ''
+        // Two marks on top of the state colour, never instead of it: the
+        // squadron reads green as approved and magenta as pending, and that
+        // stays true here. `raptor` says the approval happened elsewhere and
+        // nothing on this screen will change it; `moved` says management
+        // shifted this bid off another date.
+        const marks = [
+          here && code && raptorOwns(states, p.id, d.date) ? 'raptor' : '',
+          movedShown && here && code && shiftedFrom(states, p.id, d.date) ? 'moved' : '',
+        ].filter(Boolean).join(' ')
+        // A cell outside the person's time in the squadron is never
+        // actionable FOR A BID: bidding leave for a man who has been posted
+        // out is a data-entry accident, not a bid. But an ADMIN can still tap
+        // a posted-out day to UNDO the post-out (owner, 18 Aug 26 — "tap a
+        // struck day to undo"); `notYetArrived` is excluded — a day before
+        // someone joins is blank, not a post-out, and nothing there to undo.
+        const actionable =
+          (here && cellOpenable(states, period, role, viewer, deciding, grid, p.id, d.date)) || (role === 'admin' && !here && !notYetArrived)
+        // Their LAST day in the squadron wears a small PO tag (owner, 19 Aug
+        // 26 — chosen over nothing after the edge case was put to him):
+        // someone posting out on the 1st has a final month that otherwise
+        // looks completely normal, and the next month their row is gone — so
+        // without this, a reader jumping month to month never sees the PO at
+        // all. The tag rides the corner of the cell so a leave code on the
+        // same day still prints.
+        const lastIn = p.to !== null && d.date === p.to
+        return (
+          <td
+            key={d.date}
+            data-testid={`cell-${p.id}-${d.date}`}
+            className={`${cls}${actionable ? ' act' : ''}${lastIn ? ' pofin' : ''}`}
+            onClick={actionable
+              ? () => api.current.setOpen({ id: p.id, callsign: p.callsign, date: d.date })
+              : undefined}
+          >
+            {text && (
+              <span
+                className={`c${chipState ? ` ${chipState}` : ''}${portionClass}${marks ? ` ${marks}` : ''}`}
+              >
+                {text}
+              </span>
+            )}
+            {lastIn && (
+              <span
+                className="polast"
+                data-testid={`polast-${p.id}`}
+                title={`${p.callsign} posts out ${addDays(p.to!, 1)} — this is their last day in the squadron`}
+              >
+                PO
+              </span>
+            )}
+          </td>
+        )
+      })}
+    </tr>
+  )
+})
+
 export function Matrix() {
   /* kept in a name (not just subscribed) so store-reading memos below can
      re-derive on every store change — `movers` reads live grid state, and a
@@ -162,13 +447,21 @@ export function Matrix() {
   // column, not just the event rows — finding a holiday in 90 columns should
   // not need reading the top two rows. `work` never colours the column (its
   // own word goes red instead), so it maps to no class here.
-  const evKind = new Map<string, string>()
-  for (const d of period.days) {
-    const k = columnKindFor(eventDefs, d, period.bands)
-    if (k === 'off') evKind.set(d.date, 'evoff')
-    else if (k === 'free') evKind.set(d.date, 'evfree')
-    else if (k === 'nolv') evKind.set(d.date, 'evnolv')
-  }
+  // Memoised on the store version (3 Sep 26): the map is a row prop now, and
+  // a fresh Map on every render would defeat the row memo (see PersonRow).
+  // Keyed on `version`, not the period object, because store writes may
+  // update in place — the version is the one signal that never lies.
+  const evKind = useMemo(() => {
+    const m = new Map<string, string>()
+    for (const d of period.days) {
+      const k = columnKindFor(eventDefs, d, period.bands)
+      if (k === 'off') m.set(d.date, 'evoff')
+      else if (k === 'free') m.set(d.date, 'evfree')
+      else if (k === 'nolv') m.set(d.date, 'evnolv')
+    }
+    return m
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [version])
 
   // Which cell is open, not which sheet is open: what the sheet OFFERS is
   // derived from the stage and the role, so a period that moves on — or a
@@ -380,7 +673,9 @@ export function Matrix() {
   // Everything a figure needs to read a person's number — the store's one
   // builder, so this column, the sheets and the tracker read the same OIL
   // policy and the same "today" (a hand-built literal here used to drift).
-  const figureCtx = figureCtxOf()
+  // Once per store change, not per render — a row prop (see PersonRow).
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const figureCtx = useMemo(() => figureCtxOf(), [version])
   const cycle = (by: number) => setShownId(figures[(shownIx + by + figures.length) % figures.length].id)
 
   // Swipe across the counter column to cycle it — the fast path, beside the
@@ -576,6 +871,17 @@ export function Matrix() {
   // offset would be wrong on one of the two devices. Shared by the jump and
   // by the in-view readout, which both need to know where the day columns
   // actually begin.
+  // ---- header-cell lookups (3 Sep 26) -------------------------------------
+  // Every geometry read below wants "the header cell for date X". Searching
+  // for it from the grid WRAPPER walked all ~25,000 nodes per lookup, and the
+  // mount sequence (strip geometry, the row window, the bid box, the anchor)
+  // does thirty-odd of them — measured as the single largest frame of a 10s
+  // first open at 4x. The header is its own tbody of ~370 cells, so the same
+  // selector scoped there is a hundredth of the walk. Same nodes, same answer.
+  const headRef = useRef<HTMLTableSectionElement>(null)
+  const headCell = (date: string | undefined): HTMLElement | null =>
+    date === undefined ? null : headRef.current?.querySelector<HTMLElement>(`[data-testid="head-${date}"]`) ?? null
+
   const frozenWidth = (wrap: HTMLElement): number =>
     ['.who', '.bal']
       .map(sel => wrap.querySelector<HTMLElement>(sel)?.getBoundingClientRect().width ?? 0)
@@ -583,7 +889,7 @@ export function Matrix() {
 
   const jumpTo = (date: string) => {
     const wrap = wrapRef.current
-    const cell = wrap?.querySelector<HTMLElement>(`[data-testid="head-${date}"]`)
+    const cell = headCell(date)
     if (!wrap || !cell) return
     // Mark this as a jump so the anchor correction below re-centres it even on
     // touch (see jumpAtRef): a jump can cross many month boundaries at once,
@@ -743,6 +1049,27 @@ export function Matrix() {
     const y = below + EST_H > window.innerHeight - 6 ? Math.max(6, r.top - EST_H - 6) : below
     setQualPop({ id, x, y })
   }
+  // The chip's quals per person, once per store change (a row prop — a fresh
+  // array per render would defeat the row memo, see PersonRow).
+  const qualsOf = useMemo(() => {
+    const m = new Map<string, QualPill[]>()
+    for (const p of people) m.set(p.id, shownQuals(p))
+    return m
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [version])
+  // The row's event-time callbacks, handed over as ONE stable ref so the memo
+  // never sees a new function prop; the row reads `.current` at event time,
+  // so every handler sees this render's live state (qualPop, the drag).
+  const rowApi = useRef<RowApi>(null!)
+  rowApi.current = {
+    startRowDrag,
+    setWhoOpen,
+    setBalOpen,
+    setOpen,
+    chipEnter: openQualsAt,
+    chipLeave: () => setQualPop(null),
+    chipClick: (p, el) => { if (qualPop?.id === p.id) setQualPop(null); else openQualsAt(p.id, el) },
+  }
   /* The chip: the person's CAT, coloured by CAT (an SXO keeps gold wherever they
      sit). When they hold a displayed qualification it becomes a live control —
      hover (desktop) or tap (phone) to list them; the click is swallowed so it
@@ -829,7 +1156,6 @@ export function Matrix() {
   // does it"): the app top bar stays pinned at the top (sticky, z-index 60), so
   // the mirror freezes just below it (its lower edge) the moment the real header
   // would slide under, at every width. No width gate any more.
-  const headRef = useRef<HTMLTableSectionElement>(null)
   const mirrorRef = useRef<HTMLDivElement>(null)
   const [stuck, setStuck] = useState<{ top: number; left: number; width: number; cols: number[] } | null>(null)
 
@@ -1171,8 +1497,8 @@ export function Matrix() {
     const wrap = wrapRef.current
     if (!wrap || months.length === 0 || dates.length === 0) return null
     const headLeft = (date: string) =>
-      wrap.querySelector<HTMLElement>(`[data-testid="head-${date}"]`)?.getBoundingClientRect().left
-    const lastHead = wrap.querySelector<HTMLElement>(`[data-testid="head-${dates[dates.length - 1]}"]`)
+      headCell(date)?.getBoundingClientRect().left
+    const lastHead = headCell(dates[dates.length - 1])
     if (!lastHead) return null
     const edges = months.map(m => headLeft(m.first))
     if (edges.some(e => e === undefined)) return null
@@ -1239,7 +1565,7 @@ export function Matrix() {
     const sl = wrap.scrollLeft
     // viewport px -> content px: constant across any scroll position
     const contentL = (el: HTMLElement) => el.getBoundingClientRect().left - wr.left + sl
-    const head = (d: string) => wrap.querySelector<HTMLElement>(`[data-testid="head-${d}"]`)
+    const head = (d: string) => headCell(d)
     const firsts = months.map(m => head(m.first))
     const lastHead = head(dates[dates.length - 1]!)
     if (!lastHead || firsts.some(e => !e)) { stripGeoRef.current = null; return }
@@ -1314,7 +1640,7 @@ export function Matrix() {
           // residual on screen. Binary search — column lefts are monotonic —
           // so this is ~9 rect reads, and only on a row-set change.
           const at = (i: number) =>
-            wrap.querySelector<HTMLElement>(`[data-testid="head-${dates[i]}"]`)?.getBoundingClientRect().left ?? 0
+            headCell(dates[i])?.getBoundingClientRect().left ?? 0
           let lo = 0, hi = dates.length - 1, best = 0
           while (lo <= hi) {
             const mid = (lo + hi) >> 1
@@ -1364,11 +1690,12 @@ export function Matrix() {
   }
   useEffect(() => () => { if (idleRef.current) clearTimeout(idleRef.current); stopPump() }, [])
 
-  // Both halves measured when the war changes, since that rebuilds every
-  // column — and NOT mid-fling, so the window half runs directly here.
+  // The WINDOW half measured when the war changes, since that rebuilds every
+  // column — and NOT mid-fling, so it runs directly here. The strip half is
+  // NOT repeated: the layout effect below (same deps, plus zoom / visWindow)
+  // has already measured it in this very commit, and doing it twice cost a
+  // second set of header lookups and rect reads on every first open (3 Sep 26).
   useEffect(() => {
-    measureStripGeo()
-    measureStrip()
     measureWindow()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [period.id, dates.length])
@@ -1421,7 +1748,7 @@ export function Matrix() {
     anchorRef.current = null
     if (!a) return
     const wrap = wrapRef.current
-    const cell = wrap?.querySelector<HTMLElement>(`[data-testid="head-${a.date}"]`)
+    const cell = headCell(a.date)
     if (!wrap || !cell) return
     const coarse = typeof window.matchMedia === 'function' && window.matchMedia('(pointer: coarse)').matches
     // The window has to hold the programmatic scroll, the 120ms rest debounce
@@ -1482,8 +1809,8 @@ export function Matrix() {
     if (period.stage !== 'open') { setBidBox(prev => (prev ? null : prev)); return }
     const open = period.days.filter(d => inBidWindow(period, d.date))
     if (open.length === 0) { setBidBox(prev => (prev ? null : prev)); return }
-    const fh = wrap.querySelector<HTMLElement>(`[data-testid="head-${open[0]!.date}"]`)
-    const lh = wrap.querySelector<HTMLElement>(`[data-testid="head-${open[open.length - 1]!.date}"]`)
+    const fh = headCell(open[0]!.date)
+    const lh = headCell(open[open.length - 1]!.date)
     const table = wrap.querySelector<HTMLElement>('table.mx')
     if (!fh || !lh || !table) return
     const wr = wrap.getBoundingClientRect()
@@ -1718,32 +2045,23 @@ export function Matrix() {
   //
   // Deciding needs an existing bid to decide: a course, a sick day and an
   // empty cell are all things nobody asked for.
-  const openable = (personId: string, date: string): boolean =>
-    raptorOwns(states, personId, date) ||
-    // A member may open a cell to EDIT only on their own row (the person they
-    // are viewing as); an admin, any row. Without the row half a member could
-    // tap an empty cell on anyone's row and bid it (owner, 27 Aug 26). The
-    // date/window half is `canEditCell`; both must pass.
-    (canEditCell(period, role, date) && canEditRow(role, viewer, personId)) ||
-    (deciding && isBiddable(grid[personId]?.[date])) ||
-    // Published remarks editor (owner, 27 Aug 26): the viewer's own APPROVED
-    // leave is tappable to edit its note (an admin's every cell is already
-    // openable through the canEditCell branch above). Kept CHEAP — code and
-    // state truthiness, never leaveInputAt, because this runs for every drawn
-    // cell; the precise "is there a backing leave input" test is `canRemark`,
-    // computed once when a cell is opened. Approved-only on purpose: a
-    // member's refused or pending bid at published opens NOTHING (no editor,
-    // no decision sheet), and the first cut still painted it tappable — a
-    // dead-feeling tap exactly where the stakes are highest, a refusal.
-    (period.stage === 'published' && personId === viewer
-      && isBiddable(grid[personId]?.[date])
-      && states[personId]?.[date]?.state === 'approved')
+  // "Does a tap here open something" lives in `cellOpenable` (module level, the
+  // row's own body) — the comment block above is its rationale.
 
   // A day the squadron may not bid on, drawn as such. Without this the window
   // is invisible: a member taps an October cell, nothing happens, and the app
   // reads as broken rather than as closed. Admin sees no lock — the window
   // does not bind them, so drawing one would be a lie about their own screen.
-  const lockedDate = (date: string): boolean => !canEditCell(period, role, date)
+  // A Set per store change rather than a predicate per cell (3 Sep 26): the
+  // cells asked this ~18,000 times per build, once per person per day, when
+  // the answer only varies by DAY — 365 answers. Also a stable row prop.
+  const lockedCols = useMemo(() => {
+    const out = new Set<string>()
+    for (const d of period.days) if (!canEditCell(period, role, d.date)) out.add(d.date)
+    return out
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [version])
+  const lockedDate = (date: string): boolean => lockedCols.has(date)
 
   // Feed the drag-select controller live state. A member may DRAG only while
   // the war is OPEN (batch fill). The published remarks editor is a SINGLE
@@ -2042,206 +2360,32 @@ export function Matrix() {
                   return (
                     <Fragment key={p.id}>
                       {heads}
-                      {/* `me` lights the VIEWER's own row (owner, 17 Aug 26).
-                          While arranging the row is a drop target the pointer
-                          drag reads by hit-test; the drag SOURCE is the handle
-                          alone, so a tap on the personnel label box types
-                          rather than starting a drag. */}
-                      <tr
-                        data-testid={`row-${p.id}`}
-                        className={[
-                          p.id === viewer ? 'me' : '',
-                          arranging ? 'arrange' : '',
-                          draggingId === p.id ? 'dragging' : '',
-                          draggingId && dragOver === p.id && draggingId !== p.id ? (dragAfter ? 'dragover after' : 'dragover') : '',
-                        ].filter(Boolean).join(' ') || undefined}
-                      >
-                        <td className="who">
-                          <div className="whorow">
-                            {arranging && (
-                              <span
-                                className="drag"
-                                data-testid={`drag-${p.id}`}
-                                title="Drag to move this row"
-                                style={{ touchAction: 'none' }}
-                                onPointerDown={e => startRowDrag(e, p.id, ROSTER_DRAG)}
-                              >⠿</span>
-                            )}
-                            {/* The callsign opens the person's all-figures
-                                sheet, for everyone (owner, 17 Aug 26). The CAT
-                                chip carries the person's colour, reused from
-                                Raptor's Quals palette, and an SXO sits under
-                                the SXO heading rather than wearing a second
-                                column. */}
-                            <button
-                              className="whoedit"
-                              data-testid={`person-${p.id}`}
-                              title={`${p.callsign} — every figure`}
-                              onClick={() => setWhoOpen(p.id)}
-                            >
-                              <span className={`cs seat-${p.seat}`}>{p.callsign}</span>
-                              {catChip(p, `cat-${p.id}`)}
-                            </button>
-                            {/* The free-text role-label edit box is GONE (owner,
-                                28 Aug 26 — "i can edit personnel, dont need to
-                                show that, just leave it as the callsign/name").
-                                A ground-crew row now shows the same callsign +
-                                chip as every other row, in Rearrange too. */}
-                          </div>
-                        </td>
-                  {/* The selected figure's value for this person, derived on
-                      every render rather than cached: it has to move the
-                      instant a bid is placed, because a pending bid has been
-                      asked for and cannot be asked for twice. A balance can go
-                      negative (shown red, never refused — the squadron's
-                      balances already run negative, §Counters); a consumed
-                      figure never does. Every figure counts across EVERY war,
-                      not the one on screen — leave bid in Jan–Mar still spends
-                      against Apr–Jun. */}
-                  {(() => {
-                    const v = shown.value(figureCtx, p.id)
-                    const suffix = shown.kind === 'bal' ? 'remaining, pending bids included' : 'taken'
-                    return (
-                      <td
-                        className={`bal act${v < 0 ? ' neg' : ''}`}
-                        data-testid={`bal-${p.id}`}
-                        title={`${p.callsign}: ${show(v)} ${shown.label} — ${suffix}. Tap for the breakdown`}
-                        /* A tap opens the person's breakdown of the shown
-                           figure — the owner's "click the individual
-                           personnel counter" (17 Aug 26). The td is the
-                           target, like every grid cell here: a nested button
-                           would cost the 44px column its number. */
-                        onClick={() => setBalOpen({ person: p.id, figureId: shown.id })}
-                      >
-                        {show(v)}
-                      </td>
-                    )
-                  })()}
-                  {period.days.map(d => {
-                    const code = grid[p.id]?.[d.date] ?? ''
-                    const here = inSquadron(p, d.date)
-                    // `here` is false on both sides of the roster window. Before
-                    // `from` the person has not arrived yet — that is not the
-                    // same fact as having been posted out, and must not read as
-                    // one. Only the "after `to`" direction is a genuine PO.
-                    const notYetArrived = !here && p.from !== null && d.date < p.from
-                    const cls = [
-                      here ? '' : 'gone',
-                      here && isDuty(code) ? 'duty' : '',
-                      // The band runs the whole column, not just the header —
-                      // finding a Tuesday in 90 columns should not need
-                      // counting. `.gone`'s hatch is declared after the
-                      // weekend rule so a posted-out weekend still reads as
-                      // posted out.
-                      isWeekend(d.date) ? 'weekend' : '',
-                      // The event column colour (off = green, no-leave =
-                      // orange), declared after the weekend so a holiday
-                      // Saturday reads as the holiday, not the weekend.
-                      evKind.get(d.date) ?? '',
-                      // Outside the bidding window, for this role. Declared
-                      // after the event colour so a locked, tinted day still
-                      // reads as locked — the same cascade care the
-                      // .blocked/.weekend pair needs, and for the same reason.
-                      lockedDate(d.date) ? 'locked' : '',
-                    ].filter(Boolean).join(' ')
-                    // The stored notation, printed through the one display
-                    // mapping — the ATT markers read as the owner's bare
-                    // B / C on the grid while everything else prints as
-                    // stored (displayCell is identity for it).
-                    const text = here ? displayCell(code) : notYetArrived ? '' : 'PO'
-                    // Duty first for the reader — FO/HO are work, not a bid.
-                    // (They carry `bid: false`, so they could not reach a
-                    // bid branch anyway; the order is legibility, not a
-                    // guard.) Then the bid state, but only where the code is
-                    // one a person bids for. Everything else is plain
-                    // information:
-                    // medical, a course, overseas duty. A bare "PO" chip on
-                    // a posted-out cell carries no state class at all.
-                    //
-                    // A bid with NO decision recorded reads as pending, and
-                    // PENDING IS PLAIN — no colour class at all, so the chip
-                    // renders as text on the ordinary cell background.
-                    //
-                    // It was purple until 10 Aug 26, when the owner pointed
-                    // out what that cost: an input nobody had looked at and
-                    // one already in management's hands were the same colour,
-                    // so the sheet could not distinguish them. Purple now
-                    // means acknowledged — somebody has seen this — and the
-                    // absence of colour means the absence of news.
-                    const bid = stateOf(states, p.id, d.date)
-                    const chipState = !here || !code
-                      ? ''
-                      : isDuty(code) ? 'sc'
-                      : !isBiddable(code) ? 'info'
-                      : bid === 'approved' ? 'appr'
-                      : bid === 'refused' ? 'ref'
-                      : bid === 'acknowledged' ? 'tbc'
-                      : ''
-                    // The half-day fill is read off the stored string via
-                    // `parseCell`, never kept as its own bit of state and
-                    // never guessed by matching an asterisk here in the
-                    // component. The asterisk in `text` stays the one source
-                    // of truth; this is only a derived echo of it, so the
-                    // two can never disagree.
-                    const portion = here && code ? parseCell(code)?.portion : undefined
-                    const portionClass = portion === 'am' || portion === 'pm' ? ` ${portion}` : ''
-                    // Two marks on top of the state colour, never instead of
-                    // it: the squadron reads green as approved and magenta as
-                    // pending, and that stays true here. `raptor` says the
-                    // approval happened elsewhere and nothing on this screen
-                    // will change it; `moved` says management shifted this
-                    // bid off another date.
-                    const marks = [
-                      here && code && raptorOwns(states, p.id, d.date) ? 'raptor' : '',
-                      movedShown && here && code && shiftedFrom(states, p.id, d.date) ? 'moved' : '',
-                    ].filter(Boolean).join(' ')
-                    // A cell outside the person's time in the squadron is
-                    // never actionable FOR A BID: bidding leave for a man who
-                    // has been posted out is a data-entry accident, not a bid.
-                    // But an ADMIN can still tap a posted-out day to UNDO the
-                    // post-out (owner, 18 Aug 26 — "tap a struck day to undo");
-                    // `notYetArrived` is excluded — a day before someone joins
-                    // is blank, not a post-out, and nothing there to undo.
-                    const actionable =
-                      (here && openable(p.id, d.date)) || (role === 'admin' && !here && !notYetArrived)
-                    // Their LAST day in the squadron wears a small PO tag
-                    // (owner, 19 Aug 26 — chosen over nothing after the edge
-                    // case was put to him): someone posting out on the 1st has
-                    // a final month that otherwise looks completely normal,
-                    // and the next month their row is gone — so without this,
-                    // a reader jumping month to month never sees the PO at
-                    // all. The tag rides the corner of the cell so a leave
-                    // code on the same day still prints.
-                    const lastIn = p.to !== null && d.date === p.to
-                    return (
-                      <td
-                        key={d.date}
-                        data-testid={`cell-${p.id}-${d.date}`}
-                        className={`${cls}${actionable ? ' act' : ''}${lastIn ? ' pofin' : ''}`}
-                        onClick={actionable
-                          ? () => setOpen({ id: p.id, callsign: p.callsign, date: d.date })
-                          : undefined}
-                      >
-                        {text && (
-                          <span
-                            className={`c${chipState ? ` ${chipState}` : ''}${portionClass}${marks ? ` ${marks}` : ''}`}
-                          >
-                            {text}
-                          </span>
-                        )}
-                        {lastIn && (
-                          <span
-                            className="polast"
-                            data-testid={`polast-${p.id}`}
-                            title={`${p.callsign} posts out ${addDays(p.to!, 1)} — this is their last day in the squadron`}
-                          >
-                            PO
-                          </span>
-                        )}
-                      </td>
-                    )
-                  })}
-                      </tr>
+                      {/* The row itself is a memoised component (3 Sep 26):
+                          opening a sheet, hovering a chip or dragging a row
+                          used to rebuild all ~18,000 cells; now only a row
+                          whose own inputs changed repaints. Every store
+                          change still repaints every row via `version`. */}
+                      <PersonRow
+                        p={p}
+                        version={version}
+                        period={period}
+                        grid={grid}
+                        states={states}
+                        role={role}
+                        viewer={viewer}
+                        deciding={deciding}
+                        movedShown={movedShown}
+                        shown={shown}
+                        figureCtx={figureCtx}
+                        evKind={evKind}
+                        lockedCols={lockedCols}
+                        quals={qualsOf.get(p.id) ?? NO_QUALS}
+                        me={p.id === viewer}
+                        arranging={arranging}
+                        dragging={draggingId === p.id}
+                        over={draggingId && dragOver === p.id && draggingId !== p.id ? (dragAfter ? 'dragover after' : 'dragover') : ''}
+                        api={rowApi}
+                      />
                     </Fragment>
                   )
                 })
