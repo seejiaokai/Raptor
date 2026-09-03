@@ -219,8 +219,19 @@ export function applyDrop(el: any, x: any, y: any) {
   DRAG = null; dndOff(); return false
 }
 
-/* ---- the mouse path: HTML5 drag events ---- */
+/* ---- the native path: HTML5 drag events ----
+   Since 3 Sep 26 a MOUSE never gets here in practice: onPointerDown claims a
+   puck for the pointer machine below and this handler CANCELS the native drag
+   (owner — the white box under a dragged puck survived two drag-image fixes
+   on the MINDEF secured browser, whose photo showed our page-drawn ghost AND
+   the browser's own white-card snapshot side by side: that browser ignores
+   setDragImage altogether, so no image handed to the native drag can ever be
+   honoured there, and the only drag that cannot draw a white box is one the
+   browser never starts). What remains below is the fallback for a dragstart
+   nobody claimed — a synthetic one from a test or a probe, or a browser with
+   no pointer events — and it keeps its own blank-pixel + ghost recipe. */
 function onDragStart(e: DragEvent) {
+  if (TD && TD.mouse) { e.preventDefault(); return }
   const d = dragFrom(e.target); if (!d) return
   DRAG = d
   if (e.dataTransfer) {
@@ -314,14 +325,21 @@ function onDragEnd() { dndOff(); DRAG = null }
    events. Press and hold ~180 ms on anything [draggable="true"] to pick it up
    (a move before that is a scroll, and cancels), a ghost follows the finger,
    whatever sits under it takes .dragover exactly as on desktop, and lifting
-   off calls applyDrop() — the identical mutation path the mouse uses.        */
+   off calls applyDrop() — the identical mutation path the mouse uses.
+   THE MOUSE RIDES THIS SAME MACHINE since 3 Sep 26 (TD.mouse): a primary
+   button pressed on a puck claims it here, a 3px move arms it (no hold — a
+   mouse drag starts the moment it moves, as the native one did), the native
+   dragstart is cancelled in onDragStart, and the ghost is the PUCK alone
+   (`.dragimg`, anchored where the press landed inside it) rather than the
+   finger's centred shell clone. One machine, one applyDrop, no browser-drawn
+   image anywhere — see the note above onDragStart for why.                 */
 let TD: any = null
-const TD_SLOP = 8, TD_GIVEUP = 26, TD_HOLD = 180, TD_EDGE = 52, TD_SPEED = 16
+const TD_SLOP = 8, TD_GIVEUP = 26, TD_HOLD = 180, TD_EDGE = 52, TD_SPEED = 16, TD_MSLOP = 3
 function tdClear() {
   if (!TD) return
   clearTimeout(TD.timer)
   if (TD.ghost && TD.ghost.parentNode) TD.ghost.parentNode.removeChild(TD.ghost)
-  if (TD.armed) { document.body.classList.remove('tdrag'); dndOff(); DRAG = null }
+  if (TD.armed) { document.body.classList.remove('tdrag', 'mdrag'); dndOff(); DRAG = null }
   TD = null
 }
 /* IS A FINGER ALREADY DRIVING A DRAG? Asked by the board's day-dot scrub
@@ -352,7 +370,10 @@ function tdAutoScroll(y: any) {
 }
 function tdOver(x: any, y: any) {
   const g = TD.ghost
-  if (g) { g.style.left = x + 'px'; g.style.top = y + 'px' }
+  /* TD.ox/oy is where the mouse press landed inside the puck, so its ghost
+     stays pinned to that spot; a finger's ghost is centred (ox = oy = 0 with
+     the .tdghost translate) */
+  if (g) { g.style.left = (x - TD.ox) + 'px'; g.style.top = (y - TD.oy) + 'px' }
   const el = document.elementFromPoint(x, y)
   const t = el && el.closest ? (el.closest(DROP_SEL) || el.closest(BIN_SEL)) : null
   if (t !== TD.over) {
@@ -367,31 +388,50 @@ function tdArm() {
   const d = dragFrom(TD.src); if (!d) { tdClear(); return }
   DRAG = d; TD.armed = true
   TD.scroller = tdScrollerFor(TD.src)
-  const r = TD.src.getBoundingClientRect()
-  const g = TD.src.cloneNode(true)
-  g.classList.add('tdghost')
-  g.removeAttribute('draggable')
+  /* the mouse ghost is the PUCK alone (not the .seat shell a grid cell can
+     stretch past it), pinned where the press landed inside it — clamped to
+     the puck so a press on the shell's padding still reads as a corner grab;
+     the finger's ghost is the shell clone centred under the touch */
+  const pk = TD.mouse ? (TD.src.querySelector('.puck') || TD.src) : TD.src
+  const r = pk.getBoundingClientRect()
+  const g = pk.cloneNode(true)
+  g.classList.add(TD.mouse ? 'dragimg' : 'tdghost')
+  g.removeAttribute('draggable'); g.removeAttribute('tabindex')
   g.style.width = r.width + 'px'; g.style.height = r.height + 'px'
-  g.style.left = TD.x + 'px'; g.style.top = TD.y + 'px'
+  TD.ox = TD.mouse ? Math.min(Math.max(TD.x0 - r.left, 0), r.width) : 0
+  TD.oy = TD.mouse ? Math.min(Math.max(TD.y0 - r.top, 0), r.height) : 0
   document.body.appendChild(g)
   TD.ghost = g
   document.body.classList.add('tdrag')
+  if (TD.mouse) document.body.classList.add('mdrag')
   dndOn(TD.src)
   tdOver(TD.x, TD.y)
-  if (navigator.vibrate) try { navigator.vibrate(12) } catch (_) {}
+  if (!TD.mouse && navigator.vibrate) try { navigator.vibrate(12) } catch (_) {}
 }
 function onPointerDown(e: PointerEvent) {
-  if (e.pointerType === 'mouse' || !e.isPrimary) return
+  if (!e.isPrimary) return
   const src = (e.target as HTMLElement).closest && (e.target as HTMLElement).closest('[draggable="true"]')
   if (!src) return
+  const mouse = e.pointerType === 'mouse'
+  /* the mouse claims ONLY what dragFrom recognises — a puck on a seat or in
+     the palette — and only on its primary button. Every other draggable on
+     the page (none today; Leave War and the calendar run their own pointer
+     machines) is left to the browser, native dragstart and all. */
+  if (mouse && (e.button !== 0 || !dragFrom(src))) return
   tdClear()
-  TD = { src, x: e.clientX, y: e.clientY, x0: e.clientX, y0: e.clientY, armed: false, ghost: null, over: null, id: e.pointerId }
-  TD.timer = setTimeout(tdArm, TD_HOLD)
+  TD = { src, x: e.clientX, y: e.clientY, x0: e.clientX, y0: e.clientY, armed: false, ghost: null, over: null, id: e.pointerId, mouse, ox: 0, oy: 0 }
+  if (!mouse) TD.timer = setTimeout(tdArm, TD_HOLD)
 }
 function onPointerMove(e: PointerEvent) {
   if (!TD || e.pointerId !== TD.id) return
   TD.x = e.clientX; TD.y = e.clientY
   if (!TD.armed) {
+    /* a mouse has no hold: the first move past a hair's slop IS the drag
+       (the native drag's own threshold), a smaller wobble is still a click */
+    if (TD.mouse) {
+      if (Math.abs(e.clientX - TD.x0) > TD_MSLOP || Math.abs(e.clientY - TD.y0) > TD_MSLOP) tdArm()
+      return
+    }
     /* A finger settling on a 15px puck routinely travels more than 8px inside the
        180ms hold. That used to CANCEL the gesture outright — no ghost, no feedback,
        and holding still could not re-arm it. A small wobble now just restarts the
@@ -416,7 +456,7 @@ function onPointerUp(e: PointerEvent) {
     if (TD.ghost && TD.ghost.parentNode) TD.ghost.parentNode.removeChild(TD.ghost)
     TD.ghost = null
     const el = document.elementFromPoint(x, y)
-    document.body.classList.remove('tdrag')
+    document.body.classList.remove('tdrag', 'mdrag')
     applyDrop(el, x, y)
     /* The tap that ends a drag must not also select the puck. But a real drag ends
        on a different element than it started on, so the browser fires NO click at
@@ -453,7 +493,13 @@ export function initDrag() {
   document.addEventListener('touchmove', onTouchMove, { passive: false })
   document.addEventListener('pointerup', onPointerUp, { passive: true })
   document.addEventListener('pointercancel', onPointerCancel, { passive: true })
+  /* a mouse released outside the window normally still reaches pointerup
+     (Chromium holds the mouse for the page while a button is down), but a
+     window that loses focus mid-drag — an alt-tab, a secured browser's own
+     chrome stealing the pointer — must not leave a ghost riding the cursor */
+  window.addEventListener('blur', onPointerCancel)
   return () => {
+    window.removeEventListener('blur', onPointerCancel)
     tdClear()
     document.removeEventListener('dragstart', onDragStart)
     document.removeEventListener('dragover', onDragOver)

@@ -10,7 +10,7 @@ import { initStore, wireStore, setSession, notify } from '../state/store'
 import { slotVal, setSlotVal, rowCrew, fillSlot } from '../engine/slots'
 import { HOOKS } from '../engine/hooks'
 import { afterSchedMutate, armedKey, AVSHUT } from '../state/view'
-import { dragFrom, applyDrop, setDrag } from './drag'
+import { dragFrom, applyDrop, setDrag, DRAG } from './drag'
 import { openScheduler, closeScheduler } from './board'
 import { DAYS } from '../engine/data'
 
@@ -385,6 +385,101 @@ describe('the mouse drag image is a page-drawn puck ghost, the browser gets a bl
     src().dispatchEvent(ev('dragstart'))
     expect(document.querySelectorAll('.dragimg').length).toBe(0)
     src().dispatchEvent(ev('dragend'))
+  })
+})
+
+/* THE MOUSE RIDES THE POINTER MACHINE (owner, 3 Sep 26 — the white box under
+   a dragged puck survived two drag-image fixes on the MINDEF secured browser;
+   its photo showed our ghost AND the browser's own white snapshot together,
+   so that browser ignores setDragImage and the only drag that cannot draw a
+   white box is one the browser never starts). A primary-button press on a
+   puck claims it, a 3px move arms our own drag (ghost, .dnd, DRAG), the
+   native dragstart is cancelled, and the release drops through applyDrop —
+   the touch path's machine, one body. */
+describe('the mouse drags through the pointer machine, never the native drag', () => {
+  const src = () => $('#eRoster .rpuck[data-person]')
+  const HAS_PE = typeof (globalThis as any).PointerEvent === 'function'
+  const ptr = (type: string, x: number, y: number, o: { kind?: string, button?: number, id?: number } = {}) => {
+    const { kind = 'mouse', button = 0, id = 1 } = o
+    if (HAS_PE) return new PointerEvent(type, { bubbles: true, cancelable: true, clientX: x, clientY: y, pointerId: id, pointerType: kind, isPrimary: true, button })
+    const e: any = new MouseEvent(type, { bubbles: true, cancelable: true, clientX: x, clientY: y, button })
+    Object.defineProperty(e, 'pointerId', { value: id }); Object.defineProperty(e, 'pointerType', { value: kind }); Object.defineProperty(e, 'isPrimary', { value: true })
+    return e
+  }
+  /* jsdom has no layout, so what sits "under the pointer" is told by hand */
+  let under: Element | null = null
+  const efp = (document as any).elementFromPoint
+  beforeAll(() => { (document as any).elementFromPoint = () => under })
+  const ghosts = () => document.querySelectorAll('.dragimg').length
+  const dragstart = () => { const e = new Event('dragstart', { bubbles: true, cancelable: true }); src().dispatchEvent(e); return e }
+  const crewOf = (fill: string) => { const [k, rest] = fill.split(':'); return rowCrew(k, rest.split('.')) }
+
+  it('a press that moves past the slop arms our own drag and cancels the native one; the release drops it', async () => {
+    const who = src().dataset.person!, cell = $$('#eWeek [data-fill^="g:"]').find(c => !crewOf(c.dataset.fill!).includes(who))!
+    expect(cell, 'a ground cell the man is not yet on').toBeTruthy()
+    src().dispatchEvent(ptr('pointerdown', 10, 10))
+    expect(ghosts(), 'a press alone is not a drag').toBe(0)
+    src().dispatchEvent(ptr('pointermove', 12, 11))
+    expect(ghosts(), 'inside the slop is still a click').toBe(0)
+    src().dispatchEvent(ptr('pointermove', 20, 20))
+    expect(DRAG, 'armed: the roster puck is in flight').toEqual({ kind: 'roster', id: who })
+    expect(ghosts()).toBe(1)
+    const g = document.querySelector('.dragimg') as HTMLElement
+    expect(g.classList.contains('puck'), 'the ghost is the puck, not the .rpuck shell').toBe(true)
+    expect(g.style.left, 'a 0×0 jsdom puck gives a zero grab offset — the ghost sits at the pointer').toBe('20px')
+    expect(document.body.classList.contains('dnd'), 'drop cells decorated').toBe(true)
+    expect(document.body.classList.contains('mdrag'), 'grabbing cursor').toBe(true)
+    expect(dragstart().defaultPrevented, 'the browser is refused its own drag').toBe(true)
+    expect(ghosts(), 'and adds no second image').toBe(1)
+    document.body.dispatchEvent(ptr('pointermove', 60, 80))
+    expect(g.style.left).toBe('60px'); expect(g.style.top).toBe('80px')
+    under = cell
+    await act(async () => { document.body.dispatchEvent(ptr('pointerup', 60, 80)) })
+    expect(crewOf(cell.dataset.fill!), 'landed through applyDrop').toContain(who)
+    expect(ghosts(), 'no ghost survives the drop').toBe(0)
+    expect(DRAG).toBeNull()
+    expect(document.body.classList.contains('dnd')).toBe(false)
+    expect(document.body.classList.contains('mdrag')).toBe(false)
+    under = null
+  })
+
+  it('a press and release without moving is a click — nothing armed, nothing dropped', () => {
+    src().dispatchEvent(ptr('pointerdown', 10, 10))
+    src().dispatchEvent(ptr('pointerup', 10, 10))
+    expect(ghosts()).toBe(0); expect(DRAG).toBeNull()
+    expect(document.body.classList.contains('dnd')).toBe(false)
+  })
+
+  it('a secondary button, or a draggable that is not a puck, is left to the browser', () => {
+    src().dispatchEvent(ptr('pointerdown', 10, 10, { button: 2 }))
+    src().dispatchEvent(ptr('pointermove', 30, 30))
+    expect(ghosts(), 'right button: no drag of ours').toBe(0)
+    src().dispatchEvent(ptr('pointerup', 30, 30))
+    const other = document.createElement('div'); other.setAttribute('draggable', 'true'); document.body.appendChild(other)
+    other.dispatchEvent(ptr('pointerdown', 10, 10))
+    other.dispatchEvent(ptr('pointermove', 30, 30))
+    expect(ghosts(), 'not a puck: no claim').toBe(0)
+    const e = new Event('dragstart', { bubbles: true, cancelable: true }); other.dispatchEvent(e)
+    expect(e.defaultPrevented, 'its native drag is not cancelled').toBe(false)
+    other.dispatchEvent(ptr('pointerup', 30, 30))
+    other.remove()
+  })
+
+  it('a finger still needs the hold — a quick touch move is a scroll, not a drag', () => {
+    src().dispatchEvent(ptr('pointerdown', 10, 10, { kind: 'touch', id: 7 }))
+    src().dispatchEvent(ptr('pointermove', 20, 20, { kind: 'touch', id: 7 }))
+    expect(ghosts(), 'the touch path is unchanged by the mouse claim').toBe(0)
+    src().dispatchEvent(ptr('pointerup', 20, 20, { kind: 'touch', id: 7 }))
+  })
+
+  it('losing the window mid-drag drops nothing and clears the ghost', () => {
+    src().dispatchEvent(ptr('pointerdown', 10, 10))
+    src().dispatchEvent(ptr('pointermove', 30, 30))
+    expect(ghosts()).toBe(1)
+    window.dispatchEvent(new Event('blur'))
+    expect(ghosts()).toBe(0); expect(DRAG).toBeNull()
+    expect(document.body.classList.contains('mdrag')).toBe(false)
+    ;(document as any).elementFromPoint = efp
   })
 })
 

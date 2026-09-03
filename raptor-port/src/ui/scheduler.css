@@ -3782,6 +3782,9 @@ body.sb-lock{overflow:hidden}
   box-shadow:0 8px 20px rgba(0,0,0,.6);outline:2px solid var(--accent);outline-offset:1px;border-radius:4px}
 body.tdrag{touch-action:none;-webkit-user-select:none;user-select:none}
 body.tdrag *{-webkit-touch-callout:none}
+/* the mouse rides the pointer machine too (drag.ts, 3 Sep 26 — no native
+   drag, so no OS drag cursor): a closed hand for the length of the drag */
+body.mdrag,body.mdrag *{cursor:grabbing!important}
 
 /* ---- Inputs-calendar chip drag (caldrag.ts) — own names, not tdghost/tdrag:
    that pair belongs to drag.ts's board machine (CLAUDE.md — "that machine

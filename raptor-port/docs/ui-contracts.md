@@ -1751,27 +1751,33 @@ persisted and never in a history snapshot. The toggle builder is `notePubTog`
   native drag whose dragstart handler reflows the page before the drag
   image is captured, which killed every desktop mouse drag. The touch
   machine keeps its synchronous `dndOn` — no native capture there.
-- The MOUSE drag image is ours, and the PAGE draws it — the browser is
-  handed a blank pixel and composes nothing (owner, 3 Sep 26 — "a white box
-  follows the puck"; still there after the first fix on Edge inside the MINDEF
-  secured browser). The first cut still asked the browser to paint an
-  off-screen puck clone, which is no fix where the drag image is composed
-  outside the page (a remote-rendered or sandboxed browser hands the OS a
-  bitmap it draws without transparency — an opaque white card around the
-  puck). So `drag.ts setDragImage` gives `setDragImage` a 1×1 transparent GIF
-  (`BLANK_IMG`, decoded at module load — an unloaded image makes Chromium fall
-  back to its own snapshot) and appends a `.dragimg` clone of the PUCK alone
-  (not the `.seat` shell a grid cell can stretch) to the body as a fixed,
-  `pointer-events:none`, z-index 520 ghost — the touch `.tdghost` recipe,
-  anchored where the cursor grabbed instead of centred — which `moveDragImage`
-  pins under the cursor on every document `dragover` (real coordinates in
-  every browser; Firefox's `drag` event reports zeros). Removed by `dndOff`,
-  so a drop clears it too (the drop repaints the palette and detaches the
-  source before its dragend can bubble — seen on the built bundle). A
-  dataTransfer without `setDragImage` gets no ghost — the browser then shows
-  its own image and a second would double up. Verified on the built bundle:
-  under a real intercepted Chromium drag the ghost sits at cursor-minus-grab
-  offset, the drop lands, and no ghost survives it.
+- THE MOUSE NEVER STARTS A NATIVE DRAG — it rides the touch path's pointer
+  machine (owner, 3 Sep 26 — "a white box follows the puck", which survived
+  two drag-image fixes on Edge inside the MINDEF secured browser; the photo
+  showed our page-drawn ghost AND the browser's own white-card snapshot side
+  by side, so that browser ignores `setDragImage` altogether and the only
+  drag that cannot draw a white box is one the browser never starts). In
+  `drag.ts`: a primary-button `pointerdown` on a puck — and ONLY what
+  `dragFrom` recognises, so Leave War's and the calendar's own machines are
+  untouched — claims it (`TD.mouse`), a 3px move arms it (no hold; the
+  native drag's own threshold), `onDragStart` `preventDefault`s the native
+  dragstart, and the release drops through `applyDrop` off `elementFromPoint`
+  exactly as a finger does. The ghost is a `.dragimg` clone of the PUCK alone
+  (not the `.seat` shell a grid cell can stretch) — fixed, `pointer-events:
+  none`, z-index 520, the `.tdghost` recipe — pinned where the press landed
+  inside the puck (`TD.ox/oy`, clamped to the puck) rather than centred, and
+  `body.mdrag` paints a grabbing cursor for the length of the drag (no OS
+  drag cursor exists — there is no OS drag). Edge auto-scroll comes free with
+  the machine. A window `blur` mid-drag clears the ghost and drops nothing. A
+  press-and-release without a 3px move is a click; a secondary button is
+  left alone. The NATIVE handlers (`dragstart`/`dragover`/`drop`/`dragend`)
+  remain as the fallback for a drag nobody claimed — synthetic events from
+  tests and probes, a browser without pointer events — with their own
+  blank-pixel `setDragImage` + `dragover`-driven ghost; a real mouse never
+  reaches them. Pinned in a real browser (`e2e/geometry.spec.ts` "a mouse
+  drag of a puck runs on the pointer machine"): zero native drag events
+  fire, the ghost sits at cursor-minus-grab-offset, the drop lands, no ghost
+  survives it.
 - Touch drag: 8px slop restarts the 180ms hold, >26px cancels; ghost
   follows finger; click-eater dies on next pointerdown.
 - Toast is `pointer-events:none`.
