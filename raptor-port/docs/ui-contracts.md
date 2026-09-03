@@ -1751,6 +1751,16 @@ persisted and never in a history snapshot. The toggle builder is `notePubTog`
   native drag whose dragstart handler reflows the page before the drag
   image is captured, which killed every desktop mouse drag. The touch
   machine keeps its synchronous `dndOn` — no native capture there.
+- The MOUSE drag image is ours, not the browser's snapshot (owner, 3 Sep 26
+  — "a white box follows the puck"). With selection off app-wide (the 2 Sep
+  `html{user-select:none}`), Chromium on Windows snapshots a draggable as an
+  opaque white card with the puck in one corner. `drag.ts setDragImage` hands
+  it a `.dragimg` clone of the PUCK alone (not the `.seat` shell a grid cell
+  can stretch), parked off-screen with selection handed back, sized from the
+  puck's rect and anchored where the cursor grabbed; removed by `dndOff`, so
+  a drop clears it too (the drop repaints the palette and detaches the
+  source before its dragend can bubble — seen on the built bundle). Never
+  `display:none` it — Chromium only paints a laid-out element.
 - Touch drag: 8px slop restarts the 180ms hold, >26px cancels; ghost
   follows finger; click-eater dies on next pointerdown.
 - Toast is `pointer-events:none`.

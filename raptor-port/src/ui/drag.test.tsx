@@ -299,6 +299,66 @@ describe('the dragstart decoration waits one tick', () => {
   })
 })
 
+/* The image under the mouse is ours (owner, 3 Sep 26 — "a white box follows
+   the puck"): with selection off app-wide, Chromium's automatic snapshot of a
+   draggable came back as a white card. dragstart now hands the browser a clone
+   of the PUCK alone, parked off-screen with selection handed back, sized from
+   the puck's rect and anchored where the cursor grabbed; dragend removes it. */
+describe('the mouse drag image is an off-screen puck clone', () => {
+  const src = () => $('#eRoster .rpuck[data-person]')
+  const ev = (t: string) => new Event(t, { bubbles: true, cancelable: true })
+  const withImage = (t: string, x = 0, y = 0) => {
+    const calls: any[] = []
+    const dt: any = { effectAllowed: '', setData() {}, setDragImage(el: any, ox: number, oy: number) { calls.push({ el, ox, oy }) } }
+    const ev: any = new Event(t, { bubbles: true, cancelable: true })
+    try { ev.dataTransfer = dt } catch (_) {}
+    Object.defineProperty(ev, 'clientX', { value: x }); Object.defineProperty(ev, 'clientY', { value: y })
+    return { ev, calls }
+  }
+
+  it('sets a .dragimg clone of the puck, in the body, selectable, and removes it on dragend', () => {
+    const { ev, calls } = withImage('dragstart')
+    src().dispatchEvent(ev)
+    expect(calls.length, 'setDragImage called once').toBe(1)
+    const g = calls[0].el as HTMLElement
+    expect(g.classList.contains('dragimg')).toBe(true)
+    expect(g.classList.contains('puck'), 'the image is the puck, not the .rpuck shell').toBe(true)
+    expect(g.parentNode, 'laid out in the body for the capture').toBe(document.body)
+    expect(g.getAttribute('draggable'), 'the clone is not itself draggable').toBeNull()
+    expect(g.textContent).toBe(src().querySelector('.puck')!.textContent)
+    expect(document.querySelectorAll('.dragimg').length).toBe(1)
+    src().dispatchEvent(withImage('dragend').ev)
+    expect(document.querySelectorAll('.dragimg').length, 'gone at dragend').toBe(0)
+  })
+
+  /* A drop repaints the palette, which detaches the source before its dragend
+     can bubble to the document — seen on the built bundle: the puck landed and
+     no dragend was observed. So the clone must go with the DROP, not wait for
+     a dragend that never arrives. */
+  it('a drop clears the clone even when no dragend follows', async () => {
+    src().dispatchEvent(withImage('dragstart').ev)
+    expect(document.querySelectorAll('.dragimg').length).toBe(1)
+    const cell = $('#eWeek [data-fill^="d:"]')
+    await act(async () => { cell.dispatchEvent(withImage('dragover').ev); cell.dispatchEvent(withImage('drop').ev) })
+    expect(document.querySelectorAll('.dragimg').length, 'gone on the drop').toBe(0)
+    expect(document.body.classList.contains('dnd')).toBe(false)
+  })
+
+  it('a second dragstart replaces a stale clone rather than stacking one', () => {
+    src().dispatchEvent(withImage('dragstart').ev)
+    src().dispatchEvent(withImage('dragstart').ev)
+    expect(document.querySelectorAll('.dragimg').length).toBe(1)
+    src().dispatchEvent(withImage('dragend').ev)
+    expect(document.querySelectorAll('.dragimg').length).toBe(0)
+  })
+
+  it('a dataTransfer without setDragImage (jsdom, old browsers) is simply skipped', () => {
+    src().dispatchEvent(ev('dragstart'))
+    expect(document.querySelectorAll('.dragimg').length).toBe(0)
+    src().dispatchEvent(ev('dragend'))
+  })
+})
+
 /* isPhone was never wired in the port — the default `false` meant a palette
    drag on a phone never parked the drawer, so the drop could only land back
    on the drawer itself: a silent no-op. */

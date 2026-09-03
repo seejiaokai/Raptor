@@ -578,6 +578,28 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
   Leave War row, `docs/engine-rules.md` INPUT_META count, the leave-types spec
   table, `leavewar-sync.md` vocabulary line, ui-contracts §Legend.
 
+- **RESOLVED 3 Sep 26 — a white box followed a dragged puck on the edit week
+  and the board (owner photo, Windows laptop).** The 2 Sep app-wide
+  `html{user-select:none}` made Chromium's AUTOMATIC drag snapshot of a
+  draggable an opaque white card with the puck in one corner. The mouse path
+  now hands the browser its own image (`drag.ts setDragImage`, called from
+  `onDragStart`): a `.dragimg` clone of the PUCK alone — not the `.seat` shell,
+  which a grid cell can stretch past the puck — parked off-screen for the
+  capture frame with selection handed back (`scheduler.css .dragimg`), sized
+  from the puck's rect and anchored where the cursor grabbed; `dndOff` removes
+  it — so a DROP clears it too, which matters because the drop repaints the
+  palette and detaches the source before its dragend can bubble to the
+  document (seen on the built bundle: puck landed, no dragend observed) — and
+  a fresh dragstart replaces a stale one. Never `display:none`
+  the clone — Chromium only snapshots a laid-out element. Appending one fixed
+  element does not reflow the drop cells, so it stays clear of the
+  body.dnd-before-capture abort (the one-tick rule above it in drag.ts). The
+  touch path was never affected — its `.tdghost` is a JS-positioned clone, not
+  a browser snapshot. The OS-level drag image itself cannot be screenshotted,
+  so the browser check is: a real Chromium `dragTo` still lands the puck and
+  leaves no clone behind. Pins: `ui/drag.test.tsx` "the mouse drag image is an
+  off-screen puck clone" (+3). Contract: ui-contracts §Drag & drop.
+
 - **RESOLVED 2 Sep 26 — the Leave War drag-select e2e flake was the edge
   auto-scroll, and it was a real UX bug, not test geometry.** Instrumenting the
   built bundle showed the cause: on the lw-desktop viewport slipway's row sits

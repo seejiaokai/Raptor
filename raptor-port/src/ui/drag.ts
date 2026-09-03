@@ -36,6 +36,11 @@ const BIN_SEL = '.sb-roster,.eroster,.availpuck'
    part of .eroster, so dropping there is still "put them back" — and the drawer
    slides out again when the drag ends. */
 let ROS_REOPEN = false
+/* the explicit mouse drag image — built in setDragImage below, dropped by
+   dndOff so EVERY end of a drag clears it: a drop repaints the palette, which
+   detaches the source before its dragend can bubble to the document */
+let DRAGIMG: HTMLElement | null = null
+function dropDragImage() { if (DRAGIMG && DRAGIMG.parentNode) DRAGIMG.parentNode.removeChild(DRAGIMG); DRAGIMG = null }
 function dndOn(from: any) {
   document.body.classList.add('dnd')
   if (isPhone() && document.body.classList.contains('ros-open') && from && from.closest && from.closest('.eroster')) {
@@ -44,6 +49,7 @@ function dndOn(from: any) {
 }
 function dndOff() {
   document.body.classList.remove('dnd')
+  dropDragImage()
   document.querySelectorAll('.dragover').forEach(x => x.classList.remove('dragover'))
   if (ROS_REOPEN) { ROS_REOPEN = false; document.body.classList.add('ros-open') }
 }
@@ -217,6 +223,40 @@ function onDragStart(e: DragEvent) {
      dndOn — no native capture there.) */
   const from = e.target
   setTimeout(() => { if (DRAG === d) dndOn(from) }, 0)
+  setDragImage(e)
+}
+
+/* The image that rides under the mouse is OURS, not the browser's snapshot
+   (owner, 3 Sep 26 — "a white box follows the puck" on a Windows laptop, on
+   the edit week and the board alike). Selection went off app-wide on 2 Sep 26
+   (`html{user-select:none}`, scheduler.css) and Chromium's automatic drag
+   snapshot of a draggable inside a no-select subtree comes back as an opaque
+   white rectangle — the puck painted in one corner of a white card. So hand it
+   an explicit image instead: a clone of the PUCK alone (not the .seat shell,
+   which a grid cell can stretch past the puck), parked off-screen for the one
+   frame the capture needs, with selection handed back on it so the snapshot
+   path is the ordinary one, and pinned to the exact spot the cursor grabbed.
+   Off-screen, not display:none — Chromium only paints an element that is
+   laid out. Appending one fixed element does not reflow the drop cells, so
+   this stays clear of the abort described above. Verified on the built bundle
+   with a real Chromium mouse drag: the clone appears at dragstart and the
+   drop still lands. The clone goes with dndOff (drop, cancelled drag, dragend
+   alike — see DRAGIMG above), and a fresh dragstart replaces a stale one. */
+function setDragImage(e: DragEvent) {
+  const dt: any = e.dataTransfer
+  if (!dt || typeof dt.setDragImage !== 'function') return
+  const src = (e.target as HTMLElement).closest ? (e.target as HTMLElement).closest('[draggable="true"]') as HTMLElement : null
+  if (!src) return
+  const pk = (src.querySelector('.puck') || src) as HTMLElement
+  const r = pk.getBoundingClientRect()
+  dropDragImage()
+  const g = pk.cloneNode(true) as HTMLElement
+  g.classList.add('dragimg')
+  g.removeAttribute('draggable'); g.removeAttribute('tabindex')
+  g.style.width = r.width + 'px'; g.style.height = r.height + 'px'
+  document.body.appendChild(g)
+  DRAGIMG = g
+  dt.setDragImage(g, e.clientX - r.left, e.clientY - r.top)
 }
 function onDragOver(e: DragEvent) {
   if (!DRAG) return
