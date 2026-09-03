@@ -154,9 +154,22 @@ describe("the pilots' 15-day rule", () => {
     expect(drawnFrom(sources, 'ace', 'annual', pilotCtx)).toBe(15)
   })
 
-  it('a half day is still a day of the run', () => {
+  it('a half day BREAKS the run — a continuous run is full days only', () => {
+    // 14 full LL then a half day: the half day is not a full day of leave, so
+    // it does not extend the run to 15. The 14-day block stays short — its
+    // four weekend days are excused (10 charged) — and the half day charges
+    // its own half on the Monday.
     const grid = { ...span('2026-01-05', 14, 'LL'), '2026-01-19': 'LL*' }
-    expect(drawnFrom([src({ ace: grid })], 'ace', 'annual', pilotCtx)).toBe(14.5)
+    expect(drawnFrom([src({ ace: grid })], 'ace', 'annual', pilotCtx)).toBe(10.5)
+  })
+
+  it('a half day in the MIDDLE splits a would-be 15-day run into two short ones', () => {
+    // 7 full LL, a half day, 7 more full LL: 15 cells of leave, but the half
+    // day breaks the run, so neither side reaches 15 and the weekends inside
+    // each side are excused. 5–11 Jan holds one weekend (5 charged), the half
+    // on the 12th charges 0.5, 13–19 Jan holds one weekend (5 charged).
+    const grid = { ...span('2026-01-05', 7, 'LL'), '2026-01-12': 'LL*', ...span('2026-01-13', 7, 'LL') }
+    expect(drawnFrom([src({ ace: grid })], 'ace', 'annual', pilotCtx)).toBe(10.5)
   })
 
   it('a long run of CL charges every day for a pilot too — the rule is by counter, not by LL/OL', () => {

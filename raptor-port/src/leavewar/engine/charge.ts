@@ -31,8 +31,12 @@
 // shorter run, or anyone who is not a pilot, charges working days only. A
 // run may cross a war boundary (entitlements are continuous and wars are
 // windows onto them — counters.ts §drawnFrom), which is why the walk merges
-// every source before it looks for runs. A half day is still a day of the
-// run for the count — it is "leave taken" that day — and charges its half.
+// every source before it looks for runs. A RUN is CONTINUOUS FULL DAYS: a
+// half day BREAKS it (owner, 3 Sep 26 — "the 14-day run is a continuous run;
+// if there is a half day in the middle of that run, it breaks the rule").
+// The man was at work for half that day, so the run is not unbroken. A half
+// day is never part of a long run and so never earns the weekend/PH charge;
+// it still charges its own half on a working day by the plain rule.
 //
 // Medical markers spend no counter and are untouched: hospitalisation over a
 // weekend is still hospitalisation, and MED USED counts it as before.
@@ -108,9 +112,11 @@ export function chargedDays(sources: readonly LeaveSource[], personId: string, c
   const pilot = isPilot(ctx, personId)
 
   // 2. Walk the dates in calendar order, cutting runs where the day before
-  //    is missing or spends a different counter. `yyyy-mm-dd` sorts as a
-  //    date; `Object.entries` order is insertion order, so sort explicitly
-  //    (the engine/raptor.ts precedent).
+  //    is missing, spends a different counter, or is not a full day — a half
+  //    day breaks the run on both sides, so it forms a run of one that can
+  //    never reach LONG_LEAVE_DAYS. `yyyy-mm-dd` sorts as a date;
+  //    `Object.entries` order is insertion order, so sort explicitly (the
+  //    engine/raptor.ts precedent).
   const dates = [...taken.keys()].sort()
   const out = new Map<string, Taken>()
   let run: Taken[] = []
@@ -122,7 +128,8 @@ export function chargedDays(sources: readonly LeaveSource[], personId: string, c
   for (const date of dates) {
     const t = taken.get(date)!
     const prev = run[run.length - 1]
-    if (prev && !(addDays(prev.date, 1) === date && prev.counter === t.counter)) flush()
+    const continues = prev && addDays(prev.date, 1) === date && prev.counter === t.counter && prev.amount === 1 && t.amount === 1
+    if (prev && !continues) flush()
     run.push(t)
   }
   flush()

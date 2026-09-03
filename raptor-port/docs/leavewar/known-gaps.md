@@ -302,9 +302,13 @@ balance left) or `USED` (days taken):
   weekend is still hospitalisation — MED USED counts every day). **The one
   exception is the pilots' 15-day rule** (owner: "for pilots only, if the
   leave taken is 15 days or more, count every single day"): a RUN is
-  consecutive calendar days each holding a taken cell that spends the SAME
-  counter (LL → OL continues one — both are the annual pool; OIL/FCL/CCL/EL/
-  PL/CL, a medical day, a blank or a refused bid ends it), and a pilot's run of
+  consecutive calendar days each holding a taken, FULL-DAY cell that spends the
+  SAME counter (LL → OL continues one — both are the annual pool; OIL/FCL/CCL/
+  EL/PL/CL, a medical day, a blank, a refused bid — or a HALF DAY — ends it,
+  the last because "the run is a continuous run of full days" (owner, 3 Sep 26)
+  and a half day means the man was at work for half of it; a half day itself
+  charges its own half on a working day but never joins a long run), and a
+  pilot's run of
   `LONG_LEAVE_DAYS` (15) or more charges every day in it, weekends and PHs
   included; a shorter run, or anyone whose `seat` is not `pilot`, charges
   working days only. A run may cross a war boundary. The roster and the

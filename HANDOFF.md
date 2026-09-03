@@ -541,8 +541,10 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
   even one marked AFTER approval — draws nothing and shows in no USED figure;
   the cell still stands and still removes the man from manning
   (`removesAvailability` untouched). **Pilots only** (`Person.seat ===
-  'pilot'`): a RUN of 15+ consecutive calendar days of the SAME counter (LL→OL
-  continues; OIL/FCL/CCL/EL/PL/CL, medical, a blank or a refused bid breaks)
+  'pilot'`): a RUN of 15+ consecutive calendar days of the SAME counter, all
+  FULL days (LL→OL continues; OIL/FCL/CCL/EL/PL/CL, medical, a blank, a refused
+  bid — or a HALF DAY — breaks it, the half day because the run is a continuous
+  run of full days and a half day means the man was at work for half of it)
   charges every day, weekends and PHs included; runs may cross wars. Medical
   is untouched (MED USED counts every day). The predicate is ONE body:
   `eventdefs.ts:isNonWorkingDay`, which `sync.ts:isNonWorkingISO` (OIL
@@ -567,7 +569,8 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
   legend, the Logic matrix, colours and every predicate derive; the sync wire
   carries it by name. NOT seeded on the Raptor side (a seed CL row would be
   graded INPUT_FLY by the read-only reference and break 728/0 parity unless
-  `refwin.ts` is patched too). Pins: `engine/charge.test.ts` (+19),
+  `refwin.ts` is patched too). Pins: `engine/charge.test.ts` (+20, incl. a half
+  day BREAKS the run — a continuous run is full days only),
   `ui/oiltracker.test.tsx` (+2 Cinch cases: CL BAL Set, PH-after-Set agreement),
   `src/engine/leave.test.ts` (+1 CL twin), and the figure/COUNTERS/legend/fixture
   pins updated (`counters.test.ts`, `ui/counters.test.tsx`). Docs:
