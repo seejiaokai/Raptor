@@ -3104,14 +3104,24 @@ routing every look through the gated Pages deploy.
   `geometry (raptor|lw-phone|lw-desktop)` via `npx playwright test --project`
   as six parallel jobs; `deploy` needs all of them, so nothing publishes red
   and the gate set is unchanged. Public repo, so the extra runners are free.
-  Expected critical path: the Leave War unit leg, ~5 min, then the publish.
-  If that leg stays the long pole the next cut is `--shard` on it (vitest
-  hashes file paths across shards, so balance is probabilistic, not
-  guaranteed — measure before trusting it). Making the Leave War jsdom tests
-  render less than a full year would cut the LOCAL gate too and is the deeper
-  fix. Rejected: publishing on main without re-running the gates (90 s, but
-  the owner merges before the PR gate finishes, so the main run is the only
-  CI that completes before publish) and paid larger runners.
+  MEASURED on the first parallel PR run (#355's gate on the workflow commit,
+  same tree as #354's 16m16s serial PR gate): **8m28s end to end** — build
+  41 s (parity 27 s of it), unit raptor 4m38s, unit leavewar **8m24s** (the
+  long pole, and slower than the ~5 min estimate: its ten heavy jsdom files
+  each want a whole core, so four of them side by side on a 4-core runner do
+  not scale the way the mixed serial run did), geometry raptor 2m29s /
+  lw-phone 3m17s / lw-desktop 3m07s. Every leg spends ~10 s on runner
+  setup and ~20 s on Chromium install even with the cache hit. On main add
+  the publish (5 s on 3 Sep). So the Leave War unit leg is SHARDED in two in
+  the same PR (`--shard=1/2`, `2/2`): vitest splits the file list by a sha1
+  of each path — fixed, not duration-aware; replaying that hash over the
+  serial run's per-file times gives ~595 s / ~433 s with the heavy files
+  5/4, so expect the leg at ~5 min and the whole gate at ~5 min. Record the
+  measured figure from the PR run that carries it. Making the Leave War
+  jsdom tests render less than a full year would cut the LOCAL gate too and
+  is the deeper fix. Rejected: publishing on main without re-running the
+  gates (90 s, but the owner merges before the PR gate finishes, so the main
+  run is the only CI that completes before publish) and paid larger runners.
 - **Docs-only PRs and pushes skip the workflow entirely** (`paths-ignore`:
   `**.md` + `.claude/**`, added the same day — nothing under those patterns
   is imported into the bundle, verified by grep). A session-handoff commit

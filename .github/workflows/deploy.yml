@@ -13,10 +13,17 @@
 # browser projects three quarters of the geometry time. Splitting by the
 # projects each runner already defines (vitest: raptor / leavewar;
 # Playwright: raptor / lw-phone / lw-desktop) puts each suite on its own
-# runner; the repo is public, so the extra runners cost nothing. The critical
-# path is now the Leave War unit job (~5 min) instead of the sum (~16 min),
-# and `deploy` still waits on EVERY gate, so nothing publishes red. If Leave
-# War units stay the long pole, the next cut is `--shard` on that leg.
+# runner; the repo is public, so the extra runners cost nothing. `deploy`
+# still waits on EVERY gate, so nothing publishes red. MEASURED on the first
+# parallel PR run: 8m28s end to end (was 16m16s serial on the same tree) —
+# build 41s, unit raptor 4m38s, unit leavewar 8m24s, geometry 2m29s / 3m17s
+# / 3m07s. The Leave War unit leg was the long pole and slower than the
+# arithmetic promised: its ten heavy jsdom files each want a whole core, so
+# four side by side on a 4-core runner do not scale like the mixed serial
+# run did. So that leg is SHARDED in two below (vitest `--shard` splits the
+# file list by a hash of each path — a fixed split, not duration-aware; the
+# two halves carry ~595 s / ~433 s of the serial run's per-file times, the
+# heavy files 5/4). Expected critical path after the shard: ~5 min.
 name: Deploy to GitHub Pages
 
 # Docs-only changes skip the whole workflow (15 Aug 26): nothing under these
@@ -77,18 +84,24 @@ jobs:
         with:
           path: raptor-port/dist
 
-  # One runner per vitest project. `npm test` locally still runs both; here
-  # `--project` selects the same two pools vite.config.ts defines (raptor
-  # 2541 tests, leavewar 1284 — 3825 together, the gate count in HANDOFF).
-  # fail-fast off so a red leg reports on its own instead of cancelling the
-  # other one half way through.
+  # One runner per vitest project, and two for Leave War (see the header).
+  # `npm test` locally still runs everything; here `--project` selects the
+  # same two pools vite.config.ts defines (raptor 2541 tests, leavewar 1284 —
+  # 3825 together, the gate count in HANDOFF) and `--shard` halves the
+  # Leave War file list. fail-fast off so a red leg reports on its own
+  # instead of cancelling the others half way through.
   unit:
-    name: unit (${{ matrix.project }})
+    name: unit (${{ matrix.project }}${{ matrix.shard && format(' {0}', matrix.shard) || '' }})
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        project: [raptor, leavewar]
+        include:
+          - project: raptor
+          - project: leavewar
+            shard: 1/2
+          - project: leavewar
+            shard: 2/2
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -101,7 +114,7 @@ jobs:
         run: npm ci
       - name: Test
         working-directory: raptor-port
-        run: npx vitest run --project ${{ matrix.project }}
+        run: npx vitest run --project ${{ matrix.project }} ${{ matrix.shard && format('--shard={0}', matrix.shard) || '' }}
 
   # One runner per Playwright project. jsdom has no layout engine, so the
   # measured geometry contracts (puck 74x15, free text wraps instead of
