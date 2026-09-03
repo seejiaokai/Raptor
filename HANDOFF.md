@@ -591,7 +591,29 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
   (the DOM-write census on the open shows only highlight classes, the banner
   and the undo buttons; toggling the two page sections and the topbar class
   alone sum to ~6.6k). Not chased further — find it with the `parkcost`
-  recipe below if the open still feels slow on SIS. NOT done,
+  recipe below if the open still feels slow on SIS.
+  **BUG-HUNTED after the cut (owner: "see if there is a need to do a bug
+  test … I leave it to u"), on the built bundle, 34 real-browser checks:**
+  the warmed edit week is the view's week and the FIRST Edit open after
+  changing weeks on the View page shows the new week (the per-day diff
+  rewrote it); mid-drag state (ghost, grabbing cursor, dragover target);
+  drops onto a flying seat, duty, sim, ground and programme cells, the
+  board, and unassign back to the crew panel; the SAME person into two seats
+  raises the day warning and a ring, and two undos clear it (rules engine
+  unchanged); an input added on the Inputs page shows on that day of the
+  warmed edit week and the lazy Leave War grid renders that person's row
+  with leave codes; the Leave War grid survives a tab switch; 80 Tabs on the
+  View page never focus anything in the parked page (admin and member);
+  member sees no warm and no Edit tab; logout/login re-warms; phone: parked
+  page adds no height or sideways overflow and Edit opens at the phone width;
+  zero console/page/http errors. The one script "fail" was the check itself
+  (a duty drop lands AND removes the person from the day's available-crew
+  list, so a whole-day text count is flat) — identical on the previous
+  build, verified by running the same script against a worktree build of
+  the parent commit. Recipe: a Playwright script per scenario against
+  `vite preview`, `?dragdbg=1` on the URL so each drop prints its readout,
+  and the previous commit built in a `git worktree` on a second port for
+  any doubt. NOT done,
   deliberately: a per-day HTML cache (the 7 day strings are still rebuilt on
   every tick — ~200ms of the drop at 4x — but what invalidates a day is
   global state, so a cache is a correctness risk for a modest gain); a "lite
