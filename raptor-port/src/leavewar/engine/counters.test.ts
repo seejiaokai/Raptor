@@ -25,13 +25,14 @@ const pending = { state: 'pending' as const, source: 'bid' as const }
 const refused = { state: 'refused' as const, source: 'bid' as const }
 
 describe('COUNTERS', () => {
-  // SIX counters against SEVEN leave types. LL and OL both spend the annual
+  // SEVEN counters against EIGHT leave types. LL and OL both spend the annual
   // pool, so a list of leave TYPES would show the same figure twice under two
   // names — and it would grow every time a type was added, which the counter
   // list does not. Both figures moved together when FCL was removed on
-  // 10 Aug 26, without this list being edited: it is derived, not restated.
-  it('is the six entitlements, one fewer than the leave types', () => {
-    expect(COUNTERS).toEqual(['annual', 'oil', 'ccl', 'fcl', 'pl', 'el'])
+  // 10 Aug 26, without this list being edited: it is derived, not restated —
+  // and CL (3 Sep 26) arrived here the same way, by naming its own pool.
+  it('is the seven entitlements, one fewer than the leave types', () => {
+    expect(COUNTERS).toEqual(['annual', 'oil', 'ccl', 'fcl', 'pl', 'el', 'cl'])
   })
 
   it('has a label for every counter', () => {
@@ -208,7 +209,9 @@ describe('earnedOil — duty stood on a non-working day (wire 4)', () => {
   })
 
   it('feeds ONLY the OIL balance — leave codes earn nothing, other counters see no earned term', () => {
-    const grid: Grid = { ramp: { '2026-01-10': 'FO', '2026-01-11': 'LL' } }
+    // The LL is on the Monday: a Sunday of leave would charge nothing since
+    // 3 Sep 26 (charge.ts), and this case is about the earned term.
+    const grid: Grid = { ramp: { '2026-01-10': 'FO', '2026-01-12': 'LL' } }
     expect(earnedOil([{ grid, states: {} }], 'ramp')).toBe(1)
     expect(balanceOf({ ramp: { annual: 5 } }, [], [{ grid, states: {} }], 'ramp', 'annual')).toBe(4)
   })
@@ -234,9 +237,11 @@ describe('balances across more than one leave war', () => {
     grid: { ramp: { '2026-02-10': 'LL', '2026-02-11': 'LL' } },
     states: { ramp: { '2026-02-10': approved(), '2026-02-11': approved() } },
   }
+  // Mon 11 / Tue 12 May — 10 May is a Sunday, which charges nothing since
+  // 3 Sep 26 (charge.ts); this case is about the wars, not the calendar.
   const q2 = {
-    grid: { ramp: { '2026-05-10': 'LL', '2026-05-11': '*LL' } },
-    states: { ramp: { '2026-05-10': approved(), '2026-05-11': pending } },
+    grid: { ramp: { '2026-05-11': 'LL', '2026-05-12': '*LL' } },
+    states: { ramp: { '2026-05-11': approved(), '2026-05-12': pending } },
   }
 
   it('draws from every war, not just the one being looked at', () => {
@@ -255,7 +260,7 @@ describe('balances across more than one leave war', () => {
   it('still honours a refusal in a war that is not on screen', () => {
     const refusedQ2 = {
       grid: q2.grid,
-      states: { ramp: { '2026-05-10': refused, '2026-05-11': refused } },
+      states: { ramp: { '2026-05-11': refused, '2026-05-12': refused } },
     }
     expect(drawnFrom([q1, refusedQ2], 'ramp', 'annual')).toBe(2)
   })
@@ -302,7 +307,7 @@ describe('a legacy OFF cell draws nothing', () => {
   it('adds no counter to the panel', () => {
     expect(COUNTERS).not.toContain(undefined)
     expect(COUNTERS).not.toContain(null)
-    expect(COUNTERS).toEqual(['annual', 'oil', 'ccl', 'fcl', 'pl', 'el'])
+    expect(COUNTERS).toEqual(['annual', 'oil', 'ccl', 'fcl', 'pl', 'el', 'cl'])
   })
 })
 
@@ -354,36 +359,44 @@ describe('the two consumed aggregates', () => {
     expect(takenOf(sources, 'ramp', 'ATTB')).toBe(1)
   })
 
-  it('LVE CON sums the six leave codes and deliberately excludes medical', () => {
+  it('LVE CON sums the seven leave codes and deliberately excludes medical', () => {
+    // Weekdays only (12–16 Jan and 19–20 Jan are Mon–Fri, Mon–Tue): a
+    // weekend day of leave charges nothing since 3 Sep 26 (charge.ts), and
+    // this case is about MEMBERSHIP, not the calendar.
     const sources = [{ grid: { ramp: {
-      '2026-01-05': 'LL', '2026-01-06': 'OL', '2026-01-07': 'OIL',
-      '2026-01-09': 'CCL', '2026-01-10': 'PL', '2026-01-11': 'FCL', '2026-01-12': 'OML',
+      '2026-01-12': 'LL', '2026-01-13': 'OL', '2026-01-14': 'OIL',
+      '2026-01-15': 'CCL', '2026-01-16': 'PL', '2026-01-19': 'FCL', '2026-01-20': 'CL', '2026-01-21': 'OML',
     } }, states: {} }]
-    // Seven leave/medical days, but LVE CON counts only the six — OML is
+    // Eight leave/medical days, but LVE CON counts only the seven — OML is
     // medical and lives in MED CON.
-    expect(lveConOf(sources, 'ramp')).toBe(6)
+    expect(lveConOf(sources, 'ramp')).toBe(7)
   })
 })
 
 describe('FIGURES and orderedFigures', () => {
   // Eleven since 2 Sep 26: OFF USED went (owner — "remove the OFF used
-  // counter"); OFF still counts inside LVE USED.
-  it('is the eleven figures in the owner\'s order — OIL BAL joined with wire 4, OFF USED removed', () => {
+  // counter"). Thirteen since 3 Sep 26: CL BAL and CL USED joined, after
+  // FCL USED (owner — "2 counters to show the balance and used").
+  it('is the thirteen figures in the owner\'s order — OIL BAL joined with wire 4, OFF USED removed, CL BAL/USED added', () => {
     expect(FIGURES.map(f => f.label)).toEqual([
       'LL USED', 'OL USED', 'OIL USED', 'OIL BAL', 'CCL USED', 'PL USED',
-      'FCL USED', 'MED USED', 'OML USED', 'LVE BAL', 'LVE USED',
+      'FCL USED', 'CL BAL', 'CL USED', 'MED USED', 'OML USED', 'LVE BAL', 'LVE USED',
     ])
     expect(FIGURES.find(f => f.label === 'OFF USED')).toBeUndefined()
   })
 
-  it('has exactly two balance figures — LVE BAL and OIL BAL (wire 4\'s landing strip); every other is consumed', () => {
-    expect(FIGURES.filter(f => f.kind === 'bal').map(f => f.label)).toEqual(['OIL BAL', 'LVE BAL'])
-    expect(FIGURES.filter(f => f.kind === 'con')).toHaveLength(9)
+  it('has exactly three balance figures — OIL BAL, CL BAL and LVE BAL; every other is consumed', () => {
+    expect(FIGURES.filter(f => f.kind === 'bal').map(f => f.label)).toEqual(['OIL BAL', 'CL BAL', 'LVE BAL'])
+    expect(FIGURES.filter(f => f.kind === 'con')).toHaveLength(10)
+    // Each balance names the counter it reads — what the Cinch sheet's Set
+    // button keys on — and only OIL's goes to the tracker instead.
+    expect(FIGURES.filter(f => f.kind === 'bal').map(f => f.counter)).toEqual(['oil', 'cl', 'annual'])
+    expect(FIGURES.filter(f => f.kind === 'con').every(f => f.counter === undefined)).toBe(true)
   })
 
   it('carries each aggregate\'s composition as its legend', () => {
     expect(FIGURES.find(f => f.id === 'med')!.legend).toBe('ATT C + HL + OML')
-    expect(FIGURES.find(f => f.id === 'lvecon')!.legend).toBe('LL + OL + OIL + CCL + PL + FCL')
+    expect(FIGURES.find(f => f.id === 'lvecon')!.legend).toBe('LL + OL + OIL + CCL + PL + FCL + CL')
   })
 
   it('computes a figure through its ctx — CON via takenOf, BAL via balanceOf', () => {
@@ -437,9 +450,9 @@ describe('figureParts — the tap-a-counter breakdown (owner, 17 Aug 26)', () =>
     expect(parts.reduce((s, p) => s + p.value, 0)).toBe(f('med').value(ctx, 'ramp'))
   })
 
-  it('LVE USED opens as its six codes and sums to the figure', () => {
+  it('LVE USED opens as its seven codes and sums to the figure', () => {
     const parts = figureParts(f('lvecon'), ctx, 'ramp')
-    expect(parts.map(p => p.label)).toEqual(['LL', 'OL', 'OIL', 'CCL', 'PL', 'FCL'])
+    expect(parts.map(p => p.label)).toEqual(['LL', 'OL', 'OIL', 'CCL', 'PL', 'FCL', 'CL'])
     expect(parts.reduce((s, p) => s + p.value, 0)).toBe(f('lvecon').value(ctx, 'ramp'))
   })
 

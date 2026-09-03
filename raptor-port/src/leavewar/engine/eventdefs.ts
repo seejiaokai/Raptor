@@ -32,6 +32,7 @@
 
 import type { DayInfo } from './period'
 import type { EventBand } from './period'
+import { isWeekend } from './period'
 
 export type EventKind = 'off' | 'free' | 'nolv' | 'work'
 
@@ -102,6 +103,26 @@ export function columnKindFor(defs: EventDef[], day: DayInfo, bands: EventBand[]
     else if (k === 'nolv') sawNolv = true
   }
   return sawFree ? 'free' : sawNolv ? 'nolv' : null
+}
+
+/**
+ * Whether Leave War calls this date NON-WORKING: a weekend, or a public
+ * holiday. A holiday is whatever the war holding the date says — its `ph`
+ * flag, or an event word on it whose type is tagged `off` (the admin's own
+ * input path for holidays, seeded as `PH`). A date no war holds (`day`
+ * undefined) can still be a weekend, but never a holiday: there was nowhere
+ * to file one. The management Off day (`free`) is NOT non-working here —
+ * work on it earns nothing and leave on it still charges.
+ *
+ * ONE body for every reader (3 Sep 26): the OIL credit pass and the input
+ * ask-flow (`sync.ts:isNonWorkingISO`) and the leave-charging rule
+ * (`charge.ts`) all call this, so "is this day a holiday" cannot fork.
+ */
+export function isNonWorkingDay(date: string, day: DayInfo | undefined, defs: readonly EventDef[], bands: readonly EventBand[]): boolean {
+  if (isWeekend(date)) return true
+  if (!day) return false
+  if (day.ph) return true
+  return columnKindFor(defs as EventDef[], day, bands as EventBand[]) === 'off'
 }
 
 /** Read an untrusted stored list — hand-editable storage, so every field is

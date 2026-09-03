@@ -2,7 +2,7 @@ import { act, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 
 import { balanceOf } from '../engine'
-import { getState, ingestDutyCredit, initStore, setBalance, setCell, setOilPolicy, setRole } from '../state/store'
+import { getState, ingestDutyCredit, initStore, setBalance, setCell, setDayEvent, setOilPolicy, setRole } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { Matrix } from './Matrix'
 
@@ -419,7 +419,8 @@ describe('the Cinch sheet: an admin sets LVE BAL', () => {
     fireEvent.click(screen.getByTestId('pfig-close'))
     act(() => setRole('admin'))
     fireEvent.click(screen.getByTestId('person-ramp'))
-    expect(screen.getByTestId('pfig-lvebal').textContent).toContain('25 left')
+    // 26, not 25: ramp's one OL sits on New Year's Day, a seeded PH (charge.ts).
+    expect(screen.getByTestId('pfig-lvebal').textContent).toContain('26 left')
     fireEvent.click(screen.getByTestId('lvebal-edit'))
     fireEvent.change(screen.getByTestId('lvebal-input'), { target: { value: '30' } })
     fireEvent.click(screen.getByTestId('lvebal-save'))
@@ -429,5 +430,53 @@ describe('the Cinch sheet: an admin sets LVE BAL', () => {
     expect(screen.getByTestId('bal-ramp').textContent).toBe('30')
     act(() => { setCell('ramp', '2026-01-20', 'LL') })
     expect(screen.getByTestId('bal-ramp').textContent).toBe('29')
+  })
+
+  // CL BAL (3 Sep 26) takes the same Set control — every plain-sum balance
+  // does now, keyed by the figure's counter — and CL alone deducts from it.
+  it('an admin sets CL BAL the same way, and only CL deducts from it', () => {
+    act(() => setRole('admin'))
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId('person-ramp'))
+    expect(screen.getByTestId('pfig-clbal').textContent).toContain('0 left')
+    expect(screen.getByTestId('pfig-clbal').textContent).toContain('CL deducts')
+    fireEvent.click(screen.getByTestId('clbal-edit'))
+    fireEvent.change(screen.getByTestId('clbal-input'), { target: { value: '5' } })
+    fireEvent.click(screen.getByTestId('clbal-save'))
+    expect(screen.getByTestId('pfig-clbal').textContent).toContain('5 left')
+    expect(getState().openings.ramp?.cl).toBe(5)
+    fireEvent.click(screen.getByTestId('pfig-close'))
+    fireEvent.click(screen.getByTestId('counter-pick'))
+    fireEvent.click(screen.getByTestId('counter-clbal'))
+    expect(screen.getByTestId('bal-ramp').textContent).toBe('5')
+    act(() => { setCell('ramp', '2026-01-20', 'CL') })   // a Tuesday
+    expect(screen.getByTestId('bal-ramp').textContent).toBe('4')
+    act(() => { setCell('ramp', '2026-01-21', 'LL') })   // annual, not CL
+    expect(screen.getByTestId('bal-ramp').textContent).toBe('4')
+    // OIL BAL never grows a Set — the tracker is its editor.
+    fireEvent.click(screen.getByTestId('person-ramp'))
+    expect(screen.queryByTestId('oilbal-edit')).toBeNull()
+  })
+
+  // The weekend/PH rule (charge.ts, 3 Sep 26) and the Set control must read
+  // the SAME draw, or "set to 30" would land on a different number than the
+  // column shows. A PH marked AFTER the leave excuses that day at once.
+  it('a Set lands exactly where the column reads, with a weekend and a PH inside the leave', () => {
+    act(() => setRole('admin'))
+    render(<Matrix />)
+    // Fri 23 Jan → Tue 27 Jan: five cells, Sat/Sun inside them.
+    act(() => { for (const d of ['2026-01-23', '2026-01-24', '2026-01-25', '2026-01-26', '2026-01-27']) setCell('ramp', d, 'LL') })
+    fireEvent.click(screen.getByTestId('person-ramp'))
+    fireEvent.click(screen.getByTestId('lvebal-edit'))
+    fireEvent.change(screen.getByTestId('lvebal-input'), { target: { value: '30' } })
+    fireEvent.click(screen.getByTestId('lvebal-save'))
+    fireEvent.click(screen.getByTestId('pfig-close'))
+    expect(screen.getByTestId('bal-ramp').textContent).toBe('30')
+    // The admin now types PH on the Monday: one day fewer is charged.
+    act(() => { setDayEvent('2026-01-26', 0, 'PH') })
+    expect(screen.getByTestId('bal-ramp').textContent).toBe('31')
+    // …and takes it off again — the balance follows, nothing was stored.
+    act(() => { setDayEvent('2026-01-26', 0, '') })
+    expect(screen.getByTestId('bal-ramp').textContent).toBe('30')
   })
 })

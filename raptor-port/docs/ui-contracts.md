@@ -1751,6 +1751,16 @@ persisted and never in a history snapshot. The toggle builder is `notePubTog`
   native drag whose dragstart handler reflows the page before the drag
   image is captured, which killed every desktop mouse drag. The touch
   machine keeps its synchronous `dndOn` — no native capture there.
+- The MOUSE drag image is ours, not the browser's snapshot (owner, 3 Sep 26
+  — "a white box follows the puck"). With selection off app-wide (the 2 Sep
+  `html{user-select:none}`), Chromium on Windows snapshots a draggable as an
+  opaque white card with the puck in one corner. `drag.ts setDragImage` hands
+  it a `.dragimg` clone of the PUCK alone (not the `.seat` shell a grid cell
+  can stretch), parked off-screen with selection handed back, sized from the
+  puck's rect and anchored where the cursor grabbed; removed by `dndOff`, so
+  a drop clears it too (the drop repaints the palette and detaches the
+  source before its dragend can bubble — seen on the built bundle). Never
+  `display:none` it — Chromium only paints a laid-out element.
 - Touch drag: 8px slop restarts the 180ms hold, >26px cancels; ghost
   follows finger; click-eater dies on next pointerdown.
 - Toast is `pointer-events:none`.
@@ -4550,8 +4560,21 @@ BidPicker's look and vocabulary, not instead of it.
   click that follows a captured pointerup to `.mx-wrap` in Chromium, so the
   cell's own onClick — the single-cell input sheet — never fired on a real
   device. The window-level move/up listeners track a drag without the capture;
-  it is belt-and-braces for a fast touch drag only. Geometry is DOM-free and
-  unit-tested (`select.test.ts`); the gesture itself is e2e (`leavewar.spec.ts`).
+  it is belt-and-braces for a fast touch drag only. **An armed drag auto-scrolls
+  at the edges** (owner, 30 Aug 26 — "auto scroll to the edge to continue
+  selecting more grids" → "up down scroller too"): sideways it moves `.mx-wrap`,
+  up/down the nearest vertical scroller (the page, for the grid); a mouse steps
+  a constant 18px/frame inside a 36px band, a finger ramps 0→15px/frame across a
+  48px band so it throttles the speed by how far it pushes. **A band the press
+  STARTED in never scrolls until the pointer has left it** (2 Sep 26): a row at
+  the foot of the screen is already inside the bottom band when the drag arms,
+  and a sideways drag along it used to run the page downward every frame — the
+  rows slid up under a still pointer, the selection ballooned onto other
+  people, and when a heading was what slid under the release point the last
+  day was dropped (the e2e "drag-selecting a row" flake). Only the band(s) the
+  press sat in are held; the opposite edge scrolls as before. Geometry and the
+  edge rules are unit-tested (`select.test.ts`); the gesture itself is e2e
+  (`leavewar.spec.ts`, which also pins that the page stays put on that drag).
 - **The sheet** (`ui/SelectSheet.tsx`, `data-testid="select-sheet"`) is the
   BidPicker's sibling on the same `Sheet` chassis. Sections are contextual to
   role and stage: everyone Fills while the war is OPEN (portion + leave chips;
@@ -5061,7 +5084,8 @@ feel he rejected on 10 Aug 26). The fix-by-fix history follows.
   confirmed on a Duty & commitments input, never typed here, so the
   accent-tinted
   `.leg-sec-here` heading marks them out), then Medical (the grid's `B`/`C`
-  shorthand + HL/OML), Leave (LL…OFF) and Other duty (CSE/OD). The glossary is
+  shorthand + HL/OML), Leave (LL…EL, CL — the catalogue's eight since 3 Sep 26;
+  OFF left it 2 Sep 26) and Other duty (CSE/OD). The glossary is
   built straight from the catalogue's own label tables (one source, no drift),
   and each swatch takes the grid's own colour by the SAME rule the cell does
   (`isDuty` → `sc`, non-bid marker → `info`, leave → plain — mirrored into

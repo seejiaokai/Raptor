@@ -20,7 +20,7 @@
 // never coexisted in stored data: the old spelling was migrated to `*OIL`
 // long before the credit marker took the letters.
 
-export type CounterName = 'annual' | 'oil' | 'ccl' | 'fcl' | 'pl' | 'el'
+export type CounterName = 'annual' | 'oil' | 'ccl' | 'fcl' | 'pl' | 'el' | 'cl'
 
 export type Portion = 'full' | 'am' | 'pm'
 
@@ -46,8 +46,8 @@ export interface LeaveType {
   counter: CounterName | null
 }
 
-// The seven leave types. All are biddable and all spend a counter — that is
-// what makes them leave rather than a marker. Exported so the bid picker can
+// The eight leave types (CL joined 3 Sep 26). All are biddable and all spend a
+// counter — that is what makes them leave rather than a marker. Exported so the bid picker can
 // list them without duplicating this table.
 //
 // `FCL` and `PCL` were BOTH here until 10 Aug 26, because this author could
@@ -67,6 +67,11 @@ export const LEAVE_TYPES: LeaveType[] = [
   { type: 'FCL', label: 'family care leave', counter: 'fcl' },
   { type: 'PL', label: 'paternity leave', counter: 'pl' },
   { type: 'EL', label: 'embarkation leave', counter: 'el' },
+  // Compassionate leave (owner, 3 Sep 26): its OWN balance — `CL BAL` /
+  // `CL USED` in the column — and for every rule (availability, spare, the
+  // Raptor side) it is LL. Also a run-breaker for the pilots' 15-day rule
+  // (charge.ts), like every non-annual type.
+  { type: 'CL', label: 'compassionate leave', counter: 'cl' },
 ]
 
 const LEAVE_TYPE_BY_CODE: Record<string, LeaveType> = Object.fromEntries(

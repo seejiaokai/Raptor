@@ -2111,7 +2111,9 @@ const ISO_DAY = /^\d{4}-\d{2}-\d{2}$/
  *  the bid-time warning and the tracker all read the same OIL policy and the
  *  same "today". Four hand-built literals used to do this; they could drift. */
 export function figureCtxOf(): FigureCtx {
-  return { openings: state.openings, ledger: state.ledger, sources: state.wars, oilPolicy: state.oilPolicy, asOf: localToday() }
+  // `eventDefs` and `people` feed the weekend/PH charging rule (charge.ts,
+  // 3 Sep 26): which typed words are a holiday, and who is a pilot.
+  return { openings: state.openings, ledger: state.ledger, sources: state.wars, oilPolicy: state.oilPolicy, asOf: localToday(), eventDefs: state.eventDefs, people: state.people }
 }
 
 export function setOilPolicy(patch: Partial<OilPolicy>): boolean {
@@ -2231,7 +2233,9 @@ export function setBalance(personId: string, counter: CounterName, target: numbe
   if (state.role !== 'admin') return false
   if (!state.people.some(p => p.id === personId)) return false
   if (!Number.isFinite(target)) return false
-  const opening = target - grantedTo(state.ledger, personId, counter) + drawnFrom(state.wars, personId, counter)
+  // Through the same ctx the column reads, or "set to 20" would land on a
+  // different number than the figure shows once a holiday excuses a day.
+  const opening = target - grantedTo(state.ledger, personId, counter) + drawnFrom(state.wars, personId, counter, figureCtxOf())
   state = withCurrent({
     ...state,
     openings: { ...state.openings, [personId]: { ...state.openings[personId], [counter]: Math.round(opening * 1e6) / 1e6 || 0 } },

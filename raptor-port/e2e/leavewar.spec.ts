@@ -754,6 +754,12 @@ test('drag-selecting a row fills the leave across the whole span', async ({ page
   desktopOnly()
   await dragSelect(page, 'cell-slipway-2026-01-06', 'cell-slipway-2026-01-08')
   await expect(page.locator('[data-testid="select-sheet"]')).toBeVisible()
+  // On this viewport slipway's row sits inside the drag's bottom edge band, and
+  // a sideways drag along it used to auto-scroll the page every frame — the
+  // rows slid up under the still cursor and, when a heading was what ended up
+  // under the release point, the last day was dropped (the 2 Sep 26 flake). A
+  // band the press started in must be left before it scrolls: the page stays put.
+  expect(await page.evaluate(() => window.scrollY)).toBe(0)
   await page.locator('[data-testid="sel-LL"]').click()
   for (const d of ['2026-01-06', '2026-01-07', '2026-01-08'])
     await expect(page.locator(`[data-testid="cell-slipway-${d}"] .c`)).toBeVisible()
@@ -1062,7 +1068,7 @@ test('the figure picker doubles as the legend, aggregates spelled out', async ({
   await expect(page.locator('[data-testid="counter-legend"]')).toContainText('USED')
   await expect(page.locator('[data-testid="figsub-med"]')).toHaveText('= ATT C + HL + OML')
   await expect(page.locator('[data-testid="figsub-lvecon"]'))
-    .toHaveText('= LL + OL + OIL + CCL + PL + FCL')
+    .toHaveText('= LL + OL + OIL + CCL + PL + FCL + CL')
 })
 
 // The figures reorder through the ▲▼ each row carries — management's alone
@@ -1165,7 +1171,7 @@ test('the viewer\'s row is lit and the title sheet answers with their numbers', 
   await page.locator('[data-testid="person-prowler"]').click()
   const figs = page.locator('[data-testid="person-figures"]')
   await expect(figs).toBeVisible()
-  await expect(figs.locator('.crow-wrap')).toHaveCount(11)
+  await expect(figs.locator('.crow-wrap')).toHaveCount(13)   // CL BAL + CL USED joined 3 Sep 26
   // A member reaches no editor from here.
   await expect(page.locator('[data-testid="person-edit"]')).toHaveCount(0)
 })

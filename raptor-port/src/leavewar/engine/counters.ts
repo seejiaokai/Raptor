@@ -24,9 +24,8 @@
 // FO or HO verdict, wherever the cell came from: the sync wire at publish,
 // a hand-typed cell, or the seed.
 
-import type { Grid } from './availability'
-import { removesAvailability, stateOf, type States } from './bids'
-import { codeOf, LEAVE_TYPES, parseCell, portionAmount, type CounterName } from './codes'
+import { cellAmount, cellCharges, chargedDays, type CountCtx, type LeaveSource } from './charge'
+import { codeOf, LEAVE_TYPES, parseCell, type CounterName } from './codes'
 import { DEFAULT_OIL_POLICY, oilLedgerFor, type OilPolicy } from './oiltracker'
 import { localToday } from './period'
 
@@ -54,6 +53,7 @@ const LABEL: Record<CounterName, string> = {
   fcl: 'FCL',
   pl: 'PL',
   el: 'EL',
+  cl: 'CL',
 }
 
 export function counterLabel(counter: CounterName): string {
@@ -91,12 +91,11 @@ export function grantedTo(ledger: Ledger, personId: string, counter: CounterName
   return total
 }
 
-/** Just enough of a leave war to draw a counter from. `LeaveWar` satisfies
- *  it structurally, so callers pass their wars straight in. */
-export interface LeaveSource {
-  grid: Grid
-  states: States
-}
+// `LeaveSource` and `CountCtx` moved to charge.ts on 3 Sep 26 (the
+// weekend/PH charging rule lives there, and oiltracker.ts needs it as a VALUE
+// while importing this module as types only). Re-exported so every existing
+// import path still reads.
+export type { LeaveSource, CountCtx } from './charge'
 
 /**
  * How much of one counter this person's leave has spent, **across every
@@ -108,24 +107,21 @@ export interface LeaveSource {
  * someone is looking at Apr–Jun. A figure counting only the war on screen
  * would let the same twenty days be bid twice over, once in each.
  *
- * Which cells count is decided by `removesAvailability` — the SAME function
- * the manning rows use, not a second copy of the rule. So a refused bid
- * draws nothing, a pending one draws in full, and a half day draws 0.5,
- * exactly as the counts on screen already behave.
+ * Which cells count is decided by `chargedDays` (charge.ts): first the SAME
+ * `removesAvailability` the manning rows use (a refused bid draws nothing, a
+ * pending one draws in full, a half day draws 0.5), then the owner's
+ * weekend/PH rule (3 Sep 26) — a Saturday or holiday of leave draws nothing
+ * unless a pilot is 15 days deep in one run of it.
  */
-export function drawnFrom(
-  sources: LeaveSource[],
-  personId: string,
-  counter: CounterName,
-): number {
+export function drawnFrom(sources: LeaveSource[], personId: string, counter: CounterName, ctx?: CountCtx): number {
+  // Which cells count is decided by `chargedDays` (charge.ts): the SAME
+  // `removesAvailability` gate the manning rows use, and then the owner's
+  // weekend/PH rule — a Saturday of leave costs nothing unless a pilot is
+  // 15 days deep in it. So a refused bid draws nothing, a pending one draws
+  // in full, a half day draws 0.5, and a holiday draws nothing.
   let total = 0
-  for (const { grid, states } of sources) {
-    for (const [date, code] of Object.entries(grid[personId] ?? {})) {
-      const spends = codeOf(code)?.spends
-      if (!spends || spends.counter !== counter) continue
-      if (!removesAvailability(code, stateOf(states, personId, date))) continue
-      total += spends.amount
-    }
+  for (const t of chargedDays(sources, personId, ctx).values()) {
+    if (t.counter === counter) total += t.amount
   }
   return total
 }
@@ -162,12 +158,13 @@ export function balanceOf(
   sources: LeaveSource[],
   personId: string,
   counter: CounterName,
+  ctx?: CountCtx,
 ): number {
   const opening = openings[personId]?.[counter] ?? 0
   // Earned OIL joins the OIL balance only — no other counter is earned by
   // working, and adding a zero term for them would just be noise here.
   const earned = counter === 'oil' ? earnedOil(sources, personId) : 0
-  return opening + grantedTo(ledger, personId, counter) + earned - drawnFrom(sources, personId, counter)
+  return opening + grantedTo(ledger, personId, counter) + earned - drawnFrom(sources, personId, counter, ctx)
 }
 
 // ── The counter column's figures ────────────────────────────────────────────
@@ -186,44 +183,53 @@ export function balanceOf(
  * per-type twin of `drawnFrom` (which keys on the COUNTER, so it cannot tell
  * LL from OL, both of which spend `annual`). Portion-aware and gated by the
  * SAME `removesAvailability` the manning rows use, so a refused bid counts
- * nothing and a half day counts 0.5. Counts the medical markers too, which
- * spend no counter but are still days taken.
+ * nothing and a half day counts 0.5. A counter-bearing type also obeys the
+ * weekend/PH rule (charge.ts, 3 Sep 26) — "the leave is not taken" on a
+ * holiday — so the USED figure and the balance it draws move together.
+ * Counts the medical markers too, which spend no counter but are still days
+ * taken, every day of the week.
  */
-export function takenOf(sources: LeaveSource[], personId: string, type: string): number {
+export function takenOf(sources: LeaveSource[], personId: string, type: string, ctx?: CountCtx): number {
+  const charged = chargedDays(sources, personId, ctx)
   let total = 0
   for (const { grid, states } of sources) {
     for (const [date, code] of Object.entries(grid[personId] ?? {})) {
-      const cell = parseCell(code)
-      if (!cell || cell.type !== type) continue
-      if (!removesAvailability(code, stateOf(states, personId, date))) continue
-      total += portionAmount(cell.portion)
+      if (typeOf(code) !== type) continue
+      if (!cellCharges(charged, code, date, states, personId)) continue
+      total += cellAmount(code)
     }
   }
   return total
 }
 
-// The three medical markers that make up MED USED, and the six leave codes
-// that make up LVE USED (OFF left the list on 2 Sep 26 — it is a management
+/** The leave/medical TYPE a stored cell names, or '' for anything else. */
+function typeOf(code: string): string {
+  const cell = parseCell(code)
+  return cell ? cell.type : ''
+}
+
+// The three medical markers that make up MED USED, and the seven leave codes
+// that make up LVE USED (CL joined 3 Sep 26 — it is leave taken, from its own pool) (OFF left the list on 2 Sep 26 — it is a management
 // Off day event now, never a person's leave). Kept as literals here (not derived) because these two
 // aggregates are the owner's exact groupings — LVE USED deliberately excludes
 // OML/medical, and MED USED deliberately excludes everything else.
 const MED_CON_TYPES = ['ATTC', 'HL', 'OML'] as const
-const LVE_CON_TYPES = ['LL', 'OL', 'OIL', 'CCL', 'PL', 'FCL'] as const
+const LVE_CON_TYPES = ['LL', 'OL', 'OIL', 'CCL', 'PL', 'FCL', 'CL'] as const
 
 /** Medical days consumed = ATT C + HL + OML taken. */
-export function medConOf(sources: LeaveSource[], personId: string): number {
-  return MED_CON_TYPES.reduce((sum, t) => sum + takenOf(sources, personId, t), 0)
+export function medConOf(sources: LeaveSource[], personId: string, ctx?: CountCtx): number {
+  return MED_CON_TYPES.reduce((sum, t) => sum + takenOf(sources, personId, t, ctx), 0)
 }
 
-/** Total leave days consumed = LL + OL + OIL + CCL + PL + FCL taken
+/** Total leave days consumed = LL + OL + OIL + CCL + PL + FCL + CL taken
  *  (medical is its own MED USED tally, so it is not in here). */
-export function lveConOf(sources: LeaveSource[], personId: string): number {
-  return LVE_CON_TYPES.reduce((sum, t) => sum + takenOf(sources, personId, t), 0)
+export function lveConOf(sources: LeaveSource[], personId: string, ctx?: CountCtx): number {
+  return LVE_CON_TYPES.reduce((sum, t) => sum + takenOf(sources, personId, t, ctx), 0)
 }
 
 /** Everything a figure needs to read a person's number. `LeaveWar`-shaped
  *  callers already hold all three. */
-export interface FigureCtx {
+export interface FigureCtx extends CountCtx {
   openings: Openings
   ledger: Ledger
   sources: LeaveSource[]
@@ -249,6 +255,10 @@ export interface Figure {
   id: string
   label: string
   kind: 'bal' | 'con'
+  /** For a balance: the counter it reads. What lets the Cinch sheet offer an
+   *  admin a Set button on every plain-sum balance (LVE BAL, CL BAL) and
+   *  hand OIL BAL to the tracker instead — by fact, not by figure id. */
+  counter?: CounterName
   /** Plain-words caption for the picker/legend when there is no composition. */
   desc: string
   /** For an aggregate: what it is made of, shown as the legend "bubble". */
@@ -271,14 +281,16 @@ export interface FigurePart {
 // `LVE_CON_TYPES` feed both the value and its parts).
 const PART_LABEL: Record<string, string> = { ATTC: 'ATT C', ATTB: 'ATT B' }
 const typeParts = (types: readonly string[]) => (c: FigureCtx, p: string): FigurePart[] =>
-  types.map(t => ({ label: PART_LABEL[t] ?? t, value: takenOf(c.sources, p, t) }))
+  types.map(t => ({ label: PART_LABEL[t] ?? t, value: takenOf(c.sources, p, t, c) }))
 const balParts = (counter: CounterName, earns: boolean) => (c: FigureCtx, p: string): FigurePart[] => {
   const parts: FigurePart[] = [
     { label: 'opening figure', value: c.openings[p]?.[counter] ?? 0 },
     { label: 'granted', value: grantedTo(c.ledger, p, counter) },
   ]
   if (earns) parts.push({ label: 'earned by weekend/PH work', value: earnedOil(c.sources, p) })
-  parts.push({ label: 'taken', value: -drawnFrom(c.sources, p, counter) })
+  // `0 - x`, not `-x`: a person whose every leave day is excused draws 0,
+  // and `-0` would print as a minus sign on some paths.
+  parts.push({ label: 'taken', value: 0 - drawnFrom(c.sources, p, counter, c) })
   // OIL alone can EXPIRE (the tracker's policy, 2 Sep 26). The row appears
   // only when something did, so a squadron with no expiry sees the same four
   // rows it always saw — and when it does appear the rows still sum to the
@@ -310,9 +322,9 @@ export function figureParts(f: Figure, ctx: FigureCtx, personId: string): Figure
  * the fixed definition set `orderedFigures` arranges.
  */
 export const FIGURES: readonly Figure[] = Object.freeze([
-  { id: 'll',  label: 'LL USED',  kind: 'con', desc: 'days taken', value: (c, p) => takenOf(c.sources, p, 'LL') },
-  { id: 'ol',  label: 'OL USED',  kind: 'con', desc: 'days taken', value: (c, p) => takenOf(c.sources, p, 'OL') },
-  { id: 'oil', label: 'OIL USED', kind: 'con', desc: 'days taken', value: (c, p) => takenOf(c.sources, p, 'OIL') },
+  { id: 'll',  label: 'LL USED',  kind: 'con', desc: 'days taken', value: (c, p) => takenOf(c.sources, p, 'LL', c) },
+  { id: 'ol',  label: 'OL USED',  kind: 'con', desc: 'days taken', value: (c, p) => takenOf(c.sources, p, 'OL', c) },
+  { id: 'oil', label: 'OIL USED', kind: 'con', desc: 'days taken', value: (c, p) => takenOf(c.sources, p, 'OIL', c) },
   // Wire 4's landing strip: without a balance figure the earned credit would
   // move nothing anyone can see in the frozen column. A saved figure order
   // from before this id existed shows it appended at the end (orderedFigures'
@@ -320,17 +332,24 @@ export const FIGURES: readonly Figure[] = Object.freeze([
   // Since 2 Sep 26 the value is the TRACKER's balance (oiltracker.ts): the
   // same opening + granted + earned − taken, less whatever the admin's expiry
   // policy has retired. With no policy the two are the same number.
-  { id: 'oilbal', label: 'OIL BAL', kind: 'bal', desc: 'balance available to take', legend: 'earned by weekend/PH work + granted − taken − expired', value: (c, p) => oilLedgerOf(c, p).balance, parts: balParts('oil', true) },
+  { id: 'oilbal', label: 'OIL BAL', kind: 'bal', desc: 'balance available to take', legend: 'earned by weekend/PH work + granted − taken − expired', counter: 'oil', value: (c, p) => oilLedgerOf(c, p).balance, parts: balParts('oil', true) },
   // `OFF USED` sat here until 2 Sep 26 (owner: "remove the OFF used
   // counter"), and OFF itself stopped being a leave code the same day. A
   // saved figure order naming 'off' skips it (orderedFigures).
-  { id: 'ccl', label: 'CCL USED', kind: 'con', desc: 'days taken', value: (c, p) => takenOf(c.sources, p, 'CCL') },
-  { id: 'pl',  label: 'PL USED',  kind: 'con', desc: 'days taken', value: (c, p) => takenOf(c.sources, p, 'PL') },
-  { id: 'fcl', label: 'FCL USED', kind: 'con', desc: 'days taken', value: (c, p) => takenOf(c.sources, p, 'FCL') },
-  { id: 'med', label: 'MED USED', kind: 'con', desc: 'days taken', legend: 'ATT C + HL + OML', value: (c, p) => medConOf(c.sources, p), parts: typeParts(MED_CON_TYPES) },
-  { id: 'oml', label: 'OML USED', kind: 'con', desc: 'days taken', value: (c, p) => takenOf(c.sources, p, 'OML') },
-  { id: 'lvebal', label: 'LVE BAL', kind: 'bal', desc: 'balance available to take', value: (c, p) => balanceOf(c.openings, c.ledger, c.sources, p, 'annual'), parts: balParts('annual', false) },
-  { id: 'lvecon', label: 'LVE USED', kind: 'con', desc: 'days taken', legend: 'LL + OL + OIL + CCL + PL + FCL', value: (c, p) => lveConOf(c.sources, p), parts: typeParts(LVE_CON_TYPES) },
+  { id: 'ccl', label: 'CCL USED', kind: 'con', desc: 'days taken', value: (c, p) => takenOf(c.sources, p, 'CCL', c) },
+  { id: 'pl',  label: 'PL USED',  kind: 'con', desc: 'days taken', value: (c, p) => takenOf(c.sources, p, 'PL', c) },
+  { id: 'fcl', label: 'FCL USED', kind: 'con', desc: 'days taken', value: (c, p) => takenOf(c.sources, p, 'FCL', c) },
+  // Compassionate leave (owner, 3 Sep 26 — "2 counters to show the balance
+  // and used, called CL BAL & CL USED"). Its own pool, so unlike LL/OL it
+  // gets a balance of its own beside the days taken; the admin sets it the
+  // way LVE BAL is set. A saved figure order from before these ids existed
+  // shows them appended at the end (orderedFigures' tail rule).
+  { id: 'clbal', label: 'CL BAL', kind: 'bal', desc: 'balance available to take', counter: 'cl', value: (c, p) => balanceOf(c.openings, c.ledger, c.sources, p, 'cl', c), parts: balParts('cl', false) },
+  { id: 'cl',  label: 'CL USED',  kind: 'con', desc: 'days taken', value: (c, p) => takenOf(c.sources, p, 'CL', c) },
+  { id: 'med', label: 'MED USED', kind: 'con', desc: 'days taken', legend: 'ATT C + HL + OML', value: (c, p) => medConOf(c.sources, p, c), parts: typeParts(MED_CON_TYPES) },
+  { id: 'oml', label: 'OML USED', kind: 'con', desc: 'days taken', value: (c, p) => takenOf(c.sources, p, 'OML', c) },
+  { id: 'lvebal', label: 'LVE BAL', kind: 'bal', desc: 'balance available to take', counter: 'annual', value: (c, p) => balanceOf(c.openings, c.ledger, c.sources, p, 'annual', c), parts: balParts('annual', false) },
+  { id: 'lvecon', label: 'LVE USED', kind: 'con', desc: 'days taken', legend: 'LL + OL + OIL + CCL + PL + FCL + CL', value: (c, p) => lveConOf(c.sources, p, c), parts: typeParts(LVE_CON_TYPES) },
 ])
 
 /** The figure the column opens on: how much leave is left. */

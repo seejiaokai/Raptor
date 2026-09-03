@@ -3771,6 +3771,13 @@ body.sb-lock{overflow:hidden}
 .tdghost{position:fixed!important;z-index:520;pointer-events:none;margin:0!important;
   transform:translate(-50%,-50%);opacity:.92;box-shadow:0 8px 20px rgba(0,0,0,.6);
   outline:2px solid var(--accent);outline-offset:1px;border-radius:4px}
+/* mouse drag: the explicit drag image (drag.ts setDragImage). A puck clone
+   parked off-screen for the capture frame — never display:none, Chromium only
+   snapshots a laid-out element — with selection handed back so the snapshot is
+   the puck alone and not the white card the no-select page produced (owner,
+   3 Sep 26). Sized inline from the live puck's rect. */
+.dragimg{position:fixed!important;top:-10000px!important;left:-10000px!important;margin:0!important;pointer-events:none;
+  -webkit-user-select:text;user-select:text}
 body.tdrag{touch-action:none;-webkit-user-select:none;user-select:none}
 body.tdrag *{-webkit-touch-callout:none}
 

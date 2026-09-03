@@ -35,9 +35,8 @@ import { validate } from '../engine/validate'
 import { notify as raptorNotify, subscribe as raptorSubscribe, writeInputsBatch } from '../state/store'
 import {
   addDays,
-  columnKindFor,
   inSquadron,
-  isWeekend,
+  isNonWorkingDay,
   localToday,
   outboundToRaptor,
   parseCell,
@@ -631,13 +630,12 @@ export function runInbound(): void {
    below, the OilConfirm sheet, the bell's pending scan) all read the SAME
    answer, so "is this day applicable" can never fork. */
 export function isNonWorkingISO(date: string): boolean {
-  if (isWeekend(date)) return true
+  // The body is the engine's `isNonWorkingDay` since 3 Sep 26 — the same
+  // predicate the leave-charging rule (charge.ts) reads, so a PH earns OIL
+  // and excuses a leave day by ONE definition.
   const war = warHolding(getState().wars, date)
-  if (!war) return false
-  const day = war.period.days.find(d => d.date === date)
-  if (!day) return false
-  if (day.ph) return true
-  return columnKindFor(getState().eventDefs, day, war.period.bands ?? []) === 'off'
+  const day = war?.period.days.find(d => d.date === date)
+  return isNonWorkingDay(date, day, getState().eventDefs, war?.period.bands ?? [])
 }
 
 /* THE INPUT ASK-FLOW'S PLAN (owner, 28 Aug 26): which of a duty-&-commitments

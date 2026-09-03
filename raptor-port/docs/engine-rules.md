@@ -438,7 +438,9 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   since 10 Aug 26 it does NOT bar a standalone spare — `canSpare` decides
   that now, not leave-ness.
 - **`INPUT_META` is the single source for every input type** (owner,
-  10 Aug 26). It holds the twenty types the squadron actually books, and
+  10 Aug 26). It holds the twenty-three types the squadron actually books (`CL`,
+  compassionate leave, joined 3 Sep 26 — an LL twin for every rule here; its
+  own balance lives on the Leave War side), and
   `INPUT_TYPES` is derived from its keys — the list, the rules, the Inputs
   page's type legend and the Logic page's matrix all read the same object, so
   none of them can describe a rule the engine does not apply. Fields: `name`,

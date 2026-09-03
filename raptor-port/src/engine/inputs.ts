@@ -76,6 +76,10 @@ export const INPUT_META:any={
   'PL':         {name:'paternity leave',          grp:'leave', work:false, local:true,  ground:false, half:true},
   'FCL':        {name:'family care leave',        grp:'leave', work:false, local:true,  ground:false, half:true},
   'EL':         {name:'embarkation leave',        grp:'leave', work:false, local:true,  ground:false, half:true},
+  /* CL joined 3 Sep 26 (owner): compassionate leave, its own balance on the
+     Leave War side (CL BAL / CL USED). For the rules it is LL — local, may
+     stand a spare, closes him to everything else. */
+  'CL':         {name:'compassionate leave',      grp:'leave', work:false, local:true,  ground:false, half:true},
   /* medical — on the island but not fit to walk, so no spare either. ATT B is
      the ONLY type in the app that separates "cannot fly" from "cannot work". */
   'HL':         {name:'hospitalisation leave',    grp:'med',   work:false, local:true,  ground:false, half:true},
