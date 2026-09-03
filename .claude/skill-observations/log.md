@@ -838,3 +838,18 @@ gate's. Keep verdict-bearing commands unpiped.
 **Suggested improvement:** In dispatching-parallel-agents, add a pattern: for a feature the user describes as "everywhere X is concerned", split research by BOUNDARY (each vendored app / package, plus the docs) rather than by topic, and ask each agent to classify every hit as "derives automatically", "hand-written — must edit", or "test pins exact list". The classification is what turns the report into a checklist.
 
 **Principle:** When an ask says "everywhere", the deliverable of research is a classified touch list (auto / manual / pinned), split along the code's own boundaries, gathered in parallel before the first edit.
+
+### Observation 54: Tracing categories that inflate the numbers they attribute
+
+**Status:** OPEN
+**Date:** 2026-09-03
+**Session context:** Measuring the Leave War grid's first-open cost (CPU profile + devtools timeline trace at 1x/4x/8x) before choosing a fix
+**Skill:** New skill candidate: browser-perf-measurement (or the HANDOFF perf recipe)
+**Type:** open-source
+**Phase/Area:** Attribution pass (which JS caller forced a layout / style recalc)
+
+**Issue:** Enabling `disabled-by-default-devtools.timeline.invalidationTracking` (+ `.stack`) to get caller stacks on Layout/UpdateLayoutTree events made the one big style recalc read 2545ms where the plain-categories trace of the same open read ~324ms total style time. The attribution (which function forced it) was correct; the duration was an artefact of the tracking itself. Trusting the instrumented duration would have pointed the fix at CSS selector cost, which a scan then showed was not there.
+
+**Suggested improvement:** Two passes, never one: TIME with the plain `devtools.timeline` categories, ATTRIBUTE with the stack/invalidation categories, and only ever quote durations from the first. Same rule for the CPU profiler's sampling interval. Add to the perf recipe alongside "attribute by experiment, not by stack".
+
+**Principle:** Instrumentation that explains a cost also changes it. Measure and attribute in separate runs, and quote numbers only from the run that measured.
