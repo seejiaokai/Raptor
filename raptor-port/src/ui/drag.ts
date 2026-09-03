@@ -36,11 +36,25 @@ const BIN_SEL = '.sb-roster,.eroster,.availpuck'
    part of .eroster, so dropping there is still "put them back" — and the drawer
    slides out again when the drag ends. */
 let ROS_REOPEN = false
-/* the explicit mouse drag image — built in setDragImage below, dropped by
-   dndOff so EVERY end of a drag clears it: a drop repaints the palette, which
-   detaches the source before its dragend can bubble to the document */
+/* the mouse drag's ghost — built in setDragImage below, moved by moveDragImage
+   on every dragover, dropped by dndOff so EVERY end of a drag clears it: a
+   drop repaints the palette, which detaches the source before its dragend can
+   bubble to the document. DRAGOX/OY is where inside the puck the cursor
+   grabbed, so the ghost stays pinned to that spot rather than jumping to the
+   pointer's corner. */
 let DRAGIMG: HTMLElement | null = null
+let DRAGOX = 0, DRAGOY = 0
 function dropDragImage() { if (DRAGIMG && DRAGIMG.parentNode) DRAGIMG.parentNode.removeChild(DRAGIMG); DRAGIMG = null }
+function moveDragImage(x: number, y: number) {
+  if (!DRAGIMG) return
+  DRAGIMG.style.left = (x - DRAGOX) + 'px'; DRAGIMG.style.top = (y - DRAGOY) + 'px'
+}
+/* the image the BROWSER carries is a blank 1×1 pixel — see setDragImage.
+   Decoded once at module load: Chromium falls back to its own snapshot when
+   the image handed to setDragImage has not finished loading by dragstart. */
+const BLANK_IMG: HTMLImageElement | null = typeof Image === 'function'
+  ? (() => { const i = new Image(1, 1); i.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'; return i })()
+  : null
 function dndOn(from: any) {
   document.body.classList.add('dnd')
   if (isPhone() && document.body.classList.contains('ros-open') && from && from.closest && from.closest('.eroster')) {
@@ -226,22 +240,30 @@ function onDragStart(e: DragEvent) {
   setDragImage(e)
 }
 
-/* The image that rides under the mouse is OURS, not the browser's snapshot
-   (owner, 3 Sep 26 — "a white box follows the puck" on a Windows laptop, on
-   the edit week and the board alike). Selection went off app-wide on 2 Sep 26
-   (`html{user-select:none}`, scheduler.css) and Chromium's automatic drag
-   snapshot of a draggable inside a no-select subtree comes back as an opaque
-   white rectangle — the puck painted in one corner of a white card. So hand it
-   an explicit image instead: a clone of the PUCK alone (not the .seat shell,
-   which a grid cell can stretch past the puck), parked off-screen for the one
-   frame the capture needs, with selection handed back on it so the snapshot
-   path is the ordinary one, and pinned to the exact spot the cursor grabbed.
-   Off-screen, not display:none — Chromium only paints an element that is
-   laid out. Appending one fixed element does not reflow the drop cells, so
-   this stays clear of the abort described above. Verified on the built bundle
-   with a real Chromium mouse drag: the clone appears at dragstart and the
-   drop still lands. The clone goes with dndOff (drop, cancelled drag, dragend
-   alike — see DRAGIMG above), and a fresh dragstart replaces a stale one. */
+/* The image that rides under the mouse is OURS, drawn by the PAGE — the
+   browser is handed a blank pixel and composes nothing (owner, 3 Sep 26 — "a
+   white box follows the puck" on a Windows laptop, on the edit week and the
+   board alike; and again after the first fix, on Edge inside the MINDEF
+   secured browser). The first cut still let the browser paint the image: it
+   handed setDragImage an off-screen puck clone, on the theory that the
+   app-wide `html{user-select:none}` (2 Sep 26) was what turned Chromium's
+   automatic snapshot into a white card. That does nothing where the drag
+   image is composed OUTSIDE the page — a remote-rendered or sandboxed
+   browser (the secured-browser case) hands the OS a bitmap and the OS draws
+   it without its transparency, so whatever we ask the browser to paint comes
+   back as an opaque white card around the puck. The only image that cannot be
+   spoiled that way is one the browser never draws: setDragImage gets a 1×1
+   transparent pixel (BLANK_IMG), and the puck the user sees is a `.dragimg`
+   clone of the PUCK alone (not the .seat shell, which a grid cell can stretch
+   past the puck) appended to the body as a fixed, pointer-events:none ghost
+   that moveDragImage pins under the cursor on every dragover — the same
+   JS-positioned ghost the touch path has always used (`.tdghost`), which was
+   never affected. Appending one fixed element does not reflow the drop cells,
+   so this stays clear of the abort described above. The ghost goes with
+   dndOff (drop, cancelled drag, dragend alike — see DRAGIMG above), and a
+   fresh dragstart replaces a stale one. A dataTransfer with no setDragImage
+   gets no ghost either — the browser then shows its own image, and a second
+   one under it would double up. */
 function setDragImage(e: DragEvent) {
   const dt: any = e.dataTransfer
   if (!dt || typeof dt.setDragImage !== 'function') return
@@ -254,12 +276,18 @@ function setDragImage(e: DragEvent) {
   g.classList.add('dragimg')
   g.removeAttribute('draggable'); g.removeAttribute('tabindex')
   g.style.width = r.width + 'px'; g.style.height = r.height + 'px'
+  DRAGOX = e.clientX - r.left; DRAGOY = e.clientY - r.top
   document.body.appendChild(g)
   DRAGIMG = g
-  dt.setDragImage(g, e.clientX - r.left, e.clientY - r.top)
+  moveDragImage(e.clientX, e.clientY)
+  if (BLANK_IMG) dt.setDragImage(BLANK_IMG, 0, 0)
 }
 function onDragOver(e: DragEvent) {
   if (!DRAG) return
+  /* the ghost rides the dragover stream, not the source's `drag` event —
+     dragover on the document carries real client coordinates in every
+     browser, where Firefox's `drag` reports zeros */
+  moveDragImage(e.clientX, e.clientY)
   const drop = (e.target as HTMLElement).closest(DROP_SEL) || (e.target as HTMLElement).closest(BIN_SEL)
   if (!drop) {
     /* empty space is a valid landing for a seat puck (letting go removes it),

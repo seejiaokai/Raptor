@@ -299,12 +299,14 @@ describe('the dragstart decoration waits one tick', () => {
   })
 })
 
-/* The image under the mouse is ours (owner, 3 Sep 26 — "a white box follows
-   the puck"): with selection off app-wide, Chromium's automatic snapshot of a
-   draggable came back as a white card. dragstart now hands the browser a clone
-   of the PUCK alone, parked off-screen with selection handed back, sized from
-   the puck's rect and anchored where the cursor grabbed; dragend removes it. */
-describe('the mouse drag image is an off-screen puck clone', () => {
+/* The image under the mouse is ours, and the PAGE draws it (owner, 3 Sep 26 —
+   "a white box follows the puck", still there after the first fix on Edge in
+   the MINDEF secured browser): any image the browser is asked to paint can
+   come back as an opaque white card where the drag image is composed outside
+   the page, so the browser is handed a blank 1×1 pixel and dragstart appends
+   a `.dragimg` clone of the PUCK alone to the body as a fixed ghost, anchored
+   where the cursor grabbed and moved by every dragover; dndOff removes it. */
+describe('the mouse drag image is a page-drawn puck ghost, the browser gets a blank pixel', () => {
   const src = () => $('#eRoster .rpuck[data-person]')
   const ev = (t: string) => new Event(t, { bubbles: true, cancelable: true })
   const withImage = (t: string, x = 0, y = 0) => {
@@ -316,19 +318,46 @@ describe('the mouse drag image is an off-screen puck clone', () => {
     return { ev, calls }
   }
 
-  it('sets a .dragimg clone of the puck, in the body, selectable, and removes it on dragend', () => {
-    const { ev, calls } = withImage('dragstart')
+  it('hands the browser a blank 1×1 image, never the puck or a clone of it', () => {
+    const { ev, calls } = withImage('dragstart', 40, 30)
     src().dispatchEvent(ev)
     expect(calls.length, 'setDragImage called once').toBe(1)
-    const g = calls[0].el as HTMLElement
-    expect(g.classList.contains('dragimg')).toBe(true)
-    expect(g.classList.contains('puck'), 'the image is the puck, not the .rpuck shell').toBe(true)
-    expect(g.parentNode, 'laid out in the body for the capture').toBe(document.body)
-    expect(g.getAttribute('draggable'), 'the clone is not itself draggable').toBeNull()
+    const img = calls[0].el as HTMLImageElement
+    expect(img.tagName).toBe('IMG')
+    expect(img.width).toBe(1); expect(img.height).toBe(1)
+    expect(img.src.startsWith('data:image/gif;base64,'), 'a decoded transparent pixel, not a DOM node').toBe(true)
+    expect(img.classList.contains('dragimg'), 'the ghost is NOT what the browser paints').toBe(false)
+    expect(calls[0].ox).toBe(0); expect(calls[0].oy).toBe(0)
+    src().dispatchEvent(withImage('dragend').ev)
+  })
+
+  it('appends a .dragimg clone of the puck to the body, pinned where the cursor grabbed, and removes it on dragend', () => {
+    /* jsdom lays nothing out, so the puck's rect is 0×0 at 0,0 — the ghost
+       starts exactly OVER the puck (its corner at the puck's corner, 0,0), and
+       the 40,30 grab offset is what the dragover test below checks */
+    src().dispatchEvent(withImage('dragstart', 40, 30).ev)
+    const gs = document.querySelectorAll('.dragimg')
+    expect(gs.length).toBe(1)
+    const g = gs[0] as HTMLElement
+    expect(g.classList.contains('puck'), 'the ghost is the puck, not the .rpuck shell').toBe(true)
+    expect(g.parentNode).toBe(document.body)
+    expect(g.getAttribute('draggable'), 'the ghost is not itself draggable').toBeNull()
     expect(g.textContent).toBe(src().querySelector('.puck')!.textContent)
-    expect(document.querySelectorAll('.dragimg').length).toBe(1)
+    expect(g.style.left).toBe('0px'); expect(g.style.top).toBe('0px')
     src().dispatchEvent(withImage('dragend').ev)
     expect(document.querySelectorAll('.dragimg').length, 'gone at dragend').toBe(0)
+  })
+
+  it('the ghost follows every dragover, keeping the grab offset', () => {
+    src().dispatchEvent(withImage('dragstart', 40, 30).ev)
+    const g = document.querySelector('.dragimg') as HTMLElement
+    /* grabbed 40,30 into a 0×0-at-origin puck → the offset is 40,30 and the
+       ghost's corner trails the cursor by exactly that, both ways */
+    document.body.dispatchEvent(withImage('dragover', 140, 90).ev)
+    expect(g.style.left).toBe('100px'); expect(g.style.top).toBe('60px')
+    document.body.dispatchEvent(withImage('dragover', 12, 7).ev)
+    expect(g.style.left).toBe('-28px'); expect(g.style.top).toBe('-23px')
+    src().dispatchEvent(withImage('dragend').ev)
   })
 
   /* A drop repaints the palette, which detaches the source before its dragend

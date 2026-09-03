@@ -3771,13 +3771,15 @@ body.sb-lock{overflow:hidden}
 .tdghost{position:fixed!important;z-index:520;pointer-events:none;margin:0!important;
   transform:translate(-50%,-50%);opacity:.92;box-shadow:0 8px 20px rgba(0,0,0,.6);
   outline:2px solid var(--accent);outline-offset:1px;border-radius:4px}
-/* mouse drag: the explicit drag image (drag.ts setDragImage). A puck clone
-   parked off-screen for the capture frame — never display:none, Chromium only
-   snapshots a laid-out element — with selection handed back so the snapshot is
-   the puck alone and not the white card the no-select page produced (owner,
-   3 Sep 26). Sized inline from the live puck's rect. */
-.dragimg{position:fixed!important;top:-10000px!important;left:-10000px!important;margin:0!important;pointer-events:none;
-  -webkit-user-select:text;user-select:text}
+/* mouse drag: the puck ghost the PAGE draws under the cursor (drag.ts
+   setDragImage / moveDragImage) — the browser itself is handed a blank pixel,
+   so no platform snapshot is ever composed (the white card a secured or
+   remote-rendered browser drew around the puck, owner 3 Sep 26). The touch
+   ghost's recipe, minus the centring transform: this one is anchored where
+   the cursor grabbed, via inline left/top. Sized inline from the live puck's
+   rect; pointer-events:none so dragover still reads the cell beneath it. */
+.dragimg{position:fixed!important;z-index:520;pointer-events:none;margin:0!important;opacity:.92;
+  box-shadow:0 8px 20px rgba(0,0,0,.6);outline:2px solid var(--accent);outline-offset:1px;border-radius:4px}
 body.tdrag{touch-action:none;-webkit-user-select:none;user-select:none}
 body.tdrag *{-webkit-touch-callout:none}
 
