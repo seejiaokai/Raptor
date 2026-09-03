@@ -56,7 +56,7 @@ export function rosterPuck(id:any,di:any,armKey:any,eng:any,off:any,sby:any,rule
      shares one reason, paletteHTML prints it once under the header, or a
      front-seat arm would print "WSO — cannot fly front seat" fifteen times. */
   const showWhy=!!(armKey&&why&&!hideWhy);
-  return `<span class="rpuck ${cls}${showWhy?' haswhy':''}" draggable="true" data-person="${id}"`
+  return `<span class="rpuck ${cls}${showWhy?' haswhy':''}" data-drag="1" data-person="${id}"`
     +(why?` data-why="${esc(why)}"`:'')+` title="${esc(note)}"`
     +`>${puck(id,sevOf(di,id),true,chipOf(di,id))}${showWhy?`<span class="rwhy">${esc(why)}</span>`:''}</span>`;
 }
@@ -180,7 +180,7 @@ export function paletteHTML(di:any,opts?:any){
 export function specialRowHTML(di:any){
   if(!SPECIALS.length)return '';
   return `<div class="rall"><div class="rh2">Placeholders · drag in</div>`
-    +SPECIALS.map((id:any)=>`<span class="rpuck" draggable="true" data-person="${id}" title="${esc(PEOPLE[id].cs)} — a placeholder, never validated">${puck(id,null,true,null)}</span>`).join('')
+    +SPECIALS.map((id:any)=>`<span class="rpuck" data-drag="1" data-person="${id}" title="${esc(PEOPLE[id].cs)} — a placeholder, never validated">${puck(id,null,true,null)}</span>`).join('')
     +`</div>`;
 }
 /* SANS AVAILABILITY, ONE FULL-WIDTH SECTION (owner, 14 Aug 26) — every SANS

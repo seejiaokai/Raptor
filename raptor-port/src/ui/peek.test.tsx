@@ -52,6 +52,7 @@ describe('desktop: the preview strip itself', () => {
     expect(whole).not.toContain('data-day=')
     expect(whole).not.toContain('contenteditable')
     expect(whole).not.toContain('draggable')
+    expect(whole).not.toContain('data-drag')
     expect(whole).not.toContain('data-slot')
     expect(whole).not.toContain('data-person')
   })

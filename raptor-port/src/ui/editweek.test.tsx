@@ -198,7 +198,7 @@ describe('the edit page (tfin)', () => {
 
   it('the view page stays read-only', async () => {
     expect($$('#vWeek [data-fill]').length).toBe(0)
-    expect($$('#vWeek [draggable="true"]').length).toBe(0)
+    expect($$('#vWeek [draggable="true"],#vWeek [data-drag]').length).toBe(0)
   })
 
   /* the version dropdown: publish → edit → preview a version → restore it.
@@ -220,7 +220,7 @@ describe('the edit page (tfin)', () => {
     })
     const day = () => $(`#eWeek .day[data-day="0"]`)
     expect(day().className).toContain('preview')
-    expect(day().querySelectorAll('[data-slot],[data-fill],[draggable="true"]').length).toBe(0)
+    expect(day().querySelectorAll('[data-slot],[data-fill],[draggable="true"],[data-drag]').length).toBe(0)
     expect(day().querySelector('.dprev-bar')).toBeTruthy()
     expect(slotVal(key)).toBe('casper')        // the MODEL is untouched by previewing
     /* RE-POINTED (15 Aug 26): the view page never gets the ORIG/AL version

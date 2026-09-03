@@ -109,7 +109,7 @@ describe('the dot strip will not scrub under a finger holding a puck', () => {
     /* finger one lands on a draggable puck — initDrag's own pointerdown arms
        the touch-drag machine (a hold, not yet a drop) */
     await act(async () => { initDrag() })
-    const puck = $$('#sbBoard [draggable="true"]')[0]
+    const puck = $$('#sbBoard [data-drag]')[0]
     expect(puck, 'the board draws a draggable puck in edit mode').toBeTruthy()
     await act(async () => {
       puck.dispatchEvent(new PointerEvent('pointerdown', {
@@ -150,7 +150,7 @@ describe('the dot strip will not scrub under a finger holding a puck', () => {
   it('the board lane is untouched by the refused gesture', async () => {
     await act(async () => { boardTab(3); notify() })
     await act(async () => { initDrag() })
-    const puck = $$('#sbBoard [draggable="true"]')[0]
+    const puck = $$('#sbBoard [data-drag]')[0]
     await act(async () => {
       puck.dispatchEvent(new PointerEvent('pointerdown', {
         bubbles: true, clientX: 200, clientY: 300, pointerType: 'touch', isPrimary: true, pointerId: 11,

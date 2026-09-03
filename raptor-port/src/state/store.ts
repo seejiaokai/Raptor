@@ -469,7 +469,7 @@ export function wireStore() {
      Sched is the read-only mode. The role test is this port's own addition:
      a session change on the SAME running page (logout/login without a
      reload) can leave CURPAGE sitting on 'editsched' from the outgoing user.
-     editMode() is what drives every draggable="true" / contenteditable="true"
+     editMode() is what drives every data-drag="1" / contenteditable="true"
      attribute in html.ts, so one canEditSched() check here closes them all at
      once rather than patching each rendered surface individually. */
   HOOKS.editMode = () => canEditSched() && view.CURPAGE === 'editsched'

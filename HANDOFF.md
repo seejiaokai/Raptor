@@ -578,6 +578,44 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
   Leave War row, `docs/engine-rules.md` INPUT_META count, the leave-types spec
   table, `leavewar-sync.md` vocabulary line, ui-contracts §Legend.
 
+- **RESOLVED 3 Sep 26, FOURTH cut — nothing on the page is `draggable` any
+  more; the drag-source marker is `data-drag="1"`.** The owner's photo after
+  #354 (Edit Schedule on the SIS browser: our puck ghost under the cursor,
+  the white striped card just under it at the offset a browser's OWN
+  snapshot sits at, and "now I can't drop the pucks on any add areas")
+  settled what the third cut had guessed wrong. That browser starts its own
+  drag of any `draggable="true"` element WITHOUT asking the page:
+  `onDragStart`'s `preventDefault` never reached whatever draws the box, its
+  drag then owned the pointer (the machine got a `pointercancel`, TD
+  cleared), and because that same cancel had refused to set DRAG, the native
+  drop found nothing to apply — exactly why #354 was WORSE than #353 there.
+  A drag the page cannot refuse must never be offered. So the seven emit
+  sites (`html.ts` slotCell / lSeat / the available puck, `board-html.ts`
+  sbSeat / sbSlot / the programme seat, `palette-html.ts` ×2) write
+  `data-drag="1"` where they wrote `draggable="true"` — behind the same
+  edit-mode gates, so view / preview / peek / read-only markup is unchanged
+  and parity stays 728/0 — `drag.ts` (`dragFrom`, `onPointerDown`, both
+  ghost clones) keys on `[data-drag]`, and the CSS grab cursor follows
+  (`.seat[data-drag]`). No browser, remote or plain, has anything to pick
+  up; the pointer machine is the only way a puck moves. The native handlers
+  stay for synthetic events only (the suites' `dnd()` helper), guard and
+  all. LESSON, written down because the third cut's entry below said "this
+  cut does not depend on anything that browser can override" and was wrong:
+  on the secured browser assume the ENTIRE native drag machinery is outside
+  the page's control — its events, `preventDefault`, `setDragImage` — and
+  that the only lever is what is in the DOM. Pins: `ui/drag.test.tsx`
+  "nothing on any surface is draggable" (+4: the edit week + palette, the
+  board, the whole document, `dragFrom` on a marker-only puck); every
+  read-only render-gate test now also asserts no `data-drag` (`board`,
+  `editweek`, `draftsui`, `textedit`, `peek`); and the real-browser pin in
+  `e2e/geometry.spec.ts` asserts zero `draggable="true"` on the page before
+  it drags. Cost: nothing new — what the third cut carried (no OS
+  not-allowed cursor, a drag cannot leave the window) is unchanged. Still
+  unverified on the SIS browser itself. If the white box shows after THIS,
+  the page has no draggable element left to blame, and the next question is
+  whether that browser relays pointer events to the page at all — a photo
+  plus "does the puck follow the mouse before you let go?" answers it.
+
 - **SHIPPED 3 Sep 26 — merge-to-live cut from ~17 min to the slowest gate
   (owner: "Is it possible to shorten the time taken to merge live?" →
   "Option 1").** No app code changed. `deploy.yml` runs the four CI gates as
@@ -587,9 +625,10 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
   measured parallel run there when it lands; the PR run is the only test a
   workflow change gets, and the Actions API reads it 10–20 min stale.
 
-- **RESOLVED 3 Sep 26, THIRD cut — the white box under a dragged puck on the
-  MINDEF secured browser (Edge, "SIS", the owner's work laptop on OSN):
-  the mouse no longer starts a native drag at all.** Two drag-image fixes
+- **RESOLVED 3 Sep 26, THIRD cut (SUPERSEDED the same day by the FOURTH,
+  above — that browser overrode this one too) — the white box under a
+  dragged puck on the MINDEF secured browser (Edge, "SIS", the owner's work
+  laptop on OSN): the mouse no longer starts a native drag at all.** Two drag-image fixes
   the same day (#351: an off-screen puck clone handed to `setDragImage`;
   #353: a blank 1×1 pixel plus a page-drawn ghost moved by `dragover`) both
   left the white box there, and the owner's photo after #353 settled the

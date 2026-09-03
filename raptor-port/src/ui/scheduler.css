@@ -3590,7 +3590,10 @@ body.sb-lock{overflow:hidden}
    pair rows stay level — the 26px flying-line slot would bulge the row */
 .ppl .sb-slot.empty{min-height:var(--puck-h);height:var(--puck-h);box-sizing:border-box;font-size:9.5px;line-height:1}
 .sb-slot.empty:hover{border-color:var(--accent);color:var(--accent)}
-.seat[draggable="true"]{cursor:grab}
+/* the drag-source marker is data-drag, never the HTML draggable attribute
+   (4th cut, 3 Sep 26): the MINDEF secured browser starts its own drag of any
+   draggable="true" element without asking the page — see ui/drag.ts */
+.seat[data-drag]{cursor:grab}
 .sb-slot.dragover,.sb-roster.dragover{outline:2px solid var(--accent);outline-offset:1px;border-radius:6px}
 /* touch drag: the ghost that follows the finger, and the page lock while it does */
 /* standalone waves — SC / AVALON / BB. Marked in the SANS purple so they read

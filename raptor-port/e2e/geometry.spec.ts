@@ -4446,6 +4446,13 @@ test.describe('a mouse drag of a puck runs on the pointer machine, not the nativ
     await login(page)
     await go(page, 'editsched')
     await page.waitForSelector('#eRoster .rpuck[data-person]')
+    /* 4th cut (3 Sep 26): nothing on the page is `draggable` — the MINDEF
+       secured browser starts its own drag of any draggable="true" element
+       without asking the page, so the marker is data-drag and the attribute
+       must never come back on any surface */
+    expect(await page.evaluate(() => document.querySelectorAll('[draggable="true"]').length), 'nothing on the page is draggable').toBe(0)
+    expect(await page.locator('#eRoster .rpuck[data-drag]').count(), 'pucks carry the data-drag marker instead').toBeGreaterThan(10)
+    expect(await page.locator('#eWeek .seat[data-slot][data-drag]').count(), 'seat pucks too').toBeGreaterThan(3)
     await page.evaluate(() => {
       const w = window as any; w.__native = 0
       for (const t of ['dragstart', 'dragover', 'drop']) document.addEventListener(t, () => { w.__native++ })
