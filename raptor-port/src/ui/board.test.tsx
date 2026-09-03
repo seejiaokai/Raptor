@@ -720,7 +720,7 @@ describe('duty / sim / ground panels on the board (owner request, Aug 26)', () =
   it('the personal-inputs panel writes inputs, never the schedule', () => {
     const p = document.querySelector('#sbBoard .sb-panel.pinp')!
     expect(p.querySelectorAll('[data-ifld]').length).toBeGreaterThan(0)
-    expect(p.querySelectorAll('[data-slot],[data-fill],[draggable="true"],.mbtn,[data-txt],[data-bfld]').length).toBe(0)
+    expect(p.querySelectorAll('[data-slot],[data-fill],[draggable="true"],[data-drag],.mbtn,[data-txt],[data-bfld]').length).toBe(0)
   })
 
   /* ONE CLOCK ON THE BOARD — hh:mm (owner, 30 Aug 26, reversing the 16/29 Aug
@@ -1033,7 +1033,7 @@ describe('board lifecycle', () => {
     expect(board.querySelector('.pv-frozen')).toBeTruthy()
     expect(board.querySelector('.pv-frozen .sb-panel.duty')).toBeTruthy()   // new panels render frozen too
     expect(board.querySelectorAll("input:not([disabled]),textarea:not([disabled])").length).toBe(0)
-    expect(board.querySelectorAll('.mbtn,[data-slot],[data-fill],[draggable="true"]').length).toBe(0)
+    expect(board.querySelectorAll('.mbtn,[data-slot],[data-fill],[draggable="true"],[data-drag]').length).toBe(0)
     /* the live-checks panel is now the preview banner with the restore button */
     expect($('#schedBoard .dprev-bar .dprev-restore')).toBeTruthy()
     /* the inline "+ Wave" is a .mbtn INSIDE the board, so the `.mbtn ... === 0`
@@ -1571,12 +1571,12 @@ describe('the flying line itself honours the read-only flag (part 2)', () => {
     HOOKS.editMode = () => false
     const h = boardHTML(0)
     expect(h).not.toMatch(/<div class="sb-slot"><span class="seat" data-slot="[^"]*"/)
-    expect(h).not.toMatch(/<div class="sb-slot"><span class="seat"[^>]*draggable="true"/)
+    expect(h).not.toMatch(/<div class="sb-slot"><span class="seat"[^>]*data-drag="1"/)
   })
 
   it('a filled FCP/RCP seat is draggable and armable in edit mode (unchanged)', () => {
     const h = boardHTML(0)
-    expect(h).toMatch(/<div class="sb-slot"><span class="seat" data-slot="[^"]*"[^>]*draggable="true"/)
+    expect(h).toMatch(/<div class="sb-slot"><span class="seat" data-slot="[^"]*"[^>]*data-drag="1"/)
   })
 })
 
@@ -1755,7 +1755,7 @@ describe('the OTHER panels honour the read-only flag too, not just the flying li
 
   it('a duty row\'s seat is draggable in edit mode (unchanged)', () => {
     const h = boardHTML(0)
-    expect(h).toMatch(/<span class="seat" data-slot="d:[^"]*"[^>]*draggable="true"/)
+    expect(h).toMatch(/<span class="seat" data-slot="d:[^"]*"[^>]*data-drag="1"/)
   })
 
   /* the exact scenario the reviewer demonstrated: typing into Overall notes

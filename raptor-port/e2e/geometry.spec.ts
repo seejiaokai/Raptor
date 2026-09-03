@@ -4446,6 +4446,13 @@ test.describe('a mouse drag of a puck runs on the pointer machine, not the nativ
     await login(page)
     await go(page, 'editsched')
     await page.waitForSelector('#eRoster .rpuck[data-person]')
+    /* 4th cut (3 Sep 26): nothing on the page is `draggable` — the MINDEF
+       secured browser starts its own drag of any draggable="true" element
+       without asking the page, so the marker is data-drag and the attribute
+       must never come back on any surface */
+    expect(await page.evaluate(() => document.querySelectorAll('[draggable="true"]').length), 'nothing on the page is draggable').toBe(0)
+    expect(await page.locator('#eRoster .rpuck[data-drag]').count(), 'pucks carry the data-drag marker instead').toBeGreaterThan(10)
+    expect(await page.locator('#eWeek .seat[data-slot][data-drag]').count(), 'seat pucks too').toBeGreaterThan(3)
     await page.evaluate(() => {
       const w = window as any; w.__native = 0
       for (const t of ['dragstart', 'dragover', 'drop']) document.addEventListener(t, () => { w.__native++ })
@@ -4478,5 +4485,57 @@ test.describe('a mouse drag of a puck runs on the pointer machine, not the nativ
     expect(await page.locator('.dragimg').count(), 'no ghost survives the drop').toBe(0)
     expect(await page.evaluate(() => document.body.classList.contains('mdrag') || document.body.classList.contains('dnd'))).toBe(false)
     expect(await page.evaluate(() => (window as any).__native), 'still no native drag event').toBe(0)
+  })
+})
+
+/* THE SLOW-COMPUTER DIET (owner, 3 Sep 26 — "faster on a slow computer").
+   The Leave War screen is the app's largest, and is seen only after its tab is
+   clicked, so Shell.tsx ships it as its own chunk (React.lazy). This pins the
+   contract from the network's side: a Raptor visit downloads no Leave War
+   screen; the first click on the tab fetches exactly one. The sync engine is
+   NOT in that chunk (it boots in main.tsx) — the leavewar e2e suites prove the
+   crew projection and leave cells still reconcile, so this only has to prove
+   the deferral. */
+test.describe('slow-computer diet', () => {
+  test('desktop: the Leave War screen is not downloaded until its tab is opened', async ({ page }) => {
+    await login(page, 'a')
+    /* the screen splits into a script AND its own stylesheet; count each */
+    const lwChunks = () => page.evaluate(() => {
+      const names = performance.getEntriesByType('resource').map((e: any) => e.name as string).filter(n => /LeaveWarPage/.test(n))
+      return { js: names.filter(n => /\.js$/.test(n)).length, css: names.filter(n => /\.css$/.test(n)).length }
+    })
+    expect(await lwChunks(), 'no Leave War chunk after login').toEqual({ js: 0, css: 0 })
+    await go(page, 'leavewar')
+    await page.waitForSelector('[data-testid="row-slipway"]')
+    expect(await lwChunks(), 'the script and stylesheet arrive with the first click').toEqual({ js: 1, css: 1 })
+  })
+
+  /* the edit surfaces warm in idle time after an admin login (EditWeek.tsx),
+     and the edit page is PARKED laid-out rather than display:none while the
+     View page is on (scheduler.css) — so the first Edit click un-parks a week
+     that already stands at its real width, instead of building and laying
+     out ~6k elements on the click. */
+  test('desktop: the edit week is warmed and parked laid-out before Edit is ever opened', async ({ page }) => {
+    await login(page, 'a')
+    await page.waitForFunction(() => document.querySelectorAll('#eWeek .day[data-day]').length === 7, null, { timeout: 15000 })
+    const parked = await page.evaluate(() => {
+      const sec = document.getElementById('page-editsched')!, day = document.querySelector('#eWeek .day[data-day]')!
+      const cs = getComputedStyle(sec)
+      return { on: sec.classList.contains('on'), display: cs.display, visibility: cs.visibility, height: sec.getBoundingClientRect().height,
+        dayWidth: day.getBoundingClientRect().width, pucks: document.querySelectorAll('#eRoster .rpuck[data-person]').length }
+    })
+    expect(parked.on, 'still on the View page').toBe(false)
+    expect(parked.display, 'parked, not display:none').toBe('block')
+    expect(parked.visibility, 'invisible while parked').toBe('hidden')
+    expect(parked.height, 'takes no room on the page').toBe(0)
+    expect(parked.dayWidth, 'the warmed week is laid out at a real width').toBeGreaterThan(100)
+    expect(parked.pucks, 'the palette is warmed too').toBeGreaterThan(0)
+    await expect(page.locator('#page-editsched')).toBeHidden()
+    const first = await page.evaluate(() => { (window as any).__firstDay = document.querySelector('#eWeek .day[data-day]'); return true })
+    expect(first).toBe(true)
+    await go(page, 'editsched')
+    await expect(page.locator('#page-editsched')).toBeVisible()
+    expect(await page.evaluate(() => document.querySelector('#eWeek .day[data-day]') === (window as any).__firstDay), 'the click kept the warmed nodes').toBe(true)
+    expect(await page.evaluate(() => document.querySelector('#eWeek .day[data-day]')!.getBoundingClientRect().width), 'same width once shown').toBe(parked.dayWidth)
   })
 })

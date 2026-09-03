@@ -60,11 +60,11 @@ describe('generic drag & drop across the whole edit board (tfin)', () => {
        are drag sources whenever a day's panel is expanded — AVSHUT holds only the
        days a scheduler folded, so clearing it guarantees every panel is up */
     await act(async () => { AVSHUT.clear(); notify() })
-    expect($$('#eWeek .availpuck [data-person][draggable="true"]').length).toBeGreaterThan(10)
+    expect($$('#eWeek .availpuck [data-person][data-drag]').length).toBeGreaterThan(10)
   })
 
   it('roster puck -> duty seat', async () => {
-    const seat = $('#eWeek .seat[data-slot^="d:"][draggable="true"]')
+    const seat = $('#eWeek .seat[data-slot^="d:"][data-drag]')
     const key = seat.dataset.slot!, before = slotVal(key)
     const src = $$('#eRoster .rpuck[data-person]').find(x => x.dataset.person !== before)!
     await dnd(src, $(`#eWeek .seat[data-slot="${key}"]`))
@@ -73,8 +73,8 @@ describe('generic drag & drop across the whole edit board (tfin)', () => {
   })
 
   it('flying seat <-> duty seat swap', async () => {
-    const fly = $('#eWeek .acrow .seat[data-slot][draggable="true"]')
-    const duty = $('#eWeek .seat[data-slot^="d:"][draggable="true"]')
+    const fly = $('#eWeek .acrow .seat[data-slot][data-drag]')
+    const duty = $('#eWeek .seat[data-slot^="d:"][data-drag]')
     const fk = fly.dataset.slot!, dk = duty.dataset.slot!
     const a = slotVal(fk), b = slotVal(dk)
     await dnd(fly, duty)
@@ -103,7 +103,7 @@ describe('generic drag & drop across the whole edit board (tfin)', () => {
   })
 
   it('dragging a seat onto the roster unassigns it', async () => {
-    const seat = $('#eWeek .seat[data-slot^="g:"][draggable="true"]')
+    const seat = $('#eWeek .seat[data-slot^="g:"][data-drag]')
     const key = seat.dataset.slot!, before = slotVal(key)
     await dnd($(`#eWeek .seat[data-slot="${key}"]`), $('#eRoster'))
     expect(slotVal(key)).toBe('')
@@ -116,13 +116,14 @@ describe('generic drag & drop across the whole edit board (tfin)', () => {
 
   it('the view page stays read-only — no drop cells, nothing draggable', () => {
     expect($$('#vWeek [data-fill]').length).toBe(0)
+    expect($$('#vWeek [data-drag]').length).toBe(0)
     expect($$('#vWeek [draggable="true"]').length).toBe(0)
   })
 })
 
 describe('applyDrop contracts (B23 / B49)', () => {
   it('dragFrom reads a slot seat', () => {
-    const el = $('#eWeek .acrow .seat[data-slot][draggable="true"]')
+    const el = $('#eWeek .acrow .seat[data-slot][data-drag]')
     const r: any = dragFrom(el)
     expect(r && r.kind).toBe('slot')
     expect(r.key).toBe(el.dataset.slot)
@@ -145,7 +146,7 @@ describe('applyDrop contracts (B23 / B49)', () => {
   })
 
   it('dropping a puck back where it started says so instead of doing nothing', async () => {
-    const seat = $$('#eWeek .seat[data-slot^="d:"][draggable="true"]').find(s => slotVal(s.dataset.slot!))!
+    const seat = $$('#eWeek .seat[data-slot^="d:"][data-drag]').find(s => slotVal(s.dataset.slot!))!
     toasts = []
     await dnd(seat, seat)
     expect(toasts).toContain('Already in that seat')
@@ -164,7 +165,7 @@ describe('applyDrop contracts (B23 / B49)', () => {
   })
 
   it('dragging a seat to empty page space removes it', async () => {
-    const seat = $$('#eWeek .seat[data-slot^="d:"][draggable="true"]').find(s => slotVal(s.dataset.slot!))!
+    const seat = $$('#eWeek .seat[data-slot^="d:"][data-drag]').find(s => slotVal(s.dataset.slot!))!
     const key = seat.dataset.slot!, before = slotVal(key)
     await dnd(seat, document.body)
     expect(slotVal(key)).toBe('')
@@ -178,7 +179,7 @@ describe('applyDrop contracts (B23 / B49)', () => {
   })
 
   it('a seat puck dropped on jet-row dead space comes off the seat', async () => {
-    const seat = $$('#eWeek .acrow .seat[data-slot][draggable="true"]').find(s => slotVal(s.dataset.slot!))!
+    const seat = $$('#eWeek .acrow .seat[data-slot][data-drag]').find(s => slotVal(s.dataset.slot!))!
     const key = seat.dataset.slot!, before = slotVal(key)
     const row = seat.closest('.acrow')!
     const el = [...row.querySelectorAll('*')].find(x =>
@@ -191,7 +192,7 @@ describe('applyDrop contracts (B23 / B49)', () => {
   })
 
   it('a seat puck dropped on a row TITLE comes off the seat', async () => {
-    const seat = $$('#eWeek .seat[data-slot^="d:"][draggable="true"]').find(s => slotVal(s.dataset.slot!))!
+    const seat = $$('#eWeek .seat[data-slot^="d:"][data-drag]').find(s => slotVal(s.dataset.slot!))!
     const key = seat.dataset.slot!, before = slotVal(key)
     const nm = $('#eWeek .pl-row .nm')
     await dnd($(`#eWeek .seat[data-slot="${key}"]`), nm)
@@ -200,7 +201,7 @@ describe('applyDrop contracts (B23 / B49)', () => {
   })
 
   it('a seat puck dropped on a row TIMING comes off the seat', async () => {
-    const seat = $$('#eWeek .seat[data-slot^="d:"][draggable="true"]').find(s => slotVal(s.dataset.slot!))!
+    const seat = $$('#eWeek .seat[data-slot^="d:"][data-drag]').find(s => slotVal(s.dataset.slot!))!
     const key = seat.dataset.slot!, before = slotVal(key)
     const t = $('#eWeek .pl-row .t')
     await dnd($(`#eWeek .seat[data-slot="${key}"]`), t)
@@ -342,6 +343,7 @@ describe('the mouse drag image is a page-drawn puck ghost, the browser gets a bl
     expect(g.classList.contains('puck'), 'the ghost is the puck, not the .rpuck shell').toBe(true)
     expect(g.parentNode).toBe(document.body)
     expect(g.getAttribute('draggable'), 'the ghost is not itself draggable').toBeNull()
+    expect(g.getAttribute('data-drag'), 'nor a drag source').toBeNull()
     expect(g.textContent).toBe(src().querySelector('.puck')!.textContent)
     expect(g.style.left).toBe('0px'); expect(g.style.top).toBe('0px')
     src().dispatchEvent(withImage('dragend').ev)
@@ -395,7 +397,9 @@ describe('the mouse drag image is a page-drawn puck ghost, the browser gets a bl
    white box is one the browser never starts). A primary-button press on a
    puck claims it, a 3px move arms our own drag (ghost, .dnd, DRAG), the
    native dragstart is cancelled, and the release drops through applyDrop —
-   the touch path's machine, one body. */
+   the touch path's machine, one body. (Since the 4th cut the same day
+   nothing is draggable at all — the suite after this one — so the dragstart
+   cancel is belt-and-braces, exercised here only synthetically.) */
 describe('the mouse drags through the pointer machine, never the native drag', () => {
   const src = () => $('#eRoster .rpuck[data-person]')
   const HAS_PE = typeof (globalThis as any).PointerEvent === 'function'
@@ -483,6 +487,47 @@ describe('the mouse drags through the pointer machine, never the native drag', (
   })
 })
 
+/* NOTHING ON THE PAGE IS `draggable` (4th cut, 3 Sep 26). The third cut
+   preventDefault-ed the native dragstart and the MINDEF secured browser drew
+   its white box regardless — AND the drop died there, because that browser
+   starts its own drag of any draggable="true" element without asking the
+   page, and once its drag owns the pointer the machine is cancelled with
+   nothing left to receive the release. The only drag the page can refuse is
+   one it never offers: the marker is data-drag, the HTML attribute is gone
+   from every surface, and the pointer machine is the only way a puck moves. */
+describe('nothing on any surface is draggable — the browser has nothing to drag on its own', () => {
+  const none = (sel: string, why: string) => expect($$(sel).length, why).toBe(0)
+
+  it('the edit week and its palette: every puck carries data-drag, none carries draggable', () => {
+    expect($$('#eWeek .seat[data-slot][data-drag]').length, 'seat pucks are drag sources').toBeGreaterThan(3)
+    expect($$('#eRoster .rpuck[data-drag][data-person]').length, 'palette pucks are drag sources').toBeGreaterThan(10)
+    none('#eWeek [draggable]', 'no draggable attribute on the edit week')
+    none('#eRoster [draggable]', 'no draggable attribute in the palette')
+  })
+
+  it('the scheduler board in edit mode: the same', async () => {
+    await act(async () => { openScheduler(0); notify() })
+    try {
+      expect($$('#sbBoard .seat[data-slot][data-drag]').length, 'board seats are drag sources').toBeGreaterThan(3)
+      expect($$('#sbRoster [data-person][data-drag]').length, 'board palette pucks are drag sources').toBeGreaterThan(10)
+      none('#sbBoard [draggable],#sbRoster [draggable]', 'no draggable attribute on the board')
+    } finally { await act(async () => { closeScheduler(); notify() }) }
+  })
+
+  it('the whole document, with the edit page up: not one draggable="true"', () => {
+    none('[draggable="true"]', 'a draggable="true" anywhere is a native drag the secured browser starts on its own')
+  })
+
+  it('a data-drag puck with no draggable attribute is exactly what the machine claims', () => {
+    const p = $('#eRoster .rpuck[data-drag]')
+    expect(p.getAttribute('draggable')).toBeNull()
+    expect(dragFrom(p)).toEqual({ kind: 'roster', id: p.dataset.person })
+    const s = $('#eWeek .seat[data-slot][data-drag]')
+    expect(s.getAttribute('draggable')).toBeNull()
+    expect(dragFrom(s)).toEqual({ kind: 'slot', key: s.dataset.slot })
+  })
+})
+
 /* isPhone was never wired in the port — the default `false` meant a palette
    drag on a phone never parked the drawer, so the drop could only land back
    on the drawer itself: a silent no-op. */
@@ -524,7 +569,7 @@ describe('applyDrop refuses on a read-only board, not just the render (reviewer-
     await act(async () => { openScheduler(0); notify() })
     const fill = document.querySelector('#sbBoard .sb-panel.duty [data-fill]') as HTMLElement
     expect(fill, 'sanity: a duty row fill target exists').toBeTruthy()
-    const puck = document.querySelector('#sbRoster [data-person][draggable="true"]') as HTMLElement
+    const puck = document.querySelector('#sbRoster [data-person][data-drag]') as HTMLElement
     expect(puck, 'sanity: a draggable roster puck exists').toBeTruthy()
     const before = JSON.stringify(DAYS[0].dutywaves)
     /* HOOKS.editMode stubbed directly rather than reached through a real
@@ -558,7 +603,7 @@ describe('applyDrop refuses on a read-only board, not just the render (reviewer-
   it('the same drag DOES write in edit mode (unchanged)', async () => {
     await act(async () => { openScheduler(0); notify() })
     const fill = document.querySelector('#sbBoard .sb-panel.duty [data-fill]') as HTMLElement
-    const puck = document.querySelector('#sbRoster [data-person][draggable="true"]') as HTMLElement
+    const puck = document.querySelector('#sbRoster [data-person][data-drag]') as HTMLElement
     const before = JSON.stringify(DAYS[0].dutywaves)
     await dnd(puck, fill)
     expect(JSON.stringify(DAYS[0].dutywaves), 'the model DID see the drop').not.toBe(before)

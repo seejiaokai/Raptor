@@ -120,7 +120,7 @@ parity holds. The gate table below was the green baseline read at this pass's cl
 
 | gate | reading |
 |---|---|
-| `npm test` | 3825 across 217 files (3 Sep 26 — the THIRD drag cut, the mouse on the pointer machine, +5 `ui/drag.test.tsx`; before it 3820 — the drag-image SECOND cut, the page-drawn ghost, re-pinned `ui/drag.test.tsx` at 6 (was 4, +2); before it 3818 — the mouse drag-image fix added +4 `ui/drag.test.tsx` (the off-screen `.dragimg` puck clone that replaces Chromium's white-card snapshot); before it 3814 — the pilots' 15-day run became continuous FULL days (a half day breaks it), +1 `engine/charge.test.ts`; before it 3813 — the weekend/PH charging rule + CL batch added `engine/charge.test.ts` (now +20 with the half-day pin), +2 Cinch cases in `ui/oiltracker.test.tsx`, +1 `src/engine/leave.test.ts`, and re-pinned the figure/counter/seed fixtures; before it 3791 across 216 — the drag-select held-band fix added +1 `select.test.ts`; before it 3790 — 4 Sep 26 — the group-colour picker, full-width seat bars, LoX-catalogue and bug-hunt rounds added `groupcolors.test.ts`, `groupColor.test.ts`, `settingssheet.test.tsx`, `bootprune.test.ts` plus `roster`/`matrix`/`raptorRoster` cases; 2 Sep 26 — the tracker's THIRD CUT added +2 `oiltracker.test.tsx` + `raptorRoster.test.ts` demo-story cases, then the scrim press-guard +2; before that the OIL tracker GRID + Off-day batch: `ui/oiltracker.test.tsx` rewritten to 18, +7 `select.test.ts` row cases, +3 `oil.test.ts`, +2 `oilsync.test.ts`, +2 `store.test.ts`, +2 `oiltracker.test.ts`, +1 `eventdefs.test.ts`; the OFF pins flipped) — two vitest projects: raptor + leavewar |
+| `npm test` | 3843 across 220 files (3 Sep 26 — the slow-computer cut: +6 `ui/editwarm.test.tsx` (the idle warm + the calendar's no-measure tick), +2 `ui/css-invalidation.test.ts` (no root-class wildcard rules); before it 3835 across 218 — the FOURTH drag cut's belts, new `ui/dragdbg.test.tsx` (+6, the optional readout is inert unless flagged) and the two belts in `drag.ts`/`scheduler.css` need no new pin beyond it; before it 3829 — the FOURTH drag cut, nothing draggable, +4 `ui/drag.test.tsx` "nothing on any surface is draggable"; the edit-week parity compare in `ui/html.test.ts` maps the reference's `draggable="true"` onto the port's `data-drag="1"`; before it 3825 — the THIRD drag cut, the mouse on the pointer machine, +5 `ui/drag.test.tsx`; before it 3820 — the drag-image SECOND cut, the page-drawn ghost, re-pinned `ui/drag.test.tsx` at 6 (was 4, +2); before it 3818 — the mouse drag-image fix added +4 `ui/drag.test.tsx` (the off-screen `.dragimg` puck clone that replaces Chromium's white-card snapshot); before it 3814 — the pilots' 15-day run became continuous FULL days (a half day breaks it), +1 `engine/charge.test.ts`; before it 3813 — the weekend/PH charging rule + CL batch added `engine/charge.test.ts` (now +20 with the half-day pin), +2 Cinch cases in `ui/oiltracker.test.tsx`, +1 `src/engine/leave.test.ts`, and re-pinned the figure/counter/seed fixtures; before it 3791 across 216 — the drag-select held-band fix added +1 `select.test.ts`; before it 3790 — 4 Sep 26 — the group-colour picker, full-width seat bars, LoX-catalogue and bug-hunt rounds added `groupcolors.test.ts`, `groupColor.test.ts`, `settingssheet.test.tsx`, `bootprune.test.ts` plus `roster`/`matrix`/`raptorRoster` cases; 2 Sep 26 — the tracker's THIRD CUT added +2 `oiltracker.test.tsx` + `raptorRoster.test.ts` demo-story cases, then the scrim press-guard +2; before that the OIL tracker GRID + Off-day batch: `ui/oiltracker.test.tsx` rewritten to 18, +7 `select.test.ts` row cases, +3 `oil.test.ts`, +2 `oilsync.test.ts`, +2 `store.test.ts`, +2 `oiltracker.test.ts`, +1 `eventdefs.test.ts`; the OFF pins flipped) — two vitest projects: raptor + leavewar |
 | `node reference/tfin.js` | 728/0 (the reference is read-only; the "Ground Programme" title trim rides the tolerant normaliser in `html.test.ts`) |
 | `npm run build` | clean |
 | `npm run test:e2e` | 352 passed / 23 touch-only skips / 0 failed (3 Sep 26: +1 the first real-browser puck-drag pin — the mouse on the pointer machine, zero native drag events; earlier that day: the figure-picker legend and the Cinch-sheet count pins moved to the thirteen figures; 1 Sep 26: +1 keep-alive spec × the two Leave War projects) — three playwright projects: raptor geometry, lw-phone, lw-desktop. NOTE: a mid-session chain run showed 2 lw-phone reds against a build that predated the bug-pass fixes (the un-gated cross-lane notify repainting mid-gesture); both passed individually and the full suite passed whole against the fixed build — if they ever red again, suspect a stray repaint mid-tap first. |
@@ -519,6 +519,118 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
 
 ## Known issues / open work
 
+- **THE SLOW-COMPUTER CUT (owner, 3 Sep 26 — "Is it possible to have this app
+  work faster on a slow computer?" → "Do option 3 with option 1").** Measured
+  first, on the built bundle with Chromium's CPU throttled 4x (an old office
+  laptop) and 8x, then profiled (CPU profile + a devtools-timeline trace + a
+  DOM-write census, all against a sourcemapped scratch build): a drop at 4x
+  was ~640ms of JS, ~325ms of STYLE RECALC, ~90ms of layout, ~130ms paint;
+  opening Edit Schedule 2.4s (7.8s at 8x); login-to-week 1.8s. Layout was
+  NOT the cost, so the "batch the geometry reads" idea was dropped for what
+  the trace actually showed. Four changes, all in one PR with the drag fix:
+  (1) **`body.tdrag` and `body.mdrag` carry NO declarations any more**
+  (`scheduler.css`). The first cut only removed their `*` wildcard rules —
+  and the trace showed the 8,952-element recalc STILL there, so each body
+  class was toggled alone under the trace: `body.tdrag{touch-action;
+  user-select}` = 8,952 elements restyled, `body.mdrag{cursor}` = 4,822,
+  `body.dnd` = ~500, an unknown class = 0. An inherited property set on body
+  is re-resolved down the whole tree, wildcard or not. Neither declaration
+  did work (html{} already has user-select:none + no callout; `onTouchMove`
+  preventDefaults while armed), so both rules are gone; the mouse cursor
+  rides on the ghost instead (`.dragimg{pointer-events:auto;cursor:grabbing}`,
+  `tdOver` skips the ghost via `elementsFromPoint`). The classes stay as JS
+  markers (tests read them). `ui/css-invalidation.test.ts` fails the suite
+  on a bare `body.tdrag`/`body.mdrag` rule or any root-class wildcard. (2) **The Edit week and
+  crew palette warm ONCE in idle time after an admin login** (`EditWeek.tsx`
+  `idleOnce`/`canWarm`/`asIfEditOpen`) so the first Edit click finds them
+  standing — gated on `requestIdleCallback` (jsdom/parity never warm), admin
+  only, one build not a repaint-while-hidden; the builders read
+  `HOOKS.editMode()` themselves so the warm answers as the edit page will,
+  else the open threw the warm away (the test caught it). `ui/editwarm.test.tsx`.
+  (3) **`WeekCal` no longer re-measures all seven day boxes on every store
+  tick** with the calendar closed (the seed moved into the lazy state
+  initialiser). (4) **The Leave War screen is a lazy chunk** (`Shell.tsx`
+  `React.lazy` + `Suspense`): ~38 KB gz JS + ~11 KB gz CSS off every Raptor
+  visit's first download, fetched on the tab's first click; ONLY the screen —
+  the store/demo world/sync wires still boot in `main.tsx` and four eager
+  screens import the sync, so nothing about syncing moved (verified by
+  import graph before building). Pinned by the "not downloaded until its tab
+  is opened" e2e; `lwkeepalive.test.tsx` polls for the lazy grid.
+  (5) **The edit page is PARKED laid-out while hidden, not display:none**
+  (`scheduler.css` `#page-editsched:not(.on)`: in-flow, height 0, clipped,
+  visibility hidden). A display:none subtree has no layout, so even a warmed
+  week paid its whole first layout on the click (~660ms of Layout at 4x in
+  the trace, forced by the effect's scroll landing); parked, the idle build
+  lays it out at its real width and the click reuses it (Layout 108ms).
+  The hidden state was CHOSEN BY MEASUREMENT (`parkcost` probe, each toggle
+  alone): `visibility`, `pointer-events` and `inert` each cost a ~6.4k-element
+  recalc (~200ms at 4x) to flip because they inherit; `height:0;overflow:
+  hidden` alone costs ~nothing but leaves hidden contenteditables in the Tab
+  order; `content-visibility:hidden` un-parks for ~nothing but skips the
+  warm's layout, so the first show would pay it anyway. visibility was kept:
+  correct semantics (unfocusable, no hit-test, out of the AT tree) for 200ms
+  at 4x, ~50ms at 1x. In flow on purpose — position:absolute would size it
+  against the viewport, a different width from the shown page, and every
+  fragment would be relaid on show. Pinned by the "warmed and parked
+  laid-out" e2e (parked geometry, hidden to Playwright, same nodes and same
+  day width after the click).
+  **MEASURED, click-to-painted-frame timed inside the page (two rAFs), the
+  same build with the warm switched off (no requestIdleCallback) vs on,
+  3 s on the View page before the click, this container (noisy: ±20%):**
+
+  | | 4x slower CPU | 8x slower CPU |
+  |---|---|---|
+  | Open Edit Schedule, before → after | 1.95 s → 1.37 s | 3.58 s → 2.32 s |
+  | One drop landing, before → after | 0.94 s → 0.64 s | 2.09 s → 1.34 s |
+  | First download | 348 KB → 297 KB (12 files → 9) | same |
+
+  A drop at 4x by phase (devtools trace): style recalc 325 → 76ms, JS 640 →
+  440ms, paint 130 → 80ms; layout was never the cost (~90ms). One thing
+  STILL OPEN: the trace shows a second ~8k-element style recalc (~210ms at
+  4x) on the Edit click that no JS write or root-class toggle accounts for
+  (the DOM-write census on the open shows only highlight classes, the banner
+  and the undo buttons; toggling the two page sections and the topbar class
+  alone sum to ~6.6k). Not chased further — find it with the `parkcost`
+  recipe below if the open still feels slow on SIS.
+  **BUG-HUNTED after the cut (owner: "see if there is a need to do a bug
+  test … I leave it to u"), on the built bundle, 34 real-browser checks:**
+  the warmed edit week is the view's week and the FIRST Edit open after
+  changing weeks on the View page shows the new week (the per-day diff
+  rewrote it); mid-drag state (ghost, grabbing cursor, dragover target);
+  drops onto a flying seat, duty, sim, ground and programme cells, the
+  board, and unassign back to the crew panel; the SAME person into two seats
+  raises the day warning and a ring, and two undos clear it (rules engine
+  unchanged); an input added on the Inputs page shows on that day of the
+  warmed edit week and the lazy Leave War grid renders that person's row
+  with leave codes; the Leave War grid survives a tab switch; 80 Tabs on the
+  View page never focus anything in the parked page (admin and member);
+  member sees no warm and no Edit tab; logout/login re-warms; phone: parked
+  page adds no height or sideways overflow and Edit opens at the phone width;
+  zero console/page/http errors. The one script "fail" was the check itself
+  (a duty drop lands AND removes the person from the day's available-crew
+  list, so a whole-day text count is flat) — identical on the previous
+  build, verified by running the same script against a worktree build of
+  the parent commit. Recipe: a Playwright script per scenario against
+  `vite preview`, `?dragdbg=1` on the URL so each drop prints its readout,
+  and the previous commit built in a `git worktree` on a second port for
+  any doubt. NOT done,
+  deliberately: a per-day HTML cache (the 7 day strings are still rebuilt on
+  every tick — ~200ms of the drop at 4x — but what invalidates a day is
+  global state, so a cache is a correctness risk for a modest gain); a "lite
+  look" that drops blur/shadows on weak GPUs (unmeasurable headless — offer
+  it if the owner reports scroll jank on SIS); a service worker to survive
+  Pages' 10-minute asset cache (the secured browser may block it — ask
+  first). The measuring scripts are NOT in the repo (scratchpad, throwaway);
+  the recipe is: build with `--sourcemap` to a scratch dir, `vite preview`
+  it, Playwright + CDP `Emulation.setCPUThrottlingRate`, `Profiler` for the
+  CPU profile, `Tracing` with `disabled-by-default-devtools.timeline` for
+  layout/recalc counts (`elementCount` on UpdateLayoutTree is the number to
+  read), a `classcost`/`parkcost`-style probe that toggles ONE class or
+  property alone under the trace (the decisive tool here — the stack frames
+  the trace attaches map to the wrong source lines, so attribute by
+  experiment, not by stack), and map profiler frames back with
+  `node:module`'s `SourceMap.findEntry`.
+
 - **PARKED DIRECTION (owner, 1 Sep 26 — "we will get back to this next time;
   in the meantime just assume this is for a database. Status quo").** The
   intended end state, recorded so it isn't re-derived: a Power Apps CODE APP
@@ -578,9 +690,93 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
   Leave War row, `docs/engine-rules.md` INPUT_META count, the leave-types spec
   table, `leavewar-sync.md` vocabulary line, ui-contracts §Legend.
 
-- **RESOLVED 3 Sep 26, THIRD cut — the white box under a dragged puck on the
-  MINDEF secured browser (Edge, "SIS", the owner's work laptop on OSN):
-  the mouse no longer starts a native drag at all.** Two drag-image fixes
+- **RESOLVED 3 Sep 26, FOURTH cut — nothing on the page is `draggable` any
+  more; the drag-source marker is `data-drag="1"`.** The owner's photo after
+  #354 (Edit Schedule on the SIS browser: our puck ghost under the cursor,
+  the white striped card just under it at the offset a browser's OWN
+  snapshot sits at, and "now I can't drop the pucks on any add areas")
+  settled what the third cut had guessed wrong. That browser starts its own
+  drag of any `draggable="true"` element WITHOUT asking the page:
+  `onDragStart`'s `preventDefault` never reached whatever draws the box, its
+  drag then owned the pointer (the machine got a `pointercancel`, TD
+  cleared), and because that same cancel had refused to set DRAG, the native
+  drop found nothing to apply — exactly why #354 was WORSE than #353 there.
+  A drag the page cannot refuse must never be offered. So the seven emit
+  sites (`html.ts` slotCell / lSeat / the available puck, `board-html.ts`
+  sbSeat / sbSlot / the programme seat, `palette-html.ts` ×2) write
+  `data-drag="1"` where they wrote `draggable="true"` — behind the same
+  edit-mode gates, so view / preview / peek / read-only markup is unchanged
+  and parity stays 728/0 — `drag.ts` (`dragFrom`, `onPointerDown`, both
+  ghost clones) keys on `[data-drag]`, and the CSS grab cursor follows
+  (`.seat[data-drag]`). No browser, remote or plain, has anything to pick
+  up; the pointer machine is the only way a puck moves. The native handlers
+  stay for synthetic events only (the suites' `dnd()` helper), guard and
+  all. TWO BELTS ride with it (added the same day after an adversarial
+  workflow audit, both inert on a normal browser): (1) `onDragStart` now
+  refuses EVERY trusted drag at the document — `if (e.isTrusted)
+  e.preventDefault()` as its first line — which closes a real gap the audit
+  found (a native drag begun with no preceding `pointerdown` used to fall
+  through `dragFrom` and return WITHOUT preventDefault) and catches any drag
+  source the attribute sweep missed (`<img>`, `<a>`, computed draggability);
+  synthetic test drags are `isTrusted:false` so the fallback path and its
+  tests are untouched. (2) `scheduler.css` sets `-webkit-user-drag:none` on
+  the pucks, their children, `[data-drag]`, the ghosts, and `img,a` — Blink
+  reads that at drag INITIATION from computed style, BEFORE any JS event, so
+  it holds even where `setDragImage` and a `dragstart` `preventDefault` are
+  ignored (the SIS case). PLUS an optional on-screen diagnostic
+  (`ui/dragdbg.ts`) that is OFF by default and attaches nothing unless
+  `?dragdbg=1` / `#dragdbg` is in the URL or the top-left corner is tapped
+  five times (for a locked address bar): a `pointer-events:none` panel that
+  latches each drag's counters (pointerdown / move / arm / native-dragstart /
+  pointercancel / blur / pointerup + coords / elementFromPoint target / drop
+  outcome) so a photo of a failed SIS drag names the failure mode instead of
+  costing another blind cut. Pinned inert in `ui/dragdbg.test.tsx`. LESSON,
+  written down because the third cut's entry below said "this
+  cut does not depend on anything that browser can override" and was wrong:
+  on the secured browser assume the ENTIRE native drag machinery is outside
+  the page's control — its events, `preventDefault`, `setDragImage` — and
+  that the only lever is what is in the DOM. Pins: `ui/drag.test.tsx`
+  "nothing on any surface is draggable" (+4: the edit week + palette, the
+  board, the whole document, `dragFrom` on a marker-only puck); every
+  read-only render-gate test now also asserts no `data-drag` (`board`,
+  `editweek`, `draftsui`, `textedit`, `peek`); and the real-browser pin in
+  `e2e/geometry.spec.ts` asserts zero `draggable="true"` on the page before
+  it drags. Cost: nothing new — what the third cut carried (no OS
+  not-allowed cursor, a drag cannot leave the window) is unchanged.
+  **CONFIRMED WORKING ON THE SIS BROWSER (owner, 3 Sep 26): "it works" —
+  tested on the Vercel branch preview (which the SIS browser CAN reach; that
+  is the fast loop, no merge-to-Pages needed to test a secured-browser fix)
+  with the fourth cut and belts. The white box is gone and drops land.** This
+  is the four-cut saga's resolution: the cure was removing every draggable
+  element so the browser never starts a drag, not any image handed to a drag
+  it does. Kept below for the record. If the white box ever shows again,
+  the page has no draggable element left to blame, and the next question is
+  whether that browser relays pointer events to the page at all — a photo
+  plus "does the puck follow the mouse before you let go?" answers it, and
+  `?dragdbg=1` turns that into an exact readout (NAT≥1 = the browser still
+  starts its own drag, an admin-side problem no page change fixes; PU=0 with
+  ARM=1 = the release is swallowed, so build the deferred cancel/blur
+  drop-recovery; PU≥1 with the drop landing on BODY = the release coordinates
+  arrive offset). DEFERRED, do NOT ship blind: converting `onPointerCancel`
+  and the window-blur handler to COMPLETE a mouse drop from the last pointer
+  position (plus `setPointerCapture`) is the only in-page cure if the readout
+  shows a swallowed pointerup — medium-risk (a genuinely abandoned or
+  Escape-cancelled drag could land unwanted), so it waits for the readout to
+  prove it is needed.
+
+- **SHIPPED 3 Sep 26 — merge-to-live cut from ~17 min to the slowest gate
+  (owner: "Is it possible to shorten the time taken to merge live?" →
+  "Option 1").** No app code changed. `deploy.yml` runs the four CI gates as
+  six parallel jobs instead of one serial job, `deploy` needs all six. The
+  measurement that decided it, the options rejected, and the next cut if
+  Leave War units stay the long pole are in §Deploy. Record the first
+  measured parallel run there when it lands; the PR run is the only test a
+  workflow change gets, and the Actions API reads it 10–20 min stale.
+
+- **RESOLVED 3 Sep 26, THIRD cut (SUPERSEDED the same day by the FOURTH,
+  above — that browser overrode this one too) — the white box under a
+  dragged puck on the MINDEF secured browser (Edge, "SIS", the owner's work
+  laptop on OSN): the mouse no longer starts a native drag at all.** Two drag-image fixes
   the same day (#351: an off-screen puck clone handed to `setDragImage`;
   #353: a blank 1×1 pixel plus a page-drawn ghost moved by `dragover`) both
   left the white box there, and the owner's photo after #353 settled the
@@ -3040,8 +3236,40 @@ routing every look through the gated Pages deploy.
   first `workers:'100%'` run on main starved the shared vite preview and
   flaked the desktop carry-day test, failing the publish; 3 keeps most of the
   ~30% win (~1.7min → ~1.2min at 4 cores) with headroom, and the retry
-  absorbs a residual flake visibly (the reporter logs retried passes). So the
-  build job's checking wait is ~2–3 min, not ~5.
+  absorbs a residual flake visibly (the reporter logs retried passes). That
+  made the checking wait ~2–3 min in August; by 3 Sep 26 the suites had grown
+  to 17 min serial, which is the next bullet.
+- **The gates run as PARALLEL JOBS since 3 Sep 26 (owner ask: "shorten the
+  time taken to merge live").** Measured on #354's publish, the last
+  single-job run: 17m26s end to end = install+build 20s, vitest 9m41s
+  (1563 s of test time over 4 workers), Playwright 6m29s (1071 s over 3
+  workers), Pages publish 5 s. So the wait was the two suites queued on one
+  runner, and Leave War was most of both: its ten heaviest jsdom files
+  (`src/leavewar/ui/*.test.tsx`, each test renders a 365-column year) were
+  two thirds of the unit time and its two browser projects three quarters of
+  the geometry time. The workflow now runs `build` (tsc + bundle + parity +
+  artifact), `unit (raptor|leavewar)` via `npx vitest run --project`, and
+  `geometry (raptor|lw-phone|lw-desktop)` via `npx playwright test --project`
+  as six parallel jobs; `deploy` needs all of them, so nothing publishes red
+  and the gate set is unchanged. Public repo, so the extra runners are free.
+  MEASURED on the first parallel PR run (#355's gate on the workflow commit,
+  same tree as #354's 16m16s serial PR gate): **8m28s end to end** — build
+  41 s (parity 27 s of it), unit raptor 4m38s, unit leavewar **8m24s** (the
+  long pole, and slower than the ~5 min estimate: its ten heavy jsdom files
+  each want a whole core, so four of them side by side on a 4-core runner do
+  not scale the way the mixed serial run did), geometry raptor 2m29s /
+  lw-phone 3m17s / lw-desktop 3m07s. Every leg spends ~10 s on runner
+  setup and ~20 s on Chromium install even with the cache hit. On main add
+  the publish (5 s on 3 Sep). So the Leave War unit leg is SHARDED in two in
+  the same PR (`--shard=1/2`, `2/2`): vitest splits the file list by a sha1
+  of each path — fixed, not duration-aware; replaying that hash over the
+  serial run's per-file times gives ~595 s / ~433 s with the heavy files
+  5/4, so expect the leg at ~5 min and the whole gate at ~5 min. Record the
+  measured figure from the PR run that carries it. Making the Leave War
+  jsdom tests render less than a full year would cut the LOCAL gate too and
+  is the deeper fix. Rejected: publishing on main without re-running the
+  gates (90 s, but the owner merges before the PR gate finishes, so the main
+  run is the only CI that completes before publish) and paid larger runners.
 - **Docs-only PRs and pushes skip the workflow entirely** (`paths-ignore`:
   `**.md` + `.claude/**`, added the same day — nothing under those patterns
   is imported into the bundle, verified by grep). A session-handoff commit
@@ -3071,9 +3299,11 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
   `actions/deploy-pages` polls until Pages serves the artifact and aborts at
   600000 ms, CANCELLING a deployment that is still reporting progress — so a
   green build publishes nothing. Passing a bigger `timeout:` does not work;
-  the action clamps it and says so in the log. Pages normally takes about 8
-  minutes for this repo, which leaves roughly two minutes of margin against a
-  queue nobody here controls. Ruled out as causes before blaming the queue:
+  the action clamps it and says so in the log. Pages took about 8 minutes for
+  this repo in early August (two minutes of margin against a queue nobody here
+  controls) and 5 SECONDS on 3 Sep 26 — the ceiling is a trap for slow days,
+  not the daily cost; the daily cost is the gates, above. Ruled out as causes
+  before blaming the queue:
   the artifact is 0.15 MB over 5 files, the environment goes
   waiting→queued→in_progress in 1–3 s, and the repo sits at 2 deployments/hour
   against a soft limit of 10. If the wait becomes permanently over ten
@@ -3251,7 +3481,7 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | `reference/` | The original single-file app + its 728-assertion suite. **Read-only** — the spec for existing behaviour, and one of the four gates. |
 | `index.html` + `public/favicon.svg` | The Vite entry page and the **only** thing in `public/`. The favicon is the talon from `Login.tsx`/`Shell.tsx`, copied because a browser fetches it standalone before any bundle runs — edit the claw path in all three or the tab and the page disagree. It differs from the components on purpose: a tile and a same-colour stroke, because a tab paints it at 16px where bare thin claws vanish. `href="/favicon.svg"` in the page is rewritten to `./favicon.svg` by `base:'./'`, which is what makes it resolve under the Pages sub-path. |
 | `e2e/` | The geometry gate (`npm run test:e2e`): `geometry.spec.ts` measures the layout contracts in a real browser — including where a warning click leaves the week and the board, and where it deliberately does NOT — and `app.ts` holds login/nav/scroll-settle helpers (`settle` takes an axis, `settleBoth` waits for both) plus `clickHere`, a click that does not scroll the target into view first (`page.click` does, which would defeat any test that parks the week on purpose). `playwright.config.ts` builds and serves the port itself. |
-| `.github/workflows/deploy.yml` | Test-gated GitHub Pages deploy on push to main; four gates, geometry included. The same gates run on PRs into main, in a per-PR concurrency group so a PR run cannot cancel a live deploy. Browser download cached, geometry suite 3 workers + one CI retry (15 Aug 26). |
+| `.github/workflows/deploy.yml` | Test-gated GitHub Pages deploy on push to main; four gates, geometry included, as six PARALLEL jobs since 3 Sep 26 (build+parity, unit per vitest project, geometry per Playwright project) with `deploy` needing all of them. The same gates run on PRs into main, in a per-PR concurrency group so a PR run cannot cancel a live deploy. Browser download cached, geometry suite 3 workers + one CI retry (15 Aug 26). |
 | `vercel.json` (repo root) | The ungated fast-preview channel (15 Aug 26): builds `raptor-port` and serves every branch/PR its own Vercel URL in ~1 min, for the owner to tap mid-session and for iterating drives. Pages stays the official gated site. See §Deploy and `CLAUDE.md` §Build & verify. |
 | `src/ui/histlist.test.tsx` | The changes list's second pass (11 Aug 26) — the two entry points, a row jumping to its detail with the bubble pinned open, the grouped-by-detail view, and the phone's tap-to-expand control. The media-query split is in `e2e/geometry.spec.ts`, which is the only place it resolves (the day-carousel motion tests that used to sit beside it went with the swipe, 12 Aug 26). |
 | `src/ui/boardrmk.test.tsx` | The empty remarks box and the `+` that reveals it (12 Aug 26) — which input carries `.empty`, that the reveal clears it for its OWN row only and focuses it, that typing one drops it unaided, and that asking for the box back writes NOTHING to the edit log or the pending set. jsdom cannot measure the 109px→79px row it buys; `e2e/geometry.spec.ts` does that. |

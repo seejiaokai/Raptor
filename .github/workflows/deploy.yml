@@ -3,6 +3,27 @@
 # caught BEFORE merge — previously they only ran after, and the PR's only
 # checks were Vercel's (owner ask, Aug 5). Publishing stays push-to-main only.
 # One-time setup in the repo: Settings → Pages → Source: "GitHub Actions".
+#
+# THE GATES RUN AS PARALLEL JOBS, NOT ONE SERIAL JOB (owner ask, 3 Sep 26).
+# Measured on the last single-job run (#354's publish, 17m26s end to end):
+# install+build 20s, vitest 9m41s, Playwright 6m29s, the Pages publish 5s.
+# So the merge-to-live wait was the two suites queued on one 4-core runner,
+# and Leave War was most of both — its ten heaviest jsdom files were two
+# thirds of the unit time (each test renders a 365-column year) and its two
+# browser projects three quarters of the geometry time. Splitting by the
+# projects each runner already defines (vitest: raptor / leavewar;
+# Playwright: raptor / lw-phone / lw-desktop) puts each suite on its own
+# runner; the repo is public, so the extra runners cost nothing. `deploy`
+# still waits on EVERY gate, so nothing publishes red. MEASURED on the first
+# parallel PR run: 8m28s end to end (was 16m16s serial on the same tree) —
+# build 41s, unit raptor 4m38s, unit leavewar 8m24s, geometry 2m29s / 3m17s
+# / 3m07s. The Leave War unit leg was the long pole and slower than the
+# arithmetic promised: its ten heavy jsdom files each want a whole core, so
+# four side by side on a 4-core runner do not scale like the mixed serial
+# run did. So that leg is SHARDED in two below (vitest `--shard` splits the
+# file list by a hash of each path — a fixed split, not duration-aware; the
+# two halves carry ~595 s / ~433 s of the serial run's per-file times, the
+# heavy files 5/4). Expected critical path after the shard: ~5 min.
 name: Deploy to GitHub Pages
 
 # Docs-only changes skip the whole workflow (15 Aug 26): nothing under these
@@ -37,6 +58,8 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  # Type-check + bundle, the 728-assertion parity suite, and (on main) the
+  # artifact `deploy` publishes. Under a minute; the test jobs run beside it.
   build:
     runs-on: ubuntu-latest
     steps:
@@ -49,23 +72,77 @@ jobs:
       - name: Install
         working-directory: raptor-port
         run: npm ci
-      - name: Test
-        working-directory: raptor-port
-        run: npm test
-      - name: Reference suite
-        working-directory: raptor-port
-        run: node reference/tfin.js
       - name: Build
         working-directory: raptor-port
         run: npm run build
-      # jsdom has no layout engine, so the measured geometry contracts (puck
-      # 74x15, free text wraps instead of overflowing, one day box per pan
-      # click) can only be checked in a real browser. The runner has no
-      # browser of its own; the dev container's Chromium is not here.
-      # Cache the downloaded browser between runs, keyed on the lockfile so a
-      # Playwright bump busts it. On a hit the ~20s Chromium download is
-      # skipped; `--with-deps` still runs (the apt step is quick) so the OS
-      # libraries are present on every fresh runner.
+      - name: Reference suite
+        working-directory: raptor-port
+        run: node reference/tfin.js
+      # a PR run exists to gate, not to publish — no artifact, no deploy
+      - if: github.event_name != 'pull_request'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: raptor-port/dist
+
+  # One runner per vitest project, and two for Leave War (see the header).
+  # `npm test` locally still runs everything; here `--project` selects the
+  # same two pools vite.config.ts defines (raptor 2541 tests, leavewar 1284 —
+  # 3825 together, the gate count in HANDOFF) and `--shard` halves the
+  # Leave War file list. fail-fast off so a red leg reports on its own
+  # instead of cancelling the others half way through.
+  unit:
+    name: unit (${{ matrix.project }}${{ matrix.shard && format(' {0}', matrix.shard) || '' }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - project: raptor
+          - project: leavewar
+            shard: 1/2
+          - project: leavewar
+            shard: 2/2
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: raptor-port/package-lock.json
+      - name: Install
+        working-directory: raptor-port
+        run: npm ci
+      - name: Test
+        working-directory: raptor-port
+        run: npx vitest run --project ${{ matrix.project }} ${{ matrix.shard && format('--shard={0}', matrix.shard) || '' }}
+
+  # One runner per Playwright project. jsdom has no layout engine, so the
+  # measured geometry contracts (puck 74x15, free text wraps instead of
+  # overflowing, one day box per pan click) can only be checked in a real
+  # browser. The runner has no browser of its own; the dev container's
+  # Chromium is not here. Cache the downloaded browser between runs, keyed on
+  # the lockfile so a Playwright bump busts it. On a hit the ~20s Chromium
+  # download is skipped; `--with-deps` still runs (the apt step is quick) so
+  # the OS libraries are present on every fresh runner. Each leg builds and
+  # serves the port itself (playwright.config.ts webServer) and keeps the
+  # 3-worker / one-retry CI settings from 15 Aug 26.
+  geometry:
+    name: geometry (${{ matrix.project }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        project: [raptor, lw-phone, lw-desktop]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: raptor-port/package-lock.json
+      - name: Install
+        working-directory: raptor-port
+        run: npm ci
       - name: Cache Playwright browser
         uses: actions/cache@v4
         with:
@@ -76,15 +153,12 @@ jobs:
         run: npx playwright install --with-deps chromium
       - name: Geometry
         working-directory: raptor-port
-        run: npm run test:e2e
-      # a PR run exists to gate, not to publish — no artifact, no deploy
-      - if: github.event_name != 'pull_request'
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: raptor-port/dist
+        run: npx playwright test --project=${{ matrix.project }}
 
+  # Publishes only when every gate above is green: a failed or cancelled
+  # `needs` job skips this one, so nothing deploys red.
   deploy:
-    needs: build
+    needs: [build, unit, geometry]
     if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     environment:
@@ -107,6 +181,8 @@ jobs:
         # and the repo ran 2 deployments in the hour against a documented soft
         # limit of 10. The same deploy took 8m04s and SUCCEEDED at 11:21 that
         # morning, so this is Pages' queue moving, not anything we changed.
+        # (By 3 Sep 26 the same step was taking 5 seconds — the ceiling is a
+        # trap that bites when Pages' queue is slow, not a cost we pay daily.)
         # If it stays over ten minutes, the fix is a different publish path
         # (a gh-pages branch, which never waits on the rollout, or another
         # host) — not another re-run and not another timeout value.

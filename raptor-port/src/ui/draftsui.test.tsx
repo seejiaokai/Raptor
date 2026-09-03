@@ -203,7 +203,7 @@ describe('the edit select and the frozen draft preview', () => {
     expect(day().querySelector('.dprev-switch')).toBeTruthy()   // switch, not restore
     expect(day().querySelector('.dprev-restore')).toBeFalsy()
     expect(day().querySelector('[data-restore]')).toBeFalsy()
-    expect(day().querySelectorAll('[data-slot],[data-fill],[draggable="true"]').length).toBe(0)
+    expect(day().querySelectorAll('[data-slot],[data-fill],[draggable="true"],[data-drag]').length).toBe(0)
     await pick($(`#eWeek select[data-dver="0"]`) as unknown as HTMLSelectElement, 'live')
     expect(day().className).not.toContain('preview')
   })
@@ -295,7 +295,7 @@ describe('the view-only week', () => {
     expect(day().querySelector('.dprev-bar')!.textContent).toContain('Viewing plan Draft 1 — read-only')
     expect(day().querySelector('.dprev-switch')).toBeFalsy()
     expect(day().querySelector('[data-restore]')).toBeFalsy()
-    expect(day().querySelectorAll('[data-slot],[data-fill],[draggable="true"]').length).toBe(0)
+    expect(day().querySelectorAll('[data-slot],[data-fill],[draggable="true"],[data-drag]').length).toBe(0)
     /* back to the live (selected) draft */
     await pick($('#vWeek select[data-dver="0"]') as unknown as HTMLSelectElement, 'live')
     expect(day().className).not.toContain('preview')

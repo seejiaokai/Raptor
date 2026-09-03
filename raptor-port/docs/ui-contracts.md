@@ -14,6 +14,40 @@ several are measured and suite-enforced, not preferences.
   Shell chrome is memoized; no `validate()` during render — mutation paths
   validate. Perf gate: `probes/perf-port.cjs` (port ≤ reference × 1.15 on a
   4×-throttled phone).
+  **One exception, deliberate (owner, 3 Sep 26 — "faster on a slow
+  computer"): the EDIT week and crew palette are built ONCE in browser idle
+  time after a scheduler-admin login, while the View page is showing**
+  (`EditWeek.tsx` `idleOnce`/`canWarm`). Opening Edit Schedule used to build
+  both from nothing on a cold JIT — 2.4s at 4x throttle, 7.8s at 8x — so the
+  first click now finds the week standing and the per-day diff writes only
+  what changed since. It is a single build, never a repaint-while-hidden: the
+  gate above still holds for every store tick. The warm builds with
+  `HOOKS.editMode()` answering as the edit page will (`asIfEditOpen`), so its
+  strings are byte-identical to the live paint's and nothing is thrown away
+  on open; it skips scroll landing, peek nodes and highlights (the live open
+  does those on a visible week). Gated on `requestIdleCallback` existing —
+  jsdom and the parity harness have none, so they never warm. Members never
+  warm (no Edit tab). Pinned in `ui/editwarm.test.tsx`.
+  **And the edit page is PARKED, not display:none, while another page is
+  on** (`#page-editsched:not(.on)`: in flow, height 0, clipped, visibility
+  hidden) — a display:none subtree has no layout, so the warmed week would
+  still pay its whole first layout on the click; parked, it is laid out at
+  its real width during the idle build and the click reuses it. Every other
+  page stays display:none. visibility (not pointer-events/inert) is the
+  hidden state: unfocusable, no hit-test, out of the accessibility tree.
+  Pinned in `e2e/geometry.spec.ts` ("warmed and parked laid-out").
+- **A store tick with the week calendar CLOSED measures nothing** (same
+  cut). `WeekCal` used to compute its opening month on every render, which
+  read all seven day boxes' rects per tick — a forced layout of the dense
+  week on every drop for a value nothing used. The seed is read once in the
+  state initialiser and again only when the calendar opens. Pinned in
+  `ui/editwarm.test.tsx` ("measures no day box").
+- **The Leave War screen is its own download** (same cut): `Shell.tsx` loads
+  `LeaveWarPage` with `React.lazy`, so a Raptor visit ships ~38 KB gz of JS
+  and ~11 KB gz of CSS less, fetched on the first click of the tab. Only the
+  screen — the store, demo world and sync wires still boot in `main.tsx`, so
+  every cross-app sync is untouched. Pinned in `e2e/geometry.spec.ts`
+  ("not downloaded until its tab is opened").
 - Never repaint under the caret: `editingText()` guard + deferred txtCommit.
 - Layout is measured, suite-enforced: puck exactly 74×15px (grids derive
   from `--puck-w`); free text needs `overflow-wrap:anywhere` AND
@@ -566,7 +600,7 @@ stand in for the live model: it swaps `DAYS[di]`/`SCHED.changes`/
 `SCHED.pending`, sets the PV flag, and restores everything in `finally` —
 a throw mid-build must never leave the snapshot installed as the real
 schedule. Under PV: no WARN reads (a snapshot is never validated), no
-sev/chip rings, no `data-slot`/`data-fill`/`draggable` (those keys address
+sev/chip rings, no `data-slot`/`data-fill`/`data-drag`/`draggable` (those keys address
 the LIVE model), pucks keep `data-person` so selection works, and the
 frozen `data-alc` marks come from the snapshot's own changes slice. The
 board renders `boardHTML(di, pv)` read-only (disabled fields, no mbtn/arm
@@ -1751,33 +1785,83 @@ persisted and never in a history snapshot. The toggle builder is `notePubTog`
   native drag whose dragstart handler reflows the page before the drag
   image is captured, which killed every desktop mouse drag. The touch
   machine keeps its synchronous `dndOn` — no native capture there.
-- THE MOUSE NEVER STARTS A NATIVE DRAG — it rides the touch path's pointer
-  machine (owner, 3 Sep 26 — "a white box follows the puck", which survived
-  two drag-image fixes on Edge inside the MINDEF secured browser; the photo
-  showed our page-drawn ghost AND the browser's own white-card snapshot side
-  by side, so that browser ignores `setDragImage` altogether and the only
-  drag that cannot draw a white box is one the browser never starts). In
-  `drag.ts`: a primary-button `pointerdown` on a puck — and ONLY what
-  `dragFrom` recognises, so Leave War's and the calendar's own machines are
-  untouched — claims it (`TD.mouse`), a 3px move arms it (no hold; the
-  native drag's own threshold), `onDragStart` `preventDefault`s the native
-  dragstart, and the release drops through `applyDrop` off `elementFromPoint`
-  exactly as a finger does. The ghost is a `.dragimg` clone of the PUCK alone
+- NOTHING ON THE PAGE IS `draggable`, AND THE MOUSE NEVER STARTS A NATIVE
+  DRAG — pucks carry `data-drag="1"` (edit mode only, exactly where
+  `draggable="true"` used to be: `html.ts` slotCell/lSeat/the available
+  puck, `board-html.ts` sbSeat/sbSlot/the programme seat, `palette-html.ts`)
+  and every drag, mouse or finger, rides the pointer machine in `drag.ts`
+  (owner, 3 Sep 26, four cuts in one day: "a white box follows the puck" on
+  Edge inside the MINDEF secured browser survived an off-screen clone for
+  `setDragImage` (#351), a blank pixel plus a page-drawn ghost (#353), and
+  the mouse on the pointer machine with the native dragstart
+  `preventDefault`ed (#354) — and #354 also killed the DROP there. That
+  browser starts its own drag of any `draggable="true"` element without
+  asking the page: the page's `preventDefault` never reaches whatever draws
+  the box, and once that drag owns the pointer the machine gets a
+  `pointercancel` and nothing holds `DRAG` at the release. A drag the page
+  cannot refuse must never be offered.) In `drag.ts`: a primary-button
+  `pointerdown` on a `[data-drag]` puck — and ONLY what `dragFrom`
+  recognises, so Leave War's and the calendar's own machines are untouched —
+  claims it (`TD.mouse`), a 3px move arms it (no hold; the native drag's own
+  threshold), and the release drops through `applyDrop` off
+  `elementFromPoint` exactly as a finger does. The ghost is a `.dragimg` clone of the PUCK alone
   (not the `.seat` shell a grid cell can stretch) — fixed, `pointer-events:
   none`, z-index 520, the `.tdghost` recipe — pinned where the press landed
   inside the puck (`TD.ox/oy`, clamped to the puck) rather than centred, and
-  `body.mdrag` paints a grabbing cursor for the length of the drag (no OS
-  drag cursor exists — there is no OS drag). Edge auto-scroll comes free with
+  the ghost itself carries the grabbing cursor (no OS drag cursor exists —
+  there is no OS drag): `.dragimg` is HIT-TESTABLE with `cursor:grabbing`,
+  and `tdOver`'s dragover hit-test takes the first element under the pointer
+  that is not the ghost (`elementsFromPoint`). **`body.tdrag` and `body.mdrag`
+  are JS state markers with NO declarations of their own** (the slow-computer
+  cut, 3 Sep 26): measured by toggling each alone on the built app,
+  `body.tdrag{touch-action;user-select}` restyled every element on the page
+  (8,952 — a quarter-second at 4x throttle) at arm AND at drop, and
+  `body.mdrag{cursor}` half of it — an inherited property on body is
+  re-resolved down the whole tree, wildcard or not — and neither declaration
+  did any work (html{} already refuses user-select and the touch callout;
+  `onTouchMove` preventDefaults while armed). A class nothing matches costs
+  nothing to toggle. Guarded by `ui/css-invalidation.test.ts`. Edge auto-scroll comes free with
   the machine. A window `blur` mid-drag clears the ghost and drops nothing. A
   press-and-release without a 3px move is a click; a secondary button is
   left alone. The NATIVE handlers (`dragstart`/`dragover`/`drop`/`dragend`)
-  remain as the fallback for a drag nobody claimed — synthetic events from
-  tests and probes, a browser without pointer events — with their own
-  blank-pixel `setDragImage` + `dragover`-driven ghost; a real mouse never
-  reaches them. Pinned in a real browser (`e2e/geometry.spec.ts` "a mouse
-  drag of a puck runs on the pointer machine"): zero native drag events
-  fire, the ghost sits at cursor-minus-grab-offset, the drop lands, no ghost
-  survives it.
+  remain, reachable only by synthetic events (the suites' `dnd()` helper,
+  probes), with their blank-pixel `setDragImage` + `dragover`-driven ghost;
+  no real browser can reach them because nothing is draggable. The
+  read-only render gate is unchanged: view mode, previews, peeks and a
+  non-editing session emit no `data-drag`, exactly as they emitted no
+  `draggable`. Pinned in `ui/drag.test.tsx` ("nothing on any surface is
+  draggable": the whole document carries no `draggable="true"` with the edit
+  page up, the board included) and in a real browser (`e2e/geometry.spec.ts`
+  "a mouse drag of a puck runs on the pointer machine"): no element carries
+  `draggable`, zero native drag events fire, the ghost sits at
+  cursor-minus-grab-offset, the drop lands, no ghost survives it.
+- TWO BELTS reinforce it, both inert on a normal browser (nothing is
+  draggable so neither ever fires there): (1) `onDragStart`'s FIRST line is
+  `if (e.isTrusted) { e.preventDefault(); return }` — a document-level
+  backstop refusing EVERY real, browser-started drag whatever began it (a
+  draggable element missed by the sweep, an `<img>`/`<a>`, a text-selection
+  drag, or a secured browser starting one unbidden); synthetic drags are
+  `isTrusted:false`, so the fallback path and its tests still run. It also
+  closes a real gap: a native drag begun with NO preceding `pointerdown`
+  (`TD` null) used to fall through `dragFrom` and return WITHOUT
+  `preventDefault`. (2) `scheduler.css` sets `-webkit-user-drag:none` on
+  `.puck`/`.rpuck`/`[data-drag]`/their children/the ghosts and on `img,a` —
+  Blink reads that at drag INITIATION from computed style, before any JS
+  event, so it holds where `setDragImage` and a `dragstart` `preventDefault`
+  are ignored. Keep `html{user-select:none}` (it closes the text-selection
+  drag) — do not narrow it.
+- OPTIONAL DRAG READOUT (`ui/dragdbg.ts`) for diagnosing a drag on a
+  devtools-less secured browser: OFF by default, attaches NOTHING unless
+  `?dragdbg=1`/`#dragdbg` is in the URL or the top-left corner is tapped five
+  times (a real, `isTrusted` gesture — synthetic taps never arm it, so the
+  suites are unaffected). A `pointer-events:none` fixed panel (it must never
+  eat the gesture it measures) LATCHES each drag's counters — pointerdown,
+  move, arm, native-dragstart (trusted only, the SIS detector), pointercancel,
+  window-blur, pointerup + coords, `elementFromPoint` target, drop outcome —
+  and holds them until the next press so a photo names the failure mode. The
+  `DBG.*` hooks sit at points that already exist in `drag.ts` and are no-ops
+  until armed. Pinned inert in `ui/dragdbg.test.tsx`. The board DOM ceiling is
+  unaffected (nothing renders when off).
 - Touch drag: 8px slop restarts the 180ms hold, >26px cancels; ghost
   follows finger; click-eater dies on next pointerdown.
 - Toast is `pointer-events:none`.
@@ -4215,7 +4299,7 @@ handler runs off attribute selectors:
   already excludes a peek node by construction, with no per-site exclusion
   to remember or forget.
 - **No `data-slot`, `data-fill`, `data-person`, `data-acc`, `contenteditable`
-  or `draggable`.** Nothing a click/drag/highlight delegate keys on
+  or `data-drag`/`draggable`.** Nothing a click/drag/highlight delegate keys on
   (`routeClick`'s slot/puck branches, `highlights.ts`'s
   `.puck[data-person]` sweep, `drag.ts`) is ever emitted — a preview day is
   never validated and carries no warnings to ring, no slots to fill, no

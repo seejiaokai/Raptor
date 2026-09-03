@@ -39,6 +39,10 @@ describe('the Leave War tab is kept alive between visits', () => {
 
   it('the first visit builds the grid and opens at the top', async () => {
     await act(async () => tab('leavewar'))
+    /* the screen is a lazy chunk (Shell.tsx, 3 Sep 26): the first click
+       fetches it, so the grid lands a beat after the tab switch */
+    for (let i = 0; i < 100 && !host.querySelector('#page-leavewar.on .mx-wrap'); i++)
+      await act(async () => { await new Promise(r => setTimeout(r, 20)) })
     expect(host.querySelector('#page-leavewar.on .mx-wrap')).toBeTruthy()
     expect(scrollSpy).toHaveBeenCalledWith(0, 0)
   })

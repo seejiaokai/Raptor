@@ -205,7 +205,7 @@ export function sbProgPanel(d:any,di:any,pv?:any,ro?:any){
          (reviewer-found residual, 9 Aug 26) — these are the "36 draggable
          seats" the reviewer counted on a read-only board. */
       const inner=arr.map((nm:any,k:any)=>{const id=nameToId(nm);
-        if(id&&PEOPLE[id])return `<span class="seat"${ro?'':` data-slot="a:${di}.${ri}.${k}"`}${alAttr(`a:${di}.${ri}.${k}`)}${ro?'':' draggable="true"'}>${puck(id,ro?null:sevOf(di,id),true,ro?null:chipOf(di,id))}</span>`;
+        if(id&&PEOPLE[id])return `<span class="seat"${ro?'':` data-slot="a:${di}.${ri}.${k}"`}${alAttr(`a:${di}.${ri}.${k}`)}${ro?'':' data-drag="1"'}>${puck(id,ro?null:sevOf(di,id),true,ro?null:chipOf(di,id))}</span>`;
         return String(nm||'').trim()?`<span class="itxt">${esc(nm)}</span>`:'';}).join('');
       s+=`<div class="sb-arow c6r${rowCls(x)}"${rowMove(`mv:p.${di}.${ri}`,ro)}>`+sbGrip(ro)
         /* the Item box WRAPS AND GROWS like every other free-text board box
@@ -270,7 +270,7 @@ export function sbNote(d:any,di:any,key:any,field:any,_ph:any,pv?:any){
    into it even though the write was never committed. */
 function sbSeat(di:any,key:any,id:any,pv?:any){
   if(!(id&&PEOPLE[id]))return '';
-  return `<span class="seat"${pv?'':` data-slot="${key}"`}${alAttr(key)}${pv?'':' draggable="true"'}>${puck(id,pv?null:sevOf(di,id),true,pv?null:chipOf(di,id))}</span>`;
+  return `<span class="seat"${pv?'':` data-slot="${key}"`}${alAttr(key)}${pv?'':' data-drag="1"'}>${puck(id,pv?null:sevOf(di,id),true,pv?null:chipOf(di,id))}</span>`;
 }
 function sbMore(di:any,base:any,r:any,pv?:any){
   return ((r&&r.more)||[]).map((id:any,i:any)=>sbSeat(di,`${base}.x${i}`,id,pv)).join('');
@@ -627,9 +627,9 @@ export function sbSansPanel(d:any,di:any,day?:any,ro?:any){
 }
 /* the board never carried the amendment marks the week view had — added with
    the AL preview (Aug 26) so a board edit shows what it will go out as.
-   pv: no data-slot, no draggable, no arm target — those keys are live keys. */
+   pv: no data-slot, no data-drag, no arm target — those keys are live keys. */
 export function sbSlot(di:any,key:any,seat:any,id:any,pv?:any){
-  if(id&&PEOPLE[id])return `<div class="sb-slot"><span class="seat"${pv?'':` data-slot="${key}"`}${alAttr(key)}${pv?'':' draggable="true"'}>${puck(id,pv?null:sevOf(di,id),true,pv?null:chipOf(di,id))}</span></div>`;
+  if(id&&PEOPLE[id])return `<div class="sb-slot"><span class="seat"${pv?'':` data-slot="${key}"`}${alAttr(key)}${pv?'':' data-drag="1"'}>${puck(id,pv?null:sevOf(di,id),true,pv?null:chipOf(di,id))}</span></div>`;
   if(pv)return `<div class="sb-slot"><span class="itxt">— ${seat==='p'?'FCP':'RCP'} empty —</span></div>`;
   return `<div class="sb-slot empty" data-slot="${key}">+ ${seat==='p'?'FCP':'RCP'}</div>`;
 }

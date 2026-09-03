@@ -447,6 +447,10 @@ element in question and LOOK at it.
 
 Push to `main` → `.github/workflows/deploy.yml` reruns the gates and
 publishes to **https://seejiaokai.github.io/Raptor/**. Nothing deploys red.
+Since 3 Sep 26 the gates run as PARALLEL jobs (build+parity, unit ×2 by
+vitest project, geometry ×3 by Playwright project) and `deploy` waits on all
+of them, so merge-to-live is bounded by the slowest leg (Leave War units,
+~5 min), not the sum (~17 min). Numbers and the why: HANDOFF §Deploy.
 
 **Two deploy channels, different jobs** (owner, 15 Aug 26 — the GitHub round
 trip felt like ~20 min per change and was unsustainable):
@@ -459,10 +463,10 @@ trip felt like ~20 min per change and was unsustainable):
   a real hosted build, base path and all). It is NOT gated, so a red preview
   is still just a preview; correctness still rides the four gates below.
 - **GitHub Pages stays the OFFICIAL site** — the gated `deploy.yml`, published
-  only on merge to `main`. Slower (gates + a Pages rollout of 2–10 min, the
-  latter outside our control), so it is paid ONCE per session at the end, not
-  per change — and since 2 Sep 26 only on the owner's explicit "merge live".
-  The "done means live" chain still ends here.
+  only on merge to `main`. Slower (the gates, then a Pages rollout that has
+  ranged from 5 s to 10 min and is outside our control), so it is paid ONCE
+  per session at the end, not per change — and since 2 Sep 26 only on the
+  owner's explicit "merge live". The "done means live" chain still ends here.
 
 So the loop is: iterate against the local `vite preview` (instant, what you
 drive), let the owner eyeball the Vercel preview when he wants to tap it
@@ -470,7 +474,8 @@ himself, and ship to Pages once at the end. The CI gate itself was sped up
 15 Aug 26 (the browser download is cached and the geometry suite runs 3
 workers with one CI retry — NOT all cores; '100%' starved the preview server
 and flaked a carry-day test on its first main run, see playwright.config.ts —
-deploy.yml + playwright.config.ts), so the checking wait is ~2–3 min, not ~5.
+deploy.yml + playwright.config.ts) and again 3 Sep 26 (the suites had grown
+to a 17-min serial run; they now run as parallel jobs, ~5–6 min end to end).
 **Docs-only changes skip the gates entirely** (`paths-ignore` in deploy.yml:
 `**.md` + `.claude/**` — verified nothing there reaches the bundle), so a
 handoff PR has NO checks to wait for: push, merge at once, done. A PR mixing

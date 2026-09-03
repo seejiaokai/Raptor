@@ -283,8 +283,8 @@ export function puck(id:any,warn:any,sm:any,flag:any,dash?:any,trace?:any){
 
 export function slotCell(id:any,sev:any,key:any,kind:any,editable:any,flag:any,dash?:any,trace?:any){
   const al=alAttr(key);
-  /* preview: no data-slot, no draggable — the key addresses the LIVE model */
-  if(id) return `<span class="seat"${PV?'':` data-slot="${key}"`}${al}${editable?' draggable="true"':''}>${puck(id,sev,false,flag,dash,trace)}</span>`;
+  /* preview: no data-slot, no data-drag — the key addresses the LIVE model */
+  if(id) return `<span class="seat"${PV?'':` data-slot="${key}"`}${al}${editable?' data-drag="1"':''}>${puck(id,sev,false,flag,dash,trace)}</span>`;
   if(editable) return `<span class="seat empty-slot" data-slot="${key}"${al}>+ ${kind}</span>`;
   return `<span class="seat"${al}></span>`;
 }
@@ -295,7 +295,7 @@ export function plCols(){return `<div class="pl-cols"><span class="h-nm">Name</s
    Draggable in edit mode; renders nothing when empty so cells stay clean. */
 export function lSeat(di:any,id:any,key:any,ed:any){
   if(!(id&&PEOPLE[id]))return '';
-  return `<span class="seat"${PV?'':` data-slot="${key}"`}${alAttr(key)}${ed?' draggable="true"':''}>${puck(id,sev(di,id),true,chip(di,id),dsh(di,id),traceHit(di,id))}</span>`;}
+  return `<span class="seat"${PV?'':` data-slot="${key}"`}${alAttr(key)}${ed?' data-drag="1"':''}>${puck(id,sev(di,id),true,chip(di,id),dsh(di,id),traceHit(di,id))}</span>`;}
 /* the people cell itself — a drop target in edit mode (data-fill) */
 /* the extra bodies dropped onto a row, after its own seats */
 export function moreSeats(di:any,base:any,ed:any){
@@ -401,7 +401,7 @@ export function availHTML(d:any,di:any,ed:any){
   const A=availByWave(d);
   /* in edit mode an available puck is a drag source — drag it straight onto a line,
      a duty, a sim or a programme item */
-  const pk=(id:any)=>`<span class="seat"${ed?` draggable="true" data-person="${id}"`:''}>${puck(id,sev(di,id),true,chip(di,id),dsh(di,id),traceHit(di,id))}</span>`;
+  const pk=(id:any)=>`<span class="seat"${ed?` data-drag="1" data-person="${id}"`:''}>${puck(id,sev(di,id),true,chip(di,id),dsh(di,id),traceHit(di,id))}</span>`;
   const active=(ids:any)=>ids.filter((id:any)=>!PEOPLE[id].san);
   /* pilots-then-WSOs in CAT-ladder order (owner, 24 Aug 26 — the same reading
      order as the add-people picker; byCrew is the shared comparator). availByWave

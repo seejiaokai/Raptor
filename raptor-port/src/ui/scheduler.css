@@ -75,6 +75,17 @@ a{color:var(--accent)}
 html{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 input,textarea,select,[contenteditable]{
   -webkit-user-select:text;user-select:text;-webkit-touch-callout:default}
+/* NO NATIVE DRAG ANYWHERE (4th cut, belt 2). Removing draggable="true" stops
+   the browser dragging our pucks, but a browser can still start a native drag —
+   and paint the white drag-image card the MINDEF secured browser drew — off an
+   <img>, an <a href>, or computed draggability, none of which a JS handler can
+   veto on a browser that ignores dragstart preventDefault. -webkit-user-drag is
+   read at drag INITIATION from computed style, BEFORE any JS event, so it holds
+   where setDragImage and a dragstart handler do not. Blink accepts `none` (it
+   rejects only `element`). Belt-and-braces with the document-level backstop in
+   drag.ts and the ghost's own opt-out. */
+.puck,.puck *,.rpuck,.rpuck *,[data-drag],[data-drag] *,.dragimg,.tdghost,
+img,a{-webkit-user-drag:none;user-drag:none}
 
 /* ============ LOGIN · RAPTOR ============ */
 /* The app is RAPTOR — Readiness, Availability, Planning, Tracking & Ops
@@ -345,6 +356,21 @@ input,textarea,select,[contenteditable]{
 /* ============ PAGE SHELL ============ */
 .page{display:none}
 .page.on{display:block}
+/* THE EDIT PAGE IS PARKED, NOT display:none, WHILE ANOTHER PAGE IS ON (the
+   slow-computer cut, 3 Sep 26). EditWeek.tsx warms the edit week and palette
+   in idle time after an admin login, but a display:none subtree has no
+   layout, so the first Edit click still paid the whole first layout + style
+   of ~6k elements (traced: ~1.2s of the 2.4s open at 4x throttle, forced by
+   the effect's scroll landing). Parked in flow at zero height, clipped,
+   invisible and inert, the warmed week is laid out at its REAL width during
+   the idle build, and the click only has to un-park (same width → LayoutNG
+   reuses the children's fragments) and paint. In flow on purpose:
+   position:absolute would size it against the viewport, a different width
+   from the shown page, and every fragment would be relaid on show. Hidden to
+   every reader that matters: not painted, not hit-testable, not focusable,
+   not in the accessibility tree's visible set, zero height in the page.
+   Edit page only — the other pages are cheap to build and stay display:none. */
+#page-editsched:not(.on){display:block;visibility:hidden;height:0;overflow:hidden;pointer-events:none;margin:0;padding:0}
 /* A KEPT-ALIVE page DOZES instead of going display:none (1 Sep 26 — the
    Leave War keep-alive; the Shell puts .doze on that section once visited).
    The distinction is MEASURED, not stylistic: re-showing the ~28k-node year
@@ -3590,7 +3616,10 @@ body.sb-lock{overflow:hidden}
    pair rows stay level — the 26px flying-line slot would bulge the row */
 .ppl .sb-slot.empty{min-height:var(--puck-h);height:var(--puck-h);box-sizing:border-box;font-size:9.5px;line-height:1}
 .sb-slot.empty:hover{border-color:var(--accent);color:var(--accent)}
-.seat[draggable="true"]{cursor:grab}
+/* the drag-source marker is data-drag, never the HTML draggable attribute
+   (4th cut, 3 Sep 26): the MINDEF secured browser starts its own drag of any
+   draggable="true" element without asking the page — see ui/drag.ts */
+.seat[data-drag]{cursor:grab}
 .sb-slot.dragover,.sb-roster.dragover{outline:2px solid var(--accent);outline-offset:1px;border-radius:6px}
 /* touch drag: the ghost that follows the finger, and the page lock while it does */
 /* standalone waves — SC / AVALON / BB. Marked in the SANS purple so they read
@@ -3777,14 +3806,29 @@ body.sb-lock{overflow:hidden}
    remote-rendered browser drew around the puck, owner 3 Sep 26). The touch
    ghost's recipe, minus the centring transform: this one is anchored where
    the cursor grabbed, via inline left/top. Sized inline from the live puck's
-   rect; pointer-events:none so dragover still reads the cell beneath it. */
-.dragimg{position:fixed!important;z-index:520;pointer-events:none;margin:0!important;opacity:.92;
+   rect. It is HIT-TESTABLE and carries the grabbing cursor (the slow-computer
+   cut, 3 Sep 26): the ghost rides exactly under the pointer for the whole drag,
+   so putting `cursor:grabbing` on it shows the closed hand everywhere without
+   restyling anything else — `body.mdrag{cursor:…}` did the same job by
+   INHERITANCE, which made Blink recompute the style of every element under
+   body (~5k) at arm and at drop. drag.ts's dragover hit-test skips the ghost
+   (elementsFromPoint), and the drop removes it before its own hit-test. */
+.dragimg{position:fixed!important;z-index:520;pointer-events:auto;cursor:grabbing;margin:0!important;opacity:.92;
   box-shadow:0 8px 20px rgba(0,0,0,.6);outline:2px solid var(--accent);outline-offset:1px;border-radius:4px}
-body.tdrag{touch-action:none;-webkit-user-select:none;user-select:none}
-body.tdrag *{-webkit-touch-callout:none}
-/* the mouse rides the pointer machine too (drag.ts, 3 Sep 26 — no native
-   drag, so no OS drag cursor): a closed hand for the length of the drag */
-body.mdrag,body.mdrag *{cursor:grabbing!important}
+/* body.tdrag / body.mdrag are JS STATE MARKERS ONLY — no rule may give them a
+   declaration of their own (the slow-computer cut, 3 Sep 26). Measured by
+   toggling each class alone on the built app: `body.tdrag{touch-action:none;
+   user-select:none}` recomputed the style of EVERY element on the page
+   (8,952 — a quarter-second on a slow laptop) at arm AND at drop, and
+   `body.mdrag{cursor:grabbing}` half of it (4,822), because an inherited
+   property set on body has to be re-resolved down the whole tree — wildcard
+   or not. Neither declaration was doing work: html{} already refuses
+   user-select and the touch callout page-wide, drag.ts preventDefaults
+   touchmove while a touch drag is armed (a touch-action change mid-gesture is
+   ignored anyway), and the mouse cursor now rides on the ghost (.dragimg
+   above). A class with no matching declarations costs nothing to toggle
+   (measured: zero recalc). The one rule keyed on tdrag stays targeted
+   (`body.tdrag .hscroll`, ~1 element). Guarded by css-invalidation.test.ts. */
 
 /* ---- Inputs-calendar chip drag (caldrag.ts) — own names, not tdghost/tdrag:
    that pair belongs to drag.ts's board machine (CLAUDE.md — "that machine

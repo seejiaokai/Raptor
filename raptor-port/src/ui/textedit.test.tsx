@@ -123,7 +123,7 @@ describe('the day-detail panel (tfin H)', () => {
 
   it('the panel is read-only', () => {
     const body = $('#dayPopBody')
-    expect(body.querySelectorAll('[data-fill], [draggable="true"], input, select, textarea').length).toBe(0)
+    expect(body.querySelectorAll('[data-fill], [draggable="true"], [data-drag], input, select, textarea').length).toBe(0)
   })
 
   it('a panel issue jumps to the puck and closes the panel', async () => {
