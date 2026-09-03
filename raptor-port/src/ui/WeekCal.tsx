@@ -52,8 +52,12 @@ export function WeekCal() {
 
   // Opens on the current day's month. Recomputed only when it opens (keyed on
   // WEEKCAL), so paging months during a session is remembered until it closes.
-  const seed = currentDayIso()
-  const [view, setView] = useState(() => ({ y: +seed.slice(0, 4), m: +seed.slice(5, 7) - 1 }))
+  // The seed is read ONCE, inside the lazy initialiser (3 Sep 26, the slow-
+  // computer cut): as a plain render-time call it re-measured all seven day
+  // boxes on EVERY store tick with the calendar closed — a forced layout of
+  // the whole week per drop, for a value nothing read. The open effect below
+  // re-seeds when the calendar actually opens, which is the only time it matters.
+  const [view, setView] = useState(() => { const seed = currentDayIso(); return { y: +seed.slice(0, 4), m: +seed.slice(5, 7) - 1 } })
 
   useEffect(() => {
     if (!open) return

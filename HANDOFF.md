@@ -120,7 +120,7 @@ parity holds. The gate table below was the green baseline read at this pass's cl
 
 | gate | reading |
 |---|---|
-| `npm test` | 3835 across 218 files (3 Sep 26 — the FOURTH drag cut's belts, new `ui/dragdbg.test.tsx` (+6, the optional readout is inert unless flagged) and the two belts in `drag.ts`/`scheduler.css` need no new pin beyond it; before it 3829 — the FOURTH drag cut, nothing draggable, +4 `ui/drag.test.tsx` "nothing on any surface is draggable"; the edit-week parity compare in `ui/html.test.ts` maps the reference's `draggable="true"` onto the port's `data-drag="1"`; before it 3825 — the THIRD drag cut, the mouse on the pointer machine, +5 `ui/drag.test.tsx`; before it 3820 — the drag-image SECOND cut, the page-drawn ghost, re-pinned `ui/drag.test.tsx` at 6 (was 4, +2); before it 3818 — the mouse drag-image fix added +4 `ui/drag.test.tsx` (the off-screen `.dragimg` puck clone that replaces Chromium's white-card snapshot); before it 3814 — the pilots' 15-day run became continuous FULL days (a half day breaks it), +1 `engine/charge.test.ts`; before it 3813 — the weekend/PH charging rule + CL batch added `engine/charge.test.ts` (now +20 with the half-day pin), +2 Cinch cases in `ui/oiltracker.test.tsx`, +1 `src/engine/leave.test.ts`, and re-pinned the figure/counter/seed fixtures; before it 3791 across 216 — the drag-select held-band fix added +1 `select.test.ts`; before it 3790 — 4 Sep 26 — the group-colour picker, full-width seat bars, LoX-catalogue and bug-hunt rounds added `groupcolors.test.ts`, `groupColor.test.ts`, `settingssheet.test.tsx`, `bootprune.test.ts` plus `roster`/`matrix`/`raptorRoster` cases; 2 Sep 26 — the tracker's THIRD CUT added +2 `oiltracker.test.tsx` + `raptorRoster.test.ts` demo-story cases, then the scrim press-guard +2; before that the OIL tracker GRID + Off-day batch: `ui/oiltracker.test.tsx` rewritten to 18, +7 `select.test.ts` row cases, +3 `oil.test.ts`, +2 `oilsync.test.ts`, +2 `store.test.ts`, +2 `oiltracker.test.ts`, +1 `eventdefs.test.ts`; the OFF pins flipped) — two vitest projects: raptor + leavewar |
+| `npm test` | 3843 across 220 files (3 Sep 26 — the slow-computer cut: +6 `ui/editwarm.test.tsx` (the idle warm + the calendar's no-measure tick), +2 `ui/css-invalidation.test.ts` (no root-class wildcard rules); before it 3835 across 218 — the FOURTH drag cut's belts, new `ui/dragdbg.test.tsx` (+6, the optional readout is inert unless flagged) and the two belts in `drag.ts`/`scheduler.css` need no new pin beyond it; before it 3829 — the FOURTH drag cut, nothing draggable, +4 `ui/drag.test.tsx` "nothing on any surface is draggable"; the edit-week parity compare in `ui/html.test.ts` maps the reference's `draggable="true"` onto the port's `data-drag="1"`; before it 3825 — the THIRD drag cut, the mouse on the pointer machine, +5 `ui/drag.test.tsx`; before it 3820 — the drag-image SECOND cut, the page-drawn ghost, re-pinned `ui/drag.test.tsx` at 6 (was 4, +2); before it 3818 — the mouse drag-image fix added +4 `ui/drag.test.tsx` (the off-screen `.dragimg` puck clone that replaces Chromium's white-card snapshot); before it 3814 — the pilots' 15-day run became continuous FULL days (a half day breaks it), +1 `engine/charge.test.ts`; before it 3813 — the weekend/PH charging rule + CL batch added `engine/charge.test.ts` (now +20 with the half-day pin), +2 Cinch cases in `ui/oiltracker.test.tsx`, +1 `src/engine/leave.test.ts`, and re-pinned the figure/counter/seed fixtures; before it 3791 across 216 — the drag-select held-band fix added +1 `select.test.ts`; before it 3790 — 4 Sep 26 — the group-colour picker, full-width seat bars, LoX-catalogue and bug-hunt rounds added `groupcolors.test.ts`, `groupColor.test.ts`, `settingssheet.test.tsx`, `bootprune.test.ts` plus `roster`/`matrix`/`raptorRoster` cases; 2 Sep 26 — the tracker's THIRD CUT added +2 `oiltracker.test.tsx` + `raptorRoster.test.ts` demo-story cases, then the scrim press-guard +2; before that the OIL tracker GRID + Off-day batch: `ui/oiltracker.test.tsx` rewritten to 18, +7 `select.test.ts` row cases, +3 `oil.test.ts`, +2 `oilsync.test.ts`, +2 `store.test.ts`, +2 `oiltracker.test.ts`, +1 `eventdefs.test.ts`; the OFF pins flipped) — two vitest projects: raptor + leavewar |
 | `node reference/tfin.js` | 728/0 (the reference is read-only; the "Ground Programme" title trim rides the tolerant normaliser in `html.test.ts`) |
 | `npm run build` | clean |
 | `npm run test:e2e` | 352 passed / 23 touch-only skips / 0 failed (3 Sep 26: +1 the first real-browser puck-drag pin — the mouse on the pointer machine, zero native drag events; earlier that day: the figure-picker legend and the Cinch-sheet count pins moved to the thirteen figures; 1 Sep 26: +1 keep-alive spec × the two Leave War projects) — three playwright projects: raptor geometry, lw-phone, lw-desktop. NOTE: a mid-session chain run showed 2 lw-phone reds against a build that predated the bug-pass fixes (the un-gated cross-lane notify repainting mid-gesture); both passed individually and the full suite passed whole against the fixed build — if they ever red again, suspect a stray repaint mid-tap first. |
@@ -518,6 +518,96 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
   are still there.
 
 ## Known issues / open work
+
+- **THE SLOW-COMPUTER CUT (owner, 3 Sep 26 — "Is it possible to have this app
+  work faster on a slow computer?" → "Do option 3 with option 1").** Measured
+  first, on the built bundle with Chromium's CPU throttled 4x (an old office
+  laptop) and 8x, then profiled (CPU profile + a devtools-timeline trace + a
+  DOM-write census, all against a sourcemapped scratch build): a drop at 4x
+  was ~640ms of JS, ~325ms of STYLE RECALC, ~90ms of layout, ~130ms paint;
+  opening Edit Schedule 2.4s (7.8s at 8x); login-to-week 1.8s. Layout was
+  NOT the cost, so the "batch the geometry reads" idea was dropped for what
+  the trace actually showed. Four changes, all in one PR with the drag fix:
+  (1) **`body.tdrag` and `body.mdrag` carry NO declarations any more**
+  (`scheduler.css`). The first cut only removed their `*` wildcard rules —
+  and the trace showed the 8,952-element recalc STILL there, so each body
+  class was toggled alone under the trace: `body.tdrag{touch-action;
+  user-select}` = 8,952 elements restyled, `body.mdrag{cursor}` = 4,822,
+  `body.dnd` = ~500, an unknown class = 0. An inherited property set on body
+  is re-resolved down the whole tree, wildcard or not. Neither declaration
+  did work (html{} already has user-select:none + no callout; `onTouchMove`
+  preventDefaults while armed), so both rules are gone; the mouse cursor
+  rides on the ghost instead (`.dragimg{pointer-events:auto;cursor:grabbing}`,
+  `tdOver` skips the ghost via `elementsFromPoint`). The classes stay as JS
+  markers (tests read them). `ui/css-invalidation.test.ts` fails the suite
+  on a bare `body.tdrag`/`body.mdrag` rule or any root-class wildcard. (2) **The Edit week and
+  crew palette warm ONCE in idle time after an admin login** (`EditWeek.tsx`
+  `idleOnce`/`canWarm`/`asIfEditOpen`) so the first Edit click finds them
+  standing — gated on `requestIdleCallback` (jsdom/parity never warm), admin
+  only, one build not a repaint-while-hidden; the builders read
+  `HOOKS.editMode()` themselves so the warm answers as the edit page will,
+  else the open threw the warm away (the test caught it). `ui/editwarm.test.tsx`.
+  (3) **`WeekCal` no longer re-measures all seven day boxes on every store
+  tick** with the calendar closed (the seed moved into the lazy state
+  initialiser). (4) **The Leave War screen is a lazy chunk** (`Shell.tsx`
+  `React.lazy` + `Suspense`): ~38 KB gz JS + ~11 KB gz CSS off every Raptor
+  visit's first download, fetched on the tab's first click; ONLY the screen —
+  the store/demo world/sync wires still boot in `main.tsx` and four eager
+  screens import the sync, so nothing about syncing moved (verified by
+  import graph before building). Pinned by the "not downloaded until its tab
+  is opened" e2e; `lwkeepalive.test.tsx` polls for the lazy grid.
+  (5) **The edit page is PARKED laid-out while hidden, not display:none**
+  (`scheduler.css` `#page-editsched:not(.on)`: in-flow, height 0, clipped,
+  visibility hidden). A display:none subtree has no layout, so even a warmed
+  week paid its whole first layout on the click (~660ms of Layout at 4x in
+  the trace, forced by the effect's scroll landing); parked, the idle build
+  lays it out at its real width and the click reuses it (Layout 108ms).
+  The hidden state was CHOSEN BY MEASUREMENT (`parkcost` probe, each toggle
+  alone): `visibility`, `pointer-events` and `inert` each cost a ~6.4k-element
+  recalc (~200ms at 4x) to flip because they inherit; `height:0;overflow:
+  hidden` alone costs ~nothing but leaves hidden contenteditables in the Tab
+  order; `content-visibility:hidden` un-parks for ~nothing but skips the
+  warm's layout, so the first show would pay it anyway. visibility was kept:
+  correct semantics (unfocusable, no hit-test, out of the AT tree) for 200ms
+  at 4x, ~50ms at 1x. In flow on purpose — position:absolute would size it
+  against the viewport, a different width from the shown page, and every
+  fragment would be relaid on show. Pinned by the "warmed and parked
+  laid-out" e2e (parked geometry, hidden to Playwright, same nodes and same
+  day width after the click).
+  **MEASURED, click-to-painted-frame timed inside the page (two rAFs), the
+  same build with the warm switched off (no requestIdleCallback) vs on,
+  3 s on the View page before the click, this container (noisy: ±20%):**
+
+  | | 4x slower CPU | 8x slower CPU |
+  |---|---|---|
+  | Open Edit Schedule, before → after | 1.95 s → 1.37 s | 3.58 s → 2.32 s |
+  | One drop landing, before → after | 0.94 s → 0.64 s | 2.09 s → 1.34 s |
+  | First download | 348 KB → 297 KB (12 files → 9) | same |
+
+  A drop at 4x by phase (devtools trace): style recalc 325 → 76ms, JS 640 →
+  440ms, paint 130 → 80ms; layout was never the cost (~90ms). One thing
+  STILL OPEN: the trace shows a second ~8k-element style recalc (~210ms at
+  4x) on the Edit click that no JS write or root-class toggle accounts for
+  (the DOM-write census on the open shows only highlight classes, the banner
+  and the undo buttons; toggling the two page sections and the topbar class
+  alone sum to ~6.6k). Not chased further — find it with the `parkcost`
+  recipe below if the open still feels slow on SIS. NOT done,
+  deliberately: a per-day HTML cache (the 7 day strings are still rebuilt on
+  every tick — ~200ms of the drop at 4x — but what invalidates a day is
+  global state, so a cache is a correctness risk for a modest gain); a "lite
+  look" that drops blur/shadows on weak GPUs (unmeasurable headless — offer
+  it if the owner reports scroll jank on SIS); a service worker to survive
+  Pages' 10-minute asset cache (the secured browser may block it — ask
+  first). The measuring scripts are NOT in the repo (scratchpad, throwaway);
+  the recipe is: build with `--sourcemap` to a scratch dir, `vite preview`
+  it, Playwright + CDP `Emulation.setCPUThrottlingRate`, `Profiler` for the
+  CPU profile, `Tracing` with `disabled-by-default-devtools.timeline` for
+  layout/recalc counts (`elementCount` on UpdateLayoutTree is the number to
+  read), a `classcost`/`parkcost`-style probe that toggles ONE class or
+  property alone under the trace (the decisive tool here — the stack frames
+  the trace attaches map to the wrong source lines, so attribute by
+  experiment, not by stack), and map profiler frames back with
+  `node:module`'s `SourceMap.findEntry`.
 
 - **PARKED DIRECTION (owner, 1 Sep 26 — "we will get back to this next time;
   in the meantime just assume this is for a database. Status quo").** The

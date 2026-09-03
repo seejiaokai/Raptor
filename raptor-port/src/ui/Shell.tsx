@@ -2,7 +2,7 @@
    reference (#shell, .topbar, .page sections). Only the view-only schedule
    page is live in this slice; the other pages are placeholders that arrive
    surface by surface. */
-import { useEffect, useMemo, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from 'react'
+import { Suspense, lazy, useEffect, useMemo, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from 'react'
 import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
 import { CURWEEK } from '../engine/waves'
@@ -39,7 +39,16 @@ import { LogicPage } from './LogicPage'
 import { QualsPage } from './QualsPage'
 import { EditWeek, EditRoster } from './EditWeek'
 import { ALPanel } from './ALPanel'
-import { LeaveWarPage } from '../leavewar/LeaveWarPage'
+/* THE LEAVE WAR SCREEN IS A SEPARATE DOWNLOAD (3 Sep 26, the slow-computer cut).
+   Its year grid is the largest screen in the app, and nobody sees it until
+   the tab is clicked — so it ships as its own chunk, fetched on the first
+   click, instead of riding in the first download every Raptor visit pays for.
+   ONLY the screen: Leave War's store, demo world and the sync wires still boot
+   in main.tsx beside Raptor's own, and four always-loaded screens import the
+   sync directly, so the crew projection, leave cells and OIL plan reconcile
+   exactly as before — deferring the grid cannot reach any of it. Pinned by the
+   "not downloaded until its tab is opened" e2e. */
+const LeaveWarPage = lazy(() => import('../leavewar/LeaveWarPage').then(m => ({ default: m.LeaveWarPage })))
 import { oilPendingFor } from '../leavewar/sync'
 import { inpById } from '../engine/inputs'
 import { AdminPage } from './AdminPage'
@@ -527,7 +536,7 @@ export function Shell() {
           display:none — scheduler.css `.page.doze` carries the measurement
           and the why; the keep-alive comment sits at lwEverRef above */}
       <section className={'page' + (page === 'leavewar' ? ' on' : lwEverRef.current ? ' doze' : '')} id="page-leavewar">
-        {(page === 'leavewar' || lwEverRef.current) && <LeaveWarPage active={page === 'leavewar'} />}
+        {(page === 'leavewar' || lwEverRef.current) && <Suspense fallback={null}><LeaveWarPage active={page === 'leavewar'} /></Suspense>}
       </section>
       <section className={'page' + (page === 'help' ? ' on' : '')} id="page-help">
         {page === 'help' && <HelpPage />}

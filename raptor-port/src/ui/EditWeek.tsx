@@ -17,11 +17,77 @@ import { mountPeek } from './peek'
 import { editingText } from './textedit'
 import { wireRowDrag } from './rowdrag'
 import { useVersion } from './useStore'
+import { canEditSched } from '../state/auth'
+
+/* the seven day strings of the edit week — ONE body for the live repaint and
+   the idle warm build below, so the two can never draw a different week */
+function editDayStrings(ed: boolean): string[] {
+  return DAYS.map((_: any, di: number) => {
+    /* lazy orphan prune: the previewed AL may have been unpublished or
+       undone since the last paint — render the live day, not a ghost */
+    if (DPREV.has(di) && !daySnapOf(di, DPREV.get(di))) DPREV.delete(di)
+    return DPREV.has(di) ? dayPreviewHTML(di, DPREV.get(di), ed) : dayHTML(di, ed, true)
+  })
+}
+/* THE EDIT SURFACES ARE BUILT ONCE, QUIETLY, AFTER LOGIN (owner, 3 Sep 26 —
+   "faster on a slow computer"). Opening Edit Schedule was the worst wait on a
+   weak machine: 2.4s at 4x throttle, 7.8s at 8x, because the first open built
+   the seven days and the crew palette from nothing — and on a cold JIT. The
+   rule that only the page on screen repaints (below) is untouched: this is not
+   a repaint-while-hidden, it is one build, in browser idle time, so the tab's
+   first click finds the week already standing and the ordinary per-day diff
+   writes only what changed since. Scheduler admins only (the tab is hidden
+   for a member), and only once the View page is up (login done, week loaded).
+   requestIdleCallback is the whole gate: a browser without it (jsdom, the
+   parity harness) never warms, so every existing test sees the old timing.
+   The warm skips scroll landing, peek nodes and highlights — the live open
+   does those, on a week that is then visible and measurable. */
+function idleOnce(run: () => void): (() => void) | null {
+  const w = window as any
+  if (typeof w.requestIdleCallback !== 'function') return null
+  const id = w.requestIdleCallback(run, { timeout: 4000 })
+  return () => { if (typeof w.cancelIdleCallback === 'function') w.cancelIdleCallback(id) }
+}
+const canWarm = () => CURPAGE === 'viewsched' && canEditSched()
+/* The string builders read HOOKS.editMode() for themselves (html.ts — every
+   data-drag / contenteditable hangs off it), and that hook is "a scheduler AND
+   the edit page is open". The warm runs while the VIEW page is open, so for
+   the length of the build the hook answers as the edit page will — otherwise
+   the warm draws the read-only week and the first click throws it all away
+   (the `whole` rebuild on p.ed !== ed), which is exactly the cost this exists
+   to remove. Restored in a finally, so no other paint can ever see it. */
+function asIfEditOpen<T>(fn: () => T): T {
+  const was = HOOKS.editMode
+  HOOKS.editMode = () => canEditSched()
+  try { return fn() } finally { HOOKS.editMode = was }
+}
 
 export function EditWeek() {
   const version = useVersion()
   const ref = useRef<HTMLDivElement>(null)
   const prev = useRef<{ ed: boolean, html: string[] } | null>(null)
+  const warm = useRef<{ armed: boolean, cancel: (() => void) | null }>({ armed: false, cancel: null })
+  useEffect(() => {
+    if (warm.current.armed || !canWarm()) return
+    const cancel = idleOnce(() => {
+      const root = ref.current
+      if (!root || prev.current || CURPAGE === 'editsched') return   // opened meanwhile — the live paint owns it
+      const ed = canEditSched()
+      const html = asIfEditOpen(() => editDayStrings(ed))
+      root.innerHTML = html.join('')
+      prev.current = { ed, html }
+      /* the desktop next-week preview is a SECOND seven days of markup (ui/peek.ts)
+         — the traced open still spent ~1s at 4x building it after the warm had
+         built the live week, so it warms here too. mountPeek reads no layout
+         (a key off desktop-ness × CURWEEK), so a hidden root is fine; the live
+         open's own mountPeek then finds the key unchanged and does nothing. */
+      peekKeyRef.current = asIfEditOpen(() => mountPeek(root, html.length, peekKeyRef.current))
+    })
+    /* armed only once an idle slot is actually booked — a browser without the
+       API leaves this un-armed (and never warms), rather than armed-and-empty */
+    if (cancel) warm.current = { armed: true, cancel }
+  }, [version])
+  useEffect(() => () => { if (warm.current.cancel) warm.current.cancel() }, [])
   /* which (desktop-ness × CURWEEK) key the trailing peek nodes currently
      reflect — '' means none are mounted. See ui/peek.ts:mountPeek. */
   const peekKeyRef = useRef<string>('')
@@ -38,12 +104,7 @@ export function EditWeek() {
        has left every text field (the reference's txtCommit guarantee) */
     if (editingText()) return
     const ed = HOOKS.editMode()
-    const html = DAYS.map((_: any, di: number) => {
-      /* lazy orphan prune: the previewed AL may have been unpublished or
-         undone since the last paint — render the live day, not a ghost */
-      if (DPREV.has(di) && !daySnapOf(di, DPREV.get(di))) DPREV.delete(di)
-      return DPREV.has(di) ? dayPreviewHTML(di, DPREV.get(di), ed) : dayHTML(di, ed, true)
-    })
+    const html = editDayStrings(ed)
     const p = prev.current
     const sl = root.scrollLeft
     /* capture the outgoing week for the cross-week glide BEFORE the DOM is
@@ -109,16 +170,32 @@ export function EditWeek() {
   return <div className="week" id="eWeek" ref={ref} />
 }
 
+const rosterHTML = () => `<div class="ros-tab" id="rosTab" title="Aircrew palette"><b>${ARM ? 'PLAN' : 'AIRCREW'}</b></div>`
+  + `<div class="ros-body">${paletteHTML(paletteDay())}</div>`
+
 export function EditRoster() {
   const version = useVersion()
   const ref = useRef<HTMLElement>(null)
   const prev = useRef<string>('')
+  /* the same one-time idle warm as the week above — the palette is the other
+     half of what the first Edit click used to build from nothing */
+  const warm = useRef<{ armed: boolean, cancel: (() => void) | null }>({ armed: false, cancel: null })
+  useEffect(() => {
+    if (warm.current.armed || !canWarm()) return
+    const cancel = idleOnce(() => {
+      const el = ref.current
+      if (!el || prev.current || CURPAGE === 'editsched') return
+      const html = asIfEditOpen(rosterHTML)
+      el.innerHTML = html; prev.current = html
+    })
+    if (cancel) warm.current = { armed: true, cancel }
+  }, [version])
+  useEffect(() => () => { if (warm.current.cancel) warm.current.cancel() }, [])
 
   useEffect(() => {
     if (CURPAGE !== 'editsched') return
     const el = ref.current!
-    const html = `<div class="ros-tab" id="rosTab" title="Aircrew palette"><b>${ARM ? 'PLAN' : 'AIRCREW'}</b></div>`
-      + `<div class="ros-body">${paletteHTML(paletteDay())}</div>`
+    const html = rosterHTML()
     if (html !== prev.current) { el.innerHTML = html; prev.current = html }
   }, [version])
 

@@ -14,6 +14,40 @@ several are measured and suite-enforced, not preferences.
   Shell chrome is memoized; no `validate()` during render — mutation paths
   validate. Perf gate: `probes/perf-port.cjs` (port ≤ reference × 1.15 on a
   4×-throttled phone).
+  **One exception, deliberate (owner, 3 Sep 26 — "faster on a slow
+  computer"): the EDIT week and crew palette are built ONCE in browser idle
+  time after a scheduler-admin login, while the View page is showing**
+  (`EditWeek.tsx` `idleOnce`/`canWarm`). Opening Edit Schedule used to build
+  both from nothing on a cold JIT — 2.4s at 4x throttle, 7.8s at 8x — so the
+  first click now finds the week standing and the per-day diff writes only
+  what changed since. It is a single build, never a repaint-while-hidden: the
+  gate above still holds for every store tick. The warm builds with
+  `HOOKS.editMode()` answering as the edit page will (`asIfEditOpen`), so its
+  strings are byte-identical to the live paint's and nothing is thrown away
+  on open; it skips scroll landing, peek nodes and highlights (the live open
+  does those on a visible week). Gated on `requestIdleCallback` existing —
+  jsdom and the parity harness have none, so they never warm. Members never
+  warm (no Edit tab). Pinned in `ui/editwarm.test.tsx`.
+  **And the edit page is PARKED, not display:none, while another page is
+  on** (`#page-editsched:not(.on)`: in flow, height 0, clipped, visibility
+  hidden) — a display:none subtree has no layout, so the warmed week would
+  still pay its whole first layout on the click; parked, it is laid out at
+  its real width during the idle build and the click reuses it. Every other
+  page stays display:none. visibility (not pointer-events/inert) is the
+  hidden state: unfocusable, no hit-test, out of the accessibility tree.
+  Pinned in `e2e/geometry.spec.ts` ("warmed and parked laid-out").
+- **A store tick with the week calendar CLOSED measures nothing** (same
+  cut). `WeekCal` used to compute its opening month on every render, which
+  read all seven day boxes' rects per tick — a forced layout of the dense
+  week on every drop for a value nothing used. The seed is read once in the
+  state initialiser and again only when the calendar opens. Pinned in
+  `ui/editwarm.test.tsx` ("measures no day box").
+- **The Leave War screen is its own download** (same cut): `Shell.tsx` loads
+  `LeaveWarPage` with `React.lazy`, so a Raptor visit ships ~38 KB gz of JS
+  and ~11 KB gz of CSS less, fetched on the first click of the tab. Only the
+  screen — the store, demo world and sync wires still boot in `main.tsx`, so
+  every cross-app sync is untouched. Pinned in `e2e/geometry.spec.ts`
+  ("not downloaded until its tab is opened").
 - Never repaint under the caret: `editingText()` guard + deferred txtCommit.
 - Layout is measured, suite-enforced: puck exactly 74×15px (grids derive
   from `--puck-w`); free text needs `overflow-wrap:anywhere` AND
@@ -1774,8 +1808,19 @@ persisted and never in a history snapshot. The toggle builder is `notePubTog`
   (not the `.seat` shell a grid cell can stretch) — fixed, `pointer-events:
   none`, z-index 520, the `.tdghost` recipe — pinned where the press landed
   inside the puck (`TD.ox/oy`, clamped to the puck) rather than centred, and
-  `body.mdrag` paints a grabbing cursor for the length of the drag (no OS
-  drag cursor exists — there is no OS drag). Edge auto-scroll comes free with
+  the ghost itself carries the grabbing cursor (no OS drag cursor exists —
+  there is no OS drag): `.dragimg` is HIT-TESTABLE with `cursor:grabbing`,
+  and `tdOver`'s dragover hit-test takes the first element under the pointer
+  that is not the ghost (`elementsFromPoint`). **`body.tdrag` and `body.mdrag`
+  are JS state markers with NO declarations of their own** (the slow-computer
+  cut, 3 Sep 26): measured by toggling each alone on the built app,
+  `body.tdrag{touch-action;user-select}` restyled every element on the page
+  (8,952 — a quarter-second at 4x throttle) at arm AND at drop, and
+  `body.mdrag{cursor}` half of it — an inherited property on body is
+  re-resolved down the whole tree, wildcard or not — and neither declaration
+  did any work (html{} already refuses user-select and the touch callout;
+  `onTouchMove` preventDefaults while armed). A class nothing matches costs
+  nothing to toggle. Guarded by `ui/css-invalidation.test.ts`. Edge auto-scroll comes free with
   the machine. A window `blur` mid-drag clears the ghost and drops nothing. A
   press-and-release without a 3px move is a click; a secondary button is
   left alone. The NATIVE handlers (`dragstart`/`dragover`/`drop`/`dragend`)

@@ -398,7 +398,13 @@ function tdOver(x: any, y: any) {
      stays pinned to that spot; a finger's ghost is centred (ox = oy = 0 with
      the .tdghost translate) */
   if (g) { g.style.left = (x - TD.ox) + 'px'; g.style.top = (y - TD.oy) + 'px' }
-  const el = document.elementFromPoint(x, y)
+  /* The mouse ghost is hit-testable (it carries the grabbing cursor — see
+     .dragimg in scheduler.css, the slow-computer cut), so the cell beneath is
+     the first element under the point that is NOT the ghost. elementsFromPoint
+     gives the whole stack in one hit-test; the single-element fallback is for
+     jsdom, which has no layout and no ghost to skip. */
+  const stack: any[] = typeof (document as any).elementsFromPoint === 'function' ? (document as any).elementsFromPoint(x, y) : [document.elementFromPoint(x, y)]
+  const el = stack.find((n: any) => n && !(g && g.contains(n))) || null
   const t = el && el.closest ? (el.closest(DROP_SEL) || el.closest(BIN_SEL)) : null
   if (t !== TD.over) {
     if (TD.over) TD.over.classList.remove('dragover')
