@@ -4430,3 +4430,53 @@ test.describe('the motion set, and its reduced-motion off-switch', () => {
     await page.emulateMedia({ reducedMotion: null })
   })
 })
+
+/* THE MOUSE DRAG NEVER STARTS A NATIVE DRAG (owner, 3 Sep 26 — the white box
+   under a dragged puck survived two drag-image fixes on the MINDEF secured
+   browser; its photo showed our page-drawn ghost and the browser's own white
+   snapshot side by side, so that browser ignores setDragImage and the only
+   drag that cannot draw a white box is one the browser never starts). A real
+   Chromium mouse drag here must arm drag.ts's pointer machine — the puck
+   ghost riding the true cursor, the grabbing cursor on — with ZERO native
+   drag events fired, and the drop must still land through applyDrop. Pinned
+   in a real browser because jsdom cannot start a native drag at all. */
+test.describe('a mouse drag of a puck runs on the pointer machine, not the native drag', () => {
+  test('ghost tracks the cursor, no dragstart/dragover fires, the drop lands', async ({ page }) => {
+    await page.setViewportSize(DESK)
+    await login(page)
+    await go(page, 'editsched')
+    await page.waitForSelector('#eRoster .rpuck[data-person]')
+    await page.evaluate(() => {
+      const w = window as any; w.__native = 0
+      for (const t of ['dragstart', 'dragover', 'drop']) document.addEventListener(t, () => { w.__native++ })
+    })
+    const src = page.locator('#eRoster .rpuck[data-person]').first()
+    const who = (await src.locator('.puck').innerText()).trim()
+    const cell = page.locator('#eWeek [data-fill^="a:"]').first()
+    const sb = (await src.boundingBox())!, cb = (await cell.boundingBox())!
+    expect(sb.y >= 0 && sb.y + sb.height <= DESK.height && cb.y >= 0 && cb.y + cb.height <= DESK.height, 'both ends inside the viewport — dragover would stop at its edge').toBe(true)
+    const gx = sb.x + 5, gy = sb.y + 5
+    await page.mouse.move(gx, gy)
+    await page.mouse.down()
+    await page.mouse.move(gx + 10, gy + 10, { steps: 3 })
+    const mx = (gx + cb.x) / 2, my = (gy + cb.y) / 2
+    await page.mouse.move(mx, my, { steps: 8 })
+    const mid = await page.evaluate(() => {
+      const g = document.querySelector('.dragimg') as HTMLElement | null
+      return { ghost: !!g, rect: g ? g.getBoundingClientRect().toJSON() : null, mdrag: document.body.classList.contains('mdrag'), native: (window as any).__native }
+    })
+    expect(mid.ghost, 'the page-drawn puck ghost is up').toBe(true)
+    expect(mid.mdrag, 'the grabbing cursor is on').toBe(true)
+    expect(mid.native, 'no native drag event fired — the browser never started one').toBe(0)
+    /* the ghost sits at cursor minus the grab offset: the press landed 5px
+       into the source puck, so its top-left trails the cursor by that much */
+    expect(Math.abs(mid.rect!.left - (mx - 5))).toBeLessThan(2)
+    expect(Math.abs(mid.rect!.top - (my - 5))).toBeLessThan(2)
+    await page.mouse.move(cb.x + cb.width / 2, cb.y + cb.height / 2, { steps: 8 })
+    await page.mouse.up()
+    await expect(cell, 'landed through applyDrop').toContainText(who)
+    expect(await page.locator('.dragimg').count(), 'no ghost survives the drop').toBe(0)
+    expect(await page.evaluate(() => document.body.classList.contains('mdrag') || document.body.classList.contains('dnd'))).toBe(false)
+    expect(await page.evaluate(() => (window as any).__native), 'still no native drag event').toBe(0)
+  })
+})

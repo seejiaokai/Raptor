@@ -120,10 +120,10 @@ parity holds. The gate table below was the green baseline read at this pass's cl
 
 | gate | reading |
 |---|---|
-| `npm test` | 3820 across 217 files (3 Sep 26 — the drag-image SECOND cut, the page-drawn ghost, re-pinned `ui/drag.test.tsx` at 6 (was 4, +2); before it 3818 — the mouse drag-image fix added +4 `ui/drag.test.tsx` (the off-screen `.dragimg` puck clone that replaces Chromium's white-card snapshot); before it 3814 — the pilots' 15-day run became continuous FULL days (a half day breaks it), +1 `engine/charge.test.ts`; before it 3813 — the weekend/PH charging rule + CL batch added `engine/charge.test.ts` (now +20 with the half-day pin), +2 Cinch cases in `ui/oiltracker.test.tsx`, +1 `src/engine/leave.test.ts`, and re-pinned the figure/counter/seed fixtures; before it 3791 across 216 — the drag-select held-band fix added +1 `select.test.ts`; before it 3790 — 4 Sep 26 — the group-colour picker, full-width seat bars, LoX-catalogue and bug-hunt rounds added `groupcolors.test.ts`, `groupColor.test.ts`, `settingssheet.test.tsx`, `bootprune.test.ts` plus `roster`/`matrix`/`raptorRoster` cases; 2 Sep 26 — the tracker's THIRD CUT added +2 `oiltracker.test.tsx` + `raptorRoster.test.ts` demo-story cases, then the scrim press-guard +2; before that the OIL tracker GRID + Off-day batch: `ui/oiltracker.test.tsx` rewritten to 18, +7 `select.test.ts` row cases, +3 `oil.test.ts`, +2 `oilsync.test.ts`, +2 `store.test.ts`, +2 `oiltracker.test.ts`, +1 `eventdefs.test.ts`; the OFF pins flipped) — two vitest projects: raptor + leavewar |
+| `npm test` | 3825 across 217 files (3 Sep 26 — the THIRD drag cut, the mouse on the pointer machine, +5 `ui/drag.test.tsx`; before it 3820 — the drag-image SECOND cut, the page-drawn ghost, re-pinned `ui/drag.test.tsx` at 6 (was 4, +2); before it 3818 — the mouse drag-image fix added +4 `ui/drag.test.tsx` (the off-screen `.dragimg` puck clone that replaces Chromium's white-card snapshot); before it 3814 — the pilots' 15-day run became continuous FULL days (a half day breaks it), +1 `engine/charge.test.ts`; before it 3813 — the weekend/PH charging rule + CL batch added `engine/charge.test.ts` (now +20 with the half-day pin), +2 Cinch cases in `ui/oiltracker.test.tsx`, +1 `src/engine/leave.test.ts`, and re-pinned the figure/counter/seed fixtures; before it 3791 across 216 — the drag-select held-band fix added +1 `select.test.ts`; before it 3790 — 4 Sep 26 — the group-colour picker, full-width seat bars, LoX-catalogue and bug-hunt rounds added `groupcolors.test.ts`, `groupColor.test.ts`, `settingssheet.test.tsx`, `bootprune.test.ts` plus `roster`/`matrix`/`raptorRoster` cases; 2 Sep 26 — the tracker's THIRD CUT added +2 `oiltracker.test.tsx` + `raptorRoster.test.ts` demo-story cases, then the scrim press-guard +2; before that the OIL tracker GRID + Off-day batch: `ui/oiltracker.test.tsx` rewritten to 18, +7 `select.test.ts` row cases, +3 `oil.test.ts`, +2 `oilsync.test.ts`, +2 `store.test.ts`, +2 `oiltracker.test.ts`, +1 `eventdefs.test.ts`; the OFF pins flipped) — two vitest projects: raptor + leavewar |
 | `node reference/tfin.js` | 728/0 (the reference is read-only; the "Ground Programme" title trim rides the tolerant normaliser in `html.test.ts`) |
 | `npm run build` | clean |
-| `npm run test:e2e` | 351 passed / 23 touch-only skips / 0 failed (3 Sep 26: the figure-picker legend and the Cinch-sheet count pins moved to the thirteen figures; 1 Sep 26: +1 keep-alive spec × the two Leave War projects) — three playwright projects: raptor geometry, lw-phone, lw-desktop. NOTE: a mid-session chain run showed 2 lw-phone reds against a build that predated the bug-pass fixes (the un-gated cross-lane notify repainting mid-gesture); both passed individually and the full suite passed whole against the fixed build — if they ever red again, suspect a stray repaint mid-tap first. |
+| `npm run test:e2e` | 352 passed / 23 touch-only skips / 0 failed (3 Sep 26: +1 the first real-browser puck-drag pin — the mouse on the pointer machine, zero native drag events; earlier that day: the figure-picker legend and the Cinch-sheet count pins moved to the thirteen figures; 1 Sep 26: +1 keep-alive spec × the two Leave War projects) — three playwright projects: raptor geometry, lw-phone, lw-desktop. NOTE: a mid-session chain run showed 2 lw-phone reds against a build that predated the bug-pass fixes (the un-gated cross-lane notify repainting mid-gesture); both passed individually and the full suite passed whole against the fixed build — if they ever red again, suspect a stray repaint mid-tap first. |
 | `probes:adapted` | **all 6 GREEN**. **Read the LAST line, not the last tally**: each probe prints its own count as it finishes (`wrap-async` ends `36 passed · 0 failed`), and the suite's verdict is the line after it, `all 6 adapted probes passed`. |
 | `perf` | **4/0** — board DOM 1023 ≤ **1150** (read 1 Sep 26) (the ceiling is a SETTLED owner decision since 28 Aug 26 — CLAUDE.md §Stable decisions; the section/wave grips added ~10 nodes, noise against it). |
 
@@ -578,42 +578,42 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
   Leave War row, `docs/engine-rules.md` INPUT_META count, the leave-types spec
   table, `leavewar-sync.md` vocabulary line, ui-contracts §Legend.
 
-- **RESOLVED AGAIN 3 Sep 26 — the white box under a dragged puck, second
-  cut (owner: "still showing … on an Edge SIS browser, the MINDEF secured
-  browser").** The first cut (same day, PR #351) still asked the BROWSER to
-  paint the drag image — an off-screen puck clone handed to `setDragImage`,
-  on the theory that the 2 Sep `html{user-select:none}` had turned Chromium's
-  automatic snapshot white. That cannot help where the drag image is composed
-  OUTSIDE the page: a remote-rendered or sandboxed browser (the secured-browser
-  case) hands the OS a bitmap and the OS draws it without transparency, so
-  whatever the page asks the browser to paint comes back as an opaque white
-  card around the puck. The only image that can't be spoiled that way is one
-  the browser never draws. So the mouse path now works exactly like the touch
-  path, which was never affected: `drag.ts setDragImage` hands `setDragImage`
-  a 1×1 transparent GIF (`BLANK_IMG`, decoded once at module load — Chromium
-  falls back to its own snapshot if the image hasn't loaded by dragstart) and
-  appends a `.dragimg` clone of the PUCK alone to the body as a fixed,
-  `pointer-events:none` ghost (`scheduler.css .dragimg`, the `.tdghost` recipe
-  anchored at the grab point rather than centred) that `moveDragImage` pins
-  under the cursor on every document `dragover`. `dndOff` still removes it on
-  drop / cancel / dragend; a fresh dragstart replaces a stale one; a
-  dataTransfer with no `setDragImage` gets no ghost (the browser then shows
-  its own image and a second would double up). UNVERIFIED on the actual
-  secured browser — no such environment here; verified on the built bundle
-  under a real intercepted Chromium drag (ghost at cursor-minus-grab-offset,
-  drop lands, no ghost left behind, no console errors; the ghost is page
-  content now so it IS screenshot-able mid-drag). NOTE for the next drive:
-  Playwright's CDP drag emulation streams no `dragover` across the page (only
-  a couple over the source), so a scripted mouse drag shows the ghost frozen
-  at its first position — dispatch one `dragover` at the cursor mid-drag to
-  exercise the follow path; a real mouse streams it continuously (the
-  `.dragover` cell highlight already relies on that). If the owner reports it
-  STILL white on the secured browser, the remaining suspect is the 1×1 blank
-  itself drawn as a white dot — trivial — or the environment ignoring
-  `setDragImage` altogether, in which case the native snapshot would show
-  BESIDE our ghost; ask for a photo. Pins: `ui/drag.test.tsx` "the mouse drag
-  image is a page-drawn puck ghost" (6, was 4). Contract: ui-contracts §Drag &
-  drop.
+- **RESOLVED 3 Sep 26, THIRD cut — the white box under a dragged puck on the
+  MINDEF secured browser (Edge, "SIS", the owner's work laptop on OSN):
+  the mouse no longer starts a native drag at all.** Two drag-image fixes
+  the same day (#351: an off-screen puck clone handed to `setDragImage`;
+  #353: a blank 1×1 pixel plus a page-drawn ghost moved by `dragover`) both
+  left the white box there, and the owner's photo after #353 settled the
+  cause: our page-drawn ghost (blue outline) AND the browser's own white-card
+  snapshot were on screen TOGETHER — that browser ignores `setDragImage`
+  altogether, so no image handed to the native drag can ever be honoured
+  there. The only drag that cannot draw a white box is one the browser never
+  starts. So the mouse now rides the touch path's pointer machine (`drag.ts`
+  `TD.mouse`, which was never affected because it never asks the browser to
+  draw anything): a primary-button `pointerdown` on a puck — only what
+  `dragFrom` recognises — claims it, a 3px move arms it (no hold), the native
+  `dragstart` is `preventDefault`ed in `onDragStart`, the ghost is the
+  `.dragimg` puck clone pinned where the press landed inside the puck,
+  `body.mdrag` paints a grabbing cursor, and the release drops through
+  `applyDrop` off `elementFromPoint` exactly as a finger does. A window
+  `blur` mid-drag clears it. The native handlers stay as the fallback for a
+  drag nobody claimed (synthetic test/probe events), with #353's blank-pixel
+  + ghost recipe. VERIFIED on the built bundle under a REAL Chromium mouse
+  drag with no synthetic events: zero native drag events fired, the ghost
+  tracked the true cursor to the grab offset, the drop landed, no ghost or
+  class survived, no console errors — and pinned that way in
+  `e2e/geometry.spec.ts` ("a mouse drag of a puck runs on the pointer
+  machine", the first real-browser puck-drag pin; the earlier note that
+  Playwright streams no `dragover` is moot now — the machine reads real
+  pointer moves, which Playwright does deliver). STILL unverified on the
+  secured browser itself (no such environment here) — but this cut does not
+  depend on anything that browser can override: if a white box shows now, it
+  is not a drag image, and a photo would show what it is. Cost carried:
+  desktop loses the OS "not-allowed" drag cursor over non-targets (the
+  `.dragover` cell highlight still shows the valid ones) and a mouse drag
+  can no longer leave the browser window (nothing ever wanted that). Pins:
+  `ui/drag.test.tsx` "the mouse drags through the pointer machine" (+5).
+  Contract: ui-contracts §Drag & drop.
 
 - **RESOLVED 2 Sep 26 — the Leave War drag-select e2e flake was the edge
   auto-scroll, and it was a real UX bug, not test geometry.** Instrumenting the
