@@ -75,6 +75,17 @@ a{color:var(--accent)}
 html{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 input,textarea,select,[contenteditable]{
   -webkit-user-select:text;user-select:text;-webkit-touch-callout:default}
+/* NO NATIVE DRAG ANYWHERE (4th cut, belt 2). Removing draggable="true" stops
+   the browser dragging our pucks, but a browser can still start a native drag —
+   and paint the white drag-image card the MINDEF secured browser drew — off an
+   <img>, an <a href>, or computed draggability, none of which a JS handler can
+   veto on a browser that ignores dragstart preventDefault. -webkit-user-drag is
+   read at drag INITIATION from computed style, BEFORE any JS event, so it holds
+   where setDragImage and a dragstart handler do not. Blink accepts `none` (it
+   rejects only `element`). Belt-and-braces with the document-level backstop in
+   drag.ts and the ghost's own opt-out. */
+.puck,.puck *,.rpuck,.rpuck *,[data-drag],[data-drag] *,.dragimg,.tdghost,
+img,a{-webkit-user-drag:none;user-drag:none}
 
 /* ============ LOGIN · RAPTOR ============ */
 /* The app is RAPTOR — Readiness, Availability, Planning, Tracking & Ops

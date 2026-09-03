@@ -1790,6 +1790,33 @@ persisted and never in a history snapshot. The toggle builder is `notePubTog`
   "a mouse drag of a puck runs on the pointer machine"): no element carries
   `draggable`, zero native drag events fire, the ghost sits at
   cursor-minus-grab-offset, the drop lands, no ghost survives it.
+- TWO BELTS reinforce it, both inert on a normal browser (nothing is
+  draggable so neither ever fires there): (1) `onDragStart`'s FIRST line is
+  `if (e.isTrusted) { e.preventDefault(); return }` — a document-level
+  backstop refusing EVERY real, browser-started drag whatever began it (a
+  draggable element missed by the sweep, an `<img>`/`<a>`, a text-selection
+  drag, or a secured browser starting one unbidden); synthetic drags are
+  `isTrusted:false`, so the fallback path and its tests still run. It also
+  closes a real gap: a native drag begun with NO preceding `pointerdown`
+  (`TD` null) used to fall through `dragFrom` and return WITHOUT
+  `preventDefault`. (2) `scheduler.css` sets `-webkit-user-drag:none` on
+  `.puck`/`.rpuck`/`[data-drag]`/their children/the ghosts and on `img,a` —
+  Blink reads that at drag INITIATION from computed style, before any JS
+  event, so it holds where `setDragImage` and a `dragstart` `preventDefault`
+  are ignored. Keep `html{user-select:none}` (it closes the text-selection
+  drag) — do not narrow it.
+- OPTIONAL DRAG READOUT (`ui/dragdbg.ts`) for diagnosing a drag on a
+  devtools-less secured browser: OFF by default, attaches NOTHING unless
+  `?dragdbg=1`/`#dragdbg` is in the URL or the top-left corner is tapped five
+  times (a real, `isTrusted` gesture — synthetic taps never arm it, so the
+  suites are unaffected). A `pointer-events:none` fixed panel (it must never
+  eat the gesture it measures) LATCHES each drag's counters — pointerdown,
+  move, arm, native-dragstart (trusted only, the SIS detector), pointercancel,
+  window-blur, pointerup + coords, `elementFromPoint` target, drop outcome —
+  and holds them until the next press so a photo names the failure mode. The
+  `DBG.*` hooks sit at points that already exist in `drag.ts` and are no-ops
+  until armed. Pinned inert in `ui/dragdbg.test.tsx`. The board DOM ceiling is
+  unaffected (nothing renders when off).
 - Touch drag: 8px slop restarts the 180ms hold, >26px cancels; ghost
   follows finger; click-eater dies on next pointerdown.
 - Toast is `pointer-events:none`.

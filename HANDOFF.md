@@ -120,7 +120,7 @@ parity holds. The gate table below was the green baseline read at this pass's cl
 
 | gate | reading |
 |---|---|
-| `npm test` | 3829 across 217 files (3 Sep 26 — the FOURTH drag cut, nothing draggable, +4 `ui/drag.test.tsx` "nothing on any surface is draggable"; the edit-week parity compare in `ui/html.test.ts` maps the reference's `draggable="true"` onto the port's `data-drag="1"`; before it 3825 — the THIRD drag cut, the mouse on the pointer machine, +5 `ui/drag.test.tsx`; before it 3820 — the drag-image SECOND cut, the page-drawn ghost, re-pinned `ui/drag.test.tsx` at 6 (was 4, +2); before it 3818 — the mouse drag-image fix added +4 `ui/drag.test.tsx` (the off-screen `.dragimg` puck clone that replaces Chromium's white-card snapshot); before it 3814 — the pilots' 15-day run became continuous FULL days (a half day breaks it), +1 `engine/charge.test.ts`; before it 3813 — the weekend/PH charging rule + CL batch added `engine/charge.test.ts` (now +20 with the half-day pin), +2 Cinch cases in `ui/oiltracker.test.tsx`, +1 `src/engine/leave.test.ts`, and re-pinned the figure/counter/seed fixtures; before it 3791 across 216 — the drag-select held-band fix added +1 `select.test.ts`; before it 3790 — 4 Sep 26 — the group-colour picker, full-width seat bars, LoX-catalogue and bug-hunt rounds added `groupcolors.test.ts`, `groupColor.test.ts`, `settingssheet.test.tsx`, `bootprune.test.ts` plus `roster`/`matrix`/`raptorRoster` cases; 2 Sep 26 — the tracker's THIRD CUT added +2 `oiltracker.test.tsx` + `raptorRoster.test.ts` demo-story cases, then the scrim press-guard +2; before that the OIL tracker GRID + Off-day batch: `ui/oiltracker.test.tsx` rewritten to 18, +7 `select.test.ts` row cases, +3 `oil.test.ts`, +2 `oilsync.test.ts`, +2 `store.test.ts`, +2 `oiltracker.test.ts`, +1 `eventdefs.test.ts`; the OFF pins flipped) — two vitest projects: raptor + leavewar |
+| `npm test` | 3835 across 218 files (3 Sep 26 — the FOURTH drag cut's belts, new `ui/dragdbg.test.tsx` (+6, the optional readout is inert unless flagged) and the two belts in `drag.ts`/`scheduler.css` need no new pin beyond it; before it 3829 — the FOURTH drag cut, nothing draggable, +4 `ui/drag.test.tsx` "nothing on any surface is draggable"; the edit-week parity compare in `ui/html.test.ts` maps the reference's `draggable="true"` onto the port's `data-drag="1"`; before it 3825 — the THIRD drag cut, the mouse on the pointer machine, +5 `ui/drag.test.tsx`; before it 3820 — the drag-image SECOND cut, the page-drawn ghost, re-pinned `ui/drag.test.tsx` at 6 (was 4, +2); before it 3818 — the mouse drag-image fix added +4 `ui/drag.test.tsx` (the off-screen `.dragimg` puck clone that replaces Chromium's white-card snapshot); before it 3814 — the pilots' 15-day run became continuous FULL days (a half day breaks it), +1 `engine/charge.test.ts`; before it 3813 — the weekend/PH charging rule + CL batch added `engine/charge.test.ts` (now +20 with the half-day pin), +2 Cinch cases in `ui/oiltracker.test.tsx`, +1 `src/engine/leave.test.ts`, and re-pinned the figure/counter/seed fixtures; before it 3791 across 216 — the drag-select held-band fix added +1 `select.test.ts`; before it 3790 — 4 Sep 26 — the group-colour picker, full-width seat bars, LoX-catalogue and bug-hunt rounds added `groupcolors.test.ts`, `groupColor.test.ts`, `settingssheet.test.tsx`, `bootprune.test.ts` plus `roster`/`matrix`/`raptorRoster` cases; 2 Sep 26 — the tracker's THIRD CUT added +2 `oiltracker.test.tsx` + `raptorRoster.test.ts` demo-story cases, then the scrim press-guard +2; before that the OIL tracker GRID + Off-day batch: `ui/oiltracker.test.tsx` rewritten to 18, +7 `select.test.ts` row cases, +3 `oil.test.ts`, +2 `oilsync.test.ts`, +2 `store.test.ts`, +2 `oiltracker.test.ts`, +1 `eventdefs.test.ts`; the OFF pins flipped) — two vitest projects: raptor + leavewar |
 | `node reference/tfin.js` | 728/0 (the reference is read-only; the "Ground Programme" title trim rides the tolerant normaliser in `html.test.ts`) |
 | `npm run build` | clean |
 | `npm run test:e2e` | 352 passed / 23 touch-only skips / 0 failed (3 Sep 26: +1 the first real-browser puck-drag pin — the mouse on the pointer machine, zero native drag events; earlier that day: the figure-picker legend and the Cinch-sheet count pins moved to the thirteen figures; 1 Sep 26: +1 keep-alive spec × the two Leave War projects) — three playwright projects: raptor geometry, lw-phone, lw-desktop. NOTE: a mid-session chain run showed 2 lw-phone reds against a build that predated the bug-pass fixes (the un-gated cross-lane notify repainting mid-gesture); both passed individually and the full suite passed whole against the fixed build — if they ever red again, suspect a stray repaint mid-tap first. |
@@ -599,7 +599,27 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
   (`.seat[data-drag]`). No browser, remote or plain, has anything to pick
   up; the pointer machine is the only way a puck moves. The native handlers
   stay for synthetic events only (the suites' `dnd()` helper), guard and
-  all. LESSON, written down because the third cut's entry below said "this
+  all. TWO BELTS ride with it (added the same day after an adversarial
+  workflow audit, both inert on a normal browser): (1) `onDragStart` now
+  refuses EVERY trusted drag at the document — `if (e.isTrusted)
+  e.preventDefault()` as its first line — which closes a real gap the audit
+  found (a native drag begun with no preceding `pointerdown` used to fall
+  through `dragFrom` and return WITHOUT preventDefault) and catches any drag
+  source the attribute sweep missed (`<img>`, `<a>`, computed draggability);
+  synthetic test drags are `isTrusted:false` so the fallback path and its
+  tests are untouched. (2) `scheduler.css` sets `-webkit-user-drag:none` on
+  the pucks, their children, `[data-drag]`, the ghosts, and `img,a` — Blink
+  reads that at drag INITIATION from computed style, BEFORE any JS event, so
+  it holds even where `setDragImage` and a `dragstart` `preventDefault` are
+  ignored (the SIS case). PLUS an optional on-screen diagnostic
+  (`ui/dragdbg.ts`) that is OFF by default and attaches nothing unless
+  `?dragdbg=1` / `#dragdbg` is in the URL or the top-left corner is tapped
+  five times (for a locked address bar): a `pointer-events:none` panel that
+  latches each drag's counters (pointerdown / move / arm / native-dragstart /
+  pointercancel / blur / pointerup + coords / elementFromPoint target / drop
+  outcome) so a photo of a failed SIS drag names the failure mode instead of
+  costing another blind cut. Pinned inert in `ui/dragdbg.test.tsx`. LESSON,
+  written down because the third cut's entry below said "this
   cut does not depend on anything that browser can override" and was wrong:
   on the secured browser assume the ENTIRE native drag machinery is outside
   the page's control — its events, `preventDefault`, `setDragImage` — and
@@ -614,7 +634,17 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
   unverified on the SIS browser itself. If the white box shows after THIS,
   the page has no draggable element left to blame, and the next question is
   whether that browser relays pointer events to the page at all — a photo
-  plus "does the puck follow the mouse before you let go?" answers it.
+  plus "does the puck follow the mouse before you let go?" answers it, and
+  `?dragdbg=1` turns that into an exact readout (NAT≥1 = the browser still
+  starts its own drag, an admin-side problem no page change fixes; PU=0 with
+  ARM=1 = the release is swallowed, so build the deferred cancel/blur
+  drop-recovery; PU≥1 with the drop landing on BODY = the release coordinates
+  arrive offset). DEFERRED, do NOT ship blind: converting `onPointerCancel`
+  and the window-blur handler to COMPLETE a mouse drop from the last pointer
+  position (plus `setPointerCapture`) is the only in-page cure if the readout
+  shows a swallowed pointerup — medium-risk (a genuinely abandoned or
+  Escape-cancelled drag could land unwanted), so it waits for the readout to
+  prove it is needed.
 
 - **SHIPPED 3 Sep 26 — merge-to-live cut from ~17 min to the slowest gate
   (owner: "Is it possible to shorten the time taken to merge live?" →

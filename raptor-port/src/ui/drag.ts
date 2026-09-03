@@ -12,6 +12,7 @@ import * as view from '../state/view'
 import { notify } from '../state/store'
 import { canEditSched } from '../state/auth'
 import { reassignInput } from './inputedit'
+import { DBG, initDragDbg } from './dragdbg'
 
 const editMode = () => HOOKS.editMode()
 
@@ -241,6 +242,18 @@ export function applyDrop(el: any, x: any, y: any) {
    events now (the suites' dnd() helper, probes) and keep #353's blank-pixel
    + ghost recipe for that use; the TD.mouse guard is belt-and-braces. */
 function onDragStart(e: DragEvent) {
+  DBG.nat(e.isTrusted)
+  /* THE DOCUMENT-LEVEL BACKSTOP (4th cut, belt 1). Any REAL, browser-started
+     drag is refused here whatever began it — a draggable element we missed, an
+     <img>/<a>, a text-selection drag, or a secured browser starting one on its
+     own. `e.isTrusted` is the whole test: a user/browser drag is trusted; the
+     suites' and probes' synthetic `dispatchEvent` drags are not, so the native
+     fallback path below (and its tests) still run untouched. The app owns no
+     legitimate native drag — everything drags through the pointer machine — so
+     cancelling every trusted one costs nothing on a normal browser (nothing is
+     draggable, so none fire) and is the last line of defence on a browser that
+     ignores setDragImage and our per-element measures. */
+  if (e.isTrusted) { e.preventDefault(); return }
   if (TD && TD.mouse) { e.preventDefault(); return }
   const d = dragFrom(e.target); if (!d) return
   DRAG = d
@@ -398,6 +411,7 @@ function tdArm() {
   if (!TD || TD.armed) return
   const d = dragFrom(TD.src); if (!d) { tdClear(); return }
   DRAG = d; TD.armed = true
+  DBG.arm()
   TD.scroller = tdScrollerFor(TD.src)
   /* the mouse ghost is the PUCK alone (not the .seat shell a grid cell can
      stretch past it), pinned where the press landed inside it — clamped to
@@ -431,11 +445,13 @@ function onPointerDown(e: PointerEvent) {
   if (mouse && (e.button !== 0 || !dragFrom(src))) return
   tdClear()
   TD = { src, x: e.clientX, y: e.clientY, x0: e.clientX, y0: e.clientY, armed: false, ghost: null, over: null, id: e.pointerId, mouse, ox: 0, oy: 0 }
+  DBG.pd(e.clientX, e.clientY, mouse ? 'mouse' : e.pointerType)
   if (!mouse) TD.timer = setTimeout(tdArm, TD_HOLD)
 }
 function onPointerMove(e: PointerEvent) {
   if (!TD || e.pointerId !== TD.id) return
   TD.x = e.clientX; TD.y = e.clientY
+  DBG.mv()
   if (!TD.armed) {
     /* a mouse has no hold: the first move past a hair's slop IS the drag
        (the native drag's own threshold), a smaller wobble is still a click */
@@ -463,12 +479,14 @@ function onTouchMove(e: TouchEvent) { if (TD && TD.armed) e.preventDefault() }
 function onPointerUp(e: PointerEvent) {
   if (!TD || e.pointerId !== TD.id) return
   const armed = TD.armed, x = e.clientX, y = e.clientY
+  DBG.pu(x, y)
   if (armed) {
     if (TD.ghost && TD.ghost.parentNode) TD.ghost.parentNode.removeChild(TD.ghost)
     TD.ghost = null
     const el = document.elementFromPoint(x, y)
+    DBG.efp(el as any)
     document.body.classList.remove('tdrag', 'mdrag')
-    applyDrop(el, x, y)
+    DBG.drop(applyDrop(el, x, y) ? 'OK' : 'NONE')
     /* The tap that ends a drag must not also select the puck. But a real drag ends
        on a different element than it started on, so the browser fires NO click at
        all — {once:true} never self-removed and the eater sat there for 350ms
@@ -489,7 +507,11 @@ function onPointerUp(e: PointerEvent) {
      would fire against the NEXT gesture and pick up a puck nobody grabbed */
   tdClear()
 }
-function onPointerCancel() { tdClear() }
+/* pointercancel and a window blur both abort a drag with no drop; they are
+   split only so the readout can tell which one fired (they are the two ways a
+   secured browser could silently kill a drop mid-gesture) */
+function onPointerCancel() { DBG.can(); tdClear() }
+function onWindowBlur() { DBG.blur(); tdClear() }
 
 /* attach the whole block to the document, exactly as the reference does;
    returns the detach for React's effect cleanup */
@@ -508,9 +530,13 @@ export function initDrag() {
      (Chromium holds the mouse for the page while a button is down), but a
      window that loses focus mid-drag — an alt-tab, a secured browser's own
      chrome stealing the pointer — must not leave a ghost riding the cursor */
-  window.addEventListener('blur', onPointerCancel)
+  window.addEventListener('blur', onWindowBlur)
+  /* the optional on-screen drag readout — inert and attaches nothing unless
+     ?dragdbg=1 (or the five-tap corner) turns it on; see ui/dragdbg.ts */
+  const detachDbg = initDragDbg()
   return () => {
-    window.removeEventListener('blur', onPointerCancel)
+    window.removeEventListener('blur', onWindowBlur)
+    detachDbg()
     tdClear()
     document.removeEventListener('dragstart', onDragStart)
     document.removeEventListener('dragover', onDragOver)
