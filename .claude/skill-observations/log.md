@@ -853,3 +853,18 @@ gate's. Keep verdict-bearing commands unpiped.
 **Suggested improvement:** Two passes, never one: TIME with the plain `devtools.timeline` categories, ATTRIBUTE with the stack/invalidation categories, and only ever quote durations from the first. Same rule for the CPU profiler's sampling interval. Add to the perf recipe alongside "attribute by experiment, not by stack".
 
 **Principle:** Instrumentation that explains a cost also changes it. Measure and attribute in separate runs, and quote numbers only from the run that measured.
+
+### Observation 55: A perf diagnosis given in chat, before measuring, pointed at the wrong half
+
+**Status:** OPEN
+**Date:** 2026-09-03
+**Session context:** Leave War grid speed — the previous session's chat answer split the wait into "download the chunk" vs "draw 25,000 cells, one unsplittable chunk" and recommended virtualisation; the measurement showed download ~0, cell-building ~a tenth, and half the time in post-draw self-measurement plus repeated React rebuilds
+**Skill:** New skill candidate: browser-perf-measurement (pairs with observation 54)
+**Type:** open-source
+**Phase/Area:** Diagnosis before recommendation
+
+**Issue:** A plausible mechanism ("25k cells is the cost") was offered as the diagnosis and the fix (virtualise) sized to it, with no measurement. The real split was different enough that the cheap fixes halved the wait and took the grid out of every tap entirely, before any virtualisation.
+
+**Suggested improvement:** For any "why is X slow" question: refuse to name a cause before one profile + one phase-split trace exist; report the split as a table; only then rank fixes. Include the React-specific checks that were decisive here — (a) does a local UI state change re-render a large memo-less tree, (b) do mount-time measurements store state that re-renders it, (c) are DOM queries scoped to the smallest subtree.
+
+**Principle:** A mechanism that could explain the symptom is a hypothesis, not a diagnosis; the recommendation follows the measurement, never the story.
