@@ -53,7 +53,11 @@ export function EventRows({
           // A MERGED band: one spanning cell at its first day, then every day
           // it covers is skipped so the colspan owns those column slots.
           if (band) {
-            if (band.from === d.date) {
+            // `days` may be a WINDOW of the war (Matrix's column window, 3 Sep
+            // 26): a band that began before the first drawn day is emitted
+            // from that first day, spanning what remains of it, so the row
+            // keeps its cell count and the band still reads across the seam.
+            if (band.from === d.date || i === 0) {
               let span = 1
               while (i + span < days.length && days[i + span]!.date <= band.to) span++
               // The band's own tag first (per-event tags, 18 Aug 26), then

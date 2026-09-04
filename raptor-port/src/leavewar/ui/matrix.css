@@ -73,6 +73,15 @@
     0 0 8px 1px rgba(74, 140, 100, .30),
     inset 0 0 6px rgba(74, 140, 100, .08);
 }
+/* The column window (colwindow.ts) draws only some months, so a bidding
+   window whose bound lies OUTSIDE the drawn months has no edge to paint on
+   that side: the box is clipped there (border and halo both — a plain
+   transparent border would leave the halo drawing a ghost edge at the seam)
+   while the other sides keep their full glow (the negative insets extend the
+   clip past the box to keep it). */
+.mx-wrap .lw-bidbox.cut-l { clip-path: inset(-12px -12px -12px 3px); border-top-left-radius: 0; border-bottom-left-radius: 0; }
+.mx-wrap .lw-bidbox.cut-r { clip-path: inset(-12px 3px -12px -12px); border-top-right-radius: 0; border-bottom-right-radius: 0; }
+.mx-wrap .lw-bidbox.cut-l.cut-r { clip-path: inset(-12px 3px -12px 3px); }
 
 .mx {
   border-collapse: separate;

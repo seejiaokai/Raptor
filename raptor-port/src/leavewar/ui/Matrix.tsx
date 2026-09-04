@@ -37,6 +37,7 @@ import {
   type Group,
   type Person,
   type Period,
+  type DayInfo,
   type Grid,
   type States,
   type Role,
@@ -54,6 +55,7 @@ import { ManningSheet } from './ManningSheet'
 import { EventRows } from './EventRows'
 import { EventSheet } from './EventSheet'
 import { monthInView } from './monthview'
+import { clampWin, growAtRest, runway, visibleSpan, windowAround, WINDOW_FROM_MONTHS, type ColWin } from './colwindow'
 import { wireSelect, wireMove, daysBetween, paintLanding, clearLanding, paintEventLanding, eventMoveDateAt, earliestDate, type Cell, type Selection, type SelectCtx } from './select'
 import { SettingsSheet } from './SettingsSheet'
 import { groupColorOf, inkFor } from './groupColor'
@@ -207,6 +209,8 @@ type PersonRowProps = {
   p: Person
   version: number
   period: Period
+  /** The DRAWN days — the column window's slice of `period.days` (colwindow.ts). */
+  days: DayInfo[]
   grid: Grid
   states: States
   role: Role
@@ -225,7 +229,7 @@ type PersonRowProps = {
   api: MutableRefObject<RowApi>
 }
 
-const PersonRow = memo(function PersonRow({ p, period, grid, states, role, viewer, deciding, movedShown, shown, figureCtx, evKind, lockedCols, quals, me, arranging, dragging, over, api }: PersonRowProps) {
+const PersonRow = memo(function PersonRow({ p, period, days, grid, states, role, viewer, deciding, movedShown, shown, figureCtx, evKind, lockedCols, quals, me, arranging, dragging, over, api }: PersonRowProps) {
   const has = quals.length > 0
   // The selected figure's value for this person, derived on every render
   // rather than cached: it has to move the instant a bid is placed, because a
@@ -305,7 +309,7 @@ const PersonRow = memo(function PersonRow({ p, period, grid, states, role, viewe
       >
         {show(v)}
       </td>
-      {period.days.map(d => {
+      {days.map(d => {
         const code = grid[p.id]?.[d.date] ?? ''
         const here = inSquadron(p, d.date)
         // `here` is false on both sides of the roster window. Before `from`
@@ -851,13 +855,76 @@ export function Matrix() {
 
   const months = monthsIn(period.start, period.end)
 
+  // ---- THE COLUMN WINDOW (Phase 2 of the speed work, 3 Sep 26) -------------
+  // Which months are DRAWN. Arithmetic and the why in colwindow.ts; here is the
+  // measuring and the scrolling. `null` = the whole war: a short war, or no
+  // layout at all — jsdom reports every rect 0×0, so the lazy initialiser sees
+  // no width and the unit suites keep seeing the full year exactly as before;
+  // the browser gate is what proves the window. Everything that reads "the
+  // columns" below reads `drawnDays` / `drawnDates` / `drawnMonths`; the full
+  // `dates` stays for what is about the WAR, not the screen — the manning
+  // verdicts, the lock set, the sheets' date spans, the "365 days" caption.
+  const hasLayout = () => typeof document !== 'undefined' && document.documentElement.getBoundingClientRect().width > 0
+  const [colWinRaw, setColWin] = useState<ColWin | null>(() => (hasLayout() ? windowAround(months.length, 0) : null))
+  // The stored window is only ever read CLAMPED to the current war's months:
+  // a war switch renders once with the old window against the new months
+  // before the reset effect below lands, and a one-month war under a stale
+  // {0,3} must draw whole, not index past its months (a real crash found by
+  // the "creates a leave war" browser test — the grid vanished behind an
+  // error, and the picker with it).
+  const colWin = colWinRaw && months.length >= WINDOW_FROM_MONTHS ? clampWin(colWinRaw, months.length) : null
+  const colWinRef = useRef(colWin)
+  colWinRef.current = colWin
+  const monthIndexOf = (date: string): number => {
+    const k = date.slice(0, 7)
+    const i = months.findIndex(m => m.first.slice(0, 7) === k)
+    return i < 0 ? 0 : i
+  }
+  const drawnMonths = colWin ? months.slice(colWin.lo, colWin.hi + 1) : months
+  const drawnDays = useMemo(() => {
+    if (!colWin) return period.days
+    const from = months[colWin.lo]!.first.slice(0, 7), to = months[colWin.hi]!.first.slice(0, 7)
+    return period.days.filter(d => { const k = d.date.slice(0, 7); return k >= from && k <= to })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [colWin?.lo, colWin?.hi, version])
+  const drawnDates = useMemo(() => drawnDays.map(d => d.date), [drawnDays])
+  // The LIVE columns for anything that runs off a timer or a listener — the
+  // scroll-rest measure, the pre-grow, a resize. Those closures are minted
+  // by an earlier render, and the window can change between the event and
+  // the callback (the 250 ms pre-grow fires right after the first open; a
+  // store change can land mid-scroll): measured against the closure's own,
+  // by-then-stale column list, a month that IS drawn reads as absent and
+  // the measure silently no-ops. Closed as a hazard while chasing a gate
+  // failure that turned out to be the test's own year-wide assumption; kept
+  // because the hazard is real. Every measure reads this ref, never its
+  // closure.
+  const liveRef = useRef({ drawnMonths, drawnDates, people })
+  liveRef.current = { drawnMonths, drawnDates, people }
+  const coarsePointer = () => typeof window.matchMedia === 'function' && window.matchMedia('(pointer: coarse)').matches
+  // A month-strip jump to an undrawn month: draw around it first, scroll once
+  // those columns exist (the anchor layout effect below finishes it).
+  const pendingJumpRef = useRef<string | null>(null)
+  // A window change that moved columns LEFT of the viewport: the anchor
+  // correction must run even on a coarse pointer (the fling is already dead —
+  // the window only grows left there once the scroll sits at its bound).
+  const colShiftRef = useRef(false)
+  // A different war is a different set of months: start its window over.
+  const warRef = useRef(period.id)
+  useEffect(() => {
+    if (warRef.current === period.id) return
+    warRef.current = period.id
+    const next = hasLayout() ? windowAround(months.length, 0) : null
+    setColWin(prev => (prev && next && prev.lo === next.lo && prev.hi === next.hi ? prev : next))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [period.id])
+
   // The month BRACKET above the dates (owner, 18 Aug 26 — "draw a line at the
   // top of the dates that bracket the month u are looking at"): one spanning
   // cell per month, derived from the loaded days so a partial first or last
   // month brackets exactly the days it actually has on screen.
   const brackets = (() => {
     const out: { key: string; label: string; count: number }[] = []
-    for (const d of dates) {
+    for (const d of drawnDates) {
       const key = d.slice(0, 7)
       const last = out[out.length - 1]
       if (last && last.key === key) last.count++
@@ -889,8 +956,19 @@ export function Matrix() {
 
   const jumpTo = (date: string) => {
     const wrap = wrapRef.current
+    if (!wrap) return
+    const win = colWinRef.current
+    const mi = monthIndexOf(date)
+    if (win && (mi < win.lo || mi > win.hi)) {
+      // Not drawn yet. Draw a window around it; the anchor layout effect
+      // scrolls to the cell in the same commit those columns appear.
+      pendingJumpRef.current = date
+      anchorRef.current = null
+      setColWin(windowAround(months.length, mi))
+      return
+    }
     const cell = headCell(date)
-    if (!wrap || !cell) return
+    if (!cell) return
     // Mark this as a jump so the anchor correction below re-centres it even on
     // touch (see jumpAtRef): a jump can cross many month boundaries at once,
     // hiding rows and shrinking columns enough to leave the target far off the
@@ -1257,7 +1335,7 @@ export function Matrix() {
     // pinning the OLD widths would sit misaligned over the new ones.
     // `folded` (28 Aug 26) is the same kind of row-set change — minimising a
     // category takes its rows (and their chips) out of the table.
-  }, [period.id, dates.length, zoom, visWindow, folded])
+  }, [period.id, drawnDates.length, zoom, visWindow, folded])
 
   // The mirror starts life at the grid's current horizontal position, and the
   // two scrollers keep each other in lockstep from then on. Assigning an
@@ -1298,7 +1376,7 @@ export function Matrix() {
       window.removeEventListener('resize', measureHbar)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [phone, zoom, visWindow, period.id, dates.length, countsOpen, folded])
+  }, [phone, zoom, visWindow, period.id, drawnDates.length, countsOpen, folded])
   // The mirror FOLLOWS the grid and never drives it (owner, 20 Aug 26 — the
   // sixth report, and the one that found it: "when the top bar freezes the
   // sideways scroll can only move a bit and halts quickly"). It used to be a
@@ -1467,7 +1545,7 @@ export function Matrix() {
           </span>
         </button>
       </th>
-      {period.days.map(d => {
+      {drawnDays.map(d => {
         const mon = monthLabel(d.date)
         return (
           <th
@@ -1495,15 +1573,16 @@ export function Matrix() {
   // 365, which is what makes measuring this on every scroll event affordable.
   const readSpans = () => {
     const wrap = wrapRef.current
-    if (!wrap || months.length === 0 || dates.length === 0) return null
+    const { drawnMonths, drawnDates } = liveRef.current
+    if (!wrap || drawnMonths.length === 0 || drawnDates.length === 0) return null
     const headLeft = (date: string) =>
       headCell(date)?.getBoundingClientRect().left
-    const lastHead = headCell(dates[dates.length - 1])
+    const lastHead = headCell(drawnDates[drawnDates.length - 1])
     if (!lastHead) return null
-    const edges = months.map(m => headLeft(m.first))
+    const edges = drawnMonths.map(m => headLeft(m.first))
     if (edges.some(e => e === undefined)) return null
     const end = lastHead.getBoundingClientRect().right
-    const spans = months.map((m, i) => ({
+    const spans = drawnMonths.map((m, i) => ({
       label: m.label,
       left: edges[i]!,
       // A month runs up to where the next one starts; the last runs to the
@@ -1551,7 +1630,8 @@ export function Matrix() {
 
   const measureStripGeo = () => {
     const wrap = wrapRef.current
-    if (!wrap || months.length === 0 || dates.length === 0) { stripGeoRef.current = null; return }
+    const { drawnMonths, drawnDates } = liveRef.current
+    if (!wrap || drawnMonths.length === 0 || drawnDates.length === 0) { stripGeoRef.current = null; return }
     // The scroll-driven frozen bar (sdaActive) translates its day columns from 0
     // to -(--lwx-max)px across the grid's whole scroll range, so --lwx-max must
     // equal the grid's max scrollLeft — divided back out of the mirror table's
@@ -1566,8 +1646,8 @@ export function Matrix() {
     // viewport px -> content px: constant across any scroll position
     const contentL = (el: HTMLElement) => el.getBoundingClientRect().left - wr.left + sl
     const head = (d: string) => headCell(d)
-    const firsts = months.map(m => head(m.first))
-    const lastHead = head(dates[dates.length - 1]!)
+    const firsts = drawnMonths.map(m => head(m.first))
+    const lastHead = head(drawnDates[drawnDates.length - 1]!)
     if (!lastHead || firsts.some(e => !e)) { stripGeoRef.current = null; return }
     const edges = firsts.map(e => contentL(e!))
     const end = lastHead.getBoundingClientRect().right - wr.left + sl
@@ -1576,7 +1656,7 @@ export function Matrix() {
     // empty and let measureStrip no-op exactly as it did before.
     if (end <= edges[0]!) { stripGeoRef.current = null; return }
     stripGeoRef.current = {
-      spans: months.map((m, i) => ({
+      spans: drawnMonths.map((m, i) => ({
         label: m.label,
         left: edges[i]!,
         right: i + 1 < edges.length ? edges[i + 1]! : end,
@@ -1617,6 +1697,52 @@ export function Matrix() {
   // is invisible. Only from a real layout: jsdom reports every rect 0×0, the
   // spans have no width, and a zero-width "window" must leave visWindow at ''
   // (show everyone) rather than hide the whole roster.
+  // The first drawn column at or past the frozen edge, and where it sits —
+  // what a column-set change (rows hidden, months added or dropped on the
+  // left) puts back in the same place. Binary search — column lefts are
+  // monotonic — so ~9 rect reads. Shared by the row window and the column
+  // window so the two corrections cannot disagree.
+  const anchorNow = (wrap: HTMLElement): { date: string; left: number } | null => {
+    const { drawnDates } = liveRef.current
+    if (drawnDates.length === 0) return null
+    const viewL = wrap.getBoundingClientRect().left + frozenWidth(wrap)
+    const at = (i: number) => headCell(drawnDates[i])?.getBoundingClientRect().left ?? 0
+    let lo = 0, hi = drawnDates.length - 1, best = 0
+    while (lo <= hi) {
+      const mid = (lo + hi) >> 1
+      if (at(mid) >= viewL - 1) { best = mid; hi = mid - 1 } else lo = mid + 1
+    }
+    return { date: drawnDates[best]!, left: at(best) }
+  }
+
+  // Widen (or trim) the column window once the scroll has settled — see
+  // colwindow.ts `growAtRest` for the rules and why never mid-scroll. Reads
+  // the cached strip geometry (content space), so no rect read of its own
+  // beyond the anchor when the left edge is about to move.
+  const growColWin = () => {
+    const wrap = wrapRef.current
+    const win = colWinRef.current
+    if (!wrap || !win) return
+    if (!stripGeoRef.current) measureStripGeo()
+    const g = stripGeoRef.current
+    if (!g) return
+    const sl = wrap.scrollLeft
+    const vis = visibleSpan(g.spans, sl + g.frozen, sl + g.client)
+    if (!vis) return
+    const coarse = coarsePointer()
+    const next = growAtRest(
+      win, months.length,
+      { visLo: win.lo + vis.visLo, visHi: win.lo + vis.visHi, atLeftBound: sl < 2 },
+      { coarse, ...runway(coarse) },
+    )
+    if (next.lo === win.lo && next.hi === win.hi) return
+    if (next.lo !== win.lo) {
+      anchorRef.current = anchorNow(wrap)
+      colShiftRef.current = true
+    }
+    setColWin(next)
+  }
+
   const measureWindow = () => {
     const m = readSpans()
     if (!m) return
@@ -1625,28 +1751,21 @@ export function Matrix() {
       // >2px of overlap, not >0: a month jump aligns the next month's first
       // column to the frozen edge by integer scrollLeft, and a sub-pixel
       // sliver of the month being LEFT must not count as still viewing it.
+      const { drawnMonths, people } = liveRef.current
       const vis = spans
-        .map((s, i) => ({ s, key: months[i]!.first.slice(0, 7) }))
+        .map((s, i) => ({ s, key: drawnMonths[i]!.first.slice(0, 7) }))
         .filter(x => Math.min(x.s.right, viewR) - Math.max(x.s.left, viewL) > 2)
       if (vis.length) {
         const win = `${vis[0]!.key}|${vis[vis.length - 1]!.key}`
         const sig = people.filter(p => rowInWindow(p, win)).map(p => p.id).join(',')
         if (sig !== visSigRef.current) {
           // Capture where the FIRST VISIBLE DAY column sits NOW; the layout
-          // effect below puts it back after the repaint (see anchorRef). It
-          // has to be the day at the view's left edge, not the month's first
-          // day: a hidden row's chips widened columns on BOTH sides of any
+          // effect below puts it back after the repaint (see anchorRef and
+          // anchorNow: the day at the view's left edge, not the month's first
+          // day — a hidden row's chips widened columns on BOTH sides of any
           // other anchor, and compensating an off-screen one leaves the
-          // residual on screen. Binary search — column lefts are monotonic —
-          // so this is ~9 rect reads, and only on a row-set change.
-          const at = (i: number) =>
-            headCell(dates[i])?.getBoundingClientRect().left ?? 0
-          let lo = 0, hi = dates.length - 1, best = 0
-          while (lo <= hi) {
-            const mid = (lo + hi) >> 1
-            if (at(mid) >= viewL - 1) { best = mid; hi = mid - 1 } else lo = mid + 1
-          }
-          anchorRef.current = { date: dates[best]!, left: at(best) }
+          // residual on screen).
+          anchorRef.current = anchorNow(wrap)
           visSigRef.current = sig
           setVisWindow(win)
         }
@@ -1686,7 +1805,7 @@ export function Matrix() {
     syncHbar()
     startPump()
     if (idleRef.current) clearTimeout(idleRef.current)
-    idleRef.current = setTimeout(() => { idleRef.current = null; measureWindow() }, SCROLL_REST_MS)
+    idleRef.current = setTimeout(() => { idleRef.current = null; measureWindow(); growColWin() }, SCROLL_REST_MS)
   }
   useEffect(() => () => { if (idleRef.current) clearTimeout(idleRef.current); stopPump() }, [])
 
@@ -1697,8 +1816,13 @@ export function Matrix() {
   // second set of header lookups and rect reads on every first open (3 Sep 26).
   useEffect(() => {
     measureWindow()
+    // Pre-grow the runway a beat after the columns change (the first open
+    // draws two months; the first flick should find the third already there)
+    // — off the paint, so the open itself stays quick.
+    const t = setTimeout(growColWin, 250)
+    return () => clearTimeout(t)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [period.id, dates.length])
+  }, [period.id, drawnDates.length])
 
   // Everything else that moves a column edge, and so invalidates the cached
   // strip geometry: a zoom step (every width changes), a row-set reflow (the
@@ -1714,7 +1838,7 @@ export function Matrix() {
     window.addEventListener('resize', remeasure)
     return () => window.removeEventListener('resize', remeasure)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [zoom, visWindow, period.id, dates.length])
+  }, [zoom, visWindow, period.id, drawnDates.length])
 
   // Put the anchored column back after a row-set repaint (see anchorRef).
   // Layout effect, not effect: the correction must land in the same frame as
@@ -1744,21 +1868,36 @@ export function Matrix() {
   // mouse/trackpad (fine pointer, no touch inertia to protect) always
   // re-centres, so desktop is unchanged.
   useLayoutEffect(() => {
+    // A month-strip jump that had to draw its month first lands here, in the
+    // commit that drew it: the scroll the jump could not make yet.
+    const pj = pendingJumpRef.current
+    if (pj) {
+      pendingJumpRef.current = null
+      anchorRef.current = null
+      const wrap = wrapRef.current, cell = headCell(pj)
+      if (wrap && cell) {
+        jumpAtRef.current = Date.now()
+        wrap.scrollLeft += cell.getBoundingClientRect().left - wrap.getBoundingClientRect().left - frozenWidth(wrap)
+      }
+      return
+    }
     const a = anchorRef.current
     anchorRef.current = null
+    const colShift = colShiftRef.current
+    colShiftRef.current = false
     if (!a) return
     const wrap = wrapRef.current
     const cell = headCell(a.date)
     if (!wrap || !cell) return
-    const coarse = typeof window.matchMedia === 'function' && window.matchMedia('(pointer: coarse)').matches
+    const coarse = coarsePointer()
     // The window has to hold the programmatic scroll, the 120ms rest debounce
     // and the grid's repaint; 1200ms is comfortably clear of all three and
     // still far shorter than the gap before a deliberate follow-up flick.
     const fromJump = Date.now() - jumpAtRef.current < 1200
-    if (coarse && !fromJump) return
+    if (coarse && !fromJump && !colShift) return
     const shift = cell.getBoundingClientRect().left - a.left
     if (Math.abs(shift) > 1) wrap.scrollLeft += shift
-  }, [visWindow])
+  }, [visWindow, colWin?.lo, colWin?.hi])
 
   // Reserve exactly the month strip's own height on its sticky cell, so the
   // wrapped rows (three on a phone, more at a high zoom) never overflow into
@@ -1781,7 +1920,7 @@ export function Matrix() {
     measure()
     window.addEventListener('resize', measure)
     return () => window.removeEventListener('resize', measure)
-  }, [zoom, period.id, dates.length])
+  }, [zoom, period.id, drawnDates.length])
 
   // ---- the OPEN-BIDDING box (owner, 1 Sep 26) -----------------------------
   // A glowing dark-green rectangle around the columns open for bidding, so it
@@ -1802,15 +1941,21 @@ export function Matrix() {
   // as a day cell does when the year scrolls under the frozen columns.
   // Measured in the same layout signals as the month strip; jsdom (every rect
   // 0×0) leaves it null, which also keeps every geometry-free test honest.
-  const [bidBox, setBidBox] = useState<{ left: number; top: number; width: number; height: number } | null>(null)
+  const [bidBox, setBidBox] = useState<{ left: number; top: number; width: number; height: number; cutL: boolean; cutR: boolean } | null>(null)
   const measureBidBox = () => {
     const wrap = wrapRef.current, head = headRef.current
     if (!wrap || !head) return
     if (period.stage !== 'open') { setBidBox(prev => (prev ? null : prev)); return }
     const open = period.days.filter(d => inBidWindow(period, d.date))
-    if (open.length === 0) { setBidBox(prev => (prev ? null : prev)); return }
-    const fh = headCell(open[0]!.date)
-    const lh = headCell(open[open.length - 1]!.date)
+    if (open.length === 0 || drawnDates.length === 0) { setBidBox(prev => (prev ? null : prev)); return }
+    // Only the drawn part is measurable. A bound outside the window cuts that
+    // side of the box (matrix.css .cut-l / .cut-r) — no false edge at the seam.
+    const first = drawnDates[0]!, last = drawnDates[drawnDates.length - 1]!
+    const shown = open.filter(d => d.date >= first && d.date <= last)
+    if (shown.length === 0) { setBidBox(prev => (prev ? null : prev)); return }
+    const cutL = open[0]!.date < first, cutR = open[open.length - 1]!.date > last
+    const fh = headCell(shown[0]!.date)
+    const lh = headCell(shown[shown.length - 1]!.date)
     const table = wrap.querySelector<HTMLElement>('table.mx')
     if (!fh || !lh || !table) return
     const wr = wrap.getBoundingClientRect()
@@ -1825,8 +1970,8 @@ export function Matrix() {
     const left = fr.left - wr.left + wrap.scrollLeft
     const right = lr.right - wr.left + wrap.scrollLeft
     const top = hr.top - wr.top
-    const next = { left, top, width: right - left, height: tr.bottom - hr.top }
-    setBidBox(prev => (prev && prev.left === next.left && prev.top === next.top && prev.width === next.width && prev.height === next.height ? prev : next))
+    const next = { left, top, width: right - left, height: tr.bottom - hr.top, cutL, cutR }
+    setBidBox(prev => (prev && prev.left === next.left && prev.top === next.top && prev.width === next.width && prev.height === next.height && prev.cutL === next.cutL && prev.cutR === next.cutR ? prev : next))
   }
   useLayoutEffect(() => {
     measureBidBox()
@@ -1841,7 +1986,7 @@ export function Matrix() {
     // rect reads against an identity-guarded setState — nothing next to the
     // repaint that same commit already paid for.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [version, period.id, period.stage, period.bidFrom, period.bidTo, zoom, visWindow, dates.length, countsOpen, folded])
+  }, [version, period.id, period.stage, period.bidFrom, period.bidTo, zoom, visWindow, drawnDates.length, countsOpen, folded])
 
   // ---- the frozen roster columns, drawn ONCE (owner, 20 Aug 26 — the third
   // look at the sideways stutter) --------------------------------------------
@@ -1941,7 +2086,7 @@ export function Matrix() {
     window.addEventListener('resize', measure)
     return () => { ro?.disconnect(); window.removeEventListener('resize', measure) }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [bandActive, zoom, visWindow, period.id, dates.length, countsOpen, folded])
+  }, [bandActive, zoom, visWindow, period.id, drawnDates.length, countsOpen, folded])
 
   // Re-pinned on EVERY render, not on a dependency list: a bid placed, a
   // decision made or a figure switched can put a chip into a day cell or take
@@ -2078,7 +2223,7 @@ export function Matrix() {
       .filter(r => r.kind === 'person')
       .map(r => (r as { p: Person }).p.id)
       .filter(id => canEditRow(role, viewer, id)),
-    dates: () => dates,
+    dates: () => drawnDates,
     enabled: () => !arranging && !moveSel && !eventMoveSel && (role === 'admin' || period.stage === 'open'),
     onSelect: s => setSel(s),
     // Events are the admin's (the store refuses a member write anyway); a drag
@@ -2186,7 +2331,7 @@ export function Matrix() {
             {(countsOpen || (arranging && role === 'admin')) && (
               <CountRows
                 verdicts={verdicts}
-                dates={dates}
+                dates={drawnDates}
                 order={orderedManningIds()}
                 hidden={manningHidden}
                 arranging={arranging}
@@ -2244,7 +2389,7 @@ export function Matrix() {
                     </span>
                   </div>
                 </td>
-                <td className="mfill" colSpan={dates.length} />
+                <td className="mfill" colSpan={drawnDates.length} />
               </tr>
             </tbody>
             <tbody className="mxhead" ref={headRef}>
@@ -2254,7 +2399,7 @@ export function Matrix() {
             {/* Above the roster, below the header — an event is the REASON a
                 day is thin, so it reads right under the date it explains. */}
             <EventRows
-              days={period.days}
+              days={drawnDays}
               bands={period.bands}
               defs={eventDefs}
               rows={eventRows}
@@ -2274,7 +2419,7 @@ export function Matrix() {
                 // filtered list, so an emptied group takes its heading with
                 // it. visWindow '' (jsdom, first paint) shows everyone.
                 const roster = displayRoster().filter(p => rowInWindow(p, visWindow))
-                const span = 2 + dates.length
+                const span = 2 + drawnDates.length
                 let prevG: string | null = null
                 let prevCat = ''
                 return roster.map(p => {
@@ -2369,6 +2514,7 @@ export function Matrix() {
                         p={p}
                         version={version}
                         period={period}
+                        days={drawnDays}
                         grid={grid}
                         states={states}
                         role={role}
@@ -2397,7 +2543,7 @@ export function Matrix() {
               unless bidding is open and laid out. */}
           {bidBox && (
             <div
-              className="lw-bidbox"
+              className={`lw-bidbox${bidBox.cutL ? ' cut-l' : ''}${bidBox.cutR ? ' cut-r' : ''}`}
               data-testid="bid-box"
               aria-hidden="true"
               style={{ left: bidBox.left, top: bidBox.top, width: bidBox.width, height: bidBox.height }}

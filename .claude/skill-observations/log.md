@@ -868,3 +868,18 @@ gate's. Keep verdict-bearing commands unpiped.
 **Suggested improvement:** For any "why is X slow" question: refuse to name a cause before one profile + one phase-split trace exist; report the split as a table; only then rank fixes. Include the React-specific checks that were decisive here — (a) does a local UI state change re-render a large memo-less tree, (b) do mount-time measurements store state that re-renders it, (c) are DOM queries scoped to the smallest subtree.
 
 **Principle:** A mechanism that could explain the symptom is a hypothesis, not a diagnosis; the recommendation follows the measurement, never the story.
+
+### Observation 56: The after-measurement must cover every interaction, not the headline
+
+**Status:** OPEN
+**Date:** 2026-09-03
+**Session context:** Leave War column window (Phase 2) — the first open dropped 5.7 s → 3.8 s at 4x, but the same script showed the month jump unchanged (2.8 → 2.7 s): the windowed design moved a full-grid rebuild from the open to every far jump
+**Skill:** New skill candidate: browser-perf-measurement (with observations 54, 55)
+**Type:** open-source
+**Phase/Area:** After-measurement / reporting
+
+**Issue:** A change that shrinks the headline cost can relocate it. Had the after-run measured only the first open, the jump regression-in-place would have been reported as a pure win and found by the owner on SIS instead.
+
+**Suggested improvement:** The measuring script is a fixed list of interactions (open, tap, close, jump, return, scroll) run identically before and after; the report is the whole table, with any row that did not improve called out and explained. A perf change is not done until every row is understood.
+
+**Principle:** Optimisation moves cost as often as it removes it; measure the same set of interactions before and after and report the ones that did not move.

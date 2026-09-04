@@ -5399,3 +5399,34 @@ no label. It marks which columns the squadron may bid on. The contract:
 
 Pinned in `e2e/leavewar.spec.ts` (real-browser: the box frames 1 Jan – 31 Mar
 with its left edge on the Jan 1 column, and clears when bidding closes).
+
+## The Leave War grid draws a window of months (3 Sep 26)
+
+The year grid draws WHOLE MONTHS at their REAL widths, never the whole year
+at once (`src/leavewar/ui/colwindow.ts`; the measuring in `Matrix.tsx`).
+The contract, in the order a reader meets it:
+
+- **First open draws January–February**; 250 ms later the window pre-grows
+  to its runway off the paint. A month-strip button draws that month and the
+  one after it and lands the month's first column at the frozen edge in the
+  same commit that draws it. A war shorter than five months is drawn whole.
+- **The window grows and prunes only at scroll REST** (the 120 ms idle the
+  row window already used), never mid-scroll. Runway: one month left / two
+  right on a fine pointer, two / two on touch; pruning keeps a month of
+  hysteresis. On a COARSE pointer the LEFT side grows only once the scroll
+  sits at its left bound and never prunes — a `scrollLeft` write is what
+  kills a fling, and columns changing left of the viewport need one.
+- **Every row spans exactly the drawn columns** — the header, the brackets,
+  the fills, the roster rows, the count rows and the event rows (a band that
+  began before the window is emitted from the first drawn day). Pinned in
+  the e2e as "no row's colSpan sum differs from 2 + the drawn day count".
+- **The open-bidding box clips at the seam**: a bound outside the drawn
+  months cuts that side (`.lw-bidbox.cut-l` / `.cut-r`, a clip-path so the
+  halo cannot ghost a false edge), the other sides keep their glow.
+- **What is NOT windowed**: the manning verdicts (all 365 days), the lock
+  set, a sheet's date span, the "N days" caption — those are about the war.
+- **jsdom draws the whole year** (its rects are 0×0, so the window's lazy
+  initialiser sees no layout); the arithmetic is unit-tested and the
+  measuring is proved in the browser gate on both projects.
+- The desktop bottom scrollbar spans the DRAWN months; the month strip is
+  the year-level navigation.

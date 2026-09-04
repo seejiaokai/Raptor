@@ -435,7 +435,11 @@ test('the matrix stays within a sane DOM size', async ({ page }) => {
   // instead of passing by accident. The lower bound is a real floor too: a
   // grid that quietly went back to the 16-person seed roster would sit near
   // 10350 and this would catch it.
-  expect(nodes).toBeGreaterThan(20000)
+  // The grid draws a WINDOW of months (colwindow.ts, 3 Sep 26): two at the
+  // open, four once the runway pre-grows — ~4.4k–8.8k nodes, where the whole
+  // year was ~25k. The floor still proves the grid is really drawn; the
+  // ceiling is the old one, now a generous "nothing regressed to the year".
+  expect(nodes).toBeGreaterThan(3000)
   expect(nodes).toBeLessThan(29000)
 
   await page.locator('[data-testid="cell-ammo-2026-02-11"]').click()
@@ -468,8 +472,16 @@ test('a month button scrolls the grid to that month', async ({ page }) => {
   expect(await wrap.evaluate(el => el.scrollLeft)).toBe(0)
 
   await page.locator('[data-testid="month-SEP"]').click()
-  const scrolled = await wrap.evaluate(el => el.scrollLeft)
-  expect(scrolled).toBeGreaterThan(5000)
+  // The grid draws a WINDOW of months (colwindow.ts, 3 Sep 26): a jump to
+  // September draws Sep–Oct and lands Sep 1 at the frozen edge — which, with
+  // September the first drawn month, is scrollLeft 0, not the 6,000-odd px a
+  // year-wide scroller once travelled. The landing is the claim (below), and
+  // the draw+scroll lands a render after the click, so it is polled first.
+  await expect.poll(async () => {
+    const h = await page.locator('[data-testid="head-2026-09-01"]').boundingBox()
+    const b = await page.locator('.mx .mxhead th.bal').boundingBox()
+    return h && b ? Math.round(h.x - (b.x + b.width)) : -999
+  }, { timeout: 5000 }).toBeGreaterThanOrEqual(-1)
 
   // Landing near the month is not enough: the day has to be ON SCREEN and
   // clear of the two frozen columns, which are painted OVER the day cells.
@@ -487,10 +499,18 @@ test('a month button scrolls the grid to that month', async ({ page }) => {
 // gets wrong once the grid is already scrolled.
 test('a month button works from wherever the grid already is', async ({ page }) => {
   await page.locator('[data-testid="month-SEP"]').click()
-  const atSep = await page.locator('.mx-wrap').evaluate(el => el.scrollLeft)
+  await expect(page.locator('[data-testid="head-2026-09-01"]')).toHaveCount(1)
   await page.locator('[data-testid="month-MAR"]').click()
-  const atMar = await page.locator('.mx-wrap').evaluate(el => el.scrollLeft)
-  expect(atMar).toBeLessThan(atSep)
+  // Each jump draws its own window and lands its month at the frozen edge;
+  // two jumps' scroll offsets are not comparable (each is "the start of its
+  // own window"), so the landing is the claim — polled, because the
+  // draw+scroll lands a render after the click.
+  await expect.poll(async () => {
+    const h = await page.locator('[data-testid="head-2026-03-01"]').boundingBox()
+    const b = await page.locator('.mx .mxhead th.bal').boundingBox()
+    return h && b ? Math.round(h.x - (b.x + b.width)) : -999
+  }, { timeout: 5000 }).toBeGreaterThanOrEqual(-1)
+  await expect(page.locator('[data-testid="head-2026-09-01"]')).toHaveCount(0)
 
   const head = (await page.locator('[data-testid="head-2026-03-01"]').boundingBox())!
   const bal = (await page.locator('.mx .mxhead th.bal').boundingBox())!
@@ -1206,6 +1226,10 @@ test('switching leave war repaints the grid and keeps the balance', async ({ pag
   const before = await page.locator('[data-testid="bal-harpoon"]').textContent()
 
   await page.selectOption('[data-testid="war-picker"]', { label: 'JAN - DEC 27' })
+  // A war opens on its first months (the column window); April is reached
+  // the way a reader reaches it, by the strip.
+  await expect(page.locator('[data-testid="head-2027-01-01"]')).toHaveCount(1)
+  await page.locator('[data-testid="month-APR"]').click()
   await expect(page.locator('[data-testid="cell-harpoon-2027-04-13"]')).toHaveText('LL')
   await expect(page.locator('[data-testid="cell-slipway-2026-01-01"]')).toHaveCount(0)
 
@@ -1280,9 +1304,14 @@ test('overlapping dates are refused, with the reason on screen', async ({ page }
 test('a locked column is visibly dimmer than an open one, and still readable', async ({ page }) => {
   const open = page.locator('[data-testid="head-2026-02-11"]')
   const locked = page.locator('[data-testid="head-2026-08-11"]')
+  // Read the open column first (drawn at the open), then jump to August for
+  // the locked one — the grid draws a window of months (colwindow.ts).
+  const openOpacity = await open.evaluate(el => Number(getComputedStyle(el).opacity))
+  await page.locator('[data-testid="month-AUG"]').click()
+  await expect(locked).toHaveCount(1)
   const opacity = (l: typeof open) => l.evaluate(el => Number(getComputedStyle(el).opacity))
 
-  expect(await opacity(open)).toBe(1)
+  expect(openOpacity).toBe(1)
   const dim = await opacity(locked)
   expect(dim).toBeLessThan(1)
   // Dimmed, not hidden. Seeing the rest of the year is the entire reason the
@@ -1295,6 +1324,8 @@ test('a locked column is visibly dimmer than an open one, and still readable', a
 test('an admin sees no lock, because the window does not bind them', async ({ page }) => {
   await lwRole(page, 'admin')
   const locked = page.locator('[data-testid="head-2026-08-11"]')
+  await page.locator('[data-testid="month-AUG"]').click()
+  await expect(locked).toHaveCount(1)
   expect(await locked.evaluate(el => Number(getComputedStyle(el).opacity))).toBe(1)
 })
 
@@ -1901,7 +1932,17 @@ test('the lit month follows a real scroll', async ({ page }) => {
   expect(await litMonths(page)).toEqual(['SEP'])
 
   // And a plain drag of the scroller, which no button was involved in.
+  // The scroller spans the DRAWN months (colwindow.ts): scrolling to 0 lands
+  // on the window's first month, not January — read which off the header,
+  // then the readout must agree with a real scroll to each bound.
+  const firstDrawn = () => page.evaluate(() => {
+    const th = document.querySelector('.mx-wrap .mxhead th[data-testid^="head-"]') as HTMLElement
+    return ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'][Number(th.dataset.testid!.slice(10, 12)) - 1]
+  })
   await wrap.evaluate(el => el.scrollTo({ left: 0, behavior: 'instant' as ScrollBehavior }))
+  await settle()
+  expect(await litMonths(page)).toEqual([await firstDrawn()])
+  await page.locator('[data-testid="month-JAN"]').click()
   await settle()
   expect(await litMonths(page)).toEqual(['JAN'])
 })
@@ -2230,7 +2271,9 @@ test('on a phone the header freezes under the top bar and thaws on the way back'
 
 test('the phone zoom steps the whole grid down and back', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'lw-phone', 'the control is phone-only')
-  const width = () => page.evaluate(() => document.querySelector('.mx-wrap table.mx')!.getBoundingClientRect().width)
+  // One column's width, not the table's: the table also grows as the column
+  // window adds months at rest (colwindow.ts), which is not what zoom claims.
+  const width = () => page.evaluate(() => document.querySelector('.mx-wrap [data-testid="head-2026-01-15"]')!.getBoundingClientRect().width)
   const before = await width()
   await page.locator('[data-testid="lw-zoom-out"]').click()
   await page.locator('[data-testid="lw-zoom-out"]').click()
@@ -2273,6 +2316,9 @@ test('tagging a typed event colours the day without minting a type', async ({ pa
 // month-window filter is pinned here.
 test('posting out tags the last day, and the row leaves the months after it', async ({ page }) => {
   await lwRole(page, 'admin')
+  // June is outside the months drawn at open (colwindow.ts): reach it the way
+  // a reader does, by the month strip, then the cell exists to tap.
+  await page.locator('[data-testid="month-JUN"]').click()
   await page.locator('[data-testid="cell-slipway-2026-06-15"]').click()
   await page.locator('[data-testid="bid-postout"]').click()
   // The switch is ON by default; this test flips it off (the custom case) —
@@ -2324,6 +2370,12 @@ test('the roster does not reflow mid-scroll, only once the scroll settles', asyn
   // A synchronous burst deep past January (scrollLeft clamps to the far right,
   // well beyond IGNITE's only month). No settle timer can fire inside the
   // loop, so the row is guaranteed still present the instant it ends.
+  // The scroller spans the DRAWN months (colwindow.ts): wait for March to be
+  // drawn (the runway pre-grows a beat after the open) so the far bound puts
+  // January — the posted-out man's last month — off screen. At the bound of a
+  // Jan–Feb window a wide screen still shows January, and the roster is then
+  // RIGHT to keep him.
+  await expect(page.locator('[data-testid="head-2026-03-01"]')).toHaveCount(1, { timeout: 5000 })
   const stillThere = await page.evaluate(() => {
     const el = document.querySelector('.mx-wrap') as HTMLElement
     for (let i = 0; i < 30; i++) { el.scrollLeft = 12000 + i * 100; el.dispatchEvent(new Event('scroll')) }
@@ -2548,4 +2600,54 @@ test('a glowing green box frames the open-bidding window and clears when bidding
   await page.locator('[data-testid="stage-advance"]').click()
   await expect(page.locator('[data-testid="stage-now"]')).toHaveText('BIDDING CLOSED')
   await expect(box).toHaveCount(0)
+})
+
+// ---- the column window (Phase 2 of the speed work, 3 Sep 26) --------------
+// The grid draws a WINDOW of whole months at their real widths and grows it
+// once a scroll comes to rest; a month-strip jump draws its month first. The
+// arithmetic is unit-tested (colwindow.test.ts); this proves the measuring
+// and the scrolling around it in a real layout, on both projects. Every
+// number here is read, not assumed: the drawn months come off the header
+// testids and the row alignment off the cells' colSpans.
+test('the grid draws a window of months, keeps every row aligned, and grows at rest', async ({ page }) => {
+  const read = () => page.evaluate(() => {
+    const heads = [...document.querySelectorAll('.mx-wrap .mxhead th[data-testid^="head-"]')].map(e => (e as HTMLElement).dataset.testid!.slice(5))
+    const months = [...new Set(heads.map(d => d.slice(0, 7)))]
+    // every roster / event / count row spans exactly the drawn columns + the
+    // two frozen ones — a band that began before the window, or a row that
+    // still walked the whole year, would break this
+    const rows = [...document.querySelectorAll('.mx-wrap table.mx tbody tr')]
+      .filter(tr => !tr.classList.contains('grp') && !tr.classList.contains('catsub') && !tr.classList.contains('mbrak'))
+    const misaligned = rows.filter(tr => [...tr.children].reduce((n, c) => n + ((c as HTMLTableCellElement).colSpan || 1), 0) !== 2 + heads.length).length
+    return { months, heads: heads.length, misaligned, rows: rows.length }
+  })
+
+  const open = await read()
+  expect(open.months.length).toBeGreaterThanOrEqual(2)
+  expect(open.months.length).toBeLessThanOrEqual(4)     // Jan–Feb, plus the runway once it pre-grows
+  expect(open.months[0]).toBe('2026-01')
+  expect(open.misaligned).toBe(0)
+  expect(open.rows).toBeGreaterThan(20)
+
+  // a jump draws its month (and only around it): September exists, January does not
+  await page.locator('[data-testid="month-SEP"]').click()
+  await expect(page.locator('[data-testid="head-2026-09-01"]')).toHaveCount(1)
+  await expect.poll(async () => (await read()).months.includes('2026-01')).toBe(false)
+  const sep = await read()
+  expect(sep.months).toContain('2026-09')
+  expect(sep.misaligned).toBe(0)
+
+  // scroll to the window's right bound and rest: the window grows to the right
+  const before = sep.months.length
+  await page.locator('.mx-wrap').evaluate(el => { el.scrollLeft = el.scrollWidth })
+  await expect.poll(async () => (await read()).months.length, { timeout: 4000 }).toBeGreaterThanOrEqual(before)
+  const grown = await read()
+  expect(grown.misaligned).toBe(0)
+  expect(grown.months[grown.months.length - 1] >= sep.months[sep.months.length - 1]!).toBe(true)
+
+  // back to January by the strip: January is drawn again and December is not
+  await page.locator('[data-testid="month-JAN"]').click()
+  await expect(page.locator('[data-testid="head-2026-01-01"]')).toHaveCount(1)
+  await expect.poll(async () => (await read()).months.includes('2026-12')).toBe(false)
+  expect((await read()).misaligned).toBe(0)
 })

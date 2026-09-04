@@ -548,18 +548,22 @@ this. As of 30 Aug 26 he has closed it.
 
 ## Deliberately deferred to later plans
 
-- **The grid is still drawn WHOLE — twelve months of columns for every row
-  (3 Sep 26).** Phase 1 of the speed work halved the first open and took the
-  grid out of every tap (the roster row is a memoised `PersonRow`; see
-  `HANDOFF.md` §Known issues, the Leave War speed entry, for the measured
-  before/after). What remains of the first open is the browser's one
-  style+layout of ~18k cells, and that only shrinks by drawing fewer of them:
-  a ~three-month column window is the deferred Phase 2. Until it lands, the
-  memo CONTRACT is the thing to keep: a row is a pure function of its props,
-  every prop is a primitive or an object whose identity changes only with the
-  store `version`, and event handlers reach the Matrix through the one
-  `rowApi` ref — a new per-render object or function prop silently brings
-  back the 18k-cell rebuild on every tap.
+- **The grid draws a WINDOW of months, and the scroller spans the window
+  (3 Sep 26, Phase 2 of the speed work).** `ui/colwindow.ts` is the
+  arithmetic, `Matrix.tsx` the measuring; `HANDOFF.md` §Known issues (the
+  Leave War speed entry) carries the measured before/after and what is still
+  open. Two things to keep: the ROW memo contract (a `PersonRow` is a pure
+  function of its props, every prop a primitive or an object whose identity
+  changes only with the store `version`, handlers through the one `rowApi`
+  ref — a per-render object or function prop silently brings back the
+  whole-grid rebuild on every tap), and the COLUMN rule (anything that reads
+  "the columns" reads `drawnDays` / `drawnDates` / `drawnMonths`; anything
+  about the WAR — the verdicts, the lock set, a sheet's date span — reads the
+  full `dates`; on a coarse pointer the window never grows on the left except
+  at the left bound, because a `scrollLeft` write mid-fling kills the fling).
+  Known and accepted: the desktop bottom scrollbar walks the drawn months, not
+  the year (the month strip crosses the year); a far month jump rebuilds every
+  row's cells and is not faster than before.
 
 - **The day's overall verdict is computed and not shown.** `evaluateDay`
   produces a worst-across-all-rules verdict per day, and the interface still
