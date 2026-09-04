@@ -2544,38 +2544,59 @@ test('rapid undo/redo settle to a consistent grid', async ({ page }) => {
 })
 
 // The tab is KEPT ALIVE between visits (owner, 1 Sep 26 — "the leave war tab
-// is slow to open"): a tab switch hides the section instead of unmounting it,
-// so the year grid is built once per session and a return is near-instant.
+// is slow to open"): a tab switch HIDES the section instead of unmounting it,
+// so the grid is the SAME DOM node on return, never rebuilt from scratch.
 // jsdom pins the mount/hide/show shape (src/ui/lwkeepalive.test.tsx); this
-// pins what only a layout engine can see — the grid REALLY is the same one
-// (its sideways scroll survives the round trip), and its measurements are
-// still live afterwards (a month jump still moves the grid and lights its
-// button), with no page error across the switch.
-test('a tab switch keeps the grid alive: same sideways spot on return, measurements still live', async ({ page }) => {
+// pins what only a layout engine can see — the node's identity survives the
+// round trip and its measurements are still live afterwards (a month jump
+// still moves the grid), with no page error across the switch.
+//   The DESKTOP additionally SHRINKS the drawn window while hidden and rebuilds
+// the year on return (owner, 5 Sep 26 — so the browser wakes a small grid, not
+// the whole year), so its sideways PIXEL is not preserved — the same MONTH is.
+// The PHONE windows differently and keeps its exact sideways spot.
+const monthsDrawnCount = (page: import('@playwright/test').Page) => page.evaluate(() =>
+  new Set([...document.querySelectorAll('#page-leavewar .mx-wrap .mxhead th[data-testid^="head-"]')]
+    .map(e => (e as HTMLElement).dataset.testid!.slice(5, 12))).size)
+
+test('a tab switch keeps the grid alive: the same node returns, shrinks-and-rebuilds on desktop, measurements still live', async ({ page }) => {
   const errors: string[] = []
   page.on('pageerror', e => errors.push(e.message))
+  const desktop = !isPhone()
+  // desktop fills the whole year while viewed; give it a beat to do so
+  if (desktop) await expect.poll(() => monthsDrawnCount(page), { timeout: 9000 }).toBe(12)
+
   await page.evaluate(() => { document.querySelector<HTMLElement>('#page-leavewar .mx-wrap')!.scrollLeft = 600 })
-  await page.waitForTimeout(250)
+  await page.waitForTimeout(300)
   const before = await page.evaluate(() => Math.round(document.querySelector('#page-leavewar .mx-wrap')!.scrollLeft))
   expect(before).toBeGreaterThan(0)
+  // tag the grid node so we can prove the SAME one returns (not a rebuild)
+  await page.evaluate(() => { (window as any).__mx = document.querySelector('#page-leavewar .mx-wrap') })
 
   await go(page, 'viewsched')
-  // hidden, not torn down
   await expect(page.locator('#page-leavewar')).toBeHidden()
   expect(await page.evaluate(() => !!document.querySelector('#page-leavewar .mx-wrap'))).toBe(true)
+  // desktop: the window shrank while hidden, so the next reveal wakes a small grid
+  if (desktop) await expect.poll(() => monthsDrawnCount(page), { timeout: 4000 }).toBeLessThanOrEqual(6)
 
   await go(page, 'leavewar')
   await expect(page.locator('[data-testid="row-slipway"]')).toBeVisible()
-  // the same grid: its sideways position survived the round trip
-  const after = await page.evaluate(() => Math.round(document.querySelector('#page-leavewar .mx-wrap')!.scrollLeft))
-  expect(Math.abs(after - before)).toBeLessThanOrEqual(2)
+  // the SAME grid node — kept alive, never torn down and rebuilt
+  expect(await page.evaluate(() => document.querySelector('#page-leavewar .mx-wrap') === (window as any).__mx)).toBe(true)
+  if (desktop) {
+    // rebuilds the whole year on return
+    await expect.poll(() => monthsDrawnCount(page), { timeout: 9000 }).toBe(12)
+  } else {
+    // the phone keeps its exact sideways spot
+    const after = await page.evaluate(() => Math.round(document.querySelector('#page-leavewar .mx-wrap')!.scrollLeft))
+    expect(Math.abs(after - before)).toBeLessThanOrEqual(2)
+  }
 
-  // measurements are still live after the hidden spell: a month jump moves
-  // the grid and the readout follows it
+  // measurements are still live after the hidden spell: a month jump moves the grid
+  const pos = await page.evaluate(() => Math.round(document.querySelector('#page-leavewar .mx-wrap')!.scrollLeft))
   await page.locator('[data-testid="month-strip"] .mjump').nth(4).click()
   await page.waitForTimeout(400)
   const jumped = await page.evaluate(() => Math.round(document.querySelector('#page-leavewar .mx-wrap')!.scrollLeft))
-  expect(jumped).not.toBe(after)
+  expect(jumped).not.toBe(pos)
   expect(errors, 'no page error across the tab switch').toEqual([])
 })
 
@@ -2640,7 +2661,10 @@ test('the grid draws a window of months, keeps every row aligned, and grows at r
 
   const open = await read()
   expect(open.months.length).toBeGreaterThanOrEqual(2)
-  expect(open.months.length).toBeLessThanOrEqual(4)     // Jan–Feb, plus the runway once it pre-grows
+  // A small window, never the whole year: the open draws two, then the fill /
+  // the phone's rolling prefetch widens it a few months ahead a beat later
+  // (owner, 5 Sep 26). Well under the twelve a full year would show.
+  expect(open.months.length).toBeLessThanOrEqual(6)
   expect(open.months[0]).toBe('2026-01')
   expect(open.misaligned).toBe(0)
   expect(open.rows).toBeGreaterThan(20)

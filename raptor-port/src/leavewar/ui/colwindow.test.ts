@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { clampWin, fillStep, growAtRest, inWindow, isFullYear, runway, visibleSpan, windowAround, WINDOW_FROM_MONTHS } from './colwindow'
+import { clampWin, fillStep, growAtRest, inWindow, isFullYear, rollingTarget, runway, stepToward, visibleSpan, windowAround, WINDOW_FROM_MONTHS } from './colwindow'
 
 // The column window's arithmetic, proved here because jsdom lays nothing out:
 // the browser gate (e2e/leavewar.spec.ts) proves the measuring and the
@@ -85,6 +85,44 @@ describe('fillStep / isFullYear (the desktop background fill)', () => {
     let w = { lo: 4, hi: 5 }
     for (let i = 0; i < 12; i++) w = fillStep(w, 12)
     expect(w).toEqual({ lo: 0, hi: 11 })
+  })
+})
+
+describe('stepToward / rollingTarget (the one draw-toward-a-target engine)', () => {
+  it('grows the right edge first, then the left, one month per call', () => {
+    // toward the whole year (the desktop fill target) — same shape as fillStep
+    expect(stepToward({ lo: 0, hi: 1 }, 12, 0, 11)).toEqual({ lo: 0, hi: 2 })
+    expect(stepToward({ lo: 5, hi: 11 }, 12, 0, 11)).toEqual({ lo: 4, hi: 11 })
+    // toward a rolling window ahead of the view — grows the right edge out
+    expect(stepToward({ lo: 3, hi: 5 }, 12, 3, 8)).toEqual({ lo: 3, hi: 6 })
+  })
+  it('prunes back one month per call once past the target, past the hysteresis slack', () => {
+    // window sits well to the LEFT of a target that has moved right (scrolled on):
+    // grow the right edge toward it first...
+    expect(stepToward({ lo: 0, hi: 6 }, 12, 4, 9)).toEqual({ lo: 0, hi: 7 })
+    // ...and once the right edge is there, prune the stale LEFT months (target.lo 4,
+    // +1 hysteresis kept, so lo 2 is one past and gets trimmed)
+    expect(stepToward({ lo: 2, hi: 9 }, 12, 4, 9)).toEqual({ lo: 3, hi: 9 })
+    // trailing RIGHT months beyond the target prune too
+    expect(stepToward({ lo: 4, hi: 11 }, 12, 4, 8)).toEqual({ lo: 4, hi: 10 })
+  })
+  it('is a no-op inside [target ± hysteresis], so the loop terminates', () => {
+    expect(stepToward({ lo: 3, hi: 8 }, 12, 3, 8)).toEqual({ lo: 3, hi: 8 })
+    expect(stepToward({ lo: 2, hi: 9 }, 12, 3, 8)).toEqual({ lo: 2, hi: 9 }) // one month bigger each side, within slack — hold
+    expect(stepToward({ lo: 0, hi: 11 }, 12, 0, 11)).toEqual({ lo: 0, hi: 11 })
+  })
+  it('converges on any target from any window and then holds', () => {
+    let w = { lo: 0, hi: 1 }
+    for (let i = 0; i < 24; i++) w = stepToward(w, 12, 5, 9)
+    expect(w.lo).toBeGreaterThanOrEqual(4)   // 5 - 1 hysteresis
+    expect(w.hi).toBeLessThanOrEqual(10)     // 9 + 1 hysteresis
+    expect(w.lo).toBeLessThanOrEqual(5)
+    expect(w.hi).toBeGreaterThanOrEqual(9)
+  })
+  it('rollingTarget puts more runway ahead than behind, clamped to the war', () => {
+    expect(rollingTarget(12, 5, 5, 1, 3)).toEqual({ lo: 4, hi: 8 })
+    expect(rollingTarget(12, 0, 0, 1, 3)).toEqual({ lo: 0, hi: 3 })   // clamped at the year's start
+    expect(rollingTarget(12, 11, 11, 1, 3)).toEqual({ lo: 10, hi: 11 }) // and its end
   })
 })
 

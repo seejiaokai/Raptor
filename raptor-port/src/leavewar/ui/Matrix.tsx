@@ -55,7 +55,9 @@ import { ManningSheet } from './ManningSheet'
 import { EventRows } from './EventRows'
 import { EventSheet } from './EventSheet'
 import { monthInView } from './monthview'
-import { clampWin, fillStep, growAtRest, isFullYear, runway, visibleSpan, windowAround, WINDOW_FROM_MONTHS, type ColWin } from './colwindow'
+import { clampWin, growAtRest, isFullYear, rollingTarget, runway, stepToward, visibleSpan, windowAround, WINDOW_FROM_MONTHS, type ColWin } from './colwindow'
+import { isLwOnScreen, subLwScreen } from '../state/screen'
+import { msSinceInput } from '../../state/idle'
 import { wireSelect, wireMove, daysBetween, paintLanding, clearLanding, paintEventLanding, eventMoveDateAt, earliestDate, type Cell, type Selection, type SelectCtx } from './select'
 import { SettingsSheet } from './SettingsSheet'
 import { groupColorOf, inkFor } from './groupColor'
@@ -875,6 +877,22 @@ export function Matrix() {
   const colWin = colWinRaw && months.length >= WINDOW_FROM_MONTHS ? clampWin(colWinRaw, months.length) : null
   const colWinRef = useRef(colWin)
   colWinRef.current = colWin
+  // Is the Leave War tab on screen right now? A ref, not React state, so the
+  // fill loop below can read it every idle beat without a re-render, and
+  // flipping it (state/screen.ts) never repaints the ~25k-node grid. Seeded from
+  // the live signal so a first mount that is ALREADY the current page (a direct
+  // visit) starts on-screen, and a hidden pre-warm mount starts off-screen.
+  const onScreenRef = useRef(isLwOnScreen())
+  // The first drawn month the viewport currently overlaps (absolute index),
+  // tracked at every scroll rest — so when the tab is left we can shrink the
+  // drawn window to a few months AROUND where the reader was, not blindly.
+  const viewMonthRef = useRef(0)
+  // The visible drawn months (absolute indices) for the phone's rolling target —
+  // the window the prefetch keeps a runway ahead of.
+  const liveVisRef = useRef<{ lo: number; hi: number }>({ lo: 0, hi: 1 })
+  // Restart the background fill loop after it has parked (the tab was shown, or a
+  // scroll moved the phone's rolling target). Set by the fill effect each render.
+  const kickFillRef = useRef<() => void>(() => {})
   const monthIndexOf = (date: string): number => {
     const k = date.slice(0, 7)
     const i = months.findIndex(m => m.first.slice(0, 7) === k)
@@ -1845,16 +1863,23 @@ export function Matrix() {
     const sl = wrap.scrollLeft
     const vis = visibleSpan(g.spans, sl + g.frozen, sl + g.client)
     if (!vis) return
+    // Record where the reader is looking (absolute month indices) for the
+    // leave-prune and the phone's rolling target — see the fill effect and the
+    // on-screen effect below.
+    liveVisRef.current = { lo: win.lo + vis.visLo, hi: win.lo + vis.visHi }
+    viewMonthRef.current = liveVisRef.current.lo
     const coarse = coarsePointer()
     const next = growAtRest(
       win, months.length,
       { visLo: win.lo + vis.visLo, visHi: win.lo + vis.visHi, atLeftBound: sl < 2 },
       { coarse, ...runway(coarse) },
     )
-    // On desktop the background fill below is drawing the whole year, so this
-    // only ever GROWS the window (covering a fast scroll's view at once) — it
-    // must never prune a month the fill just added, or the two would fight. The
-    // phone keeps growAtRest's prune: its perf budget can't hold the year.
+    // Desktop while the tab is on screen: the background fill is drawing toward
+    // the whole year, so this only ever GROWS (covering a fast scroll's view at
+    // once) — it must never prune a month the fill just added, or the two would
+    // fight. The phone keeps growAtRest's prune as an at-rest backstop; the
+    // pre-emptive rolling prefetch (the fill effect) usually keeps the runway
+    // ahead so this finds nothing to grow.
     const grown = phone ? next : { lo: Math.min(next.lo, win.lo), hi: Math.max(next.hi, win.hi) }
     if (grown.lo === win.lo && grown.hi === win.hi) return
     if (grown.lo !== win.lo) {
@@ -1931,7 +1956,15 @@ export function Matrix() {
     syncHbar()
     startPump()
     if (idleRef.current) clearTimeout(idleRef.current)
-    idleRef.current = setTimeout(() => { idleRef.current = null; measureWindow(); growColWin() }, SCROLL_REST_MS)
+    idleRef.current = setTimeout(() => {
+      idleRef.current = null
+      measureWindow()
+      growColWin()
+      // Re-evaluate the fill target now the view has moved: on the phone the
+      // rolling window follows the new visible months, on desktop the fill keeps
+      // marching toward the whole year. Cheap when there is nothing left to draw.
+      kickFillRef.current()
+    }, SCROLL_REST_MS)
   }
   useEffect(() => () => { if (idleRef.current) clearTimeout(idleRef.current); if (hbarSettleRef.current) clearTimeout(hbarSettleRef.current); stopPump() }, [])
 
@@ -1950,25 +1983,41 @@ export function Matrix() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [period.id, drawnDates.length])
 
-  // BACKGROUND FILL (owner, 4 Sep 26 — "fill in the background", after the fast
-  // window still caught on a fresh draw as he scrolled). The open still draws
-  // two months; then, on DESKTOP only, this quietly widens the drawn window one
-  // month per idle beat until the whole year is up — so a beat later the reader
-  // scrolls real columns end to end with no catch, and the bottom scrollbar can
-  // slide instead of jump (see onHbarScroll). requestIdleCallback runs each step
-  // only when the main thread is free, so it self-pauses under an active scroll
-  // and never competes with a paint; a scroll within the last SCROLL_REST_MS
-  // holds it off too (the belt for the setTimeout fallback on browsers with no
-  // requestIdleCallback). The PHONE keeps the lazy runway window — the reason
-  // the window exists at all is that a phone can't hold the year and stay smooth.
-  // Re-runs on every window change, so it resumes after a month-strip / scrollbar
-  // JUMP shrinks the window, and stops the instant the year is whole. jsdom lays
-  // nothing out, so colWin is null (draw-whole) and this no-ops — the browser
-  // gate proves it. Once full, the grid is the ~full-year DOM again: heavier than
-  // the windowed grid, the cost the owner accepted for a smooth scroll.
+  // How many months the drawn window holds while the tab is HIDDEN (a pre-warm
+  // mount, or after the tab is left) — small, so the browser re-styles a few
+  // months on reveal instead of the whole year (owner, 5 Sep 26, after
+  // measurement showed the full-year reveal costs ~1.4s). The phone's rolling
+  // runway: a few months AHEAD of the finger, one behind.
+  const HIDDEN_MONTHS = 3
+  const PHONE_BEFORE = 1
+  const PHONE_AFTER = 3
+  // The pre-warm draws only while the user has been hands-off this long, so a
+  // draw never lands under a keystroke on the login-to-week path or a puck drag.
+  const PREWARM_IDLE_MS = 2000
+
+  // THE ONE DRAW-TOWARD-A-TARGET ENGINE (owner, 4–5 Sep 26 — "fill in the
+  // background", then "shrink when I leave, rebuild on return", then the phone's
+  // "load the next months as I approach the edge"). One idle loop, one target per
+  // mode, one month per beat — colwindow.ts `stepToward` is the arithmetic:
+  //   · phone → a ROLLING window a few months ahead of the visible ones
+  //     (`rollingTarget`), so a flick meets drawn columns, never the stuck edge,
+  //     and the trailing months are pruned so the phone's DOM stays light;
+  //   · desktop, tab ON screen → the WHOLE year, so scrolling runs end to end and
+  //     the bottom scrollbar slides (see onHbarScroll);
+  //   · desktop, tab OFF screen (a pre-warm mount, or just left) → capped at a few
+  //     months, and only drawn while the user is idle (`msSinceInput`) — this is
+  //     the pre-warm that makes the first open instant, and the small window that
+  //     makes the next return instant.
+  // requestIdleCallback runs each step only when the main thread is free (so it
+  // self-pauses under a scroll and never competes with a paint); a scroll within
+  // the last SCROLL_REST_MS holds it off too (the belt for the setTimeout
+  // fallback). The loop PARKS when the window already matches its target and is
+  // resumed by `kickFillRef` — from the on-screen effect (tab shown) and from
+  // scroll rest (the phone's target moved). jsdom lays nothing out, so colWin is
+  // null (draw-whole) and this no-ops; the browser gate proves it.
   const fillIdleRef = useRef<number | null>(null)
   useEffect(() => {
-    if (phone || !colWin || isFullYear(colWin, months.length)) return
+    if (!colWin) return
     let live = true
     const rideIdle = (fn: () => void): number =>
       typeof (window as { requestIdleCallback?: unknown }).requestIdleCallback === 'function'
@@ -1978,27 +2027,88 @@ export function Matrix() {
       typeof (window as { cancelIdleCallback?: unknown }).cancelIdleCallback === 'function'
         ? (window as unknown as { cancelIdleCallback: (id: number) => void }).cancelIdleCallback(id)
         : clearTimeout(id)
+    const schedule = () => { if (fillIdleRef.current == null) fillIdleRef.current = rideIdle(tick) }
     const tick = () => {
+      fillIdleRef.current = null
       if (!live) return
-      // Let a moving scroll settle first — a draw under the finger IS the freeze.
-      if (Date.now() - lastScrollTsRef.current < SCROLL_REST_MS + 40) { fillIdleRef.current = rideIdle(tick); return }
+      // A draw under a moving finger IS the freeze; and while the tab is hidden a
+      // draw must wait for the app to be genuinely idle, so it never lands under
+      // a keystroke or a puck drag on another page.
+      const atRest = Date.now() - lastScrollTsRef.current >= SCROLL_REST_MS + 40
+      const idleOk = onScreenRef.current || msSinceInput() > PREWARM_IDLE_MS
+      if (!atRest || !idleOk) { fillIdleRef.current = rideIdle(tick); return }
       const win = colWinRef.current
       if (!win) return
-      const next = fillStep(win, months.length)
-      if (next.lo === win.lo && next.hi === win.hi) return
-      // A month added on the LEFT shifts the content; keep the reader's column in
-      // place with the same anchor the grow / jump paths use (invisible at rest).
-      // At the open lo is already 0, so the common rightward fill writes none.
-      if (next.lo < win.lo) {
+      const last = months.length - 1
+      let tLo: number, tHi: number
+      if (phone) {
+        const v = liveVisRef.current
+        const t = rollingTarget(months.length, v.lo, v.hi, PHONE_BEFORE, PHONE_AFTER)
+        tLo = t.lo; tHi = t.hi
+      } else if (onScreenRef.current) {
+        tLo = 0; tHi = last                                   // the whole year
+      } else {
+        tLo = win.lo; tHi = Math.min(last, win.lo + HIDDEN_MONTHS - 1) // capped while hidden
+      }
+      const next = stepToward(win, months.length, tLo, tHi)
+      if (next.lo === win.lo && next.hi === win.hi) return    // parked — kickFillRef resumes
+      // A month added or dropped on the LEFT shifts the content; keep the reader's
+      // column in place with the same anchor the grow / jump paths use (invisible
+      // at rest). A rightward step writes none.
+      if (next.lo !== win.lo) {
         const wrap = wrapRef.current
         if (wrap) { anchorRef.current = anchorNow(wrap); colShiftRef.current = true }
       }
-      setColWin(next) // re-runs this effect for the next month
+      setColWin(next) // re-runs this effect, which schedules the next beat
     }
-    fillIdleRef.current = rideIdle(tick)
-    return () => { live = false; if (fillIdleRef.current != null) { dropIdle(fillIdleRef.current); fillIdleRef.current = null } }
+    kickFillRef.current = () => { if (live) schedule() }
+    schedule()
+    return () => {
+      live = false
+      kickFillRef.current = () => {}
+      if (fillIdleRef.current != null) { dropIdle(fillIdleRef.current); fillIdleRef.current = null }
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [phone, colWin?.lo, colWin?.hi, months.length])
+
+  // SHRINK ON LEAVE, REBUILD ON RETURN (owner, 5 Sep 26). Desktop only — the
+  // phone already windows. When the tab is LEFT, drop the drawn window back to a
+  // few months around where the reader was, so the next reveal wakes a small
+  // grid (the fill above then rebuilds the year once the tab is shown again, its
+  // left-anchor keeping the reader's month in place as the earlier months fill in
+  // behind them). Only on a real on→off / off→on transition, never on the first
+  // mount (a fresh pre-warm mount is left to the fill's hidden cap; a direct
+  // visit is left to fill the year). The signal is a listener set, not the store,
+  // so none of this re-renders the grid (state/screen.ts).
+  const prevOnRef = useRef(onScreenRef.current)
+  useEffect(() => {
+    const apply = () => {
+      const on = isLwOnScreen()
+      const prev = prevOnRef.current
+      prevOnRef.current = on
+      onScreenRef.current = on
+      if (phone) return
+      const win = colWinRef.current
+      if (!win) return                       // short war drawn whole — nothing to window
+      if (on) { if (!prev) kickFillRef.current(); return } // shown → resume filling the year
+      if (!prev) return                      // already hidden at mount → the fill's cap handles it
+      // on → off: shrink around the reader's month; land its start at the frozen
+      // edge so the return opens on the same month, then let the fill re-expand.
+      const last = months.length - 1
+      const view = Math.max(0, Math.min(viewMonthRef.current, last))
+      const small = clampWin({ lo: view, hi: view + HIDDEN_MONTHS - 1 }, months.length)
+      if (small.lo !== win.lo || small.hi !== win.hi) {
+        anchorRef.current = null
+        colShiftRef.current = false
+        setColWin(small)
+        const wrap = wrapRef.current
+        if (wrap) wrap.scrollLeft = 0
+      }
+    }
+    apply()
+    return subLwScreen(apply)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [phone, months.length])
 
   // Everything else that moves a column edge, and so invalidates the cached
   // strip geometry: a zoom step (every width changes), a row-set reflow (the

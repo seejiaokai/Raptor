@@ -120,10 +120,10 @@ parity holds. The gate table below was the green baseline read at this pass's cl
 
 | gate | reading |
 |---|---|
-| `npm test` | 3858 across 221 files (3 Sep 26 — the Leave War speed Phase 2: +12 `ui/colwindow.test.ts` (the column window's arithmetic — landing, runway growth, the coarse-pointer left-bound rule, pruning hysteresis, the visible-span read); before it 3846 across 220 — Phase 1: +1 `engine/availability.test.ts` (the heldQuals cache follows an in-place flag flip), +1 `engine/period.test.ts` (weekday arithmetic vs Date.getUTCDay over a leap year), the PersonRow memo needs no new pin — the 68 existing Leave War UI files exercise every row class and testid; before it 3843 — the slow-computer cut: +6 `ui/editwarm.test.tsx` (the idle warm + the calendar's no-measure tick), +2 `ui/css-invalidation.test.ts` (no root-class wildcard rules); before it 3835 across 218 — the FOURTH drag cut's belts, new `ui/dragdbg.test.tsx` (+6, the optional readout is inert unless flagged) and the two belts in `drag.ts`/`scheduler.css` need no new pin beyond it; before it 3829 — the FOURTH drag cut, nothing draggable, +4 `ui/drag.test.tsx` "nothing on any surface is draggable"; the edit-week parity compare in `ui/html.test.ts` maps the reference's `draggable="true"` onto the port's `data-drag="1"`; before it 3825 — the THIRD drag cut, the mouse on the pointer machine, +5 `ui/drag.test.tsx`; before it 3820 — the drag-image SECOND cut, the page-drawn ghost, re-pinned `ui/drag.test.tsx` at 6 (was 4, +2); before it 3818 — the mouse drag-image fix added +4 `ui/drag.test.tsx` (the off-screen `.dragimg` puck clone that replaces Chromium's white-card snapshot); before it 3814 — the pilots' 15-day run became continuous FULL days (a half day breaks it), +1 `engine/charge.test.ts`; before it 3813 — the weekend/PH charging rule + CL batch added `engine/charge.test.ts` (now +20 with the half-day pin), +2 Cinch cases in `ui/oiltracker.test.tsx`, +1 `src/engine/leave.test.ts`, and re-pinned the figure/counter/seed fixtures; before it 3791 across 216 — the drag-select held-band fix added +1 `select.test.ts`; before it 3790 — 4 Sep 26 — the group-colour picker, full-width seat bars, LoX-catalogue and bug-hunt rounds added `groupcolors.test.ts`, `groupColor.test.ts`, `settingssheet.test.tsx`, `bootprune.test.ts` plus `roster`/`matrix`/`raptorRoster` cases; 2 Sep 26 — the tracker's THIRD CUT added +2 `oiltracker.test.tsx` + `raptorRoster.test.ts` demo-story cases, then the scrim press-guard +2; before that the OIL tracker GRID + Off-day batch: `ui/oiltracker.test.tsx` rewritten to 18, +7 `select.test.ts` row cases, +3 `oil.test.ts`, +2 `oilsync.test.ts`, +2 `store.test.ts`, +2 `oiltracker.test.ts`, +1 `eventdefs.test.ts`; the OFF pins flipped) — two vitest projects: raptor + leavewar |
+| `npm test` | 3866 across 221 files (5 Sep 26 — the Leave War pre-warm + shrink-on-leave + phone rolling prefetch: +5 `ui/colwindow.test.ts` (`stepToward` toward a target — grow-right-then-left, prune past the hysteresis, no-op within slack, convergence; and `rollingTarget`); the new `state/idle.ts` and `leavewar/state/screen.ts` are tiny glue covered by the e2e; before it 3861 across 221 files (4 Sep group-colour + bug-hunt rounds); 3 Sep 26 — the Leave War speed Phase 2: +12 `ui/colwindow.test.ts` (the column window's arithmetic — landing, runway growth, the coarse-pointer left-bound rule, pruning hysteresis, the visible-span read); before it 3846 across 220 — Phase 1: +1 `engine/availability.test.ts` (the heldQuals cache follows an in-place flag flip), +1 `engine/period.test.ts` (weekday arithmetic vs Date.getUTCDay over a leap year), the PersonRow memo needs no new pin — the 68 existing Leave War UI files exercise every row class and testid; before it 3843 — the slow-computer cut: +6 `ui/editwarm.test.tsx` (the idle warm + the calendar's no-measure tick), +2 `ui/css-invalidation.test.ts` (no root-class wildcard rules); before it 3835 across 218 — the FOURTH drag cut's belts, new `ui/dragdbg.test.tsx` (+6, the optional readout is inert unless flagged) and the two belts in `drag.ts`/`scheduler.css` need no new pin beyond it; before it 3829 — the FOURTH drag cut, nothing draggable, +4 `ui/drag.test.tsx` "nothing on any surface is draggable"; the edit-week parity compare in `ui/html.test.ts` maps the reference's `draggable="true"` onto the port's `data-drag="1"`; before it 3825 — the THIRD drag cut, the mouse on the pointer machine, +5 `ui/drag.test.tsx`; before it 3820 — the drag-image SECOND cut, the page-drawn ghost, re-pinned `ui/drag.test.tsx` at 6 (was 4, +2); before it 3818 — the mouse drag-image fix added +4 `ui/drag.test.tsx` (the off-screen `.dragimg` puck clone that replaces Chromium's white-card snapshot); before it 3814 — the pilots' 15-day run became continuous FULL days (a half day breaks it), +1 `engine/charge.test.ts`; before it 3813 — the weekend/PH charging rule + CL batch added `engine/charge.test.ts` (now +20 with the half-day pin), +2 Cinch cases in `ui/oiltracker.test.tsx`, +1 `src/engine/leave.test.ts`, and re-pinned the figure/counter/seed fixtures; before it 3791 across 216 — the drag-select held-band fix added +1 `select.test.ts`; before it 3790 — 4 Sep 26 — the group-colour picker, full-width seat bars, LoX-catalogue and bug-hunt rounds added `groupcolors.test.ts`, `groupColor.test.ts`, `settingssheet.test.tsx`, `bootprune.test.ts` plus `roster`/`matrix`/`raptorRoster` cases; 2 Sep 26 — the tracker's THIRD CUT added +2 `oiltracker.test.tsx` + `raptorRoster.test.ts` demo-story cases, then the scrim press-guard +2; before that the OIL tracker GRID + Off-day batch: `ui/oiltracker.test.tsx` rewritten to 18, +7 `select.test.ts` row cases, +3 `oil.test.ts`, +2 `oilsync.test.ts`, +2 `store.test.ts`, +2 `oiltracker.test.ts`, +1 `eventdefs.test.ts`; the OFF pins flipped) — two vitest projects: raptor + leavewar |
 | `node reference/tfin.js` | 728/0 (the reference is read-only; the "Ground Programme" title trim rides the tolerant normaliser in `html.test.ts`) |
 | `npm run build` | clean |
-| `npm run test:e2e` | 357 passed / 24 touch-only skips / 0 failed (4 Sep 26 — the desktop BACKGROUND FILL + sliding scrubber re-pointed the two year-wide-scrollbar pins in place (no count change): the lw-desktop spec is now "a year-wide scrubber; the desktop grid fills the whole year and the bar then slides it" (waits for 12 months drawn, then asserts the bar slides the grid proportionally), and the raptor-project geometry spec likewise waits for the fill then asserts the slide; both were, the day before, the year-wide scrubber that JUMPED (the fill/slide superseded jump-on-release on desktop); before it 356 passed / 23 skips — 3 Sep 26, read whole at the Leave War speed Phase 2: +1 spec × the two Leave War projects — the column window: drawn months, every row's colSpan sum, growth at the bound, a jump draws its month and drops January; nine existing assertions re-pointed off year-wide scroll distances, see the speed entry; before it 354 — Phase 1 — no e2e file changed; the DOM the memoised row emits is byte-identical, which is exactly what this suite's cell/testid pins prove; before it 352 — the first real-browser puck-drag pin — the mouse on the pointer machine, zero native drag events; earlier that day: the figure-picker legend and the Cinch-sheet count pins moved to the thirteen figures; 1 Sep 26: +1 keep-alive spec × the two Leave War projects) — three playwright projects: raptor geometry, lw-phone, lw-desktop. NOTE: a mid-session chain run showed 2 lw-phone reds against a build that predated the bug-pass fixes (the un-gated cross-lane notify repainting mid-gesture); both passed individually and the full suite passed whole against the fixed build — if they ever red again, suspect a stray repaint mid-tap first. |
+| `npm run test:e2e` | 357 passed / 24 touch-only skips / 0 failed (5 Sep 26 — the pre-warm + shrink-on-leave: two specs re-pointed in place, no count change — the desktop "not downloaded until its tab is opened" became "the Leave War screen is a separate chunk, pre-warmed after login" (still 0 in the first download, then it fetches itself on idle before any click), and the keep-alive spec became "the same node returns, shrinks-and-rebuilds on desktop" (desktop no longer keeps the exact sideways pixel — it drops to a few months while hidden and rebuilds the year on return; the phone still keeps its spot; branched on project); the window spec's open-size bound relaxed 4→6; 4 Sep 26 — the desktop BACKGROUND FILL + sliding scrubber re-pointed the two year-wide-scrollbar pins in place (no count change): the lw-desktop spec is now "a year-wide scrubber; the desktop grid fills the whole year and the bar then slides it" (waits for 12 months drawn, then asserts the bar slides the grid proportionally), and the raptor-project geometry spec likewise waits for the fill then asserts the slide; both were, the day before, the year-wide scrubber that JUMPED (the fill/slide superseded jump-on-release on desktop); before it 356 passed / 23 skips — 3 Sep 26, read whole at the Leave War speed Phase 2: +1 spec × the two Leave War projects — the column window: drawn months, every row's colSpan sum, growth at the bound, a jump draws its month and drops January; nine existing assertions re-pointed off year-wide scroll distances, see the speed entry; before it 354 — Phase 1 — no e2e file changed; the DOM the memoised row emits is byte-identical, which is exactly what this suite's cell/testid pins prove; before it 352 — the first real-browser puck-drag pin — the mouse on the pointer machine, zero native drag events; earlier that day: the figure-picker legend and the Cinch-sheet count pins moved to the thirteen figures; 1 Sep 26: +1 keep-alive spec × the two Leave War projects) — three playwright projects: raptor geometry, lw-phone, lw-desktop. NOTE: a mid-session chain run showed 2 lw-phone reds against a build that predated the bug-pass fixes (the un-gated cross-lane notify repainting mid-gesture); both passed individually and the full suite passed whole against the fixed build — if they ever red again, suspect a stray repaint mid-tap first. |
 | `probes:adapted` | **all 6 GREEN**. **Read the LAST line, not the last tally**: each probe prints its own count as it finishes (`wrap-async` ends `36 passed · 0 failed`), and the suite's verdict is the line after it, `all 6 adapted probes passed`. |
 | `perf` | **4/0** — board DOM 1023 ≤ **1150** (read 1 Sep 26) (the ceiling is a SETTLED owner decision since 28 Aug 26 — CLAUDE.md §Stable decisions; the section/wave grips added ~10 nodes, noise against it). |
 
@@ -618,7 +618,8 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
   | Tap a cell → sheet | 1.0 s → 0.7 s → **0.4 s** (JS 0.59 → 0.17 → 0.11) | 0.2 s → 0.2 s → **0.12 s** |
   | Close the sheet | 0.8 s → 0.5 s → **0.3 s** | 0.16 → 0.14 → **0.08 s** |
   | Jump to a month | 4.9 s → 2.8 s → **2.7 s** | 1.1 s → 0.6 s → **0.9 s** |
-  | Come back to the tab | 4.0 s → 1.9 s → **1.2 s** | 0.7 s → 0.5 s → **0.23 s** |
+  | Come back to the tab | 4.0 s → 1.9 s → 1.2 s → **0.4 s** | 0.7 s → 0.5 s → 0.23 s → **~0.2 s** |
+  | First OPEN (pre-warmed) | 2.8 s → **0.5 s** | — |
 
   STILL OPEN, in order of what a user feels: (a) **the month jump did not
   improve** — a far jump now REBUILDS every row's cells for the new columns
@@ -629,12 +630,23 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
   background fill (item (d)) now draws the whole year a beat after the open,
   so SCROLLING across far months is smooth once filled and the felt "freeze
   when I scroll" is gone; a far JUMP taken before the fill finishes still pays
-  this rebuild, and the phone still windows (it can't hold the year). (b) The remaining first-open JS
+  this rebuild, and the phone still windows (it can't hold the year).
+  UPDATE 5 Sep 26 — the far-jump rebuild is unchanged, but the desktop now only
+  fills the year WHILE THE TAB IS VIEWED and shrinks back to a few months when
+  left (item (c)); the phone now draws its rolling window a few months AHEAD of
+  the finger so a flick no longer sticks at the drawn edge. (b) The remaining first-open JS
   at 4x is the manning engine over all 365 days (~0.5 s — memoised per
   store change but paid on every open) and the mount measure chain (6–8
-  layouts still, now of a 6k-cell table). (c) The dozed page's come-back is
-  a style recalc of the parked subtree; parking the Edit-page way (in-flow,
-  height 0, visibility hidden) is the candidate if it still feels slow.
+  layouts still, now of a 6k-cell table). (c) ADDRESSED for Leave War,
+  5 Sep 26 — the dozed page's come-back WAS a ~1.4 s style recalc of the parked
+  ~25k-cell subtree (measured at 4×: script 0.27 s, layout 0.01 s, style-recalc
+  1.36 s). The fix is to not KEEP the full year parked: on leaving the tab the
+  desktop grid shrinks to a few months (`HIDDEN_MONTHS`) around the last view, so
+  the reveal re-styles a small grid (~0.24 s style, ~0.4 s to visible) and the
+  fill rebuilds the year on return. The on-screen signal is a listener set
+  (`leavewar/state/screen.ts`), NOT the store, so it never repaints the grid. The
+  same idle loop PRE-WARMS the tab hidden after login (desktop), so the first open
+  reveals an already-built small grid (~0.5 s to visible). See item (d).
   (d) DONE, 4 Sep 26 — the desktop bottom scrollbar is now a YEAR-WIDE
   SCRUBBER (owner: "the scroll bar keeps adjusting … make it linear …
   halfway I'm already at the edge"). Its spacer was the drawn window, so the
@@ -660,6 +672,15 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
   year-wide scrubber; the desktop grid fills the whole year and the bar then
   slides it". This softens (a) on desktop by drawing everything, but a far JUMP
   before the fill finishes still costs its one rebuild.
+  EXTENDED 5 Sep 26 — `fillStep`/`isFullYear` gave way to ONE engine,
+  `colwindow.ts stepToward` toward a per-mode target (see item (c) and
+  `docs/ui-contracts.md`): desktop fills the year only WHILE VIEWED and shrinks
+  when left (fixing the ~1.4 s come-back), the phone rolls a window a few months
+  ahead (fixing the flick-sticks-at-the-edge), and the desktop pre-warms after
+  login. New: `leavewar/state/screen.ts` (on-screen signal), `state/idle.ts`
+  (app-idle gate), `colwindow.ts stepToward`/`rollingTarget`. Pins added:
+  `colwindow.test.ts` (stepToward/rollingTarget), e2e "the Leave War screen is a
+  separate chunk, pre-warmed after login".
   Measuring recipe: as the slow-computer cut below, plus `Profiler`
   self-time by frame mapped with `SourceMap.findEntry`; and TIME with the
   plain `devtools.timeline` categories, ATTRIBUTE with the `.stack` /
@@ -699,11 +720,15 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
   tick** with the calendar closed (the seed moved into the lazy state
   initialiser). (4) **The Leave War screen is a lazy chunk** (`Shell.tsx`
   `React.lazy` + `Suspense`): ~38 KB gz JS + ~11 KB gz CSS off every Raptor
-  visit's first download, fetched on the tab's first click; ONLY the screen —
+  visit's first download; ONLY the screen —
   the store/demo world/sync wires still boot in `main.tsx` and four eager
   screens import the sync, so nothing about syncing moved (verified by
-  import graph before building). Pinned by the "not downloaded until its tab
-  is opened" e2e; `lwkeepalive.test.tsx` polls for the lazy grid.
+  import graph before building). Since 5 Sep 26 the DESKTOP PRE-WARMS it:
+  `Shell.tsx` mounts the tab hidden once the user pauses after login (idle-gated
+  via `state/idle.ts`, so it never slows login-to-week), pulling this chunk off
+  the critical path so the first click opens instantly. Pinned by "the Leave War
+  screen is a separate chunk, pre-warmed after login" (was "not downloaded until
+  its tab is opened"); `lwkeepalive.test.tsx` polls for the lazy grid.
   (5) **The edit page is PARKED laid-out while hidden, not display:none**
   (`scheduler.css` `#page-editsched:not(.on)`: in-flow, height 0, clipped,
   visibility hidden). A display:none subtree has no layout, so even a warmed

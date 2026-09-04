@@ -49,6 +49,7 @@ import { ALPanel } from './ALPanel'
    exactly as before — deferring the grid cannot reach any of it. Pinned by the
    "not downloaded until its tab is opened" e2e. */
 const LeaveWarPage = lazy(() => import('../leavewar/LeaveWarPage').then(m => ({ default: m.LeaveWarPage })))
+import { installIdleTracking, msSinceInput } from '../state/idle'
 import { oilPendingFor } from '../leavewar/sync'
 import { inpById } from '../engine/inputs'
 import { AdminPage } from './AdminPage'
@@ -97,6 +98,27 @@ export function Shell() {
      measure the week/board containers, never the whole document. */
   const lwEverRef = useRef(false)
   if (page === 'leavewar') lwEverRef.current = true
+  /* PRE-WARM (owner, 5 Sep 26). On a desktop, once the user has paused after
+     login, mount Leave War HIDDEN — so its separate download and its first few
+     months are built off the critical path, and the tab then opens instantly.
+     Idle-gated so it never lands under the login keystrokes or early work: the
+     mount waits for a hands-off gap (state/idle.ts). Phone is left alone — its
+     first open is already quick and every phone login should not pull the grid.
+     The section still only DOZES while hidden; the flag just adds "pre-warmed"
+     to the same "ever visited" mount gate below. */
+  const [prewarmed, setPrewarmed] = useState(false)
+  useEffect(() => {
+    const teardown = installIdleTracking()
+    const isPhone = typeof window.matchMedia === 'function' && window.matchMedia('(max-width: 700px)').matches
+    if (isPhone) return teardown
+    let done = false
+    let timer = window.setTimeout(function poll() {
+      if (done) return
+      if (msSinceInput() > 2000) { done = true; setPrewarmed(true); return }
+      timer = window.setTimeout(poll, 400)
+    }, 2000)
+    return () => { done = true; clearTimeout(timer); teardown() }
+  }, [])
   /* fast sync (demo) — the toggle only demonstrates itself, as the reference
      notes: no server in the prototype */
   const [fast, setFast] = useState(false)
@@ -535,8 +557,8 @@ export function Shell() {
       {/* once visited, the section DOZES (content-visibility) rather than
           display:none — scheduler.css `.page.doze` carries the measurement
           and the why; the keep-alive comment sits at lwEverRef above */}
-      <section className={'page' + (page === 'leavewar' ? ' on' : lwEverRef.current ? ' doze' : '')} id="page-leavewar">
-        {(page === 'leavewar' || lwEverRef.current) && <Suspense fallback={null}><LeaveWarPage active={page === 'leavewar'} /></Suspense>}
+      <section className={'page' + (page === 'leavewar' ? ' on' : (lwEverRef.current || prewarmed) ? ' doze' : '')} id="page-leavewar">
+        {(page === 'leavewar' || lwEverRef.current || prewarmed) && <Suspense fallback={null}><LeaveWarPage active={page === 'leavewar'} /></Suspense>}
       </section>
       <section className={'page' + (page === 'help' ? ' on' : '')} id="page-help">
         {page === 'help' && <HelpPage />}

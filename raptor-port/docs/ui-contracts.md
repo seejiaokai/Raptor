@@ -5428,24 +5428,44 @@ The contract, in the order a reader meets it:
 - **jsdom draws the whole year** (its rects are 0×0, so the window's lazy
   initialiser sees no layout); the arithmetic is unit-tested and the
   measuring is proved in the browser gate on both projects.
-- **DESKTOP fills the whole year in the background** (owner, 4 Sep 26 — "the
-  scroll is not smooth … it freezes when I scroll … make the grid animation
-  smooth"). The fast open still draws two months; then, ON DESKTOP ONLY, the
-  window widens ONE MONTH PER IDLE BEAT (`requestIdleCallback`, `fillStep` in
-  `colwindow.ts`) until the whole year is drawn — so a beat later the reader
-  scrolls real columns end to end with no catch. Each added month is a small,
-  non-blocking layout instead of the one big freeze a jump to a far month costs;
-  the idle callback self-pauses under an active scroll, and a scroll within the
-  last rest window holds it off too (the belt for the setTimeout fallback). To
-  keep the two from fighting, `growColWin` NEVER PRUNES on desktop (it only ever
-  grows the view's columns at once for a fast scroll); the PHONE keeps
-  `growAtRest`'s grow-and-prune runway, because a phone can't hold the year and
-  stay smooth — that is the whole reason the window exists. Once full the grid is
-  the ~full-year DOM again (heavier than the windowed grid — the cost the owner
-  accepted for a smooth scroll); scrolling it is native and smooth, and the only
-  rest-time repaint left is the posted-out row-window crossing (rare, and ~0 in a
-  realistic month-by-month sweep — measured 0 of 24 rests over 100 ms). A far
-  JUMP taken BEFORE the fill finishes still costs its one rebuild.
+- **One draw-toward-a-target engine, per mode** (owner, 4–5 Sep 26 — "fill in the
+  background", then "load the next months as I approach the edge", then, once
+  measurement showed the browser spends ~1.4s RE-STYLING the full-year grid on
+  every reveal, "shrink when I leave, rebuild on return"). A single idle loop
+  widens or trims the drawn window ONE MONTH PER `requestIdleCallback` BEAT toward
+  a target that depends on the mode (`colwindow.ts stepToward`; the idle callback
+  self-pauses under an active scroll, and a scroll within the last rest window
+  holds it off — the belt for the setTimeout fallback):
+  - **PHONE → a ROLLING window a few months AHEAD of the visible ones**
+    (`rollingTarget`, one month behind / three ahead), the trailing side pruned so
+    the DOM stays light. A flick meets already-drawn columns instead of the stuck
+    edge the old grow-2-at-rest lump left; `growAtRest` stays only as an at-rest
+    backstop. This is what fixed "scrolling to the end of the block sticks, I have
+    to flick again".
+  - **DESKTOP, tab ON screen → the WHOLE year**, so scrolling runs end to end and
+    the bottom scrollbar SLIDES (below). The posted-out row-window crossing is the
+    only rest-time repaint left (rare, ~0 in a realistic sweep).
+  - **DESKTOP, tab OFF screen → capped at a few months** (`HIDDEN_MONTHS`), and
+    drawn only while the user is IDLE (`state/idle.ts msSinceInput` > 2 s), so a
+    background draw never lands under a keystroke or a puck drag on another page.
+- **Shrink on leave, rebuild on return** (owner, 5 Sep 26). Keeping the whole year
+  drawn while the tab was hidden meant the browser re-styled ~25k cells (~1.4 s on
+  a slow laptop) every time the tab was shown. So on leaving the tab the desktop
+  grid SHRINKS to a few months around the last view (the next reveal wakes a small
+  grid — measured ~0.4 s to visible, was ~1.9 s), and the fill REBUILDS the year
+  on return, its left-anchor holding the reader's month in place as the earlier
+  months fill in behind them. This REVERSES the 4 Sep "desktop keeps the whole
+  year / never prune" contract; the reveal cost is the reason. The on-screen
+  signal is `leavewar/state/screen.ts` — a plain listener set, NOT the store, so
+  flipping it never re-renders the grid.
+- **The desktop PRE-WARMS after login** (owner, 5 Sep 26 — "load it while I type
+  my password so there's no wait"). Once the user pauses after login, `Shell.tsx`
+  mounts the tab HIDDEN (desktop only): that pulls its separate download and draws
+  its first few months off the critical path, so the first click opens an
+  already-built grid (~0.5 s to visible, was ~2.4 s). It is idle-gated, so it never
+  lands under the login keystrokes and never slows login-to-week; the phone is left
+  alone (its first open is already quick). Pinned in the e2e as "the Leave War
+  screen is a separate chunk, pre-warmed after login".
 - **The desktop bottom scrollbar is a YEAR-WIDE SCRUBBER** (owner, 4 Sep 26 —
   "the scroll bar at the bottom keeps adjusting … make it linear … halfway I'm
   already at the edge"). Because the grid only draws ~2 months, the proxy bar

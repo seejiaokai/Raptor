@@ -77,6 +77,54 @@ export function fillStep(w: ColWin, monthCount: number): ColWin {
   return w
 }
 
+/** One step of the drawn window toward an explicit TARGET window — the single
+ *  engine behind every "draw more / draw less a beat at a time" path (owner,
+ *  5 Sep 26): the desktop fill (target = the whole year), the phone rolling
+ *  prefetch (target = the visible months plus a runway ahead — see
+ *  `rollingTarget`), and the small cap the grid shrinks to while the tab is
+ *  hidden. GROWS toward the target one month per call — the RIGHT edge first
+ *  (the common forward-scroll direction), then the left — and, once at or past
+ *  the target, PRUNES one month per call back toward it, keeping `hysteresis`
+ *  months of slack so a reader parked on a seam does not see the window flap.
+ *  Returns the same window when it already sits within [target ± hysteresis], so
+ *  the caller's loop terminates. Pure, so the whole rolling/fill behaviour is
+ *  provable in jsdom. */
+export function stepToward(
+  win: ColWin,
+  monthCount: number,
+  targetLo: number,
+  targetHi: number,
+  hysteresis = 1,
+): ColWin {
+  const last = Math.max(0, monthCount - 1)
+  const tLo = Math.max(0, Math.min(targetLo, last))
+  const tHi = Math.max(tLo, Math.min(targetHi, last))
+  const { lo, hi } = win
+  // grow toward the target — right edge first, then left
+  if (hi < tHi) return clampWin({ lo, hi: hi + 1 }, monthCount)
+  if (lo > tLo) return clampWin({ lo: lo - 1, hi }, monthCount)
+  // at or past the target: prune one month back, past the hysteresis slack
+  if (hi > tHi + hysteresis) return clampWin({ lo, hi: hi - 1 }, monthCount)
+  if (lo < tLo - hysteresis) return clampWin({ lo: lo + 1, hi }, monthCount)
+  return win
+}
+
+/** The rolling target window for the phone (and for the small grid the desktop
+ *  shrinks to while hidden): the visible months plus a runway — more AFTER than
+ *  BEFORE, so the drawn edge sits a few months ahead of the finger and a normal
+ *  flick never reaches it, while the trailing side is pruned to keep the phone's
+ *  DOM light. Absolute month indices, clamped to the war. */
+export function rollingTarget(
+  monthCount: number,
+  visLo: number,
+  visHi: number,
+  before: number,
+  after: number,
+): ColWin {
+  const last = Math.max(0, monthCount - 1)
+  return clampWin({ lo: visLo - before, hi: visHi + after }, monthCount)
+}
+
 /**
  * The window after a scroll comes to REST, given which drawn months are on
  * screen. Grows toward the runway, shrinks past it — and never mid-scroll:

@@ -4503,26 +4503,34 @@ test.describe('a mouse drag of a puck runs on the pointer machine, not the nativ
   })
 })
 
-/* THE SLOW-COMPUTER DIET (owner, 3 Sep 26 — "faster on a slow computer").
-   The Leave War screen is the app's largest, and is seen only after its tab is
-   clicked, so Shell.tsx ships it as its own chunk (React.lazy). This pins the
-   contract from the network's side: a Raptor visit downloads no Leave War
-   screen; the first click on the tab fetches exactly one. The sync engine is
-   NOT in that chunk (it boots in main.tsx) — the leavewar e2e suites prove the
-   crew projection and leave cells still reconcile, so this only has to prove
-   the deferral. */
+/* THE SLOW-COMPUTER DIET (owner, 3 Sep 26 — "faster on a slow computer"; the
+   pre-warm added 5 Sep 26). The Leave War screen is the app's largest, so
+   Shell.tsx ships it as its own chunk (React.lazy) rather than in the first
+   Raptor download. Since 5 Sep 26 the DESKTOP PRE-WARMS it: once the user has
+   been hands-off for a moment after login, the tab is mounted hidden — which
+   pulls exactly this chunk off the critical path — so the first click opens an
+   already-built grid instantly. So the contract is now: NOT in the first
+   download, but fetched shortly after login on its own, with no tab click; and
+   the click never re-fetches. The sync engine is still NOT in that chunk (it
+   boots in main.tsx) — the leavewar e2e suites prove the crew projection and
+   leave cells reconcile regardless. */
 test.describe('slow-computer diet', () => {
-  test('desktop: the Leave War screen is not downloaded until its tab is opened', async ({ page }) => {
+  test('desktop: the Leave War screen is a separate chunk, pre-warmed after login', async ({ page }) => {
     await login(page, 'a')
     /* the screen splits into a script AND its own stylesheet; count each */
     const lwChunks = () => page.evaluate(() => {
       const names = performance.getEntriesByType('resource').map((e: any) => e.name as string).filter(n => /LeaveWarPage/.test(n))
       return { js: names.filter(n => /\.js$/.test(n)).length, css: names.filter(n => /\.css$/.test(n)).length }
     })
-    expect(await lwChunks(), 'no Leave War chunk after login').toEqual({ js: 0, css: 0 })
+    /* not in the first Raptor download — still a lazily split chunk (read within
+       the pre-warm's hands-off gate, before it can have fetched). */
+    expect(await lwChunks(), 'no Leave War chunk in the first download').toEqual({ js: 0, css: 0 })
+    /* but pre-warmed: after a hands-off moment it fetches itself, no tab click. */
+    await expect.poll(lwChunks, { timeout: 8000 }).toEqual({ js: 1, css: 1 })
+    /* and opening the tab re-uses it — never a second fetch. */
     await go(page, 'leavewar')
     await page.waitForSelector('[data-testid="row-slipway"]')
-    expect(await lwChunks(), 'the script and stylesheet arrive with the first click').toEqual({ js: 1, css: 1 })
+    expect(await lwChunks(), 'the click re-uses the pre-warmed chunk').toEqual({ js: 1, css: 1 })
   })
 
   /* the edit surfaces warm in idle time after an admin login (EditWeek.tsx),

@@ -1553,31 +1553,46 @@ subscribers.
   a panel): keep the CONTROL's own screen position invariant to the content it
   changes — reserve the space, or anchor the growth away from the control.
   Pin: `rangepicker.test.tsx` (constant row count across months).
-- **The Leave War year grid: PHONE windows, DESKTOP fills the whole year**
-  (owner, 3–4 Sep 26, three asks in a row — "make it linear" (the year-wide
-  scrollbar), then "the scroll is not smooth … it freezes when I scroll … make
-  the grid animation smooth" → he chose "fill in the background" over "draw it
-  all up front" or "leave it fast"). The grid draws WHOLE MONTHS at real widths,
-  never fixed-width spacers (a census found 22 distinct day-column widths, so an
-  estimate would hop content under the finger). The fast open draws two months;
-  then on DESKTOP ONLY the window widens one month per idle beat
-  (`requestIdleCallback`, `colwindow.ts fillStep`/`isFullYear`) until the whole
-  year is drawn, so scrolling then runs over real columns and the bottom
-  scrollbar SLIDES the grid instead of jumping. On desktop `growColWin` NEVER
-  prunes (grow-only) so the fill isn't undone; the PHONE keeps `growAtRest`'s
-  grow-and-prune runway — the window exists because a phone can't hold the year
-  and stay smooth. The owner traded a HEAVIER full-year desktop DOM for the
-  smooth scroll: do NOT "re-optimize" by re-windowing the desktop grid or
-  re-enabling its prune, and do NOT make the phone fill the year. The bottom
-  scrollbar is a YEAR-WIDE scrubber whose spacer is the war at an estimated
-  average day-width (`avgDayWRef`, cached by war+zoom) so the thumb holds still
-  as months draw; it JUMPS on release while months are still filling and SLIDES
-  once the year is whole. Drawing a month is the expensive act — a far JUMP taken
-  before the fill finishes still costs one rebuild (HANDOFF item (a), the one
-  still-open perf item). Detail: `docs/ui-contracts.md` §The Leave War grid draws
-  a window of months; HANDOFF item (d). Pins: `colwindow.test.ts`,
-  e2e "a year-wide scrubber; the desktop grid fills the whole year and the bar
-  then slides it".
+- **The Leave War year grid: one draw-toward-a-target engine — desktop fills the
+  year WHILE VIEWED and shrinks when left; the phone rolls a window ahead of the
+  finger; both pre-warm after login** (owner, 3–5 Sep 26, a run of asks: "make it
+  linear" (the year-wide scrollbar) → "the scroll freezes … make it smooth" ("fill
+  in the background") → "load the next months as I approach the edge" → then, once
+  measurement showed the browser spends ~1.4s RE-STYLING the full-year grid every
+  time it is revealed, "shrink when I leave, rebuild on return" and pre-warm after
+  login). The grid draws WHOLE MONTHS at real widths, never fixed-width spacers (a
+  census found 22 distinct day-column widths, so an estimate would hop content
+  under the finger). One idle loop drives every "draw more / draw less a beat at a
+  time" path — `colwindow.ts stepToward` toward a per-mode TARGET, one month per
+  `requestIdleCallback` beat, gated so a draw never lands under a moving scroll:
+  · **phone** → a ROLLING window a few months AHEAD of the visible ones
+    (`rollingTarget`, before 1 / after 3), trailing months pruned so the DOM stays
+    light — so a flick meets drawn columns, never the stuck edge (the old
+    grow-2-at-rest lump is gone; `growAtRest` stays only as an at-rest backstop);
+  · **desktop, tab ON screen** → the WHOLE year, so scrolling runs end to end and
+    the bottom scrollbar SLIDES (see onHbarScroll);
+  · **desktop, tab OFF screen** (a pre-warm mount, or just left) → capped at a few
+    months (`HIDDEN_MONTHS`), drawn only while the user is IDLE (`state/idle.ts
+    msSinceInput`) so it never lands under a keystroke or a puck drag.
+  On leave the desktop grid SHRINKS to a few months around the last view (so the
+  next reveal wakes a small grid, ~0.4s not ~1.9s), and REBUILDS the year on
+  return (the fill's left-anchor keeps the reader's month in place as the earlier
+  months fill in behind them). This REVERSES the 4 Sep "desktop keeps the whole
+  year / never prune" rule — the reveal cost is why. The on-screen signal is
+  `leavewar/state/screen.ts`, a listener set NOT the store, so flipping it never
+  re-renders the ~25k-node grid. Pre-warm: `Shell.tsx` mounts the tab HIDDEN once
+  the user pauses after login (desktop only), so the chunk downloads and the first
+  months draw off the critical path and the first open is instant; it is
+  idle-gated, so it never slows login-to-week. Do NOT put the on-screen flag on the
+  store (it would repaint the grid on every tab show), do NOT drop the idle gate on
+  the hidden draw, and do NOT make the phone keep the whole year. The bottom
+  scrollbar is a YEAR-WIDE scrubber whose spacer is the war at an estimated average
+  day-width (`avgDayWRef`, cached by war+zoom) so the thumb holds still as months
+  draw; it JUMPS while the year is still filling and SLIDES once it is whole.
+  Detail: `docs/ui-contracts.md` §The Leave War grid draws a window of months;
+  HANDOFF item (d). Pins: `colwindow.test.ts` (`stepToward`/`rollingTarget`), e2e
+  "the grid draws a window of months …", "a year-wide scrubber …", and
+  "the Leave War screen is a separate chunk, pre-warmed after login".
 
 ## Where things live
 
