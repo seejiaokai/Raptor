@@ -408,6 +408,13 @@ function tdAutoScroll(y: any) {
   if (y < top + TD_EDGE) el.scrollTop -= TD_SPEED
   else if (y > bot - TD_EDGE) el.scrollTop += TD_SPEED
 }
+/* the first element under the point that is not the ghost — one hit-test for
+   the whole stack; the single-element fallback is for jsdom, which has no
+   layout and no ghost to skip */
+function underPoint(x: any, y: any, ghost: any) {
+  const stack: any[] = typeof (document as any).elementsFromPoint === 'function' ? (document as any).elementsFromPoint(x, y) : [document.elementFromPoint(x, y)]
+  return stack.find((n: any) => n && !(ghost && ghost.contains(n))) || null
+}
 function tdOver(x: any, y: any) {
   const g = TD.ghost
   /* TD.ox/oy is where the mouse press landed inside the puck, so its ghost
@@ -424,8 +431,7 @@ function tdOver(x: any, y: any) {
      the tempting alternative (pointer-events off → elementFromPoint → back on)
      rewrites the ghost's hit-test data every move, which repaints the ghost
      and re-layerises the whole page: 22ms a move worse. Leave it. */
-  const stack: any[] = typeof (document as any).elementsFromPoint === 'function' ? (document as any).elementsFromPoint(x, y) : [document.elementFromPoint(x, y)]
-  const el = stack.find((n: any) => n && !(g && g.contains(n))) || null
+  const el = underPoint(x, y, g)
   const t = el && el.closest ? (el.closest(DROP_SEL) || el.closest(BIN_SEL)) : null
   if (t !== TD.over) {
     if (TD.over) TD.over.classList.remove('dragover')
@@ -508,11 +514,23 @@ function onPointerUp(e: PointerEvent) {
   const armed = TD.armed, x = e.clientX, y = e.clientY
   DBG.pu(x, y)
   if (armed) {
+    /* HIT-TEST FIRST, with the ghost still up and skipped (the same stack read
+       every move uses), THEN take the ghost down (the 6 Sep 26 drop round).
+       The old order — ghost off, elementFromPoint, body.tdrag/.mdrag off,
+       applyDrop — dirtied the page's style twice before applyDrop measured
+       the cell's seats (nearSeat), so the drop paid two full forced
+       style+layout passes on a 4× laptop (~55 ms) before the first line of
+       real work. Now the hit-test pays the one pass the last move left
+       dirty, the ghost's removal is a trivial re-layout, and the body
+       markers come off in tdClear() below — AFTER applyDrop has repainted,
+       so their restyle rides the same frame as the drop's own. Nothing reads
+       those markers from script (css-invalidation.test.ts: they exist only as
+       ancestors in a few hover rules), so applyDrop cannot tell the
+       difference. */
+    const el = underPoint(x, y, TD.ghost)
+    DBG.efp(el as any)
     if (TD.ghost && TD.ghost.parentNode) TD.ghost.parentNode.removeChild(TD.ghost)
     TD.ghost = null
-    const el = document.elementFromPoint(x, y)
-    DBG.efp(el as any)
-    document.body.classList.remove('tdrag', 'mdrag')
     DBG.drop(applyDrop(el, x, y) ? 'OK' : 'NONE')
     /* The tap that ends a drag must not also select the puck. But a real drag ends
        on a different element than it started on, so the browser fires NO click at

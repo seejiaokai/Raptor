@@ -18,6 +18,7 @@ import { editingText } from './textedit'
 import { wireRowDrag } from './rowdrag'
 import { useVersion } from './useStore'
 import { canEditSched } from '../state/auth'
+import { swapDay, chunksOfHTML, type DayChunks } from './dayswap'
 
 /* the seven day strings of the edit week — ONE body for the live repaint and
    the idle warm build below, so the two can never draw a different week */
@@ -65,7 +66,10 @@ function asIfEditOpen<T>(fn: () => T): T {
 export function EditWeek() {
   const version = useVersion()
   const ref = useRef<HTMLDivElement>(null)
-  const prev = useRef<{ ed: boolean, html: string[] } | null>(null)
+  /* html: the seven day strings last written; chunks: each day's canonical
+     block list for the per-block swap (ui/dayswap.ts) — null for a day a
+     whole rebuild wrote, derived from its string the first time it changes */
+  const prev = useRef<{ ed: boolean, html: string[], chunks: (DayChunks | null)[] } | null>(null)
   const warm = useRef<{ armed: boolean, cancel: (() => void) | null }>({ armed: false, cancel: null })
   useEffect(() => {
     if (warm.current.armed || !canWarm()) return
@@ -75,7 +79,7 @@ export function EditWeek() {
       const ed = canEditSched()
       const html = asIfEditOpen(() => editDayStrings(ed))
       root.innerHTML = html.join('')
-      prev.current = { ed, html }
+      prev.current = { ed, html, chunks: html.map(() => null) }
       /* the desktop next-week preview is a SECOND seven days of markup (ui/peek.ts)
          — the traced open still spent ~1s at 4x building it after the warm had
          built the live week, so it warms here too. mountPeek reads no layout
@@ -115,11 +119,16 @@ export function EditWeek() {
        sections, root always carries more children than html.length on an
        ordinary repaint. */
     const whole = !p || p.ed !== ed || p.html.length !== html.length || root.children.length < html.length
+    /* a changed day rewrites only its changed BLOCKS (ui/dayswap.ts) — a drop
+       into one row re-parses, re-styles and lays out one ~150-element block
+       instead of the ~1,500-element day (the 6 Sep 26 drop round) */
+    let chunks: (DayChunks | null)[]
     if (!whole) {
       const secs = [...root.children] as HTMLElement[]
-      html.forEach((h, i) => { if (h !== p!.html[i]) secs[i].outerHTML = h })
+      chunks = html.map((h, i) => h === p!.html[i] ? (p!.chunks[i] ?? null) : swapDay(secs[i]!, h, p!.chunks[i] || chunksOfHTML(p!.html[i]!)))
     } else {
       root.innerHTML = html.join('')
+      chunks = html.map(() => null)
     }
     /* mount/refresh the trailing peek nodes — see ViewWeek for the full
        reasoning (a no-op on an ordinary repaint; self-heals the `whole`
@@ -155,7 +164,7 @@ export function EditWeek() {
          both weeks consume it the same way so the hop works in both directions */
       if (CARRYDAY != null) { scrollWeekToDay(root, CARRYDAY); setCarryDay(null) }
     }
-    prev.current = { ed, html }
+    prev.current = { ed, html, chunks }
     refreshHighlights()
     /* now the new week is written and landed on its near edge — slide it in */
     if (runGlide) runGlide()

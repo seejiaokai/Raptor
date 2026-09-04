@@ -16,11 +16,15 @@ import { beginGlide } from './weekglide'
 import { weekScrollMax, panHold } from './pan'
 import { mountPeek } from './peek'
 import { useVersion } from './useStore'
+import { swapDay, chunksOfHTML, type DayChunks } from './dayswap'
 
 export function ViewWeek() {
   const version = useVersion()
   const ref = useRef<HTMLDivElement>(null)
-  const prev = useRef<string[] | null>(null)
+  /* html: the seven day strings last written; chunks: each day's canonical
+     block list for the per-block swap (ui/dayswap.ts) — null for a day a
+     whole rebuild wrote, derived from its string the first time it changes */
+  const prev = useRef<{ html: string[], chunks: (DayChunks | null)[] } | null>(null)
   /* which (desktop-ness × CURWEEK) key the trailing peek nodes currently
      reflect — '' means none are mounted. See ui/peek.ts:mountPeek. */
   const peekKeyRef = useRef<string>('')
@@ -68,12 +72,16 @@ export function ViewWeek() {
        is expected, not a sign the live days need rebuilding from scratch.
        Only fewer-than-expected (first mount, or something having wiped the
        week) still forces the full rebuild. */
-    let whole = !p || p.length !== html.length || root.children.length < html.length
+    const whole = !p || p.html.length !== html.length || root.children.length < html.length
+    /* a changed day rewrites only its changed BLOCKS (ui/dayswap.ts) — see
+       EditWeek for the reasoning; both weeks swap the same way */
+    let chunks: (DayChunks | null)[]
     if (!whole) {
       const secs = [...root.children] as HTMLElement[]
-      html.forEach((h, i) => { if (h !== p![i]) secs[i].outerHTML = h })
+      chunks = html.map((h, i) => h === p!.html[i] ? (p!.chunks[i] ?? null) : swapDay(secs[i]!, h, p!.chunks[i] || chunksOfHTML(p!.html[i]!)))
     } else {
       root.innerHTML = html.join('')
+      chunks = html.map(() => null)
     }
     /* Mount/refresh the trailing peek nodes — a no-op DOM-wise on an ordinary
        repaint (same key, already present), so this never costs the perf-B
@@ -117,7 +125,7 @@ export function ViewWeek() {
          line above exists for. */
       if (CARRYDAY != null) { scrollWeekToDay(root, CARRYDAY); setCarryDay(null) }
     }
-    prev.current = html
+    prev.current = { html, chunks }
     /* the reference re-hangs selection/highlight classes after every render */
     refreshHighlights()
     /* now the new week is written and landed on its near edge — slide it in */

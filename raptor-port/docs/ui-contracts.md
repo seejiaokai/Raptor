@@ -8,6 +8,22 @@ several are measured and suite-enforced, not preferences.
 
 - An edit on one day must not visibly disturb the other days (per-day string
   diff in ViewWeek/EditWeek; per-panel diff in SchedBoard).
+  **And within a changed day, only its changed BLOCKS are rewritten** (6 Sep
+  26, the drop round — `ui/dayswap.ts`). A day is `<section class="day">` →
+  head / optional sign-off / `<div class="day-body">` → the warnings box and
+  one block per schedule section. `swapDay` parses the new string into a
+  `<template>`, compares each block's canonical markup (the serialisation of
+  the freshly PARSED node — never the live node, which highlights/arm/dnd
+  decorate after every repaint) with the last write's, and `replaceWith`s
+  only the blocks that differ; the section's own attributes are synced in
+  place. Any shape mismatch — a different child or block count, a live child
+  list that no longer matches what was written, a non-section — replaces the
+  whole day node as the old `outerHTML =` did. Consequences a reader can rely
+  on: a drop into one row keeps every other block's nodes (and their
+  decorations, which `refreshHighlights` re-hangs anyway); a whole-week
+  rebuild keeps no chunks, so a day's FIRST change after it re-derives them
+  from the previous string (one extra parse, once per day). Pinned in
+  `ui/dayswap.test.ts`.
 - The week keeps its scroll through any edit; the palette keeps its scroll;
   wave blocks keep swipe offset.
 - Only the page on screen re-renders (CURPAGE gates in the week effects);
@@ -1829,7 +1845,15 @@ persisted and never in a history snapshot. The toggle builder is `notePubTog`
   compositor layers (the filtered / faded roster pucks and everything that
   overlaps them) and a moving layer re-opens those overlap decisions. Fewer
   layers is the only lever left there; the ghost itself is done. Never return
-  the ghost to left/top. **The cell
+  the ghost to left/top. **The release hit-tests FIRST, with the ghost still
+  up and skipped (the same `underPoint` stack read every move uses), takes
+  the ghost down after, and leaves `body.tdrag/.mdrag` to `tdClear()` once
+  `applyDrop` has repainted** (6 Sep 26, the drop round): the old order —
+  ghost off, `elementFromPoint`, markers off, `applyDrop` — dirtied the
+  page's style twice before `nearSeat` measured the cell's seats, so a 4×
+  drop paid two full forced style+layout passes (~55 ms) before any real
+  work; nothing reads those markers from script, so `applyDrop` cannot tell
+  the difference (the jsdom fallback path is byte-for-byte the old one). **The cell
   hover highlights are off while a puck is in flight** (`body:not(.tdrag)` on
   `.acrow .seat.empty-slot:hover`, `.acrow .seat[data-slot]:hover .puck`,
   `.sb-slot.empty:hover`): each hover flip under the ghost repainted and

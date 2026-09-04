@@ -799,6 +799,46 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
   `invalidationTracking` ones in a separate run — the tracking inflated one
   style recalc 8× (2.5 s where the plain run read 0.3 s); never quote a
   duration from the attributing run.
+  EXTENDED 6 Sep 26, later still — THE DROP (owner: "Ok do it", the round the
+  drag entry above left for itself). PROFILED at 4× on an UNMINIFIED build
+  (`vite build --minify false --outDir …`, served on a second port, so the
+  CPU profile names real functions — `scratchpad/profile-drop.cjs`,
+  inclusive time per function): of the ~600 ms drop task, the rules engine
+  (both `validate` calls, `slotBar`) was ~45 ms; `applyDrop` ~100 (of which
+  ~55 was TWO forced style+layout passes — the ghost removed and the body
+  markers dropped before `nearSeat` measured); the seven day strings ~80
+  (`availHTML` a third of that); the React commit ~330, almost all the
+  EditWeek effect: the day's `outerHTML` swap (parse ~20, style ~100 on
+  ~1,500 elements, layout ~100) and `refreshHighlights` ~35; then a ~200 ms
+  frame task repainting the page (~65 recording the two VISIBLE days, ~35
+  pre-paint, ~60 compositing). DONE (`ui/dayswap.ts` new, `EditWeek.tsx`,
+  `ViewWeek.tsx`, `drag.ts`): a changed day rewrites only its changed BLOCKS
+  (per-block canonical-markup diff inside the section, whole-node fallback on
+  any shape mismatch — CLAUDE.md stable decision), and pointer-up hit-tests
+  with the ghost still up (skipped), removes it after, and leaves the body
+  markers to `tdClear()` after the drop. RESULT at 4×: the drop task ~600 →
+  ~400–490 ms, busy ~1,000 → ~750–815; a drag-free write 408–448 → ~350 ms
+  to first paint (style 46 → 13–19, layout 95 → 29–45). What is LEFT, in
+  order: the page repaint ~100 + compositing ~60 (structural — see the drag
+  entry's layer count); the seven day strings 60–135 (all seven are rebuilt
+  to diff — `availHTML`'s per-wave availability sort is the fat part, and it
+  reads the availability oracle, so any cache there is engine-adjacent);
+  the `body.dnd` decorations coming off (~40 ms restyle + a 7-day re-layout:
+  the "drop here" text and the `position:relative` flips change geometry —
+  making them layout-neutral is a visible-wording change, owner's call); the
+  two `validate` calls (~45, engine — not touched). DEAD ENDS, measured,
+  don't retry: `.day`/`.dsec`/`.day>*` as `position:relative`, `contain:paint`,
+  `contain:layout paint`, `isolation:isolate`, `will-change:transform`, and
+  the week as its own layer — all equal or worse (the days scrolled off the
+  right are already culled; the repaint is the two visible days). A
+  `refreshHighlights` "quiet path" (one `.puck.me,.puck.sel,…` selector list
+  + an attribute query instead of the ~660-puck loop) was 23 vs 11 ms — a
+  seven-selector list is matched against all ~17k elements; reverted.
+  Two probe lessons: enabling the CDP `LayerTree` domain inflates paint
+  ~4× (313 vs 65 ms for the same paint) — attribute layers in one run, time
+  in another; and the `disabled-by-default-blink.invalidation` category
+  emitted nothing in this Chromium and slowed paint 8×. Gates: see the
+  table's 6 Sep row.
 
 - **THE SLOW-COMPUTER CUT (owner, 3 Sep 26 — "Is it possible to have this app
   work faster on a slow computer?" → "Do option 3 with option 1").** Measured

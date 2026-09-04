@@ -1656,6 +1656,37 @@ subscribers.
   "pointer machine" pin). Contract: `docs/ui-contracts.md` §the mouse rides
   the pointer machine.
 
+- **A changed day rewrites only its changed BLOCKS, and a drop hit-tests
+  before it takes the ghost down** (6 Sep 26, the drop round — owner: "Ok do
+  it", after the drag round left the ~1.1 s drop for its own pass). Traced at
+  4× on the built bundle: the rules engine was ~45 ms of it; the rest was the
+  redraw — re-parsing, re-styling and laying out the WHOLE ~1,500-element day
+  for one new puck, then repainting the page. `ui/dayswap.ts` parses the new
+  day string into a `<template>` and replaces, inside the existing
+  `<section class="day">`, only the top-level children / `.day-body` blocks
+  whose CANONICAL markup (the browser's serialisation of the freshly parsed
+  markup, never the decorated live node) differs from the last write; any
+  shape mismatch falls back to replacing the whole day node, which is exactly
+  what `outerHTML =` did. Both weeks use it (`ViewWeek`/`EditWeek` keep
+  `prev.chunks`; `null` after a whole rebuild, derived from the previous
+  string on the day's first change). `drag.ts onPointerUp` now hit-tests with
+  the ghost still up (skipped, as every move does), removes it after, and
+  leaves `body.tdrag/.mdrag` to `tdClear()` after the drop — the old order
+  forced two full style+layout passes before the first line of real work.
+  Result: the drop's long task ~600 → ~400–490 ms, style 100–140 → 55–70,
+  layout 90–155 → 35–40 at 4×. MEASURED AND NOT DONE: every paint-isolation
+  variant on the week (`.day` / `.dsec` / `.day > *` as `position:relative`,
+  `contain:paint`, `isolation:isolate`, `will-change:transform`, the week as
+  its own layer) — equal or worse; the ~60–100 ms page repaint is recording
+  the two VISIBLE days and is not reducible by layering. A "quiet path" in
+  `refreshHighlights` (one seven-class selector list instead of the puck loop)
+  was 2× SLOWER at 4× — the loop stays. Do not swap by live `outerHTML`
+  comparison (decorations make every block differ), do not match blocks by
+  index across a count mismatch, and do not take the ghost down before the
+  hit-test. Pins: `ui/dayswap.test.ts`; `drag.test.tsx` unchanged (the
+  jsdom fallback path is the same). Contract: `docs/ui-contracts.md`
+  §Rendering (the per-block swap bullet).
+
 ## Where things live
 
 | Need | Go to |
