@@ -2552,8 +2552,8 @@ test('rapid undo/redo settle to a consistent grid', async ({ page }) => {
 // still moves the grid), with no page error across the switch.
 //   The DESKTOP additionally SHRINKS the drawn window while hidden and rebuilds
 // the year on return (owner, 5 Sep 26 — so the browser wakes a small grid, not
-// the whole year), so its sideways PIXEL is not preserved — the same MONTH is.
-// The PHONE windows differently and keeps its exact sideways spot.
+// the whole year). Since the placeholders (5 Sep 26) the dropped months keep
+// their width, so the sideways PIXEL is preserved on both devices.
 const monthsDrawnCount = (page: import('@playwright/test').Page) => page.evaluate(() =>
   new Set([...document.querySelectorAll('#page-leavewar .mx-wrap .mxhead th[data-testid^="head-"]')]
     .map(e => (e as HTMLElement).dataset.testid!.slice(5, 12))).size)
@@ -2582,14 +2582,13 @@ test('a tab switch keeps the grid alive: the same node returns, shrinks-and-rebu
   await expect(page.locator('[data-testid="row-slipway"]')).toBeVisible()
   // the SAME grid node — kept alive, never torn down and rebuilt
   expect(await page.evaluate(() => document.querySelector('#page-leavewar .mx-wrap') === (window as any).__mx)).toBe(true)
-  if (desktop) {
-    // rebuilds the whole year on return
-    await expect.poll(() => monthsDrawnCount(page), { timeout: 9000 }).toBe(12)
-  } else {
-    // the phone keeps its exact sideways spot
-    const after = await page.evaluate(() => Math.round(document.querySelector('#page-leavewar .mx-wrap')!.scrollLeft))
-    expect(Math.abs(after - before)).toBeLessThanOrEqual(2)
-  }
+  // …at the exact sideways spot it was left at, on both: the months the desktop
+  // dropped while hidden became placeholders of the same measured width
+  // (5 Sep 26), so nothing moved
+  const after = await page.evaluate(() => Math.round(document.querySelector('#page-leavewar .mx-wrap')!.scrollLeft))
+  expect(Math.abs(after - before)).toBeLessThanOrEqual(2)
+  // desktop rebuilds the whole year on return
+  if (desktop) await expect.poll(() => monthsDrawnCount(page), { timeout: 9000 }).toBe(12)
 
   // measurements are still live after the hidden spell: a month jump moves the grid
   const pos = await page.evaluate(() => Math.round(document.querySelector('#page-leavewar .mx-wrap')!.scrollLeft))
@@ -2640,23 +2639,32 @@ test('a glowing green box frames the open-bidding window and clears when bidding
 })
 
 // ---- the column window (Phase 2 of the speed work, 3 Sep 26) --------------
-// The grid draws a WINDOW of whole months at their real widths and grows it
-// once a scroll comes to rest; a month-strip jump draws its month first. The
-// arithmetic is unit-tested (colwindow.test.ts); this proves the measuring
-// and the scrolling around it in a real layout, on both projects. Every
-// number here is read, not assumed: the drawn months come off the header
-// testids and the row alignment off the cells' colSpans.
-test('the grid draws a window of months, keeps every row aligned, and grows at rest', async ({ page }) => {
+// The grid draws a WINDOW of whole months at their real widths; the undrawn
+// months are PLACEHOLDER cells as wide as the months they stand in for (owner,
+// 5 Sep 26 — "do the placeholders + moving"), so the scroller is year-wide from
+// the first paint and months are drawn IN PLACE under a moving view. A
+// month-strip jump draws its month first. The arithmetic is unit-tested
+// (colwindow.test.ts); this proves the measuring and the scrolling around it
+// in a real layout, on both projects. Every number here is read, not assumed:
+// the drawn months come off the header testids and the row alignment off the
+// cells' colSpans.
+test('the grid draws a window of months over year-wide placeholders, keeps every row aligned, and draws in place', async ({ page }) => {
   const read = () => page.evaluate(() => {
     const heads = [...document.querySelectorAll('.mx-wrap .mxhead th[data-testid^="head-"]')].map(e => (e as HTMLElement).dataset.testid!.slice(5))
     const months = [...new Set(heads.map(d => d.slice(0, 7)))]
+    // the placeholder cells the header carries (one per side that has undrawn
+    // months) — every other row must carry the same
+    const ph = document.querySelectorAll('.mx-wrap .mxhead tr:last-child th.lwph').length
+    const phl = document.querySelectorAll('.mx-wrap .mxhead tr:last-child th.lwph-l').length
     // every roster / event / count row spans exactly the drawn columns + the
-    // two frozen ones — a band that began before the window, or a row that
-    // still walked the whole year, would break this
+    // placeholders + the two frozen ones — a band that began before the
+    // window, a row that still walked the whole year, or a row missing a
+    // placeholder cell would break this
     const rows = [...document.querySelectorAll('.mx-wrap table.mx tbody tr')]
       .filter(tr => !tr.classList.contains('grp') && !tr.classList.contains('catsub') && !tr.classList.contains('mbrak'))
-    const misaligned = rows.filter(tr => [...tr.children].reduce((n, c) => n + ((c as HTMLTableCellElement).colSpan || 1), 0) !== 2 + heads.length).length
-    return { months, heads: heads.length, misaligned, rows: rows.length }
+    const misaligned = rows.filter(tr => [...tr.children].reduce((n, c) => n + ((c as HTMLTableCellElement).colSpan || 1), 0) !== 2 + heads.length + ph).length
+    const w = document.querySelector<HTMLElement>('.mx-wrap')!
+    return { months, heads: heads.length, ph, phl, misaligned, rows: rows.length, scrollW: w.scrollWidth, clientW: w.clientWidth }
   })
 
   const open = await read()
@@ -2668,6 +2676,10 @@ test('the grid draws a window of months, keeps every row aligned, and grows at r
   expect(open.months[0]).toBe('2026-01')
   expect(open.misaligned).toBe(0)
   expect(open.rows).toBeGreaterThan(20)
+  // …yet the scroller already spans the YEAR: a placeholder stands in for the
+  // undrawn months on the right, so there is nowhere to get stuck.
+  expect(open.ph).toBeGreaterThanOrEqual(1)
+  expect(open.scrollW).toBeGreaterThan(open.clientW * 4)
 
   // a jump draws its month (and only around it): September exists, January does not
   await page.locator('[data-testid="month-SEP"]').click()
@@ -2676,14 +2688,15 @@ test('the grid draws a window of months, keeps every row aligned, and grows at r
   const sep = await read()
   expect(sep.months).toContain('2026-09')
   expect(sep.misaligned).toBe(0)
+  // …with a LEFT placeholder now standing in for January–August (the right one
+  // may already be gone: the phone's rolling runway reaches December from here)
+  expect(sep.phl).toBe(1)
 
-  // scroll to the window's right bound and rest: the window grows to the right
-  const before = sep.months.length
+  // scroll to the far right — the December placeholder — and December is drawn
+  // IN PLACE under the view, with every row still aligned
   await page.locator('.mx-wrap').evaluate(el => { el.scrollLeft = el.scrollWidth })
-  await expect.poll(async () => (await read()).months.length, { timeout: 4000 }).toBeGreaterThanOrEqual(before)
-  const grown = await read()
-  expect(grown.misaligned).toBe(0)
-  expect(grown.months[grown.months.length - 1] >= sep.months[sep.months.length - 1]!).toBe(true)
+  await expect.poll(async () => (await read()).months.includes('2026-12'), { timeout: 6000 }).toBe(true)
+  expect((await read()).misaligned).toBe(0)
 
   // back to January by the strip: January is drawn again and December is not
   await page.locator('[data-testid="month-JAN"]').click()

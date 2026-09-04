@@ -31,6 +31,8 @@ export function EventRows({
   rows,
   editable,
   onEdit,
+  padL,
+  padR,
 }: {
   days: DayInfo[]
   bands: EventBand[]
@@ -41,6 +43,12 @@ export function EventRows({
   editable: boolean
   /** Open the Event sheet for one line + day. Only wired when `editable`. */
   onEdit: (line: number, date: string) => void
+  /** The column window's PLACEHOLDER cells (colwindow.ts, 5 Sep 26): one empty
+   *  cell before / after the drawn days standing in for the undrawn months, so
+   *  every row keeps the same column count as the header. Sized by Matrix
+   *  through a CSS variable, never here. */
+  padL?: boolean
+  padR?: boolean
 }) {
   return (
     <tbody className="events">
@@ -136,7 +144,9 @@ export function EventRows({
             {/* The count rows' blank balance cell: a day's event has no
                 balance, and the cell holds the frozen column. */}
             <td className="bal" />
+            {padL && <td className="lwph lwph-l" />}
             {cells}
+            {padR && <td className="lwph lwph-r" />}
           </tr>
         )
       })}

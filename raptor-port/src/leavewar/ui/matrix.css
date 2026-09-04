@@ -722,8 +722,38 @@
    a tap leaves the row hovered until something else is tapped, so the column
    simply stays broken. `.who` was already exempt, which is why only the
    counter showed it. Pinned by the geometry gate; jsdom cannot see it. */
-.mx tbody tr:hover td:not(.who):not(.bal) {
+.mx tbody tr:hover td:not(.who):not(.bal):not(.lwph) {
   background: rgba(59, 198, 232, .05);
+}
+
+/* THE PLACEHOLDER COLUMNS (colwindow.ts, owner 5 Sep 26 — "do the
+   placeholders + moving"). One empty cell per side in every row stands in for
+   the months the window has not drawn, exactly as wide as those months
+   (measured once drawn, estimated before), so the scroller is year-wide from
+   the first paint and the next months are drawn IN PLACE while the scroll is
+   still moving. Width rides two CSS variables Matrix writes on `.mx-outer`
+   (`applyPlaceholders`) — the mirror header lives inside that box too, so its
+   copy of the cell reads the same number. No side padding and no right
+   hairline: the column must be EXACTLY the variable, or the swap for the real
+   month would shift everything after it. The row hairline stays so the rows
+   read across; the faint diagonal hatch says "not drawn yet" without shouting,
+   and is what a reader sees for the beat before a month lands. */
+.mx th.lwph,
+.mx td.lwph,
+.mx .mxhead th.lwph {
+  padding: 0;
+  border-right: 0;
+  width: var(--lw-ph-l, 0px);
+  min-width: var(--lw-ph-l, 0px);
+  max-width: var(--lw-ph-l, 0px);
+  background: repeating-linear-gradient(135deg, transparent 0 9px, rgba(70, 81, 94, .22) 9px 10px);
+}
+.mx th.lwph-r,
+.mx td.lwph-r,
+.mx .mxhead th.lwph-r {
+  width: var(--lw-ph-r, 0px);
+  min-width: var(--lw-ph-r, 0px);
+  max-width: var(--lw-ph-r, 0px);
 }
 
 /* An actionable cell — one a click will do something with, which is stage-

@@ -8,14 +8,25 @@
 // already thinks in (the strip, the brackets, the row window), so a window
 // edge always lands where a reader expects a seam anyway.
 //
-// Why whole months and real widths, not fixed-width spacers: a census of the
-// drawn grid found 22 distinct day-column widths (24–38px) — the header text
-// and chips like "*OIL" widen columns under auto table layout — so a spacer
-// standing in for an undrawn month can only ever be an estimate, and the
-// estimate's error would hop the content under the finger the moment the real
-// month was drawn. Drawing whole months at their real width has no such seam;
-// the cost is that the scroller spans the window, not the year, so the year is
-// crossed by the month strip and by the window GROWING at its edges.
+// The undrawn months are PLACEHOLDERS (owner, 5 Sep 26 — "do the placeholders",
+// picked off a mockup of four scrolling styles): one empty cell per side in
+// EVERY row, as wide as the months it stands in for, so the scroller spans the
+// whole year from the first paint and a flick never runs into a drawn edge.
+// Months are then drawn IN PLACE — while the scroll is still moving, in both
+// directions — and the trailing ones pruned back to the placeholder at rest.
+// The 3 Sep design deliberately refused spacers, and the reason still binds:
+// a census of the drawn grid found 22 distinct day-column widths (24–38px;
+// header text and chips like "*OIL" widen columns under auto table layout), so
+// a spacer's width can only be ESTIMATED for a month never yet drawn, and the
+// error would hop the content under the finger the moment the real month
+// landed LEFT of the view. Two rules keep that from ever showing:
+//  · a month that has been drawn before keeps its MEASURED width in the
+//    placeholder (Matrix `monthPxRef`), so re-drawing it moves nothing — and
+//    that is every month a reader scrolls back over;
+//  · a month whose width is still an estimate is drawn LEFT of the view only
+//    at rest, where the existing anchor correction (`anchorRef`) absorbs the
+//    error invisibly; to the RIGHT of the view an estimate is harmless (nothing
+//    on screen moves) and it is drawn mid-scroll (`stepAllowedInMotion`).
 //
 // This file is the arithmetic, kept pure so it is provable in jsdom (which
 // computes no layout). Matrix.tsx does the measuring and the scrolling.
@@ -25,13 +36,6 @@ export type ColWin = { lo: number; hi: number } // inclusive month indices
 /** Wars this short are drawn whole: the window's bookkeeping would cost more
  *  than the months it saved. */
 export const WINDOW_FROM_MONTHS = 5
-
-/** How many months to keep drawn beyond the visible ones, per side. The left
- *  runway matters more on a touch screen, where the window only grows on the
- *  left once the scroll has actually hit its bound (see `growAtRest`). */
-export function runway(coarse: boolean): { before: number; after: number } {
-  return { before: coarse ? 2 : 1, after: 2 }
-}
 
 export function clampWin(w: ColWin, monthCount: number): ColWin {
   const last = Math.max(0, monthCount - 1)
@@ -45,8 +49,9 @@ export function clampWin(w: ColWin, monthCount: number): ColWin {
  *  landing view can show (the month sits at the frozen edge, so nothing to
  *  its left is on screen). Kept to two on purpose — a jump REBUILDS every
  *  row's cells for the new columns, so each extra month is a third more work
- *  before the reader sees anything; `growAtRest` adds the runway a beat
- *  later, off the paint. `null` when the war is short enough to draw whole. */
+ *  before the reader sees anything; the fill engine (`stepToward`) adds the
+ *  runway a beat later, off the paint. `null` when the war is short enough to
+ *  draw whole. */
 export function windowAround(monthCount: number, month: number): ColWin | null {
   if (monthCount < WINDOW_FROM_MONTHS) return null
   return clampWin({ lo: month, hi: month + 1 }, monthCount)
@@ -56,25 +61,9 @@ export function inWindow(w: ColWin | null, month: number): boolean {
   return !w || (month >= w.lo && month <= w.hi)
 }
 
-/** Is the whole year drawn? — the desktop background fill's stop condition. */
+/** Is the whole year drawn? */
 export function isFullYear(w: ColWin, monthCount: number): boolean {
   return w.lo === 0 && w.hi === monthCount - 1
-}
-
-/** One step of the desktop background fill (owner, 4 Sep 26 — "fill in the
- *  background"): widen the window by a SINGLE month toward the whole year, so
- *  the reader can scroll it smoothly a beat after the fast first open. The
- *  RIGHT edge grows first (the common forward-scroll direction), then the left;
- *  returns the same window once the year is fully drawn. One month per idle beat
- *  is the whole point — each added month is a small, non-blocking layout instead
- *  of the one big freeze a jump to a far month costs. Desktop only: the phone
- *  keeps the lazy runway window (`growAtRest`), whose reason to exist is that
- *  its perf budget cannot hold the whole year at once. */
-export function fillStep(w: ColWin, monthCount: number): ColWin {
-  const last = monthCount - 1
-  if (w.hi < last) return { lo: w.lo, hi: w.hi + 1 }
-  if (w.lo > 0) return { lo: w.lo - 1, hi: w.hi }
-  return w
 }
 
 /** One step of the drawn window toward an explicit TARGET window — the single
@@ -109,6 +98,23 @@ export function stepToward(
   return win
 }
 
+/** May the step `win → next` be applied while the scroll is still MOVING
+ *  (owner, 5 Sep 26 — draw the next months mid-fling, not only once it stops)?
+ *  Only GROWTH: a prune moves nothing the reader needs and, on the left, would
+ *  need a scroll correction that kills a fling — it waits for rest. Growth on
+ *  the RIGHT is always safe (nothing on screen moves). Growth on the LEFT is
+ *  safe only when that month's width is already KNOWN — it was drawn before, so
+ *  its placeholder is exactly as wide as the month and the swap moves nothing;
+ *  an estimated width could be off by a few pixels and would hop the content
+ *  under the finger, so that case waits for rest and the anchor correction. */
+export function stepAllowedInMotion(win: ColWin, next: ColWin, widthKnown: (month: number) => boolean): boolean {
+  const growsR = next.hi > win.hi
+  const growsL = next.lo < win.lo
+  if (!growsR && !growsL) return false
+  if (growsL && !widthKnown(next.lo)) return false
+  return true
+}
+
 /** The rolling target window for the phone (and for the small grid the desktop
  *  shrinks to while hidden): the visible months plus a runway — more AFTER than
  *  BEFORE, so the drawn edge sits a few months ahead of the finger and a normal
@@ -125,49 +131,9 @@ export function rollingTarget(
   return clampWin({ lo: visLo - before, hi: visHi + after }, monthCount)
 }
 
-/**
- * The window after a scroll comes to REST, given which drawn months are on
- * screen. Grows toward the runway, shrinks past it — and never mid-scroll:
- * every change here that adds or removes columns LEFT of the viewport shifts
- * the content and needs a compensating scrollLeft write, which is invisible at
- * rest and deadly to a touch fling (matrix.css / Matrix.tsx anchorRef carry the
- * history). So:
- *  - the RIGHT side grows and prunes freely (nothing left of the viewport moves);
- *  - on a fine pointer the LEFT side grows and prunes at rest too, corrected by
- *    the anchor;
- *  - on a COARSE pointer the left side grows only once the scroll sits AT its
- *    left bound — the fling has already been stopped by the edge, so the
- *    correction that follows kills nothing — and never prunes, so a reader
- *    exploring leftwards can only ever gain months (the worst case is the whole
- *    year, which is exactly what the grid drew before this existed).
- * Pruning keeps one month of hysteresis beyond the runway so a reader parked
- * on a seam does not see the window flap on every settle.
- */
-export function growAtRest(
-  win: ColWin,
-  monthCount: number,
-  view: { visLo: number; visHi: number; atLeftBound: boolean },
-  opts: { coarse: boolean; before: number; after: number },
-): ColWin {
-  const last = monthCount - 1
-  const wantLo = Math.max(0, view.visLo - opts.before)
-  const wantHi = Math.min(last, view.visHi + opts.after)
-  let { lo, hi } = win
-  // right: grow to the runway, prune past it (+1 hysteresis)
-  if (wantHi > hi) hi = wantHi
-  else if (hi > wantHi + 1) hi = wantHi
-  // left
-  if (wantLo < lo) {
-    if (!opts.coarse || view.atLeftBound) lo = wantLo
-  } else if (!opts.coarse && lo < wantLo - 1) {
-    lo = wantLo
-  }
-  return clampWin({ lo, hi }, monthCount)
-}
-
-/** The drawn months' indices that overlap the viewport, from the cached
- *  content-space spans (`stripGeoRef` in Matrix): [visLo, visHi] as indices
- *  INTO THE SPANS (i.e. relative to the window's `lo`), or null if nothing
+/** The months whose spans overlap the viewport, from the cached content-space
+ *  spans (`stripGeoRef` in Matrix — one span per month of the WAR, drawn or
+ *  placeholder): [visLo, visHi] as indices INTO THE SPANS, or null if nothing
  *  overlaps — a zero-width layout (jsdom) or a scroller with no content. */
 export function visibleSpan(
   spans: { left: number; right: number }[],

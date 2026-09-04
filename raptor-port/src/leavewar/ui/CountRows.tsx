@@ -17,6 +17,8 @@ export function CountRows({
   draggingId,
   dragOver,
   dragAfter,
+  padL,
+  padR,
 }: {
   verdicts: Record<string, DayVerdict>
   dates: string[]
@@ -39,6 +41,12 @@ export function CountRows({
   draggingId?: string | null
   dragOver?: string | null
   dragAfter?: boolean
+  /** The column window's PLACEHOLDER cells (colwindow.ts, 5 Sep 26): one empty
+   *  cell before / after the drawn days standing in for the undrawn months, so
+   *  every row keeps the same column count as the header. Sized by Matrix
+   *  through a CSS variable, never here. */
+  padL?: boolean
+  padR?: boolean
 }) {
   // `requirementFor` can swap in a wholly different rule set per date via
   // `overrides[date]` — nothing constrains an override's rules to the same
@@ -134,6 +142,7 @@ export function CountRows({
                 </span>
               )}
             </td>
+            {padL && <td className="lwph lwph-l" />}
             {dates.map(date => {
               const r = byDate.get(date)?.get(ruleId)
               if (!r) return <td key={date} />
@@ -148,6 +157,7 @@ export function CountRows({
                 </td>
               )
             })}
+            {padR && <td className="lwph lwph-r" />}
           </tr>
         )
       })}

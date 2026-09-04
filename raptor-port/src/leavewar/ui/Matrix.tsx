@@ -55,7 +55,7 @@ import { ManningSheet } from './ManningSheet'
 import { EventRows } from './EventRows'
 import { EventSheet } from './EventSheet'
 import { monthInView } from './monthview'
-import { clampWin, growAtRest, isFullYear, rollingTarget, runway, stepToward, visibleSpan, windowAround, WINDOW_FROM_MONTHS, type ColWin } from './colwindow'
+import { clampWin, rollingTarget, stepAllowedInMotion, stepToward, visibleSpan, windowAround, WINDOW_FROM_MONTHS, type ColWin } from './colwindow'
 import { isLwOnScreen, subLwScreen } from '../state/screen'
 import { msSinceInput } from '../../state/idle'
 import { wireSelect, wireMove, daysBetween, paintLanding, clearLanding, paintEventLanding, eventMoveDateAt, earliestDate, type Cell, type Selection, type SelectCtx } from './select'
@@ -229,9 +229,15 @@ type PersonRowProps = {
   dragging: boolean
   over: '' | 'dragover' | 'dragover after'
   api: MutableRefObject<RowApi>
+  /** The column window's PLACEHOLDER cells (colwindow.ts, 5 Sep 26): one empty
+   *  cell before / after the drawn days standing in for the undrawn months, so
+   *  every row keeps the same column count as the header. Sized by Matrix
+   *  through a CSS variable, never here. */
+  padL: boolean
+  padR: boolean
 }
 
-const PersonRow = memo(function PersonRow({ p, period, days, grid, states, role, viewer, deciding, movedShown, shown, figureCtx, evKind, lockedCols, quals, me, arranging, dragging, over, api }: PersonRowProps) {
+const PersonRow = memo(function PersonRow({ p, period, days, grid, states, role, viewer, deciding, movedShown, shown, figureCtx, evKind, lockedCols, quals, me, arranging, dragging, over, api, padL, padR }: PersonRowProps) {
   const has = quals.length > 0
   // The selected figure's value for this person, derived on every render
   // rather than cached: it has to move the instant a bid is placed, because a
@@ -311,6 +317,7 @@ const PersonRow = memo(function PersonRow({ p, period, days, grid, states, role,
       >
         {show(v)}
       </td>
+      {padL && <td className="lwph lwph-l" />}
       {days.map(d => {
         const code = grid[p.id]?.[d.date] ?? ''
         const here = inSquadron(p, d.date)
@@ -425,6 +432,7 @@ const PersonRow = memo(function PersonRow({ p, period, days, grid, states, role,
           </td>
         )
       })}
+      {padR && <td className="lwph lwph-r" />}
     </tr>
   )
 })
@@ -877,18 +885,42 @@ export function Matrix() {
   const colWin = colWinRaw && months.length >= WINDOW_FROM_MONTHS ? clampWin(colWinRaw, months.length) : null
   const colWinRef = useRef(colWin)
   colWinRef.current = colWin
+  // THE PLACEHOLDERS (owner, 5 Sep 26 — "do the placeholders + moving", picked
+  // off a mockup of four scrolling styles). One empty cell before the first
+  // drawn day and one after the last, in EVERY row, standing in for the undrawn
+  // months at their widths — so the scroller spans the whole year from the
+  // first paint, a flick never runs into a drawn edge, and months are drawn IN
+  // PLACE while the scroll is still moving (the fill engine below). Which sides
+  // exist is render knowledge (the window's edges); how WIDE they are is
+  // written imperatively as two CSS variables (`applyPlaceholders`), because
+  // those widths come from measurement and change as months draw, and a state
+  // write would re-render the ~25k-node grid for a number two cells read.
+  // Every row carries the same cells (header included) — the 20 Aug 26
+  // column-virtualisation that misaligned on iOS gave SOME rows colSpan spacers
+  // over the header's still-full columns, and WebKit reconciles rows of
+  // differing cell counts differently from Blink; here no row differs.
+  const padL = !!colWin && colWin.lo > 0
+  const padR = !!colWin && colWin.hi < months.length - 1
+  // Each month's MEASURED width (layout px, zoom divided out) once it has been
+  // drawn, by war+zoom: a pruned month's placeholder is then exactly as wide as
+  // the month, so re-drawing it moves nothing. A month never drawn falls back to
+  // an estimate (the average day width × its days) — see colwindow.ts for why
+  // that estimate is never swapped for the real month LEFT of the view while the
+  // scroll is moving.
+  const monthPxRef = useRef<{ key: string; px: (number | null)[] }>({ key: '', px: [] })
   // Is the Leave War tab on screen right now? A ref, not React state, so the
   // fill loop below can read it every idle beat without a re-render, and
   // flipping it (state/screen.ts) never repaints the ~25k-node grid. Seeded from
   // the live signal so a first mount that is ALREADY the current page (a direct
   // visit) starts on-screen, and a hidden pre-warm mount starts off-screen.
   const onScreenRef = useRef(isLwOnScreen())
-  // The first drawn month the viewport currently overlaps (absolute index),
-  // tracked at every scroll rest — so when the tab is left we can shrink the
-  // drawn window to a few months AROUND where the reader was, not blindly.
+  // The first month the viewport currently overlaps (absolute index, drawn or
+  // placeholder), tracked on every scroll event (`measureStrip`) — so when the
+  // tab is left we can shrink the drawn window to a few months AROUND where the
+  // reader was, not blindly.
   const viewMonthRef = useRef(0)
-  // The visible drawn months (absolute indices) for the phone's rolling target —
-  // the window the prefetch keeps a runway ahead of.
+  // The visible months (absolute indices) for the phone's rolling target — the
+  // window the prefetch keeps a runway ahead of, updated on every scroll event.
   const liveVisRef = useRef<{ lo: number; hi: number }>({ lo: 0, hi: 1 })
   // Restart the background fill loop after it has parked (the tab was shown, or a
   // scroll moved the phone's rolling target). Set by the fill effect each render.
@@ -906,6 +938,9 @@ export function Matrix() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [colWin?.lo, colWin?.hi, version])
   const drawnDates = useMemo(() => drawnDays.map(d => d.date), [drawnDays])
+  // The day-column slots a full-width row spans: the drawn days plus the
+  // placeholder cell on each side that exists.
+  const dayCols = drawnDates.length + (padL ? 1 : 0) + (padR ? 1 : 0)
   // The LIVE columns for anything that runs off a timer or a listener — the
   // scroll-rest measure, the pre-grow, a resize. Those closures are minted
   // by an earlier render, and the window can change between the event and
@@ -919,17 +954,14 @@ export function Matrix() {
   const liveRef = useRef({ drawnMonths, drawnDates, people })
   liveRef.current = { drawnMonths, drawnDates, people }
   const coarsePointer = () => typeof window.matchMedia === 'function' && window.matchMedia('(pointer: coarse)').matches
-  // The war's month structure for the year-wide scrollbar (see the hbar refs):
-  // days per month and the running day-index of each month's first day.
-  // Constant for the war and needs no layout, so a memo, not a measurement.
+  // The war's month structure for the placeholders' width estimate (see
+  // `monthPx`): days per month. Constant for the war and needs no layout, so a
+  // memo, not a measurement.
   const yearMonths = useMemo(() => {
     const monthDays = months.map(() => 0)
     const idxOf = new Map(months.map((m, i) => [m.first.slice(0, 7), i]))
     for (const d of period.days) { const i = idxOf.get(d.date.slice(0, 7)); if (i != null) monthDays[i]++ }
-    const cumBefore: number[] = []
-    let acc = 0
-    for (let i = 0; i < monthDays.length; i++) { cumBefore[i] = acc; acc += monthDays[i] }
-    return { monthDays, cumBefore, totalDays: acc }
+    return { monthDays }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [period.id])
   // A month-strip jump to an undrawn month: draw around it first, scroll once
@@ -990,6 +1022,13 @@ export function Matrix() {
     if (!wrap) return
     const win = colWinRef.current
     const mi = monthIndexOf(date)
+    // Tell the fill engine where the view is ABOUT to be, before the scroll
+    // event does: its first beat after the window change can land before that
+    // event, and reading the stale pre-jump view it would see a window "nowhere
+    // near the view" and replace it — undoing the jump. The scroll event then
+    // confirms the same months.
+    liveVisRef.current = { lo: mi, hi: mi }
+    viewMonthRef.current = mi
     if (win && (mi < win.lo || mi > win.hi)) {
       // Not drawn yet. Draw a window around it; the anchor layout effect
       // scrolls to the cell in the same commit those columns appear.
@@ -1308,23 +1347,18 @@ export function Matrix() {
   // The Phase-2 column window draws only ~2–4 months, so this proxy bar's spacer
   // — sized to the DRAWN content — spanned only those months: the thumb filled
   // most of the bar, "halfway" was the edge, and it RESIZED every time the
-  // window grew. The bar is now a YEAR-wide SCRUBBER. Its spacer is the whole
-  // war at an ESTIMATED width (a stable per-day average × the war's day count),
-  // so the thumb is year-proportional and never resizes as months draw.
-  // Dragging it NAVIGATES rather than scrolls: the month strip lights up under
-  // the thumb, and the grid JUMPS to the dragged-to day once the drag rests
-  // (through the same `jumpTo` the month buttons use). It has to jump, not
-  // scroll smoothly, because drawing a month is the expensive act this whole
-  // window exists to ration — redrawing every month dragged across would bring
-  // back exactly the slowness Phase 2 removed. Desktop only (a phone
-  // finger-scrolls the grid and shows no proxy bar).
+  // window grew. The bar became a YEAR-wide SCRUBBER over an ESTIMATED year
+  // width, jumping the grid to the dragged-to day on release. Since the
+  // PLACEHOLDERS (5 Sep 26) the grid's own scroller is year-wide, so the bar is
+  // a plain proxy again — its spacer is the grid's scrollWidth and a drag SLIDES
+  // the grid, the fill drawing the months under the view as it goes. Desktop
+  // only (a phone finger-scrolls the grid and shows no proxy bar).
   const hbarUserTsRef = useRef(0)              // last time the bar itself was dragged
   const hbarWantRef = useRef<number | null>(null) // the follow-write we expect back as an echo
-  const hbarSettleRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   // The measured average day-column width + the frozen-column width, cached by
-  // war+zoom so the year width (and the thumb) hold still as the window grows —
-  // only a new war or a zoom step re-measures. Taken from whatever is drawn at
-  // first measure; two months is plenty representative.
+  // war+zoom — the ESTIMATE a placeholder uses for a month never yet drawn (see
+  // `applyPlaceholders`). Only a new war or a zoom step re-measures. Taken from
+  // whatever is drawn at first measure; two months is plenty representative.
   const avgDayWRef = useRef<{ key: string; avg: number; frozen: number } | null>(null)
 
   useEffect(() => {
@@ -1388,8 +1422,10 @@ export function Matrix() {
     // the columns a removed row's chips had widened, and a stuck mirror
     // pinning the OLD widths would sit misaligned over the new ones.
     // `folded` (28 Aug 26) is the same kind of row-set change — minimising a
-    // category takes its rows (and their chips) out of the table.
-  }, [period.id, drawnDates.length, zoom, visWindow, folded])
+    // category takes its rows (and their chips) out of the table. The window's
+    // EDGES (5 Sep 26): two windows a month apart can hold the same day count,
+    // and the pinned widths would be the wrong months'.
+  }, [period.id, drawnDates.length, colWin?.lo, colWin?.hi, zoom, visWindow, folded])
 
   // The mirror starts life at the grid's current horizontal position, and the
   // two scrollers keep each other in lockstep from then on. Assigning an
@@ -1453,57 +1489,38 @@ export function Matrix() {
     if (m && w && m.scrollLeft !== w.scrollLeft) m.scrollLeft = w.scrollLeft
   }
 
-  // The year-wide scrubber FOLLOWS the grid — its thumb reflects where in the
-  // WAR the view sits, in the estimated year space (`yearXForView`). Suppressed
-  // for a beat after the bar itself is dragged (`hbarUserTsRef`), so a jump the
-  // drag kicked off does not yank the thumb back out from under the finger; it
-  // re-settles once the drag is done. Cheap — arithmetic over the cached strip
-  // geometry, no rect read. No-op when the bar is not shown (ref is null) or
-  // before the grid is measured (year space unknown).
+  // The year-wide scrubber FOLLOWS the grid. Since the placeholders (5 Sep 26)
+  // the grid's own scroller IS year-wide — the bar's spacer is simply its
+  // scrollWidth — so the follow is a straight copy of scrollLeft, no year-space
+  // estimate needed. Suppressed for a beat after the bar itself is dragged
+  // (`hbarUserTsRef`), so the grid never writes the thumb back out from under
+  // the finger; it re-settles once the drag is done. No-op when the bar is not
+  // shown (ref is null).
   const syncHbar = () => {
-    const h = hbarRef.current
-    if (!h) return
+    const h = hbarRef.current, wrap = wrapRef.current
+    if (!h || !wrap) return
     if (Date.now() - hbarUserTsRef.current < 250) return
-    const want = yearXForView()
-    if (want == null) return
-    const v = Math.min(Math.max(0, h.scrollWidth - h.clientWidth), Math.max(0, want))
+    const v = Math.min(Math.max(0, h.scrollWidth - h.clientWidth), Math.max(0, wrap.scrollLeft))
     if (Math.abs(h.scrollLeft - v) <= 1) return
     hbarWantRef.current = v
     h.scrollLeft = v
   }
-  // ...and dragging the scrubber NAVIGATES the grid: the month strip lights up
-  // live under the thumb, and the grid jumps to the dragged-to day once the drag
-  // comes to rest (see the hbar refs above for why jump, not smooth scroll).
+  // ...and dragging the scrubber SLIDES the grid: the bar's position maps
+  // straight onto the grid's real scroll, and the grid's own scroll handler
+  // lights the month strip and kicks the fill, which draws the months under the
+  // moving view in place (the placeholders make every position real). It used
+  // to JUMP on release while months were still filling in, because the scroller
+  // only spanned the drawn months; that ration is gone with them.
   const onHbarScroll = () => {
-    const h = hbarRef.current, a = avgDayWRef.current
-    if (!h || !a) return
+    const h = hbarRef.current, wrap = wrapRef.current
+    if (!h || !wrap) return
     // Our own follow-write (syncHbar) echoes back as a scroll event — ignore it.
     if (hbarWantRef.current != null && Math.abs(h.scrollLeft - hbarWantRef.current) <= 1) { hbarWantRef.current = null; return }
     hbarWantRef.current = null
     hbarUserTsRef.current = Date.now()
-    // Once the whole year is drawn — the background fill has finished, or a short
-    // war draws whole — every column is real, so the bar SLIDES the grid instead
-    // of jumping on release: map the bar's year-space position straight onto the
-    // grid's real scroll and let the grid's own scroll handler light the strip.
-    // No month to draw, so there is nothing to ration; syncHbar is suppressed for
-    // 250ms after this (hbarUserTsRef) so the grid never writes the thumb back
-    // under the finger.
-    const win = colWinRef.current
-    const wrap = wrapRef.current
-    if (wrap && (!win || isFullYear(win, months.length))) {
-      const hMax = h.scrollWidth - h.clientWidth
-      const wMax = wrap.scrollWidth - wrap.clientWidth
-      wrap.scrollLeft = hMax > 0 ? Math.round((h.scrollLeft / hMax) * wMax) : 0
-      return
-    }
-    const day = Math.min(yearMonths.totalDays - 1, Math.max(0, Math.round(h.scrollLeft / a.avg)))
-    const date = period.days[day]?.date
-    if (!date) return
-    // Live "where you'll land" — a class toggle on the strip, no React tree.
-    paintInView(months[monthIndexOf(date)]?.label ?? null)
-    // Not fully drawn yet: draw + land once the drag rests, not on every pixel.
-    if (hbarSettleRef.current) clearTimeout(hbarSettleRef.current)
-    hbarSettleRef.current = setTimeout(() => { hbarSettleRef.current = null; jumpTo(date) }, 110)
+    const hMax = h.scrollWidth - h.clientWidth
+    const wMax = wrap.scrollWidth - wrap.clientWidth
+    wrap.scrollLeft = hMax > 0 ? Math.round((h.scrollLeft / hMax) * wMax) : 0
   }
   // Only write state when the bar's presence or dimensions actually change:
   // measureHbar runs on every vertical page scroll, and this component renders
@@ -1529,10 +1546,10 @@ export function Matrix() {
     if (overflow <= 1 || r.width === 0 || r.bottom <= window.innerHeight || r.bottom <= 0 || r.top >= window.innerHeight) {
       applyHbar(null); return
     }
-    // The spacer is the whole war at its estimated width, so the thumb is
-    // year-proportional and holds still as the window grows; until the grid is
-    // measured (`yearWidth` null) fall back to the drawn-content width.
-    applyHbar({ left: r.left, width: r.width, scrollW: yearWidth() ?? w.scrollWidth })
+    // The spacer is the grid's own scroll width — year-wide since the
+    // placeholders (5 Sep 26), so the thumb is year-proportional and only ever
+    // shifts by the few pixels an estimated month gains or loses when drawn.
+    applyHbar({ left: r.left, width: r.width, scrollW: w.scrollWidth })
   }
 
   // The frozen header tracks the grid on a requestAnimationFrame LOOP, not
@@ -1591,6 +1608,7 @@ export function Matrix() {
           >⠿ {arranging ? 'Rearranging' : 'Rearrange'}</button>
         )}
       </th>
+      {padL && <th className="lwph lwph-l" />}
       {brackets.map(b => (
         <th key={b.key} className="brakm" data-testid={testids ? `bracket-${b.key}` : undefined} colSpan={b.count}>
           <div className="brakin">
@@ -1598,6 +1616,7 @@ export function Matrix() {
           </div>
         </th>
       ))}
+      {padR && <th className="lwph lwph-r" />}
     </tr>
   )
 
@@ -1641,6 +1660,7 @@ export function Matrix() {
           </span>
         </button>
       </th>
+      {padL && <th className="lwph lwph-l" />}
       {drawnDays.map(d => {
         const mon = monthLabel(d.date)
         return (
@@ -1660,6 +1680,7 @@ export function Matrix() {
           </th>
         )
       })}
+      {padR && <th className="lwph lwph-r" />}
     </tr>
   )
 
@@ -1751,55 +1772,87 @@ export function Matrix() {
     // month's overlap 0 and the readout permanently null, so leave the cache
     // empty and let measureStrip no-op exactly as it did before.
     if (end <= edges[0]!) { stripGeoRef.current = null; return }
+    const drawn = drawnMonths.map((m, i) => ({
+      label: m.label,
+      left: edges[i]!,
+      right: i + 1 < edges.length ? edges[i + 1]! : end,
+    }))
+    const frozen = frozenWidth(wrap)
+    // The placeholders' day-width estimate rides this same measurement, and
+    // the drawn months' real widths go into the cache the placeholders read.
+    measureAvgDayW(drawn, frozen)
+    const win = colWinRef.current
+    const lo = win?.lo ?? 0
+    const px = monthPxCache()
+    for (let i = 0; i < drawn.length; i++) px[lo + i] = (drawn[i]!.right - drawn[i]!.left) / zoom
+    // One span per month of the WAR, drawn or placeholder — the undrawn months
+    // laid out at their placeholder widths on either side of the measured ones,
+    // so the readout lights the month a placeholder stands for and the fill
+    // engine knows which months the view is over before they exist.
+    const spans: { label: string; left: number; right: number }[] = []
+    let x = drawn[0]!.left
+    for (let m = lo - 1; m >= 0; m--) x -= monthPx(m) * zoom
+    for (let m = 0; m < lo; m++) { const w = monthPx(m) * zoom; spans.push({ label: months[m]!.label, left: x, right: x + w }); x += w }
+    for (const s of drawn) spans.push(s)
+    x = end
+    for (let m = lo + drawn.length; m < months.length; m++) { const w = monthPx(m) * zoom; spans.push({ label: months[m]!.label, left: x, right: x + w }); x += w }
     stripGeoRef.current = {
-      spans: drawnMonths.map((m, i) => ({
-        label: m.label,
-        left: edges[i]!,
-        right: i + 1 < edges.length ? edges[i + 1]! : end,
-      })),
-      frozen: frozenWidth(wrap),
+      spans,
+      frozen,
       // the wrapper's own rect, not clientWidth: every other edge above is
       // measured from a rect, and mixing the two invites an off-by-a-scrollbar
       client: wr.width,
     }
-    // The year-wide scrollbar's day-width estimate rides this same measurement.
-    measureAvgDayW()
+    // Newly cached widths can change a placeholder's width (a month that was
+    // an estimate is now measured) — write them through before the next paint.
+    applyPlaceholders()
   }
 
   // Lock in the average day-column width (and the frozen width) the first time
-  // the strip geometry is measured for this war+zoom; reused thereafter so the
-  // year width, and thus the thumb, do not shift as the window grows.
-  const measureAvgDayW = () => {
-    const g = stripGeoRef.current
+  // the strip geometry is measured for this war+zoom; reused thereafter so a
+  // never-drawn month's estimate does not wander as the window grows.
+  const measureAvgDayW = (drawn: { left: number; right: number }[], frozen: number) => {
     const n = liveRef.current.drawnDates.length
-    if (!g || n === 0) return
+    if (drawn.length === 0 || n === 0) return
     const key = `${period.id}|${zoom}`
     if (avgDayWRef.current?.key === key) return
-    const avg = (g.spans[g.spans.length - 1]!.right - g.spans[0]!.left) / n
-    if (avg > 0) avgDayWRef.current = { key, avg, frozen: g.frozen }
+    const avg = (drawn[drawn.length - 1]!.right - drawn[0]!.left) / n
+    if (avg > 0) avgDayWRef.current = { key, avg, frozen }
   }
-  // The whole war's estimated content width — frozen columns + every day at the
-  // measured average. `null` until there is a measurement (jsdom, first paint).
-  const yearWidth = (): number | null => {
+  // The per-month width cache for this war+zoom (a zoom step changes every
+  // width; a new war is a new set of months) — started fresh when the key moves.
+  const monthPxCache = (): (number | null)[] => {
+    const key = `${period.id}|${zoom}`
+    if (monthPxRef.current.key !== key) monthPxRef.current = { key, px: months.map(() => null) }
+    return monthPxRef.current.px
+  }
+  // A month's width in LAYOUT px (the table's own space, zoom divided out — the
+  // placeholder's `width` is set in that space): measured if it has ever been
+  // drawn, else the average day width × its days, else a plain guess for the
+  // beat before the first measurement.
+  const monthPx = (m: number): number => {
+    const cached = monthPxCache()[m]
+    if (cached != null) return cached
     const a = avgDayWRef.current
-    return a ? a.frozen + yearMonths.totalDays * a.avg : null
+    return (a ? a.avg / zoom : 30) * (yearMonths.monthDays[m] ?? 30)
   }
-  // Where the view's left edge sits in that estimated year space (px): find the
-  // drawn month under the frozen edge from the cached strip geometry, its
-  // fraction scrolled, and turn that into a running day index × the average day
-  // width. Null until measured.
-  const yearXForView = (): number | null => {
-    const wrap = wrapRef.current, g = stripGeoRef.current, a = avgDayWRef.current
-    if (!wrap || !g || !a) return null
-    const viewL = wrap.scrollLeft + g.frozen
-    let si = 0
-    for (let i = 0; i < g.spans.length; i++) if (viewL >= g.spans[i]!.left - 1) si = i
-    const s = g.spans[si]!
-    const monthI = (colWinRef.current?.lo ?? 0) + si
-    const span = s.right - s.left
-    const frac = span > 0 ? Math.min(1, Math.max(0, (viewL - s.left) / span)) : 0
-    const day = (yearMonths.cumBefore[monthI] ?? 0) + frac * (yearMonths.monthDays[monthI] ?? 0)
-    return day * a.avg
+  // Size the two placeholder cells: the sum of the undrawn months on each side,
+  // written as CSS variables on `.mx-outer` (read by every row's placeholder
+  // cell AND the mirror header's copy — both live inside that box; and React
+  // never sets these properties, so they survive its renders). Runs in the
+  // layout effects below, in the same commit as the window change, so a month
+  // swapping between placeholder and drawn never paints at two widths.
+  const applyPlaceholders = () => {
+    const outer = mxOuterRef.current
+    if (!outer) return
+    const win = colWinRef.current
+    let l = 0, r = 0
+    if (win) {
+      for (let m = 0; m < win.lo; m++) l += monthPx(m)
+      for (let m = win.hi + 1; m < months.length; m++) r += monthPx(m)
+    }
+    outer.style.setProperty('--lw-ph-l', `${l.toFixed(2)}px`)
+    outer.style.setProperty('--lw-ph-r', `${r.toFixed(2)}px`)
   }
 
   // The hot path: no DOM search, no rect read, no forced layout — one
@@ -1820,6 +1873,14 @@ export function Matrix() {
     if (!g) return
     const sl = wrap.scrollLeft
     paintInView(monthInView(g.spans, sl + g.frozen, sl + g.client))
+    // Which months (absolute indices, drawn or placeholder) the view is over —
+    // what the fill engine's rolling target follows, and where the grid shrinks
+    // to around when the tab is left. Same twelve numbers, no extra read.
+    const vis = visibleSpan(g.spans, sl + g.frozen, sl + g.client)
+    if (vis) {
+      liveVisRef.current = { lo: vis.visLo, hi: vis.visHi }
+      viewMonthRef.current = vis.visLo
+    }
   }
 
   // The row WINDOW for the roster filter — the expensive half. Changing it
@@ -1847,46 +1908,6 @@ export function Matrix() {
       if (at(mid) >= viewL - 1) { best = mid; hi = mid - 1 } else lo = mid + 1
     }
     return { date: drawnDates[best]!, left: at(best) }
-  }
-
-  // Widen (or trim) the column window once the scroll has settled — see
-  // colwindow.ts `growAtRest` for the rules and why never mid-scroll. Reads
-  // the cached strip geometry (content space), so no rect read of its own
-  // beyond the anchor when the left edge is about to move.
-  const growColWin = () => {
-    const wrap = wrapRef.current
-    const win = colWinRef.current
-    if (!wrap || !win) return
-    if (!stripGeoRef.current) measureStripGeo()
-    const g = stripGeoRef.current
-    if (!g) return
-    const sl = wrap.scrollLeft
-    const vis = visibleSpan(g.spans, sl + g.frozen, sl + g.client)
-    if (!vis) return
-    // Record where the reader is looking (absolute month indices) for the
-    // leave-prune and the phone's rolling target — see the fill effect and the
-    // on-screen effect below.
-    liveVisRef.current = { lo: win.lo + vis.visLo, hi: win.lo + vis.visHi }
-    viewMonthRef.current = liveVisRef.current.lo
-    const coarse = coarsePointer()
-    const next = growAtRest(
-      win, months.length,
-      { visLo: win.lo + vis.visLo, visHi: win.lo + vis.visHi, atLeftBound: sl < 2 },
-      { coarse, ...runway(coarse) },
-    )
-    // Desktop while the tab is on screen: the background fill is drawing toward
-    // the whole year, so this only ever GROWS (covering a fast scroll's view at
-    // once) — it must never prune a month the fill just added, or the two would
-    // fight. The phone keeps growAtRest's prune as an at-rest backstop; the
-    // pre-emptive rolling prefetch (the fill effect) usually keeps the runway
-    // ahead so this finds nothing to grow.
-    const grown = phone ? next : { lo: Math.min(next.lo, win.lo), hi: Math.max(next.hi, win.hi) }
-    if (grown.lo === win.lo && grown.hi === win.hi) return
-    if (grown.lo !== win.lo) {
-      anchorRef.current = anchorNow(wrap)
-      colShiftRef.current = true
-    }
-    setColWin(grown)
   }
 
   const measureWindow = () => {
@@ -1946,6 +1967,13 @@ export function Matrix() {
     // but it never sets `pointer-events`, so this property is left alone.
     if (bandRef.current) bandRef.current.style.pointerEvents = (wrapRef.current?.scrollLeft ?? 0) > 0 ? 'auto' : 'none'
     measureStrip()
+    // Draw WHILE MOVING (owner, 5 Sep 26): the view's months just moved
+    // (measureStrip updated them), so wake the fill engine now — it draws the
+    // next month in place if the drawn edge is within the runway, or parks again
+    // at once if not (arithmetic, no DOM). The scroller is year-wide, so there is
+    // always somewhere to scroll; this is what puts the columns under the finger
+    // before it gets there.
+    kickFillRef.current()
     // Match this frame straight away, then keep matching every frame on the
     // rAF loop until the scroll rests — the immediate write covers the case
     // where the loop has not spun up yet, the loop covers the frames the
@@ -1959,14 +1987,13 @@ export function Matrix() {
     idleRef.current = setTimeout(() => {
       idleRef.current = null
       measureWindow()
-      growColWin()
-      // Re-evaluate the fill target now the view has moved: on the phone the
-      // rolling window follows the new visible months, on desktop the fill keeps
-      // marching toward the whole year. Cheap when there is nothing left to draw.
+      // At rest the fill may also PRUNE the trailing months and draw an
+      // estimated-width month on the left (the anchor makes that invisible now
+      // the grid is still) — the steps it holds back while moving.
       kickFillRef.current()
     }, SCROLL_REST_MS)
   }
-  useEffect(() => () => { if (idleRef.current) clearTimeout(idleRef.current); if (hbarSettleRef.current) clearTimeout(hbarSettleRef.current); stopPump() }, [])
+  useEffect(() => () => { if (idleRef.current) clearTimeout(idleRef.current); stopPump() }, [])
 
   // The WINDOW half measured when the war changes, since that rebuilds every
   // column — and NOT mid-fling, so it runs directly here. The strip half is
@@ -1975,11 +2002,6 @@ export function Matrix() {
   // second set of header lookups and rect reads on every first open (3 Sep 26).
   useEffect(() => {
     measureWindow()
-    // Pre-grow the runway a beat after the columns change (the first open
-    // draws two months; the first flick should find the third already there)
-    // — off the paint, so the open itself stays quick.
-    const t = setTimeout(growColWin, 250)
-    return () => clearTimeout(t)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [period.id, drawnDates.length])
 
@@ -1997,52 +2019,77 @@ export function Matrix() {
 
   // THE ONE DRAW-TOWARD-A-TARGET ENGINE (owner, 4–5 Sep 26 — "fill in the
   // background", then "shrink when I leave, rebuild on return", then the phone's
-  // "load the next months as I approach the edge"). One idle loop, one target per
-  // mode, one month per beat — colwindow.ts `stepToward` is the arithmetic:
+  // "load the next months as I approach the edge", then "do the placeholders +
+  // moving"). One loop, one target per mode, one month per beat — colwindow.ts
+  // `stepToward` is the arithmetic:
   //   · phone → a ROLLING window a few months ahead of the visible ones
-  //     (`rollingTarget`), so a flick meets drawn columns, never the stuck edge,
+  //     (`rollingTarget`), so a flick meets drawn columns, never a stuck edge,
   //     and the trailing months are pruned so the phone's DOM stays light;
-  //   · desktop, tab ON screen → the WHOLE year, so scrolling runs end to end and
-  //     the bottom scrollbar slides (see onHbarScroll);
+  //   · desktop, tab ON screen → the WHOLE year, so scrolling runs end to end
+  //     with nothing left to draw and the bottom scrollbar slides;
   //   · desktop, tab OFF screen (a pre-warm mount, or just left) → capped at a few
   //     months, and only drawn while the user is idle (`msSinceInput`) — this is
   //     the pre-warm that makes the first open instant, and the small window that
   //     makes the next return instant.
-  // requestIdleCallback runs each step only when the main thread is free (so it
-  // self-pauses under a scroll and never competes with a paint); a scroll within
-  // the last SCROLL_REST_MS holds it off too (the belt for the setTimeout
-  // fallback). The loop PARKS when the window already matches its target and is
-  // resumed by `kickFillRef` — from the on-screen effect (tab shown) and from
-  // scroll rest (the phone's target moved). jsdom lays nothing out, so colWin is
+  // WHILE THE SCROLL IS MOVING the engine keeps drawing — that is the whole
+  // point of the placeholders: the months under and ahead of the moving view
+  // land in place, so the reader sees columns arrive rather than a stuck edge.
+  // Each draw is still one synchronous month-build on the main thread (the
+  // freeze the owner felt on the mockup and chose), so it is rationed to the
+  // steps that cannot hop the content under the finger — `stepAllowedInMotion`:
+  // growth only, and on the left only over a month whose width is already
+  // measured. A prune, and a left grow over an estimated width, wait for rest,
+  // where the anchor correction hides the shift. In motion the beat is a short
+  // timeout (requestIdleCallback is starved by an active scroll); at rest it is
+  // an idle callback, so a beat never competes with a paint. The loop PARKS when
+  // the window matches its target and is resumed by `kickFillRef` — from every
+  // scroll event (the view moved), from scroll rest (the held-back steps), and
+  // from the on-screen effect (tab shown). jsdom lays nothing out, so colWin is
   // null (draw-whole) and this no-ops; the browser gate proves it.
-  const fillIdleRef = useRef<number | null>(null)
+  const fillIdleRef = useRef<{ id: number; idle: boolean } | null>(null)
   useEffect(() => {
     if (!colWin) return
     let live = true
-    const rideIdle = (fn: () => void): number =>
+    const moving = () => Date.now() - lastScrollTsRef.current < SCROLL_REST_MS + 40
+    const rideIdle = (fn: () => void): { id: number; idle: boolean } =>
       typeof (window as { requestIdleCallback?: unknown }).requestIdleCallback === 'function'
-        ? (window as unknown as { requestIdleCallback: (cb: () => void, o: { timeout: number }) => number }).requestIdleCallback(fn, { timeout: 500 })
-        : (window.setTimeout(fn, 48) as unknown as number)
-    const dropIdle = (id: number) =>
-      typeof (window as { cancelIdleCallback?: unknown }).cancelIdleCallback === 'function'
-        ? (window as unknown as { cancelIdleCallback: (id: number) => void }).cancelIdleCallback(id)
-        : clearTimeout(id)
-    const schedule = () => { if (fillIdleRef.current == null) fillIdleRef.current = rideIdle(tick) }
+        ? { id: (window as unknown as { requestIdleCallback: (cb: () => void, o: { timeout: number }) => number }).requestIdleCallback(fn, { timeout: 500 }), idle: true }
+        : { id: window.setTimeout(fn, 48), idle: false }
+    const rideSoon = (fn: () => void): { id: number; idle: boolean } => ({ id: window.setTimeout(fn, 16), idle: false })
+    const drop = (h: { id: number; idle: boolean }) => {
+      if (h.idle && typeof (window as { cancelIdleCallback?: unknown }).cancelIdleCallback === 'function') {
+        (window as unknown as { cancelIdleCallback: (id: number) => void }).cancelIdleCallback(h.id)
+      } else clearTimeout(h.id)
+    }
+    const schedule = () => { if (fillIdleRef.current == null) fillIdleRef.current = (moving() ? rideSoon : rideIdle)(tick) }
     const tick = () => {
       fillIdleRef.current = null
       if (!live) return
-      // A draw under a moving finger IS the freeze; and while the tab is hidden a
-      // draw must wait for the app to be genuinely idle, so it never lands under
-      // a keystroke or a puck drag on another page.
-      const atRest = Date.now() - lastScrollTsRef.current >= SCROLL_REST_MS + 40
+      // While the tab is hidden a draw must wait for the app to be genuinely
+      // idle, so it never lands under a keystroke or a puck drag on another page.
       const idleOk = onScreenRef.current || msSinceInput() > PREWARM_IDLE_MS
-      if (!atRest || !idleOk) { fillIdleRef.current = rideIdle(tick); return }
+      if (!idleOk) { schedule(); return }
       const win = colWinRef.current
       if (!win) return
       const last = months.length - 1
+      const v = liveVisRef.current
+      // THE VIEW COMES FIRST. The scroller is year-wide, so a scrubber drag or a
+      // long fling can park the view over placeholders nowhere near the drawn
+      // window; stepping toward it a month at a time would draw every unseen
+      // month in between before the one on screen. So when the drawn window is
+      // not even adjacent to the visible months, REPLACE it with them — the
+      // months on screen land in one draw, and the steps below add the runway
+      // (or the rest of the year) outward from there. No anchor: everything
+      // left of the view keeps its width (drawn months become placeholders of
+      // the same measured width), so the view's left edge holds still.
+      if (onScreenRef.current && (v.lo > win.hi + 1 || v.hi < win.lo - 1)) {
+        anchorRef.current = null
+        colShiftRef.current = false
+        setColWin(clampWin({ lo: v.lo, hi: v.hi }, months.length))
+        return
+      }
       let tLo: number, tHi: number
       if (phone) {
-        const v = liveVisRef.current
         const t = rollingTarget(months.length, v.lo, v.hi, PHONE_BEFORE, PHONE_AFTER)
         tLo = t.lo; tHi = t.hi
       } else if (onScreenRef.current) {
@@ -2052,10 +2099,25 @@ export function Matrix() {
       }
       const next = stepToward(win, months.length, tLo, tHi)
       if (next.lo === win.lo && next.hi === win.hi) return    // parked — kickFillRef resumes
+      const inMotion = moving()
+      if (inMotion && !stepAllowedInMotion(win, next, m => monthPxCache()[m] != null)) {
+        // Not safe under a moving scroll: look again once the moving window has
+        // passed. The scroll-rest kick itself lands INSIDE that window (it fires
+        // 120 ms after the last scroll event, the window is 160), so it cannot be
+        // the retry — without this the held-back prune / left grow would wait for
+        // the next scroll, and a phone parked after a long fling kept all twelve
+        // months (caught on the built bundle, 5 Sep 26).
+        fillIdleRef.current = { id: window.setTimeout(tick, SCROLL_REST_MS), idle: false }
+        return
+      }
       // A month added or dropped on the LEFT shifts the content; keep the reader's
-      // column in place with the same anchor the grow / jump paths use (invisible
-      // at rest). A rightward step writes none.
-      if (next.lo !== win.lo) {
+      // column in place with the same anchor the jump path uses. At rest that is
+      // invisible. In motion the step only ever swaps a placeholder for a month
+      // of the SAME width, so the shift is nil — and on a touch screen the anchor
+      // is skipped altogether, because the `scrollLeft` write that would fix a
+      // stray pixel is exactly what kills a fling (the 30 Aug history). A
+      // rightward step writes none.
+      if (next.lo !== win.lo && !(inMotion && coarsePointer())) {
         const wrap = wrapRef.current
         if (wrap) { anchorRef.current = anchorNow(wrap); colShiftRef.current = true }
       }
@@ -2066,7 +2128,7 @@ export function Matrix() {
     return () => {
       live = false
       kickFillRef.current = () => {}
-      if (fillIdleRef.current != null) { dropIdle(fillIdleRef.current); fillIdleRef.current = null }
+      if (fillIdleRef.current != null) { drop(fillIdleRef.current); fillIdleRef.current = null }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [phone, colWin?.lo, colWin?.hi, months.length])
@@ -2092,8 +2154,10 @@ export function Matrix() {
       if (!win) return                       // short war drawn whole — nothing to window
       if (on) { if (!prev) kickFillRef.current(); return } // shown → resume filling the year
       if (!prev) return                      // already hidden at mount → the fill's cap handles it
-      // on → off: shrink around the reader's month; land its start at the frozen
-      // edge so the return opens on the same month, then let the fill re-expand.
+      // on → off: shrink around the reader's month. The months dropped become
+      // placeholders at their MEASURED widths, so nothing moves and the scroll
+      // position is exactly where the reader left it on return — the fill then
+      // re-expands from there.
       const last = months.length - 1
       const view = Math.max(0, Math.min(viewMonthRef.current, last))
       const small = clampWin({ lo: view, hi: view + HIDDEN_MONTHS - 1 }, months.length)
@@ -2101,8 +2165,6 @@ export function Matrix() {
         anchorRef.current = null
         colShiftRef.current = false
         setColWin(small)
-        const wrap = wrapRef.current
-        if (wrap) wrap.scrollLeft = 0
       }
     }
     apply()
@@ -2119,15 +2181,20 @@ export function Matrix() {
   // stale cache. The strip is re-read straight after, so the readout is right
   // immediately rather than at the next scroll event.
   useLayoutEffect(() => {
-    // measureHbar/syncHbar too: once the grid is measured the proxy spacer
-    // switches from the drawn-content width to the year estimate, and the thumb
-    // takes its year position.
-    const remeasure = () => { measureStripGeo(); measureStrip(); measureHbar(); syncHbar() }
+    // The placeholders FIRST, from the cache and the estimate, so the drawn
+    // months are measured at their final positions (a left placeholder shifts
+    // everything after it); measureStripGeo writes them again once it has cached
+    // the widths it just measured. measureHbar/syncHbar too: the proxy spacer
+    // tracks the grid's scroll width and the thumb its position.
+    const remeasure = () => { applyPlaceholders(); measureStripGeo(); measureStrip(); measureHbar(); syncHbar() }
     remeasure()
     window.addEventListener('resize', remeasure)
     return () => window.removeEventListener('resize', remeasure)
+    // The window's EDGES are deps, not only the drawn-day count: two windows a
+    // month apart can hold the same number of days (Mar+Apr and May+Jun both
+    // span 61), and the placeholders and spans would be a month off.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [zoom, visWindow, period.id, drawnDates.length])
+  }, [zoom, visWindow, period.id, drawnDates.length, colWin?.lo, colWin?.hi])
 
   // Put the anchored column back after a row-set repaint (see anchorRef).
   // Layout effect, not effect: the correction must land in the same frame as
@@ -2630,6 +2697,8 @@ export function Matrix() {
                 draggingId={draggingId}
                 dragOver={dragOver}
                 dragAfter={dragAfter}
+                padL={padL}
+                padR={padR}
               />
             )}
             {/* The month strip, now a row of the grid so it sits between the
@@ -2678,7 +2747,7 @@ export function Matrix() {
                     </span>
                   </div>
                 </td>
-                <td className="mfill" colSpan={drawnDates.length} />
+                <td className="mfill" colSpan={dayCols} />
               </tr>
             </tbody>
             <tbody className="mxhead" ref={headRef}>
@@ -2694,6 +2763,8 @@ export function Matrix() {
               rows={eventRows}
               editable={role === 'admin'}
               onEdit={(line, date) => setEventEdit({ line, date })}
+              padL={padL}
+              padR={padR}
             />
             <tbody className="mxbody" ref={rosterBodyRef}>
               {(() => {
@@ -2708,7 +2779,7 @@ export function Matrix() {
                 // filtered list, so an emptied group takes its heading with
                 // it. visWindow '' (jsdom, first paint) shows everyone.
                 const roster = displayRoster().filter(p => rowInWindow(p, visWindow))
-                const span = 2 + drawnDates.length
+                const span = 2 + dayCols
                 let prevG: string | null = null
                 let prevCat = ''
                 return roster.map(p => {
@@ -2820,6 +2891,8 @@ export function Matrix() {
                         dragging={draggingId === p.id}
                         over={draggingId && dragOver === p.id && draggingId !== p.id ? (dragAfter ? 'dragover after' : 'dragover') : ''}
                         api={rowApi}
+                        padL={padL}
+                        padR={padR}
                       />
                     </Fragment>
                   )

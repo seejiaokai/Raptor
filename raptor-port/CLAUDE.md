@@ -1560,39 +1560,60 @@ subscribers.
   in the background") → "load the next months as I approach the edge" → then, once
   measurement showed the browser spends ~1.4s RE-STYLING the full-year grid every
   time it is revealed, "shrink when I leave, rebuild on return" and pre-warm after
-  login). The grid draws WHOLE MONTHS at real widths, never fixed-width spacers (a
-  census found 22 distinct day-column widths, so an estimate would hop content
-  under the finger). One idle loop drives every "draw more / draw less a beat at a
-  time" path — `colwindow.ts stepToward` toward a per-mode TARGET, one month per
-  `requestIdleCallback` beat, gated so a draw never lands under a moving scroll:
+  login; then, off a mockup of four scrolling styles, "do the placeholders +
+  moving"). The grid draws WHOLE MONTHS at real widths; **the undrawn months are
+  PLACEHOLDER cells** (5 Sep 26) — one empty cell per side in EVERY row, as wide
+  as the months it stands in for — so the scroller is YEAR-WIDE from the first
+  paint, a flick never runs into a drawn edge, and months are drawn IN PLACE
+  WHILE THE SCROLL IS STILL MOVING, in both directions. This reverses the 3 Sep
+  "never fixed-width spacers" rule, and its reason still binds (a census found
+  22 distinct day-column widths, so a never-drawn month's width is an ESTIMATE
+  whose error would hop content under the finger): a month drawn before keeps
+  its MEASURED width in the placeholder (`monthPxRef`, by war+zoom), so
+  re-drawing it moves nothing; a still-estimated month is drawn LEFT of the view
+  only at rest, under the anchor correction (`colwindow.ts stepAllowedInMotion`);
+  to the RIGHT an estimate is harmless. The placeholder widths are two CSS
+  variables written on `.mx-outer` (`applyPlaceholders`), never React state.
+  EVERY row carries the same cells, header included — the 20 Aug column
+  virtualisation that misaligned on the owner's iPhone gave SOME rows colSpan
+  spacers over full header columns, and WebKit reconciles rows of differing cell
+  counts differently from Blink; this design has no such row, but this container
+  ships no WebKit, so the owner's iPhone is the gate for that claim. One loop
+  drives every "draw more / draw less a beat at a time" path — `colwindow.ts
+  stepToward` toward a per-mode TARGET, one month per beat (a short timeout while
+  moving, an idle callback at rest), and a view parked nowhere near the drawn
+  window REPLACES it with the visible months first:
   · **phone** → a ROLLING window a few months AHEAD of the visible ones
-    (`rollingTarget`, before 1 / after 3), trailing months pruned so the DOM stays
-    light — so a flick meets drawn columns, never the stuck edge (the old
-    grow-2-at-rest lump is gone; `growAtRest` stays only as an at-rest backstop);
+    (`rollingTarget`, before 1 / after 3), trailing months pruned AT REST so the
+    DOM stays light (a prune never runs mid-scroll);
   · **desktop, tab ON screen** → the WHOLE year, so scrolling runs end to end and
     the bottom scrollbar SLIDES (see onHbarScroll);
   · **desktop, tab OFF screen** (a pre-warm mount, or just left) → capped at a few
     months (`HIDDEN_MONTHS`), drawn only while the user is IDLE (`state/idle.ts
     msSinceInput`) so it never lands under a keystroke or a puck drag.
   On leave the desktop grid SHRINKS to a few months around the last view (so the
-  next reveal wakes a small grid, ~0.4s not ~1.9s), and REBUILDS the year on
-  return (the fill's left-anchor keeps the reader's month in place as the earlier
-  months fill in behind them). This REVERSES the 4 Sep "desktop keeps the whole
-  year / never prune" rule — the reveal cost is why. The on-screen signal is
+  next reveal wakes a small grid, ~0.4s not ~1.9s) — the dropped months become
+  placeholders of their measured width, so the scroll position is exactly kept —
+  and REBUILDS the year on return. This REVERSES the 4 Sep "desktop keeps the
+  whole year / never prune" rule — the reveal cost is why. The on-screen signal is
   `leavewar/state/screen.ts`, a listener set NOT the store, so flipping it never
   re-renders the ~25k-node grid. Pre-warm: `Shell.tsx` mounts the tab HIDDEN once
   the user pauses after login (desktop only), so the chunk downloads and the first
   months draw off the critical path and the first open is instant; it is
   idle-gated, so it never slows login-to-week. Do NOT put the on-screen flag on the
   store (it would repaint the grid on every tab show), do NOT drop the idle gate on
-  the hidden draw, and do NOT make the phone keep the whole year. The bottom
-  scrollbar is a YEAR-WIDE scrubber whose spacer is the war at an estimated average
-  day-width (`avgDayWRef`, cached by war+zoom) so the thumb holds still as months
-  draw; it JUMPS while the year is still filling and SLIDES once it is whole.
+  the hidden draw, do NOT make the phone keep the whole year, do NOT prune or draw
+  an estimated-width month left of the view mid-scroll, and do NOT give any row a
+  different cell structure from the header. The bottom scrollbar is a plain proxy
+  of the year-wide scroller again: its spacer is the grid's scrollWidth and a drag
+  SLIDES the grid at any time, the fill drawing the months under the view as it
+  goes (the 4 Sep jump-on-release is gone with the estimated year space).
   Detail: `docs/ui-contracts.md` §The Leave War grid draws a window of months;
-  HANDOFF item (d). Pins: `colwindow.test.ts` (`stepToward`/`rollingTarget`), e2e
-  "the grid draws a window of months …", "a year-wide scrubber …", and
-  "the Leave War screen is a separate chunk, pre-warmed after login".
+  HANDOFF item (d). Pins: `colwindow.test.ts` (`stepToward`/`rollingTarget`/
+  `stepAllowedInMotion`), e2e "the grid draws a window of months over year-wide
+  placeholders …", "a year-wide scrubber …", "a tab switch keeps the grid alive …"
+  (exact scroll kept on both devices), and "the Leave War screen is a separate
+  chunk, pre-warmed after login".
 
 ## Where things live
 

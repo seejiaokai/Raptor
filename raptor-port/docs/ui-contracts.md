@@ -5406,20 +5406,45 @@ The year grid draws WHOLE MONTHS at their REAL widths, never the whole year
 at once (`src/leavewar/ui/colwindow.ts`; the measuring in `Matrix.tsx`).
 The contract, in the order a reader meets it:
 
-- **First open draws January–February**; 250 ms later the window pre-grows
-  to its runway off the paint. A month-strip button draws that month and the
-  one after it and lands the month's first column at the frozen edge in the
-  same commit that draws it. A war shorter than five months is drawn whole.
-- **The window grows and prunes only at scroll REST** (the 120 ms idle the
-  row window already used), never mid-scroll. Runway: one month left / two
-  right on a fine pointer, two / two on touch; pruning keeps a month of
-  hysteresis. On a COARSE pointer the LEFT side grows only once the scroll
-  sits at its left bound and never prunes — a `scrollLeft` write is what
-  kills a fling, and columns changing left of the viewport need one.
-- **Every row spans exactly the drawn columns** — the header, the brackets,
-  the fills, the roster rows, the count rows and the event rows (a band that
-  began before the window is emitted from the first drawn day). Pinned in
-  the e2e as "no row's colSpan sum differs from 2 + the drawn day count".
+- **First open draws January–February**; the fill engine (below) adds the
+  runway a beat later, off the paint. A month-strip button draws that month
+  and the one after it and lands the month's first column at the frozen edge
+  in the same commit that draws it. A war shorter than five months is drawn
+  whole.
+- **The undrawn months are PLACEHOLDERS, so the scroller is year-wide from
+  the first paint** (owner, 5 Sep 26 — "do the placeholders + moving", picked
+  off a mockup of four scrolling styles). One empty cell before the first
+  drawn day and one after the last, in EVERY row (header, brackets, fills,
+  counts, events, roster), each exactly as wide as the undrawn months it
+  stands in for (`.lwph`, width from two CSS variables Matrix writes on
+  `.mx-outer` — `applyPlaceholders` — never React state). A faint diagonal
+  hatch marks a placeholder for the beat before its month lands. A month's
+  width is MEASURED once it has been drawn and kept by war+zoom
+  (`monthPxRef`), so a pruned month's placeholder is exactly its width and
+  re-drawing it moves nothing; a month never yet drawn takes an estimate (the
+  average day width × its days, `avgDayWRef`). Why this is safe where the 3
+  Sep "no spacers" rule (22 distinct day-column widths) said it wasn't: an
+  estimate's error only matters LEFT of the view, and such a month is never
+  drawn there mid-scroll (next bullet). Every row carries the SAME cells as
+  the header — the 20 Aug column virtualisation that misaligned on iOS gave
+  some rows colSpan spacers over full header columns; no row here differs.
+  This container has no WebKit, so the owner's iPhone is the gate for that.
+- **Months are drawn IN PLACE while the scroll is still moving** — growth
+  only (`colwindow.ts stepAllowedInMotion`): to the RIGHT of the view always
+  (nothing on screen moves), to the LEFT only over a month whose width is
+  already measured (the swap is width-for-width, so nothing hops); a prune,
+  and a left grow over an estimated width, wait for scroll REST (the 120 ms
+  idle), where the anchor correction (`anchorRef`) hides the shift. On a
+  touch screen the in-motion left grow skips the anchor altogether — the
+  `scrollLeft` write that would fix a stray pixel is what kills a fling. A
+  view parked nowhere near the drawn window (a scrubber drag, a long fling
+  over placeholders) REPLACES the window with the visible months first, then
+  the runway grows outward from there.
+- **Every row spans exactly the drawn columns plus the placeholders** — the
+  header, the brackets, the fills, the roster rows, the count rows and the
+  event rows (a band that began before the window is emitted from the first
+  drawn day). Pinned in the e2e as "no row's colSpan sum differs from 2 + the
+  drawn day count + the header's placeholder cells".
 - **The open-bidding box clips at the seam**: a bound outside the drawn
   months cuts that side (`.lw-bidbox.cut-l` / `.cut-r`, a clip-path so the
   halo cannot ghost a false edge), the other sides keep their glow.
@@ -5431,17 +5456,20 @@ The contract, in the order a reader meets it:
 - **One draw-toward-a-target engine, per mode** (owner, 4–5 Sep 26 — "fill in the
   background", then "load the next months as I approach the edge", then, once
   measurement showed the browser spends ~1.4s RE-STYLING the full-year grid on
-  every reveal, "shrink when I leave, rebuild on return"). A single idle loop
-  widens or trims the drawn window ONE MONTH PER `requestIdleCallback` BEAT toward
-  a target that depends on the mode (`colwindow.ts stepToward`; the idle callback
-  self-pauses under an active scroll, and a scroll within the last rest window
-  holds it off — the belt for the setTimeout fallback):
+  every reveal, "shrink when I leave, rebuild on return", then "do the
+  placeholders + moving"). A single loop widens or trims the drawn window ONE
+  MONTH PER BEAT toward a target that depends on the mode (`colwindow.ts
+  stepToward`): a short timeout while the scroll is moving (an idle callback is
+  starved by an active scroll), an idle callback at rest so a beat never competes
+  with a paint. It is woken by every scroll event (the view moved), by scroll
+  rest (the held-back prune / left-grow steps — the rest kick itself lands inside
+  the moving window, so a held-back step re-arms its own retry), and by the tab
+  being shown:
   - **PHONE → a ROLLING window a few months AHEAD of the visible ones**
-    (`rollingTarget`, one month behind / three ahead), the trailing side pruned so
-    the DOM stays light. A flick meets already-drawn columns instead of the stuck
-    edge the old grow-2-at-rest lump left; `growAtRest` stays only as an at-rest
-    backstop. This is what fixed "scrolling to the end of the block sticks, I have
-    to flick again".
+    (`rollingTarget`, one month behind / three ahead), the trailing side pruned AT
+    REST so the DOM stays light. A flick meets already-drawn columns instead of
+    the stuck edge the old grow-2-at-rest lump left. This is what fixed
+    "scrolling to the end of the block sticks, I have to flick again".
   - **DESKTOP, tab ON screen → the WHOLE year**, so scrolling runs end to end and
     the bottom scrollbar SLIDES (below). The posted-out row-window crossing is the
     only rest-time repaint left (rare, ~0 in a realistic sweep).
@@ -5453,11 +5481,12 @@ The contract, in the order a reader meets it:
   a slow laptop) every time the tab was shown. So on leaving the tab the desktop
   grid SHRINKS to a few months around the last view (the next reveal wakes a small
   grid — measured ~0.4 s to visible, was ~1.9 s), and the fill REBUILDS the year
-  on return, its left-anchor holding the reader's month in place as the earlier
-  months fill in behind them. This REVERSES the 4 Sep "desktop keeps the whole
-  year / never prune" contract; the reveal cost is the reason. The on-screen
-  signal is `leavewar/state/screen.ts` — a plain listener set, NOT the store, so
-  flipping it never re-renders the grid.
+  on return. The dropped months become placeholders of their MEASURED width, so
+  nothing moves and the sideways scroll position is exactly where the reader left
+  it (pinned in the e2e for both devices). This REVERSES the 4 Sep "desktop keeps
+  the whole year / never prune" contract; the reveal cost is the reason. The
+  on-screen signal is `leavewar/state/screen.ts` — a plain listener set, NOT the
+  store, so flipping it never re-renders the grid.
 - **The desktop PRE-WARMS after login** (owner, 5 Sep 26 — "load it while I type
   my password so there's no wait"). Once the user pauses after login, `Shell.tsx`
   mounts the tab HIDDEN (desktop only): that pulls its separate download and draws
@@ -5468,22 +5497,19 @@ The contract, in the order a reader meets it:
   screen is a separate chunk, pre-warmed after login".
 - **The desktop bottom scrollbar is a YEAR-WIDE SCRUBBER** (owner, 4 Sep 26 —
   "the scroll bar at the bottom keeps adjusting … make it linear … halfway I'm
-  already at the edge"). Because the grid only draws ~2 months, the proxy bar
+  already at the edge"). Because the grid only drew ~2 months, the proxy bar
   (`.mx-hbar`) whose spacer matched the drawn content spanned only those: its
   thumb filled the bar, "halfway" was the edge, and it RESIZED every time the
-  window grew. Now the spacer is the whole war at an ESTIMATED width — the
-  frozen columns plus every day at a measured average day-column width, cached
-  by war+zoom (`avgDayWRef`) so it holds still as months draw — and the thumb is
-  year-proportional and stable. Dragging it NAVIGATES: the month strip lights up
-  live under the thumb (`paintInView`, a class toggle, no React tree), and the
-  grid JUMPS to the dragged-to day once the drag rests (110 ms), through the
-  same `jumpTo` the month buttons use — but ONLY while months are still filling
-  in. Once the whole year is drawn (the background fill above has finished, or a
-  short war draws whole) the bar SLIDES the grid instead: it maps the bar's
-  year-space position straight onto the grid's real scroll and lets the grid's
-  own scroll handler light the strip — every column is real, so there is nothing
-  to draw and nothing to ration. The bar follows the grid too (`syncHbar` →
-  `yearXForView`, suppressed for 250 ms after a drag so a jump/slide does not
-  yank the thumb from under the finger). Desktop only — the phone finger-scrolls
-  the grid and shows no proxy bar. Pinned in the e2e as "a year-wide scrubber;
-  the desktop grid fills the whole year and the bar then slides it".
+  window grew. On 4 Sep the spacer became the whole war at an ESTIMATED width
+  and a drag JUMPED the grid to the dragged-to day on release while months were
+  still filling in. Since the PLACEHOLDERS (5 Sep 26) the grid's own scroller is
+  year-wide, so the bar is a plain proxy of it again: its spacer is the grid's
+  `scrollWidth` (the thumb is year-proportional and only shifts by the few
+  pixels an estimated month gains or loses when drawn), a drag SLIDES the grid
+  at any time (the grid's own scroll handler lights the strip and wakes the
+  fill, which draws the months under the moving view in place), and the bar
+  follows the grid by copying its `scrollLeft` (`syncHbar`, suppressed for
+  250 ms after a drag so a slide does not yank the thumb from under the finger).
+  Desktop only — the phone finger-scrolls the grid and shows no proxy bar.
+  Pinned in the e2e as "a year-wide scrubber; the desktop grid fills the whole
+  year and the bar then slides it".
