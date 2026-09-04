@@ -2107,12 +2107,19 @@ export function Matrix() {
   }
   useEffect(() => () => { if (idleRef.current) clearTimeout(idleRef.current); stopPump() }, [])
 
-  // The WINDOW half measured when the war changes, since that rebuilds every
-  // column — and NOT mid-fling, so it runs directly here. The strip half is
+  // The WINDOW half measured when the war changes (that rebuilds every column)
+  // and when a month draw lands (the view may now sit over real columns where
+  // it sat over a placeholder). A draw can land WHILE THE GRID IS STILL MOVING
+  // (the in-motion fill kicked from every scroll event), and this must never
+  // reflow the row set under a moving finger or write scrollLeft into a fling
+  // — so while the rest debounce is pending the run is skipped: the rest
+  // handler measures the window once the scroll settles, and a draw it kicks
+  // lands at rest and runs here (bug-hunt fix, 6 Sep 26). The strip half is
   // NOT repeated: the layout effect below (same deps, plus zoom / visWindow)
   // has already measured it in this very commit, and doing it twice cost a
   // second set of header lookups and rect reads on every first open (3 Sep 26).
   useEffect(() => {
+    if (idleRef.current) return
     measureWindow()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [period.id, drawnDates.length])
@@ -2452,9 +2459,12 @@ export function Matrix() {
     // and the box read one row short/long until the next zoom or resize
     // (bug-hunt fix, 1 Sep 26). Re-measuring on every store commit is four
     // rect reads against an identity-guarded setState — nothing next to the
-    // repaint that same commit already paid for.
+    // repaint that same commit already paid for. The window's EDGES are deps
+    // too, not only the drawn-day count (same reason as the strip effect
+    // above: Mar+Apr and May+Jun both span 61 days, and the box is placed off
+    // the first and last drawn day — bug-hunt fix, 6 Sep 26).
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [version, period.id, period.stage, period.bidFrom, period.bidTo, zoom, visWindow, drawnDates.length, countsOpen, folded])
+  }, [version, period.id, period.stage, period.bidFrom, period.bidTo, zoom, visWindow, drawnDates.length, colWin?.lo, colWin?.hi, countsOpen, folded])
 
   // ---- the frozen roster columns, drawn ONCE (owner, 20 Aug 26 — the third
   // look at the sideways stutter) --------------------------------------------
