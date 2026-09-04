@@ -298,8 +298,8 @@ in what this repo actually has rather than a generic checklist:
   26 — they caught nothing in the life of the repo and went red on unchanged
   code); they are still measured and printed, so read them, but a wandering
   number is not a gate failure. Reasoning: `docs/probe-sweep.md`. Dense surfaces stay string-built (§Architecture).
-  True scaling — shared data, real accounts — is server work (HANDOFF's
-  first bullet); until then every write goes through the mutation funnel
+  True scaling — shared data, real accounts — is server work (`HANDOFF.md`
+  §Standing constraints); until then every write goes through the mutation funnel
   and storage through `HOOKS.storeBackend`, which is precisely what keeps
   that migration possible. Do not add state outside those two paths.
 - **User experience.** The bar above, plus the standing proof: the
@@ -597,10 +597,15 @@ subscribers.
 - **`scheduler.css` carries measured contracts, not preferences.**
 - **Every bug fix lands with a test that pins it**; new features get new
   tests. Never weaken a failing assertion — understand it.
-- **Keep `../HANDOFF.md` true in the same PR.** A change that resolves (or
-  creates) a known issue edits its list; a change that adds, removes or
-  renames a file edits its file map. Stale is worse than absent — the next
-  session trusts it.
+- **Keep `../HANDOFF.md` true in the same PR — and SHORT.** A change that
+  resolves a known issue REMOVES it from the open list (its contract goes to
+  the structured doc, its story to the commit message — never a "RESOLVED"
+  narrative left in the file); a change that creates one adds a 1–3 line
+  entry; a change that adds, removes or renames a file edits its file map.
+  `HANDOFF.md` was cut from 3,882 to ~550 lines on 4 Sep 26 because it is
+  read at the start of most sessions and every line costs every session; the
+  history is frozen in `../HANDOFF-ARCHIVE.md` (search it, never append to
+  it). Stale is worse than absent — the next session trusts it.
 - **Walk every non-trivial change against `docs/feature-impact.md`** (owner,
   12 Aug 26). Before building, and again before calling it done, ask which of
   the surfaces there it touches — warnings, layout, history, the board, edit
@@ -613,1087 +618,501 @@ subscribers.
 
 ## Stable decisions (do not relitigate)
 
-- **Do NOT watch PRs** (owner, 15 Aug 26). The harness auto-watches a PR you
-  open and injects every GitHub update — CI, review comments, and the Vercel
-  preview bot — as raw `<wake>`/`<event>` blocks, which cluttered the owner's
-  phone. It earns little here: the gates are run and the live page is checked
-  BEFORE the PR opens, and the owner leaves no review comments. So immediately
-  after opening any PR, call `unsubscribe_pr_activity` for it, and never leave
-  one under watch. This does NOT change the ship-to-live duty — carry the PR to
-  merged and verified on the deployed page as always (§How to work here); just
-  do it without the watch subscription. If the owner ever asks you to babysit a
-  specific PR, that explicit ask overrides this for that PR only.
-- **Leave War admin controls live in ONE ⚙ Settings; rearranging is on the grid**
-  (owner, 3 Sep 26). The matrix's top row carries only Manning · ⚙ · OIL tracker.
-  ⚙ opens `SettingsSheet` holding CONFIG — + Counter, +/− Event row, Show SANS,
-  Reset counters — then the roster GROUPS editor folded in (the old `⚙ Groups`
-  corner button is gone, the word "Groups" dropped; `GroupSheet.tsx` deleted).
-  REARRANGING the roster is a hands-on-the-grid action, started from the ⠿ toggle
-  in the grid corner above the callsigns: person rows AND category headings drag on
-  the grid, with a slim on-grid bar (`.lw-rearrange-bar`) for Auto-sort and Done.
-  Do not move config onto the grid, or rearrange into a sheet (a Sheet's scrim
-  swallows the grid taps the drag needs).
-- **Who-wins follows the page order by default** (owner, 3 Sep 26 — a deliberate
-  reversal of the 28 Aug "two fully separate orders" rule). The group higher on the
-  page wins a tie, so dragging a category on the grid reorders who-wins with it
-  (`groupPriorityIds` returns the display order until `groupPriorityCustom`). A hand
-  edit of the ⚙ "Who wins" list switches to a CUSTOM order, independent of the page;
-  "Match the page order" (`clearGroupPriority`) clears it. **The standard categories
-  OVERLAP and follow the same rule** (owner, 3 Sep 26 — "whatever that is at the top
-  priority will supersede and put those people who are that cat or qualification in
-  that order"): a category is a FIT check (`people.ts fitsCategory`), so an SXO IP
-  fits SXO and IP, and IP dragged above SXO draws them under IP. `groupOf` is the
-  first fit down `GROUP_ORDER`, so the untouched page is unchanged. Two fits stay
-  exclusive by design: ground crew fit only Personnel, and OCU fits OCU but never
-  OPS P / OPS W (else the default order would pull trainees into OPS P). The `sxo`
-  and `san` qualifications are never offered as qualification groups (they ARE the
-  SXO category / the SANS group) and a stored one is pruned. Auto-sort buckets by
-  the live grouping (`liveAutoOrder`), so a re-homed person ranks among their new
-  block.
-- **A chip shows only the CAT; a hover/tap reveals the DISPLAYED quals, in their
-  group colours** (owner, 3 Sep 26 — "hover the mouse over the person to see the
-  qualifications they hold" / "having a colour on the chip doesnt make sense … just
-  the original colour of the pucks for their CAT" / later "only the qualifications
-  that were added to display will be shown when i hover … in the colour code that i
-  selected for the group"). The chip stays CAT-coloured (`catClass`, off `groupOf` —
-  an SXO keeps gold wherever they sit); it never encodes a qualification. The
-  popover (`qualpop`, Matrix state, fixed to screen coords so the frozen column
-  cannot clip it) lists ONLY the qualification GROUPS on the page the person
-  matches (`Matrix.tsx shownQuals`: `groupsInOrder` × `matchesGroup`), each pill in
-  that group's colour, plus SXO in gold when the SXO group is on the page. A held
-  but undisplayed qual is not listed, and a chip with nothing displayable is inert
-  (no `.has-quals`). The click is swallowed so it never also opens the figures
-  sheet; dismissed by pointer-leave, an outside pointer-down, scroll, Escape, or a
-  second tap on the same chip (the phone's toggle) — no full-screen scrim (which
-  would swallow the opening click and block the grid).
-- **A qualification group's colour is the admin's PICK** (owner, 3 Sep 26 — first
-  "do we even need a colour?", then, having seen it, "allow me to pick the colour i
-  want"). `groupColors` (store, persisted `groupcolors`, admin-gated, `q:` ids and
-  `#rrggbb` only, dropped with the group, cleared by reset) holds the pick;
-  `ui/groupColor.ts groupColorOf` returns it, falling back to a deterministic
-  palette colour (`qualSwatch`) so an unpicked group is never a black square. The
-  ⚙ list opens a 12-dot palette (`PALETTE`) under the row the moment a qualification
-  group is added, and again from the row's swatch button; built-ins/SANS keep their
-  CSS-class CAT colours and have no button. Pill text colour is by luminance
-  (`inkFor`). The palette CLOSES the moment a dot is picked, on a click outside
-  it (owner, 4 Sep 26) — per the standing popup rule below — and on Escape (which
-  peels the palette only; the sheet closes on the next press). The stored list is
-  NOT pruned at boot (bug hunt, 4 Sep 26): the boot catalogue is the seed's three
-  keys, so a boot-time prune threw away every saved TF / NVG / custom group and its
-  colour before Raptor's real column list landed. Pruning happens at read
-  (`groupsInOrder`) and when the catalogue arrives (`setQualCatalog`, which also
-  drops the pruned groups' colours and persists).
-- **A click-open popup closes on a click outside it — standing UI rule** (owner,
-  4 Sep 26 — "build pop up windows to have auto close feature if i click outside of
-  it"). Any transient panel/menu/palette a tap OPENS must dismiss on an outside
-  pointer-down (and, where it makes sense, right after the choice that finished it).
-  The full-screen `Sheet` already does this (its scrim + Escape, `Sheet.tsx`); a
-  smaller inline popup adds a capturing `pointerdown` document listener while it is
-  open, treating a press on the popup itself — or on the control that toggles it —
-  as "inside" so the toggle isn't fought (the ⚙ colour palette is the worked
-  example, `SettingsSheet.tsx`). The quals popover already followed this (dismissed
-  by pointer-leave / outside pointer-down / scroll).
-- **The ⚙ groups list drags too** (owner, 3 Sep 26 — "allow me to drag and drop to
-  rearrange the groups"): its rows carry `data-grow` and a `⠿` grip wired to the
-  same `GROUP_DRAG` → `moveGroupTo` as the grid's heading grip, so the two never
-  disagree; SANS has no grip (auto-placed at the foot). The drag machine resolves
-  "drop after row X" from the hovered row's OWN container (`dragOverRef.el`'s
-  parent), never a document-wide query — the ⚙ list and the grid headings share the
-  `data-grow` vocabulary, and a mixed list could land a drop in the wrong place (bug
-  hunt, 4 Sep 26). Every draggable list shows the bar on the hovered row's BOTTOM
-  edge for a lower-half hover (`.dragover.after`), on the grid headings and both ⚙
-  lists alike.
-- **Pilots above WSOs inside every block, ALWAYS** (owner, 3 Sep 26 — "arrange all
-  pilots at the top always and wso at the bottom of the same section. But within
-  pilot and wso we arrange them in accordance to the cat category of seniority").
-  `people.ts rankCompare` sorts seat (`seatRank`: pilot, wso, gnd) before `CAT_RANK`;
-  `displayRoster` partitions each block by seat around the hand-order, so a drag
-  can never carry a WSO above the pilots. Single-seat blocks are untouched. The
-  callsign wears the seat colour as a FULL-WIDTH bar across the frozen column
-  (`.cs.seat-pilot/.seat-wso/.seat-gnd`, `flex:1` up to the CAT chip — owner, 4 Sep
-  26: "make the entire bar of the cs/name to be filled … not only based on how long
-  the name is"), a pilot olive and a WSO green so it reads the same in both apps.
-  The Leave War bars are DARKER than Raptor's flight-line pucks (owner, 4 Sep 26 —
-  "make the colour darker … still able to see the pilot or wso colour"): explicit
-  deep-olive/deep-green hex in `matrix.css`, NOT `var(--fcp/--rcp)`, so the flight
-  line keeps its own tone (never darken it via scheduler.css); ground crew keep a
-  light bar, softened off pure white so a full-width run doesn't glare. On a phone
-  (≤430px) the bar's side padding tightens to 4px so the 76px column keeps more of
-  the callsign.
-- **Leave War's qualification catalogue is Raptor's LoX column list, not the
-  holders** (owner, 3 Sep 26 — "when i add a new qualification, i cant see that new
-  qualification added in the settings page of leave war"). The Quals page's column
-  list lives in `src/engine/qualcols.ts` (`qualCols` / `setQualCols`; the page
-  mirrors its `cols` state there and fires `notify` only on a real change);
-  `raptorRoster.ts qualCatalogue` takes keys AND headings from it, appending any key
-  someone still holds after a column was removed (so ticks survive and a pinned
-  group is not pruned). Known gap, not fixed: like the ticks, the column list is not
-  saved across a reload.
-- **Show SANS = SANS as their own counted group at the foot** (owner, 3 Sep 26).
-  The switch injects a SANS group (`SANS_GROUP`, auto-managed, never stored) LAST on
-  the page and FIRST in who-wins, so shown SANS draw together at the foot rather than
-  scattering into their CATs; they still count in manning by seat+band like any
-  aircrew (a group never moves a count — the `groups.ts` invariant holds).
-- **The `npm run perf` board DOM ceiling of 1150 is settled** (owner,
-  28 Aug 26 — "the scheduler board I know it's heavy, u raised the limit,
-  it's ok"). Raised 960 → 1150 in PR #333 (the board sits at ~1051 nodes;
-  timings and per-node cost held at 0.57× the reference throughout). The
-  measurement lives at the `DOM_CEILING` literal in `perf-port.cjs`. Do not
-  re-litigate the raise or trim the board to fit the old ceiling.
-- `reference/` is **read-only** — the spec for existing behaviour. New
-  features go beyond it but must not break it.
-- The engine was historically generated from the original; that generator
-  is **deleted** (git history keeps it). Never recreate or rerun it — the
-  engine is ordinary source now and regenerating would clobber real work.
+Each entry is a tripwire: the decision is SETTLED — don't rebuild, re-propose or
+re-litigate it. Where a reference doc holds the full story, the line keeps the
+decision + a pointer. Owner + date establish authority; keep them.
+
+### Pipeline & repo invariants
+- **Do NOT watch PRs** (owner, 15 Aug 26). The harness auto-watches an opened PR
+  and floods the owner's phone with CI/review/Vercel `<wake>` blocks for little
+  gain (gates + live page are checked before the PR opens; he leaves no review
+  comments). Call `unsubscribe_pr_activity` immediately after opening any PR;
+  never leave one watched. Doesn't change the ship-to-live duty. An explicit
+  "babysit this PR" ask overrides, for that PR only.
+- `reference/` is **read-only** — the spec for existing behaviour. New features go
+  beyond it but must not break it.
+- The engine's original **generator is DELETED** (git history keeps it). Never
+  recreate or rerun it — the engine is ordinary source now; regenerating clobbers
+  real work.
 - Keep `src/probe-bridge.ts` in sync when adding engine API.
-- Product: no rule versioning · no two-person approval · no "publish all
-  days" · OIL is LL-equivalent · sim notes are single-line · pucks never
-  wrap · login page stays simple · the talon logo stays · a clicked warning
-  lights its crew in the warning colours, never selection blue (owner
-  declined the blue, 7 Aug 26 — blue is the puck-click selection only) ·
-  **no My Programme page** (owner, 7 Aug 26 — a personal week-as-cards view
-  was built, shipped and removed the same day: "don't find a use for it for
-  now"; do not re-propose it unless the owner raises it, and if he does,
-  the removed implementation is one `git revert` away in history).
-- **No Edit-mode toggle** (owner, 9 Aug 26 — removed after shipping for
-  months). Being on Edit Schedule IS the edit mode; View-only Sched is the
-  read-only mode, and a second switch for the same job only created states
-  (a live board on a dead page, controls that looked live and did nothing)
-  that had to be guarded one at a time. `HOOKS.editMode()` is
+- **Product invariants** (owner, 7 Aug 26 unless noted): no rule versioning · no
+  two-person approval · no "publish all days" · OIL is LL-equivalent · sim notes
+  single-line · pucks never wrap · login page stays simple · the talon logo stays
+  · a clicked warning lights its crew in the warning colours, never selection blue
+  (blue is the puck-click selection only) · **no My Programme page** (built +
+  removed the same day; don't re-propose — `git revert` restores it if he asks).
+- **No Edit-mode toggle** (owner, 9 Aug 26 — removed after months). Being on Edit
+  Schedule IS edit mode; View-only Sched is read-only. `HOOKS.editMode()` =
   `canEditSched() && CURPAGE==='editsched'` — don't add a third term.
-- **The late-input mark is a MARK, not a warning** (owner, 9 Aug 26, asked and
-  answered explicitly). It never enters the day's checks list, never closes a
-  slot and is invisible to `validate()` — that list stays about flying
-  conflicts. And it measures the input's **last change**, not its first
-  submission (same conversation): an input raised early and amended after the
-  deadline still reads late, because the deadline exists so the week can be
-  planned against something that has stopped moving. **Downchits are exempt**
-  (same conversation): going DNIF is not a decision made in advance, and
-  badging the one type that is always last-minute is how a mark stops meaning
-  anything — leave and overseas duty stay in scope, because those are applied
-  for. Don't re-propose any of the three.
-  **And it reads in the REMARKS cell, not beside the name or the type** (owner,
-  9 Aug 26 — moved there the day after it shipped). Remarks is where a reader
-  already goes for "why is this man down"; the name and type columns stay pure
-  identity. Every surface that draws an input has a remarks cell, which is what
-  keeps the mark in one column everywhere — bar the board's promoted ground
-  row, whose remarks cell is a bare `<input>` with nowhere to nest a chip, so
-  that one keeps its amber row edge.
-  **The word stays a word — a compact dot was offered and declined** (owner,
-  9 Aug 26, after he raised a day carrying 10+ inputs). Measured before asking,
-  on a day loaded to eleven personal inputs: on DESKTOP the mark costs nothing
-  at all (666px block with and without it — the remarks column has the room);
-  on a PHONE it costs 33px over eleven rows (757 vs 724) and squeezes that
-  narrow column enough to split two long remarks mid-word ("Medic al appt").
-  A dot measured 724 — free — and a phone-only dot was the recommendation.
-  Owner chose to keep the word and wear the cost. Don't re-propose the dot,
-  and don't "fix" the mid-word splitting by shrinking the badge. Two other
-  ideas were measured and are dead ends, so don't retry them either: the word
-  at the END of the remark saved nothing (759), and turning off mid-word
-  breaking saved nothing (757). The badge's WIDTH is the whole cost, not its
-  position.
-  **It CAN be dropped per input now, and that is a display switch, not a rule**
-  (owner, 21 Aug 26 — "show a late tag beside the applicable inputs … when I
-  click on the late orange icon beside the line, it will remove the late icon,
-  if I click the same area again it will show"). This REPLACED the 20 Aug global
-  "Hide LATE marks" header button, which the owner asked to remove. The 20 Aug
-  entry argued AGAINST a per-badge delete because clearing marks one at a time
-  needs a forgiven-input registry and a way back; the owner then asked for
-  exactly that, with the way back built in — so the registry exists (`LATEOFF`
-  in `state/view.ts`, a session-only Set of input ids) and the way back IS
-  tapping the same chip again. Three parts of the shape stay decided: the
-  board's LIVE input rows (Personal Inputs AND Unavailable) always draw a
-  clickable `latechip` on a late row — solid while shown, a dim ghost once
-  dropped — so a dropped mark stays reachable; the gate is at the passive
-  printers in `ui/html.ts` (`lateShown`), so `isLateInput` goes on answering and
-  the mark stays a mark; and the **Inputs page keeps printing it**, because that
-  page is the paperwork record and quieting a busy board is not the same as
-  erasing when an input was filed. Admin-only at the write path, cleared on
-  every login/logout. Don't move the gate into the engine, don't bring back the
-  global header button, and don't "finish the job" by silencing the Inputs page.
-  Rules: `docs/engine-rules.md` §The late-input mark.
-  Placement: `docs/ui-contracts.md` §The late-input mark on screen, §The LATE
-  marks can be dropped per input.
-- **No warning / advisory / note counts in the top bar** (owner, 20 Aug 26 —
-  "what's the point of having warning, advisory and note at the top. Just
-  remove it"). The three `pillbtn` counts are gone. Every day already leads
-  with its own "N issues · N warning · tap to review", which is the number a
-  reader can act on and it sits beside the day it belongs to; the pills
-  restated the week's sum on the phone's tightest bar. `openWarns`
-  (`state/view.ts`) is KEPT with no caller on purpose — probe-bridge mirrors
-  it, it is reference behaviour, and it is what any future "expand everything"
-  control would call. Their absence is pinned in `app.test.tsx`: do not put the
-  sum back as part of a "the top bar looks empty" pass.
-- **Nothing on the board re-orders itself** (owner, 10 Aug 26 — "prevent a
-  situation when the scheduler types and the line jumps"). Typing a role into
-  a blank duty cell used to reposition the whole block; that is gone. Auto
-  sort and Sort all are the only things that reorder a duty block, and they
-  order it by START TIME, not by role rank. Do not add an automatic sort back
-  to any board list. (The Ground Programme's render-time time sort predates
-  this and stays — it was a separate owner request and already avoids the
-  problem, since time-less rows sink to where the model appends them.)
-- **MAIN/SPARE on a standalone line is a clickable BADGE in the remarks cell,
-  and clicking it flips the line** (owner, 24 Aug 26 — "can I have the option
-  to change the line to SPARE from MAIN, vice versa … rather than a default
-  main or spare faded in the remarks"; supersedes the 10 Aug ghost-text
-  decision, which had exactly the trade-off the owner came back about: a line
-  carrying a remark stopped saying whether it was main or spare, and the role
-  could never be changed at all). `html.ts:saRoleHTML` draws it on the week
-  and the board alike — a button in edit mode, the same chip read-only
-  elsewhere — and the remarks box placeholder is plain `Remarks` like every
-  other line. The flip is ENGINE-VISIBLE, not a rename: `a.spare` + `a.role`
-  flip together, `scSpare`/`saExempt`/the shift count all follow, and the
-  handler (`interactions.ts`, `data-sarole`) marks the line's `st:` key
-  pending the way CX does, so the change rides the next AL. The next-week
-  peek keeps the role as compact fallback TEXT (`saRoleText`, the one label
-  body). Don't bring back the placeholder, and don't make the flip a
-  label-only rename. Pins: `sarole.test.tsx`.
-- **On SC, the B box is an IN-TIME, and its sortie furniture is gone** (owner,
-  24 Aug 26 — "remove the intime and 8ac note on the top right of SC … don't
-  suggest a brief time in blue. Only if the brief time is filled in then u will
-  use that as the in time for the warnings and advisories. But we will hardly
-  have a brief time"). Three parts, SC only (`w.kind==='sc'`), AVALON/BB
-  untouched: the board drops the SC wave header's "in-time · N ac" note; SC
-  lines lose the blue click-to-accept suggested-brief ghost but KEEP the empty B
-  box; and the engine reads a typed SC `f.br` as the crew's in-time —
-  `events.ts` feeds it to `intime`, `validate.ts:insOf` anchors the shift's crew
-  rest on the earlier of it and the shift start. Blank (the normal case) is
-  byte-identical to before (SC stays on its shift start). Don't restore the
-  header note or the blue suggestion on SC, and don't turn the B back into a
-  brief. Extended later the same day (owner): an early B on a MAIN also starts
-  the long-day / duty-hours span (`workSpan` takes `min(report, start)` for
-  shifts), and anything cutting into or ending inside the B→start window —
-  another event, or a timed `restsInput` personal input — raises the amber
-  `SC_INTIME` advisory (events already overlapping the shift stay with the hard
-  clash loop instead). SPARE rows have no event stream, so both are MAIN-only
-  by construction; conflict/double-book windows themselves still run off the
-  shift times, not the B. One known seam left open (documented, not a bug to "fix" silently): the
-  SC in-time is entered/shown on the board only — the desktop week renders SC as
-  SHIFT / START / END with no B — so a value typed on the board isn't surfaced on
-  the week. Owner said it will be rare; raise mirroring it to the week only if he
-  asks. Pins: `scintime.test.ts`, `scboard.test.tsx`; rules
-  `docs/engine-rules.md`, placement `docs/ui-contracts.md` §The B box.
-- **Duties are decoupled from waves** (owner, 13 Aug 26 — supersedes the 10 Aug
-  "AVALON auto-creates its desk; SC does not"). No wave auto-creates a duty desk,
-  AVALON included, and deleting a wave leaves any duty block alone. Every desk
-  now comes from the `+ Block` template picker: it lists the saved templates
-  (`engine/dutytpl.ts`, persisted like the stores list) and copies a chosen
-  template's rows onto the day as a PLAIN block — no `sa`/`noconf` marker, so a
-  template desk is conflict-checked like any other duty row (the AVALON/BB desk
-  exemption went with the auto-create). The seed week carries no exempt desk, so
-  reference parity is untouched. Editor: `ui/DutyTplModal.tsx`. **Do not re-add
-  `SAWAVE.autoDuty` or the wave-delete → `saDutyIx` linkage** — both were removed
-  deliberately; `waveDutyBlock`/`saDutyIx` remain in `waves.ts` only for any AL
-  snapshot still holding an old-style desk.
+
+### Standing UI / design rules
+- **A click-open popup closes on a click outside it** (owner, 4 Sep 26). Any
+  transient panel/menu/palette a tap OPENS must dismiss on an outside
+  pointer-down (and, where sensible, right after the choice that finished it).
+  `Sheet` does this via scrim+Escape; a smaller inline popup adds a capturing
+  document `pointerdown` listener, treating a press on the popup or its toggle as
+  "inside" (worked example: the ⚙ colour palette, `SettingsSheet.tsx`).
+- **A control the user TAPS REPEATEDLY must not move under them** (owner, 2 Sep
+  26). `RangePicker` pads EVERY month to a constant six rows so the ‹ › month
+  arrows (and the bottom-anchored sheet) hold still. Raptor's TOP-anchored
+  calendars (`InputsCal`, `WeekCal`) grow downward, arrows already fixed —
+  unchanged (checked). General rule: keep a repeated-tap control's screen
+  position invariant to the content it changes. Pin: `rangepicker.test.tsx`.
+- **The highlight MENUS read apart from their CHIPS** (owner, 25 Aug 26). `.hl-gtab`
+  is a solid RAISED control (`--ink`, bold caret); `.fchip` stays flatter/quieter
+  (`--panel-2`/`--ink-2`), filling blue (`--accent`) only when picked; an open
+  `.hl-grp.open` wraps tab+chips in one tray (scoped to `.filters`/`.ic-pick-cats`
+  — don't restyle the bare `.hl-grp`, History reuses it). Don't flatten tabs back
+  to the chip recipe. `scheduler.css`; strip is `ui/hlchips.tsx`.
+
+### Leave War roster & display (owner, 3–4 Sep 26)
+- **Admin controls live in ONE ⚙ Settings; rearranging is on the grid.** Matrix top
+  row = Manning · ⚙ · OIL tracker. ⚙ opens `SettingsSheet` (CONFIG: + Counter, +/−
+  Event row, Show SANS, Reset counters + the roster GROUPS editor folded in; old
+  `⚙ Groups` button + `GroupSheet.tsx` deleted). REARRANGING is hands-on-grid from
+  the ⠿ toggle above the callsigns (person rows AND category headings drag, slim
+  `.lw-rearrange-bar` for Auto-sort/Done). Don't move config onto the grid or
+  rearrange into a sheet (a Sheet's scrim swallows the drag's taps).
+- **Who-wins follows the page order by default** (reversal of 28 Aug "two separate
+  orders"). Group higher on the page wins a tie; dragging a category reorders
+  who-wins with it (`groupPriorityIds` until `groupPriorityCustom`). A hand edit of
+  the ⚙ "Who wins" list switches to CUSTOM; "Match the page order"
+  (`clearGroupPriority`) clears it. **Standard categories OVERLAP** — a category is
+  a FIT check (`people.ts fitsCategory`), so an SXO IP fits both and IP-above-SXO
+  draws them under IP; `groupOf` = first fit down `GROUP_ORDER` (untouched page
+  unchanged). Two fits stay exclusive by design: ground crew fit only Personnel;
+  OCU fits OCU but never OPS P/W. `sxo`/`san` are never offered as qual groups (they
+  ARE the SXO cat / SANS group; a stored one is pruned). Auto-sort buckets by live
+  grouping (`liveAutoOrder`).
+- **A chip shows only the CAT; hover/tap reveals DISPLAYED quals in group colours.**
+  Chip stays CAT-coloured (`catClass` off `groupOf`), never encodes a qual. The
+  popover (`qualpop`, screen-fixed so the frozen column can't clip it) lists ONLY
+  the qual GROUPS on the page the person matches, each pill its group colour, + SXO
+  gold when present. Undisplayed quals not listed; an empty chip is inert (no
+  `.has-quals`). Click swallowed (doesn't open figures sheet); dismissed by
+  pointer-leave, outside pointer-down, scroll, Escape, or a second tap — no scrim.
+- **A qual group's colour is the admin's PICK.** `groupColors` (persisted
+  `groupcolors`, admin-gated, `q:` ids + `#rrggbb`, dropped with the group, cleared
+  by reset); `groupColorOf` falls back to a deterministic palette (`qualSwatch`) so
+  an unpicked group is never black. ⚙ list opens a 12-dot palette (`PALETTE`);
+  built-ins/SANS keep their CSS-class CAT colours, no button. Pill text by luminance
+  (`inkFor`). Palette closes on pick / outside click / Escape (per the popup rule).
+  **NOT pruned at boot** — pruning is at read (`groupsInOrder`) and when the
+  catalogue arrives (`setQualCatalog`); a boot prune once threw away every saved
+  TF/NVG/custom group before Raptor's real column list landed (bug hunt, 4 Sep).
+- **The ⚙ groups list drags too.** Rows carry `data-grow` + a `⠿` grip wired to the
+  same `GROUP_DRAG` → `moveGroupTo` as the grid heading, so the two never disagree
+  (SANS has no grip, auto-placed at the foot). "Drop after row X" resolves from the
+  hovered row's OWN container, never a document-wide query. Every draggable list
+  shows the bar on the hovered row's bottom edge for a lower-half hover.
+- **Pilots above WSOs inside every block, ALWAYS.** `rankCompare` sorts seat before
+  `CAT_RANK`; `displayRoster` partitions each block by seat around the hand-order —
+  a drag can't carry a WSO above the pilots (single-seat blocks untouched). The
+  callsign wears a FULL-WIDTH seat-colour bar across the frozen column (pilot olive,
+  WSO green; `.cs.seat-*`, `flex:1` to the CAT chip). LW bars are DARKER than
+  Raptor's pucks — explicit deep-olive/deep-green hex in `matrix.css`, NOT
+  `var(--fcp/--rcp)` (never darken the flight line via scheduler.css); ground crew
+  keep a light bar off pure white. Phone (≤430px): bar side-padding tightens to 4px.
+- **The qual catalogue is Raptor's LoX column list, not the holders.** Column list
+  lives in `engine/qualcols.ts`; `qualCatalogue` takes keys+headings from it,
+  appending any key someone still holds after a removed column (ticks survive).
+  Known gap (not fixed): like the ticks, the column list isn't saved across reload.
+- **Show SANS = SANS as their own counted group at the foot.** Injects `SANS_GROUP`
+  (auto-managed, never stored) LAST on the page / FIRST in who-wins, so shown SANS
+  draw together; they still count in manning by seat+band (a group never moves a
+  count — `groups.ts` invariant).
+
+### The late-input mark (owner, 9 Aug 26 unless noted)
+Rules: `docs/engine-rules.md` §The late-input mark. Placement: `docs/ui-contracts.md`
+§The late-input mark on screen, §The LATE marks can be dropped per input.
+- **It is a MARK, not a warning** — never in the checks list, never closes a slot,
+  invisible to `validate()`. Measures the input's **last change**, not first
+  submission (an early input amended after the deadline reads late).
+- **Downchits are EXEMPT** (going DNIF isn't planned); leave and overseas duty stay
+  in scope (they're applied for). Don't re-propose either.
+- **It reads in the REMARKS cell**, not beside name/type (moved there the day after
+  it shipped) — except the board's promoted ground row (bare `<input>`, no room to
+  nest a chip) which keeps its amber row edge.
+- **The word stays a word — a compact dot was OFFERED and DECLINED.** Measured on an
+  11-input day: desktop costs nothing (666px w/ and w/o); phone costs 33px over 11
+  rows (757 vs 724) and splits long remarks mid-word ("Medic al appt"); a dot
+  measured 724 (free). Owner kept the word and the cost. Dead ends, don't retry:
+  word at END of remark saved nothing (759); turning off mid-word breaking saved
+  nothing (757). Don't "fix" the split by shrinking the badge — its WIDTH is the
+  whole cost. (These measurements live only here.)
+- **It CAN be dropped per input** (owner, 21 Aug 26; REPLACED the 20 Aug global
+  "Hide LATE marks" button, now removed). A session-only forgiven registry
+  (`LATEOFF` in `state/view.ts`) with the way back = tapping the same chip again.
+  Three fixed parts: the board's LIVE rows (Personal Inputs + Unavailable) always
+  draw a clickable `latechip` (solid shown, dim ghost dropped); the GATE is at the
+  passive printers (`ui/html.ts lateShown`, `isLateInput` still answers); the Inputs
+  page KEEPS printing it (paperwork record). Admin-only at the write path, cleared
+  on login/logout. Don't move the gate into the engine, don't bring back the global
+  button, don't silence the Inputs page.
+
+### Board behaviour
+- **No warning / advisory / note counts in the top bar** (owner, 20 Aug 26). The
+  three `pillbtn` counts are gone (each day leads with its own "N issues · N
+  warning · tap to review"). `openWarns` KEPT with no caller (reference behaviour /
+  future "expand everything"). Pinned in `app.test.tsx` — don't put the sum back.
+- **Nothing on the board re-orders itself** (owner, 10 Aug 26 — "prevent … the line
+  jumps"). Auto sort / Sort all are the only reorderers, by START TIME not role
+  rank. Don't add an automatic sort to any board list. (The Ground Programme's
+  render-time time sort predates this and stays — time-less rows sink to append.)
+- **MAIN/SPARE on a standalone line is a clickable BADGE in the remarks cell; a click
+  flips the line** (owner, 24 Aug 26; supersedes the 10 Aug ghost-text). `saRoleHTML`
+  draws it week+board (button in edit mode, chip read-only); placeholder is plain
+  `Remarks`. The flip is ENGINE-VISIBLE: `a.spare`+`a.role` flip together,
+  `scSpare`/`saExempt`/shift count follow, marks the `st:` key pending (rides next
+  AL). Next-week peek keeps role as fallback text (`saRoleText`). Don't restore the
+  placeholder or make the flip label-only. Pins: `sarole.test.tsx`.
+- **On SC, the B box is an IN-TIME; its sortie furniture is gone** (owner, 24 Aug 26,
+  SC only; AVALON/BB untouched). Board drops the SC header "in-time · N ac" note; SC
+  lines lose the blue suggested-brief ghost but KEEP the empty B box; the engine
+  reads a typed SC `f.br` as the crew's in-time (`events.ts` → `intime`,
+  `insOf` anchors crew rest on the earlier of it and shift start). Blank = byte-
+  identical to before. Extended same day: an early B on a MAIN starts the long-day/
+  duty-hours span (`workSpan` = `min(report,start)`), and anything cutting into the
+  B→start window raises the amber `SC_INTIME` advisory (already-overlapping events
+  stay with the hard-clash loop). SPARE rows have no event stream (both MAIN-only).
+  Known seam (documented, don't silently "fix"): the SC in-time shows on the board
+  only — the desktop week renders SC as SHIFT/START/END with no B, so a board value
+  isn't mirrored to the week. Owner said it'll be rare; raise mirroring only if he
+  asks. Pins: `scintime.test.ts`, `scboard.test.tsx`. Rules: `engine-rules.md`;
+  placement: `ui-contracts.md` §The B box.
 - **Amendment marks are a PUBLISHED-day thing — a draft day shows none** (owner,
-  25 Aug 26 — "if I have not published the schedule yet, don't show all the orange
-  dotted lines … only once published does an AL-coloured mark make sense"). `alAttr`
-  emits a pending mark (`data-alp`/`data-aln`) only when the day is `dayApproved`;
-  a pending edit on a still-draft day emits nothing. The edit is still tracked in
-  `SCHED.pending` (the "N pending" count, the publish flow and History are
-  unchanged — History finds cells by key + the edit log, not by `data-alp`); only
-  the misleading visual is gone. Don't re-add a draft-day mark. Pinned in
-  `publish.test.ts` / `interact.test.tsx`; contract in `docs/ui-contracts.md`
-  §Amendment marks on screen.
-- **Flying-wave templates + the + Wave show/hide list** (owner, 25 Aug 26 — "create
-  a function similar to how duty templates functions … for + Wave … choose which set
-  of rules it follows … create, save, edit, delete, arrange … the admin page should
-  update as well so the waves or templates can be toggled to hide or open by
-  default"). The sibling of duty templates, one level up: `engine/wavetpl.ts` holds
-  the library, `ui/WaveTplModal.tsx` is the editor (opened from the + Wave pencil,
-  `WAVEEDIT`), and `+ Wave` (`board.ts:waveMenu`) lists saved templates beside its
-  four built-in kinds. A template is `{id,title,kind,lines}`: **one rule-set per
-  template** (owner's choice), exactly one of the four the app already checks waves
-  by — `fly` / `sc` / `avalon` / `bb` — and each line is a flying line with a
-  MAIN/SPARE flag that matters only on a standby kind. Placing one mints an ordinary
-  wave (`waveFromTpl` → `addWaveFromTpl`) whose OWN kind flags (`standalone`/`noconf`/
-  `night`) drive its checking, so nothing in `validate.ts` reads a template and
-  reference parity is untouched. **A STANDBY-kind template mints the built-in's
-  SHAPE** (owner, 26 Aug 26 — closing the "structurally lighter" seam):
-  consecutive lines naming the same shift (cs + msn + times) become ONE
-  formation with a crew row per line, exactly like `makeStandalone`, so the
-  day badge and every per-formation reader treat a template SC like
-  + Wave → SC; a fly line stays one formation per line. Don't return the
-  standby mint to 1:1. Times store raw in the editor and normalise on blur
-  / mint / load (`waveTime`, colon form `07:00` — the one difference from duty
-  `tplTime`'s `0700`). Show/hide: a `WAVEHIDE` set (built-in key or template id),
-  default all-shown; a deleted template drops
-  its flag. Persisted like the stores/duty lists (`wavetpl` + `wavehide`), boot-loaded
-  in `initStore`, untrusted storage clamped. Don't seed built-in templates (the four
-  kinds are the baseline; the library starts empty), don't make `validate` read a
-  template, and don't move the show/hide gate off `WAVEHIDE`. Pinned in
+  25 Aug 26). `alAttr` emits `data-alp`/`data-aln` only when `dayApproved`; a draft
+  edit emits nothing but is still tracked in `SCHED.pending` (count/publish/History
+  unchanged — History finds cells by key+edit log). Don't re-add a draft-day mark.
+  Pinned in `publish.test.ts`/`interact.test.tsx`; `ui-contracts.md` §Amendment marks.
+- **A new flying line comes up blank** (owner, 10 Aug 26) — `+ Line` no longer copies
+  the previous callsign/mission/times. **`+ Wave` follows the same rule** (owner,
+  25 Aug 26): a plain flying wave's first line is blank (`cs/msn/to/ld` empty),
+  byte-identical to a `+ Line` add — no more `NEW / 12:00 / 13:00` seed and its green
+  suggested-brief. Standalone waves (`makeStandalone`) keep their kind-specific
+  structure (the `!kind` branch only). Pinned in `board.test.tsx`.
+
+### Waves & duties — templates and defaults
+- **Duties are decoupled from waves** (owner, 13 Aug 26; supersedes 10 Aug "AVALON
+  auto-creates its desk"). No wave auto-creates a duty desk (AVALON included);
+  deleting a wave leaves duty blocks alone. Every desk comes from the `+ Block`
+  template picker (`engine/dutytpl.ts`, persisted): a chosen template copies onto the
+  day as a PLAIN block (no `sa`/`noconf` marker → conflict-checked like any duty row;
+  the AVALON/BB desk exemption went with auto-create). Seed week carries no exempt
+  desk, parity untouched. Editor `ui/DutyTplModal.tsx`. Do NOT re-add
+  `SAWAVE.autoDuty` or the wave-delete → `saDutyIx` linkage (`waveDutyBlock`/
+  `saDutyIx` remain in `waves.ts` only for old AL snapshots).
+- **Flying-wave templates + a + Wave show/hide list** (owner, 25 Aug 26). Sibling of
+  duty templates one level up: `engine/wavetpl.ts` library, `ui/WaveTplModal.tsx`
+  editor (from the + Wave pencil, `WAVEEDIT`), `+ Wave` lists templates beside its 4
+  built-in kinds. Template `{id,title,kind,lines}`: **one rule-set per template** —
+  exactly one of `fly`/`sc`/`avalon`/`bb`. Placing one mints an ordinary wave
+  (`waveFromTpl`) whose OWN kind flags drive checking — `validate.ts` never reads a
+  template, parity untouched. **A STANDBY-kind template mints the built-in's SHAPE**
+  (owner, 26 Aug 26): consecutive same-shift lines become ONE formation with a crew
+  row per line (like `makeStandalone`); a fly line stays one formation per line —
+  don't return the standby mint to 1:1. Times store raw, normalise on blur/mint/load
+  (`waveTime`, colon form `07:00`). Show/hide via a `WAVEHIDE` set (default all-shown,
+  deleted template drops its flag), persisted (`wavetpl`+`wavehide`), boot-loaded,
+  untrusted storage clamped. Don't seed built-in templates (library starts empty),
+  don't make `validate` read a template, don't move the gate off `WAVEHIDE`. Pins:
   `wavetpl.test.ts`, `WaveTplModal.test.tsx`, `wavepicker.test.tsx`.
-  **The manage + edit surfaces are ONE sheet, opened by ONE gear** (owner, 30 Aug 26 —
-  "quite an ugly design to have the settings and edit buttons separate … combine them
-  through 1 button"; folds in the 29 Aug pt.3 ask to take show/hide/delete off Admin —
-  "make flying wave templates more intuitive … remove it in admin"). The "+ Wave" menu
-  (`board.ts waveMenu`) carries a SINGLE ⚙ (`data-wvedit`, title "Manage flying waves")
-  plus a "N hidden · Manage" line, both opening `ui/WaveTplModal.tsx` — the unified
-  "Flying waves" sheet that BOTH edits templates AND shows/hides/deletes what the picker
-  offers: a "Wave types" list with an EYE per built-in kind (`setWaveHidden`), and per
-  template an EYE beside its name plus the footer Delete (built-ins can be hidden but
-  never deleted). The old separate ⚙-Manage sheet (`WaveManageSheet.tsx`, the `WAVEMANAGE`
-  flag) is DELETED and folded in — don't re-add it or the second button. The Admin
-  `WaveVisibility` list stays REMOVED (owner: keep Admin clean); Admin keeps only the
-  wave-template editor button, which opens the same sheet. Same admin-only gate
-  (`canEditSched` === admin), no permission widened. Don't leave a wave hidden with no way
-  back — the "N hidden" line and the sheet's eyes are the way back. Pinned in
-  `WaveTplModal.test.tsx`, `wavepicker.test.tsx`.
-  **The kind-picker's one-line rule notes have ONE source, shown on the picker AND the
-  Logic page** (owner, 30 Aug 26 — "make sure these word summaries are updated when I
-  change the rules concerning them … and the logic page should be updated as well").
-  `engine/wavetpl.ts kindNote(k)` is the single, count-free summary of each kind's
-  CHECKING rule (fly/sc/avalon/bb), verified against `validate.ts` / `events.ts`: the
-  template editor prints it under the kind picker, and the Logic page's "Wave types at a
-  glance" group (`ui/logic-html.ts`) renders the SAME strings, so the two can't drift.
-  It deliberately no longer reuses `SAWAVE.note` — that keeps its "2 MAIN + 2 SPARE" count
-  for the built-in + Wave popup, where the count is real (`makeStandalone` mints exactly
-  that); a template's line count is the owner's, so a count read as a limit there. When a
-  kind's checking rule changes, update the rule, `kindNote`, and the detailed "standby
-  lines" row on the Logic page together — `logic.test.tsx` pins that every kind's
-  `kindNote` shows on the page, so a dropped wire fails a gate.
-- **The leave/absence "what each type costs" sentence has ONE source too, shared by the
-  Inputs "?" legend AND the Logic page's type matrix** (owner, 30 Aug 26 — "can u make
-  sure these word summaries are updated when change the rules … the logic page should be
-  updated as well"). `engine/inputs.ts inputRuleText(t)` is that single sentence, derived
-  from the same flags the engine enforces (`canSpare` / `shiftHardInput` / `grp` / `work`
-  / `local`). `InputsPage.tsx typeRule` and `logic-html.ts` `leaves()` both read it — they
-  used to hand-write their own copies and had drifted (the Inputs gloss missed the SC-MAIN
-  Warning nuance; the Logic matrix had no SANS / Upchit line). `inputs.test.tsx` and
-  `logic.test.tsx` each guard that every `INPUT_TYPES` entry's `inputRuleText` shows on its
-  surface, so a dropped wire fails a gate. When a type's rule changes, edit `inputRuleText`
-  once. DELIBERATELY still separate, and NOT to be "helpfully" merged into this: `SAWAVE.note`
-  (keeps its 2+2 count for the built-in popup), the `satag` caption in `html.ts`, and the
-  OIL confirm sheet's prose (it walks a decision; the Logic page states the rule) — different
-  jobs, different voices.
-- **The DEFAULT arrangement is admin-set, and the wave half is "new schedules
-  only"** (owner, 29 Aug 26 pt.2 — "allow the default arrangement of a schedule to
-  be configured in admin … even to the arrangement of the waves under display").
-  Admin → Squadron config carries a **Default arrangement** panel
-  (`ui/AdminPage.tsx ArrangeDefaults`) with two ▲▼ lists persisted on the `wavehide`
-  footing: **section order** (`engine/order.ts SEC_DEFAULT`, key `secdefault`,
-  default canonical) is the fallback `secOrder(d)` uses for un-arranged sections —
-  display-only, so a hand-arranged day still wins and the canonical baseline keeps
-  parity 728/0; **wave order** (`engine/reorder.ts WAVE_DEFAULT`, key `wavedefault`,
-  default OFF) orders the built-in kinds and is applied ONLY at wave-add time on a
-  not-signed-off day (`board.ts placeAddedWave` in `addWave`/`addWaveFromTpl` →
-  `waveInsertSlot` → the tested `moveWave`). The owner chose new-schedules-only over
-  re-shuffling every day, because a wave move is a real amendment: DON'T make the
-  wave default re-order existing or published days, and DON'T give the wave default a
-  "display-only" layer (it would fight `sortWaves`). Unset wave order = append as
-  before. Pinned: `engine/arrdefaults.test.ts`, `ui/wavedefault-add.test.tsx`,
-  `ui/admin.test.tsx`.
-- **Sections and waves are re-ordered by IN-PLACE DRAG, not a sheet** (owner, 30 Aug
-  26 — replacing the 29 Aug `⇅ Arrange` sheet, which is DELETED). A grip on each
-  section (`.sb-sec[data-secmove]` on the board, `.dsec` on the edit
-  week — edit-mode only) and in each wave header (`.wvgrip` + `data-move="mv:w…"` on
-  the block) drags the whole panel / wave into a new place, on both surfaces. One
-  machine, `ui/rowdrag.ts` (wired on the board wrap AND the edit-week root), tells the
-  three draggables apart by the grip pressed and validates the drop with `applyMove`'s
-  own same-container rule. These grips stay draggable at EVERY width — a section/wave
-  is a big target — and since 31 Aug 26 the dense ROW grip is too (the ▲▼ row nudge
-  was removed and each row's first box shortened to seat the grip; see the row-grip
-  entry below). Don't add arrows back to any of them (the owner's "drag, no arrows"). The
-  SECTION grip is the SAME dotted `⠿` the row/wave grips carry (owner, 31 Aug 26 —
-  reversing the 30 Aug drawn-rail: "the drag markers should all follow the old design
-  in which it's dotted"), placed INLINE at the head of the panel's own header (board
-  `.sb-ph`, week `.ah-h`/`.sub-h`/`.wv-sech`) — NOT as an overlay rail in the gutter.
-  Inline, it aligns with the wave grip's column (the owner's "align with GO 1"), pushes
-  its title clear of itself, and centres on the title line (`align-items:center`); the
-  board header's gap is tightened to 6px so the added grip borrows from the header's own
-  spacing, not from the sub-text / buttons on the right (owner — "make sure the text or
-  buttons on the right aren't squeezed"; measured 16px clearance). The headers set
-  `user-select:none` so a thumb holding the grip never paints the title blue. Don't
-  turn the section grip back into a rail/overlay, and don't drop the no-select.
-  **Overall Notes and Common Programme are two SEPARATE draggable sections on the
-  board** (owner, 31 Aug 26 — "split them apart"; `SECTIONS=['notes','prog',…]`, each
-  its own `.sb-sec[data-secmove]` card). On the EDIT WEEK the day notes still print as
-  lines inside the Common Programme block (they never had a card of their own there), so
-  the week keeps them in the 'prog' slice and its 'notes' slice is EMPTY and skipped —
-  which is exactly what keeps the view week and the reference byte-identical (the empty
-  slice adds nothing). The week's Flying-waves section still gets its edit-only
-  `.wv-sech` "Flying waves" header (stripped in `html.test.ts`'s reference compare) so
-  its inline grip has a header to sit in; don't drop it.
-  **The four CREW WORKING-AID panels join the SAME draggable list on the board**
-  (owner, 31 Aug 26 — "one list, drag anywhere"): Personal Inputs, Available crew,
-  SANS availability and Unavailable are ordinary section keys now
-  (`SECTIONS=[…,'inputs','avail','sans','unav']`), each wrapped in its own
-  `.sb-sec[data-secmove]` card with the same dotted grip, so any card can be dragged to
-  any position (Available crew up next to the flying waves, say). **Since 31 Aug 26 they
-  drag on the EDIT SCHEDULER too** (owner — "drag markers on edit scheduler … follow the
-  same formatting as the rest of the sections"): `ui/html.ts dayHTML` in EDIT mode emits
-  all ten sections — the crew four included — through the SAME `secOrder` loop as the
-  board, each in a `.dsec[data-secmove]` with a grip, so a drag on either surface drives
-  the ONE per-day order (no second copy to drift). The VIEW week is UNTOUCHED and
-  parity-locked: there the four are not draggable and only Unavailable prints, appended in
-  its fixed tail exactly as before, so `dayHTML(view)` and the reference stay
-  byte-identical (728/0 — the whole change is gated on `ed`). This is a scheduler
-  WORKSPACE arrangement, not a published property; the squadron's view week is
-  untouched. Being ordinary section keys they ride the per-day order, the admin house
-  default (Admin's Default-arrangement list shows all ten now, with a note that the
-  crew four are scheduler-workspace only — board + edit week, never the view week) and
-  the "Set default?" snackbar for free. The grip is
-  injected by a loose `sb-ph`|`ap-h` header match in `board.ts wrapSec` (Available
-  crew's header is `.ap-h`, re-laid to flex-start so the grip rides with its title);
-  Personal Inputs' foldable header is centred for the grip (`.sb-sec .sb-ph.pl-fold`,
-  it was baseline — the 7px "grip too high" the owner flagged), and a grip-tap on the
-  two foldable headers is guarded in `interactions.ts` so it starts a drag, not a fold.
-  On the EDIT WEEK the same grip is injected by a first-header regex
-  (`ah-h`|`sub-h`|`ap-h`) in `dayHTML`'s `gripIn`, and Available crew's `.ap-h` gets the
-  same flex-start re-lay (`.dsec .ap-h`). Don't fold the crew panels back into a fixed
-  tail, and don't let their order reach the VIEW week (the edit week now shares the
-  board's order, gated strictly on `ed`, so parity holds). A
-  SECTION drag is display-only (`store.moveSectionTo` → `engine/order.ts
-  reorderSectionTo`, histPush, no markEdit) and then offers the **"Set default
-  order?"** snackbar (`ui/SecDefaultSnackbar.tsx`, `SECDEFOFFER`) that promotes it to
-  the house default via the SAME `setSecDefault`/`secDefaultSave` the Admin panel uses.
-  A WAVE drag is unchanged — a real amendment via `applyMove('mv:w…')` → `moveWave`.
-  A held drag AUTO-SCROLLS at the top/bottom screen edges (owner, 31 Aug 26): a day is
-  taller than a phone and the grips are `touch-action:none`, so `rowdrag.ts` scrolls
-  the nearest overflowing surface (board's `.sb-board`/`.sb-main`, or the window on the
-  week) via rAF while the finger holds an edge, re-reading the drop target under the
-  still finger each step. `pointermove` is on the DOCUMENT, not the surface (like
-  `pointerup`), so the finger tracks to the very edge and over the app header without
-  the velocity freezing; don't move it back onto the container.
-  The old one-week "Apply to all days" is GONE (the henceforth default supersedes it);
-  don't re-add it, the Arrange sheet, or a phone nudge for sections/waves. Edit-only
-  grips keep the view week byte-identical (parity 728/0). Pinned: `ui/rowdrag.test.tsx`,
-  `ui/SecDefaultSnackbar.test.tsx`, `ui/board.test.tsx`, `ui/html.test.ts`. Contract:
-  `docs/ui-contracts.md` §Dragging sections and waves.
-- **Dense ROW reorder is by DRAG too — the ▲▼ nudge is GONE** (owner, 31 Aug 26 —
-  "remove up and down arrow and add a drag marker to those lines … align it vertically
-  with the rest of the text boxes … make sure all the alignment is considered for all
-  drag markers"). This REVERSES the 8 Aug "phone hides `.sb-grip`, shows ▲▼" split:
-  every dense row (flying line, duty, sim, ground, Common Programme, Overall-note) now
-  shows its dotted `⠿` grip at ALL widths and reorders by dragging it. `sbNudge` returns
-  '' (no ▲▼ renders — also ~2 nodes/row off the board DOM budget); the phone grid
-  templates gain a LEADING MARKER TRACK, the header's leading placeholder is
-  un-hidden so the column titles shift with it (each box stays UNDER its own heading),
-  and the first box shortens by the track. The right-hand tracks are untouched, so the
-  remarks box stays 154px right-anchored and still lines up with the flying line's.
-  **A same-week follow-up widened the lane 13px → 20px and shifted the pucks flush-left**
-  (owner — "the text box just starts right of the drag marker … not inside the text box";
-  "the pucks can shift it back to the left so that it holds 2 pucks not blocked … make
-  sure the rest are placed back to the same area"): the glyph is left-aligned in the wider
-  lane so the handle sits clear of the first box (measured gap 8px → 17px), and the puck
-  containers span from track 1 (`.sb-line .sb-seatpair` `1/4`, `.sb-arow.c6r>.ppl` `1/3`)
-  to reclaim the marker lane on their OWN line (the grip bottom-aligns to the first line,
-  so that lane is empty there) — every crew puck goes flush-left (measured delta 0, the
-  old layout's spot) and a two-wide box's second puck clears the remarks instead of
-  clipping under it. No puck resized (the AMT droppable-hole spec holds); marker width
-  doesn't affect puck fit, so widening the lane was free. Don't return the puck spans to
-  track 2 or the glyph to centre. ui-contracts §Dense row reorder carries the measurements.
-  ALIGNMENT is a HARD RULE now (owner — "I don't want to keep repeating this"): every
-  grip's centre is MEASURED against the box beside it to delta 0 — the flying line's grip
-  bottom-aligns (`.sb-line>.sb-grip{align-self:end;height:24px}`) because its first-row
-  boxes bottom-align under the tall B cell; the c6r/notes rows sit in a box-height first
-  row so their grip centres naturally; the section/wave/crew grips were already
-  box-centred. Don't re-add the ▲▼, don't hide the row grip on a phone, and don't move a
-  grip's placement without re-measuring delta-0 against its neighbour box. The boardMbtn
-  mv:up/dn branch stays as an inert guard for a stale element. Pinned:
-  `ui/rowdrag.test.tsx` (drag machine), `ui/board.test.tsx` (grip present, no ▲▼).
-  Contract: `docs/ui-contracts.md` §Dense row reorder.
-- **The highlight MENUS must read apart from their CHIPS** (owner, 25 Aug 26 —
-  the CAT / Type / Quals tabs looked so like the chips inside them that, with one
-  menu open, the next shut menu read as another selectable chip). A `.hl-gtab` is
-  a solid RAISED control in the brighter `--ink` with a bold caret — plainly a
-  menu that opens; a `.fchip` stays a flatter, quieter `--panel-2`/`--ink-2` tag
-  that only fills blue (`--accent`) once picked; and an open `.hl-grp.open` wraps
-  its tab and chips in one hairline tray (scoped to `.filters` / `.ic-pick-cats`,
-  since `.hl-grp` is a class the History accordion also uses — don't restyle the
-  bare `.hl-grp`). Don't flatten the tabs back to the chip recipe in a filter-bar
-  polish pass. All in `scheduler.css`; the strip is `ui/hlchips.tsx`.
-- **A new flying line comes up blank** (owner, 10 Aug 26). `+ Line` used to
-  copy the previous line's callsign, mission and times; a plausible wrong
-  value reads as filled in when nobody filled it in. **`+ Wave` follows the
-  same rule** (owner, 25 Aug 26 — "keep the data clean … nothing filled"): an
-  ordinary flying wave's first line used to seed `NEW / 12:00 / 13:00`, which
-  read as filled-in and painted a green suggested-brief in-time off the 12:00;
-  it now comes up blank (`cs/msn/to/ld` empty), byte-identical to a `+ Line`
-  add. Standalone waves (SC/AVALON/BB/SPARE via `makeStandalone`) keep their
-  own kind-specific structure — this is the `!kind` branch only. Pinned in
-  `board.test.tsx`. Don't re-seed the plain wave's first line.
-- **The phone board's top bar is ONE row, and the day is STEPPED BY ARROWS on
-  the day strip below it** (owner, 11 Aug 26 — comp approved before build; the
-  day was SWIPED until 12 Aug 26, see the amendment at the end of this entry).
-  The seven Mon–Sun chips became dots
-  then LEFT the phone bar entirely on 23 Aug 26 (see the amendment below);
-  `+ Line` is gone from the bar (every wave header already has one),
-  undo/redo are on it, and every label is icon-only under 820px. Do not add
-  a control back to this bar's FIRST LINE without taking one off: the whole point
-  was getting it from 166px to 70px on a 780px screen, and the geometry gate
-  counts ROWS, not just overflow. Desktop is unchanged.
-  **AMENDED 11 Aug 26, once, with a measurement.** History added an eighth
-  button and took nothing off, and the bar still measures 70px — but only
-  because the same change fixed `.sb-title` to shrink instead of wrap
-  (`flex:0 1 auto` → `flex:1 1 0`; an auto basis made the title's base size
-  its full text width, so `.sb-top` wrapped it onto its own line and the bar
-  went to 92px). The rule STANDS: that was the last free 33px, the day name
-  is down to ~107px of a 390px screen, and the next control genuinely has to
-  displace one. The changes LIST is the worked example of the alternative —
-  it wanted a ninth button and went to the day's checks panel instead
-  (`docs/ui-contracts.md` §History on the board).
-  **The dots were also a scrub bar** (owner, same day) — press and slide to
-  run through the week. On 23 Aug 26 the dots (and the blue current-day
-  square) were REMOVED from the phone bar (owner) to free the day row for
-  search + highlight; the scrub survives on DESKTOP, where the Mon–Sun chips
-  still draw, and there the old rule stands: every chip keeps the same
-  footprint whatever is selected — do not make the current one grow, it
-  shifts the strip under a tracking finger.
-  **THE DAY IS STEPPED BY TWO ARROWS, AND THE SWIPE IS GONE** (owner, 12 Aug 26
-  — "remove the swipe for the mobile scheduler board too. Just put arrows at the
-  edges of the bar at the top to navigate left and right between days"). Do not
-  rebuild the swipe. It was itself an owner ask on 11 Aug and it ran through
-  three shapes in a day and a half — a jump on a distance threshold, a carousel
-  tracking the finger behind a preview pane, then that carousel with its
-  hit-testing, settle and animation reworked and a phone-only gate — each round
-  paying back what the last one cost. `#sbPrevDay`/`#sbNextDay` call
-  `boardDayStep(±1)`. They USED to be disabled at the week's ends; since 22 Aug 26
-  they are CONTINUOUS ACROSS WEEKS instead (owner — "in scheduler board it's
-  continuous arrow between weeks"): stepping off Monday loads the previous week's
-  Sunday, off Sunday the next week's Monday (`boardDayStep` calls `loadWeek` then
-  `boardTab`). The swipe stays gone — only the arrows changed. Do not re-add the
-  end-of-week `disabled`. A top-left calendar icon (`#sbCal`) opens the week
-  picker in 'board' context, where a pick loads that week and opens the tapped
-  day. They flank the DAY STRIP rather than the
-  bar's first line, which has 6px of slack and would have had to give up the day
-  name; the bar went 70px → 75px and nothing came off line one. Above 820px they
-  are not drawn — a desktop bar already carries all seven days as chips, which is
-  why it never needed either control. The dots sat between the arrows until
-  23 Aug 26, when the owner removed them from the phone bar: the freed middle
-  of the day row carries `#searchB` + `#sbHl` (search + the highlight fold)
-  and the arrows plus the bar's day title carry "which day" — desktop chips
-  unchanged, the one-row rule unchanged, and the removal is `display:none` in
-  CSS so `dayTabsHTML`/`wireDayDots` and the jsdom tests are untouched. Gone
-  with the swipe (which STAYS gone): the `.sb-pane` preview and `.sb-main`'s
-  own `touch-action`, so the scroller is the browser's default again.
-  **THE DAY NAME ON THAT BAR IS THREE LETTERS ON A PHONE** (owner, 12 Aug 26 —
-  "Seems like the Wednesday blocked off the date"). The title box ellipses, so
-  the long day names were eating the date beside them. The word is SPLIT — `Wed`
-  plus a `.bl` tail — not shortened, so desktop still reads `Wednesday` off one
-  markup path, and three letters is what the dots and `dowShort` already use.
-  Don't "restore" the full word on the phone, and don't shorten the desktop one.
-  `boardTab` is view-only: it must not validate, and its board-only notification
-  lane must not wake the mounted EditWeek or EditRoster. Real mutations still use
-  the global lane and repaint both.
-  Contract: `docs/ui-contracts.md` §The board on a phone is ONE window.
-- **Week navigation is a rolling window + a calendar, and it is CONTINUOUS**
-  (owner, 22 Aug 26). The fixed 5-chip `WEEKS` strip is gone from the segs;
-  `weekWindow(CURWEEK)` (`src/ui/weeknav.ts`) draws four `data-wk` buttons —
-  prev · current · +1 · +2 — that re-centre on whatever week is loaded, the
-  loaded one `.on` and the today-week dotted. A calendar icon opens `WeekCal`
-  (`src/ui/WeekCal.tsx`, the app's own `.rc-*` picker, single-date with a
-  whole-week highlight); tapping any day loads that day's week (`loadWeek` +
-  `mondayOf`). On a phone the seg is hidden and a lone calendar icon stands where
-  the removed title was; the view/edit week is stepped day-to-day by SWIPE, which
-  is CONTINUOUS across weeks (swipe off Sunday → next week's Monday, off Monday →
-  previous week's Sunday — `pan.ts` edge-overswipe + `WEEKJUMP` landing the
-  scroll in the same repaint). **A wave-dense day no longer traps that swipe**
-  (owner, 23 Aug 26 — "stuck to swipe back from Jul 20"): a flying day is almost
-  all `.go` wave blocks (each its own sideways scroller with
-  `overscroll-behavior-x:contain`), and the handler used to cede the whole
-  gesture to a `.go` the instant a touch began inside one — so on a busy Monday
-  the back-swipe had nowhere to begin and stuck, while a bare-ground Sunday
-  crossed fine. Now the block and its scrollLeft are recorded at touch-start and
-  the decision is made at touch-END: if the wave actually scrolled it owned the
-  swipe, but a wave already at its own edge (it never moved) lets the gesture
-  fall through to the week cross. Don't restore the touch-start `.go` bail.
-  The DESKTOP `‹ ›` arrows are continuous across
-  weeks too (owner, 23 Aug 26 — completing this decision): stepping past the
-  week's last day loads the adjacent week and lands on its near edge, instead
-  of the arrows going dead at the ends. DESKTOP landings are instant — no settle
-  animation on an arrow cross. **The desktop arrows walk EVERY live day — including Saturday and Sunday —
-  to the FRONT before they cross** (owner, 23 Aug 26 — "Friday not aligned on
-  the far left … Saturday and Sunday out of selection of the placeholders … 2
-  right arrows to get to next week"). A wide screen shows three columns, and the
-  ceiling used to be "Sunday jammed flush RIGHT" (`weekScrollMax` = last day's
-  right edge − clientWidth), which left FRIDAY at the front: the weekend never
-  reached the front to be crewed, and the final press only nudged the sliver
-  before crossing. `weekScrollMax` is now "the last live day at the FRONT" =
-  `(liveDays − 1) × dayStep` clamped to the scroll range — the next-week
-  preview's real columns (`ui/peek.ts`) are the runway that makes
-  Sunday-at-the-front a whole view rather than a void — so `panDays` steps Mon
-  → … → Sun, each to the front, and crosses only on the press PAST Sunday. The
-  `sun` cross-back landing is Sunday-at-the-front too, symmetric with `mon`
-  landing Monday there. The JS-sized trailing spacer stays
-  (`pan.ts:setWeekTail` → `.week::after` / `--week-tail`, desktop only) so a FREE
-  scroll fully right still stops on a whole column; don't reintroduce a fixed
-  `calc()` spacer, and don't restore the flush-right ceiling. **One arrow press
-  = one day even mid-glide, in BOTH directions** (owner, 23 Aug 26 — "twice on
-  Tuesday to get to Wednesday", and its mirror "twice back from Thursday … then
-  the next click jumps to Tuesday"): an arrow scroll is a ~350 ms smooth glide
-  that each fresh press restarts, and rapid taps OUTRUN it — by the second or
-  third press the live `scrollLeft` is still most of a day behind the column the
-  presses have already commanded, so counting the next step from it made every
-  other press cancel the last. `panDays` counts from the position the last press
-  COMMANDED (`panTgt`) while the glide is still in flight toward it, judged by a
-  BURST CORRIDOR from where the burst started (`panAnchor`, the live scrollLeft
-  the first press counted from) to `panTgt` (`panBase`) — a manual wheel-pan or
-  a new week drops the target. The corridor is anchored at the burst start, not
-  the last step: the first cut used the previous step's start (`panPrev`), a
-  one-day window a fast backlog overshoots, which left the back-direction bug
-  alive. Don't narrow it back to the last step. **A park NEAR a day boundary
-  counts as ON it, and a plain horizontal wheel drops the corridor** (owner,
-  24 Aug 26 — "when the left most day on the screen is Saturday, I require 2
-  right arrow clicks to go to Sunday instead of 1"). A free scroll — the proxy
-  scrollbar, a trackpad — rests the strip wherever the pointer stopped,
-  routinely a few dozen px shy of the column visibly at the front; the old
-  hairline 0.02 tolerance read that as "still on Friday", so the first press
-  nudged the invisible gap and only the second moved a day — and the 1px
-  edge tests made the week-cross need the same nudge-press first.
-  `pan.ts:PARK_TOL` (0.35 of a day) now decides both the step counting and
-  the edge-cross guards; a genuinely mid-day park still steps from the day
-  being left. The same session's second find: a NO-SHIFT horizontal
-  wheel/trackpad pan scrolls the week natively, invisible to `onWheel`, so
-  the corridor survived it — arrow to Sunday, trackpad back to Saturday, and
-  the next › counted from the stale Sunday target and jumped a whole week.
-  `onWheel` now drops `panWk` on any plain horizontal tick over a `.week`
-  (booleans-only on the common vertical path — the Edge no-JIT contract
-  holds). Don't shrink PARK_TOL back to a hairline, and don't remove the
-  deltaX invalidation. **The proxy scrollbar must never write the week back
-  mid-glide** (owner, 24 Aug 26 — desktop `‹ ›` arrows "don't go day by day …
-  stuck halfway then zoom past a few days"). `panDays` fires a
-  `scroll-behavior:smooth` glide; every frame of it mirrors the week to the
-  pinned `#hsTrack` proxy, and the track's own echoed `scroll` used to run
-  `onTrackScroll`, which wrote the week straight back with `behavior:'instant'`
-  — and an instant scroll CANCELS an in-flight smooth scroll. The mirror lags a
-  frame, so its back-write landed a few px behind where the glide had reached,
-  killing the animation and freezing the strip mid-day (or, when a frame slipped
-  through, scrubbing it fast — exactly the report). The B33 self-terminating
-  two-way sync is sound for two STATIC positions, but the week is not static
-  mid-glide, so the loop is now broken by ORIGIN, not position: `mirrorToTrack`
-  records the exact scrollLeft it puts on the track (`trkEcho`), and an
-  `onTrackScroll` that finds the track still sitting there is that echo — it
-  updates the label and leaves the week alone. Only a real drag of the native
-  scrollbar thumb (the track somewhere ELSE) drives the week, and that path also
-  drops `panWk` — the native scrollbar doesn't reliably fire the `pointerdown`
-  that `onTrackGrab` listens for, so the corridor is invalidated here instead.
-  Don't route the week→track mirror around `mirrorToTrack`, and don't let
-  `onTrackScroll` write the week unconditionally again. **`trkEcho` alone was
-  not enough — the glide now OWNS the week while it is in flight** (owner, 25 Aug
-  26 — "make sure it's not just an easy fix", after a test flake led back to this
-  seam). Position bookkeeping cannot survive a `scroll` event the browser
-  coalesces or defers under load: the deferred echo arrives after a newer frame
-  has moved `trkEcho` on, clears `HS_EPS`, and is mistaken for a drag — so
-  measured on the built app the arrows still swallowed ~1 press in 7 under load.
-  `panDays` now arms a short window (`glideEnd`, `GLIDE_MS`) on every press, and
-  during it `onTrackScroll` is a pure follower regardless of position; the window
-  clears the instant the glide lands (`onDocScroll`) or on any manual pan /
-  scrollbar grab, so a real drag right after a step still drives the week. A
-  SECOND writer was cancelling the same glide: a within-week repaint (the
-  debounced palette-follow `notify` from `rosDayFollow`) re-pinned the week's
-  scrollLeft to the mid-glide position; `panHold` (`EditWeek`/`ViewWeek`) now
-  holds the glide's TARGET during the window instead, so a mid-glide repaint
-  lands on the intended day, not between two. Together these took the day-skip to
-  0/50 at human pace with the real animation. Pinned in `pan.test.tsx`; don't
-  remove the `glideEnd` guard or revert `panHold` to pinning the live `sl`.
-  **The DESKTOP
-  scheduler board now has week navigation** (owner, 23 Aug 26 — "in scheduler
-  board i cant go between weeks except through the calendar"): `‹ ›` week-jump
-  chips flank the seven day chips inside `#sbDays` (`board.ts:dayTabsHTML`,
-  `data-sbweek`, not `data-sbtab`), one press jumps a whole week and keeps the
-  open weekday (`boardWeekStep`); they ride inside `#sbDays`, which is
-  `display:none` on a phone, so the phone board keeps stepping days with its own
-  edge arrows and every `[data-sbtab]` scrub/test is untouched. The `.crew-hint`
-  edge hint stays RETIRED — the weekend now genuinely reaches the front, so the
-  limitation it apologised for is gone; don't reintroduce it. **The PHONE
-  swipe cross GLIDES, though** (owner,
-  23 Aug 26 — "go with glide … glide between weeks"): a boundary cross slides
-  instead of reload-flashing. It is `src/ui/weekglide.ts` (`beginGlide`), called
-  from the WEEKJUMP branch of ViewWeek/EditWeek, phone-only (≤820px) and
-  reduced-motion-aware, and it no-ops without layout so the gates are untouched.
-  **It slides TWO FROZEN CLONES, and hides the real week behind them** (owner,
-  24 Aug 26 — "I can see it scrolling through the week in a fast motion … don't
-  even show me that"). The first cut slid the LIVE incoming week, which still
-  carried the flick's leftover FLING, so the browser scrubbed it through Tue/Wed…
-  behind the panel — the exact "scrolling through the week" the owner rejected.
-  Now BOTH the outgoing week (frozen on the finger's day) and the incoming week
-  (frozen on its landing day) are `overflow:hidden` clones — which cannot scroll
-  or fling — and they tile the viewport while the real week is `visibility:hidden`,
-  revealed and re-landed only when the clones come off. Three load-bearing
-  details, don't drop them: the incoming clone's landing day is derived from the
-  cross DIRECTION (`fwd ? 0 : weekScrollMax`), NOT the live `scrollLeft` (the
-  phone snap doesn't reliably hold the far Sunday edge the instant it's written,
-  so reading it froze the clone on the wrong day); `void c.offsetWidth` forces
-  each clone's layout before its `scrollLeft` is set, or a fresh clone clamps to
-  0; and the real week is hidden so its own fling / flaky snap is never on
-  screen. Don't go back to sliding the live week, or to a single clone. The clone
-  sits at `z-index:40`, BELOW the sticky `.topbar`
-  (`z-index:60`) — it used to tie the bar at 60 and, being a `position:fixed`
-  clone anchored at the week's `rect.top` (which is above the bar once the page
-  is scrolled down) appended last to `<body>`, it painted the sliding week OVER
-  the bar for the length of the slide (owner, 23 Aug 26 — "bleeding at the top
-  bar when swiping"). The slide is page content; keep it under the chrome — any
-  value below 60. The swipe is NOT locked to one day — a firmer flick still crosses
-  several days within a week, which the owner explicitly kept (23 Aug 26 — "don't
-  lock the swipe to a day. I actually like how it is currently"); do not add
-  `scroll-snap-stop`. Within-week day-to-day swipes never glide (only a Monday/
-  Sunday landing does), and desktop stays instant. `WEEKS` (`engine/waves.ts`) is kept for
-  probe-bridge/reference but is no longer the seg render source. The engine
-  already builds any week (`weekBundle`/`emptyWeek`), so nothing bounds this.
-  The big `Jul 13 – Jul 19` title (`#vTitle`) and the `142 · week of… · all times
-  local` sub (`#vSub`) were REMOVED as redundant clutter — the day cards carry
-  the dates. Don't re-add the fixed chips, the title/sub, or the end-of-week
-  clamp. All week label/Monday math lives in `weeknav.ts` (one drift seam).
-  The DATE PICKER is a DAY picker (owner — "the week will be transparent to the
-  user … as the user scrolls it will feel like a continuous flow"): tapping a day
-  loads that day's week and lands the view on that exact day (`WEEKJUMP` carries a
-  day index; the board opens it). Don't turn it back into a week-row picker.
-- **Personal INPUTS are GLOBAL, not week-scoped** (owner, 22 Aug 26 — "show all
-  inputs regardless of which week I am selected on"). `loadWeek` swaps DAYS/DATES
-  but NOT `INPUTS`; every authored week's inputs are merged into the one `INPUTS`
-  array at boot (`initStore` + `weeks-data.ts:otherWeekInputs`, idempotent, and
-  boot-only so parity stays 728/0). Each week's SCHEDULE still shows only its own
-  because the day builders and auto-land match by DATE (`inputCoversDate` /
-  `DATES.indexOf`). The one gotcha, kept in `loadWeek`: it clears every input's
-  `acc` so `autoAcceptSeedInputs` re-lands the date-matching rows onto the fresh
-  (ground-row-less) days — without it an input stays marked accepted with nothing
-  on the day. Don't re-add the `INPUTS` swap, and don't move the `acc` clear.
-  Flow: `docs/feature-impact.md` §Flow E.
-- **Manage users lives on the Admin tab** (owner, 23 Aug 26). The topbar
-  `#manageUsers` button and the `#userModal` are gone; the same fields, list
-  and mutations sit on the Admin page (`ui/AdminPage.tsx`), the seventh nav
-  tab, ALWAYS LAST in both navs and admin-hidden like the Edit tab — but the
-  PAGE is the gate (`#admDeny`), per the standing role doctrine. Don't put
-  the button back on the topbar, and don't add a tab after Admin.
-- **No repeat-weeks on inputs** (owner, 22 Aug 26 — "remove repeated weeks
-  everywhere"). The Inputs form's "Repeat wks" field, the table's Recurring
-  column and the record's `recur` write are all deleted. The feature never
-  actually repeated anything — the record stored ONE span and `recur` was a
-  label nothing expanded, which surfaced when the month calendar could only
-  chip the first span — so the choice put to the owner was "draw every
-  repetition (a real feature) or live with the mismatch", and he chose
-  neither: remove it. A truly repeating input would be that real feature,
-  built only if he asks; do not re-add the label-only field, and a member
-  needing the same absence weekly files it per week. Its absence is pinned
-  in `inputs.test.tsx`. (The read-only `reference/` keeps its own Repeat
-  field — test-only, never served, same as the callsign scrub.)
-  Moving an `Other` row to Ground or Unavailable is the `→ Ground` /
-  `→ Unavail` buttons in `html.ts`, on both the week and the board. Don't add
-  drop targets to `drag.ts` for it; that machine stays scoped to pucks.
-- **The calendar day popover — five owner asks, 23 Aug 26** (all in
-  `InputsCal.tsx` / `scheduler.css`, verified live before shipping;
-  `docs/ui-contracts.md` §The Inputs month calendar carries the detail):
-  - **A SANS input reads its F/O/A letters on the popover row too**, not just
-    the cell chip — the row label is `isSansAvail ? (sansLetters||'F/O/A') :
-    inpLabel`. Don't put "SANS Availability" back on the row.
-  - **The day TITLE matches the date number's size** (15px/700). Without an
-    explicit size the input took the UA default — 16px on a phone, larger than
-    the date. `.ic-pop .ic-pop-head .ic-title-edit` outspecifies the shared
-    `.ic-pop input` font. Don't drop the explicit size.
-  - **A cell NOTE is plain text, no box** (the old `.ic-chip.plan` dashed
-    accent border is gone); on the phone, where its text can't fit, it's a
-    muted `--edge-2` bar so it stays visible. Don't re-add the dashed border.
-  - **The cell mini-pucks (`.ic-pk`) are standard-olive** (`--fcp`), the
-    CATEGORY a right-edge line (`--pk-cat`, drawn by `::after`), a SANS person
-    a purple LEFT line (`.ic-pk.sans::before`). NOT the old full CAT-tint fill.
-    The stripes are pseudo-elements (not inline box-shadows) so the phone thins
-    them; the cat colour rides in as `--pk-cat`.
-  - **`+ Pucks` opens the MULTI-SELECT picker** (`.ic-pick`), not a one-at-a
-    -time `<select>`: category highlight buttons (`HL_CATS` + `personMatchesCat`
-    — the SAME predicate as the highlight chips, one body in `state/view.ts`)
-    light a whole category, and **✓ Add** batches the ticks
-    (`addPuckRow(iso,ids)` for a new row, `addPuckPeople` to top one up — both
-    dedupe). A seated puck is removed THREE ways: its ✕, a right-click
-    (desktop), or a **drag off its row** (`startPkDrag`, phone + desktop —
-    released outside its `[data-secpucks]` drops it). Don't restore the
-    per-person `<select>`, and keep `personMatchesCat` the one category
-    predicate — a second copy is the drift seam.
-- **No ⋯ collapse of the phone row control strips** (owner, 16 Aug 26 — built,
-  shipped and rolled back the same day). Every flying/duty/sim/ground row's
-  `▲▼/CX/■/✕` strip was tucked behind one ⋯ (a `CTLOPEN` view state, one row
-  open at a time); the owner asked to undo it. The full implementation is one
-  `git revert` away (the "collapse each row's control strip behind a ⋯" commit),
-  so don't rebuild it from scratch or re-propose it unprompted. The row strips
-  stay always-visible on a phone. The sibling touches from that batch — the
-  aircrew-tab gutter, plural warnings, and the week's faded `Remarks`
-  placeholder — STAND; only the ⋯ collapse was undone (and the batch's board
-  4-digit input times were later reversed by the 30 Aug hh:mm decision below).
-- **EVERY time in the app reads `08:00` — colon, 24-hour, everywhere** (owner,
-  30 Aug 26, REVERSING their own 29 Aug "no colon, just 0800" ask: "I saw
-  wrongly … most of the timing format is 08:00. Change it back and make sure
-  everything follows that format consistently"). hh:mm is the app's native
-  form — the read-only reference gate PINS it (`reference/tfin.js`:
-  `fmtT('0745')==='07:45'`, `hhmm(760)==='12:40'`, `fmtTxt('0930')===fmtT('0930')`),
-  `txtSet` commits through `hhmm`, and the week/warnings/CSV never left it.
-  What broke ranks was compact-minted legacy data (duty templates minted
-  `0700`). The fix, three layers:
-  · **Display**: board renderers wrap every stored time string in
-    `engine/time.ts fmtHM` (the ONE display fold — compact or colon in, hh:mm
-    out, non-time → blank): flying br/to/ld + brief ghost (`board.ts`),
-    duty/sim/ground/programme str-end + ap rows + input rows (`board-html.ts`,
-    the `boxHTML` atm/tm chokepoint). The week already folds via `fmtT` (`ted`).
-  · **Minting**: `dutytpl.tplTime`, `DUTYTPL_STD`, `waveDutyBlock` and the
-    "+ In time" line now mint `07:00` (they were the compact minters);
-    `waveTime` always did. Old stored templates refold on load.
-  · **Typing**: every time box accepts `800`/`0800`/`8:00`/`08:00` (parseHM)
-    and shows hh:mm after commit — the user never types the colon. Hand-typed
-    IN TIME prose folds only the tokens `intimeTime`'s grammar recognises
-    (`events.ts intimeFold`, commit-time only — never at render, so the seed
-    week's model text stays byte-identical for parity).
-  The rules engine is untouched by construction: every reader goes through
-  `parseHM`, which takes both forms. Parity stays **728/0**. The ONE deliberate
-  4-digit survivor is the AREA window token (`0800-0900`, `atimeText`) — the
-  reference app prints it compact and `tfin.js` pins that; changing it means
-  editing the safety-net, owner sign-off required. Don't add a second display
-  formatter — `fmtHM` is the one. Placement: `docs/ui-contracts.md` §Every
-  time reads hh:mm.
-- **The flagging engine reads across week boundaries** (owner, 23 Aug 26 —
-  "It is a continuous reading of the flagging engine. It doesn't just stay
-  within a week"). Two rules used to compute strictly inside the loaded
-  Mon–Sun week and are fixed: the consecutive-days run (`DAYS_RUN`,
-  `VCONF.maxRun`) now walks in seeded up to `maxRun` days before Monday, and
-  Monday's crew-rest check (`CREW_REST`/`CREW_TIGHT`, `VCONF.crewRest`) now
-  runs against the previous week's Sunday instead of being switched off —
-  `REST[0]`, the crew picker's Monday rest-clear times, is real for the
-  first time. The midnight input tails at the week's two edges read the
-  adjacent week's dates the same way. Bounded to those two lookback windows
-  plus exactly one lookahead day — the pre-existing midnight-tail sliver
-  past Sunday night, and, since 23 Aug 26, the forward crew-rest trace
-  below; nothing else looks forward or further back than that. Don't
-  re-propose widening either window without a named case — the sizes were
-  chosen to be exactly what the named rules need.
-  **A flag still always lands on the day it BREAKS, never earlier**: next
-  Monday's own crew-rest breach still only becomes a real, clickable warning
-  when next week is loaded and viewed — the trace mechanism addresses by
-  in-week day index, so it still cannot write a second warning onto the
-  loaded week's own Monday; that half of the old ruling stands unchanged.
-  **What is superseded is this entry's old "don't build a same-page hint
-  without the owner asking" — he then asked for exactly that**, from the
-  deployed site, the same day (23 Aug 26 — "If I plan someone who bust crew
-  rest the day prior it should also flag out just like what u see for
-  outlaw"): a
-  loaded week's Sunday whose late finish busts NEXT week's Monday now draws
-  the same "Breaks Monday" trace box a within-week breach draws, built off
-  `weekctx.ts:nextMondaySeed` and a phantom pass of `validate.ts`'s own
-  `crewRestDay` (one body, two callers — the forward trace cannot drift from
-  the real rule). It carries no in-week day to jump to (`di:null`, `html.ts`
-  renders it with no click target) and writes no second warning — only the
-  pointer. `CREW_TIGHT` still never traces, forward or otherwise; only a
-  full `CREW_REST` breach does. Default demo weeks draw no forward trace
-  (verified). Rules: `docs/engine-rules.md` §validation, crew rest; on
-  screen: `docs/ui-contracts.md` §Three crew-rest rings.
-  **Session edits ARE now read where they used to be invisible** — the
-  seed's INPUTS getting richer, not the windows changing size (see the
-  per-week stash entry right below): `weekctx.ts:bundle()` checks the stash
-  before the pure seed on every cross-week read, so a scheduler's own edit
-  to an adjacent week now feeds `DAYS_RUN`, `CREW_REST` and the forward
-  trace exactly the way an authored seed always did. `SCHED` (publish state)
-  is still deliberately not read by these seed functions — the rules judge
-  the programme, not its publication state — and an unauthored, unedited
-  adjacent week still seeds nothing. `engine/weekctx.ts`'s header carries
-  the full window semantics; `docs/engine-rules.md` and
-  `docs/feature-impact.md` Flow F carry the detail.
-- **Weeks remember their edits — the per-week stash** (owner, 23 Aug 26,
-  from a reported bug: a duty planned on the Sunday of an unauthored week
-  vanished after scrolling to 13 Jul and back, and no crew-rest flag raised
-  for Ranger the way it should have). What's decided:
-  - **Session memory only, deliberately — a reload still forgets** (owner,
-    23 Aug 26 — "It's ok that u don't remember once I exit the session.
-    Just like the rest. Just that when I go between sun and mon it can't be
-    that it disappears"). `engine/weekstash.ts` remembers, per week-start
-    key, the last snapshot `state/store.ts:loadWeek` handed it on the way
-    OUT of a week — in memory only, in lockstep with `INPUTS` and the Leave
-    War's own 17 Aug 26 session-only decision: a schedule that survived a
-    reload while the inputs that fed it did not would be exactly the
-    mixed-memory confusion that lockstep exists to prevent. A localStorage
-    envelope was built and then removed the same day on the owner's word —
-    don't re-add a browser-local one for just this piece; real persistence
-    is the future shared-server step, for all of this state at once.
-  - **Pristine weeks are deliberately NOT stashed.** Stashing every week
-    unconditionally would persist a byte-copy of the pure seed for weeks
-    nobody touched — and a persisted pristine copy is a trap: the day a
-    deploy updates the built-in demo weeks, every browser that ever
-    scrolled past one would go on seeing the OLD content forever, because a
-    stash outranks the seed by design. A week is stashed on the way out
-    only when it changed since load, or when it already carries a stash
-    entry to keep current. **Don't re-add the unconditional stash of
-    untouched weeks.**
-  - **Publish state rides the restore.** The stash shares its SCHED field
-    list with `state/history.ts:schedFields` (the undo snapshot) so the two
-    serializers cannot drift — a week's approvals, AL and pending marks come
-    back exactly as left, not reset to the seed.
-  - **Seeds read the stash first.** The cross-week flag reads — `DAYS_RUN`
-    run-in, Monday's crew rest, the midnight tails, and now the forward
-    crew-rest trace — all go through `weekctx.ts:bundle()`, which checks
-    the stash ahead of the pure seed on every call (see the entry above).
-  - **The fake "Sync" chip stays decorative.** This is still a per-browser
-    fix, not shared/multi-device data — there is no server behind it. True
-    shared, persistent multi-week scheduling across devices and accounts is
-    still the future server step (`HANDOFF.md`); don't present this stash
-    as that, and don't move storage off the `HOOKS.storeBackend` seam —
-    that is precisely where the future shared-database backend hooks in.
-  - **Undo still re-baselines per week, and the edit log stays
-    session-only** — this stash is additive to both, not a replacement for
-    either.
-  Flow: `docs/feature-impact.md` Flow E. File map: `HANDOFF.md`.
-- **The open-bidding dates wear a glowing dark-green border on the Leave War
-  grid** (owner, 1 Sep 26 — "make the border of the dates open for bidding
-  green … the exterior box of the entire period", then "a bit darker and more
-  faded", picking the deeper of two comps). One overlay (`.lw-bidbox`,
-  `Matrix.tsx measureBidBox`) around the `bidFrom..bidTo` columns, shown ONLY
-  while `stage === 'open'`. The colour is `rgba(74,140,100,.80)` with a
-  low-opacity halo — the lighter of two faded greens the owner compared live
-  (deeper `rgba(56,104,76,.78)` was the other), still darker/more desaturated
-  than `--ok`; don't brighten it or swap it to `--ok` without asking. It is OUTLINE ONLY — the
-  owner declined the faint-green wash, so a long window shows nothing mid-scroll
-  until an edge; the wash was built and shown and is a one-line add if he asks,
-  so don't re-pitch it unprompted. Placement + layering (z-index 1, under the
-  frozen columns): `docs/ui-contracts.md` §The open-bidding box. Pin:
+  - **Manage + edit are ONE sheet, ONE gear** (owner, 30 Aug 26; folds in the 29 Aug
+    "remove it from Admin"). The + Wave menu carries a single ⚙ (`data-wvedit`) +
+    "N hidden · Manage", both opening the unified `WaveTplModal.tsx` (edits templates
+    AND shows/hides/deletes: a "Wave types" list with an EYE per built-in kind,
+    `setWaveHidden`; per template an EYE + footer Delete; built-ins hide but never
+    delete). Old `WaveManageSheet.tsx`/`WAVEMANAGE` DELETED — don't re-add it or a
+    second button. Admin's `WaveVisibility` stays REMOVED; Admin keeps only the
+    template-editor button (same sheet). Don't strand a hidden wave — the "N hidden"
+    line + eyes are the way back.
+  - **Kind-picker rule notes have ONE source, on the picker AND the Logic page**
+    (owner, 30 Aug 26). `wavetpl.kindNote(k)` is the single count-free summary of
+    each kind's checking rule, verified against `validate.ts`/`events.ts`; the editor
+    and the Logic "Wave types at a glance" group render the SAME strings. Deliberately
+    NOT `SAWAVE.note` (keeps its "2 MAIN + 2 SPARE" count for the built-in popup where
+    the count is real). When a kind's rule changes, update rule + `kindNote` + the
+    Logic "standby lines" row together (`logic.test.tsx` pins it).
+  - **The leave/absence "what each type costs" sentence has ONE source too** (owner,
+    30 Aug 26), shared by the Inputs "?" legend and the Logic type matrix.
+    `inputs.ts inputRuleText(t)`, derived from the enforced flags; both `InputsPage`
+    and `logic-html.ts` read it (they'd drifted). `inputs.test.tsx`/`logic.test.tsx`
+    guard it. Deliberately still separate, don't "helpfully" merge: `SAWAVE.note`,
+    the `satag` caption, the OIL-confirm prose (different jobs/voices).
+- **The DEFAULT arrangement is admin-set; the wave half is "new schedules only"**
+  (owner, 29 Aug 26 pt.2). Admin → Squadron config → **Default arrangement** panel,
+  two ▲▼ lists persisted on the `wavehide` footing: **section order**
+  (`engine/order.ts SEC_DEFAULT`, `secdefault`) is display-only fallback `secOrder`
+  uses for un-arranged sections (hand-arranged day still wins, canonical baseline
+  keeps 728/0); **wave order** (`engine/reorder.ts WAVE_DEFAULT`, `wavedefault`,
+  default OFF) applies ONLY at wave-add on a not-signed-off day. DON'T make the wave
+  default reorder existing/published days, and DON'T give it a display-only layer (it
+  would fight `sortWaves`). Unset = append. Pins: `arrdefaults.test.ts`,
+  `wavedefault-add.test.tsx`, `admin.test.tsx`.
+
+### Drag-reordering (sections, waves, dense rows)
+Contract: `docs/ui-contracts.md` §Dragging sections and waves, §Dense row reorder.
+- **Sections and waves re-order by IN-PLACE DRAG, not a sheet** (owner, 30 Aug 26;
+  the 29 Aug `⇅ Arrange` sheet is DELETED). One machine `ui/rowdrag.ts` (board wrap +
+  edit-week root) tells section/wave/row apart by the grip pressed and validates via
+  `applyMove`'s same-container rule. Grips draggable at EVERY width. The SECTION grip
+  is the SAME dotted `⠿` (owner, 31 Aug 26, reversing the 30 Aug drawn-rail),
+  placed INLINE at the panel header (not an overlay rail); headers set
+  `user-select:none`. Don't turn it back into a rail or drop the no-select. Don't add
+  arrows back to any of them.
+  - **Overall Notes and Common Programme are two SEPARATE draggable board sections**
+    (owner, 31 Aug 26). On the EDIT WEEK day notes still print inside the Common
+    Programme block, so the week keeps 'notes' EMPTY/skipped (keeps view week ==
+    reference byte-identical). The week's Flying-waves `.wv-sech` header stays (its
+    grip needs a header; stripped in the reference compare).
+  - **The four CREW WORKING-AID panels join the SAME draggable list** (owner, 31 Aug
+    26): Personal Inputs, Available crew, SANS availability, Unavailable are ordinary
+    section keys, each a `.sb-sec` card. **They drag on the EDIT SCHEDULER too** —
+    `dayHTML` in EDIT mode emits all ten sections through the SAME `secOrder` loop, so
+    a drag on either surface drives the ONE per-day order. The VIEW week is UNTOUCHED
+    and parity-locked (four not draggable, only Unavailable prints in its fixed tail;
+    whole change gated on `ed`, 728/0). This is a scheduler WORKSPACE arrangement, not
+    a published property. A SECTION drag is display-only (`moveSectionTo` →
+    `reorderSectionTo`, histPush, no markEdit) then offers the "Set default order?"
+    snackbar (`SecDefaultSnackbar.tsx`, promotes via the SAME `setSecDefault` as
+    Admin). A WAVE drag is a real amendment (`applyMove('mv:w…')` → `moveWave`). A held
+    drag AUTO-SCROLLS at screen edges (`pointermove` on the DOCUMENT — don't move it
+    back onto the container). Don't fold the crew panels into a fixed tail or let
+    their order reach the VIEW week. The old one-week "Apply to all days" is GONE.
+    Pins: `rowdrag.test.tsx`, `SecDefaultSnackbar.test.tsx`, `board.test.tsx`,
+    `html.test.ts`.
+- **Dense ROW reorder is by DRAG too — the ▲▼ nudge is GONE** (owner, 31 Aug 26;
+  reverses the 8 Aug "phone hides grip, shows ▲▼"). Every dense row shows its dotted
+  `⠿` at ALL widths; `sbNudge` returns '' (also ~2 nodes/row off the board budget);
+  phone grid gains a leading marker track, first box shortens by it, each box stays
+  under its heading. A same-week follow-up widened the lane 13→20px (glyph
+  left-aligned, handle clear of the first box) and shifted puck containers to span
+  track 1 (`.sb-line .sb-seatpair 1/4`, `.sb-arow.c6r>.ppl 1/3`) so crew pucks go
+  flush-left and a two-wide box's second puck clears the remarks. No puck resized.
+  **ALIGNMENT is a HARD RULE**: every grip's centre measured to delta-0 against the
+  box beside it (flying-line grip bottom-aligns `align-self:end;height:24px`; c6r/
+  notes centre naturally). Don't re-add ▲▼, don't hide the row grip on a phone, don't
+  move a grip without re-measuring delta-0. `boardMbtn mv:up/dn` stays as inert guard.
+  Pins: `rowdrag.test.tsx`, `board.test.tsx`.
+- **No ⋯ collapse of the phone row control strips** (owner, 16 Aug 26 — built +
+  rolled back same day). Row `▲▼/CX/■/✕` strips stay always-visible on a phone; the
+  `CTLOPEN` implementation is one `git revert` away — don't rebuild or re-propose.
+  Sibling touches from that batch (aircrew-tab gutter, plural warnings, week's faded
+  `Remarks` placeholder) STAND; only the ⋯ collapse was undone (and the batch's
+  4-digit board input times were later reversed by the 30 Aug hh:mm decision).
+
+### Time format
+- **EVERY time in the app reads `08:00` — colon, 24-hour, everywhere** (owner, 30 Aug
+  26, reversing their own 29 Aug "just 0800"). hh:mm is native and the reference gate
+  PINS it (`tfin.js`). Three layers: **Display** wraps every stored time in
+  `engine/time.ts fmtHM` (the ONE display fold; board renderers, week already folds
+  via `fmtT`); **Minting** `dutytpl.tplTime`/`DUTYTPL_STD`/`waveDutyBlock`/"+ In time"
+  now mint `07:00` (old templates refold on load); **Typing** every box accepts
+  `800`/`0800`/`8:00`/`08:00` (`parseHM`), shows hh:mm after commit (user never types
+  the colon). Engine untouched (readers go through `parseHM`), parity **728/0**. ONE
+  deliberate 4-digit survivor: the AREA window token (`0800-0900`, `atimeText`) — the
+  reference pins it compact; changing it needs owner sign-off. Don't add a second
+  display formatter — `fmtHM` is the one. `ui-contracts.md` §Every time reads hh:mm.
+
+### Week navigation & cross-week continuity
+- **The phone board's top bar is ONE row; the day is STEPPED BY ARROWS** (owner,
+  11–12 Aug 26). Getting the bar from 166→70px was the whole point — don't add a
+  control to its FIRST LINE without taking one off (the geometry gate counts ROWS).
+  History added an 8th button and stayed at 70px only because the same change fixed
+  `.sb-title` to shrink (`flex:1 1 0`) — that was the last free 33px; the next control
+  must displace one (the changes list is the worked alternative — it went to the
+  checks panel). `+ Line` is off the bar (every wave header has one); labels icon-only
+  under 820px. **The swipe is GONE (12 Aug); do not rebuild it** — `#sbPrevDay`/
+  `#sbNextDay` call `boardDayStep(±1)`, CONTINUOUS across weeks since 22 Aug
+  (`loadWeek`+`boardTab`; don't re-add the end-of-week `disabled`). `#sbCal` opens the
+  week picker in 'board' context. Arrows flank the DAY STRIP (bar 70→75px). Above
+  820px they aren't drawn (desktop has 7 day chips). The Mon–Sun chips became dots
+  then LEFT the phone bar on 23 Aug (freed row carries `#searchB`+`#sbHl`), removal is
+  CSS `display:none` so `dayTabsHTML`/`wireDayDots`/jsdom tests untouched. **Day name
+  is THREE letters on a phone** (12 Aug — split `Wed`+`.bl` tail, desktop still reads
+  `Wednesday` off one path; don't restore/ shorten). The DESKTOP scrub survives
+  (Mon–Sun chips): every chip keeps its footprint whatever is selected — don't grow
+  the current one. `boardTab` is view-only (must not validate; its board lane must not
+  wake EditWeek/EditRoster). `ui-contracts.md` §The board on a phone is ONE window.
+- **Week navigation is a rolling window + a calendar, and it is CONTINUOUS** (owner,
+  22–25 Aug 26). The fixed 5-chip `WEEKS` strip is gone; `weekWindow(CURWEEK)`
+  (`ui/weeknav.ts`) draws four `data-wk` buttons (prev·current·+1·+2, re-centring).
+  `WeekCal` (single-date, whole-week highlight) jumps to any day's week; it's a DAY
+  picker (loads that week AND lands that exact day) — don't turn it back into a
+  week-row picker. All week/Monday math lives in `weeknav.ts` (one drift seam). The
+  big `#vTitle`/`#vSub` were removed as clutter (cards carry dates) — don't re-add
+  them, the fixed chips, or the end-of-week clamp. `WEEKS` kept for probe-bridge/
+  reference only. Pinned mechanics:
+  - **Phone**: view/edit stepped day-to-day by SWIPE, continuous across weeks
+    (`pan.ts` edge-overswipe + `WEEKJUMP`). A wave-dense day no longer traps it
+    (owner, 23 Aug) — the `.go` block's ownership is decided at touch-END (a wave
+    already at its edge lets the gesture fall through); don't restore the touch-start
+    `.go` bail. The cross GLIDES (owner, 23 Aug, `ui/weekglide.ts:beginGlide`,
+    phone-only ≤820px, reduced-motion-aware, no-ops without layout). It slides TWO
+    FROZEN CLONES (owner, 24 Aug) — outgoing frozen on the finger's day, incoming
+    frozen on its landing day, both `overflow:hidden` so neither scrolls/flings, real
+    week `visibility:hidden` behind them. Three load-bearing details: landing day
+    derives from cross DIRECTION (`fwd?0:weekScrollMax`), NOT live `scrollLeft`;
+    `void c.offsetWidth` forces layout before setting `scrollLeft`; real week hidden
+    so its fling/snap never shows. Clone at `z-index:40`, BELOW the sticky `.topbar`
+    (60) — keep it under the chrome. Don't slide the live week or use a single clone.
+    Swipe NOT locked to one day (owner kept this) — no `scroll-snap-stop`; within-week
+    swipes never glide, desktop instant.
+  - **Desktop arrows are continuous across weeks** (owner, 23 Aug), landings instant.
+    They **walk EVERY live day incl Sat/Sun to the FRONT before crossing** —
+    `weekScrollMax` = "last live day at the front" (`(liveDays−1)×dayStep` clamped),
+    the next-week peek's real columns are the runway; the JS-sized trailing spacer
+    stays (`.week::after`/`--week-tail`, desktop only). Don't reintroduce a fixed
+    `calc()` spacer or the flush-right ceiling. **One press = one day even mid-glide,
+    both directions** — `panDays` counts from the COMMANDED target (`panTgt`) via a
+    BURST CORRIDOR anchored at the burst start (`panAnchor`→`panTgt` = `panBase`); a
+    manual pan or new week drops it. Don't narrow the corridor back to the last step.
+    **A park NEAR a boundary counts as ON it, and a plain horizontal wheel drops the
+    corridor** (owner, 24 Aug) — `PARK_TOL` 0.35-of-a-day decides step counting and
+    edge-cross; `onWheel` drops `panWk` on any plain horizontal tick. Don't shrink
+    `PARK_TOL` to a hairline or remove the deltaX invalidation. **The glide OWNS the
+    week while in flight** (owner, 24–25 Aug) — the proxy scrollbar and any repaint
+    are pure FOLLOWERS: `panDays` arms a short `glideEnd`/`GLIDE_MS` window (cleared on
+    land or manual pan) during which `onTrackScroll` never drives the week, and a
+    mid-glide repaint holds the glide's TARGET (`panHold` in EditWeek/ViewWeek), not
+    the captured mid-glide position; `mirrorToTrack` records `trkEcho`. Don't remove
+    the `glideEnd` guard, revert `panHold` to pinning live `sl`, or let `onTrackScroll`
+    write unconditionally. Pinned `pan.test.tsx`; `ui-contracts.md` §desktop arrow
+    glide + §spacer; `performance.md` §Single-writer during a glide.
+  - **The desktop scheduler BOARD now has week navigation** (owner, 23 Aug) — `‹ ›`
+    week-jump chips inside `#sbDays` (`data-sbweek`, `boardWeekStep`, one press = a
+    week keeping the open day); `#sbDays` is `display:none` on a phone so the phone
+    board keeps its edge arrows. The `.crew-hint` edge hint stays RETIRED.
+- **Personal INPUTS are GLOBAL, not week-scoped** (owner, 22 Aug 26). `loadWeek` swaps
+  DAYS/DATES but NOT `INPUTS`; every authored week's inputs merge into one `INPUTS`
+  at boot (idempotent, boot-only → parity 728/0). Each week's schedule shows only its
+  own (builders match by DATE). Gotcha kept in `loadWeek`: it clears every input's
+  `acc` so `autoAcceptSeedInputs` re-lands date-matching rows on the fresh days. Don't
+  re-add the `INPUTS` swap or move the `acc` clear. Flow: `feature-impact.md` §Flow E.
+- **The flagging engine reads across week boundaries** (owner, 23 Aug 26). Two rules
+  fixed to look past the loaded week: `DAYS_RUN` (`VCONF.maxRun`) walks in seeded days
+  before Monday; Monday's `CREW_REST`/`CREW_TIGHT` runs against the previous week's
+  Sunday (so `REST[0]` is real). Bounded to those lookbacks + one lookahead day (the
+  midnight-tail sliver past Sunday + the forward crew-rest trace); nothing else looks
+  further — don't widen either window without a named case. **A flag still lands on the
+  day it BREAKS**: next Monday's breach only becomes clickable when next week is
+  loaded. **The forward "Breaks Monday" trace** (owner asked from the deployed site,
+  23 Aug, reversing this entry's old "don't build a same-page hint") — a loaded week's
+  Sunday whose late finish busts next Monday draws the same trace box, off
+  `nextMondaySeed` + a phantom pass of the real `crewRestDay` (one body, two callers,
+  can't drift); it carries `di:null` (no jump target) and writes no second warning.
+  `CREW_TIGHT` never traces. Session edits ARE read now via the stash
+  (`weekctx.ts:bundle()` checks it before the pure seed); `SCHED`/publish state still
+  isn't read by these seed functions. Rules: `engine-rules.md` §validation/crew rest;
+  screen: `ui-contracts.md` §Three crew-rest rings; `feature-impact.md` Flow F.
+- **Weeks remember their edits — the per-week stash** (owner, 23 Aug 26).
+  `engine/weekstash.ts` remembers, per week-start key, the last snapshot `loadWeek`
+  handed it on the way OUT — decided parts:
+  - **Session memory only — a reload forgets**, in lockstep with `INPUTS` and Leave
+    War's own session-only decision. A localStorage envelope was built and removed the
+    same day; don't re-add a browser-local one for just this piece — real persistence
+    is the future shared server, for all this state at once.
+  - **Pristine weeks are deliberately NOT stashed** (a persisted byte-copy of the seed
+    would outrank a later demo-week update forever). Stashed on the way out only if
+    changed since load or already carrying an entry. Don't re-add the unconditional
+    stash.
+  - **Publish state rides the restore** — the stash shares its SCHED field list with
+    `history.ts:schedFields` (the two serializers can't drift).
+  - **Seeds read the stash first** — cross-week reads go through `weekctx.ts:bundle()`,
+    stash ahead of the pure seed.
+  - **The "Sync" chip stays decorative** — per-browser, no server; don't present the
+    stash as shared/multi-device or move storage off `HOOKS.storeBackend`.
+  - Undo still re-baselines per week; the edit log stays session-only — the stash is
+    additive to both. Flow: `feature-impact.md` Flow E.
+
+### Inputs & Admin
+- **Manage users lives on the Admin tab** (owner, 23 Aug 26). Topbar `#manageUsers`
+  and `#userModal` gone; same fields/list/mutations on `ui/AdminPage.tsx` (7th nav
+  tab, ALWAYS LAST, admin-hidden like Edit — but the PAGE is the gate, `#admDeny`).
+  Don't put the button back on the topbar or add a tab after Admin.
+- **No repeat-weeks on inputs** (owner, 22 Aug 26). The "Repeat wks" field, Recurring
+  column and `recur` write are deleted — the feature never actually repeated (one
+  span stored, `recur` a label nothing expanded). A truly repeating input is a real
+  future feature (build only if he asks); a member files the same absence per week.
+  Pinned in `inputs.test.tsx`. (`reference/` keeps its own Repeat field — test-only.)
+  Moving an `Other` row to Ground/Unavailable is the `→ Ground`/`→ Unavail` buttons
+  in `html.ts` (week + board); don't add drop targets to `drag.ts` (pucks only).
+- **The calendar day popover — five owner asks** (23 Aug 26, all in `InputsCal.tsx`/
+  `scheduler.css`; `ui-contracts.md` §The Inputs month calendar):
+  - A SANS input reads its F/O/A letters on the popover row too (`isSansAvail ?
+    (sansLetters||'F/O/A') : inpLabel`) — don't put "SANS Availability" back.
+  - The day TITLE matches the date number's size (15px/700) — don't drop the explicit
+    size (without it the input takes the 16px UA default).
+  - A cell NOTE is plain text, no box (the dashed accent border is gone); on a phone a
+    muted `--edge-2` bar so it stays visible — don't re-add the dashed border.
+  - The cell mini-pucks (`.ic-pk`) are standard-olive (`--fcp`), CAT a right-edge line
+    (`--pk-cat` via `::after`), a SANS person a purple LEFT line — pseudo-elements not
+    inline box-shadows. Not the old full CAT-tint fill.
+  - `+ Pucks` opens the MULTI-SELECT picker (`.ic-pick`): category buttons
+    (`personMatchesCat` — the SAME predicate as the highlight chips, one body) light a
+    category, ✓ Add batches the ticks (`addPuckRow`/`addPuckPeople`, dedupe). A seated
+    puck removes 3 ways (✕, right-click, drag off its row). Don't restore the
+    per-person `<select>`; keep `personMatchesCat` the one predicate.
+
+### Leave War grid & scheduler render/drag performance
+Full detail for this whole group: `docs/performance.md` (Part 1 invariants + Part 2
+ledger). Read it before any layout/render/drag-touching change.
+- **The board DOM ceiling of 1150 is settled** (owner, 28 Aug 26). Raised 960→1150 in
+  PR #333 (board ~1051 nodes; timings held at 0.57× reference). Lives at
+  `DOM_CEILING` in `perf-port.cjs`. Don't re-litigate the raise or trim the board to
+  the old ceiling. (`performance.md`.)
+- **The open-bidding dates wear a glowing dark-green border on the LW grid** (owner,
+  1 Sep 26). One overlay `.lw-bidbox` (`Matrix.tsx measureBidBox`) around
+  `bidFrom..bidTo`, shown only while `stage==='open'`. Colour `rgba(74,140,100,.80)`
+  + low-opacity halo (the lighter of two faded greens he compared; deeper
+  `rgba(56,104,76,.78)` was the other) — don't brighten or swap to `--ok` without
+  asking. OUTLINE ONLY — he declined the faint-green wash (built, one-line add if he
+  asks; don't re-pitch). `ui-contracts.md` §The open-bidding box; pin
   `e2e/leavewar.spec.ts`.
-- **A control the user TAPS REPEATEDLY must not move under them — standing
-  design rule** (owner, 2 Sep 26 — "as I toggle left and right on the calendar,
-  because the number of days change between months, the left and right arrow
-  keeps jumping up and down … design it such that the arrows remain at the same
-  spot so I don't need to keep chasing it. Remember this for design interface
-  and fix the rest that you saw the same"). A month spans 4–6 week-rows, so a
-  calendar whose height tracks the month shifts everything anchored to its far
-  edge as you page it. The Leave War new-period / bid / bidding-window
-  calendars sit in a BOTTOM-anchored sheet, so a short month let the whole
-  sheet (its ‹ › month arrows included) drop and a tall one pushed it up.
-  `RangePicker` now pads EVERY month to a constant six rows (trailing `.rblank`
-  cells), so the grid is one fixed height and the arrows — and the sheet — hold
-  still. The Raptor page/popover calendars (`InputsCal`, `WeekCal`) are
-  TOP-anchored — their grid grows DOWNWARD from a fixed top, so their own
-  arrows never move; they pad to whole rows only and were left unchanged
-  (checked, not assumed). The general rule for any repeated-tap control (a
-  calendar pager, a stepper, a reveal toggle, a segmented control that grows
-  a panel): keep the CONTROL's own screen position invariant to the content it
-  changes — reserve the space, or anchor the growth away from the control.
-  Pin: `rangepicker.test.tsx` (constant row count across months).
-- **The Leave War year grid: one draw-toward-a-target engine — desktop fills the
-  year WHILE VIEWED and shrinks when left; the phone rolls a window ahead of the
-  finger; both pre-warm after login** (owner, 3–5 Sep 26, a run of asks: "make it
-  linear" (the year-wide scrollbar) → "the scroll freezes … make it smooth" ("fill
-  in the background") → "load the next months as I approach the edge" → then, once
-  measurement showed the browser spends ~1.4s RE-STYLING the full-year grid every
-  time it is revealed, "shrink when I leave, rebuild on return" and pre-warm after
-  login; then, off a mockup of four scrolling styles, "do the placeholders +
-  moving"). The grid draws WHOLE MONTHS at real widths; **the undrawn months are
-  PLACEHOLDER cells** (5 Sep 26) — one empty cell per side in EVERY row, as wide
-  as the months it stands in for — so the scroller is YEAR-WIDE from the first
-  paint, a flick never runs into a drawn edge, and months are drawn IN PLACE
-  WHILE THE SCROLL IS STILL MOVING, in both directions. This reverses the 3 Sep
-  "never fixed-width spacers" rule, and its reason still binds (a census found
-  22 distinct day-column widths, so a never-drawn month's width is an ESTIMATE
-  whose error would hop content under the finger): a month drawn before keeps
-  its MEASURED width in the placeholder (`monthPxRef`, by war+zoom), so
-  re-drawing it moves nothing; a still-estimated month is drawn LEFT of the view
-  only at rest, under the anchor correction (`colwindow.ts stepAllowedInMotion`);
-  to the RIGHT an estimate is harmless. The placeholder widths are INLINE
-  styles written on the placeholder cells themselves (`applyPlaceholders` +
-  a mount hook per cell), never React state — and, since 6 Sep 26, never a
-  CSS custom property on `.mx-outer` or any other ancestor of the grid: the
-  browser re-styles EVERY element under the element whose custom property
-  changed (~7,000 here, ~0.4–0.8s on the slow laptop, measured), and it was
-  happening on every month draw. Same rule for `--lwx-max`, which now lives
-  on the frozen bar's own box.
-  EVERY row carries the same cells, header included — the 20 Aug column
-  virtualisation that misaligned on the owner's iPhone gave SOME rows colSpan
-  spacers over full header columns, and WebKit reconciles rows of differing cell
-  counts differently from Blink; this design has no such row, but this container
-  ships no WebKit, so the owner's iPhone is the gate for that claim. One loop
-  drives every "draw more / draw less a beat at a time" path — `colwindow.ts
-  stepToward` toward a per-mode TARGET, one month per beat (a short timeout while
-  moving, an idle callback at rest), and a view parked nowhere near the drawn
-  window REPLACES it with the visible months first:
-  · **phone** → a ROLLING window a few months AHEAD of the visible ones
-    (`rollingTarget`, before 1 / after 3), trailing months pruned AT REST so the
-    DOM stays light (a prune never runs mid-scroll);
-  · **desktop, tab ON screen** → the WHOLE year, so scrolling runs end to end and
-    the bottom scrollbar SLIDES (see onHbarScroll);
-  · **desktop, tab OFF screen** (a pre-warm mount, or just left) → capped at a few
-    months (`HIDDEN_MONTHS`), drawn only while the user is IDLE (`state/idle.ts
-    msSinceInput`) so it never lands under a keystroke or a puck drag.
-  On leave the desktop grid SHRINKS to a few months around the last view (so the
-  next reveal wakes a small grid, ~0.4s not ~1.9s) — the dropped months become
-  placeholders of their measured width, so the scroll position is exactly kept —
-  and REBUILDS the year on return. This REVERSES the 4 Sep "desktop keeps the
-  whole year / never prune" rule — the reveal cost is why. The on-screen signal is
-  `leavewar/state/screen.ts`, a listener set NOT the store, so flipping it never
-  re-renders the ~25k-node grid. Pre-warm: `Shell.tsx` mounts the tab HIDDEN once
-  the user pauses after login (desktop only), so the chunk downloads and the first
-  months draw off the critical path and the first open is instant; it is
-  idle-gated, so it never slows login-to-week. Do NOT put the on-screen flag on the
-  store (it would repaint the grid on every tab show), do NOT drop the idle gate on
-  the hidden draw, do NOT make the phone keep the whole year, do NOT prune or draw
-  an estimated-width month left of the view mid-scroll, and do NOT give any row a
-  different cell structure from the header. Three more from the 6 Sep 26
-  measurement round (each traced on the built bundle at 4× CPU, HANDOFF item
-  (d)): keep `PersonRow`'s day cells as one memoised `PersonMonth` per month
-  (rendering them inline re-reconciled all ~21,000 cells on every month draw);
-  keep `.mx tbody tr { position: relative }` (each row its own paint layer — a
-  single-cell change repaints in ~8 ms instead of the whole grid's ~230 ms);
-  and never write a CSS custom property on an ancestor of the grid from JS. The bottom scrollbar is a plain proxy
-  of the year-wide scroller again: its spacer is the grid's scrollWidth and a drag
-  SLIDES the grid at any time, the fill drawing the months under the view as it
-  goes (the 4 Sep jump-on-release is gone with the estimated year space).
-  Detail: `docs/ui-contracts.md` §The Leave War grid draws a window of months;
-  HANDOFF item (d). Pins: `colwindow.test.ts` (`stepToward`/`rollingTarget`/
-  `stepAllowedInMotion`), e2e "the grid draws a window of months over year-wide
-  placeholders …", "a year-wide scrubber …", "a tab switch keeps the grid alive …"
-  (exact scroll kept on both devices), and "the Leave War screen is a separate
-  chunk, pre-warmed after login".
-
-- **A dragged puck's ghost rides its own compositor layer, moved by ONE
-  transform, and the cell hover highlights are off while it is in flight**
-  (6 Sep 26, traced on the built bundle at 4× CPU after the owner asked
-  whether the Leave War speed techniques apply to the scheduler: "dragging of
-  the pucks etc"). Moved by inline left/top, the fixed ghost made Chrome lay
-  out and repaint the whole page on every pointer move — ~170ms a move on the
-  slow laptop, a ghost at ~6fps. `.dragimg`/`.tdghost` now carry
-  `will-change:transform` with left/top pinned at 0 and `drag.ts ghostXf`
-  writes `translate(x,y) [translate(-50%,-50%)]`: no page paint. The three
-  cell hover rules (`.acrow .seat.empty-slot:hover`, `.acrow
-  .seat[data-slot]:hover .puck`, `.sb-slot.empty:hover`) are scoped
-  `body:not(.tdrag)` — each hover flip under the ghost repainted the page
-  (~30ms a move) for a highlight the drag never needs; `.dragover` is the
-  drag's feedback. MEASURED AND NOT DONE, so nobody chases them again: toggling
-  the ghost's `pointer-events` around a single `elementFromPoint` (rewrites
-  its hit-test data every move — repaints, 22ms a move worse; `elementsFromPoint`
-  stays); any cursor rule on body (the 3 Sep restyle finding stands); and every
-  ghost variant tried to stop the page RE-LAYERISING on each move (2D or 3D
-  transform, translate3d, contain, backface, no decorations, non-hit-testable —
-  all ~50ms at 4×, equal): that cost is the page's ~230 compositor layers (the
-  filtered/faded roster pucks and everything overlapping them), not the ghost.
-  A first-cut claim that a `translateZ(0)` hint fixed it was an artefact of a
-  broken experiment (the patched setter threw, so the ghost never moved) —
-  retracted the same day; do not reintroduce it. Do not move the ghost by
-  left/top or re-enable hover under a drag. The white-box history is untouched:
-  nothing here starts, images or changes a native drag (`e2e/geometry.spec.ts`
-  "pointer machine" pin). Contract: `docs/ui-contracts.md` §the mouse rides
-  the pointer machine.
-
-- **A changed day rewrites only its changed BLOCKS, and a drop hit-tests
-  before it takes the ghost down** (6 Sep 26, the drop round — owner: "Ok do
-  it", after the drag round left the ~1.1 s drop for its own pass). Traced at
-  4× on the built bundle: the rules engine was ~45 ms of it; the rest was the
-  redraw — re-parsing, re-styling and laying out the WHOLE ~1,500-element day
-  for one new puck, then repainting the page. `ui/dayswap.ts` parses the new
-  day string into a `<template>` and replaces, inside the existing
-  `<section class="day">`, only the top-level children / `.day-body` blocks
-  whose CANONICAL markup (the browser's serialisation of the freshly parsed
-  markup, never the decorated live node) differs from the last write; any
-  shape mismatch falls back to replacing the whole day node, which is exactly
-  what `outerHTML =` did. Both weeks use it (`ViewWeek`/`EditWeek` keep
-  `prev.chunks`; `null` after a whole rebuild, derived from the previous
-  string on the day's first change). `drag.ts onPointerUp` now hit-tests with
-  the ghost still up (skipped, as every move does), removes it after, and
-  leaves `body.tdrag/.mdrag` to `tdClear()` after the drop — the old order
-  forced two full style+layout passes before the first line of real work.
-  Result: the drop's long task ~600 → ~400–490 ms, style 100–140 → 55–70,
-  layout 90–155 → 35–40 at 4×. MEASURED AND NOT DONE: every paint-isolation
-  variant on the week (`.day` / `.dsec` / `.day > *` as `position:relative`,
-  `contain:paint`, `isolation:isolate`, `will-change:transform`, the week as
-  its own layer) — equal or worse; the ~60–100 ms page repaint is recording
-  the two VISIBLE days and is not reducible by layering. A "quiet path" in
-  `refreshHighlights` (one seven-class selector list instead of the puck loop)
-  was 2× SLOWER at 4× — the loop stays. Do not swap by live `outerHTML`
-  comparison (decorations make every block differ), do not match blocks by
-  index across a count mismatch, and do not take the ghost down before the
-  hit-test. Pins: `ui/dayswap.test.ts`; `drag.test.tsx` unchanged (the
-  jsdom fallback path is the same). Contract: `docs/ui-contracts.md`
-  §Rendering (the per-block swap bullet).
+- **The Leave War year grid: one draw-toward-a-target window engine** (owner, 3–5 Sep
+  26). Whole months at real widths over year-wide PLACEHOLDER cells (one empty cell
+  per side per row, as wide as the months it stands for), drawn IN PLACE while the
+  scroll is still moving. One loop `colwindow.ts stepToward` toward a per-mode TARGET:
+  phone = rolling window a few months ahead (prune at rest); desktop on-screen = whole
+  year (scrollbar slides); desktop off-screen = capped `HIDDEN_MONTHS`, drawn only
+  while idle (`state/idle.ts`). Shrinks on leave (dropped months → measured-width
+  placeholders, scroll kept), rebuilds on return; pre-warmed hidden after login
+  (`Shell.tsx`, idle-gated). Load-bearing invariants (don't undo): a drawn month keeps
+  its MEASURED width in the placeholder (`monthPxRef`); never draw/prune an
+  estimated-width month left of the view mid-scroll; placeholder widths are INLINE
+  styles, never a CSS custom property on `.mx-outer` or ANY grid ancestor (restyles
+  ~7k nodes; `--lwx-max` lives on the frozen bar's own box); EVERY row incl header
+  carries identical cells (the owner's iPhone/WebKit is the gate); on-screen signal is
+  `screen.ts` (a listener set, NOT the store — never repaint the grid on tab show);
+  `PersonRow` day cells stay one memoised `PersonMonth`/month; keep `.mx tbody tr
+  {position:relative}`. This reverses the 3 Sep "never fixed-width spacers" and the
+  4 Sep "desktop keeps whole year / never prune" — the reveal cost is why.
+  `ui-contracts.md` §The Leave War grid draws a window of months; HANDOFF-ARCHIVE.md
+  (the 5 Sep 26 entry); pins `colwindow.test.ts` + e2e.
+- **A dragged puck's ghost rides its own compositor layer, moved by ONE transform;
+  cell hover highlights are off in flight** (6 Sep 26). `.dragimg`/`.tdghost` carry
+  `will-change:transform` with left/top pinned at 0; `drag.ts ghostXf` writes
+  `translate(x,y)…` — no page paint (left/top moves relaid the whole page, ~170ms/
+  move). The three cell-hover rules are scoped `body:not(.tdrag)` (`.dragover` is the
+  drag's feedback). Don't move the ghost by left/top or re-enable hover under a drag.
+  Measured-and-done dead ends (don't chase): toggling ghost `pointer-events`,
+  any cursor rule on body, every re-layering ghost variant (the cost is the page's
+  ~230 compositor layers, not the ghost); the `translateZ(0)` "fix" was a broken-
+  experiment artefact, retracted. Nothing here touches native drag. `performance.md`
+  §Drag; `ui-contracts.md` §the mouse rides the pointer machine.
+- **A changed day rewrites only its changed BLOCKS, and a drop hit-tests before it
+  takes the ghost down** (6 Sep 26). `ui/dayswap.ts` parses the new day into a
+  `<template>` and replaces only the top-level/`.day-body` blocks whose CANONICAL
+  markup (freshly parsed, never the live decorated node) differs from the last write;
+  any shape mismatch falls back to whole-day replace (the old `outerHTML=`). Both
+  weeks use it (keep `prev.chunks`). `drag.ts onPointerUp` hit-tests with the ghost
+  still up, removes it after, leaves `body.tdrag/.mdrag` to `tdClear()`. Drop long
+  task ~600→400–490ms at 4×. Dead ends (don't retry): every paint-isolation variant on
+  the week (equal/worse — the ~60–100ms repaint records the two visible days); a
+  "quiet path" in `refreshHighlights` (2× slower). Don't swap by live `outerHTML`
+  comparison, match blocks by index across a count mismatch, or take the ghost down
+  before the hit-test. Pins `ui/dayswap.test.ts` (`drag.test.tsx` unchanged).
+  `performance.md`; `ui-contracts.md` §Rendering (per-block swap).
 
 ## Where things live
 
@@ -1702,7 +1121,8 @@ subscribers.
 | Validation, VCONF, publishing/AL, auth, history | `docs/engine-rules.md` |
 | Rendering, drag & drop, text editing, AL marks | `docs/ui-contracts.md` |
 | **Which surfaces a feature touches + how one edit flows** | `docs/feature-impact.md` |
-| Open work, known gaps, the deploy traps, full file map | `../HANDOFF.md` |
+| Open work, known gaps, the deploy traps, full file map | `../HANDOFF.md` (a short current-state doc — keep it that way) |
+| The history — how each past thing was found, fixed and shipped | `../HANDOFF-ARCHIVE.md` (a FROZEN snapshot as of 4 Sep 26; search it, never read it whole, never append to it) then `git log` |
 | Probe → reference → port results | `docs/probe-sweep.md` |
 | What changed recently | `git log --oneline` (not duplicated here) |
 | Last session's leftovers, **if any** | `docs/session-state.md` (absent = nothing was pending) |
