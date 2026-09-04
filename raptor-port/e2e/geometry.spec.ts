@@ -2209,10 +2209,11 @@ test('the top bar wears the edit tint on Edit Schedule only', async ({ page }) =
   expect(await bg(), 'and View-only keeps the neutral bar').toBe(view)
 })
 
-test('the Leave War desktop grid grows a fixed bottom scrollbar that drives it', async ({ page }) => {
+test('the Leave War desktop grid grows a fixed, year-wide bottom scrollbar that navigates it', async ({ page }) => {
   await page.setViewportSize(DESK)
   await login(page); await go(page, 'leavewar')
   await page.waitForSelector('.mx-wrap')
+  await page.waitForTimeout(1000) // let the column window measure so the spacer is the year estimate
   /* scroll the PAGE down so the grid's own scrollbar is below the fold */
   await page.evaluate(() => window.scrollBy(0, 400))
   await page.waitForTimeout(200)
@@ -2220,18 +2221,23 @@ test('the Leave War desktop grid grows a fixed bottom scrollbar that drives it',
     const el = document.querySelector('.mx-hbar')
     if (!el) return null
     const r = el.getBoundingClientRect()
-    return { bottom: Math.round(r.bottom), vh: window.innerHeight }
+    return { bottom: Math.round(r.bottom), vh: window.innerHeight, hs: el.scrollWidth, ws: document.querySelector('.mx-wrap')!.scrollWidth }
   })
   expect(m, 'the proxy scrollbar appears').toBeTruthy()
   expect(m!.bottom, 'pinned to the foot of the screen').toBe(m!.vh)
-  /* it DRIVES the grid, and following the grid never loops */
-  const sync = await page.evaluate(() => {
-    const h = document.querySelector('.mx-hbar')!, w = document.querySelector('.mx-wrap')!
-    h.scrollLeft = 500
+  /* it is a YEAR-WIDE scrubber (Phase-2 follow-up, 4 Sep 26): the spacer spans
+     the whole war, not the ~2 drawn months, so the thumb is year-proportional */
+  expect(m!.hs, 'the scrubber spans the whole war, not the drawn window').toBeGreaterThan(m!.ws * 1.5)
+  /* dragging it NAVIGATES the grid — a jump at rest, not a 1:1 scroll */
+  await page.evaluate(() => {
+    const h = document.querySelector('.mx-hbar') as HTMLElement
+    h.scrollLeft = Math.round((h.scrollWidth - h.clientWidth) * 0.5)
     h.dispatchEvent(new Event('scroll'))
-    return { h: h.scrollLeft, w: w.scrollLeft }
   })
-  expect(sync.w, 'the grid follows the proxy').toBe(sync.h)
+  await expect.poll(async () => page.evaluate(() =>
+    [...document.querySelectorAll('.mx-wrap .mxhead th[data-testid^="head-"]')]
+      .some(e => { const k = (e as HTMLElement).dataset.testid!.slice(5, 12); return k >= '2026-05' && k <= '2026-08' })
+  ), { timeout: 4000 }).toBe(true)
   /* and it never leaks onto the Raptor pages */
   await go(page, 'viewsched')
   expect(await page.$('.mx-hbar'), 'gone off the Leave War page').toBeFalsy()

@@ -2651,3 +2651,60 @@ test('the grid draws a window of months, keeps every row aligned, and grows at r
   await expect.poll(async () => (await read()).months.includes('2026-12')).toBe(false)
   expect((await read()).misaligned).toBe(0)
 })
+
+// ---- the year-wide bottom scrollbar (owner, 4 Sep 26) ---------------------
+// With the column window drawing ~2 months, the desktop bottom scrollbar's
+// spacer spanned only those, so its thumb filled the bar, "halfway" was the
+// edge, and it resized as the window grew. It is now a YEAR-wide scrubber: the
+// spacer is the whole war at an estimated width, so the thumb is
+// year-proportional and holds still; dragging it jumps the grid to the
+// dragged-to month. Desktop only — the phone has no proxy bar.
+test('the bottom scrollbar is a stable, year-wide scrubber that jumps the grid', async ({ page }) => {
+  desktopOnly()
+  const bar = page.locator('.mx-hbar')
+  await expect(bar).toBeVisible()
+
+  // The set of whole months the grid has actually DRAWN — the real navigation,
+  // read off the header testids (not the live strip highlight, which lights the
+  // instant you drag, a beat before the jump lands).
+  const drawn = () => page.evaluate(() =>
+    [...new Set([...document.querySelectorAll('#page-leavewar .mx-wrap .mxhead th[data-testid^="head-"]')]
+      .map(e => (e as HTMLElement).dataset.testid!.slice(5, 12)))])
+  const spacer = () => bar.evaluate(el => el.scrollWidth)
+  const wrapContent = () => page.evaluate(() => document.querySelector<HTMLElement>('#page-leavewar .mx-wrap')!.scrollWidth)
+
+  // The scrubber spans far more than the drawn window (the whole year), so its
+  // thumb is a small fraction of the bar, not most of it.
+  const yearW = await spacer()
+  expect(yearW).toBeGreaterThan((await wrapContent()) * 1.8)
+
+  const dragTo = (frac: number) => bar.evaluate((el, f) => {
+    el.scrollLeft = Math.round((el.scrollWidth - el.clientWidth) * f)
+    el.dispatchEvent(new Event('scroll'))
+  }, frac)
+
+  // Middle of the bar → the grid jumps to mid-year (June/July), and the spacer
+  // is UNCHANGED (a thumb that no longer resizes as months draw).
+  await dragTo(0.5)
+  await expect.poll(async () => (await drawn()).some(m => m === '2026-06' || m === '2026-07'), { timeout: 4000 }).toBe(true)
+  expect(await drawn()).not.toContain('2026-01')
+  expect(await spacer()).toBe(yearW)
+
+  // Near the far right → a late month; still the same spacer.
+  await dragTo(0.92)
+  await expect.poll(async () => (await drawn()).some(m => m >= '2026-10'), { timeout: 4000 }).toBe(true)
+  expect(await spacer()).toBe(yearW)
+
+  // Back to the left edge → January is drawn again.
+  await dragTo(0)
+  await expect.poll(async () => (await drawn()).includes('2026-01'), { timeout: 4000 }).toBe(true)
+
+  // Reverse: driving the grid by the month strip moves the thumb to match —
+  // September sits about three-quarters along the year.
+  await page.locator('[data-testid="month-SEP"]').click()
+  await expect.poll(() => page.locator('[data-testid="head-2026-09-01"]').count(), { timeout: 4000 }).toBe(1)
+  await expect.poll(() => bar.evaluate(el => Math.round((el.scrollLeft / (el.scrollWidth - el.clientWidth)) * 100)), { timeout: 4000 })
+    .toBeGreaterThan(60)
+  const f = await bar.evaluate(el => el.scrollLeft / (el.scrollWidth - el.clientWidth))
+  expect(f).toBeLessThan(0.85)
+})

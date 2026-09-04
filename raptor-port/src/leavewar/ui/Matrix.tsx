@@ -901,6 +901,19 @@ export function Matrix() {
   const liveRef = useRef({ drawnMonths, drawnDates, people })
   liveRef.current = { drawnMonths, drawnDates, people }
   const coarsePointer = () => typeof window.matchMedia === 'function' && window.matchMedia('(pointer: coarse)').matches
+  // The war's month structure for the year-wide scrollbar (see the hbar refs):
+  // days per month and the running day-index of each month's first day.
+  // Constant for the war and needs no layout, so a memo, not a measurement.
+  const yearMonths = useMemo(() => {
+    const monthDays = months.map(() => 0)
+    const idxOf = new Map(months.map((m, i) => [m.first.slice(0, 7), i]))
+    for (const d of period.days) { const i = idxOf.get(d.date.slice(0, 7)); if (i != null) monthDays[i]++ }
+    const cumBefore: number[] = []
+    let acc = 0
+    for (let i = 0; i < monthDays.length; i++) { cumBefore[i] = acc; acc += monthDays[i] }
+    return { monthDays, cumBefore, totalDays: acc }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [period.id])
   // A month-strip jump to an undrawn month: draw around it first, scroll once
   // those columns exist (the anchor layout effect below finishes it).
   const pendingJumpRef = useRef<string | null>(null)
@@ -1272,6 +1285,29 @@ export function Matrix() {
   // header; and never in jsdom, which has no layout to measure.
   const hbarRef = useRef<HTMLDivElement>(null)
   const [hbar, setHbar] = useState<{ left: number; width: number; scrollW: number } | null>(null)
+  // ---- THE YEAR-WIDE SCROLLBAR (owner, 4 Sep 26 — "the scroll bar at the
+  // bottom keeps adjusting … make it linear … halfway I'm already at the edge")
+  // The Phase-2 column window draws only ~2–4 months, so this proxy bar's spacer
+  // — sized to the DRAWN content — spanned only those months: the thumb filled
+  // most of the bar, "halfway" was the edge, and it RESIZED every time the
+  // window grew. The bar is now a YEAR-wide SCRUBBER. Its spacer is the whole
+  // war at an ESTIMATED width (a stable per-day average × the war's day count),
+  // so the thumb is year-proportional and never resizes as months draw.
+  // Dragging it NAVIGATES rather than scrolls: the month strip lights up under
+  // the thumb, and the grid JUMPS to the dragged-to day once the drag rests
+  // (through the same `jumpTo` the month buttons use). It has to jump, not
+  // scroll smoothly, because drawing a month is the expensive act this whole
+  // window exists to ration — redrawing every month dragged across would bring
+  // back exactly the slowness Phase 2 removed. Desktop only (a phone
+  // finger-scrolls the grid and shows no proxy bar).
+  const hbarUserTsRef = useRef(0)              // last time the bar itself was dragged
+  const hbarWantRef = useRef<number | null>(null) // the follow-write we expect back as an echo
+  const hbarSettleRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  // The measured average day-column width + the frozen-column width, cached by
+  // war+zoom so the year width (and the thumb) hold still as the window grows —
+  // only a new war or a zoom step re-measures. Taken from whatever is drawn at
+  // first measure; two months is plenty representative.
+  const avgDayWRef = useRef<{ key: string; avg: number; frozen: number } | null>(null)
 
   useEffect(() => {
     setStuck(null)
@@ -1399,18 +1435,42 @@ export function Matrix() {
     if (m && w && m.scrollLeft !== w.scrollLeft) m.scrollLeft = w.scrollLeft
   }
 
-  // The bottom scrollbar follows the grid; the compare stops the two writing
-  // to each other forever (an unchanged scrollLeft fires no event).
+  // The year-wide scrubber FOLLOWS the grid — its thumb reflects where in the
+  // WAR the view sits, in the estimated year space (`yearXForView`). Suppressed
+  // for a beat after the bar itself is dragged (`hbarUserTsRef`), so a jump the
+  // drag kicked off does not yank the thumb back out from under the finger; it
+  // re-settles once the drag is done. Cheap — arithmetic over the cached strip
+  // geometry, no rect read. No-op when the bar is not shown (ref is null) or
+  // before the grid is measured (year space unknown).
   const syncHbar = () => {
-    const h = hbarRef.current, w = wrapRef.current
-    if (h && w && h.scrollLeft !== w.scrollLeft) h.scrollLeft = w.scrollLeft
+    const h = hbarRef.current
+    if (!h) return
+    if (Date.now() - hbarUserTsRef.current < 250) return
+    const want = yearXForView()
+    if (want == null) return
+    const v = Math.min(Math.max(0, h.scrollWidth - h.clientWidth), Math.max(0, want))
+    if (Math.abs(h.scrollLeft - v) <= 1) return
+    hbarWantRef.current = v
+    h.scrollLeft = v
   }
-  // ...and the grid follows the bottom scrollbar when THAT is the one dragged.
-  // Writing wrap.scrollLeft fires the wrap's own onScroll, which calls
-  // syncHbar — equal by then, so it no-ops and the pair rests.
+  // ...and dragging the scrubber NAVIGATES the grid: the month strip lights up
+  // live under the thumb, and the grid jumps to the dragged-to day once the drag
+  // comes to rest (see the hbar refs above for why jump, not smooth scroll).
   const onHbarScroll = () => {
-    const h = hbarRef.current, w = wrapRef.current
-    if (h && w && w.scrollLeft !== h.scrollLeft) w.scrollLeft = h.scrollLeft
+    const h = hbarRef.current, a = avgDayWRef.current
+    if (!h || !a) return
+    // Our own follow-write (syncHbar) echoes back as a scroll event — ignore it.
+    if (hbarWantRef.current != null && Math.abs(h.scrollLeft - hbarWantRef.current) <= 1) { hbarWantRef.current = null; return }
+    hbarWantRef.current = null
+    hbarUserTsRef.current = Date.now()
+    const day = Math.min(yearMonths.totalDays - 1, Math.max(0, Math.round(h.scrollLeft / a.avg)))
+    const date = period.days[day]?.date
+    if (!date) return
+    // Live "where you'll land" — a class toggle on the strip, no React tree.
+    paintInView(months[monthIndexOf(date)]?.label ?? null)
+    // Draw + land once the drag rests, not on every pixel of it.
+    if (hbarSettleRef.current) clearTimeout(hbarSettleRef.current)
+    hbarSettleRef.current = setTimeout(() => { hbarSettleRef.current = null; jumpTo(date) }, 110)
   }
   // Only write state when the bar's presence or dimensions actually change:
   // measureHbar runs on every vertical page scroll, and this component renders
@@ -1436,7 +1496,10 @@ export function Matrix() {
     if (overflow <= 1 || r.width === 0 || r.bottom <= window.innerHeight || r.bottom <= 0 || r.top >= window.innerHeight) {
       applyHbar(null); return
     }
-    applyHbar({ left: r.left, width: r.width, scrollW: w.scrollWidth })
+    // The spacer is the whole war at its estimated width, so the thumb is
+    // year-proportional and holds still as the window grows; until the grid is
+    // measured (`yearWidth` null) fall back to the drawn-content width.
+    applyHbar({ left: r.left, width: r.width, scrollW: yearWidth() ?? w.scrollWidth })
   }
 
   // The frozen header tracks the grid on a requestAnimationFrame LOOP, not
@@ -1666,6 +1729,44 @@ export function Matrix() {
       // measured from a rect, and mixing the two invites an off-by-a-scrollbar
       client: wr.width,
     }
+    // The year-wide scrollbar's day-width estimate rides this same measurement.
+    measureAvgDayW()
+  }
+
+  // Lock in the average day-column width (and the frozen width) the first time
+  // the strip geometry is measured for this war+zoom; reused thereafter so the
+  // year width, and thus the thumb, do not shift as the window grows.
+  const measureAvgDayW = () => {
+    const g = stripGeoRef.current
+    const n = liveRef.current.drawnDates.length
+    if (!g || n === 0) return
+    const key = `${period.id}|${zoom}`
+    if (avgDayWRef.current?.key === key) return
+    const avg = (g.spans[g.spans.length - 1]!.right - g.spans[0]!.left) / n
+    if (avg > 0) avgDayWRef.current = { key, avg, frozen: g.frozen }
+  }
+  // The whole war's estimated content width — frozen columns + every day at the
+  // measured average. `null` until there is a measurement (jsdom, first paint).
+  const yearWidth = (): number | null => {
+    const a = avgDayWRef.current
+    return a ? a.frozen + yearMonths.totalDays * a.avg : null
+  }
+  // Where the view's left edge sits in that estimated year space (px): find the
+  // drawn month under the frozen edge from the cached strip geometry, its
+  // fraction scrolled, and turn that into a running day index × the average day
+  // width. Null until measured.
+  const yearXForView = (): number | null => {
+    const wrap = wrapRef.current, g = stripGeoRef.current, a = avgDayWRef.current
+    if (!wrap || !g || !a) return null
+    const viewL = wrap.scrollLeft + g.frozen
+    let si = 0
+    for (let i = 0; i < g.spans.length; i++) if (viewL >= g.spans[i]!.left - 1) si = i
+    const s = g.spans[si]!
+    const monthI = (colWinRef.current?.lo ?? 0) + si
+    const span = s.right - s.left
+    const frac = span > 0 ? Math.min(1, Math.max(0, (viewL - s.left) / span)) : 0
+    const day = (yearMonths.cumBefore[monthI] ?? 0) + frac * (yearMonths.monthDays[monthI] ?? 0)
+    return day * a.avg
   }
 
   // The hot path: no DOM search, no rect read, no forced layout — one
@@ -1807,7 +1908,7 @@ export function Matrix() {
     if (idleRef.current) clearTimeout(idleRef.current)
     idleRef.current = setTimeout(() => { idleRef.current = null; measureWindow(); growColWin() }, SCROLL_REST_MS)
   }
-  useEffect(() => () => { if (idleRef.current) clearTimeout(idleRef.current); stopPump() }, [])
+  useEffect(() => () => { if (idleRef.current) clearTimeout(idleRef.current); if (hbarSettleRef.current) clearTimeout(hbarSettleRef.current); stopPump() }, [])
 
   // The WINDOW half measured when the war changes, since that rebuilds every
   // column — and NOT mid-fling, so it runs directly here. The strip half is
@@ -1833,7 +1934,10 @@ export function Matrix() {
   // stale cache. The strip is re-read straight after, so the readout is right
   // immediately rather than at the next scroll event.
   useLayoutEffect(() => {
-    const remeasure = () => { measureStripGeo(); measureStrip() }
+    // measureHbar/syncHbar too: once the grid is measured the proxy spacer
+    // switches from the drawn-content width to the year estimate, and the thumb
+    // takes its year position.
+    const remeasure = () => { measureStripGeo(); measureStrip(); measureHbar(); syncHbar() }
     remeasure()
     window.addEventListener('resize', remeasure)
     return () => window.removeEventListener('resize', remeasure)

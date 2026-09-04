@@ -5428,5 +5428,21 @@ The contract, in the order a reader meets it:
 - **jsdom draws the whole year** (its rects are 0×0, so the window's lazy
   initialiser sees no layout); the arithmetic is unit-tested and the
   measuring is proved in the browser gate on both projects.
-- The desktop bottom scrollbar spans the DRAWN months; the month strip is
-  the year-level navigation.
+- **The desktop bottom scrollbar is a YEAR-WIDE SCRUBBER** (owner, 4 Sep 26 —
+  "the scroll bar at the bottom keeps adjusting … make it linear … halfway I'm
+  already at the edge"). Because the grid only draws ~2 months, the proxy bar
+  (`.mx-hbar`) whose spacer matched the drawn content spanned only those: its
+  thumb filled the bar, "halfway" was the edge, and it RESIZED every time the
+  window grew. Now the spacer is the whole war at an ESTIMATED width — the
+  frozen columns plus every day at a measured average day-column width, cached
+  by war+zoom (`avgDayWRef`) so it holds still as months draw — and the thumb is
+  year-proportional and stable. Dragging it NAVIGATES: the month strip lights up
+  live under the thumb (`paintInView`, a class toggle, no React tree), and the
+  grid JUMPS to the dragged-to day once the drag rests (110 ms), through the
+  same `jumpTo` the month buttons use. It jumps rather than scrolls smoothly on
+  purpose — drawing a month is the expensive act the window rations, so
+  redrawing every month dragged across would undo Phase 2. The bar follows the
+  grid too (`syncHbar` → `yearXForView`, suppressed for 250 ms after a drag so
+  the jump does not yank the thumb from under the finger). Desktop only — the
+  phone finger-scrolls the grid and shows no proxy bar. Pinned in the e2e as
+  "a stable, year-wide scrubber that jumps the grid".
