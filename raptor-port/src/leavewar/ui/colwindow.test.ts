@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { clampWin, growAtRest, inWindow, runway, visibleSpan, windowAround, WINDOW_FROM_MONTHS } from './colwindow'
+import { clampWin, fillStep, growAtRest, inWindow, isFullYear, runway, visibleSpan, windowAround, WINDOW_FROM_MONTHS } from './colwindow'
 
 // The column window's arithmetic, proved here because jsdom lays nothing out:
 // the browser gate (e2e/leavewar.spec.ts) proves the measuring and the
@@ -63,6 +63,28 @@ describe('growAtRest', () => {
   it('never leaves the war', () => {
     expect(growAtRest({ lo: 10, hi: 11 }, 12, { visLo: 11, visHi: 11, atLeftBound: false }, fine)).toEqual({ lo: 10, hi: 11 })
     expect(growAtRest({ lo: 0, hi: 2 }, 12, { visLo: 0, visHi: 0, atLeftBound: true }, coarse)).toEqual({ lo: 0, hi: 2 })
+  })
+})
+
+describe('fillStep / isFullYear (the desktop background fill)', () => {
+  it('grows the right edge first, then the left, one month at a time', () => {
+    // open window {0,1}: fill rightward to the end of the year
+    expect(fillStep({ lo: 0, hi: 1 }, 12)).toEqual({ lo: 0, hi: 2 })
+    expect(fillStep({ lo: 0, hi: 10 }, 12)).toEqual({ lo: 0, hi: 11 })
+    // right edge done, left edge still short (after a mid-year jump): grow left
+    expect(fillStep({ lo: 5, hi: 11 }, 12)).toEqual({ lo: 4, hi: 11 })
+    expect(fillStep({ lo: 1, hi: 11 }, 12)).toEqual({ lo: 0, hi: 11 })
+  })
+  it('is a no-op once the whole year is drawn', () => {
+    expect(fillStep({ lo: 0, hi: 11 }, 12)).toEqual({ lo: 0, hi: 11 })
+    expect(isFullYear({ lo: 0, hi: 11 }, 12)).toBe(true)
+    expect(isFullYear({ lo: 0, hi: 10 }, 12)).toBe(false)
+    expect(isFullYear({ lo: 1, hi: 11 }, 12)).toBe(false)
+  })
+  it('converges on the full year from any window in monthCount-1 steps at most', () => {
+    let w = { lo: 4, hi: 5 }
+    for (let i = 0; i < 12; i++) w = fillStep(w, 12)
+    expect(w).toEqual({ lo: 0, hi: 11 })
   })
 })
 

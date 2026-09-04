@@ -1553,6 +1553,31 @@ subscribers.
   a panel): keep the CONTROL's own screen position invariant to the content it
   changes — reserve the space, or anchor the growth away from the control.
   Pin: `rangepicker.test.tsx` (constant row count across months).
+- **The Leave War year grid: PHONE windows, DESKTOP fills the whole year**
+  (owner, 3–4 Sep 26, three asks in a row — "make it linear" (the year-wide
+  scrollbar), then "the scroll is not smooth … it freezes when I scroll … make
+  the grid animation smooth" → he chose "fill in the background" over "draw it
+  all up front" or "leave it fast"). The grid draws WHOLE MONTHS at real widths,
+  never fixed-width spacers (a census found 22 distinct day-column widths, so an
+  estimate would hop content under the finger). The fast open draws two months;
+  then on DESKTOP ONLY the window widens one month per idle beat
+  (`requestIdleCallback`, `colwindow.ts fillStep`/`isFullYear`) until the whole
+  year is drawn, so scrolling then runs over real columns and the bottom
+  scrollbar SLIDES the grid instead of jumping. On desktop `growColWin` NEVER
+  prunes (grow-only) so the fill isn't undone; the PHONE keeps `growAtRest`'s
+  grow-and-prune runway — the window exists because a phone can't hold the year
+  and stay smooth. The owner traded a HEAVIER full-year desktop DOM for the
+  smooth scroll: do NOT "re-optimize" by re-windowing the desktop grid or
+  re-enabling its prune, and do NOT make the phone fill the year. The bottom
+  scrollbar is a YEAR-WIDE scrubber whose spacer is the war at an estimated
+  average day-width (`avgDayWRef`, cached by war+zoom) so the thumb holds still
+  as months draw; it JUMPS on release while months are still filling and SLIDES
+  once the year is whole. Drawing a month is the expensive act — a far JUMP taken
+  before the fill finishes still costs one rebuild (HANDOFF item (a), the one
+  still-open perf item). Detail: `docs/ui-contracts.md` §The Leave War grid draws
+  a window of months; HANDOFF item (d). Pins: `colwindow.test.ts`,
+  e2e "a year-wide scrubber; the desktop grid fills the whole year and the bar
+  then slides it".
 
 ## Where things live
 

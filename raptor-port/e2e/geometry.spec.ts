@@ -2209,11 +2209,16 @@ test('the top bar wears the edit tint on Edit Schedule only', async ({ page }) =
   expect(await bg(), 'and View-only keeps the neutral bar').toBe(view)
 })
 
-test('the Leave War desktop grid grows a fixed, year-wide bottom scrollbar that navigates it', async ({ page }) => {
+test('the Leave War desktop grid grows a fixed, year-wide bottom scrollbar that slides it', async ({ page }) => {
   await page.setViewportSize(DESK)
   await login(page); await go(page, 'leavewar')
   await page.waitForSelector('.mx-wrap')
-  await page.waitForTimeout(1000) // let the column window measure so the spacer is the year estimate
+  /* the background fill (owner, 4 Sep 26) draws the whole year a beat after the
+     fast open — wait for it so the scroll is over real columns end to end */
+  await expect.poll(async () => page.evaluate(() =>
+    new Set([...document.querySelectorAll('.mx-wrap .mxhead th[data-testid^="head-"]')]
+      .map(e => (e as HTMLElement).dataset.testid!.slice(5, 12))).size
+  ), { timeout: 9000 }).toBe(12)
   /* scroll the PAGE down so the grid's own scrollbar is below the fold */
   await page.evaluate(() => window.scrollBy(0, 400))
   await page.waitForTimeout(200)
@@ -2221,23 +2226,27 @@ test('the Leave War desktop grid grows a fixed, year-wide bottom scrollbar that 
     const el = document.querySelector('.mx-hbar')
     if (!el) return null
     const r = el.getBoundingClientRect()
-    return { bottom: Math.round(r.bottom), vh: window.innerHeight, hs: el.scrollWidth, ws: document.querySelector('.mx-wrap')!.scrollWidth }
+    return { bottom: Math.round(r.bottom), vh: window.innerHeight, hs: el.scrollWidth, cw: el.clientWidth }
   })
   expect(m, 'the proxy scrollbar appears').toBeTruthy()
   expect(m!.bottom, 'pinned to the foot of the screen').toBe(m!.vh)
-  /* it is a YEAR-WIDE scrubber (Phase-2 follow-up, 4 Sep 26): the spacer spans
-     the whole war, not the ~2 drawn months, so the thumb is year-proportional */
-  expect(m!.hs, 'the scrubber spans the whole war, not the drawn window').toBeGreaterThan(m!.ws * 1.5)
-  /* dragging it NAVIGATES the grid — a jump at rest, not a 1:1 scroll */
+  /* it is a YEAR-WIDE scrubber: the spacer spans the whole war, many viewports
+     wide, so the thumb is a small year-proportional slice, not most of the bar */
+  expect(m!.hs, 'the scrubber spans the whole year, not one viewport').toBeGreaterThan(m!.cw * 3)
+  /* once the year is drawn, dragging the bar SLIDES the grid to the same
+     fraction of its range (not a jump-on-release) */
   await page.evaluate(() => {
     const h = document.querySelector('.mx-hbar') as HTMLElement
     h.scrollLeft = Math.round((h.scrollWidth - h.clientWidth) * 0.5)
     h.dispatchEvent(new Event('scroll'))
   })
-  await expect.poll(async () => page.evaluate(() =>
-    [...document.querySelectorAll('.mx-wrap .mxhead th[data-testid^="head-"]')]
-      .some(e => { const k = (e as HTMLElement).dataset.testid!.slice(5, 12); return k >= '2026-05' && k <= '2026-08' })
-  ), { timeout: 4000 }).toBe(true)
+  const frac = await page.evaluate(() => {
+    const w = document.querySelector('.mx-wrap') as HTMLElement
+    const max = w.scrollWidth - w.clientWidth
+    return max > 0 ? w.scrollLeft / max : 0
+  })
+  expect(frac, 'the grid slid to about mid-year').toBeGreaterThan(0.4)
+  expect(frac, 'the grid slid to about mid-year').toBeLessThan(0.6)
   /* and it never leaks onto the Raptor pages */
   await go(page, 'viewsched')
   expect(await page.$('.mx-hbar'), 'gone off the Leave War page').toBeFalsy()

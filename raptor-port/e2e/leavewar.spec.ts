@@ -1925,16 +1925,32 @@ test('the lit month follows a real scroll', async ({ page }) => {
     }, undefined, { polling: 'raf', timeout: 5000 })
   }
 
+  // On desktop the window fills the whole year in the background (owner, 4 Sep
+  // 26) and grows/re-centres while it does; wait for the drawn-month set to stop
+  // changing before reading "the first drawn month", or a jump followed by a
+  // scroll reads a moving target. On the phone (no fill) this settles at once.
+  const windowSettle = async () => {
+    await page.waitForFunction(() => {
+      const n = new Set([...document.querySelectorAll('.mx-wrap .mxhead th[data-testid^="head-"]')]
+        .map(e => (e as HTMLElement).dataset.testid!.slice(5, 12))).size
+      const w = window as unknown as { __mn?: number; __mc?: number }
+      if (n === w.__mn) w.__mc = (w.__mc ?? 0) + 1
+      else { w.__mc = 0; w.__mn = n }
+      return (w.__mc ?? 0) >= 30 // ~half a second of no growth — past an idle-fill beat
+    }, undefined, { polling: 'raf', timeout: 9000 })
+  }
+
   // Jumping is the fastest honest way to move a long distance, and it is the
   // control the strip belongs to: pressing SEP must leave SEP lit.
   await page.locator('[data-testid="month-SEP"]').click()
+  await windowSettle()
   await settle()
   expect(await litMonths(page)).toEqual(['SEP'])
 
   // And a plain drag of the scroller, which no button was involved in.
-  // The scroller spans the DRAWN months (colwindow.ts): scrolling to 0 lands
-  // on the window's first month, not January — read which off the header,
-  // then the readout must agree with a real scroll to each bound.
+  // Scrolling to 0 lands on the window's FIRST drawn month — January once the
+  // desktop fill is done, the window's first month on the phone — read which off
+  // the header, then the readout must agree with a real scroll to that bound.
   const firstDrawn = () => page.evaluate(() => {
     const th = document.querySelector('.mx-wrap .mxhead th[data-testid^="head-"]') as HTMLElement
     return ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'][Number(th.dataset.testid!.slice(10, 12)) - 1]
@@ -2652,59 +2668,60 @@ test('the grid draws a window of months, keeps every row aligned, and grows at r
   expect((await read()).misaligned).toBe(0)
 })
 
-// ---- the year-wide bottom scrollbar (owner, 4 Sep 26) ---------------------
-// With the column window drawing ~2 months, the desktop bottom scrollbar's
-// spacer spanned only those, so its thumb filled the bar, "halfway" was the
-// edge, and it resized as the window grew. It is now a YEAR-wide scrubber: the
-// spacer is the whole war at an estimated width, so the thumb is
-// year-proportional and holds still; dragging it jumps the grid to the
-// dragged-to month. Desktop only — the phone has no proxy bar.
-test('the bottom scrollbar is a stable, year-wide scrubber that jumps the grid', async ({ page }) => {
+// ---- the year-wide bottom scrollbar, and the background fill (owner, 4 Sep 26)
+// The desktop bottom bar is a YEAR-wide scrubber: its spacer is the whole war at
+// an estimated width, so the thumb is year-proportional and holds still as the
+// window grows. Since the "fill in the background" ask (4 Sep 26) the grid also
+// widens its drawn window one month per idle beat after the fast open until the
+// WHOLE year is drawn — so a beat later the reader scrolls real columns end to
+// end, and the bar SLIDES the grid instead of jumping on release. Desktop only —
+// the phone keeps the lazy runway window and has no proxy bar.
+test('the bottom scrollbar is a year-wide scrubber; the desktop grid fills the whole year and the bar then slides it', async ({ page }) => {
   desktopOnly()
   const bar = page.locator('.mx-hbar')
   await expect(bar).toBeVisible()
 
-  // The set of whole months the grid has actually DRAWN — the real navigation,
-  // read off the header testids (not the live strip highlight, which lights the
-  // instant you drag, a beat before the jump lands).
-  const drawn = () => page.evaluate(() =>
+  const drawnMonths = () => page.evaluate(() =>
     [...new Set([...document.querySelectorAll('#page-leavewar .mx-wrap .mxhead th[data-testid^="head-"]')]
       .map(e => (e as HTMLElement).dataset.testid!.slice(5, 12)))])
-  const spacer = () => bar.evaluate(el => el.scrollWidth)
-  const wrapContent = () => page.evaluate(() => document.querySelector<HTMLElement>('#page-leavewar .mx-wrap')!.scrollWidth)
 
-  // The scrubber spans far more than the drawn window (the whole year), so its
-  // thumb is a small fraction of the bar, not most of it.
-  const yearW = await spacer()
-  expect(yearW).toBeGreaterThan((await wrapContent()) * 1.8)
+  // The thumb is year-proportional: the viewport is a small slice of the whole
+  // year, so clientWidth is a small fraction of the bar's scrollWidth.
+  expect(await bar.evaluate(el => el.clientWidth / el.scrollWidth)).toBeLessThan(0.3)
 
+  // The background fill draws the whole year (twelve months) a beat after open.
+  await expect.poll(async () => (await drawnMonths()).length, { timeout: 9000 }).toBe(12)
+
+  // Once the year is drawn the bar SLIDES the grid: a drag to a fraction moves
+  // the grid's own scroll to the same fraction of its range, immediately (no
+  // jump-on-release settle). Read the grid's scroll fraction right after.
   const dragTo = (frac: number) => bar.evaluate((el, f) => {
     el.scrollLeft = Math.round((el.scrollWidth - el.clientWidth) * f)
     el.dispatchEvent(new Event('scroll'))
   }, frac)
+  const gridFrac = () => page.evaluate(() => {
+    const w = document.querySelector<HTMLElement>('#page-leavewar .mx-wrap')!
+    const max = w.scrollWidth - w.clientWidth
+    return max > 0 ? w.scrollLeft / max : 0
+  })
 
-  // Middle of the bar → the grid jumps to mid-year (June/July), and the spacer
-  // is UNCHANGED (a thumb that no longer resizes as months draw).
   await dragTo(0.5)
-  await expect.poll(async () => (await drawn()).some(m => m === '2026-06' || m === '2026-07'), { timeout: 4000 }).toBe(true)
-  expect(await drawn()).not.toContain('2026-01')
-  expect(await spacer()).toBe(yearW)
+  expect(await gridFrac()).toBeGreaterThan(0.4)
+  expect(await gridFrac()).toBeLessThan(0.6)
 
-  // Near the far right → a late month; still the same spacer.
   await dragTo(0.92)
-  await expect.poll(async () => (await drawn()).some(m => m >= '2026-10'), { timeout: 4000 }).toBe(true)
-  expect(await spacer()).toBe(yearW)
+  expect(await gridFrac()).toBeGreaterThan(0.85)
 
-  // Back to the left edge → January is drawn again.
   await dragTo(0)
-  await expect.poll(async () => (await drawn()).includes('2026-01'), { timeout: 4000 }).toBe(true)
+  expect(await gridFrac()).toBeLessThan(0.05)
+  // January is at the frozen edge again.
+  await expect.poll(() => page.locator('[data-testid="head-2026-01-01"]').count(), { timeout: 4000 }).toBe(1)
 
   // Reverse: driving the grid by the month strip moves the thumb to match —
   // September sits about three-quarters along the year.
   await page.locator('[data-testid="month-SEP"]').click()
-  await expect.poll(() => page.locator('[data-testid="head-2026-09-01"]').count(), { timeout: 4000 }).toBe(1)
-  await expect.poll(() => bar.evaluate(el => Math.round((el.scrollLeft / (el.scrollWidth - el.clientWidth)) * 100)), { timeout: 4000 })
-    .toBeGreaterThan(60)
+  await expect.poll(() => bar.evaluate(el => (el.scrollLeft / (el.scrollWidth - el.clientWidth))), { timeout: 4000 })
+    .toBeGreaterThan(0.6)
   const f = await bar.evaluate(el => el.scrollLeft / (el.scrollWidth - el.clientWidth))
   expect(f).toBeLessThan(0.85)
 })

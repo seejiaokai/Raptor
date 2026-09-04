@@ -56,6 +56,27 @@ export function inWindow(w: ColWin | null, month: number): boolean {
   return !w || (month >= w.lo && month <= w.hi)
 }
 
+/** Is the whole year drawn? — the desktop background fill's stop condition. */
+export function isFullYear(w: ColWin, monthCount: number): boolean {
+  return w.lo === 0 && w.hi === monthCount - 1
+}
+
+/** One step of the desktop background fill (owner, 4 Sep 26 — "fill in the
+ *  background"): widen the window by a SINGLE month toward the whole year, so
+ *  the reader can scroll it smoothly a beat after the fast first open. The
+ *  RIGHT edge grows first (the common forward-scroll direction), then the left;
+ *  returns the same window once the year is fully drawn. One month per idle beat
+ *  is the whole point — each added month is a small, non-blocking layout instead
+ *  of the one big freeze a jump to a far month costs. Desktop only: the phone
+ *  keeps the lazy runway window (`growAtRest`), whose reason to exist is that
+ *  its perf budget cannot hold the whole year at once. */
+export function fillStep(w: ColWin, monthCount: number): ColWin {
+  const last = monthCount - 1
+  if (w.hi < last) return { lo: w.lo, hi: w.hi + 1 }
+  if (w.lo > 0) return { lo: w.lo - 1, hi: w.hi }
+  return w
+}
+
 /**
  * The window after a scroll comes to REST, given which drawn months are on
  * screen. Grows toward the runway, shrinks past it — and never mid-scroll:

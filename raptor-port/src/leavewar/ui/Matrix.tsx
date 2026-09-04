@@ -55,7 +55,7 @@ import { ManningSheet } from './ManningSheet'
 import { EventRows } from './EventRows'
 import { EventSheet } from './EventSheet'
 import { monthInView } from './monthview'
-import { clampWin, growAtRest, runway, visibleSpan, windowAround, WINDOW_FROM_MONTHS, type ColWin } from './colwindow'
+import { clampWin, fillStep, growAtRest, isFullYear, runway, visibleSpan, windowAround, WINDOW_FROM_MONTHS, type ColWin } from './colwindow'
 import { wireSelect, wireMove, daysBetween, paintLanding, clearLanding, paintEventLanding, eventMoveDateAt, earliestDate, type Cell, type Selection, type SelectCtx } from './select'
 import { SettingsSheet } from './SettingsSheet'
 import { groupColorOf, inkFor } from './groupColor'
@@ -1463,12 +1463,27 @@ export function Matrix() {
     if (hbarWantRef.current != null && Math.abs(h.scrollLeft - hbarWantRef.current) <= 1) { hbarWantRef.current = null; return }
     hbarWantRef.current = null
     hbarUserTsRef.current = Date.now()
+    // Once the whole year is drawn — the background fill has finished, or a short
+    // war draws whole — every column is real, so the bar SLIDES the grid instead
+    // of jumping on release: map the bar's year-space position straight onto the
+    // grid's real scroll and let the grid's own scroll handler light the strip.
+    // No month to draw, so there is nothing to ration; syncHbar is suppressed for
+    // 250ms after this (hbarUserTsRef) so the grid never writes the thumb back
+    // under the finger.
+    const win = colWinRef.current
+    const wrap = wrapRef.current
+    if (wrap && (!win || isFullYear(win, months.length))) {
+      const hMax = h.scrollWidth - h.clientWidth
+      const wMax = wrap.scrollWidth - wrap.clientWidth
+      wrap.scrollLeft = hMax > 0 ? Math.round((h.scrollLeft / hMax) * wMax) : 0
+      return
+    }
     const day = Math.min(yearMonths.totalDays - 1, Math.max(0, Math.round(h.scrollLeft / a.avg)))
     const date = period.days[day]?.date
     if (!date) return
     // Live "where you'll land" — a class toggle on the strip, no React tree.
     paintInView(months[monthIndexOf(date)]?.label ?? null)
-    // Draw + land once the drag rests, not on every pixel of it.
+    // Not fully drawn yet: draw + land once the drag rests, not on every pixel.
     if (hbarSettleRef.current) clearTimeout(hbarSettleRef.current)
     hbarSettleRef.current = setTimeout(() => { hbarSettleRef.current = null; jumpTo(date) }, 110)
   }
@@ -1836,12 +1851,17 @@ export function Matrix() {
       { visLo: win.lo + vis.visLo, visHi: win.lo + vis.visHi, atLeftBound: sl < 2 },
       { coarse, ...runway(coarse) },
     )
-    if (next.lo === win.lo && next.hi === win.hi) return
-    if (next.lo !== win.lo) {
+    // On desktop the background fill below is drawing the whole year, so this
+    // only ever GROWS the window (covering a fast scroll's view at once) — it
+    // must never prune a month the fill just added, or the two would fight. The
+    // phone keeps growAtRest's prune: its perf budget can't hold the year.
+    const grown = phone ? next : { lo: Math.min(next.lo, win.lo), hi: Math.max(next.hi, win.hi) }
+    if (grown.lo === win.lo && grown.hi === win.hi) return
+    if (grown.lo !== win.lo) {
       anchorRef.current = anchorNow(wrap)
       colShiftRef.current = true
     }
-    setColWin(next)
+    setColWin(grown)
   }
 
   const measureWindow = () => {
@@ -1882,7 +1902,12 @@ export function Matrix() {
   // the scroll comes to rest — never under a moving finger.
   const SCROLL_REST_MS = 120
   const idleRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  // When the grid was last scrolled — the background fill waits for this to go
+  // quiet before drawing a month, so a fill draw never lands under a moving
+  // scroll (which is the very freeze this whole thing exists to avoid).
+  const lastScrollTsRef = useRef(0)
   const onWrapScroll = () => {
+    lastScrollTsRef.current = Date.now()
     // The frozen-column overlay sits ON TOP of the real columns. At rest
     // (scrollLeft 0) it must let a tap fall THROUGH to the real cell beneath —
     // that cell still carries the handler, the testid and the focus seat — so
@@ -1924,6 +1949,56 @@ export function Matrix() {
     return () => clearTimeout(t)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [period.id, drawnDates.length])
+
+  // BACKGROUND FILL (owner, 4 Sep 26 — "fill in the background", after the fast
+  // window still caught on a fresh draw as he scrolled). The open still draws
+  // two months; then, on DESKTOP only, this quietly widens the drawn window one
+  // month per idle beat until the whole year is up — so a beat later the reader
+  // scrolls real columns end to end with no catch, and the bottom scrollbar can
+  // slide instead of jump (see onHbarScroll). requestIdleCallback runs each step
+  // only when the main thread is free, so it self-pauses under an active scroll
+  // and never competes with a paint; a scroll within the last SCROLL_REST_MS
+  // holds it off too (the belt for the setTimeout fallback on browsers with no
+  // requestIdleCallback). The PHONE keeps the lazy runway window — the reason
+  // the window exists at all is that a phone can't hold the year and stay smooth.
+  // Re-runs on every window change, so it resumes after a month-strip / scrollbar
+  // JUMP shrinks the window, and stops the instant the year is whole. jsdom lays
+  // nothing out, so colWin is null (draw-whole) and this no-ops — the browser
+  // gate proves it. Once full, the grid is the ~full-year DOM again: heavier than
+  // the windowed grid, the cost the owner accepted for a smooth scroll.
+  const fillIdleRef = useRef<number | null>(null)
+  useEffect(() => {
+    if (phone || !colWin || isFullYear(colWin, months.length)) return
+    let live = true
+    const rideIdle = (fn: () => void): number =>
+      typeof (window as { requestIdleCallback?: unknown }).requestIdleCallback === 'function'
+        ? (window as unknown as { requestIdleCallback: (cb: () => void, o: { timeout: number }) => number }).requestIdleCallback(fn, { timeout: 500 })
+        : (window.setTimeout(fn, 48) as unknown as number)
+    const dropIdle = (id: number) =>
+      typeof (window as { cancelIdleCallback?: unknown }).cancelIdleCallback === 'function'
+        ? (window as unknown as { cancelIdleCallback: (id: number) => void }).cancelIdleCallback(id)
+        : clearTimeout(id)
+    const tick = () => {
+      if (!live) return
+      // Let a moving scroll settle first — a draw under the finger IS the freeze.
+      if (Date.now() - lastScrollTsRef.current < SCROLL_REST_MS + 40) { fillIdleRef.current = rideIdle(tick); return }
+      const win = colWinRef.current
+      if (!win) return
+      const next = fillStep(win, months.length)
+      if (next.lo === win.lo && next.hi === win.hi) return
+      // A month added on the LEFT shifts the content; keep the reader's column in
+      // place with the same anchor the grow / jump paths use (invisible at rest).
+      // At the open lo is already 0, so the common rightward fill writes none.
+      if (next.lo < win.lo) {
+        const wrap = wrapRef.current
+        if (wrap) { anchorRef.current = anchorNow(wrap); colShiftRef.current = true }
+      }
+      setColWin(next) // re-runs this effect for the next month
+    }
+    fillIdleRef.current = rideIdle(tick)
+    return () => { live = false; if (fillIdleRef.current != null) { dropIdle(fillIdleRef.current); fillIdleRef.current = null } }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [phone, colWin?.lo, colWin?.hi, months.length])
 
   // Everything else that moves a column edge, and so invalidates the cached
   // strip geometry: a zoom step (every width changes), a row-set reflow (the

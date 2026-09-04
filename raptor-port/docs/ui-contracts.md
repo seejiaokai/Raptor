@@ -5428,6 +5428,24 @@ The contract, in the order a reader meets it:
 - **jsdom draws the whole year** (its rects are 0×0, so the window's lazy
   initialiser sees no layout); the arithmetic is unit-tested and the
   measuring is proved in the browser gate on both projects.
+- **DESKTOP fills the whole year in the background** (owner, 4 Sep 26 — "the
+  scroll is not smooth … it freezes when I scroll … make the grid animation
+  smooth"). The fast open still draws two months; then, ON DESKTOP ONLY, the
+  window widens ONE MONTH PER IDLE BEAT (`requestIdleCallback`, `fillStep` in
+  `colwindow.ts`) until the whole year is drawn — so a beat later the reader
+  scrolls real columns end to end with no catch. Each added month is a small,
+  non-blocking layout instead of the one big freeze a jump to a far month costs;
+  the idle callback self-pauses under an active scroll, and a scroll within the
+  last rest window holds it off too (the belt for the setTimeout fallback). To
+  keep the two from fighting, `growColWin` NEVER PRUNES on desktop (it only ever
+  grows the view's columns at once for a fast scroll); the PHONE keeps
+  `growAtRest`'s grow-and-prune runway, because a phone can't hold the year and
+  stay smooth — that is the whole reason the window exists. Once full the grid is
+  the ~full-year DOM again (heavier than the windowed grid — the cost the owner
+  accepted for a smooth scroll); scrolling it is native and smooth, and the only
+  rest-time repaint left is the posted-out row-window crossing (rare, and ~0 in a
+  realistic month-by-month sweep — measured 0 of 24 rests over 100 ms). A far
+  JUMP taken BEFORE the fill finishes still costs its one rebuild.
 - **The desktop bottom scrollbar is a YEAR-WIDE SCRUBBER** (owner, 4 Sep 26 —
   "the scroll bar at the bottom keeps adjusting … make it linear … halfway I'm
   already at the edge"). Because the grid only draws ~2 months, the proxy bar
@@ -5439,10 +5457,13 @@ The contract, in the order a reader meets it:
   year-proportional and stable. Dragging it NAVIGATES: the month strip lights up
   live under the thumb (`paintInView`, a class toggle, no React tree), and the
   grid JUMPS to the dragged-to day once the drag rests (110 ms), through the
-  same `jumpTo` the month buttons use. It jumps rather than scrolls smoothly on
-  purpose — drawing a month is the expensive act the window rations, so
-  redrawing every month dragged across would undo Phase 2. The bar follows the
-  grid too (`syncHbar` → `yearXForView`, suppressed for 250 ms after a drag so
-  the jump does not yank the thumb from under the finger). Desktop only — the
-  phone finger-scrolls the grid and shows no proxy bar. Pinned in the e2e as
-  "a stable, year-wide scrubber that jumps the grid".
+  same `jumpTo` the month buttons use — but ONLY while months are still filling
+  in. Once the whole year is drawn (the background fill above has finished, or a
+  short war draws whole) the bar SLIDES the grid instead: it maps the bar's
+  year-space position straight onto the grid's real scroll and lets the grid's
+  own scroll handler light the strip — every column is real, so there is nothing
+  to draw and nothing to ration. The bar follows the grid too (`syncHbar` →
+  `yearXForView`, suppressed for 250 ms after a drag so a jump/slide does not
+  yank the thumb from under the finger). Desktop only — the phone finger-scrolls
+  the grid and shows no proxy bar. Pinned in the e2e as "a year-wide scrubber;
+  the desktop grid fills the whole year and the bar then slides it".
