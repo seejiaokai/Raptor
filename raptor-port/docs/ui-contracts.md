@@ -5416,8 +5416,11 @@ The contract, in the order a reader meets it:
   off a mockup of four scrolling styles). One empty cell before the first
   drawn day and one after the last, in EVERY row (header, brackets, fills,
   counts, events, roster), each exactly as wide as the undrawn months it
-  stands in for (`.lwph`, width from two CSS variables Matrix writes on
-  `.mx-outer` — `applyPlaceholders` — never React state). A faint diagonal
+  stands in for (`.lwph`, width written as an INLINE style on each cell —
+  `applyPlaceholders`, plus a mount hook so a cell that appears later takes
+  the current width — never React state, and since 6 Sep 26 never a CSS
+  variable on `.mx-outer`: a custom property changing on the grid's ancestor
+  re-styled all ~7,000 elements under it on every month draw). A faint diagonal
   hatch marks a placeholder for the beat before its month lands. A month's
   width is MEASURED once it has been drawn and kept by war+zoom
   (`monthPxRef`), so a pruned month's placeholder is exactly its width and

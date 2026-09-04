@@ -1572,8 +1572,14 @@ subscribers.
   its MEASURED width in the placeholder (`monthPxRef`, by war+zoom), so
   re-drawing it moves nothing; a still-estimated month is drawn LEFT of the view
   only at rest, under the anchor correction (`colwindow.ts stepAllowedInMotion`);
-  to the RIGHT an estimate is harmless. The placeholder widths are two CSS
-  variables written on `.mx-outer` (`applyPlaceholders`), never React state.
+  to the RIGHT an estimate is harmless. The placeholder widths are INLINE
+  styles written on the placeholder cells themselves (`applyPlaceholders` +
+  a mount hook per cell), never React state — and, since 6 Sep 26, never a
+  CSS custom property on `.mx-outer` or any other ancestor of the grid: the
+  browser re-styles EVERY element under the element whose custom property
+  changed (~7,000 here, ~0.4–0.8s on the slow laptop, measured), and it was
+  happening on every month draw. Same rule for `--lwx-max`, which now lives
+  on the frozen bar's own box.
   EVERY row carries the same cells, header included — the 20 Aug column
   virtualisation that misaligned on the owner's iPhone gave SOME rows colSpan
   spacers over full header columns, and WebKit reconciles rows of differing cell
@@ -1604,7 +1610,13 @@ subscribers.
   store (it would repaint the grid on every tab show), do NOT drop the idle gate on
   the hidden draw, do NOT make the phone keep the whole year, do NOT prune or draw
   an estimated-width month left of the view mid-scroll, and do NOT give any row a
-  different cell structure from the header. The bottom scrollbar is a plain proxy
+  different cell structure from the header. Three more from the 6 Sep 26
+  measurement round (each traced on the built bundle at 4× CPU, HANDOFF item
+  (d)): keep `PersonRow`'s day cells as one memoised `PersonMonth` per month
+  (rendering them inline re-reconciled all ~21,000 cells on every month draw);
+  keep `.mx tbody tr { position: relative }` (each row its own paint layer — a
+  single-cell change repaints in ~8 ms instead of the whole grid's ~230 ms);
+  and never write a CSS custom property on an ancestor of the grid from JS. The bottom scrollbar is a plain proxy
   of the year-wide scroller again: its spacer is the grid's scrollWidth and a drag
   SLIDES the grid at any time, the fill drawing the months under the view as it
   goes (the 4 Sep jump-on-release is gone with the estimated year space).

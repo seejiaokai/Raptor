@@ -1,4 +1,4 @@
-import { Fragment, memo, useEffect, useLayoutEffect, useMemo, useRef, useState, type MutableRefObject, type PointerEvent as ReactPointerEvent, type TouchEvent } from 'react'
+import { Fragment, memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type MutableRefObject, type PointerEvent as ReactPointerEvent, type RefCallback, type TouchEvent } from 'react'
 import {
   addDays,
   balanceOf,
@@ -211,8 +211,10 @@ type PersonRowProps = {
   p: Person
   version: number
   period: Period
-  /** The DRAWN days — the column window's slice of `period.days` (colwindow.ts). */
-  days: DayInfo[]
+  /** The DRAWN days — the column window's slice of `period.days` (colwindow.ts)
+   *  — as one array per month, each keeping its identity while the war's days
+   *  do (Matrix `drawnMonthDays`), so `PersonMonth` can bail out per month. */
+  monthDays: DayInfo[][]
   grid: Grid
   states: States
   role: Role
@@ -231,22 +233,52 @@ type PersonRowProps = {
   api: MutableRefObject<RowApi>
   /** The column window's PLACEHOLDER cells (colwindow.ts, 5 Sep 26): one empty
    *  cell before / after the drawn days standing in for the undrawn months, so
-   *  every row keeps the same column count as the header. Sized by Matrix
-   *  through a CSS variable, never here. */
+   *  every row keeps the same column count as the header. Sized by Matrix,
+   *  never here: `phL`/`phR` are its stable mount hooks that write the width
+   *  straight onto the cell (see `applyPlaceholders`). */
   padL: boolean
   padR: boolean
+  phL: RefCallback<HTMLTableCellElement>
+  phR: RefCallback<HTMLTableCellElement>
 }
 
-const PersonRow = memo(function PersonRow({ p, period, days, grid, states, role, viewer, deciding, movedShown, shown, figureCtx, evKind, lockedCols, quals, me, arranging, dragging, over, api, padL, padR }: PersonRowProps) {
+type PersonMonthProps = {
+  p: Person
+  version: number
+  period: Period
+  /** ONE month's days (a `drawnMonthDays` slice — identity is the memo key). */
+  days: DayInfo[]
+  grid: Grid
+  states: States
+  role: Role
+  viewer: string | null
+  deciding: boolean
+  movedShown: boolean
+  evKind: Map<string, string>
+  lockedCols: Set<string>
+  api: MutableRefObject<RowApi>
+}
+
+// A placeholder cell's width, all three properties so auto table layout can
+// neither widen nor narrow it (Matrix `applyPlaceholders`).
+const setPhWidth = (el: HTMLElement, w: string) => {
+  const s = el.style
+  s.width = w; s.minWidth = w; s.maxWidth = w
+}
+
+const PersonRow = memo(function PersonRow({ p, version, period, monthDays, grid, states, role, viewer, deciding, movedShown, shown, figureCtx, evKind, lockedCols, quals, me, arranging, dragging, over, api, padL, padR, phL, phR }: PersonRowProps) {
   const has = quals.length > 0
-  // The selected figure's value for this person, derived on every render
-  // rather than cached: it has to move the instant a bid is placed, because a
-  // pending bid has been asked for and cannot be asked for twice. A balance
-  // can go negative (shown red, never refused — the squadron's balances
-  // already run negative, §Counters); a consumed figure never does. Every
-  // figure counts across EVERY war, not the one on screen — leave bid in
-  // Jan–Mar still spends against Apr–Jun.
-  const v = shown.value(figureCtx, p.id)
+  // The selected figure's value for this person. It has to move the instant a
+  // bid is placed, because a pending bid has been asked for and cannot be
+  // asked for twice — and every store change bumps `version`, so keying the
+  // memo on it keeps that true while a window step (which re-renders the row
+  // for its new month but changes no figure) no longer walks every war's
+  // ledger for all ~58 rows. A balance can go negative (shown red, never
+  // refused — the squadron's balances already run negative, §Counters); a
+  // consumed figure never does. Every figure counts across EVERY war, not the
+  // one on screen — leave bid in Jan–Mar still spends against Apr–Jun.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const v = useMemo(() => shown.value(figureCtx, p.id), [shown, figureCtx, p.id, version])
   const suffix = shown.kind === 'bal' ? 'remaining, pending bids included' : 'taken'
   return (
     /* `me` lights the VIEWER's own row (owner, 17 Aug 26). While arranging the
@@ -317,7 +349,41 @@ const PersonRow = memo(function PersonRow({ p, period, days, grid, states, role,
       >
         {show(v)}
       </td>
-      {padL && <td className="lwph lwph-l" />}
+      {padL && <td className="lwph lwph-l" ref={phL} />}
+      {/* The day cells, one memoised block PER MONTH (6 Sep 26). A window step
+          adds a month to every row; with the cells rendered inline, React
+          re-reconciled all ~21,000 drawn cells and our per-cell logic re-ran
+          for every one of them — profiled at ~⅔ of a month draw's JS on the
+          slow laptop. Keyed by the month, not the position, so a month added
+          on the LEFT still matches the blocks already drawn. */}
+      {monthDays.map(md => (
+        <PersonMonth
+          key={md[0]!.date}
+          p={p}
+          version={version}
+          period={period}
+          days={md}
+          grid={grid}
+          states={states}
+          role={role}
+          viewer={viewer}
+          deciding={deciding}
+          movedShown={movedShown}
+          evKind={evKind}
+          lockedCols={lockedCols}
+          api={api}
+        />
+      ))}
+      {padR && <td className="lwph lwph-r" ref={phR} />}
+    </tr>
+  )
+})
+
+// One month of a person's day cells. `version` is a memo input only: every
+// store change still repaints every cell through it, exactly as the row did.
+const PersonMonth = memo(function PersonMonth({ p, period, days, grid, states, role, viewer, deciding, movedShown, evKind, lockedCols, api }: PersonMonthProps) {
+  return (
+    <>
       {days.map(d => {
         const code = grid[p.id]?.[d.date] ?? ''
         const here = inSquadron(p, d.date)
@@ -432,8 +498,7 @@ const PersonRow = memo(function PersonRow({ p, period, days, grid, states, role,
           </td>
         )
       })}
-      {padR && <td className="lwph lwph-r" />}
-    </tr>
+    </>
   )
 })
 
@@ -901,6 +966,29 @@ export function Matrix() {
   // differing cell counts differently from Blink; here no row differs.
   const padL = !!colWin && colWin.lo > 0
   const padR = !!colWin && colWin.hi < months.length - 1
+  // The placeholder widths are written STRAIGHT ONTO THE CELLS as inline
+  // styles, not as a CSS variable on an ancestor (traced 6 Sep 26): a custom
+  // property changing on `.mx-outer` — any property, even an unused one —
+  // makes Chrome re-style every element under it, ~7,000 on the full year,
+  // ~0.4–0.8s on the slow laptop, and it was written on EVERY month draw. An
+  // inline width on the ~130 placeholder cells costs ~5ms and re-styles nothing
+  // else. Cells mount and unmount with the rows (row window, folds, the mirror
+  // header), so each registers itself through these stable ref hooks, takes the
+  // current width the moment it mounts, and `applyPlaceholders` rewrites the
+  // registered set when a width changes.
+  const phWRef = useRef<{ l: string; r: string }>({ l: '0px', r: '0px' })
+  const phCellsRef = useRef<{ l: Set<HTMLElement>; r: Set<HTMLElement> }>({ l: new Set(), r: new Set() })
+  const phHook = (side: 'l' | 'r'): RefCallback<HTMLTableCellElement> => el => {
+    if (!el) return
+    const set = phCellsRef.current[side]
+    set.add(el)
+    setPhWidth(el, phWRef.current[side])
+    return () => { set.delete(el) }
+  }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const phL = useCallback(phHook('l'), [])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const phR = useCallback(phHook('r'), [])
   // Each month's MEASURED width (layout px, zoom divided out) once it has been
   // drawn, by war+zoom: a pruned month's placeholder is then exactly as wide as
   // the month, so re-drawing it moves nothing. A month never drawn falls back to
@@ -938,6 +1026,21 @@ export function Matrix() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [colWin?.lo, colWin?.hi, version])
   const drawnDates = useMemo(() => drawnDays.map(d => d.date), [drawnDays])
+  // The drawn days SLICED BY MONTH, each slice keeping its identity for as long
+  // as the war's days do (the cache lives with `version`, like drawnDays):
+  // PersonMonth is memoised on the slice, so a window step re-renders only the
+  // month it adds and every other month's cells bail out at the memo.
+  const monthDaysCache = useMemo(() => new Map<string, DayInfo[]>(), [version])
+  const drawnMonthDays = useMemo(() => {
+    const keys: string[] = []
+    for (const d of drawnDays) { const k = d.date.slice(0, 7); if (keys[keys.length - 1] !== k) keys.push(k) }
+    return keys.map(k => {
+      let s = monthDaysCache.get(k)
+      if (!s) { s = period.days.filter(d => d.date.slice(0, 7) === k); monthDaysCache.set(k, s) }
+      return s
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [drawnDays, monthDaysCache])
   // The day-column slots a full-width row spans: the drawn days plus the
   // placeholder cell on each side that exists.
   const dayCols = drawnDates.length + (padL ? 1 : 0) + (padR ? 1 : 0)
@@ -1440,7 +1543,9 @@ export function Matrix() {
         // make sure the bar knows the grid's travel the instant it appears, so
         // its very first painted frame is already in step; a stale or zero
         // --lwx-max would pin the day columns at the left until the next layout.
-        mxOuterRef.current?.style.setProperty('--lwx-max', String(Math.max(0, (w.scrollWidth - w.clientWidth) / zoom)))
+        // On the bar's own box, not `.mx-outer`: a custom property changing on
+        // the grid's ancestor re-styles the whole grid (see applyPlaceholders).
+        mirrorRef.current.style.setProperty('--lwx-max', String(Math.max(0, (w.scrollWidth - w.clientWidth) / zoom)))
       } else {
         // JS-mirror fallback: start the mirror at the grid's position.
         mirrorRef.current.scrollLeft = w.scrollLeft
@@ -1608,7 +1713,7 @@ export function Matrix() {
           >⠿ {arranging ? 'Rearranging' : 'Rearrange'}</button>
         )}
       </th>
-      {padL && <th className="lwph lwph-l" />}
+      {padL && <th className="lwph lwph-l" ref={phL} />}
       {brackets.map(b => (
         <th key={b.key} className="brakm" data-testid={testids ? `bracket-${b.key}` : undefined} colSpan={b.count}>
           <div className="brakin">
@@ -1616,7 +1721,7 @@ export function Matrix() {
           </div>
         </th>
       ))}
-      {padR && <th className="lwph lwph-r" />}
+      {padR && <th className="lwph lwph-r" ref={phR} />}
     </tr>
   )
 
@@ -1660,7 +1765,7 @@ export function Matrix() {
           </span>
         </button>
       </th>
-      {padL && <th className="lwph lwph-l" />}
+      {padL && <th className="lwph lwph-l" ref={phL} />}
       {drawnDays.map(d => {
         const mon = monthLabel(d.date)
         return (
@@ -1680,7 +1785,7 @@ export function Matrix() {
           </th>
         )
       })}
-      {padR && <th className="lwph lwph-r" />}
+      {padR && <th className="lwph lwph-r" ref={phR} />}
     </tr>
   )
 
@@ -1755,8 +1860,11 @@ export function Matrix() {
     // own zoom, since the transform lands in that table's zoomed local space
     // (mirror render below). It only shifts on a real layout change (resize,
     // zoom, row-window, war), which is exactly when this runs; never per frame.
+    // Written on the bar's own box (null until the bar is stuck — the stuck
+    // effect seeds it then), never on `.mx-outer`: a custom property changing on
+    // the grid's ancestor re-styles the whole grid (see applyPlaceholders).
     if (sdaActive) {
-      mxOuterRef.current?.style.setProperty('--lwx-max', String(Math.max(0, (wrap.scrollWidth - wrap.clientWidth) / zoom)))
+      mirrorRef.current?.style.setProperty('--lwx-max', String(Math.max(0, (wrap.scrollWidth - wrap.clientWidth) / zoom)))
     }
     const wr = wrap.getBoundingClientRect()
     const sl = wrap.scrollLeft
@@ -1836,23 +1944,27 @@ export function Matrix() {
     const a = avgDayWRef.current
     return (a ? a.avg / zoom : 30) * (yearMonths.monthDays[m] ?? 30)
   }
-  // Size the two placeholder cells: the sum of the undrawn months on each side,
-  // written as CSS variables on `.mx-outer` (read by every row's placeholder
-  // cell AND the mirror header's copy — both live inside that box; and React
-  // never sets these properties, so they survive its renders). Runs in the
-  // layout effects below, in the same commit as the window change, so a month
-  // swapping between placeholder and drawn never paints at two widths.
+  // Size the placeholder cells: the sum of the undrawn months on each side,
+  // written as an inline width on every registered placeholder cell (each
+  // row's, and the mirror header's copy) — React never sets a style on these
+  // cells, so the widths survive its renders, and a cell that mounts later
+  // takes the current width through its ref hook (`phL`/`phR` above). Runs in
+  // the layout effects below, in the same commit as the window change, so a
+  // month swapping between placeholder and drawn never paints at two widths.
+  // Skipped when nothing changed: the cells are the only thing touched, but a
+  // no-op write still dirties their style.
   const applyPlaceholders = () => {
-    const outer = mxOuterRef.current
-    if (!outer) return
     const win = colWinRef.current
     let l = 0, r = 0
     if (win) {
       for (let m = 0; m < win.lo; m++) l += monthPx(m)
       for (let m = win.hi + 1; m < months.length; m++) r += monthPx(m)
     }
-    outer.style.setProperty('--lw-ph-l', `${l.toFixed(2)}px`)
-    outer.style.setProperty('--lw-ph-r', `${r.toFixed(2)}px`)
+    const next = { l: `${l.toFixed(2)}px`, r: `${r.toFixed(2)}px` }
+    const prev = phWRef.current
+    phWRef.current = next
+    if (next.l !== prev.l) for (const el of phCellsRef.current.l) setPhWidth(el, next.l)
+    if (next.r !== prev.r) for (const el of phCellsRef.current.r) setPhWidth(el, next.r)
   }
 
   // The hot path: no DOM search, no rect read, no forced layout — one
@@ -2699,6 +2811,8 @@ export function Matrix() {
                 dragAfter={dragAfter}
                 padL={padL}
                 padR={padR}
+                phL={phL}
+                phR={phR}
               />
             )}
             {/* The month strip, now a row of the grid so it sits between the
@@ -2765,6 +2879,8 @@ export function Matrix() {
               onEdit={(line, date) => setEventEdit({ line, date })}
               padL={padL}
               padR={padR}
+              phL={phL}
+              phR={phR}
             />
             <tbody className="mxbody" ref={rosterBodyRef}>
               {(() => {
@@ -2874,7 +2990,7 @@ export function Matrix() {
                         p={p}
                         version={version}
                         period={period}
-                        days={drawnDays}
+                        monthDays={drawnMonthDays}
                         grid={grid}
                         states={states}
                         role={role}
@@ -2893,6 +3009,8 @@ export function Matrix() {
                         api={rowApi}
                         padL={padL}
                         padR={padR}
+                        phL={phL}
+                        phR={phR}
                       />
                     </Fragment>
                   )

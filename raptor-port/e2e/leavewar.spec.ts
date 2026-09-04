@@ -2664,7 +2664,21 @@ test('the grid draws a window of months over year-wide placeholders, keeps every
       .filter(tr => !tr.classList.contains('grp') && !tr.classList.contains('catsub') && !tr.classList.contains('mbrak'))
     const misaligned = rows.filter(tr => [...tr.children].reduce((n, c) => n + ((c as HTMLTableCellElement).colSpan || 1), 0) !== 2 + heads.length + ph).length
     const w = document.querySelector<HTMLElement>('.mx-wrap')!
-    return { months, heads: heads.length, ph, phl, misaligned, rows: rows.length, scrollW: w.scrollWidth, clientW: w.clientWidth }
+    // the placeholder width is an INLINE style per cell (6 Sep 26 — a CSS
+    // variable on the grid's ancestor re-styled the whole grid every draw), so
+    // every row's placeholder must measure exactly the header's, rows mounted
+    // after the last write included
+    let phMismatch = 0
+    for (const side of ['l', 'r']) {
+      const hp = document.querySelector('.mx-wrap .mxhead tr:last-child th.lwph-' + side)
+      if (!hp) continue
+      const hw = hp.getBoundingClientRect().width
+      for (const c of document.querySelectorAll('.mx-wrap td.lwph-' + side)) if (Math.abs(c.getBoundingClientRect().width - hw) > 0.5) phMismatch++
+    }
+    // every body row is its own paint layer (6 Sep 26): a one-cell change
+    // repaints the row, not the ~21,000-cell grid
+    const rowLayer = rows.length > 0 && getComputedStyle(rows[0]!).position === 'relative'
+    return { months, heads: heads.length, ph, phl, misaligned, phMismatch, rowLayer, rows: rows.length, scrollW: w.scrollWidth, clientW: w.clientWidth }
   })
 
   const open = await read()
@@ -2675,6 +2689,8 @@ test('the grid draws a window of months over year-wide placeholders, keeps every
   expect(open.months.length).toBeLessThanOrEqual(6)
   expect(open.months[0]).toBe('2026-01')
   expect(open.misaligned).toBe(0)
+  expect(open.phMismatch).toBe(0)
+  expect(open.rowLayer).toBe(true)
   expect(open.rows).toBeGreaterThan(20)
   // …yet the scroller already spans the YEAR: a placeholder stands in for the
   // undrawn months on the right, so there is nowhere to get stuck.
@@ -2691,6 +2707,7 @@ test('the grid draws a window of months over year-wide placeholders, keeps every
   // …with a LEFT placeholder now standing in for January–August (the right one
   // may already be gone: the phone's rolling runway reaches December from here)
   expect(sep.phl).toBe(1)
+  expect(sep.phMismatch).toBe(0)
 
   // scroll to the far right — the December placeholder — and December is drawn
   // IN PLACE under the view, with every row still aligned

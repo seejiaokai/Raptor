@@ -16,7 +16,7 @@
 // the Event sheet — which carries the range, the merge/repeat choice, the tag,
 // and the type library — rather than typing inline. A member still only reads.
 
-import type { ReactNode } from 'react'
+import type { ReactNode, RefCallback } from 'react'
 import { bandAt, classifyEvent, dayEvent, dayEventKind, type DayInfo, type EventBand, type EventDef } from '../engine'
 
 /** How many characters a day column widens to before the text wraps. In `ch`,
@@ -33,6 +33,8 @@ export function EventRows({
   onEdit,
   padL,
   padR,
+  phL,
+  phR,
 }: {
   days: DayInfo[]
   bands: EventBand[]
@@ -45,10 +47,13 @@ export function EventRows({
   onEdit: (line: number, date: string) => void
   /** The column window's PLACEHOLDER cells (colwindow.ts, 5 Sep 26): one empty
    *  cell before / after the drawn days standing in for the undrawn months, so
-   *  every row keeps the same column count as the header. Sized by Matrix
-   *  through a CSS variable, never here. */
+   *  every row keeps the same column count as the header. Sized by Matrix,
+   *  never here: `phL`/`phR` are its mount hooks that write the width onto
+   *  the cell. */
   padL?: boolean
   padR?: boolean
+  phL?: RefCallback<HTMLTableCellElement>
+  phR?: RefCallback<HTMLTableCellElement>
 }) {
   return (
     <tbody className="events">
@@ -144,9 +149,9 @@ export function EventRows({
             {/* The count rows' blank balance cell: a day's event has no
                 balance, and the cell holds the frozen column. */}
             <td className="bal" />
-            {padL && <td className="lwph lwph-l" />}
+            {padL && <td className="lwph lwph-l" ref={phL} />}
             {cells}
-            {padR && <td className="lwph lwph-r" />}
+            {padR && <td className="lwph lwph-r" ref={phR} />}
           </tr>
         )
       })}

@@ -712,6 +712,43 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
   placeholders…" (placeholder cells counted into every row's colSpan sum, the
   year-wide scroller at open, December drawn in place at the far right), and
   the keep-alive spec now asserts the exact scroll on both devices.
+  EXTENDED 6 Sep 26 — THE COST OF DRAWING ONE MONTH, HALVED (owner: "how to
+  make the base down to around 0.3 seconds" → "Ok"). Measured first (owner's
+  order, "measure first, don't build first"): a Chrome trace of the year fill
+  at 4× CPU (the slow-laptop stand-in) split each month draw into style /
+  layout / paint / JS, and a CPU profile with caller chains named the JS. The
+  late-year month cost ~1.9 s: ~0.8 s RE-STYLING ~8,600 elements (the new
+  month is ~2,100 of them), ~0.45 s JS, ~0.35 s layout (forced twice, the
+  second one 2 objects), ~0.33 s repainting the whole grid. Three fixes, each
+  re-traced: (1) the placeholder widths were two CSS custom properties on
+  `.mx-outer`, and an isolated probe showed ANY custom-property write there —
+  even an unused one — re-styles ~7,000 elements (0.4–0.8 s at 4×) while an
+  inline width on the ~130 placeholder cells costs ~5 ms; the widths are now
+  inline styles on the cells (a ref hook gives a newly mounted cell the
+  current width; `--lwx-max` moved to the frozen bar's own box). Style recalc
+  per month 800 → ~65 ms. (2) `PersonRow` rendered all its day cells inline,
+  so every month draw re-reconciled all ~21,000 cells and re-ran the per-cell
+  logic for each; the cells are now one memoised `PersonMonth` per month
+  (month slices keep identity via a version-scoped cache), and the balance
+  column value is memoised on `version` too. JS per month ~450 → ~200 ms.
+  (3) `.mx tbody tr { position: relative }` gives every row its own paint
+  layer: a SINGLE-CELL change (a bid, a decision, a row hover) repainted the
+  whole grid, 230 ms at 4×; it is 8 ms now. That one does not help the month
+  draw (every row changes then). Result at 4×: a late-year month 1.9 → ~0.95 s,
+  mid-year ~1.4 → ~0.75 s; the year fill ~18 → ~10 s. What is LEFT is the
+  browser's own table work — auto layout of a ~42k-object table (~0.3 s,
+  climbing) and re-recording the whole grid's paint (~0.3 s) — which only a
+  per-month table split ("item 1") would touch, and the measurement says it
+  would buy ~0.3 s for the iOS alignment risk; not done. Dead ends measured,
+  don't retry: flat backgrounds instead of the hatch gradients (paint
+  unchanged), `will-change: transform` on the scroller or the table (paint
+  unchanged), a CSSOM rule for the placeholder width (61 ms vs 5 ms inline),
+  batching the measure chain (the second forced layout is already 2 objects).
+  Verified on the built bundle at 1440 and 390: header-vs-cell dx 0 across
+  the year, placeholders equal-width in every row, the desktop sticky columns
+  still paint over the day cells, the phone band mirrors every row at dy 0,
+  no page errors. iOS untestable here as before — `position: relative` on a
+  table row is the one new thing the owner's iPhone should eyeball.
   Measuring recipe: as the slow-computer cut below, plus `Profiler`
   self-time by frame mapped with `SourceMap.findEntry`; and TIME with the
   plain `devtools.timeline` categories, ATTRIBUTE with the `.stack` /
