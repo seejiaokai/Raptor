@@ -749,6 +749,50 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
   still paint over the day cells, the phone band mirrors every row at dy 0,
   no page errors. iOS untestable here as before — `position: relative` on a
   table row is the one new thing the owner's iPhone should eyeball.
+  EXTENDED 6 Sep 26, later — THE SCHEDULER: SCROLL, PUCK DRAG, DROP (owner:
+  "any techniques u can apply to like scrolling on the view and edit schedule?
+  Dragging of the pucks etc?" → measure first → "Ok for 1" = the drag).
+  MEASURED at 4× on the built bundle (`scratchpad` probes, recipes below):
+  · A week scroll runs the main thread ~50% busy, but silencing every scroll
+    handler of ours changed nothing (707 vs 772ms busy over a 1.4s glide) —
+    the browser hauling a heavy page, not our code. Not pursued.
+  · The DROP: ~1.1s on the edit week (validate → rebuild the day strings →
+    innerHTML swap → React commit + refreshHighlights), ~0.3s on the board.
+    Left for its own round — it sits beside the rules engine.
+  · The DRAG: ~170ms per pointer move — a ghost at ~6fps. Split per move:
+    ~55ms the browser RE-LAYERISING the whole page, ~30 hit-testing (the
+    browser's own hover update, not our elementsFromPoint), ~28 our JS +
+    React's event plumbing, ~13 REPAINTING the whole page.
+  DONE (drag.ts, scheduler.css, drag.test.tsx): both ghosts carry
+  `will-change:transform` with left/top pinned at 0 and are moved by ONE
+  `translate()` (`ghostXf`) — no page layout, no page paint; the three cell
+  hover rules are scoped `body:not(.tdrag)` so a hover flip under the ghost no
+  longer repaints the page. RESULT: ~168 → ~120ms a move at 4× (our JS 28 →
+  6ms, paint 13 → 7ms); ~8fps on the slow laptop instead of ~6, ~33fps on a
+  fast machine instead of ~24. Honest floor, NOT reachable by any ghost
+  change: the ~54ms re-layerise per move is the page's ~230 COMPOSITOR LAYERS
+  (CDP LayerTree: the `.rpuck.busy`/`.no` filter + opacity seed ~56, the fixed
+  modals/popups/drawer/board shell/hscroll and everything OVERLAPPING them the
+  rest; every sticky element relaxed = still 223) — a moving layer re-opens
+  the overlap decisions and Chrome re-runs layerisation for the page. Cutting
+  the layer count is the lever if the drag must get smoother (82 layers
+  measured ~29ms/move re-layerise); that is a page-wide CSS change with visual
+  implications, proposed not done. DEAD ENDS, each measured, don't retry:
+  toggling the ghost's pointer-events around one elementFromPoint (rewrites
+  its hit-test data every move — repaints + re-layerises, 22ms WORSE);
+  `translateZ(0)` / translate3d / contain:strict / backface-visibility / no
+  decorations / a non-hit-testable ghost / position:absolute (all equal to
+  base, absolute worse). A first cut CLAIMED the translateZ hint unlocked the
+  compositor fast path (85 → 14ms holding still) — an ARTEFACT: the experiment
+  patched `CSSStyleDeclaration.prototype.transform`, which in this Chromium is
+  not an own accessor, so the patched setter threw and the ghost never moved.
+  Retracted before it shipped; `probe-whomutates.cjs` prints the accessor
+  homes. Also seen: for ~5s after the edit page opens, the store notifies ~10
+  times (the pre-warm / sync settling) and EditWeek's effect rebuilds the day
+  strings + refreshHighlights each time; it stops, and a drag sees ~1 in 6s.
+  Verified: drag.test.tsx 49/49 (transform assertions), css-invalidation, the
+  e2e "pointer machine" pin (ghost tracks the cursor, no native drag, the drop
+  lands). The white-box history is untouched — nothing native-drag changes.
   Measuring recipe: as the slow-computer cut below, plus `Profiler`
   self-time by frame mapped with `SourceMap.findEntry`; and TIME with the
   plain `devtools.timeline` categories, ATTRIBUTE with the `.stack` /
@@ -775,7 +819,8 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
   did work (html{} already has user-select:none + no callout; `onTouchMove`
   preventDefaults while armed), so both rules are gone; the mouse cursor
   rides on the ghost instead (`.dragimg{pointer-events:auto;cursor:grabbing}`,
-  `tdOver` skips the ghost via `elementsFromPoint`). The classes stay as JS
+  `tdOver` skips the ghost via `elementsFromPoint` — kept after the 6 Sep 26
+  drag measurement, see that entry). The classes stay as JS
   markers (tests read them). `ui/css-invalidation.test.ts` fails the suite
   on a bare `body.tdrag`/`body.mdrag` rule or any root-class wildcard. (2) **The Edit week and
   crew palette warm ONCE in idle time after an admin login** (`EditWeek.tsx`

@@ -1810,8 +1810,31 @@ persisted and never in a history snapshot. The toggle builder is `notePubTog`
   inside the puck (`TD.ox/oy`, clamped to the puck) rather than centred, and
   the ghost itself carries the grabbing cursor (no OS drag cursor exists —
   there is no OS drag): `.dragimg` is HIT-TESTABLE with `cursor:grabbing`,
-  and `tdOver`'s dragover hit-test takes the first element under the pointer
-  that is not the ghost (`elementsFromPoint`). **`body.tdrag` and `body.mdrag`
+  and `tdOver`'s hit-test takes the first element under the pointer that is
+  not the ghost (`elementsFromPoint` — kept on purpose, 6 Sep 26: the ~25ms a
+  mouse move costs in hit-testing on the week is the browser's own hover
+  update, and the alternative of toggling the ghost's `pointer-events` around
+  one `elementFromPoint` rewrote its hit-test data every move, repainting it
+  and re-layerising the page, 22ms a move WORSE). **Both ghosts sit on their
+  OWN compositor layer and are positioned by ONE transform** (6 Sep 26,
+  traced): `.dragimg`/`.tdghost` carry `will-change:transform` with `left/top`
+  pinned at 0, and `tdOver` / `moveDragImage` write `translate(x, y)` (the
+  finger's ghost adds the `translate(-50%,-50%)` centring that used to be a
+  stylesheet transform). Moved by inline left/top, the fixed ghost in the
+  page's own layer had made the browser lay out and REPAINT the whole page on
+  every pointer move; the transform paints nothing. What it does NOT remove,
+  measured with every variable held (2D/3D transform, translate3d, contain,
+  backface, no decorations, not hit-testable — all equal): the page still
+  RE-LAYERISES on every move, ~50ms at 4×, because the edit page carries ~230
+  compositor layers (the filtered / faded roster pucks and everything that
+  overlaps them) and a moving layer re-opens those overlap decisions. Fewer
+  layers is the only lever left there; the ghost itself is done. Never return
+  the ghost to left/top. **The cell
+  hover highlights are off while a puck is in flight** (`body:not(.tdrag)` on
+  `.acrow .seat.empty-slot:hover`, `.acrow .seat[data-slot]:hover .puck`,
+  `.sb-slot.empty:hover`): each hover flip under the ghost repainted and
+  re-layerised the page (~30ms a move); the `.dragover` mark is the drag's own
+  feedback. **`body.tdrag` and `body.mdrag`
   are JS state markers with NO declarations of their own** (the slow-computer
   cut, 3 Sep 26): measured by toggling each alone on the built app,
   `body.tdrag{touch-action;user-select}` restyled every element on the page

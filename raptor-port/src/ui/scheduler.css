@@ -1009,9 +1009,16 @@ body.ros-open .eroster .ros-tab{background:var(--accent);color:var(--accent-ink)
 .acrow .seat .puck{width:var(--puck-w);flex:0 0 var(--puck-w)}
 .acrow .seat.empty-slot{width:var(--puck-w);flex:0 0 var(--puck-w);height:var(--puck-h);border:1px dashed var(--edge-2);border-radius:3px;align-items:center;justify-content:center;
   color:var(--ink-3);font-size:9px;font-weight:700;letter-spacing:.05em;cursor:pointer;background:rgba(255,255,255,.02)}
-.acrow .seat.empty-slot:hover{border-color:var(--accent);color:var(--accent)}
+/* The cell hover highlights are OFF while a puck is in flight (`body:not(.tdrag)`,
+   6 Sep 26, traced at 4×): under a dragged ghost the cursor crosses a cell
+   every few moves, each hover flip repainted the page and re-layerised it
+   (~30ms a move on the slow laptop) for a highlight the drag never needs —
+   the `.dragover` cell mark is the drag's own feedback. `body:not(.tdrag)` is
+   a descendant-named rule, so toggling the marker restyles nothing itself
+   (css-invalidation.test.ts). */
+body:not(.tdrag) .acrow .seat.empty-slot:hover{border-color:var(--accent);color:var(--accent)}
 .page.editing .acrow .seat[data-slot]{cursor:pointer}
-.page.editing .acrow .seat[data-slot]:hover .puck{outline:2px solid var(--accent);outline-offset:1px}
+body:not(.tdrag) .page.editing .acrow .seat[data-slot]:hover .puck{outline:2px solid var(--accent);outline-offset:1px}
 .cols.formcols{display:grid;grid-template-columns:52px 48px 48px calc(var(--puck-w)*2 + 16px) minmax(0,1fr);background:var(--panel-2);border-bottom:1px solid var(--edge);
   font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;letter-spacing:.03em;font-size:8.5px;font-weight:700;color:var(--ink-2)}
 .cols.formcols span{text-align:left;white-space:nowrap;overflow:hidden;padding:3px 5px;border-right:1px solid rgba(42,49,58,.4)}
@@ -3615,7 +3622,7 @@ body.sb-lock{overflow:hidden}
 /* a pax HOLE in a sims People cell (owner, 8 Aug 26): puck-sized so the
    pair rows stay level — the 26px flying-line slot would bulge the row */
 .ppl .sb-slot.empty{min-height:var(--puck-h);height:var(--puck-h);box-sizing:border-box;font-size:9.5px;line-height:1}
-.sb-slot.empty:hover{border-color:var(--accent);color:var(--accent)}
+body:not(.tdrag) .sb-slot.empty:hover{border-color:var(--accent);color:var(--accent)} /* off in flight — see the .acrow hover note */
 /* the drag-source marker is data-drag, never the HTML draggable attribute
    (4th cut, 3 Sep 26): the MINDEF secured browser starts its own drag of any
    draggable="true" element without asking the page — see ui/drag.ts */
@@ -3797,23 +3804,36 @@ body.sb-lock{overflow:hidden}
   .hl-meta{margin-left:0;flex-basis:100%}
 }
 
-.tdghost{position:fixed!important;z-index:520;pointer-events:none;margin:0!important;
-  transform:translate(-50%,-50%);opacity:.92;box-shadow:0 8px 20px rgba(0,0,0,.6);
+/* BOTH GHOSTS RIDE THEIR OWN COMPOSITOR LAYER AND MOVE BY TRANSFORM (6 Sep 26,
+   traced on the built app at 4× CPU). Moved by inline left/top, a fixed
+   element in the page's own layer made the browser lay out and REPAINT the
+   whole page on every pointer move (~170ms a move on the slow laptop, a ghost
+   crawling at ~6fps). `will-change:transform` gives the ghost its own layer
+   and a translate() moves it with no page layout and no page paint; left/top
+   are pinned at 0 so the transform is the whole position (drag.ts tdOver /
+   moveDragImage). It does NOT stop the page RE-LAYERISING on every move
+   (~50ms at 4× — this page carries ~230 compositor layers, see drag.ts
+   ghostXf); no ghost variant does, measured. */
+.tdghost{position:fixed!important;left:0!important;top:0!important;will-change:transform;z-index:520;pointer-events:none;margin:0!important;
+  opacity:.92;box-shadow:0 8px 20px rgba(0,0,0,.6);
   outline:2px solid var(--accent);outline-offset:1px;border-radius:4px}
 /* mouse drag: the puck ghost the PAGE draws under the cursor (drag.ts
    setDragImage / moveDragImage) — the browser itself is handed a blank pixel,
    so no platform snapshot is ever composed (the white card a secured or
    remote-rendered browser drew around the puck, owner 3 Sep 26). The touch
-   ghost's recipe, minus the centring transform: this one is anchored where
-   the cursor grabbed, via inline left/top. Sized inline from the live puck's
-   rect. It is HIT-TESTABLE and carries the grabbing cursor (the slow-computer
-   cut, 3 Sep 26): the ghost rides exactly under the pointer for the whole drag,
-   so putting `cursor:grabbing` on it shows the closed hand everywhere without
-   restyling anything else — `body.mdrag{cursor:…}` did the same job by
-   INHERITANCE, which made Blink recompute the style of every element under
-   body (~5k) at arm and at drop. drag.ts's dragover hit-test skips the ghost
-   (elementsFromPoint), and the drop removes it before its own hit-test. */
-.dragimg{position:fixed!important;z-index:520;pointer-events:auto;cursor:grabbing;margin:0!important;opacity:.92;
+   ghost's recipe, minus the centring: this one is anchored where the cursor
+   grabbed, the offset folded into its translate. Sized inline from the live
+   puck's rect. It is HIT-TESTABLE and carries the grabbing cursor (the
+   slow-computer cut, 3 Sep 26): the ghost rides exactly under the pointer for
+   the whole drag, so putting `cursor:grabbing` on it shows the closed hand
+   everywhere without restyling anything else — `body.mdrag{cursor:…}` did the
+   same job by INHERITANCE, which made Blink recompute the style of every
+   element under body (~5k) at arm and at drop. drag.ts's hit-test skips the
+   ghost (elementsFromPoint — measured 6 Sep 26: toggling the ghost's
+   pointer-events around a single elementFromPoint instead rewrote its
+   hit-test data every move, repainting it and re-layerising the page), and
+   the drop removes it before its own hit-test. */
+.dragimg{position:fixed!important;left:0!important;top:0!important;will-change:transform;z-index:520;pointer-events:auto;cursor:grabbing;margin:0!important;opacity:.92;
   box-shadow:0 8px 20px rgba(0,0,0,.6);outline:2px solid var(--accent);outline-offset:1px;border-radius:4px}
 /* body.tdrag / body.mdrag are JS STATE MARKERS ONLY — no rule may give them a
    declaration of their own (the slow-computer cut, 3 Sep 26). Measured by

@@ -48,7 +48,23 @@ let DRAGOX = 0, DRAGOY = 0
 function dropDragImage() { if (DRAGIMG && DRAGIMG.parentNode) DRAGIMG.parentNode.removeChild(DRAGIMG); DRAGIMG = null }
 function moveDragImage(x: number, y: number) {
   if (!DRAGIMG) return
-  DRAGIMG.style.left = (x - DRAGOX) + 'px'; DRAGIMG.style.top = (y - DRAGOY) + 'px'
+  DRAGIMG.style.transform = ghostXf(x - DRAGOX, y - DRAGOY, false)
+}
+/* A ghost's position is ONE transform, never left/top (6 Sep 26, traced at
+   4× CPU: a fixed element moved by left/top made the browser lay out and
+   REPAINT the whole page on every pointer move; on its own compositor layer —
+   .dragimg/.tdghost carry will-change:transform and left/top:0 — a translate()
+   paints nothing). What it does NOT buy, measured and recorded so nobody
+   chases it again: the browser still re-LAYERISES the page on every move
+   (~50ms at 4×), because this page carries ~230 compositor layers (the
+   filtered/faded roster pucks and everything overlapping them) and a moving
+   layer re-opens those overlap decisions; no ghost variant changes that (2D
+   or 3D transform, translate3d, contain, backface, no decorations, not
+   hit-testable — all measured equal). Fewer layers on the page is the only
+   lever left there. The finger's ghost is centred under the touch, so its
+   translate carries the -50% centring that used to live in the stylesheet. */
+function ghostXf(x: number, y: number, centred: boolean) {
+  return `translate(${x}px, ${y}px)${centred ? ' translate(-50%, -50%)' : ''}`
 }
 /* the image the BROWSER carries is a blank 1×1 pixel — see setDragImage.
    Decoded once at module load: Chromium falls back to its own snapshot when
@@ -397,12 +413,17 @@ function tdOver(x: any, y: any) {
   /* TD.ox/oy is where the mouse press landed inside the puck, so its ghost
      stays pinned to that spot; a finger's ghost is centred (ox = oy = 0 with
      the .tdghost translate) */
-  if (g) { g.style.left = (x - TD.ox) + 'px'; g.style.top = (y - TD.oy) + 'px' }
+  if (g) g.style.transform = ghostXf(x - TD.ox, y - TD.oy, !TD.mouse)
   /* The mouse ghost is hit-testable (it carries the grabbing cursor — see
      .dragimg in scheduler.css, the slow-computer cut), so the cell beneath is
      the first element under the point that is NOT the ghost. elementsFromPoint
      gives the whole stack in one hit-test; the single-element fallback is for
-     jsdom, which has no layout and no ghost to skip. */
+     jsdom, which has no layout and no ghost to skip. Measured 6 Sep 26 and NOT
+     changed: this call is a few ms at 4× — the ~25ms of hit-testing a mouse
+     move costs on the week is the browser's own hover update, not ours — and
+     the tempting alternative (pointer-events off → elementFromPoint → back on)
+     rewrites the ghost's hit-test data every move, which repaints the ghost
+     and re-layerises the whole page: 22ms a move worse. Leave it. */
   const stack: any[] = typeof (document as any).elementsFromPoint === 'function' ? (document as any).elementsFromPoint(x, y) : [document.elementFromPoint(x, y)]
   const el = stack.find((n: any) => n && !(g && g.contains(n))) || null
   const t = el && el.closest ? (el.closest(DROP_SEL) || el.closest(BIN_SEL)) : null

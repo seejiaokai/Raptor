@@ -1627,6 +1627,35 @@ subscribers.
   (exact scroll kept on both devices), and "the Leave War screen is a separate
   chunk, pre-warmed after login".
 
+- **A dragged puck's ghost rides its own compositor layer, moved by ONE
+  transform, and the cell hover highlights are off while it is in flight**
+  (6 Sep 26, traced on the built bundle at 4× CPU after the owner asked
+  whether the Leave War speed techniques apply to the scheduler: "dragging of
+  the pucks etc"). Moved by inline left/top, the fixed ghost made Chrome lay
+  out and repaint the whole page on every pointer move — ~170ms a move on the
+  slow laptop, a ghost at ~6fps. `.dragimg`/`.tdghost` now carry
+  `will-change:transform` with left/top pinned at 0 and `drag.ts ghostXf`
+  writes `translate(x,y) [translate(-50%,-50%)]`: no page paint. The three
+  cell hover rules (`.acrow .seat.empty-slot:hover`, `.acrow
+  .seat[data-slot]:hover .puck`, `.sb-slot.empty:hover`) are scoped
+  `body:not(.tdrag)` — each hover flip under the ghost repainted the page
+  (~30ms a move) for a highlight the drag never needs; `.dragover` is the
+  drag's feedback. MEASURED AND NOT DONE, so nobody chases them again: toggling
+  the ghost's `pointer-events` around a single `elementFromPoint` (rewrites
+  its hit-test data every move — repaints, 22ms a move worse; `elementsFromPoint`
+  stays); any cursor rule on body (the 3 Sep restyle finding stands); and every
+  ghost variant tried to stop the page RE-LAYERISING on each move (2D or 3D
+  transform, translate3d, contain, backface, no decorations, non-hit-testable —
+  all ~50ms at 4×, equal): that cost is the page's ~230 compositor layers (the
+  filtered/faded roster pucks and everything overlapping them), not the ghost.
+  A first-cut claim that a `translateZ(0)` hint fixed it was an artefact of a
+  broken experiment (the patched setter threw, so the ghost never moved) —
+  retracted the same day; do not reintroduce it. Do not move the ghost by
+  left/top or re-enable hover under a drag. The white-box history is untouched:
+  nothing here starts, images or changes a native drag (`e2e/geometry.spec.ts`
+  "pointer machine" pin). Contract: `docs/ui-contracts.md` §the mouse rides
+  the pointer machine.
+
 ## Where things live
 
 | Need | Go to |
