@@ -839,6 +839,18 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
   in another; and the `disabled-by-default-blink.invalidation` category
   emitted nothing in this Chromium and slowed paint 8×. Gates: see the
   table's 6 Sep row.
+  · TASK-OBSERVER (owner asked "is the observer updated", 4 Sep 26 — it was
+    not; the log stopped at Obs 56 / 3 Sep, all Leave War). Captured this
+    session's drop round as Observations 57–59 (OPEN) in
+    `.claude/skill-observations/log.md` — and noted here because the log does
+    not survive an ephemeral container: 57 measure-first split the drop into
+    engine (cheap) vs redraw (the cost) so the fix stayed redraw-only;
+    58 record measured-and-rejected optimisations (the paint-isolation
+    variants, the highlights "quiet path") at the code site AND the handoff
+    so they are not re-run; 59 hit-test before taking the drag ghost down —
+    order a pointer-up teardown reads-before-writes (sibling of Obs 48).
+
+
 
 - **THE SLOW-COMPUTER CUT (owner, 3 Sep 26 — "Is it possible to have this app
   work faster on a slow computer?" → "Do option 3 with option 1").** Measured
