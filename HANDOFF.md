@@ -849,6 +849,21 @@ perf gate — it has its own e2e DOM band (29000), measured-first.
     variants, the highlights "quiet path") at the code site AND the handoff
     so they are not re-run; 59 hit-test before taking the drag ghost down —
     order a pointer-up teardown reads-before-writes (sibling of Obs 48).
+  · THE SPEED CHARTER (owner asked, 4 Sep 26 — "remember all the speed
+    improvements … so new changes follow the structure and it doesn't rot").
+    Consolidated the whole speed history into ONE durable index,
+    `raptor-port/docs/performance.md`: Part 1 the guardrails (measure-first
+    law, the perf gate, the invariants grouped by area, the change-checklist,
+    the dead-ends list, the device gate) and Part 2 the ledger (all 20 rounds,
+    each what/mechanism/invariant/measured/files). It is an INDEX + pointer
+    map, not a fourth copy — the enforced rules still live in
+    `perf-port.cjs` / the e2e specs / CLAUDE.md §Stable decisions /
+    ui-contracts.md, and the doc points at each. Wired in so a future session
+    meets it before touching layout: CLAUDE.md §Performance & scalability now
+    opens with "read docs/performance.md Part 1 first", feature-impact.md's
+    Layout checklist item points at it, and ui-contracts.md §Rendering carries
+    a banner to it. Built from three read-only Explore/agent sweeps of
+    HANDOFF.md + CLAUDE.md/contracts + the observation log. Docs only.
 
 
 

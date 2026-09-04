@@ -283,7 +283,15 @@ ship without waiting to be asked.
 **Scoping any new work weighs four axes** (owner, 7 Aug 26), each grounded
 in what this repo actually has rather than a generic checklist:
 
-- **Performance & scalability.** The perf gate's law is the DOM CEILINGS in
+- **Performance & scalability.** THE SPEED LEDGER AND THE GUARDRAILS LIVE IN
+  `docs/performance.md` — read Part 1 before any layout, interface, design or
+  rendering-touching change, and run the change through its checklist. It is the
+  single index of every speed round and the invariant each one must not lose
+  (only the page on screen repaints; a changed day rewrites only its changed
+  blocks; the ghost rides its own transform layer; no inherited/custom property
+  toggled on body or a grid ancestor; the Leave War window engine; etc.), so a
+  later change cannot quietly undo them and let the app rot back into lag.
+  The perf gate's law is the DOM CEILINGS in
   `probes/perf-port.cjs`, re-measured, never quoted. A feature that grows
   the DOM raises its ceiling as a deliberate, argued edit in the same PR.
   The three per-node TIMING budgets are no longer assertions (owner, 10 Aug

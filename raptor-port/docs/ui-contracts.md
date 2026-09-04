@@ -6,6 +6,11 @@ several are measured and suite-enforced, not preferences.
 
 ## Rendering
 
+> The speed rules these guarantees serve — and every measured round behind them
+> — are indexed in `docs/performance.md` (Part 1 the guardrails, Part 2 the
+> ledger). Read it before a rendering/layout change; this section is the
+> contract detail, that file is the why and the checklist.
+
 - An edit on one day must not visibly disturb the other days (per-day string
   diff in ViewWeek/EditWeek; per-panel diff in SchedBoard).
   **And within a changed day, only its changed BLOCKS are rewritten** (6 Sep

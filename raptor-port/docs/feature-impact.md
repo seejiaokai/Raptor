@@ -366,9 +366,16 @@ Run this before building and again before calling it done. Most answers are
 - **Availability / palette** — if it touches an input, a time or a qual, does
   the palette still agree with the warning list? (The one invariant that
   breaks most often.)
-- **Layout** — does it add DOM or change a measured size? Then re-measure the
-  perf ceiling and add/adjust an `e2e/geometry.spec.ts` check IN THE SAME PR.
-  Check BOTH desktop and phone — they are different code paths (media queries).
+- **Layout / speed** — does it add DOM, change a measured size, or touch
+  rendering, scrolling, dragging or the Leave War grid? Then read
+  `docs/performance.md` Part 1 first and run the change through its checklist:
+  re-measure the perf ceiling and add/adjust an `e2e/geometry.spec.ts` check IN
+  THE SAME PR, check BOTH desktop and phone (different media-query code paths),
+  and confirm it preserves the speed invariants (only the page on screen
+  repaints, per-block day swap, the transform-layer ghost, no
+  inherited/custom property toggled on body or a grid ancestor, the Leave War
+  window engine). `docs/performance.md` is also the full ledger of what every
+  past speed round did and why.
 - **History / edit log** — is this a new schedule write? Then it must reach
   `markEdit` **with both from/to values** (a key with no values logs nothing),
   and a new text-key family wants a line in `keyOf` and, if the board can't
