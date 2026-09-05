@@ -284,8 +284,11 @@
   width: 100%;
   /* Stays a full tap target (owner's earlier complaint that it was too small
      to hit — e2e pins >=36px); the squaring is the border and corners, not a
-     smaller box. */
-  min-height: 40px;
+     smaller box. A REAL 40px at any grid zoom (6 Sep 26): the table's `--lwz`
+     (Matrix.tsx) divides the zoom back out, because a phone now opens one
+     step out and the picker fell to 32px tall with the rest of the header —
+     under the floor. Only the header row grows by the difference at 0.8. */
+  min-height: calc(40px / var(--lwz, 1));
   background: var(--panel);
   border: 1px solid var(--edge);
   border-radius: 3px;

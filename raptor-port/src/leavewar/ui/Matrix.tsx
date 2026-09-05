@@ -1237,6 +1237,13 @@ export function Matrix() {
     const i = ZOOMS.indexOf(zoom)
     setZoom(ZOOMS[Math.min(ZOOMS.length - 1, Math.max(0, i + by))]!)
   }
+  // The grid tables' zoom, plus `--lwz` (6 Sep 26) so a control that must keep
+  // a REAL tap size at any zoom can divide it back out (the counter picker's
+  // `min-height: calc(40px / var(--lwz))`, matrix.css): a phone opens at 0.8
+  // and the picker fell to 32px tall, under the 36px floor the owner's own
+  // complaint set. On the TABLE, not an ancestor, and it changes only when the
+  // zoom steps — a restyle the zoom itself already costs, never per frame.
+  const zoomStyle = zoom !== 1 ? ({ zoom, '--lwz': zoom } as import('react').CSSProperties) : undefined
 
   // The manning counts block (CREW SETS … SXO) collapses on a tap, for EITHER
   // role (owner, 19 Aug 26 — "allow both admin and norm user to hide it when
@@ -2836,7 +2843,7 @@ export function Matrix() {
           onTouchStart={onTouchStart}
           onTouchEnd={onTouchEnd}
         >
-          <table className="mx" style={zoom !== 1 ? { zoom } : undefined}>
+          <table className="mx" style={zoomStyle}>
             {/* THE ROW ORDER IS THE OWNER'S (18 Aug 26, arrows on a
                 screenshot): counts first, then the month buttons, then the
                 callsign + dates header, then the event rows, then the roster.
@@ -3083,7 +3090,7 @@ export function Matrix() {
           const table = (extra: string) => (
             <table
               className={`mx${extra ? ' ' + extra : ''}`}
-              style={{ tableLayout: 'fixed', width: totalW, ...(zoom !== 1 ? { zoom } : null) }}
+              style={{ tableLayout: 'fixed', width: totalW, ...(zoomStyle ?? null) }}
             >
               <colgroup>
                 {s.cols.map((w, i) => (
@@ -3124,7 +3131,16 @@ export function Matrix() {
                 <div
                   className="mxfixed-frozen"
                   aria-hidden="true"
-                  style={{ width: (s.cols[0] || 0) / zoom + (s.cols[1] || 0) / zoom }}
+                  /* VISUAL px, NOT divided by the zoom (owner's iPhone, 6 Sep 26 —
+                     the stuck bar showed the hatched filler / "MON 27" / "JAN 01"
+                     right after LVE BAL, out of step with the grid). This box is
+                     a plain div beside the track, outside any zoomed table — only
+                     the <col>s INSIDE it live in zoomed space and take the
+                     division. Divided, it was 25% too wide at the phone's 0.8
+                     (131px against the grid's 107) and revealed the copy's third
+                     cell; at 1.2 it would clip the balance column. Latent since
+                     the zoom shipped, surfaced by the one-step-out default. */
+                  style={{ width: (s.cols[0] || 0) + (s.cols[1] || 0) }}
                 >
                   {table('')}
                 </div>
@@ -3146,7 +3162,7 @@ export function Matrix() {
             data-testid="frozen-cols"
             style={{ top: bandTop ?? 0, ...(bandTop == null ? { visibility: 'hidden' as const } : null) }}
           >
-            <table className="mx" style={zoom !== 1 ? { zoom } : undefined}>
+            <table className="mx" style={zoomStyle}>
               <tbody className="mxbody">
                 {rosterSequence().map(item => {
                   if (item.kind === 'group') return (

@@ -1612,8 +1612,11 @@ test('the counter control is a real tap target on a phone', async ({ page }) => 
   await page.setViewportSize({ width: 390, height: 760 })
   const head = (await page.locator('[data-testid="counter-pick"]').boundingBox())!
   // The whole column header is the button now, so it is as wide as the
-  // column and tall enough to hit without aiming.
-  expect(head.width).toBeGreaterThanOrEqual(36)
+  // column and tall enough to hit without aiming. The WIDTH scales with the
+  // grid zoom — a phone opens one step out since 6 Sep 26 (owner's choice), so
+  // the 44px column reads 36×zoom on screen; the height stays a real 36+.
+  const zoom = await page.evaluate(() => parseFloat((document.querySelector('.mx-wrap table.mx') as HTMLElement).style.zoom || '1'))
+  expect(head.width).toBeGreaterThanOrEqual(36 * zoom)
   expect(head.height).toBeGreaterThanOrEqual(36)
 
   await page.locator('[data-testid="counter-pick"]').click()
@@ -2369,11 +2372,14 @@ test('on a phone the header freezes under the top bar and thaws on the way back'
   await page.evaluate(() => { document.querySelector('.mx-wrap')!.scrollLeft = 400 })
   await page.waitForTimeout(200)
   const followed = await page.evaluate(() => {
+    // the translate lands in the mirror table's own ZOOMED space, so 400 visual
+    // px of grid scroll is 400/zoom there (a phone opens at 0.8 since 6 Sep 26)
+    const zoom = parseFloat((document.querySelector('.mx-wrap table.mx') as HTMLElement).style.zoom || '1')
     const anim = document.querySelector('.mxfixed-anim') as HTMLElement | null
-    if (anim) return { mode: 'sda', tx: new DOMMatrixReadOnly(getComputedStyle(anim).transform).m41 }
-    return { mode: 'js', sl: (document.querySelector('.mxfixed-scroll') as HTMLElement).scrollLeft }
+    if (anim) return { mode: 'sda', tx: new DOMMatrixReadOnly(getComputedStyle(anim).transform).m41, zoom }
+    return { mode: 'js', sl: (document.querySelector('.mxfixed-scroll') as HTMLElement).scrollLeft, zoom }
   })
-  if (followed.mode === 'sda') expect(Math.abs((followed.tx as number) + 400)).toBeLessThan(3)
+  if (followed.mode === 'sda') expect(Math.abs((followed.tx as number) + 400 / followed.zoom)).toBeLessThan(3)
   else expect(followed.sl).toBe(400)
   // and its columns sit exactly over the grid's (scoped to the scrolling layer,
   // so the scroll-driven path's static frozen-column overlay is not picked)
@@ -2386,6 +2392,28 @@ test('on a phone the header freezes under the top bar and thaws on the way back'
     return null
   })
   if (ghost !== null) expect(Math.abs(ghost - real.x)).toBeLessThan(2)
+  // …and the static frozen-column COPY is exactly as wide as the grid's two
+  // frozen columns (owner's iPhone, 6 Sep 26): its width is VISUAL px, not
+  // divided by the grid zoom — at the phone's 0.8 it used to be 25% too wide
+  // and showed the hatched filler / the first date right after LVE BAL, out of
+  // step with the grid. Checked at the default zoom and after a step.
+  const copyMatchesGrid = () => page.evaluate(() => {
+    const copy = document.querySelector('.mxfixed-frozen')
+    if (!copy) return null   // JS-mirror fallback: no copy to check
+    const bal = document.querySelector('.mx-wrap .mxhead th.bal')!.getBoundingClientRect()
+    return Math.round(copy.getBoundingClientRect().right - bal.right)
+  })
+  const d0 = await copyMatchesGrid()
+  if (d0 !== null) expect(Math.abs(d0)).toBeLessThan(2)
+  // the zoom buttons sit in the top row, so a click scrolls the page up to
+  // them and thaws the header — scroll back down so it freezes again first
+  await page.locator('[data-testid="lw-zoom-in"]').click()
+  await page.evaluate(() => window.scrollTo(0, 700)); await page.waitForTimeout(400)
+  const d1 = await copyMatchesGrid()
+  if (d1 !== null) expect(Math.abs(d1)).toBeLessThan(2)
+  await page.locator('[data-testid="lw-zoom-out"]').click()
+  await page.evaluate(() => window.scrollTo(0, 700)); await page.waitForTimeout(400)
+  await expect(mirror).toHaveCount(1)
   // …but the header must NEVER drive the grid (owner, 20 Aug 26). Writing the
   // mirror's lagged position back onto the grid mid-fling is what snapped the
   // grid back and halted the sideways scroll the moment the header froze.

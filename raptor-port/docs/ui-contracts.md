@@ -5518,7 +5518,13 @@ feel he rejected on 10 Aug 26). The fix-by-fix history follows.
   ~10,000px range, the same sub-pixel rounding the JS path has at rest). A
   translated table can't keep `position: sticky`, so in this path the frozen
   callsign+counter columns are a static, opaque, clipped COPY pinned over the
-  left (`.mxfixed-frozen`); the scrolling layer's own who/bal are
+  left (`.mxfixed-frozen`) — its WIDTH is the two measured columns in VISUAL
+  px, NOT divided by the grid zoom (owner's iPhone, 6 Sep 26: divided, it was
+  25% too wide at the phone's 0.8 and showed the hatched filler / "MON 27" /
+  "JAN 01" right after LVE BAL, out of step with the grid; the box is a plain
+  div outside any zoomed table, only the `<col>`s INSIDE it take the division;
+  latent since the zoom shipped, surfaced by the one-step-out default; pinned
+  in the phone freeze/thaw e2e at 0.8 and after a step); the scrolling layer's own who/bal are
   `pointer-events:none` so the copy carries the (still-working) counter picker,
   and the copy is aria-hidden so the scrolling layer stays the one accessible
   set. Gated by `.lw-sda` (JS `sdaActive` feature-detects `scroll-timeline` +

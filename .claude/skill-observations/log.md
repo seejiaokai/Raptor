@@ -1283,3 +1283,18 @@ gate's. Keep verdict-bearing commands unpiped.
 **Suggested improvement:** When a drive measures scroll position (or anything a scroll would disturb) across a click, and the target lives in a frozen/mirrored column, tap by COORDINATES on the painted copy (`page.touchscreen.tap(x, y)` / `page.mouse.click(x, y)` from the copy's rect), or set `force: true` AND check the target is already within the viewport; and before calling a scroll-reset a bug, ask "did the tool scroll to reach the element?" — compare `scrollLeft` right before the action's event, not before the locator call. Repo note: the `.mxband` overlay (phone) and `.mxfixed-frozen` copies are exactly this shape.
 
 **Principle:** A locator action may scroll before it acts; measure the app's scroll only across actions that cannot scroll — coordinate taps on what is already on screen.
+
+### Observation 84: Changing a DEFAULT (the phone's zoom 1 → 0.8) silently invalidated absolute-pixel assertions elsewhere in the suite — a "related tests" subset run missed one, and the default also surfaced a latent bug in a part of the UI the change never touched
+
+**Status:** OPEN
+**Date:** 2026-09-06
+**Session context:** The phone's default Leave War zoom became 0.8. I ran the tests I had written or edited (zoom, top row, month strip) — 53 passed — and pushed. Two things were waiting: (1) the frozen-header freeze/thaw e2e asserted the mirror's translate equals −scrollLeft, true only at zoom 1, so CI would have gone red; (2) the stuck header's frozen-column copy had its width divided by the zoom (a bug latent since the zoom shipped on 18 Aug, invisible at zoom 1), which the owner then saw on his phone as the hatched filler / a stray date after LVE BAL — and read as a rotation bug.
+**Skill:** verification-before-completion (scope of the gate after a default changes)
+**Type:** open-source
+**Phase/Area:** Which tests to run after a change to a default value / initial state
+
+**Issue:** A default is not a local change: every measurement, screenshot and assertion that was taken with the old default now describes a state the app no longer opens in. "The tests I touched" is the wrong scope for it — the right scope is every test of the surface that renders under that default (here the whole Leave War e2e on the phone project), plus a drive of the surface's OTHER modes under the new default (the stuck header, the sheets), since a latent bug that the old default masked will show up in code the change never touched.
+
+**Suggested improvement:** When a change alters a DEFAULT / initial state (a zoom, a view, a role, a window), treat it as a whole-surface change: run that surface's full e2e project(s) before the push, not the subset, and drive the surface's modes the tests don't visit at the new default. Grep the specs for assertions that quote absolute px on the affected axis. Say in the report which tests were run at the new default.
+
+**Principle:** A default change re-baselines every measurement taken under the old one; gate it with the whole surface's suite and a drive of its other modes, never with the tests you touched.
