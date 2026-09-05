@@ -1133,3 +1133,33 @@ gate's. Keep verdict-bearing commands unpiped.
 **Suggested improvement:** In a worktree that shares dependencies by symlink, never stage with `git add -A`/`git add .`; stage the conflicted files by name (`git diff --name-only --diff-filter=U | xargs git add`). Prefer ignore patterns WITHOUT the trailing slash for dependency directories so a symlink is ignored too. After any merge that touched many files, `git diff --stat` against the base and look for a `120000` mode entry before pushing. Recovery when it has happened: `git rm` the link, fix the pattern, and in any checkout that merged it, `rm` the self-link and reinstall.
 
 **Principle:** A convenience that changes what the working tree contains (a symlink, a generated file) changes what `add -A` will commit; stage by name whenever the tree holds anything you did not author for the repo.
+
+### Observation 74: The owner's communication rules live in a subdirectory CLAUDE.md, so a session that opens on root docs answers before it has them
+
+**Status:** OPEN
+**Date:** 2026-09-05
+**Session context:** Session opened with "Read handoff.md". The root `HANDOFF.md` was read in full and summarised back to the owner in an engineer's register (commit hashes, file paths, test counts, CSS names) — the owner is non-technical and `raptor-port/CLAUDE.md` bans exactly that. The harness loads `raptor-port/CLAUDE.md` only when a file under `raptor-port/` is first touched, which happened one turn later; there is no root `CLAUDE.md`, and the handoff's opening line names CLAUDE.md as a companion but does not say "read it first" or carry the plain-language rule itself.
+**Skill:** session-handoff
+**Type:** open-source
+**Phase/Area:** What the handoff doc's first lines must carry
+
+**Issue:** The handoff is the document a fresh session reads first, and it was complete on project state but silent on HOW to talk to the owner. The rule existed, but in a file that loads lazily on a path the first turn need not touch. One reply went out in the wrong register before the rule arrived — the cheapest possible failure, but the same mechanism would bite any repo whose CLAUDE.md sits in a package subdirectory and whose sessions start at the root.
+
+**Suggested improvement:** Two structural fixes, either sufficient: (1) a root `CLAUDE.md` of a few lines — "the working rules are in `raptor-port/CLAUDE.md`; read it before replying; the owner is non-technical: plain words, short, no raw output" — so the harness loads it at session start regardless of which file is touched first; (2) the session-handoff skill's checklist gains a line: the handoff doc's first paragraph names the CLAUDE.md to load first AND restates the one or two rules that govern the reply itself (register, length), because the handoff is read before anything else. Prefer (1); it is enforceable by the harness rather than by memory.
+
+**Principle:** Put the rules that govern the FIRST reply where the first read lands. A rule that loads lazily on a code path is a rule the opening turn does not have.
+
+### Observation 75: The bug-testing tracker has no enforcement point — "every behaviour PR adds its row" drifted eight days and ~30 PRs
+
+**Status:** OPEN
+**Date:** 2026-09-05
+**Session context:** Owner asked whether the recent merges (#358–#367) were display or function bugs. Checking `BUG-TESTING.md` for their rows found the table stops at #335 (28 Aug 26); nothing from #336 to #367 (29 Aug – 5 Sep) is listed, although `HANDOFF.md`'s file-map entry for the tracker says "Every behaviour PR adds its row". The session-handoff skill's checklist does not mention the tracker at all (grep: no match), so nothing in the end-of-session step ever asked.
+**Skill:** session-handoff
+**Type:** open-source
+**Phase/Area:** The end-of-session checklist — which trackers the session's diff must be reconciled against
+
+**Issue:** The rule was documented in the place a reader consults to learn what the file IS, not in the step that runs when a session closes. HANDOFF.md itself stayed true across those PRs because the handoff skill checks it against the diff; the tracker had no such check and silently fell behind. The owner uses this tracker to drive bug testing batch by batch, so an unlisted batch is one that never gets a pass.
+
+**Suggested improvement:** Add to the session-handoff skill's checklist: "list the PRs merged or opened this session (`git log --oneline` since the session's base); for each one that ships behaviour, confirm `BUG-TESTING.md` has its row; docs-only PRs go in the footnote line." Generalise: the handoff skill should carry a short list of every "every PR updates X" tracker the repo has, and reconcile each against the session's PR list — a rule of the form "every change updates X" only holds if the closing step enumerates the changes and checks X. Backfill the missing #336–#367 rows in the next docs PR.
+
+**Principle:** "Every change updates X" is not a rule until the closing step enumerates the changes and checks X; a rule stated in the file's description is documentation, not enforcement.
