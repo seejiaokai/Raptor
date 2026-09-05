@@ -958,3 +958,18 @@ gate's. Keep verdict-bearing commands unpiped.
 **Suggested improvement:** When a paint-timing bug is fixed by a change that alters what is *underneath* the faulty layer, re-derive what the old symptom would look like with the new underlay before calling it done — a hole that showed black will now show whatever is beneath. And when a recording shows one region moving and another still, ask which layer each region belongs to (compare a top band and a bottom band across frames) before assuming one element is painting slowly.
 
 **Principle:** A symptom is the union of every fault that paints the same pixels; removing one fault changes the symptom's shape rather than ending it. Diagnose from the frames on each re-test, not from the previous round's story.
+
+### Observation 72: A seam that never moves is a box edge, not a paint race — check geometry before theorising about tiles
+
+**Status:** OPEN
+**Date:** 2026-09-05
+**Session context:** The phone week-cross "split" (obs 71's second recording). The first fix assumed a WebKit tile-paint race (arriving snapshot committed off-screen, painted top-first), built one-day pre-painted snapshots, shipped, and the owner reported "still the same" after a fresh load.
+**Skill:** systematic-debugging
+**Type:** open-source
+**Phase/Area:** Root cause from a screen recording
+
+**Issue:** The frames had the answer before any theory: the seam between the sliding top and the static bottom sat at the SAME pixel in every frame and on every cross in one direction only, and that pixel equalled the height of the short week being left. The snapshot's box was measured from the week being left, before the swap, so the tall arriving day was clipped at a short week's height. A paint race would drift between frames and vary between runs; a fixed seam is an element's edge. The tile theory was plausible (the phone does paint on its main thread), fit the first recording, and could not be tested here (no WebKit), so it survived a whole round.
+
+**Suggested improvement:** When a recording shows a region moving and another still, measure the boundary first: is it at the same pixel every frame? Does it equal any element's box (height, width, rect edge) that the code fixes from a measurement? Does it appear in only one direction/state? Only if the boundary moves or varies is a timing/paint theory in play. And when a theory cannot be tested on the target device, say so in the PR and prefer the fix that also holds if the theory is wrong (here: sizing the box correctly would have fixed it regardless).
+
+**Principle:** A fixed edge is geometry; a drifting edge is timing. Read which one the frames show before choosing a theory you cannot test.

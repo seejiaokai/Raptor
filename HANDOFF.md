@@ -165,14 +165,18 @@ run whole against the final code:
   and the phone drew the week from scratch. Fix: the week stays painted under
   the two snapshots, covered and `pointer-events:none` (still nothing to
   scrub); the incoming snapshot lifts two frames after the reveal. Second
-  pass the same evening (his 16:46 recording, "the top part swipe is like
-  split animation"): the arriving snapshot slid in with its lower tiles not
-  yet painted — it was the whole week's markup and started a screen
-  off-screen, where the phone paints nothing — so the real week showed through
-  the hole. Now each snapshot is ONE opaque day card, inserted on-screen under
-  the leaving one and painted for two frames before it moves. Pinned
-  `ui/weekglide.test.ts`; ledger 24. Chromium cannot show either fault (it
-  rasters off-thread), so the iPhone is the gate.
+  pass the same evening (his 16:46 and 17:23 recordings, "the top part swipe
+  is like split animation"): the arriving snapshot was CLIPPED at the leaving
+  week's height — its box was measured before the swap — so crossing from a
+  week of short ground days into the tall seed week cut the arriving Monday
+  at ~240 px, and below that seam the real week's own landed rows showed (the
+  page background, i.e. black, before the first pass). The box is now the
+  taller of the two weeks, measured on both sides of the swap; each snapshot
+  is also one opaque day card, pre-painted on-screen two frames before it
+  moves (cost and precaution — a first theory of a tile-paint race that did
+  not move the seam; ledger 24 records it as a dead end). Pinned
+  `ui/weekglide.test.ts`. Chromium never showed the clip (its demo weeks are
+  the same height), so the iPhone is the gate.
 - **iOS is untestable here.** This container ships no WebKit. The Leave War
   column window / placeholders and every contenteditable or touch-fling change
   are verified on the owner's iPhone against the preview; if the grid ever

@@ -140,13 +140,16 @@ Grouped by area. Each is the short rule; the source has the full story.
   (`pointer-events:none`), never `visibility:hidden`: a hidden element is never
   painted, so the reveal came back with no tiles and the phone drew the new
   week in from black over ~0.4 s. The incoming snapshot lifts two frames after
-  the reveal, over identical pixels. And each snapshot is ONE day card, opaque,
-  inserted on-screen (the arriving one under the leaving one) and left for two
-  frames before it moves — the phone paints a layer's tiles on its main thread
-  and none for an off-screen layer, so a whole-week snapshot that started a
-  screen away slid in top-first with its lower half a hole (the 16:46 "split").
-  Don't start a snapshot off-screen, don't clone the whole week into one.
-  Pinned `ui/weekglide.test.ts`.
+  the reveal, over identical pixels. And the snapshot box is as tall as the
+  TALLER of the two weeks, measured on both sides of the swap — sized from the
+  leaving week alone it clipped a tall arriving Monday at a short ground week's
+  height, and below that seam whatever lay underneath showed (black while the
+  week was hidden, the landed week's own rows once it was painted — the 16:46 /
+  17:23 "split"). Each snapshot is also ONE opaque day card, inserted on-screen
+  under the leaving one and left two frames before it moves (cost and a
+  precaution, not the fault). Don't size a snapshot from one week, don't clone
+  the whole week into one, don't start one off-screen. Pinned
+  `ui/weekglide.test.ts`.
 - **A repeatedly-tapped control must not move under the user** — reserve the
   space or anchor growth away from the control (e.g. RangePicker pads to a
   constant six rows).
@@ -450,29 +453,36 @@ through sourcemaps for the JS split, paired A/B runs.
     Not measurable here (Chromium paints a revealed page in one frame; the
     progressive main-thread tile paint is WebKit's) — the owner's iPhone is the
     gate. · `ui/weekglide.ts`.
-    **Second pass, same day (the owner's 16:46 recording — "the top part swipe
-    is like split animation").** With the real week now painted underneath,
-    the slide itself showed a card cut in two: its header slid in while its
-    lower rows sat still at the landing position. Frame-by-frame: the arriving
-    snapshot's TOP was painted and moving, its LOWER part was not painted yet,
-    and the real week (static, already landed) showed through the hole. Cause:
-    the snapshot was the WHOLE week's markup clipped to one day (seven cards to
-    paint, six of them off to the sides for the paint-ahead to reach into), and
-    it was committed a full screen OFF-SCREEN before the slide began — the phone
-    paints no tiles for an off-screen layer, so it entered with its tiles still
-    being painted top-first. Before the 16:02 fix the same hole showed the page
-    background, which is at least part of what read as "the lower half black".
-    Fix: each snapshot carries only the day card it shows (`snapshot()`), with
-    the page background so a short day is opaque to its foot; both are inserted
-    ON-SCREEN over the week — arriving under leaving — and left two frames to
-    paint, then the arriving one jumps to its start and slides in within one
-    style update (start committed by a forced style read), so it is never a
-    still, off-screen, unpainted layer. · *Invariant:* a glide snapshot is one
-    day card, opaque, and is painted on-screen before it moves. Pinned
-    `ui/weekglide.test.ts` (one card each, the right days, `var(--bg)`, inserted
-    at `translateX(0)` under the leaving clone, the slide two frames later). ·
-    Again the iPhone is the gate; Chromium rasters off-thread and never showed
-    the hole.
+    **Second pass, same day (the owner's 16:46 and 17:23 recordings — "the
+    top part swipe is like split animation").** With the real week now painted
+    underneath, the slide itself showed a card cut in two: its header slid in
+    while its lower rows sat still at the landing position, with a hard
+    horizontal seam between them. The first theory was a paint race — the
+    arriving snapshot was the whole week's markup, committed a screen
+    off-screen, so the phone (main-thread tile paint) entered it top-first —
+    and the first fix (one day card per snapshot, pre-painted on-screen for
+    two frames, opaque page background) did not move the seam at all: "still
+    the same" on a fresh load. What the frames actually said: the seam sat at
+    the SAME pixel in every frame and on every cross into the tall week, and
+    only on crosses INTO it; back-crosses were clean. A paint race drifts and
+    varies; a fixed seam is a box edge. The box: the clone's height came from
+    `root.getBoundingClientRect()` taken BEFORE the swap — the week being
+    left. Leaving a week of ground days (~240 px of card) for one whose Monday
+    runs off the screen, the arriving clone was clipped at 240 px; below that,
+    whatever lay underneath showed — the page background while the real week
+    was hidden (the 16:02 "lower half black"), the landed week's own rows once
+    it was painted (the split). Fix: the clone box is the taller of the two
+    weeks, measured on each side of the swap (`h`), opaque under a short card.
+    The one-day, pre-painted snapshots stay as cost and precaution, described
+    as such. · *Invariant:* a glide snapshot is as tall as the taller of the
+    two weeks, one opaque day card, painted on-screen before it moves. Pinned
+    `ui/weekglide.test.ts` (height on both crossing directions, one card each,
+    the right days, `var(--bg)`, inserted at `translateX(0)` under the leaving
+    clone, the slide two frames later). · *Dead end, recorded:* the off-screen
+    tile-paint theory for THIS symptom — a fixed seam is geometry; check the
+    element's box before theorising about tiles. Chromium never showed the
+    clip either, because its week was never taller than the viewport's clone
+    in the drive (the demo weeks are the same height) — the iPhone found it.
 
 ---
 

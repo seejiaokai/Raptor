@@ -19,24 +19,26 @@
    during the slide, so nothing can scrub. See the body for the layout-force and
    direction-derived landing that keep the incoming clone on the right day.
 
-   WHY EACH CLONE IS ONE DAY CARD, PAINTED BEFORE IT MOVES (owner, 5 Sep 26,
-   16:46 recording — "the top part swipe is like split animation"): the clones
-   used to be the WHOLE week's markup clipped to one day, and the arriving one
-   started a full screen off-screen and slid in from there. The phone paints a
-   composited layer's tiles on its main thread, and paints nothing for a layer
-   that is off-screen — so the arriving clone entered with its tiles still being
-   painted, top first, and for the length of the slide its lower part was a
-   hole: the real week (painted underneath since the 16:02 fix the same day; the
-   page background before it) showed through, sitting still while the top slid
-   — a card split in two. Two changes close it: each clone carries ONLY the day
-   card it shows (a seventh of the markup, and nothing off to the sides for the
-   browser to paint ahead into), and BOTH clones are inserted on-screen over the
-   week — the arriving one underneath the leaving one — and left there for two
-   frames so the browser paints them while they are covered; only then does the
-   arriving clone jump to its start and slide in, in ONE style update, so at no
-   point is it committed as a still, off-screen, unpainted layer. The clones
-   also carry the page background, so a short day (a ground Sunday) never lets
-   the taller real day underneath show below its card.
+   THE CLONES ARE AS TALL AS THE TALLER OF THE TWO WEEKS (owner, 5 Sep 26 — the
+   16:46 and 17:23 recordings, "the top part swipe is like split animation"; the
+   16:02 "lower half black" was the same fault). The clone's box was sized from
+   the week being LEFT, measured before the swap. Crossing from a week of short
+   ground days (~240 px of card) into a week whose Monday runs off the screen,
+   the arriving clone was CLIPPED at the old week's height: its top slid in,
+   and below a hard horizontal seam it showed nothing — the page background
+   while the real week was hidden (black), the real week's own rows, already
+   landed and standing still, once it was painted underneath. Frame by frame
+   the seam sat at the same pixel in every frame, exactly the old week's
+   height; that fixed seam is what told a clip apart from a paint race. The
+   clone box is now the taller of the two weeks, measured on each side of the
+   swap, and carries the page background so the extra height under a short
+   card is solid. Two cheaper things ride along and stay: each clone carries
+   ONLY the day card it shows (a seventh of the markup, nothing off to the
+   sides for the phone to paint ahead into), and both clones are inserted
+   on-screen — the arriving one under the leaving one — and left two frames to
+   paint before the arriving one jumps to its start and slides in, so it is
+   never committed as a still, off-screen layer. Those are precautions against
+   the phone's main-thread tile painting; the clip was the fault.
 
    PHONE ONLY, and only on a real week CROSS. Desktop lands instant — its arrows
    step weeks and the wide free-scroll week (multiple days visible) never showed
@@ -135,6 +137,10 @@ export function beginGlide(root: HTMLElement): (() => void) | null {
          is opaque edge to edge: below a short day card the real week's taller
          day would otherwise show through. (The body's faint top gradients reach
          at most the week's first rows, which the card itself covers.)
+       - height: the TALLER of the two weeks (`h`, measured on both sides of
+         the swap) — sized from the leaving week alone, the arriving clone was
+         clipped at that height and its lower part showed whatever lay under
+         it (the 16:02 black, the 16:46/17:23 split).
        - will-change + a resting transform give the clone its own compositor
          layer from the first frame, so it is painted where it is inserted. */
     const mkClone = (s: Snapshot, z: number) => {
@@ -142,7 +148,7 @@ export function beginGlide(root: HTMLElement): (() => void) | null {
       c.className = root.className
       c.style.cssText =
         `position:fixed;left:${rect.left}px;top:${rect.top}px;width:${rect.width}px;` +
-        `height:${rect.height}px;margin:0;overflow:hidden;pointer-events:none;z-index:${z};` +
+        `height:${h}px;margin:0;overflow:hidden;pointer-events:none;z-index:${z};` +
         `scroll-behavior:auto;background:var(--bg);will-change:transform;transform:translateX(0)`
       c.innerHTML = s.html
       const card = c.firstElementChild as HTMLElement | null
@@ -177,7 +183,11 @@ export function beginGlide(root: HTMLElement): (() => void) | null {
                 the wrong day and jumping when the clones came off. The finish
                 re-lands the real week to this SAME target, so clone and week
                 always agree. */
-    void root.offsetWidth                          // force root's new-week layout before measuring its scroll ceiling
+    void root.offsetWidth                          // force root's new-week layout before measuring it
+    /* the clone box must cover BOTH weeks' cards: the one being left (rect, measured
+       before the swap) and the one arriving (root's box now). A clone sized from
+       the leaving week alone clipped a tall arriving day at a short week's height. */
+    const h = Math.max(rect.height, root.getBoundingClientRect().height)
     const landed = fwd ? 0 : weekScrollMax(root)
     const inc = mkClone(snapshot(root, landed, false), 40)   // underneath …
     const out = mkClone(outSnap, 41)                          // … the leaving day, on top
@@ -235,7 +245,8 @@ export function beginGlide(root: HTMLElement): (() => void) | null {
        the jump committed as the transition's "from" by the forced style read),
        and both are sent on their way. The browser never sees the arriving clone
        as a still, off-screen layer — it is either on-screen or animating, so its
-       tiles are painted before a single pixel of it moves (the 16:46 split). At
+       tiles are painted before a single pixel of it moves (a precaution against
+       the phone's main-thread tile paint; the split itself was the clip). At
        every point in the slide the two clones meet edge-to-edge (out's trailing
        edge == inc's leading edge), so they cover the whole viewport — the real
        week behind them is never revealed. */

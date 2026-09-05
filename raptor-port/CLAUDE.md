@@ -954,13 +954,15 @@ Contract: `docs/ui-contracts.md` §Dragging sections and waves, §Dense row reor
     week painted but COVERED behind them (`pointer-events:none`, never
     `visibility:hidden` — 5 Sep 26, a hidden week came back unpainted). Load-bearing
     details: landing day derives from cross DIRECTION (`fwd?0:weekScrollMax`), NOT
-    live `scrollLeft`; each clone is ONE opaque day card (`snapshot()`), inserted
-    ON-SCREEN under the leaving one and left two frames to paint before it slides
-    (5 Sep 26 — a whole-week clone started off-screen slid in half-unpainted, the
-    "split"); real week covered so its fling/snap never shows. Clones at `z-index`
-    40/41, BELOW the sticky `.topbar` (60) — keep them under the chrome. Don't slide
-    the live week, use a single clone, clone the whole week, or start a clone
-    off-screen.
+    live `scrollLeft`; the clone box is as TALL as the taller of the two weeks,
+    measured on both sides of the swap (5 Sep 26 — sized from the leaving week it
+    clipped a tall arriving Monday at a short week's height: the "split" / "lower
+    half black"); each clone is ONE opaque day card (`snapshot()`), inserted
+    ON-SCREEN under the leaving one and left two frames to paint before it slides;
+    real week covered so its fling/snap never shows. Clones at `z-index` 40/41,
+    BELOW the sticky `.topbar` (60) — keep them under the chrome. Don't slide the
+    live week, use a single clone, size a clone from one week, clone the whole
+    week, or start a clone off-screen.
     Swipe NOT locked to one day (owner kept this) — no `scroll-snap-stop`; within-week
     swipes never glide, desktop instant.
   - **Desktop arrows are continuous across weeks** (owner, 23 Aug), landings instant.

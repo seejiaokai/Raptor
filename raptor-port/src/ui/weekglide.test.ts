@@ -152,6 +152,37 @@ describe('a fired glide leaves nothing behind', () => {
     vi.runAllTimers()
   })
 
+  /* THE SPLIT (owner, 5 Sep 26 — 16:46 and 17:23 recordings; the 16:02 "lower
+     half black" was the same fault). The clone box was sized from the week
+     being LEFT, measured before the swap: crossing from a week of short ground
+     days into one whose Monday runs off the screen, the arriving clone was
+     clipped at the short week's height — its top slid in, and below a hard
+     seam whatever lay underneath showed instead. The box must be as tall as
+     the TALLER of the two weeks, whichever side of the swap that is. */
+  it('the clones are as tall as the taller of the two weeks — the arriving one is never clipped at the leaving week\'s height', () => {
+    vi.useFakeTimers()
+    setW(400); view.setWeekJump('mon')
+    const root = mkRoot(390)                     // the week being left: 800px tall
+    const run = beginGlide(root)!
+    // the swap lands a week whose Monday is far taller
+    root.getBoundingClientRect = () =>
+      ({ width: 390, height: 2600, left: 0, top: 0, right: 390, bottom: 2600, x: 0, y: 0, toJSON() {} }) as DOMRect
+    run()
+    for (const c of clones()) expect(c.style.height, 'sized to the arriving week, the taller').toBe('2600px')
+    vi.runAllTimers()
+    // and the other way round: leaving a tall week for a short one keeps the tall box
+    view.setWeekJump('sun')
+    const root2 = mkRoot(390)
+    root2.getBoundingClientRect = () =>
+      ({ width: 390, height: 2600, left: 0, top: 0, right: 390, bottom: 2600, x: 0, y: 0, toJSON() {} }) as DOMRect
+    const run2 = beginGlide(root2)!
+    root2.getBoundingClientRect = () =>
+      ({ width: 390, height: 300, left: 0, top: 0, right: 390, bottom: 300, x: 0, y: 0, toJSON() {} }) as DOMRect
+    run2()
+    for (const c of clones()) expect(c.style.height, 'sized to the leaving week, the taller').toBe('2600px')
+    vi.runAllTimers()
+  })
+
   it('the clones are opaque — the page ground under a short day, so the taller real day never shows below it', () => {
     vi.useFakeTimers()
     setW(400); view.setWeekJump('mon')
