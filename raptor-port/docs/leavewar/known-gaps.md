@@ -657,7 +657,12 @@ accounts land and the roles stop being an affordance.
     `pointerdown`, clears it on up/cancel, and a mouse whose `buttons` reads 0
     ends the press on its next move (a release over the panel never reaches
     the scrim). Pinned in `scrim.test.tsx`. Any pointer-drag handler that
-    listens to `pointermove` needs the same guard — hover is a move.
+    listens to `pointermove` needs the same guard — hover is a move. Since
+    6 Sep 26 that handler is the MOUSE path only: a finger scrolls the scrim
+    ITSELF natively (`touch-action: pan-x pan-y` — the scrim is a proxy
+    scroller mirrored onto the grid, `ui-contracts.md` §LEFT-RIGHT), so touch
+    never reaches the forwarding at all and the fling under a sheet is the
+    browser's own.
 
 - **`focusDate` is view state, and it lives in the domain store on purpose.**
   The stage strip and the matrix render independently of each other — neither

@@ -1313,3 +1313,35 @@ gate's. Keep verdict-bearing commands unpiped.
 **Suggested improvement:** When a CI job is red, read the summary block for `Errors N` and the "Unhandled Errors" section before deciding anything from the pass/fail counts. For any module that schedules timers longer than a test file's typical run (seconds), make the callback tolerate a torn-down environment (guard on `document`/`window`) or clear the timers in the store's reset path — and say which in the code comment, because the next "unrelated" red run will otherwise be re-diagnosed from scratch.
 
 **Principle:** A test job fails on unhandled errors as well as on assertions; a production timer that outlives its test file is a latent red run waiting for a slow runner. (Second instance the same day: the Shell pre-warm poll, deploy run 903 — a self-re-arming `setTimeout` in a component the tests never unmount. Sweep for both shapes: long one-shot timers AND re-arming polls.)
+
+## 2026-09-06
+
+### Observation 86: Native-feel gestures — proxy the platform's own scroller instead of imitating its physics
+
+**Status:** OPEN
+**Date:** 2026-09-06
+**Session context:** The Leave War sheet scrim: the swipe on the grid behind an open sheet stopped dead at the lift, because the scrim forwarded pointer moves onto the grid's scrollLeft by hand; the owner asked for the swipe to be "exactly the same" as the bare grid's (branch `claude/read-handoff-docs-15o14q`, PR #371).
+**Skill:** New skill candidate: none — cross-cutting UI/gesture principle (sibling of Observation 67, which lists touch-fling momentum among the engine asymmetries)
+**Type:** open-source
+**Phase/Area:** design choice for gesture fidelity; verification of a physics-dependent change
+
+**Issue:** The obvious fix — track the pointer velocity and run a decay loop after release — is an imitation, and could never be "exactly the same": iOS, Chromium and Firefox each coast with a different curve and bounce, and a velocity estimated from 60 Hz pointer events is noisy. The codebase already held the better idiom in its desktop proxy scrollbar: a SECOND native scroller mirrored onto the first, echo-guarded. Making the overlay ITSELF a native scroller (`overflow-x:auto`, `touch-action: pan-x pan-y`, a spacer as wide as the target's scroll range) and mirroring its scroll onto the target gave the platform's own physics by construction, with less code than the imitation. Two hazards came with it and both were pinned: (1) the mirror direction that writes into whichever scroller is currently moving kills its fling — guarded by "the one value I wrote, cleared once its scroll event is seen"; (2) an overlay that mounts at scroll 0 must be aligned to the target in a layout effect before the first gesture, or it flings the target to the start (this repo's "jumps back to January" family).
+
+**Suggested improvement:** When an interceptor/overlay must relay a scroll-like gesture to another element and the ask is native feel, make the interceptor a real scroller of the same range and mirror positions (per-write echo guards, aligned on open, range refitted on the target's scroll and resize) rather than re-implementing momentum; reach for a hand-rolled coast only when the platform refuses to fling the proxy (record the platform's decay constant beside it — iOS UIScrollView: 0.998/ms). A verification note for the same class of change: a headless desktop browser may not fling from synthetic touches at all, so prove the drag-follow and the wiring there, and leave the coast itself to the device gate with a hypothesis and a fallback written down.
+
+**Principle:** Platform physics can be borrowed but not reproduced — route the gesture through a real native scroller and mirror its position, and keep every write out of whichever scroller is currently in motion.
+
+### Observation 87: A gesture-driven measurement that reads flat zero is a targeting question before it is a feature question
+
+**Status:** OPEN
+**Date:** 2026-09-06
+**Session context:** The same task's live drive — the first run of a real CDP touch fling on the scrim reported no movement, no coast and "the tap did not close the sheet"; every reading was consistent with "the feature does not work in Chromium".
+**Skill:** New skill candidate: none — cross-cutting verification principle (the mirror image of HANDOFF's "dispatch to `document.elementFromPoint`, not the element in hand")
+**Type:** open-source
+**Phase/Area:** live-drive verification / browser test tooling
+
+**Issue:** The finger's y was computed as "40 px above the panel", but on the phone the counter sheet starts 65 px from the top, so the touch landed ON the panel — which scrolls its own list and swallows taps. Nothing in the readings said so; the zero read as a negative finding about the feature and would have sent the investigation into the browser's fling behaviour. Printing the panel's box and `document.elementFromPoint` at the touch point before the gesture made the cause obvious; the second run (a shorter sheet, the finger provably on the scrim) measured the drag following the finger at once.
+
+**Suggested improvement:** In any drive or e2e that dispatches a pointer/touch gesture at coordinates, log the element at that point (`elementFromPoint`) and the boxes of any overlay that could sit there BEFORE dispatching, and assert it is the intended target; treat an all-zero gesture reading as "wrong target until proven otherwise". Pairs with the existing rule: check what is at the point before, and dispatch to what is at the point.
+
+**Principle:** A gesture that measures nothing has usually touched the wrong thing — verify the hit target before reading a zero as a result.

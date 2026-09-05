@@ -12,7 +12,7 @@
 // the grid, and the manning counts behind an open sheet are exactly what
 // somebody is reading while they decide.
 
-import { useEffect, useRef, type ReactNode } from 'react'
+import { useEffect, useLayoutEffect, useRef, type ReactNode } from 'react'
 import './bidpicker.css'
 
 /* THE PAGE STAYS FULLY SCROLLABLE UNDER A SHEET (owner, 28 Aug 26 — "enable
@@ -29,29 +29,116 @@ import './bidpicker.css'
 
 const PAN_THRESH = 6 // px before a gesture commits to an axis
 
-/* The scrim forwards a SIDEWAYS drag / wheel onto the grid's one horizontal
-   scroller by hand (owner, 28 Aug 26), and lets the browser handle UP-DOWN
-   natively (`touch-action: pan-y` in bidpicker.css + the wheel no-op below).
-   The scrim must keep SWALLOWING taps — a tap dismisses, and a bare grid tap
-   behind an open sheet would otherwise open a second cell sheet or start a
-   drag-select — so it goes on capturing gestures; it just no longer refuses
-   the vertical ones. Everything the frozen date bar tracks is driven off
-   `.mx-wrap.scrollLeft`, so it follows the sideways forward for free.
+/* THE SCRIM IS A NATIVE SIDEWAYS SCROLLER (owner, 6 Sep 26 — "when a window
+   like this is open, the swipe on the background of the leave war doesn't
+   decelerate smoothly. Like it stops immediately … fix the swipe animation to
+   be exactly the same"). Since 28 Aug the scrim forwarded a sideways drag onto
+   the grid BY HAND from pointer events: 1:1 under the finger, and dead the
+   instant the finger lifted, because a hand-written scrollLeft carries no
+   momentum — the grid stopped where the swipe let go instead of coasting on.
+   An imitation (a velocity estimate and a decay loop) would not be "exactly
+   the same": iOS, Chromium and Firefox each coast, decelerate and bounce
+   differently, and each one is what a person sees on the bare grid. So the
+   scrim is a REAL horizontal scroller now (`overflow-x: auto`, `touch-action:
+   pan-x pan-y`, its scrollbar hidden — bidpicker.css) with a `::before` spacer
+   the grid's scroll RANGE wide, and the two scrollers are mirrored onto each
+   other, echo-guarded — the `.mx-hbar` proxy idiom in Matrix.tsx. A finger on
+   the scrim scrolls the SCRIM natively — the browser's own drag, fling,
+   deceleration and edge bounce — and every scroll event copies its position
+   onto `.mx-wrap`, so the grid coasts exactly as it does with no sheet up.
+   Everything the frozen date bar tracks is driven off `.mx-wrap.scrollLeft`,
+   so it follows for free, as before.
 
-   Pointer capture is taken LAZILY, only once a drag commits to the horizontal
-   axis: capturing at pointerdown would stop the browser from panning the page
-   vertically from a touch that began on the scrim, which is the up-down scroll
-   the owner asked for. A gesture that never moved IS a tap — it dismisses (via
-   the scrim's onClick, guarded so a drag's trailing click can't). */
+   Why the copy cannot kill the fling (the hazard `.mx-hbar`'s history
+   records: a follower writing a stale position back onto a compositor fling):
+   under a sheet the grid never flings on its own, so the scrim → grid copy
+   has nothing to fight; and the grid → scrim copy skips the echo of our own
+   write (`gWant`, one value per write, cleared once its scroll event has been
+   seen), so nothing writes the scrim's scrollLeft while the scrim is the one
+   moving. What still crosses grid → scrim is a scroll the grid made on its
+   own — the row-window reflow at rest, the desktop proxy bar, a wheel or a
+   mouse pan — which keeps the scrim in step so the NEXT fling starts from
+   where the grid is.
+
+   A mouse cannot drag-scroll a native scroller, so a MOUSE press keeps the
+   hand forwarding below (the desktop drag-to-pan the owner has had since
+   28 Aug), and the wheel forwarding stays; a finger or a pen is left to the
+   browser. The scrim must still SWALLOW taps — a tap dismisses, and a bare
+   grid tap behind an open sheet would otherwise open a second cell sheet or
+   start a drag-select — which a scroller does simply by being the thing under
+   the finger: a native touch scroll fires no click, a tap does.
+
+   Alignment on open is load-bearing: the scrim mounts at scrollLeft 0, and a
+   fling from 0 would land the grid on January — the 2 Sep "jumps back to JAN"
+   family — so the spacer is sized and the scrim set to the grid's position in
+   a LAYOUT effect, before a finger can land. */
 function useGridPan(movedRef: { current: boolean }) {
   const scrimRef = useRef<HTMLDivElement>(null)
-  useEffect(() => {
+  useLayoutEffect(() => {
     const scrim = scrimRef.current
     if (!scrim) return
     // `.mx-wrap` is Leave War's own (and only) sideways scroller — the class
     // appears nowhere in Raptor's scheduler, so no page scope is needed.
     const grid = () => document.querySelector<HTMLElement>('.mx-wrap')
 
+    // ---- the proxy: scrim ⇄ grid, echo-guarded --------------------------
+    let gWant: number | null = null // the last position this hook wrote onto the grid…
+    let sWant: number | null = null // …and onto the scrim; each cleared once its scroll event is seen
+    let range = -1                  // the grid's max scrollLeft the spacer was last sized to
+    const gridMax = (g: HTMLElement) => Math.max(0, g.scrollWidth - g.clientWidth)
+    // Size the spacer so the scrim's scroll range EQUALS the grid's: the
+    // scrim's own width plus the grid's max scroll, so scrollLeft maps 1:1 in
+    // px on both. A cheap compare on every grid scroll; forced when the scrim
+    // itself resizes (the viewport turned, the keyboard came up).
+    const fit = (g: HTMLElement, force = false) => {
+      const max = gridMax(g)
+      if (!force && max === range) return
+      range = max
+      scrim.style.setProperty('--lw-scrim-w', `${scrim.clientWidth + max}px`)
+    }
+    const onScrimScroll = () => {
+      const g = grid()
+      if (!g) return
+      const s = scrim.scrollLeft
+      // Our own follow-write (onGridScroll) echoing back as a scroll event.
+      if (sWant != null && Math.abs(s - sWant) <= 1) { sWant = null; return }
+      sWant = null
+      // An edge bounce reads past the range on iOS; the grid takes the edge.
+      const v = Math.min(Math.max(0, s), gridMax(g))
+      if (g.scrollLeft === v) return
+      gWant = v
+      g.scrollLeft = v
+    }
+    const onGridScroll = () => {
+      const g = grid()
+      if (!g) return
+      fit(g)
+      const v = g.scrollLeft
+      // The echo of onScrimScroll's write — the one write that must NEVER
+      // come back onto the scrim, or it would land mid-fling and kill it.
+      if (gWant != null && Math.abs(v - gWant) <= 1) { gWant = null; return }
+      gWant = null
+      if (Math.abs(scrim.scrollLeft - v) <= 1) return
+      sWant = v
+      scrim.scrollLeft = v
+    }
+    // Open ALIGNED: spacer sized, scrim at the grid's position, before any
+    // finger can land (a layout effect — see the block comment above).
+    const g0 = grid()
+    if (g0) {
+      fit(g0, true)
+      if (Math.abs(scrim.scrollLeft - g0.scrollLeft) > 1) { sWant = g0.scrollLeft; scrim.scrollLeft = g0.scrollLeft }
+    }
+    // The grid's content resizes WITHOUT a scroll event when a month draws in,
+    // a row set reflows at rest or the zoom steps: keep the range fitted.
+    // jsdom has no ResizeObserver; the grid-scroll refit covers it there.
+    const ro = g0 && typeof ResizeObserver === 'function'
+      ? new ResizeObserver(() => { const g = grid(); if (g) fit(g) })
+      : null
+    if (ro && g0) { ro.observe(g0); for (const c of Array.from(g0.children)) ro.observe(c) }
+    const onResize = () => { const g = grid(); if (g) fit(g, true) }
+
+    // ---- the mouse: drag-to-pan by hand, as since 28 Aug -----------------
     let x0 = 0, y0 = 0, sl0 = 0, axis: '' | 'x' | 'y' = '', captured = false
     // Whether a press is in progress. A mouse fires `pointermove` on a bare
     // HOVER too, and the scrim covers the whole page behind a sheet — so
@@ -67,11 +154,17 @@ function useGridPan(movedRef: { current: boolean }) {
     let pressed = false
     const down = (e: PointerEvent) => {
       const g = grid()
+      if (g) fit(g) // the range is right the instant a gesture can begin
       x0 = e.clientX; y0 = e.clientY; sl0 = g ? g.scrollLeft : 0
       axis = ''; movedRef.current = false; captured = false; pressed = true
     }
     const move = (e: PointerEvent) => {
       if (!pressed) return
+      // A finger (or a pen) is the browser's: `touch-action: pan-x pan-y`
+      // lets it scroll the scrim natively, momentum and all, and
+      // onScrimScroll carries that onto the grid. Forwarding it by hand here
+      // as well would fight the native scroll and, on iOS, kill the fling.
+      if (e.pointerType === 'touch' || e.pointerType === 'pen') return
       if (e.pointerType === 'mouse' && e.buttons === 0) { pressed = false; return }
       const dx = e.clientX - x0, dy = e.clientY - y0
       if (!axis) {
@@ -81,7 +174,7 @@ function useGridPan(movedRef: { current: boolean }) {
       }
       if (axis === 'x') {
         // Capture only now, so a vertical drag is left to the browser's own
-        // page pan (touch-action: pan-y) rather than swallowed here.
+        // page pan (touch-action) rather than swallowed here.
         if (!captured) { try { scrim.setPointerCapture(e.pointerId); captured = true } catch { /* jsdom / unsupported */ } }
         const g = grid()
         if (g) g.scrollLeft = sl0 - dx
@@ -102,12 +195,19 @@ function useGridPan(movedRef: { current: boolean }) {
       e.preventDefault()
     }
 
+    scrim.addEventListener('scroll', onScrimScroll)
+    g0?.addEventListener('scroll', onGridScroll)
+    window.addEventListener('resize', onResize)
     scrim.addEventListener('pointerdown', down)
     scrim.addEventListener('pointermove', move)
     scrim.addEventListener('pointerup', upOrCancel)
     scrim.addEventListener('pointercancel', upOrCancel)
     scrim.addEventListener('wheel', wheel, { passive: false })
     return () => {
+      ro?.disconnect()
+      scrim.removeEventListener('scroll', onScrimScroll)
+      g0?.removeEventListener('scroll', onGridScroll)
+      window.removeEventListener('resize', onResize)
       scrim.removeEventListener('pointerdown', down)
       scrim.removeEventListener('pointermove', move)
       scrim.removeEventListener('pointerup', upOrCancel)
@@ -323,10 +423,14 @@ export function Sheet({
   }, [panelRef])
   return (
     <>
-      {/* Not a button and not focusable: it carries nothing a screen reader
-          needs, and every sheet already has a real labelled ✕. This is a
-          pointer convenience on top of that, never the only way out. */}
-      <div ref={scrimRef} className="sheetscrim" data-testid="sheet-scrim" aria-hidden="true" onClick={onScrimClick} />
+      {/* Not a button and not in the tab order: it carries nothing a screen
+          reader needs, and every sheet already has a real labelled ✕. This is
+          a pointer convenience on top of that, never the only way out. The
+          explicit tabIndex is load-bearing since the scrim became a scroll
+          container (6 Sep 26): Chrome 130+ makes a scroller with no focusable
+          children keyboard-focusable, and a Tab stop on an aria-hidden
+          element is exactly the trap this line refuses. */}
+      <div ref={scrimRef} className="sheetscrim" data-testid="sheet-scrim" aria-hidden="true" tabIndex={-1} onClick={onScrimClick} />
       <div ref={panelRef} className={`bidsheet${narrow ? ' narrow' : ''}${full ? ' full' : ''}`} data-testid={testid} role="dialog" aria-label={label}>
         {children}
       </div>

@@ -1166,9 +1166,107 @@ test('the page scrolls behind an open sheet, and the panel stays put', async ({ 
   const topAfter = (await sheet.boundingBox())!.y
   expect(Math.abs(topAfter - topBefore)).toBeLessThan(1.5)
 
+  // Both axes are the browser's since 6 Sep 26: the scrim is itself a native
+  // sideways scroller mirrored onto the grid (the fling test below), and its
+  // vertical pan still chains to the page.
   const ta = await page.locator('[data-testid="sheet-scrim"]').evaluate(el => getComputedStyle(el).touchAction)
-  expect(ta).toBe('pan-y')
+  expect(ta).toBe('pan-x pan-y')
   expect(await page.evaluate(() => getComputedStyle(document.body).overflow)).not.toBe('hidden')
+})
+
+/* THE SWIPE UNDER A SHEET IS THE BROWSER'S OWN (owner, 6 Sep 26 — "when a
+   window like this is open, the swipe on the background … doesn't decelerate
+   smoothly. Like it stops immediately … fix the swipe animation to be exactly
+   the same"). The scrim is a native sideways scroller mirrored onto the grid
+   (Sheet.tsx useGridPan), so a finger's drag, fling and deceleration are
+   whatever the browser gives the bare grid. Driven as a REAL touch through CDP
+   (Input.dispatchTouchEvent — the page's own touch pipeline, so the browser
+   scrolls the SCRIM itself; the `swipe` helper above only dispatches DOM
+   events, which scroll nothing). What this proves: the drag follows the finger
+   through the scrim, the two scrollers stay in step, the sheet stays up, a tap
+   still closes. What it cannot: the COAST after the lift — this container's
+   headless Chromium flings no native scroller from synthetic touches at all
+   (probed on a bare scroller, 6 Sep 26), so the deceleration is the device's
+   to show (BUG-TESTING.md #371). Phone project only: the one with a touch
+   screen. */
+test('a finger drag on the scrim scrolls the grid natively, stays in step, and the sheet stays up', async ({ page }) => {
+  test.skip(!isPhone(), 'a touch-screen creature')
+  await lwRole(page, 'admin') // any cell opens its sheet for an admin
+  await page.locator('[data-testid="month-JUN"]').click()
+  await settleGrid(page)
+  // The owner's own scenario: a cell's bid sheet, opened mid-year.
+  const cell = await page.evaluate(() => document.querySelector('[data-testid^="cell-"][data-testid$="-2026-06-15"]')?.getAttribute('data-testid'))
+  expect(cell, 'a June cell is drawn').toBeTruthy()
+  await page.locator(`[data-testid="${cell}"]`).click()
+  const sheet = page.locator('[data-testid="bid-picker"]')
+  await expect(sheet).toBeVisible()
+  await settleGrid(page)
+  const pos = () => page.evaluate(() => {
+    const s = document.querySelector('.sheetscrim') as HTMLElement, w = document.querySelector('.mx-wrap') as HTMLElement
+    return { scrim: s.scrollLeft, grid: w.scrollLeft, scrimRange: s.scrollWidth - s.clientWidth, gridRange: w.scrollWidth - w.clientWidth }
+  })
+  // The scrim opened ALIGNED to the grid, with the grid's range — a scrim left
+  // at 0 would fling the grid back to January.
+  const at0 = await pos()
+  expect(at0.grid, 'the grid sits mid-year').toBeGreaterThan(500)
+  expect(Math.abs(at0.scrim - at0.grid)).toBeLessThanOrEqual(1)
+  expect(at0.scrimRange).toBe(at0.gridRange)
+  // The finger lands on the SCRIM, above the panel — checked, not assumed: a
+  // finger on the panel scrolls the panel's own list and proves nothing.
+  const box = (await sheet.boundingBox())!
+  const y = Math.max(100, Math.round(box.y - 60)), x0 = 340
+  expect(await page.evaluate(([x, y]) => document.elementFromPoint(x, y)?.className, [x0, y])).toBe('sheetscrim')
+  const cdp = await page.context().newCDPSession(page)
+  await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x: x0, y }] })
+  for (let i = 1; i <= 10; i++) {
+    await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: x0 - i * 25, y }] })
+    await page.waitForTimeout(10)
+  }
+  const mid = await pos()
+  await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] })
+  await page.waitForTimeout(150)
+  const end = await pos()
+  // The grid moved WITH the finger (250px dragged left; the browser's own
+  // touch slop eats a little), through the scrim's native scroll…
+  expect(mid.grid - at0.grid, 'the grid followed the finger mid-drag').toBeGreaterThan(150)
+  expect(end.grid - at0.grid).toBeGreaterThan(150)
+  // …and the two scrollers are in step, so the next swipe starts where the
+  // grid is.
+  expect(Math.abs(end.scrim - end.grid)).toBeLessThanOrEqual(1)
+  // A scroll is not a dismissal.
+  await expect(sheet).toBeVisible()
+  // A plain tap on the scrim still closes it: a native touch scroll fires no
+  // click, a tap does. Not straight after the drag: a touch that lands within
+  // Chromium's ~200ms tap-suppression window after a scroll gesture is read as
+  // "stop the scroll" and fires no click — on a real phone too, which is the
+  // right behaviour — so let the gesture settle first.
+  await page.waitForTimeout(500)
+  await settleGrid(page)
+  await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x: 200, y }] })
+  await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] })
+  await expect(sheet).toHaveCount(0)
+})
+
+/* The OTHER direction, on both widths: a scroll the grid makes on its own —
+   here a programmatic one; in real life a month jump, the desktop proxy bar,
+   a wheel, the row-window reflow at rest — lands on the scrim, so the next
+   fling starts from where the grid is; and the two ranges agree, which is
+   what makes the mirror 1:1 in px. */
+test('the scrim follows a scroll the grid makes on its own, and shares its range', async ({ page }) => {
+  await page.locator('[data-testid="counter-pick"]').click()
+  await expect(page.locator('[data-testid="counter-sheet"]')).toBeVisible()
+  const pos = () => page.evaluate(() => {
+    const s = document.querySelector('.sheetscrim') as HTMLElement, w = document.querySelector('.mx-wrap') as HTMLElement
+    return { scrim: s.scrollLeft, grid: w.scrollLeft, scrimRange: s.scrollWidth - s.clientWidth, gridRange: w.scrollWidth - w.clientWidth }
+  })
+  const before = await pos()
+  expect(before.gridRange, 'the year overflows the viewport').toBeGreaterThan(1000)
+  expect(before.scrimRange).toBe(before.gridRange)
+  await page.evaluate(() => { (document.querySelector('.mx-wrap') as HTMLElement).scrollLeft += 600 })
+  await expect.poll(async () => { const p = await pos(); return Math.abs(p.scrim - p.grid) }).toBeLessThanOrEqual(1)
+  const after = await pos()
+  expect(after.grid - before.grid).toBeGreaterThanOrEqual(599)
+  expect(after.scrim - before.scrim).toBeGreaterThanOrEqual(599)
 })
 
 // The viewer — Raptor's "View as" person, Bane on a fresh login — is lit on
