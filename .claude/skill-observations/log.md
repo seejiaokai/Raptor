@@ -928,3 +928,18 @@ gate's. Keep verdict-bearing commands unpiped.
 **Suggested improvement:** In a pointer-up / drop teardown, sequence by data dependency, not by tidy-up instinct: do every measurement the drop needs (hit-test under the point, target geometry) FIRST, against the still-settled layout, and only then perform the teardown writes (remove the ghost, clear the body markers). When the ghost overlaps the drop point, exclude it from the hit-test rather than removing it early. Read-then-write, batched — the same rule that avoids layout thrash in a render loop applies to a one-shot handler.
 
 **Principle:** Interleaving DOM reads and writes forces a layout per read; a pointer-up handler that measures after it has begun tearing down pays for a layout it did not need. Order the handler so all reads precede all writes, even when the natural writing order (clean up first) reads the other way.
+
+### Observation 70: A test that asserts a transient of a background fill loop is a coin toss
+
+**Status:** OPEN
+**Date:** 2026-09-05
+**Session context:** PR #364's CI went red on the Leave War desktop test "a month button works from wherever the grid already is", the one check that had been failing ~1 in 2 locally for two days and was recorded as "intermittent" on three PR bodies instead of root-caused.
+**Skill:** New skill candidate: flake triage (or the repo's steward/babysit posture)
+**Type:** open-source
+**Phase/Area:** CI red → "flake" judgement
+
+**Issue:** The assertion (September's header gone after a SEP → MAR jump) was true on the phone, where the window rolls with the view, and only *sometimes* true on the desktop, where a background loop draws toward the whole year one idle beat at a time: if enough beats landed between the two clicks, March was already drawn, the jump only scrolled, and September rightly stayed. The test was written in the same PR that introduced the loop, so it asserted a state the design itself made transient. It was labelled "intermittent, CI green" on three PRs before anyone read the failing line against the loop.
+
+**Suggested improvement:** When a check fails on some runs and not others, the first question is "what background process could change the asserted state between the action and the assertion?" — not "is the runner slow?". Read the assertion against every loop, timer or idle callback that touches the same state; a claim that depends on how many beats fit between two steps is not a claim. Fix the assertion's scope (gate it to where it is deterministic, or assert the invariant the loop preserves), never add a retry or a longer timeout.
+
+**Principle:** A flaky test is a test asserting something the system does not promise. Find the promise the test meant to check and assert that; the flake is the diagnosis, not the disease.
