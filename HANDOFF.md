@@ -137,24 +137,134 @@ run whole against the final code:
 
 ## In flight
 
-- **The performance thread (the current live work).** The puck-drag round and
-  the drop round (both 6 Sep 26) are SHIPPED to the branch
-  `claude/read-handoff-docs-5fx50p`, PR #356, and are **NOT merged** — the owner
-  merges only on an explicit "merge live", after checking the Vercel preview on
-  the slow laptop and the iPhone
-  (`https://raptor-git-claude-read-handoff-docs-5fx50p-kai-e2f5.vercel.app`).
-  The full ledger of every speed round is `docs/performance.md` Part 2; the
+- **The Leave War swipe-up-during-a-fling fix (5 Sep 26, from the owner's
+  screen recording) — PR #358, VERIFIED on the owner's iPhone ("Ok it works"),
+  awaiting his "merge live".** After a pinch out / pinch in, a swipe up while the grid's sideways
+  fling was still decelerating rubber-banded the rows ~100px inside `.mx-wrap`
+  and snapped them back, the `.mxband` left column stood still, and the page did
+  not scroll until the fling died. Root cause, from WebKit's own source (this
+  container has no WebKit): `overflow-x: auto` alone computes `overflow-y: auto`,
+  and on iOS that hands the native scroll view whatever vertical overflow layout
+  produces — any stray pixel makes the wrapper a vertical scroller, and a finger
+  landing mid-fling is latched to it. Fix: `overflow-y: hidden` on `.mx-wrap`
+  (WebKit then clamps the vertical content size to the visible height). One CSS
+  line; contract in `docs/ui-contracts.md` §The Leave War grid scroller has no
+  vertical axis; `known-gaps.md` §momentum item 3 corrected. **Test on the
+  iPhone:** pinch out, pinch in, swipe up straight away — the rows must not slide
+  inside the grid, the page must scroll, and the sideways flick must still glide
+  exactly as before (the 30 Aug A/B says this property is momentum-neutral).
+  Revert is the one line if anything regresses; the `overscroll-behavior-y:
+  none` trap is recorded in the ui-contracts section.
+- **The performance thread.** The puck-drag round and the drop round (both
+  6 Sep 26) are MERGED to main as PR #356 (5 Sep 26 00:08 UTC). Check a PR's
+  state before acting on it — this file said "NOT merged" for an hour after the
+  owner merged (observer log obs 60). The full ledger of every speed round is `docs/performance.md` Part 2; the
   guardrails any new change must follow are Part 1. **Still-open residuals**,
-  recorded not built, in order of size: the page repaint + compositing after a
-  drop (~160 ms at 4×, structural — the page's ~230 compositor layers; cutting
-  them is the only lever left for a smoother drag, a page-wide CSS change with
-  visual implications); the seven day strings (60–135 ms — `availHTML`'s
-  per-wave availability sort is the fat part and reads the availability oracle,
-  so any cache there is engine-adjacent); the `body.dnd` decorations coming off
+  recorded not built, in order of size: the seven day strings (60–135 ms —
+  `availHTML`'s per-wave availability sort is the fat part and reads the
+  availability oracle, so any cache there is engine-adjacent); the DROP is
+  JS-bound (5 Sep 26 trace, ledger 22: ~210 ms of JS inside the pointer-up at
+  4× — validate + the block swap + parse — then ~40 style, ~45 layout, ~66
+  paint, ~72 raster; the earlier "~160 ms repaint + compositing" reading was
+  the DRAG's per-move re-layerise, halved by the 5 Sep layer cut below); plain
+  mouse movement over the week repaints on every hover boundary crossed
+  (`.form:hover`'s 1.8% white tint and the seat hover outline — ~17 ms a
+  crossing at 4×, bisected by nesting depth; dropping the tint is the owner's
+  call); what a drag move still costs after the cut (~16 ms layerize for the
+  105 layers left, 35 of them the roster's own sticky heads and pucks, ~9 ms
+  hit-test, ~18 ms pointer handlers); the `body.dnd` decorations coming off
   (~60 ms; layout-neutral only with a visible wording change — owner's call);
-  the two `validate` calls (~45 ms, engine — not touched). Every dead end
+  the ONE `validate` call (~22 ms, engine — not touched; it was two until the
+  5 Sep drop-delta PR, ledger 21). Every dead end
   measured along the way is in `docs/performance.md` §Dead ends — don't retry
   them without new measurement.
+- **The drop delta + one validate per drop (5 Sep 26)** — on the branch
+  `claude/drop-delta-flags`, its own PR, awaiting the owner's "merge live". A
+  drop or palette plant now toasts, in the validator's own words and in red
+  for a hard breach, whatever the write just raised that was not there before
+  — on whichever day the rule crossed (`Sun ·` prefix), pulsing the pucks it
+  named — and `barDrop` no longer revalidates on its own (`state/dropflag.ts`;
+  `ui-contracts.md` §the drop delta; ledger 21). **Steps 3 and 4 of the same plan are their own PR, stacked on #359's branch
+  (`claude/run-trace-hover`, 5 Sep 26) — merge #359 first, then this one:** (3)
+  `slotBar`'s last reason is now the pre-drop cross-day question — the
+  seven-day run (`runIfPlaced`, off the published `RUNLEN`/`RUNSEED`/`NEXTON`)
+  and crew rest both ways (`restIfPlaced`, the validator's own `crewRestDay`
+  re-run in probe mode on a cloned sibling leg) — and `drag.ts hoverWhy` prints
+  it under the ghost on target change, so "7th day in a row — breaks Sunday"
+  reads under the finger before the drop; the green rings and the palette
+  strike inherit it. (4) The run TRACE: every earlier day of a run that
+  crosses wears the dotted ring + the `7` + "Consecutive days — Sunday is his
+  7th day in a row", the day's issue box carries a "Breaks Sunday" row, and a
+  run at the limit on Sunday that continues into next Monday traces forward
+  ("Breaks Monday", no warning) exactly as crew rest's phantom pass does.
+  `WARN.trace[di][id]` now MERGES: crew-rest fields at the top level, the run
+  under `.run` (`traceChip`, `traceIx(t,id,'RUN')`). Known, documented gaps: an
+  EMPTY formation has no sibling leg to clone, so its crew-rest preview is
+  null (the drop delta still says it after the write); the board's pucks never
+  drew the crew-rest trace and do not draw the run trace either (week only —
+  pre-existing shape, `board-html.ts` passes no trace). Contracts:
+  Reviewed (5 Sep 26) and hardened: exempt lines (AVALON/BB, SC SPARE) get no
+  cross-day answer; a seat-to-seat drag passes the seat being left so the
+  hover reads the week AFTER the move; a man's own hard breach today keeps
+  its label over any trace; answers are memoised per validate() for the
+  palette. Contracts: `ui-contracts.md` §The run trace + §the hover reason;
+  `engine-rules.md` §the break-day rule; `performance.md` Part 1 (check B's
+  second named exemption: the edited man's run trace); pins
+  `engine/runtrace.test.ts`, `ui/runtrace-ui.test.ts`, `ui/drag.test.tsx`
+  ("the hover reason").
+- **The desktop week's compositor layers (5 Sep 26)** — branch
+  `claude/compositor-layers`, its own PR, awaiting the owner's "merge live".
+  261 → 105 layers on the desktop edit week (the phone's 9 untouched) by three
+  local CSS rules, each found by switching one suspect off in the live page
+  and re-counting: the palette's faded pucks desaturate by a saturation blend
+  instead of `filter:saturate()` (59 layers); the next-week preview is dimmed
+  by a page-background veil instead of `opacity:.5` (47); the roster aside
+  gets `z-index:5` so the week's z-indexed pucks paint below it instead of
+  being assumed to overlap its sticky scroll range (44). Armed drag at 4×, 7
+  paired trials: per-move 68 → 52 ms median, layerize 30 → 16 ms a move; the
+  drop unchanged (JS-bound, above). For the owner's eyes on the preview: the
+  faded palette pucks' little letter chips are a touch more vivid (the filter
+  used to wash them too); the preview column reads the same (≤0.1% of pixels
+  differ). Contracts: `ui-contracts.md` §Compositor layers; ledger 22; pinned
+  by `ui/layers.test.ts`.
+- **The phone carousel resting off its snap (5 Sep 26)** — branch
+  `claude/phone-snap-hold`, its own PR, awaiting the owner's iPhone verdict and
+  then "merge live". From the owner's recording on the #361 preview: after a
+  swipe in next week, days rested 60–100 px off their snap point, with a 40 px
+  vertical jump mid-rest — the signature of a repaint. Mechanism (read off the
+  code; Chromium cannot reproduce it because it re-snaps after a programmatic
+  scroll and Safari does not): the palette's day-follow (`pan.ts rosDayFollow`)
+  fires `notify()` ~110 ms after the strip's scroll events stop, the week
+  repaints with no day changed, and the B54 hold writes `root.scrollLeft = sl`
+  back to itself — on iOS that stops a still-settling snap where it stands.
+  Fix: the hold runs only when the repaint rewrote the week (`wrote`), in both
+  `EditWeek` and `ViewWeek`; pinned `ui/snaphold.test.tsx`. Not caused by
+  #361: at phone width the two builds differ only in six paint properties on
+  the faded palette pucks (JS byte-identical), and the mechanism predates the
+  drop round. Two things only the iPhone can answer: does the live site do it
+  too (expected yes), and does the fix preview stop it.
+- **The blank screen after a fast fling on the phone (5 Sep 26)** — branch
+  `claude/fresh-flash-paint`, its own PR, awaiting the owner's phone verdict
+  and then "merge live". The owner's 13:39 recording (on the #361 preview): a
+  fast vertical fling through next-week Monday, then the whole day column
+  black for ~0.8 s after the fling had stopped, painting in from the bottom.
+  Cause (a Chromium trace at 4× on the phone viewport, then the page's timers
+  wrapped from load): `view.ts flashAdded`'s two timers per fresh add — and a
+  week load accepts a handful of inputs into the ground programme, each a
+  fresh add — fired twelve full `notify()`s ~6 s after the load, ~70 ms each,
+  back to back for a second; iOS paints tiles on that same thread. Fix: the
+  timers re-hang the decoration only (`HOOKS.paintFreshAdds`, wired in
+  highlights.ts). Measured: the train gone, long tasks in the post-fling
+  window 14 → 3. Pinned `state/freshflash.test.ts`; ledger 23. Not #361's and
+  not #362's. Two "preview A/B" ideas floated before the cause was found
+  (cheaper shadows on the phone; the strip as a two-axis scroller so WebKit
+  tiles ahead vertically — `computeOverflowTiledBackingCoverage` gives a
+  scroller paint-ahead only on the axis it scrolls) are shelved: the second is
+  a layout change (the header stack above the strip stops scrolling away) and
+  neither was the cause. Residual, measured not built: the first pointer event
+  after a week switch carries ~450 ms of React work at 4× (the new week's
+  deferred render flushed inside that event) — the seven-day-strings item,
+  felt as one hitch on the first touch after switching weeks.
 - **iOS is untestable here.** This container ships no WebKit. The Leave War
   column window / placeholders and every contenteditable or touch-fling change
   are verified on the owner's iPhone against the preview; if the grid ever
@@ -400,14 +510,14 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | `data.ts` | The seed week (Jul 13): DAYS with waves/formations/aircraft, duties, sims, ground, programme rows. Plus `WEEK1_DAYS_SNAP`, the pristine model captured at module load for the week selector. Ground/meeting labels are GENERIC (no real unit names) and every callsign is FICTION (the 21 Aug 26 sensitivity scrub). |
 | `week2.ts` | **The second demo week** (Jul 20, 21 Aug 26) — `WEEK2_DAYS`/`WEEK2_DATES`/`WEEK2_INPUTS`, authored to exercise most warning families (crew solo, CO-approval pairing, tight/double turn, double booking, OCU-no-IP, illegal seat, crew-rest breach, long day, medical downchit). Deliberately avoids the two demo blind spots (no ATT B seated, no IRT without an IR, no AAR-currency remark). Not parity-compared. |
 | `weeks-data.ts` | **The loadable-week registry** (21 Aug 26) — `weekBundle(v)` hands `state/store.ts:loadWeek` a fresh deep copy of the chosen week (Jul 13 seed / Jul 20 second / a blank editable `emptyWeek` for any other chip). A leaf module (data/inputs/week2 only), no cycle. Also **`shiftWeekKey(v,n)`** (23 Aug 26) — a `dd/mm/yyyy` ± 7n-day stepper, a deliberate second implementation of `ui/weeknav.ts:shiftWeek` (an engine→ui import would be a layering violation), pinned agreeing with it by test. |
-| `weekctx.ts` | **Cross-week seed reads for `validate.ts`** (23 Aug 26) — pure reads off `weekBundle(v)` + the global `INPUTS`, nothing mutated: `seedRunIn(curWeek,maxRun)` walks back up to `maxRun` days before Monday for the consecutive-days run, `prevSundaySeed(curWeek)` shapes the previous week's Sunday like a real `ev[idx-1]` entry (`di:null`, so `markTrace` no-ops) for Monday's crew-rest check, and — added the same day for the forward crew-rest trace — **`nextMondaySeed(curWeek)`** shapes next week's Monday as a phantom "today" (carrying `fly` too, since the phantom pass computes the current day's side of the rule) fed into `validate.ts`'s `crewRestDay` a second time so a late loaded-week Sunday can trace forward onto itself. Its own `bundle(v)` helper is STASH-AWARE (see `weekstash.ts`): `stashHas(v)` is checked before the pure-bundle cache on every call, so a week the scheduler has actually edited feeds these reads its live session state instead of the untouched seed. See its own header comment for the exact window semantics and what a non-loaded, non-stashed week cannot be made to answer (SCHED/publish state, forgotten edits). Docs: `docs/engine-rules.md` §DAYS_RUN, §Crew rest; flow: `docs/feature-impact.md` Flow F. |
+| `weekctx.ts` | **Cross-week seed reads for `validate.ts`** (23 Aug 26; + `nextMondayWorked`, the seed-side on-set of next week's Monday for the forward run trace and the pre-drop run query, 5 Sep 26) — pure reads off `weekBundle(v)` + the global `INPUTS`, nothing mutated: `seedRunIn(curWeek,maxRun)` walks back up to `maxRun` days before Monday for the consecutive-days run, `prevSundaySeed(curWeek)` shapes the previous week's Sunday like a real `ev[idx-1]` entry (`di:null`, so `markTrace` no-ops) for Monday's crew-rest check, and — added the same day for the forward crew-rest trace — **`nextMondaySeed(curWeek)`** shapes next week's Monday as a phantom "today" (carrying `fly` too, since the phantom pass computes the current day's side of the rule) fed into `validate.ts`'s `crewRestDay` a second time so a late loaded-week Sunday can trace forward onto itself. Its own `bundle(v)` helper is STASH-AWARE (see `weekstash.ts`): `stashHas(v)` is checked before the pure-bundle cache on every call, so a week the scheduler has actually edited feeds these reads its live session state instead of the untouched seed. See its own header comment for the exact window semantics and what a non-loaded, non-stashed week cannot be made to answer (SCHED/publish state, forgotten edits). Docs: `docs/engine-rules.md` §DAYS_RUN, §Crew rest; flow: `docs/feature-impact.md` Flow F. |
 | `weekstash.ts` | **Per-week session stash** (23 Aug 26 — fixes the vanishing-duty bug, see Known issues) — a dumb store, keyed by week-start, of whatever `state/store.ts:loadWeek` last handed it on the way OUT of a week (`stashPut`/`stashGet`/`stashHas`), plus `stashDays(v)` (a fresh, never-cached `{days,dates}` copy in `weekBundle` shape, for `weekctx.ts`'s cross-week reads — since 24 Aug 26 it re-labels each day's `dt` from the freshly derived dates, so a stash written under one loaded year still reads correctly under another at a New Year boundary). Session-only on purpose (owner, 23 Aug 26 — forget-on-exit stays the app's rule, in lockstep with `INPUTS`/Leave War); an entry that fails to parse is silently dropped by `stashDays`, degrading to the pure seed. Holds no opinion about a snapshot's shape — that is state code's call, because WARNOFF lives in `state/view.ts` and the engine may not import `state/`. Flow: `docs/feature-impact.md` Flow E. |
 | `people.ts` | PEOPLE roster (quals, seat, categories), qual ladder (`OCU→D→C→B→A→IW→IP→IR→FI` — instructor-ness lives in CAT, no `ip` flag), `isScheduler`/`isLead`/`isInstr`/`isInstrPilot`/`isOcu`, **`isPersonnel` + the `pers:true`/`seat:'GND'` ground-crew category** (Aug 26 — seeded `torque`/`spanner`/`gizmo`, no CAT; `deriveQuals` short-circuits them), `scShiftKind`, `sanStatus`, `aarNeed`, and **`nameToId` (id-tolerant since 21 Aug 26** — resolves a who-string by callsign OR, failing that, a value that is already a person id; the seed stores bare ids in ground/programme `who`, which the callsign scrub would otherwise have stopped resolving). Also the TWO sentinel placeholders: `allavail` (cs 'ALL AVAIL') and, since 28 Aug 26, `all` (cs 'ALL') — byte-for-byte the same semantics (`special:true`, never validated, no warnings; the palette's Placeholders strip), and on a weekend/PH ground/Common-Programme row either expands to available regular aircrew for the OIL credit (`sync.ts:availableFor`). |
 | `inputs.ts` | INPUTS list + **`INPUT_META`, the one table every input type is decided by** (10 Aug 26) — `INPUT_TYPES` is derived from its keys and every predicate is a lookup: `isLeave`, `isLocalLeave`, `isDownchit` (= the medical group), **`isPersonal`/`isUnavail`** (the two day blocks, presentational only), plus `canSpare`, `canWork`, `awayAllDay`, `TYPE_GROUPS`/`typeGroup`. `isDetach` is gone with the `Detachment` type. Also DATES and the late-input block, plus `WEEK1_INPUTS_SNAP`/`WEEK1_DATES` (pristine seed-week inputs/labels for the week selector). |
 | `time.ts` | `parseHM`/`hhmm`/`minus`/`overlap` (half-open — abutting windows do not clash). |
 | `events.ts` | `collectEvents()` — the per-day event build the validator consumes; appends tomorrow's inputs shifted +1440 (the midnight tail, marked `nx`) and collects AVALON crew (`day.sacrew`) for the one check the wave's `noconf` does not cover. Also `inpShow(inp, dt)` — the per-day gate deciding whether an input reaches `day.input` (defer only on its accepted row's own day; SANS never); **exported** so the crew picker reads the SAME gate and cannot drift (Aug 26 audit). And `shiftEvHard`/`shiftHardGround` (26 Aug 26) — the SC MAIN clash grading with the ground-row red-list overlay (source type off `row.src` first, hand-typed keywords second), one body for the validator's clash loop and the picker's `live`. |
-| `validate.ts` | `validate()`, WARN/REST/EVD, WCODE/CHIP_LABEL/RANK, `wlbl`, `chipOf`, `dashOf`, the crew-rest trace (`traceOf`/`traceLeads`/`traceIx`/`tracesOn`), and **`workSpan`** — ONE person's working day out of their events (report → last landing + debrief, or start → end), the shared definition behind both the LONGDAY note and the Insights work-hours totals. `crewRestDay` (23 Aug 26) is the whole crew-rest computation extracted into one function with a `phantom` flag, so the day loop's ordinary call and the forward-trace pass after the loop (`crewRestDay(ev[6], nextMondaySeed(CURWEEK), null, true, null)`) share one body — the phantom pass writes only `markTrace` onto the loaded week's Sunday, nothing addressed to the (unreal) next-Monday index. **The conflict engine.** |
-| `avail.ts` | `slotRules`/`slotBar` eligibility, `dayOff`/`dayEngaged`, free-count ranking. `slotBar`'s busy-at-this-hour block also scans `INPUTS` for unaccepted ACTIVITY commitments (Aug 26), mirroring the four `isAway` off-blocks (canWork/flying gate, four midnight tails) so the picker and the validator's `INPUT_FLY` cannot drift. That scan gates on the validator's OWN per-day `inpShow` (imported from `events.ts`), not the day-blind `inputFlags` it first shipped with — one shared gate, so a multi-day or orphaned accept cannot silence the picker where the validator still warns (Aug 26 audit). |
+| `validate.ts` | `validate()`, WARN/REST/EVD (+ RUNLEN/RUNSEED/NEXTON/EVDAYS/PREVSUN/NEXTMON, the run tables and phantom seeds published for the pre-drop query, 5 Sep 26), the run TRACE + its forward phantom-Monday pass, `crewRestDay`'s probe mode, `runIfPlaced`/`restIfPlaced`/`crossDayIfPlaced`, `traceChip`, WCODE/CHIP_LABEL/RANK, `wlbl`, `chipOf`, `dashOf`, the crew-rest trace (`traceOf`/`traceLeads`/`traceIx`/`tracesOn`), and **`workSpan`** — ONE person's working day out of their events (report → last landing + debrief, or start → end), the shared definition behind both the LONGDAY note and the Insights work-hours totals. `crewRestDay` (23 Aug 26) is the whole crew-rest computation extracted into one function with a `phantom` flag, so the day loop's ordinary call and the forward-trace pass after the loop (`crewRestDay(ev[6], nextMondaySeed(CURWEEK), null, true, null)`) share one body — the phantom pass writes only `markTrace` onto the loaded week's Sunday, nothing addressed to the (unreal) next-Monday index. **The conflict engine.** |
+| `avail.ts` | `slotRules`/`slotBar` eligibility (slotBar's LAST reason is the pre-drop cross-day question — the run and crew rest both ways, 5 Sep 26), `dayOff`/`dayEngaged`, free-count ranking. `slotBar`'s busy-at-this-hour block also scans `INPUTS` for unaccepted ACTIVITY commitments (Aug 26), mirroring the four `isAway` off-blocks (canWork/flying gate, four midnight tails) so the picker and the validator's `INPUT_FLY` cannot drift. That scan gates on the validator's OWN per-day `inpShow` (imported from `events.ts`), not the day-blind `inputFlags` it first shipped with — one shared gate, so a multi-day or orphaned accept cannot silence the picker where the validator still warns (Aug 26 audit). |
 | `slots.ts` | The mutation funnel: `slotVal`/`setSlotVal`/`fillSlot`/`txtGet`/`txtSet`, `whoArr`/`rowCrew`/`acRef`, `rollCx`, **`acceptInput`/`unacceptInput`/`inpKey`** (Ground removal and Unavailable filing use inert amendment keys, including every loaded day of a span), and **`autoAcceptInput`/`autoAcceptSeedInputs`** (Aug 26 — the one gate every creation path calls to auto-land an activity input on its editable day's ground programme; the seed pass is boot-only and wipes its own amendment marks, so parity stays blind). |
 | `keys.ts` | `keyDay`, `shiftKeys` + `shiftAircraft`/`shiftFormation`/`shiftWave` renumbering (delete-time), and its bijective sibling `permuteKeys`/`moveKeys` for a reorder. |
 | `order.ts` | `groundOrder(rows, man)` — Ground Programme's render-time start-time sort, pulled out of `ui/html.ts` so `reorder.ts` can freeze a rendered order into the model without the engine importing from `ui/`. `man` (a day's `d.gman`) returns model order untouched. Also holds `DUTY_ORDER`, and (29 Aug 26) the **SECTION display order**: `SECTIONS`, `secOrder(d)` (a day's `d.secOrder` resolved — default when absent, unknowns/repeats dropped), and `moveSectionModel(d, key, dir)` — a pure display re-order that never touches a slot key or `SCHED.*` (the write path with undo is `state/store.ts moveSection`). |
@@ -435,6 +545,7 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | `store.ts` | `notify()`/subscribe/version plus the narrow `notifyBoard()`/`subscribeBoard()` lane used by day-only board navigation, so a swipe does not wake the seven-day edit week; `wireStore()` maps HOOKS→global notify (including the role-aware `editMode()`); **`resetSession()` — the ONE session-change path, used by every login and logout**; **`loadWeek(v)` — the ONE week-change path** (21 Aug 26): swaps DAYS/DATES in place (INPUTS is GLOBAL since 22 Aug 26 — NOT swapped; it clears each input's `acc` so `autoAcceptSeedInputs` re-lands the date-matching rows onto the fresh days), `resetSched()`, clears day-index/iid view state, revalidates and re-baselines history so no state crosses a week; write helpers; `initStore()` boot (wires, **rulesLoad**, merges every authored week's inputs into the global INPUTS once, validate, history baseline). |
 | `demoseed.ts` | **Demo-only SANS Availability seed** (14 Aug 26) — `seedDemoSans()` pushes six records straight into `INPUTS`, called from `initStore()` at BOOT, deliberately NOT part of `engine/inputs.ts`'s seed array: every parity gate and the ~40 snapshot-reset tests read `INPUTS` pristine (none call `initStore()`), so they stay blind to these rows by construction while a real built app still sees them. Idempotent (guarded per person+date, `stores-boot.test.ts` boots twice). Rules: `docs/engine-rules.md` §SANS Availability. |
 | `docs.ts` | **The supporting-document store (27 Aug 26)** — the session-only, in-memory home of the medical inputs' mandatory paperwork (`docAdd`/`docGet`/`docHas`, `DOC_MAX` 8 MB, images + PDFs). Deliberately NOT on `HOOKS.storeBackend` (a 5 MB JSON seam that swallows quota errors is the wrong home for blobs); the `docBackend` indirection is the seam the future database replaces. APPEND-ONLY for the session — undo can resurrect a deleted input and must find its document — and input records carry only the `docId` string, so history snapshots never copy a file. Object URLs are minted/revoked only by the viewer. |
+| `dropflag.ts` | **The drop delta** (5 Sep 26): `warnDelta(before, after)` — the warnings a write raised that were not there before (hard + advisory, ordered as the puck's chip ranks), `flagDrop` toasts the first in the validator's words (red for hard, `Sun ·` when the breach is on another day, `(+N more)`), `NEWFLAGS`/`isNewFlag` — the pucks `highlights.ts` blinks (`.flagnew`) after the repaint. Fed by `drag.ts done()` and `view.ts placeArmed`; `barDrop`/slotBar is its fallback voice. |
 | `view.ts` | UI state the engine reads: CURPAGE, SBDAY, ROSDAY, ARM, selection (SELID/WFOCUS/PFOCUS/DWOPEN/HLSET/SEARCH — clicking a puck lights every copy of that person), `afterSchedMutate()`, `focusWarn`, `setPage` (which sweeps body-level popups, closes the board, and captures the day being left), setters. Also `DPREV`/`prunePreviews` (the edit surfaces' version previews) and **`VWORK`/`toggleViewWork`** (15 Aug 26 — which PUBLISHED days the VIEW page is showing the live working copy for instead of its frozen issued default; deliberately NOT DPREV, so the two pages' choices can never cross — `docs/ui-contracts.md`). Also `CARRYDAY`/`weekLeftDay`/`scrollWeekToDay` — the day carried between View-only and Edit Schedule; the two geometry helpers live here, not in `ui/pan.ts`, because `pan.ts` already imports this module and `setPage` is the one moment the outgoing week still has layout. Contract: `docs/ui-contracts.md` §The day carries across a page switch. Also `AVSHUT`/`toggleAvail` (Available-crew fold — Aug 26 it names the days a scheduler COLLAPSED, since the panel is OPEN by default now; was `AVOPEN`, the open-set, before the owner flipped the default) and **`PIOPEN`/`togglePInputs`** (Aug 26 — the Personal Inputs fold, collapsed by default; same session-only pattern, cleared on session/week change). Also the Aug-26 session-only registries, all on the LATEOFF pattern and cleared on session/week change: **`BELLLIT`/`markBell`/`bellLit`/`clearBell`** (the top-bar notification glow, keyed `page|person`), **`WARNOFF`/`warnMuteKey`/`warnShown`/`toggleWarnOff`** + **`WMOPEN`/`toggleWarnMuted`** (a muted board check, keyed by the warning's day\|code\|people\|message content so it auto-re-arms when the situation changes, and its per-day "show the hidden ones" reveal — WARNOFF rides the history snapshot now so a mute is an undo step), and **`NOTEPUB`/`notePub`/`toggleNotePub`** (Aug 26 — a scheduler note flagged to show on the view-only week, keyed by the note's funnel key). |
 | `history.ts` | HIST snapshots, `histPush`/`histApply`, undo/redo bodies. The snapshot carries `view.WARNOFF` (as `wo`, array) since Aug 26, so muting/un-muting a board check is an ordinary undo step (owner: "when I click undo I should revert my hidden warning changes"); it is the ONE session-view set in the snapshot — folds, previews and late marks stay out. |
 | `auth.ts` | SESSION (the EFFECTIVE role every gate reads), `setSession` (resets LGEDIT, the Logic tab's own edit mode; captures `LOGINROLE` — the true login role, the toggle's ceiling), `setEffectiveRole`/`canToggleRole` (the admin's view-as-member flip, 27 Aug 26 — the coordinator is `store.ts:toggleRole`, pinned in `roletoggle.test.tsx`), `canEditSched`, ME/`setMe`. |

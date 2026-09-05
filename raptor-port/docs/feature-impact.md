@@ -577,6 +577,19 @@ check the other):
   only ever disagree with the palette by a stale repaint, never by a diverged
   rule. Keep it that way: a ring rule that does not go through `slotBar` is a
   new drift-seam. (`selrings.test.tsx` pins DOM-agrees-with-slotBar directly.)
+  The DROP DELTA (5 Sep 26, `state/dropflag.ts`) is the fourth reader and is
+  built the other way round: it reads `validate()`'s OWN output (WARN before
+  vs after the write) rather than re-asking any rule, so it cannot drift from
+  the warning list at all — what it can miss is a slotBar bar the validator
+  does not mirror, which is why slotBar's reason stays as its fallback voice.
+  And since 5 Sep 26 `slotBar` ITSELF reaches across days for the two hard
+  rules (`validate.ts crossDayIfPlaced`): the seven-day run off the tables the
+  last validate() published, crew rest by re-running the validator's own
+  crewRestDay in probe mode — so the palette strike, the green rings, the drag
+  hover reason (`drag.ts hoverWhy`) and the fallback toast all say "7th day in
+  a row — breaks Sunday" BEFORE the write, and none of them holds a second
+  copy of either rule. A new cross-day rule that wants a pre-drop voice goes in
+  there, the same way — never as a check of its own in a renderer.
   The 31 Aug 26 two-SC-seats rule follows the same law from the other side:
   `events.ts:scSeatHit` is the ONE body — the validator's spare-overlap
   warning and `slotBar`'s "already on …" refusal both call it (spares are
@@ -626,7 +639,8 @@ check the other):
 - **SANS availability — one gate, three surfaces (14 Aug 26; reworked to one
   window the same day).** `sansGate` (`avail.ts`, backed by
   `sansAvailOn`/`sansWindow`/`sansLetters`/`sansBadge` in `inputs.ts`) is
-  read by `slotBar` (the palette grey-out + both plant/drag toasts, PLUS the
+  read by `slotBar` (the palette grey-out + the plant/drag FALLBACK toasts —
+  since 5 Sep 26 both speak the drop DELTA first, `state/dropflag.ts` — PLUS the
   unarmed default strike `rosterPuck` gives a record-less SANS), by
   `validate()` (the `SANS_AVAIL` advisory), and by three badge surfaces — the
   palette's `.rall.rsans` band (badge + remarks), the shared card grid the

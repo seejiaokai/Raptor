@@ -5,8 +5,10 @@ import { overlap, hm24, lgT } from './time'
 import { collectEvents, shiftEvHard, scSeatHit } from './events'
 import { HOOKS } from './hooks'
 import { sansGate, SANS_LABEL } from './avail'
-import { seedRunIn, prevSundaySeed, nextMondaySeed } from './weekctx'
+import { seedRunIn, prevSundaySeed, nextMondaySeed, nextMondayWorked } from './weekctx'
 import { CURWEEK } from './waves'
+import { DAYS } from './data'
+import { keyDay } from './keys'
 
 /* the reference guards its header counters with $() lookups; the engine takes
    $ from the hooks (null outside a browser) so the guarded lines stay verbatim */
@@ -57,6 +59,13 @@ export const SEVWORD:any={hard:'Warning',adv:'Advisory',note:'Note'};
    tooltips and warning lists — the engine says 10h, the chip still says 12h. */
 export const wlbl=(s:any)=>String(s==null?'':s).replace(/\{(\w+)\}/g,(m:any,k:any)=>k in VCONF?lgT(VCONF[k]):m);
 export let WARN:any={all:[],byDay:[],sev:{},chip:{},dash:{},trace:{}};
+/* THE RUN TABLES, published like REST/EVD for the pre-drop query (5 Sep 26):
+   RUNLEN[di][id] = consecutive days on the programme through day di (only
+   ids ON that day), RUNSEED[id] = the count walked in from before Monday,
+   NEXTON = who is on next week's Monday, EVDAYS = the per-day accumulators
+   the day loop ran over (fly/events/input/dow/di), PREVSUN/NEXTMON = the two
+   phantom seeds. Reassigned by every validate() — re-read, never cache. */
+export let RUNLEN:any[]=[], RUNSEED:any={}, NEXTON:Set<any>=new Set(), EVDAYS:any[]=[], PREVSUN:any=null, NEXTMON:any=null;
 /* when crew rest expires today, per day index, per person — minutes into the
    day. Filled by validate(); read by the crew picker so an SC slot can be
    closed to anyone who is not yet clear of the previous day. */
@@ -124,7 +133,10 @@ export function validate(){
      be gone by (`leaveBy`), and the message, so the previous day can print the
      warning without re-deriving a word of it. Keyed by the PREVIOUS day, which
      is what makes it readable straight off the puck. */
-  const markTrace=(pdi:any,id:any,t:any)=>{if(pdi==null)return; trace[pdi]=trace[pdi]||{}; trace[pdi][id]=t;};
+  /* MERGED, not replaced (5 Sep 26): the same puck can carry the crew-rest
+     trace (its fields at the top level, unchanged) AND the run trace (nested
+     under `run`) — day six of a run whose late landing also wrecks tomorrow. */
+  const markTrace=(pdi:any,id:any,t:any)=>{if(pdi==null)return; trace[pdi]=trace[pdi]||{}; trace[pdi][id]=Object.assign(trace[pdi][id]||{},t);};
   const dur=(m:any)=>`${Math.floor(m/60)}h${String(Math.round(m%60)).padStart(2,'0')}`;
   /* CONSECUTIVE WORKING DAYS (owner, Aug 26) — nobody may be on the programme
      more than VCONF.maxRun days without a break day. Counted in day order off
@@ -140,14 +152,45 @@ export function validate(){
      this week's seventh. seedRunIn (weekctx.ts) walks back from last Sunday
      through weekBundle data, at most maxRun days; an unauthored previous
      week seeds nothing, which is byte-identical to the old fresh start. */
-  const RUNLEN:any[]=[]; {
+  RUNLEN=[]; EVDAYS=ev; {
     const run:any=seedRunIn(CURWEEK,VCONF.maxRun);
+    RUNSEED={...run};
     ev.forEach((day:any,i:any)=>{
       const on=new Set<any>();
       (day.events||[]).forEach((e:any)=>{ if(e.id&&PEOPLE[e.id]&&!isSpecial(e.id))on.add(e.id); });
       Object.keys(run).forEach((id:any)=>{ if(!on.has(id))run[id]=0; });   // a clear day resets it
       const m:any={}; on.forEach((id:any)=>{ m[id]=run[id]=(run[id]||0)+1; });
       RUNLEN[i]=m;
+    });
+  }
+  /* THE RUN TRACE (owner, 5 Sep 26 — "make the warning like what the crew
+     rest does… dotted pucks, to warn that the 7 day breach is on which day
+     actually"). The breach lands on the day the count crosses the limit;
+     EVERY earlier day of that run is a day the scheduler can still clear (take
+     him off any one of them and the count resets), so each of them carries a
+     dotted trace pointing at the day it breaks: `run:{di,dow,n}` merged onto
+     WARN.trace beside the crew-rest fields. Only the crossing day is traced
+     to — the days after it wear their own solid flag. Walked back while
+     RUNLEN still knows him (consecutive by construction, so it is one run).
+     THE FORWARD PASS, mirroring crew rest's phantom Monday: a run that stands
+     AT the limit on Sunday and continues into next Monday (nextMondayWorked —
+     the seed-side on-set, the stash read first) breaks on a day this WARN
+     cannot address, so it traces with di:null and dow 'Monday' and writes no
+     warning — the breach itself lands when next week is loaded. Bounded to
+     Monday, one lookahead day, like the crew-rest trace. Trace only — never a
+     warning — so parity.test.ts (which compares WARN.byDay) is untouched. */
+  {
+    const traceRun=(from:any,id:any,t:any)=>{ for(let k=from;k>=0;k--){ if(!RUNLEN[k]||RUNLEN[k][id]==null)break; markTrace(k,id,{run:t}); } };
+    ev.forEach((day:any,i:any)=>{
+      Object.keys(RUNLEN[i]||{}).forEach((id:any)=>{
+        const n=RUNLEN[i][id];
+        if(n>VCONF.maxRun&&!(i>0&&RUNLEN[i-1][id]>VCONF.maxRun))traceRun(i-1,id,{di:day.di,dow:day.dow,n});
+      });
+    });
+    NEXTON=nextMondayWorked(CURWEEK);
+    Object.keys(RUNLEN[6]||{}).forEach((id:any)=>{
+      const n=RUNLEN[6][id];
+      if(n===VCONF.maxRun&&NEXTON.has(id))traceRun(6,id,{di:null,dow:'Monday',n:n+1});
     });
   }
   /* ONE DAY'S CREW-REST COMPUTATION, extracted verbatim from the day loop
@@ -163,7 +206,14 @@ export function validate(){
      `add` rides in as a parameter because it is the day loop's own
      closure over that day's `ws` list; the phantom caller passes null —
      every add here is phantom-guarded, so it is never dereferenced. */
-  const crewRestDay=(prevSeed:any,day:any,di:any,phantom:any,add:any)=>{
+  /* PROBE MODE (5 Sep 26, the pre-drop query): `probe` = {id, hit} makes
+     the pass a QUESTION about one man — every write is suppressed (phantom
+     covers the current day; the trace write below is guarded too, since a
+     probe's prevSeed may be a live day) and the breach, if any, is handed to
+     `probe.hit(...)` instead of filed. Same body, same arithmetic, so what
+     the picker says before the drop and what the validator flags after it
+     cannot drift. Everyone but probe.id is skipped — the answer is his. */
+  const crewRestDay=(prevSeed:any,day:any,di:any,phantom:any,add:any,probe?:any)=>{
       /* prevFlyEnd/prevEnd were once distinct — the rest-bearing set against
          the last end of ANY kind — and a late non-resting row could mask the
          sortie underneath it. With every kind rest-bearing they track the
@@ -251,6 +301,7 @@ export function validate(){
          e.intime is null and this is byte-identical to the old `e.to`. */
       const insOf=(e:any)=>e.shift?(e.intime!=null?Math.min(e.intime,e.to):e.to):Math.min(e.intime!=null?e.intime:Infinity,briefOf(e));
       Object.keys(byR).forEach((id:any)=>{
+        if(probe&&id!==probe.id)return;
         /* Personnel (ground crew) hold no crew-rest rule — an incentive ride
            does not put a ground-crewman on a 12-hour flying clock. */
         if(PEOPLE[id]&&PEOPLE[id].pers)return;
@@ -343,6 +394,7 @@ export function validate(){
           /* the warning anchors on what binds it: the early event's own slot
              key when a meeting caused the breach, the leg otherwise — the
              jump then pans to the row the scheduler has to move */
+          if(probe){probe.hit({di,dow:day.dow,leaveBy,earliest,first,msg:crMsg});return;}
           if(!phantom)add('hard','CREW_REST',[id],crMsg,evBound?(fe.slot||fe.key||bl.key):bl.key,{prevDi,leaveBy,dashed});
           /* The same breach, filed against the day that caused it — with
              `fromKey`, the leg on THAT day that ran late. It rides on the trace
@@ -713,7 +765,7 @@ export function validate(){
        the warning's own message already names Sunday and its end time. An
        unauthored previous week seeds empty maps and the guards below skip
        every man, byte-identical to the old REST[di]={} branch. */
-    const prevSeed:any=idx>0?ev[idx-1]:prevSundaySeed(CURWEEK);
+    const prevSeed:any=idx>0?ev[idx-1]:(PREVSUN=prevSundaySeed(CURWEEK));
     crewRestDay(prevSeed,day,di,false,add);
     // crew combination matrix + OCU without IP — shown as puck rings
     /* a SPARE+SPARE overlap is seen from both formations' loops below, so the
@@ -974,7 +1026,11 @@ export function validate(){
      Monday when next week is viewed. The trace carries di:null (no in-week
      day to jump to): dayTraceHTML renders it as an informational row, and an
      unauthored, unedited next week seeds empty arrays and writes nothing. */
-  crewRestDay(ev[6],nextMondaySeed(CURWEEK),null,true,null);
+  crewRestDay(ev[6],(NEXTMON=nextMondaySeed(CURWEEK)),null,true,null);
+  /* the crew-rest body, kept for the pre-drop query below (restIfPlaced) —
+     the same closure the day loop ran, one body, now three callers */
+  CREWREST_BODY=crewRestDay;
+  XD_CACHE=new Map();
   WARN={all,byDay,sev,chip,dash,trace};
   const hard=all.filter((w:any)=>w.sev==='hard').length;
   const note=all.filter((w:any)=>w.sev==='note').length;
@@ -997,6 +1053,14 @@ export const traceOf=(di:any,id:any)=>(WARN.trace&&WARN.trace[di]&&WARN.trace[di
 /* ...and whether the trace OWNS the puck's flag, which it only does when the
    man carries nothing louder of his own that day. One test, so the chip the
    builder prints and the warning a click opens can never disagree. */
+/* which chip the trace itself would print: the run trace outranks the
+   crew-rest trace exactly as RUN outranks CR on the day of the breach */
+export const traceChip=(t:any)=>t&&t.run?'RUN':'CR';
+/* …and it leads only over a chip BELOW crew rest, whichever kind the trace is:
+   a man's OWN hard breach today (CR, RUN, C, Q) always keeps its label — a
+   dotted trace for a later day must never caption over the breach he has
+   right now (review finding, 5 Sep 26). traceChip decides the glyph once it
+   does lead. */
 export const traceLeads=(di:any,id:any)=>{const t=traceOf(di,id); if(!t)return null;
   const c=chipOf(di,id); return (!c||RANK['CR']>RANK[c])?t:null;};
 /* Where the traced breach actually LIVES — its index in the NEXT day's own
@@ -1004,12 +1068,129 @@ export const traceLeads=(di:any,id:any)=>{const t=traceOf(di,id); if(!t)return n
    already navigates by, so a cross-day row and a traced puck both hand the
    ordinary jump the ordinary thing and need no navigation path of their own.
    -1 where the warning has moved under an edit: WARN is rebuilt wholesale. */
-export const traceIx=(t:any,id:any)=>{if(!t)return -1;
-  const g=WARN.byDay&&WARN.byDay[t.di];
-  return (((g&&g.warns)||[]) as any[]).findIndex((w:any)=>w.code==='CREW_REST'&&(w.who||[]).indexOf(id)>=0);};
+export const traceIx=(t:any,id:any,kind?:any)=>{if(!t)return -1;
+  const run=kind==='RUN'; const tdi=run?(t.run&&t.run.di):t.di, code=run?'DAYS_RUN':'CREW_REST';
+  const g=WARN.byDay&&WARN.byDay[tdi];
+  return (((g&&g.warns)||[]) as any[]).findIndex((w:any)=>w.code===code&&(w.who||[]).indexOf(id)>=0);};
 /* every man whose day-end breaks the NEXT day, for the day that caused it */
 export const tracesOn=(di:any)=>{const m=(WARN.trace&&WARN.trace[di])||{};
   return Object.keys(m).map((id:any)=>({id,t:m[id]}));};
+
+/* ---- THE PRE-DROP QUESTION (owner, 5 Sep 26 — step 3 of the flagging plan):
+   "what would the two HARD cross-day rules say if this man landed on this
+   slot?" Read off the tables the last validate() published, never a second
+   copy of either rule: the run walks RUNLEN/RUNSEED/NEXTON, crew rest re-runs
+   the validator's own crewRestDay in probe mode. slotBar (avail.ts) appends
+   the answer as its last reason, so the palette strike, the green rings, the
+   drag hover and the fallback drop toast all say it BEFORE the write, and the
+   drop delta says it again after — one oracle, no drift. */
+let CREWREST_BODY:any=null;
+/* memo per validate(): the palette asks slotBar for every name in a column
+   several times over (its sort comparator, the free count, the column
+   reason, the row), so the two probes below are answered once per
+   (id, key, fromKey) until the next validate() reassigns the tables */
+let XD_CACHE:Map<string,string>=new Map();
+export const ordinal=(n:any)=>n+(n%10===1&&n%100!==11?'st':n%10===2&&n%100!==12?'nd':n%10===3&&n%100!==13?'rd':'th');
+/* the run: would a day on the programme at `di` push a run past the limit,
+   and on which day does it break? null when he is already on that day (the
+   count would not change) or nothing crosses. Walks forward through the days
+   he is already on and, past Sunday, into next Monday's seed. */
+/* `from` = {di, key, sole}: the seat he is being moved FROM (a seat-to-seat
+   drag) — that day reads as OFF when the moved seat was his only event there
+   (`sole`), so the answer describes the week after the move. Counted from
+   the on/off pattern alone: back through the days he is on (the seed walks in
+   when the run reaches Monday), then forward, then into next Monday. */
+export function runIfPlaced(id:any,di:any,from?:any){
+  if(!id||!PEOPLE[id]||isSpecial(id)||di==null||di<0||di>6||!RUNLEN.length)return null;
+  const on=(k:any)=>!!(RUNLEN[k]&&RUNLEN[k][id]!=null)&&!(from&&from.sole&&from.di===k);
+  if(on(di))return null;
+  let n=1, k=di-1;
+  while(k>=0&&on(k)){n++;k--;}
+  if(k<0)n+=RUNSEED[id]||0;
+  if(n>VCONF.maxRun)return {di,dow:DAYS[di].dow,n};
+  for(k=di+1;k<=6;k++){
+    if(!on(k))return null;
+    n++; if(n>VCONF.maxRun)return {di:k,dow:DAYS[k].dow,n};
+  }
+  if(NEXTON.has(id)){n++; if(n>VCONF.maxRun)return {di:null,dow:'Monday',n};}
+  return null;
+}
+/* crew rest, both directions: the candidate leg is a clone of a leg already
+   flying the same formation (same to/ld/brief/in-time — formation-level
+   facts), so no second copy of events.ts's leg arithmetic exists; an empty
+   formation has no sibling to clone and answers null — the drop delta still
+   catches it after the write. `key` is a flying-seat or standalone-shift key
+   (`di.gi.li.ai.seat`); every other kind bears no crew rest of its own. */
+export function restIfPlaced(id:any,key:any,from?:any){
+  if(!id||!PEOPLE[id]||isSpecial(id)||PEOPLE[id].pers||!CREWREST_BODY)return null;
+  const k=String(key); if(k.indexOf(':')>=0)return null;
+  const a=k.split('.'); const di=+a[0]; if(!(di>=0&&di<=6)||!EVDAYS[di])return null;
+  /* the seat he is leaving (a seat-to-seat drag) comes out of whichever day
+     it sits on — a leg being moved cannot break its own crew rest */
+  const fk=from&&from.key;
+  const strip=(d:any)=>!fk||!d||d.di!==from.di?d:{...d,fly:(d.fly||[]).filter((e:any)=>(e.key||e.slot)!==fk),events:(d.events||[]).filter((e:any)=>(e.key||e.slot)!==fk)};
+  /* the day's two lists carry a leg in two shapes: `fly` (the crew-rest
+     inputs — brief/intime/to/ld/shift, keyed by `key`) and `events` (every
+     kind, keyed by `slot`); the candidate is cloned into each from a sibling
+     leg of the same formation in that same list */
+  const pre=`${a[0]}.${a[1]}.${a[2]}.`;
+  const sibF=(EVDAYS[di].fly||[]).find((e:any)=>String(e.key||e.slot||'').indexOf(pre)===0&&e.id!==id);
+  const sibE=(EVDAYS[di].events||[]).find((e:any)=>e.kind==='fly'&&String(e.slot||e.key||'').indexOf(pre)===0&&e.id!==id);
+  if(!sibF||!sibE)return null;
+  const legF={...sibF,id,seat:a[4]==='w'?'RCP':'FCP',key:k};
+  const legE={...sibE,id,slot:k};
+  /* the seat he already HOLDS asks nothing — he is there, and the flag on
+     the day says whatever there is to say (the same self-exclusion slotBar
+     applies everywhere else, audit-c-clash.test.ts) */
+  if((EVDAYS[di].fly||[]).some((e:any)=>(e.key||e.slot)===k&&e.id===id))return null;
+  const notMine=(e:any)=>(e.key||e.slot)!==k;
+  const base=strip(EVDAYS[di]);
+  const today={...base,fly:[...base.fly.filter(notMine),legF],events:[...base.events.filter(notMine),legE]};
+  let hit:any=null;
+  const probe={id,hit:(h:any)=>{hit=h;}};
+  /* ONLY A NEW BREACH IS AN ANSWER — the same delta the drop toast reads. A
+     man whose 08:15 leg already breaks today's rest is asked about a 14:00
+     seat: the probe still sees the 08:15 leg and says "breach", but landing
+     him there changes nothing, so the answer is the existing warning's own
+     message; when the two match, nothing is new. Same forward: a breach
+     tomorrow that another late leg already causes is not this seat's. */
+  const already=(d:any,h:any)=>{const g=WARN.byDay&&WARN.byDay[d]; const w=g&&g.warns&&g.warns.find((x:any)=>x.code==='CREW_REST'&&(x.who||[]).indexOf(id)>=0); return !!w&&w.msg===h.msg;};
+  /* backward — his own report today against what ended yesterday */
+  const prev=di>0?strip(EVDAYS[di-1]):PREVSUN;
+  if(prev)CREWREST_BODY(prev,today,di,true,null,probe);
+  if(hit&&!already(di,hit))return {dir:'back',di,dow:DAYS[di].dow,earliest:hit.earliest,leaveBy:hit.leaveBy,msg:hit.msg};
+  hit=null;
+  /* forward — this leg's end against his first report tomorrow */
+  const next=di<6?strip(EVDAYS[di+1]):NEXTMON;
+  if(next&&next.fly)CREWREST_BODY({...today,di:null},next,di<6?di+1:null,true,null,probe);
+  if(hit){
+    const t=di===6?traceOf(6,id):null;
+    const dup=di<6?already(di+1,hit):!!(t&&t.leaveBy!=null&&t.msg===hit.msg);
+    if(!dup)return {dir:'fwd',di:di<6?di+1:null,dow:next.dow,earliest:hit.earliest,leaveBy:hit.leaveBy,msg:hit.msg};
+  }
+  return null;
+}
+/* the one line slotBar prints for either — short, because the palette prints
+   it under a crossed-out name at 8.5px */
+export function crossDayIfPlaced(id:any,key:any,fromKey?:any){
+  const ck=`${id}|${key}|${fromKey||''}`;
+  const hit=XD_CACHE.get(ck); if(hit!=null)return hit;
+  /* the seat he is leaving: its day, and whether it was his only event there */
+  let from:any=null;
+  if(fromKey){
+    const fdi=keyDay(fromKey), evs=(EVD[fdi]&&EVD[fdi][id])||[];
+    from={di:fdi,key:String(fromKey),sole:evs.length===1&&(evs[0].slot||evs[0].key)===String(fromKey)};
+  }
+  let out='';
+  const r=runIfPlaced(id,keyDay(key),from);
+  if(r)out=`${ordinal(r.n)} day in a row — breaks ${r.di==null?'next Monday':r.dow} (${VCONF.maxRun} is the limit)`;
+  else{
+    const c=restIfPlaced(id,key,from);
+    if(c)out=c.dir==='back'?`crew rest — not clear until ${hm24(c.earliest)}`:`crew rest — breaks ${c.di==null?'next Monday':c.dow}: he must be gone by ${c.leaveBy}`;
+  }
+  XD_CACHE.set(ck,out);
+  return out;
+}
 /* how often each code fired across the week now on screen, and on which days */
 export function lgFired(){
   const out:any={}; (WARN.all||[]).forEach((w:any)=>{

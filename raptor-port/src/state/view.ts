@@ -11,6 +11,7 @@ import { curDraftId, reconcileIssuedMarks } from '../engine/drafts'
 import { isLead, isInstr, isOcu } from '../engine/people'
 import { HOOKS } from '../engine/hooks'
 import { canEditSched, ME } from './auth'
+import { flagDrop } from './dropflag'
 
 /* the repaint/gesture call sites inside these verbatim bodies route through
    the hooks — no-ops headless, mapped to the store's notify() when wired */
@@ -704,9 +705,18 @@ export const FRESH_FADE_MS=550
 export function flashAdded(key:any){
   if(!key)return
   const k=String(key); FRESHADD.add(k)
-  /* repaint the board the box lives on and the week behind it — the same
-     surfaces afterSchedMutate paints */
-  const repaint=()=>{ if(SBDAY!=null)renderScheduler(); if(CURPAGE==='editsched')renderEditWeek() }
+  /* re-hang the box, nothing more (5 Sep 26 — the owner's phone recording of
+     a black screen after a fling). The box is a post-render DECORATION, hung
+     by highlights.ts paintFreshAdds over the board's live nodes, so its fade
+     and its removal need only that pass. This used to call renderScheduler()
+     and renderEditWeek() — each a full notify(): every week load accepts a
+     handful of inputs into the ground programme, each add schedules these two
+     timers, and ~6s after the load a dozen full repaints ran back to back
+     (seven day strings rebuilt each time, ~70ms at 4×) — a one-second stall
+     on any device and, on a phone, where tiles are painted on that same
+     thread, a blank screen if a fling was landing just then. The week never
+     draws the box at all. */
+  const repaint=()=>HOOKS.paintFreshAdds()
   /* enter the fade for the last FRESH_FADE_MS, then remove entirely — two
      timers so the steady box holds static and only the tail animates out */
   setTimeout(()=>{ if(FRESHADD.has(k)){ FRESHOUT.add(k); repaint() } },FRESH_MS-FRESH_FADE_MS)
@@ -743,12 +753,18 @@ export function placeArmed(id:any){
      armed); planting repeats it as the warn toast after the write — the same
      validate-then-ask shape as drag.ts's barDrop — and the validator rings
      the puck the same instant. */
+  const warnBefore=WARN;   // the drop delta's baseline (state/dropflag.ts)
   if(/\.\+$/.test(key))fillSlot(key,id); else setSlotVal(key,id);
   armDrop();
   /* a successful fill PARKS the drawer (owner, 8 Aug 26): the point of
      planting is seeing the puck land, and the open drawer covers it. */
   if(isPhone())document.body.classList.remove('ros-open');
   afterSchedMutate(); paintArm();
+  /* THE DELTA SPEAKS FIRST (5 Sep 26): whatever the one validate() above
+     raised that was not there before — on any day, any seat — in its own
+     words; slotBar's reason is the fallback, "planned" the all-clear. Same
+     order as drag.ts's done(), so the two ways of planting a man agree. */
+  if(flagDrop(warnBefore,keyDay(base)))return true;
   const why=slotBar(id,base);
   if(why)toast(`${PEOPLE[id].cs} — ${why}`,'warn');
   else toast(`${PEOPLE[id].cs} planned`);

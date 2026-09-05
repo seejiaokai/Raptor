@@ -101,9 +101,17 @@ Grouped by area. Each is the short rule; the source has the full story.
   §Architecture rules)
 - **Only the page on screen re-renders.** CURPAGE gates the week effects; Shell
   chrome is memoized; no `validate()` during render. (ui-contracts.md §Rendering)
+- **One `validate()` per mutation.** The drop's epilogue (`afterSchedMutate`)
+  is the pass; anything that wants a post-write answer (barDrop, the drop
+  delta, placeArmed's reason) reads AFTER it, never revalidates first.
+  Pinned `ui/dropvalidate.test.tsx`. (ledger 21)
 - **An edit on one day must not disturb the other days** — per-day string diff
   (gate check B). If you add a new cross-day trace, extend B's named exemption
-  *precisely*; never loosen it to "some other days may change."
+  *precisely*; never loosen it to "some other days may change." Two named
+  exemptions today: the day the edited day's crew rest traces to (6 Aug 26),
+  and every day carrying the EDITED MAN's run trace (5 Sep 26 — a seat filled
+  on one day can join a run, and each earlier day of it then points at the
+  day it breaks).
 - **A changed day rewrites only its changed BLOCKS** (`ui/dayswap.ts`). Diff each
   block's *canonical* markup (a freshly parsed node, never the live decorated
   one); any shape mismatch falls back to whole-node replace. Do not diff by live
@@ -117,7 +125,10 @@ Grouped by area. Each is the short rule; the source has the full story.
   string** — selection/search/warning classes, the armed ring, eligibility
   rings (outline-only: no nodes, no layout), the ~6 s fresh-add box. A new
   decoration adds a paint function in `highlights.ts`, never a class in the
-  markup. (feature-impact.md)
+  markup. (feature-impact.md) **And a decoration's own lifecycle — its fade,
+  its removal — repaints through that pass alone, never a `notify()`**
+  (5 Sep 26, ledger 23): the fresh-add box's two timers used to fire a dozen
+  full repaints ~6 s after every week load, for a box the week never draws.
 
 ### B. Scroll and motion
 - **Never write `scrollLeft` mid-fling** — it kills native touch momentum. Defer
@@ -132,6 +143,13 @@ Grouped by area. Each is the short rule; the source has the full story.
 - **B54 scroll-hold** — the week/palette/wave-offsets keep their scroll through
   any edit (gate check D). Any new whole-week/whole-day writer preserves scroll
   and consumes carry state once.
+- **A repaint that wrote nothing writes no `scrollLeft`** (5 Sep 26, the
+  owner's iPhone recording). The B54 hold runs only when the repaint actually
+  rewrote the week (`wrote` in `EditWeek`/`ViewWeek`). The palette's
+  day-follow repaints ~110 ms after a swipe settles; on iOS a `scrollLeft`
+  written back to itself while the snap is still settling stops the snap where
+  it stands — Safari does not re-snap after a programmatic scroll, Chromium
+  does, which is why this never reproduces here. Pinned `ui/snaphold.test.tsx`.
 - **Single-writer during a glide** — while a `scroll-behavior:smooth` arrow glide
   is in flight, the proxy scrollbar and any repaint are pure followers; the glide
   owns the week's scrollLeft. (ui-contracts.md §desktop arrow glide)
@@ -167,6 +185,22 @@ Grouped by area. Each is the short rule; the source has the full story.
 - **Nothing on the page is natively `draggable`** — every drag rides the pointer
   machine in `drag.ts`; `body.dnd` is added one tick after dragstart, never
   synchronously.
+- **The hover reason is asked on TARGET CHANGE, never per move** (`drag.ts
+  hoverWhy`, 5 Sep 26), and printed as a child of the ghost so it rides the
+  ghost's one transform — no second moving layer. slotBar's cross-day probe
+  (`restIfPlaced`) clones one leg and re-runs the crew-rest body for one man;
+  keep it that shape — never a buildDay or a validate() per hover or per ring.
+
+- **No `filter` on a palette puck, no `opacity` on a preview day, and the
+  roster aside stacks above the week's z-indexed pucks** (`z-index:5`) — the
+  three rules that hold the desktop edit week at ~105 compositor layers instead
+  of 261 (5 Sep 26, ledger 22). A filtered element and a translucent group can
+  never share a layer with what they overlap, and everything painted above a
+  sticky aside is assumed to overlap its whole scroll range. Pinned
+  `ui/layers.test.ts`.
+- **Every hover boundary crossed on the week repaints and re-layerises the page
+  (~17 ms at 4×)** — `.form:hover`'s tint and the seat hover outline. A new
+  hover affordance on the dense surfaces is a per-crossing cost; measure it.
 
 ### E. Leave War (the heavy grid — ~28k nodes)
 - **Kept alive between visits, not unmounted** — leaving hides it with
@@ -235,9 +269,20 @@ calling it done:
   `backface-visibility`/no-decorations/non-hit-testable ghost/`position:absolute`
   all equal or worse; toggling ghost `pointer-events` around one hit-test 22 ms
   worse. A "translateZ unlocked the fast path" claim was a broken-experiment
-  artefact — retracted. The residual is the page's ~230 compositor layers; fewer
-  layers is the only lever left (page-wide CSS change, visual implications,
-  proposed not done).
+  artefact — retracted. The ~230-layer residual was cut to 105 on 5 Sep by
+  three local rules, not a page-wide change (ledger 22); the drop itself turned
+  out JS-bound, not paint-bound.
+- **More layers, not fewer** (5 Sep, layer census by switching one suspect off
+  in the live page): `will-change:transform` on every `.day`, on the week
+  strip, or on the roster — 261 → 537 (every descendant overlapping a
+  composited sibling then needs a layer of its own); `position:static` on the
+  roster aside — 442. **No change at all:** `backdrop-filter` off the week-nav
+  and hscroll (−0), the top bar static (−2), the roster's inner scroller
+  `overflow:visible`, `contain:paint` / `isolation:isolate` on the preview
+  or the roster, `overflow:visible` on the preview or the days, `.rpuck`
+  static. The three that worked are ledger 22. Per-move cost with the pointer
+  unable to reach the week: layerize 9 ms/20 moves vs 200 — the hover
+  boundary, not the layer count, is what plain mouse movement pays for.
 - **Paint-isolation on the edit week** — `.day`/`.dsec`/`.day>*` as
   `position:relative`, `contain:paint`, `contain:layout paint`,
   `isolation:isolate`, `will-change:transform`, week-as-own-layer — all equal or
@@ -415,10 +460,72 @@ through sourcemaps for the JS split, paired A/B runs.
     `EditWeek.tsx`, `ViewWeek.tsx`, `drag.ts`, `dayswap.test.ts`.
     *(Captured as task-observer obs 57–59.)*
 
+21. **One validate() per drop; the drop delta** (5 Sep). A drop no longer runs
+    the rules engine twice (three times for a swap): `barDrop` used to
+    revalidate before asking slotBar, on top of the pass in `afterSchedMutate`.
+    It now asks AFTER that pass, and the drop's voice is the DELTA of WARN
+    before vs after (`state/dropflag.ts`) — the validator's own words, for
+    every rule, on whichever day the breach landed. · *Invariant:* exactly one
+    `validate()` per drop (pinned `ui/dropvalidate.test.tsx`); the delta is a
+    list diff, never a second copy of a rule; the pulse is opacity-only. ·
+    Derived, not re-traced: the 6 Sep drop trace put the two passes at ~45 ms
+    @4× together, so one pass is ~22 ms off the drop task — re-trace before
+    quoting a number. · `drag.ts`, `state/view.ts`, `state/dropflag.ts`,
+    `highlights.ts`, `scheduler.css`, `toast.ts`.
+
 20. **(Infra) Merge-to-live parallelised** (3 Sep). CI-to-live ~17 min → the
     slowest gate. · `deploy.yml` runs the four gates as six parallel jobs; the
     Leave War unit leg sharded 2×. No app code. · 17m26s → 8m28s. · `deploy.yml`,
     `playwright.config.ts`.
+
+22. **Fewer compositor layers on the desktop edit week** (5 Sep). Dragging a
+    puck on the desktop is smoother: the page re-layerises on every move, and
+    it now has 105 layers to decide instead of 261 (the phone's 9 untouched;
+    21 is the drop-delta round, PR #359). · Three CSS rules, each found by
+    switching one suspect off in the live page and re-counting (a `LayerTree`
+    census — an attributing run, never timed): the palette's faded pucks
+    desaturate with a translucent grey in `background-blend-mode:saturation`
+    instead of `filter:saturate()` — a filtered element can never be squashed
+    into a shared layer (59 layers); the next-week preview is dimmed by a
+    page-background `::after` veil instead of `opacity:.5` — a translucent
+    group cannot share a layer either (47); the roster aside gets `z-index:5`
+    so the week's z-indexed pucks paint below it instead of being assumed to
+    overlap its sticky scroll range (44). · *Invariant:* no `filter` on a
+    palette puck, no `opacity` on a preview day, the aside above the strip's
+    z-indexed pucks (`ui/layers.test.ts`). · Armed drag at 4×, 7 paired
+    trials, category sums from a plain `devtools.timeline` run (a paired
+    index, not wall-clock): drag per-move 68.4 → 51.9 ms median (Layerize
+    30.5 → 15.8 ms a move; raw runs 58–81 vs 46–55); the drop 836 → 820 ms —
+    unchanged, it is JS-bound (~210 ms of handler inside the pointer-up, then
+    ~40 style, ~45 layout, ~66 paint, ~72 raster, ~56 layerize); plain hover
+    per-move 17.3 → 17.7 — unchanged, that is the hover-boundary cost
+    (bisected by nesting depth: cheap until the pointer can reach `.form`).
+    Visual delta: the faded pucks' letter chips a touch more vivid (the filter
+    washed them too); the preview ≤0.1% of pixels. · `scheduler.css` (three
+    commented rules), `ui/layers.test.ts`.
+23. **The fresh-add box repaints itself, not the page** (5 Sep; 21 is the
+    drop-delta round on PR #359, 22 the compositor-layer round on PR #361). A
+    one-second stall ~6 s after every week load is gone — and on the phone,
+    the black screen after a fast fling that happened to land in that second
+    (the owner's 13:39 recording). · Every week load accepts a few inputs into
+    the ground programme; each add flashes its ~6 s blue box with two timers
+    (the fade at 5.45 s, the removal at 6 s), and each timer fired
+    `renderScheduler()` and `renderEditWeek()` — full `notify()`s — so twelve
+    full repaints (seven day strings rebuilt each time, ~70 ms at 4×) ran back
+    to back for a box that only the board draws (`paintFreshAdds` hangs it
+    under `#schedBoard`). The timers now call `HOOKS.paintFreshAdds()` — the
+    decoration pass over the board's live nodes — and nothing else. ·
+    *Invariant:* a post-render decoration's lifecycle repaints through its own
+    pass, never a notify(). Pinned `state/freshflash.test.ts` (five flashes:
+    zero full repaints, ten decoration passes; fails on the old code). ·
+    Measured at 4× on the phone viewport (a fast vertical fling, then 3 s
+    idle): long tasks (>40 ms) in the window 14 → 3, and the timer train
+    itself (87, 80, 129, 106, 165, 120, 67, 71, 69, 58 ms back to back from
+    +2.05 s) → none; the three left are the fling's own paint. On iOS tiles are
+    painted on the main thread, so that train was a blank screen. Found by
+    wrapping the page's timers from load and reading the trace's TimerFire ids
+    — not by theorising about the renderer. · `state/view.ts`,
+    `engine/hooks.ts`, `ui/highlights.ts`.
 
 ---
 
