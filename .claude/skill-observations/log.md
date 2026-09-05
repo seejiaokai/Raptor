@@ -1268,3 +1268,18 @@ gate's. Keep verdict-bearing commands unpiped.
 **Suggested improvement:** When adding a rule that a media block later overrides at equal specificity, place the base rule ABOVE that block (beside the variable/rule it sets), and make the phone measurement part of the first drive, not an afterthought — assert the phone value explicitly (here `who=92`), not just "it changed". Checklist line for CSS with breakpoint overrides: "where is the override block, and is my base rule above it?"
 
 **Principle:** A stylesheet's own placement warning fires only if the new rule is placed by cascade position, not by topic; measure the narrow breakpoint on the first drive.
+
+### Observation 83: A Playwright `click`/`tap` on a frozen-column cell that is NOT the on-screen copy scrolls the grid to that cell's layout position first — a "the grid jumps to January" finding that was the tool, not the app
+
+**Status:** OPEN
+**Date:** 2026-09-06
+**Session context:** Checking an owner-reported cosmetic flaw in the Leave War frozen columns, a drive tapped a person's balance cell (`bal-<id>`) with the grid scrolled to April and measured `scrollLeft` 1988 → 0 — "opening the figures sheet throws the grid back to January", on the new build AND the pre-batch build. The owner's own live screenshot showed April intact with that sheet open. Cause: on a phone the roster's frozen cells are `position: static` under the `.mxband` overlay (the copy a finger actually taps), so the REAL cell with the testid sits at the far left of the scrolled table, off-screen; Playwright's actionability scroll-into-view scrolled the wrapper to 0 to reach it, then tapped. A coordinate `touchscreen.tap` on the overlay copy held the grid on both builds. ~25 minutes on a non-bug.
+**Skill:** verification-before-completion (browser-drive method)
+**Type:** open-source
+**Phase/Area:** Driving an element that has an on-screen COPY (overlay/mirror) and an off-screen REAL node carrying the testid
+
+**Issue:** A locator-based click/tap is not a finger: it first makes its target visible, and where the app deliberately keeps the testid on an off-screen real node and paints a copy in an overlay, that "make visible" IS a scroll the user never performs. The measurement then reports a state change the app never causes. The tell was the pattern — rows under the overlay jumped, a row whose real cell is sticky (the counter row) held.
+
+**Suggested improvement:** When a drive measures scroll position (or anything a scroll would disturb) across a click, and the target lives in a frozen/mirrored column, tap by COORDINATES on the painted copy (`page.touchscreen.tap(x, y)` / `page.mouse.click(x, y)` from the copy's rect), or set `force: true` AND check the target is already within the viewport; and before calling a scroll-reset a bug, ask "did the tool scroll to reach the element?" — compare `scrollLeft` right before the action's event, not before the locator call. Repo note: the `.mxband` overlay (phone) and `.mxfixed-frozen` copies are exactly this shape.
+
+**Principle:** A locator action may scroll before it acts; measure the app's scroll only across actions that cannot scroll — coordinate taps on what is already on screen.
