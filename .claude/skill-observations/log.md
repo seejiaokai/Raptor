@@ -928,3 +928,18 @@ gate's. Keep verdict-bearing commands unpiped.
 **Suggested improvement:** In a pointer-up / drop teardown, sequence by data dependency, not by tidy-up instinct: do every measurement the drop needs (hit-test under the point, target geometry) FIRST, against the still-settled layout, and only then perform the teardown writes (remove the ghost, clear the body markers). When the ghost overlaps the drop point, exclude it from the hit-test rather than removing it early. Read-then-write, batched — the same rule that avoids layout thrash in a render loop applies to a one-shot handler.
 
 **Principle:** Interleaving DOM reads and writes forces a layout per read; a pointer-up handler that measures after it has begun tearing down pays for a layout it did not need. Order the handler so all reads precede all writes, even when the natural writing order (clean up first) reads the other way.
+
+### Observation 60: The handoff asserts a PR's merge state, which goes stale the moment the owner merges
+
+**Status:** OPEN
+**Date:** 2026-09-05
+**Session context:** A fresh session opened with "Read handoff.md". The In-flight section stated PR #356 was "NOT merged"; a one-line fetch of origin/main showed it had merged ~1 hour after the handoff commit, so the first thing the new session read was wrong.
+**Skill:** session-handoff
+**Type:** open-source
+**Phase/Area:** The HANDOFF.md "In flight" section — how a shipped-but-unmerged branch is recorded
+
+**Issue:** The handoff already has a rule for gate counts ("restate a count only from a run you watched") because a stale count misled twice. Merge state has the same failure shape: it is external state the owner changes between sessions, and writing it as a fact invites the next session to plan around a branch that no longer exists as unmerged work. This session caught it only because it checked main before reading further.
+
+**Suggested improvement:** In the session-handoff skill's HANDOFF-truth check, add a rule: record a PR as "shipped to branch X, PR #N — check its state before acting; the owner merges on an explicit go", never as "NOT merged". Pair it with a one-line session-start step: fetch main and compare against the branch the handoff names before trusting any In-flight bullet.
+
+**Principle:** A handoff should assert only what the writing session controls. Anything a human changes between sessions (merge state, deploy state, a review's verdict) is recorded as "where to look and how to check", not as a fact.
