@@ -1312,4 +1312,4 @@ gate's. Keep verdict-bearing commands unpiped.
 
 **Suggested improvement:** When a CI job is red, read the summary block for `Errors N` and the "Unhandled Errors" section before deciding anything from the pass/fail counts. For any module that schedules timers longer than a test file's typical run (seconds), make the callback tolerate a torn-down environment (guard on `document`/`window`) or clear the timers in the store's reset path — and say which in the code comment, because the next "unrelated" red run will otherwise be re-diagnosed from scratch.
 
-**Principle:** A test job fails on unhandled errors as well as on assertions; a production timer that outlives its test file is a latent red run waiting for a slow runner.
+**Principle:** A test job fails on unhandled errors as well as on assertions; a production timer that outlives its test file is a latent red run waiting for a slow runner. (Second instance the same day: the Shell pre-warm poll, deploy run 903 — a self-re-arming `setTimeout` in a component the tests never unmount. Sweep for both shapes: long one-shot timers AND re-arming polls.)
