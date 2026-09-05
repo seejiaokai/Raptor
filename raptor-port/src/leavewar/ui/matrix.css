@@ -54,9 +54,9 @@
    pixel of room either way (measured 0 at 390 and 1280), so this changes nothing
    there; the geometry gate still pins zero vertical scroll room. The 30 Aug
    momentum A/B on the owner's iPhone showed this property neither killed nor
-   restored the fling (known-gaps.md), so it is momentum-neutral. Not verifiable
-   in this container (no WebKit) — the owner's phone is the gate; the revert is
-   this one line.
+   restored the fling (known-gaps.md), so it is momentum-neutral. VERIFIED on
+   the owner's iPhone against the Vercel preview, 5 Sep 26 ("Ok it works"): the
+   rows stay put, the page scrolls, the flick still glides. Keep it.
 
    The date header still does not stick by CSS (`position: sticky` resolves
    against this wrapper, which owns the horizontal axis and never scrolls

@@ -5587,5 +5587,9 @@ vertical content size to the visible height regardless of layout
 has no vertical range and a vertical drag is handed to the page. Chromium had
 zero room either way (measured), the e2e "the grid has no vertical scroller of
 its own" pins that, and the 30 Aug device A/B showed the property is
-momentum-neutral. Do not drop it to "simplify" the rule again. Unverified on a
-real iPhone from this container; the revert is the one line.
+momentum-neutral. Do not drop it to "simplify" the rule again. Verified on the
+owner's iPhone against the preview (5 Sep 26). Never reach for
+`overscroll-behavior-y: none` here instead: WebKit's iOS delegate also uses that
+value to switch off the hand-off of vertical drags to the page
+(`_wk_setTransfersVerticalScrollingToParent` is set only for `auto`), which
+would kill vertical scrolling over the grid entirely.
