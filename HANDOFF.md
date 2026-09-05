@@ -137,13 +137,34 @@ run whole against the final code:
 
 ## In flight
 
-- **The performance thread (the current live work).** The puck-drag round and
-  the drop round (both 6 Sep 26) are SHIPPED to the branch
-  `claude/read-handoff-docs-5fx50p`, PR #356, and are **NOT merged** — the owner
-  merges only on an explicit "merge live", after checking the Vercel preview on
-  the slow laptop and the iPhone
-  (`https://raptor-git-claude-read-handoff-docs-5fx50p-kai-e2f5.vercel.app`).
-  The full ledger of every speed round is `docs/performance.md` Part 2; the
+- **The Leave War swipe-up-during-a-fling fix (5 Sep 26, from the owner's
+  screen recording) — on branch `claude/read-handoff-docs-mzr73u`, UNVERIFIED
+  on iOS.** After a pinch out / pinch in, a swipe up while the grid's sideways
+  fling was still decelerating rubber-banded the rows ~100px inside `.mx-wrap`
+  and snapped them back, the `.mxband` left column stood still, and the page did
+  not scroll until the fling died. Root cause, from WebKit's own source (this
+  container has no WebKit): `overflow-x: auto` alone computes `overflow-y: auto`,
+  and on iOS that hands the native scroll view whatever vertical overflow layout
+  produces — any stray pixel makes the wrapper a vertical scroller, and a finger
+  landing mid-fling is latched to it. Fix: `overflow-y: hidden` on `.mx-wrap`
+  (WebKit then clamps the vertical content size to the visible height). One CSS
+  line; contract in `docs/ui-contracts.md` §The Leave War grid scroller has no
+  vertical axis; `known-gaps.md` §momentum item 3 corrected. **Test on the
+  iPhone:** pinch out, pinch in, swipe up straight away — the rows must not slide
+  inside the grid, the page must scroll, and the sideways flick must still glide
+  exactly as before (the 30 Aug A/B says this property is momentum-neutral).
+  Revert is the one line if anything regresses. **If the phone still
+  rubber-bands after this**, the diagnosis is right about the latch but wrong
+  about the range: read `.mx-wrap`'s `scrollHeight - clientHeight` in Safari's
+  remote inspector on the device (Chromium measures 0 at both widths) and find
+  the overflowing pixel. Do NOT reach for `overscroll-behavior-y: none` — in
+  WebKit's iOS delegate that also turns off the hand-off of vertical drags to
+  the page (`_wk_setTransfersVerticalScrollingToParent` is set only for
+  `auto`), which would kill vertical scrolling over the grid entirely.
+- **The performance thread.** The puck-drag round and the drop round (both
+  6 Sep 26) are MERGED to main as PR #356 (5 Sep 26 00:08 UTC). Check a PR's
+  state before acting on it — this file said "NOT merged" for an hour after the
+  owner merged (observer log obs 60). The full ledger of every speed round is `docs/performance.md` Part 2; the
   guardrails any new change must follow are Part 1. **Still-open residuals**,
   recorded not built, in order of size: the page repaint + compositing after a
   drop (~160 ms at 4×, structural — the page's ~230 compositor layers; cutting

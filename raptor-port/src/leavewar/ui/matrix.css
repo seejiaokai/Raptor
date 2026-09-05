@@ -35,9 +35,28 @@
    dies — outranks the theory, and on some iOS builds an explicit `touch` value
    reverts a scroller to a legacy mode whose momentum is buggy. Removed, so this
    scroller now matches `.qwrap` exactly (`overflow-x: auto`, nothing else).
-   `overflow-y` is still deliberately NOT `hidden` (that property is a separate
-   known momentum killer, and with no height cap there is no vertical overflow to
-   need it — the geometry gate pins zero vertical scroll room, so no second bar).
+   `overflow-y: hidden` is BACK (5 Sep 26, owner's screen recording), and it is
+   load-bearing on iOS, not cosmetic. `overflow-x: auto` alone makes `overflow-y`
+   compute to `auto`, and on iOS every overflow scroller is a native UIScrollView
+   whose vertical content size WebKit takes from the layout overflow whenever the
+   axis is `auto` — so ANY stray pixel of vertical overflow (a chip's line box, a
+   relatively positioned row, whatever WebKit lays out a hair taller than
+   Chromium) turns this wrapper into a real vertical scroller with a rubber
+   band. A finger that lands on it while a sideways fling is still decelerating
+   is latched to THIS scroll view, so a swipe up rubber-banded the grid inside
+   the wrapper (the rows slid up ~100px and snapped back, the `.mxband` overlay
+   outside the wrapper stayed put and read as "the left column is stuck") and
+   the page never scrolled until the fling had died. With `overflow-y: hidden`
+   WebKit clamps the vertical content size to the visible height
+   (RenderLayerScrollableArea::reachableTotalContentsSize — the axis is not
+   "scrollable" unless the style scrolls it), so the UIScrollView has no vertical
+   range at all and a vertical drag is handed to the page. Chromium never had a
+   pixel of room either way (measured 0 at 390 and 1280), so this changes nothing
+   there; the geometry gate still pins zero vertical scroll room. The 30 Aug
+   momentum A/B on the owner's iPhone showed this property neither killed nor
+   restored the fling (known-gaps.md), so it is momentum-neutral. Not verifiable
+   in this container (no WebKit) — the owner's phone is the gate; the revert is
+   this one line.
 
    The date header still does not stick by CSS (`position: sticky` resolves
    against this wrapper, which owns the horizontal axis and never scrolls
@@ -45,6 +64,7 @@
    callsign and counter columns stick on `left` and are unaffected. */
 .mx-wrap {
   overflow-x: auto;
+  overflow-y: hidden;
   /* Containing block for the open-bidding box below. position:relative with
      no z-index does NOT open a stacking context, so the box's z-index still
      resolves against the same context as the frozen columns — which is what

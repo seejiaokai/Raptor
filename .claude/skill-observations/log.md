@@ -943,3 +943,18 @@ gate's. Keep verdict-bearing commands unpiped.
 **Suggested improvement:** In the session-handoff skill's HANDOFF-truth check, add a rule: record a PR as "shipped to branch X, PR #N — check its state before acting; the owner merges on an explicit go", never as "NOT merged". Pair it with a one-line session-start step: fetch main and compare against the branch the handoff names before trusting any In-flight bullet.
 
 **Principle:** A handoff should assert only what the writing session controls. Anything a human changes between sessions (merge state, deploy state, a review's verdict) is recorded as "where to look and how to check", not as a fact.
+
+### Observation 61: Diagnosing a phone-only scroll bug from a screen recording, with no device and no WebKit in the container
+
+**Status:** OPEN
+**Date:** 2026-09-05
+**Session context:** The owner uploaded a 9-second iPhone screen recording of the Leave War grid misbehaving (pinch out, pinch in, swipe up while a sideways fling was still going). The container has no video tools, no WebKit and no iOS device.
+**Skill:** New skill candidate: video-bug-triage (or a section in systematic-debugging)
+**Type:** open-source
+**Phase/Area:** Reproduce / observe — the step before any hypothesis
+
+**Issue:** Three things worked and none is written down anywhere: (1) `pip install imageio-ffmpeg` gives a working ffmpeg binary in a container that ships none; `-vf "fps=6,scale=560:-1,crop=560:900:0:0,tile=6x3"` turns a clip into contact sheets the Read tool can view, and a second pass at a higher rate over the 3–4 s of interest is what actually showed the mechanism. (2) The decisive tell was NOT in the app at all: Safari's URL bar collapses only when the PAGE scrolls, so a bar that stayed tall while content moved proved the movement was inside a nested scroller — a non-sticky title that never moved said the same. Two independent chrome-level tells beat any amount of squinting at app pixels. (3) With no device to test on, the browser engine's source was the next best evidence: fetching WebKit's iOS scrolling delegate and RenderLayerScrollableArea from GitHub answered "what does overflow-y:auto vs hidden do to the native scroll view" exactly (reachableTotalContentsSize clamps only when the style scrolls that axis), which turned a guess into a one-line fix with a stated mechanism.
+
+**Suggested improvement:** A short procedure: extract frames → find the frames around the failure → read the platform chrome for what actually scrolled → only then read app code; and when the target platform is unreachable, read the engine's source for the exact behaviour rather than reasoning from memory. Record the ffmpeg recipe and the "platform chrome as instrument" idea.
+
+**Principle:** A recording is data, not an anecdote — turn it into frames and read the platform's own indicators (browser chrome, status bars) before the app's pixels, and when the failing platform cannot be run, its source code is a better oracle than recollection.

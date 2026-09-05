@@ -5568,3 +5568,24 @@ The contract, in the order a reader meets it:
   Desktop only — the phone finger-scrolls the grid and shows no proxy bar.
   Pinned in the e2e as "a year-wide scrubber; the desktop grid fills the whole
   year and the bar then slides it".
+
+## The Leave War grid scroller has no vertical axis (5 Sep 26)
+
+`.mx-wrap` is `overflow-x: auto; overflow-y: hidden` — the page owns the one
+vertical scroll (the 10 Aug rule), and the `hidden` is what makes that true on
+iOS, not just in Chromium. Every overflow scroller on iOS is a native
+UIScrollView; when `overflow-y` computes to `auto` (which `overflow-x: auto`
+alone forces), WebKit hands it the layout's vertical overflow as content, so a
+single stray pixel makes the wrapper a real vertical scroller with a rubber
+band. The owner's recording (pinch out, pinch in, swipe up while the sideways
+fling is still decelerating) showed exactly that: the touch was latched to the
+still-moving wrapper, the rows rubber-banded ~100px inside it and snapped back,
+the `.mxband` overlay outside it stood still ("the left column is stuck"), and
+the page did not scroll until the fling died. With `hidden`, WebKit clamps the
+vertical content size to the visible height regardless of layout
+(`RenderLayerScrollableArea::reachableTotalContentsSize`), so the scroll view
+has no vertical range and a vertical drag is handed to the page. Chromium had
+zero room either way (measured), the e2e "the grid has no vertical scroller of
+its own" pins that, and the 30 Aug device A/B showed the property is
+momentum-neutral. Do not drop it to "simplify" the rule again. Unverified on a
+real iPhone from this container; the revert is the one line.
