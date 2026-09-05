@@ -3973,6 +3973,37 @@ body-level and the board wrap's own listeners can never see it.
 has stopped being true. The rows are about SCHEDULE days, so a bare `14:32`
 beside `Monday` invites being read as a time on the Monday being planned.
 
+## The page behind the burger drawer does not scroll (owner's iPhone, 6 Sep 26)
+
+"I should not be able to slide scroll when I'm on this page with a page behind
+me … sometimes instead of scrolling the side bar, it scrolls the page behind
+it as well."
+
+The drawer (`Drawer.tsx`, `.drawer` at z440) is the same shape as the board
+below and had the same two holes, closed the same way:
+
+- **`.drawer-panel` is the drawer's ONE scroller** (the View-as list makes it
+  long on a phone) and carried no `overscroll-behavior`, so a swipe that
+  reached its end chained to the document — the schedule behind the scrim. It
+  now carries `overscroll-behavior:contain` (+ `touch-action:pan-y`, so the
+  up-down pan stays on the panel, and it must stay `overflow:auto` — a
+  non-scroll-container cannot contain anything).
+- **The scrim is in no scroller at all**, so a drag on the dimmed area went
+  straight to the document. It is `touch-action:none` now — a touch there is a
+  tap-to-close, never a scroll — and `body.dw-lock{overflow:hidden}` is set by
+  `Drawer.tsx` while the drawer is open (scroll position captured and put back
+  by hand on close, the board's reasoning). Its OWN class, not `sb-lock`: the
+  drawer opens OVER the board (z440 over z400), and closing the drawer must not
+  unlock a board still open under it.
+
+iOS Safari is the known exception for `overflow:hidden` against TOUCH scrolling
+(§below), which is why the containment on the panel and the `touch-action` on
+the scrim are the halves that matter on the phone; the body lock covers the
+desktop wheel and is belt-and-braces there. Owner-iPhone-gated. Pinned in
+`drawerlock.test.ts` (the CSS contract) and `odds.test.tsx` (the lock follows
+the drawer open/closed); the geometry e2e wheels over the open drawer at 390px
+and proves the page does not move.
+
 ## The page behind the board does not scroll (owner-reported, 11 Aug 26)
 
 "I could scroll and see the edit schedule board leaking into it, and in the

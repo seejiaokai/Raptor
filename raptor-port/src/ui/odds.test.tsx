@@ -38,12 +38,15 @@ describe('the mobile drawer', () => {
     expect($('#drawer').classList.contains('open')).toBe(true)
     expect(/Logic/.test($('#drawerNav').textContent!)).toBe(true)
     expect($('.nav a[data-page="logic"]')).toBeTruthy()
+    // the page behind it is locked while it is open (owner's iPhone, 6 Sep 26)
+    expect(document.body.classList.contains('dw-lock')).toBe(true)
   })
 
   it('an admin sees the Edit tab in the drawer, and a nav tap switches page and closes it', async () => {
     expect($('#drawerNav a[data-page="editsched"]')).toBeTruthy()
     await click($('#drawerNav a[data-page="quals"]'))
     expect($('#drawer').classList.contains('open')).toBe(false)
+    expect(document.body.classList.contains('dw-lock'), 'closing the drawer lifts its lock').toBe(false)
     expect($('#page-quals').classList.contains('on')).toBe(true)
     await click($$('.nav a[data-page]').find(a => a.dataset.page === 'viewsched')!)
   })

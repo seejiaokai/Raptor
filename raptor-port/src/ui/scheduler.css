@@ -2928,9 +2928,17 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
 .ichip{font-size:11px;padding:3px 8px;border-radius:999px;background:var(--panel-2);border:1px solid var(--edge);color:var(--ink-2)}
 .irow{display:flex;justify-content:space-between;font-size:12px;padding:4px 0;border-bottom:1px solid var(--edge)}
 
-.drawer{position:fixed;inset:0;z-index:440;background:rgba(4,7,10,.55);display:none}
+/* The page behind the drawer does not scroll (owner's iPhone, 6 Sep 26 — "instead
+   of scrolling the side bar, it scrolls the page behind it as well"). Same two
+   holes as the board (see .sb-main / body.sb-lock): the scrim takes no pan at
+   all (`touch-action:none` — a touch there is a tap-to-close, never a scroll of
+   the page under it), and the panel, the drawer's one scroller, CONTAINS its
+   overscroll so a swipe that reaches its end does not chain to the document
+   (`touch-action:pan-y` keeps the up-down pan on the panel itself). The third
+   half is `body.dw-lock` (Drawer.tsx), the document lock. */
+.drawer{position:fixed;inset:0;z-index:440;background:rgba(4,7,10,.55);display:none;touch-action:none}
 .drawer.open{display:block}
-.drawer-panel{position:absolute;top:0;left:0;bottom:0;width:min(88vw,340px);overflow:auto;background:var(--panel);border-right:1px solid var(--edge);padding:16px}
+.drawer-panel{position:absolute;top:0;left:0;bottom:0;width:min(88vw,340px);overflow:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;touch-action:pan-y;background:var(--panel);border-right:1px solid var(--edge);padding:16px}
 .drawer-panel h4{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin:16px 0 7px;font-weight:600}
 .drawer-panel h4:first-child{margin-top:4px}
 .drawer-nav a{display:block;padding:10px;border-radius:9px;color:var(--ink);text-decoration:none;font-size:14px;font-weight:500;cursor:pointer}
@@ -3420,6 +3428,10 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
    in". Both surfaces: a desktop wheel over the bar did exactly the same thing.
    Set from SchedBoard.tsx while the board is open. */
 body.sb-lock{overflow:hidden}
+/* the burger drawer's own document lock (Drawer.tsx, 6 Sep 26) — its own class,
+   not sb-lock: the drawer opens OVER the board (z440 over z400), and closing the
+   drawer must not unlock a board that is still open under it */
+body.dw-lock{overflow:hidden}
 /* The day-carousel preview (`.sb-pane`/`.sb-peek`) lived here until 12 Aug 26
    and is gone with the swipe it belonged to — the day is stepped by the two
    arrows on the bar now. Reasoning, and why it must not be rebuilt: board.ts,

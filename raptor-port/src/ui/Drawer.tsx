@@ -2,6 +2,7 @@
    chips, week chips and logout, markup 1:1 with the reference. Open/close is
    the DRAWER flag in pops.ts; every action closes the drawer, as the
    reference's handlers all end with classList.remove('open'). */
+import { useEffect } from 'react'
 import { PEOPLE } from '../engine/people'
 import { SESSION, ME, setMe, canToggleRole } from '../state/auth'
 import { CURPAGE } from '../state/view'
@@ -22,6 +23,29 @@ export function Drawer() {
     ['admin', 'Admin', !!admin],
   ]
   const close = () => { setDrawer(false); notify() }
+  /* THE PAGE BEHIND THE DRAWER DOES NOT SCROLL (owner's iPhone, 6 Sep 26 — "I
+     should not be able to slide scroll when I'm on this page with a page
+     behind me … sometimes instead of scrolling the side bar, it scrolls the
+     page behind it as well"). The same two holes the board had (SchedBoard.tsx,
+     11 Aug 26): the panel is the drawer's one scroller and a swipe that reached
+     its end CHAINED to the document (closed in CSS — `.drawer-panel` carries
+     `overscroll-behavior: contain`, and the scrim `touch-action: none`), and
+     the document itself stayed live under the fixed drawer (closed here —
+     `body.dw-lock`, `overflow: hidden`, its OWN class rather than the board's
+     `sb-lock` because the drawer opens OVER the board (z440 over z400) and
+     closing it must not unlock a board that is still open). Scroll position
+     captured and put back by hand, the board's reasoning: `overflow:hidden`
+     keeps it today, not by guarantee. */
+  useEffect(() => {
+    if (!DRAWER) return
+    const el = document.scrollingElement || document.documentElement
+    const y = el.scrollTop, x = el.scrollLeft
+    document.body.classList.add('dw-lock')
+    return () => {
+      document.body.classList.remove('dw-lock')
+      el.scrollTop = y; el.scrollLeft = x
+    }
+  }, [DRAWER])
   const people = Object.keys(PEOPLE).filter(id => !PEOPLE[id].archived)
     .sort((a, b) => PEOPLE[a].cs.localeCompare(PEOPLE[b].cs))
   return (

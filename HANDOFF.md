@@ -248,7 +248,14 @@ the PR bodies):
   is the known exception for TOUCH scrolling; `overscroll-behavior:contain` on
   `.sb-main` is the other half and does work there, so only a drag on the top
   bar would still reach the week — contract `ui-contracts.md` §The page behind
-  the board does not scroll), the **eye in each manning row's frozen balance
+  the board does not scroll), the **burger drawer's page lock** (6 Sep 26 — the
+  same three halves for the drawer: `.drawer-panel` `overscroll-behavior:
+  contain` + `touch-action:pan-y`, the scrim `touch-action:none`, `body.dw-lock`;
+  the owner's report was an iOS touch swipe, which the containment and
+  touch-action are for — if it still leaks on his phone the next theory is a
+  swipe that starts on the panel when the list is NOT scrollable, and the fix
+  is a `position:fixed` body lock — §The page behind the burger drawer does not
+  scroll), the **eye in each manning row's frozen balance
   box painting at once in Rearrange** (6 Sep 26, `.mx .counts .mrow-tools`
   `translateZ(0)` — the owner's report that the eyes did not show on his iPhone
   until a tap or a scroll; the same cure the (since deleted) rearrange bar got
