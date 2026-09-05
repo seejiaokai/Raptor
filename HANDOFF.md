@@ -256,7 +256,12 @@ the PR bodies):
   own compositor layer. If it does NOT hold on his phone, the next theory is
   that the whole update went unrendered, not just the strip — ask whether the
   grid moved down at once — and the fix moves to a render kick, not a second
-  layer).
+  layer), and the **manning grip inside the frozen name cell** (5 Sep 26 — in
+  Rearrange the ⠿ shares the sticky `td.who` with the label as a flex row,
+  `.mwho-row`; flex inside a sticky table cell is the WebKit-sensitive part, and
+  the counter reorder's existing `scrollLeft` self-assign repaint kick still
+  covers it — `ui-contracts.md` §On a manning row in Rearrange the GRIP sits at
+  the LEFT).
 - **Open questions for the owner, deliberately not changed:**
   - **ATT B beyond SC MAIN is unscoped** — "for now we will focus on SC MAIN
     first". Ask before widening.

@@ -2742,7 +2742,7 @@ export function Matrix() {
                   while live so it is obvious the handles are on and how to leave.
                   Admin only. */}
               <button
-                className={`rtbtn rearr${arranging ? ' on' : ''}`}
+                className={`rtbtn${arranging ? ' on' : ''}`}
                 data-testid="roster-arrange"
                 aria-pressed={arranging}
                 title={arranging ? 'Finish rearranging the roster' : 'Rearrange the roster — drag people and category blocks'}
@@ -2762,7 +2762,7 @@ export function Matrix() {
               and a member reads Manning · OIL, each cluster left. "tracker" drops
               on a phone (`.rtlbl`) so the row still holds one line. */}
           <button
-            className="rtbtn oiltrk"
+            className="rtbtn"
             data-testid="oil-tracker"
             title="OIL balances, credits and history"
             onClick={() => setOilTracker({ person: null })}
