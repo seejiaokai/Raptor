@@ -1133,3 +1133,183 @@ gate's. Keep verdict-bearing commands unpiped.
 **Suggested improvement:** In a worktree that shares dependencies by symlink, never stage with `git add -A`/`git add .`; stage the conflicted files by name (`git diff --name-only --diff-filter=U | xargs git add`). Prefer ignore patterns WITHOUT the trailing slash for dependency directories so a symlink is ignored too. After any merge that touched many files, `git diff --stat` against the base and look for a `120000` mode entry before pushing. Recovery when it has happened: `git rm` the link, fix the pattern, and in any checkout that merged it, `rm` the self-link and reinstall.
 
 **Principle:** A convenience that changes what the working tree contains (a symlink, a generated file) changes what `add -A` will commit; stage by name whenever the tree holds anything you did not author for the repo.
+
+### Observation 74: The owner's communication rules live in a subdirectory CLAUDE.md, so a session that opens on root docs answers before it has them
+
+**Status:** OPEN
+**Date:** 2026-09-05
+**Session context:** Session opened with "Read handoff.md". The root `HANDOFF.md` was read in full and summarised back to the owner in an engineer's register (commit hashes, file paths, test counts, CSS names) — the owner is non-technical and `raptor-port/CLAUDE.md` bans exactly that. The harness loads `raptor-port/CLAUDE.md` only when a file under `raptor-port/` is first touched, which happened one turn later; there is no root `CLAUDE.md`, and the handoff's opening line names CLAUDE.md as a companion but does not say "read it first" or carry the plain-language rule itself.
+**Skill:** session-handoff
+**Type:** open-source
+**Phase/Area:** What the handoff doc's first lines must carry
+
+**Issue:** The handoff is the document a fresh session reads first, and it was complete on project state but silent on HOW to talk to the owner. The rule existed, but in a file that loads lazily on a path the first turn need not touch. One reply went out in the wrong register before the rule arrived — the cheapest possible failure, but the same mechanism would bite any repo whose CLAUDE.md sits in a package subdirectory and whose sessions start at the root.
+
+**Suggested improvement:** Two structural fixes, either sufficient: (1) a root `CLAUDE.md` of a few lines — "the working rules are in `raptor-port/CLAUDE.md`; read it before replying; the owner is non-technical: plain words, short, no raw output" — so the harness loads it at session start regardless of which file is touched first; (2) the session-handoff skill's checklist gains a line: the handoff doc's first paragraph names the CLAUDE.md to load first AND restates the one or two rules that govern the reply itself (register, length), because the handoff is read before anything else. Prefer (1); it is enforceable by the harness rather than by memory.
+
+**Principle:** Put the rules that govern the FIRST reply where the first read lands. A rule that loads lazily on a code path is a rule the opening turn does not have.
+
+### Observation 75: The bug-testing tracker has no enforcement point — "every behaviour PR adds its row" drifted eight days and ~30 PRs
+
+**Status:** OPEN
+**Date:** 2026-09-05
+**Session context:** Owner asked whether the recent merges (#358–#367) were display or function bugs. Checking `BUG-TESTING.md` for their rows found the table stops at #335 (28 Aug 26); nothing from #336 to #367 (29 Aug – 5 Sep) is listed, although `HANDOFF.md`'s file-map entry for the tracker says "Every behaviour PR adds its row". The session-handoff skill's checklist does not mention the tracker at all (grep: no match), so nothing in the end-of-session step ever asked.
+**Skill:** session-handoff
+**Type:** open-source
+**Phase/Area:** The end-of-session checklist — which trackers the session's diff must be reconciled against
+
+**Issue:** The rule was documented in the place a reader consults to learn what the file IS, not in the step that runs when a session closes. HANDOFF.md itself stayed true across those PRs because the handoff skill checks it against the diff; the tracker had no such check and silently fell behind. The owner uses this tracker to drive bug testing batch by batch, so an unlisted batch is one that never gets a pass.
+
+**Suggested improvement:** Add to the session-handoff skill's checklist: "list the PRs merged or opened this session (`git log --oneline` since the session's base); for each one that ships behaviour, confirm `BUG-TESTING.md` has its row; docs-only PRs go in the footnote line." Generalise: the handoff skill should carry a short list of every "every PR updates X" tracker the repo has, and reconcile each against the session's PR list — a rule of the form "every change updates X" only holds if the closing step enumerates the changes and checks X. Backfill the missing #336–#367 rows in the next docs PR.
+
+**Principle:** "Every change updates X" is not a rule until the closing step enumerates the changes and checks X; a rule stated in the file's description is documentation, not enforcement.
+
+### Observation 76: An iOS "not painted until touched" report was root-caused from code alone by asking what shares a backing store with the missing pixels — and pinned as a CSS contract, since no local engine can show the fault
+
+**Status:** OPEN
+**Date:** 2026-09-05
+**Session context:** Owner's iPhone report on the live site: "when I press rearrange the buttons don't show until I press that area" (the Leave War on-grid rearrange bar). No WebKit in the container, so the fault could not be reproduced; the phone e2e project (Chromium with an iPhone viewport) passes the very tap and asserts the buttons are on screen.
+**Skill:** systematic-debugging
+**Type:** open-source
+**Phase/Area:** Phase 1–2 (root cause without a repro; working examples) and Phase 4 (pinning a fix the test engine cannot observe)
+
+**Issue:** The tempting first move was a "repaint kick" (dispatch a resize, toggle a class) — a symptom fix with no mechanism. What settled it instead was three code-only questions: (1) is the tap even reaching React? — the gesture core returns early for a press that is not on a selectable cell, so yes, ruling out a swallowed-tap theory; (2) what is the ancestor chain of the pixels that fail? — the bar sits in a rounded `overflow:hidden` card whose other children are composited (a native scroll view and an absolutely-positioned overlay), so its pixels live in a clipping layer's backing store, and the same tap tears that overlay down and moves the scroller; (3) what in the SAME component appears on that phone without the fault? — the move-mode banner, which is `position:fixed` (its own layer). The difference between the working and the broken banner was exactly one property class: owning a backing store. The fix followed from that (promote the bar), the codebase already carried the same promoter for the same reason on the frozen header, and Chromium's CDP LayerTree could prove the mechanism (the bar's node owns a layer) even though it cannot show the WebKit fault.
+
+**Suggested improvement:** Add to the skill's Phase 2 a short routine for paint/visibility bugs that cannot be reproduced locally: (a) confirm the state change happened (the DOM is right) before touching paint; (b) list the ancestor chain of the missing pixels and mark which nodes are composited (overflow scrollers, transforms, will-change, fixed/sticky, rounded overflow:hidden clips over composited children) — the missing region's backing store is the suspect; (c) find the nearest element in the same surface that DOES paint correctly on the target device and diff the two on layer-owning properties only; (d) verify the fix's MECHANISM on the engine you have (computed style, the compositor layer tree) and say plainly that the fault itself remains verified only on the device; (e) pin the fix as a CSS/source contract test, since no assertion in jsdom or Chromium can observe the bug, and name in the test why it exists.
+
+**Principle:** When the failing pixels cannot be reproduced, debug the ownership of the pixels, not the pixels: find whose backing store they live in, find a sibling that paints correctly, and diff only what decides layer ownership.
+
+### Observation 77: A pixel-faithful design comp can be drawn INSIDE the live page — inject the proposed DOM into the real render and screenshot it — instead of building a throwaway HTML page
+
+**Status:** OPEN
+**Date:** 2026-09-05
+**Session context:** Owner asked for an "Archive" fold row under the Leave War manning counters. The repo's standing rule is "show a PICTURE before product code — a throwaway HTML comp in the app's own stylesheet, screenshotted at phone and desktop widths". Building a standalone comp page would have meant reproducing the grid's markup and classes by hand. Instead a Playwright drive loaded the real production bundle, performed the real prior actions (entered Rearrange, archived two counters with the real buttons), then injected the proposed row into the rendered table by cloning a real row and restyling it, and screenshotted collapsed/open states at both widths. Eight shots in ~4 minutes; the owner picked a direction and asked for one visual change from them.
+**Skill:** brainstorming (visual-companion)
+**Type:** open-source
+**Phase/Area:** Visual direction / comp before build
+
+**Issue:** A hand-built comp page drifts from the real thing (fonts, tokens, column widths, sticky behaviour) and costs nearly as much as the feature for a small change; the drift is exactly what the owner's eye would catch as "not quite the app". Injecting into the live page inherits every real style and every real neighbour for free, so the picture IS the palette, the widths and the density. It also surfaced a real constraint early — the phone's frozen column clipped the count text — which a standalone page would have hidden.
+
+**Suggested improvement:** Add to the visual-companion guidance: when the app can be driven headlessly, prefer the "comp in situ" route — load the real build, reach the real state by real actions, then inject or restyle DOM for the proposed change (clone an existing element of the same kind, blank or alter its content) and screenshot at each target width. Note its limits: React may reconcile away foreign nodes on the next render (re-inject after any state change), and the comp must be thrown away, never promoted to product code.
+
+**Principle:** The most faithful comp is the real page with the new part drawn into it; reach for a standalone mock only when there is no running page to draw on.
+
+### Observation 78: A live drive of a frozen-column grid must include a sideways scroll — the rest state hides sticky/opacity faults, and one such fault had shipped unnoticed
+
+**Status:** OPEN
+**Date:** 2026-09-05
+**Session context:** The Archive rows reuse the grid's existing "dimmed hidden row" style. The drive's screenshot at rest looked right; the one taken after scrolling the year 600px sideways showed day numbers bleeding through the archived rows' frozen name cells ("11OPSW"). Cause: the dimming was `opacity` on every cell of the row, which makes the sticky frozen cell see-through. The same rule had applied to the old greyed-in-place hidden rows for weeks — nobody had scrolled sideways with one on screen during a check.
+**Skill:** verification-before-completion (and the repo's live-view recipe)
+**Type:** open-source
+**Phase/Area:** What a UI drive must exercise
+
+**Issue:** Frozen/sticky columns are correct by construction only in the state where nothing has scrolled; every fault in them (transparent backgrounds, missing z-index, opacity on a row, a non-sticky sibling) appears only once the scroller has moved. A drive that screenshots the rest state proves the layout, not the pinning.
+
+**Suggested improvement:** For any surface with sticky/frozen headers or columns, make the drive script scroll the container by a large offset on EACH axis it scrolls and screenshot again, and read the pinned element's rect before and after (the left/top edge must not move). Add it to the verification checklist as a named step rather than leaving it to judgment — the rest-state shot is the one everyone takes.
+
+**Principle:** Sticky things are only tested by moving what they stick against; a screenshot at rest tests layout, not pinning.
+
+### Observation 79: A measured-invariant gate only guards the states it renders — a change that appears only in another UI mode escapes it, even in the same cell
+
+**Status:** OPEN
+**Date:** 2026-09-05
+**Session context:** The owner asked to move the manning-counter reorder grip from the balance box to the LEFT of the counter name, inside the frozen 76px name cell. An e2e gate — "nothing in the callsign column is cut off" — already measures `.who` scrollWidth vs clientWidth for exactly this overflow. But it loads the page as a member in NORMAL view, where the grip is not drawn; the grip appears only in Rearrange (an admin toggle). So the gate never renders the state the change lives in. A Chromium drive of Rearrange at 390px caught the one longest label ("Crew sets") clipping 7px (82/75); the fix (hug the grip to the cell edge, tighten glyph+gap, drop the label to 9px) brought it to 75/75. No automated gate would have failed on that clip.
+**Skill:** verification-before-completion (and the repo's live-view recipe)
+**Type:** open-source
+**Phase/Area:** The relationship between a measured gate and the UI states it runs in
+
+**Issue:** A gate that asserts an invariant proves it ONLY in the states the gate actually renders. A change that adds content to the guarded cell but only in a MODE the gate never enters is entirely outside its reach — same cell, same property, same failure mode, zero coverage. The gate's mere existence is a false comfort: "clipping is gated" was true for normal view and false for Rearrange, and nothing said so.
+
+**Suggested improvement:** When a change adds an element to a region an existing measured gate guards, name the gate and check which STATE it renders; if the change only appears in another mode (a role, a toggle, an admin-only view), either extend the gate to enter that mode (set the role / flip the toggle, then re-measure) or drive that mode by hand and measure it. Checklist line: "name the gate that would catch this; confirm it runs in the state my change appears in — otherwise it does not cover me."
+
+**Principle:** A gate proves its invariant only in the states it visits; a change that appears only in another mode is unguarded until the gate visits that mode, or a drive does.
+
+### Observation 80: A standing "read X and run its checklist before building" order, stated as prose in the index, does not fire unless it is the FIRST step — the owner caught a skipped pre-build perf gate
+
+**Status:** OPEN
+**Date:** 2026-09-05
+**Session context:** CLAUDE.md §Scoping carries a standing order: "read `docs/performance.md` Part 1 before any layout, interface, design or rendering-touching change, and run the change through its checklist." I built two layout changes (the manning grip move, the one-row counter top bar) and pushed them to the branch WITHOUT reading performance.md or running its checklist. The owner caught it ("I thought there is a standing order … It has to follow the structure which keeps the app fast. Did u read that file?"). Read after the fact, the changes were perf-safe (chrome-level, off the hot paths, the "same cell structure" WebKit invariant preserved) — but the checklist's item 3 (a COMMITTED browser-measured geometry gate for desktop AND phone) had genuinely been skipped: jsdom pins and a throwaway drive, no committed e2e geometry test, until the nudge.
+**Skill:** verification-before-completion (and the repo's build-order discipline)
+**Type:** open-source
+**Phase/Area:** When a standing pre-build order actually fires
+
+**Issue:** The order sat in the loaded CLAUDE.md the whole time, yet it did not fire, because it is prose in an index section, not a step in the build flow. A multi-step build proceeds file-by-file toward the visible deliverable; a pre-build reading/checklist gate that is not the FIRST concrete action is easy to walk past, and nothing downstream forces it. This is the SECOND time this session a standing rule failed to fire at its moment (obs 74 — the comm register on the opening reply). The cost here was a skipped committed gate that the owner, not the process, caught.
+
+**Suggested improvement:** Make "find and run the standing pre-build gates for this surface" the OPENING move of any layout/rendering task — before writing code, grep the loaded rules for "before you / before any / read … first", load what they name (here `performance.md` Part 1), run the change through the named checklist, and produce its concrete deliverable (the committed browser-measured geometry gate) AS PART OF the change, not after. Better, make it forcing: a pre-edit reminder keyed to the dense-surface / leavewar paths, or a checklist stub the PR requires. A prose "before you build, read X" only fires if the build's first step is "find the X's that apply."
+
+**Principle:** A "read X before building" order fires only when finding X is the first step of the build, not when it is a sentence in the index; make the pre-build gate the opening action, or the owner becomes the enforcement point.
+
+### Observation 81: A paint-layer fix for one control inserted by a mode toggle should sweep every OTHER control the same toggle inserts into the same layer family — the sibling fault surfaced a day later
+
+**Status:** OPEN
+**Date:** 2026-09-06
+**Session context:** On 5 Sep the owner's iPhone did not paint the Leave War Rearrange bar (Auto-sort / Done) until he touched it; the fix gave the bar its own compositor layer. His next screenshot showed that fix holding — and the SAME fault on the eye buttons in each manning row's frozen balance box, inserted by the same Rearrange tap into the same rebuilt layer tree (sticky cell, overlay torn down in the same commit). Same cure (`translateZ(0)` on the edit-only span), a day and a round-trip later.
+**Skill:** verification-before-completion (and the repo's WebKit-paint lore)
+**Type:** open-source
+**Phase/Area:** After a device-only repaint fault is diagnosed — how far the fix is swept
+
+**Issue:** The 5 Sep diagnosis named the mechanism precisely ("inserts X AND drops the overlay in one commit; iOS did not repaint the strip"). That mechanism applies to EVERY node the toggle inserts, not just the one the owner happened to report. The fix was scoped to the reported node, and no sweep asked "what else does this commit insert into a frozen/composited box?" — the grip (name cell) and the eye (balance cell) were both candidates; the eye failed. Each device-only fault costs an owner round-trip (no WebKit here), so the miss is expensive precisely where it is cheapest to prevent by reasoning.
+
+**Suggested improvement:** When a device-only paint fault is traced to "node inserted in the same commit as a layer-tree change", enumerate every node that commit inserts (grep the toggle's state — here `editing`/`arranging` — for conditional renders) and, for each that lands in a sticky/composited/clipped box, either apply the same promotion or record WHY it is exempt (the grip: painted fine, structural change to its cell). Put the enumeration in the commit message so the next report can be matched against it.
+
+**Principle:** A mechanism-level diagnosis obliges a mechanism-level sweep: fix every node the mechanism reaches, or name each one you leave alone and why.
+
+### Observation 82: A cascade-order trap the stylesheet itself documents ("LAST IN THE FILE ON PURPOSE") was still walked into — the phone override lost to a base rule added further down; only the browser drive caught it
+
+**Status:** OPEN
+**Date:** 2026-09-06
+**Session context:** Widening the Leave War frozen name column in Rearrange: a base rule (`.mx-outer.mx-arranging { --who-w: 136px }`) and a phone override in the existing `@media (max-width: 430px)` block (`92px`). The media block carries a long comment saying it must come LAST because its overrides share specificity with the rules they narrow. I added the base rule ~300 lines BELOW that block, so on the phone the desktop value won; the Chromium drive at 390px showed the column at 136 instead of 92, and the fix was moving the base rule up beside `--who-w`'s definition.
+**Skill:** verification-before-completion (and CSS-editing discipline in this repo)
+**Type:** open-source
+**Phase/Area:** Where a new CSS rule is placed relative to an existing media override block
+
+**Issue:** The trap was documented at the exact place it bit, and the placement still went wrong, because the base rule was written where the FEATURE's other rules were (next to the rearrange bar rules), not where its VARIABLE is defined. Equal-specificity overrides in a later media block only win if the base rule precedes them; a base rule placed by topic rather than by cascade position silently loses on the narrower breakpoint. jsdom cannot see it; only the built-app drive at the phone width did.
+
+**Suggested improvement:** When adding a rule that a media block later overrides at equal specificity, place the base rule ABOVE that block (beside the variable/rule it sets), and make the phone measurement part of the first drive, not an afterthought — assert the phone value explicitly (here `who=92`), not just "it changed". Checklist line for CSS with breakpoint overrides: "where is the override block, and is my base rule above it?"
+
+**Principle:** A stylesheet's own placement warning fires only if the new rule is placed by cascade position, not by topic; measure the narrow breakpoint on the first drive.
+
+### Observation 83: A Playwright `click`/`tap` on a frozen-column cell that is NOT the on-screen copy scrolls the grid to that cell's layout position first — a "the grid jumps to January" finding that was the tool, not the app
+
+**Status:** OPEN
+**Date:** 2026-09-06
+**Session context:** Checking an owner-reported cosmetic flaw in the Leave War frozen columns, a drive tapped a person's balance cell (`bal-<id>`) with the grid scrolled to April and measured `scrollLeft` 1988 → 0 — "opening the figures sheet throws the grid back to January", on the new build AND the pre-batch build. The owner's own live screenshot showed April intact with that sheet open. Cause: on a phone the roster's frozen cells are `position: static` under the `.mxband` overlay (the copy a finger actually taps), so the REAL cell with the testid sits at the far left of the scrolled table, off-screen; Playwright's actionability scroll-into-view scrolled the wrapper to 0 to reach it, then tapped. A coordinate `touchscreen.tap` on the overlay copy held the grid on both builds. ~25 minutes on a non-bug.
+**Skill:** verification-before-completion (browser-drive method)
+**Type:** open-source
+**Phase/Area:** Driving an element that has an on-screen COPY (overlay/mirror) and an off-screen REAL node carrying the testid
+
+**Issue:** A locator-based click/tap is not a finger: it first makes its target visible, and where the app deliberately keeps the testid on an off-screen real node and paints a copy in an overlay, that "make visible" IS a scroll the user never performs. The measurement then reports a state change the app never causes. The tell was the pattern — rows under the overlay jumped, a row whose real cell is sticky (the counter row) held.
+
+**Suggested improvement:** When a drive measures scroll position (or anything a scroll would disturb) across a click, and the target lives in a frozen/mirrored column, tap by COORDINATES on the painted copy (`page.touchscreen.tap(x, y)` / `page.mouse.click(x, y)` from the copy's rect), or set `force: true` AND check the target is already within the viewport; and before calling a scroll-reset a bug, ask "did the tool scroll to reach the element?" — compare `scrollLeft` right before the action's event, not before the locator call. Repo note: the `.mxband` overlay (phone) and `.mxfixed-frozen` copies are exactly this shape.
+
+**Principle:** A locator action may scroll before it acts; measure the app's scroll only across actions that cannot scroll — coordinate taps on what is already on screen.
+
+### Observation 84: Changing a DEFAULT (the phone's zoom 1 → 0.8) silently invalidated absolute-pixel assertions elsewhere in the suite — a "related tests" subset run missed one, and the default also surfaced a latent bug in a part of the UI the change never touched
+
+**Status:** OPEN
+**Date:** 2026-09-06
+**Session context:** The phone's default Leave War zoom became 0.8. I ran the tests I had written or edited (zoom, top row, month strip) — 53 passed — and pushed. Two things were waiting: (1) the frozen-header freeze/thaw e2e asserted the mirror's translate equals −scrollLeft, true only at zoom 1, so CI would have gone red; (2) the stuck header's frozen-column copy had its width divided by the zoom (a bug latent since the zoom shipped on 18 Aug, invisible at zoom 1), which the owner then saw on his phone as the hatched filler / a stray date after LVE BAL — and read as a rotation bug.
+**Skill:** verification-before-completion (scope of the gate after a default changes)
+**Type:** open-source
+**Phase/Area:** Which tests to run after a change to a default value / initial state
+
+**Issue:** A default is not a local change: every measurement, screenshot and assertion that was taken with the old default now describes a state the app no longer opens in. "The tests I touched" is the wrong scope for it — the right scope is every test of the surface that renders under that default (here the whole Leave War e2e on the phone project), plus a drive of the surface's OTHER modes under the new default (the stuck header, the sheets), since a latent bug that the old default masked will show up in code the change never touched.
+
+**Suggested improvement:** When a change alters a DEFAULT / initial state (a zoom, a view, a role, a window), treat it as a whole-surface change: run that surface's full e2e project(s) before the push, not the subset, and drive the surface's modes the tests don't visit at the new default. Grep the specs for assertions that quote absolute px on the affected axis. Say in the report which tests were run at the new default.
+
+**Principle:** A default change re-baselines every measurement taken under the old one; gate it with the whole surface's suite and a drive of its other modes, never with the tests you touched.
+
+### Observation 85: A CI unit job went red with every test green — a 6-second production timer outlived its test file's DOM and threw `document is not defined`; look at the "Errors" line, not just the counts
+
+**Status:** OPEN
+**Date:** 2026-09-06
+**Session context:** CI run 899's `unit (raptor)` job failed on a commit that touched only Leave War files. The log's tally read 2632 passed / 0 failed — and `Errors 1`: vitest's "unhandled error during the test run", a `ReferenceError: document is not defined` thrown from `paintFreshAdds` (highlights.ts) via a `setTimeout` armed by `flashAdded` (view.ts, the 6-second "new-row blue box", shipped 5 Sep as #363) that fired after `inputedit.test.tsx` had finished and its jsdom was torn down. The previous run on identical Raptor code was green: a pure timing race between a long-lived timer and file teardown, surfaced by a slower runner. Fixed with a guard (`typeof document === 'undefined'` → return) at the decoration pass; production always has a document.
+**Skill:** verification-before-completion (reading a CI failure; test hygiene for timers)
+**Type:** open-source
+**Phase/Area:** Interpreting a red unit job whose counts are all green; long timers in modules tests import
+
+**Issue:** Two traps. (1) A red vitest job can have zero failing tests — the "Errors" line (unhandled exceptions from timers/promises after a file ends) fails the job on its own, and a reader who scans for `×` marks concludes "flake, unrelated" and re-runs. (2) A production module that arms multi-second timers on ordinary actions (here: every accepted input on a week load) will, under a test runner, routinely outlive the file that triggered it; whether it throws depends on the runner's speed, so it is invisible locally and intermittent in CI.
+
+**Suggested improvement:** When a CI job is red, read the summary block for `Errors N` and the "Unhandled Errors" section before deciding anything from the pass/fail counts. For any module that schedules timers longer than a test file's typical run (seconds), make the callback tolerate a torn-down environment (guard on `document`/`window`) or clear the timers in the store's reset path — and say which in the code comment, because the next "unrelated" red run will otherwise be re-diagnosed from scratch.
+
+**Principle:** A test job fails on unhandled errors as well as on assertions; a production timer that outlives its test file is a latent red run waiting for a slow runner.

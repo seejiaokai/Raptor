@@ -1229,6 +1229,101 @@ test('nothing in the callsign column is cut off', async ({ page }) => {
   expect(count).toBeGreaterThan(10)
 })
 
+// The counter block's top controls sit on ONE row (owner, 5 Sep 26 — "all in 1
+// row to minimise row height space"): Manning · ⚙ · Rearrange lead, OIL right
+// AFTER rearrange (no spring to the far edge). jsdom can't see the single line;
+// this is the browser-measured gate the perf checklist asks for, run at BOTH
+// widths (phone and desktop are different CSS paths).
+test('the counter controls sit on one row, in order, OIL right after rearrange, zoom after OIL', async ({ page }) => {
+  await lwRole(page, 'admin')
+  const ids = ['counts-toggle', 'settings-open', 'roster-arrange', 'oil-tracker', 'lw-zoom-out', 'lw-zoom-in']
+  const box: Record<string, { x: number; y: number; w: number }> = {}
+  for (const id of ids) {
+    const b = (await page.locator(`[data-testid="${id}"]`).boundingBox())!
+    box[id] = { x: b.x, y: b.y, w: b.width }
+  }
+  // one row: every control shares a top within a few px
+  const tops = ids.map(id => box[id].y)
+  expect(Math.max(...tops) - Math.min(...tops)).toBeLessThan(4)
+  // left-to-right: Manning, settings, rearrange, OIL, −, +
+  for (let i = 1; i < ids.length; i++) expect(box[ids[i]!].x).toBeGreaterThan(box[ids[i - 1]!].x)
+  // the whole row fits the viewport (the phone is the real guard)
+  const last = box['lw-zoom-in']!
+  expect(last.x + last.w).toBeLessThanOrEqual(page.viewportSize()!.width)
+  // OIL sits right after rearrange — one inter-button gap, not a spring to the edge
+  expect(box['oil-tracker']!.x - (box['roster-arrange']!.x + box['roster-arrange']!.w)).toBeLessThan(24)
+  // the "… · 365 days · 50 people" line is gone
+  await expect(page.locator('.card-hd')).not.toContainText('people')
+})
+
+// A member's counter bar is just Manning · OIL, adjacent (owner, 5 Sep 26 — "in
+// normal user it's just right of manning"). Runs as the default member role.
+test('a member counter bar is Manning then OIL, adjacent, one row', async ({ page }) => {
+  await expect(page.locator('[data-testid="settings-open"]')).toHaveCount(0)
+  await expect(page.locator('[data-testid="roster-arrange"]')).toHaveCount(0)
+  const m = (await page.locator('[data-testid="counts-toggle"]').boundingBox())!
+  const o = (await page.locator('[data-testid="oil-tracker"]').boundingBox())!
+  expect(o.x).toBeGreaterThan(m.x)                       // OIL right of Manning
+  expect(Math.abs(o.y - m.y)).toBeLessThan(4)            // same row
+  expect(o.x - (m.x + m.width)).toBeLessThan(24)         // adjacent, not far-right
+  // the zoom pair follows OIL on the same row, for a member too (6 Sep 26)
+  const z = (await page.locator('[data-testid="lw-zoom-in"]').boundingBox())!
+  expect(z.x).toBeGreaterThan(o.x)
+  expect(Math.abs(z.y - m.y)).toBeLessThan(4)
+})
+
+// In Rearrange the reorder grip shares the frozen NAME cell, to the LEFT of the
+// label (owner, 5 Sep 26). This is the gate that finally VISITS Rearrange: the
+// existing clip test runs in normal view, where the grip is not drawn, so it
+// could never have caught the grip pushing "Crew sets" past the 76px phone cell.
+test('in Rearrange the counter grip is left of the name and nothing clips', async ({ page }) => {
+  await lwRole(page, 'admin')
+  await page.locator('[data-testid="roster-arrange"]').click()
+  const clipped = await page.evaluate(() =>
+    [...document.querySelectorAll('.mx tbody.counts .who')]
+      .map(el => el as HTMLElement)
+      .filter(el => el.scrollWidth > el.clientWidth + 1)
+      .map(el => `${el.textContent?.trim()} (${el.scrollWidth}>${el.clientWidth})`))
+  expect(clipped).toEqual([])
+  // the grip's right edge is at or before the label's left edge
+  const grip = (await page.locator('[data-testid="manning-drag-sets"]').boundingBox())!
+  const label = (await page.locator('[data-testid="manning-info-sets"]').boundingBox())!
+  expect(grip.x + grip.width).toBeLessThanOrEqual(label.x + 1)
+  await page.locator('[data-testid="roster-arrange"]').click()  // leave arrange mode
+})
+
+// Owner, 6 Sep 26 — "the CS/name will not be causing the puck names to be
+// shortened. Instead extend the horizontal space required to show their name.
+// Same as before rearrange was selected." The frozen name column grows by the
+// grip's footprint in Rearrange, so the callsign keeps the width it had at rest.
+test('in Rearrange the name column grows by the grip: callsigns keep their width, the frozen pair stays joined', async ({ page }) => {
+  await lwRole(page, 'admin')
+  const row = '.mx tbody.mxbody tr[data-testid^="row-"]'
+  const clippedNames = () => page.evaluate(sel =>
+    [...document.querySelectorAll(`${sel} .who .cs`)]
+      .map(el => el as HTMLElement)
+      .filter(el => el.scrollWidth > el.clientWidth + 1)
+      .map(el => el.textContent?.trim()), row)
+  const geo = () => page.evaluate(sel => {
+    const who = document.querySelector(`${sel} .who`)!.getBoundingClientRect()
+    const bal = document.querySelector(`${sel} .bal`)!.getBoundingClientRect()
+    const name = document.querySelector(`${sel} .whoedit`)!.getBoundingClientRect()
+    return { whoW: who.width, gap: Math.abs(bal.left - who.right), nameW: name.width }
+  }, row)
+  const restClipped = await clippedNames()
+  const rest = await geo()
+  await page.locator('[data-testid="roster-arrange"]').click()
+  const arr = await geo()
+  expect(arr.whoW).toBeGreaterThan(rest.whoW)
+  expect(arr.gap).toBeLessThan(1)
+  // the callsign button keeps at least the width it had at rest
+  expect(arr.nameW).toBeGreaterThanOrEqual(rest.nameW - 1)
+  // …so nothing is cut shorter than at rest
+  for (const n of await clippedNames()) expect(restClipped).toContain(n)
+  await page.locator('[data-testid="roster-arrange"]').click()
+  expect((await geo()).whoW).toBeCloseTo(rest.whoW, 0)
+})
+
 // ---- more than one leave war ----
 
 test('switching leave war repaints the grid and keeps the balance', async ({ page }) => {
@@ -1517,8 +1612,11 @@ test('the counter control is a real tap target on a phone', async ({ page }) => 
   await page.setViewportSize({ width: 390, height: 760 })
   const head = (await page.locator('[data-testid="counter-pick"]').boundingBox())!
   // The whole column header is the button now, so it is as wide as the
-  // column and tall enough to hit without aiming.
-  expect(head.width).toBeGreaterThanOrEqual(36)
+  // column and tall enough to hit without aiming. The WIDTH scales with the
+  // grid zoom — a phone opens one step out since 6 Sep 26 (owner's choice), so
+  // the 44px column reads 36×zoom on screen; the height stays a real 36+.
+  const zoom = await page.evaluate(() => parseFloat((document.querySelector('.mx-wrap table.mx') as HTMLElement).style.zoom || '1'))
+  expect(head.width).toBeGreaterThanOrEqual(36 * zoom)
   expect(head.height).toBeGreaterThanOrEqual(36)
 
   await page.locator('[data-testid="counter-pick"]').click()
@@ -2069,8 +2167,8 @@ test('a decision made before the reopen survives it', async ({ page }) => {
 // ---- the categorised roster (owner, 18 Aug 26) --------------------------
 // The header no longer repeats "142 SQN / LEAVE WAR"; the roster is grouped
 // into the owner's seven categories, colour-coded from Raptor's own CAT
-// palette; ground crew ride it as a white Personnel group; an admin auto-sorts
-// or hand-drags the order.
+// palette; ground crew ride it as a white Personnel group; an admin hand-drags
+// the order from the header's ⇅ toggle (the Auto-sort button is gone, 6 Sep 26).
 
 test('the page carries no second squadron mark — the shell is the only identity', async ({ page }) => {
   // The old "142 SQN / LEAVE WAR" mark and "Leave war" nav pill are removed.
@@ -2096,10 +2194,12 @@ test('CAT sub-headings split the ops groups on desktop and fold away on a phone'
   else await expect(sub).toBeHidden()   // rendered but display:none — the owner's "just colour code it" on mobile
 })
 
-test('an admin auto-sorts and hand-drags the roster; a member gets neither tool', async ({ page }) => {
+test('an admin hand-drags the roster from the ⇅ toggle, which is also the way out; a member gets no tool', async ({ page }) => {
   await lwRole(page, 'admin')
   const ids = () => page.$$eval('[data-testid^="row-"]', els => els.map(e => e.getAttribute('data-testid').slice(4)))
   const before = await ids()
+  const toggle = page.locator('[data-testid="roster-arrange"]')
+  const gone = page.locator('[data-testid="rearrange-bar"], [data-testid="roster-autosort"], [data-testid="roster-arrange-done"]')
 
   if (page.viewportSize()!.width >= 700) {
     // Pointer drag (works on touch too): move the top row down past the fifth.
@@ -2130,22 +2230,31 @@ test('an admin auto-sorts and hand-drags the roster; a member gets neither tool'
     await page.mouse.up()
     const after = await ids()
     expect(after[after.length - 1]).toBe(src)
-    // Auto-sort restores the categorised order.
-    await page.locator('[data-testid="roster-autosort"]').click()
-    expect((await ids())[0]).toBe(before[0])
-    await page.locator('[data-testid="roster-arrange"]').click() // leave arrange mode
+    // No strip under the header any more (owner, 6 Sep 26): the lit ⇅ is the
+    // only control, and tapping it again is the way out.
+    await expect(gone).toHaveCount(0)
+    await expect(toggle).toHaveClass(/\bon\b/)
+    await toggle.click()
+    await expect(toggle).not.toHaveClass(/\bon\b/)
+    await expect(page.locator(`[data-testid="drag-${before[0]}"]`)).toHaveCount(0)
   } else {
-    // On a phone at least prove Auto-sort is reachable and does not throw. It
-    // lives on the rearrange bar now, so enter rearrange first, then leave.
-    await page.locator('[data-testid="roster-arrange"]').click()
-    await page.locator('[data-testid="roster-autosort"]').click()
-    expect((await ids())[0]).toBe(before[0])
-    await page.locator('[data-testid="roster-arrange"]').click()
+    // On a phone the toggle is the ⇅ icon alone (the word is hidden), lit while
+    // on; in and out through the same button, nothing else appears.
+    await toggle.click()
+    await expect(toggle).toHaveClass(/\bon\b/)
+    await expect(gone).toHaveCount(0)
+    const lbl = toggle.locator('.rtlbl')
+    await expect(lbl).toBeHidden()
+    expect((await toggle.textContent())!.trim().startsWith('⇅')).toBe(true)
+    await expect(page.locator(`[data-testid="drag-${before[0]}"]`)).toHaveCount(1)
+    await toggle.click()
+    await expect(toggle).not.toHaveClass(/\bon\b/)
+    await expect(page.locator(`[data-testid="drag-${before[0]}"]`)).toHaveCount(0)
   }
 
   await lwRole(page, 'member')
-  await expect(page.locator('[data-testid="roster-autosort"]')).toHaveCount(0)
-  await expect(page.locator('[data-testid="roster-arrange"]')).toHaveCount(0)
+  await expect(gone).toHaveCount(0)
+  await expect(toggle).toHaveCount(0)
 })
 
 test('a personnel row shows its callsign, with no edit box, in Rearrange', async ({ page }) => {
@@ -2263,11 +2372,14 @@ test('on a phone the header freezes under the top bar and thaws on the way back'
   await page.evaluate(() => { document.querySelector('.mx-wrap')!.scrollLeft = 400 })
   await page.waitForTimeout(200)
   const followed = await page.evaluate(() => {
+    // the translate lands in the mirror table's own ZOOMED space, so 400 visual
+    // px of grid scroll is 400/zoom there (a phone opens at 0.8 since 6 Sep 26)
+    const zoom = parseFloat((document.querySelector('.mx-wrap table.mx') as HTMLElement).style.zoom || '1')
     const anim = document.querySelector('.mxfixed-anim') as HTMLElement | null
-    if (anim) return { mode: 'sda', tx: new DOMMatrixReadOnly(getComputedStyle(anim).transform).m41 }
-    return { mode: 'js', sl: (document.querySelector('.mxfixed-scroll') as HTMLElement).scrollLeft }
+    if (anim) return { mode: 'sda', tx: new DOMMatrixReadOnly(getComputedStyle(anim).transform).m41, zoom }
+    return { mode: 'js', sl: (document.querySelector('.mxfixed-scroll') as HTMLElement).scrollLeft, zoom }
   })
-  if (followed.mode === 'sda') expect(Math.abs((followed.tx as number) + 400)).toBeLessThan(3)
+  if (followed.mode === 'sda') expect(Math.abs((followed.tx as number) + 400 / followed.zoom)).toBeLessThan(3)
   else expect(followed.sl).toBe(400)
   // and its columns sit exactly over the grid's (scoped to the scrolling layer,
   // so the scroll-driven path's static frozen-column overlay is not picked)
@@ -2280,6 +2392,28 @@ test('on a phone the header freezes under the top bar and thaws on the way back'
     return null
   })
   if (ghost !== null) expect(Math.abs(ghost - real.x)).toBeLessThan(2)
+  // …and the static frozen-column COPY is exactly as wide as the grid's two
+  // frozen columns (owner's iPhone, 6 Sep 26): its width is VISUAL px, not
+  // divided by the grid zoom — at the phone's 0.8 it used to be 25% too wide
+  // and showed the hatched filler / the first date right after LVE BAL, out of
+  // step with the grid. Checked at the default zoom and after a step.
+  const copyMatchesGrid = () => page.evaluate(() => {
+    const copy = document.querySelector('.mxfixed-frozen')
+    if (!copy) return null   // JS-mirror fallback: no copy to check
+    const bal = document.querySelector('.mx-wrap .mxhead th.bal')!.getBoundingClientRect()
+    return Math.round(copy.getBoundingClientRect().right - bal.right)
+  })
+  const d0 = await copyMatchesGrid()
+  if (d0 !== null) expect(Math.abs(d0)).toBeLessThan(2)
+  // the zoom buttons sit in the top row, so a click scrolls the page up to
+  // them and thaws the header — scroll back down so it freezes again first
+  await page.locator('[data-testid="lw-zoom-in"]').click()
+  await page.evaluate(() => window.scrollTo(0, 700)); await page.waitForTimeout(400)
+  const d1 = await copyMatchesGrid()
+  if (d1 !== null) expect(Math.abs(d1)).toBeLessThan(2)
+  await page.locator('[data-testid="lw-zoom-out"]').click()
+  await page.evaluate(() => window.scrollTo(0, 700)); await page.waitForTimeout(400)
+  await expect(mirror).toHaveCount(1)
   // …but the header must NEVER drive the grid (owner, 20 Aug 26). Writing the
   // mirror's lagged position back onto the grid mid-fling is what snapped the
   // grid back and halted the sideways scroll the moment the header froze.
@@ -2295,25 +2429,73 @@ test('on a phone the header freezes under the top bar and thaws on the way back'
   await expect(page.locator('[data-testid="sticky-head"]')).toHaveCount(0)
 })
 
-test('the phone zoom steps the whole grid down and back', async ({ page }, testInfo) => {
-  test.skip(testInfo.project.name !== 'lw-phone', 'the control is phone-only')
+test('the zoom steps the whole grid down and back, on both widths', async ({ page }) => {
   // One column's width, not the table's: the table also grows as the column
   // window adds months at rest (colwindow.ts), which is not what zoom claims.
   const width = () => page.evaluate(() => document.querySelector('.mx-wrap [data-testid="head-2026-01-15"]')!.getBoundingClientRect().width)
   const before = await width()
   await page.locator('[data-testid="lw-zoom-out"]').click()
-  await page.locator('[data-testid="lw-zoom-out"]').click()
   const small = await width()
-  expect(small).toBeLessThan(before * 0.75)
-  await page.locator('[data-testid="lw-zoom-in"]').click()
+  expect(small).toBeLessThan(before * 0.9)
   await page.locator('[data-testid="lw-zoom-in"]').click()
   expect(Math.abs((await width()) - before)).toBeLessThan(4)
-  // the desktop never shows the control — asserted in the desktop project
 })
 
-test('the zoom control hides on desktop', async ({ page }, testInfo) => {
-  test.skip(testInfo.project.name !== 'lw-desktop', 'desktop-only assertion')
-  await expect(page.locator('[data-testid="lw-zoom"]')).toBeHidden()
+// Owner, 6 Sep 26: the − / + pair lives in the counter block's top row at both
+// widths (it used to ride the month strip, phone-only), and a phone OPENS one
+// step out — "can this be the default zoom? Like zoom 1 click out".
+test('the zoom control is in the top row on both widths; a phone opens one step out', async ({ page }, testInfo) => {
+  const pair = page.locator('[data-testid="lw-zoom"]')
+  await expect(pair).toBeVisible()
+  expect(await pair.evaluate(el => !!el.closest('.card-hd'))).toBe(true)
+  const z = await page.evaluate(() => (document.querySelector('.mx-wrap table.mx') as HTMLElement).style.zoom)
+  expect(z).toBe(testInfo.project.name === 'lw-phone' ? '0.8' : '')
+})
+
+// Owner, 6 Sep 26: the OIL tracker too — "zoom out once as a default view as
+// well, and put a plus minus for zoom placed beside range".
+test('the OIL tracker has its own − / + beside RANGE, on one row; a phone opens it one step out', async ({ page }, testInfo) => {
+  await page.locator('[data-testid="oil-tracker"]').click()
+  await expect(page.locator('[data-testid="oil-sheet"]')).toBeVisible()
+  const range = (await page.locator('[data-testid="oil-range-pick"]').boundingBox())!
+  const out = (await page.locator('[data-testid="oil-zoom-out"]').boundingBox())!
+  const inn = (await page.locator('[data-testid="oil-zoom-in"]').boundingBox())!
+  const show = (await page.locator('.oil-tools .lab').boundingBox())!
+  expect(out.x).toBeGreaterThan(range.x + range.width - 1)     // right after RANGE
+  expect(inn.x).toBeGreaterThan(out.x)
+  for (const b of [range, out, inn]) expect(Math.abs((b.y + b.height / 2) - (show.y + show.height / 2))).toBeLessThan(12)  // same row as SHOW
+  expect(inn.x + inn.width).toBeLessThanOrEqual(page.viewportSize()!.width)
+  const z = () => page.evaluate(() => (document.querySelector('[data-testid="oil-list"] table.oil-grid') as HTMLElement).style.zoom)
+  expect(await z()).toBe(testInfo.project.name === 'lw-phone' ? '0.8' : '')
+  // the frozen NAME column's width is what the zoom moves (the table itself
+  // always fills the sheet — `min-width: 100%`); a step from 0.8 to 1 leaves
+  // no inline zoom at all
+  const w = () => page.locator('[data-testid="oil-list"] table.oil-grid th.f.c1').first().evaluate(el => el.getBoundingClientRect().width)
+  const before = await w()
+  await page.locator('[data-testid="oil-zoom-in"]').click()
+  expect(await z()).toBe(testInfo.project.name === 'lw-phone' ? '' : '1.2')
+  expect(await w()).toBeGreaterThan(before * 1.1)
+  await page.locator('[data-testid="oil-zoom-out"]').click()
+  expect(Math.abs((await w()) - before)).toBeLessThan(4)
+  await page.locator('[data-testid="oil-close"]').click()
+})
+
+// Owner, 6 Sep 26: with the zoom gone from the strip, the twelve months sit on
+// ONE line on a phone (they always did on a desktop), inside the viewport.
+test('the month strip is one line of twelve, inside the viewport', async ({ page }) => {
+  const strip = page.locator('[data-testid="month-strip"] .mjump')
+  await expect(strip).toHaveCount(12)
+  const boxes = await strip.evaluateAll(els => els.map(el => { const r = el.getBoundingClientRect(); return { top: r.top, right: r.right, w: r.width } }))
+  const tops = boxes.map(b => b.top)
+  expect(Math.max(...tops) - Math.min(...tops)).toBeLessThan(2)
+  expect(Math.max(...boxes.map(b => b.right))).toBeLessThanOrEqual(page.viewportSize()!.width)
+  for (const b of boxes) expect(b.w).toBeGreaterThan(18)
+  // no label is cut
+  const clipped = await strip.evaluateAll(els => els.filter(el => el.scrollWidth > el.clientWidth + 1).map(el => el.textContent))
+  expect(clipped).toEqual([])
+  // the strip row is back to its one-line height
+  const row = (await page.locator('.mx .mstripe td.mstick').boundingBox())!
+  expect(row.height).toBeLessThan(52)
 })
 
 test('tagging a typed event colours the day without minting a type', async ({ page }) => {
@@ -2456,10 +2638,10 @@ test('deleting a counter takes its row off the grid', async ({ page }) => {
 
 // Owner, 19 Aug 26 (kept through the 3 Sep 26 fold into ⚙): every admin control
 // must sit wholly within the viewport width, whatever its home now. The controls
-// live in three places — the top row (⚙ + OIL tracker), the ⚙ sheet (counters &
-// rows), and the on-grid rearrange bar (Auto-sort + Done) — so this checks each in
-// its place on BOTH projects (the phone is the real guard, the desktop proves it
-// costs nothing).
+// live in two places — the top row (⚙ + ⇅ Rearrange + OIL tracker) and the ⚙
+// sheet (counters & rows); the on-grid rearrange bar is gone (6 Sep 26) — so this
+// checks each in its place on BOTH projects (the phone is the real guard, the
+// desktop proves it costs nothing).
 test('every admin control is reachable within the viewport', async ({ page }) => {
   await lwRole(page, 'admin')
   const vw = page.viewportSize()!.width
@@ -2470,16 +2652,19 @@ test('every admin control is reachable within the viewport', async ({ page }) =>
     expect(box.x, `${id} starts off the left edge`).toBeGreaterThanOrEqual(0)
     expect(box.x + box.width, `${id} runs off the right edge`).toBeLessThanOrEqual(vw + 1)
   }
-  // the top row: the OIL tracker and the ⚙ settings entry
+  // the top row: the OIL tracker, the ⚙ settings entry and the ⇅ rearrange toggle
   await within('oil-tracker')
   await within('settings-open')
+  await within('roster-arrange')
   // config controls, folded into ⚙ Settings
   await page.locator('[data-testid="settings-open"]').click()
   for (const id of ['event-add', 'sans-toggle', 'counter-add', 'counter-reset-all']) await within(id)
   await page.locator('[data-testid="settings-close"]').click()
-  // rearrange controls, on the grid bar
+  // rearranging adds no control of its own — the lit toggle is the only one
   await page.locator('[data-testid="roster-arrange"]').click()
-  for (const id of ['roster-autosort', 'roster-arrange-done']) await within(id)
+  await within('roster-arrange')
+  await expect(page.locator('[data-testid="rearrange-bar"], [data-testid="roster-autosort"], [data-testid="roster-arrange-done"]')).toHaveCount(0)
+  await page.locator('[data-testid="roster-arrange"]').click()
 })
 
 // --- undo / redo UI-interaction bug test (owner, 30 Aug 26) -----------------

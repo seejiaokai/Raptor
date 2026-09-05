@@ -1403,8 +1403,7 @@ export function personLabel(p: Person): string {
 
 /**
  * Write the roster's row order. ADMIN-gated, the `figureOrder` rule: a member
- * does not rearrange the roster (the drag handles and Auto-sort do not render
- * for them). An empty array clears back to the categorised default.
+ * does not rearrange the roster (the drag handles do not render for them). An empty array clears back to the categorised default.
  */
 export function setRosterOrder(order: string[]): void {
   if (state.role !== 'admin') return
@@ -1422,7 +1421,10 @@ function liveAutoOrder(): string[] {
   return autoOrder(state.people, groupIdOf, groupsInOrder().map(d => d.id))
 }
 
-/** Re-group everyone into the categorised order — the Auto-sort button. */
+/** Re-group everyone into the categorised order. Was the Auto-sort button's
+ *  action; the button went with the on-grid rearrange bar (owner, 6 Sep 26 —
+ *  "Auto sort will be removed"), so nothing in the UI calls this now — kept as
+ *  the store's one "back to the default order" write (tests, a future home). */
 export function autoSortRoster(): void {
   setRosterOrder(liveAutoOrder())
 }

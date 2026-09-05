@@ -1571,6 +1571,42 @@ test('board at 390px: taps near the right edge land where they aim', async ({ pa
    machine (board.test.tsx); only a browser can show the rows actually
    hidden, the list actually expanding, and the planted puck actually
    visible once the drawer parks itself. */
+/* THE PAGE BEHIND THE BURGER DRAWER DOES NOT SCROLL (owner's iPhone, 6 Sep 26 —
+   "instead of scrolling the side bar, it scrolls the page behind it as well").
+   A wheel is Chromium's stand-in for the swipe: over the panel it scrolls the
+   panel and, at the panel's end, must NOT chain to the page; over the scrim it
+   must move nothing. The page is scrolled down first so a leak would show as
+   scrollY changing either way. */
+test('the burger drawer at 390px scrolls only itself — the page behind it holds still', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 780 })
+  await login(page); await go(page, 'viewsched')
+  await page.evaluate(() => window.scrollTo(0, 300))
+  await page.waitForTimeout(100)
+  const y0 = await page.evaluate(() => window.scrollY)
+  await page.click('#burger')
+  await expect(page.locator('#drawer')).toHaveClass(/open/)
+  expect(await page.evaluate(() => document.body.classList.contains('dw-lock'))).toBe(true)
+  const panel = page.locator('.drawer-panel')
+  const box = (await panel.boundingBox())!
+  // wheel over the panel, far past its end
+  await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2)
+  for (let i = 0; i < 6; i++) await page.mouse.wheel(0, 1200)
+  await page.waitForTimeout(200)
+  const panelScrolled = await panel.evaluate(el => el.scrollTop)
+  expect(panelScrolled, 'the panel itself scrolled').toBeGreaterThan(0)
+  expect(await page.evaluate(() => window.scrollY), 'the page did not').toBe(y0)
+  // wheel over the scrim (the dimmed area right of the panel)
+  await page.mouse.move(box.x + box.width + 20, 400)
+  await page.mouse.wheel(0, 800); await page.mouse.wheel(0, -800)
+  await page.waitForTimeout(150)
+  expect(await page.evaluate(() => window.scrollY)).toBe(y0)
+  // close by the scrim; the lock lifts and the page is where it was
+  await page.mouse.click(box.x + box.width + 20, 400)
+  await expect(page.locator('#drawer')).not.toHaveClass(/open/)
+  expect(await page.evaluate(() => document.body.classList.contains('dw-lock'))).toBe(false)
+  expect(await page.evaluate(() => window.scrollY)).toBe(y0)
+})
+
 test('board at 390px: Live checks folds to one line, and a fill parks the drawer', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 780 })
   await login(page); await go(page, 'editsched')

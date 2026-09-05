@@ -8,9 +8,78 @@ beforeEach(() => {
   initStore(memoryBackend())
 })
 
+/* The counter block's ONE-ROW top bar (owner, 5 Sep 26 — "all in 1 row to
+   minimise row height space"): Manning · ⚙ · Rearrange lead, OIL tracker trails,
+   the old "JAN – DEC 26 · 365 days · 50 people" line dropped, and the Rearrange
+   toggle moved up from the grid corner into this row. jsdom can't see the single
+   line, but it pins the DOM: which controls live in the header, in order, by
+   role, and that the date/size text is gone. */
+describe('the counter top bar', () => {
+  it('is Manning · ⚙ · Rearrange · OIL · − · + in the header for an admin, with no date/size line', () => {
+    setRole('admin')
+    const { container } = render(<Matrix />)
+    const hd = container.querySelector('.card-hd')!
+    expect(hd).toBeTruthy()
+    // the "… · 365 days · 50 people" line is gone
+    expect(hd.textContent).not.toMatch(/days ·|· \d+ people/)
+    // all six controls live in this one header row, left-to-right in order —
+    // the zoom pair right after OIL (owner, 6 Sep 26), moved off the month strip
+    const ids = ['counts-toggle', 'settings-open', 'roster-arrange', 'oil-tracker', 'lw-zoom-out', 'lw-zoom-in']
+    const found = [...hd.querySelectorAll('[data-testid]')]
+      .map(el => el.getAttribute('data-testid'))
+      .filter(id => ids.includes(id!))
+    expect(found).toEqual(ids)
+    // the rearrange trigger moved OUT of the grid header into the card header
+    const arrange = screen.getByTestId('roster-arrange')
+    expect(arrange.closest('.card-hd')).toBe(hd)
+    expect(arrange.closest('.mxhead')).toBeNull()
+  })
+
+  it('gives a member only Manning and the OIL tracker — no config, no rearrange', () => {
+    render(<Matrix />)   // default role is member
+    const hd = document.querySelector('.card-hd')!
+    expect(hd.querySelector('[data-testid="counts-toggle"]')).toBeTruthy()
+    expect(hd.querySelector('[data-testid="oil-tracker"]')).toBeTruthy()
+    expect(hd.querySelector('[data-testid="settings-open"]')).toBeNull()
+    expect(hd.querySelector('[data-testid="roster-arrange"]')).toBeNull()
+    // …plus the zoom pair, a view control for both roles
+    expect(hd.querySelector('[data-testid="lw-zoom-out"]')).toBeTruthy()
+    expect(hd.querySelector('[data-testid="lw-zoom-in"]')).toBeTruthy()
+    // the zoom no longer rides the month strip
+    expect(screen.getByTestId('month-strip').querySelector('[data-testid="lw-zoom"]')).toBeNull()
+  })
+
+  it('the header ⇅ toggle turns arrange mode on — the grips appear, the column widens, no bar', () => {
+    setRole('admin')
+    render(<Matrix />)
+    const outer = () => document.querySelector('.mx-outer')!
+    expect(screen.queryByTestId('manning-drag-sets')).toBeNull()
+    expect(outer().classList.contains('mx-arranging')).toBe(false)
+    fireEvent.click(screen.getByTestId('roster-arrange'))
+    expect(screen.getByTestId('manning-drag-sets')).toBeTruthy()
+    expect(outer().classList.contains('mx-arranging')).toBe(true)
+    expect(screen.getByTestId('roster-arrange').classList.contains('on')).toBe(true)
+    // the old strip under the header (Auto-sort / Done) is gone (owner, 6 Sep 26)
+    expect(screen.queryByTestId('rearrange-bar')).toBeNull()
+    expect(screen.queryByTestId('roster-autosort')).toBeNull()
+    expect(screen.queryByTestId('roster-arrange-done')).toBeNull()
+  })
+
+  it('the toggle reads ⇅ with the word on a droppable tail — icon-only on a phone', () => {
+    setRole('admin')
+    render(<Matrix />)
+    const btn = screen.getByTestId('roster-arrange')
+    expect(btn.textContent!.trim().startsWith('⇅')).toBe(true)
+    expect(btn.querySelector('.rtlbl')!.textContent).toMatch(/Rearrange/)
+    fireEvent.click(btn)
+    expect(btn.querySelector('.rtlbl')!.textContent).toMatch(/Rearranging/)
+  })
+})
+
 /* The one ⚙ SETTINGS button (owner, 3 Sep 26): every admin config control folds
-   into the sheet it opens, off the top row. Rearranging is NOT in it — that is on
-   the grid, started from the ⠿ in the corner. */
+   into the sheet it opens, off the top row. Rearranging is NOT in the sheet — it
+   is its own toggle in the top row (owner, 5 Sep 26 — moved there from the grid
+   corner), and the actual rearranging still happens hands-on-grid. */
 describe('the ⚙ Settings sheet', () => {
   it('is admin-only, and folds the config controls into one sheet', () => {
     // a member has neither the button nor any of the controls it holds
@@ -61,23 +130,25 @@ describe('the ⚙ Settings sheet', () => {
 })
 
 /* Rearranging happens ON THE GRID (owner, 3 Sep 26 — "I thought the rearrange
-   could be done on the grid main page itself"): the ⠿ in the corner turns it on,
-   a slim bar (Auto-sort + Done) appears, and Done turns it off. */
+   could be done on the grid main page itself"): the header ⇅ turns it on, and
+   the SAME ⇅ turns it off (owner, 6 Sep 26 — "when I click on it, it exits the
+   rearrange mode"); the strip with Auto-sort + Done that used to sit under the
+   header is gone. */
 describe('on-grid rearrange', () => {
-  it('the corner ⠿ toggles rearrange mode and the bar, and Done ends it', () => {
+  it('the ⇅ toggle turns rearrange mode on, and the same ⇅ ends it', () => {
     setRole('admin')
     const { rerender } = render(<Matrix />)
-    // not rearranging: no bar
-    expect(screen.queryByTestId('rearrange-bar')).toBeNull()
-    fireEvent.click(screen.getByTestId('roster-arrange'))       // the corner toggle
+    const grips = () => document.querySelectorAll('[data-testid^="drag-"]').length
+    expect(grips()).toBe(0)
+    fireEvent.click(screen.getByTestId('roster-arrange'))
     rerender(<Matrix />)
-    const bar = screen.getByTestId('rearrange-bar')
-    expect(bar).toBeTruthy()
-    // Auto-sort and Done live on the bar, beside the grid
-    expect(screen.getByTestId('roster-autosort')).toBeTruthy()
-    fireEvent.click(screen.getByTestId('roster-arrange-done'))
+    expect(grips()).toBeGreaterThan(0)
+    expect(screen.getByTestId('roster-arrange').getAttribute('aria-pressed')).toBe('true')
+    fireEvent.click(screen.getByTestId('roster-arrange'))
     rerender(<Matrix />)
-    expect(screen.queryByTestId('rearrange-bar')).toBeNull()
+    expect(grips()).toBe(0)
+    expect(screen.getByTestId('roster-arrange').getAttribute('aria-pressed')).toBe('false')
+    expect(document.querySelector('.mx-outer')!.classList.contains('mx-arranging')).toBe(false)
   })
 
   it('a member has no rearrange corner', () => {

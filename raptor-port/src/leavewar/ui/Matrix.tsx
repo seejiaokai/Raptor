@@ -44,7 +44,7 @@ import {
   type Figure,
   type FigureCtx,
 } from '../engine'
-import { figureCtxOf, setBalance, groupsInOrder, groupPriorityIds, lwHistEpoch, moveGroupTo, moveGroupPriorityTo, autoSortRoster, displayRoster, getState, moveCells, movableCells, moveManningRowTo, moveProblem, moveEvent, moveEventProblem, moveRosterRow, orderedManningIds, resetManningRules, setPostOut, type MoveResult, type EventMoveResult } from '../state/store'
+import { figureCtxOf, setBalance, groupsInOrder, groupPriorityIds, lwHistEpoch, moveGroupTo, moveGroupPriorityTo, displayRoster, getState, moveCells, movableCells, moveManningRowTo, moveProblem, moveEvent, moveEventProblem, moveRosterRow, orderedManningIds, resetManningRules, setPostOut, type MoveResult, type EventMoveResult } from '../state/store'
 import { BidPicker, DecisionSheet, PostOutSheet, RaptorSheet } from './BidPicker'
 import { CounterSheet, FigureBreakdownSheet, PersonFiguresSheet } from './CounterSheet'
 import { PersonSheet } from './PersonSheet'
@@ -1218,17 +1218,32 @@ export function Matrix() {
   // mistaken for the jump once the window has passed.
   const jumpAtRef = useRef(0)
 
-  // The phone ZOOM (owner, 18 Aug 26 — "a zoom function for mobile leave
+  // The grid ZOOM (owner, 18 Aug 26 — "a zoom function for mobile leave
   // war"). Stepped +/− buttons rather than pinch: pinch fights the browser's
   // own page zoom and the frozen columns, and a button cannot half-work.
   // `zoom` (not transform) so layout, scroll width and the sticky offsets all
   // scale together. View state, session-only, like the counter choice.
+  // A PHONE OPENS ONE STEP OUT (owner, 6 Sep 26 — "can this be the default
+  // zoom? Like zoom 1 click out"): 0.8 there, 1 on a desktop, read once at
+  // mount from the same 700px query the phone flag uses (no layout yet, so
+  // this is the only place the initial value can come from; jsdom has no
+  // matchMedia and stays at 1). The buttons live in the counter block's top
+  // row at BOTH widths since the same day (they used to ride the month strip,
+  // phone-only) — a desktop can step too now.
   const ZOOMS = [0.6, 0.8, 1, 1.2, 1.4]
-  const [zoom, setZoom] = useState(1)
+  const [zoom, setZoom] = useState(() =>
+    typeof window.matchMedia === 'function' && window.matchMedia('(max-width: 700px)').matches ? 0.8 : 1)
   const zoomStep = (by: number) => {
     const i = ZOOMS.indexOf(zoom)
     setZoom(ZOOMS[Math.min(ZOOMS.length - 1, Math.max(0, i + by))]!)
   }
+  // The grid tables' zoom, plus `--lwz` (6 Sep 26) so a control that must keep
+  // a REAL tap size at any zoom can divide it back out (the counter picker's
+  // `min-height: calc(40px / var(--lwz))`, matrix.css): a phone opens at 0.8
+  // and the picker fell to 32px tall, under the 36px floor the owner's own
+  // complaint set. On the TABLE, not an ancestor, and it changes only when the
+  // zoom steps — a restyle the zoom itself already costs, never per frame.
+  const zoomStyle = zoom !== 1 ? ({ zoom, '--lwz': zoom } as import('react').CSSProperties) : undefined
 
   // The manning counts block (CREW SETS … SXO) collapses on a tap, for EITHER
   // role (owner, 19 Aug 26 — "allow both admin and norm user to hide it when
@@ -1527,8 +1542,10 @@ export function Matrix() {
     // `folded` (28 Aug 26) is the same kind of row-set change — minimising a
     // category takes its rows (and their chips) out of the table. The window's
     // EDGES (5 Sep 26): two windows a month apart can hold the same day count,
-    // and the pinned widths would be the wrong months'.
-  }, [period.id, drawnDates.length, colWin?.lo, colWin?.hi, zoom, visWindow, folded])
+    // and the pinned widths would be the wrong months'. `arranging` (6 Sep 26):
+    // Rearrange widens the frozen name column (`.mx-arranging`), so a stuck
+    // mirror pinned at the old width would sit a grip's width off the grid.
+  }, [period.id, drawnDates.length, colWin?.lo, colWin?.hi, zoom, visWindow, folded, arranging])
 
   // The mirror starts life at the grid's current horizontal position, and the
   // two scrollers keep each other in lockstep from then on. Assigning an
@@ -1694,25 +1711,11 @@ export function Matrix() {
   // answering one id would break every query that expects the real one.
   const bracketRow = (testids: boolean) => (
     <tr className="mbrak" data-testid={testids ? 'month-bracket' : undefined}>
-      {/* The corner cell above CS/Name carries the admin's ⠿ REARRANGE toggle
-          (owner, 3 Sep 26 — "rearrange could be done on the grid main page
-          itself"). It sits right at the head of the roster column it reorders;
-          tapping it turns on the on-grid drag handles (person rows AND category
-          headings) and shows the rearrange bar. The old ⚙ Groups editor moved
-          into the top-row ⚙ Settings. Admin only; the mirror copy carries no
-          testid, like every other mirrored cell. */}
-      <th className="brakhd" colSpan={2}>
-        {role === 'admin' && (
-          <button
-            className={`grpedit${arranging ? ' on' : ''}`}
-            data-testid={testids ? 'roster-arrange' : undefined}
-            tabIndex={testids ? 0 : -1}
-            aria-pressed={arranging}
-            title={arranging ? 'Finish rearranging the roster' : 'Rearrange the roster — drag people and category blocks'}
-            onClick={() => setArranging(a => !a)}
-          >⠿ {arranging ? 'Rearranging' : 'Rearrange'}</button>
-        )}
-      </th>
+      {/* The corner cell above CS/Name. The admin's ⠿ REARRANGE toggle moved UP
+          to the card-header row (owner, 5 Sep 26 — "the rearrange button goes
+          after [settings]"); the corner is left empty so the frozen pair keeps
+          its width and the month brackets still start at the right column. */}
+      <th className="brakhd" colSpan={2} />
       {padL && <th className="lwph lwph-l" ref={phL} />}
       {brackets.map(b => (
         <th key={b.key} className="brakm" data-testid={testids ? `bracket-${b.key}` : undefined} colSpan={b.count}>
@@ -2312,8 +2315,10 @@ export function Matrix() {
     // The window's EDGES are deps, not only the drawn-day count: two windows a
     // month apart can hold the same number of days (Mar+Apr and May+Jun both
     // span 61), and the placeholders and spans would be a month off.
+    // `arranging` (6 Sep 26): Rearrange widens the frozen name column, which
+    // moves every day column's edge and the grid's scroll width.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [zoom, visWindow, period.id, drawnDates.length, colWin?.lo, colWin?.hi])
+  }, [zoom, visWindow, period.id, drawnDates.length, colWin?.lo, colWin?.hi, arranging])
 
   // Put the anchored column back after a row-set repaint (see anchorRef).
   // Layout effect, not effect: the correction must land in the same frame as
@@ -2715,11 +2720,17 @@ export function Matrix() {
   return (
     <div className="stage">
       <div className="card">
+        {/* ONE compact row (owner, 5 Sep 26 — "all in 1 row to minimise row
+            height space"): Manning · ⚙ · Rearrange on the left, OIL tracker on
+            the right. The old "JAN – DEC 26 · 365 days · 50 people" line was
+            dropped (owner, same day); the war's NAME still lives in the Period
+            picker in the page chrome above, so nothing is stranded. */}
         <div className="card-hd">
-          <span className="t">{period.name} · {dates.length} days · {people.length} people</span>
-          {/* Collapse the manning counts block — EITHER role (owner, 19 Aug 26).
-              A plain view toggle, in the header so it is reachable above the
-              scroll and does not ride the grid it hides. */}
+          {/* Manning LEADS the row, sitting directly above the counter rows it
+              shows/hides (owner, 5 Sep 26 — "move the manning to be infused with
+              the counter rows … still with a drop down"). EITHER role (owner,
+              19 Aug 26); a plain view toggle, above the scroll so it does not
+              ride the grid it hides. */}
           <button
             className="rtbtn countstoggle"
             data-testid="counts-toggle"
@@ -2729,64 +2740,100 @@ export function Matrix() {
           >
             {countsOpen ? '▾' : '▸'} Manning
           </button>
-          {/* ONE ⚙ SETTINGS button (owner, 3 Sep 26 — "this row will just have a
-              settings icon and an OIL tracker"). Every admin CONFIG control —
-              counters, event rows, Show SANS, the roster groups — folds into the
-              sheet it opens. Rearranging is NOT here: that is a hands-on-the-grid
-              job, started from the ⠿ in the grid corner (see bracketRow). Admin
-              only; a member has no config to reach. */}
           {role === 'admin' && (
-            <button
-              className="rtbtn gear"
-              data-testid="settings-open"
-              title="Settings — counters, event rows and roster groups"
-              aria-label="Settings — counters, event rows and roster groups"
-              onClick={() => setSettings(true)}
-            >
-              ⚙
-            </button>
+            <>
+              {/* ONE ⚙ SETTINGS button (owner, 3 Sep 26). Every admin CONFIG
+                  control — counters, event rows, Show SANS, the roster groups —
+                  folds into the sheet it opens. */}
+              <button
+                className="rtbtn gear"
+                data-testid="settings-open"
+                title="Settings — counters, event rows and roster groups"
+                aria-label="Settings — counters, event rows and roster groups"
+                onClick={() => setSettings(true)}
+              >
+                ⚙
+              </button>
+              {/* REARRANGE toggle — moved here from the grid corner (owner, 5 Sep
+                  26 — "the rearrange button goes after [settings]"). The actual
+                  rearranging is HANDS-ON-GRID: this only turns the on-grid drag
+                  handles on and off, and it is the ONE way in and out (owner,
+                  6 Sep 26 — "delete this whole blue section … when I click on it,
+                  it exits the rearrange mode"): the old strip under the header
+                  (Auto-sort + Done) is gone. Lights accent (`.on`) while live so
+                  it is obvious the handles are on and that tapping again leaves.
+                  On a phone it is the ⇅ icon alone (the word rides `.rtlbl`,
+                  hidden ≤430px — "just show an arrow up and down icon"); desktop
+                  keeps the word. Admin only. */}
+              <button
+                className={`rtbtn${arranging ? ' on' : ''}`}
+                data-testid="roster-arrange"
+                aria-pressed={arranging}
+                aria-label={arranging ? 'Finish rearranging the roster' : 'Rearrange the roster'}
+                title={arranging ? 'Finish rearranging — tap again to leave' : 'Rearrange the roster — drag people and category blocks'}
+                onClick={() => setArranging(a => !a)}
+              >
+                ⇅<span className="rtlbl"> {arranging ? 'Rearranging' : 'Rearrange'}</span>
+              </button>
+            </>
           )}
-          <span className="card-spring" />
           {/* The OIL TRACKER (owner, 2 Sep 26): every person's OIL balance, the
               ledger behind each, and the admin's crediting. BOTH roles — a member
               reads, an admin edits; the sheet decides which controls to draw and
-              the store refuses a member's write. */}
+              the store refuses a member's write. It sits RIGHT AFTER the last
+              control, not pushed to the far edge (owner, 5 Sep 26 — "the oil
+              tracker can be right of rearrange … in normal user it's just right
+              of manning"): no spring, so admin reads Manning · ⚙ · Rearrange · OIL
+              and a member reads Manning · OIL, each cluster left. "tracker" drops
+              on a phone (`.rtlbl`) so the row still holds one line. */}
           <button
             className="rtbtn"
             data-testid="oil-tracker"
             title="OIL balances, credits and history"
             onClick={() => setOilTracker({ person: null })}
           >
-            ◷ OIL tracker
+            ◷ OIL<span className="rtlbl"> tracker</span>
           </button>
+          {/* The grid ZOOM, − then +, right after OIL at BOTH widths (owner,
+              6 Sep 26 — "put the zoom + - button after oil/oil tracker. But
+              make sure it's still 1 row on the mobile"). Both roles — it is a
+              view control. Moved here from the end of the month strip, where
+              it was phone-only; the strip's tests and readers treat every
+              button there as a month, so it never belonged among them. A
+              phone opens one step out (see `zoom`). */}
+          <span className="lwzoom" data-testid="lw-zoom">
+            <button
+              className="rtbtn zoom"
+              data-testid="lw-zoom-out"
+              aria-label="Zoom out"
+              title="Zoom out"
+              disabled={zoom === ZOOMS[0]}
+              onClick={() => zoomStep(-1)}
+            >−</button>
+            <button
+              className="rtbtn zoom"
+              data-testid="lw-zoom-in"
+              aria-label="Zoom in"
+              title="Zoom in"
+              disabled={zoom === ZOOMS[ZOOMS.length - 1]}
+              onClick={() => zoomStep(1)}
+            >＋</button>
+          </span>
         </div>
-        {/* THE ON-GRID REARRANGE BAR (owner, 3 Sep 26 — rearrange happens on the
-            grid, not in a window). Shown only while an admin is rearranging; it is
-            NOT a Sheet (a Sheet's scrim would swallow the very grid taps the drag
-            needs). Auto-sort and Done live here, beside the grid they act on. */}
-        {role === 'admin' && arranging && (
-          <div className="lw-rearrange-bar" data-testid="rearrange-bar">
-            <span className="rb-lead">⠿ Rearranging — drag people or a category heading to reorder</span>
-            <button
-              className="rtbtn"
-              data-testid="roster-autosort"
-              title="Group everyone into SXO, IP, OPS P, IWSO, OPS W, OCU, Personnel"
-              onClick={autoSortRoster}
-            >
-              ⇅ Auto-sort
-            </button>
-            <button
-              className="rtbtn on"
-              data-testid="roster-arrange-done"
-              title="Finish rearranging"
-              onClick={() => setArranging(false)}
-            >
-              ✓ Done
-            </button>
-          </div>
-        )}
+        {/* The on-grid REARRANGE BAR (3 Sep 26: "⠿ Rearranging — drag people…",
+            Auto-sort, Done) is GONE (owner, 6 Sep 26 — "delete this whole blue
+            section when rearrange is selected. Auto sort will be removed"). The
+            header toggle above is the way in and out; the store's
+            `autoSortRoster` stays for the tests and a future home. Don't bring
+            the strip back — it cost a row of height on a phone for a sentence.
+            `mx-arranging` (admin Rearrange) widens the frozen NAME column by the
+            grip's footprint so callsigns read whole beside the ⠿ (owner, same
+            day — "the CS/name will not be causing the puck names to be
+            shortened … same as before rearrange was selected"): a class on this
+            wrapper, like `mx-banded`, which the same tap already toggles on a
+            phone — one restyle per mode change, never per frame. */}
         <div
-          className={`mx-outer${bandActive && bandTop != null ? ' mx-banded' : ''}${sdaActive ? ' lw-sda' : ''}`}
+          className={`mx-outer${bandActive && bandTop != null ? ' mx-banded' : ''}${sdaActive ? ' lw-sda' : ''}${arranging && role === 'admin' ? ' mx-arranging' : ''}`}
           ref={mxOuterRef}
         >
         <div
@@ -2796,7 +2843,7 @@ export function Matrix() {
           onTouchStart={onTouchStart}
           onTouchEnd={onTouchEnd}
         >
-          <table className="mx" style={zoom !== 1 ? { zoom } : undefined}>
+          <table className="mx" style={zoomStyle}>
             {/* THE ROW ORDER IS THE OWNER'S (18 Aug 26, arrows on a
                 screenshot): counts first, then the month buttons, then the
                 callsign + dates header, then the event rows, then the roster.
@@ -2833,7 +2880,14 @@ export function Matrix() {
             <tbody className="mstripe">
               <tr>
                 <td className="mstick" colSpan={2} ref={mstickRef} style={stripH ? { height: stripH } : undefined}>
-                  <div className="mstrow" ref={mstrowRef}>
+                  {/* The strip cancels the grid's zoom (6 Sep 26): it is
+                      navigation chrome, not grid content, and once a phone
+                      opened one step out its 9px labels rendered at ~7px and
+                      "MAR"/"NOV" clipped on a 360px phone. Nested `zoom`
+                      multiplies, so 1/zoom here puts the strip back at natural
+                      size at every step; `stripH` still divides by the grid's
+                      zoom because the cell it sizes is in the grid's units. */}
+                  <div className="mstrow" ref={mstrowRef} style={zoom !== 1 ? { zoom: 1 / zoom } : undefined}>
                     <div className="months" data-testid="month-strip" ref={monthsRef}>
                       {months.map(m => (
                         <button
@@ -2848,27 +2902,10 @@ export function Matrix() {
                         </button>
                       ))}
                     </div>
-                    {/* The phone zoom, riding the same pinned cell as the
-                        months so it never scrolls out of reach sideways —
-                        but OUTSIDE the strip: it is not a month, and the
-                        strip's tests and readers treat every button there as
-                        one. Hidden above 700px in CSS — a desktop has room. */}
-                    <span className="lwzoom" data-testid="lw-zoom">
-                      <button
-                        className="mjump"
-                        data-testid="lw-zoom-out"
-                        aria-label="Zoom out"
-                        disabled={zoom === ZOOMS[0]}
-                        onClick={() => zoomStep(-1)}
-                      >−</button>
-                      <button
-                        className="mjump"
-                        data-testid="lw-zoom-in"
-                        aria-label="Zoom in"
-                        disabled={zoom === ZOOMS[ZOOMS.length - 1]}
-                        onClick={() => zoomStep(1)}
-                      >＋</button>
-                    </span>
+                    {/* The zoom pair used to ride the end of this strip
+                        (phone-only); it moved to the counter block's top row
+                        after OIL (owner, 6 Sep 26), which is what freed the
+                        strip to hold all twelve months on ONE line on a phone. */}
                   </div>
                 </td>
                 <td className="mfill" colSpan={dayCols} />
@@ -3053,7 +3090,7 @@ export function Matrix() {
           const table = (extra: string) => (
             <table
               className={`mx${extra ? ' ' + extra : ''}`}
-              style={{ tableLayout: 'fixed', width: totalW, ...(zoom !== 1 ? { zoom } : null) }}
+              style={{ tableLayout: 'fixed', width: totalW, ...(zoomStyle ?? null) }}
             >
               <colgroup>
                 {s.cols.map((w, i) => (
@@ -3094,7 +3131,16 @@ export function Matrix() {
                 <div
                   className="mxfixed-frozen"
                   aria-hidden="true"
-                  style={{ width: (s.cols[0] || 0) / zoom + (s.cols[1] || 0) / zoom }}
+                  /* VISUAL px, NOT divided by the zoom (owner's iPhone, 6 Sep 26 —
+                     the stuck bar showed the hatched filler / "MON 27" / "JAN 01"
+                     right after LVE BAL, out of step with the grid). This box is
+                     a plain div beside the track, outside any zoomed table — only
+                     the <col>s INSIDE it live in zoomed space and take the
+                     division. Divided, it was 25% too wide at the phone's 0.8
+                     (131px against the grid's 107) and revealed the copy's third
+                     cell; at 1.2 it would clip the balance column. Latent since
+                     the zoom shipped, surfaced by the one-step-out default. */
+                  style={{ width: (s.cols[0] || 0) + (s.cols[1] || 0) }}
                 >
                   {table('')}
                 </div>
@@ -3116,7 +3162,7 @@ export function Matrix() {
             data-testid="frozen-cols"
             style={{ top: bandTop ?? 0, ...(bandTop == null ? { visibility: 'hidden' as const } : null) }}
           >
-            <table className="mx" style={zoom !== 1 ? { zoom } : undefined}>
+            <table className="mx" style={zoomStyle}>
               <tbody className="mxbody">
                 {rosterSequence().map(item => {
                   if (item.kind === 'group') return (

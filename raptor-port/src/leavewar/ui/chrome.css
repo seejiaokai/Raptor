@@ -270,18 +270,18 @@
   padding: 10px 14px;
   border-bottom: 1px solid var(--edge);
   background: rgba(26, 31, 38, .6);
-  /* Wrap since the roster tools joined the row (18 Aug 26): on a phone the
-     month strip drops to its own line and lays out two rows there, instead of
-     being crushed into a one-per-line column beside the buttons. */
+  /* ONE row (owner, 5 Sep 26 — "all in 1 row to minimise row height space"):
+     Manning · ⚙ · Rearrange lead, OIL tracker trails. The controls are sized to
+     hold one line down to the phone (the droppable tail carries `.rtlbl`);
+     `flex-wrap` stays only as a safety net for a width narrower than supported. */
   flex-wrap: wrap;
 }
 
-.card-hd .t {
-  font-size: 10px;
-  letter-spacing: .16em;
-  text-transform: uppercase;
-  color: var(--ink-3);
-  font-weight: 700;
+/* The droppable tail of a header button (owner, 5 Sep 26): hidden on a phone so
+   the row holds one line — "OIL tracker" → "OIL". The icon and the lead word
+   stay; only this tail goes. */
+.card-hd .rtlbl {
+  display: inline;
 }
 
 /* The stage control. Deliberately quieter than the stage chip beside it —
@@ -469,6 +469,12 @@
   .topbar {
     gap: 8px;
     padding: 8px 12px;
+  }
+
+  /* Drop the droppable tails so Manning · ⚙ · Rearrange · OIL hold one line
+     (owner, 5 Sep 26): "OIL tracker" reads "OIL" here. */
+  .card-hd .rtlbl {
+    display: none;
   }
 
   .mark .v {

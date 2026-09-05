@@ -3973,6 +3973,37 @@ body-level and the board wrap's own listeners can never see it.
 has stopped being true. The rows are about SCHEDULE days, so a bare `14:32`
 beside `Monday` invites being read as a time on the Monday being planned.
 
+## The page behind the burger drawer does not scroll (owner's iPhone, 6 Sep 26)
+
+"I should not be able to slide scroll when I'm on this page with a page behind
+me … sometimes instead of scrolling the side bar, it scrolls the page behind
+it as well."
+
+The drawer (`Drawer.tsx`, `.drawer` at z440) is the same shape as the board
+below and had the same two holes, closed the same way:
+
+- **`.drawer-panel` is the drawer's ONE scroller** (the View-as list makes it
+  long on a phone) and carried no `overscroll-behavior`, so a swipe that
+  reached its end chained to the document — the schedule behind the scrim. It
+  now carries `overscroll-behavior:contain` (+ `touch-action:pan-y`, so the
+  up-down pan stays on the panel, and it must stay `overflow:auto` — a
+  non-scroll-container cannot contain anything).
+- **The scrim is in no scroller at all**, so a drag on the dimmed area went
+  straight to the document. It is `touch-action:none` now — a touch there is a
+  tap-to-close, never a scroll — and `body.dw-lock{overflow:hidden}` is set by
+  `Drawer.tsx` while the drawer is open (scroll position captured and put back
+  by hand on close, the board's reasoning). Its OWN class, not `sb-lock`: the
+  drawer opens OVER the board (z440 over z400), and closing the drawer must not
+  unlock a board still open under it.
+
+iOS Safari is the known exception for `overflow:hidden` against TOUCH scrolling
+(§below), which is why the containment on the panel and the `touch-action` on
+the scrim are the halves that matter on the phone; the body lock covers the
+desktop wheel and is belt-and-braces there. Owner-iPhone-gated. Pinned in
+`drawerlock.test.ts` (the CSS contract) and `odds.test.tsx` (the lock follows
+the drawer open/closed); the geometry e2e wheels over the open drawer at 390px
+and proves the page does not move.
+
 ## The page behind the board does not scroll (owner-reported, 11 Aug 26)
 
 "I could scroll and see the edit schedule board leaking into it, and in the
@@ -5092,6 +5123,169 @@ Pinned in `counters.test.tsx`, `chrome.test.tsx`, `counts.test.tsx`,
 `roster.test.ts`, and e2e ("a personnel row shows its callsign, with no edit box,
 in Rearrange").
 
+**The counter block's controls sit on ONE row (owner, 5 Sep 26 — "all in 1 row
+to minimise row height space").** The `.card-hd` above the counter grid carries,
+left to right: Manning (the `▾/▸` collapse toggle for the counter rows, EITHER
+role), then for an admin the ⚙ Settings and the ⠿ Rearrange toggle, then the OIL
+tracker — placed RIGHT AFTER the last control, not sprung to the far edge (owner,
+same day — "the oil tracker can be right of rearrange … in normal user it's just
+right of manning"): the old `.card-spring` was removed, so the row packs left and
+a member reads Manning · OIL. The "JAN – DEC 26 · 365 days · 50 people" `.t` line
+is GONE; the war's NAME still lives in the Period `<select>` in the page chrome
+(`Chrome.tsx`), so nothing is stranded. The controls hold ONE line down to the
+phone: "OIL tracker" drops its "tracker" tail (`.rtlbl`, `display:none` ≤430px)
+to read "OIL" there, and `.card-hd` keeps `flex-wrap:wrap` only as a safety net.
+The ⇅ Rearrange toggle MOVED here from the grid's bracket-corner cell
+(`th.brakhd`, empty now) — the rearranging itself is hands-on-grid, and since
+6 Sep 26 this toggle is the only control (the on-grid bar is gone — §The
+on-grid rearrange bar is GONE); it lights accent (`.rtbtn.on`) while live and
+is the ⇅ icon alone on a phone. jsdom cannot see the single line; pinned by e2e
+(`leavewar.spec.ts` — one row, order, OIL adjacency and the member layout, at
+phone AND desktop) and unit (`settingssheet.test.tsx` — the header's controls by
+role and DOM order, and the date line gone).
+
+**The controls Rearrange inserts paint on their own compositor layer (owner's
+iPhone, 5–6 Sep 26).** On a phone the ⇅ toggle inserts the Rearrange controls
+AND drops the `.mxband` overlay (`bandActive = phone && !arranging`) in one
+commit; the layer tree is rebuilt under them and iOS did not repaint the
+sticky/clipped box a new control landed in until a touch there (or a scroll)
+invalidated it. First seen on the on-grid rearrange bar (5 Sep — "when I press
+rearrange the buttons don't show until I press that area"; fixed with
+`translateZ(0)`, the `.mxfixed` promoter, and his next screenshot showed it
+holding), then on the eye in each manning row's frozen balance box (6 Sep —
+"the eyes don't show on the counter grids until I click it or when I move the
+page"). The bar is gone now (next paragraph); the surviving case is
+`.mx .counts .mrow-tools` — the edit-only span the eye (live row) or ↺
+(archived row) sits in — which carries `transform: translateZ(0)`: a backing
+store of its own, painted when the layer is created. The span exists only in
+Rearrange, so it is ~a dozen tiny layers while an admin arranges and none at
+rest — not a page-wide promotion (those are the measured dead ends in
+`performance.md`). The promotion stays on the span: not the buttons, not
+`td.bal` (a layer on every balance cell at rest would be paid on every roster
+row, always). The ⠿ grip in the name cell showed fine on his phone and is
+deliberately not promoted. Pinned in `arrangepaint.test.ts` (the CSS contract;
+jsdom cannot paint and Chromium does not reproduce the fault).
+
+**The on-grid rearrange bar is GONE; the ⇅ toggle is the way in and out
+(owner, 6 Sep 26 — "delete this whole blue section when rearrange is selected.
+Auto sort will be removed … when I click on it, it exits the rearrange
+mode").** The accent strip under the card header ("⠿ Rearranging — drag people
+or a category heading to reorder", `⇅ Auto-sort`, `✓ Done`; 3 Sep–6 Sep 26) is
+deleted — it cost a row of height on a phone for a sentence. Rearrange is
+entered and left by the same header button (`roster-arrange`, `aria-pressed`),
+lit accent (`.rtbtn.on`) while on; on a phone it is the ⇅ icon alone (the word
+rides `.rtlbl`, hidden ≤430px — "just show an arrow up and down icon"), on
+desktop "⇅ Rearrange" / "⇅ Rearranging". There is no Auto-sort button anywhere
+now — the store's `autoSortRoster` remains for the tests and a future home;
+don't re-add the button or the strip without his ask. Pinned in
+`settingssheet.test.tsx` (toggle on/off, no bar, no Auto-sort, ⇅ + `.rtlbl`)
+and `e2e/leavewar.spec.ts` (both projects: drag from the toggle, nothing else
+appears, the phone's word is hidden).
+
+**The − / + ZOOM pair sits in the counter block's top row after OIL at BOTH
+widths, and a phone opens ONE step out (owner, 6 Sep 26 — "Can this be the
+default zoom? Like zoom 1 click out. Put the zoom + - button after oil/oil
+tracker. But make sure it's still 1 row on the mobile").** `lw-zoom` (`.lwzoom`,
+two `.rtbtn.zoom`) follows `oil-tracker` in `.card-hd` for both roles — it is a
+view control — so the admin row reads Manning · ⚙ · ⇅ · OIL · − · + and a
+member's Manning · OIL · − · +, one line down to 360px (measured). The initial
+`zoom` is read ONCE at mount from the same `(max-width: 700px)` query the phone
+flag uses: 0.8 on a phone, 1 on a desktop (jsdom: 1); the steps stay
+`[0.6, 0.8, 1, 1.2, 1.4]` and a disabled end dims. It used to ride the end of
+the month strip, phone-only (18 Aug 26) — don't put it back there: the strip's
+tests and readers treat every button in it as a month, and a desktop can step
+too now. Pinned in `settingssheet.test.tsx` (order, both roles, off the strip)
+and `e2e/leavewar.spec.ts` (one row incl. the pair at both widths; the pair in
+the top row; phone `zoom` 0.8 / desktop none; step down and back).
+**The OIL tracker has the same pair, beside RANGE** (owner, same day — "zoom
+out once as a default view as well. And put a plus minus for zoom placed beside
+range"): `oil-zoom` (`.tchip.zoom` × 2) right after `oil-range-pick` in
+`.oil-tools`, both roles; the same steps, its own state (`OilTracker.tsx`),
+applied as `zoom` on `table.oil-grid` so the frozen name/balance columns and
+the sticky header scale with the boxes; a phone opens it at 0.8, a desktop at
+1. The tools row still holds one line on a phone (SHOW · From first entry ·
+RANGE · − · + · ? · ⚙, measured at 360px). Pinned in `oiltracker.test.tsx`
+(order, ends) and `e2e/leavewar.spec.ts` (beside RANGE on SHOW's row, inside
+the viewport, phone 0.8 / desktop none, step up and back).
+
+**The month strip is ONE line of twelve on a phone too (owner, 6 Sep 26 — "shift
+the months to be fitted to 1 row instead, since the +- is moved to another
+area").** Under 700px `.months` stops wrapping and each `.mjump` splits the strip
+width equally (`flex: 1 1 0`, `min-width: 0`, 9px, `.02em` tracking, 4px/0
+padding, 3px gap) over a `.mstrow` of `100vw − 32px`; the row is back to its
+44px one-line height (the 72px two-line allowance is gone, `stripH` measures
+the same). **The strip CANCELS the grid's zoom** (`.mstrow` carries an inline
+`zoom: 1/zoom`, Matrix.tsx): it is navigation chrome, not grid content, and
+once a phone opened one step out its labels rendered at ~7px and "MAR"/"NOV"
+clipped on a 360px phone — at natural size the twelve measure 349/360,
+364/375, 379/390 with none cut, and on a desktop they no longer grow with a
+zoom-in either. Desktop is otherwise untouched (it always held one line at
+640px). Never let it scroll or wrap. Pinned in `e2e/leavewar.spec.ts` (twelve
+buttons, one line, inside the viewport, none cut, row under 52px — both
+projects).
+
+**In Rearrange the frozen name column widens by the grip, so callsigns keep
+their at-rest width (owner, 6 Sep 26 — "the CS/name will not be causing the
+puck names to be shortened. Instead extend the horizontal space required to
+show their name. Same as before rearrange was selected").** `.mx-outer.mx-
+arranging` (Matrix.tsx, admin Rearrange only) re-sets `--who-w` — 118→136px
+desktop, 76→92px phone — which is the ⠿ grip's footprint (glyph + `.whorow`
+gap: 10+6 desktop, 10+4 phone, measured in the built app) rounded up to 2px of
+air, so the `.whoedit` button keeps at least the width it had at rest (103→105
+desktop, 67→69 phone) and nothing is cut shorter than it was — the same four
+long desktop callsigns clip in both states, the same set on the phone. The rule
+sits beside `--who-w` so the phone block later in the file can narrow it (placed
+after that block it won on the phone too — the drive caught 136px there). Everything anchored to
+`--who-w` moves with it in the same restyle: the balance column's `left`, the
+bracket label, the frozen header mirror (which re-pins on `arranging`) and the
+strip geometry (re-measured on `arranging`); the day grid pays the difference
+only while arranging. Set on `.mx-outer` (the `mx-banded` precedent) so it is
+one restyle per mode change, never per frame, and never on the page root. The
+5 Sep phone-only shrink of the counter labels beside the grip (9px, hugged
+grip) went with it — the wider column seats "Crew sets" as it is. Pinned in
+`e2e/leavewar.spec.ts` (column grows, pair stays joined, name width ≥ rest, no
+new clipping, both projects).
+
+**On a manning row in Rearrange the GRIP sits at the LEFT of the counter name;
+the eye (Archive) sits alone, centred, in the balance box (owner, 5 Sep 26 —
+"move the rearrange 6 dots to the left of the start of the titles … leave hide
+buttons to the middle of its original box").** The ⠿ shares the frozen NAME cell
+with the label on one flex line (`.mwho-row` in `CountRows.tsx`), ahead of it,
+so the whole row reads as the thing you grab; the eye keeps the frozen COUNTER
+cell to itself and centres there once the grip leaves. The grip is drawn ONLY in
+Rearrange on a LIVE row — a member, an idle admin and an archived row all get the
+bare label cell, which is exactly the state the frozen-column clip gate measures
+(§nothing in the callsign column is cut off), so the grip never trips it. The
+name column WIDENS by the grip in Rearrange (§In Rearrange the frozen name
+column widens, below), so the counter labels keep their at-rest size and the
+longest ("Crew sets") reads whole on the phone without the 5 Sep shrink.
+Pinned in `counts.test.tsx` (grip in the name cell ahead of the label; eye alone
+in the balance box) and the e2e clip check in Rearrange.
+
+**Archived counters live under an ARCHIVE bar (owner, 5 Sep 26 — "a row to open
+below the counter row that's called Archive, so those go there will be out of
+view unless I bring it back", then "not have the grids on the right, a merged 1
+bar horizontally", and Rearrange only).** In Rearrange the eye on a manning row
+ARCHIVES it: the row leaves the list at once and the `▸ ARCHIVE · N` bar appears
+at the foot of the block (`CountRows.tsx`, `tr.march`) — one merged bar built
+the category-heading way (a sticky `td.marchhd` `colSpan=2` over the frozen
+columns, its zero-width `.marchhd-in` label overflowing across ONE `td.marchfill`
+spanning every day column, so no day grid), same background and rules as a
+heading but at HEM scale (owner, same day — "make the archive section much
+smaller"): both cells override `.mx td`'s 22px floor (`height: 16px`), so the
+row is its content, ~18.5px against the 22px count rows; the type is one step
+below the row labels (9.5px, letter-spaced, `--ink-3` at 6.4:1 on the band),
+the caret 8px. Don't restore the heading's scale or ink — the bar must never
+outrank the counters it serves. Tap the bar to open it: the archived rows draw under it dimmed
+(`.mrow-hidden`) with only `↺` (`manning-restore-<id>`, no grip — an archived
+row has no place to drag to; restoring returns it to its old position, since
+hiding never touched `manningOrder`). The fold is LOCAL view state in CountRows
+(a tap must not re-render the grid), closed by default and closed again when
+Rearrange ends. The bar exists only while something is archived; a member and
+an idle admin see neither the bar nor the rows (unchanged). Pinned in
+`counts.test.tsx` (the bar's two-cell shape, open/close, the eye → ↺ round trip
+through the store).
+
 ## Leave War roster groups: minimise, and the admin group editor (owner, 28 Aug 26)
 
 **Minimising a category.** Every group heading is a fold control — the sticky
@@ -5324,7 +5518,13 @@ feel he rejected on 10 Aug 26). The fix-by-fix history follows.
   ~10,000px range, the same sub-pixel rounding the JS path has at rest). A
   translated table can't keep `position: sticky`, so in this path the frozen
   callsign+counter columns are a static, opaque, clipped COPY pinned over the
-  left (`.mxfixed-frozen`); the scrolling layer's own who/bal are
+  left (`.mxfixed-frozen`) — its WIDTH is the two measured columns in VISUAL
+  px, NOT divided by the grid zoom (owner's iPhone, 6 Sep 26: divided, it was
+  25% too wide at the phone's 0.8 and showed the hatched filler / "MON 27" /
+  "JAN 01" right after LVE BAL, out of step with the grid; the box is a plain
+  div outside any zoomed table, only the `<col>`s INSIDE it take the division;
+  latent since the zoom shipped, surfaced by the one-step-out default; pinned
+  in the phone freeze/thaw e2e at 0.8 and after a step); the scrolling layer's own who/bal are
   `pointer-events:none` so the copy carries the (still-working) counter picker,
   and the copy is aria-hidden so the scrolling layer stays the one accessible
   set. Gated by `.lw-sda` (JS `sdaActive` feature-detects `scroll-timeline` +

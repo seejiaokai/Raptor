@@ -667,12 +667,37 @@ decision + a pointer. Owner + date establish authority; keep them.
 
 ### Leave War roster & display (owner, 3–4 Sep 26)
 - **Admin controls live in ONE ⚙ Settings; rearranging is on the grid.** Matrix top
-  row = Manning · ⚙ · OIL tracker. ⚙ opens `SettingsSheet` (CONFIG: + Counter, +/−
-  Event row, Show SANS, Reset counters + the roster GROUPS editor folded in; old
-  `⚙ Groups` button + `GroupSheet.tsx` deleted). REARRANGING is hands-on-grid from
-  the ⠿ toggle above the callsigns (person rows AND category headings drag, slim
-  `.lw-rearrange-bar` for Auto-sort/Done). Don't move config onto the grid or
-  rearrange into a sheet (a Sheet's scrim swallows the drag's taps).
+  row is now ONE line (owner, 5 Sep 26 — "all in 1 row to minimise row height
+  space"): Manning · ⚙ · Rearrange for an admin, then the OIL tracker RIGHT AFTER
+  the last control (no spring to the far edge); a member sees just Manning · OIL.
+  The old "JAN – DEC 26 · 365 days · 50 people" line was dropped (the war NAME
+  still lives in the Period picker in the page chrome). "OIL tracker" shortens to
+  "OIL" on a phone (`.rtlbl`) so the four hold one line. **The − / + ZOOM pair
+  follows OIL in this row at BOTH widths** (owner, 6 Sep 26 — moved off the
+  month strip, where it was phone-only), and **a phone OPENS one step out**
+  (`zoom` 0.8, desktop 1 — "can this be the default zoom? Like zoom 1 click
+  out"); the freed month strip holds all twelve months on ONE line on a phone
+  (equal-width buttons, 9px, 44px row — the 72px two-line row is gone) and the
+  strip CANCELS the grid zoom (`zoom: 1/zoom` inline — navigation chrome stays
+  readable at 0.8). The OIL TRACKER sheet has its OWN − / + beside RANGE with
+  the same steps and the same phone-opens-at-0.8 default (`OilTracker.tsx`).
+  Don't put the zoom back on the strip, let the strip wrap, or let it scale
+  with the grid. ⚙ opens `SettingsSheet`
+  (CONFIG: + Counter, +/− Event row, Show SANS, Reset counters + the roster GROUPS
+  editor folded in; old `⚙ Groups` button + `GroupSheet.tsx` deleted). REARRANGING
+  is STILL hands-on-grid (person rows AND category headings drag), and the top
+  row's ⇅ toggle is the ONE way in and out (owner, 6 Sep 26 — "delete this whole
+  blue section … when I click on it, it exits"): the on-grid strip
+  (`.lw-rearrange-bar`, "Rearranging — drag people…", Auto-sort, Done) is
+  DELETED; the toggle lights accent while on and is icon-only (⇅) on a phone.
+  **No Auto-sort button anywhere** — the store's `autoSortRoster` stays for the
+  tests; don't re-add the button or the strip without his ask. In Rearrange the
+  frozen NAME column WIDENS by the grip's footprint (`.mx-outer.mx-arranging`
+  re-sets `--who-w`, 136px desktop / 92px phone) so callsigns keep their at-rest
+  width beside the ⠿ ("not … shortened"); the header mirror and strip geometry
+  re-pin on `arranging`. The corner cell is empty (5 Sep 26). Don't move config
+  onto the grid or rearrange into a sheet (a Sheet's scrim swallows the drag's
+  taps), and don't push OIL back to the far edge.
 - **Who-wins follows the page order by default** (reversal of 28 Aug "two separate
   orders"). Group higher on the page wins a tie; dragging a category reorders
   who-wins with it (`groupPriorityIds` until `groupPriorityCustom`). A hand edit of
@@ -682,8 +707,9 @@ decision + a pointer. Owner + date establish authority; keep them.
   draws them under IP; `groupOf` = first fit down `GROUP_ORDER` (untouched page
   unchanged). Two fits stay exclusive by design: ground crew fit only Personnel;
   OCU fits OCU but never OPS P/W. `sxo`/`san` are never offered as qual groups (they
-  ARE the SXO cat / SANS group; a stored one is pruned). Auto-sort buckets by live
-  grouping (`liveAutoOrder`).
+  ARE the SXO cat / SANS group; a stored one is pruned). The store's
+  `autoSortRoster` buckets by live grouping (`liveAutoOrder`) — no button calls
+  it since 6 Sep 26 (above); an empty `rosterOrder` shows the same order.
 - **A chip shows only the CAT; hover/tap reveals DISPLAYED quals in group colours.**
   Chip stays CAT-coloured (`catClass` off `groupOf`), never encodes a qual. The
   popover (`qualpop`, screen-fixed so the frozen column can't clip it) lists ONLY

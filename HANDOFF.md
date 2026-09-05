@@ -41,25 +41,21 @@ verify** — this section holds only the current baseline and the ways the gates
 mislead. Restate a count only from a run you watched — this file's history twice
 recorded a count that was wrong.
 
-**Last green baseline — the 5 Sep 26 batch, merged main `dd4744e` (PRs
-#358–#366).** CI run 889 on that head: all eight jobs green (build + reference
-suite, unit raptor, unit leavewar ×2, geometry ×3, deploy), and the deployed
-page was driven at desktop and phone widths afterwards (a phone week cross
-included — two one-card snapshots, the taller week's height, nothing left
-behind, no console errors, no 4xx). Counts below are from runs watched here:
-`npm test` and the reference suite on `dd4744e` itself; the browser gates,
-probes and perf from the last full local chain before the merges (`b4c6202`,
-#364's head — #359–#363 each ran their own full chain on their PR, recorded in
-the PR bodies):
+**Last green baseline — the 5–6 Sep 26 batch, PR #368 (CI head `8b269df` plus
+this docs-only handoff commit, squash-merged on the owner's "merge").** CI run
+901 on `8b269df`: all seven gate jobs green (build + reference suite, unit
+raptor, unit leavewar ×2, geometry ×3). Counts below are from runs watched here
+on that tree:
 
 | gate | reading |
 |---|---|
-| `npm test` | **3931 across 229 files** — two vitest projects, raptor + leavewar |
+| `npm test` | **3947 across 231 files** — two vitest projects, raptor + leavewar |
 | `node reference/tfin.js` | **728/0** (the reference is read-only; the "Ground Programme" title trim rides the tolerant normaliser in `html.test.ts`) |
 | `npm run build` | clean |
-| `npm run test:e2e` | **357 passed / 24 touch-only skips / 0 failed** — three playwright projects: raptor geometry, lw-phone, lw-desktop. One known flake lead, not reproduced on the last run: (a) the desktop carry-day test ("View-only opens on the day Edit was showing", `geometry.spec.ts`) went red once in the drag round and passed alone — for ~5 s after the edit page opens the store notifies ~10 times (pre-warm / sync settling) and each pass re-lands `eWeek.scrollLeft`, which can race `parkOn`'s scroll. The lw-desktop month-jump flake is CLOSED (#365: the assertion was a coin toss on the desktop, where the fill engine keeps drawing between the two clicks — gated to the phone). |
+| `npm run test:e2e` | **lw-phone + lw-desktop 238 passed / 0 failed; raptor geometry 131 / 0** — three playwright projects. Two traps from this batch: (a) a `npm run build` DURING a browser run swaps the files the test server serves and fails whatever page load is in flight (one login-timeout red, green on the clean re-run — never rebuild while `test:e2e` runs); (b) a background `npx playwright test` launched WITHOUT `cd raptor-port` runs from the repo root and reports "No tests found" as exit 0. The older lead stands: the desktop carry-day test ("View-only opens on the day Edit was showing", `geometry.spec.ts`) went red once in the drag round and passed alone — for ~5 s after the edit page opens the store notifies ~10 times and each pass re-lands `eWeek.scrollLeft`, which can race `parkOn`'s scroll. |
 | `probes:adapted` | **all 6 GREEN**. **Read the LAST line, not the last tally**: each probe prints its own count as it finishes, and the suite's verdict is the line after it, `all 6 adapted probes passed`. |
 | `perf` | **4/0** — board DOM 1023 ≤ **1150** (the ceiling is a SETTLED owner decision since 28 Aug 26 — `CLAUDE.md` §Stable decisions). |
+| CI `unit (raptor)` | can go red with EVERY test green: the summary's `Errors 1` line — an unhandled error after a file ended. Run 899 was the 6-second fresh-add timer (`view.ts flashAdded`) firing into a torn-down jsdom; `paintFreshAdds` now returns with no `document`. Read the "Unhandled Errors" block before calling a red run a flake (obs 85). |
 
 **How the gates lie — the durable traps, worth more than any count:**
 
@@ -142,6 +138,31 @@ the PR bodies):
 
 ## In flight
 
+- **The 5–6 Sep 26 batch is MERGED to main (PR #368, squash, on the owner's
+  "merge") — the Leave War Rearrange / counter-block rework, from his iPhone
+  against the preview.** Rearrange: the on-grid bar (Auto-sort / Done) is GONE,
+  the header ⇅ toggle is the one way in and out (icon-only on a phone); the
+  eye in each counter row's frozen box and (the day before) the bar paint at
+  once on iPhone (own compositor layer); the ⠿ grip sits left of each counter
+  name, archived counters go under an ARCHIVE bar, and the frozen name column
+  widens by the grip in Rearrange so callsigns stay whole. Counter block: ONE
+  top row (Manning · ⚙ · ⇅ · OIL · − · +), the date/size line dropped, the
+  zoom pair moved off the month strip, a phone opens one step out (0.8; the
+  strip cancels the zoom and holds twelve months on one line), the frozen
+  header's counter picker keeps a real 40px at any zoom, and the stuck date
+  bar's frozen-column copy is the grid's two columns wide at every zoom (was
+  25% too wide at 0.8 — the hatched filler / a stray date after LVE BAL). OIL
+  tracker: its own − / + beside RANGE, opens one step out on a phone. Raptor
+  shell: the burger drawer scrolls only itself (`body.dw-lock`, panel
+  containment, scrim `touch-action:none`). Contracts in `docs/ui-contracts.md`
+  (§The controls Rearrange inserts…, §The on-grid rearrange bar is GONE, §In
+  Rearrange the frozen name column widens, §The − / + ZOOM pair…, §The month
+  strip is ONE line…, §The page behind the burger drawer does not scroll) and
+  `CLAUDE.md` §Leave War roster & display; stories in the commit messages.
+  **Still owner-iPhone-unverified** (this file, §Standing constraints — the
+  iPhone-unverified list): both paint fixes, the grip in the sticky name cell,
+  sticky columns re-anchoring on the width change, the drawer lock against a
+  real touch swipe. `BUG-TESTING.md` row #368 is his checklist.
 - **The 5 Sep 26 batch is MERGED to main (5 Sep 26 ~10:25 UTC, PRs #358–#366,
   on the owner's "merge") — eight fixes and one repair.** The Leave War
   swipe-up-mid-fling rubber band (`overflow-y:hidden` on `.mx-wrap`, #358); the
@@ -187,14 +208,22 @@ the PR bodies):
   are verified on the owner's iPhone against the preview; if the grid ever
   misaligns there, the revert is one commit.
 - **The observer log persists now** — `.claude/skill-observations/log.md` is
-  committed (obs 57–73 landed across the 5 Sep 26 PRs), so the old worry that
-  it dies with the container is resolved as long as it keeps being committed.
-  It holds 69 OPEN observations; its `last-review-date.txt` reads 19 Aug 26, so
-  the skill's weekly review is overdue when the owner wants one.
+  committed (obs 57–73 landed across the 5 Sep 26 PRs, obs 74–85 in #368), so
+  the old worry that it dies with the container is resolved as long as it keeps
+  being committed. It holds 81 OPEN observations; its `last-review-date.txt`
+  reads 19 Aug 26, so the skill's weekly review is overdue when the owner wants
+  one.
 
 
 ## Open / deferred / queued
 
+- **OWNER'S CALL — no "back to the default order" control since Auto-sort went
+  (6 Sep 26).** A hand-arranged Leave War roster stays arranged until dragged
+  back; the store's `autoSortRoster` still exists. Offered: a "Reset order" line
+  in ⚙ Settings. Build only if he asks.
+- **OWNER'S CALL — the desktop Leave War grid opens at zoom 1** (6 Sep 26; the
+  phone opens one step out because the ask came from the phone). One line in
+  `Matrix.tsx` (`zoom` initial state) if he wants the desktop out too.
 - **PARKED DIRECTION (owner, 1 Sep 26 — "we will get back to this next time;
   in the meantime just assume this is for a database. Status quo").** The
   intended end state, recorded so it isn't re-derived: a Power Apps CODE APP
@@ -248,7 +277,35 @@ the PR bodies):
   is the known exception for TOUCH scrolling; `overscroll-behavior:contain` on
   `.sb-main` is the other half and does work there, so only a drag on the top
   bar would still reach the week — contract `ui-contracts.md` §The page behind
-  the board does not scroll).
+  the board does not scroll), the **burger drawer's page lock** (6 Sep 26 — the
+  same three halves for the drawer: `.drawer-panel` `overscroll-behavior:
+  contain` + `touch-action:pan-y`, the scrim `touch-action:none`, `body.dw-lock`;
+  the owner's report was an iOS touch swipe, which the containment and
+  touch-action are for — if it still leaks on his phone the next theory is a
+  swipe that starts on the panel when the list is NOT scrollable, and the fix
+  is a `position:fixed` body lock — §The page behind the burger drawer does not
+  scroll), the **eye in each manning row's frozen balance
+  box painting at once in Rearrange** (6 Sep 26, `.mx .counts .mrow-tools`
+  `translateZ(0)` — the owner's report that the eyes did not show on his iPhone
+  until a tap or a scroll; the same cure the (since deleted) rearrange bar got
+  on 5 Sep, which his 6 Sep screenshot showed holding; reasoned from the
+  band-overlay teardown landing in the same commit as the insert, not from a
+  device trace — `ui-contracts.md` §The controls Rearrange inserts paint on
+  their own compositor layer. If the eye still does NOT paint on his phone, the
+  next theory is that the sticky `td.bal` itself needs the promotion in
+  Rearrange — `tr[data-mrow] td.bal`, an edit-only selector — before any render
+  kick), the **manning grip inside the frozen name cell** (5 Sep 26 — in
+  Rearrange the ⠿ shares the sticky `td.who` with the label as a flex row,
+  `.mwho-row`; flex inside a sticky table cell is the WebKit-sensitive part, and
+  the counter reorder's existing `scrollLeft` self-assign repaint kick still
+  covers it — `ui-contracts.md` §On a manning row in Rearrange the GRIP sits at
+  the LEFT), and the **wider frozen name column in Rearrange** (6 Sep 26 —
+  `.mx-outer.mx-arranging` re-sets `--who-w`, so every sticky `.who`/`.bal`
+  `left`/width changes in one restyle while the phone's overlay is down; the
+  frozen header mirror re-pins on `arranging`. Chromium keeps the pair joined
+  and the mirror aligned; WebKit's sticky-offset recompute on a var change is
+  the unproven part — `ui-contracts.md` §In Rearrange the frozen name column
+  widens).
 - **Open questions for the owner, deliberately not changed:**
   - **ATT B beyond SC MAIN is unscoped** — "for now we will focus on SC MAIN
     first". Ask before widening.

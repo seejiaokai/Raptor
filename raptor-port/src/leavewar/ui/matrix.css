@@ -187,6 +187,26 @@
      ui/groupColor.ts, so there is no per-group rule here. */
 }
 
+/* REARRANGE widens the frozen NAME column (owner, 6 Sep 26 — "the CS/name will
+   not be causing the puck names to be shortened. Instead extend the horizontal
+   space required to show their name. Same as before rearrange was selected").
+   The ⠿ grip joins each name cell in Rearrange and was eating the name's room —
+   "Re…", "An…" on a phone. The column grows by the grip's footprint (glyph +
+   `.whorow` gap, measured in the built app: 10 + 6 = 16px here, 10 + 4 = 14px
+   on the phone — each rounded up to 2px of air), so the name keeps the width it
+   had at rest; the balance column, the bracket label and the frozen header all
+   anchor to `--who-w` and move with it, and the day grid pays the difference
+   only while arranging. Set on `.mx-outer` (the `mx-banded` precedent), NOT on
+   the page root: the same tap already restyles the grid on a phone (the overlay
+   teardown), so this is one restyle per mode change, never per frame — and the
+   frozen header mirror re-pins on `arranging` (Matrix.tsx) so its columns
+   match. Lives HERE, beside `--who-w`, so the phone block further down (equal
+   specificity, later in the file) can narrow it — placed after that block it
+   silently won on the phone too (caught by the drive, 6 Sep 26). */
+.mx-outer.mx-arranging {
+  --who-w: 136px;
+}
+
 .mx .who,
 .mx .bal {
   position: sticky;
@@ -264,8 +284,11 @@
   width: 100%;
   /* Stays a full tap target (owner's earlier complaint that it was too small
      to hit — e2e pins >=36px); the squaring is the border and corners, not a
-     smaller box. */
-  min-height: 40px;
+     smaller box. A REAL 40px at any grid zoom (6 Sep 26): the table's `--lwz`
+     (Matrix.tsx) divides the zoom back out, because a phone now opens one
+     step out and the picker fell to 32px tall with the rest of the header —
+     under the floor. Only the header row grows by the difference at 0.8. */
+  min-height: calc(40px / var(--lwz, 1));
   background: var(--panel);
   border: 1px solid var(--edge);
   border-radius: 3px;
@@ -336,6 +359,23 @@
   gap: 1px;
   justify-content: center;
   align-items: center;
+  /* Painted on its OWN compositor layer (owner's iPhone, 6 Sep 26 — "when I
+     click on rearrange, the eyes don't show on the counter grids until I click
+     it or when I move the page"). The same fault, and the same cure, as the
+     on-grid rearrange bar had on 5 Sep (deleted 6 Sep — the note where its
+     rule stood, below): tapping Rearrange on a phone
+     tears the `.mxband` overlay down and inserts this span into the sticky
+     balance cell in ONE commit, and iOS did not repaint the little frozen box
+     until a touch (the eye's :active) or a scroll invalidated it — the bar
+     itself, promoted on 5 Sep, painted at once in his screenshot, which is
+     what points this the same way. `translateZ(0)` moves nothing; it gives the
+     eye (or the ↺ on an archived row) a backing store of its own, painted when
+     the layer is created. The span exists only in Rearrange, so the cost is
+     ~a dozen tiny layers while an admin arranges and none at rest — NOT the
+     page-wide promotions performance.md lists as dead ends. The grip in the
+     name cell showed fine on his phone, so it is deliberately not promoted.
+     Reasoned from the code, not a device trace — owner-iPhone-gated. */
+  transform: translateZ(0);
 }
 .mx .counts .mrow-btn {
   appearance: none;
@@ -360,25 +400,117 @@
 .mx .counts .mrow-btn.eye {
   font-size: 10px;
 }
-.mx .counts .mrow-btn.eye.off {
-  border-style: dashed;
-  color: var(--muted, #8a94a6);
+.mx .counts .mrow-btn.restore {
+  font-size: 10px;
 }
-/* The reorder GRIP (owner, 28 Aug 26 — drag-and-drop replaced the ▲▼ arrows).
-   The same ⠿ the roster rows use, sized to the count row's narrow tools column
-   and sitting beside the hide (eye). */
-.mx .counts .mrow-tools .drag {
+
+/* THE ARCHIVE BAR under the manning rows (owner, 5 Sep 26 — "a row … called
+   Archive … out of view unless I bring it back", then "not have the grids on
+   the right, a merged 1 bar horizontally"; Rearrange only, see CountRows). The
+   category-heading recipe (`tr.grp td.grphd` / `td.grpfill` below): the label
+   rides a sticky td over the two frozen columns, pinned left as the year
+   scrolls, its zero-width `.grphd-in` overflowing across the ONE fill cell
+   that spans every day column — no per-day cells, so no grid lines. Same
+   background and rules as a heading so it reads as the block's own fold. The
+   archived rows under it keep the dimmed `.mrow-hidden` look. */
+.mx .counts tr.march td.marchhd {
+  position: sticky;
+  left: 0;
+  z-index: 3;
+  padding: 0;
+  overflow: visible;
+  background: var(--bg);
+  border-top: 1px solid var(--edge);
+  border-bottom: 1px solid var(--edge);
+  cursor: pointer;
+  /* `.mx td` gives every cell a 22px floor (the grid's uniform row); the hem
+     steps under it — the row is its content, ~17px, so it sits visibly lower
+     than the 22px count rows above it. Both cells, or the taller one wins. */
+  height: 16px;
+}
+.mx .counts tr.march td.marchhd:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.mx .counts tr.march td.marchfill {
+  background: var(--bg);
+  border-top: 1px solid var(--edge);
+  border-bottom: 1px solid var(--edge);
+  padding: 0;
+  height: 16px;
+}
+/* The bar's own scale — a HEM under the counters, not a heading (owner, 5 Sep
+   26: "make the archive section much smaller"). ~19px tall against the 22px
+   count rows, type one step below the row labels, all in the muted ink (6.4:1
+   on the band), the caret a notch smaller still. Zero-width + overflow for the
+   same reason as `.grphd-in`: the label must add no min-width to the frozen
+   callsign column. The whole 120px sticky cell stays the tap target. */
+.marchhd-in {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px 3px;
+  white-space: nowrap;
+  width: 0;
+  overflow: visible;
+  line-height: 1;
+}
+.marchhd-in .mcar {
+  font-size: 8px;
+  width: 6px;
+  flex: none;
+  color: var(--ink-3);
+}
+.marchhd-in .mname {
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  color: var(--ink-3);
+}
+.marchhd-in .mcount {
+  font-size: 9.5px;
+  font-weight: 600;
+  color: var(--ink-3);
+}
+/* The reorder GRIP (owner, 28 Aug 26 — drag-and-drop replaced the ▲▼ arrows;
+   moved to the LEFT of the counter NAME on 5 Sep 26 — "move the rearrange 6
+   dots to the left of the start of the titles"). The same ⠿ the roster rows
+   use. It now shares the frozen NAME cell with the label on one flex line, so
+   the whole row reads as the thing you grab and the hide (eye) is left centred
+   alone in the balance box. The label flexes and MAY clip in this transient
+   admin mode — the frozen-column clip gate runs in NORMAL view, where the grip
+   is not drawn and the cell is the bare button it has always been. Rearrange
+   only; an archived row draws no grip. */
+.mx .counts .who .mwho-row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  min-width: 0;
+}
+.mx .counts .who .mwho-row .mwho {
+  flex: 1 1 auto;
+  width: auto;
+  min-width: 0;
+}
+.mx .counts .who .drag {
+  flex: none;
   color: var(--edge-2);
   font-size: 12px;
   line-height: 1;
   cursor: grab;
-  padding: 0 1px;
   user-select: none;
   -webkit-user-select: none;
 }
-.mx .counts .mrow-tools .drag:active { cursor: grabbing; }
-/* A hidden row, shown dimmed WHILE arranging so an admin can bring it back. */
+.mx .counts .who .drag:active { cursor: grabbing; }
+/* A hidden row — the Archive's contents since 5 Sep 26 — drawn dimmed while an
+   admin arranges. The day cells fade by opacity; the FROZEN name cell must stay
+   opaque, because it is sticky and a see-through frozen cell lets the day
+   numbers scroll straight through the name (the phone drive caught "11OPSW"),
+   so only the text inside it fades. The balance cell keeps its ↺ fully legible. */
 .mx .counts tr.mrow-hidden td {
+  opacity: .45;
+}
+.mx .counts tr.mrow-hidden td.who {
+  opacity: 1;
+}
+.mx .counts tr.mrow-hidden td.who .mwho {
   opacity: .45;
 }
 .mx .counts tr.mrow-hidden td.bal {
@@ -915,13 +1047,22 @@
     letter-spacing: 0;
     font-size: 9.5px;
   }
+
+  /* In Rearrange the frozen name column widens by the grip's footprint (the
+     `.mx-arranging` rule above; owner, 6 Sep 26), so "Crew sets" and every
+     callsign keep the room they have at rest — the 5 Sep phone-only shrink of
+     the counter labels beside the grip (9px, hugged grip) is gone with it. */
+  .mx-outer.mx-arranging {
+    --who-w: 92px;
+  }
 }
 
 /* The month strip. A year-long war is ~13,600px wide, so this is not a
-   convenience — it is the only practical way to reach September. It wraps
-   rather than scrolling: twelve short labels fit two lines on a phone, and a
-   strip that itself needed scrolling would be a second navigation problem
-   sitting on top of the first. */
+   convenience — it is the only practical way to reach September. It never
+   scrolls (a strip that itself needed scrolling would be a second navigation
+   problem sitting on top of the first): one line on a desktop, and since 6 Sep
+   26 one line on a phone too — the buttons share the width equally there (the
+   `.mstripe` phone block further down). */
 .months {
   display: flex;
   flex-wrap: wrap;
@@ -1137,11 +1278,9 @@
 
 /* ---- Categorised roster (owner, 18 Aug 26) ------------------------------ */
 
-/* The Auto-sort / Rearrange controls in the card header. Wraps (owner,
-   19 Aug 26): on a phone all six buttons cannot sit on one line, and the
-   card clips its overflow — so +Counter and Reset counters fell off the
-   right edge with no way to reach them. Wrapping flows them onto as many
-   lines as the width needs; desktop still fits them on one. */
+/* The card-header buttons (Manning · ⚙ · ⇅ Rearrange · OIL; the sheets' own
+   buttons reuse the class). One line at every width since 5 Sep 26 — the
+   droppable words ride `.rtlbl` (chrome.css) and go on a phone. */
 .rtbtn {
   background: var(--panel-2);
   border: 1px solid var(--edge-2);
@@ -1161,30 +1300,21 @@
 /* The one ⚙ SETTINGS button (owner, 3 Sep 26) — icon only, the word dropped. */
 .rtbtn.gear { color: var(--accent); font-size: 15px; line-height: 1; padding: 5px 10px; }
 .rtbtn.gear:hover { border-color: var(--accent); }
-/* Pushes the OIL tracker to the far right of the top row, leaving Manning + ⚙ on
-   the left. On a phone the row wraps and this simply takes the slack on its line. */
-.card-spring { flex: 1 1 auto; }
+/* The grid ZOOM pair, − and +, after OIL in the top row at both widths (owner,
+   6 Sep 26). Narrow so the phone row still holds one line: Manning · ⚙ · ⇅ ·
+   OIL · − · + measured within 360px. A disabled end of the range dims. */
+.card-hd .lwzoom { display: inline-flex; gap: 6px; }
+.rtbtn.zoom { min-width: 30px; padding: 5px 7px; font-size: 13px; line-height: 1; text-align: center; }
+.rtbtn.zoom:disabled { opacity: .4; cursor: default; }
+.rtbtn.zoom:disabled:hover { border-color: var(--edge-2); }
 
-/* THE ON-GRID REARRANGE BAR (owner, 3 Sep 26 — rearrange happens on the grid).
-   A slim accent-tinted strip under the card header while an admin is rearranging;
-   Auto-sort and Done sit here, beside the grid they act on. NOT a sheet (a scrim
-   would swallow the drag). */
-.lw-rearrange-bar {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-  padding: 8px 14px;
-  background: rgba(59, 198, 232, .10);
-  border-bottom: 1px solid rgba(59, 198, 232, .45);
-}
-.lw-rearrange-bar .rb-lead {
-  flex: 1 1 auto;
-  font-size: 11.5px;
-  font-weight: 700;
-  letter-spacing: .02em;
-  color: var(--accent);
-}
+/* The on-grid REARRANGE BAR (3 Sep – 6 Sep 26: an accent strip under the header
+   with "Rearranging — drag people…", Auto-sort and Done) is GONE (owner, 6 Sep
+   26 — "delete this whole blue section"). The header's ⇅ toggle is the way in
+   and out. Its iPhone paint lesson survives on `.mx .counts .mrow-tools` above:
+   a control inserted into a sticky/clipped box by the same tap that rebuilds
+   the layer tree needs a backing store of its own (`translateZ(0)`). */
+
 
 /* Group heading. The label rides a sticky td spanning the two frozen columns
    (the .who/.bal technique), pinned to the left as the year scrolls; its text
@@ -1504,32 +1634,25 @@
   flex: 1 1 auto;
 }
 
-/* Two wrapped lines of buttons on a phone need a taller row. */
+/* ONE line of twelve months on a phone too (owner, 6 Sep 26 — "shift the
+   months to be fitted to 1 row instead, since the +- is moved to another
+   area"). The zoom pair that shared this strip moved to the counter block's
+   top row, so the strip has the whole width: the buttons split it EQUALLY
+   (`flex: 1 1 0`, no min-width) with a hair of gap, and the label tightens to
+   9px with almost no tracking — twelve 3-letter labels then fit 360px with air
+   (measured in the built app). The row falls back to its 44px desktop height
+   (the 72px two-line allowance is gone); `stripH` measures the same. */
 @media (max-width: 700px) {
-  .mx .mstripe td.mstick { height: 72px; }
-}
-
-/* The phone zoom pair rides the end of the month strip; a desktop has the
-   room not to need it, so it only exists under the phone breakpoint. */
-.mx .mstripe .lwzoom {
-  display: none;
-  gap: 4px;
-  margin-left: 6px;
-}
-
-.mx .mstripe .lwzoom .mjump {
-  min-width: 30px;
-  font-size: 12px;
-  line-height: 1;
-}
-
-.mx .mstripe .lwzoom .mjump:disabled {
-  opacity: .4;
-  cursor: default;
-}
-
-@media (max-width: 700px) {
-  .mx .mstripe .lwzoom { display: inline-flex; }
+  .mx .mstripe .mstrow { width: calc(100vw - 32px); }
+  .mx .mstripe .months { flex-wrap: nowrap; gap: 3px; }
+  .mx .mstripe .months .mjump {
+    flex: 1 1 0;
+    min-width: 0;
+    padding: 4px 0;
+    font-size: 9px;
+    letter-spacing: .02em;
+    text-align: center;
+  }
 }
 
 /* The month BRACKET over the dates (owner, 18 Aug 26): one open-topped box
@@ -1545,40 +1668,10 @@
   padding: 2px 4px;
 }
 
-/* The admin's GROUP EDITOR opener, in the corner cell above CS/Name (owner,
-   28 Aug 26 — he circled that empty space). Sized to the frozen pair's width
-   so it can never widen the callsign column; the label ellipses rather than
-   pushing the column out on a phone. */
-.mx .mxhead th.brakhd .grpedit {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  max-width: 100%;
-  padding: 3px 7px;
-  background: var(--panel-2);
-  border: 1px solid var(--edge);
-  border-radius: 7px;
-  color: var(--ink-2);
-  font-family: inherit;
-  font-size: 9.5px;
-  font-weight: 800;
-  letter-spacing: .06em;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  cursor: pointer;
-}
-.mx .mxhead th.brakhd .grpedit:hover {
-  border-color: rgba(59, 198, 232, .5);
-  color: var(--ink);
-}
-/* Rearranging on (owner, 3 Sep 26): the corner toggle lights up while the grid
-   is in rearrange mode, so it is obvious the handles are live and how to leave. */
-.mx .mxhead th.brakhd .grpedit.on {
-  background: rgba(59, 198, 232, .16);
-  border-color: var(--accent);
-  color: var(--accent);
-}
+/* The corner above CS/Name is EMPTY now — the ⠿ Rearrange toggle it used to
+   carry moved up to the card-header row (owner, 5 Sep 26 — "the rearrange button
+   goes after [settings]"). The frozen `.brakhd` cell itself stays (above), so the
+   frozen pair's width and where the month brackets start are unchanged. */
 
 .mx .mxhead th.brakm {
   padding: 4px 3px 0;

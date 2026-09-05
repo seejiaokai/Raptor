@@ -138,7 +138,7 @@ Balances are computed and on screen. Two parts of §Counters are not built:
   `src/leavewar/oilsync.test.ts`.
 - **RESOLVED 2 Sep 26 — the OIL TRACKER is both the grant sheet and the
   ledger view (owner ask).** `ui/OilTracker.tsx`, opened from the toolbar
-  button beside Auto-sort (both roles) or from the Cinch sheet's OIL BAL row.
+  button in the counter block's top row (both roles) or from the Cinch sheet's OIL BAL row.
   Everyone's OIL BAL in the roster's grouped order; one person's ledger
   newest-first — every credit (an earned FO/HO day with its derived reason
   `weekend duty`/`PH duty`, an admin's grant with its reason and approver,
