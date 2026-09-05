@@ -928,3 +928,33 @@ gate's. Keep verdict-bearing commands unpiped.
 **Suggested improvement:** In a pointer-up / drop teardown, sequence by data dependency, not by tidy-up instinct: do every measurement the drop needs (hit-test under the point, target geometry) FIRST, against the still-settled layout, and only then perform the teardown writes (remove the ghost, clear the body markers). When the ghost overlaps the drop point, exclude it from the hit-test rather than removing it early. Read-then-write, batched — the same rule that avoids layout thrash in a render loop applies to a one-shot handler.
 
 **Principle:** Interleaving DOM reads and writes forces a layout per read; a pointer-up handler that measures after it has begun tearing down pays for a layout it did not need. Order the handler so all reads precede all writes, even when the natural writing order (clean up first) reads the other way.
+
+### Observation 64: A recorded hypothesis is not a measurement — attribute a residual by switching suspects off before spending a page-wide change
+
+**Status:** OPEN
+**Date:** 2026-09-05
+**Session context:** The compositor-layer round on the desktop edit week (branch `claude/compositor-layers`). Numbered past 60–63, which live on three open branches (`claude/read-handoff-docs-mzr73u`, `claude/drop-delta-flags`, `claude/run-trace-hover`) and are not on main yet.
+**Skill:** New skill candidate: none — cross-cutting performance-measurement principle (sibling of Observations 54–57)
+**Type:** open-source
+**Phase/Area:** attribution / choosing the fix
+
+**Issue:** The handoff and the code comment both said the drag's floor was "the page's ~230 compositor layers; fewer layers is the only lever left — a page-wide CSS change with visual implications". That sentence was a hypothesis written at the end of a different round, never tested, and it steered the owner toward a scary page-wide change. A layer census with per-suspect toggling (inject one override, re-count) found the 261 layers came from three LOCAL rules — a `filter` on the faded palette pucks, an `opacity` group on the preview days, and z-indexed pucks painted above a sticky aside — and that the "repaint after a drop" residual was mis-attributed: the drop is JS-bound (the handler, then style/layout/paint/raster), while the layer count only governs the DRAG's per-move re-layerise. Six other plausible suspects (blur, containment, own layers, a static roster) measured zero or worse.
+
+**Suggested improvement:** When a doc records "the only lever left is X", treat it as an untested claim to verify first, cheaply: build a census of the thing X counts (here CDP `LayerTree` + `compositingReasons`), then toggle one suspect at a time in the live page and re-count, before designing any change. Attribute the residual to a mechanism (WHY each element is promoted), not to a number.
+
+**Principle:** A residual recorded as "structural, only lever X" at the end of one round is a hypothesis for the next; measure the mechanism behind the number before spending the expensive change the hypothesis implies — the cheap local cause is usually there.
+
+### Observation 65: A timing harness must assert the interaction actually happened, and a scripted press can land on sticky chrome
+
+**Status:** OPEN
+**Date:** 2026-09-05
+**Session context:** Same round — the 4× drag/drop timing harness (Playwright + CDP tracing).
+**Skill:** New skill candidate: none — cross-cutting measurement-validity principle (sibling of Observation 54)
+**Type:** open-source
+**Phase/Area:** measurement harness validity
+
+**Issue:** Two full before/after timing runs were labelled "drag" and "drop" but measured hover plus text selection: the pointer machine had never armed. Cause one: after scrolling the target seat into view, the first palette puck sat at y=64 under the sticky top bar, so the press landed on the bar. Cause two: a regex patch of the arm sequence silently failed to apply. Both were invisible in the numbers — the runs produced plausible medians — and were only caught because the census later showed `body.className === ""` mid-"drag". The corrected runs showed a real 24% per-move gain the wrong runs had hidden.
+
+**Suggested improvement:** Every interaction harness asserts the interaction's own evidence before recording a number (the ghost exists, the body marker is set, the drop landed), and aborts loudly otherwise. Pick a press target by `elementFromPoint` self-check, never by the first matching node, because sticky chrome can cover it after a scroll. Build harness variants by writing the file, not by regex-patching a sibling script.
+
+**Principle:** A measurement is only as valid as the proof that the thing measured happened; put that proof in the harness as an assertion, because a wrong run produces numbers just as plausible as a right one.

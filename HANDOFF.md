@@ -145,16 +145,38 @@ run whole against the final code:
   (`https://raptor-git-claude-read-handoff-docs-5fx50p-kai-e2f5.vercel.app`).
   The full ledger of every speed round is `docs/performance.md` Part 2; the
   guardrails any new change must follow are Part 1. **Still-open residuals**,
-  recorded not built, in order of size: the page repaint + compositing after a
-  drop (~160 ms at 4×, structural — the page's ~230 compositor layers; cutting
-  them is the only lever left for a smoother drag, a page-wide CSS change with
-  visual implications); the seven day strings (60–135 ms — `availHTML`'s
-  per-wave availability sort is the fat part and reads the availability oracle,
-  so any cache there is engine-adjacent); the `body.dnd` decorations coming off
+  recorded not built, in order of size: the seven day strings (60–135 ms —
+  `availHTML`'s per-wave availability sort is the fat part and reads the
+  availability oracle, so any cache there is engine-adjacent); the DROP is
+  JS-bound (5 Sep 26 trace, ledger 22: ~210 ms of JS inside the pointer-up at
+  4× — validate + the block swap + parse — then ~40 style, ~45 layout, ~66
+  paint, ~72 raster; the earlier "~160 ms repaint + compositing" reading was
+  the DRAG's per-move re-layerise, halved by the 5 Sep layer cut below); plain
+  mouse movement over the week repaints on every hover boundary crossed
+  (`.form:hover`'s 1.8% white tint and the seat hover outline — ~17 ms a
+  crossing at 4×, bisected by nesting depth; dropping the tint is the owner's
+  call); what a drag move still costs after the cut (~16 ms layerize for the
+  105 layers left, 35 of them the roster's own sticky heads and pucks, ~9 ms
+  hit-test, ~18 ms pointer handlers); the `body.dnd` decorations coming off
   (~60 ms; layout-neutral only with a visible wording change — owner's call);
   the two `validate` calls (~45 ms, engine — not touched). Every dead end
   measured along the way is in `docs/performance.md` §Dead ends — don't retry
   them without new measurement.
+- **The desktop week's compositor layers (5 Sep 26)** — branch
+  `claude/compositor-layers`, its own PR, awaiting the owner's "merge live".
+  261 → 105 layers on the desktop edit week (the phone's 9 untouched) by three
+  local CSS rules, each found by switching one suspect off in the live page
+  and re-counting: the palette's faded pucks desaturate by a saturation blend
+  instead of `filter:saturate()` (59 layers); the next-week preview is dimmed
+  by a page-background veil instead of `opacity:.5` (47); the roster aside
+  gets `z-index:5` so the week's z-indexed pucks paint below it instead of
+  being assumed to overlap its sticky scroll range (44). Armed drag at 4×, 7
+  paired trials: per-move 68 → 52 ms median, layerize 30 → 16 ms a move; the
+  drop unchanged (JS-bound, above). For the owner's eyes on the preview: the
+  faded palette pucks' little letter chips are a touch more vivid (the filter
+  used to wash them too); the preview column reads the same (≤0.1% of pixels
+  differ). Contracts: `ui-contracts.md` §Compositor layers; ledger 22; pinned
+  by `ui/layers.test.ts`.
 - **iOS is untestable here.** This container ships no WebKit. The Leave War
   column window / placeholders and every contenteditable or touch-fling change
   are verified on the owner's iPhone against the preview; if the grid ever

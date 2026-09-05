@@ -168,6 +168,17 @@ Grouped by area. Each is the short rule; the source has the full story.
   machine in `drag.ts`; `body.dnd` is added one tick after dragstart, never
   synchronously.
 
+- **No `filter` on a palette puck, no `opacity` on a preview day, and the
+  roster aside stacks above the week's z-indexed pucks** (`z-index:5`) — the
+  three rules that hold the desktop edit week at ~105 compositor layers instead
+  of 261 (5 Sep 26, ledger 22). A filtered element and a translucent group can
+  never share a layer with what they overlap, and everything painted above a
+  sticky aside is assumed to overlap its whole scroll range. Pinned
+  `ui/layers.test.ts`.
+- **Every hover boundary crossed on the week repaints and re-layerises the page
+  (~17 ms at 4×)** — `.form:hover`'s tint and the seat hover outline. A new
+  hover affordance on the dense surfaces is a per-crossing cost; measure it.
+
 ### E. Leave War (the heavy grid — ~28k nodes)
 - **Kept alive between visits, not unmounted** — leaving hides it with
   `content-visibility:hidden` (re-shows in 1–2 ms vs a 411–863 ms relayout from
@@ -235,9 +246,20 @@ calling it done:
   `backface-visibility`/no-decorations/non-hit-testable ghost/`position:absolute`
   all equal or worse; toggling ghost `pointer-events` around one hit-test 22 ms
   worse. A "translateZ unlocked the fast path" claim was a broken-experiment
-  artefact — retracted. The residual is the page's ~230 compositor layers; fewer
-  layers is the only lever left (page-wide CSS change, visual implications,
-  proposed not done).
+  artefact — retracted. The ~230-layer residual was cut to 105 on 5 Sep by
+  three local rules, not a page-wide change (ledger 22); the drop itself turned
+  out JS-bound, not paint-bound.
+- **More layers, not fewer** (5 Sep, layer census by switching one suspect off
+  in the live page): `will-change:transform` on every `.day`, on the week
+  strip, or on the roster — 261 → 537 (every descendant overlapping a
+  composited sibling then needs a layer of its own); `position:static` on the
+  roster aside — 442. **No change at all:** `backdrop-filter` off the week-nav
+  and hscroll (−0), the top bar static (−2), the roster's inner scroller
+  `overflow:visible`, `contain:paint` / `isolation:isolate` on the preview
+  or the roster, `overflow:visible` on the preview or the days, `.rpuck`
+  static. The three that worked are ledger 22. Per-move cost with the pointer
+  unable to reach the week: layerize 9 ms/20 moves vs 200 — the hover
+  boundary, not the layer count, is what plain mouse movement pays for.
 - **Paint-isolation on the edit week** — `.day`/`.dsec`/`.day>*` as
   `position:relative`, `contain:paint`, `contain:layout paint`,
   `isolation:isolate`, `will-change:transform`, week-as-own-layer — all equal or
@@ -419,6 +441,32 @@ through sourcemaps for the JS split, paired A/B runs.
     slowest gate. · `deploy.yml` runs the four gates as six parallel jobs; the
     Leave War unit leg sharded 2×. No app code. · 17m26s → 8m28s. · `deploy.yml`,
     `playwright.config.ts`.
+
+22. **Fewer compositor layers on the desktop edit week** (5 Sep). Dragging a
+    puck on the desktop is smoother: the page re-layerises on every move, and
+    it now has 105 layers to decide instead of 261 (the phone's 9 untouched;
+    21 is the drop-delta round, PR #359). · Three CSS rules, each found by
+    switching one suspect off in the live page and re-counting (a `LayerTree`
+    census — an attributing run, never timed): the palette's faded pucks
+    desaturate with a translucent grey in `background-blend-mode:saturation`
+    instead of `filter:saturate()` — a filtered element can never be squashed
+    into a shared layer (59 layers); the next-week preview is dimmed by a
+    page-background `::after` veil instead of `opacity:.5` — a translucent
+    group cannot share a layer either (47); the roster aside gets `z-index:5`
+    so the week's z-indexed pucks paint below it instead of being assumed to
+    overlap its sticky scroll range (44). · *Invariant:* no `filter` on a
+    palette puck, no `opacity` on a preview day, the aside above the strip's
+    z-indexed pucks (`ui/layers.test.ts`). · Armed drag at 4×, 7 paired
+    trials, category sums from a plain `devtools.timeline` run (a paired
+    index, not wall-clock): drag per-move 68.4 → 51.9 ms median (Layerize
+    30.5 → 15.8 ms a move; raw runs 58–81 vs 46–55); the drop 836 → 820 ms —
+    unchanged, it is JS-bound (~210 ms of handler inside the pointer-up, then
+    ~40 style, ~45 layout, ~66 paint, ~72 raster, ~56 layerize); plain hover
+    per-move 17.3 → 17.7 — unchanged, that is the hover-boundary cost
+    (bisected by nesting depth: cheap until the pointer can reach `.form`).
+    Visual delta: the faded pucks' letter chips a touch more vivid (the filter
+    washed them too); the preview ≤0.1% of pixels. · `scheduler.css` (three
+    commented rules), `ui/layers.test.ts`.
 
 ---
 
