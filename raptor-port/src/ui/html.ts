@@ -8,7 +8,7 @@ import { slotVal, txtGet, TIME_TXT, whoArr, rowCrew, rowRef, inpKey } from '../e
 /* RANK left with the focus-scoped trace: ranking the CR chip against the day's
    own worst is traceLeads' job now, in the engine, so both the chip and the
    click that follows it read one test */
-import { WARN, sevOf, chipOf, dashOf, traceOf, traceLeads, traceIx, tracesOn, chipText, wlbl, WCODE, SEVWORD, CHIP_LABEL } from '../engine/validate'
+import { WARN, sevOf, chipOf, dashOf, traceOf, traceLeads, traceChip, traceIx, tracesOn, chipText, wlbl, WCODE, SEVWORD, CHIP_LABEL, ordinal } from '../engine/validate'
 import { availByWave, personBusy, dayOff, dayEngaged, personWarns } from '../engine/avail'
 import { SCHED, alAttr, dayApproved, dayCurVer, dayPendCount, alColor, signOf, signMissing, signPeople, SIGN_ROLES, daySigned, nextAL, dowShort, alDays, daySnapOf, dayVersions, verLabel } from '../engine/publish'
 import { dayDrafts, curDraftId, isDraftVer, draftVerLabel } from '../engine/drafts'
@@ -55,7 +55,7 @@ const traceHit=(di:any,id:any)=>PV?null:traceOf(di,id)
    traceLeads applies exactly that test, and interactions.ts routes the click
    by the same call, so the chip and the warning it opens cannot disagree. */
 const chip=(di:any,id:any)=>{ if(PV)return null
-  return traceLeads(di,id)?'CR':chipOf(di,id) }
+  const t=traceLeads(di,id); return t?traceChip(t):chipOf(di,id) }
 const dsh=(di:any,id:any)=>PV?false:dashOf(di,id)
 /* the ONE place the snapshot may stand in for the live model. finally is not
    optional: a throw mid-build with the swap live would leave the old day
@@ -241,7 +241,11 @@ export function puck(id:any,warn:any,sm:any,flag:any,dash?:any,trace?:any){
      for it. Any other flag still owns the box: the trace is additive, and
      boxred is a box-shadow while boxdot is an outline, so both can be worn at
      once by a man who has a conflict of his own AND breaks tomorrow's rest. */
-  const trFlag=!!trace&&flag==='CR';       // the printed flag came off the trace
+  /* …and since 5 Sep 26 the RUN trace too: the '7' on a puck that is a day
+     of a run breaking later in the week. Each flag is owned by the trace
+     only when the trace carries THAT kind, so a man's own CR breach beside
+     a run trace keeps its solid box. */
+  const trFlag=!!trace&&((flag==='CR'&&trace.leaveBy!=null)||(flag==='RUN'&&!!trace.run));       // the printed flag came off the trace
   /* The box follows the SEVERITY the rule was raised at (owner, 10 Aug 26).
      NB and SB used to sit here, so a man whose brief was merely eaten wore a
      red box over an amber ring — the puck said "warning", the checks list
@@ -261,7 +265,10 @@ export function puck(id:any,warn:any,sm:any,flag:any,dash?:any,trace?:any){
      chip carries on the day of the breach itself. Only when the trace OWNS the
      flag: where a louder chip won it, that chip keeps its own caption and the
      trace text rides on the puck title below instead. */
-  const trLbl=trace?`Crew rest — ${trace.dow||'the next day'} is broken by this day: he had to leave by ${trace.leaveBy}`:'';
+  const trLbl=!trace?'':[
+    trace.leaveBy!=null?`Crew rest — ${trace.dow||'the next day'} is broken by this day: he had to leave by ${trace.leaveBy}`:'',
+    trace.run?`Consecutive days — ${trace.run.dow||'next Monday'} is his ${ordinal(trace.run.n)} day in a row: a break day is due before then`:'',
+  ].filter(Boolean).join(' · ');
   const lchip=flag?`<span class="lchip l-${flag.toLowerCase()}" title="${esc(trFlag?trLbl:wlbl(CHIP_LABEL[flag]||flag))}">${chipText(flag)}</span>`:'';
   /* esc() the CALLSIGN in both places, as the sentinel branch above already
      does. A callsign is free text — renameCallsign (slots.ts) only trims and
@@ -546,18 +553,37 @@ export function storesView(o:any){
 function dayTraceHTML(di:any,pf:any){
   if(PV)return '';
   if(!pf&&!DWOPEN.has(di))return '';
+  /* one trace object can carry TWO rows since 5 Sep 26: the crew-rest
+     fields (top level) and the run trace (`run`) — each resolves its own
+     warning on its own breach day (tdi), so they are split here */
   const rows=tracesOn(di)
     .filter(({id}:any)=>!pf||id===pf)
-    .map(({id,t}:any)=>({id,t,ix:t.di==null?-1:traceIx(t,id)}))
-    /* t.di==null is the FORWARD trace across the week edge (validate.ts's
+    .flatMap(({id,t}:any)=>[
+      ...(t.leaveBy!=null?[{id,t,kind:'CR',tdi:t.di,ix:t.di==null?-1:traceIx(t,id)}]:[]),
+      ...(t.run?[{id,t,kind:'RUN',tdi:t.run.di,ix:t.run.di==null?-1:traceIx(t,id,'RUN')}]:[]),
+    ])
+    /* tdi==null is the FORWARD trace across the week edge (validate.ts's
        phantom next-Monday pass): the breach it points at lives on next
        week's Monday, a day this week's warning list cannot address — so
        there is no warning index to resolve and none is required. Every
        other trace still drops out when its warning no longer resolves. */
-    .filter((r:any)=>r.ix>=0||r.t.di==null);
+    .filter((r:any)=>r.ix>=0||r.tdi==null);
   if(!rows.length)return '';
-  return `<div class="dwtrace">`+rows.map(({id,t,ix}:any)=>{
+  return `<div class="dwtrace">`+rows.map(({id,t,kind,tdi,ix}:any)=>{
     const cs=PEOPLE[id]?PEOPLE[id].cs:id;
+    /* THE RUN ROW (owner, 5 Sep 26): the same box crew rest draws, saying
+       which day the run breaks on. Nothing to pan to — the cause is the
+       whole run, not one sortie — so no wpd/wpk; the jump still focuses the
+       breach on its own day, or is inert for next Monday. */
+    if(kind==='RUN'){
+      const r=t.run;
+      const onR=r.di!=null&&WFOCUS&&WFOCUS.di===r.di&&WFOCUS.ix===ix;
+      const addrR=r.di!=null?` data-wdi="${r.di}" data-wix="${ix}" title="Jump to the day the run breaks"`
+                            :` title="Next week's Monday — load it to see the breach itself"`;
+      return `<div class="witem hard wtr${onR?' on':''}"${addrR}>`
+        +`<span class="wbar"></span><span><span class="wcode">Breaks ${esc(r.dow||'next Monday')}</span>`
+        +`<b>${esc(cs)}</b> — his ${ordinal(r.n)} day in a row falls on ${esc(r.dow||'next Monday')}; a break day before then clears it.</span></div>`;
+    }
     /* THE VIEW STAYS HERE (owner, from the deployed site, 7 Aug 26). The row
        still addresses the NEXT day's warning — that breach is what gets focused,
        and his pucks there light — but the pan lands on the leg on THIS day that
@@ -571,7 +597,7 @@ function dayTraceHTML(di:any,pf:any){
     const pan=t.fromKey?` data-wpd="${di}" data-wpk="${esc(t.fromKey)}"`:'';
     /* the active mark keys on the address the row CARRIES — the next day's
        warning — because that is what a click on it focuses */
-    const on=t.di!=null&&WFOCUS&&WFOCUS.di===t.di&&WFOCUS.ix===ix;
+    const on=tdi!=null&&WFOCUS&&WFOCUS.di===tdi&&WFOCUS.ix===ix;
     /* the forward (cross-week) trace carries no data-wdi: there is no
        warning on THIS week to focus — interactions.ts's `.witem[data-wdi]`
        branch simply never matches it, so a tap is inert rather than a

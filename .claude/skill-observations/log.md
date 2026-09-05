@@ -929,6 +929,136 @@ gate's. Keep verdict-bearing commands unpiped.
 
 **Principle:** Interleaving DOM reads and writes forces a layout per read; a pointer-up handler that measures after it has begun tearing down pays for a layout it did not need. Order the handler so all reads precede all writes, even when the natural writing order (clean up first) reads the other way.
 
+### Observation 60: The handoff asserts a PR's merge state, which goes stale the moment the owner merges
+
+**Status:** OPEN
+**Date:** 2026-09-05
+**Session context:** A fresh session opened with "Read handoff.md". The In-flight section stated PR #356 was "NOT merged"; a one-line fetch of origin/main showed it had merged ~1 hour after the handoff commit, so the first thing the new session read was wrong.
+**Skill:** session-handoff
+**Type:** open-source
+**Phase/Area:** The HANDOFF.md "In flight" section — how a shipped-but-unmerged branch is recorded
+
+**Issue:** The handoff already has a rule for gate counts ("restate a count only from a run you watched") because a stale count misled twice. Merge state has the same failure shape: it is external state the owner changes between sessions, and writing it as a fact invites the next session to plan around a branch that no longer exists as unmerged work. This session caught it only because it checked main before reading further.
+
+**Suggested improvement:** In the session-handoff skill's HANDOFF-truth check, add a rule: record a PR as "shipped to branch X, PR #N — check its state before acting; the owner merges on an explicit go", never as "NOT merged". Pair it with a one-line session-start step: fetch main and compare against the branch the handoff names before trusting any In-flight bullet.
+
+**Principle:** A handoff should assert only what the writing session controls. Anything a human changes between sessions (merge state, deploy state, a review's verdict) is recorded as "where to look and how to check", not as a fact.
+
+### Observation 61: Diagnosing a phone-only scroll bug from a screen recording, with no device and no WebKit in the container
+
+**Status:** OPEN
+**Date:** 2026-09-05
+**Session context:** The owner uploaded a 9-second iPhone screen recording of the Leave War grid misbehaving (pinch out, pinch in, swipe up while a sideways fling was still going). The container has no video tools, no WebKit and no iOS device.
+**Skill:** New skill candidate: video-bug-triage (or a section in systematic-debugging)
+**Type:** open-source
+**Phase/Area:** Reproduce / observe — the step before any hypothesis
+
+**Issue:** Three things worked and none is written down anywhere: (1) `pip install imageio-ffmpeg` gives a working ffmpeg binary in a container that ships none; `-vf "fps=6,scale=560:-1,crop=560:900:0:0,tile=6x3"` turns a clip into contact sheets the Read tool can view, and a second pass at a higher rate over the 3–4 s of interest is what actually showed the mechanism. (2) The decisive tell was NOT in the app at all: Safari's URL bar collapses only when the PAGE scrolls, so a bar that stayed tall while content moved proved the movement was inside a nested scroller — a non-sticky title that never moved said the same. Two independent chrome-level tells beat any amount of squinting at app pixels. (3) With no device to test on, the browser engine's source was the next best evidence: fetching WebKit's iOS scrolling delegate and RenderLayerScrollableArea from GitHub answered "what does overflow-y:auto vs hidden do to the native scroll view" exactly (reachableTotalContentsSize clamps only when the style scrolls that axis), which turned a guess into a one-line fix with a stated mechanism.
+
+**Suggested improvement:** A short procedure: extract frames → find the frames around the failure → read the platform chrome for what actually scrolled → only then read app code; and when the target platform is unreachable, read the engine's source for the exact behaviour rather than reasoning from memory. Record the ffmpeg recipe and the "platform chrome as instrument" idea.
+
+**Principle:** A recording is data, not an anecdote — turn it into frames and read the platform's own indicators (browser chrome, status bars) before the app's pixels, and when the failing platform cannot be run, its source code is a better oracle than recollection.
+### Observation 62: Counting calls into a module whose exports are reassigned `let`s — mock with a Proxy, never a spread
+
+**Status:** OPEN
+**Date:** 2026-09-05
+**Session context:** Raptor — the drop-delta PR (one `validate()` per drop). A test had to prove a drop calls the rules engine exactly once. `vi.spyOn` on an ESM namespace is unreliable across vitest majors, and the obvious `vi.mock(path, async orig => ({ ...await orig(), validate: counted }))` silently BREAKS the app under test: the module's `WARN`/`REST`/`EVD` are `export let`s reassigned by every `validate()`, and a spread copies their values once, freezing every live binding at mock time. Numbered 62, not 60: 60 and 61 were appended on the sibling branch of PR #358 in this same session, so this branch's log tops at 59 while the true counter is 61 — parallel branches are parallel writers.
+**Skill:** test-driven-development (a "counting a module call" recipe); task-observer (branch-parallel numbering)
+**Type:** open-source
+**Phase/Area:** writing the test that pins a call-count invariant
+
+**Issue:** The reliable shape is `vi.mock(path, async orig => new Proxy(await orig(), { get(t,k) { return k === 'validate' ? counted : t[k] } }))` — every other export is read THROUGH the namespace at access time, so reassigned bindings stay live, and only the one function is wrapped. Kept in its own test file so the counting mock never touches the sibling suite's module graph. Second, smaller lesson: the observation-log counter is per branch — read the max on the branch AND remember what sibling branches of the same session appended, or number past both.
+
+**Suggested improvement:** Add a short recipe to the testing guidance: "to count calls into a module export, mock the module with a Proxy over the real namespace, wrap only the target, never spread the namespace (a spread freezes reassigned `let` exports)". For task-observer's numbering discipline: when a session writes the log on more than one branch, number past the highest across the session's branches and say so in the entry.
+
+**Principle:** A module namespace is a set of live bindings, not a bag of values; any mock built by copying it turns bindings into snapshots. Wrap the namespace, don't copy it. And a counter that lives in a file lives per branch — a parallel branch is a parallel writer even inside one session.
+
+### Observation 63: Pick test fixtures by absence from the seed, and read both shapes of a "same" record before cloning one
+
+**Status:** OPEN
+**Date:** 2026-09-05
+**Session context:** Raptor — the run-trace + pre-drop query PR. Eleven of twenty new engine/UI tests failed on first run for two reasons that were not bugs in the feature: (1) the fixture person copied from an older test flies on weekdays in the seed, so a ground row on him raised a conflict whose chip outranked the run label the test was looking for; (2) a flying leg is carried by TWO per-day lists in two shapes (`fly` keyed by `key`, `events` keyed by `slot`), and the probe cloned from one list using the other's field name and silently found no sibling.
+**Skill:** test-driven-development (fixture selection); systematic-debugging (a 30-second scratch test beat reasoning about it)
+**Type:** open-source
+**Phase/Area:** writing tests against a rich seed; cloning records into a probe
+
+**Issue:** Both failures were resolved by one throwaway test that wrote three facts to a file: who in the seed has no events all week (two names), the exact shape of a leg in each list, and the probe's result. Console output was swallowed by the runner's config, so the scratch test wrote a file instead. A fixture chosen by "someone the older test used" inherited that test's tolerance (it only counted warnings) but not this one's need (a specific chip must lead).
+
+**Suggested improvement:** Testing guidance: when a test asserts WHICH flag/label leads, pick the fixture by computed absence from the seed (query the engine for ids with no events), not by precedent from another test; state the reason in a comment. Debugging guidance: when a lookup over rich data returns nothing, print one real record from each list before reasoning about the predicate — the field name is the usual culprit. Note the runner may swallow console output; write to a file.
+
+**Principle:** A fixture inherited from another test carries that test's assumptions, not yours. And when the same fact lives in two records, read one of each before writing code that treats them as one.
+### Observation 64: A recorded hypothesis is not a measurement — attribute a residual by switching suspects off before spending a page-wide change
+
+**Status:** OPEN
+**Date:** 2026-09-05
+**Session context:** The compositor-layer round on the desktop edit week (branch `claude/compositor-layers`). Numbered past 60–63, which live on three open branches (`claude/read-handoff-docs-mzr73u`, `claude/drop-delta-flags`, `claude/run-trace-hover`) and are not on main yet.
+**Skill:** New skill candidate: none — cross-cutting performance-measurement principle (sibling of Observations 54–57)
+**Type:** open-source
+**Phase/Area:** attribution / choosing the fix
+
+**Issue:** The handoff and the code comment both said the drag's floor was "the page's ~230 compositor layers; fewer layers is the only lever left — a page-wide CSS change with visual implications". That sentence was a hypothesis written at the end of a different round, never tested, and it steered the owner toward a scary page-wide change. A layer census with per-suspect toggling (inject one override, re-count) found the 261 layers came from three LOCAL rules — a `filter` on the faded palette pucks, an `opacity` group on the preview days, and z-indexed pucks painted above a sticky aside — and that the "repaint after a drop" residual was mis-attributed: the drop is JS-bound (the handler, then style/layout/paint/raster), while the layer count only governs the DRAG's per-move re-layerise. Six other plausible suspects (blur, containment, own layers, a static roster) measured zero or worse.
+
+**Suggested improvement:** When a doc records "the only lever left is X", treat it as an untested claim to verify first, cheaply: build a census of the thing X counts (here CDP `LayerTree` + `compositingReasons`), then toggle one suspect at a time in the live page and re-count, before designing any change. Attribute the residual to a mechanism (WHY each element is promoted), not to a number.
+
+**Principle:** A residual recorded as "structural, only lever X" at the end of one round is a hypothesis for the next; measure the mechanism behind the number before spending the expensive change the hypothesis implies — the cheap local cause is usually there.
+
+### Observation 65: A timing harness must assert the interaction actually happened, and a scripted press can land on sticky chrome
+
+**Status:** OPEN
+**Date:** 2026-09-05
+**Session context:** Same round — the 4× drag/drop timing harness (Playwright + CDP tracing).
+**Skill:** New skill candidate: none — cross-cutting measurement-validity principle (sibling of Observation 54)
+**Type:** open-source
+**Phase/Area:** measurement harness validity
+
+**Issue:** Two full before/after timing runs were labelled "drag" and "drop" but measured hover plus text selection: the pointer machine had never armed. Cause one: after scrolling the target seat into view, the first palette puck sat at y=64 under the sticky top bar, so the press landed on the bar. Cause two: a regex patch of the arm sequence silently failed to apply. Both were invisible in the numbers — the runs produced plausible medians — and were only caught because the census later showed `body.className === ""` mid-"drag". The corrected runs showed a real 24% per-move gain the wrong runs had hidden.
+
+**Suggested improvement:** Every interaction harness asserts the interaction's own evidence before recording a number (the ghost exists, the body marker is set, the drop landed), and aborts loudly otherwise. Pick a press target by `elementFromPoint` self-check, never by the first matching node, because sticky chrome can cover it after a scroll. Build harness variants by writing the file, not by regex-patching a sibling script.
+
+**Principle:** A measurement is only as valid as the proof that the thing measured happened; put that proof in the harness as an assertion, because a wrong run produces numbers just as plausible as a right one.
+
+### Observation 66: A process-kill pattern in a command chain matches the chain's own shell — put it in a script file written in a separate call
+
+**Status:** OPEN
+**Date:** 2026-09-05
+**Session context:** The compositor-layer round — swapping the preview server between the before and after bundles inside measurement chains.
+**Skill:** New skill candidate: none — cross-cutting tooling principle for agent shells
+**Type:** open-source
+**Phase/Area:** measurement harness / process management
+
+**Issue:** Five separate command chains died with exit 144 (SIGTERM'd by their own `pkill -f`). Every variant failed for the same reason: the pattern text was somewhere in the invoking command line — as the literal, as a later command that starts the same server, inside a heredoc that wrote a helper script, or as an argument to a helper. The shell running the chain carries the whole chain in its own command line, so `pkill -f <pattern>` finds it. Each death silently dropped the work queued after it (a build, a census, a timing run), and the first two were only noticed because a later result was missing.
+
+**Suggested improvement:** Never put a `pkill -f` / `pgrep -f` pattern in the same command line as anything else, and never in a command line that also mentions the target (starting it, echoing it, writing it into a file). Write the kill (and the start) into a script file in one call, then invoke that script by name in later calls — the invoking line then contains only the script's path. Prefer killing by port or by PID file over pattern matching where the tool allows it.
+
+**Principle:** A pattern-matching kill sees the shell that issued it; separate the text of the pattern from the command that uses it, or the chain kills itself and the loss is silent.
+### Observation 67: Read a phone screen recording by its frame cadence — a decaying fling, a held finger, and a one-frame jump are three different signatures — and know which bug classes the desktop browser can never reproduce
+
+**Status:** OPEN
+**Date:** 2026-09-05
+**Session context:** The owner's iPhone recording of the phone week carousel resting off its snap point ("the pages don't fit") on the #361 preview. No WebKit in the container. Numbered 67 on this branch (`claude/phone-snap-hold`); 60–66 are on three other open branches.
+**Skill:** New skill candidate: none — cross-cutting evidence-reading principle for device-only bugs (sibling of Observations 60–61, which read a recording frame by frame for a scroll bug)
+**Type:** open-source
+**Phase/Area:** root-cause investigation without the device
+
+**Issue:** The recording could not be played here, so it was decoded to 10 fps frames and each frame diffed against the previous one. That cadence separated three things a still frame cannot: a released fling (pixel change decaying smoothly over ~1 s, ending flush on a snap point — every fling in the clip did), a finger held down (zero change, then motion at constant speed — those "rests" were not bugs), and a one-frame jump (a programmatic write or a repaint — the 40 px vertical shift mid-rest, ~110 ms after the strip stopped). Only the last matched the code path that fires ~110 ms after scroll events stop (the palette's day-follow → notify → the week's B54 hold writing `scrollLeft` back to itself). Chromium then could not reproduce the resting-off-snap at all, and the reason is structural, not timing: Chromium re-snaps after a programmatic scroll (spec), iOS Safari does not — so a "write the current position back" is harmless on the desk and fatal on the phone.
+
+**Suggested improvement:** For a device-only visual bug with a recording: decode at ≥10 fps, diff consecutive frames, and classify every motion run by its shape (decay / constant / single frame) before deciding what is a rest and what is a gesture; then match the single-frame events to timers in the code. Keep a short list of browser-engine asymmetries that make a class of bugs unreproducible here (WebKit: no re-snap after programmatic scroll, row reconciliation in tables, touch-fling momentum) so the investigation goes to the device gate with a hypothesis and a fix preview instead of a "cannot reproduce".
+
+**Principle:** A recording's frame-to-frame cadence is evidence about what the code was doing; classify motion by its shape before trusting any single frame, and when the desktop engine cannot reproduce a device bug, look for an engine asymmetry rather than a timing one.
+### Observation 68: Before blaming the device's engine for a device-only blank, enumerate the timers that fire in that window — a timer train is visible in any browser's trace
+
+**Status:** OPEN
+**Date:** 2026-09-05
+**Session context:** The owner's iPhone recording of a black screen for ~0.8 s after a fast fling on the phone week (branch `claude/fresh-flash-paint`). Numbered 68 on this branch; 60–67 are on other open branches.
+**Skill:** New skill candidate: none — cross-cutting attribution principle (sibling of Observations 64 and 67)
+**Type:** open-source
+**Phase/Area:** root-cause investigation without the device
+
+**Issue:** The first theory was engine-specific and true-but-secondary: WebKit gives a composited scroller paint-ahead only on the axis it scrolls, so a vertical fling over a sideways strip exposes unpainted tiles. That led toward a layout change (a two-axis strip) with a real UX cost. A Chromium trace of the same gesture at 4× then showed a train of 60–165 ms main-thread tasks starting ~2 s after the last input; wrapping `setTimeout` from page start (logging every long-delay install with its stack, and every fire) named them in one run: the fresh-add flash's two timers per accepted input, each firing a full repaint. The fix was three lines and portable; the engine theory would have shipped a layout change and left the train in place.
+
+**Suggested improvement:** For any "blank / frozen for N ms right after input stops" symptom, before reasoning about the renderer: (1) trace the same gesture in the desktop browser and list tasks > 40 ms in the window after the input; (2) if they are TimerFire tasks, wrap the page's timers from load (install stack + fire time + duration) — the trace's own TimerInstall stacks need an extra category and the ids of early timers point at page-load installers; (3) only then bring in engine asymmetries for what remains. Prefer the portable explanation while one is still possible.
+
+**Principle:** A main-thread task train is visible in every browser; an engine-specific theory is only earned once the portable causes are exhausted, because the portable fix is usually the small one and the engine fix is usually the layout change.
 ### Observation 69: "Hidden until ready" costs a paint on reveal — cover a live element instead of hiding it when it must be ready the instant the cover comes off
 
 **Status:** OPEN
@@ -943,6 +1073,21 @@ gate's. Keep verdict-bearing commands unpiped.
 **Suggested improvement:** When an element must be unseen during a transition but visible the instant the transition ends, prefer COVERING it (an overlay, the transition's own snapshots) plus `pointer-events:none` over `visibility:hidden` / `display:none`, so the browser pre-paints it under the cover; and let the cover outlive the reveal by a frame or two over identical pixels. Reserve `visibility:hidden` for elements whose readiness on reveal does not matter.
 
 **Principle:** Hiding an element also defers its paint; if it has to be ready the moment it reappears, cover it instead — a covered element paints, a hidden one waits.
+
+### Observation 70: A test that asserts a transient of a background fill loop is a coin toss
+
+**Status:** OPEN
+**Date:** 2026-09-05
+**Session context:** PR #364's CI went red on the Leave War desktop test "a month button works from wherever the grid already is", the one check that had been failing ~1 in 2 locally for two days and was recorded as "intermittent" on three PR bodies instead of root-caused.
+**Skill:** New skill candidate: flake triage (or the repo's steward/babysit posture)
+**Type:** open-source
+**Phase/Area:** CI red → "flake" judgement
+
+**Issue:** The assertion (September's header gone after a SEP → MAR jump) was true on the phone, where the window rolls with the view, and only *sometimes* true on the desktop, where a background loop draws toward the whole year one idle beat at a time: if enough beats landed between the two clicks, March was already drawn, the jump only scrolled, and September rightly stayed. The test was written in the same PR that introduced the loop, so it asserted a state the design itself made transient. It was labelled "intermittent, CI green" on three PRs before anyone read the failing line against the loop.
+
+**Suggested improvement:** When a check fails on some runs and not others, the first question is "what background process could change the asserted state between the action and the assertion?" — not "is the runner slow?". Read the assertion against every loop, timer or idle callback that touches the same state; a claim that depends on how many beats fit between two steps is not a claim. Fix the assertion's scope (gate it to where it is deterministic, or assert the invariant the loop preserves), never add a retry or a longer timeout.
+
+**Principle:** A flaky test is a test asserting something the system does not promise. Find the promise the test meant to check and assert that; the flake is the diagnosis, not the disease.
 
 ### Observation 71: A fix that removes one symptom can unmask its twin — re-read the recording, not the diagnosis
 

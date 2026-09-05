@@ -8,6 +8,7 @@ import { slotBar } from '../engine/avail'
 import { slotVal } from '../engine/slots'
 import { WARN } from '../engine/validate'
 import { HOOKS } from '../engine/hooks'
+import { isNewFlag, NEWFLAGS } from '../state/dropflag'
 import { hsSet, hsSync } from './pan'
 
 /* A ONE-SHOT callback run at the end of the next highlight pass — i.e. in the
@@ -17,6 +18,9 @@ import { hsSet, hsSync } from './pan'
    paint, so one frame showed the schedule leapt ~220px before the corrective
    scroll snapped it back. Consumed exactly once, cleared even if it throws. */
 let PENDING_HOLD:any=null
+/* true only while a drop's pulse set may still hold live entries — so the
+   ordinary repaint (no drop in the last seconds) does not touch it */
+const NEWFLAGS_LIVE=()=>NEWFLAGS.size>0
 /* ONE overwrite slot, not a queue — a second queueHold() before the drain
    silently replaces the first, whose callback is simply lost. Two unrelated
    features already share it (holdPuckStill's scroll correction, the stores
@@ -44,8 +48,19 @@ export function refreshHighlights(){
      visits only the ~660 pucks. The loop stays. */
   document.querySelectorAll('.puck[data-person]').forEach((el:any)=>{
     const id=el.dataset.person, p=PEOPLE[id];
-    el.classList.remove('me','sel','hl','dim','wfoc','advf','echo');
+    el.classList.remove('me','sel','hl','dim','wfoc','advf','echo','flagnew');
     if(!p)return;
+    /* THE DROP-DELTA PULSE (state/dropflag.ts, 5 Sep 26): a puck a drop has
+       just flagged blinks on its own day for a moment — the day the rule
+       crossed, which is often not the day dropped on. Hung here, after the
+       repaint, because the breach day's block is fresh nodes after the
+       per-block swap. Week pucks read their day off .day[data-day]; the
+       board renders one day, SBDAY. Palettes and previews never pulse. */
+    if(NEWFLAGS_LIVE()){
+      const onB=el.closest('.sb-boardwrap')&&!el.closest('.pv-frozen');
+      const d=onB?SBDAY:(()=>{const x=el.closest('.day[data-day]');return x?+x.dataset.day:null;})();
+      if(d!=null&&isNewFlag(d,id))el.classList.add('flagnew');
+    }
     /* Warning focus governs the week scroller and — since the board's issue list
        became clickable — the board's own schedule panels. It must NOT govern the
        roster palettes: a palette puck is a drag source for a day you may not even
@@ -322,3 +337,8 @@ export function scrollToWarnFocus(){
   try{tgt.scrollIntoView({behavior:'smooth',block:'center',inline:'nearest'});}
   catch(_){try{tgt.scrollIntoView();}catch(__){}}
 }
+
+/* the fresh-add box's own lifecycle repaint (view.ts flashAdded: the fade,
+   then the removal) is this decoration pass alone — wired here the way pan.ts
+   wires weekSwapped, and never a notify() (5 Sep 26; hooks.ts has the why) */
+HOOKS.paintFreshAdds = paintFreshAdds
