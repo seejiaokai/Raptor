@@ -161,6 +161,25 @@ describe('the manning rows can be reordered and hidden (admin)', () => {
     expect(screen.queryByTestId('count-ip')).toBeNull()
   })
 
+  // The grip moved to the LEFT of the counter name (owner, 5 Sep 26 — "move the
+  // rearrange 6 dots to the left of the start of the titles"); the eye stays
+  // centred alone in the balance box. Pin both homes so a refactor can't quietly
+  // put the grip back beside the eye.
+  it('the grip sits in the NAME cell ahead of the title; the eye stays alone in the balance box', () => {
+    draw({ arranging: true, admin: true })
+    const grip = screen.getByTestId('manning-drag-sxo')
+    const eye = screen.getByTestId('manning-hide-sxo')
+    const label = screen.getByTestId('manning-info-sxo')
+    // grip is in the frozen name cell, and it comes BEFORE the label (its left)
+    expect(grip.closest('td.who')).toBeTruthy()
+    expect(grip.closest('td.bal')).toBeNull()
+    expect(grip.compareDocumentPosition(label) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+    // the eye is alone in the balance box — no grip beside it any more
+    expect(eye.closest('td.bal')).toBeTruthy()
+    expect(eye.closest('td.who')).toBeNull()
+    expect(eye.closest('.mrow-tools')!.querySelectorAll('.drag').length).toBe(0)
+  })
+
   it('the Archive bar is ONE merged bar over the day columns, not a row of cells', () => {
     draw({ hidden: ['ip'], arranging: true, admin: true })
     const row = screen.getByTestId('manning-archive-row')

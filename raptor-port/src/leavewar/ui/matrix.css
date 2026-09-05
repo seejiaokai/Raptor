@@ -429,19 +429,36 @@
   font-weight: 600;
   color: var(--ink-3);
 }
-/* The reorder GRIP (owner, 28 Aug 26 — drag-and-drop replaced the ▲▼ arrows).
-   The same ⠿ the roster rows use, sized to the count row's narrow tools column
-   and sitting beside the hide (eye). */
-.mx .counts .mrow-tools .drag {
+/* The reorder GRIP (owner, 28 Aug 26 — drag-and-drop replaced the ▲▼ arrows;
+   moved to the LEFT of the counter NAME on 5 Sep 26 — "move the rearrange 6
+   dots to the left of the start of the titles"). The same ⠿ the roster rows
+   use. It now shares the frozen NAME cell with the label on one flex line, so
+   the whole row reads as the thing you grab and the hide (eye) is left centred
+   alone in the balance box. The label flexes and MAY clip in this transient
+   admin mode — the frozen-column clip gate runs in NORMAL view, where the grip
+   is not drawn and the cell is the bare button it has always been. Rearrange
+   only; an archived row draws no grip. */
+.mx .counts .who .mwho-row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  min-width: 0;
+}
+.mx .counts .who .mwho-row .mwho {
+  flex: 1 1 auto;
+  width: auto;
+  min-width: 0;
+}
+.mx .counts .who .drag {
+  flex: none;
   color: var(--edge-2);
   font-size: 12px;
   line-height: 1;
   cursor: grab;
-  padding: 0 1px;
   user-select: none;
   -webkit-user-select: none;
 }
-.mx .counts .mrow-tools .drag:active { cursor: grabbing; }
+.mx .counts .who .drag:active { cursor: grabbing; }
 /* A hidden row — the Archive's contents since 5 Sep 26 — drawn dimmed while an
    admin arranges. The day cells fade by opacity; the FROZEN name cell must stay
    opaque, because it is sticky and a see-through frozen cell lets the day
@@ -989,6 +1006,23 @@
   .mx .counts .who {
     letter-spacing: 0;
     font-size: 9.5px;
+  }
+
+  /* In Rearrange the grip shares the 76px name cell with the label (owner,
+     5 Sep 26). The longest counter — "Crew sets" — needs the room back, so on
+     the phone ONLY, and in Rearrange ONLY, hug the grip to the cell edge, tighten
+     its glyph and the gap, and drop the label a half-step so the whole word
+     reads. Normal view is untouched (no grip, no `.mwho-row`), so the frozen-
+     column clip gate is unaffected. */
+  .mx .counts .who .mwho-row {
+    gap: 4px;
+    margin-left: -3px;
+  }
+  .mx .counts .who .mwho-row .mwho {
+    font-size: 9px;
+  }
+  .mx .counts .who .drag {
+    font-size: 11px;
   }
 }
 

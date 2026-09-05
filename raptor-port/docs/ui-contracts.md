@@ -5111,6 +5111,22 @@ taking `overflow: hidden` off `.card` — that clip is the rounded corners.
 Pinned in `rearrangebar.test.ts` (the CSS contract; jsdom cannot paint and
 Chromium does not reproduce the fault).
 
+**On a manning row in Rearrange the GRIP sits at the LEFT of the counter name;
+the eye (Archive) sits alone, centred, in the balance box (owner, 5 Sep 26 —
+"move the rearrange 6 dots to the left of the start of the titles … leave hide
+buttons to the middle of its original box").** The ⠿ shares the frozen NAME cell
+with the label on one flex line (`.mwho-row` in `CountRows.tsx`), ahead of it,
+so the whole row reads as the thing you grab; the eye keeps the frozen COUNTER
+cell to itself and centres there once the grip leaves. The grip is drawn ONLY in
+Rearrange on a LIVE row — a member, an idle admin and an archived row all get the
+bare label cell, which is exactly the state the frozen-column clip gate measures
+(§nothing in the callsign column is cut off), so the grip never trips it. The
+76px phone name cell is tight, so there (Rearrange only) the grip hugs the cell
+edge (`margin-left:-3px`), its glyph and the gap tighten, and the label drops to
+9px, and the longest counter ("Crew sets") reads whole — measured 75/75 on the
+phone, 117/117 on desktop. Pinned in `counts.test.tsx` (grip in the name cell
+ahead of the label; eye alone in the balance box).
+
 **Archived counters live under an ARCHIVE bar (owner, 5 Sep 26 — "a row to open
 below the counter row that's called Archive, so those go there will be out of
 view unless I bring it back", then "not have the grids on the right, a merged 1

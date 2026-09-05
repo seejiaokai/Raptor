@@ -108,6 +108,20 @@ export function CountRows({
           draggingId === ruleId ? 'dragging' : '',
           draggingId && dragOver === ruleId && draggingId !== ruleId ? (dragAfter ? 'dragover after' : 'dragover') : '',
         ].filter(Boolean).join(' ')
+        // The name is the tap target for the row's explainer sheet — the whole
+        // frozen cell, not a glyph inside it, because a glyph in that column is
+        // not a tap target (the counter-arrows lesson). A real button for the
+        // keyboard; styled as the plain label.
+        const nameBtn = (
+          <button
+            className="mwho"
+            data-testid={`manning-info-${ruleId}`}
+            title={`What does ${label.get(ruleId)} count?`}
+            onClick={() => onInfo(ruleId)}
+          >
+            {label.get(ruleId)}
+          </button>
+        )
         return (
           <tr
             key={ruleId}
@@ -118,19 +132,28 @@ export function CountRows({
             data-mrow={editing && !isHidden ? ruleId : undefined}
             className={cls || undefined}
           >
-            {/* The name is the tap target for the row's explainer sheet — the
-                whole 76px frozen cell, not a glyph inside it, because a glyph
-                in that column is not a tap target (the counter-arrows lesson).
-                A real button for the keyboard; styled as the plain label. */}
+            {/* In Rearrange the reorder GRIP sits to the LEFT of the name
+                (owner, 5 Sep 26 — "move the rearrange 6 dots to the left of the
+                start of the titles"), so the whole row reads as the thing you
+                grab; the two share one flex line. OUTSIDE Rearrange the cell is
+                exactly the bare button — the frozen-column clip gate measures
+                that state, and the grip (edit-mode only) never reaches it. An
+                archived row has no grip (nowhere to drag to), so it too is the
+                bare button. */}
             <td className="who">
-              <button
-                className="mwho"
-                data-testid={`manning-info-${ruleId}`}
-                title={`What does ${label.get(ruleId)} count?`}
-                onClick={() => onInfo(ruleId)}
-              >
-                {label.get(ruleId)}
-              </button>
+              {editing && !isHidden ? (
+                <div className="mwho-row">
+                  <span
+                    className="drag"
+                    data-testid={`manning-drag-${ruleId}`}
+                    title={`Drag to move ${label.get(ruleId)}`}
+                    aria-label={`Drag to move ${label.get(ruleId)}`}
+                    style={{ touchAction: 'none' }}
+                    onPointerDown={e => onRowDragStart?.(e, ruleId)}
+                  >⠿</span>
+                  {nameBtn}
+                </div>
+              ) : nameBtn}
             </td>
             {/* A count row is a rule, not a person, so it has no leave balance.
                 The cell is otherwise empty and aligns the column — in Rearrange
@@ -141,17 +164,10 @@ export function CountRows({
                 <span className="mrow-tools">
                   {/* Reorder is DRAG now (owner, 28 Aug 26 — "the rearrange
                       could u do drag and drop … remove the arrow function"): the
-                      same grip and machine the roster rows use. The ▲▼ arrows
-                      are gone; the eye stays, and since 5 Sep 26 it ARCHIVES
-                      the row — under the bar below, out of view until opened. */}
-                  <span
-                    className="drag"
-                    data-testid={`manning-drag-${ruleId}`}
-                    title={`Drag to move ${label.get(ruleId)}`}
-                    aria-label={`Drag to move ${label.get(ruleId)}`}
-                    style={{ touchAction: 'none' }}
-                    onPointerDown={e => onRowDragStart?.(e, ruleId)}
-                  >⠿</span>
+                      grip moved to the LEFT of the name (owner, 5 Sep 26, above).
+                      The hide (eye) stays here, now centred ALONE in the balance
+                      box, and since 5 Sep 26 it ARCHIVES the row — under the bar
+                      below, out of view until opened. */}
                   <button
                     className="mrow-btn eye"
                     data-testid={`manning-hide-${ruleId}`}

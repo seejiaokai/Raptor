@@ -1208,3 +1208,18 @@ gate's. Keep verdict-bearing commands unpiped.
 **Suggested improvement:** For any surface with sticky/frozen headers or columns, make the drive script scroll the container by a large offset on EACH axis it scrolls and screenshot again, and read the pinned element's rect before and after (the left/top edge must not move). Add it to the verification checklist as a named step rather than leaving it to judgment — the rest-state shot is the one everyone takes.
 
 **Principle:** Sticky things are only tested by moving what they stick against; a screenshot at rest tests layout, not pinning.
+
+### Observation 79: A measured-invariant gate only guards the states it renders — a change that appears only in another UI mode escapes it, even in the same cell
+
+**Status:** OPEN
+**Date:** 2026-09-05
+**Session context:** The owner asked to move the manning-counter reorder grip from the balance box to the LEFT of the counter name, inside the frozen 76px name cell. An e2e gate — "nothing in the callsign column is cut off" — already measures `.who` scrollWidth vs clientWidth for exactly this overflow. But it loads the page as a member in NORMAL view, where the grip is not drawn; the grip appears only in Rearrange (an admin toggle). So the gate never renders the state the change lives in. A Chromium drive of Rearrange at 390px caught the one longest label ("Crew sets") clipping 7px (82/75); the fix (hug the grip to the cell edge, tighten glyph+gap, drop the label to 9px) brought it to 75/75. No automated gate would have failed on that clip.
+**Skill:** verification-before-completion (and the repo's live-view recipe)
+**Type:** open-source
+**Phase/Area:** The relationship between a measured gate and the UI states it runs in
+
+**Issue:** A gate that asserts an invariant proves it ONLY in the states the gate actually renders. A change that adds content to the guarded cell but only in a MODE the gate never enters is entirely outside its reach — same cell, same property, same failure mode, zero coverage. The gate's mere existence is a false comfort: "clipping is gated" was true for normal view and false for Rearrange, and nothing said so.
+
+**Suggested improvement:** When a change adds an element to a region an existing measured gate guards, name the gate and check which STATE it renders; if the change only appears in another mode (a role, a toggle, an admin-only view), either extend the gate to enter that mode (set the role / flip the toggle, then re-measure) or drive that mode by hand and measure it. Checklist line: "name the gate that would catch this; confirm it runs in the state my change appears in — otherwise it does not cover me."
+
+**Principle:** A gate proves its invariant only in the states it visits; a change that appears only in another mode is unguarded until the gate visits that mode, or a drive does.
