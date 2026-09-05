@@ -1673,40 +1673,10 @@
   padding: 2px 4px;
 }
 
-/* The admin's GROUP EDITOR opener, in the corner cell above CS/Name (owner,
-   28 Aug 26 — he circled that empty space). Sized to the frozen pair's width
-   so it can never widen the callsign column; the label ellipses rather than
-   pushing the column out on a phone. */
-.mx .mxhead th.brakhd .grpedit {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  max-width: 100%;
-  padding: 3px 7px;
-  background: var(--panel-2);
-  border: 1px solid var(--edge);
-  border-radius: 7px;
-  color: var(--ink-2);
-  font-family: inherit;
-  font-size: 9.5px;
-  font-weight: 800;
-  letter-spacing: .06em;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  cursor: pointer;
-}
-.mx .mxhead th.brakhd .grpedit:hover {
-  border-color: rgba(59, 198, 232, .5);
-  color: var(--ink);
-}
-/* Rearranging on (owner, 3 Sep 26): the corner toggle lights up while the grid
-   is in rearrange mode, so it is obvious the handles are live and how to leave. */
-.mx .mxhead th.brakhd .grpedit.on {
-  background: rgba(59, 198, 232, .16);
-  border-color: var(--accent);
-  color: var(--accent);
-}
+/* The corner above CS/Name is EMPTY now — the ⠿ Rearrange toggle it used to
+   carry moved up to the card-header row (owner, 5 Sep 26 — "the rearrange button
+   goes after [settings]"). The frozen `.brakhd` cell itself stays (above), so the
+   frozen pair's width and where the month brackets start are unchanged. */
 
 .mx .mxhead th.brakm {
   padding: 4px 3px 0;

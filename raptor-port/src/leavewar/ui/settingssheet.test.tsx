@@ -8,9 +8,54 @@ beforeEach(() => {
   initStore(memoryBackend())
 })
 
+/* The counter block's ONE-ROW top bar (owner, 5 Sep 26 — "all in 1 row to
+   minimise row height space"): Manning · ⚙ · Rearrange lead, OIL tracker trails,
+   the old "JAN – DEC 26 · 365 days · 50 people" line dropped, and the Rearrange
+   toggle moved up from the grid corner into this row. jsdom can't see the single
+   line, but it pins the DOM: which controls live in the header, in order, by
+   role, and that the date/size text is gone. */
+describe('the counter top bar', () => {
+  it('is Manning · ⚙ · Rearrange · OIL in the header for an admin, with no date/size line', () => {
+    setRole('admin')
+    const { container } = render(<Matrix />)
+    const hd = container.querySelector('.card-hd')!
+    expect(hd).toBeTruthy()
+    // the "… · 365 days · 50 people" line is gone
+    expect(hd.textContent).not.toMatch(/days ·|· \d+ people/)
+    // all four controls live in this one header row, left-to-right in order
+    const ids = ['counts-toggle', 'settings-open', 'roster-arrange', 'oil-tracker']
+    const found = [...hd.querySelectorAll('[data-testid]')]
+      .map(el => el.getAttribute('data-testid'))
+      .filter(id => ids.includes(id!))
+    expect(found).toEqual(ids)
+    // the rearrange trigger moved OUT of the grid header into the card header
+    const arrange = screen.getByTestId('roster-arrange')
+    expect(arrange.closest('.card-hd')).toBe(hd)
+    expect(arrange.closest('.mxhead')).toBeNull()
+  })
+
+  it('gives a member only Manning and the OIL tracker — no config, no rearrange', () => {
+    render(<Matrix />)   // default role is member
+    const hd = document.querySelector('.card-hd')!
+    expect(hd.querySelector('[data-testid="counts-toggle"]')).toBeTruthy()
+    expect(hd.querySelector('[data-testid="oil-tracker"]')).toBeTruthy()
+    expect(hd.querySelector('[data-testid="settings-open"]')).toBeNull()
+    expect(hd.querySelector('[data-testid="roster-arrange"]')).toBeNull()
+  })
+
+  it('the header Rearrange toggle turns arrange mode on — the on-grid bar appears', () => {
+    setRole('admin')
+    render(<Matrix />)
+    expect(screen.queryByTestId('rearrange-bar')).toBeNull()
+    fireEvent.click(screen.getByTestId('roster-arrange'))
+    expect(screen.getByTestId('rearrange-bar')).toBeTruthy()
+  })
+})
+
 /* The one ⚙ SETTINGS button (owner, 3 Sep 26): every admin config control folds
-   into the sheet it opens, off the top row. Rearranging is NOT in it — that is on
-   the grid, started from the ⠿ in the corner. */
+   into the sheet it opens, off the top row. Rearranging is NOT in the sheet — it
+   is its own toggle in the top row (owner, 5 Sep 26 — moved there from the grid
+   corner), and the actual rearranging still happens hands-on-grid. */
 describe('the ⚙ Settings sheet', () => {
   it('is admin-only, and folds the config controls into one sheet', () => {
     // a member has neither the button nor any of the controls it holds

@@ -1694,25 +1694,11 @@ export function Matrix() {
   // answering one id would break every query that expects the real one.
   const bracketRow = (testids: boolean) => (
     <tr className="mbrak" data-testid={testids ? 'month-bracket' : undefined}>
-      {/* The corner cell above CS/Name carries the admin's ⠿ REARRANGE toggle
-          (owner, 3 Sep 26 — "rearrange could be done on the grid main page
-          itself"). It sits right at the head of the roster column it reorders;
-          tapping it turns on the on-grid drag handles (person rows AND category
-          headings) and shows the rearrange bar. The old ⚙ Groups editor moved
-          into the top-row ⚙ Settings. Admin only; the mirror copy carries no
-          testid, like every other mirrored cell. */}
-      <th className="brakhd" colSpan={2}>
-        {role === 'admin' && (
-          <button
-            className={`grpedit${arranging ? ' on' : ''}`}
-            data-testid={testids ? 'roster-arrange' : undefined}
-            tabIndex={testids ? 0 : -1}
-            aria-pressed={arranging}
-            title={arranging ? 'Finish rearranging the roster' : 'Rearrange the roster — drag people and category blocks'}
-            onClick={() => setArranging(a => !a)}
-          >⠿ {arranging ? 'Rearranging' : 'Rearrange'}</button>
-        )}
-      </th>
+      {/* The corner cell above CS/Name. The admin's ⠿ REARRANGE toggle moved UP
+          to the card-header row (owner, 5 Sep 26 — "the rearrange button goes
+          after [settings]"); the corner is left empty so the frozen pair keeps
+          its width and the month brackets still start at the right column. */}
+      <th className="brakhd" colSpan={2} />
       {padL && <th className="lwph lwph-l" ref={phL} />}
       {brackets.map(b => (
         <th key={b.key} className="brakm" data-testid={testids ? `bracket-${b.key}` : undefined} colSpan={b.count}>
@@ -2715,11 +2701,17 @@ export function Matrix() {
   return (
     <div className="stage">
       <div className="card">
+        {/* ONE compact row (owner, 5 Sep 26 — "all in 1 row to minimise row
+            height space"): Manning · ⚙ · Rearrange on the left, OIL tracker on
+            the right. The old "JAN – DEC 26 · 365 days · 50 people" line was
+            dropped (owner, same day); the war's NAME still lives in the Period
+            picker in the page chrome above, so nothing is stranded. */}
         <div className="card-hd">
-          <span className="t">{period.name} · {dates.length} days · {people.length} people</span>
-          {/* Collapse the manning counts block — EITHER role (owner, 19 Aug 26).
-              A plain view toggle, in the header so it is reachable above the
-              scroll and does not ride the grid it hides. */}
+          {/* Manning LEADS the row, sitting directly above the counter rows it
+              shows/hides (owner, 5 Sep 26 — "move the manning to be infused with
+              the counter rows … still with a drop down"). EITHER role (owner,
+              19 Aug 26); a plain view toggle, above the scroll so it does not
+              ride the grid it hides. */}
           <button
             className="rtbtn countstoggle"
             data-testid="counts-toggle"
@@ -2729,35 +2721,50 @@ export function Matrix() {
           >
             {countsOpen ? '▾' : '▸'} Manning
           </button>
-          {/* ONE ⚙ SETTINGS button (owner, 3 Sep 26 — "this row will just have a
-              settings icon and an OIL tracker"). Every admin CONFIG control —
-              counters, event rows, Show SANS, the roster groups — folds into the
-              sheet it opens. Rearranging is NOT here: that is a hands-on-the-grid
-              job, started from the ⠿ in the grid corner (see bracketRow). Admin
-              only; a member has no config to reach. */}
           {role === 'admin' && (
-            <button
-              className="rtbtn gear"
-              data-testid="settings-open"
-              title="Settings — counters, event rows and roster groups"
-              aria-label="Settings — counters, event rows and roster groups"
-              onClick={() => setSettings(true)}
-            >
-              ⚙
-            </button>
+            <>
+              {/* ONE ⚙ SETTINGS button (owner, 3 Sep 26). Every admin CONFIG
+                  control — counters, event rows, Show SANS, the roster groups —
+                  folds into the sheet it opens. */}
+              <button
+                className="rtbtn gear"
+                data-testid="settings-open"
+                title="Settings — counters, event rows and roster groups"
+                aria-label="Settings — counters, event rows and roster groups"
+                onClick={() => setSettings(true)}
+              >
+                ⚙
+              </button>
+              {/* REARRANGE toggle — moved here from the grid corner (owner, 5 Sep
+                  26 — "the rearrange button goes after [settings]"). The actual
+                  rearranging is still HANDS-ON-GRID: this only turns the on-grid
+                  drag handles and the rearrange bar on/off. Lights accent (`.on`)
+                  while live so it is obvious the handles are on and how to leave.
+                  Admin only. */}
+              <button
+                className={`rtbtn rearr${arranging ? ' on' : ''}`}
+                data-testid="roster-arrange"
+                aria-pressed={arranging}
+                title={arranging ? 'Finish rearranging the roster' : 'Rearrange the roster — drag people and category blocks'}
+                onClick={() => setArranging(a => !a)}
+              >
+                ⠿ {arranging ? 'Rearranging' : 'Rearrange'}
+              </button>
+            </>
           )}
           <span className="card-spring" />
           {/* The OIL TRACKER (owner, 2 Sep 26): every person's OIL balance, the
               ledger behind each, and the admin's crediting. BOTH roles — a member
               reads, an admin edits; the sheet decides which controls to draw and
-              the store refuses a member's write. */}
+              the store refuses a member's write. "tracker" drops on a phone
+              (`.rtlbl`) so the four controls hold one line. */}
           <button
-            className="rtbtn"
+            className="rtbtn oiltrk"
             data-testid="oil-tracker"
             title="OIL balances, credits and history"
             onClick={() => setOilTracker({ person: null })}
           >
-            ◷ OIL tracker
+            ◷ OIL<span className="rtlbl"> tracker</span>
           </button>
         </div>
         {/* THE ON-GRID REARRANGE BAR (owner, 3 Sep 26 — rearrange happens on the
