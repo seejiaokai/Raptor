@@ -101,9 +101,17 @@ Grouped by area. Each is the short rule; the source has the full story.
   §Architecture rules)
 - **Only the page on screen re-renders.** CURPAGE gates the week effects; Shell
   chrome is memoized; no `validate()` during render. (ui-contracts.md §Rendering)
+- **One `validate()` per mutation.** The drop's epilogue (`afterSchedMutate`)
+  is the pass; anything that wants a post-write answer (barDrop, the drop
+  delta, placeArmed's reason) reads AFTER it, never revalidates first.
+  Pinned `ui/dropvalidate.test.tsx`. (ledger 21)
 - **An edit on one day must not disturb the other days** — per-day string diff
   (gate check B). If you add a new cross-day trace, extend B's named exemption
-  *precisely*; never loosen it to "some other days may change."
+  *precisely*; never loosen it to "some other days may change." Two named
+  exemptions today: the day the edited day's crew rest traces to (6 Aug 26),
+  and every day carrying the EDITED MAN's run trace (5 Sep 26 — a seat filled
+  on one day can join a run, and each earlier day of it then points at the
+  day it breaks).
 - **A changed day rewrites only its changed BLOCKS** (`ui/dayswap.ts`). Diff each
   block's *canonical* markup (a freshly parsed node, never the live decorated
   one); any shape mismatch falls back to whole-node replace. Do not diff by live
@@ -167,6 +175,11 @@ Grouped by area. Each is the short rule; the source has the full story.
 - **Nothing on the page is natively `draggable`** — every drag rides the pointer
   machine in `drag.ts`; `body.dnd` is added one tick after dragstart, never
   synchronously.
+- **The hover reason is asked on TARGET CHANGE, never per move** (`drag.ts
+  hoverWhy`, 5 Sep 26), and printed as a child of the ghost so it rides the
+  ghost's one transform — no second moving layer. slotBar's cross-day probe
+  (`restIfPlaced`) clones one leg and re-runs the crew-rest body for one man;
+  keep it that shape — never a buildDay or a validate() per hover or per ring.
 
 - **No `filter` on a palette puck, no `opacity` on a preview day, and the
   roster aside stacks above the week's z-indexed pucks** (`z-index:5`) — the
@@ -436,6 +449,19 @@ through sourcemaps for the JS split, paired A/B runs.
     (~45 ms) left byte-for-byte unchanged, parity 728/0. · `ui/dayswap.ts`,
     `EditWeek.tsx`, `ViewWeek.tsx`, `drag.ts`, `dayswap.test.ts`.
     *(Captured as task-observer obs 57–59.)*
+
+21. **One validate() per drop; the drop delta** (5 Sep). A drop no longer runs
+    the rules engine twice (three times for a swap): `barDrop` used to
+    revalidate before asking slotBar, on top of the pass in `afterSchedMutate`.
+    It now asks AFTER that pass, and the drop's voice is the DELTA of WARN
+    before vs after (`state/dropflag.ts`) — the validator's own words, for
+    every rule, on whichever day the breach landed. · *Invariant:* exactly one
+    `validate()` per drop (pinned `ui/dropvalidate.test.tsx`); the delta is a
+    list diff, never a second copy of a rule; the pulse is opacity-only. ·
+    Derived, not re-traced: the 6 Sep drop trace put the two passes at ~45 ms
+    @4× together, so one pass is ~22 ms off the drop task — re-trace before
+    quoting a number. · `drag.ts`, `state/view.ts`, `state/dropflag.ts`,
+    `highlights.ts`, `scheduler.css`, `toast.ts`.
 
 20. **(Infra) Merge-to-live parallelised** (3 Sep). CI-to-live ~17 min → the
     slowest gate. · `deploy.yml` runs the four gates as six parallel jobs; the

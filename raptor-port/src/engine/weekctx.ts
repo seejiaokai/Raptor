@@ -168,6 +168,17 @@ export function prevSundaySeed(curWeek:any){
    next week (the session stash) is what Sunday is judged against — exactly
    what the real Monday will validate against when its week loads. di:null:
    this day belongs to a week this WARN cannot address by index. */
+/* WHO IS ON THE PROGRAMME NEXT MONDAY — the seed-side on-set (workedSet, the
+   one body RUNLEN's own on-set mirrors) for the forward run trace and the
+   pre-drop run query (validate.ts, 5 Sep 26): a run that reaches Sunday at
+   the limit and continues into next Monday breaks THERE, and this week's
+   days are the ones a scheduler can still clear. Same bundle() as every
+   seed, so an edited next week (the stash) is what Sunday is judged
+   against. Bounded to Monday — one lookahead day, like the crew-rest trace. */
+export function nextMondayWorked(curWeek:any){
+  const nextBundle=bundle(shiftWeekKey(curWeek,1));
+  return workedSet(nextBundle.days[0],0);
+}
 export function nextMondaySeed(curWeek:any){
   const nextBundle=bundle(shiftWeekKey(curWeek,1));
   const built=buildDay(nextBundle.days[0],0,null,null,true);

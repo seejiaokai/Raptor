@@ -809,6 +809,29 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   exactly today's behaviour, and reference parity is unchanged.
   NB the label carries no `{maxRun}` token: `wlbl()` renders every token
   through `lgT()`, which would print a day count as minutes.
+  **The run TRACE and the forward pass (owner, 5 Sep 26).** Every earlier day
+  of the run that crosses carries `WARN.trace[di][id].run = {di, dow, n}` —
+  the crossing day, its name, the count there — merged beside any crew-rest
+  trace fields (markTrace merges; the same puck can carry both). Walked back
+  from the crossing day while RUNLEN still knows him (one run, consecutive by
+  construction); only the crossing day is traced to. A run standing AT the
+  limit on Sunday whose man is on next week's Monday (`nextMondayWorked`, the
+  seed-side on-set) traces `{di:null, dow:'Monday', n:maxRun+1}` and writes no
+  warning — the breach lands when next week loads. Screen: `ui-contracts.md`
+  §The run trace. **The pre-drop question**: `runIfPlaced(id, di)` answers
+  whether a day on the programme at `di` would push a run past the limit and
+  where it breaks, off the published `RUNLEN`/`RUNSEED`/`NEXTON` (null when he
+  is already on that day); `restIfPlaced(id, key)` re-runs `crewRestDay` in
+  PROBE mode (every write suppressed, the breach handed back) on a copy of the
+  day with the candidate leg cloned from a sibling of the same formation,
+  backward against yesterday and forward against tomorrow (next Monday's seed
+  past Sunday); `crossDayIfPlaced` folds both into the one line `slotBar`
+  prints last. One body each — the query can never disagree with the flag the
+  drop then raises. Guards: exempt lines (`saExempt`) get no answer; a
+  seat-to-seat move passes `fromKey` so the seat being left reads as off (the
+  run: a day off when it was his only event; crew rest: that leg removed from
+  its day); answers are memoised per `(id, key, fromKey)` until the next
+  `validate()`. Pins: `runtrace.test.ts`.
 - Warning labels embed `{crewRest}`-style tokens; `wlbl()` interpolates the
   LIVE VCONF value.
 

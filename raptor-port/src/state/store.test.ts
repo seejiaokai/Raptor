@@ -227,8 +227,11 @@ describe('arm and plant, model half (tfin U, through the store)', () => {
       expect(placeArmed(wso)).toBe(true)
       expect(slotVal('0.0.0.0.p')).toBe('wolf')
       expect(armedKey()).toBe('')               // planting puts the slot down
-      const warn = said.find(([, k]) => k === 'warn')
-      expect(warn && /front seat/.test(warn[0])).toBeTruthy()
+      /* since the drop delta (5 Sep 26) the voice is the validator's own —
+         the QUAL breach the plant just raised, in red — with slotBar's
+         "front seat" reason as the fallback when nothing new was raised */
+      const warn = said.find(([, k]) => k === 'warn' || k === 'hard')
+      expect(warn && /front seat|cannot fly FCP/.test(warn[0]), String(said)).toBeTruthy()
     } finally { HOOKS.toast = t0 }
     writeSlot('0.0.0.0.p', '')
   })
