@@ -42,10 +42,12 @@ mislead. Restate a count only from a run you watched — this file's history twi
 recorded a count that was wrong.
 
 **Last green baseline — the 5–6 Sep 26 batch, PR #368 (CI head `8b269df` plus
-this docs-only handoff commit, squash-merged on the owner's "merge").** CI run
-901 on `8b269df`: all seven gate jobs green (build + reference suite, unit
-raptor, unit leavewar ×2, geometry ×3). Counts below are from runs watched here
-on that tree:
+a docs-only handoff commit, squash-merged on the owner's "merge") + PR #369
+(one guard on the Shell's pre-warm poll, after #368's own deploy run 903 went
+red on `unit (raptor)` with every test green — the timer trap in the table
+below).** CI run 901 on `8b269df` and the re-run of 904 on #369: all seven gate
+jobs green (build + reference suite, unit raptor, unit leavewar ×2, geometry
+×3). Counts below are from runs watched here on that tree:
 
 | gate | reading |
 |---|---|
@@ -55,7 +57,7 @@ on that tree:
 | `npm run test:e2e` | **lw-phone + lw-desktop 238 passed / 0 failed; raptor geometry 131 / 0** — three playwright projects. Two traps from this batch: (a) a `npm run build` DURING a browser run swaps the files the test server serves and fails whatever page load is in flight (one login-timeout red, green on the clean re-run — never rebuild while `test:e2e` runs); (b) a background `npx playwright test` launched WITHOUT `cd raptor-port` runs from the repo root and reports "No tests found" as exit 0. The older lead stands: the desktop carry-day test ("View-only opens on the day Edit was showing", `geometry.spec.ts`) went red once in the drag round and passed alone — for ~5 s after the edit page opens the store notifies ~10 times and each pass re-lands `eWeek.scrollLeft`, which can race `parkOn`'s scroll. |
 | `probes:adapted` | **all 6 GREEN**. **Read the LAST line, not the last tally**: each probe prints its own count as it finishes, and the suite's verdict is the line after it, `all 6 adapted probes passed`. |
 | `perf` | **4/0** — board DOM 1023 ≤ **1150** (the ceiling is a SETTLED owner decision since 28 Aug 26 — `CLAUDE.md` §Stable decisions). |
-| CI `unit (raptor)` | can go red with EVERY test green: the summary's `Errors 1` line — an unhandled error after a file ended. Run 899 was the 6-second fresh-add timer (`view.ts flashAdded`) firing into a torn-down jsdom; `paintFreshAdds` now returns with no `document`. Read the "Unhandled Errors" block before calling a red run a flake (obs 85). |
+| CI `unit (raptor)` | can go red with EVERY test green: the summary's `Errors 1` line — an unhandled error after a file ended. Run 899 was the 6-second fresh-add timer (`view.ts flashAdded`) firing into a torn-down jsdom (`paintFreshAdds` now returns with no `document`); run 903 was the Shell's self-re-arming pre-warm poll (`Shell.tsx`) firing after a test that never unmounts the App (it now returns with no `window`, #369). Both shapes — a long one-shot timer and a re-arming poll in a production module — outlive a test file; read the "Unhandled Errors" block before calling a red run a flake (obs 85). A docs-only push on a PR CANCELS its running gate job and starts no new one (`paths-ignore`) — re-run the cancelled run rather than pushing again. |
 
 **How the gates lie — the durable traps, worth more than any count:**
 
