@@ -3,7 +3,7 @@
    landing. jsdom has no layout, so the real motion is the browser gate's job;
    these pin the GATING (when it must NOT fire) and that a fired glide cleans up
    after itself — no leftover transform, no orphan clone, no page-overflow lock. */
-import { afterEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, describe, expect, it, vi, beforeEach } from 'vitest'
 import { beginGlide } from './weekglide'
 import * as view from '../state/view'
 
@@ -20,6 +20,10 @@ const mkRoot = (width: number) => {
   return el
 }
 
+/* jsdom has no requestAnimationFrame under vitest's fake timers; a 16ms timer
+   stands in so the clone's two-frame handover (weekglide.ts afterTwoFrames)
+   runs under vi.advanceTimersByTime / runAllTimers like everything else */
+beforeEach(() => { (window as any).requestAnimationFrame = (cb: FrameRequestCallback) => window.setTimeout(() => cb(performance.now()), 16) })
 afterEach(() => {
   view.setWeekJump(null)
   document.body.innerHTML = ''
@@ -51,25 +55,33 @@ describe('the glide only arms on a real phone week cross', () => {
 })
 
 describe('a fired glide leaves nothing behind', () => {
-  it('spawns TWO clones and hides the real week mid-slide, then cleans all of it up', () => {
+  it('spawns TWO clones and keeps the real week painted but untouchable mid-slide, then cleans all of it up', () => {
     vi.useFakeTimers()
     setW(400); view.setWeekJump('mon')
     const root = mkRoot(390)
     const run = beginGlide(root)!
     run()
     // mid-slide: BOTH weeks are cloned (outgoing + incoming) and tile the
-    // viewport, the real week is hidden behind them, and the page is clipped so
-    // it can't scroll sideways. Three `.week` in the DOM = root + the two clones.
+    // viewport, the real week stays PAINTED under them (never hidden — a hidden
+    // element is never painted, and the reveal then drew in from black on the
+    // phone, 5 Sep 26) but takes no touches, and the page is clipped so it can't
+    // scroll sideways. Three `.week` in the DOM = root + the two clones.
     expect(document.querySelectorAll('body > .week').length).toBe(3)
     expect([...document.querySelectorAll('body > .week')].filter(el => (el as HTMLElement).style.position === 'fixed').length).toBe(2)
-    expect(root.style.visibility, 'the real week is hidden while the clones slide').toBe('hidden')
+    expect(root.style.visibility, 'the real week is never hidden — it paints under the clones').toBe('')
+    expect(root.style.pointerEvents, 'but it takes no touches while the clones slide').toBe('none')
     expect(root.style.transform, 'the real week never itself transforms now — the clones do').toBe('')
     expect(document.body.style.overflowX).toBe('hidden')
-    // after the slide (no transitionend in jsdom → the fallback timer finishes it)
-    vi.runAllTimers()
-    expect(document.querySelectorAll('body > .week').length).toBe(1)   // both clones gone, only root
-    expect(root.style.visibility, 'the real week is revealed again').toBe('')
+    // the slide ends (no transitionend in jsdom → the fallback timer at DUR+120
+    // finishes it): the outgoing clone goes, the week is uncovered for touches
+    // and the page clip lifts — but the INCOMING clone, the landed week's own
+    // picture, stays two frames more while the real week's paint commits
+    vi.advanceTimersByTime(400)
+    expect(root.style.pointerEvents, 'the settled week takes touches again').toBe('')
     expect(document.body.style.overflowX).toBe('')
+    expect(document.querySelectorAll('body > .week').length, 'root + the incoming clone still covering').toBe(2)
+    vi.advanceTimersByTime(40)
+    expect(document.querySelectorAll('body > .week').length, 'two frames later the last clone comes off').toBe(1)
   })
 
   /* OVERLAPPING GLIDES must not strand the week hidden (24 Aug 26). A second
@@ -77,18 +89,18 @@ describe('a fired glide leaves nothing behind', () => {
      already-hidden styles as ITS baseline and restore to hidden, so the whole
      week went blank and the page stayed clipped until a reload. The burst now
      shares one baseline, captured on the first glide and restored on the last. */
-  it('two overlapping glides reveal the real week once, never restore it to hidden', () => {
+  it('two overlapping glides uncover the real week once, never restore it to covered', () => {
     vi.useFakeTimers()
     setW(400)
     const root = mkRoot(390)
     view.setWeekJump('mon'); beginGlide(root)!()
-    expect(root.style.visibility).toBe('hidden')
+    expect(root.style.pointerEvents).toBe('none')
     // a SECOND cross fires while the first is still sliding
     view.setWeekJump('sun'); beginGlide(root)!()
-    expect(root.style.visibility, 'still hidden mid-burst').toBe('hidden')
-    // both clones' fallback timers fire
+    expect(root.style.pointerEvents, 'still covered mid-burst').toBe('none')
+    // both clones' fallback timers fire, then the last clone's two-frame handover
     vi.runAllTimers()
-    expect(root.style.visibility, 'the week is revealed, not stranded hidden').toBe('')
+    expect(root.style.pointerEvents, 'the week takes touches again, not stranded covered').toBe('')
     expect(document.body.style.overflowX, 'the page clip is lifted').toBe('')
     expect(document.querySelectorAll('body > .week').length, 'all four clones cleaned up').toBe(1)
   })

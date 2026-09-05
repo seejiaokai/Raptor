@@ -135,6 +135,12 @@ Grouped by area. Each is the short rule; the source has the full story.
 - **Single-writer during a glide** — while a `scroll-behavior:smooth` arrow glide
   is in flight, the proxy scrollbar and any repaint are pure followers; the glide
   owns the week's scrollLeft. (ui-contracts.md §desktop arrow glide)
+- **The phone's cross-week glide keeps the real week PAINTED under its two
+  snapshots** (5 Sep 26, ledger 24) — covered and untouchable
+  (`pointer-events:none`), never `visibility:hidden`: a hidden element is never
+  painted, so the reveal came back with no tiles and the phone drew the new
+  week in from black over ~0.4 s. The incoming snapshot lifts two frames after
+  the reveal, over identical pixels. Pinned `ui/weekglide.test.ts`.
 - **A repeatedly-tapped control must not move under the user** — reserve the
   space or anchor growth away from the control (e.g. RangePicker pads to a
   constant six rows).
@@ -419,6 +425,25 @@ through sourcemaps for the JS split, paired A/B runs.
     slowest gate. · `deploy.yml` runs the four gates as six parallel jobs; the
     Leave War unit leg sharded 2×. No app code. · 17m26s → 8m28s. · `deploy.yml`,
     `playwright.config.ts`.
+
+24. **The cross-week glide pre-paints the arriving week** (5 Sep; 21–23 are
+    the drop-delta, compositor-layer and fresh-flash rounds on their own PRs).
+    Swiping from one week into the next on the phone no longer lands on a
+    half-black day (the owner's 16:02 recording: the slide itself 250 ms, then
+    the new Monday painted in from the top over ~0.4 s with its lower half
+    black). · The glide used to set `visibility:hidden` on the real week for
+    the slide — and a hidden element is never painted, so the week was revealed
+    with no tiles at all. It now stays visible but covered by the two
+    edge-to-edge snapshots, with `pointer-events:none` so a second finger still
+    finds nothing to scrub; the browser paints it during the slide. The finish
+    drops the outgoing snapshot at once, re-lands and uncovers the week, and
+    lifts the incoming snapshot — the landed week's own picture — two animation
+    frames later (`afterTwoFrames`), so the handover is over identical pixels.
+    · *Invariant:* the real week is never hidden during a glide; the incoming
+    clone outlives the reveal by two frames. Pinned `ui/weekglide.test.ts`. ·
+    Not measurable here (Chromium paints a revealed page in one frame; the
+    progressive main-thread tile paint is WebKit's) — the owner's iPhone is the
+    gate. · `ui/weekglide.ts`.
 
 ---
 

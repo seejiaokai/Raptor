@@ -928,3 +928,18 @@ gate's. Keep verdict-bearing commands unpiped.
 **Suggested improvement:** In a pointer-up / drop teardown, sequence by data dependency, not by tidy-up instinct: do every measurement the drop needs (hit-test under the point, target geometry) FIRST, against the still-settled layout, and only then perform the teardown writes (remove the ghost, clear the body markers). When the ghost overlaps the drop point, exclude it from the hit-test rather than removing it early. Read-then-write, batched — the same rule that avoids layout thrash in a render loop applies to a one-shot handler.
 
 **Principle:** Interleaving DOM reads and writes forces a layout per read; a pointer-up handler that measures after it has begun tearing down pays for a layout it did not need. Order the handler so all reads precede all writes, even when the natural writing order (clean up first) reads the other way.
+
+### Observation 69: "Hidden until ready" costs a paint on reveal — cover a live element instead of hiding it when it must be ready the instant the cover comes off
+
+**Status:** OPEN
+**Date:** 2026-09-05
+**Session context:** The phone's cross-week glide (`ui/weekglide.ts`, branch `claude/glide-prepaint`): the real week was `visibility:hidden` behind two sliding snapshots and came back half-black on the iPhone. Numbered 69 on this branch; 60–68 are on other open branches.
+**Skill:** New skill candidate: none — cross-cutting rendering principle (sibling of Observations 67–68)
+**Type:** open-source
+**Phase/Area:** transition design / paint readiness
+
+**Issue:** The glide hid the live week so the leftover fling could never be seen scrolling behind the snapshots — a correct goal — but chose `visibility:hidden`, which also tells the browser not to paint. On WebKit, where tiles are painted on the main thread progressively, the reveal then showed the new week drawing in from the top over ~0.4 s. The snapshots already covered the viewport edge to edge, so the week's visibility was never the thing keeping it unseen; `pointer-events:none` kept it untouchable, and letting it stay painted underneath cost nothing.
+
+**Suggested improvement:** When an element must be unseen during a transition but visible the instant the transition ends, prefer COVERING it (an overlay, the transition's own snapshots) plus `pointer-events:none` over `visibility:hidden` / `display:none`, so the browser pre-paints it under the cover; and let the cover outlive the reveal by a frame or two over identical pixels. Reserve `visibility:hidden` for elements whose readiness on reveal does not matter.
+
+**Principle:** Hiding an element also defers its paint; if it has to be ready the moment it reappears, cover it instead — a covered element paints, a hidden one waits.

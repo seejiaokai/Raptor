@@ -155,6 +155,18 @@ run whole against the final code:
   the two `validate` calls (~45 ms, engine — not touched). Every dead end
   measured along the way is in `docs/performance.md` §Dead ends — don't retry
   them without new measurement.
+- **The half-black day on a week cross (5 Sep 26)** — branch
+  `claude/glide-prepaint`, its own PR, awaiting the owner's phone verdict and
+  then "merge live". The owner's 16:02 recording: swipe from Sunday Jul 12 into
+  Monday Jul 13, the 250 ms slide is clean, then the landed Monday paints in
+  from the top over ~0.4 s with its lower half black. Cause, read off
+  `ui/weekglide.ts`: the glide hid the real week (`visibility:hidden`) for
+  the slide, and a hidden element is never painted, so the reveal had no tiles
+  and the phone drew the week from scratch. Fix: the week stays painted under
+  the two snapshots, covered and `pointer-events:none` (still nothing to
+  scrub); the incoming snapshot lifts two frames after the reveal. Pinned
+  `ui/weekglide.test.ts`; ledger 24. Chromium cannot show the black (it paints
+  a revealed page in one frame), so the iPhone is the gate.
 - **iOS is untestable here.** This container ships no WebKit. The Leave War
   column window / placeholders and every contenteditable or touch-fling change
   are verified on the owner's iPhone against the preview; if the grid ever

@@ -46,11 +46,18 @@ const DUR = 280
    writer of these two styles, so the captured baseline is always their real
    pre-glide value. */
 let inFlight = 0
-let savedVis: string | null = null
+let savedPE: string | null = null
 let savedOverflowX: string | null = null
 let lastRoot: HTMLElement | null = null
 let lastLanded = 0
 
+/* two animation frames from now — one for the browser to paint, one to commit it;
+   a setTimeout stand-in where rAF is missing (jsdom) so the clone never leaks */
+function afterTwoFrames(fn: () => void) {
+  const raf = typeof window.requestAnimationFrame === 'function' ? window.requestAnimationFrame.bind(window) : null
+  if (!raf) { setTimeout(fn, 32); return }
+  raf(() => raf(fn))
+}
 function reducedMotion() {
   /* jsdom has no matchMedia; treat its absence as "motion allowed" */
   try { return window.matchMedia('(prefers-reduced-motion: reduce)').matches } catch { return false }
@@ -128,21 +135,26 @@ export function beginGlide(root: HTMLElement): (() => void) | null {
     const landed = fwd ? 0 : weekScrollMax(root)
     const out = mkClone(html, snap(sl))
     const inc = mkClone(root.innerHTML, landed)
-    /* HIDE the real week for the length of the slide. The two clones are the
-       only thing on screen, so the live week — which the browser's fling can
-       still drag, and whose `sun` landing the phone snap does not always hold —
-       is never seen at a half-scrolled or wrong-day position. It keeps its box
-       (visibility, not display) so nothing reflows, and is revealed, re-landed,
-       when the clones come off. The pre-glide styles are captured ONCE per burst
-       (see the module baseline above) so an overlapping second cross can't read
-       the already-hidden values as its baseline and restore to hidden. */
+    /* COVER the real week for the length of the slide — never hide it. The two
+       clones tile the viewport edge to edge, so the live week — which the
+       browser's fling can still drag, and whose `sun` landing the phone snap
+       does not always hold — is never SEEN at a half-scrolled or wrong-day
+       position; pointer-events:none keeps a second finger off it while the
+       clones are up (the clones themselves take no touches), so there is still
+       nothing on screen to scrub. It used to be visibility:hidden (5 Sep 26,
+       the owner's 16:02 recording): a hidden element is never painted, so the
+       week came back from the reveal with no tiles at all and the phone drew it
+       in from the top over ~0.4 s — the lower half black. Painted under the
+       clones, it is ready when they come off. The pre-glide styles are captured
+       ONCE per burst (see the module baseline above) so an overlapping second
+       cross can't read the already-set values as its baseline. */
     if (inFlight === 0) {
-      savedVis = root.style.visibility
+      savedPE = root.style.pointerEvents
       savedOverflowX = document.body.style.overflowX
     }
     inFlight++
     lastRoot = root; lastLanded = landed        // the most recent cross owns the final landing
-    root.style.visibility = 'hidden'
+    root.style.pointerEvents = 'none'
     document.body.style.overflowX = 'hidden'
 
     /* start: outgoing clone covering the viewport, incoming clone one screen off
@@ -163,20 +175,24 @@ export function beginGlide(root: HTMLElement): (() => void) | null {
     const finish = () => {
       if (done) return
       done = true
-      out.remove(); inc.remove()
-      /* only the LAST glide of a burst re-lands the real week and reveals it —
-         a still-sliding earlier/later glide keeps root hidden behind its own
+      out.remove()
+      /* only the LAST glide of a burst re-lands the real week and uncovers it —
+         a still-sliding earlier/later glide keeps root covered by its own
          clones. It re-lands the MOST RECENT cross's target (lastLanded), so an
          out-of-order finish can't leave the week on a stale day. */
-      if (--inFlight > 0) return
+      if (--inFlight > 0) { inc.remove(); return }
       const r = lastRoot || root
       const wasSB = r.style.scrollBehavior
       r.style.scrollBehavior = 'auto'
       r.scrollLeft = lastLanded
       r.style.scrollBehavior = wasSB
-      r.style.visibility = savedVis ?? ''            // reveal the settled week
+      r.style.pointerEvents = savedPE ?? ''          // the settled week takes touches again
       document.body.style.overflowX = savedOverflowX ?? ''
-      savedVis = savedOverflowX = null; lastRoot = null
+      savedPE = savedOverflowX = null; lastRoot = null
+      /* the incoming clone is the landed week's own picture, so it stays on top
+         for two more frames while the browser commits the real week's paint
+         underneath — then comes off over identical pixels, never over black */
+      afterTwoFrames(() => inc.remove())
     }
     inc.addEventListener('transitionend', finish, { once: true })
     setTimeout(finish, DUR + 120)             // fallback if transitionend never fires
