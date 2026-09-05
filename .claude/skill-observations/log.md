@@ -928,3 +928,18 @@ gate's. Keep verdict-bearing commands unpiped.
 **Suggested improvement:** In a pointer-up / drop teardown, sequence by data dependency, not by tidy-up instinct: do every measurement the drop needs (hit-test under the point, target geometry) FIRST, against the still-settled layout, and only then perform the teardown writes (remove the ghost, clear the body markers). When the ghost overlaps the drop point, exclude it from the hit-test rather than removing it early. Read-then-write, batched — the same rule that avoids layout thrash in a render loop applies to a one-shot handler.
 
 **Principle:** Interleaving DOM reads and writes forces a layout per read; a pointer-up handler that measures after it has begun tearing down pays for a layout it did not need. Order the handler so all reads precede all writes, even when the natural writing order (clean up first) reads the other way.
+
+### Observation 67: Read a phone screen recording by its frame cadence — a decaying fling, a held finger, and a one-frame jump are three different signatures — and know which bug classes the desktop browser can never reproduce
+
+**Status:** OPEN
+**Date:** 2026-09-05
+**Session context:** The owner's iPhone recording of the phone week carousel resting off its snap point ("the pages don't fit") on the #361 preview. No WebKit in the container. Numbered 67 on this branch (`claude/phone-snap-hold`); 60–66 are on three other open branches.
+**Skill:** New skill candidate: none — cross-cutting evidence-reading principle for device-only bugs (sibling of Observations 60–61, which read a recording frame by frame for a scroll bug)
+**Type:** open-source
+**Phase/Area:** root-cause investigation without the device
+
+**Issue:** The recording could not be played here, so it was decoded to 10 fps frames and each frame diffed against the previous one. That cadence separated three things a still frame cannot: a released fling (pixel change decaying smoothly over ~1 s, ending flush on a snap point — every fling in the clip did), a finger held down (zero change, then motion at constant speed — those "rests" were not bugs), and a one-frame jump (a programmatic write or a repaint — the 40 px vertical shift mid-rest, ~110 ms after the strip stopped). Only the last matched the code path that fires ~110 ms after scroll events stop (the palette's day-follow → notify → the week's B54 hold writing `scrollLeft` back to itself). Chromium then could not reproduce the resting-off-snap at all, and the reason is structural, not timing: Chromium re-snaps after a programmatic scroll (spec), iOS Safari does not — so a "write the current position back" is harmless on the desk and fatal on the phone.
+
+**Suggested improvement:** For a device-only visual bug with a recording: decode at ≥10 fps, diff consecutive frames, and classify every motion run by its shape (decay / constant / single frame) before deciding what is a rest and what is a gesture; then match the single-frame events to timers in the code. Keep a short list of browser-engine asymmetries that make a class of bugs unreproducible here (WebKit: no re-snap after programmatic scroll, row reconciliation in tables, touch-fling momentum) so the investigation goes to the device gate with a hypothesis and a fix preview instead of a "cannot reproduce".
+
+**Principle:** A recording's frame-to-frame cadence is evidence about what the code was doing; classify motion by its shape before trusting any single frame, and when the desktop engine cannot reproduce a device bug, look for an engine asymmetry rather than a timing one.

@@ -132,6 +132,13 @@ Grouped by area. Each is the short rule; the source has the full story.
 - **B54 scroll-hold** — the week/palette/wave-offsets keep their scroll through
   any edit (gate check D). Any new whole-week/whole-day writer preserves scroll
   and consumes carry state once.
+- **A repaint that wrote nothing writes no `scrollLeft`** (5 Sep 26, the
+  owner's iPhone recording). The B54 hold runs only when the repaint actually
+  rewrote the week (`wrote` in `EditWeek`/`ViewWeek`). The palette's
+  day-follow repaints ~110 ms after a swipe settles; on iOS a `scrollLeft`
+  written back to itself while the snap is still settling stops the snap where
+  it stands — Safari does not re-snap after a programmatic scroll, Chromium
+  does, which is why this never reproduces here. Pinned `ui/snaphold.test.tsx`.
 - **Single-writer during a glide** — while a `scroll-behavior:smooth` arrow glide
   is in flight, the proxy scrollbar and any repaint are pure followers; the glide
   owns the week's scrollLeft. (ui-contracts.md §desktop arrow glide)

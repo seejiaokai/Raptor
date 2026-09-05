@@ -123,9 +123,13 @@ export function EditWeek() {
        into one row re-parses, re-styles and lays out one ~150-element block
        instead of the ~1,500-element day (the 6 Sep 26 drop round) */
     let chunks: (DayChunks | null)[]
+    /* did this repaint write the week's DOM at all? A repaint that changed no
+       day (the palette following the scroll, a store tick that touched nothing
+       here) must not touch the scroll either — see the hold below. */
+    let wrote = whole
     if (!whole) {
       const secs = [...root.children] as HTMLElement[]
-      chunks = html.map((h, i) => h === p!.html[i] ? (p!.chunks[i] ?? null) : swapDay(secs[i]!, h, p!.chunks[i] || chunksOfHTML(p!.html[i]!)))
+      chunks = html.map((h, i) => { if (h === p!.html[i]) return p!.chunks[i] ?? null; wrote = true; return swapDay(secs[i]!, h, p!.chunks[i] || chunksOfHTML(p!.html[i]!)) })
     } else {
       root.innerHTML = html.join('')
       chunks = html.map(() => null)
@@ -156,10 +160,17 @@ export function EditWeek() {
       root.style.scrollBehavior = was
       setPeekLand(null)
     } else {
-      /* a within-week repaint holds the week's scroll position (B54) — or the
-         glide's destination if one is in flight, so a mid-glide repaint lands on
-         the intended day instead of freezing between two (see panHold). */
-      root.scrollLeft = panHold(sl)
+      /* a within-week repaint that REWROTE the week holds its scroll position
+         (B54) — or the glide's destination if one is in flight, so a mid-glide
+         repaint lands on the intended day instead of freezing between two (see
+         panHold). A repaint that wrote nothing writes nothing here either
+         (5 Sep 26, owner's iPhone recording): the palette's day-follow fires a
+         repaint ~110ms after a swipe settles, and on iOS a scrollLeft written
+         back while the snap is still settling STOPS the snap where it stands —
+         Safari does not re-snap after a programmatic scroll the way Chromium
+         does — so days rested 60–100px off their snap point. Nothing moved the
+         strip, so there is nothing to hold it against. */
+      if (wrote) root.scrollLeft = panHold(sl)
       /* the carried day from a page switch — see ViewWeek for the reasoning;
          both weeks consume it the same way so the hop works in both directions */
       if (CARRYDAY != null) { scrollWeekToDay(root, CARRYDAY); setCarryDay(null) }
