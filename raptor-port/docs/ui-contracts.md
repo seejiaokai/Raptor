@@ -6,8 +6,29 @@ several are measured and suite-enforced, not preferences.
 
 ## Rendering
 
+> The speed rules these guarantees serve — and every measured round behind them
+> — are indexed in `docs/performance.md` (Part 1 the guardrails, Part 2 the
+> ledger). Read it before a rendering/layout change; this section is the
+> contract detail, that file is the why and the checklist.
+
 - An edit on one day must not visibly disturb the other days (per-day string
   diff in ViewWeek/EditWeek; per-panel diff in SchedBoard).
+  **And within a changed day, only its changed BLOCKS are rewritten** (6 Sep
+  26, the drop round — `ui/dayswap.ts`). A day is `<section class="day">` →
+  head / optional sign-off / `<div class="day-body">` → the warnings box and
+  one block per schedule section. `swapDay` parses the new string into a
+  `<template>`, compares each block's canonical markup (the serialisation of
+  the freshly PARSED node — never the live node, which highlights/arm/dnd
+  decorate after every repaint) with the last write's, and `replaceWith`s
+  only the blocks that differ; the section's own attributes are synced in
+  place. Any shape mismatch — a different child or block count, a live child
+  list that no longer matches what was written, a non-section — replaces the
+  whole day node as the old `outerHTML =` did. Consequences a reader can rely
+  on: a drop into one row keeps every other block's nodes (and their
+  decorations, which `refreshHighlights` re-hangs anyway); a whole-week
+  rebuild keeps no chunks, so a day's FIRST change after it re-derives them
+  from the previous string (one extra parse, once per day). Pinned in
+  `ui/dayswap.test.ts`.
 - The week keeps its scroll through any edit; the palette keeps its scroll;
   wave blocks keep swipe offset.
 - Only the page on screen re-renders (CURPAGE gates in the week effects);
@@ -1810,8 +1831,39 @@ persisted and never in a history snapshot. The toggle builder is `notePubTog`
   inside the puck (`TD.ox/oy`, clamped to the puck) rather than centred, and
   the ghost itself carries the grabbing cursor (no OS drag cursor exists —
   there is no OS drag): `.dragimg` is HIT-TESTABLE with `cursor:grabbing`,
-  and `tdOver`'s dragover hit-test takes the first element under the pointer
-  that is not the ghost (`elementsFromPoint`). **`body.tdrag` and `body.mdrag`
+  and `tdOver`'s hit-test takes the first element under the pointer that is
+  not the ghost (`elementsFromPoint` — kept on purpose, 6 Sep 26: the ~25ms a
+  mouse move costs in hit-testing on the week is the browser's own hover
+  update, and the alternative of toggling the ghost's `pointer-events` around
+  one `elementFromPoint` rewrote its hit-test data every move, repainting it
+  and re-layerising the page, 22ms a move WORSE). **Both ghosts sit on their
+  OWN compositor layer and are positioned by ONE transform** (6 Sep 26,
+  traced): `.dragimg`/`.tdghost` carry `will-change:transform` with `left/top`
+  pinned at 0, and `tdOver` / `moveDragImage` write `translate(x, y)` (the
+  finger's ghost adds the `translate(-50%,-50%)` centring that used to be a
+  stylesheet transform). Moved by inline left/top, the fixed ghost in the
+  page's own layer had made the browser lay out and REPAINT the whole page on
+  every pointer move; the transform paints nothing. What it does NOT remove,
+  measured with every variable held (2D/3D transform, translate3d, contain,
+  backface, no decorations, not hit-testable — all equal): the page still
+  RE-LAYERISES on every move, ~50ms at 4×, because the edit page carries ~230
+  compositor layers (the filtered / faded roster pucks and everything that
+  overlaps them) and a moving layer re-opens those overlap decisions. Fewer
+  layers is the only lever left there; the ghost itself is done. Never return
+  the ghost to left/top. **The release hit-tests FIRST, with the ghost still
+  up and skipped (the same `underPoint` stack read every move uses), takes
+  the ghost down after, and leaves `body.tdrag/.mdrag` to `tdClear()` once
+  `applyDrop` has repainted** (6 Sep 26, the drop round): the old order —
+  ghost off, `elementFromPoint`, markers off, `applyDrop` — dirtied the
+  page's style twice before `nearSeat` measured the cell's seats, so a 4×
+  drop paid two full forced style+layout passes (~55 ms) before any real
+  work; nothing reads those markers from script, so `applyDrop` cannot tell
+  the difference (the jsdom fallback path is byte-for-byte the old one). **The cell
+  hover highlights are off while a puck is in flight** (`body:not(.tdrag)` on
+  `.acrow .seat.empty-slot:hover`, `.acrow .seat[data-slot]:hover .puck`,
+  `.sb-slot.empty:hover`): each hover flip under the ghost repainted and
+  re-layerised the page (~30ms a move); the `.dragover` mark is the drag's own
+  feedback. **`body.tdrag` and `body.mdrag`
   are JS state markers with NO declarations of their own** (the slow-computer
   cut, 3 Sep 26): measured by toggling each alone on the built app,
   `body.tdrag{touch-action;user-select}` restyled every element on the page
@@ -5399,3 +5451,120 @@ no label. It marks which columns the squadron may bid on. The contract:
 
 Pinned in `e2e/leavewar.spec.ts` (real-browser: the box frames 1 Jan – 31 Mar
 with its left edge on the Jan 1 column, and clears when bidding closes).
+
+## The Leave War grid draws a window of months (3 Sep 26)
+
+The year grid draws WHOLE MONTHS at their REAL widths, never the whole year
+at once (`src/leavewar/ui/colwindow.ts`; the measuring in `Matrix.tsx`).
+The contract, in the order a reader meets it:
+
+- **First open draws January–February**; the fill engine (below) adds the
+  runway a beat later, off the paint. A month-strip button draws that month
+  and the one after it and lands the month's first column at the frozen edge
+  in the same commit that draws it. A war shorter than five months is drawn
+  whole.
+- **The undrawn months are PLACEHOLDERS, so the scroller is year-wide from
+  the first paint** (owner, 5 Sep 26 — "do the placeholders + moving", picked
+  off a mockup of four scrolling styles). One empty cell before the first
+  drawn day and one after the last, in EVERY row (header, brackets, fills,
+  counts, events, roster), each exactly as wide as the undrawn months it
+  stands in for (`.lwph`, width written as an INLINE style on each cell —
+  `applyPlaceholders`, plus a mount hook so a cell that appears later takes
+  the current width — never React state, and since 6 Sep 26 never a CSS
+  variable on `.mx-outer`: a custom property changing on the grid's ancestor
+  re-styled all ~7,000 elements under it on every month draw). A faint diagonal
+  hatch marks a placeholder for the beat before its month lands. A month's
+  width is MEASURED once it has been drawn and kept by war+zoom
+  (`monthPxRef`), so a pruned month's placeholder is exactly its width and
+  re-drawing it moves nothing; a month never yet drawn takes an estimate (the
+  average day width × its days, `avgDayWRef`). Why this is safe where the 3
+  Sep "no spacers" rule (22 distinct day-column widths) said it wasn't: an
+  estimate's error only matters LEFT of the view, and such a month is never
+  drawn there mid-scroll (next bullet). Every row carries the SAME cells as
+  the header — the 20 Aug column virtualisation that misaligned on iOS gave
+  some rows colSpan spacers over full header columns; no row here differs.
+  This container has no WebKit, so the owner's iPhone is the gate for that.
+- **Months are drawn IN PLACE while the scroll is still moving** — growth
+  only (`colwindow.ts stepAllowedInMotion`): to the RIGHT of the view always
+  (nothing on screen moves), to the LEFT only over a month whose width is
+  already measured (the swap is width-for-width, so nothing hops); a prune,
+  and a left grow over an estimated width, wait for scroll REST (the 120 ms
+  idle), where the anchor correction (`anchorRef`) hides the shift. On a
+  touch screen the in-motion left grow skips the anchor altogether — the
+  `scrollLeft` write that would fix a stray pixel is what kills a fling. A
+  view parked nowhere near the drawn window (a scrubber drag, a long fling
+  over placeholders) REPLACES the window with the visible months first, then
+  the runway grows outward from there.
+- **Every row spans exactly the drawn columns plus the placeholders** — the
+  header, the brackets, the fills, the roster rows, the count rows and the
+  event rows (a band that began before the window is emitted from the first
+  drawn day). Pinned in the e2e as "no row's colSpan sum differs from 2 + the
+  drawn day count + the header's placeholder cells".
+- **The open-bidding box clips at the seam**: a bound outside the drawn
+  months cuts that side (`.lw-bidbox.cut-l` / `.cut-r`, a clip-path so the
+  halo cannot ghost a false edge), the other sides keep their glow.
+- **What is NOT windowed**: the manning verdicts (all 365 days), the lock
+  set, a sheet's date span, the "N days" caption — those are about the war.
+- **jsdom draws the whole year** (its rects are 0×0, so the window's lazy
+  initialiser sees no layout); the arithmetic is unit-tested and the
+  measuring is proved in the browser gate on both projects.
+- **One draw-toward-a-target engine, per mode** (owner, 4–5 Sep 26 — "fill in the
+  background", then "load the next months as I approach the edge", then, once
+  measurement showed the browser spends ~1.4s RE-STYLING the full-year grid on
+  every reveal, "shrink when I leave, rebuild on return", then "do the
+  placeholders + moving"). A single loop widens or trims the drawn window ONE
+  MONTH PER BEAT toward a target that depends on the mode (`colwindow.ts
+  stepToward`): a short timeout while the scroll is moving (an idle callback is
+  starved by an active scroll), an idle callback at rest so a beat never competes
+  with a paint. It is woken by every scroll event (the view moved), by scroll
+  rest (the held-back prune / left-grow steps — the rest kick itself lands inside
+  the moving window, so a held-back step re-arms its own retry), and by the tab
+  being shown:
+  - **PHONE → a ROLLING window a few months AHEAD of the visible ones**
+    (`rollingTarget`, one month behind / three ahead), the trailing side pruned AT
+    REST so the DOM stays light. A flick meets already-drawn columns instead of
+    the stuck edge the old grow-2-at-rest lump left. This is what fixed
+    "scrolling to the end of the block sticks, I have to flick again".
+  - **DESKTOP, tab ON screen → the WHOLE year**, so scrolling runs end to end and
+    the bottom scrollbar SLIDES (below). The posted-out row-window crossing is the
+    only rest-time repaint left (rare, ~0 in a realistic sweep).
+  - **DESKTOP, tab OFF screen → capped at a few months** (`HIDDEN_MONTHS`), and
+    drawn only while the user is IDLE (`state/idle.ts msSinceInput` > 2 s), so a
+    background draw never lands under a keystroke or a puck drag on another page.
+- **Shrink on leave, rebuild on return** (owner, 5 Sep 26). Keeping the whole year
+  drawn while the tab was hidden meant the browser re-styled ~25k cells (~1.4 s on
+  a slow laptop) every time the tab was shown. So on leaving the tab the desktop
+  grid SHRINKS to a few months around the last view (the next reveal wakes a small
+  grid — measured ~0.4 s to visible, was ~1.9 s), and the fill REBUILDS the year
+  on return. The dropped months become placeholders of their MEASURED width, so
+  nothing moves and the sideways scroll position is exactly where the reader left
+  it (pinned in the e2e for both devices). This REVERSES the 4 Sep "desktop keeps
+  the whole year / never prune" contract; the reveal cost is the reason. The
+  on-screen signal is `leavewar/state/screen.ts` — a plain listener set, NOT the
+  store, so flipping it never re-renders the grid.
+- **The desktop PRE-WARMS after login** (owner, 5 Sep 26 — "load it while I type
+  my password so there's no wait"). Once the user pauses after login, `Shell.tsx`
+  mounts the tab HIDDEN (desktop only): that pulls its separate download and draws
+  its first few months off the critical path, so the first click opens an
+  already-built grid (~0.5 s to visible, was ~2.4 s). It is idle-gated, so it never
+  lands under the login keystrokes and never slows login-to-week; the phone is left
+  alone (its first open is already quick). Pinned in the e2e as "the Leave War
+  screen is a separate chunk, pre-warmed after login".
+- **The desktop bottom scrollbar is a YEAR-WIDE SCRUBBER** (owner, 4 Sep 26 —
+  "the scroll bar at the bottom keeps adjusting … make it linear … halfway I'm
+  already at the edge"). Because the grid only drew ~2 months, the proxy bar
+  (`.mx-hbar`) whose spacer matched the drawn content spanned only those: its
+  thumb filled the bar, "halfway" was the edge, and it RESIZED every time the
+  window grew. On 4 Sep the spacer became the whole war at an ESTIMATED width
+  and a drag JUMPED the grid to the dragged-to day on release while months were
+  still filling in. Since the PLACEHOLDERS (5 Sep 26) the grid's own scroller is
+  year-wide, so the bar is a plain proxy of it again: its spacer is the grid's
+  `scrollWidth` (the thumb is year-proportional and only shifts by the few
+  pixels an estimated month gains or loses when drawn), a drag SLIDES the grid
+  at any time (the grid's own scroll handler lights the strip and wakes the
+  fill, which draws the months under the moving view in place), and the bar
+  follows the grid by copying its `scrollLeft` (`syncHbar`, suppressed for
+  250 ms after a drag so a slide does not yank the thumb from under the finger).
+  Desktop only — the phone finger-scrolls the grid and shows no proxy bar.
+  Pinned in the e2e as "a year-wide scrubber; the desktop grid fills the whole
+  year and the bar then slides it".

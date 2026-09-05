@@ -345,7 +345,9 @@ describe('the mouse drag image is a page-drawn puck ghost, the browser gets a bl
     expect(g.getAttribute('draggable'), 'the ghost is not itself draggable').toBeNull()
     expect(g.getAttribute('data-drag'), 'nor a drag source').toBeNull()
     expect(g.textContent).toBe(src().querySelector('.puck')!.textContent)
-    expect(g.style.left).toBe('0px'); expect(g.style.top).toBe('0px')
+    /* the position is ONE transform (6 Sep 26 — the ghost rides its own
+       compositor layer; left/top are pinned at 0 in the stylesheet) */
+    expect(g.style.transform).toBe('translate(0px, 0px)')
     src().dispatchEvent(withImage('dragend').ev)
     expect(document.querySelectorAll('.dragimg').length, 'gone at dragend').toBe(0)
   })
@@ -356,9 +358,9 @@ describe('the mouse drag image is a page-drawn puck ghost, the browser gets a bl
     /* grabbed 40,30 into a 0×0-at-origin puck → the offset is 40,30 and the
        ghost's corner trails the cursor by exactly that, both ways */
     document.body.dispatchEvent(withImage('dragover', 140, 90).ev)
-    expect(g.style.left).toBe('100px'); expect(g.style.top).toBe('60px')
+    expect(g.style.transform).toBe('translate(100px, 60px)')
     document.body.dispatchEvent(withImage('dragover', 12, 7).ev)
-    expect(g.style.left).toBe('-28px'); expect(g.style.top).toBe('-23px')
+    expect(g.style.transform).toBe('translate(-28px, -23px)')
     src().dispatchEvent(withImage('dragend').ev)
   })
 
@@ -430,13 +432,13 @@ describe('the mouse drags through the pointer machine, never the native drag', (
     expect(ghosts()).toBe(1)
     const g = document.querySelector('.dragimg') as HTMLElement
     expect(g.classList.contains('puck'), 'the ghost is the puck, not the .rpuck shell').toBe(true)
-    expect(g.style.left, 'a 0×0 jsdom puck gives a zero grab offset — the ghost sits at the pointer').toBe('20px')
+    expect(g.style.transform, 'a 0×0 jsdom puck gives a zero grab offset — the ghost sits at the pointer').toBe('translate(20px, 20px)')
     expect(document.body.classList.contains('dnd'), 'drop cells decorated').toBe(true)
     expect(document.body.classList.contains('mdrag'), 'grabbing cursor').toBe(true)
     expect(dragstart().defaultPrevented, 'the browser is refused its own drag').toBe(true)
     expect(ghosts(), 'and adds no second image').toBe(1)
     document.body.dispatchEvent(ptr('pointermove', 60, 80))
-    expect(g.style.left).toBe('60px'); expect(g.style.top).toBe('80px')
+    expect(g.style.transform).toBe('translate(60px, 80px)')
     under = cell
     await act(async () => { document.body.dispatchEvent(ptr('pointerup', 60, 80)) })
     expect(crewOf(cell.dataset.fill!), 'landed through applyDrop').toContain(who)

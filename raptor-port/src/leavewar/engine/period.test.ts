@@ -92,3 +92,17 @@ describe('dayName', () => {
     }
   })
 })
+
+// `weekday` is arithmetic on cached UTC millis now (3 Sep 26), no Date per
+// call; pin it against the Date the old body built, across a leap year and
+// the epoch's own week so the modulo is proved on both sides of 1970.
+describe('weekday arithmetic', () => {
+  it('matches Date.getUTCDay for every day of 2024 and the first week of 1970', () => {
+    const dates = ['1970-01-01', '1970-01-04', '1970-01-07']
+    for (let i = 0; i < 366; i++) dates.push(addDays('2024-01-01', i))
+    for (const d of dates) {
+      const [y, m, dd] = d.split('-').map(Number)
+      expect(isWeekend(d), d).toBe([0, 6].includes(new Date(Date.UTC(y!, m! - 1, dd!)).getUTCDay()))
+    }
+  })
+})

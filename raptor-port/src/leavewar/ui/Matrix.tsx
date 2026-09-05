@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useLayoutEffect, useMemo, useRef, useState, type TouchEvent } from 'react'
+import { Fragment, memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type MutableRefObject, type PointerEvent as ReactPointerEvent, type RefCallback, type TouchEvent } from 'react'
 import {
   addDays,
   balanceOf,
@@ -36,6 +36,13 @@ import {
   stateOf,
   type Group,
   type Person,
+  type Period,
+  type DayInfo,
+  type Grid,
+  type States,
+  type Role,
+  type Figure,
+  type FigureCtx,
 } from '../engine'
 import { figureCtxOf, setBalance, groupsInOrder, groupPriorityIds, lwHistEpoch, moveGroupTo, moveGroupPriorityTo, autoSortRoster, displayRoster, getState, moveCells, movableCells, moveManningRowTo, moveProblem, moveEvent, moveEventProblem, moveRosterRow, orderedManningIds, resetManningRules, setPostOut, type MoveResult, type EventMoveResult } from '../state/store'
 import { BidPicker, DecisionSheet, PostOutSheet, RaptorSheet } from './BidPicker'
@@ -48,6 +55,9 @@ import { ManningSheet } from './ManningSheet'
 import { EventRows } from './EventRows'
 import { EventSheet } from './EventSheet'
 import { monthInView } from './monthview'
+import { clampWin, rollingTarget, stepAllowedInMotion, stepToward, visibleSpan, windowAround, WINDOW_FROM_MONTHS, type ColWin } from './colwindow'
+import { isLwOnScreen, subLwScreen } from '../state/screen'
+import { msSinceInput } from '../../state/idle'
 import { wireSelect, wireMove, daysBetween, paintLanding, clearLanding, paintEventLanding, eventMoveDateAt, earliestDate, type Cell, type Selection, type SelectCtx } from './select'
 import { SettingsSheet } from './SettingsSheet'
 import { groupColorOf, inkFor } from './groupColor'
@@ -138,6 +148,360 @@ const GROUP_PRIO_DRAG: RowDragCfg = {
   move: moveGroupPriorityTo,
 }
 
+// ---- one roster row, memoised (3 Sep 26) ----------------------------------
+//
+// MEASURED before this existed (built bundle, CPU throttled 4x, ~18,000 cells):
+// tapping a cell to open its sheet cost ~1.0s, of which ~0.6s was JS — the
+// Matrix rebuilding every cell's JSX because a sheet is Matrix STATE. The
+// first open paid the same rebuild ~3 times over as its mount-time
+// measurements (strip height, bid box, row window) each stored a result.
+// A memoised row repaints only when one of ITS inputs changes, so local UI
+// state — a sheet, the quals popover, a drag hover on another row — costs the
+// chrome, not the grid. Everything store-derived rides `version`: a bid, a
+// decision, a war change, a roster re-projection bumps it and every row
+// repaints exactly as before. So the contract is simple: a row is a pure
+// function of its props, and every prop is either a primitive or an object
+// whose identity changes only with the store version. Event-time callbacks
+// go through ONE ref (`api`) so the row never receives a fresh function prop.
+//
+// The DOM this renders is byte-identical to the inline <tr> it replaced —
+// every class, testid, title and handler position is unchanged, which is
+// what keeps the geometry gate and the drag-select machinery (which finds
+// cells by testid) honest.
+
+type QualPill = { label: string; color: string }
+const NO_QUALS: QualPill[] = []
+
+type RowApi = {
+  startRowDrag: (e: ReactPointerEvent, id: string, cfg: RowDragCfg) => void
+  setWhoOpen: (id: string) => void
+  setBalOpen: (v: { person: string; figureId: string }) => void
+  setOpen: (v: { id: string; callsign: string; date: string }) => void
+  chipEnter: (id: string, el: HTMLElement) => void
+  chipLeave: () => void
+  chipClick: (p: Person, el: HTMLElement) => void
+}
+
+/** Whether a tap on this cell opens SOMETHING — the one body Matrix and the
+ *  row share. Where a tap goes (bid / decide / read-only / remarks) is decided
+ *  in the sheet from the same facts; this only says "there is a sheet". */
+function cellOpenable(states: States, period: Period, role: Role, viewer: string | null, deciding: boolean, grid: Grid, personId: string, date: string): boolean {
+  return raptorOwns(states, personId, date) ||
+    // A member may open a cell to EDIT only on their own row (the person they
+    // are viewing as); an admin, any row. Without the row half a member could
+    // tap an empty cell on anyone's row and bid it (owner, 27 Aug 26). The
+    // date/window half is `canEditCell`; both must pass.
+    (canEditCell(period, role, date) && canEditRow(role, viewer, personId)) ||
+    (deciding && isBiddable(grid[personId]?.[date])) ||
+    // Published remarks editor (owner, 27 Aug 26): the viewer's own APPROVED
+    // leave is tappable to edit its note (an admin's every cell is already
+    // openable through the canEditCell branch above). Kept CHEAP — code and
+    // state truthiness, never leaveInputAt, because this runs for every drawn
+    // cell; the precise "is there a backing leave input" test is `canRemark`,
+    // computed once when a cell is opened. Approved-only on purpose: a
+    // member's refused or pending bid at published opens NOTHING (no editor,
+    // no decision sheet), and the first cut still painted it tappable — a
+    // dead-feeling tap exactly where the stakes are highest, a refusal.
+    (period.stage === 'published' && personId === viewer
+      && isBiddable(grid[personId]?.[date])
+      && states[personId]?.[date]?.state === 'approved')
+}
+
+type PersonRowProps = {
+  p: Person
+  version: number
+  period: Period
+  /** The DRAWN days — the column window's slice of `period.days` (colwindow.ts)
+   *  — as one array per month, each keeping its identity while the war's days
+   *  do (Matrix `drawnMonthDays`), so `PersonMonth` can bail out per month. */
+  monthDays: DayInfo[][]
+  grid: Grid
+  states: States
+  role: Role
+  viewer: string | null
+  deciding: boolean
+  movedShown: boolean
+  shown: Figure
+  figureCtx: FigureCtx
+  evKind: Map<string, string>
+  lockedCols: Set<string>
+  quals: QualPill[]
+  me: boolean
+  arranging: boolean
+  dragging: boolean
+  over: '' | 'dragover' | 'dragover after'
+  api: MutableRefObject<RowApi>
+  /** The column window's PLACEHOLDER cells (colwindow.ts, 5 Sep 26): one empty
+   *  cell before / after the drawn days standing in for the undrawn months, so
+   *  every row keeps the same column count as the header. Sized by Matrix,
+   *  never here: `phL`/`phR` are its stable mount hooks that write the width
+   *  straight onto the cell (see `applyPlaceholders`). */
+  padL: boolean
+  padR: boolean
+  phL: RefCallback<HTMLTableCellElement>
+  phR: RefCallback<HTMLTableCellElement>
+}
+
+type PersonMonthProps = {
+  p: Person
+  version: number
+  period: Period
+  /** ONE month's days (a `drawnMonthDays` slice — identity is the memo key). */
+  days: DayInfo[]
+  grid: Grid
+  states: States
+  role: Role
+  viewer: string | null
+  deciding: boolean
+  movedShown: boolean
+  evKind: Map<string, string>
+  lockedCols: Set<string>
+  api: MutableRefObject<RowApi>
+}
+
+// A placeholder cell's width, all three properties so auto table layout can
+// neither widen nor narrow it (Matrix `applyPlaceholders`).
+const setPhWidth = (el: HTMLElement, w: string) => {
+  const s = el.style
+  s.width = w; s.minWidth = w; s.maxWidth = w
+}
+
+const PersonRow = memo(function PersonRow({ p, version, period, monthDays, grid, states, role, viewer, deciding, movedShown, shown, figureCtx, evKind, lockedCols, quals, me, arranging, dragging, over, api, padL, padR, phL, phR }: PersonRowProps) {
+  const has = quals.length > 0
+  // The selected figure's value for this person. It has to move the instant a
+  // bid is placed, because a pending bid has been asked for and cannot be
+  // asked for twice — and every store change bumps `version`, so keying the
+  // memo on it keeps that true while a window step (which re-renders the row
+  // for its new month but changes no figure) no longer walks every war's
+  // ledger for all ~58 rows. A balance can go negative (shown red, never
+  // refused — the squadron's balances already run negative, §Counters); a
+  // consumed figure never does. Every figure counts across EVERY war, not the
+  // one on screen — leave bid in Jan–Mar still spends against Apr–Jun.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const v = useMemo(() => shown.value(figureCtx, p.id), [shown, figureCtx, p.id, version])
+  const suffix = shown.kind === 'bal' ? 'remaining, pending bids included' : 'taken'
+  return (
+    /* `me` lights the VIEWER's own row (owner, 17 Aug 26). While arranging the
+       row is a drop target the pointer drag reads by hit-test; the drag SOURCE
+       is the handle alone, so a tap on the personnel label box types rather
+       than starting a drag. */
+    <tr
+      data-testid={`row-${p.id}`}
+      className={[
+        me ? 'me' : '',
+        arranging ? 'arrange' : '',
+        dragging ? 'dragging' : '',
+        over,
+      ].filter(Boolean).join(' ') || undefined}
+    >
+      <td className="who">
+        <div className="whorow">
+          {arranging && (
+            <span
+              className="drag"
+              data-testid={`drag-${p.id}`}
+              title="Drag to move this row"
+              style={{ touchAction: 'none' }}
+              onPointerDown={e => api.current.startRowDrag(e, p.id, ROSTER_DRAG)}
+            >⠿</span>
+          )}
+          {/* The callsign opens the person's all-figures sheet, for everyone
+              (owner, 17 Aug 26). The CAT chip carries the person's colour,
+              reused from Raptor's Quals palette, and an SXO sits under the SXO
+              heading rather than wearing a second column. The chip: the
+              person's CAT, coloured by CAT (an SXO keeps gold wherever they
+              sit). When they hold a displayed qualification it becomes a live
+              control — hover (desktop) or tap (phone) to list them; the click
+              is swallowed so it never also opens the figures sheet the
+              callsign owns. A second tap on the SAME chip closes it (the phone
+              has no pointer to leave with); a tap on another chip moves it. */}
+          <button
+            className="whoedit"
+            data-testid={`person-${p.id}`}
+            title={`${p.callsign} — every figure`}
+            onClick={() => api.current.setWhoOpen(p.id)}
+          >
+            <span className={`cs seat-${p.seat}`}>{p.callsign}</span>
+            <span
+              className={`catchip ${catClass(p)}${has ? ' has-quals' : ''}`}
+              data-testid={`cat-${p.id}`}
+              aria-label={has ? `${p.callsign} qualifications: ${quals.map(q => q.label).join(', ')}` : undefined}
+              onPointerEnter={has ? e => { if (e.pointerType === 'mouse') api.current.chipEnter(p.id, e.currentTarget) } : undefined}
+              onPointerLeave={has ? e => { if (e.pointerType === 'mouse') api.current.chipLeave() } : undefined}
+              onClick={has ? e => { e.stopPropagation(); api.current.chipClick(p, e.currentTarget) } : undefined}
+            >{catText(p) || 'GND'}</span>
+          </button>
+          {/* The free-text role-label edit box is GONE (owner, 28 Aug 26 —
+              "i can edit personnel, dont need to show that, just leave it as
+              the callsign/name"). A ground-crew row now shows the same
+              callsign + chip as every other row, in Rearrange too. */}
+        </div>
+      </td>
+      <td
+        className={`bal act${v < 0 ? ' neg' : ''}`}
+        data-testid={`bal-${p.id}`}
+        title={`${p.callsign}: ${show(v)} ${shown.label} — ${suffix}. Tap for the breakdown`}
+        /* A tap opens the person's breakdown of the shown figure — the
+           owner's "click the individual personnel counter" (17 Aug 26). The
+           td is the target, like every grid cell here: a nested button would
+           cost the 44px column its number. */
+        onClick={() => api.current.setBalOpen({ person: p.id, figureId: shown.id })}
+      >
+        {show(v)}
+      </td>
+      {padL && <td className="lwph lwph-l" ref={phL} />}
+      {/* The day cells, one memoised block PER MONTH (6 Sep 26). A window step
+          adds a month to every row; with the cells rendered inline, React
+          re-reconciled all ~21,000 drawn cells and our per-cell logic re-ran
+          for every one of them — profiled at ~⅔ of a month draw's JS on the
+          slow laptop. Keyed by the month, not the position, so a month added
+          on the LEFT still matches the blocks already drawn. */}
+      {monthDays.map(md => (
+        <PersonMonth
+          key={md[0]!.date}
+          p={p}
+          version={version}
+          period={period}
+          days={md}
+          grid={grid}
+          states={states}
+          role={role}
+          viewer={viewer}
+          deciding={deciding}
+          movedShown={movedShown}
+          evKind={evKind}
+          lockedCols={lockedCols}
+          api={api}
+        />
+      ))}
+      {padR && <td className="lwph lwph-r" ref={phR} />}
+    </tr>
+  )
+})
+
+// One month of a person's day cells. `version` is a memo input only: every
+// store change still repaints every cell through it, exactly as the row did.
+const PersonMonth = memo(function PersonMonth({ p, period, days, grid, states, role, viewer, deciding, movedShown, evKind, lockedCols, api }: PersonMonthProps) {
+  return (
+    <>
+      {days.map(d => {
+        const code = grid[p.id]?.[d.date] ?? ''
+        const here = inSquadron(p, d.date)
+        // `here` is false on both sides of the roster window. Before `from`
+        // the person has not arrived yet — that is not the same fact as
+        // having been posted out, and must not read as one. Only the "after
+        // `to`" direction is a genuine PO.
+        const notYetArrived = !here && p.from !== null && d.date < p.from
+        const cls = [
+          here ? '' : 'gone',
+          here && isDuty(code) ? 'duty' : '',
+          // The band runs the whole column, not just the header — finding a
+          // Tuesday in 90 columns should not need counting. `.gone`'s hatch
+          // is declared after the weekend rule so a posted-out weekend still
+          // reads as posted out.
+          isWeekend(d.date) ? 'weekend' : '',
+          // The event column colour (off = green, no-leave = orange),
+          // declared after the weekend so a holiday Saturday reads as the
+          // holiday, not the weekend.
+          evKind.get(d.date) ?? '',
+          // Outside the bidding window, for this role. Declared after the
+          // event colour so a locked, tinted day still reads as locked — the
+          // same cascade care the .blocked/.weekend pair needs, and for the
+          // same reason.
+          lockedCols.has(d.date) ? 'locked' : '',
+        ].filter(Boolean).join(' ')
+        // The stored notation, printed through the one display mapping — the
+        // ATT markers read as the owner's bare B / C on the grid while
+        // everything else prints as stored (displayCell is identity for it).
+        const text = here ? displayCell(code) : notYetArrived ? '' : 'PO'
+        // Duty first for the reader — FO/HO are work, not a bid. (They carry
+        // `bid: false`, so they could not reach a bid branch anyway; the
+        // order is legibility, not a guard.) Then the bid state, but only
+        // where the code is one a person bids for. Everything else is plain
+        // information: medical, a course, overseas duty. A bare "PO" chip on
+        // a posted-out cell carries no state class at all.
+        //
+        // A bid with NO decision recorded reads as pending, and PENDING IS
+        // PLAIN — no colour class at all, so the chip renders as text on the
+        // ordinary cell background. It was purple until 10 Aug 26, when the
+        // owner pointed out what that cost: an input nobody had looked at and
+        // one already in management's hands were the same colour, so the
+        // sheet could not distinguish them. Purple now means acknowledged —
+        // somebody has seen this — and the absence of colour means the
+        // absence of news.
+        const bid = stateOf(states, p.id, d.date)
+        const chipState = !here || !code
+          ? ''
+          : isDuty(code) ? 'sc'
+          : !isBiddable(code) ? 'info'
+          : bid === 'approved' ? 'appr'
+          : bid === 'refused' ? 'ref'
+          : bid === 'acknowledged' ? 'tbc'
+          : ''
+        // The half-day fill is read off the stored string via `parseCell`,
+        // never kept as its own bit of state and never guessed by matching an
+        // asterisk here in the component. The asterisk in `text` stays the
+        // one source of truth; this is only a derived echo of it, so the two
+        // can never disagree.
+        const portion = here && code ? parseCell(code)?.portion : undefined
+        const portionClass = portion === 'am' || portion === 'pm' ? ` ${portion}` : ''
+        // Two marks on top of the state colour, never instead of it: the
+        // squadron reads green as approved and magenta as pending, and that
+        // stays true here. `raptor` says the approval happened elsewhere and
+        // nothing on this screen will change it; `moved` says management
+        // shifted this bid off another date.
+        const marks = [
+          here && code && raptorOwns(states, p.id, d.date) ? 'raptor' : '',
+          movedShown && here && code && shiftedFrom(states, p.id, d.date) ? 'moved' : '',
+        ].filter(Boolean).join(' ')
+        // A cell outside the person's time in the squadron is never
+        // actionable FOR A BID: bidding leave for a man who has been posted
+        // out is a data-entry accident, not a bid. But an ADMIN can still tap
+        // a posted-out day to UNDO the post-out (owner, 18 Aug 26 — "tap a
+        // struck day to undo"); `notYetArrived` is excluded — a day before
+        // someone joins is blank, not a post-out, and nothing there to undo.
+        const actionable =
+          (here && cellOpenable(states, period, role, viewer, deciding, grid, p.id, d.date)) || (role === 'admin' && !here && !notYetArrived)
+        // Their LAST day in the squadron wears a small PO tag (owner, 19 Aug
+        // 26 — chosen over nothing after the edge case was put to him):
+        // someone posting out on the 1st has a final month that otherwise
+        // looks completely normal, and the next month their row is gone — so
+        // without this, a reader jumping month to month never sees the PO at
+        // all. The tag rides the corner of the cell so a leave code on the
+        // same day still prints.
+        const lastIn = p.to !== null && d.date === p.to
+        return (
+          <td
+            key={d.date}
+            data-testid={`cell-${p.id}-${d.date}`}
+            className={`${cls}${actionable ? ' act' : ''}${lastIn ? ' pofin' : ''}`}
+            onClick={actionable
+              ? () => api.current.setOpen({ id: p.id, callsign: p.callsign, date: d.date })
+              : undefined}
+          >
+            {text && (
+              <span
+                className={`c${chipState ? ` ${chipState}` : ''}${portionClass}${marks ? ` ${marks}` : ''}`}
+              >
+                {text}
+              </span>
+            )}
+            {lastIn && (
+              <span
+                className="polast"
+                data-testid={`polast-${p.id}`}
+                title={`${p.callsign} posts out ${addDays(p.to!, 1)} — this is their last day in the squadron`}
+              >
+                PO
+              </span>
+            )}
+          </td>
+        )
+      })}
+    </>
+  )
+})
+
 export function Matrix() {
   /* kept in a name (not just subscribed) so store-reading memos below can
      re-derive on every store change — `movers` reads live grid state, and a
@@ -162,13 +526,21 @@ export function Matrix() {
   // column, not just the event rows — finding a holiday in 90 columns should
   // not need reading the top two rows. `work` never colours the column (its
   // own word goes red instead), so it maps to no class here.
-  const evKind = new Map<string, string>()
-  for (const d of period.days) {
-    const k = columnKindFor(eventDefs, d, period.bands)
-    if (k === 'off') evKind.set(d.date, 'evoff')
-    else if (k === 'free') evKind.set(d.date, 'evfree')
-    else if (k === 'nolv') evKind.set(d.date, 'evnolv')
-  }
+  // Memoised on the store version (3 Sep 26): the map is a row prop now, and
+  // a fresh Map on every render would defeat the row memo (see PersonRow).
+  // Keyed on `version`, not the period object, because store writes may
+  // update in place — the version is the one signal that never lies.
+  const evKind = useMemo(() => {
+    const m = new Map<string, string>()
+    for (const d of period.days) {
+      const k = columnKindFor(eventDefs, d, period.bands)
+      if (k === 'off') m.set(d.date, 'evoff')
+      else if (k === 'free') m.set(d.date, 'evfree')
+      else if (k === 'nolv') m.set(d.date, 'evnolv')
+    }
+    return m
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [version])
 
   // Which cell is open, not which sheet is open: what the sheet OFFERS is
   // derived from the stage and the role, so a period that moves on — or a
@@ -380,7 +752,9 @@ export function Matrix() {
   // Everything a figure needs to read a person's number — the store's one
   // builder, so this column, the sheets and the tracker read the same OIL
   // policy and the same "today" (a hand-built literal here used to drift).
-  const figureCtx = figureCtxOf()
+  // Once per store change, not per render — a row prop (see PersonRow).
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const figureCtx = useMemo(() => figureCtxOf(), [version])
   const cycle = (by: number) => setShownId(figures[(shownIx + by + figures.length) % figures.length].id)
 
   // Swipe across the counter column to cycle it — the fast path, beside the
@@ -556,13 +930,167 @@ export function Matrix() {
 
   const months = monthsIn(period.start, period.end)
 
+  // ---- THE COLUMN WINDOW (Phase 2 of the speed work, 3 Sep 26) -------------
+  // Which months are DRAWN. Arithmetic and the why in colwindow.ts; here is the
+  // measuring and the scrolling. `null` = the whole war: a short war, or no
+  // layout at all — jsdom reports every rect 0×0, so the lazy initialiser sees
+  // no width and the unit suites keep seeing the full year exactly as before;
+  // the browser gate is what proves the window. Everything that reads "the
+  // columns" below reads `drawnDays` / `drawnDates` / `drawnMonths`; the full
+  // `dates` stays for what is about the WAR, not the screen — the manning
+  // verdicts, the lock set, the sheets' date spans, the "365 days" caption.
+  const hasLayout = () => typeof document !== 'undefined' && document.documentElement.getBoundingClientRect().width > 0
+  const [colWinRaw, setColWin] = useState<ColWin | null>(() => (hasLayout() ? windowAround(months.length, 0) : null))
+  // The stored window is only ever read CLAMPED to the current war's months:
+  // a war switch renders once with the old window against the new months
+  // before the reset effect below lands, and a one-month war under a stale
+  // {0,3} must draw whole, not index past its months (a real crash found by
+  // the "creates a leave war" browser test — the grid vanished behind an
+  // error, and the picker with it).
+  const colWin = colWinRaw && months.length >= WINDOW_FROM_MONTHS ? clampWin(colWinRaw, months.length) : null
+  const colWinRef = useRef(colWin)
+  colWinRef.current = colWin
+  // THE PLACEHOLDERS (owner, 5 Sep 26 — "do the placeholders + moving", picked
+  // off a mockup of four scrolling styles). One empty cell before the first
+  // drawn day and one after the last, in EVERY row, standing in for the undrawn
+  // months at their widths — so the scroller spans the whole year from the
+  // first paint, a flick never runs into a drawn edge, and months are drawn IN
+  // PLACE while the scroll is still moving (the fill engine below). Which sides
+  // exist is render knowledge (the window's edges); how WIDE they are is
+  // written imperatively as two CSS variables (`applyPlaceholders`), because
+  // those widths come from measurement and change as months draw, and a state
+  // write would re-render the ~25k-node grid for a number two cells read.
+  // Every row carries the same cells (header included) — the 20 Aug 26
+  // column-virtualisation that misaligned on iOS gave SOME rows colSpan spacers
+  // over the header's still-full columns, and WebKit reconciles rows of
+  // differing cell counts differently from Blink; here no row differs.
+  const padL = !!colWin && colWin.lo > 0
+  const padR = !!colWin && colWin.hi < months.length - 1
+  // The placeholder widths are written STRAIGHT ONTO THE CELLS as inline
+  // styles, not as a CSS variable on an ancestor (traced 6 Sep 26): a custom
+  // property changing on `.mx-outer` — any property, even an unused one —
+  // makes Chrome re-style every element under it, ~7,000 on the full year,
+  // ~0.4–0.8s on the slow laptop, and it was written on EVERY month draw. An
+  // inline width on the ~130 placeholder cells costs ~5ms and re-styles nothing
+  // else. Cells mount and unmount with the rows (row window, folds, the mirror
+  // header), so each registers itself through these stable ref hooks, takes the
+  // current width the moment it mounts, and `applyPlaceholders` rewrites the
+  // registered set when a width changes.
+  const phWRef = useRef<{ l: string; r: string }>({ l: '0px', r: '0px' })
+  const phCellsRef = useRef<{ l: Set<HTMLElement>; r: Set<HTMLElement> }>({ l: new Set(), r: new Set() })
+  const phHook = (side: 'l' | 'r'): RefCallback<HTMLTableCellElement> => el => {
+    if (!el) return
+    const set = phCellsRef.current[side]
+    set.add(el)
+    setPhWidth(el, phWRef.current[side])
+    return () => { set.delete(el) }
+  }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const phL = useCallback(phHook('l'), [])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const phR = useCallback(phHook('r'), [])
+  // Each month's MEASURED width (layout px, zoom divided out) once it has been
+  // drawn, by war+zoom: a pruned month's placeholder is then exactly as wide as
+  // the month, so re-drawing it moves nothing. A month never drawn falls back to
+  // an estimate (the average day width × its days) — see colwindow.ts for why
+  // that estimate is never swapped for the real month LEFT of the view while the
+  // scroll is moving.
+  const monthPxRef = useRef<{ key: string; px: (number | null)[] }>({ key: '', px: [] })
+  // Is the Leave War tab on screen right now? A ref, not React state, so the
+  // fill loop below can read it every idle beat without a re-render, and
+  // flipping it (state/screen.ts) never repaints the ~25k-node grid. Seeded from
+  // the live signal so a first mount that is ALREADY the current page (a direct
+  // visit) starts on-screen, and a hidden pre-warm mount starts off-screen.
+  const onScreenRef = useRef(isLwOnScreen())
+  // The first month the viewport currently overlaps (absolute index, drawn or
+  // placeholder), tracked on every scroll event (`measureStrip`) — so when the
+  // tab is left we can shrink the drawn window to a few months AROUND where the
+  // reader was, not blindly.
+  const viewMonthRef = useRef(0)
+  // The visible months (absolute indices) for the phone's rolling target — the
+  // window the prefetch keeps a runway ahead of, updated on every scroll event.
+  const liveVisRef = useRef<{ lo: number; hi: number }>({ lo: 0, hi: 1 })
+  // Restart the background fill loop after it has parked (the tab was shown, or a
+  // scroll moved the phone's rolling target). Set by the fill effect each render.
+  const kickFillRef = useRef<() => void>(() => {})
+  const monthIndexOf = (date: string): number => {
+    const k = date.slice(0, 7)
+    const i = months.findIndex(m => m.first.slice(0, 7) === k)
+    return i < 0 ? 0 : i
+  }
+  const drawnMonths = colWin ? months.slice(colWin.lo, colWin.hi + 1) : months
+  const drawnDays = useMemo(() => {
+    if (!colWin) return period.days
+    const from = months[colWin.lo]!.first.slice(0, 7), to = months[colWin.hi]!.first.slice(0, 7)
+    return period.days.filter(d => { const k = d.date.slice(0, 7); return k >= from && k <= to })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [colWin?.lo, colWin?.hi, version])
+  const drawnDates = useMemo(() => drawnDays.map(d => d.date), [drawnDays])
+  // The drawn days SLICED BY MONTH, each slice keeping its identity for as long
+  // as the war's days do (the cache lives with `version`, like drawnDays):
+  // PersonMonth is memoised on the slice, so a window step re-renders only the
+  // month it adds and every other month's cells bail out at the memo.
+  const monthDaysCache = useMemo(() => new Map<string, DayInfo[]>(), [version])
+  const drawnMonthDays = useMemo(() => {
+    const keys: string[] = []
+    for (const d of drawnDays) { const k = d.date.slice(0, 7); if (keys[keys.length - 1] !== k) keys.push(k) }
+    return keys.map(k => {
+      let s = monthDaysCache.get(k)
+      if (!s) { s = period.days.filter(d => d.date.slice(0, 7) === k); monthDaysCache.set(k, s) }
+      return s
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [drawnDays, monthDaysCache])
+  // The day-column slots a full-width row spans: the drawn days plus the
+  // placeholder cell on each side that exists.
+  const dayCols = drawnDates.length + (padL ? 1 : 0) + (padR ? 1 : 0)
+  // The LIVE columns for anything that runs off a timer or a listener — the
+  // scroll-rest measure, the pre-grow, a resize. Those closures are minted
+  // by an earlier render, and the window can change between the event and
+  // the callback (the 250 ms pre-grow fires right after the first open; a
+  // store change can land mid-scroll): measured against the closure's own,
+  // by-then-stale column list, a month that IS drawn reads as absent and
+  // the measure silently no-ops. Closed as a hazard while chasing a gate
+  // failure that turned out to be the test's own year-wide assumption; kept
+  // because the hazard is real. Every measure reads this ref, never its
+  // closure.
+  const liveRef = useRef({ drawnMonths, drawnDates, people })
+  liveRef.current = { drawnMonths, drawnDates, people }
+  const coarsePointer = () => typeof window.matchMedia === 'function' && window.matchMedia('(pointer: coarse)').matches
+  // The war's month structure for the placeholders' width estimate (see
+  // `monthPx`): days per month. Constant for the war and needs no layout, so a
+  // memo, not a measurement.
+  const yearMonths = useMemo(() => {
+    const monthDays = months.map(() => 0)
+    const idxOf = new Map(months.map((m, i) => [m.first.slice(0, 7), i]))
+    for (const d of period.days) { const i = idxOf.get(d.date.slice(0, 7)); if (i != null) monthDays[i]++ }
+    return { monthDays }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [period.id])
+  // A month-strip jump to an undrawn month: draw around it first, scroll once
+  // those columns exist (the anchor layout effect below finishes it).
+  const pendingJumpRef = useRef<string | null>(null)
+  // A window change that moved columns LEFT of the viewport: the anchor
+  // correction must run even on a coarse pointer (the fling is already dead —
+  // the window only grows left there once the scroll sits at its bound).
+  const colShiftRef = useRef(false)
+  // A different war is a different set of months: start its window over.
+  const warRef = useRef(period.id)
+  useEffect(() => {
+    if (warRef.current === period.id) return
+    warRef.current = period.id
+    const next = hasLayout() ? windowAround(months.length, 0) : null
+    setColWin(prev => (prev && next && prev.lo === next.lo && prev.hi === next.hi ? prev : next))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [period.id])
+
   // The month BRACKET above the dates (owner, 18 Aug 26 — "draw a line at the
   // top of the dates that bracket the month u are looking at"): one spanning
   // cell per month, derived from the loaded days so a partial first or last
   // month brackets exactly the days it actually has on screen.
   const brackets = (() => {
     const out: { key: string; label: string; count: number }[] = []
-    for (const d of dates) {
+    for (const d of drawnDates) {
       const key = d.slice(0, 7)
       const last = out[out.length - 1]
       if (last && last.key === key) last.count++
@@ -576,6 +1104,17 @@ export function Matrix() {
   // offset would be wrong on one of the two devices. Shared by the jump and
   // by the in-view readout, which both need to know where the day columns
   // actually begin.
+  // ---- header-cell lookups (3 Sep 26) -------------------------------------
+  // Every geometry read below wants "the header cell for date X". Searching
+  // for it from the grid WRAPPER walked all ~25,000 nodes per lookup, and the
+  // mount sequence (strip geometry, the row window, the bid box, the anchor)
+  // does thirty-odd of them — measured as the single largest frame of a 10s
+  // first open at 4x. The header is its own tbody of ~370 cells, so the same
+  // selector scoped there is a hundredth of the walk. Same nodes, same answer.
+  const headRef = useRef<HTMLTableSectionElement>(null)
+  const headCell = (date: string | undefined): HTMLElement | null =>
+    date === undefined ? null : headRef.current?.querySelector<HTMLElement>(`[data-testid="head-${date}"]`) ?? null
+
   const frozenWidth = (wrap: HTMLElement): number =>
     ['.who', '.bal']
       .map(sel => wrap.querySelector<HTMLElement>(sel)?.getBoundingClientRect().width ?? 0)
@@ -583,8 +1122,26 @@ export function Matrix() {
 
   const jumpTo = (date: string) => {
     const wrap = wrapRef.current
-    const cell = wrap?.querySelector<HTMLElement>(`[data-testid="head-${date}"]`)
-    if (!wrap || !cell) return
+    if (!wrap) return
+    const win = colWinRef.current
+    const mi = monthIndexOf(date)
+    // Tell the fill engine where the view is ABOUT to be, before the scroll
+    // event does: its first beat after the window change can land before that
+    // event, and reading the stale pre-jump view it would see a window "nowhere
+    // near the view" and replace it — undoing the jump. The scroll event then
+    // confirms the same months.
+    liveVisRef.current = { lo: mi, hi: mi }
+    viewMonthRef.current = mi
+    if (win && (mi < win.lo || mi > win.hi)) {
+      // Not drawn yet. Draw a window around it; the anchor layout effect
+      // scrolls to the cell in the same commit those columns appear.
+      pendingJumpRef.current = date
+      anchorRef.current = null
+      setColWin(windowAround(months.length, mi))
+      return
+    }
+    const cell = headCell(date)
+    if (!cell) return
     // Mark this as a jump so the anchor correction below re-centres it even on
     // touch (see jumpAtRef): a jump can cross many month boundaries at once,
     // hiding rows and shrinking columns enough to leave the target far off the
@@ -743,6 +1300,27 @@ export function Matrix() {
     const y = below + EST_H > window.innerHeight - 6 ? Math.max(6, r.top - EST_H - 6) : below
     setQualPop({ id, x, y })
   }
+  // The chip's quals per person, once per store change (a row prop — a fresh
+  // array per render would defeat the row memo, see PersonRow).
+  const qualsOf = useMemo(() => {
+    const m = new Map<string, QualPill[]>()
+    for (const p of people) m.set(p.id, shownQuals(p))
+    return m
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [version])
+  // The row's event-time callbacks, handed over as ONE stable ref so the memo
+  // never sees a new function prop; the row reads `.current` at event time,
+  // so every handler sees this render's live state (qualPop, the drag).
+  const rowApi = useRef<RowApi>(null!)
+  rowApi.current = {
+    startRowDrag,
+    setWhoOpen,
+    setBalOpen,
+    setOpen,
+    chipEnter: openQualsAt,
+    chipLeave: () => setQualPop(null),
+    chipClick: (p, el) => { if (qualPop?.id === p.id) setQualPop(null); else openQualsAt(p.id, el) },
+  }
   /* The chip: the person's CAT, coloured by CAT (an SXO keeps gold wherever they
      sit). When they hold a displayed qualification it becomes a live control —
      hover (desktop) or tap (phone) to list them; the click is swallowed so it
@@ -829,7 +1407,6 @@ export function Matrix() {
   // does it"): the app top bar stays pinned at the top (sticky, z-index 60), so
   // the mirror freezes just below it (its lower edge) the moment the real header
   // would slide under, at every width. No width gate any more.
-  const headRef = useRef<HTMLTableSectionElement>(null)
   const mirrorRef = useRef<HTMLDivElement>(null)
   const [stuck, setStuck] = useState<{ top: number; left: number; width: number; cols: number[] } | null>(null)
 
@@ -868,6 +1445,24 @@ export function Matrix() {
   // header; and never in jsdom, which has no layout to measure.
   const hbarRef = useRef<HTMLDivElement>(null)
   const [hbar, setHbar] = useState<{ left: number; width: number; scrollW: number } | null>(null)
+  // ---- THE YEAR-WIDE SCROLLBAR (owner, 4 Sep 26 — "the scroll bar at the
+  // bottom keeps adjusting … make it linear … halfway I'm already at the edge")
+  // The Phase-2 column window draws only ~2–4 months, so this proxy bar's spacer
+  // — sized to the DRAWN content — spanned only those months: the thumb filled
+  // most of the bar, "halfway" was the edge, and it RESIZED every time the
+  // window grew. The bar became a YEAR-wide SCRUBBER over an ESTIMATED year
+  // width, jumping the grid to the dragged-to day on release. Since the
+  // PLACEHOLDERS (5 Sep 26) the grid's own scroller is year-wide, so the bar is
+  // a plain proxy again — its spacer is the grid's scrollWidth and a drag SLIDES
+  // the grid, the fill drawing the months under the view as it goes. Desktop
+  // only (a phone finger-scrolls the grid and shows no proxy bar).
+  const hbarUserTsRef = useRef(0)              // last time the bar itself was dragged
+  const hbarWantRef = useRef<number | null>(null) // the follow-write we expect back as an echo
+  // The measured average day-column width + the frozen-column width, cached by
+  // war+zoom — the ESTIMATE a placeholder uses for a month never yet drawn (see
+  // `applyPlaceholders`). Only a new war or a zoom step re-measures. Taken from
+  // whatever is drawn at first measure; two months is plenty representative.
+  const avgDayWRef = useRef<{ key: string; avg: number; frozen: number } | null>(null)
 
   useEffect(() => {
     setStuck(null)
@@ -930,8 +1525,10 @@ export function Matrix() {
     // the columns a removed row's chips had widened, and a stuck mirror
     // pinning the OLD widths would sit misaligned over the new ones.
     // `folded` (28 Aug 26) is the same kind of row-set change — minimising a
-    // category takes its rows (and their chips) out of the table.
-  }, [period.id, dates.length, zoom, visWindow, folded])
+    // category takes its rows (and their chips) out of the table. The window's
+    // EDGES (5 Sep 26): two windows a month apart can hold the same day count,
+    // and the pinned widths would be the wrong months'.
+  }, [period.id, drawnDates.length, colWin?.lo, colWin?.hi, zoom, visWindow, folded])
 
   // The mirror starts life at the grid's current horizontal position, and the
   // two scrollers keep each other in lockstep from then on. Assigning an
@@ -946,7 +1543,9 @@ export function Matrix() {
         // make sure the bar knows the grid's travel the instant it appears, so
         // its very first painted frame is already in step; a stale or zero
         // --lwx-max would pin the day columns at the left until the next layout.
-        mxOuterRef.current?.style.setProperty('--lwx-max', String(Math.max(0, (w.scrollWidth - w.clientWidth) / zoom)))
+        // On the bar's own box, not `.mx-outer`: a custom property changing on
+        // the grid's ancestor re-styles the whole grid (see applyPlaceholders).
+        mirrorRef.current.style.setProperty('--lwx-max', String(Math.max(0, (w.scrollWidth - w.clientWidth) / zoom)))
       } else {
         // JS-mirror fallback: start the mirror at the grid's position.
         mirrorRef.current.scrollLeft = w.scrollLeft
@@ -972,7 +1571,7 @@ export function Matrix() {
       window.removeEventListener('resize', measureHbar)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [phone, zoom, visWindow, period.id, dates.length, countsOpen, folded])
+  }, [phone, zoom, visWindow, period.id, drawnDates.length, countsOpen, folded])
   // The mirror FOLLOWS the grid and never drives it (owner, 20 Aug 26 — the
   // sixth report, and the one that found it: "when the top bar freezes the
   // sideways scroll can only move a bit and halts quickly"). It used to be a
@@ -995,18 +1594,38 @@ export function Matrix() {
     if (m && w && m.scrollLeft !== w.scrollLeft) m.scrollLeft = w.scrollLeft
   }
 
-  // The bottom scrollbar follows the grid; the compare stops the two writing
-  // to each other forever (an unchanged scrollLeft fires no event).
+  // The year-wide scrubber FOLLOWS the grid. Since the placeholders (5 Sep 26)
+  // the grid's own scroller IS year-wide — the bar's spacer is simply its
+  // scrollWidth — so the follow is a straight copy of scrollLeft, no year-space
+  // estimate needed. Suppressed for a beat after the bar itself is dragged
+  // (`hbarUserTsRef`), so the grid never writes the thumb back out from under
+  // the finger; it re-settles once the drag is done. No-op when the bar is not
+  // shown (ref is null).
   const syncHbar = () => {
-    const h = hbarRef.current, w = wrapRef.current
-    if (h && w && h.scrollLeft !== w.scrollLeft) h.scrollLeft = w.scrollLeft
+    const h = hbarRef.current, wrap = wrapRef.current
+    if (!h || !wrap) return
+    if (Date.now() - hbarUserTsRef.current < 250) return
+    const v = Math.min(Math.max(0, h.scrollWidth - h.clientWidth), Math.max(0, wrap.scrollLeft))
+    if (Math.abs(h.scrollLeft - v) <= 1) return
+    hbarWantRef.current = v
+    h.scrollLeft = v
   }
-  // ...and the grid follows the bottom scrollbar when THAT is the one dragged.
-  // Writing wrap.scrollLeft fires the wrap's own onScroll, which calls
-  // syncHbar — equal by then, so it no-ops and the pair rests.
+  // ...and dragging the scrubber SLIDES the grid: the bar's position maps
+  // straight onto the grid's real scroll, and the grid's own scroll handler
+  // lights the month strip and kicks the fill, which draws the months under the
+  // moving view in place (the placeholders make every position real). It used
+  // to JUMP on release while months were still filling in, because the scroller
+  // only spanned the drawn months; that ration is gone with them.
   const onHbarScroll = () => {
-    const h = hbarRef.current, w = wrapRef.current
-    if (h && w && w.scrollLeft !== h.scrollLeft) w.scrollLeft = h.scrollLeft
+    const h = hbarRef.current, wrap = wrapRef.current
+    if (!h || !wrap) return
+    // Our own follow-write (syncHbar) echoes back as a scroll event — ignore it.
+    if (hbarWantRef.current != null && Math.abs(h.scrollLeft - hbarWantRef.current) <= 1) { hbarWantRef.current = null; return }
+    hbarWantRef.current = null
+    hbarUserTsRef.current = Date.now()
+    const hMax = h.scrollWidth - h.clientWidth
+    const wMax = wrap.scrollWidth - wrap.clientWidth
+    wrap.scrollLeft = hMax > 0 ? Math.round((h.scrollLeft / hMax) * wMax) : 0
   }
   // Only write state when the bar's presence or dimensions actually change:
   // measureHbar runs on every vertical page scroll, and this component renders
@@ -1032,6 +1651,9 @@ export function Matrix() {
     if (overflow <= 1 || r.width === 0 || r.bottom <= window.innerHeight || r.bottom <= 0 || r.top >= window.innerHeight) {
       applyHbar(null); return
     }
+    // The spacer is the grid's own scroll width — year-wide since the
+    // placeholders (5 Sep 26), so the thumb is year-proportional and only ever
+    // shifts by the few pixels an estimated month gains or loses when drawn.
     applyHbar({ left: r.left, width: r.width, scrollW: w.scrollWidth })
   }
 
@@ -1091,6 +1713,7 @@ export function Matrix() {
           >⠿ {arranging ? 'Rearranging' : 'Rearrange'}</button>
         )}
       </th>
+      {padL && <th className="lwph lwph-l" ref={phL} />}
       {brackets.map(b => (
         <th key={b.key} className="brakm" data-testid={testids ? `bracket-${b.key}` : undefined} colSpan={b.count}>
           <div className="brakin">
@@ -1098,6 +1721,7 @@ export function Matrix() {
           </div>
         </th>
       ))}
+      {padR && <th className="lwph lwph-r" ref={phR} />}
     </tr>
   )
 
@@ -1141,7 +1765,8 @@ export function Matrix() {
           </span>
         </button>
       </th>
-      {period.days.map(d => {
+      {padL && <th className="lwph lwph-l" ref={phL} />}
+      {drawnDays.map(d => {
         const mon = monthLabel(d.date)
         return (
           <th
@@ -1160,6 +1785,7 @@ export function Matrix() {
           </th>
         )
       })}
+      {padR && <th className="lwph lwph-r" ref={phR} />}
     </tr>
   )
 
@@ -1169,15 +1795,16 @@ export function Matrix() {
   // 365, which is what makes measuring this on every scroll event affordable.
   const readSpans = () => {
     const wrap = wrapRef.current
-    if (!wrap || months.length === 0 || dates.length === 0) return null
+    const { drawnMonths, drawnDates } = liveRef.current
+    if (!wrap || drawnMonths.length === 0 || drawnDates.length === 0) return null
     const headLeft = (date: string) =>
-      wrap.querySelector<HTMLElement>(`[data-testid="head-${date}"]`)?.getBoundingClientRect().left
-    const lastHead = wrap.querySelector<HTMLElement>(`[data-testid="head-${dates[dates.length - 1]}"]`)
+      headCell(date)?.getBoundingClientRect().left
+    const lastHead = headCell(drawnDates[drawnDates.length - 1])
     if (!lastHead) return null
-    const edges = months.map(m => headLeft(m.first))
+    const edges = drawnMonths.map(m => headLeft(m.first))
     if (edges.some(e => e === undefined)) return null
     const end = lastHead.getBoundingClientRect().right
-    const spans = months.map((m, i) => ({
+    const spans = drawnMonths.map((m, i) => ({
       label: m.label,
       left: edges[i]!,
       // A month runs up to where the next one starts; the last runs to the
@@ -1225,23 +1852,27 @@ export function Matrix() {
 
   const measureStripGeo = () => {
     const wrap = wrapRef.current
-    if (!wrap || months.length === 0 || dates.length === 0) { stripGeoRef.current = null; return }
+    const { drawnMonths, drawnDates } = liveRef.current
+    if (!wrap || drawnMonths.length === 0 || drawnDates.length === 0) { stripGeoRef.current = null; return }
     // The scroll-driven frozen bar (sdaActive) translates its day columns from 0
     // to -(--lwx-max)px across the grid's whole scroll range, so --lwx-max must
     // equal the grid's max scrollLeft — divided back out of the mirror table's
     // own zoom, since the transform lands in that table's zoomed local space
     // (mirror render below). It only shifts on a real layout change (resize,
     // zoom, row-window, war), which is exactly when this runs; never per frame.
+    // Written on the bar's own box (null until the bar is stuck — the stuck
+    // effect seeds it then), never on `.mx-outer`: a custom property changing on
+    // the grid's ancestor re-styles the whole grid (see applyPlaceholders).
     if (sdaActive) {
-      mxOuterRef.current?.style.setProperty('--lwx-max', String(Math.max(0, (wrap.scrollWidth - wrap.clientWidth) / zoom)))
+      mirrorRef.current?.style.setProperty('--lwx-max', String(Math.max(0, (wrap.scrollWidth - wrap.clientWidth) / zoom)))
     }
     const wr = wrap.getBoundingClientRect()
     const sl = wrap.scrollLeft
     // viewport px -> content px: constant across any scroll position
     const contentL = (el: HTMLElement) => el.getBoundingClientRect().left - wr.left + sl
-    const head = (d: string) => wrap.querySelector<HTMLElement>(`[data-testid="head-${d}"]`)
-    const firsts = months.map(m => head(m.first))
-    const lastHead = head(dates[dates.length - 1]!)
+    const head = (d: string) => headCell(d)
+    const firsts = drawnMonths.map(m => head(m.first))
+    const lastHead = head(drawnDates[drawnDates.length - 1]!)
     if (!lastHead || firsts.some(e => !e)) { stripGeoRef.current = null; return }
     const edges = firsts.map(e => contentL(e!))
     const end = lastHead.getBoundingClientRect().right - wr.left + sl
@@ -1249,17 +1880,91 @@ export function Matrix() {
     // month's overlap 0 and the readout permanently null, so leave the cache
     // empty and let measureStrip no-op exactly as it did before.
     if (end <= edges[0]!) { stripGeoRef.current = null; return }
+    const drawn = drawnMonths.map((m, i) => ({
+      label: m.label,
+      left: edges[i]!,
+      right: i + 1 < edges.length ? edges[i + 1]! : end,
+    }))
+    const frozen = frozenWidth(wrap)
+    // The placeholders' day-width estimate rides this same measurement, and
+    // the drawn months' real widths go into the cache the placeholders read.
+    measureAvgDayW(drawn, frozen)
+    const win = colWinRef.current
+    const lo = win?.lo ?? 0
+    const px = monthPxCache()
+    for (let i = 0; i < drawn.length; i++) px[lo + i] = (drawn[i]!.right - drawn[i]!.left) / zoom
+    // One span per month of the WAR, drawn or placeholder — the undrawn months
+    // laid out at their placeholder widths on either side of the measured ones,
+    // so the readout lights the month a placeholder stands for and the fill
+    // engine knows which months the view is over before they exist.
+    const spans: { label: string; left: number; right: number }[] = []
+    let x = drawn[0]!.left
+    for (let m = lo - 1; m >= 0; m--) x -= monthPx(m) * zoom
+    for (let m = 0; m < lo; m++) { const w = monthPx(m) * zoom; spans.push({ label: months[m]!.label, left: x, right: x + w }); x += w }
+    for (const s of drawn) spans.push(s)
+    x = end
+    for (let m = lo + drawn.length; m < months.length; m++) { const w = monthPx(m) * zoom; spans.push({ label: months[m]!.label, left: x, right: x + w }); x += w }
     stripGeoRef.current = {
-      spans: months.map((m, i) => ({
-        label: m.label,
-        left: edges[i]!,
-        right: i + 1 < edges.length ? edges[i + 1]! : end,
-      })),
-      frozen: frozenWidth(wrap),
+      spans,
+      frozen,
       // the wrapper's own rect, not clientWidth: every other edge above is
       // measured from a rect, and mixing the two invites an off-by-a-scrollbar
       client: wr.width,
     }
+    // Newly cached widths can change a placeholder's width (a month that was
+    // an estimate is now measured) — write them through before the next paint.
+    applyPlaceholders()
+  }
+
+  // Lock in the average day-column width (and the frozen width) the first time
+  // the strip geometry is measured for this war+zoom; reused thereafter so a
+  // never-drawn month's estimate does not wander as the window grows.
+  const measureAvgDayW = (drawn: { left: number; right: number }[], frozen: number) => {
+    const n = liveRef.current.drawnDates.length
+    if (drawn.length === 0 || n === 0) return
+    const key = `${period.id}|${zoom}`
+    if (avgDayWRef.current?.key === key) return
+    const avg = (drawn[drawn.length - 1]!.right - drawn[0]!.left) / n
+    if (avg > 0) avgDayWRef.current = { key, avg, frozen }
+  }
+  // The per-month width cache for this war+zoom (a zoom step changes every
+  // width; a new war is a new set of months) — started fresh when the key moves.
+  const monthPxCache = (): (number | null)[] => {
+    const key = `${period.id}|${zoom}`
+    if (monthPxRef.current.key !== key) monthPxRef.current = { key, px: months.map(() => null) }
+    return monthPxRef.current.px
+  }
+  // A month's width in LAYOUT px (the table's own space, zoom divided out — the
+  // placeholder's `width` is set in that space): measured if it has ever been
+  // drawn, else the average day width × its days, else a plain guess for the
+  // beat before the first measurement.
+  const monthPx = (m: number): number => {
+    const cached = monthPxCache()[m]
+    if (cached != null) return cached
+    const a = avgDayWRef.current
+    return (a ? a.avg / zoom : 30) * (yearMonths.monthDays[m] ?? 30)
+  }
+  // Size the placeholder cells: the sum of the undrawn months on each side,
+  // written as an inline width on every registered placeholder cell (each
+  // row's, and the mirror header's copy) — React never sets a style on these
+  // cells, so the widths survive its renders, and a cell that mounts later
+  // takes the current width through its ref hook (`phL`/`phR` above). Runs in
+  // the layout effects below, in the same commit as the window change, so a
+  // month swapping between placeholder and drawn never paints at two widths.
+  // Skipped when nothing changed: the cells are the only thing touched, but a
+  // no-op write still dirties their style.
+  const applyPlaceholders = () => {
+    const win = colWinRef.current
+    let l = 0, r = 0
+    if (win) {
+      for (let m = 0; m < win.lo; m++) l += monthPx(m)
+      for (let m = win.hi + 1; m < months.length; m++) r += monthPx(m)
+    }
+    const next = { l: `${l.toFixed(2)}px`, r: `${r.toFixed(2)}px` }
+    const prev = phWRef.current
+    phWRef.current = next
+    if (next.l !== prev.l) for (const el of phCellsRef.current.l) setPhWidth(el, next.l)
+    if (next.r !== prev.r) for (const el of phCellsRef.current.r) setPhWidth(el, next.r)
   }
 
   // The hot path: no DOM search, no rect read, no forced layout — one
@@ -1280,6 +1985,14 @@ export function Matrix() {
     if (!g) return
     const sl = wrap.scrollLeft
     paintInView(monthInView(g.spans, sl + g.frozen, sl + g.client))
+    // Which months (absolute indices, drawn or placeholder) the view is over —
+    // what the fill engine's rolling target follows, and where the grid shrinks
+    // to around when the tab is left. Same twelve numbers, no extra read.
+    const vis = visibleSpan(g.spans, sl + g.frozen, sl + g.client)
+    if (vis) {
+      liveVisRef.current = { lo: vis.visLo, hi: vis.visHi }
+      viewMonthRef.current = vis.visLo
+    }
   }
 
   // The row WINDOW for the roster filter — the expensive half. Changing it
@@ -1291,6 +2004,24 @@ export function Matrix() {
   // is invisible. Only from a real layout: jsdom reports every rect 0×0, the
   // spans have no width, and a zero-width "window" must leave visWindow at ''
   // (show everyone) rather than hide the whole roster.
+  // The first drawn column at or past the frozen edge, and where it sits —
+  // what a column-set change (rows hidden, months added or dropped on the
+  // left) puts back in the same place. Binary search — column lefts are
+  // monotonic — so ~9 rect reads. Shared by the row window and the column
+  // window so the two corrections cannot disagree.
+  const anchorNow = (wrap: HTMLElement): { date: string; left: number } | null => {
+    const { drawnDates } = liveRef.current
+    if (drawnDates.length === 0) return null
+    const viewL = wrap.getBoundingClientRect().left + frozenWidth(wrap)
+    const at = (i: number) => headCell(drawnDates[i])?.getBoundingClientRect().left ?? 0
+    let lo = 0, hi = drawnDates.length - 1, best = 0
+    while (lo <= hi) {
+      const mid = (lo + hi) >> 1
+      if (at(mid) >= viewL - 1) { best = mid; hi = mid - 1 } else lo = mid + 1
+    }
+    return { date: drawnDates[best]!, left: at(best) }
+  }
+
   const measureWindow = () => {
     const m = readSpans()
     if (!m) return
@@ -1299,28 +2030,21 @@ export function Matrix() {
       // >2px of overlap, not >0: a month jump aligns the next month's first
       // column to the frozen edge by integer scrollLeft, and a sub-pixel
       // sliver of the month being LEFT must not count as still viewing it.
+      const { drawnMonths, people } = liveRef.current
       const vis = spans
-        .map((s, i) => ({ s, key: months[i]!.first.slice(0, 7) }))
+        .map((s, i) => ({ s, key: drawnMonths[i]!.first.slice(0, 7) }))
         .filter(x => Math.min(x.s.right, viewR) - Math.max(x.s.left, viewL) > 2)
       if (vis.length) {
         const win = `${vis[0]!.key}|${vis[vis.length - 1]!.key}`
         const sig = people.filter(p => rowInWindow(p, win)).map(p => p.id).join(',')
         if (sig !== visSigRef.current) {
           // Capture where the FIRST VISIBLE DAY column sits NOW; the layout
-          // effect below puts it back after the repaint (see anchorRef). It
-          // has to be the day at the view's left edge, not the month's first
-          // day: a hidden row's chips widened columns on BOTH sides of any
+          // effect below puts it back after the repaint (see anchorRef and
+          // anchorNow: the day at the view's left edge, not the month's first
+          // day — a hidden row's chips widened columns on BOTH sides of any
           // other anchor, and compensating an off-screen one leaves the
-          // residual on screen. Binary search — column lefts are monotonic —
-          // so this is ~9 rect reads, and only on a row-set change.
-          const at = (i: number) =>
-            wrap.querySelector<HTMLElement>(`[data-testid="head-${dates[i]}"]`)?.getBoundingClientRect().left ?? 0
-          let lo = 0, hi = dates.length - 1, best = 0
-          while (lo <= hi) {
-            const mid = (lo + hi) >> 1
-            if (at(mid) >= viewL - 1) { best = mid; hi = mid - 1 } else lo = mid + 1
-          }
-          anchorRef.current = { date: dates[best]!, left: at(best) }
+          // residual on screen).
+          anchorRef.current = anchorNow(wrap)
           visSigRef.current = sig
           setVisWindow(win)
         }
@@ -1336,7 +2060,12 @@ export function Matrix() {
   // the scroll comes to rest — never under a moving finger.
   const SCROLL_REST_MS = 120
   const idleRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  // When the grid was last scrolled — the background fill waits for this to go
+  // quiet before drawing a month, so a fill draw never lands under a moving
+  // scroll (which is the very freeze this whole thing exists to avoid).
+  const lastScrollTsRef = useRef(0)
   const onWrapScroll = () => {
+    lastScrollTsRef.current = Date.now()
     // The frozen-column overlay sits ON TOP of the real columns. At rest
     // (scrollLeft 0) it must let a tap fall THROUGH to the real cell beneath —
     // that cell still carries the handler, the testid and the focus seat — so
@@ -1350,6 +2079,13 @@ export function Matrix() {
     // but it never sets `pointer-events`, so this property is left alone.
     if (bandRef.current) bandRef.current.style.pointerEvents = (wrapRef.current?.scrollLeft ?? 0) > 0 ? 'auto' : 'none'
     measureStrip()
+    // Draw WHILE MOVING (owner, 5 Sep 26): the view's months just moved
+    // (measureStrip updated them), so wake the fill engine now — it draws the
+    // next month in place if the drawn edge is within the runway, or parks again
+    // at once if not (arithmetic, no DOM). The scroller is year-wide, so there is
+    // always somewhere to scroll; this is what puts the columns under the finger
+    // before it gets there.
+    kickFillRef.current()
     // Match this frame straight away, then keep matching every frame on the
     // rAF loop until the scroll rests — the immediate write covers the case
     // where the loop has not spun up yet, the loop covers the frames the
@@ -1360,18 +2096,200 @@ export function Matrix() {
     syncHbar()
     startPump()
     if (idleRef.current) clearTimeout(idleRef.current)
-    idleRef.current = setTimeout(() => { idleRef.current = null; measureWindow() }, SCROLL_REST_MS)
+    idleRef.current = setTimeout(() => {
+      idleRef.current = null
+      measureWindow()
+      // At rest the fill may also PRUNE the trailing months and draw an
+      // estimated-width month on the left (the anchor makes that invisible now
+      // the grid is still) — the steps it holds back while moving.
+      kickFillRef.current()
+    }, SCROLL_REST_MS)
   }
   useEffect(() => () => { if (idleRef.current) clearTimeout(idleRef.current); stopPump() }, [])
 
-  // Both halves measured when the war changes, since that rebuilds every
-  // column — and NOT mid-fling, so the window half runs directly here.
+  // The WINDOW half measured when the war changes (that rebuilds every column)
+  // and when a month draw lands (the view may now sit over real columns where
+  // it sat over a placeholder). A draw can land WHILE THE GRID IS STILL MOVING
+  // (the in-motion fill kicked from every scroll event), and this must never
+  // reflow the row set under a moving finger or write scrollLeft into a fling
+  // — so while the rest debounce is pending the run is skipped: the rest
+  // handler measures the window once the scroll settles, and a draw it kicks
+  // lands at rest and runs here (bug-hunt fix, 6 Sep 26). The strip half is
+  // NOT repeated: the layout effect below (same deps, plus zoom / visWindow)
+  // has already measured it in this very commit, and doing it twice cost a
+  // second set of header lookups and rect reads on every first open (3 Sep 26).
   useEffect(() => {
-    measureStripGeo()
-    measureStrip()
+    if (idleRef.current) return
     measureWindow()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [period.id, dates.length])
+  }, [period.id, drawnDates.length])
+
+  // How many months the drawn window holds while the tab is HIDDEN (a pre-warm
+  // mount, or after the tab is left) — small, so the browser re-styles a few
+  // months on reveal instead of the whole year (owner, 5 Sep 26, after
+  // measurement showed the full-year reveal costs ~1.4s). The phone's rolling
+  // runway: a few months AHEAD of the finger, one behind.
+  const HIDDEN_MONTHS = 3
+  const PHONE_BEFORE = 1
+  const PHONE_AFTER = 3
+  // The pre-warm draws only while the user has been hands-off this long, so a
+  // draw never lands under a keystroke on the login-to-week path or a puck drag.
+  const PREWARM_IDLE_MS = 2000
+
+  // THE ONE DRAW-TOWARD-A-TARGET ENGINE (owner, 4–5 Sep 26 — "fill in the
+  // background", then "shrink when I leave, rebuild on return", then the phone's
+  // "load the next months as I approach the edge", then "do the placeholders +
+  // moving"). One loop, one target per mode, one month per beat — colwindow.ts
+  // `stepToward` is the arithmetic:
+  //   · phone → a ROLLING window a few months ahead of the visible ones
+  //     (`rollingTarget`), so a flick meets drawn columns, never a stuck edge,
+  //     and the trailing months are pruned so the phone's DOM stays light;
+  //   · desktop, tab ON screen → the WHOLE year, so scrolling runs end to end
+  //     with nothing left to draw and the bottom scrollbar slides;
+  //   · desktop, tab OFF screen (a pre-warm mount, or just left) → capped at a few
+  //     months, and only drawn while the user is idle (`msSinceInput`) — this is
+  //     the pre-warm that makes the first open instant, and the small window that
+  //     makes the next return instant.
+  // WHILE THE SCROLL IS MOVING the engine keeps drawing — that is the whole
+  // point of the placeholders: the months under and ahead of the moving view
+  // land in place, so the reader sees columns arrive rather than a stuck edge.
+  // Each draw is still one synchronous month-build on the main thread (the
+  // freeze the owner felt on the mockup and chose), so it is rationed to the
+  // steps that cannot hop the content under the finger — `stepAllowedInMotion`:
+  // growth only, and on the left only over a month whose width is already
+  // measured. A prune, and a left grow over an estimated width, wait for rest,
+  // where the anchor correction hides the shift. In motion the beat is a short
+  // timeout (requestIdleCallback is starved by an active scroll); at rest it is
+  // an idle callback, so a beat never competes with a paint. The loop PARKS when
+  // the window matches its target and is resumed by `kickFillRef` — from every
+  // scroll event (the view moved), from scroll rest (the held-back steps), and
+  // from the on-screen effect (tab shown). jsdom lays nothing out, so colWin is
+  // null (draw-whole) and this no-ops; the browser gate proves it.
+  const fillIdleRef = useRef<{ id: number; idle: boolean } | null>(null)
+  useEffect(() => {
+    if (!colWin) return
+    let live = true
+    const moving = () => Date.now() - lastScrollTsRef.current < SCROLL_REST_MS + 40
+    const rideIdle = (fn: () => void): { id: number; idle: boolean } =>
+      typeof (window as { requestIdleCallback?: unknown }).requestIdleCallback === 'function'
+        ? { id: (window as unknown as { requestIdleCallback: (cb: () => void, o: { timeout: number }) => number }).requestIdleCallback(fn, { timeout: 500 }), idle: true }
+        : { id: window.setTimeout(fn, 48), idle: false }
+    const rideSoon = (fn: () => void): { id: number; idle: boolean } => ({ id: window.setTimeout(fn, 16), idle: false })
+    const drop = (h: { id: number; idle: boolean }) => {
+      if (h.idle && typeof (window as { cancelIdleCallback?: unknown }).cancelIdleCallback === 'function') {
+        (window as unknown as { cancelIdleCallback: (id: number) => void }).cancelIdleCallback(h.id)
+      } else clearTimeout(h.id)
+    }
+    const schedule = () => { if (fillIdleRef.current == null) fillIdleRef.current = (moving() ? rideSoon : rideIdle)(tick) }
+    const tick = () => {
+      fillIdleRef.current = null
+      if (!live) return
+      // While the tab is hidden a draw must wait for the app to be genuinely
+      // idle, so it never lands under a keystroke or a puck drag on another page.
+      const idleOk = onScreenRef.current || msSinceInput() > PREWARM_IDLE_MS
+      if (!idleOk) { schedule(); return }
+      const win = colWinRef.current
+      if (!win) return
+      const last = months.length - 1
+      const v = liveVisRef.current
+      // THE VIEW COMES FIRST. The scroller is year-wide, so a scrubber drag or a
+      // long fling can park the view over placeholders nowhere near the drawn
+      // window; stepping toward it a month at a time would draw every unseen
+      // month in between before the one on screen. So when the drawn window is
+      // not even adjacent to the visible months, REPLACE it with them — the
+      // months on screen land in one draw, and the steps below add the runway
+      // (or the rest of the year) outward from there. No anchor: everything
+      // left of the view keeps its width (drawn months become placeholders of
+      // the same measured width), so the view's left edge holds still.
+      if (onScreenRef.current && (v.lo > win.hi + 1 || v.hi < win.lo - 1)) {
+        anchorRef.current = null
+        colShiftRef.current = false
+        setColWin(clampWin({ lo: v.lo, hi: v.hi }, months.length))
+        return
+      }
+      let tLo: number, tHi: number
+      if (phone) {
+        const t = rollingTarget(months.length, v.lo, v.hi, PHONE_BEFORE, PHONE_AFTER)
+        tLo = t.lo; tHi = t.hi
+      } else if (onScreenRef.current) {
+        tLo = 0; tHi = last                                   // the whole year
+      } else {
+        tLo = win.lo; tHi = Math.min(last, win.lo + HIDDEN_MONTHS - 1) // capped while hidden
+      }
+      const next = stepToward(win, months.length, tLo, tHi)
+      if (next.lo === win.lo && next.hi === win.hi) return    // parked — kickFillRef resumes
+      const inMotion = moving()
+      if (inMotion && !stepAllowedInMotion(win, next, m => monthPxCache()[m] != null)) {
+        // Not safe under a moving scroll: look again once the moving window has
+        // passed. The scroll-rest kick itself lands INSIDE that window (it fires
+        // 120 ms after the last scroll event, the window is 160), so it cannot be
+        // the retry — without this the held-back prune / left grow would wait for
+        // the next scroll, and a phone parked after a long fling kept all twelve
+        // months (caught on the built bundle, 5 Sep 26).
+        fillIdleRef.current = { id: window.setTimeout(tick, SCROLL_REST_MS), idle: false }
+        return
+      }
+      // A month added or dropped on the LEFT shifts the content; keep the reader's
+      // column in place with the same anchor the jump path uses. At rest that is
+      // invisible. In motion the step only ever swaps a placeholder for a month
+      // of the SAME width, so the shift is nil — and on a touch screen the anchor
+      // is skipped altogether, because the `scrollLeft` write that would fix a
+      // stray pixel is exactly what kills a fling (the 30 Aug history). A
+      // rightward step writes none.
+      if (next.lo !== win.lo && !(inMotion && coarsePointer())) {
+        const wrap = wrapRef.current
+        if (wrap) { anchorRef.current = anchorNow(wrap); colShiftRef.current = true }
+      }
+      setColWin(next) // re-runs this effect, which schedules the next beat
+    }
+    kickFillRef.current = () => { if (live) schedule() }
+    schedule()
+    return () => {
+      live = false
+      kickFillRef.current = () => {}
+      if (fillIdleRef.current != null) { drop(fillIdleRef.current); fillIdleRef.current = null }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [phone, colWin?.lo, colWin?.hi, months.length])
+
+  // SHRINK ON LEAVE, REBUILD ON RETURN (owner, 5 Sep 26). Desktop only — the
+  // phone already windows. When the tab is LEFT, drop the drawn window back to a
+  // few months around where the reader was, so the next reveal wakes a small
+  // grid (the fill above then rebuilds the year once the tab is shown again, its
+  // left-anchor keeping the reader's month in place as the earlier months fill in
+  // behind them). Only on a real on→off / off→on transition, never on the first
+  // mount (a fresh pre-warm mount is left to the fill's hidden cap; a direct
+  // visit is left to fill the year). The signal is a listener set, not the store,
+  // so none of this re-renders the grid (state/screen.ts).
+  const prevOnRef = useRef(onScreenRef.current)
+  useEffect(() => {
+    const apply = () => {
+      const on = isLwOnScreen()
+      const prev = prevOnRef.current
+      prevOnRef.current = on
+      onScreenRef.current = on
+      if (phone) return
+      const win = colWinRef.current
+      if (!win) return                       // short war drawn whole — nothing to window
+      if (on) { if (!prev) kickFillRef.current(); return } // shown → resume filling the year
+      if (!prev) return                      // already hidden at mount → the fill's cap handles it
+      // on → off: shrink around the reader's month. The months dropped become
+      // placeholders at their MEASURED widths, so nothing moves and the scroll
+      // position is exactly where the reader left it on return — the fill then
+      // re-expands from there.
+      const last = months.length - 1
+      const view = Math.max(0, Math.min(viewMonthRef.current, last))
+      const small = clampWin({ lo: view, hi: view + HIDDEN_MONTHS - 1 }, months.length)
+      if (small.lo !== win.lo || small.hi !== win.hi) {
+        anchorRef.current = null
+        colShiftRef.current = false
+        setColWin(small)
+      }
+    }
+    apply()
+    return subLwScreen(apply)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [phone, months.length])
 
   // Everything else that moves a column edge, and so invalidates the cached
   // strip geometry: a zoom step (every width changes), a row-set reflow (the
@@ -1382,12 +2300,20 @@ export function Matrix() {
   // stale cache. The strip is re-read straight after, so the readout is right
   // immediately rather than at the next scroll event.
   useLayoutEffect(() => {
-    const remeasure = () => { measureStripGeo(); measureStrip() }
+    // The placeholders FIRST, from the cache and the estimate, so the drawn
+    // months are measured at their final positions (a left placeholder shifts
+    // everything after it); measureStripGeo writes them again once it has cached
+    // the widths it just measured. measureHbar/syncHbar too: the proxy spacer
+    // tracks the grid's scroll width and the thumb its position.
+    const remeasure = () => { applyPlaceholders(); measureStripGeo(); measureStrip(); measureHbar(); syncHbar() }
     remeasure()
     window.addEventListener('resize', remeasure)
     return () => window.removeEventListener('resize', remeasure)
+    // The window's EDGES are deps, not only the drawn-day count: two windows a
+    // month apart can hold the same number of days (Mar+Apr and May+Jun both
+    // span 61), and the placeholders and spans would be a month off.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [zoom, visWindow, period.id, dates.length])
+  }, [zoom, visWindow, period.id, drawnDates.length, colWin?.lo, colWin?.hi])
 
   // Put the anchored column back after a row-set repaint (see anchorRef).
   // Layout effect, not effect: the correction must land in the same frame as
@@ -1417,21 +2343,36 @@ export function Matrix() {
   // mouse/trackpad (fine pointer, no touch inertia to protect) always
   // re-centres, so desktop is unchanged.
   useLayoutEffect(() => {
+    // A month-strip jump that had to draw its month first lands here, in the
+    // commit that drew it: the scroll the jump could not make yet.
+    const pj = pendingJumpRef.current
+    if (pj) {
+      pendingJumpRef.current = null
+      anchorRef.current = null
+      const wrap = wrapRef.current, cell = headCell(pj)
+      if (wrap && cell) {
+        jumpAtRef.current = Date.now()
+        wrap.scrollLeft += cell.getBoundingClientRect().left - wrap.getBoundingClientRect().left - frozenWidth(wrap)
+      }
+      return
+    }
     const a = anchorRef.current
     anchorRef.current = null
+    const colShift = colShiftRef.current
+    colShiftRef.current = false
     if (!a) return
     const wrap = wrapRef.current
-    const cell = wrap?.querySelector<HTMLElement>(`[data-testid="head-${a.date}"]`)
+    const cell = headCell(a.date)
     if (!wrap || !cell) return
-    const coarse = typeof window.matchMedia === 'function' && window.matchMedia('(pointer: coarse)').matches
+    const coarse = coarsePointer()
     // The window has to hold the programmatic scroll, the 120ms rest debounce
     // and the grid's repaint; 1200ms is comfortably clear of all three and
     // still far shorter than the gap before a deliberate follow-up flick.
     const fromJump = Date.now() - jumpAtRef.current < 1200
-    if (coarse && !fromJump) return
+    if (coarse && !fromJump && !colShift) return
     const shift = cell.getBoundingClientRect().left - a.left
     if (Math.abs(shift) > 1) wrap.scrollLeft += shift
-  }, [visWindow])
+  }, [visWindow, colWin?.lo, colWin?.hi])
 
   // Reserve exactly the month strip's own height on its sticky cell, so the
   // wrapped rows (three on a phone, more at a high zoom) never overflow into
@@ -1454,7 +2395,7 @@ export function Matrix() {
     measure()
     window.addEventListener('resize', measure)
     return () => window.removeEventListener('resize', measure)
-  }, [zoom, period.id, dates.length])
+  }, [zoom, period.id, drawnDates.length])
 
   // ---- the OPEN-BIDDING box (owner, 1 Sep 26) -----------------------------
   // A glowing dark-green rectangle around the columns open for bidding, so it
@@ -1475,15 +2416,21 @@ export function Matrix() {
   // as a day cell does when the year scrolls under the frozen columns.
   // Measured in the same layout signals as the month strip; jsdom (every rect
   // 0×0) leaves it null, which also keeps every geometry-free test honest.
-  const [bidBox, setBidBox] = useState<{ left: number; top: number; width: number; height: number } | null>(null)
+  const [bidBox, setBidBox] = useState<{ left: number; top: number; width: number; height: number; cutL: boolean; cutR: boolean } | null>(null)
   const measureBidBox = () => {
     const wrap = wrapRef.current, head = headRef.current
     if (!wrap || !head) return
     if (period.stage !== 'open') { setBidBox(prev => (prev ? null : prev)); return }
     const open = period.days.filter(d => inBidWindow(period, d.date))
-    if (open.length === 0) { setBidBox(prev => (prev ? null : prev)); return }
-    const fh = wrap.querySelector<HTMLElement>(`[data-testid="head-${open[0]!.date}"]`)
-    const lh = wrap.querySelector<HTMLElement>(`[data-testid="head-${open[open.length - 1]!.date}"]`)
+    if (open.length === 0 || drawnDates.length === 0) { setBidBox(prev => (prev ? null : prev)); return }
+    // Only the drawn part is measurable. A bound outside the window cuts that
+    // side of the box (matrix.css .cut-l / .cut-r) — no false edge at the seam.
+    const first = drawnDates[0]!, last = drawnDates[drawnDates.length - 1]!
+    const shown = open.filter(d => d.date >= first && d.date <= last)
+    if (shown.length === 0) { setBidBox(prev => (prev ? null : prev)); return }
+    const cutL = open[0]!.date < first, cutR = open[open.length - 1]!.date > last
+    const fh = headCell(shown[0]!.date)
+    const lh = headCell(shown[shown.length - 1]!.date)
     const table = wrap.querySelector<HTMLElement>('table.mx')
     if (!fh || !lh || !table) return
     const wr = wrap.getBoundingClientRect()
@@ -1498,8 +2445,8 @@ export function Matrix() {
     const left = fr.left - wr.left + wrap.scrollLeft
     const right = lr.right - wr.left + wrap.scrollLeft
     const top = hr.top - wr.top
-    const next = { left, top, width: right - left, height: tr.bottom - hr.top }
-    setBidBox(prev => (prev && prev.left === next.left && prev.top === next.top && prev.width === next.width && prev.height === next.height ? prev : next))
+    const next = { left, top, width: right - left, height: tr.bottom - hr.top, cutL, cutR }
+    setBidBox(prev => (prev && prev.left === next.left && prev.top === next.top && prev.width === next.width && prev.height === next.height && prev.cutL === next.cutL && prev.cutR === next.cutR ? prev : next))
   }
   useLayoutEffect(() => {
     measureBidBox()
@@ -1512,9 +2459,12 @@ export function Matrix() {
     // and the box read one row short/long until the next zoom or resize
     // (bug-hunt fix, 1 Sep 26). Re-measuring on every store commit is four
     // rect reads against an identity-guarded setState — nothing next to the
-    // repaint that same commit already paid for.
+    // repaint that same commit already paid for. The window's EDGES are deps
+    // too, not only the drawn-day count (same reason as the strip effect
+    // above: Mar+Apr and May+Jun both span 61 days, and the box is placed off
+    // the first and last drawn day — bug-hunt fix, 6 Sep 26).
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [version, period.id, period.stage, period.bidFrom, period.bidTo, zoom, visWindow, dates.length, countsOpen, folded])
+  }, [version, period.id, period.stage, period.bidFrom, period.bidTo, zoom, visWindow, drawnDates.length, colWin?.lo, colWin?.hi, countsOpen, folded])
 
   // ---- the frozen roster columns, drawn ONCE (owner, 20 Aug 26 — the third
   // look at the sideways stutter) --------------------------------------------
@@ -1614,7 +2564,7 @@ export function Matrix() {
     window.addEventListener('resize', measure)
     return () => { ro?.disconnect(); window.removeEventListener('resize', measure) }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [bandActive, zoom, visWindow, period.id, dates.length, countsOpen, folded])
+  }, [bandActive, zoom, visWindow, period.id, drawnDates.length, countsOpen, folded])
 
   // Re-pinned on EVERY render, not on a dependency list: a bid placed, a
   // decision made or a figure switched can put a chip into a day cell or take
@@ -1718,32 +2668,23 @@ export function Matrix() {
   //
   // Deciding needs an existing bid to decide: a course, a sick day and an
   // empty cell are all things nobody asked for.
-  const openable = (personId: string, date: string): boolean =>
-    raptorOwns(states, personId, date) ||
-    // A member may open a cell to EDIT only on their own row (the person they
-    // are viewing as); an admin, any row. Without the row half a member could
-    // tap an empty cell on anyone's row and bid it (owner, 27 Aug 26). The
-    // date/window half is `canEditCell`; both must pass.
-    (canEditCell(period, role, date) && canEditRow(role, viewer, personId)) ||
-    (deciding && isBiddable(grid[personId]?.[date])) ||
-    // Published remarks editor (owner, 27 Aug 26): the viewer's own APPROVED
-    // leave is tappable to edit its note (an admin's every cell is already
-    // openable through the canEditCell branch above). Kept CHEAP — code and
-    // state truthiness, never leaveInputAt, because this runs for every drawn
-    // cell; the precise "is there a backing leave input" test is `canRemark`,
-    // computed once when a cell is opened. Approved-only on purpose: a
-    // member's refused or pending bid at published opens NOTHING (no editor,
-    // no decision sheet), and the first cut still painted it tappable — a
-    // dead-feeling tap exactly where the stakes are highest, a refusal.
-    (period.stage === 'published' && personId === viewer
-      && isBiddable(grid[personId]?.[date])
-      && states[personId]?.[date]?.state === 'approved')
+  // "Does a tap here open something" lives in `cellOpenable` (module level, the
+  // row's own body) — the comment block above is its rationale.
 
   // A day the squadron may not bid on, drawn as such. Without this the window
   // is invisible: a member taps an October cell, nothing happens, and the app
   // reads as broken rather than as closed. Admin sees no lock — the window
   // does not bind them, so drawing one would be a lie about their own screen.
-  const lockedDate = (date: string): boolean => !canEditCell(period, role, date)
+  // A Set per store change rather than a predicate per cell (3 Sep 26): the
+  // cells asked this ~18,000 times per build, once per person per day, when
+  // the answer only varies by DAY — 365 answers. Also a stable row prop.
+  const lockedCols = useMemo(() => {
+    const out = new Set<string>()
+    for (const d of period.days) if (!canEditCell(period, role, d.date)) out.add(d.date)
+    return out
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [version])
+  const lockedDate = (date: string): boolean => lockedCols.has(date)
 
   // Feed the drag-select controller live state. A member may DRAG only while
   // the war is OPEN (batch fill). The published remarks editor is a SINGLE
@@ -1760,7 +2701,7 @@ export function Matrix() {
       .filter(r => r.kind === 'person')
       .map(r => (r as { p: Person }).p.id)
       .filter(id => canEditRow(role, viewer, id)),
-    dates: () => dates,
+    dates: () => drawnDates,
     enabled: () => !arranging && !moveSel && !eventMoveSel && (role === 'admin' || period.stage === 'open'),
     onSelect: s => setSel(s),
     // Events are the admin's (the store refuses a member write anyway); a drag
@@ -1868,7 +2809,7 @@ export function Matrix() {
             {(countsOpen || (arranging && role === 'admin')) && (
               <CountRows
                 verdicts={verdicts}
-                dates={dates}
+                dates={drawnDates}
                 order={orderedManningIds()}
                 hidden={manningHidden}
                 arranging={arranging}
@@ -1878,6 +2819,10 @@ export function Matrix() {
                 draggingId={draggingId}
                 dragOver={dragOver}
                 dragAfter={dragAfter}
+                padL={padL}
+                padR={padR}
+                phL={phL}
+                phR={phR}
               />
             )}
             {/* The month strip, now a row of the grid so it sits between the
@@ -1926,7 +2871,7 @@ export function Matrix() {
                     </span>
                   </div>
                 </td>
-                <td className="mfill" colSpan={dates.length} />
+                <td className="mfill" colSpan={dayCols} />
               </tr>
             </tbody>
             <tbody className="mxhead" ref={headRef}>
@@ -1936,12 +2881,16 @@ export function Matrix() {
             {/* Above the roster, below the header — an event is the REASON a
                 day is thin, so it reads right under the date it explains. */}
             <EventRows
-              days={period.days}
+              days={drawnDays}
               bands={period.bands}
               defs={eventDefs}
               rows={eventRows}
               editable={role === 'admin'}
               onEdit={(line, date) => setEventEdit({ line, date })}
+              padL={padL}
+              padR={padR}
+              phL={phL}
+              phR={phR}
             />
             <tbody className="mxbody" ref={rosterBodyRef}>
               {(() => {
@@ -1956,7 +2905,7 @@ export function Matrix() {
                 // filtered list, so an emptied group takes its heading with
                 // it. visWindow '' (jsdom, first paint) shows everyone.
                 const roster = displayRoster().filter(p => rowInWindow(p, visWindow))
-                const span = 2 + dates.length
+                const span = 2 + dayCols
                 let prevG: string | null = null
                 let prevCat = ''
                 return roster.map(p => {
@@ -2042,206 +2991,37 @@ export function Matrix() {
                   return (
                     <Fragment key={p.id}>
                       {heads}
-                      {/* `me` lights the VIEWER's own row (owner, 17 Aug 26).
-                          While arranging the row is a drop target the pointer
-                          drag reads by hit-test; the drag SOURCE is the handle
-                          alone, so a tap on the personnel label box types
-                          rather than starting a drag. */}
-                      <tr
-                        data-testid={`row-${p.id}`}
-                        className={[
-                          p.id === viewer ? 'me' : '',
-                          arranging ? 'arrange' : '',
-                          draggingId === p.id ? 'dragging' : '',
-                          draggingId && dragOver === p.id && draggingId !== p.id ? (dragAfter ? 'dragover after' : 'dragover') : '',
-                        ].filter(Boolean).join(' ') || undefined}
-                      >
-                        <td className="who">
-                          <div className="whorow">
-                            {arranging && (
-                              <span
-                                className="drag"
-                                data-testid={`drag-${p.id}`}
-                                title="Drag to move this row"
-                                style={{ touchAction: 'none' }}
-                                onPointerDown={e => startRowDrag(e, p.id, ROSTER_DRAG)}
-                              >⠿</span>
-                            )}
-                            {/* The callsign opens the person's all-figures
-                                sheet, for everyone (owner, 17 Aug 26). The CAT
-                                chip carries the person's colour, reused from
-                                Raptor's Quals palette, and an SXO sits under
-                                the SXO heading rather than wearing a second
-                                column. */}
-                            <button
-                              className="whoedit"
-                              data-testid={`person-${p.id}`}
-                              title={`${p.callsign} — every figure`}
-                              onClick={() => setWhoOpen(p.id)}
-                            >
-                              <span className={`cs seat-${p.seat}`}>{p.callsign}</span>
-                              {catChip(p, `cat-${p.id}`)}
-                            </button>
-                            {/* The free-text role-label edit box is GONE (owner,
-                                28 Aug 26 — "i can edit personnel, dont need to
-                                show that, just leave it as the callsign/name").
-                                A ground-crew row now shows the same callsign +
-                                chip as every other row, in Rearrange too. */}
-                          </div>
-                        </td>
-                  {/* The selected figure's value for this person, derived on
-                      every render rather than cached: it has to move the
-                      instant a bid is placed, because a pending bid has been
-                      asked for and cannot be asked for twice. A balance can go
-                      negative (shown red, never refused — the squadron's
-                      balances already run negative, §Counters); a consumed
-                      figure never does. Every figure counts across EVERY war,
-                      not the one on screen — leave bid in Jan–Mar still spends
-                      against Apr–Jun. */}
-                  {(() => {
-                    const v = shown.value(figureCtx, p.id)
-                    const suffix = shown.kind === 'bal' ? 'remaining, pending bids included' : 'taken'
-                    return (
-                      <td
-                        className={`bal act${v < 0 ? ' neg' : ''}`}
-                        data-testid={`bal-${p.id}`}
-                        title={`${p.callsign}: ${show(v)} ${shown.label} — ${suffix}. Tap for the breakdown`}
-                        /* A tap opens the person's breakdown of the shown
-                           figure — the owner's "click the individual
-                           personnel counter" (17 Aug 26). The td is the
-                           target, like every grid cell here: a nested button
-                           would cost the 44px column its number. */
-                        onClick={() => setBalOpen({ person: p.id, figureId: shown.id })}
-                      >
-                        {show(v)}
-                      </td>
-                    )
-                  })()}
-                  {period.days.map(d => {
-                    const code = grid[p.id]?.[d.date] ?? ''
-                    const here = inSquadron(p, d.date)
-                    // `here` is false on both sides of the roster window. Before
-                    // `from` the person has not arrived yet — that is not the
-                    // same fact as having been posted out, and must not read as
-                    // one. Only the "after `to`" direction is a genuine PO.
-                    const notYetArrived = !here && p.from !== null && d.date < p.from
-                    const cls = [
-                      here ? '' : 'gone',
-                      here && isDuty(code) ? 'duty' : '',
-                      // The band runs the whole column, not just the header —
-                      // finding a Tuesday in 90 columns should not need
-                      // counting. `.gone`'s hatch is declared after the
-                      // weekend rule so a posted-out weekend still reads as
-                      // posted out.
-                      isWeekend(d.date) ? 'weekend' : '',
-                      // The event column colour (off = green, no-leave =
-                      // orange), declared after the weekend so a holiday
-                      // Saturday reads as the holiday, not the weekend.
-                      evKind.get(d.date) ?? '',
-                      // Outside the bidding window, for this role. Declared
-                      // after the event colour so a locked, tinted day still
-                      // reads as locked — the same cascade care the
-                      // .blocked/.weekend pair needs, and for the same reason.
-                      lockedDate(d.date) ? 'locked' : '',
-                    ].filter(Boolean).join(' ')
-                    // The stored notation, printed through the one display
-                    // mapping — the ATT markers read as the owner's bare
-                    // B / C on the grid while everything else prints as
-                    // stored (displayCell is identity for it).
-                    const text = here ? displayCell(code) : notYetArrived ? '' : 'PO'
-                    // Duty first for the reader — FO/HO are work, not a bid.
-                    // (They carry `bid: false`, so they could not reach a
-                    // bid branch anyway; the order is legibility, not a
-                    // guard.) Then the bid state, but only where the code is
-                    // one a person bids for. Everything else is plain
-                    // information:
-                    // medical, a course, overseas duty. A bare "PO" chip on
-                    // a posted-out cell carries no state class at all.
-                    //
-                    // A bid with NO decision recorded reads as pending, and
-                    // PENDING IS PLAIN — no colour class at all, so the chip
-                    // renders as text on the ordinary cell background.
-                    //
-                    // It was purple until 10 Aug 26, when the owner pointed
-                    // out what that cost: an input nobody had looked at and
-                    // one already in management's hands were the same colour,
-                    // so the sheet could not distinguish them. Purple now
-                    // means acknowledged — somebody has seen this — and the
-                    // absence of colour means the absence of news.
-                    const bid = stateOf(states, p.id, d.date)
-                    const chipState = !here || !code
-                      ? ''
-                      : isDuty(code) ? 'sc'
-                      : !isBiddable(code) ? 'info'
-                      : bid === 'approved' ? 'appr'
-                      : bid === 'refused' ? 'ref'
-                      : bid === 'acknowledged' ? 'tbc'
-                      : ''
-                    // The half-day fill is read off the stored string via
-                    // `parseCell`, never kept as its own bit of state and
-                    // never guessed by matching an asterisk here in the
-                    // component. The asterisk in `text` stays the one source
-                    // of truth; this is only a derived echo of it, so the
-                    // two can never disagree.
-                    const portion = here && code ? parseCell(code)?.portion : undefined
-                    const portionClass = portion === 'am' || portion === 'pm' ? ` ${portion}` : ''
-                    // Two marks on top of the state colour, never instead of
-                    // it: the squadron reads green as approved and magenta as
-                    // pending, and that stays true here. `raptor` says the
-                    // approval happened elsewhere and nothing on this screen
-                    // will change it; `moved` says management shifted this
-                    // bid off another date.
-                    const marks = [
-                      here && code && raptorOwns(states, p.id, d.date) ? 'raptor' : '',
-                      movedShown && here && code && shiftedFrom(states, p.id, d.date) ? 'moved' : '',
-                    ].filter(Boolean).join(' ')
-                    // A cell outside the person's time in the squadron is
-                    // never actionable FOR A BID: bidding leave for a man who
-                    // has been posted out is a data-entry accident, not a bid.
-                    // But an ADMIN can still tap a posted-out day to UNDO the
-                    // post-out (owner, 18 Aug 26 — "tap a struck day to undo");
-                    // `notYetArrived` is excluded — a day before someone joins
-                    // is blank, not a post-out, and nothing there to undo.
-                    const actionable =
-                      (here && openable(p.id, d.date)) || (role === 'admin' && !here && !notYetArrived)
-                    // Their LAST day in the squadron wears a small PO tag
-                    // (owner, 19 Aug 26 — chosen over nothing after the edge
-                    // case was put to him): someone posting out on the 1st has
-                    // a final month that otherwise looks completely normal,
-                    // and the next month their row is gone — so without this,
-                    // a reader jumping month to month never sees the PO at
-                    // all. The tag rides the corner of the cell so a leave
-                    // code on the same day still prints.
-                    const lastIn = p.to !== null && d.date === p.to
-                    return (
-                      <td
-                        key={d.date}
-                        data-testid={`cell-${p.id}-${d.date}`}
-                        className={`${cls}${actionable ? ' act' : ''}${lastIn ? ' pofin' : ''}`}
-                        onClick={actionable
-                          ? () => setOpen({ id: p.id, callsign: p.callsign, date: d.date })
-                          : undefined}
-                      >
-                        {text && (
-                          <span
-                            className={`c${chipState ? ` ${chipState}` : ''}${portionClass}${marks ? ` ${marks}` : ''}`}
-                          >
-                            {text}
-                          </span>
-                        )}
-                        {lastIn && (
-                          <span
-                            className="polast"
-                            data-testid={`polast-${p.id}`}
-                            title={`${p.callsign} posts out ${addDays(p.to!, 1)} — this is their last day in the squadron`}
-                          >
-                            PO
-                          </span>
-                        )}
-                      </td>
-                    )
-                  })}
-                      </tr>
+                      {/* The row itself is a memoised component (3 Sep 26):
+                          opening a sheet, hovering a chip or dragging a row
+                          used to rebuild all ~18,000 cells; now only a row
+                          whose own inputs changed repaints. Every store
+                          change still repaints every row via `version`. */}
+                      <PersonRow
+                        p={p}
+                        version={version}
+                        period={period}
+                        monthDays={drawnMonthDays}
+                        grid={grid}
+                        states={states}
+                        role={role}
+                        viewer={viewer}
+                        deciding={deciding}
+                        movedShown={movedShown}
+                        shown={shown}
+                        figureCtx={figureCtx}
+                        evKind={evKind}
+                        lockedCols={lockedCols}
+                        quals={qualsOf.get(p.id) ?? NO_QUALS}
+                        me={p.id === viewer}
+                        arranging={arranging}
+                        dragging={draggingId === p.id}
+                        over={draggingId && dragOver === p.id && draggingId !== p.id ? (dragAfter ? 'dragover after' : 'dragover') : ''}
+                        api={rowApi}
+                        padL={padL}
+                        padR={padR}
+                        phL={phL}
+                        phR={phR}
+                      />
                     </Fragment>
                   )
                 })
@@ -2253,7 +3033,7 @@ export function Matrix() {
               unless bidding is open and laid out. */}
           {bidBox && (
             <div
-              className="lw-bidbox"
+              className={`lw-bidbox${bidBox.cutL ? ' cut-l' : ''}${bidBox.cutR ? ' cut-r' : ''}`}
               data-testid="bid-box"
               aria-hidden="true"
               style={{ left: bidBox.left, top: bidBox.top, width: bidBox.width, height: bidBox.height }}

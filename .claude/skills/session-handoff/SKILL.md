@@ -35,22 +35,28 @@ decides everything below. Check first, then branch:
   **overwriting** it, and commit it with the session's final push. Print the
   same content in chat.
 
-**Either way, it has to reach `main`.** The next session clones the DEFAULT
-BRANCH, not yours — a handoff sitting on `claude/<name>` behind an unmerged
-PR is invisible to the only reader it was written for, and so is a `git rm`
-that never landed. So the handoff commit gets the same treatment as any
-other: PR, checks, merge. Do not end the session on "pushed" — end it on
-merged, and if the PR cannot be merged, say so in chat, because the file the
-next session reads will then be the PREVIOUS session's.
-**A docs-only handoff PR has NO checks** (15 Aug 26 — `deploy.yml`
+**Either way, it has to be COMMITTED AND PUSHED to the designated branch —
+and NEVER merged by you.** SUPERSEDED 2 Sep 26 (`CLAUDE.md` §How to work
+here, "NO AUTO-MERGE"): changes accumulate on the designated `claude/<name>`
+branch and merge to `main` ONLY on the owner's explicit "merge live". The
+harness names the designated branch at session start and the next session
+works on it, so a handoff committed and pushed there IS visible to it (and it
+is in the open PR besides) — the old "it must reach `main` or the next session
+can't see it" reasoning no longer holds, and the old instruction to merge the
+handoff yourself would now break the owner's rule. End the session on
+"pushed, PR open, awaiting merge live", hand him the Vercel preview link, and
+say so in chat. **An open PR awaiting "merge live" is the NORMAL end state,
+not an Unfinished item.**
+**A docs-only handoff has NO checks** (15 Aug 26 — `deploy.yml`
 `paths-ignore` skips the workflow when every changed file is `**.md` or
-`.claude/**`): push it and merge it at once; do not wait for a "build" check
-that will never appear. Only a handoff riding a code change runs the gates.
+`.claude/**`), so do not wait for a "build" check that will never appear.
+Only a handoff riding a code change runs the gates.
 
-"Unfinished" means any of: an open or unmerged PR, a gate that is red or was
-never run, a half-applied edit, a question the owner never answered, a
-half-finished piece of work THIS session deliberately stopped on, or a PR
-left under `subscribe_pr_activity` watch.
+"Unfinished" means any of: work not yet pushed or not yet handed to the owner
+(a pushed PR AWAITING his "merge live" is the normal end state, not
+unfinished), a gate that is red or was never run, a half-applied edit, a
+question the owner never answered, a half-finished piece of work THIS session
+deliberately stopped on, or a PR left under `subscribe_pr_activity` watch.
 
 **A standing item already recorded in `HANDOFF.md`'s open-work list is NOT
 by itself unfinished business, and must not keep this file alive.** The two
@@ -95,8 +101,8 @@ the one exception, and it is bounded to this session's own diff.)
 ## Step 3 — check the durable docs were kept true
 
 `CLAUDE.md` requires every PR to keep `../HANDOFF.md` true: a new, renamed or
-deleted file edits its **file map**; a resolved or created known issue edits
-its **list**. That rule is easy to honour on a big change and easy to forget
+deleted file edits its **file map**; a resolved known issue comes OFF its open
+list and a created one goes ON it (see the hygiene rules below). That rule is easy to honour on a big change and easy to forget
 on a small one, and nothing else in the workflow checks it. The handoff is
 the last moment before the container dies, so it checks it here.
 
@@ -123,7 +129,12 @@ memory:
   file map? A file that never reaches the map is invisible to every later
   session. `src/ui/RangeCal.tsx` shipped and stayed unmapped for weeks
   exactly this way.
-- **A known issue resolved or created** → does the open-work list say so?
+- **A known issue RESOLVED** → it is REMOVED from `HANDOFF.md` §Open /
+  deferred / queued — never left there as a "RESOLVED" bullet. Its contract
+  goes to the right structured doc (`engine-rules`, `ui-contracts`,
+  `feature-impact`, `performance`); its story goes in the commit message —
+  that is what makes `git log` the changelog. **A known issue CREATED** → a
+  1–3 line entry there: what is open and the pointer, no narrative.
 - **A rule the owner changed** (roles, gates, validation, auth) → the same
   fact often sits in `README.md`, `raptor-port/README.md` and `CLAUDE.md`
   too. Grep the changed term across `*.md` and fix every copy. A member
@@ -132,9 +143,32 @@ memory:
   above miss, because nothing was added, removed or re-ruled: test counts, DOM
   ceilings, measured node counts, budgets, timings. They are quoted in prose
   that no test reads, so nothing else can catch them. Two places carry them and
-  both went stale in one session: `HANDOFF.md` §The gates (the counts, which
+  both went stale in one session: `HANDOFF.md` §Gate status (the counts, which
   you may only restate if you re-ran them) and `docs/probe-sweep.md` (the live
   `DOM_CEILING` values and the list of raises). Check those two by name.
+
+**`HANDOFF.md` is a CURRENT-STATE doc, cut from 3,882 to ~550 lines on 4 Sep
+26 — keep it that way.** It is read at the start of most sessions, so every
+line costs every session. It has a fixed shape, and an edit lands in its
+section and nowhere else:
+- §Reference docs — the map of where each kind of truth lives (add a row only
+  for a NEW doc).
+- §Gate status — the six current readings + the seven durable traps. Restate
+  a count only from a run you watched; never add a per-batch history.
+- §In flight — the live thread(s), a few lines each, with the still-open
+  residuals and a pointer to the doc that holds the detail.
+- §Open / deferred / queued — 1–3 lines per item + pointer. A resolved item is
+  REMOVED (above), never annotated as done.
+- §Standing constraints, §Deploy, §File map — standing reference; edit only
+  when the fact itself changes.
+
+Never write the story of how something was found or fixed into `HANDOFF.md`
+— that narrative is exactly the bloat the cut removed. It belongs in the
+commit message. Never append to `HANDOFF-ARCHIVE.md` either: it is a FROZEN
+snapshot (as of 4 Sep 26), searched for history, not a running log — `git
+log` is the changelog. If an edit would push `HANDOFF.md` back toward
+narrative, that is the signal it belongs in a commit message or a structured
+doc instead.
 
 Fix what you find, in this session's final commit. If a gap is real but
 outside what you were asked to do, put it in **Unfinished** — never leave it
@@ -198,3 +232,7 @@ stable structure is the point.
    list was three commands for weeks after the geometry gate became the
    fourth. If a step here contradicts what you just did, fix the step in the
    same commit.
+8. **`HANDOFF.md` stays a current-state doc** (Step 3): resolved items come
+   OUT, stories go in commit messages, `HANDOFF-ARCHIVE.md` stays frozen. A
+   handoff that grows `HANDOFF.md` has redone the thing the 4 Sep 26 cut
+   undid.

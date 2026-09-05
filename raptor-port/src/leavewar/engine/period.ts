@@ -116,9 +116,22 @@ export function dayEventKind(day: DayInfo, line: number): EventKind | null {
   return day.eventKinds?.[line] ?? null
 }
 
+// CACHED (3 Sep 26). The grid calls `addDays` / `weekday` for every one of
+// its ~18,000 cells on every build, and each call parsed the same ISO string
+// again — measured at ~250ms of a 10s first open on a 4x-throttled CPU, the
+// single largest engine frame in the profile. A war's dates are a few
+// hundred distinct strings, so a plain map turns the parse into a lookup.
+// Bounded so a pathological caller can never grow it without limit; the
+// cap is far above any real war and clearing it is only a cache miss.
+const UTC_CACHE = new Map<string, number>()
 function toUTC(date: string): number {
+  const hit = UTC_CACHE.get(date)
+  if (hit !== undefined) return hit
   const [y, m, d] = date.split('-').map(Number)
-  return Date.UTC(y, m - 1, d)
+  const ms = Date.UTC(y, m - 1, d)
+  if (UTC_CACHE.size >= 8192) UTC_CACHE.clear()
+  UTC_CACHE.set(date, ms)
+  return ms
 }
 
 function fromUTC(ms: number): string {
@@ -175,7 +188,10 @@ export function isWeekend(date: string): boolean {
  *  accessor names the wrong day for anyone east or west of UTC, which would
  *  silently move a weekend and therefore silently move an OIL credit. */
 export function weekday(date: string): number {
-  return new Date(toUTC(date)).getUTCDay()
+  // Arithmetic on the cached UTC millis, no Date allocation: the epoch
+  // (1 Jan 1970) was a Thursday, so day-count + 4 mod 7 is the UTC weekday.
+  // `toUTC` is always a whole-day multiple, so the division is exact.
+  return (toUTC(date) / DAY_MS + 4) % 7
 }
 
 const DAY_NAMES = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT']

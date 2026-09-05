@@ -128,12 +128,23 @@ export function effectiveCat(p: Person): string {
  *  places so a seed person and a projected person answer the same question
  *  the same way. */
 export function heldQuals(p: Person): Set<string> {
+  // CACHED per person (3 Sep 26): the manning rules ask this for every person,
+  // for every rule, for every day of the year — tens of thousands of fresh Sets
+  // per grid build, ~130ms of a 10s first open at 4x. The cache is keyed on the
+  // Person OBJECT and re-validated against the four fields it derives from, so
+  // a re-projected roster (new objects) and an in-place flag flip (the demo
+  // world writes `p.sxo` at boot) both miss correctly. Callers only read the
+  // Set; none mutates it (pinned in the test file).
+  const c = HELD_CACHE.get(p)
+  if (c && c.xq === p.xq && c.sxo === p.sxo && c.scd === p.scd && c.scn === p.scn) return c.set
   const out = new Set<string>(p.xq ?? [])
   if (p.sxo) out.add('sxo')
   if (p.scd) out.add('scDay')
   if (p.scn) out.add('scNight')
+  HELD_CACHE.set(p, { xq: p.xq, sxo: p.sxo, scd: p.scd, scn: p.scn, set: out })
   return out
 }
+const HELD_CACHE = new WeakMap<Person, { xq: string[] | undefined; sxo: boolean; scd: boolean | undefined; scn: boolean | undefined; set: Set<string> }>()
 
 /** Whether this person is inside the filter. Aircrew only — callers skip
  *  ground crew before asking, same as every manning path. */

@@ -30,6 +30,7 @@
 import { memo, useEffect, useRef } from 'react'
 import { StageBar, Topbar } from './ui/Chrome'
 import { Matrix } from './ui/Matrix'
+import { setLwOnScreen } from './state/screen'
 
 /* The RENDER FIREWALL that makes staying mounted affordable. Every Raptor
    notify re-renders the Shell, and a plain child here would make React
@@ -59,6 +60,12 @@ export function LeaveWarPage({ active = true }: { active?: boolean }) {
   const savedY = useRef(0)
   useEffect(() => {
     if (!active) return
+    /* Tell the Matrix the tab is on screen BEFORE the resize kick, so its
+       background fill switches from the small hidden window to filling the whole
+       year (desktop) and the fill kick below finds the flag already true. The
+       signal is a plain listener set, NOT the store — see state/screen.ts for
+       why flipping it must not re-render the grid. */
+    setLwOnScreen(true)
     /* Restore before the resize kick, so the re-measure reads the grid at
        the position the reader is actually returned to. */
     window.scrollTo(0, savedY.current)
@@ -70,6 +77,12 @@ export function LeaveWarPage({ active = true }: { active?: boolean }) {
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => {
       window.removeEventListener('scroll', onScroll)
+      /* Off screen now: BEFORE the resize kick, so the Matrix sees the flag
+         false and shrinks its drawn window back to a few months around the
+         current view. That is what keeps the NEXT return cheap — the browser
+         re-styles a small grid on reveal, not the whole year (owner, 5 Sep 26).
+         The fill rebuilds the year again once the tab is shown. */
+      setLwOnScreen(false)
       /* The hide-side kick. The same measured-at-zero sweep that makes the
          show-side resize safe makes this one USEFUL: the Matrix's fixed
          bottom scrollbar is React state fed by a rect measurement, so one

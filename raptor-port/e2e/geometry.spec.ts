@@ -2209,10 +2209,16 @@ test('the top bar wears the edit tint on Edit Schedule only', async ({ page }) =
   expect(await bg(), 'and View-only keeps the neutral bar').toBe(view)
 })
 
-test('the Leave War desktop grid grows a fixed bottom scrollbar that drives it', async ({ page }) => {
+test('the Leave War desktop grid grows a fixed, year-wide bottom scrollbar that slides it', async ({ page }) => {
   await page.setViewportSize(DESK)
   await login(page); await go(page, 'leavewar')
   await page.waitForSelector('.mx-wrap')
+  /* the background fill (owner, 4 Sep 26) draws the whole year a beat after the
+     fast open — wait for it so the scroll is over real columns end to end */
+  await expect.poll(async () => page.evaluate(() =>
+    new Set([...document.querySelectorAll('.mx-wrap .mxhead th[data-testid^="head-"]')]
+      .map(e => (e as HTMLElement).dataset.testid!.slice(5, 12))).size
+  ), { timeout: 9000 }).toBe(12)
   /* scroll the PAGE down so the grid's own scrollbar is below the fold */
   await page.evaluate(() => window.scrollBy(0, 400))
   await page.waitForTimeout(200)
@@ -2220,18 +2226,27 @@ test('the Leave War desktop grid grows a fixed bottom scrollbar that drives it',
     const el = document.querySelector('.mx-hbar')
     if (!el) return null
     const r = el.getBoundingClientRect()
-    return { bottom: Math.round(r.bottom), vh: window.innerHeight }
+    return { bottom: Math.round(r.bottom), vh: window.innerHeight, hs: el.scrollWidth, cw: el.clientWidth }
   })
   expect(m, 'the proxy scrollbar appears').toBeTruthy()
   expect(m!.bottom, 'pinned to the foot of the screen').toBe(m!.vh)
-  /* it DRIVES the grid, and following the grid never loops */
-  const sync = await page.evaluate(() => {
-    const h = document.querySelector('.mx-hbar')!, w = document.querySelector('.mx-wrap')!
-    h.scrollLeft = 500
+  /* it is a YEAR-WIDE scrubber: the spacer spans the whole war, many viewports
+     wide, so the thumb is a small year-proportional slice, not most of the bar */
+  expect(m!.hs, 'the scrubber spans the whole year, not one viewport').toBeGreaterThan(m!.cw * 3)
+  /* once the year is drawn, dragging the bar SLIDES the grid to the same
+     fraction of its range (not a jump-on-release) */
+  await page.evaluate(() => {
+    const h = document.querySelector('.mx-hbar') as HTMLElement
+    h.scrollLeft = Math.round((h.scrollWidth - h.clientWidth) * 0.5)
     h.dispatchEvent(new Event('scroll'))
-    return { h: h.scrollLeft, w: w.scrollLeft }
   })
-  expect(sync.w, 'the grid follows the proxy').toBe(sync.h)
+  const frac = await page.evaluate(() => {
+    const w = document.querySelector('.mx-wrap') as HTMLElement
+    const max = w.scrollWidth - w.clientWidth
+    return max > 0 ? w.scrollLeft / max : 0
+  })
+  expect(frac, 'the grid slid to about mid-year').toBeGreaterThan(0.4)
+  expect(frac, 'the grid slid to about mid-year').toBeLessThan(0.6)
   /* and it never leaks onto the Raptor pages */
   await go(page, 'viewsched')
   expect(await page.$('.mx-hbar'), 'gone off the Leave War page').toBeFalsy()
@@ -4488,26 +4503,34 @@ test.describe('a mouse drag of a puck runs on the pointer machine, not the nativ
   })
 })
 
-/* THE SLOW-COMPUTER DIET (owner, 3 Sep 26 — "faster on a slow computer").
-   The Leave War screen is the app's largest, and is seen only after its tab is
-   clicked, so Shell.tsx ships it as its own chunk (React.lazy). This pins the
-   contract from the network's side: a Raptor visit downloads no Leave War
-   screen; the first click on the tab fetches exactly one. The sync engine is
-   NOT in that chunk (it boots in main.tsx) — the leavewar e2e suites prove the
-   crew projection and leave cells still reconcile, so this only has to prove
-   the deferral. */
+/* THE SLOW-COMPUTER DIET (owner, 3 Sep 26 — "faster on a slow computer"; the
+   pre-warm added 5 Sep 26). The Leave War screen is the app's largest, so
+   Shell.tsx ships it as its own chunk (React.lazy) rather than in the first
+   Raptor download. Since 5 Sep 26 the DESKTOP PRE-WARMS it: once the user has
+   been hands-off for a moment after login, the tab is mounted hidden — which
+   pulls exactly this chunk off the critical path — so the first click opens an
+   already-built grid instantly. So the contract is now: NOT in the first
+   download, but fetched shortly after login on its own, with no tab click; and
+   the click never re-fetches. The sync engine is still NOT in that chunk (it
+   boots in main.tsx) — the leavewar e2e suites prove the crew projection and
+   leave cells reconcile regardless. */
 test.describe('slow-computer diet', () => {
-  test('desktop: the Leave War screen is not downloaded until its tab is opened', async ({ page }) => {
+  test('desktop: the Leave War screen is a separate chunk, pre-warmed after login', async ({ page }) => {
     await login(page, 'a')
     /* the screen splits into a script AND its own stylesheet; count each */
     const lwChunks = () => page.evaluate(() => {
       const names = performance.getEntriesByType('resource').map((e: any) => e.name as string).filter(n => /LeaveWarPage/.test(n))
       return { js: names.filter(n => /\.js$/.test(n)).length, css: names.filter(n => /\.css$/.test(n)).length }
     })
-    expect(await lwChunks(), 'no Leave War chunk after login').toEqual({ js: 0, css: 0 })
+    /* not in the first Raptor download — still a lazily split chunk (read within
+       the pre-warm's hands-off gate, before it can have fetched). */
+    expect(await lwChunks(), 'no Leave War chunk in the first download').toEqual({ js: 0, css: 0 })
+    /* but pre-warmed: after a hands-off moment it fetches itself, no tab click. */
+    await expect.poll(lwChunks, { timeout: 8000 }).toEqual({ js: 1, css: 1 })
+    /* and opening the tab re-uses it — never a second fetch. */
     await go(page, 'leavewar')
     await page.waitForSelector('[data-testid="row-slipway"]')
-    expect(await lwChunks(), 'the script and stylesheet arrive with the first click').toEqual({ js: 1, css: 1 })
+    expect(await lwChunks(), 'the click re-uses the pre-warmed chunk').toEqual({ js: 1, css: 1 })
   })
 
   /* the edit surfaces warm in idle time after an admin login (EditWeek.tsx),

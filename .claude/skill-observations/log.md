@@ -838,3 +838,93 @@ gate's. Keep verdict-bearing commands unpiped.
 **Suggested improvement:** In dispatching-parallel-agents, add a pattern: for a feature the user describes as "everywhere X is concerned", split research by BOUNDARY (each vendored app / package, plus the docs) rather than by topic, and ask each agent to classify every hit as "derives automatically", "hand-written — must edit", or "test pins exact list". The classification is what turns the report into a checklist.
 
 **Principle:** When an ask says "everywhere", the deliverable of research is a classified touch list (auto / manual / pinned), split along the code's own boundaries, gathered in parallel before the first edit.
+
+### Observation 54: Tracing categories that inflate the numbers they attribute
+
+**Status:** OPEN
+**Date:** 2026-09-03
+**Session context:** Measuring the Leave War grid's first-open cost (CPU profile + devtools timeline trace at 1x/4x/8x) before choosing a fix
+**Skill:** New skill candidate: browser-perf-measurement (or the HANDOFF perf recipe)
+**Type:** open-source
+**Phase/Area:** Attribution pass (which JS caller forced a layout / style recalc)
+
+**Issue:** Enabling `disabled-by-default-devtools.timeline.invalidationTracking` (+ `.stack`) to get caller stacks on Layout/UpdateLayoutTree events made the one big style recalc read 2545ms where the plain-categories trace of the same open read ~324ms total style time. The attribution (which function forced it) was correct; the duration was an artefact of the tracking itself. Trusting the instrumented duration would have pointed the fix at CSS selector cost, which a scan then showed was not there.
+
+**Suggested improvement:** Two passes, never one: TIME with the plain `devtools.timeline` categories, ATTRIBUTE with the stack/invalidation categories, and only ever quote durations from the first. Same rule for the CPU profiler's sampling interval. Add to the perf recipe alongside "attribute by experiment, not by stack".
+
+**Principle:** Instrumentation that explains a cost also changes it. Measure and attribute in separate runs, and quote numbers only from the run that measured.
+
+### Observation 55: A perf diagnosis given in chat, before measuring, pointed at the wrong half
+
+**Status:** OPEN
+**Date:** 2026-09-03
+**Session context:** Leave War grid speed — the previous session's chat answer split the wait into "download the chunk" vs "draw 25,000 cells, one unsplittable chunk" and recommended virtualisation; the measurement showed download ~0, cell-building ~a tenth, and half the time in post-draw self-measurement plus repeated React rebuilds
+**Skill:** New skill candidate: browser-perf-measurement (pairs with observation 54)
+**Type:** open-source
+**Phase/Area:** Diagnosis before recommendation
+
+**Issue:** A plausible mechanism ("25k cells is the cost") was offered as the diagnosis and the fix (virtualise) sized to it, with no measurement. The real split was different enough that the cheap fixes halved the wait and took the grid out of every tap entirely, before any virtualisation.
+
+**Suggested improvement:** For any "why is X slow" question: refuse to name a cause before one profile + one phase-split trace exist; report the split as a table; only then rank fixes. Include the React-specific checks that were decisive here — (a) does a local UI state change re-render a large memo-less tree, (b) do mount-time measurements store state that re-renders it, (c) are DOM queries scoped to the smallest subtree.
+
+**Principle:** A mechanism that could explain the symptom is a hypothesis, not a diagnosis; the recommendation follows the measurement, never the story.
+
+### Observation 56: The after-measurement must cover every interaction, not the headline
+
+**Status:** OPEN
+**Date:** 2026-09-03
+**Session context:** Leave War column window (Phase 2) — the first open dropped 5.7 s → 3.8 s at 4x, but the same script showed the month jump unchanged (2.8 → 2.7 s): the windowed design moved a full-grid rebuild from the open to every far jump
+**Skill:** New skill candidate: browser-perf-measurement (with observations 54, 55)
+**Type:** open-source
+**Phase/Area:** After-measurement / reporting
+
+**Issue:** A change that shrinks the headline cost can relocate it. Had the after-run measured only the first open, the jump regression-in-place would have been reported as a pure win and found by the owner on SIS instead.
+
+**Suggested improvement:** The measuring script is a fixed list of interactions (open, tap, close, jump, return, scroll) run identically before and after; the report is the whole table, with any row that did not improve called out and explained. A perf change is not done until every row is understood.
+
+**Principle:** Optimisation moves cost as often as it removes it; measure the same set of interactions before and after and report the ones that did not move.
+
+### Observation 57: Split the cost before choosing the fix — the drop's engine half was not the expensive half
+
+**Status:** OPEN
+**Date:** 2026-09-04
+**Session context:** Edit-week puck drop felt slow on the owner's laptop (~1.1 s). The instinct (and an earlier chat guess) was that the rules engine validating the move was the cost. A 4× CPU profile on an UNMINIFIED build, split by phase, was run before touching anything.
+**Skill:** New skill candidate: browser-perf-measurement (extends Observations 54–56)
+**Type:** open-source
+**Phase/Area:** Diagnosis before a targeted optimisation
+
+**Issue:** Of the ~0.6 s blocking task at 4×, the rules engine (both `validate` calls + the bar solver) was ~45 ms; the rest was redraw — the changed day being rebuilt as one ~1,500-element string, re-parsed, re-styled and laid out, plus the drop paying TWO forced style+layout passes at pointer-up before it measured anything. Naming the engine as the cause would have aimed a risky change at the one part that was both cheap and safety-critical, and left the real 90% (pure redraw) untouched. Measuring first put the whole fix on the redraw side and left every engine validation byte-for-byte unchanged (parity stayed 728/0).
+
+**Suggested improvement:** For any "this interaction is slow" where a rules/validation step is a plausible suspect, profile and phase-split BEFORE proposing a fix, and quote the split as a table (engine vs parse vs style vs layout vs paint). The safety-critical half is usually the cheap half; proving that with a number is what lets the optimisation stay entirely on the redraw side and keep the correctness guarantee free.
+
+**Principle:** The scary-looking half of an interaction (the one that could be wrong) and the expensive half (the one worth optimising) are rarely the same half — a phase-split measurement is what tells them apart, and it is the difference between a safe redraw-only change and a risky engine change that buys almost nothing.
+
+### Observation 58: A rejected optimisation is a result worth writing down — record dead ends where the next session will look
+
+**Status:** OPEN
+**Date:** 2026-09-04
+**Session context:** The drop round: after the two fixes that worked, two more plausible-sounding ideas were measured and both came out worse — seven CSS paint-isolation variants on the week (contain, isolation, will-change, own-layer, etc.) all measured equal or worse than no change, and a "quiet path" rewrite of the highlight pass measured ~2× slower than the loop it replaced and was reverted.
+**Skill:** New skill candidate: browser-perf-measurement / a "record negative results" discipline (home: HANDOFF perf recipe + the code comment at the reverted site)
+**Type:** open-source
+**Phase/Area:** After-measurement / handoff
+
+**Issue:** Both dead ends are the kind of idea that looks obviously-worth-trying from the code and will occur to the next person (and to a future me) unprompted. Without a durable record — a comment at the reverted site AND a handoff line — the next session spends the same hour re-measuring them to the same negative conclusion. On an ephemeral container the log alone does not persist, so the record has to land somewhere that survives (a code comment at the site, and the repo handoff).
+
+**Suggested improvement:** Treat a measured-and-rejected optimisation as a deliverable, not a discard: leave a one-line comment at the exact site the idea would touch ("tried X here, measured N vs M at 4×, reverted") and a handoff line, so the negative result is found by anyone who arrives at that code with the same idea. Name the variants tried, not just "we tried isolation" — the next person's idea is a specific one of them.
+
+**Principle:** A negative measurement is as reusable as a positive one and costs the same to obtain; it only pays back if it is recorded where the next attempt will start — at the code site the idea targets, and in the durable handoff, not only in a session-scoped log.
+
+### Observation 59: Hit-test before you take the drag ghost down — order the pointer-up teardown by what each step reads
+
+**Status:** OPEN
+**Date:** 2026-09-04
+**Session context:** The drop round — pointer-up handler in the shared drag machine (`drag.ts`). It was removing the floating drag ghost and the body drag markers first, then hit-testing under the pointer and measuring the target seat.
+**Skill:** New skill candidate: none — cross-cutting frontend pointer-machine principle (sibling of Observation 48)
+**Type:** open-source
+**Phase/Area:** pointer gesture teardown / drop handling
+
+**Issue:** Removing the ghost and toggling the body's drag-state classes BEFORE the hit-test meant the browser had a dirtied style+layout tree when `elementsFromPoint` and the seat measurement ran, forcing an extra synchronous layout — two forced layouts at pointer-up where one would do. Reordering so the hit-test runs with the ghost still up (and skipping the ghost itself in the elementsFromPoint stack), then removing the ghost, then leaving the marker cleanup to the existing clear step, dropped ~55 ms of that at 4×. The DOM read has to happen before the DOM writes that would invalidate what it reads.
+
+**Suggested improvement:** In a pointer-up / drop teardown, sequence by data dependency, not by tidy-up instinct: do every measurement the drop needs (hit-test under the point, target geometry) FIRST, against the still-settled layout, and only then perform the teardown writes (remove the ghost, clear the body markers). When the ghost overlaps the drop point, exclude it from the hit-test rather than removing it early. Read-then-write, batched — the same rule that avoids layout thrash in a render loop applies to a one-shot handler.
+
+**Principle:** Interleaving DOM reads and writes forces a layout per read; a pointer-up handler that measures after it has begun tearing down pays for a layout it did not need. Order the handler so all reads precede all writes, even when the natural writing order (clean up first) reads the other way.

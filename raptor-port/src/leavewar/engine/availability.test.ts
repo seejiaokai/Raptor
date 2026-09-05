@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { availabilityOf, countsFor, type Grid } from './availability'
+import { availabilityOf, countsFor, heldQuals, type Grid } from './availability'
 import type { States } from './bids'
 import type { Person } from './people'
 
@@ -263,5 +263,22 @@ describe('the SC D / SC N team counts', () => {
   it('someone standing SC duty still counts toward the team', () => {
     const grid: Grid = { p1: { [D]: 'FO' }, sx: { [D]: 'HO' } }
     expect(countsFor(team, grid, {}, D).scd).toBe(1)
+  })
+})
+
+// The per-person cache behind the manning rules (3 Sep 26): the same answer
+// as a fresh Set, re-validated on the fields it derives from — so a flag
+// flipped in place (the demo world writes `sxo` at boot) and a re-projected
+// roster (new objects) both miss correctly, never serve a stale set.
+describe('heldQuals cache', () => {
+  it('returns the held set and follows an in-place flag flip', () => {
+    const p = { id: 'x', callsign: 'X', seat: 'pilot', cat: 'C', sxo: false, from: null, to: null, xq: ['tf'] } as any
+    expect([...heldQuals(p)]).toEqual(['tf'])
+    p.sxo = true
+    expect(heldQuals(p).has('sxo')).toBe(true)
+    p.xq = ['tf', 'nvg']
+    expect(heldQuals(p).has('nvg')).toBe(true)
+    p.scd = true
+    expect(heldQuals(p).has('scDay')).toBe(true)
   })
 })

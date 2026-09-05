@@ -16,7 +16,7 @@
 // the Event sheet — which carries the range, the merge/repeat choice, the tag,
 // and the type library — rather than typing inline. A member still only reads.
 
-import type { ReactNode } from 'react'
+import type { ReactNode, RefCallback } from 'react'
 import { bandAt, classifyEvent, dayEvent, dayEventKind, type DayInfo, type EventBand, type EventDef } from '../engine'
 
 /** How many characters a day column widens to before the text wraps. In `ch`,
@@ -31,6 +31,10 @@ export function EventRows({
   rows,
   editable,
   onEdit,
+  padL,
+  padR,
+  phL,
+  phR,
 }: {
   days: DayInfo[]
   bands: EventBand[]
@@ -41,6 +45,15 @@ export function EventRows({
   editable: boolean
   /** Open the Event sheet for one line + day. Only wired when `editable`. */
   onEdit: (line: number, date: string) => void
+  /** The column window's PLACEHOLDER cells (colwindow.ts, 5 Sep 26): one empty
+   *  cell before / after the drawn days standing in for the undrawn months, so
+   *  every row keeps the same column count as the header. Sized by Matrix,
+   *  never here: `phL`/`phR` are its mount hooks that write the width onto
+   *  the cell. */
+  padL?: boolean
+  padR?: boolean
+  phL?: RefCallback<HTMLTableCellElement>
+  phR?: RefCallback<HTMLTableCellElement>
 }) {
   return (
     <tbody className="events">
@@ -53,7 +66,11 @@ export function EventRows({
           // A MERGED band: one spanning cell at its first day, then every day
           // it covers is skipped so the colspan owns those column slots.
           if (band) {
-            if (band.from === d.date) {
+            // `days` may be a WINDOW of the war (Matrix's column window, 3 Sep
+            // 26): a band that began before the first drawn day is emitted
+            // from that first day, spanning what remains of it, so the row
+            // keeps its cell count and the band still reads across the seam.
+            if (band.from === d.date || i === 0) {
               let span = 1
               while (i + span < days.length && days[i + span]!.date <= band.to) span++
               // The band's own tag first (per-event tags, 18 Aug 26), then
@@ -132,7 +149,9 @@ export function EventRows({
             {/* The count rows' blank balance cell: a day's event has no
                 balance, and the cell holds the frozen column. */}
             <td className="bal" />
+            {padL && <td className="lwph lwph-l" ref={phL} />}
             {cells}
+            {padR && <td className="lwph lwph-r" ref={phR} />}
           </tr>
         )
       })}

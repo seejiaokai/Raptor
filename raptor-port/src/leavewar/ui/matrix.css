@@ -73,6 +73,15 @@
     0 0 8px 1px rgba(74, 140, 100, .30),
     inset 0 0 6px rgba(74, 140, 100, .08);
 }
+/* The column window (colwindow.ts) draws only some months, so a bidding
+   window whose bound lies OUTSIDE the drawn months has no edge to paint on
+   that side: the box is clipped there (border and halo both — a plain
+   transparent border would leave the halo drawing a ghost edge at the seam)
+   while the other sides keep their full glow (the negative insets extend the
+   clip past the box to keep it). */
+.mx-wrap .lw-bidbox.cut-l { clip-path: inset(-12px -12px -12px 3px); border-top-left-radius: 0; border-bottom-left-radius: 0; }
+.mx-wrap .lw-bidbox.cut-r { clip-path: inset(-12px 3px -12px -12px); border-top-right-radius: 0; border-bottom-right-radius: 0; }
+.mx-wrap .lw-bidbox.cut-l.cut-r { clip-path: inset(-12px 3px -12px 3px); }
 
 .mx {
   border-collapse: separate;
@@ -713,8 +722,46 @@
    a tap leaves the row hovered until something else is tapped, so the column
    simply stays broken. `.who` was already exempt, which is why only the
    counter showed it. Pinned by the geometry gate; jsdom cannot see it. */
-.mx tbody tr:hover td:not(.who):not(.bal) {
+.mx tbody tr:hover td:not(.who):not(.bal):not(.lwph) {
   background: rgba(59, 198, 232, .05);
+}
+
+/* EVERY BODY ROW IS ITS OWN PAINT LAYER (6 Sep 26, traced). Without this the
+   whole grid — one paint layer of ~21,000 cells — is re-walked whenever ANY
+   cell changes: a bid landing, a decision, a row hover, all cost ~230ms of
+   paint on the slow laptop before a pixel moved. A relatively-positioned row
+   gets its own layer, and the browser reuses the cached paint of every row
+   that did not change, so the same cell change paints in ~8ms. No offsets
+   are set, so nothing moves; the sticky callsign/counter cells keep painting
+   over the day cells of their own row (a positioned descendant paints after
+   its row's plain cells), and the open-bidding box (z-index 1) stays above
+   the rows and under the frozen columns as before. It does not cheapen a
+   MONTH draw (every row changes then) — that is what the placeholder inline
+   widths and the per-month row memo in Matrix.tsx are for. */
+.mx tbody tr { position: relative; }
+
+/* THE PLACEHOLDER COLUMNS (colwindow.ts, owner 5 Sep 26 — "do the
+   placeholders + moving"). One empty cell per side in every row stands in for
+   the months the window has not drawn, exactly as wide as those months
+   (measured once drawn, estimated before), so the scroller is year-wide from
+   the first paint and the next months are drawn IN PLACE while the scroll is
+   still moving. The width is an INLINE style Matrix writes on each cell
+   (`applyPlaceholders`, and the cell's mount hook) — the mirror header's copy
+   included. NOT a CSS variable on `.mx-outer` (6 Sep 26): a custom property
+   changing on the grid's ancestor makes Chrome re-style every element under it
+   (~7,000 on the full year, ~0.4–0.8s on the slow laptop) on every month draw;
+   the inline write touches only the ~130 placeholder cells. No side padding
+   and no right hairline: the column must be EXACTLY the written width, or the
+   swap for the real month would shift everything after it. The row hairline
+   stays so the rows read across; the faint diagonal hatch says "not drawn yet"
+   without shouting, and is what a reader sees for the beat before a month
+   lands. */
+.mx th.lwph,
+.mx td.lwph,
+.mx .mxhead th.lwph {
+  padding: 0;
+  border-right: 0;
+  background: repeating-linear-gradient(135deg, transparent 0 9px, rgba(70, 81, 94, .22) 9px 10px);
 }
 
 /* An actionable cell — one a click will do something with, which is stage-

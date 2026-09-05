@@ -548,6 +548,23 @@ this. As of 30 Aug 26 he has closed it.
 
 ## Deliberately deferred to later plans
 
+- **The grid draws a WINDOW of months, and the scroller spans the window
+  (3 Sep 26, Phase 2 of the speed work).** `ui/colwindow.ts` is the
+  arithmetic, `Matrix.tsx` the measuring; `HANDOFF.md` §Known issues (the
+  Leave War speed entry) carries the measured before/after and what is still
+  open. Two things to keep: the ROW memo contract (a `PersonRow` is a pure
+  function of its props, every prop a primitive or an object whose identity
+  changes only with the store `version`, handlers through the one `rowApi`
+  ref — a per-render object or function prop silently brings back the
+  whole-grid rebuild on every tap), and the COLUMN rule (anything that reads
+  "the columns" reads `drawnDays` / `drawnDates` / `drawnMonths`; anything
+  about the WAR — the verdicts, the lock set, a sheet's date span — reads the
+  full `dates`; on a coarse pointer the window never grows on the left except
+  at the left bound, because a `scrollLeft` write mid-fling kills the fling).
+  Known and accepted: the desktop bottom scrollbar walks the drawn months, not
+  the year (the month strip crosses the year); a far month jump rebuilds every
+  row's cells and is not faster than before.
+
 - **The day's overall verdict is computed and not shown.** `evaluateDay`
   produces a worst-across-all-rules verdict per day, and the interface still
   renders only the per-rule count rows. This was marked "for the bidding

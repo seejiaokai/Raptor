@@ -36,6 +36,12 @@ export function refreshHighlights(){
   const hlActive=HLSET.size>0||!!SEARCH;
   const selActive=!!SELID;
   const focusActive=hlActive||selActive;   // when anything is focused, dim everything else so the highlight pops
+  /* Measured and left alone (6 Sep 26, the drop round): a "quiet path" for
+     the no-focus case — strip classes with one `.puck.me,.puck.sel,…` query
+     and re-mark the view-as pucks with an attribute query instead of walking
+     every puck — came out SLOWER (23 ms vs 11 ms at 4×): a seven-selector
+     list is matched against all ~17k elements of the page, while this loop
+     visits only the ~660 pucks. The loop stays. */
   document.querySelectorAll('.puck[data-person]').forEach((el:any)=>{
     const id=el.dataset.person, p=PEOPLE[id];
     el.classList.remove('me','sel','hl','dim','wfoc','advf','echo');
