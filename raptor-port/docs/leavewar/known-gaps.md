@@ -521,9 +521,14 @@ thing that matters in portrait, which is the main view.**
    iPhone, it needs the compositor glue. So the glue is exonerated as the killer
    and REQUIRED for the sticky bar. **Do NOT drop the glue on touch again — it
    is a double regression.**
-3. **`overflow-y: hidden`.** Removing it changed nothing on device. (Left off —
-   with no height cap there is no vertical overflow to need it; the geometry gate
-   pins zero vertical scroll room. Just not the cause.)
+3. **`overflow-y: hidden`.** Removing it changed nothing on device — not the
+   cause of the dead fling. (It was left off from 30 Aug to 5 Sep 26 on the
+   belief that no height cap meant no vertical overflow to need it. That belief
+   was wrong on iOS: with the axis computing to `auto`, WebKit gives the native
+   scroll view whatever vertical overflow layout produces, and any stray pixel
+   makes the wrapper rubber-band vertically when a finger lands on it mid-fling
+   — the owner's 5 Sep recording. It is BACK, momentum-neutral per this very
+   A/B; see the `.mx-wrap` comment in matrix.css.)
 4. **`-webkit-overflow-scrolling: touch`.** Removed so `.mx-wrap` matches the
    gliding `.qwrap` exactly (`overflow-x: auto`, nothing else). A no-op on modern
    iOS; the flick still died. Not the cause.
