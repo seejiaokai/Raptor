@@ -11,6 +11,7 @@ import { curDraftId, reconcileIssuedMarks } from '../engine/drafts'
 import { isLead, isInstr, isOcu } from '../engine/people'
 import { HOOKS } from '../engine/hooks'
 import { canEditSched, ME } from './auth'
+import { flagDrop } from './dropflag'
 
 /* the repaint/gesture call sites inside these verbatim bodies route through
    the hooks — no-ops headless, mapped to the store's notify() when wired */
@@ -743,12 +744,18 @@ export function placeArmed(id:any){
      armed); planting repeats it as the warn toast after the write — the same
      validate-then-ask shape as drag.ts's barDrop — and the validator rings
      the puck the same instant. */
+  const warnBefore=WARN;   // the drop delta's baseline (state/dropflag.ts)
   if(/\.\+$/.test(key))fillSlot(key,id); else setSlotVal(key,id);
   armDrop();
   /* a successful fill PARKS the drawer (owner, 8 Aug 26): the point of
      planting is seeing the puck land, and the open drawer covers it. */
   if(isPhone())document.body.classList.remove('ros-open');
   afterSchedMutate(); paintArm();
+  /* THE DELTA SPEAKS FIRST (5 Sep 26): whatever the one validate() above
+     raised that was not there before — on any day, any seat — in its own
+     words; slotBar's reason is the fallback, "planned" the all-clear. Same
+     order as drag.ts's done(), so the two ways of planting a man agree. */
+  if(flagDrop(warnBefore,keyDay(base)))return true;
   const why=slotBar(id,base);
   if(why)toast(`${PEOPLE[id].cs} — ${why}`,'warn');
   else toast(`${PEOPLE[id].cs} planned`);

@@ -1117,6 +1117,13 @@ body:not(.tdrag) .page.editing .acrow .seat[data-slot]:hover .puck{outline:2px s
    the lightest of the three claims. */
 .puck.boxdot{outline:1.5px dotted var(--hard);outline-offset:2px}
 .puck.me.boxdot{outline:1.5px dotted var(--hard);outline-offset:2px}
+/* THE DROP-DELTA PULSE (state/dropflag.ts, 5 Sep 26): a puck a drop has just
+   flagged blinks twice on its own day. Opacity only — it composites, it never
+   relayouts, and it leaves every ring (boxred's !important shadow, boxdot's
+   outline) to its own rule. The reduced-motion blanket at the end of this
+   file kills it; the chip and the toast still say what happened. */
+.puck.flagnew{animation:flagnew .45s ease-in-out 2}
+@keyframes flagnew{0%,100%{opacity:1}50%{opacity:.25}}
 /* A CUT CALLSIGN HAS TO LOOK CUT (owner sweep, 6 Aug 26). This rule carried
    `text-overflow:ellipsis` and never got one: the property has no effect on a
    flex container, because the text becomes an anonymous flex item. So the
