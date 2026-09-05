@@ -138,6 +138,13 @@ export function paintArm(){
    box (the wave) wins over any inner one (its own first line) so a wave never
    draws a second box inside itself. */
 export function paintFreshAdds(){
+  /* A decoration pass with no page is a no-op. flashAdded (view.ts) arms two
+     6-second timers per add, and under vitest a file can finish — and its
+     jsdom be torn down — before they fire: CI run 899 (6 Sep 26) went red on
+     `ReferenceError: document is not defined` thrown here from a timer
+     inputedit.test.tsx had left behind, with every test green. Production
+     always has a document; only a dead test environment does not. */
+  if(typeof document==='undefined')return;
   document.querySelectorAll('.sb-fresh,.sb-fresh-out').forEach((el:any)=>el.classList.remove('sb-fresh','sb-fresh-out'));
   if(!FRESHADD.size)return;
   const wrap=document.querySelector('#schedBoard .sb-boardwrap:not(.pv-frozen)');

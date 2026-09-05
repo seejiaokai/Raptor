@@ -1298,3 +1298,18 @@ gate's. Keep verdict-bearing commands unpiped.
 **Suggested improvement:** When a change alters a DEFAULT / initial state (a zoom, a view, a role, a window), treat it as a whole-surface change: run that surface's full e2e project(s) before the push, not the subset, and drive the surface's modes the tests don't visit at the new default. Grep the specs for assertions that quote absolute px on the affected axis. Say in the report which tests were run at the new default.
 
 **Principle:** A default change re-baselines every measurement taken under the old one; gate it with the whole surface's suite and a drive of its other modes, never with the tests you touched.
+
+### Observation 85: A CI unit job went red with every test green — a 6-second production timer outlived its test file's DOM and threw `document is not defined`; look at the "Errors" line, not just the counts
+
+**Status:** OPEN
+**Date:** 2026-09-06
+**Session context:** CI run 899's `unit (raptor)` job failed on a commit that touched only Leave War files. The log's tally read 2632 passed / 0 failed — and `Errors 1`: vitest's "unhandled error during the test run", a `ReferenceError: document is not defined` thrown from `paintFreshAdds` (highlights.ts) via a `setTimeout` armed by `flashAdded` (view.ts, the 6-second "new-row blue box", shipped 5 Sep as #363) that fired after `inputedit.test.tsx` had finished and its jsdom was torn down. The previous run on identical Raptor code was green: a pure timing race between a long-lived timer and file teardown, surfaced by a slower runner. Fixed with a guard (`typeof document === 'undefined'` → return) at the decoration pass; production always has a document.
+**Skill:** verification-before-completion (reading a CI failure; test hygiene for timers)
+**Type:** open-source
+**Phase/Area:** Interpreting a red unit job whose counts are all green; long timers in modules tests import
+
+**Issue:** Two traps. (1) A red vitest job can have zero failing tests — the "Errors" line (unhandled exceptions from timers/promises after a file ends) fails the job on its own, and a reader who scans for `×` marks concludes "flake, unrelated" and re-runs. (2) A production module that arms multi-second timers on ordinary actions (here: every accepted input on a week load) will, under a test runner, routinely outlive the file that triggered it; whether it throws depends on the runner's speed, so it is invisible locally and intermittent in CI.
+
+**Suggested improvement:** When a CI job is red, read the summary block for `Errors N` and the "Unhandled Errors" section before deciding anything from the pass/fail counts. For any module that schedules timers longer than a test file's typical run (seconds), make the callback tolerate a torn-down environment (guard on `document`/`window`) or clear the timers in the store's reset path — and say which in the code comment, because the next "unrelated" red run will otherwise be re-diagnosed from scratch.
+
+**Principle:** A test job fails on unhandled errors as well as on assertions; a production timer that outlives its test file is a latent red run waiting for a slow runner.
