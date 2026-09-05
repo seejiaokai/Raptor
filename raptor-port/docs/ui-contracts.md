@@ -281,6 +281,16 @@ Four things make it work, and each is load-bearing:
   holds scroll across an ordinary repaint). If it stuck, every later repaint
   would drag the week back — the B54 scroll-hold guarantee broken, visible as
   the week jumping while you type.
+- **That `scrollLeft = sl` hold runs only when the repaint REWROTE the week**
+  (5 Sep 26, the owner's iPhone recording — days resting 60–100 px off their
+  snap point after a swipe in next week). A repaint that changed no day — the
+  palette's day-follow ~110 ms after a swipe settles, a store tick that touched
+  nothing here — writes nothing to the strip. Writing its own position back is
+  harmless in Chromium (it re-snaps after a programmatic scroll) and fatal on
+  iOS Safari (it does not: the still-settling snap stops where it stands).
+  Nothing moved the strip, so there is nothing to hold it against. Pinned
+  `ui/snaphold.test.tsx` (both weeks: no write on a no-change repaint, one
+  write on a rewrite).
 
 `state/store.ts`'s `resetSession` clears it **after** its own `setPage`, which
 is why that line sits at the end of the function rather than beside the other
@@ -1917,6 +1927,66 @@ persisted and never in a history snapshot. The toggle builder is `notePubTog`
 - Touch drag: 8px slop restarts the 180ms hold, >26px cancels; ghost
   follows finger; click-eater dies on next pointerdown.
 - Toast is `pointer-events:none`.
+- **A DROP SAYS WHAT IT JUST BROKE, IN THE VALIDATOR'S OWN WORDS — the drop
+  delta** (owner, 5 Sep 26: "it also needs to show flagging realtime";
+  `state/dropflag.ts`). `applyDrop` keeps `WARN` as it stood before the write,
+  `done()` runs the ONE `validate()` inside `afterSchedMutate`, and the
+  warnings present after but not before are what the drop caused — every
+  rule at once (crew rest from yesterday, the seven-day run counted across
+  the week, the OTHER seat's pairing), with no second copy of any rule. The
+  first of them is toasted verbatim, RED (`toast(…,'hard')`) for a hard
+  breach and amber for an advisory, ordered as the puck's own chip ranks
+  (`RANK`: a WSO on a front seat leads with Q, not the C his double seat also
+  earns), prefixed `Sun ·` when the breach landed on a day other than the one
+  dropped on (the reach IS the point — on a phone board that day is
+  off-screen), with `(+N more)` for the rest. Notes (the long-day count) are
+  never toasted. Every puck a new warning names blinks twice on its own day
+  (`.puck.flagnew`, opacity only, ~3 s window in `NEWFLAGS`; hung by
+  `refreshHighlights` AFTER the repaint because the breach day's block is
+  fresh nodes after the per-block swap). `barDrop` (slotBar's reason) is the
+  FALLBACK voice when the delta is empty, and it no longer validates on its
+  own — it runs after the epilogue's pass, so a drop validates ONCE (a swap
+  used to validate three times). `placeArmed` (the palette tap) follows the
+  same order: delta → slotBar reason → "planned". Pins: `state/dropflag.test.ts`
+  (delta, ordering, the day prefix, the pulse set), `ui/drag.test.tsx` (a WSO
+  dropped on a front seat is told so in red, the puck is marked),
+  `ui/dropvalidate.test.tsx` (exactly one `validate()` per drop and per swap),
+  `state/store.test.ts` (the plant's voice).
+- **THE HOVER REASON — the cell under a dragged puck says why, BEFORE the drop**
+  (owner, 5 Sep 26, step 3 of the same plan; `drag.ts hoverWhy`). When the drag
+  target CHANGES (mouse `dragover` and the pointer machine alike — never per
+  move, the ledger's drag budget), the target is asked `slotBar(id, key)` and a
+  non-empty answer is printed under the ghost (`.dwhy`, an absolutely
+  positioned child of `.dragimg`/`.tdghost`, so it rides the ghost's one
+  transform; the ghost gets `.haswhy` to lift the puck's overflow clip) with
+  the target's outline turned amber (`.dragover.dragover-why`). Gone the moment
+  the target changes to nothing, and with the ghost. The reason is slotBar's
+  own — the SAME string the palette strikes with and the fallback drop toast
+  prints — and since 5 Sep 26 slotBar also carries the two hard cross-day
+  rules (below), so "7th day in a row — breaks Sunday" reads under the finger
+  on a phone where Sunday is off-screen. Pinned in `ui/drag.test.tsx` ("the
+  hover reason").
+- **slotBar's LAST reason is the pre-drop cross-day question** (`validate.ts
+  crossDayIfPlaced`, `engine-rules.md` §the break-day rule): the seven-day run
+  (`runIfPlaced` — RUNLEN/RUNSEED/NEXTON, walking forward through the days he is
+  already on and into next Monday) and crew rest in BOTH directions
+  (`restIfPlaced` — the validator's own `crewRestDay` re-run in probe mode on a
+  copy of the day with the candidate leg cloned from a sibling leg of the same
+  formation; an empty formation answers null). It sits after every other
+  reason because those are closer facts about the slot itself; warn-not-bar
+  like the rest; and the green `paintSelRings`, the palette strike and the drop
+  fallback inherit it with no wiring of their own. Three guards from the 5 Sep
+  review: it stands down on a line the conflict engine leaves alone
+  (`slotRules().saExempt` — AVALON/BB, the SC SPARE row — those never enter
+  day.fly/day.events, so the validator would never raise what the oracle
+  foresaw); a seat-to-seat drag passes the seat being LEFT (`slotBar(id, key,
+  rules, fromKey)`), which the run reads as a day off when it was his only
+  event there and crew rest reads as that leg removed, so the hover describes
+  the week AFTER the move; and the answer is memoised per `(id, key, fromKey)`
+  until the next `validate()` — the palette asks slotBar for every name in a
+  column several times over (its sort comparator, the free count, the column
+  reason, the row). Pins: `engine/runtrace.test.ts` (§runIfPlaced,
+  §restIfPlaced, §slotBar, §review findings).
 - A PALETTE drop anywhere on a list row resolves to that row.
 - A SEAT puck only lands on a seat (swap) or a crew cell (move). Dropped
   anywhere else — row title/timings/remarks, jet-row dead space, blank
@@ -3083,6 +3153,53 @@ it can do. Filtering happens once, in `dayTraceHTML`: a row keeps only when
 its warning resolves to a real index OR `t.di==null` (the forward case),
 so a stale forward trace whose underlying breach has since been edited away
 drops out exactly like a stale within-week one does.
+
+### The run trace: the same dotted ring, for the seven-day rule (owner, 5 Sep 26)
+
+"Make the warning like what the crew rest does — dotted pucks, to warn that the
+7 day breach is on which day actually." The seven-day breach (`DAYS_RUN`) lands
+solid on the day the count crosses `VCONF.maxRun`; since 5 Sep 26 EVERY earlier
+day of that run wears `.puck.boxdot` too — a run differs from crew rest in that
+any day of it is a day the scheduler can still clear (take him off any one and
+the count resets), so the trace is on all of them, not only the day before.
+
+- **Published as `WARN.trace[di][id].run = {di, dow, n}`**, MERGED beside the
+  crew-rest fields (which stay at the top level, unchanged) — day six of a run
+  whose late landing also wrecks tomorrow carries both. `traceChip(t)` says
+  which glyph the trace prints once it leads: `RUN` when a run trace is
+  present (RUN outranks CR, exactly as on the day of the breach), else `CR`.
+  WHETHER it leads is unchanged: `traceLeads` lets a trace of either kind
+  caption the puck only over a chip below crew rest — a man's OWN hard breach
+  today (CR, RUN, C, Q) always keeps its label, so a dotted trace for a later
+  day never captions over the breach he has right now (review finding, 5 Sep
+  26). `traceIx(t, id, 'RUN')` resolves the run row to the `DAYS_RUN` warning
+  on its own breach day.
+- **On the puck**: the dotted ring, the `7` label when the trace owns the chip
+  (a louder flag of his own keeps its label and the caption rides on the title),
+  captioned `Consecutive days — Sunday is his 7th day in a row: a break day is
+  due before then`. A run-only trace never prints crew-rest words; a puck with
+  both prints both captions, ` · `-joined. His own solid `RUN` box on the breach
+  day is untouched, and a man with his OWN crew-rest breach beside a run trace
+  keeps his solid box (`trFlag` is per kind now).
+- **In the day's issue box**: a `Breaks Sunday` row per kind — the crew-rest row
+  as before, and the run row: "<b>cs</b> — his 7th day in a row falls on Sunday;
+  a break day before then clears it." It addresses the breach on its own day
+  (`data-wdi`/`data-wix`, so the ordinary jump focuses it) and carries no
+  `wpd`/`wpk`: the cause is the whole run, not one sortie.
+- **The forward pass, mirroring crew rest's phantom Monday**: a run standing AT
+  the limit on Sunday whose man is on next week's Monday
+  (`weekctx.ts:nextMondayWorked` — the seed-side on-set, stash read first) traces
+  every day of the run to `{di:null, dow:'Monday'}`, writes NO warning (parity
+  compares `WARN.byDay`; the trace is port-only), and the box row reads "Breaks
+  Monday" with the inert "load next week" title, exactly like the crew-rest one.
+  Bounded to Monday — one lookahead day.
+- Only the CROSSING day is traced to; the days after it wear their own solid
+  flag. A run walked in from last week that breaks on Monday traces nothing here
+  (its earlier days are last week's).
+- Pins: `engine/runtrace.test.ts` (the trace, the merge, the phantom Monday,
+  the walk-in seed), `ui/runtrace-ui.test.ts` (ring, label, caption, the box row,
+  both-traces puck). `html.test.ts`'s reference compare strips the crew-rest
+  decoration only — the seed week has no run, so nothing to strip.
 
 ## Duty templates (owner, 13 Aug 26)
 
@@ -4343,6 +4460,8 @@ Pins: `ui/help.test.tsx`.
 
 ## The next-week preview (owner ask — desktop continuous week display, 23 Aug 26)
 
+> Dimmed by a veil, never by `opacity` — see §Compositor layers on the desktop edit week (5 Sep 26) at the end of this file.
+
 Above 820px the week strip used to leave a fixed-width dead zone past
 Sunday (a JS-sized `--week-tail` spacer, `pan.ts:setWeekTail`, sized to
 round the scroll out to a whole trailing day). That space is filled now by
@@ -5577,3 +5696,37 @@ The contract, in the order a reader meets it:
   Desktop only — the phone finger-scrolls the grid and shows no proxy bar.
   Pinned in the e2e as "a year-wide scrubber; the desktop grid fills the whole
   year and the bar then slides it".
+
+## The Leave War grid scroller has no vertical axis (5 Sep 26)
+
+`.mx-wrap` is `overflow-x: auto; overflow-y: hidden` — the page owns the one
+vertical scroll (the 10 Aug rule), and the `hidden` is what makes that true on
+iOS, not just in Chromium. Every overflow scroller on iOS is a native
+UIScrollView; when `overflow-y` computes to `auto` (which `overflow-x: auto`
+alone forces), WebKit hands it the layout's vertical overflow as content, so a
+single stray pixel makes the wrapper a real vertical scroller with a rubber
+band. The owner's recording (pinch out, pinch in, swipe up while the sideways
+fling is still decelerating) showed exactly that: the touch was latched to the
+still-moving wrapper, the rows rubber-banded ~100px inside it and snapped back,
+the `.mxband` overlay outside it stood still ("the left column is stuck"), and
+the page did not scroll until the fling died. With `hidden`, WebKit clamps the
+vertical content size to the visible height regardless of layout
+(`RenderLayerScrollableArea::reachableTotalContentsSize`), so the scroll view
+has no vertical range and a vertical drag is handed to the page. Chromium had
+zero room either way (measured), the e2e "the grid has no vertical scroller of
+its own" pins that, and the 30 Aug device A/B showed the property is
+momentum-neutral. Do not drop it to "simplify" the rule again. Verified on the
+owner's iPhone against the preview (5 Sep 26). Never reach for
+`overscroll-behavior-y: none` here instead: WebKit's iOS delegate also uses that
+value to switch off the hand-off of vertical drags to the page
+(`_wk_setTransfersVerticalScrollingToParent` is set only for `auto`), which
+would kill vertical scrolling over the grid entirely.
+## Compositor layers on the desktop edit week (5 Sep 26)
+
+The desktop edit week carried 261 compositor layers, and a puck drag re-layerises the page on every pointer move, so that count was the drag's floor (`docs/performance.md` ledger 22 — per-move 68 → 52 ms at 4× once it was 105). Three contracts hold it there, pinned by `ui/layers.test.ts`:
+
+- **A palette puck is never filtered.** `.rpuck.busy .puck` / `.rpuck.no .puck` desaturate with a translucent grey layered in `background-blend-mode:saturation` (alpha .45 ≈ saturate(.55), .3 ≈ saturate(.7)): same hue, same luminance, paint-only. Only the puck's background is desaturated; its text and letter chip keep their colour (the old filter washed them too — that is the one visible difference).
+- **A preview day is never translucent.** `.day.peek` is dimmed by a `::after` veil of the page background at .5 (.2 on hover / focus-within), `pointer-events:none` so the click that loads next week still lands; the veil is clipped to the padding box, so the day's border and shadow — outside it — are halved by hand to match. It needs `position:relative` on the peek day — its markup is inert (ui/peek.ts) and positions nothing against an outer ancestor.
+- **The roster aside stacks above the week's z-indexed pucks** — `.edit-board .eroster{z-index:5}`, under the fixed chrome (week-nav 150, rail 151, hscroll 185); the narrow-screen drawer sets its own 190. Nothing inside the week strip can reach the aside (the strip clips its own box), so no pixel changes.
+
+Why each: a filtered element and an opacity group can never be squashed into a layer shared with what they overlap, and everything painted above a sticky (composited) element is assumed to overlap its whole scroll range. What was tried and did not help — own layers for the days / the strip / the roster (worse), a static roster (worse), blur off the chrome, containment and isolation on the preview or the roster — is in performance.md §Dead ends. The phone board never had the problem (9 layers).

@@ -3,8 +3,8 @@ import { INPUTS, inputCoversDate, isAway, awayAllDay, canSpare, canWork, offWord
 import { PEOPLE, isSpecial, nameToId, aarNeed, aarOK, scShiftKind, scQualOK, isInstrPilot } from './people'
 import { parseHM, win, overlap, hm24 } from './time'
 import { SHIFT_HARD, VCONF } from './rules'
-import { isStandalone, scSpare } from './waves'
-import { WARN, restClear, dayEvents } from './validate'
+import { isStandalone, scSpare, saExempt } from './waves'
+import { WARN, restClear, dayEvents, crossDayIfPlaced } from './validate'
 import { waveWindows, inpShow, shiftEvHard, seatIntime, scSeatHit } from './events'
 import { whoArr, rowRef, XKEY } from './slots'
 import { keyDay } from './keys'
@@ -141,7 +141,7 @@ export function slotRules(key:any){
   /* an append target and an overflow body both sit on the row they hang off,
      so they carry its hours — strip both before looking the row up */
   const k=String(key).replace(/\.\+$/,'').replace(XKEY,'');
-  const out:any={seat:null,sim:false,simKind:null,sc:null,scStart:null,scEnd:null,scSpare:false,aar:null,di:-1,slotStart:null,slotEnd:null,sansStart:null,avJet:false,avDuty:false,infoRow:false};
+  const out:any={seat:null,sim:false,simKind:null,sc:null,scStart:null,scEnd:null,scSpare:false,aar:null,di:-1,slotStart:null,slotEnd:null,sansStart:null,avJet:false,avDuty:false,infoRow:false,saExempt:false};
   out.di=keyDay(k);
   /* THE SLOT'S OWN HOURS (10 Aug 26, for the AM/PM half-days). Only an SC
      shift carried a window before, which is the whole reason a personal input
@@ -206,6 +206,11 @@ export function slotRules(key:any){
          warned about ("rules engine affects many parts… are they in sync") —
          so whatever the rule is, it must stay identical in both places. */
       out.aar=aarNeed(ac.rmks,!!wv.night);
+      /* a line the conflict engine leaves alone (waves.ts saExempt: AVALON/BB
+         whole wave, the SC SPARE row) never enters day.fly/day.events, so it
+         bears no crew rest and counts as no day on the programme — the
+         cross-day question below must stand down for it (5 Sep 26) */
+      out.saExempt=saExempt(wv,f,ac);
     }
     /* the sortie's window, PADDED to the step and the dekit — because that is
        what the validator judges an input against (the brief/debrief loop), and
@@ -279,7 +284,12 @@ export function sansGate(id:any,dt:any,domain:any,s:any,e:any):any{
   return {status:'window',off:{s:w[0],e:w[1]}};
 }
 /* '' when they may be planned here, otherwise the reason they may not */
-export function slotBar(id:any,key:any,rules?:any){
+/* `fromKey` (5 Sep 26): the seat the man is being MOVED from, when this is a
+   seat-to-seat drag — the cross-day question below then reads him as off
+   that seat (a run counts the day off if it was his only event; a leg being
+   moved cannot break its own crew rest), so the hover reason describes the
+   schedule AFTER the move, not before. Omitted by every other caller. */
+export function slotBar(id:any,key:any,rules?:any,fromKey?:any){
   const p=PEOPLE[id]; if(!p||p.special)return '';
   const r=rules||slotRules(key);
   /* an ⓘ info-only row raises nothing after planting (it never enters the event
@@ -513,6 +523,13 @@ export function slotBar(id:any,key:any,rules?:any){
     const t3=!pdo?null:cand(pdo.dt,(x:any)=>{const w2=inpWin(x);return !!w2&&w2[1]>1440&&iHit(x,-1440);});
     if(t3)return onWord(t3,' (overnight)');
   }
+  /* THE TWO HARD CROSS-DAY RULES, LAST (5 Sep 26 — step 3 of the flagging
+     plan): would landing here be his seventh day in a row, or break crew
+     rest against yesterday's end or tomorrow's report? Read off the
+     validator's own tables (validate.ts crossDayIfPlaced), never a second
+     copy. Last because every reason above is a closer fact about THIS slot;
+     this one is about the days around it. Warn-not-bar like the rest. */
+  if(!r.saExempt){const xd=crossDayIfPlaced(id,key,fromKey); if(xd)return xd;}
   return '';
 }
 /* An armed key names a SEAT; an event names the ROW it came off. Bring the two

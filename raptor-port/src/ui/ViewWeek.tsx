@@ -76,9 +76,10 @@ export function ViewWeek() {
     /* a changed day rewrites only its changed BLOCKS (ui/dayswap.ts) — see
        EditWeek for the reasoning; both weeks swap the same way */
     let chunks: (DayChunks | null)[]
+    let wrote = whole   // did this repaint write the week's DOM? (see the hold below)
     if (!whole) {
       const secs = [...root.children] as HTMLElement[]
-      chunks = html.map((h, i) => h === p!.html[i] ? (p!.chunks[i] ?? null) : swapDay(secs[i]!, h, p!.chunks[i] || chunksOfHTML(p!.html[i]!)))
+      chunks = html.map((h, i) => { if (h === p!.html[i]) return p!.chunks[i] ?? null; wrote = true; return swapDay(secs[i]!, h, p!.chunks[i] || chunksOfHTML(p!.html[i]!)) })
     } else {
       root.innerHTML = html.join('')
       chunks = html.map(() => null)
@@ -117,7 +118,10 @@ export function ViewWeek() {
       /* a within-week repaint holds the week's scroll position (B54) — or the
          glide's destination if one is in flight, so a mid-glide repaint lands on
          the intended day instead of freezing between two (see panHold). */
-      root.scrollLeft = panHold(sl)
+      /* only a repaint that REWROTE the week holds its scroll (EditWeek has the
+         full note): a no-change repaint writing scrollLeft back to itself stops
+         an iPhone's still-settling snap where it stands (5 Sep 26). */
+      if (wrote) root.scrollLeft = panHold(sl)
       /* ...unless a page switch left a day to carry (owner, 9 Aug 26): the
          other week was parked on it, and this one lands there rather than
          wherever it was last left. Consumed once — a repaint that is not a

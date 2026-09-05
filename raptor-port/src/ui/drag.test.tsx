@@ -13,6 +13,8 @@ import { afterSchedMutate, armedKey, AVSHUT } from '../state/view'
 import { dragFrom, applyDrop, setDrag, DRAG } from './drag'
 import { openScheduler, closeScheduler } from './board'
 import { DAYS } from '../engine/data'
+import { PEOPLE } from '../engine/people'
+import { isNewFlag } from '../state/dropflag'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
@@ -37,6 +39,7 @@ const dnd = async (from: Element, to: Element) => {
 }
 /* capture toasts without repainting anything */
 let toasts: string[] = []
+let kinds: any[] = []
 const origToast = HOOKS.toast
 
 beforeAll(async () => {
@@ -46,7 +49,7 @@ beforeAll(async () => {
   await act(async () => { createRoot(host).render(<App />) })
   await act(async () => { setSession({ user: 'a', role: 'admin' }); notify() })
   await click($$('.nav a[data-page]').find(a => a.dataset.page === 'editsched')!)
-  HOOKS.toast = (m: any) => { toasts.push(String(m)) }
+  HOOKS.toast = (m: any, k?: any) => { toasts.push(String(m)); kinds.push(k) }
 })
 
 describe('generic drag & drop across the whole edit board (tfin)', () => {
@@ -118,6 +121,81 @@ describe('generic drag & drop across the whole edit board (tfin)', () => {
     expect($$('#vWeek [data-fill]').length).toBe(0)
     expect($$('#vWeek [data-drag]').length).toBe(0)
     expect($$('#vWeek [draggable="true"]').length).toBe(0)
+  })
+})
+
+describe('the drop delta (5 Sep 26) — a drop says what it just broke, in the validator’s words', () => {
+  it('a WSO dropped onto a jet’s front seat is told so in red, the moment he lands', async () => {
+    const seat = $('#eWeek .acrow .seat[data-slot$=".p"][data-drag]')
+    const key = seat.dataset.slot!, before = slotVal(key)
+    const wso = Object.keys(PEOPLE).find(id => PEOPLE[id].seat === 'RCP' && !PEOPLE[id].special && !PEOPLE[id].archived
+      && !!document.querySelector(`#eRoster .rpuck[data-person="${id}"]`))!
+    expect(wso, 'a WSO on the roster').toBeTruthy()
+    toasts = []; kinds = []
+    await dnd($(`#eRoster .rpuck[data-person="${wso}"]`), $(`#eWeek .seat[data-slot="${key}"]`))
+    expect(slotVal(key)).toBe(wso)
+    const i = toasts.findIndex(t => /is a WSO — cannot fly FCP/.test(t))
+    expect(i, `the validator's QUAL breach was toasted: ${toasts.join(' | ')}`).toBeGreaterThanOrEqual(0)
+    expect(kinds[i]).toBe('hard')
+    /* the puck the drop flagged is marked to pulse on its own day */
+    const di = +key.split('.')[0]
+    expect(isNewFlag(di, wso)).toBe(true)
+    expect($(`#eWeek .day[data-day="${di}"] .puck[data-person="${wso}"]`).classList.contains('flagnew')).toBe(true)
+    setSlotVal(key, before); await act(async () => { afterSchedMutate(); notify() })
+  })
+
+  it('a drop that raises nothing new says nothing beyond the old fallback', async () => {
+    const seat = $('#eWeek .seat[data-slot^="g:"][data-drag]')
+    const key = seat.dataset.slot!, before = slotVal(key)
+    /* the man already in the seat, dropped back: applyDrop refuses before any write */
+    toasts = []
+    await dnd($(`#eWeek .seat[data-slot="${key}"]`), $(`#eWeek .seat[data-slot="${key}"]`))
+    expect(toasts).toEqual(['Already in that seat'])
+    expect(slotVal(key)).toBe(before)
+  })
+})
+
+describe('the hover reason (5 Sep 26) — the cell under a dragged puck says why, before the drop', () => {
+  /* the native path's ghost is built on dragstart; the suite's dnd() helper
+     hands a dataTransfer without setDragImage, so this one carries it */
+  const dtWith = (): any => ({ data: {} as any, effectAllowed: '', setData(k: string, v: string) { this.data[k] = v }, getData(k: string) { return this.data[k] || '' }, setDragImage() {} })
+  const fire = async (el: Element, t: string, dt: any) => {
+    const ev: any = new Event(t, { bubbles: true, cancelable: true }); try { ev.dataTransfer = dt } catch (_) {}
+    await act(async () => { el.dispatchEvent(ev) })
+  }
+  it('a WSO held over a jet front seat: amber outline on the seat, the reason under the ghost; gone on leaving', async () => {
+    const seat = $('#eWeek .acrow .seat[data-slot$=".p"][data-drag]')
+    const wso = Object.keys(PEOPLE).find(id => PEOPLE[id].seat === 'RCP' && !PEOPLE[id].special && !PEOPLE[id].archived
+      && !!document.querySelector(`#eRoster .rpuck[data-person="${id}"]`))!
+    const src = $(`#eRoster .rpuck[data-person="${wso}"]`)
+    const dt = dtWith()
+    await fire(src, 'dragstart', dt)
+    await fire(seat, 'dragover', dt)
+    const ghost = $('.dragimg')
+    expect(ghost, 'the ghost is up').toBeTruthy()
+    const why = ghost.querySelector('.dwhy')
+    expect(why && why.textContent, 'the reason rides under the ghost').toMatch(/front seat/)
+    expect(ghost.classList.contains('haswhy')).toBe(true)
+    expect(seat.classList.contains('dragover-why')).toBe(true)
+    /* over empty space the reason goes and the outline returns to normal */
+    await fire(document.body, 'dragover', dt)
+    expect(ghost.querySelector('.dwhy')).toBeNull()
+    expect(seat.classList.contains('dragover-why')).toBe(false)
+    await fire(src, 'dragend', dt)
+    expect($('.dragimg'), 'the ghost is gone').toBeFalsy()
+  })
+  it('a legal landing prints nothing', async () => {
+    const seat = $('#eWeek .seat[data-slot^="g:"][data-drag]')
+    const key = seat.dataset.slot!, before = slotVal(key)
+    const src = $$('#eRoster .rpuck[data-person]').find(x => x.dataset.person !== before && !x.dataset.why)!
+    const dt = dtWith()
+    await fire(src, 'dragstart', dt)
+    await fire(seat, 'dragover', dt)
+    const ghost = $('.dragimg')
+    expect(ghost).toBeTruthy()
+    expect(ghost.querySelector('.dwhy')).toBeNull()
+    expect(seat.classList.contains('dragover-why')).toBe(false)
+    await fire(src, 'dragend', dt)
   })
 })
 

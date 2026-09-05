@@ -588,7 +588,15 @@ body.dnd .hscroll,body.tdrag .hscroll{pointer-events:none}
 /* NOTE: the aside carries BOTH .sb-roster and .eroster, and .sb-roster{flex:1}
    is declared later in this sheet — so every geometry rule here needs the
    extra .edit-board specificity or the palette balloons to half the page. */
-.edit-board .eroster{flex:0 0 auto;width:max-content;align-self:stretch;position:sticky;top:8px;
+/* z-index:5 (5 Sep 26, measured — docs/performance.md ledger 22): a sticky
+   aside is composited, and everything the week paints ABOVE it in z-order —
+   the selected / me pucks and the SAN stripe at z 2–4 — was "assumed to
+   overlap" its scroll range and lifted onto a layer of its own (44 of the
+   desktop week's 261). Nothing inside the week strip can reach the aside
+   (the strip clips its own box), so stacking the aside above those pucks
+   changes no pixel. Keep it under the fixed chrome (week-nav 150, rail 151,
+   hscroll 185); the narrow-screen drawer below sets its own 190. */
+.edit-board .eroster{flex:0 0 auto;width:max-content;align-self:stretch;position:sticky;top:8px;z-index:5;
   max-height:calc(100vh - 118px);overflow-y:auto;overflow-x:hidden;
   border:1px solid var(--edge);border-right:none;border-radius:11px 0 0 11px;
   background:var(--panel);margin:2px 0 0 4px;padding:8px 8px 10px}
@@ -769,10 +777,20 @@ body.ros-open .eroster .ros-tab{background:var(--accent);color:var(--accent-ink)
    stay distinct by mark, not by colour loss. */
 .rpuck.standby{opacity:.82}
 .rpuck.standby .puck{box-shadow:inset 2px 0 0 var(--ok)}
+/* The light desaturation is a SATURATION BLEND of a translucent grey over the
+   seat colour, not filter:saturate() (5 Sep 26, measured — docs/performance.md
+   ledger 22): a filtered element can never share a compositor layer with
+   anything it overlaps, so every faded palette puck was a layer of its own —
+   59 of the desktop week's 261 — and each pointer move re-decided all of them
+   (Layerize ~13ms a move at 4×). A grey at alpha a blended in 'saturation'
+   mode keeps the hue and the luminance and scales the saturation by (1−a):
+   .45 ≈ saturate(.55), .3 ≈ saturate(.7). The blend is paint-only — no
+   stacking context, no layer. Only the puck's background is desaturated now
+   (the filter also touched its text and chip), which reads the same at 9px. */
 .rpuck.busy{opacity:.62}
-.rpuck.busy .puck{filter:saturate(.55);box-shadow:inset 2px 0 0 var(--ink-3)}
+.rpuck.busy .puck{background-image:linear-gradient(rgba(128,128,128,.45),rgba(128,128,128,.45));background-blend-mode:saturation;box-shadow:inset 2px 0 0 var(--ink-3)}
 .rpuck.no{opacity:.5;position:relative}
-.rpuck.no .puck{filter:saturate(.7)}
+.rpuck.no .puck{background-image:linear-gradient(rgba(128,128,128,.3),rgba(128,128,128,.3));background-blend-mode:saturation}
 .rpuck.no::after{content:'';position:absolute;left:3px;right:3px;top:50%;height:1px;
   background:var(--ink-3);transform:translateY(-.5px);pointer-events:none}
 .rpuck.no,.rpuck.no:active{cursor:not-allowed}
@@ -1117,6 +1135,23 @@ body:not(.tdrag) .page.editing .acrow .seat[data-slot]:hover .puck{outline:2px s
    the lightest of the three claims. */
 .puck.boxdot{outline:1.5px dotted var(--hard);outline-offset:2px}
 .puck.me.boxdot{outline:1.5px dotted var(--hard);outline-offset:2px}
+/* THE DROP-DELTA PULSE (state/dropflag.ts, 5 Sep 26): a puck a drop has just
+   flagged blinks twice on its own day. Opacity only — it composites, it never
+   relayouts, and it leaves every ring (boxred's !important shadow, boxdot's
+   outline) to its own rule. The reduced-motion blanket at the end of this
+   file kills it; the chip and the toast still say what happened. */
+.puck.flagnew{animation:flagnew .45s ease-in-out 2}
+@keyframes flagnew{0%,100%{opacity:1}50%{opacity:.25}}
+/* THE HOVER REASON under a dragged puck (drag.ts hoverWhy, 5 Sep 26): a child
+   of the ghost, absolutely placed below it, so it rides the ghost's one
+   transform — no second moving layer. The ghost is a puck clone and pucks
+   clip their overflow, so the caption needs the clip lifted while it shows.
+   Amber like the fallback drop toast: allowed, not right. */
+.dragimg.haswhy,.tdghost.haswhy{overflow:visible!important}
+.dragimg .dwhy,.tdghost .dwhy{position:absolute;top:calc(100% + 5px);left:0;background:var(--panel-2);color:var(--adv);
+  border:1px solid var(--adv);border-radius:4px;padding:3px 6px;font-size:10px;font-weight:600;line-height:1.2;
+  white-space:nowrap;max-width:62vw;overflow:hidden;text-overflow:ellipsis;pointer-events:none;box-shadow:0 2px 8px rgba(0,0,0,.35)}
+.dragover.dragover-why{outline-color:var(--adv)!important}
 /* A CUT CALLSIGN HAS TO LOOK CUT (owner sweep, 6 Aug 26). This rule carried
    `text-overflow:ellipsis` and never got one: the property has no effect on a
    flex container, because the text becomes an anonymous flex item. So the
@@ -3296,8 +3331,19 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
      552px flex-basis so scroll stops still land on a whole day, dimmed and
      with a pointer cursor so it reads as "there, but not here yet" rather than
      as a broken/loading day. Desktop-only, matching where it is ever mounted. */
-  .day.peek{opacity:.5;cursor:pointer;transition:opacity .15s}
-  .day.peek:hover,.day.peek:focus-within{opacity:.8}
+  /* DIMMED BY A VEIL, NOT BY OPACITY (5 Sep 26, measured — docs/performance.md
+     ledger 22). opacity:.5 on a whole day column made it a translucent group
+     that could not share a compositor layer with anything it overlapped, and
+     every puck, remark and seat inside the two preview days became a layer of
+     its own — 47 of the desktop week's 261. A page-background veil at the same
+     alpha over the day is the same arithmetic (.5·day + .5·bg) and paints in
+     place. The veil is clipped to the padding box (.day is overflow:hidden),
+     so the border and the shadow, both outside it, are halved by hand.
+     pointer-events:none keeps the click that loads next week. rgba(11,13,16)
+     is --bg; rgba(42,49,58) is --edge. */
+  .day.peek{position:relative;cursor:pointer;border-color:rgba(42,49,58,.5);box-shadow:0 24px 60px -34px rgba(0,0,0,.45)}
+  .day.peek::after{content:'';position:absolute;inset:0;border-radius:inherit;background:rgba(11,13,16,.5);pointer-events:none;transition:background-color .15s}
+  .day.peek:hover::after,.day.peek:focus-within::after{background:rgba(11,13,16,.2)}
   /* the boundary between the real week and the preview needs to read at a
      glance — a muted label ahead of the first preview day, the same
      small-caps "section header" treatment .pl-hint/.sub-h already use rather
