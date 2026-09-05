@@ -582,6 +582,14 @@ check the other):
   vs after the write) rather than re-asking any rule, so it cannot drift from
   the warning list at all — what it can miss is a slotBar bar the validator
   does not mirror, which is why slotBar's reason stays as its fallback voice.
+  And since 5 Sep 26 `slotBar` ITSELF reaches across days for the two hard
+  rules (`validate.ts crossDayIfPlaced`): the seven-day run off the tables the
+  last validate() published, crew rest by re-running the validator's own
+  crewRestDay in probe mode — so the palette strike, the green rings, the drag
+  hover reason (`drag.ts hoverWhy`) and the fallback toast all say "7th day in
+  a row — breaks Sunday" BEFORE the write, and none of them holds a second
+  copy of either rule. A new cross-day rule that wants a pre-drop voice goes in
+  there, the same way — never as a check of its own in a renderer.
   The 31 Aug 26 two-SC-seats rule follows the same law from the other side:
   `events.ts:scSeatHit` is the ONE body — the validator's spare-overlap
   warning and `slotBar`'s "already on …" refusal both call it (spares are

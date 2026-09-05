@@ -155,6 +155,50 @@ describe('the drop delta (5 Sep 26) — a drop says what it just broke, in the v
   })
 })
 
+describe('the hover reason (5 Sep 26) — the cell under a dragged puck says why, before the drop', () => {
+  /* the native path's ghost is built on dragstart; the suite's dnd() helper
+     hands a dataTransfer without setDragImage, so this one carries it */
+  const dtWith = (): any => ({ data: {} as any, effectAllowed: '', setData(k: string, v: string) { this.data[k] = v }, getData(k: string) { return this.data[k] || '' }, setDragImage() {} })
+  const fire = async (el: Element, t: string, dt: any) => {
+    const ev: any = new Event(t, { bubbles: true, cancelable: true }); try { ev.dataTransfer = dt } catch (_) {}
+    await act(async () => { el.dispatchEvent(ev) })
+  }
+  it('a WSO held over a jet front seat: amber outline on the seat, the reason under the ghost; gone on leaving', async () => {
+    const seat = $('#eWeek .acrow .seat[data-slot$=".p"][data-drag]')
+    const wso = Object.keys(PEOPLE).find(id => PEOPLE[id].seat === 'RCP' && !PEOPLE[id].special && !PEOPLE[id].archived
+      && !!document.querySelector(`#eRoster .rpuck[data-person="${id}"]`))!
+    const src = $(`#eRoster .rpuck[data-person="${wso}"]`)
+    const dt = dtWith()
+    await fire(src, 'dragstart', dt)
+    await fire(seat, 'dragover', dt)
+    const ghost = $('.dragimg')
+    expect(ghost, 'the ghost is up').toBeTruthy()
+    const why = ghost.querySelector('.dwhy')
+    expect(why && why.textContent, 'the reason rides under the ghost').toMatch(/front seat/)
+    expect(ghost.classList.contains('haswhy')).toBe(true)
+    expect(seat.classList.contains('dragover-why')).toBe(true)
+    /* over empty space the reason goes and the outline returns to normal */
+    await fire(document.body, 'dragover', dt)
+    expect(ghost.querySelector('.dwhy')).toBeNull()
+    expect(seat.classList.contains('dragover-why')).toBe(false)
+    await fire(src, 'dragend', dt)
+    expect($('.dragimg'), 'the ghost is gone').toBeFalsy()
+  })
+  it('a legal landing prints nothing', async () => {
+    const seat = $('#eWeek .seat[data-slot^="g:"][data-drag]')
+    const key = seat.dataset.slot!, before = slotVal(key)
+    const src = $$('#eRoster .rpuck[data-person]').find(x => x.dataset.person !== before && !x.dataset.why)!
+    const dt = dtWith()
+    await fire(src, 'dragstart', dt)
+    await fire(seat, 'dragover', dt)
+    const ghost = $('.dragimg')
+    expect(ghost).toBeTruthy()
+    expect(ghost.querySelector('.dwhy')).toBeNull()
+    expect(seat.classList.contains('dragover-why')).toBe(false)
+    await fire(src, 'dragend', dt)
+  })
+})
+
 describe('applyDrop contracts (B23 / B49)', () => {
   it('dragFrom reads a slot seat', () => {
     const el = $('#eWeek .acrow .seat[data-slot][data-drag]')

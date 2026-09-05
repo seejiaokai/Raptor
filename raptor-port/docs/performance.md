@@ -107,7 +107,11 @@ Grouped by area. Each is the short rule; the source has the full story.
   Pinned `ui/dropvalidate.test.tsx`. (ledger 21)
 - **An edit on one day must not disturb the other days** — per-day string diff
   (gate check B). If you add a new cross-day trace, extend B's named exemption
-  *precisely*; never loosen it to "some other days may change."
+  *precisely*; never loosen it to "some other days may change." Two named
+  exemptions today: the day the edited day's crew rest traces to (6 Aug 26),
+  and every day carrying the EDITED MAN's run trace (5 Sep 26 — a seat filled
+  on one day can join a run, and each earlier day of it then points at the
+  day it breaks).
 - **A changed day rewrites only its changed BLOCKS** (`ui/dayswap.ts`). Diff each
   block's *canonical* markup (a freshly parsed node, never the live decorated
   one); any shape mismatch falls back to whole-node replace. Do not diff by live
@@ -171,6 +175,11 @@ Grouped by area. Each is the short rule; the source has the full story.
 - **Nothing on the page is natively `draggable`** — every drag rides the pointer
   machine in `drag.ts`; `body.dnd` is added one tick after dragstart, never
   synchronously.
+- **The hover reason is asked on TARGET CHANGE, never per move** (`drag.ts
+  hoverWhy`, 5 Sep 26), and printed as a child of the ghost so it rides the
+  ghost's one transform — no second moving layer. slotBar's cross-day probe
+  (`restIfPlaced`) clones one leg and re-runs the crew-rest body for one man;
+  keep it that shape — never a buildDay or a validate() per hover or per ring.
 
 ### E. Leave War (the heavy grid — ~28k nodes)
 - **Kept alive between visits, not unmounted** — leaving hides it with

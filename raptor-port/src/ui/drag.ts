@@ -80,10 +80,42 @@ function dndOn(from: any) {
     ROS_REOPEN = true; document.body.classList.remove('ros-open')
   }
 }
+/* THE HOVER REASON (owner, 5 Sep 26 — step 3 of the flagging plan): while a
+   puck is in flight, the cell under it is asked slotBar's question the moment
+   the target CHANGES (never per move — the ledger's drag budget), and the
+   answer is printed under the ghost (`.dwhy`, an absolutely positioned child
+   of the ghost, so it rides the ghost's one transform and costs nothing per
+   move) with the target's outline turned amber. slotBar now carries the two
+   hard cross-day rules too (validate.ts crossDayIfPlaced), so "his 7th day
+   in a row — breaks Sunday" reads under the finger BEFORE the drop, on the
+   phone where the breach day is off-screen. One oracle: the same reason the
+   palette strikes with and the fallback drop toast prints. */
+let OVER_EL: Element | null = null
+function hoverWhy(t: Element | null) {
+  if (t === OVER_EL) return
+  if (OVER_EL) OVER_EL.classList.remove('dragover-why')
+  OVER_EL = t
+  const g = DRAGIMG || (TD && TD.ghost)
+  if (g) { const old = g.querySelector('.dwhy'); if (old) old.remove(); g.classList.remove('haswhy') }
+  if (!t || !DRAG || !g) return
+  const el = t as HTMLElement
+  const key = el.dataset.slot || el.dataset.fill || ((el.querySelector('[data-slot]') as HTMLElement | null)?.dataset.slot)
+  if (!key) return
+  const id = DRAG.kind === 'roster' ? DRAG.id : slotVal(DRAG.key)
+  if (!id || (DRAG.kind === 'slot' && DRAG.key === key)) return
+  /* a seat puck names the seat it is LEAVING, so the answer reads the week
+     after the move (slotBar's fromKey) */
+  let why = ''; try { why = slotBar(id, String(key).replace(/\.\+$/, ''), undefined, DRAG.kind === 'slot' ? DRAG.key : undefined) } catch (_) { return }
+  if (!why) return
+  el.classList.add('dragover-why')
+  const c = document.createElement('span'); c.className = 'dwhy'; c.textContent = why
+  g.appendChild(c); g.classList.add('haswhy')
+}
 function dndOff() {
   document.body.classList.remove('dnd')
+  OVER_EL = null
   dropDragImage()
-  document.querySelectorAll('.dragover').forEach(x => x.classList.remove('dragover'))
+  document.querySelectorAll('.dragover,.dragover-why').forEach(x => x.classList.remove('dragover', 'dragover-why'))
   if (ROS_REOPEN) { ROS_REOPEN = false; document.body.classList.add('ros-open') }
 }
 /* what a drag STARTS from — shared by the pointer machine and the synthetic
@@ -356,6 +388,7 @@ function onDragOver(e: DragEvent) {
   moveDragImage(e.clientX, e.clientY)
   const drop = (e.target as HTMLElement).closest(DROP_SEL) || (e.target as HTMLElement).closest(BIN_SEL)
   if (!drop) {
+    hoverWhy(null)
     /* empty space is a valid landing for a seat puck (letting go removes it),
        and the browser only fires drop where dragover was preventDefault'd */
     if (DRAG.kind === 'slot') e.preventDefault()
@@ -363,6 +396,7 @@ function onDragOver(e: DragEvent) {
   }
   e.preventDefault()
   drop.classList.add('dragover')
+  hoverWhy(drop)
 }
 function onDragLeave(e: DragEvent) { const t = (e.target as HTMLElement).closest('.dragover'); if (t) t.classList.remove('dragover') }
 function onDrop(e: DragEvent) {
@@ -453,6 +487,7 @@ function tdOver(x: any, y: any) {
     if (TD.over) TD.over.classList.remove('dragover')
     if (t) t.classList.add('dragover')
     TD.over = t
+    hoverWhy(t)
   }
   tdAutoScroll(y)
 }

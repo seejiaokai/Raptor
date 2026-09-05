@@ -1124,6 +1124,16 @@ body:not(.tdrag) .page.editing .acrow .seat[data-slot]:hover .puck{outline:2px s
    file kills it; the chip and the toast still say what happened. */
 .puck.flagnew{animation:flagnew .45s ease-in-out 2}
 @keyframes flagnew{0%,100%{opacity:1}50%{opacity:.25}}
+/* THE HOVER REASON under a dragged puck (drag.ts hoverWhy, 5 Sep 26): a child
+   of the ghost, absolutely placed below it, so it rides the ghost's one
+   transform — no second moving layer. The ghost is a puck clone and pucks
+   clip their overflow, so the caption needs the clip lifted while it shows.
+   Amber like the fallback drop toast: allowed, not right. */
+.dragimg.haswhy,.tdghost.haswhy{overflow:visible!important}
+.dragimg .dwhy,.tdghost .dwhy{position:absolute;top:calc(100% + 5px);left:0;background:var(--panel-2);color:var(--adv);
+  border:1px solid var(--adv);border-radius:4px;padding:3px 6px;font-size:10px;font-weight:600;line-height:1.2;
+  white-space:nowrap;max-width:62vw;overflow:hidden;text-overflow:ellipsis;pointer-events:none;box-shadow:0 2px 8px rgba(0,0,0,.35)}
+.dragover.dragover-why{outline-color:var(--adv)!important}
 /* A CUT CALLSIGN HAS TO LOOK CUT (owner sweep, 6 Aug 26). This rule carried
    `text-overflow:ellipsis` and never got one: the property has no effect on a
    flex container, because the text becomes an anonymous flex item. So the

@@ -1942,6 +1942,41 @@ persisted and never in a history snapshot. The toggle builder is `notePubTog`
   dropped on a front seat is told so in red, the puck is marked),
   `ui/dropvalidate.test.tsx` (exactly one `validate()` per drop and per swap),
   `state/store.test.ts` (the plant's voice).
+- **THE HOVER REASON — the cell under a dragged puck says why, BEFORE the drop**
+  (owner, 5 Sep 26, step 3 of the same plan; `drag.ts hoverWhy`). When the drag
+  target CHANGES (mouse `dragover` and the pointer machine alike — never per
+  move, the ledger's drag budget), the target is asked `slotBar(id, key)` and a
+  non-empty answer is printed under the ghost (`.dwhy`, an absolutely
+  positioned child of `.dragimg`/`.tdghost`, so it rides the ghost's one
+  transform; the ghost gets `.haswhy` to lift the puck's overflow clip) with
+  the target's outline turned amber (`.dragover.dragover-why`). Gone the moment
+  the target changes to nothing, and with the ghost. The reason is slotBar's
+  own — the SAME string the palette strikes with and the fallback drop toast
+  prints — and since 5 Sep 26 slotBar also carries the two hard cross-day
+  rules (below), so "7th day in a row — breaks Sunday" reads under the finger
+  on a phone where Sunday is off-screen. Pinned in `ui/drag.test.tsx` ("the
+  hover reason").
+- **slotBar's LAST reason is the pre-drop cross-day question** (`validate.ts
+  crossDayIfPlaced`, `engine-rules.md` §the break-day rule): the seven-day run
+  (`runIfPlaced` — RUNLEN/RUNSEED/NEXTON, walking forward through the days he is
+  already on and into next Monday) and crew rest in BOTH directions
+  (`restIfPlaced` — the validator's own `crewRestDay` re-run in probe mode on a
+  copy of the day with the candidate leg cloned from a sibling leg of the same
+  formation; an empty formation answers null). It sits after every other
+  reason because those are closer facts about the slot itself; warn-not-bar
+  like the rest; and the green `paintSelRings`, the palette strike and the drop
+  fallback inherit it with no wiring of their own. Three guards from the 5 Sep
+  review: it stands down on a line the conflict engine leaves alone
+  (`slotRules().saExempt` — AVALON/BB, the SC SPARE row — those never enter
+  day.fly/day.events, so the validator would never raise what the oracle
+  foresaw); a seat-to-seat drag passes the seat being LEFT (`slotBar(id, key,
+  rules, fromKey)`), which the run reads as a day off when it was his only
+  event there and crew rest reads as that leg removed, so the hover describes
+  the week AFTER the move; and the answer is memoised per `(id, key, fromKey)`
+  until the next `validate()` — the palette asks slotBar for every name in a
+  column several times over (its sort comparator, the free count, the column
+  reason, the row). Pins: `engine/runtrace.test.ts` (§runIfPlaced,
+  §restIfPlaced, §slotBar, §review findings).
 - A PALETTE drop anywhere on a list row resolves to that row.
 - A SEAT puck only lands on a seat (swap) or a crew cell (move). Dropped
   anywhere else — row title/timings/remarks, jet-row dead space, blank
@@ -3099,6 +3134,53 @@ it can do. Filtering happens once, in `dayTraceHTML`: a row keeps only when
 its warning resolves to a real index OR `t.di==null` (the forward case),
 so a stale forward trace whose underlying breach has since been edited away
 drops out exactly like a stale within-week one does.
+
+### The run trace: the same dotted ring, for the seven-day rule (owner, 5 Sep 26)
+
+"Make the warning like what the crew rest does — dotted pucks, to warn that the
+7 day breach is on which day actually." The seven-day breach (`DAYS_RUN`) lands
+solid on the day the count crosses `VCONF.maxRun`; since 5 Sep 26 EVERY earlier
+day of that run wears `.puck.boxdot` too — a run differs from crew rest in that
+any day of it is a day the scheduler can still clear (take him off any one and
+the count resets), so the trace is on all of them, not only the day before.
+
+- **Published as `WARN.trace[di][id].run = {di, dow, n}`**, MERGED beside the
+  crew-rest fields (which stay at the top level, unchanged) — day six of a run
+  whose late landing also wrecks tomorrow carries both. `traceChip(t)` says
+  which glyph the trace prints once it leads: `RUN` when a run trace is
+  present (RUN outranks CR, exactly as on the day of the breach), else `CR`.
+  WHETHER it leads is unchanged: `traceLeads` lets a trace of either kind
+  caption the puck only over a chip below crew rest — a man's OWN hard breach
+  today (CR, RUN, C, Q) always keeps its label, so a dotted trace for a later
+  day never captions over the breach he has right now (review finding, 5 Sep
+  26). `traceIx(t, id, 'RUN')` resolves the run row to the `DAYS_RUN` warning
+  on its own breach day.
+- **On the puck**: the dotted ring, the `7` label when the trace owns the chip
+  (a louder flag of his own keeps its label and the caption rides on the title),
+  captioned `Consecutive days — Sunday is his 7th day in a row: a break day is
+  due before then`. A run-only trace never prints crew-rest words; a puck with
+  both prints both captions, ` · `-joined. His own solid `RUN` box on the breach
+  day is untouched, and a man with his OWN crew-rest breach beside a run trace
+  keeps his solid box (`trFlag` is per kind now).
+- **In the day's issue box**: a `Breaks Sunday` row per kind — the crew-rest row
+  as before, and the run row: "<b>cs</b> — his 7th day in a row falls on Sunday;
+  a break day before then clears it." It addresses the breach on its own day
+  (`data-wdi`/`data-wix`, so the ordinary jump focuses it) and carries no
+  `wpd`/`wpk`: the cause is the whole run, not one sortie.
+- **The forward pass, mirroring crew rest's phantom Monday**: a run standing AT
+  the limit on Sunday whose man is on next week's Monday
+  (`weekctx.ts:nextMondayWorked` — the seed-side on-set, stash read first) traces
+  every day of the run to `{di:null, dow:'Monday'}`, writes NO warning (parity
+  compares `WARN.byDay`; the trace is port-only), and the box row reads "Breaks
+  Monday" with the inert "load next week" title, exactly like the crew-rest one.
+  Bounded to Monday — one lookahead day.
+- Only the CROSSING day is traced to; the days after it wear their own solid
+  flag. A run walked in from last week that breaks on Monday traces nothing here
+  (its earlier days are last week's).
+- Pins: `engine/runtrace.test.ts` (the trace, the merge, the phantom Monday,
+  the walk-in seed), `ui/runtrace-ui.test.ts` (ring, label, caption, the box row,
+  both-traces puck). `html.test.ts`'s reference compare strips the crew-rest
+  decoration only — the seed week has no run, so nothing to strip.
 
 ## Duty templates (owner, 13 Aug 26)
 

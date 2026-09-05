@@ -972,3 +972,18 @@ gate's. Keep verdict-bearing commands unpiped.
 **Suggested improvement:** Add a short recipe to the testing guidance: "to count calls into a module export, mock the module with a Proxy over the real namespace, wrap only the target, never spread the namespace (a spread freezes reassigned `let` exports)". For task-observer's numbering discipline: when a session writes the log on more than one branch, number past the highest across the session's branches and say so in the entry.
 
 **Principle:** A module namespace is a set of live bindings, not a bag of values; any mock built by copying it turns bindings into snapshots. Wrap the namespace, don't copy it. And a counter that lives in a file lives per branch — a parallel branch is a parallel writer even inside one session.
+
+### Observation 63: Pick test fixtures by absence from the seed, and read both shapes of a "same" record before cloning one
+
+**Status:** OPEN
+**Date:** 2026-09-05
+**Session context:** Raptor — the run-trace + pre-drop query PR. Eleven of twenty new engine/UI tests failed on first run for two reasons that were not bugs in the feature: (1) the fixture person copied from an older test flies on weekdays in the seed, so a ground row on him raised a conflict whose chip outranked the run label the test was looking for; (2) a flying leg is carried by TWO per-day lists in two shapes (`fly` keyed by `key`, `events` keyed by `slot`), and the probe cloned from one list using the other's field name and silently found no sibling.
+**Skill:** test-driven-development (fixture selection); systematic-debugging (a 30-second scratch test beat reasoning about it)
+**Type:** open-source
+**Phase/Area:** writing tests against a rich seed; cloning records into a probe
+
+**Issue:** Both failures were resolved by one throwaway test that wrote three facts to a file: who in the seed has no events all week (two names), the exact shape of a leg in each list, and the probe's result. Console output was swallowed by the runner's config, so the scratch test wrote a file instead. A fixture chosen by "someone the older test used" inherited that test's tolerance (it only counted warnings) but not this one's need (a specific chip must lead).
+
+**Suggested improvement:** Testing guidance: when a test asserts WHICH flag/label leads, pick the fixture by computed absence from the seed (query the engine for ids with no events), not by precedent from another test; state the reason in a comment. Debugging guidance: when a lookup over rich data returns nothing, print one real record from each list before reasoning about the predicate — the field name is the usual culprit. Note the runner may swallow console output; write to a file.
+
+**Principle:** A fixture inherited from another test carries that test's assumptions, not yours. And when the same fact lives in two records, read one of each before writing code that treats them as one.

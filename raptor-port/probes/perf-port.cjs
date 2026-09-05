@@ -330,14 +330,20 @@ async function trial(b, measureSize) {
          day too, or the strip would point at a warning that has moved. Any
          OTHER day changing is still the bug this probe was written for, so the
          exemption is named exactly: the day day-1's own trace is filed under. */
+      /* …AND, since the run trace (5 Sep 26), every day of the edited man's
+         own run: a seat filled on day 1 can join or extend a seven-day run,
+         and each earlier day of that run then carries a dotted trace to the
+         day it breaks. Named exactly: only HIS run trace, on whichever days
+         carry it — nobody else's day may change. */
       const traced = Object.keys((WARN.trace) || {})
-        .filter(di => Object.values(WARN.trace[di]).some(t => t.di === 1))
+        .filter(di => Object.values(WARN.trace[di]).some(t => t.di === 1)
+          || !!((WARN.trace[di][ids[9]] || {}).run))
       const bad = now.filter((d, i) => (d !== beforeNodes[i] || d.innerHTML !== beforeHTML[i])
         && !traced.includes(d.dataset.day))
       return { sameNodes: now.every((d, i) => d === beforeNodes[i]), sameHTML: now.every((d, i) => d.innerHTML === beforeHTML[i]),
         traced, rewritten: bad.map(d => d.dataset.day) }
     })
-    T('B · a day-1 edit rewrites only day 1 and the day its crew rest traces to',
+    T('B · a day-1 edit rewrites only day 1, the day its crew rest traces to, and the days of the edited man\'s run trace',
       r.rewritten.length === 0 ? 'held' : JSON.stringify(r), 'held')
     await p.close(); await ctx.close()
   }
