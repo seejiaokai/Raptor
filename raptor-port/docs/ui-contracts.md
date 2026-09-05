@@ -4441,6 +4441,8 @@ Pins: `ui/help.test.tsx`.
 
 ## The next-week preview (owner ask — desktop continuous week display, 23 Aug 26)
 
+> Dimmed by a veil, never by `opacity` — see §Compositor layers on the desktop edit week (5 Sep 26) at the end of this file.
+
 Above 820px the week strip used to leave a fixed-width dead zone past
 Sunday (a JS-sized `--week-tail` spacer, `pan.ts:setWeekTail`, sized to
 round the scroll out to a whole trailing day). That space is filled now by
@@ -5700,3 +5702,12 @@ owner's iPhone against the preview (5 Sep 26). Never reach for
 value to switch off the hand-off of vertical drags to the page
 (`_wk_setTransfersVerticalScrollingToParent` is set only for `auto`), which
 would kill vertical scrolling over the grid entirely.
+## Compositor layers on the desktop edit week (5 Sep 26)
+
+The desktop edit week carried 261 compositor layers, and a puck drag re-layerises the page on every pointer move, so that count was the drag's floor (`docs/performance.md` ledger 22 — per-move 68 → 52 ms at 4× once it was 105). Three contracts hold it there, pinned by `ui/layers.test.ts`:
+
+- **A palette puck is never filtered.** `.rpuck.busy .puck` / `.rpuck.no .puck` desaturate with a translucent grey layered in `background-blend-mode:saturation` (alpha .45 ≈ saturate(.55), .3 ≈ saturate(.7)): same hue, same luminance, paint-only. Only the puck's background is desaturated; its text and letter chip keep their colour (the old filter washed them too — that is the one visible difference).
+- **A preview day is never translucent.** `.day.peek` is dimmed by a `::after` veil of the page background at .5 (.2 on hover / focus-within), `pointer-events:none` so the click that loads next week still lands; the veil is clipped to the padding box, so the day's border and shadow — outside it — are halved by hand to match. It needs `position:relative` on the peek day — its markup is inert (ui/peek.ts) and positions nothing against an outer ancestor.
+- **The roster aside stacks above the week's z-indexed pucks** — `.edit-board .eroster{z-index:5}`, under the fixed chrome (week-nav 150, rail 151, hscroll 185); the narrow-screen drawer sets its own 190. Nothing inside the week strip can reach the aside (the strip clips its own box), so no pixel changes.
+
+Why each: a filtered element and an opacity group can never be squashed into a layer shared with what they overlap, and everything painted above a sticky (composited) element is assumed to overlap its whole scroll range. What was tried and did not help — own layers for the days / the strip / the roster (worse), a static roster (worse), blur off the chrome, containment and isolation on the preview or the roster — is in performance.md §Dead ends. The phone board never had the problem (9 layers).

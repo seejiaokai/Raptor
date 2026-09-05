@@ -987,3 +987,47 @@ gate's. Keep verdict-bearing commands unpiped.
 **Suggested improvement:** Testing guidance: when a test asserts WHICH flag/label leads, pick the fixture by computed absence from the seed (query the engine for ids with no events), not by precedent from another test; state the reason in a comment. Debugging guidance: when a lookup over rich data returns nothing, print one real record from each list before reasoning about the predicate — the field name is the usual culprit. Note the runner may swallow console output; write to a file.
 
 **Principle:** A fixture inherited from another test carries that test's assumptions, not yours. And when the same fact lives in two records, read one of each before writing code that treats them as one.
+### Observation 64: A recorded hypothesis is not a measurement — attribute a residual by switching suspects off before spending a page-wide change
+
+**Status:** OPEN
+**Date:** 2026-09-05
+**Session context:** The compositor-layer round on the desktop edit week (branch `claude/compositor-layers`). Numbered past 60–63, which live on three open branches (`claude/read-handoff-docs-mzr73u`, `claude/drop-delta-flags`, `claude/run-trace-hover`) and are not on main yet.
+**Skill:** New skill candidate: none — cross-cutting performance-measurement principle (sibling of Observations 54–57)
+**Type:** open-source
+**Phase/Area:** attribution / choosing the fix
+
+**Issue:** The handoff and the code comment both said the drag's floor was "the page's ~230 compositor layers; fewer layers is the only lever left — a page-wide CSS change with visual implications". That sentence was a hypothesis written at the end of a different round, never tested, and it steered the owner toward a scary page-wide change. A layer census with per-suspect toggling (inject one override, re-count) found the 261 layers came from three LOCAL rules — a `filter` on the faded palette pucks, an `opacity` group on the preview days, and z-indexed pucks painted above a sticky aside — and that the "repaint after a drop" residual was mis-attributed: the drop is JS-bound (the handler, then style/layout/paint/raster), while the layer count only governs the DRAG's per-move re-layerise. Six other plausible suspects (blur, containment, own layers, a static roster) measured zero or worse.
+
+**Suggested improvement:** When a doc records "the only lever left is X", treat it as an untested claim to verify first, cheaply: build a census of the thing X counts (here CDP `LayerTree` + `compositingReasons`), then toggle one suspect at a time in the live page and re-count, before designing any change. Attribute the residual to a mechanism (WHY each element is promoted), not to a number.
+
+**Principle:** A residual recorded as "structural, only lever X" at the end of one round is a hypothesis for the next; measure the mechanism behind the number before spending the expensive change the hypothesis implies — the cheap local cause is usually there.
+
+### Observation 65: A timing harness must assert the interaction actually happened, and a scripted press can land on sticky chrome
+
+**Status:** OPEN
+**Date:** 2026-09-05
+**Session context:** Same round — the 4× drag/drop timing harness (Playwright + CDP tracing).
+**Skill:** New skill candidate: none — cross-cutting measurement-validity principle (sibling of Observation 54)
+**Type:** open-source
+**Phase/Area:** measurement harness validity
+
+**Issue:** Two full before/after timing runs were labelled "drag" and "drop" but measured hover plus text selection: the pointer machine had never armed. Cause one: after scrolling the target seat into view, the first palette puck sat at y=64 under the sticky top bar, so the press landed on the bar. Cause two: a regex patch of the arm sequence silently failed to apply. Both were invisible in the numbers — the runs produced plausible medians — and were only caught because the census later showed `body.className === ""` mid-"drag". The corrected runs showed a real 24% per-move gain the wrong runs had hidden.
+
+**Suggested improvement:** Every interaction harness asserts the interaction's own evidence before recording a number (the ghost exists, the body marker is set, the drop landed), and aborts loudly otherwise. Pick a press target by `elementFromPoint` self-check, never by the first matching node, because sticky chrome can cover it after a scroll. Build harness variants by writing the file, not by regex-patching a sibling script.
+
+**Principle:** A measurement is only as valid as the proof that the thing measured happened; put that proof in the harness as an assertion, because a wrong run produces numbers just as plausible as a right one.
+
+### Observation 66: A process-kill pattern in a command chain matches the chain's own shell — put it in a script file written in a separate call
+
+**Status:** OPEN
+**Date:** 2026-09-05
+**Session context:** The compositor-layer round — swapping the preview server between the before and after bundles inside measurement chains.
+**Skill:** New skill candidate: none — cross-cutting tooling principle for agent shells
+**Type:** open-source
+**Phase/Area:** measurement harness / process management
+
+**Issue:** Five separate command chains died with exit 144 (SIGTERM'd by their own `pkill -f`). Every variant failed for the same reason: the pattern text was somewhere in the invoking command line — as the literal, as a later command that starts the same server, inside a heredoc that wrote a helper script, or as an argument to a helper. The shell running the chain carries the whole chain in its own command line, so `pkill -f <pattern>` finds it. Each death silently dropped the work queued after it (a build, a census, a timing run), and the first two were only noticed because a later result was missing.
+
+**Suggested improvement:** Never put a `pkill -f` / `pgrep -f` pattern in the same command line as anything else, and never in a command line that also mentions the target (starting it, echoing it, writing it into a file). Write the kill (and the start) into a script file in one call, then invoke that script by name in later calls — the invoking line then contains only the script's path. Prefer killing by port or by PID file over pattern matching where the tool allows it.
+
+**Principle:** A pattern-matching kill sees the shell that issued it; separate the text of the pattern from the command that uses it, or the chain kills itself and the loss is silent.
