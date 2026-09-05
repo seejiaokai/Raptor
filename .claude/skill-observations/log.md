@@ -958,3 +958,18 @@ gate's. Keep verdict-bearing commands unpiped.
 **Suggested improvement:** Every interaction harness asserts the interaction's own evidence before recording a number (the ghost exists, the body marker is set, the drop landed), and aborts loudly otherwise. Pick a press target by `elementFromPoint` self-check, never by the first matching node, because sticky chrome can cover it after a scroll. Build harness variants by writing the file, not by regex-patching a sibling script.
 
 **Principle:** A measurement is only as valid as the proof that the thing measured happened; put that proof in the harness as an assertion, because a wrong run produces numbers just as plausible as a right one.
+
+### Observation 66: A process-kill pattern in a command chain matches the chain's own shell — put it in a script file written in a separate call
+
+**Status:** OPEN
+**Date:** 2026-09-05
+**Session context:** The compositor-layer round — swapping the preview server between the before and after bundles inside measurement chains.
+**Skill:** New skill candidate: none — cross-cutting tooling principle for agent shells
+**Type:** open-source
+**Phase/Area:** measurement harness / process management
+
+**Issue:** Five separate command chains died with exit 144 (SIGTERM'd by their own `pkill -f`). Every variant failed for the same reason: the pattern text was somewhere in the invoking command line — as the literal, as a later command that starts the same server, inside a heredoc that wrote a helper script, or as an argument to a helper. The shell running the chain carries the whole chain in its own command line, so `pkill -f <pattern>` finds it. Each death silently dropped the work queued after it (a build, a census, a timing run), and the first two were only noticed because a later result was missing.
+
+**Suggested improvement:** Never put a `pkill -f` / `pgrep -f` pattern in the same command line as anything else, and never in a command line that also mentions the target (starting it, echoing it, writing it into a file). Write the kill (and the start) into a script file in one call, then invoke that script by name in later calls — the invoking line then contains only the script's path. Prefer killing by port or by PID file over pattern matching where the tool allows it.
+
+**Principle:** A pattern-matching kill sees the shell that issued it; separate the text of the pattern from the command that uses it, or the chain kills itself and the loss is silent.
