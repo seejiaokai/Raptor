@@ -113,7 +113,12 @@ export function Shell() {
     if (isPhone) return teardown
     let done = false
     let timer = window.setTimeout(function poll() {
-      if (done) return
+      /* `typeof window` (6 Sep 26): the cleanup below clears this on unmount,
+         but a test that renders the App and never unmounts it leaves the poll
+         armed past its file's end — jsdom is torn down, the timer fires into a
+         world with no `window`, and the whole unit job goes red with every test
+         green (CI run 903, from stsaved.test.tsx). A browser always has one. */
+      if (done || typeof window === 'undefined') return
       if (msSinceInput() > 2000) { done = true; setPrewarmed(true); return }
       timer = window.setTimeout(poll, 400)
     }, 2000)
