@@ -1059,3 +1059,17 @@ gate's. Keep verdict-bearing commands unpiped.
 **Suggested improvement:** For any "blank / frozen for N ms right after input stops" symptom, before reasoning about the renderer: (1) trace the same gesture in the desktop browser and list tasks > 40 ms in the window after the input; (2) if they are TimerFire tasks, wrap the page's timers from load (install stack + fire time + duration) — the trace's own TimerInstall stacks need an extra category and the ids of early timers point at page-load installers; (3) only then bring in engine asymmetries for what remains. Prefer the portable explanation while one is still possible.
 
 **Principle:** A main-thread task train is visible in every browser; an engine-specific theory is only earned once the portable causes are exhausted, because the portable fix is usually the small one and the engine fix is usually the layout change.
+### Observation 70: A test that asserts a transient of a background fill loop is a coin toss
+
+**Status:** OPEN
+**Date:** 2026-09-05
+**Session context:** PR #364's CI went red on the Leave War desktop test "a month button works from wherever the grid already is", the one check that had been failing ~1 in 2 locally for two days and was recorded as "intermittent" on three PR bodies instead of root-caused.
+**Skill:** New skill candidate: flake triage (or the repo's steward/babysit posture)
+**Type:** open-source
+**Phase/Area:** CI red → "flake" judgement
+
+**Issue:** The assertion (September's header gone after a SEP → MAR jump) was true on the phone, where the window rolls with the view, and only *sometimes* true on the desktop, where a background loop draws toward the whole year one idle beat at a time: if enough beats landed between the two clicks, March was already drawn, the jump only scrolled, and September rightly stayed. The test was written in the same PR that introduced the loop, so it asserted a state the design itself made transient. It was labelled "intermittent, CI green" on three PRs before anyone read the failing line against the loop.
+
+**Suggested improvement:** When a check fails on some runs and not others, the first question is "what background process could change the asserted state between the action and the assertion?" — not "is the runner slow?". Read the assertion against every loop, timer or idle callback that touches the same state; a claim that depends on how many beats fit between two steps is not a claim. Fix the assertion's scope (gate it to where it is deterministic, or assert the invariant the loop preserves), never add a retry or a longer timeout.
+
+**Principle:** A flaky test is a test asserting something the system does not promise. Find the promise the test meant to check and assert that; the flake is the diagnosis, not the disease.

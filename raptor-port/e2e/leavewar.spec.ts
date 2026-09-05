@@ -510,7 +510,17 @@ test('a month button works from wherever the grid already is', async ({ page }) 
     const b = await page.locator('.mx .mxhead th.bal').boundingBox()
     return h && b ? Math.round(h.x - (b.x + b.width)) : -999
   }, { timeout: 5000 }).toBeGreaterThanOrEqual(-1)
-  await expect(page.locator('[data-testid="head-2026-09-01"]')).toHaveCount(0)
+  // Whether SEPTEMBER is still drawn after the second jump is a claim only on
+  // the phone. There the window rolls with the view (one month behind, three
+  // ahead), so a jump from September to March rebuilds the window around March
+  // and September is gone in the same commit. On the desktop the fill engine
+  // draws toward the WHOLE year in the background, one month per idle beat,
+  // and that fill runs on between the two clicks: given enough beats it has
+  // already reached March, the jump then only scrolls (nothing to draw), and
+  // September rightly stays. How many beats land between two clicks is the
+  // runner's speed, not the grid's behaviour — this line was the one flaky
+  // assertion in the suite (5 Sep 26, ~1 in 2 locally, red on CI too).
+  if (isPhone()) await expect(page.locator('[data-testid="head-2026-09-01"]')).toHaveCount(0)
 
   const head = (await page.locator('[data-testid="head-2026-03-01"]').boundingBox())!
   const bal = (await page.locator('.mx .mxhead th.bal').boundingBox())!
