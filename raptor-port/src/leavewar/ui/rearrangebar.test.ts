@@ -36,3 +36,27 @@ describe('the rearrange bar paints on its own compositor layer', () => {
     expect(lead!).not.toMatch(/transform|will-change/)
   })
 })
+
+/* The eye (and ↺) in a manning row's frozen balance box — the same fault a day
+   later (owner's iPhone, 6 Sep 26 — "the eyes don't show on the counter grids
+   until I click it or when I move the page"): the same Rearrange tap inserts
+   the `.mrow-tools` span into the sticky cell in the commit that tears the
+   overlay down, and iOS left the little box unpainted. Same cure, same shape
+   of pin: the edit-only span owns the promotion; the buttons inside it and the
+   cell around it do not (a layer per button, or one on every balance cell at
+   rest, would be layers for nothing). */
+describe('the manning-row controls paint on their own compositor layer', () => {
+  it('.mx .counts .mrow-tools carries transform: translateZ(0)', () => {
+    const body = bodyOf('.mx .counts .mrow-tools')
+    expect(body, 'the .mx .counts .mrow-tools rule exists in matrix.css').not.toBeNull()
+    expect(body!.replace(/\s+/g, '')).toMatch(/transform:translateZ\(0\)/)
+  })
+
+  it('the promotion is on the span alone — not the buttons, not the balance cell', () => {
+    for (const sel of ['.mx .counts .mrow-btn', '.mx .counts td.bal']) {
+      const body = bodyOf(sel)
+      expect(body, `the ${sel} rule exists in matrix.css`).not.toBeNull()
+      expect(body!).not.toMatch(/transform|will-change/)
+    }
+  })
+})

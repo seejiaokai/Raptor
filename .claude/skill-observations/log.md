@@ -1238,3 +1238,18 @@ gate's. Keep verdict-bearing commands unpiped.
 **Suggested improvement:** Make "find and run the standing pre-build gates for this surface" the OPENING move of any layout/rendering task — before writing code, grep the loaded rules for "before you / before any / read … first", load what they name (here `performance.md` Part 1), run the change through the named checklist, and produce its concrete deliverable (the committed browser-measured geometry gate) AS PART OF the change, not after. Better, make it forcing: a pre-edit reminder keyed to the dense-surface / leavewar paths, or a checklist stub the PR requires. A prose "before you build, read X" only fires if the build's first step is "find the X's that apply."
 
 **Principle:** A "read X before building" order fires only when finding X is the first step of the build, not when it is a sentence in the index; make the pre-build gate the opening action, or the owner becomes the enforcement point.
+
+### Observation 81: A paint-layer fix for one control inserted by a mode toggle should sweep every OTHER control the same toggle inserts into the same layer family — the sibling fault surfaced a day later
+
+**Status:** OPEN
+**Date:** 2026-09-06
+**Session context:** On 5 Sep the owner's iPhone did not paint the Leave War Rearrange bar (Auto-sort / Done) until he touched it; the fix gave the bar its own compositor layer. His next screenshot showed that fix holding — and the SAME fault on the eye buttons in each manning row's frozen balance box, inserted by the same Rearrange tap into the same rebuilt layer tree (sticky cell, overlay torn down in the same commit). Same cure (`translateZ(0)` on the edit-only span), a day and a round-trip later.
+**Skill:** verification-before-completion (and the repo's WebKit-paint lore)
+**Type:** open-source
+**Phase/Area:** After a device-only repaint fault is diagnosed — how far the fix is swept
+
+**Issue:** The 5 Sep diagnosis named the mechanism precisely ("inserts X AND drops the overlay in one commit; iOS did not repaint the strip"). That mechanism applies to EVERY node the toggle inserts, not just the one the owner happened to report. The fix was scoped to the reported node, and no sweep asked "what else does this commit insert into a frozen/composited box?" — the grip (name cell) and the eye (balance cell) were both candidates; the eye failed. Each device-only fault costs an owner round-trip (no WebKit here), so the miss is expensive precisely where it is cheapest to prevent by reasoning.
+
+**Suggested improvement:** When a device-only paint fault is traced to "node inserted in the same commit as a layer-tree change", enumerate every node that commit inserts (grep the toggle's state — here `editing`/`arranging` — for conditional renders) and, for each that lands in a sticky/composited/clipped box, either apply the same promotion or record WHY it is exempt (the grip: painted fine, structural change to its cell). Put the enumeration in the commit message so the next report can be matched against it.
+
+**Principle:** A mechanism-level diagnosis obliges a mechanism-level sweep: fix every node the mechanism reaches, or name each one you leave alone and why.

@@ -5130,6 +5130,20 @@ buttons or the lead text (extra layers for nothing), and don't "fix" it by
 taking `overflow: hidden` off `.card` — that clip is the rounded corners.
 Pinned in `rearrangebar.test.ts` (the CSS contract; jsdom cannot paint and
 Chromium does not reproduce the fault).
+**The eye / ↺ in a manning row's frozen balance box paints the same way**
+(owner's iPhone, 6 Sep 26 — "when I click on rearrange, the eyes don't show on
+the counter grids until I click it or when I move the page"; the bar itself,
+promoted the day before, painted at once in his screenshot — that is what
+points this the same way). `.mx .counts .mrow-tools` — the edit-only span the
+eye (live row) or ↺ (archived row) sits in — carries the same `translateZ(0)`:
+the Rearrange tap inserts it into the sticky `td.bal` in the commit that tears
+the `.mxband` overlay down, and iOS left the little frozen box unpainted until
+a touch or a scroll. The span exists only in Rearrange, so it is ~a dozen tiny
+layers while an admin arranges and none at rest — not a page-wide promotion
+(those are the measured dead ends in `performance.md`). The promotion stays
+on the span: not the buttons, not `td.bal` (a layer on every balance cell at
+rest would be paid on every roster row, always). The ⠿ grip in the name cell
+showed fine on his phone and is deliberately not promoted. Same pin file.
 
 **On a manning row in Rearrange the GRIP sits at the LEFT of the counter name;
 the eye (Archive) sits alone, centred, in the balance box (owner, 5 Sep 26 —

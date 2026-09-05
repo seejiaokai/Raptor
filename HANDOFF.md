@@ -253,10 +253,14 @@ the PR bodies):
   that Auto-sort / Done did not show on his iPhone until he touched the area;
   reasoned from the rounded `overflow:hidden` card + the band-overlay teardown,
   not from a device trace — `ui-contracts.md` §The rearrange bar paints on its
-  own compositor layer. If it does NOT hold on his phone, the next theory is
-  that the whole update went unrendered, not just the strip — ask whether the
-  grid moved down at once — and the fix moves to a render kick, not a second
-  layer), and the **manning grip inside the frozen name cell** (5 Sep 26 — in
+  own compositor layer. His 6 Sep screenshot shows the bar painted at once, so
+  this one looks to hold — and the SAME fault then showed on the eye in each
+  manning row's frozen balance box, so `.mx .counts .mrow-tools` got the same
+  `translateZ(0)` the same day, same reasoning, same caveat. If the eye still
+  does NOT paint on his phone, the next theory is that the sticky `td.bal`
+  itself needs the promotion in Rearrange — `tr[data-mrow] td.bal`, an
+  edit-only selector — before any render kick), and the **manning grip inside
+  the frozen name cell** (5 Sep 26 — in
   Rearrange the ⠿ shares the sticky `td.who` with the label as a flex row,
   `.mwho-row`; flex inside a sticky table cell is the WebKit-sensitive part, and
   the counter reorder's existing `scrollLeft` self-assign repaint kick still

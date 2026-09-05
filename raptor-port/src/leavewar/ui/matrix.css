@@ -336,6 +336,22 @@
   gap: 1px;
   justify-content: center;
   align-items: center;
+  /* Painted on its OWN compositor layer (owner's iPhone, 6 Sep 26 — "when I
+     click on rearrange, the eyes don't show on the counter grids until I click
+     it or when I move the page"). The same fault, and the same cure, as the
+     rearrange bar's (`.lw-rearrange-bar` below): tapping Rearrange on a phone
+     tears the `.mxband` overlay down and inserts this span into the sticky
+     balance cell in ONE commit, and iOS did not repaint the little frozen box
+     until a touch (the eye's :active) or a scroll invalidated it — the bar
+     itself, promoted on 5 Sep, painted at once in his screenshot, which is
+     what points this the same way. `translateZ(0)` moves nothing; it gives the
+     eye (or the ↺ on an archived row) a backing store of its own, painted when
+     the layer is created. The span exists only in Rearrange, so the cost is
+     ~a dozen tiny layers while an admin arranges and none at rest — NOT the
+     page-wide promotions performance.md lists as dead ends. The grip in the
+     name cell showed fine on his phone, so it is deliberately not promoted.
+     Reasoned from the code, not a device trace — owner-iPhone-gated. */
+  transform: translateZ(0);
 }
 .mx .counts .mrow-btn {
   appearance: none;
