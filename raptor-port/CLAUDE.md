@@ -667,12 +667,19 @@ decision + a pointer. Owner + date establish authority; keep them.
 
 ### Leave War roster & display (owner, 3–4 Sep 26)
 - **Admin controls live in ONE ⚙ Settings; rearranging is on the grid.** Matrix top
-  row = Manning · ⚙ · OIL tracker. ⚙ opens `SettingsSheet` (CONFIG: + Counter, +/−
-  Event row, Show SANS, Reset counters + the roster GROUPS editor folded in; old
-  `⚙ Groups` button + `GroupSheet.tsx` deleted). REARRANGING is hands-on-grid from
-  the ⠿ toggle above the callsigns (person rows AND category headings drag, slim
-  `.lw-rearrange-bar` for Auto-sort/Done). Don't move config onto the grid or
-  rearrange into a sheet (a Sheet's scrim swallows the drag's taps).
+  row is now ONE line (owner, 5 Sep 26 — "all in 1 row to minimise row height
+  space"): Manning · ⚙ · Rearrange for an admin, then the OIL tracker RIGHT AFTER
+  the last control (no spring to the far edge); a member sees just Manning · OIL.
+  The old "JAN – DEC 26 · 365 days · 50 people" line was dropped (the war NAME
+  still lives in the Period picker in the page chrome). "OIL tracker" shortens to
+  "OIL" on a phone (`.rtlbl`) so the four hold one line. ⚙ opens `SettingsSheet`
+  (CONFIG: + Counter, +/− Event row, Show SANS, Reset counters + the roster GROUPS
+  editor folded in; old `⚙ Groups` button + `GroupSheet.tsx` deleted). REARRANGING
+  is STILL hands-on-grid (person rows AND category headings drag, slim
+  `.lw-rearrange-bar` for Auto-sort/Done), but its TOGGLE moved from the ⠿ grid
+  corner INTO the top row (5 Sep 26) — the corner cell is empty now. Don't move
+  config onto the grid or rearrange into a sheet (a Sheet's scrim swallows the
+  drag's taps), and don't push OIL back to the far edge.
 - **Who-wins follows the page order by default** (reversal of 28 Aug "two separate
   orders"). Group higher on the page wins a tie; dragging a category reorders
   who-wins with it (`groupPriorityIds` until `groupPriorityCustom`). A hand edit of

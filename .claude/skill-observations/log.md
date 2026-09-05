@@ -1223,3 +1223,18 @@ gate's. Keep verdict-bearing commands unpiped.
 **Suggested improvement:** When a change adds an element to a region an existing measured gate guards, name the gate and check which STATE it renders; if the change only appears in another mode (a role, a toggle, an admin-only view), either extend the gate to enter that mode (set the role / flip the toggle, then re-measure) or drive that mode by hand and measure it. Checklist line: "name the gate that would catch this; confirm it runs in the state my change appears in — otherwise it does not cover me."
 
 **Principle:** A gate proves its invariant only in the states it visits; a change that appears only in another mode is unguarded until the gate visits that mode, or a drive does.
+
+### Observation 80: A standing "read X and run its checklist before building" order, stated as prose in the index, does not fire unless it is the FIRST step — the owner caught a skipped pre-build perf gate
+
+**Status:** OPEN
+**Date:** 2026-09-05
+**Session context:** CLAUDE.md §Scoping carries a standing order: "read `docs/performance.md` Part 1 before any layout, interface, design or rendering-touching change, and run the change through its checklist." I built two layout changes (the manning grip move, the one-row counter top bar) and pushed them to the branch WITHOUT reading performance.md or running its checklist. The owner caught it ("I thought there is a standing order … It has to follow the structure which keeps the app fast. Did u read that file?"). Read after the fact, the changes were perf-safe (chrome-level, off the hot paths, the "same cell structure" WebKit invariant preserved) — but the checklist's item 3 (a COMMITTED browser-measured geometry gate for desktop AND phone) had genuinely been skipped: jsdom pins and a throwaway drive, no committed e2e geometry test, until the nudge.
+**Skill:** verification-before-completion (and the repo's build-order discipline)
+**Type:** open-source
+**Phase/Area:** When a standing pre-build order actually fires
+
+**Issue:** The order sat in the loaded CLAUDE.md the whole time, yet it did not fire, because it is prose in an index section, not a step in the build flow. A multi-step build proceeds file-by-file toward the visible deliverable; a pre-build reading/checklist gate that is not the FIRST concrete action is easy to walk past, and nothing downstream forces it. This is the SECOND time this session a standing rule failed to fire at its moment (obs 74 — the comm register on the opening reply). The cost here was a skipped committed gate that the owner, not the process, caught.
+
+**Suggested improvement:** Make "find and run the standing pre-build gates for this surface" the OPENING move of any layout/rendering task — before writing code, grep the loaded rules for "before you / before any / read … first", load what they name (here `performance.md` Part 1), run the change through the named checklist, and produce its concrete deliverable (the committed browser-measured geometry gate) AS PART OF the change, not after. Better, make it forcing: a pre-edit reminder keyed to the dense-surface / leavewar paths, or a checklist stub the PR requires. A prose "before you build, read X" only fires if the build's first step is "find the X's that apply."
+
+**Principle:** A "read X before building" order fires only when finding X is the first step of the build, not when it is a sentence in the index; make the pre-build gate the opening action, or the owner becomes the enforcement point.

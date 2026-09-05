@@ -2752,12 +2752,15 @@ export function Matrix() {
               </button>
             </>
           )}
-          <span className="card-spring" />
           {/* The OIL TRACKER (owner, 2 Sep 26): every person's OIL balance, the
               ledger behind each, and the admin's crediting. BOTH roles — a member
               reads, an admin edits; the sheet decides which controls to draw and
-              the store refuses a member's write. "tracker" drops on a phone
-              (`.rtlbl`) so the four controls hold one line. */}
+              the store refuses a member's write. It sits RIGHT AFTER the last
+              control, not pushed to the far edge (owner, 5 Sep 26 — "the oil
+              tracker can be right of rearrange … in normal user it's just right
+              of manning"): no spring, so admin reads Manning · ⚙ · Rearrange · OIL
+              and a member reads Manning · OIL, each cluster left. "tracker" drops
+              on a phone (`.rtlbl`) so the row still holds one line. */}
           <button
             className="rtbtn oiltrk"
             data-testid="oil-tracker"

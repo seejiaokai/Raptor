@@ -1270,9 +1270,6 @@
 /* The one ⚙ SETTINGS button (owner, 3 Sep 26) — icon only, the word dropped. */
 .rtbtn.gear { color: var(--accent); font-size: 15px; line-height: 1; padding: 5px 10px; }
 .rtbtn.gear:hover { border-color: var(--accent); }
-/* Pushes the OIL tracker to the far right of the top row, leaving Manning + ⚙ on
-   the left. On a phone the row wraps and this simply takes the slack on its line. */
-.card-spring { flex: 1 1 auto; }
 
 /* THE ON-GRID REARRANGE BAR (owner, 3 Sep 26 — rearrange happens on the grid).
    A slim accent-tinted strip under the card header while an admin is rearranging;

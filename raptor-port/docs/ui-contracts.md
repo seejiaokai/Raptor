@@ -5092,6 +5092,26 @@ Pinned in `counters.test.tsx`, `chrome.test.tsx`, `counts.test.tsx`,
 `roster.test.ts`, and e2e ("a personnel row shows its callsign, with no edit box,
 in Rearrange").
 
+**The counter block's controls sit on ONE row (owner, 5 Sep 26 — "all in 1 row
+to minimise row height space").** The `.card-hd` above the counter grid carries,
+left to right: Manning (the `▾/▸` collapse toggle for the counter rows, EITHER
+role), then for an admin the ⚙ Settings and the ⠿ Rearrange toggle, then the OIL
+tracker — placed RIGHT AFTER the last control, not sprung to the far edge (owner,
+same day — "the oil tracker can be right of rearrange … in normal user it's just
+right of manning"): the old `.card-spring` was removed, so the row packs left and
+a member reads Manning · OIL. The "JAN – DEC 26 · 365 days · 50 people" `.t` line
+is GONE; the war's NAME still lives in the Period `<select>` in the page chrome
+(`Chrome.tsx`), so nothing is stranded. The controls hold ONE line down to the
+phone: "OIL tracker" drops its "tracker" tail (`.rtlbl`, `display:none` ≤430px)
+to read "OIL" there, and `.card-hd` keeps `flex-wrap:wrap` only as a safety net.
+The ⠿ Rearrange toggle MOVED here from the grid's bracket-corner cell
+(`th.brakhd`, empty now) — the rearranging itself is unchanged (hands-on-grid,
+the `.lw-rearrange-bar` for Auto-sort/Done); the toggle lights accent
+(`.rtbtn.on`) while live. jsdom cannot see the single line; pinned by e2e
+(`leavewar.spec.ts` — one row, order, OIL adjacency and the member layout, at
+phone AND desktop) and unit (`settingssheet.test.tsx` — the header's controls by
+role and DOM order, and the date line gone).
+
 **The rearrange bar paints on its own compositor layer (owner's iPhone, 5 Sep
 26 — "when I press rearrange the buttons don't show until I press that area").**
 `.lw-rearrange-bar` carries `transform: translateZ(0)` (matrix.css, the same

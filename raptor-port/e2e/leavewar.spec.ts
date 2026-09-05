@@ -1229,6 +1229,62 @@ test('nothing in the callsign column is cut off', async ({ page }) => {
   expect(count).toBeGreaterThan(10)
 })
 
+// The counter block's top controls sit on ONE row (owner, 5 Sep 26 — "all in 1
+// row to minimise row height space"): Manning · ⚙ · Rearrange lead, OIL right
+// AFTER rearrange (no spring to the far edge). jsdom can't see the single line;
+// this is the browser-measured gate the perf checklist asks for, run at BOTH
+// widths (phone and desktop are different CSS paths).
+test('the counter controls sit on one row, in order, OIL right after rearrange', async ({ page }) => {
+  await lwRole(page, 'admin')
+  const ids = ['counts-toggle', 'settings-open', 'roster-arrange', 'oil-tracker']
+  const box: Record<string, { x: number; y: number; w: number }> = {}
+  for (const id of ids) {
+    const b = (await page.locator(`[data-testid="${id}"]`).boundingBox())!
+    box[id] = { x: b.x, y: b.y, w: b.width }
+  }
+  // one row: every control shares a top within a few px
+  const tops = ids.map(id => box[id].y)
+  expect(Math.max(...tops) - Math.min(...tops)).toBeLessThan(4)
+  // left-to-right: Manning, settings, rearrange, OIL
+  for (let i = 1; i < ids.length; i++) expect(box[ids[i]!].x).toBeGreaterThan(box[ids[i - 1]!].x)
+  // OIL sits right after rearrange — one inter-button gap, not a spring to the edge
+  expect(box['oil-tracker']!.x - (box['roster-arrange']!.x + box['roster-arrange']!.w)).toBeLessThan(24)
+  // the "… · 365 days · 50 people" line is gone
+  await expect(page.locator('.card-hd')).not.toContainText('people')
+})
+
+// A member's counter bar is just Manning · OIL, adjacent (owner, 5 Sep 26 — "in
+// normal user it's just right of manning"). Runs as the default member role.
+test('a member counter bar is Manning then OIL, adjacent, one row', async ({ page }) => {
+  await expect(page.locator('[data-testid="settings-open"]')).toHaveCount(0)
+  await expect(page.locator('[data-testid="roster-arrange"]')).toHaveCount(0)
+  const m = (await page.locator('[data-testid="counts-toggle"]').boundingBox())!
+  const o = (await page.locator('[data-testid="oil-tracker"]').boundingBox())!
+  expect(o.x).toBeGreaterThan(m.x)                       // OIL right of Manning
+  expect(Math.abs(o.y - m.y)).toBeLessThan(4)            // same row
+  expect(o.x - (m.x + m.width)).toBeLessThan(24)         // adjacent, not far-right
+})
+
+// In Rearrange the reorder grip shares the frozen NAME cell, to the LEFT of the
+// label (owner, 5 Sep 26). This is the gate that finally VISITS Rearrange: the
+// existing clip test runs in normal view, where the grip is not drawn, so it
+// could never have caught the grip pushing "Crew sets" past the 76px phone cell.
+test('in Rearrange the counter grip is left of the name and nothing clips', async ({ page }) => {
+  await lwRole(page, 'admin')
+  await page.locator('[data-testid="roster-arrange"]').click()
+  const clipped = await page.evaluate(() =>
+    [...document.querySelectorAll('.mx tbody.counts .who')]
+      .map(el => el as HTMLElement)
+      .filter(el => el.scrollWidth > el.clientWidth + 1)
+      .map(el => `${el.textContent?.trim()} (${el.scrollWidth}>${el.clientWidth})`))
+  expect(clipped).toEqual([])
+  // the grip's right edge is at or before the label's left edge
+  const grip = (await page.locator('[data-testid="manning-drag-sets"]').boundingBox())!
+  const label = (await page.locator('[data-testid="manning-info-sets"]').boundingBox())!
+  expect(grip.x + grip.width).toBeLessThanOrEqual(label.x + 1)
+  await page.locator('[data-testid="roster-arrange"]').click()  // leave arrange mode
+})
+
 // ---- more than one leave war ----
 
 test('switching leave war repaints the grid and keeps the balance', async ({ page }) => {
