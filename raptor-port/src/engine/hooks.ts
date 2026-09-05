@@ -22,6 +22,12 @@ export const HOOKS = {
   renderRosters: (): void => {},
   renderScheduler: (): void => {},
   renderEditWeek: (): void => {},
+  /* the ~6s fresh-add box's OWN lifecycle repaint (view.ts flashAdded — its
+     fade at 5.45s and its removal at 6s): the decoration pass alone, which
+     highlights.ts wires to paintFreshAdds, never a notify(). A full repaint
+     here rebuilt the seven day strings a dozen times in one second, ~6s after
+     every week load, for a box the week never draws (5 Sep 26). */
+  paintFreshAdds: (): void => {},
   renderSchedule: (): void => {},
   renderInputs: (): void => {},
   syncHistBtns: (): void => {},

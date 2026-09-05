@@ -928,3 +928,18 @@ gate's. Keep verdict-bearing commands unpiped.
 **Suggested improvement:** In a pointer-up / drop teardown, sequence by data dependency, not by tidy-up instinct: do every measurement the drop needs (hit-test under the point, target geometry) FIRST, against the still-settled layout, and only then perform the teardown writes (remove the ghost, clear the body markers). When the ghost overlaps the drop point, exclude it from the hit-test rather than removing it early. Read-then-write, batched — the same rule that avoids layout thrash in a render loop applies to a one-shot handler.
 
 **Principle:** Interleaving DOM reads and writes forces a layout per read; a pointer-up handler that measures after it has begun tearing down pays for a layout it did not need. Order the handler so all reads precede all writes, even when the natural writing order (clean up first) reads the other way.
+
+### Observation 68: Before blaming the device's engine for a device-only blank, enumerate the timers that fire in that window — a timer train is visible in any browser's trace
+
+**Status:** OPEN
+**Date:** 2026-09-05
+**Session context:** The owner's iPhone recording of a black screen for ~0.8 s after a fast fling on the phone week (branch `claude/fresh-flash-paint`). Numbered 68 on this branch; 60–67 are on other open branches.
+**Skill:** New skill candidate: none — cross-cutting attribution principle (sibling of Observations 64 and 67)
+**Type:** open-source
+**Phase/Area:** root-cause investigation without the device
+
+**Issue:** The first theory was engine-specific and true-but-secondary: WebKit gives a composited scroller paint-ahead only on the axis it scrolls, so a vertical fling over a sideways strip exposes unpainted tiles. That led toward a layout change (a two-axis strip) with a real UX cost. A Chromium trace of the same gesture at 4× then showed a train of 60–165 ms main-thread tasks starting ~2 s after the last input; wrapping `setTimeout` from page start (logging every long-delay install with its stack, and every fire) named them in one run: the fresh-add flash's two timers per accepted input, each firing a full repaint. The fix was three lines and portable; the engine theory would have shipped a layout change and left the train in place.
+
+**Suggested improvement:** For any "blank / frozen for N ms right after input stops" symptom, before reasoning about the renderer: (1) trace the same gesture in the desktop browser and list tasks > 40 ms in the window after the input; (2) if they are TimerFire tasks, wrap the page's timers from load (install stack + fire time + duration) — the trace's own TimerInstall stacks need an extra category and the ids of early timers point at page-load installers; (3) only then bring in engine asymmetries for what remains. Prefer the portable explanation while one is still possible.
+
+**Principle:** A main-thread task train is visible in every browser; an engine-specific theory is only earned once the portable causes are exhausted, because the portable fix is usually the small one and the engine fix is usually the layout change.

@@ -322,3 +322,8 @@ export function scrollToWarnFocus(){
   try{tgt.scrollIntoView({behavior:'smooth',block:'center',inline:'nearest'});}
   catch(_){try{tgt.scrollIntoView();}catch(__){}}
 }
+
+/* the fresh-add box's own lifecycle repaint (view.ts flashAdded: the fade,
+   then the removal) is this decoration pass alone — wired here the way pan.ts
+   wires weekSwapped, and never a notify() (5 Sep 26; hooks.ts has the why) */
+HOOKS.paintFreshAdds = paintFreshAdds

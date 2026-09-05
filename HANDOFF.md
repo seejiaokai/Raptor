@@ -155,6 +155,28 @@ run whole against the final code:
   the two `validate` calls (~45 ms, engine — not touched). Every dead end
   measured along the way is in `docs/performance.md` §Dead ends — don't retry
   them without new measurement.
+- **The blank screen after a fast fling on the phone (5 Sep 26)** — branch
+  `claude/fresh-flash-paint`, its own PR, awaiting the owner's phone verdict
+  and then "merge live". The owner's 13:39 recording (on the #361 preview): a
+  fast vertical fling through next-week Monday, then the whole day column
+  black for ~0.8 s after the fling had stopped, painting in from the bottom.
+  Cause (a Chromium trace at 4× on the phone viewport, then the page's timers
+  wrapped from load): `view.ts flashAdded`'s two timers per fresh add — and a
+  week load accepts a handful of inputs into the ground programme, each a
+  fresh add — fired twelve full `notify()`s ~6 s after the load, ~70 ms each,
+  back to back for a second; iOS paints tiles on that same thread. Fix: the
+  timers re-hang the decoration only (`HOOKS.paintFreshAdds`, wired in
+  highlights.ts). Measured: the train gone, long tasks in the post-fling
+  window 14 → 3. Pinned `state/freshflash.test.ts`; ledger 23. Not #361's and
+  not #362's. Two "preview A/B" ideas floated before the cause was found
+  (cheaper shadows on the phone; the strip as a two-axis scroller so WebKit
+  tiles ahead vertically — `computeOverflowTiledBackingCoverage` gives a
+  scroller paint-ahead only on the axis it scrolls) are shelved: the second is
+  a layout change (the header stack above the strip stops scrolling away) and
+  neither was the cause. Residual, measured not built: the first pointer event
+  after a week switch carries ~450 ms of React work at 4× (the new week's
+  deferred render flushed inside that event) — the seven-day-strings item,
+  felt as one hitch on the first touch after switching weeks.
 - **iOS is untestable here.** This container ships no WebKit. The Leave War
   column window / placeholders and every contenteditable or touch-fling change
   are verified on the owner's iPhone against the preview; if the grid ever
