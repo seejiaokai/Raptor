@@ -115,8 +115,9 @@ describe('count rows keyed by rule identity, not array position', () => {
 
 // Rearrange/hide the manning rows (owner, 18 Aug 26). CountRows takes the
 // order, the hidden set and whether an admin is arranging; it drops a hidden
-// row for everyone until an admin turns Rearrange on, where it comes back
-// dimmed with the reorder/hide controls in its balance cell.
+// row for everyone until an admin turns Rearrange on — where, since 5 Sep 26,
+// it waits under the ARCHIVE bar at the foot of the block (closed by default,
+// "out of view unless I bring it back") rather than sitting dimmed in the list.
 describe('the manning rows can be reordered and hidden (admin)', () => {
   const verdicts = {
     d1: day('d1', [rule('sets', 'Crew sets', 5), rule('ip', 'IP', 2), rule('sxo', 'SXO', 1)]),
@@ -132,16 +133,69 @@ describe('the manning rows can be reordered and hidden (admin)', () => {
     expect(screen.getByTestId('count-sxo')).toBeTruthy()
   })
 
-  it('an arranging admin sees the hidden row dimmed, with its show control', () => {
+  it('an arranging admin finds the hidden row under the Archive bar, not in the list', () => {
     draw({ hidden: ['ip'], arranging: true, admin: true })
+    // out of view: the row is not drawn, the bar says one is archived
+    expect(screen.queryByTestId('count-ip')).toBeNull()
+    const bar = screen.getByTestId('manning-archive')
+    expect(bar.textContent).toContain('ARCHIVE')
+    expect(bar.textContent).toContain('1')
+    expect(bar.getAttribute('aria-expanded')).toBe('false')
+    // the live rows keep their grip and archive eye (drag-and-drop replaced the
+    // ▲▼ arrows, owner 28 Aug 26 — still gone)
+    expect(screen.getByTestId('manning-drag-sxo')).toBeTruthy()
+    expect(screen.getByTestId('manning-hide-sxo')).toBeTruthy()
+    expect(screen.queryByTestId('manning-up-sxo')).toBeNull()
+    // open the archive: the row is back, dimmed, with only its way back — no
+    // grip (an archived row has no place to drag to) and no eye
+    fireEvent.click(bar)
+    expect(bar.getAttribute('aria-expanded')).toBe('true')
     const row = screen.getByTestId('count-ip')
     expect(row.className).toContain('mrow-hidden')
-    expect(screen.getByTestId('manning-hide-ip').getAttribute('aria-pressed')).toBe('true')
-    // the reorder grip (drag-and-drop, replacing the ▲▼ arrows) is only there
-    // while arranging; the old arrows are gone (owner, 28 Aug 26)
-    expect(screen.getByTestId('manning-drag-ip')).toBeTruthy()
-    expect(screen.queryByTestId('manning-up-ip')).toBeNull()
-    expect(screen.queryByTestId('manning-down-ip')).toBeNull()
+    expect(row.getAttribute('data-mrow')).toBeNull()
+    expect(screen.getByTestId('manning-restore-ip')).toBeTruthy()
+    expect(screen.queryByTestId('manning-drag-ip')).toBeNull()
+    expect(screen.queryByTestId('manning-hide-ip')).toBeNull()
+    // and closes again
+    fireEvent.click(bar)
+    expect(screen.queryByTestId('count-ip')).toBeNull()
+  })
+
+  it('the Archive bar is ONE merged bar over the day columns, not a row of cells', () => {
+    draw({ hidden: ['ip'], arranging: true, admin: true })
+    const row = screen.getByTestId('manning-archive-row')
+    const cells = row.querySelectorAll('td')
+    expect(cells.length).toBe(2)                                   // label + one fill
+    expect(cells[0]!.getAttribute('colspan')).toBe('2')            // the two frozen columns
+    expect(cells[1]!.getAttribute('colspan')).toBe('1')            // every day column (one date here)
+  })
+
+  it('the Archive bar is absent while nothing is hidden', () => {
+    draw({ arranging: true, admin: true })
+    expect(screen.queryByTestId('manning-archive')).toBeNull()
+  })
+
+  it('outside Rearrange there is no bar and no hidden row (idle admin or member)', () => {
+    draw({ hidden: ['ip'] })
+    expect(screen.queryByTestId('manning-archive')).toBeNull()
+    expect(screen.queryByTestId('count-ip')).toBeNull()
+  })
+
+  it('archiving from the eye and restoring from the Archive round-trip through the store', () => {
+    setRole('admin')
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId('roster-arrange'))            // enter Rearrange
+    expect(screen.queryByTestId('manning-archive')).toBeNull()
+    fireEvent.click(screen.getByTestId('manning-hide-ip'))           // archive IP
+    expect(screen.queryByTestId('count-ip')).toBeNull()              // out of view at once
+    const bar = screen.getByTestId('manning-archive')
+    expect(bar.textContent).toContain('1')
+    fireEvent.click(bar)                                             // open
+    fireEvent.click(screen.getByTestId('manning-restore-ip'))        // bring it back
+    const row = screen.getByTestId('count-ip')
+    expect(row.className).not.toContain('mrow-hidden')
+    expect(screen.getByTestId('manning-drag-ip')).toBeTruthy()       // a live row again, in the list
+    expect(screen.queryByTestId('manning-archive')).toBeNull()       // the bar goes when it empties
   })
 
   it('a member never gets the reorder controls even for a visible row', () => {

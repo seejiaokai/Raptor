@@ -1178,3 +1178,33 @@ gate's. Keep verdict-bearing commands unpiped.
 **Suggested improvement:** Add to the skill's Phase 2 a short routine for paint/visibility bugs that cannot be reproduced locally: (a) confirm the state change happened (the DOM is right) before touching paint; (b) list the ancestor chain of the missing pixels and mark which nodes are composited (overflow scrollers, transforms, will-change, fixed/sticky, rounded overflow:hidden clips over composited children) — the missing region's backing store is the suspect; (c) find the nearest element in the same surface that DOES paint correctly on the target device and diff the two on layer-owning properties only; (d) verify the fix's MECHANISM on the engine you have (computed style, the compositor layer tree) and say plainly that the fault itself remains verified only on the device; (e) pin the fix as a CSS/source contract test, since no assertion in jsdom or Chromium can observe the bug, and name in the test why it exists.
 
 **Principle:** When the failing pixels cannot be reproduced, debug the ownership of the pixels, not the pixels: find whose backing store they live in, find a sibling that paints correctly, and diff only what decides layer ownership.
+
+### Observation 77: A pixel-faithful design comp can be drawn INSIDE the live page — inject the proposed DOM into the real render and screenshot it — instead of building a throwaway HTML page
+
+**Status:** OPEN
+**Date:** 2026-09-05
+**Session context:** Owner asked for an "Archive" fold row under the Leave War manning counters. The repo's standing rule is "show a PICTURE before product code — a throwaway HTML comp in the app's own stylesheet, screenshotted at phone and desktop widths". Building a standalone comp page would have meant reproducing the grid's markup and classes by hand. Instead a Playwright drive loaded the real production bundle, performed the real prior actions (entered Rearrange, archived two counters with the real buttons), then injected the proposed row into the rendered table by cloning a real row and restyling it, and screenshotted collapsed/open states at both widths. Eight shots in ~4 minutes; the owner picked a direction and asked for one visual change from them.
+**Skill:** brainstorming (visual-companion)
+**Type:** open-source
+**Phase/Area:** Visual direction / comp before build
+
+**Issue:** A hand-built comp page drifts from the real thing (fonts, tokens, column widths, sticky behaviour) and costs nearly as much as the feature for a small change; the drift is exactly what the owner's eye would catch as "not quite the app". Injecting into the live page inherits every real style and every real neighbour for free, so the picture IS the palette, the widths and the density. It also surfaced a real constraint early — the phone's frozen column clipped the count text — which a standalone page would have hidden.
+
+**Suggested improvement:** Add to the visual-companion guidance: when the app can be driven headlessly, prefer the "comp in situ" route — load the real build, reach the real state by real actions, then inject or restyle DOM for the proposed change (clone an existing element of the same kind, blank or alter its content) and screenshot at each target width. Note its limits: React may reconcile away foreign nodes on the next render (re-inject after any state change), and the comp must be thrown away, never promoted to product code.
+
+**Principle:** The most faithful comp is the real page with the new part drawn into it; reach for a standalone mock only when there is no running page to draw on.
+
+### Observation 78: A live drive of a frozen-column grid must include a sideways scroll — the rest state hides sticky/opacity faults, and one such fault had shipped unnoticed
+
+**Status:** OPEN
+**Date:** 2026-09-05
+**Session context:** The Archive rows reuse the grid's existing "dimmed hidden row" style. The drive's screenshot at rest looked right; the one taken after scrolling the year 600px sideways showed day numbers bleeding through the archived rows' frozen name cells ("11OPSW"). Cause: the dimming was `opacity` on every cell of the row, which makes the sticky frozen cell see-through. The same rule had applied to the old greyed-in-place hidden rows for weeks — nobody had scrolled sideways with one on screen during a check.
+**Skill:** verification-before-completion (and the repo's live-view recipe)
+**Type:** open-source
+**Phase/Area:** What a UI drive must exercise
+
+**Issue:** Frozen/sticky columns are correct by construction only in the state where nothing has scrolled; every fault in them (transparent backgrounds, missing z-index, opacity on a row, a non-sticky sibling) appears only once the scroller has moved. A drive that screenshots the rest state proves the layout, not the pinning.
+
+**Suggested improvement:** For any surface with sticky/frozen headers or columns, make the drive script scroll the container by a large offset on EACH axis it scrolls and screenshot again, and read the pinned element's rect before and after (the left/top edge must not move). Add it to the verification checklist as a named step rather than leaving it to judgment — the rest-state shot is the one everyone takes.
+
+**Principle:** Sticky things are only tested by moving what they stick against; a screenshot at rest tests layout, not pinning.

@@ -5111,6 +5111,30 @@ taking `overflow: hidden` off `.card` — that clip is the rounded corners.
 Pinned in `rearrangebar.test.ts` (the CSS contract; jsdom cannot paint and
 Chromium does not reproduce the fault).
 
+**Archived counters live under an ARCHIVE bar (owner, 5 Sep 26 — "a row to open
+below the counter row that's called Archive, so those go there will be out of
+view unless I bring it back", then "not have the grids on the right, a merged 1
+bar horizontally", and Rearrange only).** In Rearrange the eye on a manning row
+ARCHIVES it: the row leaves the list at once and the `▸ ARCHIVE · N` bar appears
+at the foot of the block (`CountRows.tsx`, `tr.march`) — one merged bar built
+the category-heading way (a sticky `td.marchhd` `colSpan=2` over the frozen
+columns, its zero-width `.marchhd-in` label overflowing across ONE `td.marchfill`
+spanning every day column, so no day grid), same background and rules as a
+heading but at HEM scale (owner, same day — "make the archive section much
+smaller"): both cells override `.mx td`'s 22px floor (`height: 16px`), so the
+row is its content, ~18.5px against the 22px count rows; the type is one step
+below the row labels (9.5px, letter-spaced, `--ink-3` at 6.4:1 on the band),
+the caret 8px. Don't restore the heading's scale or ink — the bar must never
+outrank the counters it serves. Tap the bar to open it: the archived rows draw under it dimmed
+(`.mrow-hidden`) with only `↺` (`manning-restore-<id>`, no grip — an archived
+row has no place to drag to; restoring returns it to its old position, since
+hiding never touched `manningOrder`). The fold is LOCAL view state in CountRows
+(a tap must not re-render the grid), closed by default and closed again when
+Rearrange ends. The bar exists only while something is archived; a member and
+an idle admin see neither the bar nor the rows (unchanged). Pinned in
+`counts.test.tsx` (the bar's two-cell shape, open/close, the eye → ↺ round trip
+through the store).
+
 ## Leave War roster groups: minimise, and the admin group editor (owner, 28 Aug 26)
 
 **Minimising a category.** Every group heading is a fold control — the sticky

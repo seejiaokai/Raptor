@@ -360,9 +360,74 @@
 .mx .counts .mrow-btn.eye {
   font-size: 10px;
 }
-.mx .counts .mrow-btn.eye.off {
-  border-style: dashed;
-  color: var(--muted, #8a94a6);
+.mx .counts .mrow-btn.restore {
+  font-size: 10px;
+}
+
+/* THE ARCHIVE BAR under the manning rows (owner, 5 Sep 26 — "a row … called
+   Archive … out of view unless I bring it back", then "not have the grids on
+   the right, a merged 1 bar horizontally"; Rearrange only, see CountRows). The
+   category-heading recipe (`tr.grp td.grphd` / `td.grpfill` below): the label
+   rides a sticky td over the two frozen columns, pinned left as the year
+   scrolls, its zero-width `.grphd-in` overflowing across the ONE fill cell
+   that spans every day column — no per-day cells, so no grid lines. Same
+   background and rules as a heading so it reads as the block's own fold. The
+   archived rows under it keep the dimmed `.mrow-hidden` look. */
+.mx .counts tr.march td.marchhd {
+  position: sticky;
+  left: 0;
+  z-index: 3;
+  padding: 0;
+  overflow: visible;
+  background: var(--bg);
+  border-top: 1px solid var(--edge);
+  border-bottom: 1px solid var(--edge);
+  cursor: pointer;
+  /* `.mx td` gives every cell a 22px floor (the grid's uniform row); the hem
+     steps under it — the row is its content, ~17px, so it sits visibly lower
+     than the 22px count rows above it. Both cells, or the taller one wins. */
+  height: 16px;
+}
+.mx .counts tr.march td.marchhd:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.mx .counts tr.march td.marchfill {
+  background: var(--bg);
+  border-top: 1px solid var(--edge);
+  border-bottom: 1px solid var(--edge);
+  padding: 0;
+  height: 16px;
+}
+/* The bar's own scale — a HEM under the counters, not a heading (owner, 5 Sep
+   26: "make the archive section much smaller"). ~19px tall against the 22px
+   count rows, type one step below the row labels, all in the muted ink (6.4:1
+   on the band), the caret a notch smaller still. Zero-width + overflow for the
+   same reason as `.grphd-in`: the label must add no min-width to the frozen
+   callsign column. The whole 120px sticky cell stays the tap target. */
+.marchhd-in {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px 3px;
+  white-space: nowrap;
+  width: 0;
+  overflow: visible;
+  line-height: 1;
+}
+.marchhd-in .mcar {
+  font-size: 8px;
+  width: 6px;
+  flex: none;
+  color: var(--ink-3);
+}
+.marchhd-in .mname {
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  color: var(--ink-3);
+}
+.marchhd-in .mcount {
+  font-size: 9.5px;
+  font-weight: 600;
+  color: var(--ink-3);
 }
 /* The reorder GRIP (owner, 28 Aug 26 — drag-and-drop replaced the ▲▼ arrows).
    The same ⠿ the roster rows use, sized to the count row's narrow tools column
@@ -377,8 +442,18 @@
   -webkit-user-select: none;
 }
 .mx .counts .mrow-tools .drag:active { cursor: grabbing; }
-/* A hidden row, shown dimmed WHILE arranging so an admin can bring it back. */
+/* A hidden row — the Archive's contents since 5 Sep 26 — drawn dimmed while an
+   admin arranges. The day cells fade by opacity; the FROZEN name cell must stay
+   opaque, because it is sticky and a see-through frozen cell lets the day
+   numbers scroll straight through the name (the phone drive caught "11OPSW"),
+   so only the text inside it fades. The balance cell keeps its ↺ fully legible. */
 .mx .counts tr.mrow-hidden td {
+  opacity: .45;
+}
+.mx .counts tr.mrow-hidden td.who {
+  opacity: 1;
+}
+.mx .counts tr.mrow-hidden td.who .mwho {
   opacity: .45;
 }
 .mx .counts tr.mrow-hidden td.bal {

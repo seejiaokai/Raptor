@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import type { PointerEvent as ReactPointerEvent, RefCallback } from 'react'
 import type { DayVerdict } from '../engine'
 import { toggleManningRow } from '../state/store'
@@ -53,6 +54,18 @@ export function CountRows({
   phL?: RefCallback<HTMLTableCellElement>
   phR?: RefCallback<HTMLTableCellElement>
 }) {
+  const editing = arranging && admin
+  // THE ARCHIVE (owner, 5 Sep 26 — "a row to open below the counter row that's
+  // called Archive, so those go there will be out of view unless I bring it
+  // back", then "a merged 1 bar horizontally", and Rearrange-only). A hidden
+  // counter no longer sits dimmed in the list while an admin rearranges: it
+  // moves under an ARCHIVE bar at the foot of the block, closed by default, and
+  // comes back with the ↺ inside. Local view state on purpose — a tap on the
+  // bar must not re-render the ~28k-node grid the way a Matrix state would —
+  // and it shuts again when Rearrange ends, so every visit starts closed.
+  const [archiveOpen, setArchiveOpen] = useState(false)
+  useEffect(() => { if (!editing) setArchiveOpen(false) }, [editing])
+
   // `requirementFor` can swap in a wholly different rule set per date via
   // `overrides[date]` — nothing constrains an override's rules to the same
   // length or order as the default. So the label of each row is taken from the
@@ -73,21 +86,23 @@ export function CountRows({
   const seen = new Set(ids)
   for (const id of label.keys()) if (!seen.has(id)) ids.push(id)
 
-  // A member never sees a hidden row; an admin sees it dimmed WHILE arranging,
-  // so it can be brought back, and not at all once Done.
+  // A member never sees a hidden row, and neither does an idle admin. While an
+  // admin is arranging, the hidden rows are ARCHIVED: out of the list, kept
+  // under the Archive bar below it, drawn only while that bar is open.
   const hiddenSet = new Set(hidden)
-  const rows = ids.filter(id => (arranging && admin) || !hiddenSet.has(id))
-  if (rows.length === 0) return null
+  const live = ids.filter(id => !hiddenSet.has(id))
+  const archived = editing ? ids.filter(id => hiddenSet.has(id)) : []
+  if (live.length === 0 && archived.length === 0) return null
 
   // One lookup map per date, built once, so each cell is a ruleId lookup
   // rather than a per-cell `find` over that date's results array.
   const byDate = new Map(dates.map(date => [date, new Map(verdicts[date]?.results.map(r => [r.ruleId, r]))]))
-  const editing = arranging && admin
+  // The day columns as the header draws them — the drawn days plus the column
+  // window's placeholder cell on each side (see `padL`/`padR`) — which is what
+  // the Archive bar's fill cell must span to read as one bar.
+  const dayCols = dates.length + (padL ? 1 : 0) + (padR ? 1 : 0)
 
-  return (
-    <tbody className="counts">
-      {rows.map(ruleId => {
-        const isHidden = hiddenSet.has(ruleId)
+  const rowFor = (ruleId: string, isHidden: boolean) => {
         const cls = [
           isHidden ? 'mrow-hidden' : '',
           draggingId === ruleId ? 'dragging' : '',
@@ -100,7 +115,7 @@ export function CountRows({
             /* the drag machine hit-tests this attribute, not the testid — the
                day cells are `count-<id>-<date>` and would shadow a testid
                prefix match (Matrix: MANNING_DRAG) */
-            data-mrow={editing ? ruleId : undefined}
+            data-mrow={editing && !isHidden ? ruleId : undefined}
             className={cls || undefined}
           >
             {/* The name is the tap target for the row's explainer sheet — the
@@ -122,12 +137,13 @@ export function CountRows({
                 mode it carries the admin's reorder / hide controls, which have
                 nowhere else to sit in a frozen 44px column. */}
             <td className="bal" data-testid={`counter-count-${ruleId}`}>
-              {editing && (
+              {editing && !isHidden && (
                 <span className="mrow-tools">
                   {/* Reorder is DRAG now (owner, 28 Aug 26 — "the rearrange
                       could u do drag and drop … remove the arrow function"): the
                       same grip and machine the roster rows use. The ▲▼ arrows
-                      are gone; the hide (eye) stays. */}
+                      are gone; the eye stays, and since 5 Sep 26 it ARCHIVES
+                      the row — under the bar below, out of view until opened. */}
                   <span
                     className="drag"
                     data-testid={`manning-drag-${ruleId}`}
@@ -137,13 +153,26 @@ export function CountRows({
                     onPointerDown={e => onRowDragStart?.(e, ruleId)}
                   >⠿</span>
                   <button
-                    className={`mrow-btn eye${isHidden ? ' off' : ''}`}
+                    className="mrow-btn eye"
                     data-testid={`manning-hide-${ruleId}`}
-                    aria-pressed={isHidden}
-                    title={isHidden ? 'Show this row' : 'Hide this row'}
-                    aria-label={isHidden ? `Show ${label.get(ruleId)}` : `Hide ${label.get(ruleId)}`}
+                    title="Archive this row"
+                    aria-label={`Archive ${label.get(ruleId)}`}
                     onClick={() => toggleManningRow(ruleId)}
-                  >{isHidden ? '⊘' : '👁'}</button>
+                  >👁</button>
+                </span>
+              )}
+              {editing && isHidden && (
+                <span className="mrow-tools">
+                  {/* An archived row has no place to drag to, so no grip — only
+                      the way back, which returns it to its old position in the
+                      order (hiding never touched `manningOrder`). */}
+                  <button
+                    className="mrow-btn restore"
+                    data-testid={`manning-restore-${ruleId}`}
+                    title="Bring this row back"
+                    aria-label={`Bring ${label.get(ruleId)} back`}
+                    onClick={() => toggleManningRow(ruleId)}
+                  >↺</button>
                 </span>
               )}
             </td>
@@ -165,7 +194,46 @@ export function CountRows({
             {padR && <td className="lwph lwph-r" ref={phR} />}
           </tr>
         )
-      })}
+  }
+
+  return (
+    <tbody className="counts">
+      {live.map(id => rowFor(id, false))}
+      {/* THE ARCHIVE BAR — one merged bar with no day grid (owner, 5 Sep 26).
+          The category-heading technique (Matrix `tr.grp`): a sticky td over the
+          two frozen columns carries the label and stays pinned as the year
+          scrolls; ONE fill cell spans every day column, so the row is a bar,
+          not a grid. The td is the tap target, not the zero-width `.marchhd-in`
+          inside it (the heading's own lesson). Drawn only while something is
+          archived: an empty archive is clutter, and the bar appears the moment
+          the first eye is pressed. It is a HEM, not a heading (owner, 5 Sep 26
+          — "make the archive section much smaller"): a step shorter than a
+          count row, one type step below the row labels, muted ink, so it
+          never outranks the counters it serves. */}
+      {archived.length > 0 && (
+        <tr className="march" data-testid="manning-archive-row">
+          <td
+            className="marchhd"
+            colSpan={2}
+            data-testid="manning-archive"
+            role="button"
+            tabIndex={0}
+            aria-expanded={archiveOpen}
+            aria-label={`Archive — ${archived.length} hidden ${archived.length === 1 ? 'row' : 'rows'}, ${archiveOpen ? 'close' : 'open'} it`}
+            title={archiveOpen ? 'Close the Archive' : 'Open the Archive — bring a hidden row back'}
+            onClick={() => setArchiveOpen(o => !o)}
+            onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setArchiveOpen(o => !o) } }}
+          >
+            <div className="marchhd-in">
+              <span className="mcar" aria-hidden="true">{archiveOpen ? '▾' : '▸'}</span>
+              <span className="mname">ARCHIVE</span>
+              <span className="mcount">· {archived.length}</span>
+            </div>
+          </td>
+          <td className="marchfill" colSpan={dayCols} />
+        </tr>
+      )}
+      {archiveOpen && archived.map(id => rowFor(id, true))}
     </tbody>
   )
 }
