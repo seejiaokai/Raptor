@@ -281,6 +281,16 @@ Four things make it work, and each is load-bearing:
   holds scroll across an ordinary repaint). If it stuck, every later repaint
   would drag the week back — the B54 scroll-hold guarantee broken, visible as
   the week jumping while you type.
+- **That `scrollLeft = sl` hold runs only when the repaint REWROTE the week**
+  (5 Sep 26, the owner's iPhone recording — days resting 60–100 px off their
+  snap point after a swipe in next week). A repaint that changed no day — the
+  palette's day-follow ~110 ms after a swipe settles, a store tick that touched
+  nothing here — writes nothing to the strip. Writing its own position back is
+  harmless in Chromium (it re-snaps after a programmatic scroll) and fatal on
+  iOS Safari (it does not: the still-settling snap stops where it stands).
+  Nothing moved the strip, so there is nothing to hold it against. Pinned
+  `ui/snaphold.test.tsx` (both weeks: no write on a no-change repaint, one
+  write on a rewrite).
 
 `state/store.ts`'s `resetSession` clears it **after** its own `setPage`, which
 is why that line sits at the end of the function rather than beside the other

@@ -227,6 +227,22 @@ run whole against the final code:
   used to wash them too); the preview column reads the same (≤0.1% of pixels
   differ). Contracts: `ui-contracts.md` §Compositor layers; ledger 22; pinned
   by `ui/layers.test.ts`.
+- **The phone carousel resting off its snap (5 Sep 26)** — branch
+  `claude/phone-snap-hold`, its own PR, awaiting the owner's iPhone verdict and
+  then "merge live". From the owner's recording on the #361 preview: after a
+  swipe in next week, days rested 60–100 px off their snap point, with a 40 px
+  vertical jump mid-rest — the signature of a repaint. Mechanism (read off the
+  code; Chromium cannot reproduce it because it re-snaps after a programmatic
+  scroll and Safari does not): the palette's day-follow (`pan.ts rosDayFollow`)
+  fires `notify()` ~110 ms after the strip's scroll events stop, the week
+  repaints with no day changed, and the B54 hold writes `root.scrollLeft = sl`
+  back to itself — on iOS that stops a still-settling snap where it stands.
+  Fix: the hold runs only when the repaint rewrote the week (`wrote`), in both
+  `EditWeek` and `ViewWeek`; pinned `ui/snaphold.test.tsx`. Not caused by
+  #361: at phone width the two builds differ only in six paint properties on
+  the faded palette pucks (JS byte-identical), and the mechanism predates the
+  drop round. Two things only the iPhone can answer: does the live site do it
+  too (expected yes), and does the fix preview stop it.
 - **iOS is untestable here.** This container ships no WebKit. The Leave War
   column window / placeholders and every contenteditable or touch-fling change
   are verified on the owner's iPhone against the preview; if the grid ever
