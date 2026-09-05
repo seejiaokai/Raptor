@@ -1059,6 +1059,21 @@ gate's. Keep verdict-bearing commands unpiped.
 **Suggested improvement:** For any "blank / frozen for N ms right after input stops" symptom, before reasoning about the renderer: (1) trace the same gesture in the desktop browser and list tasks > 40 ms in the window after the input; (2) if they are TimerFire tasks, wrap the page's timers from load (install stack + fire time + duration) — the trace's own TimerInstall stacks need an extra category and the ids of early timers point at page-load installers; (3) only then bring in engine asymmetries for what remains. Prefer the portable explanation while one is still possible.
 
 **Principle:** A main-thread task train is visible in every browser; an engine-specific theory is only earned once the portable causes are exhausted, because the portable fix is usually the small one and the engine fix is usually the layout change.
+### Observation 69: "Hidden until ready" costs a paint on reveal — cover a live element instead of hiding it when it must be ready the instant the cover comes off
+
+**Status:** OPEN
+**Date:** 2026-09-05
+**Session context:** The phone's cross-week glide (`ui/weekglide.ts`, branch `claude/glide-prepaint`): the real week was `visibility:hidden` behind two sliding snapshots and came back half-black on the iPhone. Numbered 69 on this branch; 60–68 are on other open branches.
+**Skill:** New skill candidate: none — cross-cutting rendering principle (sibling of Observations 67–68)
+**Type:** open-source
+**Phase/Area:** transition design / paint readiness
+
+**Issue:** The glide hid the live week so the leftover fling could never be seen scrolling behind the snapshots — a correct goal — but chose `visibility:hidden`, which also tells the browser not to paint. On WebKit, where tiles are painted on the main thread progressively, the reveal then showed the new week drawing in from the top over ~0.4 s. The snapshots already covered the viewport edge to edge, so the week's visibility was never the thing keeping it unseen; `pointer-events:none` kept it untouchable, and letting it stay painted underneath cost nothing.
+
+**Suggested improvement:** When an element must be unseen during a transition but visible the instant the transition ends, prefer COVERING it (an overlay, the transition's own snapshots) plus `pointer-events:none` over `visibility:hidden` / `display:none`, so the browser pre-paints it under the cover; and let the cover outlive the reveal by a frame or two over identical pixels. Reserve `visibility:hidden` for elements whose readiness on reveal does not matter.
+
+**Principle:** Hiding an element also defers its paint; if it has to be ready the moment it reappears, cover it instead — a covered element paints, a hidden one waits.
+
 ### Observation 70: A test that asserts a transient of a background fill loop is a coin toss
 
 **Status:** OPEN
@@ -1073,6 +1088,36 @@ gate's. Keep verdict-bearing commands unpiped.
 **Suggested improvement:** When a check fails on some runs and not others, the first question is "what background process could change the asserted state between the action and the assertion?" — not "is the runner slow?". Read the assertion against every loop, timer or idle callback that touches the same state; a claim that depends on how many beats fit between two steps is not a claim. Fix the assertion's scope (gate it to where it is deterministic, or assert the invariant the loop preserves), never add a retry or a longer timeout.
 
 **Principle:** A flaky test is a test asserting something the system does not promise. Find the promise the test meant to check and assert that; the flake is the diagnosis, not the disease.
+
+### Observation 71: A fix that removes one symptom can unmask its twin — re-read the recording, not the diagnosis
+
+**Status:** OPEN
+**Date:** 2026-09-05
+**Session context:** The phone week-cross glide. The 16:02 recording showed "the landed day paints in with its lower half black"; the fix (real week painted, not hidden) removed the black. The owner's 16:46 recording of that fix showed a "split" — the card's header sliding while its lower rows sat still.
+**Skill:** systematic-debugging (or the repo's performance charter)
+**Type:** open-source
+**Phase/Area:** Root cause → fix → owner re-test
+
+**Issue:** The first diagnosis ("the hidden week is painted from scratch on reveal") was right about one half of the black and blind to the other: the arriving SNAPSHOT itself entered unpainted (a whole-week layer committed off-screen, painted top-first as it slid). Both faults showed as "black lower half"; fixing the first turned the second into a visible split, because the real week now showed through the unpainted hole. The frame-by-frame of the second recording (30 fps crops of the card's top band vs. its rows) is what separated them: the rows tracked the LANDING position, the header tracked the SLIDE. (Numbered 71, not 70: obs 70 was written on the sibling branch `claude/lw-month-jump-flake` heading for the same main.)
+
+**Suggested improvement:** When a paint-timing bug is fixed by a change that alters what is *underneath* the faulty layer, re-derive what the old symptom would look like with the new underlay before calling it done — a hole that showed black will now show whatever is beneath. And when a recording shows one region moving and another still, ask which layer each region belongs to (compare a top band and a bottom band across frames) before assuming one element is painting slowly.
+
+**Principle:** A symptom is the union of every fault that paints the same pixels; removing one fault changes the symptom's shape rather than ending it. Diagnose from the frames on each re-test, not from the previous round's story.
+
+### Observation 72: A seam that never moves is a box edge, not a paint race — check geometry before theorising about tiles
+
+**Status:** OPEN
+**Date:** 2026-09-05
+**Session context:** The phone week-cross "split" (obs 71's second recording). The first fix assumed a WebKit tile-paint race (arriving snapshot committed off-screen, painted top-first), built one-day pre-painted snapshots, shipped, and the owner reported "still the same" after a fresh load.
+**Skill:** systematic-debugging
+**Type:** open-source
+**Phase/Area:** Root cause from a screen recording
+
+**Issue:** The frames had the answer before any theory: the seam between the sliding top and the static bottom sat at the SAME pixel in every frame and on every cross in one direction only, and that pixel equalled the height of the short week being left. The snapshot's box was measured from the week being left, before the swap, so the tall arriving day was clipped at a short week's height. A paint race would drift between frames and vary between runs; a fixed seam is an element's edge. The tile theory was plausible (the phone does paint on its main thread), fit the first recording, and could not be tested here (no WebKit), so it survived a whole round.
+
+**Suggested improvement:** When a recording shows a region moving and another still, measure the boundary first: is it at the same pixel every frame? Does it equal any element's box (height, width, rect edge) that the code fixes from a measurement? Does it appear in only one direction/state? Only if the boundary moves or varies is a timing/paint theory in play. And when a theory cannot be tested on the target device, say so in the PR and prefer the fix that also holds if the theory is wrong (here: sizing the box correctly would have fixed it regardless).
+
+**Principle:** A fixed edge is geometry; a drifting edge is timing. Read which one the frames show before choosing a theory you cannot test.
 
 ### Observation 73: `git add -A` in a worktree with an out-of-tree symlink commits the symlink — an ignore rule ending in `/` matches directories only
 

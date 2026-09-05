@@ -265,6 +265,28 @@ run whole against the final code:
   after a week switch carries ~450 ms of React work at 4× (the new week's
   deferred render flushed inside that event) — the seven-day-strings item,
   felt as one hitch on the first touch after switching weeks.
+- **The half-black day on a week cross (5 Sep 26)** — branch
+  `claude/glide-prepaint`, its own PR, awaiting the owner's phone verdict and
+  then "merge live". The owner's 16:02 recording: swipe from Sunday Jul 12 into
+  Monday Jul 13, the 250 ms slide is clean, then the landed Monday paints in
+  from the top over ~0.4 s with its lower half black. Cause, read off
+  `ui/weekglide.ts`: the glide hid the real week (`visibility:hidden`) for
+  the slide, and a hidden element is never painted, so the reveal had no tiles
+  and the phone drew the week from scratch. Fix: the week stays painted under
+  the two snapshots, covered and `pointer-events:none` (still nothing to
+  scrub); the incoming snapshot lifts two frames after the reveal. Second
+  pass the same evening (his 16:46 and 17:23 recordings, "the top part swipe
+  is like split animation"): the arriving snapshot was CLIPPED at the leaving
+  week's height — its box was measured before the swap — so crossing from a
+  week of short ground days into the tall seed week cut the arriving Monday
+  at ~240 px, and below that seam the real week's own landed rows showed (the
+  page background, i.e. black, before the first pass). The box is now the
+  taller of the two weeks, measured on both sides of the swap; each snapshot
+  is also one opaque day card, pre-painted on-screen two frames before it
+  moves (cost and precaution — a first theory of a tile-paint race that did
+  not move the seam; ledger 24 records it as a dead end). Pinned
+  `ui/weekglide.test.ts`. Chromium never showed the clip (its demo weeks are
+  the same height), so the iPhone is the gate.
 - **iOS is untestable here.** This container ships no WebKit. The Leave War
   column window / placeholders and every contenteditable or touch-fling change
   are verified on the owner's iPhone against the preview; if the grid ever
