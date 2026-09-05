@@ -25,35 +25,24 @@
   position: fixed;
   inset: 0;
   z-index: 79;
-  /* THE SCRIM IS ITSELF A SIDEWAYS SCROLLER (owner, 6 Sep 26 — "the swipe on
-     the background … doesn't decelerate smoothly. Like it stops immediately …
-     exactly the same"). Until then a sideways finger was kept from the browser
-     (`touch-action: pan-y`) and forwarded onto the grid's `.mx-wrap` by hand
-     from pointer events, which moved the grid 1:1 and stopped it dead at the
-     lift — a hand-written scrollLeft has no momentum. Now the finger scrolls
-     THIS element natively, with the browser's own fling and deceleration, and
-     Sheet.tsx (useGridPan) mirrors every scroll of it onto the grid — so the
-     dates coast under a sheet exactly as they do without one. The `::before`
-     spacer below gives the scrim the grid's scroll RANGE (`--lw-scrim-w`, set
-     from JS: the scrim's own width plus the grid's max scrollLeft, so the two
-     map 1:1 in px); the scrollbar is hidden on every engine (a desktop would
-     otherwise grow a bar along the foot of the screen); and `pan-x pan-y`
-     hands the browser BOTH axes: sideways scrolls the scrim, up-down chains to
-     the page (the scrim never overflows vertically), which is the 28 Aug
-     "enable me to still scroll up and down when this window is opened". A
-     mouse cannot drag a native scroller, so its drag-to-pan stays hand-made in
-     Sheet.tsx; a gesture that never moved is a tap and still closes. */
-  overflow-x: auto;
-  overflow-y: hidden;
-  touch-action: pan-x pan-y;
-  scrollbar-width: none;
-}
-.sheetscrim::-webkit-scrollbar { display: none; }
-.sheetscrim::before {
-  content: '';
-  display: block;
-  height: 1px;
-  width: var(--lw-scrim-w, 100%);
+  /* `pan-y`, so the browser scrolls the page UP-DOWN natively from a finger
+     that lands on the scrim (owner, 28 Aug 26 — "enable me to still scroll up
+     and down when this window is opened"). This reverses the 17 Aug lock: the
+     page is no longer frozen under a sheet. A SIDEWAYS drag is not allowed to
+     the browser (pan-y owns only the vertical axis), so it reaches Sheet.tsx's
+     own handler, which forwards it onto the grid's `.mx-wrap` scroller — the
+     dates keep scrolling left-right while the sheet stays up. A gesture that
+     never moved is a tap and still closes.
+
+     ON A TOUCH SCREEN NONE OF THIS APPLIES (owner, 6 Sep 26 — the swipe behind
+     a sheet must coast and feel "exactly the same" as the bare grid, and a
+     forwarded or mirrored scroll never can): Sheet.tsx (useGridPan) sets
+     `pointer-events: none` on this element inline when `(pointer: coarse)`
+     matches, so a finger falls straight through to `.mx-wrap` and the browser
+     flings the grid itself; a document-level shield there swallows the tap
+     and dismisses. The rule stays here for the mouse, which cannot
+     drag-scroll a native scroller. */
+  touch-action: pan-y;
 }
 
 .bidsheet {

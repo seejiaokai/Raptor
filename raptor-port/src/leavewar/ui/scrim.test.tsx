@@ -337,141 +337,113 @@ describe('the page stays live behind a sheet, and the panel moves', () => {
 // THE SWIPE UNDER A SHEET IS THE BROWSER'S OWN (owner, 6 Sep 26 — "when a window
 // like this is open, the swipe on the background … doesn't decelerate smoothly.
 // Like it stops immediately … fix the swipe animation to be exactly the same").
-// The scrim is a native sideways scroller mirrored onto the grid (Sheet.tsx
-// useGridPan), so a finger's drag, fling and deceleration are whatever the
-// browser gives the bare grid. jsdom has no scroll physics, so what is pinned
-// here is the WIRING the physics ride on: a finger is never forwarded by hand
-// (that would fight the native scroll), the scrim's scroll lands on the grid,
-// a scroll the grid made on its own lands back on the scrim (so the next fling
-// starts where the grid is), the two never ping-pong, the scrim opens ALIGNED,
-// and the spacer gives the scrim the grid's range. The physics themselves are
-// measured in e2e/leavewar.spec.ts (a real touch fling, lw-phone).
-describe('a finger flings the grid through the scrim natively', () => {
-  // jsdom stores scrollLeft without clamping and reports every box 0×0, so
-  // give the grid a range (max scroll 5000) to be measured against.
-  const gridWith = (sl: number, scrollW = 5400) => {
-    const wrap = document.querySelector('.mx-wrap') as HTMLElement
-    Object.defineProperty(wrap, 'scrollWidth', { configurable: true, get: () => scrollW })
-    Object.defineProperty(wrap, 'clientWidth', { configurable: true, get: () => 400 })
-    wrap.scrollLeft = sl
-    return wrap
+// ON A TOUCH SCREEN THE FINGER FALLS THROUGH TO THE GRID (owner, 6 Sep 26 —
+// the swipe behind a sheet must coast "exactly the same" as the bare grid, and
+// after a first fix that mirrored a scroller onto it, "it feels more laggy /
+// stuttery"). Sheet.tsx useGridPan takes the scrim out of the finger's way
+// (`pointer-events: none` when `(pointer: coarse)` matches) so the browser
+// flings `.mx-wrap` itself, and a document-level shield does what the scrim
+// did by being in the way: a tap or press aimed under the sheet never reaches
+// the grid's handlers, the tap closes the sheet, and the touch is never
+// cancelled — that is what keeps it a scroll. jsdom has no matchMedia (a fine
+// pointer, the scrim in the way — every test above), so a touch screen is
+// stubbed in here. The fling itself is a real touch in e2e/leavewar.spec.ts.
+describe('on a touch screen the finger falls through to the grid, and a tap is shielded', () => {
+  const touchScreen = () => {
+    Object.defineProperty(window, 'matchMedia', {
+      configurable: true,
+      value: (q: string) => ({ matches: q === '(pointer: coarse)', media: q, addEventListener() {}, removeEventListener() {}, addListener() {}, removeListener() {}, onchange: null, dispatchEvent: () => false }),
+    })
+  }
+  afterEach(() => { delete (window as any).matchMedia })
+  const wrap = () => document.querySelector('.mx-wrap') as HTMLElement
+  const openBid = () => {
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId('cell-dusk-2026-02-11'))
+    expect(screen.getByTestId('bid-picker')).toBeTruthy()
+  }
+  // What the grid would hear: a listener on the scroller itself, below the
+  // document-level shield.
+  const heard = () => {
+    const got: string[] = []
+    for (const t of ['pointerdown', 'touchstart', 'mousedown', 'click']) wrap().addEventListener(t, () => got.push(t))
+    return got
   }
 
-  it('leaves a finger to the browser — a touch or pen drag on the scrim writes nothing by hand', () => {
-    render(<Matrix />)
-    const wrap = gridWith(500)
-    fireEvent.click(screen.getByTestId('counter-pick'))
-    const s = scrim()
-    fireEvent.pointerDown(s, { clientX: 300, clientY: 300, pointerId: 1, pointerType: 'touch' })
-    fireEvent.pointerMove(s, { clientX: 200, clientY: 300, pointerId: 1, pointerType: 'touch' })
-    expect(wrap.scrollLeft).toBe(500)
-    fireEvent.pointerUp(s, { clientX: 200, clientY: 300, pointerId: 1, pointerType: 'touch' })
-    fireEvent.pointerDown(s, { clientX: 300, clientY: 300, pointerId: 2, pointerType: 'pen' })
-    fireEvent.pointerMove(s, { clientX: 200, clientY: 300, pointerId: 2, pointerType: 'pen' })
-    expect(wrap.scrollLeft).toBe(500)
-    // …and the sheet is still up: a scroll is not a dismissal.
-    expect(screen.queryByTestId('counter-sheet')).toBeTruthy()
+  it('is out of the finger\'s way on a touch screen, and in it for a mouse', () => {
+    openBid()
+    expect(scrim().style.pointerEvents).toBe('') // jsdom: a fine pointer
+    fireEvent.click(screen.getByTestId('bid-cancel'))
+    expect(screen.queryByTestId('bid-picker')).toBeNull()
+    touchScreen() // the next sheet mounts onto a touch screen
+    fireEvent.click(screen.getByTestId('cell-dusk-2026-02-11'))
+    expect(scrim().style.pointerEvents).toBe('none')
   })
 
-  it('still drags the grid by hand for a MOUSE, which the browser gives no drag-scroll', () => {
-    render(<Matrix />)
-    const wrap = gridWith(500)
-    fireEvent.click(screen.getByTestId('counter-pick'))
-    const s = scrim()
-    fireEvent.pointerDown(s, { clientX: 300, clientY: 300, pointerId: 1, pointerType: 'mouse', buttons: 1 })
-    fireEvent.pointerMove(s, { clientX: 200, clientY: 300, pointerId: 1, pointerType: 'mouse', buttons: 1 })
-    expect(wrap.scrollLeft).toBe(600)
+  it('a tap on a cell behind the sheet closes it, opens nothing, and never reaches the grid', () => {
+    touchScreen()
+    openBid()
+    const got = heard()
+    const cell = screen.getByTestId('cell-dusk-2026-02-12')
+    fireEvent.pointerDown(cell, { pointerType: 'touch' })
+    fireEvent.touchStart(cell)
+    fireEvent.touchEnd(cell)
+    fireEvent.mouseDown(cell)
+    fireEvent.click(cell)
+    expect(got).toEqual([])
+    // The sheet is gone, and the tapped cell did NOT open its own.
+    expect(screen.queryByTestId('bid-picker')).toBeNull()
   })
 
-  it('opens with the scrim ALIGNED to the grid and its range the grid\'s (the JAN-jump guard)', () => {
-    render(<Matrix />)
-    gridWith(6500)
-    fireEvent.click(screen.getByTestId('counter-pick'))
-    const s = scrim()
-    // A scrim left at 0 would fling the grid from January, whatever month was
-    // showing when the sheet opened.
-    expect(s.scrollLeft).toBe(6500)
-    // jsdom's scrim is 0 wide, so the spacer is exactly the grid's max scroll.
-    expect(s.style.getPropertyValue('--lw-scrim-w')).toBe('5000px')
+  it('never cancels the touch — that is what keeps it a native scroll — but does cancel the tap\'s mousedown, so no cell is focused', () => {
+    touchScreen()
+    openBid()
+    const cell = screen.getByTestId('cell-dusk-2026-02-12')
+    const ts = new Event('touchstart', { bubbles: true, cancelable: true })
+    const pd = new Event('pointerdown', { bubbles: true, cancelable: true })
+    const md = new Event('mousedown', { bubbles: true, cancelable: true })
+    cell.dispatchEvent(ts); cell.dispatchEvent(pd); cell.dispatchEvent(md)
+    expect(ts.defaultPrevented).toBe(false)
+    expect(pd.defaultPrevented).toBe(false)
+    expect(md.defaultPrevented).toBe(true)
   })
 
-  it('carries the scrim\'s own scroll onto the grid, clamped to the grid\'s range', () => {
-    render(<Matrix />)
-    const wrap = gridWith(500)
-    fireEvent.click(screen.getByTestId('counter-pick'))
-    const s = scrim()
-    s.scrollLeft = 1200
-    fireEvent.scroll(s)
-    expect(wrap.scrollLeft).toBe(1200)
-    // An edge bounce reads past the range (iOS rubber-bands the scrim); the
-    // grid takes the edge and no more.
-    s.scrollLeft = -40
-    fireEvent.scroll(s)
-    expect(wrap.scrollLeft).toBe(0)
-    s.scrollLeft = 9999
-    fireEvent.scroll(s)
-    expect(wrap.scrollLeft).toBe(5000)
-    expect(screen.queryByTestId('counter-sheet')).toBeTruthy()
+  it('leaves the sheet\'s own panel alone', () => {
+    touchScreen()
+    openBid()
+    // A control inside the panel still works: the ✕ closes it.
+    fireEvent.click(screen.getByTestId('bid-cancel'))
+    expect(screen.queryByTestId('bid-picker')).toBeNull()
   })
 
-  it('carries a scroll the grid made on its own back onto the scrim, so the next fling starts there', () => {
-    render(<Matrix />)
-    const wrap = gridWith(500)
-    fireEvent.click(screen.getByTestId('counter-pick'))
-    const s = scrim()
-    // a month jump, the desktop proxy bar, a mouse pan, a reflow at rest…
-    wrap.scrollLeft = 3200
-    fireEvent.scroll(wrap)
-    expect(s.scrollLeft).toBe(3200)
+  it('is gone with the sheet: the next tap on that cell opens its sheet again', () => {
+    touchScreen()
+    openBid()
+    fireEvent.click(screen.getByTestId('cell-dusk-2026-02-12')) // shielded: closes
+    expect(screen.queryByTestId('bid-picker')).toBeNull()
+    const got = heard()
+    fireEvent.click(screen.getByTestId('cell-dusk-2026-02-12')) // bare: opens
+    expect(got).toEqual(['click'])
+    expect(screen.getByTestId('bid-picker')).toBeTruthy()
   })
 
-  it('never ping-pongs: each copy\'s echo is swallowed, not copied back', () => {
-    render(<Matrix />)
-    const wrap = gridWith(500)
-    fireEvent.click(screen.getByTestId('counter-pick'))
-    const s = scrim()
-    // Count the WRITES each side receives, over the plain jsdom slots.
-    let gv = wrap.scrollLeft, sv = s.scrollLeft, gridWrites = 0, scrimWrites = 0
-    Object.defineProperty(wrap, 'scrollLeft', { configurable: true, get: () => gv, set: v => { gv = v; gridWrites++ } })
-    Object.defineProperty(s, 'scrollLeft', { configurable: true, get: () => sv, set: v => { sv = v; scrimWrites++ } })
-    // The scrim scrolls (a finger): one write onto the grid…
-    sv = 900
-    fireEvent.scroll(s)
-    expect(gridWrites).toBe(1)
-    expect(gv).toBe(900)
-    // …whose scroll event is the echo, and writes nothing back onto the scrim
-    // — the one write that would land mid-fling and kill it.
-    fireEvent.scroll(wrap)
-    expect(scrimWrites).toBe(0)
-    // The grid scrolls on its own: one write onto the scrim…
-    gv = 2400
-    fireEvent.scroll(wrap)
-    expect(scrimWrites).toBe(1)
-    expect(sv).toBe(2400)
-    // …whose echo writes nothing back onto the grid.
-    fireEvent.scroll(s)
-    expect(gridWrites).toBe(1)
+  it('stands down while the Leave War section is not the one showing (the kept-mounted guard)', () => {
+    touchScreen()
+    render(<div id="page-leavewar" className="on"><Matrix /></div>)
+    fireEvent.click(screen.getByTestId('cell-dusk-2026-02-11'))
+    expect(screen.getByTestId('bid-picker')).toBeTruthy()
+    document.getElementById('page-leavewar')!.classList.remove('on')
+    const got = heard()
+    fireEvent.click(wrap())
+    expect(got).toEqual(['click']) // reached the grid: not swallowed
+    expect(screen.getByTestId('bid-picker')).toBeTruthy() // and not closed
   })
 
-  it('refits the range when the grid\'s content grows', () => {
-    render(<Matrix />)
-    const wrap = gridWith(500)
-    fireEvent.click(screen.getByTestId('counter-pick'))
-    const s = scrim()
-    expect(s.style.getPropertyValue('--lw-scrim-w')).toBe('5000px')
-    // a month drawn in at rest widens the grid with no scroll event of its
-    // own; the next scroll refits (a ResizeObserver does it live in a browser)
-    Object.defineProperty(wrap, 'scrollWidth', { configurable: true, get: () => 8400 })
-    fireEvent.scroll(wrap)
-    expect(s.style.getPropertyValue('--lw-scrim-w')).toBe('8000px')
-  })
-
-  it('is a real scroller in both axes for the browser: pan-x pan-y, never pan-y alone', () => {
-    render(<Matrix />)
-    fireEvent.click(screen.getByTestId('counter-pick'))
-    // jsdom applies no stylesheet; the computed value is measured in
-    // e2e/leavewar.spec.ts. Pinned here: the scrim exists as one element the
-    // stylesheet can address (the rule is keyed on this class alone).
-    expect(scrim().classList.contains('sheetscrim')).toBe(true)
+  it('keeps the vertical page pan for a finger on the scrim where the scrim is still in the way (a fine pointer)', () => {
+    // The class rule is `touch-action: pan-y`, as since 28 Aug — the scrim
+    // forwards a sideways drag by hand on a fine-pointer device only.
+    openBid()
+    expect(scrim().className).toBe('sheetscrim')
+    expect(scrim().style.pointerEvents).toBe('')
   })
 })

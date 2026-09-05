@@ -1345,3 +1345,18 @@ gate's. Keep verdict-bearing commands unpiped.
 **Suggested improvement:** In any drive or e2e that dispatches a pointer/touch gesture at coordinates, log the element at that point (`elementFromPoint`) and the boxes of any overlay that could sit there BEFORE dispatching, and assert it is the intended target; treat an all-zero gesture reading as "wrong target until proven otherwise". Pairs with the existing rule: check what is at the point before, and dispatch to what is at the point.
 
 **Principle:** A gesture that measures nothing has usually touched the wrong thing — verify the hit target before reading a zero as a result.
+
+### Observation 88: A proxied native scroller borrows the platform's physics but not its thread — for "exactly the same" feel the touched element must be the visible one
+
+**Status:** OPEN
+**Date:** 2026-09-06
+**Session context:** RAPTOR Leave War — the swipe behind an open sheet; the owner's second report ("fixed, but laggier/stuttery than with no sheet") on the proxy-scroller fix that observation 86 had recommended
+**Skill:** task-observer (methodology); the UI-gesture guidance in obs 86
+**Type:** open-source
+**Phase/Area:** Fix design for native-feel gestures
+
+**Issue:** Obs 86 said "proxy the platform's own scroller instead of imitating its physics". That got the deceleration curve right, but the VISIBLE element was still driven from JavaScript (a scroll event → a scrollLeft write per frame), so it moved at the main thread's cadence, one frame behind, and froze for every long task the scroll itself triggered — while a bare fling runs on the compositor and never waits. The user saw it at once as stutter. The correct fix was to remove the interceptor from the touch path entirely (pointer-events: none on the overlay for coarse pointers) and move the overlay's other job — swallowing taps — to a document-level capture listener that stops propagation without cancelling the touch.
+
+**Suggested improvement:** Amend obs 86's principle with a second clause: a proxy scroller reproduces the physics, not the thread. When the ask is "exactly the same", check whether the visible element can BE the touched one; if an overlay only exists to catch taps, replace the overlay with a capture-phase "gesture shield" (stopPropagation, never preventDefault on touch) and let the finger fall through. Add to the review checklist for any per-frame follower: "who paces the visible motion — compositor or main thread?"
+
+**Principle:** Borrowing a platform behaviour has two halves — the curve and the thread it runs on. A mirror gets the curve; only the real element gets both. Before shipping any per-frame follower of a native gesture, name what paces the pixels; if it is JavaScript, the feel will differ under load, and the honest fix is to remove the follower, not tune it.

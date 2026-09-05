@@ -4986,49 +4986,66 @@ that froze everything behind it to a panel you can read the grid around:
   sheet shipped without it — and in `chrome.test.tsx` for the Legend.
 
 - **LEFT-RIGHT** ("I want to be able to still scroll left and right … on the
-  grids … while the page is still up"). The scrim has to keep SWALLOWING
-  gestures on the grid — a tap dismisses, and a bare grid tap behind an open
-  sheet would otherwise open a second cell sheet or start a drag-select under
-  the one already up — so it cannot simply become `pointer-events: none`.
-  **Since 6 Sep 26 the scrim is ITSELF a native sideways scroller** (owner —
-  "when a window like this is open, the swipe on the background … doesn't
-  decelerate smoothly. Like it stops immediately … fix the swipe animation to
-  be exactly the same"). The 28 Aug version forwarded the drag onto `.mx-wrap`
-  by hand from pointer events — 1:1 under the finger and dead the instant it
-  lifted, because a hand-written scrollLeft has no momentum; an imitation (a
-  velocity estimate and a decay loop) would not be "exactly the same" either,
-  since iOS, Chromium and Firefox each coast differently. So `.sheetscrim` is
-  `overflow-x: auto` + `touch-action: pan-x pan-y`, scrollbar hidden, with a
-  `::before` spacer the grid's scroll RANGE wide (`--lw-scrim-w` = the scrim's
-  own width + the grid's max scrollLeft, set from JS so the two map 1:1 in
-  px), and `useGridPan` mirrors the two scrollers onto each other,
-  echo-guarded — the `.mx-hbar` proxy idiom. A finger scrolls the SCRIM
-  natively — the browser's own drag, fling, deceleration and edge bounce —
-  and every scroll event copies its position onto `.mx-wrap` (clamped to the
-  grid's range; an edge bounce reads past it), so the grid coasts under a
-  sheet exactly as it does without one. A scroll the grid makes on its OWN (a
-  month jump, the desktop proxy bar, a wheel, the row-window reflow at rest)
-  copies back onto the scrim, so the next fling starts where the grid is; the
-  range is refitted on every grid scroll and by a ResizeObserver on the grid's
-  content. The one write that must NEVER happen is our own echo landing back
-  on the scrim mid-fling — `gWant`/`sWant` hold one value per write and are
-  cleared once its scroll event is seen (the stale-write-back that once killed
-  the grid's own fling, `.mx-hbar`'s history). The scrim opens ALIGNED to the
-  grid in a LAYOUT effect (spacer sized, scrollLeft copied) before a finger
-  can land — a scrim left at 0 would fling the grid from January, the 2 Sep
-  "jumps back to JAN" family. A MOUSE cannot drag a native scroller, so the
-  hand forwarding stays for a mouse press only (1:1 drag-to-pan), and a
-  horizontal (or shift-) wheel still forwards. Everything the frozen date bar
-  tracks is driven off `.mx-wrap.scrollLeft`, so the mirror follows for free.
+  grids … while the page is still up"). The grid has to keep swallowing TAPS
+  behind a sheet — a tap dismisses, and a bare grid tap behind an open sheet
+  would otherwise open a second cell sheet or start a drag-select under the
+  one already up. **Since 6 Sep 26, on a touch screen, the finger goes to the
+  grid ITSELF and a document-level shield takes the tap** (owner — "when a
+  window like this is open, the swipe on the background … doesn't decelerate
+  smoothly. Like it stops immediately … fix the swipe animation to be exactly
+  the same"; then, of a first fix the same day, "the scrolling is fix …
+  however it feels more laggy/stuttery as compared to a window that's
+  closed"). The 28 Aug version forwarded the drag onto `.mx-wrap` by hand from
+  pointer events on the scrim — 1:1 under the finger and dead the instant it
+  lifted, because a hand-written scrollLeft has no momentum. The first 6 Sep
+  fix made the scrim a native scroller of its own, mirrored onto the grid
+  (the `.mx-hbar` idiom): it coasted, but the grid then moved only when a
+  scroll event reached the main thread and wrote `scrollLeft` — and a bare
+  fling runs on the compositor, never waiting for the main thread, while the
+  mirrored one waited behind everything a scroll event sets off (the
+  in-motion month draw of 5 Sep, the date-bar sync, the rest timers); every
+  long frame showed as a stutter. NOTHING that drives the grid from
+  JavaScript can be "exactly the same" as the browser flinging the grid; so
+  now nothing does. When `(pointer: coarse)` matches, `useGridPan` sets
+  `pointer-events: none` on `.sheetscrim` (inline — React never touches its
+  style), so a finger lands on `.mx-wrap` and the browser scrolls it as with
+  no sheet up: the same drag, fling, deceleration and edge bounce, on the same
+  thread, nothing of ours per frame. What the scrim did by being in the way, a
+  CAPTURE listener on `document` does: for `pointerdown/up/cancel`,
+  `touchstart/end/cancel`, `mousedown/up`, `click`, `dblclick` and
+  `contextmenu` whose target is under the sheet (not inside the scrim, not
+  inside any `.bidsheet`) it stops propagation before React's root listener
+  and the grid's own handlers see it, closes the sheet on the `click`, and
+  never `preventDefault`s the touch — a stopped touchstart still scrolls, a
+  cancelled one would not. The one default it cancels is the tap's compat
+  `mousedown`, so the tapped cell is not focused (a focus scrolls its cell
+  into view: a jump). Moves are not shielded (the grid handles none). The
+  shield stands down while `#page-leavewar` is not `.on` — the kept-mounted
+  guard the Escape listener already has — or a sheet left open would eat
+  every tap on a RAPTOR page. A native touch scroll fires no click, a tap
+  does, so a swipe never dismisses and a tap always does. On a fine pointer
+  the scrim stays exactly the 28 Aug interceptor: `touch-action: pan-y`, a
+  mouse press drag-to-pans by hand (1:1), a horizontal or shift-wheel
+  forwards, a click dismisses, hover never reaches the grid. Pinned:
+  `scrim.test.tsx` (a stubbed touch screen: the scrim out of the way, a tap
+  on a cell swallowed and closing, the touch un-cancelled, the panel left
+  alone, the shield gone with the sheet, the kept-mounted guard) and
+  `leavewar.spec.ts` (a real CDP touch on the phone project — the finger
+  reaches the grid, the grid follows it, a tap on a cell closes the sheet
+  and opens nothing; the desktop project — the scrim still in the way). The
+  COAST itself cannot be measured here (headless Chromium flings no native
+  scroller from synthetic touches) and is not ours to measure any more: it is
+  the grid's own, identical to the bare grid by construction.
 - **UP-DOWN** ("enable me to still scroll up and down when this window is
   opened"). This REVERSES the 17 Aug "one-scroll" body lock. The page used to
   be frozen (`body.lw-sheet-lock { overflow:hidden }`) so a swipe could never
   jump the grid under a reader; the owner now wants exactly that jump — to read
   the grid behind the panel. The lock is GONE. The scrim carries
-  `touch-action: pan-x pan-y` (was `pan-y` until 6 Sep 26 — see LEFT-RIGHT),
-  so the browser pans the page vertically from a finger on it (the scrim never
-  overflows vertically, so an up-down finger chains to the page); a vertical
-  wheel is left un-prevented, so it scrolls the page too. On the mouse path,
+  `touch-action: pan-y`, so on a fine-pointer device the browser pans the page
+  vertically from a finger on it; on a touch screen the scrim is out of the
+  way altogether (LEFT-RIGHT) and the finger pans the page through the grid,
+  as with no sheet up; a vertical wheel is left un-prevented, so it scrolls
+  the page too. On the mouse path,
   pointer capture is taken LAZILY (only once a drag commits to the horizontal
   axis), or it would stop the browser's own vertical pan. The panel is
   `position: fixed`, so only the grid behind it moves; the sheet's own inner

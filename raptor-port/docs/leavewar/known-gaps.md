@@ -658,11 +658,21 @@ accounts land and the roles stop being an affordance.
     ends the press on its next move (a release over the panel never reaches
     the scrim). Pinned in `scrim.test.tsx`. Any pointer-drag handler that
     listens to `pointermove` needs the same guard — hover is a move. Since
-    6 Sep 26 that handler is the MOUSE path only: a finger scrolls the scrim
-    ITSELF natively (`touch-action: pan-x pan-y` — the scrim is a proxy
-    scroller mirrored onto the grid, `ui-contracts.md` §LEFT-RIGHT), so touch
-    never reaches the forwarding at all and the fling under a sheet is the
-    browser's own.
+    6 Sep 26 that handler is the FINE-POINTER path only: on a touch screen
+    (`(pointer: coarse)`) the scrim is `pointer-events: none` and the finger
+    scrolls `.mx-wrap` itself, the browser's own fling, with a document-level
+    shield swallowing the tap (`ui-contracts.md` §LEFT-RIGHT). A first cut
+    that day mirrored a native scroller onto the grid instead; it coasted but
+    stuttered — the grid moved at the main thread's pace — and was replaced
+    within hours. Anything that drives the grid from JS per frame will do the
+    same; do not bring it back.
+  - **A touch screen on a fine-pointer device** (a touch laptop, a Surface:
+    `(pointer: fine)` with `any-pointer: coarse`) still hits the scrim, so a
+    sideways finger there gets the hand pan — 1:1, no coast, the 28 Aug
+    behaviour. The owner's devices are an iPhone and a desktop; a
+    `(any-pointer: coarse)` switch would take the scrim away from the MOUSE
+    on such a laptop (drag-to-pan and hover-blocking gone), which is the
+    worse trade. Revisit only if such a device turns up.
 
 - **`focusDate` is view state, and it lives in the domain store on purpose.**
   The stage strip and the matrix render independently of each other — neither

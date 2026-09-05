@@ -1166,32 +1166,37 @@ test('the page scrolls behind an open sheet, and the panel stays put', async ({ 
   const topAfter = (await sheet.boundingBox())!.y
   expect(Math.abs(topAfter - topBefore)).toBeLessThan(1.5)
 
-  // Both axes are the browser's since 6 Sep 26: the scrim is itself a native
-  // sideways scroller mirrored onto the grid (the fling test below), and its
-  // vertical pan still chains to the page.
+  // The scrim's own rule is still `pan-y` (the sideways drag it forwards by
+  // hand on a fine pointer); on a touch screen it is out of the way
+  // altogether (the fling test below), so the grid's own touch-action rules.
   const ta = await page.locator('[data-testid="sheet-scrim"]').evaluate(el => getComputedStyle(el).touchAction)
-  expect(ta).toBe('pan-x pan-y')
+  expect(ta).toBe('pan-y')
   expect(await page.evaluate(() => getComputedStyle(document.body).overflow)).not.toBe('hidden')
 })
 
-/* THE SWIPE UNDER A SHEET IS THE BROWSER'S OWN (owner, 6 Sep 26 — "when a
-   window like this is open, the swipe on the background … doesn't decelerate
-   smoothly. Like it stops immediately … fix the swipe animation to be exactly
-   the same"). The scrim is a native sideways scroller mirrored onto the grid
-   (Sheet.tsx useGridPan), so a finger's drag, fling and deceleration are
-   whatever the browser gives the bare grid. Driven as a REAL touch through CDP
-   (Input.dispatchTouchEvent — the page's own touch pipeline, so the browser
-   scrolls the SCRIM itself; the `swipe` helper above only dispatches DOM
-   events, which scroll nothing). What this proves: the drag follows the finger
-   through the scrim, the two scrollers stay in step, the sheet stays up, a tap
-   still closes. What it cannot: the COAST after the lift — this container's
-   headless Chromium flings no native scroller from synthetic touches at all
-   (probed on a bare scroller, 6 Sep 26), so the deceleration is the device's
-   to show (BUG-TESTING.md #371). Phone project only: the one with a touch
-   screen. */
-test('a finger drag on the scrim scrolls the grid natively, stays in step, and the sheet stays up', async ({ page }) => {
+/* THE SWIPE UNDER A SHEET IS THE BROWSER'S OWN, ON THE GRID ITSELF (owner,
+   6 Sep 26 — "when a window like this is open, the swipe on the background …
+   doesn't decelerate smoothly. Like it stops immediately … fix the swipe
+   animation to be exactly the same"; and of a first fix that mirrored a
+   scroller onto the grid, "it feels more laggy/stuttery as compared to a
+   window that's closed"). On a touch screen the scrim is out of the finger's
+   way (Sheet.tsx useGridPan), so the finger lands on `.mx-wrap` and the
+   browser flings the grid exactly as with no sheet up — nothing of ours runs
+   per frame. Driven as a REAL touch through CDP (Input.dispatchTouchEvent —
+   the page's own touch pipeline; the `swipe` helper above only dispatches DOM
+   events, which scroll nothing). What this proves: the finger reaches the
+   grid, the grid follows it, the sheet stays up, a tap on a cell behind the
+   sheet closes it and opens nothing and focuses nothing, and the next tap on
+   that cell — no sheet up — opens its sheet as ever. What it cannot: the COAST
+   after the lift — this container's headless Chromium flings no native
+   scroller from synthetic touches at all (probed on a bare scroller, 6 Sep
+   26), so the deceleration is the device's to show (BUG-TESTING.md #371).
+   Phone project only: the one with a touch screen. */
+test('a finger behind an open sheet scrolls the grid itself; a tap on a cell closes the sheet and opens nothing', async ({ page }) => {
   test.skip(!isPhone(), 'a touch-screen creature')
   await lwRole(page, 'admin') // any cell opens its sheet for an admin
+  // The phone project IS a touch screen to the page, or none of this applies.
+  expect(await page.evaluate(() => matchMedia('(pointer: coarse)').matches)).toBe(true)
   await page.locator('[data-testid="month-JUN"]').click()
   await settleGrid(page)
   // The owner's own scenario: a cell's bid sheet, opened mid-year.
@@ -1201,72 +1206,86 @@ test('a finger drag on the scrim scrolls the grid natively, stays in step, and t
   const sheet = page.locator('[data-testid="bid-picker"]')
   await expect(sheet).toBeVisible()
   await settleGrid(page)
-  const pos = () => page.evaluate(() => {
-    const s = document.querySelector('.sheetscrim') as HTMLElement, w = document.querySelector('.mx-wrap') as HTMLElement
-    return { scrim: s.scrollLeft, grid: w.scrollLeft, scrimRange: s.scrollWidth - s.clientWidth, gridRange: w.scrollWidth - w.clientWidth }
-  })
-  // The scrim opened ALIGNED to the grid, with the grid's range — a scrim left
-  // at 0 would fling the grid back to January.
-  const at0 = await pos()
-  expect(at0.grid, 'the grid sits mid-year').toBeGreaterThan(500)
-  expect(Math.abs(at0.scrim - at0.grid)).toBeLessThanOrEqual(1)
-  expect(at0.scrimRange).toBe(at0.gridRange)
-  // The finger lands on the SCRIM, above the panel — checked, not assumed: a
-  // finger on the panel scrolls the panel's own list and proves nothing.
+  const gridX = () => page.evaluate(() => (document.querySelector('.mx-wrap') as HTMLElement).scrollLeft)
+  const x0grid = await gridX()
+  expect(x0grid, 'the grid sits mid-year').toBeGreaterThan(500)
+  // The finger lands on the GRID, above the panel — the scrim is not in the
+  // way. Checked, not assumed: a finger on the panel scrolls the panel's own
+  // list and proves nothing.
   const box = (await sheet.boundingBox())!
   const y = Math.max(100, Math.round(box.y - 60)), x0 = 340
-  expect(await page.evaluate(([x, y]) => document.elementFromPoint(x, y)?.className, [x0, y])).toBe('sheetscrim')
+  const under = await page.evaluate(([x, y]) => {
+    const el = document.elementFromPoint(x, y)
+    return { scrim: el?.className === 'sheetscrim', inGrid: !!el?.closest('.mx-wrap'), scrimPE: getComputedStyle(document.querySelector('.sheetscrim')!).pointerEvents }
+  }, [x0, y])
+  expect(under).toEqual({ scrim: false, inGrid: true, scrimPE: 'none' })
   const cdp = await page.context().newCDPSession(page)
   await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x: x0, y }] })
   for (let i = 1; i <= 10; i++) {
     await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: x0 - i * 25, y }] })
     await page.waitForTimeout(10)
   }
-  const mid = await pos()
+  const mid = await gridX()
   await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] })
-  await page.waitForTimeout(150)
-  const end = await pos()
   // The grid moved WITH the finger (250px dragged left; the browser's own
-  // touch slop eats a little), through the scrim's native scroll…
-  expect(mid.grid - at0.grid, 'the grid followed the finger mid-drag').toBeGreaterThan(150)
-  expect(end.grid - at0.grid).toBeGreaterThan(150)
-  // …and the two scrollers are in step, so the next swipe starts where the
-  // grid is.
-  expect(Math.abs(end.scrim - end.grid)).toBeLessThanOrEqual(1)
+  // touch slop eats a little) — the browser's own scroll of the grid.
+  expect(mid - x0grid, 'the grid followed the finger mid-drag').toBeGreaterThan(150)
+  await expect.poll(gridX).toBeGreaterThan(x0grid + 150)
   // A scroll is not a dismissal.
   await expect(sheet).toBeVisible()
-  // A plain tap on the scrim still closes it: a native touch scroll fires no
-  // click, a tap does. Not straight after the drag: a touch that lands within
-  // Chromium's ~200ms tap-suppression window after a scroll gesture is read as
-  // "stop the scroll" and fires no click — on a real phone too, which is the
-  // right behaviour — so let the gesture settle first.
+  // A plain tap on a CELL behind the sheet closes it — and does not open that
+  // cell's own sheet, nor focus it (a focus would scroll it into view). Not
+  // straight after the drag: a touch within Chromium's ~200ms tap-suppression
+  // window after a scroll gesture is read as "stop the scroll" and fires no
+  // click — on a real phone too, which is the right behaviour — so let the
+  // gesture settle first.
   await page.waitForTimeout(500)
   await settleGrid(page)
-  await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x: 200, y }] })
+  // A cell that is on screen, clear of the panel, and is what a tap at its
+  // centre hits — found, not assumed: a fixed point may land on a group strip.
+  // On a phone the panel covers the rows, so the page is scrolled down first
+  // (it stays scrollable under a sheet) to bring rows up above the panel.
+  await page.evaluate(() => window.scrollBy(0, 400))
+  await page.waitForTimeout(200)
+  const spot = await page.evaluate((panelTop) => {
+    for (const c of Array.from(document.querySelectorAll<HTMLElement>('.mx-wrap [data-testid^="cell-"]'))) {
+      const r = c.getBoundingClientRect()
+      if (r.width < 8 || r.top < 120 || r.bottom > panelTop - 20 || r.left < 120 || r.right > innerWidth - 20) continue
+      const x = r.left + r.width / 2, y = r.top + r.height / 2
+      if (document.elementFromPoint(x, y)?.closest('[data-testid^="cell-"]') === c) return { x, y, id: c.getAttribute('data-testid') }
+    }
+    return null
+  }, box.y)
+  expect(spot, 'a cell sits clear of the panel').toBeTruthy()
+  const tapped = spot!.id
+  const xBefore = await gridX()
+  await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x: spot!.x, y: spot!.y }] })
   await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] })
   await expect(sheet).toHaveCount(0)
+  await page.waitForTimeout(300)
+  expect(await page.locator('[data-testid="bid-picker"]').count(), 'the tapped cell opened no sheet of its own').toBe(0)
+  expect(await page.evaluate(() => document.activeElement?.getAttribute('data-testid') ?? document.activeElement?.tagName)).not.toBe(tapped)
+  expect(Math.abs((await gridX()) - xBefore), 'the tap moved the grid nowhere').toBeLessThanOrEqual(1)
+  // With no sheet up the shield is gone: the same tap opens that cell's sheet.
+  await page.waitForTimeout(300)
+  await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x: spot!.x, y: spot!.y }] })
+  await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] })
+  await expect(sheet).toBeVisible()
 })
 
-/* The OTHER direction, on both widths: a scroll the grid makes on its own —
-   here a programmatic one; in real life a month jump, the desktop proxy bar,
-   a wheel, the row-window reflow at rest — lands on the scrim, so the next
-   fling starts from where the grid is; and the two ranges agree, which is
-   what makes the mirror 1:1 in px. */
-test('the scrim follows a scroll the grid makes on its own, and shares its range', async ({ page }) => {
+/* And on a fine pointer the scrim is still what a press lands on: the mouse
+   drag-to-pan and the click-to-dismiss the desktop has had since 28 Aug go
+   through it, and a hover never reaches the grid. Desktop project only. */
+test('on a desktop the scrim stays in the way of the mouse', async ({ page }) => {
+  test.skip(isPhone(), 'the fine-pointer half')
   await page.locator('[data-testid="counter-pick"]').click()
   await expect(page.locator('[data-testid="counter-sheet"]')).toBeVisible()
-  const pos = () => page.evaluate(() => {
-    const s = document.querySelector('.sheetscrim') as HTMLElement, w = document.querySelector('.mx-wrap') as HTMLElement
-    return { scrim: s.scrollLeft, grid: w.scrollLeft, scrimRange: s.scrollWidth - s.clientWidth, gridRange: w.scrollWidth - w.clientWidth }
+  expect(await page.evaluate(() => matchMedia('(pointer: coarse)').matches)).toBe(false)
+  const under = await page.evaluate(() => {
+    const el = document.elementFromPoint(200, 300)
+    return { scrim: el?.className === 'sheetscrim', scrimPE: getComputedStyle(document.querySelector('.sheetscrim')!).pointerEvents }
   })
-  const before = await pos()
-  expect(before.gridRange, 'the year overflows the viewport').toBeGreaterThan(1000)
-  expect(before.scrimRange).toBe(before.gridRange)
-  await page.evaluate(() => { (document.querySelector('.mx-wrap') as HTMLElement).scrollLeft += 600 })
-  await expect.poll(async () => { const p = await pos(); return Math.abs(p.scrim - p.grid) }).toBeLessThanOrEqual(1)
-  const after = await pos()
-  expect(after.grid - before.grid).toBeGreaterThanOrEqual(599)
-  expect(after.scrim - before.scrim).toBeGreaterThanOrEqual(599)
+  expect(under).toEqual({ scrim: true, scrimPE: 'auto' })
 })
 
 // The viewer — Raptor's "View as" person, Bane on a fresh login — is lit on
