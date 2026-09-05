@@ -35,6 +35,12 @@
   .oil-tools .oil-cal .cl { font-size: 9px; letter-spacing: .08em; text-transform: uppercase; margin-top: 3px; }
   /* The settings gear is icon-only now — keep it a comfortable tap target. */
   .oil-tools .oil-gear { padding: 6px 9px; font-size: 14px; }
+  /* The − / + zoom pair beside RANGE (owner, 6 Sep 26). Narrow, so the row
+     still holds SHOW · From first entry · RANGE · − · + · ? · ⚙ on a phone
+     (measured at 360px); a disabled end of the range dims. */
+  .oil-tools .oil-zoom { display: inline-flex; gap: 4px; }
+  .oil-tools .tchip.zoom { min-width: 30px; padding: 5px 7px; font-size: 13px; line-height: 1; justify-content: center; }
+  .oil-tools .tchip.zoom:disabled { opacity: .4; cursor: default; }
   .oil-pickrow {
     flex-direction: column;
     align-items: stretch;
@@ -400,9 +406,22 @@
        chips tighten (still ≥36px tall to tap). */
     .bidsheet.full .bidsheet-hd .dt { display: none; }
     .oil-tools { gap: 4px; margin: 4px 0; }
-    .oil-tools .tchip { min-height: 36px; display: inline-flex; align-items: center; padding: 4px 9px; font-size: 11.5px; }
+    .oil-tools .tchip { min-height: 36px; display: inline-flex; align-items: center; padding: 4px 7px; font-size: 11.5px; }
+    /* ONE line with the zoom pair in it (owner, 6 Sep 26 — the pair joined the
+       row beside RANGE): the chips' side padding tightens 9→7, the pair 30→26
+       wide, the gear 9→7, and the SHOW caption loses its tracking — measured
+       one line at 375px; under 370px (a 360 Android) the caption goes too. */
+    .oil-tools .lab { letter-spacing: .06em; }
+    .oil-tools .tchip.zoom { min-width: 26px; padding: 5px 5px; }
+    .oil-tools .oil-gear { padding: 6px 7px; }
     .oil-tools .oil-window { flex-basis: 100%; }
     .oil-bar .oil-text.given { flex: 1 1 140px; }
+  }
+
+  /* the SHOW caption is decoration; on the narrowest phones it is what tips
+     the tools row onto a second line, so it goes (the chips read on their own) */
+  @media (max-width: 370px) {
+    .oil-tools .lab { display: none; }
   }
 
   /* ---- the Cinch sheet's LVE BAL Set control (admin) --------------------- */

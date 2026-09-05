@@ -268,6 +268,19 @@ export function OilTracker({ person, focus, onClose, onGranted }: {
   // The history window (owner: "select which date ranges to look at … can
   // also be shown from the beginning of the first input"). Opens on the
   // admin's default; either role can switch it for the sheet's lifetime.
+  // The tracker's own ZOOM (owner, 6 Sep 26 — "zoom out once as a default
+  // view as well, and put a plus minus for zoom placed beside range"): the
+  // grid's steps, applied as CSS `zoom` on the table so the frozen columns
+  // and the sticky header scale with the boxes. A phone opens one step out
+  // (0.8), a desktop at 1 — read once at mount from the grid's own 700px
+  // query (jsdom has no matchMedia and stays at 1). Session-only view state.
+  const OIL_ZOOMS = [0.6, 0.8, 1, 1.2, 1.4]
+  const [zoom, setZoom] = useState(() =>
+    typeof window.matchMedia === 'function' && window.matchMedia('(max-width: 700px)').matches ? 0.8 : 1)
+  const zoomStep = (by: number) => {
+    const i = OIL_ZOOMS.indexOf(zoom)
+    setZoom(OIL_ZOOMS[Math.min(OIL_ZOOMS.length - 1, Math.max(0, i + by))]!)
+  }
   const [mode, setMode] = useState<RangeMode>(oilPolicy.historyMonths === null ? 'first' : 'months')
   const [pick, setPick] = useState<Range | null>(null)
   const [picking, setPicking] = useState(false)
@@ -723,6 +736,12 @@ export function OilTracker({ person, focus, onClose, onGranted }: {
           <span className="ci" aria-hidden="true">📅</span>
           <span className="cl">Range</span>
         </button>
+        {/* − / + zoom, right beside RANGE (owner, 6 Sep 26). Both roles — a
+            view control; the ends of the range dim. */}
+        <span className="oil-zoom" data-testid="oil-zoom">
+          <button className="tchip zoom" data-testid="oil-zoom-out" aria-label="Zoom out" title="Zoom out" disabled={zoom === OIL_ZOOMS[0]} onClick={() => zoomStep(-1)}>−</button>
+          <button className="tchip zoom" data-testid="oil-zoom-in" aria-label="Zoom in" title="Zoom in" disabled={zoom === OIL_ZOOMS[OIL_ZOOMS.length - 1]} onClick={() => zoomStep(1)}>＋</button>
+        </span>
         <span className="oil-right">
           <button className={`tchip${legend ? ' on' : ''}`} data-testid="oil-legend" aria-expanded={legend} onClick={() => setLegend(l => !l)} title="What the boxes mean" aria-label="What the boxes mean">?</button>
           {admin && <button className="tchip oil-gear" data-testid="oil-settings" onClick={() => setView('settings')} title="Settings" aria-label="Settings">⚙</button>}
@@ -742,7 +761,7 @@ export function OilTracker({ person, focus, onClose, onGranted }: {
         </div>
       )}
       <div ref={wrapRef} className="oil-wrap" data-testid="oil-list">
-        <table className="oil-grid">
+        <table className="oil-grid" style={zoom !== 1 ? { zoom } : undefined}>
           <thead>
             <tr className="yrs">
               <th className="f c1" />

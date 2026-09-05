@@ -58,6 +58,26 @@ describe('the OIL tracker grid', () => {
     fireEvent.click(screen.getByTestId('oil-legend'))
     expect(screen.getByTestId('oil-legend-text').textContent).toContain('oldest credit is used first')
   })
+
+  // Owner, 6 Sep 26: "put a plus minus for zoom placed beside range" (and a
+  // phone opens one step out — a browser question, in e2e). jsdom has no
+  // matchMedia, so it opens at 1 here: two steps down reach the floor.
+  it('a − / + zoom pair sits right after RANGE, for a member too, and stops at the ends', () => {
+    openTracker()
+    const tools = screen.getByTestId('oil-range-pick').parentElement!
+    const ids = [...tools.querySelectorAll('[data-testid]')].map(el => el.getAttribute('data-testid')).filter(id => id !== 'oil-zoom')   // the pair's wrapper
+    const at = (id: string) => ids.indexOf(id)
+    expect(at('oil-zoom-out')).toBe(at('oil-range-pick') + 1)
+    expect(at('oil-zoom-in')).toBe(at('oil-zoom-out') + 1)
+    const out = screen.getByTestId('oil-zoom-out') as HTMLButtonElement
+    const inn = screen.getByTestId('oil-zoom-in') as HTMLButtonElement
+    expect(out.disabled).toBe(false); expect(inn.disabled).toBe(false)
+    fireEvent.click(out); fireEvent.click(out)
+    expect(out.disabled).toBe(true)          // 0.6 — the floor
+    fireEvent.click(inn); fireEvent.click(inn); fireEvent.click(inn); fireEvent.click(inn)
+    expect(inn.disabled).toBe(true)          // 1.4 — the ceiling
+    expect(out.disabled).toBe(false)
+  })
 })
 
 describe('the Cinch sheet hands over to the tracker', () => {

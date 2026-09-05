@@ -5197,6 +5197,16 @@ tests and readers treat every button in it as a month, and a desktop can step
 too now. Pinned in `settingssheet.test.tsx` (order, both roles, off the strip)
 and `e2e/leavewar.spec.ts` (one row incl. the pair at both widths; the pair in
 the top row; phone `zoom` 0.8 / desktop none; step down and back).
+**The OIL tracker has the same pair, beside RANGE** (owner, same day — "zoom
+out once as a default view as well. And put a plus minus for zoom placed beside
+range"): `oil-zoom` (`.tchip.zoom` × 2) right after `oil-range-pick` in
+`.oil-tools`, both roles; the same steps, its own state (`OilTracker.tsx`),
+applied as `zoom` on `table.oil-grid` so the frozen name/balance columns and
+the sticky header scale with the boxes; a phone opens it at 0.8, a desktop at
+1. The tools row still holds one line on a phone (SHOW · From first entry ·
+RANGE · − · + · ? · ⚙, measured at 360px). Pinned in `oiltracker.test.tsx`
+(order, ends) and `e2e/leavewar.spec.ts` (beside RANGE on SHOW's row, inside
+the viewport, phone 0.8 / desktop none, step up and back).
 
 **The month strip is ONE line of twelve on a phone too (owner, 6 Sep 26 — "shift
 the months to be fitted to 1 row instead, since the +- is moved to another

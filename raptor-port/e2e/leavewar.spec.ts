@@ -2424,6 +2424,34 @@ test('the zoom control is in the top row on both widths; a phone opens one step 
   expect(z).toBe(testInfo.project.name === 'lw-phone' ? '0.8' : '')
 })
 
+// Owner, 6 Sep 26: the OIL tracker too — "zoom out once as a default view as
+// well, and put a plus minus for zoom placed beside range".
+test('the OIL tracker has its own − / + beside RANGE, on one row; a phone opens it one step out', async ({ page }, testInfo) => {
+  await page.locator('[data-testid="oil-tracker"]').click()
+  await expect(page.locator('[data-testid="oil-sheet"]')).toBeVisible()
+  const range = (await page.locator('[data-testid="oil-range-pick"]').boundingBox())!
+  const out = (await page.locator('[data-testid="oil-zoom-out"]').boundingBox())!
+  const inn = (await page.locator('[data-testid="oil-zoom-in"]').boundingBox())!
+  const show = (await page.locator('.oil-tools .lab').boundingBox())!
+  expect(out.x).toBeGreaterThan(range.x + range.width - 1)     // right after RANGE
+  expect(inn.x).toBeGreaterThan(out.x)
+  for (const b of [range, out, inn]) expect(Math.abs((b.y + b.height / 2) - (show.y + show.height / 2))).toBeLessThan(12)  // same row as SHOW
+  expect(inn.x + inn.width).toBeLessThanOrEqual(page.viewportSize()!.width)
+  const z = () => page.evaluate(() => (document.querySelector('[data-testid="oil-list"] table.oil-grid') as HTMLElement).style.zoom)
+  expect(await z()).toBe(testInfo.project.name === 'lw-phone' ? '0.8' : '')
+  // the frozen NAME column's width is what the zoom moves (the table itself
+  // always fills the sheet — `min-width: 100%`); a step from 0.8 to 1 leaves
+  // no inline zoom at all
+  const w = () => page.locator('[data-testid="oil-list"] table.oil-grid th.f.c1').first().evaluate(el => el.getBoundingClientRect().width)
+  const before = await w()
+  await page.locator('[data-testid="oil-zoom-in"]').click()
+  expect(await z()).toBe(testInfo.project.name === 'lw-phone' ? '' : '1.2')
+  expect(await w()).toBeGreaterThan(before * 1.1)
+  await page.locator('[data-testid="oil-zoom-out"]').click()
+  expect(Math.abs((await w()) - before)).toBeLessThan(4)
+  await page.locator('[data-testid="oil-close"]').click()
+})
+
 // Owner, 6 Sep 26: with the zoom gone from the strip, the twelve months sit on
 // ONE line on a phone (they always did on a desktop), inside the viewport.
 test('the month strip is one line of twelve, inside the viewport', async ({ page }) => {

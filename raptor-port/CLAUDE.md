@@ -679,8 +679,10 @@ decision + a pointer. Owner + date establish authority; keep them.
   out"); the freed month strip holds all twelve months on ONE line on a phone
   (equal-width buttons, 9px, 44px row — the 72px two-line row is gone) and the
   strip CANCELS the grid zoom (`zoom: 1/zoom` inline — navigation chrome stays
-  readable at 0.8). Don't put the zoom back on the strip, let the strip wrap, or
-  let it scale with the grid. ⚙ opens `SettingsSheet`
+  readable at 0.8). The OIL TRACKER sheet has its OWN − / + beside RANGE with
+  the same steps and the same phone-opens-at-0.8 default (`OilTracker.tsx`).
+  Don't put the zoom back on the strip, let the strip wrap, or let it scale
+  with the grid. ⚙ opens `SettingsSheet`
   (CONFIG: + Counter, +/− Event row, Show SANS, Reset counters + the roster GROUPS
   editor folded in; old `⚙ Groups` button + `GroupSheet.tsx` deleted). REARRANGING
   is STILL hands-on-grid (person rows AND category headings drag), and the top
