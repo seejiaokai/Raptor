@@ -1177,6 +1177,25 @@
   padding: 8px 14px;
   background: rgba(59, 198, 232, .10);
   border-bottom: 1px solid rgba(59, 198, 232, .45);
+  /* Painted on its OWN compositor layer (owner's iPhone, 5 Sep 26 — "when I
+     press rearrange the buttons don't show until I press that area"). This
+     bar sits in-flow inside `.card` (chrome.css), a rounded `overflow: hidden`
+     box that WebKit has to turn into a clipping layer because what it clips —
+     the native `.mx-wrap` scroll view and the `.mxband` overlay — is
+     composited; the bar's pixels then live in that clipping layer's backing
+     store. Tapping ⠿ Rearrange on a phone inserts the bar AND tears the
+     overlay down in the same commit (`bandActive` is `phone && !arranging`,
+     Matrix.tsx), so the scroller moves down under a rebuilt layer tree, and
+     iOS never repainted the strip the bar now occupies — the first touch there
+     (a button's :active) was what finally invalidated it. `translateZ(0)`
+     moves nothing (no offset); it gives the bar a backing store of its own,
+     painted when the layer is created, independent of the card's tiles — the
+     same promoter `.mxfixed` uses below, and like it the layer exists only
+     while the bar is mounted (rearrange mode), so it is not a standing cost.
+     The fixed `.mv-banner` (its own layer by position) never showed the fault,
+     which is the working example this follows. Reasoned from the code, not
+     from a WebKit trace — the owner verifies it on his phone against the preview. */
+  transform: translateZ(0);
 }
 .lw-rearrange-bar .rb-lead {
   flex: 1 1 auto;

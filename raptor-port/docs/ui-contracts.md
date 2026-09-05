@@ -5092,6 +5092,25 @@ Pinned in `counters.test.tsx`, `chrome.test.tsx`, `counts.test.tsx`,
 `roster.test.ts`, and e2e ("a personnel row shows its callsign, with no edit box,
 in Rearrange").
 
+**The rearrange bar paints on its own compositor layer (owner's iPhone, 5 Sep
+26 — "when I press rearrange the buttons don't show until I press that area").**
+`.lw-rearrange-bar` carries `transform: translateZ(0)` (matrix.css, the same
+promoter as `.mxfixed`). The bar sits in-flow inside `.card`, a rounded
+`overflow: hidden` box (chrome.css) that WebKit turns into a clipping layer
+because its children — the native `.mx-wrap` scroll view and the `.mxband`
+overlay — are composited, so the bar's pixels lived in that layer's backing
+store; on a phone the ⠿ toggle inserts the bar AND drops the overlay
+(`bandActive = phone && !arranging`) in one commit, the scroller moves down
+under a rebuilt layer tree, and iOS did not repaint the strip until a touch
+there invalidated it. With its own layer the bar is painted when the layer is
+created, independent of the card's tiles; the layer exists only while the bar
+is mounted. The fixed `.mv-banner` never showed the fault (own layer by
+position) and is the working example. Don't move the promotion onto the
+buttons or the lead text (extra layers for nothing), and don't "fix" it by
+taking `overflow: hidden` off `.card` — that clip is the rounded corners.
+Pinned in `rearrangebar.test.ts` (the CSS contract; jsdom cannot paint and
+Chromium does not reproduce the fault).
+
 ## Leave War roster groups: minimise, and the admin group editor (owner, 28 Aug 26)
 
 **Minimising a category.** Every group heading is a fold control — the sticky

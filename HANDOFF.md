@@ -248,7 +248,15 @@ the PR bodies):
   is the known exception for TOUCH scrolling; `overscroll-behavior:contain` on
   `.sb-main` is the other half and does work there, so only a drag on the top
   bar would still reach the week — contract `ui-contracts.md` §The page behind
-  the board does not scroll).
+  the board does not scroll), and the **Leave War rearrange bar's own paint
+  layer** (5 Sep 26, `.lw-rearrange-bar` `translateZ(0)` — the owner's report
+  that Auto-sort / Done did not show on his iPhone until he touched the area;
+  reasoned from the rounded `overflow:hidden` card + the band-overlay teardown,
+  not from a device trace — `ui-contracts.md` §The rearrange bar paints on its
+  own compositor layer. If it does NOT hold on his phone, the next theory is
+  that the whole update went unrendered, not just the strip — ask whether the
+  grid moved down at once — and the fix moves to a render kick, not a second
+  layer).
 - **Open questions for the owner, deliberately not changed:**
   - **ATT B beyond SC MAIN is unscoped** — "for now we will focus on SC MAIN
     first". Ask before widening.
