@@ -1055,10 +1055,11 @@
 }
 
 /* The month strip. A year-long war is ~13,600px wide, so this is not a
-   convenience — it is the only practical way to reach September. It wraps
-   rather than scrolling: twelve short labels fit two lines on a phone, and a
-   strip that itself needed scrolling would be a second navigation problem
-   sitting on top of the first. */
+   convenience — it is the only practical way to reach September. It never
+   scrolls (a strip that itself needed scrolling would be a second navigation
+   problem sitting on top of the first): one line on a desktop, and since 6 Sep
+   26 one line on a phone too — the buttons share the width equally there (the
+   `.mstripe` phone block further down). */
 .months {
   display: flex;
   flex-wrap: wrap;
@@ -1296,6 +1297,13 @@
 /* The one ⚙ SETTINGS button (owner, 3 Sep 26) — icon only, the word dropped. */
 .rtbtn.gear { color: var(--accent); font-size: 15px; line-height: 1; padding: 5px 10px; }
 .rtbtn.gear:hover { border-color: var(--accent); }
+/* The grid ZOOM pair, − and +, after OIL in the top row at both widths (owner,
+   6 Sep 26). Narrow so the phone row still holds one line: Manning · ⚙ · ⇅ ·
+   OIL · − · + measured within 360px. A disabled end of the range dims. */
+.card-hd .lwzoom { display: inline-flex; gap: 6px; }
+.rtbtn.zoom { min-width: 30px; padding: 5px 7px; font-size: 13px; line-height: 1; text-align: center; }
+.rtbtn.zoom:disabled { opacity: .4; cursor: default; }
+.rtbtn.zoom:disabled:hover { border-color: var(--edge-2); }
 
 /* The on-grid REARRANGE BAR (3 Sep – 6 Sep 26: an accent strip under the header
    with "Rearranging — drag people…", Auto-sort and Done) is GONE (owner, 6 Sep
@@ -1623,32 +1631,25 @@
   flex: 1 1 auto;
 }
 
-/* Two wrapped lines of buttons on a phone need a taller row. */
+/* ONE line of twelve months on a phone too (owner, 6 Sep 26 — "shift the
+   months to be fitted to 1 row instead, since the +- is moved to another
+   area"). The zoom pair that shared this strip moved to the counter block's
+   top row, so the strip has the whole width: the buttons split it EQUALLY
+   (`flex: 1 1 0`, no min-width) with a hair of gap, and the label tightens to
+   9px with almost no tracking — twelve 3-letter labels then fit 360px with air
+   (measured in the built app). The row falls back to its 44px desktop height
+   (the 72px two-line allowance is gone); `stripH` measures the same. */
 @media (max-width: 700px) {
-  .mx .mstripe td.mstick { height: 72px; }
-}
-
-/* The phone zoom pair rides the end of the month strip; a desktop has the
-   room not to need it, so it only exists under the phone breakpoint. */
-.mx .mstripe .lwzoom {
-  display: none;
-  gap: 4px;
-  margin-left: 6px;
-}
-
-.mx .mstripe .lwzoom .mjump {
-  min-width: 30px;
-  font-size: 12px;
-  line-height: 1;
-}
-
-.mx .mstripe .lwzoom .mjump:disabled {
-  opacity: .4;
-  cursor: default;
-}
-
-@media (max-width: 700px) {
-  .mx .mstripe .lwzoom { display: inline-flex; }
+  .mx .mstripe .mstrow { width: calc(100vw - 32px); }
+  .mx .mstripe .months { flex-wrap: nowrap; gap: 3px; }
+  .mx .mstripe .months .mjump {
+    flex: 1 1 0;
+    min-width: 0;
+    padding: 4px 0;
+    font-size: 9px;
+    letter-spacing: .02em;
+    text-align: center;
+  }
 }
 
 /* The month BRACKET over the dates (owner, 18 Aug 26): one open-topped box

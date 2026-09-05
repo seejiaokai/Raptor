@@ -1234,9 +1234,9 @@ test('nothing in the callsign column is cut off', async ({ page }) => {
 // AFTER rearrange (no spring to the far edge). jsdom can't see the single line;
 // this is the browser-measured gate the perf checklist asks for, run at BOTH
 // widths (phone and desktop are different CSS paths).
-test('the counter controls sit on one row, in order, OIL right after rearrange', async ({ page }) => {
+test('the counter controls sit on one row, in order, OIL right after rearrange, zoom after OIL', async ({ page }) => {
   await lwRole(page, 'admin')
-  const ids = ['counts-toggle', 'settings-open', 'roster-arrange', 'oil-tracker']
+  const ids = ['counts-toggle', 'settings-open', 'roster-arrange', 'oil-tracker', 'lw-zoom-out', 'lw-zoom-in']
   const box: Record<string, { x: number; y: number; w: number }> = {}
   for (const id of ids) {
     const b = (await page.locator(`[data-testid="${id}"]`).boundingBox())!
@@ -1245,8 +1245,11 @@ test('the counter controls sit on one row, in order, OIL right after rearrange',
   // one row: every control shares a top within a few px
   const tops = ids.map(id => box[id].y)
   expect(Math.max(...tops) - Math.min(...tops)).toBeLessThan(4)
-  // left-to-right: Manning, settings, rearrange, OIL
+  // left-to-right: Manning, settings, rearrange, OIL, −, +
   for (let i = 1; i < ids.length; i++) expect(box[ids[i]!].x).toBeGreaterThan(box[ids[i - 1]!].x)
+  // the whole row fits the viewport (the phone is the real guard)
+  const last = box['lw-zoom-in']!
+  expect(last.x + last.w).toBeLessThanOrEqual(page.viewportSize()!.width)
   // OIL sits right after rearrange — one inter-button gap, not a spring to the edge
   expect(box['oil-tracker']!.x - (box['roster-arrange']!.x + box['roster-arrange']!.w)).toBeLessThan(24)
   // the "… · 365 days · 50 people" line is gone
@@ -1263,6 +1266,10 @@ test('a member counter bar is Manning then OIL, adjacent, one row', async ({ pag
   expect(o.x).toBeGreaterThan(m.x)                       // OIL right of Manning
   expect(Math.abs(o.y - m.y)).toBeLessThan(4)            // same row
   expect(o.x - (m.x + m.width)).toBeLessThan(24)         // adjacent, not far-right
+  // the zoom pair follows OIL on the same row, for a member too (6 Sep 26)
+  const z = (await page.locator('[data-testid="lw-zoom-in"]').boundingBox())!
+  expect(z.x).toBeGreaterThan(o.x)
+  expect(Math.abs(z.y - m.y)).toBeLessThan(4)
 })
 
 // In Rearrange the reorder grip shares the frozen NAME cell, to the LEFT of the
@@ -2394,25 +2401,45 @@ test('on a phone the header freezes under the top bar and thaws on the way back'
   await expect(page.locator('[data-testid="sticky-head"]')).toHaveCount(0)
 })
 
-test('the phone zoom steps the whole grid down and back', async ({ page }, testInfo) => {
-  test.skip(testInfo.project.name !== 'lw-phone', 'the control is phone-only')
+test('the zoom steps the whole grid down and back, on both widths', async ({ page }) => {
   // One column's width, not the table's: the table also grows as the column
   // window adds months at rest (colwindow.ts), which is not what zoom claims.
   const width = () => page.evaluate(() => document.querySelector('.mx-wrap [data-testid="head-2026-01-15"]')!.getBoundingClientRect().width)
   const before = await width()
   await page.locator('[data-testid="lw-zoom-out"]').click()
-  await page.locator('[data-testid="lw-zoom-out"]').click()
   const small = await width()
-  expect(small).toBeLessThan(before * 0.75)
-  await page.locator('[data-testid="lw-zoom-in"]').click()
+  expect(small).toBeLessThan(before * 0.9)
   await page.locator('[data-testid="lw-zoom-in"]').click()
   expect(Math.abs((await width()) - before)).toBeLessThan(4)
-  // the desktop never shows the control — asserted in the desktop project
 })
 
-test('the zoom control hides on desktop', async ({ page }, testInfo) => {
-  test.skip(testInfo.project.name !== 'lw-desktop', 'desktop-only assertion')
-  await expect(page.locator('[data-testid="lw-zoom"]')).toBeHidden()
+// Owner, 6 Sep 26: the − / + pair lives in the counter block's top row at both
+// widths (it used to ride the month strip, phone-only), and a phone OPENS one
+// step out — "can this be the default zoom? Like zoom 1 click out".
+test('the zoom control is in the top row on both widths; a phone opens one step out', async ({ page }, testInfo) => {
+  const pair = page.locator('[data-testid="lw-zoom"]')
+  await expect(pair).toBeVisible()
+  expect(await pair.evaluate(el => !!el.closest('.card-hd'))).toBe(true)
+  const z = await page.evaluate(() => (document.querySelector('.mx-wrap table.mx') as HTMLElement).style.zoom)
+  expect(z).toBe(testInfo.project.name === 'lw-phone' ? '0.8' : '')
+})
+
+// Owner, 6 Sep 26: with the zoom gone from the strip, the twelve months sit on
+// ONE line on a phone (they always did on a desktop), inside the viewport.
+test('the month strip is one line of twelve, inside the viewport', async ({ page }) => {
+  const strip = page.locator('[data-testid="month-strip"] .mjump')
+  await expect(strip).toHaveCount(12)
+  const boxes = await strip.evaluateAll(els => els.map(el => { const r = el.getBoundingClientRect(); return { top: r.top, right: r.right, w: r.width } }))
+  const tops = boxes.map(b => b.top)
+  expect(Math.max(...tops) - Math.min(...tops)).toBeLessThan(2)
+  expect(Math.max(...boxes.map(b => b.right))).toBeLessThanOrEqual(page.viewportSize()!.width)
+  for (const b of boxes) expect(b.w).toBeGreaterThan(18)
+  // no label is cut
+  const clipped = await strip.evaluateAll(els => els.filter(el => el.scrollWidth > el.clientWidth + 1).map(el => el.textContent))
+  expect(clipped).toEqual([])
+  // the strip row is back to its one-line height
+  const row = (await page.locator('.mx .mstripe td.mstick').boundingBox())!
+  expect(row.height).toBeLessThan(52)
 })
 
 test('tagging a typed event colours the day without minting a type', async ({ page }) => {

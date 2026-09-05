@@ -672,7 +672,15 @@ decision + a pointer. Owner + date establish authority; keep them.
   the last control (no spring to the far edge); a member sees just Manning · OIL.
   The old "JAN – DEC 26 · 365 days · 50 people" line was dropped (the war NAME
   still lives in the Period picker in the page chrome). "OIL tracker" shortens to
-  "OIL" on a phone (`.rtlbl`) so the four hold one line. ⚙ opens `SettingsSheet`
+  "OIL" on a phone (`.rtlbl`) so the four hold one line. **The − / + ZOOM pair
+  follows OIL in this row at BOTH widths** (owner, 6 Sep 26 — moved off the
+  month strip, where it was phone-only), and **a phone OPENS one step out**
+  (`zoom` 0.8, desktop 1 — "can this be the default zoom? Like zoom 1 click
+  out"); the freed month strip holds all twelve months on ONE line on a phone
+  (equal-width buttons, 9px, 44px row — the 72px two-line row is gone) and the
+  strip CANCELS the grid zoom (`zoom: 1/zoom` inline — navigation chrome stays
+  readable at 0.8). Don't put the zoom back on the strip, let the strip wrap, or
+  let it scale with the grid. ⚙ opens `SettingsSheet`
   (CONFIG: + Counter, +/− Event row, Show SANS, Reset counters + the roster GROUPS
   editor folded in; old `⚙ Groups` button + `GroupSheet.tsx` deleted). REARRANGING
   is STILL hands-on-grid (person rows AND category headings drag), and the top

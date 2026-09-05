@@ -5151,6 +5151,38 @@ don't re-add the button or the strip without his ask. Pinned in
 and `e2e/leavewar.spec.ts` (both projects: drag from the toggle, nothing else
 appears, the phone's word is hidden).
 
+**The − / + ZOOM pair sits in the counter block's top row after OIL at BOTH
+widths, and a phone opens ONE step out (owner, 6 Sep 26 — "Can this be the
+default zoom? Like zoom 1 click out. Put the zoom + - button after oil/oil
+tracker. But make sure it's still 1 row on the mobile").** `lw-zoom` (`.lwzoom`,
+two `.rtbtn.zoom`) follows `oil-tracker` in `.card-hd` for both roles — it is a
+view control — so the admin row reads Manning · ⚙ · ⇅ · OIL · − · + and a
+member's Manning · OIL · − · +, one line down to 360px (measured). The initial
+`zoom` is read ONCE at mount from the same `(max-width: 700px)` query the phone
+flag uses: 0.8 on a phone, 1 on a desktop (jsdom: 1); the steps stay
+`[0.6, 0.8, 1, 1.2, 1.4]` and a disabled end dims. It used to ride the end of
+the month strip, phone-only (18 Aug 26) — don't put it back there: the strip's
+tests and readers treat every button in it as a month, and a desktop can step
+too now. Pinned in `settingssheet.test.tsx` (order, both roles, off the strip)
+and `e2e/leavewar.spec.ts` (one row incl. the pair at both widths; the pair in
+the top row; phone `zoom` 0.8 / desktop none; step down and back).
+
+**The month strip is ONE line of twelve on a phone too (owner, 6 Sep 26 — "shift
+the months to be fitted to 1 row instead, since the +- is moved to another
+area").** Under 700px `.months` stops wrapping and each `.mjump` splits the strip
+width equally (`flex: 1 1 0`, `min-width: 0`, 9px, `.02em` tracking, 4px/0
+padding, 3px gap) over a `.mstrow` of `100vw − 32px`; the row is back to its
+44px one-line height (the 72px two-line allowance is gone, `stripH` measures
+the same). **The strip CANCELS the grid's zoom** (`.mstrow` carries an inline
+`zoom: 1/zoom`, Matrix.tsx): it is navigation chrome, not grid content, and
+once a phone opened one step out its labels rendered at ~7px and "MAR"/"NOV"
+clipped on a 360px phone — at natural size the twelve measure 349/360,
+364/375, 379/390 with none cut, and on a desktop they no longer grow with a
+zoom-in either. Desktop is otherwise untouched (it always held one line at
+640px). Never let it scroll or wrap. Pinned in `e2e/leavewar.spec.ts` (twelve
+buttons, one line, inside the viewport, none cut, row under 52px — both
+projects).
+
 **In Rearrange the frozen name column widens by the grip, so callsigns keep
 their at-rest width (owner, 6 Sep 26 — "the CS/name will not be causing the
 puck names to be shortened. Instead extend the horizontal space required to

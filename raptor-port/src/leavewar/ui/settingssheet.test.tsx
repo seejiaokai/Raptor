@@ -15,15 +15,16 @@ beforeEach(() => {
    line, but it pins the DOM: which controls live in the header, in order, by
    role, and that the date/size text is gone. */
 describe('the counter top bar', () => {
-  it('is Manning · ⚙ · Rearrange · OIL in the header for an admin, with no date/size line', () => {
+  it('is Manning · ⚙ · Rearrange · OIL · − · + in the header for an admin, with no date/size line', () => {
     setRole('admin')
     const { container } = render(<Matrix />)
     const hd = container.querySelector('.card-hd')!
     expect(hd).toBeTruthy()
     // the "… · 365 days · 50 people" line is gone
     expect(hd.textContent).not.toMatch(/days ·|· \d+ people/)
-    // all four controls live in this one header row, left-to-right in order
-    const ids = ['counts-toggle', 'settings-open', 'roster-arrange', 'oil-tracker']
+    // all six controls live in this one header row, left-to-right in order —
+    // the zoom pair right after OIL (owner, 6 Sep 26), moved off the month strip
+    const ids = ['counts-toggle', 'settings-open', 'roster-arrange', 'oil-tracker', 'lw-zoom-out', 'lw-zoom-in']
     const found = [...hd.querySelectorAll('[data-testid]')]
       .map(el => el.getAttribute('data-testid'))
       .filter(id => ids.includes(id!))
@@ -41,6 +42,11 @@ describe('the counter top bar', () => {
     expect(hd.querySelector('[data-testid="oil-tracker"]')).toBeTruthy()
     expect(hd.querySelector('[data-testid="settings-open"]')).toBeNull()
     expect(hd.querySelector('[data-testid="roster-arrange"]')).toBeNull()
+    // …plus the zoom pair, a view control for both roles
+    expect(hd.querySelector('[data-testid="lw-zoom-out"]')).toBeTruthy()
+    expect(hd.querySelector('[data-testid="lw-zoom-in"]')).toBeTruthy()
+    // the zoom no longer rides the month strip
+    expect(screen.getByTestId('month-strip').querySelector('[data-testid="lw-zoom"]')).toBeNull()
   })
 
   it('the header ⇅ toggle turns arrange mode on — the grips appear, the column widens, no bar', () => {

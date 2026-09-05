@@ -1218,13 +1218,21 @@ export function Matrix() {
   // mistaken for the jump once the window has passed.
   const jumpAtRef = useRef(0)
 
-  // The phone ZOOM (owner, 18 Aug 26 — "a zoom function for mobile leave
+  // The grid ZOOM (owner, 18 Aug 26 — "a zoom function for mobile leave
   // war"). Stepped +/− buttons rather than pinch: pinch fights the browser's
   // own page zoom and the frozen columns, and a button cannot half-work.
   // `zoom` (not transform) so layout, scroll width and the sticky offsets all
   // scale together. View state, session-only, like the counter choice.
+  // A PHONE OPENS ONE STEP OUT (owner, 6 Sep 26 — "can this be the default
+  // zoom? Like zoom 1 click out"): 0.8 there, 1 on a desktop, read once at
+  // mount from the same 700px query the phone flag uses (no layout yet, so
+  // this is the only place the initial value can come from; jsdom has no
+  // matchMedia and stays at 1). The buttons live in the counter block's top
+  // row at BOTH widths since the same day (they used to ride the month strip,
+  // phone-only) — a desktop can step too now.
   const ZOOMS = [0.6, 0.8, 1, 1.2, 1.4]
-  const [zoom, setZoom] = useState(1)
+  const [zoom, setZoom] = useState(() =>
+    typeof window.matchMedia === 'function' && window.matchMedia('(max-width: 700px)').matches ? 0.8 : 1)
   const zoomStep = (by: number) => {
     const i = ZOOMS.indexOf(zoom)
     setZoom(ZOOMS[Math.min(ZOOMS.length - 1, Math.max(0, i + by))]!)
@@ -2779,6 +2787,31 @@ export function Matrix() {
           >
             ◷ OIL<span className="rtlbl"> tracker</span>
           </button>
+          {/* The grid ZOOM, − then +, right after OIL at BOTH widths (owner,
+              6 Sep 26 — "put the zoom + - button after oil/oil tracker. But
+              make sure it's still 1 row on the mobile"). Both roles — it is a
+              view control. Moved here from the end of the month strip, where
+              it was phone-only; the strip's tests and readers treat every
+              button there as a month, so it never belonged among them. A
+              phone opens one step out (see `zoom`). */}
+          <span className="lwzoom" data-testid="lw-zoom">
+            <button
+              className="rtbtn zoom"
+              data-testid="lw-zoom-out"
+              aria-label="Zoom out"
+              title="Zoom out"
+              disabled={zoom === ZOOMS[0]}
+              onClick={() => zoomStep(-1)}
+            >−</button>
+            <button
+              className="rtbtn zoom"
+              data-testid="lw-zoom-in"
+              aria-label="Zoom in"
+              title="Zoom in"
+              disabled={zoom === ZOOMS[ZOOMS.length - 1]}
+              onClick={() => zoomStep(1)}
+            >＋</button>
+          </span>
         </div>
         {/* The on-grid REARRANGE BAR (3 Sep 26: "⠿ Rearranging — drag people…",
             Auto-sort, Done) is GONE (owner, 6 Sep 26 — "delete this whole blue
@@ -2840,7 +2873,14 @@ export function Matrix() {
             <tbody className="mstripe">
               <tr>
                 <td className="mstick" colSpan={2} ref={mstickRef} style={stripH ? { height: stripH } : undefined}>
-                  <div className="mstrow" ref={mstrowRef}>
+                  {/* The strip cancels the grid's zoom (6 Sep 26): it is
+                      navigation chrome, not grid content, and once a phone
+                      opened one step out its 9px labels rendered at ~7px and
+                      "MAR"/"NOV" clipped on a 360px phone. Nested `zoom`
+                      multiplies, so 1/zoom here puts the strip back at natural
+                      size at every step; `stripH` still divides by the grid's
+                      zoom because the cell it sizes is in the grid's units. */}
+                  <div className="mstrow" ref={mstrowRef} style={zoom !== 1 ? { zoom: 1 / zoom } : undefined}>
                     <div className="months" data-testid="month-strip" ref={monthsRef}>
                       {months.map(m => (
                         <button
@@ -2855,27 +2895,10 @@ export function Matrix() {
                         </button>
                       ))}
                     </div>
-                    {/* The phone zoom, riding the same pinned cell as the
-                        months so it never scrolls out of reach sideways —
-                        but OUTSIDE the strip: it is not a month, and the
-                        strip's tests and readers treat every button there as
-                        one. Hidden above 700px in CSS — a desktop has room. */}
-                    <span className="lwzoom" data-testid="lw-zoom">
-                      <button
-                        className="mjump"
-                        data-testid="lw-zoom-out"
-                        aria-label="Zoom out"
-                        disabled={zoom === ZOOMS[0]}
-                        onClick={() => zoomStep(-1)}
-                      >−</button>
-                      <button
-                        className="mjump"
-                        data-testid="lw-zoom-in"
-                        aria-label="Zoom in"
-                        disabled={zoom === ZOOMS[ZOOMS.length - 1]}
-                        onClick={() => zoomStep(1)}
-                      >＋</button>
-                    </span>
+                    {/* The zoom pair used to ride the end of this strip
+                        (phone-only); it moved to the counter block's top row
+                        after OIL (owner, 6 Sep 26), which is what freed the
+                        strip to hold all twelve months on ONE line on a phone. */}
                   </div>
                 </td>
                 <td className="mfill" colSpan={dayCols} />
