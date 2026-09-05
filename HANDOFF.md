@@ -41,18 +41,23 @@ verify** — this section holds only the current baseline and the ways the gates
 mislead. Restate a count only from a run you watched — this file's history twice
 recorded a count that was wrong.
 
-**Last green baseline — the drop round, 6 Sep 26.** Code commit `61f25ab` (a
-changed day rewrites only its changed blocks; pointer-up hit-tests before the
-ghost comes down). Doc-only commits since: `3dec0a5` (gate table), `09edfeb`
-(observer log obs 57–59), `35b4fa8` (the performance charter). All gates were
-run whole against the final code:
+**Last green baseline — the 5 Sep 26 batch, merged main `dd4744e` (PRs
+#358–#366).** CI run 889 on that head: all eight jobs green (build + reference
+suite, unit raptor, unit leavewar ×2, geometry ×3, deploy), and the deployed
+page was driven at desktop and phone widths afterwards (a phone week cross
+included — two one-card snapshots, the taller week's height, nothing left
+behind, no console errors, no 4xx). Counts below are from runs watched here:
+`npm test` and the reference suite on `dd4744e` itself; the browser gates,
+probes and perf from the last full local chain before the merges (`b4c6202`,
+#364's head — #359–#363 each ran their own full chain on their PR, recorded in
+the PR bodies):
 
 | gate | reading |
 |---|---|
-| `npm test` | **3871 across 222 files** — two vitest projects, raptor + leavewar |
+| `npm test` | **3931 across 229 files** — two vitest projects, raptor + leavewar |
 | `node reference/tfin.js` | **728/0** (the reference is read-only; the "Ground Programme" title trim rides the tolerant normaliser in `html.test.ts`) |
 | `npm run build` | clean |
-| `npm run test:e2e` | **357 passed / 24 touch-only skips / 0 failed** — three playwright projects: raptor geometry, lw-phone, lw-desktop. Two known flake leads, neither reproduced on the last run: (a) the desktop carry-day test ("View-only opens on the day Edit was showing", `geometry.spec.ts`) went red once in the drag round and passed alone — for ~5 s after the edit page opens the store notifies ~10 times (pre-warm / sync settling) and each pass re-lands `eWeek.scrollLeft`, which can race `parkOn`'s scroll; (b) 2 lw-phone reds once against a build that predated the bug-pass fixes — if they red again, suspect a stray repaint mid-tap first. |
+| `npm run test:e2e` | **357 passed / 24 touch-only skips / 0 failed** — three playwright projects: raptor geometry, lw-phone, lw-desktop. One known flake lead, not reproduced on the last run: (a) the desktop carry-day test ("View-only opens on the day Edit was showing", `geometry.spec.ts`) went red once in the drag round and passed alone — for ~5 s after the edit page opens the store notifies ~10 times (pre-warm / sync settling) and each pass re-lands `eWeek.scrollLeft`, which can race `parkOn`'s scroll. The lw-desktop month-jump flake is CLOSED (#365: the assertion was a coin toss on the desktop, where the fill engine keeps drawing between the two clicks — gated to the phone). |
 | `probes:adapted` | **all 6 GREEN**. **Read the LAST line, not the last tally**: each probe prints its own count as it finishes, and the suite's verdict is the line after it, `all 6 adapted probes passed`. |
 | `perf` | **4/0** — board DOM 1023 ≤ **1150** (the ceiling is a SETTLED owner decision since 28 Aug 26 — `CLAUDE.md` §Stable decisions). |
 
@@ -137,24 +142,23 @@ run whole against the final code:
 
 ## In flight
 
-- **The Leave War swipe-up-during-a-fling fix (5 Sep 26, from the owner's
-  screen recording) — PR #358, VERIFIED on the owner's iPhone ("Ok it works"),
-  awaiting his "merge live".** After a pinch out / pinch in, a swipe up while the grid's sideways
-  fling was still decelerating rubber-banded the rows ~100px inside `.mx-wrap`
-  and snapped them back, the `.mxband` left column stood still, and the page did
-  not scroll until the fling died. Root cause, from WebKit's own source (this
-  container has no WebKit): `overflow-x: auto` alone computes `overflow-y: auto`,
-  and on iOS that hands the native scroll view whatever vertical overflow layout
-  produces — any stray pixel makes the wrapper a vertical scroller, and a finger
-  landing mid-fling is latched to it. Fix: `overflow-y: hidden` on `.mx-wrap`
-  (WebKit then clamps the vertical content size to the visible height). One CSS
-  line; contract in `docs/ui-contracts.md` §The Leave War grid scroller has no
-  vertical axis; `known-gaps.md` §momentum item 3 corrected. **Test on the
-  iPhone:** pinch out, pinch in, swipe up straight away — the rows must not slide
-  inside the grid, the page must scroll, and the sideways flick must still glide
-  exactly as before (the 30 Aug A/B says this property is momentum-neutral).
-  Revert is the one line if anything regresses; the `overscroll-behavior-y:
-  none` trap is recorded in the ui-contracts section.
+- **The 5 Sep 26 batch is MERGED to main (5 Sep 26 ~10:25 UTC, PRs #358–#366,
+  on the owner's "merge") — eight fixes and one repair.** The Leave War
+  swipe-up-mid-fling rubber band (`overflow-y:hidden` on `.mx-wrap`, #358); the
+  drop delta + one validate per drop (#359) and the run trace + the pre-drop
+  hover reason (#360); the desktop week's compositor layers 261 → 105 (#361);
+  the phone carousel's off-snap rest (#362); the blank screen after a fast
+  fling — the fresh-add box repaints itself, not the page (#363); the
+  cross-week glide's black lower half / split card — the snapshot box is now
+  the taller of the two weeks (#364); the Leave War month-jump test flake
+  (#365); and a stray `node_modules` symlink that a `git add -A` in a worktree
+  had committed, untracked with the ignore rule hardened (#366; observer log
+  obs 73 — stage conflicted files BY NAME in a worktree). Contracts:
+  `docs/ui-contracts.md` (§the drop delta, §The run trace, §Compositor layers,
+  §The Leave War grid scroller has no vertical axis), `docs/engine-rules.md`
+  §the break-day rule, ledger 21–24 in `docs/performance.md`; the stories are
+  in the squash commits. The phone-only faults (#358, #362, #363, #364) were
+  verified on the owner's iPhone against the previews before the merge.
 - **The performance thread.** The puck-drag round and the drop round (both
   6 Sep 26) are MERGED to main as PR #356 (5 Sep 26 00:08 UTC). Check a PR's
   state before acting on it — this file said "NOT merged" for an hour after the
@@ -178,124 +182,15 @@ run whole against the final code:
   5 Sep drop-delta PR, ledger 21). Every dead end
   measured along the way is in `docs/performance.md` §Dead ends — don't retry
   them without new measurement.
-- **The drop delta + one validate per drop (5 Sep 26)** — on the branch
-  `claude/drop-delta-flags`, its own PR, awaiting the owner's "merge live". A
-  drop or palette plant now toasts, in the validator's own words and in red
-  for a hard breach, whatever the write just raised that was not there before
-  — on whichever day the rule crossed (`Sun ·` prefix), pulsing the pucks it
-  named — and `barDrop` no longer revalidates on its own (`state/dropflag.ts`;
-  `ui-contracts.md` §the drop delta; ledger 21). **Steps 3 and 4 of the same plan are their own PR, stacked on #359's branch
-  (`claude/run-trace-hover`, 5 Sep 26) — merge #359 first, then this one:** (3)
-  `slotBar`'s last reason is now the pre-drop cross-day question — the
-  seven-day run (`runIfPlaced`, off the published `RUNLEN`/`RUNSEED`/`NEXTON`)
-  and crew rest both ways (`restIfPlaced`, the validator's own `crewRestDay`
-  re-run in probe mode on a cloned sibling leg) — and `drag.ts hoverWhy` prints
-  it under the ghost on target change, so "7th day in a row — breaks Sunday"
-  reads under the finger before the drop; the green rings and the palette
-  strike inherit it. (4) The run TRACE: every earlier day of a run that
-  crosses wears the dotted ring + the `7` + "Consecutive days — Sunday is his
-  7th day in a row", the day's issue box carries a "Breaks Sunday" row, and a
-  run at the limit on Sunday that continues into next Monday traces forward
-  ("Breaks Monday", no warning) exactly as crew rest's phantom pass does.
-  `WARN.trace[di][id]` now MERGES: crew-rest fields at the top level, the run
-  under `.run` (`traceChip`, `traceIx(t,id,'RUN')`). Known, documented gaps: an
-  EMPTY formation has no sibling leg to clone, so its crew-rest preview is
-  null (the drop delta still says it after the write); the board's pucks never
-  drew the crew-rest trace and do not draw the run trace either (week only —
-  pre-existing shape, `board-html.ts` passes no trace). Contracts:
-  Reviewed (5 Sep 26) and hardened: exempt lines (AVALON/BB, SC SPARE) get no
-  cross-day answer; a seat-to-seat drag passes the seat being left so the
-  hover reads the week AFTER the move; a man's own hard breach today keeps
-  its label over any trace; answers are memoised per validate() for the
-  palette. Contracts: `ui-contracts.md` §The run trace + §the hover reason;
-  `engine-rules.md` §the break-day rule; `performance.md` Part 1 (check B's
-  second named exemption: the edited man's run trace); pins
-  `engine/runtrace.test.ts`, `ui/runtrace-ui.test.ts`, `ui/drag.test.tsx`
-  ("the hover reason").
-- **The desktop week's compositor layers (5 Sep 26)** — branch
-  `claude/compositor-layers`, its own PR, awaiting the owner's "merge live".
-  261 → 105 layers on the desktop edit week (the phone's 9 untouched) by three
-  local CSS rules, each found by switching one suspect off in the live page
-  and re-counting: the palette's faded pucks desaturate by a saturation blend
-  instead of `filter:saturate()` (59 layers); the next-week preview is dimmed
-  by a page-background veil instead of `opacity:.5` (47); the roster aside
-  gets `z-index:5` so the week's z-indexed pucks paint below it instead of
-  being assumed to overlap its sticky scroll range (44). Armed drag at 4×, 7
-  paired trials: per-move 68 → 52 ms median, layerize 30 → 16 ms a move; the
-  drop unchanged (JS-bound, above). For the owner's eyes on the preview: the
-  faded palette pucks' little letter chips are a touch more vivid (the filter
-  used to wash them too); the preview column reads the same (≤0.1% of pixels
-  differ). Contracts: `ui-contracts.md` §Compositor layers; ledger 22; pinned
-  by `ui/layers.test.ts`.
-- **The phone carousel resting off its snap (5 Sep 26)** — branch
-  `claude/phone-snap-hold`, its own PR, awaiting the owner's iPhone verdict and
-  then "merge live". From the owner's recording on the #361 preview: after a
-  swipe in next week, days rested 60–100 px off their snap point, with a 40 px
-  vertical jump mid-rest — the signature of a repaint. Mechanism (read off the
-  code; Chromium cannot reproduce it because it re-snaps after a programmatic
-  scroll and Safari does not): the palette's day-follow (`pan.ts rosDayFollow`)
-  fires `notify()` ~110 ms after the strip's scroll events stop, the week
-  repaints with no day changed, and the B54 hold writes `root.scrollLeft = sl`
-  back to itself — on iOS that stops a still-settling snap where it stands.
-  Fix: the hold runs only when the repaint rewrote the week (`wrote`), in both
-  `EditWeek` and `ViewWeek`; pinned `ui/snaphold.test.tsx`. Not caused by
-  #361: at phone width the two builds differ only in six paint properties on
-  the faded palette pucks (JS byte-identical), and the mechanism predates the
-  drop round. Two things only the iPhone can answer: does the live site do it
-  too (expected yes), and does the fix preview stop it.
-- **The blank screen after a fast fling on the phone (5 Sep 26)** — branch
-  `claude/fresh-flash-paint`, its own PR, awaiting the owner's phone verdict
-  and then "merge live". The owner's 13:39 recording (on the #361 preview): a
-  fast vertical fling through next-week Monday, then the whole day column
-  black for ~0.8 s after the fling had stopped, painting in from the bottom.
-  Cause (a Chromium trace at 4× on the phone viewport, then the page's timers
-  wrapped from load): `view.ts flashAdded`'s two timers per fresh add — and a
-  week load accepts a handful of inputs into the ground programme, each a
-  fresh add — fired twelve full `notify()`s ~6 s after the load, ~70 ms each,
-  back to back for a second; iOS paints tiles on that same thread. Fix: the
-  timers re-hang the decoration only (`HOOKS.paintFreshAdds`, wired in
-  highlights.ts). Measured: the train gone, long tasks in the post-fling
-  window 14 → 3. Pinned `state/freshflash.test.ts`; ledger 23. Not #361's and
-  not #362's. Two "preview A/B" ideas floated before the cause was found
-  (cheaper shadows on the phone; the strip as a two-axis scroller so WebKit
-  tiles ahead vertically — `computeOverflowTiledBackingCoverage` gives a
-  scroller paint-ahead only on the axis it scrolls) are shelved: the second is
-  a layout change (the header stack above the strip stops scrolling away) and
-  neither was the cause. Residual, measured not built: the first pointer event
-  after a week switch carries ~450 ms of React work at 4× (the new week's
-  deferred render flushed inside that event) — the seven-day-strings item,
-  felt as one hitch on the first touch after switching weeks.
-- **The half-black day on a week cross (5 Sep 26)** — branch
-  `claude/glide-prepaint`, its own PR, awaiting the owner's phone verdict and
-  then "merge live". The owner's 16:02 recording: swipe from Sunday Jul 12 into
-  Monday Jul 13, the 250 ms slide is clean, then the landed Monday paints in
-  from the top over ~0.4 s with its lower half black. Cause, read off
-  `ui/weekglide.ts`: the glide hid the real week (`visibility:hidden`) for
-  the slide, and a hidden element is never painted, so the reveal had no tiles
-  and the phone drew the week from scratch. Fix: the week stays painted under
-  the two snapshots, covered and `pointer-events:none` (still nothing to
-  scrub); the incoming snapshot lifts two frames after the reveal. Second
-  pass the same evening (his 16:46 and 17:23 recordings, "the top part swipe
-  is like split animation"): the arriving snapshot was CLIPPED at the leaving
-  week's height — its box was measured before the swap — so crossing from a
-  week of short ground days into the tall seed week cut the arriving Monday
-  at ~240 px, and below that seam the real week's own landed rows showed (the
-  page background, i.e. black, before the first pass). The box is now the
-  taller of the two weeks, measured on both sides of the swap; each snapshot
-  is also one opaque day card, pre-painted on-screen two frames before it
-  moves (cost and precaution — a first theory of a tile-paint race that did
-  not move the seam; ledger 24 records it as a dead end). Pinned
-  `ui/weekglide.test.ts`. Chromium never showed the clip (its demo weeks are
-  the same height), so the iPhone is the gate.
 - **iOS is untestable here.** This container ships no WebKit. The Leave War
   column window / placeholders and every contenteditable or touch-fling change
   are verified on the owner's iPhone against the preview; if the grid ever
   misaligns there, the revert is one commit.
 - **The observer log persists now** — `.claude/skill-observations/log.md` is
-  committed (obs 57–59 landed in `09edfeb`), so the old worry that it dies with
-  the container is resolved as long as it keeps being committed. It holds 55
-  OPEN observations; its `last-review-date.txt` reads 19 Aug 26, so the skill's
-  weekly review is overdue when the owner wants one.
+  committed (obs 57–73 landed across the 5 Sep 26 PRs), so the old worry that
+  it dies with the container is resolved as long as it keeps being committed.
+  It holds 69 OPEN observations; its `last-review-date.txt` reads 19 Aug 26, so
+  the skill's weekly review is overdue when the owner wants one.
 
 
 ## Open / deferred / queued
