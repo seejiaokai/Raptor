@@ -125,7 +125,10 @@ Grouped by area. Each is the short rule; the source has the full story.
   string** — selection/search/warning classes, the armed ring, eligibility
   rings (outline-only: no nodes, no layout), the ~6 s fresh-add box. A new
   decoration adds a paint function in `highlights.ts`, never a class in the
-  markup. (feature-impact.md)
+  markup. (feature-impact.md) **And a decoration's own lifecycle — its fade,
+  its removal — repaints through that pass alone, never a `notify()`**
+  (5 Sep 26, ledger 23): the fresh-add box's two timers used to fire a dozen
+  full repaints ~6 s after every week load, for a box the week never draws.
 
 ### B. Scroll and motion
 - **Never write `scrollLeft` mid-fling** — it kills native touch momentum. Defer
@@ -500,6 +503,29 @@ through sourcemaps for the JS split, paired A/B runs.
     Visual delta: the faded pucks' letter chips a touch more vivid (the filter
     washed them too); the preview ≤0.1% of pixels. · `scheduler.css` (three
     commented rules), `ui/layers.test.ts`.
+23. **The fresh-add box repaints itself, not the page** (5 Sep; 21 is the
+    drop-delta round on PR #359, 22 the compositor-layer round on PR #361). A
+    one-second stall ~6 s after every week load is gone — and on the phone,
+    the black screen after a fast fling that happened to land in that second
+    (the owner's 13:39 recording). · Every week load accepts a few inputs into
+    the ground programme; each add flashes its ~6 s blue box with two timers
+    (the fade at 5.45 s, the removal at 6 s), and each timer fired
+    `renderScheduler()` and `renderEditWeek()` — full `notify()`s — so twelve
+    full repaints (seven day strings rebuilt each time, ~70 ms at 4×) ran back
+    to back for a box that only the board draws (`paintFreshAdds` hangs it
+    under `#schedBoard`). The timers now call `HOOKS.paintFreshAdds()` — the
+    decoration pass over the board's live nodes — and nothing else. ·
+    *Invariant:* a post-render decoration's lifecycle repaints through its own
+    pass, never a notify(). Pinned `state/freshflash.test.ts` (five flashes:
+    zero full repaints, ten decoration passes; fails on the old code). ·
+    Measured at 4× on the phone viewport (a fast vertical fling, then 3 s
+    idle): long tasks (>40 ms) in the window 14 → 3, and the timer train
+    itself (87, 80, 129, 106, 165, 120, 67, 71, 69, 58 ms back to back from
+    +2.05 s) → none; the three left are the fling's own paint. On iOS tiles are
+    painted on the main thread, so that train was a blank screen. Found by
+    wrapping the page's timers from load and reading the trace's TimerFire ids
+    — not by theorising about the renderer. · `state/view.ts`,
+    `engine/hooks.ts`, `ui/highlights.ts`.
 
 ---
 

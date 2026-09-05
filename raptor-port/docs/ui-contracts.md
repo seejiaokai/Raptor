@@ -2659,6 +2659,15 @@ is retired — see the "every remarks box rides the pucks' row" contract). Pinne
 in `ui/board.test.tsx`; the paint
 itself is left to the eye on the live bundle (jsdom measures every rect 0×0).
 
+**Its fade and its removal repaint through that same pass and nothing else**
+(5 Sep 26): `flashAdded`'s two timers call `HOOKS.paintFreshAdds()` — wired in
+highlights.ts — never `renderScheduler()` / `renderEditWeek()`. Those were full
+`notify()`s, and a week load flashes every input it accepts into the ground
+programme, so a dozen full repaints (seven day strings rebuilt each time) ran
+back to back ~6 s after every load — a one-second stall, and on the phone a
+blank screen if a fling was landing just then. The week never draws the box.
+Pinned `state/freshflash.test.ts`; `docs/performance.md` ledger 23.
+
 **Selection is the blue fill and nothing else (owner, 7 Aug 26).** `.puck.sel`
 used to add a 2px `#BFE0FF` ring + glow with `!important`, which read as a
 white halo AND buried the red/amber severity ring the selected puck was

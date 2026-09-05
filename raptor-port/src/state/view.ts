@@ -705,9 +705,18 @@ export const FRESH_FADE_MS=550
 export function flashAdded(key:any){
   if(!key)return
   const k=String(key); FRESHADD.add(k)
-  /* repaint the board the box lives on and the week behind it — the same
-     surfaces afterSchedMutate paints */
-  const repaint=()=>{ if(SBDAY!=null)renderScheduler(); if(CURPAGE==='editsched')renderEditWeek() }
+  /* re-hang the box, nothing more (5 Sep 26 — the owner's phone recording of
+     a black screen after a fling). The box is a post-render DECORATION, hung
+     by highlights.ts paintFreshAdds over the board's live nodes, so its fade
+     and its removal need only that pass. This used to call renderScheduler()
+     and renderEditWeek() — each a full notify(): every week load accepts a
+     handful of inputs into the ground programme, each add schedules these two
+     timers, and ~6s after the load a dozen full repaints ran back to back
+     (seven day strings rebuilt each time, ~70ms at 4×) — a one-second stall
+     on any device and, on a phone, where tiles are painted on that same
+     thread, a blank screen if a fling was landing just then. The week never
+     draws the box at all. */
+  const repaint=()=>HOOKS.paintFreshAdds()
   /* enter the fade for the last FRESH_FADE_MS, then remove entirely — two
      timers so the steady box holds static and only the tail animates out */
   setTimeout(()=>{ if(FRESHADD.has(k)){ FRESHOUT.add(k); repaint() } },FRESH_MS-FRESH_FADE_MS)
