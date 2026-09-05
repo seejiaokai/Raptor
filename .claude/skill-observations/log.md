@@ -928,3 +928,18 @@ gate's. Keep verdict-bearing commands unpiped.
 **Suggested improvement:** In a pointer-up / drop teardown, sequence by data dependency, not by tidy-up instinct: do every measurement the drop needs (hit-test under the point, target geometry) FIRST, against the still-settled layout, and only then perform the teardown writes (remove the ghost, clear the body markers). When the ghost overlaps the drop point, exclude it from the hit-test rather than removing it early. Read-then-write, batched — the same rule that avoids layout thrash in a render loop applies to a one-shot handler.
 
 **Principle:** Interleaving DOM reads and writes forces a layout per read; a pointer-up handler that measures after it has begun tearing down pays for a layout it did not need. Order the handler so all reads precede all writes, even when the natural writing order (clean up first) reads the other way.
+
+### Observation 62: Counting calls into a module whose exports are reassigned `let`s — mock with a Proxy, never a spread
+
+**Status:** OPEN
+**Date:** 2026-09-05
+**Session context:** Raptor — the drop-delta PR (one `validate()` per drop). A test had to prove a drop calls the rules engine exactly once. `vi.spyOn` on an ESM namespace is unreliable across vitest majors, and the obvious `vi.mock(path, async orig => ({ ...await orig(), validate: counted }))` silently BREAKS the app under test: the module's `WARN`/`REST`/`EVD` are `export let`s reassigned by every `validate()`, and a spread copies their values once, freezing every live binding at mock time. Numbered 62, not 60: 60 and 61 were appended on the sibling branch of PR #358 in this same session, so this branch's log tops at 59 while the true counter is 61 — parallel branches are parallel writers.
+**Skill:** test-driven-development (a "counting a module call" recipe); task-observer (branch-parallel numbering)
+**Type:** open-source
+**Phase/Area:** writing the test that pins a call-count invariant
+
+**Issue:** The reliable shape is `vi.mock(path, async orig => new Proxy(await orig(), { get(t,k) { return k === 'validate' ? counted : t[k] } }))` — every other export is read THROUGH the namespace at access time, so reassigned bindings stay live, and only the one function is wrapped. Kept in its own test file so the counting mock never touches the sibling suite's module graph. Second, smaller lesson: the observation-log counter is per branch — read the max on the branch AND remember what sibling branches of the same session appended, or number past both.
+
+**Suggested improvement:** Add a short recipe to the testing guidance: "to count calls into a module export, mock the module with a Proxy over the real namespace, wrap only the target, never spread the namespace (a spread freezes reassigned `let` exports)". For task-observer's numbering discipline: when a session writes the log on more than one branch, number past the highest across the session's branches and say so in the entry.
+
+**Principle:** A module namespace is a set of live bindings, not a bag of values; any mock built by copying it turns bindings into snapshots. Wrap the namespace, don't copy it. And a counter that lives in a file lives per branch — a parallel branch is a parallel writer even inside one session.

@@ -1917,6 +1917,31 @@ persisted and never in a history snapshot. The toggle builder is `notePubTog`
 - Touch drag: 8px slop restarts the 180ms hold, >26px cancels; ghost
   follows finger; click-eater dies on next pointerdown.
 - Toast is `pointer-events:none`.
+- **A DROP SAYS WHAT IT JUST BROKE, IN THE VALIDATOR'S OWN WORDS — the drop
+  delta** (owner, 5 Sep 26: "it also needs to show flagging realtime";
+  `state/dropflag.ts`). `applyDrop` keeps `WARN` as it stood before the write,
+  `done()` runs the ONE `validate()` inside `afterSchedMutate`, and the
+  warnings present after but not before are what the drop caused — every
+  rule at once (crew rest from yesterday, the seven-day run counted across
+  the week, the OTHER seat's pairing), with no second copy of any rule. The
+  first of them is toasted verbatim, RED (`toast(…,'hard')`) for a hard
+  breach and amber for an advisory, ordered as the puck's own chip ranks
+  (`RANK`: a WSO on a front seat leads with Q, not the C his double seat also
+  earns), prefixed `Sun ·` when the breach landed on a day other than the one
+  dropped on (the reach IS the point — on a phone board that day is
+  off-screen), with `(+N more)` for the rest. Notes (the long-day count) are
+  never toasted. Every puck a new warning names blinks twice on its own day
+  (`.puck.flagnew`, opacity only, ~3 s window in `NEWFLAGS`; hung by
+  `refreshHighlights` AFTER the repaint because the breach day's block is
+  fresh nodes after the per-block swap). `barDrop` (slotBar's reason) is the
+  FALLBACK voice when the delta is empty, and it no longer validates on its
+  own — it runs after the epilogue's pass, so a drop validates ONCE (a swap
+  used to validate three times). `placeArmed` (the palette tap) follows the
+  same order: delta → slotBar reason → "planned". Pins: `state/dropflag.test.ts`
+  (delta, ordering, the day prefix, the pulse set), `ui/drag.test.tsx` (a WSO
+  dropped on a front seat is told so in red, the puck is marked),
+  `ui/dropvalidate.test.tsx` (exactly one `validate()` per drop and per swap),
+  `state/store.test.ts` (the plant's voice).
 - A PALETTE drop anywhere on a list row resolves to that row.
 - A SEAT puck only lands on a seat (swap) or a crew cell (move). Dropped
   anywhere else — row title/timings/remarks, jet-row dead space, blank

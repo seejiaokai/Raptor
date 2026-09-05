@@ -6,10 +6,12 @@
 import { PEOPLE } from '../engine/people'
 import { slotVal, setSlotVal, fillSlot } from '../engine/slots'
 import { slotBar } from '../engine/avail'
-import { validate } from '../engine/validate'
+import { WARN } from '../engine/validate'
+import { keyDay } from '../engine/keys'
 import { HOOKS } from '../engine/hooks'
 import * as view from '../state/view'
 import { notify } from '../state/store'
+import { flagDrop } from '../state/dropflag'
 import { canEditSched } from '../state/auth'
 import { reassignInput } from './inputedit'
 import { DBG, initDragDbg } from './dragdbg'
@@ -119,14 +121,17 @@ export function nearSeat(cell: any, x: any, y: any) {
    no such gate, so an SC NIGHT shift could quietly be filled with SC DAY crew
    and the only sign was a red Qual chip afterwards. Dropping is still allowed —
    the schedule sometimes has to be built before the currency catches up — but it
-   now says what is wrong at the moment it happens. Returns true when it warned. */
+   now says what is wrong at the moment it happens. Returns true when it warned.
+   RUNS AFTER THE EPILOGUE'S validate() (5 Sep 26) — it used to revalidate
+   here itself, because EVD still held the pre-drop picture and a man moved
+   between two seats of one SC shift was warned about the seat he had just
+   vacated. That made every drop validate twice (three for a swap). done()
+   now validates once through afterSchedMutate and asks afterwards, so the
+   answer is the same and the second pass is gone. It is the FALLBACK voice:
+   the drop delta (state/dropflag.ts) speaks first, in the validator's own
+   words, and this only sounds when the delta found nothing new. */
 export function barDrop(id: any, key: any) {
   if (!id || !key) return false
-  /* The drop has already been written, but nothing has revalidated yet — EVD
-     still holds the pre-drop picture, so a man moved between two seats of the
-     same SC shift was warned about the seat he had just vacated. Recompute
-     first, then ask; slotBar's own self-exclusion covers where he now sits. */
-  try { validate() } catch (_) {}
   let why = ''; try { why = slotBar(id, String(key).replace(/\.\+$/, '')) } catch (_) { return false }
   if (!why) return false
   toast(`${(PEOPLE[id] || {}).cs || id} — ${why}`, 'warn')
@@ -153,6 +158,10 @@ export function applyDrop(el: any, x: any, y: any) {
      started the drag. */
   if (!canEditSched() || !editMode()) { DRAG = null; dndOff(); return false }
   if (!DRAG || !el || !el.closest) { DRAG = null; dndOff(); return false }
+  /* WARN as it stands before anything is written — the drop delta's baseline
+     (state/dropflag.ts). validate() reassigns WARN, so this is a snapshot by
+     identity, not a copy. */
+  const warnBefore = WARN
   /* An Unavailable row's seat, dropped on from either a roster puck or an
      already-planted one — checked BEFORE slotEl/cell below, which only know
      the schedule's data-slot/data-fill grammar and would otherwise treat this
@@ -205,30 +214,37 @@ export function applyDrop(el: any, x: any, y: any) {
      arm's job. Left armed, the ring outlived the row it was waiting on (and
      the next palette tap would plant a second body into a row the user had
      already filled by hand). Drops elsewhere leave the arm alone. */
-  const done = (served?: any) => {
+  /* `asks` are the (id, key) pairs barDrop judges once the write is in —
+     AFTER the one validate() inside afterSchedMutate, never before it (see
+     barDrop). The drop delta speaks first; barDrop is its fallback. */
+  const done = (served?: any, asks?: any[][]) => {
     if (served && view.armedKey() === served) view.disarmSlot()
     /* a drop that LANDED parks the drawer (owner, 8 Aug 26) — clear the
        reopen latch before dndOff() re-adds ros-open. Failed drops never
        reach done(), so an aborted drag still gets its drawer back. */
     ROS_REOPEN = false
-    DRAG = null; dndOff(); view.afterSchedMutate(); notify(); return true
+    DRAG = null; dndOff(); view.afterSchedMutate()
+    if (!flagDrop(warnBefore, served ? keyDay(served) : null)) (asks || []).some(([id, key]) => barDrop(id, key))
+    notify(); return true
   }
   if (slotEl) {
     const targetKey = slotEl.dataset.slot || (slotEl.querySelector('[data-slot]') && slotEl.querySelector('[data-slot]').dataset.slot)
     if (!targetKey) { DRAG = null; dndOff(); return false }
-    if (DRAG.kind === 'roster') { setSlotVal(targetKey, DRAG.id); barDrop(DRAG.id, targetKey) }
+    let asks: any[][]
+    if (DRAG.kind === 'roster') { setSlotVal(targetKey, DRAG.id); asks = [[DRAG.id, targetKey]] }
     else if (DRAG.key !== targetKey) {
       const a = slotVal(DRAG.key), b = slotVal(targetKey); setSlotVal(targetKey, a); setSlotVal(DRAG.key, b)
-      barDrop(a, targetKey) || barDrop(b, DRAG.key)
+      asks = [[a, targetKey], [b, DRAG.key]]
     }
     /* dropped back where he started — say so rather than reporting nothing */
     else { DRAG = null; dndOff(); toast('Already in that seat'); return false }
-    return done(targetKey)
+    return done(targetKey, asks)
   }
   if (cell) {                                     // dropped on an empty / shared people cell
-    if (DRAG.kind === 'roster') { fillSlot(cell.dataset.fill, DRAG.id); barDrop(DRAG.id, cell.dataset.fill) }
-    else { const id = slotVal(DRAG.key); setSlotVal(DRAG.key, ''); fillSlot(cell.dataset.fill, id); barDrop(id, cell.dataset.fill) }
-    return done(cell.dataset.fill)
+    let asks: any[][]
+    if (DRAG.kind === 'roster') { fillSlot(cell.dataset.fill, DRAG.id); asks = [[DRAG.id, cell.dataset.fill]] }
+    else { const id = slotVal(DRAG.key); setSlotVal(DRAG.key, ''); fillSlot(cell.dataset.fill, id); asks = [[id, cell.dataset.fill]] }
+    return done(cell.dataset.fill, asks)
   }
   /* a seat puck let go anywhere else — the roster, blank page space, the
      chrome — comes off its seat; the name reappears in the palette. Rows
