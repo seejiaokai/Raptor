@@ -41,11 +41,13 @@ verify** — this section holds only the current baseline and the ways the gates
 mislead. Restate a count only from a run you watched — this file's history twice
 recorded a count that was wrong.
 
-**Last green baseline — the drop round, 6 Sep 26.** Code commit `61f25ab` (a
-changed day rewrites only its changed blocks; pointer-up hit-tests before the
-ghost comes down). Doc-only commits since: `3dec0a5` (gate table), `09edfeb`
-(observer log obs 57–59), `35b4fa8` (the performance charter). All gates were
-run whole against the final code:
+**Last green baseline — the Leave War speed + drag/drop thread, shipped as
+PR #356 (squash `e36af3d` on `main`, 5 Sep 26).** The final code is the drop
+round (a changed day rewrites only its changed blocks; pointer-up hit-tests
+before the ghost comes down) plus the Leave War fix (never reflow the row set
+while the grid is still moving; re-place the bid box when the window slides).
+All six gates ran whole against it, and the merge-to-`main` Pages deploy re-ran
+them green:
 
 | gate | reading |
 |---|---|
@@ -137,24 +139,14 @@ run whole against the final code:
 
 ## In flight
 
-- **The performance thread (the current live work).** The puck-drag round and
-  the drop round (both 6 Sep 26) are SHIPPED to the branch
-  `claude/read-handoff-docs-5fx50p`, PR #356, and are **NOT merged** — the owner
-  merges only on an explicit "merge live", after checking the Vercel preview on
-  the slow laptop and the iPhone
-  (`https://raptor-git-claude-read-handoff-docs-5fx50p-kai-e2f5.vercel.app`).
-  The full ledger of every speed round is `docs/performance.md` Part 2; the
-  guardrails any new change must follow are Part 1. **Still-open residuals**,
-  recorded not built, in order of size: the page repaint + compositing after a
-  drop (~160 ms at 4×, structural — the page's ~230 compositor layers; cutting
-  them is the only lever left for a smoother drag, a page-wide CSS change with
-  visual implications); the seven day strings (60–135 ms — `availHTML`'s
-  per-wave availability sort is the fat part and reads the availability oracle,
-  so any cache there is engine-adjacent); the `body.dnd` decorations coming off
-  (~60 ms; layout-neutral only with a visible wording change — owner's call);
-  the two `validate` calls (~45 ms, engine — not touched). Every dead end
-  measured along the way is in `docs/performance.md` §Dead ends — don't retry
-  them without new measurement.
+- **The performance thread — SHIPPED.** The Leave War slow-computer speed
+  rounds and the scheduler puck-drag and drop rounds (all 6 Sep 26) merged to
+  `main` and deployed to the official Pages site as PR #356 (5 Sep 26). The
+  full ledger of every speed round is `docs/performance.md` Part 2; the
+  guardrails any new change must follow are Part 1. The still-open residuals
+  (recorded, not built) are in §Open / deferred / queued below and in full in
+  `docs/performance.md` §Dead ends — don't retry a dead end without new
+  measurement.
 - **iOS is untestable here.** This container ships no WebKit. The Leave War
   column window / placeholders and every contenteditable or touch-fling change
   are verified on the owner's iPhone against the preview; if the grid ever
@@ -168,6 +160,14 @@ run whole against the final code:
 
 ## Open / deferred / queued
 
+- **Open perf residuals from the 6 Sep drag/drop rounds** (recorded, not built;
+  full detail and every measured dead end in `docs/performance.md`): the page
+  repaint + compositing after a drop (~160 ms at 4×, structural — the page's
+  ~230 compositor layers, whose count is the only lever left for a smoother
+  drag, a page-wide CSS change with visual implications); the seven day strings
+  (60–135 ms — `availHTML`'s per-wave availability sort, engine-adjacent); the
+  `body.dnd` decorations coming off (~60 ms, layout-neutral only with a visible
+  wording change — owner's call); the two `validate` calls (~45 ms, engine).
 - **PARKED DIRECTION (owner, 1 Sep 26 — "we will get back to this next time;
   in the meantime just assume this is for a database. Status quo").** The
   intended end state, recorded so it isn't re-derived: a Power Apps CODE APP
