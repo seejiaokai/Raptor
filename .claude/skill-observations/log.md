@@ -929,6 +929,35 @@ gate's. Keep verdict-bearing commands unpiped.
 
 **Principle:** Interleaving DOM reads and writes forces a layout per read; a pointer-up handler that measures after it has begun tearing down pays for a layout it did not need. Order the handler so all reads precede all writes, even when the natural writing order (clean up first) reads the other way.
 
+### Observation 60: The handoff asserts a PR's merge state, which goes stale the moment the owner merges
+
+**Status:** OPEN
+**Date:** 2026-09-05
+**Session context:** A fresh session opened with "Read handoff.md". The In-flight section stated PR #356 was "NOT merged"; a one-line fetch of origin/main showed it had merged ~1 hour after the handoff commit, so the first thing the new session read was wrong.
+**Skill:** session-handoff
+**Type:** open-source
+**Phase/Area:** The HANDOFF.md "In flight" section — how a shipped-but-unmerged branch is recorded
+
+**Issue:** The handoff already has a rule for gate counts ("restate a count only from a run you watched") because a stale count misled twice. Merge state has the same failure shape: it is external state the owner changes between sessions, and writing it as a fact invites the next session to plan around a branch that no longer exists as unmerged work. This session caught it only because it checked main before reading further.
+
+**Suggested improvement:** In the session-handoff skill's HANDOFF-truth check, add a rule: record a PR as "shipped to branch X, PR #N — check its state before acting; the owner merges on an explicit go", never as "NOT merged". Pair it with a one-line session-start step: fetch main and compare against the branch the handoff names before trusting any In-flight bullet.
+
+**Principle:** A handoff should assert only what the writing session controls. Anything a human changes between sessions (merge state, deploy state, a review's verdict) is recorded as "where to look and how to check", not as a fact.
+
+### Observation 61: Diagnosing a phone-only scroll bug from a screen recording, with no device and no WebKit in the container
+
+**Status:** OPEN
+**Date:** 2026-09-05
+**Session context:** The owner uploaded a 9-second iPhone screen recording of the Leave War grid misbehaving (pinch out, pinch in, swipe up while a sideways fling was still going). The container has no video tools, no WebKit and no iOS device.
+**Skill:** New skill candidate: video-bug-triage (or a section in systematic-debugging)
+**Type:** open-source
+**Phase/Area:** Reproduce / observe — the step before any hypothesis
+
+**Issue:** Three things worked and none is written down anywhere: (1) `pip install imageio-ffmpeg` gives a working ffmpeg binary in a container that ships none; `-vf "fps=6,scale=560:-1,crop=560:900:0:0,tile=6x3"` turns a clip into contact sheets the Read tool can view, and a second pass at a higher rate over the 3–4 s of interest is what actually showed the mechanism. (2) The decisive tell was NOT in the app at all: Safari's URL bar collapses only when the PAGE scrolls, so a bar that stayed tall while content moved proved the movement was inside a nested scroller — a non-sticky title that never moved said the same. Two independent chrome-level tells beat any amount of squinting at app pixels. (3) With no device to test on, the browser engine's source was the next best evidence: fetching WebKit's iOS scrolling delegate and RenderLayerScrollableArea from GitHub answered "what does overflow-y:auto vs hidden do to the native scroll view" exactly (reachableTotalContentsSize clamps only when the style scrolls that axis), which turned a guess into a one-line fix with a stated mechanism.
+
+**Suggested improvement:** A short procedure: extract frames → find the frames around the failure → read the platform chrome for what actually scrolled → only then read app code; and when the target platform is unreachable, read the engine's source for the exact behaviour rather than reasoning from memory. Record the ffmpeg recipe and the "platform chrome as instrument" idea.
+
+**Principle:** A recording is data, not an anecdote — turn it into frames and read the platform's own indicators (browser chrome, status bars) before the app's pixels, and when the failing platform cannot be run, its source code is a better oracle than recollection.
 ### Observation 62: Counting calls into a module whose exports are reassigned `let`s — mock with a Proxy, never a spread
 
 **Status:** OPEN
