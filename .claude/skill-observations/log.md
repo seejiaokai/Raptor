@@ -1073,3 +1073,18 @@ gate's. Keep verdict-bearing commands unpiped.
 **Suggested improvement:** When a check fails on some runs and not others, the first question is "what background process could change the asserted state between the action and the assertion?" — not "is the runner slow?". Read the assertion against every loop, timer or idle callback that touches the same state; a claim that depends on how many beats fit between two steps is not a claim. Fix the assertion's scope (gate it to where it is deterministic, or assert the invariant the loop preserves), never add a retry or a longer timeout.
 
 **Principle:** A flaky test is a test asserting something the system does not promise. Find the promise the test meant to check and assert that; the flake is the diagnosis, not the disease.
+
+### Observation 73: `git add -A` in a worktree with an out-of-tree symlink commits the symlink — an ignore rule ending in `/` matches directories only
+
+**Status:** OPEN
+**Date:** 2026-09-05
+**Session context:** Merging eight PRs to main in sequence. To resolve doc conflicts fast, each branch was checked out in a second git worktree whose `raptor-port/node_modules` was a symlink to the main checkout's real directory. `git add -A` during conflict resolution staged that symlink — `.gitignore` said `node_modules/`, which matches a directory and not a symlink — and it was squash-merged into main. Merging main back into the primary checkout then replaced the real `node_modules` with the tracked self-pointing link (git may overwrite an ignored directory when checking out a tracked path), and every local test run went silent (exit 216, no output) until `npm ci`.
+**Skill:** using-git-worktrees (and the merge/steward posture)
+**Type:** open-source
+**Phase/Area:** Conflict resolution in a worktree
+
+**Issue:** Two small conveniences combined into a repo-polluting commit: sharing `node_modules` into a worktree by symlink, and staging with `-A` instead of naming the conflicted files. Neither is wrong alone. The ignore pattern's trailing slash is the subtle part — it is the documented gitignore semantics, but it reads as "ignore node_modules" to everyone.
+
+**Suggested improvement:** In a worktree that shares dependencies by symlink, never stage with `git add -A`/`git add .`; stage the conflicted files by name (`git diff --name-only --diff-filter=U | xargs git add`). Prefer ignore patterns WITHOUT the trailing slash for dependency directories so a symlink is ignored too. After any merge that touched many files, `git diff --stat` against the base and look for a `120000` mode entry before pushing. Recovery when it has happened: `git rm` the link, fix the pattern, and in any checkout that merged it, `rm` the self-link and reinstall.
+
+**Principle:** A convenience that changes what the working tree contains (a symlink, a generated file) changes what `add -A` will commit; stage by name whenever the tree holds anything you did not author for the repo.
