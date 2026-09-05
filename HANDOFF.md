@@ -248,24 +248,28 @@ the PR bodies):
   is the known exception for TOUCH scrolling; `overscroll-behavior:contain` on
   `.sb-main` is the other half and does work there, so only a drag on the top
   bar would still reach the week — contract `ui-contracts.md` §The page behind
-  the board does not scroll), and the **Leave War rearrange bar's own paint
-  layer** (5 Sep 26, `.lw-rearrange-bar` `translateZ(0)` — the owner's report
-  that Auto-sort / Done did not show on his iPhone until he touched the area;
-  reasoned from the rounded `overflow:hidden` card + the band-overlay teardown,
-  not from a device trace — `ui-contracts.md` §The rearrange bar paints on its
-  own compositor layer. His 6 Sep screenshot shows the bar painted at once, so
-  this one looks to hold — and the SAME fault then showed on the eye in each
-  manning row's frozen balance box, so `.mx .counts .mrow-tools` got the same
-  `translateZ(0)` the same day, same reasoning, same caveat. If the eye still
-  does NOT paint on his phone, the next theory is that the sticky `td.bal`
-  itself needs the promotion in Rearrange — `tr[data-mrow] td.bal`, an
-  edit-only selector — before any render kick), and the **manning grip inside
-  the frozen name cell** (5 Sep 26 — in
+  the board does not scroll), the **eye in each manning row's frozen balance
+  box painting at once in Rearrange** (6 Sep 26, `.mx .counts .mrow-tools`
+  `translateZ(0)` — the owner's report that the eyes did not show on his iPhone
+  until a tap or a scroll; the same cure the (since deleted) rearrange bar got
+  on 5 Sep, which his 6 Sep screenshot showed holding; reasoned from the
+  band-overlay teardown landing in the same commit as the insert, not from a
+  device trace — `ui-contracts.md` §The controls Rearrange inserts paint on
+  their own compositor layer. If the eye still does NOT paint on his phone, the
+  next theory is that the sticky `td.bal` itself needs the promotion in
+  Rearrange — `tr[data-mrow] td.bal`, an edit-only selector — before any render
+  kick), the **manning grip inside the frozen name cell** (5 Sep 26 — in
   Rearrange the ⠿ shares the sticky `td.who` with the label as a flex row,
   `.mwho-row`; flex inside a sticky table cell is the WebKit-sensitive part, and
   the counter reorder's existing `scrollLeft` self-assign repaint kick still
   covers it — `ui-contracts.md` §On a manning row in Rearrange the GRIP sits at
-  the LEFT).
+  the LEFT), and the **wider frozen name column in Rearrange** (6 Sep 26 —
+  `.mx-outer.mx-arranging` re-sets `--who-w`, so every sticky `.who`/`.bal`
+  `left`/width changes in one restyle while the phone's overlay is down; the
+  frozen header mirror re-pins on `arranging`. Chromium keeps the pair joined
+  and the mirror aligned; WebKit's sticky-offset recompute on a var change is
+  the unproven part — `ui-contracts.md` §In Rearrange the frozen name column
+  widens).
 - **Open questions for the owner, deliberately not changed:**
   - **ATT B beyond SC MAIN is unscoped** — "for now we will focus on SC MAIN
     first". Ask before widening.

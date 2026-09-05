@@ -43,12 +43,30 @@ describe('the counter top bar', () => {
     expect(hd.querySelector('[data-testid="roster-arrange"]')).toBeNull()
   })
 
-  it('the header Rearrange toggle turns arrange mode on — the on-grid bar appears', () => {
+  it('the header ⇅ toggle turns arrange mode on — the grips appear, the column widens, no bar', () => {
     setRole('admin')
     render(<Matrix />)
-    expect(screen.queryByTestId('rearrange-bar')).toBeNull()
+    const outer = () => document.querySelector('.mx-outer')!
+    expect(screen.queryByTestId('manning-drag-sets')).toBeNull()
+    expect(outer().classList.contains('mx-arranging')).toBe(false)
     fireEvent.click(screen.getByTestId('roster-arrange'))
-    expect(screen.getByTestId('rearrange-bar')).toBeTruthy()
+    expect(screen.getByTestId('manning-drag-sets')).toBeTruthy()
+    expect(outer().classList.contains('mx-arranging')).toBe(true)
+    expect(screen.getByTestId('roster-arrange').classList.contains('on')).toBe(true)
+    // the old strip under the header (Auto-sort / Done) is gone (owner, 6 Sep 26)
+    expect(screen.queryByTestId('rearrange-bar')).toBeNull()
+    expect(screen.queryByTestId('roster-autosort')).toBeNull()
+    expect(screen.queryByTestId('roster-arrange-done')).toBeNull()
+  })
+
+  it('the toggle reads ⇅ with the word on a droppable tail — icon-only on a phone', () => {
+    setRole('admin')
+    render(<Matrix />)
+    const btn = screen.getByTestId('roster-arrange')
+    expect(btn.textContent!.trim().startsWith('⇅')).toBe(true)
+    expect(btn.querySelector('.rtlbl')!.textContent).toMatch(/Rearrange/)
+    fireEvent.click(btn)
+    expect(btn.querySelector('.rtlbl')!.textContent).toMatch(/Rearranging/)
   })
 })
 
@@ -106,23 +124,25 @@ describe('the ⚙ Settings sheet', () => {
 })
 
 /* Rearranging happens ON THE GRID (owner, 3 Sep 26 — "I thought the rearrange
-   could be done on the grid main page itself"): the ⠿ in the corner turns it on,
-   a slim bar (Auto-sort + Done) appears, and Done turns it off. */
+   could be done on the grid main page itself"): the header ⇅ turns it on, and
+   the SAME ⇅ turns it off (owner, 6 Sep 26 — "when I click on it, it exits the
+   rearrange mode"); the strip with Auto-sort + Done that used to sit under the
+   header is gone. */
 describe('on-grid rearrange', () => {
-  it('the corner ⠿ toggles rearrange mode and the bar, and Done ends it', () => {
+  it('the ⇅ toggle turns rearrange mode on, and the same ⇅ ends it', () => {
     setRole('admin')
     const { rerender } = render(<Matrix />)
-    // not rearranging: no bar
-    expect(screen.queryByTestId('rearrange-bar')).toBeNull()
-    fireEvent.click(screen.getByTestId('roster-arrange'))       // the corner toggle
+    const grips = () => document.querySelectorAll('[data-testid^="drag-"]').length
+    expect(grips()).toBe(0)
+    fireEvent.click(screen.getByTestId('roster-arrange'))
     rerender(<Matrix />)
-    const bar = screen.getByTestId('rearrange-bar')
-    expect(bar).toBeTruthy()
-    // Auto-sort and Done live on the bar, beside the grid
-    expect(screen.getByTestId('roster-autosort')).toBeTruthy()
-    fireEvent.click(screen.getByTestId('roster-arrange-done'))
+    expect(grips()).toBeGreaterThan(0)
+    expect(screen.getByTestId('roster-arrange').getAttribute('aria-pressed')).toBe('true')
+    fireEvent.click(screen.getByTestId('roster-arrange'))
     rerender(<Matrix />)
-    expect(screen.queryByTestId('rearrange-bar')).toBeNull()
+    expect(grips()).toBe(0)
+    expect(screen.getByTestId('roster-arrange').getAttribute('aria-pressed')).toBe('false')
+    expect(document.querySelector('.mx-outer')!.classList.contains('mx-arranging')).toBe(false)
   })
 
   it('a member has no rearrange corner', () => {

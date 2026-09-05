@@ -44,7 +44,7 @@ import {
   type Figure,
   type FigureCtx,
 } from '../engine'
-import { figureCtxOf, setBalance, groupsInOrder, groupPriorityIds, lwHistEpoch, moveGroupTo, moveGroupPriorityTo, autoSortRoster, displayRoster, getState, moveCells, movableCells, moveManningRowTo, moveProblem, moveEvent, moveEventProblem, moveRosterRow, orderedManningIds, resetManningRules, setPostOut, type MoveResult, type EventMoveResult } from '../state/store'
+import { figureCtxOf, setBalance, groupsInOrder, groupPriorityIds, lwHistEpoch, moveGroupTo, moveGroupPriorityTo, displayRoster, getState, moveCells, movableCells, moveManningRowTo, moveProblem, moveEvent, moveEventProblem, moveRosterRow, orderedManningIds, resetManningRules, setPostOut, type MoveResult, type EventMoveResult } from '../state/store'
 import { BidPicker, DecisionSheet, PostOutSheet, RaptorSheet } from './BidPicker'
 import { CounterSheet, FigureBreakdownSheet, PersonFiguresSheet } from './CounterSheet'
 import { PersonSheet } from './PersonSheet'
@@ -1527,8 +1527,10 @@ export function Matrix() {
     // `folded` (28 Aug 26) is the same kind of row-set change — minimising a
     // category takes its rows (and their chips) out of the table. The window's
     // EDGES (5 Sep 26): two windows a month apart can hold the same day count,
-    // and the pinned widths would be the wrong months'.
-  }, [period.id, drawnDates.length, colWin?.lo, colWin?.hi, zoom, visWindow, folded])
+    // and the pinned widths would be the wrong months'. `arranging` (6 Sep 26):
+    // Rearrange widens the frozen name column (`.mx-arranging`), so a stuck
+    // mirror pinned at the old width would sit a grip's width off the grid.
+  }, [period.id, drawnDates.length, colWin?.lo, colWin?.hi, zoom, visWindow, folded, arranging])
 
   // The mirror starts life at the grid's current horizontal position, and the
   // two scrollers keep each other in lockstep from then on. Assigning an
@@ -2298,8 +2300,10 @@ export function Matrix() {
     // The window's EDGES are deps, not only the drawn-day count: two windows a
     // month apart can hold the same number of days (Mar+Apr and May+Jun both
     // span 61), and the placeholders and spans would be a month off.
+    // `arranging` (6 Sep 26): Rearrange widens the frozen name column, which
+    // moves every day column's edge and the grid's scroll width.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [zoom, visWindow, period.id, drawnDates.length, colWin?.lo, colWin?.hi])
+  }, [zoom, visWindow, period.id, drawnDates.length, colWin?.lo, colWin?.hi, arranging])
 
   // Put the anchored column back after a row-set repaint (see anchorRef).
   // Layout effect, not effect: the correction must land in the same frame as
@@ -2737,18 +2741,24 @@ export function Matrix() {
               </button>
               {/* REARRANGE toggle — moved here from the grid corner (owner, 5 Sep
                   26 — "the rearrange button goes after [settings]"). The actual
-                  rearranging is still HANDS-ON-GRID: this only turns the on-grid
-                  drag handles and the rearrange bar on/off. Lights accent (`.on`)
-                  while live so it is obvious the handles are on and how to leave.
-                  Admin only. */}
+                  rearranging is HANDS-ON-GRID: this only turns the on-grid drag
+                  handles on and off, and it is the ONE way in and out (owner,
+                  6 Sep 26 — "delete this whole blue section … when I click on it,
+                  it exits the rearrange mode"): the old strip under the header
+                  (Auto-sort + Done) is gone. Lights accent (`.on`) while live so
+                  it is obvious the handles are on and that tapping again leaves.
+                  On a phone it is the ⇅ icon alone (the word rides `.rtlbl`,
+                  hidden ≤430px — "just show an arrow up and down icon"); desktop
+                  keeps the word. Admin only. */}
               <button
                 className={`rtbtn${arranging ? ' on' : ''}`}
                 data-testid="roster-arrange"
                 aria-pressed={arranging}
-                title={arranging ? 'Finish rearranging the roster' : 'Rearrange the roster — drag people and category blocks'}
+                aria-label={arranging ? 'Finish rearranging the roster' : 'Rearrange the roster'}
+                title={arranging ? 'Finish rearranging — tap again to leave' : 'Rearrange the roster — drag people and category blocks'}
                 onClick={() => setArranging(a => !a)}
               >
-                ⠿ {arranging ? 'Rearranging' : 'Rearrange'}
+                ⇅<span className="rtlbl"> {arranging ? 'Rearranging' : 'Rearrange'}</span>
               </button>
             </>
           )}
@@ -2770,33 +2780,20 @@ export function Matrix() {
             ◷ OIL<span className="rtlbl"> tracker</span>
           </button>
         </div>
-        {/* THE ON-GRID REARRANGE BAR (owner, 3 Sep 26 — rearrange happens on the
-            grid, not in a window). Shown only while an admin is rearranging; it is
-            NOT a Sheet (a Sheet's scrim would swallow the very grid taps the drag
-            needs). Auto-sort and Done live here, beside the grid they act on. */}
-        {role === 'admin' && arranging && (
-          <div className="lw-rearrange-bar" data-testid="rearrange-bar">
-            <span className="rb-lead">⠿ Rearranging — drag people or a category heading to reorder</span>
-            <button
-              className="rtbtn"
-              data-testid="roster-autosort"
-              title="Group everyone into SXO, IP, OPS P, IWSO, OPS W, OCU, Personnel"
-              onClick={autoSortRoster}
-            >
-              ⇅ Auto-sort
-            </button>
-            <button
-              className="rtbtn on"
-              data-testid="roster-arrange-done"
-              title="Finish rearranging"
-              onClick={() => setArranging(false)}
-            >
-              ✓ Done
-            </button>
-          </div>
-        )}
+        {/* The on-grid REARRANGE BAR (3 Sep 26: "⠿ Rearranging — drag people…",
+            Auto-sort, Done) is GONE (owner, 6 Sep 26 — "delete this whole blue
+            section when rearrange is selected. Auto sort will be removed"). The
+            header toggle above is the way in and out; the store's
+            `autoSortRoster` stays for the tests and a future home. Don't bring
+            the strip back — it cost a row of height on a phone for a sentence.
+            `mx-arranging` (admin Rearrange) widens the frozen NAME column by the
+            grip's footprint so callsigns read whole beside the ⠿ (owner, same
+            day — "the CS/name will not be causing the puck names to be
+            shortened … same as before rearrange was selected"): a class on this
+            wrapper, like `mx-banded`, which the same tap already toggles on a
+            phone — one restyle per mode change, never per frame. */}
         <div
-          className={`mx-outer${bandActive && bandTop != null ? ' mx-banded' : ''}${sdaActive ? ' lw-sda' : ''}`}
+          className={`mx-outer${bandActive && bandTop != null ? ' mx-banded' : ''}${sdaActive ? ' lw-sda' : ''}${arranging && role === 'admin' ? ' mx-arranging' : ''}`}
           ref={mxOuterRef}
         >
         <div

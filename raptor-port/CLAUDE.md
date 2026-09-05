@@ -675,11 +675,19 @@ decision + a pointer. Owner + date establish authority; keep them.
   "OIL" on a phone (`.rtlbl`) so the four hold one line. ⚙ opens `SettingsSheet`
   (CONFIG: + Counter, +/− Event row, Show SANS, Reset counters + the roster GROUPS
   editor folded in; old `⚙ Groups` button + `GroupSheet.tsx` deleted). REARRANGING
-  is STILL hands-on-grid (person rows AND category headings drag, slim
-  `.lw-rearrange-bar` for Auto-sort/Done), but its TOGGLE moved from the ⠿ grid
-  corner INTO the top row (5 Sep 26) — the corner cell is empty now. Don't move
-  config onto the grid or rearrange into a sheet (a Sheet's scrim swallows the
-  drag's taps), and don't push OIL back to the far edge.
+  is STILL hands-on-grid (person rows AND category headings drag), and the top
+  row's ⇅ toggle is the ONE way in and out (owner, 6 Sep 26 — "delete this whole
+  blue section … when I click on it, it exits"): the on-grid strip
+  (`.lw-rearrange-bar`, "Rearranging — drag people…", Auto-sort, Done) is
+  DELETED; the toggle lights accent while on and is icon-only (⇅) on a phone.
+  **No Auto-sort button anywhere** — the store's `autoSortRoster` stays for the
+  tests; don't re-add the button or the strip without his ask. In Rearrange the
+  frozen NAME column WIDENS by the grip's footprint (`.mx-outer.mx-arranging`
+  re-sets `--who-w`, 136px desktop / 92px phone) so callsigns keep their at-rest
+  width beside the ⠿ ("not … shortened"); the header mirror and strip geometry
+  re-pin on `arranging`. The corner cell is empty (5 Sep 26). Don't move config
+  onto the grid or rearrange into a sheet (a Sheet's scrim swallows the drag's
+  taps), and don't push OIL back to the far edge.
 - **Who-wins follows the page order by default** (reversal of 28 Aug "two separate
   orders"). Group higher on the page wins a tie; dragging a category reorders
   who-wins with it (`groupPriorityIds` until `groupPriorityCustom`). A hand edit of
@@ -689,8 +697,9 @@ decision + a pointer. Owner + date establish authority; keep them.
   draws them under IP; `groupOf` = first fit down `GROUP_ORDER` (untouched page
   unchanged). Two fits stay exclusive by design: ground crew fit only Personnel;
   OCU fits OCU but never OPS P/W. `sxo`/`san` are never offered as qual groups (they
-  ARE the SXO cat / SANS group; a stored one is pruned). Auto-sort buckets by live
-  grouping (`liveAutoOrder`).
+  ARE the SXO cat / SANS group; a stored one is pruned). The store's
+  `autoSortRoster` buckets by live grouping (`liveAutoOrder`) — no button calls
+  it since 6 Sep 26 (above); an empty `rosterOrder` shows the same order.
 - **A chip shows only the CAT; hover/tap reveals DISPLAYED quals in group colours.**
   Chip stays CAT-coloured (`catClass` off `groupOf`), never encodes a qual. The
   popover (`qualpop`, screen-fixed so the frozen column can't clip it) lists ONLY

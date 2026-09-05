@@ -5104,46 +5104,74 @@ is GONE; the war's NAME still lives in the Period `<select>` in the page chrome
 (`Chrome.tsx`), so nothing is stranded. The controls hold ONE line down to the
 phone: "OIL tracker" drops its "tracker" tail (`.rtlbl`, `display:none` ≤430px)
 to read "OIL" there, and `.card-hd` keeps `flex-wrap:wrap` only as a safety net.
-The ⠿ Rearrange toggle MOVED here from the grid's bracket-corner cell
-(`th.brakhd`, empty now) — the rearranging itself is unchanged (hands-on-grid,
-the `.lw-rearrange-bar` for Auto-sort/Done); the toggle lights accent
-(`.rtbtn.on`) while live. jsdom cannot see the single line; pinned by e2e
+The ⇅ Rearrange toggle MOVED here from the grid's bracket-corner cell
+(`th.brakhd`, empty now) — the rearranging itself is hands-on-grid, and since
+6 Sep 26 this toggle is the only control (the on-grid bar is gone — §The
+on-grid rearrange bar is GONE); it lights accent (`.rtbtn.on`) while live and
+is the ⇅ icon alone on a phone. jsdom cannot see the single line; pinned by e2e
 (`leavewar.spec.ts` — one row, order, OIL adjacency and the member layout, at
 phone AND desktop) and unit (`settingssheet.test.tsx` — the header's controls by
 role and DOM order, and the date line gone).
 
-**The rearrange bar paints on its own compositor layer (owner's iPhone, 5 Sep
-26 — "when I press rearrange the buttons don't show until I press that area").**
-`.lw-rearrange-bar` carries `transform: translateZ(0)` (matrix.css, the same
-promoter as `.mxfixed`). The bar sits in-flow inside `.card`, a rounded
-`overflow: hidden` box (chrome.css) that WebKit turns into a clipping layer
-because its children — the native `.mx-wrap` scroll view and the `.mxband`
-overlay — are composited, so the bar's pixels lived in that layer's backing
-store; on a phone the ⠿ toggle inserts the bar AND drops the overlay
-(`bandActive = phone && !arranging`) in one commit, the scroller moves down
-under a rebuilt layer tree, and iOS did not repaint the strip until a touch
-there invalidated it. With its own layer the bar is painted when the layer is
-created, independent of the card's tiles; the layer exists only while the bar
-is mounted. The fixed `.mv-banner` never showed the fault (own layer by
-position) and is the working example. Don't move the promotion onto the
-buttons or the lead text (extra layers for nothing), and don't "fix" it by
-taking `overflow: hidden` off `.card` — that clip is the rounded corners.
-Pinned in `rearrangebar.test.ts` (the CSS contract; jsdom cannot paint and
-Chromium does not reproduce the fault).
-**The eye / ↺ in a manning row's frozen balance box paints the same way**
-(owner's iPhone, 6 Sep 26 — "when I click on rearrange, the eyes don't show on
-the counter grids until I click it or when I move the page"; the bar itself,
-promoted the day before, painted at once in his screenshot — that is what
-points this the same way). `.mx .counts .mrow-tools` — the edit-only span the
-eye (live row) or ↺ (archived row) sits in — carries the same `translateZ(0)`:
-the Rearrange tap inserts it into the sticky `td.bal` in the commit that tears
-the `.mxband` overlay down, and iOS left the little frozen box unpainted until
-a touch or a scroll. The span exists only in Rearrange, so it is ~a dozen tiny
-layers while an admin arranges and none at rest — not a page-wide promotion
-(those are the measured dead ends in `performance.md`). The promotion stays
-on the span: not the buttons, not `td.bal` (a layer on every balance cell at
-rest would be paid on every roster row, always). The ⠿ grip in the name cell
-showed fine on his phone and is deliberately not promoted. Same pin file.
+**The controls Rearrange inserts paint on their own compositor layer (owner's
+iPhone, 5–6 Sep 26).** On a phone the ⇅ toggle inserts the Rearrange controls
+AND drops the `.mxband` overlay (`bandActive = phone && !arranging`) in one
+commit; the layer tree is rebuilt under them and iOS did not repaint the
+sticky/clipped box a new control landed in until a touch there (or a scroll)
+invalidated it. First seen on the on-grid rearrange bar (5 Sep — "when I press
+rearrange the buttons don't show until I press that area"; fixed with
+`translateZ(0)`, the `.mxfixed` promoter, and his next screenshot showed it
+holding), then on the eye in each manning row's frozen balance box (6 Sep —
+"the eyes don't show on the counter grids until I click it or when I move the
+page"). The bar is gone now (next paragraph); the surviving case is
+`.mx .counts .mrow-tools` — the edit-only span the eye (live row) or ↺
+(archived row) sits in — which carries `transform: translateZ(0)`: a backing
+store of its own, painted when the layer is created. The span exists only in
+Rearrange, so it is ~a dozen tiny layers while an admin arranges and none at
+rest — not a page-wide promotion (those are the measured dead ends in
+`performance.md`). The promotion stays on the span: not the buttons, not
+`td.bal` (a layer on every balance cell at rest would be paid on every roster
+row, always). The ⠿ grip in the name cell showed fine on his phone and is
+deliberately not promoted. Pinned in `arrangepaint.test.ts` (the CSS contract;
+jsdom cannot paint and Chromium does not reproduce the fault).
+
+**The on-grid rearrange bar is GONE; the ⇅ toggle is the way in and out
+(owner, 6 Sep 26 — "delete this whole blue section when rearrange is selected.
+Auto sort will be removed … when I click on it, it exits the rearrange
+mode").** The accent strip under the card header ("⠿ Rearranging — drag people
+or a category heading to reorder", `⇅ Auto-sort`, `✓ Done`; 3 Sep–6 Sep 26) is
+deleted — it cost a row of height on a phone for a sentence. Rearrange is
+entered and left by the same header button (`roster-arrange`, `aria-pressed`),
+lit accent (`.rtbtn.on`) while on; on a phone it is the ⇅ icon alone (the word
+rides `.rtlbl`, hidden ≤430px — "just show an arrow up and down icon"), on
+desktop "⇅ Rearrange" / "⇅ Rearranging". There is no Auto-sort button anywhere
+now — the store's `autoSortRoster` remains for the tests and a future home;
+don't re-add the button or the strip without his ask. Pinned in
+`settingssheet.test.tsx` (toggle on/off, no bar, no Auto-sort, ⇅ + `.rtlbl`)
+and `e2e/leavewar.spec.ts` (both projects: drag from the toggle, nothing else
+appears, the phone's word is hidden).
+
+**In Rearrange the frozen name column widens by the grip, so callsigns keep
+their at-rest width (owner, 6 Sep 26 — "the CS/name will not be causing the
+puck names to be shortened. Instead extend the horizontal space required to
+show their name. Same as before rearrange was selected").** `.mx-outer.mx-
+arranging` (Matrix.tsx, admin Rearrange only) re-sets `--who-w` — 118→136px
+desktop, 76→92px phone — which is the ⠿ grip's footprint (glyph + `.whorow`
+gap: 10+6 desktop, 10+4 phone, measured in the built app) rounded up to 2px of
+air, so the `.whoedit` button keeps at least the width it had at rest (103→105
+desktop, 67→69 phone) and nothing is cut shorter than it was — the same four
+long desktop callsigns clip in both states, the same set on the phone. The rule
+sits beside `--who-w` so the phone block later in the file can narrow it (placed
+after that block it won on the phone too — the drive caught 136px there). Everything anchored to
+`--who-w` moves with it in the same restyle: the balance column's `left`, the
+bracket label, the frozen header mirror (which re-pins on `arranging`) and the
+strip geometry (re-measured on `arranging`); the day grid pays the difference
+only while arranging. Set on `.mx-outer` (the `mx-banded` precedent) so it is
+one restyle per mode change, never per frame, and never on the page root. The
+5 Sep phone-only shrink of the counter labels beside the grip (9px, hugged
+grip) went with it — the wider column seats "Crew sets" as it is. Pinned in
+`e2e/leavewar.spec.ts` (column grows, pair stays joined, name width ≥ rest, no
+new clipping, both projects).
 
 **On a manning row in Rearrange the GRIP sits at the LEFT of the counter name;
 the eye (Archive) sits alone, centred, in the balance box (owner, 5 Sep 26 —
@@ -5155,11 +5183,11 @@ cell to itself and centres there once the grip leaves. The grip is drawn ONLY in
 Rearrange on a LIVE row — a member, an idle admin and an archived row all get the
 bare label cell, which is exactly the state the frozen-column clip gate measures
 (§nothing in the callsign column is cut off), so the grip never trips it. The
-76px phone name cell is tight, so there (Rearrange only) the grip hugs the cell
-edge (`margin-left:-3px`), its glyph and the gap tighten, and the label drops to
-9px, and the longest counter ("Crew sets") reads whole — measured 75/75 on the
-phone, 117/117 on desktop. Pinned in `counts.test.tsx` (grip in the name cell
-ahead of the label; eye alone in the balance box).
+name column WIDENS by the grip in Rearrange (§In Rearrange the frozen name
+column widens, below), so the counter labels keep their at-rest size and the
+longest ("Crew sets") reads whole on the phone without the 5 Sep shrink.
+Pinned in `counts.test.tsx` (grip in the name cell ahead of the label; eye alone
+in the balance box) and the e2e clip check in Rearrange.
 
 **Archived counters live under an ARCHIVE bar (owner, 5 Sep 26 — "a row to open
 below the counter row that's called Archive, so those go there will be out of

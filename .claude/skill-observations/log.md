@@ -1253,3 +1253,18 @@ gate's. Keep verdict-bearing commands unpiped.
 **Suggested improvement:** When a device-only paint fault is traced to "node inserted in the same commit as a layer-tree change", enumerate every node that commit inserts (grep the toggle's state — here `editing`/`arranging` — for conditional renders) and, for each that lands in a sticky/composited/clipped box, either apply the same promotion or record WHY it is exempt (the grip: painted fine, structural change to its cell). Put the enumeration in the commit message so the next report can be matched against it.
 
 **Principle:** A mechanism-level diagnosis obliges a mechanism-level sweep: fix every node the mechanism reaches, or name each one you leave alone and why.
+
+### Observation 82: A cascade-order trap the stylesheet itself documents ("LAST IN THE FILE ON PURPOSE") was still walked into — the phone override lost to a base rule added further down; only the browser drive caught it
+
+**Status:** OPEN
+**Date:** 2026-09-06
+**Session context:** Widening the Leave War frozen name column in Rearrange: a base rule (`.mx-outer.mx-arranging { --who-w: 136px }`) and a phone override in the existing `@media (max-width: 430px)` block (`92px`). The media block carries a long comment saying it must come LAST because its overrides share specificity with the rules they narrow. I added the base rule ~300 lines BELOW that block, so on the phone the desktop value won; the Chromium drive at 390px showed the column at 136 instead of 92, and the fix was moving the base rule up beside `--who-w`'s definition.
+**Skill:** verification-before-completion (and CSS-editing discipline in this repo)
+**Type:** open-source
+**Phase/Area:** Where a new CSS rule is placed relative to an existing media override block
+
+**Issue:** The trap was documented at the exact place it bit, and the placement still went wrong, because the base rule was written where the FEATURE's other rules were (next to the rearrange bar rules), not where its VARIABLE is defined. Equal-specificity overrides in a later media block only win if the base rule precedes them; a base rule placed by topic rather than by cascade position silently loses on the narrower breakpoint. jsdom cannot see it; only the built-app drive at the phone width did.
+
+**Suggested improvement:** When adding a rule that a media block later overrides at equal specificity, place the base rule ABOVE that block (beside the variable/rule it sets), and make the phone measurement part of the first drive, not an afterthought — assert the phone value explicitly (here `who=92`), not just "it changed". Checklist line for CSS with breakpoint overrides: "where is the override block, and is my base rule above it?"
+
+**Principle:** A stylesheet's own placement warning fires only if the new rule is placed by cascade position, not by topic; measure the narrow breakpoint on the first drive.

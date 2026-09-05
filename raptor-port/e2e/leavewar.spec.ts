@@ -1285,6 +1285,38 @@ test('in Rearrange the counter grip is left of the name and nothing clips', asyn
   await page.locator('[data-testid="roster-arrange"]').click()  // leave arrange mode
 })
 
+// Owner, 6 Sep 26 — "the CS/name will not be causing the puck names to be
+// shortened. Instead extend the horizontal space required to show their name.
+// Same as before rearrange was selected." The frozen name column grows by the
+// grip's footprint in Rearrange, so the callsign keeps the width it had at rest.
+test('in Rearrange the name column grows by the grip: callsigns keep their width, the frozen pair stays joined', async ({ page }) => {
+  await lwRole(page, 'admin')
+  const row = '.mx tbody.mxbody tr[data-testid^="row-"]'
+  const clippedNames = () => page.evaluate(sel =>
+    [...document.querySelectorAll(`${sel} .who .cs`)]
+      .map(el => el as HTMLElement)
+      .filter(el => el.scrollWidth > el.clientWidth + 1)
+      .map(el => el.textContent?.trim()), row)
+  const geo = () => page.evaluate(sel => {
+    const who = document.querySelector(`${sel} .who`)!.getBoundingClientRect()
+    const bal = document.querySelector(`${sel} .bal`)!.getBoundingClientRect()
+    const name = document.querySelector(`${sel} .whoedit`)!.getBoundingClientRect()
+    return { whoW: who.width, gap: Math.abs(bal.left - who.right), nameW: name.width }
+  }, row)
+  const restClipped = await clippedNames()
+  const rest = await geo()
+  await page.locator('[data-testid="roster-arrange"]').click()
+  const arr = await geo()
+  expect(arr.whoW).toBeGreaterThan(rest.whoW)
+  expect(arr.gap).toBeLessThan(1)
+  // the callsign button keeps at least the width it had at rest
+  expect(arr.nameW).toBeGreaterThanOrEqual(rest.nameW - 1)
+  // …so nothing is cut shorter than at rest
+  for (const n of await clippedNames()) expect(restClipped).toContain(n)
+  await page.locator('[data-testid="roster-arrange"]').click()
+  expect((await geo()).whoW).toBeCloseTo(rest.whoW, 0)
+})
+
 // ---- more than one leave war ----
 
 test('switching leave war repaints the grid and keeps the balance', async ({ page }) => {
@@ -2125,8 +2157,8 @@ test('a decision made before the reopen survives it', async ({ page }) => {
 // ---- the categorised roster (owner, 18 Aug 26) --------------------------
 // The header no longer repeats "142 SQN / LEAVE WAR"; the roster is grouped
 // into the owner's seven categories, colour-coded from Raptor's own CAT
-// palette; ground crew ride it as a white Personnel group; an admin auto-sorts
-// or hand-drags the order.
+// palette; ground crew ride it as a white Personnel group; an admin hand-drags
+// the order from the header's ⇅ toggle (the Auto-sort button is gone, 6 Sep 26).
 
 test('the page carries no second squadron mark — the shell is the only identity', async ({ page }) => {
   // The old "142 SQN / LEAVE WAR" mark and "Leave war" nav pill are removed.
@@ -2152,10 +2184,12 @@ test('CAT sub-headings split the ops groups on desktop and fold away on a phone'
   else await expect(sub).toBeHidden()   // rendered but display:none — the owner's "just colour code it" on mobile
 })
 
-test('an admin auto-sorts and hand-drags the roster; a member gets neither tool', async ({ page }) => {
+test('an admin hand-drags the roster from the ⇅ toggle, which is also the way out; a member gets no tool', async ({ page }) => {
   await lwRole(page, 'admin')
   const ids = () => page.$$eval('[data-testid^="row-"]', els => els.map(e => e.getAttribute('data-testid').slice(4)))
   const before = await ids()
+  const toggle = page.locator('[data-testid="roster-arrange"]')
+  const gone = page.locator('[data-testid="rearrange-bar"], [data-testid="roster-autosort"], [data-testid="roster-arrange-done"]')
 
   if (page.viewportSize()!.width >= 700) {
     // Pointer drag (works on touch too): move the top row down past the fifth.
@@ -2186,22 +2220,31 @@ test('an admin auto-sorts and hand-drags the roster; a member gets neither tool'
     await page.mouse.up()
     const after = await ids()
     expect(after[after.length - 1]).toBe(src)
-    // Auto-sort restores the categorised order.
-    await page.locator('[data-testid="roster-autosort"]').click()
-    expect((await ids())[0]).toBe(before[0])
-    await page.locator('[data-testid="roster-arrange"]').click() // leave arrange mode
+    // No strip under the header any more (owner, 6 Sep 26): the lit ⇅ is the
+    // only control, and tapping it again is the way out.
+    await expect(gone).toHaveCount(0)
+    await expect(toggle).toHaveClass(/\bon\b/)
+    await toggle.click()
+    await expect(toggle).not.toHaveClass(/\bon\b/)
+    await expect(page.locator(`[data-testid="drag-${before[0]}"]`)).toHaveCount(0)
   } else {
-    // On a phone at least prove Auto-sort is reachable and does not throw. It
-    // lives on the rearrange bar now, so enter rearrange first, then leave.
-    await page.locator('[data-testid="roster-arrange"]').click()
-    await page.locator('[data-testid="roster-autosort"]').click()
-    expect((await ids())[0]).toBe(before[0])
-    await page.locator('[data-testid="roster-arrange"]').click()
+    // On a phone the toggle is the ⇅ icon alone (the word is hidden), lit while
+    // on; in and out through the same button, nothing else appears.
+    await toggle.click()
+    await expect(toggle).toHaveClass(/\bon\b/)
+    await expect(gone).toHaveCount(0)
+    const lbl = toggle.locator('.rtlbl')
+    await expect(lbl).toBeHidden()
+    expect((await toggle.textContent())!.trim().startsWith('⇅')).toBe(true)
+    await expect(page.locator(`[data-testid="drag-${before[0]}"]`)).toHaveCount(1)
+    await toggle.click()
+    await expect(toggle).not.toHaveClass(/\bon\b/)
+    await expect(page.locator(`[data-testid="drag-${before[0]}"]`)).toHaveCount(0)
   }
 
   await lwRole(page, 'member')
-  await expect(page.locator('[data-testid="roster-autosort"]')).toHaveCount(0)
-  await expect(page.locator('[data-testid="roster-arrange"]')).toHaveCount(0)
+  await expect(gone).toHaveCount(0)
+  await expect(toggle).toHaveCount(0)
 })
 
 test('a personnel row shows its callsign, with no edit box, in Rearrange', async ({ page }) => {
@@ -2512,10 +2555,10 @@ test('deleting a counter takes its row off the grid', async ({ page }) => {
 
 // Owner, 19 Aug 26 (kept through the 3 Sep 26 fold into ⚙): every admin control
 // must sit wholly within the viewport width, whatever its home now. The controls
-// live in three places — the top row (⚙ + OIL tracker), the ⚙ sheet (counters &
-// rows), and the on-grid rearrange bar (Auto-sort + Done) — so this checks each in
-// its place on BOTH projects (the phone is the real guard, the desktop proves it
-// costs nothing).
+// live in two places — the top row (⚙ + ⇅ Rearrange + OIL tracker) and the ⚙
+// sheet (counters & rows); the on-grid rearrange bar is gone (6 Sep 26) — so this
+// checks each in its place on BOTH projects (the phone is the real guard, the
+// desktop proves it costs nothing).
 test('every admin control is reachable within the viewport', async ({ page }) => {
   await lwRole(page, 'admin')
   const vw = page.viewportSize()!.width
@@ -2526,16 +2569,19 @@ test('every admin control is reachable within the viewport', async ({ page }) =>
     expect(box.x, `${id} starts off the left edge`).toBeGreaterThanOrEqual(0)
     expect(box.x + box.width, `${id} runs off the right edge`).toBeLessThanOrEqual(vw + 1)
   }
-  // the top row: the OIL tracker and the ⚙ settings entry
+  // the top row: the OIL tracker, the ⚙ settings entry and the ⇅ rearrange toggle
   await within('oil-tracker')
   await within('settings-open')
+  await within('roster-arrange')
   // config controls, folded into ⚙ Settings
   await page.locator('[data-testid="settings-open"]').click()
   for (const id of ['event-add', 'sans-toggle', 'counter-add', 'counter-reset-all']) await within(id)
   await page.locator('[data-testid="settings-close"]').click()
-  // rearrange controls, on the grid bar
+  // rearranging adds no control of its own — the lit toggle is the only one
   await page.locator('[data-testid="roster-arrange"]').click()
-  for (const id of ['roster-autosort', 'roster-arrange-done']) await within(id)
+  await within('roster-arrange')
+  await expect(page.locator('[data-testid="rearrange-bar"], [data-testid="roster-autosort"], [data-testid="roster-arrange-done"]')).toHaveCount(0)
+  await page.locator('[data-testid="roster-arrange"]').click()
 })
 
 // --- undo / redo UI-interaction bug test (owner, 30 Aug 26) -----------------
