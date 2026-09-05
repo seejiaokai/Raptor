@@ -943,3 +943,18 @@ gate's. Keep verdict-bearing commands unpiped.
 **Suggested improvement:** When an element must be unseen during a transition but visible the instant the transition ends, prefer COVERING it (an overlay, the transition's own snapshots) plus `pointer-events:none` over `visibility:hidden` / `display:none`, so the browser pre-paints it under the cover; and let the cover outlive the reveal by a frame or two over identical pixels. Reserve `visibility:hidden` for elements whose readiness on reveal does not matter.
 
 **Principle:** Hiding an element also defers its paint; if it has to be ready the moment it reappears, cover it instead — a covered element paints, a hidden one waits.
+
+### Observation 71: A fix that removes one symptom can unmask its twin — re-read the recording, not the diagnosis
+
+**Status:** OPEN
+**Date:** 2026-09-05
+**Session context:** The phone week-cross glide. The 16:02 recording showed "the landed day paints in with its lower half black"; the fix (real week painted, not hidden) removed the black. The owner's 16:46 recording of that fix showed a "split" — the card's header sliding while its lower rows sat still.
+**Skill:** systematic-debugging (or the repo's performance charter)
+**Type:** open-source
+**Phase/Area:** Root cause → fix → owner re-test
+
+**Issue:** The first diagnosis ("the hidden week is painted from scratch on reveal") was right about one half of the black and blind to the other: the arriving SNAPSHOT itself entered unpainted (a whole-week layer committed off-screen, painted top-first as it slid). Both faults showed as "black lower half"; fixing the first turned the second into a visible split, because the real week now showed through the unpainted hole. The frame-by-frame of the second recording (30 fps crops of the card's top band vs. its rows) is what separated them: the rows tracked the LANDING position, the header tracked the SLIDE. (Numbered 71, not 70: obs 70 was written on the sibling branch `claude/lw-month-jump-flake` heading for the same main.)
+
+**Suggested improvement:** When a paint-timing bug is fixed by a change that alters what is *underneath* the faulty layer, re-derive what the old symptom would look like with the new underlay before calling it done — a hole that showed black will now show whatever is beneath. And when a recording shows one region moving and another still, ask which layer each region belongs to (compare a top band and a bottom band across frames) before assuming one element is painting slowly.
+
+**Principle:** A symptom is the union of every fault that paints the same pixels; removing one fault changes the symptom's shape rather than ending it. Diagnose from the frames on each re-test, not from the previous round's story.

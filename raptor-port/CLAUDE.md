@@ -951,11 +951,16 @@ Contract: `docs/ui-contracts.md` §Dragging sections and waves, §Dense row reor
     phone-only ≤820px, reduced-motion-aware, no-ops without layout). It slides TWO
     FROZEN CLONES (owner, 24 Aug) — outgoing frozen on the finger's day, incoming
     frozen on its landing day, both `overflow:hidden` so neither scrolls/flings, real
-    week `visibility:hidden` behind them. Three load-bearing details: landing day
-    derives from cross DIRECTION (`fwd?0:weekScrollMax`), NOT live `scrollLeft`;
-    `void c.offsetWidth` forces layout before setting `scrollLeft`; real week hidden
-    so its fling/snap never shows. Clone at `z-index:40`, BELOW the sticky `.topbar`
-    (60) — keep it under the chrome. Don't slide the live week or use a single clone.
+    week painted but COVERED behind them (`pointer-events:none`, never
+    `visibility:hidden` — 5 Sep 26, a hidden week came back unpainted). Load-bearing
+    details: landing day derives from cross DIRECTION (`fwd?0:weekScrollMax`), NOT
+    live `scrollLeft`; each clone is ONE opaque day card (`snapshot()`), inserted
+    ON-SCREEN under the leaving one and left two frames to paint before it slides
+    (5 Sep 26 — a whole-week clone started off-screen slid in half-unpainted, the
+    "split"); real week covered so its fling/snap never shows. Clones at `z-index`
+    40/41, BELOW the sticky `.topbar` (60) — keep them under the chrome. Don't slide
+    the live week, use a single clone, clone the whole week, or start a clone
+    off-screen.
     Swipe NOT locked to one day (owner kept this) — no `scroll-snap-stop`; within-week
     swipes never glide, desktop instant.
   - **Desktop arrows are continuous across weeks** (owner, 23 Aug), landings instant.

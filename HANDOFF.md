@@ -164,9 +164,15 @@ run whole against the final code:
   the slide, and a hidden element is never painted, so the reveal had no tiles
   and the phone drew the week from scratch. Fix: the week stays painted under
   the two snapshots, covered and `pointer-events:none` (still nothing to
-  scrub); the incoming snapshot lifts two frames after the reveal. Pinned
-  `ui/weekglide.test.ts`; ledger 24. Chromium cannot show the black (it paints
-  a revealed page in one frame), so the iPhone is the gate.
+  scrub); the incoming snapshot lifts two frames after the reveal. Second
+  pass the same evening (his 16:46 recording, "the top part swipe is like
+  split animation"): the arriving snapshot slid in with its lower tiles not
+  yet painted — it was the whole week's markup and started a screen
+  off-screen, where the phone paints nothing — so the real week showed through
+  the hole. Now each snapshot is ONE opaque day card, inserted on-screen under
+  the leaving one and painted for two frames before it moves. Pinned
+  `ui/weekglide.test.ts`; ledger 24. Chromium cannot show either fault (it
+  rasters off-thread), so the iPhone is the gate.
 - **iOS is untestable here.** This container ships no WebKit. The Leave War
   column window / placeholders and every contenteditable or touch-fling change
   are verified on the owner's iPhone against the preview; if the grid ever
