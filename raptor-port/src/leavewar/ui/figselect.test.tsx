@@ -3,6 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { advanceStage, initStore, lwHistEpoch, lwUndo, setBalance, setRole } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { Matrix } from './Matrix'
+import { FIGSEL_ATTR } from './select'
 
 /* THE FIGURE SELECTION (owner, 6 Sep 26) — a drag down ONE figure column picks
    a run of people, for the docked balance bar.
@@ -17,7 +18,7 @@ import { Matrix } from './Matrix'
    React owns rather than a class painted from outside).
 
    jsdom has no layout: every rect is 0×0 and `elementFromPoint` answers
-   nothing, so the drag is fed a stub keyed on a `data-y` written onto the two
+   nothing, so the drag is fed a stub keyed on a `data-y` written onto the
    cells under test — the same trick select.test.ts uses, and the only way to
    hit-test a column here. */
 
@@ -31,19 +32,24 @@ afterEach(() => { document.elementFromPoint = origEFP })
 
 /** The counter column's cells, in grid order — one per person row. */
 const balCells = () => [...document.querySelectorAll('td[data-testid^="bal-"]')] as HTMLElement[]
-const marked = () => [...document.querySelectorAll('[data-figsel]')] as HTMLElement[]
+/** Whose row a counter cell is (`bal-<person>`), read off the grid rather than
+ *  named, so a re-keyed seed cannot leave a test quietly asserting nothing. */
+const personOf = (cell: HTMLElement) => cell.dataset.testid!.slice(4)
+/** The COMMITTED selection — the attribute React renders (`data-figsel`), never
+ *  the gesture's own mid-drag mark. */
+const marked = () => [...document.querySelectorAll(`[${FIGSEL_ATTR}]`)] as HTMLElement[]
 
-/** Lay the first two rows of the closed column out at y = 10 and 30 and answer
- *  `elementFromPoint` from that, so a drag from one to the other has something
- *  to hit. Everything else answers null — a point off the two is off the grid,
- *  which is the hold-last-focus path. */
-function layOutColumn(): [HTMLElement, HTMLElement] {
-  const [a, b] = balCells()
-  a!.setAttribute('data-y', '10')
-  b!.setAttribute('data-y', '30')
+/** Lay the first three rows of the closed column out at y = 10, 30 and 50 and
+ *  answer `elementFromPoint` from that, so a drag from one to another has
+ *  something to hit. Everything else answers null — a point off the three is
+ *  off the grid, which is the hold-last-focus path. */
+function layOutColumn(): [HTMLElement, HTMLElement, HTMLElement] {
+  const [a, b, c] = balCells()
+  const rows = [a!, b!, c!]
+  rows.forEach((el, i) => el.setAttribute('data-y', String(10 + i * 20)))
   document.elementFromPoint = (_x: number, y: number) =>
-    [a!, b!].find(c => c.getAttribute('data-y') === String(y)) ?? null
-  return [a!, b!]
+    rows.find(el => el.getAttribute('data-y') === String(y)) ?? null
+  return [a!, b!, c!]
 }
 
 const pointerDown = (el: Element, y: number, pointerType = 'mouse') =>
@@ -52,19 +58,24 @@ const pointerMove = (y: number) =>
   window.dispatchEvent(new PointerEvent('pointermove', { pointerId: 1, pointerType: 'mouse', clientX: 20, clientY: y }))
 const pointerUp = () =>
   window.dispatchEvent(new PointerEvent('pointerup', { pointerId: 1, pointerType: 'mouse', button: 0 }))
+const pointerCancel = () =>
+  window.dispatchEvent(new PointerEvent('pointercancel', { pointerId: 1, pointerType: 'mouse' }))
 
 /** One macrotask, for the 0ms sweep that retires a committed drag's one-shot
  *  click swallow (select.ts `swallowNextClick`). */
 const tick = () => act(() => new Promise<void>(r => { setTimeout(r, 0) }))
 
-/** A mouse drag from the first laid-out row to the second: down, past
- *  MOUSE_SLOP (which arms it), onto the second row, up. */
-function dragDown(from: HTMLElement) {
+/** A mouse drag from one laid-out row to another: down, past MOUSE_SLOP (which
+ *  arms it), onto the target row, up. `end` says how it finishes — a release
+ *  commits, a cancel is the browser taking the gesture away mid-drag (an iOS
+ *  system gesture, a notification). */
+function dragDown(from: HTMLElement, toY = 30, end: 'up' | 'cancel' = 'up') {
+  const y0 = Number(from.getAttribute('data-y'))
   act(() => {
-    pointerDown(from, 10)
-    pointerMove(16)
-    pointerMove(30)
-    pointerUp()
+    pointerDown(from, y0)
+    pointerMove(y0 + 6)
+    pointerMove(toY)
+    if (end === 'up') pointerUp(); else pointerCancel()
   })
 }
 
@@ -96,7 +107,7 @@ describe('a drag down the figure column selects a run of people', () => {
     const [a] = layOutColumn()
     // Something to undo: the selection itself writes nothing, so a bare undo
     // would no-op and prove nothing about the clear.
-    act(() => { setBalance(a.dataset.testid!.slice(4), 'annual', 9) })
+    act(() => { setBalance(personOf(a), 'annual', 9) })
     dragDown(a)
     expect(marked()).toHaveLength(2)
     // UNDO: a restore can rewrite the very rows the selection covers, so the
@@ -125,15 +136,47 @@ describe('a drag down the figure column selects a run of people', () => {
 
   it('a store write mid-selection leaves the highlight standing', () => {
     render(<Matrix />)
-    const [a, b] = layOutColumn()
+    const [a, b, c] = layOutColumn()
     dragDown(a)
     expect(marked()).toHaveLength(2)
     // An unrelated admin write: every row re-renders, and FigureCell rebuilds
     // its className from `wide`/`flash` as it goes. A class painted onto the
     // box by the gesture would be wiped here — which is the whole reason the
-    // mark is an attribute React itself renders.
-    act(() => { setBalance('tata', 'annual', 5) })
-    expect(marked().map(c => c.getAttribute('data-testid'))).toEqual([a.dataset.testid, b.dataset.testid])
+    // mark is an attribute React itself renders. The person is read off the
+    // grid, never named: `setBalance` returns false for an unknown id and
+    // notifies nobody, so a renamed seed would leave this asserting nothing.
+    act(() => { setBalance(personOf(c), 'annual', 5) })
+    expect(marked().map(el => el.getAttribute('data-testid'))).toEqual([a.dataset.testid, b.dataset.testid])
+  })
+
+  // THE TWO WRITERS MUST NOT SHARE AN ATTRIBUTE (6 Sep 26 review). React renders
+  // `data-figsel` for the committed selection; the gesture paints its own
+  // `data-figdrag` while dragging and wipes it on release. Sharing one attribute
+  // looked fine until a drag overlapped a live selection: the gesture's clear
+  // stripped a box whose React prop had NOT changed, so React never put it back
+  // — a selected person went dark while still selected, and the bar (Task 3)
+  // would key a number into somebody the screen no longer showed.
+  it('a second drag overlapping the first leaves EVERY selected box lit', () => {
+    render(<Matrix />)
+    const [a, b, c] = layOutColumn()
+    dragDown(a, 30)                       // a..b
+    expect(marked()).toHaveLength(2)
+    dragDown(b, 50)                       // b..c — b is already selected
+    // The union is a..c: b must not have been wiped on the way through.
+    expect(marked().map(el => el.getAttribute('data-testid')))
+      .toEqual([a.dataset.testid, b.dataset.testid, c.dataset.testid])
+  })
+
+  it('an armed drag the browser CANCELS leaves the live selection lit', () => {
+    render(<Matrix />)
+    const [a, b] = layOutColumn()
+    dragDown(a, 30)
+    expect(marked()).toHaveLength(2)
+    // A cancel commits nothing and changes no state — so nothing re-renders
+    // afterwards, and anything the gesture wiped on the way out would stay
+    // wiped. The selection made a moment ago is still the user's.
+    dragDown(a, 30, 'cancel')
+    expect(marked().map(el => el.getAttribute('data-testid'))).toEqual([a.dataset.testid, b.dataset.testid])
   })
 })
 

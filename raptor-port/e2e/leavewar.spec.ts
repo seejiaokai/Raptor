@@ -1703,6 +1703,15 @@ test('a drag on a total, or by a member, lights nothing', async ({ page }) => {
   // so it starts nothing (selectableFigure — a figure with a counter).
   await dragFigures(page, drawerBox(page, 'lvetot', p1!), drawerBox(page, 'lvetot', p3!))
   await expect(lit).toHaveCount(0)
+  // A QUICK CLICK IS STILL A CLICK, for the admin who can drag. The gesture is
+  // the day grid's rhythm — a hold (or a mouse past the slop) selects and eats
+  // the trailing click; a plain tap never arms — so the box that now starts a
+  // selection must still open its breakdown when it is simply pressed.
+  await drawerBox(page, 'ccl', p1!).click()
+  await expect(page.locator('[data-testid="figure-breakdown"]')).toBeVisible()
+  await page.locator('[data-testid="breakdown-close"]').click()
+  await expect(page.locator('[data-testid="figure-breakdown"]')).toHaveCount(0)
+  await expect(lit).toHaveCount(0)   // ...and a click selects nobody
   // ...and keying balances is the admin's: a member's drag down a real pool
   // does nothing either, and opens no sheet on the way.
   await lwRole(page, 'member')

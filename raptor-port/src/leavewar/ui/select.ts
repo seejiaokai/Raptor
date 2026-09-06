@@ -136,7 +136,7 @@ type Hit = { kind: 'roster'; cell: Cell } | { kind: 'event'; cell: EventCell }
    the same mechanics as the leave war grid") and the figure columns
    (`wireFigureSelect`: a run of people down one figure, 6 Sep 26) are three
    callers of the same machine, so the phone learns one rhythm for all of them. */
-interface GestureSpec<A, P> {
+interface GestureBase<A, P> {
   enabled: () => boolean
   /** The thing under the pointer on pointerdown, or null when the press is
    *  not on something selectable (an ordinary click, then). */
@@ -146,17 +146,6 @@ interface GestureSpec<A, P> {
    *  "last thing the finger was over" so a gap or an edge-scroll never
    *  collapses the selection. `null` paints nothing. */
   current: (anchor: A, x: number, y: number) => { ids: string[]; payload: P } | null
-  /** The node an id paints on, inside `wrap` — or, for a thing drawn in more
-   *  than one place (a figure box has a real cell, the band's copy and a
-   *  drawer box), `nodes`: every copy. Either one. */
-  node?: (id: string) => Element | null
-  nodes?: (id: string) => Element[]
-  /** The class a painted node wears. `mark` replaces it when the node's
-   *  className is React's to rewrite on every render (FigureCell rebuilds
-   *  `wide`/`flash` on every store change): an attribute React never rendered
-   *  survives that rewrite; a class painted from outside does not. */
-  cls: string
-  mark?: (el: Element, on: boolean) => void
   /** Fires the moment the drag ARMS (a finger's hold landed, a mouse crossed
    *  the slop): a caller's chance to tell a sibling gesture to stand down. */
   onArm?: () => void
@@ -168,6 +157,22 @@ interface GestureSpec<A, P> {
    *  wrap scrolls both ways passes itself. */
   vscroll?: (wrap: HTMLElement) => VScroll
 }
+/* WHICH NODE, and HOW it is marked — both are either/or, and the type says so
+   rather than leaving a caller to pass a `cls` it does not use (6 Sep 26
+   review). `node` is the thing drawn once; `nodes` is a thing drawn in more
+   than one place at once (a figure box has a real cell, the band's copy and a
+   drawer box, and every copy must light). `cls` toggles a class; `mark`
+   replaces it where the node's className is React's to rewrite on every render
+   (FigureCell rebuilds `wide`/`flash` on every store change) — an attribute
+   React never rendered survives that rewrite, a class painted from outside
+   does not. */
+type GesturePaint =
+  | { node: (id: string) => Element | null; nodes?: never }
+  | { nodes: (id: string) => Element[]; node?: never }
+type GestureMark =
+  | { cls: string; mark?: never }
+  | { mark: (el: Element, on: boolean) => void; cls?: never }
+type GestureSpec<A, P> = GestureBase<A, P> & GesturePaint & GestureMark
 
 function wireGesture<A, P>(wrap: HTMLElement, spec: GestureSpec<A, P>): () => void {
   let anchor: A | null = null
@@ -190,7 +195,7 @@ function wireGesture<A, P>(wrap: HTMLElement, spec: GestureSpec<A, P>): () => vo
     const n = spec.node?.(id)
     return n ? [n] : []
   }
-  const markEl = (el: Element, on: boolean) => { if (spec.mark) spec.mark(el, on); else el.classList.toggle(spec.cls, on) }
+  const markEl = (el: Element, on: boolean) => { if (spec.mark) spec.mark(el, on); else el.classList.toggle(spec.cls!, on) }
   const clearPaint = () => {
     for (const id of painted) for (const el of nodesOf(id)) markEl(el, false)
     painted = new Set()
@@ -298,7 +303,14 @@ function wireGesture<A, P>(wrap: HTMLElement, spec: GestureSpec<A, P>): () => vo
     // with 1 input"): `.selecting` makes the wash brighter and the ring thicker
     // than the resting highlight (matrix.css), and Android gets a short haptic.
     // iOS has no web vibrate, so the visual cue carries it there.
+    // ...as a class AND an attribute, and the attribute is the durable one: a
+    // wrap whose className React OWNS (the figure select's `.mx-outer`, rebuilt
+    // from `mx-banded`/`lw-sda`/`mx-arranging`/`mx-figures`) loses the class on
+    // the next render — a phone drag whose edge auto-scroll turned the band on
+    // would go dim mid-drag. The class stays for the day grid's own recipe,
+    // which is keyed on it (6 Sep 26 review).
     wrap.classList.add('selecting')
+    wrap.setAttribute('data-selecting', '1')
     try { (navigator as { vibrate?: (ms: number) => void }).vibrate?.(12) } catch { /* unsupported */ }
     // The bands the PRESS sat in (the press point, not the arming move — a
     // mouse arms a few px on, a finger arms still). See noteEdge.
@@ -394,6 +406,7 @@ function wireGesture<A, P>(wrap: HTMLElement, spec: GestureSpec<A, P>): () => vo
     wrap.removeEventListener('touchmove', onTouchMove)
     wrap.style.touchAction = ''
     wrap.classList.remove('selecting')
+    wrap.removeAttribute('data-selecting')
     anchor = null; armed = false; pid = -1; vscroll = null; held = 0   // re-resolve next drag
     spec.reset?.()
   }
@@ -553,9 +566,9 @@ export function wireRowSelect(wrap: HTMLElement, ctx: RowSelectCtx): () => void 
    focus is whichever person's box is under the pointer, in any of a box's
    three copies (the real cell, the band's copy, a drawer box), all addressed
    by `data-fig` + `data-person`. Bound on `.mx-outer`, the one ancestor of all
-   three. Painted as an ATTRIBUTE (`data-figsel`), never a class — FigureCell
-   rebuilds its className on every store change, which is exactly the moment
-   Save lands. A heading, a sub-heading or an event row under the pointer
+   three. Painted as an ATTRIBUTE (see the pair below), never a class —
+   FigureCell rebuilds its className on every store change, which is exactly the
+   moment Save lands. A heading, a sub-heading or an event row under the pointer
    holds the last person (`lastFocus`), the grid's own rule. */
 export interface FigureSelectCtx {
   order: () => string[]                     // person ids, top → bottom, people only
@@ -566,7 +579,17 @@ export interface FigureSelectCtx {
 }
 export type FigureSelection = { fig: string; ids: string[] }
 type FigAnchor = { fig: string; person: string }
+/* TWO WRITERS, TWO ATTRIBUTES, and they must never be one (6 Sep 26 review).
+   React renders `data-figsel` for the COMMITTED selection; the gesture paints
+   `data-figdrag` while a drag is live and wipes its own marks on release.
+   Shared, the gesture's clear stripped boxes React already owned — and React
+   only writes an attribute whose PROP changed, so it never put them back: a
+   second drag overlapping a live selection left a selected person dark, and a
+   cancelled drag (which commits nothing, so nothing re-renders) left the whole
+   selection dark. Both are lit by the same CSS (matrix.css), so a box under a
+   drag looks the same whichever attribute it is wearing. */
 export const FIGSEL_ATTR = 'data-figsel'
+export const FIGDRAG_ATTR = 'data-figdrag'
 const FIGBOX = 'td.figbox[data-fig][data-person]'
 
 const figBoxOf = (el: Element | null | undefined): FigAnchor | null => {
@@ -579,14 +602,19 @@ export function wireFigureSelect(outer: HTMLElement, ctx: FigureSelectCtx): () =
   let lastFocus: string | null = null
   return wireGesture<FigAnchor, FigureSelection>(outer, {
     enabled: ctx.enabled,
-    cls: 'figsel',   // unused — `mark` paints the attribute
     nodes: id => {
       const i = id.indexOf(':')
       return Array.from(outer.querySelectorAll(`td.figbox[data-fig="${id.slice(0, i)}"][data-person="${id.slice(i + 1)}"]`))
     },
-    mark: (el, on) => { if (on) el.setAttribute(FIGSEL_ATTR, '1'); else el.removeAttribute(FIGSEL_ATTR) },
+    mark: (el, on) => { if (on) el.setAttribute(FIGDRAG_ATTR, '1'); else el.removeAttribute(FIGDRAG_ATTR) },
     reset: () => { lastFocus = null },
     onArm: ctx.onArm,
+    // A HOLD selects, a quick tap still opens the breakdown — the day grid's own
+    // rhythm, on the same feel constants. So an admin's press that dwells past
+    // HOLD (or a mouse that moves past MOUSE_SLOP) commits a selection of the
+    // one person pressed and swallows the trailing click; a plain tap never
+    // arms, and the box's own onClick opens that person's figure as it always
+    // has. Pinned both ways in the e2e.
     hit: el => {
       const box = figBoxOf(el)
       return box && ctx.selectable(box.fig) && ctx.order().includes(box.person) ? box : null

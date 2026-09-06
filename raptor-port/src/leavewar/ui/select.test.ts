@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { clearLanding, earliestDate, eventRange, FIGSEL_ATTR, paintLanding, parseCellId, parseEventCell, rectCells, rowRun, wireFigureSelect, wireRowSelect, wireSelect, type Selection } from './select'
+import { clearLanding, earliestDate, eventRange, FIGDRAG_ATTR, paintLanding, parseCellId, parseEventCell, rectCells, rowRun, wireFigureSelect, wireRowSelect, wireSelect, type Selection } from './select'
 
 // The gesture controller (wireSelect) needs a real browser (elementFromPoint,
 // pointer capture, layout) and is covered by e2e/leavewar.spec.ts. Here we pin
@@ -698,7 +698,10 @@ describe('wireFigureSelect', () => {
   const down = (el: Element, x: number, y: number) => el.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, pointerId: 1, pointerType: 'mouse', clientX: x, clientY: y, button: 0 }))
   const move = (x: number, y: number) => window.dispatchEvent(new PointerEvent('pointermove', { pointerId: 1, pointerType: 'mouse', clientX: x, clientY: y }))
   const up = () => window.dispatchEvent(new PointerEvent('pointerup', { pointerId: 1, pointerType: 'mouse', button: 0 }))
-  const marked = () => cells.filter(c => c.hasAttribute(FIGSEL_ATTR)).map(c => `${c.getAttribute('data-fig')}:${c.getAttribute('data-person')}`)
+  // The GESTURE's own mark. React's `data-figsel` is the committed selection
+  // and is nobody's business here — the two are separate attributes precisely so
+  // this clear can never reach a box React owns (select.ts).
+  const marked = () => cells.filter(c => c.hasAttribute(FIGDRAG_ATTR)).map(c => `${c.getAttribute('data-fig')}:${c.getAttribute('data-person')}`)
 
   it('a mouse drag down the CCL column paints the run as an ATTRIBUTE and hands the pool + people over', () => {
     down(at('ccl', 'a'), 60, 10)
@@ -739,10 +742,18 @@ describe('wireFigureSelect', () => {
     expect(onArm).toHaveBeenCalledTimes(1)
     expect(outer.style.touchAction).toBe('none')
     expect(outer.classList.contains('selecting')).toBe(true)
+    // The armed beat is an ATTRIBUTE as well, and that copy is the one the
+    // figure recipe reads: this wrap's className belongs to React, which
+    // rebuilds it mid-drag (6 Sep 26 review).
+    expect(outer.getAttribute('data-selecting')).toBe('1')
   })
-  it('the mark survives a className rewrite — the reason it is an attribute', () => {
+  it('the mark and the armed beat both survive a className rewrite — the reason they are attributes', () => {
     down(at('ccl', 'a'), 60, 10); move(60, 16)
     at('ccl', 'a').className = 'bal figbox flash'   // what a React re-render does mid-drag
-    expect(at('ccl', 'a').hasAttribute(FIGSEL_ATTR)).toBe(true)
+    outer.className = 'mx-outer mx-banded mx-figures'
+    expect(at('ccl', 'a').hasAttribute(FIGDRAG_ATTR)).toBe(true)
+    expect(outer.getAttribute('data-selecting')).toBe('1')
+    up()
+    expect(outer.hasAttribute('data-selecting')).toBe(false)   // and it is taken down
   })
 })

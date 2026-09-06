@@ -811,6 +811,9 @@ export function Matrix() {
   // touches that START on a `.bal` cell so a swipe anywhere else still
   // scrolls the grid, which is what a horizontal drag must go on doing.
   const swipe = useRef<{ x: number; y: number } | null>(null)
+  // `figArmed` is the figure select's own flag, declared with that gesture's
+  // block further down (search FIGURE SELECT): it says a hold-and-drag took
+  // this touch, and these two handlers are the only readers.
   const onTouchStart = (e: TouchEvent) => {
     figArmed.current = false
     const on = (e.target as HTMLElement).closest?.('.bal')
@@ -2974,8 +2977,10 @@ export function Matrix() {
     // starts over (owner, 6 Sep 26 — one pool per drag).
     onSelect: s => setFigSel(prev => (prev && prev.fig === s.fig ? { fig: s.fig, ids: [...new Set([...prev.ids, ...s.ids])] } : s)),
   }
-  // The selection in roster order, and its figure — the bar's two inputs. A
-  // figure hidden after the drag, or a person gone from the roster, drops out.
+  // The selection in roster order, and its figure — consumed by the balance bar
+  // (Task 3), which is where they are read; computed here because this is where
+  // the roster order and the live figure list are. A figure hidden after the
+  // drag, or a person gone from the roster, drops out.
   const figSelFigure = figSel ? figures.find(f => f.id === figSel.fig) : undefined
   const figSelIds = figSel ? figSelCtxRef.current.order().filter(id => figSel.ids.includes(id)) : []
   const csOf = (id: string): string => displayRoster().find(p => p.id === id)?.callsign ?? id

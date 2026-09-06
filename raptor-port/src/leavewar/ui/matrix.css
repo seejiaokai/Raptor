@@ -1017,14 +1017,25 @@
 /* The FIGURE selection (owner, 6 Sep 26) — the day grid's recipe, keyed on an
    ATTRIBUTE: the box's className is React's (rebuilt from `wide`/`flash` on
    every store change), so a class painted by the gesture would be wiped at
-   the very moment Save re-renders the row. `.mx-outer.selecting` is the
-   armed-drag brightening, the same beat the day grid's `.mx-wrap.selecting`
-   carries — a phone user must SEE the hold land. */
-.mx td.figbox[data-figsel] {
+   the very moment Save re-renders the row.
+     TWO attributes, one look: React renders `data-figsel` for the committed
+   selection and the gesture paints `data-figdrag` while a drag is live. They
+   are separate because the gesture wipes its OWN marks on release, and wiping
+   a box React already owned left it dark for good (select.ts) — but they read
+   as one highlight here, so a drag over a live selection never flickers.
+     `[data-selecting]` is the armed-drag brightening, the same beat the day
+   grid's `.mx-wrap.selecting` carries — a phone user must SEE the hold land.
+   An ATTRIBUTE rather than that class because this wrap is `.mx-outer`, whose
+   className React rebuilds (`mx-banded`/`lw-sda`/`mx-arranging`/`mx-figures`):
+   a phone drag whose edge auto-scroll flipped the band on would have lost the
+   brightening mid-drag. */
+.mx td.figbox[data-figsel],
+.mx td.figbox[data-figdrag] {
   background: rgba(59, 198, 232, .22);
   box-shadow: inset 0 0 0 1px rgba(59, 198, 232, .6);
 }
-.mx-outer.selecting .mx td.figbox[data-figsel] {
+.mx-outer[data-selecting] .mx td.figbox[data-figsel],
+.mx-outer[data-selecting] .mx td.figbox[data-figdrag] {
   background: rgba(59, 198, 232, .34);
   box-shadow: inset 0 0 0 2px rgba(59, 198, 232, .95);
 }

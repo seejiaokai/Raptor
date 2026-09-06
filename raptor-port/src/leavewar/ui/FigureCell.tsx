@@ -58,8 +58,10 @@ export const FigureCell = memo(function FigureCell({
   dataPerson?: string
   /** The committed selection (Matrix `figSel`) — rendered as `data-figsel` so
    *  the highlight survives this cell's own re-render. Mid-drag the gesture
-   *  writes the SAME attribute imperatively; React leaves it alone because this
-   *  prop has not changed, and takes it over the moment the drag commits. */
+   *  paints its OWN attribute (`data-figdrag`, select.ts) and never touches
+   *  this one: React writes an attribute only when its prop CHANGED, so a mark
+   *  cleared from outside would never come back. The two read as one highlight
+   *  in the CSS. */
   selected?: boolean
 }) {
   const prev = useRef<{ id: string; person: string; top: number } | null>(null)
