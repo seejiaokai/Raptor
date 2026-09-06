@@ -1556,3 +1556,33 @@ gate's. Keep verdict-bearing commands unpiped.
 
 **Principle:** React reconciles props, not the DOM: an attribute two writers share is repaired by neither — one hook per writer, unified in CSS.
 
+### Observation 102: A DONE_WITH_CONCERNS concern that is itself a missing requirement is closed by the same implementer BEFORE the review, not after it
+
+**Status:** OPEN
+**Date:** 2026-09-06
+**Session context:** Leave War bulk balance entry + the owner's phone batch (Tasks 3 and 5): a pre-review completion, and two CSS cascade fix rounds.
+**Skill:** subagent-driven-development
+**Type:** open-source
+**Phase/Area:** Handle the report / the fix loop
+
+**Issue:** An implementer reported DONE_WITH_CONCERNS with "his call" attached to a concern that sat squarely inside the owner's ask (a tap on a phone leaves the button hovered, so the border the owner had complained about would remain). The skill's flow would have sent the task to review as-is, had the reviewer flag it, and spent a fix round + re-review on it. Instead the controller resumed the implementer (its context hot) with "this is yours to finish, not his to decide", the completion landed as a second commit in minutes, and ONE review covered both commits — no round consumed.
+
+**Suggested improvement:** In "Handle the report", under DONE_WITH_CONCERNS: read each concern against the task's requirement; a concern that names a requirement the implementer left undone ("beyond the brief, his call") is not a concern to note — resume the implementer to complete it before dispatching the review, and review the combined diff. Only concerns about scope, correctness of what WAS built, or observations go forward as-is.
+
+**Principle:** A concern that is really an unfinished requirement is closed before the review, by the hands that still hold the context — the review then judges finished work.
+
+### Observation 103: CSS that must beat an existing STATE rule is a cascade contract: state the rule it must out-rank, and pin it with a specificity calculation
+
+**Status:** OPEN
+**Date:** 2026-09-06
+**Session context:** Leave War bulk balance entry + the owner's phone batch (Tasks 3 and 5): a pre-review completion, and two CSS cascade fix rounds.
+**Skill:** writing-plans
+**Type:** open-source
+**Phase/Area:** Task steps for CSS / test design
+
+**Issue:** Two of the build's three CSS fix rounds were the same defect: a new rule written at the specificity the brief's literal selector implied lost to an existing state rule the brief never named — a whole-row landing bar out-ranked by the manning grid's amber/red shortfall ring; a band rule out-ranked by an inline per-scroll style. Neither showed in jsdom (no layout) and the implementers' browser drives happened to look at rows without the state. The fix that held was a CSS-contract unit test that computes specificity for the pair and treats a tie as a loss, plus composing the two rules (a custom property) rather than overwriting.
+
+**Suggested improvement:** In writing-plans, for any CSS step whose rule must apply on cells that carry other state classes: name the existing rules it must out-rank (grep the file for rules on the same element/property), state whether the new rule REPLACES or COMPOSES the old box-shadow/background, and require a pin that computes specificity (tie = loss) or asserts the computed style in a real browser on a cell wearing the state. Add to the plan self-review: "which existing rule on the same property does this beat, and how do I know?"
+
+**Principle:** A CSS rule is a contract against every other rule on the same element and property — name what it must beat, compose rather than overwrite, and pin the cascade, not the selector.
+
