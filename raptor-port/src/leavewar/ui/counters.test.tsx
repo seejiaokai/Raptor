@@ -1,7 +1,8 @@
 import { act, fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
 
-import { advanceStage, getState, initStore, moveFigure, resetFigureOrder, setBidState, setCell, setPeople, setRole, setViewer } from '../state/store'
+import { DEFAULT_FIGURE_ORDER } from '../engine'
+import { advanceStage, getState, initStore, moveFigure, resetFigureOrder, setBidState, setCell, setPeople, setRole, setViewer, toggleFigure, visibleFigures } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { Matrix } from './Matrix'
 
@@ -470,5 +471,46 @@ describe('a callsign opens the all-figures sheet, for everyone (owner, 17 Aug 26
     expect(bd.textContent).toContain('MED USED')
     const rows = [...bd.querySelectorAll('.crow-top')].map(r => r.textContent)
     expect(rows).toEqual(['ATT C1', 'HL0', 'OML1', 'Total2'])
+  })
+})
+
+describe('hiding a figure (owner, 6 Sep 26 — "admin should also be able to customise")', () => {
+  it('lets an admin hide a figure, and the visible list drops it', () => {
+    setRole('admin')
+    expect(visibleFigures().map(f => f.id)).toEqual(['lve', 'oil', 'ccl', 'fcl', 'cl', 'pl', 'lvetot', 'medtot'])
+    expect(toggleFigure('fcl')).toBe(true)
+    expect(getState().figureHidden).toEqual(['fcl'])
+    expect(visibleFigures().map(f => f.id)).toEqual(['lve', 'oil', 'ccl', 'cl', 'pl', 'lvetot', 'medtot'])
+    expect(toggleFigure('fcl')).toBe(true)
+    expect(visibleFigures()).toHaveLength(8)
+  })
+  it('refuses a member', () => {
+    setRole('member')
+    expect(toggleFigure('fcl')).toBe(false)
+    expect(getState().figureHidden).toEqual([])
+  })
+  it('never hides the last figure showing', () => {
+    setRole('admin')
+    for (const id of ['oil', 'ccl', 'fcl', 'cl', 'pl', 'lvetot', 'medtot']) toggleFigure(id)
+    expect(visibleFigures().map(f => f.id)).toEqual(['lve'])
+    expect(toggleFigure('lve')).toBe(false)
+    expect(visibleFigures().map(f => f.id)).toEqual(['lve'])
+  })
+  it('persists the hidden list and reads it back', () => {
+    const backend = memoryBackend()
+    initStore(backend)
+    setRole('admin')
+    toggleFigure('pl')
+    expect(JSON.parse(backend.read('fighidden')!)).toEqual(['pl'])
+    initStore(backend)
+    expect(getState().figureHidden).toEqual(['pl'])
+  })
+  it('Reset puts the order back AND shows everything again', () => {
+    setRole('admin')
+    toggleFigure('pl')
+    moveFigure('medtot', -1)
+    resetFigureOrder()
+    expect(getState().figureHidden).toEqual([])
+    expect(getState().figureOrder).toEqual([...DEFAULT_FIGURE_ORDER])
   })
 })
