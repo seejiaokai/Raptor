@@ -1676,3 +1676,18 @@ gate's. Keep verdict-bearing commands unpiped.
 
 **Principle:** The incumbent stylesheet's comments are a record of failed devices; read them for the device you are about to propose, not only for the tokens.
 
+### Observation 110: The one look at an interactive mock must drive its controls the way the user will — a side door (setting state programmatically) hides a dead control
+
+**Status:** OPEN
+**Date:** 2026-09-06
+**Session context:** Drag lift + landing flash — the interactive mock's first round on the owner's iPhone ("I can't select outer halo").
+**Skill:** impeccable (artifact "look once") / brainstorming (visual companion, interactive mock)
+**Type:** open-source
+**Phase/Area:** The single verification round before publishing a mock
+
+**Issue:** The mock's two switches were exercised in the one look by writing the setting straight onto the root element, so the screenshots showed every variant while the real tap path was never run. The edge switch was dead on the owner's iPhone: the click handler resolved `closest('[data-mock-glow]')`, which walked past the edge button up to `<html>` — where the setting itself was stored under the same attribute name — and swallowed the tap. Found only when the owner reported it; reproduced in one Playwright tap and fixed by scoping every lookup to `button[...]`.
+
+**Suggested improvement:** In the one look at a mock or artifact with controls: drive each control through its real input (a tap or click on the element), then read the resulting state — never set the state from outside to save a step. And a general rule for small pages: keep the STATE attribute and the CONTROL attribute under different names, or scope every `closest()`/`querySelectorAll()` to the control's element type, because `closest()` walks to the root and matches the state holder.
+
+**Principle:** A verification round that reaches the result by a side door proves the result, not the control — drive the control the user will touch, and never let a state attribute share a name with the control that sets it.
+
