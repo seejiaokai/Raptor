@@ -1541,3 +1541,18 @@ gate's. Keep verdict-bearing commands unpiped.
 
 **Principle:** Reuse is where the hidden bugs live: pair every trap with its defence line before designing, and turn "must build" gaps into pinned tasks rather than fix rounds.
 
+### Observation 101: A plan that hands one DOM hook to two writers (an imperative painter and React) must give each its own attribute — React never repairs an external removal
+
+**Status:** OPEN
+**Date:** 2026-09-06
+**Session context:** Leave War bulk balance entry — Task 2 (the figure selection gesture) review found the shared-attribute defect; fixed in round 1.
+**Skill:** writing-plans
+**Type:** open-source
+**Phase/Area:** Task design / DOM ownership in React codebases
+
+**Issue:** The plan specified that a drag gesture paints a selection as a data attribute during the drag and that React renders the SAME attribute after release, on the theory that React would "take it over". It does not: React writes an attribute only when the prop value changes, so the gesture's own clean-up on release stripped boxes React already rendered as selected, and nothing ever put them back. The task reviewer caught it (overlapping second drag → selected-but-dark; a cancelled drag over a live selection → all dark), proving it with a probe against the repo's React, and the fix was one line of design: a writer-exclusive attribute for the gesture, CSS lighting either.
+
+**Suggested improvement:** In writing-plans, when a task has an imperative DOM write (classList, setAttribute, style) on nodes React renders: state which writer OWNS each class/attribute and forbid sharing; if two writers must express the same visual, give each its own hook and let CSS unify them. Add to the plan's self-review: "does any imperative DOM write touch something React also renders?"
+
+**Principle:** React reconciles props, not the DOM: an attribute two writers share is repaired by neither — one hook per writer, unified in CSS.
+
