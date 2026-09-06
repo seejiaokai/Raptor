@@ -1691,3 +1691,18 @@ gate's. Keep verdict-bearing commands unpiped.
 
 **Principle:** A verification round that reaches the result by a side door proves the result, not the control — drive the control the user will touch, and never let a state attribute share a name with the control that sets it.
 
+### Observation 111: task-brief extracts the task section alone — the plan's Global Constraints never reach the implementer unless the dispatch points at them
+
+**Status:** OPEN
+**Date:** 2026-09-06
+**Session context:** Drag lift + landing flash — dispatching Task 1 of the subagent-driven build.
+**Skill:** subagent-driven-development (scripts/task-brief, the implementer dispatch)
+**Type:** open-source
+**Phase/Area:** Dispatch the implementer — composing the brief
+
+**Issue:** The skill says the brief is "the single source of requirements, with the exact values to use verbatim" and that every task implicitly includes the plan's Global Constraints. The script writes only the text between "### Task N" and the next task heading (657 lines for a code-heavy task, header and constraints absent). The implementer was dispatched with the brief and the spec; the binding values (the recipe numbers, the frame's rules, the performance rules, the no-push rule, the gate commands) were only in the plan header, and had to be sent as a follow-up message after the dispatch.
+
+**Suggested improvement:** Either make task-brief prepend the plan's "## Global Constraints" section (and the header's Goal/Architecture lines) to every brief it writes, or make the implementer-prompt template carry a required "[GLOBAL_CONSTRAINTS_FILE]" placeholder that the controller must fill with the plan path and line range. Add to the pre-dispatch checklist: "confirm the brief carries the Global Constraints, or name where they are".
+
+**Principle:** A brief that is "the single source of requirements" has to contain the requirements that bind every task, not only the task's own text — check what the extraction script actually wrote before calling it the source.
+
