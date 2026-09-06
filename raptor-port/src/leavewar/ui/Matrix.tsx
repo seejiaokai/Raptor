@@ -1144,10 +1144,28 @@ export function Matrix() {
   const headCell = (date: string | undefined): HTMLElement | null =>
     date === undefined ? null : headRef.current?.querySelector<HTMLElement>(`[data-testid="head-${date}"]`) ?? null
 
-  const frozenWidth = (wrap: HTMLElement): number =>
-    ['.who', '.bal']
-      .map(sel => wrap.querySelector<HTMLElement>(sel)?.getBoundingClientRect().width ?? 0)
-      .reduce((a, b) => a + b, 0)
+  // Where the visible day strip BEGINS: the width of everything painted OVER
+  // the day columns and frozen there. Normally the callsign + counter pair —
+  // but while the FIGURES drawer is open (6 Sep 26) the frozen part is the
+  // callsign column plus the DRAWER, which stands over the days from that
+  // column's right edge out. Taken from the drawer's own box rather than by
+  // adding eight column widths: one rect read either way, and the box is what
+  // the reader actually sees.
+  //
+  // Every caller depends on this being honest — a month jump lands its month
+  // just past this edge (`jumpTo`), the anchor correction holds the first
+  // column past it across a redraw, and the month-strip readout credits the
+  // month the reader is over rather than one hidden underneath. Left at the
+  // closed pair, a jump put 1 September NINE columns under the drawer:
+  // scrolled-to and invisible at the same time, the exact fault the jump's own
+  // e2e was written to stop (measured 6 Sep 26; pinned by "a month jump lands
+  // the month clear of the drawer, not under it").
+  const frozenWidth = (wrap: HTMLElement): number => {
+    const who = wrap.querySelector<HTMLElement>('.who')?.getBoundingClientRect().width ?? 0
+    const drawer = figuresOpen ? (drawerRef.current?.getBoundingClientRect().width ?? 0) : 0
+    if (drawer) return who + drawer
+    return who + (wrap.querySelector<HTMLElement>('.bal')?.getBoundingClientRect().width ?? 0)
+  }
 
   const jumpTo = (date: string) => {
     const wrap = wrapRef.current
