@@ -1364,6 +1364,111 @@ test('a month jump lands the month clear of the drawer, not under it', async ({ 
   expect(head.x + head.width).toBeLessThanOrEqual(wrapBox.x + wrapBox.width + 1)
 })
 
+test('a day beside the open drawer still takes a tap', async ({ page }) => {
+  // "The days keep working beside it" (the design's own words) is a claim about
+  // the days being USABLE, not merely visible — and usable is the half that
+  // broke: 24 of the 28 desktop failures this suite opened with were taps
+  // answered by the drawer instead of the grid. The width ratio above proves
+  // day columns are on screen; this proves one of them still opens its sheet.
+  //
+  // The day is chosen at run time — the FIRST empty cell whose column starts
+  // past the drawer's right edge — because how many columns the drawer covers
+  // is a reading of the screen (about nine at 1440px, seven on a phone), not a
+  // constant, and an already-filled cell would open a different sheet.
+  await openDrawer(page)
+  const date = await page.evaluate(() => {
+    const right = document.querySelector('.mxdrawer')!.getBoundingClientRect().right
+    for (const th of document.querySelectorAll('.mx-wrap .mxhead th[data-testid^="head-"]')) {
+      if (th.getBoundingClientRect().left < right) continue
+      const d = (th as HTMLElement).dataset.testid!.slice(5)
+      const cell = document.querySelector(`[data-testid="cell-slipway-${d}"]`)
+      if (cell && !cell.querySelector('.c')) return d
+    }
+    return null
+  })
+  expect(date, 'a drawn, empty day column clear of the drawer').not.toBeNull()
+  await page.locator(`[data-testid="cell-slipway-${date}"]`).click()
+  // ITS OWN sheet: the tap reached the grid, not the overlay standing beside it.
+  await expect(page.locator('[data-testid="bid-picker"]')).toBeVisible()
+  expect(await page.locator('[data-testid="figure-breakdown"]').count()).toBe(0)
+  await page.locator('[data-testid="bid-cancel"]').click()
+  // ...and the drawer is still out — nothing about tapping a day put it away.
+  await expect(figBar(page)).toHaveAttribute('aria-expanded', 'true')
+})
+
+test('the month strip reads from the drawer\'s edge, not the closed column\'s', async ({ page }) => {
+  // The strip answers "which month is most of what I can see", and it measures
+  // from the FROZEN EDGE — which the drawer moves. That number is CACHED
+  // (`stripGeoRef.current.frozen`) and re-measured only by the layout effect
+  // that watches everything which moves a column edge; the drawer had to join
+  // that list, and this is the pin.
+  //
+  // Nothing here scrolls between the two readings — the grid is parked once and
+  // only the drawer changes — because a scroll can move the column WINDOW, and
+  // that re-runs the same effect and refreshes the cache by accident. (It did:
+  // a first draft of this test that scrolled after opening passed with the fix
+  // reverted.) The parking spot is chosen at run time from the two real edges,
+  // as the point where the closed pair and the drawer disagree BY NAME:
+  // January is the larger half of the strip measured from the closed pair, and
+  // February is measured from the drawer. Reading JAN with the drawer out means
+  // the cache is still the closed pair's — and the `visibleSpan` the fill
+  // engine's rolling target follows is wrong with it, ~250px left of where the
+  // reader is actually looking on a desktop.
+  await openDrawer(page)
+  await settleGrid(page)
+  const at = await page.evaluate(() => {
+    const wrap = document.querySelector('.mx-wrap') as HTMLElement
+    const wr = wrap.getBoundingClientRect()
+    const w = (sel: string) => document.querySelector(sel)!.getBoundingClientRect().width
+    const who = w('.mx-wrap .mxhead th.who')
+    const closed = who + w('.mx-wrap .mxhead th.bal')
+    const open = who + w('.mxdrawer')
+    // January's right edge in the scroller's own CONTENT coordinates — the
+    // space the strip's spans live in. The day columns do not move when the
+    // drawer opens (it is an overlay), so this holds for both readings.
+    const jan = document.querySelector('[data-testid="head-2026-01-31"]')!.getBoundingClientRect()
+    const j = jan.right - wr.left + wrap.scrollLeft
+    // With `d` the distance from the scroll position to that edge: JANUARY is
+    // the larger half measured from the closed pair while d > (client+closed)/2,
+    // and FEBRUARY is measured from the drawer while d < (client+open)/2. The
+    // midpoint of that band is the least fragile point in it.
+    const lo = (wr.width + closed) / 2, hi = (wr.width + open) / 2
+    return { sl: Math.round(j - (lo + hi) / 2), lo: Math.round(lo), hi: Math.round(hi) }
+  })
+  // The band has to exist, or this test would be asserting nothing.
+  expect(at.hi).toBeGreaterThan(at.lo + 20)
+
+  const bar = figBar(page)
+  await bar.click()
+  expect(await page.locator('[data-testid="figdrawer"]').count()).toBe(0)
+  // Park it, then let the grid come to rest before reading: closing the drawer
+  // re-lays the header row and the anchor correction can nudge the scroll a few
+  // pixels after the write, which is enough to move a readout chosen to sit on
+  // a boundary.
+  await settleGrid(page)
+  // ...and force the cached geometry to be re-measured for the state the grid
+  // is actually in NOW. It is measured at MOUNT — on a desktop that is with the
+  // drawer OUT, because that is how the page opens — and the shared beforeEach
+  // then puts the drawer away, so the cache is already a step behind before this
+  // test starts: the JAN reading below would be about that leftover rather than
+  // about the drawer. A one-pixel height change fires the same layout effect a
+  // resize does; the WIDTHS are untouched, so every number measured above holds.
+  const vp = page.viewportSize()!
+  await page.setViewportSize({ width: vp.width, height: vp.height - 1 })
+  await page.setViewportSize(vp)
+  await settleGrid(page)
+  await page.evaluate(sl => { (document.querySelector('.mx-wrap') as HTMLElement).scrollLeft = sl }, at.sl)
+  await settleGrid(page)
+  expect(await page.evaluate(() => Math.round((document.querySelector('.mx-wrap') as HTMLElement).scrollLeft))).toBe(at.sl)
+  await expect.poll(() => litMonths(page), { timeout: 5000 }).toEqual(['JAN'])
+
+  // ...and now the ONLY thing that changes is the drawer.
+  await bar.click()
+  await expect(page.locator('[data-testid="figdrawer"]')).toBeVisible()
+  await settleGrid(page)
+  await expect.poll(() => litMonths(page), { timeout: 5000 }).toEqual(['FEB'])
+})
+
 test('the column follows the leave just entered to the balance it comes off', async ({ page }) => {
   await lwRole(page, 'admin')
   await pickCounter(page, 'medtot')

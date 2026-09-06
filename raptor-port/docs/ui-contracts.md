@@ -6047,7 +6047,15 @@ left behind, the label sat over the drawer's own titles and, in the stuck bar,
 vanished under the opaque frozen copy. `Matrix.tsx frozenWidth` reads the
 drawer's live rect instead — it is called from scroll-time code that must not
 depend on a restyle having landed — and it is what a month JUMP, the anchor
-correction after a redraw and the month-strip readout all measure from. Before
+correction after a redraw and the month-strip readout all measure from. The
+first two call it at use time; the readout does NOT — `measureStripGeo` caches
+the number into `stripGeoRef.current.frozen` and `measureStrip` reads that cache
+on every scroll event, so the drawer has to be a DEP of the layout effect that
+re-measures it (beside the zoom, the window edges and Rearrange, which move a
+column edge for the same reason). Left off that list, the readout — and the
+`visibleSpan` the fill engine's rolling target follows with it — went on using
+the closed pair's width, ~250px left of where the reader was looking on a
+desktop, until an unrelated resize or zoom happened to refresh the cache. Before
 that second half a month jump landed 1 September nine columns UNDER the drawer
 (head at x 210.8, drawer right edge 463, measured at 1440px) — scrolled-to and
 invisible at the same time, the exact fault the jump's own e2e exists to stop.

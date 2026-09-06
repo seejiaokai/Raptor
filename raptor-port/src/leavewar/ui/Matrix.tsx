@@ -2390,8 +2390,20 @@ export function Matrix() {
     // span 61), and the placeholders and spans would be a month off.
     // `arranging` (6 Sep 26): Rearrange widens the frozen name column, which
     // moves every day column's edge and the grid's scroll width.
+    // `figuresOpen` (6 Sep 26, review): the FIGURES drawer moves the frozen
+    // EDGE — `frozenWidth` reads the drawer while it is open — and this effect
+    // is the only thing that re-measures it into `stripGeoRef.current.frozen`,
+    // which `measureStrip` then reads on every scroll event. Without the dep,
+    // opening or closing the drawer fired nothing here and the strip readout
+    // (and the `visibleSpan` the fill engine's rolling target follows) went on
+    // using the closed pair's width — ~250px too far left on a desktop — until
+    // an unrelated zoom, resize, war change or window edge happened to refresh
+    // the cache. The self-heal in `measureStrip` cannot cover it: it only fires
+    // when the cache is null, and here it is merely stale. Same dep, same
+    // reason, as the sibling effects that re-pin the stuck mirror and the
+    // drawer's own box.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [zoom, visWindow, period.id, drawnDates.length, colWin?.lo, colWin?.hi, arranging])
+  }, [zoom, visWindow, period.id, drawnDates.length, colWin?.lo, colWin?.hi, arranging, figuresOpen])
 
   // Put the anchored column back after a row-set repaint (see anchorRef).
   // Layout effect, not effect: the correction must land in the same frame as
