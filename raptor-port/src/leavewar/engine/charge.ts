@@ -46,7 +46,7 @@ import { removesAvailability, stateOf, type States } from './bids'
 import { codeOf, portionAmount, parseCell, type CounterName } from './codes'
 import { isNonWorkingDay, type EventDef } from './eventdefs'
 import type { Person } from './people'
-import { addDays, type Period } from './period'
+import { addDays, type DayInfo, type Period } from './period'
 
 /** The run length from which a PILOT's leave charges every calendar day. */
 export const LONG_LEAVE_DAYS = 15
@@ -83,6 +83,50 @@ interface Taken {
 }
 
 /**
+ * A period's days, by date — built once per days ARRAY and remembered.
+ *
+ * This is the hot half of `chargedDays`: a year-long war holds 365 days and
+ * two of them 730, and the walk below needs to look one date up at a time. It
+ * used to build a fresh 730-entry map on EVERY call, and `figureLines` calls
+ * `chargedDays` about twenty-three times per person (once per figure's value
+ * and once per used line, medical included) — so a sixty-person roster with
+ * the drawer open paid for ~1,400 rebuilds of the same map before every paint.
+ * Measured on the seed store (16 people, 2 wars): one drawer pass 25.4 ms
+ * against a closed column's 3.1 ms, ~8× for eight times the boxes when the
+ * per-box work should have been nearly free.
+ *
+ * KEYED ON `period.days`, NOT on the period, and that choice is the whole
+ * safety argument: a memo keyed on something that survives an edit is a silent
+ * wrong-charge bug, which is far worse than the cost it saves. The index holds
+ * exactly what that array holds, and every path that can change a day REPLACES
+ * the array rather than writing into it:
+ *   - the store's day writers (`setDayEvent`, the band writers, the blocked/PH
+ *     edits) all rebuild with `days: w.period.days.map(…)`;
+ *   - a new war comes from `makeWar` → `buildDays`, a fresh array;
+ *   - undo/redo and a load from storage go through `JSON.parse`/`readWar`,
+ *     which mint the whole graph anew;
+ *   - `seedPeriod` is the ONE place that writes a day in place, and it does so
+ *     before the array leaves the function.
+ * `period.bands` is deliberately NOT in here — `nonWorking` reads it live off
+ * the source's own period, so a merged event band lands immediately.
+ * A caller that hand-edits a day IN PLACE after the period is in use would see
+ * the stale index; nothing in production does, and the test fixtures tweak a
+ * period before its first read for the same reason.
+ *
+ * A WeakMap so a war that is replaced or deleted takes its index with it.
+ */
+const DAY_INDEX = new WeakMap<Period['days'], Map<string, DayInfo>>()
+
+function dayIndex(period: Period): Map<string, DayInfo> {
+  let ix = DAY_INDEX.get(period.days)
+  if (!ix) {
+    ix = new Map(period.days.map(d => [d.date, d]))
+    DAY_INDEX.set(period.days, ix)
+  }
+  return ix
+}
+
+/**
  * The dates on which this person's counter-bearing leave CHARGES, across
  * every source, keyed by date. A date absent from the map either holds no
  * counter-bearing leave, holds a refused bid, or is a weekend/PH the rule
@@ -90,12 +134,14 @@ interface Taken {
  * two facts `drawnFrom` and `takenOf` need — so neither re-walks the runs.
  */
 export function chargedDays(sources: readonly LeaveSource[], personId: string, ctx?: CountCtx): Map<string, Taken> {
-  // 1. Every taken counter-bearing cell, merged across the wars, and every
-  //    day's calendar facts from the war that holds it.
+  // 1. Every taken counter-bearing cell, merged across the wars. This walks
+  //    only THIS person's cells, so it is cheap — and it comes FIRST, ahead of
+  //    any calendar work, because most people hold no leave at all in most
+  //    calls and the answer for them is an empty map. Before 6 Sep 26 the
+  //    calendar was built above this line and every one of those calls paid a
+  //    year of it for nothing.
   const taken = new Map<string, Taken>()
-  const days = new Map<string, { period: Period; day: Period['days'][number] }>()
   for (const src of sources) {
-    if (src.period) for (const day of src.period.days) days.set(day.date, { period: src.period, day })
     for (const [date, code] of Object.entries(src.grid[personId] ?? {})) {
       const spends = codeOf(code)?.spends
       if (!spends) continue
@@ -105,9 +151,24 @@ export function chargedDays(sources: readonly LeaveSource[], personId: string, c
   }
   if (taken.size === 0) return taken
 
+  // The war holding a date, and its own record of that day. Searched from the
+  // LAST source back, which is the merged map's rule kept exactly: it was
+  // filled in source order with `set`, so the last war naming a date won. (The
+  // store refuses overlapping wars, so in practice only one ever does.) One
+  // lookup per taken date rather than one insert per day of the year.
+  const held = (date: string): { period: Period; day: DayInfo } | undefined => {
+    for (let i = sources.length - 1; i >= 0; i--) {
+      const period = sources[i]!.period
+      if (!period) continue
+      const day = dayIndex(period).get(date)
+      if (day) return { period, day }
+    }
+    return undefined
+  }
+
   const nonWorking = (date: string): boolean => {
-    const held = days.get(date)
-    return isNonWorkingDay(date, held?.day, ctx?.eventDefs ?? [], held?.period.bands ?? [])
+    const h = held(date)
+    return isNonWorkingDay(date, h?.day, ctx?.eventDefs ?? [], h?.period.bands ?? [])
   }
   const pilot = isPilot(ctx, personId)
 

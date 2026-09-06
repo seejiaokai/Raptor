@@ -1,9 +1,10 @@
 import { act, fireEvent, render, screen } from '@testing-library/react'
-import { beforeEach, describe, expect, it } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { DEFAULT_FIGURE_ORDER, FIGURES } from '../engine'
-import { advanceStage, getState, initStore, moveFigure, resetFigureOrder, setBidState, setCell, setPeople, setRole, setViewer, toggleFigure, visibleFigures } from '../state/store'
+import { advanceStage, getState, initStore, moveFigure, resetFigureOrder, setBalance, setBidState, setCell, setPeople, setRole, setViewer, toggleFigure, visibleFigures } from '../state/store'
 import { memoryBackend } from '../state/storage'
+import { FigureCell } from './FigureCell'
 import { Matrix } from './Matrix'
 
 beforeEach(() => {
@@ -197,6 +198,52 @@ describe('the counter column', () => {
   })
 })
 
+/* "A column never widens and a number never wraps — the rare over-wide value
+   (a three-digit balance) drops one type size inside its box" (spec §2). The
+   TYPE SIZE is CSS, which jsdom cannot see; what it can prove is which boxes
+   ask for it, which is the half that would silently stop happening. The
+   measurement that chose four characters is in FigureCell.tsx. */
+describe('an over-wide value drops a type size rather than spilling (spec §2)', () => {
+  /** A box with exactly these lines, drawn the way the grid draws it. */
+  const box = (top: number, used: { label: string; tone: 'white' | 'amber' | 'red'; value: number }[]) => {
+    const { container } = render(
+      <FigureCell figure={FIGURES[0]!} lines={{ top, used }} personId="x" extraClass="bal act" />,
+    )
+    return container.querySelector('td')!
+  }
+  const LL = (value: number) => ({ label: 'LL', tone: 'amber' as const, value })
+  const OL = (value: number) => ({ label: 'OL', tone: 'red' as const, value })
+
+  it('leaves an ordinary box alone — two digits over one', () => {
+    expect(box(26, [OL(4)]).classList.contains('wide')).toBe(false)
+  })
+
+  it('shrinks a four-character balance', () => {
+    expect(box(-100, []).classList.contains('wide')).toBe(true)
+    // Three still fits, so it is not shrunk for nothing.
+    expect(box(100, []).classList.contains('wide')).toBe(false)
+    expect(box(-10, []).classList.contains('wide')).toBe(false)
+  })
+
+  it('shrinks a used line of two two-digit numbers — they share one line', () => {
+    expect(box(26, [LL(12), OL(10)]).classList.contains('wide')).toBe(true)
+    // ...but a zero shows nothing, so it costs the line nothing either.
+    expect(box(26, [LL(12), OL(0)]).classList.contains('wide')).toBe(false)
+  })
+
+  it('reaches the real grid cell, not just the component', () => {
+    setRole('admin')
+    setBalance('ramp', 'annual', -100)
+    render(<Matrix />)
+    expect(screen.getByTestId('bal-ramp').classList.contains('wide')).toBe(true)
+    expect(top('ramp')).toBe('-100')
+    // Every box carries `figbox` — the class the box's own styling hangs off,
+    // so `td.bal` at large no longer decides how the manning rows' cell reads.
+    expect(screen.getByTestId('bal-ramp').classList.contains('figbox')).toBe(true)
+    expect(screen.getByTestId('counter-count-ip').classList.contains('figbox')).toBe(false)
+  })
+})
+
 describe('the counter follows the leave just entered — to the balance it comes off (6 Sep 26)', () => {
   // The owner's ask: "If the user inputs a leave for e.g OIL, the leave
   // counter will snap to show how many OIL they have." The figure then
@@ -260,6 +307,44 @@ describe('the counter follows the leave just entered — to the balance it comes
     expect(screen.getByTestId('bal-tata').classList.contains('flash')).toBe(false)
     fireAnimationEnd(screen.getByTestId('bal-ramp'))
     expect(screen.getByTestId('bal-ramp').classList.contains('flash')).toBe(false)
+  })
+
+  /* SWITCHING THE COLUMN'S FIGURE FLASHES NOTHING. The flash means "this
+     person's number just moved"; every number on screen changing because the
+     column now shows a different figure is not that, and sixty rows lighting up
+     on every picker tap would make the signal worthless. The `prev` ref is keyed
+     by figure id for exactly this reason (FigureCell), and the contract is
+     stated in three docs — so it is pinned here rather than left to be
+     rediscovered. The existing test proves a flash HAPPENS; this proves the
+     other half. */
+  it('flashes NO row when the picker merely switches the figure', () => {
+    render(<Matrix />)
+    const before = getState().people.map(p => top(p.id))
+    pick('oil')
+    // Every number on screen changed...
+    expect(getState().people.map(p => top(p.id))).not.toEqual(before)
+    // ...and not one box asked for the flash.
+    expect([...document.querySelectorAll('td.bal.flash')]).toHaveLength(0)
+  })
+
+  /* The class comes off on `animationend` — but under `prefers-reduced-motion`
+     matrix.css turns the animation off, so that event never arrives. Without a
+     fallback the class stayed on the cell for the life of the row: invisible,
+     and a lie to anything reading the DOM for "what just changed". */
+  it('clears the flash on a timer too, for the browser that runs no animation', () => {
+    vi.useFakeTimers()
+    try {
+      setRole('admin')
+      render(<Matrix />)
+      fireEvent.click(screen.getByTestId('cell-ramp-2026-03-02'))
+      fireEvent.click(screen.getByTestId('bid-LL'))
+      expect(screen.getByTestId('bal-ramp').classList.contains('flash')).toBe(true)
+      // Deliberately NO `animationend` — that is the whole case.
+      act(() => { vi.advanceTimersByTime(700) })
+      expect(screen.getByTestId('bal-ramp').classList.contains('flash')).toBe(false)
+    } finally {
+      vi.useRealTimers()
+    }
   })
 })
 
@@ -586,5 +671,45 @@ describe('hiding a figure (owner, 6 Sep 26 — "admin should also be able to cus
     resetFigureOrder()
     expect(getState().figureHidden).toEqual([])
     expect(getState().figureOrder).toEqual([...DEFAULT_FIGURE_ORDER])
+  })
+
+  /* WHO SEES A HIDDEN ROW IN THE PICKER (6 Sep 26 review). Hiding is the
+     admin's control, so the dimmed row with its eye is his way back and it
+     stays. A member cannot un-hide anything, so a dimmed row he taps and
+     nothing happens is an inert control on a production surface — he is not
+     shown it at all. */
+  it('shows an admin the hidden row, dimmed, with its eye lit', () => {
+    setRole('admin')
+    toggleFigure('pl')
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId('counter-pick'))
+    expect(screen.getByTestId('figrow-pl').classList.contains('hidden')).toBe(true)
+    expect(screen.getByTestId('figeye-pl').getAttribute('aria-pressed')).toBe('true')
+    expect([...screen.getByTestId('counter-sheet').querySelectorAll('.crow .cn')].map(e => e.textContent))
+      .toEqual(['LVE', 'OIL', 'CCL', 'FCL', 'CL', 'PL', 'LVE TOT', 'MED TOT'])
+  })
+
+  it('an admin\'s tap on the hidden row un-hides it AND picks it — one gesture', () => {
+    setRole('admin')
+    toggleFigure('pl')
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId('counter-pick'))
+    fireEvent.click(screen.getByTestId('counter-pl'))
+    expect(getState().figureHidden).toEqual([])
+    expect(screen.getByTestId('counter-name').textContent).toBe('+PL')
+    // ...and the column cycles all eight again, so the dots agree with it.
+    expect(screen.getByTestId('counter-head').querySelectorAll('.cdot')).toHaveLength(8)
+  })
+
+  it('does not offer a member the hidden figure at all', () => {
+    setRole('admin')
+    toggleFigure('pl')
+    setRole('member')
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId('counter-pick'))
+    expect([...screen.getByTestId('counter-sheet').querySelectorAll('.crow .cn')].map(e => e.textContent))
+      .toEqual(['LVE', 'OIL', 'CCL', 'FCL', 'CL', 'LVE TOT', 'MED TOT'])
+    expect(screen.queryByTestId('figrow-pl')).toBeNull()
+    expect(screen.queryByTestId('counter-pl')).toBeNull()
   })
 })

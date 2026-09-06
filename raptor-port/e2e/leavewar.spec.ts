@@ -468,10 +468,14 @@ test('the matrix stays within a sane DOM size', async ({ page }) => {
   //
   // RAISED A SIXTH TIME, 29000 -> 31700, for the FIGURES DRAWER (owner, 6 Sep
   // 26). The drawer is a second table inside `.mx` — eight columns of two-line
-  // boxes over every roster row — and it costs a measured 957 nodes, the same
+  // boxes over every roster row — and it costs a measured 958 nodes, the same
   // number on BOTH projects because it depends on the roster and the figure
   // list, not on the viewport (phone 9307 -> 10264, desktop 25470 -> 26427, on
-  // the built bundle before this number was written). The old 29000 had not
+  // the built bundle before this number was written). ONE OF THE 958 IS THE
+  // DRAWER'S OWN `table.mx`, which is why the `.mx *` count below grows by 957
+  // and the `.mxdrawer *` count reads 958: the table is a `.mx` itself, so its
+  // descendants are inside a `.mx` but the table is not. Same measurement, one
+  // wrapper apart. The old 29000 had not
   // gone red, but it had ~200 nodes of headroom left against the worst case
   // measured here — the desktop with February drawn AND the drawer open, 28794
   // inside `.mx` and 28849 whole-page — which is a ceiling in name only. 31700
@@ -515,10 +519,12 @@ test('the matrix stays within a sane DOM size', async ({ page }) => {
   // resting state and one tap away on a phone. Measured on the built bundle,
   // 6 Sep 26: the drawer's own subtree is 958 nodes on BOTH projects (it draws
   // one box per person per figure, so it scales with the roster and the figure
-  // list, never with the screen), taking `.mx` to 12054 on the phone and 28794
-  // on the desktop — the largest this grid gets, and what the ceiling above is
-  // set from. The drawer's own count is asserted separately because the whole-
-  // grid figure moves with the column window's runway and this one does not.
+  // list, never with the screen — and one of the 958 is its own `table.mx`
+  // wrapper, see the ceiling note above), taking `.mx` to 12054 on the phone
+  // and 28794 on the desktop — the largest this grid gets, and what the ceiling
+  // above is set from. The drawer's own count is asserted separately because
+  // the whole-grid figure moves with the column window's runway and this one
+  // does not.
   await page.locator('[data-testid="bid-cancel"]').click()
   const bar = page.locator('[data-testid="figures-toggle"]')
   if ((await bar.getAttribute('aria-expanded')) === 'false') await bar.click()
@@ -1334,13 +1340,58 @@ test('the stuck header carries the drawer titles, the switch and the month once 
     const copy = mirror.locator('.mxfixed-frozen')
     await expect(copy.locator('th.fig')).toHaveCount(8)
     await expect(copy.locator('th.fig').first()).toBeVisible()
+    // THE COPY'S RIGHT EDGE IS THE DRAWER'S RIGHT EDGE. The contract says the
+    // frozen copy "grows from the two closed columns to the drawer's own right
+    // edge" (ui-contracts.md §The figures drawer), and that number is the one
+    // HANDOFF flags as WebKit-sensitive: it is measured in VISUAL pixels off a
+    // box outside the zoomed table, and dividing it by the zoom was what put
+    // the hatched filler on the owner's phone on 6 Sep. A copy a column short
+    // shows a stripe of the scrolling layer's dates beside the figures; a
+    // column long hides one. Counting the cells cannot see either.
+    const cb = (await copy.boundingBox())!
+    const db = (await page.locator('[data-testid="figdrawer"]').boundingBox())!
+    expect(Math.abs((cb.x + cb.width) - (db.x + db.width))).toBeLessThanOrEqual(1.5)
+
     // ...and the month label still reads. It sticks "just clear of the frozen
     // columns", which is now the DRAWER — left at the closed pair's offset it
     // sat under the opaque frozen copy and disappeared (6 Sep 26 review).
-    const cb = (await copy.boundingBox())!
     const lbl = (await mirror.locator('.brakm .brakl').first().boundingBox())!
     expect(lbl.x).toBeGreaterThanOrEqual(cb.x + cb.width - 1)
+
+    // A PRESS ON THE MIRROR'S TITLE CLOSES AN OPEN POP-UP. Its copies are
+    // read-only spans, so a press on one is an OUTSIDE press by the app's
+    // click-open popup rule — but the "inside" test matched any
+    // `[data-fig] .figtitle`, the mirror's included, and that made the one
+    // press most likely to mean "I am done with this" the one press that did
+    // nothing (6 Sep 26 review).
+    //
+    // Driven rather than gestured, and that is the finding's own point: the
+    // pop-up closes on ANY scroll, so a person cannot open one and then scroll
+    // the mirror into place — which is why the dead spot sat here unseen. The
+    // events are dispatched instead of clicked so nothing scrolls, leaving the
+    // page in the one state where the two can be on screen together.
+    await page.locator('[data-testid="figdrawer"] th.fig[data-fig="lvetot"] button').dispatchEvent('click')
+    await expect(page.locator('[data-testid="figpop"]')).toHaveCount(1)
+    await copy.locator('th.fig[data-fig="lvetot"] .figtitle').dispatchEvent('pointerdown')
+    await expect(page.locator('[data-testid="figpop"]')).toHaveCount(0)
   }
+})
+
+test('the corner switch fills its cell — the whole corner is the tap target', async ({ page }) => {
+  // The type is small on purpose; the TARGET must not be. In flow the button
+  // was its own 15px line inside a 22px cell, so a third of the corner did
+  // nothing when pressed — and on a phone that corner is the only way in and
+  // out of the drawer. The spec asks for a target at least the archive bar's,
+  // and the archive bar's is its whole sticky cell.
+  const cell = page.locator('.mx-wrap .mxhead th.brakhd').first()
+  const bar = figBar(page)
+  const cb = (await cell.boundingBox())!
+  const bb = (await bar.boundingBox())!
+  // The cell's own 1px bottom hairline is the only slack allowed.
+  expect(cb.height - bb.height).toBeLessThanOrEqual(1.5)
+  expect(bb.height).toBeGreaterThan(15)
+  // ...and the cell's full WIDTH as well — the whole corner, not a strip of it.
+  expect(bb.width).toBeGreaterThan(cb.width - 2)
 })
 
 test('a month jump lands the month clear of the drawer, not under it', async ({ page }) => {
@@ -1465,6 +1516,57 @@ test('the month strip reads from the drawer\'s edge, not the closed column\'s', 
   // ...and now the ONLY thing that changes is the drawer.
   await bar.click()
   await expect(page.locator('[data-testid="figdrawer"]')).toBeVisible()
+  await settleGrid(page)
+  await expect.poll(() => litMonths(page), { timeout: 5000 }).toEqual(['FEB'])
+})
+
+test('the month strip follows the drawer WIDENING while it is already out', async ({ page }) => {
+  // The sibling above proves the cached frozen edge follows the drawer opening
+  // and closing. This one proves it follows the drawer CHANGING WIDTH with
+  // `figuresOpen` never moving — which is the case a dep list of hand-named
+  // edge-movers misses, and did (6 Sep 26 review). The reachable path is the
+  // owner's own: an admin hides figures in the picker, opens the drawer, then
+  // presses Undo. The drawer grows a column per step; nothing else changes.
+  //
+  // So the dep is the MEASURED WIDTH (`drawerAt.width`), not a list of the
+  // things that move it. Five figures are hidden rather than one so the two
+  // frozen widths are 5 columns apart (180px desktop / 140px phone) and the
+  // parking band between them is wide enough to read without chasing pixels.
+  await lwRole(page, 'admin')
+  await openPicker(page)
+  for (const id of ['oil', 'ccl', 'fcl', 'cl', 'pl']) await page.locator(`[data-testid="figeye-${id}"]`).click()
+  await page.locator('[data-testid="counter-cancel"]').click()
+
+  await openDrawer(page)
+  await expect(page.locator('.mxdrawer th.fig')).toHaveCount(3)
+  await settleGrid(page)
+
+  const at = await page.evaluate(() => {
+    const wrap = document.querySelector('.mx-wrap') as HTMLElement
+    const wr = wrap.getBoundingClientRect()
+    const who = document.querySelector('.mx-wrap .mxhead th.who')!.getBoundingClientRect().width
+    // The narrow edge as it stands, and the wide one it will grow to: the
+    // drawer's own width now, plus the five columns Undo will give back. Every
+    // non-first title cell is `--figw` wide, so one of them is the step.
+    const narrow = who + document.querySelector('.mxdrawer')!.getBoundingClientRect().width
+    const step = document.querySelector('.mxdrawer th.fig:not(.first)')!.getBoundingClientRect().width
+    const wide = narrow + step * 5
+    const jan = document.querySelector('[data-testid="head-2026-01-31"]')!.getBoundingClientRect()
+    const j = jan.right - wr.left + wrap.scrollLeft
+    const lo = (wr.width + narrow) / 2, hi = (wr.width + wide) / 2
+    return { sl: Math.round(j - (lo + hi) / 2), lo: Math.round(lo), hi: Math.round(hi) }
+  })
+  expect(at.hi).toBeGreaterThan(at.lo + 20)
+
+  await page.evaluate(sl => { (document.querySelector('.mx-wrap') as HTMLElement).scrollLeft = sl }, at.sl)
+  await settleGrid(page)
+  await expect.poll(() => litMonths(page), { timeout: 5000 }).toEqual(['JAN'])
+
+  // Undo until every figure is back. The drawer widens under a strip that has
+  // been told nothing about it; the readout has to follow anyway.
+  const undo = page.locator('[data-testid="lw-undo"]')
+  for (let i = 0; i < 8 && (await page.locator('.mxdrawer th.fig').count()) < 8; i++) await undo.click()
+  await expect(page.locator('.mxdrawer th.fig')).toHaveCount(8)
   await settleGrid(page)
   await expect.poll(() => litMonths(page), { timeout: 5000 }).toEqual(['FEB'])
 })

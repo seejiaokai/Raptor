@@ -188,3 +188,50 @@ describe('chargedDays', () => {
     expect(chargedDays([src({})], 'nobody', pilotCtx).size).toBe(0)
   })
 })
+
+// The calendar a war contributes — which dates are holidays, which carry an
+// 'off' event — is looked up through an index remembered per `period.days`
+// (charge.ts §DAY_INDEX), because rebuilding it on every call cost the drawer
+// ~8× the closed column's engine time. The saving is only worth having if the
+// answer is still right the instant a day changes, which is what these pin.
+describe('the remembered day index answers for the CURRENT calendar (6 Sep 26)', () => {
+  const jan5 = '2026-01-05'   // a Monday — a working day until something says otherwise
+
+  it('a PH marked AFTER the first read gives the day back', () => {
+    const p = period('2026-01-01', '2026-01-31')
+    const sources = [src({ wiz: { [jan5]: 'LL' } }, p)]
+    expect(drawnFrom(sources, 'wiz', 'annual', pilotCtx)).toBe(1)
+
+    // Exactly the store's own edit shape (`setDayEvent`: `days:
+    // w.period.days.map(…)`) — a NEW days array with one new day in it, which
+    // is what makes the remembered index a fact about a calendar rather than
+    // about a war.
+    const marked: Period = { ...p, days: p.days.map(d => (d.date === jan5 ? { ...d, ph: true } : d)) }
+    expect(drawnFrom([src({ wiz: { [jan5]: 'LL' } }, marked)], 'wiz', 'annual', pilotCtx)).toBe(0)
+    // ...and the original period, untouched, still reads the way it did.
+    expect(drawnFrom(sources, 'wiz', 'annual', pilotCtx)).toBe(1)
+  })
+
+  it('a merged event band is read live, never remembered', () => {
+    // `bands` live on the period and are deliberately outside the index, so a
+    // band added to a period whose days array is the SAME array must land at
+    // once. Two periods sharing one days array is the shape every non-day edit
+    // makes (`{ ...w.period, stage }` and friends keep the array).
+    const p = period('2026-01-01', '2026-01-31')
+    expect(drawnFrom([src({ wiz: { [jan5]: 'LL' } }, p)], 'wiz', 'annual', pilotCtx)).toBe(1)
+    const banded: Period = { ...p, bands: [{ line: 0, from: jan5, to: jan5, text: 'PH', kind: 'off' }] }
+    expect(banded.days).toBe(p.days)
+    expect(drawnFrom([src({ wiz: { [jan5]: 'LL' } }, banded)], 'wiz', 'annual', pilotCtx)).toBe(0)
+  })
+
+  it('still reads the calendar of the war that holds the date, with several in play', () => {
+    // The merged map this replaced was filled in source order, so the LAST war
+    // naming a date won; the lookup walks the sources backwards to keep that.
+    // Here only the second war knows January at all.
+    const jan = period('2026-01-01', '2026-01-31', p => { p.days.find(d => d.date === jan5)!.ph = true })
+    const feb = period('2026-02-01', '2026-02-28')
+    const leave = { wiz: { [jan5]: 'LL' } }
+    expect(drawnFrom([src(leave, feb), src({}, jan)], 'wiz', 'annual', pilotCtx)).toBe(0)
+    expect(drawnFrom([src(leave, jan), src({}, feb)], 'wiz', 'annual', pilotCtx)).toBe(0)
+  })
+})

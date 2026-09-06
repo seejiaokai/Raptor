@@ -36,11 +36,18 @@ export function CounterSheet({
   onClose: () => void
 }) {
   const { people, figureOrder, figureHidden, role, viewer } = getState()
-  // The PICKER lists every figure, not just the shown ones (a hidden row
-  // stays reachable — dimmed, and an admin's tap un-hides it). The column and
-  // the drawer are the two surfaces that actually cycle/show figures, and
-  // both read `visibleFigures()` instead.
-  const figures = orderedFigures(figureOrder)
+  // The ARRANGEMENT is management's (owner, 17 Aug 26) — the ▲▼, the eye and
+  // the Reset render for an admin only; the store refuses a member's write
+  // anyway. Read before the list, because it also decides what the list IS.
+  const arranging = role === 'admin'
+  // WHAT THE PICKER LISTS depends on who is looking (6 Sep 26 review). An
+  // ADMIN sees every figure, a hidden one dimmed with its eye lit, because
+  // hiding is his control and the dimmed row is the way back. A MEMBER sees
+  // only what is actually showing: a hidden figure is not his to un-hide, so a
+  // row he cannot use — greyed, with no eye, doing nothing when tapped — is an
+  // inert control on a production surface, and this app does not ship those.
+  // The column and the drawer read `visibleFigures()` for both roles.
+  const figures = arranging ? orderedFigures(figureOrder) : visibleFigures()
   const hidden = new Set(figureHidden)
   const ctx = figureCtxOf()
   // The person LOOKING at the page, when the roster holds them — each row
@@ -55,9 +62,6 @@ export function CounterSheet({
   // number is meant to answer "how much do I have left", which has no meaning
   // without a person.
   const me = viewer ? people.find(p => p.id === viewer) ?? null : null
-  // The ARRANGEMENT is management's (owner, same day) — the ▲▼ and Reset
-  // render for an admin only; the store refuses a member's write anyway.
-  const arranging = role === 'admin'
 
   return (
     <Sheet testid="counter-sheet" label="Which figure" onClose={onClose} narrow>
@@ -107,10 +111,11 @@ export function CounterSheet({
                 data-testid={`counter-${f.id}`}
                 aria-pressed={f.id === shownId}
                 onClick={() => {
-                  // A hidden row's tap is a no-op for a member (nothing they
-                  // can do would show it); an admin's tap un-hides it first —
-                  // one gesture picks AND reveals rather than two.
-                  if (isHidden && !arranging) return
+                  // Only an admin is ever shown a hidden row, and his tap
+                  // un-hides it first — one gesture picks AND reveals rather
+                  // than two. (Picking a still-hidden figure would be refused
+                  // by the column's own visibility gate, so the un-hide is
+                  // what makes the tap mean anything.)
                   if (isHidden) toggleFigure(f.id)
                   onPick(f.id)
                   onClose()

@@ -50,7 +50,7 @@ import { figureCtxOf, setBalance, groupsInOrder, groupPriorityIds, lwHistEpoch, 
 import { BidPicker, DecisionSheet, PostOutSheet, RaptorSheet } from './BidPicker'
 import { CounterSheet, FigureBreakdownSheet, PersonFiguresSheet } from './CounterSheet'
 import { FigureCell, show } from './FigureCell'
-import { FiguresDrawer, FigureTitle, type DrawerRow } from './FiguresDrawer'
+import { FiguresDrawer, FigureTitle, figClass, type DrawerRow } from './FiguresDrawer'
 import { PersonSheet } from './PersonSheet'
 import { OilTracker } from './OilTracker'
 import { CountRows } from './CountRows'
@@ -778,6 +778,15 @@ export function Matrix() {
   // past the figure actually on screen.
   const shown = figures.find(f => f.id === shownId) ?? figures[0]!
   const shownIx = figures.indexOf(shown)
+  /** Put a figure in the column — the ONE gated way in (6 Sep 26 review).
+   *
+   *  A hidden figure never becomes the column's: an admin who hid it should not
+   *  have the column jump to something the picker, the drawer and the cycle no
+   *  longer offer. That rule was written on the leave-just-entered snap and
+   *  nowhere else, so the two OIL paths (a tracker grant, an admin's hand-typed
+   *  OIL day) walked straight past it and could park the column on a figure the
+   *  dots did not contain. One body now, so a fourth caller cannot miss it. */
+  const showFigure = (id: string) => { if (figures.some(f => f.id === id)) setShownId(id) }
   // Everything a figure needs to read a person's number — the store's one
   // builder, so this column, the sheets and the tracker read the same OIL
   // policy and the same "today" (a hand-built literal here used to drift).
@@ -1804,7 +1813,7 @@ export function Matrix() {
           down does not take the legend with it. Read-only — the live titles are
           the drawer's own, a few pixels below. */}
       {drawer && figures.map(f => (
-        <th key={f.id} className={`bal fig${f.id === figures[0]?.id ? ' first' : ''}${f.id === figures[figures.length - 1]?.id ? ' last' : ''}`} data-fig={f.id}>
+        <th key={f.id} className={figClass(figures, f.id)} data-fig={f.id}>
           <FigureTitle figure={f} />
         </th>
       ))}
@@ -2390,20 +2399,29 @@ export function Matrix() {
     // span 61), and the placeholders and spans would be a month off.
     // `arranging` (6 Sep 26): Rearrange widens the frozen name column, which
     // moves every day column's edge and the grid's scroll width.
-    // `figuresOpen` (6 Sep 26, review): the FIGURES drawer moves the frozen
-    // EDGE — `frozenWidth` reads the drawer while it is open — and this effect
-    // is the only thing that re-measures it into `stripGeoRef.current.frozen`,
-    // which `measureStrip` then reads on every scroll event. Without the dep,
-    // opening or closing the drawer fired nothing here and the strip readout
-    // (and the `visibleSpan` the fill engine's rolling target follows) went on
-    // using the closed pair's width — ~250px too far left on a desktop — until
-    // an unrelated zoom, resize, war change or window edge happened to refresh
-    // the cache. The self-heal in `measureStrip` cannot cover it: it only fires
-    // when the cache is null, and here it is merely stale. Same dep, same
-    // reason, as the sibling effects that re-pin the stuck mirror and the
-    // drawer's own box.
+    // `figuresOpen` AND `drawerAt?.width` (6 Sep 26, review): the FIGURES
+    // drawer moves the frozen EDGE — `frozenWidth` reads the drawer while it is
+    // open — and this effect is the only thing that re-measures it into
+    // `stripGeoRef.current.frozen`, which `measureStrip` then reads on every
+    // scroll event. Without a dep, the strip readout (and the `visibleSpan` the
+    // fill engine's rolling target follows) goes on using the width it last
+    // cached — the closed pair's, ~250px too far left on a desktop — until an
+    // unrelated zoom, resize, war change or window edge happens to refresh it.
+    // The self-heal in `measureStrip` cannot cover it: it only fires when the
+    // cache is null, and here it is merely stale.
+    //
+    // `figuresOpen` alone was not enough, and the shape of the miss is the
+    // lesson: it catches the drawer APPEARING but not the drawer CHANGING
+    // WIDTH while it is out — an admin hiding a figure in the picker, or the
+    // undo of that hide, takes a column off or puts one back and the cached
+    // edge stays a column short. So the canonical signal is the measured width
+    // itself: `drawerAt` is value-guarded (its own effect only publishes a new
+    // object when a number really moved), so this dep fires on every real edge
+    // move — including the ones nobody has thought of yet — and on none of the
+    // renders in between. `figuresOpen` stays beside it because it is what
+    // takes the width back to `undefined` on close.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [zoom, visWindow, period.id, drawnDates.length, colWin?.lo, colWin?.hi, arranging, figuresOpen])
+  }, [zoom, visWindow, period.id, drawnDates.length, colWin?.lo, colWin?.hi, arranging, figuresOpen, drawerAt?.width])
 
   // Put the anchored column back after a row-set repaint (see anchorRef).
   // Layout effect, not effect: the correction must land in the same frame as
@@ -3587,18 +3605,22 @@ export function Matrix() {
           for; the picker still opens on an empty one, so an admin can add
           leave to a closed sheet without a second control. */}
       {picking && (
-        <CounterSheet shownId={shownId} onPick={setShownId} onClose={() => setPicking(false)} />
+        <CounterSheet shownId={shown.id} onPick={setShownId} onClose={() => setPicking(false)} />
       )}
       {/* The tapped person's breakdown of one figure — the column's shown
           one from a counter-cell tap, or whichever row was tapped in the
           person-figures sheet. Guarded on the person still existing — an
           admin can delete a row while any sheet is up, the same guard
           PersonSheet carries. Looked up in the FULL catalogue, not the
-          column's `figures` (visible-only, 6 Sep 26): the all-figures sheet
-          lists every figure, hidden ones included, so a tap there must still
-          open the right breakdown rather than silently substituting whatever
-          the column happens to be showing. An unknown id (a stale saved
-          order) falls back to the shown one. */}
+          column's `figures` (visible-only, 6 Sep 26): the figure this sheet
+          was asked for was chosen before it opened, and an admin can hide a
+          figure at any moment — including while this very sheet is up — so a
+          lookup that depended on visibility would answer a stale id by
+          silently substituting whatever the column happens to be showing. The
+          reader would then be reading someone's MED TOT under a heading that
+          says CCL, which is worse than showing a figure that has just left the
+          picker. An unknown id (a stale saved order) falls back to the shown
+          one. */}
       {balOpen && people.some(p => p.id === balOpen.person) && (
         <FigureBreakdownSheet
           figure={orderedFigures(figureOrder).find(f => f.id === balOpen.figureId) ?? shown}
@@ -3652,7 +3674,7 @@ export function Matrix() {
           /* A credit lands → the column shows +OIL (owner, 2 Sep 26; id
              renamed 6 Sep 26 when OIL BAL and OIL USED merged into one
              balance figure, 'oil'). */
-          onGranted={() => setShownId('oil')}
+          onGranted={() => showFigure('oil')}
         />
       )}
       {editingWho && people.some(p => p.id === editingWho) && (
@@ -3741,15 +3763,14 @@ export function Matrix() {
              (counters.ts) is the one map: LL/OL both come off LVE, every
              other balance-bearing type snaps to its own, ATT C/HL/OML feed
              MED TOT, and a type with no figure (EL, ATT B) simply returns
-             null and does not snap. Also gated on the figure still being
-             VISIBLE — an admin who hid it should not have the column jump to
-             a figure the sheet no longer offers. */
+             null and does not snap. Through `showFigure`, which is where the
+             "must still be VISIBLE" gate now lives for every caller. */
           onWrote={code => {
             const cell = parseCell(code)
             const earns = (codeOf(code)?.earnsOil ?? 0) > 0
             if (cell) {
               const id = figureForLeave(cell.type)
-              if (id && figures.some(f => f.id === id)) setShownId(id)
+              if (id) showFigure(id)
             }
             /* An ADMIN's manual OIL-family write — OIL taken, or an FO/HO
                credit typed by hand — opens the tracker on that person with
@@ -3760,7 +3781,7 @@ export function Matrix() {
             if (role === 'admin' && (cell?.type === 'OIL' || earns) && open) {
               const who = open.id, when = open.date
               close()
-              setShownId('oil')
+              showFigure('oil')
               setOilTracker({ person: who, focus: when })
             }
           }}

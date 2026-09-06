@@ -254,8 +254,16 @@
    `.fu b`), the title above says which is which. Nothing sets `.neg`
    straight on `.bal` any more (that lived on the td before the box split
    the balance from its used line into `.fb`/`.fu`) — the old
-   `.mx .bal.neg` rule went with it. */
-.mx td.bal {
+   `.mx .bal.neg` rule went with it.
+
+   SCOPED TO `.figbox`, the class `FigureCell` puts on its own cell, not to
+   `td.bal` at large (6 Sep 26 review). `.bal` is the frozen counter COLUMN,
+   and three other kinds of cell sit in it: the manning rows' blank cell —
+   which in Rearrange holds the archive eye — the event rows' blank cell, and
+   the drawer's own boxes. Top alignment, the box's tight padding and the 11px
+   line belong to the box; the eye reads better centred in its cell, which is
+   what it gets back here. */
+.mx td.bal.figbox {
   vertical-align: top;
   padding: 0 1px;
   font-variant-numeric: tabular-nums;
@@ -267,6 +275,11 @@
   font-size: 10.5px;
   font-weight: 700;
   color: var(--ink);
+  /* A column never widens and a number never wraps (spec §2). Whatever the
+     value, the line is clipped at the box's edge rather than run into the box
+     beside it — the `.wide` step below is what keeps a real number inside that
+     edge, and this is the guarantee for anything past it. */
+  overflow: hidden;
 }
 .mx td.bal .fb.neg,
 .mx td.bal .fb.red { color: var(--hard); }
@@ -276,11 +289,23 @@
   font-size: 9.5px;
   font-weight: 700;
   white-space: nowrap;
+  overflow: hidden;
 }
 .mx td.bal .fu b { font-weight: 700; }
 .mx td.bal .fu b + b { margin-left: 3px; }
 .mx td.bal .fu b.amber { color: var(--adv); }
 .mx td.bal .fu b.red { color: var(--hard); }
+/* THE OVER-WIDE VALUE (spec §2: "the rare over-wide value — a three-digit
+   balance — drops one type size inside its box"). Four characters is where a
+   value stops fitting the drawer's narrowest box (28px on a phone, 26px of it
+   usable): `-100` on the top line, or an LVE used line of two two-digit
+   numbers, runs past the edge at the ordinary size. `FigureCell` measures the
+   text it is about to draw and asks for this one step down — 10.5→9.5 and
+   9.5→8.5 — which brings both back inside. The LINE HEIGHTS do not move, so a
+   wide box is still two 11px lines and no row grows. */
+.mx td.bal.figbox.wide .fb { font-size: 9.5px; }
+.mx td.bal.figbox.wide .fu { font-size: 8.5px; }
+.mx td.bal.figbox.wide .fu b + b { margin-left: 2px; }
 /* One authored motion: a box whose number just changed fades from the accent
    tint, once. Off under reduced motion. */
 .mx td.bal.flash { animation: lw-figflash 700ms ease-out 1; }
@@ -2126,12 +2151,25 @@
 .mx-outer.mx-figures .mxbody tr.grp td.grphd { z-index: 6; }
 .mx-outer.mx-figures .mxband { z-index: 6; }
 /* The switch in the corner above CS/Name — the archive bar's scale (a HEM, not
-   a heading: it must not outrank the grid it opens). */
+   a heading: it must not outrank the grid it opens).
+
+   It FILLS ITS CELL (6 Sep 26 review). The type is small on purpose, but the
+   TARGET must not be: laid out in flow the button was its own 15px line inside
+   a 22px cell, so a third of the corner — and, on a phone, a third of the only
+   way in and out of the drawer — did nothing when pressed. The spec asks for a
+   tap target at least the archive bar's, and the archive bar's is its whole
+   sticky cell. Taken out of flow and pinned to the cell's four edges instead:
+   `th.brakhd` is already `position: sticky`, which is a containing block, so
+   `inset: 0` is exactly the cell. Out of flow it also adds no height of its
+   own, which is what keeps the bracket row at the 22px it has always been.
+   The button's own side padding replaces the cell padding it now covers. */
 .mx .mxhead th.brakhd .figbar {
-  display: block;
-  width: 100%;
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
   text-align: left;
-  padding: 0 2px;
+  padding: 0 4px;
   background: transparent;
   border: 0;
   font: inherit;

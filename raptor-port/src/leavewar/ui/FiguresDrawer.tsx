@@ -24,9 +24,20 @@ import { popAt } from './popat'
  *  against, and a rough height for the flip. */
 const POP_W = 260, POP_H = 84
 
-/** The first column is the CLOSED column's width, so a box does not move when
- *  the drawer opens; the last carries the drawer's right edge. */
-const figClass = (figures: Figure[], id: string) =>
+/** The pop-up's element id, so the title that opened it can name it through
+ *  `aria-controls`. One at a time — only one title's pop-up is ever up — so a
+ *  constant is honest here and there is nothing to make unique. */
+const POP_ID = 'lw-figpop'
+
+/** The classes one drawer column's cell wears. The first column is the CLOSED
+ *  column's width, so a box does not move when the drawer opens; the last
+ *  carries the drawer's right edge.
+ *
+ *  Exported because the stuck header's frozen copy (Matrix.tsx `headerRow`)
+ *  draws the same eight title cells and needs the same `first`/`last` — the
+ *  recipe was hand-copied there, and two copies of a rule the CSS reads by
+ *  name are a drift seam waiting for the day one of them gains a class. */
+export const figClass = (figures: Figure[], id: string) =>
   `bal fig${id === figures[0]?.id ? ' first' : ''}${id === figures[figures.length - 1]?.id ? ' last' : ''}`
 
 export type DrawerRow =
@@ -41,9 +52,12 @@ export type DrawerRow =
  *  of "+LVE over −LL −OL" would drift. With no `onClick` it is a plain span:
  *  that copy is aria-hidden decoration, and a button that opens nothing is
  *  worse than no button. */
-export function FigureTitle({ figure, open, onClick }: {
+export function FigureTitle({ figure, open, popId, onClick }: {
   figure: Figure
   open?: boolean
+  /** The id of the pop-up this title owns, so a screen reader can follow the
+   *  press to the panel it opened. Only the live drawer's titles have one. */
+  popId?: string
   onClick?: (e: MouseEvent<HTMLElement>) => void
 }) {
   const words = titleLines(figure).map((line, i) => (
@@ -61,6 +75,7 @@ export function FigureTitle({ figure, open, onClick }: {
       className="figtitle"
       aria-label={`${figure.label} — what this column counts`}
       aria-expanded={!!open}
+      aria-controls={popId}
       onClick={onClick}
     >{words}</button>
   )
@@ -68,7 +83,7 @@ export function FigureTitle({ figure, open, onClick }: {
 
 /** One person's row of boxes, memoised — `PersonRow`'s own lesson (3 Sep 26),
  *  which this drawer would otherwise undo: eight figures for sixty people is
- *  ~520 boxes, and each one reads that person's whole grid across every war. So
+ *  480 boxes, and each one reads that person's whole grid across every war. So
  *  opening a sheet, hovering a chip or dragging a row would re-read all of them
  *  for a change none of them saw. Every store change still repaints every row,
  *  because `ctx` is rebuilt from the store on each one and its identity is the
@@ -151,7 +166,13 @@ export function FiguresDrawer({
     const close = () => setPop(null)
     const onDown = (e: PointerEvent) => {
       const t = e.target as HTMLElement | null
-      if (t?.closest('.figpop') || t?.closest(`[data-fig="${pop.id}"] .figtitle`)) return
+      // "Inside" is the pop-up and the LIVE title that opened it — scoped to
+      // `.mxdrawer` on purpose (6 Sep 26 review). The stuck header's frozen
+      // copy draws the same `[data-fig] .figtitle` markup as a read-only span,
+      // and without the scope a press on that copy matched here: the one press
+      // that looks most like "I am done with this pop-up" was the one press
+      // that left it open, a dead spot in the app's own outside-press rule.
+      if (t?.closest('.figpop') || t?.closest(`.mxdrawer [data-fig="${pop.id}"] .figtitle`)) return
       setPop(null)
     }
     const onKey = (e: KeyboardEvent) => {
@@ -199,6 +220,7 @@ export function FiguresDrawer({
                 <FigureTitle
                   figure={f}
                   open={pop?.id === f.id}
+                  popId={pop?.id === f.id ? POP_ID : undefined}
                   onClick={e => {
                     const at = popAt(e.currentTarget.getBoundingClientRect(), POP_W, POP_H)
                     setPop(p => (p?.id === f.id ? null : { id: f.id, ...at }))
@@ -229,9 +251,24 @@ export function FiguresDrawer({
         </tbody>
       </table>
       {/* Screen-fixed (matrix.css) so the frozen columns cannot clip it, and
-          placed off the title's own rect at the moment of the press. */}
+          placed off the title's own rect at the moment of the press.
+
+          `dialog`, not `tooltip` (6 Sep 26 review): a tooltip is something a
+          pointer or focus reveals and that describes the thing it hangs off.
+          This is a panel a CLICK opens and a click, Escape or a scroll closes,
+          and it is the answer to a question the reader asked — which is a
+          dialog's contract, not a tooltip's. Named by its own figure, and
+          pointed at from the title through `aria-expanded`/`aria-controls`, so
+          a reader who cannot see it land is still told it opened and where. */}
       {pop && popped && (
-        <div className="figpop" data-testid="figpop" role="tooltip" style={{ left: pop.x, top: pop.y }}>
+        <div
+          className="figpop"
+          id={POP_ID}
+          data-testid="figpop"
+          role="dialog"
+          aria-label={`${popped.label} — what this column counts`}
+          style={{ left: pop.x, top: pop.y }}
+        >
           <div className="figpop-hd">{popped.label}</div>
           <div className="figpop-t">{popped.desc}</div>
         </div>
