@@ -1496,3 +1496,18 @@ gate's. Keep verdict-bearing commands unpiped.
 
 **Principle:** Each task runs the gate that can see its own change; deferring the only gate that can see a change to the last task converts per-task findings into one big-bang slice owned by a stranger to the code.
 
+### Observation 98: When a task gets a fix round anyway, its own deferred minors ride along as a separate, optional list
+
+**Status:** OPEN
+**Date:** 2026-09-06
+**Session context:** Leave War figures drawer — the final whole-branch review of the six-task subagent-driven build, and its one closing fix wave.
+**Skill:** subagent-driven-development
+**Type:** open-source
+**Phase/Area:** The fix loop / deferred minors
+
+**Issue:** The skill keeps Minor findings out of the fix loop (ledger them; the final whole-branch review triages). In a six-task build, most minors were folded into the next task by its brief and were gone by the end — except the one task whose fix round was spent on three Important findings: its five minors stayed in the ledger untouched and the final reviewer promoted three of them to fix-before-merge. They then landed in the closing wave, done by an implementer who had never seen that task, beside eleven other items. The task's own implementer was resumed for the fix round with its context intact and could have taken them for a few minutes.
+
+**Suggested improvement:** In the fix-loop section: when a fix round is dispatched for a task, append that task's ledgered minors to the dispatch under a separate "optional, non-blocking" heading (blocking findings first, verbatim); the scoped re-review gets the same two lists and verdicts the minors as ADDRESSED / DEFERRED without extending the loop. Keep the rule that minors alone never TRIGGER a round.
+
+**Principle:** A minor finding never opens a fix round, but it should ride one that is open anyway — the implementer who still holds the task's context fixes it in minutes, where the closing wave hands it to a stranger among a dozen others.
+
