@@ -1039,9 +1039,20 @@
    An ATTRIBUTE rather than that class because this wrap is `.mx-outer`, whose
    className React rebuilds (`mx-banded`/`lw-sda`/`mx-arranging`/`mx-figures`):
    a phone drag whose edge auto-scroll flipped the band on would have lost the
-   brightening mid-drag. */
+   brightening mid-drag.
+     THE VIEWER'S OWN ROW needs the last two selectors (review, 6 Sep 26).
+   `.mx tbody tr.me .bal` (0,3,2) and `.mxdrawer .mx tbody tr.me td` (0,3,3)
+   both out-rank the plain recipe (0,3,1), so a box selected on the ONE row the
+   owner asked to make more obvious came back wearing the row's teal instead of
+   the selection's wash — the resting state only; the armed brightening below
+   is (0,5,1) and always won. The `tr.me` selectors are (0,4,3): over both
+   copies of the viewer's row, still under the armed rule. They join this rule's
+   list rather than restating its two declarations, so the resting look cannot
+   drift between the two. */
 .mx td.figbox[data-figsel],
-.mx td.figbox[data-figdrag] {
+.mx td.figbox[data-figdrag],
+.mx tbody tr.me td.figbox[data-figsel],
+.mx tbody tr.me td.figbox[data-figdrag] {
   background: rgba(59, 198, 232, .22);
   box-shadow: inset 0 0 0 1px rgba(59, 198, 232, .6);
 }
@@ -2111,7 +2122,12 @@
   position: fixed;
   left: 12px;
   bottom: 14px;
-  width: min(880px, calc(100vw - 24px));
+  /* `100%` of a fixed element, not `100vw` (review, 6 Sep 26): a fixed box's
+     percentage resolves against the initial containing block, which EXCLUDES a
+     classic scrollbar, where `100vw` includes it — so on a desktop with
+     always-on scrollbars the panel ran a scrollbar's width past the 12px gutter
+     on its right. The 880px cap on a wide screen stays as it is. */
+  width: min(880px, calc(100% - 24px));
   box-sizing: border-box;
   z-index: 60;
   display: flex;
@@ -2320,6 +2336,34 @@
    the real header and the mirror — because both draw `bracketRow`. */
 .mx-outer.mx-figures .mx .mxhead th.brakm .brakl {
   left: calc(var(--who-w) + var(--drawer-w, var(--bal-w)) + 6px);
+}
+/* …and the month RAIL itself has to be covered over the same ground (6 Sep 26
+   bug hunt). `.brakin`'s top border belongs to the month whose first columns
+   now sit UNDER the drawer, so with the figures open the rail's top edge ran
+   across the drawer's title row — from the FIGURES bar's right edge to the
+   drawer's right edge — at the top of the page, on a phone and on a desktop.
+   The frozen corner is only who + counter wide (`th.brakhd`, colSpan 2), so
+   the stretch between it and the drawer's edge was left uncovered, and the
+   drawer's own table starts a row lower.
+     The corner reaches over it with a pseudo-element rather than a colSpan,
+   because the real bracket row's cells belong to the day columns and the
+   drawer is an overlay that must not change them. `th.brakhd` is already
+   `position: sticky`, which is a containing block, so `left: 100%` is its own
+   right edge (see the `.figbar` note below). No `pointer-events: none`: the
+   ground it covers is inert bracket cells, and the corner answering a press
+   there is what the e2e reads.
+     The stuck MIRROR is deliberately excluded — its copy of this row already
+   draws the corner as wide as the drawer (`bracketRow(false, true)`, one cell
+   over the name column and every figure), so the same strip there would paint
+   PAST the drawer's right edge. Hence `.mx-wrap`, the real grid's scroller. */
+.mx-outer.mx-figures .mx-wrap .mx .mxhead th.brakhd::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 100%;
+  width: calc(var(--drawer-w, var(--bal-w)) - var(--bal-w));
+  background: var(--panel-2);
 }
 .mx-outer.mx-figures .mxband td.bal { visibility: hidden; }  /* the drawer's first column covers it */
 /* A group heading's label OVERFLOWS its two frozen columns rightward (the

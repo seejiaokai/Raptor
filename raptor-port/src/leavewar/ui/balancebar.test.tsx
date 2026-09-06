@@ -93,6 +93,27 @@ describe('BalanceBar', () => {
     expect(screen.getByTestId('oil-credit-err').textContent).toBe('Give a reason')
   })
 
+  /* A SECOND DRAG THAT EXTENDS THE RUN KEEPS THE DRAFT (review, 6 Sep 26). The
+     form was keyed on the pool AND the ids, so adding two more people to a live
+     selection remounted it and silently emptied every box — on OIL that is the
+     amount, the date, the reason and the given-by, thrown away for a reason the
+     reader would never guess. The run is a prop; only a change of POOL is a
+     different credit and earns a fresh form. Both halves are here: the draft
+     survives more ids, and it does NOT survive a different pool. */
+  it('extending the run keeps what has been typed; a different pool starts fresh', () => {
+    const { rerender } = render(<BalanceBar figure={oil} ids={['ramp']} onDone={() => {}} onClose={() => {}} />)
+    fireEvent.change(screen.getByTestId('oil-amt'), { target: { value: '2' } })
+    fireEvent.change(screen.getByTestId('oil-reason'), { target: { value: 'Det recovery' } })
+
+    rerender(<BalanceBar figure={oil} ids={['ramp', 'dusk', 'miles']} onDone={() => {}} onClose={() => {}} />)
+    expect(screen.getByTestId('oil-credit-who').textContent).toBe('3 people · +OIL')
+    expect((screen.getByTestId('oil-amt') as HTMLInputElement).value, 'the amount survives').toBe('2')
+    expect((screen.getByTestId('oil-reason') as HTMLInputElement).value, 'and so does the reason').toBe('Det recovery')
+
+    rerender(<BalanceBar figure={ccl} ids={['ramp', 'dusk', 'miles']} onDone={() => {}} onClose={() => {}} />)
+    expect((screen.getByTestId('oil-amt') as HTMLInputElement).value, 'another pool is another credit').toBe('')
+  })
+
   it('✕ closes without writing, and Escape in the amount box does the same', () => {
     const onClose = vi.fn()
     render(<BalanceBar figure={ccl} ids={['ramp']} onDone={() => {}} onClose={onClose} />)

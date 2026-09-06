@@ -2224,9 +2224,15 @@ export function grantOil(personIds: string[], amount: number, date: string, reas
 /** Edit a grant in place — amount, date or reason. The approver stays who it
  *  was; the edit is visible in undo, which is the audit trail here. */
 export function updateLedgerEntry(id: string, patch: { amount?: number; date?: string; reason?: string; givenBy?: string }): string | null {
-  if (state.role !== 'admin') return 'Only an admin can edit OIL'
+  // The ENTRY first, then the role — so the refusal can name the pool it is
+  // about (review, 6 Sep 26). This said "Only an admin can edit OIL" whatever
+  // the entry was, from the day the ledger stopped being OIL's alone; a member
+  // editing a CCL credit was told about a pool they had not touched. An id that
+  // names nothing still answers "That entry is gone" first, which is true for a
+  // member and an admin alike and gives away nothing either way.
   const cur = state.ledger.find(e => e.id === id)
   if (!cur) return 'That entry is gone'
+  if (state.role !== 'admin') return `Only an admin can edit ${counterLabel(cur.counter)}`
   const amount = patch.amount ?? cur.amount
   const date = patch.date ?? cur.date
   const reason = patch.reason ?? cur.reason

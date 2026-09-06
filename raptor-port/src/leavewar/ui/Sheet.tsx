@@ -29,6 +29,14 @@ import './bidpicker.css'
 
 const PAN_THRESH = 6 // px before a gesture commits to an axis
 
+/** How much of the visual viewport must be gone before it counts as a KEYBOARD
+ *  rather than a URL bar showing or hiding — below this, a docked panel must
+ *  not re-anchor itself. Exported because the balance bar keeps itself above a
+ *  phone's keyboard the same way (`BalanceBar.tsx`) and had copied the number:
+ *  two literals for one physical judgement is the drift seam the house rules
+ *  name (review, 6 Sep 26). */
+export const KEYBOARD_MIN = 120
+
 /* A FINGER SCROLLS THE GRID ITSELF (owner, 6 Sep 26 — "when a window like
    this is open, the swipe on the background of the leave war doesn't
    decelerate smoothly. Like it stops immediately … fix the swipe animation to
@@ -279,11 +287,8 @@ function useKeyboardInset(panelRef: { current: HTMLDivElement | null }) {
     const panel = panelRef.current
     if (!vv || !panel) return
     const GAP = 8
-    // The viewport must lose more than a chunk before we call it a keyboard —
-    // the URL bar showing/hiding shifts it a little and must not re-anchor.
-    const KEY = 120
     const place = () => {
-      if (window.innerHeight - vv.height <= KEY) {
+      if (window.innerHeight - vv.height <= KEYBOARD_MIN) {
         // No keyboard: drop the overrides, the CSS bottom-anchor + dvh cap
         // take back over.
         panel.style.top = ''

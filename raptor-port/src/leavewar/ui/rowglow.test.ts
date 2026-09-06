@@ -154,6 +154,29 @@ describe('the viewer\'s own row is lit by LINES, never by a wash', () => {
       expect(bodiesFor(sel).join(' ').replace(/\s+/g, ' '), `${sel} brackets the row`)
         .toMatch(/inset 0 1px 0 rgba\(59, 198, 232, \.55\), inset 0 -1px 0 rgba\(59, 198, 232, \.55\)/)
   })
+
+  /* …but the row's own panel must not swallow a SELECTED figure box on it
+     (review, 6 Sep 26). The two `tr.me` panels beat the plain committed recipe
+     `.mx td.figbox[data-figsel]` (0,3,1) — the grid's frozen counter cell is a
+     `.bal`, and the drawer restates the row across every figure column — so
+     the one row the owner asked to make more obvious was the one row where a
+     selection stopped showing. The armed brightening (0,5,1) always won, which
+     is why only the RESTING state was dim. Pinned as the arithmetic, not as a
+     string: a later edit to any of the four selectors re-runs the comparison. */
+  it('a selected figure box out-ranks the viewer\'s row — in the grid and in the drawer', () => {
+    const me = ['.mx tbody tr.me .bal', '.mxdrawer .mx tbody tr.me td']
+    for (const sel of me) expect(rulesFor(sel).length, `${sel} is declared`).toBeGreaterThan(0)
+    for (const attr of ['[data-figsel]', '[data-figdrag]']) {
+      const sel = `.mx tbody tr.me td.figbox${attr}`
+      const bodies = bodiesFor(sel)
+      expect(bodies.length, `${sel} is declared`).toBeGreaterThan(0)
+      expect(bodies.join(' '), `${sel} carries the selection wash`).toMatch(/rgba\(59, 198, 232, \.22\)/)
+      for (const row of me) expect(beats(sel, row), `${sel} beats ${row}`).toBe(true)
+      // …and the armed drag still beats the committed rule, or the hold would
+      // stop showing on this row instead.
+      expect(beats(`.mx-outer[data-selecting] .mx td.figbox${attr}`, sel), 'the armed brightening still wins').toBe(true)
+    }
+  })
 })
 
 describe('the Rearrange switch rings only for a keyboard, and glows while on', () => {
@@ -207,5 +230,24 @@ describe('the Rearrange switch rings only for a keyboard, and glows while on', (
     // would steal the border those states own.
     expect(indexOf('.rtbtn:hover')).toBeLessThan(indexOf('.rtbtn.pri'))
     expect(indexOf('.rtbtn:hover')).toBeLessThan(indexOf('.rtbtn.arm'))
+  })
+})
+
+/* The two docked panels are the third thing only the file can answer for
+   (review, 6 Sep 26). A `position: fixed` box's percentage resolves against the
+   initial containing block, which EXCLUDES a classic scrollbar; `100vw`
+   INCLUDES it. So `min(880px, 100vw − 24px)` ran the panel a scrollbar's width
+   past its own 12px right gutter on any desktop with always-on scrollbars — and
+   nothing in this repo's browsers has one, so no drive and no geometry test can
+   see it. The file is the only witness. */
+describe('the docked panels measure themselves against the page, not the viewport', () => {
+  it('the shared dock recipe caps at 880px and takes its width from `100%`', () => {
+    const bodies = bodiesFor('.balbar')
+    expect(bodies.length, '.balbar shares the dock recipe').toBeGreaterThan(0)
+    expect(bodiesFor('.mv-banner').length, '…and so does the move banner').toBeGreaterThan(0)
+    const dock = RULES.find(r => r.sels.includes('.balbar') && r.sels.includes('.mv-banner'))
+    expect(dock, 'the two are ONE rule, so they cannot drift apart').toBeTruthy()
+    expect(dock!.body.replace(/\s+/g, ' ')).toContain('width: min(880px, calc(100% - 24px))')
+    expect(dock!.body, 'never 100vw — it counts the scrollbar the panel does not sit under').not.toMatch(/100vw/)
   })
 })

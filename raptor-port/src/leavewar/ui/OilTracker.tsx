@@ -146,12 +146,19 @@ function IntField({ testid, value, min, max, onCommit }: {
   )
 }
 
-export function OilTracker({ person, focus, onClose, onGranted }: {
-  /** Scroll to this person's row on open (the Cinch's OIL BAL, or a manual
-   *  OIL write on the grid); `null` opens at the top. */
+/* THE `focus` PROP IS GONE (controller, 6 Sep 26). It lit the credit box for
+   the day just written, and its ONE caller was the grid's own OIL/FO/HO write
+   opening the tracker on that person and day — a route reversed the same day
+   ("OIL from the bid picker never opens the tracker"). Nothing has set it
+   since, so the prop, the archive it auto-opened to reveal the lit box, and
+   the `here` marks it and `person` painted all came out rather than sitting
+   here as capability nobody asks for. `git log` keeps every line of it. What
+   stays is `person`: the row is still scrolled into view when the tracker is
+   opened on somebody. */
+export function OilTracker({ person, onClose, onGranted }: {
+  /** Scroll to this person's row on open (the Cinch's OIL BAL); `null` opens
+   *  at the top. */
   person: string | null
-  /** The day whose box to light, when opened from a grid write. */
-  focus?: string | null
   onClose: () => void
   /** After an admin's credit, edit or delete lands — the matrix snaps its
    *  counter column to OIL BAL (owner, 2 Sep 26). */
@@ -257,11 +264,6 @@ export function OilTracker({ person, focus, onClose, onGranted }: {
     const row = wrapRef.current?.querySelector<HTMLElement>(`[data-oilrow="${person}"]`)
     row?.scrollIntoView?.({ block: 'center' })
   }, [person])
-  // Opened on a day whose credit is already in the archive (a grid write
-  // that drew the last of it): open the archive, or the lit box is hidden.
-  const focusLed = person && focus ? ledgers.get(person) : undefined
-  const focusArchived = !!focusLed?.credits.some(c => c.date === focus && c.left === 0 && (c.used.length > 0 || c.expired > 0))
-  useEffect(() => { if (focusArchived) setArchiveOpen(true) }, [focusArchived])
 
   // A tap outside the open credit bar cancels it (no save) — the owner asked
   // for this in place of a Deselect button (owner, 2 Sep 26). A tap on a name
@@ -422,8 +424,7 @@ export function OilTracker({ person, focus, onClose, onGranted }: {
       const usedUp = c.left === 0 && !c.expired && c.used.length > 0
       const editing = editId !== null && c.ledgerId === editId
       const noting = noteId === `${p.id}|${c.date}`
-      const here = !!focus && p.id === person && c.date === focus
-      const cls = `oil-e credit${c.source === 'grant' ? ' grant' : ''}${usedUp ? ' used' : ''}${c.expired ? ' expired' : ''}${here ? ' here' : ''}${editing || noting ? ' editing' : ''}`
+      const cls = `oil-e credit${c.source === 'grant' ? ' grant' : ''}${usedUp ? ' used' : ''}${c.expired ? ' expired' : ''}${editing || noting ? ' editing' : ''}`
       const canEdit = admin && c.source === 'grant'
       const canNote = admin && c.source === 'auto' && c.manual
       if (editing) {
@@ -583,7 +584,7 @@ export function OilTracker({ person, focus, onClose, onGranted }: {
     const archivedN = archivedOf.get(p.id) ?? 0
     const on = sel.has(p.id)
     rows.push(
-      <tr key={p.id} className={`oil-row${on ? ' on' : ''}${idle ? ' idle' : ''}${p.id === person ? ' here' : ''}`} data-testid={`oil-row-${p.id}`} data-oilrow={p.id}>
+      <tr key={p.id} className={`oil-row${on ? ' on' : ''}${idle ? ' idle' : ''}`} data-testid={`oil-row-${p.id}`} data-oilrow={p.id}>
         <td
           className="oil-name f c1"
           data-oilpick=""

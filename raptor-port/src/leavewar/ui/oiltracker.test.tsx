@@ -81,13 +81,30 @@ describe('the OIL tracker grid', () => {
 })
 
 describe('the Cinch sheet hands over to the tracker', () => {
+  /* The row is BROUGHT INTO VIEW rather than MARKED (controller, 6 Sep 26).
+     This case used to read the `here` class off the row; that class — and the
+     one a `focus` day painted on a credit box — went with the tracker's dead
+     `focus` prop, whose only caller was the grid write that stopped
+     auto-opening the tracker on the same day. So the assertion is rewritten
+     onto what actually still happens, not deleted: `scrollIntoView` on that
+     person's row. jsdom implements no scrolling at all, so the method has to
+     be stood up here for the effect's optional call to reach anything. */
+  const origScroll = Element.prototype.scrollIntoView
+  let scrolled: Element[] = []
+  beforeEach(() => {
+    scrolled = []
+    Element.prototype.scrollIntoView = function (this: Element) { scrolled.push(this) }
+  })
+  afterEach(() => { Element.prototype.scrollIntoView = origScroll })
+
   it('+OIL opens the tracker on that person\'s row; other rows still open their breakdown', () => {
     render(<Matrix />)
     fireEvent.click(screen.getByTestId('person-ramp'))
     fireEvent.click(screen.getByTestId('pfig-oil').querySelector('.crow')!)
     expect(screen.queryByTestId('person-figures')).toBeNull()
     expect(screen.getByTestId('oil-sheet')).toBeTruthy()
-    expect(screen.getByTestId('oil-row-ramp').className).toContain('here')
+    expect(scrolled).toContain(screen.getByTestId('oil-row-ramp'))
+    expect(scrolled).not.toContain(screen.getByTestId('oil-row-dusk'))
   })
 })
 

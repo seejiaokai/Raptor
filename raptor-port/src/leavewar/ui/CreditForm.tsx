@@ -101,8 +101,13 @@ export function CreditForm({ counter, ids, who, today, initialAmount = '1', auto
     if (e.key === 'Enter') save()
     if (e.key === 'Escape' && onCancel) { e.stopPropagation(); onCancel() }
   }
+  // No `plain` modifier on the short form (review, 6 Sep 26): no rule ever read
+  // it, and a class that styles nothing reads as a hook something depends on.
+  // What the short form drops is plain in the markup — `full` gates the date,
+  // the reason and the given-by. Add one back with a rule the day the short bar
+  // needs a look of its own.
   return (
-    <div className={`oil-bar form${full ? '' : ' plain'}`} data-testid="oil-credit-panel">
+    <div className="oil-bar form" data-testid="oil-credit-panel">
       <b className="oil-who" data-testid="oil-credit-who">{who}</b>
       <button
         className="tchip sign"

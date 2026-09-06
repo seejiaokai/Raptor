@@ -169,6 +169,19 @@ interface GestureBase<A, P> {
    *  of the expanded counters … likewise the counter on the left"). Absent =
    *  the wrap's own left edge: every existing caller and test is untouched. */
   leftEdge?: () => number
+  /** How GENTLE this caller's edge auto-scroll is. `rate` multiplies the
+   *  per-frame step; `dwellMs` is how long the pointer must sit inside a band
+   *  before that band scrolls at all, timed from the frame it ENTERED the band
+   *  and started again whenever it leaves and comes back. Defaults `1` and `0`
+   *  — absent, every existing caller is byte-identical.
+   *    Only the FIGURE select asks for it (6 Sep 26 bug hunt). Painting a
+   *  rectangle of days wants the grid's own quick run to the next month; a
+   *  figure drag is a run of PEOPLE a number is about to be written to, so a
+   *  finger that merely finishes near the foot of the screen must not keep
+   *  collecting names. Measured on the built bundle before this: a three-row
+   *  drag ending in the bottom band ran the page 259px in ~0.7s and lit
+   *  FOURTEEN people. */
+  edge?: { rate?: number; dwellMs?: number }
 }
 /* WHICH NODE, and HOW it is marked — both are either/or, and the type says so
    rather than leaving a caller to pass a `cls` it does not use (6 Sep 26
@@ -202,6 +215,12 @@ function wireGesture<A, P>(wrap: HTMLElement, spec: GestureSpec<A, P>): () => vo
   let touchGesture = false   // this drag started from a finger, not a mouse
   let vscroll: VScroll | null = null  // the vertical scroller, resolved in arm()
   let held = 0               // edge bands the PRESS sat inside (bitmask, see bandsAt)
+  // The DWELL clock, one entry per band the pointer is currently inside, holding
+  // the moment it entered. A band that is left is deleted, so coming back starts
+  // the wait again — the pointer must SIT in a band, not brush through it. Only
+  // filled when a caller asked for a dwell (spec.edge.dwellMs); the day grid
+  // never touches it. See edgeScroll.
+  const enteredAt = new Map<number, number>()
 
   const nodesOf = (id: string): Element[] => {
     if (spec.nodes) return spec.nodes(id)
@@ -298,9 +317,31 @@ function wireGesture<A, P>(wrap: HTMLElement, spec: GestureSpec<A, P>): () => vo
       if (lastX > r.right - EDGE) dx = EDGE_STEP; else if (lastX < left + EDGE) dx = -EDGE_STEP
       if (lastY > vBot - EDGE) dy = EDGE_STEP; else if (lastY < vTop + EDGE) dy = -EDGE_STEP
     }
+    // A caller may ask for a GENTLER run than the day grid's (spec.edge): the
+    // step is scaled, and a band must be sat in for `dwellMs` before it moves at
+    // all. Both default to no-ops, so the grid's own feel is untouched.
+    const rate = spec.edge?.rate ?? 1
+    if (rate !== 1) { dx *= rate; dy *= rate }
     noteEdge()
+    // The HELD-band rule first: a band the press sat in is dead until the
+    // pointer has left it, whatever the dwell says.
     if ((dx > 0 && held & BR) || (dx < 0 && held & BL)) dx = 0
     if ((dy > 0 && held & BB) || (dy < 0 && held & BT)) dy = 0
+    const dwellMs = spec.edge?.dwellMs ?? 0
+    if (dwellMs > 0) {
+      // Timed from the frame the pointer ENTERED each band, and reset the moment
+      // it leaves — so a drag that merely ends near the edge pauses there and
+      // stops, while one deliberately parked in the band still runs on.
+      const now = Date.now()
+      const inBands = bandsAt(lastX, lastY)
+      for (const b of [BL, BR, BT, BB]) {
+        if (inBands & b) { if (!enteredAt.has(b)) enteredAt.set(b, now) }
+        else enteredAt.delete(b)
+      }
+      const waiting = (b: number) => now - (enteredAt.get(b) ?? now) < dwellMs
+      if ((dx > 0 && waiting(BR)) || (dx < 0 && waiting(BL))) dx = 0
+      if ((dy > 0 && waiting(BB)) || (dy < 0 && waiting(BT))) dy = 0
+    }
     if (dx) wrap.scrollLeft += dx
     if (dy) vs.el.scrollTop += dy
     if (dx || dy) repaint()
@@ -430,6 +471,7 @@ function wireGesture<A, P>(wrap: HTMLElement, spec: GestureSpec<A, P>): () => vo
     wrap.classList.remove('selecting')
     wrap.removeAttribute('data-selecting')
     anchor = null; armed = false; pid = -1; vscroll = null; held = 0   // re-resolve next drag
+    enteredAt.clear()
     spec.reset?.()
   }
   const onCancel = (e: PointerEvent) => {
@@ -632,6 +674,15 @@ export function wireFigureSelect(outer: HTMLElement, ctx: FigureSelectCtx): () =
     mark: (el, on) => { if (on) el.setAttribute(FIGDRAG_ATTR, '1'); else el.removeAttribute(FIGDRAG_ATTR) },
     reset: () => { lastFocus = null },
     onArm: ctx.onArm,
+    // GENTLE at the edge, unlike the day grid (6 Sep 26 bug hunt). What this
+    // run collects is what a number gets written to, so a finger that simply
+    // ends its drag in a phone's bottom band must not go on gathering people:
+    // 0.4 of the step (≤6px a frame at full depth against the grid's 15), and
+    // not until it has sat in the band for 220ms — about a beat longer than a
+    // finger takes to stop and lift. Parked there on purpose it still runs on,
+    // so a run CAN still be extended past the screen; the bar's count is the
+    // check before Save.
+    edge: { rate: 0.4, dwellMs: 220 },
     // A HOLD selects, a quick tap still opens the breakdown — the day grid's own
     // rhythm, on the same feel constants. So an admin's press that dwells past
     // HOLD (or a mouse that moves past MOUSE_SLOP) commits a selection of the

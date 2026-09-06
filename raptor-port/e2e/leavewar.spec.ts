@@ -1528,6 +1528,32 @@ test('the corner switch fills its cell — the whole corner is the tap target', 
   expect(bb.width).toBeGreaterThan(cb.width - 2)
 })
 
+test('the corner covers the month rail all the way to the drawer\'s edge', async ({ page }) => {
+  // The month BRACKET's top edge belongs to the month whose first columns now
+  // sit UNDER the drawer, and the frozen corner is only the name + counter
+  // columns wide — so with the figures open a length of rail ran across the
+  // drawer's title row, from the FIGURES bar's right edge to the drawer's
+  // right edge (bug hunt, 6 Sep 26; seen on a phone and on a desktop, at the
+  // TOP of the page — once the page is scrolled the stuck mirror hides it,
+  // which is why the drawer drives never met it). The corner reaches over that
+  // stretch now, so the topmost thing at a point inside it is the corner and
+  // never the rail.
+  await openDrawer(page)
+  await page.evaluate(() => window.scrollTo(0, 0))
+  const bar = (await figBar(page).boundingBox())!
+  const drawer = (await page.locator('[data-testid="figdrawer"]').boundingBox())!
+  const x = bar.x + bar.width + 10
+  const y = bar.y + bar.height / 2
+  // The point has to be IN the gap, or this proves nothing.
+  expect(x, 'the probe sits inside the uncovered stretch').toBeLessThan(drawer.x + drawer.width)
+  const hit = await page.evaluate(([px, py]) => {
+    const el = document.elementFromPoint(px as number, py as number) as HTMLElement | null
+    return { rail: !!el?.closest('.brakm, .brakin'), corner: !!el?.closest('th.brakhd') }
+  }, [x, y])
+  expect(hit.rail, 'no month rail shows beside the FIGURES bar').toBe(false)
+  expect(hit.corner, 'the corner reaches to the drawer\'s edge').toBe(true)
+})
+
 test('a month jump lands the month clear of the drawer, not under it', async ({ page }) => {
   // The jump measures a "frozen width" to know where the visible day strip
   // begins, and with the drawer out the frozen part IS the drawer — eight

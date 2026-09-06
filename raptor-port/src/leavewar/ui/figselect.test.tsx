@@ -1,6 +1,6 @@
 import { act, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { advanceStage, initStore, lwHistEpoch, lwUndo, setBalance, setRole } from '../state/store'
+import { advanceStage, initStore, lwHistEpoch, lwUndo, setBalance, setRole, toggleFigure } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { Matrix } from './Matrix'
 import { FIGSEL_ATTR } from './select'
@@ -225,6 +225,36 @@ describe('a drag down the figure column selects a run of people', () => {
     fireEvent.click(screen.getByTestId('figures-toggle'))
     expect(screen.getByTestId('figures-toggle').getAttribute('aria-expanded')).toBe('true')
     expect(marked()).toHaveLength(0)
+  })
+
+  /* …and so does HIDING the figure the run is on (review, 6 Sep 26). The clear
+     above watches the stage, the war, the undo epoch, the drawer and the role,
+     and `toggleFigure` bumps none of them — so a hidden figure left the run
+     ALIVE with nothing on screen to say so: no bar (its figure has left the
+     visible list) and no lit boxes (the column falls back to the first visible
+     figure). Showing it again then brought the whole run back lit, as though it
+     had been waiting there. The identity of the visible list is a dependency of
+     the clear now, which is what makes the second half of this test the one
+     that bites. */
+  it('hiding the figure a run is on ends it — showing it again brings nothing back', () => {
+    render(<Matrix />)
+    // The run has to sit on a figure that is not the column's fallback, or
+    // hiding it would take the highlight away by simply changing the column.
+    fireEvent.click(screen.getByTestId('counter-pick'))
+    fireEvent.click(screen.getByTestId('counter-ccl'))
+    const [a] = layOutColumn()
+    dragDown(a)
+    expect(screen.getByTestId('oil-credit-who').textContent).toBe('2 people · +CCL')
+    expect(marked()).toHaveLength(2)
+
+    act(() => { toggleFigure('ccl') })
+    expect(screen.queryByTestId('balance-bar')).toBeNull()
+    expect(marked()).toHaveLength(0)
+
+    act(() => { toggleFigure('ccl') })
+    expect(screen.getByTestId('counter-name').textContent, 'the column comes back').toBe('+CCL')
+    expect(marked(), 'the run does not').toHaveLength(0)
+    expect(screen.queryByTestId('balance-bar')).toBeNull()
   })
 
   it('a store write mid-selection leaves the highlight standing', () => {

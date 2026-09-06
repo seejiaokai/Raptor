@@ -397,6 +397,90 @@ describe('wireSelect edge auto-scroll (mouse and touch, both axes)', () => {
   })
 })
 
+// The FIGURE select's edge auto-scroll is GENTLE, where the day grid's is
+// quick (6 Sep 26 bug hunt, on the built bundle at iPhone-13 size). Painting a
+// rectangle of days wants the grid's run to the next month; a figure drag is a
+// run of PEOPLE a number is about to be written to, and a three-row drag that
+// merely ENDED in the phone's bottom 48px band ran the page 259px in ~0.7s and
+// lit fourteen — the bar then offered "14 people · +CCL" for a run the finger
+// never crossed. So `wireFigureSelect` asks for `edge: { rate: 0.4, dwellMs:
+// 220 }`: 0.4 of the step, and not until the pointer has SAT in the band. The
+// option is absent everywhere else, which is what keeps every case above — and
+// `wireSelect`/`wireRowSelect` themselves — byte-identical.
+describe('wireFigureSelect asks the edge auto-scroll to be gentle', () => {
+  let outer: HTMLElement, wrap: HTMLElement, box: HTMLElement, teardown: () => void
+  let rafSpy: ReturnType<typeof vi.spyOn>
+  let st: number                  // backing field for the page's scrollTop
+  const origEFP = document.elementFromPoint
+  const rect = (o: Partial<DOMRect>) => ({ left: 0, right: 300, top: 0, bottom: 400, width: 300, height: 400, x: 0, y: 0, toJSON() {}, ...o }) as DOMRect
+  beforeEach(() => {
+    document.elementFromPoint = () => null
+    rafSpy = vi.spyOn(window, 'requestAnimationFrame').mockImplementation(() => 1 as unknown as number)
+    outer = document.createElement('div')
+    outer.style.overflowY = 'auto'
+    Object.defineProperty(outer, 'scrollHeight', { configurable: true, value: 2000 })
+    Object.defineProperty(outer, 'clientHeight', { configurable: true, value: 400 })
+    st = 0
+    Object.defineProperty(outer, 'scrollTop', { configurable: true, get: () => st, set: v => { st = v } })
+    outer.getBoundingClientRect = () => rect({})
+    wrap = document.createElement('div')
+    box = document.createElement('td')
+    box.className = 'figbox'
+    box.setAttribute('data-fig', 'ccl')
+    box.setAttribute('data-person', 'ramp')
+    wrap.appendChild(box)
+    outer.appendChild(wrap)
+    document.body.appendChild(outer)
+    wrap.getBoundingClientRect = () => rect({})
+    teardown = wireFigureSelect(wrap, {
+      order: () => ['ramp'], selectable: () => true, enabled: () => true, onSelect: () => {},
+    })
+  })
+  afterEach(() => { teardown(); outer.remove(); document.elementFromPoint = origEFP; rafSpy.mockRestore(); vi.useRealTimers() })
+
+  /** Arm a touch drag on the box and hand back one frame of the auto-scroll.
+   *  `Date` is faked as well as the timers, because the dwell is measured off
+   *  the clock rather than off the rAF timestamp — the frame argument is 0 in
+   *  every one of these drives. */
+  const armTouchFrame = () => {
+    let cb: FrameRequestCallback | null = null
+    rafSpy.mockImplementation((fn: FrameRequestCallback) => { cb = fn; return 1 as unknown as number })
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout', 'Date'] })
+    box.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, pointerId: 1, pointerType: 'touch', clientX: 150, clientY: 200, button: 0 }))
+    vi.advanceTimersByTime(200)   // hold → arm, which schedules the first frame
+    expect(cb).not.toBeNull()
+    return () => cb!(0)
+  }
+  const move = (x: number, y: number) =>
+    window.dispatchEvent(new PointerEvent('pointermove', { bubbles: true, pointerId: 1, pointerType: 'touch', clientX: x, clientY: y }))
+
+  it('a band must be SAT IN for 220ms before it scrolls, and leaving restarts the wait', () => {
+    const frame = armTouchFrame()
+    move(150, 399)                                        // deep in the bottom band
+    st = 0; frame(); expect(st, 'the frame it entered on does not scroll').toBe(0)
+    vi.advanceTimersByTime(200)                           // still short of 220
+    st = 0; frame(); expect(st, 'nor does one 200ms in').toBe(0)
+    vi.advanceTimersByTime(40)
+    st = 0; frame(); expect(st, 'past the dwell it runs').toBeGreaterThan(0)
+    move(150, 200); frame()                               // out of the band …
+    move(150, 399)                                        // … and back in
+    st = 0; frame(); expect(st, 'coming back starts the wait again').toBe(0)
+  })
+
+  it('and then moves at 0.4 of the grid\'s step — ≤ 6px a frame at full depth', () => {
+    const frame = armTouchFrame()
+    move(150, 399)
+    frame()                                               // enters the band
+    vi.advanceTimersByTime(300)                           // sit there, past the dwell
+    st = 0; frame()
+    expect(st, 'it does move — a run can still be extended past the screen').toBeGreaterThan(0)
+    // TOUCH_STEP_MAX is 15px a frame at the very edge, which is what the day
+    // grid takes; 0.4 of it is 6. The `wireSelect` case above measures the
+    // ungentled step at the same depth.
+    expect(st, 'but at 0.4 of the step').toBeLessThanOrEqual(6)
+  })
+})
+
 // When the finger leaves every cell — a gap, or the empty area an edge
 // auto-scroll runs the grid past — the selection HOLDS the last cell it was
 // over instead of collapsing back to the anchor. Without this a drag to the

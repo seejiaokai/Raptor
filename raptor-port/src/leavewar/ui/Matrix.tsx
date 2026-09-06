@@ -632,10 +632,11 @@ export function Matrix() {
   // so the frozen callsign column's overflow can never clip it. null = hidden.
   const [qualPop, setQualPop] = useState<{ id: string; x: number; y: number } | null>(null)
   // The OIL TRACKER (owner, 2 Sep 26): open on everyone (the toolbar button)
-  // or on one person (the Cinch sheet's OIL BAL row). null = closed.
-  // The OIL tracker: open on a person (scrolled to their row) or at the top;
-  // `focus` lights the box for the day just written on the grid.
-  const [oilTracker, setOilTracker] = useState<{ person: string | null; focus?: string | null } | null>(null)
+  // or on one person, scrolled to their row (the Cinch sheet's OIL BAL row).
+  // null = closed. It carried a `focus` day as well until 6 Sep 26, for a grid
+  // write to light the credit it had just made; the write-opens-the-tracker
+  // route was reversed the same day, so both the field and the prop are gone.
+  const [oilTracker, setOilTracker] = useState<{ person: string | null } | null>(null)
   // Which event cell the admin has tapped to edit, or null. Keyed by line +
   // day; the Event sheet reads the current text or band off the store.
   // `to` is set only when a DRAG selected a span (owner, 27 Aug 26) — the sheet
@@ -910,7 +911,14 @@ export function Matrix() {
   // is mounted only for an admin, so a "view as member" flip mid-selection took
   // the bar off the screen and left the run lit with nothing to act on it —
   // a highlight the reader could not clear or use.
-  useEffect(() => { setFigSel(null) }, [period.stage, period.id, histEpoch, figuresOpen, role])
+  //   The VISIBLE FIGURES are in here too (review, 6 Sep 26). `toggleFigure`
+  // bumps none of the others, so hiding the very figure a run was selected on
+  // left the selection alive and unreachable — nothing on screen, and showing
+  // the figure again brought the run back lit, as if it had been waiting. It is
+  // the identity of the shown list, not its length: swapping one figure for
+  // another is the same change to a live run.
+  const figIds = figures.map(f => f.id).join('|')
+  useEffect(() => { setFigSel(null) }, [period.stage, period.id, histEpoch, figuresOpen, role, figIds])
 
   // A press outside the bar and the boxes drops the selection (the tracker's
   // own rule, owner 2 Sep 26 — no Deselect button); a press ON a box is the
@@ -3788,7 +3796,6 @@ export function Matrix() {
         <OilTracker
           key={oilTracker.person ?? '*'}
           person={oilTracker.person}
-          focus={oilTracker.focus ?? null}
           onClose={() => setOilTracker(null)}
           /* A credit lands → the column shows +OIL (owner, 2 Sep 26; id
              renamed 6 Sep 26 when OIL BAL and OIL USED merged into one

@@ -64,7 +64,7 @@ import {
   setViewer,
 } from './store'
 import { FIGURES, figureParts, makeWar, seedRequirements, type CounterName } from '../engine'
-import { balanceOf } from '../engine/counters'
+import { balanceOf, figureLines } from '../engine/counters'
 import { localBackend, memoryBackend } from './storage'
 
 beforeEach(() => {
@@ -2484,6 +2484,22 @@ describe('grantTo — a dated credit on any pool', () => {
     expect(e).toMatchObject({ amount: 2, date: '2026-09-06', reason: '', approvedBy: 'admin' })
     expect(e.id).toMatch(/^ol-\d+$/)
   })
+  /* THE DEFAULT COLUMN had no write test of its own (review, 6 Sep 26). Every
+     case here ran on `ccl`/`fcl`/`pl`, single-used-type pools; `annual` is the
+     one the column opens on, the one a drag reaches first, and the only pool
+     whose figure subtracts TWO used types (LL and OL) from the balance. So it
+     is checked twice over: through `balanceOf`, and through the figure the
+     grid actually draws — a credit that reached the ledger but not the box
+     would look to the reader like nothing had happened. */
+  it('credits `annual`, the column\'s own pool — in the balance and in the LVE box', () => {
+    setRole('admin')
+    const lve = FIGURES.find(f => f.id === 'lve')!
+    const before = bal('ramp', 'annual')
+    const boxBefore = figureLines(lve, figureCtxOf(), 'ramp').top
+    expect(grantTo(['ramp'], 'annual', 2, '2026-09-06', '')).toBeNull()
+    expect(bal('ramp', 'annual')).toBe(before + 2)
+    expect(figureLines(lve, figureCtxOf(), 'ramp').top).toBe(boxBefore + 2)
+  })
   it('subtracts with a negative amount — a correction, not a second mechanism', () => {
     setRole('admin')
     const before = bal('dusk', 'fcl')
@@ -2518,6 +2534,24 @@ describe('grantTo — a dated credit on any pool', () => {
     expect(getState().ledger.length).toBe(n + 3)
     lwUndo()
     expect(getState().ledger.length).toBe(n)
+  })
+  /* AND ITS REFUSAL NAMES THE RIGHT POOL (review, 6 Sep 26). `updateLedgerEntry`
+     checked the role before it looked the entry up, so its message was the
+     literal "Only an admin can edit OIL" — written when the ledger was OIL's
+     alone, and left telling a member editing a CCL credit about a pool they had
+     not touched. The entry is found first now, and the label comes off it. */
+  it('an edit\'s refusal names the entry\'s OWN pool', () => {
+    setRole('admin')
+    grantTo(['ramp'], 'ccl', 2, '2026-09-06', '')
+    const ccl = getState().ledger.filter(x => x.counter === 'ccl').at(-1)!
+    grantOil(['ramp'], 1, '2026-09-06', 'weekend')
+    const oil = getState().ledger.filter(x => x.counter === 'oil').at(-1)!
+    setRole('member')
+    expect(updateLedgerEntry(ccl.id, { amount: 1 })).toBe('Only an admin can edit CCL')
+    expect(updateLedgerEntry(oil.id, { amount: 1 })).toBe('Only an admin can edit OIL')
+    // An id naming nothing answers the same for either role — there is no pool
+    // to name, and "gone" is true whoever asks.
+    expect(updateLedgerEntry('ol-999', { amount: 1 })).toBe('That entry is gone')
   })
   it('an edit keeps the pool\'s own reason rule', () => {
     setRole('admin')

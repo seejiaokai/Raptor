@@ -4,6 +4,7 @@ import { useEffect, useRef } from 'react'
 import type { CounterName, Figure } from '../engine'
 import { figureCtxOf } from '../state/store'
 import { CreditForm } from './CreditForm'
+import { KEYBOARD_MIN } from './Sheet'
 
 /**
  * The docked bar after a drag down a figure column (owner, 6 Sep 26): "N
@@ -27,8 +28,14 @@ export function BalanceBar({ figure, ids, onDone, onClose }: {
   const n = ids.length
   return (
     <div className="balbar" data-testid="balance-bar" role="group" aria-label={`${figure.label}: ${n} ${n === 1 ? 'person' : 'people'}`} ref={ref}>
+      {/* KEYED ON THE POOL ALONE (review, 6 Sep 26). The key was the pool AND
+          the run, so a second drag that EXTENDED the run remounted the form and
+          threw away whatever had been typed into it — on OIL that is the amount,
+          the date, the reason and the given-by, gone because two more people
+          were added. The run is a prop; only a change of POOL is a different
+          credit and deserves a fresh form. */}
       <CreditForm
-        key={`${figure.id}|${ids.join('|')}`}
+        key={figure.id}
         counter={figure.counter}
         ids={ids}
         who={<>{n} {n === 1 ? 'person' : 'people'} · <b className="pool">{figure.title}</b></>}
@@ -45,17 +52,18 @@ export function BalanceBar({ figure, ids, onDone, onClose }: {
 /** Keep the bar above the phone's keyboard. A `position: fixed; bottom` panel
  *  is anchored to the LAYOUT viewport, which iOS does not shrink for the
  *  keyboard — the visual viewport does, so the bar's bottom follows that gap
- *  while a keyboard is up. The same threshold as Sheet's own hook, so a URL
- *  bar showing or hiding does not move it. */
+ *  while a keyboard is up. `KEYBOARD_MIN` is Sheet's own threshold, imported
+ *  rather than restated, so a URL bar showing or hiding never moves either of
+ *  them and the two cannot fall out of step. */
 function useDockAboveKeyboard(ref: { current: HTMLDivElement | null }) {
   useEffect(() => {
     const vv = window.visualViewport
     const el = ref.current
     if (!vv || !el) return
-    const KEY = 120, GAP = 14
+    const GAP = 14
     const place = () => {
       const covered = window.innerHeight - vv.height - vv.offsetTop
-      el.style.bottom = window.innerHeight - vv.height > KEY ? `${Math.max(0, covered) + GAP}px` : ''
+      el.style.bottom = window.innerHeight - vv.height > KEYBOARD_MIN ? `${Math.max(0, covered) + GAP}px` : ''
     }
     place()
     vv.addEventListener('resize', place)
