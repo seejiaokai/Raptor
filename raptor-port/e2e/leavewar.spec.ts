@@ -481,6 +481,15 @@ test('the matrix stays within a sane DOM size', async ({ page }) => {
   // inside `.mx` and 28849 whole-page — which is a ceiling in name only. 31700
   // and 31900 restore the ~10% the earlier raises each kept.
   //
+  // RE-MEASURED at the balance bar (6 Sep 26) and NOT raised. The figure drag
+  // paints ATTRIBUTES and never adds a node — `.mx` reads 26427 with the drawer
+  // out whether or not a run is lit — and the docked bar is 8 nodes on a plain
+  // pool, 12 on OIL, drawn outside `.mx` but inside `#page-leavewar`. So the
+  // worst case this test bounds moves by at most 12 and the three numbers below
+  // stand. (Measured on the built bundle at 1440x900; the bar cannot be raised
+  // from inside this test, which never selects a run — the balance-bar tests
+  // further down cover it.)
+  //
   // The headroom principle is unchanged: this is a ceiling, not a target,
   // and raising it is a deliberate edit in the change that adds the nodes.
   const nodes = await page.evaluate(() => document.querySelectorAll('.mx *').length)

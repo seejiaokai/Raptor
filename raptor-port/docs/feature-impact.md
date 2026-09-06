@@ -874,3 +874,61 @@ agree — name it here so the next session knows to check both.
   LISTS also differs by role**: the picker shows an admin all eight (a hidden one
   dimmed, with its eye) and a member only `visibleFigures()`; the drawer, the
   column and the cycle read `visibleFigures()` for both.
+
+- **Leave War BULK BALANCE ENTRY — one gesture, one bar, one writer (6 Sep 26).**
+  An admin drags down a run of people in ONE figure column and keys ONE number
+  into a docked bar; it lands on every one of them. Surfaces touched: the figure
+  BOX (`ui/FigureCell.tsx` — all three copies, the real counter cell, the phone
+  band's and every drawer box, now carrying `data-fig`/`data-person` and a
+  `selected` prop), the DRAWER (`ui/FiguresDrawer.tsx`, a primitive `selFig` per
+  row so the memo still keeps a growing run off the other rows), the GRID
+  (`ui/Matrix.tsx` — the `.mx-outer` bind, the swipe stand-down, the clears, the
+  bar's mount), the shared GESTURE CORE (`ui/select.ts` — `nodes`/`mark`/`onArm`
+  on `GestureSpec`, and the click swallow moved onto ANY armed teardown, which
+  the day grid gains too), the BAR and its FORM (`ui/BalanceBar.tsx` +
+  `ui/CreditForm.tsx`, lifted out of `ui/OilTracker.tsx` so the tracker and the
+  grid share one body), the BREAKDOWN sheet (`ui/CounterSheet.tsx`, which now
+  itemises the entries behind `granted`), and the STORE (`state/store.ts`).
+  **Three drift seams, and they are where a second copy would go wrong:**
+  - **`grantTo` is the ONE credit writer** — dedupe, `ledgerProblem`, `ledgerSeq`,
+    `approverName`, then ONE `withCurrent` + one `persist` + one `notify`. That
+    single write is what makes a nine-person batch **one undo step**, and
+    `grantOil` is now a one-line wrapper on it, so the tracker cannot drift from
+    the bar. A new credit surface that appends to `state.ledger` itself would
+    skip the halves rule (`isHalfStep`/`HALF_STEP_MSG`, every pool, the tracker
+    included), the OIL-only reason rule (`reasonRequired`, also read by the edit
+    path, the boot reader and the form) and the approver stamp — and would put N
+    entries into N undo steps. `ledgerProblem` is counter-FIRST for the same
+    reason: an edit re-checks the EDITED entry's own pool's rule.
+  - **`selectableFigure(f) = !!f.counter` is the ONE "can this be credited"
+    predicate**, read off the catalogue rather than a written-out list of pools.
+    Two readers, both in `Matrix.tsx`: what the drag will start on, and whether
+    the bar mounts. It is deliberately NOT the breakdown's `settable`, which
+    excludes OIL because **Set** moves an opening figure and OIL's opening lives
+    in the tracker — selection includes OIL. Conflating them would either lose
+    the OIL column to the drag or grow a Set button the tracker owns.
+  - **`leftEdge` / `frozenWidth` — the drag's left auto-scroll band and the
+    month-jump maths must read the SAME frozen width.** `Matrix.tsx frozenWidth`
+    is the one body (name column + counter column, or the drawer while it is
+    out); the day-grid drag now feeds it to the gesture as `leftEdge()`, and the
+    month jump, the post-redraw anchor correction and the month-strip readout all
+    measure from it too. Measured from the wrap's own `r.left` instead, the left
+    band sits BEHIND the frozen block where no pointer can reach it. `leftEdge`
+    is optional on `GestureBase`/`SelectCtx` — absent means `r.left`, which is
+    what the tracker's row select and the figure columns still want — and it
+    returns `-Infinity`, never `0`, with no wrap: `0` is a real client-x at the
+    screen's edge and the `??` at the wiring site cannot rescue it.
+  Ripples already walked: nothing in `balanceOf` changed (it summed the ledger
+  for every counter already), so the drawer, the picker, the person sheet, the
+  Legend and the OIL tracker pick a bulk credit up for free through
+  `figureCtxOf()`; `readLedger` was CHECKED rather than changed — it already
+  takes a blank reason (it only demands a string), so a saved plain-pool credit
+  reloads, and the reader now says so beside the check, because the rule that
+  makes a blank one legal lives at the WRITE path; the DOM ceilings did not
+  move — measured 6 Sep 26 on the built bundle with the drawer OUT and the bar
+  UP, the gesture adds attributes and never a node (`.mx` 26427 either way) and
+  the bar's whole subtree is 8 nodes on a plain pool, 12 on OIL, outside `.mx`
+  though inside `#page-leavewar`; and the edit/delete paths still
+  reach OIL entries only —
+  a plain-pool credit is corrected with a negative entry
+  (`docs/leavewar/known-gaps.md` §What balances do not yet do).

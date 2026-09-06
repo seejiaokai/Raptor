@@ -1548,8 +1548,10 @@
   box-shadow: inset 0 0 0 2px var(--accent), 0 0 12px rgba(59, 198, 232, .6);
   z-index: 4;   /* the heading's own sticky z-index is 3 — lift it over the rows */
 }
-/* The landing bar itself comes from the roster row's `tr.dragover td` rule —
-   the whole width at 3px — since a heading's cells are ordinary `td`s. Only
+/* The landing bar itself comes from the roster row's `tr.dragover td:not(.who)`
+   rule — the whole width at 3px — since a heading's cells are ordinary `td`s
+   and none of them is `.who` (that exclusion is what lifts the rule clear of
+   the manning shortfall states, and it costs a heading nothing). Only
    the GLOW is written here, on the sticky cell the thumb is nearest; the 2px
    on that cell alone was easy to miss under a finger. */
 .mx tbody tr.grp.dragover td.grphd { box-shadow: inset 0 3px 0 var(--accent), 0 -1px 10px rgba(59, 198, 232, .55); }

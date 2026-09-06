@@ -5210,9 +5210,29 @@ Four asks from the same sitting, all on the Leave War grid:
   edge for an insert-before, BOTTOM for a lower-half hover, unchanged. One
   cascade note, because it bites: the heading's ring rule and the row's line
   rule tie on specificity, so the line rule is scoped `tr.dragging:not(.grp)`
-  and the heading's two cells are painted in the heading block instead. Pinned in
+  and the heading's two cells are painted in the heading block instead.
+  **AND THE DRAG PAINT COMPOSES THE MANNING SHORTFALL RING RATHER THAN FIGHTING
+  IT.** An under-strength count cell wears its own `box-shadow` ring
+  (`.mx .counts td.amber` / `.red`, 0,3,1) and `box-shadow` is ONE property, so
+  the first cut of the row-wide paint and the shortfall were in direct
+  competition on exactly the days an admin reorders the block FOR: the landing
+  bar (0,2,3) lost and simply vanished on a short day, while the picked-up row's
+  lines (0,5,3) won and wiped the ring the landing row still had — the two ends
+  of the same drag disagreeing about the same column. The states now PUBLISH
+  their ring as `--mrow-ring` as well as painting it, and all three day-cell
+  drag rules take `var(--mrow-ring, 0 0 transparent)` as their LAST layer;
+  box-shadow layers paint first-on-top, so the drag's edges win and the
+  shortfall still shows down the sides, and a cell with no shortfall inherits
+  nothing and takes one invisible layer. The landing bar is `td:not(.who)`
+  (0,3,3) so it out-ranks the states outright — `.who` is excluded because it
+  has its own glow rule, and a heading's cells are not `.who`, so a heading
+  still gets its bar. Note for the perf rule: `--mrow-ring` is defined and read
+  on the SAME static cell, never toggled on `.mx-outer` or a grid ancestor, so
+  it restyles nothing. Pinned in
   `rowglow.test.ts` — a CSS contract read off `matrix.css`, since jsdom paints
-  nothing and this is entirely about what is painted.
+  nothing and this is entirely about what is painted; the shortfall half is
+  pinned as the CASCADE FACT (a specificity calculator, a tie counted as a
+  loss) rather than as a string.
 
 Verified live at 1440px: picker rows 30px, the viewer chip reads "Viewing as
 Ranger", a ground-crew row shows "Cotter" with no edit box, and a count-row drag
@@ -6262,18 +6282,242 @@ whole of what the admin sees on an OIL day he has no balance for: it WARNS once
 leave, per COUNTER. Pinned in `oiltracker.test.tsx` (no tracker for either role,
 the column still snaps) and `bidding.test.tsx` (warn → write, OIL and CCL at 0).
 
-**The docked balance bar's two dismissal rules agree with each other (6 Sep 26).**
-A press outside the bar and the figure boxes drops the run (the tracker's own
-no-Deselect-button rule, 2 Sep 26) — but NOT while a `.bidsheet` is mounted,
-which is what Escape already did: the two read the same situation differently, so
-dismissing a breakdown by tapping beside it silently took the selection with it
-where Escape left it standing. Both now yield to an open sheet, and a press after
-the sheet closes clears as ever (`Matrix.tsx onDown`, pinned in
-`figselect.test.tsx`).
+## Bulk balance entry from the figures (owner, 6 Sep 26)
 
-**A refusal in the balance bar's form clears when the amount is edited (6 Sep
-26).** The message names what was wrong with the value that WAS typed, so left
-standing over a new one it reads as a fresh rejection of a draft nothing has
-judged yet. Editing the number clears it; Save brings it back if the new value is
-still bad, so this is a clear, not a silencing (`CreditForm.tsx`, pinned in
-`balancebar.test.tsx`).
+The figures drawer above shows every pool's balance for everyone; this is how an
+admin CHANGES them from the same place — "drag down a run of people in one
+column, key one number, and it lands on all of them" (owner, 6 Sep 26: "7 shows,
+I type 3, it reads 10; I type −3, it reads 4"). The design doc, owner-approved
+section by section, is
+`docs/superpowers/specs/2026-09-06-leavewar-bulk-balance-design.md`; this is what
+the built surface promises. Almost none of it is reachable from jsdom — there is
+no hit-testing, no layout and no docked panel to measure — so
+`e2e/leavewar.spec.ts` (both projects) carries the browser half and the unit
+files carry the rules.
+
+### The gesture
+
+**One listener, three copies of every box.** A figure box is drawn in three
+places — the real counter cell, the phone band's frozen copy and a drawer box —
+and the gesture is bound ONCE, on `.mx-outer`, the only ancestor all three share
+(`Matrix.tsx`, `select.ts wireFigureSelect`). Every copy carries the same
+addressing, `data-fig` + `data-person`, and `GestureSpec.nodes(id)` paints all of
+them, so a selected person lights wherever he is on screen. The hit is
+`td.figbox[data-fig][data-person]` and nothing else: a `th` title cell, the
+corner switch and the manning/event blanks can never start one.
+
+**The feel is the day grid's, on the same constants, unchanged.** A mouse arms at
+a 4px move (`MOUSE_SLOP`); a finger arms after a 180 ms dwell (`HOLD`), or
+earlier if it is still down at 140 ms (`SLOWARM`) and then slides past 26 px
+(`GIVEUP`) — a slow, deliberate drag. That same 26 px slid BEFORE the 140 ms
+cedes to the native scroll, which is what keeps a quick flick a flick. Pointer
+capture is taken in `arm()`, never on down. The page auto-scrolls vertically at
+the top and bottom edge bands while a drag is armed (the day grid's own rule,
+owner 30 Aug 26 — "auto scroll to the edge to continue selecting more"), so a
+drag held near the bottom of a phone keeps scrolling AND keeps adding people:
+the bar can name more of them than the finger visibly crossed. There is no
+sideways auto-scroll — `.mx-outer` does not scroll. **A HOLD SELECTS AND A QUICK
+TAP STILL OPENS THE BREAKDOWN** — that is
+the whole difference a reader feels on a box that used to do only one thing, and
+it is pinned both ways in the e2e ("a drag on a total, or by a member, lights
+nothing" makes an admin's plain click open `figure-breakdown`, close it, and
+light nobody).
+
+**One pool per drag, people only.** The pressed box's `data-fig` fixes the pool
+for the whole gesture — the run never widens sideways — and the run itself is the
+roster-order slice between the anchor person and whoever is under the pointer
+(`rowRun` over people only). A group heading, a CAT sub-heading or an event row
+under the pointer holds the LAST person rather than breaking the run. A second
+drag in the SAME pool adds to the live selection; a drag in another pool starts
+over. **A total is never selectable** — one predicate, `selectableFigure(f) =
+!!f.counter`, read off the catalogue rather than a written-out list, so `−LVE
+TOT` and `−MED TOT` refuse and every balance including OIL accepts.
+
+**Who.** Admin only (`role === 'admin'`), and the gesture stands down entirely
+while another one owns the grid — Rearrange, move mode, event move. A member's
+boxes behave exactly as they always did.
+
+**TWO ATTRIBUTES, ONE LOOK, AND THEY MUST NEVER BE ONE.** React renders
+`data-figsel` for the COMMITTED selection; the gesture paints `data-figdrag`
+while a drag is live and wipes only its own marks on release. Neither is a
+CLASS, because `FigureCell` rebuilds its `className` from `wide`/`flash` on every
+store change — which is exactly the moment a Save lands — so a class painted from
+outside would be wiped mid-drag. And they are two attributes rather than one
+because the gesture's clear would otherwise strip boxes React already owned, and
+React writes an attribute only when its PROP changed, so it never put them back:
+a second drag overlapping a live selection left a selected person dark, and a
+cancelled drag left the whole selection dark. Both are lit by the same pair of
+rules in `matrix.css`, so a drag crossing a live selection never flickers.
+The armed BRIGHTENING is a third attribute, `data-selecting` on `.mx-outer` —
+the day grid's `.selecting` beat, as an attribute for the same reason (React
+rebuilds that element's className too, and a phone drag whose edge auto-scroll
+flipped the band on would have lost the brightening mid-drag). Pinned in
+`select.test.ts` (the armed beat survives a className rewrite and comes down on
+release) and `figselect.test.tsx` (through the imported `FIGSEL_ATTR`, so the
+constant and the test cannot drift).
+
+**The swipe stands down for a touch that armed.** The closed counter column's
+swipe-to-cycle (40 px on `onTouchEnd`) ignores any touch during which the figure
+gesture ARMED — a ref set in `arm()` and cleared on the next `touchstart`. A
+quick flick never arms, so it still cycles the column; a slow hold-and-drag
+selects and does not.
+
+**The click swallow now runs on ANY armed teardown, cancelled drags included.**
+It used to live in `finish()`, so an iOS system gesture that cut a hold with
+`pointercancel` let the trailing click open a sheet over the selection just made.
+`swallowNextClick()` is called from both `finish` (when it was armed, even if the
+selection came back null) and `onCancel`. This is a fix to the shared core, so
+the DAY GRID gains it too. Pinned in `select.test.ts`.
+
+**The phone band lets a press through to the drawer while the figures are open.**
+With the grid scrolled sideways the band's own (hidden) counter column sits over
+the drawer's first column, and `elementFromPoint` there answered the BAND, not
+the box — so the drawer's first column could not be dragged at all. The rule is
+`.mx-outer.mx-figures .mxband { pointer-events: none !important }`, with
+`td.who`/`td.grphd` put back to `auto` so the names and headings still take the
+pointer. **That `!important` is the only one in `matrix.css` and it is
+deliberate**: the band root's `pointer-events` is written on its INLINE style by
+`onWrapScroll`, imperatively, on every scroll frame, so a plain rule cannot reach
+it — and the alternative is teaching a hot per-frame scroll handler about the
+drawer. It is scoped to `.mx-figures`, so the at-rest and no-drawer behaviour the
+inline style drives is byte-identical to before. The e2e asserts BOTH halves: the
+drawer box answers a press, and the band's own callsign still does.
+
+**The phone hold is proven in this container, not only on a device.** A CDP
+`Input.dispatchTouchEvent` hold does produce a real `pointerType: 'touch'`
+pointerdown in headless Chromium here, so "a finger's hold-and-drag down the
+drawer lights the run and does not scroll the page" is a real lw-phone test, not
+a `fixme`. It parks the run a third of the way down the screen first and asserts
+it is clear of the edge bands, because the 48px bottom band is deliberate
+auto-scroll and the first roster rows sit inside it on a 664px viewport.
+
+### The bar
+
+**It is NOT a `Sheet`, and that is a contract, not a shortcut.** A Sheet's touch
+shield swallows presses on the very boxes being selected, and its popup family
+dismisses on scroll — both fatal to a panel that must stay up while the reader
+scrolls the grid under it to see who else to include. `BalanceBar.tsx` is a
+plain viewport-docked panel (`div.balbar`, `data-testid="balance-bar"`,
+`role="group"` with an aria-label naming the pool and the count). It has no
+scrim, does not close on scroll, and re-anchors above a phone's keyboard by
+following the VISUAL viewport (`useDockAboveKeyboard`, the same 120px threshold
+Sheet's own hook uses, so a URL bar showing or hiding does not move it).
+
+**One dock recipe, shared with the move banner** (`matrix.css` `.mv-banner,
+.balbar`): `position: fixed; left: 12px; bottom: 14px; width: min(880px,
+calc(100vw - 24px)); z-index: 60`, a raised `#1d232b` ground, a `1.5px solid
+var(--accent)` ring, `0 0 0 4px rgba(59,198,232,.16)` plus a deep drop shadow,
+radius 14, and a 160 ms `lw-dockin` slide on entry that is off under
+`prefers-reduced-motion`. The first cut of the bar "visually blended in with the
+background" (owner, 6 Sep 26), which is what the ring and the glow answer. **The
+MOVE BANNER now stops at 880px on a wide screen** — it used to run `left: 12px;
+right: 12px` — because a foot-of-screen panel spanning 1400px reads as chrome
+rather than as something that just appeared. Below 904px, which is every phone,
+its geometry is unchanged.
+
+**Contents.** A plain pool: `N people · +CCL` (the count, then the figure's own
+title in accent), the sign chip, the amount box, **Save**, **✕**. OIL: the same,
+plus the date chip, the reason and the optional "given by" — because it is the
+tracker's own `CreditForm`, generalised with a `counter` prop, so the grid's bar
+and the tracker's bar are ONE body and cannot drift about what a valid grant is.
+Save is pushed to the right (`margin-left: auto`); under 520px the count takes
+its own line, so the bar reads top-to-bottom — who it is for, then the number and
+what to do with it. The chips need their own base rules here (`.balbar .tchip`,
+`.balbar .dchip`) because the sheet's are written `.bidsheet .tchip` and this is
+deliberately not a sheet; without them they came up as bare grey browser buttons.
+
+**The sign chip, and the amount rule (one function, both bars).**
+`parseAmount(raw, sign)`: `2` and `+2` both ADD, `-2` (or a typed `−2`)
+subtracts, and a typed sign always beats the chip. With no sign typed the `+ / −`
+chip decides — a phone's decimal keypad has no minus key, so the chip is the
+phone's only way to a correction. It is `aria-pressed` and TINTS RED while
+subtracting, because a pick the eye cannot see is a form that lies (this file's
+own 19 Aug 26 rule). Anything that is not a plain number is refused with "Type
+the days — 2 adds, -2 subtracts"; zero, blanks and quarter-days are refused by
+the STORE, so the two surfaces cannot disagree with it. A refusal keeps both the
+selection and the draft.
+
+**The bar's amount box opens EMPTY; the tracker keeps its `1`.** A missing input
+must fail closed — an idle Enter on the grid can never add a day to a run of
+people — while the tracker's long-standing default is behaviour nobody asked to
+change, so the shared form takes the initial amount as a prop. **The tracker's
+amount box is a TEXT input now** (`inputMode="decimal"`), which is what gives a
+phone the right keypad and lets the sign chip carry the minus; a desktop user who
+used the number spinner's up/down arrows will not find them.
+
+**Dismissal, and what clears the run.** Escape and a press outside the bar and
+the boxes both drop the selection (the tracker's own no-Deselect-button rule,
+owner 2 Sep 26) — and both YIELD to an open `.bidsheet`, which is what Escape
+already did alone: the two read the same situation differently, so dismissing a
+breakdown by tapping beside it silently took the selection with it where Escape
+left it standing. A press after the sheet closes clears as ever. A press ON a box
+is the next drag or a tap for the breakdown and is left alone. The run also
+clears on Undo/Redo (`histEpoch`), a stage or war change, the drawer being opened
+or put away, and an admin's flip to "view as member" — the bar is mounted for an
+admin only, so without that last one a flip mid-selection left a lit run with
+nothing able to use or clear it. Pinned in `figselect.test.tsx` (including "a
+press while a sheet is open leaves the run alone, as Escape does") and the e2e
+"a tap outside clears the bar, the drawer toggle clears it, and a sideways scroll
+does not".
+
+**A refusal clears when the amount is edited.** The message names what was wrong
+with the value that WAS typed, so left standing over a new one it reads as a
+fresh rejection of a draft nothing has judged yet. Editing the number clears it;
+Save brings it back if the new value is still bad, so this is a clear, not a
+silencing (`CreditForm.tsx`, pinned in `balancebar.test.tsx`).
+
+### The record
+
+**ONE WRITER FOR EVERY POOL.** `state/store.ts grantTo(personIds, counter,
+amount, date, reason, givenBy)` is the single credit path, shaped exactly as
+`grantOil` was — dedupe the ids, drop anyone not on the roster, one entry per
+person through `ledgerSeq()`, then ONE `withCurrent` + one `persist()` + one
+`notify()`. So a run of nine people is **one undo step**, not nine.
+`grantOil(ids, …)` is now a one-line wrapper on `grantTo(ids, 'oil', …)`, which
+is why the tracker needed no change at all.
+
+**The rules, in `ledgerProblem`, one body for every pool.** Admin only, and the
+refusal names the pool ("Only an admin can credit CCL"). The amount must be
+finite and non-zero, and **a multiple of 0.5 on EVERY pool, the tracker
+included** — "Days come in halves — 1, 1.5, 2 …" — because a half day (HO) is the
+smallest thing the grid ever charges, so a credit of 0.3 could never be drawn
+against. That is new, owner-approved, and it tightens the OIL tracker too. The
+date must be `YYYY-MM-DD` (the bar supplies today). **A REASON IS REQUIRED FOR
+OIL ONLY** — `reasonRequired(counter) = counter === 'oil'`, the one predicate the
+writer, the edit path, the boot reader and the form all read, so a blank reason
+is a valid plain-pool credit and an invalid OIL one. `givenBy` is optional
+everywhere. `approvedBy` is stamped from `approverName()` — the viewer's
+CALLSIGN, never their id. A NEGATIVE amount is a correction, not a second
+mechanism.
+
+**Nothing changes about how a balance is READ.** `balanceOf` already summed the
+ledger for every counter; the bar simply gives five more pools a writer. What
+DID change is that a bare "granted 2" now needs explaining, so the breakdown
+sheet ITEMISES the entries behind its `granted` row — `+2 · 6 Sep 26 · by admin
+(OC Ops) · Exercise weekend`, the negative in red — drawn INSIDE the row, under
+its label-and-number line, where `.csub` already puts a caption (`grantsFor`,
+`CounterSheet.tsx`, `data-testid="breakdown-grants"`). Outside the row it became
+a flex sibling and squeezed in beside the number it explains.
+
+**After Save**: the bar closes, the selection clears, each changed box flashes
+once (the drawer's existing `lines.top` flash — free confirmation), and one Undo
+takes the whole batch back. The closed column does not switch figures; the drag
+was made on the one already shown. Pinned end to end in the e2e "the bar takes
+one number for the run, the boxes flash, and one Undo takes it all back", which
+arms a `MutationObserver` on `class` BEFORE pressing Enter rather than racing the
+700 ms flash window.
+
+**One gap this opens, and it is real**: a credit on a plain pool has no edit or
+delete path afterwards — the tracker's in-place edit and delete reach OIL entries
+only. The way to correct one is a second entry with the opposite sign, which the
+breakdown then shows on its own line. `docs/leavewar/known-gaps.md` §What
+balances do not yet do.
+
+### What this does not touch
+
+Bidding, decisions, the day cells' own drag-select, the OIL tracker's maths
+(FIFO, expiry, policy) and its behaviour, the drawer's layout and the corner
+switch, the figure picker and hide/show, **Set** on the person sheet (which still
+moves the OPENING figure — `+`/`−` are entries on top of it), the manning rows,
+the month strip, the window engine, the frozen-names mechanics, the quick-flick
+swipe, and everything a member sees.

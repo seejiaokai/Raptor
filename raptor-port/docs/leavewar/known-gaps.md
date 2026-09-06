@@ -195,9 +195,11 @@ Balances are computed and on screen. Two parts of §Counters are not built:
   gesture core (`wireGesture`) — and the credit bar docks under the grid
   (headed `OIL credits · <names>`; amount, date, reason, given by, Save; a tap
   anywhere outside the bar cancels the pick with no save — there is no Deselect
-  button, owner 2 Sep 26); idle it reads the tap-or-hold hint. An admin's manual OIL / FO / HO write on the grid opens the
-  tracker on that person with the day's box lit, and any credit, edit or
-  delete snaps the counter column to OIL BAL. A `?` chip holds the legend.
+  button, owner 2 Sep 26); idle it reads the tap-or-hold hint. Any credit, edit or
+  delete snaps the counter column to OIL BAL. (An admin's manual OIL / FO / HO
+  write on the grid used to OPEN the tracker on that person with the day's box
+  lit; that was reversed on 6 Sep 26 — a write on the grid keeps you on the
+  grid, and only the column snaps.) A `?` chip holds the legend.
   Nothing on the page is under 11px.
   **THIRD CUT the same evening (owner, from the shipped grid):** every take
   is its OWN ROW inside the box and `n left` is pinned bottom-right whatever
@@ -251,6 +253,34 @@ Balances are computed and on screen. Two parts of §Counters are not built:
   typed number, so leave already on the grid stays counted and every LL/OL
   after it deducts as before — no stored balance, the breakdown explains
   the new opening. Any counter, though only `annual` has a control.
+- **RESOLVED 6 Sep 26 — the ledger now takes a credit on EVERY pool, not OIL
+  alone (owner ask; `docs/ui-contracts.md` §Bulk balance entry from the
+  figures).** The OIL tracker's grant was the precedent and is now one caller
+  of a general writer: `store.ts:grantTo(ids, counter, amount, date, reason,
+  givenBy)` credits any balance — annual, OIL, CCL, FCL, CL, PL — to a run of
+  people in one write, so a batch is one undo step; `grantOil` is a one-line
+  wrapper on it. An admin gets there by dragging down a figure column and
+  keying one number into the docked balance bar. Three rules moved with it:
+  amounts are HALVES on every pool including the tracker (`HALF_STEP_MSG`), a
+  REASON is asked for OIL only (`reasonRequired`, the one predicate the writer,
+  the edit path, the boot reader and the form share), and `approvedBy` is
+  stamped from the viewer's callsign as before. The breakdown sheet itemises
+  the entries behind a pool's `granted` row.
+- **A credit on a PLAIN pool cannot be edited or deleted afterwards.** The edit
+  and delete paths (`updateLedgerEntry`/`removeLedgerEntry`) are reachable only
+  from the OIL tracker, which lists OIL entries alone — so a wrong CCL, FCL, CL,
+  PL or leave credit is corrected by keying the opposite number (the bar's sign
+  chip), which the ledger records as a second entry. That is the same "a
+  correction is not a second mechanism" rule the OIL grant already follows, and
+  the breakdown shows both lines, but if the owner expects to REMOVE a mistake
+  rather than offset it, this is the gap.
+- **On the closed counter column a slow drag now SELECTS instead of swiping.**
+  The column's swipe-to-cycle stands down for any touch during which the figure
+  drag armed, so for an admin a 180 ms hold — or a slow drag past 140 ms — picks
+  a run of people down that column rather than cycling the figure. A quick flick
+  still cycles, and a member is untouched. Deliberate (it is the same gesture the
+  day grid uses), but it is a new meaning for a press that used to do nothing,
+  and a slow swiper will find himself selecting.
 
 Also note the derivation, because it narrows the spec deliberately: §Counters
 says every change to a counter is a ledger entry, and **leave taken is not
