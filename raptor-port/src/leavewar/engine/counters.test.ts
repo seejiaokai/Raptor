@@ -414,6 +414,13 @@ describe('FIGURES — the owner\'s eight (6 Sep 26)', () => {
     expect(desc.lvetot).toBe('All leave taken: LL + OL + OIL + CCL + FCL + CL + PL')
     expect(desc.medtot).toBe('Medical days: ATT C + HL + OML')
   })
+  // The totals' `.legend` is the short "= …" form the sheets' Set caption and
+  // the breakdown once quoted — kept on the figure itself so it cannot say
+  // something the `desc` above disagrees with.
+  it('carries the short legend string on each total', () => {
+    expect(FIGURES.find(f => f.id === 'lvetot')!.legend).toBe('LL + OL + OIL + CCL + FCL + CL + PL')
+    expect(FIGURES.find(f => f.id === 'medtot')!.legend).toBe('ATT C + HL + OML')
+  })
   it('lays the title out: one line, or two when a balance has two used lines', () => {
     const lve = FIGURES.find(f => f.id === 'lve')!
     expect(titleLines(lve)).toEqual([[{ text: '+LVE', tone: 'white' }], [{ text: '−LL', tone: 'amber' }, { text: '−OL', tone: 'red' }]])
@@ -499,9 +506,12 @@ describe('figureParts — the tap-a-counter breakdown (owner, 17 Aug 26)', () =>
     expect(parts.reduce((s, p) => s + p.value, 0)).toBe(f('medtot').value(ctx, 'ramp'))
   })
 
-  it('LVE TOT opens as its seven codes and sums to the figure', () => {
+  // Order matches the figure's own `desc`/`legend` wording (counters.ts,
+  // LVE_CON_TYPES) — LL, OL, OIL, CCL, FCL, CL, PL — so the breakdown reads
+  // in the same order the caption already named them in.
+  it('LVE TOT opens as its seven codes, in the owner\'s own order, and sums to the figure', () => {
     const parts = figureParts(f('lvetot'), ctx, 'ramp')
-    expect(parts.map(p => p.label)).toEqual(['LL', 'OL', 'OIL', 'CCL', 'PL', 'FCL', 'CL'])
+    expect(parts.map(p => p.label)).toEqual(['LL', 'OL', 'OIL', 'CCL', 'FCL', 'CL', 'PL'])
     expect(parts.reduce((s, p) => s + p.value, 0)).toBe(f('lvetot').value(ctx, 'ramp'))
   })
 

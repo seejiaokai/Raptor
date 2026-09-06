@@ -483,10 +483,10 @@ describe('medical crosses both ways (owner, 17 Aug 26)', () => {
     expect(getState().grid.ammo['2026-02-20']).toBe('OL')
   })
 
-  it('MED USED follows a synced-in ATT C for free, halves included', () => {
+  it('MED TOT follows a synced-in ATT C for free, halves included', () => {
     const med = () => {
       const { openings, ledger, wars } = getState()
-      return figureParts(FIGURES.find(f => f.id === 'med')!, { openings, ledger, sources: wars }, 'ammo')
+      return figureParts(FIGURES.find(f => f.id === 'medtot')!, { openings, ledger, sources: wars }, 'ammo')
     }
     writeInputs(() => INPUTS.push({
       person: 'ammo', date: 'Feb 10', allday: false, half: 'am', s: 0, e: 720, type: 'ATT C', remarks: '', mod: '2026-06-01',

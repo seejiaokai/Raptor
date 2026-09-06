@@ -49,7 +49,7 @@ import {
 import { figureCtxOf, setBalance, groupsInOrder, groupPriorityIds, lwHistEpoch, moveGroupTo, moveGroupPriorityTo, displayRoster, getState, moveCells, movableCells, moveManningRowTo, moveProblem, moveEvent, moveEventProblem, moveRosterRow, orderedManningIds, resetManningRules, setPostOut, visibleFigures, type MoveResult, type EventMoveResult } from '../state/store'
 import { BidPicker, DecisionSheet, PostOutSheet, RaptorSheet } from './BidPicker'
 import { CounterSheet, FigureBreakdownSheet, PersonFiguresSheet } from './CounterSheet'
-import { FigureCell } from './FigureCell'
+import { FigureCell, show } from './FigureCell'
 import { FiguresDrawer, FigureTitle, type DrawerRow } from './FiguresDrawer'
 import { PersonSheet } from './PersonSheet'
 import { OilTracker } from './OilTracker'
@@ -70,11 +70,6 @@ import { RemarksSheet } from './RemarksSheet'
 import { leaveInputAt } from '../sync'
 import { useVersion } from './useStore'
 import './matrix.css'
-
-/** Rounds for display only — 4.5 stays 4.5, 4 does not become "4.0". The
- *  same rule the count rows use; nothing in this engine rounds a real
- *  figure. */
-const show = (n: number) => String(Math.round(n * 10) / 10)
 
 /** A move refusal, in plain words for the move banner. */
 function moveReason(r: Exclude<MoveResult, 'moved'>): string {
@@ -514,7 +509,7 @@ export function Matrix() {
      memo keyed only on the selection went stale when a sync pass changed a
      selected cell under an armed move */
   const version = useVersion()
-  const { people, period, grid, states, requirements, role, viewer, eventDefs, openings, ledger, wars, figureOrder, figureHidden, manningHidden, eventRows, focusDate, focusSeq, qualCatalog, groupColors } = getState()
+  const { people, period, grid, states, requirements, role, viewer, eventDefs, openings, ledger, wars, figureOrder, manningHidden, eventRows, focusDate, focusSeq, qualCatalog, groupColors } = getState()
   const dates = period.days.map(d => d.date)
   // Memoized on the store objects (the store replaces what it writes, so
   // identity IS change): rules-as-data made a day's evaluation walk every

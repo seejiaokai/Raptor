@@ -1,7 +1,7 @@
 import { act, fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
 
-import { DEFAULT_FIGURE_ORDER } from '../engine'
+import { DEFAULT_FIGURE_ORDER, FIGURES } from '../engine'
 import { advanceStage, getState, initStore, moveFigure, resetFigureOrder, setBidState, setCell, setPeople, setRole, setViewer, toggleFigure, visibleFigures } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { Matrix } from './Matrix'
@@ -102,15 +102,15 @@ describe('the counter column', () => {
     expect(screen.getByTestId('counter-oil').getAttribute('aria-pressed')).toBe('false')
   })
 
-  // MED CON and LVE CON are the two aggregates, and the sheet is where the
-  // owner asked their make-up to show — the "= …" caption is the legend bubble.
-  it('states the legend and each aggregate composition in the sheet', () => {
+  // The key is stated once, and every row's caption is the owner's own words
+  // (`Figure.desc`) — the one source the title pop-up, this sheet and the
+  // page Legend all read, so the three can never disagree (owner, 6 Sep 26).
+  it('states the key once and each column\'s meaning under its row', () => {
     render(<Matrix />)
     fireEvent.click(screen.getByTestId('counter-pick'))
-    expect(screen.getByTestId('counter-legend').textContent).toContain('BAL')
-    expect(screen.getByTestId('counter-legend').textContent).toContain('USED')
-    expect(screen.getByTestId('figsub-med').textContent).toBe('= ATT C + HL + OML')
-    expect(screen.getByTestId('figsub-lvecon').textContent).toBe('= LL + OL + OIL + CCL + PL + FCL + CL')
+    expect(screen.getByTestId('counter-legend').textContent).toBe('+ balance left · − days used · LL amber · OL red')
+    expect(screen.getByTestId('figsub-lvetot').textContent).toBe('All leave taken: LL + OL + OIL + CCL + FCL + CL + PL')
+    expect(screen.getByTestId('figsub-lve').textContent).toBe('Balance of local + overseas leave: opening + granted − LL − OL')
   })
 
   // The figure is what makes the list answerable: each row previews the
@@ -214,6 +214,10 @@ describe('the counter follows the leave just entered — to the balance it comes
     fireEvent.click(screen.getByTestId('cell-ramp-2026-03-03'))
     fireEvent.click(screen.getByTestId('bid-OIL'))
     expect(screen.getByTestId('counter-name').textContent).toBe('+OIL')
+    // …and a medical mark, matching the title's own claim.
+    fireEvent.click(screen.getByTestId('cell-ramp-2026-03-04'))
+    fireEvent.click(screen.getByTestId('bid-HL'))
+    expect(screen.getByTestId('counter-name').textContent).toBe('−MED TOT')
   })
 
   it('snaps for a half day exactly as for a whole one', () => {
@@ -275,6 +279,27 @@ describe('reordering the figures', () => {
     expect(moveFigure('lve', 1)).toBe(false)
     resetFigureOrder()
     expect(getState().figureOrder[0]).toBe('lve')
+  })
+
+  // The admin eye (owner, 6 Sep 26 — "admin should also be able to
+  // customise" which figures show at all): hiding a figure in the picker
+  // drops it from the column's cycle at once — the dots are `visibleFigures`.
+  it('offers an admin an eye per figure; hiding one drops it from the column\'s cycle', () => {
+    setRole('admin')
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId('counter-pick'))
+    fireEvent.click(screen.getByTestId('figeye-pl'))
+    expect(screen.getByTestId('figeye-pl').getAttribute('aria-pressed')).toBe('true')
+    expect(getState().figureHidden).toEqual(['pl'])
+    fireEvent.click(screen.getByTestId('counter-cancel'))
+    // the column cycles seven now
+    expect(screen.getByTestId('counter-head').querySelectorAll('.cdot')).toHaveLength(7)
+  })
+  it('offers a member no eye', () => {
+    setRole('member')
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId('counter-pick'))
+    expect(screen.queryByTestId('figeye-pl')).toBeNull()
   })
 
   it('moves a figure down, and the column follows the new order', () => {
@@ -389,50 +414,61 @@ describe('going negative is asked about, never refused', () => {
 })
 
 describe('the per-person breakdown sheet (owner, 17 Aug 26)', () => {
-  it('opens from a tap on a person’s counter cell and breaks MED USED into its three markers', () => {
+  it('opens from a tap on a person’s counter cell and breaks MED TOT into its three markers', () => {
     render(<Matrix />)
-    pick('med')
+    pick('medtot')
     // splice's seed medical: one ATT C (5 Jan) and one OML (6 Jan).
     fireEvent.click(screen.getByTestId('bal-splice'))
     const sheet = screen.getByTestId('figure-breakdown')
     expect(sheet.textContent).toContain('SPLICE')
-    expect(sheet.textContent).toContain('MED USED')
+    expect(sheet.textContent).toContain('MED TOT')
     const rows = [...sheet.querySelectorAll('.crow-top')].map(r => r.textContent)
     expect(rows).toEqual(['ATT C1', 'HL0', 'OML1', 'Total2'])
   })
 
   it('breaks a balance into opening + granted − taken, and closes', () => {
     render(<Matrix />)
-    // LVE BAL is the default figure. RAMP: 12 opening + 14 granted − 1 taken = 25.
+    // +LVE is the default figure. RAMP: 12 opening + 14 granted − 0 taken = 26.
     fireEvent.click(screen.getByTestId('bal-ramp'))
     const sheet = screen.getByTestId('figure-breakdown')
     const rows = [...sheet.querySelectorAll('.crow-top')].map(r => r.textContent)
-    // ramp's OL is on New Year's Day (a seeded PH) — taken reads 0 since 3 Sep 26.
-    expect(rows).toEqual(['opening figure12', 'granted14', 'taken0', 'Total26'])
+    // ramp's OL is on New Year's Day (a seeded PH) — taken reads 0 since 3 Sep
+    // 26 — and LVE now splits its taken line per type (LL, OL) rather than one
+    // generic "taken" row (6 Sep 26).
+    expect(rows).toEqual(['opening figure12', 'granted14', 'LL taken0', 'OL taken0', 'Total26'])
     fireEvent.click(screen.getByTestId('breakdown-close'))
     expect(screen.queryByTestId('figure-breakdown')).toBeNull()
   })
 
-  it('restates a single-code figure as one line, so every figure answers', () => {
+  // OIL keeps its own ledger (earned + granted, not only opening), so it no
+  // longer restates as a single line — every one of the eight figures now
+  // defines its own parts (engine/counters.test.ts pins the fallback branch
+  // against a stand-in figure instead, since no real one still takes it).
+  it('breaks OIL into opening, granted, earned and taken, and still sums to the balance', () => {
     render(<Matrix />)
     pick('oil')
     fireEvent.click(screen.getByTestId('bal-ramp'))
     const rows = [...screen.getByTestId('figure-breakdown').querySelectorAll('.crow-top')].map(r => r.textContent)
-    expect(rows).toEqual(['days taken0.5', 'Total0.5'])
+    // ramp: opening 3, no OIL grant, one earned FO day (3 Jan), one pending
+    // half-day OIL taken (10 Feb) = 3 + 0 + 1 − 0.5 = 3.5.
+    expect(rows).toEqual(['opening figure3', 'granted0', 'earned by weekend/PH work1', 'OIL taken-0.5', 'Total3.5'])
   })
 })
 
 describe('the picker answers with the viewer\'s own numbers (owner, 17 Aug 26)', () => {
-  it('shows YOUR figure per row when the roster knows who is looking', () => {
+  // Each row's value is now the SAME two-line box the grid cell wears — a
+  // balance on top, its used lines under it — rather than plain "26 left"
+  // text (owner, 6 Sep 26). "yours" stays gone from the rows: the VIEWING AS
+  // header already says whose numbers these are, once (28 Aug 26).
+  it('shows the viewing person\'s box on each row — balance and used', () => {
     setViewer('ramp')
     render(<Matrix />)
     fireEvent.click(screen.getByTestId('counter-pick'))
-    // RAMP's own LVE BAL is 25; the squadron-wide sum is not. ("yours" is gone
-    // from the rows now — the VIEWING AS header says whose once, 28 Aug 26.)
-    expect(screen.getByTestId('counter-lvebal').textContent).toContain('26 left')
-    expect(screen.getByTestId('counter-lvebal').textContent).not.toContain('yours')
-    // RAMP's *OIL half-day: 0.5 taken.
-    expect(screen.getByTestId('counter-oil').textContent).toContain('0.5 taken')
+    expect(screen.getByTestId('counter-lve').querySelector('.fb')!.textContent).toBe('26')
+    // RAMP's +OIL: opening 3 + earned 1 (FO) − 0.5 taken = 3.5, half a day
+    // (OIL) taken shown as the used line under it.
+    expect(screen.getByTestId('counter-oil').querySelector('.fb')!.textContent).toBe('3.5')
+    expect(screen.getByTestId('counter-oil').querySelector('.fu b')!.textContent).toBe('0.5')
     // The header names whose numbers these are, and prominently (28 Aug 26).
     expect(screen.getByTestId('counter-viewer').textContent).toContain('VIEWING AS')
     expect(screen.getByTestId('counter-viewer').textContent).toContain('RAMP')
@@ -469,28 +505,27 @@ describe('the viewer\'s row is lit (owner, 17 Aug 26)', () => {
 })
 
 describe('a callsign opens the all-figures sheet, for everyone (owner, 17 Aug 26)', () => {
-  it('lists every figure with that person\'s own number, for a member', () => {
+  // Set on every plain balance (owner, 6 Sep 26): the eight figures, LVE/
+  // CCL/FCL/CL/PL each grow a Set button, OIL does not (the tracker owns it).
+  it('lists the eight with that person\'s numbers, Set on every plain balance', () => {
+    setRole('admin')
     render(<Matrix />)
     fireEvent.click(screen.getByTestId('person-ramp'))
     const sheet = screen.getByTestId('person-figures')
-    expect(sheet.textContent).toContain('RAMP')
-    // All eleven figures, in the column's own order (OFF USED went 2 Sep 26).
-    expect(sheet.querySelectorAll('.crow-wrap')).toHaveLength(13)
-    expect(screen.getByTestId('pfig-lvebal').textContent).toContain('26 left')
-    expect(screen.getByTestId('pfig-oil').textContent).toContain('0.5 taken')
-    // A member gets no editor path.
-    expect(screen.queryByTestId('person-edit')).toBeNull()
+    expect(sheet.querySelectorAll('.crow-wrap')).toHaveLength(8)
+    for (const id of ['lve', 'ccl', 'fcl', 'cl', 'pl']) expect(screen.getByTestId(`${id}-edit`)).toBeTruthy()
+    expect(screen.queryByTestId('oil-edit')).toBeNull()   // OIL is the tracker's
   })
 
   it('a figure row opens that figure\'s breakdown for that person', () => {
     render(<Matrix />)
     fireEvent.click(screen.getByTestId('person-splice'))
-    fireEvent.click(screen.getByTestId('pfig-med').querySelector('.crow')!)
-    // The figures sheet hands over to the breakdown — MED USED, splice's parts.
+    fireEvent.click(screen.getByTestId('pfig-medtot').querySelector('.crow')!)
+    // The figures sheet hands over to the breakdown — MED TOT, splice's parts.
     expect(screen.queryByTestId('person-figures')).toBeNull()
     const bd = screen.getByTestId('figure-breakdown')
     expect(bd.textContent).toContain('SPLICE')
-    expect(bd.textContent).toContain('MED USED')
+    expect(bd.textContent).toContain('MED TOT')
     const rows = [...bd.querySelectorAll('.crow-top')].map(r => r.textContent)
     expect(rows).toEqual(['ATT C1', 'HL0', 'OML1', 'Total2'])
   })
@@ -518,6 +553,13 @@ describe('hiding a figure (owner, 6 Sep 26 — "admin should also be able to cus
     expect(toggleFigure('lve')).toBe(false)
     expect(visibleFigures().map(f => f.id)).toEqual(['lve'])
   })
+  // Mirrors moveFigure's own unknown-id no-op (store.ts) — an id naming no
+  // real figure must be refused, not recorded as hidden forever.
+  it('refuses an id that names no real figure', () => {
+    setRole('admin')
+    expect(toggleFigure('bogus')).toBe(false)
+    expect(getState().figureHidden).toEqual([])
+  })
   it('persists the hidden list and reads it back', () => {
     const backend = memoryBackend()
     initStore(backend)
@@ -526,6 +568,16 @@ describe('hiding a figure (owner, 6 Sep 26 — "admin should also be able to cus
     expect(JSON.parse(backend.read('fighidden')!)).toEqual(['pl'])
     initStore(backend)
     expect(getState().figureHidden).toEqual(['pl'])
+  })
+  // A stale `fighidden` blob naming EVERY figure (a squadron's storage from
+  // before a figure was added, or plain corruption) must not boot to an
+  // empty column — `visibleFigures` falls back to the whole order rather
+  // than showing nothing.
+  it('falls back to the whole order when every figure is hidden in storage', () => {
+    const backend = memoryBackend()
+    backend.write('fighidden', JSON.stringify(FIGURES.map(f => f.id)))
+    initStore(backend)
+    expect(visibleFigures().map(f => f.id)).toEqual([...DEFAULT_FIGURE_ORDER])
   })
   it('Reset puts the order back AND shows everything again', () => {
     setRole('admin')

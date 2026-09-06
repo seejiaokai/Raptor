@@ -13,7 +13,10 @@
 import { memo, useEffect, useRef, useState, type MouseEvent } from 'react'
 import type { Figure, FigureLines } from '../engine'
 
-const show = (n: number) => String(Math.round(n * 10) / 10)
+// Exported — Matrix's own title-tooltip text (PersonRow) reads a figure's
+// top number the same way, and a second copy of this rounding rule would be
+// a drift seam waiting to happen.
+export const show = (n: number) => String(Math.round(n * 10) / 10)
 
 export const FigureCell = memo(function FigureCell({
   figure, lines, personId, testid, title, onClick, extraClass, dataFig, dataPerson,

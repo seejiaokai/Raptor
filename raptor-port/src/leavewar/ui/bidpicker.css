@@ -389,6 +389,45 @@
   color: #FFAAB0;
 }
 
+/* The mini figure box (owner, 6 Sep 26) — the SAME two-line shape the grid
+   cell and the drawer wear (matrix.css `.mx td.bal .fb/.fu`), reused here
+   inside a `<span>` instead of a `<td>` so the picker and person sheet read
+   the identical balance-over-used story rather than a plain "26 left". */
+.crow .fbox {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1px;
+}
+.crow .fbox .fb {
+  color: var(--ink);
+  font-weight: 700;
+}
+.crow .fbox .fb.neg,
+.crow .fbox .fb.red {
+  color: var(--hard);
+}
+.crow .fbox .fu b {
+  font-weight: 700;
+}
+.crow .fbox .fu b + b {
+  margin-left: 4px;
+}
+.crow .fbox .fu b.amber {
+  color: var(--adv);
+}
+.crow .fbox .fu b.red {
+  color: var(--hard);
+}
+
+/* A hidden figure stays in the picker (an admin's way back to it) but reads
+   as put-away — the same idea as an archived manning row, without leaving
+   the list (owner, 6 Sep 26: at least one figure always shows, so removing
+   the row outright would need its own "nothing to show" state for no gain). */
+.crow-wrap.hidden .crow {
+  opacity: .45;
+}
+
 /* The figure column's picker is ALSO its legend and its reorder surface, so
    each row is a select button plus its own ▲▼ pair rather than a bare button.
    The wrap holds them side by side; the selected highlight lives on the wrap

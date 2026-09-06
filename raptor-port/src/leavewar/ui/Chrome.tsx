@@ -4,7 +4,7 @@
 // the engine does not model. See CLAUDE-facing restyle brief for why.
 
 import { useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore } from 'react'
-import { biddingClosed, canReopen, evaluatePeriod, isBiddable, isDuty, nextStage, previousStage, stageLabel } from '../engine'
+import { biddingClosed, canReopen, evaluatePeriod, FIGURES, isBiddable, isDuty, nextStage, previousStage, stageLabel } from '../engine'
 import { CODE_GLOSSARY } from '../engine/codes'
 import { getClashes, getClashVersion, subscribeClashes } from '../sync'
 import {
@@ -30,8 +30,11 @@ import './chrome.css'
 /** Kept in step with `.umlist`'s width in chrome.css — the clamp has to know
  *  how wide the thing it is clamping actually is. */
 const LIST_WIDTH = 244
-/** Same, for the colour/mark legend popover (`.leglist`). */
-const LEGEND_WIDTH = 272
+/** Same, for the colour/mark legend popover (`.leglist`). Widened +40px
+ *  (6 Sep 26) for the figures section: `−MED TOT` is the longest swatch
+ *  word the popover now carries, and the constant has to track the CSS
+ *  width exactly or the clamp math above places the popover off-screen. */
+const LEGEND_WIDTH = 312
 
 export function Topbar() {
   useVersion()
@@ -471,6 +474,20 @@ export function StageBar() {
               <div className="leg-sec">The <b>*</b> — a half day</div>
               <div className="leg-row"><span className="leg-sw plain">*LL</span><span className="leg-t">AM (before the code)</span></div>
               <div className="leg-row"><span className="leg-sw plain">LL*</span><span className="leg-t">PM (after the code)</span></div>
+              {/* The figures (owner, 6 Sep 26): the colours the boxes and the
+                  column titles wear, then what each column counts — read off
+                  the figure catalogue so this can never drift from the grid. */}
+              <div data-testid="legend-figures">
+                <div className="leg-sec">The figures — the colours</div>
+                <div className="leg-row"><span className="leg-sw plain figw">26</span><span className="leg-t">white — balance left (+ in the title)</span></div>
+                <div className="leg-row"><span className="leg-sw plain figa">3</span><span className="leg-t">amber — local leave (LL) taken</span></div>
+                <div className="leg-row"><span className="leg-sw plain figr">2</span><span className="leg-t">red — overseas leave (OL) taken, days used, or a total (− in the title)</span></div>
+                <div className="leg-row"><span className="leg-sw plain figr">−4</span><span className="leg-t">red with a minus — a balance below zero</span></div>
+                <div className="leg-sec">The figures — each column</div>
+                {FIGURES.map(f => (
+                  <div key={f.id} className="leg-row"><span className={`leg-sw plain ${f.kind === 'bal' ? 'figw' : 'figr'}`}>{f.title}</span><span className="leg-t">{f.desc}</span></div>
+                ))}
+              </div>
               {/* What the LETTERS mean (owner, 28 Aug 26). The grid shows codes
                   the Inputs page never explains — FO/HO above all, which are not
                   even typed there. Each swatch takes the grid's OWN colour by

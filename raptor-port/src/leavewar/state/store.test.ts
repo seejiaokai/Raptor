@@ -2362,10 +2362,10 @@ describe('the OIL tracker: grants, corrections and the policy', () => {
     // A second batch continues the sequence — no clock, no collision.
     expect(grantOil(['dusk'], -0.5, '2026-03-03', 'Correction')).toBeNull()
     expect(getState().ledger.at(-1)!.id).toBe('ol-3')
-    // And the figure moves: dusk's OIL BAL rose by 1.5 − 0.5.
+    // And the figure moves: dusk's +OIL rose by 1.5 − 0.5.
     const ctx = figureCtxOf()
-    expect(FIGURES.find(f => f.id === 'oilbal')!.value(ctx, 'dusk')).toBe(
-      FIGURES.find(f => f.id === 'oilbal')!.value({ ...ctx, ledger: ctx.ledger.slice(0, before) }, 'dusk') + 1,
+    expect(FIGURES.find(f => f.id === 'oil')!.value(ctx, 'dusk')).toBe(
+      FIGURES.find(f => f.id === 'oil')!.value({ ...ctx, ledger: ctx.ledger.slice(0, before) }, 'dusk') + 1,
     )
   })
 
@@ -2414,10 +2414,10 @@ describe('the OIL tracker: grants, corrections and the policy', () => {
     expect(getState().oilPolicy).toEqual({ expiry: null, historyMonths: 12 })
   })
 
-  it('an expiry policy retires old credit from OIL BAL, and the breakdown still sums', () => {
+  it('an expiry policy retires old credit from +OIL, and the breakdown still sums', () => {
     setRole('admin')
     // jaguar: opening 2 + grant 2 (19 Jan 26) in the seed, nothing taken.
-    const oilbal = FIGURES.find(f => f.id === 'oilbal')!
+    const oilbal = FIGURES.find(f => f.id === 'oil')!
     const was = oilbal.value(figureCtxOf(), 'jaguar')
     expect(setOilPolicy({ expiry: { n: 30, unit: 'days' } })).toBe(true)
     const ctx = figureCtxOf()
@@ -2435,8 +2435,8 @@ describe('setBalance: an admin types the balance, LL and OL deduct from it', () 
     setRole('admin')
   })
 
-  it('makes LVE BAL read the target now, by moving the opening figure', () => {
-    const lvebal = FIGURES.find(f => f.id === 'lvebal')!
+  it('makes +LVE read the target now, by moving the opening figure', () => {
+    const lvebal = FIGURES.find(f => f.id === 'lve')!
     // ramp: 12 opening + 14 top-up − 0 drawn = 26 in the seed — his one OL
     // sits on 1 Jan, a seeded PH, which charges nothing since 3 Sep 26.
     expect(lvebal.value(figureCtxOf(), 'ramp')).toBe(26)

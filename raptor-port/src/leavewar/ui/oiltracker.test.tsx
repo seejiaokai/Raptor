@@ -81,10 +81,10 @@ describe('the OIL tracker grid', () => {
 })
 
 describe('the Cinch sheet hands over to the tracker', () => {
-  it('OIL BAL opens the tracker on that person\'s row; other rows still open their breakdown', () => {
+  it('+OIL opens the tracker on that person\'s row; other rows still open their breakdown', () => {
     render(<Matrix />)
     fireEvent.click(screen.getByTestId('person-ramp'))
-    fireEvent.click(screen.getByTestId('pfig-oilbal').querySelector('.crow')!)
+    fireEvent.click(screen.getByTestId('pfig-oil').querySelector('.crow')!)
     expect(screen.queryByTestId('person-figures')).toBeNull()
     expect(screen.getByTestId('oil-sheet')).toBeTruthy()
     expect(screen.getByTestId('oil-row-ramp').className).toContain('here')
@@ -230,8 +230,8 @@ describe('the credit boxes', () => {
     expect(getState().ledger.find(e => e.id === 'l4')).toMatchObject({ amount: 3, reason: 'CNY workplan (three days)', givenBy: 'OC Ops' })
     expect(screen.getByTestId('oil-entry-l4').textContent).toContain('+3')
     expect(screen.getByTestId('oil-entry-l4').textContent).toContain('OC Ops')
-    // The column snapped to OIL BAL on the edit.
-    expect(screen.getByTestId('counter-name').textContent).toBe('OIL BAL')
+    // The column snapped to +OIL on the edit.
+    expect(screen.getByTestId('counter-name').textContent).toBe('+OIL')
     fireEvent.click(screen.getByTestId('oil-entry-l4'))
     fireEvent.click(screen.getByTestId('oil-del-l4'))
     expect(screen.getByTestId('oil-del-l4').textContent).toBe('Really delete?')
@@ -257,7 +257,7 @@ describe('the credit boxes', () => {
 })
 
 describe('crediting OIL (admin)', () => {
-  it('a tap on a name picks it; the bar credits a dated, reasoned grant with an optional given-by, and the column shows OIL BAL', () => {
+  it('a tap on a name picks it; the bar credits a dated, reasoned grant with an optional given-by, and the column shows +OIL', () => {
     setRole('admin')
     openTracker()
     expect(screen.getByTestId('oil-bal-slammed').textContent).toBe('0')
@@ -277,7 +277,7 @@ describe('crediting OIL (admin)', () => {
     expect(box.textContent).toContain('Det recovery')
     expect(box.textContent).toContain('CO')
     expect(box.textContent).toContain('1.5 left')
-    expect(screen.getByTestId('counter-name').textContent).toBe('OIL BAL')
+    expect(screen.getByTestId('counter-name').textContent).toBe('+OIL')
   })
 
   it('a bad grant is refused with the reason, and nothing is written', () => {
@@ -383,7 +383,7 @@ describe('an admin\'s manual OIL on the grid opens the tracker', () => {
     fireEvent.click(screen.getByTestId('bid-OIL'))
     expect(screen.getByTestId('oil-sheet')).toBeTruthy()
     expect(screen.getByTestId('oil-row-dusk').className).toContain('here')
-    expect(screen.getByTestId('counter-name').textContent).toBe('OIL BAL')
+    expect(screen.getByTestId('counter-name').textContent).toBe('+OIL')
   })
 })
 
@@ -431,51 +431,53 @@ describe('the settings (admin): expiry and the default window', () => {
   })
 })
 
-describe('the Cinch sheet: an admin sets LVE BAL', () => {
+describe('the Cinch sheet: an admin sets +LVE', () => {
   it('a member sees no Set; an admin types the balance and LL/OL deduct from it', () => {
     render(<Matrix />)
     fireEvent.click(screen.getByTestId('person-ramp'))
-    expect(screen.queryByTestId('lvebal-edit')).toBeNull()
+    expect(screen.queryByTestId('lve-edit')).toBeNull()
     fireEvent.click(screen.getByTestId('pfig-close'))
     act(() => setRole('admin'))
     fireEvent.click(screen.getByTestId('person-ramp'))
     // 26, not 25: ramp's one OL sits on New Year's Day, a seeded PH (charge.ts).
-    expect(screen.getByTestId('pfig-lvebal').textContent).toContain('26 left')
-    fireEvent.click(screen.getByTestId('lvebal-edit'))
-    fireEvent.change(screen.getByTestId('lvebal-input'), { target: { value: '30' } })
-    fireEvent.click(screen.getByTestId('lvebal-save'))
-    expect(screen.getByTestId('pfig-lvebal').textContent).toContain('30 left')
-    expect(screen.queryByTestId('lvebal-input')).toBeNull()
+    expect(screen.getByTestId('pfig-lve').querySelector('.fb')!.textContent).toBe('26')
+    fireEvent.click(screen.getByTestId('lve-edit'))
+    fireEvent.change(screen.getByTestId('lve-input'), { target: { value: '30' } })
+    fireEvent.click(screen.getByTestId('lve-save'))
+    expect(screen.getByTestId('pfig-lve').querySelector('.fb')!.textContent).toBe('30')
+    expect(screen.queryByTestId('lve-input')).toBeNull()
     fireEvent.click(screen.getByTestId('pfig-close'))
-    expect(screen.getByTestId('bal-ramp').textContent).toBe('30')
+    // The grid cell is the two-line box now (balance over used) — its `.fb`
+    // is the balance; a used line joins it once a day is actually drawn.
+    expect(screen.getByTestId('bal-ramp').querySelector('.fb')!.textContent).toBe('30')
     act(() => { setCell('ramp', '2026-01-20', 'LL') })
-    expect(screen.getByTestId('bal-ramp').textContent).toBe('29')
+    expect(screen.getByTestId('bal-ramp').querySelector('.fb')!.textContent).toBe('29')
   })
 
-  // CL BAL (3 Sep 26) takes the same Set control — every plain-sum balance
-  // does now, keyed by the figure's counter — and CL alone deducts from it.
-  it('an admin sets CL BAL the same way, and only CL deducts from it', () => {
+  // +CL (3 Sep 26) takes the same Set control — every plain-sum balance does
+  // now, keyed by the figure's counter — and CL alone deducts from it.
+  it('an admin sets +CL the same way, and only CL deducts from it', () => {
     act(() => setRole('admin'))
     render(<Matrix />)
     fireEvent.click(screen.getByTestId('person-ramp'))
-    expect(screen.getByTestId('pfig-clbal').textContent).toContain('0 left')
-    expect(screen.getByTestId('pfig-clbal').textContent).toContain('CL deducts')
-    fireEvent.click(screen.getByTestId('clbal-edit'))
-    fireEvent.change(screen.getByTestId('clbal-input'), { target: { value: '5' } })
-    fireEvent.click(screen.getByTestId('clbal-save'))
-    expect(screen.getByTestId('pfig-clbal').textContent).toContain('5 left')
+    expect(screen.getByTestId('pfig-cl').querySelector('.fb')!.textContent).toBe('0')
+    expect(screen.getByTestId('pfig-cl').textContent).toContain('CL deducts')
+    fireEvent.click(screen.getByTestId('cl-edit'))
+    fireEvent.change(screen.getByTestId('cl-input'), { target: { value: '5' } })
+    fireEvent.click(screen.getByTestId('cl-save'))
+    expect(screen.getByTestId('pfig-cl').querySelector('.fb')!.textContent).toBe('5')
     expect(getState().openings.ramp?.cl).toBe(5)
     fireEvent.click(screen.getByTestId('pfig-close'))
     fireEvent.click(screen.getByTestId('counter-pick'))
-    fireEvent.click(screen.getByTestId('counter-clbal'))
-    expect(screen.getByTestId('bal-ramp').textContent).toBe('5')
+    fireEvent.click(screen.getByTestId('counter-cl'))
+    expect(screen.getByTestId('bal-ramp').querySelector('.fb')!.textContent).toBe('5')
     act(() => { setCell('ramp', '2026-01-20', 'CL') })   // a Tuesday
-    expect(screen.getByTestId('bal-ramp').textContent).toBe('4')
+    expect(screen.getByTestId('bal-ramp').querySelector('.fb')!.textContent).toBe('4')
     act(() => { setCell('ramp', '2026-01-21', 'LL') })   // annual, not CL
-    expect(screen.getByTestId('bal-ramp').textContent).toBe('4')
-    // OIL BAL never grows a Set — the tracker is its editor.
+    expect(screen.getByTestId('bal-ramp').querySelector('.fb')!.textContent).toBe('4')
+    // +OIL never grows a Set — the tracker is its editor.
     fireEvent.click(screen.getByTestId('person-ramp'))
-    expect(screen.queryByTestId('oilbal-edit')).toBeNull()
+    expect(screen.queryByTestId('oil-edit')).toBeNull()
   })
 
   // The weekend/PH rule (charge.ts, 3 Sep 26) and the Set control must read
@@ -487,16 +489,16 @@ describe('the Cinch sheet: an admin sets LVE BAL', () => {
     // Fri 23 Jan → Tue 27 Jan: five cells, Sat/Sun inside them.
     act(() => { for (const d of ['2026-01-23', '2026-01-24', '2026-01-25', '2026-01-26', '2026-01-27']) setCell('ramp', d, 'LL') })
     fireEvent.click(screen.getByTestId('person-ramp'))
-    fireEvent.click(screen.getByTestId('lvebal-edit'))
-    fireEvent.change(screen.getByTestId('lvebal-input'), { target: { value: '30' } })
-    fireEvent.click(screen.getByTestId('lvebal-save'))
+    fireEvent.click(screen.getByTestId('lve-edit'))
+    fireEvent.change(screen.getByTestId('lve-input'), { target: { value: '30' } })
+    fireEvent.click(screen.getByTestId('lve-save'))
     fireEvent.click(screen.getByTestId('pfig-close'))
-    expect(screen.getByTestId('bal-ramp').textContent).toBe('30')
+    expect(screen.getByTestId('bal-ramp').querySelector('.fb')!.textContent).toBe('30')
     // The admin now types PH on the Monday: one day fewer is charged.
     act(() => { setDayEvent('2026-01-26', 0, 'PH') })
-    expect(screen.getByTestId('bal-ramp').textContent).toBe('31')
+    expect(screen.getByTestId('bal-ramp').querySelector('.fb')!.textContent).toBe('31')
     // …and takes it off again — the balance follows, nothing was stored.
     act(() => { setDayEvent('2026-01-26', 0, '') })
-    expect(screen.getByTestId('bal-ramp').textContent).toBe('30')
+    expect(screen.getByTestId('bal-ramp').querySelector('.fb')!.textContent).toBe('30')
   })
 })

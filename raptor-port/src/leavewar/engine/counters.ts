@@ -216,7 +216,11 @@ function typeOf(code: string): string {
 // aggregates are the owner's exact groupings — LVE TOT deliberately excludes
 // OML/medical, and MED TOT deliberately excludes everything else.
 const MED_CON_TYPES = ['ATTC', 'HL', 'OML'] as const
-const LVE_CON_TYPES = ['LL', 'OL', 'OIL', 'CCL', 'PL', 'FCL', 'CL'] as const
+// Ordered to match the owner's own wording (`desc`/`legend` below: "LL + OL +
+// OIL + CCL + FCL + CL + PL") — the breakdown's rows read in the same order
+// the figure's own caption already names them in, rather than an arbitrary
+// arrival order.
+const LVE_CON_TYPES = ['LL', 'OL', 'OIL', 'CCL', 'FCL', 'CL', 'PL'] as const
 
 /** Medical days consumed = ATT C + HL + OML taken. */
 export function medConOf(sources: LeaveSource[], personId: string, ctx?: CountCtx): number {

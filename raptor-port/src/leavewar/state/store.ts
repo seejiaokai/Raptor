@@ -2318,6 +2318,11 @@ export function visibleFigures(): Figure[] {
  *  be hidden — returns whether anything changed. */
 export function toggleFigure(id: string): boolean {
   if (state.role !== 'admin') return false
+  // Mirrors moveFigure's unknown-id no-op: an id that names no real figure
+  // (a typo, a stale saved order) must not be recorded as hidden forever —
+  // `orderedFigures` is the same "does this name a real figure" check the
+  // rest of this block already leans on.
+  if (!orderedFigures(state.figureOrder).some(f => f.id === id)) return false
   const hidden = new Set(state.figureHidden)
   if (hidden.has(id)) hidden.delete(id)
   else {

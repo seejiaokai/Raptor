@@ -140,6 +140,19 @@ describe('the colour/mark legend', () => {
     expect(Array.from(leg.querySelectorAll('.leg-sw')).some(s => s.textContent === 'LL')).toBe(true)
     expect(text).toContain('Local leave')
   })
+
+  // The figures section (owner, 6 Sep 26): the same colours the boxes wear,
+  // then every column read off the FIGURES catalogue — one source, so this
+  // can never drift from the grid or the picker.
+  it('explains the figures — the colours and each column', () => {
+    render(<StageBar />)
+    fireEvent.click(screen.getByTestId('legend-open'))
+    const sec = screen.getByTestId('legend-figures')
+    expect(sec.textContent).toContain('white')
+    expect(sec.textContent).toContain('amber')
+    expect(sec.textContent).toContain('+LVE')
+    expect(sec.textContent).toContain('Medical days: ATT C + HL + OML')
+  })
 })
 
 describe('the viewer badge (owner, 28 Aug 26)', () => {
