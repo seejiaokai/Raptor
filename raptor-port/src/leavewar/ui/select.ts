@@ -131,10 +131,11 @@ type Hit = { kind: 'roster'; cell: Cell } | { kind: 'event'; cell: EventCell }
    slow-drag-arms rule, pointer capture, the non-passive touchmove scroll lock,
    the context-menu swallow, edge auto-scroll and the one-shot click swallow on
    release — lives here once, parameterised by WHAT is being selected. The grid
-   (`wireSelect`: people × days cells, or a date span on an event line) and the
+   (`wireSelect`: people × days cells, or a date span on an event line), the
    OIL tracker (`wireRowSelect`: a run of people rows — owner, 2 Sep 26, "use
-   the same mechanics as the leave war grid") are two callers of the same
-   machine, so the phone learns one rhythm for both. */
+   the same mechanics as the leave war grid") and the figure columns
+   (`wireFigureSelect`: a run of people down one figure, 6 Sep 26) are three
+   callers of the same machine, so the phone learns one rhythm for all of them. */
 interface GestureSpec<A, P> {
   enabled: () => boolean
   /** The thing under the pointer on pointerdown, or null when the press is
@@ -145,10 +146,20 @@ interface GestureSpec<A, P> {
    *  "last thing the finger was over" so a gap or an edge-scroll never
    *  collapses the selection. `null` paints nothing. */
   current: (anchor: A, x: number, y: number) => { ids: string[]; payload: P } | null
-  /** The node an id paints on, inside `wrap`. */
-  node: (id: string) => Element | null
-  /** The class a painted node wears. */
+  /** The node an id paints on, inside `wrap` — or, for a thing drawn in more
+   *  than one place (a figure box has a real cell, the band's copy and a
+   *  drawer box), `nodes`: every copy. Either one. */
+  node?: (id: string) => Element | null
+  nodes?: (id: string) => Element[]
+  /** The class a painted node wears. `mark` replaces it when the node's
+   *  className is React's to rewrite on every render (FigureCell rebuilds
+   *  `wide`/`flash` on every store change): an attribute React never rendered
+   *  survives that rewrite; a class painted from outside does not. */
   cls: string
+  mark?: (el: Element, on: boolean) => void
+  /** Fires the moment the drag ARMS (a finger's hold landed, a mouse crossed
+   *  the slop): a caller's chance to tell a sibling gesture to stand down. */
+  onArm?: () => void
   onSelect: (payload: P) => void
   /** Called on every teardown so the caller can drop its held focus. */
   reset?: () => void
@@ -174,14 +185,20 @@ function wireGesture<A, P>(wrap: HTMLElement, spec: GestureSpec<A, P>): () => vo
   let vscroll: VScroll | null = null  // the vertical scroller, resolved in arm()
   let held = 0               // edge bands the PRESS sat inside (bitmask, see bandsAt)
 
+  const nodesOf = (id: string): Element[] => {
+    if (spec.nodes) return spec.nodes(id)
+    const n = spec.node?.(id)
+    return n ? [n] : []
+  }
+  const markEl = (el: Element, on: boolean) => { if (spec.mark) spec.mark(el, on); else el.classList.toggle(spec.cls, on) }
   const clearPaint = () => {
-    for (const id of painted) spec.node(id)?.classList.remove(spec.cls)
+    for (const id of painted) for (const el of nodesOf(id)) markEl(el, false)
     painted = new Set()
   }
   const paintIds = (ids: string[]) => {
     const want = new Set(ids)
-    for (const id of painted) if (!want.has(id)) spec.node(id)?.classList.remove(spec.cls)
-    for (const id of want) if (!painted.has(id)) spec.node(id)?.classList.add(spec.cls)
+    for (const id of painted) if (!want.has(id)) for (const el of nodesOf(id)) markEl(el, false)
+    for (const id of want) if (!painted.has(id)) for (const el of nodesOf(id)) markEl(el, true)
     painted = want
   }
 
@@ -293,6 +310,7 @@ function wireGesture<A, P>(wrap: HTMLElement, spec: GestureSpec<A, P>): () => vo
     wrap.addEventListener('touchmove', onTouchMove, { passive: false })
     document.addEventListener('contextmenu', onCtxMenu, true)
     repaint()
+    spec.onArm?.()
     // Edge auto-scroll runs for both a mouse and a finger now (owner, 30 Aug 26):
     // touch ramps its speed by finger depth (see edgeScroll). The rAF is stopped
     // in teardown(), so it can never outlive the armed drag.
@@ -328,18 +346,25 @@ function wireGesture<A, P>(wrap: HTMLElement, spec: GestureSpec<A, P>): () => vo
     repaint()
   }
 
+  // Swallow the click the browser fires on the anchor after this pointer
+  // ends: after a COMMITTED drag (its single-cell onClick would open the
+  // wrong sheet) and, since 6 Sep 26, after a CANCELLED armed one — an iOS
+  // system gesture cutting a hold short fires pointercancel, and the trailing
+  // click then opened a breakdown over a selection the user thought they had.
+  // One-shot AND a 0ms sweep, so a drag that produces no trailing click never
+  // leaves a listener to eat the next real one.
+  const swallowNextClick = () => {
+    const swallow = (ev: Event) => { ev.stopPropagation(); ev.preventDefault() }
+    document.addEventListener('click', swallow, { capture: true, once: true })
+    setTimeout(() => document.removeEventListener('click', swallow, true), 0)
+  }
   const finish = (commit: boolean) => {
+    const wasArmed = armed
     // Read the selection BEFORE teardown nulls the anchor.
     const s = commit && armed && anchor !== null ? current() : null
     teardown()
-    if (s) {
-      // swallow the click the browser fires on the anchor cell after this
-      // pointerup, or its single-cell onClick would open the wrong sheet
-      const swallow = (ev: Event) => { ev.stopPropagation(); ev.preventDefault() }
-      document.addEventListener('click', swallow, { capture: true, once: true })
-      setTimeout(() => document.removeEventListener('click', swallow, true), 0)
-      spec.onSelect(s.payload)
-    }
+    if (wasArmed) swallowNextClick()
+    if (s) spec.onSelect(s.payload)
     clearPaint()
   }
 
@@ -374,7 +399,9 @@ function wireGesture<A, P>(wrap: HTMLElement, spec: GestureSpec<A, P>): () => vo
   }
   const onCancel = (e: PointerEvent) => {
     if (e.pointerId !== pid) return   // a second pointer's cancel is not ours
+    const wasArmed = armed
     teardown(); clearPaint()
+    if (wasArmed) swallowNextClick()
   }
 
   // THE SCROLL LOCK (owner, 27 Aug 26 — "when I hold then drag … I can't
@@ -514,6 +541,61 @@ export function wireRowSelect(wrap: HTMLElement, ctx: RowSelectCtx): () => void 
       if (hit && ctx.order().includes(hit)) lastFocus = hit
       const run = rowRun(ctx.order(), anchor, lastFocus ?? anchor)
       return run ? { ids: run, payload: run } : null
+    },
+    onSelect: ctx.onSelect,
+  })
+}
+
+/* ---- FIGURE SELECT (the counter column and the figures drawer, owner 6 Sep
+   26 — "drag as many as I like and key one number into them all") ----------
+   A run of PEOPLE down ONE figure column. The anchor's figure fixes the pool
+   (the run never widens sideways — one pool per drag, the owner's call); the
+   focus is whichever person's box is under the pointer, in any of a box's
+   three copies (the real cell, the band's copy, a drawer box), all addressed
+   by `data-fig` + `data-person`. Bound on `.mx-outer`, the one ancestor of all
+   three. Painted as an ATTRIBUTE (`data-figsel`), never a class — FigureCell
+   rebuilds its className on every store change, which is exactly the moment
+   Save lands. A heading, a sub-heading or an event row under the pointer
+   holds the last person (`lastFocus`), the grid's own rule. */
+export interface FigureSelectCtx {
+  order: () => string[]                     // person ids, top → bottom, people only
+  selectable: (figId: string) => boolean    // a balance with a counter; a total never
+  enabled: () => boolean
+  onArm?: () => void
+  onSelect: (sel: FigureSelection) => void
+}
+export type FigureSelection = { fig: string; ids: string[] }
+type FigAnchor = { fig: string; person: string }
+export const FIGSEL_ATTR = 'data-figsel'
+const FIGBOX = 'td.figbox[data-fig][data-person]'
+
+const figBoxOf = (el: Element | null | undefined): FigAnchor | null => {
+  const box = el?.closest?.(FIGBOX)
+  return box ? { fig: box.getAttribute('data-fig')!, person: box.getAttribute('data-person')! } : null
+}
+const figBoxAt = (x: number, y: number) => figBoxOf(document.elementFromPoint(x, y))
+
+export function wireFigureSelect(outer: HTMLElement, ctx: FigureSelectCtx): () => void {
+  let lastFocus: string | null = null
+  return wireGesture<FigAnchor, FigureSelection>(outer, {
+    enabled: ctx.enabled,
+    cls: 'figsel',   // unused — `mark` paints the attribute
+    nodes: id => {
+      const i = id.indexOf(':')
+      return Array.from(outer.querySelectorAll(`td.figbox[data-fig="${id.slice(0, i)}"][data-person="${id.slice(i + 1)}"]`))
+    },
+    mark: (el, on) => { if (on) el.setAttribute(FIGSEL_ATTR, '1'); else el.removeAttribute(FIGSEL_ATTR) },
+    reset: () => { lastFocus = null },
+    onArm: ctx.onArm,
+    hit: el => {
+      const box = figBoxOf(el)
+      return box && ctx.selectable(box.fig) && ctx.order().includes(box.person) ? box : null
+    },
+    current: (anchor, x, y) => {
+      const hit = figBoxAt(x, y)
+      if (hit && ctx.order().includes(hit.person)) lastFocus = hit.person
+      const run = rowRun(ctx.order(), anchor.person, lastFocus ?? anchor.person)
+      return run ? { ids: run.map(p => `${anchor.fig}:${p}`), payload: { fig: anchor.fig, ids: run } } : null
     },
     onSelect: ctx.onSelect,
   })

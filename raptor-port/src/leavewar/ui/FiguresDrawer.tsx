@@ -88,11 +88,16 @@ export function FigureTitle({ figure, open, popId, onClick }: {
  *  for a change none of them saw. Every store change still repaints every row,
  *  because `ctx` is rebuilt from the store on each one and its identity is the
  *  dependency here. */
-const DrawerPersonRow = memo(function DrawerPersonRow({ figures, ctx, p, me, onBox }: {
+const DrawerPersonRow = memo(function DrawerPersonRow({ figures, ctx, p, me, selFig, onBox }: {
   figures: Figure[]
   ctx: FigureCtx
   p: Person
   me: boolean
+  /** The SELECTED figure's id when this person is in the figure selection, else
+   *  null (Matrix `figSel`, 6 Sep 26). A primitive on purpose: the memo above
+   *  is what keeps a drag off the other 59 rows, so only the rows whose own
+   *  value flips may repaint as the run grows. */
+  selFig: string | null
   onBox: (personId: string, figureId: string) => void
 }) {
   return (
@@ -109,6 +114,7 @@ const DrawerPersonRow = memo(function DrawerPersonRow({ figures, ctx, p, me, onB
           extraClass={`${figClass(figures, f.id)} act`}
           dataFig={f.id}
           dataPerson={p.id}
+          selected={selFig === f.id}
           onClick={() => onBox(p.id, f.id)}
         />
       ))}
@@ -117,7 +123,7 @@ const DrawerPersonRow = memo(function DrawerPersonRow({ figures, ctx, p, me, onB
 })
 
 export function FiguresDrawer({
-  figures, ctx, rows, zoom, top, left, headH, rootRef, arranging, onBox,
+  figures, ctx, rows, zoom, top, left, headH, rootRef, arranging, selFor, onBox,
 }: {
   figures: Figure[]
   ctx: FigureCtx
@@ -147,6 +153,11 @@ export function FiguresDrawer({
    *  nothing about it has to be re-measured or restored on the way out. It is
    *  the one property the band also drives inline (`onWrapScroll`). */
   arranging: boolean
+  /** The figure a person's boxes are SELECTED on, or null (Matrix `figSel`) —
+   *  the committed run of a figure drag, which React owns the moment the drag
+   *  releases. Asked per person rather than handed the whole selection so each
+   *  row's prop stays a primitive and the memo above still holds. */
+  selFor: (personId: string) => string | null
   onBox: (personId: string, figureId: string) => void
 }) {
   const [pop, setPop] = useState<{ id: string; x: number; y: number } | null>(null)
@@ -246,7 +257,7 @@ export function FiguresDrawer({
                 <td className="figfill" colSpan={figures.length} />
               </tr>
             )
-            return <DrawerPersonRow key={r.key} figures={figures} ctx={ctx} p={r.p} me={r.me} onBox={onBox} />
+            return <DrawerPersonRow key={r.key} figures={figures} ctx={ctx} p={r.p} me={r.me} selFig={selFor(r.p.id)} onBox={onBox} />
           })}
         </tbody>
       </table>

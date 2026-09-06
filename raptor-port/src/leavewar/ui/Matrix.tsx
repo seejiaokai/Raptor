@@ -63,7 +63,8 @@ import { popAt } from './popat'
 import { clampWin, rollingTarget, stepAllowedInMotion, stepToward, visibleSpan, windowAround, WINDOW_FROM_MONTHS, type ColWin } from './colwindow'
 import { isLwOnScreen, subLwScreen } from '../state/screen'
 import { msSinceInput } from '../../state/idle'
-import { wireSelect, wireMove, daysBetween, paintLanding, clearLanding, paintEventLanding, eventMoveDateAt, earliestDate, type Cell, type Selection, type SelectCtx } from './select'
+import { wireSelect, wireMove, wireFigureSelect, daysBetween, paintLanding, clearLanding, paintEventLanding, eventMoveDateAt, earliestDate, type Cell, type Selection, type SelectCtx, type FigureSelectCtx, type FigureSelection } from './select'
+import { selectableFigure } from '../engine/counters'
 import { SettingsSheet } from './SettingsSheet'
 import { groupColorOf, inkFor } from './groupColor'
 import { SelectSheet } from './SelectSheet'
@@ -223,6 +224,10 @@ type PersonRowProps = {
   movedShown: boolean
   shown: Figure
   figureCtx: FigureCtx
+  /** The figure this row's counter box is SELECTED on, or null (Matrix
+   *  `figSel`, 6 Sep 26 — a drag down one figure column). A primitive, so the
+   *  memo only repaints the rows whose own value flips as the run grows. */
+  figSel: string | null
   evKind: Map<string, string>
   lockedCols: Set<string>
   quals: QualPill[]
@@ -266,7 +271,7 @@ const setPhWidth = (el: HTMLElement, w: string) => {
   s.width = w; s.minWidth = w; s.maxWidth = w
 }
 
-const PersonRow = memo(function PersonRow({ p, version, period, monthDays, grid, states, role, viewer, deciding, movedShown, shown, figureCtx, evKind, lockedCols, quals, me, arranging, dragging, over, api, padL, padR, phL, phR }: PersonRowProps) {
+const PersonRow = memo(function PersonRow({ p, version, period, monthDays, grid, states, role, viewer, deciding, movedShown, shown, figureCtx, figSel, evKind, lockedCols, quals, me, arranging, dragging, over, api, padL, padR, phL, phR }: PersonRowProps) {
   const has = quals.length > 0
   // The selected figure's LINES for this person — the two-line box's own
   // number on top, the days taken from it stacked under (FigureCell, 6 Sep
@@ -341,13 +346,18 @@ const PersonRow = memo(function PersonRow({ p, version, period, monthDays, grid,
       {/* A tap opens the person's breakdown of the shown figure — the
           owner's "click the individual personnel counter" (17 Aug 26). The
           td is the target, like every grid cell here: a nested button would
-          cost the 44px column its number. */}
+          cost the 44px column its number.
+          `dataFig`/`dataPerson` are what the figure DRAG addresses the box by
+          (6 Sep 26) — the one vocabulary all three copies of a box share. */}
       <FigureCell
         figure={shown}
         lines={lines}
         personId={p.id}
         extraClass="bal act"
         testid={`bal-${p.id}`}
+        dataFig={shown.id}
+        dataPerson={p.id}
+        selected={figSel === shown.id}
         title={`${p.callsign}: ${shown.label} ${show(lines.top)} ${shown.kind === 'bal' ? 'left' : 'taken'}. Tap for the breakdown`}
         onClick={() => api.current.setBalOpen({ person: p.id, figureId: shown.id })}
       />
@@ -802,12 +812,16 @@ export function Matrix() {
   // scrolls the grid, which is what a horizontal drag must go on doing.
   const swipe = useRef<{ x: number; y: number } | null>(null)
   const onTouchStart = (e: TouchEvent) => {
+    figArmed.current = false
     const on = (e.target as HTMLElement).closest?.('.bal')
     swipe.current = on ? { x: e.touches[0].clientX, y: e.touches[0].clientY } : null
   }
   const onTouchEnd = (e: TouchEvent) => {
     const from = swipe.current
     swipe.current = null
+    // A hold-and-drag that ARMED a figure selection during this touch is not a
+    // swipe, however far the finger travelled: the select owns it (6 Sep 26).
+    if (figArmed.current) { figArmed.current = false; return }
     if (!from) return
     const dx = e.changedTouches[0].clientX - from.x
     const dy = e.changedTouches[0].clientY - from.y
@@ -857,6 +871,37 @@ export function Matrix() {
   const rosterBodyRef = useRef<HTMLTableSectionElement>(null)
   const [phone, setPhone] = useState(false)
   const [bandTop, setBandTop] = useState<number | null>(null)
+
+  // FIGURE SELECT (owner, 6 Sep 26): a run of people down one figure column,
+  // for the docked balance bar (BalanceBar). Bound on `.mx-outer` — the one
+  // ancestor of the real column, the band's copy and the drawer — so a drag
+  // works on whichever copy of a box the finger is on. Live state through a
+  // ref, like the day grid's; the committed selection is React state so the
+  // highlight survives the re-render Save causes. The bind sits here rather
+  // than beside the day grid's because it needs `mxOuterRef` in scope; the
+  // effect runs after mount either way.
+  const [figSel, setFigSel] = useState<FigureSelection | null>(null)
+  const figSelCtxRef = useRef<FigureSelectCtx | null>(null)
+  // Set the instant a figure drag ARMS during a touch: the counter column's
+  // swipe-to-cycle (onTouchEnd) must stand down for that touch, or a slow
+  // hold-and-drag that travelled 40px sideways would flip the column under
+  // the selection it just made.
+  const figArmed = useRef(false)
+  useEffect(() => {
+    const o = mxOuterRef.current
+    if (!o) return
+    return wireFigureSelect(o, {
+      order: () => figSelCtxRef.current?.order() ?? [],
+      selectable: id => figSelCtxRef.current?.selectable(id) ?? false,
+      enabled: () => figSelCtxRef.current?.enabled() ?? false,
+      onArm: () => { figArmed.current = true },
+      onSelect: s => figSelCtxRef.current?.onSelect(s),
+    })
+  }, [])
+  // A drawer toggle drops the selection too, and it needs its OWN effect: the
+  // clear above must keep its own dependency list, or opening the figures
+  // would also throw away a day-grid selection that has nothing to do with it.
+  useEffect(() => { setFigSel(null) }, [period.stage, period.id, histEpoch, figuresOpen])
 
   // MOVE MODE (owner, 27 Aug 26). The picked block is dropped onto a new day.
   // `movers` are the inputs PRESENT in the selection — the empty cells the user
@@ -2917,6 +2962,22 @@ export function Matrix() {
     eventsEnabled: () => role === 'admin' && !arranging && !moveSel && !eventMoveSel,
     onEventSelect: s => setEventEdit({ line: s.line, date: s.from, to: s.from === s.to ? undefined : s.to }),
   }
+
+  // ...and the FIGURE drag the same way (owner, 6 Sep 26): a run of people down
+  // one figure column, for the docked balance bar. The admin's alone — a member
+  // never keys a balance — and never while another gesture holds the grid.
+  figSelCtxRef.current = {
+    order: () => rosterSequence().filter(r => r.kind === 'person').map(r => (r as { p: Person }).p.id),
+    selectable: id => selectableFigure(figures.find(f => f.id === id)),
+    enabled: () => role === 'admin' && !arranging && !moveSel && !eventMoveSel,
+    // A second drag in the SAME pool adds to the selection; one in another pool
+    // starts over (owner, 6 Sep 26 — one pool per drag).
+    onSelect: s => setFigSel(prev => (prev && prev.fig === s.fig ? { fig: s.fig, ids: [...new Set([...prev.ids, ...s.ids])] } : s)),
+  }
+  // The selection in roster order, and its figure — the bar's two inputs. A
+  // figure hidden after the drag, or a person gone from the roster, drops out.
+  const figSelFigure = figSel ? figures.find(f => f.id === figSel.fig) : undefined
+  const figSelIds = figSel ? figSelCtxRef.current.order().filter(id => figSel.ids.includes(id)) : []
   const csOf = (id: string): string => displayRoster().find(p => p.id === id)?.callsign ?? id
 
   return (
@@ -3253,6 +3314,7 @@ export function Matrix() {
                         movedShown={movedShown}
                         shown={shown}
                         figureCtx={figureCtx}
+                        figSel={figSel && figSel.fig === shown.id && figSel.ids.includes(p.id) ? shown.id : null}
                         evKind={evKind}
                         lockedCols={lockedCols}
                         quals={qualsOf.get(p.id) ?? NO_QUALS}
@@ -3437,6 +3499,9 @@ export function Matrix() {
                         lines={lines}
                         personId={p.id}
                         extraClass="bal act"
+                        dataFig={shown.id}
+                        dataPerson={p.id}
+                        selected={!!figSel && figSel.fig === shown.id && figSel.ids.includes(p.id)}
                         onClick={() => setBalOpen({ person: p.id, figureId: shown.id })}
                       />
                     </tr>
@@ -3462,6 +3527,7 @@ export function Matrix() {
             headH={drawerAt?.headH ?? 40}
             rootRef={drawerRef}
             arranging={arranging && role === 'admin'}
+            selFor={id => (figSel && figSel.ids.includes(id) ? figSel.fig : null)}
             onBox={onDrawerBox}
           />
         )}

@@ -1014,6 +1014,21 @@
   box-shadow: inset 0 0 0 2px rgba(59, 198, 232, .95);
 }
 
+/* The FIGURE selection (owner, 6 Sep 26) — the day grid's recipe, keyed on an
+   ATTRIBUTE: the box's className is React's (rebuilt from `wide`/`flash` on
+   every store change), so a class painted by the gesture would be wiped at
+   the very moment Save re-renders the row. `.mx-outer.selecting` is the
+   armed-drag brightening, the same beat the day grid's `.mx-wrap.selecting`
+   carries — a phone user must SEE the hold land. */
+.mx td.figbox[data-figsel] {
+  background: rgba(59, 198, 232, .22);
+  box-shadow: inset 0 0 0 1px rgba(59, 198, 232, .6);
+}
+.mx-outer.selecting .mx td.figbox[data-figsel] {
+  background: rgba(59, 198, 232, .34);
+  box-shadow: inset 0 0 0 2px rgba(59, 198, 232, .95);
+}
+
 /* MOVE-MODE landing preview (owner, 27 Aug 26): where the picked block will
    sit if dropped here. Deliberately a WARM amber, not the accent-blue of the
    selection or the viewer's own tinted row — it must read as "will land here"
@@ -2150,6 +2165,22 @@
    own sticky cell, and the phone's band, which is the copy that shows there. */
 .mx-outer.mx-figures .mxbody tr.grp td.grphd { z-index: 6; }
 .mx-outer.mx-figures .mxband { z-index: 6; }
+/* With the figures open the band stands ABOVE the drawer (z-index 6 over 5,
+   for the heading labels) and, once the grid has scrolled sideways, takes the
+   pointer — so the band answered every press meant for the drawer's first
+   column, which sits over the band's own (hidden) counter column: measured 6
+   Sep 26, `elementFromPoint` on that box returned the band, not the box. Only
+   the band's names and headings take the pointer while the figures are open;
+   everything else lets it through to the drawer box underneath.
+     The `!important` is the one in this file, and it is deliberate: the band
+   ROOT's pointer-events is written on its inline style by `onWrapScroll`
+   (Matrix), imperatively, on every scroll — so a plain rule cannot reach it,
+   and the alternative is teaching a hot per-frame scroll handler about the
+   drawer. Scoped to `.mx-figures`, so the at-rest and no-drawer behaviour the
+   inline style drives is exactly what it was. */
+.mx-outer.mx-figures .mxband { pointer-events: none !important; }
+.mx-outer.mx-figures .mxband td.who,
+.mx-outer.mx-figures .mxband td.grphd { pointer-events: auto; }
 /* The switch in the corner above CS/Name — the archive bar's scale (a HEM, not
    a heading: it must not outrank the grid it opens).
 

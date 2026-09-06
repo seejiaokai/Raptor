@@ -19,7 +19,7 @@
    reset→harpoon. The category-label assertions (OPSP(S), IP→IP(S)) hold
    unchanged because the map preserves seat and band and the mapped
    people's own SXO flags match the seed's. */
-import { expect, test, type Page } from '@playwright/test'
+import { expect, test, type Locator, type Page } from '@playwright/test'
 import { go, lwRole, lwView, openLeaveWar } from './app'
 
 const CAL_MONTHS = [
@@ -1627,6 +1627,157 @@ test('the Legend pop-out carries the figures key, and fits the screen', async ({
   expect(box.x).toBeGreaterThanOrEqual(0)
   expect(box.x + box.width).toBeLessThanOrEqual(vp.width + 1)
   expect(await leg.evaluate(el => el.scrollWidth - el.clientWidth)).toBeLessThanOrEqual(0)
+})
+
+// ---- THE FIGURE SELECTION (owner, 6 Sep 26) -------------------------------
+//
+// A drag down ONE figure column picks a run of people, for the docked balance
+// bar that takes one amount for all of them. The run itself is pinned DOM-free
+// in select.test.ts and the wiring in figselect.test.tsx; what needs a real
+// browser is the hit-test — three copies of every box (the real column, the
+// phone's band, the drawer) stacked in one place, with an overlay or two over
+// them — and that the page does not scroll under an armed drag.
+
+/** A mouse drag from one figure box to another (a run down one column). The
+ *  boxes are addressed by figure + person on every copy (the real column, the
+ *  band's copy, the drawer). */
+async function dragFigures(page: Page, from: Locator, to: Locator) {
+  const a = (await from.boundingBox())!
+  const b = (await to.boundingBox())!
+  await page.mouse.move(a.x + a.width / 2, a.y + a.height / 2)
+  await page.mouse.down()
+  await page.mouse.move(a.x + a.width / 2, a.y + a.height / 2 + 6)   // past MOUSE_SLOP
+  await page.mouse.move(b.x + b.width / 2, b.y + b.height / 2, { steps: 6 })
+  await page.mouse.up()
+}
+
+/** Three people the page has drawn CONSECUTIVELY under one heading, read off
+ *  the grid rather than named here: who sits beside whom is the roster's own
+ *  business (a category boundary can fall anywhere), and a run written from
+ *  three names that turned out not to be neighbours would assert the wrong
+ *  count without ever looking wrong. */
+async function threeInARow(page: Page): Promise<string[]> {
+  const run = await page.evaluate(() => {
+    let out: string[] = []
+    for (const tr of document.querySelectorAll('.mx-wrap table.mx tbody.mxbody > tr')) {
+      const id = tr.getAttribute('data-testid') ?? ''
+      if (!id.startsWith('row-')) { out = []; continue }   // a heading breaks the run
+      out.push(id.slice(4))
+      if (out.length === 3) return out
+    }
+    return out
+  })
+  expect(run, 'three people drawn in a row under one heading').toHaveLength(3)
+  return run
+}
+
+/** One figure box in the drawer. */
+const drawerBox = (page: Page, fig: string, person: string) =>
+  page.locator(`[data-testid="figdrawer"] td.figbox[data-fig="${fig}"][data-person="${person}"]`)
+
+test('a drag down a drawer column lights the run, on that pool only', async ({ page }) => {
+  desktopOnly()
+  await lwRole(page, 'admin')
+  await openDrawer(page)
+  const [p1, , p3] = await threeInARow(page)
+  await dragFigures(page, drawerBox(page, 'ccl', p1!), drawerBox(page, 'ccl', p3!))
+  const lit = page.locator('[data-testid="figdrawer"] td[data-figsel]')
+  await expect(lit).toHaveCount(3)
+  // ONE POOL PER DRAG: the three lit boxes are all CCL, and the closed counter
+  // column — which is showing +LVE — stays dark. A selection is a pool and a
+  // set of people, never a rectangle across the figures.
+  expect(await lit.evaluateAll(els => els.every(e => e.getAttribute('data-fig') === 'ccl'))).toBe(true)
+  expect(await page.locator('td[data-testid^="bal-"][data-figsel]').count()).toBe(0)
+  // The page did not run away under the drag: an armed select owns the pointer
+  // (the same edge-band rule the day grid's drag lives by).
+  expect(await page.evaluate(() => window.scrollY)).toBe(0)
+})
+
+test('a drag on a total, or by a member, lights nothing', async ({ page }) => {
+  desktopOnly()
+  await lwRole(page, 'admin')
+  await openDrawer(page)
+  const [p1, , p3] = await threeInARow(page)
+  const lit = page.locator('[data-testid="figdrawer"] td[data-figsel]')
+  // A TOTAL is not a balance: there is no pool behind it to key a number into,
+  // so it starts nothing (selectableFigure — a figure with a counter).
+  await dragFigures(page, drawerBox(page, 'lvetot', p1!), drawerBox(page, 'lvetot', p3!))
+  await expect(lit).toHaveCount(0)
+  // ...and keying balances is the admin's: a member's drag down a real pool
+  // does nothing either, and opens no sheet on the way.
+  await lwRole(page, 'member')
+  await dragFigures(page, drawerBox(page, 'ccl', p1!), drawerBox(page, 'ccl', p3!))
+  await expect(lit).toHaveCount(0)
+  expect(await page.locator('[data-testid="figure-breakdown"]').count()).toBe(0)
+  // A PLAIN CLICK is untouched by any of it — the box still opens that person's
+  // breakdown, for a member as for anyone.
+  await drawerBox(page, 'ccl', p1!).click()
+  await expect(page.locator('[data-testid="figure-breakdown"]')).toBeVisible()
+})
+
+test('the band lets a press through to the drawer once the grid has scrolled', async ({ page }) => {
+  test.skip(!isPhone(), 'the band is a phone-only creature')
+  await lwRole(page, 'admin')
+  await openDrawer(page)
+  // Once the year has scrolled sideways the band takes the pointer (it is the
+  // copy the reader can actually tap) and it stands ABOVE the drawer for its
+  // heading labels — so its hidden `td.bal` column's ROW answered presses meant
+  // for the drawer's first column. Only the band's names and headings take the
+  // pointer while the figures are open; the rest lets it through.
+  await page.evaluate(() => { (document.querySelector('.mx-wrap') as HTMLElement).scrollLeft = 300 })
+  await settleGrid(page)
+  const [p1] = await threeInARow(page)
+  const b = (await drawerBox(page, 'lve', p1!).boundingBox())!
+  const under = await page.evaluate(
+    ([x, y]) => document.elementFromPoint(x!, y!)?.closest('.mxdrawer td.figbox')?.getAttribute('data-person') ?? null,
+    [b.x + b.width / 2, b.y + b.height / 2],
+  )
+  expect(under).toBe(p1)
+  // ...and the band's own NAME still answers, which is the half the rule must
+  // not cost: it is the only copy of that callsign left on screen once the year
+  // has scrolled, and it opens the person's figures.
+  const who = (await page.locator(`.mxband [data-band-id="${p1}"] .who`).boundingBox())!
+  const onName = await page.evaluate(
+    ([x, y]) => !!document.elementFromPoint(x!, y!)?.closest('.mxband td.who'),
+    [who.x + who.width / 2, who.y + who.height / 2],
+  )
+  expect(onName).toBe(true)
+})
+
+test('a finger\'s hold-and-drag down the drawer lights the run and does not scroll the page', async ({ page }) => {
+  test.skip(!isPhone(), 'the touch gesture')
+  await lwRole(page, 'admin')
+  await openDrawer(page)
+  const [p1, , p3] = await threeInARow(page)
+  // PARK THE RUN MID-SCREEN FIRST. A drag that reaches an edge band auto-scrolls
+  // the page on purpose (owner, 30 Aug 26 — "auto scroll to the edge to continue
+  // selecting more"), and where the page opens, the first roster rows sit ~20px
+  // inside the bottom band on this viewport: a drag left there measures that
+  // feature (the page ran 106px and the run grew to eight, 6 Sep 26) instead of
+  // the thing under test, which is that a HOLD takes the finger off the page's
+  // own scroll.
+  const vh = page.viewportSize()!.height
+  await page.evaluate(dy => window.scrollBy(0, dy), (await drawerBox(page, 'ccl', p1!).boundingBox())!.y - vh / 3)
+  await settleGrid(page)
+  const a = (await drawerBox(page, 'ccl', p1!).boundingBox())!
+  const b = (await drawerBox(page, 'ccl', p3!).boundingBox())!
+  expect(b.y + b.height, 'the run is parked clear of the edge bands').toBeLessThan(vh - 60)
+  const y0 = await page.evaluate(() => window.scrollY)
+  // A REAL touch, through CDP — the page's own touch pipeline. Playwright's
+  // touchscreen taps but cannot drag, and dispatched DOM events arm nothing:
+  // the hold is a timer against a real pointerdown.
+  const cdp = await page.context().newCDPSession(page)
+  const x = a.x + a.width / 2
+  await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x, y: a.y + a.height / 2 }] })
+  await page.waitForTimeout(260)   // past HOLD
+  for (let i = 1; i <= 6; i++) {
+    await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x, y: a.y + a.height / 2 + ((b.y - a.y) * i) / 6 }] })
+  }
+  await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] })
+  // The three the finger crossed, and not one row more: the scroll lock held,
+  // so the rows did not slide under it.
+  await expect(page.locator('[data-testid="figdrawer"] td[data-figsel]')).toHaveCount(3)
+  expect(await page.evaluate(() => window.scrollY)).toBe(y0)
 })
 
 // The figure sheets scroll INSIDE the sheet on a phone, and the header

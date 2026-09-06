@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { clearLanding, earliestDate, eventRange, paintLanding, parseCellId, parseEventCell, rectCells, rowRun, wireRowSelect, wireSelect, type Selection } from './select'
+import { clearLanding, earliestDate, eventRange, FIGSEL_ATTR, paintLanding, parseCellId, parseEventCell, rectCells, rowRun, wireFigureSelect, wireRowSelect, wireSelect, type Selection } from './select'
 
 // The gesture controller (wireSelect) needs a real browser (elementFromPoint,
 // pointer capture, layout) and is covered by e2e/leavewar.spec.ts. Here we pin
@@ -593,5 +593,156 @@ describe('wireRowSelect', () => {
     up()
     expect(got).toEqual([])
     expect(wrap.classList.contains('selecting')).toBe(false)
+  })
+})
+
+// The click swallow after an ARMED drag that the browser CANCELLED (6 Sep 26).
+// An iOS system gesture — an edge swipe, a notification — cutting a hold short
+// fires pointercancel; the trailing click then reached the cell's own onClick
+// and opened a sheet over a selection the user thought they had.
+describe('wireSelect swallows the click after a cancelled armed drag', () => {
+  let wrap: HTMLElement, cell: HTMLElement, teardown: () => void
+  const origEFP = document.elementFromPoint
+  beforeEach(() => {
+    vi.useFakeTimers()
+    document.elementFromPoint = () => null
+    wrap = document.createElement('div')
+    cell = document.createElement('div')
+    cell.setAttribute('data-testid', 'cell-ramp-2026-01-06')
+    wrap.appendChild(cell)
+    document.body.appendChild(wrap)
+    teardown = wireSelect(wrap, { order: () => ['ramp'], dates: () => ['2026-01-06'], enabled: () => true, onSelect: () => {} })
+    // An earlier test in this file COMMITTED a drag under fake timers, so its
+    // one-shot click swallow is still sitting on `document`: the 0ms sweep that
+    // removes it never ran, and `vi.useRealTimers()` threw the pending timer
+    // away. A throwaway click eats that leftover here, so the clicks below are
+    // answered by THIS gesture and nothing else — without it the first assertion
+    // passed on the neighbour's listener whatever this file's code did (seen
+    // running the file whole, 6 Sep 26). Real timers always sweep, so the leak
+    // is jsdom's alone.
+    document.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
+  })
+  afterEach(() => { teardown(); wrap.remove(); document.elementFromPoint = origEFP; vi.useRealTimers() })
+  const press = () => cell.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, pointerId: 1, pointerType: 'touch', clientX: 5, clientY: 5, button: 0 }))
+  const cancel = () => cell.dispatchEvent(new PointerEvent('pointercancel', { bubbles: true, pointerId: 1, pointerType: 'touch' }))
+  const click = () => { const ev = new MouseEvent('click', { bubbles: true, cancelable: true }); cell.dispatchEvent(ev); return ev.defaultPrevented }
+
+  it('swallows exactly one click after an armed drag is cancelled', () => {
+    const seen = vi.fn()
+    cell.addEventListener('click', seen)
+    press()
+    vi.advanceTimersByTime(200)   // the hold armed
+    cancel()
+    expect(click()).toBe(true)
+    expect(seen).not.toHaveBeenCalled()
+    vi.advanceTimersByTime(1)     // the one-shot is gone
+    expect(click()).toBe(false)
+    expect(seen).toHaveBeenCalledTimes(1)
+  })
+  it('lets the click through when an UN-armed press is cancelled — a plain tap interrupted', () => {
+    press()
+    cancel()
+    expect(click()).toBe(false)
+  })
+})
+
+// FIGURE SELECT (owner, 6 Sep 26): a run of people down ONE figure column.
+// jsdom cannot hit-test, so elementFromPoint answers by y: one row of boxes per
+// 20px, three copies of nothing — the point is the run, the anchor's pool and
+// the ATTRIBUTE paint.
+describe('wireFigureSelect', () => {
+  let outer: HTMLElement, teardown: () => void
+  const origEFP = document.elementFromPoint
+  const order = ['a', 'b', 'c', 'd']
+  const box = (fig: string, person: string, y: number) => {
+    const td = document.createElement('td')
+    td.className = 'bal figbox'
+    td.setAttribute('data-fig', fig); td.setAttribute('data-person', person)
+    td.dataset.y = String(y)
+    return td
+  }
+  let cells: HTMLElement[]
+  const selected = vi.fn()
+  beforeEach(() => {
+    vi.useFakeTimers()
+    selected.mockReset()
+    outer = document.createElement('div')
+    const table = document.createElement('table'), tb = document.createElement('tbody')
+    cells = []
+    order.forEach((p, i) => {
+      const tr = document.createElement('tr')
+      for (const fig of ['lve', 'ccl', 'lvetot']) { const c = box(fig, p, 10 + i * 20); tr.appendChild(c); cells.push(c) }
+      tb.appendChild(tr)
+      if (i === 1) { const h = document.createElement('tr'); const f = document.createElement('td'); f.className = 'figfill'; h.appendChild(f); tb.appendChild(h) }
+    })
+    const th = document.createElement('th'); th.className = 'bal fig'; th.setAttribute('data-fig', 'ccl'); tb.appendChild(th)
+    table.appendChild(tb); outer.appendChild(table); document.body.appendChild(outer)
+    // Rows sit at y = 10 (a), 30 (b), 50 (c), 70 (d); x picks the column. A
+    // point within 5px of a row's centre is that row's box in that column;
+    // the band between b and c (y 31–49) is the heading — its figfill has no
+    // person, which is what hold-last-focus must ride over.
+    document.elementFromPoint = (x: number, y: number) => {
+      const fig = x < 50 ? 'lve' : x < 100 ? 'ccl' : 'lvetot'
+      const hit = cells.find(c => c.getAttribute('data-fig') === fig && Math.abs(Number(c.dataset.y) - y) <= 5)
+      return hit ?? (y > 30 && y < 50 ? outer.querySelector('.figfill') : null)
+    }
+    teardown = wireFigureSelect(outer, {
+      order: () => order,
+      selectable: id => id !== 'lvetot',
+      enabled: () => true,
+      onSelect: selected,
+    })
+  })
+  afterEach(() => { teardown(); outer.remove(); document.elementFromPoint = origEFP; vi.useRealTimers() })
+  const at = (fig: string, p: string) => cells.find(c => c.getAttribute('data-fig') === fig && c.getAttribute('data-person') === p)!
+  const down = (el: Element, x: number, y: number) => el.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, pointerId: 1, pointerType: 'mouse', clientX: x, clientY: y, button: 0 }))
+  const move = (x: number, y: number) => window.dispatchEvent(new PointerEvent('pointermove', { pointerId: 1, pointerType: 'mouse', clientX: x, clientY: y }))
+  const up = () => window.dispatchEvent(new PointerEvent('pointerup', { pointerId: 1, pointerType: 'mouse', button: 0 }))
+  const marked = () => cells.filter(c => c.hasAttribute(FIGSEL_ATTR)).map(c => `${c.getAttribute('data-fig')}:${c.getAttribute('data-person')}`)
+
+  it('a mouse drag down the CCL column paints the run as an ATTRIBUTE and hands the pool + people over', () => {
+    down(at('ccl', 'a'), 60, 10)
+    move(60, 16)                    // past MOUSE_SLOP → armed
+    move(60, 70)                    // over d, crossing the heading band
+    expect(marked()).toEqual(['ccl:a', 'ccl:b', 'ccl:c', 'ccl:d'])
+    up()
+    expect(selected).toHaveBeenCalledWith({ fig: 'ccl', ids: ['a', 'b', 'c', 'd'] })
+    expect(marked()).toEqual([])   // the gesture's own marks are gone; React owns it now
+  })
+  it('a pointer straying sideways stays in the anchor\'s pool — one pool per drag', () => {
+    down(at('lve', 'b'), 20, 30)
+    move(20, 36)                    // armed; no row within 5px, so the run is still b
+    move(120, 50)                   // over the TOTAL column's x, on c's row: c is the focus, the pool stays lve
+    expect(marked()).toEqual(['lve:b', 'lve:c'])
+  })
+  it('crossing a heading holds the last person, and the next row extends the run past it', () => {
+    down(at('ccl', 'a'), 60, 10)
+    move(60, 16); move(60, 30)      // b
+    move(60, 40)                    // the heading band: no person under the pointer
+    expect(marked()).toEqual(['ccl:a', 'ccl:b'])
+    move(60, 50)                    // c
+    expect(marked()).toEqual(['ccl:a', 'ccl:b', 'ccl:c'])
+  })
+  it('a total, a header and a name no longer on the list start nothing', () => {
+    down(at('lvetot', 'a'), 120, 10); move(120, 16); move(120, 70); up()
+    expect(selected).not.toHaveBeenCalled()
+    down(outer.querySelector('th')!, 60, 200); move(60, 206); up()
+    expect(selected).not.toHaveBeenCalled()
+  })
+  it('a finger: the hold arms, locks the page scroll on the outer, and onArm fires', () => {
+    const onArm = vi.fn()
+    teardown()
+    teardown = wireFigureSelect(outer, { order: () => order, selectable: () => true, enabled: () => true, onArm, onSelect: selected })
+    at('ccl', 'a').dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, pointerId: 2, pointerType: 'touch', clientX: 60, clientY: 10, button: 0 }))
+    expect(onArm).not.toHaveBeenCalled()
+    vi.advanceTimersByTime(200)
+    expect(onArm).toHaveBeenCalledTimes(1)
+    expect(outer.style.touchAction).toBe('none')
+    expect(outer.classList.contains('selecting')).toBe(true)
+  })
+  it('the mark survives a className rewrite — the reason it is an attribute', () => {
+    down(at('ccl', 'a'), 60, 10); move(60, 16)
+    at('ccl', 'a').className = 'bal figbox flash'   // what a React re-render does mid-drag
+    expect(at('ccl', 'a').hasAttribute(FIGSEL_ATTR)).toBe(true)
   })
 })
