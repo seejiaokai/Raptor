@@ -1586,3 +1586,48 @@ gate's. Keep verdict-bearing commands unpiped.
 
 **Principle:** A CSS rule is a contract against every other rule on the same element and property — name what it must beat, compose rather than overwrite, and pin the cascade, not the selector.
 
+### Observation 104: A removal brief names what STAYS: trace each "dependent" to the input that drives it — a shared class name is not a dependency
+
+**Status:** OPEN
+**Date:** 2026-09-06
+**Session context:** Leave War bulk balance entry + the owner's phone batch — the final fix wave, its completion round and the scoped re-review.
+**Skill:** subagent-driven-development
+**Type:** open-source
+**Phase/Area:** The fix loop — writing the fix brief from a review finding
+
+**Issue:** The whole-branch review found a dead prop (a tracker's day-level focus) and the controller's fix brief listed its dependents from a grep of the shared CSS class — including "the here class on rows and credits". The ROW marker was driven by a different, live prop (the person the sheet opened on) and only shared the class name; the implementer deleted it as briefed, and the tracker then opened with no row lit. Caught only from the report's live-drive paragraph, and it cost a completion round.
+
+**Suggested improvement:** In the fix loop, for any "delete X and its dependents" finding: build the dependents list by tracing data flow FROM the dead input (what reads it, what those write, what CSS those alone select), never by grepping a name two features share; and write into the brief what STAYS beside what goes. Apply the same check to the reviewer's own dependents list before accepting it.
+
+**Principle:** Delete only what is reachable from the dead input alone; a shared name is a coincidence, not a dependency — and a removal brief names what stays as carefully as what goes.
+
+### Observation 105: A number measured through a harness carries the harness's latency — measure it and state it before the number becomes a target
+
+**Status:** OPEN
+**Date:** 2026-09-06
+**Session context:** Leave War bulk balance entry + the owner's phone batch — the final fix wave, its completion round and the scoped re-review.
+**Skill:** writing-plans
+**Type:** open-source
+**Phase/Area:** Acceptance criteria for time-gated behaviour (edge auto-scroll dwell, debounce, hold-to-arm)
+
+**Issue:** The fix brief set "the same drag must now light ≤ 5 people" from a phone probe whose own touch-move round-trips took ~420 ms and ate most of the new dwell, so the first constants read 8–9 people and looked like a miss; the honest reading needed the probe's latency subtracted, and the retuned constants were then judged against a corrected number. Nobody had measured the probe's no-op cost before the target was written.
+
+**Suggested improvement:** When a plan or brief sets an acceptance number for a time-gated behaviour measured through a probe or e2e harness: run the harness once with the behaviour disabled (or a zero-length hold) to measure its own latency, state that latency beside the target, and prefer a target in the behaviour's own terms ("a drag that lifts within N ms scrolls 0 px"; "a hold of N ms scrolls") over a count that folds the harness in.
+
+**Principle:** A measurement taken through a harness includes the harness; state and subtract its latency before the number is a target, or the tuning chases the tool.
+
+### Observation 106: A second pass that changes a value re-reads every SENTENCE the first pass wrote about the behaviour — prose describes effects, not constants
+
+**Status:** OPEN
+**Date:** 2026-09-06
+**Session context:** Leave War bulk balance entry + the owner's phone batch — the final fix wave, its completion round and the scoped re-review.
+**Skill:** subagent-driven-development
+**Type:** open-source
+**Phase/Area:** The fix loop — a completion round after a fix round
+
+**Issue:** A two-pass fix wave changed the edge-scroll constants in its second pass. The implementer swept the docs for the old numbers and found none in the owner's test checklist, because that clause described the behaviour ("the page keeps scrolling and keeps picking people") without quoting a constant; under the new values a drag that reaches the edge and lifts scrolls nothing. The scoped re-review caught the stale sentence. This repo's engine doctrine already says "grep for the old rule's WORDING as well as its identifiers"; the SDD completion step did not.
+
+**Suggested improvement:** In the fix loop, when a completion round changes a value or behaviour the first round documented: list every file the first round touched and re-read each sentence about that behaviour (grep the old behaviour's wording — "keeps scrolling", "opens on the day" — not only the identifiers or numbers), and say in the completion report which sentences were re-read and which were changed.
+
+**Principle:** Docs describe effects, not constants; when a value changes, a grep for the number finds nothing — re-read the sentences.
+
