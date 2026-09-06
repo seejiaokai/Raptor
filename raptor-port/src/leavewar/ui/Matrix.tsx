@@ -59,6 +59,7 @@ import { ManningSheet } from './ManningSheet'
 import { EventRows } from './EventRows'
 import { EventSheet } from './EventSheet'
 import { monthInView } from './monthview'
+import { popAt } from './popat'
 import { clampWin, rollingTarget, stepAllowedInMotion, stepToward, visibleSpan, windowAround, WINDOW_FROM_MONTHS, type ColWin } from './colwindow'
 import { isLwOnScreen, subLwScreen } from '../state/screen'
 import { msSinceInput } from '../../state/idle'
@@ -1334,15 +1335,11 @@ export function Matrix() {
   }
   /* Open the quals popover anchored to the chip just interacted with. Placed in
      fixed (screen) coordinates read from the chip's rect, clamped to stay on
-     screen and flipped above the chip when it would fall off the bottom. */
-  const openQualsAt = (id: string, el: HTMLElement) => {
-    const r = el.getBoundingClientRect()
-    const W = 240, EST_H = 108
-    const x = Math.max(6, Math.min(r.left, window.innerWidth - W - 6))
-    const below = r.bottom + 6
-    const y = below + EST_H > window.innerHeight - 6 ? Math.max(6, r.top - EST_H - 6) : below
-    setQualPop({ id, x, y })
-  }
+     screen and flipped above the chip when it would fall off the bottom —
+     `popAt` (popat.ts), shared with the drawer's title pop-up so the two
+     screen-fixed popups cannot drift. 240 is `.qualpop`'s own max-width. */
+  const openQualsAt = (id: string, el: HTMLElement) =>
+    setQualPop({ id, ...popAt(el.getBoundingClientRect(), 240, 108) })
   // The chip's quals per person, once per store change (a row prop — a fresh
   // array per render would defeat the row memo, see PersonRow).
   const qualsOf = useMemo(() => {
@@ -2689,6 +2686,28 @@ export function Matrix() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [figuresOpen, zoom, visWindow, period.id, drawnDates.length, countsOpen, folded, figures.length, arranging])
 
+  // How wide the drawer came out, in the GRID's own pixels, published to the
+  // stylesheet as `--drawer-w` — read by the month-bracket LABEL, which sticks
+  // "just clear of the frozen columns" and has to be told that the frozen part
+  // is now the drawer (`.mx-figures` override of `.brakl`, matrix.css). Without
+  // it the label kept the closed pair's offset: on a desktop, where the drawer
+  // opens open, it sat over the drawer's own columns un-stuck and vanished
+  // under the opaque frozen copy of the stuck bar (6 Sep 26 review).
+  //
+  // A custom property on `.mx-outer` restyles the whole grid, and the standing
+  // rule (CLAUDE.md, the column window) is that one must never ride a FRAME.
+  // This one rides a MODE: `drawerAt` is value-guarded, so this runs on
+  // open/close, a zoom step and a resize — the same taps that already toggle
+  // `mx-figures` on this very node. A per-frame value must never join it here.
+  useLayoutEffect(() => {
+    const outer = mxOuterRef.current
+    if (!outer) return
+    if (!figuresOpen || !drawerAt) { outer.style.removeProperty('--drawer-w'); return }
+    // Visual px in, grid px out: `--who-w` and the label's `left` live inside
+    // the zoomed table, and the drawer's own box does not.
+    outer.style.setProperty('--drawer-w', `${drawerAt.width / zoom}px`)
+  }, [figuresOpen, drawerAt, zoom])
+
   // Re-pinned on EVERY render, not on a dependency list: a bid placed, a
   // decision made or a figure switched can put a chip into a day cell or take
   // one out, which moves that row's height by the pixel above — and there is
@@ -3394,6 +3413,7 @@ export function Matrix() {
             left={drawerAt?.left ?? 0}
             headH={drawerAt?.headH ?? 40}
             rootRef={drawerRef}
+            arranging={arranging && role === 'admin'}
             onBox={onDrawerBox}
           />
         )}

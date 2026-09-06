@@ -2103,6 +2103,18 @@
    step out and CLIPPED the words at one step in, where the type is 20% bigger
    and the box was not: "−MED TOT" read "−MED TO" (measured, 6 Sep 26). */
 .mx-outer.mx-figures .mxhead tr:last-child > th { height: 62px; }
+/* The month-bracket LABEL sticks "just clear of the frozen columns" (its base
+   rule above), and with the drawer open the frozen part IS the drawer — so it
+   starts at the drawer's right edge instead of the closed pair's. Left behind,
+   it sat over the drawer's own title columns rather than the days it names,
+   and in the STUCK bar it went under the opaque frozen copy and disappeared
+   altogether (6 Sep 26 review). `--drawer-w` is measured and published by
+   Matrix on open/close; the fallback is the closed pair, so a first paint
+   before the measurement lands reads exactly as it does today. Both copies —
+   the real header and the mirror — because both draw `bracketRow`. */
+.mx-outer.mx-figures .mx .mxhead th.brakm .brakl {
+  left: calc(var(--who-w) + var(--drawer-w, var(--bal-w)) + 6px);
+}
 .mx-outer.mx-figures .mxband td.bal { visibility: hidden; }  /* the drawer's first column covers it */
 /* A group heading's label OVERFLOWS its two frozen columns rightward (the
    `.grphd` technique) and the drawer stands over exactly that ground, so with

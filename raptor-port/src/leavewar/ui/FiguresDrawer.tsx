@@ -18,6 +18,11 @@
 import { Fragment, memo, useEffect, useState, type CSSProperties, type MouseEvent, type RefObject } from 'react'
 import { figureLines, titleLines, type Figure, type FigureCtx, type Person } from '../engine'
 import { FigureCell } from './FigureCell'
+import { popAt } from './popat'
+
+/** `.figpop`'s own max-width (matrix.css), which is what the clamp measures
+ *  against, and a rough height for the flip. */
+const POP_W = 260, POP_H = 84
 
 /** The first column is the CLOSED column's width, so a box does not move when
  *  the drawer opens; the last carries the drawer's right edge. */
@@ -97,7 +102,7 @@ const DrawerPersonRow = memo(function DrawerPersonRow({ figures, ctx, p, me, onB
 })
 
 export function FiguresDrawer({
-  figures, ctx, rows, zoom, top, left, headH, rootRef, onBox,
+  figures, ctx, rows, zoom, top, left, headH, rootRef, arranging, onBox,
 }: {
   figures: Figure[]
   ctx: FigureCtx
@@ -117,6 +122,16 @@ export function FiguresDrawer({
   /** Matrix measures this box (its width and its column widths feed the stuck
    *  header's frozen copy) and writes its row heights straight onto the nodes. */
   rootRef: RefObject<HTMLDivElement | null>
+  /** An admin is REARRANGING the roster. The drawer stands down to taps — it
+   *  covers a wide strip beside the grip column, and a roster drag hit-tests
+   *  with `elementFromPoint`, so an overlay that takes the pointer hides the
+   *  very row being dragged over. `pointer-events: none` hands the point
+   *  straight through to the real row underneath. The band's own answer to the
+   *  same problem is to tear itself down; the drawer stays UP, because the
+   *  figures are worth reading while the roster is being ordered and because
+   *  nothing about it has to be re-measured or restored on the way out. It is
+   *  the one property the band also drives inline (`onWrapScroll`). */
+  arranging: boolean
   onBox: (personId: string, figureId: string) => void
 }) {
   const [pop, setPop] = useState<{ id: string; x: number; y: number } | null>(null)
@@ -125,8 +140,15 @@ export function FiguresDrawer({
   // that press is "inside" and left to the button's own handler. Escape listens
   // on `window` — capture there runs ahead of the sheets' own document-capture
   // Escape, so the pop-up peels first — with the sheets' kept-mounted guard.
+  //
+  // It also closes on a SCROLL or a RESIZE, the other two thirds of the quals
+  // popover's contract (Matrix.tsx): the box is screen-fixed and its corner was
+  // read once from the title's rect, so the moment the grid scrolls sideways
+  // under it — or the phone rotates — it is pointing at nothing. The scroll
+  // listener captures, because `.mx-wrap`'s own sideways scroll does not bubble.
   useEffect(() => {
     if (!pop) return
+    const close = () => setPop(null)
     const onDown = (e: PointerEvent) => {
       const t = e.target as HTMLElement | null
       if (t?.closest('.figpop') || t?.closest(`[data-fig="${pop.id}"] .figtitle`)) return
@@ -139,9 +161,13 @@ export function FiguresDrawer({
       e.stopPropagation()
       setPop(null)
     }
+    window.addEventListener('scroll', close, true)
+    window.addEventListener('resize', close)
     document.addEventListener('pointerdown', onDown, true)
     window.addEventListener('keydown', onKey, true)
     return () => {
+      window.removeEventListener('scroll', close, true)
+      window.removeEventListener('resize', close)
       document.removeEventListener('pointerdown', onDown, true)
       window.removeEventListener('keydown', onKey, true)
     }
@@ -153,7 +179,12 @@ export function FiguresDrawer({
       className="mxdrawer"
       data-testid="figdrawer"
       ref={rootRef}
-      style={{ top: top ?? 0, left, ...(top == null ? { visibility: 'hidden' as const } : null) }}
+      style={{
+        top: top ?? 0,
+        left,
+        ...(top == null ? { visibility: 'hidden' as const } : null),
+        ...(arranging ? { pointerEvents: 'none' as const } : null),
+      }}
     >
       <table className="mx" style={zoom !== 1 ? ({ zoom, '--lwz': zoom } as CSSProperties) : undefined}>
         <tbody className="mxhead">
@@ -169,8 +200,8 @@ export function FiguresDrawer({
                   figure={f}
                   open={pop?.id === f.id}
                   onClick={e => {
-                    const r = e.currentTarget.getBoundingClientRect()
-                    setPop(p => (p?.id === f.id ? null : { id: f.id, x: r.left, y: r.bottom + 4 }))
+                    const at = popAt(e.currentTarget.getBoundingClientRect(), POP_W, POP_H)
+                    setPop(p => (p?.id === f.id ? null : { id: f.id, ...at }))
                   }}
                 />
               </th>
