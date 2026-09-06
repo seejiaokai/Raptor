@@ -395,6 +395,24 @@ export function figureLines(f: Figure, ctx: FigureCtx, personId: string): Figure
 }
 export interface FigureLines { top: number; used: { label: string; tone: Tone; value: number }[] }
 
+/** A figure an admin can credit from the grid: every balance that names a
+ *  counter — OIL included, whose grant is the tracker's own record. Totals
+ *  (and headers, which are not figures) never. ONE predicate: the gesture, the
+ *  bar and their tests read it, never a literal list of ids. Deliberately NOT
+ *  the person sheet's `settable` (that excludes OIL, because SET moves an
+ *  opening figure and OIL's opening belongs to the tracker). */
+export const selectableFigure = (f: Figure | undefined): f is Figure & { counter: CounterName } => !!f?.counter
+
+/** The entries behind a person's "granted" line on one pool, oldest first —
+ *  the breakdown itemises them, so a +2 keyed from the grid is explained (who,
+ *  when, and the reason when one was given). Ties (one batch = one date) keep
+ *  their written order by id. */
+export function grantsFor(ledger: Ledger, personId: string, counter: CounterName): LedgerEntry[] {
+  return ledger
+    .filter(e => e.personId === personId && e.counter === counter)
+    .sort((a, b) => a.date.localeCompare(b.date) || a.id.localeCompare(b.id, undefined, { numeric: true }))
+}
+
 /** The column title as coloured words, one line per row: "+OIL −OIL" on one
  *  line; LVE, with two used types, takes two ("+LVE" over "−LL −OL"). */
 export function titleLines(f: Figure): TitleWord[][] {

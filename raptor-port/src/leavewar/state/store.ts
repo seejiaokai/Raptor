@@ -89,6 +89,7 @@ import {
   type Stage,
   type States,
 } from '../engine'
+import { counterLabel } from '../engine/counters'
 import { localBackend, memoryBackend, type StorageBackend } from './storage'
 
 interface State {
@@ -428,7 +429,9 @@ function readLedger(x: unknown): Ledger | null {
     if (typeof amount !== 'number' || !Number.isFinite(amount)) return null
     if (typeof date !== 'string') return null
     // A grant with no reason and no approver is the untraceable free text
-    // the ledger exists to replace, so it is not a grant.
+    // the ledger exists to replace, so it is not a grant. (A blank reason
+    // is a plain-pool credit from the grid since 6 Sep 26 — `reasonRequired`
+    // gates that at the write path, not here, so this reader is unchanged.)
     if (typeof reason !== 'string' || typeof approvedBy !== 'string') return null
     const entry: LedgerEntry = { id, personId, counter: counter as CounterName, amount, date, reason, approvedBy }
     // `givenBy` is optional decoration (2 Sep 26); a bad one is dropped.
@@ -2140,15 +2143,29 @@ export function setOilPolicy(patch: Partial<OilPolicy>): boolean {
   return true
 }
 
+/** Days come in HALVES — a half day (HO) is the smallest thing the grid ever
+ *  charges, so a credit of 0.3 could never be drawn against. One rule for every
+ *  pool, the tracker's included (owner, 6 Sep 26). */
+const isHalfStep = (n: number) => Math.abs(n * 2 - Math.round(n * 2)) < 1e-9
+export const HALF_STEP_MSG = 'Days come in halves — 1, 1.5, 2 …'
+
+/** Which pools NEED a reason on a credit. OIL keeps the tracker's rule — a
+ *  credit with no reason is the untraceable free text the ledger replaced;
+ *  the other pools take a bare number from the grid (owner, 6 Sep 26 —
+ *  "reason only for OIL"). ONE predicate: the writer, the edit path and the
+ *  credit form all read it. */
+export const reasonRequired = (counter: CounterName): boolean => counter === 'oil'
+
 /** The sentence that stops a bad ledger write, or null. Stricter than the
  *  boot reader (which tolerates any string date and a zero amount, so an
  *  older stored ledger still loads): a NEW entry with no date or nothing in
  *  it is a mistake worth telling the admin about. */
-function ledgerProblem(amount: number, date: string, reason: string, givenBy = ''): string | null {
+function ledgerProblem(counter: CounterName, amount: number, date: string, reason: string, givenBy = ''): string | null {
   if (!Number.isFinite(amount) || amount === 0) return 'The amount must be a number other than 0'
+  if (!isHalfStep(amount)) return HALF_STEP_MSG
   if (!ISO_DAY.test(date)) return 'Pick a date'
   const clean = reason.trim()
-  if (!clean) return 'Give a reason'
+  if (!clean && reasonRequired(counter)) return 'Give a reason'
   if (clean.length > MAX_REASON) return `A reason is at most ${MAX_REASON} characters`
   if (givenBy.trim().length > MAX_GIVEN_BY) return `Given by is at most ${MAX_GIVEN_BY} characters`
   return null
@@ -2172,29 +2189,36 @@ function approverName(): string {
 }
 
 /**
- * Credit OIL to one or many people at once — the tracker's "credit N
- * people" (owner: "drag and select all WSOs to put OIL, date and reason").
- * A NEGATIVE amount is a correction, not a second mechanism (§Counters).
- * Returns the error sentence for the sheet, or null on success. One state
- * write for the whole batch → one persist, one undo step.
+ * Credit a pool to one or many people at once — the tracker's "credit N
+ * people" (owner: "drag and select all WSOs to put OIL, date and reason"),
+ * and since 6 Sep 26 the figures bar's "+2 for everyone I dragged" on ANY
+ * balance. A NEGATIVE amount is a correction, not a second mechanism
+ * (§Counters). Returns the error sentence for the form, or null on success.
+ * One state write for the whole batch → one persist, one undo step.
  */
-export function grantOil(personIds: string[], amount: number, date: string, reason: string, givenBy = ''): string | null {
-  if (state.role !== 'admin') return 'Only an admin can credit OIL'
+export function grantTo(personIds: string[], counter: CounterName, amount: number, date: string, reason: string, givenBy = ''): string | null {
+  if (state.role !== 'admin') return `Only an admin can credit ${counterLabel(counter)}`
   const ids = [...new Set(personIds)].filter(id => state.people.some(p => p.id === id))
   if (!ids.length) return 'Pick at least one person'
-  const problem = ledgerProblem(amount, date, reason, givenBy)
+  const problem = ledgerProblem(counter, amount, date, reason, givenBy)
   if (problem) return problem
   const approvedBy = approverName()
   const by = givenBy.trim()
   let n = ledgerSeq()
   const entries: Ledger = ids.map(personId => ({
-    id: `ol-${++n}`, personId, counter: 'oil' as const, amount, date, reason: reason.trim(), approvedBy,
+    id: `ol-${++n}`, personId, counter, amount, date, reason: reason.trim(), approvedBy,
     ...(by ? { givenBy: by } : {}),
   }))
   state = withCurrent({ ...state, ledger: [...state.ledger, ...entries] })
   persist()
   notify()
   return null
+}
+
+/** The OIL case of `grantTo` — kept so the tracker and its tests read as they
+ *  always did. */
+export function grantOil(personIds: string[], amount: number, date: string, reason: string, givenBy = ''): string | null {
+  return grantTo(personIds, 'oil', amount, date, reason, givenBy)
 }
 
 /** Edit a grant in place — amount, date or reason. The approver stays who it
@@ -2207,7 +2231,7 @@ export function updateLedgerEntry(id: string, patch: { amount?: number; date?: s
   const date = patch.date ?? cur.date
   const reason = patch.reason ?? cur.reason
   const givenBy = (patch.givenBy ?? cur.givenBy ?? '').trim()
-  const problem = ledgerProblem(amount, date, reason, givenBy)
+  const problem = ledgerProblem(cur.counter, amount, date, reason, givenBy)
   if (problem) return problem
   state = withCurrent({
     ...state,

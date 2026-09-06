@@ -17,6 +17,8 @@ import {
   figureForLeave,
   figureLines,
   titleLines,
+  selectableFigure,
+  grantsFor,
   DEFAULT_FIGURE_ID,
   DEFAULT_FIGURE_ORDER,
   type Figure,
@@ -537,5 +539,23 @@ describe('figureParts — the tap-a-counter breakdown (owner, 17 Aug 26)', () =>
   it('a figure with no parts of its own restates as one line, so every figure answers', () => {
     const bare: Figure = { id: 'x', label: 'X', title: '−X', kind: 'tot', used: [], desc: 'x', value: () => 4 }
     expect(figureParts(bare, ctx, 'ramp')).toEqual([{ label: 'days taken', value: 4 }])
+  })
+})
+
+describe('selectableFigure and grantsFor (the figures bar, 6 Sep 26)', () => {
+  it('selects every balance, OIL included, and never a total', () => {
+    const by = Object.fromEntries(FIGURES.map(f => [f.id, selectableFigure(f)]))
+    expect(by).toEqual({ lve: true, oil: true, ccl: true, fcl: true, cl: true, pl: true, lvetot: false, medtot: false })
+    expect(selectableFigure(undefined)).toBe(false)
+  })
+  it('lists a person\'s entries on one pool, oldest first, and no other pool\'s', () => {
+    const ledger: Ledger = [
+      { id: 'ol-2', personId: 'a', counter: 'ccl', amount: 1, date: '2026-03-02', reason: '', approvedBy: 'admin' },
+      { id: 'ol-1', personId: 'a', counter: 'ccl', amount: 2, date: '2026-01-05', reason: 'x', approvedBy: 'admin' },
+      { id: 'ol-3', personId: 'a', counter: 'oil', amount: 1, date: '2026-01-01', reason: 'y', approvedBy: 'admin' },
+      { id: 'ol-4', personId: 'b', counter: 'ccl', amount: 1, date: '2026-01-01', reason: '', approvedBy: 'admin' },
+    ]
+    expect(grantsFor(ledger, 'a', 'ccl').map(e => e.id)).toEqual(['ol-1', 'ol-2'])
+    expect(grantsFor(ledger, 'a', 'fcl')).toEqual([])
   })
 })

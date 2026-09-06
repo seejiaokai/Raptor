@@ -24,6 +24,9 @@ import {
   moveEventProblem,
   addEventType,
   grantOil,
+  grantTo,
+  reasonRequired,
+  HALF_STEP_MSG,
   setCellNote,
   updateLedgerEntry,
   removeLedgerEntry,
@@ -60,7 +63,8 @@ import {
   moveProblem,
   setViewer,
 } from './store'
-import { FIGURES, figureParts, makeWar, seedRequirements } from '../engine'
+import { FIGURES, figureParts, makeWar, seedRequirements, type CounterName } from '../engine'
+import { balanceOf } from '../engine/counters'
 import { localBackend, memoryBackend } from './storage'
 
 beforeEach(() => {
@@ -2456,5 +2460,73 @@ describe('setBalance: an admin types the balance, LL and OL deduct from it', () 
     expect(setBalance('ramp', 'annual', NaN)).toBe(false)
     expect(setBalance('ramp', 'oil', 0)).toBe(true)
     expect(getState().openings.ramp.annual).toBe(12)
+  })
+})
+
+// A dated +/− on ANY pool from the figures (owner, 6 Sep 26 — "if it shows 7
+// and I add 3 it reads 10; −3 gives 4"; "reason only for OIL"). One writer,
+// grantTo; grantOil is the OIL case of it. The rules live in ONE body.
+describe('grantTo — a dated credit on any pool', () => {
+  const bal = (id: string, counter: CounterName) => {
+    const s = getState()
+    return balanceOf(s.openings, s.ledger, s.wars, id, counter, figureCtxOf())
+  }
+  it('refuses a member and names the pool', () => {
+    setRole('member')
+    expect(grantTo(['ramp'], 'ccl', 2, '2026-09-06', '')).toBe('Only an admin can credit CCL')
+  })
+  it('adds to the balance with no reason on a plain pool, stamped with who and when', () => {
+    setRole('admin')
+    const before = bal('ramp', 'ccl')
+    expect(grantTo(['ramp'], 'ccl', 2, '2026-09-06', '')).toBeNull()
+    expect(bal('ramp', 'ccl')).toBe(before + 2)
+    const e = getState().ledger.filter(x => x.personId === 'ramp' && x.counter === 'ccl').at(-1)!
+    expect(e).toMatchObject({ amount: 2, date: '2026-09-06', reason: '', approvedBy: 'admin' })
+    expect(e.id).toMatch(/^ol-\d+$/)
+  })
+  it('subtracts with a negative amount — a correction, not a second mechanism', () => {
+    setRole('admin')
+    const before = bal('dusk', 'fcl')
+    expect(grantTo(['dusk'], 'fcl', -3, '2026-09-06', '')).toBeNull()
+    expect(bal('dusk', 'fcl')).toBe(before - 3)
+  })
+  it('still demands a reason for OIL — the tracker\'s rule, unchanged', () => {
+    setRole('admin')
+    expect(reasonRequired('oil')).toBe(true)
+    expect(reasonRequired('ccl')).toBe(false)
+    expect(grantTo(['ramp'], 'oil', 1, '2026-09-06', '')).toBe('Give a reason')
+    expect(grantTo(['ramp'], 'oil', 1, '2026-09-06', 'Det recovery')).toBeNull()
+  })
+  it('takes halves only, on every pool — the tracker included', () => {
+    setRole('admin')
+    expect(grantTo(['ramp'], 'ccl', 1.25, '2026-09-06', '')).toBe(HALF_STEP_MSG)
+    expect(grantOil(['ramp'], 0.3, '2026-09-06', 'x')).toBe(HALF_STEP_MSG)
+    expect(grantTo(['ramp'], 'ccl', 1.5, '2026-09-06', '')).toBeNull()
+    expect(grantTo(['ramp'], 'ccl', -0.5, '2026-09-06', '')).toBeNull()
+  })
+  it('keeps every other refusal: no people, zero, a bad date, an unknown person', () => {
+    setRole('admin')
+    expect(grantTo([], 'ccl', 1, '2026-09-06', '')).toBe('Pick at least one person')
+    expect(grantTo(['nobody'], 'ccl', 1, '2026-09-06', '')).toBe('Pick at least one person')
+    expect(grantTo(['ramp'], 'ccl', 0, '2026-09-06', '')).toBe('The amount must be a number other than 0')
+    expect(grantTo(['ramp'], 'ccl', 1, '6 Sep', '')).toBe('Pick a date')
+  })
+  it('writes N people in ONE undo step', () => {
+    setRole('admin')
+    const n = getState().ledger.length
+    expect(grantTo(['ramp', 'dusk', 'miles', 'dusk'], 'pl', 1, '2026-09-06', '')).toBeNull()
+    expect(getState().ledger.length).toBe(n + 3)
+    lwUndo()
+    expect(getState().ledger.length).toBe(n)
+  })
+  it('an edit keeps the pool\'s own reason rule', () => {
+    setRole('admin')
+    grantTo(['ramp'], 'ccl', 2, '2026-09-06', 'top-up')
+    const ccl = getState().ledger.filter(x => x.personId === 'ramp' && x.counter === 'ccl').at(-1)!
+    expect(updateLedgerEntry(ccl.id, { reason: '' })).toBeNull()
+    grantOil(['ramp'], 1, '2026-09-06', 'weekend')
+    const oil = getState().ledger.filter(x => x.personId === 'ramp' && x.counter === 'oil').at(-1)!
+    expect(updateLedgerEntry(oil.id, { reason: '' })).toBe('Give a reason')
+    expect(updateLedgerEntry(oil.id, { amount: 0.75 })).toBe(HALF_STEP_MSG)
   })
 })
