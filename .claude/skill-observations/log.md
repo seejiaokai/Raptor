@@ -1421,3 +1421,63 @@ gate's. Keep verdict-bearing commands unpiped.
 
 **Principle:** A layout question answered in words gets answered with a sketch — ask it with a picture from the start, and say plainly when an image did not arrive.
 
+### Observation 93: A number in a test step is an oracle — compute it from the fixture at plan time, or say "measure it"
+
+**Status:** OPEN
+**Date:** 2026-09-06
+**Session context:** Leave War figures drawer — orchestrating the six-task subagent-driven build (fresh implementer per task, task reviews, fix rounds, a shared working tree) after the owner approved the design.
+**Skill:** writing-plans (task steps) / subagent-driven-development (briefs)
+**Type:** open-source
+**Phase/Area:** Plan test steps / implementer briefs
+
+**Issue:** A task's test step asserted a person's balance at a value reasoned from memory of the seed (−13); the seed actually grants +14, so the number was wrong. The implementer noticed only because the test failed, measured a different fixture person, re-pinned the measured value and reported DONE_WITH_CONCERNS — a concern round that a trusting implementer would instead have spent forcing the code to a wrong number, or "fixing" the test.
+
+**Suggested improvement:** In writing-plans' "No Placeholders" rules: every numeric expectation in a test step is computed from the real fixture/seed while writing the plan (a one-line script against the data), and the step says where it came from ("seed: opening 12 + granted 14 = 26"). If it cannot be computed at plan time, the step says "measure X on the fixture and pin the measured value" — never a plausible guess. In SDD, an implementer whose measured value disagrees with the brief reports the disagreement as a concern (as happened) rather than bending either side silently.
+
+**Principle:** A worked number in a test step is an oracle, not an illustration — a plausible guess is worse than no number, because it can be pinned; compute it from the fixture or instruct the implementer to measure it.
+
+### Observation 94: A brief deletes tests by NAME, never by category — a category matches every lookalike
+
+**Status:** OPEN
+**Date:** 2026-09-06
+**Session context:** Leave War figures drawer — orchestrating the six-task subagent-driven build (fresh implementer per task, task reviews, fix rounds, a shared working tree) after the owner approved the design.
+**Skill:** writing-plans / subagent-driven-development (dispatch + report handling)
+**Type:** open-source
+**Phase/Area:** Task steps that remove tests
+
+**Issue:** A brief said to delete the tests that assert the retired figure ids (a category). The implementer also deleted an unrelated pin whose title mentioned the same word — "offers no OFF chip", which asserts a fact still true (OFF is not a bidding chip). The orchestrator caught it in the report's list of deleted tests, resumed the agent, and a one-line commit restored the pin before review. Had the report not listed deletions, the coverage loss would have been silent.
+
+**Suggested improvement:** In writing-plans: a step that removes tests names each test by file + title, or states the predicate that makes a test obsolete ("expects a value that no longer exists in the catalogue") and lists lookalikes to KEEP. In SDD: the implementer report contract lists every deleted or rewritten test by title; the orchestrator diffs that list against the brief before dispatching the reviewer, and a deleted test the brief did not name is a fix round, not a note.
+
+**Principle:** Delete by name, not by category — a category ("tests about X") matches every lookalike, and a deleted test is a coverage loss nobody sees.
+
+### Observation 95: In one working tree, the conflict unit is everything that can still LAND for a task — its fix rounds included
+
+**Status:** OPEN
+**Date:** 2026-09-06
+**Session context:** Leave War figures drawer — orchestrating the six-task subagent-driven build (fresh implementer per task, task reviews, fix rounds, a shared working tree) after the owner approved the design.
+**Skill:** subagent-driven-development
+**Type:** open-source
+**Phase/Area:** Parallel dispatch / the fix loop
+
+**Issue:** The skill says never run implementers in parallel. What worked all session: a read-only reviewer beside the next implementer, always; and once two implementers on provably disjoint file sets. What bit: a task's review produced a fix round whose files (the grid component) overlapped the task already in flight, so the fix had to be QUEUED until that task committed, and its scoped re-review then needed a FIX_BASE that skipped the unrelated commit sitting between the review head and the fix. The brief's file list is not the task's footprint — the fix round's is.
+
+**Suggested improvement:** In SDD's task loop: state the safe parallel pattern explicitly (reviewer beside the next implementer, always; a second implementer only on disjoint file sets), and add the rule that overlapping a new implementer with a task whose review is still OPEN means assuming that review's fix round will touch the same files — either wait for the verdict, or accept queuing the fix and record it in the ledger. When a fix lands after unrelated commits, the re-review package runs from the commit just before the fix (FIX_BASE), named in the ledger, not from the original review head.
+
+**Principle:** In a shared working tree the unit of conflict is the file set of everything that can still land for a task — the fix rounds a pending review may demand — not the files its brief names.
+
+### Observation 96: Commit and push state is read off git before it is reported — memory of a push is not a push
+
+**Status:** OPEN
+**Date:** 2026-09-06
+**Session context:** Leave War figures drawer — orchestrating the six-task subagent-driven build (fresh implementer per task, task reviews, fix rounds, a shared working tree) after the owner approved the design.
+**Skill:** subagent-driven-development (ledger discipline) / any orchestrating skill
+**Type:** open-source
+**Phase/Area:** Reporting state to the user; the ledger
+
+**Issue:** The orchestrator told the owner a landed fix "wasn't pushed" from a stale recollection — it was. One `git status -sb` would have shown the branch level with its remote. Later the same session, after context compaction, the ledger plus `git log` recovered the whole state exactly as the skill promises; the failure was in the human-facing report, not the record.
+
+**Suggested improvement:** In SDD's ledger section: a ledger line says "pushed" only after the push result is read, and any statement about commit/push state — to the user or in the ledger — is preceded by `git status -sb` (or `git log origin/<branch>..HEAD`) in the same turn. Report the command's reading, never a remembered one.
+
+**Principle:** Repository state is a fact on disk — read it in the turn you report it; a remembered push, commit or clean tree is a guess wearing a fact's clothes.
+
