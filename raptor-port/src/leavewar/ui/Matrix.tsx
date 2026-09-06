@@ -63,6 +63,7 @@ import { popAt } from './popat'
 import { clampWin, rollingTarget, stepAllowedInMotion, stepToward, visibleSpan, windowAround, WINDOW_FROM_MONTHS, type ColWin } from './colwindow'
 import { isLwOnScreen, subLwScreen } from '../state/screen'
 import { msSinceInput } from '../../state/idle'
+import { boxOf, frameLift, frameLand, landOn, liftOff } from '../../ui/lift'
 import { wireSelect, wireMove, wireFigureSelect, daysBetween, paintLanding, clearLanding, paintEventLanding, eventMoveDateAt, earliestDate, type Cell, type Selection, type SelectCtx, type FigureSelectCtx, type FigureSelection } from './select'
 import { selectableFigure } from '../engine/counters'
 import { SettingsSheet } from './SettingsSheet'
@@ -126,16 +127,20 @@ type RowDragCfg = {
   idOf: (el: Element) => string | null
   /** commit: move `from` to sit before `beforeId` (end when null). */
   move: (from: string, beforeId: string | null) => void
+  /** the moved thing after the store has re-rendered — where the landing flash goes */
+  landSel: (id: string) => string
 }
 const ROSTER_DRAG: RowDragCfg = {
   sel: '[data-testid^="row-"]',
   idOf: el => el.getAttribute('data-testid')?.slice(4) ?? null,
   move: moveRosterRow,
+  landSel: id => `[data-testid="row-${id}"]`,
 }
 const MANNING_DRAG: RowDragCfg = {
   sel: '[data-mrow]',
   idOf: el => el.getAttribute('data-mrow'),
   move: moveManningRowTo,
+  landSel: id => `[data-mrow="${id}"]`,
 }
 /* The group editor's two lists reorder with the SAME machine — display order
    and the separate who-wins priority (owner, 28 Aug 26). */
@@ -143,11 +148,13 @@ const GROUP_DRAG: RowDragCfg = {
   sel: '[data-grow]',
   idOf: el => el.getAttribute('data-grow'),
   move: moveGroupTo,
+  landSel: id => `[data-grow="${id}"]`,
 }
 const GROUP_PRIO_DRAG: RowDragCfg = {
   sel: '[data-gprio]',
   idOf: el => el.getAttribute('data-gprio'),
   move: moveGroupPriorityTo,
+  landSel: id => `[data-gprio="${id}"]`,
 }
 
 // ---- one roster row, memoised (3 Sep 26) ----------------------------------
@@ -684,6 +691,13 @@ export function Matrix() {
   // can end it — otherwise its window listeners leak and the row stays stuck
   // in the .dragging highlight.
   const dragCleanup = useRef<(() => void) | null>(null)
+  /* ONE LIFT, EVERY DRAG (owner, 6 Sep 26): the grid's overlay frame (rendered
+     last in .mx-outer with a constant className, so React never writes to it
+     again — this ref is its only writer) and the landing to play once the
+     store's move has re-rendered the rows. Refs, not state: the frame must cost
+     nothing per frame and nothing per render. */
+  const liftRef = useRef<HTMLDivElement | null>(null)
+  const landRef = useRef<{ sel: string; surface: 'grid' | 'list' } | null>(null)
   const [draggingId, setDraggingId] = useState<string | null>(null)
   const [dragOver, setDragOver] = useState<string | null>(null)
   const [dragAfter, setDragAfter] = useState(false)
@@ -700,6 +714,16 @@ export function Matrix() {
     e.preventDefault()
     dragId.current = id
     setDraggingId(id)
+    /* the frame goes up in the same tick as the grip's pointerdown — one
+       measurement, then nothing until the drop. A GRID row (person, heading,
+       manning) is composite, so it gets the frame; a Settings LIST row is one
+       element and already wears the recipe through its prop-driven `dragging`
+       class (matrix.css), so it needs nothing here. */
+    const grip = e.currentTarget as Element
+    const surface: 'grid' | 'list' = grip.closest('.mx-wrap') ? 'grid' : 'list'
+    const rowEl = grip.closest(cfg.sel) as HTMLElement | null
+    const outer = mxOuterRef.current, wrap = wrapRef.current
+    if (surface === 'grid' && rowEl && outer && wrap) frameLift(liftRef.current, boxOf(outer, rowEl, wrap))
     const move = (ev: PointerEvent) => {
       const el = document.elementFromPoint(ev.clientX, ev.clientY)
       const row = el && (el as Element).closest ? (el as Element).closest(cfg.sel) : null
@@ -733,6 +757,9 @@ export function Matrix() {
       setDraggingId(null)
       setDragOver(null)
       setDragAfter(false)
+      // The lift is over either way — a commit re-places the frame at the
+      // landing below, a cancel simply leaves it hidden.
+      frameLift(liftRef.current, null)
       if (commit && from && over && over.id !== from) {
         /* "after row X" resolves to "before the row that follows X" in the
            RENDERED order — the DOM is what the user is looking at, and the
@@ -753,6 +780,11 @@ export function Matrix() {
         }
         if (beforeId !== from) {
           cfg.move(from, beforeId)
+          /* the flash is measured AFTER React commits the new order — this
+             listener is a native window handler, so the store's notify and the
+             state clears above are batched into one commit that has not
+             happened yet; the layout effect below reads this ref there. */
+          landRef.current = { sel: cfg.landSel(from), surface }
           /* A manning reorder shuffles the rows of the frozen LEFT column, whose
              grip/eye tools live in a `position: sticky` cell. iOS Safari does not
              reliably repaint a sticky column after that DOM churn, so the just
@@ -2855,6 +2887,26 @@ export function Matrix() {
     if (figuresOpen) syncDrawerHeights()
   })
 
+  /* The landing flash, in the SAME commit as the reorder (a dep list would run
+     a frame late, an rAF after cfg.move() is not ordered against React's
+     scheduler). Grid: the moved <tr> — keyed rows MOVE, they do not remount —
+     measured against the outer and the wrap's visible span, exactly as at arm.
+     List: the Settings row, found OUTSIDE the wrap because the grid's heading
+     shares its data-grow. */
+  useLayoutEffect(() => {
+    const land = landRef.current
+    if (!land) return
+    landRef.current = null
+    const outer = mxOuterRef.current, wrap = wrapRef.current
+    if (land.surface === 'grid') {
+      const row = wrap?.querySelector<HTMLElement>(land.sel)
+      if (row && outer && wrap) frameLand(liftRef.current, boxOf(outer, row, wrap))
+      return
+    }
+    const el = [...document.querySelectorAll<HTMLElement>(land.sel)].find(n => !wrap || !wrap.contains(n))
+    if (el) { liftOff(el); landOn(el) }
+  })
+
   // The roster's row SEQUENCE — group headings, CAT sub-headings and people, in
   // display order — computed so the real grid and the frozen overlay draw the
   // SAME rows in the SAME order. The overlay must not invent its own order or
@@ -3583,6 +3635,11 @@ export function Matrix() {
             onBox={onDrawerBox}
           />
         )}
+        {/* THE LIFT FRAME (owner, 6 Sep 26): one box round a picked-up row, and
+            the flash where it lands — src/ui/lift.ts. Last in the outer so it
+            paints over the band and the drawer; a constant className, so React
+            never touches it after mount. */}
+        <div className="lift-frame" data-testid="lift-frame" aria-hidden="true" ref={liftRef} />
       </div>
       </div>
 

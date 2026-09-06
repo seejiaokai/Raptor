@@ -80,12 +80,15 @@ describe('a dragged row keeps its frozen cells opaque', () => {
     }
   })
 
-  it('the picked-up row is LIFTED — a ring on the frozen cells and a glow past them', () => {
-    for (const sel of ['.mx tbody tr.dragging .who', '.mx tbody tr.dragging .bal', '.mx tbody tr.grp.dragging td.grphd']) {
-      const body = bodiesFor(sel).join(' ').replace(/\s+/g, ' ')
-      expect(body, `${sel} wears the accent ring`).toMatch(/box-shadow:[^;]*inset 0 0 0 2px var\(--accent\)/)
-      expect(body, `${sel} glows past its own edge`).toMatch(/box-shadow:[^;]*0 0 12px rgba\(59, 198, 232, \.6\)/)
+  it('nothing paints the picked-up row per cell any more — the shared lift frame carries it (6 Sep 26)', () => {
+    for (const r of RULES) {
+      const drags = r.sels.filter(s => /tr\.dragging/.test(s) && !/\.dragover/.test(s))
+      if (!drags.length) continue
+      expect(r.body, `${drags.join(', ')} must not draw a box-shadow or a z-index — that was the "individual boxes" look`).not.toMatch(/box-shadow|z-index/)
     }
+    // the Settings lists wear the recipe through their prop-driven class
+    for (const sel of ['.set-grow.dragging', '.crow-wrap.gs-row.dragging'])
+      expect(bodiesFor(sel).join(' ').replace(/\s+/g, ' '), `${sel} wears --lift-box`).toMatch(/box-shadow: var\(--lift-box\)/)
   })
 
   it('the landing bar runs the whole row at 3px, top edge or bottom', () => {
@@ -105,10 +108,13 @@ describe('a dragged row keeps its frozen cells opaque', () => {
      Two things have to hold, and they used to disagree with each other: the
      drag paint must out-rank the ring (or the landing bar simply vanishes on
      the short days), and it must then put the ring back underneath (or the
-     picked-up row loses the shortfall the landing row still shows). */
+     picked-up row loses the shortfall the landing row still shows).
+     Only the LANDING half is left to arbitrate (6 Sep 26): the picked-up row is
+     the lift frame's job now and paints no cell at all, which is why the
+     per-cell rule's absence is asserted first. */
   it('the drag rules out-rank the counts shortfall states', () => {
+    expect(rulesFor('.mx tbody tr.dragging:not(.grp) td:not(.who):not(.bal)').length, 'the per-cell line rule is gone').toBe(0)
     for (const sel of [
-      '.mx tbody tr.dragging:not(.grp) td:not(.who):not(.bal)',
       '.mx tbody tr.dragover td:not(.who)',
       '.mx tbody tr.dragover.after td:not(.who)',
     ]) {
@@ -125,7 +131,6 @@ describe('a dragged row keeps its frozen cells opaque', () => {
       expect(body, `${state} still paints it`).toMatch(/box-shadow:\s*var\(--mrow-ring\)/)
     }
     for (const sel of [
-      '.mx tbody tr.dragging:not(.grp) td:not(.who):not(.bal)',
       '.mx tbody tr.dragover td:not(.who)',
       '.mx tbody tr.dragover.after td:not(.who)',
     ]) {

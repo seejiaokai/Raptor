@@ -3426,6 +3426,66 @@ test('an admin hand-drags the roster from the ⇅ toggle, which is also the way 
   await expect(toggle).toHaveCount(0)
 })
 
+/* ONE LIFT, EVERY DRAG (owner, 6 Sep 26). During a Rearrange drag exactly one
+   frame stands round the picked-up row — the row's own top and height, the
+   grid's VISIBLE left and width (closing at the screen's edge, over the frozen
+   block and the days as one perimeter) — it is never a hit-test target, and
+   after the drop the same frame flashes once on the row where it LANDED and
+   is gone within a second. The phone drives a real CDP touch (the machine arms
+   on pointerdown, no hold); the desktop a mouse. */
+test('a picked-up row wears one frame the width of the visible grid, and the row it lands on flashes once', async ({ page }) => {
+  await lwRole(page, 'admin')
+  const ids = () => page.$$eval('[data-testid^="row-"]', els => els.map(e => e.getAttribute('data-testid')!.slice(4)))
+  const before = await ids()
+  await page.locator('[data-testid="roster-arrange"]').click()
+  const src = before[1]!, dst = before[5]!
+  /* The drop point has to be ON SCREEN before the gesture starts: the phone's
+     viewport is 390x664 and the sixth roster row sits ~700px down, and a touch
+     dispatched past the bottom edge hit-tests NOTHING — the drag would arm, the
+     frame would stand, and the drop would land nowhere (measured 6 Sep 26). The
+     four rows between the two stay in view, so the grip is still reachable. */
+  await page.locator(`[data-testid="row-${dst}"]`).scrollIntoViewIfNeeded()
+  const h = (await page.locator(`[data-testid="drag-${src}"]`).boundingBox())!
+  const tgt = (await page.locator(`[data-testid="row-${dst}"]`).boundingBox())!
+  const phone = page.viewportSize()!.width < 700
+  const cdp = phone ? await page.context().newCDPSession(page) : null
+  const x = h.x + h.width / 2, y0 = h.y + h.height / 2, y1 = tgt.y + tgt.height - 4
+  if (cdp) {
+    await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x, y: y0 }] })
+    await page.waitForTimeout(80)
+    for (let i = 1; i <= 6; i++) await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: x + 40, y: y0 + (y1 - y0) * i / 6 }] })
+  } else {
+    await page.mouse.move(x, y0); await page.mouse.down()
+    await page.mouse.move(x, y0 + 20, { steps: 3 }); await page.mouse.move(x + 40, y1, { steps: 5 })
+  }
+  await page.waitForTimeout(120)
+  const mid = await page.evaluate((src) => {
+    const frames = document.querySelectorAll('.lift-frame.lift')
+    const f = frames[0] as HTMLElement, fr = f.getBoundingClientRect()
+    const row = document.querySelector(`[data-testid="row-${src}"]`)!.getBoundingClientRect()
+    const wrap = document.querySelector('.mx-wrap') as HTMLElement, wr = wrap.getBoundingClientRect()
+    const hit = document.elementFromPoint(fr.left + fr.width / 2, fr.top + fr.height / 2)
+    return { n: frames.length, dTop: Math.abs(fr.top - row.top), dH: Math.abs(fr.height - row.height), dLeft: Math.abs(fr.left - wr.left), dW: Math.abs(fr.width - wrap.clientWidth), pe: getComputedStyle(f).pointerEvents, hit: hit?.tagName, inMx: !!f.closest('.mx') }
+  }, src)
+  expect(mid.n).toBe(1)
+  expect(mid.dTop).toBeLessThan(1.01); expect(mid.dH).toBeLessThan(1.01)
+  expect(mid.dLeft).toBeLessThan(1.01); expect(mid.dW).toBeLessThan(1.01)
+  expect(mid.pe).toBe('none'); expect(mid.hit).toBe('TD'); expect(mid.inMx).toBe(false)
+  if (cdp) await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] })
+  else await page.mouse.up()
+  await page.waitForTimeout(60)
+  const land = await page.evaluate((src) => {
+    const f = document.querySelector('.lift-frame.lift-land'); if (!f) return null
+    const fr = f.getBoundingClientRect(), row = document.querySelector(`[data-testid="row-${src}"]`)!.getBoundingClientRect()
+    return { dTop: Math.abs(fr.top - row.top), dH: Math.abs(fr.height - row.height) }
+  }, src)
+  expect(land, 'the frame flashes on the landed row').not.toBeNull()
+  expect(land!.dTop).toBeLessThan(1.01); expect(land!.dH).toBeLessThan(1.01)
+  expect((await ids()).indexOf(src)).toBeGreaterThan(before.indexOf(src))     // the reorder itself still happens
+  await expect(page.locator('.lift-frame.lift-land')).toHaveCount(0, { timeout: 1500 })
+  await expect(page.locator('.lift-frame.lift')).toHaveCount(0)
+})
+
 test('a personnel row shows its callsign, with no edit box, in Rearrange', async ({ page }) => {
   // The free-text label editor was REMOVED (owner, 28 Aug 26 — "i can edit
   // personnel, dont need to show that, just leave it as the callsign/name").

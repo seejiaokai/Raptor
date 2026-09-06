@@ -22,6 +22,13 @@
   --filters-bg:#0E1115;
   --edge:#2A313A; --edge-2:#39424D; --ink:#F1F4F7; --ink-2:#B6C0CB; --ink-3:#8A96A3;
   --accent:#3BC6E8; --accent-ink:#052A34;
+  /* THE PICKED-UP LOOK, one recipe for every drag in the app (owner, 6 Sep 26 —
+     the "Soft, inside the line" he picked off the mock he dragged on his phone).
+     A CONSTANT, never toggled: a custom property that changes on a grid ancestor
+     re-resolves every descendant's style (the Leave War column window's standing
+     rule). Every layer is INSET so nothing of it can be clipped — see the .lift
+     block near .sb-fresh for the whole story. */
+  --lift-box:inset 0 0 0 2px var(--accent), inset 0 0 12px rgba(59,198,232,.30);
   --hard:#F0555F; --adv:#E5A83B; --ok:#57C97A;
   --flight:#3BC6E8;
   /* seat colours (kept from the working file) */
@@ -4467,6 +4474,46 @@ button.sanscard:hover{border-color:var(--accent)}
 .ppl.fcprcp .sb-slot.empty{width:var(--puck-w);height:var(--puck-h);border:1px dashed var(--edge-2);
   border-radius:3px;display:flex;align-items:center;justify-content:center;color:var(--ink-3);font-size:11px}
 /* a duty-block / AMT / OFT sub-head inside a panel body */
+/* ---- ONE LIFT, EVERY DRAG (owner, 6 Sep 26 — "every single drag and drop for
+   rearranging things in the app … the thing u are grabbing glows evenly … a cyan
+   box around the perimeter, not individual boxes … once I drop the item, it
+   should flash to show where the new item ended up"; the pick from the mock he
+   dragged on his phone: SOFT, INSIDE THE LINE, for all). The one recipe every
+   drag machine wears — board rows/waves/sections (rowdrag.ts), the two ghosts
+   (drag.ts, caldrag.ts), the quals column, the calendar popover, Leave War's rows
+   and lists (src/ui/lift.ts is the choreography).
+   INSET ONLY, on purpose: the Leave War grid sits in `.card{overflow:hidden}` and
+   the board rows in `.sb-panel{overflow:hidden}`, and an overflow:hidden ancestor
+   DISCARDS a descendant's outer box-shadow — which is exactly why the old halo
+   showed above and below a row and never at its sides (the same lesson .sb-fresh
+   learnt on 16 Aug 26: draw nothing outside the border box). --lift-box lives on
+   :root as a CONSTANT so matrix.css's own rows can wear the same numbers; it is
+   never toggled (a toggled property on a grid ancestor restyles thousands of
+   cells — see the performance doctrine). */
+.lift{border-radius:8px;box-shadow:var(--lift-box)}
+/* The overlay for a thing that is not one element (a table row across sticky and
+   scrolling cells; a column): absolute in a positioned host that scrolls WITH the
+   content, above the host's own overlays (Leave War: band 4/6, drawer 5; under
+   .mxfixed 55 which covers it exactly as it covers the row), never a hit-test
+   target. Hidden until it carries .lift or .lift-land. Absolute stays absolute:
+   the veil's relative rule below is scoped :not(.lift-frame) — a bare rule lost
+   the landing frame to normal flow in the mock's first drive. */
+.lift-frame{position:absolute;z-index:7;pointer-events:none;display:none;box-sizing:border-box}
+.lift-frame.lift,.lift-frame.lift-land{display:block}
+.lift-frame.lift{animation:liftIn 120ms ease-out}
+/* The landing flash: a veil pseudo-element over the landed thing — the same box
+   plus a light wash — bright for the first 150ms then gone by 600ms, opacity
+   only, so it runs on the compositor and adds no DOM node. lift.ts removes the
+   class on animationend AND on a 600ms timer, because the reduced-motion blanket
+   above (*{animation:none!important}) means the veil then simply holds and the
+   timer is the only way out. A plain element needs the positioning context (and
+   z 4 to paint over the next row's top border, as .sb-fresh does); the frame is
+   already absolute. */
+.lift-land:not(.lift-frame){position:relative;z-index:4}
+.lift-land::after{content:'';position:absolute;inset:0;border-radius:8px;pointer-events:none;will-change:opacity;
+  background:rgba(59,198,232,.20);box-shadow:var(--lift-box);animation:liftLand 600ms ease-out forwards}
+@keyframes liftIn{from{opacity:.65;transform:scale(.985)}to{opacity:1;transform:none}}
+@keyframes liftLand{0%,25%{opacity:1}to{opacity:0}}
 /* A freshly added row / line / wave / block wears a blue box for ~6s (owner,
    14 Aug 26 — "a blue box around the new thing added for around 6 seconds"),
    fading out over its last stretch (owner — "yes fade"). Selection blue
