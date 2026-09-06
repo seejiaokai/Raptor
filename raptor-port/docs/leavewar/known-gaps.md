@@ -199,7 +199,9 @@ Balances are computed and on screen. Two parts of §Counters are not built:
   delete snaps the counter column to OIL BAL. (An admin's manual OIL / FO / HO
   write on the grid used to OPEN the tracker on that person with the day's box
   lit; that was reversed on 6 Sep 26 — a write on the grid keeps you on the
-  grid, and only the column snaps.) A `?` chip holds the legend.
+  grid, and only the column snaps. The day-lighting itself was deleted the same
+  day, having lost its only caller: the tracker opens on a PERSON, whose row it
+  scrolls to, and never on a day.) A `?` chip holds the legend.
   Nothing on the page is under 11px.
   **THIRD CUT the same evening (owner, from the shipped grid):** every take
   is its OWN ROW inside the box and `n left` is pinned bottom-right whatever
@@ -281,6 +283,22 @@ Balances are computed and on screen. Two parts of §Counters are not built:
   still cycles, and a member is untouched. Deliberate (it is the same gesture the
   day grid uses), but it is a new meaning for a press that used to do nothing,
   and a slow swiper will find himself selecting.
+- **A figure run can still grow past what the finger crossed.** Held at the top
+  or bottom edge of the screen the page auto-scrolls and the run keeps
+  collecting people — the day grid's own rule (owner, 30 Aug 26), and what lets
+  a run reach past one screenful. It is much gentler here since the 6 Sep 26 bug
+  hunt (0.4 of the step, and nothing until the pointer has sat in the band for
+  220 ms: a three-row phone drag that ended in the bottom band went from
+  fourteen people to a handful), but it is not off, so the bar's count can still
+  be larger than the rows the finger remembers crossing. **The count in the bar
+  is the check before Save** — it is on screen for exactly this reason.
+- **The halves rule also blocks EDITING a legacy non-half ledger entry.**
+  `ledgerProblem` is one body, so `updateLedgerEntry` applies the same
+  whole-or-half-day rule as a new credit: an entry already holding, say, 1.25
+  days cannot be edited at all until its amount is made a half — the refusal
+  names the amount, not the entry. The boot reader tolerates such a row and no
+  path in the app writes one today, so this is unreachable now; it matters when
+  the database backend lands and rows can arrive from elsewhere.
 
 Also note the derivation, because it narrows the spec deliberately: §Counters
 says every change to a counter is a ledger entry, and **leave taken is not

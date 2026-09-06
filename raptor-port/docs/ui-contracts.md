@@ -6275,7 +6275,13 @@ lit, so the reason could be typed there. Being thrown off the grid mid-pass cost
 more than the reason was worth, and the tracker is one tap away on the OIL
 button. `Matrix.tsx onWrote` now does two things and no more: the column snaps to
 the figure the leave comes off (above), and an EARNING cell — FO/HO — snaps to
-`+OIL` so the balance that just grew is the one on screen. Nothing navigates. The
+`+OIL` so the balance that just grew is the one on screen. Nothing navigates.
+**And since that write was its only caller, the tracker's own way of lighting a
+day is gone too** (controller, 6 Sep 26): the `focus` prop, the archive it
+auto-opened so the lit box could be seen, and the marks it painted on the row
+and the credit box all came out rather than standing as capability nothing asks
+for. Opening the tracker on a PERSON still scrolls their row into view; there is
+no way to open it on a DAY. The
 negative-balance confirm in `BidPicker.write` is untouched by this and is now the
 whole of what the admin sees on an OIL day he has no balance for: it WARNS once
 ("Tap the same leave again to go ahead") and writes on the second tap of the same
@@ -6315,7 +6321,20 @@ capture is taken in `arm()`, never on down. The page auto-scrolls vertically at
 the top and bottom edge bands while a drag is armed (the day grid's own rule,
 owner 30 Aug 26 — "auto scroll to the edge to continue selecting more"), so a
 drag held near the bottom of a phone keeps scrolling AND keeps adding people:
-the bar can name more of them than the finger visibly crossed. There is no
+the bar can name more of them than the finger visibly crossed. **That edge run
+is GENTLE here, unlike the day grid's** (6 Sep 26 bug hunt): the figure drag
+scrolls the page slowly and only after a short pause at the edge — `GestureBase`
+grew `edge?: { rate, dwellMs }` (defaults `1` and `0`, so `wireSelect` and
+`wireRowSelect` are untouched) and `wireFigureSelect` asks for `{ rate: 0.4,
+dwellMs: 220 }`: 0.4 of the per-frame step, and nothing at all until the pointer
+has sat in the band, timed from the frame it entered and restarted whenever it
+leaves. Painting a rectangle of days wants the grid's quick run to the next
+month; a run of PEOPLE is what a number is about to be written to, and a
+three-row drag that merely ended in the bottom band ran the page 259 px in
+~0.7 s and lit fourteen. It can still be extended past the screen by holding
+there on purpose — **so the bar's count is the check before Save**, and the
+count is the number to read, not the rows the finger remembers crossing.
+There is no
 sideways auto-scroll — `.mx-outer` does not scroll. **A HOLD SELECTS AND A QUICK
 TAP STILL OPENS THE BREAKDOWN** — that is
 the whole difference a reader feels on a box that used to do only one thing, and
