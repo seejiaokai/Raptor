@@ -1170,3 +1170,121 @@ git push -u origin claude/read-handoff-docs-15o14q
 ```
 
 The open PR (#371) accumulates it; the Vercel preview for the branch is the owner's link. Do not merge.
+
+---
+
+### Task 5: Batch B — seven fixes from the owner's iPhone (6 Sep 26), taken BEFORE Task 4's gates
+
+Owner's notes and screenshots, 6 Sep 26 (his answers: OIL with no balance = warn once, the second tap writes it and the balance goes red; "the glow of the selected row" = what lights when he taps/holds a row — make it clearly stronger). Every item below was traced to its cause first; the cause is named so the fix is at it.
+
+**Files:**
+- Modify: `raptor-port/src/leavewar/ui/matrix.css` (the `.dragging` rules ~1662–1663 and ~1488; the `.dragover` bars ~1660–1661 and ~1489/1492; `tr.me` ~1350–1371 and the drawer's copy ~2081–2087; the `.rtbtn` block ~1378–1403)
+- Modify: `raptor-port/src/leavewar/ui/select.ts` (`GestureBase` — add `leftEdge?`; `bandsAt` ~243–250 and `edgeScroll` ~261–286 read it for the LEFT band only; `SelectCtx` + `wireSelect` thread it)
+- Modify: `raptor-port/src/leavewar/ui/Matrix.tsx` (`selCtxRef.current` gains `leftEdge`; the `onWrote` handler ~3867–3886 no longer opens the OIL tracker)
+- Modify: `raptor-port/docs/ui-contracts.md` (the OIL-write paragraph that says the tracker opens; the Rearrange drag paragraph; the "View as" row paragraph — each amended in place, dated)
+- Test: `raptor-port/src/leavewar/ui/select.test.ts`, `raptor-port/src/leavewar/ui/oiltracker.test.tsx` (the "admin writes OIL → tracker opens" case flips honestly), `raptor-port/src/leavewar/ui/bidding.test.tsx` (the warn-once pin), a CSS-contract test in the style of `ui/arrangepaint.test.ts` (read `matrix.css` off disk), `raptor-port/e2e/leavewar.spec.ts`
+
+**Interfaces:**
+- Consumes: `frozenWidth(wrap)` (Matrix.tsx ~1242–1247 — already drawer-aware), `wrapRef`, `figuresOpen`, `drawerRef`; `wouldLeave`/`confirming` in `ui/BidPicker.tsx` (100–132, already warns once and writes on the second tap — unchanged); `showFigure`.
+- Produces: `GestureBase.leftEdge?: () => number` and `SelectCtx.leftEdge?: () => number` (client-x where the day area begins; absent = the wrap's own left edge, so every existing caller and test is untouched).
+
+- [ ] **Step 1: The CSS-contract test (failing first)** — new `raptor-port/src/leavewar/ui/rowglow.test.ts`, modelled on `arrangepaint.test.ts`: reads `matrix.css`, asserts (a) no rule sets `opacity` on the bare selectors `.mx tbody tr.dragging .who`, `.mx tbody tr.dragging .bal` or `.mx tbody tr.grp.dragging` (the sticky cells must stay opaque); (b) the `> *` content-fade rules exist; (c) `.rtbtn:focus` resolves to `outline: none` and `.rtbtn:focus-visible` is defined; (d) `.rtbtn.on` carries a `box-shadow` (the glow). Run: `npx vitest run src/leavewar/ui/rowglow.test.ts` → FAIL.
+
+- [ ] **Step 2: The drag bleed + the picked-up row + the drop bar** (matrix.css). Replace the two `.dragging` opacity rules with:
+
+```css
+/* A dragged row (Rearrange) keeps its FROZEN cells opaque — they are sticky
+   and paint over the scrolling day cells, so fading them let the numbers bleed
+   through the label ("19FL P9 18", the owner's iPhone, 6 Sep 26 — the same
+   failure the archived rows had, see .mrow-hidden). Only the CONTENT fades. */
+.mx tbody tr.dragging .who > *,
+.mx tbody tr.dragging .bal > * { opacity: .5; }
+/* The picked-up row reads as LIFTED, not merely dimmed (owner, 6 Sep 26 —
+   "make the glow of the selected row more obvious"): an accent ring on its
+   frozen cells, a glow past them, and accent lines the width of the row. The
+   lines are box-shadows so a day cell's own state colour still shows. */
+.mx tbody tr.dragging .who,
+.mx tbody tr.dragging .bal {
+  box-shadow: inset 0 0 0 2px var(--accent), 0 0 12px rgba(59, 198, 232, .6);
+  z-index: 3;
+}
+.mx tbody tr.dragging td:not(.who):not(.bal) {
+  box-shadow: inset 0 2px 0 rgba(59, 198, 232, .65), inset 0 -2px 0 rgba(59, 198, 232, .65);
+}
+/* The landing bar runs the WHOLE row, 3px, with a glow — the previous 2px on
+   the frozen cell alone was easy to miss under a thumb. */
+.mx tbody tr.dragover td { box-shadow: inset 0 3px 0 var(--accent); }
+.mx tbody tr.dragover.after td { box-shadow: inset 0 -3px 0 var(--accent); }
+.mx tbody tr.dragover .who { box-shadow: inset 0 3px 0 var(--accent), 0 -1px 10px rgba(59, 198, 232, .55); }
+.mx tbody tr.dragover.after .who { box-shadow: inset 0 -3px 0 var(--accent), 0 1px 10px rgba(59, 198, 232, .55); }
+```
+
+Group headings: READ the heading row's markup (Matrix.tsx, the `tr.grp` render — `td.grphd` with `.grphd-in` inside, and whatever cell(s) follow it) and replace `.mx tbody tr.grp.dragging { opacity: .5; }` with rules that keep `td.grphd` opaque (fade `td.grphd > .grphd-in` and the non-sticky cell(s) by their real class) and give `td.grphd` the same ring/glow as `.who` above; the heading's `.dragover` bars (~1489/1492) take the same 3px + glow. Delete the old rules — no duplicates. Keep the existing `.mrow-hidden` block as is.
+
+- [ ] **Step 3: The "View as" row, stronger** (matrix.css `tr.me`, both copies):
+
+```css
+.mx tbody tr.me .who,
+.mx tbody tr.me .bal { background: #173C4A; }
+.mx tbody tr.me td {
+  background-color: rgba(59, 198, 232, .07);
+  box-shadow: inset 0 1px 0 rgba(59, 198, 232, .55), inset 0 -1px 0 rgba(59, 198, 232, .55);
+}
+.mx tbody tr.me .who { color: var(--accent); }
+.mx tbody tr.me .who .whoedit .cs { box-shadow: inset 0 0 0 1px var(--accent), 0 0 8px rgba(59, 198, 232, .55); }
+.mxdrawer .mx tbody tr.me td {
+  background: #173C4A;
+  box-shadow: inset 0 1px 0 rgba(59, 198, 232, .55), inset 0 -1px 0 rgba(59, 198, 232, .55);
+}
+```
+
+Check in the browser that a day cell's leave chips and the weekend/blocked shading still read on the viewer's row (the wash is 7% — it must sit UNDER state colours); if any state colour is a `td` background that the wash would override, drop the `background-color` line and keep the lines/glow. Update the comment above the block (why: owner, 6 Sep 26 — "make the glow of the view as user row a bit more obvious in the grids").
+
+- [ ] **Step 4: The Rearrange switch** (matrix.css `.rtbtn` block):
+
+```css
+/* A real <button>, so iOS leaves it FOCUSED after a tap and paints its own
+   ring — which read as "still on" after the second tap turned Rearrange off
+   (owner, 6 Sep 26). Keyboard focus keeps a ring via :focus-visible (the house
+   idiom, see .grphd/.catchip); a tap gets none. ON now GLOWS, not just tints. */
+.rtbtn { -webkit-tap-highlight-color: transparent; }
+.rtbtn:focus { outline: none; }
+.rtbtn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.rtbtn.on {
+  background: var(--raised);
+  border-color: var(--accent);
+  color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(59, 198, 232, .18), 0 0 12px rgba(59, 198, 232, .5);
+}
+```
+
+(`.rtbtn.on` replaces the existing rule at ~1391.) Run Step 1's test → PASS.
+
+- [ ] **Step 5: OIL from the bid picker never opens the tracker.** In Matrix.tsx `onWrote` (~3867–3886) the admin branch that calls `close()` + `setOilTracker({ person, focus })` goes; what stays: the snap of the column to the figure the leave comes off (`figureForLeave`), and for an EARNING cell (FO/HO) `showFigure('oil')` so the grown balance is the one on screen. Rewrite the comment: the tracker is one tap away (the OIL button); a write on the grid keeps the admin on the grid (owner, 6 Sep 26 — "it should never bring me to the oil tracker page"). The warn-once rule already lives in `BidPicker.write` (100–132) — unchanged. Tests: in `oiltracker.test.tsx` (~374–387) the case "admin writes OIL → tracker opens, day lit" flips to "an admin's OIL write does NOT open the tracker; the column snaps to +OIL; a member's write neither" — an honest rewrite of a behaviour the owner reversed, say so in its comment. In `bidding.test.tsx` add the pin the flow never had: as admin, a person whose OIL balance is 0 — tapping OIL shows the note containing "Tap the same leave again" and writes nothing; tapping OIL again writes the cell and the OIL figure reads −1 (red); the same shape once for CCL at 0 (the rule is per counter). Amend `docs/ui-contracts.md` where it says the tracker opens on an admin's OIL write.
+
+- [ ] **Step 6: Auto-scroll LEFT at the frozen block's edge** (select.ts + Matrix.tsx). Add to `GestureBase`:
+
+```ts
+  /** Client-x where the CONTENT begins, past whatever frozen thing stands in
+   *  front of the wrap's own left edge — the frozen name/counter columns, or
+   *  the figures drawer while it is open. The left edge band starts there, so
+   *  a finger approaching the visible days' left edge auto-scrolls (owner,
+   *  6 Sep 26 — "let me auto scroll left when my drag is approaching the edge
+   *  of the expanded counters … likewise the counter on the left"). Absent =
+   *  the wrap's own left edge: every existing caller and test is untouched. */
+  leftEdge?: () => number
+```
+
+In `bandsAt` and `edgeScroll`, the LEFT band's origin becomes `const left = spec.leftEdge ? spec.leftEdge() : r.left` (both the `x < left + w` test and the touch `intoL = (left + TOUCH_EDGE) - lastX` / mouse `lastX < left + EDGE` reads); the RIGHT band keeps `r.right`. `SelectCtx` gains `leftEdge?: () => number`; `wireSelect` passes `leftEdge: ctx.leftEdge`. Matrix supplies, in `selCtxRef.current`:
+
+```ts
+    // The days begin past the frozen block — the name/counter pair, or the
+    // drawer while it is open (frozenWidth is already drawer-aware).
+    leftEdge: () => { const w = wrapRef.current; return w ? w.getBoundingClientRect().left + frozenWidth(w) : 0 },
+```
+
+Pins: `select.test.ts` — in the edge-auto-scroll block, a case that supplies `leftEdge: () => r.left + 120` and shows a mouse at `r.left + 130` scrolls left (`scrollLeft` decreases per frame) while one at `r.left + 200` does not, and that the held-band rule still applies from the new edge; the existing cases untouched. e2e (`lw-desktop`): drag-select from a day cell leftward and park the mouse 20px right of the counter column's right edge for ~400 ms → `.mx-wrap` `scrollLeft` decreased; then the same with the drawer OPEN, parked 20px right of the drawer's right edge → decreased. (`lw-phone`, via the CDP hold used in Task 2: the drawer open, a hold on a day beside it, a slow drag to 20px right of the drawer's edge, held ~400 ms → `scrollLeft` decreased.) The "page stays put" assertion at ~875 must still hold — run it.
+
+- [ ] **Step 7: Unit + both projects' tests for what changed**: `npx vitest run --project leavewar`; `npx playwright test e2e/leavewar.spec.ts --project=lw-desktop --grep "auto-scroll|drawer|drag-select|OIL|Rearrange"` and the same for `lw-phone`. Drive the built bundle at phone width: Rearrange ON, hold a manning row's grip with the grid scrolled sideways — screenshot the dragged row and the landing bar; the viewer's row; the switch on and off; a drag toward the counter column with a scroll happening. Say what you saw.
+
+- [ ] **Step 8: Commit** — `fix(leavewar): the phone batch — an opaque dragged label, a lit picked-up row and viewer row, a switch that glows only while on, OIL stays on the grid, and the drag scrolls left at the frozen edge` (+ trailers). Do not push.
