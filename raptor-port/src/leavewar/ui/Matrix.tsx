@@ -25,6 +25,8 @@ import {
   opsCatOf,
   orderedFigures,
   DEFAULT_FIGURE_ID,
+  figureForLeave,
+  figureLines,
   dayName,
   inBidWindow,
   isWeekend,
@@ -44,9 +46,10 @@ import {
   type Figure,
   type FigureCtx,
 } from '../engine'
-import { figureCtxOf, setBalance, groupsInOrder, groupPriorityIds, lwHistEpoch, moveGroupTo, moveGroupPriorityTo, displayRoster, getState, moveCells, movableCells, moveManningRowTo, moveProblem, moveEvent, moveEventProblem, moveRosterRow, orderedManningIds, resetManningRules, setPostOut, type MoveResult, type EventMoveResult } from '../state/store'
+import { figureCtxOf, setBalance, groupsInOrder, groupPriorityIds, lwHistEpoch, moveGroupTo, moveGroupPriorityTo, displayRoster, getState, moveCells, movableCells, moveManningRowTo, moveProblem, moveEvent, moveEventProblem, moveRosterRow, orderedManningIds, resetManningRules, setPostOut, visibleFigures, type MoveResult, type EventMoveResult } from '../state/store'
 import { BidPicker, DecisionSheet, PostOutSheet, RaptorSheet } from './BidPicker'
 import { CounterSheet, FigureBreakdownSheet, PersonFiguresSheet } from './CounterSheet'
+import { FigureCell } from './FigureCell'
 import { PersonSheet } from './PersonSheet'
 import { OilTracker } from './OilTracker'
 import { CountRows } from './CountRows'
@@ -268,18 +271,19 @@ const setPhWidth = (el: HTMLElement, w: string) => {
 
 const PersonRow = memo(function PersonRow({ p, version, period, monthDays, grid, states, role, viewer, deciding, movedShown, shown, figureCtx, evKind, lockedCols, quals, me, arranging, dragging, over, api, padL, padR, phL, phR }: PersonRowProps) {
   const has = quals.length > 0
-  // The selected figure's value for this person. It has to move the instant a
-  // bid is placed, because a pending bid has been asked for and cannot be
-  // asked for twice — and every store change bumps `version`, so keying the
-  // memo on it keeps that true while a window step (which re-renders the row
-  // for its new month but changes no figure) no longer walks every war's
-  // ledger for all ~58 rows. A balance can go negative (shown red, never
-  // refused — the squadron's balances already run negative, §Counters); a
-  // consumed figure never does. Every figure counts across EVERY war, not the
-  // one on screen — leave bid in Jan–Mar still spends against Apr–Jun.
+  // The selected figure's LINES for this person — the two-line box's own
+  // number on top, the days taken from it stacked under (FigureCell, 6 Sep
+  // 26). It has to move the instant a bid is placed, because a pending bid
+  // has been asked for and cannot be asked for twice — and every store
+  // change bumps `version`, so keying the memo on it keeps that true while a
+  // window step (which re-renders the row for its new month but changes no
+  // figure) no longer walks every war's ledger for all ~58 rows. A balance
+  // can go negative (shown red, never refused — the squadron's balances
+  // already run negative, §Counters); a total never does. Every figure
+  // counts across EVERY war, not the one on screen — leave bid in Jan–Mar
+  // still spends against Apr–Jun.
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const v = useMemo(() => shown.value(figureCtx, p.id), [shown, figureCtx, p.id, version])
-  const suffix = shown.kind === 'bal' ? 'remaining, pending bids included' : 'taken'
+  const lines = useMemo(() => figureLines(shown, figureCtx, p.id), [shown, figureCtx, p.id, version])
   return (
     /* `me` lights the VIEWER's own row (owner, 17 Aug 26). While arranging the
        row is a drop target the pointer drag reads by hit-test; the drag SOURCE
@@ -337,18 +341,19 @@ const PersonRow = memo(function PersonRow({ p, version, period, monthDays, grid,
               callsign + chip as every other row, in Rearrange too. */}
         </div>
       </td>
-      <td
-        className={`bal act${v < 0 ? ' neg' : ''}`}
-        data-testid={`bal-${p.id}`}
-        title={`${p.callsign}: ${show(v)} ${shown.label} — ${suffix}. Tap for the breakdown`}
-        /* A tap opens the person's breakdown of the shown figure — the
-           owner's "click the individual personnel counter" (17 Aug 26). The
-           td is the target, like every grid cell here: a nested button would
-           cost the 44px column its number. */
+      {/* A tap opens the person's breakdown of the shown figure — the
+          owner's "click the individual personnel counter" (17 Aug 26). The
+          td is the target, like every grid cell here: a nested button would
+          cost the 44px column its number. */}
+      <FigureCell
+        figure={shown}
+        lines={lines}
+        personId={p.id}
+        extraClass="bal act"
+        testid={`bal-${p.id}`}
+        title={`${p.callsign}: ${shown.label} ${show(lines.top)} ${shown.kind === 'bal' ? 'left' : 'taken'}. Tap for the breakdown`}
         onClick={() => api.current.setBalOpen({ person: p.id, figureId: shown.id })}
-      >
-        {show(v)}
-      </td>
+      />
       {padL && <td className="lwph lwph-l" ref={phL} />}
       {/* The day cells, one memoised block PER MONTH (6 Sep 26). A window step
           adds a month to every row; with the cells rendered inline, React
@@ -508,7 +513,7 @@ export function Matrix() {
      memo keyed only on the selection went stale when a sync pass changed a
      selected cell under an armed move */
   const version = useVersion()
-  const { people, period, grid, states, requirements, role, viewer, eventDefs, openings, ledger, wars, figureOrder, manningHidden, eventRows, focusDate, focusSeq, qualCatalog, groupColors } = getState()
+  const { people, period, grid, states, requirements, role, viewer, eventDefs, openings, ledger, wars, figureOrder, figureHidden, manningHidden, eventRows, focusDate, focusSeq, qualCatalog, groupColors } = getState()
   const dates = period.days.map(d => d.date)
   // Memoized on the store objects (the store replaces what it writes, so
   // identity IS change): rules-as-data made a day's evaluation walk every
@@ -576,8 +581,11 @@ export function Matrix() {
   // ONE selected figure, shared by every row, tracked by its stable ID so a
   // reorder keeps the SAME figure on screen rather than whatever now sits in
   // its old slot. Giving each row its own would let them desync — row 1
-  // showing LVE BAL while row 2 shows MED USED — worse than no column at all.
-  const figures = orderedFigures(figureOrder)
+  // showing +LVE while row 2 shows −MED TOT — worse than no column at all.
+  // `visibleFigures()` (the admin's order, minus anything hidden, 6 Sep 26) —
+  // not `orderedFigures(figureOrder)` — so a hidden figure drops out of the
+  // cycle, the picker and the dots at once, everywhere this column shows.
+  const figures = visibleFigures()
   const [shownId, setShownId] = useState(DEFAULT_FIGURE_ID)
   const [picking, setPicking] = useState(false)
   // Whose counter was tapped, and WHICH figure to break down (owner, 17 Aug
@@ -747,8 +755,12 @@ export function Matrix() {
   // component unmounts or the role stops being admin (a logout mid-arrange).
   useEffect(() => () => { dragCleanup.current?.() }, [])
   useEffect(() => { if (role !== 'admin' && arranging) setArranging(false) }, [role, arranging])
-  const shownIx = Math.max(0, figures.findIndex(f => f.id === shownId))
-  const shown = figures[shownIx]
+  // Falls back to the first visible figure when `shownId` names one an admin
+  // has since hidden (or a stale saved id) — `shownIx` is then DERIVED from
+  // `shown`, not the other way round, so the dots and the cycle never point
+  // past the figure actually on screen.
+  const shown = figures.find(f => f.id === shownId) ?? figures[0]!
+  const shownIx = figures.indexOf(shown)
   // Everything a figure needs to read a person's number — the store's one
   // builder, so this column, the sheets and the tracker read the same OIL
   // policy and the same "today" (a hand-built literal here used to drift).
@@ -1749,7 +1761,7 @@ export function Matrix() {
           aria-label={`Showing ${shown.label}. Choose what this column shows`}
           onClick={() => setPicking(true)}
         >
-          <span className="cname" data-testid={testids ? 'counter-name' : undefined}>{shown.label}</span>
+          <span className="cname" data-testid={testids ? 'counter-name' : undefined}>{shown.title}</span>
           <span className="cdots" aria-hidden="true">
             {figures.map((f, i) => (
               <span key={f.id} className={`cdot${i === shownIx ? ' on' : ''}`} />
@@ -3190,13 +3202,16 @@ export function Matrix() {
                     </tr>
                   )
                   const p = item.p
-                  const v = shown.value(figureCtx, p.id)
+                  const lines = figureLines(shown, figureCtx, p.id)
                   return (
                     // `data-band-id`, NOT a testid: the real row keeps `row-…`
                     // and `bal-…`, and two nodes answering one testid would
                     // break every query that expects the one real match. e2e
                     // still needs to find a given person in the overlay to prove
                     // it lines up with — and stays put over — the real row.
+                    // The SAME `<FigureCell>` as the real cell (no testid — the
+                    // overlay never answers one) so the phone's frozen copy
+                    // shows the two-line box too, and the two cannot drift.
                     <tr key={`b-${p.id}`} data-band-id={p.id} data-band-key={`row-${p.id}`} className={p.id === viewer ? 'me' : undefined}>
                       <td className="who">
                         <div className="whorow">
@@ -3206,12 +3221,13 @@ export function Matrix() {
                           </button>
                         </div>
                       </td>
-                      <td
-                        className={`bal act${v < 0 ? ' neg' : ''}`}
+                      <FigureCell
+                        figure={shown}
+                        lines={lines}
+                        personId={p.id}
+                        extraClass="bal act"
                         onClick={() => setBalOpen({ person: p.id, figureId: shown.id })}
-                      >
-                        {show(v)}
-                      </td>
+                      />
                     </tr>
                   )
                 })}
@@ -3365,11 +3381,15 @@ export function Matrix() {
           one from a counter-cell tap, or whichever row was tapped in the
           person-figures sheet. Guarded on the person still existing — an
           admin can delete a row while any sheet is up, the same guard
-          PersonSheet carries; an unknown figure id (a stale saved order)
-          falls back to the shown one. */}
+          PersonSheet carries. Looked up in the FULL catalogue, not the
+          column's `figures` (visible-only, 6 Sep 26): the all-figures sheet
+          lists every figure, hidden ones included, so a tap there must still
+          open the right breakdown rather than silently substituting whatever
+          the column happens to be showing. An unknown id (a stale saved
+          order) falls back to the shown one. */}
       {balOpen && people.some(p => p.id === balOpen.person) && (
         <FigureBreakdownSheet
-          figure={figures.find(f => f.id === balOpen.figureId) ?? shown}
+          figure={orderedFigures(figureOrder).find(f => f.id === balOpen.figureId) ?? shown}
           person={people.find(p => p.id === balOpen.person)!}
           onClose={() => setBalOpen(null)}
         />
@@ -3417,8 +3437,10 @@ export function Matrix() {
           person={oilTracker.person}
           focus={oilTracker.focus ?? null}
           onClose={() => setOilTracker(null)}
-          /* A credit lands → the column shows OIL BAL (owner, 2 Sep 26). */
-          onGranted={() => setShownId('oilbal')}
+          /* A credit lands → the column shows +OIL (owner, 2 Sep 26; id
+             renamed 6 Sep 26 when OIL BAL and OIL USED merged into one
+             balance figure, 'oil'). */
+          onGranted={() => setShownId('oil')}
         />
       )}
       {editingWho && people.some(p => p.id === editingWho) && (
@@ -3500,21 +3522,22 @@ export function Matrix() {
              Members file theirs on Raptor's Inputs page, which is also the
              normal path once bidding has closed. */
           medical={role === 'admin'}
-          /* The column follows the leave just entered — ask for OIL and it
-             snaps to OIL USED. The owner's ask, and it makes the figure answer
-             the question the bidder is holding in their head at that moment.
-             Each leave type's figure id is just its code lower-cased (LL→'ll',
-             OIL→'oil'…), so the map is the string itself — a type without a
-             figure (EL) simply does not snap. ATT C and HL have no figure of
-             their own but do feed MED USED, so they snap there; ATT B feeds
-             nothing (the owner's sum leaves it out) and does not snap. */
+          /* The column follows the leave just entered, to the BALANCE it
+             comes off (owner, 6 Sep 26) — ask for OIL and it snaps to +OIL.
+             The owner's ask, and it makes the figure answer the question the
+             bidder is holding in their head at that moment. `figureForLeave`
+             (counters.ts) is the one map: LL/OL both come off LVE, every
+             other balance-bearing type snaps to its own, ATT C/HL/OML feed
+             MED TOT, and a type with no figure (EL, ATT B) simply returns
+             null and does not snap. Also gated on the figure still being
+             VISIBLE — an admin who hid it should not have the column jump to
+             a figure the sheet no longer offers. */
           onWrote={code => {
             const cell = parseCell(code)
             const earns = (codeOf(code)?.earnsOil ?? 0) > 0
             if (cell) {
-              const id = cell.type.toLowerCase()
-              if (figures.some(f => f.id === id)) setShownId(id)
-              else if (cell.type === 'ATTC' || cell.type === 'HL') setShownId('med')
+              const id = figureForLeave(cell.type)
+              if (id && figures.some(f => f.id === id)) setShownId(id)
             }
             /* An ADMIN's manual OIL-family write — OIL taken, or an FO/HO
                credit typed by hand — opens the tracker on that person with
@@ -3525,7 +3548,7 @@ export function Matrix() {
             if (role === 'admin' && (cell?.type === 'OIL' || earns) && open) {
               const who = open.id, when = open.date
               close()
-              setShownId('oilbal')
+              setShownId('oil')
               setOilTracker({ person: who, focus: when })
             }
           }}

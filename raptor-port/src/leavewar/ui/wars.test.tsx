@@ -72,11 +72,15 @@ describe('switching leave war', () => {
 
   // RESET opens at 2 annual and has four days pending in Apr–Jun, so his
   // annual balance is −2 — and it reads −2 from the Jan–Mar screen, where
-  // none of that leave is visible. That is the whole point.
+  // none of that leave is visible. That is the whole point. Read off `.fb`,
+  // not the cell's whole textContent (6 Sep 26): the two-line box now stacks
+  // the days-taken line under the balance in the same cell, so the raw
+  // textContent would read the two numbers run together.
   it('counts leave from a war that is not on screen', () => {
     render(<Matrix />)
-    expect(screen.getByTestId('bal-reset').textContent).toBe('-2')
-    expect(screen.getByTestId('bal-reset').className).toContain('neg')
+    const fb = screen.getByTestId('bal-reset').querySelector('.fb')!
+    expect(fb.textContent).toBe('-2')
+    expect(fb.classList.contains('neg')).toBe(true)
   })
 })
 

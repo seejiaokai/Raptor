@@ -243,9 +243,43 @@
   box-shadow: inset -1px 0 0 var(--edge);
 }
 
-.mx .bal.neg {
-  color: #FFAAB0;
+/* The two-line figure box (owner, 6 Sep 26). Two 11px lines fill the 22px
+   cell — the balance, then the days taken under it. Tabular digits so a
+   column of numbers lines up; the colours are the legend (matrix.css
+   `.fu b`), the title above says which is which. Nothing sets `.neg`
+   straight on `.bal` any more (that lived on the td before the box split
+   the balance from its used line into `.fb`/`.fu`) — the old
+   `.mx .bal.neg` rule went with it. */
+.mx td.bal {
+  vertical-align: top;
+  padding: 0 1px;
+  font-variant-numeric: tabular-nums;
+  line-height: 11px;
 }
+.mx td.bal .fb {
+  display: block;
+  height: 11px;
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--ink);
+}
+.mx td.bal .fb.neg,
+.mx td.bal .fb.red { color: var(--hard); }
+.mx td.bal .fu {
+  display: block;
+  height: 11px;
+  font-size: 9.5px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.mx td.bal .fu b { font-weight: 700; }
+.mx td.bal .fu b + b { margin-left: 3px; }
+.mx td.bal .fu b.amber { color: var(--adv); }
+.mx td.bal .fu b.red { color: var(--hard); }
+/* One authored motion: a box whose number just changed fades from the accent
+   tint, once. Off under reduced motion. */
+.mx td.bal.flash { animation: lw-figflash 700ms ease-out 1; }
+@media (prefers-reduced-motion: reduce) { .mx td.bal.flash { animation: none; } }
 
 .mx .mxhead th.bal {
   z-index: 3;
@@ -1951,4 +1985,12 @@
    `.lw-sda` rules above. */
 @keyframes lwx-follow {
   to { transform: translateX(calc(-1 * var(--lwx-max, 0) * 1px)); }
+}
+
+/* TOP LEVEL too, same reason — driven by `.mx td.bal.flash` above. A box
+   whose figure just changed for this person fades from the accent tint back
+   to nothing, once (`FigureCell.tsx`, 6 Sep 26). */
+@keyframes lw-figflash {
+  from { background-color: rgba(59, 198, 232, .38); }
+  to { background-color: transparent; }
 }
