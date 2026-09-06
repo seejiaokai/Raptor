@@ -1360,3 +1360,64 @@ gate's. Keep verdict-bearing commands unpiped.
 **Suggested improvement:** Amend obs 86's principle with a second clause: a proxy scroller reproduces the physics, not the thread. When the ask is "exactly the same", check whether the visible element can BE the touched one; if an overlay only exists to catch taps, replace the overlay with a capture-phase "gesture shield" (stopPropagation, never preventDefault on touch) and let the finger fall through. Add to the review checklist for any per-frame follower: "who paces the visible motion — compositor or main thread?"
 
 **Principle:** Borrowing a platform behaviour has two halves — the curve and the thread it runs on. A mirror gets the curve; only the real element gets both. Before shipping any per-frame follower of a native gesture, name what paces the pixels; if it is JavaScript, the feel will differ under load, and the honest fix is to remove the follower, not tune it.
+
+### Observation 89: Mock a proposed design ON the real bundle by transforming its DOM, not by hand-drawing a comp
+
+**Status:** OPEN
+**Date:** 2026-09-06
+**Session context:** Leave War figures drawer — brainstorming the owner's counter-column redesign with mockups drawn on the real bundle, then writing the SDD plan.
+**Skill:** brainstorming (+ the repo's "picture before product code" rule)
+**Type:** open-source
+**Phase/Area:** Visual companion / showing options
+
+**Issue:** The owner needed to see three layout options for a grid feature. Instead of writing a throwaway HTML comp, a Playwright script logged into the built app, injected a small CSS/JS transform (extra cells, an overlay table, a toggle) into the LIVE DOM, and screenshotted phone (iPhone emulation, DPR 2) and desktop, then composited the shots side by side with captions. Every pixel — palette, fonts, sticky columns, zoom — was the real app's, and each iteration (six in this session) cost ~1 minute. The owner reacted to real screenshots and designed his own variant from them.
+
+**Suggested improvement:** In brainstorming's visual-companion step (or the repo's picture-before-code rule), add the recipe: build + preview the real bundle, transform the DOM in-page with a `page.evaluate` that injects a `<style>` and mutates/creates nodes, screenshot at the shipped viewports, composite with captions, SEND the images (the user is on a phone; a local browser tab does not exist in a remote session). Keep the transform script in the scratchpad and re-run it per variant.
+
+**Principle:** When a person must approve a look, show it on the real page with the real stylesheet — a DOM transform of the live app is cheaper and truer than a hand-built comp, and it re-renders variants in a minute.
+
+### Observation 90: Injected mock markup must use its own class names — the host stylesheet will style anything it recognises
+
+**Status:** OPEN
+**Date:** 2026-09-06
+**Session context:** Leave War figures drawer — brainstorming the owner's counter-column redesign with mockups drawn on the real bundle, then writing the SDD plan.
+**Skill:** brainstorming (visual companion) / any DOM-transform mock
+**Type:** open-source
+**Phase/Area:** Mock hygiene
+
+**Issue:** A mock overlay gave its "balance" span the class `bal`, which the app's CSS uses for its sticky, fixed-width frozen column. The spans became 72px sticky boxes with an opaque background, covering the neighbouring cell's text — it looked like a clipping bug and cost a diagnosis round. Renaming the class fixed it instantly.
+
+**Suggested improvement:** Add to the mock recipe: prefix every injected class with a unique token (`mock-`), never reuse a host class for a different element kind; when a mock renders "wrongly", grep the host CSS for the injected class names first.
+
+**Principle:** A stylesheet styles by class, not by intent — nodes injected into a real page inherit every rule their class names match, so mock markup needs names the host has never heard of.
+
+### Observation 91: State a layout cost only after measuring it in the real stylesheet
+
+**Status:** OPEN
+**Date:** 2026-09-06
+**Session context:** Leave War figures drawer — brainstorming the owner's counter-column redesign with mockups drawn on the real bundle, then writing the SDD plan.
+**Skill:** brainstorming / writing-plans
+**Type:** open-source
+**Phase/Area:** Trade-off claims in design dialogue
+
+**Issue:** The design dialogue carried "rows must grow by a third (then a fifth) while the drawer is open" for three rounds — reasoned from font sizes — and the owner weighed options on that cost. The real cell is 22px of content with two 11px lines fitting exactly; measured on the mock, the rows did not grow at all. The claim was retracted and the spec corrected, but the owner had already been asked to choose between variants partly on a false cost.
+
+**Suggested improvement:** Before presenting a trade-off that names a numeric layout cost (height, width, days visible), render it and read the number off the real DOM (`getBoundingClientRect`) — the same script that makes the mock can print it. Put the measured number in the caption ("5.7 days beside it"), never an estimate.
+
+**Principle:** A design trade-off stated as a number is a measurement, not an estimate — read it off the rendered page before asking anyone to choose on it.
+
+### Observation 92: For a visual decision, the FIRST question should carry a picture — text options were rejected wholesale
+
+**Status:** OPEN
+**Date:** 2026-09-06
+**Session context:** Leave War figures drawer — brainstorming the owner's counter-column redesign with mockups drawn on the real bundle, then writing the SDD plan.
+**Skill:** brainstorming
+**Type:** open-source
+**Phase/Area:** Ask clarifying questions / propose approaches
+
+**Issue:** After two text rounds the owner was offered three text-described layout options and answered "none of the above, let me show you images". His own sketch (described in words — the image never reached the agent) became the design; every later round converged fast because each carried a screenshot. The skill's "offer the visual companion just-in-time" step fired one round too late: the layout question was visual from the start.
+
+**Suggested improvement:** In brainstorming: when the topic is a layout/placement/size choice, treat the first approach-proposal round as visual by default — render the options (per the DOM-transform recipe) and ask with the picture; keep text options for non-visual choices. Also: if the user says they attached an image and none arrived, say so in the first reply and proceed from the words.
+
+**Principle:** A layout question answered in words gets answered with a sketch — ask it with a picture from the start, and say plainly when an image did not arrive.
+
