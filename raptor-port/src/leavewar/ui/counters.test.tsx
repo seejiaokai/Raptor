@@ -224,6 +224,22 @@ describe('the counter follows the leave just entered — to the balance it comes
     expect(screen.getByTestId('counter-name').textContent).toBe('+CCL')
   })
 
+  // OFF stopped being a leave code on 2 Sep 26 (it is a management Off day
+  // event now), so the bid sheet offers no OFF chip at all. Restored 6 Sep 26
+  // (coordinator correction): this pins the BID SHEET's chip list, not the
+  // figure catalogue — 'LVE BAL' is the only line the 6 Sep rename actually
+  // touches (now '+LVE'); everything else here is untouched from 285367b.
+  it('offers no OFF chip — OFF is not a person\'s leave', () => {
+    render(<Matrix />)
+    expect(screen.getByTestId('counter-name').textContent).toBe('+LVE')
+    fireEvent.click(screen.getByTestId('cell-dusk-2026-02-11'))
+    expect(screen.queryByTestId('bid-OFF')).toBeNull()
+    expect(screen.getByTestId('bid-EL')).toBeTruthy()
+    expect(screen.getByTestId('counter-name').textContent).toBe('+LVE')
+    fireEvent.click(screen.getByTestId('counter-pick'))
+    expect(screen.queryByTestId('counter-off')).toBeNull()
+  })
+
   it('clearing a cell moves nothing', () => {
     render(<Matrix />)
     fireEvent.click(screen.getByTestId('cell-dusk-2026-02-11'))
