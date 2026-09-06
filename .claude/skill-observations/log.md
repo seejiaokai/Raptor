@@ -1481,3 +1481,18 @@ gate's. Keep verdict-bearing commands unpiped.
 
 **Principle:** Repository state is a fact on disk — read it in the turn you report it; a remembered push, commit or clean tree is a guess wearing a fact's clothes.
 
+### Observation 97: A task that changes on-screen geometry runs the browser gate for ITS surface in its own task — only the full gate set waits for the end
+
+**Status:** OPEN
+**Date:** 2026-09-06
+**Session context:** Leave War figures drawer — the closing task of the six-task subagent-driven build found the desktop e2e gate red on the branch because no earlier task had run it.
+**Skill:** writing-plans (task steps) / subagent-driven-development (pre-flight + per-task test evidence)
+**Type:** open-source
+**Phase/Area:** Plan test steps / gate placement across tasks
+
+**Issue:** The plan deferred every gate but the task's own unit file to the last task ("Task 6 runs every gate"). The drawer task (an overlay standing over the first day columns, opened by default on a desktop) therefore never ran the desktop Playwright project; when the last task did, 28 tests were red — 24 of them clicks on day cells answered by the overlay — plus two timing flakes and one real product defect (the month jump landing under the drawer). All of that landed in one closing slice of ~2¼ hours and half a million tokens, decided by an agent that had not written the drawer, and it needed a fix round of its own. Run in the drawer task, the same 28 would have reached the drawer's author with full context, and the "should the suite normalise the drawer away?" question would have been answered where the behaviour was designed.
+
+**Suggested improvement:** In writing-plans: a task whose change is visible on screen (layout, overlay, sticky/frozen geometry, a new default state) ends with the browser gate for the project that can SEE it (`npx playwright test --project=<the one>`, or the affected spec with `--grep`), not only its jsdom unit file; the plan's closing task still runs the FULL set once. In SDD's pre-flight scan: when a plan defers every browser gate to the last task, flag it before dispatching — the cost of running one project per UI task (~5 min) is far below the cost of a big-bang closing slice.
+
+**Principle:** Each task runs the gate that can see its own change; deferring the only gate that can see a change to the last task converts per-task findings into one big-bang slice owned by a stranger to the code.
+
