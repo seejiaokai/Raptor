@@ -50,6 +50,7 @@ import { figureCtxOf, setBalance, groupsInOrder, groupPriorityIds, lwHistEpoch, 
 import { BidPicker, DecisionSheet, PostOutSheet, RaptorSheet } from './BidPicker'
 import { CounterSheet, FigureBreakdownSheet, PersonFiguresSheet } from './CounterSheet'
 import { FigureCell } from './FigureCell'
+import { FiguresDrawer, FigureTitle, type DrawerRow } from './FiguresDrawer'
 import { PersonSheet } from './PersonSheet'
 import { OilTracker } from './OilTracker'
 import { CountRows } from './CountRows'
@@ -585,9 +586,29 @@ export function Matrix() {
   // `visibleFigures()` (the admin's order, minus anything hidden, 6 Sep 26) —
   // not `orderedFigures(figureOrder)` — so a hidden figure drops out of the
   // cycle, the picker and the dots at once, everywhere this column shows.
-  const figures = visibleFigures()
+  // Memoised on the store's own version so the list is the SAME array between
+  // store changes: the drawer's rows are memoised against it (FiguresDrawer),
+  // and a fresh array every render would defeat them.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const figures = useMemo(() => visibleFigures(), [version])
   const [shownId, setShownId] = useState(DEFAULT_FIGURE_ID)
   const [picking, setPicking] = useState(false)
+  // The figures DRAWER (owner, 6 Sep 26): every figure at once, popped out
+  // beside the names over the days. Open on a desktop, closed on a phone — a
+  // view preference, session-only, either role. Decided once at mount from the
+  // same width query the phone flag uses; jsdom (no matchMedia) opens closed so
+  // the unit suite sees the grid it always saw.
+  const [figuresOpen, setFiguresOpen] = useState(() =>
+    typeof window.matchMedia === 'function' && !window.matchMedia('(max-width: 700px)').matches)
+  // Where the drawer sits and how wide it came out: the real header row's top
+  // inside `.mx-outer`, the names column's right edge, the header row's height
+  // and the drawer's own measured widths (its right edge and its columns feed
+  // the stuck header's frozen copy). All MEASURED — never guessed — like
+  // `bandTop`; null while closed or before the first layout (jsdom).
+  const [drawerAt, setDrawerAt] = useState<{ top: number; left: number; headH: number; width: number; cols: number[] } | null>(null)
+  const drawerRef = useRef<HTMLDivElement>(null)
+  // Stable, for the same reason `figures` is: it is a memoised row's prop.
+  const onDrawerBox = useCallback((person: string, figureId: string) => setBalOpen({ person, figureId }), [])
   // Whose counter was tapped, and WHICH figure to break down (owner, 17 Aug
   // 26). A counter-cell tap opens the column's shown figure; a row tapped
   // inside the person-figures sheet names its own.
@@ -1557,7 +1578,10 @@ export function Matrix() {
     // and the pinned widths would be the wrong months'. `arranging` (6 Sep 26):
     // Rearrange widens the frozen name column (`.mx-arranging`), so a stuck
     // mirror pinned at the old width would sit a grip's width off the grid.
-  }, [period.id, drawnDates.length, colWin?.lo, colWin?.hi, zoom, visWindow, folded, arranging])
+    // `figuresOpen` (6 Sep 26): the header row grows for the drawer's titles, so
+    // where it crosses under the top bar — and so whether the mirror is stuck at
+    // all — moves with it.
+  }, [period.id, drawnDates.length, colWin?.lo, colWin?.hi, zoom, visWindow, folded, arranging, figuresOpen])
 
   // The mirror starts life at the grid's current horizontal position, and the
   // two scrollers keep each other in lockstep from then on. Assigning an
@@ -1721,13 +1745,31 @@ export function Matrix() {
   // The bracket row and the header row, rendered once in the grid and again
   // inside the phone mirror. The mirror copy carries no test ids — two nodes
   // answering one id would break every query that expects the real one.
-  const bracketRow = (testids: boolean) => (
+  //
+  // `drawer` is the stuck mirror's FROZEN copy only (see the render below):
+  // there the counter column is replaced by the drawer's own title columns, so
+  // the frozen pair is one + however many figures show, and the brackets start
+  // that many columns in. The real grid never takes it — the drawer is an
+  // overlay, and every real row keeps identical cells.
+  const bracketRow = (testids: boolean, drawer = false) => (
     <tr className="mbrak" data-testid={testids ? 'month-bracket' : undefined}>
       {/* The corner cell above CS/Name. The admin's ⠿ REARRANGE toggle moved UP
           to the card-header row (owner, 5 Sep 26 — "the rearrange button goes
-          after [settings]"); the corner is left empty so the frozen pair keeps
-          its width and the month brackets still start at the right column. */}
-      <th className="brakhd" colSpan={2} />
+          after [settings]"); it now carries the DRAWER's switch (owner, 6 Sep
+          26) — the one empty frozen cell, sitting directly above the column it
+          unfolds. The stuck mirror draws the same copy (no testid, one id one
+          node) so the switch is reachable however far the roster has scrolled. */}
+      <th className="brakhd" colSpan={drawer ? 1 + figures.length : 2}>
+        <button
+          className={`figbar${figuresOpen ? ' on' : ''}`}
+          data-testid={testids ? 'figures-toggle' : undefined}
+          aria-expanded={figuresOpen}
+          title={figuresOpen ? 'Hide the figures' : 'Show every figure'}
+          onClick={() => setFiguresOpen(o => !o)}
+        >
+          {figuresOpen ? '▾' : '▸'} FIGURES
+        </button>
+      </th>
       {padL && <th className="lwph lwph-l" ref={phL} />}
       {brackets.map(b => (
         <th key={b.key} className="brakm" data-testid={testids ? `bracket-${b.key}` : undefined} colSpan={b.count}>
@@ -1740,13 +1782,22 @@ export function Matrix() {
     </tr>
   )
 
-  const headerRow = (testids: boolean) => (
+  const headerRow = (testids: boolean, drawer = false) => (
     <tr>
       {/* CS/Name (owner, 26 Aug 26): the column holds aircrew callsigns AND
           ground-crew names, and the short form fits the phone's 76px frozen
           column; the Quals page's Personnel view says the long form
           (Callsign/Name) where there is room. */}
       <th className="who">CS/Name</th>
+      {/* The stuck mirror's frozen copy, while the drawer is open: the drawer's
+          own sideways titles in place of the one chip, so scrolling the page
+          down does not take the legend with it. Read-only — the live titles are
+          the drawer's own, a few pixels below. */}
+      {drawer && figures.map(f => (
+        <th key={f.id} className={`bal fig${f.id === figures[0]?.id ? ' first' : ''}${f.id === figures[figures.length - 1]?.id ? ' last' : ''}`} data-fig={f.id}>
+          <FigureTitle figure={f} />
+        </th>
+      ))}
       {/* The counter selector lives in the column header, which is the only
           place a 40px-wide column has room for a control. The WHOLE header is
           the control (the two 13px arrows were too small to hit from a
@@ -1754,7 +1805,7 @@ export function Matrix() {
           and swiping across the column (handled on `.mx-wrap`) is the fast
           path. The column is frozen beside the callsign so the figure stays
           on screen however far the grid scrolls. */}
-      <th className="bal" data-testid={testids ? 'counter-head' : undefined}>
+      {!drawer && <th className="bal" data-testid={testids ? 'counter-head' : undefined}>
         <button
           className="cpick"
           data-testid={testids ? 'counter-pick' : undefined}
@@ -1779,7 +1830,7 @@ export function Matrix() {
             </svg>
           </span>
         </button>
-      </th>
+      </th>}
       {padL && <th className="lwph lwph-l" ref={phL} />}
       {drawnDays.map(d => {
         const mon = monthLabel(d.date)
@@ -2480,8 +2531,10 @@ export function Matrix() {
     // too, not only the drawn-day count (same reason as the strip effect
     // above: Mar+Apr and May+Jun both span 61 days, and the box is placed off
     // the first and last drawn day — bug-hunt fix, 6 Sep 26).
+    // `figuresOpen` (6 Sep 26): the drawer grows the header row to 62px, so the
+    // table is that much taller and the box would stand a header short.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [version, period.id, period.stage, period.bidFrom, period.bidTo, zoom, visWindow, drawnDates.length, colWin?.lo, colWin?.hi, countsOpen, folded])
+  }, [version, period.id, period.stage, period.bidFrom, period.bidTo, zoom, visWindow, drawnDates.length, colWin?.lo, colWin?.hi, countsOpen, folded, figuresOpen])
 
   // ---- the frozen roster columns, drawn ONCE (owner, 20 Aug 26 — the third
   // look at the sideways stutter) --------------------------------------------
@@ -2542,12 +2595,17 @@ export function Matrix() {
   // lot instead of thrashing row by row. Heights come back as VISUAL pixels,
   // so the table's `zoom` is divided out on the way in, exactly as the
   // mirror's measured column widths are.
-  const syncBandHeights = () => {
-    const band = bandRef.current, body = rosterBodyRef.current
-    if (!band || !body) return
-    const rows = Array.from(band.querySelectorAll<HTMLTableRowElement>('tbody > tr'))
+  //
+  // Two overlays need this now — the phone's frozen band and the figures
+  // drawer (6 Sep 26) — so it takes the overlay, the box its twins live in and
+  // the attribute naming each twin. The band's twins are the roster rows alone
+  // (`rosterBodyRef`); the drawer also copies the EVENT rows, which sit in
+  // their own tbody, so it hands over the whole table.
+  const syncOverlayHeights = (overlay: HTMLElement | null, body: HTMLElement | null, keyAttr: string) => {
+    if (!overlay || !body) return
+    const rows = Array.from(overlay.querySelectorAll<HTMLTableRowElement>(`tbody.mxbody > tr[${keyAttr}]`))
     const want = rows.map(tr => {
-      const key = tr.getAttribute('data-band-key')
+      const key = tr.getAttribute(keyAttr)
       const real = key ? body.querySelector<HTMLElement>(`[data-testid="${key}"]`) : null
       return real ? real.getBoundingClientRect().height : 0
     })
@@ -2556,6 +2614,9 @@ export function Matrix() {
     // than align it, so an unmeasurable row is left exactly as it was.
     rows.forEach((tr, i) => { if (want[i]! > 0) tr.style.height = `${want[i]! / zoom}px` })
   }
+  const syncBandHeights = () => syncOverlayHeights(bandRef.current, rosterBodyRef.current, 'data-band-key')
+  const syncDrawerHeights = () =>
+    syncOverlayHeights(drawerRef.current, wrapRef.current?.querySelector<HTMLElement>('table.mx') ?? null, 'data-drawer-key')
 
   useLayoutEffect(() => {
     if (!bandActive) { setBandTop(null); return }
@@ -2583,6 +2644,56 @@ export function Matrix() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [bandActive, zoom, visWindow, period.id, drawnDates.length, countsOpen, folded])
 
+  // ---- where the DRAWER sits (owner, 6 Sep 26) ------------------------------
+  //
+  // The same discipline as the band, one row higher: the drawer hangs off the
+  // real HEADER row (not the roster), because it covers the header's day cells
+  // with its own sideways titles. Four numbers, all measured: the header row's
+  // top and the names column's right edge (where the closed counter column
+  // begins, so the drawer's first column lands exactly on it and no box moves
+  // when it opens), the header row's height (the real row GROWS to 62px for the
+  // titles via `.mx-figures`, so the drawer is told what that came to rather
+  // than repeating the arithmetic), and the drawer's own width and column
+  // widths, which the stuck header's frozen copy needs to grow to match.
+  //
+  // The `.who` cell is read at whatever the sideways scroll has left it at —
+  // it is sticky, so its right edge is the column's width wherever the year
+  // sits. Heights come back as VISUAL pixels (the table wears the grid's
+  // zoom), so `headH` divides it back out for a row inside the drawer's own
+  // zoomed table, while `left`/`width` stay visual: the drawer's box is a plain
+  // absolute div in `.mx-outer`, outside any zoom.
+  useLayoutEffect(() => {
+    if (!figuresOpen) { setDrawerAt(null); return }
+    const measure = () => {
+      const outer = mxOuterRef.current, head = headRef.current, drawer = drawerRef.current
+      if (!outer || !head || !drawer) return
+      const headRow = head.querySelector<HTMLElement>('tr:last-child')
+      const who = headRow?.querySelector<HTMLElement>('th.who')
+      if (!headRow || !who) return
+      const hr = headRow.getBoundingClientRect(), o = outer.getBoundingClientRect()
+      if (hr.height === 0) { setDrawerAt(null); return }   // jsdom / not laid out
+      const next = {
+        top: hr.top - o.top,
+        left: who.getBoundingClientRect().right - o.left,
+        headH: hr.height / zoom,
+        width: drawer.getBoundingClientRect().width,
+        cols: Array.from(drawer.querySelectorAll<HTMLElement>('th.fig')).map(th => th.getBoundingClientRect().width),
+      }
+      // Value-guarded: this runs from a ResizeObserver, and a fresh object every
+      // time would re-render the grid on its own echo.
+      setDrawerAt(prev => (prev && prev.top === next.top && prev.left === next.left && prev.headH === next.headH &&
+        prev.width === next.width && prev.cols.length === next.cols.length && prev.cols.every((w, i) => w === next.cols[i])
+        ? prev : next))
+      syncDrawerHeights()
+    }
+    measure()
+    const ro = typeof ResizeObserver === 'function' ? new ResizeObserver(measure) : null
+    if (ro && mxOuterRef.current) ro.observe(mxOuterRef.current)
+    window.addEventListener('resize', measure)
+    return () => { ro?.disconnect(); window.removeEventListener('resize', measure) }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [figuresOpen, zoom, visWindow, period.id, drawnDates.length, countsOpen, folded, figures.length, arranging])
+
   // Re-pinned on EVERY render, not on a dependency list: a bid placed, a
   // decision made or a figure switched can put a chip into a day cell or take
   // one out, which moves that row's height by the pixel above — and there is
@@ -2590,7 +2701,10 @@ export function Matrix() {
   // precisely because this component does NOT re-render on scroll (the reason
   // the overlay exists), so this runs on real edits, not on frames. Layout
   // effect, so the heights land in the same frame as the rows they answer.
-  useLayoutEffect(() => { if (bandActive) syncBandHeights() })
+  useLayoutEffect(() => {
+    if (bandActive) syncBandHeights()
+    if (figuresOpen) syncDrawerHeights()
+  })
 
   // The roster's row SEQUENCE — group headings, CAT sub-headings and people, in
   // display order — computed so the real grid and the frozen overlay draw the
@@ -2632,6 +2746,20 @@ export function Matrix() {
     }
     return out
   }
+
+  // The DRAWER's rows, in the same grid order, each keyed to the real row's own
+  // testid so its height can be copied across (`syncOverlayHeights`). The
+  // drawer starts at the header row, so what it covers is the event lines and
+  // then the roster — an event line and a heading show one empty box across the
+  // block, since neither has a figure. Read from `rosterSequence` for the same
+  // reason the band does: one order, so the two cannot fall out of step.
+  const drawerRows = (): DrawerRow[] => [
+    ...Array.from({ length: eventRows }, (_, line) => ({ kind: 'blank' as const, key: `event-row-${line}` })),
+    ...rosterSequence().map((item): DrawerRow =>
+      item.kind === 'group' ? { kind: 'group', key: `group-${item.g}`, folded: folded.has(item.g) }
+        : item.kind === 'catsub' ? { kind: 'catsub', key: `subcat-${item.g}-${item.cat}` }
+          : { kind: 'person', key: `row-${item.p.id}`, p: item.p, me: item.p.id === viewer }),
+  ]
 
   // The under-manned list asks for a day the same way the month strip asks
   // for a month, through the one `jumpTo` above — so a target lands clear of
@@ -2845,7 +2973,12 @@ export function Matrix() {
             wrapper, like `mx-banded`, which the same tap already toggles on a
             phone — one restyle per mode change, never per frame. */}
         <div
-          className={`mx-outer${bandActive && bandTop != null ? ' mx-banded' : ''}${sdaActive ? ' lw-sda' : ''}${arranging && role === 'admin' ? ' mx-arranging' : ''}`}
+          /* `mx-figures` grows the real header row to the sideways titles'
+             height while the drawer is open (matrix.css), so the drawer's rows
+             and the day rows beside it stay level. One class toggled on
+             open/close — the same "one restyle per mode change, never per
+             frame" footing as `mx-banded` and `mx-arranging`. */
+          className={`mx-outer${bandActive && bandTop != null ? ' mx-banded' : ''}${sdaActive ? ' lw-sda' : ''}${arranging && role === 'admin' ? ' mx-arranging' : ''}${figuresOpen ? ' mx-figures' : ''}`}
           ref={mxOuterRef}
         >
         <div
@@ -3094,27 +3227,40 @@ export function Matrix() {
             the sheets' 79/80) and never renders in jsdom, where nothing has
             a height to scroll past. */}
         {stuck && ((s: { top: number; left: number; width: number; cols: number[] }) => {
+          // The drawer's titles ride the FROZEN copy alone, never the scrolling
+          // layer (6 Sep 26). The scrolling layer's day columns are glued to the
+          // grid's own — by a translate on the compositor, or by a copied
+          // scrollLeft — so its geometry has to stay the grid's: give it the
+          // drawer's seven extra columns and every date in the bar would sit
+          // that far right of the column it names. The frozen copy is clipped to
+          // its own width and carries no day columns anyone can see, so it is
+          // free to be as wide as the drawer.
+          const mirrorDrawer = figuresOpen && !!drawerAt && drawerAt.cols.length === figures.length
+          const colsFor = (drawer: boolean) =>
+            drawer ? [s.cols[0] ?? 0, ...drawerAt!.cols, ...s.cols.slice(2)] : s.cols
           // The measured widths are visual px (they include the zoom), and the
           // mirror table wears the same zoom so its text sizes match — so its
           // layout widths are the measurements divided back out, or the zoom
           // would apply twice.
-          const totalW = s.cols.reduce((a, b) => a + b, 0) / zoom
-          const table = (extra: string) => (
-            <table
-              className={`mx${extra ? ' ' + extra : ''}`}
-              style={{ tableLayout: 'fixed', width: totalW, ...(zoomStyle ?? null) }}
-            >
-              <colgroup>
-                {s.cols.map((w, i) => (
-                  <col key={i} style={{ width: w / zoom }} />
-                ))}
-              </colgroup>
-              <tbody className="mxhead">
-                {bracketRow(false)}
-                {headerRow(false)}
-              </tbody>
-            </table>
-          )
+          const table = (extra: string, drawer = false) => {
+            const cols = colsFor(drawer)
+            return (
+              <table
+                className={`mx${extra ? ' ' + extra : ''}`}
+                style={{ tableLayout: 'fixed', width: cols.reduce((a, b) => a + b, 0) / zoom, ...(zoomStyle ?? null) }}
+              >
+                <colgroup>
+                  {cols.map((w, i) => (
+                    <col key={i} style={{ width: w / zoom }} />
+                  ))}
+                </colgroup>
+                <tbody className="mxhead">
+                  {bracketRow(false, drawer)}
+                  {headerRow(false, drawer)}
+                </tbody>
+              </table>
+            )
+          }
           return (
             <div
               className="mxfixed"
@@ -3151,10 +3297,13 @@ export function Matrix() {
                      division. Divided, it was 25% too wide at the phone's 0.8
                      (131px against the grid's 107) and revealed the copy's third
                      cell; at 1.2 it would clip the balance column. Latent since
-                     the zoom shipped, surfaced by the one-step-out default. */
-                  style={{ width: (s.cols[0] || 0) + (s.cols[1] || 0) }}
+                     the zoom shipped, surfaced by the one-step-out default.
+                     While the DRAWER is open the frozen pair IS the drawer, so
+                     the clip runs to the drawer's own right edge — measured in
+                     the same visual pixels, off the same box. */
+                  style={{ width: mirrorDrawer ? drawerAt!.left + drawerAt!.width : (s.cols[0] || 0) + (s.cols[1] || 0) }}
                 >
-                  {table('')}
+                  {table('', mirrorDrawer)}
                 </div>
               )}
             </div>
@@ -3234,6 +3383,24 @@ export function Matrix() {
               </tbody>
             </table>
           </div>
+        )}
+        {/* THE FIGURES DRAWER (owner, 6 Sep 26) — the band's sibling and its
+            mirror image: the band draws the two frozen columns over the LEFT of
+            the days, the drawer draws every figure over the RIGHT of them. Both
+            are overlays outside `.mx-wrap`, drawn once, placed from measured
+            numbers and never from guessed ones. */}
+        {figuresOpen && (
+          <FiguresDrawer
+            figures={figures}
+            ctx={figureCtx}
+            rows={drawerRows()}
+            zoom={zoom}
+            top={drawerAt?.top ?? null}
+            left={drawerAt?.left ?? 0}
+            headH={drawerAt?.headH ?? 40}
+            rootRef={drawerRef}
+            onBox={onDrawerBox}
+          />
         )}
       </div>
       </div>

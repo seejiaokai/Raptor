@@ -176,6 +176,11 @@
      Talisman by 6px. The day grid pays the 26px, which the desktop has. */
   --who-w: 118px;
   --bal-w: 72px;
+  /* One drawer column (owner, 6 Sep 26). Narrow — two digits and a half, which
+     is every figure the squadron actually carries — because the eight of them
+     are paid for out of the days beside them. The drawer's FIRST column keeps
+     `--bal-w` instead, so a box does not move when the drawer opens. */
+  --figw: 36px;
   --sxo: #E8B23B;
   --pers: #E7ECF1;
   /* SANS group swatch (owner, 3 Sep 26 — SANS as their own category at the foot).
@@ -1059,6 +1064,10 @@
     /* The phone keeps the tight counter — the "extended" counter is a desktop
        affordance where there is room; on a phone every px goes to the days. */
     --bal-w: 44px;
+    /* Eight columns at 36 would eat the phone's whole day grid; at 28 about
+       five days stay in view beside the open drawer, which is the size the
+       owner approved on the mock. */
+    --figw: 28px;
   }
 
   .mx .who {
@@ -1974,6 +1983,171 @@
   color: var(--accent);
   border-color: rgba(59, 198, 232, .55);
 }
+
+/* ---- THE FIGURES DRAWER (owner, 6 Sep 26) ---------------------------------
+
+   Every figure for everyone, popped out beside the names OVER the day columns
+   — the `.mxband` overlay's mirror image, and built on the same three rules:
+   drawn ONCE, outside the sideways scroller, and never a set of extra cells in
+   the real table (every real row keeps identical cells; the owner's iPhone is
+   the gate). Placed and sized from measured numbers in FiguresDrawer.tsx. */
+.mxdrawer {
+  position: absolute;
+  z-index: 5;            /* above the frozen band (4), below the sheets (79) */
+}
+.mxdrawer table.mx {
+  width: auto;
+  table-layout: fixed;
+  background: var(--panel);
+  /* The drawer stands OVER the days, so it needs a lit edge to read as a thing
+     in front rather than a stripe of the grid. */
+  box-shadow: 6px 0 14px rgba(0, 0, 0, .5);
+}
+/* Column widths: the first is the closed column's own width (so the box does
+   not move when the drawer opens), the rest as narrow as two digits and a
+   half. Each cell still carries `.bal`, which is what gives it the two-line
+   box; these override the frozen column's sticky pinning and hairline, which
+   belong to the real column, not to a copy of it eight wide. */
+.mxdrawer .mx .fig {
+  position: static;
+  left: auto;
+  width: var(--figw); min-width: var(--figw); max-width: var(--figw);
+  box-shadow: none;
+  background: var(--panel);
+}
+.mxdrawer .mx .fig.first { width: var(--bal-w); min-width: var(--bal-w); max-width: var(--bal-w); }
+.mxdrawer .mx .fig.last { box-shadow: inset -1px 0 0 var(--edge-2); }
+/* A heading, a sub-heading or an event line has no figure, so it shows one
+   empty box across the block — in the heading's own colours, so the band still
+   reads across the drawer. */
+.mxdrawer .mx .figfill { background: var(--panel); }
+.mxdrawer .mx tr.grp .figfill {
+  background: var(--bg);
+  border-top: 1px solid var(--edge);
+  border-bottom: 1px solid var(--edge);
+}
+.mxdrawer .mx tr.catsub .figfill { background: var(--bg); }
+/* The viewer's own row keeps its tint AND its accent band across the drawer —
+   `.fig` above turns the frozen column's hairline off, and the band rides the
+   same property. */
+.mxdrawer .mx tbody tr.me td {
+  background: #14333E;
+  box-shadow: inset 0 1px 0 rgba(59, 198, 232, .28), inset 0 -1px 0 rgba(59, 198, 232, .28);
+}
+/* A title cell is a FIXED box the words are painted inside. The title is taken
+   out of the cell's own flow (`position: absolute`) so it cannot push the
+   header row taller than the height it was told — with the words in flow the
+   desktop's row came out 67.6px against the grid's 62 and the whole drawer sat
+   a quarter of a row low (measured, 6 Sep 26; the phone hid it, because at the
+   0.8 zoom the same 62 screen pixels are 77 of the table's own). `overflow`
+   clips rather than spilling over the month brackets if a platform's font ever
+   runs the words longer than the box. */
+.mxdrawer .mx .mxhead th.fig,
+.mxfixed .mx .mxhead th.fig {
+  position: relative;
+  left: auto;
+  overflow: hidden;
+  background: var(--panel-2);
+  padding: 0;
+  box-shadow: none;
+}
+.mxfixed .mx .mxhead th.fig.last { box-shadow: inset -1px 0 0 var(--edge-2); }
+.mxdrawer .figtitle,
+.mxfixed .figtitle {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 1px 0 2px;
+  background: transparent;
+  border: 0;
+  color: inherit;
+  font: inherit;
+}
+/* Only the drawer's own titles are a control — the mirror's copy is a plain
+   span (FiguresDrawer.tsx), and a hand over a dead button is a lie. */
+.mxdrawer button.figtitle { cursor: pointer; }
+/* Sideways titles: bottom-to-top, one line per row, each word its colour. The
+   title IS the legend (owner, 6 Sep 26) — white a balance, amber LL, red OL
+   and every other day used — so these three colours are the same three the
+   numbers under them wear. */
+.mx .fig .rot {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  display: inline-block;
+  margin: 0 1px;
+  font-size: 8.5px;
+  font-weight: 700;
+  /* .05em, not the .06 the rest of this file's small caps use: the longest
+     title ("+CCL −CCL") runs 56 of the 58 grid pixels the 62px header row
+     leaves it, and the spacing is the one part of that measurement that is
+     decoration. Both numbers scale with the zoom together, so the fit holds at
+     every step (measured at 0.8, 1 and 1.2). */
+  letter-spacing: .05em;
+  line-height: 1;
+  white-space: nowrap;
+  color: var(--ink-2);
+}
+.mx .fig .rot b { font-weight: inherit; }
+.mx .fig .rot b.white { color: var(--ink); }
+.mx .fig .rot b.amber { color: var(--adv); }
+.mx .fig .rot b.red { color: var(--hard); }
+/* While the drawer is open the real header row grows to the titles' height
+   (62px), so the drawer's rows and the day rows beside it stay level; the
+   mirror's frozen copy grows with it. Rows themselves do not grow — a two-line
+   box already fits the 22px cell.
+   62 of the GRID's own pixels, so it scales with the zoom exactly as the
+   titles inside it do (every other length in this file is in the same units).
+   Pinned to the screen instead — `calc(62px / var(--lwz))` — it held at one
+   step out and CLIPPED the words at one step in, where the type is 20% bigger
+   and the box was not: "−MED TOT" read "−MED TO" (measured, 6 Sep 26). */
+.mx-outer.mx-figures .mxhead tr:last-child > th { height: 62px; }
+.mx-outer.mx-figures .mxband td.bal { visibility: hidden; }  /* the drawer's first column covers it */
+/* A group heading's label OVERFLOWS its two frozen columns rightward (the
+   `.grphd` technique) and the drawer stands over exactly that ground, so with
+   the drawer open a phone read "IWSC" for IWSO · 5 and "OPS" for OPS P · 8
+   (seen in the drive, 6 Sep 26). The heading is lifted over the drawer instead
+   — it has nothing to hide there but an empty box, and a heading you cannot
+   read is worse than one written across the figures. Both copies: the desktop's
+   own sticky cell, and the phone's band, which is the copy that shows there. */
+.mx-outer.mx-figures .mxbody tr.grp td.grphd { z-index: 6; }
+.mx-outer.mx-figures .mxband { z-index: 6; }
+/* The switch in the corner above CS/Name — the archive bar's scale (a HEM, not
+   a heading: it must not outrank the grid it opens). */
+.mx .mxhead th.brakhd .figbar {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 0 2px;
+  background: transparent;
+  border: 0;
+  font: inherit;
+  font-size: 9.5px;
+  letter-spacing: .08em;
+  font-weight: 700;
+  color: var(--ink-3);
+  line-height: 15px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.mx .mxhead th.brakhd .figbar.on { color: var(--accent); }
+/* The title pop-up: what a column counts, in the same words as the picker's
+   legend. Screen-fixed so the frozen columns cannot clip it; closes on an
+   outside press or Escape (FiguresDrawer.tsx — the app's click-open popup
+   rule). z above the drawer and the stuck bar, below the sheets. */
+.figpop {
+  position: fixed;
+  z-index: 71;
+  max-width: 260px;
+  padding: 8px 10px;
+  background: var(--panel);
+  border: 1px solid var(--edge-2);
+  border-radius: 8px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, .45);
+}
+.figpop-hd { font-size: 9.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); font-weight: 700; margin-bottom: 3px; }
+.figpop-t { font-size: 11.5px; color: var(--ink); line-height: 1.35; }
 
 }
 
