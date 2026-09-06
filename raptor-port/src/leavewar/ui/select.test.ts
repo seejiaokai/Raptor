@@ -403,10 +403,13 @@ describe('wireSelect edge auto-scroll (mouse and touch, both axes)', () => {
 // run of PEOPLE a number is about to be written to, and a three-row drag that
 // merely ENDED in the phone's bottom 48px band ran the page 259px in ~0.7s and
 // lit fourteen — the bar then offered "14 people · +CCL" for a run the finger
-// never crossed. So `wireFigureSelect` asks for `edge: { rate: 0.4, dwellMs:
-// 220 }`: 0.4 of the step, and not until the pointer has SAT in the band. The
-// option is absent everywhere else, which is what keeps every case above — and
-// `wireSelect`/`wireRowSelect` themselves — byte-identical.
+// never crossed. So `wireFigureSelect` asks for `edge: { rate: 0.3, dwellMs:
+// 500 }`: 0.3 of the step, and not until the pointer has RESTED half a second
+// in the band. Half a second because a drag's own moves take longer than a
+// short dwell — at 220ms the same drag still reached eight people, since the
+// wait had run out before the finger stopped. The option is absent everywhere
+// else, which is what keeps every case above — and `wireSelect`/`wireRowSelect`
+// themselves — byte-identical.
 describe('wireFigureSelect asks the edge auto-scroll to be gentle', () => {
   let outer: HTMLElement, wrap: HTMLElement, box: HTMLElement, teardown: () => void
   let rafSpy: ReturnType<typeof vi.spyOn>
@@ -454,12 +457,12 @@ describe('wireFigureSelect asks the edge auto-scroll to be gentle', () => {
   const move = (x: number, y: number) =>
     window.dispatchEvent(new PointerEvent('pointermove', { bubbles: true, pointerId: 1, pointerType: 'touch', clientX: x, clientY: y }))
 
-  it('a band must be SAT IN for 220ms before it scrolls, and leaving restarts the wait', () => {
+  it('a band must be RESTED IN for 500ms before it scrolls, and leaving restarts the wait', () => {
     const frame = armTouchFrame()
     move(150, 399)                                        // deep in the bottom band
     st = 0; frame(); expect(st, 'the frame it entered on does not scroll').toBe(0)
-    vi.advanceTimersByTime(200)                           // still short of 220
-    st = 0; frame(); expect(st, 'nor does one 200ms in').toBe(0)
+    vi.advanceTimersByTime(480)                           // still short of 500
+    st = 0; frame(); expect(st, 'nor does one 480ms in — longer than the drag itself took').toBe(0)
     vi.advanceTimersByTime(40)
     st = 0; frame(); expect(st, 'past the dwell it runs').toBeGreaterThan(0)
     move(150, 200); frame()                               // out of the band …
@@ -467,17 +470,17 @@ describe('wireFigureSelect asks the edge auto-scroll to be gentle', () => {
     st = 0; frame(); expect(st, 'coming back starts the wait again').toBe(0)
   })
 
-  it('and then moves at 0.4 of the grid\'s step — ≤ 6px a frame at full depth', () => {
+  it('and then moves at 0.3 of the grid\'s step — ≤ 5px a frame at full depth', () => {
     const frame = armTouchFrame()
     move(150, 399)
     frame()                                               // enters the band
-    vi.advanceTimersByTime(300)                           // sit there, past the dwell
+    vi.advanceTimersByTime(600)                           // rest there, past the dwell
     st = 0; frame()
     expect(st, 'it does move — a run can still be extended past the screen').toBeGreaterThan(0)
     // TOUCH_STEP_MAX is 15px a frame at the very edge, which is what the day
-    // grid takes; 0.4 of it is 6. The `wireSelect` case above measures the
+    // grid takes; 0.3 of it is 4.5. The `wireSelect` case above measures the
     // ungentled step at the same depth.
-    expect(st, 'but at 0.4 of the step').toBeLessThanOrEqual(6)
+    expect(st, 'but at 0.3 of the step').toBeLessThanOrEqual(5)
   })
 })
 

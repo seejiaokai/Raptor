@@ -146,15 +146,17 @@ function IntField({ testid, value, min, max, onCommit }: {
   )
 }
 
-/* THE `focus` PROP IS GONE (controller, 6 Sep 26). It lit the credit box for
-   the day just written, and its ONE caller was the grid's own OIL/FO/HO write
-   opening the tracker on that person and day — a route reversed the same day
-   ("OIL from the bid picker never opens the tracker"). Nothing has set it
-   since, so the prop, the archive it auto-opened to reveal the lit box, and
-   the `here` marks it and `person` painted all came out rather than sitting
-   here as capability nobody asks for. `git log` keeps every line of it. What
-   stays is `person`: the row is still scrolled into view when the tracker is
-   opened on somebody. */
+/* THE `focus` PROP IS GONE (controller, 6 Sep 26). It named a DAY whose credit
+   box to light, and its ONE caller was the grid's own OIL/FO/HO write opening
+   the tracker on that person and day — a route reversed the same day ("OIL from
+   the bid picker never opens the tracker"). Nothing has set it since, so the
+   prop, the archive it auto-opened to reveal the lit box, and the `here` mark on
+   the credit box all came out rather than sitting here as capability nobody asks
+   for. `git log` keeps every line of it.
+     `person` is UNTOUCHED and still has callers — the Cinch sheet's OIL BAL row
+   is one — so what it drives stays whole: the row is scrolled into view AND
+   lit (`here` on the row, `oiltracker.css`). Opening on a person is a live
+   feature; only opening on a day went. */
 export function OilTracker({ person, onClose, onGranted }: {
   /** Scroll to this person's row on open (the Cinch's OIL BAL); `null` opens
    *  at the top. */
@@ -584,7 +586,7 @@ export function OilTracker({ person, onClose, onGranted }: {
     const archivedN = archivedOf.get(p.id) ?? 0
     const on = sel.has(p.id)
     rows.push(
-      <tr key={p.id} className={`oil-row${on ? ' on' : ''}${idle ? ' idle' : ''}`} data-testid={`oil-row-${p.id}`} data-oilrow={p.id}>
+      <tr key={p.id} className={`oil-row${on ? ' on' : ''}${idle ? ' idle' : ''}${p.id === person ? ' here' : ''}`} data-testid={`oil-row-${p.id}`} data-oilrow={p.id}>
         <td
           className="oil-name f c1"
           data-oilpick=""

@@ -211,6 +211,11 @@
   .oil-grid td.oil-name[role="button"] { cursor: pointer; }
   .oil-grid td.oil-name .who { display: block; font-weight: 800; font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .oil-grid td.oil-name .catchip { display: inline-block; margin-top: 2px; font-size: 8px; padding: 1px 4px; line-height: 1.15; letter-spacing: 0; }
+  /* Opened ON somebody (the Cinch's OIL BAL row): their row is scrolled to
+     AND marked, so the reader can see which of sixteen they landed on. The
+     DAY-level twin of this rule went with the dead `focus` prop on 6 Sep 26;
+     this one has live callers and stays. */
+  .oil-grid tr.oil-row.here td.oil-name { box-shadow: inset 3px 0 0 var(--adv, #E5A83B); }
 
   /* Selected (picked, or under the drag): a wash across the row and an
      accent bar on the name. `.selrow` is what select.ts paints mid-drag;

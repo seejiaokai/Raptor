@@ -180,7 +180,10 @@ interface GestureBase<A, P> {
    *  finger that merely finishes near the foot of the screen must not keep
    *  collecting names. Measured on the built bundle before this: a three-row
    *  drag ending in the bottom band ran the page 259px in ~0.7s and lit
-   *  FOURTEEN people. */
+   *  FOURTEEN people.
+   *    The dwell is deliberately longer than a drag's own moves take, so it is
+   *  a RESTING finger the scroll waits for, not merely one that has crossed the
+   *  band on its way down — see `wireFigureSelect` for the measured numbers. */
   edge?: { rate?: number; dwellMs?: number }
 }
 /* WHICH NODE, and HOW it is marked — both are either/or, and the type says so
@@ -677,12 +680,18 @@ export function wireFigureSelect(outer: HTMLElement, ctx: FigureSelectCtx): () =
     // GENTLE at the edge, unlike the day grid (6 Sep 26 bug hunt). What this
     // run collects is what a number gets written to, so a finger that simply
     // ends its drag in a phone's bottom band must not go on gathering people:
-    // 0.4 of the step (≤6px a frame at full depth against the grid's 15), and
-    // not until it has sat in the band for 220ms — about a beat longer than a
-    // finger takes to stop and lift. Parked there on purpose it still runs on,
-    // so a run CAN still be extended past the screen; the bar's count is the
-    // check before Save.
-    edge: { rate: 0.4, dwellMs: 220 },
+    // 0.3 of the step (≤5px a frame at full depth against the grid's 15), and
+    // not until it has RESTED half a second in the band. The numbers are
+    // measured, not guessed: the drag that started this ran 259px and lit
+    // fourteen; at 0.4 and 220ms it still reached eight, because a drag's own
+    // moves burn a short dwell before the finger has even stopped. Half a
+    // second outlasts the drag, so the wait only begins once the finger really
+    // has come to rest — the same drag now scrolls NOTHING while it is being
+    // made (measured: 0px), and then runs at about a third of the day grid's
+    // pace, ~7 rows a second at the depth a drag like that ends at. Rested
+    // there on purpose a run CAN still be extended past the screen; the bar's
+    // count is the check before Save.
+    edge: { rate: 0.3, dwellMs: 500 },
     // A HOLD selects, a quick tap still opens the breakdown — the day grid's own
     // rhythm, on the same feel constants. So an admin's press that dwells past
     // HOLD (or a mouse that moves past MOUSE_SLOP) commits a selection of the

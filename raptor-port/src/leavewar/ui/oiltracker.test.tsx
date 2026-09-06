@@ -81,14 +81,14 @@ describe('the OIL tracker grid', () => {
 })
 
 describe('the Cinch sheet hands over to the tracker', () => {
-  /* The row is BROUGHT INTO VIEW rather than MARKED (controller, 6 Sep 26).
-     This case used to read the `here` class off the row; that class — and the
-     one a `focus` day painted on a credit box — went with the tracker's dead
-     `focus` prop, whose only caller was the grid write that stopped
-     auto-opening the tracker on the same day. So the assertion is rewritten
-     onto what actually still happens, not deleted: `scrollIntoView` on that
-     person's row. jsdom implements no scrolling at all, so the method has to
-     be stood up here for the effect's optional call to reach anything. */
+  /* The row is SCROLLED TO and MARKED — both halves of what `person` drives,
+     and `person` has live callers (this one). The tracker's `focus` prop, which
+     named a DAY and lit that credit box, was deleted on 6 Sep 26 with its only
+     caller (the grid write that stopped auto-opening the tracker); the row's own
+     `here` is untouched by that and is asserted below as it always was. The
+     scroll is asserted beside it because nothing else pinned it — jsdom
+     implements no scrolling at all, so the method has to be stood up here for
+     the effect's optional call to reach anything. */
   const origScroll = Element.prototype.scrollIntoView
   let scrolled: Element[] = []
   beforeEach(() => {
@@ -103,6 +103,8 @@ describe('the Cinch sheet hands over to the tracker', () => {
     fireEvent.click(screen.getByTestId('pfig-oil').querySelector('.crow')!)
     expect(screen.queryByTestId('person-figures')).toBeNull()
     expect(screen.getByTestId('oil-sheet')).toBeTruthy()
+    expect(screen.getByTestId('oil-row-ramp').className).toContain('here')
+    expect(screen.getByTestId('oil-row-dusk').className).not.toContain('here')
     expect(scrolled).toContain(screen.getByTestId('oil-row-ramp'))
     expect(scrolled).not.toContain(screen.getByTestId('oil-row-dusk'))
   })

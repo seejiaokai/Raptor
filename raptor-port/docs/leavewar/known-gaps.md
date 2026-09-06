@@ -199,9 +199,9 @@ Balances are computed and on screen. Two parts of §Counters are not built:
   delete snaps the counter column to OIL BAL. (An admin's manual OIL / FO / HO
   write on the grid used to OPEN the tracker on that person with the day's box
   lit; that was reversed on 6 Sep 26 — a write on the grid keeps you on the
-  grid, and only the column snaps. The day-lighting itself was deleted the same
-  day, having lost its only caller: the tracker opens on a PERSON, whose row it
-  scrolls to, and never on a day.) A `?` chip holds the legend.
+  grid, and only the column snaps. Opening the tracker on a DAY was deleted the
+  same day, having lost its only caller: it opens on a PERSON, whose row it
+  scrolls to and lights, and never on a day.) A `?` chip holds the legend.
   Nothing on the page is under 11px.
   **THIRD CUT the same evening (owner, from the shipped grid):** every take
   is its OWN ROW inside the box and `n left` is pinned bottom-right whatever
@@ -287,11 +287,14 @@ Balances are computed and on screen. Two parts of §Counters are not built:
   or bottom edge of the screen the page auto-scrolls and the run keeps
   collecting people — the day grid's own rule (owner, 30 Aug 26), and what lets
   a run reach past one screenful. It is much gentler here since the 6 Sep 26 bug
-  hunt (0.4 of the step, and nothing until the pointer has sat in the band for
-  220 ms: a three-row phone drag that ended in the bottom band went from
-  fourteen people to a handful), but it is not off, so the bar's count can still
-  be larger than the rows the finger remembers crossing. **The count in the bar
-  is the check before Save** — it is on screen for exactly this reason.
+  hunt: 0.3 of the step, and nothing at all until the finger has RESTED half a
+  second in the band, which is longer than the drag's own moves take. A
+  three-row phone drag that ended in the bottom band went from fourteen people
+  to THREE, with the page not moving at all while the drag was made; resting
+  there afterwards still collects, at roughly seven rows a second. So it is not
+  off, and the bar's count can still be larger than the rows the finger
+  remembers crossing. **The count in the bar is the check before Save** — it is
+  on screen for exactly this reason.
 - **The halves rule also blocks EDITING a legacy non-half ledger entry.**
   `ledgerProblem` is one body, so `updateLedgerEntry` applies the same
   whole-or-half-day rule as a new credit: an entry already holding, say, 1.25
