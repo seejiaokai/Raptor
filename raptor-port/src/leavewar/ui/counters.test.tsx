@@ -2,7 +2,7 @@ import { act, fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { DEFAULT_FIGURE_ORDER, FIGURES } from '../engine'
-import { advanceStage, getState, initStore, moveFigure, resetFigureOrder, setBalance, setBidState, setCell, setPeople, setRole, setViewer, toggleFigure, visibleFigures } from '../state/store'
+import { advanceStage, getState, grantTo, initStore, moveFigure, resetFigureOrder, setBalance, setBidState, setCell, setPeople, setRole, setViewer, toggleFigure, visibleFigures } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { FigureCell } from './FigureCell'
 import { Matrix } from './Matrix'
@@ -537,6 +537,40 @@ describe('the per-person breakdown sheet (owner, 17 Aug 26)', () => {
     // ramp: opening 3, no OIL grant, one earned FO day (3 Jan), one pending
     // half-day OIL taken (10 Feb) = 3 + 0 + 1 − 0.5 = 3.5.
     expect(rows).toEqual(['opening figure3', 'granted0', 'earned by weekend/PH work1', 'OIL taken-0.5', 'Total3.5'])
+  })
+
+  /* A grant keyed from the grid's balance bar (6 Sep 26) has to be EXPLAINED
+     somewhere: "granted 2" on its own says nothing about who gave it, when, or
+     why, and the bar is the first way a plain pool has ever been credited. The
+     rows under "granted" itemise the ledger entries behind it — oldest first,
+     the reason shown when there is one — so the number is traceable from the
+     same tap that shows it. */
+  it('itemises the grants under "granted": amount, date, approver — and the reason when there is one', () => {
+    setRole('admin')
+    grantTo(['ramp'], 'ccl', 2, '2026-09-06', '')
+    grantTo(['ramp'], 'oil', 1.5, '2026-09-06', 'Det recovery')
+    render(<Matrix />)
+
+    pick('ccl')
+    fireEvent.click(screen.getByTestId('bal-ramp'))
+    const ccl = [...screen.getByTestId('breakdown-grants').querySelectorAll('[data-testid^="grant-ol-"]')]
+    expect(ccl.map(r => r.textContent)).toEqual(['+2 · 6 Sep 26 · by admin'])
+    fireEvent.click(screen.getByTestId('breakdown-close'))
+
+    pick('oil')
+    fireEvent.click(screen.getByTestId('bal-ramp'))
+    const oil = [...screen.getByTestId('breakdown-grants').querySelectorAll('[data-testid^="grant-ol-"]')]
+    expect(oil.map(r => r.textContent)).toEqual(['+1.5 · 6 Sep 26 · by admin · Det recovery'])
+  })
+
+  // A pool nobody has been credited on shows no list at all — an empty
+  // container under "granted 0" would read as a missing row, not as nothing.
+  it('shows no grants list where there is nothing granted', () => {
+    render(<Matrix />)
+    pick('ccl')
+    fireEvent.click(screen.getByTestId('bal-ramp'))
+    expect(screen.getByTestId('part-granted').textContent).toBe('granted0')
+    expect(screen.queryByTestId('breakdown-grants')).toBeNull()
   })
 })
 

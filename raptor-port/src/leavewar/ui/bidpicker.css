@@ -657,6 +657,20 @@
   border-color: var(--edge);
 }
 
+/* The ledger entries behind the "granted" row (6 Sep 26) — indented under its
+   number as its detail, quiet enough that the line above stays the figure
+   being read. Drawn inside the row, where `.csub` puts a caption. */
+.bidsheet .bdgrants {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 2px 0 4px 12px;
+  font-size: 11px;
+  color: var(--ink-2);
+}
+.bidsheet .bdgrant b { color: var(--ink); }
+.bidsheet .bdgrant b.neg { color: var(--hard); }
+
 /* The total, ruled off from the parts above it the way a sum is. */
 .crow-wrap.bdtotal {
   border-top: 1px solid var(--edge);

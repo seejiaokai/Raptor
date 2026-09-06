@@ -354,6 +354,21 @@
   .oil-bar .oil-num { width: 70px; }
   .oil-bar .oil-text { flex: 1 1 180px; }
   .oil-bar .oil-text.given { flex: 0 1 170px; }
+  /* The + / − chip beside the amount (6 Sep 26) — the phone's way to a
+     correction, since a decimal keypad has no minus key. Wide enough to be a
+     target and heavy enough for the glyph to read at this size. Here rather
+     than beside the grid's balance bar because the chip belongs to the FORM,
+     which both bars draw: one rule, one place.
+     SUBTRACTING also has to LOOK different, not just read different — a − and
+     a + are one stroke apart at this size, and the chip is the only thing
+     saying which way the number goes ("a pick the eye cannot see is a form
+     that lies", the 19 Aug 26 find). */
+  .oil-bar .tchip.sign { min-width: 32px; font-weight: 800; }
+  .oil-bar .tchip.sign[aria-pressed="true"] {
+    background: rgba(240, 85, 95, .16);
+    border-color: rgba(240, 85, 95, .55);
+    color: var(--hard);
+  }
   .oil-bar .note.warn { flex-basis: 100%; }
   .oil-daychip { position: relative; display: inline-block; }
   .oil-pop {

@@ -68,6 +68,7 @@ import { selectableFigure } from '../engine/counters'
 import { SettingsSheet } from './SettingsSheet'
 import { groupColorOf, inkFor } from './groupColor'
 import { SelectSheet } from './SelectSheet'
+import { BalanceBar } from './BalanceBar'
 import { RemarksSheet } from './RemarksSheet'
 import { leaveInputAt } from '../sync'
 import { useVersion } from './useStore'
@@ -905,6 +906,27 @@ export function Matrix() {
   // clear above must keep its own dependency list, or opening the figures
   // would also throw away a day-grid selection that has nothing to do with it.
   useEffect(() => { setFigSel(null) }, [period.stage, period.id, histEpoch, figuresOpen])
+
+  // A press outside the bar and the boxes drops the selection (the tracker's
+  // own rule, owner 2 Sep 26 — no Deselect button); a press ON a box is the
+  // next drag or a tap for the breakdown, and is left alone. Escape clears it
+  // too, unless a sheet is up — the sheet's own Escape goes first.
+  useEffect(() => {
+    if (!figSel) return
+    const onDown = (e: PointerEvent) => {
+      const t = e.target as HTMLElement | null
+      if (t?.closest('[data-testid="balance-bar"]') || t?.closest('td.figbox[data-fig][data-person]')) return
+      setFigSel(null)
+    }
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape' || document.querySelector('.bidsheet')) return
+      e.stopPropagation()
+      setFigSel(null)
+    }
+    document.addEventListener('pointerdown', onDown, true)
+    window.addEventListener('keydown', onKey, true)
+    return () => { document.removeEventListener('pointerdown', onDown, true); window.removeEventListener('keydown', onKey, true) }
+  }, [figSel])
 
   // MOVE MODE (owner, 27 Aug 26). The picked block is dropped onto a new day.
   // `movers` are the inputs PRESENT in the selection — the empty cells the user
@@ -3606,6 +3628,15 @@ export function Matrix() {
           onDone={(_changed, keepOpen) => { if (!keepOpen) setSel(null) }}
           onClose={() => setSel(null)}
         />
+      )}
+      {/* The balance bar — a drag down one figure column, one number for the
+          run (owner, 6 Sep 26). Up while the selection lives; Save writes ONE
+          ledger batch (grantTo) and the changed boxes flash on their own. The
+          role is read HERE, not only where the drag arms: an admin's "view as
+          member" flip lands mid-selection and must take the write control off
+          the screen with it (absent, not disabled — the house rule). */}
+      {role === 'admin' && figSel && selectableFigure(figSelFigure) && figSelIds.length > 0 && (
+        <BalanceBar figure={figSelFigure} ids={figSelIds} onDone={() => setFigSel(null)} onClose={() => setFigSel(null)} />
       )}
       {/* Move mode: a slim banner. On desktop a ghost follows the mouse (from
           wireMove) and a CLICK lands the block at once; on phone a TAP stages

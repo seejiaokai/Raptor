@@ -80,7 +80,6 @@ import {
   displayRoster,
   figureCtxOf,
   getState,
-  grantOil,
   groupsInOrder,
   groupPriorityIds,
   MAX_GIVEN_BY,
@@ -90,6 +89,7 @@ import {
   setOilPolicy,
   updateLedgerEntry,
 } from '../state/store'
+import { CreditForm, DayChip } from './CreditForm'
 import { shortDate, shortSpan } from './dates'
 import { RangePicker, type Range } from './RangePicker'
 import { wireRowSelect } from './select'
@@ -143,99 +143,6 @@ function IntField({ testid, value, min, max, onCommit }: {
       onBlur={commit}
       onKeyDown={e => { if (e.key === 'Enter') commit() }}
     />
-  )
-}
-
-/** A single-day picker behind a chip: the chip shows the day, a tap opens the
- *  calendar under it, a tap on a day closes it. */
-function DayChip({ testid, pickerId, value, today, onPick }: {
-  testid: string
-  pickerId: string
-  value: string
-  today: string
-  onPick: (d: string) => void
-}) {
-  const [open, setOpen] = useState(false)
-  return (
-    <span className="oil-daychip">
-      <button className="tchip" data-testid={testid} aria-expanded={open} onClick={() => setOpen(o => !o)}>
-        📅 {value ? shortDate(value) : 'date'} ▾
-      </button>
-      {open && (
-        <span className="oil-pop">
-          <RangePicker
-            compact
-            testid={pickerId}
-            anchor={value || today}
-            value={value ? { from: value, to: value } : null}
-            // A single day: a tap on a later day than the one shown arrives
-            // as a range starting at the shown day, so take its far end.
-            onChange={r => { if (!r) return; onPick(r.to !== value ? r.to : r.from); setOpen(false) }}
-          />
-        </span>
-      )}
-    </span>
-  )
-}
-
-/**
- * The credit bar's form — one amount, one date, one reason, an optional
- * "given by", for one or many people. Its own component so its draft state
- * resets with the people it is for (the caller keys it).
- */
-function CreditForm({ ids, names, today, onDone }: {
-  ids: string[]
-  names: string
-  today: string
-  onDone: () => void
-}) {
-  const [amt, setAmt] = useState('1')
-  const [date, setDate] = useState(today)
-  const [reason, setReason] = useState('')
-  const [given, setGiven] = useState('')
-  const [err, setErr] = useState('')
-  const save = () => {
-    const problem = grantOil(ids, Number(amt), date, reason, given)
-    if (problem) { setErr(problem); return }
-    onDone()
-  }
-  return (
-    <div className="oil-bar form" data-testid="oil-credit-panel">
-      <b className="oil-who" data-testid="oil-credit-who">OIL credits · {names}</b>
-      <input
-        type="number"
-        step="0.5"
-        className="oil-num"
-        data-testid="oil-amt"
-        value={amt}
-        onChange={e => setAmt(e.target.value)}
-        aria-label="Days of OIL — a negative number is a correction"
-        title="days · a negative number is a correction"
-      />
-      <DayChip testid="oil-date" pickerId="oildate" value={date} today={today} onPick={setDate} />
-      <input
-        className="oil-text"
-        data-testid="oil-reason"
-        maxLength={MAX_REASON}
-        value={reason}
-        placeholder="reason"
-        aria-label="Reason"
-        onChange={e => setReason(e.target.value)}
-        onKeyDown={e => { if (e.key === 'Enter') save() }}
-      />
-      <input
-        className="oil-text given"
-        data-testid="oil-given"
-        maxLength={MAX_GIVEN_BY}
-        value={given}
-        placeholder="given by (optional)"
-        aria-label="Given by"
-        onChange={e => setGiven(e.target.value)}
-        onKeyDown={e => { if (e.key === 'Enter') save() }}
-      />
-      <button className="dchip approve" data-testid="oil-credit-save" onClick={save}>Save</button>
-      {err && <span className="note warn" data-testid="oil-credit-err">{err}</span>}
-    </div>
   )
 }
 
@@ -794,7 +701,7 @@ export function OilTracker({ person, focus, onClose, onGranted }: {
         {!anyBox && <div className="note oil-empty" data-testid="oil-empty">Nothing in this window.</div>}
       </div>
       {admin && selIds.length > 0 && (
-        <CreditForm key={selIds.join('|')} ids={selIds} names={namesOf(selIds)} today={today} onDone={() => { setSel(new Set()); done() }} />
+        <CreditForm key={selIds.join('|')} counter="oil" ids={selIds} who={`OIL credits · ${namesOf(selIds)}`} today={today} onDone={() => { setSel(new Set()); done() }} />
       )}
       {admin && selIds.length === 0 && (
         <div className="oil-bar idle" data-testid="oil-bar-idle">Tap a name to credit OIL · hold and drag down the names to pick several</div>

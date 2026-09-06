@@ -90,8 +90,55 @@ describe('a drag down the figure column selects a run of people', () => {
     expect(marked().map(c => c.getAttribute('data-testid'))).toEqual([a.dataset.testid, b.dataset.testid])
     expect(marked()[0]!.getAttribute('data-figsel')).toBe('1')
     // A selection is a selection: nothing is written until the bar takes an
-    // amount (Task 3), so the war's history must not have moved.
+    // amount, so the war's history must not have moved.
     expect(lwHistEpoch()).toBe(epoch)
+    // ...and the bar it exists for is up, naming the run and the pool it will
+    // credit (the column opens on +LVE).
+    expect(screen.getByTestId('balance-bar')).toBeTruthy()
+    expect(screen.getByTestId('oil-credit-who').textContent).toBe('2 people · +LVE')
+  })
+
+  /* NO DESELECT BUTTON — a press outside the bar and the boxes drops the run,
+     the tracker's own rule (owner, 2 Sep 26). A press ON a box is the next drag
+     or a tap for that person's breakdown, so it must survive. The listener
+     captures, because the boxes and the bar both stop presses of their own. */
+  it('a press outside the bar and the boxes clears the run; a press on a box does not', () => {
+    render(<Matrix />)
+    const [a] = layOutColumn()
+    dragDown(a)
+    expect(marked()).toHaveLength(2)
+
+    fireEvent.pointerDown(a)                       // the box itself: still selected
+    expect(marked()).toHaveLength(2)
+    expect(screen.getByTestId('balance-bar')).toBeTruthy()
+
+    fireEvent.pointerDown(document.body)           // anywhere else: gone, bar and marks
+    expect(marked()).toHaveLength(0)
+    expect(screen.queryByTestId('balance-bar')).toBeNull()
+  })
+
+  /* ESCAPE CLEARS IT TOO — but a sheet open over the selection gets the press
+     first, or one key would take away both the panel being read and the run
+     underneath it. The bar's listener yields while a `.bidsheet` is mounted;
+     Sheet's own capture handler closes that, and the next press reaches here. */
+  it('Escape clears the run — after any open sheet has had it', async () => {
+    render(<Matrix />)
+    const [a] = layOutColumn()
+    dragDown(a)
+    expect(marked()).toHaveLength(2)
+    // The breakdown, opened over the live selection (the tick first: a
+    // committed drag swallows the one click that follows it).
+    await tick()
+    fireEvent.click(a)
+    expect(screen.getByTestId('figure-breakdown')).toBeTruthy()
+
+    fireEvent.keyDown(document.body, { key: 'Escape' })
+    expect(screen.queryByTestId('figure-breakdown')).toBeNull()
+    expect(marked()).toHaveLength(2)                // the run is still the user's
+
+    fireEvent.keyDown(document.body, { key: 'Escape' })
+    expect(marked()).toHaveLength(0)
+    expect(screen.queryByTestId('balance-bar')).toBeNull()
   })
 
   it('a member\'s drag does nothing — keying balances is the admin\'s', () => {
@@ -100,6 +147,20 @@ describe('a drag down the figure column selects a run of people', () => {
     const [a] = layOutColumn()
     dragDown(a)
     expect(marked()).toHaveLength(0)
+    expect(screen.queryByTestId('balance-bar')).toBeNull()
+  })
+
+  // The admin's "view as member" flip can land while a selection is live, and
+  // the bar is a WRITE control: it has to leave with the role, not sit there
+  // offering a Save the store would refuse (absent, not disabled — the house
+  // rule for every admin control in this app).
+  it('the bar goes when an admin flips to viewing as a member', () => {
+    render(<Matrix />)
+    const [a] = layOutColumn()
+    dragDown(a)
+    expect(screen.getByTestId('balance-bar')).toBeTruthy()
+    act(() => { setRole('member') })
+    expect(screen.queryByTestId('balance-bar')).toBeNull()
   })
 
   it('an undo, a stage change and the drawer toggle all drop it', async () => {

@@ -20,7 +20,7 @@
    unchanged because the map preserves seat and band and the mapped
    people's own SXO flags match the seed's. */
 import { expect, test, type Locator, type Page } from '@playwright/test'
-import { go, lwRole, lwView, openLeaveWar } from './app'
+import { go, lwRole, lwView, openLeaveWar, scrollTo } from './app'
 
 const CAL_MONTHS = [
   'JANUARY', 'FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE',
@@ -1787,6 +1787,214 @@ test('a finger\'s hold-and-drag down the drawer lights the run and does not scro
   // so the rows did not slide under it.
   await expect(page.locator('[data-testid="figdrawer"] td[data-figsel]')).toHaveCount(3)
   expect(await page.evaluate(() => window.scrollY)).toBe(y0)
+})
+
+// ---- THE DOCKED BALANCE BAR (owner, 6 Sep 26) -----------------------------
+//
+// What the selection is FOR: one number for the whole run. The bar is a
+// viewport-docked panel, not a sheet, so everything about where it sits — over
+// a scrolling grid, above a phone's keyboard, clear of the bottom edge — is
+// browser-only. So is the flash on the boxes it just changed.
+
+/** The top number of a figure box in the drawer. */
+const drawerNum = (page: Page, fig: string, person: string) => drawerBox(page, fig, person).locator('.fb')
+
+const bar = (page: Page) => page.locator('[data-testid="balance-bar"]')
+
+/** Select a run of three down one drawer column and wait for the bar. */
+async function pickRun(page: Page, fig: string, run: string[]) {
+  await dragFigures(page, drawerBox(page, fig, run[0]!), drawerBox(page, fig, run[2]!))
+  await expect(bar(page)).toBeVisible()
+}
+
+/** Type an amount into the bar and commit it with Enter, the way a keyboard
+ *  does — the bar's own Save is proved by the unit suite. */
+async function keyAmount(page: Page, amount: string) {
+  const amt = page.locator('[data-testid="oil-amt"]')
+  await amt.fill(amount)
+  await amt.press('Enter')
+}
+
+test('the bar takes one number for the run, the boxes flash, and one Undo takes it all back', async ({ page }) => {
+  desktopOnly()
+  await lwRole(page, 'admin')
+  await openDrawer(page)
+  const run = await threeInARow(page)
+  const before = await Promise.all(run.map(p => drawerNum(page, 'ccl', p).textContent()))
+
+  await pickRun(page, 'ccl', run)
+  await expect(page.locator('[data-testid="oil-credit-who"]')).toHaveText('3 people · +CCL')
+  // A plain pool takes the number alone — no date, no reason, no given-by.
+  expect(await page.locator('[data-testid="oil-reason"]').count()).toBe(0)
+  expect(await page.locator('[data-testid="oil-amt"]').inputValue()).toBe('')
+
+  // The flash lives ~700ms, so watch for it rather than polling after the fact:
+  // a round trip that starts once the write has landed can miss the whole thing.
+  await page.evaluate(() => {
+    const w = window as unknown as { __figFlashed: string[] }
+    w.__figFlashed = []
+    new MutationObserver(() => {
+      for (const el of document.querySelectorAll('td.figbox[data-fig="ccl"].flash')) {
+        const p = el.getAttribute('data-person')!
+        if (!w.__figFlashed.includes(p)) w.__figFlashed.push(p)
+      }
+    }).observe(document.body, { subtree: true, attributes: true, attributeFilter: ['class'] })
+  })
+
+  await keyAmount(page, '2')
+  await expect(bar(page)).toHaveCount(0)                       // the bar closes on a good write
+  await expect(page.locator('[data-figsel]')).toHaveCount(0)   // ...and the run is released
+  for (const [i, p] of run.entries()) {
+    await expect(drawerNum(page, 'ccl', p!)).toHaveText(String(Number(before[i]) + 2))
+  }
+  const flashed = await page.evaluate(() => (window as unknown as { __figFlashed: string[] }).__figFlashed)
+  expect(flashed.sort()).toEqual([...run].sort())
+
+  // ONE batch, ONE step back: the three credits went in as a single ledger
+  // write, so a single Undo has to undo all three.
+  await page.locator('[data-testid="lw-undo"]').click()
+  for (const [i, p] of run.entries()) {
+    await expect(drawerNum(page, 'ccl', p!)).toHaveText(before[i]!)
+  }
+})
+
+test('-1.5 subtracts; 0, abc and 1.25 are refused and the run stays', async ({ page }) => {
+  desktopOnly()
+  await lwRole(page, 'admin')
+  await openDrawer(page)
+  const run = await threeInARow(page)
+  const before = await Promise.all(run.map(p => drawerNum(page, 'ccl', p).textContent()))
+
+  // A typed minus is a correction — the same field, no second control.
+  await pickRun(page, 'ccl', run)
+  await keyAmount(page, '-1.5')
+  await expect(bar(page)).toHaveCount(0)
+  for (const [i, p] of run.entries()) {
+    await expect(drawerNum(page, 'ccl', p!)).toHaveText(String(Math.round((Number(before[i]) - 1.5) * 10) / 10))
+  }
+
+  // Every refusal says why AND keeps the run: a rejected number must not cost
+  // the person the drag they just made.
+  await pickRun(page, 'ccl', run)
+  const err = page.locator('[data-testid="oil-credit-err"]')
+  for (const [typed, says] of [
+    ['0', 'The amount must be a number other than 0'],
+    ['abc', 'Type the days — 2 adds, -2 subtracts'],
+    ['1.25', 'Days come in halves — 1, 1.5, 2 …'],
+  ]) {
+    await keyAmount(page, typed!)
+    await expect(err).toHaveText(says!)
+    await expect(bar(page)).toBeVisible()
+    await expect(page.locator('[data-testid="figdrawer"] td[data-figsel]')).toHaveCount(3)
+  }
+})
+
+test('OIL from the grid is the tracker\'s own credit', async ({ page }) => {
+  desktopOnly()
+  await lwRole(page, 'admin')
+  await openDrawer(page)
+  const run = await threeInARow(page)
+  // Two people, not three: the bar's count line is the run's, whatever its size.
+  await dragFigures(page, drawerBox(page, 'oil', run[0]!), drawerBox(page, 'oil', run[1]!))
+  await expect(bar(page)).toBeVisible()
+  await expect(page.locator('[data-testid="oil-credit-who"]')).toHaveText('2 people · +OIL')
+  // OIL alone brings the full form — the pool whose credits are a record.
+  await expect(page.locator('[data-testid="oil-date"]')).toBeVisible()
+  await expect(page.locator('[data-testid="oil-given"]')).toBeVisible()
+  await page.locator('[data-testid="oil-amt"]').fill('1')
+  await page.locator('[data-testid="oil-reason"]').fill('Det')
+  await page.locator('[data-testid="oil-credit-save"]').click()
+  await expect(bar(page)).toHaveCount(0)
+
+  // ...and it lands in the TRACKER as an ordinary credit, because it went
+  // through the same writer the tracker's own bar uses.
+  await page.locator('[data-testid="oil-tracker"]').click()
+  const row = page.locator(`[data-testid="oil-row-${run[0]}"]`)
+  await expect(row).toContainText('+1')
+  await expect(row).toContainText('Det')
+})
+
+test('a tap outside clears the bar, the drawer toggle clears it, and a sideways scroll does not', async ({ page }) => {
+  desktopOnly()
+  await lwRole(page, 'admin')
+  await openDrawer(page)
+  const run = await threeInARow(page)
+
+  // A PRESS ON A DAY still does what a press on a day does (it opens that
+  // cell's sheet) — and drops the run on the way, which is the rule the
+  // tracker set: no Deselect button, anywhere outside puts it away.
+  await pickRun(page, 'ccl', run)
+  const day = await page.evaluate(() => {
+    const d = document.querySelector('[data-testid="figdrawer"]')!.getBoundingClientRect()
+    for (const td of document.querySelectorAll('.mx-wrap td[data-testid^="cell-"]')) {
+      const r = td.getBoundingClientRect()
+      if (r.left > d.right + 20 && r.width > 6 && r.top > 0 && r.bottom < window.innerHeight) {
+        return { x: r.left + r.width / 2, y: r.top + r.height / 2 }
+      }
+    }
+    return null
+  })
+  expect(day, 'a day cell clear of the drawer').not.toBeNull()
+  await page.mouse.click(day!.x, day!.y)
+  await expect(bar(page)).toHaveCount(0)
+  await expect(page.locator('[data-figsel]')).toHaveCount(0)
+  await page.keyboard.press('Escape')                       // put the cell's sheet away again
+  await expect(page.locator('.bidsheet')).toHaveCount(0)
+
+  // PUTTING THE FIGURES AWAY takes the boxes off the screen, so the selection
+  // made against them cannot outlive them.
+  await pickRun(page, 'ccl', run)
+  await figBar(page).click()
+  await expect(bar(page)).toHaveCount(0)
+
+  // A SIDEWAYS SCROLL does not: the bar is docked to the viewport, not parked
+  // in the grid, which is the whole reason it is not a sheet.
+  await openDrawer(page)
+  await pickRun(page, 'ccl', run)
+  await scrollTo(page, '.mx-wrap', 600)
+  await settleGrid(page)
+  await expect(bar(page)).toBeVisible()
+})
+
+test('a member never sees the bar', async ({ page }) => {
+  await lwRole(page, 'member')
+  const run = await threeInARow(page)
+  // The closed counter column — whichever copy this width freezes.
+  await dragFigures(page, frozen(page, run[0]!, '.bal'), frozen(page, run[2]!, '.bal'))
+  await expect(bar(page)).toHaveCount(0)
+  expect(await page.locator('[data-figsel]').count()).toBe(0)
+})
+
+test('on a phone the bar comes up whole, clear of the bottom edge', async ({ page }) => {
+  test.skip(!isPhone(), 'the touch gesture')
+  await lwRole(page, 'admin')
+  await openDrawer(page)
+  const run = await threeInARow(page)
+  // The same hold-drag as the run test above — park the rows mid-screen first
+  // so an edge band does not auto-scroll the page under the finger.
+  const vh = page.viewportSize()!.height
+  await page.evaluate(dy => window.scrollBy(0, dy), (await drawerBox(page, 'ccl', run[0]!).boundingBox())!.y - vh / 3)
+  await settleGrid(page)
+  const a = (await drawerBox(page, 'ccl', run[0]!).boundingBox())!
+  const b = (await drawerBox(page, 'ccl', run[2]!).boundingBox())!
+  const cdp = await page.context().newCDPSession(page)
+  const x = a.x + a.width / 2
+  await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x, y: a.y + a.height / 2 }] })
+  await page.waitForTimeout(260)   // past HOLD
+  for (let i = 1; i <= 6; i++) {
+    await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x, y: a.y + a.height / 2 + ((b.y - a.y) * i) / 6 }] })
+  }
+  await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] })
+
+  await expect(bar(page)).toBeVisible()
+  const box = (await bar(page).boundingBox())!
+  const vp = page.viewportSize()!
+  expect(box.y + box.height).toBeLessThanOrEqual(vp.height)   // nothing under the fold
+  expect(box.x).toBeGreaterThanOrEqual(0)
+  expect(box.x + box.width).toBeLessThanOrEqual(vp.width + 1)
+  // ...and the number it wants is reachable without a sideways scroll inside it.
+  await expect(page.locator('[data-testid="oil-amt"]')).toBeVisible()
+  expect(await bar(page).evaluate(el => el.scrollWidth - el.clientWidth)).toBeLessThanOrEqual(0)
 })
 
 // The figure sheets scroll INSIDE the sheet on a phone, and the header

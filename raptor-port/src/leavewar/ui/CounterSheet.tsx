@@ -17,8 +17,9 @@
 // column cycles the squadron's own preferred, visible figures.
 
 import { useState } from 'react'
-import { figureLines, figureParts, orderedFigures, type CounterName, type Figure, type Person } from '../engine'
+import { figureLines, figureParts, grantsFor, orderedFigures, type CounterName, type Figure, type Person } from '../engine'
 import { figureCtxOf, getState, moveFigure, resetFigureOrder, toggleFigure, visibleFigures } from '../state/store'
+import { shortDate } from './dates'
 import { Sheet } from './Sheet'
 import './bidpicker.css'
 import './oiltracker.css'
@@ -223,6 +224,11 @@ export function FigureBreakdownSheet({
   const ctx = figureCtxOf()
   const parts = figureParts(figure, ctx, person.id)
   const total = figure.value(ctx, person.id)
+  // The entries behind the "granted" line. Since the grid's balance bar keys
+  // credits onto any pool (6 Sep 26), a bare "granted 2" leaves the reader with
+  // no way to ask who gave it or when — so the row itemises them underneath.
+  // A total names no counter and has no grants to show.
+  const grants = figure.counter ? grantsFor(ctx.ledger, person.id, figure.counter) : []
 
   return (
     <Sheet testid="figure-breakdown" label={`${figure.label} breakdown`} onClose={onClose} narrow>
@@ -244,6 +250,20 @@ export function FigureBreakdownSheet({
                     subtraction it is, so the rows visibly sum to the total. */}
                 <span className={`ct${p.value < 0 ? ' neg' : ''}`}>{show(p.value)}</span>
               </span>
+              {/* Inside the row, under its label-and-number line — the place
+                  `.csub` already uses for a caption. Outside it the list
+                  became a flex SIBLING of the row and squeezed in beside the
+                  number it explains (live-view pass, 6 Sep 26). */}
+              {p.label === 'granted' && grants.length > 0 && (
+                <span className="bdgrants" data-testid="breakdown-grants">
+                  {grants.map(g => (
+                    <span key={g.id} className="bdgrant" data-testid={`grant-${g.id}`}>
+                      <b className={g.amount < 0 ? 'neg' : ''}>{g.amount < 0 ? '−' : '+'}{show(Math.abs(g.amount))}</b>
+                      {' · '}{shortDate(g.date)}{' · by '}{g.approvedBy}{g.givenBy ? ` (${g.givenBy})` : ''}{g.reason ? ` · ${g.reason}` : ''}
+                    </span>
+                  ))}
+                </span>
+              )}
             </span>
           </div>
         ))}
