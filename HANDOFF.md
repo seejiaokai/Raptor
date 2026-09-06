@@ -140,8 +140,9 @@ jobs green (build + reference suite, unit raptor, unit leavewar ×2, geometry
 
 ## In flight
 
-- **The swipe behind a sheet — on the branch as PR #371, NOT merged (6 Sep
-  26; the owner merges on his "merge live").** On a touch screen the finger
+- **The swipe behind a sheet — OWNER-CONFIRMED on his iPhone (6 Sep 26: "Ok
+  it's fixed"); on the branch as PR #371, NOT merged (he merges on his "merge
+  live").** On a touch screen the finger
   now scrolls the grid ITSELF behind an open Leave War sheet: `ui/Sheet.tsx
   useGridPan` takes the scrim out of the way (`pointer-events: none` when
   `(pointer: coarse)`) and a document-level capture shield swallows the tap
@@ -283,13 +284,7 @@ jobs green (build + reference suite, unit raptor, unit leavewar ×2, geometry
   file true as rules are added.** Still to gather: the day/AL publishing flow,
   the roles split, what each warning means in practice, the phone gestures.
 - **Unverified on a real iPhone** (no iOS device reachable from here; each is a
-  caveat, not a finding): the **swipe behind a sheet** (6 Sep 26 — on a touch screen the scrim is
-  `pointer-events: none` and the finger flings `.mx-wrap` itself, a document
-  shield taking the tap; the fall-through, the drag-follow and the shielded
-  tap are proven with a real CDP touch in Chromium, but iOS is the device to
-  confirm the feel on — there is nothing of ours in the fling any more, so if
-  it still feels wrong on his phone the suspect is the GRID's own scroll
-  handler work, the same as with no sheet up, not the sheet), the
+  caveat, not a finding): the
   **focus-zoom fix** (`index.html` appends
   `maximum-scale=1` to the viewport meta at runtime on Apple touch devices only;
   Chromium's meta stays bare, gated in `e2e/geometry.spec.ts`; the unbuilt
