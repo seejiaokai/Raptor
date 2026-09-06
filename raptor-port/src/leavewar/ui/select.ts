@@ -114,6 +114,11 @@ export interface SelectCtx {
   // false ⇒ event cells are not selectable (a member, or the rows are gone).
   eventsEnabled?: () => boolean
   onEventSelect?: (sel: EventSelection) => void
+  /** Client-x where the day columns begin — past the frozen name/counter pair,
+   *  or past the figures drawer while it is open. The drag's LEFT auto-scroll
+   *  band starts there rather than at the wrap's own edge, which is buried
+   *  under them (owner, 6 Sep 26). Absent = the wrap's left edge. */
+  leftEdge?: () => number
 }
 /* elementFromPoint works in client coords regardless of the table's CSS
    `zoom`, so the hit-test needs no un-scaling. */
@@ -156,6 +161,14 @@ interface GestureBase<A, P> {
    *  nearest scrolling ancestor (its wrap has no height cap); a modal whose
    *  wrap scrolls both ways passes itself. */
   vscroll?: (wrap: HTMLElement) => VScroll
+  /** Client-x where the CONTENT begins, past whatever frozen thing stands in
+   *  front of the wrap's own left edge — the frozen name/counter columns, or
+   *  the figures drawer while it is open. The left edge band starts there, so
+   *  a finger approaching the visible days' left edge auto-scrolls (owner,
+   *  6 Sep 26 — "let me auto scroll left when my drag is approaching the edge
+   *  of the expanded counters … likewise the counter on the left"). Absent =
+   *  the wrap's own left edge: every existing caller and test is untouched. */
+  leftEdge?: () => number
 }
 /* WHICH NODE, and HOW it is marked — both are either/or, and the type says so
    rather than leaving a caller to pass a `cls` it does not use (6 Sep 26
@@ -246,7 +259,13 @@ function wireGesture<A, P>(wrap: HTMLElement, spec: GestureSpec<A, P>): () => vo
     const vTop = vs.isDoc ? 0 : vs.el.getBoundingClientRect().top
     const vBot = vs.isDoc ? (window.innerHeight || vs.el.clientHeight) : vs.el.getBoundingClientRect().bottom
     const w = touchGesture ? TOUCH_EDGE : EDGE
-    return (x < r.left + w ? BL : 0) | (x > r.right - w ? BR : 0) | (y < vTop + w ? BT : 0) | (y > vBot - w ? BB : 0)
+    // The LEFT band starts where the CONTENT does, not where the box does: on
+    // this grid the frozen columns (or the open figures drawer) stand in front
+    // of the wrap's own left edge, so a band measured from `r.left` sat behind
+    // them and no finger could ever reach it. The RIGHT band keeps `r.right` —
+    // nothing is parked over that side.
+    const left = spec.leftEdge ? spec.leftEdge() : r.left
+    return (x < left + w ? BL : 0) | (x > r.right - w ? BR : 0) | (y < vTop + w ? BT : 0) | (y > vBot - w ? BB : 0)
   }
   // A band the press STARTED inside must be LEFT before it scrolls. Without
   // this a row at the bottom of the screen could not be drag-selected
@@ -267,13 +286,16 @@ function wireGesture<A, P>(wrap: HTMLElement, spec: GestureSpec<A, P>): () => vo
     const vs = vscroll ?? (vscroll = (spec.vscroll ?? findVScroll)(wrap))
     const vTop = vs.isDoc ? 0 : vs.el.getBoundingClientRect().top
     const vBot = vs.isDoc ? (window.innerHeight || vs.el.clientHeight) : vs.el.getBoundingClientRect().bottom
+    // The left band's origin — see `bandsAt`: the content's own left edge, past
+    // the frozen columns or the open drawer standing in front of the wrap's.
+    const left = spec.leftEdge ? spec.leftEdge() : r.left
     if (touchGesture) {
-      const intoR = lastX - (r.right - TOUCH_EDGE), intoL = (r.left + TOUCH_EDGE) - lastX
+      const intoR = lastX - (r.right - TOUCH_EDGE), intoL = (left + TOUCH_EDGE) - lastX
       if (intoR > 0) dx = ramp(intoR); else if (intoL > 0) dx = -ramp(intoL)
       const intoB = lastY - (vBot - TOUCH_EDGE), intoT = (vTop + TOUCH_EDGE) - lastY
       if (intoB > 0) dy = ramp(intoB); else if (intoT > 0) dy = -ramp(intoT)
     } else {
-      if (lastX > r.right - EDGE) dx = EDGE_STEP; else if (lastX < r.left + EDGE) dx = -EDGE_STEP
+      if (lastX > r.right - EDGE) dx = EDGE_STEP; else if (lastX < left + EDGE) dx = -EDGE_STEP
       if (lastY > vBot - EDGE) dy = EDGE_STEP; else if (lastY < vTop + EDGE) dy = -EDGE_STEP
     }
     noteEdge()
@@ -469,6 +491,7 @@ export function wireSelect(wrap: HTMLElement, ctx: SelectCtx): () => void {
     enabled: ctx.enabled,
     cls: 'selcell',
     node: id => wrap.querySelector(`[data-testid="${id}"]`),
+    leftEdge: ctx.leftEdge,
     reset: () => { lastFocus = null; lastFocusDate = null },
     hit: el => {
       const roster = parseCellId(el?.closest?.('[data-testid^="cell-"]')?.getAttribute('data-testid'))

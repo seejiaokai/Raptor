@@ -154,13 +154,18 @@ describe('a drag down the figure column selects a run of people', () => {
   // the bar is a WRITE control: it has to leave with the role, not sit there
   // offering a Save the store would refuse (absent, not disabled — the house
   // rule for every admin control in this app).
-  it('the bar goes when an admin flips to viewing as a member', () => {
+  it('the bar goes when an admin flips to viewing as a member — and takes the highlight with it', () => {
     render(<Matrix />)
     const [a] = layOutColumn()
     dragDown(a)
     expect(screen.getByTestId('balance-bar')).toBeTruthy()
     act(() => { setRole('member') })
     expect(screen.queryByTestId('balance-bar')).toBeNull()
+    // …and the run itself goes with it (review, 6 Sep 26). The bar's mount was
+    // gated on the role from the start; the SELECTION was not, so the flip left
+    // a member-viewing screen with a run still lit and nothing on screen able to
+    // clear or use it.
+    expect(marked()).toHaveLength(0)
   })
 
   it('an undo, a stage change and the drawer toggle all drop it', async () => {

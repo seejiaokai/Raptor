@@ -1350,16 +1350,25 @@
 
 /* The VIEWER's own row — Raptor's "View as" person. The frozen pair must
    stay OPAQUE (it paints over scrolling cells), so it takes a solid tinted
-   panel; the scrolling cells take a wash faint enough to sit under every
-   state colour. The tint is the app's accent at whisper volume, not a
-   selection colour — nothing here is selected, it is "this row is you". */
+   panel; the row itself is bracketed by accent lines. The tint is the app's
+   accent, not a selection colour — nothing here is selected, it is "this row
+   is you". Turned UP on 6 Sep 26 (owner, from his iPhone — "make the glow of
+   the view as user row a bit more obvious in the grids"): a lighter panel,
+   lines at .55 rather than .28, and a glow on the seat bar.
+     Deliberately NO wash across the day cells. A 7% accent tint was tried here
+   and looked at in the browser: a `td` background on this row out-ranks
+   `.mx td.weekend` and every other state colour (0,2,3 against 0,2,1), and the
+   viewer's Saturdays came back rgba(59,198,232,.07) where every other row's
+   read rgba(6,8,11,.55) — the band gone on the one row that most needs reading.
+   The bracketing lines carry the row instead: a box-shadow sits OVER a cell's
+   own fill rather than replacing it. */
 .mx tbody tr.me .who,
 .mx tbody tr.me .bal {
-  background: #14333E;
+  background: #173C4A;
 }
 
 .mx tbody tr.me td {
-  box-shadow: inset 0 1px 0 rgba(59, 198, 232, .28), inset 0 -1px 0 rgba(59, 198, 232, .28);
+  box-shadow: inset 0 1px 0 rgba(59, 198, 232, .55), inset 0 -1px 0 rgba(59, 198, 232, .55);
 }
 
 .mx tbody tr.me .who {
@@ -1367,8 +1376,9 @@
 }
 /* The full-width seat bar (4 Sep 26) covers most of that tinted panel, so the
    "this row is you" cue rides the bar itself as a thin accent ring (bug hunt,
-   4 Sep 26) — the seat colour and ink are untouched. */
-.mx tbody tr.me .who .whoedit .cs { box-shadow: inset 0 0 0 1px var(--accent); }
+   4 Sep 26) — the seat colour and ink are untouched — now with a glow past it
+   (6 Sep 26), which is what carries the row at a glance on a phone. */
+.mx tbody tr.me .who .whoedit .cs { box-shadow: inset 0 0 0 1px var(--accent), 0 0 8px rgba(59, 198, 232, .55); }
 
 /* ---- Categorised roster (owner, 18 Aug 26) ------------------------------ */
 
@@ -1388,7 +1398,19 @@
 }
 .rtbtn:hover { border-color: var(--accent); }
 .rtbtn.pri { background: var(--accent); color: var(--accent-ink); border-color: transparent; }
-.rtbtn.on { background: var(--raised); border-color: var(--accent); color: var(--accent); }
+/* A real <button>, so iOS leaves it FOCUSED after a tap and paints its own
+   ring — which read as "still on" after the second tap turned Rearrange off
+   (owner, 6 Sep 26). Keyboard focus keeps a ring via :focus-visible (the house
+   idiom, see .grphd/.catchip); a tap gets none. ON now GLOWS, not just tints. */
+.rtbtn { -webkit-tap-highlight-color: transparent; }
+.rtbtn:focus { outline: none; }
+.rtbtn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.rtbtn.on {
+  background: var(--raised);
+  border-color: var(--accent);
+  color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(59, 198, 232, .18), 0 0 12px rgba(59, 198, 232, .5);
+}
 /* An armed destructive button (Reset counters): the first tap only asks. */
 .rtbtn.arm { border-color: rgba(255, 92, 92, .6); color: #ff5c5c; }
 /* The one ⚙ SETTINGS button (owner, 3 Sep 26) — icon only, the word dropped. */
@@ -1483,13 +1505,26 @@
   touch-action: none;
 }
 .grphd-in .ghd-grip:active { cursor: grabbing; }
-/* Drag feedback on a category block, mirroring the roster row: the block being
-   carried fades, the one it would land on takes an accent top edge. */
-.mx tbody tr.grp.dragging { opacity: .5; }
-.mx tbody tr.grp.dragover td.grphd { box-shadow: inset 0 2px 0 var(--accent); }
+/* Drag feedback on a category block, mirroring the roster row exactly. The
+   heading's own cell is `td.grphd` — sticky over the two frozen columns — so
+   it must stay OPAQUE for the same reason the callsign cell does: at .5 the
+   day numbers scrolled straight through the group's name (the owner's iPhone,
+   6 Sep 26). The label inside it and the fill cell beside it fade instead, and
+   the heading takes the picked-up row's ring and glow. */
+.mx tbody tr.grp.dragging td.grphd > .grphd-in,
+.mx tbody tr.grp.dragging td.grpfill { opacity: .5; }
+.mx tbody tr.grp.dragging td.grphd {
+  box-shadow: inset 0 0 0 2px var(--accent), 0 0 12px rgba(59, 198, 232, .6);
+  z-index: 4;   /* the heading's own sticky z-index is 3 — lift it over the rows */
+}
+/* The landing bar itself comes from the roster row's `tr.dragover td` rule —
+   the whole width at 3px — since a heading's cells are ordinary `td`s. Only
+   the GLOW is written here, on the sticky cell the thumb is nearest; the 2px
+   on that cell alone was easy to miss under a finger. */
+.mx tbody tr.grp.dragover td.grphd { box-shadow: inset 0 3px 0 var(--accent), 0 -1px 10px rgba(59, 198, 232, .55); }
 /* …and the BOTTOM edge when the pointer is in the heading's lower half — the
    drop lands after it (the roster rows' `.after` rule, bug hunt 4 Sep 26). */
-.mx tbody tr.grp.dragover.after td.grphd { box-shadow: inset 0 -2px 0 var(--accent); }
+.mx tbody tr.grp.dragover.after td.grphd { box-shadow: inset 0 -3px 0 var(--accent), 0 1px 10px rgba(59, 198, 232, .55); }
 
 /* The CAT sub-heading inside an ops group — DESKTOP ONLY. On a phone the
    coloured chip carries the CAT and these headings would only cost height
@@ -1657,10 +1692,34 @@
    rework in Matrix.tsx), so the bar always points at the seam the row will
    actually land in. */
 .mx tbody tr.arrange .who { cursor: default; }
-.mx tbody tr.dragover .who { box-shadow: inset 0 2px 0 var(--accent); }
-.mx tbody tr.dragover.after .who { box-shadow: inset 0 -2px 0 var(--accent); }
+/* A dragged row (Rearrange) keeps its FROZEN cells opaque — they are sticky
+   and paint over the scrolling day cells, so fading them let the numbers bleed
+   through the label ("19FL P9 18", the owner's iPhone, 6 Sep 26 — the same
+   failure the archived rows had, see .mrow-hidden). Only the CONTENT fades. */
+.mx tbody tr.dragging .who > *,
+.mx tbody tr.dragging .bal > * { opacity: .5; }
+/* The picked-up row reads as LIFTED, not merely dimmed (owner, 6 Sep 26 —
+   "make the glow of the selected row more obvious"): an accent ring on its
+   frozen cells, a glow past them, and accent lines the width of the row. The
+   lines are box-shadows so a day cell's own state colour still shows. */
 .mx tbody tr.dragging .who,
-.mx tbody tr.dragging .bal { opacity: .5; }
+.mx tbody tr.dragging .bal {
+  box-shadow: inset 0 0 0 2px var(--accent), 0 0 12px rgba(59, 198, 232, .6);
+  z-index: 3;
+}
+/* `:not(.grp)` because a category heading is a `tr.dragging` too, and its own
+   ring rule up in the heading block would otherwise TIE with this one on
+   specificity and lose on source order — the heading would take the lines and
+   never the ring. Its two cells are painted there, beside the grip. */
+.mx tbody tr.dragging:not(.grp) td:not(.who):not(.bal) {
+  box-shadow: inset 0 2px 0 rgba(59, 198, 232, .65), inset 0 -2px 0 rgba(59, 198, 232, .65);
+}
+/* The landing bar runs the WHOLE row, 3px, with a glow — the previous 2px on
+   the frozen cell alone was easy to miss under a thumb. */
+.mx tbody tr.dragover td { box-shadow: inset 0 3px 0 var(--accent); }
+.mx tbody tr.dragover.after td { box-shadow: inset 0 -3px 0 var(--accent); }
+.mx tbody tr.dragover .who { box-shadow: inset 0 3px 0 var(--accent), 0 -1px 10px rgba(59, 198, 232, .55); }
+.mx tbody tr.dragover.after .who { box-shadow: inset 0 -3px 0 var(--accent), 0 1px 10px rgba(59, 198, 232, .55); }
 
 /* The frozen callsign column is only 76px on a phone, and an auto-layout
    table grows a column to its content's min-width — so anything wider than
@@ -2132,8 +2191,8 @@
    `.fig` above turns the frozen column's hairline off, and the band rides the
    same property. */
 .mxdrawer .mx tbody tr.me td {
-  background: #14333E;
-  box-shadow: inset 0 1px 0 rgba(59, 198, 232, .28), inset 0 -1px 0 rgba(59, 198, 232, .28);
+  background: #173C4A;
+  box-shadow: inset 0 1px 0 rgba(59, 198, 232, .55), inset 0 -1px 0 rgba(59, 198, 232, .55);
 }
 /* A title cell is a FIXED box the words are painted inside. The title is taken
    out of the cell's own flow (`position: absolute`) so it cannot push the

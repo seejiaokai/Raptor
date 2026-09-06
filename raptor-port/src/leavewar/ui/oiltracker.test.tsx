@@ -371,18 +371,30 @@ describe('crediting OIL (admin)', () => {
   })
 })
 
-describe('an admin\'s manual OIL on the grid opens the tracker', () => {
-  it('writing OIL on a cell opens the tracker on that person with the day lit; a member\'s bid does not', () => {
+/* This case used to read "an admin's manual OIL on the grid OPENS the
+   tracker" — the 2 Sep 26 rule that a hand-typed OIL day jumped to the tracker
+   so the reason could be typed there. The owner REVERSED it on 6 Sep 26 from
+   his iPhone ("it should never bring me to the oil tracker page"): being
+   thrown off the grid mid-pass cost more than the reason was worth, and the
+   tracker is one tap away on the OIL button. So this is not a weakened
+   assertion but the opposite rule, pinned as tightly — including the half
+   that did NOT change, the column snapping to the balance the leave comes
+   off. */
+describe('an admin\'s manual OIL on the grid stays on the grid', () => {
+  it('opens no tracker for either role, and the column still snaps to +OIL', () => {
     render(<Matrix />)
-    // A member's own bid: no tracker.
+    // A member's own bid: no tracker, and the column follows the write.
     fireEvent.click(screen.getByTestId('cell-ramp-2026-02-11'))
     fireEvent.click(screen.getByTestId('bid-OIL'))
     expect(screen.queryByTestId('oil-sheet')).toBeNull()
     act(() => setRole('admin'))
     fireEvent.click(screen.getByTestId('cell-dusk-2026-02-11'))
     fireEvent.click(screen.getByTestId('bid-OIL'))
-    expect(screen.getByTestId('oil-sheet')).toBeTruthy()
-    expect(screen.getByTestId('oil-row-dusk').className).toContain('here')
+    expect(screen.queryByTestId('oil-sheet')).toBeNull()
+    // The write landed and the sheet closed — the admin is left on the grid,
+    // looking at the figure the day just came off.
+    expect(getState().grid.dusk['2026-02-11']).toBe('OIL')
+    expect(screen.queryByTestId('bid-picker')).toBeNull()
     expect(screen.getByTestId('counter-name').textContent).toBe('+OIL')
   })
 })

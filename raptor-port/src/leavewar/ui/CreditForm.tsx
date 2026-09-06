@@ -120,7 +120,11 @@ export function CreditForm({ counter, ids, who, today, initialAmount = '1', auto
         placeholder="days"
         autoFocus={autoFocus}
         aria-label="Days — 2 or +2 adds, -2 subtracts"
-        onChange={e => setAmt(e.target.value)}
+        // Editing the number clears the last refusal (review, 6 Sep 26): the
+        // message names what was wrong with the value that WAS typed, so left
+        // standing over a new one it reads as a fresh rejection of a draft
+        // nothing has judged yet.
+        onChange={e => { setErr(''); setAmt(e.target.value) }}
         onKeyDown={keys}
       />
       {full && <DayChip testid="oil-date" pickerId="oildate" value={date} today={today} onPick={setDate} />}

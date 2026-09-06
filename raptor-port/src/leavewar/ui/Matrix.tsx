@@ -854,6 +854,7 @@ export function Matrix() {
       onSelect: s => selCtxRef.current?.onSelect(s),
       eventsEnabled: () => selCtxRef.current?.eventsEnabled?.() ?? false,
       onEventSelect: s => selCtxRef.current?.onEventSelect?.(s),
+      leftEdge: () => selCtxRef.current?.leftEdge?.() ?? w.getBoundingClientRect().left,
     })
   }, [])
   // A stage or war change drops any open selection or in-flight move, so a
@@ -905,7 +906,11 @@ export function Matrix() {
   // A drawer toggle drops the selection too, and it needs its OWN effect: the
   // clear above must keep its own dependency list, or opening the figures
   // would also throw away a day-grid selection that has nothing to do with it.
-  useEffect(() => { setFigSel(null) }, [period.stage, period.id, histEpoch, figuresOpen])
+  //   `role` is in here for the same reason (review, 6 Sep 26): the balance bar
+  // is mounted only for an admin, so a "view as member" flip mid-selection took
+  // the bar off the screen and left the run lit with nothing to act on it —
+  // a highlight the reader could not clear or use.
+  useEffect(() => { setFigSel(null) }, [period.stage, period.id, histEpoch, figuresOpen, role])
 
   // A press outside the bar and the boxes drops the selection (the tracker's
   // own rule, owner 2 Sep 26 — no Deselect button); a press ON a box is the
@@ -916,6 +921,10 @@ export function Matrix() {
     const onDown = (e: PointerEvent) => {
       const t = e.target as HTMLElement | null
       if (t?.closest('[data-testid="balance-bar"]') || t?.closest('td.figbox[data-fig][data-person]')) return
+      // A sheet is up: it owns this press, exactly as Escape below yields to it
+      // (review, 6 Sep 26 — the two disagreed, so a tap on a sheet's scrim
+      // dropped a run that the same sheet's Escape would have left alone).
+      if (document.querySelector('.bidsheet')) return
       setFigSel(null)
     }
     const onKey = (e: KeyboardEvent) => {
@@ -2986,6 +2995,9 @@ export function Matrix() {
     // (owner, 27 Aug 26). from === to (a one-cell drag) opens on the single day.
     eventsEnabled: () => role === 'admin' && !arranging && !moveSel && !eventMoveSel,
     onEventSelect: s => setEventEdit({ line: s.line, date: s.from, to: s.from === s.to ? undefined : s.to }),
+    // The days begin past the frozen block — the name/counter pair, or the
+    // drawer while it is open (frozenWidth is already drawer-aware).
+    leftEdge: () => { const w = wrapRef.current; return w ? w.getBoundingClientRect().left + frozenWidth(w) : 0 },
   }
 
   // ...and the FIGURE drag the same way (owner, 6 Sep 26): a run of people down
@@ -3874,18 +3886,16 @@ export function Matrix() {
               const id = figureForLeave(cell.type)
               if (id) showFigure(id)
             }
-            /* An ADMIN's manual OIL-family write — OIL taken, or an FO/HO
-               credit typed by hand — opens the tracker on that person with
-               the day's box lit (owner, 2 Sep 26: "whenever I admin input
-               an OIL on the leave war manually, it will bring me to the OIL
-               tracker page to include the reason"). A member's own OIL bid
-               stays where it is. */
-            if (role === 'admin' && (cell?.type === 'OIL' || earns) && open) {
-              const who = open.id, when = open.date
-              close()
-              showFigure('oil')
-              setOilTracker({ person: who, focus: when })
-            }
+            /* A write on the grid keeps you ON the grid (owner, 6 Sep 26 —
+               "it should never bring me to the oil tracker page"), reversing
+               the 2 Sep rule that sent an admin's manual OIL straight to the
+               tracker to type a reason. Being thrown off the grid mid-pass
+               cost more than the reason was worth, and the tracker is one tap
+               away on the OIL button when he does want it. What survives is
+               the COLUMN: an FO/HO day EARNS oil, so the figure that just grew
+               is the one left on screen — the balance answers for the write
+               without moving the reader. */
+            if (earns) showFigure('oil')
           }}
           /* What the balance would read AFTER this write, so the sheet can
              ask before taking someone negative. Computed here because this

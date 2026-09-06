@@ -345,6 +345,56 @@ describe('wireSelect edge auto-scroll (mouse and touch, both axes)', () => {
     // the RIGHT band was never held — a press at the bottom still scrolls sideways
     mouse('pointermove', 299, 380); sl = 0; cb!(0); expect(sl).toBeGreaterThan(0)
   })
+
+  // The LEFT band starts where the DAYS start, not where the wrap does (owner,
+  // 6 Sep 26 — "let me auto scroll left when my drag is approaching the edge of
+  // the expanded counters … likewise the counter on the left"). On the real
+  // grid the frozen name/counter pair — or the figures drawer, while it is
+  // open — is parked over the wrap's own left edge, so a band measured from
+  // there sat BEHIND them: a finger dragging left simply stopped at the
+  // counters and the year never came back. Matrix hands in
+  // `wrap.left + frozenWidth(wrap)`, which is drawer-aware already. The option
+  // is absent everywhere else, so every case above still measures from
+  // `r.left` — which is what keeps them untouched.
+  const withLeftEdge = (edge: number) => {
+    teardown()
+    teardown = wireSelect(wrap, {
+      order: () => ['ramp'], dates: () => ['2026-01-06'],
+      enabled: () => true, onSelect: () => {}, leftEdge: () => edge,
+    })
+  }
+  const mouseAt = (type: string, x: number, y: number) =>
+    (type === 'pointerdown' ? cell : window).dispatchEvent(new PointerEvent(type, { bubbles: true, pointerId: 1, pointerType: 'mouse', clientX: x, clientY: y, button: 0 }))
+  /** Arm a mouse drag from a point clear of every band, and hand back one frame. */
+  const armFrom = (x: number, y: number) => {
+    let cb: FrameRequestCallback | null = null
+    rafSpy.mockImplementation((fn: FrameRequestCallback) => { cb = fn; return 1 as unknown as number })
+    mouseAt('pointerdown', x, y)
+    mouseAt('pointermove', x - 6, y)          // > MOUSE_SLOP → arm
+    expect(cb).not.toBeNull()
+    return () => cb!(0)
+  }
+
+  it('the LEFT band starts at the supplied edge — a drag toward the frozen columns scrolls', () => {
+    withLeftEdge(120)                          // the wrap's own left is 0
+    const frame = armFrom(250, 200)
+    mouseAt('pointermove', 130, 200); sl = 500; frame()
+    expect(sl, '10px inside the day area\'s left edge → the grid runs left').toBeLessThan(500)
+    mouseAt('pointermove', 200, 200); sl = 500; frame()
+    expect(sl, 'well clear of it → nothing moves').toBe(500)
+  })
+
+  it('and the held-band rule is measured from that edge too', () => {
+    withLeftEdge(120)
+    // The press lands INSIDE the new left band (120..156), which is ordinary on
+    // this grid — the first day column sits right against the counters. It must
+    // not run the year sideways under a still cursor.
+    const frame = armFrom(130, 200)
+    sl = 500; frame(); expect(sl, 'the band the press sat in is held').toBe(500)
+    mouseAt('pointermove', 200, 200)           // leaves it …
+    mouseAt('pointermove', 130, 200)           // … and comes back: a deliberate push
+    sl = 500; frame(); expect(sl).toBeLessThan(500)
+  })
 })
 
 // When the finger leaves every cell — a gap, or the empty area an edge

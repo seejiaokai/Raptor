@@ -983,6 +983,133 @@ test('dragging an event row opens the event sheet ranged to the span', async ({ 
   await expect(page.locator('[data-testid="event-scope-range"]')).toHaveClass(/approve/)
 })
 
+/* ---- AUTO-SCROLL LEFT AT THE FROZEN BLOCK'S EDGE (owner, 6 Sep 26) ----
+   "Let me auto scroll left when my drag is approaching the edge of the expanded
+   counters … likewise the counter on the left." The wrap's own left edge is
+   BURIED under the frozen name/counter pair — and under the figures drawer
+   while it is out — so the drag's left auto-scroll band sat behind them where
+   no pointer could ever reach it: a selection dragged leftward stopped dead at
+   the counters and the earlier days never came back. The band now starts where
+   the DAYS start (`select.ts leftEdge`, fed `wrap.left + frozenWidth(wrap)`,
+   which is drawer-aware already). None of that is measurable without layout,
+   so it is pinned here; `select.test.ts` pins the band arithmetic itself.
+     A DECREASE in `scrollLeft` is the signal, and it is unambiguous: a finger
+   or cursor moving LEFT would make the browser's own pan scroll the grid the
+   other way. */
+
+/** The x where the DAY columns begin — the right edge of whatever is frozen in
+ *  front of them: the figures drawer when it is out, else the counter column
+ *  (the real sticky cell on a desktop, the band's copy on a phone). */
+async function dayAreaLeft(page: Page, person: string): Promise<number> {
+  const drawer = page.locator('[data-testid="figdrawer"]')
+  if (await drawer.count()) { const d = (await drawer.boundingBox())!; return d.x + d.width }
+  const b = (await frozen(page, person, '.bal').boundingBox())!
+  return b.x + b.width
+}
+
+/** A day cell drawn on screen, at least `minX` px from the left of the window,
+ *  and well inside the viewport vertically — found rather than named, because
+ *  which day is where depends on the zoom, the width and where the year is
+ *  parked. The PAGE is scrolled first: on a phone the roster starts below the
+ *  fold (measured 6 Sep 26 — first cell at y 595 in a 664px window, under the
+ *  counts block and the month strip), so nothing would qualify at rest. */
+async function cellRightOf(page: Page, minX: number): Promise<string> {
+  await page.evaluate(() => {
+    const first = document.querySelector('.mx-wrap tbody.mxbody tr[data-testid^="row-"]')
+    if (first) window.scrollBy(0, first.getBoundingClientRect().top - Math.round(window.innerHeight * 0.3))
+  })
+  await page.waitForTimeout(250)
+  const id = await page.evaluate((x) => {
+    const wrapRight = document.querySelector('.mx-wrap')!.getBoundingClientRect().right
+    for (const c of Array.from(document.querySelectorAll<HTMLElement>('.mx-wrap [data-testid^="cell-"]'))) {
+      const r = c.getBoundingClientRect()
+      if (r.x > x && r.right < wrapRight && r.y > 80 && r.bottom < window.innerHeight - 80) return c.getAttribute('data-testid')
+    }
+    return null
+  }, minX)
+  expect(id, 'a day cell drawn clear of the frozen block').toBeTruthy()
+  return id!
+}
+
+/** Park the war mid-year, so there IS ground to the left to scroll back onto. */
+async function parkMidYear(page: Page): Promise<number> {
+  await page.locator('[data-testid="month-JUN"]').click()
+  await settleGrid(page)
+  const at = await page.locator('.mx-wrap').evaluate(el => el.scrollLeft)
+  expect(at, 'the grid sits mid-year').toBeGreaterThan(500)
+  return at
+}
+
+test('a drag-select parked at the counter column auto-scrolls the grid left', async ({ page }) => {
+  desktopOnly()
+  await lwRole(page, 'admin')
+  const before = await parkMidYear(page)
+  const [p1] = await threeInARow(page)
+  const edge = await dayAreaLeft(page, p1!)
+  const box = (await page.locator(`[data-testid="${await cellRightOf(page, edge + 150)}"]`).boundingBox())!
+  const y = box.y + box.height / 2
+  await page.mouse.move(box.x + box.width / 2, y)
+  await page.mouse.down()
+  await page.mouse.move(box.x + box.width / 2 - 8, y)          // arm past MOUSE_SLOP
+  await page.mouse.move(edge + 20, y, { steps: 6 })            // park just inside the day area
+  await page.waitForTimeout(400)
+  const parked = await page.locator('.mx-wrap').evaluate(el => el.scrollLeft)
+  await page.mouse.up()
+  await page.keyboard.press('Escape')
+  expect(parked, 'the year ran left under the parked cursor').toBeLessThan(before)
+})
+
+test('with the figures drawer open the band starts at the DRAWER\'s edge', async ({ page }) => {
+  desktopOnly()
+  await lwRole(page, 'admin')
+  await openDrawer(page)
+  const before = await parkMidYear(page)
+  const [p1] = await threeInARow(page)
+  const edge = await dayAreaLeft(page, p1!)
+  const box = (await page.locator(`[data-testid="${await cellRightOf(page, edge + 150)}"]`).boundingBox())!
+  const y = box.y + box.height / 2
+  await page.mouse.move(box.x + box.width / 2, y)
+  await page.mouse.down()
+  await page.mouse.move(box.x + box.width / 2 - 8, y)
+  await page.mouse.move(edge + 20, y, { steps: 6 })
+  await page.waitForTimeout(400)
+  const parked = await page.locator('.mx-wrap').evaluate(el => el.scrollLeft)
+  await page.mouse.up()
+  await page.keyboard.press('Escape')
+  expect(parked, 'the drawer, not the wrap, is what the band starts past').toBeLessThan(before)
+})
+
+/* The phone's own path: a REAL touch through CDP (the hold-then-drag recipe —
+   Playwright's mouse cannot arm the 180ms hold, and DOM touch events scroll
+   nothing). The drawer is open, which is the case that mattered on his iPhone:
+   the drawer covers most of the width there, so the days start well inside the
+   wrap and the old band was unreachable by a wide margin. */
+test('a held finger dragged to the drawer\'s edge auto-scrolls the grid left', async ({ page }) => {
+  test.skip(!isPhone(), 'the CDP touch path')
+  await lwRole(page, 'admin')
+  await openDrawer(page)
+  const before = await parkMidYear(page)
+  const [p1] = await threeInARow(page)
+  const edge = await dayAreaLeft(page, p1!)
+  // Clear of the LEFT band by construction: a press INSIDE it would be held
+  // (the 2 Sep rule) and could never scroll, and the drawer leaves only ~115px
+  // of day area on this viewport — so the press goes in its right-hand third.
+  const box = (await page.locator(`[data-testid="${await cellRightOf(page, edge + 80)}"]`).boundingBox())!
+  const y = box.y + box.height / 2
+  const x0 = box.x + box.width / 2, x1 = edge + 20
+  const cdp = await page.context().newCDPSession(page)
+  await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x: x0, y }] })
+  await page.waitForTimeout(260)                               // past HOLD (180ms) → armed
+  for (let i = 1; i <= 8; i++) {
+    await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: x0 - ((x0 - x1) * i) / 8, y }] })
+    await page.waitForTimeout(20)
+  }
+  await page.waitForTimeout(400)                               // held inside the band: it ramps
+  const parked = await page.locator('.mx-wrap').evaluate(el => el.scrollLeft)
+  await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] })
+  expect(parked, 'the year ran left under the held finger').toBeLessThan(before)
+})
+
 // The date header freezes below the top bar on a DESKTOP page scroll now, like
 // the phone (owner, 27 Aug 26). The mirror only exists once the real header has
 // scrolled up under the bar.

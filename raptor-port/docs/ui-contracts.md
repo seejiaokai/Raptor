@@ -4884,9 +4884,22 @@ BidPicker's look and vocabulary, not instead of it.
   rows slid up under a still pointer, the selection ballooned onto other
   people, and when a heading was what slid under the release point the last
   day was dropped (the e2e "drag-selecting a row" flake). Only the band(s) the
-  press sat in are held; the opposite edge scrolls as before. Geometry and the
+  press sat in are held; the opposite edge scrolls as before. **The LEFT band
+  starts where the DAYS start, not where the wrap does** (owner, 6 Sep 26 — "let
+  me auto scroll left when my drag is approaching the edge of the expanded
+  counters … likewise the counter on the left"): the frozen name/counter pair —
+  or the figures drawer while it is out — is parked over the wrap's own left
+  edge, so a band measured from `r.left` sat behind them where no pointer could
+  reach it, and a drag leftward simply stopped at the counters. `GestureBase`
+  and `SelectCtx` take an OPTIONAL `leftEdge()`; Matrix feeds it
+  `wrap.left + frozenWidth(wrap)`, which is drawer-aware already. Absent — every
+  other caller (the tracker's row select, the figure columns) — means the wrap's
+  own edge, unchanged. The RIGHT band keeps `r.right`: nothing is parked there.
+  The held-band rule above is measured from the same edge. Geometry and the
   edge rules are unit-tested (`select.test.ts`); the gesture itself is e2e
-  (`leavewar.spec.ts`, which also pins that the page stays put on that drag).
+  (`leavewar.spec.ts` — the park at the counters and at the drawer's edge on
+  desktop, the CDP hold-drag on the phone, and it also pins that the page stays
+  put on that drag).
 - **The sheet** (`ui/SelectSheet.tsx`, `data-testid="select-sheet"`) is the
   BidPicker's sibling on the same `Sheet` chassis. Sections are contextual to
   role and stage: everyone Fills while the war is OPEN (portion + leave chips;
@@ -5149,6 +5162,18 @@ Four asks from the same sitting, all on the Leave War grid:
   (`lw-viewing`, `ui/Chrome.tsx`) and the picker header leads with **VIEWING AS
   &lt;callsign&gt;**. Both are ABSENT when nobody in the roster is being viewed —
   there is no "you" to name, mirroring the picker's existing dash rule.
+  The LIT ROW itself was turned up on 6 Sep 26 (owner, from his iPhone — "make
+  the glow of the view as user row a bit more obvious in the grids"): the frozen
+  pair takes a lighter panel (`#173C4A`), the accent lines bracketing the row go
+  from .28 to .55, and the full-width seat bar in the name cell gains a glow past
+  its ring — which is what carries the row at a glance on a phone. The same
+  values in the figures DRAWER's copy of the row, so the two never disagree.
+  There is deliberately **no wash across the day cells**: a `td` background here
+  out-ranks `.mx td.weekend`, `.evoff`, `.locked` and every other state colour
+  (0,2,3 against 0,2,1), so a 7% accent tint was tried and would have swallowed
+  the weekend band on the one row that most needs reading. The bracketing lines
+  carry it instead — they are box-shadows, which sit over a cell's own fill
+  rather than replacing it. (`matrix.css` `tr.me`, both copies.)
 - **No personnel label editor** ("i can edit personnel, dont need to show that,
   just leave it as the callsign/name"). In Rearrange a ground-crew row used to
   turn its name column into a "Maint / Line" edit box; `PersLabel` is deleted, so
@@ -5167,6 +5192,27 @@ Four asks from the same sitting, all on the Leave War grid:
   before-itself guard, same splice-then-reinsert). The step-wise
   `moveManningRow(id, ±1)` stays as a tested store primitive with no UI caller.
   The hide (eye) control is unchanged.
+- **What a drag LOOKS like, reworked 6 Sep 26.** It used to be: the picked-up
+  row (person, manning row or category heading alike) faded to `opacity: .5`,
+  and the row it would land on took a 2px accent line on its FROZEN cell alone.
+  Two faults, both from the owner's iPhone. First, a frozen cell is STICKY — it
+  paints over the day cells scrolling beneath it — so fading it let the day
+  numbers come straight through the callsign ("19FL P9 18"); the same failure
+  the archived rows had, and `.mrow-hidden` already carried its cure. So the
+  CELL now stays opaque and only its CONTENT fades (`.who > *`, `.bal > *`, and
+  a heading's `.grphd-in` plus its fill cell). Second, "make the glow of the
+  selected row more obvious": the picked-up row is now LIFTED rather than merely
+  dimmed — an accent ring inset in its frozen cells (and in `td.grphd`), a halo
+  past them, and, on a person or manning row, accent lines top and bottom across
+  every day cell, written as box-shadows so a cell's own state colour still
+  shows through. The landing bar runs the WHOLE row at 3px with a glow on the
+  sticky cell, where 2px on that cell alone was easy to miss under a thumb; TOP
+  edge for an insert-before, BOTTOM for a lower-half hover, unchanged. One
+  cascade note, because it bites: the heading's ring rule and the row's line
+  rule tie on specificity, so the line rule is scoped `tr.dragging:not(.grp)`
+  and the heading's two cells are painted in the heading block instead. Pinned in
+  `rowglow.test.ts` — a CSS contract read off `matrix.css`, since jsdom paints
+  nothing and this is entirely about what is painted.
 
 Verified live at 1440px: picker rows 30px, the viewer chip reads "Viewing as
 Ranger", a ground-crew row shows "Cotter" with no edit box, and a count-row drag
@@ -5190,11 +5236,25 @@ to read "OIL" there, and `.card-hd` keeps `flex-wrap:wrap` only as a safety net.
 The ⇅ Rearrange toggle MOVED here from the grid's bracket-corner cell
 (`th.brakhd`, empty now) — the rearranging itself is hands-on-grid, and since
 6 Sep 26 this toggle is the only control (the on-grid bar is gone — §The
-on-grid rearrange bar is GONE); it lights accent (`.rtbtn.on`) while live and
-is the ⇅ icon alone on a phone. jsdom cannot see the single line; pinned by e2e
+on-grid rearrange bar is GONE); it GLOWS accent (`.rtbtn.on`: accent border and
+ink, plus a soft ring and halo) while live and is the ⇅ icon alone on a phone.
+jsdom cannot see the single line; pinned by e2e
 (`leavewar.spec.ts` — one row, order, OIL adjacency and the member layout, at
 phone AND desktop) and unit (`settingssheet.test.tsx` — the header's controls by
 role and DOM order, and the date line gone).
+
+**A TAP LEAVES NO RING ON ANY `.rtbtn`; A KEYBOARD STILL GETS ONE (owner, 6 Sep
+26).** These are real `<button>`s, so iOS leaves the one just pressed FOCUSED and
+paints its own focus ring — which on the Rearrange toggle read as "still on"
+after the second tap had turned Rearrange OFF, the state being said twice and
+disagreeing. `.rtbtn:focus { outline: none }` with `-webkit-tap-highlight-color:
+transparent`, and `.rtbtn:focus-visible` restores a 2px accent outline for
+keyboard focus — the house idiom (`.grphd`, `.catchip`). The two have the SAME
+specificity, so `:focus-visible` must stay AFTER `:focus` in `matrix.css` or the
+keyboard ring is cleared again; that source order is pinned. The ON state now
+carries a glow of its own, so "on" is said by the button's paint rather than by
+a ring the browser happened to leave behind. Pinned in `rowglow.test.ts` (the CSS
+contract — jsdom loads no stylesheet).
 
 **The controls Rearrange inserts paint on their own compositor layer (owner's
 iPhone, 5–6 Sep 26).** On a phone the ⇅ toggle inserts the Rearrange controls
@@ -6163,8 +6223,23 @@ off (`figureForLeave`: LL/OL → +LVE, OIL → +OIL, CCL/FCL/CL/PL → their own
 ATT C/HL/OML → −MED TOT; EL and ATT B do not switch), gated on that figure still
 being visible so an admin who hid one is not sent to it. One gate, one body —
 `Matrix.tsx showFigure` — because the two OIL paths (a tracker grant landing, an
-admin's hand-typed OIL day opening the tracker) had their own `setShownId('oil')`
-and walked straight past it. The picker is handed `shown.id`, the figure actually
+admin's hand-typed OIL day) had their own `setShownId('oil')` and walked straight
+past it. The picker is handed `shown.id`, the figure actually
 on screen, not the stored `shownId`: where the stored one names a figure since
 hidden the column has already fallen back to the first visible one, and the
 picker marked the dimmed row as pressed instead.
+
+**A WRITE ON THE GRID KEEPS YOU ON THE GRID (owner, 6 Sep 26 — "it should never
+bring me to the oil tracker page").** This REVERSES the 2 Sep 26 rule that an
+admin's manual OIL-family write (OIL taken, or an FO/HO credit typed by hand)
+closed the sheet and opened the OIL tracker on that person with the day's box
+lit, so the reason could be typed there. Being thrown off the grid mid-pass cost
+more than the reason was worth, and the tracker is one tap away on the OIL
+button. `Matrix.tsx onWrote` now does two things and no more: the column snaps to
+the figure the leave comes off (above), and an EARNING cell — FO/HO — snaps to
+`+OIL` so the balance that just grew is the one on screen. Nothing navigates. The
+negative-balance confirm in `BidPicker.write` is untouched by this and is now the
+whole of what the admin sees on an OIL day he has no balance for: it WARNS once
+("Tap the same leave again to go ahead") and writes on the second tap of the same
+leave, per COUNTER. Pinned in `oiltracker.test.tsx` (no tracker for either role,
+the column still snaps) and `bidding.test.tsx` (warn → write, OIL and CCL at 0).

@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
-import { advanceStage, getState, initStore, setRole } from '../state/store'
+import { advanceStage, getState, initStore, setBalance, setRole } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { Matrix } from './Matrix'
 
@@ -267,5 +267,48 @@ describe('marking medical on the grid (owner, 17 Aug 26)', () => {
     expect(screen.getByTestId('bid-picker')).toBeTruthy()
     expect(screen.queryByTestId('bid-ATTC')).toBeNull()
     expect(screen.queryByTestId('bid-HL')).toBeNull()
+  })
+})
+
+/* The negative-balance confirm, pinned for the first time (6 Sep 26). It has
+   lived in `BidPicker.write` since the counters landed and nothing about it
+   changed in this batch — a bid that would take someone below zero WARNS once
+   and writes on the second tap of the SAME leave, because the squadron's own
+   workbook runs negative (the owner was explicit: annual at −14, OIL at −5.5)
+   and what was wrong was doing it silently. It is pinned now because the OIL
+   path around it moved: an admin's OIL write no longer leaves the grid for the
+   tracker, so this note is the whole of what he sees, and it must not be able
+   to go quiet unnoticed. The rule is per COUNTER, not one flag for the sheet,
+   so CCL is walked too. */
+describe('a bid that would go below zero asks once, then writes', () => {
+  const warnThenWrite = (type: 'OIL' | 'CCL', counter: 'oil' | 'ccl', title: string) => {
+    setRole('admin')
+    expect(setBalance('dusk', counter, 0)).toBe(true)
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId(CELL))
+    fireEvent.click(screen.getByTestId(`bid-${type}`))
+    // The first tap only ASKS: the note names the way through and the sheet
+    // stays up with the day still empty.
+    expect(screen.getByTestId('span-note').textContent).toContain('Tap the same leave again')
+    expect(getState().grid.dusk?.['2026-02-11']).toBeUndefined()
+    expect(screen.getByTestId('bid-picker')).toBeTruthy()
+    // The second tap of the same leave goes through, and the sheet closes.
+    fireEvent.click(screen.getByTestId(`bid-${type}`))
+    expect(getState().grid.dusk['2026-02-11']).toBe(type)
+    expect(screen.queryByTestId('bid-picker')).toBeNull()
+    // The column has followed the write to the balance it came off, which now
+    // reads one day under, in the red a negative balance wears.
+    expect(screen.getByTestId('counter-name').textContent).toBe(title)
+    const fb = screen.getByTestId('bal-dusk').querySelector('.fb')!
+    expect(fb.textContent).toBe('-1')
+    expect(fb.className).toContain('neg')
+  }
+
+  it('OIL at zero: the note asks, the second tap writes, and +OIL reads −1', () => {
+    warnThenWrite('OIL', 'oil', '+OIL')
+  })
+
+  it('CCL at zero the same way — the confirm is per counter', () => {
+    warnThenWrite('CCL', 'ccl', '+CCL')
   })
 })
