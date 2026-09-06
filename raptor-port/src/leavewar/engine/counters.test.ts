@@ -14,8 +14,12 @@ import {
   FIGURES,
   orderedFigures,
   earnedOil,
+  figureForLeave,
+  figureLines,
+  titleLines,
   DEFAULT_FIGURE_ID,
   DEFAULT_FIGURE_ORDER,
+  type Figure,
   type Ledger,
   type Openings,
 } from './counters'
@@ -216,14 +220,14 @@ describe('earnedOil — duty stood on a non-working day (wire 4)', () => {
     expect(balanceOf({ ramp: { annual: 5 } }, [], [{ grid, states: {} }], 'ramp', 'annual')).toBe(4)
   })
 
-  it('the OIL BAL figure reads it: earned + granted − taken', () => {
+  it('the OIL figure reads it: earned + granted − taken', () => {
     const ctx = {
       openings: {},
       ledger: [{ id: 'g1', personId: 'ramp', counter: 'oil' as const, amount: 0.5, date: '2026-01-01', reason: 'award', approvedBy: 'SQNCDR' }],
       sources: [{ grid: { ramp: { '2026-01-10': 'FO', '2026-01-20': 'OIL' } }, states: {} }],
     }
     // earned 1 (FO) + granted 0.5 − taken 1 (OIL) = 0.5
-    expect(FIGURES.find(f => f.id === 'oilbal')!.value(ctx, 'ramp')).toBe(0.5)
+    expect(FIGURES.find(f => f.id === 'oil')!.value(ctx, 'ramp')).toBe(0.5)
   })
 })
 
@@ -373,59 +377,104 @@ describe('the two consumed aggregates', () => {
   })
 })
 
-describe('FIGURES and orderedFigures', () => {
-  // Eleven since 2 Sep 26: OFF USED went (owner — "remove the OFF used
-  // counter"). Thirteen since 3 Sep 26: CL BAL and CL USED joined, after
-  // FCL USED (owner — "2 counters to show the balance and used").
-  it('is the thirteen figures in the owner\'s order — OIL BAL joined with wire 4, OFF USED removed, CL BAL/USED added', () => {
-    expect(FIGURES.map(f => f.label)).toEqual([
-      'LL USED', 'OL USED', 'OIL USED', 'OIL BAL', 'CCL USED', 'PL USED',
-      'FCL USED', 'CL BAL', 'CL USED', 'MED USED', 'OML USED', 'LVE BAL', 'LVE USED',
-    ])
-    expect(FIGURES.find(f => f.label === 'OFF USED')).toBeUndefined()
+describe('FIGURES — the owner\'s eight (6 Sep 26)', () => {
+  it('is the eight figures, balances first, then the two totals', () => {
+    expect(FIGURES.map(f => f.id)).toEqual(['lve', 'oil', 'ccl', 'fcl', 'cl', 'pl', 'lvetot', 'medtot'])
+    expect(FIGURES.map(f => f.label)).toEqual(['LVE', 'OIL', 'CCL', 'FCL', 'CL', 'PL', 'LVE TOT', 'MED TOT'])
   })
-
-  it('has exactly three balance figures — OIL BAL, CL BAL and LVE BAL; every other is consumed', () => {
-    expect(FIGURES.filter(f => f.kind === 'bal').map(f => f.label)).toEqual(['OIL BAL', 'CL BAL', 'LVE BAL'])
-    expect(FIGURES.filter(f => f.kind === 'con')).toHaveLength(10)
-    // Each balance names the counter it reads — what the Cinch sheet's Set
-    // button keys on — and only OIL's goes to the tracker instead.
-    expect(FIGURES.filter(f => f.kind === 'bal').map(f => f.counter)).toEqual(['oil', 'cl', 'annual'])
-    expect(FIGURES.filter(f => f.kind === 'con').every(f => f.counter === undefined)).toBe(true)
+  it('opens on LVE', () => {
+    expect(DEFAULT_FIGURE_ID).toBe('lve')
+    expect(DEFAULT_FIGURE_ORDER).toEqual(FIGURES.map(f => f.id))
   })
-
-  it('carries each aggregate\'s composition as its legend', () => {
-    expect(FIGURES.find(f => f.id === 'med')!.legend).toBe('ATT C + HL + OML')
-    expect(FIGURES.find(f => f.id === 'lvecon')!.legend).toBe('LL + OL + OIL + CCL + PL + FCL + CL')
+  it('signs every title: + for a balance, − for a total', () => {
+    expect(FIGURES.filter(f => f.kind === 'bal').map(f => f.title)).toEqual(['+LVE', '+OIL', '+CCL', '+FCL', '+CL', '+PL'])
+    expect(FIGURES.filter(f => f.kind === 'tot').map(f => f.title)).toEqual(['−LVE TOT', '−MED TOT'])
   })
-
-  it('computes a figure through its ctx — CON via takenOf, BAL via balanceOf', () => {
-    const ctx = { openings: { ramp: { annual: 10 } }, ledger: [], sources: [{ grid: { ramp: { '2026-01-05': 'LL' } }, states: {} }] }
-    expect(FIGURES.find(f => f.id === 'll')!.value(ctx, 'ramp')).toBe(1)
-    // LVE BAL = opening 10 − 1 drawn.
-    expect(FIGURES.find(f => f.id === 'lvebal')!.value(ctx, 'ramp')).toBe(9)
+  it('names what each balance draws from, LL amber and OL red under LVE', () => {
+    const lve = FIGURES.find(f => f.id === 'lve')!
+    expect(lve.counter).toBe('annual')
+    expect(lve.used).toEqual([{ type: 'LL', label: 'LL', tone: 'amber' }, { type: 'OL', label: 'OL', tone: 'red' }])
+    const oil = FIGURES.find(f => f.id === 'oil')!
+    expect(oil.used).toEqual([{ type: 'OIL', label: 'OIL', tone: 'red' }])
+    for (const id of ['ccl', 'fcl', 'cl', 'pl']) {
+      const f = FIGURES.find(x => x.id === id)!
+      expect(f.counter).toBe(id)
+      expect(f.used).toEqual([{ type: id.toUpperCase(), label: id.toUpperCase(), tone: 'red' }])
+    }
+    expect(FIGURES.find(f => f.id === 'lvetot')!.used).toEqual([])
   })
-
-  it('opens on LVE BAL by default', () => {
-    expect(FIGURES.find(f => f.id === DEFAULT_FIGURE_ID)!.label).toBe('LVE BAL')
-    expect([...DEFAULT_FIGURE_ORDER]).toEqual(FIGURES.map(f => f.id))
+  it('says what each column counts, in the owner\'s words', () => {
+    const desc = Object.fromEntries(FIGURES.map(f => [f.id, f.desc]))
+    expect(desc.lve).toBe('Balance of local + overseas leave: opening + granted − LL − OL')
+    expect(desc.oil).toBe("The OIL tracker's balance: earned by weekend/PH work + granted − taken − expired")
+    expect(desc.ccl).toBe('Child care leave balance: opening + granted − taken')
+    expect(desc.fcl).toBe('Family care leave balance: opening + granted − taken')
+    expect(desc.cl).toBe('Compassionate leave balance: opening + granted − taken')
+    expect(desc.pl).toBe('Paternity leave balance: opening + granted − taken')
+    expect(desc.lvetot).toBe('All leave taken: LL + OL + OIL + CCL + FCL + CL + PL')
+    expect(desc.medtot).toBe('Medical days: ATT C + HL + OML')
   })
-
-  it('orders by a saved id list', () => {
-    expect(orderedFigures(['lvebal', 'll']).map(f => f.id).slice(0, 2)).toEqual(['lvebal', 'll'])
+  it('lays the title out: one line, or two when a balance has two used lines', () => {
+    const lve = FIGURES.find(f => f.id === 'lve')!
+    expect(titleLines(lve)).toEqual([[{ text: '+LVE', tone: 'white' }], [{ text: '−LL', tone: 'amber' }, { text: '−OL', tone: 'red' }]])
+    const oil = FIGURES.find(f => f.id === 'oil')!
+    expect(titleLines(oil)).toEqual([[{ text: '+OIL', tone: 'white' }, { text: '−OIL', tone: 'red' }]])
+    const tot = FIGURES.find(f => f.id === 'medtot')!
+    expect(titleLines(tot)).toEqual([[{ text: '−MED TOT', tone: 'red' }]])
   })
-
-  it('appends catalogue figures a stale saved order omits, and never duplicates', () => {
-    const out = orderedFigures(['lvebal'])
-    expect(out[0].id).toBe('lvebal')
-    expect(out).toHaveLength(FIGURES.length)
+  it('refuses to be reordered by a caller mutating the exported array', () => {
+    expect(() => (FIGURES as Figure[]).reverse()).toThrow()
   })
+  it('heals a stale saved order (old ids dropped, new ids appended)', () => {
+    expect(orderedFigures(['lvebal', 'medtot', 'oil']).map(f => f.id)).toEqual(['medtot', 'oil', 'lve', 'ccl', 'fcl', 'cl', 'pl', 'lvetot'])
+  })
+})
 
-  it('drops an unknown id and dedups a repeated one', () => {
-    const out = orderedFigures(['nope', 'll', 'll'])
-    expect(out.filter(f => f.id === 'll')).toHaveLength(1)
-    expect(out.some(f => f.id === 'nope')).toBe(false)
-    expect(out).toHaveLength(FIGURES.length)
+describe('figureLines — the two-line box', () => {
+  const grid: Grid = { ramp: { '2026-03-02': 'LL', '2026-03-03': 'LL', '2026-03-04': 'OL', '2026-03-10': 'OIL' } }
+  const states: States = {
+    ramp: { '2026-03-02': approved(), '2026-03-03': approved(), '2026-03-04': approved(), '2026-03-10': pending },
+  }
+  const openings: Openings = { ramp: { annual: 12, oil: 3 } }
+  const ledger: Ledger = []
+  const ctx = { openings, ledger, sources: [{ grid, states }] }
+
+  it('reads the balance on top and each used line under it, LL then OL', () => {
+    const lve = FIGURES.find(f => f.id === 'lve')!
+    expect(figureLines(lve, ctx, 'ramp')).toEqual({
+      top: 9,
+      used: [{ label: 'LL', tone: 'amber', value: 2 }, { label: 'OL', tone: 'red', value: 1 }],
+    })
+  })
+  it('a total has no used lines', () => {
+    const tot = FIGURES.find(f => f.id === 'lvetot')!
+    expect(figureLines(tot, ctx, 'ramp')).toEqual({ top: 4, used: [] })
+  })
+  it('an LVE breakdown splits LL from OL and still sums to the balance', () => {
+    const lve = FIGURES.find(f => f.id === 'lve')!
+    const parts = figureParts(lve, ctx, 'ramp')
+    expect(parts.map(p => p.label)).toEqual(['opening figure', 'granted', 'LL taken', 'OL taken'])
+    expect(parts.reduce((s, p) => s + p.value, 0)).toBe(lve.value(ctx, 'ramp'))
+  })
+})
+
+describe('figureForLeave — which balance a leave comes off', () => {
+  it('maps every leave code to the balance it draws from, medical to MED TOT', () => {
+    expect(figureForLeave('LL')).toBe('lve')
+    expect(figureForLeave('OL')).toBe('lve')
+    expect(figureForLeave('OIL')).toBe('oil')
+    expect(figureForLeave('CCL')).toBe('ccl')
+    expect(figureForLeave('FCL')).toBe('fcl')
+    expect(figureForLeave('CL')).toBe('cl')
+    expect(figureForLeave('PL')).toBe('pl')
+    expect(figureForLeave('ATTC')).toBe('medtot')
+    expect(figureForLeave('HL')).toBe('medtot')
+    expect(figureForLeave('OML')).toBe('medtot')
+  })
+  it('EL has a pool but no figure, and an unknown code maps to nothing', () => {
+    expect(figureForLeave('EL')).toBeNull()
+    expect(figureForLeave('ATTB')).toBeNull()
+    expect(figureForLeave('FO')).toBeNull()
   })
 })
 
@@ -440,37 +489,43 @@ describe('figureParts — the tap-a-counter breakdown (owner, 17 Aug 26)', () =>
     } }, states: {} }],
   }
 
-  it('MED USED opens as its three markers, half days included, and the parts sum to the figure', () => {
-    const parts = figureParts(f('med'), ctx, 'ramp')
+  it('MED TOT opens as its three markers, half days included, and the parts sum to the figure', () => {
+    const parts = figureParts(f('medtot'), ctx, 'ramp')
     expect(parts).toEqual([
       { label: 'ATT C', value: 1 },
       { label: 'HL', value: 0.5 },
       { label: 'OML', value: 1 },
     ])
-    expect(parts.reduce((s, p) => s + p.value, 0)).toBe(f('med').value(ctx, 'ramp'))
+    expect(parts.reduce((s, p) => s + p.value, 0)).toBe(f('medtot').value(ctx, 'ramp'))
   })
 
-  it('LVE USED opens as its seven codes and sums to the figure', () => {
-    const parts = figureParts(f('lvecon'), ctx, 'ramp')
+  it('LVE TOT opens as its seven codes and sums to the figure', () => {
+    const parts = figureParts(f('lvetot'), ctx, 'ramp')
     expect(parts.map(p => p.label)).toEqual(['LL', 'OL', 'OIL', 'CCL', 'PL', 'FCL', 'CL'])
-    expect(parts.reduce((s, p) => s + p.value, 0)).toBe(f('lvecon').value(ctx, 'ramp'))
+    expect(parts.reduce((s, p) => s + p.value, 0)).toBe(f('lvetot').value(ctx, 'ramp'))
   })
 
-  it('a balance opens as opening + granted (+ earned for OIL) − taken, signed so it sums', () => {
-    const oil = figureParts(f('oilbal'), ctx, 'ramp')
+  it('a balance opens as opening + granted (+ earned for OIL) − taken per type, signed so it sums', () => {
+    const oil = figureParts(f('oil'), ctx, 'ramp')
     expect(oil).toEqual([
       { label: 'opening figure', value: 2 },
       { label: 'granted', value: 1 },
       { label: 'earned by weekend/PH work', value: 1 },
-      { label: 'taken', value: -1 },
+      { label: 'OIL taken', value: -1 },
     ])
-    expect(oil.reduce((s, p) => s + p.value, 0)).toBe(f('oilbal').value(ctx, 'ramp'))
-    // LVE BAL has no earned row — nothing but OIL is earned by working.
-    expect(figureParts(f('lvebal'), ctx, 'ramp').map(p => p.label))
-      .toEqual(['opening figure', 'granted', 'taken'])
+    expect(oil.reduce((s, p) => s + p.value, 0)).toBe(f('oil').value(ctx, 'ramp'))
+    // LVE has no earned row — nothing but OIL is earned by working — and
+    // splits its taken line per type (LL, OL) rather than one generic 'taken'.
+    expect(figureParts(f('lve'), ctx, 'ramp').map(p => p.label))
+      .toEqual(['opening figure', 'granted', 'LL taken', 'OL taken'])
   })
 
-  it('a single-code figure restates itself as one line, so every figure answers', () => {
-    expect(figureParts(f('ll'), ctx, 'ramp')).toEqual([{ label: 'days taken', value: 1 }])
+  // Every one of the eight real figures defines its own `.parts` now, so no
+  // catalogue figure still takes this branch — a stand-in exercises the
+  // fallback `figureParts` itself still promises (its own doc comment: "the
+  // figure restated as its one line where it is already a single number").
+  it('a figure with no parts of its own restates as one line, so every figure answers', () => {
+    const bare: Figure = { id: 'x', label: 'X', title: '−X', kind: 'tot', used: [], desc: 'x', value: () => 4 }
+    expect(figureParts(bare, ctx, 'ramp')).toEqual([{ label: 'days taken', value: 4 }])
   })
 })
