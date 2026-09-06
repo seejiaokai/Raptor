@@ -1511,3 +1511,33 @@ gate's. Keep verdict-bearing commands unpiped.
 
 **Principle:** A minor finding never opens a fix round, but it should ride one that is open anyway — the implementer who still holds the task's context fixes it in minutes, where the closing wave hands it to a stranger among a dozen others.
 
+### Observation 99: Where the visual companion cannot open a browser, the substitute is a mock on the real bundle — offered as an OPTION on the section it would clarify
+
+**Status:** OPEN
+**Date:** 2026-09-06
+**Session context:** Leave War bulk balance entry — the brainstorm after the figures drawer shipped to preview (owner asked for the gesture's watch areas, then for a mockup of the bar).
+**Skill:** brainstorming
+**Type:** open-source
+**Phase/Area:** Visual Companion / Present design sections
+
+**Issue:** In a remote, ephemeral session (no way to open the owner's browser) the skill's companion offer is impossible, so the visual question was answered the way the repo's own rule prescribes: a throwaway comp drawn on the built bundle with Playwright, screenshotted at phone and desktop widths, sent as an image. The offer was NOT a separate message — it rode the section-approval question as one of its options ("Looks right / Show me a mockup first / …"). The owner took the mockup option, and the picture exposed a defect the approved text could never have shown (the bar "visually blends in with the background"); a second round with two stronger treatments settled it in one exchange. Two rounds, bounded, no polishing loop.
+
+**Suggested improvement:** In the Visual Companion section: name the fallback for environments where the companion cannot run — a throwaway comp on the project's real stylesheet/bundle, screenshotted at the shipped widths and sent as an image — and allow the offer to be an option on the approval question of the section it would clarify, instead of a mandatory standalone message, when the visual question IS that section. Keep the standalone offer for questions that are not tied to a section under approval.
+
+**Principle:** A picture offer costs least as an answer option on the very question it would clarify; when the companion cannot run, a comp on the real stylesheet is the substitute — and it catches what prose approval cannot (a control that blends into its background).
+
+### Observation 100: Reusing an interaction core: dispatch a dedicated trap-hunt exploration that pairs every trap with its existing defence line or "must build"
+
+**Status:** OPEN
+**Date:** 2026-09-06
+**Session context:** Leave War bulk balance entry — the brainstorm after the figures drawer shipped to preview (owner asked for the gesture's watch areas, then for a mockup of the bar).
+**Skill:** brainstorming (explore project context) / writing-plans (task constraints)
+**Type:** open-source
+**Phase/Area:** Explore project context / plan constraints
+
+**Issue:** The standard exploration (three agents: data model, interaction mechanics, conventions) described the drag-select core well but did not ask, per trap, whether a defence already existed. The owner then asked for exactly that ("watch areas to prevent bugs"), and a fourth, deeper exploration produced an 18-item list in which each trap named the line that defends it today or "no defence exists — must build". Eleven of the eighteen were new to the design (a React re-render wiping an imperative class on the new surface; the phone band layered above the drawer; a swipe handler firing after an armed drag; the click swallow missing on pointercancel; a Sheet's touch shield blocking the very cells being selected). Several would have surfaced as fix rounds or as bugs on the owner's phone.
+
+**Suggested improvement:** In brainstorming's "Explore project context": when a design REUSES an existing interaction/engine core on a new surface, add a fourth exploration whose brief is the trap-hunt — for the new surface, list every trap, the existing defence with its location, or "must build" — and carry the list verbatim into the spec as build constraints and into writing-plans as per-task pins. In writing-plans: a task that touches such a core lists the traps it must defend and the test that pins each.
+
+**Principle:** Reuse is where the hidden bugs live: pair every trap with its defence line before designing, and turn "must build" gaps into pinned tasks rather than fix rounds.
+
