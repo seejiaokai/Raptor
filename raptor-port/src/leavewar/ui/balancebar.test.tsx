@@ -56,6 +56,25 @@ describe('BalanceBar', () => {
     expect(screen.getByTestId('balance-bar')).toBeTruthy()
   })
 
+  /* A refusal names what was wrong with the value that WAS typed, so left
+     standing over a new one it reads as a fresh rejection of a draft nothing
+     has judged yet — the reader's next keystroke is met by an error about the
+     keystroke before it (review, 6 Sep 26). Editing the amount clears it; the
+     refusal comes back only if Save is pressed again. */
+  it('editing the amount clears the last refusal', () => {
+    render(<BalanceBar figure={ccl} ids={['ramp']} onDone={() => {}} onClose={() => {}} />)
+    const amt = screen.getByTestId('oil-amt')
+    fireEvent.change(amt, { target: { value: '1.25' } })
+    fireEvent.click(screen.getByTestId('oil-credit-save'))
+    expect(screen.getByTestId('oil-credit-err').textContent).toBe('Days come in halves — 1, 1.5, 2 …')
+    fireEvent.change(amt, { target: { value: '1.5' } })
+    expect(screen.queryByTestId('oil-credit-err'), 'the message goes the moment the draft changes').toBeNull()
+    // …and it is a CLEAR, not a silencing: a still-bad value refuses again.
+    fireEvent.change(amt, { target: { value: '1.25' } })
+    fireEvent.click(screen.getByTestId('oil-credit-save'))
+    expect(screen.getByTestId('oil-credit-err').textContent).toBe('Days come in halves — 1, 1.5, 2 …')
+  })
+
   it('the sign chip subtracts on a phone keypad that has no minus', () => {
     render(<BalanceBar figure={ccl} ids={['ramp']} onDone={() => {}} onClose={() => {}} />)
     fireEvent.click(screen.getByTestId('oil-sign'))

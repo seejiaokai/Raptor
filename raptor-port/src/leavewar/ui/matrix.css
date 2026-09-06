@@ -799,16 +799,27 @@
   text-underline-offset: 3px;
 }
 
+/* The shortfall ring is PUBLISHED as `--mrow-ring` as well as painted, because
+   `box-shadow` is one property and a rule that writes only its own bar wipes it.
+   The Rearrange drag rules compose this value under their own paint (see
+   `tr.dragging` / `tr.dragover` further down): while an admin is reordering the
+   manning block, WHICH DAYS ARE SHORT is exactly what he is reading to decide
+   the order, so the ring has to survive being dragged and being landed on.
+     The property is defined and consumed on the SAME static cell — it is not a
+   custom property toggled on `.mx-outer` or any grid ancestor, which is the
+   thing performance.md forbids (that restyles ~7k nodes; this restyles none). */
 .mx .counts td.amber {
+  --mrow-ring: inset 0 0 0 1px rgba(229, 168, 59, .45);
   background: rgba(229, 168, 59, .18);
   color: #F2C879;
-  box-shadow: inset 0 0 0 1px rgba(229, 168, 59, .45);
+  box-shadow: var(--mrow-ring);
 }
 
 .mx .counts td.red {
+  --mrow-ring: inset 0 0 0 1px rgba(240, 85, 95, .55);
   background: rgba(240, 85, 95, .20);
   color: #FFAAB0;
-  box-shadow: inset 0 0 0 1px rgba(240, 85, 95, .55);
+  box-shadow: var(--mrow-ring);
 }
 
 /* cells — chip idiom: tint + ink + hairline, never a solid block. Five
@@ -1730,14 +1741,27 @@
 /* `:not(.grp)` because a category heading is a `tr.dragging` too, and its own
    ring rule up in the heading block would otherwise TIE with this one on
    specificity and lose on source order — the heading would take the lines and
-   never the ring. Its two cells are painted there, beside the grip. */
+   never the ring. Its two cells are painted there, beside the grip.
+     `--mrow-ring` LAST, so a MANNING row keeps its amber/red shortfall ring
+   under the drag's lines instead of losing it (see `.mx .counts td.amber`).
+   Box-shadow layers paint first-on-top, so the drag's own paint wins the top
+   and bottom edges and the shortfall shows down the sides. A day cell with no
+   shortfall has no `--mrow-ring` to inherit and takes the transparent
+   fallback — one invisible layer, nothing else changed. */
 .mx tbody tr.dragging:not(.grp) td:not(.who):not(.bal) {
-  box-shadow: inset 0 2px 0 rgba(59, 198, 232, .65), inset 0 -2px 0 rgba(59, 198, 232, .65);
+  box-shadow: inset 0 2px 0 rgba(59, 198, 232, .65), inset 0 -2px 0 rgba(59, 198, 232, .65), var(--mrow-ring, 0 0 transparent);
 }
 /* The landing bar runs the WHOLE row, 3px, with a glow — the previous 2px on
-   the frozen cell alone was easy to miss under a thumb. */
-.mx tbody tr.dragover td { box-shadow: inset 0 3px 0 var(--accent); }
-.mx tbody tr.dragover.after td { box-shadow: inset 0 -3px 0 var(--accent); }
+   the frozen cell alone was easy to miss under a thumb.
+     `td:not(.who)` is not decoration: at a bare `td` this rule is (0,2,3) and
+   LOSES to `.mx .counts td.amber` (0,3,1), so a manning row being landed on
+   drew no bar at all on its short days — gaps in the bar on exactly the
+   columns the admin is reordering the block for. Excluding `.who` (which has
+   its own glow rule below) takes it to (0,3,3), which clears the counts
+   states; the ring rides underneath, as on the picked-up row above, so the
+   two rows now say the same thing about the same day. */
+.mx tbody tr.dragover td:not(.who) { box-shadow: inset 0 3px 0 var(--accent), var(--mrow-ring, 0 0 transparent); }
+.mx tbody tr.dragover.after td:not(.who) { box-shadow: inset 0 -3px 0 var(--accent), var(--mrow-ring, 0 0 transparent); }
 .mx tbody tr.dragover .who { box-shadow: inset 0 3px 0 var(--accent), 0 -1px 10px rgba(59, 198, 232, .55); }
 .mx tbody tr.dragover.after .who { box-shadow: inset 0 -3px 0 var(--accent), 0 1px 10px rgba(59, 198, 232, .55); }
 

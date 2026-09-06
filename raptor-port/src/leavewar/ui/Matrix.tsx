@@ -2997,7 +2997,12 @@ export function Matrix() {
     onEventSelect: s => setEventEdit({ line: s.line, date: s.from, to: s.from === s.to ? undefined : s.to }),
     // The days begin past the frozen block — the name/counter pair, or the
     // drawer while it is open (frozenWidth is already drawer-aware).
-    leftEdge: () => { const w = wrapRef.current; return w ? w.getBoundingClientRect().left + frozenWidth(w) : 0 },
+    //   No wrap means nothing to measure, and `0` would be a LIE the band could
+    // act on — a real client-x at the screen's left edge. `-Infinity` is the
+    // only value that reads as "no left band", and the `??` at the wiring site
+    // cannot rescue it for us: `0` is not nullish, so it would pass straight
+    // through (review, 6 Sep 26).
+    leftEdge: () => { const w = wrapRef.current; return w ? w.getBoundingClientRect().left + frozenWidth(w) : -Infinity },
   }
 
   // ...and the FIGURE drag the same way (owner, 6 Sep 26): a run of people down

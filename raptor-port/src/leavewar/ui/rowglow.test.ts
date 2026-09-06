@@ -49,6 +49,21 @@ const HOVER_MEDIA: Array<[number, number]> = [...css.matchAll(/@media\s*\(\s*hov
 })
 const insideHoverMedia = (at: number) => HOVER_MEDIA.some(([a, b]) => at > a && at < b)
 
+/** A selector's specificity as [ids, classes, elements] — enough for the simple
+ *  class/element/`:not()` selectors this file deals in. `:not()` adds nothing
+ *  itself but its argument counts, which is precisely the arithmetic that
+ *  decided the manning-row bug below, so it is computed rather than eyeballed. */
+const spec = (sel: string): [number, number, number] => {
+  const s = sel.replace(/:not\(([^)]*)\)/g, ' $1 ')
+  const n = (re: RegExp) => (s.match(re) ?? []).length
+  return [n(/#[\w-]+/g), n(/\.[\w-]+/g) + n(/:[\w-]+/g) + n(/\[[^\]]*\]/g), n(/(^|[\s>+~])[a-zA-Z][\w-]*/g)]
+}
+const beats = (a: string, b: string): boolean => {
+  const [x, y] = [spec(a), spec(b)]
+  for (let i = 0; i < 3; i++) if (x[i]! !== y[i]!) return x[i]! > y[i]!
+  return false            // a tie is NOT a win: source order would decide it
+}
+
 describe('a dragged row keeps its frozen cells opaque', () => {
   it('nothing fades the sticky cells themselves — not the pair, not the heading', () => {
     for (const sel of ['.mx tbody tr.dragging .who', '.mx tbody tr.dragging .bal', '.mx tbody tr.grp.dragging', '.mx tbody tr.grp.dragging td.grphd']) {
@@ -74,13 +89,52 @@ describe('a dragged row keeps its frozen cells opaque', () => {
   })
 
   it('the landing bar runs the whole row at 3px, top edge or bottom', () => {
-    // `tr.dragover td` is the one that runs the width — a category heading's
-    // cells are ordinary `td`s, so it serves both kinds of row; the `.who` and
-    // `.grphd` rules only add the glow on the sticky cell.
-    for (const sel of ['.mx tbody tr.dragover td', '.mx tbody tr.dragover .who', '.mx tbody tr.grp.dragover td.grphd'])
+    // The `td:not(.who)` rule is the one that runs the width — a category
+    // heading's cells are ordinary `td`s, so it serves both kinds of row; the
+    // `.who` and `.grphd` rules only add the glow on the sticky cell.
+    for (const sel of ['.mx tbody tr.dragover td:not(.who)', '.mx tbody tr.dragover .who', '.mx tbody tr.grp.dragover td.grphd'])
       expect(bodiesFor(sel).join(' '), `${sel} draws the 3px landing bar`).toMatch(/inset 0 3px 0 var\(--accent\)/)
-    for (const sel of ['.mx tbody tr.dragover.after td', '.mx tbody tr.dragover.after .who', '.mx tbody tr.grp.dragover.after td.grphd'])
+    for (const sel of ['.mx tbody tr.dragover.after td:not(.who)', '.mx tbody tr.dragover.after .who', '.mx tbody tr.grp.dragover.after td.grphd'])
       expect(bodiesFor(sel).join(' '), `${sel} draws it on the bottom edge instead`).toMatch(/inset 0 -3px 0 var\(--accent\)/)
+  })
+
+  /* THE MANNING ROW, both halves of it. A count cell that is under strength
+     carries its own `box-shadow` ring (`.mx .counts td.amber` / `.red`), and
+     box-shadow is ONE property, so the drag rules and the shortfall ring are in
+     direct competition on exactly the days an admin reorders the block FOR.
+     Two things have to hold, and they used to disagree with each other: the
+     drag paint must out-rank the ring (or the landing bar simply vanishes on
+     the short days), and it must then put the ring back underneath (or the
+     picked-up row loses the shortfall the landing row still shows). */
+  it('the drag rules out-rank the counts shortfall states', () => {
+    for (const sel of [
+      '.mx tbody tr.dragging:not(.grp) td:not(.who):not(.bal)',
+      '.mx tbody tr.dragover td:not(.who)',
+      '.mx tbody tr.dragover.after td:not(.who)',
+    ]) {
+      expect(bodiesFor(sel).length, `${sel} exists`).toBe(1)
+      for (const state of ['.mx .counts td.amber', '.mx .counts td.red'])
+        expect(beats(sel, state), `${sel} must out-rank ${state} — a bare \`td\` here is (0,2,3) and LOSES to (0,3,1), which left no landing bar on a short day`).toBe(true)
+    }
+  })
+
+  it('…and put the shortfall ring back underneath, so both rows say the same thing', () => {
+    for (const state of ['.mx .counts td.amber', '.mx .counts td.red']) {
+      const body = bodiesFor(state).join(' ')
+      expect(body, `${state} publishes its ring as --mrow-ring`).toMatch(/--mrow-ring:\s*inset 0 0 0 1px/)
+      expect(body, `${state} still paints it`).toMatch(/box-shadow:\s*var\(--mrow-ring\)/)
+    }
+    for (const sel of [
+      '.mx tbody tr.dragging:not(.grp) td:not(.who):not(.bal)',
+      '.mx tbody tr.dragover td:not(.who)',
+      '.mx tbody tr.dragover.after td:not(.who)',
+    ]) {
+      const body = bodiesFor(sel)[0]!.replace(/\s+/g, ' ')
+      expect(body, `${sel} composes the shortfall ring`).toMatch(/var\(--mrow-ring, 0 0 transparent\)/)
+      // LAST layer: box-shadow paints first-on-top, so the drag's own edges win
+      // and the shortfall shows down the sides rather than over the bar.
+      expect(body.trim().replace(/;$/, '').endsWith('var(--mrow-ring, 0 0 transparent)'), `${sel} keeps the ring as the BOTTOM layer`).toBe(true)
+    }
   })
 })
 
@@ -134,7 +188,11 @@ describe('the Rearrange switch rings only for a keyboard, and glows while on', (
   it('every .rtbtn hover rule is behind @media (hover: hover)', () => {
     expect(HOVER_MEDIA.length, 'matrix.css declares an @media (hover: hover) block').toBeGreaterThan(0)
     const hovers = RULES.filter(r => r.sels.some(s => /\.rtbtn[^,]*:hover$/.test(s)))
-    expect(hovers.length, 'the .rtbtn family still HAS hover rules — a mouse keeps them').toBe(3)
+    // At least the three that exist today, so the guard cannot be "passed" by
+    // deleting the hovers — but not EXACTLY three, or a future hover added
+    // correctly inside the guard would fail. The per-rule check below is what
+    // actually holds the line.
+    expect(hovers.length, 'the .rtbtn family still HAS hover rules — a mouse keeps them').toBeGreaterThanOrEqual(3)
     for (const r of hovers)
       expect(insideHoverMedia(r.at), `${r.sels.join(', ')} is guarded — a touch screen keeps :hover stuck on the last thing tapped`).toBe(true)
   })

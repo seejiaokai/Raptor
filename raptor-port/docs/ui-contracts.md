@@ -6261,3 +6261,19 @@ whole of what the admin sees on an OIL day he has no balance for: it WARNS once
 ("Tap the same leave again to go ahead") and writes on the second tap of the same
 leave, per COUNTER. Pinned in `oiltracker.test.tsx` (no tracker for either role,
 the column still snaps) and `bidding.test.tsx` (warn → write, OIL and CCL at 0).
+
+**The docked balance bar's two dismissal rules agree with each other (6 Sep 26).**
+A press outside the bar and the figure boxes drops the run (the tracker's own
+no-Deselect-button rule, 2 Sep 26) — but NOT while a `.bidsheet` is mounted,
+which is what Escape already did: the two read the same situation differently, so
+dismissing a breakdown by tapping beside it silently took the selection with it
+where Escape left it standing. Both now yield to an open sheet, and a press after
+the sheet closes clears as ever (`Matrix.tsx onDown`, pinned in
+`figselect.test.tsx`).
+
+**A refusal in the balance bar's form clears when the amount is edited (6 Sep
+26).** The message names what was wrong with the value that WAS typed, so left
+standing over a new one it reads as a fresh rejection of a draft nothing has
+judged yet. Editing the number clears it; Save brings it back if the new value is
+still bad, so this is a clear, not a silencing (`CreditForm.tsx`, pinned in
+`balancebar.test.tsx`).

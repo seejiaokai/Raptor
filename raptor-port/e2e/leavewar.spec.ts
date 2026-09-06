@@ -1040,9 +1040,12 @@ async function parkMidYear(page: Page): Promise<number> {
   return at
 }
 
-test('a drag-select parked at the counter column auto-scrolls the grid left', async ({ page }) => {
-  desktopOnly()
-  await lwRole(page, 'admin')
+/** Park mid-year, drag-select from a day cell well clear of the frozen block,
+ *  and leave the cursor 20px inside the day area's left edge for long enough
+ *  that the auto-scroll can run. Returns where the grid was and where it got
+ *  to; the drawer's state is the caller's business, because that is the only
+ *  thing the two desktop cases differ by. */
+async function parkAndDragToEdge(page: Page): Promise<{ before: number; parked: number }> {
   const before = await parkMidYear(page)
   const [p1] = await threeInARow(page)
   const edge = await dayAreaLeft(page, p1!)
@@ -1056,6 +1059,13 @@ test('a drag-select parked at the counter column auto-scrolls the grid left', as
   const parked = await page.locator('.mx-wrap').evaluate(el => el.scrollLeft)
   await page.mouse.up()
   await page.keyboard.press('Escape')
+  return { before, parked }
+}
+
+test('a drag-select parked at the counter column auto-scrolls the grid left', async ({ page }) => {
+  desktopOnly()
+  await lwRole(page, 'admin')
+  const { before, parked } = await parkAndDragToEdge(page)
   expect(parked, 'the year ran left under the parked cursor').toBeLessThan(before)
 })
 
@@ -1063,19 +1073,7 @@ test('with the figures drawer open the band starts at the DRAWER\'s edge', async
   desktopOnly()
   await lwRole(page, 'admin')
   await openDrawer(page)
-  const before = await parkMidYear(page)
-  const [p1] = await threeInARow(page)
-  const edge = await dayAreaLeft(page, p1!)
-  const box = (await page.locator(`[data-testid="${await cellRightOf(page, edge + 150)}"]`).boundingBox())!
-  const y = box.y + box.height / 2
-  await page.mouse.move(box.x + box.width / 2, y)
-  await page.mouse.down()
-  await page.mouse.move(box.x + box.width / 2 - 8, y)
-  await page.mouse.move(edge + 20, y, { steps: 6 })
-  await page.waitForTimeout(400)
-  const parked = await page.locator('.mx-wrap').evaluate(el => el.scrollLeft)
-  await page.mouse.up()
-  await page.keyboard.press('Escape')
+  const { before, parked } = await parkAndDragToEdge(page)
   expect(parked, 'the drawer, not the wrap, is what the band starts past').toBeLessThan(before)
 })
 

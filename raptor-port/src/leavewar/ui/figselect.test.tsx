@@ -117,6 +117,33 @@ describe('a drag down the figure column selects a run of people', () => {
     expect(screen.queryByTestId('balance-bar')).toBeNull()
   })
 
+  /* …but not while a SHEET is up. The press and the Escape below were reading
+     the same situation two different ways (review, 6 Sep 26): Escape yielded to
+     an open `.bidsheet`, while a press anywhere outside the boxes — a tap on
+     that sheet's own scrim included — dropped the run. So dismissing a
+     breakdown by tapping beside it silently took the selection with it, where
+     dismissing the same panel with Escape left it standing. The press now
+     yields to a sheet exactly as Escape does; closing the sheet and pressing
+     again still clears, so nothing is stranded. */
+  it('a press while a sheet is open leaves the run alone, as Escape does', async () => {
+    render(<Matrix />)
+    const [a] = layOutColumn()
+    dragDown(a)
+    expect(marked()).toHaveLength(2)
+    await tick()
+    fireEvent.click(a)                             // the breakdown, over the live run
+    expect(screen.getByTestId('figure-breakdown')).toBeTruthy()
+
+    fireEvent.pointerDown(document.body)           // a tap beside the sheet: the sheet's business
+    expect(marked(), 'the run survives a press aimed at the sheet').toHaveLength(2)
+
+    fireEvent.keyDown(document.body, { key: 'Escape' })   // close the sheet …
+    expect(screen.queryByTestId('figure-breakdown')).toBeNull()
+    fireEvent.pointerDown(document.body)                  // … and now the press clears as ever
+    expect(marked()).toHaveLength(0)
+    expect(screen.queryByTestId('balance-bar')).toBeNull()
+  })
+
   /* ESCAPE CLEARS IT TOO — but a sheet open over the selection gets the press
      first, or one key would take away both the panel being read and the run
      underneath it. The bar's listener yields while a `.bidsheet` is mounted;
