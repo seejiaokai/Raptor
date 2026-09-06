@@ -388,8 +388,8 @@ set, each titled with the sign it carries:
 
 The drawer is an overlay standing over the day columns from the names' right
 edge out (the owner's shape — §The figures drawer, `docs/ui-contracts.md`), and
-two consequences of that fall out of it. Neither is a bug in the drawer; both
-are open questions for the owner rather than decisions taken quietly:
+THREE questions fall out of it. None is a bug in the drawer; all three are open
+questions for the owner rather than decisions taken quietly:
 
 - **The first ~9 day columns (desktop) or ~7 (phone) sit UNDER the drawer while
   it is open, and no scroll position reveals them** — the grid's scroll floor is
@@ -404,7 +404,17 @@ are open questions for the owner rather than decisions taken quietly:
   first column while it is open.** Reordering, hiding and the legend are
   therefore reached by closing the drawer first. It reads naturally on a phone
   (which opens closed) and costs an admin one extra tap on a desktop (which
-  opens open). No second entry to the picker was invented for it.
+  opens open). No second entry to the picker was invented for it. The SWIPE
+  across the counter column that cycles the figure is under the same first
+  column, so it too is reached by putting the drawer away — no loss on a phone,
+  where the drawer opens closed and the swipe is the fast path with it away.
+- **A desktop opens with the drawer OUT, and that is a choice, not a default
+  that fell out.** It is what a wide screen is for — every figure for everyone,
+  with the days still working beside them — and it costs the first ~9 day
+  columns and the picker above (the two bullets over this one). The owner may
+  want a desktop to open on the days instead; it is one line in `Matrix.tsx`
+  (the `matchMedia` at mount) either way, and the switch is session-only, so
+  nothing is stored that a change would have to migrate.
 
 ## The stuck header keeps the plain chip without scroll-driven animations (6 Sep 26)
 

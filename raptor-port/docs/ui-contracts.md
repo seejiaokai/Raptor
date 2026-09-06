@@ -6004,12 +6004,28 @@ A zero used line is absent, not a "0". Two 11px lines fill the existing 22px row
 which is why rows do NOT grow when the drawer opens. Digits are tabular so a
 column of numbers lines up.
 
+**A column never widens and a number never wraps** (spec §2), so the rare
+over-wide value drops one type size inside its box instead. `FigureCell`
+measures the text it is about to draw and adds `.wide` at FOUR characters —
+`-100` on the top line, or a used line whose numbers total four digits (`12 10`,
+LL beside OL) — which takes `.fb` from 10.5px to 9.5px and `.fu` from 9.5px to
+8.5px. Four is where it stops fitting the narrowest box there is: 28px on a
+phone, 26px of it usable. Three (`100`, `-10`) still fits and is left alone. The
+line heights do not move, so a wide box is still two 11px lines and no row grows;
+both lines also clip (`overflow: hidden`), which is the guarantee for a value
+past anything measured here. Pinned in `ui/counters.test.tsx` §an over-wide
+value.
+
 **The corner switch.** `button.figbar` in the bracket row's one empty frozen cell
 (`th.brakhd`, above CS/Name) reads `▸ FIGURES` / `▾ FIGURES` and carries
 `aria-expanded`; it is the archive bar's scale, deliberately a hem rather than a
 heading. Both roles, session-only, decided ONCE at mount: a desktop opens OPEN, a
 phone (`matchMedia('(max-width: 700px)')`) and jsdom (no `matchMedia`) open
-CLOSED.
+CLOSED. The type is small; the TARGET is the WHOLE CELL — the button is taken out
+of flow and pinned `inset: 0` inside the (already sticky) `th`, which is also
+what keeps it costing the bracket row no height. In flow it was its own 15px line
+in a 22px cell, so a third of the only way in and out of the drawer did nothing
+when pressed.
 
 **The drawer is an overlay, never extra cells.** A second `table.mx` in a
 `div.mxdrawer` positioned absolutely inside `.mx-outer` — the `.mxband` phone
@@ -6055,7 +6071,15 @@ re-measures it (beside the zoom, the window edges and Rearrange, which move a
 column edge for the same reason). Left off that list, the readout — and the
 `visibleSpan` the fill engine's rolling target follows with it — went on using
 the closed pair's width, ~250px left of where the reader was looking on a
-desktop, until an unrelated resize or zoom happened to refresh the cache. Before
+desktop, until an unrelated resize or zoom happened to refresh the cache. **The
+dep is the measured width `drawerAt.width`, not a list of the things that move
+it**: `figuresOpen` alone catches the drawer appearing but not the drawer
+CHANGING WIDTH while it is out — hide a figure, open the drawer, press Undo, and
+the cached edge is a column short of where the reader is looking. `drawerAt` is
+value-guarded, so that dep fires on a real edge move and on nothing else. Pinned
+both ways: "the month strip reads from the drawer's edge, not the closed
+column's" and "the month strip follows the drawer WIDENING while it is already
+out". Before
 that second half a month jump landed 1 September nine columns UNDER the drawer
 (head at x 210.8, drawer right edge 463, measured at 1440px) — scrolled-to and
 invisible at the same time, the exact fault the jump's own e2e exists to stop.
@@ -6085,8 +6109,14 @@ clip it), placed by `ui/popat.ts` — the shared clamp/flip the quals popover us
 — and obeys the app's click-open popup rule plus the popover's other two thirds:
 an outside pointer-down, Escape, a SCROLL (captured, because `.mx-wrap`'s
 sideways scroll does not bubble) or a RESIZE closes it. A press on its own title
-toggles it. The mirror's copy of the titles is a plain span, not a button: a hand
-over a dead control is a lie. **Any** scroll dismisses it, the app's own
+toggles it, and "its own title" means the LIVE drawer's — the outside-press test
+is scoped `.mxdrawer [data-fig] .figtitle`, or the stuck bar's read-only copy of
+the same markup counted as inside and a press there closed nothing. It is
+`role="dialog"` with the figure's name, not a tooltip: a click opens it and a
+click closes it, which is a dialog's contract; the title that opened it carries
+`aria-expanded` and `aria-controls`, so a reader who cannot see it land is still
+told it opened and where. The mirror's copy of the titles is a plain span, not a
+button: a hand over a dead control is a lie. **Any** scroll dismisses it, the app's own
 included: a sheet takes the page's scroll while it is up and gives it back on
 the way out (445px on a phone, measured), so a pop-up opened in the same beat as
 a sheet closing is dismissed by that restore. Harmless to a reader, who pauses;
@@ -6094,11 +6124,47 @@ it is why the e2e opens the pop-up BEFORE it opens a sheet, not after.
 
 **The flash.** When a person's shown figure CHANGES, that box fades from the
 accent tint once — `.flash` + `@keyframes lw-figflash`, 700ms, removed on
-`animationend`, off under `prefers-reduced-motion`. Keyed by figure id, so
-switching the column to another figure never flashes every row, and never on the
-first render: there is nothing changed about a number just appearing.
+`animationend`, off under `prefers-reduced-motion`. Where the animation is off
+there is no `animationend`, so a 700ms timer of the same length clears the class
+as well; whichever gets there first wins, and nothing is ever cut short. Keyed by
+figure id, so switching the column to another figure never flashes every row (a
+picker tap would otherwise light sixty rows at once), and never on the first
+render: there is nothing changed about a number just appearing.
+
+**Four parts are WebKit-unproven** (Chromium is clean on all four; the
+owner's iPhone is the gate). The overlay's copied ROW HEIGHTS — a Safari that
+lays the two tables out a fraction apart shows as figures drifting off their
+names further down the roster. The stuck bar's frozen COPY being exactly the
+drawer's right edge — the same visual-vs-zoomed-pixel trap that put the hatched
+filler on his phone on 6 Sep; a column short shows a stripe of the scrolling
+layer's dates beside the figures, a column long hides one (pinned in the stuck-
+header e2e as `copy.right ≈ drawer.right`). And the FLASH painting at all — a
+700ms background animation on an overlay cell. And, since 6 Sep 26, the CORNER
+SWITCH being `position: absolute; inset: 0` inside a `position: sticky` `th` —
+a sticky box is a containing block for an absolute descendant in every modern
+engine, but table cells have a history of quirks here, and a Safari that did not
+honour it would draw the switch across the whole grid rather than in its corner
+(obvious rather than silent, which is why it was taken this way).
+Margins to watch: in Chromium the longest title, "+CCL −CCL", clears its 62px
+box by only ~2px, so a wider WebKit font clips that one first; and a `-100` in
+the narrowest phone box measures 18.8px of text in 19.8px of room at the `.wide`
+size (measured), so a wider font there clips the value rather than spilling it.
+
+**Who sees which figures in the PICKER depends on the role.** An admin sees all
+eight, a hidden one dimmed with its eye lit — hiding is his control and the
+dimmed row is the way back, and his tap on it un-hides AND picks in one gesture.
+A member sees only what is showing (`visibleFigures()`): he cannot un-hide
+anything, so a greyed row that does nothing when tapped would be an inert control
+on a production surface. The column and the drawer read `visibleFigures()` for
+both roles.
 
 **And the column still follows the leave just entered** — to the BALANCE it comes
 off (`figureForLeave`: LL/OL → +LVE, OIL → +OIL, CCL/FCL/CL/PL → their own,
 ATT C/HL/OML → −MED TOT; EL and ATT B do not switch), gated on that figure still
-being visible so an admin who hid one is not sent to it.
+being visible so an admin who hid one is not sent to it. One gate, one body —
+`Matrix.tsx showFigure` — because the two OIL paths (a tracker grant landing, an
+admin's hand-typed OIL day opening the tracker) had their own `setShownId('oil')`
+and walked straight past it. The picker is handed `shown.id`, the figure actually
+on screen, not the stored `shownId`: where the stored one names a figure since
+hidden the column has already fallen back to the first visible one, and the
+picker marked the dimmed row as pressed instead.

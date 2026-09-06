@@ -863,8 +863,14 @@ agree — name it here so the next session knows to check both.
   halves of the charging rule) is the seam — it will look right and quietly
   disagree with the grid. Ripples to walk when this set changes: the snap map
   `figureForLeave` must name a figure that EXISTS and is not hidden (`fighidden`,
-  admin-gated, at-least-one guard); `setBalance` keys on `Figure.counter`, so a
-  figure with no counter must offer no Set; the OIL row deliberately routes to
+  admin-gated, at-least-one guard) — the visibility gate is `Matrix.tsx
+  showFigure`, and EVERY path that parks the column on a figure goes through it
+  (the OIL tracker's grant and the admin's hand-typed OIL day had their own
+  ungated `setShownId` until 6 Sep 26); `setBalance` keys on `Figure.counter`, so
+  a figure with no counter must offer no Set; the OIL row deliberately routes to
   the tracker instead; and the DOM ceilings move — the drawer adds a measured 957
-  nodes inside `.mx` (`e2e` "the matrix stays within a sane DOM size", raised in
-  the same PR).
+  nodes inside `.mx`, 958 counting its own `table.mx` wrapper (`e2e` "the matrix
+  stays within a sane DOM size", raised in the same PR). **What each surface
+  LISTS also differs by role**: the picker shows an admin all eight (a hidden one
+  dimmed, with its eye) and a member only `visibleFigures()`; the drawer, the
+  column and the cycle read `visibleFigures()` for both.
