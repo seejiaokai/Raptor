@@ -2552,6 +2552,8 @@ describe('grantTo — a dated credit on any pool', () => {
     // An id naming nothing answers the same for either role — there is no pool
     // to name, and "gone" is true whoever asks.
     expect(updateLedgerEntry('ol-999', { amount: 1 })).toBe('That entry is gone')
+    setRole('admin')
+    expect(updateLedgerEntry('ol-999', { amount: 1 })).toBe('That entry is gone')
   })
   it('an edit keeps the pool\'s own reason rule', () => {
     setRole('admin')
