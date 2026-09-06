@@ -1631,3 +1631,48 @@ gate's. Keep verdict-bearing commands unpiped.
 
 **Principle:** Docs describe effects, not constants; when a value changes, a grep for the number finds nothing — re-read the sentences.
 
+### Observation 107: A motion or gesture-feel ask cannot be approved from a still — the mock must be interactive, built from the captured real DOM with a minimal gesture machine
+
+**Status:** OPEN
+**Date:** 2026-09-06
+**Session context:** Drag lift + landing flash — the brainstorm and plan for the owner's "every drag glows evenly and flashes where it lands" ask (twelve surfaces, mock first).
+**Skill:** brainstorming (visual companion) / impeccable (animate)
+**Type:** open-source
+**Phase/Area:** Showing options for an animation or drag feel
+
+**Issue:** The owner asked for a mockup "to test" of a drag glow and a landing flash. The repo's picture-before-code rule and the DOM-transform recipe (obs 89) both produce STILLS, which cannot show a 120ms bloom, a landing flash, or whether the pick-up feels slower. The remote session cannot open his browser and the Vercel preview is behind his login. The answer was to extend the recipe: capture the built page's live markup and compiled stylesheet, re-implement the gesture in ~120 lines of vanilla JS that moves the real nodes, and publish it as a private page he opens on the phone.
+
+**Suggested improvement:** In the visual-companion fallback (obs 99) add the interactive branch: when the question is motion, timing or gesture feel, the mock is a standalone page — captured real DOM + real CSS + a minimal re-implementation of the gesture — delivered as a link the user can touch on the target device, with the variants behind an on-page switch. Say in the plan which runtime values (zoom, custom properties set by JS, clip ancestors) must be captured or re-applied for the comp not to lie.
+
+**Principle:** A still can approve a look; only a touchable page can approve a feel — when the question is motion, the mock must run.
+
+### Observation 108: "Every single X in the app" is a scope claim to enumerate before it is agreed — sweep the whole app first, then ask with the list in hand
+
+**Status:** OPEN
+**Date:** 2026-09-06
+**Session context:** Drag lift + landing flash — the brainstorm and plan for the owner's "every drag glows evenly and flashes where it lands" ask (twelve surfaces, mock first).
+**Skill:** brainstorming (explore project context) / writing-plans
+**Type:** open-source
+**Phase/Area:** Scope check before the clarifying questions
+
+**Issue:** The screenshot showed one drag surface; the owner's words were "every single drag and drop for rearranging things in the app". A dedicated exploration found twelve surfaces across seven independently written gesture machines (four in the vendored app, eight in the host app, including ghost-following drags with a different visual model). Only with that list could the scope question be asked honestly (Leave War only / everywhere / a middle set), and the owner chose everywhere — a materially larger build than the screenshot implied.
+
+**Suggested improvement:** When an ask contains a universal quantifier ("every", "all", "everywhere"), dispatch an enumeration exploration BEFORE the clarifying questions, and put the count and the list into the scope question itself with the effort difference stated. Carry the enumerated list verbatim into the spec as the definition of done.
+
+**Principle:** A universal quantifier in a brief is a list you have not written yet — enumerate it before anyone agrees to it.
+
+### Observation 109: Before pinning a visual device in a design direction, grep the repo's own CSS comments for that device — the codebase had already rejected the outer halo once
+
+**Status:** OPEN
+**Date:** 2026-09-06
+**Session context:** Drag lift + landing flash — the brainstorm and plan for the owner's "every drag glows evenly and flashes where it lands" ask (twelve surfaces, mock first).
+**Skill:** impeccable (animate / craft) / brainstorming (propose approaches)
+**Type:** open-source
+**Phase/Area:** Writing the design direction handed to the Plan agent
+
+**Issue:** The design direction specified an outer halo (`0 0 16px …`) as the recipe. The design pass found that the grid sits in `.card { overflow: hidden }`, which discards a descendant's outer box-shadow — the very reason today's halo shows on two sides only, AND a lesson already written on `.sb-fresh` in the host app's stylesheet ("draw nothing outside the border box"). The correction (inset-only, halo only on fixed ghosts) came a round later than it should have.
+
+**Suggested improvement:** When a direction names a visual device (glow, halo, blur, backdrop, sticky, transform on a table), grep the project's stylesheets and contract docs for the device's words ("outer glow", "overflow: hidden", "clipped", "swallowed") before writing it into the brief, and cite the prior lesson in the direction. Add this to the "inspect at least one source of incumbent visual truth" step: the truth includes the comments that say what was tried and failed.
+
+**Principle:** The incumbent stylesheet's comments are a record of failed devices; read them for the device you are about to propose, not only for the tokens.
+
