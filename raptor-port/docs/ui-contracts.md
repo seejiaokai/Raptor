@@ -5243,18 +5243,36 @@ jsdom cannot see the single line; pinned by e2e
 phone AND desktop) and unit (`settingssheet.test.tsx` — the header's controls by
 role and DOM order, and the date line gone).
 
-**A TAP LEAVES NO RING ON ANY `.rtbtn`; A KEYBOARD STILL GETS ONE (owner, 6 Sep
-26).** These are real `<button>`s, so iOS leaves the one just pressed FOCUSED and
-paints its own focus ring — which on the Rearrange toggle read as "still on"
-after the second tap had turned Rearrange OFF, the state being said twice and
-disagreeing. `.rtbtn:focus { outline: none }` with `-webkit-tap-highlight-color:
-transparent`, and `.rtbtn:focus-visible` restores a 2px accent outline for
-keyboard focus — the house idiom (`.grphd`, `.catchip`). The two have the SAME
-specificity, so `:focus-visible` must stay AFTER `:focus` in `matrix.css` or the
-keyboard ring is cleared again; that source order is pinned. The ON state now
-carries a glow of its own, so "on" is said by the button's paint rather than by
-a ring the browser happened to leave behind. Pinned in `rowglow.test.ts` (the CSS
-contract — jsdom loads no stylesheet).
+**A TAP LEAVES NOTHING BEHIND ON ANY `.rtbtn`; A MOUSE AND A KEYBOARD KEEP WHAT
+THEY HAD (owner, 6 Sep 26 — "a second click when it's turned off shouldn't
+glow").** After the second tap turned Rearrange OFF, the ⇅ still read as on. Two
+independent causes, both fixed:
+
+- **The focus ring.** These are real `<button>`s, so iOS leaves the one just
+  pressed FOCUSED and paints its own ring. `.rtbtn:focus { outline: none }` with
+  `-webkit-tap-highlight-color: transparent`, and `.rtbtn:focus-visible` restores
+  a 2px accent outline for keyboard focus — the house idiom (`.grphd`,
+  `.catchip`). The two have the SAME specificity, so `:focus-visible` must stay
+  AFTER `:focus` in `matrix.css` or the keyboard ring is cleared again.
+- **Stuck hover.** iOS applies `:hover` to the last element TAPPED and leaves it
+  there until something else is tapped, so `.rtbtn:hover`'s accent border sat on
+  the button too — the same lie by a second route. Every hover in this family
+  (`.rtbtn:hover`, `.rtbtn.gear:hover`, and `.rtbtn.zoom:disabled:hover`, which
+  exists only to cancel the first) now sits inside `@media (hover: hover)`:
+  false on a touch screen, true for a mouse, so the desktop hover is unchanged.
+  They are wrapped IN PLACE, not gathered: `.rtbtn:hover` shares specificity
+  (0,2,0) with `.rtbtn.pri` and `.rtbtn.arm` below it and loses to them on
+  source order, which is what stops a hover stealing a primary or armed
+  button's border. Moved down, it would win.
+
+The ON state also carries a glow of its own now, so "on" is said by the button's
+own paint rather than by anything the browser left behind. Measured on the built
+bundle (6 Sep 26): on an iPhone-13 context `(hover: hover)` is false, and the
+button after the second tap is byte-identical to its at-rest self — resting
+border, no shadow, no outline — while still being `document.activeElement`. On a
+1440px mouse context the hover border is the accent, exactly as before. Pinned in
+`rowglow.test.ts` (the CSS contract, including the source orders — jsdom loads no
+stylesheet).
 
 **The controls Rearrange inserts paint on their own compositor layer (owner's
 iPhone, 5–6 Sep 26).** On a phone the ⇅ toggle inserts the Rearrange controls

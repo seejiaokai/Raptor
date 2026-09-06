@@ -25,23 +25,29 @@ import { describe, it, expect } from 'vitest'
 
 const css = readFileSync(new URL('./matrix.css', import.meta.url), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '')
 
-/* Every rule that lists `sel` among its comma-separated selectors, as
-   declaration bodies — not `arrangepaint`'s whole-selector-list match, because
-   these recipes are deliberately written as SHARED lists (`.who, .bal`) and a
-   fade hiding in one of them is exactly what this file is here to catch. A
-   media query's own `@media …` line never matches (its body holds braces). */
-const bodiesFor = (sel: string): string[] => {
-  const out: string[] = []
-  for (const m of css.matchAll(/([^{}]+)\{([^{}]*)\}/g))
-    if (m[1]!.split(',').map(s => s.trim().replace(/\s+/g, ' ')).includes(sel)) out.push(m[2]!)
-  return out
-}
+/** Every rule in the file: its selector list, its declarations, and where it sits.
+ *  An `@media …` line never matches this shape (its body holds braces), so a rule
+ *  NESTED in one is still found — which is what lets the hover check below ask
+ *  where a rule sits rather than only whether it exists. */
+const RULES = [...css.matchAll(/([^{}]+)\{([^{}]*)\}/g)]
+  .map(m => ({ sels: m[1]!.split(',').map(s => s.trim().replace(/\s+/g, ' ')), body: m[2]!, at: m.index! }))
+
+/* Every rule that lists `sel` among its comma-separated selectors — not
+   `arrangepaint`'s whole-selector-list match, because these recipes are
+   deliberately written as SHARED lists (`.who, .bal`) and a fade hiding in one
+   of them is exactly what this file is here to catch. */
+const rulesFor = (sel: string) => RULES.filter(r => r.sels.includes(sel))
+const bodiesFor = (sel: string): string[] => rulesFor(sel).map(r => r.body)
 /** Where a rule listing `sel` first appears in the file — for source order. */
-const indexOf = (sel: string): number => {
-  for (const m of css.matchAll(/([^{}]+)\{([^{}]*)\}/g))
-    if (m[1]!.split(',').map(s => s.trim().replace(/\s+/g, ' ')).includes(sel)) return m.index!
-  return -1
-}
+const indexOf = (sel: string): number => rulesFor(sel)[0]?.at ?? -1
+
+/** The character span of every `@media (hover: hover)` block, brace-matched. */
+const HOVER_MEDIA: Array<[number, number]> = [...css.matchAll(/@media\s*\(\s*hover:\s*hover\s*\)\s*\{/g)].map(m => {
+  let i = m.index! + m[0]!.length, depth = 1
+  while (i < css.length && depth > 0) { if (css[i] === '{') depth++; else if (css[i] === '}') depth--; i++ }
+  return [m.index!, i] as [number, number]
+})
+const insideHoverMedia = (at: number) => HOVER_MEDIA.some(([a, b]) => at > a && at < b)
 
 describe('a dragged row keeps its frozen cells opaque', () => {
   it('nothing fades the sticky cells themselves — not the pair, not the heading', () => {
@@ -117,5 +123,31 @@ describe('the Rearrange switch rings only for a keyboard, and glows while on', (
     expect(body, '.rtbtn.on is declared').not.toBe('')
     expect(body).toMatch(/box-shadow:[^;]*rgba\(59, 198, 232, \.5\)/)
     expect(body).toMatch(/border-color: var\(--accent\)/)
+  })
+
+  /* The OTHER half of "a second click when it's turned off shouldn't glow"
+     (owner, 6 Sep 26). iOS applies `:hover` to the last element TAPPED and
+     leaves it there, so the accent hover border sat on the ⇅ after the second
+     tap had turned Rearrange off — the same lie the focus ring told, by a
+     second route. Every hover in this family is behind `@media (hover: hover)`,
+     which is false on a touch screen and true for a mouse. */
+  it('every .rtbtn hover rule is behind @media (hover: hover)', () => {
+    expect(HOVER_MEDIA.length, 'matrix.css declares an @media (hover: hover) block').toBeGreaterThan(0)
+    const hovers = RULES.filter(r => r.sels.some(s => /\.rtbtn[^,]*:hover$/.test(s)))
+    expect(hovers.length, 'the .rtbtn family still HAS hover rules — a mouse keeps them').toBe(3)
+    for (const r of hovers)
+      expect(insideHoverMedia(r.at), `${r.sels.join(', ')} is guarded — a touch screen keeps :hover stuck on the last thing tapped`).toBe(true)
+  })
+
+  it('no bare .rtbtn:hover survives — the accent border is the mouse\'s alone', () => {
+    const rules = rulesFor('.rtbtn:hover')
+    expect(rules.length, '.rtbtn:hover is declared exactly once').toBe(1)
+    expect(rules[0]!.body).toMatch(/border-color: var\(--accent\)/)
+    expect(insideHoverMedia(rules[0]!.at)).toBe(true)
+    // …and it stays ABOVE `.rtbtn.pri` / `.rtbtn.arm`, which share its
+    // specificity: moved below them, hovering a primary or an armed button
+    // would steal the border those states own.
+    expect(indexOf('.rtbtn:hover')).toBeLessThan(indexOf('.rtbtn.pri'))
+    expect(indexOf('.rtbtn:hover')).toBeLessThan(indexOf('.rtbtn.arm'))
   })
 })

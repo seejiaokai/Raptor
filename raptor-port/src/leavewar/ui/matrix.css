@@ -1396,7 +1396,20 @@
   cursor: pointer;
   white-space: nowrap;
 }
-.rtbtn:hover { border-color: var(--accent); }
+/* HOVER IS A MOUSE'S, and only a mouse's (owner, 6 Sep 26 — "a second click
+   when it's turned off shouldn't glow"). A touch screen has no hover to
+   leave: iOS applies `:hover` to the last element TAPPED and leaves it stuck
+   there until something else is tapped, so the accent border sat on the ⇅
+   after the second tap had turned Rearrange off — the same "still on" lie the
+   focus ring told, by a second route. `hover: hover` is false on a touch
+   screen, so a finger never paints it; a mouse keeps it exactly as before.
+     Wrapped IN PLACE rather than gathered into one block at the end: this rule
+   shares specificity (0,2,0) with `.rtbtn.pri` and `.rtbtn.arm` below and
+   loses to them on source order, which is why hovering a primary or an armed
+   button does not steal their border. Moved down, it would win. */
+@media (hover: hover) {
+  .rtbtn:hover { border-color: var(--accent); }
+}
 .rtbtn.pri { background: var(--accent); color: var(--accent-ink); border-color: transparent; }
 /* A real <button>, so iOS leaves it FOCUSED after a tap and paints its own
    ring — which read as "still on" after the second tap turned Rearrange off
@@ -1415,14 +1428,21 @@
 .rtbtn.arm { border-color: rgba(255, 92, 92, .6); color: #ff5c5c; }
 /* The one ⚙ SETTINGS button (owner, 3 Sep 26) — icon only, the word dropped. */
 .rtbtn.gear { color: var(--accent); font-size: 15px; line-height: 1; padding: 5px 10px; }
-.rtbtn.gear:hover { border-color: var(--accent); }
+/* Mouse-only, for the reason above the `.rtbtn:hover` rule. */
+@media (hover: hover) {
+  .rtbtn.gear:hover { border-color: var(--accent); }
+}
 /* The grid ZOOM pair, − and +, after OIL in the top row at both widths (owner,
    6 Sep 26). Narrow so the phone row still holds one line: Manning · ⚙ · ⇅ ·
    OIL · − · + measured within 360px. A disabled end of the range dims. */
 .card-hd .lwzoom { display: inline-flex; gap: 6px; }
 .rtbtn.zoom { min-width: 30px; padding: 5px 7px; font-size: 13px; line-height: 1; text-align: center; }
 .rtbtn.zoom:disabled { opacity: .4; cursor: default; }
-.rtbtn.zoom:disabled:hover { border-color: var(--edge-2); }
+/* This one exists only to CANCEL `.rtbtn:hover` on a dead end of the range, so
+   it belongs behind the same gate — there is nothing to cancel without one. */
+@media (hover: hover) {
+  .rtbtn.zoom:disabled:hover { border-color: var(--edge-2); }
+}
 
 /* The on-grid REARRANGE BAR (3 Sep – 6 Sep 26: an accent strip under the header
    with "Rearranging — drag people…", Auto-sort and Done) is GONE (owner, 6 Sep
