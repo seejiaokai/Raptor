@@ -5982,3 +5982,115 @@ The desktop edit week carried 261 compositor layers, and a puck drag re-layerise
 - **The roster aside stacks above the week's z-indexed pucks** — `.edit-board .eroster{z-index:5}`, under the fixed chrome (week-nav 150, rail 151, hscroll 185); the narrow-screen drawer sets its own 190. Nothing inside the week strip can reach the aside (the strip clips its own box), so no pixel changes.
 
 Why each: a filtered element and an opacity group can never be squashed into a layer shared with what they overlap, and everything painted above a sticky (composited) element is assumed to overlap its whole scroll range. What was tried and did not help — own layers for the days / the strip / the roster (worse), a static roster (worse), blur off the chrome, containment and isolation on the preview or the roster — is in performance.md §Dead ends. The phone board never had the problem (9 layers).
+
+## The figures drawer and the two-line box (owner, 6 Sep 26)
+
+Everyone's figures beside the names at a glance, without losing the one smart
+column when they are put away — the owner's own shape, settled over four rounds
+of mockups drawn on the real bundle: a drawer that pops out to the right of the
+names OVER the day columns, sideways `+`/`−` titles carrying the colour key, and
+two-line boxes (balance over used). The design doc is
+`docs/superpowers/specs/2026-09-06-leavewar-figures-drawer-design.md`; this is
+what the geometry has to keep true, and almost none of it is visible to jsdom —
+every rect there is 0×0 and the drawer never opens at all, so `e2e/leavewar.spec.ts`
+(both projects) is the gate.
+
+**The box, one component for three places.** `ui/FigureCell.tsx` draws the real
+counter cell, the phone band's frozen copy and every drawer box, so the three
+cannot drift: `span.fb` on top — the balance in white, red WITH its minus below
+zero (`.neg`), a total always red (`.red`) — then `span.fu` holding one `<b>` per
+used type with NO minus (`b.amber` for LL, `b.red` for OL and every other kind).
+A zero used line is absent, not a "0". Two 11px lines fill the existing 22px row,
+which is why rows do NOT grow when the drawer opens. Digits are tabular so a
+column of numbers lines up.
+
+**The corner switch.** `button.figbar` in the bracket row's one empty frozen cell
+(`th.brakhd`, above CS/Name) reads `▸ FIGURES` / `▾ FIGURES` and carries
+`aria-expanded`; it is the archive bar's scale, deliberately a hem rather than a
+heading. Both roles, session-only, decided ONCE at mount: a desktop opens OPEN, a
+phone (`matchMedia('(max-width: 700px)')`) and jsdom (no `matchMedia`) open
+CLOSED.
+
+**The drawer is an overlay, never extra cells.** A second `table.mx` in a
+`div.mxdrawer` positioned absolutely inside `.mx-outer` — the `.mxband` phone
+overlay's mirror image, and built on its three rules: drawn once, outside the
+sideways scroller, and every real row keeps identical cells. Four measured
+numbers place it (`Matrix.tsx`, one `useLayoutEffect` + a `ResizeObserver`): the
+real header row's top, the names column's RIGHT EDGE (so the drawer's first
+column lands exactly on the closed counter column and no box moves when it
+opens), the header row's height, and its own width and column widths. Its body
+rows copy the real rows' MEASURED heights through `syncOverlayHeights`, keyed
+`data-drawer-key` = `event-row-<n>` / `group-<g>` / `subcat-<g>-<cat>` /
+`row-<personId>` against the real rows' own testids — two independently laid-out
+tables agree on nothing you have not measured. The TITLE row is the one
+exception: it carries no key, because the real header row is itself GROWING for
+these titles and a copy of a growing row would chase itself, so it is TOLD the
+measured height instead.
+
+**Widths and the one row that grows.** The first column is `--bal-w` (44px phone
+/ 72px desktop), the others `--figw` (28 / 36) — grid pixels, so the zoom applies
+to them. Only the HEADER row grows, to 62 grid px (`.mx-outer.mx-figures`), for
+the sideways titles; 62 of the grid's own pixels rather than screen pixels, or
+the words clip at one zoom step in and float at one step out. A title is taken
+out of its cell's flow (`position:absolute`) so it cannot push the row past the
+height it was told. Measured at 1440×900: header 62px, the longest title
+("+CCL −CCL") 56.8px of it. Beside the drawer on a phone, 5.3 day columns still
+read at the opening zoom (368px of wrap, a 191.9px drawer, 21.7px days at 0.8).
+
+**The frozen edge moves out to the drawer while it is open**, because the strip
+of days a reader can actually see now begins at the drawer's right edge, not at
+the closed counter column's. Two consumers, and they read it differently on
+purpose. The month-bracket LABEL sticks off a custom property: Matrix publishes
+`--drawer-w` on `.mx-outer` (the measured width ÷ the zoom, so it is in the
+table's own units) and `.mx-outer.mx-figures .brakm .brakl` adds it to `--who-w`;
+left behind, the label sat over the drawer's own titles and, in the stuck bar,
+vanished under the opaque frozen copy. `Matrix.tsx frozenWidth` reads the
+drawer's live rect instead — it is called from scroll-time code that must not
+depend on a restyle having landed — and it is what a month JUMP, the anchor
+correction after a redraw and the month-strip readout all measure from. Before
+that second half a month jump landed 1 September nine columns UNDER the drawer
+(head at x 210.8, drawer right edge 463, measured at 1440px) — scrolled-to and
+invisible at the same time, the exact fault the jump's own e2e exists to stop.
+Pinned by "a month jump lands the month clear of the drawer, not under it".
+
+**The stuck header carries the drawer.** In the scroll-driven-animation path
+(`.lw-sda`) the frozen copy `.mxfixed-frozen` grows from the two closed columns
+to the drawer's own right edge and draws the sideways titles plus the `▸/▾
+FIGURES` switch, so scrolling the roster down does not take the legend or the
+switch with it. Its width is VISUAL pixels, never divided by the zoom (the
+6 Sep 26 iPhone fix). Without scroll-driven animations there is no frozen copy
+and the stuck bar keeps the plain chip — see `docs/leavewar/known-gaps.md`.
+
+**What stands aside while it is open.** `.mxband td.bal` is hidden (the drawer's
+first column covers it); a group heading's label is lifted over the drawer
+(`z-index: 6` on `tr.grp td.grphd` and on `.mxband`) because that label overflows
+its frozen columns rightward and read "IWSC" for "IWSO · 5" underneath. While an
+admin is REARRANGING the drawer takes `pointer-events: none` — it is NOT
+unmounted: the figures are worth reading while the roster is ordered, and a
+roster drag hit-tests with `elementFromPoint`, so an overlay that took the
+pointer would hide the row being dragged over.
+
+**A title says what its column counts.** Tapping one opens `div.figpop` — the
+figure's own `desc` from the catalogue, the same words the picker's caption and
+the Legend's Figures section use. It is screen-fixed (the frozen columns cannot
+clip it), placed by `ui/popat.ts` — the shared clamp/flip the quals popover uses
+— and obeys the app's click-open popup rule plus the popover's other two thirds:
+an outside pointer-down, Escape, a SCROLL (captured, because `.mx-wrap`'s
+sideways scroll does not bubble) or a RESIZE closes it. A press on its own title
+toggles it. The mirror's copy of the titles is a plain span, not a button: a hand
+over a dead control is a lie. **Any** scroll dismisses it, the app's own
+included: a sheet takes the page's scroll while it is up and gives it back on
+the way out (445px on a phone, measured), so a pop-up opened in the same beat as
+a sheet closing is dismissed by that restore. Harmless to a reader, who pauses;
+it is why the e2e opens the pop-up BEFORE it opens a sheet, not after.
+
+**The flash.** When a person's shown figure CHANGES, that box fades from the
+accent tint once — `.flash` + `@keyframes lw-figflash`, 700ms, removed on
+`animationend`, off under `prefers-reduced-motion`. Keyed by figure id, so
+switching the column to another figure never flashes every row, and never on the
+first render: there is nothing changed about a number just appearing.
+
+**And the column still follows the leave just entered** — to the BALANCE it comes
+off (`figureForLeave`: LL/OL → +LVE, OIL → +OIL, CCL/FCL/CL/PL → their own,
+ATT C/HL/OML → −MED TOT; EL and ATT B do not switch), gated on that figure still
+being visible so an admin who hid one is not sent to it.

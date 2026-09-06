@@ -842,3 +842,29 @@ agree — name it here so the next session knows to check both.
     published one ("new schedules only", owner). **Drift-seam:** any NEW wave-add
     path must call `placeAddedWave` too, or template/built-in adds would place
     inconsistently. Guards: `engine/arrdefaults.test.ts`, `ui/wavedefault-add.test.tsx`.
+
+- **Leave War FIGURES — nine surfaces, one catalogue (6 Sep 26).** The counter
+  column now speaks EIGHT figures (`+LVE +OIL +CCL +FCL +CL +PL −LVE TOT
+  −MED TOT`, replacing the thirteen `BAL`/`USED` rows) and they are read in nine
+  places: the closed column's two-line box and its header chip, the FIGURES
+  DRAWER's eight columns of boxes and their sideways titles, the picker sheet
+  (which is also the legend), a person's all-figures sheet, the breakdown sheet,
+  the page Legend's "The figures" section, the OIL tracker (whose balance IS the
+  `+OIL` figure, through `figureCtxOf()`), the snap-to-balance after a leave is
+  entered, and the admin's **Set** on a balance row. **The drift-seam is the
+  catalogue**: `leavewar/engine/counters.ts FIGURES` is the ONE record of a
+  figure's `title` (the signed words, with a real U+2212 minus), its `used` lines
+  and their colours, its `desc` sentence and its `counter` — `titleLines`,
+  `figureLines`, `figureParts` and `figureForLeave` are the only readers, and
+  `ui/FigureCell.tsx` is the ONE box component behind the real cell, the phone
+  band's copy and every drawer box. A new figure surface that re-types a title,
+  re-derives "which used lines does this figure have", or builds its own
+  `FigureCtx` without `eventDefs` + `people` (the weekend/PH and pilot-15-day
+  halves of the charging rule) is the seam — it will look right and quietly
+  disagree with the grid. Ripples to walk when this set changes: the snap map
+  `figureForLeave` must name a figure that EXISTS and is not hidden (`fighidden`,
+  admin-gated, at-least-one guard); `setBalance` keys on `Figure.counter`, so a
+  figure with no counter must offer no Set; the OIL row deliberately routes to
+  the tracker instead; and the DOM ceilings move — the drawer adds a measured 957
+  nodes inside `.mx` (`e2e` "the matrix stays within a sane DOM size", raised in
+  the same PR).

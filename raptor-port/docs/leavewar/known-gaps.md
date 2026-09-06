@@ -258,48 +258,54 @@ posted to the ledger here**. The grid is already that record, and a second
 copy of it would be a second version of the truth. The ledger holds only what
 the grid cannot know.
 
-## The counter column is figures, not raw counters (Aug 26)
+## The counter column is figures, not raw counters (Aug 26; the EIGHT, 6 Sep 26)
 
-The frozen column no longer cycles the seven entitlement counters. It cycles
-THIRTEEN named figures (owner's set; `OIL BAL` joined with wire 4; `OFF USED`
-was the twelfth until 2 Sep 26 — owner: "remove the OFF used counter" — and
-OFF itself stopped being a leave code later that day; `CL BAL` and `CL USED`
-joined 3 Sep 26 with the compassionate-leave code), each labelled `BAL` (a
-balance left) or `USED` (days taken):
+The frozen column does not cycle the seven entitlement counters, and since
+6 Sep 26 it no longer cycles the thirteen `BAL`/`USED` figures either (that
+set — `LL USED · OL USED · OIL USED · OIL BAL · CCL USED · PL USED · FCL USED ·
+CL BAL · CL USED · MED USED · OML USED · LVE BAL · LVE USED`, grown one figure
+at a time between 17 Aug and 3 Sep 26 — split every pool into two rows and
+still left CCL/FCL/PL balances off the grid). It cycles EIGHT, the owner's own
+set, each titled with the sign it carries:
 
-    LL USED · OL USED · OIL USED · OIL BAL · CCL USED · PL USED ·
-    FCL USED · CL BAL · CL USED · MED USED · OML USED · LVE BAL · LVE USED
+    +LVE · +OIL · +CCL · +FCL · +CL · +PL · −LVE TOT · −MED TOT
 
-- **Ten are consumed (`USED`)** — days of that type taken, read per-TYPE by
-  `takenOf` (not the per-counter `drawnFrom`, which cannot tell LL from OL —
-  both spend the one annual pool). Two are aggregates: `MED USED` = ATT C + HL +
-  OML, `LVE USED` = LL+OL+OIL+CCL+PL+FCL+CL (medical deliberately excluded; OFF
-  left the sum on 2 Sep 26 when it stopped being a leave code; CL joined it
-  3 Sep 26 — leave taken, from its own pool).
-- **Three are balances (`LVE BAL`, `CL BAL`, `OIL BAL`)** — the annual pool and
-  the compassionate pool, each `opening + grants − drawn` (admin-settable from
-  the Cinch sheet — LVE BAL since 2 Sep 26, CL BAL since 3 Sep 26; every
-  balance figure names its counter, `Figure.counter`, and that is what the Set
-  button keys on), and the OIL tracker's balance; all can go negative and red.
-  The other entitlement balances (CCL/FCL/PL/EL) are still computed by
-  `balanceOf` and used by the bid-warning path, but are NOT surfaced in the
-  column — the owner asked for exactly the figures above. EL is dropped from
-  the column yet stays a valid biddable code.
+- **Six are BALANCES and two are TOTALS.** A balance is `opening + granted
+  (+ earned, OIL) − drawn`, never clamped, and each carries its own USED days
+  under it in the box rather than in a second figure: LVE shows LL amber and OL
+  red on one line, every other balance one red number. `−LVE TOT` = LL + OL +
+  OIL + CCL + FCL + CL + PL taken (medical deliberately excluded); `−MED TOT` =
+  ATT C + HL + OML. The per-type days are still read by `takenOf` (not the
+  per-counter `drawnFrom`, which cannot tell LL from OL — both spend the one
+  annual pool); what changed is that they are LINES of a figure, not figures.
+- **CCL, FCL and PL balances are surfaced and SETTABLE now.** They were computed
+  by `balanceOf` and used only by the bid-warning path before. Admin **Set**
+  (the person sheet's `<id>-edit` row) reaches LVE, CCL, FCL, CL and PL — every
+  figure that names a `counter`. OIL stays with its tracker (the Set on its row
+  opens the tracker instead), and EL keeps a pool but no figure: still a valid
+  biddable code, still never on the grid.
+- **The catalogue is the ONE source of the words.** `engine/counters.ts FIGURES`
+  carries each figure's `title` (`+LVE`, `−MED TOT` — a real U+2212 minus, not a
+  hyphen), its `used` lines with their colours, and a `desc` sentence. The
+  column header chip, the drawer's sideways titles, the picker's caption, the
+  title pop-up, the Legend's Figures section and the breakdown sheet all read
+  that one record — a ninth figure, or a reworded one, changes every surface at
+  once. Adding a surface that re-types the words is the drift-seam.
 - **A weekend or public-holiday day of leave CHARGES NOTHING (owner, 3 Sep 26
   — "if they fall on a weekend or a PH … it won't deduct from the total
   balance nor used").** `engine/charge.ts:chargedDays` decides which
   counter-bearing cells draw: it walks a person's taken cells across EVERY war
   in date order and excuses any that `isNonWorkingDay` (eventdefs.ts — a
   weekend, the war's `ph` flag, or an event word tagged `off`, the admin's PH)
-  calls non-working. `drawnFrom`, `takenOf` (so every USED figure), the OIL
-  tracker's debits and `setBalance` all read that ONE map, so the column, the
-  breakdown, the bid-time warning and the Set control cannot disagree. The
-  cell itself still stands and still removes the man from manning
-  (`removesAvailability` is untouched) — he IS away on the Saturday, it just
-  costs him nothing. A PH marked AFTER the leave was approved excuses the day
-  the moment the tag lands, because nothing about a balance is stored.
-  Medical markers spend no counter and are untouched (hospitalisation over a
-  weekend is still hospitalisation — MED USED counts every day). **The one
+  calls non-working. `drawnFrom`, `takenOf` (so every used line and both
+  totals), the OIL tracker's debits and `setBalance` all read that ONE map, so
+  the column, the drawer, the breakdown, the bid-time warning and the Set
+  control cannot disagree. The cell itself still stands and still removes the
+  man from manning (`removesAvailability` is untouched) — he IS away on the
+  Saturday, it just costs him nothing. A PH marked AFTER the leave was approved
+  excuses the day the moment the tag lands, because nothing about a balance is
+  stored. Medical markers spend no counter and are untouched (hospitalisation
+  over a weekend is still hospitalisation — MED TOT counts every day). **The one
   exception is the pilots' 15-day rule** (owner: "for pilots only, if the
   leave taken is 15 days or more, count every single day"): a RUN is
   consecutive calendar days each holding a taken, FULL-DAY cell that spends the
@@ -328,33 +334,41 @@ balance left) or `USED` (days taken):
   `moveFigure`/`resetFigureOrder` refuse a member at the write path; the
   figure SELECTION stays ungated view state. `orderedFigures` heals a stale
   saved order — an unknown id is dropped, a newly added figure appended.
+  **An admin can also HIDE a figure since 6 Sep 26** (owner: "admin should also
+  be able to customise" which figures show at all): `fighidden` on the same
+  footing (persisted, admin-gated, in the undo snapshot, healed on read), the
+  eye beside the ▲▼. A hidden figure leaves the drawer, the column's cycle and
+  the snap-to-balance; the store refuses to hide the LAST visible one, and
+  Reset shows them all again. Nothing is hidden by default.
 - **The picker sheet is also the legend** (owner: "show the legend as a
-  bubble"): the USED/BAL key and the two aggregates' compositions render
-  inline. **Since 17 Aug 26 its rows answer with the VIEWER's own numbers**
-  ("your numbers — <callsign>", each row "N taken/left, yours") — the
-  viewer being Raptor's "View as" person, mirrored into `state.viewer` by
-  the sync wire (never persisted). **With no viewer on the roster the row
-  now reads a DASH, not a squadron-wide sum** (owner, 18 Aug 26: "I don't
-  need to see totals when no one is picked… it defaults to the account
+  bubble"): the key reads `+ balance left · − days used · LL amber · OL red`,
+  and every row carries the figure's own `desc` as its caption — not just the
+  aggregates, as in the thirteen-figure version. **Since 17 Aug 26 its rows
+  answer with the VIEWER's own numbers**, drawn as the same two-line box the
+  grid shows — the viewer being Raptor's "View as" person, mirrored into
+  `state.viewer` by the sync wire (never persisted). **With no viewer on the
+  roster the row reads a DASH, not a squadron-wide sum** (owner, 18 Aug 26:
+  "I don't need to see totals when no one is picked… it defaults to the account
   viewer") — the figure answers "how much do I have left", which has no
   meaning without a person.
 - **The viewer's row is lit on the matrix** (same ask) — `tr.me`, a solid
-  tint on the frozen callsign+counter pair and a faint band across the row.
-  The CSS lives INSIDE matrix.css's `#page-leavewar` wrapper — a rule
-  appended after the closing brace loses to the wrapper's +1 id specificity,
-  which is exactly the trap the file's header warns about.
+  tint on the frozen callsign+counter pair and a faint band across the row,
+  carried across the drawer's boxes too. The CSS lives INSIDE matrix.css's
+  `#page-leavewar` wrapper — a rule appended after the closing brace loses to
+  the wrapper's +1 id specificity, which is exactly the trap the file's header
+  warns about.
 - **Any callsign tap opens that person's ALL-FIGURES sheet, for every role**
   (owner: "everyone should be able to click on that person's name and see
-  these logics") — the eleven figures with that person's numbers, each row
-  opening its parts breakdown (the OIL BAL row opens the OIL TRACKER instead,
-  2 Sep 26); an admin reaches the person EDITOR through
-  the sheet's "Edit person" button (the old direct-to-editor tap), and sets
-  the LVE BAL from its row.
+  these logics") — the eight figures with that person's numbers, each row
+  opening its parts breakdown (the OIL row opens the OIL TRACKER instead,
+  2 Sep 26); an admin reaches the person EDITOR through the sheet's "Edit
+  person" button (the old direct-to-editor tap), and sets a balance from its
+  row.
 - **Medical is FOUR markers now** — `ATTB` (shown as a bare "B" on the grid),
   `ATTC` (shown "C"), `HL`, `OML` — B joined 17 Aug 26 ("u can indicate,
   B (att b), C (att c), OML, HL"), and since the same day they TAKE PORTIONS
-  (`*OML` a morning, `HL*` an afternoon; a half counts 0.5 in MED USED). ATT B
-  deliberately feeds NO figure (the owner's MED USED sum names the other three)
+  (`*OML` a morning, `HL*` an afternoon; a half counts 0.5 in −MED TOT). ATT B
+  deliberately feeds NO figure (the owner's medical sum names the other three)
   and removes nothing from manning — no flying, but at work, matching Raptor's
   own meaning of the code. Still assigned, not bid, but **the cell-entry UI now
   exists**: the cell sheet shows a Medical row of the four chips to an ADMIN
@@ -362,12 +376,52 @@ balance left) or `USED` (days taken):
   Raptor's Inputs page and the record syncs across (the spec's Wire 5 — an
   ATT B / ATT C / HL / OML input lands as a read-only raptor-owned cell, an
   admin-marked cell lands as an lw-tagged input, no approval step either way).
-- **Tapping a person's counter CELL opens the breakdown** (owner, 17 Aug 26):
-  MED USED as its ATT C / HL / OML rows, LVE USED as its seven codes, a
-  balance as opening + granted (+ earned) − taken, any single-code figure as
-  its one line — parts signed so they visibly sum to the total
-  (`figureParts` in counters.ts, `FigureBreakdownSheet`). The column HEADER
-  still opens the figure picker; the two controls answer different questions.
+- **Tapping a person's counter CELL — or a drawer box — opens the breakdown**
+  (owner, 17 Aug 26): −MED TOT as its ATT C / HL / OML rows, −LVE TOT as its
+  seven codes, a balance as opening + granted (+ earned) − taken, parts signed
+  so they visibly sum to the total (`figureParts` in counters.ts,
+  `FigureBreakdownSheet`). A drawer box opens the breakdown of ITS OWN column,
+  not the one the closed column happens to show. The column HEADER still opens
+  the figure picker; the two controls answer different questions.
+
+## The figures drawer covers the first days, and the picker hides under it (6 Sep 26)
+
+The drawer is an overlay standing over the day columns from the names' right
+edge out (the owner's shape — §The figures drawer, `docs/ui-contracts.md`), and
+two consequences of that fall out of it. Neither is a bug in the drawer; both
+are open questions for the owner rather than decisions taken quietly:
+
+- **The first ~9 day columns (desktop) or ~7 (phone) sit UNDER the drawer while
+  it is open, and no scroll position reveals them** — the grid's scroll floor is
+  0, and at 0 the war's first day is behind the drawer. A month jump now lands
+  every OTHER month clear of it (`frozenWidth` reads the drawer, 6 Sep 26), but
+  January of a Jan–Dec war cannot be cleared that way. The way to those days is
+  to put the drawer away, which is one tap on the corner switch. If the owner
+  wants them reachable with the drawer out, the grid would have to open scrolled
+  clear of it (or the drawer would have to push the days rather than cover
+  them) — a change to the scroller, not to the drawer.
+- **The counter column's header chip — the figure PICKER — is under the drawer's
+  first column while it is open.** Reordering, hiding and the legend are
+  therefore reached by closing the drawer first. It reads naturally on a phone
+  (which opens closed) and costs an admin one extra tap on a desktop (which
+  opens open). No second entry to the picker was invented for it.
+
+## The stuck header keeps the plain chip without scroll-driven animations (6 Sep 26)
+
+The frozen copy inside the stuck header bar (`.mxfixed-frozen`) exists only in
+the scroll-driven-animation path (`.lw-sda` — `CSS.supports('scroll-timeline')`
+and `timeline-scope`, detected once at mount). That copy is what carries the
+drawer's sideways titles while the drawer is open. In a browser WITHOUT those
+features the bar falls back to the JS mirror, which has no frozen copy at all —
+so its one scrolling layer keeps the ordinary `+LVE` chip, and a reader who has
+scrolled the roster down sees the closed column's header above eight columns of
+figures with no titles on them. The `▸/▾ FIGURES` switch itself still rides that
+layer and still works; only the title legend is missing. The drawer is
+unaffected either way — it is absolute in `.mx-outer` and does not ride the bar.
+Chromium takes the scroll-driven path (checked here, both projects); whether the
+owner's iPhone Safari does is one of the unverified items in `HANDOFF.md`. Left
+as it is rather than growing a second frozen-copy implementation for a path the
+squadron is probably not on.
 
 ## The owner's review of 10 Aug 26, and what it settled
 
