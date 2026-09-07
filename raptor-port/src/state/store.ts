@@ -32,6 +32,7 @@ import * as view from './view'
 import { histPush, histInit, schedFields } from './history'
 import { setSession as authSetSession, canEditSched, SESSION, ACCOUNTS, canToggleRole, setEffectiveRole, setLgEdit, setMe } from './auth'
 import { setRole as lwSetRole } from '../leavewar/state/store'
+import { setReadOnly as trSetReadOnly } from '../tracker/role.js'
 import { clearPlan } from './plan'
 
 let VERSION = 0
@@ -186,6 +187,11 @@ export function resetSession(s: any) {
      store neither persists nor re-reads it, so nothing can disagree with
      the session that is actually looking at the page. */
   lwSetRole(s && s.role === 'admin' ? 'admin' : 'member')
+  /* the Tracker tab rides the same seam (7 Sep 26): an admin login edits
+     the syllabus charts and marks, everyone else — and a logout — only reads
+     them. Same discipline as the Leave War role above: one production writer
+     here, one in toggleRole, never persisted (tracker/app/core.js readOnly). */
+  trSetReadOnly(!(s && s.role === 'admin'))
   /* and the log itself goes. It is stamped with WHO made each change, so
      carrying it across a logout would show the incoming user a list of
      someone else's work under their own board — and the schedule those
@@ -227,6 +233,7 @@ export function toggleRole() {
     setLgEdit(false)
   }
   lwSetRole(toAdmin ? 'admin' : 'member')
+  trSetReadOnly(!toAdmin)
   notify()
 }
 

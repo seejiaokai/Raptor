@@ -13,6 +13,12 @@
     "moduleDetection": "force",
     "noEmit": true,
     "jsx": "react-jsx",
+    /* src/tracker/ is the vendored OCU Progress Tracker (7 Sep 26), written
+       in plain JavaScript/JSX; allowJs lets the TS side import it (main.tsx's
+       resetSession seam, TrackerPage.tsx). checkJs stays off — its bodies are
+       verbatim ports and are not type-checked, only bundled. */
+    "allowJs": true,
+    "checkJs": false,
     "types": ["node"],
 
     "strict": true,

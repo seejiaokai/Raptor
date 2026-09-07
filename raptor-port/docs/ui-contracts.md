@@ -6731,3 +6731,44 @@ switch, the figure picker and hide/show, **Set** on the person sheet (which stil
 moves the OPENING figure — `+`/`−` are entries on top of it), the manning rows,
 the month strip, the window engine, the frozen-names mechanics, the quick-flick
 swipe, and everything a member sees.
+
+## The Tracker tab (7 Sep 26)
+
+The vendored OCU Progress Tracker (`src/tracker/`, from `seejiaokai/Tracker`
+at `bf9a47a`) is the eighth tab, after Leave War, for everyone. What holds on
+screen:
+
+- **A viewport-tall column, never a scrolling page.** `.tr-root` is exactly
+  the viewport minus whatever Raptor draws above the section (`--tr-top`, the
+  section's own measured top edge at scroll 0, re-measured on resize —
+  `TrackerPage.tsx`); the chart and the side panel scroll inside their own
+  boxes. While the tab is up `body.tr-on` locks the document and drops the
+  120px bottom pad Raptor's week pages keep; leaving the tab restores both.
+  Measured 7 Sep 26: root 103→900 at 1440×900 (bar 103), 49→844 at 390×844
+  (bar 49), document exactly the viewport, nothing of the tab visible on any
+  other page (no fixed element, the `#detailBubble` hidden).
+- **Kept mounted once visited** (the Leave War rule, for a harder reason: the
+  flow board is drawn imperatively once by `core.init()` and would come back
+  empty on a remount). Hidden it dozes (`.page.doze`); its document-level key
+  and click listeners switch off while another tab is up (`App.jsx`'s `active`
+  effect), so Escape/Delete on a Raptor page never reach the chart editor.
+- **Everyone views, only the admin edits** (owner, 7 Sep 26). A member (and a
+  logged-out session, and an admin viewing as member) sees the Crew / Course /
+  Syllabus pickers, Show All and the search, and reads every figure; the
+  Course, Syllabus and File menus, ✎ Edit, Details mode's toggle, the save slot,
+  + Add / ⇅ Reorder / a chip's ×, the lull buttons and the per-event Edit in
+  Show All are not drawn, and the date/pace boxes are disabled. A viewer's ball
+  click shows the event's brief (Details mode is forced on) — never the grading
+  pop-up. The rule is enforced at the write path in `core.js` (every exported
+  mutation refuses `readOnly`), not only at the affordance. Pins:
+  `src/tracker/tracker.test.tsx`.
+- **Its own look, inside the section.** The Tracker keeps its dark palette,
+  type and controls (`tracker.css`, wrapped under `#page-tracker`). Five class
+  names collide with `scheduler.css` (`.day`, `.day.today`, `.legend`, `.modal`,
+  `.sub`) and are reset first inside the wrapper; the standalone app's own
+  geometry contracts — the one-row bar at 1440, the phone's two-row bar with
+  Crew leftmost, the compact editor, the legend clear of the edit hint — are
+  the vendored smoke suite's (`npm run smoke:tracker`).
+- **The file is the record.** 📁 Open / ✓ Save changes behave as in the
+  standalone app; localStorage (`ocu:` keys, `tracker/storage.js`) is the
+  per-browser cache. No SharePoint/cloud sync, no Cloud button.

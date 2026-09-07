@@ -1826,3 +1826,33 @@ gate's. Keep verdict-bearing commands unpiped.
 
 **Principle:** Not watching a PR is not the same as not reading its gates — read the conclusions once per push — and a browser assertion must name the behaviour, not a value one browser version happens to compute for it.
 
+
+### Observation 120: Vendoring a whole app as a tab is a repeatable recipe — worth a skill
+
+**Status:** OPEN
+**Date:** 2026-09-07
+**Session context:** Merging the standalone OCU Progress Tracker (seejiaokai/Tracker) into Raptor as a new tab — the second time this repo has vendored a whole React app (Leave War, 16 Aug 26), and the steps were the same both times.
+**Skill:** New skill candidate: vendor-app-as-tab
+**Type:** open-source
+**Phase/Area:** whole workflow
+
+**Issue:** Both merges followed one unwritten sequence, re-derived from the first merge's comments each time: (1) intersect the two apps' element IDs and CLASS names before touching anything (this merge found 2 id collisions and 5 bare-class collisions — `.day`, `.modal`, `.sub` … — the class ones only surfaced when the vendored browser suite ran inside the host); (2) wrap the vendored stylesheet in the host's page-section selector with native CSS nesting, converting `:root`/`body`/`#root` rules to `&` and moving body-appended elements' rules OUTSIDE the wrapper; (3) replace the vendored app's storage/sync layers with one small doorway module of the same async shape; (4) put the host→guest role flag in a no-import module so the host can set it without loading the guest bundle (the first cut pulled ~280 KB into the host's first download via a store import); (5) keep the guest mounted after first visit when its render is imperative/once-only, and gate its document-level listeners on an `active` prop; (6) adapt the guest's browser suite by replacing every `goto`/`reload` with ONE "open via host login + tab" helper; (7) enforce the host's roles at the guest's write paths AND its affordances, and pin the pair with a test.
+
+**Suggested improvement:** Write a `vendor-app-as-tab` skill whose core is that ordered checklist plus the two audits as runnable one-liners (id intersection; class intersection restricted to bare-class rules in the host stylesheet). Include the "measure the guest's column height off the section's own top edge, not a hard-coded bar height" note and the "lazy chunk regression guard" test pattern.
+
+**Principle:** A second occurrence of a multi-hour integration is the moment to capture it as a skill; the two collision audits are the part nobody remembers and the browser suite is the only thing that catches what they miss.
+
+### Observation 121: `pkill -f <pattern>` kills the shell that runs it when the pattern appears in that shell's own command line
+
+**Status:** OPEN
+**Date:** 2026-09-07
+**Session context:** Stopping a `vite preview` before rebuilding for the e2e gate (Raptor, the Tracker merge).
+**Skill:** verification-before-completion (the "kill the preview before trusting an e2e run" step) — and the repo's CLAUDE.md §Build & verify
+**Type:** open-source
+**Phase/Area:** gate sequencing / process hygiene
+
+**Issue:** Twice in one session a compound Bash command died with exit 144 and did nothing after the kill step: `pkill -f "vite preview"` (and later a `pgrep -f` loop) matched the invoking shell's own command line — the harness runs the whole command through `bash -c '…'`, so the pattern is present in that process's argv — and killed it before the build and the e2e launch that followed. Each miss cost a full re-run and the confusion looked like a tool failure.
+
+**Suggested improvement:** Stop a dev server by PORT, never by command-line pattern: `fuser -k 4173/tcp` or `kill $(lsof -t -i:4173)`, and confirm with `ss -ltnp | grep 4173` (empty = down). If a pattern kill is unavoidable, exclude the current shell (`pgrep -f pattern | grep -v $$`) and never chain the kill with the work that must follow it in one command.
+
+**Principle:** Process-matching by pattern is self-referential inside a wrapper shell; address a server by the resource it holds (its port), and never put a kill and its dependent steps in the same compound command.

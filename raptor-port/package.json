@@ -13,7 +13,8 @@
     "e2e:quick": "playwright test --project=raptor --project=lw-desktop",
     "test:reference": "node reference/tfin.js",
     "probes:adapted": "node probes/adapted/run-all.cjs",
-    "perf": "node probes/perf-port.cjs"
+    "perf": "node probes/perf-port.cjs",
+    "smoke:tracker": "node scripts/tracker/smoke.mjs"
   },
   "dependencies": {
     "react": "^19.2.8",

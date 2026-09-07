@@ -345,6 +345,7 @@ npm test                    # Vitest — must stay green
 npm run build               # typecheck + build
 node reference/tfin.js      # the original's assertions — must stay 728/0
 npm run test:e2e            # geometry in a real browser — builds & serves itself
+npm run smoke:tracker       # the Tracker tab's vendored 345-check browser suite — builds & serves itself
 ```
 
 `test:e2e` is the fourth gate because jsdom has no layout engine: a puck that
@@ -590,6 +591,28 @@ commitInputEdit` — a remarks-only edit, so `rowSig` is unchanged and the war
 cells never move. Don't add a fifth seam casually,
 and never call its `initStore` from a component — it clears the store's
 subscribers.
+
+**The Tracker tab is a THIRD app with a THIRD store** (vendored 7 Sep 26,
+`src/tracker/`, from `seejiaokai/Tracker` — plain JavaScript/JSX, `allowJs`,
+bodies are verbatim ports like `src/engine/`). Its state is module `let`s in
+`tracker/app/core.js` with its own subscribe/notify; its storage goes through
+ONE doorway, `tracker/storage.js` (localStorage under `ocu:` keys — the
+standalone app's SharePoint/Dataverse/Firebase layers were dropped; the shared
+database replaces this file when it arrives); the user's syllabus FILE (📁 Open
+/ ✓ Save changes) stays the authoritative copy. **Nothing of it boots in
+`main.tsx`** — the screen is a lazy chunk and `core.init()` runs on the tab's
+first mount, which is also why the section is KEPT MOUNTED afterwards (the flow
+board is drawn imperatively once). **Two seams cross the boundary, and only
+two:** `resetSession`/`toggleRole` write the role through `tracker/role.js` (a
+no-import module — importing `core.js` there would put ~280 KB of syllabus data
+into every Raptor visit; `tracker.test.tsx` guards it), and `TrackerPage.tsx` is
+the page. **No data crosses yet** (owner, 7 Sep 26 — students are the Tracker's
+own list; linking them to Raptor's OCU people is a later step). Everyone views,
+only the admin edits — enforced at every exported write path in `core.js` AND at
+the affordances; keep both halves when adding either. CSS is scoped under
+`#page-tracker` with five Raptor collisions reset at the top of the wrapper.
+Gaps and the carried-over traps: `docs/tracker/known-gaps.md`; the working loop
+with the owner's chart file: `scripts/tracker/bake-user-charts.mjs`.
 
 ## Coding conventions
 
@@ -1169,3 +1192,4 @@ ledger). Read it before any layout/render/drag-touching change.
 | Store / UI state / undo | `src/state/` |
 | Components + HTML builders | `src/ui/` |
 | **The Leave War tab** (vendored app: engine, store, UI, tests) | `src/leavewar/` — its own store and `leavewar:` storage keys; role written only by `resetSession` + the admin's `toggleRole`; stage-advance is admin-only (27 Aug 26, members still bid); a member bids only on their OWN row — the "View as" person, mirrored to `viewer` — while an admin edits any row (`canEditRow`, 27 Aug 26; enforced at the write path and the grid affordance alike); an admin decides bids at closed OR published (`canDecide`, 27 Aug 26 — since the 27 Aug overnight pass the STORE enforces it too: `setBidState`/`setBidStates` refuse anyone else, `shiftBid` carries `moveCells`' whole stage/window/war-day law, `moveProblem` is the one validation body the landing preview and the commit share, a chain of closed moves keeps the ORIGINAL `shiftedFrom`, and a member cannot write a medical mark); a drag selects a block to batch fill/decide/move/delete and a plain click still opens the single-cell sheet (`select.ts`, capture taken in `arm()`); the dotted "moved" mark is recorded AND shown only for a move made once bidding is closed (`biddingClosed`, 27 Aug 26 — an open-bidding shuffle stores no `shiftedFrom`, so it never sprouts the stripe when the war later closes); the colour pop-out is "Legend"; at PUBLISHED a tap on an approved leave opens the remarks editor (`RemarksSheet` → `sync.ts:leaveInputAt` + `inputedit.ts:setLeaveRemarks`, member edits own / admin any); CSS scoped under `#page-leavewar`; gaps in `docs/leavewar/known-gaps.md`, future sync in `docs/superpowers/specs/leavewar-sync.md` |
+| **The Tracker tab** (vendored OCU progress tracker: syllabus flow charts, marks, pace) | `src/tracker/` — plain JS/JSX, its own store (`app/core.js`) and storage doorway (`storage.js`, `ocu:` keys), CSS scoped under `#page-tracker`; role written only by `resetSession` + the admin's `toggleRole` through `role.js` (everyone views, admin edits — enforced at the write path); page seam `TrackerPage.tsx`, kept mounted once visited; its browser suite `scripts/tracker/smoke.mjs` (`npm run smoke:tracker`, a CI job); gaps `docs/tracker/known-gaps.md`; the design specs it was built from `docs/tracker/specs/` |
