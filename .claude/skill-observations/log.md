@@ -1751,3 +1751,18 @@ gate's. Keep verdict-bearing commands unpiped.
 
 **Principle:** A post-render hook runs once per surface that renders, not once per write — a mark that spends itself on the first hit chooses the wrong surface whenever two repaint; identity-keyed marks with a short life survive both.
 
+### Observation 115: The owner called the full per-task review loop "extreme" for a visual change — state the loop's time cost and its lighter shapes up front, and let the owner pick the cadence per build
+
+**Status:** OPEN
+**Date:** 2026-09-07
+**Session context:** Drag lift + landing flash — six tasks into the subagent-driven build; the owner asked whether the process was extreme.
+**Skill:** subagent-driven-development (process selection) / the repo's CLAUDE.md "HEAVY path" rule
+**Type:** open-source
+**Phase/Area:** Choosing the review cadence before the build starts
+
+**Issue:** A seven-task visual build (one drag look across twelve surfaces) ran the full loop — fresh implementer, task review, fix round, scoped re-review — at roughly an hour per task. Six tasks in, the owner asked whether the process was "extreme" and said it "really takes a long time". The loop had earned its keep (four real defects caught that tests alone would have passed to his phone: a reduced-motion gap on a pseudo-element, a landing lit on a hidden surface, an overlap over a frozen column, a flash lost to a double repaint), but nobody had told him the cost or offered a lighter shape before starting. Offered three cadences with time estimates, he chose "lighter from here" (no per-task reviews for the remainder; one final whole-branch review + live look).
+
+**Suggested improvement:** In the SDD setup step (and in the repo rule that routes builds to the HEAVY path): before dispatching Task 1, state the expected wall-clock per task under the full loop and offer the cadences — full loop; task reviews only on the risky tasks (shared modules, gesture cores, cross-surface plumbing) with a final review for the rest; final review only — with a one-line risk note each, and let the human pick. Mid-build, if the elapsed time passes the estimate, re-offer the choice rather than waiting to be asked. Record the pick in the ledger.
+
+**Principle:** A review cadence is a cost the person paying for it should choose knowingly — name the hours and the lighter shapes before the first dispatch, and again when the estimate slips.
+
