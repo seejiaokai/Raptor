@@ -1856,3 +1856,18 @@ gate's. Keep verdict-bearing commands unpiped.
 **Suggested improvement:** Stop a dev server by PORT, never by command-line pattern: `fuser -k 4173/tcp` or `kill $(lsof -t -i:4173)`, and confirm with `ss -ltnp | grep 4173` (empty = down). If a pattern kill is unavoidable, exclude the current shell (`pgrep -f pattern | grep -v $$`) and never chain the kill with the work that must follow it in one command.
 
 **Principle:** Process-matching by pattern is self-referential inside a wrapper shell; address a server by the resource it holds (its port), and never put a kill and its dependent steps in the same compound command.
+
+### Observation 122: "Keep it mounted" is not enough when the HOST unmounts everything — a once-only imperative init needs a remount redraw
+
+**Status:** OPEN
+**Date:** 2026-09-07
+**Session context:** Bug sweep after vendoring the OCU Tracker into Raptor as a tab. The tab was kept mounted across tab switches because its flow board is drawn imperatively by a once-only init — but Raptor's logout swaps the WHOLE shell for the login screen, so the next login remounted the tab with an empty board and the guarded init drew nothing. Found only by a scenario that crossed a session boundary; every tab-switch test passed.
+**Skill:** New skill candidate: vendor-app-as-tab (extends observation 120)
+**Type:** open-source
+**Phase/Area:** integration checklist — lifecycle
+
+**Issue:** The "keep the guest mounted so its once-only render survives" rule (obs 120, step 5) has a hole: any host lifecycle that unmounts ABOVE the guest (logout, a route change, an error boundary reset) brings the guest back with fresh DOM and a guard that refuses to re-run. Tab-switch tests cannot see it.
+
+**Suggested improvement:** Add to the vendor-app-as-tab checklist: "for every once-only init in the guest, make the mount effect 'boot if not ready, else REDRAW' — and test mount → unmount → mount explicitly, plus the host's session boundary (logout/login) in the browser sweep." The bug sweep's scenario list (session boundary, in-between widths, live resize, host overlays over the guest, host notify while the guest is up) is the reusable part.
+
+**Principle:** A guard against double-initialisation is also a guard against re-initialisation; wherever a host can recreate the guest's DOM, the guest needs a redraw path that is not the init path — and the test that proves it must cross the host's own lifecycle boundaries, not just the guest's.
