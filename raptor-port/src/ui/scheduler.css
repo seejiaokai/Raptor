@@ -2731,6 +2731,12 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
 .tpl-name{width:100%;box-sizing:border-box;background:var(--bg);border:1px solid var(--edge);border-radius:8px;
   color:var(--ink);font-size:14px;font-weight:700;padding:8px 10px;margin-bottom:10px}
 .tpl-name:focus{outline:none;border-color:var(--accent)}
+/* the "For wave" picker under the name (7 Sep 26): a label + select on one
+   line, the app's select recipe, and a one-line note in the muted ink */
+.tpl-wave{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:700;color:var(--ink-2);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px}
+.tpl-wave select{background:var(--bg);border:1px solid var(--edge);border-radius:8px;color:var(--ink);font-size:13px;font-weight:600;padding:5px 8px;text-transform:none;letter-spacing:0}
+.tpl-wave select:focus{outline:none;border-color:var(--accent)}
+.tpl-wave-note{font-size:11px;color:var(--ink-3);line-height:1.35;margin-bottom:10px}
 /* ---- Flying-waves sheet: the show/hide zone folded in from the retired Manage
    sheet (owner, 30 Aug 26 — one button for edit + manage). Reuses the .wvmng-*
    row/eye styles that already sit by the modal above. ---- */

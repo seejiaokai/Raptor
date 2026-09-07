@@ -400,11 +400,14 @@ describe('CAT IW is a WSO category (data-inconsistency guard)', () => {
   })
 })
 
-/* ---- the sim rear seat needs no instructor (owner, 14 Aug 26) -------------
-   "oft doesn't need an instructor to be in the RCP, likewise for amt". The
-   jet's IP/IR/FI rear-seat rule used to be copied onto the sim box; only the
-   jet keeps it now, and the sim's FRONT seat rules are untouched. */
-describe('a sim rear seat takes any pilot', () => {
+/* ---- the rear seat takes any pilot, jet AND sim (owner, 7 Sep 26) ---------
+   The sim's rear seat dropped its instructor rule on 14 Aug 26 ("oft doesn't
+   need an instructor to be in the RCP, likewise for amt"); the JET's went the
+   same way today — owner: "don't flag out that they are in an illegal seat".
+   So a plain pilot in a rear seat raises no illegal-seat QUAL on either box.
+   Every OTHER rule on that seat still speaks (currency, AAR supervision, rest,
+   double-book); the sim's FRONT seat rules are untouched. */
+describe('a rear seat takes any pilot — jet and sim alike', () => {
   it('a plain pilot in an OFT or AMT rear seat raises no QUAL', () => {
     /* ignite is CAT C — a pilot with no instructor category at all */
     DAYS[0].sims.oft[0].w = 'ignite'
@@ -413,11 +416,10 @@ describe('a sim rear seat takes any pilot', () => {
     expect(WARN.all.filter((x: any) => x.code === 'QUAL' && (x.who || []).includes('ignite'))).toEqual([])
   })
 
-  it('the same pilot in the JET rear seat is still flagged', () => {
+  it('the same pilot in the JET rear seat also raises no QUAL now', () => {
     setSlotVal('0.0.0.0.w', 'ignite')
     const hits = validate().all.filter((x: any) => x.code === 'QUAL' && (x.who || []).includes('ignite'))
-    expect(hits.length).toBeGreaterThan(0)
-    expect(hits[0].msg).toContain('only IP / IR / FI may fly RCP')
+    expect(hits, JSON.stringify(hits)).toEqual([])
   })
 
   it('a WSO in a sim FRONT seat is still flagged', () => {

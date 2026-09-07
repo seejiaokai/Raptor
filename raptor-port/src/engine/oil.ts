@@ -1,6 +1,6 @@
 import { VCONF } from './rules'
 import { parseHM } from './time'
-import { isStandalone } from './waves'
+import { isStandalone, saExemptKind } from './waves'
 import { PEOPLE, realP, nameToId, isSpecial } from './people'
 import { whoArr } from './slots'
 /* =====================================================================
@@ -146,7 +146,7 @@ export function dayOilWork(day:any,opts?:{expandAll?:(win:[number,number])=>stri
   }));
   src='Duty';
   (day.dutywaves||[]).forEach((dw:any)=>{
-    if(dw&&(dw.sa==='avalon'||dw.sa==='bb'))return;      // the excluded waves' own desks
+    if(dw&&saExemptKind(dw.sa))return;                   // the excluded waves' own desks
     (dw.rows||[]).forEach((r:any)=>{
       if(r.cx)return;
       const win=w2(parseHM(r.str),parseHM(r.end));

@@ -515,8 +515,9 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
 - **The CAT ladder is `OCU → D → C → B → A → IW → IP → IR → FI`** (owner,
   Aug 5 '26). The generic `I` tier and the standalone `ip` flag (and its
   derived `quals.instr`) are gone — instructor-ness lives solely in CAT.
-  `isInstr(q)` = any of the four; `isInstrPilot(q)` = IP/IR/FI (the rear-seat
-  privilege). Seat matrix:
+  `isInstr(q)` = any of the four; `isInstrPilot(q)` = IP/IR/FI (feeds the AAR
+  back-seat supervision rule and the combination matrix — no longer the
+  rear-seat bar, removed 7 Sep 26). Seat matrix:
   - `IW` (instructor WSO): WSO-only category, RCP only. A hand-edited record
     with `q:'IW'` + `seat:'FCP'` planted forward raises hard `QUAL` (the CAT
     dropdowns are seat-filtered, so the UI can't create it).
@@ -531,15 +532,16 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   Parity stays byte-exact via `refwin.ts:remap()` (retier's sibling), which
   migrates the in-memory reference's ladder tables, `isInstr`, puck builder,
   PEOPLE literals and legend to this world before boot.
-  **The rear-seat privilege is the JET's rule only** (owner, 14 Aug 26 —
-  "oft doesn't need an instructor to be in the RCP, likewise for amt"). A
-  sim's rear seat takes any pilot: the engine's Q (sims) block guards the
-  FRONT seat alone, and `slotBar` scopes its instructor bar with
-  `slotRules().sim`. The sim's front-seat rules (no WSO, no IW-in-FCP, no
-  ground crew) are unchanged. The reference still carries the old copied
-  rule; `refwin.ts:resim()` excises it from the in-memory copy — it fires
-  nowhere on the seed either way (every seeded sim rear seat holds an IP or
-  a WSO).
+  **The rear seat carries no instructor rule — any pilot may ride the back,
+  jet or sim** (owner, 7 Sep 26 — "don't flag out that they are in an illegal
+  seat"). The old "only IP / IR / FI may fly RCP" QUAL is gone from both the
+  validator and the crew picker; the seat's OTHER rules are untouched (SC
+  currency, AAR back-seat supervision, one-man-two-places, rest, busy), and a
+  WSO still cannot fly the FRONT seat. The sim's rear seat had already dropped
+  the rule on 14 Aug 26; the jet followed today. The reference carries both old
+  copies; `refwin.ts:resim()` (sim) and `refwin.ts:rejet()` (jet) excise them
+  from the in-memory copy — each fires nowhere on the seed, so WARN stays
+  byte-equal, and the excision stops a later fixture reopening the seam.
 - **The combination matrix (F-15SG Table 1.5-2, owner Aug 5 '26)** grades a
   crewed aircraft — the jet only, not the sim box — whenever the front seat
   is a CAT A–D or OCU pilot AND the back seat is a CAT A–D or OCU WSO. An
@@ -661,6 +663,15 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
     from EVD by design), read by the validator AND the crew picker's
     `slotBar` ("already on SC AM MAIN 07:00–13:00"), so the palette refuses
     exactly what the warning list would flag after a drag-drop.
+    **The SC DESK is one of those seats since 7 Sep 26** (owner — "for sc
+    duties desk they are also not allowed to be planned as the same time as
+    main or spare"): `scSeatHit` also walks every duty block marked
+    `sa:'sc'` — the desk a template marked SC's (`dutytpl.ts`, below) — so a
+    spare on the SXO AM desk in the same hours is the same red ("… and also on
+    SXO AM duty"), and the desk's own picker refuses a man standing spare
+    (`slotRules().scDesk`). MAIN-vs-desk is the ordinary clash (both are
+    events). An ORDINARY desk in the same hours still raises nothing against
+    a spare — spares stay free; only the SC desk is an SC seat.
   - **The spare front seat is pilots-only** — a WSO (`seat==='RCP'`, plus the
     CAT-IW data-consistency variant) planted in a spare line's FCP raises the
     same hard `QUAL` the flying seat rules raise, suffixed "(… SPARE)" and
@@ -670,15 +681,17 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
     silent path was a drag-drop, and only the WSO-in-FCP half closes it.
   Deliberately NOT rules, unchanged: a spare against his own sortie, sim or
   duty raises nothing (spares stay free — the owner declined a call-up
-  advisory the same day), and AVALON/BB are untouched (the AVALON rule stays
-  owner-reserved). Pins: `scspare-rules.test.ts` (validator),
+  advisory the same day). AVALON/BB carry their own four rules since 7 Sep
+  26 — §AVALON's one check and §AVALON's (and BB's) three seat rules below. Pins: `scspare-rules.test.ts` (validator),
   `slotrules.test.ts` (picker); the parity compare excises the port-only
   `spareAcs` field (`parity.test.ts noPortOnly`).
-- Standalone waves: SC (spares uncrosschecked beyond the four checks above),
-  AVALON/BB (`noconf`).
-- **AVALON's one check (owner, 11 Aug 26).** AVALON and its desk keep
+- Standalone waves: SC (spares uncrosschecked beyond the checks above — the
+  availability bar, currency, the front seat, and another SC seat or the SC
+  desk in the same hours), AVALON/BB (`noconf`, with the four rules below).
+- **AVALON's one check (owner, 11 Aug 26) — and the three that joined it on
+  7 Sep 26 (owner), listed after it.** AVALON and its desk keep
   `noconf` — nothing on them is cross-checked against tasks, rest or
-  qualifications — but every man on the wave now gets ONE look, the SC-spare
+  briefs — but every man on the wave now gets ONE look, the SC-spare
   shape widened. A JET seat (MAIN and SPARE alike) raises a hard
   DNIF_FLY/LEAVE_FLY for any input failing `canSpare` — overseas (OL, OD)
   and the whole medical group, **ATT B included**: these are jet seats, and
@@ -700,13 +713,85 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   day, which is why the old all-or-nothing gate existed. These lines ring
   red or not at all; the owner confirmed no amber rule lives on them. BB
   can anchor nothing and never rings. The badge and the add-toast say it
-  per wave: AVALON "availability check only", SC's spare "availability and
-  SC currency only", BB "not cross-checked". The 19:00–23:59
+  per wave: AVALON "availability, currency and seat checks only", SC's spare
+  "availability and SC currency only", BB "not cross-checked". The 19:00–23:59
   half is judged against today's inputs and the 00:00–07:00 half against
   tomorrow's (the midnight tail below). Collected as `day.sacrew` in
-  `events.ts`, checked in one loop in `validate.ts`. **BB is deliberately
+  `events.ts` (each entry carrying its `role` MAIN/SPARE/DUTY and `seat`
+  since 7 Sep 26), checked in one loop in `validate.ts`. **BB is deliberately
   untouched** — the owner specified AVALON only; extending the bar to BB
   needs his word first.
+  **BB is AVALON's twin** (owner, 7 Sep 26 — "bb main and spare rules are
+  exactly the same. And the duties. As Avalon"): every rule in this entry and
+  the next reads "AVALON or BB". `events.ts` collects every `noconf`
+  standalone wave's seats and every `sa:'avalon'`/`'bb'` desk row into
+  `day.sacrew`, so there is no BB-specific code anywhere; the only difference
+  is that BB's hours are TYPED, and a BB line left with blank hours has no
+  window and is not collected at all — fail closed, inert.
+  **The desk this applies to is the one a template marked AVALON's (or BB's)**
+  (7 Sep 26). Since the 13 Aug decoupling no UI path minted an `sa:'avalon'` desk,
+  so a placed "AVALON" template came out PLAIN and fully cross-checked —
+  every row DOUBLE_BOOKed against the man's own sortie, and ATT B flagged
+  on it. The template now names its wave (`dutytpl.ts` `wave`, the "For
+  wave" picker in the editor; the seeded SC Shift / AVALON templates carry
+  theirs, a pre-7-Sep saved library gets them back by seed id on load), and
+  `blockFromTpl` carries it onto the block as `sa` + `noconf` exactly as the
+  retired `waveDutyBlock` did. So an AVALON desk once again reads: overseas,
+  HL, OML, ATT C and OD flag; ATT B mans it; nothing else is raised; and it
+  earns no OIL (`oil.ts` already excluded `sa:'avalon'` desks — the seats
+  never earned). Duties stay DECOUPLED: no wave mints a desk and deleting a
+  wave leaves every desk alone; only the marker came back.
+- **AVALON's (and BB's) three seat rules (owner, 7 Sep 26)** — each the
+  SC-spare shape re-cut, each hard, each anchored on the seat or desk row it
+  is about so the exempt line's puck rings for its OWN rule (`html.ts`): 
+  - **SC currency on EVERY jet seat, MAIN and SPARE** (the owner's first word
+    was MAIN; his second, the same day, "AVALON SPARE also requires SC NIGHT"
+    — the SC-spare precedent, currency being the man's own qualification).
+    Never the desk. The kind is read off the shift as scheduled
+    (`scShiftKind`, the body SC uses), so AVALON's 19:00–07:00 asks for SC
+    NIGHT and a BB shift typed inside the day asks for SC DAY rather than
+    nothing. The seat, not the pilot: a WSO in a rear seat is checked too.
+    `SC_QUAL`, chip Q. The picker refuses the same man ("not SC NIGHT
+    current", `slotRules().avMain/avKind` — set for every noconf jet seat).
+  - **The front seat is pilots-only, MAIN and SPARE alike** — the three
+    predicates of the SC-spare seat rule verbatim (a WSO, ground crew, the
+    CAT-IW variant), `QUAL` suffixed "(AVALON NIGHT MAIN)" / "(… SPARE)". The
+    rear seat stays unruled, as on the SC spare — the owner confirmed it the
+    same day ("pilots can go backseat"). The picker's seat rules
+    already refused these; the validator now agrees after a drag-drop.
+  - **One man in a SEAT and another place in the same hours** — MAIN + SPARE,
+    a seat + the desk, an AVALON seat + a BB seat. **Two desk roles on one man
+    are allowed** (owner, 7 Sep 26 — "two avalon desk roles is ok"): a desk
+    row asks about seats only (`avSeatHit`'s `seatsOnly`). Nothing on these
+    waves is an event, so the ordinary clash loop is blind; `events.ts:
+    avSeatHit` walks the model (every `noconf` wave's seats and every
+    `sa:'avalon'`/`'bb'` desk row — one family), the same body the picker
+    reads before a plant ("already on AVALON NIGHT MAIN 19:00–07:00").
+    `DOUBLE_BOOK`, said once per PAIR — every pair (`avSeatHits` lists every
+    place a man holds; MAIN + SPARE + the desk is three warnings, sweep 7 Sep
+    26) — anchored on the first place in the day's order (seats before desks)
+    and carrying the other place as `also`, so BOTH copies' pucks ring for the
+    pair they are in. Half-open: a desk retyped 07:00–19:00
+    beside the 19:00–07:00 shift touches only at 19:00 and passes. The
+    window is whatever is TYPED on the line, rolled past midnight (+1440)
+    exactly as collectEvents rolls it, so the same-hours question — and the
+    availability look's midnight tail — run to the stated end time, not to a
+    fixed 07:00.
+  **An exempt desk's puck follows its own rules and nothing else** (sweep,
+  7 Sep 26 — the 11 Aug word for exempt flying seats, extended to the duty
+  rows it had never reached): a row on a `noconf` block reads only the
+  warnings anchored to that row, or naming it as `also`, and naming the man —
+  DNIF_FLY / LEAVE_FLY / DOUBLE_BOOK — so a clean AVALON desk no longer wears
+  a clash the man has elsewhere that day. One body, `html.ts exemptDeskOwn`,
+  read by the week (`lSeat`) and the board (`sbSeat`). An ordinary desk is
+  unchanged (day-wide decoration).
+  Deliberately NOT a rule (owner, 7 Sep 26 — "it should not raise a
+  warning"): a man on AVALON or BB tonight and a sortie or desk tomorrow
+  morning, or any crew-rest / run-count question — nothing on these waves
+  is an event. Settled; don't re-propose. Pins: `avalon-rules.test.ts`
+  (validator, picker, OIL, the template desk, the BB twin); `overnight.test.ts`
+  keeps the 11 Aug availability pins (its jet-seat fixtures now use an
+  SC-NIGHT-current instructor WSO, since every seat asks for currency).
 - **The midnight tail (owner, 11 Aug 26 — "check in the same modality for
   all applicable rules based on timing").** A window that runs past midnight
   — a night sortie's landing and debrief tail, an overnight duty row, an
@@ -775,15 +860,18 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   (a blank duty time is legal), a valid one canonicalises to the compact `HHMM`
   the model stores (`0700`, not `07:00`), so a stale value from a pre-guard
   session can never reach a day.
-- **A template desk is conflict-checked like any other duty row** (owner,
-  13 Aug 26). The wave→duty coupling is gone: no wave auto-creates a desk
+- **A template desk is conflict-checked like any other duty row — unless its
+  template names AVALON** (owner, 13 Aug 26; the wave field 7 Sep 26). The
+  wave→duty coupling is gone: no wave auto-creates a desk
   (`SAWAVE.autoDuty` removed from the add path), deleting a wave leaves any desk
-  alone (the wave-delete → `saDutyIx` walk removed), and a template block
-  carries no `noconf`, so the AVALON/BB desk exemption went with the
-  auto-create. The seed week has no exempt desk, so reference parity is
-  untouched. `events.ts` still honours a `noconf`/`sa==='avalon'` desk if one
-  reaches it from an old AL snapshot, but no UI path mints one now. Do not
-  re-add the coupling (`CLAUDE.md` §Stable decisions).
+  alone (the wave-delete → `saDutyIx` walk removed). Since 7 Sep 26 a template
+  carries `wave` ('' / 'sc' / 'avalon' / 'bb', the editor's "For wave" picker) and
+  `blockFromTpl` mints it onto the block as `sa` (+ `noconf` for AVALON and
+  BB, mirroring `SAWAVE[kind].all`), so an AVALON or BB desk is exempt as its
+  wave is (§AVALON above) and an SC desk counts as an SC seat for the spare rule
+  (§the two SC SPARE rules); a template with no wave mints the PLAIN block
+  it always did. The seed week has no template desk, so reference parity is
+  untouched. Do not re-add the coupling (`CLAUDE.md` §Stable decisions).
 - Chip ranking `RANK` (highest wins): LD<DT<TT<A<SD<SB<DB<NB<CR<RUN<C<Q.
   Glyphs shorten: CR→R, RUN→7, NB/SB→B, DB/SD→D, LD→L. `A` = on shift AND down for
   a ground event/programme.

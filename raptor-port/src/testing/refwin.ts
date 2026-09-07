@@ -29,7 +29,7 @@ import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
 
 export async function refWindow(): Promise<any> {
-  const html = relabel(reshift(reinput(redn(reirest(refirst(reaar(rerest(rering(rebrief(relead(rematrix(resim(remap(retier(redt(renm(readFileSync('reference/scheduler.html', 'utf8'))))))))))))))))))
+  const html = relabel(reshift(reinput(redn(reirest(refirst(reaar(rerest(rering(rebrief(relead(rematrix(resim(rejet(remap(retier(redt(renm(readFileSync('reference/scheduler.html', 'utf8')))))))))))))))))))
   const vc = new VirtualConsole()
   vc.on('jsdomError', () => {})
   const dom = new JSDOM(html, { runScripts: 'dangerously', resources: 'usable', virtualConsole: vc, pretendToBeVisual: true })
@@ -270,8 +270,6 @@ function remap(html: string): string {
     ["const chipTxt=p.ip?'I':QCHIP[p.q], chipCls=p.ip?'q-ins':QCLASS[p.q];",
      "const chipTxt=QCHIP[p.q], chipCls=QCLASS[p.q];"],
     ["LEVELNAME[p.q]+(p.ip?' · IP':'')+", "LEVELNAME[p.q]+"],
-    ["is a pilot, not IP — only IP may fly RCP (",
-     "is a pilot, not an instructor — only IP / IR / FI may fly RCP ("],
     [`<span><span class="qk" style="background:var(--q-ins)">I</span>IP / instr</span>`,
      `<span><span class="qk" style="background:var(--q-ins)">IW</span>IWSO</span>\n    <span><span class="qk" style="background:var(--q-ins)">IP</span>IP</span>\n    <span><span class="qk" style="background:var(--q-ins)">IR</span>IR exmr</span>\n    <span><span class="qk" style="background:var(--q-ins)">FI</span>FWI</span>`],
     ["seat:'FCP',q:'I',ip:true", "seat:'FCP',q:'IP',ip:true", 8],
@@ -292,11 +290,28 @@ function remap(html: string): string {
    check is deleted from validate(), so the reference's is excised from the
    in-memory copy too — the parity idiom, both sides — though it fires nowhere
    on the seed anyway (every seeded sim rear seat holds an IP or a WSO), so
-   WARN was byte-equal either way. The jet's rear-seat rule stands on both. */
+   WARN was byte-equal either way. The jet's rear-seat rule went the same way
+   on 7 Sep 26 — see rejet() below. */
 function resim(html: string): string {
   const from = "if(w&&w.seat==='FCP'&&!(w.ip||isInstr(w.q))){markChip(di,s.w,'Q');markRing(di,s.w,'hard');add('hard','QUAL',[s.w],`${w.cs} is a pilot, not IP — only IP may take the back seat (${s.label})`);}"
   const n = html.split(from).length - 1
   if (n !== 1) throw new Error(`refwin resim: expected 1 match, got ${n}`)
+  return html.split(from).join('')
+}
+
+/* The JET's rear-seat instructor rule went the way of the sim's (owner, 7 Sep
+   26 — "don't flag out that they are in an illegal seat"): any pilot may ride
+   any back seat now. The port's check is deleted from validate(), so the
+   reference's is excised from the in-memory copy too — the parity idiom, both
+   sides. It fires nowhere on the seed either way (no seeded jet rear seat holds
+   a non-instructor pilot), so WARN stays byte-equal; the excision keeps a
+   later seed fixture from reopening the seam silently. The message remap that
+   used to reword this line was dropped from remap() the same day — the whole
+   statement goes, so there is nothing left to reword. */
+function rejet(html: string): string {
+  const from = "if(w&&w.seat==='FCP'&&!(w.ip||isInstr(w.q))){markChip(di,ac.w,'Q');markRing(di,ac.w,'hard');add('hard','QUAL',[ac.w],`${w.cs} is a pilot, not IP — only IP may fly RCP (${f.label})`);}"
+  const n = html.split(from).length - 1
+  if (n !== 1) throw new Error(`refwin rejet: expected 1 match, got ${n}`)
   return html.split(from).join('')
 }
 

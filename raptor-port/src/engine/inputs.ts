@@ -162,8 +162,9 @@ export function inpType(t:any){const u=String(t==null?'':t).trim().toUpperCase()
    spare is standing by, not tasked, which is why a local commitment does not
    bar one. Derived rather than stored so the rule lives in one place and a
    twenty-row column cannot fall out of step with it.
-   Written against "a standalone spare" on purpose: SC is the only kind
-   enforced today, and the owner's AVALON rule drops in without re-cutting. */
+   Written against "a standalone spare" on purpose: the SC spare reads it,
+   and since 11 Aug 26 so does every AVALON (7 Sep 26: and BB) seat and desk
+   — one predicate, three readers (validate.ts). */
 export function canSpare(t:any){const m=inpMeta(t); return !!m&&m.local&&m.grp!=='med';}
 /* WHAT DOES THIS TYPE COST? — the one plain-English sentence describing what a
    man on this input may and may not be planned for. The SINGLE SOURCE for both

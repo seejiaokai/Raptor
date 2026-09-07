@@ -298,11 +298,34 @@ export function slotCell(id:any,sev:any,key:any,kind:any,editable:any,flag:any,d
 export function fmtT(s:any){const m=parseHM(s);return m==null?esc(s||''):hhmm(m);}
 export const ORD=['1st','2nd','3rd','4th','5th'];
 export function plCols(){return `<div class="pl-cols"><span class="h-nm">Name</span><span class="h-st">Start</span><span class="h-en">End</span><span class="h-pp">People</span><span class="h-rk">Rmks</span></div>`;}
+/* AN EXEMPT DESK'S PUCK FOLLOWS ITS OWN RULES AND NOTHING ELSE (sweep, 7 Sep
+   26 — the 11 Aug 26 owner word for exempt flying seats, "the rings should
+   also follow", which never reached the duty rows: a clean AVALON desk wore
+   the man's worst warning from anywhere in the day). A row on a `noconf`
+   block (AVALON's or BB's desk) reads the day's warning list for entries
+   ANCHORED to that row — or naming it as the other half of a same-hours pair
+   (`also`, the seat-anchored DOUBLE_BOOK) — and naming this man: the
+   availability look (DNIF_FLY / LEAVE_FLY) and the one-man-two-places clash
+   (DOUBLE_BOOK), the only codes a desk can carry, all hard, so it rings red
+   or not at all. Returns undefined for an ordinary desk (day-wide decoration,
+   unchanged), null for a clean exempt row, 'C' for a lit one. One body for
+   the week (lSeat) and the board (sbSeat) so the two cannot drift. */
+export function exemptDeskOwn(di:any,key:any,id:any){
+  const m=/^d:(\d+)\.(\d+)\.(\d+)/.exec(String(key||'')); if(!m)return undefined;
+  const dw=((DAYS[+m[1]]||{}).dutywaves||[])[+m[2]]; if(!dw||!dw.noconf)return undefined;
+  if(PV||!id)return null;
+  const rk=`d:${m[1]}.${m[2]}.${m[3]}`, g=WARN.byDay[di];
+  const hit=((g&&g.warns)||[]).find((x:any)=>(x.code==='DNIF_FLY'||x.code==='LEAVE_FLY'||x.code==='DOUBLE_BOOK')
+    &&(x.who||[]).includes(id)&&(x.key===rk||x.also===rk));
+  return hit?'C':null;
+}
 /* one crew position inside a list cell (programme / duties / sims / ground).
    Draggable in edit mode; renders nothing when empty so cells stay clean. */
 export function lSeat(di:any,id:any,key:any,ed:any){
   if(!(id&&PEOPLE[id]))return '';
-  return `<span class="seat"${PV?'':` data-slot="${key}"`}${alAttr(key)}${ed?' data-drag="1"':''}>${puck(id,sev(di,id),true,chip(di,id),dsh(di,id),traceHit(di,id))}</span>`;}
+  const ex=exemptDeskOwn(di,key,id);
+  const inner=ex===undefined?puck(id,sev(di,id),true,chip(di,id),dsh(di,id),traceHit(di,id)):puck(id,ex?'hard':null,true,ex,false,null);
+  return `<span class="seat"${PV?'':` data-slot="${key}"`}${alAttr(key)}${ed?' data-drag="1"':''}>${inner}</span>`;}
 /* the people cell itself — a drop target in edit mode (data-fill) */
 /* the extra bodies dropped onto a row, after its own seats */
 export function moreSeats(di:any,base:any,ed:any){
@@ -794,9 +817,17 @@ export function saRoleText(a:any){return a.role||(a.spare?'SPARE':'MAIN');}
 export function saRoleHTML(key:any,a:any,ed:any){
   const sp=!!a.spare, role=saRoleText(a);
   if(!ed)return `<span class="sarole ro${sp?' sp':''}">${esc(role)}</span>`;
-  return `<button class="sarole${sp?' sp':''}" data-sarole="${key}" title="${sp
-    ?'SPARE — standing by, checked for availability and currency only. Click to make this line MAIN.'
-    :'MAIN — fully cross-checked. Click to make this line SPARE.'}">${esc(role)}</button>`;
+  /* the tooltip names the checks that ACTUALLY run on this line (sweep, 7 Sep
+     26 — it said "fully cross-checked" on an AVALON MAIN, which is exempt
+     whole): an SC MAIN is fully checked; an SC SPARE, and every AVALON / BB
+     seat, carry the four standby checks only. The wave is read off the key
+     (di.gi…), the same model saExempt reads. */
+  const kp=String(key).split('.'), wv=(((DAYS[+kp[0]]||{}).waves||[])[+kp[1]]), whole=!!(wv&&wv.noconf);
+  const four=(who:any)=>`${who}checked for availability, SC currency, the front seat and another ${whole?'seat or the desk':'SC seat or the SC desk'} in the same hours only.`;
+  const title=sp?`SPARE — standing by; ${four('')} Click to make this line MAIN.`
+    :whole?`MAIN — ${four('')} Click to make this line SPARE.`
+    :'MAIN — fully cross-checked. Click to make this line SPARE.';
+  return `<button class="sarole${sp?' sp':''}" data-sarole="${key}" title="${title}">${esc(role)}</button>`;
 }
 /* LATE INPUT (owner, 9 Aug 26) — the mark that rides on an input last changed
    after its own week's deadline (engine/inputs.ts's isLateInput). It is drawn
@@ -1084,7 +1115,7 @@ export function dayHTML(di:any,ed:any,vsel?:any){
       const edge=sa?'var(--san)':`var(--${mColor(f0?f0.msn:'')})`;
       h+=`<div class="go ${w.night?'night':''} ${sa?'sa sa-'+(w.kind||'x'):''}"${ed?` data-move="mv:w.${di}.${gi}"`:''} style="border-left-color:${sa?'var(--san)':(w.night?'var(--hard)':edge)}">
         <div class="go-tab">${ed?'<span class="wvgrip" title="Drag to reorder this wave" aria-label="Reorder this wave">⠿</span>':''}<span class="asd">${ted(`wl:${di}.${gi}`,w.label,ed,'ntx')}${!sa&&w.night&&!/night/i.test(w.label)?' · NIGHT':''}`
-        +`${sa?`<span class="satag" title="${esc((SAWAVE[w.kind]||{}).note||'Standalone — outside the day\u2019s flying count')}">standalone${w.noconf?(w.kind==='avalon'?' · availability check only':' · not cross-checked'):''}</span>`:''}</span>
+        +`${sa?`<span class="satag" title="${esc((SAWAVE[w.kind]||{}).note||'Standalone — outside the day\u2019s flying count')}">standalone${w.noconf?' · availability, currency and seat checks only':''}</span>`:''}</span>
         ${sa?'':`<button class="airbtn" data-air="${di}|${gi}">Traffic</button>`}${sa||!ed?'':`<button class="airbtn" data-itadd="${di}|${gi}" title="Add an in-time line to this wave">+ In time</button>`}</div>`;
       /* "+ In time" renders whether or not the wave has lines — the always-there
          add control is the fix for the old trap where deleting the last line
@@ -1175,15 +1206,25 @@ export function dayHTML(di:any,ed:any,vsel?:any){
              and SPARE alike (SC_QUAL — the red Q), and — 31 Aug 26 — the two
              SC-SPARE rules: another SC seat in the same hours (DOUBLE_BOOK —
              the red C) and a WSO in the spare front seat (QUAL — the red Q).
+             Since 7 Sep 26 AVALON anchors the same three codes for its own
+             three rules (SC NIGHT on a MAIN, the pilots-only front seat, one
+             man in two AVALON places), so nothing here changed for it.
              Only these four codes can anchor to an exempt line, and all are
              hard, so these pucks ring red or not at all — the owner confirmed
              no amber rule lives here. BB can anchor nothing and so never
-             rings, with no special case. */
+             rings, with no special case — until 7 Sep 26, when BB became
+             AVALON's twin and anchors the same codes. */
           const chk=!saExempt(w,f,a), fkey=`${di}.${gi}.${li}`;
           const own=(id:any)=>{ if(PV||!id)return null;
             const g=WARN.byDay[di];
             const hit=((g&&g.warns)||[]).find((x:any)=>(x.code==='DNIF_FLY'||x.code==='LEAVE_FLY'||x.code==='SC_QUAL'||x.code==='DOUBLE_BOOK'||x.code==='QUAL')
-              &&(x.who||[]).includes(id)&&(x.key===fkey||String(x.key||'').indexOf(fkey+'.')===0));
+              /* also `x.also`, so the SECOND place of a one-man-two-places pair
+                 rings when it sits in a DIFFERENT wave (an AVALON seat + a BB
+                 seat): the clash anchors on the first place, the other in `also`
+                 — same match the exempt DESK puck already makes (7 Sep 26). A
+                 same-formation pair already rings off the shared key prefix. */
+              &&(x.who||[]).includes(id)&&(x.key===fkey||String(x.key||'').indexOf(fkey+'.')===0
+                ||x.also===fkey||String(x.also||'').indexOf(fkey+'.')===0));
             return hit?((hit.code==='SC_QUAL'||hit.code==='QUAL')?'Q':'C'):null; };
           const sv=(id:any)=>chk?sev(di,id):(own(id)?'hard':null), cp=(id:any)=>chk?chip(di,id):own(id), dh=(id:any)=>chk?dsh(di,id):false,
                 tr=(id:any)=>chk?traceHit(di,id):null;

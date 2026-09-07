@@ -1,5 +1,6 @@
 import { store } from './hooks'
 import { parseHM, hmOK, hhmm } from './time'
+import { SAWAVE } from './waves'
 
 /* A duty time is a clock time or nothing — the same question txtSet asks of a
    schedule time cell (slots.ts). A malformed value ('2500', 'morning') drops to
@@ -35,19 +36,30 @@ export function tplTime(v: any): string {
    shift hours. Placing a template COPIES its rows onto the day, so later edits
    to the library never reach a block already on a board, and vice-versa.
 
-   Nothing in validate.ts reads a template. It only MINTS a plain duty block
-   (blockFromTpl) — no sa/noconf marker, so a template desk is conflict-checked
-   like any other duty row (owner, 13 Aug 26: duties are decoupled from waves,
-   and the AVALON/BB desk exemption went with the auto-create). The seed week
-   carries no such desk, so this changes nothing the reference parity gate sees. */
+   Nothing in validate.ts reads a template. It only MINTS a duty block
+   (blockFromTpl). Duties stay DECOUPLED from waves (owner, 13 Aug 26: no wave
+   creates a desk, deleting a wave leaves every desk alone) — but since 7 Sep
+   26 a template NAMES THE WAVE ITS DESK SERVES (`wave`: '' / 'sc' / 'avalon' / 'bb'),
+   and the mint carries that onto the block as the same `sa` marker the
+   engine has read since 11 Aug 26. That is what lets the owner's desk rules
+   land: an AVALON desk is exempt from every cross-check but the availability
+   look (`noconf` + `sa:'avalon'`, events.ts), earns no OIL (oil.ts), and is
+   one of the places a man may not hold twice in the same hours — a BB desk is
+   its twin (owner, 7 Sep 26, same day); an SC desk is
+   checked like any duty row AND counts as an SC seat for the spare's
+   same-hours rule (events.ts scSeatHit). A template with no wave mints the
+   PLAIN block it always did. The seed week carries no template desk, so
+   reference parity is untouched either way. */
 
+export type DutyWave = '' | 'sc' | 'avalon' | 'bb'
+export const DUTY_WAVES: readonly DutyWave[] = Object.freeze(['', 'sc', 'avalon', 'bb'])
 export type DutyTplRow = { role: string; str: string; end: string }
-export type DutyTpl = { id: string; title: string; rows: DutyTplRow[] }
+export type DutyTpl = { id: string; title: string; wave: DutyWave; rows: DutyTplRow[] }
 
 export const MAX_TPL = 24, MAX_TITLE = 24, MAX_ROWS = 24, MAX_ROLE = 24
 
-const mk = (id: string, title: string, rows: [string, string, string][]): DutyTpl =>
-  ({ id, title, rows: rows.map(([role, str, end]) => ({ role, str, end })) })
+const mk = (id: string, title: string, wave: DutyWave, rows: [string, string, string][]): DutyTpl =>
+  ({ id, title, wave, rows: rows.map(([role, str, end]) => ({ role, str, end })) })
 
 /* seeded from the shapes duties came in as before templates existed: the
    ordinary desk, SC's per-shift desk, and AVALON's overnight desk. BB's desk
@@ -57,14 +69,14 @@ const mk = (id: string, title: string, rows: [string, string, string][]): DutyTp
    editor's boxes show the stored string raw, so the seed itself must carry
    the colon; a pre-fix library in storage refolds on load (tplTime). */
 export const DUTYTPL_STD: readonly DutyTpl[] = Object.freeze([
-  mk('std', 'Standard', [['SDO', '', ''], ['SXO', '', ''], ['OPS O', '', '']]),
-  mk('sc', 'SC Shift', [['SXO AM', '07:00', '13:00'], ['OPS O AM', '07:00', '13:00'],
+  mk('std', 'Standard', '', [['SDO', '', ''], ['SXO', '', ''], ['OPS O', '', '']]),
+  mk('sc', 'SC Shift', 'sc', [['SXO AM', '07:00', '13:00'], ['OPS O AM', '07:00', '13:00'],
     ['SXO PM', '13:00', '19:00'], ['OPS O PM', '13:00', '19:00']]),
-  mk('avalon', 'AVALON', [['SXO', '19:00', '07:00'], ['OPS O', '19:00', '07:00'],
+  mk('avalon', 'AVALON', 'avalon', [['SXO', '19:00', '07:00'], ['OPS O', '19:00', '07:00'],
     ['RUNNER', '19:00', '07:00'], ['LOG CELL', '19:00', '07:00']]),
 ])
 
-const clone = (t: DutyTpl): DutyTpl => ({ id: t.id, title: t.title, rows: t.rows.map(r => ({ ...r })) })
+const clone = (t: DutyTpl): DutyTpl => ({ id: t.id, title: t.title, wave: t.wave, rows: t.rows.map(r => ({ ...r })) })
 const stdCopy = () => DUTYTPL_STD.map(clone)
 
 export let DUTYTPL_CFG: DutyTpl[] = stdCopy()
@@ -82,7 +94,7 @@ export function tplAreStandard() {
 export function addTpl(title = 'New template'): DutyTpl | null {
   if (DUTYTPL_CFG.length >= MAX_TPL) return null
   const t: DutyTpl = { id: newId(), title: String(title).slice(0, MAX_TITLE) || 'New template',
-    rows: [{ role: '', str: '', end: '' }] }
+    wave: '', rows: [{ role: '', str: '', end: '' }] }
   DUTYTPL_CFG.push(t)
   return t
 }
@@ -98,6 +110,16 @@ export function renameTpl(id: string, title: string): boolean {
   const t = DUTYTPL_CFG.find(t => t.id === id)
   if (!t) return false
   t.title = String(title).slice(0, MAX_TITLE)
+  return true
+}
+
+/* which wave this desk serves — the one field the engine reads off the minted
+   block (as `sa`). Only the three known values; anything else is refused so a
+   stray string can never reach events.ts/oil.ts as a marker they half-know. */
+export function setTplWave(id: string, wave: DutyWave): boolean {
+  const t = DUTYTPL_CFG.find(t => t.id === id)
+  if (!t || DUTY_WAVES.indexOf(wave) < 0) return false
+  t.wave = wave
   return true
 }
 
@@ -146,13 +168,21 @@ export function moveTplRow(id: string, from: number, to: number): boolean {
   return true
 }
 
-/* mint a PLAIN duty block from a template — the one thing "+ Block" asks for.
+/* mint a duty block from a template — the one thing "+ Block" asks for.
    Rows are copied (id blank, ready to seat a body), so the placed block is a
-   free-standing copy the library no longer owns. */
+   free-standing copy the library no longer owns. A template with no wave
+   mints the PLAIN {label,rows} block, byte-identical to before 7 Sep 26; one
+   naming a wave carries it as `sa`, and `noconf` mirrors the WAVE's own
+   exemption exactly as the retired waveDutyBlock did (SAWAVE[kind].all —
+   AVALON's desk sits outside the conflict engine with its wave, an SC desk is
+   checked like any duty row), so the engine reads a template desk and a
+   pre-decoupling desk from an old AL snapshot the same way. */
 export function blockFromTpl(id: string): any | null {
   const t = DUTYTPL_CFG.find(t => t.id === id)
   if (!t) return null
-  return { label: t.title, rows: t.rows.map(r => ({ role: r.role, id: '', str: tplTime(r.str), end: tplTime(r.end) })) }
+  const blk: any = { label: t.title, rows: t.rows.map(r => ({ role: r.role, id: '', str: tplTime(r.str), end: tplTime(r.end) })) }
+  if (t.wave) { blk.sa = t.wave; if (SAWAVE[t.wave] && SAWAVE[t.wave].all) blk.noconf = true }
+  return blk
 }
 
 /* An ordered, renameable list IS its order, titles and rows, so — as with the
@@ -186,6 +216,13 @@ export function dutyTplLoad() {
     if (!t || typeof t !== 'object' || !Array.isArray((t as any).rows)) continue
     const id = typeof (t as any).id === 'string' && (t as any).id ? (t as any).id : newId()
     const title = typeof (t as any).title === 'string' ? (t as any).title.slice(0, MAX_TITLE) : ''
+    /* the wave: one of the three known values, else none — EXCEPT a library
+       saved before the field existed (7 Sep 26), where the two seeded desks
+       still carry their seed ids and get their seed waves back rather than
+       silently turning into plain desks on the first load after the update */
+    const rw = (t as any).wave
+    const wave: DutyWave = DUTY_WAVES.indexOf(rw) >= 0 ? rw
+      : (rw == null && (id === 'sc' || id === 'avalon') ? id : '')   // null reads as unset too (sweep, 7 Sep 26)
     const rows: DutyTplRow[] = []
     for (const r of (t as any).rows) {
       if (rows.length >= MAX_ROWS) break
@@ -196,7 +233,7 @@ export function dutyTplLoad() {
         end: tplTime(r.end),
       })
     }
-    out.push({ id, title, rows })
+    out.push({ id, title, wave, rows })
   }
   DUTYTPL_CFG = out.length ? out : stdCopy()
   /* SEQ was advanced past every restored 'uN' in the pre-scan above, before
