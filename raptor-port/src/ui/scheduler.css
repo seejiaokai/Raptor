@@ -1780,7 +1780,14 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
 /* the 20px page gutter is a MARGIN, not padding, so it sits OUTSIDE the scroll
    box — otherwise the frozen callsign sticks at the padding edge and scrolled
    cells show through the 20px gap to its left (owner, 15 Aug 26). */
-.qwrap{padding:6px 0 40px;margin:0 20px;overflow-x:auto}
+/* position:relative is the lift frame's containing block (src/ui/lift.ts) — no
+   z-index, so it opens no stacking context (the .mx-wrap precedent) and the
+   frame's z 7 still resolves against the same context as the frozen callsign
+   column (z 1/3) and the sticky headings (z 2), which is what lets one box
+   paint over the whole column. Being IN the scroller is deliberate too: the
+   frame is placed in content coordinates and rides the sideways scroll for
+   free, instead of standing still while the column it wraps slides away. */
+.qwrap{padding:6px 0 40px;margin:0 20px;overflow-x:auto;position:relative}
 /* THE FROZEN QUALS HEADER (owner, 29 Aug 26 — "the quals top bar should also
    freeze like the leave war top bar … desktop and mobile … same mechanism").
    The Leave War `.mxfixed` mechanism, scaled to this table: `.qwrap` scrolls

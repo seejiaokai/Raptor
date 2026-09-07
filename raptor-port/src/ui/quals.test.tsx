@@ -917,6 +917,95 @@ describe('Edit quals', () => {
       .toEqual(order)
   })
 
+  /* ---- ONE LIFT, EVERY DRAG (owner, 6 Sep 26) ---------------------------
+     A column is not one element — a heading and a cell per person — so what
+     is picked up wears ONE overlay frame inside `.qwrap`, placed from the
+     heading's x and the table's y (src/ui/lift.ts), and the drop flashes it
+     where the column LANDED. jsdom lays nothing out and boxOf answers null
+     for a 0×0 world, so these three hand the three measured elements a
+     layout; what is pinned here is the choreography and the arithmetic, and
+     what it PAINTS is pinned in a real browser (e2e/geometry.spec.ts). */
+  const RECT = (top: number, left: number, width: number, height: number) =>
+    ({ top, left, width, height, right: left + width, bottom: top + height, x: left, y: top, toJSON() { return {} } }) as DOMRect
+  const WRAP = RECT(100, 20, 800, 600), TBL = RECT(106, 20, 1050, 560), NOTHING = RECT(0, 0, 0, 0)
+  /* the headings, 70 wide on an 80 pitch, starting at 320 — so a column's
+     measured place says which POSITION it is in, and a move can be seen */
+  const thLeft = (k: string) => 320 + qualCols().indexOf(k) * 80
+  let realRect: () => DOMRect
+  /* keyed on the SELECTOR rather than the node, because the table's innerHTML
+     is rebuilt by the drop: the heading measured at the landing is a different
+     element from the one that was picked up. Everything else keeps jsdom's
+     0×0, which is what leaves the frozen-header mirror inert here (it bails on
+     a 0-height thead — the test at the foot of this file pins that). */
+  const layOut = () => {
+    realRect = Element.prototype.getBoundingClientRect
+    Element.prototype.getBoundingClientRect = function (this: Element) {
+      if (this.classList.contains('qwrap')) return WRAP
+      if ((this as HTMLElement).id === 'qtbl') return TBL
+      const k = (this as HTMLElement).dataset?.col
+      return k ? RECT(106, thLeft(k), 70, 26) : NOTHING
+    }
+  }
+  const layDown = () => { Element.prototype.getBoundingClientRect = realRect }
+  const frame = () => $('.qwrap [data-testid="qlift-frame"]')
+
+  it('picking a heading up puts ONE frame round the column, inside the scroller', async () => {
+    await on()
+    layOut()
+    try {
+      const k = qualCols()[2]!
+      await pointer('pointerdown', $(`#qtbl thead th[data-col="${k}"]`))
+      const lifted = $$('.qwrap .lift-frame.lift')
+      expect(lifted.length, 'one frame, in the scroller the table lives in').toBe(1)
+      expect($$('.lift-frame.lift').length, 'and nothing else on the page wears one').toBe(1)
+      /* the heading's x and the table's y, in the wrap's CONTENT coordinates
+         (left = 320 + 2×80 − the wrap's own 20) — so the frame rides the
+         sideways scroll with the column instead of being placed once and left */
+      expect([frame().style.left, frame().style.width]).toEqual(['460px', '70px'])
+      expect([frame().style.top, frame().style.height]).toEqual(['6px', '560px'])
+      expect(frame().getAttribute('aria-hidden'), 'never read out, never hit-tested').toBe('true')
+      /* the heading's own picked-up look is untouched by the frame */
+      expect($(`#qtbl thead th[data-col="${k}"]`).className).toContain('qdragging')
+      await pointer('pointerup', document)
+    } finally { layDown() }
+  })
+
+  it('dropping it moves the column and flashes the frame where the column landed', async () => {
+    await on()
+    layOut()
+    try {
+      const before = qualCols()
+      const k = before[before.length - 1]!, onto = before[0]!
+      await pointer('pointerdown', $(`#qtbl thead th[data-col="${k}"]`))
+      await pointer('pointermove', $(`#qtbl thead th[data-col="${onto}"]`))
+      await pointer('pointerup', document)
+      expect(qualCols()[0], 'the last column really moved to the front (moveQual ran)').toBe(k)
+      expect($$('.qwrap .lift-frame.lift-land').length, 'one flash, and it is the frame').toBe(1)
+      expect($$('.lift-frame.lift').length, 'the picked-up box is gone on release').toBe(0)
+      /* measured against the REBUILT table — the moved heading is a new node,
+         found by its stable key, and it now stands in the first place */
+      expect(frame().style.left, 'the flash is where the column ENDED UP').toBe('300px')
+    } finally { layDown() }
+  })
+
+  it('a cancel — or a release over no heading — leaves the frame hidden', async () => {
+    await on()
+    layOut()
+    try {
+      const before = qualCols()
+      const k = before[1]!
+      await pointer('pointerdown', $(`#qtbl thead th[data-col="${k}"]`))
+      expect($$('.qwrap .lift-frame.lift').length, 'armed').toBe(1)
+      await pointer('pointercancel', document)
+      expect(frame().className, 'hidden again, wearing nothing').toBe('lift-frame')
+      /* a release that never found another heading says the same nothing */
+      await pointer('pointerdown', $(`#qtbl thead th[data-col="${k}"]`))
+      await pointer('pointerup', document)
+      expect(frame().className).toBe('lift-frame')
+      expect(qualCols(), 'and neither one moved a column').toEqual(before)
+    } finally { layDown() }
+  })
+
   it('Save changes puts the table back to reading, and the mode with it', async () => {
     await on()
     await click($('#qSave'))

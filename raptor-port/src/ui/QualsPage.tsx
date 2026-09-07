@@ -2,7 +2,7 @@
    builder; the tick/untick handlers keep the reference's invariants: NAAR
    is signed off after DAAR, SC NIGHT after SC DAY, and withdrawing the day
    qualification takes the night one with it. */
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { PEOPLE, QORDER, QCHIP, QCOLOR, LEVELNAME, deriveQuals, isInstrPilot, ID_BY_CS } from '../engine/people'
 import { renameCallsign } from '../engine/slots'
 import { validate } from '../engine/validate'
@@ -12,6 +12,10 @@ import { esc } from '../state/view'
 import { notify } from '../state/store'
 import { DEFAULT_QUAL_COLS, qualCols, setQualCols } from '../engine/qualcols'
 import { useVersion } from './useStore'
+/* ONE LIFT, EVERY DRAG (owner, 6 Sep 26) — the shared drag decoration every
+   surface in the app wears. A column is a COMPOSITE thing (a heading and a
+   cell per person), so it takes the overlay frame rather than a class. */
+import { boxOf, frameLift, frameLand } from './lift'
 /* this page used to carry its own copy of exportCSV — which is how it missed
    the UTF-8 BOM the shared one now writes. One exporter, one encoding. */
 import { exportCSV } from './export'
@@ -290,6 +294,13 @@ export function QualsPage() {
      carrying where to pin it and the live column widths to size it. */
   const wrapRef = useRef<HTMLDivElement>(null)
   const mirrorRef = useRef<HTMLDivElement>(null)
+  /* ONE LIFT, EVERY DRAG (owner, 6 Sep 26): the column's overlay frame
+     (rendered in the scroll wrap with a constant className, so React never
+     writes to it again — this ref is its only writer) and the column key whose
+     landing is still to be played once the new order has re-rendered. Refs,
+     not state: the frame must cost nothing per frame and nothing per render. */
+  const qLiftRef = useRef<HTMLDivElement | null>(null)
+  const qLandRef = useRef<string | null>(null)
   const [stuck, setStuck] = useState<{ top: number; left: number; width: number; cols: number[] } | null>(null)
   const admin = !!SESSION && SESSION.role === 'admin'
 
@@ -489,6 +500,13 @@ export function QualsPage() {
       from = th.dataset.col!
       try { th.releasePointerCapture?.(e.pointerId) } catch { /* mouse: nothing to release */ }
       th.classList.add('qdragging')
+      /* the frame goes up in the same tick as the pointerdown — ONE measurement
+         here and one at the landing, nothing per pointermove. It is placed in
+         the wrap's CONTENT coordinates (the heading's x, the table's y, plus
+         however far the wrap is scrolled), so it rides the sideways scroll with
+         the column it is drawn round instead of standing still over it. */
+      const w = wrapRef.current
+      if (w) frameLift(qLiftRef.current, boxOf(w, tbl, th, w.scrollLeft))
     }
     const onMove = (e: any) => {
       if (!from) return
@@ -497,7 +515,14 @@ export function QualsPage() {
       if (th !== over) { clear(); over = th; th.classList.add('qdrop') }
     }
     const onUp = () => {
-      if (from && over) live.current.moveQual(from, over.dataset.col!)
+      /* a real move hides the lift frame at the landing below (it is the SAME
+         frame that flashes, so hiding it here would take the answer away before
+         it was given); a cancel, or a release over no heading, hides it here
+         and says nothing. The `from` guard is what keeps an unrelated click
+         anywhere on the page — this pair of listeners is mounted for the life
+         of the page, not just for the drag — from cutting a flash short. */
+      if (from && over) { qLandRef.current = from; live.current.moveQual(from, over.dataset.col!) }
+      else if (from) frameLift(qLiftRef.current, null)
       tbl.querySelectorAll('.qdragging').forEach(x => x.classList.remove('qdragging'))
       clear(); from = ''
     }
@@ -612,6 +637,25 @@ export function QualsPage() {
     if (stuck && mirrorRef.current && wrapRef.current) mirrorRef.current.scrollLeft = wrapRef.current.scrollLeft
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stuck])
+
+  /* THE LANDING FLASH, in the SAME commit as the reorder (one lift, every drag
+     — src/ui/lift.ts). The drop runs from a native document pointerup, so the
+     setCols above is BATCHED: a rect read on the next line would measure the
+     old order. A dep-list-free layout effect reads the key the drop left here
+     and measures the column where it actually ended up — deliberately not a
+     dep list (a frame late) and not a rAF (not ordered against React). The
+     table's innerHTML is rebuilt by the re-render, so the moved heading is a
+     NEW node; the column KEY is stable, which is what finds it. Its idle cost
+     is one comparison per render. */
+  useLayoutEffect(() => {
+    const k = qLandRef.current
+    if (!k) return
+    qLandRef.current = null
+    const w = wrapRef.current, tbl = tblRef.current
+    const th = tbl?.querySelector<HTMLElement>(`th[data-col="${k}"]`)
+    if (w && tbl && th) frameLand(qLiftRef.current, boxOf(w, tbl, th, w.scrollLeft))
+    else frameLift(qLiftRef.current, null)   // nothing to flash: take the frame down
+  })
 
   const addPerson = () => {
     const cs = addP.cs.trim()
@@ -742,6 +786,12 @@ export function QualsPage() {
       <div className="qwrap" ref={wrapRef}>
         <table className={'qtbl' + (qEditing ? ' editing' : '') + (canEditQuals() ? ' qediting' : '')} id="qtbl" ref={tblRef}
           dangerouslySetInnerHTML={{ __html: qualsTable(cols, qSeatView, qSort, qEditing, qSearch, canEditQuals(), armDel, admin) }} />
+        {/* THE LIFT FRAME (owner, 6 Sep 26): one box round a picked-up column,
+            and the flash where it lands — src/ui/lift.ts. Inside the scroll
+            wrap so it travels with the table sideways; a constant className, so
+            React never touches it after mount and the drag machine's classes
+            survive every re-render the table has. */}
+        <div className="lift-frame" data-testid="qlift-frame" aria-hidden="true" ref={qLiftRef} />
       </div>
       {/* THE FROZEN HEADER MIRROR (see the effect above). A fixed clone of the
           heading row + the group row, pinned just under the app top bar while the
