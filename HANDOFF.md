@@ -170,15 +170,19 @@ jobs green (build + reference suite, unit raptor, unit leavewar ×2, geometry
   validator AND the crew picker off one body (`events.ts avSeatHit`,
   `scSeatHit` now walking `sa:'sc'` desks). Rules `docs/engine-rules.md`
   §AVALON's one check + §AVALON's three seat rules + §the two SC SPARE rules;
-  seams `docs/feature-impact.md`; pins `engine/avalon-rules.test.ts` (45),
+  seams `docs/feature-impact.md`; pins `engine/avalon-rules.test.ts` (51),
   `dutytpl.test.ts`, `DutyTplModal.test.tsx`. Owner-settled the same day: an
   AVALON/BB night followed by a sortie the next morning raises NOTHING (nothing
   on these waves is an event, so neither carries crew rest or counts toward
   the 6-day run) — a decision, not a gap. **Bug-swept the same day** (three
   cheaper agents — a 22-scenario browser drive, an engine edge-case review, a
-  wording audit; three real fixes, see `BUG-TESTING.md` row #377); the one
-  thing no browser proved is the Saturday OIL credit landing in Leave War
-  (unit-pinned only).
+  wording audit; three real fixes, see `BUG-TESTING.md` row #377), then a
+  `/requesting-code-review` pass over the whole branch caught three more
+  picker/ring drifts (all fixed, pinned): a standby rear seat is unruled so the
+  picker offers a non-instructor pilot it used to grey out; a hand-edited CAT IW
+  in a front seat now refused by the picker as the validator already refuses it;
+  the `also` puck of a cross-wave double-book now rings. The one thing no browser
+  proved is the Saturday OIL credit landing in Leave War (unit-pinned only).
 
 - **LEAVE WAR OPENS ON THE WAR BEING BID ON — on the branch, unmerged (7 Sep
   26).** The tab no longer always opens on January of the first war. It now

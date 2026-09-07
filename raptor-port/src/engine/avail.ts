@@ -311,9 +311,20 @@ export function slotBar(id:any,key:any,rules?:any,fromKey?:any){
      through to the normal input/busy checks. */
   if(p.pers&&r.seat==='p')return 'ground crew — rear seat only, cannot fly front seat';
   if(r.seat==='p'&&p.seat==='RCP')return 'WSO — cannot fly front seat';
+  /* belt and braces, mirrored from the validator (validate.ts Q): CAT IW is a
+     WSO-only category, so an IW record whose seat says FCP is inconsistent data
+     — the Quals dropdowns never offer it, but a hand-edit could. The picker must
+     red the same drag-drop the warning list does, or the two drift (7 Sep 26). */
+  if(r.seat==='p'&&p.q==='IW'&&p.seat==='FCP')return 'CAT IW — a WSO category, cannot fly FCP';
   /* the instructor rule is the JET's rear seat only — a sim's rear seat is
-     open to any pilot (owner, 14 Aug 26), matching the engine's Q (sims) */
-  if(r.seat==='w'&&!r.sim&&p.seat==='FCP'&&!isInstrPilot(p.q))return 'pilot, not an instructor — only IP / IR / FI may fly rear seat';
+     open to any pilot (owner, 14 Aug 26), matching the engine's Q (sims). It
+     also stands down on a STANDBY rear seat (AVALON / BB, and the SC spare):
+     nobody checks the rear seat there — "pilots can go backseat" (owner, 7 Sep
+     26), and the validator's sacrew loop and the SC-spare seat rule both leave
+     it unruled, so the picker must too or it refuses a man the warning list
+     would accept (7 Sep 26 reviewer). The standby seat's own SC-currency refusal
+     below still applies. */
+  if(r.seat==='w'&&!r.sim&&!r.avJet&&!(r.sc&&r.scSpare)&&p.seat==='FCP'&&!isInstrPilot(p.q))return 'pilot, not an instructor — only IP / IR / FI may fly rear seat';
   if(r.sc&&!scQualOK(id,r.sc))return `not ${r.sc==='day'?'SC DAY':'SC NIGHT'} current`;
   /* every AVALON / BB jet seat wants SC currency for its hours (owner, 7 Sep
      26 — MAIN, then "AVALON SPARE also requires SC NIGHT") — the validator's

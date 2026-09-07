@@ -138,6 +138,38 @@ describe('the AVALON front seat is pilots-only, MAIN and SPARE alike', () => {
   })
 })
 
+/* THE STANDBY REAR SEAT IS UNRULED, AND THE PICKER MUST AGREE (sweep, 7 Sep 26
+   reviewer — the jet's rear-seat instructor rule fired in the picker on an
+   AVALON / BB / SC-spare rear seat, where the validator checks nothing: a
+   drift, and a contradiction of the owner's "pilots can go backseat; nobody
+   checks the rear seat"). Plus the mirror gap: a hand-edited CAT IW in a front
+   seat is the validator's red but slipped the picker. */
+describe('the standby rear seat is unruled — the picker and validator agree', () => {
+  it('a non-instructor pilot is OFFERED an AVALON rear seat ("pilots can go backseat")', () => {
+    const q = PEOPLE.ignite.quals, was = q.scNight
+    q.scNight = true                                   // an SC-NIGHT-current non-instructor pilot (CAT C)
+    try {
+      expect(slotBar('ignite', SEAT(0, 'w'))).toBe('') // the jet's instructor rule stands down here
+      F().aircraft[0].w = 'ignite'
+      expect(warns('ignite')).toEqual([])              // and the validator raises nothing either
+    } finally { q.scNight = was }
+  })
+  it('a non-instructor pilot without SC NIGHT is still refused — by CURRENCY, not the instructor rule', () => {
+    expect(slotBar('ignite', SEAT(0, 'w'))).toMatch(/not SC NIGHT current/)
+  })
+  it('a hand-edited CAT IW in a front seat is refused by the picker too, matching the validator', () => {
+    const p: any = PEOPLE.split, wasQ = p.q
+    p.q = 'IW'                                          // inconsistent data: a WSO category on an FCP body
+    try {
+      expect(slotBar('split', SEAT(0, 'p'))).toMatch(/IW/)
+      F().aircraft[0].p = 'split'
+      const h = warns('split', 'QUAL')
+      expect(h.length, JSON.stringify(h)).toBe(1)
+      expect(h[0].msg).toMatch(/IW/)
+    } finally { p.q = wasQ }
+  })
+})
+
 describe('one man in two AVALON places in the same hours', () => {
   it('MAIN + SPARE on the same shift is a hard DOUBLE_BOOK, said once, naming both', () => {
     F().aircraft[0].p = 'split'
@@ -383,6 +415,18 @@ describe('BB carries exactly the AVALON rules', () => {
     const all = validate().all.filter((x: any) => x.di === TUE && x.code === 'DOUBLE_BOOK' && (x.who || []).includes('split'))
     expect(all.length, JSON.stringify(all)).toBe(1)
     expect(all[0].msg).toMatch(/AVALON NIGHT MAIN/); expect(all[0].msg).toMatch(/BB SHIFT SPARE/)
+  })
+  it('both seats of that cross-wave pair ring — the also-anchored puck too (sweep, 7 Sep 26)', () => {
+    const puckClass = (html: string, key: string) => {
+      const m = html.match(new RegExp('data-slot="' + key.replace(/[.:]/g, (c) => '\\' + c) + '"[^>]*><span class="(puck[^"]*)"'))
+      return m ? m[1] : null
+    }
+    F().aircraft[0].p = 'split'                       // AVALON MAIN 19:00–07:00 — the anchor place
+    B().aircraft[2].w = 'split'                       // BB SPARE 20:00–04:00 — the `also` place
+    validate()
+    const html = dayHTML(TUE, true)
+    expect(/warn hard/.test(puckClass(html, SEAT(0, 'p')) || ''), 'the anchor AVALON puck rings').toBe(true)
+    expect(/warn hard/.test(puckClass(html, BSEAT(2, 'w')) || ''), 'the also BB puck rings too').toBe(true)
   })
   it('availability: OL on a seat flags; ATT B mans the BB desk; ATT C on the desk flags', () => {
     B().aircraft[1].p = 'split'

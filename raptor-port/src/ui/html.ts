@@ -1218,7 +1218,13 @@ export function dayHTML(di:any,ed:any,vsel?:any){
           const own=(id:any)=>{ if(PV||!id)return null;
             const g=WARN.byDay[di];
             const hit=((g&&g.warns)||[]).find((x:any)=>(x.code==='DNIF_FLY'||x.code==='LEAVE_FLY'||x.code==='SC_QUAL'||x.code==='DOUBLE_BOOK'||x.code==='QUAL')
-              &&(x.who||[]).includes(id)&&(x.key===fkey||String(x.key||'').indexOf(fkey+'.')===0));
+              /* also `x.also`, so the SECOND place of a one-man-two-places pair
+                 rings when it sits in a DIFFERENT wave (an AVALON seat + a BB
+                 seat): the clash anchors on the first place, the other in `also`
+                 — same match the exempt DESK puck already makes (7 Sep 26). A
+                 same-formation pair already rings off the shared key prefix. */
+              &&(x.who||[]).includes(id)&&(x.key===fkey||String(x.key||'').indexOf(fkey+'.')===0
+                ||x.also===fkey||String(x.also||'').indexOf(fkey+'.')===0));
             return hit?((hit.code==='SC_QUAL'||hit.code==='QUAL')?'Q':'C'):null; };
           const sv=(id:any)=>chk?sev(di,id):(own(id)?'hard':null), cp=(id:any)=>chk?chip(di,id):own(id), dh=(id:any)=>chk?dsh(di,id):false,
                 tr=(id:any)=>chk?traceHit(di,id):null;
