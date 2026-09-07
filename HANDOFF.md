@@ -172,6 +172,22 @@ jobs green (build + reference suite, unit raptor, unit leavewar ×2, geometry
   pins `engine/stages.test.ts`, `engine/period.test.ts`, `leavewarpage.test.tsx`,
   `ui/undermanned.test.tsx`.
 
+- **THREE LEAVE WAR VISUAL FIXES the owner spotted on that preview — on the
+  branch, unmerged (7 Sep 26).** Small, unrelated to the default-view logic,
+  each with its own commit + pin: (1) the VIEWER row's last figure cell (MED
+  TOT) missed its accent band — the drawer's `.fig.last` right-seam rule
+  out-specified the `tr.me` band rule, so it read darker than the row; fixed
+  with `.mxdrawer .mx tbody tr.me td.fig.last` (`matrix.css`). (2) the
+  open-bidding box's LEFT border vanished in Rearrange — `measureBidBox` did
+  not re-measure on `arranging`, so it stayed behind the widened frozen column;
+  fixed by adding the dep. (3) the box stayed DISPLACED after LEAVING Rearrange
+  on iOS WebKit only — WebKit settles the `--who-w` shrink a frame after the
+  synchronous measure reads it; fixed with a two-frame rAF re-measure on the
+  `arranging` toggle (`Matrix.tsx`). (2)+(3) pinned in `e2e/leavewar.spec.ts`
+  (enter AND leave). **(3) is owner-iPhone-unverified** — no WebKit in the
+  container, so it was fixed blind for iOS and only checked not to regress
+  Chromium; awaiting his tap on the preview.
+
 - **THE TRACKER TAB — on the branch, unmerged, owner-unverified (7 Sep 26).**
   The OCU Progress Tracker (`seejiaokai/Tracker` at `bf9a47a`) is vendored as
   the eighth tab, after Leave War, for everyone — `src/tracker/` (plain JS/JSX
