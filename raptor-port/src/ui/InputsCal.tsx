@@ -29,7 +29,7 @@ import { canEditSched, ME } from '../state/auth'
 import { fmt, fmtDay, inputTone, firstPersonalType } from './inputedit'
 import { INPEDIT, setInpEdit } from './pops'
 import { initCalDrag } from './caldrag'
-import { markLand, paintLand } from './lift'
+import { landOn, markLand, paintLand } from './lift'
 import { useVersion } from './useStore'
 
 const MON = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
@@ -492,18 +492,32 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose }:
         window.removeEventListener('pointercancel', cancel)
         if (dragCancelRef.current === cancel) dragCancelRef.current = null
         setSecDrag(null); setSecOver(null)
-        if (!commit || !over || over.id === id) return
+        /* A COMMITTED DROP WITH A TARGET FLASHES WHERE THE THING ENDED UP,
+           MOVED OR NOT (7 Sep 26; the owner's words are "once I drop the item
+           it should flash to show where the new item ended up", and IN PLACE is
+           where it ended up — the Leave War grid already reads this way for a
+           drop on a row's own grip). Only a cancel, or a release with nothing
+           under it, shows nothing — hence this one early return.
+           The flash is DEFERRED through a mark rather than written here, on
+           every branch, because the state clears above already guarantee a
+           re-render: React is about to rewrite this row's className to drop
+           `dragging`, and an imperative class added now would go with it. The
+           layout effect paints in that very commit, so nothing is left waiting. */
+        if (!commit || !over) return
+        const landSel = `[data-sec="${id}"]`     // one address, whichever way the drop resolves
+        if (over.id === id) { markLand(landSel); return }   // dropped on itself
         const secs = dayEntries(iso, { fPerson, fType, fSearch }).pucks
         let beforeId: string | null = over.id
         if (over.after) {
           const ix = secs.findIndex((s: any) => s.id === over!.id)
           beforeId = secs[ix + 1]?.id ?? null
         }
-        /* the flash goes on the section AFTER the write has rebuilt this
-           popover, so the address is marked first and painted by the layout
-           effect in that very commit (src/ui/lift.ts markLand/paintLand) —
-           a class written here would be wiped by the re-render itself. */
-        if (beforeId !== id) { markLand(`[data-sec="${id}"]`); writeInputs(() => movePlanSection(id, beforeId)) }
+        if (beforeId === id) { markLand(landSel); return }  // resolves to its own place
+        /* a real move: the same mark, but the write is what rebuilds the
+           popover, and movePlanSection may still refuse it as a no-op — either
+           way the section is there to flash when the layout effect runs. */
+        markLand(landSel)
+        writeInputs(() => movePlanSection(id, beforeId))
       }
       const up = () => end(true)
       const cancel = () => end(false)
@@ -562,15 +576,22 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose }:
         if (!dragging || !ev) return                        // a tap, not a drag — leave the puck seated
         const { inRow, ix } = slotAt(ev)
         if (!inRow) writeInputs(() => togglePuckPerson(rowId, personId))                          // off the row → drop
-        /* a swap/move LANDS somewhere, so it flashes there — the SLOT it landed
-           in, marked before the write that rebuilds the row (src/ui/lift.ts). A
-           drop off the row is a removal with no landing place, so it marks
-           nothing. */
-        else if (ix >= 0 && ix !== fromIx) {
+        /* Released back on its OWN slot: a committed drop with a target, so it
+           flashes where it ended up — in place (7 Sep 26; the owner's "show
+           where the new item ended up"). Straight onto the chip, no mark: there
+           is no write, so nothing rebuilds this row and nothing re-renders that
+           could wipe the class (the seated puck's className is a constant, and
+           this whole drag is imperative — that is why `.pk-drag` works too). */
+        else if (ix === fromIx) landOn(chip)
+        /* a swap/move LANDS somewhere else, so it flashes there — the SLOT it
+           landed in, marked before the write that rebuilds the row
+           (src/ui/lift.ts). A drop OFF the row is a removal with no landing
+           place, so it marks nothing. */
+        else if (ix >= 0) {
           markLand(`[data-secpucks="${rowId}"] .ic-secpk[data-pkidx="${ix}"]`)
           writeInputs(() => movePuckPerson(rowId, fromIx, ix))
         }
-        // inRow but no slot → a cancel, leave it seated
+        // inRow but between cells (ix -1) → a cancel, leave it seated, no flash
       }
       const up = (ev: PointerEvent) => done(ev)
       const cancel = () => done(null)

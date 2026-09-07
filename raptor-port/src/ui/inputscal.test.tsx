@@ -816,6 +816,91 @@ describe('one lift, every drag — the day popover (6 Sep 26)', () => {
     }
   })
 
+  /* A COMMITTED DROP WITH A TARGET FLASHES WHERE THE THING ENDED UP, MOVED OR
+     NOT (ruling, 7 Sep 26, on the owner's own words — "once I drop the item it
+     should flash to show where the new item ended up", and in place IS where it
+     ended up). The Leave War grid already reads this way for a drop on a row's
+     own grip. Only a cancel, or a release with no target under it, shows
+     nothing. These three pin the "moved nothing" half, which is the half a
+     review found unpinned. */
+  it('a section dropped back where it already sat still flashes — in place', async () => {
+    const iso = '2026-07-02'
+    // three sections, so the drop below is a REAL no-op rather than a two-row swap
+    await act(async () => {
+      addPlanPuck(iso, 'in place three'); addPlanPuck(iso, 'in place two'); addPlanPuck(iso, 'in place one'); notify()
+    })
+    const before = dayIds(iso)
+    const [one, two] = before
+    try {
+      await openPop(iso)
+      markLand('')
+      /* drop the first section on the SECOND's upper half — "before that one",
+         which is exactly where it already is, so movePlanSection refuses it */
+      document.elementFromPoint = () => $(`[data-sec="${two}"]`)
+      await act(async () => { $(`[data-sechandle="${one}"]`)!.dispatchEvent(ptr('pointerdown', 10, 20)) })
+      await win('pointermove', 10, 30)
+      await win('pointerup', 10, 30)
+
+      expect(dayIds(iso), 'the store refused a move that lands where it began').toEqual(before)
+      expect($(`[data-sec="${one}"]`)!.classList.contains('lift-land'),
+        'and it still flashes — in place is where it ended up').toBe(true)
+    } finally {
+      if ($('#icPopClose')) await click($('#icPopClose'))
+      await wipe(iso)
+    }
+  })
+
+  it('a section dropped on its OWN row flashes in place, and leaves no mark to fire late', async () => {
+    const iso = '2026-07-03'
+    await act(async () => { addPlanPuck(iso, 'own row two'); addPlanPuck(iso, 'own row one'); notify() })
+    const before = dayIds(iso)
+    const [one] = before
+    try {
+      await openPop(iso)
+      markLand('')
+      document.elementFromPoint = () => $(`[data-sec="${one}"]`)
+      await act(async () => { $(`[data-sechandle="${one}"]`)!.dispatchEvent(ptr('pointerdown', 10, 20)) })
+      await win('pointermove', 10, 22)
+      await win('pointerup', 10, 22)
+
+      expect(dayIds(iso), 'nothing moved').toEqual(before)
+      const el = $(`[data-sec="${one}"]`)!
+      expect(el.className, 'the picked-up class is gone').not.toMatch(/\bdragging\b/)
+      expect(el.classList.contains('lift-land'), 'a committed drop on itself flashes where it stands').toBe(true)
+      /* and nothing outlives the drop: the very next unrelated render must not
+         find a live mark and flash something late */
+      await act(async () => { notify() })
+      expect(pendingLand(), 'no mark survives into an unrelated render').toBeNull()
+    } finally {
+      if ($('#icPopClose')) await click($('#icPopClose'))
+      await wipe(iso)
+    }
+  })
+
+  it('a seated puck released on its own slot flashes in place, and marks nothing at all', async () => {
+    const iso = '2026-07-04'
+    const { rowId, a, b } = await seatTwo(iso)
+    try {
+      await openPop(iso)
+      markLand('')
+      const slot = (i: number) => $(`[data-secpucks="${rowId}"] .ic-secpk[data-pkidx="${i}"]`)!
+      document.elementFromPoint = () => slot(0)          // released back on the slot it came from
+      await act(async () => { slot(0).dispatchEvent(ptr('pointerdown', 10, 10)) })
+      await win('pointermove', 30, 10)
+      await win('pointerup', 30, 10)
+
+      expect((PLANPUCKS.find((p: any) => p.id === rowId) as any).ids, 'the seats are untouched').toEqual([a, b])
+      expect(slot(0).classList.contains('lift-land'), 'it flashes where it stayed').toBe(true)
+      /* nothing was written, so nothing rebuilds the row — the chip is right
+         here and takes the flash on the spot, with no mark to defer */
+      expect(pendingLand(), 'an in-place puck needs no deferred landing').toBeNull()
+      expect(host.querySelector('.pk-drag'), 'nothing left picked up').toBeFalsy()
+    } finally {
+      if ($('#icPopClose')) await click($('#icPopClose'))
+      await wipe(iso)
+    }
+  })
+
   /* The popover closing mid-drag is the one path that ends a drag with the
      dragged element already unmounted (dragCancelRef, 24 Aug 26). It must end
      the LIFT as well as the listeners: nothing moves, nothing is marked, and the
