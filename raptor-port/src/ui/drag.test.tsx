@@ -829,6 +829,32 @@ describe('the puck ghosts wear the lift, and the seat it lands on flashes', () =
     } finally { await act(async () => { closeScheduler(); notify() }) }
   })
 
+  /* THE OTHER HALF OF THE SAME RULE (7 Sep 26): "moved or NOT". A seat puck
+     dropped back on its own seat writes nothing — applyDrop refuses it with
+     "Already in that seat" — but the man IS in the seat the scheduler aimed at,
+     so it flashes there. Nothing rebuilds on that path (no write, no
+     afterSchedMutate, no notify), so the seat is lit DIRECTLY: a mark would sit
+     in the slot with no later pass to spend it, and would then be spent by the
+     next unrelated repaint within its second. */
+  it('a puck dropped back on its own seat flashes in place, and marks nothing', async () => {
+    markLand('')
+    toasts = []
+    const seat = $('#eWeek .seat[data-slot^="g:"][data-drag]')
+    const key = seat.dataset.slot!, before = slotVal(key)
+    const mark = await dropAndPeek(seat, seat)
+    expect(slotVal(key), 'sanity: nothing was written').toBe(before)
+    expect(toasts, 'the toast still says why nothing moved').toEqual(['Already in that seat'])
+    expect(mark, 'nothing is deferred — there is no rebuild to defer to').toBeNull()
+    expect(pendingLand(), 'and none is left in the slot afterwards').toBeNull()
+    const live = $(`#eWeek [data-slot="${key}"]`)
+    expect(live, 'the seat is the same node — nothing re-rendered').toBe(seat)
+    expect(live.classList.contains('lift-land'), 'the seat he dropped on flashed').toBe(true)
+    /* and it leaves the ordinary way, on the veil's own animationend */
+    const ev: any = new Event('animationend', { bubbles: false }); ev.animationName = 'liftLand'
+    live.dispatchEvent(ev)
+    expect(live.classList.contains('lift-land'), 'the flash ends with its animation').toBe(false)
+  })
+
   /* "A committed drop with a TARGET flashes where the thing ended up; a release
      with no target shows nothing" (the owner's rule). Letting a seat puck go
      over the roster takes the man off the seat — a removal, with nowhere to

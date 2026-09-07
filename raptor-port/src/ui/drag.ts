@@ -14,7 +14,7 @@ import { notify } from '../state/store'
 import { flagDrop } from '../state/dropflag'
 import { canEditSched } from '../state/auth'
 import { reassignInput } from './inputedit'
-import { liftOn, markLand } from './lift'
+import { landOn, liftOn, markLand } from './lift'
 import { DBG, initDragDbg } from './dragdbg'
 
 const editMode = () => HOOKS.editMode()
@@ -293,8 +293,20 @@ export function applyDrop(el: any, x: any, y: any) {
       const a = slotVal(DRAG.key), b = slotVal(targetKey); setSlotVal(targetKey, a); setSlotVal(DRAG.key, b)
       asks = [[a, targetKey], [b, DRAG.key]]
     }
-    /* dropped back where he started — say so rather than reporting nothing */
-    else { DRAG = null; dndOff(); toast('Already in that seat'); return false }
+    /* dropped back where he started — say so rather than reporting nothing, and
+       FLASH the seat he let go on. The app's rule is "a committed drop with a
+       target flashes where the thing ended up, moved or NOT" (owner, 6 Sep 26),
+       and this is that case: he aimed at a seat and the puck is in it. Lit
+       directly rather than marked, because nothing rebuilds here — no write, no
+       afterSchedMutate, no notify — so there is no later pass for paintLand to
+       run in, and the seat under the pointer is the live node either way (the
+       surface question markLand answers cannot arise: this element IS the one he
+       dropped on). The toast stays; it says WHY nothing moved, the flash says
+       where the puck is. */
+    else {
+      const seat = slotEl.matches('[data-slot]') ? slotEl : slotEl.querySelector(`[data-slot="${targetKey}"]`)
+      DRAG = null; dndOff(); landOn(seat); toast('Already in that seat'); return false
+    }
     return done(targetKey, asks)
   }
   if (cell) {                                     // dropped on an empty / shared people cell

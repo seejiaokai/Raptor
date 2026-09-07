@@ -1748,7 +1748,12 @@
    the picked-up look is HERE, with the grid rows it has to match — one drag
    machine (Matrix.tsx startRowDrag), one look, changed in one place. */
 .set-grow.dragging,
-.crow-wrap.gs-row.dragging { border-radius: 8px; box-shadow: var(--lift-box); }
+.crow-wrap.gs-row.dragging { box-shadow: var(--lift-box); }
+/* The ring follows each row's OWN corner (7 Sep 26, when `.lift` stopped forcing
+   one on things that have their own): a Groups row is already 7px round
+   (bidpicker.css `.bidsheet .set-grow`) and now keeps it, while a who-wins row
+   is a bare flex WRAP with no corner of its own, so the 8px is named here. */
+.crow-wrap.gs-row.dragging { border-radius: 8px; }
 /* The landing bar runs the WHOLE row, 3px, with a glow — the previous 2px on
    the frozen cell alone was easy to miss under a thumb.
      `td:not(.who)` is not decoration: at a bare `td` this rule is (0,2,3) and

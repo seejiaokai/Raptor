@@ -44,10 +44,17 @@ describe('the lift recipe — one box, drawn INSIDE the line', () => {
     expect(v).toBe('inset 0 0 0 2px var(--accent), inset 0 0 12px rgba(59,198,232,.30)')
     for (const l of layers(v)) expect(l.startsWith('inset'), `${l} is inset`).toBe(true)
   })
-  it('.lift wears it with the 8px radius', () => {
+  /* THE RECIPE IS A COLOUR, NOT A SHAPE (7 Sep 26). `.lift{border-radius:8px}`
+     re-cornered everything it touched: a wave block's 10/12px went square
+     mid-drag and a 15px crew puck (3px corners) read pill-shaped while it was
+     carried. An INSET box-shadow follows the element's own border-radius, so
+     the ring hugs each thing's own corner the moment the recipe stops naming
+     one. What this pins is the absence — the declaration coming back is the
+     regression. */
+  it('.lift wears it and forces NO radius — an inset ring follows the thing\'s own corner', () => {
     const b = bodyOf('.lift')
     expect(b).toMatch(/box-shadow:\s*var\(--lift-box\)/)
-    expect(b).toMatch(/border-radius:\s*8px/)
+    expect(b, '.lift must not re-corner what it lifts').not.toMatch(/border-radius/)
   })
   it('nothing keys .lift off a body / html / root class — a toggled root class restyles the page', () => {
     const keyed = RULES.filter(r => r.sels.some(s => /^(body|html|:root)[.[]/.test(s) && /\.lift\b/.test(s)))
@@ -56,12 +63,15 @@ describe('the lift recipe — one box, drawn INSIDE the line', () => {
 })
 
 describe('the frame', () => {
-  it('is absolute, z 7, pointer-events none, hidden until it carries lift or lift-land', () => {
+  it('is absolute, z 7, pointer-events none, 8px round, hidden until it carries lift or lift-land', () => {
     const b = bodyOf('.lift-frame')
     expect(b).toMatch(/position:\s*absolute/)
     expect(b).toMatch(/z-index:\s*7\b/)
     expect(b).toMatch(/pointer-events:\s*none/)
     expect(b).toMatch(/display:\s*none/)
+    /* the frame is an empty overlay with nothing under it to take a shape from,
+       so it carries the recipe's old 8px itself (7 Sep 26) */
+    expect(b, 'the frame names its own corner').toMatch(/border-radius:\s*8px/)
     expect(bodyOf('.lift-frame.lift')).toMatch(/display:\s*block/)
     expect(bodyOf('.lift-frame.lift-land')).toMatch(/display:\s*block/)
   })
@@ -88,6 +98,9 @@ describe('the landing flash', () => {
     expect(v).toMatch(/content:\s*''/)
     expect(v).toMatch(/position:\s*absolute/)
     expect(v).toMatch(/inset:\s*0/)
+    /* the veil covers the landed thing exactly, so it takes THAT thing's corner
+       (7 Sep 26) — the frame's 8px, a wave block's 10/12px, a puck's 3px */
+    expect(v, 'the flash matches the shape of what it covers').toMatch(/border-radius:\s*inherit/)
     expect(v).toMatch(/pointer-events:\s*none/)
     expect(v).toMatch(/background:\s*rgba\(59,198,232,\.20\)/)
     expect(v).toMatch(/box-shadow:\s*var\(--lift-box\)/)

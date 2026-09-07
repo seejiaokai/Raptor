@@ -3944,8 +3944,10 @@ body:not(.tdrag) .sb-slot.empty:hover{border-color:var(--accent);color:var(--acc
    the perimeter, not individual boxes"; src/ui/lift.ts adds the class, drag.ts
    tdArm/setDragImage). INSET, so it is even on every side and no clip can eat
    it, and the ghosts' own 2px accent OUTLINE — drawn outside the border box, a
-   different look from every other picked-up thing — is gone with their 4px
-   radius (.lift's 8px replaces it). The dark drop shadow STAYS: it is what
+   different look from every other picked-up thing — is gone, with the 4px
+   radius that went with it: a ghost is a CLONE, so the ring follows the corner
+   of the thing being carried (a crew puck's 3px), which is the point of the
+   recipe naming no radius of its own. The dark drop shadow STAYS: it is what
    lifts the ghost off the page, it is neutral rather than accent, and nothing
    clips a fixed child of <body>. Both layers must ride ONE box-shadow, and the
    rule is written on the `.lift` COMPOUND because the recipe's own
@@ -4544,16 +4546,28 @@ button.sanscard:hover{border-color:var(--accent)}
    learnt on 16 Aug 26: draw nothing outside the border box). --lift-box lives on
    :root as a CONSTANT so matrix.css's own rows can wear the same numbers; it is
    never toggled (a toggled property on a grid ancestor restyles thousands of
-   cells — see the performance doctrine). */
-.lift{border-radius:8px;box-shadow:var(--lift-box)}
+   cells — see the performance doctrine).
+   NO RADIUS OF ITS OWN (7 Sep 26). The first cut wrote `border-radius:8px`
+   here, and it OVERRODE the corner every picked-up thing already had: a wave
+   block's 10/12px squared off mid-drag, and a 15px crew puck (3px corners)
+   read pill-shaped while it was carried. An INSET box-shadow follows the
+   element's OWN border-radius, so dropping the declaration is the whole fix —
+   the ring hugs each thing's corners and the recipe stops being a shape as
+   well as a colour. The two places that have no corners of their own name the
+   8px themselves: the overlay frame below, and the ⚙ who-wins row
+   (matrix.css). */
+.lift{box-shadow:var(--lift-box)}
 /* The overlay for a thing that is not one element (a table row across sticky and
    scrolling cells; a column): absolute in a positioned host that scrolls WITH the
    content, above the host's own overlays (Leave War: band 4/6, drawer 5; under
    .mxfixed 55 which covers it exactly as it covers the row), never a hit-test
    target. Hidden until it carries .lift or .lift-land. Absolute stays absolute:
    the veil's relative rule below is scoped :not(.lift-frame) — a bare rule lost
-   the landing frame to normal flow in the mock's first drive. */
-.lift-frame{position:absolute;z-index:7;pointer-events:none;display:none;box-sizing:border-box}
+   the landing frame to normal flow in the mock's first drive. The 8px corner is
+   the frame's OWN (7 Sep 26, when .lift stopped forcing one): the frame is an
+   empty box with nothing under it to take a shape from, so it names the number
+   here — and its veil inherits it. */
+.lift-frame{position:absolute;z-index:7;pointer-events:none;display:none;box-sizing:border-box;border-radius:8px}
 .lift-frame.lift,.lift-frame.lift-land{display:block}
 .lift-frame.lift{animation:liftIn 120ms ease-out}
 /* The landing flash: a veil pseudo-element over the landed thing — the same box
@@ -4563,9 +4577,12 @@ button.sanscard:hover{border-color:var(--accent)}
    clears it first, and under reduced motion — where the rule below stops the
    animation, so animationend never comes — the timer is the only way out. A
    plain element needs the positioning context (and z 4 to paint over the next
-   row's top border, as .sb-fresh does); the frame is already absolute. */
+   row's top border, as .sb-fresh does); the frame is already absolute.
+   border-radius:inherit (7 Sep 26): the veil covers the landed thing exactly,
+   so it takes that thing's OWN corner — a wave block's 10/12px, a puck's 3px,
+   the frame's 8px — instead of the flat 8 it forced on all of them. */
 .lift-land:not(.lift-frame){position:relative;z-index:4}
-.lift-land::after{content:'';position:absolute;inset:0;border-radius:8px;pointer-events:none;will-change:opacity;
+.lift-land::after{content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;will-change:opacity;
   background:rgba(59,198,232,.20);box-shadow:var(--lift-box);animation:liftLand 600ms ease-out forwards}
 /* The veil needs its OWN reduced-motion rule (review, 6 Sep 26). The blanket at
    the top of the file is `*{animation:none!important}`, and `*` matches ELEMENTS
