@@ -1896,3 +1896,18 @@ gate's. Keep verdict-bearing commands unpiped.
 **Suggested improvement:** When a visual report names or points at a specific element ("this column/cell/line looks wrong/darker/different"), the first diagnostic step is to read that element's COMPUTED style in a real browser and diff it against (a) its immediate siblings and (b) the same element in a state that looks correct — not to hypothesise a cause from the screenshot and build a candidate fix. The computed-style diff names the exact property and rule responsible, turning a guessing loop into a one-shot fix.
 
 **Principle:** A rendered-difference complaint is a computed-style question. Diffing the suspect element's resolved styles against a known-good reference (sibling, other row, prior state) localises the offending property and cascade rule directly; pattern-matching the screenshot to a plausible-sounding cause risks fixing the wrong thing and burning review round-trips.
+
+### Observation 125: A merge-time handoff must sweep the WHOLE "in flight" list, not just this session's diff
+
+**Status:** OPEN
+**Date:** 2026-09-07
+**Session context:** session-handoff after merging the accumulated branch to main. The current-state doc's "In flight" section still marked this session's own threads "unmerged", AND still carried an earlier PR's threads as "unmerged" even though that PR had merged in a prior session and its cleanup was never done.
+**Skill:** session-handoff (RAPTOR local skill)
+**Type:** open-source
+**Phase/Area:** Step 3 — the bounded "keep the durable docs true" check
+
+**Issue:** Step 3's check is deliberately bounded to `git diff <session-start>...origin/main` — this session's own changes. That correctly catches docs THIS session falsified, but it structurally cannot catch a current-state ("in flight" / "unmerged") entry that a PRIOR session's merge left stale, because that entry sits in a file this session's diff never touched. Here four threads from an already-merged earlier PR had been sitting in "In flight" marked "unmerged" for one or more sessions; they were caught only because the handoff happened to read the entire section by eye, not because any step pointed at them. On a busier handoff they would have been missed and shipped forward as false state — the same failure mode the skill already documents for the AVALON item and for the two-merged-PRs session-state file.
+
+**Suggested improvement:** Add one line to Step 3: whenever this session performed or observed a merge to main, re-read the ENTIRE "In flight" (or equivalent current-state/unmerged) section and reconcile every entry's merge status against `git log origin/main`, not only the entries this session's diff touched. A "current-state" section's invariant is that nothing in it is stale as of now — that is a whole-section check, independent of who made which entry stale.
+
+**Principle:** A bounded diff-scoped check keeps a doc true to THIS change, but a section whose contract is "current state" (nothing here is already done/merged) must be reconciled in full at every merge — staleness left by earlier actors lives outside this session's diff and is invisible to a diff-scoped sweep.
