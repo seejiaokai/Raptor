@@ -8,6 +8,11 @@
      ONE size everywhere, desktop included — there is deliberately no per-breakpoint
      override, because two pucks + remarks have to fit on one row at every width. */
   --puck-w:74px; --puck-h:15px;
+  /* the puck's corner, named once so the things that wrap a puck exactly — the
+     finger's seat-clone ghost, a landed grid seat's flash — can hug the same
+     curve (owner, 7 Sep 26: the ring round a carried puck "should follow the
+     shape of the curved edges of the puck") */
+  --puck-r:3px;
   --san:#B24DEA;   /* SANS (staff-assigned & NS aircrew) purple */
   --bg:#0B0D10; --panel:#14181D; --panel-2:#1A1F26; --raised:#20262E;
   /* the top bar's two stops, opaque — see the .topbar rule */
@@ -1052,7 +1057,7 @@ body:not(.tdrag) .page.editing .acrow .seat[data-slot]:hover .puck{outline:2px s
 /* ============ PUCK ============ */
 /* 9px is not arbitrary: it is the reference tool's own puck type, back-computed from a
    19-device-px cap height on a 3x screen. Same size on desktop — see the note in :root. */
-.puck{display:inline-flex;align-items:stretch;border-radius:3px;overflow:hidden;font-size:9px;font-weight:600;cursor:pointer;line-height:1;border:1px solid transparent;height:var(--puck-h);width:var(--puck-w);max-width:var(--puck-w);flex:0 0 var(--puck-w)}
+.puck{display:inline-flex;align-items:stretch;border-radius:var(--puck-r);overflow:hidden;font-size:9px;font-weight:600;cursor:pointer;line-height:1;border:1px solid transparent;height:var(--puck-h);width:var(--puck-w);max-width:var(--puck-w);flex:0 0 var(--puck-w)}
 /* every puck, anywhere, is exactly the flying-puck size */
 .seat .puck,.ppl .seat .puck,.ap-grid .seat .puck,.rpuck .puck,.sb-slot .seat .puck{width:var(--puck-w)!important;max-width:var(--puck-w)!important;flex:0 0 var(--puck-w)!important;height:var(--puck-h)!important}
 /* SANS: bright purple line down the right edge of the puck (deliberately the
@@ -3941,9 +3946,17 @@ body:not(.tdrag) .sb-slot.empty:hover{border-color:var(--accent);color:var(--acc
    ghostXf); no ghost variant does, measured.
    THE ACCENT BOX IS THE SHARED .lift NOW (6 Sep 26) — inset, so it survives
    every clip; the drop shadow stays for depth, and both ride the one
-   box-shadow written on the .lift compound just below .dragimg. */
+   box-shadow written on the .lift compound just below .dragimg.
+   THE PUCK'S CORNER (owner, 7 Sep 26, from his phone: the ring round a carried
+   puck "should follow the shape of the curved edges of the puck"). This ghost
+   clones the SEAT, and a seat is a bare flex shell with no corner of its own
+   that hugs a 3px-round puck edge to edge — so the veil below, which takes its
+   corner from this element, drew a SQUARE ring round a rounded puck (a dark
+   wedge at each corner). The mouse ghost IS the puck and never had the fault.
+   The seat clone takes the puck's own number, so ring, drop shadow and puck
+   share one curve. */
 .tdghost{position:fixed!important;left:0!important;top:0!important;will-change:transform;z-index:520!important;pointer-events:none;margin:0!important;
-  opacity:.92}
+  opacity:.92;border-radius:var(--puck-r)}
 /* mouse drag: the puck ghost the PAGE draws under the cursor (drag.ts
    setDragImage / moveDragImage) — the browser itself is handed a blank pixel,
    so no platform snapshot is ever composed (the white card a secured or
@@ -4678,6 +4691,19 @@ button.sanscard:hover{border-color:var(--accent)}
 .lift-land:not(.lift-frame){position:relative;z-index:4}
 .lift-land::after{content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;will-change:opacity;
   background:rgba(59,198,232,.20);box-shadow:var(--lift-box);animation:liftLand 600ms ease-out forwards}
+/* A SEAT NAMES THE SHAPE IT FLASHES IN (owner, 7 Sep 26, from his phone: "when
+   dropped … the box looks too rectangle, it should follow the curve of the
+   input area"). The veil takes its corner from its host, and a landed seat has
+   none of its own by the time the flash paints: a grid seat ([data-slot]) is a
+   bare shell hugging a 3px puck, and a people cell ([data-fill]) is 5px round
+   ONLY under body.dnd — the dashed drop target of the drag — which dndOff has
+   already taken off. So both flashed square round a rounded thing. The grid
+   seat takes the puck's corner; the people cell keeps the corner its drop
+   target wore a moment earlier (lift-css.test.ts reads that rule off this file
+   and holds the two numbers equal). A seat has no background or border of its
+   own at rest, so the corner shows only in the flash. */
+[data-slot].lift-land{border-radius:var(--puck-r)}
+[data-fill].lift-land{border-radius:5px}
 /* The veil needs its OWN reduced-motion rule (review, 6 Sep 26). The blanket at
    the top of the file is `*{animation:none!important}`, and `*` matches ELEMENTS
    — never pseudo-elements — so it takes the frame's bloom (liftIn, above) and

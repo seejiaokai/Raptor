@@ -225,6 +225,24 @@ describe('the landing flash', () => {
     expect(kf).toMatch(/0%,\s*25%\s*\{opacity:1\}/)
   })
 
+  /* A SEAT NAMES THE SHAPE IT FLASHES IN (owner, 7 Sep 26, from his phone: "the
+     box looks too rectangle, it should follow the curve of the input area").
+     The veil inherits its host's corner, and a landed seat has none of its own
+     by the time the flash paints: a grid seat is a bare shell round a 3px puck,
+     and a people cell's 5px is written only under body.dnd — the drag state
+     dndOff has already taken off. Both flashed SQUARE round a rounded thing.
+     The grid seat takes the puck's corner; the people cell keeps the corner its
+     dashed drop target wore a moment earlier — read off the file here, so the
+     two numbers cannot drift apart. */
+  it('a landed seat carries the corner of the shape the eye sees — the puck\'s, or its drop target\'s', () => {
+    expect(bodyOf('[data-slot].lift-land'), 'a grid seat hugs its puck').toMatch(/border-radius:\s*var\(--puck-r\)/)
+    const target = bodyOf('body.dnd [data-fill]').match(/border-radius:\s*([^;]+)/)
+    expect(target, 'the drop target a people cell wears during the drag names a corner').toBeTruthy()
+    const landed = bodyOf('[data-fill].lift-land').match(/border-radius:\s*([^;]+)/)
+    expect(landed, 'and the landed cell names one for its flash').toBeTruthy()
+    expect(landed![1]!.trim(), 'the flash lands in the same curve the target showed').toBe(target![1]!.trim())
+  })
+
   /* THE VEIL NEEDS ITS OWN REDUCED-MOTION RULE (review, 6 Sep 26). The blanket
      `@media (prefers-reduced-motion:reduce){*{animation:none!important}}` reaches
      the FRAME's bloom, because `*` matches elements — but `.lift-land::after` is
@@ -337,6 +355,22 @@ describe('the ghosts wear the same recipe — inset accent, neutral depth', () =
   it('both puck ghosts pin their own stacking order — a clone must not bring one with it', () => {
     for (const cls of ['.tdghost', '.dragimg'])
       expect(ghostBody(cls), `${cls} keeps its own layer whatever it cloned`).toMatch(/z-index:\s*520!important/)
+  })
+
+  /* THE FINGER'S GHOST TAKES THE PUCK'S CORNER (owner, 7 Sep 26, from his phone:
+     the ring "should follow the shape of the curved edges of the puck"). It
+     clones the SEAT — a bare shell with no corner of its own round a 3px puck —
+     and its veil takes its corner from the element, so the ring came out square
+     round a rounded puck. The mouse ghost IS the puck, inherits the puck's own
+     corner, and must go on naming none. The number is the puck's, read from one
+     token, so the two curves cannot drift apart. */
+  it('the seat-clone ghost hugs the puck\'s corner; the puck ghost inherits it', () => {
+    const root = bodyOf(':root').match(/--puck-r:\s*([^;]+)/)
+    expect(root, ':root names the puck\'s corner once').toBeTruthy()
+    expect(root![1]!.trim()).toBe('3px')
+    expect(bodyOf('.puck'), 'the puck wears the token').toMatch(/border-radius:\s*var\(--puck-r\)/)
+    expect(ghostBody('.tdghost'), 'the finger\'s seat clone takes the puck\'s corner').toMatch(/border-radius:\s*var\(--puck-r\)/)
+    expect(ghostBody('.dragimg'), 'the mouse ghost IS the puck — it names no corner of its own').not.toMatch(/border-radius/)
   })
 
   it('and nothing the drag itself needs was lost', () => {

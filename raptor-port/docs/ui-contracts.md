@@ -5260,6 +5260,17 @@ Four asks from the same sitting, all on the Leave War grid:
     pill-shaped). The two things with no corner of their own name one where it is
     used — the overlay frame (8px) and the ⚙ who-wins row (8px, `matrix.css`); a
     ⚙ Groups row keeps its own 7px.
+  - **A seat names the shape it flashes in, and the finger's ghost takes the
+    puck's (owner, 7 Sep 26, from his phone).** The veil inherits its host's
+    corner, and a landed seat has none by the time the flash paints — a grid
+    seat is a bare shell round a 3px puck, and a people cell is 5px round only
+    under `body.dnd`, which the drop has already taken off — so both flashed
+    SQUARE round a rounded thing. `[data-slot].lift-land` takes the puck's corner
+    and `[data-fill].lift-land` the 5px its dashed drop target wore a moment
+    earlier (`lift-css.test.ts` reads the target's rule and holds the two equal).
+    The puck's corner is one token, `--puck-r` on `:root`, worn by `.puck` and by
+    the finger's seat-clone ghost `.tdghost`, whose veil was square for the same
+    reason; the mouse ghost IS the puck and names none.
   - **`--lift-box` is a CONSTANT on `:root`, never toggled.** A custom property
     toggled on `.mx-outer` or any grid ancestor restyles thousands of cells (the
     performance doctrine); a constant read by `matrix.css`'s own rows costs

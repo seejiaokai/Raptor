@@ -1781,3 +1781,18 @@ gate's. Keep verdict-bearing commands unpiped.
 
 **Principle:** A shared recipe is only as strong as its weakest host — enumerate what each host already owns on the same property or slot, and drive the hosts in their busy states, because a clean row proves nothing about a marked one.
 
+### Observation 117: A visual that INHERITS a property from its host must be checked in the state the host is in when the visual shows — the live drive read the landing flash under the drag, where the corner came from a drag-only rule that was gone by the time the flash painted
+
+**Status:** OPEN
+**Date:** 2026-09-07
+**Session context:** Drag lift + landing flash — the owner's corner feedback the morning after the build (finger ghost and seat flash square round rounded things).
+**Skill:** the live-drive step (verification) / brainstorming (trap-hunt exploration) for a recipe worn by many hosts
+**Type:** open-source
+**Phase/Area:** Verifying a shared visual recipe applied through `inherit`
+
+**Issue:** The landing veil takes `border-radius:inherit` from the seat it flashes on. Every check of the flash — the e2e pins, the live drive, the whole-branch review — confirmed the class arrived, the veil animated opacity only and the ring was inset; none read the veil's COMPUTED corner at the moment it painted. Two hosts had no corner of their own at that moment: a grid seat is a bare shell round a rounded puck, and a people cell is rounded only under the drag-state class (`body.dnd`), which the drop removes before the flash appears. The finger's ghost had the same fault one step earlier: it clones the seat, not the puck, so `inherit` gave it the shell's square. The owner saw all of it on his phone within the hour: "the box looks too rectangle, it should follow the curve".
+
+**Suggested improvement:** When a recipe takes a property by `inherit` (or `currentColor`, or any host-derived value), the trap hunt lists, per host, WHERE that value comes from and WHEN that source is on — a value that only exists under a gesture-state class is a value the after-gesture visual will not have. The live drive then reads the visual's computed value (getComputedStyle(el, "::after")) at the moment it shows, per host, and the screenshot is a close-up of a CORNER, not a whole row; the CSS-contract test holds the host's at-rest number equal to the number the gesture state shows.
+
+**Principle:** A visual that borrows a value from its host inherits the host's state too — check it in the state the host will be in when the visual is actually on screen, and read the computed value, not the class.
+
