@@ -146,10 +146,14 @@ barely more than one.
 - **MODELS (owner, 7 Sep 26) — heavy work runs on Opus 4.8; Fable 5.1 is
   budget-limited.** The owner prefers Opus 4.8 and Fable 5.1 for work ("they
   hallucinate less and are more correct"); he has plenty of Opus tokens and a
-  LIMITED Fable allowance. So: put the voluminous work — long reads, audits,
-  parallel reviewer subagents, many-turn orchestration — on Opus 4.8, and spend
-  Fable only on short, high-leverage judgment calls. A session running on Fable
-  keeps its own turns few and short. For subagents, OMIT the model override so
+  LIMITED Fable allowance, which he spends deliberately on the SMART work —
+  bug checks, verification, complex reasoning ("sometimes I use fable for
+  things like bug check because it's smarter"). So split by kind, not by
+  importance: put the VOLUMINOUS work — long reads, wide scans, parallel
+  reviewer subagents, many-turn orchestration — on Opus 4.8, and put the
+  HARD-REASONING work — the verify pass on findings, tricky design calls,
+  a focused bug check — on Fable. A session running on Fable keeps its own
+  turns few and short. For subagents, OMIT the model override so
   they INHERIT the session's model: the bare `opus` alias is resolved by the
   harness and may not land on 4.8.
 - **Always hand him the Vercel preview link; auto-merge WAS the default until
