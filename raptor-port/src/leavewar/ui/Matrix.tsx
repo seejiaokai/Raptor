@@ -809,7 +809,17 @@ export function Matrix() {
              It is measured AFTER React commits: this listener is a native
            window handler, so the store's notify and the state clears above are
            batched into one commit that has not happened yet, and the layout
-           effect below reads this ref there. */
+           effect below reads this ref there.
+             AND IT IS SET AFTER cfg.move(), where every other surface marks
+           BEFORE its write (rowdrag.ts, InputsCal.tsx, drag.ts) — safe here, and
+           only here, for that same batching reason: those three hand their mark
+           to a DOM that an innerHTML rebuild replaces during the very call that
+           follows, so the mark has to exist first. This one is read by a layout
+           effect of the commit that `cfg.move`'s notify schedules, and React
+           batches a native listener's updates to the end of this handler, so
+           nothing has re-rendered by the time this line runs. The order that
+           matters is ref-before-RETURN, not ref-before-move; writing it here
+           keeps it beside the `beforeId !== from` decision it depends on. */
         landRef.current = { sel: cfg.landSel(from), surface }
       }
     }

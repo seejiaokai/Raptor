@@ -2525,12 +2525,19 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
    bars are the board row-drag's own vocabulary (a 2px accent edge on the
    half the drop would land) */
 .ic-secs{display:flex;flex-direction:column;gap:6px}
-.ic-sec{display:flex;align-items:flex-start;gap:6px}
+/* THE CORNER BELONGS TO THE ROW, NOT TO ITS DRAG (fix, 7 Sep 26). The 8px used
+   to be written on `.ic-sec.dragging` below, and the landing veil takes
+   `border-radius:inherit` from the BARE element — which had none — so a section
+   was 8px round while it was carried and flashed SQUARE where it landed: the two
+   halves of one gesture drawn with different corners. The row's own box is
+   transparent (no background, no border), so naming the radius at rest costs
+   nothing visible and both halves now read the same. */
+.ic-sec{display:flex;align-items:flex-start;gap:6px;border-radius:8px}
 /* ONE LIFT, EVERY DRAG (owner, 6 Sep 26): a section IS one element, so it wears
    the shared recipe directly — on the `dragging` class REACT writes, because an
    imperative class here would be wiped by the very re-render the arm causes
    (src/ui/lift.ts). The fade stays: it is what says "this one is travelling". */
-.ic-sec.dragging{opacity:.45;border-radius:8px;box-shadow:var(--lift-box)}
+.ic-sec.dragging{opacity:.45;box-shadow:var(--lift-box)}
 .ic-sec.dragover{box-shadow:0 -2px 0 var(--accent)}
 .ic-sec.dragover.after{box-shadow:0 2px 0 var(--accent)}
 .ic-sec>.ic-poppuck,.ic-sec>.ic-poppuck-edit,.ic-sec>.ic-secpucks{flex:1;min-width:0}
@@ -2541,7 +2548,12 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
    The grid is a full-width flex child so those two controls wrap below it. */
 .ic-secpucks{display:flex;flex-wrap:wrap;gap:5px;align-items:center;min-height:24px}
 .ic-secpk-grid{flex:1 1 100%;display:grid;grid-template-columns:repeat(3,1fr);gap:5px;align-items:center}
-.ic-secpk{display:inline-flex;align-items:center;justify-content:flex-start;gap:2px;min-height:var(--puck-h)}
+/* the 8px is the ROW's, not the drag's (fix, 7 Sep 26 — see .ic-sec above): the
+   landing veil inherits its radius from the bare element, so a corner named only
+   on `.pk-drag` gave a round lift and a square flash. The cell is transparent at
+   rest (the puck inside carries its own 3px), so it is invisible until one of
+   the two paints on it. */
+.ic-secpk{display:inline-flex;align-items:center;justify-content:flex-start;gap:2px;min-height:var(--puck-h);border-radius:8px}
 .ic-secpk .seat{display:flex}
 /* a removed puck leaves a BLANK cell that holds its grid position so the
    survivors never shift (owner, 24 Aug 26); invisible but it occupies its third
@@ -2556,7 +2568,7 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
    6 Sep 26): it is one element, so it takes the shared recipe here — this class
    is imperative, and safely so, because nothing re-renders under this drag. */
 .ic-secpk.pk-drag{position:relative;z-index:3;opacity:.85;cursor:grabbing;pointer-events:none;
-  border-radius:8px;box-shadow:var(--lift-box)}
+  box-shadow:var(--lift-box)}
 /* the slot a lifted puck is hovering over — where it will swap/land on release.
    A gap target flips back to opaque so its dashed ring shows over the empty cell. */
 .ic-secpk.pk-swap-target{outline:2px dashed var(--accent);outline-offset:1px;border-radius:6px}
@@ -3930,7 +3942,7 @@ body:not(.tdrag) .sb-slot.empty:hover{border-color:var(--accent);color:var(--acc
    THE ACCENT BOX IS THE SHARED .lift NOW (6 Sep 26) — inset, so it survives
    every clip; the drop shadow stays for depth, and both ride the one
    box-shadow written on the .lift compound just below .dragimg. */
-.tdghost{position:fixed!important;left:0!important;top:0!important;will-change:transform;z-index:520;pointer-events:none;margin:0!important;
+.tdghost{position:fixed!important;left:0!important;top:0!important;will-change:transform;z-index:520!important;pointer-events:none;margin:0!important;
   opacity:.92}
 /* mouse drag: the puck ghost the PAGE draws under the cursor (drag.ts
    setDragImage / moveDragImage) — the browser itself is handed a blank pixel,
@@ -3948,8 +3960,20 @@ body:not(.tdrag) .sb-slot.empty:hover{border-color:var(--accent);color:var(--acc
    pointer-events around a single elementFromPoint instead rewrote its
    hit-test data every move, repainting it and re-layerising the page), and
    the drop removes it before its own hit-test.
-   THE ACCENT BOX IS THE SHARED .lift NOW (6 Sep 26) — see below. */
-.dragimg{position:fixed!important;left:0!important;top:0!important;will-change:transform;z-index:520;pointer-events:auto;cursor:grabbing;margin:0!important;opacity:.92}
+   THE ACCENT BOX IS THE SHARED .lift NOW (6 Sep 26) — see below.
+   z-index IS !important LIKE THE POSITION BESIDE IT (fix, 7 Sep 26, found in
+   the live drive). A ghost is a CLONE, so it arrives wearing whatever state
+   classes the original had, and two of those name a stacking order of their
+   own: `.puck.me{z-index:2}` (the View-as puck) and `.puck.wfoc{z-index:5}` (a
+   puck lit by a clicked warning), both (0,2,0) against this rule's (0,1,0).
+   Measured in Chromium: the mouse ghost of a View-as puck computed `z-index:2`
+   and was painted UNDER the board — dragging your own puck showed no ghost at
+   all, ring or no ring. The ghost is a detached child of <body> and its layer
+   is the machine's business, not the cloned node's, which is exactly why
+   position/left/top/margin were already !important here; z-index was the one
+   that got away. Same on .tdghost above, which clones a SEAT: nothing gives a
+   seat a z-index today, and the ghost must not start depending on that. */
+.dragimg{position:fixed!important;left:0!important;top:0!important;will-change:transform;z-index:520!important;pointer-events:auto;cursor:grabbing;margin:0!important;opacity:.92}
 /* THE PICKED-UP BOX IS THE SHARED .lift (owner, 6 Sep 26 — "a cyan box around
    the perimeter, not individual boxes"; src/ui/lift.ts adds the class, drag.ts
    tdArm/setDragImage). INSET, so it is even on every side and no clip can eat
@@ -3965,18 +3989,45 @@ body:not(.tdrag) .sb-slot.empty:hover{border-color:var(--accent);color:var(--acc
    specificity it would replace the depth shadow outright and the ghost would
    read as part of the page. */
 .tdghost.lift,.dragimg.lift{box-shadow:var(--lift-box),0 8px 20px rgba(0,0,0,.6)}
-/* …and the FINGER's ghost needs the accent drawn ABOVE what it clones (7 Sep
-   26, found in the live drive and measured edge by edge on the built app: no
-   cyan on any of the four). tdArm clones the whole [data-drag] SEAT for a touch
-   drag, and that seat is filled edge to edge by an opaque .puck — an INSET
-   shadow paints in the element's OWN background layer, under its children, so
-   the ring was in the computed style and invisible on the screen. A veil
-   pseudo-element paints over the clone's contents, which is the same answer
-   .lift-land::after already gives for a landing on a seat. Only the wrapper
-   case needs it: the mouse ghost IS the puck (.dragimg) and the chip ghost has
-   no such child, and both were measured showing the ring on all four edges. The
-   depth shadow above is an OUTER shadow and was never obscured. */
-.tdghost.lift::after{content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;box-shadow:var(--lift-box)}
+/* …and BOTH puck ghosts draw the accent on a VEIL pseudo-element. Two different
+   faults, one cure:
+   - THE FINGER's ghost (7 Sep 26, found in the live drive and measured edge by
+     edge on the built app: no cyan on any of the four). tdArm clones the whole
+     [data-drag] SEAT for a touch drag, and that seat is filled edge to edge by
+     an opaque .puck — an INSET shadow paints in the element's OWN background
+     layer, UNDER its children, so the ring was in the computed style and
+     invisible on the screen.
+   - THE MOUSE's ghost (fix wave, 7 Sep 26). It IS the puck — setDragImage and
+     tdArm clone `.puck`, not the seat — so it inherits every state rule the
+     puck already wears, and five of those carry !important: `.puck.me` (the
+     View-as purple ring), `.puck.boxred` and `.puck.me.boxred` (a hard
+     conflict), `.puck.boxdash` and `.puck.me.boxdash`. No specificity beats an
+     !important declaration, so dragging your own puck or a conflicted one
+     showed the state ring and no cyan at all — and, the depth shadow being
+     replaced with it, nothing that read as picked up. (`.puck.warn.hard` is the
+     same shape one rung down: (0,3,0), no !important needed to win.)
+   A veil owns its own box-shadow property and paints OVER the clone's contents,
+   which answers both — the same answer .lift-land::after already gives a landing
+   on a seat.
+   ::BEFORE, NOT ::after, and z-index above the clone's children. A clone brings
+   the original's pseudo-elements with it, and ::after is TAKEN on exactly these
+   two nodes: `.seat[data-alc]::after` is the AL amendment badge (its
+   `background:var(--alc)` and padding survive `content:''` + `inset:0` and would
+   paint a solid AL-coloured block over a finger-dragged ghost on any published
+   day being amended) and `.puck.san::after` is the SANS purple edge (its
+   `width:4px` survives `inset:0` — over-constrained, so `right` is dropped — and
+   the veil would shrink to a 4px bar at the wrong edge). Nothing in this file
+   gives a seat or a puck a ::before, so the veil owns it outright and both
+   badges keep painting; the z-index is what puts it back on top, since a
+   ::before is the FIRST child and would otherwise paint under the clone's
+   contents (5 clears the badge's and the SANS stripe's own 4, so the ring closes
+   on all four edges — which is the whole ask).
+   The chip ghost needs no veil either way: it clones a `.ic-chip` with no opaque
+   child, and its state rules (`.ic-chip.red/.amb/.san`) are ordinary (0,2,0)
+   pairs that `.ic-ghost.lift` already out-ranks from later in this file. The
+   depth shadow above is an OUTER shadow on the element and was never obscured. */
+.tdghost.lift::before,.dragimg.lift::before{content:'';position:absolute;inset:0;border-radius:inherit;
+  pointer-events:none;z-index:5;box-shadow:var(--lift-box)}
 /* body.tdrag / body.mdrag are JS STATE MARKERS ONLY — no rule may give them a
    declaration of their own (the slow-computer cut, 3 Sep 26). Measured by
    toggling each class alone on the built app: `body.tdrag{touch-action:none;
@@ -4579,6 +4630,27 @@ button.sanscard:hover{border-color:var(--accent)}
    8px themselves: the overlay frame below, and the ⚙ who-wins row
    (matrix.css). */
 .lift{box-shadow:var(--lift-box)}
+/* …AND IT MUST OUT-RANK THE ROW'S OWN STATE EDGE (fix, 7 Sep 26). The recipe
+   rides `box-shadow`, which is ONE property, and a board row very often owns it
+   already: `.sb-fresh` (the blue box every add wears for 6s), `.redbox` (a hard
+   conflict), `.lateinp` (a late input's amber left edge), `.cx` (a cancelled
+   line), `.gr-frominput` (a ground row promoted from an input). Measured in
+   Chromium: `.sb-arow.redbox.lift` painted RED only, `.sb-arow.lateinp.lift`
+   AMBER only, `.sb-arow.sb-fresh.lift` BLUE only — the bare `.lift` above is
+   (0,1,0), so it loses to every `.sb-arow.<state>` pair (0,2,0) and TIES with
+   `.sb-fresh`, which is written later in this file and therefore wins. Each of
+   those states is reachable under the very drag the class is for: paintFreshAdds
+   (highlights.ts) boxes exactly the nodes rowdrag.ts lifts, and board-html.ts
+   emits a ground row carrying `redbox`/`lateinp` WITH its move grip. So on five
+   ordinary drags the picked-up thing showed no cyan at all — a regression on the
+   old `.rowdrag`, which painted an `outline` + `background`, different properties
+   that a state's box-shadow could not replace. Naming the host raises the recipe
+   to (0,2,0) and, sitting here, later than all of them.
+   These five are the hosts a state rule paints; `.sb-sec`, the edit week's
+   `.dsec` and its `.go` own no box-shadow of their own (checked across the file),
+   so the bare rule above still serves them, and lift-css.test.ts re-derives the
+   whole set from this file rather than trusting the list. */
+.sb-line.lift,.sb-arow.lift,.sb-go.lift,.sb-nrow.lift,.sb-psub.lift{box-shadow:var(--lift-box)}
 /* The overlay for a thing that is not one element (a table row across sticky and
    scrolling cells; a column): absolute in a positioned host that scrolls WITH the
    content, above the host's own overlays (Leave War: band 4/6, drawer 5; under

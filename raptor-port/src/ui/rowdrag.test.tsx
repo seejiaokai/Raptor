@@ -286,16 +286,18 @@ describe('one lift, every drag — the board (6 Sep 26)', () => {
     expect(host.querySelectorAll('.secdrag,.lift').length).toBe(0)
   })
 
-  it('landSel: the destination address is the landed row; a travelling formation climbs to its block', () => {
+  it('landSel: the destination address is the landed row; a travelling formation names its block', () => {
     /* engine/reorder.ts: "`to` is the destination index AFTER removal", so the
-       row that was carried answers the target's own address */
-    expect(landSel('mv:d.0.0.1', 'mv:d.0.0.3')).toEqual(['[data-move="mv:d.0.0.3"]'])
-    expect(landSel('mv:ac.0.1.0.2', 'mv:ac.0.1.0.0')).toEqual(['[data-move="mv:ac.0.1.0.0"]'])   // a jet resequenced inside its formation
+       row that was carried answers the target's own address. ONE selector, plain
+       (7 Sep 26): it used to be a one-element tuple every caller read as `[0]`,
+       left over from a `climb` half that no production caller ever needed. */
+    expect(landSel('mv:d.0.0.1', 'mv:d.0.0.3')).toBe('[data-move="mv:d.0.0.3"]')
+    expect(landSel('mv:ac.0.1.0.2', 'mv:ac.0.1.0.0')).toBe('[data-move="mv:ac.0.1.0.0"]')   // a jet resequenced inside its formation
     /* the one exception — the whole FORMATION travelled, so `to` names a jet
        inside the target formation and what flashes is the first jet line of the
        block now at the target's formation index (a formation has no wrapper
        element, so there is nothing to climb to) */
-    expect(landSel('mv:ac.0.1.0.2', 'mv:ac.0.1.2.0')).toEqual(['[data-move^="mv:ac.0.1.2."]'])
+    expect(landSel('mv:ac.0.1.0.2', 'mv:ac.0.1.2.0')).toBe('[data-move^="mv:ac.0.1.2."]')
   })
 
   it('a real move marks the landed row BEFORE the rebuild, and paintLand paints it once', () => {

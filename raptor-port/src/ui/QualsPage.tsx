@@ -351,11 +351,26 @@ export function QualsPage() {
     HOOKS.toast(`${h.toUpperCase()} added — tick the people who hold it`)
   }
 
-  const moveQual = (from: string, to: string) => setCols(cs => {
-    const i = cs.findIndex((c: any) => c.k === from), j = cs.findIndex((c: any) => c.k === to)
-    if (i < 0 || j < 0 || i === j) return cs
-    const out = [...cs]; out.splice(j, 0, out.splice(i, 1)[0]); return out
-  })
+  /* Answers whether it actually moved anything, because the drop needs to know
+     (7 Sep 26): if the columns come back unchanged React skips the render, and
+     the dep-list-free landing effect below — which is what takes the frame down
+     — never runs, leaving the lift box standing round a column nobody is
+     holding. The decision is made HERE, against the `cols` of this render, and
+     not inside the updater: an updater's answer arrives too late to be returned.
+     `live.current` is rebuilt every render, so the closure always reads the
+     current list. Unreachable through the UI today — onMove refuses a target
+     that is the dragged column, so `i === j` cannot happen — which is exactly
+     why it is worth closing rather than relying on. */
+  const moveQual = (from: string, to: string): boolean => {
+    const i = cols.findIndex((c: any) => c.k === from), j = cols.findIndex((c: any) => c.k === to)
+    if (i < 0 || j < 0 || i === j) return false
+    setCols(cs => {
+      const a = cs.findIndex((c: any) => c.k === from), b = cs.findIndex((c: any) => c.k === to)
+      if (a < 0 || b < 0 || a === b) return cs
+      const out = [...cs]; out.splice(b, 0, out.splice(a, 1)[0]); return out
+    })
+    return true
+  }
 
   /* the delegated listeners below are mounted once and never re-bound, so
      anything of theirs that changes per render is read through this ref
@@ -517,11 +532,14 @@ export function QualsPage() {
     const onUp = () => {
       /* a real move hides the lift frame at the landing below (it is the SAME
          frame that flashes, so hiding it here would take the answer away before
-         it was given); a cancel, or a release over no heading, hides it here
-         and says nothing. The `from` guard is what keeps an unrelated click
-         anywhere on the page — this pair of listeners is mounted for the life
-         of the page, not just for the drag — from cutting a flash short. */
-      if (from && over) { qLandRef.current = from; live.current.moveQual(from, over.dataset.col!) }
+         it was given); a cancel, a release over no heading, or a drop moveQual
+         REFUSED hides it here and says nothing — that last one because a refusal
+         changes no state, so the landing effect below never runs and the frame
+         would stand round a column nobody is holding. The `from` guard is what
+         keeps an unrelated click anywhere on the page — this pair of listeners
+         is mounted for the life of the page, not just for the drag — from
+         cutting a flash short. */
+      if (from && over && live.current.moveQual(from, over.dataset.col!)) qLandRef.current = from
       else if (from) frameLift(qLiftRef.current, null)
       tbl.querySelectorAll('.qdragging').forEach(x => x.classList.remove('qdragging'))
       clear(); from = ''

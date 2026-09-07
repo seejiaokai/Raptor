@@ -59,10 +59,10 @@ import { liftOn, liftOff, markLand } from './lift'
    from the second drag on. Closing it needs the mover to report the index it
    landed on — an engine-API question, not a string-maths one, so it is not
    guessed at here. */
-export function landSel(from: string, to: string): [string] {
+export function landSel(from: string, to: string): string {
   const a = from.slice(3).split('.'), b = to.slice(3).split('.')
-  if (a[0] === 'ac' && a.length === 5 && a[3] !== b[3]) return [`[data-move^="mv:ac.${b[1]}.${b[2]}.${b[3]}."]`]
-  return [`[data-move="${to}"]`]
+  if (a[0] === 'ac' && a.length === 5 && a[3] !== b[3]) return `[data-move^="mv:ac.${b[1]}.${b[2]}.${b[3]}."]`
+  return `[data-move="${to}"]`
 }
 
 export function wireRowDrag(el: HTMLElement) {
@@ -257,7 +257,7 @@ export function wireRowDrag(el: HTMLElement) {
       if (moveSectionTo(di, fromKey, toKey)) { markLand(`${where}[data-secmove="${di}.${fromKey}"]`); setSecDefOffer(di); notify() }
     } else {
       const to = dst?.move
-      if (src && to && applyMove(src, to)) { markLand(where + landSel(src, to)[0]); view.afterSchedMutate(); notify() }
+      if (src && to && applyMove(src, to)) { markLand(where + landSel(src, to)); view.afterSchedMutate(); notify() }
     }
   }
 
