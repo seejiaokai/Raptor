@@ -1736,3 +1736,18 @@ gate's. Keep verdict-bearing commands unpiped.
 
 **Principle:** Escalate decisions, not premises: a false technical premise in the plan is corrected by the person who can read the proof, and the ledger carries the ruling.
 
+### Observation 114: A "one-shot" decoration hung on a shared post-render pass is spent by the FIRST surface that repaints — design the mark per node (or per surface), and put "which passes run after this write, in what order" into the trap hunt
+
+**Status:** OPEN
+**Date:** 2026-09-07
+**Session context:** Drag lift + landing flash — Task 3 (the board's rows, waves and sections) in the subagent-driven build.
+**Skill:** brainstorming (trap-hunt exploration) / writing-plans (a decoration on a rebuilt DOM)
+**Type:** open-source
+**Phase/Area:** Designing a post-render decoration for a DOM that is rebuilt after a write
+
+**Issue:** The design deferred the landing flash to the app's existing post-render pass and made it one-shot ("clears its slot on the first hit") to defend against a known flicker fault. In the browser the drop flashed NOTHING: two surfaces (the edit week and the board) each run that pass after one commit, ~20 ms apart, and the first one found the same address in the board's PRE-DROP markup — a reorder never changes a list's length — and spent the mark on a node the second pass then destroyed. The implementer instrumented the bundle, found the order, and changed the module to "one flash per node, the mark lives its second" — a design correction made mid-task in a shared file, caught only because the e2e never saw the class.
+
+**Suggested improvement:** In the trap hunt for any decoration that must survive a rebuild: enumerate every subscriber that repaints after the write in question and their ORDER (a grep for the pass's call sites, one console.log in the built bundle), and ask whether a stale copy of the target can be found before the real rebuild. Prefer "mark per node with a short life" (skip what was already lit; die at N ms) over "one-shot" — it defends the same flicker by identity and survives multi-pass repaints. In the plan, make the browser drive of the deferred path a required step of that task, not of the final gate.
+
+**Principle:** A post-render hook runs once per surface that renders, not once per write — a mark that spends itself on the first hit chooses the wrong surface whenever two repaint; identity-keyed marks with a short life survive both.
+
