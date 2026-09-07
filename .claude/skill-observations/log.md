@@ -1706,3 +1706,33 @@ gate's. Keep verdict-bearing commands unpiped.
 
 **Principle:** A brief that is "the single source of requirements" has to contain the requirements that bind every task, not only the task's own text — check what the extraction script actually wrote before calling it the source.
 
+### Observation 112: A plan constraint that says "no new rule — X already covers it" is a claim about X: verify X (in a browser, or against the selector spec) before it becomes a constraint
+
+**Status:** OPEN
+**Date:** 2026-09-06
+**Session context:** Drag lift + landing flash — Task 1's review and fix round in the subagent-driven build.
+**Skill:** writing-plans (Global Constraints) / brainstorming (design pass)
+**Type:** open-source
+**Phase/Area:** Writing a constraint that relies on an existing mechanism
+
+**Issue:** The design pass read the app's reduced-motion blanket `*{animation:none!important}` and concluded the new landing veil needed no rule of its own; the plan's Global Constraints then said "Reduced motion: no new rule". `*` matches elements, not pseudo-elements, so the veil (`::after`) kept animating under reduced motion. The task reviewer proved it in Chromium; the implementer's own live pass had recorded a false positive (it read the element's animation-name, not the pseudo-element's). The repo even carried the counter-example — a targeted `::before` override under the same media query — that nobody grepped for.
+
+**Suggested improvement:** When a constraint delegates a behaviour to an existing rule ("the blanket handles it", "the reset covers it", "the base class already does that"), the plan states the CHECK that proved it — a one-line browser read of the computed value on the actual target (a pseudo-element via getComputedStyle(el, "::after")), or a grep for existing exceptions to that rule — before the constraint is written. In the design pass: any claim that a wildcard or inherited rule reaches a pseudo-element, a shadow root, or a portal is a claim to test, not to assume.
+
+**Principle:** A constraint that leans on an existing mechanism inherits every gap in that mechanism — name the check that proved the mechanism reaches the new target, or write the rule yourself.
+
+### Observation 113: When a review finding conflicts with plan text whose premise is technically false, the controller rules and records it — the "ask the human which governs" rule is for real decisions, not for a non-technical owner adjudicating CSS
+
+**Status:** OPEN
+**Date:** 2026-09-06
+**Session context:** Drag lift + landing flash — Task 1's review and fix round in the subagent-driven build.
+**Skill:** subagent-driven-development (the fix loop — plan-conflicting findings)
+**Type:** open-source
+**Phase/Area:** Handling a finding that contradicts the plan's own text
+
+**Issue:** The skill says a finding that conflicts with the plan's text is the human's decision. The conflict here was "Global Constraints: reduced motion needs no new rule" vs the reviewer's browser proof that the rule was needed; the plan text rested on a false technical premise, the design's INTENT was unambiguous (no motion under reduced motion), and the human partner is a non-technical owner whose standing rule is plain-language reports and no jargon. Asking him "does the plan or the reviewer govern?" would have handed him a CSS selector-matching question. The controller ruled for the intent, corrected the plan and spec sentences in the fix round, and wrote the ruling into the ledger.
+
+**Suggested improvement:** In the fix-loop rule for plan-conflicting findings, distinguish two cases: (a) the plan text encodes a DECISION (a chosen behaviour, a trade-off) — ask the human which governs; (b) the plan text encodes a technical PREMISE that the finding proves false, and the design's intent is stated elsewhere — the controller rules for the intent, has the fix correct the plan/spec text in the same round, and records the ruling in the ledger with the evidence. Add: "a question the human partner cannot answer in their own terms is not their decision — it is yours to make and to write down".
+
+**Principle:** Escalate decisions, not premises: a false technical premise in the plan is corrected by the person who can read the proof, and the ledger carries the ruling.
+
