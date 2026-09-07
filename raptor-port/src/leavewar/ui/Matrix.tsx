@@ -36,6 +36,7 @@ import {
   raptorOwns,
   shiftedFrom,
   stateOf,
+  defaultFocusDate,
   type Group,
   type Person,
   type Period,
@@ -1107,6 +1108,20 @@ export function Matrix() {
 
   const months = monthsIn(period.start, period.end)
 
+  // The month the grid should OPEN on — the start of this war's bidding window
+  // (owner, 7 Sep 26). The column window below is built AROUND it, not around
+  // January, so the months the reader is about to see are the ones drawn first
+  // (the preload), and — on the desktop, where the fill then rebuilds the whole
+  // year outward from here — the landing does not drift back to January as the
+  // left months fill in (which it did when the window reset to month 0 and the
+  // jump raced the fill). `LeaveWarPage`/`selectWar` do the actual scroll via
+  // `focusDate`; this only decides which columns exist when they land.
+  const defaultMonth = (() => {
+    const k = defaultFocusDate(period).slice(0, 7)
+    const i = months.findIndex(m => m.first.slice(0, 7) === k)
+    return i < 0 ? 0 : i
+  })()
+
   // ---- THE COLUMN WINDOW (Phase 2 of the speed work, 3 Sep 26) -------------
   // Which months are DRAWN. Arithmetic and the why in colwindow.ts; here is the
   // measuring and the scrolling. `null` = the whole war: a short war, or no
@@ -1117,7 +1132,7 @@ export function Matrix() {
   // `dates` stays for what is about the WAR, not the screen — the manning
   // verdicts, the lock set, the sheets' date spans, the "365 days" caption.
   const hasLayout = () => typeof document !== 'undefined' && document.documentElement.getBoundingClientRect().width > 0
-  const [colWinRaw, setColWin] = useState<ColWin | null>(() => (hasLayout() ? windowAround(months.length, 0) : null))
+  const [colWinRaw, setColWin] = useState<ColWin | null>(() => (hasLayout() ? windowAround(months.length, defaultMonth) : null))
   // The stored window is only ever read CLAMPED to the current war's months:
   // a war switch renders once with the old window against the new months
   // before the reset effect below lands, and a one-month war under a stale
@@ -1256,7 +1271,7 @@ export function Matrix() {
   useEffect(() => {
     if (warRef.current === period.id) return
     warRef.current = period.id
-    const next = hasLayout() ? windowAround(months.length, 0) : null
+    const next = hasLayout() ? windowAround(months.length, defaultMonth) : null
     setColWin(prev => (prev && next && prev.lo === next.lo && prev.hi === next.hi ? prev : next))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [period.id])
@@ -2712,8 +2727,37 @@ export function Matrix() {
     // the first and last drawn day — bug-hunt fix, 6 Sep 26).
     // `figuresOpen` (6 Sep 26): the drawer grows the header row to 62px, so the
     // table is that much taller and the box would stand a header short.
+    // `arranging` (7 Sep 26): Rearrange WIDENS the frozen name column
+    // (`.mx-arranging` re-sets `--who-w`), pushing the day columns right — so
+    // the box's LEFT edge, placed off the first day's header cell, must be
+    // re-measured or it stays at its narrower-column position and hides behind
+    // the now-wider frozen columns (z 2/3 paint over the box's z 1). The
+    // owner saw exactly this: the left green border gone in Rearrange, the
+    // right one fine (its edge is far from the frozen columns). Its two sibling
+    // measure effects (the month strip, the frozen-mirror geometry) already
+    // carry `arranging` for the same reason; this one had been missed.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [version, period.id, period.stage, period.bidFrom, period.bidTo, zoom, visWindow, drawnDates.length, colWin?.lo, colWin?.hi, countsOpen, folded, figuresOpen])
+  }, [version, period.id, period.stage, period.bidFrom, period.bidTo, zoom, visWindow, drawnDates.length, colWin?.lo, colWin?.hi, countsOpen, folded, figuresOpen, arranging])
+
+  // iOS WebKit settles the frozen-column width change a FRAME LATER than the
+  // synchronous layout-effect above reads it: on LEAVING Rearrange the column
+  // shrinks back (`--who-w`), but WebKit still reported the wider geometry when
+  // the effect measured, so the box kept its wider left and its edge sat
+  // displaced INTO the grid until the next scroll (owner, 7 Sep 26 — "after I
+  // close rearrange icon I get this green border displaced"). Re-measure on the
+  // next two frames, when the reflow has landed. The identity guard inside
+  // `measureBidBox` (setBidBox bails when nothing moved) makes this a no-op
+  // wherever the synchronous read already settled — Chromium here measures the
+  // final geometry at once, so this only ever CORRECTS a stale read, never adds
+  // a render. Keyed on `arranging` so it costs two frames on the toggle only.
+  // (No WebKit in this container — verified not to regress Chromium; the fix
+  // rides the owner's iPhone check.)
+  useEffect(() => {
+    let raf2 = 0
+    const raf1 = requestAnimationFrame(() => { measureBidBox(); raf2 = requestAnimationFrame(measureBidBox) })
+    return () => { cancelAnimationFrame(raf1); if (raf2) cancelAnimationFrame(raf2) }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [arranging])
 
   // ---- the frozen roster columns, drawn ONCE (owner, 20 Aug 26 — the third
   // look at the sideways stutter) --------------------------------------------

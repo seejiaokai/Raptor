@@ -49,6 +49,11 @@ import { ALPanel } from './ALPanel'
    exactly as before — deferring the grid cannot reach any of it. Pinned by the
    "not downloaded until its tab is opened" e2e. */
 const LeaveWarPage = lazy(() => import('../leavewar/LeaveWarPage').then(m => ({ default: m.LeaveWarPage })))
+/* The Tracker (7 Sep 26) is the second such separate download, for the same
+   reason: a 200-event flow chart plus its editor is nothing a Raptor visit
+   needs until the tab is clicked. Nothing of it boots in main.tsx — it has no
+   sync wires; core.init() runs on the first mount. */
+const TrackerPage = lazy(() => import('../tracker/TrackerPage').then(m => ({ default: m.TrackerPage })))
 import { installIdleTracking, msSinceInput } from '../state/idle'
 import { oilPendingFor } from '../leavewar/sync'
 import { inpById } from '../engine/inputs'
@@ -98,6 +103,12 @@ export function Shell() {
      measure the week/board containers, never the whole document. */
   const lwEverRef = useRef(false)
   if (page === 'leavewar') lwEverRef.current = true
+  /* The Tracker STAYS MOUNTED once visited, for a harder reason than speed:
+     its flow board is drawn imperatively by a once-only init, so a remount
+     would come back with an empty chart (tracker/TrackerPage.tsx). Not
+     pre-warmed — nobody pays for a chart they have not asked for. */
+  const trEverRef = useRef(false)
+  if (page === 'tracker') trEverRef.current = true
   /* PRE-WARM (owner, 5 Sep 26). On a desktop, once the user has paused after
      login, mount Leave War HIDDEN — so its separate download and its first few
      months are built off the critical path, and the tab then opens instantly.
@@ -270,6 +281,10 @@ export function Shell() {
           <a data-page="quals" role="button" tabIndex={0} className={page === 'quals' ? 'on' : ''} onClick={() => nav('quals')} onKeyDown={navKey('quals')}>Quals</a>
           <a data-page="logic" role="button" tabIndex={0} className={page === 'logic' ? 'on' : ''} onClick={() => nav('logic')} onKeyDown={navKey('logic')}>Logic</a>
           <a data-page="leavewar" role="button" tabIndex={0} className={page === 'leavewar' ? 'on' : ''} onClick={() => nav('leavewar')} onKeyDown={navKey('leavewar')}>Leave War</a>
+          {/* the OCU progress Tracker (7 Sep 26) — a work tab for everyone,
+              after Leave War; edits are the admin's (tracker/app/core.js
+              readOnly, written from resetSession) */}
+          <a data-page="tracker" role="button" tabIndex={0} className={page === 'tracker' ? 'on' : ''} onClick={() => nav('tracker')} onKeyDown={navKey('tracker')}>Tracker</a>
           {/* Help is for EVERYONE (owner, 25 Aug 26 — "allows anyone to type
               in Bug reports") — after the work tabs, before the admin-only
               tools tab */}
@@ -564,6 +579,11 @@ export function Shell() {
           and the why; the keep-alive comment sits at lwEverRef above */}
       <section className={'page' + (page === 'leavewar' ? ' on' : (lwEverRef.current || prewarmed) ? ' doze' : '')} id="page-leavewar">
         {(page === 'leavewar' || lwEverRef.current || prewarmed) && <Suspense fallback={null}><LeaveWarPage active={page === 'leavewar'} /></Suspense>}
+      </section>
+      {/* once visited the Tracker dozes too (content-visibility, same as Leave
+          War above) — its whole reason is in TrackerPage.tsx */}
+      <section className={'page' + (page === 'tracker' ? ' on' : trEverRef.current ? ' doze' : '')} id="page-tracker">
+        {(page === 'tracker' || trEverRef.current) && <Suspense fallback={null}><TrackerPage active={page === 'tracker'} /></Suspense>}
       </section>
       <section className={'page' + (page === 'help' ? ' on' : '')} id="page-help">
         {page === 'help' && <HelpPage />}

@@ -31,6 +31,8 @@ import { memo, useEffect, useRef } from 'react'
 import { StageBar, Topbar } from './ui/Chrome'
 import { Matrix } from './ui/Matrix'
 import { setLwOnScreen } from './state/screen'
+import { focusDay, getState } from './state/store'
+import { defaultFocusDate } from './engine'
 
 /* The RENDER FIREWALL that makes staying mounted affordable. Every Raptor
    notify re-renders the Shell, and a plain child here would make React
@@ -58,6 +60,16 @@ const LwBody = memo(function LwBody() {
 
 export function LeaveWarPage({ active = true }: { active?: boolean }) {
   const savedY = useRef(0)
+  /* Has the tab landed on its default view yet? The FIRST time it comes on
+     screen we snap the grid to the start of the current war's bidding window
+     (owner, 7 Sep 26 — "the start of the period in which it is opened for
+     bidding"); which war that is was already decided at boot by the stage
+     priority (store `pickDefaultPeriodId`). Once only — a later return to the
+     tab restores where the reader actually was (the DOM never went away and
+     `savedY` holds the page scroll), so re-landing would yank them off it. A
+     hidden pre-warm mount never runs this, because the effect returns early
+     while `active` is false. */
+  const landedRef = useRef(false)
   useEffect(() => {
     if (!active) return
     /* Tell the Matrix the tab is on screen BEFORE the resize kick, so its
@@ -70,6 +82,18 @@ export function LeaveWarPage({ active = true }: { active?: boolean }) {
        the position the reader is actually returned to. */
     window.scrollTo(0, savedY.current)
     window.dispatchEvent(new Event('resize'))
+    /* The default landing, once. AFTER the resize kick, so the jump reads a
+       freshly measured grid (the frozen columns and the strip re-measure on
+       that event). `focusDay` bumps the store's focus, which the Matrix turns
+       into a jump — the same proven path the under-manned list uses — so it
+       both draws the target months (the preload the owner asked for) and
+       scrolls to them. For the seeded war the window opens in January, so this
+       lands where the grid already sits and moves nothing; it earns its keep
+       when the bidding window starts later in the year. */
+    if (!landedRef.current) {
+      landedRef.current = true
+      focusDay(defaultFocusDate(getState().period))
+    }
     /* Track the spot continuously rather than reading scrollY on the way
        out: by the time a leave-effect runs the section is already hidden,
        the page is shorter, and the browser has clamped the scroll. */

@@ -1826,3 +1826,73 @@ gate's. Keep verdict-bearing commands unpiped.
 
 **Principle:** Not watching a PR is not the same as not reading its gates — read the conclusions once per push — and a browser assertion must name the behaviour, not a value one browser version happens to compute for it.
 
+
+### Observation 120: Vendoring a whole app as a tab is a repeatable recipe — worth a skill
+
+**Status:** OPEN
+**Date:** 2026-09-07
+**Session context:** Merging the standalone OCU Progress Tracker (seejiaokai/Tracker) into Raptor as a new tab — the second time this repo has vendored a whole React app (Leave War, 16 Aug 26), and the steps were the same both times.
+**Skill:** New skill candidate: vendor-app-as-tab
+**Type:** open-source
+**Phase/Area:** whole workflow
+
+**Issue:** Both merges followed one unwritten sequence, re-derived from the first merge's comments each time: (1) intersect the two apps' element IDs and CLASS names before touching anything (this merge found 2 id collisions and 5 bare-class collisions — `.day`, `.modal`, `.sub` … — the class ones only surfaced when the vendored browser suite ran inside the host); (2) wrap the vendored stylesheet in the host's page-section selector with native CSS nesting, converting `:root`/`body`/`#root` rules to `&` and moving body-appended elements' rules OUTSIDE the wrapper; (3) replace the vendored app's storage/sync layers with one small doorway module of the same async shape; (4) put the host→guest role flag in a no-import module so the host can set it without loading the guest bundle (the first cut pulled ~280 KB into the host's first download via a store import); (5) keep the guest mounted after first visit when its render is imperative/once-only, and gate its document-level listeners on an `active` prop; (6) adapt the guest's browser suite by replacing every `goto`/`reload` with ONE "open via host login + tab" helper; (7) enforce the host's roles at the guest's write paths AND its affordances, and pin the pair with a test.
+
+**Suggested improvement:** Write a `vendor-app-as-tab` skill whose core is that ordered checklist plus the two audits as runnable one-liners (id intersection; class intersection restricted to bare-class rules in the host stylesheet). Include the "measure the guest's column height off the section's own top edge, not a hard-coded bar height" note and the "lazy chunk regression guard" test pattern.
+
+**Principle:** A second occurrence of a multi-hour integration is the moment to capture it as a skill; the two collision audits are the part nobody remembers and the browser suite is the only thing that catches what they miss.
+
+### Observation 121: `pkill -f <pattern>` kills the shell that runs it when the pattern appears in that shell's own command line
+
+**Status:** OPEN
+**Date:** 2026-09-07
+**Session context:** Stopping a `vite preview` before rebuilding for the e2e gate (Raptor, the Tracker merge).
+**Skill:** verification-before-completion (the "kill the preview before trusting an e2e run" step) — and the repo's CLAUDE.md §Build & verify
+**Type:** open-source
+**Phase/Area:** gate sequencing / process hygiene
+
+**Issue:** Twice in one session a compound Bash command died with exit 144 and did nothing after the kill step: `pkill -f "vite preview"` (and later a `pgrep -f` loop) matched the invoking shell's own command line — the harness runs the whole command through `bash -c '…'`, so the pattern is present in that process's argv — and killed it before the build and the e2e launch that followed. Each miss cost a full re-run and the confusion looked like a tool failure.
+
+**Suggested improvement:** Stop a dev server by PORT, never by command-line pattern: `fuser -k 4173/tcp` or `kill $(lsof -t -i:4173)`, and confirm with `ss -ltnp | grep 4173` (empty = down). If a pattern kill is unavoidable, exclude the current shell (`pgrep -f pattern | grep -v $$`) and never chain the kill with the work that must follow it in one command.
+
+**Principle:** Process-matching by pattern is self-referential inside a wrapper shell; address a server by the resource it holds (its port), and never put a kill and its dependent steps in the same compound command.
+
+### Observation 122: "Keep it mounted" is not enough when the HOST unmounts everything — a once-only imperative init needs a remount redraw
+
+**Status:** OPEN
+**Date:** 2026-09-07
+**Session context:** Bug sweep after vendoring the OCU Tracker into Raptor as a tab. The tab was kept mounted across tab switches because its flow board is drawn imperatively by a once-only init — but Raptor's logout swaps the WHOLE shell for the login screen, so the next login remounted the tab with an empty board and the guarded init drew nothing. Found only by a scenario that crossed a session boundary; every tab-switch test passed.
+**Skill:** New skill candidate: vendor-app-as-tab (extends observation 120)
+**Type:** open-source
+**Phase/Area:** integration checklist — lifecycle
+
+**Issue:** The "keep the guest mounted so its once-only render survives" rule (obs 120, step 5) has a hole: any host lifecycle that unmounts ABOVE the guest (logout, a route change, an error boundary reset) brings the guest back with fresh DOM and a guard that refuses to re-run. Tab-switch tests cannot see it.
+
+**Suggested improvement:** Add to the vendor-app-as-tab checklist: "for every once-only init in the guest, make the mount effect 'boot if not ready, else REDRAW' — and test mount → unmount → mount explicitly, plus the host's session boundary (logout/login) in the browser sweep." The bug sweep's scenario list (session boundary, in-between widths, live resize, host overlays over the guest, host notify while the guest is up) is the reusable part.
+
+**Principle:** A guard against double-initialisation is also a guard against re-initialisation; wherever a host can recreate the guest's DOM, the guest needs a redraw path that is not the init path — and the test that proves it must cross the host's own lifecycle boundaries, not just the guest's.
+
+### Observation 123: A "green unit suite" for a scroll/window feature can hide a desktop-vs-phone divergence only the browser shows
+
+**Status:** OPEN
+**Date:** 7 Sep 26
+**Session context:** Leave War "default view lands on the start of the bidding window, picking the open war first" feature. All 4176 unit tests passed (jsdom reports every rect 0×0, so the grid draws the whole year and the scroll is a no-op there). Driving the built preview in a real browser caught that on the DESKTOP the landing drifted back to January after a war switch — the window reset to month 0 and the whole-year fill rebuilt leftward, racing the jump — while the PHONE (rolling window) landed correctly. Fixed by building the column window around the target month, not month 0.
+**Skill:** task-observer (methodology reinforcement; no dedicated skill for this repo's live-view rule)
+**Type:** open-source
+**Phase/Area:** verification / when a live-view browser pass is load-bearing
+
+**Issue:** A feature whose visible effect is a SCROLL or a windowed/virtualised render is invisible to a layout-free test runner (jsdom): the assertions can all pass while the on-screen result is wrong, and the failure mode can differ between viewport modes (a rolling-window phone path vs a fill-the-whole-year desktop path) so that one width works and the other does not. A single-width or unit-only check would have shipped the desktop bug.
+
+**Suggested improvement:** For any change to scrolling, virtualisation, or a "which slice is drawn" window, treat a real-browser drive at BOTH the narrow and wide breakpoints as part of done, and assert the actual outcome (scroll position / which slice is in view), not just that a handler ran. Where a project already mandates a live-view pass, this is the concrete reason to run it at every breakpoint rather than one.
+
+**Principle:** Tests written against a layout-free environment prove which markup/handlers were emitted, never what was painted or scrolled; a feature defined by pixels or scroll position needs a real-browser check at every viewport mode it has a distinct code path for, because the bug can live in only one of them.
+
+### Observation 124: For a "this element looks different" UI report, read the element's computed style vs its neighbours BEFORE hypothesising a fix
+
+**Status:** OPEN
+**Date:** 7 Sep 26
+**Session context:** A non-technical owner circled a region of a dense grid on his phone and said it "looks different, like the medical column." I first theorised the empty day-grid cells "read as a gap", built and screenshotted three fill/gridline variants, and offered them — all wrong. His clarification ("why does MED TOT grid lines for the SELECTED user look darker from the rest") pointed at a specific cell on the highlighted row. Only when I read getComputedStyle on that exact cell and compared box-shadow/border against its row-siblings and the same cell on a non-selected row did the real cause fall out immediately: a CSS specificity clash left the last figure cell without the viewer-row accent band, so its darker drawer-edge seam was its only mark. One targeted rule fixed it.
+
+**Suggested improvement:** When a visual report names or points at a specific element ("this column/cell/line looks wrong/darker/different"), the first diagnostic step is to read that element's COMPUTED style in a real browser and diff it against (a) its immediate siblings and (b) the same element in a state that looks correct — not to hypothesise a cause from the screenshot and build a candidate fix. The computed-style diff names the exact property and rule responsible, turning a guessing loop into a one-shot fix.
+
+**Principle:** A rendered-difference complaint is a computed-style question. Diffing the suspect element's resolved styles against a known-good reference (sibling, other row, prior state) localises the offending property and cascade rule directly; pattern-matching the screenshot to a plausible-sounding cause risks fixing the wrong thing and burning review round-trips.

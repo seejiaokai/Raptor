@@ -16,7 +16,7 @@ export async function login(page: Page, who: 'a' | 'user' = 'a') {
 
 /* React commits a tick after the nav, so every reader has to wait for the page
    it asked for rather than for a fixed delay. */
-export async function go(page: Page, to: 'viewsched' | 'editsched' | 'inputs' | 'quals' | 'logic' | 'leavewar') {
+export async function go(page: Page, to: 'viewsched' | 'editsched' | 'inputs' | 'quals' | 'logic' | 'leavewar' | 'tracker') {
   await page.evaluate(p => (window as any).go(p), to)
   await page.waitForFunction(p => (window as any).CURPAGE === p, to)
   await page.waitForTimeout(350)
@@ -171,4 +171,17 @@ export async function lwRole(page: Page, role: 'admin' | 'member') {
 export async function lwView(page: Page, id: string | null) {
   await page.evaluate(i => (window as any).lwSetViewer(i), id)
   await page.waitForTimeout(150)
+}
+
+/* Open the Tracker tab the way a user reaches it: log in, click the tab, wait
+   for the flow board's balls (7 Sep 26, the Tracker merge). The vendored
+   smoke suite (scripts/tracker/smoke.mjs) has its own copy of this in plain
+   Playwright — this one serves the e2e specs. Admin by default: the
+   standalone app had no roles, so every one of its checks assumes it can
+   edit; a member test passes 'user' and expects the read-only shape. */
+export async function openTracker(page: Page, who: 'a' | 'user' = 'a') {
+  await login(page, who)
+  await go(page, 'tracker')
+  await page.waitForSelector('#flowSvg .ball', { timeout: 20000 })
+  await page.waitForTimeout(300)
 }

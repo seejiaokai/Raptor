@@ -17,6 +17,7 @@ export function Drawer() {
     ['editsched', 'Edit Schedule', !!admin], ['viewsched', 'View-only Sched', true],
     ['inputs', 'Inputs', true], ['quals', 'Quals', true], ['logic', 'Logic', true],
     ['leavewar', 'Leave War', true],
+    ['tracker', 'Tracker', true],
     /* Help for everyone (owner, 25 Aug 26), then Admin last, always
        (owner, 23 Aug 26) — same order as the topnav */
     ['help', 'Help', true],

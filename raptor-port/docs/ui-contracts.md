@@ -6066,6 +6066,39 @@ scroll restore / resize kick) and the `e2e/leavewar.spec.ts` keep-alive spec
 (real-browser: sideways position survives the round trip, a month jump still
 works after the hidden spell, no page error).
 
+## The Leave War opens on the war being bid on (owner, 7 Sep 26)
+
+"The default view of leave war when a user gets to it is always the start of
+the period in which it is opened for bidding, followed by bidding closed,
+followed by published." Two halves:
+
+- **Which war.** When a squadron holds more than one leave war, the tab opens
+  on the one that is OPEN for bidding; if none is open, the one where bidding
+  has just CLOSED; if none of those, the latest PUBLISHED; a DRAFT war is the
+  last resort. `engine/stages.ts pickDefaultPeriodId` (ranked open→closed→
+  published→draft, same-stage ties to the earliest bidding start) decides the
+  boot `currentId` in `state/store.ts` — but only when nothing is remembered:
+  a stored `current` (the reader's own pick, from the shared database to come)
+  always wins. Leave War is session-only today, so the stage pick decides on
+  every load.
+- **Where in it.** The grid lands on the START of that war's bidding window —
+  `engine/period.ts defaultFocusDate` = `bidFrom ?? start` (a war with no
+  window set has no narrower start than its first day). `bidFrom` is kept
+  across a stage change, so a closed or published war still lands on the dates
+  it was bid on. `LeaveWarPage.tsx` fires this once, the FIRST time the tab
+  comes on screen, through the same `focusDay` → `Matrix jumpTo` path the
+  under-manned list uses — so it both draws the target months (the preload)
+  and scrolls to them. A later return to the tab restores where the reader
+  actually was (the DOM persists; `savedY` holds the page scroll), so it never
+  re-lands. Switching wars from the picker lands on the new war's bidding start
+  the same way (`store.ts selectWar` sets `focusDate`, no longer null).
+
+For the seeded demo the open war's window starts on 1 January, so the landing
+is where the grid already opens — it earns its keep when a window starts later
+in the year or a squadron has wars in several stages. Pinned:
+`engine/stages.test.ts`, `engine/period.test.ts`, `leavewarpage.test.tsx`,
+`ui/undermanned.test.tsx` (focus moves with the war), and the browser drive.
+
 ## The open-bidding box on the Leave War grid (owner, 1 Sep 26)
 
 "Can u make the border of the dates open for bidding green … the exterior box
@@ -6731,3 +6764,61 @@ switch, the figure picker and hide/show, **Set** on the person sheet (which stil
 moves the OPENING figure — `+`/`−` are entries on top of it), the manning rows,
 the month strip, the window engine, the frozen-names mechanics, the quick-flick
 swipe, and everything a member sees.
+
+## The Tracker tab (7 Sep 26)
+
+The vendored OCU Progress Tracker (`src/tracker/`, from `seejiaokai/Tracker`
+at `bf9a47a`) is the eighth tab, after Leave War, for everyone. What holds on
+screen:
+
+- **A viewport-tall column, never a scrolling page.** `.tr-root` is exactly
+  the viewport minus whatever Raptor draws above the section (`--tr-top`, the
+  section's own measured top edge at scroll 0, re-measured on resize —
+  `TrackerPage.tsx`); the chart and the side panel scroll inside their own
+  boxes. While the tab is up `body.tr-on` locks the document and drops the
+  120px bottom pad Raptor's week pages keep; leaving the tab restores both.
+  Measured 7 Sep 26: root 103→900 at 1440×900 (bar 103), 49→844 at 390×844
+  (bar 49), document exactly the viewport, nothing of the tab visible on any
+  other page (no fixed element, the `#detailBubble` hidden).
+- **Kept mounted once visited** (the Leave War rule, for a harder reason: the
+  flow board is drawn imperatively once by `core.init()` and would come back
+  empty on a remount). Hidden it dozes (`.page.doze`); its document-level key
+  and click listeners switch off while another tab is up (`App.jsx`'s `active`
+  effect), so Escape/Delete on a Raptor page never reach the chart editor.
+- **Everyone edits; only the FILE portion is the admin's** (owner, 7 Sep 26,
+  his second word — "allowed for both admin and member for all access, except
+  the file portion which is admin only"). Marking, Edit mode, the Course and
+  Syllabus menus, students, dates, pace and lull periods behave exactly as in
+  the standalone app for every login. A member (and a logged-out session, and
+  an admin viewing as member) does not get the **File** menu — 📁 Open,
+  ⊕ Import syllabus, ⤓ Save a copy — and the three entry points behind it
+  refuse at the write path in `core.js` (`fileLocked`); ✓ Save changes stays
+  for everyone (it persists the syllabus to the browser store; its file half
+  only fires when a file is open, which only an admin can do). Pins:
+  `src/tracker/tracker.test.tsx`.
+- **On a phone, ONE half at a time — and the switch rides the Tracker's own
+  element.** Below 1050px the Flow chart / Info tabs show either the chart
+  column or the side panel, never both stacked; the class that decides
+  (`tab-flow` / `tab-info`) sits on `.tr-root`, whose className React renders
+  from `App.jsx`. It must NEVER be toggled onto the `#page-tracker` section:
+  that element's className belongs to Raptor's Shell, which rewrites it
+  ("page on" ↔ "page doze") on every tab switch away and back — the first cut
+  did exactly that and the owner's iPhone showed the chart with the whole
+  panel stacked under it (7 Sep 26). Pinned in the smoke's phone block ("a
+  Raptor refresh does not bring the side panel back under the chart").
+- **A second mount redraws the chart.** Logging out swaps the whole Shell for
+  the login screen (`ui/App.tsx`), so the next login mounts the Tracker again
+  with a fresh, empty `#board` while `core.init()` — guarded against a second
+  run — has nothing left to do. `App.jsx`'s mount effect therefore calls
+  `renderBoard()` when the engine is already `ready` (found by the 7 Sep 26
+  bug sweep: no chart after logging back in). Pinned in `tracker.test.tsx`.
+- **Its own look, inside the section.** The Tracker keeps its dark palette,
+  type and controls (`tracker.css`, wrapped under `#page-tracker`). Five class
+  names collide with `scheduler.css` (`.day`, `.day.today`, `.legend`, `.modal`,
+  `.sub`) and are reset first inside the wrapper; the standalone app's own
+  geometry contracts — the one-row bar at 1440, the phone's two-row bar with
+  Crew leftmost, the compact editor, the legend clear of the edit hint — are
+  the vendored smoke suite's (`npm run smoke:tracker`).
+- **The file is the record.** 📁 Open / ✓ Save changes behave as in the
+  standalone app; localStorage (`ocu:` keys, `tracker/storage.js`) is the
+  per-browser cache. No SharePoint/cloud sync, no Cloud button.

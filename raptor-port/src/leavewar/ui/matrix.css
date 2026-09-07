@@ -2246,6 +2246,22 @@
   background: #173C4A;
   box-shadow: inset 0 1px 0 rgba(59, 198, 232, .55), inset 0 -1px 0 rgba(59, 198, 232, .55);
 }
+/* The LAST figure column (MED TOT) also carries the drawer's right-edge seam
+   (`.mxdrawer .mx .fig.last`, box-shadow `inset -1px 0 0 --edge-2`). That rule
+   is specificity (0,4,0) — it out-ranks the viewer-row rule just above (0,3,3),
+   so on the VIEWER's own row MED TOT kept only that darker --edge-2 seam and
+   missed the accent band every other cell in the row gets. The one cell then
+   read as a different, darker gridline than the rest of the row (owner, 7 Sep
+   26 — "why does med tot grid lines for the selected user … [look] darker from
+   the rest"). Give the last cell BOTH — the row's accent band AND its own
+   drawer edge — at a specificity (0,5,3) that clears both rules, so MED TOT
+   now matches its row-mates and the drawer's right edge stays continuous. */
+.mxdrawer .mx tbody tr.me td.fig.last {
+  box-shadow:
+    inset 0 1px 0 rgba(59, 198, 232, .55),
+    inset 0 -1px 0 rgba(59, 198, 232, .55),
+    inset -1px 0 0 var(--edge-2);
+}
 /* A title cell is a FIXED box the words are painted inside. The title is taken
    out of the cell's own flow (`position: absolute`) so it cannot push the
    header row taller than the height it was told — with the words in flow the

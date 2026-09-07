@@ -1,0 +1,499 @@
+/* SCOPED under #page-tracker (7 Sep 26, the Tracker merge — the same recipe
+   the Leave War stylesheets use, see leavewar/ui/chrome.css): this file was
+   written for the OCU Progress Tracker as a whole page, and its element rules
+   (header, select/button/input, *), its :root palette and its `body.tab-*`
+   phone switches would otherwise restyle every Raptor tab. Native CSS nesting
+   wraps every rule in the page section without touching a selector, keeping
+   this file's own internal cascade order intact (the two @media(max-width:
+   1050px) blocks — top and END — are load-bearing: the last one wins, and
+   phone overrides belong there). :root blocks became `&` blocks; <body>/#root
+   became `.tr-root` (App.jsx), and the phone's `body.tab-*` switch is
+   `.tr-root.tab-*` — on .tr-root, NOT on the section, whose className Raptor's
+   Shell rewrites on every notify (the owner's iPhone showed chart + panel
+   stacked the first time it did, 7 Sep 26). Do not unwrap, and never fix a cross-page bleed
+   by editing scheduler.css — add the explicit property here instead.
+   The ONE rule outside the wrapper is #detailBubble: core.js appends that
+   element to document.body, so no page-scoped selector can reach it. */
+/* Also outside the wrapper, for the same reason (no page-scoped selector can
+   reach <body>): while the Tracker tab is up the document does not scroll and
+   loses Raptor's 120px bottom pad, so the viewport-tall .tr-root column is
+   the whole page. Toggled by TrackerPage.tsx; the same shape as body.sb-lock. */
+body.tr-on{padding-bottom:0;overflow:hidden}
+#detailBubble{position:fixed;z-index:66;display:none;max-width:260px;background:var(--panel);border:1px solid var(--accent);border-radius:9px;padding:9px 11px;font-size:12.5px;line-height:1.5;color:var(--ink);box-shadow:0 8px 26px rgba(0,0,0,.6);pointer-events:none}
+#detailBubble .dbId{font-weight:700;font-size:12px;letter-spacing:.4px;color:var(--accent);margin-bottom:3px}
+
+#page-tracker {
+/* RAPTOR COLLISION RESETS — first inside the wrapper so every Tracker rule
+   below still overrides them, while their +1 id specificity beats Raptor's
+   bare class rules. Five class names mean different things in the two apps
+   and Raptor's scheduler.css styles them unscoped: `.day` is Raptor's 620px
+   week card (here: a lull-calendar cell), `.day.today` its ringed card,
+   `.legend` its chip legend, `.modal` its full-screen scrim (here: the
+   centred editor box — Raptor's inset:0 + flex made the editor 475px tall),
+   `.sub` carries a 10px margin (here: the bar's labels — which grew the
+   one-row bar to 50px). Found by the vendored smoke suite the first time it
+   ran inside Raptor, 7 Sep 26; the audit that found them is in the merge
+   commit. A new Raptor rule on one of these names lands here, not in
+   scheduler.css. */
+.day{flex:initial;border-radius:0;overflow:visible;scroll-snap-align:none;background:none;border:0;box-shadow:none}
+.day.today{border-color:transparent;box-shadow:none}
+.legend{padding:4px 16px;font-size:11.5px;color:var(--muted);gap:14px;align-items:normal}
+.modal{inset:auto;background:var(--panel2);align-items:normal;justify-content:normal;padding:18px;z-index:60}
+.sub{margin:0}
+&{
+ --bg:#0f1115;--panel:#161922;--panel2:#1d212b;--line:#2b313d;--ink:#e9ecf2;--muted:#98a2b3;--accent:#36c2ff;
+ --flight:#19b6e8;--acad:#27d64a;--test:#ff4040;--sim:#ffe000;--device:#b063ff;
+ --dco:#000;--dpco:#1f6dff;--marg:#27d64a;--na:#cdbb8e;--fail:#ff2b2b;
+ --orange:#ff9800;--red:#ff2b2b;--grey:#5a6172;
+}
+*{box-sizing:border-box}
+/* Column flex so the board absorbs whatever the header and the edit strip
+   actually take. The old .layout{height:calc(100vh - 86px)} was already wrong —
+   the header measures 135px at 1440 — and a docked edit strip breaks it outright. */
+/* height, not min-height: with min-height the column grows to fit the board's
+   own 10,000px of chart and the whole page scrolls instead of the board.
+   dvh so a phone's collapsing address bar does not cut the bottom off. */
+/* The page section itself is a plain block Raptor shows and hides; the
+   column the standalone app hung on <body> + #root is .tr-root, sized to the
+   viewport minus Raptor's sticky top bar (--tr-top, measured by TrackerPage.tsx).
+   The Tracker keeps its own dark palette and type inside that box. */
+& .tr-root{margin:0;background:var(--bg);color:var(--ink);font:13.5px/1.45 "Segoe UI",Roboto,Arial,sans-serif;height:calc(100vh - var(--tr-top,0px));height:calc(100dvh - var(--tr-top,0px));overflow:hidden;display:flex;flex-direction:column;min-height:0;width:100%;max-width:100%;min-width:0}
+/* The column has to live on #root: React mounts the header, the edit strip and
+   the layout inside it, so a flex column on body would only ever lay out #root. */
+/* min-width/max-width matter as much as the height: without them the scrollable
+   one-row header on a phone widens the whole column and every card with it. */
+& .tr-root>*{min-width:0;max-width:100%}
+.restricted{background:#7a1414;color:#fff;text-align:center;font-weight:700;letter-spacing:3px;font-size:11px;padding:3px}
+header{display:flex;align-items:center;gap:14px;padding:10px 16px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+header h1{font-size:16px;margin:0;letter-spacing:.5px}
+.sub{color:var(--muted);font-size:12px}
+/* The bar now starts with Crew and ends with the save slot, with .hspacer
+   holding the two groups apart. margin-left:auto moved onto the spacer, so the
+   left group can sit next to the title instead of the whole bar being pushed
+   right. */
+.controls{margin-left:14px;flex:1 1 auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.hspacer{flex:1 1 auto;min-width:0}
+/* The bar had 14px of slack at 1440 and the search box wants 153, so it wrapped
+   onto a second row and took 44px of chart with it. The heading is what gives
+   way: at this width it repeats the Course dropdown sitting two inches to its
+   right, and the event count it carries is also in the side panel. Above
+   1600px there is room for both and it comes back. */
+@media(max-width:1600px){ header>div:first-child{display:none} .controls{margin-left:0} }
+/* Desktop: the box is simply in the bar and the 🔍 button is not needed. */
+.findwrap{position:relative;display:inline-flex}
+.findpanel{display:inline-flex;align-items:center;gap:5px}
+#hSearch{width:112px;padding:4px 8px;font-size:12px}
+#hSearchBtn{display:none}
+#hSearchClear{padding:3px 6px}
+/* No reserved width: the bar has to hold Save changes as well, and 52px of
+   permanently blank space was enough to tip it onto a second row at 1440 the
+   moment Save appeared. It only takes room while it has something to say. */
+.findstat{font-size:11px;color:var(--muted);white-space:nowrap}
+select,button,input{background:var(--panel2);color:var(--ink);border:1px solid var(--line);border-radius:7px;padding:6px 9px;font-size:12.5px}
+button{cursor:pointer}button:hover{border-color:var(--accent)}
+button.primary{background:#16384a;border-color:var(--accent)}
+button.sm{padding:3px 7px;font-size:11px}
+&{--sideW:350px}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 6px var(--sideW);flex:1;min-height:0}
+/* Grid items default to min-height:auto, which lets the board's chart push the
+   row taller than the viewport rather than scrolling inside it. */
+.board,.side{min-height:0}
+/* The zoom controls are docked at the foot of these columns, so each column is
+   a flex stack: the scrollable half takes the slack, the control keeps its own
+   height and never overlaps what it zooms. */
+.boardcol,.sidecol{display:flex;flex-direction:column;min-height:0;min-width:0;overflow:hidden}
+.boardcol>.board,.sidecol>.side{flex:1 1 auto}
+.resizer{background:var(--line);cursor:col-resize}.resizer:hover{background:var(--accent)}
+.viewtabs{display:none;gap:6px;padding:6px 10px;border-bottom:1px solid var(--line);background:var(--panel);position:sticky;top:0;z-index:35}
+.viewtabs button{flex:1;padding:8px;font-size:13px}
+.viewtabs button.active{background:#16384a;border-color:var(--accent)}
+@media(max-width:1050px){
+ .layout{grid-template-columns:1fr}
+ .resizer{display:none}
+ .viewtabs{display:flex}
+ & .tr-root.tab-info .boardcol{display:none}
+ & .tr-root.tab-flow .sidecol{display:none}
+ & .tr-root.tab-info .legend{display:none}
+}
+#showAllPanel{position:fixed;z-index:81;left:50%;top:50%;transform:translate(-50%,-50%);width:min(760px,94vw);max-height:88vh;display:none;flex-direction:column;background:var(--panel);border:1px solid var(--line);border-radius:12px;box-shadow:0 12px 40px rgba(0,0,0,.6)}
+#showAllPanel.on{display:flex}
+#showAllPanel .sahd{display:flex;gap:8px;align-items:center;padding:12px 14px;border-bottom:1px solid var(--line)}
+#showAllPanel .sahd h2{margin:0;font-size:15px;flex:1}
+#saBody{overflow:auto;padding:10px 14px}
+.saphase{font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:var(--muted);margin:12px 0 5px;border-bottom:1px solid var(--line);padding-bottom:3px}
+.sarow{display:grid;grid-template-columns:14px 1fr auto;gap:8px;align-items:start;padding:7px 0;border-bottom:1px dashed #262c38}
+.ordrow{display:flex;align-items:center;gap:8px;padding:8px 10px;border-bottom:1px solid var(--line);background:var(--panel2);cursor:grab;user-select:none}
+.ordrow:last-child{border-bottom:0}
+.ordrow.drag{opacity:.45}
+.ordrow.over{outline:2px solid var(--accent);outline-offset:-2px}
+.ordrow .grip{color:var(--muted);letter-spacing:1px}
+.ordrow .onm{flex:1;font-size:12.5px}
+.ordrow .otag{color:var(--muted);font-size:11px}
+.ordrow button{padding:2px 7px;font-size:12px}
+.sarow .sdot{width:11px;height:11px;border-radius:50%;margin-top:3px}
+.sarow .sid{font-weight:700}.sarow .snm{color:var(--ink)}
+/* Failures. Outlined, never solid: --red (danger) and --test (an event type) are
+   near-identical, and a solid red chip beside a red Test ball would read as the
+   same thing meaning two different things. The list has a ceiling and scrolls
+   inside it, because the number of failures has no ceiling. */
+.c-fails h3{display:flex;align-items:center;gap:6px}
+.failtot{margin-left:auto;background:#ff2b2b1f;border:1px solid #ff2b2b88;color:#ff9b9b;border-radius:20px;padding:1px 8px;font-size:10.5px;font-weight:600;letter-spacing:0}
+.failchips{max-height:104px;overflow:auto;align-content:flex-start}
+.failchip{border:1px solid #ff2b2b88;color:#ff9b9b;background:transparent;white-space:nowrap}
+/* Status badge: dark ink on the grade's own fill, matching the ring colours on
+   the board so one vocabulary covers both surfaces. */
+.sst{display:inline-block;margin-left:6px;padding:1px 7px;border-radius:20px;font-size:10.5px;font-weight:600;vertical-align:1px}
+.sst.undone{background:transparent;border:1px dashed var(--line);color:var(--muted);font-weight:500}
+.sarow .smeta{font-size:11.5px;color:var(--muted);margin-top:2px;line-height:1.5}
+.sarow .smeta b{color:var(--ink);font-weight:600}
+.sarow .sedit{align-self:center}
+.sarow.editing{background:#151b26;border-bottom-color:var(--accent)}
+.saedit{display:grid;grid-template-columns:1fr 1fr;gap:6px 10px;margin:6px 6px 4px 0}
+.saedit label{display:flex;flex-direction:column;gap:3px;font-size:10px;letter-spacing:.7px;text-transform:uppercase;color:var(--muted)}
+.saedit .full{grid-column:1/-1}
+.saedit input,.saedit textarea{width:100%;background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:7px;padding:5px 7px;font-family:inherit;font-size:12.5px;line-height:1.45;text-transform:none;letter-spacing:normal}
+.saedit textarea{resize:vertical;min-height:34px}
+.saedit-btns{grid-column:1/-1;display:flex;gap:6px;justify-content:flex-end;margin-top:2px}
+.saedit-btns button:first-child{margin-right:auto}
+@media(max-width:560px){.saedit{grid-template-columns:1fr}}
+#infoModal .field label{min-width:96px}
+/* five short fields — the generic 300px .modal textarea is for the raw-JSON editor */
+#infoModal textarea{width:100%;height:52px;min-height:34px;resize:vertical;background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:7px;padding:7px;font:inherit}
+.board{overflow-x:auto;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding:12px 16px;touch-action:none;scrollbar-color:#4a5464 transparent;scrollbar-width:auto}
+.board::-webkit-scrollbar{width:12px;height:12px}
+.board::-webkit-scrollbar-track{background:#12151b}
+.board::-webkit-scrollbar-thumb{background:#4a5464;border-radius:7px;border:2px solid #12151b}
+.board::-webkit-scrollbar-thumb:hover{background:#5f6b7e}
+.board::-webkit-scrollbar-corner{background:#12151b}
+.board.dragging,.side.dragging{cursor:grabbing;user-select:none}
+.side{border-left:1px solid var(--line);background:var(--panel);overflow:auto;padding:12px}
+#sideZoomCtl{flex:0 0 auto;justify-content:flex-end;border-left:0;border-right:0;border-bottom:0;border-radius:0;display:flex;gap:4px;align-items:center;background:var(--panel2);border:1px solid var(--line);border-radius:9px;padding:4px 6px;box-shadow:0 4px 14px rgba(0,0,0,.45)}
+#sideZoomCtl button{padding:2px 8px;font-size:14px;line-height:1.2;min-width:26px}
+#sideZoomCtl #szReset{font-size:11px;min-width:0}
+#sideZoomCtl #szPct{font-size:11.5px;color:var(--muted);min-width:38px;text-align:center}
+/* The two controls were pixel-identical; only their screen corner said which
+   half of the app they zoomed. */
+.zoomwho{font-size:10px;letter-spacing:.7px;text-transform:uppercase;color:var(--muted);padding-right:2px}
+/* Bottom-right, not centred: centred it landed on the last card's buttons. The
+   Chart/Panel labels go too — only one control is ever visible on a phone, and
+   at 200px wide the labelled control still reached into the left column. */
+@media(max-width:1050px){
+ & .tr-root.tab-flow #sideZoomCtl{display:none}
+ .zoomwho{display:none}
+ /* Room to scroll the last event clear of the bottom edge and the zoom control,
+    which otherwise sits on top of it. Must come after the .board shorthand
+    further up the file, or padding:12px 16px silently wins. */
+ .board{padding-bottom:170px}
+ #sideZoomCtl,#flowZoomCtl{padding:3px 5px;gap:3px}
+}
+#flowZoomCtl{flex:0 0 auto;border-left:0;border-right:0;border-bottom:0;border-radius:0;display:flex;gap:4px;align-items:center;background:var(--panel2);border:1px solid var(--line);border-radius:9px;padding:4px 6px;box-shadow:0 4px 14px rgba(0,0,0,.45)}
+#flowZoomCtl button{padding:2px 8px;font-size:14px;line-height:1.2;min-width:26px}
+#flowZoomCtl #fzReset{font-size:11px;min-width:0}
+#flowZoomCtl #fzPct{font-size:11.5px;color:var(--muted);min-width:38px;text-align:center}
+@media(max-width:1050px){ & .tr-root.tab-info #flowZoomCtl{display:none} }
+
+.phase{margin-bottom:16px}
+.phase h2{font-size:11px;text-transform:uppercase;letter-spacing:1.4px;color:var(--muted);margin:0 0 7px;border-bottom:1px solid var(--line);padding-bottom:3px}
+.row{display:flex;flex-wrap:wrap;gap:3px 1px;align-items:center}
+.ev{display:flex;align-items:center}
+.ev .chev{color:#454e60;font-size:15px;margin:0 1px;user-select:none}
+.ball{width:60px;height:60px;cursor:pointer;flex:0 0 auto}
+.ball{cursor:pointer}.ball:hover{filter:brightness(1.12)}
+svg.perf{shape-rendering:optimizeSpeed;text-rendering:optimizeSpeed}
+svg.perf #viewport{will-change:transform}
+svg.perf .avail{filter:none;stroke-width:3.4}
+svg.perf .found{filter:none;stroke-width:3.2}
+svg.perf .ball:hover{filter:none}
+svg.perf .edgehit{pointer-events:none}
+#flowSvg.arrange{touch-action:none}
+.avail{filter:drop-shadow(0 0 5px #ffd23f)}
+/* The searched ball. Turquoise rather than the accent blue #36c2ff, which
+   already means "selected" while editing, and it carries a glow those rings do
+   not — two ways to tell them apart, not one. */
+.found{filter:drop-shadow(0 0 6px #00e5c8)}
+.flowwrap{min-width:max-content}
+#flowSvg.arrange .ball{cursor:grab}#flowSvg.arrange .ball:active{cursor:grabbing}
+.numbadge{font:700 9px Arial;fill:#fff}.numbg{fill:#11141a;stroke:#5a6172;stroke-width:0.8}
+/* Docked for the same reason as .arrtools — it floated at top:96px, over the
+   header at any width where the header wraps past that. */
+/* The wrapper is 0px tall so the hint never pushes the chart; the hint itself
+   overlays the legend strip below. pointer-events:none lets every click pass
+   through, so it can never block the board. Keep it under the header menus (50). */
+.arrhintwrap{position:relative;height:0;z-index:45}
+/* One line of hint (12px × 1.45 + 4px padding either side + the 1px rule),
+   reserved while editing so the legend and the phone's view tabs sit below
+   the hint instead of under it. Fixed, so a longer hint cannot move the board. */
+.arrhintwrap.on{height:26.4px}
+.arrhint{position:absolute;top:0;left:0;right:0;background:#16384a;border-bottom:1px solid var(--accent);color:#dff;padding:4px 12px;font-size:12px;display:none;text-align:center;pointer-events:none;opacity:.97}
+.arrhint.on{display:block}
+/* The Details-mode hint takes its own room: nothing changes under it. */
+.arrhint.inflow{position:static;opacity:1}
+/* The bar itself stays click-transparent so it cannot swallow chart clicks;
+   only the escape button takes the pointer back. */
+.hintoff{pointer-events:auto;margin-left:10px;background:var(--accent);color:#04121b;border:0;border-radius:5px;padding:2px 9px;font-size:12px;font-weight:600;cursor:pointer;min-height:24px}
+/* Fixed-width slot so the bar is the same size dirty or clean. */
+.saveslot{display:inline-flex;align-items:center;gap:6px;justify-content:flex-end;min-width:172px}
+.savestat{font-size:11px;color:#8a93a3;white-space:nowrap;max-width:170px;overflow:hidden;text-overflow:ellipsis}
+.savestat.ok{color:#39d353}.savestat.saving{color:#ffb84d}.savestat.err{color:#ff6b6b}
+.ball text.lbl{font:600 8.5px "Segoe UI",Arial;fill:#10131a;pointer-events:none}
+.ball text.lbll{fill:#fff}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:11.5px;color:var(--muted);padding:4px 16px}
+.legend b{color:var(--ink)} .sw{display:inline-block;width:10px;height:10px;border-radius:50%;vertical-align:-1px;margin-right:4px}
+.card{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:11px;margin-bottom:11px}
+.card h3{margin:0 0 9px;font-size:11px;letter-spacing:.8px;text-transform:uppercase;color:var(--accent);display:flex;justify-content:space-between;align-items:center}
+/* Two buttons in one heading, kept together on the right. */
+.card h3 .hbtns{display:inline-flex;gap:4px}
+.card h3 .hbtns button{text-transform:none;letter-spacing:0}
+.bar{height:8px;border-radius:5px;background:#262c38;overflow:hidden;margin:3px 0 8px}.bar>div{height:100%;background:linear-gradient(90deg,#19b6e8,#27d64a)}
+.kv{display:flex;justify-content:space-between;gap:8px;font-size:12.5px;padding:3px 0;border-bottom:1px dashed #262c38}
+.kv:last-child{border-bottom:0}.kv span:first-child{color:var(--muted)}.kv b{font-variant-numeric:tabular-nums;text-align:right}
+.big{display:flex;gap:8px;flex-wrap:wrap}.big .num{flex:1;min-width:60px;text-align:center;background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:7px}
+.big .num .v{font-size:20px;font-weight:700}.big .num .l{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px}
+.flexbar{padding:8px 10px;border-radius:8px;font-weight:700;color:#fff;text-align:center;font-size:13px}
+/* Stacked on the desktop, side by side on a phone. */
+.flexPair{display:grid;gap:6px;margin-top:8px}
+.opt2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px}
+/* Three date boxes across needed 419px in a 301px panel, putting End date B 84px
+   off the right of the window. Set pace takes the full width; the two end dates
+   share the row below, where each has room for a whole dd/mm/yyyy. */
+.paceGrid>.o:first-child{grid-column:1/-1}
+.paceGrid .o{padding:8px}
+.paceGrid input[type=date]{width:100%;min-width:0;padding:6px 4px}
+.paceRow{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.paceRow .r{font-size:17px;font-weight:700;line-height:1.15}
+.opt2 .o{background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:9px}
+.opt2 .o .t{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:5px}
+.opt2 .o .r{font-size:17px;font-weight:700}
+/* Chips you can press: no text selection or callout on a long press. */
+.evchip{cursor:pointer;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.evchip:hover{border-color:var(--accent)}
+.branch{display:inline-block;background:#2a3550;border:1px solid #3a4a6a;border-radius:6px;padding:1px 7px;margin:2px 3px 0 0;font-weight:600}
+/* "Coming up" rather than "go and fly it". Faded AND dashed, so it does not
+   rely on colour alone to say the prerequisites are not done yet. */
+.branch.notyet{background:transparent;border-style:dashed;border-color:var(--grey);color:var(--muted);font-weight:500}
+.pop,.modal{position:fixed;z-index:60;background:var(--panel2);border:1px solid var(--line);border-radius:11px;box-shadow:0 12px 40px rgba(0,0,0,.6)}
+.pop{display:none;padding:9px;width:210px}.pop .t{font-size:11px;color:var(--muted);margin-bottom:7px;text-align:center}
+.pop .opts{display:grid;grid-template-columns:1fr 1fr;gap:5px}.pop button{padding:6px;font-size:12px;display:flex;align-items:center;gap:6px}
+.dot{width:11px;height:11px;border-radius:50%;border:1px solid #0006;flex:0 0 auto}
+.pop .fails{display:flex;gap:6px;margin-top:7px;justify-content:center;align-items:center}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:55;display:none}
+.modal{display:none;z-index:60;left:50%;top:50%;transform:translate(-50%,-50%);width:min(680px,92vw);max-height:86vh;overflow:auto;padding:18px}
+.modal h2{margin:0 0 12px;font-size:16px}
+.modal textarea{width:100%;height:300px;font:12px/1.4 ui-monospace,Consolas,monospace;background:var(--bg);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:10px}
+/* The lull pop-up. z-index 70: above .overlay (55) and .modal/.pop (60) so it
+   clears the side panel, below #dlgModal (71) so a confirm raised from it still
+   lands on top. It never opens over #showAllPanel (81). */
+.lullback{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:69}
+.lullcal{position:fixed;z-index:70;left:50%;top:50%;transform:translate(-50%,-50%);width:min(340px,92vw);max-height:88vh;overflow:auto;background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:12px;box-shadow:0 14px 44px rgba(0,0,0,.65)}
+.lullhd{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.lullhd b{flex:1;font-size:13px}
+.lullcal .cal{margin-top:8px}
+.lullcal .cal .day{font-size:12.5px}
+.lullbtns{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.lullpick{display:flex;align-items:center;gap:8px;padding:4px 2px}
+.lullchip{cursor:pointer}.lullchip:hover{border-color:var(--accent)}
+.cal{user-select:none}.cal .hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.cal .grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
+.cal .dow{font-size:9px;color:var(--muted);text-align:center;padding:2px}
+.cal .day{aspect-ratio:1;display:flex;align-items:center;justify-content:center;border-radius:6px;font-size:11px;cursor:pointer;border:1px solid transparent}
+.cal .day:hover{border-color:var(--accent)}.cal .day.out{color:#475}.cal .today{outline:2px solid var(--accent)}
+.cal .lull{background:#3a3030;color:#ffb3a0}.cal .end{background:#16384a}.cal .ls{background:#2a3550}.cal .lc{background:#203a2a}
+.chips{display:flex;flex-wrap:wrap;gap:5px}.chip{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:3px 9px;font-size:12px;display:flex;align-items:center;gap:6px}
+.chip b{font-weight:600}.chip .x{cursor:pointer;color:var(--muted)}.chip .x:hover{color:var(--red)}
+.seg-key{display:flex;gap:5px;flex-wrap:wrap;font-size:11px}
+.mini{font-size:11px;color:var(--muted)}
+.field{display:flex;gap:7px;align-items:center;margin:5px 0}.field label{min-width:120px;color:var(--muted);font-size:12px}
+small.hint{color:var(--muted);font-size:11px}
+/* Docked, not floating. It used to be position:fixed over the board at
+   (360,128) — 720x139 — which put it on top of the first event of every chart:
+   elementFromPoint at ST-01 returned the toolbar, so ST-01 could not be clicked
+   or dragged at all. In normal flow it pushes the board down instead. */
+.arrtools{display:none;gap:6px;background:var(--panel2);border-bottom:1px solid var(--line);padding:6px 10px;flex-wrap:wrap;justify-content:center;align-items:center}
+.arrtools.on{display:flex}
+.arrtools .sep{width:1px;background:var(--line);margin:0 2px}
+.edgehit{cursor:pointer}.edgehit:hover{stroke:rgba(54,194,255,.25)!important}
+.linehandle{cursor:move}
+.port{cursor:crosshair}.endhandle{cursor:move}
+.arrtools input.fontnum{width:52px}
+.arrtools .arrnote{flex-basis:100%;text-align:center;color:var(--muted);font-size:11.5px;margin-top:3px}
+#flowSvg.arrange{background:#0c0e12;border:1px dashed #2b313d;border-radius:10px;touch-action:none}
+#saveChanges.dirty{background:#4a2f16;border-color:var(--orange)}
+#delSyl:hover,#delCourse:hover{border-color:var(--red)}
+/* Grouping for the 22 controls that used to wrap onto six rows at 1440.
+   z-index 50: over the board and the sticky view tabs (35), under .modal (60). */
+.menu{position:relative;display:inline-flex}
+/* fixed, not absolute: the phone header scrolls sideways and an overflow
+   container clips its own absolutely positioned children. Placed by Header.jsx. */
+.menupanel{position:fixed;z-index:50;width:200px;overflow:auto;display:none;flex-direction:column;gap:4px;background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:6px;box-shadow:0 12px 32px rgba(0,0,0,.6)}
+.menupanel.on{display:flex}
+.menupanel button{text-align:left;width:100%}
+.menupanel label.sub{display:flex;align-items:center;gap:7px;padding:2px 4px}
+.menupanel .msep{height:1px;background:var(--line);margin:2px 0}
+.menupanel .mnote{font-size:11px;color:var(--muted);padding:2px 4px;line-height:1.5;overflow-wrap:anywhere}
+
+/* ---- phone: fit every statistic on one screen, no pinching to photograph ----
+   Everything above the calendar was ~1500px tall in ~500px of screen, so the
+   only way to see it was 30% zoom. These rules apply at phone width whether or
+   not the panel is zoomed; the two-across currency grid used to need .zoomed. */
+@media(max-width:1050px){
+ .curGrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:10px;row-gap:2px}
+ .curGrid .field{flex-direction:column;align-items:stretch;gap:1px;margin:2px 0}
+ .curGrid .field label{min-width:0}
+ .curGrid .field input{width:100%!important}
+ .curKv{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:12px}
+ .curKv .kv{border-bottom:0;padding:2px 0}
+ /* The student key-ball diagram is the single biggest card on the phone. */
+ /* Two columns. Density alone got 2133px down to 1458 against ~620px of screen;
+    only pairing the cards closes a gap that size. Cards holding date boxes span
+    both columns — a dd/mm/yyyy field needs ~124px and a column is ~183px. */
+ /* stretch, not start: two cards side by side should be the same height, or the
+    shorter one looks like a mistake. The row is as tall as its taller card. */
+ /* The user asked for the old 80% view to BE 100%: they preferred it, and it
+    gives the date fields room. The zoom control still reads 100% because it
+    scales this on top of the baseline. */
+ .sidescale{zoom:.8;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:7px;align-content:start;align-items:stretch}
+ .side{display:block}
+ /* Every card goes narrow and pairs off. Keeping the date-holding cards full
+    width left 1151px against 754 of screen; pairing Currency with Pace alone is
+    worth ~180 of that. A column is 183px and a compact dd/mm/yyyy needs ~124,
+    so the dates still fit — the inner two-across grids go back to one column. */
+ /* Short cards pair off two to a row; the two holding date boxes stay full
+    width, where their fields go two across instead of stacking four deep. A
+    183px column is too narrow for a dd/mm/yyyy field to sit beside anything. */
+ .card.wide{grid-column:1/-1}
+ /* Explicit order, so a new card cannot silently land first: a card without one
+    defaults to order:0 and jumps ahead of Overall, which is what unpaired
+    Students from Overall the moment Failures was added.
+    Lull used to sit alone on the last row at the user's request; Failures takes
+    the empty slot beside it (16 Aug), which is the free space this panel had. */
+ .c-overall{order:1}.c-students{order:2}.c-next{order:3}.c-plan{order:4}
+ .c-curr{order:5}.c-pace{order:6}.c-lull{order:7}.c-fails{order:8}
+ .kvGrid,.curKv{grid-template-columns:minmax(0,1fr)}
+ .kvGrid .kv,.curKv .kv{border-bottom:0}
+ .flexPair{display:grid;gap:5px;margin-top:6px}
+ .side{font-size:11.5px}
+ /* iOS renders a date field far wider than Chromium and will not shrink one
+    that keeps its native appearance, which is why END DATE B ran off the right
+    on a real phone while every desktop measurement said it fitted. */
+ input[type=date]{font-size:11px;padding:5px 2px;min-width:0;-webkit-appearance:none;appearance:none}
+ .paceGrid .o,.curGrid .field{min-width:0}
+ .big{gap:4px}.big .num{padding:3px;min-width:0}
+ /* Headings that name the student, and the parenthetical hints, wrap onto two
+    and three lines in a 183px card. The student is named in the top bar. */
+ .card h3 .who,.card h3 .mini{display:none}
+ /* Three figures on one row, not stacked three deep: that alone was ~120px. */
+ .big{flex-wrap:nowrap}
+ .big .num .v{font-size:13.5px}.big .num .l{font-size:7.5px;letter-spacing:.2px}
+ /* Four date fields, compactly. */
+ .curGrid .field label{font-size:10px}
+ .curGrid .field{margin:1px 0}
+ .flexPair{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+ .flexbar{padding:4px 5px;font-size:10.5px;line-height:1.25}
+ /* Keep each row on one line so nothing wraps to double height. */
+ .c-next .kv>span:first-child{white-space:nowrap;font-size:10.5px}
+ .branch{padding:0 5px;margin:1px 2px 0 0;font-size:11px}
+ /* Explanatory notes are the first thing to go when the screen is this small;
+    they are direct children of a card, so inline .mini spans are untouched. */
+ .card>div.mini{display:none}
+ /* Tighter cards, headings and rows throughout. */
+ .side{padding:8px}
+ .card{padding:6px;margin-bottom:0}
+ /* Final squeeze to bring 867px of statistics inside 754px of screen. */
+ .card h3{margin:0 0 4px;font-size:10px}
+ .kv{padding:0;line-height:1.5}
+ .bar{margin:2px 0 5px;height:6px}
+ /* Set pace, End date A and End date B back on ONE row, which is the layout the
+    user asked to keep. It stopped fitting when the three sat in a 301px panel;
+    the card is full width here and the whole panel is scaled to 80%, so there
+    are now ~470 units to share and each box gets ~150 for a ~124 date field.
+    The field is centred and stops short of the cell edge, because iOS draws a
+    date value wider than any desktop measurement predicts. */
+ .paceGrid{gap:5px;grid-template-columns:repeat(3,minmax(0,1fr))}
+ .paceGrid>.o:first-child{grid-column:auto}
+ .paceGrid input[type=date]{width:100%;margin:0;display:block;text-align:center}
+ /* iOS lays the value out in its own inner box that ignores text-align and
+    keeps its natural width, which is how a date ran past the right edge while
+    every measurement said the field itself fitted. */
+ input[type=date]::-webkit-date-and-time-value{width:100%;margin:0;text-align:center}
+ .paceGrid>.o:not(:first-child){text-align:center}
+ .paceGrid .o{padding:4px}
+ .paceGrid .o .t{margin-bottom:2px}
+ .paceRow .r,.opt2 .o .r{font-size:14px}
+ .curGrid{column-gap:8px}
+ .chip{padding:1px 6px;font-size:11px}
+ /* Fill the card's width — the names need the room, and the ring inside is
+    drawn small on purpose. Height follows from the viewBox. */
+ .keyball svg{width:100%;height:auto}
+ .keyball{line-height:0}
+ .card.wide .curKv{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+ /* Two across, not three: a third of the card was enough for Chromium and not
+    for iOS, where END DATE B ran off the right on a real phone. Half the card
+    each gives ~50% more room and cannot depend on how one engine sizes a native
+    date field. The height it costs is affordable now the panel is at .8. */
+ .paceRow{flex-direction:column;align-items:flex-start;gap:0}
+ /* Headroom: at exactly the screen height a third student would start it
+    scrolling again. */
+ .kv{line-height:1.4}
+ .flexbar{padding:3px 4px}
+ .curGrid .field label{font-size:9.5px}
+ .chips{gap:3px}
+ .curGrid .field input{padding:4px 3px}
+ .big .num{padding:2px}.big .num .v{font-size:12.5px}
+ .side{padding:6px}
+ .viewtabs{padding:4px 8px;gap:5px}
+ .viewtabs button{padding:6px;font-size:12px}
+ .card h3{margin:0 0 6px}
+ .kv{padding:1px 0;font-size:12px}
+ .big .num{padding:4px}
+ .big .num .v{font-size:17px}
+ .flexbar{padding:5px 8px;font-size:12px}
+ .paceGrid .o{padding:6px}
+ .paceRow .r,.opt2 .o .r{font-size:15px}
+ .chips{gap:4px}.chip{padding:2px 7px}
+ /* The bar took 281px before a single statistic appeared, and still 175 after
+    tightening, because 10 controls wrap onto four rows in 390px. One row that
+    scrolls sideways is 44px whatever it holds — that is 130px of screen handed
+    back to the statistics.
+    Superseded 15 Aug at the user's request: one scrolling row hid six of the
+    controls off the right-hand edge behind a suppressed scrollbar, with
+    nothing on screen to say they were there. Two wrapped rows show every
+    control and still leave the board the rest of the screen. The width that
+    buys the second row comes from dropping the inline field labels — each
+    dropdown already prints its own value — not from hiding controls. */
+ header{padding:5px 8px;gap:6px;row-gap:5px;flex-wrap:wrap;overflow:visible}
+ header>div:first-child{display:none}
+ .controls{flex:1 1 auto;flex-wrap:wrap;gap:6px;margin-left:0}
+ .controls>*{flex:0 0 auto}
+ /* An auto-margin spacer applies per flex line, so on a wrapping bar it would
+    push whatever landed on row one hard right. */
+ .hspacer{display:none}
+ /* Only the caption goes, never the label itself — it WRAPS the dropdown, so
+    hiding the label would take the control with it. */
+ .controls .lbltx{display:none}
+ /* Eleven controls only reach two rows in 390px if they are trimmed to it:
+    the three dropdowns are the width, and they still print their own value. */
+ .controls select{max-width:88px;padding:4px 6px;font-size:12px}
+ .controls button.sm{padding:3px 6px}
+ /* A 132px box in a 390px row leaves nothing for anything else, so the phone
+    gets a 🔍 button and a full-width strip under the bar. position:fixed, not
+    absolute: the header scrolls sideways, and an overflow container clips its
+    own absolutely positioned children — the exact fault that made every menu
+    panel untappable. left/right rather than a width, so it cannot be wrong. */
+ #hSearchBtn{display:inline-flex}
+ .findpanel{position:fixed;left:6px;right:6px;z-index:52;display:none;gap:6px;
+   background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:6px 8px;
+   box-shadow:0 8px 26px rgba(0,0,0,.5)}
+ .findpanel.on{display:flex}
+ #hSearch{flex:1 1 auto;min-width:0;width:auto}
+ /* 204px of the 865px the bar wants was this slot, because .savestat is capped
+    at 170px for a desktop row. The words still ellipsis; the full text is in
+    the File menu beside the file name. */
+ .saveslot{min-width:0;gap:4px}
+ .savestat{max-width:72px;font-size:10px}
+ .legend{display:none}
+ /* The Show All tab under the bar is the phone's way in; the header button
+    would only repeat it and cost the two-row bar 80px. */
+ #showAllBtn{display:none}
+ .satl{display:none}
+}
+}

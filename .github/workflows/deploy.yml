@@ -155,10 +155,40 @@ jobs:
         working-directory: raptor-port
         run: npx playwright test --project=${{ matrix.project }}
 
+  # The vendored OCU Progress Tracker's own browser suite (7 Sep 26, the
+  # Tracker merge) — 345 checks from the standalone repo, driven through
+  # Raptor's login and tab (scripts/tracker/smoke.mjs). Its own job so it
+  # runs beside the geometry legs rather than after them; it builds and
+  # serves the bundle itself like they do.
+  tracker:
+    name: tracker (smoke)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: raptor-port/package-lock.json
+      - name: Install
+        working-directory: raptor-port
+        run: npm ci
+      - name: Cache Playwright browser
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('raptor-port/package-lock.json') }}
+      - name: Install Chromium
+        working-directory: raptor-port
+        run: npx playwright install --with-deps chromium
+      - name: Tracker smoke
+        working-directory: raptor-port
+        run: npm run smoke:tracker
+
   # Publishes only when every gate above is green: a failed or cancelled
   # `needs` job skips this one, so nothing deploys red.
   deploy:
-    needs: [build, unit, geometry]
+    needs: [build, unit, geometry, tracker]
     if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     environment:
