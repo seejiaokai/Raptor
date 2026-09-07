@@ -9,7 +9,7 @@ import { alAttr } from '../engine/publish'
 import { groundOrder } from '../engine/order'
 import { esc, PIOPEN, notePub } from '../state/view'
 import { canEditSched } from '../state/auth'
-import { ORD, puck, rowCls, accCtl, inpEditLabel, lateTag, lateChip, lateRowCls, lateRowTitle, dormRowCls, dormRowTitle, sansCardsHTML, notePubTog, ADDZ } from './html'
+import { ORD, puck, rowCls, accCtl, inpEditLabel, lateTag, lateChip, lateRowCls, lateRowTitle, dormRowCls, dormRowTitle, sansCardsHTML, notePubTog, ADDZ, exemptDeskOwn } from './html'
 
 /* ONE CLOCK ON THE BOARD — hh:mm (owner, 30 Aug 26, reversing the 29 Aug
    4-digit pass: "most of the timing format is 08:00 … make sure everything
@@ -270,7 +270,11 @@ export function sbNote(d:any,di:any,key:any,field:any,_ph:any,pv?:any){
    into it even though the write was never committed. */
 function sbSeat(di:any,key:any,id:any,pv?:any){
   if(!(id&&PEOPLE[id]))return '';
-  return `<span class="seat"${pv?'':` data-slot="${key}"`}${alAttr(key)}${pv?'':' data-drag="1"'}>${puck(id,pv?null:sevOf(di,id),true,pv?null:chipOf(di,id))}</span>`;
+  /* an exempt desk row rings for its OWN rule only — html.ts exemptDeskOwn,
+     the one body the week's lSeat reads too */
+  const ex=pv?undefined:exemptDeskOwn(di,key,id);
+  const inner=ex===undefined?puck(id,pv?null:sevOf(di,id),true,pv?null:chipOf(di,id)):puck(id,ex?'hard':null,true,ex);
+  return `<span class="seat"${pv?'':` data-slot="${key}"`}${alAttr(key)}${pv?'':' data-drag="1"'}>${inner}</span>`;
 }
 function sbMore(di:any,base:any,r:any,pv?:any){
   return ((r&&r.more)||[]).map((id:any,i:any)=>sbSeat(di,`${base}.x${i}`,id,pv)).join('');

@@ -4,7 +4,7 @@ import {
   DUTYTPL_STD, DUTYTPL_CFG, tplAreStandard,
   addTpl, delTpl, renameTpl, moveTpl,
   addTplRow, delTplRow, setTplRow, moveTplRow,
-  blockFromTpl, dutyTplSave, dutyTplLoad, dutyTplReset, tplTime,
+  blockFromTpl, dutyTplSave, dutyTplLoad, dutyTplReset, tplTime, setTplWave,
 } from './dutytpl'
 
 /* storeBackend.impl is null headless — wire a fake, never real localStorage */
@@ -64,10 +64,12 @@ describe('editing the library', () => {
 })
 
 describe('minting a block from a template', () => {
-  it('copies the rows onto a PLAIN block — no sa/noconf, id blank, independent of the library', () => {
+  it('copies the rows onto a block that carries the template\'s WAVE as its sa marker, id blank, independent of the library', () => {
     const blk = blockFromTpl(DUTYTPL_CFG[1]!.id)   // SC Shift
     expect(blk.label).toBe('SC Shift')
-    expect(blk.sa).toBeUndefined()
+    /* an SC desk is checked like any duty row (no noconf) but the marker is
+       what lets the SC-spare rule see it (owner, 7 Sep 26) */
+    expect(blk.sa).toBe('sc')
     expect(blk.noconf).toBeUndefined()
     /* the seed stores compact ('0700'); the mint folds to hh:mm, the app's one
        time form (owner, 30 Aug 26) — so a placed block always reads 07:00 */
@@ -166,5 +168,62 @@ describe('persistence, like the stores list', () => {
     dutyTplLoad()
     const ids = DUTYTPL_CFG.map(t => t.id)
     expect(new Set(ids).size).toBe(ids.length)
+  })
+})
+
+/* WHICH WAVE A DESK BELONGS TO (owner, 7 Sep 26 — "a duty role that falls under
+   AVALON will not have any warning … unless OL, HL, OML, ATT C, OD", "sc duties
+   desk … not allowed … the same time as main or spare"). The engine already
+   knew an `sa`-marked desk; nothing minted one since the 13 Aug decoupling.
+   The template now names its wave, and the mint carries it onto the block. */
+describe('a template names the wave its desk serves', () => {
+  it('the seed library: Standard is nobody\'s, SC Shift is SC\'s, AVALON is AVALON\'s', () => {
+    expect(DUTYTPL_STD.map(t => t.wave)).toEqual(['', 'sc', 'avalon'])
+    expect(DUTYTPL_CFG.map(t => t.wave)).toEqual(['', 'sc', 'avalon'])
+  })
+  it('an AVALON template mints an exempt desk (sa + noconf); an ordinary one mints a PLAIN block', () => {
+    const av = blockFromTpl('avalon')
+    expect(av.sa).toBe('avalon')
+    expect(av.noconf).toBe(true)
+    const std = blockFromTpl('std')
+    expect(std).toEqual({ label: 'Standard', rows: std.rows })
+    expect('sa' in std).toBe(false)
+    expect('noconf' in std).toBe(false)
+  })
+  it('setTplWave writes one of the three values and refuses anything else', () => {
+    const t = addTpl('Nights')!
+    expect(t.wave).toBe('')
+    expect(setTplWave(t.id, 'avalon')).toBe(true)
+    expect(blockFromTpl(t.id).sa).toBe('avalon')
+    expect(setTplWave(t.id, 'bogus' as any)).toBe(false)
+    expect(DUTYTPL_CFG.find(x => x.id === t.id)!.wave).toBe('avalon')
+    expect(setTplWave(t.id, '')).toBe(true)
+    expect('sa' in blockFromTpl(t.id)).toBe(false)
+    expect(setTplWave('nope', 'sc')).toBe(false)
+  })
+  it('the wave survives a save / load round trip', () => {
+    const t = addTpl('Nights')!
+    setTplWave(t.id, 'avalon')
+    dutyTplSave()
+    dutyTplLoad()
+    expect(DUTYTPL_CFG.find(x => x.id === t.id)!.wave).toBe('avalon')
+  })
+  it('untrusted storage: a nonsense wave drops to none; a pre-7-Sep library keeps the seed desks\' waves by id', () => {
+    mem['sqn142_dutytpl'] = JSON.stringify([
+      { id: 'u1', title: 'Bad', wave: 'moon', rows: [{ role: 'SDO', str: '', end: '' }] },
+      { id: 'u2', title: 'None', rows: [{ role: 'SDO', str: '', end: '' }] },
+      { id: 'avalon', title: 'AVALON', rows: [{ role: 'SXO', str: '19:00', end: '07:00' }] },
+      { id: 'sc', title: 'SC Shift', rows: [{ role: 'SXO AM', str: '07:00', end: '13:00' }] },
+    ])
+    dutyTplLoad()
+    expect(DUTYTPL_CFG.map(t => [t.id, t.wave])).toEqual([['u1', ''], ['u2', ''], ['avalon', 'avalon'], ['sc', 'sc']])
+  })
+  it('an explicit null wave on a seed desk reads as "unset" too — the seed wave comes back, never a silent plain desk', () => {
+    mem['sqn142_dutytpl'] = JSON.stringify([
+      { id: 'avalon', title: 'AVALON', wave: null, rows: [{ role: 'SXO', str: '19:00', end: '07:00' }] },
+      { id: 'u1', title: 'Mine', wave: null, rows: [{ role: 'SDO', str: '', end: '' }] },
+    ])
+    dutyTplLoad()
+    expect(DUTYTPL_CFG.map(t => [t.id, t.wave])).toEqual([['avalon', 'avalon'], ['u1', '']])
   })
 })

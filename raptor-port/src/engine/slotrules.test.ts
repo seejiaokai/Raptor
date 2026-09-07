@@ -31,16 +31,18 @@ describe('who may be planned into a slot (tfin U)', () => {
     expect(fcps.some(id => slotBar(id, key) === '')).toBe(true)
   })
 
-  it('a rear seat leaves only WSOs and instructor pilots (IP / IR / FI)', () => {
+  it('a rear seat now takes any pilot — the illegal-seat bar is gone (owner, 7 Sep 26)', () => {
     const key = '0.0.0.0.w'
+    /* a plain (non-instructor) pilot is no longer turned away as "not an
+       instructor". Asserted as "not the seat reason" over every plain pilot
+       rather than '' — seeded men are genuinely busy at these hours, and a
+       true busy-bar must not make this test lie about the seat rule */
     const plain = ids.filter(id => PEOPLE[id].seat === 'FCP' && !isInstrPilot(PEOPLE[id].q))
     expect(plain.length).toBeGreaterThan(0)
-    expect(plain.every(id => /pilot, not an instructor/.test(slotBar(id, key)))).toBe(true)
+    expect(plain.every(id => !/not an instructor/.test(slotBar(id, key)))).toBe(true)
     const wso = ids.find(id => PEOPLE[id].seat === 'RCP')!
     expect(slotBar(wso, key)).toBe('')
-    /* the instructor CATs themselves clear the SEAT rule: neither an IP nor
-       the IR examiner is turned away as "not an instructor" (other bars —
-       rest, currency — are their own rules and may still apply) */
+    /* instructor pilots were always fine and still are */
     expect(/pilot, not an instructor/.test(slotBar('stiff', key))).toBe(false)   // IP
     expect(/pilot, not an instructor/.test(slotBar('dice', key))).toBe(false)    // IR
   })
@@ -53,8 +55,9 @@ describe('who may be planned into a slot (tfin U)', () => {
     expect(plain.length).toBeGreaterThan(0)
     for (const k of ['s:0.oft.0.w', 's:0.amt.0.w'])
       expect(plain.every(id => !/not an instructor/.test(slotBar(id, k))), k).toBe(true)
-    /* the JET rear seat keeps the rule — the test above pins it — and the
-       sim's FRONT seat still turns a WSO away */
+    /* the JET rear seat takes any pilot too now (the test above pins it), so
+       this sim assertion is no longer the only place a plain pilot rides the
+       back — but the sim's FRONT seat still turns a WSO away */
     const wso = ids.find(id => PEOPLE[id].seat === 'RCP')!
     expect(slotBar(wso, 's:0.oft.0.p')).toContain('WSO')
   })
@@ -111,7 +114,8 @@ describe('who may be planned into a slot (tfin U)', () => {
     expect(slotRules('s:0.oft.0.p').seat).toBe('p')
     expect(slotRules('s:0.oft.0.w').seat).toBe('w')
     expect(slotRules('s:0.amt.1.pax.3').seat).toBe(null)   // a body in the room, not a seat
-    /* the sim flag is what scopes the rear-seat instructor bar to the JET */
+    /* the sim flag still scopes the sim's FRONT-seat handling (the rear-seat
+       instructor bar it once also scoped is gone — owner, 7 Sep 26) */
     expect(slotRules('s:0.oft.0.w').sim).toBe(true)
     expect(slotRules('0.0.0.0.w').sim).toBe(false)
   })

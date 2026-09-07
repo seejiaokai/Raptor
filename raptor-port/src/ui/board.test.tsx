@@ -211,7 +211,7 @@ describe('the scheduler board (tfin board group)', () => {
   })
 
   /* + Block lists the saved TEMPLATES now, not the day's waves (owner, 13 Aug
-     26), and picking one COPIES its rows onto the day as a plain block. */
+     26), and picking one COPIES its rows onto the day — a plain block, or an SC / AVALON / BB desk when the template names its wave (7 Sep 26). */
   it('+ Block offers the duty templates, and picking one copies its rows as a plain block', async () => {
     const d = DAYS[0]
     const nDW = (d.dutywaves || []).length

@@ -854,9 +854,16 @@ Rules: `docs/engine-rules.md` §The late-input mark. Placement: `docs/ui-contrac
   auto-creates its desk"). No wave auto-creates a duty desk (AVALON included);
   deleting a wave leaves duty blocks alone. Every desk comes from the `+ Block`
   template picker (`engine/dutytpl.ts`, persisted): a chosen template copies onto the
-  day as a PLAIN block (no `sa`/`noconf` marker → conflict-checked like any duty row;
-  the AVALON/BB desk exemption went with auto-create). Seed week carries no exempt
-  desk, parity untouched. Editor `ui/DutyTplModal.tsx`. Do NOT re-add
+  day as a block carrying the template's WAVE, if it names one (owner, 7 Sep 26 —
+  "a duty role that falls under AVALON will not have any warning … unless OL, HL,
+  OML, ATT C, OD" / "sc duties desk … not … the same time as main or spare"): the
+  editor's "For wave" picker (None / SC / AVALON / BB) → `blockFromTpl` mints `sa`
+  (+ `noconf` for AVALON and BB — BB is AVALON's twin, owner 7 Sep 26), so that
+  desk is exempt as its wave is and earns no
+  OIL, an SC desk is an SC seat for the spare rule, and a template with no wave
+  mints the PLAIN block it always did. This amends the 13 Aug "always plain"
+  clause; the decoupling itself stands. Seed week carries no template desk, parity
+  untouched. Editor `ui/DutyTplModal.tsx`. Do NOT re-add
   `SAWAVE.autoDuty` or the wave-delete → `saDutyIx` linkage (`waveDutyBlock`/
   `saDutyIx` remain in `waves.ts` only for old AL snapshots).
 - **Flying-wave templates + a + Wave show/hide list** (owner, 25 Aug 26). Sibling of

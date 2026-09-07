@@ -1896,3 +1896,33 @@ gate's. Keep verdict-bearing commands unpiped.
 **Suggested improvement:** When a visual report names or points at a specific element ("this column/cell/line looks wrong/darker/different"), the first diagnostic step is to read that element's COMPUTED style in a real browser and diff it against (a) its immediate siblings and (b) the same element in a state that looks correct — not to hypothesise a cause from the screenshot and build a candidate fix. The computed-style diff names the exact property and rule responsible, turning a guessing loop into a one-shot fix.
 
 **Principle:** A rendered-difference complaint is a computed-style question. Diffing the suspect element's resolved styles against a known-good reference (sibling, other row, prior state) localises the offending property and cascade rule directly; pattern-matching the screenshot to a plausible-sounding cause risks fixing the wrong thing and burning review round-trips.
+
+### Observation 125: An "I'm just reinforcing" rules list is a verify-then-build table, and it exposes dead seams
+
+**Status:** OPEN
+**Date:** 2026-09-07
+**Session context:** The owner restated ten AVALON / SC-spare rules ("some of these may already be present, I am just reinforcing … if not, implement them"). Six were present, four were not, and one "present" rule (the AVALON desk exemption) had been silently dead since a 13 Aug decoupling removed the only path that minted the marker it keyed on.
+**Skill:** test-driven-development (and the repo's rules-engine doctrine in CLAUDE.md)
+**Type:** open-source
+**Phase/Area:** intake — turning a mixed list of asks into work
+
+**Issue:** A list that mixes "already true" and "please build" invites two failure modes: re-implementing what exists (drift seam), or trusting the docs that say a rule exists when no live path exercises it. Here the docs, the engine and the tests all still described the AVALON desk exemption, and it was unreachable from the UI — the template path minted plain blocks. Only writing the test against the block a scheduler actually PLACES (blockFromTpl) rather than a hand-built fixture exposed it.
+
+**Suggested improvement:** For a reinforcement list, produce a per-rule table first — rule / where enforced / where the picker mirrors it / test that pins it / VERDICT (present, present-but-unreachable, missing) — and write each new test's fixture through the same entry point a user would use, not a hand-built model object. Then build only the "missing" and "unreachable" rows.
+
+**Principle:** "The rule exists" is a claim about a code path a user can reach, not about a function that would fire if handed the right object; pin rules through the user's own entry points, and treat a reinforcement list as an audit before it is a build.
+
+### Observation 126: A delegated bug sweep must take its expectations from the rule doc, not from the dispatcher's paraphrase
+
+**Status:** OPEN
+**Date:** 2026-09-07
+**Session context:** A three-agent bug sweep of the AVALON/BB rules (browser drive on sonnet, engine review on sonnet, wording audit on haiku). The browser agent reported one "FAIL": a man on a seat plus TWO desk rows raised two conflicts, not one. The engine reviewer, on the same tree, had just established that one-per-pair is the correct, SC-precedented behaviour. The "failure" was my own loosely-worded scenario line ("still exactly one DOUBLE_BOOK") — the agent tested my paraphrase, faithfully.
+**Skill:** dispatching-parallel-agents (and the bug-sweep pattern in BUG-TESTING.md)
+**Type:** open-source
+**Phase/Area:** writing the sweep brief
+
+**Issue:** When the dispatcher writes expected outcomes from memory into an agent's brief, the agent verifies the brief, not the product rule; a wrong expectation becomes a confident false finding that then needs an adjudication pass. Two agents run in parallel on the same behaviour can also disagree for exactly this reason.
+
+**Suggested improvement:** In a sweep brief, state expectations as pointers to the rule's source of truth (the engine doc section, the pinning test) and ask the agent to derive the expected count/wording from there; reserve hand-written expectations for things the docs don't yet say. Ask the agent to label each FAIL as "contradicts the doc" vs "contradicts the brief". The wording-audit agent, briefed with a literal list of stale phrases, produced two false positives for the same reason — a phrase list is a paraphrase too.
+
+**Principle:** A verifier can only be as right as its oracle; when you delegate verification, delegate the oracle (a doc or a test), not your memory of it.
