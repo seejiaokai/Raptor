@@ -3,7 +3,7 @@ import { INPUTS, inputCoversDate, inputFlags, inputDormant, inpWin, isSansAvail,
 import { PEOPLE, isSpecial, nameToId, aarNeed } from './people'
 import { toMin, parseHM, win, overlap } from './time'
 import { VCONF, SHIFT_HARD } from './rules'
-import { isStandalone, saExempt, CURWEEK } from './waves'
+import { isStandalone, saExempt, saExemptKind, CURWEEK } from './waves'
 import { whoArr, acceptedDay } from './slots'
 import { edgeDate } from './weeks-data'
 /* THE ACCEPT DEFERRAL IS PER-DAY, NOT PER-INPUT (audit, 12 Aug 26).
@@ -108,11 +108,17 @@ export function avSeatHit(di:any,id:any,s:any,e:any,selfKey:any,seatsOnly?:any){
    kind is the noconf family — AVALON and BB, waves and desks. `seatsOnly`
    skips the desks: a DESK asking (owner, 7 Sep 26 — "two avalon desk roles is
    ok") wants only the seats, while a seat asking wants seats and desks. */
-const NOCONF_SA:any={avalon:true,bb:true};
 function standaloneHit(di:any,id:any,s:any,e:any,selfKey:any,kind:any,seatsOnly?:any){
   const d=DAYS[di]; if(!d||!id||s==null||e==null)return null;
+  /* selfKey: the place being asked about — OR a list of them, so the crew
+     picker can also exclude the seat a man is being DRAGGED FROM (slotBar's
+     fromKey, 5 Sep 26): the hover reads the week after the move, and telling
+     him he is "already on" the seat he is leaving would put the hover and the
+     post-drop warning list at odds (reviewer, 7 Sep 26) */
+  const self:any[]=(Array.isArray(selfKey)?selfKey:[selfKey]).filter(Boolean);
+  const isSelf=(k:any)=>self.indexOf(k)>=0;
   const wantsW=(w:any)=>kind?w.kind===kind:!!w.noconf;
-  const wantsD=(dw:any)=>!seatsOnly&&(kind?dw.sa===kind:!!NOCONF_SA[dw.sa]);
+  const wantsD=(dw:any)=>!seatsOnly&&(kind?dw.sa===kind:saExemptKind(dw.sa));
   let hit:any=null;
   (d.waves||[]).forEach((w:any,gi:any)=>{ if(hit||!isStandalone(w)||!wantsW(w))return;
     (w.formations||[]).forEach((f:any,li:any)=>{ if(hit||f.cx)return;
@@ -122,7 +128,7 @@ function standaloneHit(di:any,id:any,s:any,e:any,selfKey:any,kind:any,seatsOnly?
       (f.aircraft||[]).forEach((a:any,ai:any)=>{ if(hit||a.cx)return;
         [['p',a.p],['w',a.w]].forEach(([seat,pid]:any)=>{ if(hit||pid!==id||!PEOPLE[pid]||isSpecial(pid))return;
           const k=`${di}.${gi}.${li}.${ai}.${seat}`;
-          if(k===selfKey)return;
+          if(isSelf(k))return;
           /* the WAVE's full label (AVALON), not the callsign (AV) — see the
              sacrew note in buildDay; SC's cs and label are both "SC" */
           const role=(f.spare||a.spare)?'SPARE':'MAIN', label=`${w.label} ${f.msn}`;
@@ -131,7 +137,7 @@ function standaloneHit(di:any,id:any,s:any,e:any,selfKey:any,kind:any,seatsOnly?
     (dw.rows||[]).forEach((r:any,ri:any)=>{ if(hit||r.cx)return;
       const w2=win(parseHM(r.str),parseHM(r.end)); if(!w2)return;
       if(!overlap(s,e,w2[0],w2[1]))return;
-      const k=`d:${di}.${dwi}.${ri}`; if(k===selfKey)return;
+      const k=`d:${di}.${dwi}.${ri}`; if(isSelf(k))return;
       if(![r.id].concat(r.more||[]).some((pid:any)=>pid===id&&PEOPLE[pid]&&!isSpecial(pid)))return;
       const label=`${r.role} duty`;
       hit={label,role:'DUTY',what:label,s:w2[0],e:w2[1],key:k};});});
@@ -267,10 +273,10 @@ export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
                  the narrow board callsign box, and the LEAVE_FLY/DNIF prose reads
                  as prose ("but on AVALON — overseas"). Don't re-shorten to f.cs. */
               /* role + seat ride along since 7 Sep 26 for the three checks
-                 validate() added on top of the availability look: SC NIGHT
-                 currency (MAIN only), the pilots-only front seat, and one man
-                 in two AVALON places. sacrew is port-only (the parity gate
-                 excises it whole), so the extra fields cost nothing there. */
+                 validate() added on top of the availability look: SC currency
+                 (every seat), the pilots-only front seat, and one man in two
+                 AVALON/BB places. sacrew is port-only (the parity gate excises
+                 it whole), so the extra fields cost nothing there. */
               const role=(f.spare||a.spare)?'SPARE':'MAIN';
               [['p',a.p],['w',a.w]].forEach(([seat,id]:any)=>{ if(id&&PEOPLE[id]&&!isSpecial(id))sacrew.push({id,s:sTo,e:sLd,label:`${w.label} ${f.msn}`,key:`${di}.${gi}.${li}.${ai}.${seat}`,work:false,role,seat,kind:w.kind}); });
             });
@@ -436,7 +442,7 @@ export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
            one check applies, with ATT B carved out — he cannot fly but he can man a
            desk (owner, 11 Aug 26). work:true is that carve-out. BB's desk is the
            same (7 Sep 26). */
-        if(dw.sa==='avalon'||dw.sa==='bb'){
+        if(saExemptKind(dw.sa)){
           const w2=win(parseHM(r.str),parseHM(r.end));
           if(w2)[r.id].concat(extras(r)).forEach((id:any)=>{ if(id&&PEOPLE[id]&&!isSpecial(id))sacrew.push({id,s:w2[0],e:w2[1],label:r.role+' duty',key:`d:${di}.${dwi}.${ri}`,work:true,role:'DUTY',seat:null,kind:dw.sa}); });
         }

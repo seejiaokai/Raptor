@@ -771,9 +771,10 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
     exactly as collectEvents rolls it, so the same-hours question — and the
     availability look's midnight tail — run to the stated end time, not to a
     fixed 07:00.
-  Deliberately NOT a rule: a man on AVALON tonight and a sortie or desk
-  tomorrow morning (or any crew-rest question) — nothing on AVALON is an
-  event, and the owner has not asked. Pins: `avalon-rules.test.ts`
+  Deliberately NOT a rule (owner, 7 Sep 26 — "it should not raise a
+  warning"): a man on AVALON or BB tonight and a sortie or desk tomorrow
+  morning, or any crew-rest / run-count question — nothing on these waves
+  is an event. Settled; don't re-propose. Pins: `avalon-rules.test.ts`
   (validator, picker, OIL, the template desk, the BB twin); `overnight.test.ts`
   keeps the 11 Aug availability pins (its jet-seat fixtures now use an
   SC-NIGHT-current instructor WSO, since every seat asks for currency).

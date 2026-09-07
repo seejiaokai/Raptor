@@ -3,7 +3,7 @@ import { INPUTS, inputCoversDate, isAway, awayAllDay, canSpare, canWork, offWord
 import { PEOPLE, isSpecial, nameToId, aarNeed, aarOK, scShiftKind, scQualOK, isInstrPilot } from './people'
 import { parseHM, win, overlap, hm24 } from './time'
 import { SHIFT_HARD, VCONF } from './rules'
-import { isStandalone, scSpare, saExempt } from './waves'
+import { isStandalone, scSpare, saExempt, saExemptKind } from './waves'
 import { WARN, restClear, dayEvents, crossDayIfPlaced } from './validate'
 import { waveWindows, inpShow, shiftEvHard, seatIntime, scSeatHit, avSeatHit } from './events'
 import { whoArr, rowRef, XKEY } from './slots'
@@ -141,7 +141,7 @@ export function slotRules(key:any){
   /* an append target and an overflow body both sit on the row they hang off,
      so they carry its hours — strip both before looking the row up */
   const k=String(key).replace(/\.\+$/,'').replace(XKEY,'');
-  const out:any={seat:null,sim:false,simKind:null,sc:null,scStart:null,scEnd:null,scSpare:false,aar:null,di:-1,slotStart:null,slotEnd:null,sansStart:null,avJet:false,avDuty:false,avMain:false,avKind:null,scDesk:false,infoRow:false,saExempt:false};
+  const out:any={seat:null,sim:false,simKind:null,sc:null,scStart:null,scEnd:null,scSpare:false,aar:null,di:-1,slotStart:null,slotEnd:null,sansStart:null,avJet:false,avDuty:false,avKind:null,scDesk:false,infoRow:false,saExempt:false};
   out.di=keyDay(k);
   /* THE SLOT'S OWN HOURS (10 Aug 26, for the AM/PM half-days). Only an SC
      shift carried a window before, which is the whole reason a personal input
@@ -158,7 +158,7 @@ export function slotRules(key:any){
     /* AVALON's desk (owner, 11 Aug 26): the wave's `sa` marker survives on its
        duty block (waveDutyBlock), so a `d:` key can tell whether its row is an
        AVALON desk without walking back through DAYS.waves at all. */
-    if(kk==='d'){const dwx=((DAYS[+parts[0]]||{}).dutywaves||[])[+parts[1]]; if(dwx&&(dwx.sa==='avalon'||dwx.sa==='bb'))out.avDuty=true;   // BB's desk is AVALON's twin (7 Sep 26)
+    if(kk==='d'){const dwx=((DAYS[+parts[0]]||{}).dutywaves||[])[+parts[1]]; if(dwx&&saExemptKind(dwx.sa))out.avDuty=true;   // AVALON's desk, or BB's — its twin (7 Sep 26)
       /* an SC desk (7 Sep 26): checked like any duty row, AND one of the SC
          seats for the spare's same-hours rule — slotBar asks scSeatHit off this */
       if(dwx&&dwx.sa==='sc')out.scDesk=true;}
@@ -229,7 +229,7 @@ export function slotRules(key:any){
           /* every jet seat asks for SC currency by the shift's kind (7 Sep 26,
              SPARE included the same day) — the same scShiftKind the validator
              reads, so night is night here too; the desk never asks */
-          out.avMain=true; out.avKind=scShiftKind(st,en);}
+          out.avKind=scShiftKind(st,en);}
         out.slotStart=sh?st:st-VCONF.step; out.slotEnd=sh?en:en+VCONF.dekit;
         /* SANS judges a flying seat from the crew's IN-TIME (owner, 26 Aug
            26 — "SANS should consider IN TIME till land plus 30 minutes for
@@ -315,24 +315,29 @@ export function slotBar(id:any,key:any,rules?:any,fromKey?:any){
      open to any pilot (owner, 14 Aug 26), matching the engine's Q (sims) */
   if(r.seat==='w'&&!r.sim&&p.seat==='FCP'&&!isInstrPilot(p.q))return 'pilot, not an instructor — only IP / IR / FI may fly rear seat';
   if(r.sc&&!scQualOK(id,r.sc))return `not ${r.sc==='day'?'SC DAY':'SC NIGHT'} current`;
-  /* AVALON MAIN wants SC NIGHT (owner, 7 Sep 26) — the validator's SC_QUAL on
-     that seat, refused here first so the two never disagree */
-  if(r.avMain&&r.avKind&&!scQualOK(id,r.avKind))return `not ${r.avKind==='day'?'SC DAY':'SC NIGHT'} current`;
+  /* every AVALON / BB jet seat wants SC currency for its hours (owner, 7 Sep
+     26 — MAIN, then "AVALON SPARE also requires SC NIGHT") — the validator's
+     SC_QUAL on that seat, refused here first so the two never disagree */
+  if(r.avJet&&r.avKind&&!scQualOK(id,r.avKind))return `not ${r.avKind==='day'?'SC DAY':'SC NIGHT'} current`;
   /* TWO SC SEATS IN THE SAME HOURS bar the plant (owner, 31 Aug 26) — the
      same scSeatHit body the validator reads, so what bars here and what
      reds after a drag-drop can never disagree. Spares are absent from EVD,
      which is why the inside-this-shift scan below cannot answer this; runs
      for MAIN and SPARE slots alike. Abutting shifts pass (overlap is
      half-open) — a man on SC AM is still offered normally for SC PM. */
+  /* every walk below excludes the seat being planned into AND, on a drag, the
+     seat the man is leaving (fromKey) — the hover describes the week AFTER the
+     move, as crossDayIfPlaced already does (reviewer, 7 Sep 26) */
+  const selfKeys=[selfKey(key),fromKey!=null?selfKey(fromKey):null];
   if(r.sc&&r.scStart!=null&&r.scEnd!=null&&r.di>=0){
-    const hit=scSeatHit(r.di,id,r.scStart,r.scEnd,String(key).replace(/\.\+$/,''));
+    const hit=scSeatHit(r.di,id,r.scStart,r.scEnd,selfKeys);
     if(hit)return `already on ${hit.what} ${hm24(hit.s)}–${hm24(hit.e)}`;
   }
   /* …AND THE SC DESK asks the same question of the SC seats (7 Sep 26): a
      man standing SC SPARE is no event, so only this walk can refuse him the
      desk; a MAIN is an event and the busy scan below would say so anyway. */
   if(r.scDesk&&r.slotStart!=null&&r.slotEnd!=null&&r.di>=0){
-    const hit=scSeatHit(r.di,id,r.slotStart,r.slotEnd,selfKey(key));
+    const hit=scSeatHit(r.di,id,r.slotStart,r.slotEnd,selfKeys);
     if(hit)return `already on ${hit.what} ${hm24(hit.s)}–${hm24(hit.e)}`;
   }
   /* ONE MAN IN TWO AVALON PLACES (owner, 7 Sep 26) — a seat or the desk asks
@@ -340,7 +345,7 @@ export function slotBar(id:any,key:any,rules?:any,fromKey?:any){
      Nothing on AVALON is an event (noconf), so the busy scan below is blind
      to it — and spare-like seats skip that scan anyway. */
   if((r.avJet||r.avDuty)&&r.slotStart!=null&&r.slotEnd!=null&&r.di>=0){
-    const hit=avSeatHit(r.di,id,r.slotStart,r.slotEnd,selfKey(key),!!r.avDuty);   // a desk asks about seats only
+    const hit=avSeatHit(r.di,id,r.slotStart,r.slotEnd,selfKeys,!!r.avDuty);   // a desk asks about seats only
     if(hit)return `already on ${hit.what} ${hm24(hit.s)}–${hm24(hit.e)}`;
   }
   /* SC is treated as flying for crew rest: 12h clear of yesterday or he cannot

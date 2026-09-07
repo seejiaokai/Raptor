@@ -23,6 +23,12 @@ export const SAWAVE:any={
           note:'Two MAIN and two SPARE, times are yours to set. The same checks as AVALON: availability — overseas or medically down; every seat for SC currency by the hours you type; the front seat is pilots-only; and nobody holds a seat and another seat or the desk in the same hours — nothing else.'}
 };
 export function isStandalone(w:any){return !!(w&&w.standalone);}
+/* is this standby KIND exempt whole — its seats and its desk outside the
+   conflict engine? ONE source (SAWAVE[kind].all) for every reader: the mint
+   (dutytpl.ts blockFromTpl), the collector and the same-hours walk
+   (events.ts), the crew picker (avail.ts) and OIL (oil.ts) — so a third such
+   kind is exempt everywhere or nowhere, never half (reviewer, 7 Sep 26). */
+export function saExemptKind(k:any){return !!(k&&SAWAVE[k]&&SAWAVE[k].all);}
 /* a line the conflict engine must leave alone */
 export function saExempt(w:any,f:any,a:any){
   if(!w||!w.standalone)return false;

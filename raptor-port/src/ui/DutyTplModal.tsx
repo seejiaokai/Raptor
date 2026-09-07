@@ -12,6 +12,12 @@ import {
 } from '../engine/dutytpl'
 import type { DutyWave } from '../engine/dutytpl'
 
+import { hmOK } from '../engine/time'
+import { TPLEDIT, setTplEdit } from './pops'
+import { useVersion } from './useStore'
+import { HOOKS } from '../engine/hooks'
+import { SESSION } from '../state/auth'
+
 /* what each "For wave" answer DOES, in the app's own words — instruction, not
    apology (owner, 25 Aug 26). Kept beside the control so a change to the rule
    (engine-rules.md §AVALON, §the SC desk) is seen here too. */
@@ -21,11 +27,6 @@ const WAVE_NOTE: Record<DutyWave, string> = {
   avalon: 'The AVALON desk — checked only for overseas or medically down (ATT B may still man it), and earns no OIL on a weekend or holiday.',
   bb: 'The BB desk — the same rules as the AVALON desk: checked only for overseas or medically down (ATT B may still man it), and earns no OIL on a weekend or holiday.',
 }
-import { hmOK } from '../engine/time'
-import { TPLEDIT, setTplEdit } from './pops'
-import { useVersion } from './useStore'
-import { HOOKS } from '../engine/hooks'
-import { SESSION } from '../state/auth'
 
 export function DutyTplModal() {
   useVersion()

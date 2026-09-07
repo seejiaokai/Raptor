@@ -24,6 +24,7 @@ import { validate } from './validate'
 import { makeStandalone } from './waves'
 import { avSeatHit, scSeatHit } from './events'
 import { blockFromTpl, dutyTplReset, addTpl, setTplWave, setTplRow, DUTY_WAVES } from './dutytpl'
+import { addDayTpl, applyDayTpl, DAYTPL_CFG, dayTplReset } from './daytpl'
 import { slotBar } from './avail'
 import { dayOilCredits } from './oil'
 import { SCHED } from './publish'
@@ -401,5 +402,51 @@ describe('BB carries exactly the AVALON rules', () => {
     const before = JSON.stringify(dayOilCredits(DAYS[TUE]))
     B().aircraft[0].p = 'split'; bdesk.rows[0].id = 'ignite'
     expect(JSON.stringify(dayOilCredits(DAYS[TUE]))).toBe(before)
+  })
+})
+
+/* THE PRE-DROP HOVER READS THE WEEK AFTER THE MOVE (5 Sep 26's fromKey): a man
+   dragged from one AVALON place to another must not be told he is "already on"
+   the seat he is leaving — the drop then raises nothing, and the hover and the
+   warning list may never disagree. Found by the 7 Sep 26 reviewer pass. */
+describe('a seat-to-seat drag inside AVALON reads the week after the move', () => {
+  it('MAIN → SPARE: the hover is clear when the MAIN seat is the one being vacated', () => {
+    F().aircraft[0].p = 'split'
+    expect(slotBar('split', SEAT(2, 'p'))).toMatch(/already on AVALON NIGHT MAIN/)        // a plain plant: he IS on MAIN
+    expect(slotBar('split', SEAT(2, 'p'), undefined, SEAT(0, 'p'))).toBe('')            // the drag from MAIN: clear
+  })
+  it('MAIN → the AVALON desk, and the desk → a seat, read the same way', () => {
+    F().aircraft[0].p = 'split'
+    expect(slotBar('split', DESK(0), undefined, SEAT(0, 'p'))).toBe('')
+    F().aircraft[0].p = ''
+    desk.rows[0].id = 'split'
+    expect(slotBar('split', SEAT(2, 'w'), undefined, DESK(0))).toBe('')
+  })
+  it('an SC SPARE dragged onto the SC desk in the same hours reads clear too', () => {
+    const d: any = DAYS[TUE]
+    const sc = makeStandalone('sc'); d.waves.push(sc); const sgi = d.waves.length - 1
+    const sdesk = blockFromTpl('sc'); d.dutywaves.push(sdesk); const sdwi = d.dutywaves.length - 1
+    sc.formations[0].aircraft[2].p = 'split'
+    expect(slotBar('split', `d:${TUE}.${sdwi}.0`)).toMatch(/already on/)
+    expect(slotBar('split', `d:${TUE}.${sdwi}.0`, undefined, `${TUE}.${sgi}.0.2.p`)).toBe('')
+  })
+})
+
+/* THE MARKER SURVIVES EVERY COPY OF THE DAY. A day template deep-copies the
+   duty blocks and blanks the people, so an AVALON desk saved into one and
+   applied elsewhere is still AVALON's (checked in the 7 Sep 26 reviewer
+   walk; pinned so a future allowlist in daytpl.ts cannot quietly drop it). */
+describe('an AVALON desk keeps its marker through a day template', () => {
+  it('saved from one day and applied to another, it is still exempt', () => {
+    dayTplReset()
+    desk.rows[0].id = 'split'
+    const t: any = addDayTpl(TUE, 'AV day')
+    const blob = (DAYTPL_CFG.find((x: any) => x.id === t.id) as any).d
+    const saved = blob.dutywaves[blob.dutywaves.length - 1]
+    expect(saved.sa).toBe('avalon'); expect(saved.noconf).toBe(true); expect(saved.rows[0].id).toBe('')
+    applyDayTpl(2, t.id)
+    const applied: any = DAYS[2].dutywaves[DAYS[2].dutywaves.length - 1]
+    expect(applied.sa).toBe('avalon'); expect(applied.noconf).toBe(true)
+    dayTplReset()
   })
 })

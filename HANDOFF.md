@@ -171,11 +171,10 @@ jobs green (build + reference suite, unit raptor, unit leavewar ×2, geometry
   `scSeatHit` now walking `sa:'sc'` desks). Rules `docs/engine-rules.md`
   §AVALON's one check + §AVALON's three seat rules + §the two SC SPARE rules;
   seams `docs/feature-impact.md`; pins `engine/avalon-rules.test.ts` (45),
-  `dutytpl.test.ts`, `DutyTplModal.test.tsx`. **One owner question open**
-  (asked in the session report): whether "AVALON tonight + a sortie tomorrow
-  morning" should ever be a rule (it is not — nothing on AVALON or BB is an
-  event, so neither carries crew rest or counts toward the 6-day run).
-  `BUG-TESTING.md` row #377.
+  `dutytpl.test.ts`, `DutyTplModal.test.tsx`. Owner-settled the same day: an
+  AVALON/BB night followed by a sortie the next morning raises NOTHING (nothing
+  on these waves is an event, so neither carries crew rest or counts toward
+  the 6-day run) — a decision, not a gap. `BUG-TESTING.md` row #377.
 
 - **LEAVE WAR OPENS ON THE WAR BEING BID ON — on the branch, unmerged (7 Sep
   26).** The tab no longer always opens on January of the first war. It now
