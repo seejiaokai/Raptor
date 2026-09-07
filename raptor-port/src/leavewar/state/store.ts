@@ -30,6 +30,7 @@ import {
   COUNTERS,
   DEFAULT_FIGURE_ORDER,
   orderedFigures,
+  type Figure,
   makeWar,
   overlapping,
   seedLedger,
@@ -88,6 +89,7 @@ import {
   type Stage,
   type States,
 } from '../engine'
+import { counterLabel } from '../engine/counters'
 import { localBackend, memoryBackend, type StorageBackend } from './storage'
 
 interface State {
@@ -185,6 +187,12 @@ interface State {
    *  a hidden row at all; an admin sees it dimmed in Rearrange mode, so it can
    *  be brought back. ADMIN-gated at the write path. */
   manningHidden: string[]
+  /** The figures an admin has hidden from the column's cycle and the drawer
+   *  (owner, 6 Sep 26 — "admin should also be able to customise"). Persisted
+   *  under `fighidden`, ADMIN-gated at the write path like `figureOrder`; read
+   *  leniently (unknown ids are ignored by `visibleFigures`). At least one
+   *  figure always stays visible — the column cannot show nothing. */
+  figureHidden: string[]
   /** WHICH GROUPS the roster is drawn in, top to bottom (owner, 28 Aug 26 —
    *  the admin group editor). The seven built-ins by default; an admin may add
    *  a group per QUALIFICATION and drag the order. ADMIN-gated, same rule as
@@ -290,6 +298,7 @@ function blank(): State {
     persLabels: {},
     manningOrder: [],
     manningHidden: [],
+    figureHidden: [],
     groupDefs: [...DEFAULT_GROUPS],
     groupPriority: [],
     groupPriorityCustom: false,
@@ -420,7 +429,9 @@ function readLedger(x: unknown): Ledger | null {
     if (typeof amount !== 'number' || !Number.isFinite(amount)) return null
     if (typeof date !== 'string') return null
     // A grant with no reason and no approver is the untraceable free text
-    // the ledger exists to replace, so it is not a grant.
+    // the ledger exists to replace, so it is not a grant. (A blank reason
+    // is a plain-pool credit from the grid since 6 Sep 26 — `reasonRequired`
+    // gates that at the write path, not here, so this reader is unchanged.)
     if (typeof reason !== 'string' || typeof approvedBy !== 'string') return null
     const entry: LedgerEntry = { id, personId, counter: counter as CounterName, amount, date, reason, approvedBy }
     // `givenBy` is optional decoration (2 Sep 26); a bad one is dropped.
@@ -793,6 +804,7 @@ export function initStore(b?: StorageBackend): void {
   const persLabels = readStored('perslabels', readLabelMap) ?? {}
   const manningOrder = readStored('manningorder', readIdList) ?? []
   const manningHidden = readStored('manninghidden', readIdList) ?? []
+  const figureHidden = readStored('fighidden', readIdList) ?? []
   /* Untrusted storage: keep only structurally sound entries. NOT pruned against
      the catalogue here (bug hunt, 4 Sep 26): at boot the catalogue is still the
      seed's three keys, so pruning now threw away every saved TF / NVG / custom
@@ -826,7 +838,7 @@ export function initStore(b?: StorageBackend): void {
      boot, so a stored copy could only ever disagree with the roster Raptor
      is actually flying. Boot leaves the seed — the vendored unit suite reads
      it pristine — and the projection that follows replaces it. */
-  state = withCurrent({ ...state, wars, currentId, openings, ledger, oilPolicy, eventDefs, figureOrder, rosterOrder, persLabels, manningOrder, manningHidden, groupDefs, groupPriority, groupPriorityCustom, groupColors: colorsFor(groupDefs, groupColors), requirements, eventRows, showSans })
+  state = withCurrent({ ...state, wars, currentId, openings, ledger, oilPolicy, eventDefs, figureOrder, rosterOrder, persLabels, manningOrder, manningHidden, figureHidden, groupDefs, groupPriority, groupPriorityCustom, groupColors: colorsFor(groupDefs, groupColors), requirements, eventRows, showSans })
 
   version = 0
   listeners.clear()
@@ -895,6 +907,7 @@ function persist(): void {
   backend.write('perslabels', JSON.stringify(state.persLabels))
   backend.write('manningorder', JSON.stringify(state.manningOrder))
   backend.write('manninghidden', JSON.stringify(state.manningHidden))
+  backend.write('fighidden', JSON.stringify(state.figureHidden))
   backend.write('groupdefs', JSON.stringify(state.groupDefs))
   backend.write('grouppriority', JSON.stringify(state.groupPriority))
   backend.write('grouppriocustom', JSON.stringify(state.groupPriorityCustom))
@@ -965,7 +978,7 @@ function historySnap(): string {
   return JSON.stringify({
     wars: s.wars, openings: s.openings, ledger: s.ledger, oilPolicy: s.oilPolicy, eventDefs: s.eventDefs,
     figureOrder: s.figureOrder, rosterOrder: s.rosterOrder, persLabels: s.persLabels,
-    manningOrder: s.manningOrder, manningHidden: s.manningHidden,
+    manningOrder: s.manningOrder, manningHidden: s.manningHidden, figureHidden: s.figureHidden,
     groupDefs: s.groupDefs, groupPriority: s.groupPriority, groupPriorityCustom: s.groupPriorityCustom,
     requirements: s.requirements, eventRows: s.eventRows, showSans: s.showSans,
   })
@@ -1021,7 +1034,7 @@ function historyApply(i: number): void {
   if (i < 0 || i >= HIST.stack.length) return
   const snap = JSON.parse(HIST.stack[i]) as Pick<State,
     'wars' | 'openings' | 'ledger' | 'oilPolicy' | 'eventDefs' | 'figureOrder' | 'rosterOrder'
-    | 'persLabels' | 'manningOrder' | 'manningHidden' | 'groupDefs'
+    | 'persLabels' | 'manningOrder' | 'manningHidden' | 'figureHidden' | 'groupDefs'
     | 'groupPriority' | 'groupPriorityCustom' | 'requirements' | 'eventRows' | 'showSans'>
   HIST.ix = i
   historyEpoch++   // signal the matrix to drop any in-flight gesture (see above)
@@ -2130,15 +2143,29 @@ export function setOilPolicy(patch: Partial<OilPolicy>): boolean {
   return true
 }
 
+/** Days come in HALVES — a half day (HO) is the smallest thing the grid ever
+ *  charges, so a credit of 0.3 could never be drawn against. One rule for every
+ *  pool, the tracker's included (owner, 6 Sep 26). */
+const isHalfStep = (n: number) => Math.abs(n * 2 - Math.round(n * 2)) < 1e-9
+export const HALF_STEP_MSG = 'Days come in halves — 1, 1.5, 2 …'
+
+/** Which pools NEED a reason on a credit. OIL keeps the tracker's rule — a
+ *  credit with no reason is the untraceable free text the ledger replaced;
+ *  the other pools take a bare number from the grid (owner, 6 Sep 26 —
+ *  "reason only for OIL"). ONE predicate: the writer, the edit path and the
+ *  credit form all read it. */
+export const reasonRequired = (counter: CounterName): boolean => counter === 'oil'
+
 /** The sentence that stops a bad ledger write, or null. Stricter than the
  *  boot reader (which tolerates any string date and a zero amount, so an
  *  older stored ledger still loads): a NEW entry with no date or nothing in
  *  it is a mistake worth telling the admin about. */
-function ledgerProblem(amount: number, date: string, reason: string, givenBy = ''): string | null {
+function ledgerProblem(counter: CounterName, amount: number, date: string, reason: string, givenBy = ''): string | null {
   if (!Number.isFinite(amount) || amount === 0) return 'The amount must be a number other than 0'
+  if (!isHalfStep(amount)) return HALF_STEP_MSG
   if (!ISO_DAY.test(date)) return 'Pick a date'
   const clean = reason.trim()
-  if (!clean) return 'Give a reason'
+  if (!clean && reasonRequired(counter)) return 'Give a reason'
   if (clean.length > MAX_REASON) return `A reason is at most ${MAX_REASON} characters`
   if (givenBy.trim().length > MAX_GIVEN_BY) return `Given by is at most ${MAX_GIVEN_BY} characters`
   return null
@@ -2162,23 +2189,24 @@ function approverName(): string {
 }
 
 /**
- * Credit OIL to one or many people at once — the tracker's "credit N
- * people" (owner: "drag and select all WSOs to put OIL, date and reason").
- * A NEGATIVE amount is a correction, not a second mechanism (§Counters).
- * Returns the error sentence for the sheet, or null on success. One state
- * write for the whole batch → one persist, one undo step.
+ * Credit a pool to one or many people at once — the tracker's "credit N
+ * people" (owner: "drag and select all WSOs to put OIL, date and reason"),
+ * and since 6 Sep 26 the figures bar's "+2 for everyone I dragged" on ANY
+ * balance. A NEGATIVE amount is a correction, not a second mechanism
+ * (§Counters). Returns the error sentence for the form, or null on success.
+ * One state write for the whole batch → one persist, one undo step.
  */
-export function grantOil(personIds: string[], amount: number, date: string, reason: string, givenBy = ''): string | null {
-  if (state.role !== 'admin') return 'Only an admin can credit OIL'
+export function grantTo(personIds: string[], counter: CounterName, amount: number, date: string, reason: string, givenBy = ''): string | null {
+  if (state.role !== 'admin') return `Only an admin can credit ${counterLabel(counter)}`
   const ids = [...new Set(personIds)].filter(id => state.people.some(p => p.id === id))
   if (!ids.length) return 'Pick at least one person'
-  const problem = ledgerProblem(amount, date, reason, givenBy)
+  const problem = ledgerProblem(counter, amount, date, reason, givenBy)
   if (problem) return problem
   const approvedBy = approverName()
   const by = givenBy.trim()
   let n = ledgerSeq()
   const entries: Ledger = ids.map(personId => ({
-    id: `ol-${++n}`, personId, counter: 'oil' as const, amount, date, reason: reason.trim(), approvedBy,
+    id: `ol-${++n}`, personId, counter, amount, date, reason: reason.trim(), approvedBy,
     ...(by ? { givenBy: by } : {}),
   }))
   state = withCurrent({ ...state, ledger: [...state.ledger, ...entries] })
@@ -2187,17 +2215,29 @@ export function grantOil(personIds: string[], amount: number, date: string, reas
   return null
 }
 
+/** The OIL case of `grantTo` — kept so the tracker and its tests read as they
+ *  always did. */
+export function grantOil(personIds: string[], amount: number, date: string, reason: string, givenBy = ''): string | null {
+  return grantTo(personIds, 'oil', amount, date, reason, givenBy)
+}
+
 /** Edit a grant in place — amount, date or reason. The approver stays who it
  *  was; the edit is visible in undo, which is the audit trail here. */
 export function updateLedgerEntry(id: string, patch: { amount?: number; date?: string; reason?: string; givenBy?: string }): string | null {
-  if (state.role !== 'admin') return 'Only an admin can edit OIL'
+  // The ENTRY first, then the role — so the refusal can name the pool it is
+  // about (review, 6 Sep 26). This said "Only an admin can edit OIL" whatever
+  // the entry was, from the day the ledger stopped being OIL's alone; a member
+  // editing a CCL credit was told about a pool they had not touched. An id that
+  // names nothing still answers "That entry is gone" first, which is true for a
+  // member and an admin alike and gives away nothing either way.
   const cur = state.ledger.find(e => e.id === id)
   if (!cur) return 'That entry is gone'
+  if (state.role !== 'admin') return `Only an admin can edit ${counterLabel(cur.counter)}`
   const amount = patch.amount ?? cur.amount
   const date = patch.date ?? cur.date
   const reason = patch.reason ?? cur.reason
   const givenBy = (patch.givenBy ?? cur.givenBy ?? '').trim()
-  const problem = ledgerProblem(amount, date, reason, givenBy)
+  const problem = ledgerProblem(cur.counter, amount, date, reason, givenBy)
   if (problem) return problem
   state = withCurrent({
     ...state,
@@ -2247,14 +2287,18 @@ export function setBalance(personId: string, counter: CounterName, target: numbe
   return true
 }
 
-/* THE COUNTER-COLUMN FIGURE ORDER writers. ADMIN-GATED (owner, 17 Aug 26:
-   "normal user should not have authority to change the leave war column
-   arrangement") — the enforcement is in each writer below, mirroring the
-   event-type library. (The counter SELECTION — which figure the column shows —
-   stays ungated view state; only the ORDER is management's.) Persisted under
-   `figorder`. The order is normalised through `orderedFigures` on every move,
-   so a stored blob missing a new figure (or naming a dead one) is healed the
-   first time it is touched rather than carried forward malformed. */
+/* THE COUNTER-COLUMN FIGURE ORDER AND VISIBILITY writers. ADMIN-GATED (owner,
+   17 Aug 26: "normal user should not have authority to change the leave war
+   column arrangement"; extended 6 Sep 26 — "admin should also be able to
+   customise" which figures show at all) — the enforcement is in each writer
+   below, mirroring the event-type library. (The counter SELECTION — which
+   figure the column shows right now — stays ungated view state; only the
+   ORDER and the HIDDEN set are management's.) Persisted under `figorder` and
+   `fighidden`. The order is normalised through `orderedFigures` on every
+   move, so a stored blob missing a new figure (or naming a dead one) is
+   healed the first time it is touched rather than carried forward malformed;
+   `visibleFigures` applies the hidden set on top of that healed order, so a
+   hidden id that no longer exists just never appears in it. */
 
 /** Move a figure one place up (`-1`) or down (`+1`) the column's order.
  *  Clamped at the ends and a no-op for an unknown id — returns whether it
@@ -2278,13 +2322,47 @@ export function moveFigure(id: string, dir: -1 | 1): boolean {
   return true
 }
 
-/** Put the column's figures back in their catalogue order. */
+/** Put the column's figures back in their catalogue order, and unhide every
+ *  one — a reset is the admin's way back to the factory arrangement, and a
+ *  figure they hid and forgot about should not survive it. */
 export function resetFigureOrder(): void {
   // Same gate as moveFigure — a reset rewrites the arrangement too.
   if (state.role !== 'admin') return
-  state = withCurrent({ ...state, figureOrder: [...DEFAULT_FIGURE_ORDER] })
+  state = withCurrent({ ...state, figureOrder: [...DEFAULT_FIGURE_ORDER], figureHidden: [] })
   persist()
   notify()
+}
+
+/** The figures the column cycles and the drawer shows: the admin's order,
+ *  less the hidden ones. Every surface that lists figures reads this, so a
+ *  hidden figure disappears from all of them at once. */
+export function visibleFigures(): Figure[] {
+  const hidden = new Set(state.figureHidden)
+  const shown = orderedFigures(state.figureOrder).filter(f => !hidden.has(f.id))
+  // A stale hidden list naming every figure would leave nothing to show —
+  // fall back to the whole order rather than an empty column.
+  return shown.length ? shown : orderedFigures(state.figureOrder)
+}
+
+/** Hide or show one figure. ADMIN-gated, and the last visible figure cannot
+ *  be hidden — returns whether anything changed. */
+export function toggleFigure(id: string): boolean {
+  if (state.role !== 'admin') return false
+  // Mirrors moveFigure's unknown-id no-op: an id that names no real figure
+  // (a typo, a stale saved order) must not be recorded as hidden forever —
+  // `orderedFigures` is the same "does this name a real figure" check the
+  // rest of this block already leans on.
+  if (!orderedFigures(state.figureOrder).some(f => f.id === id)) return false
+  const hidden = new Set(state.figureHidden)
+  if (hidden.has(id)) hidden.delete(id)
+  else {
+    if (visibleFigures().length <= 1) return false
+    hidden.add(id)
+  }
+  state = withCurrent({ ...state, figureHidden: [...hidden] })
+  persist()
+  notify()
+  return true
 }
 
 /* THE MANNING COUNT ROWS' order and visibility (owner, 18 Aug 26: "allow me to

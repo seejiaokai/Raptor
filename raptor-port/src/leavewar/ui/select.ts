@@ -114,6 +114,11 @@ export interface SelectCtx {
   // false ⇒ event cells are not selectable (a member, or the rows are gone).
   eventsEnabled?: () => boolean
   onEventSelect?: (sel: EventSelection) => void
+  /** Client-x where the day columns begin — past the frozen name/counter pair,
+   *  or past the figures drawer while it is open. The drag's LEFT auto-scroll
+   *  band starts there rather than at the wrap's own edge, which is buried
+   *  under them (owner, 6 Sep 26). Absent = the wrap's left edge. */
+  leftEdge?: () => number
 }
 /* elementFromPoint works in client coords regardless of the table's CSS
    `zoom`, so the hit-test needs no un-scaling. */
@@ -131,11 +136,12 @@ type Hit = { kind: 'roster'; cell: Cell } | { kind: 'event'; cell: EventCell }
    slow-drag-arms rule, pointer capture, the non-passive touchmove scroll lock,
    the context-menu swallow, edge auto-scroll and the one-shot click swallow on
    release — lives here once, parameterised by WHAT is being selected. The grid
-   (`wireSelect`: people × days cells, or a date span on an event line) and the
+   (`wireSelect`: people × days cells, or a date span on an event line), the
    OIL tracker (`wireRowSelect`: a run of people rows — owner, 2 Sep 26, "use
-   the same mechanics as the leave war grid") are two callers of the same
-   machine, so the phone learns one rhythm for both. */
-interface GestureSpec<A, P> {
+   the same mechanics as the leave war grid") and the figure columns
+   (`wireFigureSelect`: a run of people down one figure, 6 Sep 26) are three
+   callers of the same machine, so the phone learns one rhythm for all of them. */
+interface GestureBase<A, P> {
   enabled: () => boolean
   /** The thing under the pointer on pointerdown, or null when the press is
    *  not on something selectable (an ordinary click, then). */
@@ -145,10 +151,9 @@ interface GestureSpec<A, P> {
    *  "last thing the finger was over" so a gap or an edge-scroll never
    *  collapses the selection. `null` paints nothing. */
   current: (anchor: A, x: number, y: number) => { ids: string[]; payload: P } | null
-  /** The node an id paints on, inside `wrap`. */
-  node: (id: string) => Element | null
-  /** The class a painted node wears. */
-  cls: string
+  /** Fires the moment the drag ARMS (a finger's hold landed, a mouse crossed
+   *  the slop): a caller's chance to tell a sibling gesture to stand down. */
+  onArm?: () => void
   onSelect: (payload: P) => void
   /** Called on every teardown so the caller can drop its held focus. */
   reset?: () => void
@@ -156,7 +161,47 @@ interface GestureSpec<A, P> {
    *  nearest scrolling ancestor (its wrap has no height cap); a modal whose
    *  wrap scrolls both ways passes itself. */
   vscroll?: (wrap: HTMLElement) => VScroll
+  /** Client-x where the CONTENT begins, past whatever frozen thing stands in
+   *  front of the wrap's own left edge — the frozen name/counter columns, or
+   *  the figures drawer while it is open. The left edge band starts there, so
+   *  a finger approaching the visible days' left edge auto-scrolls (owner,
+   *  6 Sep 26 — "let me auto scroll left when my drag is approaching the edge
+   *  of the expanded counters … likewise the counter on the left"). Absent =
+   *  the wrap's own left edge: every existing caller and test is untouched. */
+  leftEdge?: () => number
+  /** How GENTLE this caller's edge auto-scroll is. `rate` multiplies the
+   *  per-frame step; `dwellMs` is how long the pointer must sit inside a band
+   *  before that band scrolls at all, timed from the frame it ENTERED the band
+   *  and started again whenever it leaves and comes back. Defaults `1` and `0`
+   *  — absent, every existing caller is byte-identical.
+   *    Only the FIGURE select asks for it (6 Sep 26 bug hunt). Painting a
+   *  rectangle of days wants the grid's own quick run to the next month; a
+   *  figure drag is a run of PEOPLE a number is about to be written to, so a
+   *  finger that merely finishes near the foot of the screen must not keep
+   *  collecting names. Measured on the built bundle before this: a three-row
+   *  drag ending in the bottom band ran the page 259px in ~0.7s and lit
+   *  FOURTEEN people.
+   *    The dwell is deliberately longer than a drag's own moves take, so it is
+   *  a RESTING finger the scroll waits for, not merely one that has crossed the
+   *  band on its way down — see `wireFigureSelect` for the measured numbers. */
+  edge?: { rate?: number; dwellMs?: number }
 }
+/* WHICH NODE, and HOW it is marked — both are either/or, and the type says so
+   rather than leaving a caller to pass a `cls` it does not use (6 Sep 26
+   review). `node` is the thing drawn once; `nodes` is a thing drawn in more
+   than one place at once (a figure box has a real cell, the band's copy and a
+   drawer box, and every copy must light). `cls` toggles a class; `mark`
+   replaces it where the node's className is React's to rewrite on every render
+   (FigureCell rebuilds `wide`/`flash` on every store change) — an attribute
+   React never rendered survives that rewrite, a class painted from outside
+   does not. */
+type GesturePaint =
+  | { node: (id: string) => Element | null; nodes?: never }
+  | { nodes: (id: string) => Element[]; node?: never }
+type GestureMark =
+  | { cls: string; mark?: never }
+  | { mark: (el: Element, on: boolean) => void; cls?: never }
+type GestureSpec<A, P> = GestureBase<A, P> & GesturePaint & GestureMark
 
 function wireGesture<A, P>(wrap: HTMLElement, spec: GestureSpec<A, P>): () => void {
   let anchor: A | null = null
@@ -173,15 +218,27 @@ function wireGesture<A, P>(wrap: HTMLElement, spec: GestureSpec<A, P>): () => vo
   let touchGesture = false   // this drag started from a finger, not a mouse
   let vscroll: VScroll | null = null  // the vertical scroller, resolved in arm()
   let held = 0               // edge bands the PRESS sat inside (bitmask, see bandsAt)
+  // The DWELL clock, one entry per band the pointer is currently inside, holding
+  // the moment it entered. A band that is left is deleted, so coming back starts
+  // the wait again — the pointer must SIT in a band, not brush through it. Only
+  // filled when a caller asked for a dwell (spec.edge.dwellMs); the day grid
+  // never touches it. See edgeScroll.
+  const enteredAt = new Map<number, number>()
 
+  const nodesOf = (id: string): Element[] => {
+    if (spec.nodes) return spec.nodes(id)
+    const n = spec.node?.(id)
+    return n ? [n] : []
+  }
+  const markEl = (el: Element, on: boolean) => { if (spec.mark) spec.mark(el, on); else el.classList.toggle(spec.cls!, on) }
   const clearPaint = () => {
-    for (const id of painted) spec.node(id)?.classList.remove(spec.cls)
+    for (const id of painted) for (const el of nodesOf(id)) markEl(el, false)
     painted = new Set()
   }
   const paintIds = (ids: string[]) => {
     const want = new Set(ids)
-    for (const id of painted) if (!want.has(id)) spec.node(id)?.classList.remove(spec.cls)
-    for (const id of want) if (!painted.has(id)) spec.node(id)?.classList.add(spec.cls)
+    for (const id of painted) if (!want.has(id)) for (const el of nodesOf(id)) markEl(el, false)
+    for (const id of want) if (!painted.has(id)) for (const el of nodesOf(id)) markEl(el, true)
     painted = want
   }
 
@@ -224,7 +281,13 @@ function wireGesture<A, P>(wrap: HTMLElement, spec: GestureSpec<A, P>): () => vo
     const vTop = vs.isDoc ? 0 : vs.el.getBoundingClientRect().top
     const vBot = vs.isDoc ? (window.innerHeight || vs.el.clientHeight) : vs.el.getBoundingClientRect().bottom
     const w = touchGesture ? TOUCH_EDGE : EDGE
-    return (x < r.left + w ? BL : 0) | (x > r.right - w ? BR : 0) | (y < vTop + w ? BT : 0) | (y > vBot - w ? BB : 0)
+    // The LEFT band starts where the CONTENT does, not where the box does: on
+    // this grid the frozen columns (or the open figures drawer) stand in front
+    // of the wrap's own left edge, so a band measured from `r.left` sat behind
+    // them and no finger could ever reach it. The RIGHT band keeps `r.right` —
+    // nothing is parked over that side.
+    const left = spec.leftEdge ? spec.leftEdge() : r.left
+    return (x < left + w ? BL : 0) | (x > r.right - w ? BR : 0) | (y < vTop + w ? BT : 0) | (y > vBot - w ? BB : 0)
   }
   // A band the press STARTED inside must be LEFT before it scrolls. Without
   // this a row at the bottom of the screen could not be drag-selected
@@ -245,18 +308,43 @@ function wireGesture<A, P>(wrap: HTMLElement, spec: GestureSpec<A, P>): () => vo
     const vs = vscroll ?? (vscroll = (spec.vscroll ?? findVScroll)(wrap))
     const vTop = vs.isDoc ? 0 : vs.el.getBoundingClientRect().top
     const vBot = vs.isDoc ? (window.innerHeight || vs.el.clientHeight) : vs.el.getBoundingClientRect().bottom
+    // The left band's origin — see `bandsAt`: the content's own left edge, past
+    // the frozen columns or the open drawer standing in front of the wrap's.
+    const left = spec.leftEdge ? spec.leftEdge() : r.left
     if (touchGesture) {
-      const intoR = lastX - (r.right - TOUCH_EDGE), intoL = (r.left + TOUCH_EDGE) - lastX
+      const intoR = lastX - (r.right - TOUCH_EDGE), intoL = (left + TOUCH_EDGE) - lastX
       if (intoR > 0) dx = ramp(intoR); else if (intoL > 0) dx = -ramp(intoL)
       const intoB = lastY - (vBot - TOUCH_EDGE), intoT = (vTop + TOUCH_EDGE) - lastY
       if (intoB > 0) dy = ramp(intoB); else if (intoT > 0) dy = -ramp(intoT)
     } else {
-      if (lastX > r.right - EDGE) dx = EDGE_STEP; else if (lastX < r.left + EDGE) dx = -EDGE_STEP
+      if (lastX > r.right - EDGE) dx = EDGE_STEP; else if (lastX < left + EDGE) dx = -EDGE_STEP
       if (lastY > vBot - EDGE) dy = EDGE_STEP; else if (lastY < vTop + EDGE) dy = -EDGE_STEP
     }
+    // A caller may ask for a GENTLER run than the day grid's (spec.edge): the
+    // step is scaled, and a band must be sat in for `dwellMs` before it moves at
+    // all. Both default to no-ops, so the grid's own feel is untouched.
+    const rate = spec.edge?.rate ?? 1
+    if (rate !== 1) { dx *= rate; dy *= rate }
     noteEdge()
+    // The HELD-band rule first: a band the press sat in is dead until the
+    // pointer has left it, whatever the dwell says.
     if ((dx > 0 && held & BR) || (dx < 0 && held & BL)) dx = 0
     if ((dy > 0 && held & BB) || (dy < 0 && held & BT)) dy = 0
+    const dwellMs = spec.edge?.dwellMs ?? 0
+    if (dwellMs > 0) {
+      // Timed from the frame the pointer ENTERED each band, and reset the moment
+      // it leaves — so a drag that merely ends near the edge pauses there and
+      // stops, while one deliberately parked in the band still runs on.
+      const now = Date.now()
+      const inBands = bandsAt(lastX, lastY)
+      for (const b of [BL, BR, BT, BB]) {
+        if (inBands & b) { if (!enteredAt.has(b)) enteredAt.set(b, now) }
+        else enteredAt.delete(b)
+      }
+      const waiting = (b: number) => now - (enteredAt.get(b) ?? now) < dwellMs
+      if ((dx > 0 && waiting(BR)) || (dx < 0 && waiting(BL))) dx = 0
+      if ((dy > 0 && waiting(BB)) || (dy < 0 && waiting(BT))) dy = 0
+    }
     if (dx) wrap.scrollLeft += dx
     if (dy) vs.el.scrollTop += dy
     if (dx || dy) repaint()
@@ -281,7 +369,14 @@ function wireGesture<A, P>(wrap: HTMLElement, spec: GestureSpec<A, P>): () => vo
     // with 1 input"): `.selecting` makes the wash brighter and the ring thicker
     // than the resting highlight (matrix.css), and Android gets a short haptic.
     // iOS has no web vibrate, so the visual cue carries it there.
+    // ...as a class AND an attribute, and the attribute is the durable one: a
+    // wrap whose className React OWNS (the figure select's `.mx-outer`, rebuilt
+    // from `mx-banded`/`lw-sda`/`mx-arranging`/`mx-figures`) loses the class on
+    // the next render — a phone drag whose edge auto-scroll turned the band on
+    // would go dim mid-drag. The class stays for the day grid's own recipe,
+    // which is keyed on it (6 Sep 26 review).
     wrap.classList.add('selecting')
+    wrap.setAttribute('data-selecting', '1')
     try { (navigator as { vibrate?: (ms: number) => void }).vibrate?.(12) } catch { /* unsupported */ }
     // The bands the PRESS sat in (the press point, not the arming move — a
     // mouse arms a few px on, a finger arms still). See noteEdge.
@@ -293,6 +388,7 @@ function wireGesture<A, P>(wrap: HTMLElement, spec: GestureSpec<A, P>): () => vo
     wrap.addEventListener('touchmove', onTouchMove, { passive: false })
     document.addEventListener('contextmenu', onCtxMenu, true)
     repaint()
+    spec.onArm?.()
     // Edge auto-scroll runs for both a mouse and a finger now (owner, 30 Aug 26):
     // touch ramps its speed by finger depth (see edgeScroll). The rAF is stopped
     // in teardown(), so it can never outlive the armed drag.
@@ -328,18 +424,25 @@ function wireGesture<A, P>(wrap: HTMLElement, spec: GestureSpec<A, P>): () => vo
     repaint()
   }
 
+  // Swallow the click the browser fires on the anchor after this pointer
+  // ends: after a COMMITTED drag (its single-cell onClick would open the
+  // wrong sheet) and, since 6 Sep 26, after a CANCELLED armed one — an iOS
+  // system gesture cutting a hold short fires pointercancel, and the trailing
+  // click then opened a breakdown over a selection the user thought they had.
+  // One-shot AND a 0ms sweep, so a drag that produces no trailing click never
+  // leaves a listener to eat the next real one.
+  const swallowNextClick = () => {
+    const swallow = (ev: Event) => { ev.stopPropagation(); ev.preventDefault() }
+    document.addEventListener('click', swallow, { capture: true, once: true })
+    setTimeout(() => document.removeEventListener('click', swallow, true), 0)
+  }
   const finish = (commit: boolean) => {
+    const wasArmed = armed
     // Read the selection BEFORE teardown nulls the anchor.
     const s = commit && armed && anchor !== null ? current() : null
     teardown()
-    if (s) {
-      // swallow the click the browser fires on the anchor cell after this
-      // pointerup, or its single-cell onClick would open the wrong sheet
-      const swallow = (ev: Event) => { ev.stopPropagation(); ev.preventDefault() }
-      document.addEventListener('click', swallow, { capture: true, once: true })
-      setTimeout(() => document.removeEventListener('click', swallow, true), 0)
-      spec.onSelect(s.payload)
-    }
+    if (wasArmed) swallowNextClick()
+    if (s) spec.onSelect(s.payload)
     clearPaint()
   }
 
@@ -369,12 +472,16 @@ function wireGesture<A, P>(wrap: HTMLElement, spec: GestureSpec<A, P>): () => vo
     wrap.removeEventListener('touchmove', onTouchMove)
     wrap.style.touchAction = ''
     wrap.classList.remove('selecting')
+    wrap.removeAttribute('data-selecting')
     anchor = null; armed = false; pid = -1; vscroll = null; held = 0   // re-resolve next drag
+    enteredAt.clear()
     spec.reset?.()
   }
   const onCancel = (e: PointerEvent) => {
     if (e.pointerId !== pid) return   // a second pointer's cancel is not ours
+    const wasArmed = armed
     teardown(); clearPaint()
+    if (wasArmed) swallowNextClick()
   }
 
   // THE SCROLL LOCK (owner, 27 Aug 26 — "when I hold then drag … I can't
@@ -429,6 +536,7 @@ export function wireSelect(wrap: HTMLElement, ctx: SelectCtx): () => void {
     enabled: ctx.enabled,
     cls: 'selcell',
     node: id => wrap.querySelector(`[data-testid="${id}"]`),
+    leftEdge: ctx.leftEdge,
     reset: () => { lastFocus = null; lastFocusDate = null },
     hit: el => {
       const roster = parseCellId(el?.closest?.('[data-testid^="cell-"]')?.getAttribute('data-testid'))
@@ -514,6 +622,91 @@ export function wireRowSelect(wrap: HTMLElement, ctx: RowSelectCtx): () => void 
       if (hit && ctx.order().includes(hit)) lastFocus = hit
       const run = rowRun(ctx.order(), anchor, lastFocus ?? anchor)
       return run ? { ids: run, payload: run } : null
+    },
+    onSelect: ctx.onSelect,
+  })
+}
+
+/* ---- FIGURE SELECT (the counter column and the figures drawer, owner 6 Sep
+   26 — "drag as many as I like and key one number into them all") ----------
+   A run of PEOPLE down ONE figure column. The anchor's figure fixes the pool
+   (the run never widens sideways — one pool per drag, the owner's call); the
+   focus is whichever person's box is under the pointer, in any of a box's
+   three copies (the real cell, the band's copy, a drawer box), all addressed
+   by `data-fig` + `data-person`. Bound on `.mx-outer`, the one ancestor of all
+   three. Painted as an ATTRIBUTE (see the pair below), never a class —
+   FigureCell rebuilds its className on every store change, which is exactly the
+   moment Save lands. A heading, a sub-heading or an event row under the pointer
+   holds the last person (`lastFocus`), the grid's own rule. */
+export interface FigureSelectCtx {
+  order: () => string[]                     // person ids, top → bottom, people only
+  selectable: (figId: string) => boolean    // a balance with a counter; a total never
+  enabled: () => boolean
+  onArm?: () => void
+  onSelect: (sel: FigureSelection) => void
+}
+export type FigureSelection = { fig: string; ids: string[] }
+type FigAnchor = { fig: string; person: string }
+/* TWO WRITERS, TWO ATTRIBUTES, and they must never be one (6 Sep 26 review).
+   React renders `data-figsel` for the COMMITTED selection; the gesture paints
+   `data-figdrag` while a drag is live and wipes its own marks on release.
+   Shared, the gesture's clear stripped boxes React already owned — and React
+   only writes an attribute whose PROP changed, so it never put them back: a
+   second drag overlapping a live selection left a selected person dark, and a
+   cancelled drag (which commits nothing, so nothing re-renders) left the whole
+   selection dark. Both are lit by the same CSS (matrix.css), so a box under a
+   drag looks the same whichever attribute it is wearing. */
+export const FIGSEL_ATTR = 'data-figsel'
+export const FIGDRAG_ATTR = 'data-figdrag'
+const FIGBOX = 'td.figbox[data-fig][data-person]'
+
+const figBoxOf = (el: Element | null | undefined): FigAnchor | null => {
+  const box = el?.closest?.(FIGBOX)
+  return box ? { fig: box.getAttribute('data-fig')!, person: box.getAttribute('data-person')! } : null
+}
+const figBoxAt = (x: number, y: number) => figBoxOf(document.elementFromPoint(x, y))
+
+export function wireFigureSelect(outer: HTMLElement, ctx: FigureSelectCtx): () => void {
+  let lastFocus: string | null = null
+  return wireGesture<FigAnchor, FigureSelection>(outer, {
+    enabled: ctx.enabled,
+    nodes: id => {
+      const i = id.indexOf(':')
+      return Array.from(outer.querySelectorAll(`td.figbox[data-fig="${id.slice(0, i)}"][data-person="${id.slice(i + 1)}"]`))
+    },
+    mark: (el, on) => { if (on) el.setAttribute(FIGDRAG_ATTR, '1'); else el.removeAttribute(FIGDRAG_ATTR) },
+    reset: () => { lastFocus = null },
+    onArm: ctx.onArm,
+    // GENTLE at the edge, unlike the day grid (6 Sep 26 bug hunt). What this
+    // run collects is what a number gets written to, so a finger that simply
+    // ends its drag in a phone's bottom band must not go on gathering people:
+    // 0.3 of the step (≤5px a frame at full depth against the grid's 15), and
+    // not until it has RESTED half a second in the band. The numbers are
+    // measured, not guessed: the drag that started this ran 259px and lit
+    // fourteen; at 0.4 and 220ms it still reached eight, because a drag's own
+    // moves burn a short dwell before the finger has even stopped. Half a
+    // second outlasts the drag, so the wait only begins once the finger really
+    // has come to rest — the same drag now scrolls NOTHING while it is being
+    // made (measured: 0px), and then runs at about a third of the day grid's
+    // pace, ~7 rows a second at the depth a drag like that ends at. Rested
+    // there on purpose a run CAN still be extended past the screen; the bar's
+    // count is the check before Save.
+    edge: { rate: 0.3, dwellMs: 500 },
+    // A HOLD selects, a quick tap still opens the breakdown — the day grid's own
+    // rhythm, on the same feel constants. So an admin's press that dwells past
+    // HOLD (or a mouse that moves past MOUSE_SLOP) commits a selection of the
+    // one person pressed and swallows the trailing click; a plain tap never
+    // arms, and the box's own onClick opens that person's figure as it always
+    // has. Pinned both ways in the e2e.
+    hit: el => {
+      const box = figBoxOf(el)
+      return box && ctx.selectable(box.fig) && ctx.order().includes(box.person) ? box : null
+    },
+    current: (anchor, x, y) => {
+      const hit = figBoxAt(x, y)
+      if (hit && ctx.order().includes(hit.person)) lastFocus = hit.person
+      const run = rowRun(ctx.order(), anchor.person, lastFocus ?? anchor.person)
+      return run ? { ids: run.map(p => `${anchor.fig}:${p}`), payload: { fig: anchor.fig, ids: run } } : null
     },
     onSelect: ctx.onSelect,
   })

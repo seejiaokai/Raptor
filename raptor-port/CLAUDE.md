@@ -56,7 +56,10 @@ to HEAVY (spec → plan → task-by-task with a review and fix loop on each)
 only where a defect would be SILENT rather than obvious: persisted data,
 roles and permissions, the validation engine, anything the byte-exact
 reference parity or the perf ceilings sit on top of. Say at the time that
-you are escalating, and why. And prefer BATCHES — most of the cost is
+you are escalating, and why. A visual change across many surfaces is still
+MEDIUM (the 6–7 Sep 26 drag-lift build ran HEAVY at about an hour a task and
+the owner called it extreme); whichever path is chosen, state the expected
+time before the first task starts. And prefer BATCHES — most of the cost is
 loading this app into context, so five related changes in one pass cost
 barely more than one.
 
@@ -132,7 +135,10 @@ barely more than one.
   now: change → gates green locally → commit + push to the session branch (one
   open PR accumulates the lot) → reply with the Vercel preview link the moment
   it is Ready (~1 min after the push — do NOT go quiet waiting on CI) → take the
-  next change. The "Done MEANS LIVE" chain (merge on green → Pages → live-verify
+  next change. The PR's checks finish ~6 min after each push: READ their
+  conclusions on your next turn and fix a red one then — never discover it at
+  "merge live" (7 Sep 26: six red runs sat unread while the branch was being
+  tested on the preview, and the merge waited on a CI-only fix). The "Done MEANS LIVE" chain (merge on green → Pages → live-verify
   → one notification) runs ONLY on his explicit "merge live"; a green PR
   sitting open is the intended resting state, not a thing to finish. The 24 Aug
   rule below is kept for its mechanics (where the link is, SSO, no PR-watching);

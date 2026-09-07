@@ -15,6 +15,7 @@ import { INPUTS, inpId } from '../engine/inputs'
 import { PLANPUCKS, addPlanPuck, addPuckRow, togglePuckPerson } from '../state/plan'
 import { HOOKS } from '../engine/hooks'
 import { commitChipMove, initCalDrag } from './caldrag'
+import { markLand, pendingLand } from './lift'
 
 /* jsdom 30 (this repo's version, verified directly) constructs a full
    PointerEvent — clientX/clientY, pointerId, pointerType and isPrimary all
@@ -233,6 +234,133 @@ describe('initCalDrag — the pointer machine', () => {
       expect(document.body.classList.contains('ic-dragging')).toBe(false)
       expect(document.querySelector('.ic-ghost')).toBeFalsy()
       expect(cellB.classList.contains('ic-over')).toBe(false)
+    } finally { off() }
+  })
+
+  /* ONE LIFT, EVERY DRAG (owner, 6 Sep 26 — "the thing u are grabbing glows
+     evenly … once I drop the item, it should flash to show where the new item
+     ended up"). The chip's ghost is one element, so it wears the shared `.lift`
+     class directly. The landing is deferred through lift.ts's mark: a real move
+     rewrites the whole month, so the address of the chip IN ITS NEW DAY is
+     marked before the write and InputsCal's own paintLand() pass flashes it.
+     A drop back on the day it came from is still a landing — nothing is written
+     and nothing re-renders, so that one flashes the chip where it stands. */
+  const chipGhost = () => document.querySelector('.ic-ghost') as HTMLElement | null
+  const armDrag = (chip: HTMLElement) => {
+    chip.dispatchEvent(ptr('pointerdown', 10, 10))
+    chip.dispatchEvent(ptr('pointermove', 20, 10))     // > MOUSE_SLOP
+  }
+
+  it('the ghost wears the shared lift', () => {
+    const { root, chip } = buildCalDom('ghost-row')
+    const off = initCalDrag(root, { onTap: () => {} })
+    try {
+      armDrag(chip)
+      expect(chipGhost(), 'the ghost is up').toBeTruthy()
+      expect(chipGhost()!.classList.contains('lift'), 'and wears the one recipe').toBe(true)
+      chip.dispatchEvent(ptr('pointercancel', 20, 10))
+    } finally { off() }
+  })
+
+  /* the ghost is a COPY of the chip, so a chip re-grabbed inside its own 600ms
+     landing flash handed `lift-land` to a clone with no timer to end it */
+  it('a chip re-grabbed inside its own landing flash does not hand it to the ghost', () => {
+    const { root, chip } = buildCalDom('regrab-row')
+    chip.classList.add('lift-land')
+    const off = initCalDrag(root, { onTap: () => {} })
+    try {
+      armDrag(chip)
+      expect(chipGhost()!.classList.contains('lift')).toBe(true)
+      expect(chipGhost()!.classList.contains('lift-land'), 'not also landing').toBe(false)
+      chip.dispatchEvent(ptr('pointercancel', 20, 10))
+    } finally { off() }
+  })
+
+  it('a move to another day marks the chip in the day it landed in', () => {
+    markLand('')
+    const row: any = { person: 'bane', date: 'Jul 20', allday: true, type: 'LL', remarks: '', mod: 'now' }
+    inpId(row)
+    INPUTS.unshift(row)
+    const { root, cellB, chip } = buildCalDom(row.iid)
+    EFP_TARGET = cellB
+    const off = initCalDrag(root, { onTap: () => {} })
+    try {
+      armDrag(chip)
+      chip.dispatchEvent(ptr('pointerup', 20, 10))
+      expect(row.date, 'sanity: it moved').toBe('Jul 21')
+      expect(pendingLand()!.sel).toBe(`[data-icday="2026-07-21"] [data-iid="${row.iid}"]`)
+    } finally { off() }
+  })
+
+  /* a planning section carries its own id, not an input's — the calendar draws
+     it as [data-pid] (InputsCal's `.ic-pks` / `.ic-chip.plan`) */
+  it('a plan puck is marked by its own id', () => {
+    markLand('')
+    let added = false
+    writeInputs(() => { added = addPlanPuck('2026-07-20', 'Check quals') })
+    expect(added).toBe(true)
+    const pid = PLANPUCKS[0].id
+    document.body.innerHTML = `
+      <div id="root">
+        <div class="ic-day" data-icday="2026-07-20"><div class="ic-chip plan" data-icdrag data-pid="${pid}">note</div></div>
+        <div class="ic-day" data-icday="2026-07-21">B</div>
+      </div>`
+    const root = document.getElementById('root')!
+    const chip = root.querySelector('[data-icdrag]') as HTMLElement
+    EFP_TARGET = root.children[1] as HTMLElement
+    const off = initCalDrag(root, { onTap: () => {} })
+    try {
+      armDrag(chip)
+      chip.dispatchEvent(ptr('pointerup', 20, 10))
+      expect(PLANPUCKS[0].date, 'sanity: it moved').toBe('2026-07-21')
+      expect(pendingLand()!.sel).toBe(`[data-icday="2026-07-21"] [data-pid="${pid}"]`)
+    } finally { off() }
+  })
+
+  it('dropped back on the day it came from, the chip flashes where it stands — nothing is marked', () => {
+    markLand('')
+    const row: any = { person: 'bane', date: 'Jul 20', allday: true, type: 'LL', remarks: '', mod: 'now' }
+    inpId(row)
+    INPUTS.unshift(row)
+    const { root, cellA, chip } = buildCalDom(row.iid)
+    EFP_TARGET = cellA
+    const off = initCalDrag(root, { onTap: () => {} })
+    try {
+      armDrag(chip)
+      chip.dispatchEvent(ptr('pointerup', 20, 10))
+      expect(row.date, 'nothing moved').toBe('Jul 20')
+      expect(chip.classList.contains('lift-land'), 'the chip flashed in place').toBe(true)
+      expect(pendingLand(), 'and no address was marked — nothing rebuilds').toBeNull()
+    } finally { off() }
+  })
+
+  it('let go over no day at all, nothing flashes and nothing is marked', () => {
+    markLand('')
+    const row: any = { person: 'bane', date: 'Jul 20', allday: true, type: 'LL', remarks: '', mod: 'now' }
+    inpId(row)
+    INPUTS.unshift(row)
+    const { root, chip } = buildCalDom(row.iid)
+    EFP_TARGET = null
+    const off = initCalDrag(root, { onTap: () => {} })
+    try {
+      armDrag(chip)
+      chip.dispatchEvent(ptr('pointerup', 20, 10))
+      expect(row.date).toBe('Jul 20')
+      expect(chip.classList.contains('lift-land')).toBe(false)
+      expect(pendingLand()).toBeNull()
+    } finally { off() }
+  })
+
+  it('a cancelled drag shows nothing either', () => {
+    markLand('')
+    const { root, cellB, chip } = buildCalDom('cancel-row')
+    EFP_TARGET = cellB
+    const off = initCalDrag(root, { onTap: () => {} })
+    try {
+      armDrag(chip)
+      chip.dispatchEvent(ptr('pointercancel', 20, 10))
+      expect(chip.classList.contains('lift-land')).toBe(false)
+      expect(pendingLand()).toBeNull()
     } finally { off() }
   })
 

@@ -1836,7 +1836,9 @@ persisted and never in a history snapshot. The toggle builder is `notePubTog`
   claims it (`TD.mouse`), a 3px move arms it (no hold; the native drag's own
   threshold), and the release drops through `applyDrop` off
   `elementFromPoint` exactly as a finger does. The ghost is a `.dragimg` clone of the PUCK alone
-  (not the `.seat` shell a grid cell can stretch) — fixed, `pointer-events:
+  (not the `.seat` shell a grid cell can stretch — and since 7 Sep 26 the
+  finger's `.tdghost` is the puck alone as well: its shell clone boxed the
+  AIRCREW drawer row's empty width beside the name) — fixed, `pointer-events:
   none`, z-index 520, the `.tdghost` recipe — pinned where the press landed
   inside the puck (`TD.ox/oy`, clamped to the puck) rather than centred, and
   the ghost itself carries the grabbing cursor (no OS drag cursor exists —
@@ -1882,7 +1884,16 @@ persisted and never in a history snapshot. The toggle builder is `notePubTog`
   re-resolved down the whole tree, wildcard or not — and neither declaration
   did any work (html{} already refuses user-select and the touch callout;
   `onTouchMove` preventDefaults while armed). A class nothing matches costs
-  nothing to toggle. Guarded by `ui/css-invalidation.test.ts`. Edge auto-scroll comes free with
+  nothing to toggle. Guarded by `ui/css-invalidation.test.ts`. **Both ghosts wear the
+  shared `.lift` and the seat they land on flashes once** (6 Sep 26 — §What a drag
+  LOOKS like — one recipe, every surface): each lost the 2px accent OUTLINE it drew
+  for itself (an outline paints outside the border box, which is the uneven look the
+  whole change is about) and keeps its neutral depth shadow, written on the
+  `.lift` compound so one `box-shadow` carries both; the ring follows the cloned
+  puck's own 3px corner. The class is added through `liftOn`, not a bare
+  `classList.add`, because a ghost is a COPY: a seat re-grabbed inside its own
+  landing flash would otherwise hand `.lift-land` to a clone that has no timer to
+  take it off. Edge auto-scroll comes free with
   the machine. A window `blur` mid-drag clears the ghost and drops nothing. A
   press-and-release without a 3px move is a click; a secondary button is
   left alone. The NATIVE handlers (`dragstart`/`dragover`/`drop`/`dragend`)
@@ -2133,6 +2144,10 @@ the phone hid `.sb-grip` and showed a ▲▼ nudge (`.mbtn.nudge`, `sbNudge`) in
 board DOM budget), and the grip paints everywhere. The grip is still ALWAYS emitted
 (`.ro` alone hides it on a read-only board), never conditionally on viewport width, so
 the panel's string-diff stays width-independent and survives a resize.
+
+Since 6 Sep 26 the picked-up look is the shared `.lift` and the row it lands on flashes
+once (§What a drag LOOKS like — one recipe, every surface): `.rowdrag` only recolours
+the grip now, and the landing is marked before the panel is rebuilt.
 
 **The address lives on the ROW, never on the grip** — `data-move="mv:…"` (`rowMove`)
 is an attribute of `.sb-line` / `.sb-arow` / `.sb-nrow` itself, not the `.sb-grip` span
@@ -2386,7 +2401,11 @@ dotted grip inline in its own header — `.sb-sec[data-secmove="di.key"]` on the
 board ROW grip (`.sb-grip`) is shown at every width too since 31 Aug 26 (the ▲▼ nudge it
 used to defer to on a phone is gone — §Dense row reorder); a section or a wave is an even
 bigger target, so these grips
-**stay draggable at every width** (the "drag, no arrows" design). The machine is
+**stay draggable at every width** (the "drag, no arrows" design). Since 6 Sep 26 a
+carried wave block or section panel wears the shared `.lift` and the place it lands
+flashes once (§What a drag LOOKS like — one recipe, every surface); `.secdrag` only
+recolours the grip, and the mark carries the surface (`#sbBoard` / `#eWeek`) because
+both emit the same `data-secmove` and `mv:w` addresses. The machine is
 `ui/rowdrag.ts`, wired on both the board wrap and the edit-week root; it tells the
 three draggables apart by the grip pressed, walks up to the enclosing wave block for
 a wave drag (so a wave drops onto another wave, not a line inside it), and validates
@@ -3766,6 +3785,11 @@ heading gains a grip, a `.qlbl` label element and a `✕`.
   the browser does not claim the gesture as a scroll, and the drop highlight
   written straight to the DOM — a re-render would rebuild the innerHTML table
   under the moving finger and drop the drag. Only the drop itself sets state.
+  Since 7 Sep 26 the picked-up column wears one measured overlay frame down the
+  whole table and the column flashes where it lands (§What a drag LOOKS like —
+  one recipe, every surface, and the quals z-index set there); the frozen header
+  mirror `.qfixed` still carries no drag handlers, so a heading is dragged on the
+  real table.
 
 None of it is persisted, exactly like the ticks, initials and flights beside
 it: reload and the LoX is the default set again. `rules` is still the only
@@ -4267,7 +4291,12 @@ side; the title stays visible one size down.
   wobble-restart, the click-eater). The drop applies a DAY-DELTA from the
   grabbed cell, so a span grabbed by its middle SLIDES whole rather than
   re-anchoring; `commitInputEdit` does the write (accepted-row relink and
-  Leave-War retraction included). A member may move their OWN input only.
+  Leave-War retraction included). A member may move their OWN input only. Since
+  6–7 Sep 26 the chip ghost wears the shared `.lift` and the chip flashes in the
+  day it landed in — the same day included, which is the one case with no toast
+  and no re-render; the day popover's planning sections and seated pucks wear it
+  too, and `paintLand` runs from this page's own layout effect (§What a drag
+  LOOKS like — one recipe, every surface).
 - *Tap an empty cell* → the day popover. *Hold it (`HOLD_ADD`, 450ms —
   longer than the chip hold because an empty cell has a tap meaning too)* →
   the add dialog seeded for that date, person = ME, everyone allowed (page
@@ -4884,9 +4913,22 @@ BidPicker's look and vocabulary, not instead of it.
   rows slid up under a still pointer, the selection ballooned onto other
   people, and when a heading was what slid under the release point the last
   day was dropped (the e2e "drag-selecting a row" flake). Only the band(s) the
-  press sat in are held; the opposite edge scrolls as before. Geometry and the
+  press sat in are held; the opposite edge scrolls as before. **The LEFT band
+  starts where the DAYS start, not where the wrap does** (owner, 6 Sep 26 — "let
+  me auto scroll left when my drag is approaching the edge of the expanded
+  counters … likewise the counter on the left"): the frozen name/counter pair —
+  or the figures drawer while it is out — is parked over the wrap's own left
+  edge, so a band measured from `r.left` sat behind them where no pointer could
+  reach it, and a drag leftward simply stopped at the counters. `GestureBase`
+  and `SelectCtx` take an OPTIONAL `leftEdge()`; Matrix feeds it
+  `wrap.left + frozenWidth(wrap)`, which is drawer-aware already. Absent — every
+  other caller (the tracker's row select, the figure columns) — means the wrap's
+  own edge, unchanged. The RIGHT band keeps `r.right`: nothing is parked there.
+  The held-band rule above is measured from the same edge. Geometry and the
   edge rules are unit-tested (`select.test.ts`); the gesture itself is e2e
-  (`leavewar.spec.ts`, which also pins that the page stays put on that drag).
+  (`leavewar.spec.ts` — the park at the counters and at the drawer's edge on
+  desktop, the CDP hold-drag on the phone, and it also pins that the page stays
+  put on that drag).
 - **The sheet** (`ui/SelectSheet.tsx`, `data-testid="select-sheet"`) is the
   BidPicker's sibling on the same `Sheet` chassis. Sections are contextual to
   role and stage: everyone Fills while the war is OPEN (portion + leave chips;
@@ -4986,23 +5028,67 @@ that froze everything behind it to a panel you can read the grid around:
   sheet shipped without it — and in `chrome.test.tsx` for the Legend.
 
 - **LEFT-RIGHT** ("I want to be able to still scroll left and right … on the
-  grids … while the page is still up"). The scrim has to keep SWALLOWING
-  gestures on the grid — a tap dismisses, and a bare grid tap behind an open
-  sheet would otherwise open a second cell sheet or start a drag-select under
-  the one already up — so it cannot simply become `pointer-events: none`.
-  Instead it keeps capturing and FORWARDS the sideways ones by hand
-  (`useGridPan`): a horizontal drag moves the grid's one horizontal scroller
-  (`.mx-wrap`) 1:1, and a horizontal (or shift-) wheel does the same.
-  Everything the frozen date bar tracks is driven off `.mx-wrap.scrollLeft`,
-  so the mirror follows for free.
+  grids … while the page is still up"). The grid has to keep swallowing TAPS
+  behind a sheet — a tap dismisses, and a bare grid tap behind an open sheet
+  would otherwise open a second cell sheet or start a drag-select under the
+  one already up. **Since 6 Sep 26, on a touch screen, the finger goes to the
+  grid ITSELF and a document-level shield takes the tap** (owner — "when a
+  window like this is open, the swipe on the background … doesn't decelerate
+  smoothly. Like it stops immediately … fix the swipe animation to be exactly
+  the same"; then, of a first fix the same day, "the scrolling is fix …
+  however it feels more laggy/stuttery as compared to a window that's
+  closed"). The 28 Aug version forwarded the drag onto `.mx-wrap` by hand from
+  pointer events on the scrim — 1:1 under the finger and dead the instant it
+  lifted, because a hand-written scrollLeft has no momentum. The first 6 Sep
+  fix made the scrim a native scroller of its own, mirrored onto the grid
+  (the `.mx-hbar` idiom): it coasted, but the grid then moved only when a
+  scroll event reached the main thread and wrote `scrollLeft` — and a bare
+  fling runs on the compositor, never waiting for the main thread, while the
+  mirrored one waited behind everything a scroll event sets off (the
+  in-motion month draw of 5 Sep, the date-bar sync, the rest timers); every
+  long frame showed as a stutter. NOTHING that drives the grid from
+  JavaScript can be "exactly the same" as the browser flinging the grid; so
+  now nothing does. When `(pointer: coarse)` matches, `useGridPan` sets
+  `pointer-events: none` on `.sheetscrim` (inline — React never touches its
+  style), so a finger lands on `.mx-wrap` and the browser scrolls it as with
+  no sheet up: the same drag, fling, deceleration and edge bounce, on the same
+  thread, nothing of ours per frame. What the scrim did by being in the way, a
+  CAPTURE listener on `document` does: for `pointerdown/up/cancel`,
+  `touchstart/end/cancel`, `mousedown/up`, `click`, `dblclick` and
+  `contextmenu` whose target is under the sheet (not inside the scrim, not
+  inside any `.bidsheet`) it stops propagation before React's root listener
+  and the grid's own handlers see it, closes the sheet on the `click`, and
+  never `preventDefault`s the touch — a stopped touchstart still scrolls, a
+  cancelled one would not. The one default it cancels is the tap's compat
+  `mousedown`, so the tapped cell is not focused (a focus scrolls its cell
+  into view: a jump). Moves are not shielded (the grid handles none). The
+  shield stands down while `#page-leavewar` is not `.on` — the kept-mounted
+  guard the Escape listener already has — or a sheet left open would eat
+  every tap on a RAPTOR page. A native touch scroll fires no click, a tap
+  does, so a swipe never dismisses and a tap always does. On a fine pointer
+  the scrim stays exactly the 28 Aug interceptor: `touch-action: pan-y`, a
+  mouse press drag-to-pans by hand (1:1), a horizontal or shift-wheel
+  forwards, a click dismisses, hover never reaches the grid. Pinned:
+  `scrim.test.tsx` (a stubbed touch screen: the scrim out of the way, a tap
+  on a cell swallowed and closing, the touch un-cancelled, the panel left
+  alone, the shield gone with the sheet, the kept-mounted guard) and
+  `leavewar.spec.ts` (a real CDP touch on the phone project — the finger
+  reaches the grid, the grid follows it, a tap on a cell closes the sheet
+  and opens nothing; the desktop project — the scrim still in the way). The
+  COAST itself cannot be measured here (headless Chromium flings no native
+  scroller from synthetic touches) and is not ours to measure any more: it is
+  the grid's own, identical to the bare grid by construction.
 - **UP-DOWN** ("enable me to still scroll up and down when this window is
   opened"). This REVERSES the 17 Aug "one-scroll" body lock. The page used to
   be frozen (`body.lw-sheet-lock { overflow:hidden }`) so a swipe could never
   jump the grid under a reader; the owner now wants exactly that jump — to read
   the grid behind the panel. The lock is GONE. The scrim carries
-  `touch-action: pan-y`, so the browser pans the page vertically from a finger
-  on it; a vertical wheel is left un-prevented, so it scrolls the page too.
-  Pointer capture is taken LAZILY (only once a drag commits to the horizontal
+  `touch-action: pan-y`, so on a fine-pointer device the browser pans the page
+  vertically from a finger on it; on a touch screen the scrim is out of the
+  way altogether (LEFT-RIGHT) and the finger pans the page through the grid,
+  as with no sheet up; a vertical wheel is left un-prevented, so it scrolls
+  the page too. On the mouse path,
+  pointer capture is taken LAZILY (only once a drag commits to the horizontal
   axis), or it would stop the browser's own vertical pan. The panel is
   `position: fixed`, so only the grid behind it moves; the sheet's own inner
   list keeps `overscroll-behavior: contain` so scrolling to the end of the list
@@ -5029,16 +5115,24 @@ that froze everything behind it to a panel you can read the grid around:
   editor) keep their 44px targets, which the geometry gate holds.
 
 A gesture that never crossed the ~6px threshold is a tap and still dismisses (a
-drag's trailing click is swallowed via `movedRef` so a scroll never closes the
-sheet). My CALL, flagged to the owner: a tap on the empty area still CLOSES the
+mouse drag's trailing click is swallowed via `movedRef` so a scroll never closes
+the sheet; a finger's native scroll fires no click at all, so a fling never
+does). My CALL, flagged to the owner: a tap on the empty area still CLOSES the
 panel, so the grid behind scrolls but is not clickable — if he wants it clickable
 too, drop the tap-to-close. Verified live at 1440px and 402px, sheet up: page
 scrolls both ways with the panel fixed, the panel drags anywhere, the desktop
 proxy bar sits above the scrim, zero console errors. The small legend / manning
 pop-outs use a different, lighter overlay (`.umscrim`, `ui/Chrome.tsx`) and are
-OUT of scope. Pinned in `scrim.test.tsx` (drag-forward, no lock, movable) and
+OUT of scope. Pinned in `scrim.test.tsx` (the mouse drag-forward; the native
+proxy's wiring — a finger never forwarded by hand, both mirror directions, the
+echo guard, the aligned open, the range refit; no lock; movable) and
 `e2e/leavewar.spec.ts` ("the page scrolls behind an open sheet, and the panel
-stays put").
+stays put"; "a finger drag on the scrim scrolls the grid natively, stays in
+step, and the sheet stays up" on lw-phone — a REAL touch through CDP, since a
+dispatched DOM event scrolls nothing; the coast itself is the device's to show,
+because headless Chromium flings nothing from synthetic touches; "the scrim
+follows a scroll the grid makes on its own, and shares its range" on both
+widths).
 
 ## The event sheet on a phone keyboard (owner, 31 Aug 26)
 
@@ -5097,6 +5191,18 @@ Four asks from the same sitting, all on the Leave War grid:
   (`lw-viewing`, `ui/Chrome.tsx`) and the picker header leads with **VIEWING AS
   &lt;callsign&gt;**. Both are ABSENT when nobody in the roster is being viewed —
   there is no "you" to name, mirroring the picker's existing dash rule.
+  The LIT ROW itself was turned up on 6 Sep 26 (owner, from his iPhone — "make
+  the glow of the view as user row a bit more obvious in the grids"): the frozen
+  pair takes a lighter panel (`#173C4A`), the accent lines bracketing the row go
+  from .28 to .55, and the full-width seat bar in the name cell gains a glow past
+  its ring — which is what carries the row at a glance on a phone. The same
+  values in the figures DRAWER's copy of the row, so the two never disagree.
+  There is deliberately **no wash across the day cells**: a `td` background here
+  out-ranks `.mx td.weekend`, `.evoff`, `.locked` and every other state colour
+  (0,2,3 against 0,2,1), so a 7% accent tint was tried and would have swallowed
+  the weekend band on the one row that most needs reading. The bracketing lines
+  carry it instead — they are box-shadows, which sit over a cell's own fill
+  rather than replacing it. (`matrix.css` `tr.me`, both copies.)
 - **No personnel label editor** ("i can edit personnel, dont need to show that,
   just leave it as the callsign/name"). In Rearrange a ground-crew row used to
   turn its name column into a "Maint / Line" edit box; `PersLabel` is deleted, so
@@ -5115,6 +5221,123 @@ Four asks from the same sitting, all on the Leave War grid:
   before-itself guard, same splice-then-reinsert). The step-wise
   `moveManningRow(id, ±1)` stays as a tested store primitive with no UI caller.
   The hide (eye) control is unchanged.
+- **What a drag LOOKS like — one recipe, every surface (6–7 Sep 26).** Two
+  earlier faults are kept here as history, because they are why two of the rules
+  read as they do. FIRST, the picked-up row used to fade to `opacity:.5` — but a
+  frozen cell is STICKY, it paints over the day cells scrolling beneath it, so
+  fading the CELL let the day numbers come straight through the callsign
+  ("19FL P9 18"); the same failure the archived rows had, and `.mrow-hidden`
+  already carried its cure. The cell stays opaque and only its CONTENT fades
+  (`.who > *`, `.bal > *`, a heading's `.grphd-in` plus its fill cell), and that
+  is still exactly what happens. SECOND, "make the glow of the selected row more
+  obvious" — a dim row read as merely faded rather than picked up, so it was
+  given a ring; but that ring was assembled PER CELL (a box on `.who`, a box on
+  `.bal`, lines across the day cells) because a table row spanning two sticky
+  cells and a year of scrolling ones cannot take one outline. The owner's iPhone
+  showed it for what it was: **"every single drag and drop for rearranging things
+  in the app … the thing u are grabbing glows evenly … a cyan box around the
+  perimeter, not individual boxes. Once I drop the item, it should flash to show
+  where the new item ended up"** — everywhere in the app, and "there should not be
+  a perceived drop in speed". The pick from the mock he dragged on his phone:
+  **soft, inside the line, for all**.
+
+  **So the picked-up look is ONE recipe now, defined once and worn by all twelve
+  drag surfaces** — Leave War's person rows, category headings and manning rows;
+  the two ⚙ Settings lists; the board's rows, wave blocks and section panels;
+  quals columns; the day popover's planning sections and seated pucks; the
+  calendar chip ghost; the crew-puck ghosts. It lives in `src/ui/scheduler.css`
+  (`--lift-box` on `:root`, `.lift`, `.lift-frame`, `.lift-land` + its veil, the
+  `liftIn`/`liftLand` keyframes) with the DOM choreography in `src/ui/lift.ts`;
+  the design is `docs/superpowers/specs/2026-09-06-drag-lift-design.md`.
+  - **INSET ONLY — no outer halo on anything, ghosts included.** The Leave War
+    grid sits inside `.card{overflow:hidden}` and the board rows inside
+    `.sb-panel{overflow:hidden}`, and an `overflow:hidden` ancestor DISCARDS a
+    descendant's outer box-shadow — which is precisely why the old halo showed
+    above and below a row and never at its sides. `.sb-fresh` learnt the same
+    lesson on 16 Aug 26: draw nothing outside the border box.
+  - **The recipe is a COLOUR, not a shape (7 Sep 26).** `.lift` carries the box
+    and no `border-radius`: an inset shadow follows the element's own corner, so
+    the ring hugs a wave block's 10/12px and a crew puck's 3px instead of
+    re-cornering them at a flat 8 (the first cut did, and a 15px puck read
+    pill-shaped). The two things with no corner of their own name one where it is
+    used — the overlay frame (8px) and the ⚙ who-wins row (8px, `matrix.css`); a
+    ⚙ Groups row keeps its own 7px.
+  - **A seat names the shape it flashes in, and the finger's ghost takes the
+    puck's (owner, 7 Sep 26, from his phone).** The veil inherits its host's
+    corner, and a landed seat has none by the time the flash paints — a grid
+    seat is a bare shell round a 3px puck, and a people cell is 5px round only
+    under `body.dnd`, which the drop has already taken off — so both flashed
+    SQUARE round a rounded thing. `[data-slot].lift-land` takes the puck's corner
+    and `[data-fill].lift-land` the 5px its dashed drop target wore a moment
+    earlier (`lift-css.test.ts` reads the target's rule and holds the two equal).
+    The puck's corner is one token, `--puck-r` on `:root`, worn by `.puck` and
+    kept on `.tdghost` as the fallback for a shell clone. **And the finger's
+    ghost is the PUCK now, as the mouse's always was** (`drag.ts tdArm` clones
+    `.puck` for both pointers): its shell clone drew the ring on the shell's
+    edge — square round a seat, and from the AIRCREW drawer a roster row as
+    wide as its column, so the box ran 156px past the name (measured on the
+    built app). The mouse ghost names no corner of its own.
+  - **`--lift-box` is a CONSTANT on `:root`, never toggled.** A custom property
+    toggled on `.mx-outer` or any grid ancestor restyles thousands of cells (the
+    performance doctrine); a constant read by `matrix.css`'s own rows costs
+    nothing and keeps one set of numbers for the whole app.
+  - **A composite thing gets ONE measured frame.** A Leave War row and a quals
+    column are not one element, so they take an overlay `.lift-frame` rendered in
+    JSX with a constant `className` and driven only through a ref (React never
+    writes to it again — trap 6). Leave War's is the LAST child of `.mx-outer`
+    at z 7 (over the band 4/6 and the drawer 5, under `.mxfixed` 55, which covers
+    the frame exactly as it covers the row); its rect is the ROW's top/height
+    ∪ the `.mx-wrap`'s VISIBLE left/width, so the box closes at the screen's edge
+    and wraps the frozen block, the open drawer and the days as one perimeter.
+    Measured ONCE at arm and ONCE at landing, in visual pixels, NEVER divided by
+    the table's `zoom` (the figures-drawer precedent — `.mx-outer` is outside the
+    zoom). Nothing runs per pointermove.
+  - **The quals frame TRAVELS, so the host arranges around it.** It lives inside
+    `.qwrap` (which gains `position:relative`, no z-index, so it opens no stacking
+    context) in CONTENT coordinates, riding the sideways scroll with its column
+    — and it is the column's OWN width (`boxOf(…, 'rect')`, the heading's border
+    box, fractional; 7 Sep 26): the heading's `clientWidth` is its padding box
+    rounded, a border and a fraction short, and on the CI runner's fonts that
+    shortfall was 1.28px against the gate's 1px. The Leave War frame keeps the
+    scroller's `clientWidth`, the visible box with no scrollbar —
+    which means a scrolled column slides the whole frame under the FROZEN callsign
+    column. The cure is a set of numbers, not JS: the frame drops to `.qwrap
+    .lift-frame{z-index:2}`, the heading row's own level (it is rendered AFTER the
+    table, so an equal z still paints it over the heading it wraps), and the frozen
+    cells are raised above it — `.qtbl td.qname` 1→**3**, the corner
+    `thead th[data-sort="cs"]` 3→**4**, `thead th` unchanged at **2**. Lowering the
+    frame alone would have hidden the ring's top edge under the opaque heading on
+    every ordinary drag. Nothing scrolls vertically inside `.qwrap`, so a raised
+    name cell and a heading never meet; where they do meet — the corner — 4 wins.
+    Pinned as a SET in `lift-css.test.ts`, read out of the file and compared to
+    each other. **`.qfixed`, the frozen header mirror, carries no drag handlers at
+    all** — pre-existing, recorded, not fixed here: a heading is dragged on the
+    real table.
+  - **The per-cell drag paint is DELETED** (`matrix.css`: the `.who`/`.bal` ring +
+    halo, the day-cell lines, the heading twin). With it gone, **a manning row's
+    shortfall ring paints on the picked-up row exactly as it does at rest** — the
+    two used to fight over the same `box-shadow` property on exactly the days an
+    admin reorders the block FOR. The board's `.rowdrag`/`.secdrag` are state
+    classes now too: they recolour the grip and nothing else.
+  - **Every LANDING BAR is untouched** (`.rowdrop`, `.secdrop`, `.qdrop`,
+    `.ic-over`, `.pk-swap-target`, `[data-fill].dragover`, Leave War's
+    `tr.dragover`) — they say where it WILL go, the flash says where it WENT, and
+    the two are deliberately different vocabularies. Leave War's still runs the
+    WHOLE row at 3px with a glow on the sticky cell (2px on that cell alone was
+    easy to miss under a thumb), TOP edge for an insert-before, BOTTOM for a
+    lower-half hover; it still keeps `var(--mrow-ring, 0 0 transparent)` as its
+    LAST box-shadow layer so a short day's amber/red ring still shows down the
+    sides of the row being landed on (box-shadow layers paint first-on-top), and
+    it is still scoped `td:not(.who)` (0,3,3) so it out-ranks the count states
+    (0,3,1) outright. `--mrow-ring` is defined and read on the SAME static cell,
+    never on a grid ancestor, so it restyles nothing.
+  - **Pins.** `lift.test.ts` (the module's arithmetic and class choreography),
+    `lift-css.test.ts` (the recipe as a CSS contract — inset-only, no forced
+    radius, the frame's position/z/hit-testing, the veil, the reduced-motion rule,
+    the ghosts, the quals z set), `rowglow.test.ts` (nothing paints a Leave War
+    row per cell any more; both ⚙ lists wear `--lift-box`), plus the drag machines'
+    own suites and the e2e "one frame the width of the visible grid", "a section
+    dropped on the board flashes", "a dragged quals heading wears one frame".
 
 Verified live at 1440px: picker rows 30px, the viewer chip reads "Viewing as
 Ranger", a ground-crew row shows "Cotter" with no edit box, and a count-row drag
@@ -5122,6 +5345,86 @@ moved a row from first to third with the arrows absent — zero console errors.
 Pinned in `counters.test.tsx`, `chrome.test.tsx`, `counts.test.tsx`,
 `roster.test.ts`, and e2e ("a personnel row shows its callsign, with no edit box,
 in Rearrange").
+
+**The landing flash (owner, 6 Sep 26 — "once I drop the item, it should flash to
+show where the new item ended up").** Every drop that lands somewhere lights the
+place it landed for 600ms and then leaves. The flash is a VEIL — `.lift-land::after`,
+a pseudo-element, so it adds no DOM node and no ceiling moves: `inset:0`,
+`border-radius:inherit` (it matches the shape of whatever it covers),
+`pointer-events:none`, the same inset `--lift-box` plus a light wash
+`rgba(59,198,232,.20)`, animating OPACITY and nothing else so it runs on the
+compositor. `@keyframes liftLand{0%,25%{opacity:1}to{opacity:0}}` over
+`LIFT_LAND_MS = 600` — the number is named on both sides of the same beat, in
+`lift.ts` and in the stylesheet. A plain element takes `position:relative;z-index:4`
+with the class (the `.sb-fresh` precedent: paint over the next row's top border);
+the overlay frame keeps its own `position:absolute`, which is why the relative rule
+is scoped `:not(.lift-frame)`.
+
+- **What counts as a landing.** A committed drop with a TARGET flashes where the
+  thing ended up — **moved or not** (the owner's words). A cancel, or a release
+  with no target, shows nothing. So a section dropped back on its own row flashes
+  in place, a chip dropped back on its own day flashes in place, and a crew puck
+  dropped back on the seat it already sat in flashes in place too (7 Sep 26 —
+  that path writes nothing and keeps its "Already in that seat" toast, which says
+  WHY nothing moved while the flash says where the man is). A puck let go over the
+  roster is a REMOVAL: it has landed nowhere and marks nothing.
+- **Reduced motion.** The blanket `*{animation:none!important}` matches ELEMENTS
+  and never pseudo-elements, so the veil carries its own
+  `@media (prefers-reduced-motion:reduce){.lift-land::after{animation:none}}`
+  beside the recipe. The feedback is kept and only the motion goes: the class
+  HOLDS for its 600ms and `lift.ts`'s timer takes it off — `animationend` never
+  fires there, so the timer is the only way out (the `FigureCell` lesson), and
+  under normal motion whichever comes first clears it.
+- **Landing on a DOM that is REBUILT by the drop** (the board's innerHTML panels,
+  the calendar, the popover) cannot be painted at the drop, so the mover calls
+  `markLand(selector)` BEFORE the rebuild and the existing post-render pass calls
+  `paintLand()` — `refreshHighlights` right after `paintFreshAdds()` for the
+  board and both weeks, InputsCal's own dep-list-free layout effect for the
+  calendar and its popover. **It is ONE FLASH PER NODE, not one-shot** (corrected
+  6 Sep 26, measured in Chromium against the built board — the design's original
+  "one-shot" wording is superseded). `refreshHighlights` runs once per re-rendered
+  SURFACE, and on the scheduler board two of them run in the same commit:
+  EditWeek's ~20ms BEFORE SchedBoard's, while `#sbBoard` still holds its pre-drop
+  markup — which carries the same address, because a reorder never changes a
+  list's length. A slot spent on the first node found was therefore spent on a
+  doomed node, and the drop flashed nothing at all. So the mark now lives its 1s,
+  SKIPS the node it has already lit, hands the flash on to a node that REPLACED
+  it, and is spent the moment the lit node is still standing on a later pass —
+  which normally closes the window at the very next pass. Trap 7 (the `.sb-fresh`
+  fault: an unrelated repaint restarting a flash) is still defended, by identity
+  rather than by spending the slot.
+- **The mark carries the SURFACE it belongs to** — `#sbBoard ` or `#eWeek `
+  prefixed onto the selector (`rowdrag.ts landScope`, `drag.ts landSel`). The
+  board and the edit week emit the SAME addresses (`data-move`, `data-secmove`,
+  `data-slot`/`data-fill`) and the week stays MOUNTED behind the board overlay,
+  earlier in document order, so a bare address handed every board drop's flash to
+  a hidden copy nobody could see — and, because that copy survives, the mark was
+  spent there. A drop on a host with neither id (a test harness, a page with only
+  one of the two) keeps the document-wide behaviour.
+- **Where the landed thing IS.** `engine/reorder.ts` states that `to` is the
+  destination index AFTER removal, so a moved row answers the target's own address
+  (`[data-move="<to>"]`); a section keeps its own key wherever it lands
+  (`[data-secmove="<di>.<fromKey>"]`); a seat is `[data-slot="k"],[data-fill="k"]`;
+  a chip is `[data-icday="<toIso>"] [data-iid|data-pid="…"]`; a quals column and a
+  Leave War row are found by their stable key and re-MEASURED (keyed rows move,
+  they do not remount). The one address that travels is an `ac` move where the
+  whole formation goes: `to` then names a jet inside the target formation.
+- **KNOWN GAPS, recorded rather than fixed.** (1) The Ground Programme is drawn in
+  START-TIME order, so its FIRST manual move on an unsorted day freezes that order
+  into the model and re-indexes every row — on that one move the landed row is not
+  `to`, and the flash can land one row out. It is decorative, first-drag-of-a-day
+  only and self-corrects from the second drag on; closing it needs the movers to
+  report the index they landed on, which is an engine change, not string maths.
+  (2) A mark that has lit a node but is not yet spent can flash a second time if
+  the day popover is closed and reopened inside its one second. (3) A flash can be
+  cut short if the surface re-renders again inside the 600ms — inherent to a
+  deferred landing. (4) A seated puck's box is drawn round its whole grid SLOT (a
+  third of the popover row), not tight round the puck glyph — the same box
+  `.pk-swap-target` has always used.
+- **Cost.** One `getBoundingClientRect` set at arm and one at landing; nothing per
+  pointermove; no React state for the frame or the flash; `will-change` only on the
+  veil; one declared `void el.offsetWidth` reflow when a flash is restarted on an
+  element already flashing (once, at a drop, in a frame that is laying out anyway).
 
 **The counter block's controls sit on ONE row (owner, 5 Sep 26 — "all in 1 row
 to minimise row height space").** The `.card-hd` above the counter grid carries,
@@ -5138,11 +5441,43 @@ to read "OIL" there, and `.card-hd` keeps `flex-wrap:wrap` only as a safety net.
 The ⇅ Rearrange toggle MOVED here from the grid's bracket-corner cell
 (`th.brakhd`, empty now) — the rearranging itself is hands-on-grid, and since
 6 Sep 26 this toggle is the only control (the on-grid bar is gone — §The
-on-grid rearrange bar is GONE); it lights accent (`.rtbtn.on`) while live and
-is the ⇅ icon alone on a phone. jsdom cannot see the single line; pinned by e2e
+on-grid rearrange bar is GONE); it GLOWS accent (`.rtbtn.on`: accent border and
+ink, plus a soft ring and halo) while live and is the ⇅ icon alone on a phone.
+jsdom cannot see the single line; pinned by e2e
 (`leavewar.spec.ts` — one row, order, OIL adjacency and the member layout, at
 phone AND desktop) and unit (`settingssheet.test.tsx` — the header's controls by
 role and DOM order, and the date line gone).
+
+**A TAP LEAVES NOTHING BEHIND ON ANY `.rtbtn`; A MOUSE AND A KEYBOARD KEEP WHAT
+THEY HAD (owner, 6 Sep 26 — "a second click when it's turned off shouldn't
+glow").** After the second tap turned Rearrange OFF, the ⇅ still read as on. Two
+independent causes, both fixed:
+
+- **The focus ring.** These are real `<button>`s, so iOS leaves the one just
+  pressed FOCUSED and paints its own ring. `.rtbtn:focus { outline: none }` with
+  `-webkit-tap-highlight-color: transparent`, and `.rtbtn:focus-visible` restores
+  a 2px accent outline for keyboard focus — the house idiom (`.grphd`,
+  `.catchip`). The two have the SAME specificity, so `:focus-visible` must stay
+  AFTER `:focus` in `matrix.css` or the keyboard ring is cleared again.
+- **Stuck hover.** iOS applies `:hover` to the last element TAPPED and leaves it
+  there until something else is tapped, so `.rtbtn:hover`'s accent border sat on
+  the button too — the same lie by a second route. Every hover in this family
+  (`.rtbtn:hover`, `.rtbtn.gear:hover`, and `.rtbtn.zoom:disabled:hover`, which
+  exists only to cancel the first) now sits inside `@media (hover: hover)`:
+  false on a touch screen, true for a mouse, so the desktop hover is unchanged.
+  They are wrapped IN PLACE, not gathered: `.rtbtn:hover` shares specificity
+  (0,2,0) with `.rtbtn.pri` and `.rtbtn.arm` below it and loses to them on
+  source order, which is what stops a hover stealing a primary or armed
+  button's border. Moved down, it would win.
+
+The ON state also carries a glow of its own now, so "on" is said by the button's
+own paint rather than by anything the browser left behind. Measured on the built
+bundle (6 Sep 26): on an iPhone-13 context `(hover: hover)` is false, and the
+button after the second tap is byte-identical to its at-rest self — resting
+border, no shadow, no outline — while still being `document.activeElement`. On a
+1440px mouse context the hover border is the accent, exactly as before. Pinned in
+`rowglow.test.ts` (the CSS contract, including the source orders — jsdom loads no
+stylesheet).
 
 **The controls Rearrange inserts paint on their own compositor layer (owner's
 iPhone, 5–6 Sep 26).** On a phone the ⇅ toggle inserts the Rearrange controls
@@ -5930,3 +6265,469 @@ The desktop edit week carried 261 compositor layers, and a puck drag re-layerise
 - **The roster aside stacks above the week's z-indexed pucks** — `.edit-board .eroster{z-index:5}`, under the fixed chrome (week-nav 150, rail 151, hscroll 185); the narrow-screen drawer sets its own 190. Nothing inside the week strip can reach the aside (the strip clips its own box), so no pixel changes.
 
 Why each: a filtered element and an opacity group can never be squashed into a layer shared with what they overlap, and everything painted above a sticky (composited) element is assumed to overlap its whole scroll range. What was tried and did not help — own layers for the days / the strip / the roster (worse), a static roster (worse), blur off the chrome, containment and isolation on the preview or the roster — is in performance.md §Dead ends. The phone board never had the problem (9 layers).
+
+## The figures drawer and the two-line box (owner, 6 Sep 26)
+
+Everyone's figures beside the names at a glance, without losing the one smart
+column when they are put away — the owner's own shape, settled over four rounds
+of mockups drawn on the real bundle: a drawer that pops out to the right of the
+names OVER the day columns, sideways `+`/`−` titles carrying the colour key, and
+two-line boxes (balance over used). The design doc is
+`docs/superpowers/specs/2026-09-06-leavewar-figures-drawer-design.md`; this is
+what the geometry has to keep true, and almost none of it is visible to jsdom —
+every rect there is 0×0 and the drawer never opens at all, so `e2e/leavewar.spec.ts`
+(both projects) is the gate.
+
+**The box, one component for three places.** `ui/FigureCell.tsx` draws the real
+counter cell, the phone band's frozen copy and every drawer box, so the three
+cannot drift: `span.fb` on top — the balance in white, red WITH its minus below
+zero (`.neg`), a total always red (`.red`) — then `span.fu` holding one `<b>` per
+used type with NO minus (`b.amber` for LL, `b.red` for OL and every other kind).
+A zero used line is absent, not a "0". Two 11px lines fill the existing 22px row,
+which is why rows do NOT grow when the drawer opens. Digits are tabular so a
+column of numbers lines up.
+
+**A column never widens and a number never wraps** (spec §2), so the rare
+over-wide value drops one type size inside its box instead. `FigureCell`
+measures the text it is about to draw and adds `.wide` at FOUR characters —
+`-100` on the top line, or a used line whose numbers total four digits (`12 10`,
+LL beside OL) — which takes `.fb` from 10.5px to 9.5px and `.fu` from 9.5px to
+8.5px. Four is where it stops fitting the narrowest box there is: 28px on a
+phone, 26px of it usable. Three (`100`, `-10`) still fits and is left alone. The
+line heights do not move, so a wide box is still two 11px lines and no row grows;
+both lines also clip (`overflow: hidden`), which is the guarantee for a value
+past anything measured here. Pinned in `ui/counters.test.tsx` §an over-wide
+value.
+
+**The corner switch.** `button.figbar` in the bracket row's one empty frozen cell
+(`th.brakhd`, above CS/Name) reads `▸ FIGURES` / `▾ FIGURES` and carries
+`aria-expanded`; it is the archive bar's scale, deliberately a hem rather than a
+heading. Both roles, session-only, decided ONCE at mount: a desktop opens OPEN, a
+phone (`matchMedia('(max-width: 700px)')`) and jsdom (no `matchMedia`) open
+CLOSED. The type is small; the TARGET is the WHOLE CELL — the button is taken out
+of flow and pinned `inset: 0` inside the (already sticky) `th`, which is also
+what keeps it costing the bracket row no height. In flow it was its own 15px line
+in a 22px cell, so a third of the only way in and out of the drawer did nothing
+when pressed.
+
+**The drawer is an overlay, never extra cells.** A second `table.mx` in a
+`div.mxdrawer` positioned absolutely inside `.mx-outer` — the `.mxband` phone
+overlay's mirror image, and built on its three rules: drawn once, outside the
+sideways scroller, and every real row keeps identical cells. Four measured
+numbers place it (`Matrix.tsx`, one `useLayoutEffect` + a `ResizeObserver`): the
+real header row's top, the names column's RIGHT EDGE (so the drawer's first
+column lands exactly on the closed counter column and no box moves when it
+opens), the header row's height, and its own width and column widths. Its body
+rows copy the real rows' MEASURED heights through `syncOverlayHeights`, keyed
+`data-drawer-key` = `event-row-<n>` / `group-<g>` / `subcat-<g>-<cat>` /
+`row-<personId>` against the real rows' own testids — two independently laid-out
+tables agree on nothing you have not measured. The TITLE row is the one
+exception: it carries no key, because the real header row is itself GROWING for
+these titles and a copy of a growing row would chase itself, so it is TOLD the
+measured height instead.
+
+**Widths and the one row that grows.** The first column is `--bal-w` (44px phone
+/ 72px desktop), the others `--figw` (28 / 36) — grid pixels, so the zoom applies
+to them. Only the HEADER row grows, to 62 grid px (`.mx-outer.mx-figures`), for
+the sideways titles; 62 of the grid's own pixels rather than screen pixels, or
+the words clip at one zoom step in and float at one step out. A title is taken
+out of its cell's flow (`position:absolute`) so it cannot push the row past the
+height it was told. Measured at 1440×900: header 62px, the longest title
+("+CCL −CCL") 56.8px of it. Beside the drawer on a phone, 5.3 day columns still
+read at the opening zoom (368px of wrap, a 191.9px drawer, 21.7px days at 0.8).
+
+**The frozen edge moves out to the drawer while it is open**, because the strip
+of days a reader can actually see now begins at the drawer's right edge, not at
+the closed counter column's. Two consumers, and they read it differently on
+purpose. The month-bracket LABEL sticks off a custom property: Matrix publishes
+`--drawer-w` on `.mx-outer` (the measured width ÷ the zoom, so it is in the
+table's own units) and `.mx-outer.mx-figures .brakm .brakl` adds it to `--who-w`;
+left behind, the label sat over the drawer's own titles and, in the stuck bar,
+vanished under the opaque frozen copy. `Matrix.tsx frozenWidth` reads the
+drawer's live rect instead — it is called from scroll-time code that must not
+depend on a restyle having landed — and it is what a month JUMP, the anchor
+correction after a redraw and the month-strip readout all measure from. The
+first two call it at use time; the readout does NOT — `measureStripGeo` caches
+the number into `stripGeoRef.current.frozen` and `measureStrip` reads that cache
+on every scroll event, so the drawer has to be a DEP of the layout effect that
+re-measures it (beside the zoom, the window edges and Rearrange, which move a
+column edge for the same reason). Left off that list, the readout — and the
+`visibleSpan` the fill engine's rolling target follows with it — went on using
+the closed pair's width, ~250px left of where the reader was looking on a
+desktop, until an unrelated resize or zoom happened to refresh the cache. **The
+dep is the measured width `drawerAt.width`, not a list of the things that move
+it**: `figuresOpen` alone catches the drawer appearing but not the drawer
+CHANGING WIDTH while it is out — hide a figure, open the drawer, press Undo, and
+the cached edge is a column short of where the reader is looking. `drawerAt` is
+value-guarded, so that dep fires on a real edge move and on nothing else. Pinned
+both ways: "the month strip reads from the drawer's edge, not the closed
+column's" and "the month strip follows the drawer WIDENING while it is already
+out". Before
+that second half a month jump landed 1 September nine columns UNDER the drawer
+(head at x 210.8, drawer right edge 463, measured at 1440px) — scrolled-to and
+invisible at the same time, the exact fault the jump's own e2e exists to stop.
+Pinned by "a month jump lands the month clear of the drawer, not under it".
+
+**The stuck header carries the drawer.** In the scroll-driven-animation path
+(`.lw-sda`) the frozen copy `.mxfixed-frozen` grows from the two closed columns
+to the drawer's own right edge and draws the sideways titles plus the `▸/▾
+FIGURES` switch, so scrolling the roster down does not take the legend or the
+switch with it. Its width is VISUAL pixels, never divided by the zoom (the
+6 Sep 26 iPhone fix). Without scroll-driven animations there is no frozen copy
+and the stuck bar keeps the plain chip — see `docs/leavewar/known-gaps.md`.
+
+**What stands aside while it is open.** `.mxband td.bal` is hidden (the drawer's
+first column covers it); a group heading's label is lifted over the drawer
+(`z-index: 6` on `tr.grp td.grphd` and on `.mxband`) because that label overflows
+its frozen columns rightward and read "IWSC" for "IWSO · 5" underneath. While an
+admin is REARRANGING the drawer takes `pointer-events: none` — it is NOT
+unmounted: the figures are worth reading while the roster is ordered, and a
+roster drag hit-tests with `elementFromPoint`, so an overlay that took the
+pointer would hide the row being dragged over.
+
+**A title says what its column counts.** Tapping one opens `div.figpop` — the
+figure's own `desc` from the catalogue, the same words the picker's caption and
+the Legend's Figures section use. It is screen-fixed (the frozen columns cannot
+clip it), placed by `ui/popat.ts` — the shared clamp/flip the quals popover uses
+— and obeys the app's click-open popup rule plus the popover's other two thirds:
+an outside pointer-down, Escape, a SCROLL (captured, because `.mx-wrap`'s
+sideways scroll does not bubble) or a RESIZE closes it. A press on its own title
+toggles it, and "its own title" means the LIVE drawer's — the outside-press test
+is scoped `.mxdrawer [data-fig] .figtitle`, or the stuck bar's read-only copy of
+the same markup counted as inside and a press there closed nothing. It is
+`role="dialog"` with the figure's name, not a tooltip: a click opens it and a
+click closes it, which is a dialog's contract; the title that opened it carries
+`aria-expanded` and `aria-controls`, so a reader who cannot see it land is still
+told it opened and where. The mirror's copy of the titles is a plain span, not a
+button: a hand over a dead control is a lie. **Any** scroll dismisses it, the app's own
+included: a sheet takes the page's scroll while it is up and gives it back on
+the way out (445px on a phone, measured), so a pop-up opened in the same beat as
+a sheet closing is dismissed by that restore. Harmless to a reader, who pauses;
+it is why the e2e opens the pop-up BEFORE it opens a sheet, not after.
+
+**The flash.** When a person's shown figure CHANGES, that box fades from the
+accent tint once — `.flash` + `@keyframes lw-figflash`, 700ms, removed on
+`animationend`, off under `prefers-reduced-motion`. Where the animation is off
+there is no `animationend`, so a 700ms timer of the same length clears the class
+as well; whichever gets there first wins, and nothing is ever cut short. Keyed by
+figure id, so switching the column to another figure never flashes every row (a
+picker tap would otherwise light sixty rows at once), and never on the first
+render: there is nothing changed about a number just appearing.
+
+**Four parts are WebKit-unproven** (Chromium is clean on all four; the
+owner's iPhone is the gate). The overlay's copied ROW HEIGHTS — a Safari that
+lays the two tables out a fraction apart shows as figures drifting off their
+names further down the roster. The stuck bar's frozen COPY being exactly the
+drawer's right edge — the same visual-vs-zoomed-pixel trap that put the hatched
+filler on his phone on 6 Sep; a column short shows a stripe of the scrolling
+layer's dates beside the figures, a column long hides one (pinned in the stuck-
+header e2e as `copy.right ≈ drawer.right`). And the FLASH painting at all — a
+700ms background animation on an overlay cell. And, since 6 Sep 26, the CORNER
+SWITCH being `position: absolute; inset: 0` inside a `position: sticky` `th` —
+a sticky box is a containing block for an absolute descendant in every modern
+engine, but table cells have a history of quirks here, and a Safari that did not
+honour it would draw the switch across the whole grid rather than in its corner
+(obvious rather than silent, which is why it was taken this way).
+Margins to watch: in Chromium the longest title, "+CCL −CCL", clears its 62px
+box by only ~2px, so a wider WebKit font clips that one first; and a `-100` in
+the narrowest phone box measures 18.8px of text in 19.8px of room at the `.wide`
+size (measured), so a wider font there clips the value rather than spilling it.
+
+**Who sees which figures in the PICKER depends on the role.** An admin sees all
+eight, a hidden one dimmed with its eye lit — hiding is his control and the
+dimmed row is the way back, and his tap on it un-hides AND picks in one gesture.
+A member sees only what is showing (`visibleFigures()`): he cannot un-hide
+anything, so a greyed row that does nothing when tapped would be an inert control
+on a production surface. The column and the drawer read `visibleFigures()` for
+both roles.
+
+**And the column still follows the leave just entered** — to the BALANCE it comes
+off (`figureForLeave`: LL/OL → +LVE, OIL → +OIL, CCL/FCL/CL/PL → their own,
+ATT C/HL/OML → −MED TOT; EL and ATT B do not switch), gated on that figure still
+being visible so an admin who hid one is not sent to it. One gate, one body —
+`Matrix.tsx showFigure` — because the two OIL paths (a tracker grant landing, an
+admin's hand-typed OIL day) had their own `setShownId('oil')` and walked straight
+past it. The picker is handed `shown.id`, the figure actually
+on screen, not the stored `shownId`: where the stored one names a figure since
+hidden the column has already fallen back to the first visible one, and the
+picker marked the dimmed row as pressed instead.
+
+**A WRITE ON THE GRID KEEPS YOU ON THE GRID (owner, 6 Sep 26 — "it should never
+bring me to the oil tracker page").** This REVERSES the 2 Sep 26 rule that an
+admin's manual OIL-family write (OIL taken, or an FO/HO credit typed by hand)
+closed the sheet and opened the OIL tracker on that person with the day's box
+lit, so the reason could be typed there. Being thrown off the grid mid-pass cost
+more than the reason was worth, and the tracker is one tap away on the OIL
+button. `Matrix.tsx onWrote` now does two things and no more: the column snaps to
+the figure the leave comes off (above), and an EARNING cell — FO/HO — snaps to
+`+OIL` so the balance that just grew is the one on screen. Nothing navigates.
+**And since that write was its only caller, the tracker's own way of opening on
+a DAY is gone too** (controller, 6 Sep 26): the `focus` prop, the archive it
+auto-opened so the lit box could be seen, and the mark it painted on that credit
+box all came out rather than standing as capability nothing asks for. Opening
+the tracker on a PERSON is untouched and still has callers — the Cinch sheet's
+OIL BAL row — so that row is still scrolled to AND lit; there is simply no way
+to open the tracker on a day. The
+negative-balance confirm in `BidPicker.write` is untouched by this and is now the
+whole of what the admin sees on an OIL day he has no balance for: it WARNS once
+("Tap the same leave again to go ahead") and writes on the second tap of the same
+leave, per COUNTER. Pinned in `oiltracker.test.tsx` (no tracker for either role,
+the column still snaps) and `bidding.test.tsx` (warn → write, OIL and CCL at 0).
+
+## Bulk balance entry from the figures (owner, 6 Sep 26)
+
+The figures drawer above shows every pool's balance for everyone; this is how an
+admin CHANGES them from the same place — "drag down a run of people in one
+column, key one number, and it lands on all of them" (owner, 6 Sep 26: "7 shows,
+I type 3, it reads 10; I type −3, it reads 4"). The design doc, owner-approved
+section by section, is
+`docs/superpowers/specs/2026-09-06-leavewar-bulk-balance-design.md`; this is what
+the built surface promises. Almost none of it is reachable from jsdom — there is
+no hit-testing, no layout and no docked panel to measure — so
+`e2e/leavewar.spec.ts` (both projects) carries the browser half and the unit
+files carry the rules.
+
+### The gesture
+
+**One listener, three copies of every box.** A figure box is drawn in three
+places — the real counter cell, the phone band's frozen copy and a drawer box —
+and the gesture is bound ONCE, on `.mx-outer`, the only ancestor all three share
+(`Matrix.tsx`, `select.ts wireFigureSelect`). Every copy carries the same
+addressing, `data-fig` + `data-person`, and `GestureSpec.nodes(id)` paints all of
+them, so a selected person lights wherever he is on screen. The hit is
+`td.figbox[data-fig][data-person]` and nothing else: a `th` title cell, the
+corner switch and the manning/event blanks can never start one.
+
+**The feel is the day grid's, on the same constants, unchanged.** A mouse arms at
+a 4px move (`MOUSE_SLOP`); a finger arms after a 180 ms dwell (`HOLD`), or
+earlier if it is still down at 140 ms (`SLOWARM`) and then slides past 26 px
+(`GIVEUP`) — a slow, deliberate drag. That same 26 px slid BEFORE the 140 ms
+cedes to the native scroll, which is what keeps a quick flick a flick. Pointer
+capture is taken in `arm()`, never on down. The page auto-scrolls vertically at
+the top and bottom edge bands while a drag is armed (the day grid's own rule,
+owner 30 Aug 26 — "auto scroll to the edge to continue selecting more"), so a
+drag held near the bottom of a phone keeps scrolling AND keeps adding people:
+the bar can name more of them than the finger visibly crossed. **That edge run
+is GENTLE here, unlike the day grid's** (6 Sep 26 bug hunt): the figure drag
+scrolls the page **after about half a second's rest at the edge, and slowly** —
+`GestureBase` grew `edge?: { rate, dwellMs }` (defaults `1` and `0`, so
+`wireSelect` and `wireRowSelect` are untouched) and `wireFigureSelect` asks for
+`{ rate: 0.3, dwellMs: 500 }`: 0.3 of the per-frame step, and nothing at all
+until the pointer has rested in the band, timed from the frame it entered and
+started again whenever it leaves. Painting a rectangle of days wants the grid's
+quick run to the next month; a run of PEOPLE is what a number is about to be
+written to, and a three-row drag that merely ended in the bottom band ran the
+page 259 px in ~0.7 s and lit fourteen. The half second is measured rather than
+chosen: a drag's own moves take longer than a short dwell, so at 220 ms the same
+drag still reached eight — the wait had run out before the finger stopped. At
+500 ms the drag itself now scrolls NOTHING (measured 0 px), and a run can still
+be extended past the screen by resting there on purpose, at roughly seven rows a
+second at the depth such a drag ends at — **so the bar's count is the check
+before Save**, and the count is the number to read, not the rows the finger
+remembers crossing.
+There is no
+sideways auto-scroll — `.mx-outer` does not scroll. **A HOLD SELECTS AND A QUICK
+TAP STILL OPENS THE BREAKDOWN** — that is
+the whole difference a reader feels on a box that used to do only one thing, and
+it is pinned both ways in the e2e ("a drag on a total, or by a member, lights
+nothing" makes an admin's plain click open `figure-breakdown`, close it, and
+light nobody).
+
+**One pool per drag, people only.** The pressed box's `data-fig` fixes the pool
+for the whole gesture — the run never widens sideways — and the run itself is the
+roster-order slice between the anchor person and whoever is under the pointer
+(`rowRun` over people only). A group heading, a CAT sub-heading or an event row
+under the pointer holds the LAST person rather than breaking the run. A second
+drag in the SAME pool adds to the live selection; a drag in another pool starts
+over. **A total is never selectable** — one predicate, `selectableFigure(f) =
+!!f.counter`, read off the catalogue rather than a written-out list, so `−LVE
+TOT` and `−MED TOT` refuse and every balance including OIL accepts.
+
+**Who.** Admin only (`role === 'admin'`), and the gesture stands down entirely
+while another one owns the grid — Rearrange, move mode, event move. A member's
+boxes behave exactly as they always did.
+
+**TWO ATTRIBUTES, ONE LOOK, AND THEY MUST NEVER BE ONE.** React renders
+`data-figsel` for the COMMITTED selection; the gesture paints `data-figdrag`
+while a drag is live and wipes only its own marks on release. Neither is a
+CLASS, because `FigureCell` rebuilds its `className` from `wide`/`flash` on every
+store change — which is exactly the moment a Save lands — so a class painted from
+outside would be wiped mid-drag. And they are two attributes rather than one
+because the gesture's clear would otherwise strip boxes React already owned, and
+React writes an attribute only when its PROP changed, so it never put them back:
+a second drag overlapping a live selection left a selected person dark, and a
+cancelled drag left the whole selection dark. Both are lit by the same pair of
+rules in `matrix.css`, so a drag crossing a live selection never flickers.
+The armed BRIGHTENING is a third attribute, `data-selecting` on `.mx-outer` —
+the day grid's `.selecting` beat, as an attribute for the same reason (React
+rebuilds that element's className too, and a phone drag whose edge auto-scroll
+flipped the band on would have lost the brightening mid-drag). Pinned in
+`select.test.ts` (the armed beat survives a className rewrite and comes down on
+release) and `figselect.test.tsx` (through the imported `FIGSEL_ATTR`, so the
+constant and the test cannot drift).
+
+**The swipe stands down for a touch that armed.** The closed counter column's
+swipe-to-cycle (40 px on `onTouchEnd`) ignores any touch during which the figure
+gesture ARMED — a ref set in `arm()` and cleared on the next `touchstart`. A
+quick flick never arms, so it still cycles the column; a slow hold-and-drag
+selects and does not.
+
+**The click swallow now runs on ANY armed teardown, cancelled drags included.**
+It used to live in `finish()`, so an iOS system gesture that cut a hold with
+`pointercancel` let the trailing click open a sheet over the selection just made.
+`swallowNextClick()` is called from both `finish` (when it was armed, even if the
+selection came back null) and `onCancel`. This is a fix to the shared core, so
+the DAY GRID gains it too. Pinned in `select.test.ts`.
+
+**The phone band lets a press through to the drawer while the figures are open.**
+With the grid scrolled sideways the band's own (hidden) counter column sits over
+the drawer's first column, and `elementFromPoint` there answered the BAND, not
+the box — so the drawer's first column could not be dragged at all. The rule is
+`.mx-outer.mx-figures .mxband { pointer-events: none !important }`, with
+`td.who`/`td.grphd` put back to `auto` so the names and headings still take the
+pointer. **That `!important` is the only one in `matrix.css` and it is
+deliberate**: the band root's `pointer-events` is written on its INLINE style by
+`onWrapScroll`, imperatively, on every scroll frame, so a plain rule cannot reach
+it — and the alternative is teaching a hot per-frame scroll handler about the
+drawer. It is scoped to `.mx-figures`, so the at-rest and no-drawer behaviour the
+inline style drives is byte-identical to before. The e2e asserts BOTH halves: the
+drawer box answers a press, and the band's own callsign still does.
+
+**The phone hold is proven in this container, not only on a device.** A CDP
+`Input.dispatchTouchEvent` hold does produce a real `pointerType: 'touch'`
+pointerdown in headless Chromium here, so "a finger's hold-and-drag down the
+drawer lights the run and does not scroll the page" is a real lw-phone test, not
+a `fixme`. It parks the run a third of the way down the screen first and asserts
+it is clear of the edge bands, because the 48px bottom band is deliberate
+auto-scroll and the first roster rows sit inside it on a 664px viewport.
+
+### The bar
+
+**It is NOT a `Sheet`, and that is a contract, not a shortcut.** A Sheet's touch
+shield swallows presses on the very boxes being selected, and its popup family
+dismisses on scroll — both fatal to a panel that must stay up while the reader
+scrolls the grid under it to see who else to include. `BalanceBar.tsx` is a
+plain viewport-docked panel (`div.balbar`, `data-testid="balance-bar"`,
+`role="group"` with an aria-label naming the pool and the count). It has no
+scrim, does not close on scroll, and re-anchors above a phone's keyboard by
+following the VISUAL viewport (`useDockAboveKeyboard`, the same 120px threshold
+Sheet's own hook uses, so a URL bar showing or hiding does not move it).
+
+**One dock recipe, shared with the move banner** (`matrix.css` `.mv-banner,
+.balbar`): `position: fixed; left: 12px; bottom: 14px; width: min(880px,
+calc(100vw - 24px)); z-index: 60`, a raised `#1d232b` ground, a `1.5px solid
+var(--accent)` ring, `0 0 0 4px rgba(59,198,232,.16)` plus a deep drop shadow,
+radius 14, and a 160 ms `lw-dockin` slide on entry that is off under
+`prefers-reduced-motion`. The first cut of the bar "visually blended in with the
+background" (owner, 6 Sep 26), which is what the ring and the glow answer. **The
+MOVE BANNER now stops at 880px on a wide screen** — it used to run `left: 12px;
+right: 12px` — because a foot-of-screen panel spanning 1400px reads as chrome
+rather than as something that just appeared. Below 904px, which is every phone,
+its geometry is unchanged.
+
+**Contents.** A plain pool: `N people · +CCL` (the count, then the figure's own
+title in accent), the sign chip, the amount box, **Save**, **✕**. OIL: the same,
+plus the date chip, the reason and the optional "given by" — because it is the
+tracker's own `CreditForm`, generalised with a `counter` prop, so the grid's bar
+and the tracker's bar are ONE body and cannot drift about what a valid grant is.
+Save is pushed to the right (`margin-left: auto`); under 520px the count takes
+its own line, so the bar reads top-to-bottom — who it is for, then the number and
+what to do with it. The chips need their own base rules here (`.balbar .tchip`,
+`.balbar .dchip`) because the sheet's are written `.bidsheet .tchip` and this is
+deliberately not a sheet; without them they came up as bare grey browser buttons.
+
+**The sign chip, and the amount rule (one function, both bars).**
+`parseAmount(raw, sign)`: `2` and `+2` both ADD, `-2` (or a typed `−2`)
+subtracts, and a typed sign always beats the chip. With no sign typed the `+ / −`
+chip decides — a phone's decimal keypad has no minus key, so the chip is the
+phone's only way to a correction. It is `aria-pressed` and TINTS RED while
+subtracting, because a pick the eye cannot see is a form that lies (this file's
+own 19 Aug 26 rule). Anything that is not a plain number is refused with "Type
+the days — 2 adds, -2 subtracts"; zero, blanks and quarter-days are refused by
+the STORE, so the two surfaces cannot disagree with it. A refusal keeps both the
+selection and the draft.
+
+**The bar's amount box opens EMPTY; the tracker keeps its `1`.** A missing input
+must fail closed — an idle Enter on the grid can never add a day to a run of
+people — while the tracker's long-standing default is behaviour nobody asked to
+change, so the shared form takes the initial amount as a prop. **The tracker's
+amount box is a TEXT input now** (`inputMode="decimal"`), which is what gives a
+phone the right keypad and lets the sign chip carry the minus; a desktop user who
+used the number spinner's up/down arrows will not find them.
+
+**Dismissal, and what clears the run.** Escape and a press outside the bar and
+the boxes both drop the selection (the tracker's own no-Deselect-button rule,
+owner 2 Sep 26) — and both YIELD to an open `.bidsheet`, which is what Escape
+already did alone: the two read the same situation differently, so dismissing a
+breakdown by tapping beside it silently took the selection with it where Escape
+left it standing. A press after the sheet closes clears as ever. A press ON a box
+is the next drag or a tap for the breakdown and is left alone. The run also
+clears on Undo/Redo (`histEpoch`), a stage or war change, the drawer being opened
+or put away, and an admin's flip to "view as member" — the bar is mounted for an
+admin only, so without that last one a flip mid-selection left a lit run with
+nothing able to use or clear it. Pinned in `figselect.test.tsx` (including "a
+press while a sheet is open leaves the run alone, as Escape does") and the e2e
+"a tap outside clears the bar, the drawer toggle clears it, and a sideways scroll
+does not".
+
+**A refusal clears when the amount is edited.** The message names what was wrong
+with the value that WAS typed, so left standing over a new one it reads as a
+fresh rejection of a draft nothing has judged yet. Editing the number clears it;
+Save brings it back if the new value is still bad, so this is a clear, not a
+silencing (`CreditForm.tsx`, pinned in `balancebar.test.tsx`).
+
+### The record
+
+**ONE WRITER FOR EVERY POOL.** `state/store.ts grantTo(personIds, counter,
+amount, date, reason, givenBy)` is the single credit path, shaped exactly as
+`grantOil` was — dedupe the ids, drop anyone not on the roster, one entry per
+person through `ledgerSeq()`, then ONE `withCurrent` + one `persist()` + one
+`notify()`. So a run of nine people is **one undo step**, not nine.
+`grantOil(ids, …)` is now a one-line wrapper on `grantTo(ids, 'oil', …)`, which
+is why the tracker needed no change at all.
+
+**The rules, in `ledgerProblem`, one body for every pool.** Admin only, and the
+refusal names the pool ("Only an admin can credit CCL"). The amount must be
+finite and non-zero, and **a multiple of 0.5 on EVERY pool, the tracker
+included** — "Days come in halves — 1, 1.5, 2 …" — because a half day (HO) is the
+smallest thing the grid ever charges, so a credit of 0.3 could never be drawn
+against. That is new, owner-approved, and it tightens the OIL tracker too. The
+date must be `YYYY-MM-DD` (the bar supplies today). **A REASON IS REQUIRED FOR
+OIL ONLY** — `reasonRequired(counter) = counter === 'oil'`, the one predicate the
+writer, the edit path, the boot reader and the form all read, so a blank reason
+is a valid plain-pool credit and an invalid OIL one. `givenBy` is optional
+everywhere. `approvedBy` is stamped from `approverName()` — the viewer's
+CALLSIGN, never their id. A NEGATIVE amount is a correction, not a second
+mechanism.
+
+**Nothing changes about how a balance is READ.** `balanceOf` already summed the
+ledger for every counter; the bar simply gives five more pools a writer. What
+DID change is that a bare "granted 2" now needs explaining, so the breakdown
+sheet ITEMISES the entries behind its `granted` row — `+2 · 6 Sep 26 · by admin
+(OC Ops) · Exercise weekend`, the negative in red — drawn INSIDE the row, under
+its label-and-number line, where `.csub` already puts a caption (`grantsFor`,
+`CounterSheet.tsx`, `data-testid="breakdown-grants"`). Outside the row it became
+a flex sibling and squeezed in beside the number it explains.
+
+**After Save**: the bar closes, the selection clears, each changed box flashes
+once (the drawer's existing `lines.top` flash — free confirmation), and one Undo
+takes the whole batch back. The closed column does not switch figures; the drag
+was made on the one already shown. Pinned end to end in the e2e "the bar takes
+one number for the run, the boxes flash, and one Undo takes it all back", which
+arms a `MutationObserver` on `class` BEFORE pressing Enter rather than racing the
+700 ms flash window.
+
+**One gap this opens, and it is real**: a credit on a plain pool has no edit or
+delete path afterwards — the tracker's in-place edit and delete reach OIL entries
+only. The way to correct one is a second entry with the opposite sign, which the
+breakdown then shows on its own line. `docs/leavewar/known-gaps.md` §What
+balances do not yet do.
+
+### What this does not touch
+
+Bidding, decisions, the day cells' own drag-select, the OIL tracker's maths
+(FIFO, expiry, policy) and its behaviour, the drawer's layout and the corner
+switch, the figure picker and hide/show, **Set** on the person sheet (which still
+moves the OPENING figure — `+`/`−` are entries on top of it), the manning rows,
+the month strip, the window engine, the frozen-names mechanics, the quick-flick
+swipe, and everything a member sees.

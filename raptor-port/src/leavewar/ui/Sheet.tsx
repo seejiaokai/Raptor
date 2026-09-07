@@ -12,7 +12,7 @@
 // the grid, and the manning counts behind an open sheet are exactly what
 // somebody is reading while they decide.
 
-import { useEffect, useRef, type ReactNode } from 'react'
+import { useEffect, useLayoutEffect, useRef, type ReactNode } from 'react'
 import './bidpicker.css'
 
 /* THE PAGE STAYS FULLY SCROLLABLE UNDER A SHEET (owner, 28 Aug 26 — "enable
@@ -29,29 +29,97 @@ import './bidpicker.css'
 
 const PAN_THRESH = 6 // px before a gesture commits to an axis
 
-/* The scrim forwards a SIDEWAYS drag / wheel onto the grid's one horizontal
-   scroller by hand (owner, 28 Aug 26), and lets the browser handle UP-DOWN
-   natively (`touch-action: pan-y` in bidpicker.css + the wheel no-op below).
-   The scrim must keep SWALLOWING taps — a tap dismisses, and a bare grid tap
-   behind an open sheet would otherwise open a second cell sheet or start a
-   drag-select — so it goes on capturing gestures; it just no longer refuses
-   the vertical ones. Everything the frozen date bar tracks is driven off
-   `.mx-wrap.scrollLeft`, so it follows the sideways forward for free.
+/** How much of the visual viewport must be gone before it counts as a KEYBOARD
+ *  rather than a URL bar showing or hiding — below this, a docked panel must
+ *  not re-anchor itself. Exported because the balance bar keeps itself above a
+ *  phone's keyboard the same way (`BalanceBar.tsx`) and had copied the number:
+ *  two literals for one physical judgement is the drift seam the house rules
+ *  name (review, 6 Sep 26). */
+export const KEYBOARD_MIN = 120
 
-   Pointer capture is taken LAZILY, only once a drag commits to the horizontal
-   axis: capturing at pointerdown would stop the browser from panning the page
-   vertically from a touch that began on the scrim, which is the up-down scroll
-   the owner asked for. A gesture that never moved IS a tap — it dismisses (via
-   the scrim's onClick, guarded so a drag's trailing click can't). */
-function useGridPan(movedRef: { current: boolean }) {
+/* A FINGER SCROLLS THE GRID ITSELF (owner, 6 Sep 26 — "when a window like
+   this is open, the swipe on the background of the leave war doesn't
+   decelerate smoothly. Like it stops immediately … fix the swipe animation to
+   be exactly the same"; then, of the first fix, "the scrolling is fix …
+   however it feels more laggy/stuttery as compared to a window that's
+   closed"). Since 28 Aug the scrim forwarded a sideways drag onto `.mx-wrap`
+   by hand from pointer events: 1:1 under the finger and dead the instant it
+   lifted, because a hand-written scrollLeft carries no momentum. The first
+   fix (same day, superseded within hours) made the scrim a native scroller of
+   its own, mirrored onto the grid: it coasted, but every step of the coast
+   reached the grid as a `scrollLeft` write from a scroll event, so the columns
+   moved only when the main thread got round to it. A bare fling runs on the
+   compositor and never waits for the main thread; a mirrored one waits behind
+   everything a scroll event sets off — the in-motion month draw (Matrix.tsx
+   onWrapScroll, 5 Sep), the date-bar sync, the rest timers — and every frame
+   that ran long showed as a stutter, which is exactly what the owner then saw.
+   Nothing that drives the grid from JavaScript can be "exactly the same"; only
+   the grid being the thing under the finger is.
+
+   So on a touch screen (`(pointer: coarse)`) the scrim no longer takes the
+   finger at all: it is `pointer-events: none`, the finger lands on `.mx-wrap`
+   and the browser scrolls it the way it does with no sheet up — the same
+   drag, fling, deceleration and edge bounce, on the same thread, with
+   nothing of ours in between. What the scrim used to do by being in the way —
+   swallow a tap (a bare tap on a cell behind an open sheet would open a second
+   cell sheet; a press would start a drag-select or a row drag) and dismiss on
+   it — a document-level CAPTURE listener does instead: for a press, a tap or a
+   click aimed under the sheet it stops propagation before the grid's handlers
+   (React's root listener and the grid's own) can see it, closes the sheet on
+   the click, and never `preventDefault`s the touch — a stopped touchstart
+   still scrolls, a cancelled one would not. The one default it does cancel is
+   the compat `mousedown` of a tap, so a tapped cell is not focused (a focus
+   scrolls its cell into view: a jump). Moves are left alone: the grid handles
+   none, and a listener on every move frame is a cost for nothing.
+
+   A mouse cannot drag-scroll a native scroller, so on a fine pointer the scrim
+   stays the interceptor it has been since 28 Aug: drag-to-pan by hand, wheel
+   forwarded, click dismisses, hover kept off the grid. A touch screen on a
+   fine-pointer device (a touch laptop) gets that hand pan too — 1:1, no coast
+   — the pre-6 Sep behaviour; docs/leavewar/known-gaps.md records it. */
+
+/* Everything a bare tap or press on the grid sets off, in the order a touch
+   produces them; `click` is the one the shield also acts on. */
+const SHIELDED = ['pointerdown', 'pointerup', 'pointercancel', 'touchstart', 'touchend', 'touchcancel', 'mousedown', 'mouseup', 'click', 'dblclick', 'contextmenu'] as const
+
+function useGridPan(movedRef: { current: boolean }, closeRef: { current: () => void }) {
   const scrimRef = useRef<HTMLDivElement>(null)
-  useEffect(() => {
+  // A layout effect: the scrim must be out of the finger's way, and the
+  // shield in place, before a finger can land on the freshly-opened sheet.
+  useLayoutEffect(() => {
     const scrim = scrimRef.current
     if (!scrim) return
     // `.mx-wrap` is Leave War's own (and only) sideways scroller — the class
     // appears nowhere in Raptor's scheduler, so no page scope is needed.
     const grid = () => document.querySelector<HTMLElement>('.mx-wrap')
 
+    // ---- the touch screen: the finger goes to the grid, the shield takes the tap
+    // Decided ONCE, here, and the scrim's own pointer-events follow the same
+    // answer as an inline style (React never sets `style` on the scrim, so it
+    // is left alone), so the two can never disagree. jsdom has no matchMedia:
+    // a fine pointer, the scrim in the way, as every scrim test expects.
+    const coarse = typeof window.matchMedia === 'function' && window.matchMedia('(pointer: coarse)').matches
+    scrim.style.pointerEvents = coarse ? 'none' : ''
+    const shield = (e: Event) => {
+      // KEPT-MOUNTED guard, as the Escape listener's: the Leave War tab stays
+      // mounted behind a tab switch, so a sheet left open would otherwise eat
+      // every tap on a RAPTOR page. Act only while this section is showing.
+      const pg = document.getElementById('page-leavewar')
+      if (pg && !pg.classList.contains('on')) return
+      const t = e.target
+      if (!(t instanceof Node)) return
+      // Not "under the sheet": the scrim itself, and ANY sheet panel — two are
+      // never up at once, but a lower one's shield must not eat the upper's taps.
+      if (scrim.contains(t)) return
+      const el = t instanceof Element ? t : t.parentElement
+      if (el?.closest('.bidsheet')) return
+      e.stopPropagation()
+      if (e.type === 'mousedown') e.preventDefault()
+      if (e.type === 'click') closeRef.current()
+    }
+    if (coarse) for (const type of SHIELDED) document.addEventListener(type, shield, true)
+
+    // ---- the fine pointer: drag-to-pan by hand, as since 28 Aug -------------
     let x0 = 0, y0 = 0, sl0 = 0, axis: '' | 'x' | 'y' = '', captured = false
     // Whether a press is in progress. A mouse fires `pointermove` on a bare
     // HOVER too, and the scrim covers the whole page behind a sheet — so
@@ -108,13 +176,14 @@ function useGridPan(movedRef: { current: boolean }) {
     scrim.addEventListener('pointercancel', upOrCancel)
     scrim.addEventListener('wheel', wheel, { passive: false })
     return () => {
+      if (coarse) for (const type of SHIELDED) document.removeEventListener(type, shield, true)
       scrim.removeEventListener('pointerdown', down)
       scrim.removeEventListener('pointermove', move)
       scrim.removeEventListener('pointerup', upOrCancel)
       scrim.removeEventListener('pointercancel', upOrCancel)
       scrim.removeEventListener('wheel', wheel)
     }
-  }, [movedRef])
+  }, [movedRef, closeRef])
   return scrimRef
 }
 
@@ -218,11 +287,8 @@ function useKeyboardInset(panelRef: { current: HTMLDivElement | null }) {
     const panel = panelRef.current
     if (!vv || !panel) return
     const GAP = 8
-    // The viewport must lose more than a chunk before we call it a keyboard —
-    // the URL bar showing/hiding shifts it a little and must not re-anchor.
-    const KEY = 120
     const place = () => {
-      if (window.innerHeight - vv.height <= KEY) {
+      if (window.innerHeight - vv.height <= KEYBOARD_MIN) {
         // No keyboard: drop the overrides, the CSS bottom-anchor + dvh cap
         // take back over.
         panel.style.top = ''
@@ -278,7 +344,11 @@ export function Sheet({
   // (mouse) — swallow that one so a sideways scroll never dismisses the sheet.
   // A real tap sets this false at pointerdown, so it still closes.
   const movedRef = useRef(false)
-  const scrimRef = useGridPan(movedRef)
+  // The latest onClose, for listeners armed once: the Escape key below and, on
+  // a touch screen, the tap shield in useGridPan.
+  const closeRef = useRef(onClose)
+  closeRef.current = onClose
+  const scrimRef = useGridPan(movedRef, closeRef)
   const panelRef = useSheetDrag(!full)
   useKeyboardInset(panelRef)
   const onScrimClick = () => {
@@ -298,8 +368,6 @@ export function Sheet({
      ever one — but the day two are mounted at once, one press must peel one
      layer rather than clearing the pile. The listener captures so a field's own
      Escape handler cannot swallow it first. */
-  const closeRef = useRef(onClose)
-  closeRef.current = onClose
   useEffect(() => {
     const esc = (e: KeyboardEvent) => {
       if (e.key !== 'Escape') return
@@ -325,7 +393,9 @@ export function Sheet({
     <>
       {/* Not a button and not focusable: it carries nothing a screen reader
           needs, and every sheet already has a real labelled ✕. This is a
-          pointer convenience on top of that, never the only way out. */}
+          pointer convenience on top of that, never the only way out. On a
+          touch screen useGridPan turns its pointer-events OFF, so a finger
+          falls through to the grid and its click here never fires there. */}
       <div ref={scrimRef} className="sheetscrim" data-testid="sheet-scrim" aria-hidden="true" onClick={onScrimClick} />
       <div ref={panelRef} className={`bidsheet${narrow ? ' narrow' : ''}${full ? ' full' : ''}`} data-testid={testid} role="dialog" aria-label={label}>
         {children}

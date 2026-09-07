@@ -1313,3 +1313,516 @@ gate's. Keep verdict-bearing commands unpiped.
 **Suggested improvement:** When a CI job is red, read the summary block for `Errors N` and the "Unhandled Errors" section before deciding anything from the pass/fail counts. For any module that schedules timers longer than a test file's typical run (seconds), make the callback tolerate a torn-down environment (guard on `document`/`window`) or clear the timers in the store's reset path — and say which in the code comment, because the next "unrelated" red run will otherwise be re-diagnosed from scratch.
 
 **Principle:** A test job fails on unhandled errors as well as on assertions; a production timer that outlives its test file is a latent red run waiting for a slow runner. (Second instance the same day: the Shell pre-warm poll, deploy run 903 — a self-re-arming `setTimeout` in a component the tests never unmount. Sweep for both shapes: long one-shot timers AND re-arming polls.)
+
+## 2026-09-06
+
+### Observation 86: Native-feel gestures — proxy the platform's own scroller instead of imitating its physics
+
+**Status:** OPEN
+**Date:** 2026-09-06
+**Session context:** The Leave War sheet scrim: the swipe on the grid behind an open sheet stopped dead at the lift, because the scrim forwarded pointer moves onto the grid's scrollLeft by hand; the owner asked for the swipe to be "exactly the same" as the bare grid's (branch `claude/read-handoff-docs-15o14q`, PR #371).
+**Skill:** New skill candidate: none — cross-cutting UI/gesture principle (sibling of Observation 67, which lists touch-fling momentum among the engine asymmetries)
+**Type:** open-source
+**Phase/Area:** design choice for gesture fidelity; verification of a physics-dependent change
+
+**Issue:** The obvious fix — track the pointer velocity and run a decay loop after release — is an imitation, and could never be "exactly the same": iOS, Chromium and Firefox each coast with a different curve and bounce, and a velocity estimated from 60 Hz pointer events is noisy. The codebase already held the better idiom in its desktop proxy scrollbar: a SECOND native scroller mirrored onto the first, echo-guarded. Making the overlay ITSELF a native scroller (`overflow-x:auto`, `touch-action: pan-x pan-y`, a spacer as wide as the target's scroll range) and mirroring its scroll onto the target gave the platform's own physics by construction, with less code than the imitation. Two hazards came with it and both were pinned: (1) the mirror direction that writes into whichever scroller is currently moving kills its fling — guarded by "the one value I wrote, cleared once its scroll event is seen"; (2) an overlay that mounts at scroll 0 must be aligned to the target in a layout effect before the first gesture, or it flings the target to the start (this repo's "jumps back to January" family).
+
+**Suggested improvement:** When an interceptor/overlay must relay a scroll-like gesture to another element and the ask is native feel, make the interceptor a real scroller of the same range and mirror positions (per-write echo guards, aligned on open, range refitted on the target's scroll and resize) rather than re-implementing momentum; reach for a hand-rolled coast only when the platform refuses to fling the proxy (record the platform's decay constant beside it — iOS UIScrollView: 0.998/ms). A verification note for the same class of change: a headless desktop browser may not fling from synthetic touches at all, so prove the drag-follow and the wiring there, and leave the coast itself to the device gate with a hypothesis and a fallback written down.
+
+**Principle:** Platform physics can be borrowed but not reproduced — route the gesture through a real native scroller and mirror its position, and keep every write out of whichever scroller is currently in motion.
+
+### Observation 87: A gesture-driven measurement that reads flat zero is a targeting question before it is a feature question
+
+**Status:** OPEN
+**Date:** 2026-09-06
+**Session context:** The same task's live drive — the first run of a real CDP touch fling on the scrim reported no movement, no coast and "the tap did not close the sheet"; every reading was consistent with "the feature does not work in Chromium".
+**Skill:** New skill candidate: none — cross-cutting verification principle (the mirror image of HANDOFF's "dispatch to `document.elementFromPoint`, not the element in hand")
+**Type:** open-source
+**Phase/Area:** live-drive verification / browser test tooling
+
+**Issue:** The finger's y was computed as "40 px above the panel", but on the phone the counter sheet starts 65 px from the top, so the touch landed ON the panel — which scrolls its own list and swallows taps. Nothing in the readings said so; the zero read as a negative finding about the feature and would have sent the investigation into the browser's fling behaviour. Printing the panel's box and `document.elementFromPoint` at the touch point before the gesture made the cause obvious; the second run (a shorter sheet, the finger provably on the scrim) measured the drag following the finger at once.
+
+**Suggested improvement:** In any drive or e2e that dispatches a pointer/touch gesture at coordinates, log the element at that point (`elementFromPoint`) and the boxes of any overlay that could sit there BEFORE dispatching, and assert it is the intended target; treat an all-zero gesture reading as "wrong target until proven otherwise". Pairs with the existing rule: check what is at the point before, and dispatch to what is at the point.
+
+**Principle:** A gesture that measures nothing has usually touched the wrong thing — verify the hit target before reading a zero as a result.
+
+### Observation 88: A proxied native scroller borrows the platform's physics but not its thread — for "exactly the same" feel the touched element must be the visible one
+
+**Status:** OPEN
+**Date:** 2026-09-06
+**Session context:** RAPTOR Leave War — the swipe behind an open sheet; the owner's second report ("fixed, but laggier/stuttery than with no sheet") on the proxy-scroller fix that observation 86 had recommended
+**Skill:** task-observer (methodology); the UI-gesture guidance in obs 86
+**Type:** open-source
+**Phase/Area:** Fix design for native-feel gestures
+
+**Issue:** Obs 86 said "proxy the platform's own scroller instead of imitating its physics". That got the deceleration curve right, but the VISIBLE element was still driven from JavaScript (a scroll event → a scrollLeft write per frame), so it moved at the main thread's cadence, one frame behind, and froze for every long task the scroll itself triggered — while a bare fling runs on the compositor and never waits. The user saw it at once as stutter. The correct fix was to remove the interceptor from the touch path entirely (pointer-events: none on the overlay for coarse pointers) and move the overlay's other job — swallowing taps — to a document-level capture listener that stops propagation without cancelling the touch.
+
+**Suggested improvement:** Amend obs 86's principle with a second clause: a proxy scroller reproduces the physics, not the thread. When the ask is "exactly the same", check whether the visible element can BE the touched one; if an overlay only exists to catch taps, replace the overlay with a capture-phase "gesture shield" (stopPropagation, never preventDefault on touch) and let the finger fall through. Add to the review checklist for any per-frame follower: "who paces the visible motion — compositor or main thread?"
+
+**Principle:** Borrowing a platform behaviour has two halves — the curve and the thread it runs on. A mirror gets the curve; only the real element gets both. Before shipping any per-frame follower of a native gesture, name what paces the pixels; if it is JavaScript, the feel will differ under load, and the honest fix is to remove the follower, not tune it.
+
+### Observation 89: Mock a proposed design ON the real bundle by transforming its DOM, not by hand-drawing a comp
+
+**Status:** OPEN
+**Date:** 2026-09-06
+**Session context:** Leave War figures drawer — brainstorming the owner's counter-column redesign with mockups drawn on the real bundle, then writing the SDD plan.
+**Skill:** brainstorming (+ the repo's "picture before product code" rule)
+**Type:** open-source
+**Phase/Area:** Visual companion / showing options
+
+**Issue:** The owner needed to see three layout options for a grid feature. Instead of writing a throwaway HTML comp, a Playwright script logged into the built app, injected a small CSS/JS transform (extra cells, an overlay table, a toggle) into the LIVE DOM, and screenshotted phone (iPhone emulation, DPR 2) and desktop, then composited the shots side by side with captions. Every pixel — palette, fonts, sticky columns, zoom — was the real app's, and each iteration (six in this session) cost ~1 minute. The owner reacted to real screenshots and designed his own variant from them.
+
+**Suggested improvement:** In brainstorming's visual-companion step (or the repo's picture-before-code rule), add the recipe: build + preview the real bundle, transform the DOM in-page with a `page.evaluate` that injects a `<style>` and mutates/creates nodes, screenshot at the shipped viewports, composite with captions, SEND the images (the user is on a phone; a local browser tab does not exist in a remote session). Keep the transform script in the scratchpad and re-run it per variant.
+
+**Principle:** When a person must approve a look, show it on the real page with the real stylesheet — a DOM transform of the live app is cheaper and truer than a hand-built comp, and it re-renders variants in a minute.
+
+### Observation 90: Injected mock markup must use its own class names — the host stylesheet will style anything it recognises
+
+**Status:** OPEN
+**Date:** 2026-09-06
+**Session context:** Leave War figures drawer — brainstorming the owner's counter-column redesign with mockups drawn on the real bundle, then writing the SDD plan.
+**Skill:** brainstorming (visual companion) / any DOM-transform mock
+**Type:** open-source
+**Phase/Area:** Mock hygiene
+
+**Issue:** A mock overlay gave its "balance" span the class `bal`, which the app's CSS uses for its sticky, fixed-width frozen column. The spans became 72px sticky boxes with an opaque background, covering the neighbouring cell's text — it looked like a clipping bug and cost a diagnosis round. Renaming the class fixed it instantly.
+
+**Suggested improvement:** Add to the mock recipe: prefix every injected class with a unique token (`mock-`), never reuse a host class for a different element kind; when a mock renders "wrongly", grep the host CSS for the injected class names first.
+
+**Principle:** A stylesheet styles by class, not by intent — nodes injected into a real page inherit every rule their class names match, so mock markup needs names the host has never heard of.
+
+### Observation 91: State a layout cost only after measuring it in the real stylesheet
+
+**Status:** OPEN
+**Date:** 2026-09-06
+**Session context:** Leave War figures drawer — brainstorming the owner's counter-column redesign with mockups drawn on the real bundle, then writing the SDD plan.
+**Skill:** brainstorming / writing-plans
+**Type:** open-source
+**Phase/Area:** Trade-off claims in design dialogue
+
+**Issue:** The design dialogue carried "rows must grow by a third (then a fifth) while the drawer is open" for three rounds — reasoned from font sizes — and the owner weighed options on that cost. The real cell is 22px of content with two 11px lines fitting exactly; measured on the mock, the rows did not grow at all. The claim was retracted and the spec corrected, but the owner had already been asked to choose between variants partly on a false cost.
+
+**Suggested improvement:** Before presenting a trade-off that names a numeric layout cost (height, width, days visible), render it and read the number off the real DOM (`getBoundingClientRect`) — the same script that makes the mock can print it. Put the measured number in the caption ("5.7 days beside it"), never an estimate.
+
+**Principle:** A design trade-off stated as a number is a measurement, not an estimate — read it off the rendered page before asking anyone to choose on it.
+
+### Observation 92: For a visual decision, the FIRST question should carry a picture — text options were rejected wholesale
+
+**Status:** OPEN
+**Date:** 2026-09-06
+**Session context:** Leave War figures drawer — brainstorming the owner's counter-column redesign with mockups drawn on the real bundle, then writing the SDD plan.
+**Skill:** brainstorming
+**Type:** open-source
+**Phase/Area:** Ask clarifying questions / propose approaches
+
+**Issue:** After two text rounds the owner was offered three text-described layout options and answered "none of the above, let me show you images". His own sketch (described in words — the image never reached the agent) became the design; every later round converged fast because each carried a screenshot. The skill's "offer the visual companion just-in-time" step fired one round too late: the layout question was visual from the start.
+
+**Suggested improvement:** In brainstorming: when the topic is a layout/placement/size choice, treat the first approach-proposal round as visual by default — render the options (per the DOM-transform recipe) and ask with the picture; keep text options for non-visual choices. Also: if the user says they attached an image and none arrived, say so in the first reply and proceed from the words.
+
+**Principle:** A layout question answered in words gets answered with a sketch — ask it with a picture from the start, and say plainly when an image did not arrive.
+
+### Observation 93: A number in a test step is an oracle — compute it from the fixture at plan time, or say "measure it"
+
+**Status:** OPEN
+**Date:** 2026-09-06
+**Session context:** Leave War figures drawer — orchestrating the six-task subagent-driven build (fresh implementer per task, task reviews, fix rounds, a shared working tree) after the owner approved the design.
+**Skill:** writing-plans (task steps) / subagent-driven-development (briefs)
+**Type:** open-source
+**Phase/Area:** Plan test steps / implementer briefs
+
+**Issue:** A task's test step asserted a person's balance at a value reasoned from memory of the seed (−13); the seed actually grants +14, so the number was wrong. The implementer noticed only because the test failed, measured a different fixture person, re-pinned the measured value and reported DONE_WITH_CONCERNS — a concern round that a trusting implementer would instead have spent forcing the code to a wrong number, or "fixing" the test.
+
+**Suggested improvement:** In writing-plans' "No Placeholders" rules: every numeric expectation in a test step is computed from the real fixture/seed while writing the plan (a one-line script against the data), and the step says where it came from ("seed: opening 12 + granted 14 = 26"). If it cannot be computed at plan time, the step says "measure X on the fixture and pin the measured value" — never a plausible guess. In SDD, an implementer whose measured value disagrees with the brief reports the disagreement as a concern (as happened) rather than bending either side silently.
+
+**Principle:** A worked number in a test step is an oracle, not an illustration — a plausible guess is worse than no number, because it can be pinned; compute it from the fixture or instruct the implementer to measure it.
+
+### Observation 94: A brief deletes tests by NAME, never by category — a category matches every lookalike
+
+**Status:** OPEN
+**Date:** 2026-09-06
+**Session context:** Leave War figures drawer — orchestrating the six-task subagent-driven build (fresh implementer per task, task reviews, fix rounds, a shared working tree) after the owner approved the design.
+**Skill:** writing-plans / subagent-driven-development (dispatch + report handling)
+**Type:** open-source
+**Phase/Area:** Task steps that remove tests
+
+**Issue:** A brief said to delete the tests that assert the retired figure ids (a category). The implementer also deleted an unrelated pin whose title mentioned the same word — "offers no OFF chip", which asserts a fact still true (OFF is not a bidding chip). The orchestrator caught it in the report's list of deleted tests, resumed the agent, and a one-line commit restored the pin before review. Had the report not listed deletions, the coverage loss would have been silent.
+
+**Suggested improvement:** In writing-plans: a step that removes tests names each test by file + title, or states the predicate that makes a test obsolete ("expects a value that no longer exists in the catalogue") and lists lookalikes to KEEP. In SDD: the implementer report contract lists every deleted or rewritten test by title; the orchestrator diffs that list against the brief before dispatching the reviewer, and a deleted test the brief did not name is a fix round, not a note.
+
+**Principle:** Delete by name, not by category — a category ("tests about X") matches every lookalike, and a deleted test is a coverage loss nobody sees.
+
+### Observation 95: In one working tree, the conflict unit is everything that can still LAND for a task — its fix rounds included
+
+**Status:** OPEN
+**Date:** 2026-09-06
+**Session context:** Leave War figures drawer — orchestrating the six-task subagent-driven build (fresh implementer per task, task reviews, fix rounds, a shared working tree) after the owner approved the design.
+**Skill:** subagent-driven-development
+**Type:** open-source
+**Phase/Area:** Parallel dispatch / the fix loop
+
+**Issue:** The skill says never run implementers in parallel. What worked all session: a read-only reviewer beside the next implementer, always; and once two implementers on provably disjoint file sets. What bit: a task's review produced a fix round whose files (the grid component) overlapped the task already in flight, so the fix had to be QUEUED until that task committed, and its scoped re-review then needed a FIX_BASE that skipped the unrelated commit sitting between the review head and the fix. The brief's file list is not the task's footprint — the fix round's is.
+
+**Suggested improvement:** In SDD's task loop: state the safe parallel pattern explicitly (reviewer beside the next implementer, always; a second implementer only on disjoint file sets), and add the rule that overlapping a new implementer with a task whose review is still OPEN means assuming that review's fix round will touch the same files — either wait for the verdict, or accept queuing the fix and record it in the ledger. When a fix lands after unrelated commits, the re-review package runs from the commit just before the fix (FIX_BASE), named in the ledger, not from the original review head.
+
+**Principle:** In a shared working tree the unit of conflict is the file set of everything that can still land for a task — the fix rounds a pending review may demand — not the files its brief names.
+
+### Observation 96: Commit and push state is read off git before it is reported — memory of a push is not a push
+
+**Status:** OPEN
+**Date:** 2026-09-06
+**Session context:** Leave War figures drawer — orchestrating the six-task subagent-driven build (fresh implementer per task, task reviews, fix rounds, a shared working tree) after the owner approved the design.
+**Skill:** subagent-driven-development (ledger discipline) / any orchestrating skill
+**Type:** open-source
+**Phase/Area:** Reporting state to the user; the ledger
+
+**Issue:** The orchestrator told the owner a landed fix "wasn't pushed" from a stale recollection — it was. One `git status -sb` would have shown the branch level with its remote. Later the same session, after context compaction, the ledger plus `git log` recovered the whole state exactly as the skill promises; the failure was in the human-facing report, not the record.
+
+**Suggested improvement:** In SDD's ledger section: a ledger line says "pushed" only after the push result is read, and any statement about commit/push state — to the user or in the ledger — is preceded by `git status -sb` (or `git log origin/<branch>..HEAD`) in the same turn. Report the command's reading, never a remembered one.
+
+**Principle:** Repository state is a fact on disk — read it in the turn you report it; a remembered push, commit or clean tree is a guess wearing a fact's clothes.
+
+### Observation 97: A task that changes on-screen geometry runs the browser gate for ITS surface in its own task — only the full gate set waits for the end
+
+**Status:** OPEN
+**Date:** 2026-09-06
+**Session context:** Leave War figures drawer — the closing task of the six-task subagent-driven build found the desktop e2e gate red on the branch because no earlier task had run it.
+**Skill:** writing-plans (task steps) / subagent-driven-development (pre-flight + per-task test evidence)
+**Type:** open-source
+**Phase/Area:** Plan test steps / gate placement across tasks
+
+**Issue:** The plan deferred every gate but the task's own unit file to the last task ("Task 6 runs every gate"). The drawer task (an overlay standing over the first day columns, opened by default on a desktop) therefore never ran the desktop Playwright project; when the last task did, 28 tests were red — 24 of them clicks on day cells answered by the overlay — plus two timing flakes and one real product defect (the month jump landing under the drawer). All of that landed in one closing slice of ~2¼ hours and half a million tokens, decided by an agent that had not written the drawer, and it needed a fix round of its own. Run in the drawer task, the same 28 would have reached the drawer's author with full context, and the "should the suite normalise the drawer away?" question would have been answered where the behaviour was designed.
+
+**Suggested improvement:** In writing-plans: a task whose change is visible on screen (layout, overlay, sticky/frozen geometry, a new default state) ends with the browser gate for the project that can SEE it (`npx playwright test --project=<the one>`, or the affected spec with `--grep`), not only its jsdom unit file; the plan's closing task still runs the FULL set once. In SDD's pre-flight scan: when a plan defers every browser gate to the last task, flag it before dispatching — the cost of running one project per UI task (~5 min) is far below the cost of a big-bang closing slice.
+
+**Principle:** Each task runs the gate that can see its own change; deferring the only gate that can see a change to the last task converts per-task findings into one big-bang slice owned by a stranger to the code.
+
+### Observation 98: When a task gets a fix round anyway, its own deferred minors ride along as a separate, optional list
+
+**Status:** OPEN
+**Date:** 2026-09-06
+**Session context:** Leave War figures drawer — the final whole-branch review of the six-task subagent-driven build, and its one closing fix wave.
+**Skill:** subagent-driven-development
+**Type:** open-source
+**Phase/Area:** The fix loop / deferred minors
+
+**Issue:** The skill keeps Minor findings out of the fix loop (ledger them; the final whole-branch review triages). In a six-task build, most minors were folded into the next task by its brief and were gone by the end — except the one task whose fix round was spent on three Important findings: its five minors stayed in the ledger untouched and the final reviewer promoted three of them to fix-before-merge. They then landed in the closing wave, done by an implementer who had never seen that task, beside eleven other items. The task's own implementer was resumed for the fix round with its context intact and could have taken them for a few minutes.
+
+**Suggested improvement:** In the fix-loop section: when a fix round is dispatched for a task, append that task's ledgered minors to the dispatch under a separate "optional, non-blocking" heading (blocking findings first, verbatim); the scoped re-review gets the same two lists and verdicts the minors as ADDRESSED / DEFERRED without extending the loop. Keep the rule that minors alone never TRIGGER a round.
+
+**Principle:** A minor finding never opens a fix round, but it should ride one that is open anyway — the implementer who still holds the task's context fixes it in minutes, where the closing wave hands it to a stranger among a dozen others.
+
+### Observation 99: Where the visual companion cannot open a browser, the substitute is a mock on the real bundle — offered as an OPTION on the section it would clarify
+
+**Status:** OPEN
+**Date:** 2026-09-06
+**Session context:** Leave War bulk balance entry — the brainstorm after the figures drawer shipped to preview (owner asked for the gesture's watch areas, then for a mockup of the bar).
+**Skill:** brainstorming
+**Type:** open-source
+**Phase/Area:** Visual Companion / Present design sections
+
+**Issue:** In a remote, ephemeral session (no way to open the owner's browser) the skill's companion offer is impossible, so the visual question was answered the way the repo's own rule prescribes: a throwaway comp drawn on the built bundle with Playwright, screenshotted at phone and desktop widths, sent as an image. The offer was NOT a separate message — it rode the section-approval question as one of its options ("Looks right / Show me a mockup first / …"). The owner took the mockup option, and the picture exposed a defect the approved text could never have shown (the bar "visually blends in with the background"); a second round with two stronger treatments settled it in one exchange. Two rounds, bounded, no polishing loop.
+
+**Suggested improvement:** In the Visual Companion section: name the fallback for environments where the companion cannot run — a throwaway comp on the project's real stylesheet/bundle, screenshotted at the shipped widths and sent as an image — and allow the offer to be an option on the approval question of the section it would clarify, instead of a mandatory standalone message, when the visual question IS that section. Keep the standalone offer for questions that are not tied to a section under approval.
+
+**Principle:** A picture offer costs least as an answer option on the very question it would clarify; when the companion cannot run, a comp on the real stylesheet is the substitute — and it catches what prose approval cannot (a control that blends into its background).
+
+### Observation 100: Reusing an interaction core: dispatch a dedicated trap-hunt exploration that pairs every trap with its existing defence line or "must build"
+
+**Status:** OPEN
+**Date:** 2026-09-06
+**Session context:** Leave War bulk balance entry — the brainstorm after the figures drawer shipped to preview (owner asked for the gesture's watch areas, then for a mockup of the bar).
+**Skill:** brainstorming (explore project context) / writing-plans (task constraints)
+**Type:** open-source
+**Phase/Area:** Explore project context / plan constraints
+
+**Issue:** The standard exploration (three agents: data model, interaction mechanics, conventions) described the drag-select core well but did not ask, per trap, whether a defence already existed. The owner then asked for exactly that ("watch areas to prevent bugs"), and a fourth, deeper exploration produced an 18-item list in which each trap named the line that defends it today or "no defence exists — must build". Eleven of the eighteen were new to the design (a React re-render wiping an imperative class on the new surface; the phone band layered above the drawer; a swipe handler firing after an armed drag; the click swallow missing on pointercancel; a Sheet's touch shield blocking the very cells being selected). Several would have surfaced as fix rounds or as bugs on the owner's phone.
+
+**Suggested improvement:** In brainstorming's "Explore project context": when a design REUSES an existing interaction/engine core on a new surface, add a fourth exploration whose brief is the trap-hunt — for the new surface, list every trap, the existing defence with its location, or "must build" — and carry the list verbatim into the spec as build constraints and into writing-plans as per-task pins. In writing-plans: a task that touches such a core lists the traps it must defend and the test that pins each.
+
+**Principle:** Reuse is where the hidden bugs live: pair every trap with its defence line before designing, and turn "must build" gaps into pinned tasks rather than fix rounds.
+
+### Observation 101: A plan that hands one DOM hook to two writers (an imperative painter and React) must give each its own attribute — React never repairs an external removal
+
+**Status:** OPEN
+**Date:** 2026-09-06
+**Session context:** Leave War bulk balance entry — Task 2 (the figure selection gesture) review found the shared-attribute defect; fixed in round 1.
+**Skill:** writing-plans
+**Type:** open-source
+**Phase/Area:** Task design / DOM ownership in React codebases
+
+**Issue:** The plan specified that a drag gesture paints a selection as a data attribute during the drag and that React renders the SAME attribute after release, on the theory that React would "take it over". It does not: React writes an attribute only when the prop value changes, so the gesture's own clean-up on release stripped boxes React already rendered as selected, and nothing ever put them back. The task reviewer caught it (overlapping second drag → selected-but-dark; a cancelled drag over a live selection → all dark), proving it with a probe against the repo's React, and the fix was one line of design: a writer-exclusive attribute for the gesture, CSS lighting either.
+
+**Suggested improvement:** In writing-plans, when a task has an imperative DOM write (classList, setAttribute, style) on nodes React renders: state which writer OWNS each class/attribute and forbid sharing; if two writers must express the same visual, give each its own hook and let CSS unify them. Add to the plan's self-review: "does any imperative DOM write touch something React also renders?"
+
+**Principle:** React reconciles props, not the DOM: an attribute two writers share is repaired by neither — one hook per writer, unified in CSS.
+
+### Observation 102: A DONE_WITH_CONCERNS concern that is itself a missing requirement is closed by the same implementer BEFORE the review, not after it
+
+**Status:** OPEN
+**Date:** 2026-09-06
+**Session context:** Leave War bulk balance entry + the owner's phone batch (Tasks 3 and 5): a pre-review completion, and two CSS cascade fix rounds.
+**Skill:** subagent-driven-development
+**Type:** open-source
+**Phase/Area:** Handle the report / the fix loop
+
+**Issue:** An implementer reported DONE_WITH_CONCERNS with "his call" attached to a concern that sat squarely inside the owner's ask (a tap on a phone leaves the button hovered, so the border the owner had complained about would remain). The skill's flow would have sent the task to review as-is, had the reviewer flag it, and spent a fix round + re-review on it. Instead the controller resumed the implementer (its context hot) with "this is yours to finish, not his to decide", the completion landed as a second commit in minutes, and ONE review covered both commits — no round consumed.
+
+**Suggested improvement:** In "Handle the report", under DONE_WITH_CONCERNS: read each concern against the task's requirement; a concern that names a requirement the implementer left undone ("beyond the brief, his call") is not a concern to note — resume the implementer to complete it before dispatching the review, and review the combined diff. Only concerns about scope, correctness of what WAS built, or observations go forward as-is.
+
+**Principle:** A concern that is really an unfinished requirement is closed before the review, by the hands that still hold the context — the review then judges finished work.
+
+### Observation 103: CSS that must beat an existing STATE rule is a cascade contract: state the rule it must out-rank, and pin it with a specificity calculation
+
+**Status:** OPEN
+**Date:** 2026-09-06
+**Session context:** Leave War bulk balance entry + the owner's phone batch (Tasks 3 and 5): a pre-review completion, and two CSS cascade fix rounds.
+**Skill:** writing-plans
+**Type:** open-source
+**Phase/Area:** Task steps for CSS / test design
+
+**Issue:** Two of the build's three CSS fix rounds were the same defect: a new rule written at the specificity the brief's literal selector implied lost to an existing state rule the brief never named — a whole-row landing bar out-ranked by the manning grid's amber/red shortfall ring; a band rule out-ranked by an inline per-scroll style. Neither showed in jsdom (no layout) and the implementers' browser drives happened to look at rows without the state. The fix that held was a CSS-contract unit test that computes specificity for the pair and treats a tie as a loss, plus composing the two rules (a custom property) rather than overwriting.
+
+**Suggested improvement:** In writing-plans, for any CSS step whose rule must apply on cells that carry other state classes: name the existing rules it must out-rank (grep the file for rules on the same element/property), state whether the new rule REPLACES or COMPOSES the old box-shadow/background, and require a pin that computes specificity (tie = loss) or asserts the computed style in a real browser on a cell wearing the state. Add to the plan self-review: "which existing rule on the same property does this beat, and how do I know?"
+
+**Principle:** A CSS rule is a contract against every other rule on the same element and property — name what it must beat, compose rather than overwrite, and pin the cascade, not the selector.
+
+### Observation 104: A removal brief names what STAYS: trace each "dependent" to the input that drives it — a shared class name is not a dependency
+
+**Status:** OPEN
+**Date:** 2026-09-06
+**Session context:** Leave War bulk balance entry + the owner's phone batch — the final fix wave, its completion round and the scoped re-review.
+**Skill:** subagent-driven-development
+**Type:** open-source
+**Phase/Area:** The fix loop — writing the fix brief from a review finding
+
+**Issue:** The whole-branch review found a dead prop (a tracker's day-level focus) and the controller's fix brief listed its dependents from a grep of the shared CSS class — including "the here class on rows and credits". The ROW marker was driven by a different, live prop (the person the sheet opened on) and only shared the class name; the implementer deleted it as briefed, and the tracker then opened with no row lit. Caught only from the report's live-drive paragraph, and it cost a completion round.
+
+**Suggested improvement:** In the fix loop, for any "delete X and its dependents" finding: build the dependents list by tracing data flow FROM the dead input (what reads it, what those write, what CSS those alone select), never by grepping a name two features share; and write into the brief what STAYS beside what goes. Apply the same check to the reviewer's own dependents list before accepting it.
+
+**Principle:** Delete only what is reachable from the dead input alone; a shared name is a coincidence, not a dependency — and a removal brief names what stays as carefully as what goes.
+
+### Observation 105: A number measured through a harness carries the harness's latency — measure it and state it before the number becomes a target
+
+**Status:** OPEN
+**Date:** 2026-09-06
+**Session context:** Leave War bulk balance entry + the owner's phone batch — the final fix wave, its completion round and the scoped re-review.
+**Skill:** writing-plans
+**Type:** open-source
+**Phase/Area:** Acceptance criteria for time-gated behaviour (edge auto-scroll dwell, debounce, hold-to-arm)
+
+**Issue:** The fix brief set "the same drag must now light ≤ 5 people" from a phone probe whose own touch-move round-trips took ~420 ms and ate most of the new dwell, so the first constants read 8–9 people and looked like a miss; the honest reading needed the probe's latency subtracted, and the retuned constants were then judged against a corrected number. Nobody had measured the probe's no-op cost before the target was written.
+
+**Suggested improvement:** When a plan or brief sets an acceptance number for a time-gated behaviour measured through a probe or e2e harness: run the harness once with the behaviour disabled (or a zero-length hold) to measure its own latency, state that latency beside the target, and prefer a target in the behaviour's own terms ("a drag that lifts within N ms scrolls 0 px"; "a hold of N ms scrolls") over a count that folds the harness in.
+
+**Principle:** A measurement taken through a harness includes the harness; state and subtract its latency before the number is a target, or the tuning chases the tool.
+
+### Observation 106: A second pass that changes a value re-reads every SENTENCE the first pass wrote about the behaviour — prose describes effects, not constants
+
+**Status:** OPEN
+**Date:** 2026-09-06
+**Session context:** Leave War bulk balance entry + the owner's phone batch — the final fix wave, its completion round and the scoped re-review.
+**Skill:** subagent-driven-development
+**Type:** open-source
+**Phase/Area:** The fix loop — a completion round after a fix round
+
+**Issue:** A two-pass fix wave changed the edge-scroll constants in its second pass. The implementer swept the docs for the old numbers and found none in the owner's test checklist, because that clause described the behaviour ("the page keeps scrolling and keeps picking people") without quoting a constant; under the new values a drag that reaches the edge and lifts scrolls nothing. The scoped re-review caught the stale sentence. This repo's engine doctrine already says "grep for the old rule's WORDING as well as its identifiers"; the SDD completion step did not.
+
+**Suggested improvement:** In the fix loop, when a completion round changes a value or behaviour the first round documented: list every file the first round touched and re-read each sentence about that behaviour (grep the old behaviour's wording — "keeps scrolling", "opens on the day" — not only the identifiers or numbers), and say in the completion report which sentences were re-read and which were changed.
+
+**Principle:** Docs describe effects, not constants; when a value changes, a grep for the number finds nothing — re-read the sentences.
+
+### Observation 107: A motion or gesture-feel ask cannot be approved from a still — the mock must be interactive, built from the captured real DOM with a minimal gesture machine
+
+**Status:** OPEN
+**Date:** 2026-09-06
+**Session context:** Drag lift + landing flash — the brainstorm and plan for the owner's "every drag glows evenly and flashes where it lands" ask (twelve surfaces, mock first).
+**Skill:** brainstorming (visual companion) / impeccable (animate)
+**Type:** open-source
+**Phase/Area:** Showing options for an animation or drag feel
+
+**Issue:** The owner asked for a mockup "to test" of a drag glow and a landing flash. The repo's picture-before-code rule and the DOM-transform recipe (obs 89) both produce STILLS, which cannot show a 120ms bloom, a landing flash, or whether the pick-up feels slower. The remote session cannot open his browser and the Vercel preview is behind his login. The answer was to extend the recipe: capture the built page's live markup and compiled stylesheet, re-implement the gesture in ~120 lines of vanilla JS that moves the real nodes, and publish it as a private page he opens on the phone.
+
+**Suggested improvement:** In the visual-companion fallback (obs 99) add the interactive branch: when the question is motion, timing or gesture feel, the mock is a standalone page — captured real DOM + real CSS + a minimal re-implementation of the gesture — delivered as a link the user can touch on the target device, with the variants behind an on-page switch. Say in the plan which runtime values (zoom, custom properties set by JS, clip ancestors) must be captured or re-applied for the comp not to lie.
+
+**Principle:** A still can approve a look; only a touchable page can approve a feel — when the question is motion, the mock must run.
+
+### Observation 108: "Every single X in the app" is a scope claim to enumerate before it is agreed — sweep the whole app first, then ask with the list in hand
+
+**Status:** OPEN
+**Date:** 2026-09-06
+**Session context:** Drag lift + landing flash — the brainstorm and plan for the owner's "every drag glows evenly and flashes where it lands" ask (twelve surfaces, mock first).
+**Skill:** brainstorming (explore project context) / writing-plans
+**Type:** open-source
+**Phase/Area:** Scope check before the clarifying questions
+
+**Issue:** The screenshot showed one drag surface; the owner's words were "every single drag and drop for rearranging things in the app". A dedicated exploration found twelve surfaces across seven independently written gesture machines (four in the vendored app, eight in the host app, including ghost-following drags with a different visual model). Only with that list could the scope question be asked honestly (Leave War only / everywhere / a middle set), and the owner chose everywhere — a materially larger build than the screenshot implied.
+
+**Suggested improvement:** When an ask contains a universal quantifier ("every", "all", "everywhere"), dispatch an enumeration exploration BEFORE the clarifying questions, and put the count and the list into the scope question itself with the effort difference stated. Carry the enumerated list verbatim into the spec as the definition of done.
+
+**Principle:** A universal quantifier in a brief is a list you have not written yet — enumerate it before anyone agrees to it.
+
+### Observation 109: Before pinning a visual device in a design direction, grep the repo's own CSS comments for that device — the codebase had already rejected the outer halo once
+
+**Status:** OPEN
+**Date:** 2026-09-06
+**Session context:** Drag lift + landing flash — the brainstorm and plan for the owner's "every drag glows evenly and flashes where it lands" ask (twelve surfaces, mock first).
+**Skill:** impeccable (animate / craft) / brainstorming (propose approaches)
+**Type:** open-source
+**Phase/Area:** Writing the design direction handed to the Plan agent
+
+**Issue:** The design direction specified an outer halo (`0 0 16px …`) as the recipe. The design pass found that the grid sits in `.card { overflow: hidden }`, which discards a descendant's outer box-shadow — the very reason today's halo shows on two sides only, AND a lesson already written on `.sb-fresh` in the host app's stylesheet ("draw nothing outside the border box"). The correction (inset-only, halo only on fixed ghosts) came a round later than it should have.
+
+**Suggested improvement:** When a direction names a visual device (glow, halo, blur, backdrop, sticky, transform on a table), grep the project's stylesheets and contract docs for the device's words ("outer glow", "overflow: hidden", "clipped", "swallowed") before writing it into the brief, and cite the prior lesson in the direction. Add this to the "inspect at least one source of incumbent visual truth" step: the truth includes the comments that say what was tried and failed.
+
+**Principle:** The incumbent stylesheet's comments are a record of failed devices; read them for the device you are about to propose, not only for the tokens.
+
+### Observation 110: The one look at an interactive mock must drive its controls the way the user will — a side door (setting state programmatically) hides a dead control
+
+**Status:** OPEN
+**Date:** 2026-09-06
+**Session context:** Drag lift + landing flash — the interactive mock's first round on the owner's iPhone ("I can't select outer halo").
+**Skill:** impeccable (artifact "look once") / brainstorming (visual companion, interactive mock)
+**Type:** open-source
+**Phase/Area:** The single verification round before publishing a mock
+
+**Issue:** The mock's two switches were exercised in the one look by writing the setting straight onto the root element, so the screenshots showed every variant while the real tap path was never run. The edge switch was dead on the owner's iPhone: the click handler resolved `closest('[data-mock-glow]')`, which walked past the edge button up to `<html>` — where the setting itself was stored under the same attribute name — and swallowed the tap. Found only when the owner reported it; reproduced in one Playwright tap and fixed by scoping every lookup to `button[...]`.
+
+**Suggested improvement:** In the one look at a mock or artifact with controls: drive each control through its real input (a tap or click on the element), then read the resulting state — never set the state from outside to save a step. And a general rule for small pages: keep the STATE attribute and the CONTROL attribute under different names, or scope every `closest()`/`querySelectorAll()` to the control's element type, because `closest()` walks to the root and matches the state holder.
+
+**Principle:** A verification round that reaches the result by a side door proves the result, not the control — drive the control the user will touch, and never let a state attribute share a name with the control that sets it.
+
+### Observation 111: task-brief extracts the task section alone — the plan's Global Constraints never reach the implementer unless the dispatch points at them
+
+**Status:** OPEN
+**Date:** 2026-09-06
+**Session context:** Drag lift + landing flash — dispatching Task 1 of the subagent-driven build.
+**Skill:** subagent-driven-development (scripts/task-brief, the implementer dispatch)
+**Type:** open-source
+**Phase/Area:** Dispatch the implementer — composing the brief
+
+**Issue:** The skill says the brief is "the single source of requirements, with the exact values to use verbatim" and that every task implicitly includes the plan's Global Constraints. The script writes only the text between "### Task N" and the next task heading (657 lines for a code-heavy task, header and constraints absent). The implementer was dispatched with the brief and the spec; the binding values (the recipe numbers, the frame's rules, the performance rules, the no-push rule, the gate commands) were only in the plan header, and had to be sent as a follow-up message after the dispatch.
+
+**Suggested improvement:** Either make task-brief prepend the plan's "## Global Constraints" section (and the header's Goal/Architecture lines) to every brief it writes, or make the implementer-prompt template carry a required "[GLOBAL_CONSTRAINTS_FILE]" placeholder that the controller must fill with the plan path and line range. Add to the pre-dispatch checklist: "confirm the brief carries the Global Constraints, or name where they are".
+
+**Principle:** A brief that is "the single source of requirements" has to contain the requirements that bind every task, not only the task's own text — check what the extraction script actually wrote before calling it the source.
+
+### Observation 112: A plan constraint that says "no new rule — X already covers it" is a claim about X: verify X (in a browser, or against the selector spec) before it becomes a constraint
+
+**Status:** OPEN
+**Date:** 2026-09-06
+**Session context:** Drag lift + landing flash — Task 1's review and fix round in the subagent-driven build.
+**Skill:** writing-plans (Global Constraints) / brainstorming (design pass)
+**Type:** open-source
+**Phase/Area:** Writing a constraint that relies on an existing mechanism
+
+**Issue:** The design pass read the app's reduced-motion blanket `*{animation:none!important}` and concluded the new landing veil needed no rule of its own; the plan's Global Constraints then said "Reduced motion: no new rule". `*` matches elements, not pseudo-elements, so the veil (`::after`) kept animating under reduced motion. The task reviewer proved it in Chromium; the implementer's own live pass had recorded a false positive (it read the element's animation-name, not the pseudo-element's). The repo even carried the counter-example — a targeted `::before` override under the same media query — that nobody grepped for.
+
+**Suggested improvement:** When a constraint delegates a behaviour to an existing rule ("the blanket handles it", "the reset covers it", "the base class already does that"), the plan states the CHECK that proved it — a one-line browser read of the computed value on the actual target (a pseudo-element via getComputedStyle(el, "::after")), or a grep for existing exceptions to that rule — before the constraint is written. In the design pass: any claim that a wildcard or inherited rule reaches a pseudo-element, a shadow root, or a portal is a claim to test, not to assume.
+
+**Principle:** A constraint that leans on an existing mechanism inherits every gap in that mechanism — name the check that proved the mechanism reaches the new target, or write the rule yourself.
+
+### Observation 113: When a review finding conflicts with plan text whose premise is technically false, the controller rules and records it — the "ask the human which governs" rule is for real decisions, not for a non-technical owner adjudicating CSS
+
+**Status:** OPEN
+**Date:** 2026-09-06
+**Session context:** Drag lift + landing flash — Task 1's review and fix round in the subagent-driven build.
+**Skill:** subagent-driven-development (the fix loop — plan-conflicting findings)
+**Type:** open-source
+**Phase/Area:** Handling a finding that contradicts the plan's own text
+
+**Issue:** The skill says a finding that conflicts with the plan's text is the human's decision. The conflict here was "Global Constraints: reduced motion needs no new rule" vs the reviewer's browser proof that the rule was needed; the plan text rested on a false technical premise, the design's INTENT was unambiguous (no motion under reduced motion), and the human partner is a non-technical owner whose standing rule is plain-language reports and no jargon. Asking him "does the plan or the reviewer govern?" would have handed him a CSS selector-matching question. The controller ruled for the intent, corrected the plan and spec sentences in the fix round, and wrote the ruling into the ledger.
+
+**Suggested improvement:** In the fix-loop rule for plan-conflicting findings, distinguish two cases: (a) the plan text encodes a DECISION (a chosen behaviour, a trade-off) — ask the human which governs; (b) the plan text encodes a technical PREMISE that the finding proves false, and the design's intent is stated elsewhere — the controller rules for the intent, has the fix correct the plan/spec text in the same round, and records the ruling in the ledger with the evidence. Add: "a question the human partner cannot answer in their own terms is not their decision — it is yours to make and to write down".
+
+**Principle:** Escalate decisions, not premises: a false technical premise in the plan is corrected by the person who can read the proof, and the ledger carries the ruling.
+
+### Observation 114: A "one-shot" decoration hung on a shared post-render pass is spent by the FIRST surface that repaints — design the mark per node (or per surface), and put "which passes run after this write, in what order" into the trap hunt
+
+**Status:** OPEN
+**Date:** 2026-09-07
+**Session context:** Drag lift + landing flash — Task 3 (the board's rows, waves and sections) in the subagent-driven build.
+**Skill:** brainstorming (trap-hunt exploration) / writing-plans (a decoration on a rebuilt DOM)
+**Type:** open-source
+**Phase/Area:** Designing a post-render decoration for a DOM that is rebuilt after a write
+
+**Issue:** The design deferred the landing flash to the app's existing post-render pass and made it one-shot ("clears its slot on the first hit") to defend against a known flicker fault. In the browser the drop flashed NOTHING: two surfaces (the edit week and the board) each run that pass after one commit, ~20 ms apart, and the first one found the same address in the board's PRE-DROP markup — a reorder never changes a list's length — and spent the mark on a node the second pass then destroyed. The implementer instrumented the bundle, found the order, and changed the module to "one flash per node, the mark lives its second" — a design correction made mid-task in a shared file, caught only because the e2e never saw the class.
+
+**Suggested improvement:** In the trap hunt for any decoration that must survive a rebuild: enumerate every subscriber that repaints after the write in question and their ORDER (a grep for the pass's call sites, one console.log in the built bundle), and ask whether a stale copy of the target can be found before the real rebuild. Prefer "mark per node with a short life" (skip what was already lit; die at N ms) over "one-shot" — it defends the same flicker by identity and survives multi-pass repaints. In the plan, make the browser drive of the deferred path a required step of that task, not of the final gate.
+
+**Principle:** A post-render hook runs once per surface that renders, not once per write — a mark that spends itself on the first hit chooses the wrong surface whenever two repaint; identity-keyed marks with a short life survive both.
+
+### Observation 115: The owner called the full per-task review loop "extreme" for a visual change — state the loop's time cost and its lighter shapes up front, and let the owner pick the cadence per build
+
+**Status:** OPEN
+**Date:** 2026-09-07
+**Session context:** Drag lift + landing flash — six tasks into the subagent-driven build; the owner asked whether the process was extreme.
+**Skill:** subagent-driven-development (process selection) / the repo's CLAUDE.md "HEAVY path" rule
+**Type:** open-source
+**Phase/Area:** Choosing the review cadence before the build starts
+
+**Issue:** A seven-task visual build (one drag look across twelve surfaces) ran the full loop — fresh implementer, task review, fix round, scoped re-review — at roughly an hour per task. Six tasks in, the owner asked whether the process was "extreme" and said it "really takes a long time". The loop had earned its keep (four real defects caught that tests alone would have passed to his phone: a reduced-motion gap on a pseudo-element, a landing lit on a hidden surface, an overlap over a frozen column, a flash lost to a double repaint), but nobody had told him the cost or offered a lighter shape before starting. Offered three cadences with time estimates, he chose "lighter from here" (no per-task reviews for the remainder; one final whole-branch review + live look).
+
+**Suggested improvement:** In the SDD setup step (and in the repo rule that routes builds to the HEAVY path): before dispatching Task 1, state the expected wall-clock per task under the full loop and offer the cadences — full loop; task reviews only on the risky tasks (shared modules, gesture cores, cross-surface plumbing) with a final review for the rest; final review only — with a one-line risk note each, and let the human pick. Mid-build, if the elapsed time passes the estimate, re-offer the choice rather than waiting to be asked. Record the pick in the ledger.
+
+**Principle:** A review cadence is a cost the person paying for it should choose knowingly — name the hours and the lighter shapes before the first dispatch, and again when the estimate slips.
+
+### Observation 116: A shared visual recipe claims resources its hosts already own — the same CSS property under a state class, a pseudo-element slot — so the trap hunt enumerates the prior owners PER HOST and the live drive exercises the hosts in those states
+
+**Status:** OPEN
+**Date:** 2026-09-07
+**Session context:** Drag lift + landing flash — the final whole-branch review and its fix wave.
+**Skill:** brainstorming (trap-hunt exploration) / writing-plans (a recipe class applied across many hosts) / the live-drive step
+**Type:** open-source
+**Phase/Area:** Designing one look for many existing surfaces
+
+**Issue:** The lift recipe was one low-specificity class (`.lift{box-shadow}`) added to twelve kinds of host. Every per-task review and every live drive passed on a CLEAN row, and only the final whole-branch review found that a fresh row, a red-boxed row, a late-marked row and a conflicted or view-as puck ghost showed NO box: each host already had state rules that own the same property at higher specificity or with !important, and the recipe silently lost to them. The fix also collided with a second kind of ownership — the ghost's `::after` was taken by the AL badge and the SANS edge — so the veil had to move to `::before`, and a puck's own z-index rode the cloned ghost under the board. None of this was visible on the states the drives happened to pick.
+
+**Suggested improvement:** When a design adds one recipe to many existing hosts, the trap hunt lists, PER HOST: every other rule that sets the same property on that host (grep the property name, note specificity and !important), every pseudo-element slot already used on it, and every inherited or cloned value (z-index on a cloned node) — and the plan makes the recipe win by construction (a compound host rule, an unused slot) rather than by luck of source order. The live drive then exercises each host in its OTHER states (fresh, error-marked, late, selected, view-as), not only the clean one; a CSS-contract test that replays the cascade for those states pins it.
+
+**Principle:** A shared recipe is only as strong as its weakest host — enumerate what each host already owns on the same property or slot, and drive the hosts in their busy states, because a clean row proves nothing about a marked one.
+
+### Observation 117: A visual that INHERITS a property from its host must be checked in the state the host is in when the visual shows — the live drive read the landing flash under the drag, where the corner came from a drag-only rule that was gone by the time the flash painted
+
+**Status:** OPEN
+**Date:** 2026-09-07
+**Session context:** Drag lift + landing flash — the owner's corner feedback the morning after the build (finger ghost and seat flash square round rounded things).
+**Skill:** the live-drive step (verification) / brainstorming (trap-hunt exploration) for a recipe worn by many hosts
+**Type:** open-source
+**Phase/Area:** Verifying a shared visual recipe applied through `inherit`
+
+**Issue:** The landing veil takes `border-radius:inherit` from the seat it flashes on. Every check of the flash — the e2e pins, the live drive, the whole-branch review — confirmed the class arrived, the veil animated opacity only and the ring was inset; none read the veil's COMPUTED corner at the moment it painted. Two hosts had no corner of their own at that moment: a grid seat is a bare shell round a rounded puck, and a people cell is rounded only under the drag-state class (`body.dnd`), which the drop removes before the flash appears. The finger's ghost had the same fault one step earlier: it clones the seat, not the puck, so `inherit` gave it the shell's square. The owner saw all of it on his phone within the hour: "the box looks too rectangle, it should follow the curve".
+
+**Suggested improvement:** When a recipe takes a property by `inherit` (or `currentColor`, or any host-derived value), the trap hunt lists, per host, WHERE that value comes from and WHEN that source is on — a value that only exists under a gesture-state class is a value the after-gesture visual will not have. The live drive then reads the visual's computed value (getComputedStyle(el, "::after")) at the moment it shows, per host, and the screenshot is a close-up of a CORNER, not a whole row; the CSS-contract test holds the host's at-rest number equal to the number the gesture state shows.
+
+**Principle:** A visual that borrows a value from its host inherits the host's state too — check it in the state the host will be in when the visual is actually on screen, and read the computed value, not the class.
+
+### Observation 118: Two pointer paths doing one job drifted: the mouse ghost had been the puck alone since 3 Sep 26 (a shell can be stretched by its host) and the finger's ghost still cloned the shell — a fix made on one path is not a fix until it is checked on its twin
+
+**Status:** OPEN
+**Date:** 2026-09-07
+**Session context:** Drag lift + landing flash — the owner's second corner note (edit schedule and board alike); the AIRCREW drawer drive found the finger's ghost wider than its puck.
+**Skill:** the live-drive step (verification) / brainstorming (trap-hunt exploration) for gestures with more than one pointer path
+**Type:** open-source
+**Phase/Area:** Verifying a gesture that has a mouse path and a touch path
+
+**Issue:** drag.ts builds the carried ghost two ways: the mouse path clones the .puck alone (fixed 3 Sep 26 because "a grid cell can stretch the seat shell past the puck"), the touch path cloned the whole [data-drag] shell. The lift recipe was verified on both, but the finger drives all picked SEATS, which hug their puck — never the AIRCREW drawer, where a roster row is as wide as its column. The owner's phone showed the ring running past the name; measured: the finger's ghost 156px wider than the puck inside it. The mouse path had already learnt the lesson; nobody re-asked it of the finger.
+
+**Suggested improvement:** When a gesture has parallel paths (mouse/touch, keyboard/pointer, native/synthetic), the trap hunt lists every place the two paths BUILD something differently and asks whether a past fix on one applies to the other; the live drive drives each path from every SOURCE the gesture accepts (a seat, a people cell, the palette/drawer), not the one source that is easiest to reach, and measures the built thing against the thing it stands for (ghost rect vs puck rect).
+
+**Principle:** A fix on one of two twin paths is a bug report against the other — verify parity by driving both paths from every source, and measure the built artefact against what it represents.
+
+### Observation 119: A green local gate is not the merge gate: the branch's CI had been red for six pushes — two browser tests written against the sandbox's Chromium (an outline-width quirk, an integer-vs-fraction width) failed only on the CI runner — and nobody read the check conclusions because "do not watch the PR" was taken as "do not look"
+
+**Status:** OPEN
+**Date:** 2026-09-07
+**Session context:** The owner's "Merge" for PR #371 — the branch's CI turned out to be red on a job no one had read; two CI-only test failures fixed before the merge.
+**Skill:** the push-and-hand-over step (the Vercel-link loop) / the live-drive step for browser tests
+**Type:** open-source
+**Phase/Area:** Reading CI after a push; writing browser assertions that survive a browser version
+
+**Issue:** Six consecutive runs of the deploy workflow on the session branch failed on the same job, from the drag-lift build's first push to the corner follow-up, while every local gate was green: (1) a test asserted getComputedStyle(ghost).outlineWidth === "0px" — true on the sandbox's Chromium 141, but the CI runner's newer Chromium computes outline-width as its initial medium (3px) even with outline-style none, so the width says nothing about whether an outline is drawn; (2) a frame width taken from clientWidth (an integer, the padding box) was held within 1px of a heading's fractional rect width — 1.00 on the sandbox's fonts, 1.28 on the runner's. Neither was looked at until the owner said "merge", because the standing rule not to WATCH the PR (no event subscription) was read as not LOOKING at its checks either, and the loop hands over the preview link a minute after the push, before CI finishes.
+
+**Suggested improvement:** Two rules. In the push loop: the checks finish ~6 min after a push — read their conclusions on the next turn (one API call), and fix a red one then, never at merge time; a Vercel preview being Ready is not the gate. In browser tests: assert the property that names the behaviour (outline-style: none, not outline-width: 0px; a rect against a rect, never an integer measurement against a fractional one), and treat "passes locally, browser pinned by the lockfile in CI" as two environments — when a computed-style read is the assertion, ask which spec change could move it.
+
+**Principle:** Not watching a PR is not the same as not reading its gates — read the conclusions once per push — and a browser assertion must name the behaviour, not a value one browser version happens to compute for it.
+

@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { clearLanding, earliestDate, eventRange, paintLanding, parseCellId, parseEventCell, rectCells, rowRun, wireRowSelect, wireSelect, type Selection } from './select'
+import { clearLanding, earliestDate, eventRange, FIGDRAG_ATTR, paintLanding, parseCellId, parseEventCell, rectCells, rowRun, wireFigureSelect, wireRowSelect, wireSelect, type Selection } from './select'
 
 // The gesture controller (wireSelect) needs a real browser (elementFromPoint,
 // pointer capture, layout) and is covered by e2e/leavewar.spec.ts. Here we pin
@@ -345,6 +345,143 @@ describe('wireSelect edge auto-scroll (mouse and touch, both axes)', () => {
     // the RIGHT band was never held — a press at the bottom still scrolls sideways
     mouse('pointermove', 299, 380); sl = 0; cb!(0); expect(sl).toBeGreaterThan(0)
   })
+
+  // The LEFT band starts where the DAYS start, not where the wrap does (owner,
+  // 6 Sep 26 — "let me auto scroll left when my drag is approaching the edge of
+  // the expanded counters … likewise the counter on the left"). On the real
+  // grid the frozen name/counter pair — or the figures drawer, while it is
+  // open — is parked over the wrap's own left edge, so a band measured from
+  // there sat BEHIND them: a finger dragging left simply stopped at the
+  // counters and the year never came back. Matrix hands in
+  // `wrap.left + frozenWidth(wrap)`, which is drawer-aware already. The option
+  // is absent everywhere else, so every case above still measures from
+  // `r.left` — which is what keeps them untouched.
+  const withLeftEdge = (edge: number) => {
+    teardown()
+    teardown = wireSelect(wrap, {
+      order: () => ['ramp'], dates: () => ['2026-01-06'],
+      enabled: () => true, onSelect: () => {}, leftEdge: () => edge,
+    })
+  }
+  const mouseAt = (type: string, x: number, y: number) =>
+    (type === 'pointerdown' ? cell : window).dispatchEvent(new PointerEvent(type, { bubbles: true, pointerId: 1, pointerType: 'mouse', clientX: x, clientY: y, button: 0 }))
+  /** Arm a mouse drag from a point clear of every band, and hand back one frame. */
+  const armFrom = (x: number, y: number) => {
+    let cb: FrameRequestCallback | null = null
+    rafSpy.mockImplementation((fn: FrameRequestCallback) => { cb = fn; return 1 as unknown as number })
+    mouseAt('pointerdown', x, y)
+    mouseAt('pointermove', x - 6, y)          // > MOUSE_SLOP → arm
+    expect(cb).not.toBeNull()
+    return () => cb!(0)
+  }
+
+  it('the LEFT band starts at the supplied edge — a drag toward the frozen columns scrolls', () => {
+    withLeftEdge(120)                          // the wrap's own left is 0
+    const frame = armFrom(250, 200)
+    mouseAt('pointermove', 130, 200); sl = 500; frame()
+    expect(sl, '10px inside the day area\'s left edge → the grid runs left').toBeLessThan(500)
+    mouseAt('pointermove', 200, 200); sl = 500; frame()
+    expect(sl, 'well clear of it → nothing moves').toBe(500)
+  })
+
+  it('and the held-band rule is measured from that edge too', () => {
+    withLeftEdge(120)
+    // The press lands INSIDE the new left band (120..156), which is ordinary on
+    // this grid — the first day column sits right against the counters. It must
+    // not run the year sideways under a still cursor.
+    const frame = armFrom(130, 200)
+    sl = 500; frame(); expect(sl, 'the band the press sat in is held').toBe(500)
+    mouseAt('pointermove', 200, 200)           // leaves it …
+    mouseAt('pointermove', 130, 200)           // … and comes back: a deliberate push
+    sl = 500; frame(); expect(sl).toBeLessThan(500)
+  })
+})
+
+// The FIGURE select's edge auto-scroll is GENTLE, where the day grid's is
+// quick (6 Sep 26 bug hunt, on the built bundle at iPhone-13 size). Painting a
+// rectangle of days wants the grid's run to the next month; a figure drag is a
+// run of PEOPLE a number is about to be written to, and a three-row drag that
+// merely ENDED in the phone's bottom 48px band ran the page 259px in ~0.7s and
+// lit fourteen — the bar then offered "14 people · +CCL" for a run the finger
+// never crossed. So `wireFigureSelect` asks for `edge: { rate: 0.3, dwellMs:
+// 500 }`: 0.3 of the step, and not until the pointer has RESTED half a second
+// in the band. Half a second because a drag's own moves take longer than a
+// short dwell — at 220ms the same drag still reached eight people, since the
+// wait had run out before the finger stopped. The option is absent everywhere
+// else, which is what keeps every case above — and `wireSelect`/`wireRowSelect`
+// themselves — byte-identical.
+describe('wireFigureSelect asks the edge auto-scroll to be gentle', () => {
+  let outer: HTMLElement, wrap: HTMLElement, box: HTMLElement, teardown: () => void
+  let rafSpy: ReturnType<typeof vi.spyOn>
+  let st: number                  // backing field for the page's scrollTop
+  const origEFP = document.elementFromPoint
+  const rect = (o: Partial<DOMRect>) => ({ left: 0, right: 300, top: 0, bottom: 400, width: 300, height: 400, x: 0, y: 0, toJSON() {}, ...o }) as DOMRect
+  beforeEach(() => {
+    document.elementFromPoint = () => null
+    rafSpy = vi.spyOn(window, 'requestAnimationFrame').mockImplementation(() => 1 as unknown as number)
+    outer = document.createElement('div')
+    outer.style.overflowY = 'auto'
+    Object.defineProperty(outer, 'scrollHeight', { configurable: true, value: 2000 })
+    Object.defineProperty(outer, 'clientHeight', { configurable: true, value: 400 })
+    st = 0
+    Object.defineProperty(outer, 'scrollTop', { configurable: true, get: () => st, set: v => { st = v } })
+    outer.getBoundingClientRect = () => rect({})
+    wrap = document.createElement('div')
+    box = document.createElement('td')
+    box.className = 'figbox'
+    box.setAttribute('data-fig', 'ccl')
+    box.setAttribute('data-person', 'ramp')
+    wrap.appendChild(box)
+    outer.appendChild(wrap)
+    document.body.appendChild(outer)
+    wrap.getBoundingClientRect = () => rect({})
+    teardown = wireFigureSelect(wrap, {
+      order: () => ['ramp'], selectable: () => true, enabled: () => true, onSelect: () => {},
+    })
+  })
+  afterEach(() => { teardown(); outer.remove(); document.elementFromPoint = origEFP; rafSpy.mockRestore(); vi.useRealTimers() })
+
+  /** Arm a touch drag on the box and hand back one frame of the auto-scroll.
+   *  `Date` is faked as well as the timers, because the dwell is measured off
+   *  the clock rather than off the rAF timestamp — the frame argument is 0 in
+   *  every one of these drives. */
+  const armTouchFrame = () => {
+    let cb: FrameRequestCallback | null = null
+    rafSpy.mockImplementation((fn: FrameRequestCallback) => { cb = fn; return 1 as unknown as number })
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout', 'Date'] })
+    box.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, pointerId: 1, pointerType: 'touch', clientX: 150, clientY: 200, button: 0 }))
+    vi.advanceTimersByTime(200)   // hold → arm, which schedules the first frame
+    expect(cb).not.toBeNull()
+    return () => cb!(0)
+  }
+  const move = (x: number, y: number) =>
+    window.dispatchEvent(new PointerEvent('pointermove', { bubbles: true, pointerId: 1, pointerType: 'touch', clientX: x, clientY: y }))
+
+  it('a band must be RESTED IN for 500ms before it scrolls, and leaving restarts the wait', () => {
+    const frame = armTouchFrame()
+    move(150, 399)                                        // deep in the bottom band
+    st = 0; frame(); expect(st, 'the frame it entered on does not scroll').toBe(0)
+    vi.advanceTimersByTime(480)                           // still short of 500
+    st = 0; frame(); expect(st, 'nor does one 480ms in — longer than the drag itself took').toBe(0)
+    vi.advanceTimersByTime(40)
+    st = 0; frame(); expect(st, 'past the dwell it runs').toBeGreaterThan(0)
+    move(150, 200); frame()                               // out of the band …
+    move(150, 399)                                        // … and back in
+    st = 0; frame(); expect(st, 'coming back starts the wait again').toBe(0)
+  })
+
+  it('and then moves at 0.3 of the grid\'s step — ≤ 5px a frame at full depth', () => {
+    const frame = armTouchFrame()
+    move(150, 399)
+    frame()                                               // enters the band
+    vi.advanceTimersByTime(600)                           // rest there, past the dwell
+    st = 0; frame()
+    expect(st, 'it does move — a run can still be extended past the screen').toBeGreaterThan(0)
+    // TOUCH_STEP_MAX is 15px a frame at the very edge, which is what the day
+    // grid takes; 0.3 of it is 4.5. The `wireSelect` case above measures the
+    // ungentled step at the same depth.
+    expect(st, 'but at 0.3 of the step').toBeLessThanOrEqual(5)
+  })
 })
 
 // When the finger leaves every cell — a gap, or the empty area an edge
@@ -593,5 +730,167 @@ describe('wireRowSelect', () => {
     up()
     expect(got).toEqual([])
     expect(wrap.classList.contains('selecting')).toBe(false)
+  })
+})
+
+// The click swallow after an ARMED drag that the browser CANCELLED (6 Sep 26).
+// An iOS system gesture — an edge swipe, a notification — cutting a hold short
+// fires pointercancel; the trailing click then reached the cell's own onClick
+// and opened a sheet over a selection the user thought they had.
+describe('wireSelect swallows the click after a cancelled armed drag', () => {
+  let wrap: HTMLElement, cell: HTMLElement, teardown: () => void
+  const origEFP = document.elementFromPoint
+  beforeEach(() => {
+    vi.useFakeTimers()
+    document.elementFromPoint = () => null
+    wrap = document.createElement('div')
+    cell = document.createElement('div')
+    cell.setAttribute('data-testid', 'cell-ramp-2026-01-06')
+    wrap.appendChild(cell)
+    document.body.appendChild(wrap)
+    teardown = wireSelect(wrap, { order: () => ['ramp'], dates: () => ['2026-01-06'], enabled: () => true, onSelect: () => {} })
+    // An earlier test in this file COMMITTED a drag under fake timers, so its
+    // one-shot click swallow is still sitting on `document`: the 0ms sweep that
+    // removes it never ran, and `vi.useRealTimers()` threw the pending timer
+    // away. A throwaway click eats that leftover here, so the clicks below are
+    // answered by THIS gesture and nothing else — without it the first assertion
+    // passed on the neighbour's listener whatever this file's code did (seen
+    // running the file whole, 6 Sep 26). Real timers always sweep, so the leak
+    // is jsdom's alone.
+    document.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
+  })
+  afterEach(() => { teardown(); wrap.remove(); document.elementFromPoint = origEFP; vi.useRealTimers() })
+  const press = () => cell.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, pointerId: 1, pointerType: 'touch', clientX: 5, clientY: 5, button: 0 }))
+  const cancel = () => cell.dispatchEvent(new PointerEvent('pointercancel', { bubbles: true, pointerId: 1, pointerType: 'touch' }))
+  const click = () => { const ev = new MouseEvent('click', { bubbles: true, cancelable: true }); cell.dispatchEvent(ev); return ev.defaultPrevented }
+
+  it('swallows exactly one click after an armed drag is cancelled', () => {
+    const seen = vi.fn()
+    cell.addEventListener('click', seen)
+    press()
+    vi.advanceTimersByTime(200)   // the hold armed
+    cancel()
+    expect(click()).toBe(true)
+    expect(seen).not.toHaveBeenCalled()
+    vi.advanceTimersByTime(1)     // the one-shot is gone
+    expect(click()).toBe(false)
+    expect(seen).toHaveBeenCalledTimes(1)
+  })
+  it('lets the click through when an UN-armed press is cancelled — a plain tap interrupted', () => {
+    press()
+    cancel()
+    expect(click()).toBe(false)
+  })
+})
+
+// FIGURE SELECT (owner, 6 Sep 26): a run of people down ONE figure column.
+// jsdom cannot hit-test, so elementFromPoint answers by y: one row of boxes per
+// 20px, three copies of nothing — the point is the run, the anchor's pool and
+// the ATTRIBUTE paint.
+describe('wireFigureSelect', () => {
+  let outer: HTMLElement, teardown: () => void
+  const origEFP = document.elementFromPoint
+  const order = ['a', 'b', 'c', 'd']
+  const box = (fig: string, person: string, y: number) => {
+    const td = document.createElement('td')
+    td.className = 'bal figbox'
+    td.setAttribute('data-fig', fig); td.setAttribute('data-person', person)
+    td.dataset.y = String(y)
+    return td
+  }
+  let cells: HTMLElement[]
+  const selected = vi.fn()
+  beforeEach(() => {
+    vi.useFakeTimers()
+    selected.mockReset()
+    outer = document.createElement('div')
+    const table = document.createElement('table'), tb = document.createElement('tbody')
+    cells = []
+    order.forEach((p, i) => {
+      const tr = document.createElement('tr')
+      for (const fig of ['lve', 'ccl', 'lvetot']) { const c = box(fig, p, 10 + i * 20); tr.appendChild(c); cells.push(c) }
+      tb.appendChild(tr)
+      if (i === 1) { const h = document.createElement('tr'); const f = document.createElement('td'); f.className = 'figfill'; h.appendChild(f); tb.appendChild(h) }
+    })
+    const th = document.createElement('th'); th.className = 'bal fig'; th.setAttribute('data-fig', 'ccl'); tb.appendChild(th)
+    table.appendChild(tb); outer.appendChild(table); document.body.appendChild(outer)
+    // Rows sit at y = 10 (a), 30 (b), 50 (c), 70 (d); x picks the column. A
+    // point within 5px of a row's centre is that row's box in that column;
+    // the band between b and c (y 31–49) is the heading — its figfill has no
+    // person, which is what hold-last-focus must ride over.
+    document.elementFromPoint = (x: number, y: number) => {
+      const fig = x < 50 ? 'lve' : x < 100 ? 'ccl' : 'lvetot'
+      const hit = cells.find(c => c.getAttribute('data-fig') === fig && Math.abs(Number(c.dataset.y) - y) <= 5)
+      return hit ?? (y > 30 && y < 50 ? outer.querySelector('.figfill') : null)
+    }
+    teardown = wireFigureSelect(outer, {
+      order: () => order,
+      selectable: id => id !== 'lvetot',
+      enabled: () => true,
+      onSelect: selected,
+    })
+  })
+  afterEach(() => { teardown(); outer.remove(); document.elementFromPoint = origEFP; vi.useRealTimers() })
+  const at = (fig: string, p: string) => cells.find(c => c.getAttribute('data-fig') === fig && c.getAttribute('data-person') === p)!
+  const down = (el: Element, x: number, y: number) => el.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, pointerId: 1, pointerType: 'mouse', clientX: x, clientY: y, button: 0 }))
+  const move = (x: number, y: number) => window.dispatchEvent(new PointerEvent('pointermove', { pointerId: 1, pointerType: 'mouse', clientX: x, clientY: y }))
+  const up = () => window.dispatchEvent(new PointerEvent('pointerup', { pointerId: 1, pointerType: 'mouse', button: 0 }))
+  // The GESTURE's own mark. React's `data-figsel` is the committed selection
+  // and is nobody's business here — the two are separate attributes precisely so
+  // this clear can never reach a box React owns (select.ts).
+  const marked = () => cells.filter(c => c.hasAttribute(FIGDRAG_ATTR)).map(c => `${c.getAttribute('data-fig')}:${c.getAttribute('data-person')}`)
+
+  it('a mouse drag down the CCL column paints the run as an ATTRIBUTE and hands the pool + people over', () => {
+    down(at('ccl', 'a'), 60, 10)
+    move(60, 16)                    // past MOUSE_SLOP → armed
+    move(60, 70)                    // over d, crossing the heading band
+    expect(marked()).toEqual(['ccl:a', 'ccl:b', 'ccl:c', 'ccl:d'])
+    up()
+    expect(selected).toHaveBeenCalledWith({ fig: 'ccl', ids: ['a', 'b', 'c', 'd'] })
+    expect(marked()).toEqual([])   // the gesture's own marks are gone; React owns it now
+  })
+  it('a pointer straying sideways stays in the anchor\'s pool — one pool per drag', () => {
+    down(at('lve', 'b'), 20, 30)
+    move(20, 36)                    // armed; no row within 5px, so the run is still b
+    move(120, 50)                   // over the TOTAL column's x, on c's row: c is the focus, the pool stays lve
+    expect(marked()).toEqual(['lve:b', 'lve:c'])
+  })
+  it('crossing a heading holds the last person, and the next row extends the run past it', () => {
+    down(at('ccl', 'a'), 60, 10)
+    move(60, 16); move(60, 30)      // b
+    move(60, 40)                    // the heading band: no person under the pointer
+    expect(marked()).toEqual(['ccl:a', 'ccl:b'])
+    move(60, 50)                    // c
+    expect(marked()).toEqual(['ccl:a', 'ccl:b', 'ccl:c'])
+  })
+  it('a total, a header and a name no longer on the list start nothing', () => {
+    down(at('lvetot', 'a'), 120, 10); move(120, 16); move(120, 70); up()
+    expect(selected).not.toHaveBeenCalled()
+    down(outer.querySelector('th')!, 60, 200); move(60, 206); up()
+    expect(selected).not.toHaveBeenCalled()
+  })
+  it('a finger: the hold arms, locks the page scroll on the outer, and onArm fires', () => {
+    const onArm = vi.fn()
+    teardown()
+    teardown = wireFigureSelect(outer, { order: () => order, selectable: () => true, enabled: () => true, onArm, onSelect: selected })
+    at('ccl', 'a').dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, pointerId: 2, pointerType: 'touch', clientX: 60, clientY: 10, button: 0 }))
+    expect(onArm).not.toHaveBeenCalled()
+    vi.advanceTimersByTime(200)
+    expect(onArm).toHaveBeenCalledTimes(1)
+    expect(outer.style.touchAction).toBe('none')
+    expect(outer.classList.contains('selecting')).toBe(true)
+    // The armed beat is an ATTRIBUTE as well, and that copy is the one the
+    // figure recipe reads: this wrap's className belongs to React, which
+    // rebuilds it mid-drag (6 Sep 26 review).
+    expect(outer.getAttribute('data-selecting')).toBe('1')
+  })
+  it('the mark and the armed beat both survive a className rewrite — the reason they are attributes', () => {
+    down(at('ccl', 'a'), 60, 10); move(60, 16)
+    at('ccl', 'a').className = 'bal figbox flash'   // what a React re-render does mid-drag
+    outer.className = 'mx-outer mx-banded mx-figures'
+    expect(at('ccl', 'a').hasAttribute(FIGDRAG_ATTR)).toBe(true)
+    expect(outer.getAttribute('data-selecting')).toBe('1')
+    up()
+    expect(outer.hasAttribute('data-selecting')).toBe(false)   // and it is taken down
   })
 })

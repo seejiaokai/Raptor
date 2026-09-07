@@ -2,7 +2,7 @@
 /* Drag & drop — tfin's "generic drag & drop across the whole edit board"
    group and the B23/B49 applyDrop contracts, driven through the React edit
    page with the same synthesized drag events the reference suite uses. */
-import { beforeAll, describe, expect, it } from 'vitest'
+import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { act } from 'react'
 import { createRoot } from 'react-dom/client'
 import { App } from './App'
@@ -15,6 +15,7 @@ import { openScheduler, closeScheduler } from './board'
 import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
 import { isNewFlag } from '../state/dropflag'
+import { markLand, pendingLand } from './lift'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
@@ -688,6 +689,221 @@ describe('applyDrop refuses on a read-only board, not just the render (reviewer-
     await dnd(puck, fill)
     expect(JSON.stringify(DAYS[0].dutywaves), 'the model DID see the drop').not.toBe(before)
     await act(async () => { closeScheduler(); notify() })
+  })
+})
+
+/* ONE LIFT, EVERY DRAG (owner, 6 Sep 26 — "every single drag and drop for
+   rearranging things … the thing u are grabbing glows evenly … once I drop the
+   item, it should flash to show where the new item ended up"). The puck's two
+   ghosts are single elements, so they wear the shared `.lift` class directly
+   (src/ui/lift.ts, scheduler.css) instead of the accent outline each drew for
+   itself. The landing cannot be painted at the drop — the drop REBUILDS the
+   panels from HTML strings — so applyDrop marks the served seat's address first
+   and refreshHighlights' paintLand() flashes it in the pass that rebuilt it. */
+describe('the puck ghosts wear the lift, and the seat it lands on flashes', () => {
+  const src = () => $('#eRoster .rpuck[data-person]')
+  const HAS_PE = typeof (globalThis as any).PointerEvent === 'function'
+  const ptr = (type: string, x: number, y: number, o: { kind?: string, id?: number } = {}) => {
+    const { kind = 'mouse', id = 21 } = o
+    if (HAS_PE) return new PointerEvent(type, { bubbles: true, cancelable: true, clientX: x, clientY: y, pointerId: id, pointerType: kind, isPrimary: true, button: 0 })
+    const e: any = new MouseEvent(type, { bubbles: true, cancelable: true, clientX: x, clientY: y, button: 0 })
+    Object.defineProperty(e, 'pointerId', { value: id }); Object.defineProperty(e, 'pointerType', { value: kind }); Object.defineProperty(e, 'isPrimary', { value: true })
+    return e
+  }
+  /* the native path only builds its ghost when the dataTransfer can take a
+     drag image (drag.ts setDragImage) */
+  const dragEv = (t: string) => {
+    const ev: any = new Event(t, { bubbles: true, cancelable: true })
+    try { ev.dataTransfer = { effectAllowed: '', setData() {}, setDragImage() {} } } catch (_) {}
+    return ev
+  }
+  /* the file's own dnd(), stopped for a beat at the drop: the mark is set
+     BEFORE afterSchedMutate(), and React's re-render — which is what spends it
+     — waits for the end of this act() scope, so this is the one place the
+     address itself can be read. */
+  const dropAndPeek = async (from: Element, to: Element) => {
+    const dt: any = { data: {}, effectAllowed: '', setData(k: string, v: string) { this.data[k] = v }, getData(k: string) { return this.data[k] || '' } }
+    const mk = (t: string) => { const ev: any = new Event(t, { bubbles: true, cancelable: true }); try { ev.dataTransfer = dt } catch (_) {} return ev }
+    let mark: { sel: string } | null = null
+    /* THE CLOCK IS HELD STILL ACROSS THE DROP (7 Sep 26). lift.ts drops a mark
+       nobody has painted for a SECOND (LAND_STALE_MS) — a real-time backstop,
+       and in a browser the rebuild it waits for is ~20ms away. Here the rebuild
+       is jsdom re-rendering the whole board AND the week inside this act()
+       scope, which on a loaded machine takes longer than that second: running
+       the two vitest projects together, this file's board-and-week test failed
+       with the board never flashing, and it reproduces on demand with six busy
+       CPUs beside it (measured — and it passes under the same load with
+       LAND_STALE_MS raised, which is what names the cause). Freezing Date.now
+       for the drop removes an environment-speed dependency that has nothing to
+       do with what these tests pin; the staleness rule keeps its own pin in
+       lift.test.ts, on a fake clock, where it belongs. */
+    const realNow = Date.now
+    const frozen = realNow()
+    Date.now = () => frozen
+    try {
+      await act(async () => {
+        from.dispatchEvent(mk('dragstart')); to.dispatchEvent(mk('dragover')); to.dispatchEvent(mk('drop'))
+        mark = pendingLand()
+        from.dispatchEvent(mk('dragend'))
+      })
+    } finally { Date.now = realNow }
+    return mark as { sel: string } | null
+  }
+  /* jsdom lays nothing out, so what is "under the pointer" is told by hand */
+  let under: Element | null = null
+  const efp = (document as any).elementFromPoint
+  beforeAll(() => { (document as any).elementFromPoint = () => under })
+  afterAll(() => { (document as any).elementFromPoint = efp })
+
+  it('the mouse ghost the page draws under the cursor carries it', () => {
+    src().dispatchEvent(dragEv('dragstart'))
+    const g = $('.dragimg')
+    expect(g, 'the ghost is up').toBeTruthy()
+    expect(g.classList.contains('lift'), 'and wears the one recipe, not its own outline').toBe(true)
+    src().dispatchEvent(dragEv('dragend'))
+  })
+
+  it('so does the one the pointer machine builds for a mouse', () => {
+    src().dispatchEvent(ptr('pointerdown', 10, 10))
+    src().dispatchEvent(ptr('pointermove', 30, 30))
+    expect($('.dragimg').classList.contains('lift')).toBe(true)
+    window.dispatchEvent(new Event('blur'))            // give it up without dropping
+    expect($('.dragimg'), 'and it goes with the drag').toBeFalsy()
+  })
+
+  it('and the finger\'s ghost, once the hold has armed it', async () => {
+    src().dispatchEvent(ptr('pointerdown', 10, 10, { kind: 'touch', id: 22 }))
+    await new Promise(r => setTimeout(r, 240))         // TD_HOLD is 180ms
+    const g = $('.tdghost')
+    expect(g, 'the hold armed a touch drag').toBeTruthy()
+    expect(g.classList.contains('lift')).toBe(true)
+    /* the PUCK alone, as the mouse's ghost always was (owner, 7 Sep 26): the
+       [data-drag] shell round it is whatever its host makes it — a seat a grid
+       cell can stretch, a roster row as wide as its column — and a ring on the
+       shell's edge boxed empty space beside the name */
+    expect(g.classList.contains('puck'), 'the ghost is the puck, not the shell round it').toBe(true)
+    expect(g.querySelector('.puck'), 'and carries no second puck inside it').toBeNull()
+    document.body.dispatchEvent(ptr('pointerup', 10, 10, { kind: 'touch', id: 22 }))
+    expect($('.tdghost')).toBeFalsy()
+  })
+
+  it('a palette puck carried by a finger is the puck alone too — its roster row is as wide as the column', async () => {
+    const pal = $('#eRoster .rpuck[data-drag][data-person]')
+    pal.dispatchEvent(ptr('pointerdown', 10, 10, { kind: 'touch', id: 24 }))
+    await new Promise(r => setTimeout(r, 240))
+    const g = $('.tdghost')
+    expect(g, 'the hold armed a touch drag off the palette').toBeTruthy()
+    expect(g.classList.contains('puck'), 'the ghost is the puck, not the .rpuck row').toBe(true)
+    expect(g.classList.contains('rpuck')).toBe(false)
+    document.body.dispatchEvent(ptr('pointerup', 10, 10, { kind: 'touch', id: 24 }))
+    expect($('.tdghost')).toBeFalsy()
+  })
+
+  /* A ghost is a COPY of a live node. While the finger's one cloned the whole
+     [data-drag] seat (until 7 Sep 26), a seat re-grabbed inside its own 600ms
+     landing (a scheduler correcting a mis-drop straight away) handed its
+     `lift-land` to the clone, which has no timer of its own to take it off
+     again; the ghost is the puck now, which never carries the seat's class,
+     and liftOn strips it either way — this pins that neither road brings it back. */
+  it('a seat re-grabbed inside its own landing flash does not hand it to the ghost', async () => {
+    const seat = $('#eWeek .seat[data-slot][data-drag]')
+    seat.classList.add('lift-land')                    // as a fresh drop leaves it
+    seat.dispatchEvent(ptr('pointerdown', 10, 10, { kind: 'touch', id: 23 }))
+    await new Promise(r => setTimeout(r, 240))
+    const g = $('.tdghost')
+    expect(g, 'the hold armed a touch drag off the seat').toBeTruthy()
+    expect(g.classList.contains('lift'), 'the ghost is picked up').toBe(true)
+    expect(g.classList.contains('lift-land'), 'and is not also landing').toBe(false)
+    document.body.dispatchEvent(ptr('pointerup', 10, 10, { kind: 'touch', id: 23 }))
+    seat.classList.remove('lift-land')
+  })
+
+  it('a served drop marks the seat it landed on, and the flash is there after the rebuild', async () => {
+    markLand('')                                       // a clean slot
+    const key = $('#eWeek .seat[data-slot^="d:"][data-drag]').dataset.slot!
+    const before = slotVal(key)
+    const puck = $$('#eRoster .rpuck[data-person]').find(x => x.dataset.person !== before)!
+    const mark = await dropAndPeek(puck, $(`#eWeek .seat[data-slot="${key}"]`))
+    expect(slotVal(key), 'sanity: the drop wrote').toBe(puck.dataset.person)
+    expect(mark!.sel).toBe(`#eWeek [data-slot="${key}"],#eWeek [data-fill="${key}"]`)
+    expect($(`#eWeek [data-slot="${key}"]`).classList.contains('lift-land'), 'the seat flashed').toBe(true)
+    setSlotVal(key, before); await act(async () => { afterSchedMutate(); notify() })
+  })
+
+  /* A SWAP changes two seats; the flash goes to the one the finger let go over
+     — `served`, the place the user was aiming at. */
+  it('a swap flashes the seat the puck was dropped ON', async () => {
+    markLand('')
+    const fly = $('#eWeek .acrow .seat[data-slot][data-drag]')
+    const duty = $('#eWeek .seat[data-slot^="d:"][data-drag]')
+    const fk = fly.dataset.slot!, dk = duty.dataset.slot!
+    const a = slotVal(fk), b = slotVal(dk)
+    const mark = await dropAndPeek(fly, duty)
+    expect(slotVal(dk), 'sanity: they swapped').toBe(a)
+    expect(mark!.sel).toBe(`#eWeek [data-slot="${dk}"],#eWeek [data-fill="${dk}"]`)
+    expect($(`#eWeek [data-slot="${dk}"]`).classList.contains('lift-land'), 'the seat he dropped on flashed').toBe(true)
+    expect($(`#eWeek [data-slot="${fk}"]`).classList.contains('lift-land'), 'the seat he came from did not').toBe(false)
+    setSlotVal(fk, a); setSlotVal(dk, b); await act(async () => { afterSchedMutate(); notify() })
+  })
+
+  /* The board and the EDIT WEEK render seats with the SAME keys, and the week
+     stays mounted behind the board overlay — so a bare address hands the
+     board's flash to a hidden node nobody can see (the rowdrag.ts lesson, 6 Sep
+     26). The mark is prefixed with the surface the drop landed on. */
+  it('the board and the week share a seat address — the flash goes to the surface dropped on', async () => {
+    markLand('')
+    await act(async () => { openScheduler(0); notify() })
+    try {
+      const key = $('#sbBoard .seat[data-slot^="d:"][data-drag]').dataset.slot!
+      expect($(`#eWeek [data-slot="${key}"]`), 'the week holds the same address behind the board').toBeTruthy()
+      const before = slotVal(key)
+      const puck = $$('#sbRoster [data-person][data-drag]').find(x => x.dataset.person !== before)!
+      const mark = await dropAndPeek(puck, $(`#sbBoard .seat[data-slot="${key}"]`))
+      expect(mark!.sel).toBe(`#sbBoard [data-slot="${key}"],#sbBoard [data-fill="${key}"]`)
+      expect($(`#sbBoard [data-slot="${key}"]`).classList.contains('lift-land'), 'the board flashed').toBe(true)
+      expect($(`#eWeek [data-slot="${key}"]`).classList.contains('lift-land'), 'the hidden week did not').toBe(false)
+      setSlotVal(key, before)
+    } finally { await act(async () => { closeScheduler(); notify() }) }
+  })
+
+  /* THE OTHER HALF OF THE SAME RULE (7 Sep 26): "moved or NOT". A seat puck
+     dropped back on its own seat writes nothing — applyDrop refuses it with
+     "Already in that seat" — but the man IS in the seat the scheduler aimed at,
+     so it flashes there. Nothing rebuilds on that path (no write, no
+     afterSchedMutate, no notify), so the seat is lit DIRECTLY: a mark would sit
+     in the slot with no later pass to spend it, and would then be spent by the
+     next unrelated repaint within its second. */
+  it('a puck dropped back on its own seat flashes in place, and marks nothing', async () => {
+    markLand('')
+    toasts = []
+    const seat = $('#eWeek .seat[data-slot^="g:"][data-drag]')
+    const key = seat.dataset.slot!, before = slotVal(key)
+    const mark = await dropAndPeek(seat, seat)
+    expect(slotVal(key), 'sanity: nothing was written').toBe(before)
+    expect(toasts, 'the toast still says why nothing moved').toEqual(['Already in that seat'])
+    expect(mark, 'nothing is deferred — there is no rebuild to defer to').toBeNull()
+    expect(pendingLand(), 'and none is left in the slot afterwards').toBeNull()
+    const live = $(`#eWeek [data-slot="${key}"]`)
+    expect(live, 'the seat is the same node — nothing re-rendered').toBe(seat)
+    expect(live.classList.contains('lift-land'), 'the seat he dropped on flashed').toBe(true)
+    /* and it leaves the ordinary way, on the veil's own animationend */
+    const ev: any = new Event('animationend', { bubbles: false }); ev.animationName = 'liftLand'
+    live.dispatchEvent(ev)
+    expect(live.classList.contains('lift-land'), 'the flash ends with its animation').toBe(false)
+  })
+
+  /* "A committed drop with a TARGET flashes where the thing ended up; a release
+     with no target shows nothing" (the owner's rule). Letting a seat puck go
+     over the roster takes the man off the seat — a removal, with nowhere to
+     flash. */
+  it('a puck let go on the roster has landed nowhere — nothing is marked', async () => {
+    markLand('')
+    const seat = $('#eWeek .seat[data-slot^="g:"][data-drag]')
+    const key = seat.dataset.slot!, before = slotVal(key)
+    const mark = await dropAndPeek($(`#eWeek .seat[data-slot="${key}"]`), $('#eRoster'))
+    expect(slotVal(key), 'sanity: it came off the seat').toBe('')
+    expect(mark, 'no target, no flash').toBeNull()
+    setSlotVal(key, before); await act(async () => { afterSchedMutate(); notify() })
   })
 })
 

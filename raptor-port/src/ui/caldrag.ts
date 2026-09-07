@@ -26,6 +26,7 @@ import { writeInputs } from '../state/store'
 import { canEditSched, ME } from '../state/auth'
 import { INPUTS } from '../engine/inputs'
 import { HOOKS } from '../engine/hooks'
+import { landOn, liftOn, markLand } from './lift'
 
 /* drag.ts's own numbers, cited rather than re-derived (its tdArm/onPointerDown/
    onPointerMove, drag.ts ~240-338): 180ms of hold turns a touch into a
@@ -124,6 +125,11 @@ export function commitChipMove(entry: any, fromIso: string, toIso: string): bool
 
 type Entry = { kind: 'input' | 'puck', iid?: string, pid?: string, el: HTMLElement, fromIso: string }
 
+/* The address the calendar draws this entry at, for the landing flash: a
+   planning section by its own id, an input by its input id (InputsCal renders
+   them as `[data-pid]` / `[data-iid]` chips inside a `[data-icday]` cell). */
+const chipSel = (e: Entry) => e.kind === 'puck' ? `[data-pid="${e.pid}"]` : `[data-iid="${e.iid}"]`
+
 /* Attaches to `root` (the calendar overlay), not `document` — the calendar
    owns this gesture the way the board owns drag.ts's, and a component-scoped
    listener is what lets several calendars mount and unmount in the same
@@ -153,7 +159,13 @@ export function initCalDrag(root: HTMLElement, opts: { onTap: (entry: any) => vo
     st.armed = true
     const r = st.entry.el.getBoundingClientRect()
     const g = st.entry.el.cloneNode(true) as HTMLElement
+    /* the app's ONE picked-up look (owner, 6 Sep 26 — src/ui/lift.ts,
+       scheduler.css `.lift`), the same box the board's puck ghosts wear.
+       liftOn, not a bare classList.add: the ghost is a COPY of the chip, and a
+       chip re-grabbed inside its own 600ms landing flash would otherwise hand
+       `lift-land` to a clone that has no timer of its own to end it. */
     g.classList.add('ic-ghost')
+    liftOn(g)
     g.removeAttribute('data-icdrag')
     g.style.width = r.width + 'px'
     g.style.height = r.height + 'px'
@@ -258,7 +270,20 @@ export function initCalDrag(root: HTMLElement, opts: { onTap: (entry: any) => vo
       : null
     clearGesture()
     if (armed) {
-      if (target) commitChipMove(entry, entry.fromIso, target.dataset.icday!)
+      const to = target ? target.dataset.icday! : ''
+      /* WHERE IT LANDED (owner, 6 Sep 26 — "once I drop the item, it should
+         flash to show where the new item ended up"). A real move rewrites the
+         whole month, so its flash is deferred: the chip's address IN THE DAY IT
+         LANDED IN is marked here and InputsCal's own paintLand() pass lights it
+         in the commit that rebuilt the grid (src/ui/lift.ts). A drop back on the
+         day it came from is still a landing — commitChipMove writes nothing, so
+         nothing re-renders and nothing could wipe the class, and the chip
+         flashes where it stands (the seated-puck precedent, InputsCal). A
+         REFUSED move (someone else's input, no rights) has said its own piece in
+         a toast and the chip never left, so it shows nothing; nor does a cancel
+         or a release over no day at all. */
+      if (to && commitChipMove(entry, entry.fromIso, to)) markLand(`[data-icday="${to}"] ${chipSel(entry)}`)
+      else if (to && to === entry.fromIso) landOn(entry.el)
       installClickEater() // a real drag happened — its own release click must not fall through to the chip
     } else {
       const dx = Math.abs(x - x0), dy = Math.abs(y - y0)

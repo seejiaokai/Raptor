@@ -211,6 +211,10 @@
   .oil-grid td.oil-name[role="button"] { cursor: pointer; }
   .oil-grid td.oil-name .who { display: block; font-weight: 800; font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .oil-grid td.oil-name .catchip { display: inline-block; margin-top: 2px; font-size: 8px; padding: 1px 4px; line-height: 1.15; letter-spacing: 0; }
+  /* Opened ON somebody (the Cinch's OIL BAL row): their row is scrolled to
+     AND marked, so the reader can see which of sixteen they landed on. The
+     DAY-level twin of this rule went with the dead `focus` prop on 6 Sep 26;
+     this one has live callers and stays. */
   .oil-grid tr.oil-row.here td.oil-name { box-shadow: inset 3px 0 0 var(--adv, #E5A83B); }
 
   /* Selected (picked, or under the drag): a wash across the row and an
@@ -310,7 +314,6 @@
   .oil-e.grant { outline: 1px dashed rgba(59, 198, 232, .35); outline-offset: -3px; border-radius: 6px; cursor: pointer; }
   .oil-e.grant:hover { outline-color: rgba(59, 198, 232, .7); }
   .oil-e.editing { outline: 2px solid var(--accent); outline-offset: -3px; background: rgba(59, 198, 232, .08); }
-  .oil-e.here { outline: 2px solid var(--adv, #E5A83B); outline-offset: -3px; }
   .oil-e.take { background: rgba(240, 85, 95, .06); }
   .oil-e.take .l1 .amt { color: #FFAAB0; }
   .oil-e.take .l2 { color: #FFAAB0; }
@@ -354,6 +357,21 @@
   .oil-bar .oil-num { width: 70px; }
   .oil-bar .oil-text { flex: 1 1 180px; }
   .oil-bar .oil-text.given { flex: 0 1 170px; }
+  /* The + / − chip beside the amount (6 Sep 26) — the phone's way to a
+     correction, since a decimal keypad has no minus key. Wide enough to be a
+     target and heavy enough for the glyph to read at this size. Here rather
+     than beside the grid's balance bar because the chip belongs to the FORM,
+     which both bars draw: one rule, one place.
+     SUBTRACTING also has to LOOK different, not just read different — a − and
+     a + are one stroke apart at this size, and the chip is the only thing
+     saying which way the number goes ("a pick the eye cannot see is a form
+     that lies", the 19 Aug 26 find). */
+  .oil-bar .tchip.sign { min-width: 32px; font-weight: 800; }
+  .oil-bar .tchip.sign[aria-pressed="true"] {
+    background: rgba(240, 85, 95, .16);
+    border-color: rgba(240, 85, 95, .55);
+    color: var(--hard);
+  }
   .oil-bar .note.warn { flex-basis: 100%; }
   .oil-daychip { position: relative; display: inline-block; }
   .oil-pop {

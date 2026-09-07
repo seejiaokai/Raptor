@@ -14,6 +14,7 @@ import { notify } from '../state/store'
 import { flagDrop } from '../state/dropflag'
 import { canEditSched } from '../state/auth'
 import { reassignInput } from './inputedit'
+import { landOn, liftOn, markLand } from './lift'
 import { DBG, initDragDbg } from './dragdbg'
 
 const editMode = () => HOOKS.editMode()
@@ -242,6 +243,20 @@ export function applyDrop(el: any, x: any, y: any) {
     toast('A jet line carries two — FCP and RCP')
     DRAG = null; dndOff(); return false
   }
+  /* WHICH SURFACE the landing flash belongs to (the rowdrag.ts precedent, 6 Sep
+     26). The board and the EDIT WEEK render seats under the SAME keys, and the
+     week stays MOUNTED behind the board overlay (Shell keeps #page-editsched
+     alive), earlier in document order — so a bare `[data-slot="…"]` hands every
+     board drop's flash to the week's hidden copy, where nobody can see it and
+     where it stays (the node survives, so paintLand spends the mark on it). The
+     mark is prefixed with the id of the surface the drop LANDED on. A drop on a
+     host with neither id (a test harness) keeps the document-wide behaviour,
+     which is correct when there is only one. */
+  const surf = el.closest('#sbBoard,#eWeek')
+  const landSel = (k: any) => {
+    const w = surf ? `#${surf.id} ` : ''
+    return `${w}[data-slot="${k}"],${w}[data-fill="${k}"]`
+  }
   /* a drop that lands ON the armed target puts the arm down — it just did the
      arm's job. Left armed, the ring outlived the row it was waiting on (and
      the next palette tap would plant a second body into a row the user had
@@ -255,7 +270,17 @@ export function applyDrop(el: any, x: any, y: any) {
        reopen latch before dndOff() re-adds ros-open. Failed drops never
        reach done(), so an aborted drag still gets its drawer back. */
     ROS_REOPEN = false
-    DRAG = null; dndOff(); view.afterSchedMutate()
+    DRAG = null; dndOff()
+    /* WHERE THE PUCK LANDED (owner, 6 Sep 26 — "once I drop the item, it should
+       flash to show where the new item ended up"). The write rebuilds the day's
+       panels from HTML strings, so the flash cannot be painted here: the seat's
+       address is marked NOW and refreshHighlights' paintLand() lights it in the
+       pass that rebuilt it (src/ui/lift.ts). `served` is the seat the puck was
+       let go ON — on a SWAP both seats change and this is the one the finger was
+       aiming at. A puck let go with no target (taken off its seat onto the
+       roster or blank space) has landed nowhere and marks nothing. */
+    if (served) markLand(landSel(served))
+    view.afterSchedMutate()
     if (!flagDrop(warnBefore, served ? keyDay(served) : null)) (asks || []).some(([id, key]) => barDrop(id, key))
     notify(); return true
   }
@@ -268,8 +293,20 @@ export function applyDrop(el: any, x: any, y: any) {
       const a = slotVal(DRAG.key), b = slotVal(targetKey); setSlotVal(targetKey, a); setSlotVal(DRAG.key, b)
       asks = [[a, targetKey], [b, DRAG.key]]
     }
-    /* dropped back where he started — say so rather than reporting nothing */
-    else { DRAG = null; dndOff(); toast('Already in that seat'); return false }
+    /* dropped back where he started — say so rather than reporting nothing, and
+       FLASH the seat he let go on. The app's rule is "a committed drop with a
+       target flashes where the thing ended up, moved or NOT" (owner, 6 Sep 26),
+       and this is that case: he aimed at a seat and the puck is in it. Lit
+       directly rather than marked, because nothing rebuilds here — no write, no
+       afterSchedMutate, no notify — so there is no later pass for paintLand to
+       run in, and the seat under the pointer is the live node either way (the
+       surface question markLand answers cannot arise: this element IS the one he
+       dropped on). The toast stays; it says WHY nothing moved, the flash says
+       where the puck is. */
+    else {
+      const seat = slotEl.matches('[data-slot]') ? slotEl : slotEl.querySelector(`[data-slot="${targetKey}"]`)
+      DRAG = null; dndOff(); landOn(seat); toast('Already in that seat'); return false
+    }
     return done(targetKey, asks)
   }
   if (cell) {                                     // dropped on an empty / shared people cell
@@ -371,7 +408,13 @@ function setDragImage(e: DragEvent) {
   const r = pk.getBoundingClientRect()
   dropDragImage()
   const g = pk.cloneNode(true) as HTMLElement
+  /* `lift` is the app's ONE picked-up look (owner, 6 Sep 26; src/ui/lift.ts,
+     scheduler.css) — the ghost drew its own accent outline until then. Through
+     liftOn rather than a bare classList.add: a ghost is a COPY of a live node,
+     and a seat re-grabbed inside its own 600ms landing flash would otherwise
+     hand `lift-land` to the clone, which has no timer of its own to end it. */
   g.classList.add('dragimg')
+  liftOn(g)
   g.removeAttribute('data-drag'); g.removeAttribute('draggable'); g.removeAttribute('tabindex')
   g.style.width = r.width + 'px'; g.style.height = r.height + 'px'
   DRAGOX = e.clientX - r.left; DRAGOY = e.clientY - r.top
@@ -497,14 +540,27 @@ function tdArm() {
   DRAG = d; TD.armed = true
   DBG.arm()
   TD.scroller = tdScrollerFor(TD.src)
-  /* the mouse ghost is the PUCK alone (not the .seat shell a grid cell can
-     stretch past it), pinned where the press landed inside it — clamped to
-     the puck so a press on the shell's padding still reads as a corner grab;
-     the finger's ghost is the shell clone centred under the touch */
-  const pk = TD.mouse ? (TD.src.querySelector('.puck') || TD.src) : TD.src
+  /* BOTH ghosts are the PUCK alone, never the [data-drag] shell round it. The
+     mouse's always was — pinned where the press landed inside it, clamped to
+     the puck so a press on the shell's padding still reads as a corner grab.
+     The finger's cloned the shell, centred under the touch, until 7 Sep 26,
+     when the owner saw the ring run past the puck on his phone: a shell is
+     whatever its host makes it — a grid cell can stretch a seat past its puck,
+     and the AIRCREW drawer's rows are as wide as their column (measured on the
+     built app: a placeholder's row 156px wider than the puck in it) — so a
+     ring drawn on the shell's edge boxed empty space beside the name. The puck
+     is the thing he is carrying; the ghost is the puck. */
+  const pk = TD.src.querySelector('.puck') || TD.src
   const r = pk.getBoundingClientRect()
   const g = pk.cloneNode(true)
+  /* both ghosts wear the app's ONE picked-up look (owner, 6 Sep 26 —
+     src/ui/lift.ts, scheduler.css `.lift`), not an outline of their own.
+     liftOn, not a bare classList.add: the helper also strips a `lift-land` a
+     clone could inherit — the finger's shell clone did (a seat re-grabbed
+     inside its own 600ms landing flash handed the class to a copy with no
+     timer to end it); a puck clone cannot, and the one entry point stays. */
   g.classList.add(TD.mouse ? 'dragimg' : 'tdghost')
+  liftOn(g)
   g.removeAttribute('data-drag'); g.removeAttribute('draggable'); g.removeAttribute('tabindex')
   g.style.width = r.width + 'px'; g.style.height = r.height + 'px'
   TD.ox = TD.mouse ? Math.min(Math.max(TD.x0 - r.left, 0), r.width) : 0

@@ -333,3 +333,117 @@ describe('the page stays live behind a sheet, and the panel moves', () => {
     expect(panel.style.getPropertyValue('--lw-dx')).toBe('')
   })
 })
+
+// THE SWIPE UNDER A SHEET IS THE BROWSER'S OWN (owner, 6 Sep 26 — "when a window
+// like this is open, the swipe on the background … doesn't decelerate smoothly.
+// Like it stops immediately … fix the swipe animation to be exactly the same").
+// ON A TOUCH SCREEN THE FINGER FALLS THROUGH TO THE GRID (owner, 6 Sep 26 —
+// the swipe behind a sheet must coast "exactly the same" as the bare grid, and
+// after a first fix that mirrored a scroller onto it, "it feels more laggy /
+// stuttery"). Sheet.tsx useGridPan takes the scrim out of the finger's way
+// (`pointer-events: none` when `(pointer: coarse)` matches) so the browser
+// flings `.mx-wrap` itself, and a document-level shield does what the scrim
+// did by being in the way: a tap or press aimed under the sheet never reaches
+// the grid's handlers, the tap closes the sheet, and the touch is never
+// cancelled — that is what keeps it a scroll. jsdom has no matchMedia (a fine
+// pointer, the scrim in the way — every test above), so a touch screen is
+// stubbed in here. The fling itself is a real touch in e2e/leavewar.spec.ts.
+describe('on a touch screen the finger falls through to the grid, and a tap is shielded', () => {
+  const touchScreen = () => {
+    Object.defineProperty(window, 'matchMedia', {
+      configurable: true,
+      value: (q: string) => ({ matches: q === '(pointer: coarse)', media: q, addEventListener() {}, removeEventListener() {}, addListener() {}, removeListener() {}, onchange: null, dispatchEvent: () => false }),
+    })
+  }
+  afterEach(() => { delete (window as any).matchMedia })
+  const wrap = () => document.querySelector('.mx-wrap') as HTMLElement
+  const openBid = () => {
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId('cell-dusk-2026-02-11'))
+    expect(screen.getByTestId('bid-picker')).toBeTruthy()
+  }
+  // What the grid would hear: a listener on the scroller itself, below the
+  // document-level shield.
+  const heard = () => {
+    const got: string[] = []
+    for (const t of ['pointerdown', 'touchstart', 'mousedown', 'click']) wrap().addEventListener(t, () => got.push(t))
+    return got
+  }
+
+  it('is out of the finger\'s way on a touch screen, and in it for a mouse', () => {
+    openBid()
+    expect(scrim().style.pointerEvents).toBe('') // jsdom: a fine pointer
+    fireEvent.click(screen.getByTestId('bid-cancel'))
+    expect(screen.queryByTestId('bid-picker')).toBeNull()
+    touchScreen() // the next sheet mounts onto a touch screen
+    fireEvent.click(screen.getByTestId('cell-dusk-2026-02-11'))
+    expect(scrim().style.pointerEvents).toBe('none')
+  })
+
+  it('a tap on a cell behind the sheet closes it, opens nothing, and never reaches the grid', () => {
+    touchScreen()
+    openBid()
+    const got = heard()
+    const cell = screen.getByTestId('cell-dusk-2026-02-12')
+    fireEvent.pointerDown(cell, { pointerType: 'touch' })
+    fireEvent.touchStart(cell)
+    fireEvent.touchEnd(cell)
+    fireEvent.mouseDown(cell)
+    fireEvent.click(cell)
+    expect(got).toEqual([])
+    // The sheet is gone, and the tapped cell did NOT open its own.
+    expect(screen.queryByTestId('bid-picker')).toBeNull()
+  })
+
+  it('never cancels the touch — that is what keeps it a native scroll — but does cancel the tap\'s mousedown, so no cell is focused', () => {
+    touchScreen()
+    openBid()
+    const cell = screen.getByTestId('cell-dusk-2026-02-12')
+    const ts = new Event('touchstart', { bubbles: true, cancelable: true })
+    const pd = new Event('pointerdown', { bubbles: true, cancelable: true })
+    const md = new Event('mousedown', { bubbles: true, cancelable: true })
+    cell.dispatchEvent(ts); cell.dispatchEvent(pd); cell.dispatchEvent(md)
+    expect(ts.defaultPrevented).toBe(false)
+    expect(pd.defaultPrevented).toBe(false)
+    expect(md.defaultPrevented).toBe(true)
+  })
+
+  it('leaves the sheet\'s own panel alone', () => {
+    touchScreen()
+    openBid()
+    // A control inside the panel still works: the ✕ closes it.
+    fireEvent.click(screen.getByTestId('bid-cancel'))
+    expect(screen.queryByTestId('bid-picker')).toBeNull()
+  })
+
+  it('is gone with the sheet: the next tap on that cell opens its sheet again', () => {
+    touchScreen()
+    openBid()
+    fireEvent.click(screen.getByTestId('cell-dusk-2026-02-12')) // shielded: closes
+    expect(screen.queryByTestId('bid-picker')).toBeNull()
+    const got = heard()
+    fireEvent.click(screen.getByTestId('cell-dusk-2026-02-12')) // bare: opens
+    expect(got).toEqual(['click'])
+    expect(screen.getByTestId('bid-picker')).toBeTruthy()
+  })
+
+  it('stands down while the Leave War section is not the one showing (the kept-mounted guard)', () => {
+    touchScreen()
+    render(<div id="page-leavewar" className="on"><Matrix /></div>)
+    fireEvent.click(screen.getByTestId('cell-dusk-2026-02-11'))
+    expect(screen.getByTestId('bid-picker')).toBeTruthy()
+    document.getElementById('page-leavewar')!.classList.remove('on')
+    const got = heard()
+    fireEvent.click(wrap())
+    expect(got).toEqual(['click']) // reached the grid: not swallowed
+    expect(screen.getByTestId('bid-picker')).toBeTruthy() // and not closed
+  })
+
+  it('keeps the vertical page pan for a finger on the scrim where the scrim is still in the way (a fine pointer)', () => {
+    // The class rule is `touch-action: pan-y`, as since 28 Aug — the scrim
+    // forwards a sideways drag by hand on a fine-pointer device only.
+    openBid()
+    expect(scrim().className).toBe('sheetscrim')
+    expect(scrim().style.pointerEvents).toBe('')
+  })
+})

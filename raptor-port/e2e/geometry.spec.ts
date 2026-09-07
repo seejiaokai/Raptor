@@ -2116,6 +2116,27 @@ test('the notes row keeps a usable text field and a single row on a phone', asyn
   expect(m.rowHeight, 'one grid row, not wrapped onto a second').toBeLessThan(40)
 })
 
+/* ONE LIFT, EVERY DRAG (owner, 6 Sep 26) — the landing flash, LATCHED. The
+   class arrives ~60ms after the pointer goes up (React's effect flush, then the
+   post-render pass) and is gone again at 600ms, so a read taken straight after
+   mouse.up can be too early and a poll can be too late. An observer installed
+   BEFORE the drop latches the first sighting, and nothing races. */
+async function watchLanding(page: Page, sel: string) {
+  await page.evaluate((s) => {
+    const w = window as any
+    w.__landed = false
+    const look = () => { const el = document.querySelector(s); if (el && el.classList.contains('lift-land')) w.__landed = true }
+    w.__landObs = new MutationObserver(look)
+    w.__landObs.observe(document.body, { subtree: true, childList: true, attributes: true, attributeFilter: ['class'] })
+    look()
+  }, sel)
+}
+async function landedOnce(page: Page, what: string) {
+  await page.waitForFunction(() => (window as any).__landed === true, null, { timeout: 3000 })
+    .catch(() => { throw new Error(`${what} — no .lift-land ever reached the landed address`) })
+  await page.evaluate(() => (window as any).__landObs.disconnect())
+}
+
 /* the reference day's very first wave carries two formations (VL, RU), and
    the SECOND wave reuses the same two callsigns for its own pair (measured:
    DAYS[0].waves[0] and [1] both hold a VL 2-ship and a RU 2-ship) — so a
@@ -2132,6 +2153,13 @@ test('dragging a grip reorders the wave and keeps a pair together', async ({ pag
   await page.waitForSelector('#sbBoard .sb-line[data-move]')
   const go1 = page.locator('#sbBoard .sb-go').first()
   const before = await go1.locator('.sb-line .lin').evaluateAll(els => els.map(i => (i as HTMLInputElement).value))
+  /* ONE LIFT, EVERY DRAG (owner, 6 Sep 26): the addresses on both ends, read
+     BEFORE the drop — the panels are innerHTML strings, so every node here is
+     replaced by the re-render and only the address survives. `to` is the
+     destination index after removal (engine/reorder.ts), so it names the
+     landed line whether this drag resequences a jet or travels a formation. */
+  const carried = (await go1.locator('.sb-line[data-move]').last().getAttribute('data-move'))!
+  const to = (await go1.locator('.sb-line[data-move]').first().getAttribute('data-move'))!
   const grips = go1.locator('.sb-line .sb-grip')
   const last = await grips.count() - 1
   /* the day's flying section runs taller than the 900px viewport, so the
@@ -2146,7 +2174,15 @@ test('dragging a grip reorders the wave and keeps a pair together', async ({ pag
   await page.mouse.move(a!.x + a!.width / 2, a!.y + a!.height / 2)
   await page.mouse.down()
   await page.mouse.move(b!.x + b!.width / 2, b!.y + b!.height / 2, { steps: 12 })
+  /* mid-drag: exactly ONE cyan box on the board, and it is on the carried
+     LINE — `rowdrag` stayed behind as the state class that recolours the grip */
+  await expect(page.locator('#sbBoard .lift')).toHaveCount(1)
+  await expect(page.locator(`#sbBoard [data-move="${carried}"]`)).toHaveClass(/(^|\s)rowdrag(\s|$)/)
+  await watchLanding(page, `#sbBoard [data-move="${to}"]`)
   await page.mouse.up()
+  await landedOnce(page, 'the line that was landed on flashes where it ended up')
+  await expect(page.locator('#sbBoard .lift'), 'the picked-up box is gone on release').toHaveCount(0)
+  await expect(page.locator('#sbBoard .lift-land'), 'the flash clears itself').toHaveCount(0, { timeout: 1500 })
   const after = await go1.locator('.sb-line .lin').evaluateAll(els => els.map(i => (i as HTMLInputElement).value))
   expect(after).not.toEqual(before)
   /* a formation's rows stay adjacent — a callsign must never appear twice in
@@ -2167,14 +2203,60 @@ test('a phone row DRAG reorders a row and the board still reads correctly', asyn
   const before = await names()
   const grips = page.locator('#sbBoard .sb-panel.grnd .sb-arow .sb-grip')
   const rows = page.locator('#sbBoard .sb-panel.grnd .sb-arow')
+  /* the two addresses, read before the drop — the panel is rebuilt from a
+     string, so these rows are new nodes afterwards (see the desktop test) */
+  const carried = (await rows.first().getAttribute('data-move'))!
+  const to = (await rows.nth(2).getAttribute('data-move'))!
   await grips.first().scrollIntoViewIfNeeded()
   const a = await grips.first().boundingBox()
   const b = await rows.nth(2).boundingBox()
   await page.mouse.move(a!.x + a!.width / 2, a!.y + a!.height / 2)
   await page.mouse.down()
   await page.mouse.move(b!.x + b!.width / 2, b!.y + 8, { steps: 12 })
+  await expect(page.locator('#sbBoard .lift')).toHaveCount(1)
+  await expect(page.locator(`#sbBoard [data-move="${carried}"]`)).toHaveClass(/(^|\s)rowdrag(\s|$)/)
+  await watchLanding(page, `#sbBoard [data-move="${to}"]`)
   await page.mouse.up()
+  await landedOnce(page, 'the row that was landed on flashes where it ended up')
+  await expect(page.locator('#sbBoard .lift'), 'the picked-up box is gone on release').toHaveCount(0)
+  await expect(page.locator('#sbBoard .lift-land'), 'the flash clears itself').toHaveCount(0, { timeout: 1500 })
   expect(await names(), 'the dragged ground row moved (gman set, re-rendered in model order)').not.toEqual(before)
+})
+
+/* A SECTION (and a wave) has the SAME address on the board and on the edit week
+   behind it — `<di>.<key>` / `mv:w.<di>.<gi>` — and the week stays mounted under
+   the board overlay, earlier in document order. So the flash has to be scoped to
+   the surface the drag happened on, or the board's drop lights a node nobody can
+   see (and, since that node survives, lights nothing else afterwards). Only a
+   real browser has both surfaces up at once, which is why this pin lives here. */
+test('a section dropped on the board flashes the board\'s own panel, not the week\'s copy', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 })
+  await login(page); await go(page, 'editsched')
+  await page.evaluate(() => (window as any).openScheduler(0))
+  await page.waitForSelector('#sbBoard [data-secmove] .secgrip')
+  const order = () => page.$$eval('#sbBoard [data-secmove]', els => els.map(e => e.getAttribute('data-secmove')))
+  const before = await order()
+  /* Overall Notes and Common Programme are the two panels at the TOP of the
+     board, so both are on screen at once — a section further down needs the
+     board scrolled, and a mouse.move to a point outside the viewport hits
+     nothing (the same trap the wave test above documents). */
+  const grip = page.locator('#sbBoard [data-secmove="0.prog"] .secgrip')
+  const target = page.locator('#sbBoard [data-secmove="0.notes"]')
+  await grip.scrollIntoViewIfNeeded()
+  const a = (await grip.boundingBox())!
+  const b = (await target.boundingBox())!
+  await page.mouse.move(a.x + a.width / 2, a.y + a.height / 2)
+  await page.mouse.down()
+  await page.mouse.move(b.x + b.width / 2, b.y + b.height - 6, { steps: 10 })
+  await expect(page.locator('#sbBoard .lift'), 'one box, on the carried panel').toHaveCount(1)
+  await watchLanding(page, '#sbBoard [data-secmove="0.prog"]')
+  await page.mouse.up()
+  await landedOnce(page, 'the section flashes where it landed on the board')
+  const weekLit = await page.evaluate(() =>
+    !!document.querySelector('#eWeek [data-secmove="0.prog"].lift-land'))
+  expect(weekLit, 'the week\'s hidden copy of the same address is left alone').toBe(false)
+  expect(await order(), 'and the section really did move').not.toEqual(before)
+  await expect(page.locator('#sbBoard .lift-land'), 'the flash clears itself').toHaveCount(0, { timeout: 1500 })
 })
 
 /* ---- the 22 Aug 26 chrome batch — five geometry/paint contracts jsdom
@@ -4052,6 +4134,149 @@ test.describe('the frozen callsign column', () => {
   })
 })
 
+/* ONE LIFT, EVERY DRAG (owner, 6 Sep 26) — a quals COLUMN is a composite thing
+   (a heading and one cell per person), so what is picked up wears the shared
+   overlay frame instead of a class: ONE box, as wide as the heading and as tall
+   as the table, never a hit-test target. It lives INSIDE `.qwrap`, in content
+   coordinates, so it rides the sideways scroll with the column it is drawn
+   round — which is why this drag is done on a SCROLLED table, where a frame
+   placed in viewport pixels would sit a scroll's width off its column. On the
+   drop the same frame flashes where the column ENDED UP, then clears itself.
+   jsdom measures nothing (quals.test.tsx pins the choreography against stubbed
+   rects), so the geometry can only be proved in a real browser. */
+test('a dragged quals heading wears one frame down the table, and the column flashes where it lands', async ({ page }) => {
+  await page.setViewportSize({ width: 1000, height: 950 })
+  await login(page)
+  await go(page, 'quals')
+  await page.waitForSelector('#qtbl td.qname')
+  await page.click('#qEdit')                             // Enable editing
+  await page.click('#qEditQuals')                        // EDIT QUALS: the headings become the columns
+  await page.waitForSelector('#qtbl thead th[data-col]')
+  const cols = () => page.$$eval('#qtbl thead th[data-col]', els => els.map(e => (e as HTMLElement).dataset.col!))
+  const before = await cols()
+  /* scrolled sideways on purpose (see the note above), then the two headings
+     are chosen from what is actually reachable: one under the frozen callsign
+     column, or half off the right edge, cannot be pressed by a finger either. */
+  const pick = await page.evaluate(() => {
+    const wrap = document.querySelector('.qwrap') as HTMLElement
+    wrap.scrollLeft = 80
+    const wr = wrap.getBoundingClientRect()
+    const csW = (document.querySelector('#qtbl thead th[data-sort="cs"]') as HTMLElement).getBoundingClientRect().width
+    const ths = [...document.querySelectorAll('#qtbl thead th[data-col]')] as HTMLElement[]
+    const reachable = ths.filter(t => {
+      const r = t.getBoundingClientRect()
+      return r.left > wr.left + csW + 4 && r.right < wr.right - 4
+    })
+    return { scrolled: wrap.scrollLeft, n: reachable.length, from: reachable[0]?.dataset.col, to: reachable[reachable.length - 1]?.dataset.col }
+  })
+  expect(pick.scrolled, 'the table really is scrolled sideways under the frame').toBeGreaterThan(0)
+  expect(pick.n, 'two headings clear of the frozen column and the right edge').toBeGreaterThan(1)
+  const from = pick.from!, to = pick.to!
+  const a = (await page.locator(`#qtbl thead th[data-col="${from}"]`).boundingBox())!
+  const b = (await page.locator(`#qtbl thead th[data-col="${to}"]`).boundingBox())!
+  await page.mouse.move(a.x + a.width / 2, a.y + a.height / 2)
+  await page.mouse.down()
+  await page.mouse.move(b.x + b.width / 2, b.y + b.height / 2, { steps: 8 })
+  const mid = await page.evaluate((k) => {
+    const frames = document.querySelectorAll('.qwrap .lift-frame.lift')
+    const f = frames[0] as HTMLElement, fr = f.getBoundingClientRect()
+    const th = document.querySelector(`#qtbl thead th[data-col="${k}"]`) as HTMLElement
+    const tr = th.getBoundingClientRect(), tbl = document.getElementById('qtbl')!.getBoundingClientRect()
+    /* the drag reads what is under the pointer; a frame that answered a
+       hit-test would end every drag over its own box */
+    const hit = document.elementFromPoint(tr.left + tr.width / 2, tr.top + tr.height / 2)
+    return {
+      n: frames.length, anywhere: document.querySelectorAll('.lift-frame.lift').length,
+      dLeft: Math.abs(fr.left - tr.left), dW: Math.abs(fr.width - tr.width),
+      dTop: Math.abs(fr.top - tbl.top), dH: Math.abs(fr.height - tbl.height),
+      pe: getComputedStyle(f).pointerEvents, hitIsFrame: hit === f, inTable: !!f.closest('#qtbl'),
+      dragging: th.classList.contains('qdragging'),
+    }
+  }, from)
+  expect(mid.n, 'one box, in the scroller the table lives in').toBe(1)
+  expect(mid.anywhere, 'and nothing else on the page wears one').toBe(1)
+  expect(mid.dLeft, 'the frame stands over its column, scroll and all').toBeLessThan(1.01)
+  expect(mid.dW).toBeLessThan(1.01)
+  expect(mid.dTop, 'and runs the whole height of the table').toBeLessThan(1.01)
+  expect(mid.dH).toBeLessThan(1.01)
+  expect(mid.pe).toBe('none'); expect(mid.hitIsFrame).toBe(false)
+  expect(mid.inTable, 'outside the table it wraps — it adds nothing to the grid').toBe(false)
+  expect(mid.dragging, 'the heading keeps its own picked-up look').toBe(true)
+  /* THE FROZEN COLUMN WINS (review, 7 Sep 26). This frame TRAVELS with the
+     content, so a column scrolled far enough left slides its whole rectangle
+     under the frozen callsign column — and it must go UNDER, exactly as the
+     column's own cells do. Paint order in one stacking context is decided by
+     z-index then DOM order, so the proof is those numbers as the BROWSER
+     computes them, taken while a real overlap is on screen: the frame at the
+     heading row's level (and after the table in DOM order, which is what keeps
+     its ring over the picked-up heading), both frozen cells above it, and the
+     wrap opening no stacking context of its own to change the arithmetic. */
+  const tuck = await page.evaluate((k) => {
+    const wrap = document.querySelector('.qwrap') as HTMLElement
+    const th = document.querySelector(`#qtbl thead th[data-col="${k}"]`) as HTMLElement
+    const cs = document.querySelector('#qtbl thead th[data-sort="cs"]') as HTMLElement
+    const name = document.querySelector('#qtbl td.qname') as HTMLElement
+    const f = document.querySelector('.qwrap .lift-frame.lift') as HTMLElement
+    // slide the picked-up column until its leading edge is inside the frozen band
+    const csw = cs.getBoundingClientRect().width
+    wrap.scrollLeft = Math.min(wrap.scrollWidth - wrap.clientWidth,
+      wrap.scrollLeft + (th.getBoundingClientRect().left - wrap.getBoundingClientRect().left) - csw / 2)
+    const fr = f.getBoundingClientRect(), nr = name.getBoundingClientRect()
+    const z = (el: Element) => getComputedStyle(el).zIndex
+    const ws = getComputedStyle(wrap)
+    const x = Math.max(fr.left, nr.left) + 2, y = nr.top + nr.height / 2
+    const hit = document.elementFromPoint(x, y) as HTMLElement | null
+    return {
+      overlap: Math.round(Math.min(fr.right, nr.right) - Math.max(fr.left, nr.left)),
+      frame: z(f), name: z(name), corner: z(cs), head: z(document.querySelector('#qtbl thead th[data-col]')!),
+      afterTable: f.previousElementSibling?.id === 'qtbl',
+      wrapZ: ws.zIndex, wrapTf: ws.transform, wrapFilter: ws.filter, wrapIsolation: ws.isolation, wrapOpacity: ws.opacity,
+      hitInName: !!hit?.closest('td.qname'), hitIsFrame: hit === f,
+    }
+  }, from)
+  expect(tuck.overlap, 'the picked-up column really is under the frozen callsign column now').toBeGreaterThan(8)
+  expect(Number(tuck.frame), 'the frame is at the heading row\'s level…').toBe(Number(tuck.head))
+  expect(tuck.afterTable, '…and after the table, so DOM order still paints its ring over the heading').toBe(true)
+  expect(Number(tuck.frame), 'and UNDER the frozen callsign cells, which cover it as they cover the column')
+    .toBeLessThan(Number(tuck.name))
+  expect(Number(tuck.frame)).toBeLessThan(Number(tuck.corner))
+  expect([tuck.wrapZ, tuck.wrapTf, tuck.wrapFilter, tuck.wrapIsolation, tuck.wrapOpacity],
+    'the wrap opens no stacking context, so those numbers are compared to each other')
+    .toEqual(['auto', 'none', 'none', 'auto', '1'])
+  expect(tuck.hitInName, 'and the frozen cell is what answers a press in the overlap').toBe(true)
+  expect(tuck.hitIsFrame).toBe(false)
+  await page.evaluate(() => { (document.querySelector('.qwrap') as HTMLElement).scrollLeft = 80 })
+  await watchLanding(page, '.qwrap .lift-frame')
+  /* the landing frame's geometry, captured AT the sighting rather than read
+     after it: the flash is 600ms long and a round trip through waitForFunction
+     spends some of that — a read taken afterwards is a race nobody needs. */
+  await page.evaluate((k) => {
+    const w = window as any
+    w.__qland = null
+    const look = () => {
+      if (w.__qland) return
+      const f = document.querySelector('.qwrap .lift-frame.lift-land') as HTMLElement | null
+      const th = document.querySelector(`#qtbl thead th[data-col="${k}"]`)
+      if (!f || !th) return
+      const fr = f.getBoundingClientRect(), tr = th.getBoundingClientRect()
+      w.__qland = { dLeft: Math.abs(fr.left - tr.left), dW: Math.abs(fr.width - tr.width),
+        n: document.querySelectorAll('.lift-frame.lift-land').length }
+    }
+    w.__qlandObs = new MutationObserver(look)
+    w.__qlandObs.observe(document.body, { subtree: true, childList: true, attributes: true, attributeFilter: ['class'] })
+  }, from)
+  await page.mouse.up()
+  await landedOnce(page, 'the quals column that was dropped flashes where it ended up')
+  const land = await page.evaluate(() => { const w = window as any; w.__qlandObs.disconnect(); return w.__qland })
+  expect(land, 'the flash was measured while it stood').toBeTruthy()
+  expect(land.n, 'one flash, and it is the frame').toBe(1)
+  expect(land.dLeft, 'over the column where it ENDED UP, not where it was picked up').toBeLessThan(1.01)
+  expect(land.dW).toBeLessThan(1.01)
+  expect(await cols(), 'and the column really moved').not.toEqual(before)
+  await expect(page.locator('.qwrap .lift-frame.lift'), 'the picked-up box is gone on release').toHaveCount(0)
+  await expect(page.locator('.qwrap .lift-frame.lift-land'), 'the flash clears itself').toHaveCount(0, { timeout: 1500 })
+})
+
 test.describe('the collapsible legend', () => {
   test('phone: the legend is closed by default and opens on click', async ({ page }) => {
     await page.setViewportSize(PHONE)
@@ -4521,9 +4746,28 @@ test.describe('a mouse drag of a puck runs on the pointer machine, not the nativ
     await page.mouse.move(mx, my, { steps: 8 })
     const mid = await page.evaluate(() => {
       const g = document.querySelector('.dragimg') as HTMLElement | null
-      return { ghost: !!g, rect: g ? g.getBoundingClientRect().toJSON() : null, mdrag: document.body.classList.contains('mdrag'), native: (window as any).__native }
+      const cs = g ? getComputedStyle(g) : null
+      return {
+        ghost: !!g, rect: g ? g.getBoundingClientRect().toJSON() : null,
+        mdrag: document.body.classList.contains('mdrag'), native: (window as any).__native,
+        /* ONE LIFT, EVERY DRAG (owner, 6 Sep 26): the ghost wears the app's one
+           picked-up box — the accent drawn INSIDE its edge, the dark drop
+           shadow still under it — and no outline of its own any more */
+        lift: !!g && g.classList.contains('lift'),
+        shadow: cs ? cs.boxShadow : '', outline: cs ? cs.outlineStyle : '',
+      }
     })
     expect(mid.ghost, 'the page-drawn puck ghost is up').toBe(true)
+    expect(mid.lift, 'and wears the shared lift').toBe(true)
+    expect(mid.shadow, 'the accent box is drawn inside the ghost\'s edge').toMatch(/inset/)
+    expect(mid.shadow, 'and its depth shadow is still under it').toMatch(/rgba\(0, 0, 0, 0\.6\)/)
+    /* the STYLE, not the width: a newer Chromium computes `outline-width` as its
+       initial `medium` (3px) even under `outline-style: none` — the width no
+       longer collapses to 0 when nothing is drawn — so the CI runner's browser
+       read 3px on a ghost with no outline rule anywhere, while a Chromium 141
+       read 0px (deploy runs 951–956, 7 Sep 26). Whether an outline is DRAWN is
+       the style. */
+    expect(mid.outline, 'no outline outside the line any more').toBe('none')
     expect(mid.mdrag, 'the grabbing cursor is on').toBe(true)
     expect(mid.native, 'no native drag event fired — the browser never started one').toBe(0)
     /* the ghost sits at cursor minus the grab offset: the press landed 5px
@@ -4531,8 +4775,16 @@ test.describe('a mouse drag of a puck runs on the pointer machine, not the nativ
     expect(Math.abs(mid.rect!.left - (mx - 5))).toBeLessThan(2)
     expect(Math.abs(mid.rect!.top - (my - 5))).toBeLessThan(2)
     await page.mouse.move(cb.x + cb.width / 2, cb.y + cb.height / 2, { steps: 8 })
+    /* the cell is rebuilt from an HTML string by the drop, so the flash is
+       deferred through lift.ts's mark and only the ADDRESS survives — latched
+       before the release, since the class arrives after the re-render and is
+       gone again at 600ms */
+    const fill = (await cell.getAttribute('data-fill'))!
+    await watchLanding(page, `#eWeek [data-fill="${fill}"]`)
     await page.mouse.up()
     await expect(cell, 'landed through applyDrop').toContainText(who)
+    await landedOnce(page, 'the cell the puck was dropped on flashes where it ended up')
+    await expect(page.locator('.lift-land'), 'the flash clears itself').toHaveCount(0, { timeout: 1500 })
     expect(await page.locator('.dragimg').count(), 'no ghost survives the drop').toBe(0)
     expect(await page.evaluate(() => document.body.classList.contains('mdrag') || document.body.classList.contains('dnd'))).toBe(false)
     expect(await page.evaluate(() => (window as any).__native), 'still no native drag event').toBe(0)

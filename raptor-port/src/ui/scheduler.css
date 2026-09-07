@@ -8,6 +8,11 @@
      ONE size everywhere, desktop included — there is deliberately no per-breakpoint
      override, because two pucks + remarks have to fit on one row at every width. */
   --puck-w:74px; --puck-h:15px;
+  /* the puck's corner, named once so the things that wrap a puck exactly — the
+     finger's seat-clone ghost, a landed grid seat's flash — can hug the same
+     curve (owner, 7 Sep 26: the ring round a carried puck "should follow the
+     shape of the curved edges of the puck") */
+  --puck-r:3px;
   --san:#B24DEA;   /* SANS (staff-assigned & NS aircrew) purple */
   --bg:#0B0D10; --panel:#14181D; --panel-2:#1A1F26; --raised:#20262E;
   /* the top bar's two stops, opaque — see the .topbar rule */
@@ -22,6 +27,13 @@
   --filters-bg:#0E1115;
   --edge:#2A313A; --edge-2:#39424D; --ink:#F1F4F7; --ink-2:#B6C0CB; --ink-3:#8A96A3;
   --accent:#3BC6E8; --accent-ink:#052A34;
+  /* THE PICKED-UP LOOK, one recipe for every drag in the app (owner, 6 Sep 26 —
+     the "Soft, inside the line" he picked off the mock he dragged on his phone).
+     A CONSTANT, never toggled: a custom property that changes on a grid ancestor
+     re-resolves every descendant's style (the Leave War column window's standing
+     rule). Every layer is INSET so nothing of it can be clipped — see the .lift
+     block near .sb-fresh for the whole story. */
+  --lift-box:inset 0 0 0 2px var(--accent), inset 0 0 12px rgba(59,198,232,.30);
   --hard:#F0555F; --adv:#E5A83B; --ok:#57C97A;
   --flight:#3BC6E8;
   /* seat colours (kept from the working file) */
@@ -1045,7 +1057,7 @@ body:not(.tdrag) .page.editing .acrow .seat[data-slot]:hover .puck{outline:2px s
 /* ============ PUCK ============ */
 /* 9px is not arbitrary: it is the reference tool's own puck type, back-computed from a
    19-device-px cap height on a 3x screen. Same size on desktop — see the note in :root. */
-.puck{display:inline-flex;align-items:stretch;border-radius:3px;overflow:hidden;font-size:9px;font-weight:600;cursor:pointer;line-height:1;border:1px solid transparent;height:var(--puck-h);width:var(--puck-w);max-width:var(--puck-w);flex:0 0 var(--puck-w)}
+.puck{display:inline-flex;align-items:stretch;border-radius:var(--puck-r);overflow:hidden;font-size:9px;font-weight:600;cursor:pointer;line-height:1;border:1px solid transparent;height:var(--puck-h);width:var(--puck-w);max-width:var(--puck-w);flex:0 0 var(--puck-w)}
 /* every puck, anywhere, is exactly the flying-puck size */
 .seat .puck,.ppl .seat .puck,.ap-grid .seat .puck,.rpuck .puck,.sb-slot .seat .puck{width:var(--puck-w)!important;max-width:var(--puck-w)!important;flex:0 0 var(--puck-w)!important;height:var(--puck-h)!important}
 /* SANS: bright purple line down the right edge of the puck (deliberately the
@@ -1773,7 +1785,30 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
 /* the 20px page gutter is a MARGIN, not padding, so it sits OUTSIDE the scroll
    box — otherwise the frozen callsign sticks at the padding edge and scrolled
    cells show through the 20px gap to its left (owner, 15 Aug 26). */
-.qwrap{padding:6px 0 40px;margin:0 20px;overflow-x:auto}
+/* position:relative is the lift frame's containing block (src/ui/lift.ts) — no
+   z-index, so it opens no stacking context (the .mx-wrap precedent) and the
+   frame stacks in the same context as the table's own sticky cells. Being IN
+   the scroller is deliberate too: the frame is placed in content coordinates
+   and rides the sideways scroll for free, instead of standing still while the
+   column it wraps slides away.
+   THE HOST ARRANGES AROUND THE FRAME (review, 7 Sep 26). This is the one frame
+   in the app that TRAVELS — Leave War's spans its wrap's constant visible box,
+   this one moves with the content — so a scrolled column slides its whole
+   rectangle under the FROZEN callsign column, and at the shared recipe's z 7
+   it drew its cyan ring over the frozen names. Lowering the frame ALONE is not
+   the cure: under `.qtbl thead th`'s opaque z 2 the ring round the picked-up
+   heading disappears on every ordinary drag. So the numbers are a set — the
+   frame drops to the heading row's own 2 (it is rendered AFTER the table, so
+   equal z-index still paints it over the heading by DOM order) and the frozen
+   cells are raised above it below (body 3, corner 4). The frozen column then
+   covers the frame's overhang exactly as it covers the column's own cells (the
+   .mxfixed lesson — a cover that also covers what it decorates is right, not a
+   fault). Raising the body cell over the heading row costs nothing: nothing
+   scrolls VERTICALLY inside .qwrap, so a name cell and a heading never meet;
+   where the frozen column and the heading row DO meet — the corner — 4 still
+   wins. Pinned as a set in lift-css.test.ts. */
+.qwrap{padding:6px 0 40px;margin:0 20px;overflow-x:auto;position:relative}
+.qwrap .lift-frame{z-index:2}
 /* THE FROZEN QUALS HEADER (owner, 29 Aug 26 — "the quals top bar should also
    freeze like the leave war top bar … desktop and mobile … same mechanism").
    The Leave War `.mxfixed` mechanism, scaled to this table: `.qwrap` scrolls
@@ -1814,12 +1849,17 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
    against the callsign as the narrower initials/flight columns scrolled under
    it). In a `border-collapse` table a cell's own box-shadow does NOT reliably
    paint over its sibling cells, so the emerging badge stayed visible; a
-   positioned ::after that is a CHILD of the z-index:1 sticky cell paints inside
-   that cell's stacking context, cleanly above the z-0 scrolling cells. It runs
+   positioned ::after that is a CHILD of the sticky cell paints inside that
+   cell's own stacking context, cleanly above the unpositioned cells scrolling
+   beneath it. It runs
    3px of the cell's own opaque colour (hiding the badge's leading edge) then
    fades over 9px as a soft depth cue. Body cell is --bg, header --panel-2. */
-.qtbl td.qname{position:sticky;left:0;z-index:1;background:var(--bg)}
-.qtbl thead th[data-sort="cs"]{position:sticky;left:0;top:0;z-index:3;background:var(--panel-2)}
+/* the two z-indexes were 1 and 3; they went up by two on 7 Sep 26 so the frozen
+   column also out-ranks the travelling lift frame (z 2 — the reasoning is on
+   .qwrap above). Nothing else in this table is positioned, so the pair only
+   ever has the heading row (2) and that frame to beat. */
+.qtbl td.qname{position:sticky;left:0;z-index:3;background:var(--bg)}
+.qtbl thead th[data-sort="cs"]{position:sticky;left:0;top:0;z-index:4;background:var(--panel-2)}
 .qtbl td.qname::after,.qtbl thead th[data-sort="cs"]::after{content:'';position:absolute;top:0;bottom:0;left:100%;width:16px;pointer-events:none;opacity:0;transition:opacity .12s}
 /* the seal only appears once the table is actually scrolled sideways (the
    .qwrap gets .xscroll from QualsPage) — unscrolled it would dim the leading
@@ -2490,8 +2530,19 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
    bars are the board row-drag's own vocabulary (a 2px accent edge on the
    half the drop would land) */
 .ic-secs{display:flex;flex-direction:column;gap:6px}
-.ic-sec{display:flex;align-items:flex-start;gap:6px}
-.ic-sec.dragging{opacity:.45}
+/* THE CORNER BELONGS TO THE ROW, NOT TO ITS DRAG (fix, 7 Sep 26). The 8px used
+   to be written on `.ic-sec.dragging` below, and the landing veil takes
+   `border-radius:inherit` from the BARE element — which had none — so a section
+   was 8px round while it was carried and flashed SQUARE where it landed: the two
+   halves of one gesture drawn with different corners. The row's own box is
+   transparent (no background, no border), so naming the radius at rest costs
+   nothing visible and both halves now read the same. */
+.ic-sec{display:flex;align-items:flex-start;gap:6px;border-radius:8px}
+/* ONE LIFT, EVERY DRAG (owner, 6 Sep 26): a section IS one element, so it wears
+   the shared recipe directly — on the `dragging` class REACT writes, because an
+   imperative class here would be wiped by the very re-render the arm causes
+   (src/ui/lift.ts). The fade stays: it is what says "this one is travelling". */
+.ic-sec.dragging{opacity:.45;box-shadow:var(--lift-box)}
 .ic-sec.dragover{box-shadow:0 -2px 0 var(--accent)}
 .ic-sec.dragover.after{box-shadow:0 2px 0 var(--accent)}
 .ic-sec>.ic-poppuck,.ic-sec>.ic-poppuck-edit,.ic-sec>.ic-secpucks{flex:1;min-width:0}
@@ -2502,7 +2553,12 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
    The grid is a full-width flex child so those two controls wrap below it. */
 .ic-secpucks{display:flex;flex-wrap:wrap;gap:5px;align-items:center;min-height:24px}
 .ic-secpk-grid{flex:1 1 100%;display:grid;grid-template-columns:repeat(3,1fr);gap:5px;align-items:center}
-.ic-secpk{display:inline-flex;align-items:center;justify-content:flex-start;gap:2px;min-height:var(--puck-h)}
+/* the 8px is the ROW's, not the drag's (fix, 7 Sep 26 — see .ic-sec above): the
+   landing veil inherits its radius from the bare element, so a corner named only
+   on `.pk-drag` gave a round lift and a square flash. The cell is transparent at
+   rest (the puck inside carries its own 3px), so it is invisible until one of
+   the two paints on it. */
+.ic-secpk{display:inline-flex;align-items:center;justify-content:flex-start;gap:2px;min-height:var(--puck-h);border-radius:8px}
 .ic-secpk .seat{display:flex}
 /* a removed puck leaves a BLANK cell that holds its grid position so the
    survivors never shift (owner, 24 Aug 26); invisible but it occupies its third
@@ -2513,8 +2569,11 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
 .ic-pkdel:hover{color:var(--hard)}
 /* a seated puck lifted for a drag — floats above its neighbours and follows the
    finger (transform set inline by startPkDrag); pointer-events:none so the slot
-   UNDER the finger is what elementFromPoint reads. */
-.ic-secpk.pk-drag{position:relative;z-index:3;opacity:.85;cursor:grabbing;pointer-events:none}
+   UNDER the finger is what elementFromPoint reads. ONE LIFT, EVERY DRAG (owner,
+   6 Sep 26): it is one element, so it takes the shared recipe here — this class
+   is imperative, and safely so, because nothing re-renders under this drag. */
+.ic-secpk.pk-drag{position:relative;z-index:3;opacity:.85;cursor:grabbing;pointer-events:none;
+  box-shadow:var(--lift-box)}
 /* the slot a lifted puck is hovering over — where it will swap/land on release.
    A gap target flips back to opaque so its dashed ring shows over the empty cell. */
 .ic-secpk.pk-swap-target{outline:2px dashed var(--accent);outline-offset:1px;border-radius:6px}
@@ -2772,9 +2831,22 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
 .wvgrip:hover{color:var(--accent)}
 .wvgrip:active{cursor:grabbing}
 /* the carried section and the drop line; a dragged WAVE block reuses .rowdrag /
-   .rowdrop (defined with the row grip) since it is the same kind of move. */
-.secdrag{outline:1px solid var(--accent);outline-offset:-1px;border-radius:9px}
+   .rowdrop (defined with the row grip) since it is the same kind of move. Since
+   6 Sep 26 the picked-up BOX on all three is the shared .lift (one lift, every
+   drag — rowdrag.ts adds it beside these), so .secdrag and .rowdrag are state
+   classes carrying nothing but the grip's own recolour. */
+.secdrag{/* the picked-up look is the shared .lift; this class only recolours the grip */}
 .secdrag .secgrip{color:var(--accent);cursor:grabbing}
+/* …and the BOARD's wrapper takes the card's corner while it is carried or
+   flashing (7 Sep 26, from the live drive). `.sb-sec` is a bare positioned
+   wrapper with no shape of its own, but its box is EXACTLY the `.sb-panel`
+   inside it (measured on the built board: 0px on all four sides) and that card
+   is 10px round — so the ring, which follows the element's own border-radius,
+   drew a square corner and left a cyan wedge past each rounded one. The edit
+   week's `.dsec` is deliberately NOT given the same: there the wrapper is 10px
+   wider than the card on both sides, so it is its own square strip and a square
+   ring is what fits it. The veil inherits this radius (see .lift-land::after). */
+.sb-sec.lift,.sb-sec.lift-land{border-radius:10px}
 .secdrop{box-shadow:inset 0 3px 0 0 var(--accent)}
 /* ---- the "Set default order?" snackbar (ui/SecDefaultSnackbar.tsx) — an
    ACTIONABLE bottom bar (the plain toast can't carry a button), shown after a
@@ -3871,10 +3943,22 @@ body:not(.tdrag) .sb-slot.empty:hover{border-color:var(--accent);color:var(--acc
    are pinned at 0 so the transform is the whole position (drag.ts tdOver /
    moveDragImage). It does NOT stop the page RE-LAYERISING on every move
    (~50ms at 4× — this page carries ~230 compositor layers, see drag.ts
-   ghostXf); no ghost variant does, measured. */
-.tdghost{position:fixed!important;left:0!important;top:0!important;will-change:transform;z-index:520;pointer-events:none;margin:0!important;
-  opacity:.92;box-shadow:0 8px 20px rgba(0,0,0,.6);
-  outline:2px solid var(--accent);outline-offset:1px;border-radius:4px}
+   ghostXf); no ghost variant does, measured.
+   THE ACCENT BOX IS THE SHARED .lift NOW (6 Sep 26) — inset, so it survives
+   every clip; the drop shadow stays for depth, and both ride the one
+   box-shadow written on the .lift compound just below .dragimg.
+   THE PUCK'S CORNER (owner, 7 Sep 26, from his phone: the ring round a carried
+   puck "should follow the shape of the curved edges of the puck"). This ghost
+   used to clone the [data-drag] SHELL — a seat, a bare flex shell with no
+   corner of its own, so the veil below (which takes its corner from this
+   element) drew a SQUARE ring round a rounded puck; and from the AIRCREW
+   drawer a roster row as wide as its column, so the ring boxed empty space
+   beside the name (measured on the built app: 156px of it). It IS the puck
+   now, as the mouse's ghost always was (drag.ts tdArm clones `.puck` for both
+   pointers), and wears the puck's own corner; the declaration here is the
+   fallback for a source with no .puck inside it, and one number either way. */
+.tdghost{position:fixed!important;left:0!important;top:0!important;will-change:transform;z-index:520!important;pointer-events:none;margin:0!important;
+  opacity:.92;border-radius:var(--puck-r)}
 /* mouse drag: the puck ghost the PAGE draws under the cursor (drag.ts
    setDragImage / moveDragImage) — the browser itself is handed a blank pixel,
    so no platform snapshot is ever composed (the white card a secured or
@@ -3890,9 +3974,78 @@ body:not(.tdrag) .sb-slot.empty:hover{border-color:var(--accent);color:var(--acc
    ghost (elementsFromPoint — measured 6 Sep 26: toggling the ghost's
    pointer-events around a single elementFromPoint instead rewrote its
    hit-test data every move, repainting it and re-layerising the page), and
-   the drop removes it before its own hit-test. */
-.dragimg{position:fixed!important;left:0!important;top:0!important;will-change:transform;z-index:520;pointer-events:auto;cursor:grabbing;margin:0!important;opacity:.92;
-  box-shadow:0 8px 20px rgba(0,0,0,.6);outline:2px solid var(--accent);outline-offset:1px;border-radius:4px}
+   the drop removes it before its own hit-test.
+   THE ACCENT BOX IS THE SHARED .lift NOW (6 Sep 26) — see below.
+   z-index IS !important LIKE THE POSITION BESIDE IT (fix, 7 Sep 26, found in
+   the live drive). A ghost is a CLONE, so it arrives wearing whatever state
+   classes the original had, and two of those name a stacking order of their
+   own: `.puck.me{z-index:2}` (the View-as puck) and `.puck.wfoc{z-index:5}` (a
+   puck lit by a clicked warning), both (0,2,0) against this rule's (0,1,0).
+   Measured in Chromium: the mouse ghost of a View-as puck computed `z-index:2`
+   and was painted UNDER the board — dragging your own puck showed no ghost at
+   all, ring or no ring. The ghost is a detached child of <body> and its layer
+   is the machine's business, not the cloned node's, which is exactly why
+   position/left/top/margin were already !important here; z-index was the one
+   that got away. Same on .tdghost above, which clones a SEAT: nothing gives a
+   seat a z-index today, and the ghost must not start depending on that. */
+.dragimg{position:fixed!important;left:0!important;top:0!important;will-change:transform;z-index:520!important;pointer-events:auto;cursor:grabbing;margin:0!important;opacity:.92}
+/* THE PICKED-UP BOX IS THE SHARED .lift (owner, 6 Sep 26 — "a cyan box around
+   the perimeter, not individual boxes"; src/ui/lift.ts adds the class, drag.ts
+   tdArm/setDragImage). INSET, so it is even on every side and no clip can eat
+   it, and the ghosts' own 2px accent OUTLINE — drawn outside the border box, a
+   different look from every other picked-up thing — is gone, with the 4px
+   radius that went with it: a ghost is a CLONE, so the ring follows the corner
+   of the thing being carried (a crew puck's 3px), which is the point of the
+   recipe naming no radius of its own. The dark drop shadow STAYS: it is what
+   lifts the ghost off the page, it is neutral rather than accent, and nothing
+   clips a fixed child of <body>. Both layers must ride ONE box-shadow, and the
+   rule is written on the `.lift` COMPOUND because the recipe's own
+   `.lift{box-shadow:var(--lift-box)}` sits later in this file — at equal
+   specificity it would replace the depth shadow outright and the ghost would
+   read as part of the page. */
+.tdghost.lift,.dragimg.lift{box-shadow:var(--lift-box),0 8px 20px rgba(0,0,0,.6)}
+/* …and BOTH puck ghosts draw the accent on a VEIL pseudo-element. Two different
+   faults, one cure:
+   - THE FINGER's ghost (7 Sep 26, found in the live drive and measured edge by
+     edge on the built app: no cyan on any of the four). tdArm cloned the whole
+     [data-drag] SEAT for a touch drag then, and that seat was filled edge to
+     edge by an opaque .puck — an INSET shadow paints in the element's OWN
+     background layer, UNDER its children, so the ring was in the computed
+     style and invisible on the screen. (Later that day the finger's ghost
+     became the puck itself — see .tdghost above — which puts it in the mouse
+     ghost's case below; the veil stays for that reason.)
+   - THE MOUSE's ghost (fix wave, 7 Sep 26). It IS the puck — setDragImage and
+     tdArm clone `.puck`, not the seat — so it inherits every state rule the
+     puck already wears, and five of those carry !important: `.puck.me` (the
+     View-as purple ring), `.puck.boxred` and `.puck.me.boxred` (a hard
+     conflict), `.puck.boxdash` and `.puck.me.boxdash`. No specificity beats an
+     !important declaration, so dragging your own puck or a conflicted one
+     showed the state ring and no cyan at all — and, the depth shadow being
+     replaced with it, nothing that read as picked up. (`.puck.warn.hard` is the
+     same shape one rung down: (0,3,0), no !important needed to win.)
+   A veil owns its own box-shadow property and paints OVER the clone's contents,
+   which answers both — the same answer .lift-land::after already gives a landing
+   on a seat.
+   ::BEFORE, NOT ::after, and z-index above the clone's children. A clone brings
+   the original's pseudo-elements with it, and ::after is TAKEN on exactly these
+   two nodes (the seat's mattered while the finger cloned the seat; the puck's
+   alone keeps the veil on ::before today): `.seat[data-alc]::after` is the AL amendment badge (its
+   `background:var(--alc)` and padding survive `content:''` + `inset:0` and would
+   paint a solid AL-coloured block over a finger-dragged ghost on any published
+   day being amended) and `.puck.san::after` is the SANS purple edge (its
+   `width:4px` survives `inset:0` — over-constrained, so `right` is dropped — and
+   the veil would shrink to a 4px bar at the wrong edge). Nothing in this file
+   gives a seat or a puck a ::before, so the veil owns it outright and both
+   badges keep painting; the z-index is what puts it back on top, since a
+   ::before is the FIRST child and would otherwise paint under the clone's
+   contents (5 clears the badge's and the SANS stripe's own 4, so the ring closes
+   on all four edges — which is the whole ask).
+   The chip ghost needs no veil either way: it clones a `.ic-chip` with no opaque
+   child, and its state rules (`.ic-chip.red/.amb/.san`) are ordinary (0,2,0)
+   pairs that `.ic-ghost.lift` already out-ranks from later in this file. The
+   depth shadow above is an OUTER shadow on the element and was never obscured. */
+.tdghost.lift::before,.dragimg.lift::before{content:'';position:absolute;inset:0;border-radius:inherit;
+  pointer-events:none;z-index:5;box-shadow:var(--lift-box)}
 /* body.tdrag / body.mdrag are JS STATE MARKERS ONLY — no rule may give them a
    declaration of their own (the slow-computer cut, 3 Sep 26). Measured by
    toggling each class alone on the built app: `body.tdrag{touch-action:none;
@@ -3911,11 +4064,14 @@ body:not(.tdrag) .sb-slot.empty:hover{border-color:var(--accent);color:var(--acc
 /* ---- Inputs-calendar chip drag (caldrag.ts) — own names, not tdghost/tdrag:
    that pair belongs to drag.ts's board machine (CLAUDE.md — "that machine
    stays scoped to pucks") and this is a different one, over a different DOM,
-   riding the pointer at the calendar's own z-index rather than the board's. */
+   riding the pointer at the calendar's own z-index rather than the board's.
+   THE ACCENT BOX IS THE SHARED .lift NOW (6 Sep 26), the same one the board's
+   ghosts wear — inset, so it survives every clip; the drop shadow stays for
+   depth, and the compound below is why the two ride one box-shadow. */
 .ic-ghost{position:fixed!important;z-index:480;pointer-events:none;margin:0!important;
   max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
-  transform:translate(-50%,-50%) scale(1.05);opacity:.85;
-  box-shadow:0 8px 20px rgba(0,0,0,.5)}
+  transform:translate(-50%,-50%) scale(1.05);opacity:.85}
+.ic-ghost.lift{box-shadow:var(--lift-box),0 8px 20px rgba(0,0,0,.5)}
 [data-icday].ic-over{outline:2px solid var(--accent);outline-offset:-2px;border-radius:6px}
 body.ic-dragging{user-select:none;-webkit-user-select:none}
 /* ---- drag & drop affordances outside the flying grid (programme / duties / sims /
@@ -4311,8 +4467,7 @@ button.sanscard:hover{border-color:var(--accent)}
    after it one column left of its own header. visibility:hidden keeps the
    box (and its track) while painting nothing and taking no clicks. */
 .sb-grip.ro{visibility:hidden;cursor:default}
-.rowdrag{background:var(--raised);outline:1px solid var(--accent);outline-offset:-1px;
-  border-radius:6px;box-shadow:0 6px 18px rgba(0,0,0,.55)}
+.rowdrag{/* the picked-up look is the shared .lift (one lift, every drag, 6 Sep 26); this class only recolours the grip */}
 .rowdrag .sb-grip{color:var(--accent);cursor:grabbing}
 /* the landing mark is a border on the row being dropped ONTO, not an inserted
    element: the panels are innerHTML strings and inserting a node under a moving
@@ -4467,6 +4622,104 @@ button.sanscard:hover{border-color:var(--accent)}
 .ppl.fcprcp .sb-slot.empty{width:var(--puck-w);height:var(--puck-h);border:1px dashed var(--edge-2);
   border-radius:3px;display:flex;align-items:center;justify-content:center;color:var(--ink-3);font-size:11px}
 /* a duty-block / AMT / OFT sub-head inside a panel body */
+/* ---- ONE LIFT, EVERY DRAG (owner, 6 Sep 26 — "every single drag and drop for
+   rearranging things in the app … the thing u are grabbing glows evenly … a cyan
+   box around the perimeter, not individual boxes … once I drop the item, it
+   should flash to show where the new item ended up"; the pick from the mock he
+   dragged on his phone: SOFT, INSIDE THE LINE, for all). The one recipe every
+   drag machine wears — board rows/waves/sections (rowdrag.ts), the two ghosts
+   (drag.ts, caldrag.ts), the quals column, the calendar popover, Leave War's rows
+   and lists (src/ui/lift.ts is the choreography).
+   INSET ONLY, on purpose: the Leave War grid sits in `.card{overflow:hidden}` and
+   the board rows in `.sb-panel{overflow:hidden}`, and an overflow:hidden ancestor
+   DISCARDS a descendant's outer box-shadow — which is exactly why the old halo
+   showed above and below a row and never at its sides (the same lesson .sb-fresh
+   learnt on 16 Aug 26: draw nothing outside the border box). --lift-box lives on
+   :root as a CONSTANT so matrix.css's own rows can wear the same numbers; it is
+   never toggled (a toggled property on a grid ancestor restyles thousands of
+   cells — see the performance doctrine).
+   NO RADIUS OF ITS OWN (7 Sep 26). The first cut wrote `border-radius:8px`
+   here, and it OVERRODE the corner every picked-up thing already had: a wave
+   block's 10/12px squared off mid-drag, and a 15px crew puck (3px corners)
+   read pill-shaped while it was carried. An INSET box-shadow follows the
+   element's OWN border-radius, so dropping the declaration is the whole fix —
+   the ring hugs each thing's corners and the recipe stops being a shape as
+   well as a colour. The two places that have no corners of their own name the
+   8px themselves: the overlay frame below, and the ⚙ who-wins row
+   (matrix.css). */
+.lift{box-shadow:var(--lift-box)}
+/* …AND IT MUST OUT-RANK THE ROW'S OWN STATE EDGE (fix, 7 Sep 26). The recipe
+   rides `box-shadow`, which is ONE property, and a board row very often owns it
+   already: `.sb-fresh` (the blue box every add wears for 6s), `.redbox` (a hard
+   conflict), `.lateinp` (a late input's amber left edge), `.cx` (a cancelled
+   line), `.gr-frominput` (a ground row promoted from an input). Measured in
+   Chromium: `.sb-arow.redbox.lift` painted RED only, `.sb-arow.lateinp.lift`
+   AMBER only, `.sb-arow.sb-fresh.lift` BLUE only — the bare `.lift` above is
+   (0,1,0), so it loses to every `.sb-arow.<state>` pair (0,2,0) and TIES with
+   `.sb-fresh`, which is written later in this file and therefore wins. Each of
+   those states is reachable under the very drag the class is for: paintFreshAdds
+   (highlights.ts) boxes exactly the nodes rowdrag.ts lifts, and board-html.ts
+   emits a ground row carrying `redbox`/`lateinp` WITH its move grip. So on five
+   ordinary drags the picked-up thing showed no cyan at all — a regression on the
+   old `.rowdrag`, which painted an `outline` + `background`, different properties
+   that a state's box-shadow could not replace. Naming the host raises the recipe
+   to (0,2,0) and, sitting here, later than all of them.
+   These five are the hosts a state rule paints; `.sb-sec`, the edit week's
+   `.dsec` and its `.go` own no box-shadow of their own (checked across the file),
+   so the bare rule above still serves them, and lift-css.test.ts re-derives the
+   whole set from this file rather than trusting the list. */
+.sb-line.lift,.sb-arow.lift,.sb-go.lift,.sb-nrow.lift,.sb-psub.lift{box-shadow:var(--lift-box)}
+/* The overlay for a thing that is not one element (a table row across sticky and
+   scrolling cells; a column): absolute in a positioned host that scrolls WITH the
+   content, above the host's own overlays (Leave War: band 4/6, drawer 5; under
+   .mxfixed 55 which covers it exactly as it covers the row), never a hit-test
+   target. Hidden until it carries .lift or .lift-land. Absolute stays absolute:
+   the veil's relative rule below is scoped :not(.lift-frame) — a bare rule lost
+   the landing frame to normal flow in the mock's first drive. The 8px corner is
+   the frame's OWN (7 Sep 26, when .lift stopped forcing one): the frame is an
+   empty box with nothing under it to take a shape from, so it names the number
+   here — and its veil inherits it. */
+.lift-frame{position:absolute;z-index:7;pointer-events:none;display:none;box-sizing:border-box;border-radius:8px}
+.lift-frame.lift,.lift-frame.lift-land{display:block}
+.lift-frame.lift{animation:liftIn 120ms ease-out}
+/* The landing flash: a veil pseudo-element over the landed thing — the same box
+   plus a light wash — bright for the first 150ms then gone by 600ms, opacity
+   only, so it runs on the compositor and adds no DOM node. lift.ts removes the
+   class on animationend AND on a 600ms timer: under normal motion animationend
+   clears it first, and under reduced motion — where the rule below stops the
+   animation, so animationend never comes — the timer is the only way out. A
+   plain element needs the positioning context (and z 4 to paint over the next
+   row's top border, as .sb-fresh does); the frame is already absolute.
+   border-radius:inherit (7 Sep 26): the veil covers the landed thing exactly,
+   so it takes that thing's OWN corner — a wave block's 10/12px, a puck's 3px,
+   the frame's 8px — instead of the flat 8 it forced on all of them. */
+.lift-land:not(.lift-frame){position:relative;z-index:4}
+.lift-land::after{content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;will-change:opacity;
+  background:rgba(59,198,232,.20);box-shadow:var(--lift-box);animation:liftLand 600ms ease-out forwards}
+/* A SEAT NAMES THE SHAPE IT FLASHES IN (owner, 7 Sep 26, from his phone: "when
+   dropped … the box looks too rectangle, it should follow the curve of the
+   input area"). The veil takes its corner from its host, and a landed seat has
+   none of its own by the time the flash paints: a grid seat ([data-slot]) is a
+   bare shell hugging a 3px puck, and a people cell ([data-fill]) is 5px round
+   ONLY under body.dnd — the dashed drop target of the drag — which dndOff has
+   already taken off. So both flashed square round a rounded thing. The grid
+   seat takes the puck's corner; the people cell keeps the corner its drop
+   target wore a moment earlier (lift-css.test.ts reads that rule off this file
+   and holds the two numbers equal). A seat has no background or border of its
+   own at rest, so the corner shows only in the flash. */
+[data-slot].lift-land{border-radius:var(--puck-r)}
+[data-fill].lift-land{border-radius:5px}
+/* The veil needs its OWN reduced-motion rule (review, 6 Sep 26). The blanket at
+   the top of the file is `*{animation:none!important}`, and `*` matches ELEMENTS
+   — never pseudo-elements — so it takes the frame's bloom (liftIn, above) and
+   leaves this fade running at full 600ms for someone who asked for no motion (in
+   Chromium: the veil computed `liftLand` while its own host computed `none`).
+   .legend-sum::before already carries the same targeted override. The FEEDBACK
+   is kept, only the motion goes: the class holds for LIFT_LAND_MS and lift.ts's
+   timer removes it, exactly as .sb-fresh-out holds and is removed below. */
+@media (prefers-reduced-motion:reduce){.lift-land::after{animation:none}}
+@keyframes liftIn{from{opacity:.65;transform:scale(.985)}to{opacity:1;transform:none}}
+@keyframes liftLand{0%,25%{opacity:1}to{opacity:0}}
 /* A freshly added row / line / wave / block wears a blue box for ~6s (owner,
    14 Aug 26 — "a blue box around the new thing added for around 6 seconds"),
    fading out over its last stretch (owner — "yes fade"). Selection blue

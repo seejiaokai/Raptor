@@ -170,13 +170,15 @@ export function balanceOf(
 // ── The counter column's figures ────────────────────────────────────────────
 //
 // The column shows one figure at a time (picked in `CounterSheet`), and the
-// owner's set (Aug 26) is neither the raw counters nor a 1:1 map onto them:
-// most rows are DAYS CONSUMED of a single code, two are consumed AGGREGATES
-// (medical, and total leave), and only one is a balance. So the column reads
-// from this `FIGURES` catalogue rather than from `COUNTERS` — which stays as
-// the counter-name vocabulary the balance/bid math still uses.
+// owner's set (6 Sep 26, replacing Aug 26's thirteen) is neither the raw
+// counters nor a 1:1 map onto them: six BALANCES, each drawn down by its own
+// leave type(s), then two TOTALS that sum across every pool (medical, and
+// all leave). So the column reads from this `FIGURES` catalogue rather than
+// from `COUNTERS` — which stays as the counter-name vocabulary the
+// balance/bid math still uses.
 //
-// Suffix convention, owner's own: `USED` = days taken, `BAL` = balance left.
+// Title convention, owner's own: `+` signs a balance, `−` signs a total and
+// every used line stacked under a balance.
 
 /**
  * Days of ONE code TYPE this person has taken, across every war — the
@@ -208,13 +210,17 @@ function typeOf(code: string): string {
   return cell ? cell.type : ''
 }
 
-// The three medical markers that make up MED USED, and the seven leave codes
-// that make up LVE USED (CL joined 3 Sep 26 — it is leave taken, from its own pool) (OFF left the list on 2 Sep 26 — it is a management
+// The three medical markers that make up MED TOT, and the seven leave codes
+// that make up LVE TOT (CL joined 3 Sep 26 — it is leave taken, from its own pool) (OFF left the list on 2 Sep 26 — it is a management
 // Off day event now, never a person's leave). Kept as literals here (not derived) because these two
-// aggregates are the owner's exact groupings — LVE USED deliberately excludes
-// OML/medical, and MED USED deliberately excludes everything else.
+// aggregates are the owner's exact groupings — LVE TOT deliberately excludes
+// OML/medical, and MED TOT deliberately excludes everything else.
 const MED_CON_TYPES = ['ATTC', 'HL', 'OML'] as const
-const LVE_CON_TYPES = ['LL', 'OL', 'OIL', 'CCL', 'PL', 'FCL', 'CL'] as const
+// Ordered to match the owner's own wording (`desc`/`legend` below: "LL + OL +
+// OIL + CCL + FCL + CL + PL") — the breakdown's rows read in the same order
+// the figure's own caption already names them in, rather than an arbitrary
+// arrival order.
+const LVE_CON_TYPES = ['LL', 'OL', 'OIL', 'CCL', 'FCL', 'CL', 'PL'] as const
 
 /** Medical days consumed = ATT C + HL + OML taken. */
 export function medConOf(sources: LeaveSource[], personId: string, ctx?: CountCtx): number {
@@ -222,7 +228,7 @@ export function medConOf(sources: LeaveSource[], personId: string, ctx?: CountCt
 }
 
 /** Total leave days consumed = LL + OL + OIL + CCL + PL + FCL + CL taken
- *  (medical is its own MED USED tally, so it is not in here). */
+ *  (medical is its own MED TOT tally, so it is not in here). */
 export function lveConOf(sources: LeaveSource[], personId: string, ctx?: CountCtx): number {
   return LVE_CON_TYPES.reduce((sum, t) => sum + takenOf(sources, personId, t, ctx), 0)
 }
@@ -243,30 +249,48 @@ export interface FigureCtx extends CountCtx {
 }
 
 /** The OIL ledger this ctx describes for one person — FIFO-allocated and
- *  expiry-applied. The OIL BAL figure and its breakdown both read from here,
- *  so the column and the tracker sheet cannot disagree. */
+ *  expiry-applied. The OIL figure and its breakdown both read from here, so
+ *  the column and the tracker sheet cannot disagree. */
 export function oilLedgerOf(ctx: FigureCtx, personId: string) {
   return oilLedgerFor(ctx, personId, ctx.oilPolicy ?? DEFAULT_OIL_POLICY, ctx.asOf ?? localToday())
 }
 
+/** Which colour a number wears: the balance white, LL amber, everything else
+ *  used (OL, OIL, CCL…, a total) red. A balance below zero is red too — the
+ *  renderer decides that from the sign, not from here. */
+export type Tone = 'white' | 'amber' | 'red'
+
+/** One leave TYPE a balance is drawn down by, and the colour its number wears
+ *  under the balance. LVE has two (LL amber, OL red); every other pool one. */
+export interface UsedLine { type: string; label: string; tone: Tone }
+
+/** A word of a column title, with its colour — the title IS the legend
+ *  (owner, 6 Sep 26): "+LVE" white over "−LL −OL" amber and red. */
+export interface TitleWord { text: string; tone: Tone }
+
 export interface Figure {
-  /** Stable id — the persisted display order is a list of these, so renaming
-   *  one silently drops it from a saved order. Don't. */
+  /** Stable id — the persisted display order and hidden list are lists of
+   *  these, so renaming one silently drops it from a saved order. Don't. */
   id: string
+  /** The plain name for sheets and the legend: 'LVE', 'LVE TOT'. */
   label: string
-  kind: 'bal' | 'con'
-  /** For a balance: the counter it reads. What lets the Cinch sheet offer an
-   *  admin a Set button on every plain-sum balance (LVE BAL, CL BAL) and
-   *  hand OIL BAL to the tracker instead — by fact, not by figure id. */
+  /** The signed title word for a column: '+LVE' (a balance), '−LVE TOT' (a
+   *  total) — the owner's own shorthand, + meaning balance and − meaning used. */
+  title: string
+  kind: 'bal' | 'tot'
+  /** For a balance: the counter it reads — what lets the person sheet offer an
+   *  admin a Set button on every plain-sum balance and hand OIL to the tracker. */
   counter?: CounterName
-  /** Plain-words caption for the picker/legend when there is no composition. */
+  /** The types drawn from this balance, in the order their numbers stack under
+   *  it. A total has none. */
+  used: readonly UsedLine[]
+  /** What the column counts, in the owner's words — the title pop-up, the
+   *  picker caption and the page Legend all read this one string. */
   desc: string
-  /** For an aggregate: what it is made of, shown as the legend "bubble". */
+  /** Kept for the sheets' "= …" caption on a total. */
   legend?: string
   value: (ctx: FigureCtx, personId: string) => number
-  /** The per-person breakdown, where a figure has one — the rows the tap-a-
-   *  counter sheet shows. SIGNED so the parts always sum to `value`: a
-   *  balance's "taken" row is negative, which is also how it reads. */
+  /** The per-person breakdown, SIGNED so the parts always sum to `value`. */
   parts?: (ctx: FigureCtx, personId: string) => FigurePart[]
 }
 
@@ -282,18 +306,21 @@ export interface FigurePart {
 const PART_LABEL: Record<string, string> = { ATTC: 'ATT C', ATTB: 'ATT B' }
 const typeParts = (types: readonly string[]) => (c: FigureCtx, p: string): FigurePart[] =>
   types.map(t => ({ label: PART_LABEL[t] ?? t, value: takenOf(c.sources, p, t, c) }))
-const balParts = (counter: CounterName, earns: boolean) => (c: FigureCtx, p: string): FigurePart[] => {
+/** A balance's parts, with the taken side split PER TYPE (LVE reads "LL taken
+ *  −3 · OL taken −2", owner 6 Sep 26) — the per-type draws sum to the pool's
+ *  draw because both read the one charged-days map (charge.ts). `0 - x`, not
+ *  `-x`: a person whose every leave day is excused draws 0, and `-0` would
+ *  print as a minus sign on some paths. */
+const balParts = (counter: CounterName, types: readonly string[], earns: boolean) => (c: FigureCtx, p: string): FigurePart[] => {
   const parts: FigurePart[] = [
     { label: 'opening figure', value: c.openings[p]?.[counter] ?? 0 },
     { label: 'granted', value: grantedTo(c.ledger, p, counter) },
   ]
   if (earns) parts.push({ label: 'earned by weekend/PH work', value: earnedOil(c.sources, p) })
-  // `0 - x`, not `-x`: a person whose every leave day is excused draws 0,
-  // and `-0` would print as a minus sign on some paths.
-  parts.push({ label: 'taken', value: 0 - drawnFrom(c.sources, p, counter, c) })
+  for (const t of types) parts.push({ label: `${PART_LABEL[t] ?? t} taken`, value: 0 - takenOf(c.sources, p, t, c) })
   // OIL alone can EXPIRE (the tracker's policy, 2 Sep 26). The row appears
-  // only when something did, so a squadron with no expiry sees the same four
-  // rows it always saw — and when it does appear the rows still sum to the
+  // only when something did, so a squadron with no expiry sees the same rows
+  // it always saw — and when it does appear the rows still sum to the
   // figure, which is the whole contract of a breakdown.
   if (counter === 'oil') {
     const expired = oilLedgerOf(c, p).expired
@@ -301,6 +328,16 @@ const balParts = (counter: CounterName, earns: boolean) => (c: FigureCtx, p: str
   }
   return parts
 }
+
+/** One leave-type/tone pair for a balance's `used` list — the LABEL falls
+ *  back to the raw type (`PART_LABEL` only overrides the two ATT markers,
+ *  which never appear on a balance, so this is here for the one shape both
+ *  builders share). */
+const used = (type: string, tone: Tone): UsedLine => ({ type, label: PART_LABEL[type] ?? type, tone })
+
+/** A plain-sum balance's `value`: opening + granted − drawn, the one line
+ *  every balance but OIL reads (OIL's own is the tracker's `balance`, above). */
+const plainBal = (counter: CounterName) => (c: FigureCtx, p: string) => balanceOf(c.openings, c.ledger, c.sources, p, counter, c)
 
 /**
  * The rows the tap-a-person's-counter sheet shows: the figure's own parts
@@ -316,44 +353,86 @@ export function figureParts(f: Figure, ctx: FigureCtx, personId: string): Figure
 }
 
 /**
- * The counter column's figures, in their default order (owner, Aug 26).
- * Frozen for the same reason `COUNTERS` is — an exported array is mutable by
- * whoever imports it. The DISPLAY order is a separate persisted list; this is
- * the fixed definition set `orderedFigures` arranges.
+ * The eight figures (owner, 6 Sep 26 — replacing the thirteen): six balances,
+ * each drawn on its own leave types, then the two totals. Balances first
+ * because a balance is what a bidder holds in their head; the totals close
+ * the list. Frozen for the same reason `COUNTERS` is.
  */
 export const FIGURES: readonly Figure[] = Object.freeze([
-  { id: 'll',  label: 'LL USED',  kind: 'con', desc: 'days taken', value: (c, p) => takenOf(c.sources, p, 'LL', c) },
-  { id: 'ol',  label: 'OL USED',  kind: 'con', desc: 'days taken', value: (c, p) => takenOf(c.sources, p, 'OL', c) },
-  { id: 'oil', label: 'OIL USED', kind: 'con', desc: 'days taken', value: (c, p) => takenOf(c.sources, p, 'OIL', c) },
-  // Wire 4's landing strip: without a balance figure the earned credit would
-  // move nothing anyone can see in the frozen column. A saved figure order
-  // from before this id existed shows it appended at the end (orderedFigures'
-  // tail rule) rather than losing it.
-  // Since 2 Sep 26 the value is the TRACKER's balance (oiltracker.ts): the
-  // same opening + granted + earned − taken, less whatever the admin's expiry
-  // policy has retired. With no policy the two are the same number.
-  { id: 'oilbal', label: 'OIL BAL', kind: 'bal', desc: 'balance available to take', legend: 'earned by weekend/PH work + granted − taken − expired', counter: 'oil', value: (c, p) => oilLedgerOf(c, p).balance, parts: balParts('oil', true) },
-  // `OFF USED` sat here until 2 Sep 26 (owner: "remove the OFF used
-  // counter"), and OFF itself stopped being a leave code the same day. A
-  // saved figure order naming 'off' skips it (orderedFigures).
-  { id: 'ccl', label: 'CCL USED', kind: 'con', desc: 'days taken', value: (c, p) => takenOf(c.sources, p, 'CCL', c) },
-  { id: 'pl',  label: 'PL USED',  kind: 'con', desc: 'days taken', value: (c, p) => takenOf(c.sources, p, 'PL', c) },
-  { id: 'fcl', label: 'FCL USED', kind: 'con', desc: 'days taken', value: (c, p) => takenOf(c.sources, p, 'FCL', c) },
-  // Compassionate leave (owner, 3 Sep 26 — "2 counters to show the balance
-  // and used, called CL BAL & CL USED"). Its own pool, so unlike LL/OL it
-  // gets a balance of its own beside the days taken; the admin sets it the
-  // way LVE BAL is set. A saved figure order from before these ids existed
-  // shows them appended at the end (orderedFigures' tail rule).
-  { id: 'clbal', label: 'CL BAL', kind: 'bal', desc: 'balance available to take', counter: 'cl', value: (c, p) => balanceOf(c.openings, c.ledger, c.sources, p, 'cl', c), parts: balParts('cl', false) },
-  { id: 'cl',  label: 'CL USED',  kind: 'con', desc: 'days taken', value: (c, p) => takenOf(c.sources, p, 'CL', c) },
-  { id: 'med', label: 'MED USED', kind: 'con', desc: 'days taken', legend: 'ATT C + HL + OML', value: (c, p) => medConOf(c.sources, p, c), parts: typeParts(MED_CON_TYPES) },
-  { id: 'oml', label: 'OML USED', kind: 'con', desc: 'days taken', value: (c, p) => takenOf(c.sources, p, 'OML', c) },
-  { id: 'lvebal', label: 'LVE BAL', kind: 'bal', desc: 'balance available to take', counter: 'annual', value: (c, p) => balanceOf(c.openings, c.ledger, c.sources, p, 'annual', c), parts: balParts('annual', false) },
-  { id: 'lvecon', label: 'LVE USED', kind: 'con', desc: 'days taken', legend: 'LL + OL + OIL + CCL + PL + FCL + CL', value: (c, p) => lveConOf(c.sources, p, c), parts: typeParts(LVE_CON_TYPES) },
+  { id: 'lve', label: 'LVE', title: '+LVE', kind: 'bal', counter: 'annual', used: [used('LL', 'amber'), used('OL', 'red')],
+    desc: 'Balance of local + overseas leave: opening + granted − LL − OL',
+    value: plainBal('annual'), parts: balParts('annual', ['LL', 'OL'], false) },
+  { id: 'oil', label: 'OIL', title: '+OIL', kind: 'bal', counter: 'oil', used: [used('OIL', 'red')],
+    desc: "The OIL tracker's balance: earned by weekend/PH work + granted − taken − expired",
+    value: (c, p) => oilLedgerOf(c, p).balance, parts: balParts('oil', ['OIL'], true) },
+  { id: 'ccl', label: 'CCL', title: '+CCL', kind: 'bal', counter: 'ccl', used: [used('CCL', 'red')],
+    desc: 'Child care leave balance: opening + granted − taken', value: plainBal('ccl'), parts: balParts('ccl', ['CCL'], false) },
+  { id: 'fcl', label: 'FCL', title: '+FCL', kind: 'bal', counter: 'fcl', used: [used('FCL', 'red')],
+    desc: 'Family care leave balance: opening + granted − taken', value: plainBal('fcl'), parts: balParts('fcl', ['FCL'], false) },
+  { id: 'cl', label: 'CL', title: '+CL', kind: 'bal', counter: 'cl', used: [used('CL', 'red')],
+    desc: 'Compassionate leave balance: opening + granted − taken', value: plainBal('cl'), parts: balParts('cl', ['CL'], false) },
+  { id: 'pl', label: 'PL', title: '+PL', kind: 'bal', counter: 'pl', used: [used('PL', 'red')],
+    desc: 'Paternity leave balance: opening + granted − taken', value: plainBal('pl'), parts: balParts('pl', ['PL'], false) },
+  { id: 'lvetot', label: 'LVE TOT', title: '−LVE TOT', kind: 'tot', used: [],
+    desc: 'All leave taken: LL + OL + OIL + CCL + FCL + CL + PL', legend: 'LL + OL + OIL + CCL + FCL + CL + PL',
+    value: (c, p) => lveConOf(c.sources, p, c), parts: typeParts(LVE_CON_TYPES) },
+  { id: 'medtot', label: 'MED TOT', title: '−MED TOT', kind: 'tot', used: [],
+    desc: 'Medical days: ATT C + HL + OML', legend: 'ATT C + HL + OML',
+    value: (c, p) => medConOf(c.sources, p, c), parts: typeParts(MED_CON_TYPES) },
 ])
 
 /** The figure the column opens on: how much leave is left. */
-export const DEFAULT_FIGURE_ID = 'lvebal'
+export const DEFAULT_FIGURE_ID = 'lve'
+
+/** The numbers a two-line box shows: the figure's own number on top, and each
+ *  used line's days under it. One reader for the closed column, the frozen
+ *  overlay and the drawer, so the three cannot disagree. */
+export function figureLines(f: Figure, ctx: FigureCtx, personId: string): FigureLines {
+  return {
+    top: f.value(ctx, personId),
+    used: f.used.map(u => ({ label: u.label, tone: u.tone, value: takenOf(ctx.sources, personId, u.type, ctx) })),
+  }
+}
+export interface FigureLines { top: number; used: { label: string; tone: Tone; value: number }[] }
+
+/** A figure an admin can credit from the grid: every balance that names a
+ *  counter — OIL included, whose grant is the tracker's own record. Totals
+ *  (and headers, which are not figures) never. ONE predicate: the gesture, the
+ *  bar and their tests read it, never a literal list of ids. Deliberately NOT
+ *  the person sheet's `settable` (that excludes OIL, because SET moves an
+ *  opening figure and OIL's opening belongs to the tracker). */
+export const selectableFigure = (f: Figure | undefined): f is Figure & { counter: CounterName } => !!f?.counter
+
+/** The entries behind a person's "granted" line on one pool, oldest first —
+ *  the breakdown itemises them, so a +2 keyed from the grid is explained (who,
+ *  when, and the reason when one was given). Ties (one batch = one date) keep
+ *  their written order by id. */
+export function grantsFor(ledger: Ledger, personId: string, counter: CounterName): LedgerEntry[] {
+  return ledger
+    .filter(e => e.personId === personId && e.counter === counter)
+    .sort((a, b) => a.date.localeCompare(b.date) || a.id.localeCompare(b.id, undefined, { numeric: true }))
+}
+
+/** The column title as coloured words, one line per row: "+OIL −OIL" on one
+ *  line; LVE, with two used types, takes two ("+LVE" over "−LL −OL"). */
+export function titleLines(f: Figure): TitleWord[][] {
+  const head: TitleWord = { text: f.title, tone: f.kind === 'bal' ? 'white' : 'red' }
+  const rest = f.used.map(u => ({ text: `−${u.label}`, tone: u.tone }))
+  if (rest.length === 0) return [[head]]
+  if (rest.length === 1) return [[head, rest[0]!]]
+  return [[head], rest]
+}
+
+/** The figure the column switches to when a leave of this TYPE is entered —
+ *  the balance it comes off (owner, 6 Sep 26: "switches to LVE BAL in view"),
+ *  medical to the MED total. EL keeps a pool but has no figure; ATT B feeds
+ *  no total. Null = don't switch. */
+const LEAVE_FIGURE: Record<string, string> = {
+  LL: 'lve', OL: 'lve', OIL: 'oil', CCL: 'ccl', FCL: 'fcl', CL: 'cl', PL: 'pl', ATTC: 'medtot', HL: 'medtot', OML: 'medtot',
+}
+export function figureForLeave(type: string): string | null {
+  return LEAVE_FIGURE[type] ?? null
+}
 
 const FIGURE_BY_ID: Record<string, Figure> = Object.fromEntries(FIGURES.map(f => [f.id, f]))
 

@@ -24,6 +24,9 @@ import {
   moveEventProblem,
   addEventType,
   grantOil,
+  grantTo,
+  reasonRequired,
+  HALF_STEP_MSG,
   setCellNote,
   updateLedgerEntry,
   removeLedgerEntry,
@@ -60,7 +63,8 @@ import {
   moveProblem,
   setViewer,
 } from './store'
-import { FIGURES, figureParts, makeWar, seedRequirements } from '../engine'
+import { FIGURES, figureParts, makeWar, seedRequirements, type CounterName } from '../engine'
+import { balanceOf, figureLines } from '../engine/counters'
 import { localBackend, memoryBackend } from './storage'
 
 beforeEach(() => {
@@ -2362,10 +2366,10 @@ describe('the OIL tracker: grants, corrections and the policy', () => {
     // A second batch continues the sequence — no clock, no collision.
     expect(grantOil(['dusk'], -0.5, '2026-03-03', 'Correction')).toBeNull()
     expect(getState().ledger.at(-1)!.id).toBe('ol-3')
-    // And the figure moves: dusk's OIL BAL rose by 1.5 − 0.5.
+    // And the figure moves: dusk's +OIL rose by 1.5 − 0.5.
     const ctx = figureCtxOf()
-    expect(FIGURES.find(f => f.id === 'oilbal')!.value(ctx, 'dusk')).toBe(
-      FIGURES.find(f => f.id === 'oilbal')!.value({ ...ctx, ledger: ctx.ledger.slice(0, before) }, 'dusk') + 1,
+    expect(FIGURES.find(f => f.id === 'oil')!.value(ctx, 'dusk')).toBe(
+      FIGURES.find(f => f.id === 'oil')!.value({ ...ctx, ledger: ctx.ledger.slice(0, before) }, 'dusk') + 1,
     )
   })
 
@@ -2414,10 +2418,10 @@ describe('the OIL tracker: grants, corrections and the policy', () => {
     expect(getState().oilPolicy).toEqual({ expiry: null, historyMonths: 12 })
   })
 
-  it('an expiry policy retires old credit from OIL BAL, and the breakdown still sums', () => {
+  it('an expiry policy retires old credit from +OIL, and the breakdown still sums', () => {
     setRole('admin')
     // jaguar: opening 2 + grant 2 (19 Jan 26) in the seed, nothing taken.
-    const oilbal = FIGURES.find(f => f.id === 'oilbal')!
+    const oilbal = FIGURES.find(f => f.id === 'oil')!
     const was = oilbal.value(figureCtxOf(), 'jaguar')
     expect(setOilPolicy({ expiry: { n: 30, unit: 'days' } })).toBe(true)
     const ctx = figureCtxOf()
@@ -2435,8 +2439,8 @@ describe('setBalance: an admin types the balance, LL and OL deduct from it', () 
     setRole('admin')
   })
 
-  it('makes LVE BAL read the target now, by moving the opening figure', () => {
-    const lvebal = FIGURES.find(f => f.id === 'lvebal')!
+  it('makes +LVE read the target now, by moving the opening figure', () => {
+    const lvebal = FIGURES.find(f => f.id === 'lve')!
     // ramp: 12 opening + 14 top-up − 0 drawn = 26 in the seed — his one OL
     // sits on 1 Jan, a seeded PH, which charges nothing since 3 Sep 26.
     expect(lvebal.value(figureCtxOf(), 'ramp')).toBe(26)
@@ -2456,5 +2460,109 @@ describe('setBalance: an admin types the balance, LL and OL deduct from it', () 
     expect(setBalance('ramp', 'annual', NaN)).toBe(false)
     expect(setBalance('ramp', 'oil', 0)).toBe(true)
     expect(getState().openings.ramp.annual).toBe(12)
+  })
+})
+
+// A dated +/− on ANY pool from the figures (owner, 6 Sep 26 — "if it shows 7
+// and I add 3 it reads 10; −3 gives 4"; "reason only for OIL"). One writer,
+// grantTo; grantOil is the OIL case of it. The rules live in ONE body.
+describe('grantTo — a dated credit on any pool', () => {
+  const bal = (id: string, counter: CounterName) => {
+    const s = getState()
+    return balanceOf(s.openings, s.ledger, s.wars, id, counter, figureCtxOf())
+  }
+  it('refuses a member and names the pool', () => {
+    setRole('member')
+    expect(grantTo(['ramp'], 'ccl', 2, '2026-09-06', '')).toBe('Only an admin can credit CCL')
+  })
+  it('adds to the balance with no reason on a plain pool, stamped with who and when', () => {
+    setRole('admin')
+    const before = bal('ramp', 'ccl')
+    expect(grantTo(['ramp'], 'ccl', 2, '2026-09-06', '')).toBeNull()
+    expect(bal('ramp', 'ccl')).toBe(before + 2)
+    const e = getState().ledger.filter(x => x.personId === 'ramp' && x.counter === 'ccl').at(-1)!
+    expect(e).toMatchObject({ amount: 2, date: '2026-09-06', reason: '', approvedBy: 'admin' })
+    expect(e.id).toMatch(/^ol-\d+$/)
+  })
+  /* THE DEFAULT COLUMN had no write test of its own (review, 6 Sep 26). Every
+     case here ran on `ccl`/`fcl`/`pl`, single-used-type pools; `annual` is the
+     one the column opens on, the one a drag reaches first, and the only pool
+     whose figure subtracts TWO used types (LL and OL) from the balance. So it
+     is checked twice over: through `balanceOf`, and through the figure the
+     grid actually draws — a credit that reached the ledger but not the box
+     would look to the reader like nothing had happened. */
+  it('credits `annual`, the column\'s own pool — in the balance and in the LVE box', () => {
+    setRole('admin')
+    const lve = FIGURES.find(f => f.id === 'lve')!
+    const before = bal('ramp', 'annual')
+    const boxBefore = figureLines(lve, figureCtxOf(), 'ramp').top
+    expect(grantTo(['ramp'], 'annual', 2, '2026-09-06', '')).toBeNull()
+    expect(bal('ramp', 'annual')).toBe(before + 2)
+    expect(figureLines(lve, figureCtxOf(), 'ramp').top).toBe(boxBefore + 2)
+  })
+  it('subtracts with a negative amount — a correction, not a second mechanism', () => {
+    setRole('admin')
+    const before = bal('dusk', 'fcl')
+    expect(grantTo(['dusk'], 'fcl', -3, '2026-09-06', '')).toBeNull()
+    expect(bal('dusk', 'fcl')).toBe(before - 3)
+  })
+  it('still demands a reason for OIL — the tracker\'s rule, unchanged', () => {
+    setRole('admin')
+    expect(reasonRequired('oil')).toBe(true)
+    expect(reasonRequired('ccl')).toBe(false)
+    expect(grantTo(['ramp'], 'oil', 1, '2026-09-06', '')).toBe('Give a reason')
+    expect(grantTo(['ramp'], 'oil', 1, '2026-09-06', 'Det recovery')).toBeNull()
+  })
+  it('takes halves only, on every pool — the tracker included', () => {
+    setRole('admin')
+    expect(grantTo(['ramp'], 'ccl', 1.25, '2026-09-06', '')).toBe(HALF_STEP_MSG)
+    expect(grantOil(['ramp'], 0.3, '2026-09-06', 'x')).toBe(HALF_STEP_MSG)
+    expect(grantTo(['ramp'], 'ccl', 1.5, '2026-09-06', '')).toBeNull()
+    expect(grantTo(['ramp'], 'ccl', -0.5, '2026-09-06', '')).toBeNull()
+  })
+  it('keeps every other refusal: no people, zero, a bad date, an unknown person', () => {
+    setRole('admin')
+    expect(grantTo([], 'ccl', 1, '2026-09-06', '')).toBe('Pick at least one person')
+    expect(grantTo(['nobody'], 'ccl', 1, '2026-09-06', '')).toBe('Pick at least one person')
+    expect(grantTo(['ramp'], 'ccl', 0, '2026-09-06', '')).toBe('The amount must be a number other than 0')
+    expect(grantTo(['ramp'], 'ccl', 1, '6 Sep', '')).toBe('Pick a date')
+  })
+  it('writes N people in ONE undo step', () => {
+    setRole('admin')
+    const n = getState().ledger.length
+    expect(grantTo(['ramp', 'dusk', 'miles', 'dusk'], 'pl', 1, '2026-09-06', '')).toBeNull()
+    expect(getState().ledger.length).toBe(n + 3)
+    lwUndo()
+    expect(getState().ledger.length).toBe(n)
+  })
+  /* AND ITS REFUSAL NAMES THE RIGHT POOL (review, 6 Sep 26). `updateLedgerEntry`
+     checked the role before it looked the entry up, so its message was the
+     literal "Only an admin can edit OIL" — written when the ledger was OIL's
+     alone, and left telling a member editing a CCL credit about a pool they had
+     not touched. The entry is found first now, and the label comes off it. */
+  it('an edit\'s refusal names the entry\'s OWN pool', () => {
+    setRole('admin')
+    grantTo(['ramp'], 'ccl', 2, '2026-09-06', '')
+    const ccl = getState().ledger.filter(x => x.counter === 'ccl').at(-1)!
+    grantOil(['ramp'], 1, '2026-09-06', 'weekend')
+    const oil = getState().ledger.filter(x => x.counter === 'oil').at(-1)!
+    setRole('member')
+    expect(updateLedgerEntry(ccl.id, { amount: 1 })).toBe('Only an admin can edit CCL')
+    expect(updateLedgerEntry(oil.id, { amount: 1 })).toBe('Only an admin can edit OIL')
+    // An id naming nothing answers the same for either role — there is no pool
+    // to name, and "gone" is true whoever asks.
+    expect(updateLedgerEntry('ol-999', { amount: 1 })).toBe('That entry is gone')
+    setRole('admin')
+    expect(updateLedgerEntry('ol-999', { amount: 1 })).toBe('That entry is gone')
+  })
+  it('an edit keeps the pool\'s own reason rule', () => {
+    setRole('admin')
+    grantTo(['ramp'], 'ccl', 2, '2026-09-06', 'top-up')
+    const ccl = getState().ledger.filter(x => x.personId === 'ramp' && x.counter === 'ccl').at(-1)!
+    expect(updateLedgerEntry(ccl.id, { reason: '' })).toBeNull()
+    grantOil(['ramp'], 1, '2026-09-06', 'weekend')
+    const oil = getState().ledger.filter(x => x.personId === 'ramp' && x.counter === 'oil').at(-1)!
+    expect(updateLedgerEntry(oil.id, { reason: '' })).toBe('Give a reason')
+    expect(updateLedgerEntry(oil.id, { amount: 0.75 })).toBe(HALF_STEP_MSG)
   })
 })

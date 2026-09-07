@@ -629,7 +629,7 @@
   top: 96px;
   left: 8px;
   z-index: 70;   /* above the frozen header mirror (55) — see .umlist */
-  width: 272px;
+  width: 312px;  /* kept in step with Chrome.tsx LEGEND_WIDTH — see its comment */
   background: var(--panel);
   border: 1px solid var(--edge);
   border-radius: 12px;
@@ -684,6 +684,12 @@
    legend can't drift from the cells and doubles as a key to those two colours */
 .leg-sw.sc   { background: rgba(59, 198, 232, .16); color: #9FDCEE; box-shadow: inset 0 0 0 1px rgba(59, 198, 232, .5); }
 .leg-sw.info { color: var(--ink-3); }
+/* The figures section's swatches (owner, 6 Sep 26) — the SAME three tones
+   the two-line box wears (matrix.css `.mx td.bal .fb/.fu`), so the legend
+   cannot say a colour the grid does not actually paint. */
+.leg-sw.figw { color: var(--ink); }
+.leg-sw.figa { color: var(--adv); }
+.leg-sw.figr { color: var(--hard); }
 /* the FO/HO heading — the codes that live ONLY here — reads in the accent so
    the "not on Inputs" group stands out from the mirror-of-Inputs groups below */
 .leg-sec-here { color: var(--accent); }

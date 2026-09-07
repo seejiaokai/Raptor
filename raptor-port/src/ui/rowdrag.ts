@@ -4,6 +4,7 @@ import * as view from '../state/view'
 import { notify } from '../state/store'
 import { moveSectionTo } from '../state/store'
 import { setSecDefOffer } from './pops'
+import { liftOn, liftOff, markLand } from './lift'
 
 /* ---- dragging to reorder, in place (owner, 8 Aug 26; sections + wave blocks
    added 29 Aug 26 pt.3, replacing the Arrange sheet) ------------------------
@@ -36,6 +37,34 @@ import { setSecDefOffer } from './pops'
    repaint underneath it. Wired on BOTH the board wrap and the edit-week
    container: on the week only wave/section grips exist (rows are board-only),
    so the row branch simply never fires there. */
+
+/* ONE LIFT, EVERY DRAG (owner, 6 Sep 26 — "once I drop the item it should
+   flash to show where the new item ended up").
+
+   Where the moved thing sits after the rebuild. `to` is the destination index
+   AFTER removal (engine/reorder.ts — "plain splice-out/splice-in"), so the row
+   that was carried now answers the target's own address; the exception handled
+   here is a FORMATION that travelled as a block (applyMove's ac branch when the
+   formation index differs), where `to` names a jet inside the TARGET formation
+   rather than the moved one. A formation has no wrapper element — it is a RUN
+   of `div.sb-line[data-move="mv:ac…"]` jet lines (board.ts's flying-line
+   builder) — so what flashes is the FIRST jet line of the formation that
+   travelled, the top of the block, and there is nothing to climb to.
+   KNOWN GAP, recorded not fixed (6 Sep 26): the GROUND programme is the one
+   list drawn in a SORTED order, and its FIRST manual move freezes that display
+   order into the model and re-indexes every row (moveGroundRow's !gman branch),
+   so on that one move the landed row can be `newOf[to]` rather than `to` and
+   the flash lands a row out. Only the first ground drag of a day whose items
+   are not already in start-time order, only decorative, and self-correcting
+   from the second drag on. Closing it needs the mover to report the index it
+   landed on — an engine-API question, not a string-maths one, so it is not
+   guessed at here. */
+export function landSel(from: string, to: string): string {
+  const a = from.slice(3).split('.'), b = to.slice(3).split('.')
+  if (a[0] === 'ac' && a.length === 5 && a[3] !== b[3]) return `[data-move^="mv:ac.${b[1]}.${b[2]}.${b[3]}."]`
+  return `[data-move="${to}"]`
+}
+
 export function wireRowDrag(el: HTMLElement) {
   let from = ''          // an mv: address (row or wave), '' when not an mv drag
   let fromSec = ''       // a data-secmove value ("di.key"), '' when not a section drag
@@ -53,6 +82,20 @@ export function wireRowDrag(el: HTMLElement) {
      and fall back to the document. lastX/lastY are the last pointer position, kept
      so the loop can re-read what's now under the still finger after each scroll
      step (no pointermove fires while the finger holds still). */
+  /* WHICH SURFACE the landing flash belongs to (fix, 6 Sep 26 review). The board
+     and the EDIT WEEK emit the SAME addresses for a wave (`mv:w.<di>.<gi>`) and
+     a section (`<di>.<key>`) — html.ts's `.dsec` / wave block in edit mode,
+     board.ts's `.sb-sec` / `.sb-go` — and the week stays MOUNTED behind the
+     board overlay (Shell keeps #page-editsched alive), earlier in document
+     order. So a bare selector handed every board drop's flash to the week's
+     hidden node, where nobody could see it and where it stayed: the node
+     survives, so paintLand spends the mark on it and the board's own row is
+     never reached. The mark is prefixed with the id of the surface THIS wiring
+     owns — #sbBoard or #eWeek, the two elements wireRowDrag is attached to — so
+     each surface flashes its own copy. A host with no id (a test harness) keeps
+     the old document-wide behaviour, which is correct when there is only one. */
+  const landScope = () => (el.id && carry && el.contains(carry)) ? `#${el.id} ` : ''
+
   let lastX = 0, lastY = 0
   let vel = 0                                   // px/frame, sign = direction, 0 = idle
   let raf = 0
@@ -98,7 +141,11 @@ export function wireRowDrag(el: HTMLElement) {
   }
 
   const clear = () => {
-    if (carry) carry.classList.remove('rowdrag', 'secdrag')
+    /* rowdrag/secdrag are STATE classes now (they recolour the grip); the box
+       is the shared .lift, so both come off together — liftOff also ends a
+       landing flash still running on this element, which a re-lift would
+       otherwise inherit. */
+    if (carry) { carry.classList.remove('rowdrag', 'secdrag'); liftOff(carry) }
     if (over) over.classList.remove('rowdrop', 'secdrop')
     carry = null; over = null; from = ''; fromSec = ''; kind = ''
     stopScroll()
@@ -138,13 +185,13 @@ export function wireRowDrag(el: HTMLElement) {
       const sec = grip.closest('[data-secmove]') as HTMLElement | null; if (!sec) return
       if (dayPrev(sec.dataset.secmove!.split('.')[0])) return
       fromSec = sec.dataset.secmove!
-      carry = sec; sec.classList.add('secdrag')
+      carry = sec; sec.classList.add('secdrag'); liftOn(sec)
     } else {
       const row = grip.closest('[data-move]') as HTMLElement | null; if (!row) return
       if (dayPrev(row.dataset.move!.slice(3).split('.')[1])) return
       from = row.dataset.move!
       kind = from.slice(3).split('.')[0]
-      carry = row; row.classList.add('rowdrag')
+      carry = row; row.classList.add('rowdrag'); liftOn(row)
     }
     try { grip.releasePointerCapture?.(e.pointerId) } catch { /* mouse: nothing to release */ }
     /* the surface this drag can reach off-screen ends of, and the loop that
@@ -185,7 +232,7 @@ export function wireRowDrag(el: HTMLElement) {
     hoverAt(e.target as HTMLElement)
   }
   const onUp = () => {
-    const sec = fromSec, src = from, dst = over?.dataset
+    const sec = fromSec, src = from, dst = over?.dataset, where = landScope()
     /* mv:/secmove addresses are index-based and captured at pointerdown/-move; a
        panel repaint mid-drag (innerHTML swap — e.g. a sort confirmed by keyboard
        while a touch holds an element) detaches both elements but their dataset
@@ -199,11 +246,18 @@ export function wireRowDrag(el: HTMLElement) {
       const to = dst?.secmove
       if (!to) return
       const di = +sec.split('.')[0], fromKey = sec.split('.')[1], toKey = to.split('.')[1]
-      /* a real move offers the "make this the house default?" snackbar */
-      if (moveSectionTo(di, fromKey, toKey)) { setSecDefOffer(di); notify() }
+      /* a real move offers the "make this the house default?" snackbar. The
+         landing flash is MARKED here and painted after the rebuild the notify
+         below triggers (lift.ts markLand/paintLand): a section keeps its own
+         key wherever it lands, so its address is the one thing that does not
+         move. Marking AFTER the mover, not before, because only a REAL move
+         flashes and its return value is what says so — safe even though
+         moveSectionTo notifies internally, since a native-listener update is
+         batched and nothing re-renders until this handler returns. */
+      if (moveSectionTo(di, fromKey, toKey)) { markLand(`${where}[data-secmove="${di}.${fromKey}"]`); setSecDefOffer(di); notify() }
     } else {
       const to = dst?.move
-      if (src && to && applyMove(src, to)) { view.afterSchedMutate(); notify() }
+      if (src && to && applyMove(src, to)) { markLand(where + landSel(src, to)); view.afterSchedMutate(); notify() }
     }
   }
 
