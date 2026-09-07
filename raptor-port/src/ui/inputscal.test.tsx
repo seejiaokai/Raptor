@@ -4,14 +4,15 @@
    are later tasks and carry no assertions here; this file only pins the
    shell, the view-state round trip, and the DISPLAY contract (the data
    attributes those later tasks will hook). */
-import { beforeAll, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest'
 import { act } from 'react'
 import { createRoot } from 'react-dom/client'
 import { App } from './App'
 import { initStore, setSession, notify, undo, writeInputs } from '../state/store'
 import { INPUTS, inpId, defaultAllday } from '../engine/inputs'
 import { INPVIEW, CALMONTH, setCalMonth } from '../state/view'
-import { DAYRMK, PLANPUCKS, addPlanPuck, removePlanPuck } from '../state/plan'
+import { DAYRMK, PLANPUCKS, addPlanPuck, addPuckPeople, addPuckRow, removePlanPuck } from '../state/plan'
+import { LIFT_LAND_MS, markLand, pendingLand } from './lift'
 import { ME } from '../state/auth'
 import { PEOPLE, QORDER } from '../engine/people'
 import { fmt, fmtDay, firstPersonalType } from './inputedit'
@@ -687,6 +688,175 @@ describe('member session — reduced controls, same reach to add and to open a c
       await act(async () => { setInpEdit(null); notify() })
     } finally {
       await act(async () => { setSession({ user: 'a', role: 'admin' }); notify() })
+    }
+  })
+})
+
+/* ONE LIFT, EVERY DRAG (owner, 6 Sep 26) — the day popover's two drags. Both
+   picked-up things ARE one element, so the cyan box is plain CSS on a class:
+   `.ic-sec.dragging`, which React itself writes, and `.ic-secpk.pk-drag`, which
+   the puck drag adds by hand (nothing re-renders under it). jsdom paints no
+   shadow, so the box is pinned as a CSS contract in lift-css.test.ts; what this
+   file pins is the half CSS cannot see. The popover is REBUILT by the very write
+   the drop makes, so the landing is deferred (lift.ts markLand/paintLand): the
+   address is marked BEFORE the write, and the component's own dep-list-free
+   layout effect paints it in the commit that rebuilt it. A drop that moves
+   nothing marks nothing, and a popover closed mid-drag leaves no class and no
+   mark behind for the next stray release to cash in. */
+describe('one lift, every drag — the day popover (6 Sep 26)', () => {
+  const origEFP = document.elementFromPoint
+  afterEach(() => { document.elementFromPoint = origEFP; markLand(''); vi.useRealTimers() })
+  /* both machines listen on WINDOW for the life of one press — the release that
+     ends a drag never reaches the element it started on */
+  const win = (type: string, x: number, y: number) => act(async () => { window.dispatchEvent(ptr(type, x, y)) })
+  const openPop = async (iso: string) => {
+    const cell = $(`[data-icday="${iso}"]`)!
+    await act(async () => { cell.dispatchEvent(ptr('pointerdown', 10, 10)) })
+    await act(async () => { cell.dispatchEvent(ptr('pointerup', 10, 10)) })
+    expect($('.ic-pop'), `the ${iso} popover opened`).toBeTruthy()
+  }
+  const dayIds = (iso: string) => PLANPUCKS.filter((p: any) => p.date === iso).map((p: any) => p.id)
+  const wipe = async (iso: string) => act(async () => {
+    for (const id of dayIds(iso)) removePlanPuck(id)
+    notify()
+  })
+  /* two seated pucks on a fresh row, straight through the store — the picker
+     route is already pinned above and is not what is under test here */
+  const seatTwo = async (iso: string) => {
+    const [a, b] = Object.keys(PEOPLE)
+    let rowId = ''
+    await act(async () => {
+      addPuckRow(iso)
+      rowId = PLANPUCKS.find((p: any) => p.date === iso && p.kind === 'pucks')!.id
+      addPuckPeople(rowId, [a, b])
+      notify()
+    })
+    return { rowId, a, b }
+  }
+
+  it('a section drop marks where it landed, and the popover flashes it in the commit that rebuilt it', async () => {
+    vi.useFakeTimers()
+    const iso = '2026-07-23'
+    // addPlanPuck UNSHIFTS, so the note added second leads the day's own run
+    await act(async () => { addPlanPuck(iso, 'lift note one'); addPlanPuck(iso, 'lift note two'); notify() })
+    const [top, below] = dayIds(iso)
+    try {
+      await openPop(iso)
+      const order = () => $$('.ic-secs .ic-sec').map(e => e.dataset.sec!)
+      expect(order(), 'the day opens in store order').toEqual([top, below])
+
+      /* jsdom lays nothing out: the hit-test answers with the section the finger
+         is over, and its 0-height rect leaves the half-rule on "before this one" */
+      document.elementFromPoint = () => $(`[data-sec="${top}"]`)
+      await act(async () => { $(`[data-sechandle="${below}"]`)!.dispatchEvent(ptr('pointerdown', 10, 60)) })
+      expect($(`[data-sec="${below}"]`)!.className,
+        'picked up: the recipe rides the class React writes, never an imperative one').toMatch(/\bdragging\b/)
+      await win('pointermove', 10, 20)
+      await win('pointerup', 10, 20)
+
+      expect(order(), 'it landed above the section it was dropped on').toEqual([below, top])
+      expect(pendingLand(), 'the mark names the section that moved, by its own address')
+        .toEqual({ sel: `[data-sec="${below}"]`, climb: undefined })
+      const landed = $(`[data-sec="${below}"]`)!
+      expect(landed.className, 'the picked-up class is gone').not.toMatch(/\bdragging\b/)
+      expect(landed.classList.contains('lift-land'), 'and the section flashes where it landed').toBe(true)
+      await act(async () => { vi.advanceTimersByTime(LIFT_LAND_MS + 50) })
+      expect(landed.classList.contains('lift-land'), 'the flash is over within its own beat').toBe(false)
+    } finally {
+      if ($('#icPopClose')) await click($('#icPopClose'))
+      await wipe(iso)
+    }
+  })
+
+  it('a seated-puck swap flashes the SLOT the puck landed in, not the one it left', async () => {
+    vi.useFakeTimers()
+    const iso = '2026-07-28'
+    const { rowId, a, b } = await seatTwo(iso)
+    try {
+      await openPop(iso)
+      const slot = (i: number) => $(`[data-secpucks="${rowId}"] .ic-secpk[data-pkidx="${i}"]`)!
+      document.elementFromPoint = () => slot(1)
+      await act(async () => { slot(0).dispatchEvent(ptr('pointerdown', 10, 10)) })
+      await win('pointermove', 30, 10)          // past the 6px that arms the drag
+      expect(slot(0).className, 'the lifted chip wears the recipe on its own .pk-drag').toMatch(/\bpk-drag\b/)
+      await win('pointerup', 30, 10)
+
+      const row: any = PLANPUCKS.find((p: any) => p.id === rowId)
+      expect(row.ids, 'the two swapped seats').toEqual([b, a])
+      expect(slot(1).classList.contains('lift-land'), 'the landed slot flashes').toBe(true)
+      expect(slot(0).classList.contains('lift-land'), 'the vacated slot does not').toBe(false)
+      expect(host.querySelector('.pk-drag'), 'nothing is left picked up').toBeFalsy()
+      await act(async () => { vi.advanceTimersByTime(LIFT_LAND_MS + 50) })
+      expect(slot(1).classList.contains('lift-land')).toBe(false)
+    } finally {
+      if ($('#icPopClose')) await click($('#icPopClose'))
+      await wipe(iso)
+    }
+  })
+
+  it('dragging a puck OFF the row is a removal, not a landing — it marks nothing', async () => {
+    const iso = '2026-07-29'
+    const { rowId, a } = await seatTwo(iso)
+    try {
+      await openPop(iso)
+      markLand('')                               // start from an empty slot, so null MEANS null
+      const slot = (i: number) => $(`[data-secpucks="${rowId}"] .ic-secpk[data-pkidx="${i}"]`)!
+      document.elementFromPoint = () => document.body     // the finger has left the row
+      await act(async () => { slot(0).dispatchEvent(ptr('pointerdown', 10, 10)) })
+      await win('pointermove', 30, 90)
+      await win('pointerup', 30, 90)
+
+      const row: any = PLANPUCKS.find((p: any) => p.id === rowId)
+      expect(row.ids.includes(a), 'the puck came off the row').toBe(false)
+      expect(pendingLand(), 'a removal has no landing place to flash').toBeNull()
+      expect(host.querySelector('.lift-land'), 'so nothing flashes').toBeFalsy()
+    } finally {
+      if ($('#icPopClose')) await click($('#icPopClose'))
+      await wipe(iso)
+    }
+  })
+
+  /* The popover closing mid-drag is the one path that ends a drag with the
+     dragged element already unmounted (dragCancelRef, 24 Aug 26). It must end
+     the LIFT as well as the listeners: nothing moves, nothing is marked, and the
+     stray release that arrives afterwards has nothing left to fire. */
+  it('a popover closed mid-drag cancels both drags, leaving no lift and no mark', async () => {
+    const iso = '2026-07-30'
+    await act(async () => { addPlanPuck(iso, 'cancel note one'); addPlanPuck(iso, 'cancel note two'); notify() })
+    const { rowId, a, b } = await seatTwo(iso)
+    const before = dayIds(iso)          // the two notes, then the pucks row
+    const [top, below] = before
+    try {
+      // ---- a SECTION drag, interrupted
+      await openPop(iso)
+      markLand('')
+      document.elementFromPoint = () => $(`[data-sec="${top}"]`)
+      await act(async () => { $(`[data-sechandle="${below}"]`)!.dispatchEvent(ptr('pointerdown', 10, 60)) })
+      await win('pointermove', 10, 20)
+      await click($('#icPopClose'))
+      await win('pointerup', 10, 20)             // the stray release the canceller disarmed
+      expect(dayIds(iso), 'nothing moved').toEqual(before)
+      expect(pendingLand(), 'nothing was marked').toBeNull()
+
+      // ---- a SEATED PUCK drag, interrupted
+      await openPop(iso)
+      const chip = $(`[data-secpucks="${rowId}"] .ic-secpk[data-pkidx="0"]`)!
+      document.elementFromPoint = () => $(`[data-secpucks="${rowId}"] .ic-secpk[data-pkidx="1"]`)
+      await act(async () => { chip.dispatchEvent(ptr('pointerdown', 10, 10)) })
+      await win('pointermove', 30, 10)
+      expect(chip.className, 'it really was picked up').toMatch(/\bpk-drag\b/)
+      await click($('#icPopClose'))
+      await win('pointerup', 30, 10)
+      expect(chip.className, 'the lift came off on the way out').not.toMatch(/\bpk-drag\b/)
+      expect((PLANPUCKS.find((p: any) => p.id === rowId) as any).ids, 'the seats are untouched').toEqual([a, b])
+      expect(pendingLand(), 'and nothing was marked').toBeNull()
+
+      await openPop(iso)
+      expect(host.querySelector('.ic-pop .lift, .ic-pop .lift-land'), 'the reopened popover carries neither class').toBeFalsy()
+      expect(host.querySelector('.ic-pop .dragging'), 'nor a stuck picked-up section').toBeFalsy()
+    } finally {
+      if ($('#icPopClose')) await click($('#icPopClose'))
+      await wipe(iso)
     }
   })
 })

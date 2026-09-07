@@ -29,6 +29,7 @@ import { canEditSched, ME } from '../state/auth'
 import { fmt, fmtDay, inputTone, firstPersonalType } from './inputedit'
 import { INPEDIT, setInpEdit } from './pops'
 import { initCalDrag } from './caldrag'
+import { markLand, paintLand } from './lift'
 import { useVersion } from './useStore'
 
 const MON = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
@@ -418,6 +419,18 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose }:
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cur.y, cur.m])
 
+  /* ONE LIFT, EVERY DRAG (owner, 6 Sep 26 — "once I drop the item it should
+     flash to show where the new item ended up"). A drop here writes to the
+     store, and that write REBUILDS this whole surface, so the landing cannot be
+     painted at the drop: the drag marks an address first (lift.ts markLand) and
+     this pass flashes it in the very commit that rebuilt it. Deliberately NO
+     dep list — every commit is a candidate, and the marked node may appear in
+     one that no single dependency describes (the popover's sections and seated
+     pucks, and the month grid's chips once a chip move marks one). Its idle
+     cost is one null check; lift.ts, not this effect, decides when the mark is
+     spent, so a repaint can never restart a flash. */
+  useLayoutEffect(() => { paintLand() })
+
   const cells = monthCells(cur.y, cur.m)
   /* the flat cell list chunked into weeks of 7 — each renders as its own flex
      row (.ic-week) so a packed day grows its week's height instead of spilling
@@ -486,7 +499,11 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose }:
           const ix = secs.findIndex((s: any) => s.id === over!.id)
           beforeId = secs[ix + 1]?.id ?? null
         }
-        if (beforeId !== id) writeInputs(() => movePlanSection(id, beforeId))
+        /* the flash goes on the section AFTER the write has rebuilt this
+           popover, so the address is marked first and painted by the layout
+           effect in that very commit (src/ui/lift.ts markLand/paintLand) —
+           a class written here would be wiped by the re-render itself. */
+        if (beforeId !== id) { markLand(`[data-sec="${id}"]`); writeInputs(() => movePlanSection(id, beforeId)) }
       }
       const up = () => end(true)
       const cancel = () => end(false)
@@ -545,7 +562,14 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, onClose }:
         if (!dragging || !ev) return                        // a tap, not a drag — leave the puck seated
         const { inRow, ix } = slotAt(ev)
         if (!inRow) writeInputs(() => togglePuckPerson(rowId, personId))                          // off the row → drop
-        else if (ix >= 0 && ix !== fromIx) writeInputs(() => movePuckPerson(rowId, fromIx, ix))   // over a slot → swap
+        /* a swap/move LANDS somewhere, so it flashes there — the SLOT it landed
+           in, marked before the write that rebuilds the row (src/ui/lift.ts). A
+           drop off the row is a removal with no landing place, so it marks
+           nothing. */
+        else if (ix >= 0 && ix !== fromIx) {
+          markLand(`[data-secpucks="${rowId}"] .ic-secpk[data-pkidx="${ix}"]`)
+          writeInputs(() => movePuckPerson(rowId, fromIx, ix))
+        }
         // inRow but no slot → a cancel, leave it seated
       }
       const up = (ev: PointerEvent) => done(ev)

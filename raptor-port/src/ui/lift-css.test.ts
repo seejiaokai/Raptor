@@ -119,6 +119,35 @@ describe('the landing flash', () => {
   })
 })
 
+/* THE DAY POPOVER'S TWO PICKED-UP THINGS (7 Sep 26). Both are single elements,
+   so they wear the recipe DIRECTLY rather than through a frame (design: "Single-
+   element things wear the recipe directly") — a section through the prop-driven
+   `dragging` class React already writes, a seated puck through the imperative
+   `.pk-drag` its own drag adds (nothing re-renders during that one). Neither
+   rule may lose what it already carried: the section's fade is what says "this
+   one is travelling", and the puck's position/z/pointer-events are load-bearing
+   for the hit-test under the finger. The landing bars (`.ic-sec.dragover`,
+   `.pk-swap-target`) are a different vocabulary and stay untouched. */
+describe('the day popover wears the same recipe', () => {
+  it('a dragged section and a lifted seated puck carry --lift-box at the 8px radius', () => {
+    for (const sel of ['.ic-sec.dragging', '.ic-secpk.pk-drag']) {
+      const b = bodyOf(sel)
+      expect(b, `${sel} has a rule at all`).toBeTruthy()
+      expect(b, `${sel} wears --lift-box`).toMatch(/box-shadow:\s*var\(--lift-box\)/)
+      expect(b, `${sel} takes the recipe's radius`).toMatch(/border-radius:\s*8px/)
+    }
+  })
+  it('and keeps everything it carried before the lift', () => {
+    expect(bodyOf('.ic-sec.dragging'), 'the travelling section still fades').toMatch(/opacity:\s*\.45/)
+    const pk = bodyOf('.ic-secpk.pk-drag')
+    expect(pk, 'the lifted puck still floats above its neighbours').toMatch(/position:\s*relative/)
+    expect(pk).toMatch(/z-index:\s*3\b/)
+    /* pointer-events:none is what lets elementFromPoint read the SLOT under the
+       finger instead of the chip riding it — the swap would never resolve without it */
+    expect(pk, 'the lifted puck is not its own hit-test target').toMatch(/pointer-events:\s*none/)
+  })
+})
+
 /* THE HOST ARRANGES AROUND THE FRAME (review, 7 Sep 26). The quals column frame
    is the one frame in the app that TRAVELS: it is placed in `.qwrap`'s content
    coordinates so it rides the sideways scroll with its column, which means a

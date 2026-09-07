@@ -2526,7 +2526,11 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
    half the drop would land) */
 .ic-secs{display:flex;flex-direction:column;gap:6px}
 .ic-sec{display:flex;align-items:flex-start;gap:6px}
-.ic-sec.dragging{opacity:.45}
+/* ONE LIFT, EVERY DRAG (owner, 6 Sep 26): a section IS one element, so it wears
+   the shared recipe directly — on the `dragging` class REACT writes, because an
+   imperative class here would be wiped by the very re-render the arm causes
+   (src/ui/lift.ts). The fade stays: it is what says "this one is travelling". */
+.ic-sec.dragging{opacity:.45;border-radius:8px;box-shadow:var(--lift-box)}
 .ic-sec.dragover{box-shadow:0 -2px 0 var(--accent)}
 .ic-sec.dragover.after{box-shadow:0 2px 0 var(--accent)}
 .ic-sec>.ic-poppuck,.ic-sec>.ic-poppuck-edit,.ic-sec>.ic-secpucks{flex:1;min-width:0}
@@ -2548,8 +2552,11 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
 .ic-pkdel:hover{color:var(--hard)}
 /* a seated puck lifted for a drag — floats above its neighbours and follows the
    finger (transform set inline by startPkDrag); pointer-events:none so the slot
-   UNDER the finger is what elementFromPoint reads. */
-.ic-secpk.pk-drag{position:relative;z-index:3;opacity:.85;cursor:grabbing;pointer-events:none}
+   UNDER the finger is what elementFromPoint reads. ONE LIFT, EVERY DRAG (owner,
+   6 Sep 26): it is one element, so it takes the shared recipe here — this class
+   is imperative, and safely so, because nothing re-renders under this drag. */
+.ic-secpk.pk-drag{position:relative;z-index:3;opacity:.85;cursor:grabbing;pointer-events:none;
+  border-radius:8px;box-shadow:var(--lift-box)}
 /* the slot a lifted puck is hovering over — where it will swap/land on release.
    A gap target flips back to opaque so its dashed ring shows over the empty cell. */
 .ic-secpk.pk-swap-target{outline:2px dashed var(--accent);outline-offset:1px;border-radius:6px}
