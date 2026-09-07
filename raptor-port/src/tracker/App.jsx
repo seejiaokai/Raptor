@@ -11,11 +11,10 @@ import { SideZoomCtl, FlowZoomCtl } from './components/ZoomControls.jsx';
 
 /* The Tracker's own page section — the element the standalone app called
    #root. Inside Raptor it is `#page-tracker`, which the Shell mounts this
-   component into; the layout column, the phone tab classes and the resizable
-   side width all live on it now instead of on <body>/<html>, so nothing this
-   tab does can reach the other tabs (a `body.tab-info` rule was hiding nothing
-   of Raptor's only because Raptor has no `.boardcol`, and the `--sideW`
-   variable on <html> would have been shadowed by the scoped stylesheet). */
+   component into; the resizable side width lives on it now instead of
+   <html> (the `--sideW` variable on <html> would have been shadowed by the
+   scoped stylesheet), and the layout column + the phone tab classes live on
+   `.tr-root` below, so nothing this tab does can reach the other tabs. */
 export const PAGE_ID = 'page-tracker';
 const pageEl = () => document.getElementById(PAGE_ID);
 
@@ -67,13 +66,6 @@ export default function App({ active = true }) {
 
   useEffect(() => { core.init(); }, []);
 
-  /* The phone's Flow / Info tab is a class on the page section (was <body>). */
-  useEffect(() => {
-    const el = pageEl(); if (!el) return;
-    el.classList.toggle('tab-flow', tab === 'flow');
-    el.classList.toggle('tab-info', tab === 'info');
-  }, [tab]);
-
   /* Which tab is showing is React state, but the search has to reach it: on the
      Info tab the board is display:none, so scrolling to a found event would be
      measuring a hidden element and would land nowhere. */
@@ -97,8 +89,15 @@ export default function App({ active = true }) {
     };
   }, [active]);
 
+  /* The phone's Flow / Info switch (was a class on <body>) rides the .tr-root
+     div's className — never the page section above it. The section's className
+     belongs to Raptor's Shell, which rewrites it whenever its value changes —
+     "page on" ↔ "page doze" on every tab switch away and back — wiping anything
+     toggled onto it by hand: on the owner's iPhone that showed the chart AND
+     the side panel stacked (7 Sep 26). React owns this div, so the class
+     survives. */
   return (
-    <div className="tr-root">
+    <div className={'tr-root tab-' + tab}>
       <Header />
       <ArrangeTools />
       {/* Zero-height wrapper: the hint FLOATS over the legend/board instead of

@@ -6763,6 +6763,16 @@ screen:
   for everyone (it persists the syllabus to the browser store; its file half
   only fires when a file is open, which only an admin can do). Pins:
   `src/tracker/tracker.test.tsx`.
+- **On a phone, ONE half at a time — and the switch rides the Tracker's own
+  element.** Below 1050px the Flow chart / Info tabs show either the chart
+  column or the side panel, never both stacked; the class that decides
+  (`tab-flow` / `tab-info`) sits on `.tr-root`, whose className React renders
+  from `App.jsx`. It must NEVER be toggled onto the `#page-tracker` section:
+  that element's className belongs to Raptor's Shell, which rewrites it
+  ("page on" ↔ "page doze") on every tab switch away and back — the first cut
+  did exactly that and the owner's iPhone showed the chart with the whole
+  panel stacked under it (7 Sep 26). Pinned in the smoke's phone block ("a
+  Raptor refresh does not bring the side panel back under the chart").
 - **Its own look, inside the section.** The Tracker keeps its dark palette,
   type and controls (`tracker.css`, wrapped under `#page-tracker`). Five class
   names collide with `scheduler.css` (`.day`, `.day.today`, `.legend`, `.modal`,

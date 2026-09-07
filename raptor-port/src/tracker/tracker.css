@@ -7,7 +7,10 @@
    this file's own internal cascade order intact (the two @media(max-width:
    1050px) blocks — top and END — are load-bearing: the last one wins, and
    phone overrides belong there). :root blocks became `&` blocks; <body>/#root
-   became `.tr-root` (App.jsx). Do not unwrap, and never fix a cross-page bleed
+   became `.tr-root` (App.jsx), and the phone's `body.tab-*` switch is
+   `.tr-root.tab-*` — on .tr-root, NOT on the section, whose className Raptor's
+   Shell rewrites on every notify (the owner's iPhone showed chart + panel
+   stacked the first time it did, 7 Sep 26). Do not unwrap, and never fix a cross-page bleed
    by editing scheduler.css — add the explicit property here instead.
    The ONE rule outside the wrapper is #detailBubble: core.js appends that
    element to document.body, so no page-scoped selector can reach it. */
@@ -108,9 +111,9 @@ button.sm{padding:3px 7px;font-size:11px}
  .layout{grid-template-columns:1fr}
  .resizer{display:none}
  .viewtabs{display:flex}
- &.tab-info .boardcol{display:none}
- &.tab-flow .sidecol{display:none}
- &.tab-info .legend{display:none}
+ & .tr-root.tab-info .boardcol{display:none}
+ & .tr-root.tab-flow .sidecol{display:none}
+ & .tr-root.tab-info .legend{display:none}
 }
 #showAllPanel{position:fixed;z-index:81;left:50%;top:50%;transform:translate(-50%,-50%);width:min(760px,94vw);max-height:88vh;display:none;flex-direction:column;background:var(--panel);border:1px solid var(--line);border-radius:12px;box-shadow:0 12px 40px rgba(0,0,0,.6)}
 #showAllPanel.on{display:flex}
@@ -175,7 +178,7 @@ button.sm{padding:3px 7px;font-size:11px}
    Chart/Panel labels go too — only one control is ever visible on a phone, and
    at 200px wide the labelled control still reached into the left column. */
 @media(max-width:1050px){
- &.tab-flow #sideZoomCtl{display:none}
+ & .tr-root.tab-flow #sideZoomCtl{display:none}
  .zoomwho{display:none}
  /* Room to scroll the last event clear of the bottom edge and the zoom control,
     which otherwise sits on top of it. Must come after the .board shorthand
@@ -187,7 +190,7 @@ button.sm{padding:3px 7px;font-size:11px}
 #flowZoomCtl button{padding:2px 8px;font-size:14px;line-height:1.2;min-width:26px}
 #flowZoomCtl #fzReset{font-size:11px;min-width:0}
 #flowZoomCtl #fzPct{font-size:11.5px;color:var(--muted);min-width:38px;text-align:center}
-@media(max-width:1050px){ &.tab-info #flowZoomCtl{display:none} }
+@media(max-width:1050px){ & .tr-root.tab-info #flowZoomCtl{display:none} }
 
 .phase{margin-bottom:16px}
 .phase h2{font-size:11px;text-transform:uppercase;letter-spacing:1.4px;color:var(--muted);margin:0 0 7px;border-bottom:1px solid var(--line);padding-bottom:3px}

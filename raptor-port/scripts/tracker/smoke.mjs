@@ -3355,6 +3355,19 @@ await openTracker(pg); await pg.waitForSelector('#flowSvg .ball'); await pg.wait
   ok('phone: zoom reset goes back to fitting the width, not to 100%',
     z0.pct !== '100%' && z1.over > 0 && z2.over <= 1 && z2.pct === z0.pct,
     `${z0.pct} → + ${z1.pct} (${z1.over}px over) → reset ${z2.pct} (${z2.over}px over)`);
+  /* The Flow/Info switch must survive a RAPTOR notify (the Sync chip, the
+     bell, an idle tick re-render the Shell, which rewrites the page
+     section's className): on the owner's iPhone the first one showed the
+     chart AND the side panel stacked (7 Sep 26). window.setPage is the probe
+     bridge's bare notify-carrying setter. */
+  await pp.evaluate(() => window.setPage('tracker')); await pp.waitForTimeout(300);
+  const afterNotify = await pp.evaluate(() => ({
+    flow: document.querySelector('#page-tracker .tr-root').classList.contains('tab-flow'),
+    panelHidden: getComputedStyle(document.querySelector('#page-tracker .sidecol')).display === 'none',
+    boardShown: getComputedStyle(document.querySelector('#page-tracker .boardcol')).display !== 'none',
+  }));
+  ok('phone: a Raptor refresh does not bring the side panel back under the chart',
+    afterNotify.flow && afterNotify.panelHidden && afterNotify.boardShown, JSON.stringify(afterNotify));
   ok('phone: the header Show All button is hidden — the tab does its job',
     await pp.evaluate(() => document.getElementById('showAllBtn').getBoundingClientRect().width === 0));
   await pp.tap('#showAllTab'); await pp.waitForSelector('#showAllPanel.on');
@@ -3445,13 +3458,13 @@ await openTracker(pg); await pg.waitForSelector('#flowSvg .ball'); await pg.wait
   const pb = await pp.evaluate(() => { const d = document.getElementById('detailBubble'); return d && d.style.display !== 'none' ? d.innerText : ''; });
   await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] }); await pp.waitForTimeout(300);
   ok('phone: a long press on a chip shows the details bubble', pb.startsWith(pid) && /Type:/.test(pb), JSON.stringify(pb));
-  ok('phone: a long press does not jump away from the Info tab', await pp.evaluate(() => document.getElementById('page-tracker').classList.contains('tab-info')));
+  ok('phone: a long press does not jump away from the Info tab', await pp.evaluate(() => document.querySelector('#page-tracker .tr-root').classList.contains('tab-info')));
   await pc.tap(); await pp.waitForTimeout(700);
   const pw = await pp.evaluate(() => {
     const id = document.getElementById('hSearch').value;
     const g = document.querySelector(`#flowSvg .ball[data-id="${id}"]`); if (!g) return { id, found: false };
     const r = g.getBoundingClientRect(), bd = document.getElementById('board').getBoundingClientRect();
-    return { id, found: true, flow: document.getElementById('page-tracker').classList.contains('tab-flow'), inView: r.top >= bd.top && r.bottom <= bd.bottom };
+    return { id, found: true, flow: document.querySelector('#page-tracker .tr-root').classList.contains('tab-flow'), inView: r.top >= bd.top && r.bottom <= bd.bottom };
   });
   ok('phone: a tap on a chip switches to the Flow chart and lands on that ball', pw.id === pid && pw.found && pw.flow && pw.inView, JSON.stringify(pw));
   await pp.close();
