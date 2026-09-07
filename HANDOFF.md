@@ -41,20 +41,22 @@ verify** — this section holds only the current baseline and the ways the gates
 mislead. Restate a count only from a run you watched — this file's history twice
 recorded a count that was wrong.
 
-**Last green baseline — the 5–6 Sep 26 batch, PR #368 (CI head `8b269df` plus
-a docs-only handoff commit, squash-merged on the owner's "merge") + PR #369
-(one guard on the Shell's pre-warm poll, after #368's own deploy run 903 went
-red on `unit (raptor)` with every test green — the timer trap in the table
-below).** CI run 901 on `8b269df` and the re-run of 904 on #369: all seven gate
-jobs green (build + reference suite, unit raptor, unit leavewar ×2, geometry
-×3). Counts below are from runs watched here on that tree:
+**Last green baseline — the 6–7 Sep 26 batch, PR #371 (CI head `3010e20`,
+squash-merged as `343a46d` on the owner's "Merge", 7 Sep 26).** CI run
+34102661018 on `3010e20` and the `main` deploy run 958 on `343a46d`: all seven
+gate jobs green (build + reference suite, unit raptor, unit leavewar ×2,
+geometry ×3), Pages published. The six runs before it were RED on `geometry
+(raptor)` — two browser assertions that held on the sandbox's Chromium 141 and
+failed on the runner's Playwright build (trap rows (c) and (d) below) — and
+went unread until the merge. Counts below are from runs watched here on that
+tree:
 
 | gate | reading |
 |---|---|
-| `npm test` | **3982 across 232 files** — two vitest projects, raptor + leavewar. **The RAPTOR project is flaky under load on a busy container** (6 Sep 26): three consecutive runs of one unchanged tree gave a post-teardown unhandled error (React's scheduler finishing work after jsdom went away, reported against `src/ui/odds.test.tsx`), then one failed test, then a clean 2632/2632 — while the branch base ran clean too. Every test passes; it is the exit code that wanders. Re-run before treating it as a finding, and read the "Unhandled Errors" block (obs 85) — this is the same shape as the two already fixed. |
+| `npm test` | **4153 across 237 files** — two vitest projects, raptor + leavewar. **The RAPTOR project is flaky under load on a busy container** (6 Sep 26): three consecutive runs of one unchanged tree gave a post-teardown unhandled error (React's scheduler finishing work after jsdom went away, reported against `src/ui/odds.test.tsx`), then one failed test, then a clean 2632/2632 — while the branch base ran clean too. Every test passes; it is the exit code that wanders. Re-run before treating it as a finding, and read the "Unhandled Errors" block (obs 85) — this is the same shape as the two already fixed. |
 | `node reference/tfin.js` | **728/0** (the reference is read-only; the "Ground Programme" title trim rides the tolerant normaliser in `html.test.ts`) |
 | `npm run build` | clean |
-| `npm run test:e2e` | **lw-phone 128 + lw-desktop 133 passed / 0 failed (21 skipped by project gate); raptor geometry 134 / 0** — three playwright projects, 416 tests, ~12.5 min locally. Two traps from this batch: (a) a `npm run build` DURING a browser run swaps the files the test server serves and fails whatever page load is in flight (one login-timeout red, green on the clean re-run — never rebuild while `test:e2e` runs); (b) a background `npx playwright test` launched WITHOUT `cd raptor-port` runs from the repo root and reports "No tests found" as exit 0. The older lead stands: the desktop carry-day test ("View-only opens on the day Edit was showing", `geometry.spec.ts`) went red once in the drag round and passed alone — for ~5 s after the edit page opens the store notifies ~10 times and each pass re-lands `eWeek.scrollLeft`, which can race `parkOn`'s scroll. |
+| `npm run test:e2e` | **lw-phone + lw-desktop 287 passed / 0 failed (33 skipped by project gate); raptor geometry 136 / 0** — three playwright projects, ~13 min locally. Four traps: (c) **the CI browser is the lockfile's Playwright build, NEWER than `/opt/pw-browsers/chromium` (141 here)** — a `getComputedStyle().outlineWidth` reads 3px there under `outline-style:none` (assert the STYLE, never the width), and an integer `clientWidth` held within 1px of a fractional rect failed on the runner's fonts (measure a rect against a rect); both passed locally for six pushes (7 Sep 26); (d) **a green local run is not the gate** — the branch sat red for a day because "do not watch the PR" was read as "do not look": read the check conclusions ~6 min after each push (`CLAUDE.md` §How to work here); (a) a `npm run build` DURING a browser run swaps the files the test server serves and fails whatever page load is in flight (one login-timeout red, green on the clean re-run — never rebuild while `test:e2e` runs); (b) a background `npx playwright test` launched WITHOUT `cd raptor-port` runs from the repo root and reports "No tests found" as exit 0. The older lead stands: the desktop carry-day test ("View-only opens on the day Edit was showing", `geometry.spec.ts`) went red once in the drag round and passed alone — for ~5 s after the edit page opens the store notifies ~10 times and each pass re-lands `eWeek.scrollLeft`, which can race `parkOn`'s scroll. |
 | `probes:adapted` | **all 6 GREEN**. **Read the LAST line, not the last tally**: each probe prints its own count as it finishes, and the suite's verdict is the line after it, `all 6 adapted probes passed`. |
 | `perf` | **4/0** — board DOM 1023 ≤ **1150** (the ceiling is a SETTLED owner decision since 28 Aug 26 — `CLAUDE.md` §Stable decisions). |
 | CI `unit (raptor)` | can go red with EVERY test green: the summary's `Errors 1` line — an unhandled error after a file ended. Run 899 was the 6-second fresh-add timer (`view.ts flashAdded`) firing into a torn-down jsdom (`paintFreshAdds` now returns with no `document`); run 903 was the Shell's self-re-arming pre-warm poll (`Shell.tsx`) firing after a test that never unmounts the App (it now returns with no `window`, #369). Both shapes — a long one-shot timer and a re-arming poll in a production module — outlive a test file; read the "Unhandled Errors" block before calling a red run a flake (obs 85). A docs-only push on a PR CANCELS its running gate job and starts no new one (`paths-ignore`) — re-run the cancelled run rather than pushing again. |
@@ -140,51 +142,32 @@ jobs green (build + reference suite, unit raptor, unit leavewar ×2, geometry
 
 ## In flight
 
-- **ONE LIFT, EVERY DRAG — on the branch, unmerged, iPhone-unverified (6–7 Sep
-  26).** All twelve drag surfaces now share one picked-up look (an even inset
-  cyan box, no halo, following each thing's own corner) and flash where the thing
-  landed; contract `docs/ui-contracts.md` §What a drag LOOKS like — one recipe,
-  every surface + §The landing flash, design
-  `docs/superpowers/specs/2026-09-06-drag-lift-design.md`, gaps
-  `docs/leavewar/known-gaps.md` §The lift frame is measured twice, seam
-  `docs/feature-impact.md`, speed `docs/performance.md` §D + ledger 25.
-  Pins: `src/ui/lift.test.ts` (the module), `src/ui/lift-css.test.ts` (the recipe
-  as a CSS contract), `src/leavewar/ui/rowglow.test.ts` (no per-cell paint), plus
-  e2e "a picked-up row wears one frame the width of the visible grid…"
-  (`leavewar.spec.ts`, both projects), "a section dropped on the board flashes the
-  board's own panel, not the week's copy" and "a dragged quals heading wears one
-  frame down the table…" (`geometry.spec.ts`).
-  His on-phone checklist is `BUG-TESTING.md` row #375 — the drag FEEL and the
-  flash's brightness are his to confirm; four known gaps are recorded in the
-  contract (the ground programme's first move can flash one row out, a
-  close-and-reopen re-flash in the popover, a flash cut short by a second
-  rebuild, and the seated puck's box being its whole slot).
-- **BULK BALANCE ENTRY + the owner's seven phone fixes — on the branch,
-  unmerged, iPhone-unverified (6 Sep 26).** A drag down one figure column picks
-  a run of people and a docked bar credits them all in ONE write; the same batch
-  relit the dragged row, the "View as" row and the Rearrange switch, kept an OIL
-  write on the grid, and moved the drag's left auto-scroll to the frozen edge.
-  Contract `docs/ui-contracts.md` §Bulk balance entry from the figures (and the
-  five paragraphs amended in place around it); seams `docs/feature-impact.md`;
-  gaps `docs/leavewar/known-gaps.md`; his checklists `BUG-TESTING.md` #373/#374.
-- **THE LEAVE WAR FIGURES DRAWER — on the branch, unmerged, iPhone-unverified
-  (6 Sep 26).** Eight figures in the counter column, and a corner switch that
-  pops all eight out beside the names. Contract `docs/ui-contracts.md` §The
-  figures drawer; every gap and the THREE open owner questions
-  `docs/leavewar/known-gaps.md`; his on-phone checklist `BUG-TESTING.md` #372.
-- **The swipe behind a sheet — OWNER-CONFIRMED on his iPhone (6 Sep 26: "Ok
-  it's fixed"); on the branch as PR #371, NOT merged (he merges on his "merge
-  live").** On a touch screen the finger
-  now scrolls the grid ITSELF behind an open Leave War sheet: `ui/Sheet.tsx
-  useGridPan` takes the scrim out of the way (`pointer-events: none` when
-  `(pointer: coarse)`) and a document-level capture shield swallows the tap
-  and closes the sheet — so the fling is the browser's own, on the
-  compositor, identical to the bare grid by construction. A first cut the
-  same day (a native scroller mirrored onto the grid) coasted but stuttered —
-  the owner's recording showed it — because the grid then moved at the main
-  thread's pace; it is gone. Contract: `docs/ui-contracts.md` §The page stays
-  fully usable behind an open sheet (LEFT-RIGHT); pins `scrim.test.tsx` + two
-  e2e. `BUG-TESTING.md` row #371 is his checklist (feel is his to confirm).
+- **The 6–7 Sep 26 batch is MERGED to main (PR #371, squash `343a46d`, on the
+  owner's "Merge", 7 Sep 26) and LIVE on Pages (deploy run 958).** Leave War:
+  the FIGURES DRAWER — eight figures in the counter column and a corner switch
+  that pops all eight out beside the names (contract `docs/ui-contracts.md`
+  §The figures drawer; gaps and the THREE open owner questions
+  `docs/leavewar/known-gaps.md` §The figures drawer covers the first days…;
+  checklist `BUG-TESTING.md` #372); BULK BALANCE ENTRY — a drag down one figure
+  column picks a run of people and a docked bar credits them all in ONE write
+  (§Bulk balance entry from the figures; #373); the owner's seven phone fixes —
+  the dragged row's solid name panel and stronger glow, the "View as" row, the
+  Rearrange switch, an OIL pick staying on the grid, the drag's LEFT
+  auto-scroll at the frozen edge (#374); the swipe behind an open sheet,
+  owner-confirmed on his iPhone (§The page stays fully usable behind an open
+  sheet; #371). Raptor + Leave War: ONE LIFT, EVERY DRAG — all twelve drag
+  surfaces share one inset cyan box that follows each thing's own corner and
+  flash where the thing landed (§What a drag LOOKS like — one recipe, every
+  surface + §The landing flash; design
+  `docs/superpowers/specs/2026-09-06-drag-lift-design.md`; speed
+  `docs/performance.md` §D + ledger 25; the four known gaps are in the
+  contract; #375), with the 7 Sep corner follow-up: a carried puck's box is
+  the puck alone (the finger's ghost is the puck now, as the mouse's was) and a
+  landed seat or people cell flashes in its own rounded shape. Stories in the
+  squash commit. **Still owner-iPhone-unverified:** everything on his four
+  checklists #372–#375 — the drawer's four WebKit-sensitive parts, the drag
+  FEEL and the flash's brightness, the ring on WebKit's inset shadows (this
+  file, §Open — the iPhone-unverified list).
 - **The 5–6 Sep 26 batch is MERGED to main (PR #368, squash, on the owner's
   "merge") — the Leave War Rearrange / counter-block rework, from his iPhone
   against the preview.** Rearrange: the on-grid bar (Auto-sort / Done) is GONE,
@@ -255,9 +238,10 @@ jobs green (build + reference suite, unit raptor, unit leavewar ×2, geometry
   are verified on the owner's iPhone against the preview; if the grid ever
   misaligns there, the revert is one commit.
 - **The observer log persists now** — `.claude/skill-observations/log.md` is
-  committed (obs 57–73 landed across the 5 Sep 26 PRs, obs 74–85 in #368), so
+  committed (obs 57–73 landed across the 5 Sep 26 PRs, obs 74–85 in #368, obs
+  86–119 in #371), so
   the old worry that it dies with the container is resolved as long as it keeps
-  being committed. It holds 81 OPEN observations; its `last-review-date.txt`
+  being committed. It holds 115 OPEN observations; its `last-review-date.txt`
   reads 19 Aug 26, so the skill's weekly review is overdue when the owner wants
   one.
 
@@ -357,7 +341,20 @@ jobs green (build + reference suite, unit raptor, unit leavewar ×2, geometry
   the overlay's copied ROW HEIGHTS, the stuck bar's frozen COPY matching the
   drawer's width, the FLASH painting at all, and the corner switch filling its
   sticky cell out of flow; each with what would show and how tight the margin is
-  in `ui-contracts.md` §The figures drawer). Chromium is clean on all four.
+  in `ui-contracts.md` §The figures drawer). Chromium is clean on all four —
+  and the **ONE LIFT's ring and flash** (6–7 Sep 26: inset box-shadows on a
+  `position:fixed` puck clone, a veil pseudo-element over a landed seat or
+  people cell, the measured overlay frame over a Leave War row and a quals
+  column; Chromium clean at both widths, finger and mouse, on the built app and
+  on the live page — `ui-contracts.md` §What a drag LOOKS like; his checklist
+  `BUG-TESTING.md` #375).
+- **OWNER'S CALL — the figures drawer's THREE open questions (6 Sep 26):** the
+  first ~9 (desktop) / ~7 (phone) day columns and the figure PICKER sit under
+  the open drawer (one tap on the corner switch reaches them; the alternative is
+  a scroller change), and a desktop opening with the drawer OUT is a choice, not
+  a fallout (one line in `Matrix.tsx` either way) —
+  `docs/leavewar/known-gaps.md` §The figures drawer covers the first days, and
+  the picker hides under it. Build only what he picks.
 - **Open questions for the owner, deliberately not changed:**
   - **ATT B beyond SC MAIN is unscoped** — "for now we will focus on SC MAIN
     first". Ask before widening.
@@ -587,6 +584,7 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | `SchedBoard.tsx` | The full-screen day board: panels with per-panel string diff; subscribes to both the global store and the board-only view lane; CxDialog (cancel-with-reason — its chips read the editable `CXR_CFG` now, plus an admin `✎ Edit` inline template editor) and the Sort-all confirm, both wired to `HOOKS.closeBoardDialogs`. Mounts the desktop checks-panel resize grip (`.sb-wsplit`, wired by `board.ts:wireWarnSplit`). |
 | `board.ts` | Board HTML assembly + delegated handlers: line/wave and duty/sim/ground row add/delete (with key renumbering), the ▲/▼ nudge handler, per-section and whole-day sorts, CX flow, red-box flag, `waveMenu`, `openScheduler`/`closeScheduler`. `boardHTML` now renders the in-time block, per-formation area strip and Traffic button (14 Aug 26 — week-only before); `boardSignHTML` is the sign-off as its own `#sbSign` element (so the checks bar can sit below it); `boardWarnHTML` reads the "N issues · N warning" severity-coloured bar. Also `boardDayStep`, the day arrows' one call (12 Aug 26 — the swipe and its whole carousel are deleted; do not rebuild them, the tombstone comment in this file says why), and **`boardWeekStep`** (23 Aug 26) — the whole-week jump behind the desktop board's `‹ ›` week chips (`dayTabsHTML` renders them inside `#sbDays` with `data-sbweek`; keeps the open weekday), the fix for "in scheduler board i cant go between weeks except through the calendar"; phone board still steps days with its own edge arrows. Pinned in `boardnav.test.tsx`. `boardWarnHTML` now also draws a per-check MUTE ✕ and a "N hidden" reveal for muted checks (Aug 26, `view.warnShown`/`WMOPEN`); `grdel` routes a `src`-bearing ground delete through `unacceptInput` (the auto-land round-trip, Aug 26 audit); and **`wireWarnSplit`** is the desktop grip that resizes `.sb-warn` against the roster (a no-op until dragged, so the default geometry holds). |
 | `rowdrag.ts` | The reorder pointer machine — its own small machine, deliberately not `drag.ts` (which stays scoped to pucks): pointer events so a finger works, releases implicit pointer capture on the way down, writes the lifted element and the drop bar straight onto the DOM, delegated on the surface wrap so it survives every repaint. Handles THREE draggables, told apart by the grip pressed: a board ROW (`.sb-grip` → `applyMove`), a whole WAVE block (`.wvgrip`, walks up to `.sb-go`/`.go` carrying `data-move="mv:w…"` → `applyMove`/`moveWave`, a real amendment), and a whole SECTION (`.secgrip` on `.sb-sec`/`.dsec[data-secmove]` → `store.moveSectionTo`, display order, then the "Set default order?" snackbar). Same-container validation (applyMove's own rule) so only a valid drop highlights. Wired on BOTH the board wrap (`SchedBoard`) and the edit-week root (`EditWeek`); on the week only wave/section grips exist. |
+| `lift.ts` | **ONE LIFT, EVERY DRAG (6–7 Sep 26)** — the DOM-only choreography every drag surface calls: `liftOn`/`liftOff` (a single element wears `.lift`), `boxOf` + `frameLift`/`frameLand` (the measured overlay `.lift-frame` for a composite thing — a Leave War row, a quals column; `boxOf(…, 'rect')` lends a heading its own border-box width), `landOn` (the 600ms landing flash, cleared by `animationend` or the timer alone under reduced motion), `markLand`/`paintLand` (a flash deferred across a DOM rebuild — one per node, surface-prefixed `#sbBoard `/`#eWeek ` because the board and the week emit the same addresses). Contract `docs/ui-contracts.md` §What a drag LOOKS like — one recipe, every surface + §The landing flash; pins `lift.test.ts` (the module) and `lift-css.test.ts` (`scheduler.css` read as a CSS contract — every layer inset, the frame's position, the stacking sets, the corners, the ghosts' veils). |
 | `html.ts` | THE builder library: `dayHTML`, `puck`, `slotCell`, `signoffHTML`, day warnings, day-info panel, legend, cx/flag tags, and the derived `areaText`/`atimeText`. `dayTraceHTML` draws the crew-rest cross-day trace row; since 23 Aug 26 it also renders the FORWARD (cross-week) trace — `t.di==null` — with no `data-wdi`/`data-wix` (nothing on this week's DOM to focus) and a title naming next week's Monday instead of a jump instruction. |
 | `board-html.ts` / `palette-html.ts` / `logic-html.ts` | Board panels (inputs bands, notes, programme, duties, sim rows, ground, personal-inputs group, sim notes), the aircrew palette, the Logic tab's rule text. |
 | `interactions.ts` | `routeClick` — the delegated click router: select/arm/plant (a puck's flag chip falls through to selection — the chip is the puck), publish/AL/sign-clear, day-info, warning boxes, the board's issue list (via `jumpToWarn`), week chips, stores remove + the config picker (`openStoresMenu`). Also the board-check MUTE/reveal (`[data-woff]` → `view.toggleWarnOff(view.warnMuteKey(w))`, `[data-wmtog]` → `view.toggleWarnMuted`, both above the `.wln` jump so muting never also pans, Aug 26), and — checked FIRST, ahead of every other branch (23 Aug 26) — the next-week preview's `.day.peek` click-to-land, which records the clicked position (`view.setPeekLand`) and calls the ordinary `loadWeek` (`ui/peek.ts`). |
