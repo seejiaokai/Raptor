@@ -149,8 +149,9 @@ jobs green (build + reference suite, unit raptor, unit leavewar ×2, geometry
 
 ## In flight
 
-- **AVALON'S FOUR RULES, BB AS ITS TWIN, + THE SC DESK — on the branch,
-  unmerged (7 Sep 26, owner's rules list + three same-day corrections).** On
+- **AVALON'S FOUR RULES, BB AS ITS TWIN, + THE SC DESK — MERGED to main
+  (PR #375, on the owner's "merge live", 7 Sep 26; his rules list + three
+  same-day corrections, the branch bug-sweep, then the rear-seat relaxation).** On
   top of the 11 Aug availability look, every AVALON seat (MAIN AND SPARE —
   his second word) needs SC currency for the shift's hours (SC NIGHT on
   19:00–07:00), the front seat is pilots-only (the rear seat stays open to a
@@ -190,8 +191,8 @@ jobs green (build + reference suite, unit raptor, unit leavewar ×2, geometry
   supervision, one-man-two-places, WSO-can't-fly-front). The reference copy is
   excised too (`refwin.ts:rejet()`, resim's sibling), byte-parity held.
 
-- **LEAVE WAR OPENS ON THE WAR BEING BID ON — on the branch, unmerged (7 Sep
-  26).** The tab no longer always opens on January of the first war. It now
+- **LEAVE WAR OPENS ON THE WAR BEING BID ON — MERGED to main (PR #375, on the
+  owner's "merge live", 7 Sep 26).** The tab no longer always opens on January of the first war. It now
   picks the war that is OPEN for bidding — else bidding CLOSED, else the latest
   PUBLISHED, else a DRAFT (`engine/stages.ts:pickDefaultPeriodId`, deciding the
   boot `currentId` in `state/store.ts` unless a `current` is remembered) — and
