@@ -2739,6 +2739,26 @@ export function Matrix() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [version, period.id, period.stage, period.bidFrom, period.bidTo, zoom, visWindow, drawnDates.length, colWin?.lo, colWin?.hi, countsOpen, folded, figuresOpen, arranging])
 
+  // iOS WebKit settles the frozen-column width change a FRAME LATER than the
+  // synchronous layout-effect above reads it: on LEAVING Rearrange the column
+  // shrinks back (`--who-w`), but WebKit still reported the wider geometry when
+  // the effect measured, so the box kept its wider left and its edge sat
+  // displaced INTO the grid until the next scroll (owner, 7 Sep 26 — "after I
+  // close rearrange icon I get this green border displaced"). Re-measure on the
+  // next two frames, when the reflow has landed. The identity guard inside
+  // `measureBidBox` (setBidBox bails when nothing moved) makes this a no-op
+  // wherever the synchronous read already settled — Chromium here measures the
+  // final geometry at once, so this only ever CORRECTS a stale read, never adds
+  // a render. Keyed on `arranging` so it costs two frames on the toggle only.
+  // (No WebKit in this container — verified not to regress Chromium; the fix
+  // rides the owner's iPhone check.)
+  useEffect(() => {
+    let raf2 = 0
+    const raf1 = requestAnimationFrame(() => { measureBidBox(); raf2 = requestAnimationFrame(measureBidBox) })
+    return () => { cancelAnimationFrame(raf1); if (raf2) cancelAnimationFrame(raf2) }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [arranging])
+
   // ---- the frozen roster columns, drawn ONCE (owner, 20 Aug 26 — the third
   // look at the sideways stutter) --------------------------------------------
   //

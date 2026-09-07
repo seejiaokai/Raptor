@@ -4118,7 +4118,15 @@ test('the open-bidding box keeps its left edge on 1 Jan through Rearrange', asyn
   expect(janArr).toBeGreaterThan(janRest)
   // ...and the box's left edge follows it onto 1 Jan, not left behind and hidden.
   expect(Math.abs(await boxLeft() - janArr)).toBeLessThanOrEqual(4)
+  // Leaving Rearrange shrinks the column back — 1 Jan returns left and the box
+  // must follow it back, not stay displaced at its wider Rearrange position
+  // (owner, 7 Sep 26). On iOS WebKit the return lags a frame, which the rAF
+  // re-measure corrects; Chromium settles at once, so this asserts the landing.
   await page.locator('[data-testid="roster-arrange"]').click()  // leave arrange
+  await page.waitForTimeout(120)
+  const janBack = await jan1Left()
+  expect(janBack).toBeLessThan(janArr)
+  expect(Math.abs(await boxLeft() - janBack)).toBeLessThanOrEqual(4)
 })
 
 // ---- the column window (Phase 2 of the speed work, 3 Sep 26) --------------
