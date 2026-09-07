@@ -777,14 +777,34 @@ describe('the puck ghosts wear the lift, and the seat it lands on flashes', () =
     const g = $('.tdghost')
     expect(g, 'the hold armed a touch drag').toBeTruthy()
     expect(g.classList.contains('lift')).toBe(true)
+    /* the PUCK alone, as the mouse's ghost always was (owner, 7 Sep 26): the
+       [data-drag] shell round it is whatever its host makes it — a seat a grid
+       cell can stretch, a roster row as wide as its column — and a ring on the
+       shell's edge boxed empty space beside the name */
+    expect(g.classList.contains('puck'), 'the ghost is the puck, not the shell round it').toBe(true)
+    expect(g.querySelector('.puck'), 'and carries no second puck inside it').toBeNull()
     document.body.dispatchEvent(ptr('pointerup', 10, 10, { kind: 'touch', id: 22 }))
     expect($('.tdghost')).toBeFalsy()
   })
 
-  /* A ghost is a COPY of a live node, and the finger's one clones the whole
-     [data-drag] seat — so a seat re-grabbed inside its own 600ms landing (a
-     scheduler correcting a mis-drop straight away) handed its `lift-land` to
-     the clone, which has no timer of its own to take it off again. */
+  it('a palette puck carried by a finger is the puck alone too — its roster row is as wide as the column', async () => {
+    const pal = $('#eRoster .rpuck[data-drag][data-person]')
+    pal.dispatchEvent(ptr('pointerdown', 10, 10, { kind: 'touch', id: 24 }))
+    await new Promise(r => setTimeout(r, 240))
+    const g = $('.tdghost')
+    expect(g, 'the hold armed a touch drag off the palette').toBeTruthy()
+    expect(g.classList.contains('puck'), 'the ghost is the puck, not the .rpuck row').toBe(true)
+    expect(g.classList.contains('rpuck')).toBe(false)
+    document.body.dispatchEvent(ptr('pointerup', 10, 10, { kind: 'touch', id: 24 }))
+    expect($('.tdghost')).toBeFalsy()
+  })
+
+  /* A ghost is a COPY of a live node. While the finger's one cloned the whole
+     [data-drag] seat (until 7 Sep 26), a seat re-grabbed inside its own 600ms
+     landing (a scheduler correcting a mis-drop straight away) handed its
+     `lift-land` to the clone, which has no timer of its own to take it off
+     again; the ghost is the puck now, which never carries the seat's class,
+     and liftOn strips it either way — this pins that neither road brings it back. */
   it('a seat re-grabbed inside its own landing flash does not hand it to the ghost', async () => {
     const seat = $('#eWeek .seat[data-slot][data-drag]')
     seat.classList.add('lift-land')                    // as a fresh drop leaves it

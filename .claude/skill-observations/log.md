@@ -1796,3 +1796,18 @@ gate's. Keep verdict-bearing commands unpiped.
 
 **Principle:** A visual that borrows a value from its host inherits the host's state too — check it in the state the host will be in when the visual is actually on screen, and read the computed value, not the class.
 
+### Observation 118: Two pointer paths doing one job drifted: the mouse ghost had been the puck alone since 3 Sep 26 (a shell can be stretched by its host) and the finger's ghost still cloned the shell — a fix made on one path is not a fix until it is checked on its twin
+
+**Status:** OPEN
+**Date:** 2026-09-07
+**Session context:** Drag lift + landing flash — the owner's second corner note (edit schedule and board alike); the AIRCREW drawer drive found the finger's ghost wider than its puck.
+**Skill:** the live-drive step (verification) / brainstorming (trap-hunt exploration) for gestures with more than one pointer path
+**Type:** open-source
+**Phase/Area:** Verifying a gesture that has a mouse path and a touch path
+
+**Issue:** drag.ts builds the carried ghost two ways: the mouse path clones the .puck alone (fixed 3 Sep 26 because "a grid cell can stretch the seat shell past the puck"), the touch path cloned the whole [data-drag] shell. The lift recipe was verified on both, but the finger drives all picked SEATS, which hug their puck — never the AIRCREW drawer, where a roster row is as wide as its column. The owner's phone showed the ring running past the name; measured: the finger's ghost 156px wider than the puck inside it. The mouse path had already learnt the lesson; nobody re-asked it of the finger.
+
+**Suggested improvement:** When a gesture has parallel paths (mouse/touch, keyboard/pointer, native/synthetic), the trap hunt lists every place the two paths BUILD something differently and asks whether a past fix on one applies to the other; the live drive drives each path from every SOURCE the gesture accepts (a seat, a people cell, the palette/drawer), not the one source that is easiest to reach, and measures the built thing against the thing it stands for (ghost rect vs puck rect).
+
+**Principle:** A fix on one of two twin paths is a bug report against the other — verify parity by driving both paths from every source, and measure the built artefact against what it represents.
+

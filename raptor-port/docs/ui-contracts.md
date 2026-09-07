@@ -1836,7 +1836,9 @@ persisted and never in a history snapshot. The toggle builder is `notePubTog`
   claims it (`TD.mouse`), a 3px move arms it (no hold; the native drag's own
   threshold), and the release drops through `applyDrop` off
   `elementFromPoint` exactly as a finger does. The ghost is a `.dragimg` clone of the PUCK alone
-  (not the `.seat` shell a grid cell can stretch) — fixed, `pointer-events:
+  (not the `.seat` shell a grid cell can stretch — and since 7 Sep 26 the
+  finger's `.tdghost` is the puck alone as well: its shell clone boxed the
+  AIRCREW drawer row's empty width beside the name) — fixed, `pointer-events:
   none`, z-index 520, the `.tdghost` recipe — pinned where the press landed
   inside the puck (`TD.ox/oy`, clamped to the puck) rather than centred, and
   the ghost itself carries the grabbing cursor (no OS drag cursor exists —
@@ -5268,9 +5270,13 @@ Four asks from the same sitting, all on the Leave War grid:
     SQUARE round a rounded thing. `[data-slot].lift-land` takes the puck's corner
     and `[data-fill].lift-land` the 5px its dashed drop target wore a moment
     earlier (`lift-css.test.ts` reads the target's rule and holds the two equal).
-    The puck's corner is one token, `--puck-r` on `:root`, worn by `.puck` and by
-    the finger's seat-clone ghost `.tdghost`, whose veil was square for the same
-    reason; the mouse ghost IS the puck and names none.
+    The puck's corner is one token, `--puck-r` on `:root`, worn by `.puck` and
+    kept on `.tdghost` as the fallback for a shell clone. **And the finger's
+    ghost is the PUCK now, as the mouse's always was** (`drag.ts tdArm` clones
+    `.puck` for both pointers): its shell clone drew the ring on the shell's
+    edge — square round a seat, and from the AIRCREW drawer a roster row as
+    wide as its column, so the box ran 156px past the name (measured on the
+    built app). The mouse ghost names no corner of its own.
   - **`--lift-box` is a CONSTANT on `:root`, never toggled.** A custom property
     toggled on `.mx-outer` or any grid ancestor restyles thousands of cells (the
     performance doctrine); a constant read by `matrix.css`'s own rows costs

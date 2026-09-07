@@ -357,19 +357,21 @@ describe('the ghosts wear the same recipe — inset accent, neutral depth', () =
       expect(ghostBody(cls), `${cls} keeps its own layer whatever it cloned`).toMatch(/z-index:\s*520!important/)
   })
 
-  /* THE FINGER'S GHOST TAKES THE PUCK'S CORNER (owner, 7 Sep 26, from his phone:
-     the ring "should follow the shape of the curved edges of the puck"). It
-     clones the SEAT — a bare shell with no corner of its own round a 3px puck —
-     and its veil takes its corner from the element, so the ring came out square
-     round a rounded puck. The mouse ghost IS the puck, inherits the puck's own
-     corner, and must go on naming none. The number is the puck's, read from one
-     token, so the two curves cannot drift apart. */
-  it('the seat-clone ghost hugs the puck\'s corner; the puck ghost inherits it', () => {
+  /* THE FINGER'S GHOST IS THE PUCK (owner, 7 Sep 26, from his phone: the ring
+     "should follow the shape of the curved edges of the puck"). It cloned the
+     [data-drag] SHELL — a seat with no corner of its own, so the ring came out
+     square round a rounded puck; and from the AIRCREW drawer a roster row as
+     wide as its column, so the ring boxed 156px of nothing beside the name.
+     drag.ts clones the puck for both pointers now (drag.test.tsx pins it), and
+     the .tdghost rule keeps the puck's corner as the fallback for a shell clone
+     (a source with no .puck inside), read from the one token .puck wears, so
+     the two curves cannot drift apart. The mouse ghost names none of its own. */
+  it('the finger\'s ghost names the puck\'s corner as its fallback; the mouse ghost inherits it', () => {
     const root = bodyOf(':root').match(/--puck-r:\s*([^;]+)/)
     expect(root, ':root names the puck\'s corner once').toBeTruthy()
     expect(root![1]!.trim()).toBe('3px')
     expect(bodyOf('.puck'), 'the puck wears the token').toMatch(/border-radius:\s*var\(--puck-r\)/)
-    expect(ghostBody('.tdghost'), 'the finger\'s seat clone takes the puck\'s corner').toMatch(/border-radius:\s*var\(--puck-r\)/)
+    expect(ghostBody('.tdghost'), 'the finger\'s ghost names the puck\'s corner (its fallback for a shell clone)').toMatch(/border-radius:\s*var\(--puck-r\)/)
     expect(ghostBody('.dragimg'), 'the mouse ghost IS the puck — it names no corner of its own').not.toMatch(/border-radius/)
   })
 
@@ -397,15 +399,17 @@ describe('the ghosts wear the same recipe — inset accent, neutral depth', () =
   })
 
   /* BOTH PUCK GHOSTS DRAW THEIR RING ON A VEIL — two faults, one cure.
-     The FINGER's ghost (7 Sep 26, found in the live drive): `tdArm` clones the
-     whole `[data-drag]` SEAT, and a seat is filled edge to edge by an opaque
+     The FINGER's ghost (7 Sep 26, found in the live drive): `tdArm` cloned the
+     whole `[data-drag]` SEAT then, and a seat is filled edge to edge by an opaque
      `.puck`; an INSET shadow paints in the element's OWN background layer, UNDER
      its children, so the ring was in the computed style and invisible on the
      screen — measured edge by edge on the built app, no cyan on any of the four.
      The MOUSE's ghost (fix wave, 7 Sep 26): it IS the puck, so it inherits the
      puck's own !important state rules and NO selector can out-rank them (the
      cascade test above pins that premise). A veil owns its own box-shadow
-     property and paints over the clone's contents, which answers both.
+     property and paints over the clone's contents, which answers both — and
+     since the finger's ghost became the puck as well (later on 7 Sep 26), the
+     mouse's reason is the standing one for both.
      ::BEFORE, not ::after: a clone brings its original's pseudo-elements with
      it, and ::after is TAKEN on both of these nodes — the AL amendment badge on
      a seat, the SANS purple edge on a puck — whose leftover declarations would
@@ -428,7 +432,7 @@ describe('the ghosts wear the same recipe — inset accent, neutral depth', () =
     expect(v, 'a ::before is the first child — it needs a z-index to paint over the clone').toMatch(/z-index:\s*[1-9]/)
     /* the two badges that already own ::after on exactly what these ghosts
        clone, and which is why the veil is not written there */
-    expect(rulesFor('.seat[data-alc]::after').length, 'the AL badge still owns a seat clone\'s ::after').toBe(1)
+    expect(rulesFor('.seat[data-alc]::after').length, 'the AL badge owns a seat\'s ::after (the seat clone the finger used to carry)').toBe(1)
     expect(rulesFor('.puck.san::after').length, 'the SANS edge still owns a puck clone\'s ::after').toBe(1)
     for (const cls of ['.tdghost', '.dragimg', '.ic-ghost'])
       expect(rulesFor(`${cls}.lift::after`).length, `${cls} leaves ::after to the badge that already owns it`).toBe(0)

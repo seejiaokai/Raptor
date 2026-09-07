@@ -3949,12 +3949,14 @@ body:not(.tdrag) .sb-slot.empty:hover{border-color:var(--accent);color:var(--acc
    box-shadow written on the .lift compound just below .dragimg.
    THE PUCK'S CORNER (owner, 7 Sep 26, from his phone: the ring round a carried
    puck "should follow the shape of the curved edges of the puck"). This ghost
-   clones the SEAT, and a seat is a bare flex shell with no corner of its own
-   that hugs a 3px-round puck edge to edge — so the veil below, which takes its
-   corner from this element, drew a SQUARE ring round a rounded puck (a dark
-   wedge at each corner). The mouse ghost IS the puck and never had the fault.
-   The seat clone takes the puck's own number, so ring, drop shadow and puck
-   share one curve. */
+   used to clone the [data-drag] SHELL — a seat, a bare flex shell with no
+   corner of its own, so the veil below (which takes its corner from this
+   element) drew a SQUARE ring round a rounded puck; and from the AIRCREW
+   drawer a roster row as wide as its column, so the ring boxed empty space
+   beside the name (measured on the built app: 156px of it). It IS the puck
+   now, as the mouse's ghost always was (drag.ts tdArm clones `.puck` for both
+   pointers), and wears the puck's own corner; the declaration here is the
+   fallback for a source with no .puck inside it, and one number either way. */
 .tdghost{position:fixed!important;left:0!important;top:0!important;will-change:transform;z-index:520!important;pointer-events:none;margin:0!important;
   opacity:.92;border-radius:var(--puck-r)}
 /* mouse drag: the puck ghost the PAGE draws under the cursor (drag.ts
@@ -4005,11 +4007,13 @@ body:not(.tdrag) .sb-slot.empty:hover{border-color:var(--accent);color:var(--acc
 /* …and BOTH puck ghosts draw the accent on a VEIL pseudo-element. Two different
    faults, one cure:
    - THE FINGER's ghost (7 Sep 26, found in the live drive and measured edge by
-     edge on the built app: no cyan on any of the four). tdArm clones the whole
-     [data-drag] SEAT for a touch drag, and that seat is filled edge to edge by
-     an opaque .puck — an INSET shadow paints in the element's OWN background
-     layer, UNDER its children, so the ring was in the computed style and
-     invisible on the screen.
+     edge on the built app: no cyan on any of the four). tdArm cloned the whole
+     [data-drag] SEAT for a touch drag then, and that seat was filled edge to
+     edge by an opaque .puck — an INSET shadow paints in the element's OWN
+     background layer, UNDER its children, so the ring was in the computed
+     style and invisible on the screen. (Later that day the finger's ghost
+     became the puck itself — see .tdghost above — which puts it in the mouse
+     ghost's case below; the veil stays for that reason.)
    - THE MOUSE's ghost (fix wave, 7 Sep 26). It IS the puck — setDragImage and
      tdArm clone `.puck`, not the seat — so it inherits every state rule the
      puck already wears, and five of those carry !important: `.puck.me` (the
@@ -4024,7 +4028,8 @@ body:not(.tdrag) .sb-slot.empty:hover{border-color:var(--accent);color:var(--acc
    on a seat.
    ::BEFORE, NOT ::after, and z-index above the clone's children. A clone brings
    the original's pseudo-elements with it, and ::after is TAKEN on exactly these
-   two nodes: `.seat[data-alc]::after` is the AL amendment badge (its
+   two nodes (the seat's mattered while the finger cloned the seat; the puck's
+   alone keeps the veil on ::before today): `.seat[data-alc]::after` is the AL amendment badge (its
    `background:var(--alc)` and padding survive `content:''` + `inset:0` and would
    paint a solid AL-coloured block over a finger-dragged ghost on any published
    day being amended) and `.puck.san::after` is the SANS purple edge (its

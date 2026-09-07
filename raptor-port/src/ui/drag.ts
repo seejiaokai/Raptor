@@ -540,18 +540,25 @@ function tdArm() {
   DRAG = d; TD.armed = true
   DBG.arm()
   TD.scroller = tdScrollerFor(TD.src)
-  /* the mouse ghost is the PUCK alone (not the .seat shell a grid cell can
-     stretch past it), pinned where the press landed inside it — clamped to
-     the puck so a press on the shell's padding still reads as a corner grab;
-     the finger's ghost is the shell clone centred under the touch */
-  const pk = TD.mouse ? (TD.src.querySelector('.puck') || TD.src) : TD.src
+  /* BOTH ghosts are the PUCK alone, never the [data-drag] shell round it. The
+     mouse's always was — pinned where the press landed inside it, clamped to
+     the puck so a press on the shell's padding still reads as a corner grab.
+     The finger's cloned the shell, centred under the touch, until 7 Sep 26,
+     when the owner saw the ring run past the puck on his phone: a shell is
+     whatever its host makes it — a grid cell can stretch a seat past its puck,
+     and the AIRCREW drawer's rows are as wide as their column (measured on the
+     built app: a placeholder's row 156px wider than the puck in it) — so a
+     ring drawn on the shell's edge boxed empty space beside the name. The puck
+     is the thing he is carrying; the ghost is the puck. */
+  const pk = TD.src.querySelector('.puck') || TD.src
   const r = pk.getBoundingClientRect()
   const g = pk.cloneNode(true)
   /* both ghosts wear the app's ONE picked-up look (owner, 6 Sep 26 —
      src/ui/lift.ts, scheduler.css `.lift`), not an outline of their own.
-     liftOn, not a bare classList.add: the finger's ghost clones the whole
-     [data-drag] SEAT, so a seat re-grabbed inside its own 600ms landing flash
-     would hand `lift-land` to a clone that has no timer to end it. */
+     liftOn, not a bare classList.add: the helper also strips a `lift-land` a
+     clone could inherit — the finger's shell clone did (a seat re-grabbed
+     inside its own 600ms landing flash handed the class to a copy with no
+     timer to end it); a puck clone cannot, and the one entry point stays. */
   g.classList.add(TD.mouse ? 'dragimg' : 'tdghost')
   liftOn(g)
   g.removeAttribute('data-drag'); g.removeAttribute('draggable'); g.removeAttribute('tabindex')
