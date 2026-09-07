@@ -1766,3 +1766,18 @@ gate's. Keep verdict-bearing commands unpiped.
 
 **Principle:** A review cadence is a cost the person paying for it should choose knowingly — name the hours and the lighter shapes before the first dispatch, and again when the estimate slips.
 
+### Observation 116: A shared visual recipe claims resources its hosts already own — the same CSS property under a state class, a pseudo-element slot — so the trap hunt enumerates the prior owners PER HOST and the live drive exercises the hosts in those states
+
+**Status:** OPEN
+**Date:** 2026-09-07
+**Session context:** Drag lift + landing flash — the final whole-branch review and its fix wave.
+**Skill:** brainstorming (trap-hunt exploration) / writing-plans (a recipe class applied across many hosts) / the live-drive step
+**Type:** open-source
+**Phase/Area:** Designing one look for many existing surfaces
+
+**Issue:** The lift recipe was one low-specificity class (`.lift{box-shadow}`) added to twelve kinds of host. Every per-task review and every live drive passed on a CLEAN row, and only the final whole-branch review found that a fresh row, a red-boxed row, a late-marked row and a conflicted or view-as puck ghost showed NO box: each host already had state rules that own the same property at higher specificity or with !important, and the recipe silently lost to them. The fix also collided with a second kind of ownership — the ghost's `::after` was taken by the AL badge and the SANS edge — so the veil had to move to `::before`, and a puck's own z-index rode the cloned ghost under the board. None of this was visible on the states the drives happened to pick.
+
+**Suggested improvement:** When a design adds one recipe to many existing hosts, the trap hunt lists, PER HOST: every other rule that sets the same property on that host (grep the property name, note specificity and !important), every pseudo-element slot already used on it, and every inherited or cloned value (z-index on a cloned node) — and the plan makes the recipe win by construction (a compound host rule, an unused slot) rather than by luck of source order. The live drive then exercises each host in its OTHER states (fresh, error-marked, late, selected, view-as), not only the clean one; a CSS-contract test that replays the cascade for those states pins it.
+
+**Principle:** A shared recipe is only as strong as its weakest host — enumerate what each host already owns on the same property or slot, and drive the hosts in their busy states, because a clean row proves nothing about a marked one.
+

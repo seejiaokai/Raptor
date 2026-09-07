@@ -123,7 +123,12 @@ describe('the lift out-ranks every state box a picked-up row already wears', () 
     return best
   }
   /** Every OTHER class the FILE pairs with `host` in a box-shadow rule — read
-   *  out of the stylesheet, never listed here, so the set grows with it. */
+   *  out of the stylesheet, never listed here, so the set grows with it. One
+   *  edge (the 7 Sep 26 re-review): the states are replayed ONE AT A TIME, so a
+   *  future THREE-class state rule (`.sb-arow.redbox.foo`, (0,3,0)) would only
+   *  match with both classes on and would slip past this loop. No such rule
+   *  exists today (every competing box on these hosts is a two-class compound);
+   *  if one is ever written, replay each rule's whole class set here as well. */
   const statesOn = (host: string) => [...new Set(SHADOWS
     .filter(s => s.classes.includes(host) && s.classes.length > 1)
     .flatMap(s => s.classes.filter(c => c !== host && c !== 'lift' && c !== 'lift-land')))]
