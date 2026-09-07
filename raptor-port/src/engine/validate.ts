@@ -2,7 +2,7 @@ import { PEOPLE, isSpecial, realP, isOcu, isInstr, isInstrPilot, aarOK, aarInstr
 import { isDownchit, isLeave, isUnavail, canSpare, canWork, shiftHardInput, restsInput, inpLabel, inpMeta } from './inputs'
 import { VCONF, SHIFT_HARD } from './rules'
 import { overlap, hm24, lgT } from './time'
-import { collectEvents, shiftEvHard, scSeatHit, avSeatHit } from './events'
+import { collectEvents, shiftEvHard, scSeatHit, avSeatHits } from './events'
 import { HOOKS } from './hooks'
 import { sansGate, SANS_LABEL } from './avail'
 import { seedRunIn, prevSundaySeed, nextMondaySeed, nextMondayWorked } from './weekctx'
@@ -706,13 +706,16 @@ export function validate(){
          pair (the seen-set, the SC precedent), anchored on the first place in
          the day's order — seats before desks — so that copy rings; both are
          named in the words. */
-      const hit=avSeatHit(di,sa.id,sa.s,sa.e,sa.key,sa.role==='DUTY'); if(!hit)return;
-      const pk=[sa.key,hit.key].sort().join('|')+'·'+sa.id;
-      if(avPairSeen.has(pk))return; avPairSeen.add(pk);
-      markChip(di,sa.id,'C'); markRing(di,sa.id,'hard');
-      const mine=sa.role==='DUTY'?sa.label:`${sa.label} ${sa.role}`;
-      add('hard','DOUBLE_BOOK',[sa.id],
-        `${p.cs} is on ${mine} (${hm24(sa.s)}–${hm24(sa.e)}) and also on ${hit.what} (${hm24(hit.s)}–${hm24(hit.e)})`,sa.key);
+      avSeatHits(di,sa.id,sa.s,sa.e,sa.key,sa.role==='DUTY').forEach((hit:any)=>{
+        const pk=[sa.key,hit.key].sort().join('|')+'·'+sa.id;
+        if(avPairSeen.has(pk))return; avPairSeen.add(pk);
+        markChip(di,sa.id,'C'); markRing(di,sa.id,'hard');
+        const mine=sa.role==='DUTY'?sa.label:`${sa.label} ${sa.role}`;
+        /* `also` names the OTHER place, so that copy's puck can ring for the
+           pair it is in (an exempt desk reads only its own rule — html.ts) */
+        add('hard','DOUBLE_BOOK',[sa.id],
+          `${p.cs} is on ${mine} (${hm24(sa.s)}–${hm24(sa.e)}) and also on ${hit.what} (${hm24(hit.s)}–${hm24(hit.e)})`,sa.key,{also:hit.key});
+      });
     });
     /* ---- BRIEF / DEBRIEF windows round each sortie -----------------------
        The published BRIEF time (the B column, T/O − 2h20) is the hardline: the

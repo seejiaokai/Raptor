@@ -85,7 +85,7 @@ export function shiftEvHard(e:any){return !!SHIFT_HARD[e.kind]||shiftHardGround(
    is the spoken form for a message: "SC AM SPARE" / "SXO AM duty". The
    AVALON twin is avSeatHit below. */
 export function scSeatHit(di:any,id:any,s:any,e:any,selfKey:any){
-  return standaloneHit(di,id,s,e,selfKey,'sc');
+  return standaloneHits(di,id,s,e,selfKey,'sc')[0]||null;
 }
 /* DOES HE ALREADY HOLD ANOTHER AVALON / BB PLACE IN THESE HOURS? (owner, 7 Sep
    26 — "they should also not be planned as a main and a spare the same timing
@@ -101,15 +101,23 @@ export function scSeatHit(di:any,id:any,s:any,e:any,selfKey:any){
    19:00–07:00 overlaps and a desk retyped 07:00–19:00 beside it touches only
    at 19:00 and passes — half-open, the SC precedent. */
 export function avSeatHit(di:any,id:any,s:any,e:any,selfKey:any,seatsOnly?:any){
-  return standaloneHit(di,id,s,e,selfKey,null,seatsOnly);
+  return standaloneHits(di,id,s,e,selfKey,null,seatsOnly)[0]||null;
+}
+/* EVERY place, not the first (sweep, 7 Sep 26): a man on MAIN, SPARE and the
+   desk at once is three pairs, and the validator must word each — the
+   first-hit walk let MAIN "use up" the desk's one hit and left SPARE↔desk
+   unspoken. The picker keeps the single answer (one refusal reason). */
+export function avSeatHits(di:any,id:any,s:any,e:any,selfKey:any,seatsOnly?:any){
+  return standaloneHits(di,id,s,e,selfKey,null,seatsOnly);
 }
 /* the one walk behind both: the KIND's waves (every crew row, MAIN and SPARE)
    plus every duty block marked `sa:<kind>` (the seat and its extras); a null
    kind is the noconf family — AVALON and BB, waves and desks. `seatsOnly`
    skips the desks: a DESK asking (owner, 7 Sep 26 — "two avalon desk roles is
    ok") wants only the seats, while a seat asking wants seats and desks. */
-function standaloneHit(di:any,id:any,s:any,e:any,selfKey:any,kind:any,seatsOnly?:any){
-  const d=DAYS[di]; if(!d||!id||s==null||e==null)return null;
+function standaloneHits(di:any,id:any,s:any,e:any,selfKey:any,kind:any,seatsOnly?:any){
+  const hits:any[]=[];
+  const d=DAYS[di]; if(!d||!id||s==null||e==null)return hits;
   /* selfKey: the place being asked about — OR a list of them, so the crew
      picker can also exclude the seat a man is being DRAGGED FROM (slotBar's
      fromKey, 5 Sep 26): the hover reads the week after the move, and telling
@@ -119,29 +127,28 @@ function standaloneHit(di:any,id:any,s:any,e:any,selfKey:any,kind:any,seatsOnly?
   const isSelf=(k:any)=>self.indexOf(k)>=0;
   const wantsW=(w:any)=>kind?w.kind===kind:!!w.noconf;
   const wantsD=(dw:any)=>!seatsOnly&&(kind?dw.sa===kind:saExemptKind(dw.sa));
-  let hit:any=null;
-  (d.waves||[]).forEach((w:any,gi:any)=>{ if(hit||!isStandalone(w)||!wantsW(w))return;
-    (w.formations||[]).forEach((f:any,li:any)=>{ if(hit||f.cx)return;
+  (d.waves||[]).forEach((w:any,gi:any)=>{ if(!isStandalone(w)||!wantsW(w))return;
+    (w.formations||[]).forEach((f:any,li:any)=>{ if(f.cx)return;
       const st=parseHM(f.to); let en=parseHM(f.ld||f.to);
       if(st==null||en==null)return; if(en<st)en+=1440;
       if(!overlap(s,e,st,en))return;
-      (f.aircraft||[]).forEach((a:any,ai:any)=>{ if(hit||a.cx)return;
-        [['p',a.p],['w',a.w]].forEach(([seat,pid]:any)=>{ if(hit||pid!==id||!PEOPLE[pid]||isSpecial(pid))return;
+      (f.aircraft||[]).forEach((a:any,ai:any)=>{ if(a.cx)return;
+        [['p',a.p],['w',a.w]].forEach(([seat,pid]:any)=>{ if(pid!==id||!PEOPLE[pid]||isSpecial(pid))return;
           const k=`${di}.${gi}.${li}.${ai}.${seat}`;
           if(isSelf(k))return;
           /* the WAVE's full label (AVALON), not the callsign (AV) — see the
              sacrew note in buildDay; SC's cs and label are both "SC" */
           const role=(f.spare||a.spare)?'SPARE':'MAIN', label=`${w.label} ${f.msn}`;
-          hit={label,role,what:`${label} ${role}`,s:st,e:en,key:k};});});});});
-  (d.dutywaves||[]).forEach((dw:any,dwi:any)=>{ if(hit||!dw||!wantsD(dw))return;
-    (dw.rows||[]).forEach((r:any,ri:any)=>{ if(hit||r.cx)return;
+          hits.push({label,role,what:`${label} ${role}`,s:st,e:en,key:k});});});});});
+  (d.dutywaves||[]).forEach((dw:any,dwi:any)=>{ if(!dw||!wantsD(dw))return;
+    (dw.rows||[]).forEach((r:any,ri:any)=>{ if(r.cx)return;
       const w2=win(parseHM(r.str),parseHM(r.end)); if(!w2)return;
       if(!overlap(s,e,w2[0],w2[1]))return;
       const k=`d:${di}.${dwi}.${ri}`; if(isSelf(k))return;
       if(![r.id].concat(r.more||[]).some((pid:any)=>pid===id&&PEOPLE[pid]&&!isSpecial(pid)))return;
       const label=`${r.role} duty`;
-      hit={label,role:'DUTY',what:label,s:w2[0],e:w2[1],key:k};});});
-  return hit;
+      hits.push({label,role:'DUTY',what:label,s:w2[0],e:w2[1],key:k});});});
+  return hits;
 }
 /* The time WRITTEN in an in-time line (owner, 21 Aug 26 — "can u accept any
    form of combination"): 0900 · 09:00 · 0900H · 09:00H · 0900L · 09:00L, any

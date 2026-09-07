@@ -25,6 +25,9 @@ import { makeStandalone } from './waves'
 import { avSeatHit, scSeatHit } from './events'
 import { blockFromTpl, dutyTplReset, addTpl, setTplWave, setTplRow, DUTY_WAVES } from './dutytpl'
 import { addDayTpl, applyDayTpl, DAYTPL_CFG, dayTplReset } from './daytpl'
+import { dayHTML } from '../ui/html'
+import { sbDutyPanel } from '../ui/board-html'
+import { avSeatHits } from './events'
 import { slotBar } from './avail'
 import { dayOilCredits } from './oil'
 import { SCHED } from './publish'
@@ -448,5 +451,68 @@ describe('an AVALON desk keeps its marker through a day template', () => {
     const applied: any = DAYS[2].dutywaves[DAYS[2].dutywaves.length - 1]
     expect(applied.sa).toBe('avalon'); expect(applied.noconf).toBe(true)
     dayTplReset()
+  })
+})
+
+/* AN EXEMPT DESK'S PUCK FOLLOWS ITS OWN RULES AND NOTHING ELSE — the 11 Aug 26
+   owner word for exempt flying seats ("the rings should also follow"), which
+   never reached the duty rows: a clean AVALON desk wore the man's worst
+   warning from anywhere in the day (found by the 7 Sep 26 engine review). */
+describe("an exempt desk's puck rings for its own rule only", () => {
+  const puckClass = (html: string, key: string) => {
+    const m = html.match(new RegExp('data-slot="' + key.replace(/[.:]/g, (c) => '\\' + c) + '"[^>]*><span class="(puck[^"]*)"'))
+    return m ? m[1] : null
+  }
+  const bothSurfaces = () => {
+    validate()
+    return [dayHTML(TUE, true), sbDutyPanel(DAYS[TUE], TUE)]
+  }
+  it('a clean AVALON desk stays clean while the man is hard double-booked elsewhere that day', () => {
+    desk.rows[0].id = 'split'
+    const w0 = DAYS[TUE].waves[0]
+    w0.formations[0].aircraft[0].p = 'split'
+    w0.formations[1].to = w0.formations[0].to; w0.formations[1].ld = w0.formations[0].ld
+    w0.formations[1].aircraft[0].p = 'split'
+    expect(validate().all.some((x: any) => x.di === TUE && x.code === 'DOUBLE_BOOK' && (x.who || []).includes('split'))).toBe(true)
+    for (const html of bothSurfaces()) {
+      const c = puckClass(html, DESK(0))
+      expect(c, 'desk puck renders').toBeTruthy()
+      expect(/warn/.test(c!), 'desk copy stays clean: ' + c).toBe(false)
+    }
+  })
+  it("…but rings red for the desk's OWN availability check and its own same-hours clash", () => {
+    desk.rows[0].id = 'split'
+    INPUTS.push({ person: 'split', date: 'Jul 14', allday: true, type: 'ATT C', remarks: '' })
+    for (const html of bothSurfaces()) expect(/warn hard/.test(puckClass(html, DESK(0)) || '')).toBe(true)
+    INPUTS.pop()
+    F().aircraft[0].p = 'split'                         // seat + desk: the DOUBLE_BOOK is anchored on the SEAT
+    for (const html of bothSurfaces()) expect(/warn hard/.test(puckClass(html, DESK(0)) || ''), 'the desk copy rings for the pair it is in').toBe(true)
+  })
+  it('an ORDINARY desk still wears the day-wide decoration (unchanged)', () => {
+    const std = blockFromTpl('std'); std.rows[0].id = 'split'; std.rows[0].str = '19:00'; std.rows[0].end = '21:00'
+    DAYS[TUE].dutywaves.push(std)
+    const sdwi = DAYS[TUE].dutywaves.length - 1
+    const w0 = DAYS[TUE].waves[0]
+    w0.formations[0].aircraft[0].p = 'split'
+    w0.formations[1].to = w0.formations[0].to; w0.formations[1].ld = w0.formations[0].ld
+    w0.formations[1].aircraft[0].p = 'split'
+    for (const html of bothSurfaces()) expect(/warn hard/.test(puckClass(html, `d:${TUE}.${sdwi}.0`) || '')).toBe(true)
+  })
+})
+
+describe('three AVALON places at once — every pair is said, each once', () => {
+  it('MAIN + SPARE + the desk on one man: three DOUBLE_BOOKs, one per pair', () => {
+    F().aircraft[0].p = 'split'; F().aircraft[2].p = 'split'; desk.rows[0].id = 'split'
+    const h = warns('split', 'DOUBLE_BOOK')
+    expect(h.length, JSON.stringify(h.map((x: any) => x.msg))).toBe(3)
+    const said = h.map((x: any) => x.msg)
+    expect(said.some((m: string) => /MAIN/.test(m) && /SPARE/.test(m))).toBe(true)
+    expect(said.some((m: string) => /MAIN/.test(m) && /SXO duty/.test(m))).toBe(true)
+    expect(said.some((m: string) => /SPARE/.test(m) && /SXO duty/.test(m))).toBe(true)
+  })
+  it('avSeatHits lists every place, avSeatHit the first', () => {
+    F().aircraft[0].p = 'split'; F().aircraft[2].p = 'split'; desk.rows[0].id = 'split'
+    expect(avSeatHits(TUE, 'split', 1140, 1860, 'x').map((h: any) => h.role)).toEqual(['MAIN', 'SPARE', 'DUTY'])
+    expect(avSeatHit(TUE, 'split', 1140, 1860, 'x').role).toBe('MAIN')
   })
 })

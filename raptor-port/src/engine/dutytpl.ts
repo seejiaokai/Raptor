@@ -222,7 +222,7 @@ export function dutyTplLoad() {
        silently turning into plain desks on the first load after the update */
     const rw = (t as any).wave
     const wave: DutyWave = DUTY_WAVES.indexOf(rw) >= 0 ? rw
-      : (rw === undefined && (id === 'sc' || id === 'avalon') ? id : '')
+      : (rw == null && (id === 'sc' || id === 'avalon') ? id : '')   // null reads as unset too (sweep, 7 Sep 26)
     const rows: DutyTplRow[] = []
     for (const r of (t as any).rows) {
       if (rows.length >= MAX_ROWS) break

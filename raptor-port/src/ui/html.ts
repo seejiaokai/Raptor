@@ -298,11 +298,34 @@ export function slotCell(id:any,sev:any,key:any,kind:any,editable:any,flag:any,d
 export function fmtT(s:any){const m=parseHM(s);return m==null?esc(s||''):hhmm(m);}
 export const ORD=['1st','2nd','3rd','4th','5th'];
 export function plCols(){return `<div class="pl-cols"><span class="h-nm">Name</span><span class="h-st">Start</span><span class="h-en">End</span><span class="h-pp">People</span><span class="h-rk">Rmks</span></div>`;}
+/* AN EXEMPT DESK'S PUCK FOLLOWS ITS OWN RULES AND NOTHING ELSE (sweep, 7 Sep
+   26 — the 11 Aug 26 owner word for exempt flying seats, "the rings should
+   also follow", which never reached the duty rows: a clean AVALON desk wore
+   the man's worst warning from anywhere in the day). A row on a `noconf`
+   block (AVALON's or BB's desk) reads the day's warning list for entries
+   ANCHORED to that row — or naming it as the other half of a same-hours pair
+   (`also`, the seat-anchored DOUBLE_BOOK) — and naming this man: the
+   availability look (DNIF_FLY / LEAVE_FLY) and the one-man-two-places clash
+   (DOUBLE_BOOK), the only codes a desk can carry, all hard, so it rings red
+   or not at all. Returns undefined for an ordinary desk (day-wide decoration,
+   unchanged), null for a clean exempt row, 'C' for a lit one. One body for
+   the week (lSeat) and the board (sbSeat) so the two cannot drift. */
+export function exemptDeskOwn(di:any,key:any,id:any){
+  const m=/^d:(\d+)\.(\d+)\.(\d+)/.exec(String(key||'')); if(!m)return undefined;
+  const dw=((DAYS[+m[1]]||{}).dutywaves||[])[+m[2]]; if(!dw||!dw.noconf)return undefined;
+  if(PV||!id)return null;
+  const rk=`d:${m[1]}.${m[2]}.${m[3]}`, g=WARN.byDay[di];
+  const hit=((g&&g.warns)||[]).find((x:any)=>(x.code==='DNIF_FLY'||x.code==='LEAVE_FLY'||x.code==='DOUBLE_BOOK')
+    &&(x.who||[]).includes(id)&&(x.key===rk||x.also===rk));
+  return hit?'C':null;
+}
 /* one crew position inside a list cell (programme / duties / sims / ground).
    Draggable in edit mode; renders nothing when empty so cells stay clean. */
 export function lSeat(di:any,id:any,key:any,ed:any){
   if(!(id&&PEOPLE[id]))return '';
-  return `<span class="seat"${PV?'':` data-slot="${key}"`}${alAttr(key)}${ed?' data-drag="1"':''}>${puck(id,sev(di,id),true,chip(di,id),dsh(di,id),traceHit(di,id))}</span>`;}
+  const ex=exemptDeskOwn(di,key,id);
+  const inner=ex===undefined?puck(id,sev(di,id),true,chip(di,id),dsh(di,id),traceHit(di,id)):puck(id,ex?'hard':null,true,ex,false,null);
+  return `<span class="seat"${PV?'':` data-slot="${key}"`}${alAttr(key)}${ed?' data-drag="1"':''}>${inner}</span>`;}
 /* the people cell itself — a drop target in edit mode (data-fill) */
 /* the extra bodies dropped onto a row, after its own seats */
 export function moreSeats(di:any,base:any,ed:any){

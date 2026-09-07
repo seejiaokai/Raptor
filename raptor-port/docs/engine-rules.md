@@ -765,13 +765,24 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
     avSeatHit` walks the model (every `noconf` wave's seats and every
     `sa:'avalon'`/`'bb'` desk row — one family), the same body the picker
     reads before a plant ("already on AVALON NIGHT MAIN 19:00–07:00").
-    `DOUBLE_BOOK`, said once per pair, anchored on the first place in the
-    day's order (seats before desks). Half-open: a desk retyped 07:00–19:00
+    `DOUBLE_BOOK`, said once per PAIR — every pair (`avSeatHits` lists every
+    place a man holds; MAIN + SPARE + the desk is three warnings, sweep 7 Sep
+    26) — anchored on the first place in the day's order (seats before desks)
+    and carrying the other place as `also`, so BOTH copies' pucks ring for the
+    pair they are in. Half-open: a desk retyped 07:00–19:00
     beside the 19:00–07:00 shift touches only at 19:00 and passes. The
     window is whatever is TYPED on the line, rolled past midnight (+1440)
     exactly as collectEvents rolls it, so the same-hours question — and the
     availability look's midnight tail — run to the stated end time, not to a
     fixed 07:00.
+  **An exempt desk's puck follows its own rules and nothing else** (sweep,
+  7 Sep 26 — the 11 Aug word for exempt flying seats, extended to the duty
+  rows it had never reached): a row on a `noconf` block reads only the
+  warnings anchored to that row, or naming it as `also`, and naming the man —
+  DNIF_FLY / LEAVE_FLY / DOUBLE_BOOK — so a clean AVALON desk no longer wears
+  a clash the man has elsewhere that day. One body, `html.ts exemptDeskOwn`,
+  read by the week (`lSeat`) and the board (`sbSeat`). An ordinary desk is
+  unchanged (day-wide decoration).
   Deliberately NOT a rule (owner, 7 Sep 26 — "it should not raise a
   warning"): a man on AVALON or BB tonight and a sortie or desk tomorrow
   morning, or any crew-rest / run-count question — nothing on these waves

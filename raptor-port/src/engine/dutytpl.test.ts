@@ -218,4 +218,12 @@ describe('a template names the wave its desk serves', () => {
     dutyTplLoad()
     expect(DUTYTPL_CFG.map(t => [t.id, t.wave])).toEqual([['u1', ''], ['u2', ''], ['avalon', 'avalon'], ['sc', 'sc']])
   })
+  it('an explicit null wave on a seed desk reads as "unset" too — the seed wave comes back, never a silent plain desk', () => {
+    mem['sqn142_dutytpl'] = JSON.stringify([
+      { id: 'avalon', title: 'AVALON', wave: null, rows: [{ role: 'SXO', str: '19:00', end: '07:00' }] },
+      { id: 'u1', title: 'Mine', wave: null, rows: [{ role: 'SDO', str: '', end: '' }] },
+    ])
+    dutyTplLoad()
+    expect(DUTYTPL_CFG.map(t => [t.id, t.wave])).toEqual([['avalon', 'avalon'], ['u1', '']])
+  })
 })
