@@ -2820,6 +2820,16 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
    classes carrying nothing but the grip's own recolour. */
 .secdrag{/* the picked-up look is the shared .lift; this class only recolours the grip */}
 .secdrag .secgrip{color:var(--accent);cursor:grabbing}
+/* …and the BOARD's wrapper takes the card's corner while it is carried or
+   flashing (7 Sep 26, from the live drive). `.sb-sec` is a bare positioned
+   wrapper with no shape of its own, but its box is EXACTLY the `.sb-panel`
+   inside it (measured on the built board: 0px on all four sides) and that card
+   is 10px round — so the ring, which follows the element's own border-radius,
+   drew a square corner and left a cyan wedge past each rounded one. The edit
+   week's `.dsec` is deliberately NOT given the same: there the wrapper is 10px
+   wider than the card on both sides, so it is its own square strip and a square
+   ring is what fits it. The veil inherits this radius (see .lift-land::after). */
+.sb-sec.lift,.sb-sec.lift-land{border-radius:10px}
 .secdrop{box-shadow:inset 0 3px 0 0 var(--accent)}
 /* ---- the "Set default order?" snackbar (ui/SecDefaultSnackbar.tsx) — an
    ACTIONABLE bottom bar (the plain toast can't carry a button), shown after a
@@ -3955,6 +3965,18 @@ body:not(.tdrag) .sb-slot.empty:hover{border-color:var(--accent);color:var(--acc
    specificity it would replace the depth shadow outright and the ghost would
    read as part of the page. */
 .tdghost.lift,.dragimg.lift{box-shadow:var(--lift-box),0 8px 20px rgba(0,0,0,.6)}
+/* …and the FINGER's ghost needs the accent drawn ABOVE what it clones (7 Sep
+   26, found in the live drive and measured edge by edge on the built app: no
+   cyan on any of the four). tdArm clones the whole [data-drag] SEAT for a touch
+   drag, and that seat is filled edge to edge by an opaque .puck — an INSET
+   shadow paints in the element's OWN background layer, under its children, so
+   the ring was in the computed style and invisible on the screen. A veil
+   pseudo-element paints over the clone's contents, which is the same answer
+   .lift-land::after already gives for a landing on a seat. Only the wrapper
+   case needs it: the mouse ghost IS the puck (.dragimg) and the chip ghost has
+   no such child, and both were measured showing the ring on all four edges. The
+   depth shadow above is an OUTER shadow and was never obscured. */
+.tdghost.lift::after{content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;box-shadow:var(--lift-box)}
 /* body.tdrag / body.mdrag are JS STATE MARKERS ONLY — no rule may give them a
    declaration of their own (the slow-computer cut, 3 Sep 26). Measured by
    toggling each class alone on the built app: `body.tdrag{touch-action:none;

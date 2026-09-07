@@ -725,11 +725,28 @@ describe('the puck ghosts wear the lift, and the seat it lands on flashes', () =
     const dt: any = { data: {}, effectAllowed: '', setData(k: string, v: string) { this.data[k] = v }, getData(k: string) { return this.data[k] || '' } }
     const mk = (t: string) => { const ev: any = new Event(t, { bubbles: true, cancelable: true }); try { ev.dataTransfer = dt } catch (_) {} return ev }
     let mark: { sel: string } | null = null
-    await act(async () => {
-      from.dispatchEvent(mk('dragstart')); to.dispatchEvent(mk('dragover')); to.dispatchEvent(mk('drop'))
-      mark = pendingLand()
-      from.dispatchEvent(mk('dragend'))
-    })
+    /* THE CLOCK IS HELD STILL ACROSS THE DROP (7 Sep 26). lift.ts drops a mark
+       nobody has painted for a SECOND (LAND_STALE_MS) — a real-time backstop,
+       and in a browser the rebuild it waits for is ~20ms away. Here the rebuild
+       is jsdom re-rendering the whole board AND the week inside this act()
+       scope, which on a loaded machine takes longer than that second: running
+       the two vitest projects together, this file's board-and-week test failed
+       with the board never flashing, and it reproduces on demand with six busy
+       CPUs beside it (measured — and it passes under the same load with
+       LAND_STALE_MS raised, which is what names the cause). Freezing Date.now
+       for the drop removes an environment-speed dependency that has nothing to
+       do with what these tests pin; the staleness rule keeps its own pin in
+       lift.test.ts, on a fake clock, where it belongs. */
+    const realNow = Date.now
+    const frozen = realNow()
+    Date.now = () => frozen
+    try {
+      await act(async () => {
+        from.dispatchEvent(mk('dragstart')); to.dispatchEvent(mk('dragover')); to.dispatchEvent(mk('drop'))
+        mark = pendingLand()
+        from.dispatchEvent(mk('dragend'))
+      })
+    } finally { Date.now = realNow }
     return mark as { sel: string } | null
   }
   /* jsdom lays nothing out, so what is "under the pointer" is told by hand */

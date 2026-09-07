@@ -62,6 +62,22 @@ describe('the lift recipe — one box, drawn INSIDE the line', () => {
   })
 })
 
+/* THE HOST NAMES A CORNER ONLY WHERE IT HAS ONE TO NAME (7 Sep 26, from the
+   live drive). `.sb-sec` is a bare positioned wrapper, but its box is exactly
+   the `.sb-panel` card inside it, and that card is 10px round — so the square
+   ring the recipe now leaves it drew a cyan wedge past each rounded corner. The
+   edit week's `.dsec` wraps a card 10px narrower than itself on both sides, so
+   its own square shape IS what the eye sees there and it must stay square. What
+   this pins is the pair: one named, the other deliberately not. */
+describe('a section wrapper rings the shape the eye sees', () => {
+  it('the board\'s section takes its card\'s 10px, and the week\'s wider strip stays square', () => {
+    const b = bodyOf('.sb-sec.lift') + ' ' + bodyOf('.sb-sec.lift-land')
+    expect(b, 'the carried board panel and its flash are both 10px round').toMatch(/border-radius:\s*10px[\s\S]*border-radius:\s*10px/)
+    const dsec = RULES.filter(r => r.sels.some(s => /^\.dsec\.lift/.test(s)))
+    expect(dsec.map(r => r.sels.join(', ')), 'the edit week\'s wrapper names no radius').toEqual([])
+  })
+})
+
 describe('the frame', () => {
   it('is absolute, z 7, pointer-events none, 8px round, hidden until it carries lift or lift-land', () => {
     const b = bodyOf('.lift-frame')
@@ -223,6 +239,29 @@ describe('the ghosts wear the same recipe — inset accent, neutral depth', () =
      test above pins the one user; this says it in the ghosts' own words. */
   it('no ghost is given the frame\'s bloom — a transform keyframe would fight its inline transform', () => {
     for (const [cls] of GHOSTS) expect(ghostBody(cls), `${cls} runs no animation`).not.toMatch(/animation/)
+  })
+
+  /* THE FINGER'S GHOST DRAWS ITS RING ON A VEIL (7 Sep 26, found in the live
+     drive). `tdArm` clones the whole `[data-drag]` SEAT for a touch drag, and a
+     seat is filled edge to edge by an opaque `.puck`; an INSET shadow paints in
+     the element's OWN background layer, UNDER its children, so the ring was in
+     the computed style and invisible on the screen — measured edge by edge on
+     the built app, no cyan on any of the four. A veil pseudo-element paints
+     over the clone's contents (the same answer `.lift-land::after` already
+     gives a landing on a seat). It is the WRAPPER case alone: the mouse ghost
+     IS the puck and the chip ghost has no such child, both measured showing the
+     ring on all four edges, so neither gets a second copy of it. */
+  it('the finger\'s ghost carries a veil, because what it clones would cover an inset ring', () => {
+    const v = bodyOf('.tdghost.lift::after')
+    expect(v, '.tdghost.lift::after exists').toBeTruthy()
+    expect(v).toMatch(/content:\s*''/)
+    expect(v).toMatch(/position:\s*absolute/)
+    expect(v).toMatch(/inset:\s*0/)
+    expect(v).toMatch(/box-shadow:\s*var\(--lift-box\)/)
+    expect(v, 'it takes the ghost\'s own corner').toMatch(/border-radius:\s*inherit/)
+    expect(v, 'and is never a hit-test target').toMatch(/pointer-events:\s*none/)
+    for (const cls of ['.dragimg', '.ic-ghost'])
+      expect(rulesFor(`${cls}.lift::after`).length, `${cls} shows its ring already and takes no veil`).toBe(0)
   })
 })
 
