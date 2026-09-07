@@ -679,12 +679,13 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
     silent path was a drag-drop, and only the WSO-in-FCP half closes it.
   Deliberately NOT rules, unchanged: a spare against his own sortie, sim or
   duty raises nothing (spares stay free — the owner declined a call-up
-  advisory the same day), and AVALON/BB are untouched (the AVALON rule stays
-  owner-reserved). Pins: `scspare-rules.test.ts` (validator),
+  advisory the same day). AVALON/BB carry their own four rules since 7 Sep
+  26 — §AVALON's one check and §AVALON's (and BB's) three seat rules below. Pins: `scspare-rules.test.ts` (validator),
   `slotrules.test.ts` (picker); the parity compare excises the port-only
   `spareAcs` field (`parity.test.ts noPortOnly`).
-- Standalone waves: SC (spares uncrosschecked beyond the four checks above),
-  AVALON/BB (`noconf`).
+- Standalone waves: SC (spares uncrosschecked beyond the checks above — the
+  availability bar, currency, the front seat, and another SC seat or the SC
+  desk in the same hours), AVALON/BB (`noconf`, with the four rules below).
 - **AVALON's one check (owner, 11 Aug 26) — and the three that joined it on
   7 Sep 26 (owner), listed after it.** AVALON and its desk keep
   `noconf` — nothing on them is cross-checked against tasks, rest or

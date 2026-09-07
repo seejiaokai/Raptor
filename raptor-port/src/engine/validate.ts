@@ -959,7 +959,8 @@ export function validate(){
            The spare exemption keeps this crew out of every other clash rule,
            so this is the only place any of it can be caught at all.
            Deliberately written against "a standalone spare" rather than SC
-           alone: the owner reserved the AVALON rule and it drops in here. */
+           alone — and the AVALON/BB version of it (every seat and the desk,
+           with the ATT B desk carve-out) is the day.sacrew loop above. */
         (f.spareCrew||[]).forEach((id:any)=>{
           day.input.forEach((inp:any)=>{ if(inp.id!==id)return;
             if(canSpare(inp.type))return;

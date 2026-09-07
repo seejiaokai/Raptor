@@ -5,7 +5,7 @@
        against TOMORROW's inputs, everywhere day.input is read;
      - AVALON stays noconf except one new check: a jet seat (MAIN and SPARE
        alike) bars canSpare-failing types, a duty desk bars the same but lets
-       canWork (ATT B) through. BB is untouched on purpose.
+       canWork (ATT B) through. BB was untouched then; it became AVALON's twin on 7 Sep 26 (avalon-rules.test.ts).
    Person ids below are picked by inspecting people.ts and data.ts for men
    with nothing on Mon (Jul 13) or Tue (Jul 14) and no seed INPUTS row, so a
    test's own mutation is the only thing driving the result. Assertions are
