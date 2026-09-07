@@ -58,8 +58,8 @@ export function kindLabel(k: WaveKind) { return WAVE_BUILTIN.find(b => b.key ===
 export function kindNote(k: WaveKind): string {
   switch (k) {
     case 'sc': return 'A SPARE line is only checked for overseas / medically down, SC currency, a pilots-only front seat and not holding another SC seat or SC desk in the same hours — nothing else. A MAIN line is checked in full. Add as many of each as you need.'
-    case 'avalon': return 'Overnight. Every line — MAIN or SPARE — is only checked for overseas / medically down, a pilots-only front seat and not holding another AVALON seat or desk in the same hours; a MAIN also for SC NIGHT currency. Nothing else. Add as many as you need.'
-    case 'bb': return 'Times are yours to set. Nothing on a BB line is cross-checked at all. Add as many as you need.'
+    case 'avalon': return 'Overnight. Every line — MAIN or SPARE — is only checked for overseas / medically down, SC NIGHT currency, a pilots-only front seat and not holding another AVALON seat or the AVALON desk in the same hours. Nothing else. Add as many as you need.'
+    case 'bb': return 'Times are yours to set. The same checks as AVALON — overseas / medically down, SC currency for the hours typed, a pilots-only front seat and not holding another seat or the BB desk in the same hours. Nothing else. Add as many as you need.'
     default: return 'An ordinary flying wave — it counts toward the day’s flying tally, and every line is fully cross-checked.'
   }
 }

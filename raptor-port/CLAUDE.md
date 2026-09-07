@@ -857,8 +857,9 @@ Rules: `docs/engine-rules.md` §The late-input mark. Placement: `docs/ui-contrac
   day as a block carrying the template's WAVE, if it names one (owner, 7 Sep 26 —
   "a duty role that falls under AVALON will not have any warning … unless OL, HL,
   OML, ATT C, OD" / "sc duties desk … not … the same time as main or spare"): the
-  editor's "For wave" picker (None / SC / AVALON) → `blockFromTpl` mints `sa` (+
-  `noconf` for AVALON), so an AVALON desk is exempt as its wave is and earns no
+  editor's "For wave" picker (None / SC / AVALON / BB) → `blockFromTpl` mints `sa`
+  (+ `noconf` for AVALON and BB — BB is AVALON's twin, owner 7 Sep 26), so that
+  desk is exempt as its wave is and earns no
   OIL, an SC desk is an SC seat for the spare rule, and a template with no wave
   mints the PLAIN block it always did. This amends the 13 Aug "always plain"
   clause; the decoupling itself stands. Seed week carries no template desk, parity

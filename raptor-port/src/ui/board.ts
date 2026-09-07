@@ -1147,7 +1147,7 @@ export function addWave(di: number, kind: any) {
      Adding a wave creates only the wave. */
   const fi = placeAddedWave(di, kind)
   markStructuralAdd(`wl:${di}.${fi}`); afterSchedMutate(); notify()
-  toast(S.label + ' added — standalone, ' + (kind === 'avalon' ? 'checked for availability, SC NIGHT on MAIN, front seat and overlapping AVALON places only' : S.all ? 'nothing on it is cross-checked' : 'SPARE is checked for availability, SC currency, front seat and overlapping SC seats or the SC desk only'))
+  toast(S.label + ' added — standalone, ' + (S.all ? 'every seat checked for availability, SC currency, front seat and overlapping places only' : 'SPARE is checked for availability, SC currency, front seat and overlapping SC seats or the SC desk only'))
 }
 
 /* the Add-a-wave chooser, verbatim (a body-level popup, just as the reference
@@ -1196,7 +1196,7 @@ export function blockMenu(anchor: HTMLElement, di: any) {
      icon on the top right \u2026 do the same for \u2026 duties, not how it is at the
      bottom currently"). Same data-blkedit hook, only relocated. */
   const html = `<h5 class="wm-hpen">Add a duty block<button class="wm-pen" data-blkedit="1" title="Edit the duty templates">\u270e</button></h5><div class="wm-row" style="flex-direction:column;align-items:stretch">`
-    + DUTYTPL_CFG.map((t: any) => `<button class="wm" data-blktpl="${esc(t.id)}">${esc(t.title || 'Untitled')}<span class="wm-sub">${t.rows.length} role${t.rows.length === 1 ? '' : 's'}${t.wave ? ` · ${t.wave === 'sc' ? 'SC' : 'AVALON'} desk` : ''}</span></button>`).join('')
+    + DUTYTPL_CFG.map((t: any) => `<button class="wm" data-blktpl="${esc(t.id)}">${esc(t.title || 'Untitled')}<span class="wm-sub">${t.rows.length} role${t.rows.length === 1 ? '' : 's'}${t.wave ? ` · ${String(t.wave).toUpperCase()} desk` : ''}</span></button>`).join('')
     + `<button class="wm" data-blktpl="">Empty block</button></div>`
   popMenu(anchor, html, (e, close) => {
     if (e.target.closest('[data-blkedit]')) { close(); setTplEdit(true); notify(); e.stopPropagation(); return }

@@ -631,7 +631,7 @@ export function validate(){
         add('hard',dn?'DNIF_FLY':lv?'LEAVE_FLY':'INPUT_FLY',[e.id],
           (dn?'Downchit but tasked':lv?'On leave but tasked':`${inp.type} but tasked`)+` — ${e.label}${why}`,kOf(e)); }); });
     /* AVALON'S ONE CHECK (owner, 11 Aug 26; three more joined it on 7 Sep 26,
-       right below). The wave and its desk keep their
+       right below, and BB became AVALON's twin the same day). The wave and its desk keep their
        noconf exemption — nothing on them is cross-checked against tasks, rest or
        qualifications — but the owner commissioned exactly one look, the same shape
        as the SC SPARE rule below: a man standing AVALON must be on the island and
@@ -663,22 +663,29 @@ export function validate(){
        puck ring for its OWN rule and nothing else (html.ts). The wave stays
        noconf: none of this reads day.events or crew rest, so a man on AVALON
        tonight and a sortie tomorrow morning still raises nothing — the owner
-       has not asked for that. BB is untouched, as before: it is not collected. */
+       has not asked for that. BB is AVALON's twin (owner, 7 Sep 26 — "bb main
+       and spare rules are exactly the same. And the duties") — events.ts
+       collects every noconf wave and both desks into day.sacrew, so this loop
+       and the availability look above cover BB with no BB-specific code; a BB
+       shift left with blank times has no window and is simply not collected. */
     const avPairSeen:any=new Set();
     (day.sacrew||[]).forEach((sa:any)=>{
       const p=realP(sa.id); if(!p)return;
-      /* SC NIGHT CURRENCY ON A MAIN SEAT. MAIN only — the owner named MAIN; a
-         SPARE is standing by. The kind is read off the shift as scheduled
+      /* SC CURRENCY ON EVERY JET SEAT — MAIN and SPARE (owner, 7 Sep 26: "Avalon
+         main will also be checked for SC NIGHT qual", then the same day "AVALON
+         SPARE also requires SC NIGHT" — the SC-spare precedent, where currency
+         is the man's own qualification and the spare exemption never covered
+         it). Never the desk. The kind is read off the shift as scheduled
          (scShiftKind, the same body SC uses): AVALON's 19:00–07:00 is a night
-         shift, and a retyped daytime AVALON would ask for SC DAY instead of
-         quietly asking nothing. Reads the seat, not the pilot: a WSO in the
-         MAIN rear seat is checked too. */
-      if(sa.role==='MAIN'){
+         shift; a BB shift typed inside the day asks for SC DAY instead of
+         quietly asking nothing. Reads the seat, not the pilot: a WSO in a rear
+         seat is checked too. */
+      if(sa.seat){
         const kind=scShiftKind(sa.s,sa.e);
         if(kind&&!scQualOK(sa.id,kind)){
           markChip(di,sa.id,'Q');markRing(di,sa.id,'hard');
           add('hard','SC_QUAL',[sa.id],
-            `${kind==='day'?'SC DAY':'SC NIGHT'} currency needed for ${sa.label} MAIN (${hm24(sa.s)}–${hm24(sa.e)}) — ${p.cs} is not current`,sa.key);
+            `${kind==='day'?'SC DAY':'SC NIGHT'} currency needed for ${sa.label} ${sa.role} (${hm24(sa.s)}–${hm24(sa.e)}) — ${p.cs} is not current`,sa.key);
         }
       }
       /* THE FRONT SEAT IS PILOTS-ONLY, MAIN AND SPARE ALIKE — the three
@@ -691,13 +698,15 @@ export function validate(){
         else if(p.seat==='RCP'){markChip(di,sa.id,'Q');markRing(di,sa.id,'hard');add('hard','QUAL',[sa.id],`${p.cs} is a WSO — cannot fly FCP ${tag}`,sa.key);}
         else if(p.q==='IW'&&p.seat==='FCP'){markChip(di,sa.id,'Q');markRing(di,sa.id,'hard');add('hard','QUAL',[sa.id],`${p.cs} is CAT IW — a WSO category, cannot fly FCP ${tag}`,sa.key);}
       }
-      /* ONE MAN IN TWO AVALON PLACES IN THE SAME HOURS — MAIN + SPARE, a seat +
-         the desk, two desk roles. Nothing on AVALON is an event, so the
-         ordinary clash loop is blind here; avSeatHit walks the model, the same
-         body the picker reads before a plant. Said once per pair (the seen-set,
-         the SC precedent), anchored on the first place in the day's order —
-         seats before desks — so that copy rings; both are named in the words. */
-      const hit=avSeatHit(di,sa.id,sa.s,sa.e,sa.key); if(!hit)return;
+      /* ONE MAN IN TWO AVALON / BB PLACES IN THE SAME HOURS — MAIN + SPARE, a
+         seat + the desk. NOT two desk roles (owner, 7 Sep 26 — "two avalon desk
+         roles is ok"): a desk row asks only about SEATS. Nothing on these waves
+         is an event, so the ordinary clash loop is blind here; avSeatHit walks
+         the model, the same body the picker reads before a plant. Said once per
+         pair (the seen-set, the SC precedent), anchored on the first place in
+         the day's order — seats before desks — so that copy rings; both are
+         named in the words. */
+      const hit=avSeatHit(di,sa.id,sa.s,sa.e,sa.key,sa.role==='DUTY'); if(!hit)return;
       const pk=[sa.key,hit.key].sort().join('|')+'·'+sa.id;
       if(avPairSeen.has(pk))return; avPairSeen.add(pk);
       markChip(di,sa.id,'C'); markRing(di,sa.id,'hard');

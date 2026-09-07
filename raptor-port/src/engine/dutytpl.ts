@@ -39,19 +39,20 @@ export function tplTime(v: any): string {
    Nothing in validate.ts reads a template. It only MINTS a duty block
    (blockFromTpl). Duties stay DECOUPLED from waves (owner, 13 Aug 26: no wave
    creates a desk, deleting a wave leaves every desk alone) — but since 7 Sep
-   26 a template NAMES THE WAVE ITS DESK SERVES (`wave`: '' / 'sc' / 'avalon'),
+   26 a template NAMES THE WAVE ITS DESK SERVES (`wave`: '' / 'sc' / 'avalon' / 'bb'),
    and the mint carries that onto the block as the same `sa` marker the
    engine has read since 11 Aug 26. That is what lets the owner's desk rules
    land: an AVALON desk is exempt from every cross-check but the availability
    look (`noconf` + `sa:'avalon'`, events.ts), earns no OIL (oil.ts), and is
-   one of the places a man may not hold twice in the same hours; an SC desk is
+   one of the places a man may not hold twice in the same hours — a BB desk is
+   its twin (owner, 7 Sep 26, same day); an SC desk is
    checked like any duty row AND counts as an SC seat for the spare's
    same-hours rule (events.ts scSeatHit). A template with no wave mints the
    PLAIN block it always did. The seed week carries no template desk, so
    reference parity is untouched either way. */
 
-export type DutyWave = '' | 'sc' | 'avalon'
-export const DUTY_WAVES: readonly DutyWave[] = Object.freeze(['', 'sc', 'avalon'])
+export type DutyWave = '' | 'sc' | 'avalon' | 'bb'
+export const DUTY_WAVES: readonly DutyWave[] = Object.freeze(['', 'sc', 'avalon', 'bb'])
 export type DutyTplRow = { role: string; str: string; end: string }
 export type DutyTpl = { id: string; title: string; wave: DutyWave; rows: DutyTplRow[] }
 

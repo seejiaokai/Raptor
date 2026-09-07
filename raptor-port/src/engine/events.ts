@@ -87,25 +87,34 @@ export function shiftEvHard(e:any){return !!SHIFT_HARD[e.kind]||shiftHardGround(
 export function scSeatHit(di:any,id:any,s:any,e:any,selfKey:any){
   return standaloneHit(di,id,s,e,selfKey,'sc');
 }
-/* DOES HE ALREADY HOLD ANOTHER AVALON PLACE IN THESE HOURS? (owner, 7 Sep 26
-   — "they should also not be planned as a main and a spare the same timing …
-   or be planned on a duty for Avalon and planned as Avalon main or spare").
-   AVALON is noconf whole — no seat on it and no `sa:'avalon'` desk row ever
-   becomes an event — so, as with the SC spare, only a model walk can answer
-   this, and the same body serves the validator (after a drop) and the crew
-   picker (before a plant). The shift is overnight: the window is rolled
-   (07:00 < 19:00 → +1440) exactly as collectEvents rolls it, so 19:00–07:00
-   against 19:00–07:00 overlaps and a desk retyped 07:00–19:00 beside it
-   touches only at 19:00 and passes — half-open, the SC precedent. */
-export function avSeatHit(di:any,id:any,s:any,e:any,selfKey:any){
-  return standaloneHit(di,id,s,e,selfKey,'avalon');
+/* DOES HE ALREADY HOLD ANOTHER AVALON / BB PLACE IN THESE HOURS? (owner, 7 Sep
+   26 — "they should also not be planned as a main and a spare the same timing
+   … or be planned on a duty for Avalon and planned as Avalon main or spare";
+   and "bb main and spare rules are exactly the same"). These waves are noconf
+   whole — no seat on them and no `sa:'avalon'`/`'bb'` desk row ever becomes an
+   event — so, as with the SC spare, only a model walk can answer this, and the
+   same body serves the validator (after a drop) and the crew picker (before a
+   plant). ONE family: an AVALON seat against a BB seat in the same hours is
+   one man in two places too (a man is one body; the walk reads every noconf
+   wave and both desks). The shift is overnight: the window is rolled (07:00 <
+   19:00 → +1440) exactly as collectEvents rolls it, so 19:00–07:00 against
+   19:00–07:00 overlaps and a desk retyped 07:00–19:00 beside it touches only
+   at 19:00 and passes — half-open, the SC precedent. */
+export function avSeatHit(di:any,id:any,s:any,e:any,selfKey:any,seatsOnly?:any){
+  return standaloneHit(di,id,s,e,selfKey,null,seatsOnly);
 }
 /* the one walk behind both: the KIND's waves (every crew row, MAIN and SPARE)
-   plus every duty block marked `sa:<kind>` (the seat and its extras) */
-function standaloneHit(di:any,id:any,s:any,e:any,selfKey:any,kind:any){
+   plus every duty block marked `sa:<kind>` (the seat and its extras); a null
+   kind is the noconf family — AVALON and BB, waves and desks. `seatsOnly`
+   skips the desks: a DESK asking (owner, 7 Sep 26 — "two avalon desk roles is
+   ok") wants only the seats, while a seat asking wants seats and desks. */
+const NOCONF_SA:any={avalon:true,bb:true};
+function standaloneHit(di:any,id:any,s:any,e:any,selfKey:any,kind:any,seatsOnly?:any){
   const d=DAYS[di]; if(!d||!id||s==null||e==null)return null;
+  const wantsW=(w:any)=>kind?w.kind===kind:!!w.noconf;
+  const wantsD=(dw:any)=>!seatsOnly&&(kind?dw.sa===kind:!!NOCONF_SA[dw.sa]);
   let hit:any=null;
-  (d.waves||[]).forEach((w:any,gi:any)=>{ if(hit||!isStandalone(w)||w.kind!==kind)return;
+  (d.waves||[]).forEach((w:any,gi:any)=>{ if(hit||!isStandalone(w)||!wantsW(w))return;
     (w.formations||[]).forEach((f:any,li:any)=>{ if(hit||f.cx)return;
       const st=parseHM(f.to); let en=parseHM(f.ld||f.to);
       if(st==null||en==null)return; if(en<st)en+=1440;
@@ -118,7 +127,7 @@ function standaloneHit(di:any,id:any,s:any,e:any,selfKey:any,kind:any){
              sacrew note in buildDay; SC's cs and label are both "SC" */
           const role=(f.spare||a.spare)?'SPARE':'MAIN', label=`${w.label} ${f.msn}`;
           hit={label,role,what:`${label} ${role}`,s:st,e:en,key:k};});});});});
-  (d.dutywaves||[]).forEach((dw:any,dwi:any)=>{ if(hit||!dw||dw.sa!==kind)return;
+  (d.dutywaves||[]).forEach((dw:any,dwi:any)=>{ if(hit||!dw||!wantsD(dw))return;
     (dw.rows||[]).forEach((r:any,ri:any)=>{ if(hit||r.cx)return;
       const w2=win(parseHM(r.str),parseHM(r.end)); if(!w2)return;
       if(!overlap(s,e,w2[0],w2[1]))return;
@@ -247,8 +256,10 @@ export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
              cross-checked against nothing — but the men on it must be on the island and
              fit, so their names and the shift window are collected here for the single
              look validate() gives them. MAIN and SPARE alike: both are jet seats.
-             BB is deliberately NOT collected — the owner specified AVALON only. */
-          if(w.kind==='avalon'){
+             BB joined on 7 Sep 26 (owner — "bb main and spare rules are exactly the
+             same … as Avalon"): every noconf standalone wave is collected. A BB shift
+             with blank times has no window and is skipped — fail closed, inert. */
+          if(w.noconf){
             const sTo=toMin(f.to); let sLd=toMin(f.ld||f.to); if(sLd<sTo)sLd+=1440;
             if(isFinite(sTo)&&isFinite(sLd))f.aircraft.forEach((a:any,ai:any)=>{ if(a.cx)return;
               /* the warning names the wave by its FULL label (AVALON), not the
@@ -261,7 +272,7 @@ export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
                  in two AVALON places. sacrew is port-only (the parity gate
                  excises it whole), so the extra fields cost nothing there. */
               const role=(f.spare||a.spare)?'SPARE':'MAIN';
-              [['p',a.p],['w',a.w]].forEach(([seat,id]:any)=>{ if(id&&PEOPLE[id]&&!isSpecial(id))sacrew.push({id,s:sTo,e:sLd,label:`${w.label} ${f.msn}`,key:`${di}.${gi}.${li}.${ai}.${seat}`,work:false,role,seat}); });
+              [['p',a.p],['w',a.w]].forEach(([seat,id]:any)=>{ if(id&&PEOPLE[id]&&!isSpecial(id))sacrew.push({id,s:sTo,e:sLd,label:`${w.label} ${f.msn}`,key:`${di}.${gi}.${li}.${ai}.${seat}`,work:false,role,seat,kind:w.kind}); });
             });
           }
           return;
@@ -423,10 +434,11 @@ export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
       if(dw.noconf||r.noconf){
         /* AVALON's desk shares the wave's exemption, not its invisibility: the same
            one check applies, with ATT B carved out — he cannot fly but he can man a
-           desk (owner, 11 Aug 26). work:true is that carve-out. */
-        if(dw.sa==='avalon'){
+           desk (owner, 11 Aug 26). work:true is that carve-out. BB's desk is the
+           same (7 Sep 26). */
+        if(dw.sa==='avalon'||dw.sa==='bb'){
           const w2=win(parseHM(r.str),parseHM(r.end));
-          if(w2)[r.id].concat(extras(r)).forEach((id:any)=>{ if(id&&PEOPLE[id]&&!isSpecial(id))sacrew.push({id,s:w2[0],e:w2[1],label:r.role+' duty',key:`d:${di}.${dwi}.${ri}`,work:true,role:'DUTY',seat:null}); });
+          if(w2)[r.id].concat(extras(r)).forEach((id:any)=>{ if(id&&PEOPLE[id]&&!isSpecial(id))sacrew.push({id,s:w2[0],e:w2[1],label:r.role+' duty',key:`d:${di}.${dwi}.${ri}`,work:true,role:'DUTY',seat:null,kind:dw.sa}); });
         }
         return;
       }

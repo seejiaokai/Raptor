@@ -115,7 +115,7 @@ function peekWave(w: any): string {
   const edge = sa ? 'var(--san)' : `var(--${mColor(f0 ? f0.msn : '')})`
   let h = `<div class="go ${w.night ? 'night' : ''} ${sa ? 'sa sa-' + (w.kind || 'x') : ''}" style="border-left-color:${sa ? 'var(--san)' : (w.night ? 'var(--hard)' : edge)}">`
     + `<div class="go-tab"><span class="asd">${esc(w.label || '')}${!sa && w.night && !/night/i.test(w.label || '') ? ' · NIGHT' : ''}`
-    + `${sa ? `<span class="satag">standalone${w.noconf ? (w.kind === 'avalon' ? ' · availability, currency and seat checks only' : ' · not cross-checked') : ''}</span>` : ''}</span></div>`
+    + `${sa ? `<span class="satag">standalone${w.noconf ? ' · availability, currency and seat checks only' : ''}</span>` : ''}</span></div>`
   h += sa
     ? `<div class="cols formcols"><span>${esc(w.label || '')}<br>SHIFT</span><span class="c-c">START</span><span class="c-c">END</span><span>FCP / RCP</span><span>RMKS</span></div>`
     : `<div class="cols formcols"><span>CS<br>MSN</span><span class="c-c">B<br>TO</span><span class="c-c">LD</span><span>FCP / RCP</span><span>RMKS</span></div>`

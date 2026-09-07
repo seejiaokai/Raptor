@@ -18,9 +18,9 @@ export const SAWAVE:any={
           note:'Two MAIN and two SPARE per shift. A SPARE is checked for availability, SC currency, a pilots-only front seat and not holding another SC seat in the same hours — nothing else.'},
   avalon:{label:'AVALON',cs:'AV',all:true,  main:2, spare:2, shifts:[['NIGHT','19:00','07:00']],
           duties:['SXO','OPS O','RUNNER','LOG CELL'], autoDuty:true,
-          note:'Overnight, two MAIN and two SPARE. Every man on it is checked for availability — overseas or medically down; a MAIN for SC NIGHT currency; the front seat is pilots-only; and nobody holds two AVALON places in the same hours — nothing else.'},
+          note:'Overnight, two MAIN and two SPARE. Every man on it is checked for availability — overseas or medically down; every seat for SC NIGHT currency; the front seat is pilots-only; and nobody holds a seat and another seat or the desk in the same hours — nothing else.'},
   bb:    {label:'BB',    all:true,  main:2, spare:2, shifts:[['SHIFT','','']],
-          note:'Two MAIN and two SPARE, times are yours to set. Nothing on a BB line is cross-checked.'}
+          note:'Two MAIN and two SPARE, times are yours to set. The same checks as AVALON: availability — overseas or medically down; every seat for SC currency by the hours you type; the front seat is pilots-only; and nobody holds a seat and another seat or the desk in the same hours — nothing else.'}
 };
 export function isStandalone(w:any){return !!(w&&w.standalone);}
 /* a line the conflict engine must leave alone */

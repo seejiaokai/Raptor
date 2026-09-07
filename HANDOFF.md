@@ -149,15 +149,19 @@ jobs green (build + reference suite, unit raptor, unit leavewar ×2, geometry
 
 ## In flight
 
-- **AVALON'S FOUR RULES + THE SC DESK — on the branch, unmerged (7 Sep 26,
-  owner's rules list).** On top of the 11 Aug availability look, an AVALON
-  MAIN now needs SC NIGHT currency, the AVALON front seat is pilots-only (MAIN
-  and SPARE), and nobody holds two AVALON places in the same hours (MAIN +
-  SPARE, a seat + the desk, two desk roles); an SC SPARE may not also hold the
+- **AVALON'S FOUR RULES, BB AS ITS TWIN, + THE SC DESK — on the branch,
+  unmerged (7 Sep 26, owner's rules list + three same-day corrections).** On
+  top of the 11 Aug availability look, every AVALON seat (MAIN AND SPARE —
+  his second word) needs SC currency for the shift's hours (SC NIGHT on
+  19:00–07:00), the front seat is pilots-only (the rear seat stays open to a
+  pilot, confirmed), and nobody holds a seat and another place in the same
+  hours (MAIN + SPARE, a seat + the desk; two desk roles are allowed — his
+  third word); BB carries exactly the same rules, seats and desk, its hours
+  typed (a blank BB line checks nothing); an SC SPARE may not also hold the
   SC desk in the same hours. The seam that made the desk rules possible: a duty
   TEMPLATE names its wave ("For wave" picker in the editor — None / SC /
   AVALON; the seeded SC Shift and AVALON carry theirs, an older saved library
-  gets them back by seed id on load), and the minted block carries it as the
+  gets them back by seed id on load; BB is a fourth choice), and the minted block carries it as the
   `sa` marker the engine has read since 11 Aug — so a placed AVALON desk is
   exempt again (overseas / HL / OML / ATT C / OD flag, ATT B mans it, nothing
   else, no OIL) instead of the plain fully-checked block the 13 Aug decoupling
@@ -167,11 +171,11 @@ jobs green (build + reference suite, unit raptor, unit leavewar ×2, geometry
   `scSeatHit` now walking `sa:'sc'` desks). Rules `docs/engine-rules.md`
   §AVALON's one check + §AVALON's three seat rules + §the two SC SPARE rules;
   seams `docs/feature-impact.md`; pins `engine/avalon-rules.test.ts` (45),
-  `dutytpl.test.ts`, `DutyTplModal.test.tsx`. **Two owner questions open**
-  (asked in the session report): whether an AVALON SPARE should also carry the
-  SC NIGHT check (built MAIN-only, as he worded it), and whether "AVALON
-  tonight + a sortie tomorrow morning" should ever be a rule (it is not —
-  nothing on AVALON is an event). `BUG-TESTING.md` row #377.
+  `dutytpl.test.ts`, `DutyTplModal.test.tsx`. **One owner question open**
+  (asked in the session report): whether "AVALON tonight + a sortie tomorrow
+  morning" should ever be a rule (it is not — nothing on AVALON or BB is an
+  event, so neither carries crew rest or counts toward the 6-day run).
+  `BUG-TESTING.md` row #377.
 
 - **LEAVE WAR OPENS ON THE WAR BEING BID ON — on the branch, unmerged (7 Sep
   26).** The tab no longer always opens on January of the first war. It now

@@ -19,6 +19,7 @@ const WAVE_NOTE: Record<DutyWave, string> = {
   '': 'An ordinary desk — every row is checked like any duty.',
   sc: 'The SC desk — checked like any duty, and a man on it cannot also stand SC MAIN or SPARE in the same hours.',
   avalon: 'The AVALON desk — checked only for overseas or medically down (ATT B may still man it), and earns no OIL on a weekend or holiday.',
+  bb: 'The BB desk — the same rules as the AVALON desk: checked only for overseas or medically down (ATT B may still man it), and earns no OIL on a weekend or holiday.',
 }
 import { hmOK } from '../engine/time'
 import { TPLEDIT, setTplEdit } from './pops'
@@ -90,6 +91,7 @@ export function DutyTplModal() {
               <option value="">None</option>
               <option value="sc">SC</option>
               <option value="avalon">AVALON</option>
+              <option value="bb">BB</option>
             </select>
           </label>
           <div className="tpl-wave-note">{WAVE_NOTE[tpl.wave]}</div>

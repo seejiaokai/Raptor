@@ -1084,7 +1084,7 @@ export function dayHTML(di:any,ed:any,vsel?:any){
       const edge=sa?'var(--san)':`var(--${mColor(f0?f0.msn:'')})`;
       h+=`<div class="go ${w.night?'night':''} ${sa?'sa sa-'+(w.kind||'x'):''}"${ed?` data-move="mv:w.${di}.${gi}"`:''} style="border-left-color:${sa?'var(--san)':(w.night?'var(--hard)':edge)}">
         <div class="go-tab">${ed?'<span class="wvgrip" title="Drag to reorder this wave" aria-label="Reorder this wave">⠿</span>':''}<span class="asd">${ted(`wl:${di}.${gi}`,w.label,ed,'ntx')}${!sa&&w.night&&!/night/i.test(w.label)?' · NIGHT':''}`
-        +`${sa?`<span class="satag" title="${esc((SAWAVE[w.kind]||{}).note||'Standalone — outside the day\u2019s flying count')}">standalone${w.noconf?(w.kind==='avalon'?' · availability, currency and seat checks only':' · not cross-checked'):''}</span>`:''}</span>
+        +`${sa?`<span class="satag" title="${esc((SAWAVE[w.kind]||{}).note||'Standalone — outside the day\u2019s flying count')}">standalone${w.noconf?' · availability, currency and seat checks only':''}</span>`:''}</span>
         ${sa?'':`<button class="airbtn" data-air="${di}|${gi}">Traffic</button>`}${sa||!ed?'':`<button class="airbtn" data-itadd="${di}|${gi}" title="Add an in-time line to this wave">+ In time</button>`}</div>`;
       /* "+ In time" renders whether or not the wave has lines — the always-there
          add control is the fix for the old trap where deleting the last line
@@ -1181,7 +1181,8 @@ export function dayHTML(di:any,ed:any,vsel?:any){
              Only these four codes can anchor to an exempt line, and all are
              hard, so these pucks ring red or not at all — the owner confirmed
              no amber rule lives here. BB can anchor nothing and so never
-             rings, with no special case. */
+             rings, with no special case — until 7 Sep 26, when BB became
+             AVALON's twin and anchors the same codes. */
           const chk=!saExempt(w,f,a), fkey=`${di}.${gi}.${li}`;
           const own=(id:any)=>{ if(PV||!id)return null;
             const g=WARN.byDay[di];

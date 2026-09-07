@@ -718,8 +718,15 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   since 7 Sep 26), checked in one loop in `validate.ts`. **BB is deliberately
   untouched** — the owner specified AVALON only; extending the bar to BB
   needs his word first.
-  **The desk this applies to is the one a template marked AVALON's** (7 Sep
-  26). Since the 13 Aug decoupling no UI path minted an `sa:'avalon'` desk,
+  **BB is AVALON's twin** (owner, 7 Sep 26 — "bb main and spare rules are
+  exactly the same. And the duties. As Avalon"): every rule in this entry and
+  the next reads "AVALON or BB". `events.ts` collects every `noconf`
+  standalone wave's seats and every `sa:'avalon'`/`'bb'` desk row into
+  `day.sacrew`, so there is no BB-specific code anywhere; the only difference
+  is that BB's hours are TYPED, and a BB line left with blank hours has no
+  window and is not collected at all — fail closed, inert.
+  **The desk this applies to is the one a template marked AVALON's (or BB's)**
+  (7 Sep 26). Since the 13 Aug decoupling no UI path minted an `sa:'avalon'` desk,
   so a placed "AVALON" template came out PLAIN and fully cross-checked —
   every row DOUBLE_BOOKed against the man's own sortie, and ATT B flagged
   on it. The template now names its wave (`dutytpl.ts` `wave`, the "For
@@ -731,37 +738,45 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   earns no OIL (`oil.ts` already excluded `sa:'avalon'` desks — the seats
   never earned). Duties stay DECOUPLED: no wave mints a desk and deleting a
   wave leaves every desk alone; only the marker came back.
-- **AVALON's three seat rules (owner, 7 Sep 26)** — each the SC-spare shape
-  re-cut, each hard, each anchored on the seat or desk row it is about so the
-  exempt line's puck rings for its OWN rule (`html.ts`): 
-  - **SC NIGHT currency on a MAIN seat.** MAIN only — the owner named MAIN; a
-    SPARE is standing by. The kind is read off the shift as scheduled
-    (`scShiftKind`, the body SC uses), so 19:00–07:00 asks for SC NIGHT and
-    a retyped daytime AVALON would ask for SC DAY rather than nothing. The
-    seat, not the pilot: a WSO in the MAIN rear seat is checked too.
+- **AVALON's (and BB's) three seat rules (owner, 7 Sep 26)** — each the
+  SC-spare shape re-cut, each hard, each anchored on the seat or desk row it
+  is about so the exempt line's puck rings for its OWN rule (`html.ts`): 
+  - **SC currency on EVERY jet seat, MAIN and SPARE** (the owner's first word
+    was MAIN; his second, the same day, "AVALON SPARE also requires SC NIGHT"
+    — the SC-spare precedent, currency being the man's own qualification).
+    Never the desk. The kind is read off the shift as scheduled
+    (`scShiftKind`, the body SC uses), so AVALON's 19:00–07:00 asks for SC
+    NIGHT and a BB shift typed inside the day asks for SC DAY rather than
+    nothing. The seat, not the pilot: a WSO in a rear seat is checked too.
     `SC_QUAL`, chip Q. The picker refuses the same man ("not SC NIGHT
-    current", `slotRules().avMain/avKind`).
+    current", `slotRules().avMain/avKind` — set for every noconf jet seat).
   - **The front seat is pilots-only, MAIN and SPARE alike** — the three
     predicates of the SC-spare seat rule verbatim (a WSO, ground crew, the
     CAT-IW variant), `QUAL` suffixed "(AVALON NIGHT MAIN)" / "(… SPARE)". The
-    rear seat stays unruled, as on the SC spare. The picker's seat rules
+    rear seat stays unruled, as on the SC spare — the owner confirmed it the
+    same day ("pilots can go backseat"). The picker's seat rules
     already refused these; the validator now agrees after a drag-drop.
-  - **One man in two AVALON places in the same hours** — MAIN + SPARE, a
-    seat + the AVALON desk, two desk roles. Nothing on AVALON is an event, so
-    the ordinary clash loop is blind; `events.ts:avSeatHit` walks the model
-    (the AVALON waves' seats and every `sa:'avalon'` desk row), the same body
-    the picker reads before a plant ("already on AVALON NIGHT MAIN
-    19:00–07:00"). `DOUBLE_BOOK`, said once per pair, anchored on the first
-    place in the day's order (seats before desks). Half-open: a desk retyped
-    07:00–19:00 beside the 19:00–07:00 shift touches only at 19:00 and
-    passes. The overnight window is rolled (+1440) exactly as collectEvents
-    rolls it, so the same-hours question is asked over the whole night.
+  - **One man in a SEAT and another place in the same hours** — MAIN + SPARE,
+    a seat + the desk, an AVALON seat + a BB seat. **Two desk roles on one man
+    are allowed** (owner, 7 Sep 26 — "two avalon desk roles is ok"): a desk
+    row asks about seats only (`avSeatHit`'s `seatsOnly`). Nothing on these
+    waves is an event, so the ordinary clash loop is blind; `events.ts:
+    avSeatHit` walks the model (every `noconf` wave's seats and every
+    `sa:'avalon'`/`'bb'` desk row — one family), the same body the picker
+    reads before a plant ("already on AVALON NIGHT MAIN 19:00–07:00").
+    `DOUBLE_BOOK`, said once per pair, anchored on the first place in the
+    day's order (seats before desks). Half-open: a desk retyped 07:00–19:00
+    beside the 19:00–07:00 shift touches only at 19:00 and passes. The
+    window is whatever is TYPED on the line, rolled past midnight (+1440)
+    exactly as collectEvents rolls it, so the same-hours question — and the
+    availability look's midnight tail — run to the stated end time, not to a
+    fixed 07:00.
   Deliberately NOT a rule: a man on AVALON tonight and a sortie or desk
   tomorrow morning (or any crew-rest question) — nothing on AVALON is an
   event, and the owner has not asked. Pins: `avalon-rules.test.ts`
-  (validator, picker, OIL, the template desk); `overnight.test.ts` keeps the
-  11 Aug availability pins (its MAIN-seat fixtures moved to the SPARE rear
-  seat, since a MAIN now asks for currency).
+  (validator, picker, OIL, the template desk, the BB twin); `overnight.test.ts`
+  keeps the 11 Aug availability pins (its jet-seat fixtures now use an
+  SC-NIGHT-current instructor WSO, since every seat asks for currency).
 - **The midnight tail (owner, 11 Aug 26 — "check in the same modality for
   all applicable rules based on timing").** A window that runs past midnight
   — a night sortie's landing and debrief tail, an overnight duty row, an
@@ -835,10 +850,10 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   wave→duty coupling is gone: no wave auto-creates a desk
   (`SAWAVE.autoDuty` removed from the add path), deleting a wave leaves any desk
   alone (the wave-delete → `saDutyIx` walk removed). Since 7 Sep 26 a template
-  carries `wave` ('' / 'sc' / 'avalon', the editor's "For wave" picker) and
-  `blockFromTpl` mints it onto the block as `sa` (+ `noconf` for AVALON,
-  mirroring `SAWAVE[kind].all`), so an AVALON desk is exempt as its wave is
-  (§AVALON above) and an SC desk counts as an SC seat for the spare rule
+  carries `wave` ('' / 'sc' / 'avalon' / 'bb', the editor's "For wave" picker) and
+  `blockFromTpl` mints it onto the block as `sa` (+ `noconf` for AVALON and
+  BB, mirroring `SAWAVE[kind].all`), so an AVALON or BB desk is exempt as its
+  wave is (§AVALON above) and an SC desk counts as an SC seat for the spare rule
   (§the two SC SPARE rules); a template with no wave mints the PLAIN block
   it always did. The seed week has no template desk, so reference parity is
   untouched. Do not re-add the coupling (`CLAUDE.md` §Stable decisions).

@@ -114,6 +114,14 @@ describe('the "For wave" picker', () => {
     await click($$('.tpl-tab:not(.new)')[2]!)
     expect(($('.tpl-wave select') as HTMLSelectElement).value).toBe('avalon')
   })
+  it('offers BB beside SC and AVALON, with its own note', async () => {
+    await click($$('.tpl-tab:not(.new)')[0]!)
+    expect([...$$('.tpl-wave option')].map(o => (o as HTMLOptionElement).value)).toEqual(['', 'sc', 'avalon', 'bb'])
+    await pick('bb')
+    expect(DUTYTPL_CFG[0]!.wave).toBe('bb')
+    expect($('.tpl-wave-note').textContent).toMatch(/BB desk/)
+    expect($('.tpl-wave-note').textContent).toMatch(/OIL/)
+  })
   it('a pick writes the template\'s wave and persists it', async () => {
     await click($$('.tpl-tab:not(.new)')[0]!)   // Standard
     await pick('avalon')

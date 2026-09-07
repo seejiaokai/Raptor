@@ -23,7 +23,7 @@ import { PEOPLE, scQualOK } from './people'
 import { validate } from './validate'
 import { makeStandalone } from './waves'
 import { avSeatHit, scSeatHit } from './events'
-import { blockFromTpl, dutyTplReset } from './dutytpl'
+import { blockFromTpl, dutyTplReset, addTpl, setTplWave, setTplRow, DUTY_WAVES } from './dutytpl'
 import { slotBar } from './avail'
 import { dayOilCredits } from './oil'
 import { SCHED } from './publish'
@@ -56,7 +56,7 @@ const ours = (x: any) => {
 const warns = (id: string, code?: string) => validate().all.filter((x: any) =>
   x.di === TUE && (x.who || []).includes(id) && ours(x) && (!code || x.code === code))
 
-describe('AVALON MAIN is checked for SC NIGHT currency', () => {
+describe('every AVALON jet seat is checked for SC NIGHT currency', () => {
   it('a pilot without SC NIGHT on a MAIN seat is a hard SC_QUAL, anchored on his seat', () => {
     expect(scQualOK('ignite', 'night')).toBe(false)
     F().aircraft[0].p = 'ignite'
@@ -72,8 +72,15 @@ describe('AVALON MAIN is checked for SC NIGHT currency', () => {
     F().aircraft[0].p = 'split'
     expect(warns('split')).toEqual([])
   })
-  it('the same pilot on a SPARE seat is NOT checked — the owner named MAIN only', () => {
+  it('the same pilot on a SPARE seat is checked too (owner, 7 Sep 26 — "AVALON SPARE also requires SC NIGHT")', () => {
     F().aircraft[2].p = 'ignite'
+    const h = warns('ignite', 'SC_QUAL')
+    expect(h.length, JSON.stringify(h)).toBe(1)
+    expect(h[0].key).toBe(SEAT(2, 'p'))
+    expect(h[0].msg).toMatch(/SPARE/)
+  })
+  it('the desk is not a seat — a non-current man on the AVALON desk raises no SC_QUAL', () => {
+    desk.rows[0].id = 'ignite'
     expect(warns('ignite', 'SC_QUAL')).toEqual([])
   })
   it('a WSO in the MAIN rear seat is checked too — MAIN is the seat, not the pilot', () => {
@@ -90,7 +97,8 @@ describe('AVALON MAIN is checked for SC NIGHT currency', () => {
   it('the crew picker refuses the same man with the same words', () => {
     expect(slotBar('ignite', SEAT(0, 'p'))).toMatch(/not SC NIGHT current/)
     expect(slotBar('split', SEAT(0, 'p'))).toBe('')
-    expect(slotBar('ignite', SEAT(2, 'p'))).not.toMatch(/SC NIGHT/)
+    expect(slotBar('ignite', SEAT(2, 'p'))).toMatch(/not SC NIGHT current/)
+    expect(slotBar('ignite', DESK(0))).not.toMatch(/SC NIGHT/)
   })
 })
 
@@ -153,11 +161,11 @@ describe('one man in two AVALON places in the same hours', () => {
     expect(h[0].msg).toMatch(/SPARE/)
     expect(h[0].msg).toMatch(/OPS O duty/)
   })
-  it('two AVALON desk roles in the same hours are one man in two places too', () => {
+  it('two AVALON desk roles in the same hours are FINE (owner, 7 Sep 26 — "two avalon desk roles is ok")', () => {
     desk.rows[0].id = 'split'
     desk.rows[1].id = 'split'
-    const h = warns('split', 'DOUBLE_BOOK')
-    expect(h.length, JSON.stringify(h)).toBe(1)
+    expect(warns('split', 'DOUBLE_BOOK')).toEqual([])
+    expect(slotBar('split', DESK(1))).toBe('')
   })
   it('a desk retyped to the DAY beside the night shift is two clean commitments — no conflict', () => {
     F().aircraft[0].p = 'split'
@@ -303,5 +311,95 @@ describe('an SC desk is one of the SC seats for the same-hours rule', () => {
     AM().aircraft[2].p = 'split'
     expect(slotBar('split', `d:${TUE}.${sdwi}.0`)).toMatch(/already on .*SPARE/)
     expect(slotBar('split', `d:${TUE}.${sdwi}.2`)).toBe('')      // the PM desk abuts, still offered
+  })
+})
+
+/* BB IS AVALON'S TWIN (owner, 7 Sep 26 — "bb main and spare rules are exactly
+   the same. And the duties. As Avalon"). Same four rules, same desk seam. BB's
+   shift comes up with BLANK times, so the fixture types one; a blank shift
+   has no window and every check stands down (fail closed, inert). */
+describe('BB carries exactly the AVALON rules', () => {
+  let bb: any, bgi = -1, bdesk: any, bdwi = -1
+  beforeEach(() => {
+    const d: any = DAYS[TUE]
+    bb = makeStandalone('bb')
+    bb.formations[0].to = '20:00'; bb.formations[0].ld = '04:00'
+    d.waves.push(bb); bgi = d.waves.length - 1
+    const t = addTpl('BB desk')!
+    setTplWave(t.id, 'bb')
+    setTplRow(t.id, 0, 'role', 'SXO'); setTplRow(t.id, 0, 'str', '20:00'); setTplRow(t.id, 0, 'end', '04:00')
+    bdesk = blockFromTpl(t.id)
+    d.dutywaves.push(bdesk); bdwi = d.dutywaves.length - 1
+  })
+  const B = () => bb.formations[0]
+  const BSEAT = (ai: number, seat: 'p' | 'w') => `${TUE}.${bgi}.0.${ai}.${seat}`
+  const bw = (id: string, code?: string) => validate().all.filter((x: any) =>
+    x.di === TUE && (x.who || []).includes(id) && (!code || x.code === code)
+    && (String(x.key || '').indexOf(`${TUE}.${bgi}.0`) === 0 || String(x.key || '').indexOf(`d:${TUE}.${bdwi}.`) === 0))
+
+  it('the template mints an exempt BB desk, and bb is a legal wave for a template', () => {
+    expect(DUTY_WAVES).toContain('bb')
+    expect(bdesk.sa).toBe('bb')
+    expect(bdesk.noconf).toBe(true)
+  })
+  it('a seat asks for SC currency by the typed shift — NIGHT for 20:00–04:00, DAY for 08:00–16:00', () => {
+    B().aircraft[0].p = 'ignite'
+    let h = bw('ignite', 'SC_QUAL')
+    expect(h.length, JSON.stringify(h)).toBe(1)
+    expect(h[0].msg).toMatch(/SC NIGHT/); expect(h[0].msg).toMatch(/BB SHIFT MAIN/)
+    expect(h[0].key).toBe(BSEAT(0, 'p'))
+    /* every seed aircrew holds SC DAY, so the DAY case strips it for the test */
+    const q = PEOPLE.ignite.quals, was = q.scDay
+    q.scDay = false
+    try {
+      B().to = '08:00'; B().ld = '16:00'
+      h = bw('ignite', 'SC_QUAL')
+      expect(h.length, JSON.stringify(h)).toBe(1); expect(h[0].msg).toMatch(/SC DAY/)
+      expect(slotBar('ignite', BSEAT(0, 'p'))).toMatch(/not SC DAY current/)
+    } finally { q.scDay = was }
+  })
+  it('a WSO in a BB front seat is the red Q, MAIN and SPARE', () => {
+    B().aircraft[0].p = 'glass'; B().aircraft[3].p = 'xray'
+    expect(bw('glass', 'QUAL').length).toBe(1)
+    expect(bw('xray', 'QUAL').length).toBe(1)
+    expect(bw('xray', 'QUAL')[0].msg).toMatch(/BB SHIFT SPARE/)
+  })
+  it('one man in two BB places — MAIN + SPARE, a seat + the desk — is the red C, once', () => {
+    B().aircraft[0].p = 'split'; B().aircraft[2].p = 'split'
+    expect(bw('split', 'DOUBLE_BOOK').length).toBe(1)
+    B().aircraft[2].p = ''
+    bdesk.rows[0].id = 'split'
+    const h = bw('split', 'DOUBLE_BOOK')
+    expect(h.length).toBe(1); expect(h[0].msg).toMatch(/SXO duty/)
+    expect(slotBar('split', BSEAT(2, 'p'))).toMatch(/already on BB SHIFT MAIN/)
+  })
+  it('an AVALON seat and a BB seat in the same hours is one man in two places too', () => {
+    F().aircraft[0].p = 'split'                       // AVALON MAIN 19:00–07:00
+    B().aircraft[2].w = 'split'                       // BB SPARE 20:00–04:00
+    const all = validate().all.filter((x: any) => x.di === TUE && x.code === 'DOUBLE_BOOK' && (x.who || []).includes('split'))
+    expect(all.length, JSON.stringify(all)).toBe(1)
+    expect(all[0].msg).toMatch(/AVALON NIGHT MAIN/); expect(all[0].msg).toMatch(/BB SHIFT SPARE/)
+  })
+  it('availability: OL on a seat flags; ATT B mans the BB desk; ATT C on the desk flags', () => {
+    B().aircraft[1].p = 'split'
+    INPUTS.push({ person: 'split', date: 'Jul 14', allday: true, type: 'OL', remarks: '' })
+    expect(bw('split', 'LEAVE_FLY').length).toBe(1)
+    bdesk.rows[0].id = 'glass'
+    INPUTS.push({ person: 'glass', date: 'Jul 14', allday: true, type: 'ATT B', remarks: '' })
+    expect(bw('glass')).toEqual([])
+    bdesk.rows[0].id = 'xray'
+    INPUTS.push({ person: 'xray', date: 'Jul 14', allday: true, type: 'ATT C', remarks: '' })
+    expect(bw('xray', 'DNIF_FLY').length).toBe(1)
+  })
+  it('a BB shift with BLANK times checks nothing — no window, no rule (fail closed, inert)', () => {
+    B().to = ''; B().ld = ''
+    B().aircraft[0].p = 'glass'; B().aircraft[2].p = 'glass'
+    INPUTS.push({ person: 'glass', date: 'Jul 14', allday: true, type: 'OL', remarks: '' })
+    expect(bw('glass')).toEqual([])
+  })
+  it('BB adds no OIL', () => {
+    const before = JSON.stringify(dayOilCredits(DAYS[TUE]))
+    B().aircraft[0].p = 'split'; bdesk.rows[0].id = 'ignite'
+    expect(JSON.stringify(dayOilCredits(DAYS[TUE]))).toBe(before)
   })
 })

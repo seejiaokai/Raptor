@@ -158,7 +158,7 @@ export function slotRules(key:any){
     /* AVALON's desk (owner, 11 Aug 26): the wave's `sa` marker survives on its
        duty block (waveDutyBlock), so a `d:` key can tell whether its row is an
        AVALON desk without walking back through DAYS.waves at all. */
-    if(kk==='d'){const dwx=((DAYS[+parts[0]]||{}).dutywaves||[])[+parts[1]]; if(dwx&&dwx.sa==='avalon')out.avDuty=true;
+    if(kk==='d'){const dwx=((DAYS[+parts[0]]||{}).dutywaves||[])[+parts[1]]; if(dwx&&(dwx.sa==='avalon'||dwx.sa==='bb'))out.avDuty=true;   // BB's desk is AVALON's twin (7 Sep 26)
       /* an SC desk (7 Sep 26): checked like any duty row, AND one of the SC
          seats for the spare's same-hours rule — slotBar asks scSeatHit off this */
       if(dwx&&dwx.sa==='sc')out.scDesk=true;}
@@ -225,10 +225,11 @@ export function slotRules(key:any){
     if(f){ const st=parseHM(f.to); let en=parseHM(f.ld);
       if(st!=null){ if(en==null)en=st; if(en<st)en+=1440;
         const sh=wv&&isStandalone(wv);
-        if(sh&&wv.kind==='avalon'){out.avJet=true;    // MAIN or SPARE, both are jet seats (owner, 11 Aug 26)
-          /* a MAIN seat asks for SC currency by the shift's kind (7 Sep 26) —
-             the same scShiftKind the validator reads, so night is night here too */
-          if(!((f&&f.spare)||(ac&&ac.spare))){out.avMain=true; out.avKind=scShiftKind(st,en);}}
+        if(sh&&wv.noconf){out.avJet=true;    // AVALON or BB, MAIN or SPARE — all jet seats (owner, 11 Aug 26; BB 7 Sep 26)
+          /* every jet seat asks for SC currency by the shift's kind (7 Sep 26,
+             SPARE included the same day) — the same scShiftKind the validator
+             reads, so night is night here too; the desk never asks */
+          out.avMain=true; out.avKind=scShiftKind(st,en);}
         out.slotStart=sh?st:st-VCONF.step; out.slotEnd=sh?en:en+VCONF.dekit;
         /* SANS judges a flying seat from the crew's IN-TIME (owner, 26 Aug
            26 — "SANS should consider IN TIME till land plus 30 minutes for
@@ -339,7 +340,7 @@ export function slotBar(id:any,key:any,rules?:any,fromKey?:any){
      Nothing on AVALON is an event (noconf), so the busy scan below is blind
      to it — and spare-like seats skip that scan anyway. */
   if((r.avJet||r.avDuty)&&r.slotStart!=null&&r.slotEnd!=null&&r.di>=0){
-    const hit=avSeatHit(r.di,id,r.slotStart,r.slotEnd,selfKey(key));
+    const hit=avSeatHit(r.di,id,r.slotStart,r.slotEnd,selfKey(key),!!r.avDuty);   // a desk asks about seats only
     if(hit)return `already on ${hit.what} ${hm24(hit.s)}–${hm24(hit.e)}`;
   }
   /* SC is treated as flying for crew rest: 12h clear of yesterday or he cannot
