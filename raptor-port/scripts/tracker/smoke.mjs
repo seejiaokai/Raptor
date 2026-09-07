@@ -9,8 +9,9 @@
  * board. The checks themselves are the standalone suite's own, untouched
  * except for two renamed ids (#trUndoBtn/#trRedoBtn — Raptor's own top bar
  * owns #undoBtn/#redoBtn), the phone tab class (now on the page section
- * instead of <body>) and the page background read (the Tracker's own column,
- * not Raptor's <body>).
+ * instead of <body>), the page background read (the Tracker's own column,
+ * not Raptor's <body>) and one `.legend` selector scoped to the section
+ * (Raptor keeps a hidden .legend of its own earlier in the document).
  *
  *   npm run smoke:tracker                 build dist/, serve it, drive it, tear down
  *   npm run smoke:tracker -- --keep       leave the preview server running afterwards
@@ -2388,7 +2389,9 @@ await pg.click('#arrangeBtn'); await pg.waitForTimeout(400);
 const hintGeom = () => pg.evaluate(() => {
   /* Geometry, not elementFromPoint: the hint passes clicks through, so a hit
      test "sees" the legend even while the hint is painted over it. */
-  const lr = document.querySelector('.legend').getBoundingClientRect();
+  /* scoped to the tab: Raptor's own page keeps a hidden .legend element
+     earlier in the document, and the bare selector measured that 0×0 box */
+  const lr = document.querySelector('#page-tracker .legend').getBoundingClientRect();
   const hr = document.getElementById('arrhint').getBoundingClientRect();
   return {
     top: document.getElementById('flowSvg').getBoundingClientRect().top,

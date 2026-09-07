@@ -42,6 +42,13 @@ verify** — this section holds only the current baseline and the ways the gates
 mislead. Restate a count only from a run you watched — this file's history twice
 recorded a count that was wrong.
 
+**Latest watched run — the Tracker merge branch, PR #373 (7 Sep 26, unmerged):
+`npm test` 4165 across 238 files (raptor 2725 incl. the 11 new Tracker pins,
+leavewar 1440); `tfin.js` 728/0; build clean; `test:e2e` 423 passed / 0 failed
+(33 skipped by project gate); `smoke:tracker` see its own row; `perf` 4/0;
+`probes:adapted` all 6. The main-branch baseline below stands until #373
+merges.**
+
 **Last green baseline — the 5–6 Sep 26 batch, PR #368 (CI head `8b269df` plus
 a docs-only handoff commit, squash-merged on the owner's "merge") + PR #369
 (one guard on the Shell's pre-warm poll, after #368's own deploy run 903 went
@@ -57,7 +64,7 @@ jobs green (build + reference suite, unit raptor, unit leavewar ×2, geometry
 | `npm run build` | clean |
 | `npm run test:e2e` | **lw-phone 128 + lw-desktop 133 passed / 0 failed (21 skipped by project gate); raptor geometry 134 / 0** — three playwright projects, 416 tests, ~12.5 min locally. Two traps from this batch: (a) a `npm run build` DURING a browser run swaps the files the test server serves and fails whatever page load is in flight (one login-timeout red, green on the clean re-run — never rebuild while `test:e2e` runs); (b) a background `npx playwright test` launched WITHOUT `cd raptor-port` runs from the repo root and reports "No tests found" as exit 0. The older lead stands: the desktop carry-day test ("View-only opens on the day Edit was showing", `geometry.spec.ts`) went red once in the drag round and passed alone — for ~5 s after the edit page opens the store notifies ~10 times and each pass re-lands `eWeek.scrollLeft`, which can race `parkOn`'s scroll. |
 | `probes:adapted` | **all 6 GREEN**. **Read the LAST line, not the last tally**: each probe prints its own count as it finishes, and the suite's verdict is the line after it, `all 6 adapted probes passed`. |
-| `npm run smoke:tracker` | **the Tracker tab's vendored browser suite** (7 Sep 26) — 345 checks from the standalone repo driven through Raptor's login and tab; builds + serves itself on 4179, or `APP_URL=http://localhost:4173/` against a running preview. ~8 min locally. Counts: see §In flight until the first CI run records them. Its 4 tests near the end use a second browser page; a `localStorage.clear()` inside it also clears Raptor's `rules`/`stores` keys in that browser — harmless, but don't run it against a browser you care about. |
+| `npm run smoke:tracker` | **the Tracker tab's vendored browser suite** (7 Sep 26) — 345 checks from the standalone repo driven through Raptor's login and tab; builds + serves itself on 4179, or `APP_URL=http://localhost:4173/` against a running preview. ~8 min locally. **345/0 watched 7 Sep 26** (the first run inside Raptor found six fails, all the host's — five bare Raptor class rules restyling the tab, since reset in `tracker.css`, and one selector the suite itself had to scope to the section). Its 4 tests near the end use a second browser page; a `localStorage.clear()` inside it also clears Raptor's `rules`/`stores` keys in that browser — harmless, but don't run it against a browser you care about. |
 | `perf` | **4/0** — board DOM 1023 ≤ **1150** (the ceiling is a SETTLED owner decision since 28 Aug 26 — `CLAUDE.md` §Stable decisions). |
 | CI `unit (raptor)` | can go red with EVERY test green: the summary's `Errors 1` line — an unhandled error after a file ended. Run 899 was the 6-second fresh-add timer (`view.ts flashAdded`) firing into a torn-down jsdom (`paintFreshAdds` now returns with no `document`); run 903 was the Shell's self-re-arming pre-warm poll (`Shell.tsx`) firing after a test that never unmounts the App (it now returns with no `window`, #369). Both shapes — a long one-shot timer and a re-arming poll in a production module — outlive a test file; read the "Unhandled Errors" block before calling a red run a flake (obs 85). A docs-only push on a PR CANCELS its running gate job and starts no new one (`paths-ignore`) — re-run the cancelled run rather than pushing again. |
 
