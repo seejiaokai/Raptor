@@ -135,7 +135,10 @@ barely more than one.
   now: change → gates green locally → commit + push to the session branch (one
   open PR accumulates the lot) → reply with the Vercel preview link the moment
   it is Ready (~1 min after the push — do NOT go quiet waiting on CI) → take the
-  next change. The "Done MEANS LIVE" chain (merge on green → Pages → live-verify
+  next change. The PR's checks finish ~6 min after each push: READ their
+  conclusions on your next turn and fix a red one then — never discover it at
+  "merge live" (7 Sep 26: six red runs sat unread while the branch was being
+  tested on the preview, and the merge waited on a CI-only fix). The "Done MEANS LIVE" chain (merge on green → Pages → live-verify
   → one notification) runs ONLY on his explicit "merge live"; a green PR
   sitting open is the intended resting state, not a thing to finish. The 24 Aug
   rule below is kept for its mechanics (where the link is, SSO, no PR-watching);

@@ -4754,14 +4754,20 @@ test.describe('a mouse drag of a puck runs on the pointer machine, not the nativ
            picked-up box — the accent drawn INSIDE its edge, the dark drop
            shadow still under it — and no outline of its own any more */
         lift: !!g && g.classList.contains('lift'),
-        shadow: cs ? cs.boxShadow : '', outline: cs ? cs.outlineWidth : '',
+        shadow: cs ? cs.boxShadow : '', outline: cs ? cs.outlineStyle : '',
       }
     })
     expect(mid.ghost, 'the page-drawn puck ghost is up').toBe(true)
     expect(mid.lift, 'and wears the shared lift').toBe(true)
     expect(mid.shadow, 'the accent box is drawn inside the ghost\'s edge').toMatch(/inset/)
     expect(mid.shadow, 'and its depth shadow is still under it').toMatch(/rgba\(0, 0, 0, 0\.6\)/)
-    expect(mid.outline, 'no outline outside the line any more').toBe('0px')
+    /* the STYLE, not the width: a newer Chromium computes `outline-width` as its
+       initial `medium` (3px) even under `outline-style: none` — the width no
+       longer collapses to 0 when nothing is drawn — so the CI runner's browser
+       read 3px on a ghost with no outline rule anywhere, while a Chromium 141
+       read 0px (deploy runs 951–956, 7 Sep 26). Whether an outline is DRAWN is
+       the style. */
+    expect(mid.outline, 'no outline outside the line any more').toBe('none')
     expect(mid.mdrag, 'the grabbing cursor is on').toBe(true)
     expect(mid.native, 'no native drag event fired — the browser never started one').toBe(0)
     /* the ghost sits at cursor minus the grab offset: the press landed 5px

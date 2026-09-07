@@ -521,7 +521,10 @@ export function QualsPage() {
          however far the wrap is scrolled), so it rides the sideways scroll with
          the column it is drawn round instead of standing still over it. */
       const w = wrapRef.current
-      if (w) frameLift(qLiftRef.current, boxOf(w, tbl, th, w.scrollLeft))
+      /* 'rect': the heading's OWN border box, so the frame is the column's full
+         width — its clientWidth is the padding box rounded, a border and a
+         fraction short of it (lift.ts boxOf) */
+      if (w) frameLift(qLiftRef.current, boxOf(w, tbl, th, w.scrollLeft, 'rect'))
     }
     const onMove = (e: any) => {
       if (!from) return
@@ -671,7 +674,7 @@ export function QualsPage() {
     qLandRef.current = null
     const w = wrapRef.current, tbl = tblRef.current
     const th = tbl?.querySelector<HTMLElement>(`th[data-col="${k}"]`)
-    if (w && tbl && th) frameLand(qLiftRef.current, boxOf(w, tbl, th, w.scrollLeft))
+    if (w && tbl && th) frameLand(qLiftRef.current, boxOf(w, tbl, th, w.scrollLeft, 'rect'))
     else frameLift(qLiftRef.current, null)   // nothing to flash: take the frame down
   })
 

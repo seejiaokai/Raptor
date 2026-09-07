@@ -43,11 +43,19 @@ export type LiftBox = { top: number; left: number; width: number; height: number
  *  frame must ride its content. Visual pixels straight from the rects — a zoomed
  *  table's rect is already visual, and the host is outside the zoom, so nothing
  *  is ever divided by zoom (the figures-drawer precedent, Matrix.tsx). `null`
- *  when nothing is laid out (jsdom, a hidden host): no frame, never zeroes. */
-export function boxOf(host: Element, y: Element, x: Element, scrollLeft = 0): LiftBox | null {
+ *  when nothing is laid out (jsdom, a hidden host): no frame, never zeroes.
+ *  `span` is which width `x` lends: 'client' (the default) is its clientWidth —
+ *  the VISIBLE box of a scroller, no scrollbar, no border, an integer — which is
+ *  what the Leave War frame wants of `.mx-wrap`; 'rect' is its own border box,
+ *  fractional, for a thing the frame must cover edge to edge — a quals column
+ *  heading, whose clientWidth is the padding box rounded: the frame it gave ran
+ *  a border plus a fraction short of the column (1.28px on the CI runner's
+ *  fonts), and the geometry gate that holds the two within a pixel went red
+ *  there and nowhere else (deploy runs 951–956, 7 Sep 26). */
+export function boxOf(host: Element, y: Element, x: Element, scrollLeft = 0, span: 'client' | 'rect' = 'client'): LiftBox | null {
   const h = host.getBoundingClientRect(), r = y.getBoundingClientRect(), s = x.getBoundingClientRect()
   if (!(r.height > 0) || !(h.width > 0)) return null
-  const width = (x as HTMLElement).clientWidth || s.width
+  const width = span === 'rect' ? s.width : ((x as HTMLElement).clientWidth || s.width)
   return { top: r.top - h.top, height: r.height, left: s.left - h.left + scrollLeft, width }
 }
 

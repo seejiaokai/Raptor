@@ -30,6 +30,16 @@ describe('boxOf — the frame\'s rectangle', () => {
     const host = el(rect(0, 0, 500, 300)), col = el(rect(0, 120, 60, 20), 0), tbl = el(rect(10, 0, 900, 260))
     expect(boxOf(host, tbl, col)!.width).toBe(60)
   })
+  /* THE COLUMN FRAME IS THE COLUMN'S OWN WIDTH (CI, 7 Sep 26). A heading's
+     clientWidth is its padding box, rounded — a border and a fraction short of
+     the column the frame is drawn round; on the CI runner's fonts the shortfall
+     was 1.28px and the geometry gate holding the two within a pixel went red
+     there and nowhere else. 'rect' lends the border box, fractional. */
+  it('\'rect\' lends the x element\'s own border box, fractional — a column heading, whose clientWidth is its padding box rounded', () => {
+    const host = el(rect(0, 0, 500, 300)), col = el(rect(0, 120, 62.28125, 20), 61), tbl = el(rect(10, 0, 900, 260))
+    expect(boxOf(host, tbl, col, 40, 'rect')!.width).toBeCloseTo(62.28125, 5)
+    expect(boxOf(host, tbl, col, 40)!.width, 'the default is still the scroller\'s visible width').toBe(61)
+  })
   it('answers null when nothing is laid out — a zero-height row or a zero-width host (jsdom)', () => {
     const zero = rect(0, 0, 0, 0)
     expect(boxOf(el(zero), el(zero), el(zero))).toBeNull()

@@ -1811,3 +1811,18 @@ gate's. Keep verdict-bearing commands unpiped.
 
 **Principle:** A fix on one of two twin paths is a bug report against the other — verify parity by driving both paths from every source, and measure the built artefact against what it represents.
 
+### Observation 119: A green local gate is not the merge gate: the branch's CI had been red for six pushes — two browser tests written against the sandbox's Chromium (an outline-width quirk, an integer-vs-fraction width) failed only on the CI runner — and nobody read the check conclusions because "do not watch the PR" was taken as "do not look"
+
+**Status:** OPEN
+**Date:** 2026-09-07
+**Session context:** The owner's "Merge" for PR #371 — the branch's CI turned out to be red on a job no one had read; two CI-only test failures fixed before the merge.
+**Skill:** the push-and-hand-over step (the Vercel-link loop) / the live-drive step for browser tests
+**Type:** open-source
+**Phase/Area:** Reading CI after a push; writing browser assertions that survive a browser version
+
+**Issue:** Six consecutive runs of the deploy workflow on the session branch failed on the same job, from the drag-lift build's first push to the corner follow-up, while every local gate was green: (1) a test asserted getComputedStyle(ghost).outlineWidth === "0px" — true on the sandbox's Chromium 141, but the CI runner's newer Chromium computes outline-width as its initial medium (3px) even with outline-style none, so the width says nothing about whether an outline is drawn; (2) a frame width taken from clientWidth (an integer, the padding box) was held within 1px of a heading's fractional rect width — 1.00 on the sandbox's fonts, 1.28 on the runner's. Neither was looked at until the owner said "merge", because the standing rule not to WATCH the PR (no event subscription) was read as not LOOKING at its checks either, and the loop hands over the preview link a minute after the push, before CI finishes.
+
+**Suggested improvement:** Two rules. In the push loop: the checks finish ~6 min after a push — read their conclusions on the next turn (one API call), and fix a red one then, never at merge time; a Vercel preview being Ready is not the gate. In browser tests: assert the property that names the behaviour (outline-style: none, not outline-width: 0px; a rect against a rect, never an integer measurement against a fractional one), and treat "passes locally, browser pinned by the lockfile in CI" as two environments — when a computed-style read is the assertion, ask which spec change could move it.
+
+**Principle:** Not watching a PR is not the same as not reading its gates — read the conclusions once per push — and a browser assertion must name the behaviour, not a value one browser version happens to compute for it.
+

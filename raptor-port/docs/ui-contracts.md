@@ -5294,7 +5294,12 @@ Four asks from the same sitting, all on the Leave War grid:
     zoom). Nothing runs per pointermove.
   - **The quals frame TRAVELS, so the host arranges around it.** It lives inside
     `.qwrap` (which gains `position:relative`, no z-index, so it opens no stacking
-    context) in CONTENT coordinates, riding the sideways scroll with its column —
+    context) in CONTENT coordinates, riding the sideways scroll with its column
+    — and it is the column's OWN width (`boxOf(…, 'rect')`, the heading's border
+    box, fractional; 7 Sep 26): the heading's `clientWidth` is its padding box
+    rounded, a border and a fraction short, and on the CI runner's fonts that
+    shortfall was 1.28px against the gate's 1px. The Leave War frame keeps the
+    scroller's `clientWidth`, the visible box with no scrollbar —
     which means a scrolled column slides the whole frame under the FROZEN callsign
     column. The cure is a set of numbers, not JS: the frame drops to `.qwrap
     .lift-frame{z-index:2}`, the heading row's own level (it is rendered AFTER the
