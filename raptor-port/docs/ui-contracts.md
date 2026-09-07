@@ -6752,15 +6752,16 @@ screen:
   empty on a remount). Hidden it dozes (`.page.doze`); its document-level key
   and click listeners switch off while another tab is up (`App.jsx`'s `active`
   effect), so Escape/Delete on a Raptor page never reach the chart editor.
-- **Everyone views, only the admin edits** (owner, 7 Sep 26). A member (and a
-  logged-out session, and an admin viewing as member) sees the Crew / Course /
-  Syllabus pickers, Show All and the search, and reads every figure; the
-  Course, Syllabus and File menus, ✎ Edit, Details mode's toggle, the save slot,
-  + Add / ⇅ Reorder / a chip's ×, the lull buttons and the per-event Edit in
-  Show All are not drawn, and the date/pace boxes are disabled. A viewer's ball
-  click shows the event's brief (Details mode is forced on) — never the grading
-  pop-up. The rule is enforced at the write path in `core.js` (every exported
-  mutation refuses `readOnly`), not only at the affordance. Pins:
+- **Everyone edits; only the FILE portion is the admin's** (owner, 7 Sep 26,
+  his second word — "allowed for both admin and member for all access, except
+  the file portion which is admin only"). Marking, Edit mode, the Course and
+  Syllabus menus, students, dates, pace and lull periods behave exactly as in
+  the standalone app for every login. A member (and a logged-out session, and
+  an admin viewing as member) does not get the **File** menu — 📁 Open,
+  ⊕ Import syllabus, ⤓ Save a copy — and the three entry points behind it
+  refuse at the write path in `core.js` (`fileLocked`); ✓ Save changes stays
+  for everyone (it persists the syllabus to the browser store; its file half
+  only fires when a file is open, which only an admin can do). Pins:
   `src/tracker/tracker.test.tsx`.
 - **Its own look, inside the section.** The Tracker keeps its dark palette,
   type and controls (`tracker.css`, wrapped under `#page-tracker`). Five class

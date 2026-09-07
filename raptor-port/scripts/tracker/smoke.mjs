@@ -4,8 +4,8 @@
  * drove the standalone app. Inside Raptor the Tracker is a tab behind the
  * login, so the ONE adaptation is how a page gets to the chart: every
  * `goto`/`reload` of the standalone app became openTracker() below — load
- * Raptor, sign in as the admin (the standalone app had no roles, so every
- * check here assumes it may edit), click the Tracker tab, wait for the flow
+ * Raptor, sign in as the admin (the one login that also gets the File menu,
+ * which the file checks below need), click the Tracker tab, wait for the flow
  * board. The checks themselves are the standalone suite's own, untouched
  * except for two renamed ids (#trUndoBtn/#trRedoBtn — Raptor's own top bar
  * owns #undoBtn/#redoBtn), the phone tab class (now on the page section

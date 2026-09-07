@@ -133,11 +133,7 @@ export default function SidePanel({ zoom }) {
   const ref = useRef(null);
   useEffect(() => { if (ref.current) core.dragScroll(ref.current); }, []);
   const s = core.active;
-  /* READ-ONLY (7 Sep 26): a viewer reads every figure and can still jump the
-     chart from a chip, but the student list, the date/pace boxes and the lull
-     periods are the admin's. Boxes are disabled rather than removed so the
-     panel keeps its shape; the write paths behind them are guarded in core. */
-  const ro = core.readOnly;
+
   const style = { zoom: zoom, cursor: 'grab' };
   const cls = 'side' + (zoom < 1 ? ' zoomed' : '');
 
@@ -148,9 +144,9 @@ export default function SidePanel({ zoom }) {
           <div className="card c-students">
             {/* Same heading as the full card, so the buttons do not jump about
                 as students come and go; Reorder simply has nothing to do yet. */}
-            <h3>Students {ro ? null : <span className="hbtns">
+            <h3>Students <span className="hbtns">
               <button className="sm" id="ordCrew" disabled title="Nobody to reorder yet">⇅ Reorder</button>
-              <button className="sm" id="addStu" onClick={core.addStudent}>+ Add</button></span>}</h3>
+              <button className="sm" id="addStu" onClick={core.addStudent}>+ Add</button></span></h3>
             <div className="mini">No students on this course yet. Add one to start tracking progress.</div>
           </div>
         )}
@@ -195,13 +191,13 @@ export default function SidePanel({ zoom }) {
         {/* Everything done TO the list of students lives here: add, reorder,
             and (on each chip) remove. Reorder used to sit in the header's View
             menu, two clicks away and nowhere near the students it moves. */}
-        <h3>Students {ro ? null : <span className="hbtns">
+        <h3>Students <span className="hbtns">
           <button className="sm" id="ordCrew" disabled={core.roster.length < 2}
             title="Change the order crew appear in the dropdown and which slice of every ball is theirs" onClick={core.openOrdCrew}>⇅ Reorder</button>
-          <button className="sm" id="addStu" onClick={core.addStudent}>+ Add</button></span>}</h3>
+          <button className="sm" id="addStu" onClick={core.addStudent}>+ Add</button></span></h3>
         <div className="chips">
           {core.roster.map((r, i) => (
-            <span key={r} className="chip"><b>{i + 1}</b> {r} {ro ? null : <span className="x" data-rm={r} onClick={() => core.removeStudent(r)}>×</span>}</span>
+            <span key={r} className="chip"><b>{i + 1}</b> {r} <span className="x" data-rm={r} onClick={() => core.removeStudent(r)}>×</span></span>
           ))}
         </div>
         {/* Wrapped so the phone can shrink it — it is the tallest card there. */}
@@ -263,10 +259,10 @@ export default function SidePanel({ zoom }) {
       <div className="card wide c-curr">
         <h3>Currency &amp; flex</h3>
         <div className="curGrid">
-          <div className="field"><label>Last Flown (Syllabus)</label><input type="date" id="lastSyll" disabled={ro} value={core.dates[s].lastSyll || ''} onChange={e => core.setLastSyll(s, e.target.value)} /></div>
-          <div className="field"><label>Last Flown (Currency)</label><input type="date" id="lastCurr" disabled={ro} value={core.dates[s].lastCurr || ''} onChange={e => core.setLastCurr(s, e.target.value)} /></div>
-          <div className="field"><label>No. of Down Days</label><input type="number" min="0" id="downDays" disabled={ro} value={core.dates[s].downDays || ''} style={{ width: 80 }} onChange={e => core.setDownDays(s, e.target.value)} /></div>
-          <div className="field"><label>Upchit Date</label><input type="date" id="upchit" disabled={ro} value={core.dates[s].upchit || ''} onChange={e => core.setUpchit(s, e.target.value)} /></div>
+          <div className="field"><label>Last Flown (Syllabus)</label><input type="date" id="lastSyll" value={core.dates[s].lastSyll || ''} onChange={e => core.setLastSyll(s, e.target.value)} /></div>
+          <div className="field"><label>Last Flown (Currency)</label><input type="date" id="lastCurr" value={core.dates[s].lastCurr || ''} onChange={e => core.setLastCurr(s, e.target.value)} /></div>
+          <div className="field"><label>No. of Down Days</label><input type="number" min="0" id="downDays" value={core.dates[s].downDays || ''} style={{ width: 80 }} onChange={e => core.setDownDays(s, e.target.value)} /></div>
+          <div className="field"><label>Upchit Date</label><input type="date" id="upchit" value={core.dates[s].upchit || ''} onChange={e => core.setUpchit(s, e.target.value)} /></div>
         </div>
         <div className="curKv">
           <div className="kv"><span>Days since syllabus</span><b>{dSyll == null ? '—' : dSyll + 'd'}</b></div>
@@ -288,7 +284,7 @@ export default function SidePanel({ zoom }) {
             <div className="t">Set pace</div>
             <div className="paceRow">
               <div className="field" style={{ margin: 0 }}>
-                <input type="number" step="0.1" min="0.5" id="epwIn" disabled={ro} value={epwRaw ?? ''} style={{ width: 52 }} onChange={e => core.setEpw(s, e.target.value)} /> <span className="mini">/wk</span>
+                <input type="number" step="0.1" min="0.5" id="epwIn" value={epwRaw ?? ''} style={{ width: 52 }} onChange={e => core.setEpw(s, e.target.value)} /> <span className="mini">/wk</span>
               </div>
               <div style={{ textAlign: 'right' }}>
                 <div className="r">{projEnd}</div><div className="mini">projected end</div>
@@ -297,12 +293,12 @@ export default function SidePanel({ zoom }) {
           </div>
           <div className="o">
             <div className="t">End date A</div>
-            <input type="date" id="targetIn" disabled={ro} value={myPace.target || ''} onChange={e => core.setTarget(s, e.target.value)} />
+            <input type="date" id="targetIn" value={myPace.target || ''} onChange={e => core.setTarget(s, e.target.value)} />
             <div className="r" style={{ marginTop: 6 }}>{reqEpw}{reqEpw !== '—' && reqEpw !== 'past' ? ' /wk' : ''}</div><div className="mini">req. pace</div>
           </div>
           <div className="o">
             <div className="t">End date B</div>
-            <input type="date" id="targetIn2" disabled={ro} value={myPace.target2 || ''} onChange={e => core.setTarget2(s, e.target.value)} />
+            <input type="date" id="targetIn2" value={myPace.target2 || ''} onChange={e => core.setTarget2(s, e.target.value)} />
             <div className="r" style={{ marginTop: 6 }}>{reqEpw2}{reqEpw2 !== '—' && reqEpw2 !== 'past' ? ' /wk' : ''}</div><div className="mini">req. pace</div>
           </div>
         </div>
@@ -348,20 +344,20 @@ export default function SidePanel({ zoom }) {
             ? (core.lulls[s] || []).map((l, i) => (
               /* Tapping the period reopens the calendar on it — the same
                  pop-up that made it, so there is one way to set these dates. */
-              <span key={i} className="chip lullchip" title={ro ? undefined : 'Tap to change these dates'}
+              <span key={i} className="chip lullchip" title="Tap to change these dates"
                 onClick={() => core.openLullPicker(s, i)}>
                 <b>{core.fmt(core.parseD(l.start))}</b>→<b>{core.fmt(core.parseD(l.end))}</b>
-                {ro ? null : <span className="x" data-lull={i}
-                  onClick={e => { e.stopPropagation(); core.removeLull(s, i); }}>×</span>}
+                <span className="x" data-lull={i}
+                  onClick={e => { e.stopPropagation(); core.removeLull(s, i); }}>×</span>
               </span>
             ))
             : <span className="mini">none</span>}
         </div>
-        {ro ? null : <div className="lullbtns">
+        <div className="lullbtns">
           <button className="sm" id="setLullBtn" onClick={() => core.openLullPicker(s, null)}>+ Set lull period</button>
           <button className="sm" id="copyLullBtn" disabled={core.roster.length < 2}
             title="Copy these periods onto other students" onClick={() => core.openLullCopy(s)}>⧉ Copy to…</button>
-        </div>}
+        </div>
       </div>
       </div>
       {core.lullPick ? <LullCalendar /> : null}

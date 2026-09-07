@@ -93,7 +93,7 @@ export default function ShowAllPanel() {
                   </div>
                 )}
               </div>
-              {editing || core.readOnly ? null : <button className="sm sedit" onClick={() => setEditId(e.id)}>Edit</button>}
+              {editing ? null : <button className="sm sedit" onClick={() => setEditId(e.id)}>Edit</button>}
             </div>
           );
         })}

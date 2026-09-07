@@ -5,14 +5,15 @@
 > that app knew about itself and did not fix, plus the three things the merge
 > changed. Read it with the merge in mind:
 >
-> - **Roles exist now.** The standalone app had none. Inside Raptor the
->   owner's rule is *everyone views, only admin edits*: the flag rides the
->   Raptor login (`state/store.ts resetSession`/`toggleRole` → `tracker/role.js`
->   → `core.js readOnly`), is enforced at every exported write path in
->   `core.js` and mirrored by the affordances (header menus, Edit, Details,
->   the File menu and the save slot hidden; side-panel boxes disabled; a
->   viewer's ball click reads the brief — Details mode forced on). Never
->   persisted. The vendored smoke suite drives as the admin throughout;
+> - **One role rule exists now.** The standalone app had none. Inside Raptor
+>   the owner's rule (his second word, 7 Sep 26) is *everyone edits; only the
+>   file portion is the admin's*: marking, charts, students, courses and
+>   syllabi are open to every login, while 📁 Open, ⊕ Import syllabus and
+>   ⤓ Save a copy need the admin. The flag rides the Raptor login
+>   (`state/store.ts resetSession`/`toggleRole` → `tracker/role.js` → `core.js
+>   fileLocked`), is enforced at those three entry points in `core.js` and
+>   mirrored by `Header.jsx` (the File menu not drawn). Never persisted. The
+>   vendored smoke suite drives as the admin throughout;
 >   `src/tracker/tracker.test.tsx` pins the member shape.
 > - **The cloud-sync layers are GONE.** `sync/cloud.js` (Dataverse/Firebase)
 >   and `sync/local.js` (a SharePoint file, falling back to localStorage) were

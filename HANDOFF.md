@@ -155,9 +155,11 @@ jobs green (build + reference suite, unit raptor, unit leavewar ×2, geometry
   under `allowJs`), a lazy chunk (~333 KB, the first download unchanged at
   487 KB), kept mounted once visited. Owner's three answers: keep its own 📁
   Open / ✓ Save file (storage behind one doorway, `tracker/storage.js`, for
-  the database later; the SharePoint/cloud layers dropped); everyone views,
-  only admin edits (`tracker/role.js` ← `resetSession`/`toggleRole`, enforced
-  at every write path in `core.js`); standalone first — no link to Raptor's
+  the database later; the SharePoint/cloud layers dropped); **everyone edits —
+  only the FILE portion (Open / Import / Save a copy) is the admin's** (his
+  second word the same day, replacing "everyone views, admin edits";
+  `tracker/role.js` ← `resetSession`/`toggleRole`, enforced at the three file
+  entry points in `core.js`); standalone first — no link to Raptor's
   people. Contracts `docs/ui-contracts.md` §The Tracker tab, seams
   `docs/feature-impact.md`, gaps + carried traps `docs/tracker/known-gaps.md`,
   the architecture paragraph `CLAUDE.md` §The Tracker tab is a THIRD app.
@@ -167,9 +169,8 @@ jobs green (build + reference suite, unit raptor, unit leavewar ×2, geometry
   member: no console/page errors, no 4xx, nothing leaks onto the other tabs,
   the chart survives a tab round-trip. **What his eyes still need**: the feel
   on his iPhone (the tab is a viewport-tall column — chart and panel scroll
-  inside, the page does not), whether he wants the Tracker's own dark palette
-  kept or Raptor's, and whether a member should be able to OPEN a file to look
-  at (today: no — File menu is admin's). `BUG-TESTING.md` row #376.
+  inside, the page does not), and whether he wants the Tracker's own dark
+  palette kept or Raptor's. `BUG-TESTING.md` row #376.
 
 - **ONE LIFT, EVERY DRAG — on the branch, unmerged, iPhone-unverified (6–7 Sep
   26).** All twelve drag surfaces now share one picked-up look (an even inset
@@ -675,15 +676,15 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | file | what it does |
 |---|---|
 | `TrackerPage.tsx` | The ONE page seam: renders the standalone app's `<App/>` inside `#page-tracker`, measures `--tr-top` (the section's top edge — the column is the viewport minus that), locks the document (`body.tr-on`) while the tab is up, kicks a `resize` on show. Kept mounted once visited (Shell.tsx `trEverRef`) because the board is drawn imperatively once. |
-| `role.js` | The read-only flag and its listeners — a NO-IMPORT module so Raptor's `resetSession`/`toggleRole` can write the role without loading the chart engine (the seam `tracker.test.tsx` guards). |
+| `role.js` | The FILE-LOCK flag and its listeners — a NO-IMPORT module so Raptor's `resetSession`/`toggleRole` can write it without loading the chart engine (the seam `tracker.test.tsx` guards). Locked = a member/logout: Open, Import and Save a copy refuse; everything else is everyone's. |
 | `storage.js` | The storage doorway: async get/set/delete/list over localStorage (`ocu:` keys), `flushNow`/`loadLatest` no-ops. Replaced `sync/cloud.js` + `sync/local.js`. The database plugs in here. |
-| `App.jsx` | The standalone app's root, adapted: `.tr-root` column (was `<body>`/`#root`), phone tab classes on the page section (was `body.tab-*`), the resizer's `--sideW` on the section, document listeners gated on `active`, the Details hint hidden for a viewer. |
-| `app/core.js` | The whole model + the imperatively rendered SVG flow board (3.1k lines, verbatim port). Adapted: imports `../storage.js` + `../role.js`, `readOnly` mirrored from role.js with `applyReadOnly` (closes pop-ups, leaves edit mode, forces Details on), and `if (readOnly) return` at the head of every exported write (grading, edit mode, editors, student/date/pace/lull writes, course/syllabus menus, file open/save/import). The cloud button state and sinks are gone. |
+| `App.jsx` | The standalone app's root, adapted: `.tr-root` column (was `<body>`/`#root`), phone tab classes on the page section (was `body.tab-*`), the resizer's `--sideW` on the section, document listeners gated on `active`. |
+| `app/core.js` | The whole model + the imperatively rendered SVG flow board (3.1k lines, verbatim port). Adapted: imports `../storage.js` + `../role.js`, `fileLocked` mirrored from role.js, and `if (fileLocked) return` at the head of the three file entry points only (`openFileClick`, `importSyllabusClick`, `openCopy`/`saveCopyClick`). The cloud button state and sinks are gone. |
 | `app/fileFormat.js` · `app/fileStore.js` · `app/eventOrder.js` | The saved file's shape (no browser APIs); the File System Access wrapper (in-place write on Chrome/Edge, download elsewhere; pickers need a live click); the Show All grouping/search — unchanged. |
-| `components/` | Header (Course/Syllabus/File menus, Edit, Details, the save slot — all hidden for a viewer), ArrangeTools (`#trUndoBtn`/`#trRedoBtn` renamed from Raptor's ids), SidePanel (boxes disabled, student/lull actions hidden for a viewer), ShowAllPanel (per-event Edit hidden for a viewer), Pop, Legend, Modals, ZoomControls — otherwise unchanged. |
+| `components/` | Header (the File menu hidden while the file is locked; everything else drawn for every login), ArrangeTools (`#trUndoBtn`/`#trRedoBtn` renamed from Raptor's ids), SidePanel, ShowAllPanel, Pop, Legend, Modals, ZoomControls — otherwise unchanged. |
 | `data/` | `syllabi.js` (one single-line JSON blob per syllabus — edit by replacing the LINE), `layouts.js`, `eventInfo.js`, `seedState.js` — verbatim, no student names (public repo). |
 | `tracker.css` | The standalone stylesheet wrapped under `#page-tracker` (native nesting, the Leave War recipe) with FIVE Raptor collision resets first (`.day`, `.day.today`, `.legend`, `.modal`, `.sub`); `#detailBubble` and `body.tr-on` sit outside the wrapper on purpose. |
-| `tracker.test.tsx` | The seam pins: role rides the session both ways, write paths refuse a viewer, the header's viewer/admin shape, role.js imports nothing, the renamed ids. |
+| `tracker.test.tsx` | The seam pins: the file lock rides the session both ways, only the three file entry points refuse (count pinned), the header hides only the File menu, role.js imports nothing, the renamed ids. |
 | `../../scripts/tracker/smoke.mjs` | The vendored 345-check browser suite; `openTracker()` (login + tab) replaced every `goto`/`reload`. `npm run smoke:tracker`; CI job `tracker (smoke)`. |
 | `../../scripts/tracker/bake-user-charts.mjs` + `course-map-*.json` + `gen-agaa-layout.mjs` | The owner's chart-file loop (bake his file's `charts` half into `data/`), the two transcribed course maps the smoke pins the charts against, and the historical A/G–A/A layout generator (do NOT re-run — his hand edits sit on top). |
 | `../../sample-data/OCU_state_sample.json` | Legacy state export, a smoke fixture only. |

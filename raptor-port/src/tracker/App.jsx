@@ -98,7 +98,7 @@ export default function App({ active = true }) {
   }, [active]);
 
   return (
-    <div className={'tr-root' + (core.readOnly ? ' ro' : '')}>
+    <div className="tr-root">
       <Header />
       <ArrangeTools />
       {/* Zero-height wrapper: the hint FLOATS over the legend/board instead of
@@ -123,10 +123,8 @@ export default function App({ active = true }) {
       </div>
       {/* In normal flow, not floating: its text never changes while it is up,
           so there is nothing for the chart to jump about, and on a phone it
-          covered the view tabs. A read-only viewer is ALWAYS in Details mode
-          (core.setReadOnly) and cannot turn it off, so the hint would only be
-          telling them about a switch they do not have — it is not drawn. */}
-      {!core.arrangeMode && core.showDetails && !core.readOnly
+          covered the view tabs. */}
+      {!core.arrangeMode && core.showDetails
         ? <div className="arrhint on inflow" id="detailsHint">
             Details mode — click an event for its brief. <b>Marking is off.</b>
             <button className="hintoff" id="detailsHintOff" onClick={core.toggleDetails}>Turn off</button>

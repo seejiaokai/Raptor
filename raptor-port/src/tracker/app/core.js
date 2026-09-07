@@ -14,7 +14,7 @@ import { storage, flushNow, loadLatest } from '../storage.js';
 import * as FMT from './fileFormat.js';
 import * as FS from './fileStore.js';
 import { findEvents } from './eventOrder.js';
-import { isReadOnly, onReadOnly } from '../role.js';
+import { isFileLocked, onFileLocked } from '../role.js';
 
 export { SYLLABI, SYL_NAMES, DEFAULT_SYL_NAME, DEFAULT_SYL_ORDER, DEFAULT_LAYOUTS, EVENT_INFO };
 
@@ -31,35 +31,21 @@ const refreshSyl = notify;
 const refreshActive = notify;
 const refreshCourses = notify;
 
-/* ---------- READ-ONLY: the Raptor role seam (7 Sep 26, the Tracker merge) ----------
-   The standalone app had no roles at all. Inside Raptor the owner's rule is
-   "everyone views, only admin edits" — the same split Edit Schedule has — and
-   this flag is the ONE place the tab learns which it is. Written only by
-   Raptor's resetSession (every login/logout) and the admin's view-as-member
-   toggle, through setReadOnly below; never persisted, never re-read, so it
-   can never disagree with the session actually looking at the page.
-   Enforced at the WRITE PATH (every exported mutation below opens with
-   `if (readOnly) return`), not only at the affordance: the header hides the
-   menus and buttons, the side panel disables its boxes, but a stray click,
-   a keyboard shortcut or a test driving core directly meets the same wall.
-   A read-only viewer's ball click shows the event's brief instead of the
-   grading pop-up — Details mode is forced on, and its toggle is hidden. */
-export let readOnly = isReadOnly();
-/* The flag itself lives in ../role.js (so Raptor can write it without loading
-   this module); this is the Tracker's reaction to a change of role. */
-onReadOnly(applyReadOnly);
-function applyReadOnly(next) {
-  if (next === readOnly) return;
-  readOnly = next;
-  if (readOnly) {
-    pop = null; lullPick = null; lullCopy = null; infoId = null; editId = null;
-    ordMode = null; sylModalOpen = false; copyOpen = false;
-    if (arrangeMode) { arrangeMode = false; connectSrc = null; }
-    showDetails = true;
-  } else showDetails = false;
-  notify();
-  if (ready) renderBoard();
-}
+/* ---------- FILE ACCESS: the Raptor role seam (7 Sep 26, the Tracker merge) ----------
+   The standalone app had no roles at all. Inside Raptor the owner's rule
+   (his second word, 7 Sep 26) is: everyone — admin and member alike — marks,
+   edits charts and manages students, courses and syllabi exactly as before;
+   ONLY the file portion is the admin's: 📁 Open, ⊕ Import syllabus, ⤓ Save a
+   copy. ✓ Save changes stays for everyone (it persists the syllabus to the
+   browser store; its file half only fires when a file is open, which only an
+   admin can do). The flag is written by Raptor's resetSession (every
+   login/logout) and the admin's view-as-member toggle, through role.js;
+   never persisted, never re-read, so it can never disagree with the session
+   actually looking at the page. Enforced at the WRITE PATH (the three file
+   entry points below open with `if (fileLocked) return`), not only at the
+   affordance (Header.jsx hides the File menu). */
+export let fileLocked = isFileLocked();
+onFileLocked(next => { if (next === fileLocked) return; fileLocked = next; if (fileLocked) copyOpen = false; notify(); });
 
 export const DEFAULT_SYLLABUS = SYLLABI[DEFAULT_SYL_NAME];
 export const TYPE_COLOR = { flight: '#19b6e8', acad: '#27d64a', test: '#ff4040', sim: '#ffe000', device: '#b063ff' };
@@ -1710,7 +1696,7 @@ function connectClick(id) {
   pushUndo(); ev.prereqs = ev.prereqs || []; ev.prereqs.push(src);
   markDirty(); renderBoard(); renderSide();
 }
-export async function addModule(type) { if (readOnly) return;
+export async function addModule(type) {
   let id = ((await uiPrompt('Name for the new ' + type + ' event:')) || '').trim();
   if (!id) return;
   if (byid[id]) { await uiAlert('An event with that name already exists.'); return; }
@@ -1795,7 +1781,7 @@ export let editId = null;
 export function openEdit(id) { const ev = byid[id]; if (!ev) return; editId = id; notify(); }
 export function closeEdit() { editId = null; notify(); }
 /* Values from the modal; returns an error string, or null on success. */
-export async function saveEdit(vals) { if (readOnly) return;
+export async function saveEdit(vals) {
   const ev = byid[editId]; if (!ev) { closeEdit(); return null; }
   /* --- validate the prereq links before touching anything --- */
   const raw = vals.links;
@@ -1839,7 +1825,7 @@ export async function saveEdit(vals) { if (readOnly) return;
   markDirty(); await saveLayout(); closeEdit(); refreshSyl(); renderBoard(); renderSide();
   return null;
 }
-export async function deleteFromEditModal() { if (readOnly) return;
+export async function deleteFromEditModal() {
   const rid = editId; if (!rid || !byid[rid]) return;
   /* Ask first, close after. The editor used to close before the question was
      put, so answering "no" left the user with nothing on screen and the edit
@@ -1918,16 +1904,16 @@ export function sliceBg(cols) {
 }
 
 /* ---------- side panel actions (inputs live in <SidePanel/>) ---------- */
-export async function setLastSyll(s, v) { if (readOnly) return; dates[s].lastSyll = v; dates[s].lastCurr = v; await saveDates(s); renderSide(); }
-export async function setLastCurr(s, v) { if (readOnly) return; dates[s].lastCurr = v; await saveDates(s); renderSide(); }
-export async function setDownDays(s, v) { if (readOnly) return; dates[s].downDays = v; await saveDates(s); renderSide(); }
-export async function setUpchit(s, v) { if (readOnly) return; dates[s].upchit = v; await saveDates(s); renderSide(); }
+export async function setLastSyll(s, v) { dates[s].lastSyll = v; dates[s].lastCurr = v; await saveDates(s); renderSide(); }
+export async function setLastCurr(s, v) { dates[s].lastCurr = v; await saveDates(s); renderSide(); }
+export async function setDownDays(s, v) { dates[s].downDays = v; await saveDates(s); renderSide(); }
+export async function setUpchit(s, v) { dates[s].upchit = v; await saveDates(s); renderSide(); }
 /* v is kept verbatim — an empty or half-typed box must stay as typed. epwOf()
    does the coercion for the arithmetic. */
-export async function setEpw(s, v) { if (readOnly) return; pace[s] = { ...paceOf(s), epw: v }; await savePace(s); renderSide(); }
-export async function setTarget(s, v) { if (readOnly) return; pace[s] = { ...paceOf(s), target: v }; await savePace(s); renderSide(); }
-export async function setTarget2(s, v) { if (readOnly) return; pace[s] = { ...paceOf(s), target2: v }; await savePace(s); renderSide(); }
-export async function removeLull(s, i) { if (readOnly) return;
+export async function setEpw(s, v) { pace[s] = { ...paceOf(s), epw: v }; await savePace(s); renderSide(); }
+export async function setTarget(s, v) { pace[s] = { ...paceOf(s), target: v }; await savePace(s); renderSide(); }
+export async function setTarget2(s, v) { pace[s] = { ...paceOf(s), target2: v }; await savePace(s); renderSide(); }
+export async function removeLull(s, i) {
   (lulls[s] = lulls[s] || []).splice(i, 1); await saveLulls(s); renderSide();
 }
 export function calPrev() { calView = new Date(calView.getFullYear(), calView.getMonth() - 1, 1); notify(); }
@@ -1940,14 +1926,14 @@ export function calNext() { calView = new Date(calView.getFullYear(), calView.ge
    the old "set mode to Lull start, click, set mode to Lull end, click" pair is
    exactly what made this unusable. */
 export let lullPick = null;   /* {student, index, start} while the pop-up is up */
-export function openLullPicker(s, index) { if (readOnly) return;
+export function openLullPicker(s, index) {
   const cur = (index != null) ? (lulls[s] || [])[index] : null;
   lullPick = { student: s, index: (index == null ? -1 : index), start: null };
   if (cur && cur.start) { const d = parseD(cur.start); if (d) calView = new Date(d.getFullYear(), d.getMonth(), 1); }
   notify();
 }
 export function closeLullPicker() { lullPick = null; notify(); }
-export async function lullDayClick(iso) { if (readOnly) return;
+export async function lullDayClick(iso) {
   if (!lullPick) return;
   if (!lullPick.start) { lullPick = { ...lullPick, start: iso }; notify(); return; }
   let a = lullPick.start, b = iso;
@@ -1963,14 +1949,14 @@ export async function lullDayClick(iso) { if (readOnly) return;
 
 /* ---------- copying periods between students ---------- */
 export let lullCopy = null;   /* {from, picked:[...]} while the tick-list is up */
-export function openLullCopy(from) { if (readOnly) return; lullCopy = { from, picked: [] }; notify(); }
+export function openLullCopy(from) { lullCopy = { from, picked: [] }; notify(); }
 export function closeLullCopy() { lullCopy = null; notify(); }
 export function toggleLullCopy(s, on) {
   if (!lullCopy) return;
   const picked = on ? [...new Set([...lullCopy.picked, s])] : lullCopy.picked.filter(x => x !== s);
   lullCopy = { ...lullCopy, picked }; notify();
 }
-export async function applyLullCopy() { if (readOnly) return;
+export async function applyLullCopy() {
   if (!lullCopy) return;
   const src = (lulls[lullCopy.from] || []).map(l => ({ start: l.start, end: l.end }));
   for (const s of lullCopy.picked) { lulls[s] = src.map(l => ({ ...l })); await saveLulls(s); }
@@ -2004,7 +1990,7 @@ export let pop = null;               /* {id, x, y} */
 export let popFlightDate = '';
 export function isoOf(d) { return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
 export function isoToday() { try { return new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Singapore', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date()); } catch (e) { return isoOf(new Date()); } }
-export function openPop(id, evt) { if (readOnly) return;
+export function openPop(id, evt) {
   pop = { id, x: evt.clientX, y: evt.clientY };
   const isFlight = byid[id] && byid[id].type === 'flight';
   popFlightDate = isFlight ? isoToday() : '';
@@ -2076,7 +2062,7 @@ export function showLastEdit(s) {
   if (!rec || !rec.event || rec.syl !== curSyl()) return false;
   return scrollToEvent(rec.event);
 }
-export async function popGrade(v) { if (readOnly) return;
+export async function popGrade(v) {
   const s = active; const popId = pop && pop.id; if (!popId) return;
   if (v === 'cancel') { closePop(); return; }
   /* A syllabus with nobody on its roster leaves active null, and grading threw
@@ -2090,7 +2076,7 @@ export async function popGrade(v) { if (readOnly) return;
   if (byid[popId] && byid[popId].type === 'flight' && DONE.has(v)) await flownOn(s, popFlightDate || isoToday());
   renderBoard(); renderSide(); closePop();
 }
-export async function popFail(delta) { if (readOnly) return;
+export async function popFail(delta) {
   const s = active; const popId = pop && pop.id; if (!popId || !s) return;
   marks[s] = marks[s] || {};
   marks[s][popId] = marks[s][popId] || { g: 0, f: 0 };
@@ -2102,7 +2088,7 @@ export async function popFail(delta) { if (readOnly) return;
   marks[s][popId].f = Math.max(0, (marks[s][popId].f || 0) + delta);
   await saveMarks(s); renderBoard(); renderSide();
 }
-export async function popFlightChanged(v) { if (readOnly) return;
+export async function popFlightChanged(v) {
   const s = active; const popId = pop && pop.id;
   popFlightDate = v; notify();
   if (!popId || !byid[popId] || byid[popId].type !== 'flight') return;
@@ -2156,10 +2142,10 @@ export function toggleDetails() {
 }
 /* ---------- event info editor ---------- */
 export let infoId = null;
-export function openInfo(id) { if (readOnly) return; infoId = id; notify(); }
+export function openInfo(id) { infoId = id; notify(); }
 export function closeInfo() { infoId = null; notify(); }
 /* the id-explicit forms — used by the inline editor in the Show All list */
-export async function saveInfoFor(id, vals) { if (readOnly) return;
+export async function saveInfoFor(id, vals) {
   if (!id) return;
   const t = v => (v == null ? '' : String(v)).trim();
   const o = { name: t(vals.name), fmt: t(vals.fmt), hrs: t(vals.hrs), crew: t(vals.crew), pre: t(vals.pre) };
@@ -2184,22 +2170,22 @@ export async function saveInfoFor(id, vals) { if (readOnly) return;
      Without this the Save button never lit and the file quietly fell behind. */
   await saveEventInfo(); markFileDirty(); renderBoard(); renderSide();
 }
-export async function resetInfoFor(id) { if (readOnly) return;
+export async function resetInfoFor(id) {
   if (!id) return;
   delete eventInfo[id]; await saveEventInfo(); markFileDirty(); renderBoard(); notify();
 }
-export async function saveInfo(vals) { if (readOnly) return;
+export async function saveInfo(vals) {
   const id = infoId; if (!id) return;
   await saveInfoFor(id, vals); closeInfo();
 }
-export async function resetInfo() { if (readOnly) return; await resetInfoFor(infoId); }
+export async function resetInfo() { await resetInfoFor(infoId); }
 /* ---------- Show All ---------- */
 export let showAllOpen = false;
 export function openShowAll() { showAllOpen = true; notify(); }
 export function closeShowAll() { showAllOpen = false; notify(); }
 
 /* ---------- roster / course ops ---------- */
-export async function addStudent() { if (readOnly) return;
+export async function addStudent() {
   const v = ((await uiPrompt('Student callsign:')) || '').trim().toUpperCase(); if (!v) return;
   if (!roster.includes(v)) {
     roster.push(v); marks[v] = {}; dates[v] = { lastSyll: null, lastCurr: null };
@@ -2207,7 +2193,7 @@ export async function addStudent() { if (readOnly) return;
   }
   active = v; refreshActive(); renderBoard(); renderSide();
 }
-export async function removeStudent(v) { if (readOnly) return;
+export async function removeStudent(v) {
   if (!await uiConfirm('Remove ' + v + ' from ' + plan.sylName + '?\n\nTheir marks, dates, pace and lull periods on this syllabus are deleted.')) return;
   roster = roster.filter(x => x !== v); delete marks[v]; delete dates[v];
   await saveRoster();
@@ -2329,9 +2315,9 @@ export async function switchSyllabus(v) {
    Header.jsx passes them straight to onClick, so a single openOrd(mode) would
    silently receive the click event as its mode. */
 export let ordMode = null;               /* null | 'syllabus' | 'course' | 'crew' */
-export function openOrd() { if (readOnly) return; ordMode = 'syllabus'; notify(); }
-export function openOrdCourse() { if (readOnly) return; ordMode = 'course'; notify(); }
-export function openOrdCrew() { if (readOnly) return; ordMode = 'crew'; notify(); }
+export function openOrd() { ordMode = 'syllabus'; notify(); }
+export function openOrdCourse() { ordMode = 'course'; notify(); }
+export function openOrdCrew() { ordMode = 'crew'; notify(); }
 export function closeOrd() { ordMode = null; notify(); }
 /* Rank against what actually exists now, the way orderedSylNames does: a
    teammate can add a course or a student over SharePoint while the modal sits
@@ -2340,13 +2326,13 @@ function reranked(list, live) {
   const ranked = list.filter(n => live.includes(n));
   return [...ranked, ...live.filter(n => !ranked.includes(n))];
 }
-export async function saveOrderList(list) { if (readOnly) return;
+export async function saveOrderList(list) {
   SYL_ORDER = [...list]; await saveSylOrder();
   closeOrd(); refreshSyl();
   setSaveStatus('syllabus order saved', 'ok');
 }
 /* COURSES is itself the display order, so there is no separate ranking key. */
-export async function saveCourseOrder(list) { if (readOnly) return;
+export async function saveCourseOrder(list) {
   COURSES = reranked(list, COURSES); await saveCourses();
   closeOrd(); refreshCourses();
   setSaveStatus('course order saved', 'ok');
@@ -2354,12 +2340,12 @@ export async function saveCourseOrder(list) { if (readOnly) return;
 /* renderBoard is NOT optional: wedge(i,n) slices every ball's ring by roster
    index, so without it the key re-orders while the balls keep the old
    assignment until the next grade. */
-export async function saveCrewOrder(list) { if (readOnly) return;
+export async function saveCrewOrder(list) {
   roster = reranked(list, roster); await saveRoster();
   closeOrd(); refreshActive(); renderBoard(); renderSide();
   setSaveStatus('crew order saved', 'ok');
 }
-export async function restoreHiddenSyl(n) { if (readOnly) return;
+export async function restoreHiddenSyl(n) {
   SYL_HIDDEN = SYL_HIDDEN.filter(x => x !== n);
   delete SYL_TOMB[n];
   await saveSylPrefs();
@@ -2377,7 +2363,7 @@ export async function switchCourse(v) {
      "unsaved flow edits" about a chart that had just been discarded. */
   setSaveStatus('switched to ' + v, 'ok');
 }
-export async function addCourse() { if (readOnly) return;
+export async function addCourse() {
   if (!await leaveFlowEdits('Discard them and add a course?')) return;
   const v = ((await uiPrompt('New course name (e.g. 26BBSG):')) || '').trim().toUpperCase(); if (!v) return;
   /* Front, not back: the newest course is the one being set up, so it should be
@@ -2390,7 +2376,7 @@ export async function addCourse() { if (readOnly) return;
   await loadCourse(v); refreshCourses(); refreshSyl(); refreshActive(); renderBoard(); renderSide();
   setSaveStatus('course ' + v + ' created on the ' + useName + ' syllabus — add students to begin', 'ok');
 }
-export async function renCourse() { if (readOnly) return;
+export async function renCourse() {
   if (!await leaveFlowEdits('Discard them and rename the course?')) return;
   const old = course;
   const v = ((await uiPrompt('Rename course “' + old + '” to:', old)) || '').trim().toUpperCase();
@@ -2432,7 +2418,7 @@ export async function renCourse() { if (readOnly) return;
   await loadCourse(v); refreshCourses(); refreshSyl(); refreshActive(); renderBoard(); renderSide();
   setSaveStatus('renamed ' + old + ' → ' + v, 'ok');
 }
-export async function delCourse() { if (readOnly) return;
+export async function delCourse() {
   if (COURSES.length <= 1) { await uiAlert('Keep at least one course.'); return; }
   if (!await leaveFlowEdits('Discard them and delete the course?')) return;
   if (!await uiConfirm('Delete course ' + course + '? (marks remain in storage)')) return;
@@ -2442,10 +2428,10 @@ export async function delCourse() { if (readOnly) return;
 
 /* ---------- syllabus editor (JSON modal) ---------- */
 export let sylModalOpen = false;
-export function openModal() { if (readOnly) return; sylModalOpen = true; notify(); }
+export function openModal() { sylModalOpen = true; notify(); }
 export function closeModal() { sylModalOpen = false; notify(); }
 /* Returns an error string, or null on success. */
-export async function saveSylText(text) { if (readOnly) return;
+export async function saveSylText(text) {
   try {
     const arr = JSON.parse(text);
     if (!Array.isArray(arr)) throw new Error('Must be a JSON array');
@@ -2478,7 +2464,7 @@ export async function persistSyl() {
   return true;
 }
 
-export async function dupSyl() { if (readOnly) return;
+export async function dupSyl() {
   const src = plan.sylName;
   const nm = ((await uiPrompt('Name for the duplicated syllabus:', src + ' copy')) || '').trim();
   if (!nm) return;
@@ -2510,7 +2496,7 @@ export async function dupSyl() { if (readOnly) return;
 }
 
 /* Add syllabus: a brand-new EMPTY sheet (no events, no marks). */
-export async function addSyl() { if (readOnly) return;
+export async function addSyl() {
   const nm = ((await uiPrompt('Name for the new (empty) syllabus:', 'New syllabus')) || '').trim();
   if (!nm) return;
   if (allSylNames().includes(nm)) { await uiAlert('A syllabus with that name already exists.'); return; }
@@ -2534,7 +2520,7 @@ export async function addSyl() { if (readOnly) return;
 }
 
 /* Rename syllabus: works on built-ins too. */
-export async function renSyl() { if (readOnly) return;
+export async function renSyl() {
   const old = plan.sylName;
   const nm = ((await uiPrompt('Rename syllabus “' + old + '” to:', old)) || '').trim();
   if (!nm || nm === old) return;
@@ -2567,7 +2553,7 @@ export async function renSyl() { if (readOnly) return;
 }
 
 /* Delete syllabus: removes ANY syllabus - custom or built-in. */
-export async function delSyl() { if (readOnly) return;
+export async function delSyl() {
   const nm = plan.sylName, isB = !!builtinOf(nm);
   if (allSylNames().length <= 1) { await uiAlert('Keep at least one syllabus.'); return; }
   let confirmed = false;
@@ -2610,7 +2596,7 @@ export async function delSyl() { if (readOnly) return;
   }
 }
 
-export function toggleArrange() { if (readOnly) return;
+export function toggleArrange() {
   arrangeMode = !arrangeMode;
   /* Capture the framing FIRST (see original comments). */
   if (arrangeMode) { captureViewFromScroll(); setTool('move'); renderBoard(); applyView(); }
@@ -2651,7 +2637,7 @@ export function handleEscapeKey(e) {
   e.preventDefault(); finishLine(drawing.pts.length >= 2);
 }
 /* Delete / Backspace removes the current selection while arranging */
-export async function handleDeleteKey(e) { if (readOnly) return;
+export async function handleDeleteKey(e) {
   if (e.key !== 'Delete' && e.key !== 'Backspace') return;
   if (!arrangeMode) return;
   if (selLine && !selBalls.size) {
@@ -2702,7 +2688,7 @@ export function setFont(v) {
   if (selBalls.size) selBalls.forEach(id => layout.__font[id] = v); else layout.__font.__all = v;
   markDirty(); saveLayout(); renderBoard();
 }
-export async function resetLayoutClick() { if (readOnly) return;
+export async function resetLayoutClick() {
   /* Name the lines. "Manual moves" read as "the boxes I dragged", but this
      empties the whole layout — every hand-drawn line goes with it, and once any
      later edit saves the empty state the shipped lines stop coming back. */
@@ -2977,7 +2963,7 @@ async function fileBody(opts, savedAt) {
   });
 }
 
-export async function openFileClick() { if (readOnly) return;
+export async function openFileClick() { if (fileLocked) return;
   if (!FS.canWriteInPlace()) { await uiAlert('This browser cannot open a file directly.\n\nUse Chrome or Edge.'); return; }
   const picked = await FS.pickOpen();          /* no await before this — gesture */
   if (!picked) return;
@@ -3004,7 +2990,7 @@ export async function openFileClick() { if (readOnly) return;
    have to opt in — the safety measure agreed when tick-boxes were chosen over
    two files that cannot mix. */
 export let copyOpen = false, copyOpts = { charts: true, students: false }, copyPick = {};
-export function openCopy() { if (readOnly) return;
+export function openCopy() { if (fileLocked) return;
   copyOpts = { charts: true, students: false };
   copyPick = {}; orderedSylNames().forEach(n => { copyPick[n] = (n === curSyl()); });
   copyOpen = true; notify();
@@ -3013,7 +2999,7 @@ export function closeCopy() { copyOpen = false; notify(); }
 export function setCopyOpt(which, on) { copyOpts = { ...copyOpts, [which]: !!on }; notify(); }
 export function setCopyPick(name, on) { copyPick = { ...copyPick, [name]: !!on }; notify(); }
 
-export async function saveCopyClick() { if (readOnly) return;
+export async function saveCopyClick() { if (fileLocked) return;
   const names = Object.keys(copyPick).filter(n => copyPick[n]);
   if (!copyOpts.charts && !copyOpts.students) { await uiAlert('Tick charts, students, or both.'); return; }
   if (copyOpts.charts && !names.length) { await uiAlert('Tick at least one syllabus.'); return; }
@@ -3040,7 +3026,7 @@ export async function saveCopyClick() { if (readOnly) return;
    for when a new syllabus is issued. Marks are never touched either way:
    applyCharts writes no roster, mark or date key, which smoke.mjs pins by
    watching every storage write. */
-export async function importSyllabusClick() { if (readOnly) return;
+export async function importSyllabusClick() { if (fileLocked) return;
   if (!FS.canWriteInPlace()) { await uiAlert('This browser cannot open a file directly.\n\nUse Chrome or Edge.'); return; }
   const picked = await FS.pickOpen();          /* no await before this — gesture */
   if (!picked) return;
@@ -3076,7 +3062,7 @@ export async function importSyllabusClick() { if (readOnly) return;
 
 /* One Save button, not two. It saves the syllabus into the browser as it always
    did, and then writes your file — which is where the work really lives. */
-export async function saveChangesClick() { if (readOnly) return;
+export async function saveChangesClick() {
   /* Ask for write permission FIRST, before anything else awaits. Opening a file
      only grants read, so saving has to ask — and the browser only allows that
      question while the click that started it is still live. Doing any other work
@@ -3136,13 +3122,6 @@ export let ready = false;
 let initStarted = false;
 export async function init() {
   if (initStarted) return; initStarted = true;
-  /* A member who logged in BEFORE ever opening this tab: role.js already
-     held read-only when this module loaded (so every guard above is right
-     from the first click), but applyReadOnly never ran — it only fires on a
-     CHANGE — so Details mode would not be forced on and a viewer's ball click
-     would fall into the guarded grading pop-up and do nothing. Settle it here,
-     once every module-level `let` exists. */
-  if (readOnly) showDetails = true;
   await applyBundle();
   await loadCourses();
   await loadSylPrefs();

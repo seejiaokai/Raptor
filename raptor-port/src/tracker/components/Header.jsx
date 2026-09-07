@@ -109,14 +109,12 @@ export default function Header() {
   const sylValue = (core.plan && core.plan.sylName) || core.DEFAULT_SYL_NAME;
   const sylOptions = sylNames.includes(sylValue) ? sylNames : [...sylNames, sylValue];
   const dirty = core.sylDirty || core.fileDirty;
-  /* READ-ONLY (Raptor's member login, 7 Sep 26): the bar keeps everything used
-     to CHOOSE what is looked at — Crew, Show All, the search, the Course and
-     Syllabus dropdowns — and drops everything that CHANGES it: the two menus,
-     the File menu (a file opened here would load into this browser's store,
-     which is an edit), Edit mode, the Details toggle (Details is forced on for
-     a viewer, core.setReadOnly) and the Save slot. The write paths behind each
-     are guarded in core.js too; this is the affordance half. */
-  const ro = core.readOnly;
+  /* THE FILE PORTION IS THE ADMIN'S (owner, 7 Sep 26): a member gets every
+     other control on this bar — the pickers, the Course and Syllabus menus,
+     Edit, Details and Save changes — and not the File menu (Open, Import,
+     Save a copy). The three entry points behind it are guarded in core.js
+     too; this is the affordance half. */
+  const fileLocked = core.fileLocked;
 
   return (
     <header>
@@ -149,27 +147,27 @@ export default function Header() {
             {core.COURSES.map(c => <option key={c} value={c}>{c}</option>)}
           </select>
         </label>
-        {ro ? null : <Menu id="course" label="Course" title="Add, rename or delete a course">
+        <Menu id="course" label="Course" title="Add, rename or delete a course">
           <button className="sm" id="addCourse" onClick={core.addCourse}>+ Add course</button>
           <button className="sm" id="renCourse" title="Rename the current course" onClick={core.renCourse}>✎ Rename course</button>
           <button className="sm" id="ordCourse" title="Change the order courses appear in the dropdown" onClick={core.openOrdCourse}>⇅ Reorder courses</button>
           <div className="msep" />
           <button className="sm" id="delCourse" title="Delete the current course" onClick={core.delCourse}>🗑 Delete course</button>
-        </Menu>}
+        </Menu>
 
         <label className="sub"><span className="lbltx">Syllabus</span>{' '}
           <select id="sylSel" value={sylValue} onChange={e => core.switchSyllabus(e.target.value)}>
             {sylOptions.map(n => <option key={n} value={n}>{n + (core.CUSTOMS[n] ? ' ✎' : '')}</option>)}
           </select>
         </label>
-        {ro ? null : <Menu id="syl" label="Syllabus" title="Duplicate, add, rename, reorder or delete a syllabus">
+        <Menu id="syl" label="Syllabus" title="Duplicate, add, rename, reorder or delete a syllabus">
           <button className="sm" id="dupSyl" title="Make an exact copy of the current syllabus, including every student's marks" onClick={core.dupSyl}>⧉ Duplicate syllabus</button>
           <button className="sm" id="addSyl" title="Create a new syllabus from the current structure with a clean slate (no marks)" onClick={core.addSyl}>+ Add syllabus</button>
           <button className="sm" id="renSyl" title="Rename the current syllabus (built-ins included)" onClick={core.renSyl}>✎ Rename syllabus</button>
           <button className="sm" id="ordSyl" title="Change the order syllabi appear in the dropdown" onClick={core.openOrd}>⇅ Reorder syllabi</button>
           <div className="msep" />
           <button className="sm" id="delSyl" title="Delete the current syllabus, built-in or custom. Deleted built-ins can be restored from Reorder." onClick={core.delSyl}>🗑 Delete syllabus</button>
-        </Menu>}
+        </Menu>
         {/* Everything used to CHOOSE what you are looking at sits to the left of
             this; everything you DO sits to the right. A real element rather than
             margin-left:auto on the File menu: with a wrapping bar an auto margin
@@ -177,8 +175,7 @@ export default function Header() {
             depend on where the bar happened to wrap. */}
         <span className="hspacer" />
 
-        {ro ? null : <>
-        <Menu id="file" label="File" title="Open your file, bring a syllabus in, or hand a copy over">
+        {fileLocked ? null : <Menu id="file" label="File" title="Open your file, bring a syllabus in, or hand a copy over">
           <button className="sm" id="openFileBtn" title="Open your syllabus file, or start a new one" onClick={core.openFileClick}>📁 Open…</button>
           <button className="sm" id="importSylBtn" title="Bring one syllabus in from another file, keeping everything you already have" onClick={core.importSyllabusClick}>⊕ Import syllabus…</button>
           <button className="sm" id="saveCopyBtn" title="Save a separate copy to hand over — your own file is not touched" onClick={core.openCopy}>⤓ Save a copy…</button>
@@ -190,7 +187,7 @@ export default function Header() {
           </div>
           <label className="sub"><input type="checkbox" id="optCharts" checked={core.saveOpts.charts} onChange={e => core.setSaveOpt('charts', e.target.checked)} /> Charts</label>
           <label className="sub"><input type="checkbox" id="optStudents" checked={core.saveOpts.students} onChange={e => core.setSaveOpt('students', e.target.checked)} /> Students &amp; courses</label>
-        </Menu>
+        </Menu>}
 
         <button className={'sm' + (core.arrangeMode ? ' primary' : '')} id="arrangeBtn" onClick={core.toggleArrange}>{core.arrangeMode ? '✓ Done' : '✎ Edit'}</button>
         {/* Named as the mode it is, not as a display option: turning it on
@@ -210,7 +207,6 @@ export default function Header() {
               the green until nothing is outstanding. Errors stay red. */}
           <span id="saveStat" className={'savestat ' + (dirty && core.saveStat.cls === 'ok' ? '' : core.saveStat.cls)}>{core.saveStat.text}</span>
         </span>
-        </>}
       </div>
     </header>
   );

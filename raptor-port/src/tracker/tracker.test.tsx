@@ -2,23 +2,24 @@
 /* The Tracker tab's seam into Raptor (7 Sep 26, the Tracker merge).
    Three things this pins, none of which the vendored smoke suite
    (scripts/tracker/smoke.mjs) can see because it always drives as the admin:
-   · the ROLE rides the Raptor session — a member login (and a logout) makes
-     the tab read-only, an admin login makes it editable, and the admin's
+   · the FILE LOCK rides the Raptor session — a member login (and a logout)
+     locks the file portion, an admin login unlocks it, and the admin's
      view-as-member toggle flips it both ways (state/store.ts resetSession /
      toggleRole → tracker/role.js);
-   · the read-only shape is enforced at the WRITE PATH in core.js, not only at
-     the affordance — the grading pop-up, edit mode and every student/date
-     write refuse a read-only caller;
-   · the affordance half matches: the header hides the Course/Syllabus/File
-     menus, Edit and Details for a viewer and keeps the pickers, Show All and
-     the search.
+   · the lock is enforced at the WRITE PATH in core.js, not only at the
+     affordance — Open, Import and Save a copy refuse a locked caller — while
+     everything else (marking, edit mode, the editors, students, dates) stays
+     open to everyone (owner, 7 Sep 26: "allowed for both admin and member
+     for all access, except the file portion which is admin only");
+   · the affordance half matches: the header hides only the File menu for a
+     member and keeps every other control.
    The flag lives in role.js so Raptor can write it WITHOUT loading the chart
    engine — a regression there would put ~280 KB of syllabus data back into
    Raptor's first download; the last test guards that by construction. */
 import { beforeEach, describe, expect, it } from 'vitest'
 import { act } from 'react'
 import { createRoot } from 'react-dom/client'
-import { isReadOnly, setReadOnly } from './role.js'
+import { isFileLocked, setFileLocked } from './role.js'
 import * as core from './app/core.js'
 import Header from './components/Header.jsx'
 import { initStore, resetSession, toggleRole } from '../state/store'
@@ -28,94 +29,71 @@ import { join } from 'node:path'
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 const $ = (sel: string) => document.querySelector(sel)
 
-describe('the role rides the Raptor session (store.ts → tracker/role.js)', () => {
+describe('the file lock rides the Raptor session (store.ts → tracker/role.js)', () => {
   beforeEach(() => { initStore() })
 
-  it('a member login is read-only, an admin login is not, a logout is read-only', () => {
+  it('a member login locks the file portion, an admin login unlocks it, a logout locks it', () => {
     resetSession({ user: 'us', role: 'main' })
-    expect(isReadOnly()).toBe(true)
-    expect(core.readOnly).toBe(true)
+    expect(isFileLocked()).toBe(true)
+    expect(core.fileLocked).toBe(true)
     resetSession({ user: 'ad', role: 'admin' })
-    expect(isReadOnly()).toBe(false)
-    expect(core.readOnly).toBe(false)
+    expect(isFileLocked()).toBe(false)
+    expect(core.fileLocked).toBe(false)
     resetSession(null)
-    expect(isReadOnly()).toBe(true)
+    expect(isFileLocked()).toBe(true)
   })
 
   it("the admin's view-as-member toggle flips it both ways", () => {
     resetSession({ user: 'ad', role: 'admin' })
-    expect(core.readOnly).toBe(false)
+    expect(core.fileLocked).toBe(false)
     toggleRole()
-    expect(core.readOnly).toBe(true)
+    expect(core.fileLocked).toBe(true)
     toggleRole()
-    expect(core.readOnly).toBe(false)
-  })
-
-  it('a viewer is always in Details mode — a ball click reads the brief, never grades', () => {
-    resetSession({ user: 'ad', role: 'admin' })
-    expect(core.showDetails).toBe(false)
-    resetSession({ user: 'us', role: 'main' })
-    expect(core.showDetails).toBe(true)
-  })
-
-  it('a member who logged in before ever opening the tab still gets Details mode on first open', async () => {
-    /* the flag was set while core.js was not loaded, so only its initial
-       mirror saw it — init() has to settle Details itself (core.js init) */
-    resetSession({ user: 'us', role: 'main' })
-    expect(core.readOnly).toBe(true)
-    const host = document.createElement('div')
-    host.innerHTML = '<div id="page-tracker"><div class="tr-root"><div class="board" id="board"></div></div></div>'
-    document.body.appendChild(host)
-    await core.init()
-    expect(core.showDetails).toBe(true)
-    host.remove()
+    expect(core.fileLocked).toBe(false)
   })
 })
 
-describe('read-only is enforced at the write path (core.js)', () => {
-  beforeEach(() => { setReadOnly(false) })
+describe('only the file portion is locked, at the write path (core.js)', () => {
+  beforeEach(() => { setFileLocked(false) })
 
-  it('the grading pop-up does not open for a viewer, and does for the admin', () => {
-    setReadOnly(true)
-    core.openPop('ST-01', { clientX: 10, clientY: 10 })
-    expect(core.pop).toBeNull()
-    setReadOnly(false)
+  it('a member still grades, edits and manages — the pop-up and the editors open', () => {
+    setFileLocked(true)
     core.openPop('ST-01', { clientX: 10, clientY: 10 })
     expect(core.pop).toEqual({ id: 'ST-01', x: 10, y: 10 })
     core.closePop()
+    core.openInfo('ST-01'); expect(core.infoId).toBe('ST-01'); core.closeInfo?.()
+    core.openModal(); expect(core.sylModalOpen).toBe(true); core.closeModal()
+    core.openOrdCrew(); expect(core.ordMode).toBe('crew'); core.closeOrd?.()
+    core.openLullCopy('STUDENT A'); expect(core.lullCopy).toEqual({ from: 'STUDENT A', picked: [] }); core.closeLullCopy()
   })
 
-  it('edit mode, the editors and the student/date writes all refuse a viewer', async () => {
-    setReadOnly(true)
-    core.toggleArrange()
-    expect(core.arrangeMode).toBe(false)
-    core.openInfo('ST-01'); expect(core.infoId).toBeNull()
-    core.openModal(); expect(core.sylModalOpen).toBe(false)
-    core.openOrdCrew(); expect(core.ordMode).toBeNull()
-    core.openCopy(); expect(core.copyOpen).toBe(false)
-    core.openLullCopy('STUDENT A'); expect(core.lullCopy).toBeNull()
-    /* every async writer returns without touching state — the roster is the
-       cheapest witness: an add that went through would prompt for a name */
-    const before = JSON.stringify([core.roster, core.dates, core.pace, core.lulls])
-    await core.addStudent()
-    await core.setLastSyll('STUDENT A', '2026-01-01')
-    await core.setEpw('STUDENT A', '3')
-    await core.lullDayClick('2026-01-01')
-    expect(JSON.stringify([core.roster, core.dates, core.pace, core.lulls])).toBe(before)
+  it('Save a copy refuses a member and opens for the admin', () => {
+    setFileLocked(true)
+    core.openCopy()
+    expect(core.copyOpen).toBe(false)
+    setFileLocked(false)
+    core.openCopy()
+    expect(core.copyOpen).toBe(true)
+    core.closeCopy()
   })
 
-  it('switching to read-only closes whatever editing state was open', () => {
-    core.openPop('ST-01', { clientX: 1, clientY: 1 })
-    core.openInfo('ST-01')
-    expect(core.pop).not.toBeNull()
-    setReadOnly(true)
-    expect(core.pop).toBeNull()
-    expect(core.infoId).toBeNull()
-    expect(core.arrangeMode).toBe(false)
+  it('locking mid-session closes an open Save a copy dialog', () => {
+    core.openCopy()
+    expect(core.copyOpen).toBe(true)
+    setFileLocked(true)
+    expect(core.copyOpen).toBe(false)
+  })
+
+  it('Open and Import are guarded at their entry points', () => {
+    const src = readFileSync(join(__dirname, 'app/core.js'), 'utf8')
+    for (const fn of ['openFileClick', 'importSyllabusClick', 'openCopy', 'saveCopyClick'])
+      expect(src, fn).toMatch(new RegExp(`export (async )?function ${fn}\\([^)]*\\) \\{ if \\(fileLocked\\) return;`))
+    /* and nothing else is — the standalone app's other writes are everyone's */
+    expect((src.match(/if \(fileLocked\) return;/g) || []).length).toBe(4)
   })
 })
 
-describe('the header shows a viewer only the choosing controls', () => {
+describe('the header hides only the File menu for a member', () => {
   const render = async () => {
     const host = document.createElement('div')
     document.body.appendChild(host)
@@ -124,25 +102,27 @@ describe('the header shows a viewer only the choosing controls', () => {
   }
   beforeEach(() => { document.body.innerHTML = '' })
 
-  it('admin: every menu and mode button is drawn', async () => {
-    setReadOnly(false)
+  const EVERYONE = ['activeSel', 'showAllBtn', 'hSearchBtn', 'courseSel', 'courseMenuBtn', 'sylSel', 'sylMenuBtn', 'arrangeBtn', 'detailsBtn', 'saveStat']
+
+  it('admin: every control including the File menu', async () => {
+    setFileLocked(false)
     await render()
-    for (const id of ['activeSel', 'showAllBtn', 'hSearchBtn', 'courseSel', 'courseMenuBtn', 'sylSel', 'sylMenuBtn', 'fileMenuBtn', 'arrangeBtn', 'detailsBtn'])
-      expect($('#' + id), id).toBeTruthy()
+    for (const id of [...EVERYONE, 'fileMenuBtn']) expect($('#' + id), id).toBeTruthy()
   })
 
-  it('viewer: the pickers, Show All and the search stay; the menus, Edit, Details and the save slot go', async () => {
-    setReadOnly(true)
+  it('member: everything but the File menu', async () => {
+    setFileLocked(true)
     await render()
-    for (const id of ['activeSel', 'showAllBtn', 'hSearchBtn', 'courseSel', 'sylSel'])
-      expect($('#' + id), id).toBeTruthy()
-    for (const id of ['courseMenuBtn', 'sylMenuBtn', 'fileMenuBtn', 'arrangeBtn', 'detailsBtn', 'saveChanges', 'saveStat'])
-      expect($('#' + id), id).toBeNull()
+    for (const id of EVERYONE) expect($('#' + id), id).toBeTruthy()
+    expect($('#fileMenuBtn')).toBeNull()
+    expect($('#openFileBtn')).toBeNull()
+    expect($('#importSylBtn')).toBeNull()
+    expect($('#saveCopyBtn')).toBeNull()
   })
 })
 
 describe('the seam stays light', () => {
-  it('Raptor writes the role through role.js, never by importing core.js', () => {
+  it('Raptor writes the lock through role.js, never by importing core.js', () => {
     const store = readFileSync(join(__dirname, '../state/store.ts'), 'utf8')
     expect(store).toMatch(/from '\.\.\/tracker\/role\.js'/)
     expect(store).not.toMatch(/from '[^']*tracker\/app\//)
