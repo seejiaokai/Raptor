@@ -1133,6 +1133,19 @@ ledger). Read it before any layout/render/drag-touching change.
   asking. OUTLINE ONLY — he declined the faint-green wash (built, one-line add if he
   asks; don't re-pitch). `ui-contracts.md` §The open-bidding box; pin
   `e2e/leavewar.spec.ts`.
+- **The tab opens on the war being bid on, at the start of its bidding window**
+  (owner, 7 Sep 26 — "the default view … is always the start of the period in which
+  it is opened for bidding, followed by bidding closed, followed by published"). Boot
+  picks `currentId` by STAGE (open→closed→published→draft, `stages.ts
+  pickDefaultPeriodId`) unless a `current` is remembered; the grid lands on
+  `period.ts defaultFocusDate` (`bidFrom ?? start`) once on first show
+  (`LeaveWarPage.tsx` → `focusDay` → `Matrix jumpTo`, the under-manned jump path — so
+  it preloads the target months and scrolls there), and `selectWar` lands the same way
+  on a picker switch. The column window builds AROUND that month, not month 0 — don't
+  reset it to 0 on a war change or the desktop whole-year fill drifts the landing back
+  to January (the phone's rolling window doesn't). Reads the same `stage`/`bidFrom` as
+  the open-bidding box; keep them in step. `ui-contracts.md` §The Leave War opens on
+  the war being bid on; pins `stages.test.ts` / `period.test.ts` / `leavewarpage.test.tsx`.
 - **The Leave War year grid: one draw-toward-a-target window engine** (owner, 3–5 Sep
   26). Whole months at real widths over year-wide PLACEHOLDER cells (one empty cell
   per side per row, as wide as the months it stands for), drawn IN PLACE while the

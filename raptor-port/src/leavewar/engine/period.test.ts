@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { addDays, buildDays, dayName, isWeekend } from './period'
+import { addDays, buildDays, dayName, defaultFocusDate, isWeekend, type Period } from './period'
 
 describe('isWeekend', () => {
   it('recognises Saturday and Sunday', () => {
@@ -104,5 +104,20 @@ describe('weekday arithmetic', () => {
       const [y, m, dd] = d.split('-').map(Number)
       expect(isWeekend(d), d).toBe([0, 6].includes(new Date(Date.UTC(y!, m! - 1, dd!)).getUTCDay()))
     }
+  })
+})
+
+describe('defaultFocusDate — where the grid lands when a war comes up', () => {
+  const war = (bidFrom: string | null, start = '2026-01-01'): Period => ({
+    id: 'y', name: 'JAN - DEC 26', start, end: '2026-12-31',
+    stage: 'open', bidFrom, bidTo: null, days: [], bands: [],
+  })
+
+  it('lands on the start of the bidding window when one is set', () => {
+    expect(defaultFocusDate(war('2026-04-01'))).toBe('2026-04-01')
+  })
+
+  it('lands on the first day of the war when no window is set', () => {
+    expect(defaultFocusDate(war(null, '2027-01-01'))).toBe('2027-01-01')
   })
 })

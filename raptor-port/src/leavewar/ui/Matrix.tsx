@@ -36,6 +36,7 @@ import {
   raptorOwns,
   shiftedFrom,
   stateOf,
+  defaultFocusDate,
   type Group,
   type Person,
   type Period,
@@ -1107,6 +1108,20 @@ export function Matrix() {
 
   const months = monthsIn(period.start, period.end)
 
+  // The month the grid should OPEN on — the start of this war's bidding window
+  // (owner, 7 Sep 26). The column window below is built AROUND it, not around
+  // January, so the months the reader is about to see are the ones drawn first
+  // (the preload), and — on the desktop, where the fill then rebuilds the whole
+  // year outward from here — the landing does not drift back to January as the
+  // left months fill in (which it did when the window reset to month 0 and the
+  // jump raced the fill). `LeaveWarPage`/`selectWar` do the actual scroll via
+  // `focusDate`; this only decides which columns exist when they land.
+  const defaultMonth = (() => {
+    const k = defaultFocusDate(period).slice(0, 7)
+    const i = months.findIndex(m => m.first.slice(0, 7) === k)
+    return i < 0 ? 0 : i
+  })()
+
   // ---- THE COLUMN WINDOW (Phase 2 of the speed work, 3 Sep 26) -------------
   // Which months are DRAWN. Arithmetic and the why in colwindow.ts; here is the
   // measuring and the scrolling. `null` = the whole war: a short war, or no
@@ -1117,7 +1132,7 @@ export function Matrix() {
   // `dates` stays for what is about the WAR, not the screen — the manning
   // verdicts, the lock set, the sheets' date spans, the "365 days" caption.
   const hasLayout = () => typeof document !== 'undefined' && document.documentElement.getBoundingClientRect().width > 0
-  const [colWinRaw, setColWin] = useState<ColWin | null>(() => (hasLayout() ? windowAround(months.length, 0) : null))
+  const [colWinRaw, setColWin] = useState<ColWin | null>(() => (hasLayout() ? windowAround(months.length, defaultMonth) : null))
   // The stored window is only ever read CLAMPED to the current war's months:
   // a war switch renders once with the old window against the new months
   // before the reset effect below lands, and a one-month war under a stale
@@ -1256,7 +1271,7 @@ export function Matrix() {
   useEffect(() => {
     if (warRef.current === period.id) return
     warRef.current = period.id
-    const next = hasLayout() ? windowAround(months.length, 0) : null
+    const next = hasLayout() ? windowAround(months.length, defaultMonth) : null
     setColWin(prev => (prev && next && prev.lo === next.lo && prev.hi === next.hi ? prev : next))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [period.id])

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { windowFits, type Period, type Stage } from './period'
-import { canDecide, canEdit, canEditCell, canReopen, nextStage, previousStage, stageLabel, STAGE_ORDER } from './stages'
+import { canDecide, canEdit, canEditCell, canReopen, nextStage, pickDefaultPeriodId, previousStage, stageLabel, STAGE_ORDER } from './stages'
 
 describe('stage transitions', () => {
   it('runs draft to open to closed to published', () => {
@@ -211,5 +211,65 @@ describe('who may reopen', () => {
   // directions, which is the guarantee stages are for.
   it('refuses a member at every stage', () => {
     for (const s of STAGE_ORDER) expect(canReopen(s, 'member')).toBe(false)
+  })
+})
+
+describe('pickDefaultPeriodId — which war the app opens on', () => {
+  // A minimal war-period; only stage / bidFrom / start decide the pick.
+  const war = (id: string, stage: Stage, bidFrom: string | null, start = '2026-01-01'): Period => ({
+    id, name: id, start, end: '2026-12-31', stage, bidFrom, bidTo: null, days: [], bands: [],
+  })
+
+  it('prefers the war OPEN for bidding over any other stage', () => {
+    const ids = pickDefaultPeriodId([
+      war('draft', 'draft', null),
+      war('published', 'published', '2026-01-01'),
+      war('open', 'open', '2026-04-01'),
+      war('closed', 'closed', '2026-01-01'),
+    ])
+    expect(ids).toBe('open')
+  })
+
+  it('falls back to bidding CLOSED when none is open', () => {
+    expect(pickDefaultPeriodId([
+      war('draft', 'draft', null),
+      war('published', 'published', '2026-01-01'),
+      war('closed', 'closed', '2026-01-01'),
+    ])).toBe('closed')
+  })
+
+  it('falls back to PUBLISHED when none is open or closed, and a DRAFT is the last resort', () => {
+    expect(pickDefaultPeriodId([
+      war('draft', 'draft', null),
+      war('published', 'published', '2026-01-01'),
+    ])).toBe('published')
+    expect(pickDefaultPeriodId([war('draft', 'draft', null)])).toBe('draft')
+  })
+
+  it('breaks a same-stage tie by the earliest bidding start, deterministically', () => {
+    // Two wars both open: the one whose bidding starts sooner is the one you
+    // would act on first.
+    expect(pickDefaultPeriodId([
+      war('later', 'open', '2026-07-01'),
+      war('sooner', 'open', '2026-04-01'),
+    ])).toBe('sooner')
+    // A null window falls back to the period start for the comparison.
+    expect(pickDefaultPeriodId([
+      war('windowed', 'open', '2026-06-01', '2026-01-01'),
+      war('whole', 'open', null, '2026-01-01'),
+    ])).toBe('whole')
+  })
+
+  it('is order-independent — the same set picks the same war however it is listed', () => {
+    const a = war('open', 'open', '2026-04-01')
+    const b = war('closed', 'closed', '2026-01-01')
+    const c = war('published', 'published', '2026-01-01')
+    expect(pickDefaultPeriodId([a, b, c])).toBe('open')
+    expect(pickDefaultPeriodId([c, b, a])).toBe('open')
+    expect(pickDefaultPeriodId([b, a, c])).toBe('open')
+  })
+
+  it('returns empty for an empty list (the store never passes one)', () => {
+    expect(pickDefaultPeriodId([])).toBe('')
   })
 })

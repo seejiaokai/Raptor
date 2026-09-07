@@ -221,6 +221,20 @@ export function inBidWindow(period: Period, date: string): boolean {
 }
 
 /**
+ * The day the grid should land on when this war first comes up, and the day a
+ * war-switch snaps to — the START of the part that is (or was) open for bidding
+ * (owner, 7 Sep 26: "the start of the period in which it is opened for
+ * bidding"). `bidFrom` is where the squadron actually acts, and it is kept
+ * across a stage change (closing or publishing a war does not clear the window
+ * it was bid on), so it is the right anchor at EVERY stage, not only while
+ * open. A war with no window set — `null` bounds, the whole period open — has
+ * no narrower "start" than its first day, so it lands there.
+ */
+export function defaultFocusDate(period: Period): string {
+  return period.bidFrom ?? period.start
+}
+
+/**
  * Whether a proposed bidding window is one this period can hold.
  *
  * Refused rather than clamped: an admin who typed dates outside the war has

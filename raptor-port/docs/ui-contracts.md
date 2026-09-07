@@ -6066,6 +6066,39 @@ scroll restore / resize kick) and the `e2e/leavewar.spec.ts` keep-alive spec
 (real-browser: sideways position survives the round trip, a month jump still
 works after the hidden spell, no page error).
 
+## The Leave War opens on the war being bid on (owner, 7 Sep 26)
+
+"The default view of leave war when a user gets to it is always the start of
+the period in which it is opened for bidding, followed by bidding closed,
+followed by published." Two halves:
+
+- **Which war.** When a squadron holds more than one leave war, the tab opens
+  on the one that is OPEN for bidding; if none is open, the one where bidding
+  has just CLOSED; if none of those, the latest PUBLISHED; a DRAFT war is the
+  last resort. `engine/stages.ts pickDefaultPeriodId` (ranked open→closed→
+  published→draft, same-stage ties to the earliest bidding start) decides the
+  boot `currentId` in `state/store.ts` — but only when nothing is remembered:
+  a stored `current` (the reader's own pick, from the shared database to come)
+  always wins. Leave War is session-only today, so the stage pick decides on
+  every load.
+- **Where in it.** The grid lands on the START of that war's bidding window —
+  `engine/period.ts defaultFocusDate` = `bidFrom ?? start` (a war with no
+  window set has no narrower start than its first day). `bidFrom` is kept
+  across a stage change, so a closed or published war still lands on the dates
+  it was bid on. `LeaveWarPage.tsx` fires this once, the FIRST time the tab
+  comes on screen, through the same `focusDay` → `Matrix jumpTo` path the
+  under-manned list uses — so it both draws the target months (the preload)
+  and scrolls to them. A later return to the tab restores where the reader
+  actually was (the DOM persists; `savedY` holds the page scroll), so it never
+  re-lands. Switching wars from the picker lands on the new war's bidding start
+  the same way (`store.ts selectWar` sets `focusDate`, no longer null).
+
+For the seeded demo the open war's window starts on 1 January, so the landing
+is where the grid already opens — it earns its keep when a window starts later
+in the year or a squadron has wars in several stages. Pinned:
+`engine/stages.test.ts`, `engine/period.test.ts`, `leavewarpage.test.tsx`,
+`ui/undermanned.test.tsx` (focus moves with the war), and the browser drive.
+
 ## The open-bidding box on the Leave War grid (owner, 1 Sep 26)
 
 "Can u make the border of the dates open for bidding green … the exterior box

@@ -149,6 +149,29 @@ jobs green (build + reference suite, unit raptor, unit leavewar ×2, geometry
 
 ## In flight
 
+- **LEAVE WAR OPENS ON THE WAR BEING BID ON — on the branch, unmerged (7 Sep
+  26).** The tab no longer always opens on January of the first war. It now
+  picks the war that is OPEN for bidding — else bidding CLOSED, else the latest
+  PUBLISHED, else a DRAFT (`engine/stages.ts:pickDefaultPeriodId`, deciding the
+  boot `currentId` in `state/store.ts` unless a `current` is remembered) — and
+  lands the grid on the START of that war's bidding window
+  (`engine/period.ts:defaultFocusDate` = `bidFrom ?? start`). `LeaveWarPage`
+  fires it once, the first time the tab shows, through the same
+  `focusDay → Matrix jumpTo` path the under-manned list uses (so it draws the
+  target months — the preload the owner asked for — and scrolls to them); a
+  later return keeps where the reader was. `selectWar` lands the same way on a
+  picker switch. The Matrix column window now builds AROUND that month, not
+  month 0 — without which the desktop whole-year fill drifted the landing back
+  to January (found and fixed in the 7 Sep browser drive; the phone's rolling
+  window never had it). Seeded demo opens in January exactly as before (its
+  open war's window starts 1 Jan); the change shows when a window starts later
+  in the year or a squadron holds wars in several stages — driven at 1440/390
+  as admin, an open mid-year (Jul) window landing on July at both widths, no
+  console/page/4xx errors. Contract `docs/ui-contracts.md` §The Leave War opens
+  on the war being bid on; impact `docs/feature-impact.md` (Leave War tab row);
+  pins `engine/stages.test.ts`, `engine/period.test.ts`, `leavewarpage.test.tsx`,
+  `ui/undermanned.test.tsx`.
+
 - **THE TRACKER TAB — on the branch, unmerged, owner-unverified (7 Sep 26).**
   The OCU Progress Tracker (`seejiaokai/Tracker` at `bf9a47a`) is vendored as
   the eighth tab, after Leave War, for everyone — `src/tracker/` (plain JS/JSX

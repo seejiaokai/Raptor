@@ -1871,3 +1871,18 @@ gate's. Keep verdict-bearing commands unpiped.
 **Suggested improvement:** Add to the vendor-app-as-tab checklist: "for every once-only init in the guest, make the mount effect 'boot if not ready, else REDRAW' — and test mount → unmount → mount explicitly, plus the host's session boundary (logout/login) in the browser sweep." The bug sweep's scenario list (session boundary, in-between widths, live resize, host overlays over the guest, host notify while the guest is up) is the reusable part.
 
 **Principle:** A guard against double-initialisation is also a guard against re-initialisation; wherever a host can recreate the guest's DOM, the guest needs a redraw path that is not the init path — and the test that proves it must cross the host's own lifecycle boundaries, not just the guest's.
+
+### Observation 123: A "green unit suite" for a scroll/window feature can hide a desktop-vs-phone divergence only the browser shows
+
+**Status:** OPEN
+**Date:** 7 Sep 26
+**Session context:** Leave War "default view lands on the start of the bidding window, picking the open war first" feature. All 4176 unit tests passed (jsdom reports every rect 0×0, so the grid draws the whole year and the scroll is a no-op there). Driving the built preview in a real browser caught that on the DESKTOP the landing drifted back to January after a war switch — the window reset to month 0 and the whole-year fill rebuilt leftward, racing the jump — while the PHONE (rolling window) landed correctly. Fixed by building the column window around the target month, not month 0.
+**Skill:** task-observer (methodology reinforcement; no dedicated skill for this repo's live-view rule)
+**Type:** open-source
+**Phase/Area:** verification / when a live-view browser pass is load-bearing
+
+**Issue:** A feature whose visible effect is a SCROLL or a windowed/virtualised render is invisible to a layout-free test runner (jsdom): the assertions can all pass while the on-screen result is wrong, and the failure mode can differ between viewport modes (a rolling-window phone path vs a fill-the-whole-year desktop path) so that one width works and the other does not. A single-width or unit-only check would have shipped the desktop bug.
+
+**Suggested improvement:** For any change to scrolling, virtualisation, or a "which slice is drawn" window, treat a real-browser drive at BOTH the narrow and wide breakpoints as part of done, and assert the actual outcome (scroll position / which slice is in view), not just that a handler ran. Where a project already mandates a live-view pass, this is the concrete reason to run it at every breakpoint rather than one.
+
+**Principle:** Tests written against a layout-free environment prove which markup/handlers were emitted, never what was painted or scrolled; a feature defined by pixels or scroll position needs a real-browser check at every viewport mode it has a distinct code path for, because the bug can live in only one of them.

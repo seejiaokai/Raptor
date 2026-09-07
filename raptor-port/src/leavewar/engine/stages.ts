@@ -171,3 +171,40 @@ export function biddingClosed(stage: Stage): boolean {
 export function stageLabel(stage: Stage): string {
   return LABEL[stage]
 }
+
+/**
+ * Which leave war the app opens on when a squadron has more than one (owner,
+ * 7 Sep 26 — "the start of the period in which it is opened for bidding,
+ * followed by bidding closed, followed by published"). The one OPEN for
+ * bidding wins; if none is open, the one where bidding has just CLOSED; if none
+ * of those, the latest PUBLISHED; and a DRAFT war — not yet opened, nothing
+ * happening in it — is the last resort.
+ *
+ * Ties inside the winning stage go to the war whose bidding starts EARLIEST
+ * (the deadline you would act on first), then earliest period start, then id.
+ * Only one war is ever open at a time in practice, so the tie-break rarely
+ * decides anything; it is here so two wars sharing a stage can never resolve
+ * differently across reloads. (A shelf of several PUBLISHED wars is the one
+ * place earliest is arguably not "most relevant", but published is only ever
+ * reached when nothing is live, so any stable choice serves.)
+ *
+ * Pure and total. Returns '' only for an empty list, which the store never
+ * passes — it always holds at least the seeded war, and its caller falls back
+ * to the first war anyway.
+ */
+const STAGE_RANK: Record<Stage, number> = { open: 0, closed: 1, published: 2, draft: 3 }
+
+export function pickDefaultPeriodId(periods: readonly Period[]): string {
+  let best: Period | null = null
+  for (const p of periods) if (!best || betterDefault(p, best)) best = p
+  return best?.id ?? ''
+}
+
+function betterDefault(a: Period, b: Period): boolean {
+  const ra = STAGE_RANK[a.stage], rb = STAGE_RANK[b.stage]
+  if (ra !== rb) return ra < rb
+  const ba = a.bidFrom ?? a.start, bb = b.bidFrom ?? b.start
+  if (ba !== bb) return ba < bb
+  if (a.start !== b.start) return a.start < b.start
+  return a.id < b.id
+}

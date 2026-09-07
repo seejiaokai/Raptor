@@ -913,6 +913,17 @@ describe('more than one leave war', () => {
     expect(getState().period.name).toBe('JAN - DEC 26')
   })
 
+  // The war it opens on is chosen by STAGE, not by list order (owner,
+  // 7 Sep 26): the seed carries an OPEN 2026 war and a DRAFT 2027 war, and the
+  // open one is where the squadron is acting — so that is the one on screen at
+  // boot. It happens to be first in the list too, but the rule is the stage,
+  // not the index (`pickDefaultPeriodId` is pinned order-independent in
+  // engine/stages.test).
+  it('opens on the war that is open for bidding, not merely the first', () => {
+    expect(getState().period.stage).toBe('open')
+    expect(getState().wars.some(w => w.period.stage === 'draft')).toBe(true)
+  })
+
   it('switches to another war, and the grid on screen switches with it', () => {
     const other = getState().wars[1].period.id
     selectWar(other)

@@ -63,6 +63,8 @@ import {
   bandOverlaps,
   warHolding,
   STAGE_ORDER,
+  pickDefaultPeriodId,
+  defaultFocusDate,
   type BidRecord,
   MAX_CELL_NOTE,
   type BidSource,
@@ -289,7 +291,11 @@ function blank(): State {
     qualCatalog: [...SEED_QUAL_CATALOG],
     eventDefs: seedEventDefs(),
     wars,
-    currentId: wars[0].period.id,
+    // Open on the war that is OPEN for bidding — else closed, else published,
+    // else draft (owner, 7 Sep 26). `pickDefaultPeriodId` is total but returns
+    // '' on an empty list, which cannot happen here; the `||` is belt-and-braces
+    // so a future change to `seedWars` can never blank the screen.
+    currentId: pickDefaultPeriodId(wars.map(w => w.period)) || wars[0].period.id,
     openings: seedOpenings(),
     ledger: seedLedger(),
     oilPolicy: { ...DEFAULT_OIL_POLICY },
@@ -791,9 +797,15 @@ export function initStore(b?: StorageBackend): void {
 
   const wars = readStored('wars', readWars) ?? migrateSingleWar() ?? seedWars()
   const storedCurrent = backend.read('current')
+  // A remembered choice wins (a returning session put the reader back where
+  // they were); otherwise open on the war that is open for bidding — else
+  // closed, else published (owner, 7 Sep 26). Leave War is session-only today,
+  // so in practice there is never a stored `current` and the stage pick always
+  // decides — but the shared database to come will persist it, and then the
+  // reader's own pick must outrank the default.
   const currentId = wars.some(w => w.period.id === storedCurrent)
     ? (storedCurrent as string)
-    : wars[0].period.id
+    : (pickDefaultPeriodId(wars.map(w => w.period)) || wars[0].period.id)
 
   const openings = readStored('openings', readOpenings) ?? seedOpenings()
   const ledger = readStored('ledger', readLedger) ?? seedLedger()
@@ -3019,11 +3031,21 @@ export function focusDay(date: string): void {
  *  blanking the grid — a stale link is not worth an empty page. */
 export function selectWar(id: string): void {
   if (id === state.currentId) return
-  if (!state.wars.some(w => w.period.id === id)) return
-  // The focus is dropped with the war it pointed into. Wars do not overlap,
-  // so a date from the old one names no column in the new grid — carrying it
-  // across would mark nothing and send the next jump nowhere.
-  state = withCurrent({ ...state, currentId: id, focusDate: null })
+  const picked = state.wars.find(w => w.period.id === id)
+  if (!picked) return
+  // Land on the START of the new war's bidding window (owner, 7 Sep 26 — the
+  // same rule as opening the tab). The old focus pointed into the war just
+  // left, and since wars do not overlap that date names no column in the new
+  // grid — so it had to go; but rather than drop it to nothing, we point it at
+  // the new war's own bid-start, a real column here and where the reader wants
+  // to be. `focusSeq` bumps so the matrix re-runs its jump even when the two
+  // wars happen to share a start date.
+  state = withCurrent({
+    ...state,
+    currentId: id,
+    focusDate: defaultFocusDate(picked.period),
+    focusSeq: state.focusSeq + 1,
+  })
   persist()
   notify()
   // Undo is scoped to the war on screen: switching wars starts a fresh stack,

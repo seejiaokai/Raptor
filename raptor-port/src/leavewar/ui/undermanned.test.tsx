@@ -136,14 +136,20 @@ describe('snapping to a day', () => {
 
   // Switching war rebuilds the grid around different dates; a focus left
   // pointing into the old one would mark a column that is no longer there and
-  // send the next snap nowhere.
-  it('forgets the focus when the war changes', () => {
+  // send the next snap nowhere. So the focus MOVES with the war — to the new
+  // one's own bidding start (owner, 7 Sep 26 — the same "land on the start of
+  // the period opened for bidding" rule as opening the tab), never left
+  // pointing back into the war just left.
+  it('moves the focus to the new war\'s bidding start when the war changes', () => {
     render(<StageBar />)
     fireEvent.click(screen.getByTestId('undermanned'))
     fireEvent.click(screen.getByTestId('undermanned-day-2026-02-10'))
     expect(getState().focusDate).toBe('2026-02-10')
     const other = getState().wars.find(w => w.period.id !== getState().period.id)!
+    const want = other.period.bidFrom ?? other.period.start
     act(() => selectWar(other.period.id))
-    expect(getState().focusDate).toBeNull()
+    // The focus now names a day inside the NEW war, not the old 2026-02-10.
+    expect(getState().focusDate).toBe(want)
+    expect(getState().focusDate).not.toBe('2026-02-10')
   })
 })
