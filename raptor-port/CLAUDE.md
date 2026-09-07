@@ -56,7 +56,10 @@ to HEAVY (spec → plan → task-by-task with a review and fix loop on each)
 only where a defect would be SILENT rather than obvious: persisted data,
 roles and permissions, the validation engine, anything the byte-exact
 reference parity or the perf ceilings sit on top of. Say at the time that
-you are escalating, and why. And prefer BATCHES — most of the cost is
+you are escalating, and why. A visual change across many surfaces is still
+MEDIUM (the 6–7 Sep 26 drag-lift build ran HEAVY at about an hour a task and
+the owner called it extreme); whichever path is chosen, state the expected
+time before the first task starts. And prefer BATCHES — most of the cost is
 loading this app into context, so five related changes in one pass cost
 barely more than one.
 

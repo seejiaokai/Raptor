@@ -484,6 +484,32 @@ owner's iPhone Safari does is one of the unverified items in `HANDOFF.md`. Left
 as it is rather than growing a second frozen-copy implementation for a path the
 squadron is probably not on.
 
+## The lift frame is measured twice, and it does not chase the row (6–7 Sep 26)
+
+A picked-up row wears ONE overlay frame — the shared lift (owner, 6 Sep 26 —
+"the thing u are grabbing glows evenly … a cyan box around the perimeter, not
+individual boxes"; `src/ui/lift.ts`, §What a drag LOOKS like in
+`docs/ui-contracts.md`). It is measured ONCE when the grip is pressed and ONCE
+when the row lands, and never in between. Two consequences, both accepted:
+
+- **A layout change UNDER a live drag would leave the frame a pixel or two out
+  of place.** Nothing does that today: the drag holds the grid still — the band
+  is torn down in Rearrange, the drawer is inert, the window engine only draws
+  months while the scroll is moving, and a row's height does not change while it
+  is being carried. The obvious cure is a `ResizeObserver` on the row and the
+  wrap, and it is deliberately NOT paid for: it would run work on a surface whose
+  whole design rule is that a drag costs nothing per move ("there should not be a
+  perceived drop in speed"), to defend a case that cannot currently arise. If a
+  future change does move the grid mid-drag — a live band, a drawer that opens
+  under a drag — re-measure at that event, not on every frame.
+- **The frame does not follow a row under the stuck header.** It sits at z 7 in
+  `.mx-outer`, and `.mxfixed` (the frozen header bar) is 55, so scrolling a
+  picked-up row up under the bar hides the top of its ring. That is correct
+  rather than a fault: the bar covers the ROW there too, and a decoration that
+  outlived the thing it decorates would be the worse picture. The same reasoning
+  settles the quals frame against the frozen callsign column (there the numbers
+  are a set — see the contract).
+
 ## The owner's review of 10 Aug 26, and what it settled
 
 Twelve pieces of feedback from a phone. What they changed is in the spec; what

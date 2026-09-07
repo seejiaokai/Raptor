@@ -471,6 +471,25 @@ ON these, don't route around them):
   per loaded year (`weekctx` bundle cache, `stashDays`). Rules:
   `docs/engine-rules.md` §Every input is anchored; pins:
   `engine/crossyear.test.ts`.
+- **TWELVE DRAG SURFACES SHARE ONE VISUAL SEAM** (6–7 Sep 26) — `--lift-box` and
+  `.lift` / `.lift-frame` / `.lift-land` in `src/ui/scheduler.css`, plus the DOM
+  choreography in `src/ui/lift.ts`. Leave War's person rows, category headings
+  and manning rows; the ⚙ Groups and ⚙ who-wins lists; the board's dense rows,
+  wave blocks and section panels; quals columns; the day popover's planning
+  sections and seated pucks; the calendar chip ghost; the crew-puck ghosts. This
+  is the GOOD kind of single point: change the colour, the softness or the
+  landing's timing in one place and all twelve move together, which is the whole
+  point of the owner's "every single drag and drop … should have these
+  animation". Two things follow from it. **Changing it changes all twelve** — so
+  a tweak asked for on one surface is a decision about the app, not about that
+  surface; if one genuinely needs to differ, it differs on its OWN rule beside
+  the shared one (the ghosts' depth shadow and the ⚙ rows' corners are the two
+  precedents), never by forking the recipe. And **a new drag must join it**:
+  wear `.lift` if it is one element, take an overlay `.lift-frame` if it is
+  composite, and mark or light where it lands — a new drag that invents its own
+  picked-up look is the drift this entry exists to prevent. Contract: §What a
+  drag LOOKS like in `docs/ui-contracts.md`; pins: `lift-css.test.ts`,
+  `lift.test.ts`, `rowglow.test.ts`.
 
 **Where the wiring is a drift-seam** (two copies of one truth that a change can
 split — these are where this app's recurring bugs come from; touch one side and

@@ -140,6 +140,25 @@ jobs green (build + reference suite, unit raptor, unit leavewar ×2, geometry
 
 ## In flight
 
+- **ONE LIFT, EVERY DRAG — on the branch, unmerged, iPhone-unverified (6–7 Sep
+  26).** All twelve drag surfaces now share one picked-up look (an even inset
+  cyan box, no halo, following each thing's own corner) and flash where the thing
+  landed; contract `docs/ui-contracts.md` §What a drag LOOKS like — one recipe,
+  every surface + §The landing flash, design
+  `docs/superpowers/specs/2026-09-06-drag-lift-design.md`, gaps
+  `docs/leavewar/known-gaps.md` §The lift frame is measured twice, seam
+  `docs/feature-impact.md`, speed `docs/performance.md` §D + ledger 25.
+  Pins: `src/ui/lift.test.ts` (the module), `src/ui/lift-css.test.ts` (the recipe
+  as a CSS contract), `src/leavewar/ui/rowglow.test.ts` (no per-cell paint), plus
+  e2e "a picked-up row wears one frame the width of the visible grid…"
+  (`leavewar.spec.ts`, both projects), "a section dropped on the board flashes the
+  board's own panel, not the week's copy" and "a dragged quals heading wears one
+  frame down the table…" (`geometry.spec.ts`).
+  His on-phone checklist is `BUG-TESTING.md` row #375 — the drag FEEL and the
+  flash's brightness are his to confirm; four known gaps are recorded in the
+  contract (the ground programme's first move can flash one row out, a
+  close-and-reopen re-flash in the popover, a flash cut short by a second
+  rebuild, and the seated puck's box being its whole slot).
 - **BULK BALANCE ENTRY + the owner's seven phone fixes — on the branch,
   unmerged, iPhone-unverified (6 Sep 26).** A drag down one figure column picks
   a run of people and a docked bar credits them all in ONE write; the same batch

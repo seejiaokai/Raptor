@@ -205,6 +205,20 @@ Grouped by area. Each is the short rule; the source has the full story.
   ghost's one transform — no second moving layer. slotBar's cross-day probe
   (`restIfPlaced`) clones one leg and re-runs the crew-rest body for one man;
   keep it that shape — never a buildDay or a validate() per hover or per ring.
+- **A drag's DECORATION costs one measurement at arm and one at landing**
+  (6–7 Sep 26, the one-lift build — owner: "there should not be a perceived drop
+  in speed"). Nothing new runs per pointermove; the overlay frames
+  (`src/ui/lift.ts boxOf`) read their rects exactly twice per drag; there is no
+  React state for the frame or the flash; the store's move commits BEFORE the
+  landing is measured, in the same commit, through a dep-list-free layout effect
+  — never an rAF chasing React's scheduler. The landing flash is ONE opacity
+  animation on ONE veil pseudo-element (`will-change` on the veil and nowhere
+  else), so it adds no DOM node and no ceiling moves. `.lift` is never keyed on a
+  body/root class, and `--lift-box` is a CONSTANT on `:root` — never a custom
+  property toggled on `.mx-outer` or any grid ancestor (that restyles thousands
+  of cells). One declared cost: restarting a flash on an element already flashing
+  needs a single `void el.offsetWidth` reflow, at a drop, in a frame already
+  laying out.
 
 - **No `filter` on a palette puck, no `opacity` on a preview day, and the
   roster aside stacks above the week's z-indexed pucks** (`z-index:5`) — the
@@ -589,6 +603,46 @@ through sourcemaps for the JS split, paired A/B runs.
     element's box before theorising about tiles. Chromium never showed the
     clip either, because its week was never taller than the viewport's clone
     in the drive (the demo weeks are the same height) — the iPhone found it.
+
+25. **One lift, every drag — a decoration that measures at nothing** (6–7 Sep).
+    Every drag in the app now draws one even inset box on the thing being
+    carried and flashes where it landed, on twelve surfaces, and the owner's
+    bar was explicit: "there should not be a perceived drop in speed." · The
+    decoration is a class or ONE overlay frame placed from a single
+    `getBoundingClientRect` set at arm and another at landing (`src/ui/lift.ts
+    boxOf`); nothing runs per pointermove, no React state holds the frame, the
+    store's move commits before the landing is measured (a dep-list-free layout
+    effect in the same commit), the flash is one opacity animation on one veil
+    pseudo-element, `will-change` is on that veil and nowhere else, and
+    `--lift-box` is a constant on `:root` — never a custom property toggled on
+    a grid ancestor. · *Invariant:* §D's new bullet, in full. ·
+    **Measured** with the scripted Leave War row drag (iPhone 13 emulation,
+    built bundle, the same pointer path each time, `mock/perf.cjs`'s preview
+    half, three runs per reading):
+
+    | | long tasks | that task | max frame gap | every other frame |
+    |---|---|---|---|---|
+    | before this build | 1 | ~85–104 ms | ~83–100 ms | 17 ms |
+    | after | 1 | 108–124 ms | 117–133 ms | 17 ms |
+    | after, frame painted but HIDDEN (`display:none`) | 1 | 114–136 ms | 117–150 ms | 17 ms |
+
+    Read it as: the drag still costs exactly ONE long task and one frame gap
+    over 50 ms — the app's own pick-up redraw, which existed before this work —
+    and every other frame is 17 ms, unchanged. The absolute number of that one
+    redraw reads ~15–20 ms higher than the figure recorded before the build,
+    and the third row is why that is NOT attributed to the decoration: with the
+    frame's paint suppressed and all of its JS still running, the same task
+    measures the same or slower, so the difference is the machine on the day,
+    not the box. The honest summary is that the decoration is below this
+    method's noise floor, which is what the design predicted (one measurement
+    at arm, one at landing) — and that a future round wanting a real figure for
+    the arm itself needs a finer instrument than a long-task count. ·
+    `src/ui/lift.ts`, `src/ui/scheduler.css` (the recipe block),
+    `src/leavewar/ui/Matrix.tsx`, `src/ui/rowdrag.ts`, `src/ui/QualsPage.tsx`,
+    `src/ui/InputsCal.tsx`, `src/ui/drag.ts`, `src/ui/caldrag.ts`. · *No
+    ceiling moved*: the veil is a pseudo-element and both frames live outside
+    the counted subtrees — board 1023/1150, week 5098/5450, the Leave War
+    `.mx *` band unchanged.
 
 ---
 

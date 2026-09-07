@@ -1882,7 +1882,16 @@ persisted and never in a history snapshot. The toggle builder is `notePubTog`
   re-resolved down the whole tree, wildcard or not — and neither declaration
   did any work (html{} already refuses user-select and the touch callout;
   `onTouchMove` preventDefaults while armed). A class nothing matches costs
-  nothing to toggle. Guarded by `ui/css-invalidation.test.ts`. Edge auto-scroll comes free with
+  nothing to toggle. Guarded by `ui/css-invalidation.test.ts`. **Both ghosts wear the
+  shared `.lift` and the seat they land on flashes once** (6 Sep 26 — §What a drag
+  LOOKS like — one recipe, every surface): each lost the 2px accent OUTLINE it drew
+  for itself (an outline paints outside the border box, which is the uneven look the
+  whole change is about) and keeps its neutral depth shadow, written on the
+  `.lift` compound so one `box-shadow` carries both; the ring follows the cloned
+  puck's own 3px corner. The class is added through `liftOn`, not a bare
+  `classList.add`, because a ghost is a COPY: a seat re-grabbed inside its own
+  landing flash would otherwise hand `.lift-land` to a clone that has no timer to
+  take it off. Edge auto-scroll comes free with
   the machine. A window `blur` mid-drag clears the ghost and drops nothing. A
   press-and-release without a 3px move is a click; a secondary button is
   left alone. The NATIVE handlers (`dragstart`/`dragover`/`drop`/`dragend`)
@@ -2133,6 +2142,10 @@ the phone hid `.sb-grip` and showed a ▲▼ nudge (`.mbtn.nudge`, `sbNudge`) in
 board DOM budget), and the grip paints everywhere. The grip is still ALWAYS emitted
 (`.ro` alone hides it on a read-only board), never conditionally on viewport width, so
 the panel's string-diff stays width-independent and survives a resize.
+
+Since 6 Sep 26 the picked-up look is the shared `.lift` and the row it lands on flashes
+once (§What a drag LOOKS like — one recipe, every surface): `.rowdrag` only recolours
+the grip now, and the landing is marked before the panel is rebuilt.
 
 **The address lives on the ROW, never on the grip** — `data-move="mv:…"` (`rowMove`)
 is an attribute of `.sb-line` / `.sb-arow` / `.sb-nrow` itself, not the `.sb-grip` span
@@ -2386,7 +2399,11 @@ dotted grip inline in its own header — `.sb-sec[data-secmove="di.key"]` on the
 board ROW grip (`.sb-grip`) is shown at every width too since 31 Aug 26 (the ▲▼ nudge it
 used to defer to on a phone is gone — §Dense row reorder); a section or a wave is an even
 bigger target, so these grips
-**stay draggable at every width** (the "drag, no arrows" design). The machine is
+**stay draggable at every width** (the "drag, no arrows" design). Since 6 Sep 26 a
+carried wave block or section panel wears the shared `.lift` and the place it lands
+flashes once (§What a drag LOOKS like — one recipe, every surface); `.secdrag` only
+recolours the grip, and the mark carries the surface (`#sbBoard` / `#eWeek`) because
+both emit the same `data-secmove` and `mv:w` addresses. The machine is
 `ui/rowdrag.ts`, wired on both the board wrap and the edit-week root; it tells the
 three draggables apart by the grip pressed, walks up to the enclosing wave block for
 a wave drag (so a wave drops onto another wave, not a line inside it), and validates
@@ -3766,6 +3783,11 @@ heading gains a grip, a `.qlbl` label element and a `✕`.
   the browser does not claim the gesture as a scroll, and the drop highlight
   written straight to the DOM — a re-render would rebuild the innerHTML table
   under the moving finger and drop the drag. Only the drop itself sets state.
+  Since 7 Sep 26 the picked-up column wears one measured overlay frame down the
+  whole table and the column flashes where it lands (§What a drag LOOKS like —
+  one recipe, every surface, and the quals z-index set there); the frozen header
+  mirror `.qfixed` still carries no drag handlers, so a heading is dragged on the
+  real table.
 
 None of it is persisted, exactly like the ticks, initials and flights beside
 it: reload and the LoX is the default set again. `rules` is still the only
@@ -4267,7 +4289,12 @@ side; the title stays visible one size down.
   wobble-restart, the click-eater). The drop applies a DAY-DELTA from the
   grabbed cell, so a span grabbed by its middle SLIDES whole rather than
   re-anchoring; `commitInputEdit` does the write (accepted-row relink and
-  Leave-War retraction included). A member may move their OWN input only.
+  Leave-War retraction included). A member may move their OWN input only. Since
+  6–7 Sep 26 the chip ghost wears the shared `.lift` and the chip flashes in the
+  day it landed in — the same day included, which is the one case with no toast
+  and no re-render; the day popover's planning sections and seated pucks wear it
+  too, and `paintLand` runs from this page's own layout effect (§What a drag
+  LOOKS like — one recipe, every surface).
 - *Tap an empty cell* → the day popover. *Hold it (`HOLD_ADD`, 450ms —
   longer than the chip hold because an empty cell has a tap meaning too)* →
   the add dialog seeded for that date, person = ME, everyone allowed (page
@@ -5192,47 +5219,103 @@ Four asks from the same sitting, all on the Leave War grid:
   before-itself guard, same splice-then-reinsert). The step-wise
   `moveManningRow(id, ±1)` stays as a tested store primitive with no UI caller.
   The hide (eye) control is unchanged.
-- **What a drag LOOKS like, reworked 6 Sep 26.** It used to be: the picked-up
-  row (person, manning row or category heading alike) faded to `opacity: .5`,
-  and the row it would land on took a 2px accent line on its FROZEN cell alone.
-  Two faults, both from the owner's iPhone. First, a frozen cell is STICKY — it
-  paints over the day cells scrolling beneath it — so fading it let the day
-  numbers come straight through the callsign ("19FL P9 18"); the same failure
-  the archived rows had, and `.mrow-hidden` already carried its cure. So the
-  CELL now stays opaque and only its CONTENT fades (`.who > *`, `.bal > *`, and
-  a heading's `.grphd-in` plus its fill cell). Second, "make the glow of the
-  selected row more obvious": the picked-up row is now LIFTED rather than merely
-  dimmed — an accent ring inset in its frozen cells (and in `td.grphd`), a halo
-  past them, and, on a person or manning row, accent lines top and bottom across
-  every day cell, written as box-shadows so a cell's own state colour still
-  shows through. The landing bar runs the WHOLE row at 3px with a glow on the
-  sticky cell, where 2px on that cell alone was easy to miss under a thumb; TOP
-  edge for an insert-before, BOTTOM for a lower-half hover, unchanged. One
-  cascade note, because it bites: the heading's ring rule and the row's line
-  rule tie on specificity, so the line rule is scoped `tr.dragging:not(.grp)`
-  and the heading's two cells are painted in the heading block instead.
-  **AND THE DRAG PAINT COMPOSES THE MANNING SHORTFALL RING RATHER THAN FIGHTING
-  IT.** An under-strength count cell wears its own `box-shadow` ring
-  (`.mx .counts td.amber` / `.red`, 0,3,1) and `box-shadow` is ONE property, so
-  the first cut of the row-wide paint and the shortfall were in direct
-  competition on exactly the days an admin reorders the block FOR: the landing
-  bar (0,2,3) lost and simply vanished on a short day, while the picked-up row's
-  lines (0,5,3) won and wiped the ring the landing row still had — the two ends
-  of the same drag disagreeing about the same column. The states now PUBLISH
-  their ring as `--mrow-ring` as well as painting it, and all three day-cell
-  drag rules take `var(--mrow-ring, 0 0 transparent)` as their LAST layer;
-  box-shadow layers paint first-on-top, so the drag's edges win and the
-  shortfall still shows down the sides, and a cell with no shortfall inherits
-  nothing and takes one invisible layer. The landing bar is `td:not(.who)`
-  (0,3,3) so it out-ranks the states outright — `.who` is excluded because it
-  has its own glow rule, and a heading's cells are not `.who`, so a heading
-  still gets its bar. Note for the perf rule: `--mrow-ring` is defined and read
-  on the SAME static cell, never toggled on `.mx-outer` or a grid ancestor, so
-  it restyles nothing. Pinned in
-  `rowglow.test.ts` — a CSS contract read off `matrix.css`, since jsdom paints
-  nothing and this is entirely about what is painted; the shortfall half is
-  pinned as the CASCADE FACT (a specificity calculator, a tie counted as a
-  loss) rather than as a string.
+- **What a drag LOOKS like — one recipe, every surface (6–7 Sep 26).** Two
+  earlier faults are kept here as history, because they are why two of the rules
+  read as they do. FIRST, the picked-up row used to fade to `opacity:.5` — but a
+  frozen cell is STICKY, it paints over the day cells scrolling beneath it, so
+  fading the CELL let the day numbers come straight through the callsign
+  ("19FL P9 18"); the same failure the archived rows had, and `.mrow-hidden`
+  already carried its cure. The cell stays opaque and only its CONTENT fades
+  (`.who > *`, `.bal > *`, a heading's `.grphd-in` plus its fill cell), and that
+  is still exactly what happens. SECOND, "make the glow of the selected row more
+  obvious" — a dim row read as merely faded rather than picked up, so it was
+  given a ring; but that ring was assembled PER CELL (a box on `.who`, a box on
+  `.bal`, lines across the day cells) because a table row spanning two sticky
+  cells and a year of scrolling ones cannot take one outline. The owner's iPhone
+  showed it for what it was: **"every single drag and drop for rearranging things
+  in the app … the thing u are grabbing glows evenly … a cyan box around the
+  perimeter, not individual boxes. Once I drop the item, it should flash to show
+  where the new item ended up"** — everywhere in the app, and "there should not be
+  a perceived drop in speed". The pick from the mock he dragged on his phone:
+  **soft, inside the line, for all**.
+
+  **So the picked-up look is ONE recipe now, defined once and worn by all twelve
+  drag surfaces** — Leave War's person rows, category headings and manning rows;
+  the two ⚙ Settings lists; the board's rows, wave blocks and section panels;
+  quals columns; the day popover's planning sections and seated pucks; the
+  calendar chip ghost; the crew-puck ghosts. It lives in `src/ui/scheduler.css`
+  (`--lift-box` on `:root`, `.lift`, `.lift-frame`, `.lift-land` + its veil, the
+  `liftIn`/`liftLand` keyframes) with the DOM choreography in `src/ui/lift.ts`;
+  the design is `docs/superpowers/specs/2026-09-06-drag-lift-design.md`.
+  - **INSET ONLY — no outer halo on anything, ghosts included.** The Leave War
+    grid sits inside `.card{overflow:hidden}` and the board rows inside
+    `.sb-panel{overflow:hidden}`, and an `overflow:hidden` ancestor DISCARDS a
+    descendant's outer box-shadow — which is precisely why the old halo showed
+    above and below a row and never at its sides. `.sb-fresh` learnt the same
+    lesson on 16 Aug 26: draw nothing outside the border box.
+  - **The recipe is a COLOUR, not a shape (7 Sep 26).** `.lift` carries the box
+    and no `border-radius`: an inset shadow follows the element's own corner, so
+    the ring hugs a wave block's 10/12px and a crew puck's 3px instead of
+    re-cornering them at a flat 8 (the first cut did, and a 15px puck read
+    pill-shaped). The two things with no corner of their own name one where it is
+    used — the overlay frame (8px) and the ⚙ who-wins row (8px, `matrix.css`); a
+    ⚙ Groups row keeps its own 7px.
+  - **`--lift-box` is a CONSTANT on `:root`, never toggled.** A custom property
+    toggled on `.mx-outer` or any grid ancestor restyles thousands of cells (the
+    performance doctrine); a constant read by `matrix.css`'s own rows costs
+    nothing and keeps one set of numbers for the whole app.
+  - **A composite thing gets ONE measured frame.** A Leave War row and a quals
+    column are not one element, so they take an overlay `.lift-frame` rendered in
+    JSX with a constant `className` and driven only through a ref (React never
+    writes to it again — trap 6). Leave War's is the LAST child of `.mx-outer`
+    at z 7 (over the band 4/6 and the drawer 5, under `.mxfixed` 55, which covers
+    the frame exactly as it covers the row); its rect is the ROW's top/height
+    ∪ the `.mx-wrap`'s VISIBLE left/width, so the box closes at the screen's edge
+    and wraps the frozen block, the open drawer and the days as one perimeter.
+    Measured ONCE at arm and ONCE at landing, in visual pixels, NEVER divided by
+    the table's `zoom` (the figures-drawer precedent — `.mx-outer` is outside the
+    zoom). Nothing runs per pointermove.
+  - **The quals frame TRAVELS, so the host arranges around it.** It lives inside
+    `.qwrap` (which gains `position:relative`, no z-index, so it opens no stacking
+    context) in CONTENT coordinates, riding the sideways scroll with its column —
+    which means a scrolled column slides the whole frame under the FROZEN callsign
+    column. The cure is a set of numbers, not JS: the frame drops to `.qwrap
+    .lift-frame{z-index:2}`, the heading row's own level (it is rendered AFTER the
+    table, so an equal z still paints it over the heading it wraps), and the frozen
+    cells are raised above it — `.qtbl td.qname` 1→**3**, the corner
+    `thead th[data-sort="cs"]` 3→**4**, `thead th` unchanged at **2**. Lowering the
+    frame alone would have hidden the ring's top edge under the opaque heading on
+    every ordinary drag. Nothing scrolls vertically inside `.qwrap`, so a raised
+    name cell and a heading never meet; where they do meet — the corner — 4 wins.
+    Pinned as a SET in `lift-css.test.ts`, read out of the file and compared to
+    each other. **`.qfixed`, the frozen header mirror, carries no drag handlers at
+    all** — pre-existing, recorded, not fixed here: a heading is dragged on the
+    real table.
+  - **The per-cell drag paint is DELETED** (`matrix.css`: the `.who`/`.bal` ring +
+    halo, the day-cell lines, the heading twin). With it gone, **a manning row's
+    shortfall ring paints on the picked-up row exactly as it does at rest** — the
+    two used to fight over the same `box-shadow` property on exactly the days an
+    admin reorders the block FOR. The board's `.rowdrag`/`.secdrag` are state
+    classes now too: they recolour the grip and nothing else.
+  - **Every LANDING BAR is untouched** (`.rowdrop`, `.secdrop`, `.qdrop`,
+    `.ic-over`, `.pk-swap-target`, `[data-fill].dragover`, Leave War's
+    `tr.dragover`) — they say where it WILL go, the flash says where it WENT, and
+    the two are deliberately different vocabularies. Leave War's still runs the
+    WHOLE row at 3px with a glow on the sticky cell (2px on that cell alone was
+    easy to miss under a thumb), TOP edge for an insert-before, BOTTOM for a
+    lower-half hover; it still keeps `var(--mrow-ring, 0 0 transparent)` as its
+    LAST box-shadow layer so a short day's amber/red ring still shows down the
+    sides of the row being landed on (box-shadow layers paint first-on-top), and
+    it is still scoped `td:not(.who)` (0,3,3) so it out-ranks the count states
+    (0,3,1) outright. `--mrow-ring` is defined and read on the SAME static cell,
+    never on a grid ancestor, so it restyles nothing.
+  - **Pins.** `lift.test.ts` (the module's arithmetic and class choreography),
+    `lift-css.test.ts` (the recipe as a CSS contract — inset-only, no forced
+    radius, the frame's position/z/hit-testing, the veil, the reduced-motion rule,
+    the ghosts, the quals z set), `rowglow.test.ts` (nothing paints a Leave War
+    row per cell any more; both ⚙ lists wear `--lift-box`), plus the drag machines'
+    own suites and the e2e "one frame the width of the visible grid", "a section
+    dropped on the board flashes", "a dragged quals heading wears one frame".
 
 Verified live at 1440px: picker rows 30px, the viewer chip reads "Viewing as
 Ranger", a ground-crew row shows "Cotter" with no edit box, and a count-row drag
@@ -5240,6 +5323,86 @@ moved a row from first to third with the arrows absent — zero console errors.
 Pinned in `counters.test.tsx`, `chrome.test.tsx`, `counts.test.tsx`,
 `roster.test.ts`, and e2e ("a personnel row shows its callsign, with no edit box,
 in Rearrange").
+
+**The landing flash (owner, 6 Sep 26 — "once I drop the item, it should flash to
+show where the new item ended up").** Every drop that lands somewhere lights the
+place it landed for 600ms and then leaves. The flash is a VEIL — `.lift-land::after`,
+a pseudo-element, so it adds no DOM node and no ceiling moves: `inset:0`,
+`border-radius:inherit` (it matches the shape of whatever it covers),
+`pointer-events:none`, the same inset `--lift-box` plus a light wash
+`rgba(59,198,232,.20)`, animating OPACITY and nothing else so it runs on the
+compositor. `@keyframes liftLand{0%,25%{opacity:1}to{opacity:0}}` over
+`LIFT_LAND_MS = 600` — the number is named on both sides of the same beat, in
+`lift.ts` and in the stylesheet. A plain element takes `position:relative;z-index:4`
+with the class (the `.sb-fresh` precedent: paint over the next row's top border);
+the overlay frame keeps its own `position:absolute`, which is why the relative rule
+is scoped `:not(.lift-frame)`.
+
+- **What counts as a landing.** A committed drop with a TARGET flashes where the
+  thing ended up — **moved or not** (the owner's words). A cancel, or a release
+  with no target, shows nothing. So a section dropped back on its own row flashes
+  in place, a chip dropped back on its own day flashes in place, and a crew puck
+  dropped back on the seat it already sat in flashes in place too (7 Sep 26 —
+  that path writes nothing and keeps its "Already in that seat" toast, which says
+  WHY nothing moved while the flash says where the man is). A puck let go over the
+  roster is a REMOVAL: it has landed nowhere and marks nothing.
+- **Reduced motion.** The blanket `*{animation:none!important}` matches ELEMENTS
+  and never pseudo-elements, so the veil carries its own
+  `@media (prefers-reduced-motion:reduce){.lift-land::after{animation:none}}`
+  beside the recipe. The feedback is kept and only the motion goes: the class
+  HOLDS for its 600ms and `lift.ts`'s timer takes it off — `animationend` never
+  fires there, so the timer is the only way out (the `FigureCell` lesson), and
+  under normal motion whichever comes first clears it.
+- **Landing on a DOM that is REBUILT by the drop** (the board's innerHTML panels,
+  the calendar, the popover) cannot be painted at the drop, so the mover calls
+  `markLand(selector)` BEFORE the rebuild and the existing post-render pass calls
+  `paintLand()` — `refreshHighlights` right after `paintFreshAdds()` for the
+  board and both weeks, InputsCal's own dep-list-free layout effect for the
+  calendar and its popover. **It is ONE FLASH PER NODE, not one-shot** (corrected
+  6 Sep 26, measured in Chromium against the built board — the design's original
+  "one-shot" wording is superseded). `refreshHighlights` runs once per re-rendered
+  SURFACE, and on the scheduler board two of them run in the same commit:
+  EditWeek's ~20ms BEFORE SchedBoard's, while `#sbBoard` still holds its pre-drop
+  markup — which carries the same address, because a reorder never changes a
+  list's length. A slot spent on the first node found was therefore spent on a
+  doomed node, and the drop flashed nothing at all. So the mark now lives its 1s,
+  SKIPS the node it has already lit, hands the flash on to a node that REPLACED
+  it, and is spent the moment the lit node is still standing on a later pass —
+  which normally closes the window at the very next pass. Trap 7 (the `.sb-fresh`
+  fault: an unrelated repaint restarting a flash) is still defended, by identity
+  rather than by spending the slot.
+- **The mark carries the SURFACE it belongs to** — `#sbBoard ` or `#eWeek `
+  prefixed onto the selector (`rowdrag.ts landScope`, `drag.ts landSel`). The
+  board and the edit week emit the SAME addresses (`data-move`, `data-secmove`,
+  `data-slot`/`data-fill`) and the week stays MOUNTED behind the board overlay,
+  earlier in document order, so a bare address handed every board drop's flash to
+  a hidden copy nobody could see — and, because that copy survives, the mark was
+  spent there. A drop on a host with neither id (a test harness, a page with only
+  one of the two) keeps the document-wide behaviour.
+- **Where the landed thing IS.** `engine/reorder.ts` states that `to` is the
+  destination index AFTER removal, so a moved row answers the target's own address
+  (`[data-move="<to>"]`); a section keeps its own key wherever it lands
+  (`[data-secmove="<di>.<fromKey>"]`); a seat is `[data-slot="k"],[data-fill="k"]`;
+  a chip is `[data-icday="<toIso>"] [data-iid|data-pid="…"]`; a quals column and a
+  Leave War row are found by their stable key and re-MEASURED (keyed rows move,
+  they do not remount). The one address that travels is an `ac` move where the
+  whole formation goes: `to` then names a jet inside the target formation.
+- **KNOWN GAPS, recorded rather than fixed.** (1) The Ground Programme is drawn in
+  START-TIME order, so its FIRST manual move on an unsorted day freezes that order
+  into the model and re-indexes every row — on that one move the landed row is not
+  `to`, and the flash can land one row out. It is decorative, first-drag-of-a-day
+  only and self-corrects from the second drag on; closing it needs the movers to
+  report the index they landed on, which is an engine change, not string maths.
+  (2) A mark that has lit a node but is not yet spent can flash a second time if
+  the day popover is closed and reopened inside its one second. (3) A flash can be
+  cut short if the surface re-renders again inside the 600ms — inherent to a
+  deferred landing. (4) A seated puck's box is drawn round its whole grid SLOT (a
+  third of the popover row), not tight round the puck glyph — the same box
+  `.pk-swap-target` has always used.
+- **Cost.** One `getBoundingClientRect` set at arm and one at landing; nothing per
+  pointermove; no React state for the frame or the flash; `will-change` only on the
+  veil; one declared `void el.offsetWidth` reflow when a flash is restarted on an
+  element already flashing (once, at a drop, in a frame that is laying out anyway).
 
 **The counter block's controls sit on ONE row (owner, 5 Sep 26 — "all in 1 row
 to minimise row height space").** The `.card-hd` above the counter grid carries,
