@@ -1886,3 +1886,13 @@ gate's. Keep verdict-bearing commands unpiped.
 **Suggested improvement:** For any change to scrolling, virtualisation, or a "which slice is drawn" window, treat a real-browser drive at BOTH the narrow and wide breakpoints as part of done, and assert the actual outcome (scroll position / which slice is in view), not just that a handler ran. Where a project already mandates a live-view pass, this is the concrete reason to run it at every breakpoint rather than one.
 
 **Principle:** Tests written against a layout-free environment prove which markup/handlers were emitted, never what was painted or scrolled; a feature defined by pixels or scroll position needs a real-browser check at every viewport mode it has a distinct code path for, because the bug can live in only one of them.
+
+### Observation 124: For a "this element looks different" UI report, read the element's computed style vs its neighbours BEFORE hypothesising a fix
+
+**Status:** OPEN
+**Date:** 7 Sep 26
+**Session context:** A non-technical owner circled a region of a dense grid on his phone and said it "looks different, like the medical column." I first theorised the empty day-grid cells "read as a gap", built and screenshotted three fill/gridline variants, and offered them — all wrong. His clarification ("why does MED TOT grid lines for the SELECTED user look darker from the rest") pointed at a specific cell on the highlighted row. Only when I read getComputedStyle on that exact cell and compared box-shadow/border against its row-siblings and the same cell on a non-selected row did the real cause fall out immediately: a CSS specificity clash left the last figure cell without the viewer-row accent band, so its darker drawer-edge seam was its only mark. One targeted rule fixed it.
+
+**Suggested improvement:** When a visual report names or points at a specific element ("this column/cell/line looks wrong/darker/different"), the first diagnostic step is to read that element's COMPUTED style in a real browser and diff it against (a) its immediate siblings and (b) the same element in a state that looks correct — not to hypothesise a cause from the screenshot and build a candidate fix. The computed-style diff names the exact property and rule responsible, turning a guessing loop into a one-shot fix.
+
+**Principle:** A rendered-difference complaint is a computed-style question. Diffing the suspect element's resolved styles against a known-good reference (sibling, other row, prior state) localises the offending property and cascade rule directly; pattern-matching the screenshot to a plausible-sounding cause risks fixing the wrong thing and burning review round-trips.
