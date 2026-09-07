@@ -6773,6 +6773,12 @@ screen:
   did exactly that and the owner's iPhone showed the chart with the whole
   panel stacked under it (7 Sep 26). Pinned in the smoke's phone block ("a
   Raptor refresh does not bring the side panel back under the chart").
+- **A second mount redraws the chart.** Logging out swaps the whole Shell for
+  the login screen (`ui/App.tsx`), so the next login mounts the Tracker again
+  with a fresh, empty `#board` while `core.init()` — guarded against a second
+  run — has nothing left to do. `App.jsx`'s mount effect therefore calls
+  `renderBoard()` when the engine is already `ready` (found by the 7 Sep 26
+  bug sweep: no chart after logging back in). Pinned in `tracker.test.tsx`.
 - **Its own look, inside the section.** The Tracker keeps its dark palette,
   type and controls (`tracker.css`, wrapped under `#page-tracker`). Five class
   names collide with `scheduler.css` (`.day`, `.day.today`, `.legend`, `.modal`,

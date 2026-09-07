@@ -64,7 +64,15 @@ export default function App({ active = true }) {
   const [tab, setTab] = useState('flow');
   const [sideZoom, setSideZoom] = useState(1);
 
-  useEffect(() => { core.init(); }, []);
+  /* First mount boots the engine; a LATER mount redraws. core.init() runs
+     once per page load and is guarded against a second run — but the Shell
+     that holds this tab is unmounted by a LOGOUT (ui/App.tsx renders the
+     login screen in its place), so the next login mounts the Tracker again
+     with a fresh, empty #board and nothing would draw into it (found by the
+     7 Sep 26 bug sweep: log out from the Tracker, log back in, open it —
+     no chart). The engine's state is intact in that case; only the DOM is
+     new, so ask it to render again. */
+  useEffect(() => { if (core.ready) { core.renderBoard(); core.notify(); } else core.init(); }, []);
 
   /* Which tab is showing is React state, but the search has to reach it: on the
      Info tab the board is display:none, so scrolling to a found event would be

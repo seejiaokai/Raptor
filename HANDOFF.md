@@ -167,7 +167,18 @@ jobs green (build + reference suite, unit raptor, unit leavewar ×2, geometry
   and the vendored `scripts/tracker/smoke.mjs` (`npm run smoke:tracker`, a
   seventh CI job `tracker (smoke)`). Driven 7 Sep 26 at 1440/390 as admin and
   member: no console/page errors, no 4xx, nothing leaks onto the other tabs,
-  the chart survives a tab round-trip. **What his eyes still need**: the feel
+  the chart survives a tab round-trip. **Bug-swept the same day (owner ask)**
+  — 25 scenario checks at 390/830/1000/1200/1440: two real bugs found and
+  fixed (the phone's Flow/Info switch wiped by a tab round-trip; an EMPTY
+  chart after logging out from the Tracker and back in — the Shell unmounts
+  on logout, so the remount now redraws), the rest clean: Raptor's document
+  click/change/key routers share no class, id or data-attribute with the
+  Tracker (audited), Delete/Escape on other tabs never reach the chart, the
+  dozing section adds no page height, the details bubble never shows
+  elsewhere, logout releases the document lock, the burger drawer opens over
+  the tab (Raptor's drawer never closed on Escape — not a regression), the
+  admin's view-as-member flip closes an open Save-a-copy dialog. **What his
+  eyes still need**: the feel
   on his iPhone (the tab is a viewport-tall column — chart and panel scroll
   inside, the page does not), and whether he wants the Tracker's own dark
   palette kept or Raptor's. `BUG-TESTING.md` row #376.

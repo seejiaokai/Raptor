@@ -121,6 +121,31 @@ describe('the header hides only the File menu for a member', () => {
   })
 })
 
+describe('a second mount redraws the chart (logout → login)', () => {
+  it('the board is drawn again on a fresh #board after the engine already booted', async () => {
+    /* ui/App.tsx swaps the whole Shell for the login screen on logout, so the
+       next login mounts the Tracker again with a new, empty #board while
+       core.init() — guarded against a second run — has nothing to do. Found
+       by the 7 Sep 26 bug sweep: no chart after logging back in. */
+    const { default: App } = await import('./App.jsx')
+    const mount = async () => {
+      const host = document.createElement('div')
+      host.innerHTML = '<div id="page-tracker"></div>'
+      document.body.appendChild(host)
+      const root = createRoot(host.querySelector('#page-tracker')!)
+      await act(async () => { root.render(<App active={true} />) })
+      await act(async () => { await new Promise(r => setTimeout(r, 50)) })
+      return { host, root }
+    }
+    const first = await mount()
+    expect(document.querySelector('#page-tracker #board #flowSvg'), 'first mount draws').toBeTruthy()
+    await act(async () => { first.root.unmount() }); first.host.remove()
+    const second = await mount()
+    expect(document.querySelector('#page-tracker #board #flowSvg .ball'), 'second mount draws again').toBeTruthy()
+    await act(async () => { second.root.unmount() }); second.host.remove()
+  })
+})
+
 describe('the seam stays light', () => {
   it('Raptor writes the lock through role.js, never by importing core.js', () => {
     const store = readFileSync(join(__dirname, '../state/store.ts'), 'utf8')
