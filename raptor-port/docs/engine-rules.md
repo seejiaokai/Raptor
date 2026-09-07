@@ -515,8 +515,9 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
 - **The CAT ladder is `OCU → D → C → B → A → IW → IP → IR → FI`** (owner,
   Aug 5 '26). The generic `I` tier and the standalone `ip` flag (and its
   derived `quals.instr`) are gone — instructor-ness lives solely in CAT.
-  `isInstr(q)` = any of the four; `isInstrPilot(q)` = IP/IR/FI (the rear-seat
-  privilege). Seat matrix:
+  `isInstr(q)` = any of the four; `isInstrPilot(q)` = IP/IR/FI (feeds the AAR
+  back-seat supervision rule and the combination matrix — no longer the
+  rear-seat bar, removed 7 Sep 26). Seat matrix:
   - `IW` (instructor WSO): WSO-only category, RCP only. A hand-edited record
     with `q:'IW'` + `seat:'FCP'` planted forward raises hard `QUAL` (the CAT
     dropdowns are seat-filtered, so the UI can't create it).
@@ -531,15 +532,16 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   Parity stays byte-exact via `refwin.ts:remap()` (retier's sibling), which
   migrates the in-memory reference's ladder tables, `isInstr`, puck builder,
   PEOPLE literals and legend to this world before boot.
-  **The rear-seat privilege is the JET's rule only** (owner, 14 Aug 26 —
-  "oft doesn't need an instructor to be in the RCP, likewise for amt"). A
-  sim's rear seat takes any pilot: the engine's Q (sims) block guards the
-  FRONT seat alone, and `slotBar` scopes its instructor bar with
-  `slotRules().sim`. The sim's front-seat rules (no WSO, no IW-in-FCP, no
-  ground crew) are unchanged. The reference still carries the old copied
-  rule; `refwin.ts:resim()` excises it from the in-memory copy — it fires
-  nowhere on the seed either way (every seeded sim rear seat holds an IP or
-  a WSO).
+  **The rear seat carries no instructor rule — any pilot may ride the back,
+  jet or sim** (owner, 7 Sep 26 — "don't flag out that they are in an illegal
+  seat"). The old "only IP / IR / FI may fly RCP" QUAL is gone from both the
+  validator and the crew picker; the seat's OTHER rules are untouched (SC
+  currency, AAR back-seat supervision, one-man-two-places, rest, busy), and a
+  WSO still cannot fly the FRONT seat. The sim's rear seat had already dropped
+  the rule on 14 Aug 26; the jet followed today. The reference carries both old
+  copies; `refwin.ts:resim()` (sim) and `refwin.ts:rejet()` (jet) excise them
+  from the in-memory copy — each fires nowhere on the seed, so WARN stays
+  byte-equal, and the excision stops a later fixture reopening the seam.
 - **The combination matrix (F-15SG Table 1.5-2, owner Aug 5 '26)** grades a
   crewed aircraft — the jet only, not the sim box — whenever the front seat
   is a CAT A–D or OCU pilot AND the back seat is a CAT A–D or OCU WSO. An

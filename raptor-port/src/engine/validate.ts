@@ -866,13 +866,15 @@ export function validate(){
            seat, so these two lines are the whole story for personnel. */
         if(p&&p.pers){markChip(di,ac.p,'Q');markRing(di,ac.p,'hard');add('hard','QUAL',[ac.p],`${p.cs} is ground crew — cannot fly a front seat (${f.label})`,ac.key+'.p');}
         if(w&&w.pers){markChip(di,ac.w,'CP');markRing(di,ac.w,'adv');add('adv','PAX_CREW',[ac.w],`${w.cs} is riding the rear seat of ${f.label} as an incentive passenger — this crew pairing needs approval`,ac.key+'.w');}
-        // Q — seat qualification: a WSO can't fly FCP; only an instructor pilot (IP / IR / FI) may fly RCP
+        // Q — seat qualification: a WSO can't fly FCP. The rear seat carries no
+        // instructor rule: any pilot may ride the back (owner, 7 Sep 26 — "don't
+        // flag out that they are in an illegal seat"; the AAR supervision rule
+        // below, currency and the combination matrix are separate and still apply)
         if(p&&p.seat==='RCP'){markChip(di,ac.p,'Q');markRing(di,ac.p,'hard');add('hard','QUAL',[ac.p],`${p.cs} is a WSO — cannot fly FCP (${f.label})`,ac.key+'.p');}
         /* belt and braces: CAT IW is a WSO-only category, so an IW record whose
            seat says FCP is inconsistent data — the Quals-page dropdowns never
            offer IW to a pilot, but a hand-edit could. Flag it, don't hide it. */
         if(p&&p.q==='IW'&&p.seat==='FCP'){markChip(di,ac.p,'Q');markRing(di,ac.p,'hard');add('hard','QUAL',[ac.p],`${p.cs} is CAT IW — a WSO category, cannot fly FCP (${f.label})`,ac.key+'.p');}
-        if(w&&w.seat==='FCP'&&!isInstrPilot(w.q)){markChip(di,ac.w,'Q');markRing(di,ac.w,'hard');add('hard','QUAL',[ac.w],`${w.cs} is a pilot, not an instructor — only IP / IR / FI may fly RCP (${f.label})`,ac.key+'.w');}
         /* AAR — the remarks call for it and the FRONT seat is not current.
            A man who is not current may still fly it as TRAINING, but only with
            someone cleared to teach that AAR sitting behind him (owner,

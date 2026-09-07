@@ -26,9 +26,12 @@ export const QCOLOR:any={OCU:'#7F65BF',D:'#3673DD',C:'#3BC6E8',B:'#E5A83B',A:'#C
 export const LEVELNAME:any={OCU:'OCU (ab-initio)',D:'D · wingman',C:'C · ops wingman',B:'B · 2-ship FL',A:'A · 4-ship FL',IW:'IW · instructor WSO',IP:'IP · instructor pilot',IR:'IR · instrument rating exmr',FI:'FI · fighter wing instructor'};
 export const isLead=(q:any)=>q==='A'||q==='B';
 export const isInstr=(q:any)=>q==='IW'||q==='IP'||q==='IR'||q==='FI';
-/* rear-seat privilege for an FCP person: only these instructor CATs may fly
-   RCP. IW is deliberately absent (WSO-only category) and a WSO FI never
-   reaches this test — seat rules ask it about pilots alone. */
+/* the instructor-pilot CATs — IP, IR, FI. IW is deliberately absent (a WSO-only
+   category) and a WSO FI never reaches this test — it is asked about pilots
+   alone. It once drove the rear-seat "only an instructor may fly RCP" bar; that
+   bar was removed 7 Sep 26 (owner: any pilot may ride the back). It now feeds
+   the AAR back-seat supervision rule and the crew combination matrix (an
+   instructor in either seat clears the matrix). */
 export const isInstrPilot=(q:any)=>q==='IP'||q==='IR'||q==='FI';
 export const isOcu=(q:any)=>q==='OCU';
 export const QORDER:any={OCU:0,D:1,C:2,B:3,A:4,IW:5,IP:6,IR:7,FI:8};

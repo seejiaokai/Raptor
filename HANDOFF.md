@@ -183,6 +183,12 @@ jobs green (build + reference suite, unit raptor, unit leavewar ×2, geometry
   in a front seat now refused by the picker as the validator already refuses it;
   the `also` puck of a cross-wave double-book now rings. The one thing no browser
   proved is the Saturday OIL credit landing in Leave War (unit-pinned only).
+  **Rear-seat rule relaxed the same day** (owner: "don't flag out that they are
+  in an illegal seat") — the "only IP / IR / FI may fly RCP" QUAL is removed from
+  the validator (`validate.ts`) AND the crew picker (`avail.ts`); any pilot may
+  ride any back seat, jet or sim, and all other seat rules stay (SC currency, AAR
+  supervision, one-man-two-places, WSO-can't-fly-front). The reference copy is
+  excised too (`refwin.ts:rejet()`, resim's sibling), byte-parity held.
 
 - **LEAVE WAR OPENS ON THE WAR BEING BID ON — on the branch, unmerged (7 Sep
   26).** The tab no longer always opens on January of the first war. It now

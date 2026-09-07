@@ -1,6 +1,6 @@
 import { DAYS } from './data'
 import { INPUTS, inputCoversDate, isAway, awayAllDay, canSpare, canWork, offWord, inpWin, sansAvailOn, sansWindow, isPersonal, inpLabel } from './inputs'
-import { PEOPLE, isSpecial, nameToId, aarNeed, aarOK, scShiftKind, scQualOK, isInstrPilot } from './people'
+import { PEOPLE, isSpecial, nameToId, aarNeed, aarOK, scShiftKind, scQualOK } from './people'
 import { parseHM, win, overlap, hm24 } from './time'
 import { SHIFT_HARD, VCONF } from './rules'
 import { isStandalone, scSpare, saExempt, saExemptKind } from './waves'
@@ -316,15 +316,11 @@ export function slotBar(id:any,key:any,rules?:any,fromKey?:any){
      — the Quals dropdowns never offer it, but a hand-edit could. The picker must
      red the same drag-drop the warning list does, or the two drift (7 Sep 26). */
   if(r.seat==='p'&&p.q==='IW'&&p.seat==='FCP')return 'CAT IW — a WSO category, cannot fly FCP';
-  /* the instructor rule is the JET's rear seat only — a sim's rear seat is
-     open to any pilot (owner, 14 Aug 26), matching the engine's Q (sims). It
-     also stands down on a STANDBY rear seat (AVALON / BB, and the SC spare):
-     nobody checks the rear seat there — "pilots can go backseat" (owner, 7 Sep
-     26), and the validator's sacrew loop and the SC-spare seat rule both leave
-     it unruled, so the picker must too or it refuses a man the warning list
-     would accept (7 Sep 26 reviewer). The standby seat's own SC-currency refusal
-     below still applies. */
-  if(r.seat==='w'&&!r.sim&&!r.avJet&&!(r.sc&&r.scSpare)&&p.seat==='FCP'&&!isInstrPilot(p.q))return 'pilot, not an instructor — only IP / IR / FI may fly rear seat';
+  /* NO rear-seat instructor bar (owner, 7 Sep 26 — "don't flag out that they
+     are in an illegal seat"): any pilot may ride any back seat, jet or sim, so
+     the picker raises nothing on that count, matching the validator which no
+     longer emits the QUAL either. The seat's OTHER bars below — SC currency,
+     one-man-two-places, rest, busy — are their own rules and still apply. */
   if(r.sc&&!scQualOK(id,r.sc))return `not ${r.sc==='day'?'SC DAY':'SC NIGHT'} current`;
   /* every AVALON / BB jet seat wants SC currency for its hours (owner, 7 Sep
      26 — MAIN, then "AVALON SPARE also requires SC NIGHT") — the validator's
