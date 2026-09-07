@@ -516,3 +516,30 @@ describe('three AVALON places at once — every pair is said, each once', () => 
     expect(avSeatHit(TUE, 'split', 1140, 1860, 'x').role).toBe('MAIN')
   })
 })
+
+/* THE MAIN / SPARE BADGE TOOLTIP TELLS THE TRUTH PER WAVE (sweep, 7 Sep 26 —
+   it said "MAIN — fully cross-checked" on an AVALON line, which is exempt
+   whole, and under-sold the SPARE on every wave). */
+describe('the MAIN / SPARE badge tooltip names the checks that actually run', () => {
+  const titleOf = (html: string, key: string) => {
+    const m = html.match(new RegExp('data-sarole="' + key.replace(/\./g, '\\.') + '" title="([^"]*)"'))
+    return m ? m[1] : null
+  }
+  it('an AVALON MAIN is not "fully cross-checked" — it names its four checks; the SPARE too', () => {
+    const html = dayHTML(TUE, true)
+    const main = titleOf(html, `${TUE}.${gi}.0.0`)!, spare = titleOf(html, `${TUE}.${gi}.0.2`)!
+    expect(main).not.toMatch(/fully cross-checked/)
+    for (const t of [main, spare]) {
+      expect(t).toMatch(/availability/); expect(t).toMatch(/currency/); expect(t).toMatch(/front seat/); expect(t).toMatch(/same hours/)
+    }
+    expect(spare).toMatch(/standing by/)
+  })
+  it('an SC MAIN stays "fully cross-checked"; the SC SPARE names the SC desk', () => {
+    const d: any = DAYS[TUE]
+    const sc = makeStandalone('sc'); d.waves.push(sc); const sgi = d.waves.length - 1
+    const html = dayHTML(TUE, true)
+    expect(titleOf(html, `${TUE}.${sgi}.0.0`)).toMatch(/fully cross-checked/)
+    const spare = titleOf(html, `${TUE}.${sgi}.0.2`)!
+    expect(spare).toMatch(/SC desk/); expect(spare).toMatch(/front seat/); expect(spare).toMatch(/currency/)
+  })
+})

@@ -817,9 +817,17 @@ export function saRoleText(a:any){return a.role||(a.spare?'SPARE':'MAIN');}
 export function saRoleHTML(key:any,a:any,ed:any){
   const sp=!!a.spare, role=saRoleText(a);
   if(!ed)return `<span class="sarole ro${sp?' sp':''}">${esc(role)}</span>`;
-  return `<button class="sarole${sp?' sp':''}" data-sarole="${key}" title="${sp
-    ?'SPARE — standing by, checked for availability and currency only. Click to make this line MAIN.'
-    :'MAIN — fully cross-checked. Click to make this line SPARE.'}">${esc(role)}</button>`;
+  /* the tooltip names the checks that ACTUALLY run on this line (sweep, 7 Sep
+     26 — it said "fully cross-checked" on an AVALON MAIN, which is exempt
+     whole): an SC MAIN is fully checked; an SC SPARE, and every AVALON / BB
+     seat, carry the four standby checks only. The wave is read off the key
+     (di.gi…), the same model saExempt reads. */
+  const kp=String(key).split('.'), wv=(((DAYS[+kp[0]]||{}).waves||[])[+kp[1]]), whole=!!(wv&&wv.noconf);
+  const four=(who:any)=>`${who}checked for availability, SC currency, the front seat and another ${whole?'seat or the desk':'SC seat or the SC desk'} in the same hours only.`;
+  const title=sp?`SPARE — standing by; ${four('')} Click to make this line MAIN.`
+    :whole?`MAIN — ${four('')} Click to make this line SPARE.`
+    :'MAIN — fully cross-checked. Click to make this line SPARE.';
+  return `<button class="sarole${sp?' sp':''}" data-sarole="${key}" title="${title}">${esc(role)}</button>`;
 }
 /* LATE INPUT (owner, 9 Aug 26) — the mark that rides on an input last changed
    after its own week's deadline (engine/inputs.ts's isLateInput). It is drawn

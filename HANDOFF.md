@@ -174,7 +174,11 @@ jobs green (build + reference suite, unit raptor, unit leavewar ×2, geometry
   `dutytpl.test.ts`, `DutyTplModal.test.tsx`. Owner-settled the same day: an
   AVALON/BB night followed by a sortie the next morning raises NOTHING (nothing
   on these waves is an event, so neither carries crew rest or counts toward
-  the 6-day run) — a decision, not a gap. `BUG-TESTING.md` row #377.
+  the 6-day run) — a decision, not a gap. **Bug-swept the same day** (three
+  cheaper agents — a 22-scenario browser drive, an engine edge-case review, a
+  wording audit; three real fixes, see `BUG-TESTING.md` row #377); the one
+  thing no browser proved is the Saturday OIL credit landing in Leave War
+  (unit-pinned only).
 
 - **LEAVE WAR OPENS ON THE WAR BEING BID ON — on the branch, unmerged (7 Sep
   26).** The tab no longer always opens on January of the first war. It now
