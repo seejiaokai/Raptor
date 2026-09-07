@@ -1,7 +1,8 @@
 import { act, fireEvent, render, screen } from '@testing-library/react'
-import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { getState, groupsInOrder, initStore, setRole } from '../state/store'
 import { memoryBackend } from '../state/storage'
+import { LIFT_LAND_MS } from '../../ui/lift'
 import { Matrix } from './Matrix'
 
 beforeEach(() => {
@@ -288,5 +289,87 @@ describe('drag to reorder in ⚙', () => {
     fireEvent.click(screen.getByTestId('sans-toggle'))
     expect(screen.queryByTestId('gsdrag-SANS')).toBeNull()
     expect(screen.getByTestId('gsdrag-IP')).toBeTruthy()
+  })
+})
+
+/* ONE LIFT, EVERY DRAG (owner, 6 Sep 26): these two lists are React-managed
+   rows, so the picked-up look rides the prop-driven `dragging` class instead
+   of an imperative `.lift` (matrix.css .set-grow.dragging / .crow-wrap.gs-row
+   .dragging, pinned as a CSS contract in rowglow.test.ts) — an imperative
+   class here would be wiped by the very re-render the arm causes. What that
+   CSS pin cannot see is the DOM half: that `dragging` actually appears and
+   disappears through the real pointer path, and that the row landOn's once
+   the store's move has re-rendered it (design: "Finding the landed thing" —
+   GROUP_DRAG serves the grid heading too, so the landed row is found OUTSIDE
+   `.mx-wrap`). */
+describe('one lift, every drag — the ⚙ lists (6 Sep 26)', () => {
+  const origEFP = document.elementFromPoint
+  afterEach(async () => {
+    document.elementFromPoint = origEFP
+    vi.useRealTimers()
+    await new Promise(r => setTimeout(r, 0))
+  })
+  const pointer = (type: 'pointerdown' | 'pointermove' | 'pointerup' | 'pointercancel', target: EventTarget, init: PointerEventInit) =>
+    act(() => { target.dispatchEvent(new PointerEvent(type, { bubbles: true, ...init })) })
+  // A row's own rect, mocked so "hover the fourth row" resolves to its LOWER
+  // half (the after-bar test's same rect) — jsdom lays nothing out for real.
+  const lowerHalfRect = () => ({ top: 0, height: 20, bottom: 20, left: 0, right: 100, width: 100, x: 0, y: 0, toJSON() {} }) as DOMRect
+
+  it('the row being dragged wears the recipe through its dragging class, and the moved row flashes once', () => {
+    vi.useFakeTimers()
+    setRole('admin')
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId('settings-open'))
+    // arm on the Groups list's second row (IP), hover the fourth row's
+    // (IWSO) lower half, release — drops IP just after IWSO.
+    const iwso = screen.getByTestId('grow-IWSO')
+    document.elementFromPoint = () => iwso
+    iwso.getBoundingClientRect = lowerHalfRect
+    pointer('pointerdown', screen.getByTestId('gsdrag-IP'), { pointerType: 'mouse', button: 0, clientX: 10, clientY: 40, pointerId: 1 })
+    // picked up: the row wears the recipe through the class React writes,
+    // the same class the grid's own dragging row wears.
+    expect(screen.getByTestId('grow-IP').className).toMatch(/\bdragging\b/)
+    pointer('pointermove', window, { pointerType: 'mouse', clientX: 10, clientY: 15, pointerId: 1 })
+    pointer('pointerup', window, { pointerType: 'mouse', clientX: 10, clientY: 15, pointerId: 1, button: 0 })
+    // landed: `[data-grow="IP"]` outside `.mx-wrap` — the grid heading can
+    // carry the same attribute, which is exactly why the lookup excludes it.
+    const moved = document.querySelector('[data-grow="IP"]:not(.mx-wrap [data-grow])') as HTMLElement
+    expect(moved.className).not.toMatch(/\bdragging\b/)
+    expect(moved.classList.contains('lift-land')).toBe(true)
+    vi.advanceTimersByTime(LIFT_LAND_MS + 50)
+    expect(moved.classList.contains('lift-land')).toBe(false)
+  })
+
+  it('the who-wins list lands the same way', () => {
+    vi.useFakeTimers()
+    setRole('admin')
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId('settings-open'))
+    fireEvent.click(screen.getByTestId('who-wins-toggle'))   // tucked behind a disclosure
+    const iwso = screen.getByTestId('gprio-IWSO')
+    document.elementFromPoint = () => iwso
+    iwso.getBoundingClientRect = lowerHalfRect
+    pointer('pointerdown', screen.getByTestId('gpdrag-IP'), { pointerType: 'mouse', button: 0, clientX: 10, clientY: 40, pointerId: 1 })
+    expect(screen.getByTestId('gprio-IP').className).toMatch(/\bdragging\b/)
+    pointer('pointermove', window, { pointerType: 'mouse', clientX: 10, clientY: 15, pointerId: 1 })
+    pointer('pointerup', window, { pointerType: 'mouse', clientX: 10, clientY: 15, pointerId: 1, button: 0 })
+    const moved = document.querySelector('[data-gprio="IP"]') as HTMLElement
+    expect(moved.className).not.toMatch(/\bdragging\b/)
+    expect(moved.classList.contains('lift-land')).toBe(true)
+    vi.advanceTimersByTime(LIFT_LAND_MS + 50)
+    expect(moved.classList.contains('lift-land')).toBe(false)
+  })
+
+  it('a pointercancel leaves neither class behind', () => {
+    setRole('admin')
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId('settings-open'))
+    pointer('pointerdown', screen.getByTestId('gsdrag-IP'), { pointerType: 'mouse', button: 0, clientX: 10, clientY: 40, pointerId: 1 })
+    expect(screen.getByTestId('grow-IP').className).toMatch(/\bdragging\b/)
+    pointer('pointercancel', window, { pointerType: 'mouse', pointerId: 1 })
+    const row = screen.getByTestId('grow-IP')
+    expect(row.className).not.toMatch(/\bdragging\b/)
+    expect(row.classList.contains('lift')).toBe(false)
+    expect(row.classList.contains('lift-land')).toBe(false)
   })
 })
