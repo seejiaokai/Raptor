@@ -2727,8 +2727,17 @@ export function Matrix() {
     // the first and last drawn day — bug-hunt fix, 6 Sep 26).
     // `figuresOpen` (6 Sep 26): the drawer grows the header row to 62px, so the
     // table is that much taller and the box would stand a header short.
+    // `arranging` (7 Sep 26): Rearrange WIDENS the frozen name column
+    // (`.mx-arranging` re-sets `--who-w`), pushing the day columns right — so
+    // the box's LEFT edge, placed off the first day's header cell, must be
+    // re-measured or it stays at its narrower-column position and hides behind
+    // the now-wider frozen columns (z 2/3 paint over the box's z 1). The
+    // owner saw exactly this: the left green border gone in Rearrange, the
+    // right one fine (its edge is far from the frozen columns). Its two sibling
+    // measure effects (the month strip, the frozen-mirror geometry) already
+    // carry `arranging` for the same reason; this one had been missed.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [version, period.id, period.stage, period.bidFrom, period.bidTo, zoom, visWindow, drawnDates.length, colWin?.lo, colWin?.hi, countsOpen, folded, figuresOpen])
+  }, [version, period.id, period.stage, period.bidFrom, period.bidTo, zoom, visWindow, drawnDates.length, colWin?.lo, colWin?.hi, countsOpen, folded, figuresOpen, arranging])
 
   // ---- the frozen roster columns, drawn ONCE (owner, 20 Aug 26 — the third
   // look at the sideways stutter) --------------------------------------------

@@ -4096,6 +4096,31 @@ test('a glowing green box frames the open-bidding window and clears when bidding
   await expect(box).toHaveCount(0)
 })
 
+// The box's LEFT edge is placed off the first day's header cell, so it MUST
+// re-measure when Rearrange widens the frozen name column and pushes the day
+// columns right — otherwise the left edge is left behind at its narrower
+// position, under the now-wider frozen columns (z 2/3 over the box's z 1), and
+// the left green border vanishes while the far right edge stays clear (owner,
+// 7 Sep 26, from the preview). jsdom computes no layout, so only a browser can
+// prove it moved. Pins the `arranging` dep added to measureBidBox.
+test('the open-bidding box keeps its left edge on 1 Jan through Rearrange', async ({ page }) => {
+  await openLeaveWar(page, 'a')   // admin, so Rearrange is available
+  await putDrawerAway(page)
+  const jan1Left = () => page.evaluate(() =>
+    document.querySelector('[data-testid="head-2026-01-01"]').getBoundingClientRect().left)
+  const boxLeft = () => page.evaluate(() =>
+    document.querySelector('#page-leavewar .lw-bidbox').getBoundingClientRect().left)
+  const janRest = await jan1Left()
+  expect(Math.abs(await boxLeft() - janRest)).toBeLessThanOrEqual(4)  // aligned at rest
+  await page.locator('[data-testid="roster-arrange"]').click()
+  // Rearrange grows the frozen name column, so 1 Jan shifts right...
+  const janArr = await jan1Left()
+  expect(janArr).toBeGreaterThan(janRest)
+  // ...and the box's left edge follows it onto 1 Jan, not left behind and hidden.
+  expect(Math.abs(await boxLeft() - janArr)).toBeLessThanOrEqual(4)
+  await page.locator('[data-testid="roster-arrange"]').click()  // leave arrange
+})
+
 // ---- the column window (Phase 2 of the speed work, 3 Sep 26) --------------
 // The grid draws a WINDOW of whole months at their real widths; the undrawn
 // months are PLACEHOLDER cells as wide as the months they stand in for (owner,
