@@ -129,6 +129,15 @@ describe('lifting and landing a plain element', () => {
     vi.advanceTimersByTime(300)
     expect(d.classList.contains('lift-land')).toBe(false)
   })
+  it('liftOn ends a flash still in flight — a row grabbed again inside its own landing (6 Sep 26)', () => {
+    vi.useFakeTimers()
+    const d = document.createElement('div'); document.body.appendChild(d)
+    landOn(d); vi.advanceTimersByTime(120)
+    liftOn(d)
+    expect(d.className, 'the picked-up box alone, never the veil under it too').toBe('lift')
+    vi.advanceTimersByTime(1000)
+    expect(d.className, 'and the old flash\'s timer cannot fire into the new drag').toBe('lift')
+  })
 })
 
 describe('markLand / paintLand — landing on a DOM that is rebuilt after the drop', () => {
@@ -157,13 +166,32 @@ describe('markLand / paintLand — landing on a DOM that is rebuilt after the dr
     const fresh = document.createElement('div'); fresh.setAttribute('data-move', 'mv:g.0.1'); document.body.appendChild(fresh)
     paintLand()                                             // the pass that rebuilt it
     expect(fresh.classList.contains('lift-land'), 'the row the user is actually looking at flashes').toBe(true)
+    /* …and there the hand-off stops: the node it lit is still standing, so the
+       next pass spends the mark rather than leaving it live for a second */
+    paintLand()
+    expect(pendingLand(), 'a lit node that survived a pass spends the mark').toBeNull()
   })
-  it('climbs to the container the caller names (a formation that travelled)', () => {
-    const line = document.createElement('div'); line.className = 'sb-line'
-    const jet = document.createElement('div'); jet.setAttribute('data-move', 'mv:ac.0.1.2.0'); line.appendChild(jet); document.body.appendChild(line)
-    markLand('[data-move^="mv:ac.0.1.2."]', '.sb-line'); paintLand()
-    expect(line.classList.contains('lift-land')).toBe(true)
-    expect(jet.classList.contains('lift-land')).toBe(false)
+  it('a hand-off that never comes dies with the mark, rather than flashing late', () => {
+    vi.useFakeTimers()
+    const stale = document.createElement('div'); stale.setAttribute('data-move', 'mv:g.0.2'); document.body.appendChild(stale)
+    markLand('[data-move="mv:g.0.2"]'); paintLand()
+    expect(stale.classList.contains('lift-land')).toBe(true)
+    stale.remove()                                          // thrown away, and nothing came back for a second
+    vi.advanceTimersByTime(1100)
+    const late = document.createElement('div'); late.setAttribute('data-move', 'mv:g.0.2'); document.body.appendChild(late)
+    paintLand()
+    expect(late.classList.contains('lift-land')).toBe(false)
+    expect(pendingLand()).toBeNull()
+  })
+  it('climbs to the container the caller names, when the address sits on a child of the thing to flash', () => {
+    /* the board has no such shape today — its jet lines ARE the [data-move]
+       elements — but the climb is the module's general capability and the
+       calendar and quals surfaces may need it, so it keeps its own pin */
+    const box = document.createElement('div'); box.className = 'land-box'
+    const inner = document.createElement('div'); inner.setAttribute('data-move', 'mv:x.0.1.2.0'); box.appendChild(inner); document.body.appendChild(box)
+    markLand('[data-move^="mv:x.0.1.2."]', '.land-box'); paintLand()
+    expect(box.classList.contains('lift-land')).toBe(true)
+    expect(inner.classList.contains('lift-land')).toBe(false)
   })
   it('a mark nobody painted for a second is dropped, not painted late', () => {
     vi.useFakeTimers()

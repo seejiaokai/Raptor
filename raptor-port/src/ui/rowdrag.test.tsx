@@ -292,9 +292,10 @@ describe('one lift, every drag — the board (6 Sep 26)', () => {
     expect(landSel('mv:d.0.0.1', 'mv:d.0.0.3')).toEqual(['[data-move="mv:d.0.0.3"]'])
     expect(landSel('mv:ac.0.1.0.2', 'mv:ac.0.1.0.0')).toEqual(['[data-move="mv:ac.0.1.0.0"]'])   // a jet resequenced inside its formation
     /* the one exception — the whole FORMATION travelled, so `to` names a jet
-       inside the target formation and the landed thing is the block now at the
-       target's formation index */
-    expect(landSel('mv:ac.0.1.0.2', 'mv:ac.0.1.2.0')).toEqual(['[data-move^="mv:ac.0.1.2."]', '.sb-line'])
+       inside the target formation and what flashes is the first jet line of the
+       block now at the target's formation index (a formation has no wrapper
+       element, so there is nothing to climb to) */
+    expect(landSel('mv:ac.0.1.0.2', 'mv:ac.0.1.2.0')).toEqual(['[data-move^="mv:ac.0.1.2."]'])
   })
 
   it('a real move marks the landed row BEFORE the rebuild, and paintLand paints it once', () => {
@@ -305,7 +306,9 @@ describe('one lift, every drag — the board (6 Sep 26)', () => {
       const [rowA, rowB] = rows
       const to = rowB.dataset.move!
       down(rowA.querySelector('.sb-grip')!); over(rowB); up()
-      expect(pendingLand()).toEqual({ sel: `[data-move="${to}"]`, climb: undefined })
+      /* `#host ` is this harness's surface prefix — see the two-surface test
+         below for why the mark is scoped to the surface it was dragged on */
+      expect(pendingLand()).toEqual({ sel: `#host [data-move="${to}"]`, climb: undefined })
       paintLand()                                      // what refreshHighlights does after the repaint
       const landed = host.querySelector(`[data-move="${to}"]`)!
       expect(landed.classList.contains('lift-land')).toBe(true)
@@ -326,10 +329,53 @@ describe('one lift, every drag — the board (6 Sep 26)', () => {
       const grip = host.querySelector('[data-secmove="0.prog"] .secgrip') as HTMLElement
       const target = host.querySelector('[data-secmove="0.duty"]') as HTMLElement
       down(grip); over(target); up()
-      expect(pendingLand()).toEqual({ sel: '[data-secmove="0.prog"]', climb: undefined })
+      expect(pendingLand()).toEqual({ sel: '#host [data-secmove="0.prog"]', climb: undefined })
       paintLand()
       expect(host.querySelector('[data-secmove="0.prog"]')!.classList.contains('lift-land')).toBe(true)
     } finally { HOOKS.editMode = o }
+  })
+
+  /* THE BOARD AND THE EDIT WEEK SPEAK THE SAME ADDRESSES (fix, 6 Sep 26
+     review). A wave is `mv:w.<di>.<gi>` and a section `<di>.<key>` on BOTH
+     surfaces — html.ts's `.dsec` / wave block in edit mode, board.ts's
+     `.sb-sec` / `.sb-go` — and the week stays mounted behind the board overlay,
+     earlier in document order. An unscoped mark therefore flashed the week's
+     hidden node on every board drop and, because that node survives, spent the
+     mark there so the board's own row was never reached. Each wiring now
+     prefixes its mark with its own surface id. */
+  describe('the same address on two surfaces', () => {
+    const secs = (cls: string) => ['prog', 'duty']
+      .map(k => `<div class="${cls}" data-secmove="0.${k}"><span class="secgrip">⠿</span></div>`).join('')
+    const drop = (root: HTMLElement) => {
+      const offSurface = wireRowDrag(root)
+      try {
+        down(root.querySelector('[data-secmove="0.prog"] .secgrip')!)
+        over(root.querySelector('[data-secmove="0.duty"]')!)
+        up()
+      } finally { offSurface() }
+    }
+    beforeEach(() => {
+      document.body.innerHTML =
+        `<div class="week" id="eWeek">${secs('dsec')}</div>` +
+        `<div class="sb-board" id="sbBoard">${secs('sb-sec')}</div>`
+    })
+    const lit = (sel: string) => document.querySelector(sel)!.classList.contains('lift-land')
+
+    it('a section dropped on the BOARD flashes the board\'s node, never the week\'s copy', () => {
+      drop(document.getElementById('sbBoard')!)
+      paintLand()
+      expect(lit('#sbBoard [data-secmove="0.prog"]'), 'the section the user dropped flashes').toBe(true)
+      expect(lit('#eWeek [data-secmove="0.prog"]'), 'the hidden week copy is left alone').toBe(false)
+      expect(pendingLand()).toEqual({ sel: '#sbBoard [data-secmove="0.prog"]', climb: undefined })
+    })
+
+    it('…and a section dropped on the WEEK flashes the week\'s own', () => {
+      drop(document.getElementById('eWeek')!)
+      expect(pendingLand()).toEqual({ sel: '#eWeek [data-secmove="0.prog"]', climb: undefined })
+      paintLand()
+      expect(lit('#eWeek [data-secmove="0.prog"]')).toBe(true)
+      expect(lit('#sbBoard [data-secmove="0.prog"]')).toBe(false)
+    })
   })
 
   it('a STALE drop (a detached carry) marks nothing', () => {

@@ -99,7 +99,12 @@ export function refreshHighlights(){
   paintArm();      // every render rebuilds the slots, so the ring is re-hung here
   paintSelRings(); // after paintArm, so an armed element can keep its own ring
   paintFreshAdds();// the ~6s blue box on a just-added row / line / wave / block
-  paintLand();     // the landing flash of a just-dropped row / wave / section / puck — one-shot (lift.ts)
+  /* the landing flash of a just-dropped row / wave / section / puck. One flash
+     per NODE (lift.ts): this pass is called by every surface that has just
+     re-rendered, so the mark rides along until it has lit a node that is still
+     standing — a repaint can never restart it, and a rebuild that replaced the
+     node it lit hands the flash on to the new one. */
+  paintLand();
   /* the queued hold, after the classes so it measures the final layout */
   if(PENDING_HOLD){const f=PENDING_HOLD; PENDING_HOLD=null; try{f()}catch(_){}}
 }

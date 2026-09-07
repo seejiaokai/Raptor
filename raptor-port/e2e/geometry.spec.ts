@@ -2116,6 +2116,27 @@ test('the notes row keeps a usable text field and a single row on a phone', asyn
   expect(m.rowHeight, 'one grid row, not wrapped onto a second').toBeLessThan(40)
 })
 
+/* ONE LIFT, EVERY DRAG (owner, 6 Sep 26) — the landing flash, LATCHED. The
+   class arrives ~60ms after the pointer goes up (React's effect flush, then the
+   post-render pass) and is gone again at 600ms, so a read taken straight after
+   mouse.up can be too early and a poll can be too late. An observer installed
+   BEFORE the drop latches the first sighting, and nothing races. */
+async function watchLanding(page: Page, sel: string) {
+  await page.evaluate((s) => {
+    const w = window as any
+    w.__landed = false
+    const look = () => { const el = document.querySelector(s); if (el && el.classList.contains('lift-land')) w.__landed = true }
+    w.__landObs = new MutationObserver(look)
+    w.__landObs.observe(document.body, { subtree: true, childList: true, attributes: true, attributeFilter: ['class'] })
+    look()
+  }, sel)
+}
+async function landedOnce(page: Page, what: string) {
+  await page.waitForFunction(() => (window as any).__landed === true, null, { timeout: 3000 })
+    .catch(() => { throw new Error(`${what} — no .lift-land ever reached the landed address`) })
+  await page.evaluate(() => (window as any).__landObs.disconnect())
+}
+
 /* the reference day's very first wave carries two formations (VL, RU), and
    the SECOND wave reuses the same two callsigns for its own pair (measured:
    DAYS[0].waves[0] and [1] both hold a VL 2-ship and a RU 2-ship) — so a
@@ -2157,15 +2178,10 @@ test('dragging a grip reorders the wave and keeps a pair together', async ({ pag
      LINE — `rowdrag` stayed behind as the state class that recolours the grip */
   await expect(page.locator('#sbBoard .lift')).toHaveCount(1)
   await expect(page.locator(`#sbBoard [data-move="${carried}"]`)).toHaveClass(/(^|\s)rowdrag(\s|$)/)
+  await watchLanding(page, `#sbBoard [data-move="${to}"]`)
   await page.mouse.up()
-  /* read in ONE round trip rather than by polling: the flash is 600ms long and
-     a poll that first looked after it had faded would read a false negative */
-  const landed = await page.evaluate((sel) => {
-    const el = document.querySelector(`#sbBoard [data-move="${sel}"]`)
-    return { land: !!el && el.classList.contains('lift-land'), lifts: document.querySelectorAll('#sbBoard .lift').length }
-  }, to)
-  expect(landed.land, 'the line that was landed on flashes where it ended up').toBe(true)
-  expect(landed.lifts, 'the picked-up box is gone on release').toBe(0)
+  await landedOnce(page, 'the line that was landed on flashes where it ended up')
+  await expect(page.locator('#sbBoard .lift'), 'the picked-up box is gone on release').toHaveCount(0)
   await expect(page.locator('#sbBoard .lift-land'), 'the flash clears itself').toHaveCount(0, { timeout: 1500 })
   const after = await go1.locator('.sb-line .lin').evaluateAll(els => els.map(i => (i as HTMLInputElement).value))
   expect(after).not.toEqual(before)
@@ -2199,15 +2215,48 @@ test('a phone row DRAG reorders a row and the board still reads correctly', asyn
   await page.mouse.move(b!.x + b!.width / 2, b!.y + 8, { steps: 12 })
   await expect(page.locator('#sbBoard .lift')).toHaveCount(1)
   await expect(page.locator(`#sbBoard [data-move="${carried}"]`)).toHaveClass(/(^|\s)rowdrag(\s|$)/)
+  await watchLanding(page, `#sbBoard [data-move="${to}"]`)
   await page.mouse.up()
-  const landed = await page.evaluate((sel) => {
-    const el = document.querySelector(`#sbBoard [data-move="${sel}"]`)
-    return { land: !!el && el.classList.contains('lift-land'), lifts: document.querySelectorAll('#sbBoard .lift').length }
-  }, to)
-  expect(landed.land, 'the row that was landed on flashes where it ended up').toBe(true)
-  expect(landed.lifts, 'the picked-up box is gone on release').toBe(0)
+  await landedOnce(page, 'the row that was landed on flashes where it ended up')
+  await expect(page.locator('#sbBoard .lift'), 'the picked-up box is gone on release').toHaveCount(0)
   await expect(page.locator('#sbBoard .lift-land'), 'the flash clears itself').toHaveCount(0, { timeout: 1500 })
   expect(await names(), 'the dragged ground row moved (gman set, re-rendered in model order)').not.toEqual(before)
+})
+
+/* A SECTION (and a wave) has the SAME address on the board and on the edit week
+   behind it — `<di>.<key>` / `mv:w.<di>.<gi>` — and the week stays mounted under
+   the board overlay, earlier in document order. So the flash has to be scoped to
+   the surface the drag happened on, or the board's drop lights a node nobody can
+   see (and, since that node survives, lights nothing else afterwards). Only a
+   real browser has both surfaces up at once, which is why this pin lives here. */
+test('a section dropped on the board flashes the board\'s own panel, not the week\'s copy', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 })
+  await login(page); await go(page, 'editsched')
+  await page.evaluate(() => (window as any).openScheduler(0))
+  await page.waitForSelector('#sbBoard [data-secmove] .secgrip')
+  const order = () => page.$$eval('#sbBoard [data-secmove]', els => els.map(e => e.getAttribute('data-secmove')))
+  const before = await order()
+  /* Overall Notes and Common Programme are the two panels at the TOP of the
+     board, so both are on screen at once — a section further down needs the
+     board scrolled, and a mouse.move to a point outside the viewport hits
+     nothing (the same trap the wave test above documents). */
+  const grip = page.locator('#sbBoard [data-secmove="0.prog"] .secgrip')
+  const target = page.locator('#sbBoard [data-secmove="0.notes"]')
+  await grip.scrollIntoViewIfNeeded()
+  const a = (await grip.boundingBox())!
+  const b = (await target.boundingBox())!
+  await page.mouse.move(a.x + a.width / 2, a.y + a.height / 2)
+  await page.mouse.down()
+  await page.mouse.move(b.x + b.width / 2, b.y + b.height - 6, { steps: 10 })
+  await expect(page.locator('#sbBoard .lift'), 'one box, on the carried panel').toHaveCount(1)
+  await watchLanding(page, '#sbBoard [data-secmove="0.prog"]')
+  await page.mouse.up()
+  await landedOnce(page, 'the section flashes where it landed on the board')
+  const weekLit = await page.evaluate(() =>
+    !!document.querySelector('#eWeek [data-secmove="0.prog"].lift-land'))
+  expect(weekLit, 'the week\'s hidden copy of the same address is left alone').toBe(false)
+  expect(await order(), 'and the section really did move').not.toEqual(before)
+  await expect(page.locator('#sbBoard .lift-land'), 'the flash clears itself').toHaveCount(0, { timeout: 1500 })
 })
 
 /* ---- the 22 Aug 26 chrome batch — five geometry/paint contracts jsdom

@@ -18,10 +18,14 @@
 
    The landing on a DOM that is REBUILT after the drop (the board's innerHTML
    panels, the calendar) is deferred: the mover calls markLand(selector) before
-   the rebuild, and the post-render pass calls paintLand(), which paints the
-   node the first time it finds it and then FORGETS the mark — one-shot, so an
-   unrelated repaint can never restart the flash (the .sb-fresh lesson,
-   highlights.ts paintFreshAdds). A mark nobody paints for a second is dropped. */
+   the rebuild, and the post-render pass calls paintLand(), which flashes the
+   node it finds and remembers WHICH node it lit. One flash per NODE, not one
+   per mark: the mark is spent as soon as the node it lit is still standing on a
+   later pass, so an unrelated repaint can never restart the flash (the
+   .sb-fresh lesson, highlights.ts paintFreshAdds), while a rebuild that
+   REPLACED that node hands the flash on to the new one — which is the whole
+   point, and is not reachable by a one-shot slot (see paintLand). A mark nobody
+   has finished with after a second is dropped either way. */
 
 /** Matches @keyframes liftLand's duration in scheduler.css — named on both
  *  sides of the same beat (the FigureCell.tsx FLASH_MS precedent). */
@@ -47,7 +51,16 @@ export function boxOf(host: Element, y: Element, x: Element, scrollLeft = 0): Li
   return { top: r.top - h.top, height: r.height, left: s.left - h.left + scrollLeft, width }
 }
 
-export function liftOn(el: Element | null | undefined): void { el?.classList.add('lift') }
+/** Pick `el` up. A flash still in flight on it is ended first — the same beat
+ *  frameLift takes, and for the same reason: re-grabbing a row inside its own
+ *  600ms landing would otherwise leave it wearing the lift AND the veil, and a
+ *  timer from the last drop would fire into the middle of the new drag. */
+export function liftOn(el: Element | null | undefined): void {
+  if (!el) return
+  endLanding(el)
+  el.classList.remove('lift-land')
+  el.classList.add('lift')
+}
 export function liftOff(el: Element | null | undefined): void {
   if (!el) return
   endLanding(el)
@@ -140,17 +153,20 @@ export function markLand(sel: string, climb?: string): void {
  *  while `#sbBoard` still holds its pre-drop markup. A mark spent on the first
  *  node found was therefore spent on a doomed node — SchedBoard's innerHTML
  *  swap replaced it a moment later and the drop flashed nothing at all. So the
- *  mark stays live for its short life and paints the node it finds, skipping
- *  the one it has ALREADY lit: an unrelated repaint that leaves that node
- *  standing restarts nothing (the .sb-fresh fault trap 7 names), a rebuild that
- *  replaces it hands the flash to the new node, and either way the mark dies at
- *  LAND_STALE_MS. */
+ *  mark stays live only until the node it lit is seen STILL STANDING on a later
+ *  pass, and is spent there: an unrelated repaint can never restart the flash
+ *  (the .sb-fresh fault trap 7 names), while a pass that finds the lit node
+ *  GONE — replaced by the rebuild — hands the flash on to whatever answers the
+ *  address now. In practice that closes the window at the very next pass rather
+ *  than at LAND_STALE_MS, which remains the backstop for a hand-off that never
+ *  comes (the lit node was thrown away and nothing replaced it). */
 export function paintLand(root: ParentNode | null = typeof document === 'undefined' ? null : document): void {
   if (!root || !PENDING) return
   if (Date.now() - PENDING.at > LAND_STALE_MS) { PENDING = null; return }
+  if (PENDING.lit && PENDING.lit.isConnected) { PENDING = null; return }
   let el = root.querySelector(PENDING.sel) as HTMLElement | null
   if (el && PENDING.climb) el = el.closest(PENDING.climb) as HTMLElement | null
-  if (!el || el === PENDING.lit) return
+  if (!el) return
   PENDING.lit = el
   landOn(el)
 }
