@@ -8,7 +8,7 @@ import { describe, it, expect } from 'vitest'
 
 const css = readFileSync(new URL('./scheduler.css', import.meta.url), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '')
 const RULES = [...css.matchAll(/([^{}]+)\{([^{}]*)\}/g)]
-  .map(m => ({ sels: m[1]!.split(',').map(s => s.trim().replace(/\s+/g, ' ')), body: m[2]! }))
+  .map(m => ({ sels: m[1]!.split(',').map(s => s.trim().replace(/\s+/g, ' ')), body: m[2]!, at: m.index! }))
 const rulesFor = (sel: string) => RULES.filter(r => r.sels.includes(sel))
 const bodyOf = (sel: string) => rulesFor(sel).map(r => r.body).join(' ').replace(/\s+/g, ' ')
 /** box-shadow layers: split on the commas that are not inside rgba(...) */
@@ -25,6 +25,16 @@ const keyframes = (name: string) => {
   const rest = css.slice(i)
   return rest.slice(0, rest.indexOf('}}') + 2)
 }
+/** The character span of every `@media (prefers-reduced-motion:reduce)` block,
+ *  brace-matched — the rowglow.test.ts HOVER_MEDIA shape. A rule's position is
+ *  the question here, not its existence: `animation:none` written OUTSIDE the
+ *  guard would kill the flash for everybody. */
+const REDUCED: Array<[number, number]> = [...css.matchAll(/@media\s*\(\s*prefers-reduced-motion:\s*reduce\s*\)\s*\{/g)].map(m => {
+  let i = m.index! + m[0]!.length, depth = 1
+  while (i < css.length && depth > 0) { if (css[i] === '{') depth++; else if (css[i] === '}') depth--; i++ }
+  return [m.index!, i] as [number, number]
+})
+const insideReduced = (at: number) => REDUCED.some(([a, b]) => at > a && at < b)
 
 describe('the lift recipe — one box, drawn INSIDE the line', () => {
   it('--lift-box is the owner\'s Soft, every layer inset', () => {
@@ -86,5 +96,25 @@ describe('the landing flash', () => {
     const props = [...kf.matchAll(/([a-z-]+):/g)].map(m => m[1])
     expect(props.every(p => p === 'opacity'), `liftLand animates ${props.join(',')}`).toBe(true)
     expect(kf).toMatch(/0%,\s*25%\s*\{opacity:1\}/)
+  })
+
+  /* THE VEIL NEEDS ITS OWN REDUCED-MOTION RULE (review, 6 Sep 26). The blanket
+     `@media (prefers-reduced-motion:reduce){*{animation:none!important}}` reaches
+     the FRAME's bloom, because `*` matches elements — but `.lift-land::after` is
+     a PSEUDO-element, which `*` does not match, so the landing fade ran at full
+     600ms for a user who asked for no motion. Measured in Chromium: the veil's
+     computed animation-name read `liftLand` under reducedMotion:'reduce' while
+     its host element's read `none`. The file already knew the shape of the cure
+     — `.legend-sum::before` carries the same targeted override — and .sb-fresh
+     puts its one right beside the animation it cancels, which is where this sits.
+     The feedback is not lost: the class still HOLDS for LIFT_LAND_MS and lift.ts's
+     timer takes it off. */
+  it('the veil is silenced under reduced motion by its OWN rule — `*` never matches a pseudo-element', () => {
+    const off = RULES.filter(r => r.sels.includes('.lift-land::after') && /animation:\s*none/.test(r.body))
+    expect(off.length, '.lift-land::after declares animation:none somewhere').toBe(1)
+    expect(insideReduced(off[0]!.at), 'and it is INSIDE @media (prefers-reduced-motion:reduce) — outside it, nobody gets the flash').toBe(true)
+    // the blanket itself is untouched and still uses the wildcard it always did
+    expect(RULES.some(r => r.sels.includes('*') && /animation:\s*none\s*!important/.test(r.body) && insideReduced(r.at)),
+      'the blanket still stands (it is what silences the frame\'s bloom)').toBe(true)
   })
 })

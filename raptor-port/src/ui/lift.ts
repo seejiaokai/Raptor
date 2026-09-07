@@ -48,32 +48,47 @@ export function boxOf(host: Element, y: Element, x: Element, scrollLeft = 0): Li
 }
 
 export function liftOn(el: Element | null | undefined): void { el?.classList.add('lift') }
-export function liftOff(el: Element | null | undefined): void { el?.classList.remove('lift', 'lift-land') }
+export function liftOff(el: Element | null | undefined): void {
+  if (!el) return
+  endLanding(el)
+  el.classList.remove('lift', 'lift-land')
+}
 
-const TIMERS = new WeakMap<Element, ReturnType<typeof setTimeout>>()
+/** The cleanup for a flash IN FLIGHT, per element: cancels its timer, unhooks its
+ *  listener and takes `.lift-land` off. Held here rather than as a bare timer id
+ *  so that every path which ends a flash early — a re-lift, a liftOff — ends ALL
+ *  of it, instead of leaving a timer to fire into a later state. */
+const LANDING = new WeakMap<Element, () => void>()
+/** End a flash in flight, if there is one. Safe on an element that never had one. */
+function endLanding(el: Element): void { LANDING.get(el)?.() }
 
 /** Flash `el` where it stands: `.lift-land` on, then off again when its veil's
- *  animation ends — OR when the timer fires, whichever is first. The timer is
- *  not a belt-and-braces: under prefers-reduced-motion the app's blanket
- *  `*{animation:none!important}` means animationend NEVER fires, and the class
- *  would stay forever (the FigureCell lesson). A flash restarted on an element
- *  already flashing needs one reflow (`void offsetWidth`) so the veil's
- *  animation runs again — once, at a drop, in a frame already laying out. */
+ *  animation ends — OR when the timer fires, whichever is first. Under normal
+ *  motion animationend comes first; under prefers-reduced-motion the veil's own
+ *  `animation:none` rule (scheduler.css, beside the recipe) means animationend
+ *  NEVER fires, so the timer is the only way out and the class would otherwise
+ *  stay forever (the FigureCell lesson). The blanket `*{animation:none!important}`
+ *  does NOT cover this — `*` matches elements, and the veil is a pseudo-element.
+ *  A flash restarted on an element already flashing needs one reflow
+ *  (`void offsetWidth`) so the veil's animation runs again — once, at a drop, in
+ *  a frame already laying out. */
 export function landOn(el: HTMLElement | null | undefined): void {
   if (!el) return
-  const old = TIMERS.get(el)
-  if (old) clearTimeout(old)
+  endLanding(el)
   el.classList.remove('lift', 'lift-land')
   void el.offsetWidth
+  let timer: ReturnType<typeof setTimeout>
   const clear = () => {
+    clearTimeout(timer)
     el.classList.remove('lift-land')
     el.removeEventListener('animationend', onEnd)
-    TIMERS.delete(el)
+    LANDING.delete(el)
   }
   const onEnd = (e: Event) => { if ((e as AnimationEvent).animationName === LAND_ANIM) clear() }
   el.addEventListener('animationend', onEnd)
   el.classList.add('lift-land')
-  TIMERS.set(el, setTimeout(clear, LIFT_LAND_MS + 40))
+  timer = setTimeout(clear, LIFT_LAND_MS + 40)
+  LANDING.set(el, clear)
 }
 
 function place(el: HTMLElement, b: LiftBox): void {
@@ -84,9 +99,13 @@ function place(el: HTMLElement, b: LiftBox): void {
 }
 
 /** Show the frame around `box` and lift it; `null` hides it (a cancel, or a
- *  host that could not be measured). */
+ *  host that could not be measured). A new drag armed inside the previous
+ *  landing's 600ms ends that flash outright — one frame serves every row, so a
+ *  timer left running from the last drop would fire mid-lift; it only strips
+ *  `.lift-land` today, but that is an invariant nobody should have to know. */
 export function frameLift(frame: HTMLElement | null, box: LiftBox | null): void {
   if (!frame) return
+  endLanding(frame)
   frame.classList.remove('lift-land')
   if (!box) { frame.classList.remove('lift'); return }
   place(frame, box)

@@ -68,6 +68,40 @@ describe('the frame', () => {
     vi.advanceTimersByTime(60)
     expect(f.classList.contains('lift-land')).toBe(false)
   })
+  /* ONE frame serves every row, so an arm can land inside the previous drop's
+     600ms — and the timer from that drop must not fire into the new lift. It
+     only ever stripped `.lift-land`, which is harmless today; frameLift ends the
+     flash outright so nothing rests on that (review, 6 Sep 26). */
+  it('a re-arm inside the landing cancels its timer — the new lift is never touched by the old drop', () => {
+    vi.useFakeTimers()
+    const f = frame()
+    frameLand(f, { top: 96, left: 10, width: 368, height: 22 })
+    vi.advanceTimersByTime(120)
+    frameLift(f, { top: 30, left: 10, width: 368, height: 22 })
+    expect(f.classList.contains('lift')).toBe(true)
+    expect(f.classList.contains('lift-land')).toBe(false)
+    // the assertion with the teeth: nothing is left ticking. The class checks
+    // below pass either way, because clear() only ever removes `lift-land` —
+    // which is exactly the unstated invariant this cancel removes.
+    expect(vi.getTimerCount(), 'the landing timer is cancelled, not left to fire').toBe(0)
+    vi.advanceTimersByTime(2000)                            // the old timer's moment, and well past it
+    expect(f.classList.contains('lift'), 'the lift survives the cancelled landing').toBe(true)
+    expect(f.classList.contains('lift-land')).toBe(false)
+  })
+  /* Both keyframes fire animationend at the same element: the frame's 120ms
+     bloom (liftIn) ends WHILE a later landing could be running, so the listener
+     reads the name rather than assuming (review, 6 Sep 26). */
+  it('an animationend from the bloom does not end the flash — only liftLand does', () => {
+    vi.useFakeTimers()
+    const f = frame()
+    frameLand(f, { top: 96, left: 10, width: 368, height: 22 })
+    const bloom = new Event('animationend'); (bloom as any).animationName = 'liftIn'
+    f.dispatchEvent(bloom)
+    expect(f.classList.contains('lift-land'), 'liftIn is not the landing').toBe(true)
+    const land = new Event('animationend'); (land as any).animationName = 'liftLand'
+    f.dispatchEvent(land)
+    expect(f.classList.contains('lift-land')).toBe(false)
+  })
   it('a null box at landing hides the frame rather than flashing at a stale place', () => {
     const f = frame()
     frameLift(f, { top: 30, left: 10, width: 368, height: 22 })

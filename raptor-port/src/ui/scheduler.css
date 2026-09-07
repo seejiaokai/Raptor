@@ -4504,14 +4504,23 @@ button.sanscard:hover{border-color:var(--accent)}
 /* The landing flash: a veil pseudo-element over the landed thing — the same box
    plus a light wash — bright for the first 150ms then gone by 600ms, opacity
    only, so it runs on the compositor and adds no DOM node. lift.ts removes the
-   class on animationend AND on a 600ms timer, because the reduced-motion blanket
-   above (*{animation:none!important}) means the veil then simply holds and the
-   timer is the only way out. A plain element needs the positioning context (and
-   z 4 to paint over the next row's top border, as .sb-fresh does); the frame is
-   already absolute. */
+   class on animationend AND on a 600ms timer: under normal motion animationend
+   clears it first, and under reduced motion — where the rule below stops the
+   animation, so animationend never comes — the timer is the only way out. A
+   plain element needs the positioning context (and z 4 to paint over the next
+   row's top border, as .sb-fresh does); the frame is already absolute. */
 .lift-land:not(.lift-frame){position:relative;z-index:4}
 .lift-land::after{content:'';position:absolute;inset:0;border-radius:8px;pointer-events:none;will-change:opacity;
   background:rgba(59,198,232,.20);box-shadow:var(--lift-box);animation:liftLand 600ms ease-out forwards}
+/* The veil needs its OWN reduced-motion rule (review, 6 Sep 26). The blanket at
+   the top of the file is `*{animation:none!important}`, and `*` matches ELEMENTS
+   — never pseudo-elements — so it takes the frame's bloom (liftIn, above) and
+   leaves this fade running at full 600ms for someone who asked for no motion (in
+   Chromium: the veil computed `liftLand` while its own host computed `none`).
+   .legend-sum::before already carries the same targeted override. The FEEDBACK
+   is kept, only the motion goes: the class holds for LIFT_LAND_MS and lift.ts's
+   timer removes it, exactly as .sb-fresh-out holds and is removed below. */
+@media (prefers-reduced-motion:reduce){.lift-land::after{animation:none}}
 @keyframes liftIn{from{opacity:.65;transform:scale(.985)}to{opacity:1;transform:none}}
 @keyframes liftLand{0%,25%{opacity:1}to{opacity:0}}
 /* A freshly added row / line / wave / block wears a blue box for ~6s (owner,

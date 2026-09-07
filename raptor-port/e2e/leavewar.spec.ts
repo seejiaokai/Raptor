@@ -3465,12 +3465,17 @@ test('a picked-up row wears one frame the width of the visible grid, and the row
     const row = document.querySelector(`[data-testid="row-${src}"]`)!.getBoundingClientRect()
     const wrap = document.querySelector('.mx-wrap') as HTMLElement, wr = wrap.getBoundingClientRect()
     const hit = document.elementFromPoint(fr.left + fr.width / 2, fr.top + fr.height / 2)
-    return { n: frames.length, dTop: Math.abs(fr.top - row.top), dH: Math.abs(fr.height - row.height), dLeft: Math.abs(fr.left - wr.left), dW: Math.abs(fr.width - wrap.clientWidth), pe: getComputedStyle(f).pointerEvents, hit: hit?.tagName, inMx: !!f.closest('.mx') }
+    // the property, not a proxy for it: whatever is under the middle of the
+    // frame, it must not BE the frame (or anything inside it) — the grid
+    // underneath still answers the pointer.
+    return { n: frames.length, dTop: Math.abs(fr.top - row.top), dH: Math.abs(fr.height - row.height), dLeft: Math.abs(fr.left - wr.left), dW: Math.abs(fr.width - wrap.clientWidth), pe: getComputedStyle(f).pointerEvents, hitFrame: !!hit?.closest('.lift-frame'), hitTag: hit?.tagName, inMx: !!f.closest('.mx') }
   }, src)
   expect(mid.n).toBe(1)
   expect(mid.dTop).toBeLessThan(1.01); expect(mid.dH).toBeLessThan(1.01)
   expect(mid.dLeft).toBeLessThan(1.01); expect(mid.dW).toBeLessThan(1.01)
-  expect(mid.pe).toBe('none'); expect(mid.hit).toBe('TD'); expect(mid.inMx).toBe(false)
+  expect(mid.pe).toBe('none')
+  expect(mid.hitFrame, `the frame is not the hit-test answer (got ${mid.hitTag})`).toBe(false)
+  expect(mid.inMx).toBe(false)
   if (cdp) await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] })
   else await page.mouse.up()
   await page.waitForTimeout(60)
@@ -3484,6 +3489,34 @@ test('a picked-up row wears one frame the width of the visible grid, and the row
   expect((await ids()).indexOf(src)).toBeGreaterThan(before.indexOf(src))     // the reorder itself still happens
   await expect(page.locator('.lift-frame.lift-land')).toHaveCount(0, { timeout: 1500 })
   await expect(page.locator('.lift-frame.lift')).toHaveCount(0)
+
+  /* A drop that moves NOTHING still flashes where the row is (review, 6 Sep 26).
+     The owner's ask is "flash to show where the new item ended up", and for a row
+     released on itself, in place is where it ended up — the alternative is a drop
+     that answers with nothing at all. Same gesture as above, released on its own
+     row. */
+  const now = await ids()
+  const h2 = (await page.locator(`[data-testid="drag-${src}"]`).boundingBox())!
+  const x2 = h2.x + h2.width / 2, y2 = h2.y + h2.height / 2
+  if (cdp) {
+    await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x: x2, y: y2 }] })
+    await page.waitForTimeout(80)
+    await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: x2 + 20, y: y2 + 2 }] })
+    await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] })
+  } else {
+    await page.mouse.move(x2, y2); await page.mouse.down()
+    await page.mouse.move(x2 + 20, y2 + 2, { steps: 3 }); await page.mouse.up()
+  }
+  await page.waitForTimeout(60)
+  const still = await page.evaluate((src) => {
+    const f = document.querySelector('.lift-frame.lift-land'); if (!f) return null
+    const fr = f.getBoundingClientRect(), row = document.querySelector(`[data-testid="row-${src}"]`)!.getBoundingClientRect()
+    return { dTop: Math.abs(fr.top - row.top), dH: Math.abs(fr.height - row.height) }
+  }, src)
+  expect(still, 'a drop that moved nothing still flashes, in place').not.toBeNull()
+  expect(still!.dTop).toBeLessThan(1.01); expect(still!.dH).toBeLessThan(1.01)
+  expect(await ids(), 'and it really did move nothing').toEqual(now)
+  await expect(page.locator('.lift-frame.lift-land')).toHaveCount(0, { timeout: 1500 })
 })
 
 test('a personnel row shows its callsign, with no edit box, in Rearrange', async ({ page }) => {

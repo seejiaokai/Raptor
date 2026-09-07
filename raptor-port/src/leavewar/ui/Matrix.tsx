@@ -63,7 +63,7 @@ import { popAt } from './popat'
 import { clampWin, rollingTarget, stepAllowedInMotion, stepToward, visibleSpan, windowAround, WINDOW_FROM_MONTHS, type ColWin } from './colwindow'
 import { isLwOnScreen, subLwScreen } from '../state/screen'
 import { msSinceInput } from '../../state/idle'
-import { boxOf, frameLift, frameLand, landOn, liftOff } from '../../ui/lift'
+import { boxOf, frameLift, frameLand, landOn } from '../../ui/lift'
 import { wireSelect, wireMove, wireFigureSelect, daysBetween, paintLanding, clearLanding, paintEventLanding, eventMoveDateAt, earliestDate, type Cell, type Selection, type SelectCtx, type FigureSelectCtx, type FigureSelection } from './select'
 import { selectableFigure } from '../engine/counters'
 import { SettingsSheet } from './SettingsSheet'
@@ -760,47 +760,57 @@ export function Matrix() {
       // The lift is over either way — a commit re-places the frame at the
       // landing below, a cancel simply leaves it hidden.
       frameLift(liftRef.current, null)
-      if (commit && from && over && over.id !== from) {
-        /* "after row X" resolves to "before the row that follows X" in the
-           RENDERED order — the DOM is what the user is looking at, and the
-           hit-test above already trusts it. No follower means the true end
-           of the roster, the store's beforeId:null path (unreachable from
-           this gesture before the rework). Resolving to `from` itself means
-           the drop lands exactly where the row already is — skip, or the
-           store's before-itself guard would have to save us. */
-        let beforeId: string | null = over.id
-        if (over.after) {
-          /* The follower comes from the hovered row's OWN list (its parent), not
-             the whole document — see dragOverRef. */
-          const scope: ParentNode = over.el.parentElement ?? document
-          const rows = [...scope.querySelectorAll(cfg.sel)]
-            .map(el => cfg.idOf(el)).filter((x): x is string => x != null)
-          const ix = rows.indexOf(over.id)
-          beforeId = ix >= 0 ? (rows[ix + 1] ?? null) : over.id
-        }
-        if (beforeId !== from) {
-          cfg.move(from, beforeId)
-          /* the flash is measured AFTER React commits the new order — this
-             listener is a native window handler, so the store's notify and the
-             state clears above are batched into one commit that has not
-             happened yet; the layout effect below reads this ref there. */
-          landRef.current = { sel: cfg.landSel(from), surface }
-          /* A manning reorder shuffles the rows of the frozen LEFT column, whose
-             grip/eye tools live in a `position: sticky` cell. iOS Safari does not
-             reliably repaint a sticky column after that DOM churn, so the just
-             -moved rows can sit drawn WITHOUT their tools until something forces a
-             redraw (owner, 30 Aug 26 — "sometimes I see these showing, sometimes I
-             do not … after I tried to drag and drop multiple times"). A one-frame
-             self-assignment of the scroller's own scrollLeft re-solves every sticky
-             offset in the scrollport and repaints them; it moves nothing, and —
-             unlike a transform on the sticky cell itself — cannot break the
-             stickiness. Manning kind only; the roster/group drags don't touch this
-             column. */
-          if (cfg === MANNING_DRAG) {
-            const w = wrapRef.current
-            if (w) requestAnimationFrame(() => { w.scrollLeft = w.scrollLeft })
+      if (commit && from && over) {
+        if (over.id !== from) {
+          /* "after row X" resolves to "before the row that follows X" in the
+             RENDERED order — the DOM is what the user is looking at, and the
+             hit-test above already trusts it. No follower means the true end
+             of the roster, the store's beforeId:null path (unreachable from
+             this gesture before the rework). Resolving to `from` itself means
+             the drop lands exactly where the row already is — skip, or the
+             store's before-itself guard would have to save us. */
+          let beforeId: string | null = over.id
+          if (over.after) {
+            /* The follower comes from the hovered row's OWN list (its parent), not
+               the whole document — see dragOverRef. */
+            const scope: ParentNode = over.el.parentElement ?? document
+            const rows = [...scope.querySelectorAll(cfg.sel)]
+              .map(el => cfg.idOf(el)).filter((x): x is string => x != null)
+            const ix = rows.indexOf(over.id)
+            beforeId = ix >= 0 ? (rows[ix + 1] ?? null) : over.id
+          }
+          if (beforeId !== from) {
+            cfg.move(from, beforeId)
+            /* A manning reorder shuffles the rows of the frozen LEFT column, whose
+               grip/eye tools live in a `position: sticky` cell. iOS Safari does not
+               reliably repaint a sticky column after that DOM churn, so the just
+               -moved rows can sit drawn WITHOUT their tools until something forces a
+               redraw (owner, 30 Aug 26 — "sometimes I see these showing, sometimes I
+               do not … after I tried to drag and drop multiple times"). A one-frame
+               self-assignment of the scroller's own scrollLeft re-solves every sticky
+               offset in the scrollport and repaints them; it moves nothing, and —
+               unlike a transform on the sticky cell itself — cannot break the
+               stickiness. Manning kind only; the roster/group drags don't touch this
+               column. */
+            if (cfg === MANNING_DRAG) {
+              const w = wrapRef.current
+              if (w) requestAnimationFrame(() => { w.scrollLeft = w.scrollLeft })
+            }
           }
         }
+        /* EVERY committed drop flashes, including one that moved nothing — a row
+           released on itself, or "after the row above it", which resolves to
+           where it already is. The owner's ask is "once I drop the item, it
+           should flash to show where the new item ended up", and in place IS
+           where it ended up; the alternative is a drop that answers with
+           nothing at all (review, 6 Sep 26). A CANCEL still shows nothing:
+           pointercancel, an unmount, or a release over no row never reaches
+           here (`over` is null).
+             It is measured AFTER React commits: this listener is a native
+           window handler, so the store's notify and the state clears above are
+           batched into one commit that has not happened yet, and the layout
+           effect below reads this ref there. */
+        landRef.current = { sel: cfg.landSel(from), surface }
       }
     }
     const up = () => end(true)
@@ -2904,7 +2914,9 @@ export function Matrix() {
       return
     }
     const el = [...document.querySelectorAll<HTMLElement>(land.sel)].find(n => !wrap || !wrap.contains(n))
-    if (el) { liftOff(el); landOn(el) }
+    // landOn takes `lift` and `lift-land` off itself before re-adding, so there
+    // is nothing to clear first (review, 6 Sep 26 — the liftOff here was dead).
+    if (el) landOn(el)
   })
 
   // The roster's row SEQUENCE — group headings, CAT sub-headings and people, in
