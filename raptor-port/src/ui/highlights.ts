@@ -10,6 +10,7 @@ import { WARN } from '../engine/validate'
 import { HOOKS } from '../engine/hooks'
 import { isNewFlag, NEWFLAGS } from '../state/dropflag'
 import { hsSet, hsSync } from './pan'
+import { paintLand } from './lift'
 
 /* A ONE-SHOT callback run at the end of the next highlight pass — i.e. in the
    SAME task as the innerHTML swap that just changed the layout, before the
@@ -98,6 +99,7 @@ export function refreshHighlights(){
   paintArm();      // every render rebuilds the slots, so the ring is re-hung here
   paintSelRings(); // after paintArm, so an armed element can keep its own ring
   paintFreshAdds();// the ~6s blue box on a just-added row / line / wave / block
+  paintLand();     // the landing flash of a just-dropped row / wave / section / puck — one-shot (lift.ts)
   /* the queued hold, after the classes so it measures the final layout */
   if(PENDING_HOLD){const f=PENDING_HOLD; PENDING_HOLD=null; try{f()}catch(_){}}
 }

@@ -2132,6 +2132,13 @@ test('dragging a grip reorders the wave and keeps a pair together', async ({ pag
   await page.waitForSelector('#sbBoard .sb-line[data-move]')
   const go1 = page.locator('#sbBoard .sb-go').first()
   const before = await go1.locator('.sb-line .lin').evaluateAll(els => els.map(i => (i as HTMLInputElement).value))
+  /* ONE LIFT, EVERY DRAG (owner, 6 Sep 26): the addresses on both ends, read
+     BEFORE the drop — the panels are innerHTML strings, so every node here is
+     replaced by the re-render and only the address survives. `to` is the
+     destination index after removal (engine/reorder.ts), so it names the
+     landed line whether this drag resequences a jet or travels a formation. */
+  const carried = (await go1.locator('.sb-line[data-move]').last().getAttribute('data-move'))!
+  const to = (await go1.locator('.sb-line[data-move]').first().getAttribute('data-move'))!
   const grips = go1.locator('.sb-line .sb-grip')
   const last = await grips.count() - 1
   /* the day's flying section runs taller than the 900px viewport, so the
@@ -2146,7 +2153,20 @@ test('dragging a grip reorders the wave and keeps a pair together', async ({ pag
   await page.mouse.move(a!.x + a!.width / 2, a!.y + a!.height / 2)
   await page.mouse.down()
   await page.mouse.move(b!.x + b!.width / 2, b!.y + b!.height / 2, { steps: 12 })
+  /* mid-drag: exactly ONE cyan box on the board, and it is on the carried
+     LINE — `rowdrag` stayed behind as the state class that recolours the grip */
+  await expect(page.locator('#sbBoard .lift')).toHaveCount(1)
+  await expect(page.locator(`#sbBoard [data-move="${carried}"]`)).toHaveClass(/(^|\s)rowdrag(\s|$)/)
   await page.mouse.up()
+  /* read in ONE round trip rather than by polling: the flash is 600ms long and
+     a poll that first looked after it had faded would read a false negative */
+  const landed = await page.evaluate((sel) => {
+    const el = document.querySelector(`#sbBoard [data-move="${sel}"]`)
+    return { land: !!el && el.classList.contains('lift-land'), lifts: document.querySelectorAll('#sbBoard .lift').length }
+  }, to)
+  expect(landed.land, 'the line that was landed on flashes where it ended up').toBe(true)
+  expect(landed.lifts, 'the picked-up box is gone on release').toBe(0)
+  await expect(page.locator('#sbBoard .lift-land'), 'the flash clears itself').toHaveCount(0, { timeout: 1500 })
   const after = await go1.locator('.sb-line .lin').evaluateAll(els => els.map(i => (i as HTMLInputElement).value))
   expect(after).not.toEqual(before)
   /* a formation's rows stay adjacent — a callsign must never appear twice in
@@ -2167,13 +2187,26 @@ test('a phone row DRAG reorders a row and the board still reads correctly', asyn
   const before = await names()
   const grips = page.locator('#sbBoard .sb-panel.grnd .sb-arow .sb-grip')
   const rows = page.locator('#sbBoard .sb-panel.grnd .sb-arow')
+  /* the two addresses, read before the drop — the panel is rebuilt from a
+     string, so these rows are new nodes afterwards (see the desktop test) */
+  const carried = (await rows.first().getAttribute('data-move'))!
+  const to = (await rows.nth(2).getAttribute('data-move'))!
   await grips.first().scrollIntoViewIfNeeded()
   const a = await grips.first().boundingBox()
   const b = await rows.nth(2).boundingBox()
   await page.mouse.move(a!.x + a!.width / 2, a!.y + a!.height / 2)
   await page.mouse.down()
   await page.mouse.move(b!.x + b!.width / 2, b!.y + 8, { steps: 12 })
+  await expect(page.locator('#sbBoard .lift')).toHaveCount(1)
+  await expect(page.locator(`#sbBoard [data-move="${carried}"]`)).toHaveClass(/(^|\s)rowdrag(\s|$)/)
   await page.mouse.up()
+  const landed = await page.evaluate((sel) => {
+    const el = document.querySelector(`#sbBoard [data-move="${sel}"]`)
+    return { land: !!el && el.classList.contains('lift-land'), lifts: document.querySelectorAll('#sbBoard .lift').length }
+  }, to)
+  expect(landed.land, 'the row that was landed on flashes where it ended up').toBe(true)
+  expect(landed.lifts, 'the picked-up box is gone on release').toBe(0)
+  await expect(page.locator('#sbBoard .lift-land'), 'the flash clears itself').toHaveCount(0, { timeout: 1500 })
   expect(await names(), 'the dragged ground row moved (gman set, re-rendered in model order)').not.toEqual(before)
 })
 

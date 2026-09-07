@@ -4,6 +4,7 @@ import * as view from '../state/view'
 import { notify } from '../state/store'
 import { moveSectionTo } from '../state/store'
 import { setSecDefOffer } from './pops'
+import { liftOn, liftOff, markLand } from './lift'
 
 /* ---- dragging to reorder, in place (owner, 8 Aug 26; sections + wave blocks
    added 29 Aug 26 pt.3, replacing the Arrange sheet) ------------------------
@@ -36,6 +37,37 @@ import { setSecDefOffer } from './pops'
    repaint underneath it. Wired on BOTH the board wrap and the edit-week
    container: on the week only wave/section grips exist (rows are board-only),
    so the row branch simply never fires there. */
+
+/* ONE LIFT, EVERY DRAG (owner, 6 Sep 26 — "once I drop the item it should
+   flash to show where the new item ended up"). A formation is a RUN of jet
+   lines in the board's markup — `div.sb-line` each, no wrapper element per
+   formation (board.ts's flying-line builder) — so the block to flash is the
+   FIRST jet line at the target formation's index, and climbing it to
+   `.sb-line` is a safe no-op that keeps landSel's two branches one shape. */
+const FORMATION_BLOCK = '.sb-line'
+
+/* Where the moved thing sits after the rebuild. `to` is the destination index
+   AFTER removal (engine/reorder.ts — "plain splice-out/splice-in"), so the row
+   that was carried now answers the target's own address; the exception handled
+   here is a FORMATION that travelled as a block (applyMove's ac branch when the
+   formation index differs): `to` names a jet inside the target formation, and
+   the landed thing is the whole block that now sits at the target's formation
+   index.
+   KNOWN GAP, recorded not fixed (6 Sep 26): the GROUND programme is the one
+   list drawn in a SORTED order, and its FIRST manual move freezes that display
+   order into the model and re-indexes every row (moveGroundRow's !gman branch),
+   so on that one move the landed row can be `newOf[to]` rather than `to` and
+   the flash lands a row out. Only the first ground drag of a day whose items
+   are not already in start-time order, only decorative, and self-correcting
+   from the second drag on. Closing it needs the mover to report the index it
+   landed on — an engine-API question, not a string-maths one, so it is not
+   guessed at here. */
+export function landSel(from: string, to: string): [string, string?] {
+  const a = from.slice(3).split('.'), b = to.slice(3).split('.')
+  if (a[0] === 'ac' && a.length === 5 && a[3] !== b[3]) return [`[data-move^="mv:ac.${b[1]}.${b[2]}.${b[3]}."]`, FORMATION_BLOCK]
+  return [`[data-move="${to}"]`]
+}
+
 export function wireRowDrag(el: HTMLElement) {
   let from = ''          // an mv: address (row or wave), '' when not an mv drag
   let fromSec = ''       // a data-secmove value ("di.key"), '' when not a section drag
@@ -98,7 +130,11 @@ export function wireRowDrag(el: HTMLElement) {
   }
 
   const clear = () => {
-    if (carry) carry.classList.remove('rowdrag', 'secdrag')
+    /* rowdrag/secdrag are STATE classes now (they recolour the grip); the box
+       is the shared .lift, so both come off together — liftOff also ends a
+       landing flash still running on this element, which a re-lift would
+       otherwise inherit. */
+    if (carry) { carry.classList.remove('rowdrag', 'secdrag'); liftOff(carry) }
     if (over) over.classList.remove('rowdrop', 'secdrop')
     carry = null; over = null; from = ''; fromSec = ''; kind = ''
     stopScroll()
@@ -138,13 +174,13 @@ export function wireRowDrag(el: HTMLElement) {
       const sec = grip.closest('[data-secmove]') as HTMLElement | null; if (!sec) return
       if (dayPrev(sec.dataset.secmove!.split('.')[0])) return
       fromSec = sec.dataset.secmove!
-      carry = sec; sec.classList.add('secdrag')
+      carry = sec; sec.classList.add('secdrag'); liftOn(sec)
     } else {
       const row = grip.closest('[data-move]') as HTMLElement | null; if (!row) return
       if (dayPrev(row.dataset.move!.slice(3).split('.')[1])) return
       from = row.dataset.move!
       kind = from.slice(3).split('.')[0]
-      carry = row; row.classList.add('rowdrag')
+      carry = row; row.classList.add('rowdrag'); liftOn(row)
     }
     try { grip.releasePointerCapture?.(e.pointerId) } catch { /* mouse: nothing to release */ }
     /* the surface this drag can reach off-screen ends of, and the loop that
@@ -199,11 +235,15 @@ export function wireRowDrag(el: HTMLElement) {
       const to = dst?.secmove
       if (!to) return
       const di = +sec.split('.')[0], fromKey = sec.split('.')[1], toKey = to.split('.')[1]
-      /* a real move offers the "make this the house default?" snackbar */
-      if (moveSectionTo(di, fromKey, toKey)) { setSecDefOffer(di); notify() }
+      /* a real move offers the "make this the house default?" snackbar. The
+         landing flash is MARKED here and painted after the rebuild the notify
+         below triggers (lift.ts markLand/paintLand): a section keeps its own
+         key wherever it lands, so its address is the one thing that does not
+         move. */
+      if (moveSectionTo(di, fromKey, toKey)) { markLand(`[data-secmove="${di}.${fromKey}"]`); setSecDefOffer(di); notify() }
     } else {
       const to = dst?.move
-      if (src && to && applyMove(src, to)) { view.afterSchedMutate(); notify() }
+      if (src && to && applyMove(src, to)) { markLand(...landSel(src, to)); view.afterSchedMutate(); notify() }
     }
   }
 

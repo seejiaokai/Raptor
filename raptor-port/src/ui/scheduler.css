@@ -2779,8 +2779,11 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
 .wvgrip:hover{color:var(--accent)}
 .wvgrip:active{cursor:grabbing}
 /* the carried section and the drop line; a dragged WAVE block reuses .rowdrag /
-   .rowdrop (defined with the row grip) since it is the same kind of move. */
-.secdrag{outline:1px solid var(--accent);outline-offset:-1px;border-radius:9px}
+   .rowdrop (defined with the row grip) since it is the same kind of move. Since
+   6 Sep 26 the picked-up BOX on all three is the shared .lift (one lift, every
+   drag — rowdrag.ts adds it beside these), so .secdrag and .rowdrag are state
+   classes carrying nothing but the grip's own recolour. */
+.secdrag{/* the picked-up look is the shared .lift; this class only recolours the grip */}
 .secdrag .secgrip{color:var(--accent);cursor:grabbing}
 .secdrop{box-shadow:inset 0 3px 0 0 var(--accent)}
 /* ---- the "Set default order?" snackbar (ui/SecDefaultSnackbar.tsx) — an
@@ -4318,8 +4321,7 @@ button.sanscard:hover{border-color:var(--accent)}
    after it one column left of its own header. visibility:hidden keeps the
    box (and its track) while painting nothing and taking no clicks. */
 .sb-grip.ro{visibility:hidden;cursor:default}
-.rowdrag{background:var(--raised);outline:1px solid var(--accent);outline-offset:-1px;
-  border-radius:6px;box-shadow:0 6px 18px rgba(0,0,0,.55)}
+.rowdrag{/* the picked-up look is the shared .lift (one lift, every drag, 6 Sep 26); this class only recolours the grip */}
 .rowdrag .sb-grip{color:var(--accent);cursor:grabbing}
 /* the landing mark is a border on the row being dropped ONTO, not an inserted
    element: the panels are innerHTML strings and inserting a node under a moving

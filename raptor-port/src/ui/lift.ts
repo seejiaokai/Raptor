@@ -121,7 +121,7 @@ export function frameLand(frame: HTMLElement | null, box: LiftBox | null): void 
   landOn(frame)
 }
 
-let PENDING: { sel: string; climb?: string; at: number } | null = null
+let PENDING: { sel: string; climb?: string; at: number; lit?: HTMLElement } | null = null
 
 /** Remember what to flash once the DOM has been rebuilt: the first node matching
  *  `sel` (climbed to `climb` when given). Call BEFORE the rebuild. One slot —
@@ -131,14 +131,27 @@ export function markLand(sel: string, climb?: string): void {
 }
 
 /** The post-render half of markLand. Safe with no document (a torn-down test
- *  environment, the paintFreshAdds precedent). */
+ *  environment, the paintFreshAdds precedent).
+ *
+ *  ONE FLASH PER NODE, not one flash per mark (corrected 6 Sep 26, measured in
+ *  Chromium against the built board). refreshHighlights is called by EVERY
+ *  surface that has just re-rendered, and on the scheduler board TWO of them
+ *  run in the same commit: EditWeek's pass fires ~20ms BEFORE SchedBoard's,
+ *  while `#sbBoard` still holds its pre-drop markup. A mark spent on the first
+ *  node found was therefore spent on a doomed node — SchedBoard's innerHTML
+ *  swap replaced it a moment later and the drop flashed nothing at all. So the
+ *  mark stays live for its short life and paints the node it finds, skipping
+ *  the one it has ALREADY lit: an unrelated repaint that leaves that node
+ *  standing restarts nothing (the .sb-fresh fault trap 7 names), a rebuild that
+ *  replaces it hands the flash to the new node, and either way the mark dies at
+ *  LAND_STALE_MS. */
 export function paintLand(root: ParentNode | null = typeof document === 'undefined' ? null : document): void {
   if (!root || !PENDING) return
   if (Date.now() - PENDING.at > LAND_STALE_MS) { PENDING = null; return }
   let el = root.querySelector(PENDING.sel) as HTMLElement | null
   if (el && PENDING.climb) el = el.closest(PENDING.climb) as HTMLElement | null
-  if (!el) return
-  PENDING = null
+  if (!el || el === PENDING.lit) return
+  PENDING.lit = el
   landOn(el)
 }
 

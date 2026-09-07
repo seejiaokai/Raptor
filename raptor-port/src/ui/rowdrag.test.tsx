@@ -5,7 +5,8 @@
    right place is a geometry question and lives in e2e/geometry.spec.ts. */
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { DAYS } from '../engine/data'
-import { wireRowDrag } from './rowdrag'
+import { landSel, wireRowDrag } from './rowdrag'
+import { markLand, paintLand, pendingLand } from './lift'
 import { setSession } from '../state/auth'
 import { setBoardDay, DPREV } from '../state/view'
 import { boardHTML } from './board'
@@ -243,5 +244,100 @@ describe('wireRowDrag', () => {
       expect(DAYS[0].secOrder).toBeUndefined()
       expect(SECDEFOFFER).toBe(null)
     }))
+  })
+})
+
+/* ONE LIFT, EVERY DRAG (owner, 6 Sep 26 — "the thing u are grabbing glows
+   evenly … once I drop the item it should flash to show where the new item
+   ended up"). Two halves meet here. The PICKED-UP half is a second class on
+   the same element `rowdrag`/`secdrag` already mark, so the box is the shared
+   recipe (scheduler.css .lift) and those two are left as state classes for the
+   grip recolour. The LANDING half is deferred, because every board panel is an
+   innerHTML string a re-render rebuilds and the row that was carried is a NEW
+   node by the time anyone could flash it: rowdrag marks the destination
+   ADDRESS before the rebuild and highlights.ts's paintLand paints whatever
+   answers it afterwards. jsdom rebuilds nothing, so what is pinned here is the
+   address arithmetic, the mark, and that the paint happens exactly once. */
+describe('one lift, every drag — the board (6 Sep 26)', () => {
+  /* one module-level slot in lift.ts, so a mark left by an earlier test (every
+     accepted move sets one now) must not be inherited */
+  beforeEach(() => markLand(''))
+
+  it('the carried row wears lift beside rowdrag, and loses both on release', () => {
+    host.innerHTML = rowsHTML(['mv:p.0.0', 'mv:p.0.1'])
+    const [a] = [...host.querySelectorAll('.sb-grip')]
+    const [rowA] = [...host.querySelectorAll('.sb-arow')]
+    down(a)
+    expect(rowA.classList.contains('rowdrag')).toBe(true)
+    expect(rowA.classList.contains('lift')).toBe(true)
+    expect(a.classList.contains('lift'), 'the box goes on the row, never the 18px grip').toBe(false)
+    up()
+    expect(rowA.classList.contains('rowdrag')).toBe(false)
+    expect(rowA.classList.contains('lift')).toBe(false)
+  })
+
+  it('a section carries lift beside secdrag', () => {
+    host.innerHTML = '<div class="sb-sec" data-secmove="0.grnd"><span class="secgrip">⠿</span></div>'
+    const sec = host.querySelector('[data-secmove]') as HTMLElement
+    down(host.querySelector('.secgrip')!)
+    expect(sec.classList.contains('secdrag')).toBe(true)
+    expect(sec.classList.contains('lift')).toBe(true)
+    up()
+    expect(host.querySelectorAll('.secdrag,.lift').length).toBe(0)
+  })
+
+  it('landSel: the destination address is the landed row; a travelling formation climbs to its block', () => {
+    /* engine/reorder.ts: "`to` is the destination index AFTER removal", so the
+       row that was carried answers the target's own address */
+    expect(landSel('mv:d.0.0.1', 'mv:d.0.0.3')).toEqual(['[data-move="mv:d.0.0.3"]'])
+    expect(landSel('mv:ac.0.1.0.2', 'mv:ac.0.1.0.0')).toEqual(['[data-move="mv:ac.0.1.0.0"]'])   // a jet resequenced inside its formation
+    /* the one exception — the whole FORMATION travelled, so `to` names a jet
+       inside the target formation and the landed thing is the block now at the
+       target's formation index */
+    expect(landSel('mv:ac.0.1.0.2', 'mv:ac.0.1.2.0')).toEqual(['[data-move^="mv:ac.0.1.2."]', '.sb-line'])
+  })
+
+  it('a real move marks the landed row BEFORE the rebuild, and paintLand paints it once', () => {
+    const o = HOOKS.editMode; HOOKS.editMode = () => true
+    try {
+      host.innerHTML = boardHTML(0)
+      const rows = [...host.querySelectorAll('.sb-arow[data-move^="mv:p.0."]')] as HTMLElement[]
+      const [rowA, rowB] = rows
+      const to = rowB.dataset.move!
+      down(rowA.querySelector('.sb-grip')!); over(rowB); up()
+      expect(pendingLand()).toEqual({ sel: `[data-move="${to}"]`, climb: undefined })
+      paintLand()                                      // what refreshHighlights does after the repaint
+      const landed = host.querySelector(`[data-move="${to}"]`)!
+      expect(landed.classList.contains('lift-land')).toBe(true)
+      /* one flash per node: an unrelated repaint that leaves the row standing
+         can never restart it (the .sb-fresh lesson, highlights.ts
+         paintFreshAdds) */
+      landed.classList.remove('lift-land'); paintLand()
+      expect(landed.classList.contains('lift-land')).toBe(false)
+    } finally { HOOKS.editMode = o }
+  })
+
+  /* a section keeps its own key wherever it lands (the move is a display order,
+     not a renumbering), so its address is the one thing that does not move */
+  it('a section move marks the section that travelled, by its own key', () => {
+    const o = HOOKS.editMode; HOOKS.editMode = () => true
+    try {
+      host.innerHTML = boardHTML(0)
+      const grip = host.querySelector('[data-secmove="0.prog"] .secgrip') as HTMLElement
+      const target = host.querySelector('[data-secmove="0.duty"]') as HTMLElement
+      down(grip); over(target); up()
+      expect(pendingLand()).toEqual({ sel: '[data-secmove="0.prog"]', climb: undefined })
+      paintLand()
+      expect(host.querySelector('[data-secmove="0.prog"]')!.classList.contains('lift-land')).toBe(true)
+    } finally { HOOKS.editMode = o }
+  })
+
+  it('a STALE drop (a detached carry) marks nothing', () => {
+    host.innerHTML = rowsHTML(['mv:p.0.0', 'mv:p.0.1'])
+    const [a, b] = [...host.querySelectorAll('.sb-grip')]
+    down(a); over(b)
+    host.innerHTML = rowsHTML(['mv:p.0.0', 'mv:p.0.1'])   // a repaint under the finger detaches both
+    up()
+    expect(pendingLand(), 'the drop was refused, so nothing landed to flash').toBeNull()
   })
 })

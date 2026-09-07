@@ -132,16 +132,31 @@ describe('lifting and landing a plain element', () => {
 })
 
 describe('markLand / paintLand — landing on a DOM that is rebuilt after the drop', () => {
-  it('paints the marked node once it exists, then is spent — a later repaint adds nothing', () => {
+  it('paints the marked node once it exists, and a later repaint of that same node adds nothing', () => {
     markLand('[data-move="mv:d.0.0.2"]')
     paintLand()                                             // nothing to find yet
     expect(pendingLand()).toEqual({ sel: '[data-move="mv:d.0.0.2"]', climb: undefined })
     const row = document.createElement('div'); row.setAttribute('data-move', 'mv:d.0.0.2'); document.body.appendChild(row)
     paintLand()
     expect(row.classList.contains('lift-land')).toBe(true)
-    expect(pendingLand()).toBeNull()
     row.classList.remove('lift-land'); paintLand()
-    expect(row.classList.contains('lift-land')).toBe(false)
+    expect(row.classList.contains('lift-land'), 'the node it already lit is never re-flashed').toBe(false)
+  })
+  /* ONE FLASH PER NODE, not per mark (corrected 6 Sep 26, measured in Chromium
+     against the built board). refreshHighlights runs once per re-rendered
+     surface, and on the board TWO fire in the same commit — EditWeek's ~20ms
+     BEFORE SchedBoard's, while #sbBoard still holds its pre-drop markup. A mark
+     spent on the first node found was spent on a doomed one: the innerHTML swap
+     that followed replaced it and the drop flashed nothing at all. */
+  it('hands the flash on when the pass that found the node was looking at a DOM about to be rebuilt', () => {
+    const stale = document.createElement('div'); stale.setAttribute('data-move', 'mv:g.0.1'); document.body.appendChild(stale)
+    markLand('[data-move="mv:g.0.1"]')
+    paintLand()                                             // the early pass, on markup that has not caught up
+    expect(stale.classList.contains('lift-land')).toBe(true)
+    stale.remove()                                          // …and the rebuild throws that node away
+    const fresh = document.createElement('div'); fresh.setAttribute('data-move', 'mv:g.0.1'); document.body.appendChild(fresh)
+    paintLand()                                             // the pass that rebuilt it
+    expect(fresh.classList.contains('lift-land'), 'the row the user is actually looking at flashes').toBe(true)
   })
   it('climbs to the container the caller names (a formation that travelled)', () => {
     const line = document.createElement('div'); line.className = 'sb-line'
