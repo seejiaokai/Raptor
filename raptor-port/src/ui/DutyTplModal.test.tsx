@@ -93,6 +93,46 @@ describe('renaming the selected template', () => {
   })
 })
 
+/* WHICH WAVE THE DESK SERVES (owner, 7 Sep 26) — the one field the engine
+   reads off a minted block, so the editor must let an admin set it and the
+   seed must open on the right answers. A <select>, so the change event is a
+   plain 'change' with the option value. */
+describe('the "For wave" picker', () => {
+  const pick = async (value: string) => {
+    const sel = $('.tpl-wave select') as HTMLSelectElement
+    expect(sel, 'the wave select exists').toBeTruthy()
+    await act(async () => {
+      sel.value = value
+      sel.dispatchEvent(new Event('change', { bubbles: true }))
+    })
+  }
+  it('opens on the seed answers: Standard none, SC Shift SC, AVALON AVALON', async () => {
+    await click($$('.tpl-tab:not(.new)')[0]!)
+    expect(($('.tpl-wave select') as HTMLSelectElement).value).toBe('')
+    await click($$('.tpl-tab:not(.new)')[1]!)
+    expect(($('.tpl-wave select') as HTMLSelectElement).value).toBe('sc')
+    await click($$('.tpl-tab:not(.new)')[2]!)
+    expect(($('.tpl-wave select') as HTMLSelectElement).value).toBe('avalon')
+  })
+  it('a pick writes the template\'s wave and persists it', async () => {
+    await click($$('.tpl-tab:not(.new)')[0]!)   // Standard
+    await pick('avalon')
+    expect(DUTYTPL_CFG[0]!.wave).toBe('avalon')
+    expect(JSON.parse(mem['sqn142_dutytpl']!)[0].wave).toBe('avalon')
+    await pick('')
+    expect(DUTYTPL_CFG[0]!.wave).toBe('')
+  })
+  it('the note under it says what the pick means, in the app\'s words', async () => {
+    await click($$('.tpl-tab:not(.new)')[2]!)   // AVALON
+    expect($('.tpl-wave-note').textContent).toMatch(/overseas or medically down/)
+    expect($('.tpl-wave-note').textContent).toMatch(/OIL/)
+    await click($$('.tpl-tab:not(.new)')[1]!)   // SC Shift
+    expect($('.tpl-wave-note').textContent).toMatch(/SPARE/)
+    await click($$('.tpl-tab:not(.new)')[0]!)   // Standard
+    expect($('.tpl-wave-note').textContent).toMatch(/checked like any duty/)
+  })
+})
+
 describe('rows', () => {
   it('+ Add role adds a row to the selected template', async () => {
     await click($$('.tpl-tab:not(.new)')[0]!)   // Standard: 3 seeded rows

@@ -2,7 +2,7 @@ import { PEOPLE, isSpecial, realP, isOcu, isInstr, isInstrPilot, aarOK, aarInstr
 import { isDownchit, isLeave, isUnavail, canSpare, canWork, shiftHardInput, restsInput, inpLabel, inpMeta } from './inputs'
 import { VCONF, SHIFT_HARD } from './rules'
 import { overlap, hm24, lgT } from './time'
-import { collectEvents, shiftEvHard, scSeatHit } from './events'
+import { collectEvents, shiftEvHard, scSeatHit, avSeatHit } from './events'
 import { HOOKS } from './hooks'
 import { sansGate, SANS_LABEL } from './avail'
 import { seedRunIn, prevSundaySeed, nextMondaySeed, nextMondayWorked } from './weekctx'
@@ -630,7 +630,8 @@ export function validate(){
         const why=inp.remarks?` — reason: ${inp.remarks}`:'';
         add('hard',dn?'DNIF_FLY':lv?'LEAVE_FLY':'INPUT_FLY',[e.id],
           (dn?'Downchit but tasked':lv?'On leave but tasked':`${inp.type} but tasked`)+` — ${e.label}${why}`,kOf(e)); }); });
-    /* AVALON'S ONE CHECK (owner, 11 Aug 26). The wave and its desk keep their
+    /* AVALON'S ONE CHECK (owner, 11 Aug 26; three more joined it on 7 Sep 26,
+       right below). The wave and its desk keep their
        noconf exemption — nothing on them is cross-checked against tasks, rest or
        qualifications — but the owner commissioned exactly one look, the same shape
        as the SC SPARE rule below: a man standing AVALON must be on the island and
@@ -652,6 +653,57 @@ export function validate(){
         add('hard',dn?'DNIF_FLY':'LEAVE_FLY',[sa.id],
           `${inp.type} but on ${sa.label} — ${dn?'medically down':'overseas'}${why}`,sa.key);
       });
+    });
+    /* THE THREE AVALON CHECKS OF 7 SEP 26 (owner — "Avalon main will also be
+       checked for SC NIGHT qual", "u still cannot put a wso in the front seat",
+       "they should also not be planned as a main and a spare the same timing …
+       or be planned on a duty for Avalon and planned as Avalon main or spare").
+       Each is the SC-spare rule below re-cut for AVALON, and each is anchored on
+       the seat (or desk row) it is about, which is what lets the exempt line's
+       puck ring for its OWN rule and nothing else (html.ts). The wave stays
+       noconf: none of this reads day.events or crew rest, so a man on AVALON
+       tonight and a sortie tomorrow morning still raises nothing — the owner
+       has not asked for that. BB is untouched, as before: it is not collected. */
+    const avPairSeen:any=new Set();
+    (day.sacrew||[]).forEach((sa:any)=>{
+      const p=realP(sa.id); if(!p)return;
+      /* SC NIGHT CURRENCY ON A MAIN SEAT. MAIN only — the owner named MAIN; a
+         SPARE is standing by. The kind is read off the shift as scheduled
+         (scShiftKind, the same body SC uses): AVALON's 19:00–07:00 is a night
+         shift, and a retyped daytime AVALON would ask for SC DAY instead of
+         quietly asking nothing. Reads the seat, not the pilot: a WSO in the
+         MAIN rear seat is checked too. */
+      if(sa.role==='MAIN'){
+        const kind=scShiftKind(sa.s,sa.e);
+        if(kind&&!scQualOK(sa.id,kind)){
+          markChip(di,sa.id,'Q');markRing(di,sa.id,'hard');
+          add('hard','SC_QUAL',[sa.id],
+            `${kind==='day'?'SC DAY':'SC NIGHT'} currency needed for ${sa.label} MAIN (${hm24(sa.s)}–${hm24(sa.e)}) — ${p.cs} is not current`,sa.key);
+        }
+      }
+      /* THE FRONT SEAT IS PILOTS-ONLY, MAIN AND SPARE ALIKE — the three
+         predicates of the SC-spare seat rule, verbatim, so the crew picker
+         (whose seat rules carry no exemption) and the warning list agree on a
+         drag-drop. The rear seat stays unruled, as it is on the SC spare. */
+      if(sa.seat==='p'){
+        const tag=`(${sa.label} ${sa.role})`;
+        if(p.pers){markChip(di,sa.id,'Q');markRing(di,sa.id,'hard');add('hard','QUAL',[sa.id],`${p.cs} is ground crew — cannot fly a front seat ${tag}`,sa.key);}
+        else if(p.seat==='RCP'){markChip(di,sa.id,'Q');markRing(di,sa.id,'hard');add('hard','QUAL',[sa.id],`${p.cs} is a WSO — cannot fly FCP ${tag}`,sa.key);}
+        else if(p.q==='IW'&&p.seat==='FCP'){markChip(di,sa.id,'Q');markRing(di,sa.id,'hard');add('hard','QUAL',[sa.id],`${p.cs} is CAT IW — a WSO category, cannot fly FCP ${tag}`,sa.key);}
+      }
+      /* ONE MAN IN TWO AVALON PLACES IN THE SAME HOURS — MAIN + SPARE, a seat +
+         the desk, two desk roles. Nothing on AVALON is an event, so the
+         ordinary clash loop is blind here; avSeatHit walks the model, the same
+         body the picker reads before a plant. Said once per pair (the seen-set,
+         the SC precedent), anchored on the first place in the day's order —
+         seats before desks — so that copy rings; both are named in the words. */
+      const hit=avSeatHit(di,sa.id,sa.s,sa.e,sa.key); if(!hit)return;
+      const pk=[sa.key,hit.key].sort().join('|')+'·'+sa.id;
+      if(avPairSeen.has(pk))return; avPairSeen.add(pk);
+      markChip(di,sa.id,'C'); markRing(di,sa.id,'hard');
+      const mine=sa.role==='DUTY'?sa.label:`${sa.label} ${sa.role}`;
+      add('hard','DOUBLE_BOOK',[sa.id],
+        `${p.cs} is on ${mine} (${hm24(sa.s)}–${hm24(sa.e)}) and also on ${hit.what} (${hm24(hit.s)}–${hm24(hit.e)})`,sa.key);
     });
     /* ---- BRIEF / DEBRIEF windows round each sortie -----------------------
        The published BRIEF time (the B column, T/O − 2h20) is the hardline: the
@@ -936,7 +988,7 @@ export function validate(){
             markChip(di,id,'C'); markRing(di,id,'hard');
             add('hard','DOUBLE_BOOK',[id],
               `${PEOPLE[id].cs} is standing SC SPARE (${f.label} ${hm24(f.s)}–${hm24(f.e)})`
-              +` and also on ${hit.label} ${hit.role} (${hm24(hit.s)}–${hm24(hit.e)})`,own); }); });
+              +` and also on ${hit.what} (${hm24(hit.s)}–${hm24(hit.e)})`,own); }); });
         /* THE SPARE FRONT SEAT IS PILOTS-ONLY (owner, 31 Aug 26 — "a wso
            can't be planned for FCP"; the pilot-in-rear-seat mirror was
            offered and DECLINED, so the rear spare seat stays unruled here).

@@ -114,7 +114,9 @@ describe('the AVALON rule — jet seats', () => {
 
   it('jet with LL today — no AVALON warning (local leave is fine, the whole point)', () => {
     const { f } = pushAvalon()
-    f.aircraft[0].w = 'bullet'
+    /* the SPARE rear seat: bullet holds no SC NIGHT, and since 7 Sep 26 a MAIN
+       seat asks for it (avalon-rules.test.ts) — this test is about the leave */
+    f.aircraft[2].w = 'bullet'
     INPUTS.push({ person: 'bullet', date: 'Jul 13', allday: true, type: 'LL', remarks: '' })
     const bad = validate().all.filter((x: any) => (x.who || []).includes('bullet') && /AVALON/.test(x.msg))
     expect(bad, JSON.stringify(bad)).toEqual([])
@@ -282,13 +284,15 @@ describe('the AVALON puck wears its ring (11 Aug 26, owner’s first live use)',
     const w = makeStandalone('avalon')
     DAYS[0].waves.push(w)
     const wi = DAYS[0].waves.length - 1
-    w.formations[0].aircraft[0].w = 'badger'
+    /* the SPARE rear seat — badger holds no SC NIGHT and a MAIN seat would
+       ring Q for its OWN rule since 7 Sep 26; this test is about the bleed */
+    w.formations[0].aircraft[2].w = 'badger'
     DAYS[0].waves[0].formations[0].aircraft[0].w = 'badger'      // an ordinary sortie too
     INPUTS.push({ person: 'badger', date: 'Jul 13', allday: false, s: 600, e: 900, type: 'Meeting', remarks: '' })
     validate()
     const html = dayHTML(0, false)
     expect(/warn/.test(slotPuckClass(html, '0.0.0.0.w') || ''), 'the sortie copy rings').toBe(true)
-    const av = slotPuckClass(html, `0.${wi}.0.0.w`)
+    const av = slotPuckClass(html, `0.${wi}.0.2.w`)
     expect(av, 'AVALON seat renders a puck').toBeTruthy()
     expect(/warn/.test(av!), 'AVALON copy stays clean: ' + av).toBe(false)
   })
@@ -312,7 +316,7 @@ describe('the AVALON puck wears its ring (11 Aug 26, owner’s first live use)',
     DAYS[0].waves.push(makeStandalone('avalon'))
     DAYS[0].waves.push(makeStandalone('bb'))
     const html = dayHTML(0, false)
-    expect(html).toContain('availability check only')
+    expect(html).toContain('availability, currency and seat checks only')
     expect(html).toContain('not cross-checked')
   })
 })
@@ -347,19 +351,21 @@ describe('slotBar agrees with the validator (picker parity)', () => {
   }
 
   it('AVALON jet key: LL clear, OL bars with "overseas", ATT B bars', () => {
-    // plasma is RCP — the rear seat, .w — so the seat rule stays out of the way
+    // plasma is RCP — the rear seat, .w — so the seat rule stays out of the
+    // way; the SPARE row (2), because a MAIN seat asks for SC NIGHT since
+    // 7 Sep 26 and plasma holds none (avalon-rules.test.ts pins that)
     const { wi } = pushAvalon()
     INPUTS.push({ person: 'plasma', date: 'Jul 13', allday: true, type: 'LL', remarks: '' })
     validate()
-    expect(slotBar('plasma', `0.${wi}.0.0.w`)).toBe('')
+    expect(slotBar('plasma', `0.${wi}.0.2.w`)).toBe('')
     INPUTS.length = 0; JSON.parse(ISNAP).forEach((i: any) => INPUTS.push(i))
     INPUTS.push({ person: 'plasma', date: 'Jul 13', allday: true, type: 'OL', remarks: '' })
     validate()
-    expect(/overseas/.test(slotBar('plasma', `0.${wi}.0.0.w`))).toBe(true)
+    expect(/overseas/.test(slotBar('plasma', `0.${wi}.0.2.w`))).toBe(true)
     INPUTS.length = 0; JSON.parse(ISNAP).forEach((i: any) => INPUTS.push(i))
     INPUTS.push({ person: 'plasma', date: 'Jul 13', allday: true, type: 'ATT B', remarks: '' })
     validate()
-    expect(slotBar('plasma', `0.${wi}.0.0.w`)).toBeTruthy()
+    expect(slotBar('plasma', `0.${wi}.0.2.w`)).toBeTruthy()
   })
 
   it('AVALON desk key: ATT B clear, ATT C bars, LL clear, OL bars', () => {

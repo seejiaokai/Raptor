@@ -75,11 +75,37 @@ export function shiftEvHard(e:any){return !!SHIFT_HARD[e.kind]||shiftHardGround(
    SC AM 07:00–13:00 and PM 13:00–19:00 share only the 13:00 instant and stay
    two clean shifts — the owner's own example. selfKey excludes the seat
    being asked about (a re-arm, or the seat a warning is being raised FOR).
-   SC only on purpose: the AVALON rule stays owner-reserved (10 Aug 26). */
+   SINCE 7 SEP 26 (owner — "for sc duties desk they are also not allowed to be
+   planned as the same time as main or spare") the walk also reads every
+   `sa:'sc'` DUTY BLOCK (the desk a template marked as SC's, dutytpl.ts): a
+   man on an SC desk row (its seat or its extras) inside the hours is a hit
+   with role 'DUTY'. MAIN-vs-desk needs nothing here (both are events, the
+   clash loop reds them); this is what lets the SPARE — absent from EVD — be
+   caught against the desk, and the desk's own picker refuse a spare. `what`
+   is the spoken form for a message: "SC AM SPARE" / "SXO AM duty". The
+   AVALON twin is avSeatHit below. */
 export function scSeatHit(di:any,id:any,s:any,e:any,selfKey:any){
+  return standaloneHit(di,id,s,e,selfKey,'sc');
+}
+/* DOES HE ALREADY HOLD ANOTHER AVALON PLACE IN THESE HOURS? (owner, 7 Sep 26
+   — "they should also not be planned as a main and a spare the same timing …
+   or be planned on a duty for Avalon and planned as Avalon main or spare").
+   AVALON is noconf whole — no seat on it and no `sa:'avalon'` desk row ever
+   becomes an event — so, as with the SC spare, only a model walk can answer
+   this, and the same body serves the validator (after a drop) and the crew
+   picker (before a plant). The shift is overnight: the window is rolled
+   (07:00 < 19:00 → +1440) exactly as collectEvents rolls it, so 19:00–07:00
+   against 19:00–07:00 overlaps and a desk retyped 07:00–19:00 beside it
+   touches only at 19:00 and passes — half-open, the SC precedent. */
+export function avSeatHit(di:any,id:any,s:any,e:any,selfKey:any){
+  return standaloneHit(di,id,s,e,selfKey,'avalon');
+}
+/* the one walk behind both: the KIND's waves (every crew row, MAIN and SPARE)
+   plus every duty block marked `sa:<kind>` (the seat and its extras) */
+function standaloneHit(di:any,id:any,s:any,e:any,selfKey:any,kind:any){
   const d=DAYS[di]; if(!d||!id||s==null||e==null)return null;
   let hit:any=null;
-  (d.waves||[]).forEach((w:any,gi:any)=>{ if(hit||!isStandalone(w)||w.kind!=='sc')return;
+  (d.waves||[]).forEach((w:any,gi:any)=>{ if(hit||!isStandalone(w)||w.kind!==kind)return;
     (w.formations||[]).forEach((f:any,li:any)=>{ if(hit||f.cx)return;
       const st=parseHM(f.to); let en=parseHM(f.ld||f.to);
       if(st==null||en==null)return; if(en<st)en+=1440;
@@ -88,7 +114,18 @@ export function scSeatHit(di:any,id:any,s:any,e:any,selfKey:any){
         [['p',a.p],['w',a.w]].forEach(([seat,pid]:any)=>{ if(hit||pid!==id||!PEOPLE[pid]||isSpecial(pid))return;
           const k=`${di}.${gi}.${li}.${ai}.${seat}`;
           if(k===selfKey)return;
-          hit={label:`${f.cs} ${f.msn}`,role:saExempt(w,f,a)?'SPARE':'MAIN',s:st,e:en,key:k};});});});});
+          /* the WAVE's full label (AVALON), not the callsign (AV) — see the
+             sacrew note in buildDay; SC's cs and label are both "SC" */
+          const role=(f.spare||a.spare)?'SPARE':'MAIN', label=`${w.label} ${f.msn}`;
+          hit={label,role,what:`${label} ${role}`,s:st,e:en,key:k};});});});});
+  (d.dutywaves||[]).forEach((dw:any,dwi:any)=>{ if(hit||!dw||dw.sa!==kind)return;
+    (dw.rows||[]).forEach((r:any,ri:any)=>{ if(hit||r.cx)return;
+      const w2=win(parseHM(r.str),parseHM(r.end)); if(!w2)return;
+      if(!overlap(s,e,w2[0],w2[1]))return;
+      const k=`d:${di}.${dwi}.${ri}`; if(k===selfKey)return;
+      if(![r.id].concat(r.more||[]).some((pid:any)=>pid===id&&PEOPLE[pid]&&!isSpecial(pid)))return;
+      const label=`${r.role} duty`;
+      hit={label,role:'DUTY',what:label,s:w2[0],e:w2[1],key:k};});});
   return hit;
 }
 /* The time WRITTEN in an in-time line (owner, 21 Aug 26 — "can u accept any
@@ -218,7 +255,13 @@ export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
                  formation callsign — that was shortened to "AV" on 25 Aug 26 for
                  the narrow board callsign box, and the LEAVE_FLY/DNIF prose reads
                  as prose ("but on AVALON — overseas"). Don't re-shorten to f.cs. */
-              [['p',a.p],['w',a.w]].forEach(([seat,id]:any)=>{ if(id&&PEOPLE[id]&&!isSpecial(id))sacrew.push({id,s:sTo,e:sLd,label:`${w.label} ${f.msn}`,key:`${di}.${gi}.${li}.${ai}.${seat}`,work:false}); });
+              /* role + seat ride along since 7 Sep 26 for the three checks
+                 validate() added on top of the availability look: SC NIGHT
+                 currency (MAIN only), the pilots-only front seat, and one man
+                 in two AVALON places. sacrew is port-only (the parity gate
+                 excises it whole), so the extra fields cost nothing there. */
+              const role=(f.spare||a.spare)?'SPARE':'MAIN';
+              [['p',a.p],['w',a.w]].forEach(([seat,id]:any)=>{ if(id&&PEOPLE[id]&&!isSpecial(id))sacrew.push({id,s:sTo,e:sLd,label:`${w.label} ${f.msn}`,key:`${di}.${gi}.${li}.${ai}.${seat}`,work:false,role,seat}); });
             });
           }
           return;
@@ -383,7 +426,7 @@ export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
            desk (owner, 11 Aug 26). work:true is that carve-out. */
         if(dw.sa==='avalon'){
           const w2=win(parseHM(r.str),parseHM(r.end));
-          if(w2)[r.id].concat(extras(r)).forEach((id:any)=>{ if(id&&PEOPLE[id]&&!isSpecial(id))sacrew.push({id,s:w2[0],e:w2[1],label:r.role+' duty',key:`d:${di}.${dwi}.${ri}`,work:true}); });
+          if(w2)[r.id].concat(extras(r)).forEach((id:any)=>{ if(id&&PEOPLE[id]&&!isSpecial(id))sacrew.push({id,s:w2[0],e:w2[1],label:r.role+' duty',key:`d:${di}.${dwi}.${ri}`,work:true,role:'DUTY',seat:null}); });
         }
         return;
       }

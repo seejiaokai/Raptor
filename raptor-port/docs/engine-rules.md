@@ -661,6 +661,15 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
     from EVD by design), read by the validator AND the crew picker's
     `slotBar` ("already on SC AM MAIN 07:00–13:00"), so the palette refuses
     exactly what the warning list would flag after a drag-drop.
+    **The SC DESK is one of those seats since 7 Sep 26** (owner — "for sc
+    duties desk they are also not allowed to be planned as the same time as
+    main or spare"): `scSeatHit` also walks every duty block marked
+    `sa:'sc'` — the desk a template marked SC's (`dutytpl.ts`, below) — so a
+    spare on the SXO AM desk in the same hours is the same red ("… and also on
+    SXO AM duty"), and the desk's own picker refuses a man standing spare
+    (`slotRules().scDesk`). MAIN-vs-desk is the ordinary clash (both are
+    events). An ORDINARY desk in the same hours still raises nothing against
+    a spare — spares stay free; only the SC desk is an SC seat.
   - **The spare front seat is pilots-only** — a WSO (`seat==='RCP'`, plus the
     CAT-IW data-consistency variant) planted in a spare line's FCP raises the
     same hard `QUAL` the flying seat rules raise, suffixed "(… SPARE)" and
@@ -676,9 +685,10 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   `spareAcs` field (`parity.test.ts noPortOnly`).
 - Standalone waves: SC (spares uncrosschecked beyond the four checks above),
   AVALON/BB (`noconf`).
-- **AVALON's one check (owner, 11 Aug 26).** AVALON and its desk keep
+- **AVALON's one check (owner, 11 Aug 26) — and the three that joined it on
+  7 Sep 26 (owner), listed after it.** AVALON and its desk keep
   `noconf` — nothing on them is cross-checked against tasks, rest or
-  qualifications — but every man on the wave now gets ONE look, the SC-spare
+  briefs — but every man on the wave now gets ONE look, the SC-spare
   shape widened. A JET seat (MAIN and SPARE alike) raises a hard
   DNIF_FLY/LEAVE_FLY for any input failing `canSpare` — overseas (OL, OD)
   and the whole medical group, **ATT B included**: these are jet seats, and
@@ -700,13 +710,58 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   day, which is why the old all-or-nothing gate existed. These lines ring
   red or not at all; the owner confirmed no amber rule lives on them. BB
   can anchor nothing and never rings. The badge and the add-toast say it
-  per wave: AVALON "availability check only", SC's spare "availability and
-  SC currency only", BB "not cross-checked". The 19:00–23:59
+  per wave: AVALON "availability, currency and seat checks only", SC's spare
+  "availability and SC currency only", BB "not cross-checked". The 19:00–23:59
   half is judged against today's inputs and the 00:00–07:00 half against
   tomorrow's (the midnight tail below). Collected as `day.sacrew` in
-  `events.ts`, checked in one loop in `validate.ts`. **BB is deliberately
+  `events.ts` (each entry carrying its `role` MAIN/SPARE/DUTY and `seat`
+  since 7 Sep 26), checked in one loop in `validate.ts`. **BB is deliberately
   untouched** — the owner specified AVALON only; extending the bar to BB
   needs his word first.
+  **The desk this applies to is the one a template marked AVALON's** (7 Sep
+  26). Since the 13 Aug decoupling no UI path minted an `sa:'avalon'` desk,
+  so a placed "AVALON" template came out PLAIN and fully cross-checked —
+  every row DOUBLE_BOOKed against the man's own sortie, and ATT B flagged
+  on it. The template now names its wave (`dutytpl.ts` `wave`, the "For
+  wave" picker in the editor; the seeded SC Shift / AVALON templates carry
+  theirs, a pre-7-Sep saved library gets them back by seed id on load), and
+  `blockFromTpl` carries it onto the block as `sa` + `noconf` exactly as the
+  retired `waveDutyBlock` did. So an AVALON desk once again reads: overseas,
+  HL, OML, ATT C and OD flag; ATT B mans it; nothing else is raised; and it
+  earns no OIL (`oil.ts` already excluded `sa:'avalon'` desks — the seats
+  never earned). Duties stay DECOUPLED: no wave mints a desk and deleting a
+  wave leaves every desk alone; only the marker came back.
+- **AVALON's three seat rules (owner, 7 Sep 26)** — each the SC-spare shape
+  re-cut, each hard, each anchored on the seat or desk row it is about so the
+  exempt line's puck rings for its OWN rule (`html.ts`): 
+  - **SC NIGHT currency on a MAIN seat.** MAIN only — the owner named MAIN; a
+    SPARE is standing by. The kind is read off the shift as scheduled
+    (`scShiftKind`, the body SC uses), so 19:00–07:00 asks for SC NIGHT and
+    a retyped daytime AVALON would ask for SC DAY rather than nothing. The
+    seat, not the pilot: a WSO in the MAIN rear seat is checked too.
+    `SC_QUAL`, chip Q. The picker refuses the same man ("not SC NIGHT
+    current", `slotRules().avMain/avKind`).
+  - **The front seat is pilots-only, MAIN and SPARE alike** — the three
+    predicates of the SC-spare seat rule verbatim (a WSO, ground crew, the
+    CAT-IW variant), `QUAL` suffixed "(AVALON NIGHT MAIN)" / "(… SPARE)". The
+    rear seat stays unruled, as on the SC spare. The picker's seat rules
+    already refused these; the validator now agrees after a drag-drop.
+  - **One man in two AVALON places in the same hours** — MAIN + SPARE, a
+    seat + the AVALON desk, two desk roles. Nothing on AVALON is an event, so
+    the ordinary clash loop is blind; `events.ts:avSeatHit` walks the model
+    (the AVALON waves' seats and every `sa:'avalon'` desk row), the same body
+    the picker reads before a plant ("already on AVALON NIGHT MAIN
+    19:00–07:00"). `DOUBLE_BOOK`, said once per pair, anchored on the first
+    place in the day's order (seats before desks). Half-open: a desk retyped
+    07:00–19:00 beside the 19:00–07:00 shift touches only at 19:00 and
+    passes. The overnight window is rolled (+1440) exactly as collectEvents
+    rolls it, so the same-hours question is asked over the whole night.
+  Deliberately NOT a rule: a man on AVALON tonight and a sortie or desk
+  tomorrow morning (or any crew-rest question) — nothing on AVALON is an
+  event, and the owner has not asked. Pins: `avalon-rules.test.ts`
+  (validator, picker, OIL, the template desk); `overnight.test.ts` keeps the
+  11 Aug availability pins (its MAIN-seat fixtures moved to the SPARE rear
+  seat, since a MAIN now asks for currency).
 - **The midnight tail (owner, 11 Aug 26 — "check in the same modality for
   all applicable rules based on timing").** A window that runs past midnight
   — a night sortie's landing and debrief tail, an overnight duty row, an
@@ -775,15 +830,18 @@ are REASSIGNED per validate — read them fresh). Severities: `hard`, `adv`,
   (a blank duty time is legal), a valid one canonicalises to the compact `HHMM`
   the model stores (`0700`, not `07:00`), so a stale value from a pre-guard
   session can never reach a day.
-- **A template desk is conflict-checked like any other duty row** (owner,
-  13 Aug 26). The wave→duty coupling is gone: no wave auto-creates a desk
+- **A template desk is conflict-checked like any other duty row — unless its
+  template names AVALON** (owner, 13 Aug 26; the wave field 7 Sep 26). The
+  wave→duty coupling is gone: no wave auto-creates a desk
   (`SAWAVE.autoDuty` removed from the add path), deleting a wave leaves any desk
-  alone (the wave-delete → `saDutyIx` walk removed), and a template block
-  carries no `noconf`, so the AVALON/BB desk exemption went with the
-  auto-create. The seed week has no exempt desk, so reference parity is
-  untouched. `events.ts` still honours a `noconf`/`sa==='avalon'` desk if one
-  reaches it from an old AL snapshot, but no UI path mints one now. Do not
-  re-add the coupling (`CLAUDE.md` §Stable decisions).
+  alone (the wave-delete → `saDutyIx` walk removed). Since 7 Sep 26 a template
+  carries `wave` ('' / 'sc' / 'avalon', the editor's "For wave" picker) and
+  `blockFromTpl` mints it onto the block as `sa` (+ `noconf` for AVALON,
+  mirroring `SAWAVE[kind].all`), so an AVALON desk is exempt as its wave is
+  (§AVALON above) and an SC desk counts as an SC seat for the spare rule
+  (§the two SC SPARE rules); a template with no wave mints the PLAIN block
+  it always did. The seed week has no template desk, so reference parity is
+  untouched. Do not re-add the coupling (`CLAUDE.md` §Stable decisions).
 - Chip ranking `RANK` (highest wins): LD<DT<TT<A<SD<SB<DB<NB<CR<RUN<C<Q.
   Glyphs shorten: CR→R, RUN→7, NB/SB→B, DB/SD→D, LD→L. `A` = on shift AND down for
   a ground event/programme.

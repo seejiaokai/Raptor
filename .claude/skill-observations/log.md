@@ -1896,3 +1896,18 @@ gate's. Keep verdict-bearing commands unpiped.
 **Suggested improvement:** When a visual report names or points at a specific element ("this column/cell/line looks wrong/darker/different"), the first diagnostic step is to read that element's COMPUTED style in a real browser and diff it against (a) its immediate siblings and (b) the same element in a state that looks correct — not to hypothesise a cause from the screenshot and build a candidate fix. The computed-style diff names the exact property and rule responsible, turning a guessing loop into a one-shot fix.
 
 **Principle:** A rendered-difference complaint is a computed-style question. Diffing the suspect element's resolved styles against a known-good reference (sibling, other row, prior state) localises the offending property and cascade rule directly; pattern-matching the screenshot to a plausible-sounding cause risks fixing the wrong thing and burning review round-trips.
+
+### Observation 125: An "I'm just reinforcing" rules list is a verify-then-build table, and it exposes dead seams
+
+**Status:** OPEN
+**Date:** 2026-09-07
+**Session context:** The owner restated ten AVALON / SC-spare rules ("some of these may already be present, I am just reinforcing … if not, implement them"). Six were present, four were not, and one "present" rule (the AVALON desk exemption) had been silently dead since a 13 Aug decoupling removed the only path that minted the marker it keyed on.
+**Skill:** test-driven-development (and the repo's rules-engine doctrine in CLAUDE.md)
+**Type:** open-source
+**Phase/Area:** intake — turning a mixed list of asks into work
+
+**Issue:** A list that mixes "already true" and "please build" invites two failure modes: re-implementing what exists (drift seam), or trusting the docs that say a rule exists when no live path exercises it. Here the docs, the engine and the tests all still described the AVALON desk exemption, and it was unreachable from the UI — the template path minted plain blocks. Only writing the test against the block a scheduler actually PLACES (blockFromTpl) rather than a hand-built fixture exposed it.
+
+**Suggested improvement:** For a reinforcement list, produce a per-rule table first — rule / where enforced / where the picker mirrors it / test that pins it / VERDICT (present, present-but-unreachable, missing) — and write each new test's fixture through the same entry point a user would use, not a hand-built model object. Then build only the "missing" and "unreachable" rows.
+
+**Principle:** "The rule exists" is a claim about a code path a user can reach, not about a function that would fire if handed the right object; pin rules through the user's own entry points, and treat a reinforcement list as an audit before it is a build.

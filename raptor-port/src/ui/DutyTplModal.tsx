@@ -8,8 +8,18 @@ import { notify } from '../state/store'
 import { DUTY_PICK } from '../engine/waves'
 import {
   DUTYTPL_CFG, MAX_ROWS, addTpl, delTpl, renameTpl, addTplRow, delTplRow,
-  setTplRow, moveTplRow, dutyTplSave, dutyTplReset, tplTime,
+  setTplRow, moveTplRow, dutyTplSave, dutyTplReset, tplTime, setTplWave,
 } from '../engine/dutytpl'
+import type { DutyWave } from '../engine/dutytpl'
+
+/* what each "For wave" answer DOES, in the app's own words — instruction, not
+   apology (owner, 25 Aug 26). Kept beside the control so a change to the rule
+   (engine-rules.md §AVALON, §the SC desk) is seen here too. */
+const WAVE_NOTE: Record<DutyWave, string> = {
+  '': 'An ordinary desk — every row is checked like any duty.',
+  sc: 'The SC desk — checked like any duty, and a man on it cannot also stand SC MAIN or SPARE in the same hours.',
+  avalon: 'The AVALON desk — checked only for overseas or medically down (ATT B may still man it), and earns no OIL on a weekend or holiday.',
+}
 import { hmOK } from '../engine/time'
 import { TPLEDIT, setTplEdit } from './pops'
 import { useVersion } from './useStore'
@@ -75,6 +85,14 @@ export function DutyTplModal() {
           </div>
           <input className="tpl-name" value={tpl.title} maxLength={24}
             onChange={e => { renameTpl(tpl.id, e.target.value); save() }} />
+          <label className="tpl-wave">For wave
+            <select value={tpl.wave} onChange={e => { setTplWave(tpl.id, e.target.value as DutyWave); save() }}>
+              <option value="">None</option>
+              <option value="sc">SC</option>
+              <option value="avalon">AVALON</option>
+            </select>
+          </label>
+          <div className="tpl-wave-note">{WAVE_NOTE[tpl.wave]}</div>
           <div className="tcols"><span></span><span>Role</span><span>Start</span><span>End</span><span></span></div>
           {tpl.rows.map((row, ri) => (
             <div className="trow" key={ri}>
