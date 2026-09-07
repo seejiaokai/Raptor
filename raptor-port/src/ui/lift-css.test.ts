@@ -148,6 +148,71 @@ describe('the day popover wears the same recipe', () => {
   })
 })
 
+/* THE TWO GHOST DRAGS (7 Sep 26). A ghost is one element the machine builds and
+   throws away, so it wears the recipe DIRECTLY — no frame. Its own accent
+   outline goes (an outline is drawn OUTSIDE the border box, which is the uneven
+   look the whole change is about), and the neutral DEPTH shadow stays: it is
+   what lifts the ghost off the page, it is not the accent, and nothing clips a
+   fixed child of <body>. The two must ride ONE box-shadow, and it is written on
+   the ghost's `.lift` compound — `.lift`'s own single-layer box-shadow sits
+   later in this file, so at equal specificity it would REPLACE the depth shadow
+   outright. What this pins is the SET: the accent only ever paints inset, the
+   one outer layer is neutral, and everything the ghost carried for the drag
+   itself (fixed position, the compositor layer, the hit-test rules) is intact. */
+describe('the ghosts wear the same recipe — inset accent, neutral depth', () => {
+  const GHOSTS: Array<[string, string]> = [['.tdghost', '.6'], ['.dragimg', '.6'], ['.ic-ghost', '.5']]
+  /** Every rule that paints a ghost in flight: its own class, and the compound
+   *  with the `lift` the machine adds beside it (drag.ts tdArm/setDragImage,
+   *  caldrag.ts arm). */
+  const ghostRules = (cls: string) => RULES.filter(r => r.sels.some(s => s === cls || s === `${cls}.lift`))
+  const ghostBody = (cls: string) => ghostRules(cls).map(r => r.body).join(' ').replace(/\s+/g, ' ')
+
+  it('no ghost draws an outline any more — the box is the shared .lift, inside the line', () => {
+    for (const [cls] of GHOSTS) {
+      expect(ghostRules(cls).length, `${cls} has rules`).toBeGreaterThan(0)
+      expect(ghostBody(cls), `${cls} draws no outline`).not.toMatch(/outline/)
+    }
+  })
+
+  it('each carries --lift-box plus its dark drop shadow, and the ONE outer layer is neutral', () => {
+    for (const [cls, alpha] of GHOSTS) {
+      const m = ghostBody(cls).match(/box-shadow:\s*([^;}]+)/)
+      expect(m, `${cls} declares a box-shadow`).toBeTruthy()
+      const ls = layers(m![1]!.trim())
+      expect(ls[0], `${cls} leads with the shared recipe`).toBe('var(--lift-box)')
+      expect(ls.length, `${cls} carries exactly the recipe and its depth shadow`).toBe(2)
+      expect(ls[1], `${cls} keeps the dark drop shadow that lifts it off the page`)
+        .toBe(`0 8px 20px rgba(0,0,0,${alpha})`)
+      /* the accent NEVER paints outside the border box — that is trap row 1,
+         and the reason the outline went */
+      expect(ls[1], `${cls}'s outer layer is neutral, never the accent`).not.toMatch(/--accent|59,\s*198,\s*232/)
+    }
+  })
+
+  it('and nothing the drag itself needs was lost', () => {
+    for (const [cls] of GHOSTS) expect(ghostBody(cls), `${cls} still rides the pointer`).toMatch(/position:\s*fixed/)
+    /* the puck ghosts' compositor layer (6 Sep 26) and the mouse ghost's
+       hit-testable grabbing cursor (css-invalidation.test.ts pins the pair too) */
+    for (const cls of ['.tdghost', '.dragimg']) {
+      expect(ghostBody(cls), `${cls} keeps its own layer`).toMatch(/will-change:\s*transform/)
+      expect(ghostBody(cls), `${cls} is still positioned by transform alone`).toMatch(/left:\s*0!important/)
+    }
+    expect(ghostBody('.dragimg')).toMatch(/pointer-events:\s*auto/)
+    expect(ghostBody('.dragimg')).toMatch(/cursor:\s*grabbing/)
+    expect(ghostBody('.tdghost')).toMatch(/pointer-events:\s*none/)
+    /* the chip ghost's own look: centred under the finger, slightly grown and faded */
+    expect(ghostBody('.ic-ghost')).toMatch(/transform:\s*translate\(-50%,\s*-50%\)\s*scale\(1\.05\)/)
+    expect(ghostBody('.ic-ghost')).toMatch(/opacity:\s*\.85/)
+  })
+
+  /* Trap row 15: `liftIn` scales, and a ghost's position IS an inline transform —
+     the keyframe would throw it back to 0,0 for its first 120ms. The frame-only
+     test above pins the one user; this says it in the ghosts' own words. */
+  it('no ghost is given the frame\'s bloom — a transform keyframe would fight its inline transform', () => {
+    for (const [cls] of GHOSTS) expect(ghostBody(cls), `${cls} runs no animation`).not.toMatch(/animation/)
+  })
+})
+
 /* THE HOST ARRANGES AROUND THE FRAME (review, 7 Sep 26). The quals column frame
    is the one frame in the app that TRAVELS: it is placed in `.qwrap`'s content
    coordinates so it rides the sideways scroll with its column, which means a

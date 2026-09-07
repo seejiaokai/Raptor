@@ -3916,10 +3916,12 @@ body:not(.tdrag) .sb-slot.empty:hover{border-color:var(--accent);color:var(--acc
    are pinned at 0 so the transform is the whole position (drag.ts tdOver /
    moveDragImage). It does NOT stop the page RE-LAYERISING on every move
    (~50ms at 4× — this page carries ~230 compositor layers, see drag.ts
-   ghostXf); no ghost variant does, measured. */
+   ghostXf); no ghost variant does, measured.
+   THE ACCENT BOX IS THE SHARED .lift NOW (6 Sep 26) — inset, so it survives
+   every clip; the drop shadow stays for depth, and both ride the one
+   box-shadow written on the .lift compound just below .dragimg. */
 .tdghost{position:fixed!important;left:0!important;top:0!important;will-change:transform;z-index:520;pointer-events:none;margin:0!important;
-  opacity:.92;box-shadow:0 8px 20px rgba(0,0,0,.6);
-  outline:2px solid var(--accent);outline-offset:1px;border-radius:4px}
+  opacity:.92}
 /* mouse drag: the puck ghost the PAGE draws under the cursor (drag.ts
    setDragImage / moveDragImage) — the browser itself is handed a blank pixel,
    so no platform snapshot is ever composed (the white card a secured or
@@ -3935,9 +3937,22 @@ body:not(.tdrag) .sb-slot.empty:hover{border-color:var(--accent);color:var(--acc
    ghost (elementsFromPoint — measured 6 Sep 26: toggling the ghost's
    pointer-events around a single elementFromPoint instead rewrote its
    hit-test data every move, repainting it and re-layerising the page), and
-   the drop removes it before its own hit-test. */
-.dragimg{position:fixed!important;left:0!important;top:0!important;will-change:transform;z-index:520;pointer-events:auto;cursor:grabbing;margin:0!important;opacity:.92;
-  box-shadow:0 8px 20px rgba(0,0,0,.6);outline:2px solid var(--accent);outline-offset:1px;border-radius:4px}
+   the drop removes it before its own hit-test.
+   THE ACCENT BOX IS THE SHARED .lift NOW (6 Sep 26) — see below. */
+.dragimg{position:fixed!important;left:0!important;top:0!important;will-change:transform;z-index:520;pointer-events:auto;cursor:grabbing;margin:0!important;opacity:.92}
+/* THE PICKED-UP BOX IS THE SHARED .lift (owner, 6 Sep 26 — "a cyan box around
+   the perimeter, not individual boxes"; src/ui/lift.ts adds the class, drag.ts
+   tdArm/setDragImage). INSET, so it is even on every side and no clip can eat
+   it, and the ghosts' own 2px accent OUTLINE — drawn outside the border box, a
+   different look from every other picked-up thing — is gone with their 4px
+   radius (.lift's 8px replaces it). The dark drop shadow STAYS: it is what
+   lifts the ghost off the page, it is neutral rather than accent, and nothing
+   clips a fixed child of <body>. Both layers must ride ONE box-shadow, and the
+   rule is written on the `.lift` COMPOUND because the recipe's own
+   `.lift{box-shadow:var(--lift-box)}` sits later in this file — at equal
+   specificity it would replace the depth shadow outright and the ghost would
+   read as part of the page. */
+.tdghost.lift,.dragimg.lift{box-shadow:var(--lift-box),0 8px 20px rgba(0,0,0,.6)}
 /* body.tdrag / body.mdrag are JS STATE MARKERS ONLY — no rule may give them a
    declaration of their own (the slow-computer cut, 3 Sep 26). Measured by
    toggling each class alone on the built app: `body.tdrag{touch-action:none;
@@ -3956,11 +3971,14 @@ body:not(.tdrag) .sb-slot.empty:hover{border-color:var(--accent);color:var(--acc
 /* ---- Inputs-calendar chip drag (caldrag.ts) — own names, not tdghost/tdrag:
    that pair belongs to drag.ts's board machine (CLAUDE.md — "that machine
    stays scoped to pucks") and this is a different one, over a different DOM,
-   riding the pointer at the calendar's own z-index rather than the board's. */
+   riding the pointer at the calendar's own z-index rather than the board's.
+   THE ACCENT BOX IS THE SHARED .lift NOW (6 Sep 26), the same one the board's
+   ghosts wear — inset, so it survives every clip; the drop shadow stays for
+   depth, and the compound below is why the two ride one box-shadow. */
 .ic-ghost{position:fixed!important;z-index:480;pointer-events:none;margin:0!important;
   max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
-  transform:translate(-50%,-50%) scale(1.05);opacity:.85;
-  box-shadow:0 8px 20px rgba(0,0,0,.5)}
+  transform:translate(-50%,-50%) scale(1.05);opacity:.85}
+.ic-ghost.lift{box-shadow:var(--lift-box),0 8px 20px rgba(0,0,0,.5)}
 [data-icday].ic-over{outline:2px solid var(--accent);outline-offset:-2px;border-radius:6px}
 body.ic-dragging{user-select:none;-webkit-user-select:none}
 /* ---- drag & drop affordances outside the flying grid (programme / duties / sims /

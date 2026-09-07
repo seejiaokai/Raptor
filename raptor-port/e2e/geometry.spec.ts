@@ -4746,9 +4746,22 @@ test.describe('a mouse drag of a puck runs on the pointer machine, not the nativ
     await page.mouse.move(mx, my, { steps: 8 })
     const mid = await page.evaluate(() => {
       const g = document.querySelector('.dragimg') as HTMLElement | null
-      return { ghost: !!g, rect: g ? g.getBoundingClientRect().toJSON() : null, mdrag: document.body.classList.contains('mdrag'), native: (window as any).__native }
+      const cs = g ? getComputedStyle(g) : null
+      return {
+        ghost: !!g, rect: g ? g.getBoundingClientRect().toJSON() : null,
+        mdrag: document.body.classList.contains('mdrag'), native: (window as any).__native,
+        /* ONE LIFT, EVERY DRAG (owner, 6 Sep 26): the ghost wears the app's one
+           picked-up box — the accent drawn INSIDE its edge, the dark drop
+           shadow still under it — and no outline of its own any more */
+        lift: !!g && g.classList.contains('lift'),
+        shadow: cs ? cs.boxShadow : '', outline: cs ? cs.outlineWidth : '',
+      }
     })
     expect(mid.ghost, 'the page-drawn puck ghost is up').toBe(true)
+    expect(mid.lift, 'and wears the shared lift').toBe(true)
+    expect(mid.shadow, 'the accent box is drawn inside the ghost\'s edge').toMatch(/inset/)
+    expect(mid.shadow, 'and its depth shadow is still under it').toMatch(/rgba\(0, 0, 0, 0\.6\)/)
+    expect(mid.outline, 'no outline outside the line any more').toBe('0px')
     expect(mid.mdrag, 'the grabbing cursor is on').toBe(true)
     expect(mid.native, 'no native drag event fired — the browser never started one').toBe(0)
     /* the ghost sits at cursor minus the grab offset: the press landed 5px
@@ -4756,8 +4769,16 @@ test.describe('a mouse drag of a puck runs on the pointer machine, not the nativ
     expect(Math.abs(mid.rect!.left - (mx - 5))).toBeLessThan(2)
     expect(Math.abs(mid.rect!.top - (my - 5))).toBeLessThan(2)
     await page.mouse.move(cb.x + cb.width / 2, cb.y + cb.height / 2, { steps: 8 })
+    /* the cell is rebuilt from an HTML string by the drop, so the flash is
+       deferred through lift.ts's mark and only the ADDRESS survives — latched
+       before the release, since the class arrives after the re-render and is
+       gone again at 600ms */
+    const fill = (await cell.getAttribute('data-fill'))!
+    await watchLanding(page, `#eWeek [data-fill="${fill}"]`)
     await page.mouse.up()
     await expect(cell, 'landed through applyDrop').toContainText(who)
+    await landedOnce(page, 'the cell the puck was dropped on flashes where it ended up')
+    await expect(page.locator('.lift-land'), 'the flash clears itself').toHaveCount(0, { timeout: 1500 })
     expect(await page.locator('.dragimg').count(), 'no ghost survives the drop').toBe(0)
     expect(await page.evaluate(() => document.body.classList.contains('mdrag') || document.body.classList.contains('dnd'))).toBe(false)
     expect(await page.evaluate(() => (window as any).__native), 'still no native drag event').toBe(0)
