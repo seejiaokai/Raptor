@@ -4167,7 +4167,7 @@ test('a dragged quals heading wears one frame down the table, and the column fla
       const r = t.getBoundingClientRect()
       return r.left > wr.left + csW + 4 && r.right < wr.right - 4
     })
-    return { scrolled: wrap.scrollLeft, n: reachable.length, from: reachable[reachable.length - 1]?.dataset.col, to: reachable[0]?.dataset.col }
+    return { scrolled: wrap.scrollLeft, n: reachable.length, from: reachable[0]?.dataset.col, to: reachable[reachable.length - 1]?.dataset.col }
   })
   expect(pick.scrolled, 'the table really is scrolled sideways under the frame').toBeGreaterThan(0)
   expect(pick.n, 'two headings clear of the frozen column and the right edge').toBeGreaterThan(1)
@@ -4202,6 +4202,50 @@ test('a dragged quals heading wears one frame down the table, and the column fla
   expect(mid.pe).toBe('none'); expect(mid.hitIsFrame).toBe(false)
   expect(mid.inTable, 'outside the table it wraps — it adds nothing to the grid').toBe(false)
   expect(mid.dragging, 'the heading keeps its own picked-up look').toBe(true)
+  /* THE FROZEN COLUMN WINS (review, 7 Sep 26). This frame TRAVELS with the
+     content, so a column scrolled far enough left slides its whole rectangle
+     under the frozen callsign column — and it must go UNDER, exactly as the
+     column's own cells do. Paint order in one stacking context is decided by
+     z-index then DOM order, so the proof is those numbers as the BROWSER
+     computes them, taken while a real overlap is on screen: the frame at the
+     heading row's level (and after the table in DOM order, which is what keeps
+     its ring over the picked-up heading), both frozen cells above it, and the
+     wrap opening no stacking context of its own to change the arithmetic. */
+  const tuck = await page.evaluate((k) => {
+    const wrap = document.querySelector('.qwrap') as HTMLElement
+    const th = document.querySelector(`#qtbl thead th[data-col="${k}"]`) as HTMLElement
+    const cs = document.querySelector('#qtbl thead th[data-sort="cs"]') as HTMLElement
+    const name = document.querySelector('#qtbl td.qname') as HTMLElement
+    const f = document.querySelector('.qwrap .lift-frame.lift') as HTMLElement
+    // slide the picked-up column until its leading edge is inside the frozen band
+    const csw = cs.getBoundingClientRect().width
+    wrap.scrollLeft = Math.min(wrap.scrollWidth - wrap.clientWidth,
+      wrap.scrollLeft + (th.getBoundingClientRect().left - wrap.getBoundingClientRect().left) - csw / 2)
+    const fr = f.getBoundingClientRect(), nr = name.getBoundingClientRect()
+    const z = (el: Element) => getComputedStyle(el).zIndex
+    const ws = getComputedStyle(wrap)
+    const x = Math.max(fr.left, nr.left) + 2, y = nr.top + nr.height / 2
+    const hit = document.elementFromPoint(x, y) as HTMLElement | null
+    return {
+      overlap: Math.round(Math.min(fr.right, nr.right) - Math.max(fr.left, nr.left)),
+      frame: z(f), name: z(name), corner: z(cs), head: z(document.querySelector('#qtbl thead th[data-col]')!),
+      afterTable: f.previousElementSibling?.id === 'qtbl',
+      wrapZ: ws.zIndex, wrapTf: ws.transform, wrapFilter: ws.filter, wrapIsolation: ws.isolation, wrapOpacity: ws.opacity,
+      hitInName: !!hit?.closest('td.qname'), hitIsFrame: hit === f,
+    }
+  }, from)
+  expect(tuck.overlap, 'the picked-up column really is under the frozen callsign column now').toBeGreaterThan(8)
+  expect(Number(tuck.frame), 'the frame is at the heading row\'s level…').toBe(Number(tuck.head))
+  expect(tuck.afterTable, '…and after the table, so DOM order still paints its ring over the heading').toBe(true)
+  expect(Number(tuck.frame), 'and UNDER the frozen callsign cells, which cover it as they cover the column')
+    .toBeLessThan(Number(tuck.name))
+  expect(Number(tuck.frame)).toBeLessThan(Number(tuck.corner))
+  expect([tuck.wrapZ, tuck.wrapTf, tuck.wrapFilter, tuck.wrapIsolation, tuck.wrapOpacity],
+    'the wrap opens no stacking context, so those numbers are compared to each other')
+    .toEqual(['auto', 'none', 'none', 'auto', '1'])
+  expect(tuck.hitInName, 'and the frozen cell is what answers a press in the overlap').toBe(true)
+  expect(tuck.hitIsFrame).toBe(false)
+  await page.evaluate(() => { (document.querySelector('.qwrap') as HTMLElement).scrollLeft = 80 })
   await watchLanding(page, '.qwrap .lift-frame')
   /* the landing frame's geometry, captured AT the sighting rather than read
      after it: the flash is 600ms long and a round trip through waitForFunction

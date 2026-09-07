@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 /* The Quals page — tfin's B24 (Scheduler appointment) and V (AAR invariant)
    page assertions, driven through the React table. */
-import { beforeAll, describe, expect, it } from 'vitest'
+import { beforeAll, describe, expect, it, vi } from 'vitest'
 import { act } from 'react'
 import { createRoot } from 'react-dom/client'
 import { App } from './App'
@@ -12,6 +12,9 @@ import { PEOPLE, isScheduler, isInstr, isInstrPilot, deriveQuals, ID_BY_CS, QCHI
 import { sansGate } from '../engine/avail'
 import { restoreArchivedPerson } from '../leavewar/sync'
 import { HOOKS } from '../engine/hooks'
+/* the landing flash's own beat, named once in lift.ts and read here rather
+   than re-typed — the drag tests at the foot of this file advance past it */
+import { LIFT_LAND_MS } from './lift'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
@@ -986,6 +989,33 @@ describe('Edit quals', () => {
          found by its stable key, and it now stands in the first place */
       expect(frame().style.left, 'the flash is where the column ENDED UP').toBe('300px')
     } finally { layDown() }
+  })
+
+  /* THE GUARD ON THE HIDE (review, 7 Sep 26). `onUp` hides the frame only when
+     a drag was actually armed, and the difference only shows in the one case no
+     other test here reaches: this pointerup/pointercancel pair is mounted on the
+     DOCUMENT for the life of the page, not for the drag, so an ordinary click
+     while a landing is still flashing runs the same handler with nothing armed.
+     Unguarded it would call frameLift(null) — which ends the flash outright — and
+     the answer to "where did it go?" would vanish under the next tap. */
+  it('an unrelated click while the landing is flashing does not cut it short', async () => {
+    await on()
+    layOut()
+    vi.useFakeTimers()
+    try {
+      const before = qualCols()
+      await pointer('pointerdown', $(`#qtbl thead th[data-col="${before[before.length - 1]}"]`))
+      await pointer('pointermove', $(`#qtbl thead th[data-col="${before[0]}"]`))
+      await pointer('pointerup', document)
+      expect(frame().className, 'the drop is flashing').toContain('lift-land')
+      await pointer('pointerup', document)          // a click anywhere else on the page
+      await pointer('pointercancel', document)      // …and a cancelled gesture that was never a drag
+      expect(frame().className, 'still flashing where the column landed').toContain('lift-land')
+      /* and it still ends itself, on lift.ts's own timer — the only way out
+         under reduced motion, where animationend never comes */
+      await act(async () => { vi.advanceTimersByTime(LIFT_LAND_MS + 60) })
+      expect(frame().className, 'the flash clears itself').toBe('lift-frame')
+    } finally { vi.useRealTimers(); layDown() }
   })
 
   it('a cancel — or a release over no heading — leaves the frame hidden', async () => {

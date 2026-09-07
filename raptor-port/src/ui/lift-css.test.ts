@@ -118,3 +118,40 @@ describe('the landing flash', () => {
       'the blanket still stands (it is what silences the frame\'s bloom)').toBe(true)
   })
 })
+
+/* THE HOST ARRANGES AROUND THE FRAME (review, 7 Sep 26). The quals column frame
+   is the one frame in the app that TRAVELS: it is placed in `.qwrap`'s content
+   coordinates so it rides the sideways scroll with its column, which means a
+   scrolled column slides its whole rectangle under the FROZEN callsign column —
+   and at the shared recipe's z 7 it drew its cyan ring over the frozen names.
+   Dropping the frame alone is not the cure either: below `.qtbl thead th`'s
+   opaque z 2 the ring round the PICKED-UP heading disappears on every ordinary
+   drag. So the numbers are a set, and the set is what this pins — read out of
+   the file and compared to each other, so a later re-tune of any one of them
+   has to keep the order that makes the picture right. */
+describe('the quals column frame stacks under the frozen column and over the headings', () => {
+  const zOf = (sel: string) => {
+    const m = bodyOf(sel).match(/z-index:\s*(-?\d+)/)
+    expect(m, `${sel} declares a z-index`).toBeTruthy()
+    return Number(m![1])
+  }
+  it('the frame sits at the heading row\'s own level and below both frozen cells', () => {
+    const frame = zOf('.qwrap .lift-frame'), head = zOf('.qtbl thead th')
+    const name = zOf('.qtbl td.qname'), corner = zOf('.qtbl thead th[data-sort="cs"]')
+    /* at-or-above the heading row: the frame is rendered AFTER the table inside
+       .qwrap, so an equal z-index still paints it over the heading it wraps */
+    expect(frame, 'the ring shows over the picked-up heading').toBeGreaterThanOrEqual(head)
+    /* and under the frozen column, which then covers the frame's overhang
+       exactly as it covers the column's own cells */
+    expect(frame, 'the frozen callsign cells win over the travelling frame').toBeLessThan(name)
+    expect(frame).toBeLessThan(corner)
+    /* the corner still out-ranks every other heading (it is the one place the
+       frozen column and the heading row DO meet) */
+    expect(corner).toBeGreaterThan(head)
+    expect(corner).toBeGreaterThan(name)
+  })
+  it('the host rule re-stacks the frame and nothing else — position and hit-testing are the recipe\'s', () => {
+    expect(rulesFor('.qwrap .lift-frame').length, 'one host rule').toBe(1)
+    expect(bodyOf('.qwrap .lift-frame').replace(/z-index:\s*-?\d+;?/, '').trim(), 'z-index only').toBe('')
+  })
+})

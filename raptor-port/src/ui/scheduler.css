@@ -1782,12 +1782,28 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
    cells show through the 20px gap to its left (owner, 15 Aug 26). */
 /* position:relative is the lift frame's containing block (src/ui/lift.ts) — no
    z-index, so it opens no stacking context (the .mx-wrap precedent) and the
-   frame's z 7 still resolves against the same context as the frozen callsign
-   column (z 1/3) and the sticky headings (z 2), which is what lets one box
-   paint over the whole column. Being IN the scroller is deliberate too: the
-   frame is placed in content coordinates and rides the sideways scroll for
-   free, instead of standing still while the column it wraps slides away. */
+   frame stacks in the same context as the table's own sticky cells. Being IN
+   the scroller is deliberate too: the frame is placed in content coordinates
+   and rides the sideways scroll for free, instead of standing still while the
+   column it wraps slides away.
+   THE HOST ARRANGES AROUND THE FRAME (review, 7 Sep 26). This is the one frame
+   in the app that TRAVELS — Leave War's spans its wrap's constant visible box,
+   this one moves with the content — so a scrolled column slides its whole
+   rectangle under the FROZEN callsign column, and at the shared recipe's z 7
+   it drew its cyan ring over the frozen names. Lowering the frame ALONE is not
+   the cure: under `.qtbl thead th`'s opaque z 2 the ring round the picked-up
+   heading disappears on every ordinary drag. So the numbers are a set — the
+   frame drops to the heading row's own 2 (it is rendered AFTER the table, so
+   equal z-index still paints it over the heading by DOM order) and the frozen
+   cells are raised above it below (body 3, corner 4). The frozen column then
+   covers the frame's overhang exactly as it covers the column's own cells (the
+   .mxfixed lesson — a cover that also covers what it decorates is right, not a
+   fault). Raising the body cell over the heading row costs nothing: nothing
+   scrolls VERTICALLY inside .qwrap, so a name cell and a heading never meet;
+   where the frozen column and the heading row DO meet — the corner — 4 still
+   wins. Pinned as a set in lift-css.test.ts. */
 .qwrap{padding:6px 0 40px;margin:0 20px;overflow-x:auto;position:relative}
+.qwrap .lift-frame{z-index:2}
 /* THE FROZEN QUALS HEADER (owner, 29 Aug 26 — "the quals top bar should also
    freeze like the leave war top bar … desktop and mobile … same mechanism").
    The Leave War `.mxfixed` mechanism, scaled to this table: `.qwrap` scrolls
@@ -1828,12 +1844,17 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
    against the callsign as the narrower initials/flight columns scrolled under
    it). In a `border-collapse` table a cell's own box-shadow does NOT reliably
    paint over its sibling cells, so the emerging badge stayed visible; a
-   positioned ::after that is a CHILD of the z-index:1 sticky cell paints inside
-   that cell's stacking context, cleanly above the z-0 scrolling cells. It runs
+   positioned ::after that is a CHILD of the sticky cell paints inside that
+   cell's own stacking context, cleanly above the unpositioned cells scrolling
+   beneath it. It runs
    3px of the cell's own opaque colour (hiding the badge's leading edge) then
    fades over 9px as a soft depth cue. Body cell is --bg, header --panel-2. */
-.qtbl td.qname{position:sticky;left:0;z-index:1;background:var(--bg)}
-.qtbl thead th[data-sort="cs"]{position:sticky;left:0;top:0;z-index:3;background:var(--panel-2)}
+/* the two z-indexes were 1 and 3; they went up by two on 7 Sep 26 so the frozen
+   column also out-ranks the travelling lift frame (z 2 — the reasoning is on
+   .qwrap above). Nothing else in this table is positioned, so the pair only
+   ever has the heading row (2) and that frame to beat. */
+.qtbl td.qname{position:sticky;left:0;z-index:3;background:var(--bg)}
+.qtbl thead th[data-sort="cs"]{position:sticky;left:0;top:0;z-index:4;background:var(--panel-2)}
 .qtbl td.qname::after,.qtbl thead th[data-sort="cs"]::after{content:'';position:absolute;top:0;bottom:0;left:100%;width:16px;pointer-events:none;opacity:0;transition:opacity .12s}
 /* the seal only appears once the table is actually scrolled sideways (the
    .qwrap gets .xscroll from QualsPage) — unscrolled it would dim the leading
