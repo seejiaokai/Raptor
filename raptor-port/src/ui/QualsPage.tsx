@@ -10,6 +10,7 @@ import { HOOKS } from '../engine/hooks'
 import { SESSION } from '../state/auth'
 import { esc } from '../state/view'
 import { notify } from '../state/store'
+import { persistPeople } from '../state/persist'
 import { DEFAULT_QUAL_COLS, qualCols, setQualCols } from '../engine/qualcols'
 import { useVersion } from './useStore'
 /* ONE LIFT, EVERY DRAG (owner, 6 Sep 26) — the shared drag decoration every
@@ -448,7 +449,7 @@ export function QualsPage() {
            roster no longer justified until some unrelated schedule edit
            happened to run the validator. The callsign path below already
            re-validated for exactly this reason; the tick never did. */
-        validate(); notify(); return
+        validate(); persistPeople(); notify(); return
       }
       /* archiving takes a body off the roster, which can change what the
          warnings say about the lines he was on. Write-path role backstop
@@ -459,7 +460,7 @@ export function QualsPage() {
       const arch = t.closest('[data-arch]') as HTMLElement | null
       if (arch) {
         if (SESSION && SESSION.role !== 'admin') return HOOKS.toast('Only an admin can archive someone', 'warn')
-        PEOPLE[arch.dataset.arch!].archived = true; validate(); notify()
+        PEOPLE[arch.dataset.arch!].archived = true; validate(); persistPeople(); notify()
       }
     }
     const onChange = (e: Event) => {

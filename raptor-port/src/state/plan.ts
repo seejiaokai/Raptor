@@ -46,6 +46,7 @@ export const DAYRMK: Record<string, string> = {}
    within the session, so a puck created after a history snapshot can never
    collide with one a replay of that snapshot hands back. */
 let PPN = 0
+export function seedPuckCounter(n: number) { if (n > PPN) PPN = n }
 function nextPuckId() { return 'pp' + (++PPN) }
 
 /* the day's one-line scheduler remark. Trims; an emptied-out remark DELETES

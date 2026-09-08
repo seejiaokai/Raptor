@@ -84,6 +84,7 @@ export function histApply(i:any){
   prunePreviews();
   reflow();
   HIST.lock=false;
+  HOOKS.histApplied();
   syncHistBtns();
 }
 /* Undo and redo are logged, and they do NOT erase what they undo.

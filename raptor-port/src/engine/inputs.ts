@@ -30,6 +30,9 @@ export function inpTimeText(inp:any,field:any){
    snapshot the row appears in. The lazy branch stays as a backstop for a row
    that reaches a builder without having gone through either path. */
 let IIDN=0;
+/* hydration seeds the counter past every stored iid so a row minted this
+   session cannot collide with one that came back from storage */
+export function seedIidCounter(n:number){ if(n>IIDN)IIDN=n; }
 export function inpId(inp:any){return inp.iid||(inp.iid='i'+(++IIDN));}
 export function mintInpIds(){INPUTS.forEach(inpId);}
 export function inpById(id:any){return INPUTS.find((r:any)=>r.iid===id)||null;}

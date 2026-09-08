@@ -11,17 +11,16 @@
    ever sees the JSON string state/history.ts (schedFields) and state/store.ts
    (loadWeek) build.
 
-   SESSION-ONLY, DELIBERATELY (owner, 23 Aug 26 — "It's ok that u don't
-   remember once I exit the session. Just like the rest. Just that when I go
-   between sun and mon it can't be that it disappears"): everything else a
-   scheduler types — INPUTS, the Leave War (its 17 Aug 26 lockstep decision)
-   — already forgets on exit, and a schedule that reloaded remembered while
-   the inputs that fed it did not would be the exact mixed-memory confusion
-   that lockstep exists to prevent. So no localStorage: a reload returns
-   every week to the plan, the same as the rest of the app. When true
-   persistence arrives it is the future shared-server step through
-   HOOKS.storeBackend (HANDOFF.md), for all of this state at once — do not
-   re-add a browser-local envelope for just this piece. */
+   PERSISTED THROUGH THE WHITEBOARD (8 Sep 26, the storage seam — owner:
+   "everything persists"). This module is still the in-session memory and
+   holds no opinion about storage; state/persist.ts reads every stashed
+   week out of here on each history step and writes it to the whiteboard
+   (`weeks/<dd-mm-yyyy>`), and at boot stashes every stored week back in
+   BEFORE initStore, which restores the current one through applyWeekModel.
+   The 23 Aug 26 session-only decision is superseded; the lockstep worry it
+   answered (a schedule that remembered while its inputs forgot) cannot
+   recur because inputs, people, the plan layer and every week now persist
+   together or not at all. */
 import { weekBundle } from './weeks-data'
 
 const WEEKSTASH:Record<string,string>={};

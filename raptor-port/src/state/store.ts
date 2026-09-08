@@ -34,6 +34,7 @@ import { setSession as authSetSession, canEditSched, SESSION, ACCOUNTS, canToggl
 import { setRole as lwSetRole } from '../leavewar/state/store'
 import { setFileLocked as trSetFileLocked } from '../tracker/role.js'
 import { clearPlan } from './plan'
+import { isHydrated } from './persist'
 
 let VERSION = 0
 const listeners = new Set<() => void>()
@@ -292,7 +293,7 @@ function unacceptedKeys(): string[] {
   })
   return out
 }
-function weekStashSnap() {
+export function weekStashSnap() {
   return JSON.stringify({ d: DAYS, ...schedFields(), wo: [...view.WARNOFF], un: unacceptedKeys() })
 }
 
@@ -307,6 +308,10 @@ function weekStashSnap() {
    the model is applied and WARNOFF restored — the same fields the snapshot
    serializes — in both loadWeek and initStore. */
 let weekBaseline = ''
+/* has the loaded week changed since it was loaded — the stash-on-leave
+   yardstick, exposed for state/persist.ts (a pristine seed week is never
+   persisted; see weekstash.ts's "persisted pristine copy is a trap") */
+export function weekDirty() { return weekStashSnap() !== weekBaseline }
 
 /* THE autoAcceptSeedInputs LANDING-MECHANICS GOTCHA a stash restore runs
    into: acceptInput (engine/slots.ts) does not just set `row.acc='g'`, it
@@ -546,25 +551,34 @@ export function initStore() {
      the never-booting parity harness stays blind to them. */
   secDefaultLoad()
   waveDefaultLoad()
-  /* GLOBAL INPUTS (owner, 22 Aug 26 — "show all inputs regardless of which week
-     I am selected on"). The module-load INPUTS array is week 1's; merge every
-     OTHER authored week's inputs in ONCE here so the Inputs page carries them
-     all. Each week's SCHEDULE still shows only its own, because inputCoversDate
-     matches by date and a week only loads its seven days. Idempotent (initStore
-     may run twice in tests) — guarded on the same person|date|type|start
-     identity seedDemoSans guards on. Boot-only, so the parity harness (which
-     never boots) stays blind, exactly like seedDemoSans and autoAcceptSeedInputs. */
-  otherWeekInputs().forEach((r: any) => {
-    const dup = INPUTS.some((x: any) => x.person === r.person && x.date === r.date && x.type === r.type && (x.s ?? '') === (r.s ?? ''))
-    if (!dup) INPUTS.push(r)
-  })
-  /* demo-only SANS Availability rows (see state/demoseed.ts for why this
-     lives here and not in engine/inputs.ts's INPUTS array) — pushed before
-     mintInpIds so they mint an iid exactly like every other seed row */
-  seedDemoSans()
-  /* demo-only medical lifecycle rows + placeholder documents (same boot-only
-     home and blindness guarantee — see state/demoseed.ts) */
-  seedDemoMedical(docAdd)
+  /* THE SEED MERGES ARE SKIPPED WHEN STATE CAME BACK FROM STORAGE (the
+     storage seam, 8 Sep 26). A hydrated INPUTS already carries every week's
+     rows and the demo SANS/medical lifecycle that were saved last session;
+     re-running the seeds here would push the demo rows back on top of a
+     roster the squadron has since curated. When NOT hydrated (a fresh
+     backend) they run exactly as before, which is what keeps the un-booted
+     parity harness and stores-boot.test.ts unchanged. */
+  if (!isHydrated()) {
+    /* GLOBAL INPUTS (owner, 22 Aug 26 — "show all inputs regardless of which week
+       I am selected on"). The module-load INPUTS array is week 1's; merge every
+       OTHER authored week's inputs in ONCE here so the Inputs page carries them
+       all. Each week's SCHEDULE still shows only its own, because inputCoversDate
+       matches by date and a week only loads its seven days. Idempotent (initStore
+       may run twice in tests) — guarded on the same person|date|type|start
+       identity seedDemoSans guards on. Boot-only, so the parity harness (which
+       never boots) stays blind, exactly like seedDemoSans and autoAcceptSeedInputs. */
+    otherWeekInputs().forEach((r: any) => {
+      const dup = INPUTS.some((x: any) => x.person === r.person && x.date === r.date && x.type === r.type && (x.s ?? '') === (r.s ?? ''))
+      if (!dup) INPUTS.push(r)
+    })
+    /* demo-only SANS Availability rows (see state/demoseed.ts for why this
+       lives here and not in engine/inputs.ts's INPUTS array) — pushed before
+       mintInpIds so they mint an iid exactly like every other seed row */
+    seedDemoSans()
+    /* demo-only medical lifecycle rows + placeholder documents (same boot-only
+       home and blindness guarantee — see state/demoseed.ts) */
+    seedDemoMedical(docAdd)
+  }
   /* ANCHOR EVERY SEED INPUT TO ITS YEAR (24 Aug 26). A bare 'Jul 13' label
      is resolved through the row's `yr`; at boot CURWEEK is the seed week, so
      baseYear() is exactly the year every demo/authored/SANS seed row means.
@@ -579,7 +593,11 @@ export function initStore() {
   /* land every activity input on its day's ground programme before the first
      validate + baseline — boot-only, so parity (which never boots) stays blind;
      SCHED is fresh here, so every day reads editable. See autoAcceptSeedInputs. */
-  autoAcceptSeedInputs()
+  /* a week that came back from storage (state/persist.ts hydrate stashed
+     it) is restored exactly as loadWeek would — applyWeekModel also
+     re-lands the inputs — otherwise the seed lands as before */
+  if (stashHas(CURWEEK)) applyWeekModel(CURWEEK)
+  else autoAcceptSeedInputs()
   weekBaseline = weekStashSnap()   // the stash-on-leave yardstick (see its comment)
   validate()
   histInit()
