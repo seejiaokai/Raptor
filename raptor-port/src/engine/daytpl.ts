@@ -119,7 +119,7 @@ function mintBlob(d: any): DayTplBlob {
   })
   Object.keys(sims).forEach(kind => {
     ;(sims[kind] || []).forEach((r: any) => {
-      delete r.cx; delete r.flag
+      delete r.cx; delete r.cxr; delete r.flag
       if ('p' in r) r.p = ''
       if ('w' in r) r.w = ''
       if (Array.isArray(r.pax)) r.pax = []
@@ -130,13 +130,13 @@ function mintBlob(d: any): DayTplBlob {
   dutywaves.forEach((b: any) => {
     ;(b.rows || []).forEach((r: any) => {
       r.id = ''
-      delete r.cx; delete r.flag
+      delete r.cx; delete r.cxr; delete r.flag
       if (Array.isArray(r.more)) r.more = r.more.map(() => '')
     })
   })
   ground.forEach((r: any) => {
     r.who = ''
-    delete r.cx; delete r.flag
+    delete r.cx; delete r.cxr; delete r.flag
     /* `src` ties an accepted-input ground row back to the specific personal
        input it was promoted from (slots.ts's acceptInput) — an identity
        reference exactly like a crewed seat, not part of the row's shape */
