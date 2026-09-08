@@ -998,7 +998,11 @@ export function validate(){
           [['p',sa.p],['w',sa.w]].forEach(([seat,id]:any)=>{ if(!id||!PEOPLE[id]||isSpecial(id))return;
             const own=`${sa.key}.${seat}`;
             /* every place, not the first (audit, 8 Sep 26 — the avSeatHits
-               precedent): two spares + the desk is three pairs, each worded */
+               precedent): two spares + the desk is three pairs at the walk
+               level; add()'s message-dedupe folds the two identical spare↔desk
+               lines to one, so the user sees the desk clash the old first-hit
+               walk dropped entirely (a distinct-worded case like MAIN+SPARE+desk
+               still shows all three) */
             scSeatHits(di,id,f.s,f.e,own).forEach((hit:any)=>{
               const pk=[own,hit.key].sort().join('|')+'·'+id;
               if(scPairSeen.has(pk))return; scPairSeen.add(pk);

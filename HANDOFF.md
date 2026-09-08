@@ -153,8 +153,22 @@ on that tree (superseded by the #373 baseline above; the traps stand):
 
 ## In flight
 
-Nothing is unmerged. The whole branch is on main and deployed — three PRs
-landed 7 Sep 26: **PR #371** (the Leave War figures drawer, bulk balance
+**In flight — the rules-engine audit fixes (PR #374, draft; branch
+`claude/read-handoff-docs-wuftw9`).** A two-engine bug audit (7 Sep 26 — 26
+agents, ~196 rules verified correct; the leave/day charge maths, the OIL
+ledger and the medical trims came back clean) plus its fixes (8 Sep 26): seven
+commits, each a confirmed bug pinned by a test — the AVALON/BB desk
+picker/validator run-check drift, the ⓘ info-flag lost on a published day, a
+Leave War false-RED rounding slip (3.999-for-4), the SC spare↔desk clash being
+dropped, a stale flying-key crash guard, a day-template CX-reason leak, and the
+owner's "don't pad" call on the available-crew strip. Findings + scan plan +
+fix plan are committed under `docs/audits/` and `docs/superpowers/plans/`; the
+per-bug detail is in `BUG-TESTING.md` (#374 audit-fixes row). Gates all green
+(vitest 4245/240, tfin 728/0, e2e 425 + 33 skipped, tracker 346/0, build
+clean). **Merge waits on the owner's "merge live" — NOT merged.**
+
+Everything before the audit fixes is merged — three PRs landed 7 Sep 26:
+**PR #371** (the Leave War figures drawer, bulk balance
 entry, the seven 6 Sep phone fixes, one-lift-for-every-drag, the
 swipe-behind-a-sheet), **PR #373** (the Tracker tab, Leave War opening on the
 war being bid on, and the three 7 Sep visual fixes — the viewer row's MED TOT

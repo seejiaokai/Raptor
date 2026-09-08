@@ -1010,6 +1010,12 @@ flagged correctly and still swept the man out of the crew palette.
   and a ground row may carry no times; treating either as "clashes with
   nothing" would silently drop a real absence, so the consumer falls back to
   the whole-day answer.
+- **`personBusy` (the Available-crew strip) reads the same windows** — a
+  sortie `[to − step, ld + dekit]`, a standalone line exactly its hours
+  (owner, 8 Sep 26: "don't pad"). The strip was the one reader still padding
+  a standalone SC/AVALON/BB shift, so an SC man read busy ~90 min wider on
+  the strip than the engine reserved him; now it agrees with `slotRules`
+  and `events.ts`. Pinned in `avail.test.ts`.
 - **`slotBar`'s filter chain, in order**: skip on a spare post if `canSpare`;
   skip a non-flying key if `canWork`; then the overlap. **The order of the
   last one is load-bearing** — an all-day absence, or one `awayAllDay` cannot

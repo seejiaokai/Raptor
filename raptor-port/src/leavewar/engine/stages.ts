@@ -177,7 +177,8 @@ export function stageLabel(stage: Stage): string {
  * 7 Sep 26 — "the start of the period in which it is opened for bidding,
  * followed by bidding closed, followed by published"). The one OPEN for
  * bidding wins; if none is open, the one where bidding has just CLOSED; if none
- * of those, the latest PUBLISHED; and a DRAFT war — not yet opened, nothing
+ * of those, a PUBLISHED one (the tie-break below decides which — earliest
+ * bidding start); and a DRAFT war — not yet opened, nothing
  * happening in it — is the last resort.
  *
  * Ties inside the winning stage go to the war whose bidding starts EARLIEST
