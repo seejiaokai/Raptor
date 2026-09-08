@@ -699,7 +699,14 @@ const noPeople = await pg.evaluate(async () => {
   const written = [];
   const realSet = Storage.prototype.setItem;
   Storage.prototype.setItem = function (k, v) { written.push(k); return realSet.call(this, k, v); };
-  try { await t.applyCharts(await t.collectCharts(['2026']), { names: ['2026'], mode: 'replace', rename: null }); }
+  try {
+    await t.applyCharts(await t.collectCharts(['2026']), { names: ['2026'], mode: 'replace', rename: null });
+    /* Since the seam the durable write goes through the postman's 300 ms coalesce
+       and lands via BrowserBackend.put → Storage.prototype.setItem AFTER applyCharts
+       resolves. Hold the interception across that window, or it captures nothing and
+       the check passes even when a mark/roster/date key was wrongly rewritten. */
+    await new Promise(r => setTimeout(r, 600));
+  }
   finally { Storage.prototype.setItem = realSet; }
   return written.filter(k => /:m:|:d:|:roster/.test(k));
 });
