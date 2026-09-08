@@ -33,7 +33,7 @@ import {
   medKeptSegments, mintMedSegments, ordISO, DocField, oilGate, oilAnswered,
   rosterOptions as people, inputTone,
 } from './inputedit'
-import { docFields, rowDocIds } from '../state/docs'
+import { docFields, docHas, rowDocIds } from '../state/docs'
 import { useVersion } from './useStore'
 import { exportCSV } from './export'
 import { RangeCal } from './RangeCal'
@@ -1030,7 +1030,7 @@ export function InputsPage() {
                     {/* the paperwork behind a medical row — EVERY account may
                         view it (owner, 27 Aug 26), so this sits ungated where
                         the row's other actions live */}
-                    {rowDocIds(r).length > 0 && <span className="rclip" data-doc={inx} title="View the document"
+                    {rowDocIds(r).some(docHas) && <span className="rclip" data-doc={inx} title="View the document"
                       onClick={() => { setDocView({ row: r }); notify() }}><ClipIcon /></span>}
                     {/* Edit and delete are the owner's OWN-INPUT rights for a
                         member (owner, 27 Aug 26): a scheduler works every row,

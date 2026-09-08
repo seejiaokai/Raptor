@@ -24,8 +24,10 @@ shared database replaces; nothing above a door knows where a key lives.
 | Tracker | `storage {get, set, delete, list}` (async) in `src/tracker/storage.js`; per-browser prefs via `ocuLocal:` (NOT through the whiteboard) | `raptor:tracker/*` (legacy `ocu:` imported once); prefs stay `ocuLocal:*` | the whiteboard (`src/storage/`) → BrowserBackend on the built site; the owner's syllabus **file** stays the authoritative copy |
 
 Two smaller seams sit beside these: `docBackend.impl` in `src/state/docs.ts`
-(uploaded attachments, an in-memory map) and `HOOKS.whoami()` (who is
-making an edit — the one hook that changes the day real accounts arrive).
+(uploaded attachments — an in-memory cache over a per-browser IndexedDB
+drawer, `src/storage/docstore.ts`, wired by `docBoot`; see Attachments) and
+`HOOKS.whoami()` (who is making an edit — the one hook that changes the day
+real accounts arrive).
 
 History worth knowing: the Tracker, before it was merged in (7 Sep 26), had
 a `sync/cloud.js` layer written for Dataverse / Firebase over a SharePoint
@@ -48,7 +50,8 @@ owner approved "everything persists on the built site".
 | Templates, house orders, rule overrides, cancel reasons, look-ahead, stores list | whiteboard → backend (settings collection; legacy `sqn142_*`) | Yes |
 | Every Leave War record | whiteboard → backend (Browser on the built site, Memory in dev/tests) | **Yes** on the built site (per browser); no in dev/tests by design |
 | Tracker charts and students | whiteboard → backend (`raptor:tracker/*` on the built site) + the syllabus file | Yes |
-| Undo history, edit log, attachment bytes | scheduler session memory (attachments stay in-memory in stage 1 — see spec) | **No** — session-only by design |
+| Undo history, edit log | scheduler session memory | **No** — session-only by design |
+| Attachment bytes (medical documents) | in-memory cache → per-browser IndexedDB drawer (`raptor-docs`, `src/storage/docstore.ts`) on the built site; memory-only in dev/tests | **Yes** on the built site (per browser, since 8 Sep 26); no in dev/tests |
 | Accounts | hard-coded in `src/state/auth.ts` | n/a |
 
 `?fresh=1` on the URL forces the Memory backend for a clean-start demo. So
@@ -190,10 +193,20 @@ The week stash (`src/engine/weekstash.ts`) keys these by week-start
 
 ### Attachments — `src/state/docs.ts`
 
-`docBackend.impl`: a map `id → { name, mime, size, blob }`. Accepts photos
-(`image/*`) and PDFs, capped at **8 MB** each. Append-only for the session
-(undo can resurrect the input that owned one). Input records carry only the
-id, never the bytes.
+`docBackend.impl`: a map `id → { name, mime, size, blob }` — the synchronous
+read path the viewer needs in render. Behind it (since 8 Sep 26) a durable
+per-browser drawer: **IndexedDB** `raptor-docs` (`src/storage/docstore.ts`),
+wired by `docBoot` from `main.tsx` on the built site only (dev/tests/`?fresh`
+stay memory-only). `docAdd` writes through to it; `docBoot` fills the cache
+back at boot and advances the id counter past every stored id (a reset `seq`
+must not reuse a hydrated `doc<N>`). Its OWN drawer, deliberately NOT the
+~5 MB text seam a couple of photos would overflow. Accepts photos (`image/*`)
+and PDFs, capped at **8 MB** each. Append-only (undo can resurrect the input
+that owned one). Input records carry only the id, never the bytes. Fail-soft:
+a drawer that will not open (private mode) leaves the store memory-only.
+Migration seam: a browser that persisted INPUTS before the drawer existed
+holds `docId`s whose blobs were never saved — read honestly as "no document
+on file" (never fabricated) until the data is cleared.
 
 ### Edit log — `ELOG.rows`, `src/engine/editlog.ts`
 
@@ -368,8 +381,9 @@ Listed in the order they would bite.
    names or dates may ever be committed as seed.
 5. **Accounts are two hard-coded users.** Real sign-in is a separate step
    from storage; `HOOKS.whoami()` is the one seam the edit log needs.
-6. **Attachments are in-memory blobs.** They need a file store, not a table
-   column; inputs already reference them by id only.
+6. **Attachments are blobs in a per-browser file store** (IndexedDB
+   `raptor-docs`, since 8 Sep 26). The database step gives them a **shared**
+   file store, not a table column; inputs already reference them by id only.
 7. **`null` means "standard"** for every `sqn142_*` key. The migration must
    keep that meaning (absent row = shipped default), not store the default.
 8. **The three worlds do not share a style** (sync vs async doors, three

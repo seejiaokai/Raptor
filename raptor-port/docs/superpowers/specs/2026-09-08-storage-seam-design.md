@@ -286,10 +286,20 @@ All in the existing vitest suite, part of the normal gates.
 ## Out of scope for stage 1
 
 Real sign-in (the two prototype accounts and `HOOKS.whoami()` stay);
-attachment bytes (docs stay session-only in memory; the row keeps only the
-id — a file store is its own later step); per-change letters; any screen
-change beyond the indicator and the two error surfaces; deleting legacy
-browser keys.
+per-change letters; any screen change beyond the indicator and the two error
+surfaces; deleting legacy browser keys.
+
+**Amended 8 Sep 26 — attachment bytes now persist per browser.** They were
+out of scope at stage-1 design, but once the seam began saving the inputs
+(and their `docId`), a persisted input on a reload showed a paperclip whose
+blob was gone (owner, from the preview: "there is no persistence when I saved
+documents on medical"). Blobs are still deliberately OFF the ~5 MB text seam;
+they get their own drawer instead — IndexedDB `raptor-docs`
+(`src/storage/docstore.ts`), wired by `docBoot` from `main.tsx` on the browser
+backend only. `state/docs`' in-memory map stays the synchronous read path the
+viewer needs in render; `docAdd` writes through, `docBoot` fills the cache
+back at boot and advances the id counter past every stored id. A SHARED file
+store (visible across people/devices) is still the later database step.
 
 ## What the 8 Sep 26 bug pass changed (implementation deltas)
 

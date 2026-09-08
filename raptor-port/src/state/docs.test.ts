@@ -1,7 +1,8 @@
 /* The supporting-document store (owner, 27 Aug 26) — session-only, in
    memory, append-only, ids only on the input records. */
-import { describe, expect, it } from 'vitest'
-import { DOC_MAX, docAccepts, docAdd, docFields, docGet, docHas, docBackend, rowDocIds } from './docs'
+import { describe, expect, it, afterAll } from 'vitest'
+import { DOC_MAX, docAccepts, docAdd, docBoot, docFields, docGet, docHas, docBackend, rowDocIds } from './docs'
+import type { DocDurable, DocRec } from './docs'
 
 const png = (bytes = 4) => new Blob([new Uint8Array(bytes)], { type: 'image/png' }) as any
 
@@ -59,5 +60,69 @@ describe('the record shape for several files', () => {
     const one = { person: 'bane', type: 'ATT C', ...docFields(['d1']) }
     expect(rowDocIds(one)).toEqual(['d1'])
     expect((one as any).docIds, 'a single file keeps the legacy shape exactly').toBeUndefined()
+  })
+})
+
+/* THE DURABLE DRAWER (owner, 8 Sep 26 — "there is no persistence when I saved
+   documents on medical"). The cache above is now backed by a per-browser
+   drawer (storage/docstore's IndexedDB on the built site); these pin the seam
+   the drawer plugs into, without needing a real IndexedDB. */
+class FakeDrawer implements DocDurable {
+  rows: DocRec[]
+  puts = 0
+  constructor(rows: DocRec[] = []) { this.rows = rows }
+  async load() { return this.rows.map(r => ({ ...r })) }
+  put(rec: DocRec) { this.puts++; this.rows.push({ ...rec }) }
+}
+const rec = (id: string): DocRec => ({ id, name: id + '.png', mime: 'image/png', size: 4, blob: png() })
+
+describe('the durable drawer behind the cache', () => {
+  /* leave the module memory-only for every other test in the file */
+  afterAll(async () => { await docBoot(null) })
+
+  it('docBoot fills the cache so a reloaded file reads back synchronously', async () => {
+    await docBoot(new FakeDrawer([rec('doc4001'), rec('doc4002')]))
+    expect(docHas('doc4001')).toBe(true)
+    expect(docGet('doc4002')!.mime).toBe('image/png')
+  })
+
+  it('a new upload after a reload cannot reuse a stored id (seq advances past it)', async () => {
+    await docBoot(new FakeDrawer([rec('doc9999')]))
+    const { id } = docAdd(png())
+    expect(id).not.toBe('doc9999')          // no collision with the hydrated file
+    expect(docHas('doc9999'), 'the hydrated file is untouched').toBe(true)
+    expect(docGet(id)!.name).toBe('document')
+  })
+
+  it('docAdd writes through to the drawer so the file survives a reload', async () => {
+    const d = new FakeDrawer()
+    await docBoot(d)
+    const { id } = docAdd(png())
+    expect(d.puts).toBe(1)
+    expect(d.rows[0].id).toBe(id)
+    expect(d.rows[0].blob).toBeInstanceOf(Blob)
+  })
+
+  it('skips a corrupt stored row instead of handing the viewer a bad blob', async () => {
+    await docBoot(new FakeDrawer([
+      { id: 'docBad1', name: 'x', mime: 'image/png', size: 1, blob: 'not a blob' as any },
+      { id: '', name: 'x', mime: 'image/png', size: 1, blob: png() } as any,
+      rec('doc7001'),
+    ]))
+    expect(docHas('docBad1')).toBe(false)
+    expect(docHas('doc7001'), 'the good row still lands').toBe(true)
+  })
+
+  it('is fail-soft: a drawer whose load rejects leaves the store memory-only', async () => {
+    const broken: DocDurable = { load: () => Promise.reject(new Error('locked')), put: () => { throw new Error('should never be called') } }
+    await expect(docBoot(broken)).resolves.toBeUndefined()   // no throw
+    expect(() => docAdd(png())).not.toThrow()                // and no write-through to the broken drawer
+  })
+
+  it('docBoot(null) keeps the old memory-only behaviour', async () => {
+    await docBoot(null)
+    const { id, why } = docAdd(png())
+    expect(why).toBe('')
+    expect(docHas(id)).toBe(true)
   })
 })

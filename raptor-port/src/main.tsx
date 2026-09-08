@@ -10,6 +10,9 @@ import { installDemoWorld } from './leavewar/state/demoworld'
 import { wireLeaveWarSync } from './leavewar/sync'
 import { installProbeBridge } from './probe-bridge'
 import { bootStorage, chooseBackend, guardUnload } from './storage/boot'
+import { BrowserBackend } from './storage/browser'
+import { idbDocStore } from './storage/docstore'
+import { docBoot } from './state/docs'
 import { settingsAdapter, leavewarAdapter, trackerTarget } from './storage/adapters'
 import { useStorageImpl } from './tracker/storage.js'
 import { hydrate, wirePersist } from './state/persist'
@@ -21,7 +24,15 @@ import { setSaveStatusSource } from './ui/SaveStatus'
    the live scheduler state, then run the boot sequence exactly as before
    the seam, then draw. Nothing below bootStorage ever waits on storage. */
 async function boot(): Promise<void> {
-  const { wb, postman } = await bootStorage(chooseBackend())
+  const backend = chooseBackend()
+  const { wb, postman } = await bootStorage(backend)
+
+  /* supporting documents get their OWN durable drawer (storage/docstore) —
+     photos/PDFs are too big for the text seam — but only on the real browser
+     backend; dev/tests/?fresh stay memory-only in lockstep with the seam.
+     Awaited BEFORE initStore so the cache is warm when the hydrated-boot path
+     SKIPS the demo re-seed (state/store.ts) and the viewer first renders. */
+  await docBoot(backend instanceof BrowserBackend ? idbDocStore() : null)
 
   /* the three doors (storage/adapters.ts): settings, Leave War, Tracker */
   storeBackend.impl = settingsAdapter(wb)
