@@ -1971,3 +1971,18 @@ gate's. Keep verdict-bearing commands unpiped.
 **Suggested improvement:** Add a note under Setup / The Task Loop: when the environment enforces a clean-or-pushed tree at every turn boundary (stop-hook or CI gate), expect it to fire while a background implementer is mid-flight. Triage by `git status`, never by reflex — (a) HEAD advanced and tree clean → push the new commit (correct on ephemeral containers); (b) tree dirty with the subagent's files → wait for its completion notification, do not commit its working tree. Prefer per-task pushes on ephemeral containers so work survives a reset.
 
 **Principle:** A clean-tree/push enforcement mechanism assumes the actor holding the turn also owns the working tree. Under delegated background execution that assumption breaks — the tree belongs to a subagent mid-cycle — so the controller must triage the signal by git state, never satisfy it by committing work it does not own.
+
+### Observation 130: A fix's pinning test must expect the count AFTER every downstream merge/dedupe layer, not just the layer the fix touches
+
+**Status:** OPEN
+**Date:** 2026-09-08
+**Session context:** Executing a from-findings implementation plan (rules-engine audit fixes) via subagent-driven-development. One task (an all-hits conflict walker) was BLOCKED because the plan's pinning test asserted 3 warnings but the true user-visible count was 2.
+**Skill:** writing-plans
+**Type:** open-source
+**Phase/Area:** Writing the pinning test in a from-findings plan; No-Placeholders / self-review
+
+**Issue:** The plan added an all-hits walker fix and asserted "3 conflicts", counting the pairs the FIX generates and copying the shape of a sibling scenario. But the warnings then pass through a SECOND, independent dedupe layer (an add() keyed on code + who + message-TEXT) that folds byte-identical messages. Two of the three generated pairs produced identical text and collapsed to one, so the true count was 2. The test would have failed even though the fix was correct; the implementer rightly blocked rather than edit the assertion to fudge. The sibling scenario the test was modelled on reached 3 only because ITS rows carried distinct wording (MAIN vs SPARE) — a discriminator absent in the new scenario (two same-role rows).
+
+**Suggested improvement:** When a test asserts a COUNT of user-visible outputs (warnings, rows, notifications, log lines), trace the value through EVERY downstream merge/dedupe/format layer between the changed code and the surface the test reads — not only the layer the fix touches. When a sibling scenario is the template for a new test, verify the discriminator the sibling relies on actually exists in the new scenario. Prefer asserting the BEHAVIOUR the fix delivers ("the previously-dropped case now appears") over a raw total a dedupe layer can move. Add this as a check in writing-plans' self-review (type-consistency / no-placeholder pass).
+
+**Principle:** A count assertion is a claim about the OUTPUT surface, not about the code path the fix changed. Between the two sit merge/dedupe/format layers that can fold or split results, so a test written from the fix's-eye view — ignoring them — can pin the wrong number even when the fix is right.
