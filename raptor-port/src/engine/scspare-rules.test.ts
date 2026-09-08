@@ -16,6 +16,7 @@ import { PEOPLE, isInstrPilot } from './people'
 import { validate } from './validate'
 import { makeStandalone } from './waves'
 import { scSeatHit } from './events'
+import { blockFromTpl } from './dutytpl'
 
 const TUE = 1
 const DSNAP = JSON.stringify(DAYS)
@@ -72,6 +73,22 @@ describe('two SC seats in the same hours are one man in two places', () => {
     AM().aircraft[2].p = 'split'
     AM().aircraft[3].p = 'split'
     expect(warns('split', 'DOUBLE_BOOK').length).toBe(1)
+  })
+
+  it('two SPARE rows and the SC desk at once: the desk clash is no longer dropped (audit, 8 Sep 26)', () => {
+    const d: any = DAYS[TUE]
+    const sdesk = blockFromTpl('sc'); d.dutywaves = d.dutywaves || []; d.dutywaves.push(sdesk)
+    AM().aircraft[2].p = 'split'
+    AM().aircraft[3].p = 'split'
+    sdesk.rows[0].id = 'split'                   // SXO AM duty, 07:00–13:00
+    const hits = warns('split', 'DOUBLE_BOOK')
+    /* Before the all-hits walker the first-hit walk stopped at the other spare,
+       so the SC desk was never reached and NO spare↔desk clash was said. Now it
+       is. The two spare↔desk pairs carry byte-identical wording (same formation,
+       same desk role), so add()'s message-dedupe correctly folds them to one
+       line — 2 distinct warnings: spare↔spare, and spare↔desk. */
+    expect(hits.filter((h: any) => /SXO AM duty/.test(h.msg)).length, 'the desk clash is now surfaced (was dropped)').toBe(1)
+    expect(hits.length, JSON.stringify(hits.map((h: any) => h.msg))).toBe(2)
   })
 
   it('a spare against his own SORTIE still raises nothing — spares stay free for real flying', () => {

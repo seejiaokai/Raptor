@@ -2,7 +2,7 @@ import { PEOPLE, isSpecial, realP, isOcu, isInstr, isInstrPilot, aarOK, aarInstr
 import { isDownchit, isLeave, isUnavail, canSpare, canWork, shiftHardInput, restsInput, inpLabel, inpMeta } from './inputs'
 import { VCONF, SHIFT_HARD } from './rules'
 import { overlap, hm24, lgT } from './time'
-import { collectEvents, shiftEvHard, scSeatHit, avSeatHits } from './events'
+import { collectEvents, shiftEvHard, scSeatHits, avSeatHits } from './events'
 import { HOOKS } from './hooks'
 import { sansGate, SANS_LABEL } from './avail'
 import { seedRunIn, prevSundaySeed, nextMondaySeed, nextMondayWorked } from './weekctx'
@@ -984,7 +984,7 @@ export function validate(){
            framing … the 1300 is not a conflict"; SPARE+SPARE ruled the same
            red). A spare is deliberately absent from EVD, so the ordinary
            DOUBLE_BOOK loop cannot see him — this asks the model instead,
-           through the same scSeatHit body the crew picker's slotBar reads,
+           through the same standaloneHits body (scSeatHits — every hit) the crew picker's slotBar reads,
            so what bars a plant and what reds after a drag-drop cannot drift.
            MAIN+MAIN needs nothing here: main shifts are events and the clash
            loop already reds them. Abutting shifts never fire — overlap() is
@@ -997,13 +997,15 @@ export function validate(){
         (f.spareAcs||[]).forEach((sa:any)=>{
           [['p',sa.p],['w',sa.w]].forEach(([seat,id]:any)=>{ if(!id||!PEOPLE[id]||isSpecial(id))return;
             const own=`${sa.key}.${seat}`;
-            const hit=scSeatHit(di,id,f.s,f.e,own); if(!hit)return;
-            const pk=[own,hit.key].sort().join('|')+'·'+id;
-            if(scPairSeen.has(pk))return; scPairSeen.add(pk);
-            markChip(di,id,'C'); markRing(di,id,'hard');
-            add('hard','DOUBLE_BOOK',[id],
-              `${PEOPLE[id].cs} is standing SC SPARE (${f.label} ${hm24(f.s)}–${hm24(f.e)})`
-              +` and also on ${hit.what} (${hm24(hit.s)}–${hm24(hit.e)})`,own); }); });
+            /* every place, not the first (audit, 8 Sep 26 — the avSeatHits
+               precedent): two spares + the desk is three pairs, each worded */
+            scSeatHits(di,id,f.s,f.e,own).forEach((hit:any)=>{
+              const pk=[own,hit.key].sort().join('|')+'·'+id;
+              if(scPairSeen.has(pk))return; scPairSeen.add(pk);
+              markChip(di,id,'C'); markRing(di,id,'hard');
+              add('hard','DOUBLE_BOOK',[id],
+                `${PEOPLE[id].cs} is standing SC SPARE (${f.label} ${hm24(f.s)}–${hm24(f.e)})`
+                +` and also on ${hit.what} (${hm24(hit.s)}–${hm24(hit.e)})`,own); }); }); });
         /* THE SPARE FRONT SEAT IS PILOTS-ONLY (owner, 31 Aug 26 — "a wso
            can't be planned for FCP"; the pilot-in-rear-seat mirror was
            offered and DECLINED, so the rear spare seat stays unruled here).
