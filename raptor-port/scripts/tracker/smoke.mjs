@@ -663,7 +663,11 @@ const imported = await pg.evaluate(async () => {
   charts.syllabi['2026'] = charts.syllabi['2026'].slice(0, 4);
   const marksBefore = Object.keys(localStorage).filter(k => k.includes(':m:')).length;
   await t.applyCharts(charts, { names: ['2026'], mode: 'add', rename: { from: '2026', to: 'SMOKE NEW SYL' } });
-  const all = JSON.parse(localStorage['ocu:v3:master:syls']);
+  /* Since the seam the write lands in the whiteboard at once but reaches the
+     raptor:tracker/* localStorage keys through the write-behind postman (300 ms
+     coalesce); the app reads the whiteboard, this raw read must wait for it. */
+  await new Promise(r => setTimeout(r, 600));
+  const all = JSON.parse(localStorage['raptor:tracker/v3:master:syls']);
   return { added: (all['SMOKE NEW SYL'] || []).length, original: (all['2026'] || []).length,
            marks: Object.keys(localStorage).filter(k => k.includes(':m:')).length, marksBefore };
 });
@@ -680,8 +684,9 @@ const applied = await pg.evaluate(async () => {
   const charts = await t.collectCharts(['2026']);
   charts.syllabi['2026'] = charts.syllabi['2026'].slice(0, 5);   /* a much smaller chart */
   await t.applyCharts(charts, { names: ['2026'], mode: 'replace', rename: null });
+  await new Promise(r => setTimeout(r, 600));   // wait for the write-behind postman to flush to raptor:tracker/*
   return { same: JSON.stringify(before) === JSON.stringify(grab()),
-           count: JSON.parse(localStorage['ocu:v3:master:syls'])['2026'].length };
+           count: JSON.parse(localStorage['raptor:tracker/v3:master:syls'])['2026'].length };
 });
 ok('replacing a syllabus writes the new chart', !!applied && applied.count === 5,
   applied ? `${applied.count} events` : 'no result');
@@ -709,8 +714,9 @@ const stApplied = await pg.evaluate(async () => {
     bySyllabus: { '2026': { roster: ['STUDENT Z'],
       marks: { 'STUDENT Z': { 'ST-01': { g: 'dco', f: 3 } } },
       dates: { 'STUDENT Z': { lastSyll: '2026-02-03', lastCurr: null } } } } } } });
-  return { roster: localStorage['ocu:v3:SMOKE COURSE:2026:roster'],
-           marks: localStorage['ocu:v3:SMOKE COURSE:2026:m:STUDENT Z'] };
+  await new Promise(r => setTimeout(r, 600));   // wait for the write-behind postman to flush to raptor:tracker/*
+  return { roster: localStorage['raptor:tracker/v3:SMOKE COURSE:2026:roster'],
+           marks: localStorage['raptor:tracker/v3:SMOKE COURSE:2026:m:STUDENT Z'] };
 });
 ok('applying students writes the roster', !!stApplied && (stApplied.roster || '').includes('STUDENT Z'));
 ok('applying students writes marks and failure counts',
@@ -1933,12 +1939,13 @@ if (two.length >= 2) {
 }
 
 /* A recorded syllabus that has since been deleted must not break the load.
-   The "ocu:" prefix is not decoration: sync/local.js only ever reads keys that
-   carry it, so this check spent its whole life planting a key the app never
-   looked at and asserting that nothing broke — which nothing would have. */
+   Since the storage seam the Tracker's data flows through the whiteboard and
+   lands in BrowserBackend under `raptor:tracker/*`, so the key is planted with
+   that prefix here — loadAll hydrates it into the whiteboard at boot, and the
+   app reads it back exactly where it would read its own. */
 ok('a remembered syllabus that no longer exists does not break opening the app',
   await pg.evaluate(async () => {
-    localStorage.setItem('ocu:v3:' + document.getElementById('courseSel').value + ':lastStudent', 'NO SUCH PERSON');
+    localStorage.setItem('raptor:tracker/v3:' + document.getElementById('courseSel').value + ':lastStudent', 'NO SUCH PERSON');
     return true;
   }));
 await openTracker(pg);
@@ -2053,7 +2060,7 @@ await pg.waitForSelector('#flowSvg .ball', { timeout: 15000 });
      all, which is exactly how a feature that never wrote anything would look. */
   const where = await pg.evaluate(() => ({
     mine: localStorage.getItem('ocuLocal:lastCourse'),
-    shared: Object.keys(localStorage).filter(k => k.startsWith('ocu:') && /lastCourse/i.test(k)),
+    shared: Object.keys(localStorage).filter(k => k.startsWith('raptor:tracker/') && /lastCourse/i.test(k)),
   }));
   ok('that memory is this browser\'s alone, not in the shared file',
     where.mine === 'SMOKE FIRST' && where.shared.length === 0,
@@ -2152,12 +2159,12 @@ await pg.waitForSelector('#flowSvg .ball', { timeout: 15000 });
   /* force the shipped layout into storage so there is something real to lose */
   await pg.evaluate(s => {
     const L = window.__coreForTests.DEFAULT_LAYOUTS[s];
-    localStorage.setItem('ocu:v3:master:lay:' + s, JSON.stringify(L));
+    localStorage.setItem('raptor:tracker/v3:master:lay:' + s, JSON.stringify(L));
   }, AG);
   await openTracker(pg); await pg.waitForSelector('#flowSvg .ball');
   await pg.selectOption('#sylSel', AG).catch(() => {}); await pg.waitForTimeout(1200);
   const linesOf = () => pg.evaluate(s => {
-    const raw = localStorage.getItem('ocu:v3:master:lay:' + s);
+    const raw = localStorage.getItem('raptor:tracker/v3:master:lay:' + s);
     return raw ? (JSON.parse(raw).__lines || []).length : 0;
   }, AG);
   const linesBefore = await linesOf();
@@ -2191,7 +2198,7 @@ await pg.waitForSelector('#flowSvg .ball', { timeout: 15000 });
   }
   await pg.click('#trUndoBtn'); await pg.waitForTimeout(500);
   const txBoxes = () => pg.evaluate(() => {
-    const raw = localStorage.getItem('ocu:v3:master:lay:Tx 2026');
+    const raw = localStorage.getItem('raptor:tracker/v3:master:lay:Tx 2026');
     return raw ? Object.keys(JSON.parse(raw)).filter(k => !k.startsWith('__')).length : 0;
   });
   const txBefore = await txBoxes();
@@ -2242,16 +2249,16 @@ await pg.waitForSelector('#flowSvg .ball', { timeout: 15000 });
   await wipe();
   await pg.evaluate(() => {
     const c = document.getElementById('courseSel').value;
-    localStorage.setItem('ocu:v3:' + c + ':pace:STUDENT A', JSON.stringify({ epw: '3.5', target: '2027-01-01' }));
-    localStorage.setItem('ocu:v3:' + c + ':lulls:STUDENT A', JSON.stringify([{ a: 1, b: 2 }]));
+    localStorage.setItem('raptor:tracker/v3:' + c + ':pace:STUDENT A', JSON.stringify({ epw: '3.5', target: '2027-01-01' }));
+    localStorage.setItem('raptor:tracker/v3:' + c + ':lulls:STUDENT A', JSON.stringify([{ a: 1, b: 2 }]));
   });
   await openTracker(pg); await pg.waitForSelector('#flowSvg .ball'); await pg.waitForTimeout(700);
   await viaMenu('course', '#renCourse'); await pg.waitForTimeout(250);
   await pg.fill('#dlgInput', 'RENAMEDC'); await pg.click('#dlgOk'); await pg.waitForTimeout(1100);
   const carried = await pg.evaluate(() => {
     const c = document.getElementById('courseSel').value;
-    return { c, pace: localStorage.getItem('ocu:v3:' + c + ':pace:STUDENT A'),
-      lulls: localStorage.getItem('ocu:v3:' + c + ':lulls:STUDENT A') };
+    return { c, pace: localStorage.getItem('raptor:tracker/v3:' + c + ':pace:STUDENT A'),
+      lulls: localStorage.getItem('raptor:tracker/v3:' + c + ':lulls:STUDENT A') };
   });
   ok('renaming a course carries each crew member\'s pace and lull periods',
     !!carried.pace && carried.pace.includes('3.5') && !!carried.lulls,
@@ -2260,7 +2267,7 @@ await pg.waitForSelector('#flowSvg .ball', { timeout: 15000 });
   await wipe();
   await pg.evaluate(() => {
     const c = document.getElementById('courseSel').value;
-    localStorage.setItem('ocu:v3:' + c + ':pace:STUDENT B', JSON.stringify({ epw: '9.9' }));
+    localStorage.setItem('raptor:tracker/v3:' + c + ':pace:STUDENT B', JSON.stringify({ epw: '9.9' }));
   });
   await openTracker(pg); await pg.waitForSelector('#flowSvg .ball'); await pg.waitForTimeout(700);
   await pg.selectOption('#activeSel', 'STUDENT B'); await pg.waitForTimeout(300);
@@ -2277,7 +2284,7 @@ await pg.waitForSelector('#flowSvg .ball', { timeout: 15000 });
   await pg.fill('#dlgInput', 'STUDENT B'); await pg.click('#dlgOk'); await pg.waitForTimeout(800);
   const revived = await pg.evaluate(() => {
     const c = document.getElementById('courseSel').value;
-    return localStorage.getItem('ocu:v3:' + c + ':pace:STUDENT B');
+    return localStorage.getItem('raptor:tracker/v3:' + c + ':pace:STUDENT B');
   });
   ok('adding the same callsign back starts them clean',
     !revived || !revived.includes('9.9'), `pace after re-adding: ${revived}`);
@@ -2447,8 +2454,8 @@ const fileClobber = await pg.evaluate(async () => {
   const snap = await core.collectCharts(['2026']); /* full baked table + edits */
   Object.assign(full, snap.eventInfo);
   await core.applyCharts({ order: [], syllabi: {}, layouts: {}, eventInfo: full }, {});
-  /* the sync layer prefixes its localStorage keys with "ocu:" */
-  const stored = JSON.parse(localStorage.getItem('ocu:v3:eventinfo') || '{}');
+  /* since the seam the Tracker's data lands in BrowserBackend under "raptor:tracker/" */
+  const stored = JSON.parse(localStorage.getItem('raptor:tracker/v3:eventinfo') || '{}');
   return { storedKeys: Object.keys(stored).length, sentKeys: Object.keys(full).length };
 });
 await clickBall('BFM-5'); await pg.waitForTimeout(300);

@@ -153,19 +153,20 @@ on that tree (superseded by the #373 baseline above; the traps stand):
 
 ## In flight
 
-**In flight — the rules-engine audit fixes (PR #374, draft; branch
-`claude/read-handoff-docs-wuftw9`).** A two-engine bug audit (7 Sep 26 — 26
-agents, ~196 rules verified correct; the leave/day charge maths, the OIL
-ledger and the medical trims came back clean) plus its fixes (8 Sep 26): seven
-commits, each a confirmed bug pinned by a test — the AVALON/BB desk
-picker/validator run-check drift, the ⓘ info-flag lost on a published day, a
-Leave War false-RED rounding slip (3.999-for-4), the SC spare↔desk clash being
-dropped, a stale flying-key crash guard, a day-template CX-reason leak, and the
-owner's "don't pad" call on the available-crew strip. Findings + scan plan +
-fix plan are committed under `docs/audits/` and `docs/superpowers/plans/`; the
-per-bug detail is in `BUG-TESTING.md` (#374 audit-fixes row). Gates all green
-(vitest 4245/240, tfin 728/0, e2e 425 + 33 skipped, tracker 346/0, build
-clean). **Merge waits on the owner's "merge live" — NOT merged.**
+**In flight — the storage seam, stage 1 (draft PR #377, branch
+`claude/storage-seam`).** The whole app now boots through one storage door.
+Three parts: a **whiteboard** (in-memory, synchronous — every existing door
+reads and writes it), a **postman** (write-behind: coalesces changes and
+retries, so saving can be slow without the engine, undo or the Leave War sync
+noticing), and two **backends** behind one contract — Memory (dev and tests,
+always a clean start) and Browser (the built site). On the built site
+**everything now persists per browser** — the schedule, inputs, Leave War and
+the Tracker all survive a reload, together; `?fresh=1` on the URL gives a
+clean start. Stages 2–4 are still pending: stable row ids, live-ish sync
+(others' changes while you edit), and the Dataverse adapter for a real shared
+database. Gates all green after this branch's fixes (vitest 4309/0, tfin
+728/0, e2e 425 + 33 skipped, tracker 346/0, build clean). **Merge only on the
+owner's explicit "merge live" — NOT merged.**
 
 Everything before the audit fixes is merged — three PRs landed 7 Sep 26:
 **PR #371** (the Leave War figures drawer, bulk balance

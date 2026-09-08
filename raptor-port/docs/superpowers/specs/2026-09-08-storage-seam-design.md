@@ -1,7 +1,7 @@
 # Storage seam — design (stage 1 of 4)
 
-**Date:** 8 Sep 26 · **Branch:** `claude/storage-seam` · **Status:** approved in
-brainstorm, awaiting owner review of this file.
+**Date:** 8 Sep 26 · **Branch:** `claude/storage-seam` · **Status:** implemented
+on `claude/storage-seam` (plan: `docs/superpowers/plans/2026-09-08-storage-seam.md`, at the repo root).
 
 The end state is RAPTOR on Dataverse, shared by the whole squadron, with
 live-ish collaboration. This spec covers **stage 1 only**: one storage
@@ -56,7 +56,7 @@ interface, and can be tested alone.
 ### `backend.ts` — the contract
 
 ```ts
-export type Collection = 'settings' | 'weeks' | 'inputs' | 'people' | 'leavewar' | 'tracker'
+export type Collection = 'settings' | 'weeks' | 'inputs' | 'people' | 'plan' | 'leavewar' | 'tracker'
 export interface Backend {
   /** Everything, once, at boot. Resolves to {collection: {id: json}}. */
   loadAll(): Promise<Record<Collection, Record<string, string>>>
@@ -92,13 +92,14 @@ These are session-only today and become records:
 
 | Record | Written when | Contents |
 |---|---|---|
-| `weeks/<dd-mm-yyyy>` (the stash's `dd/mm/yyyy` week-start key with `/` → `-`, because `/` is the collection/id separator) | every `histPush` for the loaded week, and `stashPut` on week swap | the `histSnap()` object **minus `i`** (see below) |
+| `weeks/<dd-mm-yyyy>` (the stash's `dd/mm/yyyy` week-start key with `/` → `-`, because `/` is the collection/id separator) | every `histPush` for the loaded week, and `stashPut` on week swap | the week-stash snapshot (`weekStashSnap()`: `{d, c, p, ad, a, al, ok, sg, o, cv, dr, cd, wo, un}`) — exactly what `applyWeekModel` restores |
 | `inputs/all` | every inputs write (the `writeInputs*` funnel in `src/state/store.ts`) | the `INPUTS` list |
 | `people/all` | every quals-page tick / archive change | the whole `PEOPLE` map |
+| `plan/all` | every planning-layer write (`src/state/persist.ts`) | `{pp: PLANPUCKS, dm: DAYRMK}` — the planning layer |
 
 Inputs are global across weeks, so they are stored once in `inputs/all`,
-not inside each week record. The in-memory undo snapshot (`histSnap`) is
-unchanged and still carries `i` — undo fidelity is untouched. On load:
+not inside each week record; the planning layer is likewise global, in
+`plan/all`. On load:
 `INPUTS` from `inputs/all`, each week from `weeks/*`, `PEOPLE` from
 `people/all` when present (the whole map replaces the seed), else the code
 seed exactly as today, which is then written once.
@@ -143,7 +144,8 @@ adapters → today's boot sequence, unchanged (`initStore`, Leave War init,
 
 | Context | Backend |
 |---|---|
-| Unit tests, browser tests | **Memory** — always a clean start |
+| Unit tests (vitest) | **Memory** — always a clean start |
+| Browser (Playwright) tests, Tracker smoke | **Browser** — the built site's backend, so persistence is ON; a fresh context per test starts empty, but a write survives a reload WITHIN a test (the reload proof in `e2e/leavewar.spec.ts`) |
 | `npm run dev` | **Memory** by default (`VITE_STORAGE=browser` opts in to persistence while developing) |
 | Built site (GitHub Pages, Vercel previews) | **Browser**; `?fresh=1` on the URL forces Memory for a clean-start demo |
 

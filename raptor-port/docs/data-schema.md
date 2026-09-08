@@ -17,11 +17,11 @@ RAPTOR is one app, but it keeps three separate stores, each behind its own
 "door" (a small module every save goes through). The doors are the seams a
 shared database replaces; nothing above a door knows where a key lives.
 
-| World | Door (the seam) | Key prefix | Backed by today |
+| World | Door (the seam) | Key prefix (built site) | Backed by today |
 |---|---|---|---|
-| Scheduler | `store` + `storeBackend.impl` in `src/engine/hooks.ts`, plugged in once by `src/main.tsx` | `sqn142_` | browser storage — **settings and templates only**; the live schedule is session memory |
-| Leave War | `StorageBackend {read, write}` in `src/leavewar/state/storage.ts` (`memoryBackend` / `localBackend`) | `leavewar:` | **session memory** — `main.tsx` boots it on `memoryBackend()`; `localBackend` (browser storage) exists but is not wired |
-| Tracker | `storage {get, set, delete, list}` (async) in `src/tracker/storage.js`; per-browser prefs via `ocuLocal:` | `ocu:` | browser storage as a cache; the owner's syllabus **file** is the authoritative copy |
+| Scheduler | `store` + `storeBackend.impl` in `src/engine/hooks.ts`, plugged in once by `src/main.tsx` | `raptor:settings/*`, `raptor:weeks/*`, `raptor:inputs/all`, `raptor:people/all`, `raptor:plan/all` (legacy `sqn142_` imported once) | the whiteboard (`src/storage/`) → BrowserBackend on the built site |
+| Leave War | `StorageBackend {read, write}` in `src/leavewar/state/storage.ts`, now the whiteboard-backed adapter | `raptor:leavewar/*` (legacy `leavewar:` ignored) | the whiteboard (`src/storage/`) → BrowserBackend on the built site |
+| Tracker | `storage {get, set, delete, list}` (async) in `src/tracker/storage.js`; per-browser prefs via `ocuLocal:` (NOT through the whiteboard) | `raptor:tracker/*` (legacy `ocu:` imported once); prefs stay `ocuLocal:*` | the whiteboard (`src/storage/`) → BrowserBackend on the built site; the owner's syllabus **file** stays the authoritative copy |
 
 Two smaller seams sit beside these: `docBackend.impl` in `src/state/docs.ts`
 (uploaded attachments, an in-memory map) and `HOOKS.whoami()` (who is
@@ -34,21 +34,26 @@ removed at the merge; `storage.js` is what replaced it.
 
 ## What persists, and what is session-only
 
-This is the single most important fact for the database step. Most of the
-live data is **deliberately forgotten on reload** (owner, 23 Aug 26 — "it's
-ok that u don't remember once I exit the session"). Only settings survive.
+This is the single most important fact for the database step. Since the
+storage seam (8 Sep 26) the whole app boots through the whiteboard
+(`src/storage/`), so on the **built site** (BrowserBackend) everything
+persists together, per browser; in **dev and tests** (MemoryBackend) every
+boot starts clean by design. This replaced the pre-seam doctrine (owner,
+23 Aug 26 — "it's ok that u don't remember once I exit the session") once the
+owner approved "everything persists on the built site".
 
 | Data | Lives in | Survives reload? |
 |---|---|---|
-| Roster (PEOPLE), schedule (DAYS), inputs (INPUTS), publish book (SCHED), per-week stash, undo history, edit log, planning pucks, attachments | scheduler session memory | **No** — rebuilt from the demo seed each boot |
-| Templates, house orders, rule overrides, cancel reasons, look-ahead, stores list | scheduler `store` (`sqn142_*`) | Yes |
-| Every Leave War record | Leave War store, booted on `memoryBackend()` by `src/main.tsx` (owner, 19 Aug 26 — no persistence until the database) | **No** — `localBackend` (`leavewar:*`) exists but is not wired in the app |
-| Tracker charts and students | `ocu:*` (cache) + the syllabus file | Yes |
+| Roster (PEOPLE), schedule + publish book + per-week stash (DAYS/SCHED), inputs (INPUTS), planning pucks (PLANPUCKS/DAYRMK) | whiteboard → backend (Browser on the built site, Memory in dev/tests) | **Yes** on the built site (per browser); no in dev/tests by design |
+| Templates, house orders, rule overrides, cancel reasons, look-ahead, stores list | whiteboard → backend (settings collection; legacy `sqn142_*`) | Yes |
+| Every Leave War record | whiteboard → backend (Browser on the built site, Memory in dev/tests) | **Yes** on the built site (per browser); no in dev/tests by design |
+| Tracker charts and students | whiteboard → backend (`raptor:tracker/*` on the built site) + the syllabus file | Yes |
+| Undo history, edit log, attachment bytes | scheduler session memory (attachments stay in-memory in stage 1 — see spec) | **No** — session-only by design |
 | Accounts | hard-coded in `src/state/auth.ts` | n/a |
 
-So "moving RAPTOR to a database" is not moving something that is saved
-today; it is giving the session-only shapes below a permanent, shared home
-for the first time.
+`?fresh=1` on the URL forces the Memory backend for a clean-start demo. So
+"moving RAPTOR to a database" is now giving these already-per-browser shapes
+a permanent, **shared** home, rather than saving them for the first time.
 
 ---
 
@@ -227,12 +232,14 @@ a later change to the standard is picked up rather than frozen in a browser.
 Fully typed (TypeScript interfaces), so these shapes are exact. Dates here
 are ISO `'yyyy-mm-dd'` throughout.
 
-### Keys (`leavewar:*`)
+### Keys (`raptor:leavewar/*` on the built site; legacy `leavewar:*`)
 
-`wars`, `current`, `openings`, `ledger`, `oilpolicy`, `eventdefs`,
-`figorder`, `rosterorder` — plus the pre-migration trio `grid`, `states`,
-`stage` that older browsers may still hold (read once, migrated into
-`wars`).
+Every key its `persist()` writes — about twenty (`src/leavewar/state/store.ts`):
+`wars`, `current`, `openings`, `ledger`, `oilpolicy`, `eventdefs`, `figorder`,
+`rosterorder`, `perslabels`, `manningorder`, `manninghidden`, `fighidden`,
+`groupdefs`, `grouppriority`, `grouppriocustom`, `groupcolors`, `manningdefs`,
+`eventrows`, `showsans` — plus the pre-migration trio `grid`, `states`, `stage`
+that older browsers may still hold (read once, migrated into `wars`).
 
 ### The state — `src/leavewar/state/store.ts`
 
@@ -296,11 +303,14 @@ Vendored JavaScript, shapes fixed in `src/tracker/app/fileFormat.js`.
 Course, syllabus and student names are free text and are used as object
 keys on purpose (nested objects, never joined strings).
 
-### Keys (`ocu:*`) and prefs (`ocuLocal:*`)
+### Keys (`raptor:tracker/*` on the built site; legacy `ocu:*`) and prefs (`ocuLocal:*`)
 
 `v3:master`, `v3:courses`, `v3:lay`, `v3:eventinfo`, `v3:seedstamp` hold
-the containers below. `ocuLocal:*` holds this browser's last course and
-crew member — a view preference, kept outside the shared prefix by design.
+the containers below. Since the seam the Tracker's data flows through the
+whiteboard and lands under `raptor:tracker/<key>` (e.g. `raptor:tracker/v3:master:syls`);
+the legacy `ocu:*` keys are imported once. `ocuLocal:*` holds this browser's
+last course and crew member — a view preference, written straight to
+localStorage (NOT through the whiteboard), kept outside the shared prefix by design.
 
 ### Containers
 
