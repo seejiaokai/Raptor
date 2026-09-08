@@ -158,7 +158,13 @@ export function slotRules(key:any){
     /* AVALON's desk (owner, 11 Aug 26): the wave's `sa` marker survives on its
        duty block (waveDutyBlock), so a `d:` key can tell whether its row is an
        AVALON desk without walking back through DAYS.waves at all. */
-    if(kk==='d'){const dwx=((DAYS[+parts[0]]||{}).dutywaves||[])[+parts[1]]; if(dwx&&saExemptKind(dwx.sa))out.avDuty=true;   // AVALON's desk, or BB's — its twin (7 Sep 26)
+    if(kk==='d'){const dwx=((DAYS[+parts[0]]||{}).dutywaves||[])[+parts[1]];
+      /* AVALON's desk, or BB's — its twin (7 Sep 26). saExempt too (audit,
+         8 Sep 26): the desk row never becomes an event (events.ts sacrew), so
+         the cross-day question at the foot of slotBar must stand down for it
+         exactly as it does for the jet seat below — else the picker bars a
+         run the validator never flags. */
+      if(dwx&&saExemptKind(dwx.sa)){out.avDuty=true; out.saExempt=true;}
       /* an SC desk (7 Sep 26): checked like any duty row, AND one of the SC
          seats for the spare's same-hours rule — slotBar asks scSeatHit off this */
       if(dwx&&dwx.sa==='sc')out.scDesk=true;}

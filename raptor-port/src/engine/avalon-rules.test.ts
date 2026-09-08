@@ -29,6 +29,8 @@ import { dayHTML } from '../ui/html'
 import { sbDutyPanel } from '../ui/board-html'
 import { avSeatHits } from './events'
 import { slotBar } from './avail'
+import { slotRules } from './avail'
+import { VCONF } from './rules'
 import { dayOilCredits } from './oil'
 import { SCHED } from './publish'
 
@@ -585,5 +587,37 @@ describe('the MAIN / SPARE badge tooltip names the checks that actually run', ()
     expect(titleOf(html, `${TUE}.${sgi}.0.0`)).toMatch(/fully cross-checked/)
     const spare = titleOf(html, `${TUE}.${sgi}.0.2`)!
     expect(spare).toMatch(/SC desk/); expect(spare).toMatch(/front seat/); expect(spare).toMatch(/currency/)
+  })
+})
+
+/* THE DESK IS EXEMPT LIKE THE SEAT (audit, 8 Sep 26). slotRules set saExempt
+   on an AVALON/BB jet seat but not on its desk key, so the crew picker ran
+   the cross-day (run / crew-rest) question on a desk the validator never
+   sees as an event — the picker barred a plant the warning list never
+   flagged, the exact drift the 7 Sep review closed for the seat. */
+describe('the AVALON / BB desk stands outside the cross-day rules in the picker too', () => {
+  const workOn = (id: string, di: number) => {
+    const d: any = DAYS[di]; d.ground = d.ground || []
+    d.ground.push({ prog: 'DUTY SPELL', str: '0900', end: '1000', who: id })
+  }
+  it('slotRules marks the desk key saExempt, exactly as it marks the jet seat', () => {
+    expect(slotRules(SEAT(0, 'p')).saExempt).toBe(true)
+    expect(slotRules(DESK(0)).saExempt).toBe(true)
+  })
+  it('a run of days does not bar the desk — and the validator raises no DAYS_RUN for it either', () => {
+    const was = VCONF.maxRun
+    VCONF.maxRun = 1
+    try {
+      workOn('split', 0)                                   // Monday worked → Tuesday would be his 2nd day
+      validate()
+      /* the control: an ORDINARY desk in the same hours IS barred, so the exemption is doing the work */
+      const std = blockFromTpl('std'); std.rows[0].str = '19:00'; std.rows[0].end = '21:00'
+      const d: any = DAYS[TUE]; d.dutywaves.push(std); const si = d.dutywaves.length - 1
+      validate()
+      expect(slotBar('split', `d:${TUE}.${si}.0`)).toMatch(/day in a row/)
+      expect(slotBar('split', DESK(0))).toBe('')
+      desk.rows[0].id = 'split'
+      expect(warns('split', 'DAYS_RUN')).toEqual([])
+    } finally { VCONF.maxRun = was }
   })
 })
