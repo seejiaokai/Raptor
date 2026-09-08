@@ -20,7 +20,7 @@ shared database replaces; nothing above a door knows where a key lives.
 | World | Door (the seam) | Key prefix | Backed by today |
 |---|---|---|---|
 | Scheduler | `store` + `storeBackend.impl` in `src/engine/hooks.ts`, plugged in once by `src/main.tsx` | `sqn142_` | browser storage — **settings and templates only**; the live schedule is session memory |
-| Leave War | `StorageBackend {read, write}` in `src/leavewar/state/storage.ts` (`memoryBackend` / `localBackend`) | `leavewar:` | browser storage |
+| Leave War | `StorageBackend {read, write}` in `src/leavewar/state/storage.ts` (`memoryBackend` / `localBackend`) | `leavewar:` | **session memory** — `main.tsx` boots it on `memoryBackend()`; `localBackend` (browser storage) exists but is not wired |
 | Tracker | `storage {get, set, delete, list}` (async) in `src/tracker/storage.js`; per-browser prefs via `ocuLocal:` | `ocu:` | browser storage as a cache; the owner's syllabus **file** is the authoritative copy |
 
 Two smaller seams sit beside these: `docBackend.impl` in `src/state/docs.ts`
@@ -42,7 +42,7 @@ ok that u don't remember once I exit the session"). Only settings survive.
 |---|---|---|
 | Roster (PEOPLE), schedule (DAYS), inputs (INPUTS), publish book (SCHED), per-week stash, undo history, edit log, planning pucks, attachments | scheduler session memory | **No** — rebuilt from the demo seed each boot |
 | Templates, house orders, rule overrides, cancel reasons, look-ahead, stores list | scheduler `store` (`sqn142_*`) | Yes |
-| Every Leave War record | `leavewar:*` | Yes |
+| Every Leave War record | Leave War store, booted on `memoryBackend()` by `src/main.tsx` (owner, 19 Aug 26 — no persistence until the database) | **No** — `localBackend` (`leavewar:*`) exists but is not wired in the app |
 | Tracker charts and students | `ocu:*` (cache) + the syllabus file | Yes |
 | Accounts | hard-coded in `src/state/auth.ts` | n/a |
 
