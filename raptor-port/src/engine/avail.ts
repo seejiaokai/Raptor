@@ -16,15 +16,20 @@ export function personBusy(d:any,id:any){
      everywhere: an overnight duty used to come out inverted and read as FREE */
   const add=(st:any,en:any,dflt?:any)=>{const w2=win(st,en,dflt); if(w2)out.push(w2);};
   const has=(r:any,who?:any)=>who===id||((r&&r.more)||[]).includes(id);
-  (d.waves||[]).forEach((w:any)=>w.formations.forEach((f:any)=>{ if(f.cx)return; f.aircraft.forEach((a:any)=>{
+  (d.waves||[]).forEach((w:any)=>{const shift=isStandalone(w); w.formations.forEach((f:any)=>{ if(f.cx)return; f.aircraft.forEach((a:any)=>{
     if(a.cx)return;
     if(a.p===id||a.w===id){const to=parseHM(f.to); let ld=parseHM(f.ld);
       /* the step and dekit pads are VCONF's, not literals: both are editable on
          the Logic tab (0–240), and slotRules/events.ts/validate.ts all read them
          from there. Hardcoding 60/30 here matched only at the defaults, so
          raising either rule left this strip offering a man the validator already
-         considered occupied. */
-      if(to!=null&&ld!=null){if(ld<to)ld+=1440; out.push([to-VCONF.step,ld+VCONF.dekit]);}}});}));
+         considered occupied.
+         A standalone line is a SHIFT, not a sortie (owner, 8 Sep 26 — "don't
+         pad"): 07:00–13:00 occupies exactly that, no step in front and no dekit
+         behind — the reading slotRules and events.ts already give it. This strip
+         was the one place still padding it, greying an SC man ~90 min wider
+         than the engine reserves him. */
+      if(to!=null&&ld!=null){if(ld<to)ld+=1440; out.push(shift?[to,ld]:[to-VCONF.step,ld+VCONF.dekit]);}}});});});
   /* both sim devices count, and a row's pax list counts as much as its p/w seats —
      an AMT box session with 8 aircrew makes all 8 of them busy for that window. */
   const sm=d.sims||{}; ['amt','oft'].forEach((k:any)=>(sm[k]||[]).forEach((o:any)=>{ if(o.cx)return;
