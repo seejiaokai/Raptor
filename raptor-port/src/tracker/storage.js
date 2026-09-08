@@ -25,13 +25,31 @@ function ls() {
   try { return typeof localStorage !== 'undefined' ? localStorage : null } catch (_) { return null }
 }
 
+/* THE PLUGGABLE TARGET (8 Sep 26, the storage seam). Raptor's main.tsx
+   plugs the whiteboard in through useStorageImpl; with no target (the
+   standalone smoke, a test that never boots main) every verb keeps its
+   localStorage path under `ocu:` exactly as before. Return shapes are
+   identical either way — core.js cannot tell which is behind it. */
+let target = null   // { get(k), set(k, v), remove(k), keys() } — sync, unprefixed
+export function useStorageImpl(t) { target = t }
+
 export const storage = {
-  async get(k) { const s = ls(); if (!s) return null; const v = s.getItem(LP + k); return v == null ? null : { key: k, value: v } },
-  async set(k, v) { const s = ls(); if (!s) throw new Error('no storage'); s.setItem(LP + k, v); return { key: k, value: v } },
-  async delete(k) { const s = ls(); if (s) s.removeItem(LP + k); return { key: k, deleted: true } },
+  async get(k) {
+    if (target) { const v = target.get(k); return v == null ? null : { key: k, value: v } }
+    const s = ls(); if (!s) return null; const v = s.getItem(LP + k); return v == null ? null : { key: k, value: v }
+  },
+  async set(k, v) {
+    if (target) { target.set(k, v); return { key: k, value: v } }
+    const s = ls(); if (!s) throw new Error('no storage'); s.setItem(LP + k, v); return { key: k, value: v }
+  },
+  async delete(k) {
+    if (target) { target.remove(k); return { key: k, deleted: true } }
+    const s = ls(); if (s) s.removeItem(LP + k); return { key: k, deleted: true }
+  },
   async list(prefix) {
-    const s = ls(); const keys = []
-    if (s) for (let i = 0; i < s.length; i++) { const k = s.key(i); if (k && k.startsWith(LP)) keys.push(k.slice(LP.length)) }
+    let keys = []
+    if (target) keys = target.keys()
+    else { const s = ls(); if (s) for (let i = 0; i < s.length; i++) { const k = s.key(i); if (k && k.startsWith(LP)) keys.push(k.slice(LP.length)) } }
     return { keys: prefix ? keys.filter(x => x.startsWith(prefix)) : keys }
   },
 }

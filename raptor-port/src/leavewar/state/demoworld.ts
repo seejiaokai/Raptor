@@ -160,15 +160,21 @@ export function installDemoWorld(hadStoredWars: boolean): void {
     remapPersonKeys(DEMO_MAP)
   }
 
-  for (const rec of DEMO_RAPTOR_INPUTS) {
-    /* Guarded per person+date+type, the seedDemoSans idiom — a second boot
-       against the same INPUTS array must not double-file. */
-    const already = INPUTS.some(
-      (x: any) => x.person === rec.person && x.date === rec.date && x.type === rec.type,
-    )
-    if (already) continue
-    const row = { ...rec }
-    inpId(row)
-    INPUTS.push(row)
+  /* The demo inputs are SEED, like the OIL story above them: a world that
+     came back from storage (hadStoredWars) already holds whatever inputs
+     survived — re-filing a demo row a scheduler deleted would resurrect it
+     on every boot (storage seam, 8 Sep 26). */
+  if (!hadStoredWars) {
+    for (const rec of DEMO_RAPTOR_INPUTS) {
+      /* Guarded per person+date+type, the seedDemoSans idiom — a second boot
+         against the same INPUTS array must not double-file. */
+      const already = INPUTS.some(
+        (x: any) => x.person === rec.person && x.date === rec.date && x.type === rec.type,
+      )
+      if (already) continue
+      const row = { ...rec }
+      inpId(row)
+      INPUTS.push(row)
+    }
   }
 }
