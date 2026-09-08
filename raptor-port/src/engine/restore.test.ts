@@ -48,6 +48,15 @@ describe('the dayKeys walker', () => {
     expect(dayKeys(DAYS[0], 0).get('fr:0.0.0.0')).not.toBe(before)
   })
 
+  it('the ⓘ info-only flag rides the row composite too — allhands and ground', () => {
+    const g0 = dayKeys(DAYS[0], 0).get('gr:0.0.prog')
+    DAYS[0].ground[0].info = true
+    expect(dayKeys(DAYS[0], 0).get('gr:0.0.prog')).not.toBe(g0)
+    const a0 = dayKeys(DAYS[0], 0).get('ap:0.4.prog')
+    DAYS[0].allhands[4].info = true
+    expect(dayKeys(DAYS[0], 0).get('ap:0.4.prog')).not.toBe(a0)
+  })
+
   /* CANONICAL person compare (owner, 16 Aug 26) — a seed/pre-fix row can hold a
      person's id ('nact') where an app write stores his callsign ('Warden'); both
      name the same man, and comparing them raw made a moved-and-restored person
