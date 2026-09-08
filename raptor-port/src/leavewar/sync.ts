@@ -24,6 +24,7 @@
 
 import { INPUTS, DATES, baseYear, dateOrd, inpId, inpWin, isAway, isDownchit, isLeave, oilAsks, withRemarksTail } from '../engine/inputs'
 import { ME, SESSION } from '../state/auth'
+import { persistPeople } from '../state/persist'
 import { docFields, rowDocIds } from '../state/docs'
 import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
@@ -1059,6 +1060,7 @@ export function restoreArchivedPerson(id: string): boolean {
   setPostOut(id, null)
   body.archived = false
   validate()
+  persistPeople()
   raptorNotify()
   return true
 }
