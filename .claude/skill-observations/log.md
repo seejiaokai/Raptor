@@ -1941,3 +1941,18 @@ gate's. Keep verdict-bearing commands unpiped.
 **Suggested improvement:** Add one line to Step 3: whenever this session performed or observed a merge to main, re-read the ENTIRE "In flight" (or equivalent current-state/unmerged) section and reconcile every entry's merge status against `git log origin/main`, not only the entries this session's diff touched. A "current-state" section's invariant is that nothing in it is stale as of now — that is a whole-section check, independent of who made which entry stale.
 
 **Principle:** A bounded diff-scoped check keeps a doc true to THIS change, but a section whose contract is "current state" (nothing here is already done/merged) must be reconciled in full at every merge — staleness left by earlier actors lives outside this session's diff and is invisible to a diff-scoped sweep.
+
+### Observation 128: A bug-audit plan must re-read every finding's code site before prescribing the fix — the audit names the symptom, the plan needs the write path
+
+**Status:** OPEN
+**Date:** 2026-09-08
+**Session context:** Writing the implementation plan for the seven rules-engine audit fixes (writing-plans skill, on the budget-limited "hard reasoning" model per the owner's model rule).
+**Skill:** writing-plans
+**Type:** open-source
+**Phase/Area:** Turning audit findings into tasks
+
+**Issue:** The audit report gave each bug a file:line, a repro and a "fix shape". That was enough to believe the bug, not enough to write a test that fails without the fix: for the info-flag fingerprint bug the test needed to know WHICH pending key the UI writes on the ⓘ tap (board.ts, not the engine file the finding named); for the three-way SC clash it needed to confirm only ONE validator site asks the hit walker (else the expected count would be wrong); for the double-rounding bug it needed the existing 0.667/0.5 pins to prove a single rounding leaves them unmoved. Every one of the seven tasks needed a read beyond the finding's named lines.
+
+**Suggested improvement:** In writing-plans, under "File Structure" or a new "From findings to tasks" note: when the spec is a set of audit/review findings, re-read each finding's code site PLUS its callers and the existing tests that pin the seam before writing the task — the finding names the symptom; the failing test needs the write path (who sets the state the bug loses) and the existing pins that the fix must not move. Budget one focused read per finding; the plan is only as real as those reads.
+
+**Principle:** A finding is a claim about a symptom; a task is a claim about a fix and a test. The second needs facts the first never carried — callers, write paths, existing pins — so a plan built only from the findings document will carry tests that cannot fail for the right reason.
