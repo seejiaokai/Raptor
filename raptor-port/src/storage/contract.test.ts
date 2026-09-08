@@ -1,3 +1,4 @@
+// @vitest-environment jsdom
 // src/storage/contract.test.ts
 /* THE CONTRACT every backend must pass. Stage 4 runs this same function
    against the Dataverse adapter; if it passes, the app cannot tell the
@@ -5,6 +6,7 @@
 import { describe, it, expect } from 'vitest'
 import type { Backend } from './backend'
 import { MemoryBackend } from './memory'
+import { BrowserBackend } from './browser'
 
 export function contractTests(name: string, make: () => Backend | Promise<Backend>): void {
   describe(`Backend contract: ${name}`, () => {
@@ -54,3 +56,4 @@ export function contractTests(name: string, make: () => Backend | Promise<Backen
 }
 
 contractTests('MemoryBackend', () => new MemoryBackend())
+contractTests('BrowserBackend', () => { localStorage.clear(); return new BrowserBackend() })
