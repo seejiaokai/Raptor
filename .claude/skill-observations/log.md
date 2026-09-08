@@ -1956,3 +1956,18 @@ gate's. Keep verdict-bearing commands unpiped.
 **Suggested improvement:** In writing-plans, under "File Structure" or a new "From findings to tasks" note: when the spec is a set of audit/review findings, re-read each finding's code site PLUS its callers and the existing tests that pin the seam before writing the task — the finding names the symptom; the failing test needs the write path (who sets the state the bug loses) and the existing pins that the fix must not move. Budget one focused read per finding; the plan is only as real as those reads.
 
 **Principle:** A finding is a claim about a symptom; a task is a claim about a fix and a test. The second needs facts the first never carried — callers, write paths, existing pins — so a plan built only from the findings document will carry tests that cannot fail for the right reason.
+
+### Observation 129: The SDD background-subagent pattern collides with a stop-hook clean-tree/push check
+
+**Status:** OPEN
+**Date:** 2026-09-08
+**Session context:** Executing an implementation plan via subagent-driven-development on Claude Code web (ephemeral container) with a repo stop-hook that flags uncommitted changes and unpushed commits at every turn boundary.
+**Skill:** subagent-driven-development
+**Type:** open-source
+**Phase/Area:** The Task Loop — dispatching background implementers and waiting for their completion notification
+
+**Issue:** Each implementer subagent runs in the background and leaves the working tree dirty for minutes until it commits; the controller must end its turn to await the completion notification. A repo-level stop-hook that enforces git cleanliness fires on that turn boundary and reports "uncommitted changes" — but the dirty file is the subagent's in-flight TDD work (a failing test not yet paired with its fix), which the controller must NOT commit or it corrupts the fail-then-fix cycle and skips review. Separately, once a task commits, the hook reports "unpushed commit(s)"; on an ephemeral container a per-task push is actually the right move (it protects the work against a container reset), so that half of the signal is a useful nudge. Net effect: a recurring interrupt the controller must TRIAGE by git state, not satisfy blindly.
+
+**Suggested improvement:** Add a note under Setup / The Task Loop: when the environment enforces a clean-or-pushed tree at every turn boundary (stop-hook or CI gate), expect it to fire while a background implementer is mid-flight. Triage by `git status`, never by reflex — (a) HEAD advanced and tree clean → push the new commit (correct on ephemeral containers); (b) tree dirty with the subagent's files → wait for its completion notification, do not commit its working tree. Prefer per-task pushes on ephemeral containers so work survives a reset.
+
+**Principle:** A clean-tree/push enforcement mechanism assumes the actor holding the turn also owns the working tree. Under delegated background execution that assumption breaks — the tree belongs to a subagent mid-cycle — so the controller must triage the signal by git state, never satisfy it by committing work it does not own.
