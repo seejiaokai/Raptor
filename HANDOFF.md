@@ -42,20 +42,24 @@ verify** — this section holds only the current baseline and the ways the gates
 mislead. Restate a count only from a run you watched — this file's history twice
 recorded a count that was wrong.
 
-**Latest watched run — the Tracker merge branch, PR #373 (7 Sep 26, unmerged):
-`npm test` 4165 across 238 files (raptor 2725 incl. the 11 new Tracker pins,
-leavewar 1440); `tfin.js` 728/0; build clean; `test:e2e` 423 passed / 0 failed
-(33 skipped by project gate); `smoke:tracker` see its own row; `perf` 4/0;
-`probes:adapted` all 6. The main-branch baseline below stands until #373
-merges.**
+**Current main baseline — PR #373 MERGED to main 7 Sep 26 (`d787e17`; CI all
+ten jobs green, confirmed at merge — build, unit raptor, unit leavewar ×2,
+geometry ×3, tracker smoke, Vercel):** `npm test` 4165 across 238 files (raptor
+2725 incl. the 11 Tracker pins, leavewar 1440); `tfin.js` 728/0; build clean;
+`test:e2e` 423 passed / 0 failed (33 skipped by project gate); `smoke:tracker`
+345/0; `perf` 4/0; `probes:adapted` all 6. Counts recorded from the runs
+watched on this tree as #373 was built. **The per-gate table and traps below
+were captured on the earlier #368 tree — the trap descriptions all still
+stand; only its raw counts predate #373.**
 
-**Last green baseline — the 5–6 Sep 26 batch, PR #368 (CI head `8b269df` plus
-a docs-only handoff commit, squash-merged on the owner's "merge") + PR #369
-(one guard on the Shell's pre-warm poll, after #368's own deploy run 903 went
-red on `unit (raptor)` with every test green — the timer trap in the table
-below).** CI run 901 on `8b269df` and the re-run of 904 on #369: all seven gate
-jobs green (build + reference suite, unit raptor, unit leavewar ×2, geometry
-×3). Counts below are from runs watched here on that tree:
+**Earlier tree the table below was captured on — the 5–6 Sep 26 batch, PR #368
+(CI head `8b269df` plus a docs-only handoff commit, squash-merged on the
+owner's "merge") + PR #369 (one guard on the Shell's pre-warm poll, after
+#368's own deploy run 903 went red on `unit (raptor)` with every test green —
+the timer trap in the table below).** CI run 901 on `8b269df` and the re-run of
+904 on #369: all seven gate jobs green (build + reference suite, unit raptor,
+unit leavewar ×2, geometry ×3). Counts in the table are from runs watched here
+on that tree (superseded by the #373 baseline above; the traps stand):
 
 | gate | reading |
 |---|---|
@@ -149,244 +153,66 @@ jobs green (build + reference suite, unit raptor, unit leavewar ×2, geometry
 
 ## In flight
 
-- **AVALON'S FOUR RULES, BB AS ITS TWIN, + THE SC DESK — on the branch,
-  unmerged (7 Sep 26, owner's rules list + three same-day corrections).** On
-  top of the 11 Aug availability look, every AVALON seat (MAIN AND SPARE —
-  his second word) needs SC currency for the shift's hours (SC NIGHT on
-  19:00–07:00), the front seat is pilots-only (the rear seat stays open to a
-  pilot, confirmed), and nobody holds a seat and another place in the same
-  hours (MAIN + SPARE, a seat + the desk; two desk roles are allowed — his
-  third word); BB carries exactly the same rules, seats and desk, its hours
-  typed (a blank BB line checks nothing); an SC SPARE may not also hold the
-  SC desk in the same hours. The seam that made the desk rules possible: a duty
-  TEMPLATE names its wave ("For wave" picker in the editor — None / SC /
-  AVALON; the seeded SC Shift and AVALON carry theirs, an older saved library
-  gets them back by seed id on load; BB is a fourth choice), and the minted block carries it as the
-  `sa` marker the engine has read since 11 Aug — so a placed AVALON desk is
-  exempt again (overseas / HL / OML / ATT C / OD flag, ATT B mans it, nothing
-  else, no OIL) instead of the plain fully-checked block the 13 Aug decoupling
-  left it as (that is an amendment to the "always plain" clause of that
-  stable decision; the decoupling itself stands). Every rule is in the
-  validator AND the crew picker off one body (`events.ts avSeatHit`,
-  `scSeatHit` now walking `sa:'sc'` desks). Rules `docs/engine-rules.md`
-  §AVALON's one check + §AVALON's three seat rules + §the two SC SPARE rules;
-  seams `docs/feature-impact.md`; pins `engine/avalon-rules.test.ts` (51),
-  `dutytpl.test.ts`, `DutyTplModal.test.tsx`. Owner-settled the same day: an
-  AVALON/BB night followed by a sortie the next morning raises NOTHING (nothing
-  on these waves is an event, so neither carries crew rest or counts toward
-  the 6-day run) — a decision, not a gap. **Bug-swept the same day** (three
-  cheaper agents — a 22-scenario browser drive, an engine edge-case review, a
-  wording audit; three real fixes, see `BUG-TESTING.md` row #377), then a
-  `/requesting-code-review` pass over the whole branch caught three more
-  picker/ring drifts (all fixed, pinned): a standby rear seat is unruled so the
-  picker offers a non-instructor pilot it used to grey out; a hand-edited CAT IW
-  in a front seat now refused by the picker as the validator already refuses it;
-  the `also` puck of a cross-wave double-book now rings. The one thing no browser
-  proved is the Saturday OIL credit landing in Leave War (unit-pinned only).
-  **Rear-seat rule relaxed the same day** (owner: "don't flag out that they are
-  in an illegal seat") — the "only IP / IR / FI may fly RCP" QUAL is removed from
-  the validator (`validate.ts`) AND the crew picker (`avail.ts`); any pilot may
-  ride any back seat, jet or sim, and all other seat rules stay (SC currency, AAR
-  supervision, one-man-two-places, WSO-can't-fly-front). The reference copy is
-  excised too (`refwin.ts:rejet()`, resim's sibling), byte-parity held.
+**In flight — the rules-engine audit fixes (PR #374, draft; branch
+`claude/read-handoff-docs-wuftw9`).** A two-engine bug audit (7 Sep 26 — 26
+agents, ~196 rules verified correct; the leave/day charge maths, the OIL
+ledger and the medical trims came back clean) plus its fixes (8 Sep 26): seven
+commits, each a confirmed bug pinned by a test — the AVALON/BB desk
+picker/validator run-check drift, the ⓘ info-flag lost on a published day, a
+Leave War false-RED rounding slip (3.999-for-4), the SC spare↔desk clash being
+dropped, a stale flying-key crash guard, a day-template CX-reason leak, and the
+owner's "don't pad" call on the available-crew strip. Findings + scan plan +
+fix plan are committed under `docs/audits/` and `docs/superpowers/plans/`; the
+per-bug detail is in `BUG-TESTING.md` (#374 audit-fixes row). Gates all green
+(vitest 4245/240, tfin 728/0, e2e 425 + 33 skipped, tracker 346/0, build
+clean). **Merge waits on the owner's "merge live" — NOT merged.**
 
-- **LEAVE WAR OPENS ON THE WAR BEING BID ON — on the branch, unmerged (7 Sep
-  26).** The tab no longer always opens on January of the first war. It now
-  picks the war that is OPEN for bidding — else bidding CLOSED, else the latest
-  PUBLISHED, else a DRAFT (`engine/stages.ts:pickDefaultPeriodId`, deciding the
-  boot `currentId` in `state/store.ts` unless a `current` is remembered) — and
-  lands the grid on the START of that war's bidding window
-  (`engine/period.ts:defaultFocusDate` = `bidFrom ?? start`). `LeaveWarPage`
-  fires it once, the first time the tab shows, through the same
-  `focusDay → Matrix jumpTo` path the under-manned list uses (so it draws the
-  target months — the preload the owner asked for — and scrolls to them); a
-  later return keeps where the reader was. `selectWar` lands the same way on a
-  picker switch. The Matrix column window now builds AROUND that month, not
-  month 0 — without which the desktop whole-year fill drifted the landing back
-  to January (found and fixed in the 7 Sep browser drive; the phone's rolling
-  window never had it). Seeded demo opens in January exactly as before (its
-  open war's window starts 1 Jan); the change shows when a window starts later
-  in the year or a squadron holds wars in several stages — driven at 1440/390
-  as admin, an open mid-year (Jul) window landing on July at both widths, no
-  console/page/4xx errors. Contract `docs/ui-contracts.md` §The Leave War opens
-  on the war being bid on; impact `docs/feature-impact.md` (Leave War tab row);
-  pins `engine/stages.test.ts`, `engine/period.test.ts`, `leavewarpage.test.tsx`,
-  `ui/undermanned.test.tsx`.
+Everything before the audit fixes is merged — three PRs landed 7 Sep 26:
+**PR #371** (the Leave War figures drawer, bulk balance
+entry, the seven 6 Sep phone fixes, one-lift-for-every-drag, the
+swipe-behind-a-sheet), **PR #373** (the Tracker tab, Leave War opening on the
+war being bid on, and the three 7 Sep visual fixes — the viewer row's MED TOT
+accent band, the Rearrange left-border re-measure, the iOS leave-Rearrange
+re-measure), and **PR #375** (AVALON's four seat rules + BB as its twin + the
+SC desk — SC currency on every AVALON/BB seat, pilots-only front seat, the
+one-man-two-places check, the duty-template "For wave" seam that re-exempts a
+placed AVALON desk; plus the same-day rear-seat relaxation: any pilot may ride
+any back seat). #375 was bug-swept AND `/requesting-code-review`-ed the day it
+landed (three agents + a review pass, six fixes; `BUG-TESTING.md` #377).
+Contracts live in the structured docs (`docs/engine-rules.md` §AVALON,
+`docs/ui-contracts.md`, `docs/feature-impact.md`, `docs/leavewar/known-gaps.md`,
+`docs/tracker/known-gaps.md`, `CLAUDE.md`); the stories are in the commit
+messages. What is NOT closed is the owner's own device pass (see Open /
+deferred / queued) and one unproven seam — the Saturday OIL credit landing in
+Leave War from an AVALON/BB weekend shift is unit-pinned only, never
+browser-proven.
 
-- **THREE LEAVE WAR VISUAL FIXES the owner spotted on that preview — on the
-  branch, unmerged (7 Sep 26).** Small, unrelated to the default-view logic,
-  each with its own commit + pin: (1) the VIEWER row's last figure cell (MED
-  TOT) missed its accent band — the drawer's `.fig.last` right-seam rule
-  out-specified the `tr.me` band rule, so it read darker than the row; fixed
-  with `.mxdrawer .mx tbody tr.me td.fig.last` (`matrix.css`). (2) the
-  open-bidding box's LEFT border vanished in Rearrange — `measureBidBox` did
-  not re-measure on `arranging`, so it stayed behind the widened frozen column;
-  fixed by adding the dep. (3) the box stayed DISPLACED after LEAVING Rearrange
-  on iOS WebKit only — WebKit settles the `--who-w` shrink a frame after the
-  synchronous measure reads it; fixed with a two-frame rAF re-measure on the
-  `arranging` toggle (`Matrix.tsx`). (2)+(3) pinned in `e2e/leavewar.spec.ts`
-  (enter AND leave). **(3) is owner-iPhone-unverified** — no WebKit in the
-  container, so it was fixed blind for iOS and only checked not to regress
-  Chromium; awaiting his tap on the preview.
+- **The performance thread — residuals recorded, not built.** Several speed
+  wins are measured and deferred (the seven day-strings sort, the JS-bound
+  drop, hover-boundary repaints, the `body.dnd` decorations, the one
+  `validate` call); two are the owner's call because they change wording or
+  feel. The full ledger and the guardrails are `docs/performance.md` (Part 2 /
+  Part 1); its §Dead ends lists what not to retry without new measurement.
 
-- **THE TRACKER TAB — on the branch, unmerged, owner-unverified (7 Sep 26).**
-  The OCU Progress Tracker (`seejiaokai/Tracker` at `bf9a47a`) is vendored as
-  the eighth tab, after Leave War, for everyone — `src/tracker/` (plain JS/JSX
-  under `allowJs`), a lazy chunk (~333 KB, the first download unchanged at
-  487 KB), kept mounted once visited. Owner's three answers: keep its own 📁
-  Open / ✓ Save file (storage behind one doorway, `tracker/storage.js`, for
-  the database later; the SharePoint/cloud layers dropped); **everyone edits —
-  only the FILE portion (Open / Import / Save a copy) is the admin's** (his
-  second word the same day, replacing "everyone views, admin edits";
-  `tracker/role.js` ← `resetSession`/`toggleRole`, enforced at the three file
-  entry points in `core.js`); standalone first — no link to Raptor's
-  people. Contracts `docs/ui-contracts.md` §The Tracker tab, seams
-  `docs/feature-impact.md`, gaps + carried traps `docs/tracker/known-gaps.md`,
-  the architecture paragraph `CLAUDE.md` §The Tracker tab is a THIRD app.
-  Pins: `src/tracker/tracker.test.tsx` (10, the role seam + the header shape)
-  and the vendored `scripts/tracker/smoke.mjs` (`npm run smoke:tracker`, a
-  seventh CI job `tracker (smoke)`). Driven 7 Sep 26 at 1440/390 as admin and
-  member: no console/page errors, no 4xx, nothing leaks onto the other tabs,
-  the chart survives a tab round-trip. **Bug-swept the same day (owner ask)**
-  — 25 scenario checks at 390/830/1000/1200/1440: two real bugs found and
-  fixed (the phone's Flow/Info switch wiped by a tab round-trip; an EMPTY
-  chart after logging out from the Tracker and back in — the Shell unmounts
-  on logout, so the remount now redraws), the rest clean: Raptor's document
-  click/change/key routers share no class, id or data-attribute with the
-  Tracker (audited), Delete/Escape on other tabs never reach the chart, the
-  dozing section adds no page height, the details bubble never shows
-  elsewhere, logout releases the document lock, the burger drawer opens over
-  the tab (Raptor's drawer never closed on Escape — not a regression), the
-  admin's view-as-member flip closes an open Save-a-copy dialog. **What his
-  eyes still need**: the feel
-  on his iPhone (the tab is a viewport-tall column — chart and panel scroll
-  inside, the page does not), and whether he wants the Tracker's own dark
-  palette kept or Raptor's. `BUG-TESTING.md` row #376.
+- **iOS is untestable here.** This container ships no WebKit, so every touch /
+  contenteditable / sticky-column change is verified on the owner's iPhone
+  against the Vercel preview; if the grid ever misaligns there, the revert is
+  one commit. This is why the device pass below is his, not something CI closes.
 
-- **ONE LIFT, EVERY DRAG — on the branch, unmerged, iPhone-unverified (6–7 Sep
-  26).** All twelve drag surfaces now share one picked-up look (an even inset
-  cyan box, no halo, following each thing's own corner) and flash where the thing
-  landed; contract `docs/ui-contracts.md` §What a drag LOOKS like — one recipe,
-  every surface + §The landing flash, design
-  `docs/superpowers/specs/2026-09-06-drag-lift-design.md`, gaps
-  `docs/leavewar/known-gaps.md` §The lift frame is measured twice, seam
-  `docs/feature-impact.md`, speed `docs/performance.md` §D + ledger 25.
-  Pins: `src/ui/lift.test.ts` (the module), `src/ui/lift-css.test.ts` (the recipe
-  as a CSS contract), `src/leavewar/ui/rowglow.test.ts` (no per-cell paint), plus
-  e2e "a picked-up row wears one frame the width of the visible grid…"
-  (`leavewar.spec.ts`, both projects), "a section dropped on the board flashes the
-  board's own panel, not the week's copy" and "a dragged quals heading wears one
-  frame down the table…" (`geometry.spec.ts`).
-  His on-phone checklist is `BUG-TESTING.md` row #375 — the drag FEEL and the
-  flash's brightness are his to confirm; four known gaps are recorded in the
-  contract (the ground programme's first move can flash one row out, a
-  close-and-reopen re-flash in the popover, a flash cut short by a second
-  rebuild, and the seated puck's box being its whole slot).
-- **BULK BALANCE ENTRY + the owner's seven phone fixes — on the branch,
-  unmerged, iPhone-unverified (6 Sep 26).** A drag down one figure column picks
-  a run of people and a docked bar credits them all in ONE write; the same batch
-  relit the dragged row, the "View as" row and the Rearrange switch, kept an OIL
-  write on the grid, and moved the drag's left auto-scroll to the frozen edge.
-  Contract `docs/ui-contracts.md` §Bulk balance entry from the figures (and the
-  five paragraphs amended in place around it); seams `docs/feature-impact.md`;
-  gaps `docs/leavewar/known-gaps.md`; his checklists `BUG-TESTING.md` #373/#374.
-- **THE LEAVE WAR FIGURES DRAWER — on the branch, unmerged, iPhone-unverified
-  (6 Sep 26).** Eight figures in the counter column, and a corner switch that
-  pops all eight out beside the names. Contract `docs/ui-contracts.md` §The
-  figures drawer; every gap and the THREE open owner questions
-  `docs/leavewar/known-gaps.md`; his on-phone checklist `BUG-TESTING.md` #372.
-- **The swipe behind a sheet — OWNER-CONFIRMED on his iPhone (6 Sep 26: "Ok
-  it's fixed"); on the branch as PR #371, NOT merged (he merges on his "merge
-  live").** On a touch screen the finger
-  now scrolls the grid ITSELF behind an open Leave War sheet: `ui/Sheet.tsx
-  useGridPan` takes the scrim out of the way (`pointer-events: none` when
-  `(pointer: coarse)`) and a document-level capture shield swallows the tap
-  and closes the sheet — so the fling is the browser's own, on the
-  compositor, identical to the bare grid by construction. A first cut the
-  same day (a native scroller mirrored onto the grid) coasted but stuttered —
-  the owner's recording showed it — because the grid then moved at the main
-  thread's pace; it is gone. Contract: `docs/ui-contracts.md` §The page stays
-  fully usable behind an open sheet (LEFT-RIGHT); pins `scrim.test.tsx` + two
-  e2e. `BUG-TESTING.md` row #371 is his checklist (feel is his to confirm).
-- **The 5–6 Sep 26 batch is MERGED to main (PR #368, squash, on the owner's
-  "merge") — the Leave War Rearrange / counter-block rework, from his iPhone
-  against the preview.** Rearrange: the on-grid bar (Auto-sort / Done) is GONE,
-  the header ⇅ toggle is the one way in and out (icon-only on a phone); the
-  eye in each counter row's frozen box and (the day before) the bar paint at
-  once on iPhone (own compositor layer); the ⠿ grip sits left of each counter
-  name, archived counters go under an ARCHIVE bar, and the frozen name column
-  widens by the grip in Rearrange so callsigns stay whole. Counter block: ONE
-  top row (Manning · ⚙ · ⇅ · OIL · − · +), the date/size line dropped, the
-  zoom pair moved off the month strip, a phone opens one step out (0.8; the
-  strip cancels the zoom and holds twelve months on one line), the frozen
-  header's counter picker keeps a real 40px at any zoom, and the stuck date
-  bar's frozen-column copy is the grid's two columns wide at every zoom (was
-  25% too wide at 0.8 — the hatched filler / a stray date after LVE BAL). OIL
-  tracker: its own − / + beside RANGE, opens one step out on a phone. Raptor
-  shell: the burger drawer scrolls only itself (`body.dw-lock`, panel
-  containment, scrim `touch-action:none`). Contracts in `docs/ui-contracts.md`
-  (§The controls Rearrange inserts…, §The on-grid rearrange bar is GONE, §In
-  Rearrange the frozen name column widens, §The − / + ZOOM pair…, §The month
-  strip is ONE line…, §The page behind the burger drawer does not scroll) and
-  `CLAUDE.md` §Leave War roster & display; stories in the commit messages.
-  **Still owner-iPhone-unverified** (this file, §Standing constraints — the
-  iPhone-unverified list): both paint fixes, the grip in the sticky name cell,
-  sticky columns re-anchoring on the width change, the drawer lock against a
-  real touch swipe. `BUG-TESTING.md` row #368 is his checklist.
-- **The 5 Sep 26 batch is MERGED to main (5 Sep 26 ~10:25 UTC, PRs #358–#366,
-  on the owner's "merge") — eight fixes and one repair.** The Leave War
-  swipe-up-mid-fling rubber band (`overflow-y:hidden` on `.mx-wrap`, #358); the
-  drop delta + one validate per drop (#359) and the run trace + the pre-drop
-  hover reason (#360); the desktop week's compositor layers 261 → 105 (#361);
-  the phone carousel's off-snap rest (#362); the blank screen after a fast
-  fling — the fresh-add box repaints itself, not the page (#363); the
-  cross-week glide's black lower half / split card — the snapshot box is now
-  the taller of the two weeks (#364); the Leave War month-jump test flake
-  (#365); and a stray `node_modules` symlink that a `git add -A` in a worktree
-  had committed, untracked with the ignore rule hardened (#366; observer log
-  obs 73 — stage conflicted files BY NAME in a worktree). Contracts:
-  `docs/ui-contracts.md` (§the drop delta, §The run trace, §Compositor layers,
-  §The Leave War grid scroller has no vertical axis), `docs/engine-rules.md`
-  §the break-day rule, ledger 21–24 in `docs/performance.md`; the stories are
-  in the squash commits. The phone-only faults (#358, #362, #363, #364) were
-  verified on the owner's iPhone against the previews before the merge.
-- **The performance thread.** The puck-drag round and the drop round (both
-  6 Sep 26) are MERGED to main as PR #356 (5 Sep 26 00:08 UTC). Check a PR's
-  state before acting on it — this file said "NOT merged" for an hour after the
-  owner merged (observer log obs 60). The full ledger of every speed round is `docs/performance.md` Part 2; the
-  guardrails any new change must follow are Part 1. **Still-open residuals**,
-  recorded not built, in order of size: the seven day strings (60–135 ms —
-  `availHTML`'s per-wave availability sort is the fat part and reads the
-  availability oracle, so any cache there is engine-adjacent); the DROP is
-  JS-bound (5 Sep 26 trace, ledger 22: ~210 ms of JS inside the pointer-up at
-  4× — validate + the block swap + parse — then ~40 style, ~45 layout, ~66
-  paint, ~72 raster; the earlier "~160 ms repaint + compositing" reading was
-  the DRAG's per-move re-layerise, halved by the 5 Sep layer cut below); plain
-  mouse movement over the week repaints on every hover boundary crossed
-  (`.form:hover`'s 1.8% white tint and the seat hover outline — ~17 ms a
-  crossing at 4×, bisected by nesting depth; dropping the tint is the owner's
-  call); what a drag move still costs after the cut (~16 ms layerize for the
-  105 layers left, 35 of them the roster's own sticky heads and pucks, ~9 ms
-  hit-test, ~18 ms pointer handlers); the `body.dnd` decorations coming off
-  (~60 ms; layout-neutral only with a visible wording change — owner's call);
-  the ONE `validate` call (~22 ms, engine — not touched; it was two until the
-  5 Sep drop-delta PR, ledger 21). Every dead end
-  measured along the way is in `docs/performance.md` §Dead ends — don't retry
-  them without new measurement.
-- **iOS is untestable here.** This container ships no WebKit. The Leave War
-  column window / placeholders and every contenteditable or touch-fling change
-  are verified on the owner's iPhone against the preview; if the grid ever
-  misaligns there, the revert is one commit.
-- **The observer log persists now** — `.claude/skill-observations/log.md` is
-  committed (obs 57–73 landed across the 5 Sep 26 PRs, obs 74–85 in #368), so
-  the old worry that it dies with the container is resolved as long as it keeps
-  being committed. It holds 81 OPEN observations; its `last-review-date.txt`
-  reads 19 Aug 26, so the skill's weekly review is overdue when the owner wants
+- **The observer log is committed** at `.claude/skill-observations/log.md` (it
+  now carries entries through #124, landed across the merged PRs), so it
+  survives the container. Its weekly review is overdue whenever the owner wants
   one.
 
 
 ## Open / deferred / queued
 
+- **OWNER'S DEVICE PASS — the just-shipped Leave War + Tracker work awaits his
+  own eyeball (7 Sep 26).** Everything is merged and live, but verified here
+  only in Chromium; the owner still confirms feel and appearance on his iPhone
+  (and, for the bulk-balance run, a computer too). Per-item checklists are
+  `BUG-TESTING.md` rows #368 and #372–#376. One open question rides row #376 —
+  whether the Tracker keeps its own dark palette or takes Raptor's.
 - **OWNER'S CALL — no "back to the default order" control since Auto-sort went
   (6 Sep 26).** A hand-arranged Leave War roster stays arranged until dragged
   back; the store's `autoSortRoster` still exists. Offered: a "Reset order" line

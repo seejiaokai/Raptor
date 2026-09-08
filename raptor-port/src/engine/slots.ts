@@ -65,7 +65,10 @@ export function slotVal(key:any){
     if(m&&c>=0){const k=key.slice(0,c),a=key.slice(c+1).replace(XKEY,'').split('.');
       const r=rowRef(k,a); const v=r&&(r.more||[])[+m[1]];
       return PEOPLE[v]?v:'';} }
-  if(c<0)return flyRef(key)[key.split('.')[4]];
+  /* the flying branch guards like every other (audit, 8 Sep 26): flyRef is
+     built to answer nothing for a key that outlived its row, and reading a
+     seat off that nothing threw out of the middle of a click handler */
+  if(c<0){const r=flyRef(key); return r?(r[key.split('.')[4]]||''):'';}
   const k=key.slice(0,c),a=key.slice(c+1).split('.'),d=DAYS[+a[0]];
   try{
     if(k==='d'){const r=d.dutywaves[+a[1]].rows[+a[2]];return r&&PEOPLE[r.id]?r.id:'';}
@@ -84,6 +87,7 @@ export function slotVal(key:any){
 export function noteChange(key:any,was?:any,now?:any){ if(key){SCHED.pending[String(key)]=1; delete SCHED.changes[String(key)]; logEdit(key,was,now);} }
 export function setSlotVal(key:any,id:any){
   key=String(key);const c=key.indexOf(':');
+  if(c<0&&!flyRef(key))return;                   // a stale flying key: nothing to write, nothing to mark
   /* dropping someone onto the seat they already occupy is not a change — it
      used to raise a pending mark, an undo step and a line in the next AL */
   const was=slotVal(key);
@@ -95,7 +99,7 @@ export function setSlotVal(key:any,id:any){
       r.more=r.more||[]; r.more[+m[1]]=id||'';
       while(r.more.length&&!r.more[r.more.length-1])r.more.pop();   // keep the tail tidy
       return;} }
-  if(c<0){flyRef(key)[key.split('.')[4]]=id||'';return;}
+  if(c<0){flyRef(key)[key.split('.')[4]]=id||'';return;}   // non-null: guarded above
   const k=key.slice(0,c),a=key.slice(c+1).split('.'),d=DAYS[+a[0]];
   try{
     if(k==='d'){d.dutywaves[+a[1]].rows[+a[2]].id=id||'';return;}

@@ -51,7 +51,10 @@ export function dayKeys(d:any,di:any){
   m.set(`dtn:${di}`,S(d.dutynotes));
   m.set(`gn:${di}`,S(d.grndnotes));
   (d.allhands||[]).forEach((r:any,ri:any)=>{
-    m.set(`ap:${di}.${ri}.prog`,S(r.prog)+'␟'+(r.cx?1:0)+'␟'+S(r.cxr)+'␟'+(r.flag?1:0));
+    /* `info` (the ⓘ info-only flag) rides the composite (audit, 8 Sep 26):
+       without it a flip on a published day fingerprinted as "no change" and
+       reconcile threw the pending mark away — the flip could never be issued */
+    m.set(`ap:${di}.${ri}.prog`,S(r.prog)+'␟'+(r.cx?1:0)+'␟'+S(r.cxr)+'␟'+(r.flag?1:0)+'␟'+(r.info?1:0));
     m.set(`ap:${di}.${ri}.sub`,S(r.sub)); m.set(`ap:${di}.${ri}.str`,T(r.str)); m.set(`ap:${di}.${ri}.end`,T(r.end));
     m.set(`ap:${di}.${ri}.rmks`,S(r.rmks));
     const who=Array.isArray(r.who)?r.who:(r.who?[r.who]:[]);
@@ -94,7 +97,7 @@ export function dayKeys(d:any,di:any){
     });
   });
   (d.ground||[]).forEach((r:any,ri:any)=>{
-    m.set(`gr:${di}.${ri}.prog`,S(r.prog)+'␟'+(r.cx?1:0)+'␟'+(r.flag?1:0));
+    m.set(`gr:${di}.${ri}.prog`,S(r.prog)+'␟'+(r.cx?1:0)+'␟'+(r.flag?1:0)+'␟'+(r.info?1:0));   // + info, as ap: above
     m.set(`gr:${di}.${ri}.str`,T(r.str)); m.set(`gr:${di}.${ri}.end`,T(r.end)); m.set(`gr:${di}.${ri}.rmks`,S(r.rmks));
     m.set(`g:${di}.${ri}`,P(r.who));
     (r.more||[]).forEach((v:any,x:any)=>m.set(`g:${di}.${ri}.x${x}`,P(v)));

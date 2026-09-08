@@ -89,6 +89,13 @@ describe('the mutation funnel (tfin edit-board group)', () => {
     expect(flyRef('0.99.0.0')).toBeUndefined()
   })
 
+  it('a stale flying key reads blank and writes nothing — no throw, no phantom mark (audit, 8 Sep 26)', () => {
+    expect(slotVal('99.99.99.99.p')).toBe('')
+    expect(slotVal('0.0.0.99.w')).toBe('')
+    expect(() => setSlotVal('0.0.0.99.w', 'bane')).not.toThrow()
+    expect(SCHED.pending['0.0.0.99.w']).toBeUndefined()
+  })
+
   it('txtRef resolves a remarks field', () => {
     expect(txtRef('fr:0.0.0.0')).toBeTruthy()
   })

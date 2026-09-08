@@ -194,9 +194,10 @@ function teamsOf(slots: TeamSlot[], weightOf: (p: Person) => number, people: Per
     teams = Math.min(teams, have / need)
   }
   if (!Number.isFinite(teams)) return 0
-  // Never negative, and rounded to kill float dust (0.9999999 must read 1 —
-  // a team the squadron actually has must not paint the day red).
-  return Math.max(0, Math.round(teams * 1000) / 1000)
+  // Never negative. RAW — ruleHave rounds once at the end (audit, 8 Sep 26):
+  // rounding here and again after × size gave 1.333 × 3 = 3.999, and a
+  // "red below 4" threshold painted the day red with four present.
+  return Math.max(0, teams)
 }
 
 /**
@@ -222,10 +223,14 @@ export function ruleHave(rc: RuleCount, people: Person[], grid: Grid, states: St
     const have = availabilityOf(p, date, code, stateOf(states, p.id, date))
     return rc.presence && onDuty ? 1 : have
   }
+  // One rounding, on the number the cell shows — it kills float dust
+  // (0.9999999 must read 1: a team the squadron has must not paint the day
+  // red) without stacking a second rounding on top of the first.
+  const r3 = (x: number) => Math.round(x * 1000) / 1000
   const teams = teamsOf(rc.slots, weightOf, people)
-  if (rc.show !== 'people') return teams
+  if (rc.show !== 'people') return r3(teams)
   const size = rc.slots.reduce((n, s) => n + s.count, 0)
-  return Math.round(teams * size * 1000) / 1000
+  return r3(teams * size)
 }
 
 export function countsFor(people: Person[], grid: Grid, states: States, date: string): DayCounts {

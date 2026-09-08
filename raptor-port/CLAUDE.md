@@ -143,6 +143,19 @@ barely more than one.
   sitting open is the intended resting state, not a thing to finish. The 24 Aug
   rule below is kept for its mechanics (where the link is, SSO, no PR-watching);
   its "auto-merge is the default" clause no longer applies.
+- **MODELS (owner, 7 Sep 26) — heavy work runs on Opus 4.8; Fable 5.1 is
+  budget-limited.** The owner prefers Opus 4.8 and Fable 5.1 for work ("they
+  hallucinate less and are more correct"); he has plenty of Opus tokens and a
+  LIMITED Fable allowance, which he spends deliberately on the SMART work —
+  bug checks, verification, complex reasoning ("sometimes I use fable for
+  things like bug check because it's smarter"). So split by kind, not by
+  importance: put the VOLUMINOUS work — long reads, wide scans, parallel
+  reviewer subagents, many-turn orchestration — on Opus 4.8, and put the
+  HARD-REASONING work — the verify pass on findings, tricky design calls,
+  a focused bug check — on Fable. A session running on Fable keeps its own
+  turns few and short. For subagents, OMIT the model override so
+  they INHERIT the session's model: the bare `opus` alias is resolved by the
+  harness and may not land on 4.8.
 - **Always hand him the Vercel preview link; auto-merge WAS the default until
   2 Sep 26 (see above)** (owner, 24 Aug 26 — "always let me know once vercel
   is ready to be tested so i can test it" → "u can auto merge unless u feel

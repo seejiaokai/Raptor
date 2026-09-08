@@ -196,4 +196,12 @@ describe('personBusy follows the editable step / dekit rules', () => {
       expect(after[1]).toBe(before[1] + 15)
     } finally { VCONF.step = step0; VCONF.dekit = dekit0 }
   })
+
+  it("a standalone SC shift is a SHIFT — occupied exactly its hours, no step or dekit (owner, 8 Sep 26: \"don't pad\")", () => {
+    const sc: any = makeStandalone('sc'); DAYS[0].waves.push(sc)
+    sc.formations[0].aircraft[0].p = 'split'                 // SC AM MAIN, 07:00–13:00
+    const spans = personBusy(DAYS[0], 'split')
+    expect(spans).toContainEqual([420, 780])
+    expect(spans.some(([s, e]: any) => s === 420 - VCONF.step && e === 780 + VCONF.dekit), 'no padded copy').toBe(false)
+  })
 })

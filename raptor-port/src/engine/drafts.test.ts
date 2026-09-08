@@ -477,4 +477,15 @@ describe('reconcileIssuedMarks — a mark stranded at an address in neither docu
     reconcileIssuedMarks()
     expect(SCHED.pending[key], 'canonical compare: callsign live vs id issued still match').toBeUndefined()
   })
+
+  it('an ⓘ info-only flip on a published day is a real amendment — reconcile keeps the mark, and drops it when flipped back', () => {
+    pub()
+    DAYS[0].ground[0].info = true
+    SCHED.pending['gr:0.0.prog'] = 1                  // what board.ts marks on the ⓘ tap
+    reconcileIssuedMarks()
+    expect(SCHED.pending['gr:0.0.prog'], 'the flip differs from the issued day').toBe(1)
+    DAYS[0].ground[0].info = false
+    reconcileIssuedMarks()
+    expect(SCHED.pending['gr:0.0.prog'], 'flipped back = nothing to publish').toBeUndefined()
+  })
 })

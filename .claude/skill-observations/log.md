@@ -1926,3 +1926,63 @@ gate's. Keep verdict-bearing commands unpiped.
 **Suggested improvement:** In a sweep brief, state expectations as pointers to the rule's source of truth (the engine doc section, the pinning test) and ask the agent to derive the expected count/wording from there; reserve hand-written expectations for things the docs don't yet say. Ask the agent to label each FAIL as "contradicts the doc" vs "contradicts the brief". The wording-audit agent, briefed with a literal list of stale phrases, produced two false positives for the same reason — a phrase list is a paraphrase too.
 
 **Principle:** A verifier can only be as right as its oracle; when you delegate verification, delegate the oracle (a doc or a test), not your memory of it.
+
+### Observation 127: A merge-time handoff must sweep the WHOLE "in flight" list, not just this session's diff
+
+**Status:** OPEN
+**Date:** 2026-09-07
+**Session context:** session-handoff after merging the accumulated branch to main. The current-state doc's "In flight" section still marked this session's own threads "unmerged", AND still carried an earlier PR's threads as "unmerged" even though that PR had merged in a prior session and its cleanup was never done.
+**Skill:** session-handoff (RAPTOR local skill)
+**Type:** open-source
+**Phase/Area:** Step 3 — the bounded "keep the durable docs true" check
+
+**Issue:** Step 3's check is deliberately bounded to `git diff <session-start>...origin/main` — this session's own changes. That correctly catches docs THIS session falsified, but it structurally cannot catch a current-state ("in flight" / "unmerged") entry that a PRIOR session's merge left stale, because that entry sits in a file this session's diff never touched. Here four threads from an already-merged earlier PR had been sitting in "In flight" marked "unmerged" for one or more sessions; they were caught only because the handoff happened to read the entire section by eye, not because any step pointed at them. On a busier handoff they would have been missed and shipped forward as false state — the same failure mode the skill already documents for the AVALON item and for the two-merged-PRs session-state file.
+
+**Suggested improvement:** Add one line to Step 3: whenever this session performed or observed a merge to main, re-read the ENTIRE "In flight" (or equivalent current-state/unmerged) section and reconcile every entry's merge status against `git log origin/main`, not only the entries this session's diff touched. A "current-state" section's invariant is that nothing in it is stale as of now — that is a whole-section check, independent of who made which entry stale.
+
+**Principle:** A bounded diff-scoped check keeps a doc true to THIS change, but a section whose contract is "current state" (nothing here is already done/merged) must be reconciled in full at every merge — staleness left by earlier actors lives outside this session's diff and is invisible to a diff-scoped sweep.
+
+### Observation 128: A bug-audit plan must re-read every finding's code site before prescribing the fix — the audit names the symptom, the plan needs the write path
+
+**Status:** OPEN
+**Date:** 2026-09-08
+**Session context:** Writing the implementation plan for the seven rules-engine audit fixes (writing-plans skill, on the budget-limited "hard reasoning" model per the owner's model rule).
+**Skill:** writing-plans
+**Type:** open-source
+**Phase/Area:** Turning audit findings into tasks
+
+**Issue:** The audit report gave each bug a file:line, a repro and a "fix shape". That was enough to believe the bug, not enough to write a test that fails without the fix: for the info-flag fingerprint bug the test needed to know WHICH pending key the UI writes on the ⓘ tap (board.ts, not the engine file the finding named); for the three-way SC clash it needed to confirm only ONE validator site asks the hit walker (else the expected count would be wrong); for the double-rounding bug it needed the existing 0.667/0.5 pins to prove a single rounding leaves them unmoved. Every one of the seven tasks needed a read beyond the finding's named lines.
+
+**Suggested improvement:** In writing-plans, under "File Structure" or a new "From findings to tasks" note: when the spec is a set of audit/review findings, re-read each finding's code site PLUS its callers and the existing tests that pin the seam before writing the task — the finding names the symptom; the failing test needs the write path (who sets the state the bug loses) and the existing pins that the fix must not move. Budget one focused read per finding; the plan is only as real as those reads.
+
+**Principle:** A finding is a claim about a symptom; a task is a claim about a fix and a test. The second needs facts the first never carried — callers, write paths, existing pins — so a plan built only from the findings document will carry tests that cannot fail for the right reason.
+
+### Observation 129: The SDD background-subagent pattern collides with a stop-hook clean-tree/push check
+
+**Status:** OPEN
+**Date:** 2026-09-08
+**Session context:** Executing an implementation plan via subagent-driven-development on Claude Code web (ephemeral container) with a repo stop-hook that flags uncommitted changes and unpushed commits at every turn boundary.
+**Skill:** subagent-driven-development
+**Type:** open-source
+**Phase/Area:** The Task Loop — dispatching background implementers and waiting for their completion notification
+
+**Issue:** Each implementer subagent runs in the background and leaves the working tree dirty for minutes until it commits; the controller must end its turn to await the completion notification. A repo-level stop-hook that enforces git cleanliness fires on that turn boundary and reports "uncommitted changes" — but the dirty file is the subagent's in-flight TDD work (a failing test not yet paired with its fix), which the controller must NOT commit or it corrupts the fail-then-fix cycle and skips review. Separately, once a task commits, the hook reports "unpushed commit(s)"; on an ephemeral container a per-task push is actually the right move (it protects the work against a container reset), so that half of the signal is a useful nudge. Net effect: a recurring interrupt the controller must TRIAGE by git state, not satisfy blindly.
+
+**Suggested improvement:** Add a note under Setup / The Task Loop: when the environment enforces a clean-or-pushed tree at every turn boundary (stop-hook or CI gate), expect it to fire while a background implementer is mid-flight. Triage by `git status`, never by reflex — (a) HEAD advanced and tree clean → push the new commit (correct on ephemeral containers); (b) tree dirty with the subagent's files → wait for its completion notification, do not commit its working tree. Prefer per-task pushes on ephemeral containers so work survives a reset.
+
+**Principle:** A clean-tree/push enforcement mechanism assumes the actor holding the turn also owns the working tree. Under delegated background execution that assumption breaks — the tree belongs to a subagent mid-cycle — so the controller must triage the signal by git state, never satisfy it by committing work it does not own.
+
+### Observation 130: A fix's pinning test must expect the count AFTER every downstream merge/dedupe layer, not just the layer the fix touches
+
+**Status:** OPEN
+**Date:** 2026-09-08
+**Session context:** Executing a from-findings implementation plan (rules-engine audit fixes) via subagent-driven-development. One task (an all-hits conflict walker) was BLOCKED because the plan's pinning test asserted 3 warnings but the true user-visible count was 2.
+**Skill:** writing-plans
+**Type:** open-source
+**Phase/Area:** Writing the pinning test in a from-findings plan; No-Placeholders / self-review
+
+**Issue:** The plan added an all-hits walker fix and asserted "3 conflicts", counting the pairs the FIX generates and copying the shape of a sibling scenario. But the warnings then pass through a SECOND, independent dedupe layer (an add() keyed on code + who + message-TEXT) that folds byte-identical messages. Two of the three generated pairs produced identical text and collapsed to one, so the true count was 2. The test would have failed even though the fix was correct; the implementer rightly blocked rather than edit the assertion to fudge. The sibling scenario the test was modelled on reached 3 only because ITS rows carried distinct wording (MAIN vs SPARE) — a discriminator absent in the new scenario (two same-role rows).
+
+**Suggested improvement:** When a test asserts a COUNT of user-visible outputs (warnings, rows, notifications, log lines), trace the value through EVERY downstream merge/dedupe/format layer between the changed code and the surface the test reads — not only the layer the fix touches. When a sibling scenario is the template for a new test, verify the discriminator the sibling relies on actually exists in the new scenario. Prefer asserting the BEHAVIOUR the fix delivers ("the previously-dropped case now appears") over a raw total a dedupe layer can move. Add this as a check in writing-plans' self-review (type-consistency / no-placeholder pass).
+
+**Principle:** A count assertion is a claim about the OUTPUT surface, not about the code path the fix changed. Between the two sit merge/dedupe/format layers that can fold or split results, so a test written from the fix's-eye view — ignoring them — can pin the wrong number even when the fix is right.

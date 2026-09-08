@@ -94,6 +94,15 @@ describe('ruleHave', () => {
     expect(ruleHave(rc, crew, {}, {}, D)).toBe(2) // 1 set × 2 people
   })
 
+  it('show: people rounds ONCE — four pilots on a three-pilot team read 4, not 3.999', () => {
+    // 4/3 of a team rounded to 1.333 and then × 3 gave 3.999, which a
+    // "red below 4" threshold painted RED with exactly four present.
+    const rc: RuleCount = { kind: 'team', slots: [{ count: 3, filter: { seats: ['pilot'] } }], show: 'people' }
+    const four = [p('a', 'pilot', 'ops'), p('b', 'pilot', 'ops'), p('c', 'pilot', 'ops'), p('d', 'pilot', 'ops')]
+    expect(ruleHave(rc, four, {}, {}, D)).toBe(4)
+    expect(ruleHave({ ...rc, show: 'teams' }, four, {}, {}, D)).toBe(1.333)
+  })
+
   it('presence counts a man standing SC duty; availability does not', () => {
     const duo = [p('p1', 'pilot', 'ops', { scd: true }), p('w1', 'wso', 'ops', { scd: true })]
     const grid: Grid = { p1: { [D]: 'FO' } }

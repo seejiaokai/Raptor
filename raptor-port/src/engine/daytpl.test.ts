@@ -111,6 +111,9 @@ describe('tplFromDay — the crew-blanked mint', () => {
     DAYS[0].dutywaves[0].rows[0].flag = true
     DAYS[0].ground[0].cx = true
     DAYS[0].allhands[0]!.flag = true
+    DAYS[0].sims.oft[0].cxr = 'U/S BOX'
+    DAYS[0].dutywaves[0].rows[0].cxr = 'SICK'
+    DAYS[0].ground[0].cxr = 'WX'
     const t = tplFromDay(0, 'Cancelled day')
     expect(t.d.waves[0].formations[0].aircraft[0].cx).toBeUndefined()
     expect(t.d.waves[0].formations[0].aircraft[0].cxr).toBeUndefined()
@@ -119,6 +122,12 @@ describe('tplFromDay — the crew-blanked mint', () => {
     expect(t.d.dutywaves[0].rows[0].flag).toBeUndefined()
     expect(t.d.ground[0].cx).toBeUndefined()
     expect(t.d.allhands[0].flag).toBeUndefined()
+    /* the typed reason goes with the cx on EVERY row kind (audit, 8 Sep 26):
+       it used to ride sim / duty / ground rows into the template and pre-fill
+       the cancel box on the day the template was applied to */
+    expect(t.d.sims.oft[0].cxr).toBeUndefined()
+    expect(t.d.dutywaves[0].rows[0].cxr).toBeUndefined()
+    expect(t.d.ground[0].cxr).toBeUndefined()
   })
 
   it('drops the accepted-input src reference off a ground row', () => {

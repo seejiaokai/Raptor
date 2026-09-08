@@ -87,6 +87,13 @@ export function shiftEvHard(e:any){return !!SHIFT_HARD[e.kind]||shiftHardGround(
 export function scSeatHit(di:any,id:any,s:any,e:any,selfKey:any){
   return standaloneHits(di,id,s,e,selfKey,'sc')[0]||null;
 }
+/* EVERY SC place, not the first — the SC twin of avSeatHits (audit, 8 Sep
+   26): a man on two SPARE rows and the SC desk at once is three pairs, and
+   the first-hit walk let one spare "use up" the other and left spare↔desk
+   unspoken. The picker keeps scSeatHit's single answer (one refusal reason). */
+export function scSeatHits(di:any,id:any,s:any,e:any,selfKey:any){
+  return standaloneHits(di,id,s,e,selfKey,'sc');
+}
 /* DOES HE ALREADY HOLD ANOTHER AVALON / BB PLACE IN THESE HOURS? (owner, 7 Sep
    26 — "they should also not be planned as a main and a spare the same timing
    … or be planned on a duty for Avalon and planned as Avalon main or spare";
