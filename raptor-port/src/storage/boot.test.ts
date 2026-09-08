@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
-import { bootStorage, chooseBackend } from './boot'
+import { bootStorage, chooseBackend, guardUnload } from './boot'
 import { MemoryBackend } from './memory'
 import { BrowserBackend } from './browser'
 
@@ -26,6 +26,76 @@ describe('bootStorage', () => {
   it('rejects when loadAll fails, and nothing is attached', async () => {
     const be = new MemoryBackend(); be.failNext(1)
     await expect(bootStorage(be)).rejects.toThrow()
+  })
+})
+
+/* 8 Sep 26 bug pass: a reload inside the 300 ms coalesce wait lost the last
+   edit — the guard only asked "leave?", and on a phone (no beforeunload) it
+   could not even ask. The page-leaving events now flush first. */
+describe('guardUnload', () => {
+  const fakeWin = (visibility = 'hidden') => {
+    const h: Record<string, (e?: any) => void> = {}
+    const win = { addEventListener: (t: string, fn: any) => { h[t] = fn }, document: { visibilityState: visibility } } as unknown as Window
+    return { win, h }
+  }
+  const unloadEvent = () => ({ preventDefault: vi.fn(), returnValue: undefined as any })
+
+  it('pagehide lands every letter still in its coalesce wait — a phone leaving the page keeps the last edit', async () => {
+    vi.useFakeTimers()
+    const be = new MemoryBackend()
+    const { wb, postman } = await bootStorage(be)
+    const { win, h } = fakeWin()
+    guardUnload(postman, win)
+    wb.set('settings', 'rules', '"just typed"')
+    expect(be.peek('settings', 'rules')).toBeNull()
+    h.pagehide()
+    await vi.advanceTimersByTimeAsync(0)
+    expect(be.peek('settings', 'rules')).toBe('"just typed"')
+  })
+
+  it('a hidden visibilitychange flushes too; a visible one does not', async () => {
+    vi.useFakeTimers()
+    const be = new MemoryBackend()
+    const { wb, postman } = await bootStorage(be)
+    const seen = fakeWin('visible')
+    guardUnload(postman, seen.win)
+    wb.set('settings', 'rules', '"a"')
+    seen.h.visibilitychange()
+    await vi.advanceTimersByTimeAsync(0)
+    expect(be.peek('settings', 'rules')).toBeNull()
+    ;(seen.win.document as any).visibilityState = 'hidden'
+    seen.h.visibilitychange()
+    await vi.advanceTimersByTimeAsync(0)
+    expect(be.peek('settings', 'rules')).toBe('"a"')
+  })
+
+  it('beforeunload flushes and, with the letter on its way, does not prompt', async () => {
+    vi.useFakeTimers()
+    const be = new MemoryBackend()
+    const { wb, postman } = await bootStorage(be)
+    const { win, h } = fakeWin()
+    guardUnload(postman, win)
+    wb.set('settings', 'rules', '"b"')
+    const e = unloadEvent()
+    h.beforeunload(e)
+    expect(e.preventDefault).not.toHaveBeenCalled()
+    await vi.advanceTimersByTimeAsync(0)
+    expect(be.peek('settings', 'rules')).toBe('"b"')
+  })
+
+  it('beforeunload still prompts while a letter has failed to land', async () => {
+    vi.useFakeTimers()
+    const be = new MemoryBackend()
+    const { wb, postman } = await bootStorage(be)
+    const { win, h } = fakeWin()
+    guardUnload(postman, win)
+    be.failNext(2)
+    wb.set('settings', 'rules', '"c"')
+    await vi.advanceTimersByTimeAsync(300)
+    expect(postman.status).toBe('failed')
+    const e = unloadEvent()
+    h.beforeunload(e)
+    expect(e.preventDefault).toHaveBeenCalled()
   })
 })
 

@@ -1,12 +1,12 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { INPUTS, inpId } from '../engine/inputs'
-import { PEOPLE } from '../engine/people'
+import { PEOPLE, ID_BY_CS, nameToId } from '../engine/people'
 import { DAYS } from '../engine/data'
 import { CURWEEK } from '../engine/waves'
 import { storeBackend, HOOKS } from '../engine/hooks'
-import { stashClear, stashHas } from '../engine/weekstash'
+import { stashClear, stashHas, stashDrop } from '../engine/weekstash'
 import { PLANPUCKS, DAYRMK, addPlanPuck } from './plan'
-import { initStore, writeInputs, weekStashSnap, weekDirty } from './store'
+import { initStore, writeInputs, weekStashSnap, weekDirty, loadWeek, moveSectionTo, resetSession } from './store'
 import { undo } from './history'
 import { setSession } from './auth'
 import { hydrate, persistAll, persistPeople, wirePersist, isHydrated, weekId, weekKey } from './persist'
@@ -16,13 +16,20 @@ import { MemoryBackend } from '../storage/memory'
 
 const ISNAP = JSON.stringify(INPUTS)
 const PSNAP = JSON.stringify(PEOPLE)
+const BOOT_WEEK = CURWEEK
+const WEEK_B = '20/07/2026'   // the authored second demo week: an input lands on it
+const WEEK_C = '12/10/2026'   // a blank far-off week: nothing lands
 const ROW = { person: 'dj', date: 'Jul 14', allday: true, type: 'LL', remarks: 'persist test', mod: '2026-07-01' }
 
 function resetWorld() {
   INPUTS.length = 0; JSON.parse(ISNAP).forEach((r: any) => INPUTS.push(r))
   for (const k of Object.keys(PEOPLE)) delete PEOPLE[k]
   Object.assign(PEOPLE, JSON.parse(PSNAP))
+  for (const k of Object.keys(ID_BY_CS)) delete ID_BY_CS[k]
+  for (const id of Object.keys(PEOPLE)) ID_BY_CS[PEOPLE[id].cs.toLowerCase()] = id
   PLANPUCKS.length = 0; for (const k of Object.keys(DAYRMK)) delete DAYRMK[k]
+  stashClear()
+  if (CURWEEK !== BOOT_WEEK) loadWeek(BOOT_WEEK)   // the swap tests leave the loaded week elsewhere
   stashClear()
 }
 
@@ -174,5 +181,106 @@ describe('persistAll and the hooks', () => {
 
   it('persistAll is a no-op before wirePersist', () => {
     expect(() => persistAll()).not.toThrow()
+  })
+})
+
+/* The 8 Sep 26 bug pass on the seam: every case here was a real loss or
+   corruption found by the audit probes, each pinned so it cannot return. */
+describe('the week swap and the stored week records (8 Sep 26 bug pass)', () => {
+  it('leaving an edited week for a blank one files the edit under ITS OWN id and nothing under the blank one — and a reload agrees', async () => {
+    const be = new MemoryBackend()
+    const { wb } = await boot(be)
+    const A = CURWEEK
+    DAYS[0].notes.push('WEEK-A-NOTE'); HOOKS.histPush()
+    loadWeek(WEEK_C)
+    expect(wb.has('weeks', weekId(WEEK_C))).toBe(false)
+    expect(wb.get('weeks', weekId(A))).toContain('WEEK-A-NOTE')
+    loadWeek(A)                                            // and back: A's record is not overwritten with C's blank days
+    expect(wb.has('weeks', weekId(WEEK_C))).toBe(false)
+    expect(wb.get('weeks', weekId(A))).toContain('WEEK-A-NOTE')
+    expect(DAYS[0].notes).toContain('WEEK-A-NOTE')
+    await vi.advanceTimersByTimeAsync(300)
+    resetWorld()                                           // the reload
+    await boot(be)
+    expect(DAYS[0].notes).toContain('WEEK-A-NOTE')
+    loadWeek(WEEK_C)
+    expect(DAYS[0].notes).not.toContain('WEEK-A-NOTE')
+    expect(DAYS[0].waves.length).toBe(0)
+  })
+
+  it('a week merely visited is not persisted, even though an input lands on it during the swap', async () => {
+    const be = new MemoryBackend()
+    const { wb } = await boot(be)
+    loadWeek(WEEK_B)
+    expect(wb.has('weeks', weekId(WEEK_B))).toBe(false)
+    expect(wb.has('weeks', weekId(BOOT_WEEK))).toBe(false)
+  })
+
+  it('undo back to the load state removes the stored record, so the undone edit does not come back after a reload', async () => {
+    const be = new MemoryBackend()
+    const { wb } = await boot(be)
+    DAYS[0].notes.push('UNDONE'); HOOKS.histPush()
+    expect(wb.has('weeks', weekId(CURWEEK))).toBe(true)
+    undo()
+    expect(wb.has('weeks', weekId(CURWEEK))).toBe(false)
+    await vi.advanceTimersByTimeAsync(300)
+    expect(be.peek('weeks', weekId(CURWEEK))).toBeNull()
+  })
+
+  it("a week dropped from the stash (the Admin sweep) leaves storage on the next persistAll", async () => {
+    const be = new MemoryBackend()
+    const { wb } = await boot(be)
+    const A = CURWEEK
+    DAYS[0].notes.push('OLD'); HOOKS.histPush()
+    loadWeek(WEEK_C)                                       // A is stashed and stored
+    expect(wb.has('weeks', weekId(A))).toBe(true)
+    stashDrop(A); persistAll()
+    expect(wb.has('weeks', weekId(A))).toBe(false)
+    await vi.advanceTimersByTimeAsync(300)
+    expect(be.peek('weeks', weekId(A))).toBeNull()
+  })
+
+  it('a section reorder on the board is filed like any other edit', async () => {
+    const be = new MemoryBackend()
+    const { wb } = await boot(be)
+    setSession({ user: 'ad', role: 'admin' })
+    expect(wb.has('weeks', weekId(CURWEEK))).toBe(false)
+    expect(moveSectionTo(0, 'notes', 'waves')).toBe(true)
+    const rec = JSON.parse(wb.get('weeks', weekId(CURWEEK))!)
+    expect(rec.d[0].secOrder[0]).not.toBe('notes')
+  })
+
+  it('a logout keeps the saved planning layer', async () => {
+    const be = new MemoryBackend()
+    const { wb } = await boot(be)
+    setSession({ user: 'ad', role: 'admin' })
+    writeInputs(() => { addPlanPuck('2026-07-15', 'keep me') })
+    expect(wb.get('plan', 'all')).toContain('keep me')
+    resetSession(null)
+    HOOKS.histPush()
+    expect(wb.get('plan', 'all')).toContain('keep me')
+  })
+})
+
+describe('hydrate hardening (8 Sep 26 bug pass)', () => {
+  it('a null row in a stored record is dropped, not a crash', async () => {
+    const be = new MemoryBackend()
+    be.seed({
+      inputs: { all: JSON.stringify([null, { ...ROW, iid: 'i57', yr: 2026 }]) },
+      plan: { all: JSON.stringify({ pp: [null, { id: 'pp4', iso: '2026-07-14', kind: 'note', text: 'x' }], dm: {} }) },
+    })
+    await boot(be)
+    expect(INPUTS).toHaveLength(1)
+    expect(PLANPUCKS).toHaveLength(1)
+  })
+
+  it('a stored roster rebuilds the callsign index — a renamed callsign resolves after the reload, the old one no longer', async () => {
+    const be = new MemoryBackend()
+    const people = JSON.parse(PSNAP)
+    const oldCs = people.dj.cs; people.dj.cs = 'Renamed'
+    be.seed({ people: { all: JSON.stringify(people) } })
+    await boot(be)
+    expect(nameToId('renamed')).toBe('dj')
+    expect(nameToId(oldCs)).toBeUndefined()
   })
 })

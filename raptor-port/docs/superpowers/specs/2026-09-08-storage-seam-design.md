@@ -92,7 +92,7 @@ These are session-only today and become records:
 
 | Record | Written when | Contents |
 |---|---|---|
-| `weeks/<dd-mm-yyyy>` (the stash's `dd/mm/yyyy` week-start key with `/` → `-`, because `/` is the collection/id separator) | every `histPush` for the loaded week, and `stashPut` on week swap | the week-stash snapshot (`weekStashSnap()`: `{d, c, p, ad, a, al, ok, sg, o, cv, dr, cd, wo, un}`) — exactly what `applyWeekModel` restores |
+| `weeks/<dd-mm-yyyy>` (the stash's `dd/mm/yyyy` week-start key with `/` → `-`, because `/` is the collection/id separator) | every history step (`histPush`, undo/redo, week swap) writes the loaded week once it has changed since load, plus every stashed week from its stash entry; a record nothing backs any more (the loaded week undone back to its load state, a week the Admin sweep dropped) is deleted on the same step; inside `loadWeek`'s swap window only the stash is written, the arriving week once its baseline is set (8 Sep 26 bug pass — the live-week line used to file the LEAVING week under the ARRIVING id) | the week-stash snapshot (`weekStashSnap()`: `{d, c, p, ad, a, al, ok, sg, o, cv, dr, cd, wo, un}`) — exactly what `applyWeekModel` restores |
 | `inputs/all` | every inputs write (the `writeInputs*` funnel in `src/state/store.ts`) | the `INPUTS` list |
 | `people/all` | every quals-page tick / archive change | the whole `PEOPLE` map |
 | `plan/all` | every planning-layer write (`src/state/persist.ts`) | `{pp: PLANPUCKS, dm: DAYRMK}` — the planning layer |
@@ -121,15 +121,23 @@ Subscribes to the whiteboard. Rules:
   ever. The whiteboard is never rolled back.
 - **Status** (one value, subscribable): `saved` · `saving` · `unsaved`
   (queued, no failure yet) · `failed` (at least one retry pending).
-- **Unload guard**: while anything is queued or failed, `beforeunload`
-  asks the browser to confirm leaving.
+- **Unload guard** (`boot.ts guardUnload`, revised 8 Sep 26 bug pass):
+  `pagehide`, a hidden `visibilitychange` and `beforeunload` each call
+  `flush()` first — the Browser backend writes inside `put()` before its
+  first await, so every letter still in its 300 ms wait lands synchronously
+  and a reload right after an edit keeps the edit (it was lost, and on iOS
+  Safari — which never fires `beforeunload` — silently). Only if the status
+  is still `failed` or `unsaved` after the flush does `beforeunload` ask the
+  browser to confirm leaving; a letter merely in flight is on its way.
 - `flush()`: send everything queued now, ignoring the 300 ms wait. Used by
-  tests and by the unload path.
+  tests, by Retry and by the unload path. Known limit: a letter already in
+  flight is not awaited by the returned promise; its newer queued value
+  follows when that send completes.
 
 ### `boot.ts` — the gate
 
 ```ts
-export async function bootStorage(backend: Backend): Promise<Whiteboard>
+export async function bootStorage(backend: Backend): Promise<{ wb: Whiteboard; postman: Postman }>
 ```
 
 Calls `loadAll()`, fills a whiteboard, starts the postman, returns. On
@@ -194,8 +202,9 @@ screen changes in stage 1.
 |---|---|
 | A `put` fails | whiteboard keeps the work; status `failed`; postman retries with backoff; indicator offers Retry; editing continues |
 | `loadAll` fails | full-screen error with Retry; nothing boots |
-| A stored record does not parse | treated as absent (settings: the shipped standard applies; a week: the plan seed applies), logged to console, never a crash — the rule Leave War's `readStored` already follows |
-| Tab closed with letters queued | browser's leave-page confirmation |
+| A stored record does not parse, or parses to the wrong shape | treated as absent (settings: the shipped standard applies; a week: the plan seed applies; a null row inside `inputs/all` / `plan/all` is dropped; a Tracker record that is not the array/object its reader expects reads as absent), logged to console, never a crash — the rule Leave War's `readStored` already follows (8 Sep 26 bug pass: a wrong-shape `inputs/all` used to throw out of `hydrate` into the boot-failure screen, and a corrupt Tracker `courses`/`syls` record killed the Tracker tab on every visit) |
+| Tab closed or reloaded with letters queued | flushed on the way out (see the unload guard); the leave-page confirmation only if something still failed to land |
+| The same browser has two tabs open | not synchronised in stage 1: each tab writes whole records, so an unrelated edit in one tab can overwrite the other tab's newer `inputs/all` / `people/all` / `plan/all` / Leave War records (per-record week snapshots are only re-sent when they changed). Silent, no corruption. Stage 3's incoming side is the fix; until then, one tab per browser (8 Sep 26 bug pass) |
 
 ## Testing
 
@@ -208,7 +217,10 @@ All in the existing vitest suite, part of the normal gates.
    non-JSON value survives as a string (the backend does not parse); the
    Browser legacy import. Stage 4 runs the same function against the
    Dataverse adapter.
-2. **Timing tests** — `src/storage/timing.test.ts`, with the Memory knobs:
+2. **Timing tests** — as built they live beside the code they pin
+   (`src/state/persist.test.ts`, `src/storage/postman.test.ts`,
+   `src/storage/boot.test.ts`, `src/leavewar/storage-seam.test.ts`) rather
+   than in one `timing.test.ts`; the cases, with the Memory knobs:
    - undo during a slow save (`latency: 500`) restores exactly the
      previous whiteboard state;
    - the Leave War sync with delayed writes lands an approved leave on the
@@ -243,7 +255,19 @@ All in the existing vitest suite, part of the normal gates.
   (`put` of the string `"null"` is a valid record; absent is also
   standard).
 - `histSnap` must keep `i` for undo even though the week record drops it.
-- The unload guard must not fire when status is `saved`.
+- The unload guard must not fire when status is `saved`, and must flush
+  before it decides (a reload inside the coalesce wait must keep the edit).
+- **Every mutation of persisted state must end in a history step or an
+  explicit `persistPeople()`** (8 Sep 26 bug pass — the class of bug found
+  most often: the Quals page's edits, Restore, the auto-archive on a PO
+  date, a section drag calling the raw `histPush` instead of
+  `HOOKS.histPush`). A new write path that bypasses `HOOKS.histPush` is
+  a silent loss until proven otherwise.
+- `loadWeek` must never let `persistAll` file the live DAYS while CURWEEK
+  has moved on (the swap window, `persist.ts swapping`).
+- Anything Leave War owns about a person beyond the projection (the PO
+  window, an identity override) must be in a persisted record and laid
+  back on by `setPeople`; `state.people` itself is never stored.
 
 ## How stages 2–4 attach
 
@@ -266,6 +290,31 @@ attachment bytes (docs stay session-only in memory; the row keeps only the
 id — a file store is its own later step); per-change letters; any screen
 change beyond the indicator and the two error surfaces; deleting legacy
 browser keys.
+
+## What the 8 Sep 26 bug pass changed (implementation deltas)
+
+Found by two code audits, a 34-scenario browser drive and one e2e failure;
+each fixed and pinned by a test that was verified failing first:
+
+- `loadWeek` swap window — the leaving week was filed under the arriving
+  week's id (data corruption on any week change); a merely visited week was
+  persisted when an input landed on it during the swap.
+- `persistAll` reconciles the stored week records: undo back to the load
+  state and the Admin "clear old data" sweep now delete what they undo.
+- Page-leaving flush (`guardUnload`): reload/close inside the coalesce
+  wait, and iOS Safari, no longer lose the last edit.
+- `hydrate` rebuilds the callsign index and drops non-object rows.
+- Section drag on the board, the auto-archive on a PO date, the Leave War
+  posting-out window and identity overrides (`leavewar/postouts`,
+  `leavewar/personedits`) and the LoX column list (`settings/qualcols`)
+  are now persisted.
+- The planning layer (`plan/all`) survives a logout — clearing it in
+  memory destroyed the saved copy on the next edit. Owner-reversible.
+- The Tracker reads a corrupt record as absent instead of dying.
+- `?fresh=1` IGNORES the browser's data for that load; it does not wipe
+  it. The "Not saved — Retry" state cannot be produced by losing wifi on
+  this backend (browser storage needs no network) — only by a full or
+  locked-down store.
 
 ## Public-repository rule
 

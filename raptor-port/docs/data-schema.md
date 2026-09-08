@@ -223,6 +223,7 @@ a later change to the standard is picked up rather than frozen in a browser.
 | `lookahead` | `{ w, s }` | weeks ahead, to-Sunday flag |
 | `secdefault` | `string[]` | section order, from `notes, prog, waves, duty, sims, ground, inputs, avail, sans, unav` |
 | `stores` | `[[key, label]]` | the stores list |
+| `qualcols` | `QualCol[]` | the LoX column list — `{ k, h, lav?, apt?, scq?, aar?, fcpOnly? }` in display order (saved since the 8 Sep 26 bug pass: the ticks under a column persist, so the column must too) |
 | `rules` | `{ v: { rule: number }, s: { kind: boolean } }` | overrides only: `v` for thresholds off the standard (`briefLead, dur, step, dekit, minTurn, tightTurn, crewRest, debrief, reportLead, longDay, epBrief, simDebrief, amtDebrief, openEnd, maxRun, inputLead, scDayFrom, scDayTo, simLen, oilFullMin`), `s` for which kinds hard-clash a shift (`fly, sim, duty, shift, ground, prog`) |
 
 ---
@@ -238,8 +239,17 @@ Every key its `persist()` writes — about twenty (`src/leavewar/state/store.ts`
 `wars`, `current`, `openings`, `ledger`, `oilpolicy`, `eventdefs`, `figorder`,
 `rosterorder`, `perslabels`, `manningorder`, `manninghidden`, `fighidden`,
 `groupdefs`, `grouppriority`, `grouppriocustom`, `groupcolors`, `manningdefs`,
-`eventrows`, `showsans` — plus the pre-migration trio `grid`, `states`, `stage`
-that older browsers may still hold (read once, migrated into `wars`).
+`eventrows`, `showsans`, `personedits`, `postouts` — plus the pre-migration
+trio `grid`, `states`, `stage` that older browsers may still hold (read once,
+migrated into `wars`).
+
+The last two are the only per-person records Leave War keeps (8 Sep 26 bug
+pass — a posting-out date used to vanish on reload): `personedits` is
+`{ [personId]: { seat?, band?, sxo? } }`, an admin's identity overrides;
+`postouts` is `{ [personId]: Person }`, the person as last projected with
+the posting-out window (`to`, `poArchive`) on them — an entry exists only
+while `to` is set. `people` itself is never stored: it is re-projected from
+Raptor's `PEOPLE` on every boot and these two are laid back on top.
 
 ### The state — `src/leavewar/state/store.ts`
 

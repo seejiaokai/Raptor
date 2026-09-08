@@ -4,13 +4,14 @@
    while eyeballing a month at a time; neither touches a slot, a wave or an
    input record, so the flying/duty machinery never reads either of these.
 
-   DELIBERATELY SESSION-ONLY — never wired through HOOKS.storeBackend or
-   localStorage. INPUTS itself is session-only (engine/inputs.ts is reseeded
-   every boot; the Leave War merge deliberately matched that on 17 Aug 26 —
-   see CLAUDE.md's "session-only since 17 Aug 26"), and this calendar sits
-   directly on top of INPUTS. The owner's choice here is the same scratch-pad
-   semantics: a reload starts clean rather than carrying half-planned pucks
-   nobody has committed to anything yet.
+   SAVED since the storage seam (8 Sep 26): PLANPUCKS and DAYRMK ride the
+   whiteboard as the `plan` record (state/persist.ts), written on every
+   history step exactly like INPUTS, which this calendar sits directly on top
+   of. Before the seam both were session-only by the owner's choice (a reload
+   started clean); with INPUTS persisted the scratch pad persists with it, and
+   a logout no longer clears it (resetSession — clearing the memory copy
+   destroyed the saved one on the next edit). Still never wired through
+   HOOKS.storeBackend directly: the seam is the one door.
 
    IMPORT-GRAPH CONSTRAINT: this file imports ONLY from ./auth (itself a leaf
    module). history.ts imports PLANPUCKS/DAYRMK to ride them on the undo

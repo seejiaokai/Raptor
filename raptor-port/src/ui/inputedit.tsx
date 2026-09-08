@@ -33,6 +33,7 @@ import { retractLwRow, rowSig, oilAskPlan } from '../leavewar/sync'
 import { inputOilAmt } from '../engine/oil'
 import { PLANPUCKS, DAYRMK } from '../state/plan'
 import { stashKeys, stashDrop } from '../engine/weekstash'
+import { persistAll } from '../state/persist'
 import { canEditSched, ME, SESSION } from '../state/auth'
 import { INPEDIT, setInpEdit, OILASK, setOilAsk } from './pops'
 import { useVersion } from './useStore'
@@ -1196,6 +1197,10 @@ export function clearHistoryData(mode: ClearMode, a: string, b?: string, dry?: b
     oldRmk.forEach(k => { delete DAYRMK[k] })
   })
   oldWeeks.forEach(k => stashDrop(k))
+  /* a stash drop is not a history step, so file it now — persistAll deletes
+     the stored copy of every week no longer stashed (8 Sep 26 bug pass: the
+     cleared weeks were all back after a reload) */
+  if (oldWeeks.length) persistAll()
   logAction(null, `Cleared ${n} record${n === 1 ? '' : 's'} ${w.said}`)
   return n
 }

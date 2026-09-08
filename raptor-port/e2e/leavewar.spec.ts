@@ -679,7 +679,10 @@ test('a bid can be placed, and lands plain because nobody has answered it', asyn
 // cell can never linger on one side of a reload. A freshly placed bid must
 // therefore STILL be there after a reload, standing alongside the seed's own
 // cells — the whole war comes back, new bid and seed together. `?fresh=1` is the
-// clean-start path that wipes the store back to the demo world.
+// clean-start path: that load runs on the in-memory backend and ignores what
+// the browser holds (it does not wipe it; the plain address brings it back).
+// The reload comes straight after the bid, inside the postman's coalesce wait —
+// the page-leaving flush (storage/boot.ts guardUnload) is what lands it.
 test('a placed bid survives a reload — the war persists per browser', async ({ page }) => {
   await page.locator('[data-testid="cell-ammo-2026-02-11"]').click()
   await page.locator('[data-testid="bid-LL"]').click()

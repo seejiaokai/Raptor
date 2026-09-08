@@ -1986,3 +1986,78 @@ gate's. Keep verdict-bearing commands unpiped.
 **Suggested improvement:** When a test asserts a COUNT of user-visible outputs (warnings, rows, notifications, log lines), trace the value through EVERY downstream merge/dedupe/format layer between the changed code and the surface the test reads — not only the layer the fix touches. When a sibling scenario is the template for a new test, verify the discriminator the sibling relies on actually exists in the new scenario. Prefer asserting the BEHAVIOUR the fix delivers ("the previously-dropped case now appears") over a raw total a dedupe layer can move. Add this as a check in writing-plans' self-review (type-consistency / no-placeholder pass).
 
 **Principle:** A count assertion is a claim about the OUTPUT surface, not about the code path the fix changed. Between the two sit merge/dedupe/format layers that can fold or split results, so a test written from the fix's-eye view — ignoring them — can pin the wrong number even when the fix is right.
+
+### Observation 131: After a review finds two instances of a bug class, enumerate the class — a third review pass still samples
+
+**Status:** OPEN
+**Date:** 2026-09-08
+**Session context:** Full bug test of a persistence layer ("storage seam") after SDD delivery. The SDD final review had found two "edit mutates state but never reaches the save path" holes and fixed them. A dedicated audit that first wrote down the exact save invariant per collection ("every mutation must end in HOOKS.histPush / undo / week-swap / persistPeople") and then enumerated EVERY mutation site against it found five more of the same class (a raw histPush import bypassing the wrapped hook, an auto-archive pass, two Leave War setters whose fields were absent from persist(), a logout that cleared persisted state in memory only).
+**Skill:** requesting-code-review / subagent-driven-development (final review)
+**Type:** open-source
+**Phase/Area:** Final whole-branch review; the fix round after an "Important" finding
+
+**Issue:** A review reads diffs and samples; when it surfaces two findings of one class, the class is almost certainly wider, but the review's fix round only fixes the two named sites. The same class then reached the owner ("my last inputs didn't save").
+
+**Suggested improvement:** In the review-fix round, when two findings share a class, stop treating them as two bugs: (1) state the invariant the class violates in one sentence; (2) enumerate every site the invariant covers (grep by state object, list file:line, mark each yes/no); (3) fix the whole table; (4) add the invariant to the project's watch-list. Delegate (2) as its own audit brief with the invariant written in — a fresh agent with the invariant finds what a reviewer skimming diffs cannot.
+
+**Principle:** Two findings of one class are a sample, not the population. The moment a class is named, the cheapest complete fix is an exhaustive enumeration against the stated invariant — a further review round will sample again.
+
+### Observation 132: A feature that reverses a persistence rule must list the tests that pin the OLD rule in its spec
+
+**Status:** OPEN
+**Date:** 2026-09-08
+**Session context:** The storage-seam spec added a `plan` collection ("everything persists" — owner's decision). An existing test pinned the opposite for that layer ("resetSession forgets the planning layer", written when nothing persisted). Both survived to the bug pass: logout cleared the in-memory plan, and the next history step wrote the empty plan over the saved one — data loss created by the contradiction, invisible to both the old test (still green) and the new ones (never exercised logout).
+**Skill:** brainstorming / writing-plans
+**Type:** open-source
+**Phase/Area:** Spec "what changes" section; the plan's task list
+
+**Issue:** The design changed a rule ("session-only" → "saved") for state that had explicit tests and comments pinning the old rule. Neither the spec nor the plan listed them, so the implementation left the old clearing path in place next to the new persistence path.
+
+**Suggested improvement:** When a design reverses or relaxes an existing rule (session-only → persisted, optional → required, cleared on X → kept), add a spec sub-section "Pins of the old rule": grep tests and header comments for the old rule's wording, list each file, and give each a disposition (rewrite the test to the new rule / delete / keep because still true). Make it a plan task. A grep for the old rule's key verbs ("session-only", "forgets", "clears", "reset") is enough to find them.
+
+**Principle:** A reversed rule leaves its old pins behind as green tests and confident comments; unless the design names them, the implementation ships both rules at once and the contradiction becomes a data-loss path.
+
+### Observation 133: A gate that turns intermittent right after a timing change is a symptom to diagnose, not a flake to re-point
+
+**Status:** OPEN
+**Date:** 2026-09-08
+**Session context:** After the seam turned persistence on, an e2e test (place a bid → reload → bid still there) was re-pointed from the old "does not survive" to "survives". It passed on the SDD gate run and failed on the bug-pass rerun. The cause was the real bug under test: the reload fired inside the 300 ms write-coalesce window and the unload guard prompted instead of flushing, so whether the bid survived depended on the runner's speed. The fix (flush on pagehide/beforeunload) made the test deterministic.
+**Skill:** subagent-driven-development / test-driven-development
+**Type:** open-source
+**Phase/Area:** Gate runs; "flaky test" triage
+
+**Issue:** The SDD Task 10 implementer re-pointed the test and moved on once it passed once. Nobody asked WHY a reload immediately after an edit survives at all under a deferred-write design — the answer ("it only survives if the timer wins the race") was the bug.
+
+**Suggested improvement:** When a test's expected behaviour depends on a deferred/async write landing before an event (reload, close, navigation), the test must either (a) wait for the write explicitly, or (b) be the pin for a flush-on-event guarantee — and the plan should say which. A test that passes once after such a change is not evidence; run it three times or under CPU load before calling the gate green. Treat "passed then failed with no code change" after a timing feature as the highest-priority finding of the pass, not as flake.
+
+**Principle:** Under deferred writes, "sometimes survives" IS the failure mode. Intermittency that appears right after the timing change is the bug announcing itself; re-pointing or retrying the test silences the only alarm.
+
+### Observation 134: Owner-facing check steps are themselves tests — drive them before writing them
+
+**Status:** OPEN
+**Date:** 2026-09-08
+**Session context:** The SDD docs task wrote a BUG-TESTING.md row telling the owner to check (a) "add ?fresh=1 — the demo is back, your changes GONE" and (b) "turn wifi OFF, edit — the header shows Not saved". Both were written from the design's intent. The browser drive showed (a) fresh only IGNORES stored data for that load (the changes return on the plain address) and (b) a browser-storage backend cannot fail for lack of network, so the step can never trigger. An owner following the steps would have reported two "bugs" that were doc errors.
+**Skill:** subagent-driven-development (docs/handoff task) / writing-plans
+**Type:** open-source
+**Phase/Area:** The docs/handoff task; owner check-lists
+
+**Issue:** Check steps were derived from what the feature was meant to do, not from what the built site does. They are executable claims and were never executed.
+
+**Suggested improvement:** Any "owner to check" step that names an observable outcome must be driven once against the built artefact (a Playwright script, or the reviewer doing it by hand) before it is written into the handoff. Where a step cannot be triggered on the current backend (network loss on a local store), say so explicitly instead of inventing a trigger. Put this in the docs task's brief: "each check step: run it, then write it".
+
+**Principle:** A step that tells a person what they will see is a test with a human runner. Writing it from intent instead of observation ships a false assertion to the least equipped tester.
+
+### Observation 135: Subagents that run test suites need explicit run rules or they contend into a stall
+
+**Status:** OPEN
+**Date:** 2026-09-08
+**Session context:** Earlier in the same session an implementer subagent repeatedly backgrounded the FULL vitest suite and yielded, spawning ~15 competing runs so none finished; stopping it reset the tree and lost its one-line fix. In the bug pass every audit brief carried explicit rules ("do NOT run the full suite — another process owns it; run ONE file at a time, foreground; port X is taken; copy dist before serving") and three parallel agents plus two background gate runs completed without a single collision.
+**Skill:** subagent-driven-development
+**Type:** open-source
+**Phase/Area:** The implementer / reviewer prompt templates
+
+**Issue:** The default subagent prompt says nothing about shared machine resources. A subagent that decides "run the tests" has no way to know the controller is already running them, nor that backgrounding-and-yielding will be repeated on every resumption.
+
+**Suggested improvement:** Add a fixed "machine rules" block to every subagent brief when the controller runs gates concurrently: which suites/ports/directories the controller owns; run only named files, in the foreground, one at a time; never re-run a suite you already started; copy any artefact you serve. Make the controller state these, not hope the agent infers them.
+
+**Principle:** Parallel agents share one machine but not one view of it; resource ownership must be declared in the brief, because an agent cannot observe another's intent, only its side-effects.

@@ -5,10 +5,11 @@ import { INPVIEW, CALMONTH, setInpView, setCalMonth } from './view'
 import { undo, redo, histInit, HIST, histApply, resetSession, writeInputs } from './store'
 import { histSnap } from './history'
 
-/* The Inputs-calendar's planning layer (state/plan.ts) — a scratch pad, not
-   schedule data, so these tests pin the same three things every other
-   session-only view store in this app is checked against: the admin gate at
-   the write path, an undo/redo round trip, and resetSession forgetting it. */
+/* The Inputs-calendar's planning layer (state/plan.ts). These tests pin the
+   admin gate at the write path, an undo/redo round trip, and what a logout
+   does: the calendar VIEW resets, the pucks and remarks stay — they are saved
+   squadron data since the storage seam (8 Sep 26), and clearing the memory
+   copy on logout destroyed the saved one on the next edit. */
 beforeEach(() => {
   setSession({ user: 'a', role: 'admin' })
   clearPlan()
@@ -94,8 +95,8 @@ describe('undo / redo (state/history.ts riding the ordinary snapshot)', () => {
   })
 })
 
-describe('resetSession forgets the planning layer', () => {
-  it('an admin plans a month, logs out — the next session opens on a clean calendar', () => {
+describe('resetSession resets the calendar view and keeps the plan', () => {
+  it('an admin plans a month, logs out — the next session opens on the table view with the plan still there', () => {
     addPlanPuck('2026-08-24', 'brief the new guy')
     setDayRemark('2026-08-24', 'short week')
     setInpView('cal')
@@ -104,8 +105,8 @@ describe('resetSession forgets the planning layer', () => {
     resetSession(null)                              // logout
     resetSession({ user: 'user', role: 'main' })     // next login, same tab
 
-    expect(PLANPUCKS.length).toBe(0)
-    expect(Object.keys(DAYRMK).length).toBe(0)
+    expect(PLANPUCKS.length).toBe(1)
+    expect(DAYRMK['2026-08-24']).toBe('short week')
     expect(INPVIEW).toBe('table')
     expect(CALMONTH).toBe(null)
   })

@@ -121,6 +121,21 @@ export const BUCKETS = [
 /* ---------- storage ---------- */
 const mem = {};
 async function sGet(k) { try { const r = await storage.get(k); return r ? r.value : null; } catch (e) { return mem[k] ?? null; } }
+/* A stored record that is not the JSON shape its reader expects reads as
+   ABSENT (the storage seam, 8 Sep 26 bug pass): one corrupt key must not take
+   the whole tab down with an uncaught parse error on every visit. `want` is
+   'array' or 'object' (or nothing: either); null, a number, a string or bad
+   JSON all fall back. */
+function sParse(r, fallback, want) {
+  if (r == null || r === '') return fallback;
+  try {
+    const v = JSON.parse(r);
+    if (v == null || typeof v !== 'object') return fallback;
+    if (want === 'array' && !Array.isArray(v)) return fallback;
+    if (want === 'object' && Array.isArray(v)) return fallback;
+    return v;
+  } catch (_) { return fallback; }
+}
 async function sSet(k, v) { mem[k] = v; setSaveStatus('', 'saving'); try { await storage.set(k, v); setSaveStatus('', 'ok'); } catch (e) { setSaveStatus('local only', 'ok'); } }
 
 /* ---------- this browser's own preferences ----------
@@ -225,7 +240,7 @@ async function loadLayout() {
     const prev = await sGet(kLayoutOldMaster()) || await sGet(kLayoutOwn());
     if (prev) { r = prev; await sSet(kLayout(), prev); }
   }
-  layout = r ? JSON.parse(r) : {}; loadLineDefaults(); loadEdgeMeta();
+  layout = sParse(r, {}, 'object'); loadLineDefaults(); loadEdgeMeta();
 }
 /* Adopt shipped default __lines / __derived only when the key is ABSENT. */
 function loadLineDefaults() {
@@ -336,7 +351,7 @@ function translateMarks(old, ids) {
 }
 async function loadCourses() {
   const r = await sGet(kCourses);
-  COURSES = r ? JSON.parse(r) : ['26ABSG'];
+  COURSES = sParse(r, ['26ABSG'], 'array');
   COURSES = COURSES.filter(c => c !== 'SYLLABUS EDIT');   /* retired: syllabi are global now */
   if (!COURSES.length) COURSES = ['26ABSG'];
   await sSet(kCourses, JSON.stringify(COURSES));
@@ -397,14 +412,14 @@ async function loadCourse(c, restoreLastSyllabus = false) {
      went through clearDirty, so an Undo pressed afterwards stamped the old
      course's chart onto the new one's syllabus and saved it immediately. */
   undoStack = []; redoStack = [];
-  const pr = await sGet(kPlan(c)); plan = pr ? JSON.parse(pr) : { lulls: [], mode: 'pace', epw: 2, target: null, sylName: DEFAULT_SYL_NAME, custom: false };
+  const pr = await sGet(kPlan(c)); plan = sParse(pr, null, 'object') || { lulls: [], mode: 'pace', epw: 2, target: null, sylName: DEFAULT_SYL_NAME, custom: false };
   if (!plan.sylName) plan.sylName = DEFAULT_SYL_NAME;
-  const cs = await sGet(kSyls(c)); CUSTOMS = cs ? JSON.parse(cs) : {};
+  const cs = await sGet(kSyls(c)); CUSTOMS = sParse(cs, {}, 'object');
   { /* adopt custom syllabi stored before syllabi went global */
     let added = false;
     for (const key of [kSylsOldMaster(), kSylsOwn(c)]) {
       const raw = await sGet(key); if (!raw) continue;
-      const L = JSON.parse(raw);
+      const L = sParse(raw, null, 'object'); if (!L) continue;
       for (const k in L) { if (!CUSTOMS[k] && !isHidden(k) && !SYL_TOMB[k]) { CUSTOMS[k] = L[k]; added = true; } }
     }
     if (added) await sSet(kSyls(c), JSON.stringify(CUSTOMS));
@@ -414,7 +429,8 @@ async function loadCourse(c, restoreLastSyllabus = false) {
     const sr = await sGet(kSyl(c));
     if (sr) {
       const nm = (SYL_RENAME[plan.sylName] || plan.sylName) + ' (edited)';
-      if (!CUSTOMS[nm] && !isHidden(nm) && !SYL_TOMB[nm]) CUSTOMS[nm] = JSON.parse(sr);
+      const legacy = sParse(sr, null);
+      if (legacy && !CUSTOMS[nm] && !isHidden(nm) && !SYL_TOMB[nm]) CUSTOMS[nm] = legacy;
       await sSet(kSyls(c), JSON.stringify(CUSTOMS)); plan.sylName = nm;
     }
     plan.custom = false; await savePlan();
@@ -444,7 +460,7 @@ async function loadCourse(c, restoreLastSyllabus = false) {
   byid = {}; SYL.forEach(e => byid[e.id] = e);
   await migrateRosters(c);
   const rr = await sGet(kRosterFor(c, plan.sylName));
-  roster = rr ? JSON.parse(rr) : [];
+  roster = sParse(rr, [], 'array');
   /* Your own last pick first, then the last person anyone GRADED on this course
      (kLastStudent), then whoever is at the top. The roster is per syllabus, so
      the includes() guard quietly handles remembering someone who is not on the
@@ -498,10 +514,10 @@ async function savePlan() { await sSet(kPlan(course), JSON.stringify(plan)); tou
 async function loadStudent() {
   marks = {}; dates = {}; lulls = {}; lastEdit = {}; pace = {};
   for (const s of roster) {
-    const m = await sGet(kMarks(course, s)); marks[s] = m ? JSON.parse(m) : {};
+    const m = await sGet(kMarks(course, s)); marks[s] = sParse(m, {}, 'object');
     let d = await sGet(kDates(course, s));
     if (d == null || d === '') { const od = await sGet(kDatesOld(course, s)); if (od) { d = od; await sSet(kDates(course, s), od); } }
-    dates[s] = d ? JSON.parse(d) : { lastSyll: null, lastCurr: null };
+    dates[s] = sParse(d, null, 'object') || { lastSyll: null, lastCurr: null };
     /* Everyone inherits a copy of the old course-wide set the first time. The
        original is left in plan.lulls, unread, so an older saved file migrates
        exactly the same way when it is opened. */

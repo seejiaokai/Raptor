@@ -254,11 +254,24 @@ interface State {
    *  Raptor's Quals page OWNS identity (see `setPeople`), so the live
    *  re-projection refreshes every person's identity from Raptor by default;
    *  this registry is the exception, the deliberate local edits that survive it.
-   *  Session-only and NOT persisted, exactly like `role`/`viewer` — a stored
-   *  copy could only disagree with the roster Raptor is actually flying, and a
-   *  reboot returns to Raptor's truth. Posting-out (`from`/`to`) is preserved
-   *  separately in `reprojectRoster`; it is not an identity field. */
+   *  PERSISTED since the storage seam (8 Sep 26 bug pass): Raptor's PEOPLE
+   *  persists now, so an override no longer goes stale against a reseeded
+   *  roster, and an admin's seat/band/SXO flip survives a reload. Posting-out
+   *  (`from`/`to`) is preserved separately (`postOuts`, `reprojectRoster`); it
+   *  is not an identity field. */
   personEdits: Record<string, Partial<Pick<Person, 'seat' | 'band' | 'sxo'>>>
+
+  /** The posting-out windows an admin set through `setPostOut`, keyed by
+   *  person id, each holding the person AS LAST PROJECTED with the window on
+   *  it. Persisted (8 Sep 26 bug pass — a PO date vanished on reload): on
+   *  every `setPeople` the window is laid back onto the projected person, and
+   *  someone the projection no longer has (archived once the date arrived) is
+   *  put back from the frozen copy, so the months before they left keep
+   *  showing their history — `reprojectRoster`'s keep rule, now surviving a
+   *  reboot. An entry exists only while `to` is set; clearing the post-out
+   *  removes it. The demo overlay's own `to` (no `poArchive`) is not one of
+   *  these and still lasts a session. */
+  postOuts: Record<string, Person>
 }
 
 /** The event-row count and its bounds (owner, 18 Aug 26). Two rows is the
@@ -318,6 +331,7 @@ function blank(): State {
     focusDate: null,
     focusSeq: 0,
     personEdits: {},
+    postOuts: {},
   })
 }
 
@@ -589,6 +603,31 @@ function readManningRules(x: unknown): ManningRule[] | null {
 /** A stored id→label map (personnel labels). Non-string values are dropped
  *  rather than rejecting the whole blob — one bad entry should not blank the
  *  admin's other labels. */
+/* Untrusted storage for the two roster-side records (8 Sep 26): an override
+   keeps only fields with a legal value; a posting-out entry must be keyed by
+   its own id, name a callsign and carry the `to` date it exists for. */
+function readPersonEdits(x: unknown): State['personEdits'] | null {
+  if (!isPlainObject(x)) return null
+  const out: State['personEdits'] = {}
+  for (const [id, v] of Object.entries(x)) {
+    if (!isPlainObject(v)) continue
+    const e: Partial<Pick<Person, 'seat' | 'band' | 'sxo'>> = {}
+    if (v.seat === 'pilot' || v.seat === 'wso' || v.seat === 'gnd') e.seat = v.seat
+    if (v.band === 'instructor' || v.band === 'ops') e.band = v.band
+    if (typeof v.sxo === 'boolean') e.sxo = v.sxo
+    if (Object.keys(e).length) out[id] = e
+  }
+  return out
+}
+function readPostOuts(x: unknown): Record<string, Person> | null {
+  if (!isPlainObject(x)) return null
+  const out: Record<string, Person> = {}
+  for (const [id, v] of Object.entries(x)) {
+    if (!isPlainObject(v) || v.id !== id || typeof v.callsign !== 'string' || typeof v.to !== 'string') continue
+    out[id] = v as unknown as Person
+  }
+  return out
+}
 function readLabelMap(x: unknown): Record<string, string> | null {
   if (!isPlainObject(x)) return null
   const out: Record<string, string> = {}
@@ -799,10 +838,10 @@ export function initStore(b?: StorageBackend): void {
   const storedCurrent = backend.read('current')
   // A remembered choice wins (a returning session put the reader back where
   // they were); otherwise open on the war that is open for bidding — else
-  // closed, else published (owner, 7 Sep 26). Leave War is session-only today,
-  // so in practice there is never a stored `current` and the stage pick always
-  // decides — but the shared database to come will persist it, and then the
-  // reader's own pick must outrank the default.
+  // closed, else published (owner, 7 Sep 26). Since the storage seam (8 Sep
+  // 26) `current` IS stored per browser, so after the first war switch the
+  // tab reopens on the remembered war and the stage pick decides only for a
+  // browser that never chose.
   const currentId = wars.some(w => w.period.id === storedCurrent)
     ? (storedCurrent as string)
     : (pickDefaultPeriodId(wars.map(w => w.period)) || wars[0].period.id)
@@ -838,6 +877,8 @@ export function initStore(b?: StorageBackend): void {
     typeof x === 'number' && Number.isInteger(x) && x >= DEFAULT_EVENT_ROWS && x <= MAX_EVENT_ROWS ? x : null,
   ) ?? DEFAULT_EVENT_ROWS
   const showSans = readStored('showsans', x => (typeof x === 'boolean' ? x : null)) ?? false
+  const personEdits = readStored('personedits', readPersonEdits) ?? {}
+  const postOuts = readStored('postouts', readPostOuts) ?? {}
 
   /* The role is neither read nor persisted since the Raptor merge: it is
      derived from the Raptor login on every session change (resetSession in
@@ -849,8 +890,11 @@ export function initStore(b?: StorageBackend): void {
      (state/raptorRoster.ts), installed by main.tsx via setPeople on every
      boot, so a stored copy could only ever disagree with the roster Raptor
      is actually flying. Boot leaves the seed — the vendored unit suite reads
-     it pristine — and the projection that follows replaces it. */
-  state = withCurrent({ ...state, wars, currentId, openings, ledger, oilPolicy, eventDefs, figureOrder, rosterOrder, persLabels, manningOrder, manningHidden, figureHidden, groupDefs, groupPriority, groupPriorityCustom, groupColors: colorsFor(groupDefs, groupColors), requirements, eventRows, showSans })
+     it pristine — and the projection that follows replaces it. What IS read
+     back are the two things Leave War owns about a person (8 Sep 26): the
+     admin's identity overrides and the posting-out windows, laid onto the
+     projection by setPeople. */
+  state = withCurrent({ ...state, wars, currentId, openings, ledger, oilPolicy, eventDefs, figureOrder, rosterOrder, persLabels, manningOrder, manningHidden, figureHidden, groupDefs, groupPriority, groupPriorityCustom, groupColors: colorsFor(groupDefs, groupColors), requirements, eventRows, showSans, personEdits, postOuts })
 
   version = 0
   listeners.clear()
@@ -927,12 +971,14 @@ function persist(): void {
   backend.write('manningdefs', JSON.stringify(state.requirements.default.rules))
   backend.write('eventrows', JSON.stringify(state.eventRows))
   backend.write('showsans', JSON.stringify(state.showSans))
+  backend.write('personedits', JSON.stringify(state.personEdits))
+  backend.write('postouts', JSON.stringify(state.postOuts))
   /* `people` deliberately absent: the roster is a projection of Raptor's
      PEOPLE (see initStore) — persisting it would store a copy that can only
-     disagree with the projection the next boot installs. The roster ORDER and
-     the personnel LABELS are kept instead: they are the admin's arrangement
-     of that projection, keyed by id, so they survive a roster that gains or
-     loses a body. */
+     disagree with the projection the next boot installs. The roster ORDER,
+     the personnel LABELS, the identity OVERRIDES and the posting-out WINDOWS
+     are kept instead: they are the admin's arrangement of that projection,
+     keyed by id, so they survive a roster that gains or loses a body. */
 
   // A save IS an undo step: record the durable snapshot now that the backend
   // holds it (the UNDO / REDO block below). Skipped while a restore or a
@@ -1165,11 +1211,14 @@ export function setPostOut(id: string, fromDate: string | null, archive = true):
   const person = state.people.find(p => p.id === id)
   if (!person) return false
   const to = fromDate ? addDays(fromDate, -1) : null
-  state = withCurrent({
-    ...state,
-    people: state.people.map(p =>
-      (p.id === id ? { ...p, to, poArchive: fromDate ? archive : undefined } : p)),
-  })
+  const people = state.people.map(p =>
+    (p.id === id ? { ...p, to, poArchive: fromDate ? archive : undefined } : p))
+  /* the persisted window (State.postOuts): the person as they stand now,
+     window on; cleared with the post-out */
+  const postOuts = { ...state.postOuts }
+  if (fromDate) postOuts[id] = people.find(p => p.id === id)!
+  else delete postOuts[id]
+  state = withCurrent({ ...state, people, postOuts })
   persist()
   notify()
   return true
@@ -1186,7 +1235,22 @@ export function setPostOut(id: string, fromDate: string | null, archive = true):
  * the same reason — Raptor's Quals page owns identity.
  */
 export function setPeople(people: Person[]): void {
-  state = withCurrent({ ...state, people })
+  /* Lay Leave War's own two records over the projection (State.postOuts,
+     State.personEdits — both persisted since 8 Sep 26): a stored posting-out
+     window goes back onto its person, an identity override too, and a person
+     with a window whom the projection no longer has (archived when the date
+     arrived) is put back from the frozen copy — reprojectRoster's keep rule,
+     which used to hold only within a session. Empty records make this the
+     plain install it always was. */
+  const po = state.postOuts, edits = state.personEdits
+  const next: Person[] = people.map(p => {
+    const w = po[p.id]
+    const merged: Person = { ...p, ...(edits[p.id] || {}) }
+    return w ? { ...merged, to: w.to, poArchive: w.poArchive } : merged
+  })
+  const ids = new Set(next.map(p => p.id))
+  for (const id of Object.keys(po)) if (!ids.has(id)) next.push(po[id])
+  state = withCurrent({ ...state, people: next })
   notify()
 }
 

@@ -1032,6 +1032,7 @@ export function runPoArchive(): void {
     // A body leaving the roster can change what the warnings say about the
     // lines it was on — the same reason the Quals ✕ re-validates.
     validate()
+    persistPeople()   // not a history step: file the roster, as the Quals ✕ and Restore do
     raptorNotify()
   } finally {
     SYNCING = false

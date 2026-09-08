@@ -16,6 +16,9 @@ import { getState, initStore as lwInitStore, setPeople, setPostOut, setRole } fr
 import { memoryBackend } from './state/storage'
 import { projectPeople } from './state/raptorRoster'
 import { restoreArchivedPerson, runPoArchive, wireLeaveWarSync } from './sync'
+import { Whiteboard } from '../storage/whiteboard'
+import { wirePersist } from '../state/persist'
+import { weekStashSnap, weekDirty } from '../state/store'
 
 /* The pass reads the REAL clock (a PO archives on its live date), so the
    tests speak in days relative to today rather than fixed dates. */
@@ -59,6 +62,14 @@ describe('runPoArchive', () => {
     // so the months before they left still show their history.
     const kept = getState().people.find(p => p.id === id)!
     expect(kept.to).toBe(addDays(today, -1))
+  })
+
+  it('the archive is filed to the whiteboard at once — it is not a history step (8 Sep 26 bug pass)', () => {
+    const wb = new Whiteboard()
+    wirePersist(wb, { weekSnap: weekStashSnap, weekDirty })
+    const id = anAircrewId()
+    setPostOut(id, today)
+    expect(JSON.parse(wb.get('people', 'all')!)[id].archived).toBe(true)
   })
 
   it('a future PO waits for its date', () => {
