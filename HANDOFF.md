@@ -162,10 +162,21 @@ noticing), and two **backends** behind one contract — Memory (dev and tests,
 always a clean start) and Browser (the built site). On the built site
 **everything now persists per browser** — the schedule, inputs, Leave War and
 the Tracker all survive a reload, together; `?fresh=1` on the URL gives a
-clean start. Stages 2–4 are still pending: stable row ids, live-ish sync
+clean start for that visit (it ignores what the browser holds; it does not
+wipe it). Stages 2–4 are still pending: stable row ids, live-ish sync
 (others' changes while you edit), and the Dataverse adapter for a real shared
-database. Gates all green after this branch's fixes (vitest 4309/0, tfin
-728/0, e2e 425 + 33 skipped, tracker 346/0, build clean). **Merge only on the
+database. **Bug-tested 8 Sep 26** (BUG-TESTING.md: two code audits, a
+34-scenario browser drive, the gates): seven real data-loss holes found and
+fixed, each pinned — the week-switch corruption (the leaving week filed under
+the arriving week's id), the last edit lost on a reload inside the 300 ms
+write wait (silently on iPhone; now flushed on the way out), undo-to-load-state
+and Admin clear-old-data leaving stale records, section drag / auto-archive /
+Leave War posting-out + overrides never saved, the callsign index not rebuilt
+after a reload; plus the plan layer surviving logout, the LoX column list
+saved, and a corrupt Tracker record no longer killing the tab. Gates all green
+after the pass (vitest 4329/0, tfin 728/0, e2e 425 + 33 skipped, tracker 346/0,
+build clean). Known stage-1 gap: two tabs of one browser overwrite each other's
+whole-record writes (stage 3's incoming side is the fix). **Merge only on the
 owner's explicit "merge live" — NOT merged.**
 
 Everything before the audit fixes is merged — three PRs landed 7 Sep 26:
