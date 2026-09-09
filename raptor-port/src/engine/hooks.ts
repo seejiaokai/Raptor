@@ -72,6 +72,10 @@ export const HOOKS = {
      arrow press jumped several days (26 Aug 26 bug pass). Same layering story
      as closeBoardDialogs: state/ does not import ui/, HOOKS is the doorway. */
   weekSwapped: (): void => {},
+  /* UNDO / REDO JUST REPLACED THE WHOLE MODEL (state/history.ts histApply).
+     state/persist.ts wires this to re-persist everything: an undo is a
+     change the backend must see, and histApply never calls histPush. */
+  histApplied: (): void => {},
 }
 
 /* tiny preference store — same guarded semantics as the reference's

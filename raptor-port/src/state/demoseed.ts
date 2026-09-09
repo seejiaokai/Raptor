@@ -103,10 +103,19 @@ export function seedDemoSans() {
 
    Each medical row also gets a PLACEHOLDER supporting document — a small
    SVG the viewer can actually show — because the demo's point is seeing the
-   flow work. Session-only like every document (state/docs); a page RELOAD
-   forgets docs and INPUTS in lockstep and this seed re-runs, so no dangling
-   docId survives. (An earlier note here claimed loadWeek drops these ids —
-   it never touches INPUTS content, only the `acc` flags; corrected 27 Aug.) */
+   flow work. Since 8 Sep 26 documents PERSIST per browser (state/docs' durable
+   drawer), so on a fresh boot this seed mints the placeholders once and they
+   survive a reload; on a hydrated boot this whole seed is skipped (store.ts)
+   because the persisted INPUTS already carry the demo rows AND their durable
+   blobs. (An earlier note here claimed loadWeek drops these ids — it never
+   touches INPUTS content, only the `acc` flags; corrected 27 Aug.)
+
+   One migration seam, deliberately left honest: a browser that persisted
+   INPUTS BEFORE the drawer existed carries demo docIds whose blobs were never
+   saved; the skipped seed won't refill them, and we must NOT fabricate a
+   placeholder for what might by then be a real medical entry, so those few
+   pre-drawer demo docs read "no document on file" until the data is cleared.
+   Anything uploaded from 8 Sep 26 on persists. */
 const DEMO_MED: any[] = [
   { person: 'nasty', date: 'Jul 6', endDate: 'Jul 9', allday: true,
     type: 'OML', remarks: 'Medically down till 9 Jul', mod: '2026-07-05' },

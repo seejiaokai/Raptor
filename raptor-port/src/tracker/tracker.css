@@ -93,6 +93,9 @@ select,button,input{background:var(--panel2);color:var(--ink);border:1px solid v
 button{cursor:pointer}button:hover{border-color:var(--accent)}
 button.primary{background:#16384a;border-color:var(--accent)}
 button.sm{padding:3px 7px;font-size:11px}
+/* The Course / Syllabus edit pencils and the ⓘ info toggle are glyph-only: a
+   touch bigger than the 11px .sm text so the icon reads, and centred. */
+button.sm.icon{font-size:14px;padding:3px 8px;line-height:1}
 &{--sideW:350px}
 .layout{display:grid;grid-template-columns:minmax(0,1fr) 6px var(--sideW);flex:1;min-height:0}
 /* Grid items default to min-height:auto, which lets the board's chart push the
@@ -488,7 +491,10 @@ small.hint{color:var(--muted);font-size:11px}
  /* 204px of the 865px the bar wants was this slot, because .savestat is capped
     at 170px for a desktop row. The words still ellipsis; the full text is in
     the File menu beside the file name. */
- .saveslot{min-width:0;gap:4px}
+ /* The desktop .hspacer is display:none on a phone, so Save would flow inline
+    right after the search. The owner wants it pinned to the far right of its
+    row (9 Sep 26), so the slot takes the auto margin here instead. */
+ .saveslot{min-width:0;gap:4px;margin-left:auto}
  .savestat{max-width:72px;font-size:10px}
  .legend{display:none}
  /* The Show All tab under the bar is the phone's way in; the header button

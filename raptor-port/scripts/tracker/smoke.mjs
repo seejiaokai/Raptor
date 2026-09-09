@@ -223,6 +223,13 @@ const viaMenu = async (menu, item) => {
   await pg.click(`#${menu}MenuBtn`); await pg.waitForTimeout(120);
   await pg.click(item);
 };
+/* "Edit chart layout" lives inside the Syllabus ✎ menu now (owner, 9 Sep 26):
+   open the pencil, then toggle the item. Defensive (swallows) so it stands in
+   for the old `pg.click('#arrangeBtn').catch(()=>{})` exits too — every call
+   site is a paired on/off toggle, so a swallowed miss keeps the parity. */
+const arr = async (page = pg) => {
+  try { await page.click('#sylMenuBtn'); await page.waitForTimeout(120); await page.click('#arrangeBtn'); } catch { /* already in the wanted state */ }
+};
 await openShowAll();
 await row('ST-01').locator('button.sedit').click();
 await pg.waitForSelector('.saedit');
@@ -476,116 +483,50 @@ ok('the page is a secure context, which the file pickers require', fsCaps.secure
 }
 
 const FFNAME = await import('../../src/tracker/app/fileFormat.js');
-ok('the Open button exists', await pg.locator('#openFileBtn').count() === 1);
+/* ---- the File menu is import/export only (9 Sep 26) ----
+   Owner: "I thought it should be auto synced … isn't it duplicating". The
+   file used to be the master copy: Open bound a handle, every mark flagged it
+   unsaved, and Save changes wrote the store AND the file (a save-file dialog
+   under a button that says Save). The store is the record now. */
+ok('the Import button exists', await pg.locator('#importFileBtn').count() === 1);
+ok('the Export button exists', await pg.locator('#exportBtn').count() === 1);
+for (const id of ['#openFileBtn', '#saveCopyBtn', '#importSylBtn', '#restoreBtn', '#openFileName', '#lastSaved', '#optCharts', '#optStudents', '#fileHasStudents'])
+  ok(`${id} is gone with the file-as-store model`, await pg.locator(id).count() === 0);
 /* Never more than one — two Save buttons side by side is a fault this suite has
    caught before. It is absent while there is nothing to save; the checks further
    down prove it comes back the moment there is. */
 ok('there is never a second Save button', await pg.locator('#saveChanges').count() <= 1
   && await pg.locator('#saveFileBtn').count() === 0);
-ok('the toolbar says when no file is open',
-  (await pg.textContent('#openFileName')).includes('no file open'));
-ok('the charts tick-box starts ticked', await pg.isChecked('#optCharts'));
-ok('the students tick-box starts ticked', await pg.isChecked('#optStudents'));
-ok('no student-data warning shows with no file open',
-  await pg.locator('#fileHasStudents').count() === 0);
 
-/* ---- Save still works after opening a file ----
-   Opening grants read only; saving must ask for write, and the browser only
-   allows that question while the click is live. Doing other work first spent
-   the click, the request threw uncaught, and the button appeared dead. */
-const afterOpen = await pg.evaluate(async () => {
-  const written = [];
-  let asked = 0, perm = 'prompt';
-  window.__setFileHandleForTests({
-    name: 'my-syllabus.json',
-    queryPermission: async () => perm,
-    requestPermission: async () => { asked++; perm = 'granted'; return perm; },
-    createWritable: async () => ({ write: t => { written.push(t); }, close: async () => {} }),
-  });
-  /* Save changes only exists while there is something unsaved, so make there be
-     something: this is the state a user is in when they press it. */
-  window.__markFileDirtyForTests();
+/* ---- Save changes writes the store and never touches a file ----
+   (that it makes NO file call at all is pinned at source level in
+   tracker.test.tsx — the bundled module namespace cannot be stubbed here, its
+   exports are getters; what this proves is the button's life cycle) */
+const savedToStore = await pg.evaluate(async () => {
+  /* Save changes only exists while there is an unsaved structure edit, so
+     make there be one: this is the state a user is in when they press it. */
+  window.__markDirtyForTests();
   await new Promise(r => setTimeout(r, 60));
+  const shown = !!document.getElementById('saveChanges');
   document.getElementById('saveChanges').click();
-  await new Promise(r => setTimeout(r, 1500));
-  return { asked, wrote: written.length, status: document.getElementById('saveStat').textContent };
+  await new Promise(r => setTimeout(r, 1200));
+  const el = document.getElementById('saveStat');
+  return { shown, gone: !document.getElementById('saveChanges'), cls: el.className, text: el.textContent };
 });
-ok('Save asks for write permission once a file is open', afterOpen.asked === 1, `asked ${afterOpen.asked}x`);
-ok('Save actually writes the file after opening one', afterOpen.wrote === 1,
-  `${afterOpen.wrote} writes, status: ${afterOpen.status}`);
-
-const refused = await pg.evaluate(async () => {
-  const written = [];
-  window.__setFileHandleForTests({
-    name: 'my-syllabus.json',
-    queryPermission: async () => 'prompt',
-    /* what the browser does when the click has already expired */
-    requestPermission: async () => { throw new DOMException('user activation is required', 'SecurityError'); },
-    createWritable: async () => ({ write: t => { written.push(t); }, close: async () => {} }),
-  });
-  /* Save changes only exists while there is something unsaved, so make there be
-     something: this is the state a user is in when they press it. */
-  window.__markFileDirtyForTests();
-  await new Promise(r => setTimeout(r, 60));
-  document.getElementById('saveChanges').click();
-  await new Promise(r => setTimeout(r, 1500));
-  return { wrote: written.length, status: document.getElementById('saveStat').textContent };
-});
-ok('a refused write permission is reported, not swallowed',
-  refused.wrote === 0 && /not saved/i.test(refused.status), `status: ${refused.status}`);
-
-/* A write that silently does not land is the worst case: the file may be the
-   user's only copy, so "saved" must never appear over a stale file. */
-const dropped = await pg.evaluate(async () => {
-  window.__setFileHandleForTests({
-    name: 'my-syllabus.json',
-    queryPermission: async () => 'granted',
-    requestPermission: async () => 'granted',
-    createWritable: async () => ({ write: () => {}, close: async () => {} }),  /* writes nothing */
-    getFile: async () => ({ size: 0 }),                                        /* file stays empty */
-  });
-  /* Save changes only exists while there is something unsaved, so make there be
-     something: this is the state a user is in when they press it. */
-  window.__markFileDirtyForTests();
-  await new Promise(r => setTimeout(r, 60));
-  document.getElementById('saveChanges').click();
-  await new Promise(r => setTimeout(r, 1500));
-  return document.getElementById('saveStat').textContent;
-});
-ok('a write that does not land is reported, never as success',
-  /NOT SAVED/.test(dropped), `status: ${dropped}`);
-
-const good = await pg.evaluate(async () => {
-  let stored = '';
-  window.__setFileHandleForTests({
-    name: 'my-syllabus.json',
-    queryPermission: async () => 'granted',
-    requestPermission: async () => 'granted',
-    createWritable: async () => ({ write: t => { stored = t; }, close: async () => {} }),
-    getFile: async () => ({ size: new Blob([stored]).size }),
-  });
-  /* Save changes only exists while there is something unsaved, so make there be
-     something: this is the state a user is in when they press it. */
-  window.__markFileDirtyForTests();
-  await new Promise(r => setTimeout(r, 60));
-  document.getElementById('saveChanges').click();
-  await new Promise(r => setTimeout(r, 1500));
-  const el = document.getElementById('lastSaved');
-  return { note: el ? el.textContent : '', bytes: stored.length };
-});
+ok('a structure edit brings the Save button up', savedToStore.shown);
+ok('Save changes clears the unsaved dot', savedToStore.gone);
+ok('Save changes reports the syllabus saved', savedToStore.cls.includes('ok') && /saved/i.test(savedToStore.text),
+  `class="${savedToStore.cls}" text="${savedToStore.text}"`);
 /* Both boxes on means the file holds people, so its name must say so. */
 ok('with both boxes ticked the suggested name warns about students',
   FFNAME.suggestedFileName({ charts: true, students: true }, '2026-08-07T00:00:00.000Z')
     === 'OCU-syllabus-WITH-STUDENTS-2026-08-07.json');
-ok('a real save shows its size and the time on the toolbar',
-  /saved \d+ KB at /.test(good.note), `note: "${good.note}"`);
-ok('a real save writes the whole file', good.bytes > 10000, `${good.bytes} bytes`);
 
 /* ---- the toolbar must not call the work safe and at risk at once ----
-   Found 15 Aug: marking an event straight after a save left a green
-   "● saved" six pixels from the orange "✓ Save changes ●". The two watch
-   different things — the store and the file — and answered the user's one
-   question in opposite ways. The words may stay; the green may not. */
+   Found 15 Aug: a flow edit straight after a save left a green "● saved" six
+   pixels from the orange "✓ Save changes ●" — the status reports the last
+   write, the button the flow edits still waiting — and answered the user's
+   one question in opposite ways. The words may stay; the green may not. */
 {
   const before = await pg.evaluate(() => {
     const el = document.getElementById('saveStat');
@@ -593,8 +534,8 @@ ok('a real save writes the whole file', good.bytes > 10000, `${good.bytes} bytes
   });
   ok('a completed save does report itself in green', before.cls.includes('ok'),
     `class="${before.cls}" text="${before.text}"`);
-  await pg.evaluate(() => window.__markFileDirtyForTests());  /* i.e. they mark an event */
-  await pg.waitForTimeout(300);                               /* let the header redraw */
+  await pg.evaluate(() => window.__markDirtyForTests());  /* i.e. they move a ball */
+  await pg.waitForTimeout(300);                           /* let the header redraw */
   const after = await pg.evaluate(() => {
     const el = document.getElementById('saveStat');
     return { cls: el.className, text: el.textContent,
@@ -605,35 +546,8 @@ ok('a real save writes the whole file', good.bytes > 10000, `${good.bytes} bytes
     `class="${after.cls}" text="${after.text}"`);
   ok('the status still says what it last did', after.text.trim().length > 0,
     `text="${after.text}"`);
+  await pg.locator('#saveChanges').click(); await pg.waitForTimeout(600);   /* leave it clean */
 }
-
-/* ---- pressing Save and cancelling the file dialog must not go silent ----
-   It used to `return` with no message at all: the user had just been told
-   their work was unsaved, pressed Save, and been told nothing back. */
-{
-  await pg.evaluate(() => {
-    window.__setFileHandleForTests(null);
-    window.__fileStoreForTests.__realPick = window.__fileStoreForTests.pickSave;
-    window.__fileStoreForTests.pickSave = async () => null;   /* the user hits Cancel */
-    window.__markFileDirtyForTests();
-  });
-  await pg.locator('#saveChanges').click();
-  await pg.waitForTimeout(400);
-  const res = await pg.evaluate(() => {
-    const FS = window.__fileStoreForTests;
-    FS.pickSave = FS.__realPick; delete FS.__realPick;
-    const el = document.getElementById('saveStat');
-    return { cls: el.className, text: el.textContent };
-  });
-  ok('cancelling the save dialog says something', res.text.trim().length > 0,
-    `text="${res.text}"`);
-  ok('cancelling the save dialog does not claim a save', !res.cls.includes('ok'),
-    `class="${res.cls}" text="${res.text}"`);
-  ok('cancelling the save dialog says nothing reached the disk',
-    /no file chosen|nothing written/i.test(res.text), `text="${res.text}"`);
-}
-
-await pg.evaluate(() => window.__setFileHandleForTests(null));
 
 /* ---- the buttons the file replaces are gone ----
    The sync machinery under ☁ Cloud stays: it is how ALL saving works,
@@ -643,27 +557,31 @@ for (const id of ['#cloudBtn', '#loadLatestBtn', '#saveBtn', '#importBtn', '#exp
 ok('saving still works with no cloud button',
   (await pg.textContent('#saveStat')).trim().length > 0);
 
-/* ---- Save a copy: the handover case, which must start clean every time ---- */
-await viaMenu('file', '#saveCopyBtn'); await pg.waitForTimeout(600);
-ok('Save a copy opens a dialog', await pg.locator('#copyModal').count() === 1);
-ok('Save a copy starts with students unticked', !(await pg.isChecked('#copyStudents')));
-ok('Save a copy lists the syllabi to tick', await pg.locator('#copySylList input').count() >= 4);
-ok('Save a copy sits above the Show All panel (81)',
+/* ---- Export: the handover case, which must start clean every time ---- */
+await viaMenu('file', '#exportBtn'); await pg.waitForTimeout(600);
+ok('Export opens a dialog', await pg.locator('#copyModal').count() === 1);
+ok('Export starts with students unticked', !(await pg.isChecked('#copyStudents')));
+ok('Export lists the syllabi to tick', await pg.locator('#copySylList input').count() >= 4);
+ok('Export sits above the Show All panel (81)',
   await pg.evaluate(() => +getComputedStyle(document.getElementById('copyModal')).zIndex) > 81);
 await pg.check('#copyStudents'); await pg.click('#copyCancel'); await pg.waitForTimeout(400);
-await viaMenu('file', '#saveCopyBtn'); await pg.waitForTimeout(600);
-ok('Save a copy resets students to unticked every time', !(await pg.isChecked('#copyStudents')));
+await viaMenu('file', '#exportBtn'); await pg.waitForTimeout(600);
+ok('Export resets students to unticked every time', !(await pg.isChecked('#copyStudents')));
 await pg.click('#copyCancel'); await pg.waitForTimeout(300);
 
 /* ---- Import: drop one syllabus in without disturbing the rest ---- */
-ok('the Import button exists', await pg.locator('#importSylBtn').count() === 1);
+ok('the one Import button is the syllabus import too', await pg.locator('#importFileBtn').count() === 1);
 const imported = await pg.evaluate(async () => {
   const t = window.__coreForTests;
   const charts = await t.collectCharts(['2026']);
   charts.syllabi['2026'] = charts.syllabi['2026'].slice(0, 4);
   const marksBefore = Object.keys(localStorage).filter(k => k.includes(':m:')).length;
   await t.applyCharts(charts, { names: ['2026'], mode: 'add', rename: { from: '2026', to: 'SMOKE NEW SYL' } });
-  const all = JSON.parse(localStorage['ocu:v3:master:syls']);
+  /* Since the seam the write lands in the whiteboard at once but reaches the
+     raptor:tracker/* localStorage keys through the write-behind postman (300 ms
+     coalesce); the app reads the whiteboard, this raw read must wait for it. */
+  await new Promise(r => setTimeout(r, 600));
+  const all = JSON.parse(localStorage['raptor:tracker/v3:master:syls']);
   return { added: (all['SMOKE NEW SYL'] || []).length, original: (all['2026'] || []).length,
            marks: Object.keys(localStorage).filter(k => k.includes(':m:')).length, marksBefore };
 });
@@ -680,8 +598,9 @@ const applied = await pg.evaluate(async () => {
   const charts = await t.collectCharts(['2026']);
   charts.syllabi['2026'] = charts.syllabi['2026'].slice(0, 5);   /* a much smaller chart */
   await t.applyCharts(charts, { names: ['2026'], mode: 'replace', rename: null });
+  await new Promise(r => setTimeout(r, 600));   // wait for the write-behind postman to flush to raptor:tracker/*
   return { same: JSON.stringify(before) === JSON.stringify(grab()),
-           count: JSON.parse(localStorage['ocu:v3:master:syls'])['2026'].length };
+           count: JSON.parse(localStorage['raptor:tracker/v3:master:syls'])['2026'].length };
 });
 ok('replacing a syllabus writes the new chart', !!applied && applied.count === 5,
   applied ? `${applied.count} events` : 'no result');
@@ -694,7 +613,14 @@ const noPeople = await pg.evaluate(async () => {
   const written = [];
   const realSet = Storage.prototype.setItem;
   Storage.prototype.setItem = function (k, v) { written.push(k); return realSet.call(this, k, v); };
-  try { await t.applyCharts(await t.collectCharts(['2026']), { names: ['2026'], mode: 'replace', rename: null }); }
+  try {
+    await t.applyCharts(await t.collectCharts(['2026']), { names: ['2026'], mode: 'replace', rename: null });
+    /* Since the seam the durable write goes through the postman's 300 ms coalesce
+       and lands via BrowserBackend.put → Storage.prototype.setItem AFTER applyCharts
+       resolves. Hold the interception across that window, or it captures nothing and
+       the check passes even when a mark/roster/date key was wrongly rewritten. */
+    await new Promise(r => setTimeout(r, 600));
+  }
   finally { Storage.prototype.setItem = realSet; }
   return written.filter(k => /:m:|:d:|:roster/.test(k));
 });
@@ -709,8 +635,9 @@ const stApplied = await pg.evaluate(async () => {
     bySyllabus: { '2026': { roster: ['STUDENT Z'],
       marks: { 'STUDENT Z': { 'ST-01': { g: 'dco', f: 3 } } },
       dates: { 'STUDENT Z': { lastSyll: '2026-02-03', lastCurr: null } } } } } } });
-  return { roster: localStorage['ocu:v3:SMOKE COURSE:2026:roster'],
-           marks: localStorage['ocu:v3:SMOKE COURSE:2026:m:STUDENT Z'] };
+  await new Promise(r => setTimeout(r, 600));   // wait for the write-behind postman to flush to raptor:tracker/*
+  return { roster: localStorage['raptor:tracker/v3:SMOKE COURSE:2026:roster'],
+           marks: localStorage['raptor:tracker/v3:SMOKE COURSE:2026:m:STUDENT Z'] };
 });
 ok('applying students writes the roster', !!stApplied && (stApplied.roster || '').includes('STUDENT Z'));
 ok('applying students writes marks and failure counts',
@@ -802,7 +729,7 @@ const headerShape = () => pg.evaluate(() => ({
     .map(e => Math.round(e.getBoundingClientRect().top))).size,
 }));
 const headerBefore = await headerShape();
-await pg.click('#arrangeBtn');
+await arr();
 await pg.waitForTimeout(400);
 /* Fit first: earlier checks leave the chart panned somewhere arbitrary, and Fit
    is the one deterministic view. It also spreads events across the whole board,
@@ -876,7 +803,7 @@ ok('ST-01 can actually be dragged in edit mode',
   `moved ${st01Drag.dx},${st01Drag.dy} of 70,45`);
 await pg.click('#trUndoBtn').catch(() => {});
 await pg.waitForTimeout(200);
-await pg.click('#arrangeBtn');
+await arr();
 await pg.waitForTimeout(300);
 await pg.setViewportSize({ width: 1500, height: 950 });
 await pg.waitForTimeout(300);
@@ -892,10 +819,12 @@ ok('the chart zoom control says which side it zooms', /chart/i.test(zoomLabels.f
 ok('the panel zoom control says which side it zooms', /panel/i.test(zoomLabels.side),
   JSON.stringify(zoomLabels.side));
 
-/* ---- the top bar: 22 controls wrapping onto six rows at 1440 ----
-   Grouped behind Course / Syllabus / File / View menus. Only the three
-   dropdowns, Edit and Show All Details stay out, plus Save changes when there
-   is something to save. */
+/* ---- the top bar, since the 9 Sep 26 reorder ----
+   Crew · Course + ✎ pencil · Syllabus + ✎ pencil · ⓘ info · Show All · File ·
+   search, then a spacer and Save changes alone in the corner. The Course /
+   Syllabus edit menus are pencils now; Edit chart layout lives inside the
+   Syllabus pencil. Only the dropdowns, Show All and the ⓘ icon stay out of a
+   menu, plus Save changes when there is something to save. */
 /* A clean slate: earlier checks leave flow edits unsaved, and this block is
    about what the bar looks like with nothing to save. */
 await openTracker(pg);
@@ -941,38 +870,47 @@ ok('Crew is the first control in the bar and sits left of Course',
   `${crewFirst.ids.slice(0, 4).join(' → ')} (crew ${crewFirst.crewLeft}px, course ${crewFirst.courseLeft}px)`);
 ok('the picker is labelled Crew, not Marking as',
   crewFirst.words.includes('Crew') && !crewFirst.words.includes('Marking as'));
-ok('Show All sits right after Crew',
-  crewFirst.ids.indexOf('showAllBtn') === 1, crewFirst.ids.slice(0, 3).join(' → '));
+/* Course follows Crew now (owner, 9 Sep 26 reorder): the Course / Syllabus edit
+   pencils sit immediately after their own dropdown, so a pencil is always index
+   +1 from its select. */
+ok('Course follows Crew, and each edit pencil sits right after its dropdown',
+  crewFirst.ids.indexOf('courseSel') === 1
+    && crewFirst.ids.indexOf('courseMenuBtn') === crewFirst.ids.indexOf('courseSel') + 1
+    && crewFirst.ids.indexOf('sylMenuBtn') === crewFirst.ids.indexOf('sylSel') + 1,
+  crewFirst.ids.slice(0, 5).join(' → '));
 
 /* The whole bar, written down. The user could not tell from the app which order
    the controls were in, and neither could this suite — every check above looks
    at one control at a time. Save changes is left out: it only exists while
-   there is something unsaved. */
-ok('the bar reads Crew · Show All · search · Course · Syllabus · File · Edit · Details mode',
-  crewFirst.ids.join(',') === ['activeSel', 'showAllBtn', 'hSearch', 'hSearchClear',
-    'courseSel', 'courseMenuBtn', 'sylSel', 'sylMenuBtn',
-    'fileMenuBtn', 'arrangeBtn', 'detailsBtn'].join(','),
+   there is something unsaved; the ✎ Edit toggle is now inside the Syllabus
+   pencil, so it is not a bar control; hSearchBtn is 0-wide on a desktop (the
+   search shows as an inline box, hSearch + hSearchClear). */
+ok('the bar reads Crew · Course ✎ · Syllabus ✎ · ⓘ · Show All · File · search',
+  crewFirst.ids.join(',') === ['activeSel', 'courseSel', 'courseMenuBtn',
+    'sylSel', 'sylMenuBtn', 'detailsBtn', 'showAllBtn',
+    'fileMenuBtn', 'hSearch', 'hSearchClear'].join(','),
   crewFirst.ids.join(' → '));
 
-/* WHERE THE GAP FALLS, which none of the above can see: the spacer is a <span>,
-   so moving it changes no id and no height, and every check here stayed green
-   while it sat in the wrong place. Everything used to choose what you are
-   looking at belongs left of the space; everything you do belongs right of it. */
-const biggestGap = await pg.evaluate(() => {
-  const vis = [...document.querySelectorAll('header .controls select, header .controls button, header .controls input')]
-    .filter(e => e.getBoundingClientRect().width > 0)
-    .map(e => ({ id: e.id, l: e.getBoundingClientRect().left, r: e.getBoundingClientRect().right }))
-    .sort((a, b) => a.l - b.l);
-  let best = { px: -1, before: null, after: null };
-  for (let i = 1; i < vis.length; i++) {
-    const px = vis[i].l - vis[i - 1].r;
-    if (px > best.px) best = { px: Math.round(px), before: vis[i - 1].id, after: vis[i].id };
-  }
-  return best;
+/* WHERE THE GAP FALLS, which the id list can't see: the spacer is a <span>, so
+   moving it changes no id and no height. Since the reorder (owner, 9 Sep 26) it
+   sits after the search, with Save changes alone in the corner to its right —
+   everything you choose or do is left of it. A structure check, not pixels: on
+   this clean slate Save changes is hidden, so there is no counted control to
+   the right to measure a gap against. */
+const spacer = await pg.evaluate(() => {
+  const c = document.querySelector('header .controls');
+  const kids = [...c.children];
+  const si = kids.findIndex(e => e.classList.contains('hspacer'));
+  const cls = e => ((e.className || '').toString().split(' ')[0]) || e.tagName.toLowerCase();
+  return {
+    si, n: kids.length,
+    after: kids.slice(si + 1).map(cls),
+    searchBefore: kids.slice(0, si).some(e => e.querySelector && e.querySelector('#hSearchBtn, #hSearch')),
+  };
 });
-ok('the empty space in the bar falls after Syllabus, not before Course',
-  biggestGap.before === 'sylMenuBtn' && biggestGap.after === 'fileMenuBtn' && biggestGap.px > 60,
-  `${biggestGap.px}px between ${biggestGap.before} and ${biggestGap.after}`);
+ok('the spacer falls after the search, with only the Save slot to its right',
+  spacer.si > 0 && spacer.searchBefore && spacer.after.join(',') === 'saveslot',
+  `spacer at ${spacer.si}/${spacer.n}, right of it: [${spacer.after.join(',')}]`);
 
 /* ---- finding one ball on a 210-event chart ---- */
 {
@@ -1097,8 +1035,10 @@ ok('the empty space in the bar falls after Syllabus, not before Course',
    id, with the menu that now holds it. */
 const MENUS = {
   '#courseMenuBtn': ['#addCourse', '#renCourse', '#ordCourse', '#delCourse'],
-  '#sylMenuBtn': ['#dupSyl', '#addSyl', '#renSyl', '#ordSyl', '#delSyl'],
-  '#fileMenuBtn': ['#openFileBtn', '#importSylBtn', '#saveCopyBtn', '#optCharts', '#optStudents'],
+  /* Edit chart layout (#arrangeBtn) folded into the Syllabus pencil, first item
+     (owner, 9 Sep 26) — so it is a grouped action now, not a bar button. */
+  '#sylMenuBtn': ['#arrangeBtn', '#dupSyl', '#addSyl', '#renSyl', '#ordSyl', '#delSyl'],
+  '#fileMenuBtn': ['#importFileBtn', '#exportBtn'],
 };
 const unreachable = [];
 for (const [btn, items] of Object.entries(MENUS)) {
@@ -1110,8 +1050,8 @@ for (const [btn, items] of Object.entries(MENUS)) {
 ok('every grouped action is still reachable from its menu', unreachable.length === 0,
   unreachable.join(', '));
 
-ok('the three dropdowns, Show All, Edit and Details mode stay out of the menus', await pg.evaluate(() => {
-  const out = ['#courseSel', '#sylSel', '#activeSel', '#showAllBtn', '#detailsBtn', '#arrangeBtn'];
+ok('the three dropdowns, Show All and the ⓘ info icon stay out of the menus', await pg.evaluate(() => {
+  const out = ['#courseSel', '#sylSel', '#activeSel', '#showAllBtn', '#detailsBtn'];
   return out.every(s => { const e = document.querySelector(s); return e && e.getBoundingClientRect().width > 0; });
 }));
 /* Reorder crew is about the students, so it sits with + Add in the Students
@@ -1125,17 +1065,18 @@ ok('Reorder crew sits in the Students card beside + Add', await pg.evaluate(() =
 /* Clicking away must close a menu. A menu left open swallows the next click the
    way the old Cloud dialog did. */
 await pg.click('#fileMenuBtn'); await pg.waitForTimeout(150);
-const openedFile = await pg.locator('#openFileBtn:visible').count() === 1;
+const openedFile = await pg.locator('#importFileBtn:visible').count() === 1;
 await pg.mouse.click(700, 700); await pg.waitForTimeout(200);
 ok('a menu opens, and clicking away closes it again',
-  openedFile && await pg.locator('#openFileBtn:visible').count() === 0);
+  openedFile && await pg.locator('#importFileBtn:visible').count() === 0);
 
 /* Save changes is a data-loss risk hidden in a menu and clutter when always
-   shown, so it appears exactly when there is something unsaved. Marks and dates
-   already write themselves to storage; flow edits and the open file do not. */
+   shown, so it appears exactly when there is something unsaved. Marks, dates,
+   event details and a moved ball write themselves to storage; structure
+   edits (events, prerequisites, lines, fonts) do not. */
 ok('Save changes is out of the way when there is nothing to save',
   await pg.locator('#saveChanges').count() === 0);
-await pg.click('#arrangeBtn'); await pg.waitForTimeout(400);
+await arr(); await pg.waitForTimeout(400);
 await pg.click('#fitBtn'); await pg.waitForTimeout(300);
 const dragged = await pg.evaluate(() => {
   const g = document.querySelector('#flowSvg .ball');
@@ -1147,7 +1088,15 @@ await pg.mouse.down();
 await pg.mouse.move(dragged.x + 40, dragged.y + 30, { steps: 8 });
 await pg.mouse.up();
 await pg.waitForTimeout(400);
-ok('Save changes appears the moment a flow edit makes something unsaved',
+/* A moved ball saves its own position on the drop (it always did — the
+   button used to light here only because the FILE was unsaved, 9 Sep 26), so
+   the honest thing is no button. What still waits for Save is a STRUCTURE
+   edit — events, prerequisites, drawn lines, fonts — the Font box being the
+   one reachable without a prompt or a second ball. */
+ok('a moved ball saves itself — no Save button for a drag',
+  await pg.locator('#saveChanges:visible').count() === 0);
+await pg.fill('#fontIn', '9'); await pg.waitForTimeout(400);
+ok('Save changes appears the moment a structure edit makes something unsaved',
   await pg.locator('#saveChanges:visible').count() === 1);
 /* The button appearing must not resize the bar. When it did, the board slid
    down 44px mid-drag and a ball dragged 45px moved 89. */
@@ -1157,7 +1106,9 @@ ok('the bar is the same height with the Save button showing', await pg.evaluate(
 }, barRows.h), `was ${barRows.h}px`);
 await pg.click('#trUndoBtn').catch(() => {});
 await pg.waitForTimeout(300);
-await pg.click('#arrangeBtn'); await pg.waitForTimeout(300);
+/* undo is itself a structure edit; leave the chart clean for what follows */
+if (await pg.locator('#saveChanges').count()) { await pg.click('#saveChanges'); await pg.waitForTimeout(600); }
+await arr(); await pg.waitForTimeout(300);
 await pg.setViewportSize({ width: 1500, height: 950 });
 await pg.waitForTimeout(300);
 
@@ -1353,10 +1304,10 @@ await pg.waitForTimeout(800);
    pop-up, Show All and Save a copy each needed a different dismiss found by
    eye. Each is opened and escaped in turn. */
 {
-  await viaMenu('file', '#saveCopyBtn'); await pg.waitForTimeout(400);
-  ok('Save a copy is open before Escape', await pg.locator('#copyModal:visible').count() === 1);
+  await viaMenu('file', '#exportBtn'); await pg.waitForTimeout(400);
+  ok('Export is open before Escape', await pg.locator('#copyModal:visible').count() === 1);
   await pg.keyboard.press('Escape'); await pg.waitForTimeout(300);
-  ok('Escape closes Save a copy', await pg.locator('#copyModal:visible').count() === 0);
+  ok('Escape closes Export', await pg.locator('#copyModal:visible').count() === 0);
 
   await openShowAll(); await pg.waitForTimeout(400);
   ok('Show All is open before Escape', await pg.locator('#showAllPanel.on').count() === 1);
@@ -1933,12 +1884,13 @@ if (two.length >= 2) {
 }
 
 /* A recorded syllabus that has since been deleted must not break the load.
-   The "ocu:" prefix is not decoration: sync/local.js only ever reads keys that
-   carry it, so this check spent its whole life planting a key the app never
-   looked at and asserting that nothing broke — which nothing would have. */
+   Since the storage seam the Tracker's data flows through the whiteboard and
+   lands in BrowserBackend under `raptor:tracker/*`, so the key is planted with
+   that prefix here — loadAll hydrates it into the whiteboard at boot, and the
+   app reads it back exactly where it would read its own. */
 ok('a remembered syllabus that no longer exists does not break opening the app',
   await pg.evaluate(async () => {
-    localStorage.setItem('ocu:v3:' + document.getElementById('courseSel').value + ':lastStudent', 'NO SUCH PERSON');
+    localStorage.setItem('raptor:tracker/v3:' + document.getElementById('courseSel').value + ':lastStudent', 'NO SUCH PERSON');
     return true;
   }));
 await openTracker(pg);
@@ -2053,7 +2005,7 @@ await pg.waitForSelector('#flowSvg .ball', { timeout: 15000 });
      all, which is exactly how a feature that never wrote anything would look. */
   const where = await pg.evaluate(() => ({
     mine: localStorage.getItem('ocuLocal:lastCourse'),
-    shared: Object.keys(localStorage).filter(k => k.startsWith('ocu:') && /lastCourse/i.test(k)),
+    shared: Object.keys(localStorage).filter(k => k.startsWith('raptor:tracker/') && /lastCourse/i.test(k)),
   }));
   ok('that memory is this browser\'s alone, not in the shared file',
     where.mine === 'SMOKE FIRST' && where.shared.length === 0,
@@ -2152,16 +2104,16 @@ await pg.waitForSelector('#flowSvg .ball', { timeout: 15000 });
   /* force the shipped layout into storage so there is something real to lose */
   await pg.evaluate(s => {
     const L = window.__coreForTests.DEFAULT_LAYOUTS[s];
-    localStorage.setItem('ocu:v3:master:lay:' + s, JSON.stringify(L));
+    localStorage.setItem('raptor:tracker/v3:master:lay:' + s, JSON.stringify(L));
   }, AG);
   await openTracker(pg); await pg.waitForSelector('#flowSvg .ball');
   await pg.selectOption('#sylSel', AG).catch(() => {}); await pg.waitForTimeout(1200);
   const linesOf = () => pg.evaluate(s => {
-    const raw = localStorage.getItem('ocu:v3:master:lay:' + s);
+    const raw = localStorage.getItem('raptor:tracker/v3:master:lay:' + s);
     return raw ? (JSON.parse(raw).__lines || []).length : 0;
   }, AG);
   const linesBefore = await linesOf();
-  await pg.click('#arrangeBtn'); await pg.waitForTimeout(500);
+  await arr(); await pg.waitForTimeout(500);
   await pg.click('#resetLayout'); await pg.waitForTimeout(400);
   const resetWarning = (await pg.textContent('#dlgModal')).replace(/\s+/g, ' ');
   ok('the Reset layout warning says the drawn lines go too',
@@ -2172,12 +2124,12 @@ await pg.waitForSelector('#flowSvg .ball', { timeout: 15000 });
   await pg.click('#trUndoBtn'); await pg.waitForTimeout(800);
   ok('Undo brings the lines back after a Reset layout',
     await linesOf() === linesBefore, `${linesBefore} before, ${await linesOf()} after undo`);
-  await pg.click('#arrangeBtn').catch(() => {}); await pg.waitForTimeout(300);
+  await arr(); await pg.waitForTimeout(300);
 
   /* 4. Undo/redo must not carry across a chart change. */
   await wipe();
   await pg.selectOption('#sylSel', '2026'); await pg.waitForTimeout(900);
-  await pg.click('#arrangeBtn'); await pg.waitForTimeout(400);
+  await arr(); await pg.waitForTimeout(400);
   await pg.click('#fitBtn'); await pg.waitForTimeout(500);
   const ballAt = id => pg.evaluate(i => {
     const g = [...document.querySelectorAll('#flowSvg .ball')].find(x => x.dataset.id === i);
@@ -2191,7 +2143,7 @@ await pg.waitForSelector('#flowSvg .ball', { timeout: 15000 });
   }
   await pg.click('#trUndoBtn'); await pg.waitForTimeout(500);
   const txBoxes = () => pg.evaluate(() => {
-    const raw = localStorage.getItem('ocu:v3:master:lay:Tx 2026');
+    const raw = localStorage.getItem('raptor:tracker/v3:master:lay:Tx 2026');
     return raw ? Object.keys(JSON.parse(raw)).filter(k => !k.startsWith('__')).length : 0;
   });
   const txBefore = await txBoxes();
@@ -2200,7 +2152,7 @@ await pg.waitForSelector('#flowSvg .ball', { timeout: 15000 });
   await pg.click('#trRedoBtn').catch(() => {}); await pg.waitForTimeout(800);
   ok('Redo after changing syllabus cannot stamp the old chart onto the new one',
     await txBoxes() === txBefore, `Tx 2026 held ${txBefore} moved boxes, now ${await txBoxes()}`);
-  await pg.click('#arrangeBtn').catch(() => {}); await pg.waitForTimeout(300);
+  await arr(); await pg.waitForTimeout(300);
 
   /* 5. Event details: the Save button, and the note that used to come back. */
   await wipe();
@@ -2216,8 +2168,10 @@ await pg.waitForSelector('#flowSvg .ball', { timeout: 15000 });
   await pg.locator('#infoModal input').first().fill('SMOKE DETAIL EDIT');
   await pg.locator('#infoModal button', { hasText: /save/i }).first().click();
   await pg.waitForTimeout(600);
-  ok('changing an event\'s details lights the Save button',
-    await pg.locator('#saveChanges').count() === 1);
+  /* Event details save themselves to the store (9 Sep 26) — they used to also
+     flag the user's file unsaved, which is what lit the button here. */
+  ok('changing an event\'s details saves itself — no Save button',
+    await pg.locator('#saveChanges').count() === 0);
 
   const txHas = (await pg.evaluate(() => [...document.querySelectorAll('#sylSel option')].map(o => o.value))).includes('Tx 2026');
   if (txHas) {
@@ -2242,16 +2196,16 @@ await pg.waitForSelector('#flowSvg .ball', { timeout: 15000 });
   await wipe();
   await pg.evaluate(() => {
     const c = document.getElementById('courseSel').value;
-    localStorage.setItem('ocu:v3:' + c + ':pace:STUDENT A', JSON.stringify({ epw: '3.5', target: '2027-01-01' }));
-    localStorage.setItem('ocu:v3:' + c + ':lulls:STUDENT A', JSON.stringify([{ a: 1, b: 2 }]));
+    localStorage.setItem('raptor:tracker/v3:' + c + ':pace:STUDENT A', JSON.stringify({ epw: '3.5', target: '2027-01-01' }));
+    localStorage.setItem('raptor:tracker/v3:' + c + ':lulls:STUDENT A', JSON.stringify([{ a: 1, b: 2 }]));
   });
   await openTracker(pg); await pg.waitForSelector('#flowSvg .ball'); await pg.waitForTimeout(700);
   await viaMenu('course', '#renCourse'); await pg.waitForTimeout(250);
   await pg.fill('#dlgInput', 'RENAMEDC'); await pg.click('#dlgOk'); await pg.waitForTimeout(1100);
   const carried = await pg.evaluate(() => {
     const c = document.getElementById('courseSel').value;
-    return { c, pace: localStorage.getItem('ocu:v3:' + c + ':pace:STUDENT A'),
-      lulls: localStorage.getItem('ocu:v3:' + c + ':lulls:STUDENT A') };
+    return { c, pace: localStorage.getItem('raptor:tracker/v3:' + c + ':pace:STUDENT A'),
+      lulls: localStorage.getItem('raptor:tracker/v3:' + c + ':lulls:STUDENT A') };
   });
   ok('renaming a course carries each crew member\'s pace and lull periods',
     !!carried.pace && carried.pace.includes('3.5') && !!carried.lulls,
@@ -2260,7 +2214,7 @@ await pg.waitForSelector('#flowSvg .ball', { timeout: 15000 });
   await wipe();
   await pg.evaluate(() => {
     const c = document.getElementById('courseSel').value;
-    localStorage.setItem('ocu:v3:' + c + ':pace:STUDENT B', JSON.stringify({ epw: '9.9' }));
+    localStorage.setItem('raptor:tracker/v3:' + c + ':pace:STUDENT B', JSON.stringify({ epw: '9.9' }));
   });
   await openTracker(pg); await pg.waitForSelector('#flowSvg .ball'); await pg.waitForTimeout(700);
   await pg.selectOption('#activeSel', 'STUDENT B'); await pg.waitForTimeout(300);
@@ -2277,7 +2231,7 @@ await pg.waitForSelector('#flowSvg .ball', { timeout: 15000 });
   await pg.fill('#dlgInput', 'STUDENT B'); await pg.click('#dlgOk'); await pg.waitForTimeout(800);
   const revived = await pg.evaluate(() => {
     const c = document.getElementById('courseSel').value;
-    return localStorage.getItem('ocu:v3:' + c + ':pace:STUDENT B');
+    return localStorage.getItem('raptor:tracker/v3:' + c + ':pace:STUDENT B');
   });
   ok('adding the same callsign back starts them clean',
     !revived || !revived.includes('9.9'), `pace after re-adding: ${revived}`);
@@ -2385,7 +2339,7 @@ await pg.evaluate(() => { const b = document.getElementById('board'); b.scrollTo
    tools may not move the board at all. It used to be 0px — which put the hint
    on top of the colour legend for the whole edit session, and on a phone on
    top of the Flow chart / Info / Show All tabs (2 Sep). */
-await pg.click('#arrangeBtn'); await pg.waitForTimeout(400);
+await arr(); await pg.waitForTimeout(400);
 const hintGeom = () => pg.evaluate(() => {
   /* Geometry, not elementFromPoint: the hint passes clicks through, so a hit
      test "sees" the legend even while the hint is painted over it. */
@@ -2418,7 +2372,7 @@ ok('the hint is visible, takes exactly one line of real space, and passes clicks
 ok('the colour legend is not covered by the edit-mode hint', moveState.legendClear,
   `Move: ${moveState.legendClear}, Line: ${lineState.legendClear}`);
 await pg.click('#arrTools button:has-text("✋ Move")'); await pg.waitForTimeout(200);
-await pg.click('#arrangeBtn'); await pg.waitForTimeout(400);
+await arr(); await pg.waitForTimeout(400);
 const sylOptions = await pg.evaluate(() =>
   [...document.getElementById('sylSel').options].map(o => o.value));
 const txOpt = sylOptions.find(v => v === 'Tx 2026') || sylOptions.find(v => v.startsWith('Tx 2026'));
@@ -2447,8 +2401,8 @@ const fileClobber = await pg.evaluate(async () => {
   const snap = await core.collectCharts(['2026']); /* full baked table + edits */
   Object.assign(full, snap.eventInfo);
   await core.applyCharts({ order: [], syllabi: {}, layouts: {}, eventInfo: full }, {});
-  /* the sync layer prefixes its localStorage keys with "ocu:" */
-  const stored = JSON.parse(localStorage.getItem('ocu:v3:eventinfo') || '{}');
+  /* since the seam the Tracker's data lands in BrowserBackend under "raptor:tracker/" */
+  const stored = JSON.parse(localStorage.getItem('raptor:tracker/v3:eventinfo') || '{}');
   return { storedKeys: Object.keys(stored).length, sentKeys: Object.keys(full).length };
 });
 await clickBall('BFM-5'); await pg.waitForTimeout(300);
@@ -3267,7 +3221,7 @@ await openTracker(pg); await pg.waitForSelector('#flowSvg .ball'); await pg.wait
   const dbl = id => pg.evaluate(i => {
     document.querySelector(`#flowSvg .ball[data-id="${i}"]`).dispatchEvent(new MouseEvent('dblclick', { bubbles: true }));
   }, id);
-  await pg.click('#arrangeBtn'); await pg.waitForTimeout(300);
+  await arr(); await pg.waitForTimeout(300);
   await dbl('ST-01'); await pg.waitForSelector('#editModal');
   await pg.click('#edDelete'); await pg.waitForSelector('#dlgModal');
   ok('the poke-ball editor stays open while it asks "Delete?"', await pg.locator('#editModal').count() === 1);
@@ -3280,7 +3234,7 @@ await openTracker(pg); await pg.waitForSelector('#flowSvg .ball'); await pg.wait
   /* tidy up by hand if the key did nothing, so the checks below still run */
   if (await pg.locator('#dlgCancel').count()) await pg.click('#dlgCancel');
   if (await pg.locator('#edCancel').count()) await pg.click('#edCancel');
-  await pg.click('#arrangeBtn'); await pg.waitForTimeout(300);
+  await arr(); await pg.waitForTimeout(300);
 
   await clickBall('ST-01'); await pg.waitForTimeout(250);
   await pg.click('#popEditInfo'); await pg.waitForSelector('#infoModal');
@@ -3306,10 +3260,10 @@ await openTracker(pg); await pg.waitForSelector('#flowSvg .ball'); await pg.wait
   const to = (await opts()).find(c => c !== from);
   /* a structural edit — a new event — is what makes the chart dirty; moving a
      ball only saves its position */
-  await pg.click('#arrangeBtn'); await pg.waitForTimeout(300);
+  await arr(); await pg.waitForTimeout(300);
   await pg.click('#arrTools button:has-text("+ Acad")'); await pg.waitForSelector('#dlgInput');
   await pg.fill('#dlgInput', 'SMOKE TMP'); await pg.click('#dlgOk'); await pg.waitForTimeout(400);
-  await pg.click('#arrangeBtn'); await pg.waitForTimeout(300);
+  await arr(); await pg.waitForTimeout(300);
   ok('a new event leaves the chart with unsaved flow edits', /unsaved flow edits/.test(await pg.textContent('#saveStat')));
   await pg.selectOption('#courseSel', to); await pg.waitForTimeout(400);
   ok('switching course with unsaved flow edits asks first', await pg.locator('#dlgModal').count() === 1
@@ -3342,11 +3296,11 @@ await openTracker(pg); await pg.waitForSelector('#flowSvg .ball'); await pg.wait
   ok('phone: the Details-mode hint sits above the view tabs, not on them',
     d.hintBottom > 0 && d.tabTop >= d.hintBottom - 1 && d.hit, JSON.stringify(d));
   await pp.tap('#detailsBtn'); await pp.waitForTimeout(200);
-  await pp.tap('#arrangeBtn'); await pp.waitForTimeout(400);
+  await arr(pp); await pp.waitForTimeout(400);
   const e = await tabClear();
   ok('phone: the edit-mode hint sits above the view tabs, not on them',
     e.hintBottom > 0 && e.tabTop >= e.hintBottom - 1 && e.hit, JSON.stringify(e));
-  await pp.tap('#arrangeBtn'); await pp.waitForTimeout(300);
+  await arr(pp); await pp.waitForTimeout(300);
   const zr = () => pp.evaluate(() => { const bd = document.getElementById('board');
     return { pct: document.getElementById('fzPct').textContent, over: bd.scrollWidth - bd.clientWidth }; });
   const z0 = await zr();
@@ -3409,16 +3363,16 @@ await openTracker(pg); await pg.waitForSelector('#flowSvg .ball'); await pg.wait
    between is what makes this a test: without it the box simply keeps the text
    that was typed into it. */
 {
-  await pg.click('#arrangeBtn'); await pg.waitForTimeout(300);
+  await arr(); await pg.waitForTimeout(300);
   await pg.fill('#fontIn', '7'); await pg.waitForTimeout(400);
-  await pg.click('#arrangeBtn'); await pg.waitForTimeout(300);
+  await arr(); await pg.waitForTimeout(300);
   await openTracker(pg); await pg.waitForSelector('#flowSvg .ball'); await pg.waitForTimeout(300);
-  await pg.click('#arrangeBtn'); await pg.waitForTimeout(300);
+  await arr(); await pg.waitForTimeout(300);
   const shown = await pg.inputValue('#fontIn');
   const real = await pg.evaluate(() => parseFloat(document.querySelector('#flowSvg .ball[data-id="ST-01"] text.lbl').style.fontSize));
   ok('the Font box shows the size the chart is actually using', shown === '7' && real === 7, `box "${shown}", chart ${real}px`);
   await pg.fill('#fontIn', '8.5'); await pg.waitForTimeout(400);
-  await pg.click('#arrangeBtn'); await pg.waitForTimeout(300);
+  await arr(); await pg.waitForTimeout(300);
 }
 
 /* ---- the side panel's event chips: click to jump, hover / long-press to read ----
@@ -3468,6 +3422,64 @@ await openTracker(pg); await pg.waitForSelector('#flowSvg .ball'); await pg.wait
   });
   ok('phone: a tap on a chip switches to the Flow chart and lands on that ball', pw.id === pid && pw.found && pw.flow && pw.inView, JSON.stringify(pw));
   await pp.close();
+}
+
+/* ---- ONE Import for both jobs (9 Sep 26, owner: "is it possible to just have
+   1 button?") ----
+   A chart drawn up elsewhere and the whole export back in after the database
+   move go through the same button: charts always, chart by chart (a name
+   already here asks replace / add as new); students & marks only after ONE
+   question, so a handed-over chart can never restore marks by accident.
+   The OS picker cannot be driven, so the file goes in through
+   window.__pickOpenForTests. Last in the suite: it adds a course. */
+{
+  await pg.setViewportSize({ width: 1440, height: 900 });
+  await openTracker(pg); await pg.waitForSelector('#flowSvg .ball'); await pg.waitForTimeout(400);
+  const feed = (charts, students) => pg.evaluate(([c, st]) => {
+    const text = JSON.stringify(window.__fileFormatForTests.buildFile({ charts: c, students: st, savedAt: new Date().toISOString() }));
+    window.__pickOpenForTests = async () => ({ name: 'smoke-import.json', text });
+  }, [charts, students]);
+  const dlg = async () => ((await pg.locator('#dlgModal').textContent().catch(() => '')) || '').replace(/\s+/g, ' ');
+  const charts = { order: ['SMOKE IMP'], syllabi: { 'SMOKE IMP': [
+    { id: 'SI-01', type: 'acad', seq: 0, prereqs: [], phase: 'P' }, { id: 'SI-02', type: 'flight', seq: 1, prereqs: ['SI-01'], phase: 'P' }] }, layouts: {}, eventInfo: {} };
+  const students = { courses: ['SMOKE IMP COURSE'], byCourse: { 'SMOKE IMP COURSE': { plan: { sylName: 'SMOKE IMP' }, lulls: {}, pace: {},
+    bySyllabus: { 'SMOKE IMP': { roster: ['SMOKE IMP STU'], marks: {}, dates: {} } } } } };
+  const courses = () => pg.evaluate(() => [...document.querySelectorAll('#courseSel option')].map(o => o.value));
+  const marksBefore = await pg.evaluate(() => Object.keys(localStorage).filter(k => k.includes(':m:')).length);
+
+  await feed(charts, null);
+  await viaMenu('file', '#importFileBtn'); await pg.waitForTimeout(1500);
+  let t = await dlg();
+  ok('a charts-only file imports without asking about people', /brought in SMOKE IMP/i.test(t) && !/students and marks/i.test(t), t);
+  await pg.click('#dlgOk'); await pg.waitForTimeout(500);
+  ok('the imported chart is in the syllabus list',
+    (await pg.evaluate(() => [...document.querySelectorAll('#sylSel option')].map(o => o.value))).includes('SMOKE IMP'));
+  ok('a charts-only import wrote no mark', (await pg.evaluate(() => Object.keys(localStorage).filter(k => k.includes(':m:')).length)) === marksBefore);
+
+  await feed(charts, students);
+  await viaMenu('file', '#importFileBtn'); await pg.waitForTimeout(1200);
+  t = await dlg();
+  ok('a chart already here asks replace / add as new', /already exists/i.test(t), t);
+  await pg.click('#dlgOk'); await pg.waitForTimeout(1200);                                  /* Replace it */
+  t = await dlg();
+  ok('a file with people asks ONCE before bringing them in', /also contains students and marks/i.test(t), t);
+  await pg.click('#dlgCancel'); await pg.waitForTimeout(1200);                              /* No */
+  t = await dlg();
+  ok('No keeps the people out and says so', /brought in SMOKE IMP/i.test(t) && /marks are untouched/i.test(t), t);
+  await pg.click('#dlgOk'); await pg.waitForTimeout(400);
+  ok('after No the course is not here', !(await courses()).includes('SMOKE IMP COURSE'));
+
+  await feed(charts, students);
+  await viaMenu('file', '#importFileBtn'); await pg.waitForTimeout(1200);
+  await pg.click('#dlgOk'); await pg.waitForTimeout(1200);                                  /* Replace it */
+  t = await dlg();
+  ok('asked again on the next file with people', /also contains students and marks/i.test(t), t);
+  await pg.click('#dlgOk'); await pg.waitForTimeout(1500);                                  /* Yes */
+  t = await dlg();
+  ok('Yes reports charts and people both', /brought in SMOKE IMP/i.test(t) && /students & marks restored/i.test(t), t);
+  await pg.click('#dlgOk'); await pg.waitForTimeout(500);
+  ok('after Yes the restored course is here', (await courses()).includes('SMOKE IMP COURSE'));
+  await pg.evaluate(() => { delete window.__pickOpenForTests; });
 }
 
 console.log(`\n${pass} passed, ${fail} failed\n`);

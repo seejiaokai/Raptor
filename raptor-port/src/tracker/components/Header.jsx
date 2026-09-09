@@ -5,7 +5,10 @@ import * as core from '../app/core.js';
    rendered. Two reasons: the file name and the save tick-boxes have to stay
    readable while the menu is shut, and a button that is removed and recreated
    around a click is exactly how the file-picker gesture got spent before. */
-function Menu({ id, label, title, children }) {
+/* `icon` drops the ▾ caret and shows the glyph alone (the Course / Syllabus
+   edit pencils). `active` lights the button (primary) even while shut — the
+   syllabus pencil uses it to show the chart is in edit mode. */
+function Menu({ id, label, title, children, icon, active }) {
   const [open, setOpen] = useState(false);
   const [at, setAt] = useState(null);
   const ref = useRef(null), btn = useRef(null);
@@ -40,8 +43,8 @@ function Menu({ id, label, title, children }) {
   }, [open]);
   return (
     <span className="menu" ref={ref}>
-      <button className={'sm' + (open ? ' primary' : '')} id={id + 'MenuBtn'} title={title} ref={btn}
-        aria-expanded={open} onClick={() => setOpen(o => !o)}>{label} ▾</button>
+      <button className={'sm' + (icon ? ' icon' : '') + (open || active ? ' primary' : '')} id={id + 'MenuBtn'} title={title} ref={btn}
+        aria-expanded={open} onClick={() => setOpen(o => !o)}>{icon ? label : <>{label} ▾</>}</button>
       {/* Closing on bubble, so the item's own handler has already run — the
           file pickers throw if anything awaits before them. */}
       <div className={'menupanel' + (open ? ' on' : '')} id={id + 'MenuPanel'}
@@ -108,12 +111,16 @@ export default function Header() {
   const sylNames = core.ready ? core.orderedSylNames() : [];
   const sylValue = (core.plan && core.plan.sylName) || core.DEFAULT_SYL_NAME;
   const sylOptions = sylNames.includes(sylValue) ? sylNames : [...sylNames, sylValue];
-  const dirty = core.sylDirty || core.fileDirty;
+  /* Unsaved FLOW edits only. Until 9 Sep 26 this also watched the user's file
+     (`fileDirty`), so a mark lit the button and pressing it opened a save-file
+     dialog; the store is the record now, marks save themselves, and the File
+     menu is import/export only. */
+  const dirty = core.sylDirty;
   /* THE FILE PORTION IS THE ADMIN'S (owner, 7 Sep 26): a member gets every
      other control on this bar — the pickers, the Course and Syllabus menus,
-     Edit, Details and Save changes — and not the File menu (Open, Import,
-     Save a copy). The three entry points behind it are guarded in core.js
-     too; this is the affordance half. */
+     Edit, Details and Save changes — and not the File menu (Import, Export).
+     The entry points behind it are guarded in core.js too; this is the
+     affordance half. */
   const fileLocked = core.fileLocked;
 
   return (
@@ -134,20 +141,15 @@ export default function Header() {
             {core.roster.map(r => <option key={r} value={r}>{r}</option>)}
           </select>
         </label>
-        {/* A plain button, not a "View" menu. The menu held two items: this,
-            and Reorder crew — which is about the students, not about how the
-            syllabus is looked at, and now sits in the Students card with + Add.
-            A menu of one item is a click for nothing. On a phone the button is
-            hidden: the Show All tab under the bar is already there. */}
-        <button className="sm" id="showAllBtn" title="Show name, crew & prerequisites for every event" onClick={core.openShowAll}>☰ Show All</button>
-        <HeaderSearch />
-
+        {/* Course: pick from the dropdown; the ✎ pencil beside it holds add /
+            rename / reorder / delete (owner, 9 Sep 26 — the wide "Course ▾"
+            menu became an edit icon that sits right after its dropdown). */}
         <label className="sub"><span className="lbltx">Course</span>{' '}
           <select id="courseSel" value={core.course || ''} onChange={e => core.switchCourse(e.target.value)}>
             {core.COURSES.map(c => <option key={c} value={c}>{c}</option>)}
           </select>
         </label>
-        <Menu id="course" label="Course" title="Add, rename or delete a course">
+        <Menu id="course" label="✎" icon title="Edit courses — add, rename, reorder or delete">
           <button className="sm" id="addCourse" onClick={core.addCourse}>+ Add course</button>
           <button className="sm" id="renCourse" title="Rename the current course" onClick={core.renCourse}>✎ Rename course</button>
           <button className="sm" id="ordCourse" title="Change the order courses appear in the dropdown" onClick={core.openOrdCourse}>⇅ Reorder courses</button>
@@ -155,12 +157,20 @@ export default function Header() {
           <button className="sm" id="delCourse" title="Delete the current course" onClick={core.delCourse}>🗑 Delete course</button>
         </Menu>
 
+        {/* Syllabus: pick from the dropdown; the ✎ pencil beside it now ALSO
+            holds "Edit chart layout" — the old standalone Edit button, folded
+            in as a menu item (owner, 9 Sep 26: "fuse it into the syllabus edit
+            icon"). The pencil LIGHTS (active) while the chart is in edit mode,
+            and the top item reads "Done editing" so there is always a way out
+            even though the toolbar below the bar also shows it. */}
         <label className="sub"><span className="lbltx">Syllabus</span>{' '}
           <select id="sylSel" value={sylValue} onChange={e => core.switchSyllabus(e.target.value)}>
             {sylOptions.map(n => <option key={n} value={n}>{n + (core.CUSTOMS[n] ? ' ✎' : '')}</option>)}
           </select>
         </label>
-        <Menu id="syl" label="Syllabus" title="Duplicate, add, rename, reorder or delete a syllabus">
+        <Menu id="syl" label="✎" icon active={core.arrangeMode} title="Edit the syllabus — chart layout, duplicate, rename, reorder or delete">
+          <button className="sm" id="arrangeBtn" title="Draw and move events, prerequisites and lines on the chart" onClick={core.toggleArrange}>{core.arrangeMode ? '✓ Done editing chart' : '✎ Edit chart layout'}</button>
+          <div className="msep" />
           <button className="sm" id="dupSyl" title="Make an exact copy of the current syllabus, including every student's marks" onClick={core.dupSyl}>⧉ Duplicate syllabus</button>
           <button className="sm" id="addSyl" title="Create a new syllabus from the current structure with a clean slate (no marks)" onClick={core.addSyl}>+ Add syllabus</button>
           <button className="sm" id="renSyl" title="Rename the current syllabus (built-ins included)" onClick={core.renSyl}>✎ Rename syllabus</button>
@@ -168,43 +178,53 @@ export default function Header() {
           <div className="msep" />
           <button className="sm" id="delSyl" title="Delete the current syllabus, built-in or custom. Deleted built-ins can be restored from Reorder." onClick={core.delSyl}>🗑 Delete syllabus</button>
         </Menu>
-        {/* Everything used to CHOOSE what you are looking at sits to the left of
-            this; everything you DO sits to the right. A real element rather than
-            margin-left:auto on the File menu: with a wrapping bar an auto margin
-            applies per flex line, so the right-hand group's alignment would
-            depend on where the bar happened to wrap. */}
-        <span className="hspacer" />
 
-        {fileLocked ? null : <Menu id="file" label="File" title="Open your file, bring a syllabus in, or hand a copy over">
-          <button className="sm" id="openFileBtn" title="Open your syllabus file, or start a new one" onClick={core.openFileClick}>📁 Open…</button>
-          <button className="sm" id="importSylBtn" title="Bring one syllabus in from another file, keeping everything you already have" onClick={core.importSyllabusClick}>⊕ Import syllabus…</button>
-          <button className="sm" id="saveCopyBtn" title="Save a separate copy to hand over — your own file is not touched" onClick={core.openCopy}>⤓ Save a copy…</button>
-          <div className="msep" />
-          <div className="mnote">
-            <span id="openFileName">{core.openFileName || 'no file open'}</span>
-            {core.lastSavedAt ? <span id="lastSaved"> · {core.lastSavedAt}</span> : null}
-            {core.openFileHasStudents ? <span id="fileHasStudents"> · contains student data</span> : null}
-          </div>
-          <label className="sub"><input type="checkbox" id="optCharts" checked={core.saveOpts.charts} onChange={e => core.setSaveOpt('charts', e.target.checked)} /> Charts</label>
-          <label className="sub"><input type="checkbox" id="optStudents" checked={core.saveOpts.students} onChange={e => core.setSaveOpt('students', e.target.checked)} /> Students &amp; courses</label>
+        {/* Info mode (was "Details mode"): a compact ⓘ icon now, sitting right
+            after the syllabus pencil (owner, 9 Sep 26 — "change it to i icon").
+            Turn it on and hovering an event (tapping on a phone) pops its
+            title, type, crew & prerequisites; marking is off while it is on. */}
+        <button className={'sm icon' + (core.showDetails ? ' primary' : '')} id="detailsBtn" title="Show each event's title, type, crew & prerequisites on hover (tap on a phone) — marking is off while this is on" onClick={core.toggleDetails}>ⓘ</button>
+
+        {/* Show All moved to the right of the syllabus group (owner, 9 Sep 26).
+            On a phone the button is hidden: the Show All tab under the bar is
+            already there. */}
+        <button className="sm" id="showAllBtn" title="Show name, crew & prerequisites for every event" onClick={core.openShowAll}>☰ Show All</button>
+
+        {/* Two one-way moves between the store and a file, nothing that binds
+            a file (owner, 9 Sep 26): Import a file — a chart drawn up
+            elsewhere, or a whole export back in (it asks before students &
+            marks); Export a copy — the backup before the database move, or a
+            handover. One Import, not an Import + a Restore (owner, same day:
+            "is it possible to just have 1 button?"). */}
+        {fileLocked ? null : <Menu id="file" label="⇪ File" title="Bring a file in, or export a copy">
+          <button className="sm" id="importFileBtn" title="Bring flow charts in from a file — and, if it holds them, students & marks (it asks first)" onClick={core.importClick}>⇪ Import…</button>
+          <button className="sm" id="exportBtn" title="Save a copy of the Tracker's data to a file — a backup, or a chart to hand over" onClick={core.openCopy}>⤓ Export…</button>
         </Menu>}
 
-        <button className={'sm' + (core.arrangeMode ? ' primary' : '')} id="arrangeBtn" onClick={core.toggleArrange}>{core.arrangeMode ? '✓ Done' : '✎ Edit'}</button>
-        {/* Named as the mode it is, not as a display option: turning it on
-            stops the chart accepting marks, which "Show All Details" gave no
-            hint of. Shorter too, and the 1440 bar has no spare width. */}
-        <button className={'sm' + (core.showDetails ? ' primary' : '')} id="detailsBtn" title="Show title, type, crew & prerequisites on every event — marking is off while this is on" onClick={core.toggleDetails}>ⓘ Details mode</button>
-        {/* Save changes shows only when there is something to lose — marks and
-            dates write themselves to storage, flow edits and the open file do
-            not. The slot keeps its width whether the button is there or not: a
-            header that grows on the first edit shifts the whole chart down and
-            slides everything out from under the pointer mid-drag. */}
+        {/* Find event moved to the far right of the choose/act group (owner,
+            9 Sep 26). On a phone it is a 🔍 that opens a full-width strip. */}
+        <HeaderSearch />
+
+        {/* The spacer now falls between the search and the save corner, so Save
+            changes sits alone at the far right. A real element rather than
+            margin-left:auto: with a wrapping bar an auto margin applies per
+            flex line, so the corner's alignment would depend on where the bar
+            wrapped (the phone adds the auto margin deliberately, in CSS). */}
+        <span className="hspacer" />
+
+        {/* Save changes shows only when there is something to lose — marks,
+            dates, students, event details and a moved ball write themselves to
+            storage; structure edits (events, prerequisites, lines, fonts) do
+            not. The slot keeps its width whether the button is there or
+            not: a header that grows on the first edit shifts the whole chart down
+            and slides everything out from under the pointer mid-drag. */}
         <span className="saveslot">
-          {dirty ? <button className="sm dirty" id="saveChanges" title="Save your work — the syllabus, and your file if one is open" onClick={core.saveChangesClick}>✓ Save changes ●</button> : null}
+          {dirty ? <button className="sm dirty" id="saveChanges" title="Save your changes to the syllabus — events, prerequisites and lines" onClick={core.saveChangesClick}>✓ Save changes ●</button> : null}
           {/* Green here while the orange button is showing would tell the user
-              their work is both safe and at risk at once — the two watch
-              different things (the store vs the file). Keep the words, drop
-              the green until nothing is outstanding. Errors stay red. */}
+              their work is both safe and at risk at once (the status reports
+              the last write; the button, the flow edits still waiting). Keep
+              the words, drop the green until nothing is outstanding. Errors
+              stay red. */}
           <span id="saveStat" className={'savestat ' + (dirty && core.saveStat.cls === 'ok' ? '' : core.saveStat.cls)}>{core.saveStat.text}</span>
         </span>
       </div>

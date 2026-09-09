@@ -10,6 +10,7 @@ import { HOOKS } from '../engine/hooks'
 import { SESSION } from '../state/auth'
 import { esc } from '../state/view'
 import { notify } from '../state/store'
+import { persistPeople } from '../state/persist'
 import { DEFAULT_QUAL_COLS, qualCols, setQualCols } from '../engine/qualcols'
 import { useVersion } from './useStore'
 /* ONE LIFT, EVERY DRAG (owner, 6 Sep 26) — the shared drag decoration every
@@ -448,7 +449,7 @@ export function QualsPage() {
            roster no longer justified until some unrelated schedule edit
            happened to run the validator. The callsign path below already
            re-validated for exactly this reason; the tick never did. */
-        validate(); notify(); return
+        validate(); persistPeople(); notify(); return
       }
       /* archiving takes a body off the roster, which can change what the
          warnings say about the lines he was on. Write-path role backstop
@@ -459,7 +460,7 @@ export function QualsPage() {
       const arch = t.closest('[data-arch]') as HTMLElement | null
       if (arch) {
         if (SESSION && SESSION.role !== 'admin') return HOOKS.toast('Only an admin can archive someone', 'warn')
-        PEOPLE[arch.dataset.arch!].archived = true; validate(); notify()
+        PEOPLE[arch.dataset.arch!].archived = true; validate(); persistPeople(); notify()
       }
     }
     const onChange = (e: Event) => {
@@ -467,19 +468,19 @@ export function QualsPage() {
       /* a CAT change moves MORE rules than a tick does — the seat rules, the
          combination matrix, OCU-without-IP — so this one especially cannot
          leave the week showing what it worked out for the old category */
-      if (s) { PEOPLE[s.dataset.lvl!].q = s.value; deriveQuals(PEOPLE[s.dataset.lvl!]); validate(); notify(); return }
+      if (s) { PEOPLE[s.dataset.lvl!].q = s.value; deriveQuals(PEOPLE[s.dataset.lvl!]); validate(); persistPeople(); notify(); return }
       const ini = (e.target as HTMLElement).closest('[data-init]') as HTMLInputElement | null
-      if (ini) { PEOPLE[ini.dataset.init!].initials = ini.value.trim().toUpperCase(); notify(); return }
+      if (ini) { PEOPLE[ini.dataset.init!].initials = ini.value.trim().toUpperCase(); persistPeople(); notify(); return }
       /* upper-cased on the way in, like the initials: the column is sorted by
          GROUPING, and "a" typed on one row and "A" on another would read as
          two flights in the table even though they sort together */
       const flt = (e.target as HTMLElement).closest('[data-flt]') as HTMLInputElement | null
-      if (flt) { PEOPLE[flt.dataset.flt!].flight = flt.value.trim().toUpperCase(); notify(); return }
+      if (flt) { PEOPLE[flt.dataset.flt!].flight = flt.value.trim().toUpperCase(); persistPeople(); notify(); return }
       /* a personnel (ground crew) row's Remarks is free-text prose the person
          owns — kept as typed (only trimmed), unlike the identity fields above.
          Nothing in the engine reads it, so a plain re-render is enough. */
       const prmk = (e.target as HTMLElement).closest('[data-prmk]') as HTMLInputElement | null
-      if (prmk) { PEOPLE[prmk.dataset.prmk!].remarks = prmk.value.trim(); notify(); return }
+      if (prmk) { PEOPLE[prmk.dataset.prmk!].remarks = prmk.value.trim(); persistPeople(); notify(); return }
       const cs = (e.target as HTMLElement).closest('[data-cs]') as HTMLInputElement | null
       if (cs) {
         const id = cs.dataset.cs!, was = PEOPLE[id].cs, want = cs.value.trim()
@@ -490,7 +491,7 @@ export function QualsPage() {
         }
         /* warning text embeds the callsign, so re-run the engine or the issue
            strips would keep naming them by the name they no longer have */
-        validate(); notify()
+        validate(); persistPeople(); notify()
         HOOKS.toast(`${was} is now ${PEOPLE[id].cs} — every puck follows`)
       }
     }
@@ -709,7 +710,7 @@ export function QualsPage() {
        silent branch — a tap that adds a whole person to the roster with
        nothing said (owner audit) */
     HOOKS.toast(`${cs} added`, 'ok')
-    notify()
+    persistPeople(); notify()
   }
 
   /* the export is what is on the screen: the same view, the same filter and

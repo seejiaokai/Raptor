@@ -17,10 +17,11 @@
    the flying qualifications after them. The flags (`lav`, `apt`, `scq`, `aar`,
    `fcpOnly`) are the page's rendering hints and travel with the column.
 
-   Like the ticks it sits beside this is NOT persisted: reload and the LoX is
-   the default set again (`rules` is still the only thing Raptor writes to
-   storage). A shared list fixes the cross-app miss; saving it is a separate
-   ask. */
+   SAVED with the settings since the storage seam (8 Sep 26 bug pass): the
+   ticks beside it persist now, so a column that vanished on reload left its
+   ticks orphaned under a key no heading named. `qualcols` is null while the
+   list is the default ten, like every other settings key. */
+import { store } from './hooks'
 
 export type QualCol = {
   k: string
@@ -58,10 +59,29 @@ export function qualCols(): readonly QualCol[] {
  *  the engine does not import the store; the page that edits the LoX already
  *  calls Raptor's `notify`, which is the lane Leave War's re-projection rides. */
 export function setQualCols(next: readonly QualCol[]): boolean {
-  const same = next.length === cols.length && next.every((c, i) => c.k === cols[i].k && c.h === cols[i].h)
-  if (same) return false
+  if (sameCols(next, cols)) return false
   cols = next
+  store.set('qualcols', sameCols(cols, DEFAULT_QUAL_COLS) ? null : cols.map(c => ({ ...c })))
   return true
+}
+
+const sameCols = (a: readonly QualCol[], b: readonly QualCol[]) =>
+  a.length === b.length && a.every((c, i) => c.k === b[i].k && c.h === b[i].h)
+
+/** Untrusted storage → the list, or the default when the record is unusable.
+ *  Called by initStore beside the other settings loaders. */
+export function qualColsLoad(): void {
+  const raw = store.get('qualcols', null)
+  cols = DEFAULT_QUAL_COLS
+  if (!Array.isArray(raw) || !raw.length) return
+  const clean: QualCol[] = []
+  for (const c of raw) {
+    if (!c || typeof c !== 'object' || typeof c.k !== 'string' || typeof c.h !== 'string' || !c.k) return
+    const col: QualCol = { k: c.k, h: c.h }
+    for (const f of ['lav', 'apt', 'scq', 'aar', 'fcpOnly'] as const) if (c[f] === true) col[f] = true
+    clean.push(col)
+  }
+  cols = clean
 }
 
 /** Tests only: back to the default ten. */

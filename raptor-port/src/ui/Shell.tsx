@@ -59,6 +59,7 @@ import { oilPendingFor } from '../leavewar/sync'
 import { inpById } from '../engine/inputs'
 import { AdminPage } from './AdminPage'
 import { HelpPage } from './HelpPage'
+import { SaveStatus } from './SaveStatus'
 import { bugAlert, unseenReports } from '../state/reports'
 
 /* the week banner — the exact strings renderStatus builds, as a pure value */
@@ -294,6 +295,7 @@ export function Shell() {
               but the PAGE is the gate, not this attribute (AdminPage.tsx) */}
           <a data-page="admin" data-admin="" hidden={!admin} role="button" tabIndex={0} className={page === 'admin' ? 'on' : ''} onClick={() => nav('admin')} onKeyDown={navKey('admin')}>Admin</a>
         </nav>
+        <SaveStatus />
         <div className="spring">
           {/* Undo / redo live at the TOP now (owner, Aug 26 — "so I'll always
               see it when I'm editing to undo if needed"), in the sticky bar

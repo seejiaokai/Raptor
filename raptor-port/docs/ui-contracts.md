@@ -6790,12 +6790,11 @@ screen:
   the file portion which is admin only"). Marking, Edit mode, the Course and
   Syllabus menus, students, dates, pace and lull periods behave exactly as in
   the standalone app for every login. A member (and a logged-out session, and
-  an admin viewing as member) does not get the **File** menu — 📁 Open,
-  ⊕ Import syllabus, ⤓ Save a copy — and the three entry points behind it
-  refuse at the write path in `core.js` (`fileLocked`); ✓ Save changes stays
-  for everyone (it persists the syllabus to the browser store; its file half
-  only fires when a file is open, which only an admin can do). Pins:
-  `src/tracker/tracker.test.tsx`.
+  an admin viewing as member) does not get the **File** menu — ⇪ Import,
+  ⤓ Export — and the entry points behind it refuse at the write path in
+  `core.js` (`fileLocked`); ✓ Save
+  changes stays for everyone (it writes flow edits to the store — nothing
+  else, since 9 Sep 26). Pins: `src/tracker/tracker.test.tsx`.
 - **On a phone, ONE half at a time — and the switch rides the Tracker's own
   element.** Below 1050px the Flow chart / Info tabs show either the chart
   column or the side panel, never both stacked; the class that decides
@@ -6819,6 +6818,41 @@ screen:
   geometry contracts — the one-row bar at 1440, the phone's two-row bar with
   Crew leftmost, the compact editor, the legend clear of the edit hint — are
   the vendored smoke suite's (`npm run smoke:tracker`).
-- **The file is the record.** 📁 Open / ✓ Save changes behave as in the
-  standalone app; localStorage (`ocu:` keys, `tracker/storage.js`) is the
-  per-browser cache. No SharePoint/cloud sync, no Cloud button.
+- **The bar layout, reordered 9 Sep 26 (owner).** Left to right: Crew ·
+  Course dropdown + a ✎ pencil · Syllabus dropdown + a ✎ pencil · ⓘ info ·
+  ☰ Show All · ⇪ File (admin) · 🔍 Find event, then a spacer and ✓ Save
+  changes alone in the far-right corner. The wide "Course ▾" / "Syllabus ▾"
+  menus are now glyph **✎ pencils** sitting right after the dropdown each
+  edits (`Menu icon` prop drops the caret). **Edit chart layout** (the old
+  standalone ✎ Edit button, `#arrangeBtn`) folded into the **Syllabus**
+  pencil as its first item; while the chart is in edit mode that pencil
+  lights (`active` prop) and the item reads "✓ Done editing chart". **Details
+  mode** became a compact **ⓘ** icon (`#detailsBtn`, `.sm.icon`) in place of
+  the wide button — same behaviour (hover on desktop / tap on a phone pops an
+  event's detail bubble, marking off while on). On a phone the desktop spacer
+  is hidden, so `.saveslot` takes `margin-left:auto` to keep Save in the
+  far-right corner. Pins: `tracker.test.tsx` (the fusion + the icons), the
+  smoke suite (the whole bar order, the spacer after the search, every
+  grouped action reachable — `#arrangeBtn` now via the Syllabus pencil).
+- **The STORE is the record; the file is a format (9 Sep 26).** Marks, dates,
+  students and event details save themselves the moment they land (the
+  header's saved/saving indicator is the storage seam's), and so does a MOVED
+  BALL (its position is written on the drop); ✓ Save changes appears only
+  while a STRUCTURE edit (an added/removed event, a changed prerequisite, a
+  drawn line, a font, the JSON editor, undo) is unsaved, and writes it to the
+  store — never a file. The
+  File menu is TWO one-way moves (owner: "is it possible to just have 1
+  button?"): ⇪ Import (reads what the file holds — charts go in chart by
+  chart with the replace/add-as-new prompts, marks untouched; if the file
+  also holds students & marks it asks ONCE "bring them in too?" and merges
+  them only on yes — so one button serves a chart drawn up elsewhere AND the
+  whole export back in after the database move, and a handed-over chart can
+  never restore marks by accident) and ⤓ Export (the old "Save a copy"
+  dialog — Charts on, Students off by default, a syllabus pick-list, a loud
+  confirmation naming which kind of file was written). No file name on the
+  toolbar, no Charts/Students boxes on the menu, no "Use Chrome or Edge"
+  refusal on Import (a plain file input stands in where the native picker is
+  missing). No SharePoint/cloud sync, no Cloud button. Pins:
+  `tracker.test.tsx` (the menu shape, Save watches flow edits only) and the
+  smoke suite (Save never opens a save-file dialog; event details save
+  themselves).

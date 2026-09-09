@@ -673,13 +673,17 @@ test('a bid can be placed, and lands plain because nobody has answered it', asyn
   expect(await chip.evaluate(el => getComputedStyle(el).backgroundColor)).toBe('rgba(0, 0, 0, 0)')
 })
 
-// Leave War is session-only, deliberately (see main.tsx): its store boots on a
-// memory backend so a reload forgets everything and returns to the seed — the
-// same as Raptor's own INPUTS, and the point is that the two apps reset in
-// lockstep so a synced cell can never linger on one side of a reload. A freshly
-// placed bid must therefore be gone after a reload, and the seed's own cells
-// (which the demo re-key always re-installs on the fresh boot) must be back.
-test('a placed bid does not survive a reload — the war is session-only', async ({ page }) => {
+// Leave War persists per browser since the storage seam: its store boots on the
+// whiteboard-backed adapter (BrowserBackend on the built site), the same route
+// Raptor's own INPUTS now take, so the two apps persist in lockstep and a synced
+// cell can never linger on one side of a reload. A freshly placed bid must
+// therefore STILL be there after a reload, standing alongside the seed's own
+// cells — the whole war comes back, new bid and seed together. `?fresh=1` is the
+// clean-start path: that load runs on the in-memory backend and ignores what
+// the browser holds (it does not wipe it; the plain address brings it back).
+// The reload comes straight after the bid, inside the postman's coalesce wait —
+// the page-leaving flush (storage/boot.ts guardUnload) is what lands it.
+test('a placed bid survives a reload — the war persists per browser', async ({ page }) => {
   await page.locator('[data-testid="cell-ammo-2026-02-11"]').click()
   await page.locator('[data-testid="bid-LL"]').click()
   await expect(page.locator('[data-testid="cell-ammo-2026-02-11"] .c')).toHaveText('LL')
@@ -688,9 +692,13 @@ test('a placed bid does not survive a reload — the war is session-only', async
   await openLeaveWar(page)
   await putDrawerAway(page)
 
-  // The bid is gone (empty cells render no chip at all), while a seed cell is
-  // back — proving the reload reset to the seed rather than losing the war.
-  await expect(page.locator('[data-testid="cell-ammo-2026-02-11"] .c')).toHaveCount(0)
+  // The bid is still exactly where it was placed (one chip, still reading LL),
+  // and a seed cell is still there beside it — proving the whole war persisted
+  // across the reload, the new bid and the seed in lockstep, rather than either
+  // being lost or reset to the demo world.
+  const chip = page.locator('[data-testid="cell-ammo-2026-02-11"] .c')
+  await expect(chip).toHaveText('LL')
+  await expect(chip).toHaveCount(1)
   await expect(page.locator('[data-testid="cell-dj-2026-01-16"] .c')).toBeVisible()
 })
 

@@ -84,12 +84,12 @@ describe('only the file portion is locked, at the write path (core.js)', () => {
     expect(core.copyOpen).toBe(false)
   })
 
-  it('Open and Import are guarded at their entry points', () => {
+  it('Import and Export are guarded at their entry points', () => {
     const src = readFileSync(join(__dirname, 'app/core.js'), 'utf8')
-    for (const fn of ['openFileClick', 'importSyllabusClick', 'openCopy', 'saveCopyClick'])
+    for (const fn of ['importClick', 'openCopy', 'saveCopyClick'])
       expect(src, fn).toMatch(new RegExp(`export (async )?function ${fn}\\([^)]*\\) \\{ if \\(fileLocked\\) return;`))
     /* and nothing else is — the standalone app's other writes are everyone's */
-    expect((src.match(/if \(fileLocked\) return;/g) || []).length).toBe(4)
+    expect((src.match(/if \(fileLocked\) return;/g) || []).length).toBe(3)
   })
 })
 
@@ -115,9 +115,47 @@ describe('the header hides only the File menu for a member', () => {
     await render()
     for (const id of EVERYONE) expect($('#' + id), id).toBeTruthy()
     expect($('#fileMenuBtn')).toBeNull()
-    expect($('#openFileBtn')).toBeNull()
-    expect($('#importSylBtn')).toBeNull()
-    expect($('#saveCopyBtn')).toBeNull()
+    expect($('#importFileBtn')).toBeNull()
+    expect($('#exportBtn')).toBeNull()
+  })
+
+  /* 9 Sep 26 (owner: "I thought it should be auto synced … isn't it
+     duplicating"): the file is a format, not a store. The Save button watches
+     flow edits only and the File menu is three one-way moves. */
+  it('the File menu is ONE Import and ONE Export — nothing binds or names a file', async () => {
+    setFileLocked(false)
+    await render()
+    for (const id of ['importFileBtn', 'exportBtn']) expect($('#' + id), id).toBeTruthy()
+    for (const id of ['openFileBtn', 'saveCopyBtn', 'importSylBtn', 'restoreBtn', 'openFileName', 'lastSaved', 'optCharts', 'optStudents'])
+      expect($('#' + id), id + ' is gone').toBeNull()
+  })
+
+  /* 9 Sep 26 reorder (owner): the wide "Course ▾" / "Syllabus ▾" menus became ✎
+     pencils beside their dropdowns; the standalone Edit button folded into the
+     Syllabus pencil as its first item; Details mode became a compact ⓘ icon. */
+  it('Edit chart folds into the Syllabus pencil; Course/Syllabus are ✎ icons; Details is an ⓘ icon', async () => {
+    setFileLocked(false)
+    await render()
+    /* Edit chart layout is the FIRST item inside the Syllabus pencil menu... */
+    const sylPanel = $('#sylMenuPanel')!
+    expect(sylPanel, 'syllabus menu panel exists').toBeTruthy()
+    expect(sylPanel.querySelector('button')!.id, 'first item is Edit chart').toBe('arrangeBtn')
+    /* ...and NOT a bar control any more */
+    const bar = document.querySelector('header .controls')!
+    expect([...bar.children].some(e => (e as HTMLElement).id === 'arrangeBtn'), 'arrange is not a bar button').toBe(false)
+    /* the menu buttons are glyph pencils, the info toggle a lone ⓘ */
+    expect($('#courseMenuBtn')!.textContent!.trim()).toBe('✎')
+    expect($('#sylMenuBtn')!.textContent!.trim()).toBe('✎')
+    expect($('#detailsBtn')!.textContent!.trim()).toBe('ⓘ')
+  })
+
+  it('Save changes watches flow edits only, and no longer touches a file', () => {
+    const src = readFileSync(join(__dirname, 'app/core.js'), 'utf8')
+    const hdr = readFileSync(join(__dirname, 'components/Header.jsx'), 'utf8')
+    expect(hdr).toMatch(/const dirty = core\.sylDirty;/)
+    expect(src).toMatch(/export async function saveChangesClick\(\) \{ await persistSyl\(\); \}/)
+    for (const gone of ['fileDirty', 'markFileDirty', 'fileHandle', 'saveToFileClick', 'openFileClick', 'ensureWritable'])
+      expect(src, gone + ' is gone').not.toContain(gone)
   })
 })
 

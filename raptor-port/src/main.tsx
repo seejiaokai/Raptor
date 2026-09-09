@@ -1,59 +1,89 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './ui/scheduler.css'
-import { initStore, setToast, histInit } from './state/store'
+import { initStore, setToast, histInit, weekStashSnap, weekDirty } from './state/store'
 import { storeBackend } from './engine/hooks'
 import { toast } from './ui/toast'
 import { App } from './ui/App'
 import { initStore as lwInitStore, lwHistInit } from './leavewar/state/store'
-import { memoryBackend } from './leavewar/state/storage'
 import { installDemoWorld } from './leavewar/state/demoworld'
 import { wireLeaveWarSync } from './leavewar/sync'
 import { installProbeBridge } from './probe-bridge'
+import { bootStorage, chooseBackend, guardUnload } from './storage/boot'
+import { BrowserBackend } from './storage/browser'
+import { idbDocStore } from './storage/docstore'
+import { docBoot } from './state/docs'
+import { settingsAdapter, leavewarAdapter, trackerTarget } from './storage/adapters'
+import { useStorageImpl } from './tracker/storage.js'
+import { hydrate, wirePersist } from './state/persist'
+import { setSaveStatusSource } from './ui/SaveStatus'
 
-/* the engine's rule persistence gets the real localStorage in a browser,
-   and the engine's toasts get the real toast */
-try { storeBackend.impl = window.localStorage } catch (e) { /* headless */ }
-setToast(toast)
+/* THE BOOT (storage seam, 8 Sep 26 — docs/superpowers/specs/2026-09-08-
+   storage-seam-design.md). The ONE place the app waits: fetch everything
+   from the backend into the whiteboard, plug the three doors in, hydrate
+   the live scheduler state, then run the boot sequence exactly as before
+   the seam, then draw. Nothing below bootStorage ever waits on storage. */
+async function boot(): Promise<void> {
+  const backend = chooseBackend()
+  const { wb, postman } = await bootStorage(backend)
 
-initStore()
-/* Leave War's store boots ONCE here, beside Raptor's own, never from the
-   page component: its initStore clears every store subscriber, and the
-   Leave War section unmounts/remounts on each tab switch. It must also be
-   up before the first login — resetSession derives the Leave War role from
-   the Raptor session on every login/logout.
+  /* supporting documents get their OWN durable drawer (storage/docstore) —
+     photos/PDFs are too big for the text seam — but only on the real browser
+     backend; dev/tests/?fresh stay memory-only in lockstep with the seam.
+     Awaited BEFORE initStore so the cache is warm when the hydrated-boot path
+     SKIPS the demo re-seed (state/store.ts) and the viewer first renders. */
+  await docBoot(
+    backend instanceof BrowserBackend ? idbDocStore() : null,
+    /* a dropped document write is rare (storage full/locked) but must not be
+       silent — the file works this session but won't survive a reload */
+    () => toast("Couldn't save that document — your browser storage may be full, so it may not be here after a reload.", 'warn'),
+  )
 
-   It boots on a MEMORY backend, so a leave war lasts for the session and
-   resets on reload — deliberately matching Raptor's own INPUTS, which are
-   session-only too. Before this, Leave War persisted to localStorage while
-   Raptor did not, and that asymmetry showed on screen: a leave cell synced
-   between the two apps would reverse-clear or reappear at the next boot,
-   because one half remembered the world across a reload and the other had
-   forgotten it. Making both forget keeps them in step. The manning counter
-   definitions and their arrangement forget with the rest of the war (owner,
-   19 Aug 26 — no persistence wanted; the database, when it arrives, is where
-   that configuration will live). The storage seam (leavewar/state/storage.ts)
-   is still where a shared database backend plugs in when real multi-device
-   data arrives; until then, memory. */
-lwInitStore(memoryBackend())
-/* One roster (sync wire 0): Leave War's people become the projection of
-   Raptor's PEOPLE, and the seeded demo world is re-keyed onto that real crew.
-   Every boot is a FRESH one now (the memory backend above forgets the last
-   session), so the re-key always runs — the first-visit path, taken every
-   time. See leavewar/state/demoworld.ts. */
-installDemoWorld(false)
-/* Wires 1+2: one reconciliation pass each way (inbound first), then both
-   stores stay subscribed. After it, re-take BOTH history baselines: the boot
-   sync's writes are the world the session STARTS in, and Undo — on either the
-   schedule or the Leave War — must not be able to peel them away as if a
-   person had made them. */
-wireLeaveWarSync()
-histInit()
-lwHistInit()
-installProbeBridge()
+  /* the three doors (storage/adapters.ts): settings, Leave War, Tracker */
+  storeBackend.impl = settingsAdapter(wb)
+  useStorageImpl(trackerTarget(wb))
+  setToast(toast)
 
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <App />
-  </StrictMode>,
-)
+  /* inputs / roster / plan layer / stashed weeks: whiteboard → singletons,
+     BEFORE initStore so its seeds know to stand down (state/persist.ts) */
+  hydrate(wb)
+  initStore()
+
+  /* Leave War boots on the whiteboard too. installDemoWorld's flag is now
+     REAL: a world that came back from storage keeps its wars, its OIL story
+     and its inputs; only a first-ever boot gets the demo overlay. */
+  const hadStoredWars = wb.has('leavewar', 'wars')
+  lwInitStore(leavewarAdapter(wb))
+  installDemoWorld(hadStoredWars)
+
+  /* same order as before the seam: the boot sync's writes are the world the
+     session STARTS in, and both history baselines are taken after it */
+  wireLeaveWarSync()
+  histInit()
+  lwHistInit()
+
+  /* every history step, undo/redo and week swap now re-persists; the
+     indicator and the unload guard hang off the postman */
+  wirePersist(wb, { weekSnap: weekStashSnap, weekDirty })
+  setSaveStatusSource(postman)
+  guardUnload(postman)
+
+  installProbeBridge()
+  createRoot(document.getElementById('root')!).render(
+    <StrictMode>
+      <App />
+    </StrictMode>,
+  )
+}
+
+boot().catch((err: unknown) => {
+  console.error('RAPTOR could not load its data', err)
+  const root = document.getElementById('root')
+  if (!root) return
+  root.innerHTML =
+    '<div class="bootfail" role="alert" style="max-width:520px;margin:20vh auto;padding:24px;font:14px system-ui,sans-serif;color:#eee">' +
+    '<h1 style="font-size:18px;margin:0 0 8px">RAPTOR could not load its data</h1>' +
+    '<p style="margin:0 0 16px">Nothing was opened, so nothing can be lost. Check the connection and try again.</p>' +
+    '<button id="bootRetry" type="button" style="padding:8px 14px;border-radius:10px;border:1px solid #888;background:transparent;color:inherit;cursor:pointer">Retry</button></div>'
+  document.getElementById('bootRetry')?.addEventListener('click', () => location.reload())
+})

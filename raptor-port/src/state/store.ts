@@ -24,6 +24,7 @@ import { weekBundle, otherWeekInputs } from '../engine/weeks-data'
 import { seedDemoSans, seedDemoMedical } from './demoseed'
 import { docAdd } from './docs'
 import { storesLoad, cxReasonsLoad, dutyTplLoad, waveTplLoad, dayTplLoad, autoAcceptSeedInputs, autoAcceptInput, inpKey, secOrder, moveSectionModel, reorderSectionTo, secDefaultLoad, waveDefaultLoad } from '../engine'
+import { qualColsLoad } from '../engine/qualcols'
 import { elogClear } from '../engine/editlog'
 import { markDeletion, resetSched, SCHED, dayApproved } from '../engine/publish'
 import { stashPut, stashGet, stashHas } from '../engine/weekstash'
@@ -33,7 +34,7 @@ import { histPush, histInit, schedFields } from './history'
 import { setSession as authSetSession, canEditSched, SESSION, ACCOUNTS, canToggleRole, setEffectiveRole, setLgEdit, setMe } from './auth'
 import { setRole as lwSetRole } from '../leavewar/state/store'
 import { setFileLocked as trSetFileLocked } from '../tracker/role.js'
-import { clearPlan } from './plan'
+import { isHydrated, weekSwapBegin, weekSwapEnd } from './persist'
 
 let VERSION = 0
 const listeners = new Set<() => void>()
@@ -113,7 +114,9 @@ export function writeInputsBatch(fn: () => void) {
    rules. Gated at the write path too, per the role doctrine, not only in the UI. */
 export function moveSection(di: number, key: string, dir: number) {
   if (!canEditSched()) return
-  if (moveSectionModel(DAYS[di], key, dir)) { histPush(); notify() }
+  /* HOOKS.histPush, not the raw histPush: the storage seam's persist wrapper
+     rides the hook, and the raw call left a reorder unsaved (8 Sep 26 bug pass) */
+  if (moveSectionModel(DAYS[di], key, dir)) { HOOKS.histPush(); notify() }
 }
 
 /* THE SECTION DISPLAY ORDER, dragged (owner, 29 Aug 26 pt.3 — the in-place drag
@@ -125,7 +128,7 @@ export function moveSection(di: number, key: string, dir: number) {
    ±1 step. Gated at the write path per the role doctrine. */
 export function moveSectionTo(di: number, fromKey: string, toKey: string): boolean {
   if (!canEditSched()) return false
-  if (reorderSectionTo(DAYS[di], fromKey, toKey)) { histPush(); notify(); return true }
+  if (reorderSectionTo(DAYS[di], fromKey, toKey)) { HOOKS.histPush(); notify(); return true }
   return false
 }
 
@@ -163,13 +166,15 @@ export function resetSession(s: any) {
   view.WARNOFF.clear()            // muted board warnings come back for the next session
   view.WMOPEN.clear()
   view.NOTEPUB.clear()            // "public" scheduler-note flags reset with the session
-  /* the Inputs-calendar planning layer is a scratch pad, not a record — a
-     login/logout must not hand the next user the previous user's open
-     calendar month or its half-planned pucks and remarks. */
+  /* the Inputs-calendar VIEW (which month is open, table or calendar) is
+     per session and resets. The planning layer's pucks and remarks
+     themselves do NOT clear any more: since the storage seam they are saved
+     squadron data like INPUTS (spec §Collections, `plan`), and clearing them
+     in memory here wiped the saved copy for good on the next history step
+     (8 Sep 26 bug pass). */
   view.setInpView('table')
   view.setCalMonth(null)
   view.setMedAsOf(null)
-  clearPlan()
   /* the "View as" IDENTITY goes back to the boot default too. It is what
      every member-own gate keys on — the Inputs page's person filter and
      edit/delete reach, the Leave War's own-row rule (mirrored into its
@@ -292,7 +297,7 @@ function unacceptedKeys(): string[] {
   })
   return out
 }
-function weekStashSnap() {
+export function weekStashSnap() {
   return JSON.stringify({ d: DAYS, ...schedFields(), wo: [...view.WARNOFF], un: unacceptedKeys() })
 }
 
@@ -307,6 +312,10 @@ function weekStashSnap() {
    the model is applied and WARNOFF restored — the same fields the snapshot
    serializes — in both loadWeek and initStore. */
 let weekBaseline = ''
+/* has the loaded week changed since it was loaded — the stash-on-leave
+   yardstick, exposed for state/persist.ts (a pristine seed week is never
+   persisted; see weekstash.ts's "persisted pristine copy is a trap") */
+export function weekDirty() { return weekStashSnap() !== weekBaseline }
 
 /* THE autoAcceptSeedInputs LANDING-MECHANICS GOTCHA a stash restore runs
    into: acceptInput (engine/slots.ts) does not just set `row.acc='g'`, it
@@ -439,31 +448,40 @@ function applyWeekModel(v: any): any {
 export function loadWeek(v: any) {
   const leaveSnap = weekStashSnap()
   if (stashHas(CURWEEK) || leaveSnap !== weekBaseline) stashPut(CURWEEK, leaveSnap)
-  setCurWeek(v)
-  HOOKS.weekSwapped()         // pan.ts drops its arrow-burst corridor (stale-target fix)
-  const s = applyWeekModel(v)
-  view.setBoardDay(null)      // closes the phone board and disarms
-  view.armDrop()
-  view.selDrop()
-  view.clearOtherHL()
-  view.setSecDefOffer(null)   // a "set default?" offer keyed by day index must not outlive its week
-  view.DPREV.clear()
-  view.VWORK.clear()
-  view.AVSHUT.clear()
-  view.PIOPEN.clear()
-  view.BELLLIT.clear()
-  /* the muted-warnings set is the one view-state field a stash restores
-     (weekStashSnap) — a scheduler who quieted a check on this week should
-     not have it reappear just because they looked away and came back. */
-  view.WARNOFF.clear()
-  if (s) (s.wo || []).forEach((k: any) => view.WARNOFF.add(k))
-  view.WMOPEN.clear()
-  view.NOTEPUB.clear()
-  view.setCarryDay(null)
-  view.setHistMode(false)
-  view.setRosDay(0)
-  view.LATEOFF.clear()
-  weekBaseline = weekStashSnap()   // the stash-on-leave yardstick (see its comment)
+  /* THE SWAP WINDOW (state/persist.ts `swapping`): from here until the new
+     baseline is set, CURWEEK names v while DAYS/SCHED still hold the week
+     being left — persistAll must not file the live days under v. try/finally
+     so a throw mid-swap cannot leave the window open for the session. */
+  weekSwapBegin()
+  try {
+    setCurWeek(v)
+    HOOKS.weekSwapped()         // pan.ts drops its arrow-burst corridor (stale-target fix)
+    const s = applyWeekModel(v)
+    view.setBoardDay(null)      // closes the phone board and disarms
+    view.armDrop()
+    view.selDrop()
+    view.clearOtherHL()
+    view.setSecDefOffer(null)   // a "set default?" offer keyed by day index must not outlive its week
+    view.DPREV.clear()
+    view.VWORK.clear()
+    view.AVSHUT.clear()
+    view.PIOPEN.clear()
+    view.BELLLIT.clear()
+    /* the muted-warnings set is the one view-state field a stash restores
+       (weekStashSnap) — a scheduler who quieted a check on this week should
+       not have it reappear just because they looked away and came back. */
+    view.WARNOFF.clear()
+    if (s) (s.wo || []).forEach((k: any) => view.WARNOFF.add(k))
+    view.WMOPEN.clear()
+    view.NOTEPUB.clear()
+    view.setCarryDay(null)
+    view.setHistMode(false)
+    view.setRosDay(0)
+    view.LATEOFF.clear()
+    weekBaseline = weekStashSnap()   // the stash-on-leave yardstick (see its comment)
+  } finally {
+    weekSwapEnd()
+  }
   validate()
   histInit()                  // new baseline for this week — Undo starts here
   notify()
@@ -539,6 +557,7 @@ export function initStore() {
   dutyTplLoad()
   waveTplLoad()
   dayTplLoad()
+  qualColsLoad()
   /* the admin-set DEFAULT arrangement (owner, 29 Aug 26 pt.2) — the global section
      order secOrder falls back to, and the global wave order a new wave is placed by.
      Both default to "un-customised" (canonical sections / no wave order = append),
@@ -546,25 +565,34 @@ export function initStore() {
      the never-booting parity harness stays blind to them. */
   secDefaultLoad()
   waveDefaultLoad()
-  /* GLOBAL INPUTS (owner, 22 Aug 26 — "show all inputs regardless of which week
-     I am selected on"). The module-load INPUTS array is week 1's; merge every
-     OTHER authored week's inputs in ONCE here so the Inputs page carries them
-     all. Each week's SCHEDULE still shows only its own, because inputCoversDate
-     matches by date and a week only loads its seven days. Idempotent (initStore
-     may run twice in tests) — guarded on the same person|date|type|start
-     identity seedDemoSans guards on. Boot-only, so the parity harness (which
-     never boots) stays blind, exactly like seedDemoSans and autoAcceptSeedInputs. */
-  otherWeekInputs().forEach((r: any) => {
-    const dup = INPUTS.some((x: any) => x.person === r.person && x.date === r.date && x.type === r.type && (x.s ?? '') === (r.s ?? ''))
-    if (!dup) INPUTS.push(r)
-  })
-  /* demo-only SANS Availability rows (see state/demoseed.ts for why this
-     lives here and not in engine/inputs.ts's INPUTS array) — pushed before
-     mintInpIds so they mint an iid exactly like every other seed row */
-  seedDemoSans()
-  /* demo-only medical lifecycle rows + placeholder documents (same boot-only
-     home and blindness guarantee — see state/demoseed.ts) */
-  seedDemoMedical(docAdd)
+  /* THE SEED MERGES ARE SKIPPED WHEN STATE CAME BACK FROM STORAGE (the
+     storage seam, 8 Sep 26). A hydrated INPUTS already carries every week's
+     rows and the demo SANS/medical lifecycle that were saved last session;
+     re-running the seeds here would push the demo rows back on top of a
+     roster the squadron has since curated. When NOT hydrated (a fresh
+     backend) they run exactly as before, which is what keeps the un-booted
+     parity harness and stores-boot.test.ts unchanged. */
+  if (!isHydrated()) {
+    /* GLOBAL INPUTS (owner, 22 Aug 26 — "show all inputs regardless of which week
+       I am selected on"). The module-load INPUTS array is week 1's; merge every
+       OTHER authored week's inputs in ONCE here so the Inputs page carries them
+       all. Each week's SCHEDULE still shows only its own, because inputCoversDate
+       matches by date and a week only loads its seven days. Idempotent (initStore
+       may run twice in tests) — guarded on the same person|date|type|start
+       identity seedDemoSans guards on. Boot-only, so the parity harness (which
+       never boots) stays blind, exactly like seedDemoSans and autoAcceptSeedInputs. */
+    otherWeekInputs().forEach((r: any) => {
+      const dup = INPUTS.some((x: any) => x.person === r.person && x.date === r.date && x.type === r.type && (x.s ?? '') === (r.s ?? ''))
+      if (!dup) INPUTS.push(r)
+    })
+    /* demo-only SANS Availability rows (see state/demoseed.ts for why this
+       lives here and not in engine/inputs.ts's INPUTS array) — pushed before
+       mintInpIds so they mint an iid exactly like every other seed row */
+    seedDemoSans()
+    /* demo-only medical lifecycle rows + placeholder documents (same boot-only
+       home and blindness guarantee — see state/demoseed.ts) */
+    seedDemoMedical(docAdd)
+  }
   /* ANCHOR EVERY SEED INPUT TO ITS YEAR (24 Aug 26). A bare 'Jul 13' label
      is resolved through the row's `yr`; at boot CURWEEK is the seed week, so
      baseYear() is exactly the year every demo/authored/SANS seed row means.
@@ -579,7 +607,11 @@ export function initStore() {
   /* land every activity input on its day's ground programme before the first
      validate + baseline — boot-only, so parity (which never boots) stays blind;
      SCHED is fresh here, so every day reads editable. See autoAcceptSeedInputs. */
-  autoAcceptSeedInputs()
+  /* a week that came back from storage (state/persist.ts hydrate stashed
+     it) is restored exactly as loadWeek would — applyWeekModel also
+     re-lands the inputs — otherwise the seed lands as before */
+  if (stashHas(CURWEEK)) applyWeekModel(CURWEEK)
+  else autoAcceptSeedInputs()
   weekBaseline = weekStashSnap()   // the stash-on-leave yardstick (see its comment)
   validate()
   histInit()

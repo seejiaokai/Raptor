@@ -24,6 +24,7 @@
 
 import { INPUTS, DATES, baseYear, dateOrd, inpId, inpWin, isAway, isDownchit, isLeave, oilAsks, withRemarksTail } from '../engine/inputs'
 import { ME, SESSION } from '../state/auth'
+import { persistPeople } from '../state/persist'
 import { docFields, rowDocIds } from '../state/docs'
 import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
@@ -1031,6 +1032,7 @@ export function runPoArchive(): void {
     // A body leaving the roster can change what the warnings say about the
     // lines it was on — the same reason the Quals ✕ re-validates.
     validate()
+    persistPeople()   // not a history step: file the roster, as the Quals ✕ and Restore do
     raptorNotify()
   } finally {
     SYNCING = false
@@ -1059,6 +1061,7 @@ export function restoreArchivedPerson(id: string): boolean {
   setPostOut(id, null)
   body.archived = false
   validate()
+  persistPeople()
   raptorNotify()
   return true
 }
