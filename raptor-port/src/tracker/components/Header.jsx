@@ -115,9 +115,9 @@ export default function Header() {
   const dirty = core.sylDirty;
   /* THE FILE PORTION IS THE ADMIN'S (owner, 7 Sep 26): a member gets every
      other control on this bar — the pickers, the Course and Syllabus menus,
-     Edit, Details and Save changes — and not the File menu (Restore, Import,
-     Export). The three entry points behind it are guarded in core.js too;
-     this is the affordance half. */
+     Edit, Details and Save changes — and not the File menu (Import, Export).
+     The entry points behind it are guarded in core.js too; this is the
+     affordance half. */
   const fileLocked = core.fileLocked;
 
   return (
@@ -179,15 +179,15 @@ export default function Header() {
             depend on where the bar happened to wrap. */}
         <span className="hspacer" />
 
-        {/* Three one-way moves between the store and a file, nothing that
-            binds a file (owner, 9 Sep 26): Import a chart drawn up elsewhere;
-            Export a copy — the backup before the database move, or a handover;
-            Restore a whole export back in. */}
-        {fileLocked ? null : <Menu id="file" label="File" title="Bring a syllabus in, export a copy, or restore a whole export">
-          <button className="sm" id="importSylBtn" title="Bring one or more flow charts in from a file — everyone's marks are untouched" onClick={core.importSyllabusClick}>⊕ Import syllabus…</button>
+        {/* Two one-way moves between the store and a file, nothing that binds
+            a file (owner, 9 Sep 26): Import a file — a chart drawn up
+            elsewhere, or a whole export back in (it asks before students &
+            marks); Export a copy — the backup before the database move, or a
+            handover. One Import, not an Import + a Restore (owner, same day:
+            "is it possible to just have 1 button?"). */}
+        {fileLocked ? null : <Menu id="file" label="File" title="Bring a file in, or export a copy">
+          <button className="sm" id="importFileBtn" title="Bring flow charts in from a file — and, if it holds them, students & marks (it asks first)" onClick={core.importClick}>⇪ Import…</button>
           <button className="sm" id="exportBtn" title="Save a copy of the Tracker's data to a file — a backup, or a chart to hand over" onClick={core.openCopy}>⤓ Export…</button>
-          <div className="msep" />
-          <button className="sm" id="restoreBtn" title="Bring a whole export back in — charts, students and marks — for example after moving to a new database" onClick={core.restoreClick}>⇪ Restore everything…</button>
         </Menu>}
 
         <button className={'sm' + (core.arrangeMode ? ' primary' : '')} id="arrangeBtn" onClick={core.toggleArrange}>{core.arrangeMode ? '✓ Done' : '✎ Edit'}</button>

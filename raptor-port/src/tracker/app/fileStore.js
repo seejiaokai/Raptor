@@ -1,6 +1,6 @@
 /* Wraps the browser's file pickers. Since 9 Sep 26 the file is a FORMAT, not a
    store (core.js, the File-menu note): the app only ever reads a whole file in
-   (Restore, Import) or writes a whole copy out (Export), so nothing here keeps
+   (Import) or writes a whole copy out (Export), so nothing here keeps
    a handle between calls. Export writes in place through the File System
    Access API where Chrome and Edge offer it, and downloads elsewhere — saying
    so plainly rather than leaving the user to think a save happened.

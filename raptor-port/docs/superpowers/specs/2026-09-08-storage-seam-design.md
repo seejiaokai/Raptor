@@ -193,7 +193,7 @@ the whiteboard. The file is a format, not a store.
 > the owner read "every mark lights Save changes, and Save changes raises a
 > save-file dialog" as duplication of the auto-sync. Save changes now writes
 > flow edits to the whiteboard and nothing else; 📁 Open (the bound file) is
-> gone; the File menu is ⊕ Import syllabus / ⤓ Export / ⇪ Restore everything.
+> gone; the File menu is ⇪ Import (asks before students & marks) / ⤓ Export.
 > The "format, not a store" sentence above is now literally true on screen.
 > Contract: `docs/ui-contracts.md` §The Tracker tab.
 

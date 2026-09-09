@@ -268,7 +268,7 @@ function CopyModalInner() {
       <div className="modal" id="copyModal" style={{ zIndex: 91, width: 'min(460px, 92vw)', display: 'block' }}>
         <div style={{ fontWeight: 600, marginBottom: 10 }}>Export</div>
         <div className="mini" style={{ marginBottom: 10 }}>
-          A copy of the Tracker's data as a file. Tick both for a full backup you can bring back with Restore everything; charts only to hand a syllabus over. Nothing here is changed.
+          A copy of the Tracker's data as a file. Tick both for a full backup you can bring back with Import; charts only to hand a syllabus over. Nothing here is changed.
         </div>
         <label style={{ display: 'block', marginBottom: 6 }}>
           <input type="checkbox" id="copyCharts" checked={core.copyOpts.charts}

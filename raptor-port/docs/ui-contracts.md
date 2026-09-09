@@ -6790,9 +6790,9 @@ screen:
   the file portion which is admin only"). Marking, Edit mode, the Course and
   Syllabus menus, students, dates, pace and lull periods behave exactly as in
   the standalone app for every login. A member (and a logged-out session, and
-  an admin viewing as member) does not get the **File** menu — ⊕ Import
-  syllabus, ⤓ Export, ⇪ Restore everything — and the three entry points
-  behind it refuse at the write path in `core.js` (`fileLocked`); ✓ Save
+  an admin viewing as member) does not get the **File** menu — ⇪ Import,
+  ⤓ Export — and the entry points behind it refuse at the write path in
+  `core.js` (`fileLocked`); ✓ Save
   changes stays for everyone (it writes flow edits to the store — nothing
   else, since 9 Sep 26). Pins: `src/tracker/tracker.test.tsx`.
 - **On a phone, ONE half at a time — and the switch rides the Tracker's own
@@ -6825,15 +6825,18 @@ screen:
   while a STRUCTURE edit (an added/removed event, a changed prerequisite, a
   drawn line, a font, the JSON editor, undo) is unsaved, and writes it to the
   store — never a file. The
-  File menu is three one-way moves: ⊕ Import syllabus (charts in, marks
-  untouched, per-syllabus replace/add-as-new prompts), ⤓ Export (the old
-  "Save a copy" dialog — Charts on, Students off by default, a syllabus
-  pick-list, a loud confirmation naming which kind of file was written) and
-  ⇪ Restore everything (a whole export back in — charts replace same-named
-  charts, students and marks merge — asked first). No file name on the
+  File menu is TWO one-way moves (owner: "is it possible to just have 1
+  button?"): ⇪ Import (reads what the file holds — charts go in chart by
+  chart with the replace/add-as-new prompts, marks untouched; if the file
+  also holds students & marks it asks ONCE "bring them in too?" and merges
+  them only on yes — so one button serves a chart drawn up elsewhere AND the
+  whole export back in after the database move, and a handed-over chart can
+  never restore marks by accident) and ⤓ Export (the old "Save a copy"
+  dialog — Charts on, Students off by default, a syllabus pick-list, a loud
+  confirmation naming which kind of file was written). No file name on the
   toolbar, no Charts/Students boxes on the menu, no "Use Chrome or Edge"
-  refusal on Import/Restore (a plain file input stands in where the native
-  picker is missing). No SharePoint/cloud sync, no Cloud button. Pins:
+  refusal on Import (a plain file input stands in where the native picker is
+  missing). No SharePoint/cloud sync, no Cloud button. Pins:
   `tracker.test.tsx` (the menu shape, Save watches flow edits only) and the
   smoke suite (Save never opens a save-file dialog; event details save
   themselves).

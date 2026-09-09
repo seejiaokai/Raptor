@@ -15,7 +15,7 @@
    standalone Tracker on the same origin keeps its data. THIS IS THE RECORD
    (9 Sep 26): the owner's .json file was the authoritative copy and this layer
    its cache until the storage seam made the store durable; the file is now a
-   format the File menu reads in (Restore / Import) or writes out (Export),
+   format the File menu reads in (Import) or writes out (Export),
    never a second source of truth — app/core.js, the File-menu note. */
 const LP = 'ocu:'
 

@@ -481,9 +481,9 @@ const FFNAME = await import('../../src/tracker/app/fileFormat.js');
    file used to be the master copy: Open bound a handle, every mark flagged it
    unsaved, and Save changes wrote the store AND the file (a save-file dialog
    under a button that says Save). The store is the record now. */
-ok('the Restore button exists', await pg.locator('#restoreBtn').count() === 1);
+ok('the Import button exists', await pg.locator('#importFileBtn').count() === 1);
 ok('the Export button exists', await pg.locator('#exportBtn').count() === 1);
-for (const id of ['#openFileBtn', '#saveCopyBtn', '#openFileName', '#lastSaved', '#optCharts', '#optStudents', '#fileHasStudents'])
+for (const id of ['#openFileBtn', '#saveCopyBtn', '#importSylBtn', '#restoreBtn', '#openFileName', '#lastSaved', '#optCharts', '#optStudents', '#fileHasStudents'])
   ok(`${id} is gone with the file-as-store model`, await pg.locator(id).count() === 0);
 /* Never more than one — two Save buttons side by side is a fault this suite has
    caught before. It is absent while there is nothing to save; the checks further
@@ -491,24 +491,22 @@ for (const id of ['#openFileBtn', '#saveCopyBtn', '#openFileName', '#lastSaved',
 ok('there is never a second Save button', await pg.locator('#saveChanges').count() <= 1
   && await pg.locator('#saveFileBtn').count() === 0);
 
-/* ---- Save changes writes the store and never opens a file dialog ---- */
+/* ---- Save changes writes the store and never touches a file ----
+   (that it makes NO file call at all is pinned at source level in
+   tracker.test.tsx — the bundled module namespace cannot be stubbed here, its
+   exports are getters; what this proves is the button's life cycle) */
 const savedToStore = await pg.evaluate(async () => {
-  const FS = window.__fileStoreForTests;
-  let picks = 0;
-  const realPick = FS.pickSave; FS.pickSave = async () => { picks++; return null; };
-  /* Save changes only exists while there is an unsaved flow edit, so make
-     there be one: this is the state a user is in when they press it. */
+  /* Save changes only exists while there is an unsaved structure edit, so
+     make there be one: this is the state a user is in when they press it. */
   window.__markDirtyForTests();
   await new Promise(r => setTimeout(r, 60));
   const shown = !!document.getElementById('saveChanges');
   document.getElementById('saveChanges').click();
   await new Promise(r => setTimeout(r, 1200));
-  FS.pickSave = realPick;
   const el = document.getElementById('saveStat');
-  return { shown, picks, gone: !document.getElementById('saveChanges'), cls: el.className, text: el.textContent };
+  return { shown, gone: !document.getElementById('saveChanges'), cls: el.className, text: el.textContent };
 });
-ok('a flow edit brings the Save button up', savedToStore.shown);
-ok('Save changes never opens a save-file dialog', savedToStore.picks === 0, `${savedToStore.picks} dialogs`);
+ok('a structure edit brings the Save button up', savedToStore.shown);
 ok('Save changes clears the unsaved dot', savedToStore.gone);
 ok('Save changes reports the syllabus saved', savedToStore.cls.includes('ok') && /saved/i.test(savedToStore.text),
   `class="${savedToStore.cls}" text="${savedToStore.text}"`);
@@ -565,7 +563,7 @@ ok('Export resets students to unticked every time', !(await pg.isChecked('#copyS
 await pg.click('#copyCancel'); await pg.waitForTimeout(300);
 
 /* ---- Import: drop one syllabus in without disturbing the rest ---- */
-ok('the Import button exists', await pg.locator('#importSylBtn').count() === 1);
+ok('the one Import button is the syllabus import too', await pg.locator('#importFileBtn').count() === 1);
 const imported = await pg.evaluate(async () => {
   const t = window.__coreForTests;
   const charts = await t.collectCharts(['2026']);
@@ -1020,7 +1018,7 @@ ok('the empty space in the bar falls after Syllabus, not before Course',
 const MENUS = {
   '#courseMenuBtn': ['#addCourse', '#renCourse', '#ordCourse', '#delCourse'],
   '#sylMenuBtn': ['#dupSyl', '#addSyl', '#renSyl', '#ordSyl', '#delSyl'],
-  '#fileMenuBtn': ['#importSylBtn', '#exportBtn', '#restoreBtn'],
+  '#fileMenuBtn': ['#importFileBtn', '#exportBtn'],
 };
 const unreachable = [];
 for (const [btn, items] of Object.entries(MENUS)) {
@@ -1047,10 +1045,10 @@ ok('Reorder crew sits in the Students card beside + Add', await pg.evaluate(() =
 /* Clicking away must close a menu. A menu left open swallows the next click the
    way the old Cloud dialog did. */
 await pg.click('#fileMenuBtn'); await pg.waitForTimeout(150);
-const openedFile = await pg.locator('#restoreBtn:visible').count() === 1;
+const openedFile = await pg.locator('#importFileBtn:visible').count() === 1;
 await pg.mouse.click(700, 700); await pg.waitForTimeout(200);
 ok('a menu opens, and clicking away closes it again',
-  openedFile && await pg.locator('#restoreBtn:visible').count() === 0);
+  openedFile && await pg.locator('#importFileBtn:visible').count() === 0);
 
 /* Save changes is a data-loss risk hidden in a menu and clutter when always
    shown, so it appears exactly when there is something unsaved. Marks, dates,
@@ -3404,6 +3402,64 @@ await openTracker(pg); await pg.waitForSelector('#flowSvg .ball'); await pg.wait
   });
   ok('phone: a tap on a chip switches to the Flow chart and lands on that ball', pw.id === pid && pw.found && pw.flow && pw.inView, JSON.stringify(pw));
   await pp.close();
+}
+
+/* ---- ONE Import for both jobs (9 Sep 26, owner: "is it possible to just have
+   1 button?") ----
+   A chart drawn up elsewhere and the whole export back in after the database
+   move go through the same button: charts always, chart by chart (a name
+   already here asks replace / add as new); students & marks only after ONE
+   question, so a handed-over chart can never restore marks by accident.
+   The OS picker cannot be driven, so the file goes in through
+   window.__pickOpenForTests. Last in the suite: it adds a course. */
+{
+  await pg.setViewportSize({ width: 1440, height: 900 });
+  await openTracker(pg); await pg.waitForSelector('#flowSvg .ball'); await pg.waitForTimeout(400);
+  const feed = (charts, students) => pg.evaluate(([c, st]) => {
+    const text = JSON.stringify(window.__fileFormatForTests.buildFile({ charts: c, students: st, savedAt: new Date().toISOString() }));
+    window.__pickOpenForTests = async () => ({ name: 'smoke-import.json', text });
+  }, [charts, students]);
+  const dlg = async () => ((await pg.locator('#dlgModal').textContent().catch(() => '')) || '').replace(/\s+/g, ' ');
+  const charts = { order: ['SMOKE IMP'], syllabi: { 'SMOKE IMP': [
+    { id: 'SI-01', type: 'acad', seq: 0, prereqs: [], phase: 'P' }, { id: 'SI-02', type: 'flight', seq: 1, prereqs: ['SI-01'], phase: 'P' }] }, layouts: {}, eventInfo: {} };
+  const students = { courses: ['SMOKE IMP COURSE'], byCourse: { 'SMOKE IMP COURSE': { plan: { sylName: 'SMOKE IMP' }, lulls: {}, pace: {},
+    bySyllabus: { 'SMOKE IMP': { roster: ['SMOKE IMP STU'], marks: {}, dates: {} } } } } };
+  const courses = () => pg.evaluate(() => [...document.querySelectorAll('#courseSel option')].map(o => o.value));
+  const marksBefore = await pg.evaluate(() => Object.keys(localStorage).filter(k => k.includes(':m:')).length);
+
+  await feed(charts, null);
+  await viaMenu('file', '#importFileBtn'); await pg.waitForTimeout(1500);
+  let t = await dlg();
+  ok('a charts-only file imports without asking about people', /brought in SMOKE IMP/i.test(t) && !/students and marks/i.test(t), t);
+  await pg.click('#dlgOk'); await pg.waitForTimeout(500);
+  ok('the imported chart is in the syllabus list',
+    (await pg.evaluate(() => [...document.querySelectorAll('#sylSel option')].map(o => o.value))).includes('SMOKE IMP'));
+  ok('a charts-only import wrote no mark', (await pg.evaluate(() => Object.keys(localStorage).filter(k => k.includes(':m:')).length)) === marksBefore);
+
+  await feed(charts, students);
+  await viaMenu('file', '#importFileBtn'); await pg.waitForTimeout(1200);
+  t = await dlg();
+  ok('a chart already here asks replace / add as new', /already exists/i.test(t), t);
+  await pg.click('#dlgOk'); await pg.waitForTimeout(1200);                                  /* Replace it */
+  t = await dlg();
+  ok('a file with people asks ONCE before bringing them in', /also contains students and marks/i.test(t), t);
+  await pg.click('#dlgCancel'); await pg.waitForTimeout(1200);                              /* No */
+  t = await dlg();
+  ok('No keeps the people out and says so', /brought in SMOKE IMP/i.test(t) && /marks are untouched/i.test(t), t);
+  await pg.click('#dlgOk'); await pg.waitForTimeout(400);
+  ok('after No the course is not here', !(await courses()).includes('SMOKE IMP COURSE'));
+
+  await feed(charts, students);
+  await viaMenu('file', '#importFileBtn'); await pg.waitForTimeout(1200);
+  await pg.click('#dlgOk'); await pg.waitForTimeout(1200);                                  /* Replace it */
+  t = await dlg();
+  ok('asked again on the next file with people', /also contains students and marks/i.test(t), t);
+  await pg.click('#dlgOk'); await pg.waitForTimeout(1500);                                  /* Yes */
+  t = await dlg();
+  ok('Yes reports charts and people both', /brought in SMOKE IMP/i.test(t) && /students & marks restored/i.test(t), t);
+  await pg.click('#dlgOk'); await pg.waitForTimeout(500);
+  ok('after Yes the restored course is here', (await courses()).includes('SMOKE IMP COURSE'));
+  await pg.evaluate(() => { delete window.__pickOpenForTests; });
 }
 
 console.log(`\n${pass} passed, ${fail} failed\n`);

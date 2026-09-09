@@ -35,8 +35,8 @@ const refreshCourses = notify;
    The standalone app had no roles at all. Inside Raptor the owner's rule
    (his second word, 7 Sep 26) is: everyone — admin and member alike — marks,
    edits charts and manages students, courses and syllabi exactly as before;
-   ONLY the file portion is the admin's: ⇪ Restore everything, ⊕ Import
-   syllabus, ⤓ Export (📁 Open / ⤓ Save a copy until 9 Sep 26). ✓ Save changes
+   ONLY the file portion is the admin's: ⇪ Import, ⤓ Export (📁 Open /
+   ⊕ Import syllabus / ⤓ Save a copy until 9 Sep 26). ✓ Save changes
    stays for everyone — it writes flow edits to the store and nothing else.
    The flag is written by Raptor's resetSession (every
    login/logout) and the admin's view-as-member toggle, through role.js;
@@ -2957,7 +2957,7 @@ export async function applyStudents(students) {
   return { courses: courses.slice() };
 }
 
-/* ---------- the File menu: Restore, Import, Export ----------
+/* ---------- the File menu: Import, Export ----------
    THE FILE IS A FORMAT, NOT A STORE (owner, 9 Sep 26 — "the file feature is
    for admin to import newly created flow charts … from external areas", and
    to "export these data … then wipe … then import" when the app moves to the
@@ -2967,36 +2967,11 @@ export async function applyStudents(students) {
    button and pressing it raised a save-file dialog, which read as duplication
    once the storage seam made the store durable. Gone with it: the handle, the
    file-unsaved flag, the Charts/Students boxes on the menu and the file name
-   on the toolbar. What stays is three one-way moves between the store and a
-   file — ⇪ Restore everything (a whole export back in), ⊕ Import syllabus
-   (charts only, marks untouched) and ⤓ Export (a copy out) — and the admin
-   lock on all three (`fileLocked`, mirrored by Header.jsx). Every entry point
-   still runs its picker before any await: the browser spends the click. */
-
-/* Restore: bring a whole export back in — charts AND students & marks — on top
-   of what is here. This is the database-move path (export → wipe → restore)
-   and the old 📁 Open minus the handle. Charts of the same name are replaced
-   (applyCharts 'replace' over the file's whole order); students merge, never
-   overwrite the course list (applyStudents). Asked first, because a wrong
-   file here can overwrite real charts. */
-export async function restoreClick() { if (fileLocked) return;
-  const picked = await FS.pickOpen();          /* no await before this — gesture */
-  if (!picked) return;
-  let obj; try { obj = JSON.parse(picked.text); } catch (_) { await uiAlert('That file is not readable as JSON.'); return; }
-  let info; try { info = FMT.describeFile(obj); } catch (e) { await uiAlert(e.message); return; }
-  if (!info.charts && !info.students) { await uiAlert('That file holds no charts and no students.'); return; }
-  const what = [info.charts ? 'charts' : null, info.students ? 'students & marks' : null].filter(Boolean).join(' and ');
-  const go = await uiConfirm('Restore ' + what + ' from “' + picked.name + '”?\n\n'
-    + (info.charts ? 'A chart here with the same name as one in the file is replaced by the file’s. ' : '')
-    + (info.students ? 'Students and marks in the file are added to what is here. ' : '')
-    + 'Nothing else is touched.');
-  if (!go) return;
-  const { charts, students } = FMT.readFile(obj);
-  if (charts) await applyCharts(charts, { names: null, mode: 'replace', rename: null });
-  if (students) await applyStudents(students);
-  clearDirty();
-  setSaveStatus('restored ' + what + ' from ' + picked.name, 'ok'); notify();
-}
+   on the toolbar. What stays is two one-way moves between the store and a
+   file — ⇪ Import (a file in: charts always, students & marks only after a
+   yes) and ⤓ Export (a copy out) — and the admin lock on both (`fileLocked`,
+   mirrored by Header.jsx). Every entry point still runs its picker before
+   any await: the browser spends the click. */
 
 /* ---------- Export: a copy of the store as a file ----------
    The backup before the database move, or a chart to hand over. Students start
@@ -3039,39 +3014,58 @@ export async function saveCopyClick() { if (fileLocked) return;
       : 'It contains charts only — no student names or marks.'));
 }
 
-/* Take one syllabus out of another file and drop it into what is already here —
-   for when a new syllabus is issued or drawn up elsewhere. Marks are never
-   touched either way: applyCharts writes no roster, mark or date key, which
-   smoke.mjs pins by watching every storage write. */
-export async function importSyllabusClick() { if (fileLocked) return;
-  const picked = await FS.pickOpen();          /* no await before this — gesture */
+/* ONE import for both of the owner's jobs (9 Sep 26 — "is it possible to just
+   have 1 button?"): a chart drawn up elsewhere, and the whole export back in
+   after the move to the shared database. It reads what the file holds and
+   adapts. CHARTS go in chart by chart — a name already here asks "replace it,
+   or add as new?" — and never touch a mark: applyCharts writes no roster,
+   mark or date key, which smoke.mjs pins by watching every storage write.
+   STUDENTS & MARKS go in only after a yes, asked once, so a chart handed over
+   can never restore someone's marks by accident; a wipe-then-import finds
+   nothing to ask about on the chart side and one question on the people side.
+   applyStudents merges (never overwrites the course list). */
+export async function importClick() { if (fileLocked) return;
+  /* Playwright cannot drive the OS file picker and the bundled module
+     namespace cannot be patched (its exports are getters), so the smoke suite
+     hands a file in through window.__pickOpenForTests instead. */
+  const pick = (typeof window !== 'undefined' && window.__pickOpenForTests) || FS.pickOpen;
+  const picked = await pick();                 /* no await before this — gesture */
   if (!picked) return;
   let obj; try { obj = JSON.parse(picked.text); } catch (_) { await uiAlert('That file is not readable as JSON.'); return; }
   let info; try { info = FMT.describeFile(obj); } catch (e) { await uiAlert(e.message); return; }
-  if (!info.charts || !info.syllabusNames.length) { await uiAlert('That file holds no charts.'); return; }
-  const { charts } = FMT.readFile(obj);
+  const hasCharts = !!(info.charts && info.syllabusNames.length);
+  if (!hasCharts && !info.students) { await uiAlert('That file holds no charts and no students.'); return; }
+  const { charts, students } = FMT.readFile(obj);
   const done = [];
-  for (const name of info.syllabusNames) {
-    if (!allSylNames().includes(name)) {
-      await applyCharts(charts, { names: [name], mode: 'replace', rename: null });
-      done.push(name); continue;
+  if (hasCharts) {
+    for (const name of info.syllabusNames) {
+      if (!allSylNames().includes(name)) {
+        await applyCharts(charts, { names: [name], mode: 'replace', rename: null });
+        done.push(name); continue;
+      }
+      const c = await uiChoice(
+        '“' + name + '” already exists.\n\nReplace it, or add the incoming one under a new name?',
+        'Replace it', 'Add as new');
+      if (c === 'cancel') continue;
+      if (c === 'ok') {
+        await applyCharts(charts, { names: [name], mode: 'replace', rename: null });
+        done.push(name); continue;
+      }
+      const to = ((await uiPrompt('Name for the incoming syllabus:', name + ' (new)')) || '').trim();
+      if (!to || allSylNames().includes(to)) { await uiAlert('That name is blank or already taken.'); continue; }
+      await applyCharts(charts, { names: [name], mode: 'add', rename: { from: name, to } });
+      done.push(to);
     }
-    const c = await uiChoice(
-      '“' + name + '” already exists.\n\nReplace it, or add the incoming one under a new name?',
-      'Replace it', 'Add as new');
-    if (c === 'cancel') continue;
-    if (c === 'ok') {
-      await applyCharts(charts, { names: [name], mode: 'replace', rename: null });
-      done.push(name); continue;
-    }
-    const to = ((await uiPrompt('Name for the incoming syllabus:', name + ' (new)')) || '').trim();
-    if (!to || allSylNames().includes(to)) { await uiAlert('That name is blank or already taken.'); continue; }
-    await applyCharts(charts, { names: [name], mode: 'add', rename: { from: name, to } });
-    done.push(to);
   }
-  if (done.length) setSaveStatus('brought in ' + done.join(', '), 'ok');
-  await uiAlert(done.length
-    ? 'Brought in: ' + done.join(', ') + '.\n\nEveryone’s marks are untouched. It is saved.'
+  let people = false;
+  if (info.students && students) {
+    people = await uiConfirm('This file also contains students and marks.\n\nBring them in too? They are added to what is here; nothing else is touched.');
+    if (people) await applyStudents(students);
+  }
+  const what = [done.length ? 'brought in ' + done.join(', ') : null, people ? 'students & marks restored' : null].filter(Boolean).join(' · ');
+  if (what) setSaveStatus(what, 'ok');
+  await uiAlert(what
+    ? what.charAt(0).toUpperCase() + what.slice(1) + '.\n\n' + (people ? 'It is saved.' : 'Everyone’s marks are untouched. It is saved.')
     : 'Nothing was brought in.');
   notify();
 }

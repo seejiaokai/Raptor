@@ -84,12 +84,12 @@ describe('only the file portion is locked, at the write path (core.js)', () => {
     expect(core.copyOpen).toBe(false)
   })
 
-  it('Restore, Import and Export are guarded at their entry points', () => {
+  it('Import and Export are guarded at their entry points', () => {
     const src = readFileSync(join(__dirname, 'app/core.js'), 'utf8')
-    for (const fn of ['restoreClick', 'importSyllabusClick', 'openCopy', 'saveCopyClick'])
+    for (const fn of ['importClick', 'openCopy', 'saveCopyClick'])
       expect(src, fn).toMatch(new RegExp(`export (async )?function ${fn}\\([^)]*\\) \\{ if \\(fileLocked\\) return;`))
     /* and nothing else is — the standalone app's other writes are everyone's */
-    expect((src.match(/if \(fileLocked\) return;/g) || []).length).toBe(4)
+    expect((src.match(/if \(fileLocked\) return;/g) || []).length).toBe(3)
   })
 })
 
@@ -115,19 +115,18 @@ describe('the header hides only the File menu for a member', () => {
     await render()
     for (const id of EVERYONE) expect($('#' + id), id).toBeTruthy()
     expect($('#fileMenuBtn')).toBeNull()
-    expect($('#restoreBtn')).toBeNull()
-    expect($('#importSylBtn')).toBeNull()
+    expect($('#importFileBtn')).toBeNull()
     expect($('#exportBtn')).toBeNull()
   })
 
   /* 9 Sep 26 (owner: "I thought it should be auto synced … isn't it
      duplicating"): the file is a format, not a store. The Save button watches
      flow edits only and the File menu is three one-way moves. */
-  it('the File menu is import/export only — nothing binds or names a file', async () => {
+  it('the File menu is ONE Import and ONE Export — nothing binds or names a file', async () => {
     setFileLocked(false)
     await render()
-    for (const id of ['importSylBtn', 'exportBtn', 'restoreBtn']) expect($('#' + id), id).toBeTruthy()
-    for (const id of ['openFileBtn', 'saveCopyBtn', 'openFileName', 'lastSaved', 'optCharts', 'optStudents'])
+    for (const id of ['importFileBtn', 'exportBtn']) expect($('#' + id), id).toBeTruthy()
+    for (const id of ['openFileBtn', 'saveCopyBtn', 'importSylBtn', 'restoreBtn', 'openFileName', 'lastSaved', 'optCharts', 'optStudents'])
       expect($('#' + id), id + ' is gone').toBeNull()
   })
 

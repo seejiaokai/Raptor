@@ -8,10 +8,10 @@
 > - **One role rule exists now.** The standalone app had none. Inside Raptor
 >   the owner's rule (his second word, 7 Sep 26) is *everyone edits; only the
 >   file portion is the admin's*: marking, charts, students, courses and
->   syllabi are open to every login, while ⇪ Restore everything, ⊕ Import
->   syllabus and ⤓ Export need the admin. The flag rides the Raptor login
+>   syllabi are open to every login, while ⇪ Import and ⤓ Export need the
+>   admin. The flag rides the Raptor login
 >   (`state/store.ts resetSession`/`toggleRole` → `tracker/role.js` → `core.js
->   fileLocked`), is enforced at those three entry points in `core.js` and
+>   fileLocked`), is enforced at those entry points in `core.js` and
 >   mirrored by `Header.jsx` (the File menu not drawn). Never persisted. The
 >   vendored smoke suite drives as the admin throughout;
 >   `src/tracker/tracker.test.tsx` pins the member shape.
@@ -30,16 +30,18 @@
 >   save-file dialog). Now marks, dates, students, event details and a moved
 >   ball save themselves; ✓ Save changes writes STRUCTURE edits (events,
 >   prerequisites, lines, fonts) to the store and nothing else; and the File
->   menu is ⊕ Import syllabus (charts in, marks untouched),
->   ⤓ Export (a copy out — the backup before the database move, or a handover;
->   students unticked by default) and ⇪ Restore everything (a whole export
->   back in, asked first). No bound file, no file name on the toolbar, no
+>   menu is ⇪ Import (ONE button for both jobs: charts in, chart by chart,
+>   marks untouched — and if the file also holds students & marks it asks once
+>   before merging them, which is the export → wipe → import move) and
+>   ⤓ Export (a copy out — the backup before the database move, or a
+>   handover; students unticked by default). No bound file, no file name on the toolbar, no
 >   Charts/Students boxes on the menu. `app/fileStore.js` reads on any browser
 >   (a plain file input where the native picker is missing) and writes in
 >   place only on Chrome/Edge (download elsewhere). The owner's chart loop
 >   still holds: he Exports charts only, sends the file, a session bakes it
 >   with `scripts/tracker/bake-user-charts.mjs` (reads only the `charts`
->   half), and he Imports the charts-only file he gets back.
+>   half), and he Imports the charts-only file he gets back (no students
+>   question — a charts-only file never asks).
 > - **Students are NOT linked to Raptor's people** (owner, 7 Sep 26 —
 >   "standalone first"). The roster is the Tracker's own list, as in his file.
 >   Linking OCU trainees to Raptor's pucks is a later, separate step, the way
@@ -126,7 +128,7 @@ time changed.
   of ids, `data-ord` says which. Only one can ever be open.
 - **Target elements by ID in tests** (`#showAllBtn`, `#detailsBtn`,
   `#saveChanges`, `#dupSyl`, `#addStu`, `#trUndoBtn`, `#editSyl`,
-  `#restoreBtn`, `#importSylBtn`, `#exportBtn`). Most sit inside a menu
+  `#importFileBtn`, `#exportBtn`). Most sit inside a menu
   (`#courseMenuBtn`, `#sylMenuBtn`, `#fileMenuBtn`) — open it first.
   `#saveChanges` exists only while a flow edit is unsaved. The app uses its
   own confirm (`#dlgModal`), not native `prompt()`.

@@ -355,10 +355,10 @@ students = { courses: string[],
 ### The syllabus file
 
 `{ format: 'ocu-tracker', version: 1, savedAt, contains: { charts, students }, charts?, students? }`
-— a FORMAT, not a store (9 Sep 26): ⤓ Export writes one from the store, ⇪ Restore
-everything and ⊕ Import syllabus read one back in. Nothing binds a file; the
-store above is the record. The database migration's recipe is exactly this
-shape: Export (both boxes ticked) → wipe → Restore everything.
+— a FORMAT, not a store (9 Sep 26): ⤓ Export writes one from the store, ⇪ Import
+reads one back in (charts always; students & marks only after a yes). Nothing
+binds a file; the store above is the record. The database migration's recipe
+is exactly this shape: Export (both boxes ticked) → wipe → Import, answer yes.
 
 ---
 

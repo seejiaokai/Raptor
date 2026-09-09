@@ -2,9 +2,9 @@
 
 **Status:** built; **superseded in part 9 Sep 26** — inside RAPTOR the browser
 store is durable (the storage seam) and became the record. 📁 Open and the
-file half of ✓ Save changes are gone; ⊕ Import syllabus and ⤓ Save a copy
-(now ⤓ Export) stay, joined by ⇪ Restore everything for the export → wipe →
-restore move to the shared database. Current contract: `docs/ui-contracts.md`
+file half of ✓ Save changes are gone; ⊕ Import syllabus became the one
+⇪ Import (it asks before bringing students & marks in, which is the export →
+wipe → import move to the shared database) and ⤓ Save a copy became ⤓ Export. Current contract: `docs/ui-contracts.md`
 §The Tracker tab. Kept as the design record. · **Date:** 2026-08-07
 
 ## What this changes
