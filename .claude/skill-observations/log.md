@@ -2106,3 +2106,18 @@ gate's. Keep verdict-bearing commands unpiped.
 **Suggested improvement:** When a user reports unwanted movement/change on screen right after a fix that redraws, FIRST check whether the fix itself introduced a new movement, and ask one question: "should it stay exactly where it was, or go to X like before?" — before removing an existing rule. Add to the bug-triage checklist: "did my last change cause this symptom on top of the existing behaviour?"
 
 **Principle:** A symptom rarely names its cause. When two behaviours could produce the same complaint and one of them is a rule the app had on purpose, confirm which one the user means before deleting the deliberate one — a one-line question is cheaper than a reversal.
+
+### Observation 139: A new e2e check that mutates shared fixture state must run after the checks that read the pre-mutation state
+
+**Status:** OPEN
+**Date:** 2026-09-09
+**Session context:** Fixing a Tracker flow-chart bug (marking a ball reset the board scroll to the top). Added a new browser smoke check that grades a ball and asserts the view holds.
+**Skill:** task-observer (general testing principle; no dedicated skill)
+**Type:** open-source
+**Phase/Area:** Adding a check to a long single-session end-to-end suite that shares one running app across hundreds of checks.
+
+**Issue:** I inserted the new "grading keeps the view" check BEFORE an existing wedge-picker block. Grading gave the active student a new "latest work", so when the later block re-selected that student it no longer landed on the ball whose on-screen coordinates the block had precomputed — four previously-green checks failed at screen coordinates that now pointed at the wrong ball. The fix was purely positional: move the new check to run AFTER every check that depended on the pre-grade state.
+
+**Suggested improvement:** When adding a check to a shared-fixture e2e suite, ask what persistent state it mutates and which later checks read that same state; place a state-mutating check last within its block, or give it its own throwaway fixture (a fresh student/course), rather than assuming insertion point is free.
+
+**Principle:** In a suite where one long-lived instance is threaded through many checks, ordering is part of correctness: a check that mutates shared state is only safe after everything that relies on the unmutated state, or when it isolates its own fixture.
