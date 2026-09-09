@@ -2193,6 +2193,12 @@ export function showLastEdit(s) {
   if (!rec || !rec.event || rec.syl !== curSyl()) return false;
   return scrollToEvent(rec.event);
 }
+/* The chart's first event in syllabus order — where a student with nothing
+   marked yet starts, so a crew pick has somewhere to land for them too. */
+export function firstEventId() {
+  let f = null; for (const e of SYL) if (!f || e.seq < f.seq) f = e;
+  return f ? f.id : null;
+}
 export async function popGrade(v) {
   const s = active; const popId = pop && pop.id; if (!popId) return;
   if (v === 'cancel') { closePop(); return; }
@@ -2377,8 +2383,10 @@ export function setActive(v, opts) {
      straight back. THEN land on the picked student's latest work, the rule
      this app has always had (owner, same day, once the snap was explained:
      "when u pick a crew it will land on their latest work without having to
-     scroll"); someone with no mark on this chart yet has nowhere to land, so
-     for them the view simply stays where it was — never the top. */
+     scroll"); someone with no mark on this chart yet lands on the chart's
+     FIRST event instead (owner, same evening: "if nothing is clocked … it
+     will show the view based on the first item") — never a bare reset to
+     the top-left corner. */
   const board = document.getElementById('board');
   const sx = board ? board.scrollLeft : 0, sy = board ? board.scrollTop : 0;
   renderBoard(); renderSide();
@@ -2387,7 +2395,7 @@ export function setActive(v, opts) {
      measuring in the same tick reads a stale one (same reason jumpTo and init
      defer). Guarded on `active`: a quick second pick before the frame must not
      scroll to the first one's mark. */
-  const go = () => { if (active === v) showLastEdit(v); };
+  const go = () => { if (active === v && !showLastEdit(v)) scrollToEvent(firstEventId()); };
   if (!land) { /* stay */ }
   else if (typeof requestAnimationFrame !== 'undefined') requestAnimationFrame(go);
   else go();

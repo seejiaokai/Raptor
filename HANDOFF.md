@@ -237,8 +237,8 @@ redraws (and closes an open grading pop-up); pinned in `tracker.test.tsx`.
 That redraw reset the board's scroll to the top, which his phone read as a
 snap; he first asked for "the view stays put", then, once the old rule was
 explained, for it back: **a crew pick lands on that student's latest work;
-a student with no mark yet leaves the view where it is** (scroll captured
-across the redraw, then `showLastEdit` after the frame). Pinned in the smoke
+a student with no mark yet lands on the chart's first event** (scroll captured
+across the redraw, then `showLastEdit` — or `firstEventId` — after the frame). Pinned in the smoke
 suite; `docs/tracker/known-gaps.md`. **Then his idea, the same evening: the
 ring on every ball is a SECOND crew picker** — tap another student's wedge
 to pick them (every ball edges that wedge in cyan — "cyan edge only", his

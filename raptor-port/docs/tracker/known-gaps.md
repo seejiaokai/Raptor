@@ -80,7 +80,8 @@ time changed.
   the same day when a snap-to-the-top from the ring redraw was read as the
   landing itself). `setActive` captures the board's scroll across the redraw,
   puts it back, then scrolls to the last mark after the frame; a student with
-  no mark on this chart stays where the view was, never the top. Switching
+  no mark on this chart lands on the chart's FIRST event (owner: "if nothing
+  is clocked … the first item"), never a bare top-left reset. Switching
   student still does not switch syllabus. **A tap on another student's wedge
   on any ball also picks them** (same day) — that route deliberately does NOT
   land: the user is looking at the ball they tapped. With five or six

@@ -2008,20 +2008,25 @@ if (two.length >= 2) {
     onShallow.found && onShallow.inView && onShallow.scrollTop < onDeep.scrollTop,
     `${shallow.id}: scrolled ${onShallow.scrollTop}px, in view ${onShallow.found ? onShallow.inView : 'n/a'}`);
 
-  /* Someone with no marks yet: the view stays put. Park the board at a
-     deliberate, non-zero, non-top offset first, so a snap to the top would
-     show. (Adding a student selects them and redraws, so pick a marked student
+  /* Someone with no marks yet lands on the chart's FIRST event (owner, 9 Sep
+     26: "if nothing is clocked … it will show the view based on the first
+     item"). Park the board well down first, so the landing is a real move.
+     (Adding a student selects them and redraws, so pick a marked student
      again before parking.) */
   await addStudent('STUDENT FRESH');
   await pg.selectOption('#activeSel', marker); await pg.waitForTimeout(600);
-  await pg.evaluate(() => { const bd = document.getElementById('board'); bd.scrollTop = Math.round(bd.scrollHeight * 0.4); bd.scrollLeft = 0; });
+  await pg.evaluate(() => { const bd = document.getElementById('board'); bd.scrollTop = Math.round(bd.scrollHeight * 0.6); bd.scrollLeft = 0; });
   await pg.waitForTimeout(200);
   const parked = await pg.evaluate(() => Math.round(document.getElementById('board').scrollTop));
+  const firstId = await pg.evaluate(() => {
+    const balls = [...document.querySelectorAll('#flowSvg .ball')];
+    return balls.map(g => ({ id: g.dataset.id, y: g.getBBox().y })).sort((a, b) => a.y - b.y)[0].id;
+  });
   await pg.selectOption('#activeSel', 'STUDENT FRESH'); await pg.waitForTimeout(600);
-  const afterFresh = await pg.evaluate(() => Math.round(document.getElementById('board').scrollTop));
-  ok('picking a crew member with no marks yet leaves the view where it was, no snap to the top',
-    parked > 100 && Math.abs(afterFresh - parked) <= 4,
-    `parked ${parked}px, after picking them ${afterFresh}px`);
+  const onFirst = await ballView(firstId);
+  ok("picking a crew member with no marks yet lands on the chart's first event",
+    parked > 100 && onFirst.found && onFirst.inView && onFirst.scrollTop < parked,
+    `parked ${parked}px; ${firstId} in view ${onFirst.found ? onFirst.inView : 'n/a'} at ${onFirst.scrollTop}px`);
 
   /* The ring on every ball is a second crew picker (owner, 9 Sep 26): a real
      mouse click on another student's wedge picks them, every ball edges that
