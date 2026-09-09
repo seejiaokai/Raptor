@@ -71,9 +71,10 @@ describe('the record shape for several files', () => {
 class FakeDrawer implements DocDurable {
   rows: DocRec[]
   puts = 0
+  failPut = false
   constructor(rows: DocRec[] = []) { this.rows = rows }
   async load() { return this.rows.map(r => ({ ...r })) }
-  put(rec: DocRec) { this.puts++; this.rows.push({ ...rec }) }
+  async put(rec: DocRec) { this.puts++; if (this.failPut) throw new Error('drawer write failed'); this.rows.push({ ...rec }) }
 }
 const rec = (id: string): DocRec => ({ id, name: id + '.png', mime: 'image/png', size: 4, blob: png() })
 
@@ -119,9 +120,23 @@ describe('the durable drawer behind the cache', () => {
   })
 
   it('is fail-soft: a drawer whose load rejects leaves the store memory-only', async () => {
-    const broken: DocDurable = { load: () => Promise.reject(new Error('locked')), put: () => { throw new Error('should never be called') } }
+    const broken: DocDurable = { load: () => Promise.reject(new Error('locked')), put: async () => { throw new Error('should never be called') } }
     await expect(docBoot(broken)).resolves.toBeUndefined()   // no throw
     expect(() => docAdd(png())).not.toThrow()                // and no write-through to the broken drawer
+  })
+
+  it('surfaces a dropped durable write instead of losing it silently', async () => {
+    /* 9 Sep 26: a failed IndexedDB put (storage full/locked) used to be
+       fire-and-forget; now the rejection reaches the user via onDurableError.
+       The file still works this session — only its reload survival is lost. */
+    const d = new FakeDrawer(); d.failPut = true
+    let failed: DocRec | null = null
+    await docBoot(d, r => { failed = r })
+    const { id } = docAdd(png())
+    await new Promise(r => setTimeout(r))                    // let the rejected put's catch run
+    expect(failed, 'the user was told').not.toBeNull()
+    expect(failed!.id).toBe(id)
+    expect(docHas(id), 'the file still works this session').toBe(true)
   })
 
   it('docBoot(null) keeps the old memory-only behaviour', async () => {

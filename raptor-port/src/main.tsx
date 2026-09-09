@@ -32,7 +32,12 @@ async function boot(): Promise<void> {
      backend; dev/tests/?fresh stay memory-only in lockstep with the seam.
      Awaited BEFORE initStore so the cache is warm when the hydrated-boot path
      SKIPS the demo re-seed (state/store.ts) and the viewer first renders. */
-  await docBoot(backend instanceof BrowserBackend ? idbDocStore() : null)
+  await docBoot(
+    backend instanceof BrowserBackend ? idbDocStore() : null,
+    /* a dropped document write is rare (storage full/locked) but must not be
+       silent — the file works this session but won't survive a reload */
+    () => toast("Couldn't save that document — your browser storage may be full, so it may not be here after a reload.", 'warn'),
+  )
 
   /* the three doors (storage/adapters.ts): settings, Leave War, Tracker */
   storeBackend.impl = settingsAdapter(wb)

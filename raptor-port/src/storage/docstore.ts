@@ -48,14 +48,20 @@ export function idbDocStore(): DocDurable {
         req.onerror = () => reject(req.error)
       }))
     },
-    /* fire-and-forget, exactly like the postman's write-behind: the file is
-       already in the cache, so a failed durable write only costs this file
-       its reload survival, never the session. */
+    /* Returns a promise that RESOLVES when the write is durably committed and
+       REJECTS if the transaction errors or aborts (quota, locked profile) —
+       observing tx.oncomplete/onerror, not just the request, so the outcome is
+       actually known. state/docs stays fire-and-forget at the call site (it
+       does not await) but can now surface a failed save instead of losing it
+       silently. The file is already in the cache, so a failure only costs this
+       file its reload survival, never the session. */
     put(rec: DocRec) {
-      db().then(d => {
+      return db().then(d => new Promise<void>((resolve, reject) => {
         const tx = d.transaction(STORE, 'readwrite')
-        tx.objectStore(STORE).put(rec)
-      }).catch(() => { /* quota / locked profile — stays session-only */ })
+        tx.oncomplete = () => resolve()
+        tx.onerror = tx.onabort = () => reject(tx.error || new Error('doc write failed'))
+        try { tx.objectStore(STORE).put(rec) } catch (e) { reject(e) }
+      }))
     },
   }
 }

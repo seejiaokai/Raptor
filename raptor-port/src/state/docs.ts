@@ -30,12 +30,19 @@ export type DocRec = { id: string, name: string, mime: string, size: number, blo
    the built site, left null (memory-only) everywhere else */
 export interface DocDurable {
   load(): Promise<DocRec[]>
-  put(rec: DocRec): void
+  /* resolves when the write is durably committed, rejects if it fails — so a
+     failed save can be surfaced instead of lost silently (docAdd does not
+     await it; it only listens for the rejection) */
+  put(rec: DocRec): Promise<void>
 }
 const mem = new Map<string, { name: string, mime: string, size: number, blob: Blob }>()
 export const docBackend: any = { impl: mem }
 
 let durable: DocDurable | null = null
+/* how a failed durable write reaches the user (a toast, wired by main.tsx) —
+   a dropped IndexedDB put (storage full or locked) is rare but must not be
+   silent: the file works this session but won't survive a reload */
+let onDurableError: ((rec: DocRec) => void) | null = null
 
 /* Boot the durable drawer (main.tsx, browser backend only). Fill the cache
    from it so the viewer's synchronous docGet finds a reloaded file. A null
@@ -43,8 +50,9 @@ let durable: DocDurable | null = null
    store memory-only rather than blocking boot — the same posture the storage
    seam takes. (Ids are globally unique at mint, see newDocId, so boot needs
    no counter to advance — a fresh upload can never collide with a stored id.) */
-export async function docBoot(store: DocDurable | null): Promise<void> {
+export async function docBoot(store: DocDurable | null, onError?: (rec: DocRec) => void): Promise<void> {
   durable = store
+  onDurableError = onError || null
   if (!store) return
   let rows: DocRec[]
   try { rows = await store.load() }
@@ -87,8 +95,17 @@ export function docAdd(file: { name?: any, type?: any, size?: any } & Blob): { i
   const rec = { name: String(file.name || 'document'), mime: String(file.type), size: +file.size, blob: file as Blob }
   docBackend.impl.set(id, rec)
   /* write through to the durable drawer so a reload keeps it — no-op when
-     memory-only (dev/tests/?fresh), fire-and-forget otherwise */
-  if (durable) durable.put({ id, ...rec })
+     memory-only (dev/tests/?fresh). Fire-and-forget (not awaited), but a
+     REJECTION is surfaced: a dropped write (storage full/locked) tells the
+     user instead of vanishing. A synchronous throw is treated the same. */
+  if (durable) {
+    const dr: DocRec = { id, ...rec }
+    const fail = () => { if (onDurableError) onDurableError(dr) }
+    try {
+      const p = durable.put(dr)
+      if (p && typeof p.catch === 'function') p.catch(fail)
+    } catch { fail() }
+  }
   return { id, why: '' }
 }
 export function docGet(id: any) { return (id && docBackend.impl.get(String(id))) || null }
