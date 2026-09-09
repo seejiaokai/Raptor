@@ -6818,6 +6818,22 @@ screen:
   geometry contracts — the one-row bar at 1440, the phone's two-row bar with
   Crew leftmost, the compact editor, the legend clear of the edit hint — are
   the vendored smoke suite's (`npm run smoke:tracker`).
+- **The bar layout, reordered 9 Sep 26 (owner).** Left to right: Crew ·
+  Course dropdown + a ✎ pencil · Syllabus dropdown + a ✎ pencil · ⓘ info ·
+  ☰ Show All · ⇪ File (admin) · 🔍 Find event, then a spacer and ✓ Save
+  changes alone in the far-right corner. The wide "Course ▾" / "Syllabus ▾"
+  menus are now glyph **✎ pencils** sitting right after the dropdown each
+  edits (`Menu icon` prop drops the caret). **Edit chart layout** (the old
+  standalone ✎ Edit button, `#arrangeBtn`) folded into the **Syllabus**
+  pencil as its first item; while the chart is in edit mode that pencil
+  lights (`active` prop) and the item reads "✓ Done editing chart". **Details
+  mode** became a compact **ⓘ** icon (`#detailsBtn`, `.sm.icon`) in place of
+  the wide button — same behaviour (hover on desktop / tap on a phone pops an
+  event's detail bubble, marking off while on). On a phone the desktop spacer
+  is hidden, so `.saveslot` takes `margin-left:auto` to keep Save in the
+  far-right corner. Pins: `tracker.test.tsx` (the fusion + the icons), the
+  smoke suite (the whole bar order, the spacer after the search, every
+  grouped action reachable — `#arrangeBtn` now via the Syllabus pencil).
 - **The STORE is the record; the file is a format (9 Sep 26).** Marks, dates,
   students and event details save themselves the moment they land (the
   header's saved/saving indicator is the storage seam's), and so does a MOVED

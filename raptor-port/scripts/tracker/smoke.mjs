@@ -223,6 +223,13 @@ const viaMenu = async (menu, item) => {
   await pg.click(`#${menu}MenuBtn`); await pg.waitForTimeout(120);
   await pg.click(item);
 };
+/* "Edit chart layout" lives inside the Syllabus ✎ menu now (owner, 9 Sep 26):
+   open the pencil, then toggle the item. Defensive (swallows) so it stands in
+   for the old `pg.click('#arrangeBtn').catch(()=>{})` exits too — every call
+   site is a paired on/off toggle, so a swallowed miss keeps the parity. */
+const arr = async (page = pg) => {
+  try { await page.click('#sylMenuBtn'); await page.waitForTimeout(120); await page.click('#arrangeBtn'); } catch { /* already in the wanted state */ }
+};
 await openShowAll();
 await row('ST-01').locator('button.sedit').click();
 await pg.waitForSelector('.saedit');
@@ -722,7 +729,7 @@ const headerShape = () => pg.evaluate(() => ({
     .map(e => Math.round(e.getBoundingClientRect().top))).size,
 }));
 const headerBefore = await headerShape();
-await pg.click('#arrangeBtn');
+await arr();
 await pg.waitForTimeout(400);
 /* Fit first: earlier checks leave the chart panned somewhere arbitrary, and Fit
    is the one deterministic view. It also spreads events across the whole board,
@@ -796,7 +803,7 @@ ok('ST-01 can actually be dragged in edit mode',
   `moved ${st01Drag.dx},${st01Drag.dy} of 70,45`);
 await pg.click('#trUndoBtn').catch(() => {});
 await pg.waitForTimeout(200);
-await pg.click('#arrangeBtn');
+await arr();
 await pg.waitForTimeout(300);
 await pg.setViewportSize({ width: 1500, height: 950 });
 await pg.waitForTimeout(300);
@@ -812,10 +819,12 @@ ok('the chart zoom control says which side it zooms', /chart/i.test(zoomLabels.f
 ok('the panel zoom control says which side it zooms', /panel/i.test(zoomLabels.side),
   JSON.stringify(zoomLabels.side));
 
-/* ---- the top bar: 22 controls wrapping onto six rows at 1440 ----
-   Grouped behind Course / Syllabus / File / View menus. Only the three
-   dropdowns, Edit and Show All Details stay out, plus Save changes when there
-   is something to save. */
+/* ---- the top bar, since the 9 Sep 26 reorder ----
+   Crew · Course + ✎ pencil · Syllabus + ✎ pencil · ⓘ info · Show All · File ·
+   search, then a spacer and Save changes alone in the corner. The Course /
+   Syllabus edit menus are pencils now; Edit chart layout lives inside the
+   Syllabus pencil. Only the dropdowns, Show All and the ⓘ icon stay out of a
+   menu, plus Save changes when there is something to save. */
 /* A clean slate: earlier checks leave flow edits unsaved, and this block is
    about what the bar looks like with nothing to save. */
 await openTracker(pg);
@@ -861,38 +870,47 @@ ok('Crew is the first control in the bar and sits left of Course',
   `${crewFirst.ids.slice(0, 4).join(' → ')} (crew ${crewFirst.crewLeft}px, course ${crewFirst.courseLeft}px)`);
 ok('the picker is labelled Crew, not Marking as',
   crewFirst.words.includes('Crew') && !crewFirst.words.includes('Marking as'));
-ok('Show All sits right after Crew',
-  crewFirst.ids.indexOf('showAllBtn') === 1, crewFirst.ids.slice(0, 3).join(' → '));
+/* Course follows Crew now (owner, 9 Sep 26 reorder): the Course / Syllabus edit
+   pencils sit immediately after their own dropdown, so a pencil is always index
+   +1 from its select. */
+ok('Course follows Crew, and each edit pencil sits right after its dropdown',
+  crewFirst.ids.indexOf('courseSel') === 1
+    && crewFirst.ids.indexOf('courseMenuBtn') === crewFirst.ids.indexOf('courseSel') + 1
+    && crewFirst.ids.indexOf('sylMenuBtn') === crewFirst.ids.indexOf('sylSel') + 1,
+  crewFirst.ids.slice(0, 5).join(' → '));
 
 /* The whole bar, written down. The user could not tell from the app which order
    the controls were in, and neither could this suite — every check above looks
    at one control at a time. Save changes is left out: it only exists while
-   there is something unsaved. */
-ok('the bar reads Crew · Show All · search · Course · Syllabus · File · Edit · Details mode',
-  crewFirst.ids.join(',') === ['activeSel', 'showAllBtn', 'hSearch', 'hSearchClear',
-    'courseSel', 'courseMenuBtn', 'sylSel', 'sylMenuBtn',
-    'fileMenuBtn', 'arrangeBtn', 'detailsBtn'].join(','),
+   there is something unsaved; the ✎ Edit toggle is now inside the Syllabus
+   pencil, so it is not a bar control; hSearchBtn is 0-wide on a desktop (the
+   search shows as an inline box, hSearch + hSearchClear). */
+ok('the bar reads Crew · Course ✎ · Syllabus ✎ · ⓘ · Show All · File · search',
+  crewFirst.ids.join(',') === ['activeSel', 'courseSel', 'courseMenuBtn',
+    'sylSel', 'sylMenuBtn', 'detailsBtn', 'showAllBtn',
+    'fileMenuBtn', 'hSearch', 'hSearchClear'].join(','),
   crewFirst.ids.join(' → '));
 
-/* WHERE THE GAP FALLS, which none of the above can see: the spacer is a <span>,
-   so moving it changes no id and no height, and every check here stayed green
-   while it sat in the wrong place. Everything used to choose what you are
-   looking at belongs left of the space; everything you do belongs right of it. */
-const biggestGap = await pg.evaluate(() => {
-  const vis = [...document.querySelectorAll('header .controls select, header .controls button, header .controls input')]
-    .filter(e => e.getBoundingClientRect().width > 0)
-    .map(e => ({ id: e.id, l: e.getBoundingClientRect().left, r: e.getBoundingClientRect().right }))
-    .sort((a, b) => a.l - b.l);
-  let best = { px: -1, before: null, after: null };
-  for (let i = 1; i < vis.length; i++) {
-    const px = vis[i].l - vis[i - 1].r;
-    if (px > best.px) best = { px: Math.round(px), before: vis[i - 1].id, after: vis[i].id };
-  }
-  return best;
+/* WHERE THE GAP FALLS, which the id list can't see: the spacer is a <span>, so
+   moving it changes no id and no height. Since the reorder (owner, 9 Sep 26) it
+   sits after the search, with Save changes alone in the corner to its right —
+   everything you choose or do is left of it. A structure check, not pixels: on
+   this clean slate Save changes is hidden, so there is no counted control to
+   the right to measure a gap against. */
+const spacer = await pg.evaluate(() => {
+  const c = document.querySelector('header .controls');
+  const kids = [...c.children];
+  const si = kids.findIndex(e => e.classList.contains('hspacer'));
+  const cls = e => ((e.className || '').toString().split(' ')[0]) || e.tagName.toLowerCase();
+  return {
+    si, n: kids.length,
+    after: kids.slice(si + 1).map(cls),
+    searchBefore: kids.slice(0, si).some(e => e.querySelector && e.querySelector('#hSearchBtn, #hSearch')),
+  };
 });
-ok('the empty space in the bar falls after Syllabus, not before Course',
-  biggestGap.before === 'sylMenuBtn' && biggestGap.after === 'fileMenuBtn' && biggestGap.px > 60,
-  `${biggestGap.px}px between ${biggestGap.before} and ${biggestGap.after}`);
+ok('the spacer falls after the search, with only the Save slot to its right',
+  spacer.si > 0 && spacer.searchBefore && spacer.after.join(',') === 'saveslot',
+  `spacer at ${spacer.si}/${spacer.n}, right of it: [${spacer.after.join(',')}]`);
 
 /* ---- finding one ball on a 210-event chart ---- */
 {
@@ -1017,7 +1035,9 @@ ok('the empty space in the bar falls after Syllabus, not before Course',
    id, with the menu that now holds it. */
 const MENUS = {
   '#courseMenuBtn': ['#addCourse', '#renCourse', '#ordCourse', '#delCourse'],
-  '#sylMenuBtn': ['#dupSyl', '#addSyl', '#renSyl', '#ordSyl', '#delSyl'],
+  /* Edit chart layout (#arrangeBtn) folded into the Syllabus pencil, first item
+     (owner, 9 Sep 26) — so it is a grouped action now, not a bar button. */
+  '#sylMenuBtn': ['#arrangeBtn', '#dupSyl', '#addSyl', '#renSyl', '#ordSyl', '#delSyl'],
   '#fileMenuBtn': ['#importFileBtn', '#exportBtn'],
 };
 const unreachable = [];
@@ -1030,8 +1050,8 @@ for (const [btn, items] of Object.entries(MENUS)) {
 ok('every grouped action is still reachable from its menu', unreachable.length === 0,
   unreachable.join(', '));
 
-ok('the three dropdowns, Show All, Edit and Details mode stay out of the menus', await pg.evaluate(() => {
-  const out = ['#courseSel', '#sylSel', '#activeSel', '#showAllBtn', '#detailsBtn', '#arrangeBtn'];
+ok('the three dropdowns, Show All and the ⓘ info icon stay out of the menus', await pg.evaluate(() => {
+  const out = ['#courseSel', '#sylSel', '#activeSel', '#showAllBtn', '#detailsBtn'];
   return out.every(s => { const e = document.querySelector(s); return e && e.getBoundingClientRect().width > 0; });
 }));
 /* Reorder crew is about the students, so it sits with + Add in the Students
@@ -1056,7 +1076,7 @@ ok('a menu opens, and clicking away closes it again',
    edits (events, prerequisites, lines, fonts) do not. */
 ok('Save changes is out of the way when there is nothing to save',
   await pg.locator('#saveChanges').count() === 0);
-await pg.click('#arrangeBtn'); await pg.waitForTimeout(400);
+await arr(); await pg.waitForTimeout(400);
 await pg.click('#fitBtn'); await pg.waitForTimeout(300);
 const dragged = await pg.evaluate(() => {
   const g = document.querySelector('#flowSvg .ball');
@@ -1088,7 +1108,7 @@ await pg.click('#trUndoBtn').catch(() => {});
 await pg.waitForTimeout(300);
 /* undo is itself a structure edit; leave the chart clean for what follows */
 if (await pg.locator('#saveChanges').count()) { await pg.click('#saveChanges'); await pg.waitForTimeout(600); }
-await pg.click('#arrangeBtn'); await pg.waitForTimeout(300);
+await arr(); await pg.waitForTimeout(300);
 await pg.setViewportSize({ width: 1500, height: 950 });
 await pg.waitForTimeout(300);
 
@@ -2093,7 +2113,7 @@ await pg.waitForSelector('#flowSvg .ball', { timeout: 15000 });
     return raw ? (JSON.parse(raw).__lines || []).length : 0;
   }, AG);
   const linesBefore = await linesOf();
-  await pg.click('#arrangeBtn'); await pg.waitForTimeout(500);
+  await arr(); await pg.waitForTimeout(500);
   await pg.click('#resetLayout'); await pg.waitForTimeout(400);
   const resetWarning = (await pg.textContent('#dlgModal')).replace(/\s+/g, ' ');
   ok('the Reset layout warning says the drawn lines go too',
@@ -2104,12 +2124,12 @@ await pg.waitForSelector('#flowSvg .ball', { timeout: 15000 });
   await pg.click('#trUndoBtn'); await pg.waitForTimeout(800);
   ok('Undo brings the lines back after a Reset layout',
     await linesOf() === linesBefore, `${linesBefore} before, ${await linesOf()} after undo`);
-  await pg.click('#arrangeBtn').catch(() => {}); await pg.waitForTimeout(300);
+  await arr(); await pg.waitForTimeout(300);
 
   /* 4. Undo/redo must not carry across a chart change. */
   await wipe();
   await pg.selectOption('#sylSel', '2026'); await pg.waitForTimeout(900);
-  await pg.click('#arrangeBtn'); await pg.waitForTimeout(400);
+  await arr(); await pg.waitForTimeout(400);
   await pg.click('#fitBtn'); await pg.waitForTimeout(500);
   const ballAt = id => pg.evaluate(i => {
     const g = [...document.querySelectorAll('#flowSvg .ball')].find(x => x.dataset.id === i);
@@ -2132,7 +2152,7 @@ await pg.waitForSelector('#flowSvg .ball', { timeout: 15000 });
   await pg.click('#trRedoBtn').catch(() => {}); await pg.waitForTimeout(800);
   ok('Redo after changing syllabus cannot stamp the old chart onto the new one',
     await txBoxes() === txBefore, `Tx 2026 held ${txBefore} moved boxes, now ${await txBoxes()}`);
-  await pg.click('#arrangeBtn').catch(() => {}); await pg.waitForTimeout(300);
+  await arr(); await pg.waitForTimeout(300);
 
   /* 5. Event details: the Save button, and the note that used to come back. */
   await wipe();
@@ -2319,7 +2339,7 @@ await pg.evaluate(() => { const b = document.getElementById('board'); b.scrollTo
    tools may not move the board at all. It used to be 0px — which put the hint
    on top of the colour legend for the whole edit session, and on a phone on
    top of the Flow chart / Info / Show All tabs (2 Sep). */
-await pg.click('#arrangeBtn'); await pg.waitForTimeout(400);
+await arr(); await pg.waitForTimeout(400);
 const hintGeom = () => pg.evaluate(() => {
   /* Geometry, not elementFromPoint: the hint passes clicks through, so a hit
      test "sees" the legend even while the hint is painted over it. */
@@ -2352,7 +2372,7 @@ ok('the hint is visible, takes exactly one line of real space, and passes clicks
 ok('the colour legend is not covered by the edit-mode hint', moveState.legendClear,
   `Move: ${moveState.legendClear}, Line: ${lineState.legendClear}`);
 await pg.click('#arrTools button:has-text("✋ Move")'); await pg.waitForTimeout(200);
-await pg.click('#arrangeBtn'); await pg.waitForTimeout(400);
+await arr(); await pg.waitForTimeout(400);
 const sylOptions = await pg.evaluate(() =>
   [...document.getElementById('sylSel').options].map(o => o.value));
 const txOpt = sylOptions.find(v => v === 'Tx 2026') || sylOptions.find(v => v.startsWith('Tx 2026'));
@@ -3201,7 +3221,7 @@ await openTracker(pg); await pg.waitForSelector('#flowSvg .ball'); await pg.wait
   const dbl = id => pg.evaluate(i => {
     document.querySelector(`#flowSvg .ball[data-id="${i}"]`).dispatchEvent(new MouseEvent('dblclick', { bubbles: true }));
   }, id);
-  await pg.click('#arrangeBtn'); await pg.waitForTimeout(300);
+  await arr(); await pg.waitForTimeout(300);
   await dbl('ST-01'); await pg.waitForSelector('#editModal');
   await pg.click('#edDelete'); await pg.waitForSelector('#dlgModal');
   ok('the poke-ball editor stays open while it asks "Delete?"', await pg.locator('#editModal').count() === 1);
@@ -3214,7 +3234,7 @@ await openTracker(pg); await pg.waitForSelector('#flowSvg .ball'); await pg.wait
   /* tidy up by hand if the key did nothing, so the checks below still run */
   if (await pg.locator('#dlgCancel').count()) await pg.click('#dlgCancel');
   if (await pg.locator('#edCancel').count()) await pg.click('#edCancel');
-  await pg.click('#arrangeBtn'); await pg.waitForTimeout(300);
+  await arr(); await pg.waitForTimeout(300);
 
   await clickBall('ST-01'); await pg.waitForTimeout(250);
   await pg.click('#popEditInfo'); await pg.waitForSelector('#infoModal');
@@ -3240,10 +3260,10 @@ await openTracker(pg); await pg.waitForSelector('#flowSvg .ball'); await pg.wait
   const to = (await opts()).find(c => c !== from);
   /* a structural edit — a new event — is what makes the chart dirty; moving a
      ball only saves its position */
-  await pg.click('#arrangeBtn'); await pg.waitForTimeout(300);
+  await arr(); await pg.waitForTimeout(300);
   await pg.click('#arrTools button:has-text("+ Acad")'); await pg.waitForSelector('#dlgInput');
   await pg.fill('#dlgInput', 'SMOKE TMP'); await pg.click('#dlgOk'); await pg.waitForTimeout(400);
-  await pg.click('#arrangeBtn'); await pg.waitForTimeout(300);
+  await arr(); await pg.waitForTimeout(300);
   ok('a new event leaves the chart with unsaved flow edits', /unsaved flow edits/.test(await pg.textContent('#saveStat')));
   await pg.selectOption('#courseSel', to); await pg.waitForTimeout(400);
   ok('switching course with unsaved flow edits asks first', await pg.locator('#dlgModal').count() === 1
@@ -3276,11 +3296,11 @@ await openTracker(pg); await pg.waitForSelector('#flowSvg .ball'); await pg.wait
   ok('phone: the Details-mode hint sits above the view tabs, not on them',
     d.hintBottom > 0 && d.tabTop >= d.hintBottom - 1 && d.hit, JSON.stringify(d));
   await pp.tap('#detailsBtn'); await pp.waitForTimeout(200);
-  await pp.tap('#arrangeBtn'); await pp.waitForTimeout(400);
+  await arr(pp); await pp.waitForTimeout(400);
   const e = await tabClear();
   ok('phone: the edit-mode hint sits above the view tabs, not on them',
     e.hintBottom > 0 && e.tabTop >= e.hintBottom - 1 && e.hit, JSON.stringify(e));
-  await pp.tap('#arrangeBtn'); await pp.waitForTimeout(300);
+  await arr(pp); await pp.waitForTimeout(300);
   const zr = () => pp.evaluate(() => { const bd = document.getElementById('board');
     return { pct: document.getElementById('fzPct').textContent, over: bd.scrollWidth - bd.clientWidth }; });
   const z0 = await zr();
@@ -3343,16 +3363,16 @@ await openTracker(pg); await pg.waitForSelector('#flowSvg .ball'); await pg.wait
    between is what makes this a test: without it the box simply keeps the text
    that was typed into it. */
 {
-  await pg.click('#arrangeBtn'); await pg.waitForTimeout(300);
+  await arr(); await pg.waitForTimeout(300);
   await pg.fill('#fontIn', '7'); await pg.waitForTimeout(400);
-  await pg.click('#arrangeBtn'); await pg.waitForTimeout(300);
+  await arr(); await pg.waitForTimeout(300);
   await openTracker(pg); await pg.waitForSelector('#flowSvg .ball'); await pg.waitForTimeout(300);
-  await pg.click('#arrangeBtn'); await pg.waitForTimeout(300);
+  await arr(); await pg.waitForTimeout(300);
   const shown = await pg.inputValue('#fontIn');
   const real = await pg.evaluate(() => parseFloat(document.querySelector('#flowSvg .ball[data-id="ST-01"] text.lbl').style.fontSize));
   ok('the Font box shows the size the chart is actually using', shown === '7' && real === 7, `box "${shown}", chart ${real}px`);
   await pg.fill('#fontIn', '8.5'); await pg.waitForTimeout(400);
-  await pg.click('#arrangeBtn'); await pg.waitForTimeout(300);
+  await arr(); await pg.waitForTimeout(300);
 }
 
 /* ---- the side panel's event chips: click to jump, hover / long-press to read ----

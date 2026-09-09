@@ -130,6 +130,25 @@ describe('the header hides only the File menu for a member', () => {
       expect($('#' + id), id + ' is gone').toBeNull()
   })
 
+  /* 9 Sep 26 reorder (owner): the wide "Course ▾" / "Syllabus ▾" menus became ✎
+     pencils beside their dropdowns; the standalone Edit button folded into the
+     Syllabus pencil as its first item; Details mode became a compact ⓘ icon. */
+  it('Edit chart folds into the Syllabus pencil; Course/Syllabus are ✎ icons; Details is an ⓘ icon', async () => {
+    setFileLocked(false)
+    await render()
+    /* Edit chart layout is the FIRST item inside the Syllabus pencil menu... */
+    const sylPanel = $('#sylMenuPanel')!
+    expect(sylPanel, 'syllabus menu panel exists').toBeTruthy()
+    expect(sylPanel.querySelector('button')!.id, 'first item is Edit chart').toBe('arrangeBtn')
+    /* ...and NOT a bar control any more */
+    const bar = document.querySelector('header .controls')!
+    expect([...bar.children].some(e => (e as HTMLElement).id === 'arrangeBtn'), 'arrange is not a bar button').toBe(false)
+    /* the menu buttons are glyph pencils, the info toggle a lone ⓘ */
+    expect($('#courseMenuBtn')!.textContent!.trim()).toBe('✎')
+    expect($('#sylMenuBtn')!.textContent!.trim()).toBe('✎')
+    expect($('#detailsBtn')!.textContent!.trim()).toBe('ⓘ')
+  })
+
   it('Save changes watches flow edits only, and no longer touches a file', () => {
     const src = readFileSync(join(__dirname, 'app/core.js'), 'utf8')
     const hdr = readFileSync(join(__dirname, 'components/Header.jsx'), 'utf8')

@@ -206,8 +206,17 @@ one Import for a chart from elsewhere AND the whole export back in (it asks
 before students & marks; the export → wipe → import recipe for the database
 move); the bound handle, `fileDirty` and the menu's tick-boxes are
 gone; Import reads on any browser. Pinned in `tracker.test.tsx` and
-the smoke suite; verified in a real browser. **Merge only on the
-owner's explicit "merge live" — NOT merged.**
+the smoke suite; verified in a real browser. **Then (9 Sep 26) the Tracker
+toolbar was reordered** (owner, from the mockup): the wide "Course ▾" /
+"Syllabus ▾" menus are ✎ pencils beside their dropdowns, the standalone
+Edit button folded into the Syllabus pencil as "Edit chart layout", Details
+mode became a compact ⓘ icon after it, Show All moved right of the syllabus
+group, and Find event moved to sit after File with Save changes alone in the
+far-right corner (on a phone Save takes an auto margin to hold that corner).
+Same behaviours, tidier bar; contract in `docs/ui-contracts.md` §The Tracker
+tab, pinned in `tracker.test.tsx` + the smoke suite, driven in a real browser
+at 1440 and 390. **Merge only on the owner's explicit "merge live" — NOT
+merged.**
 
 Everything before the audit fixes is merged — three PRs landed 7 Sep 26:
 **PR #371** (the Leave War figures drawer, bulk balance
