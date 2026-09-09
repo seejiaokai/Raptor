@@ -2151,3 +2151,18 @@ gate's. Keep verdict-bearing commands unpiped.
 **Suggested improvement:** For a masking ask: (1) grep the whole repo (comments, tests, docs, scripts, JSON metadata) for every old token AND for provenance words (source, read_from, screenshot, page numbers, file formats); (2) swap with per-file asserted counts, longest token first; (3) add a tripwire test that fails on the old patterns; (4) if a read-only oracle carries the originals, mirror by position instead of editing it; (5) report what still remains (git history, the read-only oracle) so the owner can decide.
 
 **Principle:** Sensitive-content removal is about every place that points back to the source, not the data field itself; assert counts on each swap and leave a test that keeps the old wording out.
+
+### Observation 142: The pkill -f self-kill trap fired AGAIN one turn after being re-read — a documented rule is not a guard
+
+**Status:** OPEN
+**Date:** 2026-09-09
+**Session context:** RAPTOR masking pass; stopping a vite preview after a Playwright drive
+**Skill:** task-observer (meta) / RAPTOR build-and-verify loop
+**Type:** open-source
+**Phase/Area:** shell hygiene in one-shot compound commands
+
+**Issue:** Observation 140 (same session) recorded that `pkill -f <substring>` kills the caller when the caller's own command line contains the substring. One turn later the same agent wrote `pgrep -f "vite preview --port 4173" && pkill -9 -f "vite preview --port 4173"` inside a compound command — the substring was in its own command line, the shell killed itself, the tool reported exit 1, and the preview server it meant to stop was orphaned. Knowing the rule (it was in the compaction summary) did not prevent the slip because the failure is structural: any `-f` pattern typed into the command that runs it matches itself.
+
+**Suggested improvement:** Replace the rule with a mechanism. Never start a server inline; start it with its PID captured (`cmd & echo $! > file`) and stop it with `kill $(cat file)` — and if a pattern kill is unavoidable, exclude the caller with `pgrep -f PATTERN | grep -v $$` or use `pkill -f -x`/a PID list filtered by command name. Add this as a one-line checklist item to the build-and-verify section that the screenshot recipe lives in.
+
+**Principle:** A rule an agent has already violated twice in one session is not a rule problem but a design problem: convert it into a habit that cannot self-match (PID files, exclusion of $$), because the trigger — typing the pattern into the command that runs it — is invisible at the moment of writing.
