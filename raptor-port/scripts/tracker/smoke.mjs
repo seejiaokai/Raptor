@@ -1976,8 +1976,14 @@ const ballView = id => pg.evaluate(i => {
   if (!g) return { found: false };
   const r = g.getBoundingClientRect(), b = bd.getBoundingClientRect();
   return { found: true, scrollTop: Math.round(bd.scrollTop),
-    inView: r.top >= b.top - 2 && r.bottom <= b.bottom + 2 };
+    inView: r.top >= b.top - 2 && r.bottom <= b.bottom + 2,
+    /* how far the ball's middle sits from the view's middle, vertically */
+    off: Math.round(Math.abs((r.top + r.height / 2) - (b.top + b.height / 2))) };
 }, id);
+/* "Centralise the view if its possible" (owner, 9 Sep 26): the chart carries
+   half a view of slack above and below, so even the first and last events can
+   sit in the middle — a landing is centred, not merely in view. */
+const CENTRED = 4;
 if (two.length >= 2) {
   const otherS = two.find(r => r !== marker);
   /* Give the other student a mark of their own, near the TOP of the chart, so
@@ -1999,14 +2005,14 @@ if (two.length >= 2) {
 
   await pg.selectOption('#activeSel', marker); await pg.waitForTimeout(600);
   const onDeep = await ballView(deep.id);
-  ok('picking a crew member lands on their latest work, well down the chart',
-    onDeep.found && onDeep.inView && onDeep.scrollTop > 100,
-    `${deep.id}: scrolled ${onDeep.scrollTop}px, in view ${onDeep.found ? onDeep.inView : 'n/a'}`);
+  ok('picking a crew member lands on their latest work, well down the chart, centred',
+    onDeep.found && onDeep.inView && onDeep.scrollTop > 100 && onDeep.off <= CENTRED,
+    `${deep.id}: scrolled ${onDeep.scrollTop}px, in view ${onDeep.found ? onDeep.inView : 'n/a'}, ${onDeep.off}px off centre`);
   await pg.selectOption('#activeSel', otherS); await pg.waitForTimeout(600);
   const onShallow = await ballView(shallow.id);
-  ok("picking the other one lands on THEIR latest work, near the top",
-    onShallow.found && onShallow.inView && onShallow.scrollTop < onDeep.scrollTop,
-    `${shallow.id}: scrolled ${onShallow.scrollTop}px, in view ${onShallow.found ? onShallow.inView : 'n/a'}`);
+  ok("picking the other one lands on THEIR latest work, near the top, centred",
+    onShallow.found && onShallow.inView && onShallow.scrollTop < onDeep.scrollTop && onShallow.off <= CENTRED,
+    `${shallow.id}: scrolled ${onShallow.scrollTop}px, in view ${onShallow.found ? onShallow.inView : 'n/a'}, ${onShallow.off}px off centre`);
 
   /* Someone with no marks yet lands on the chart's FIRST event (owner, 9 Sep
      26: "if nothing is clocked … it will show the view based on the first
@@ -2024,9 +2030,9 @@ if (two.length >= 2) {
   });
   await pg.selectOption('#activeSel', 'STUDENT FRESH'); await pg.waitForTimeout(600);
   const onFirst = await ballView(firstId);
-  ok("picking a crew member with no marks yet lands on the chart's first event",
-    parked > 100 && onFirst.found && onFirst.inView && onFirst.scrollTop < parked,
-    `parked ${parked}px; ${firstId} in view ${onFirst.found ? onFirst.inView : 'n/a'} at ${onFirst.scrollTop}px`);
+  ok("picking a crew member with no marks yet lands on the chart's first event, centred",
+    parked > 100 && onFirst.found && onFirst.inView && onFirst.scrollTop < parked && onFirst.off <= CENTRED,
+    `parked ${parked}px; ${firstId} in view ${onFirst.found ? onFirst.inView : 'n/a'} at ${onFirst.scrollTop}px, ${onFirst.off}px off centre`);
 
   /* The ring on every ball is a second crew picker (owner, 9 Sep 26): a real
      mouse click on another student's wedge picks them, every ball edges that
@@ -2497,9 +2503,14 @@ await pg.waitForSelector('#flowSvg .ball', { timeout: 15000 });
    area". The chart is 10,000px tall, so the vertical anchor is the one that
    matters; the horizontal one only exists once the width overflows. */
 const zread = () => pg.evaluate(() => {
-  const b = document.getElementById('board');
-  const z = +(getComputedStyle(document.querySelector('#board .flowwrap')).zoom || 1);
-  return { cx: (b.scrollLeft + b.clientWidth / 2) / z, cy: (b.scrollTop + b.clientHeight / 2) / z, z };
+  const b = document.getElementById('board'), w = document.querySelector('#board .flowwrap'), s = w.querySelector('svg');
+  const z = +(getComputedStyle(w).zoom || 1);
+  /* the chart wears half a view of slack on each side (screen-constant, so a
+     landing can centre the first/last event); take it off before dividing
+     by the zoom, or the slack itself reads as a drift */
+  const px = s.getBoundingClientRect().left - w.getBoundingClientRect().left;
+  const py = s.getBoundingClientRect().top - w.getBoundingClientRect().top;
+  return { cx: (b.scrollLeft + b.clientWidth / 2 - px) / z, cy: (b.scrollTop + b.clientHeight / 2 - py) / z, z };
 });
 await pg.evaluate(() => { const b = document.getElementById('board'); b.scrollTop = 3000; });
 const z0 = await zread();

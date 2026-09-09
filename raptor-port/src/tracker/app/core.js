@@ -1433,6 +1433,9 @@ export function renderBoard() {
   hideDetailBubble();
   fitPhoneWidth(svgW);
   applyFlowZoom();
+  /* Fresh markup scrolls to 0,0 — which, with the slack above, is empty
+     space. Park at the chart's own corner; a landing that follows moves on. */
+  if (boardPad.x || boardPad.y) { board.scrollLeft = boardPad.x; board.scrollTop = boardPad.y; }
   notify();   /* header event count etc. */
 }
 export let flowZoom = 1;
@@ -1454,6 +1457,30 @@ function fitPhoneWidth(chartW) {
 }
 function applyFlowZoom() {
   const w = document.querySelector('#board .flowwrap'); if (w) w.style.zoom = arrangeMode ? 1 : flowZoom;
+  padBoard();
+}
+/* Slack around the chart, half a view's worth on each side, so ANY event —
+   the first, the last, one at a side edge of a chart wider than the board —
+   can sit in the MIDDLE of the view when a landing asks for it (owner, 9 Sep
+   26: "centralise the view if its possible when the crew picker is selected").
+   The browser clamps a scroll at the content's edge, so without it the top
+   and bottom of the chart could never be centred. Held in SCREEN pixels
+   across zooms — the wrapper is what gets zoomed, so its padding is written
+   in unzoomed units — and setFlowZoom's anchor maths subtracts it. Sideways
+   slack only once the chart already scrolls sideways: a phone chart fitted
+   to the width must not start wandering. Nothing in arrange mode (the
+   canvas is sized to the board there). renderBoard parks the fresh scroll
+   at the chart's top-left corner, so a chart switch looks as it always did. */
+let boardPad = { x: 0, y: 0 };
+function padBoard() {
+  const board = document.getElementById('board'), w = board && board.querySelector('.flowwrap');
+  if (!board || !w) return;
+  const z = arrangeMode ? 1 : (flowZoom || 1);
+  const svg = w.querySelector('svg'); const chartW = svg ? (parseFloat(svg.getAttribute('width')) || 0) * z : 0;
+  const y = arrangeMode ? 0 : Math.max(0, Math.round(board.clientHeight / 2));
+  const x = (arrangeMode || chartW <= board.clientWidth) ? 0 : Math.max(0, Math.round(board.clientWidth / 2));
+  boardPad = { x, y };
+  w.style.padding = `${(y / z).toFixed(2)}px ${(x / z).toFixed(2)}px`;
 }
 /* Anchored at the middle of the current view, the same way pinch zoom anchors
    under the fingers. Without the scroll correction, CSS zoom rescales the whole
@@ -1464,10 +1491,12 @@ export function setFlowZoom(z) {
   const board = document.getElementById('board');
   if (board && !arrangeMode && flowZoom > 0) {
     const ox = board.clientWidth / 2, oy = board.clientHeight / 2;
-    const cx = (board.scrollLeft + ox) / flowZoom, cy = (board.scrollTop + oy) / flowZoom;
+    /* boardPad is screen-constant slack, so take it off before dividing by the
+       zoom and put the fresh one back after (padBoard runs inside applyFlowZoom). */
+    const cx = (board.scrollLeft + ox - boardPad.x) / flowZoom, cy = (board.scrollTop + oy - boardPad.y) / flowZoom;
     flowZoom = z; applyFlowZoom();
     void board.scrollWidth; /* force reflow, or the new scroll range is stale and clamps */
-    board.scrollLeft = cx * z - ox; board.scrollTop = cy * z - oy;
+    board.scrollLeft = boardPad.x + cx * z - ox; board.scrollTop = boardPad.y + cy * z - oy;
   } else { flowZoom = z; applyFlowZoom(); }
   notify();
 }
@@ -2128,6 +2157,10 @@ export function scrollToEvent(id) {
   const bd = document.getElementById('board'); if (!bd || !id) return false;
   const g = [...document.querySelectorAll('#flowSvg .ball')].find(x => x.dataset.id === id);
   if (!g) return false;
+  /* The slack is sized from the board, which may have had no height when the
+     chart was drawn (first mount, a hidden tab) — size it now, so the middle
+     is reachable, then measure. */
+  padBoard();
   const r = g.getBoundingClientRect(), b = bd.getBoundingClientRect();
   bd.scrollTop += (r.top + r.height / 2) - (b.top + b.height / 2);
   bd.scrollLeft += (r.left + r.width / 2) - (b.left + b.width / 2);
@@ -3252,9 +3285,11 @@ export async function init() {
   await loadEventInfo(); await loadSylOrder();
   ready = true;
   refreshCourses(); refreshSyl(); refreshActive(); renderBoard(); renderSide();
-  /* After the first paint, so the balls exist to measure. */
-  if (typeof requestAnimationFrame !== 'undefined') requestAnimationFrame(() => showLastEdit(active));
-  else showLastEdit(active);
+  /* After the first paint, so the balls exist to measure. No last mark → the
+     chart's first event, the same landing a crew pick makes. */
+  const land = () => { if (!showLastEdit(active)) scrollToEvent(firstEventId()); };
+  if (typeof requestAnimationFrame !== 'undefined') requestAnimationFrame(land);
+  else land();
   /* Unsaved flow edits must not vanish quietly when the tab closes — the one
      kind of work that waits for the Save button. */
   if (typeof window !== 'undefined')

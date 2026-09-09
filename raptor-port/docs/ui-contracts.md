@@ -6867,8 +6867,12 @@ screen:
   tapping the SELECTED student's own wedge, or the centre icon (`g.core`),
   opens the details pop-up as any tap did before. A pick made on the chart
   keeps the view where it is (`setActive(s, {land:false})`); only the
-  dropdown lands on the student's latest work. Pins: `tracker.test.tsx` +
-  the smoke suite (real mouse clicks at ring / centre coordinates).
+  dropdown lands — on the student's latest work, or the chart's first event
+  when nothing is marked — and the landing is CENTRED: the chart carries half
+  a view of slack on each side (`padBoard`) so the first and last events can
+  sit in the middle too. Pins: `tracker.test.tsx` + the smoke suite (real
+  mouse clicks at ring / centre coordinates; landings measured ≤4px off
+  centre).
 - **↶ ↷ are on the bar for EVERYONE, and take back marks as well as chart
   edits (owner, 9 Sep 26 — "not only isolated to under edit").** The pair
   (`#trUndoBtn` / `#trRedoBtn`, `.sm.icon`, right after ⓘ) left the edit

@@ -81,8 +81,14 @@ time changed.
   landing itself). `setActive` captures the board's scroll across the redraw,
   puts it back, then scrolls to the last mark after the frame; a student with
   no mark on this chart lands on the chart's FIRST event (owner: "if nothing
-  is clocked … the first item"), never a bare top-left reset. Switching
-  student still does not switch syllabus. **A tap on another student's wedge
+  is clocked … the first item"), never a bare top-left reset. A landing is
+  CENTRED (owner: "centralise the view if its possible"): the chart wrapper
+  carries half a view of slack above and below (`padBoard`, screen-constant
+  across zooms; sideways only once the chart is wider than the board), so
+  even the first and last events can sit in the middle; `renderBoard` parks
+  a fresh draw at the chart's own corner so a chart switch looks unchanged,
+  and `setFlowZoom`'s anchor maths subtracts the slack. Switching student
+  still does not switch syllabus. **A tap on another student's wedge
   on any ball also picks them** (same day) — that route deliberately does NOT
   land: the user is looking at the ball they tapped. With five or six
   students the wedges get thin on a phone; the centre stays the easy target
