@@ -33,6 +33,7 @@ as of 4 Sep 26) — search it for "why did we do X", don't re-read it.
 | the history — how each past thing was found, fixed and shipped | `HANDOFF-ARCHIVE.md`, then `git log` |
 | the Tracker tab's known gaps and carried-over traps | `raptor-port/docs/tracker/known-gaps.md` |
 | what is stored today (as-is) / the designed model for the database step (to-be) | `raptor-port/docs/data-schema.md` / `raptor-port/docs/data-model.md` |
+| the architecture direction — modular apps on ONE backend and ONE database, the order of work for the server step (read before any backend/API work) | `raptor-port/docs/architecture-direction.md` |
 | skill-improvement observations captured during sessions | `.claude/skill-observations/log.md` |
 
 
