@@ -2342,17 +2342,23 @@ export function setActive(v) {
      done for student A, picking student B kept A's rings — ACG-01 lit for B,
      whose own next event is ST-01. Every other path that moves the picker
      (adding or removing a student, an undone mark, a reload) already redraws;
-     this was the only one that did not. */
+     this was the only one that did not.
+     But the CREW CHANGE MUST NOT MOVE THE VIEW (owner, 9 Sep 26: "when I'm
+     switching between crew, the flow chart view should remain the same and not
+     snap to something else"). renderBoard replaces the board's markup, which
+     resets its scroll to the top-left, and it used to then jump to this
+     student's last mark. The chart is the SAME size for every student (only the
+     rings differ), so the scroll offset points at the same place before and
+     after — capture it and put it straight back. This REPLACES the old
+     jump-to-last-mark on a crew switch; init()'s first-load landing is a
+     different moment and stays. */
+  const board = document.getElementById('board');
+  const sx = board ? board.scrollLeft : 0, sy = board ? board.scrollTop : 0;
   renderBoard(); renderSide();
+  if (board) { board.scrollLeft = sx; board.scrollTop = sy; }
   /* Merely looking at someone counts. Before this, only grading was remembered,
      so picking a crew member and coming back tomorrow forgot them. */
   prefSet('lastCrew:' + course, v);
-  /* Jump to where this student was last marked, so picking someone halfway
-     through their course does not land at the top of the chart. After the
-     frame, as jumpTo does: the redraw's zoom has not landed in this tick and a
-     measurement now reads the old scale. */
-  if (typeof requestAnimationFrame !== 'undefined') requestAnimationFrame(() => { if (active === v) showLastEdit(v); });
-  else showLastEdit(v);
 }
 
 /* ---- syllabus display order ---- */

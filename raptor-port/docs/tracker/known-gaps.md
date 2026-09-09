@@ -74,8 +74,11 @@ time changed.
 **Worth raising when he next looks:**
 - Everything fits one phone screen at two students; a fifth may start it
   scrolling.
-- Switching student scrolls to their last mark but does not switch syllabus.
-  Deliberate.
+- Switching student KEEPS the view where it is (owner, 9 Sep 26: "the flow
+  chart view should remain the same and not snap"). It used to scroll to that
+  student's last mark; `setActive` now captures the board's scroll and restores
+  it across the ring redraw. Opening the app (init) still lands on the last
+  mark — a different moment. Switching student still does not switch syllabus.
 - `SA(S)-3` on Tx: the source document contradicts itself. **User chose keep,
   twice, 8 Aug.**
 - The edit-mode hint overlays the colour legend. Move it if he misses the

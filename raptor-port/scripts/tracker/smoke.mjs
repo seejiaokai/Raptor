@@ -1961,29 +1961,29 @@ ok('opening the app lands on the last event marked, not at the top of the chart'
   await pg.selectOption('#sylSel', before); await pg.waitForTimeout(900);
 }
 
-/* Switching student jumps to that student's own last mark. */
+/* Switching student keeps the view where it is (owner, 9 Sep 26: "the flow
+   chart view should remain the same and not snap to something else"). It used
+   to jump to that student's own last mark; the crew change now leaves the
+   scroll exactly where the user left it. */
 const two = await pg.evaluate(() => [...document.querySelectorAll('#activeSel option')].map(o => o.value));
 /* Whoever the app came back on is the one who did the marking — not
    necessarily the first name in the list. */
 const marker = await pg.inputValue('#activeSel');
 if (two.length >= 2) {
   const otherS = two.find(r => r !== marker);
-  await pg.selectOption('#activeSel', otherS); await pg.waitForTimeout(600);
-  /* Scroll right away from the mark first. Without this the board never moved
-     between the two reads and the check passed on a view that had not changed. */
-  await pg.evaluate(() => { document.getElementById('board').scrollTop = 0; });
+  /* Park the board at a deliberate, non-zero, non-top offset first, so a snap
+     in either direction (to the top, or to the other student's last mark)
+     would move it. */
+  await pg.evaluate(() => { const bd = document.getElementById('board'); bd.scrollTop = Math.round(bd.scrollHeight * 0.4); bd.scrollLeft = 0; });
   await pg.waitForTimeout(200);
-  const away = await pg.evaluate(() => Math.round(document.getElementById('board').scrollTop));
-  await pg.selectOption('#activeSel', marker); await pg.waitForTimeout(800);
-  const back = await pg.evaluate(id => {
-    const bd = document.getElementById('board');
-    const g = [...document.querySelectorAll('#flowSvg .ball')].find(x => x.dataset.id === id);
-    const r = g.getBoundingClientRect(), b = bd.getBoundingClientRect();
-    return { scrollTop: Math.round(bd.scrollTop), inView: r.top >= b.top - 2 && r.bottom <= b.bottom + 2 };
-  }, deep.id);
-  ok('switching back to a student returns to their own last mark',
-    back.inView && away === 0 && back.scrollTop > 100,
-    `scrolled to ${away}px, switching back moved to ${back.scrollTop}px`);
+  const parked = await pg.evaluate(() => Math.round(document.getElementById('board').scrollTop));
+  await pg.selectOption('#activeSel', otherS); await pg.waitForTimeout(600);
+  const afterSwitch = await pg.evaluate(() => Math.round(document.getElementById('board').scrollTop));
+  await pg.selectOption('#activeSel', marker); await pg.waitForTimeout(600);
+  const afterBack = await pg.evaluate(() => Math.round(document.getElementById('board').scrollTop));
+  ok('switching crew leaves the flow chart view where it was, no snap',
+    parked > 100 && Math.abs(afterSwitch - parked) <= 4 && Math.abs(afterBack - parked) <= 4,
+    `parked ${parked}px, after switch ${afterSwitch}px, after switching back ${afterBack}px`);
 }
 
 /* A recorded syllabus that has since been deleted must not break the load.
