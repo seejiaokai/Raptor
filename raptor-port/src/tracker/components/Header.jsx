@@ -108,12 +108,16 @@ export default function Header() {
   const sylNames = core.ready ? core.orderedSylNames() : [];
   const sylValue = (core.plan && core.plan.sylName) || core.DEFAULT_SYL_NAME;
   const sylOptions = sylNames.includes(sylValue) ? sylNames : [...sylNames, sylValue];
-  const dirty = core.sylDirty || core.fileDirty;
+  /* Unsaved FLOW edits only. Until 9 Sep 26 this also watched the user's file
+     (`fileDirty`), so a mark lit the button and pressing it opened a save-file
+     dialog; the store is the record now, marks save themselves, and the File
+     menu is import/export only. */
+  const dirty = core.sylDirty;
   /* THE FILE PORTION IS THE ADMIN'S (owner, 7 Sep 26): a member gets every
      other control on this bar — the pickers, the Course and Syllabus menus,
-     Edit, Details and Save changes — and not the File menu (Open, Import,
-     Save a copy). The three entry points behind it are guarded in core.js
-     too; this is the affordance half. */
+     Edit, Details and Save changes — and not the File menu (Restore, Import,
+     Export). The three entry points behind it are guarded in core.js too;
+     this is the affordance half. */
   const fileLocked = core.fileLocked;
 
   return (
@@ -175,18 +179,15 @@ export default function Header() {
             depend on where the bar happened to wrap. */}
         <span className="hspacer" />
 
-        {fileLocked ? null : <Menu id="file" label="File" title="Open your file, bring a syllabus in, or hand a copy over">
-          <button className="sm" id="openFileBtn" title="Open your syllabus file, or start a new one" onClick={core.openFileClick}>📁 Open…</button>
-          <button className="sm" id="importSylBtn" title="Bring one syllabus in from another file, keeping everything you already have" onClick={core.importSyllabusClick}>⊕ Import syllabus…</button>
-          <button className="sm" id="saveCopyBtn" title="Save a separate copy to hand over — your own file is not touched" onClick={core.openCopy}>⤓ Save a copy…</button>
+        {/* Three one-way moves between the store and a file, nothing that
+            binds a file (owner, 9 Sep 26): Import a chart drawn up elsewhere;
+            Export a copy — the backup before the database move, or a handover;
+            Restore a whole export back in. */}
+        {fileLocked ? null : <Menu id="file" label="File" title="Bring a syllabus in, export a copy, or restore a whole export">
+          <button className="sm" id="importSylBtn" title="Bring one or more flow charts in from a file — everyone's marks are untouched" onClick={core.importSyllabusClick}>⊕ Import syllabus…</button>
+          <button className="sm" id="exportBtn" title="Save a copy of the Tracker's data to a file — a backup, or a chart to hand over" onClick={core.openCopy}>⤓ Export…</button>
           <div className="msep" />
-          <div className="mnote">
-            <span id="openFileName">{core.openFileName || 'no file open'}</span>
-            {core.lastSavedAt ? <span id="lastSaved"> · {core.lastSavedAt}</span> : null}
-            {core.openFileHasStudents ? <span id="fileHasStudents"> · contains student data</span> : null}
-          </div>
-          <label className="sub"><input type="checkbox" id="optCharts" checked={core.saveOpts.charts} onChange={e => core.setSaveOpt('charts', e.target.checked)} /> Charts</label>
-          <label className="sub"><input type="checkbox" id="optStudents" checked={core.saveOpts.students} onChange={e => core.setSaveOpt('students', e.target.checked)} /> Students &amp; courses</label>
+          <button className="sm" id="restoreBtn" title="Bring a whole export back in — charts, students and marks — for example after moving to a new database" onClick={core.restoreClick}>⇪ Restore everything…</button>
         </Menu>}
 
         <button className={'sm' + (core.arrangeMode ? ' primary' : '')} id="arrangeBtn" onClick={core.toggleArrange}>{core.arrangeMode ? '✓ Done' : '✎ Edit'}</button>
@@ -194,17 +195,19 @@ export default function Header() {
             stops the chart accepting marks, which "Show All Details" gave no
             hint of. Shorter too, and the 1440 bar has no spare width. */}
         <button className={'sm' + (core.showDetails ? ' primary' : '')} id="detailsBtn" title="Show title, type, crew & prerequisites on every event — marking is off while this is on" onClick={core.toggleDetails}>ⓘ Details mode</button>
-        {/* Save changes shows only when there is something to lose — marks and
-            dates write themselves to storage, flow edits and the open file do
-            not. The slot keeps its width whether the button is there or not: a
-            header that grows on the first edit shifts the whole chart down and
-            slides everything out from under the pointer mid-drag. */}
+        {/* Save changes shows only when there is something to lose — marks,
+            dates, students, event details and a moved ball write themselves to
+            storage; structure edits (events, prerequisites, lines, fonts) do
+            not. The slot keeps its width whether the button is there or
+            not: a header that grows on the first edit shifts the whole chart down
+            and slides everything out from under the pointer mid-drag. */}
         <span className="saveslot">
-          {dirty ? <button className="sm dirty" id="saveChanges" title="Save your work — the syllabus, and your file if one is open" onClick={core.saveChangesClick}>✓ Save changes ●</button> : null}
+          {dirty ? <button className="sm dirty" id="saveChanges" title="Save your changes to the syllabus — events, prerequisites and lines" onClick={core.saveChangesClick}>✓ Save changes ●</button> : null}
           {/* Green here while the orange button is showing would tell the user
-              their work is both safe and at risk at once — the two watch
-              different things (the store vs the file). Keep the words, drop
-              the green until nothing is outstanding. Errors stay red. */}
+              their work is both safe and at risk at once (the status reports
+              the last write; the button, the flow edits still waiting). Keep
+              the words, drop the green until nothing is outstanding. Errors
+              stay red. */}
           <span id="saveStat" className={'savestat ' + (dirty && core.saveStat.cls === 'ok' ? '' : core.saveStat.cls)}>{core.saveStat.text}</span>
         </span>
       </div>

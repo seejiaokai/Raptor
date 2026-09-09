@@ -611,8 +611,16 @@ bodies are verbatim ports like `src/engine/`). Its state is module `let`s in
 `tracker/app/core.js` with its own subscribe/notify; its storage goes through
 ONE doorway, `tracker/storage.js` (localStorage under `ocu:` keys — the
 standalone app's SharePoint/Dataverse/Firebase layers were dropped; the shared
-database replaces this file when it arrives); the user's syllabus FILE (📁 Open
-/ ✓ Save changes) stays the authoritative copy. **Nothing of it boots in
+database replaces this file when it arrives). **The store is the record; the
+.json file is a FORMAT, not a store** (owner, 9 Sep 26 — "I thought it should
+be auto synced … isn't it duplicating"): marks, dates, students, event
+details and a moved ball save themselves, ✓ Save changes writes STRUCTURE
+edits (events, prerequisites, lines, fonts) to the store and nothing else,
+and the File menu is three one-way moves — ⊕ Import syllabus
+(charts drawn up elsewhere, marks untouched), ⤓ Export (a backup before the
+database move, or a handover) and ⇪ Restore everything (a whole export back
+in). The old model — 📁 Open binding a live file handle that Save changes
+wrote back to — is gone; don't re-add a bound file. **Nothing of it boots in
 `main.tsx`** — the screen is a lazy chunk and `core.init()` runs on the tab's
 first mount, which is also why the section is KEPT MOUNTED afterwards (the flow
 board is drawn imperatively once). **Two seams cross the boundary, and only
@@ -622,7 +630,7 @@ into every Raptor visit; `tracker.test.tsx` guards it), and `TrackerPage.tsx` is
 the page. **No data crosses yet** (owner, 7 Sep 26 — students are the Tracker's
 own list; linking them to Raptor's OCU people is a later step). **Everyone
 edits — marking, charts, students, courses, syllabi — and only the FILE portion
-(Open / Import / Save a copy) is the admin's** (owner, 7 Sep 26, second word),
+(Restore / Import / Export) is the admin's** (owner, 7 Sep 26, second word),
 enforced at the three file entry points in `core.js` AND at the File menu in
 `Header.jsx`; keep both halves when adding a way to reach the file. CSS is scoped under
 `#page-tracker` with five Raptor collisions reset at the top of the wrapper.
@@ -1229,4 +1237,4 @@ ledger). Read it before any layout/render/drag-touching change.
 | Store / UI state / undo | `src/state/` |
 | Components + HTML builders | `src/ui/` |
 | **The Leave War tab** (vendored app: engine, store, UI, tests) | `src/leavewar/` — its own store and `leavewar:` storage keys; role written only by `resetSession` + the admin's `toggleRole`; stage-advance is admin-only (27 Aug 26, members still bid); a member bids only on their OWN row — the "View as" person, mirrored to `viewer` — while an admin edits any row (`canEditRow`, 27 Aug 26; enforced at the write path and the grid affordance alike); an admin decides bids at closed OR published (`canDecide`, 27 Aug 26 — since the 27 Aug overnight pass the STORE enforces it too: `setBidState`/`setBidStates` refuse anyone else, `shiftBid` carries `moveCells`' whole stage/window/war-day law, `moveProblem` is the one validation body the landing preview and the commit share, a chain of closed moves keeps the ORIGINAL `shiftedFrom`, and a member cannot write a medical mark); a drag selects a block to batch fill/decide/move/delete and a plain click still opens the single-cell sheet (`select.ts`, capture taken in `arm()`); the dotted "moved" mark is recorded AND shown only for a move made once bidding is closed (`biddingClosed`, 27 Aug 26 — an open-bidding shuffle stores no `shiftedFrom`, so it never sprouts the stripe when the war later closes); the colour pop-out is "Legend"; at PUBLISHED a tap on an approved leave opens the remarks editor (`RemarksSheet` → `sync.ts:leaveInputAt` + `inputedit.ts:setLeaveRemarks`, member edits own / admin any); CSS scoped under `#page-leavewar`; gaps in `docs/leavewar/known-gaps.md`, future sync in `docs/superpowers/specs/leavewar-sync.md` |
-| **The Tracker tab** (vendored OCU progress tracker: syllabus flow charts, marks, pace) | `src/tracker/` — plain JS/JSX, its own store (`app/core.js`) and storage doorway (`storage.js`, `ocu:` keys), CSS scoped under `#page-tracker`; file lock written only by `resetSession` + the admin's `toggleRole` through `role.js` (everyone edits; Open / Import / Save a copy are the admin's — enforced at the write path); page seam `TrackerPage.tsx`, kept mounted once visited; its browser suite `scripts/tracker/smoke.mjs` (`npm run smoke:tracker`, a CI job); gaps `docs/tracker/known-gaps.md`; the design specs it was built from `docs/tracker/specs/` |
+| **The Tracker tab** (vendored OCU progress tracker: syllabus flow charts, marks, pace) | `src/tracker/` — plain JS/JSX, its own store (`app/core.js`) and storage doorway (`storage.js`, `ocu:` keys), CSS scoped under `#page-tracker`; file lock written only by `resetSession` + the admin's `toggleRole` through `role.js` (everyone edits; Restore / Import / Export are the admin's — enforced at the write path; the file is a format, not a store — 9 Sep 26); page seam `TrackerPage.tsx`, kept mounted once visited; its browser suite `scripts/tracker/smoke.mjs` (`npm run smoke:tracker`, a CI job); gaps `docs/tracker/known-gaps.md`; the design specs it was built from `docs/tracker/specs/` |

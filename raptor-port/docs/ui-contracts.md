@@ -6790,12 +6790,11 @@ screen:
   the file portion which is admin only"). Marking, Edit mode, the Course and
   Syllabus menus, students, dates, pace and lull periods behave exactly as in
   the standalone app for every login. A member (and a logged-out session, and
-  an admin viewing as member) does not get the **File** menu — 📁 Open,
-  ⊕ Import syllabus, ⤓ Save a copy — and the three entry points behind it
-  refuse at the write path in `core.js` (`fileLocked`); ✓ Save changes stays
-  for everyone (it persists the syllabus to the browser store; its file half
-  only fires when a file is open, which only an admin can do). Pins:
-  `src/tracker/tracker.test.tsx`.
+  an admin viewing as member) does not get the **File** menu — ⊕ Import
+  syllabus, ⤓ Export, ⇪ Restore everything — and the three entry points
+  behind it refuse at the write path in `core.js` (`fileLocked`); ✓ Save
+  changes stays for everyone (it writes flow edits to the store — nothing
+  else, since 9 Sep 26). Pins: `src/tracker/tracker.test.tsx`.
 - **On a phone, ONE half at a time — and the switch rides the Tracker's own
   element.** Below 1050px the Flow chart / Info tabs show either the chart
   column or the side panel, never both stacked; the class that decides
@@ -6819,6 +6818,22 @@ screen:
   geometry contracts — the one-row bar at 1440, the phone's two-row bar with
   Crew leftmost, the compact editor, the legend clear of the edit hint — are
   the vendored smoke suite's (`npm run smoke:tracker`).
-- **The file is the record.** 📁 Open / ✓ Save changes behave as in the
-  standalone app; localStorage (`ocu:` keys, `tracker/storage.js`) is the
-  per-browser cache. No SharePoint/cloud sync, no Cloud button.
+- **The STORE is the record; the file is a format (9 Sep 26).** Marks, dates,
+  students and event details save themselves the moment they land (the
+  header's saved/saving indicator is the storage seam's), and so does a MOVED
+  BALL (its position is written on the drop); ✓ Save changes appears only
+  while a STRUCTURE edit (an added/removed event, a changed prerequisite, a
+  drawn line, a font, the JSON editor, undo) is unsaved, and writes it to the
+  store — never a file. The
+  File menu is three one-way moves: ⊕ Import syllabus (charts in, marks
+  untouched, per-syllabus replace/add-as-new prompts), ⤓ Export (the old
+  "Save a copy" dialog — Charts on, Students off by default, a syllabus
+  pick-list, a loud confirmation naming which kind of file was written) and
+  ⇪ Restore everything (a whole export back in — charts replace same-named
+  charts, students and marks merge — asked first). No file name on the
+  toolbar, no Charts/Students boxes on the menu, no "Use Chrome or Edge"
+  refusal on Import/Restore (a plain file input stands in where the native
+  picker is missing). No SharePoint/cloud sync, no Cloud button. Pins:
+  `tracker.test.tsx` (the menu shape, Save watches flow edits only) and the
+  smoke suite (Save never opens a save-file dialog; event details save
+  themselves).

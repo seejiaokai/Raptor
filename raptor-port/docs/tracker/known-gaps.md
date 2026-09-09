@@ -8,8 +8,8 @@
 > - **One role rule exists now.** The standalone app had none. Inside Raptor
 >   the owner's rule (his second word, 7 Sep 26) is *everyone edits; only the
 >   file portion is the admin's*: marking, charts, students, courses and
->   syllabi are open to every login, while 📁 Open, ⊕ Import syllabus and
->   ⤓ Save a copy need the admin. The flag rides the Raptor login
+>   syllabi are open to every login, while ⇪ Restore everything, ⊕ Import
+>   syllabus and ⤓ Export need the admin. The flag rides the Raptor login
 >   (`state/store.ts resetSession`/`toggleRole` → `tracker/role.js` → `core.js
 >   fileLocked`), is enforced at those three entry points in `core.js` and
 >   mirrored by `Header.jsx` (the File menu not drawn). Never persisted. The
@@ -23,13 +23,23 @@
 >   database eventually") — the same role `leavewar/state/storage.ts` and
 >   `HOOKS.storeBackend` play. The Cloud button and the `_api/…` 404s are gone
 >   with it.
-> - **The user's FILE stays the authoritative copy.** 📁 Open / ✓ Save changes
->   (`app/fileStore.js`, `app/fileFormat.js`) work exactly as before, Chrome
->   and Edge writing back in place, other browsers downloading. localStorage
->   is the per-browser cache that file loads into. The owner's working loop
->   still holds: he edits charts in the app, sends the file, a session bakes
->   it with `scripts/tracker/bake-user-charts.mjs` (reads only the `charts`
->   half), and he gets a charts-only sync file back to open and re-save.
+> - **The STORE is the record; the file is a format (9 Sep 26, superseding
+>   "the user's FILE stays the authoritative copy").** Once the storage seam
+>   made the store durable, the file-as-master model read as duplication to
+>   the owner (every mark lit ✓ Save changes, and pressing it raised a
+>   save-file dialog). Now marks, dates, students, event details and a moved
+>   ball save themselves; ✓ Save changes writes STRUCTURE edits (events,
+>   prerequisites, lines, fonts) to the store and nothing else; and the File
+>   menu is ⊕ Import syllabus (charts in, marks untouched),
+>   ⤓ Export (a copy out — the backup before the database move, or a handover;
+>   students unticked by default) and ⇪ Restore everything (a whole export
+>   back in, asked first). No bound file, no file name on the toolbar, no
+>   Charts/Students boxes on the menu. `app/fileStore.js` reads on any browser
+>   (a plain file input where the native picker is missing) and writes in
+>   place only on Chrome/Edge (download elsewhere). The owner's chart loop
+>   still holds: he Exports charts only, sends the file, a session bakes it
+>   with `scripts/tracker/bake-user-charts.mjs` (reads only the `charts`
+>   half), and he Imports the charts-only file he gets back.
 > - **Students are NOT linked to Raptor's people** (owner, 7 Sep 26 —
 >   "standalone first"). The roster is the Tracker's own list, as in his file.
 >   Linking OCU trainees to Raptor's pucks is a later, separate step, the way
@@ -116,9 +126,10 @@ time changed.
   of ids, `data-ord` says which. Only one can ever be open.
 - **Target elements by ID in tests** (`#showAllBtn`, `#detailsBtn`,
   `#saveChanges`, `#dupSyl`, `#addStu`, `#trUndoBtn`, `#editSyl`,
-  `#openFileBtn`). Most sit inside a menu (`#courseMenuBtn`, `#sylMenuBtn`,
-  `#fileMenuBtn`) — open it first. `#saveChanges` exists only while something
-  is unsaved. The app uses its own confirm (`#dlgModal`), not native `prompt()`.
+  `#restoreBtn`, `#importSylBtn`, `#exportBtn`). Most sit inside a menu
+  (`#courseMenuBtn`, `#sylMenuBtn`, `#fileMenuBtn`) — open it first.
+  `#saveChanges` exists only while a flow edit is unsaved. The app uses its
+  own confirm (`#dlgModal`), not native `prompt()`.
 - **Reading the syllabus `.docx`:** do not trust chart pages unzipped from the
   document — Word overlays (red X strikes, the IEPE ellipse) are separate
   images and go missing, which produced five confidently wrong readings once.

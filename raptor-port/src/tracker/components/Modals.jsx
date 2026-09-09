@@ -254,7 +254,11 @@ export function OrdModal() {
   return <OrdModalInner key={core.ordMode} mode={core.ordMode} />;
 }
 
-/* ---------- Save a copy: pick what goes into a file you hand over ---------- */
+/* ---------- Export: pick what goes into the file ----------
+   The one way data leaves the app (owner, 9 Sep 26): a backup before the
+   database move (tick both), or a chart to hand over (charts only, the
+   default). The ids keep their `copy` prefix — the mechanism is the same copy
+   the "Save a copy" dialog made; only its job widened. */
 function CopyModalInner() {
   const names = core.orderedSylNames();
   const picked = names.filter(n => core.copyPick[n]).length;
@@ -262,9 +266,9 @@ function CopyModalInner() {
     <>
       <div className="overlay" id="copyOverlay" style={{ zIndex: 90, display: 'block' }} onClick={core.closeCopy}></div>
       <div className="modal" id="copyModal" style={{ zIndex: 91, width: 'min(460px, 92vw)', display: 'block' }}>
-        <div style={{ fontWeight: 600, marginBottom: 10 }}>Save a copy</div>
+        <div style={{ fontWeight: 600, marginBottom: 10 }}>Export</div>
         <div className="mini" style={{ marginBottom: 10 }}>
-          For handing work over. Your own file is not touched.
+          A copy of the Tracker's data as a file. Tick both for a full backup you can bring back with Restore everything; charts only to hand a syllabus over. Nothing here is changed.
         </div>
         <label style={{ display: 'block', marginBottom: 6 }}>
           <input type="checkbox" id="copyCharts" checked={core.copyOpts.charts}
@@ -290,7 +294,7 @@ function CopyModalInner() {
         </div>
         <div style={{ display: 'flex', gap: 8, marginTop: 12, justifyContent: 'flex-end' }}>
           <button id="copyCancel" onClick={core.closeCopy}>Cancel</button>
-          <button className="primary" id="copyOk" onClick={core.saveCopyClick}>Save copy</button>
+          <button className="primary" id="copyOk" onClick={core.saveCopyClick}>Export</button>
         </div>
       </div>
     </>

@@ -189,6 +189,14 @@ and Import write the file's `charts` / `students` **through the
 whiteboard** (`tracker/*` records), and Save changes builds the file from
 the whiteboard. The file is a format, not a store.
 
+> **Amended 9 Sep 26.** The on-screen half changed once the seam was live:
+> the owner read "every mark lights Save changes, and Save changes raises a
+> save-file dialog" as duplication of the auto-sync. Save changes now writes
+> flow edits to the whiteboard and nothing else; 📁 Open (the bound file) is
+> gone; the File menu is ⊕ Import syllabus / ⤓ Export / ⇪ Restore everything.
+> The "format, not a store" sentence above is now literally true on screen.
+> Contract: `docs/ui-contracts.md` §The Tracker tab.
+
 ### Saved / unsaved indicator
 
 One small element in the header, wired to the postman's status: hidden

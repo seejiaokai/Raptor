@@ -476,116 +476,52 @@ ok('the page is a secure context, which the file pickers require', fsCaps.secure
 }
 
 const FFNAME = await import('../../src/tracker/app/fileFormat.js');
-ok('the Open button exists', await pg.locator('#openFileBtn').count() === 1);
+/* ---- the File menu is import/export only (9 Sep 26) ----
+   Owner: "I thought it should be auto synced … isn't it duplicating". The
+   file used to be the master copy: Open bound a handle, every mark flagged it
+   unsaved, and Save changes wrote the store AND the file (a save-file dialog
+   under a button that says Save). The store is the record now. */
+ok('the Restore button exists', await pg.locator('#restoreBtn').count() === 1);
+ok('the Export button exists', await pg.locator('#exportBtn').count() === 1);
+for (const id of ['#openFileBtn', '#saveCopyBtn', '#openFileName', '#lastSaved', '#optCharts', '#optStudents', '#fileHasStudents'])
+  ok(`${id} is gone with the file-as-store model`, await pg.locator(id).count() === 0);
 /* Never more than one — two Save buttons side by side is a fault this suite has
    caught before. It is absent while there is nothing to save; the checks further
    down prove it comes back the moment there is. */
 ok('there is never a second Save button', await pg.locator('#saveChanges').count() <= 1
   && await pg.locator('#saveFileBtn').count() === 0);
-ok('the toolbar says when no file is open',
-  (await pg.textContent('#openFileName')).includes('no file open'));
-ok('the charts tick-box starts ticked', await pg.isChecked('#optCharts'));
-ok('the students tick-box starts ticked', await pg.isChecked('#optStudents'));
-ok('no student-data warning shows with no file open',
-  await pg.locator('#fileHasStudents').count() === 0);
 
-/* ---- Save still works after opening a file ----
-   Opening grants read only; saving must ask for write, and the browser only
-   allows that question while the click is live. Doing other work first spent
-   the click, the request threw uncaught, and the button appeared dead. */
-const afterOpen = await pg.evaluate(async () => {
-  const written = [];
-  let asked = 0, perm = 'prompt';
-  window.__setFileHandleForTests({
-    name: 'my-syllabus.json',
-    queryPermission: async () => perm,
-    requestPermission: async () => { asked++; perm = 'granted'; return perm; },
-    createWritable: async () => ({ write: t => { written.push(t); }, close: async () => {} }),
-  });
-  /* Save changes only exists while there is something unsaved, so make there be
-     something: this is the state a user is in when they press it. */
-  window.__markFileDirtyForTests();
+/* ---- Save changes writes the store and never opens a file dialog ---- */
+const savedToStore = await pg.evaluate(async () => {
+  const FS = window.__fileStoreForTests;
+  let picks = 0;
+  const realPick = FS.pickSave; FS.pickSave = async () => { picks++; return null; };
+  /* Save changes only exists while there is an unsaved flow edit, so make
+     there be one: this is the state a user is in when they press it. */
+  window.__markDirtyForTests();
   await new Promise(r => setTimeout(r, 60));
+  const shown = !!document.getElementById('saveChanges');
   document.getElementById('saveChanges').click();
-  await new Promise(r => setTimeout(r, 1500));
-  return { asked, wrote: written.length, status: document.getElementById('saveStat').textContent };
+  await new Promise(r => setTimeout(r, 1200));
+  FS.pickSave = realPick;
+  const el = document.getElementById('saveStat');
+  return { shown, picks, gone: !document.getElementById('saveChanges'), cls: el.className, text: el.textContent };
 });
-ok('Save asks for write permission once a file is open', afterOpen.asked === 1, `asked ${afterOpen.asked}x`);
-ok('Save actually writes the file after opening one', afterOpen.wrote === 1,
-  `${afterOpen.wrote} writes, status: ${afterOpen.status}`);
-
-const refused = await pg.evaluate(async () => {
-  const written = [];
-  window.__setFileHandleForTests({
-    name: 'my-syllabus.json',
-    queryPermission: async () => 'prompt',
-    /* what the browser does when the click has already expired */
-    requestPermission: async () => { throw new DOMException('user activation is required', 'SecurityError'); },
-    createWritable: async () => ({ write: t => { written.push(t); }, close: async () => {} }),
-  });
-  /* Save changes only exists while there is something unsaved, so make there be
-     something: this is the state a user is in when they press it. */
-  window.__markFileDirtyForTests();
-  await new Promise(r => setTimeout(r, 60));
-  document.getElementById('saveChanges').click();
-  await new Promise(r => setTimeout(r, 1500));
-  return { wrote: written.length, status: document.getElementById('saveStat').textContent };
-});
-ok('a refused write permission is reported, not swallowed',
-  refused.wrote === 0 && /not saved/i.test(refused.status), `status: ${refused.status}`);
-
-/* A write that silently does not land is the worst case: the file may be the
-   user's only copy, so "saved" must never appear over a stale file. */
-const dropped = await pg.evaluate(async () => {
-  window.__setFileHandleForTests({
-    name: 'my-syllabus.json',
-    queryPermission: async () => 'granted',
-    requestPermission: async () => 'granted',
-    createWritable: async () => ({ write: () => {}, close: async () => {} }),  /* writes nothing */
-    getFile: async () => ({ size: 0 }),                                        /* file stays empty */
-  });
-  /* Save changes only exists while there is something unsaved, so make there be
-     something: this is the state a user is in when they press it. */
-  window.__markFileDirtyForTests();
-  await new Promise(r => setTimeout(r, 60));
-  document.getElementById('saveChanges').click();
-  await new Promise(r => setTimeout(r, 1500));
-  return document.getElementById('saveStat').textContent;
-});
-ok('a write that does not land is reported, never as success',
-  /NOT SAVED/.test(dropped), `status: ${dropped}`);
-
-const good = await pg.evaluate(async () => {
-  let stored = '';
-  window.__setFileHandleForTests({
-    name: 'my-syllabus.json',
-    queryPermission: async () => 'granted',
-    requestPermission: async () => 'granted',
-    createWritable: async () => ({ write: t => { stored = t; }, close: async () => {} }),
-    getFile: async () => ({ size: new Blob([stored]).size }),
-  });
-  /* Save changes only exists while there is something unsaved, so make there be
-     something: this is the state a user is in when they press it. */
-  window.__markFileDirtyForTests();
-  await new Promise(r => setTimeout(r, 60));
-  document.getElementById('saveChanges').click();
-  await new Promise(r => setTimeout(r, 1500));
-  const el = document.getElementById('lastSaved');
-  return { note: el ? el.textContent : '', bytes: stored.length };
-});
+ok('a flow edit brings the Save button up', savedToStore.shown);
+ok('Save changes never opens a save-file dialog', savedToStore.picks === 0, `${savedToStore.picks} dialogs`);
+ok('Save changes clears the unsaved dot', savedToStore.gone);
+ok('Save changes reports the syllabus saved', savedToStore.cls.includes('ok') && /saved/i.test(savedToStore.text),
+  `class="${savedToStore.cls}" text="${savedToStore.text}"`);
 /* Both boxes on means the file holds people, so its name must say so. */
 ok('with both boxes ticked the suggested name warns about students',
   FFNAME.suggestedFileName({ charts: true, students: true }, '2026-08-07T00:00:00.000Z')
     === 'OCU-syllabus-WITH-STUDENTS-2026-08-07.json');
-ok('a real save shows its size and the time on the toolbar',
-  /saved \d+ KB at /.test(good.note), `note: "${good.note}"`);
-ok('a real save writes the whole file', good.bytes > 10000, `${good.bytes} bytes`);
 
 /* ---- the toolbar must not call the work safe and at risk at once ----
-   Found 15 Aug: marking an event straight after a save left a green
-   "● saved" six pixels from the orange "✓ Save changes ●". The two watch
-   different things — the store and the file — and answered the user's one
-   question in opposite ways. The words may stay; the green may not. */
+   Found 15 Aug: a flow edit straight after a save left a green "● saved" six
+   pixels from the orange "✓ Save changes ●" — the status reports the last
+   write, the button the flow edits still waiting — and answered the user's
+   one question in opposite ways. The words may stay; the green may not. */
 {
   const before = await pg.evaluate(() => {
     const el = document.getElementById('saveStat');
@@ -593,8 +529,8 @@ ok('a real save writes the whole file', good.bytes > 10000, `${good.bytes} bytes
   });
   ok('a completed save does report itself in green', before.cls.includes('ok'),
     `class="${before.cls}" text="${before.text}"`);
-  await pg.evaluate(() => window.__markFileDirtyForTests());  /* i.e. they mark an event */
-  await pg.waitForTimeout(300);                               /* let the header redraw */
+  await pg.evaluate(() => window.__markDirtyForTests());  /* i.e. they move a ball */
+  await pg.waitForTimeout(300);                           /* let the header redraw */
   const after = await pg.evaluate(() => {
     const el = document.getElementById('saveStat');
     return { cls: el.className, text: el.textContent,
@@ -605,35 +541,8 @@ ok('a real save writes the whole file', good.bytes > 10000, `${good.bytes} bytes
     `class="${after.cls}" text="${after.text}"`);
   ok('the status still says what it last did', after.text.trim().length > 0,
     `text="${after.text}"`);
+  await pg.locator('#saveChanges').click(); await pg.waitForTimeout(600);   /* leave it clean */
 }
-
-/* ---- pressing Save and cancelling the file dialog must not go silent ----
-   It used to `return` with no message at all: the user had just been told
-   their work was unsaved, pressed Save, and been told nothing back. */
-{
-  await pg.evaluate(() => {
-    window.__setFileHandleForTests(null);
-    window.__fileStoreForTests.__realPick = window.__fileStoreForTests.pickSave;
-    window.__fileStoreForTests.pickSave = async () => null;   /* the user hits Cancel */
-    window.__markFileDirtyForTests();
-  });
-  await pg.locator('#saveChanges').click();
-  await pg.waitForTimeout(400);
-  const res = await pg.evaluate(() => {
-    const FS = window.__fileStoreForTests;
-    FS.pickSave = FS.__realPick; delete FS.__realPick;
-    const el = document.getElementById('saveStat');
-    return { cls: el.className, text: el.textContent };
-  });
-  ok('cancelling the save dialog says something', res.text.trim().length > 0,
-    `text="${res.text}"`);
-  ok('cancelling the save dialog does not claim a save', !res.cls.includes('ok'),
-    `class="${res.cls}" text="${res.text}"`);
-  ok('cancelling the save dialog says nothing reached the disk',
-    /no file chosen|nothing written/i.test(res.text), `text="${res.text}"`);
-}
-
-await pg.evaluate(() => window.__setFileHandleForTests(null));
 
 /* ---- the buttons the file replaces are gone ----
    The sync machinery under ☁ Cloud stays: it is how ALL saving works,
@@ -643,16 +552,16 @@ for (const id of ['#cloudBtn', '#loadLatestBtn', '#saveBtn', '#importBtn', '#exp
 ok('saving still works with no cloud button',
   (await pg.textContent('#saveStat')).trim().length > 0);
 
-/* ---- Save a copy: the handover case, which must start clean every time ---- */
-await viaMenu('file', '#saveCopyBtn'); await pg.waitForTimeout(600);
-ok('Save a copy opens a dialog', await pg.locator('#copyModal').count() === 1);
-ok('Save a copy starts with students unticked', !(await pg.isChecked('#copyStudents')));
-ok('Save a copy lists the syllabi to tick', await pg.locator('#copySylList input').count() >= 4);
-ok('Save a copy sits above the Show All panel (81)',
+/* ---- Export: the handover case, which must start clean every time ---- */
+await viaMenu('file', '#exportBtn'); await pg.waitForTimeout(600);
+ok('Export opens a dialog', await pg.locator('#copyModal').count() === 1);
+ok('Export starts with students unticked', !(await pg.isChecked('#copyStudents')));
+ok('Export lists the syllabi to tick', await pg.locator('#copySylList input').count() >= 4);
+ok('Export sits above the Show All panel (81)',
   await pg.evaluate(() => +getComputedStyle(document.getElementById('copyModal')).zIndex) > 81);
 await pg.check('#copyStudents'); await pg.click('#copyCancel'); await pg.waitForTimeout(400);
-await viaMenu('file', '#saveCopyBtn'); await pg.waitForTimeout(600);
-ok('Save a copy resets students to unticked every time', !(await pg.isChecked('#copyStudents')));
+await viaMenu('file', '#exportBtn'); await pg.waitForTimeout(600);
+ok('Export resets students to unticked every time', !(await pg.isChecked('#copyStudents')));
 await pg.click('#copyCancel'); await pg.waitForTimeout(300);
 
 /* ---- Import: drop one syllabus in without disturbing the rest ---- */
@@ -1111,7 +1020,7 @@ ok('the empty space in the bar falls after Syllabus, not before Course',
 const MENUS = {
   '#courseMenuBtn': ['#addCourse', '#renCourse', '#ordCourse', '#delCourse'],
   '#sylMenuBtn': ['#dupSyl', '#addSyl', '#renSyl', '#ordSyl', '#delSyl'],
-  '#fileMenuBtn': ['#openFileBtn', '#importSylBtn', '#saveCopyBtn', '#optCharts', '#optStudents'],
+  '#fileMenuBtn': ['#importSylBtn', '#exportBtn', '#restoreBtn'],
 };
 const unreachable = [];
 for (const [btn, items] of Object.entries(MENUS)) {
@@ -1138,14 +1047,15 @@ ok('Reorder crew sits in the Students card beside + Add', await pg.evaluate(() =
 /* Clicking away must close a menu. A menu left open swallows the next click the
    way the old Cloud dialog did. */
 await pg.click('#fileMenuBtn'); await pg.waitForTimeout(150);
-const openedFile = await pg.locator('#openFileBtn:visible').count() === 1;
+const openedFile = await pg.locator('#restoreBtn:visible').count() === 1;
 await pg.mouse.click(700, 700); await pg.waitForTimeout(200);
 ok('a menu opens, and clicking away closes it again',
-  openedFile && await pg.locator('#openFileBtn:visible').count() === 0);
+  openedFile && await pg.locator('#restoreBtn:visible').count() === 0);
 
 /* Save changes is a data-loss risk hidden in a menu and clutter when always
-   shown, so it appears exactly when there is something unsaved. Marks and dates
-   already write themselves to storage; flow edits and the open file do not. */
+   shown, so it appears exactly when there is something unsaved. Marks, dates,
+   event details and a moved ball write themselves to storage; structure
+   edits (events, prerequisites, lines, fonts) do not. */
 ok('Save changes is out of the way when there is nothing to save',
   await pg.locator('#saveChanges').count() === 0);
 await pg.click('#arrangeBtn'); await pg.waitForTimeout(400);
@@ -1160,7 +1070,15 @@ await pg.mouse.down();
 await pg.mouse.move(dragged.x + 40, dragged.y + 30, { steps: 8 });
 await pg.mouse.up();
 await pg.waitForTimeout(400);
-ok('Save changes appears the moment a flow edit makes something unsaved',
+/* A moved ball saves its own position on the drop (it always did — the
+   button used to light here only because the FILE was unsaved, 9 Sep 26), so
+   the honest thing is no button. What still waits for Save is a STRUCTURE
+   edit — events, prerequisites, drawn lines, fonts — the Font box being the
+   one reachable without a prompt or a second ball. */
+ok('a moved ball saves itself — no Save button for a drag',
+  await pg.locator('#saveChanges:visible').count() === 0);
+await pg.fill('#fontIn', '9'); await pg.waitForTimeout(400);
+ok('Save changes appears the moment a structure edit makes something unsaved',
   await pg.locator('#saveChanges:visible').count() === 1);
 /* The button appearing must not resize the bar. When it did, the board slid
    down 44px mid-drag and a ball dragged 45px moved 89. */
@@ -1170,6 +1088,8 @@ ok('the bar is the same height with the Save button showing', await pg.evaluate(
 }, barRows.h), `was ${barRows.h}px`);
 await pg.click('#trUndoBtn').catch(() => {});
 await pg.waitForTimeout(300);
+/* undo is itself a structure edit; leave the chart clean for what follows */
+if (await pg.locator('#saveChanges').count()) { await pg.click('#saveChanges'); await pg.waitForTimeout(600); }
 await pg.click('#arrangeBtn'); await pg.waitForTimeout(300);
 await pg.setViewportSize({ width: 1500, height: 950 });
 await pg.waitForTimeout(300);
@@ -1366,10 +1286,10 @@ await pg.waitForTimeout(800);
    pop-up, Show All and Save a copy each needed a different dismiss found by
    eye. Each is opened and escaped in turn. */
 {
-  await viaMenu('file', '#saveCopyBtn'); await pg.waitForTimeout(400);
-  ok('Save a copy is open before Escape', await pg.locator('#copyModal:visible').count() === 1);
+  await viaMenu('file', '#exportBtn'); await pg.waitForTimeout(400);
+  ok('Export is open before Escape', await pg.locator('#copyModal:visible').count() === 1);
   await pg.keyboard.press('Escape'); await pg.waitForTimeout(300);
-  ok('Escape closes Save a copy', await pg.locator('#copyModal:visible').count() === 0);
+  ok('Escape closes Export', await pg.locator('#copyModal:visible').count() === 0);
 
   await openShowAll(); await pg.waitForTimeout(400);
   ok('Show All is open before Escape', await pg.locator('#showAllPanel.on').count() === 1);
@@ -2230,8 +2150,10 @@ await pg.waitForSelector('#flowSvg .ball', { timeout: 15000 });
   await pg.locator('#infoModal input').first().fill('SMOKE DETAIL EDIT');
   await pg.locator('#infoModal button', { hasText: /save/i }).first().click();
   await pg.waitForTimeout(600);
-  ok('changing an event\'s details lights the Save button',
-    await pg.locator('#saveChanges').count() === 1);
+  /* Event details save themselves to the store (9 Sep 26) — they used to also
+     flag the user's file unsaved, which is what lit the button here. */
+  ok('changing an event\'s details saves itself — no Save button',
+    await pg.locator('#saveChanges').count() === 0);
 
   const txHas = (await pg.evaluate(() => [...document.querySelectorAll('#sylSel option')].map(o => o.value))).includes('Tx 2026');
   if (txHas) {

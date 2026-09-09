@@ -21,7 +21,7 @@ shared database replaces; nothing above a door knows where a key lives.
 |---|---|---|---|
 | Scheduler | `store` + `storeBackend.impl` in `src/engine/hooks.ts`, plugged in once by `src/main.tsx` | `raptor:settings/*`, `raptor:weeks/*`, `raptor:inputs/all`, `raptor:people/all`, `raptor:plan/all` (legacy `sqn142_` imported once) | the whiteboard (`src/storage/`) → BrowserBackend on the built site |
 | Leave War | `StorageBackend {read, write}` in `src/leavewar/state/storage.ts`, now the whiteboard-backed adapter | `raptor:leavewar/*` (legacy `leavewar:` ignored) | the whiteboard (`src/storage/`) → BrowserBackend on the built site |
-| Tracker | `storage {get, set, delete, list}` (async) in `src/tracker/storage.js`; per-browser prefs via `ocuLocal:` (NOT through the whiteboard) | `raptor:tracker/*` (legacy `ocu:` imported once); prefs stay `ocuLocal:*` | the whiteboard (`src/storage/`) → BrowserBackend on the built site; the owner's syllabus **file** stays the authoritative copy |
+| Tracker | `storage {get, set, delete, list}` (async) in `src/tracker/storage.js`; per-browser prefs via `ocuLocal:` (NOT through the whiteboard) | `raptor:tracker/*` (legacy `ocu:` imported once); prefs stay `ocuLocal:*` | the whiteboard (`src/storage/`) → BrowserBackend on the built site — the record; the .json file is an import/export FORMAT only (9 Sep 26) |
 
 Two smaller seams sit beside these: `docBackend.impl` in `src/state/docs.ts`
 (uploaded attachments — an in-memory cache over a per-browser IndexedDB
@@ -355,8 +355,10 @@ students = { courses: string[],
 ### The syllabus file
 
 `{ format: 'ocu-tracker', version: 1, savedAt, contains: { charts, students }, charts?, students? }`
-— the owner's own file (📁 Open / ✓ Save changes) is the authoritative copy;
-browser storage is the cache it loads into.
+— a FORMAT, not a store (9 Sep 26): ⤓ Export writes one from the store, ⇪ Restore
+everything and ⊕ Import syllabus read one back in. Nothing binds a file; the
+store above is the record. The database migration's recipe is exactly this
+shape: Export (both boxes ticked) → wipe → Restore everything.
 
 ---
 

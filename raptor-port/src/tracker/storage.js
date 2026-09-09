@@ -12,10 +12,11 @@
    stores. Nothing above this line knows where a key actually lives.
 
    Keys keep their historical `ocu:` prefix, so a browser that used the
-   standalone Tracker on the same origin keeps its data, and the owner's own
-   syllabus FILE (📁 Open / ✓ Save changes, app/fileStore.js) stays the
-   authoritative copy exactly as before — this layer is the per-browser cache
-   the file loads into, not a second source of truth. */
+   standalone Tracker on the same origin keeps its data. THIS IS THE RECORD
+   (9 Sep 26): the owner's .json file was the authoritative copy and this layer
+   its cache until the storage seam made the store durable; the file is now a
+   format the File menu reads in (Restore / Import) or writes out (Export),
+   never a second source of truth — app/core.js, the File-menu note. */
 const LP = 'ocu:'
 
 /* A store that cannot be read (Safari private mode, a locked-down browser)

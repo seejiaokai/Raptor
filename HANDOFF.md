@@ -195,7 +195,17 @@ are now globally unique (`doc-`+UUID) so two tabs / two people can't mint the
 same id and cross-reference the wrong medical file. Everything else it found
 is genuine shared-database work (write-verify, per-row writes, incoming sync,
 boot resilience), captured as "Database-stage requirements" in the storage-seam
-spec. **Merge only on the
+spec. **Then (9 Sep 26) the Tracker's file stopped being a store** (owner,
+from the preview: "I thought it should be auto synced … isn't it duplicating"):
+✓ Save changes had kept writing the user's .json as well as the store (a
+save-file dialog under a Save button, lit by every mark) — the standalone
+app's master-copy model. Now the store is the record: marks, dates, students,
+event details and a moved ball save themselves; Save changes writes STRUCTURE
+edits to the store and nothing else; the File menu is ⊕ Import syllabus /
+⤓ Export / ⇪ Restore everything (the export → wipe → restore recipe for the
+database move); the bound handle, `fileDirty` and the menu's tick-boxes are
+gone; Import/Restore read on any browser. Pinned in `tracker.test.tsx` and
+the smoke suite; verified in a real browser. **Merge only on the
 owner's explicit "merge live" — NOT merged.**
 
 Everything before the audit fixes is merged — three PRs landed 7 Sep 26:
@@ -624,11 +634,11 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | file | what it does |
 |---|---|
 | `TrackerPage.tsx` | The ONE page seam: renders the standalone app's `<App/>` inside `#page-tracker`, measures `--tr-top` (the section's top edge — the column is the viewport minus that), locks the document (`body.tr-on`) while the tab is up, kicks a `resize` on show. Kept mounted once visited (Shell.tsx `trEverRef`) because the board is drawn imperatively once. |
-| `role.js` | The FILE-LOCK flag and its listeners — a NO-IMPORT module so Raptor's `resetSession`/`toggleRole` can write it without loading the chart engine (the seam `tracker.test.tsx` guards). Locked = a member/logout: Open, Import and Save a copy refuse; everything else is everyone's. |
+| `role.js` | The FILE-LOCK flag and its listeners — a NO-IMPORT module so Raptor's `resetSession`/`toggleRole` can write it without loading the chart engine (the seam `tracker.test.tsx` guards). Locked = a member/logout: Restore, Import and Export refuse; everything else is everyone's. |
 | `storage.js` | The storage doorway: async get/set/delete/list over localStorage (`ocu:` keys), `flushNow`/`loadLatest` no-ops. Replaced `sync/cloud.js` + `sync/local.js`. The database plugs in here. |
 | `App.jsx` | The standalone app's root, adapted: `.tr-root` column (was `<body>`/`#root`), phone tab classes on the page section (was `body.tab-*`), the resizer's `--sideW` on the section, document listeners gated on `active`. |
-| `app/core.js` | The whole model + the imperatively rendered SVG flow board (3.1k lines, verbatim port). Adapted: imports `../storage.js` + `../role.js`, `fileLocked` mirrored from role.js, and `if (fileLocked) return` at the head of the three file entry points only (`openFileClick`, `importSyllabusClick`, `openCopy`/`saveCopyClick`). The cloud button state and sinks are gone. |
-| `app/fileFormat.js` · `app/fileStore.js` · `app/eventOrder.js` | The saved file's shape (no browser APIs); the File System Access wrapper (in-place write on Chrome/Edge, download elsewhere; pickers need a live click); the Show All grouping/search — unchanged. |
+| `app/core.js` | The whole model + the imperatively rendered SVG flow board (3.1k lines, verbatim port). Adapted: imports `../storage.js` + `../role.js`, `fileLocked` mirrored from role.js, and `if (fileLocked) return` at the head of the three file entry points only (`restoreClick`, `importSyllabusClick`, `openCopy`/`saveCopyClick`). The cloud button state and sinks are gone. **The file is a format, not a store (9 Sep 26):** the bound file handle, `fileDirty`, `saveToFileClick` and the menu's Charts/Students boxes are deleted; ✓ Save changes = `persistSyl()` only; `restoreClick` is the old Open minus the handle, asked first. |
+| `app/fileFormat.js` · `app/fileStore.js` · `app/eventOrder.js` | The saved file's shape (no browser APIs); the picker wrapper (`pickOpen` reads on ANY browser — native picker on Chrome/Edge, a plain file input elsewhere, 9 Sep 26; Export writes in place on Chrome/Edge, downloads elsewhere; pickers need a live click); the Show All grouping/search — unchanged. |
 | `components/` | Header (the File menu hidden while the file is locked; everything else drawn for every login), ArrangeTools (`#trUndoBtn`/`#trRedoBtn` renamed from Raptor's ids), SidePanel, ShowAllPanel, Pop, Legend, Modals, ZoomControls — otherwise unchanged. |
 | `data/` | `syllabi.js` (one single-line JSON blob per syllabus — edit by replacing the LINE), `layouts.js`, `eventInfo.js`, `seedState.js` — verbatim, no student names (public repo). |
 | `tracker.css` | The standalone stylesheet wrapped under `#page-tracker` (native nesting, the Leave War recipe) with FIVE Raptor collision resets first (`.day`, `.day.today`, `.legend`, `.modal`, `.sub`); `#detailBubble` and `body.tr-on` sit outside the wrapper on purpose. |

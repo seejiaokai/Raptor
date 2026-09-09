@@ -1,12 +1,15 @@
-/* Wraps the browser's File System Access API. Chrome and Edge can write back
-   into the same file, so saving behaves like Word: one file, updated in place.
-   Safari and Firefox cannot, so those get a download and are told so plainly
-   rather than being left to think a save happened.
+/* Wraps the browser's file pickers. Since 9 Sep 26 the file is a FORMAT, not a
+   store (core.js, the File-menu note): the app only ever reads a whole file in
+   (Restore, Import) or writes a whole copy out (Export), so nothing here keeps
+   a handle between calls. Export writes in place through the File System
+   Access API where Chrome and Edge offer it, and downloads elsewhere — saying
+   so plainly rather than leaving the user to think a save happened.
 
    Every picker call MUST run directly inside a click handler with no await
    before it, or the browser discards the user gesture and rejects it.
 
-   See docs/superpowers/specs/2026-08-07-syllabus-file-design.md */
+   See docs/superpowers/specs/2026-08-07-syllabus-file-design.md (superseded
+   in part — its note at the top says which part). */
 const TYPES = [{ description: 'OCU Tracker file', accept: { 'application/json': ['.json'] } }];
 
 export function canWriteInPlace() {
@@ -18,12 +21,34 @@ export async function pickSave(suggestedName) {
   catch (e) { if (e && e.name === 'AbortError') return null; throw e; }
 }
 
+/* Read one file: `{ name, text }`, or null when the user cancels. Chrome/Edge
+   get the native picker; every other browser (the owner's iPhone included)
+   gets a plain file input — reading needs no write permission, so there is no
+   reason to refuse Safari/Firefox the way the old "Use Chrome or Edge" alert
+   did. The input's own cancel fires no reliable event everywhere, so a cancel
+   is read as "no change within a beat of the dialog closing". */
 export async function pickOpen() {
-  try {
-    const [handle] = await window.showOpenFilePicker({ types: TYPES, multiple: false });
-    const text = await (await handle.getFile()).text();
-    return { handle, text };
-  } catch (e) { if (e && e.name === 'AbortError') return null; throw e; }
+  if (typeof window !== 'undefined' && typeof window.showOpenFilePicker === 'function') {
+    try {
+      const [handle] = await window.showOpenFilePicker({ types: TYPES, multiple: false });
+      const file = await handle.getFile();
+      return { name: file.name || handle.name, text: await file.text() };
+    } catch (e) { if (e && e.name === 'AbortError') return null; throw e; }
+  }
+  return new Promise(resolve => {
+    const input = document.createElement('input');
+    input.type = 'file'; input.accept = '.json,application/json';
+    input.style.display = 'none';
+    document.body.appendChild(input);
+    const done = v => { input.remove(); resolve(v); };
+    input.addEventListener('change', async () => {
+      const f = input.files && input.files[0];
+      if (!f) { done(null); return; }
+      try { done({ name: f.name, text: await f.text() }); } catch (_) { done(null); }
+    });
+    input.addEventListener('cancel', () => done(null));
+    input.click();
+  });
 }
 
 /* Browsers drop write permission between sessions. Returns false when declined,

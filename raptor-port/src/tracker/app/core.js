@@ -35,10 +35,10 @@ const refreshCourses = notify;
    The standalone app had no roles at all. Inside Raptor the owner's rule
    (his second word, 7 Sep 26) is: everyone — admin and member alike — marks,
    edits charts and manages students, courses and syllabi exactly as before;
-   ONLY the file portion is the admin's: 📁 Open, ⊕ Import syllabus, ⤓ Save a
-   copy. ✓ Save changes stays for everyone (it persists the syllabus to the
-   browser store; its file half only fires when a file is open, which only an
-   admin can do). The flag is written by Raptor's resetSession (every
+   ONLY the file portion is the admin's: ⇪ Restore everything, ⊕ Import
+   syllabus, ⤓ Export (📁 Open / ⤓ Save a copy until 9 Sep 26). ✓ Save changes
+   stays for everyone — it writes flow edits to the store and nothing else.
+   The flag is written by Raptor's resetSession (every
    login/logout) and the admin's view-as-member toggle, through role.js;
    never persisted, never re-read, so it can never disagree with the session
    actually looking at the page. Enforced at the WRITE PATH (the three file
@@ -159,8 +159,9 @@ export let lulls = {};   /* {student: [{start,end}]} for the current course */
 export let lastEdit = {};   /* {student: {syl, event}} for the current course */
 export let pace = {};   /* {student: {epw, target, target2}} for the current course */
 export let calView = new Date();
-/* True while boot migrations and course switches are writing, so they do not
-   flag the user's file as having unsaved work. See touched(). */
+/* True while boot migrations and course switches are writing. It used to gate
+   the file-unsaved flag; since 9 Sep 26 there is no file to flag (the store is
+   the record) and it only marks the boot/switch window. */
 let loading = true;
 export let arrangeMode = false, layout = {}, drag = null, AUTO = {}, BORROW = null;
 /* ---- per-edge routing metadata layered on top of the prereq graph ---- */
@@ -499,18 +500,15 @@ async function loadCourse(c, restoreLastSyllabus = false) {
   }
   loading = false;
 }
-/* Every write of the user's own work goes through one of the four functions
-   below, so flagging the file unsaved here catches marking an event, a date, a
-   pace, a lull and a student alike — including anything added later. Doing it in
-   each caller instead is how marking a student came to leave the file clean:
-   Save changes wrote the file anyway, so nothing was lost while the button was
-   always on screen, but it never showed the unsaved dot and could not be hidden
-   safely. `loading` keeps boot-time migrations and course switches from
-   flagging work the user has not done. */
-function touched() { if (!loading) markFileDirty(); }
-async function saveSyl() { await sSet(kSyl(course), JSON.stringify(SYL)); touched(); }
-async function saveRoster() { await sSet(kRosterFor(course, plan.sylName), JSON.stringify(roster)); touched(); }
-async function savePlan() { await sSet(kPlan(course), JSON.stringify(plan)); touched(); }
+/* Every write of the user's own work goes through one of the functions below,
+   straight into the store — marking an event, a date, a pace, a lull, a student.
+   Until 9 Sep 26 each also flagged the user's FILE as unsaved (`touched()`), so
+   the Save button lit for a mark; the store is the record now (owner: "I thought
+   it should be auto synced"), so a mark is saved the moment it lands and nothing
+   here lights a button. Only flow edits (markDirty) still wait for Save. */
+async function saveSyl() { await sSet(kSyl(course), JSON.stringify(SYL)); }
+async function saveRoster() { await sSet(kRosterFor(course, plan.sylName), JSON.stringify(roster)); }
+async function savePlan() { await sSet(kPlan(course), JSON.stringify(plan)); }
 async function loadStudent() {
   marks = {}; dates = {}; lulls = {}; lastEdit = {}; pace = {};
   for (const s of roster) {
@@ -533,15 +531,15 @@ async function loadStudent() {
     else { try { lulls[s] = JSON.parse(l); } catch (_) { lulls[s] = []; } }
   }
 }
-async function saveLulls(s) { await sSet(kLulls(course, s), JSON.stringify(lulls[s] || [])); touched(); }
-async function savePace(s) { await sSet(kPace(course, s), JSON.stringify(pace[s] || {})); touched(); }
+async function saveLulls(s) { await sSet(kLulls(course, s), JSON.stringify(lulls[s] || [])); }
+async function savePace(s) { await sSet(kPace(course, s), JSON.stringify(pace[s] || {})); }
 /* Always a shape, even for a student added since load. */
 export function paceOf(s) { return (pace && pace[s]) || { epw: 2, target: null, target2: null }; }
 /* The box holds whatever the user is part-way through typing, so the maths needs
    its own reading. Clearing it to type a new number used to snap it back to 2. */
 export function epwOf(s) { const n = parseFloat(paceOf(s).epw); return n > 0 ? n : 2; }
-async function saveMarks(s) { await sSet(kMarks(course, s), JSON.stringify(marks[s])); touched(); }
-async function saveDates(s) { await sSet(kDates(course, s), JSON.stringify(dates[s])); touched(); }
+async function saveMarks(s) { await sSet(kMarks(course, s), JSON.stringify(marks[s])); }
+async function saveDates(s) { await sSet(kDates(course, s), JSON.stringify(dates[s])); }
 
 /* ---------- in-page dialogs (promise-based, rendered by <DlgModal/>) ---------- */
 export let dlg = null; export let dlgSerial = 0;
@@ -1789,7 +1787,7 @@ function drawGuides() {
 function endDrag(ev) {
   if (!drag) return; const g = drag.g;
   g.removeEventListener('pointermove', onDrag); g.removeEventListener('pointerup', endDrag); g.removeEventListener('pointercancel', endDrag);
-  const moved = drag.moved; drag = null; alignGuides = []; flushDragPaint(); const gl = document.getElementById('bandLayer'); if (gl) gl.innerHTML = ''; perfOff(); if (moved) { saveLayout(); markFileDirty(); wireBoard(); }
+  const moved = drag.moved; drag = null; alignGuides = []; flushDragPaint(); const gl = document.getElementById('bandLayer'); if (gl) gl.innerHTML = ''; perfOff(); if (moved) { saveLayout(); wireBoard(); }
 }
 
 /* ---------- inline ball editor (text / colour / number) — state for <EditModal/> ---------- */
@@ -2182,13 +2180,13 @@ export async function saveInfoFor(id, vals) {
   });
   if (kept.length) diff.__kept = kept;
   if (Object.keys(diff).filter(k => k !== '__kept').length) eventInfo[id] = diff; else delete eventInfo[id];
-  /* Event details ride in the user's file, so changing them is unsaved work.
-     Without this the Save button never lit and the file quietly fell behind. */
-  await saveEventInfo(); markFileDirty(); renderBoard(); renderSide();
+  /* Event details save themselves to the store like a mark does — no button to
+     press (they used to also flag the user's file unsaved; gone 9 Sep 26). */
+  await saveEventInfo(); renderBoard(); renderSide();
 }
 export async function resetInfoFor(id) {
   if (!id) return;
-  delete eventInfo[id]; await saveEventInfo(); markFileDirty(); renderBoard(); notify();
+  delete eventInfo[id]; await saveEventInfo(); renderBoard(); notify();
 }
 export async function saveInfo(vals) {
   const id = infoId; if (!id) return;
@@ -2461,8 +2459,14 @@ export async function saveSylText(text) {
 }
 
 /* ---------- arrange mode, editor tools, duplicate & save changes ---------- */
+/* STRUCTURE edits — adding or removing events, connecting prerequisites,
+   drawn lines, arrows, fonts, the JSON editor, undo/redo — are the ONE kind of
+   work that waits for ✓ Save changes: the editing session is a unit (undo runs
+   back to the last save), so SYL is written on the press. A MOVED BALL is not
+   one of them: endDrag saves its position on the drop (saveLayout), as marks,
+   dates, students and event details save themselves (see saveSyl…). */
 export let sylDirty = false;
-function markDirty() { sylDirty = true; markFileDirty(); notify(); }
+function markDirty() { sylDirty = true; notify(); }
 /* Both stacks. Leaving redoStack behind let a Redo pressed after a syllabus
    change write the PREVIOUS chart's positions over the new one and save them
    on the spot — four moved boxes on 2026 landed on Tx 2026 under test. */
@@ -2953,58 +2957,54 @@ export async function applyStudents(students) {
   return { courses: courses.slice() };
 }
 
-/* ---------- the user's file: Open and Save changes ----------
-   Saving is manual on purpose, so the file always holds a version the user
-   chose. To make forgetting hard rather than silent, the Save button carries a
-   dot whenever there is unsaved work and closing the tab warns first. */
-export let openFileName = null, openFileHasStudents = false, fileDirty = false, lastSavedAt = null;
-/* Both on by default: this file is the owner's working save and their backup,
-   so it should hold everything unless they choose otherwise. The handover case
-   is ⤓ Save a copy, which starts with students OFF — that is where the
-   send-it-to-someone risk lives, not here. */
-export let saveOpts = { charts: true, students: true };
-let fileHandle = null;
+/* ---------- the File menu: Restore, Import, Export ----------
+   THE FILE IS A FORMAT, NOT A STORE (owner, 9 Sep 26 — "the file feature is
+   for admin to import newly created flow charts … from external areas", and
+   to "export these data … then wipe … then import" when the app moves to the
+   shared database). Until then the standalone app's model held: the user's
+   own .json was the master copy, 📁 Open bound a live file handle and
+   ✓ Save changes wrote the store AND that file — so every mark lit the Save
+   button and pressing it raised a save-file dialog, which read as duplication
+   once the storage seam made the store durable. Gone with it: the handle, the
+   file-unsaved flag, the Charts/Students boxes on the menu and the file name
+   on the toolbar. What stays is three one-way moves between the store and a
+   file — ⇪ Restore everything (a whole export back in), ⊕ Import syllabus
+   (charts only, marks untouched) and ⤓ Export (a copy out) — and the admin
+   lock on all three (`fileLocked`, mirrored by Header.jsx). Every entry point
+   still runs its picker before any await: the browser spends the click. */
 
-export function setSaveOpt(which, on) { saveOpts = { ...saveOpts, [which]: !!on }; notify(); }
-/* Called from markDirty() and from endDrag(): dragging a ball saves its own
-   position, so before this it never lit the Save button — an easy way to think
-   work was saved when the file had not been touched. */
-export function markFileDirty() { if (!fileDirty) { fileDirty = true; notify(); } }
-
-async function fileBody(opts, savedAt) {
-  return FMT.buildFile({
-    charts: opts.charts ? await collectCharts(null) : null,
-    students: opts.students ? await collectStudents() : null,
-    savedAt,
-  });
-}
-
-export async function openFileClick() { if (fileLocked) return;
-  if (!FS.canWriteInPlace()) { await uiAlert('This browser cannot open a file directly.\n\nUse Chrome or Edge.'); return; }
+/* Restore: bring a whole export back in — charts AND students & marks — on top
+   of what is here. This is the database-move path (export → wipe → restore)
+   and the old 📁 Open minus the handle. Charts of the same name are replaced
+   (applyCharts 'replace' over the file's whole order); students merge, never
+   overwrite the course list (applyStudents). Asked first, because a wrong
+   file here can overwrite real charts. */
+export async function restoreClick() { if (fileLocked) return;
   const picked = await FS.pickOpen();          /* no await before this — gesture */
   if (!picked) return;
-  lastSavedAt = null;
   let obj; try { obj = JSON.parse(picked.text); } catch (_) { await uiAlert('That file is not readable as JSON.'); return; }
   let info; try { info = FMT.describeFile(obj); } catch (e) { await uiAlert(e.message); return; }
+  if (!info.charts && !info.students) { await uiAlert('That file holds no charts and no students.'); return; }
+  const what = [info.charts ? 'charts' : null, info.students ? 'students & marks' : null].filter(Boolean).join(' and ');
+  const go = await uiConfirm('Restore ' + what + ' from “' + picked.name + '”?\n\n'
+    + (info.charts ? 'A chart here with the same name as one in the file is replaced by the file’s. ' : '')
+    + (info.students ? 'Students and marks in the file are added to what is here. ' : '')
+    + 'Nothing else is touched.');
+  if (!go) return;
   const { charts, students } = FMT.readFile(obj);
   if (charts) await applyCharts(charts, { names: null, mode: 'replace', rename: null });
   if (students) await applyStudents(students);
-  fileHandle = picked.handle;
-  openFileName = picked.handle.name;
-  openFileHasStudents = info.students;
-  /* Turn boxes ON to match the file, never OFF. Downgrading here would mean
-     opening a charts-only file silently drops everyone's marks out of the next
-     save — losing them from the very file being relied on as the backup. */
-  saveOpts = { charts: saveOpts.charts || info.charts, students: saveOpts.students || info.students };
-  fileDirty = false;
-  setSaveStatus('opened ' + openFileName, 'ok'); notify();
+  clearDirty();
+  setSaveStatus('restored ' + what + ' from ' + picked.name, 'ok'); notify();
 }
 
-/* ---------- Save a copy: the handover case ----------
-   Students start OFF and are reset OFF on every open, not just the first. This
-   is the moment a file leaves the owner's hands, so it begins clean and they
-   have to opt in — the safety measure agreed when tick-boxes were chosen over
-   two files that cannot mix. */
+/* ---------- Export: a copy of the store as a file ----------
+   The backup before the database move, or a chart to hand over. Students start
+   OFF and are reset OFF on every open, not just the first: this is the moment
+   a file leaves the owner's hands, so it begins clean and they have to opt in —
+   the safety measure agreed when tick-boxes were chosen over two files that
+   cannot mix. For a full backup they tick it; the dialog and the confirmation
+   both say which kind of file was written. */
 export let copyOpen = false, copyOpts = { charts: true, students: false }, copyPick = {};
 export function openCopy() { if (fileLocked) return;
   copyOpts = { charts: true, students: false };
@@ -3034,16 +3034,16 @@ export async function saveCopyClick() { if (fileLocked) return;
   }
   closeCopy();
   setSaveStatus('', 'ok'); notify();
-  await uiAlert('Copy saved as “' + (handle ? handle.name : name) + '”.\n\n'
-    + (opts.students ? 'It CONTAINS student names and marks.' : 'It contains charts only — no student names or marks.'));
+  await uiAlert('Exported as “' + (handle ? handle.name : name) + '”.\n\n'
+    + (opts.students ? 'It CONTAINS student names and marks — a full backup; only send it to someone entitled to see them.'
+      : 'It contains charts only — no student names or marks.'));
 }
 
 /* Take one syllabus out of another file and drop it into what is already here —
-   for when a new syllabus is issued. Marks are never touched either way:
-   applyCharts writes no roster, mark or date key, which smoke.mjs pins by
-   watching every storage write. */
+   for when a new syllabus is issued or drawn up elsewhere. Marks are never
+   touched either way: applyCharts writes no roster, mark or date key, which
+   smoke.mjs pins by watching every storage write. */
 export async function importSyllabusClick() { if (fileLocked) return;
-  if (!FS.canWriteInPlace()) { await uiAlert('This browser cannot open a file directly.\n\nUse Chrome or Edge.'); return; }
   const picked = await FS.pickOpen();          /* no await before this — gesture */
   if (!picked) return;
   let obj; try { obj = JSON.parse(picked.text); } catch (_) { await uiAlert('That file is not readable as JSON.'); return; }
@@ -3069,69 +3069,17 @@ export async function importSyllabusClick() { if (fileLocked) return;
     await applyCharts(charts, { names: [name], mode: 'add', rename: { from: name, to } });
     done.push(to);
   }
-  if (done.length) { markFileDirty(); setSaveStatus('', 'ok'); }
+  if (done.length) setSaveStatus('brought in ' + done.join(', '), 'ok');
   await uiAlert(done.length
-    ? 'Brought in: ' + done.join(', ') + '.\n\nEveryone’s marks are untouched.\nPress Save changes to write this into your file.'
+    ? 'Brought in: ' + done.join(', ') + '.\n\nEveryone’s marks are untouched. It is saved.'
     : 'Nothing was brought in.');
   notify();
 }
 
-/* One Save button, not two. It saves the syllabus into the browser as it always
-   did, and then writes your file — which is where the work really lives. */
-export async function saveChangesClick() {
-  /* Ask for write permission FIRST, before anything else awaits. Opening a file
-     only grants read, so saving has to ask — and the browser only allows that
-     question while the click that started it is still live. Doing any other work
-     first spends that click and the request fails, which is what made this
-     button look dead after opening a file. */
-  if (fileHandle && !await FS.ensureWritable(fileHandle)) {
-    setSaveStatus('not saved — allow the browser to write to your file, then press Save again', 'err');
-    notify(); return;
-  }
-  await persistSyl();
-  await saveToFileClick();
-}
-
-export async function saveToFileClick() {
-  const savedAt = new Date().toISOString();
-  const name = FMT.suggestedFileName(saveOpts, savedAt);
-  if (!fileHandle) {
-    if (!FS.canWriteInPlace()) {
-      FS.downloadInstead(name, JSON.stringify(await fileBody(saveOpts, savedAt), null, 2));
-      setSaveStatus('downloaded a copy — this browser cannot save in place', 'ok');
-      fileDirty = false; notify(); return;
-    }
-    fileHandle = await FS.pickSave(name);      /* gesture-critical */
-    /* Cancelling used to return in silence: the user had just been told their
-       work was unsaved, pressed Save, and been told nothing at all. Say what
-       did and did not happen — the syllabus write above this already ran. */
-    if (!fileHandle) {
-      setSaveStatus('no file chosen — nothing written to disk', 'err');
-      notify(); return;
-    }
-  }
-  if (!await FS.ensureWritable(fileHandle)) {
-    setSaveStatus('not saved — permission to write your file was declined', 'err'); notify(); return;
-  }
-  /* Any failure here must be loud. This file may be the user's only copy, so
-     reporting success when nothing was written is the worst thing the app can
-     do — worse than crashing, because they would never know to try again. */
-  const text = JSON.stringify(await fileBody(saveOpts, savedAt), null, 2);
-  try {
-    await FS.writeTo(fileHandle, text);
-  } catch (err) {
-    fileDirty = true; lastSavedAt = null;
-    setSaveStatus('NOT SAVED — ' + ((err && err.message) || err) + ' — try Save again', 'err');
-    notify(); return;
-  }
-  openFileName = fileHandle.name; openFileHasStudents = !!saveOpts.students;
-  fileDirty = false;
-  /* The shared status widget rewrites every 'ok' message to a bare "saved", so
-     the proof that a real write happened goes next to the file name instead. */
-  const kb = Math.round(new Blob([text]).size / 1024);
-  lastSavedAt = `saved ${kb} KB at ${new Date().toLocaleTimeString()}`;
-  setSaveStatus('', 'ok'); notify();
-}
+/* One Save button, one job: write the flow edits into the store. It used to go
+   on to write the user's file too (see the File-menu note above), which is what
+   put a save-file dialog under a button that reads "Save changes". */
+export async function saveChangesClick() { await persistSyl(); }
 
 /* ---------- init ---------- */
 export let ready = false;
@@ -3152,9 +3100,10 @@ export async function init() {
   /* After the first paint, so the balls exist to measure. */
   if (typeof requestAnimationFrame !== 'undefined') requestAnimationFrame(() => showLastEdit(active));
   else showLastEdit(active);
-  /* Unsaved work must not vanish quietly when the tab closes. */
+  /* Unsaved flow edits must not vanish quietly when the tab closes — the one
+     kind of work that waits for the Save button. */
   if (typeof window !== 'undefined')
-    window.addEventListener('beforeunload', e => { if (fileDirty) { e.preventDefault(); e.returnValue = ''; } });
+    window.addEventListener('beforeunload', e => { if (sylDirty) { e.preventDefault(); e.returnValue = ''; } });
   /* Turning a phone sideways changes how much chart fits, so re-fit unless the
      user has set the zoom themselves. */
   if (typeof window !== 'undefined') {
@@ -3176,12 +3125,8 @@ export async function init() {
       applyCharts, applyStudents, SYLLABI, DEFAULT_LAYOUTS };
     window.__fileFormatForTests = FMT;
     window.__fileStoreForTests = FS;
-    /* Playwright cannot drive the OS file picker, so smoke.mjs injects a stub
-       handle to exercise the save path — including the permission refusal that
-       made Save appear dead after opening a file. */
-    window.__setFileHandleForTests = h => { fileHandle = h; openFileName = h ? h.name : null; notify(); };
-    /* Save changes is only on screen while there is unsaved work, so a test that
-       wants to press it has to put the app in that state first. */
-    window.__markFileDirtyForTests = () => markFileDirty();
+    /* Save changes is only on screen while there is an unsaved flow edit, so a
+       test that wants to press it has to put the app in that state first. */
+    window.__markDirtyForTests = () => markDirty();
   }
 }
