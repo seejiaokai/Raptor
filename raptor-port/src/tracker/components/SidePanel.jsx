@@ -378,7 +378,7 @@ export default function SidePanel({ zoom }) {
           <div className={'card c-fails' + (total > 10 ? ' wide' : '')} id="failsCard">
             <h3><span className="failTitle" id="failTitle" role="button" tabIndex={0}
               title="Every failure with its date" onClick={() => core.openFailLog(s)}
-              onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); core.openFailLog(s); } }}>Failures</span>
+              onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); core.openFailLog(s); } }}>Failures</span>{' '}
               <span className="who">— {s}</span>
               {total ? <span className="failtot" id="failTotal">
                 {total} fail{total === 1 ? '' : 's'}</span> : null}</h3>
