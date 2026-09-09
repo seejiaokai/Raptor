@@ -1354,18 +1354,125 @@ await pg.waitForTimeout(800);
 
   await bump('ST-01', 3);
   await bump('ST-02', 1);
+  /* Since 9 Sep 26 (owner): EACH failure is its own chip — "when someone fails
+     twice, it should show ST-01, ST-01X" — and each carries the day it
+     happened. Today, as the app reckons it (Singapore), is the day a + records
+     unless the box is changed first. */
+  const today = await pg.evaluate(() => new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Singapore', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date()));
   const card = await pg.evaluate(() => ({
     chips: [...document.querySelectorAll('#failChips .failchip')].map(c => c.textContent.trim()),
+    dates: [...document.querySelectorAll('#failChips .failchip')].map(c => c.dataset.date),
     total: (document.getElementById('failTotal') || {}).textContent || '',
   }));
-  ok('a failed event carries one X per failure after the first',
-    card.chips[0] === 'ST-01XX', `chips: ${card.chips.join(', ')}`);
+  ok('every failure is its own chip — ST-01, ST-01X, ST-01XX for three',
+    card.chips.slice(0, 3).join(',') === 'ST-01,ST-01X,ST-01XX', `chips: ${card.chips.join(', ')}`);
   ok('a single failure shows the plain code',
-    card.chips.includes('ST-02'), `chips: ${card.chips.join(', ')}`);
+    card.chips.includes('ST-02') && card.chips.length === 4, `chips: ${card.chips.join(', ')}`);
   ok('the worst offender is listed first',
-    card.chips.indexOf('ST-01XX') === 0, card.chips.join(', '));
+    card.chips.indexOf('ST-01') === 0, card.chips.join(', '));
   ok('the total counts failures, not events',
     /\b4 fails\b/.test(card.total), `total: "${card.total}"`);
+  ok('a failure is recorded on the day it is pressed',
+    card.dates.length === 4 && card.dates.every(d => d === today), `dates: ${card.dates.join(', ')} (today ${today})`);
+
+  /* Mouse over a chip: the bubble says which failure it is and the day. */
+  await pg.hover('#failChips .failchip:nth-child(2)'); await pg.waitForTimeout(250);
+  const hov = await pg.evaluate(() => { const b = document.getElementById('detailBubble'); return b && b.style.display !== 'none' ? b.textContent : ''; });
+  ok('hovering a failure chip shows the day it happened',
+    /ST-01X/.test(hov) && /2nd failure/.test(hov) && /\d{2}\/\d{2}\/\d{2}/.test(hov), `bubble: "${hov.trim().slice(0, 80)}"`);
+  await pg.mouse.move(5, 5); await pg.waitForTimeout(150);
+  ok('the bubble goes when the mouse leaves',
+    await pg.evaluate(() => { const b = document.getElementById('detailBubble'); return !b || b.style.display === 'none'; }));
+  /* A tap (a click, on a phone) shows the same bubble; the next touch anywhere puts it away. */
+  await pg.click('#failChips .failchip:nth-child(4)'); await pg.waitForTimeout(200);
+  const tapped = await pg.evaluate(() => { const b = document.getElementById('detailBubble'); return b && b.style.display !== 'none' ? b.textContent : ''; });
+  ok('clicking a failure chip shows its day too', /ST-02/.test(tapped) && /1st failure/.test(tapped), `bubble: "${tapped.trim().slice(0, 60)}"`);
+  await pg.mouse.click(5, 5); await pg.waitForTimeout(200);
+  ok('the next touch anywhere puts the tapped bubble away',
+    await pg.evaluate(() => { const b = document.getElementById('detailBubble'); return !b || b.style.display === 'none'; }));
+
+  /* The title opens the full lowdown: every failure, in chart order, with a
+     date box each — and a day changed there shows on the chip. */
+  await pg.click('#failTitle'); await pg.waitForTimeout(300);
+  const log = await pg.evaluate(() => ({
+    open: !!document.querySelector('#failLog'),
+    rows: [...document.querySelectorAll('#failLog .frow')].map(r => r.querySelector('.failchip').textContent.trim()),
+    dates: [...document.querySelectorAll('#failLog .frow input[type=date]')].map(i => i.value),
+    total: (document.getElementById('failLogTotal') || {}).textContent || '',
+  }));
+  ok('the Failures title opens the full list, one row per failure with its date',
+    log.open && log.rows.join(',') === 'ST-01,ST-01X,ST-01XX,ST-02' && log.dates.every(d => d === today) && /4 fails/.test(log.total),
+    `rows: ${log.rows.join(', ')} · dates: ${log.dates.join(', ')} · ${log.total}`);
+  await pg.fill('#failLog .frow[data-ev="ST-01"][data-fi="1"] input[type=date]', '2026-08-01'); await pg.waitForTimeout(300);
+  const redated = await pg.evaluate(() => [...document.querySelectorAll('#failChips .failchip')].map(c => c.dataset.date));
+  ok('changing a day in the list re-dates that one failure and its chip',
+    redated[1] === '2026-08-01' && redated[0] === redated[2] && redated[0] !== '2026-08-01', `chip dates: ${redated.join(', ')}`);
+  await pg.keyboard.press('Escape'); await pg.waitForTimeout(250);
+  ok('Escape closes the failures list', !(await pg.locator('#failLog').count()));
+
+  /* The pop-up: this student's failures on the event with their days, and a
+     "Failed on" box that the next + lands on. */
+  await pg.evaluate(() => { const g = [...document.querySelectorAll('#flowSvg .ball')].find(x => x.dataset.id === 'ST-01'); g.dispatchEvent(new MouseEvent('click', { bubbles: true })); });
+  await pg.waitForSelector('#popFailDate');
+  const popList = await pg.evaluate(() => ({
+    box: document.getElementById('popFailDate').value,
+    days: [...document.querySelectorAll('#popFailDates .fdate')].map(e => e.dataset.date),
+    labels: [...document.querySelectorAll('#popFailDates .fdate b')].map(e => e.textContent),
+  }));
+  ok('the pop-up lists this student’s failures on the event with their days',
+    popList.box === today && popList.labels.join(',') === 'ST-01,ST-01X,ST-01XX' && popList.days[1] === '2026-08-01',
+    `box ${popList.box} · ${popList.labels.join(', ')} · ${popList.days.join(', ')}`);
+  await pg.fill('#popFailDate', '2026-08-15'); await pg.waitForTimeout(150);
+  await pg.click('#popFailPlus'); await pg.waitForTimeout(400);
+  const dated = await pg.evaluate(() => [...document.querySelectorAll('#failChips .failchip')].map(c => c.textContent.trim() + '@' + c.dataset.date));
+  ok('a + records the failure on the day in the "Failed on" box',
+    dated.includes('ST-01XXX@2026-08-15'), dated.join(', '));
+  await pg.click('#popFailMinus'); await pg.waitForTimeout(300);
+  ok('a − takes the latest failure back',
+    (await pg.evaluate(() => document.querySelectorAll('#failChips .failchip').length)) === 4);
+  await pg.keyboard.press('Escape'); await pg.waitForTimeout(250);
+
+  /* Each student's own data: another crew member sees none of these. */
+  const crew = await pg.evaluate(() => [...document.querySelectorAll('#activeSel option')].map(o => o.value));
+  if (crew.length >= 2) {
+    const me = await pg.inputValue('#activeSel'); const other = crew.find(c => c !== me);
+    await pg.selectOption('#activeSel', other); await pg.waitForTimeout(500);
+    const theirs = await pg.evaluate(() => ({ chips: document.querySelectorAll('#failChips .failchip').length, txt: (document.getElementById('failChips') || {}).textContent || '' }));
+    ok('another student’s Failures card shows their own record, not this one’s', theirs.chips === 0 && /none/i.test(theirs.txt), `${theirs.chips} chips`);
+    await pg.selectOption('#activeSel', me); await pg.waitForTimeout(500);
+    ok('switching back brings the failures back',
+      (await pg.evaluate(() => document.querySelectorAll('#failChips .failchip').length)) === 4);
+  }
+
+  /* Done on (owner, 9 Sep 26: "the details portion … will reflect the date
+     accomplished automatically as the date updated. But the user can also
+     manually change the date after"): a grade is dated the day it is pressed,
+     the box re-dates it afterwards, Not done drops the day. */
+  const openPop = async id => {
+    await pg.evaluate(i => { const g = [...document.querySelectorAll('#flowSvg .ball')].find(x => x.dataset.id === i); g.dispatchEvent(new MouseEvent('click', { bubbles: true })); }, id);
+    await pg.waitForSelector('#popDoneDate');
+  };
+  await openPop('ST-02');
+  ok('the Done on box offers today before a grade', (await pg.inputValue('#popDoneDate')) === today, await pg.inputValue('#popDoneDate'));
+  await pg.locator('#pop .opts button', { hasText: 'DCO' }).click(); await pg.waitForTimeout(500);
+  await openPop('ST-02');
+  ok('marking DCO dates the event the day it was pressed', (await pg.inputValue('#popDoneDate')) === today, await pg.inputValue('#popDoneDate'));
+  await pg.fill('#popDoneDate', '2026-08-10'); await pg.waitForTimeout(300);
+  await pg.keyboard.press('Escape'); await pg.waitForTimeout(200);
+  await openPop('ST-02');
+  ok('the day can be changed afterwards, and it sticks', (await pg.inputValue('#popDoneDate')) === '2026-08-10', await pg.inputValue('#popDoneDate'));
+  await pg.keyboard.press('Escape'); await pg.waitForTimeout(200);
+  /* Details mode's bubble answers for THIS student: grade, day, failures. */
+  await pg.hover('#failChips .failchip:nth-child(4)'); await pg.waitForTimeout(200);
+  const rec = await pg.evaluate(() => { const b = document.getElementById('detailBubble'); return b ? b.textContent : ''; });
+  const whose = await pg.inputValue('#activeSel');
+  ok('the failure bubble names the student it belongs to', rec.includes(whose) && /failure of 1 on ST-02/.test(rec), rec.trim().slice(0, 80));
+  await pg.mouse.move(5, 5); await pg.waitForTimeout(150);
+  await openPop('ST-02');
+  await pg.locator('#pop .opts button', { hasText: 'Not done' }).click(); await pg.waitForTimeout(500);
+  await openPop('ST-02');
+  ok('Not done drops the day again', (await pg.inputValue('#popDoneDate')) === today, await pg.inputValue('#popDoneDate'));
+  await pg.keyboard.press('Escape'); await pg.waitForTimeout(200);
 
   /* Unbounded by nature, so the list must never grow the panel without limit. */
   const capped = await pg.evaluate(() => {
@@ -3578,8 +3685,8 @@ await openTracker(pg); await pg.waitForSelector('#flowSvg .ball'); await pg.wait
     .map(g => g.dataset.id).slice(0, 2));
   ok('two flight events found to test Last Flown with', flights.length === 2, flights.join(', '));
   const grade = async (id, iso, what) => {
-    await clickBall(id); await pg.waitForSelector('#popFlightDate');
-    await pg.fill('#popFlightDate', iso); await pg.waitForTimeout(150);
+    await clickBall(id); await pg.waitForSelector('#popDoneDate');
+    await pg.fill('#popDoneDate', iso); await pg.waitForTimeout(150);
     await pg.locator('#pop button', { hasText: what }).click(); await pg.waitForTimeout(400);
   };
   const flown = async () => `${await pg.inputValue('#lastCurr')} / ${await pg.inputValue('#lastSyll')}`;

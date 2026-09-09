@@ -569,6 +569,50 @@ export async function uiChoice(msg, okLabel, altLabel) {
 export const gradeOf = (s, id) => (marks[s] && marks[s][id] && marks[s][id].g) || 0;
 export const failOf = (s, id) => (marks[s] && marks[s][id] && marks[s][id].f) || 0;
 export const isDone = (s, id) => DONE.has(gradeOf(s, id));
+/* Each failure carries the DAY it happened (owner, 9 Sep 26: "Failures will
+   also track the date in which the student fails"). marks[s][id].fd holds one
+   ISO date per failure, oldest first, so fd.length === f. A count recorded
+   before dates existed — or read from a file of that time — is that many
+   UNDATED failures: nulls here, never an invented day. `f` stays the count the
+   ball's red ticks and the file check read. */
+export function failDates(s, id) {
+  const m = marks[s] && marks[s][id]; const n = (m && m.f) || 0;
+  const fd = (m && Array.isArray(m.fd)) ? m.fd : [];
+  const out = []; for (let i = 0; i < n; i++) out.push(fd[i] || null);
+  return out;
+}
+/* The owner's notation (16 Aug; each failure its own entry, 9 Sep 26): the
+   first failure is the plain code and every later one adds an X — ST-01,
+   ST-01X, ST-01XX. `i` is the failure's index, oldest first. */
+export function failLabel(id, i) { return id + 'X'.repeat(Math.max(0, i | 0)); }
+/* Every failure one student has on this chart, in chart order then as recorded
+   — the full lowdown behind the Failures title. */
+export function failList(s) {
+  const out = [];
+  for (const e of [...SYL].sort((a, b) => a.seq - b.seq))
+    failDates(s, e.id).forEach((d, i) => out.push({ id: e.id, i, label: failLabel(e.id, i), date: d }));
+  return out;
+}
+/* The day an event was accomplished (owner, 9 Sep 26: "the details portion …
+   will reflect the date accomplished automatically as the date updated. But
+   the user can also manually change the date after"). Set when a grade lands,
+   cleared with it, editable in the pop-up. */
+export const doneDate = (s, id) => (marks[s] && marks[s][id] && marks[s][id].d) || null;
+const ORD = n => n + (['th', 'st', 'nd', 'rd'][(n % 100 > 10 && n % 100 < 14) ? 0 : Math.min(n % 10, 4) % 4] || 'th');
+export const ordinal = ORD;
+/* One student's record on one event, for the details bubble — grade, the day it
+   was done, and every failure with its day — so a hover in Details mode shows
+   THIS student's data, not just the event's. Empty when nothing is marked. */
+export function markHtml(s, id) {
+  if (!s) return '';
+  const g = gradeOf(s, id), gl = { dco: 'DCO', dpco: 'DPCO', marg: 'Marginal', na: 'N.A.' }[g];
+  const fd = failDates(s, id);
+  if (!gl && !fd.length) return '';
+  const rows = [];
+  if (gl) rows.push('<b>' + escapeId(s) + ':</b> ' + gl + (DONE.has(g) && doneDate(s, id) ? ' on ' + fmt(parseD(doneDate(s, id))) : ''));
+  if (fd.length) rows.push('<b>Failed' + (gl ? '' : ' (' + escapeId(s) + ')') + ':</b> ' + fd.map((d, i) => escapeId(failLabel(id, i)) + ' ' + (d ? fmt(parseD(d)) : 'date not recorded')).join(' · '));
+  return '<div class="mkrec">' + rows.join('<br>') + '</div>';
+}
 /* Escapes for both text and attribute contexts: the result is interpolated into
    attribute values (e.g. data-id="…"), so quotes must be escaped too or a name
    containing one breaks out and injects arbitrary attributes. */
@@ -2131,13 +2175,19 @@ export function renderKeyBall() {
 
 /* ---------- popover ---------- */
 export let pop = null;               /* {id, x, y} */
-export let popFlightDate = '';
+/* The pop-up's two date boxes. popDoneDate is the day the event was (or is
+   about to be) accomplished — the mark's own date if it has one, else today,
+   so a grade lands dated the day it was pressed and the box can change it
+   after. popFailDate is the day the next + records a failure on — today until
+   the user picks another. Both are per pop-up, never stored on their own. */
+export let popDoneDate = '';
+export let popFailDate = '';
 export function isoOf(d) { return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
 export function isoToday() { try { return new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Singapore', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date()); } catch (e) { return isoOf(new Date()); } }
 export function openPop(id, evt) {
   pop = { id, x: evt.clientX, y: evt.clientY };
-  const isFlight = byid[id] && byid[id].type === 'flight';
-  popFlightDate = isFlight ? isoToday() : '';
+  popDoneDate = doneDate(active, id) || isoToday();
+  popFailDate = isoToday();
   notify();
 }
 export function closePop() { pop = null; notify(); }
@@ -2256,30 +2306,69 @@ export async function popGrade(v) {
   pushMarkUndo(s, 'the mark on ' + popId);
   await noteLastEdit(s, popId);
   marks[s] = marks[s] || {};
-  marks[s][popId] = marks[s][popId] || { g: 0, f: 0 }; marks[s][popId].g = v === '0' ? 0 : v;
+  const m = marks[s][popId] = marks[s][popId] || { g: 0, f: 0 }; m.g = v === '0' ? 0 : v;
+  /* A grade that means "accomplished" is dated the day it is pressed (the box
+     in the pop-up, today unless changed first); Not done and N.A. carry no
+     day, so the date goes with the grade. */
+  if (DONE.has(v)) m.d = popDoneDate || isoToday(); else delete m.d;
   await saveMarks(s);
-  if (byid[popId] && byid[popId].type === 'flight' && DONE.has(v)) await flownOn(s, popFlightDate || isoToday());
+  if (byid[popId] && byid[popId].type === 'flight' && DONE.has(v)) await flownOn(s, m.d);
   redrawKeepView(); closePop();
 }
 export async function popFail(delta) {
   const s = active; const popId = pop && pop.id; if (!popId || !s) return;
   marks[s] = marks[s] || {};
-  marks[s][popId] = marks[s][popId] || { g: 0, f: 0 };
+  const m = marks[s][popId] = marks[s][popId] || { g: 0, f: 0 };
   /* Not applicable means it never has to be flown, so it cannot be failed.
      Counting up was allowed and the ball then wore red failure ticks over the
      N/A colour. Existing counts are kept, not wiped — mark it back to a real
      grade and the history is still there. */
   if (delta > 0 && gradeOf(s, popId) === 'na') { flashHint('“' + popId + '” is marked N.A., so it cannot be failed.'); return; }
   pushMarkUndo(s, 'the failure count on ' + popId);
-  marks[s][popId].f = Math.max(0, (marks[s][popId].f || 0) + delta);
+  /* + records a failure on the pop-up's failure day; − takes the LATEST one
+     back. The count and the list of days are kept in step. */
+  const fd = failDates(s, popId);
+  for (let k = 0; k < delta; k++) fd.push(popFailDate || isoToday());
+  for (let k = 0; k < -delta && fd.length; k++) fd.pop();
+  m.f = fd.length; m.fd = fd;
   await saveMarks(s); redrawKeepView();
 }
-export async function popFlightChanged(v) {
+/* The pop-up's "Failed on" box: only where the NEXT + lands. Nothing is saved
+   until a failure is recorded on that day. */
+export function popFailDateChanged(v) { popFailDate = v; notify(); }
+/* The pop-up's "Done on" box. Before a grade it only sets the day the grade
+   will carry; on an event already accomplished it re-dates the mark at once
+   (owner: "the user can also manually change the date after"). A flight's day
+   is also its Last Flown, as before. */
+export async function popDoneChanged(v) {
   const s = active; const popId = pop && pop.id;
-  popFlightDate = v; notify();
-  if (!popId || !byid[popId] || byid[popId].type !== 'flight') return;
-  if (DONE.has(gradeOf(s, popId))) await flownOn(s, v || isoToday());
+  popDoneDate = v; notify();
+  if (!popId || !s || !DONE.has(gradeOf(s, popId))) return;
+  await setDoneDate(s, popId, v || isoToday());
 }
+export async function setDoneDate(s, id, iso) {
+  if (!s || !marks[s] || !marks[s][id] || !DONE.has(gradeOf(s, id))) return;
+  pushMarkUndo(s, 'the date on ' + id, 'doneDate:' + id);
+  marks[s][id].d = iso || isoToday();
+  await saveMarks(s); renderSide();
+  if (byid[id] && byid[id].type === 'flight') await flownOn(s, marks[s][id].d);
+}
+/* Re-date ONE failure — the i-th (oldest first) on an event — from the full
+   lowdown. An emptied box leaves the failure undated, not deleted. */
+export async function setFailDate(s, id, i, iso) {
+  if (!s || !marks[s] || !marks[s][id]) return;
+  const fd = failDates(s, id); if (i < 0 || i >= fd.length) return;
+  pushMarkUndo(s, 'the date of ' + failLabel(id, i), 'failDate:' + id + ':' + i);
+  fd[i] = iso || null; marks[s][id].fd = fd;
+  await saveMarks(s); renderSide();
+}
+/* The full lowdown of one student's failures, opened from the Failures title
+   on the side panel (owner, 9 Sep 26: "if the user clicks on the title
+   'failures' then it will show a full lowdown of all failures with a date").
+   Holds the student it opened for; the rows read the live marks. */
+export let failLog = null;   /* the student, while the list is up */
+export function openFailLog(s) { if (!s) return; failLog = s; notify(); }
+export function closeFailLog() { failLog = null; notify(); }
 /* A flight marked done moves Last Flown FORWARD only. Recording an older sortie
    after a newer one used to drag both dates back to the older day, so "days
    since" jumped up and the currency and flex bars went red for a flight that
@@ -2293,10 +2382,13 @@ async function flownOn(s, d) {
   dates[s].lastCurr = nc; dates[s].lastSyll = ns; await saveDates(s); renderSide();
 }
 function hideDetailBubble() { const b = document.getElementById('detailBubble'); if (b) b.style.display = 'none'; }
-function showDetailBubble(id, anchorEl) {
+function showDetailBubble(id, anchorEl, html) {
   let b = document.getElementById('detailBubble');
   if (!b) { b = document.createElement('div'); b.id = 'detailBubble'; document.body.appendChild(b); }
-  b.innerHTML = `<div class="dbId">${escapeId(id)}</div>${infoHtml(id)}`;
+  /* The event's details, then the selected student's own record on it (grade,
+     the day, each failure's day) — so the bubble answers for the person the
+     chart is showing, not only for the event. */
+  b.innerHTML = html != null ? html : `<div class="dbId">${escapeId(id)}</div>${infoHtml(id)}${markHtml(active, id)}`;
   b.style.display = 'block'; b.style.left = '-9999px'; b.style.top = '0px';
   const r = anchorEl.getBoundingClientRect();
   const bw = b.offsetWidth, bh = b.offsetHeight, gap = 8, vw = innerWidth, vh = innerHeight;
@@ -2312,6 +2404,20 @@ function showDetailBubble(id, anchorEl) {
    the Details mode draws, anchored on the chip. */
 export function showEventBubble(id, el) { if (byid[id] && el) showDetailBubble(id, el); }
 export function hideEventBubble() { hideDetailBubble(); }
+/* One failure's day, over its chip on the Failures card (owner, 9 Sep 26: the
+   panel "reflects the dates in which they fail when the mouse hovers over it
+   or on the mobile when the user clicks on it"). Same bubble, anchored on the
+   chip. */
+export function showFailBubble(s, id, i, el) {
+  if (!el) return;
+  const fd = failDates(s, id); if (i < 0 || i >= fd.length) return;
+  const nm = infoFor(id).name;
+  const html = `<div class="dbId">${escapeId(failLabel(id, i))}</div>` +
+    (nm ? `<div style="font-weight:600;margin-bottom:3px">${escapeId(nm)}</div>` : '') +
+    `<b>${escapeId(s)}:</b> ${ORD(i + 1)} failure of ${fd.length} on ${escapeId(id)}<br>` +
+    `<b>Failed on:</b> ${fd[i] ? fmt(parseD(fd[i])) : 'date not recorded'}`;
+  showDetailBubble(id, el, html);
+}
 /* Tapping a chip snaps the chart to that ball, whichever tab a phone is on, and
    rings it the way a search does — the box shows the code, so ✕ takes the ring
    off again. */
@@ -2856,6 +2962,7 @@ export function handleEscapeKey(e) {
   /* The three editors (event details, the reorder list, the poke-ball editor)
      and the raw event list were the last dialogs Escape did nothing for. */
   if (infoId != null) { e.preventDefault(); closeInfo(); return; }
+  if (failLog) { e.preventDefault(); closeFailLog(); return; }
   if (pop) { e.preventDefault(); closePop(); return; }
   if (showAllOpen) { e.preventDefault(); closeShowAll(); return; }
   if (ordMode) { e.preventDefault(); closeOrd(); return; }

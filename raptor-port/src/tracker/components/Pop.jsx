@@ -18,6 +18,8 @@ export default function Pop() {
   if (!p) return null;
   const s = core.active;
   const isFlight = core.byid[p.id] && core.byid[p.id].type === 'flight';
+  const done = core.isDone(s, p.id);
+  const fd = core.failDates(s, p.id);
   const style = posn
     ? { display: 'block', left: posn.x + 'px', top: posn.y + 'px' }
     : { display: 'block', left: p.x + 'px', top: (p.y + 12) + 'px', visibility: 'hidden' };
@@ -33,18 +35,37 @@ export default function Pop() {
         <button onClick={() => core.popGrade('na')}><span className="dot" style={{ background: 'var(--na)' }}></span>N.A.</button>
         <button onClick={() => core.popGrade('cancel')}>Close</button>
       </div>
+      {/* Done on: the day the grade carries. Today by default, so pressing DCO
+          dates the event the day it was pressed; change it first and the
+          grade lands on that day; change it after and the mark is re-dated on
+          the spot. A flight's day is also its Last Flown, as before. */}
+      <div id="popDoneRow" style={{ marginTop: 8, borderTop: '1px dashed #262c38', paddingTop: 8 }}>
+        <div className="mini" style={{ marginBottom: 4 }}>
+          {done ? 'Done on' : 'Done on (when marked)'}{isFlight ? ' — sets Last Flown' : ''}
+        </div>
+        <input type="date" id="popDoneDate" style={{ width: '100%' }} value={core.popDoneDate} onChange={e => core.popDoneChanged(e.target.value)} />
+      </div>
+      {/* Failures: each + records one failure ON the day in the box (today
+          unless changed), − takes the latest one back. The list under the
+          counter is this student's failures on this event, each with its day;
+          the days can be changed from the Failures title on the side panel. */}
       <div className="fails">
         <span className="mini">Fails:</span>
         <button className="sm" id="popFailMinus" title="One fewer failure" onClick={() => core.popFail(-1)}>−</button>
         <span id="failCount" style={{ minWidth: 14, textAlign: 'center' }}>{core.failOf(s, p.id)}</span>
-        <button className="sm" id="popFailPlus" title="Record another failure" onClick={() => core.popFail(1)}>+</button>
+        <button className="sm" id="popFailPlus" title="Record another failure on the day below" onClick={() => core.popFail(1)}>+</button>
       </div>
-      {isFlight && (
-        <div id="popFlightRow" style={{ display: 'block', marginTop: 8, borderTop: '1px dashed #262c38', paddingTop: 8 }}>
-          <div className="mini" style={{ marginBottom: 4 }}>Flight date — sets Last Flown (currency &amp; syllabus)</div>
-          <input type="date" id="popFlightDate" style={{ width: '100%' }} value={core.popFlightDate} onChange={e => core.popFlightChanged(e.target.value)} />
+      <div className="mini" style={{ marginTop: 5, marginBottom: 3 }}>Failed on</div>
+      <input type="date" id="popFailDate" style={{ width: '100%' }} value={core.popFailDate} onChange={e => core.popFailDateChanged(e.target.value)} />
+      {fd.length ? (
+        <div className="fdates" id="popFailDates">
+          {fd.map((d, i) => (
+            <span key={i} className="fdate" data-date={d || ''}>
+              <b>{core.failLabel(p.id, i)}</b> {d ? core.fmt(core.parseD(d)) : 'no date'}
+            </span>
+          ))}
         </div>
-      )}
+      ) : null}
       <div id="popInfo" style={{ marginTop: 8, borderTop: '1px dashed #262c38', paddingTop: 8, fontSize: 12 }} dangerouslySetInnerHTML={{ __html: core.infoHtml(p.id) }} />
       <button className="sm" id="popEditInfo" style={{ marginTop: 6, width: '100%' }} onClick={() => { const id = p.id; core.closePop(); core.openInfo(id); }}>✎ Edit details</button>
     </div>

@@ -16,7 +16,7 @@
    The flag lives in role.js so Raptor can write it WITHOUT loading the chart
    engine — a regression there would put ~280 KB of syllabus data back into
    Raptor's first download; the last test guards that by construction. */
-import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { act } from 'react'
 import { createRoot } from 'react-dom/client'
 import { isFileLocked, setFileLocked } from './role.js'
@@ -255,6 +255,86 @@ describe('undo / redo on the bar, for everyone (core.js)', () => {
 /* 9 Sep 26 (owner: "a drop down menu on the prediction of the syllabus related
    to the typed text"): the box exposes every match, not just a count, and the
    list under it is walked and picked from. */
+/* 9 Sep 26 (owner): "Failures will also track the date in which the student
+   fails … Indicate each failure individually, so when someone fails twice, it
+   should show ST-01, ST01X … the details portion will reflect the date
+   accomplished automatically as the date updated. But the user can also
+   manually change the date after. And make sure it shows the right data for
+   each student separately." The record is marks[s][id]: f the count, fd one day
+   per failure, d the day the event was done. */
+describe('dated failures and the day an event was done (core.js)', () => {
+  const drain = async () => { while (core.canUndo()) await core.doUndo(); while (core.canRedo()) await core.doRedo(); while (core.canUndo()) await core.doUndo() }
+  const at = { clientX: 1, clientY: 1 }
+  const today = core.isoToday()
+  /* The full list walks the CHART (chart order), so the engine has to have
+     booted — the same one-off boot the crew-picker tests do; init() guards
+     against a second run. */
+  let board: HTMLElement
+  beforeAll(async () => { board = document.createElement('div'); board.id = 'board'; document.body.appendChild(board); await core.init() })
+  afterAll(() => board.remove())
+  beforeEach(async () => { await drain(); core.setActive('STUDENT Z') })
+  afterEach(async () => { core.closePop(); await drain() })
+
+  it('+ records a failure on the pop-up’s day — today unless changed — and − takes the latest back', async () => {
+    core.openPop('ST-01', at)
+    expect(core.popFailDate).toBe(today)
+    await core.popFail(1)
+    core.popFailDateChanged('2026-08-02')
+    await core.popFail(1)
+    expect(((core.marks as any)['STUDENT Z']['ST-01']).f, 'the count the ball’s ticks read').toBe(2)
+    expect(core.failDates('STUDENT Z', 'ST-01')).toEqual([today, '2026-08-02'])
+    expect(core.failList('STUDENT Z').map(x => x.label), 'each failure its own entry').toEqual(['ST-01', 'ST-01X'])
+    await core.popFail(-1)
+    expect(core.failDates('STUDENT Z', 'ST-01')).toEqual([today])
+    expect(core.failDates('STUDENT Y', 'ST-01'), 'the other student’s record is untouched').toEqual([])
+  })
+
+  it('a count from before days were kept reads as that many undated failures; the notation adds an X per failure', () => {
+    ;(core.marks as any)['STUDENT Z']['ST-03'] = { g: 0, f: 2 }
+    expect(core.failDates('STUDENT Z', 'ST-03')).toEqual([null, null])
+    expect(core.failList('STUDENT Z').filter(x => x.id === 'ST-03').map(x => x.label)).toEqual(['ST-03', 'ST-03X'])
+    expect(core.failLabel('ST-03', 2)).toBe('ST-03XX')
+    delete (core.marks as any)['STUDENT Z']['ST-03']
+  })
+
+  it('re-dating one failure from the full list is one step per box and leaves the others alone', async () => {
+    core.openPop('ST-02', at); await core.popFail(1); await core.popFail(1); core.closePop()
+    await core.setFailDate('STUDENT Z', 'ST-02', 0, '2026-07-01')
+    await core.setFailDate('STUDENT Z', 'ST-02', 0, '2026-07-02')
+    expect(core.failDates('STUDENT Z', 'ST-02')).toEqual(['2026-07-02', today])
+    expect(core.undoWhat()).toBe('the date of ST-02 for STUDENT Z')
+    await core.doUndo()
+    expect(core.failDates('STUDENT Z', 'ST-02'), 'both keystrokes were one step').toEqual([today, today])
+  })
+
+  it('a grade is dated the day it is pressed; the box re-dates it afterwards; Not done drops the day', async () => {
+    core.openPop('ST-01', at)
+    expect(core.popDoneDate).toBe(today)
+    await core.popGrade('dco')
+    expect(core.doneDate('STUDENT Z', 'ST-01')).toBe(today)
+    core.openPop('ST-01', at)
+    await core.popDoneChanged('2026-08-10')
+    expect(core.doneDate('STUDENT Z', 'ST-01')).toBe('2026-08-10')
+    expect(core.undoWhat()).toBe('the date on ST-01 for STUDENT Z')
+    core.closePop()
+    expect(core.doneDate('STUDENT Y', 'ST-01'), 'per student').toBeNull()
+    core.openPop('ST-01', at)
+    expect(core.popDoneDate, 'the box opens on the day already recorded').toBe('2026-08-10')
+    await core.popGrade('0')
+    expect(core.doneDate('STUDENT Z', 'ST-01')).toBeNull()
+  })
+
+  it('the details bubble carries the student’s own record, and nothing for a student with none', async () => {
+    core.openPop('ST-02', at); await core.popFail(1)
+    core.openPop('ST-02', at); await core.popGrade('dpco')
+    const html = core.markHtml('STUDENT Z', 'ST-02')
+    expect(html).toContain('STUDENT Z')
+    expect(html).toContain('DPCO on')
+    expect(html).toContain('Failed')
+    expect(core.markHtml('STUDENT Y', 'ST-02')).toBe('')
+  })
+})
+
 describe('the Find box lists its predictions (core.js + Header.jsx)', () => {
   const SYL3 = [{ id: 'ST-01', type: 'flight' }, { id: 'ST-02', type: 'flight' }, { id: 'ACG-01', type: 'acad' }]
   beforeEach(async () => {

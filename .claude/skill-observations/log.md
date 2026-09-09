@@ -2121,3 +2121,18 @@ gate's. Keep verdict-bearing commands unpiped.
 **Suggested improvement:** When adding a check to a shared-fixture e2e suite, ask what persistent state it mutates and which later checks read that same state; place a state-mutating check last within its block, or give it its own throwaway fixture (a fresh student/course), rather than assuming insertion point is free.
 
 **Principle:** In a suite where one long-lived instance is threaded through many checks, ordering is part of correctness: a check that mutates shared state is only safe after everything that relies on the unmutated state, or when it isolates its own fixture.
+
+### Observation 140: pkill -f with a pattern that names the running script kills the caller's own shell
+
+**Status:** OPEN
+**Date:** 2026-09-09
+**Session context:** Restarting a Playwright smoke run after a selector edit; needed the old run (and its vite preview server on a strict port) gone first.
+**Skill:** New skill candidate: background-task hygiene (or a note in any skill that restarts long-running gates)
+**Type:** open-source
+**Phase/Area:** Stopping/restarting background gates
+
+**Issue:** `pkill -f "smoke.mjs"` was issued from the same Bash command that then ran the smoke. The caller's own shell command line contained "smoke.mjs", so pkill matched and killed the shell (exit 144), the restart never happened, and a stale preview server was left holding the strict port — which would have failed the next start too.
+
+**Suggested improvement:** Stop a background task with the harness tool (TaskStop) or by PID, never with `pkill -f <substring>` from a command whose own text contains that substring. After stopping, check for orphaned children (a dev/preview server on a fixed port) by PID before restarting.
+
+**Principle:** A process-matching kill from inside a shell matches the shell too; kill by identity (task id or PID), and after any forced stop look for the orphans the stopped task left behind before relaunching.

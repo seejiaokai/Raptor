@@ -99,6 +99,26 @@ time changed.
   land: the user is looking at the ball they tapped. With five or six
   students the wedges get thin on a phone; the centre stays the easy target
   for the details — raise it if he reports mis-taps.
+- **Every failure has a day, every mark has a day (owner, 9 Sep 26: "Failures
+  will also track the date in which the student fails … the details portion
+  will reflect the date accomplished automatically as the date updated. But
+  the user can also manually change the date after").** The record is still
+  `marks[s][id]`: `f` the count (what the ball's red ticks and the file check
+  read, unchanged), `fd` one ISO day per failure oldest first, `d` the day the
+  event was done. The pop-up has a *Done on* box (today; a DCO/DPCO/Marginal
+  lands dated that day, changing it after re-dates the mark; Not done and
+  N.A. clear it; a flight's day is still its Last Flown) and a *Failed on*
+  box that the next + records on, with this student's failures listed under
+  the counter. The Failures card shows EACH failure as its own chip — ST-01,
+  ST-01X, ST-01XX (owner: "when someone fails twice, it should show ST-01,
+  ST01X") — hover or tap for its day; the card's title opens the full list
+  with a date box per failure (`#failLog`, a `.lullcal`; Escape closes it).
+  The Details-mode bubble ends with the selected student's own record. A
+  count from before this (or from an older file) reads as that many UNDATED
+  failures — `failDates` pads with nulls, never invents a day; the file
+  format needed no change (marks are opaque objects to `checkStudents`).
+  Undo: a re-date is one step per box (`doneDate:` / `failDate:` fields
+  coalesce keystrokes), a failure is its own step as before.
 - `SA(S)-3` on Tx: the source document contradicts itself. **User chose keep,
   twice, 8 Aug.**
 - The edit-mode hint overlays the colour legend. Move it if he misses the
