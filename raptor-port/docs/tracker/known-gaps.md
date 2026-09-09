@@ -74,11 +74,14 @@ time changed.
 **Worth raising when he next looks:**
 - Everything fits one phone screen at two students; a fifth may start it
   scrolling.
-- Switching student KEEPS the view where it is (owner, 9 Sep 26: "the flow
-  chart view should remain the same and not snap"). It used to scroll to that
-  student's last mark; `setActive` now captures the board's scroll and restores
-  it across the ring redraw. Opening the app (init) still lands on the last
-  mark — a different moment. Switching student still does not switch syllabus.
+- Switching student LANDS ON THAT STUDENT'S LATEST WORK (owner, 9 Sep 26:
+  "when u pick a crew it will land on their latest work without having to
+  scroll" — the rule the app always had, briefly replaced by "keep the view"
+  the same day when a snap-to-the-top from the ring redraw was read as the
+  landing itself). `setActive` captures the board's scroll across the redraw,
+  puts it back, then scrolls to the last mark after the frame; a student with
+  no mark on this chart stays where the view was, never the top. Switching
+  student still does not switch syllabus.
 - `SA(S)-3` on Tx: the source document contradicts itself. **User chose keep,
   twice, 8 Aug.**
 - The edit-mode hint overlays the colour legend. Move it if he misses the

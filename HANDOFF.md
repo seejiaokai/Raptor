@@ -234,6 +234,12 @@ smoke suite. **Then a bug from his screenshot:** the Crew picker never
 redrew the chart, so the yellow "can be planned next" rings stayed the LAST
 student's (ST-01 done for A → B still showed ACG-01 lit). `setActive` now
 redraws (and closes an open grading pop-up); pinned in `tracker.test.tsx`.
+That redraw reset the board's scroll to the top, which his phone read as a
+snap; he first asked for "the view stays put", then, once the old rule was
+explained, for it back: **a crew pick lands on that student's latest work;
+a student with no mark yet leaves the view where it is** (scroll captured
+across the redraw, then `showLastEdit` after the frame). Pinned in the smoke
+suite; `docs/tracker/known-gaps.md`.
 
 Everything before the audit fixes is merged — three PRs landed 7 Sep 26:
 **PR #371** (the Leave War figures drawer, bulk balance

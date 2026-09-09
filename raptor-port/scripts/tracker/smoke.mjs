@@ -1961,29 +1961,67 @@ ok('opening the app lands on the last event marked, not at the top of the chart'
   await pg.selectOption('#sylSel', before); await pg.waitForTimeout(900);
 }
 
-/* Switching student keeps the view where it is (owner, 9 Sep 26: "the flow
-   chart view should remain the same and not snap to something else"). It used
-   to jump to that student's own last mark; the crew change now leaves the
-   scroll exactly where the user left it. */
+/* Picking a crew member lands on THEIR latest work (owner, 9 Sep 26: "when u
+   pick a crew it will land on their latest work without having to scroll") —
+   and a crew member with no mark on this chart yet leaves the view where it
+   is, never snapping to the top (his phone screenshot the same day: the redraw
+   that fixed the rings had reset the scroll). */
 const two = await pg.evaluate(() => [...document.querySelectorAll('#activeSel option')].map(o => o.value));
 /* Whoever the app came back on is the one who did the marking — not
    necessarily the first name in the list. */
 const marker = await pg.inputValue('#activeSel');
+const ballView = id => pg.evaluate(i => {
+  const bd = document.getElementById('board');
+  const g = [...document.querySelectorAll('#flowSvg .ball')].find(x => x.dataset.id === i);
+  if (!g) return { found: false };
+  const r = g.getBoundingClientRect(), b = bd.getBoundingClientRect();
+  return { found: true, scrollTop: Math.round(bd.scrollTop),
+    inView: r.top >= b.top - 2 && r.bottom <= b.bottom + 2 };
+}, id);
 if (two.length >= 2) {
   const otherS = two.find(r => r !== marker);
-  /* Park the board at a deliberate, non-zero, non-top offset first, so a snap
-     in either direction (to the top, or to the other student's last mark)
-     would move it. */
+  /* Give the other student a mark of their own, near the TOP of the chart, so
+     the two last marks are far apart and a landing is unmistakable. */
+  await pg.selectOption('#activeSel', otherS); await pg.waitForTimeout(600);
+  const shallow = await pg.evaluate(() => {
+    const balls = [...document.querySelectorAll('#flowSvg .ball')];
+    const withY = balls.map(g => ({ id: g.dataset.id, y: g.getBBox().y })).sort((a, b) => a.y - b.y);
+    return withY[Math.floor(withY.length * 0.15)];
+  });
+  await pg.evaluate(id => {
+    const g = [...document.querySelectorAll('#flowSvg .ball')].find(x => x.dataset.id === id);
+    g.scrollIntoView({ block: 'center' });
+    g.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+  }, shallow.id);
+  await pg.waitForSelector('#pop');
+  await pg.locator('#pop .opts button', { hasText: 'DCO' }).click();
+  await pg.waitForTimeout(700);
+
+  await pg.selectOption('#activeSel', marker); await pg.waitForTimeout(600);
+  const onDeep = await ballView(deep.id);
+  ok('picking a crew member lands on their latest work, well down the chart',
+    onDeep.found && onDeep.inView && onDeep.scrollTop > 100,
+    `${deep.id}: scrolled ${onDeep.scrollTop}px, in view ${onDeep.found ? onDeep.inView : 'n/a'}`);
+  await pg.selectOption('#activeSel', otherS); await pg.waitForTimeout(600);
+  const onShallow = await ballView(shallow.id);
+  ok("picking the other one lands on THEIR latest work, near the top",
+    onShallow.found && onShallow.inView && onShallow.scrollTop < onDeep.scrollTop,
+    `${shallow.id}: scrolled ${onShallow.scrollTop}px, in view ${onShallow.found ? onShallow.inView : 'n/a'}`);
+
+  /* Someone with no marks yet: the view stays put. Park the board at a
+     deliberate, non-zero, non-top offset first, so a snap to the top would
+     show. (Adding a student selects them and redraws, so pick a marked student
+     again before parking.) */
+  await addStudent('STUDENT FRESH');
+  await pg.selectOption('#activeSel', marker); await pg.waitForTimeout(600);
   await pg.evaluate(() => { const bd = document.getElementById('board'); bd.scrollTop = Math.round(bd.scrollHeight * 0.4); bd.scrollLeft = 0; });
   await pg.waitForTimeout(200);
   const parked = await pg.evaluate(() => Math.round(document.getElementById('board').scrollTop));
-  await pg.selectOption('#activeSel', otherS); await pg.waitForTimeout(600);
-  const afterSwitch = await pg.evaluate(() => Math.round(document.getElementById('board').scrollTop));
-  await pg.selectOption('#activeSel', marker); await pg.waitForTimeout(600);
-  const afterBack = await pg.evaluate(() => Math.round(document.getElementById('board').scrollTop));
-  ok('switching crew leaves the flow chart view where it was, no snap',
-    parked > 100 && Math.abs(afterSwitch - parked) <= 4 && Math.abs(afterBack - parked) <= 4,
-    `parked ${parked}px, after switch ${afterSwitch}px, after switching back ${afterBack}px`);
+  await pg.selectOption('#activeSel', 'STUDENT FRESH'); await pg.waitForTimeout(600);
+  const afterFresh = await pg.evaluate(() => Math.round(document.getElementById('board').scrollTop));
+  ok('picking a crew member with no marks yet leaves the view where it was, no snap to the top',
+    parked > 100 && Math.abs(afterFresh - parked) <= 4,
+    `parked ${parked}px, after picking them ${afterFresh}px`);
 }
 
 /* A recorded syllabus that has since been deleted must not break the load.

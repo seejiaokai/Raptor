@@ -2091,3 +2091,18 @@ gate's. Keep verdict-bearing commands unpiped.
 **Suggested improvement:** When a bug check touches a module-level state variable, grep every ASSIGNMENT of it and tabulate which refresh calls follow each one. A row that is missing a call its siblings all make is a finding, even with no symptom yet.
 
 **Principle:** For state that several code paths set, the refresh calls after each assignment should form an identical set; audit assignments as a table, not one path at a time.
+
+### Observation 138: A "don't snap" complaint was read as "don't move" — ask what the user EXPECTED before removing a rule
+
+**Status:** OPEN
+**Date:** 2026-09-09
+**Session context:** Tracker crew-switch view behaviour. A fix (redraw on crew switch) had a side effect: the board's scroll reset to the top. The owner's phone screenshot said "the view should remain the same and not snap to something else". The session removed the app's long-standing rule (land on the picked student's last mark) and made the view stay put. Within the hour, after asking what the old rule was, the owner asked for the old rule back: land on the latest work. The snap he saw was the top-of-chart reset, not the landing.
+**Skill:** CLAUDE.md §How to work here (95% confidence rule) / task-observer
+**Type:** open-source
+**Phase/Area:** bug triage from a user report
+
+**Issue:** A symptom report ("it snaps") was mapped straight to a behaviour removal without checking which of TWO movements the user was objecting to. The regression introduced by the previous fix (scroll reset) and the deliberate behaviour (land on the last mark) were both "movement"; only the first was the bug. Removing the second cost a second round-trip, a second PR revision and a reversal in the docs.
+
+**Suggested improvement:** When a user reports unwanted movement/change on screen right after a fix that redraws, FIRST check whether the fix itself introduced a new movement, and ask one question: "should it stay exactly where it was, or go to X like before?" — before removing an existing rule. Add to the bug-triage checklist: "did my last change cause this symptom on top of the existing behaviour?"
+
+**Principle:** A symptom rarely names its cause. When two behaviours could produce the same complaint and one of them is a rule the app had on purpose, confirm which one the user means before deleting the deliberate one — a one-line question is cheaper than a reversal.

@@ -2343,19 +2343,28 @@ export function setActive(v) {
      whose own next event is ST-01. Every other path that moves the picker
      (adding or removing a student, an undone mark, a reload) already redraws;
      this was the only one that did not.
-     But the CREW CHANGE MUST NOT MOVE THE VIEW (owner, 9 Sep 26: "when I'm
-     switching between crew, the flow chart view should remain the same and not
-     snap to something else"). renderBoard replaces the board's markup, which
-     resets its scroll to the top-left, and it used to then jump to this
-     student's last mark. The chart is the SAME size for every student (only the
-     rings differ), so the scroll offset points at the same place before and
-     after — capture it and put it straight back. This REPLACES the old
-     jump-to-last-mark on a crew switch; init()'s first-load landing is a
-     different moment and stays. */
+     renderBoard replaces the board's markup, which resets its scroll to the
+     top-left — and with the redraw in, a crew change snapped to the top of the
+     chart (owner, 9 Sep 26, phone screenshot: "the flow chart view should
+     remain the same and not snap to something else"). The chart is the SAME
+     size for every student (only the rings differ), so the scroll offset
+     points at the same place before and after — capture it and put it
+     straight back. THEN land on the picked student's latest work, the rule
+     this app has always had (owner, same day, once the snap was explained:
+     "when u pick a crew it will land on their latest work without having to
+     scroll"); someone with no mark on this chart yet has nowhere to land, so
+     for them the view simply stays where it was — never the top. */
   const board = document.getElementById('board');
   const sx = board ? board.scrollLeft : 0, sy = board ? board.scrollTop : 0;
   renderBoard(); renderSide();
   if (board) { board.scrollLeft = sx; board.scrollTop = sy; }
+  /* After the frame, so the new balls exist and the zoom scale has landed —
+     measuring in the same tick reads a stale one (same reason jumpTo and init
+     defer). Guarded on `active`: a quick second pick before the frame must not
+     scroll to the first one's mark. */
+  const land = () => { if (active === v) showLastEdit(v); };
+  if (typeof requestAnimationFrame !== 'undefined') requestAnimationFrame(land);
+  else land();
   /* Merely looking at someone counts. Before this, only grading was remembered,
      so picking a crew member and coming back tomorrow forgot them. */
   prefSet('lastCrew:' + course, v);
