@@ -400,6 +400,13 @@ probes), `npm run perf` (the DOM ceilings and two behavioural checks, with
 the reference-vs-port timings printed alongside) — all against that same
 preview.
 A fresh container needs `npm ci` first — `node_modules/` is not in the image.
+**Stopping a stray preview server: kill by PORT, never by a command-line
+pattern** — `lsof -ti :4173 | xargs -r kill` (or `:4179` for the smoke suite's).
+`pkill -f "vite preview"` / `pgrep -f … | xargs kill` inside a compound command
+matches the CALLER's own shell (its command line carries the pattern) and kills
+it — exit 144, the rest of the line never runs. It happened three times in one
+day (9 Sep 26) despite two logged warnings; the port form cannot express the
+mistake.
 Any NEW Playwright script must pass `executablePath:'/opt/pw-browsers/chromium'`
 (a stable symlink): the pinned Playwright looks for a browser build the image
 doesn't ship, so a bare `chromium.launch()` dies with "Executable doesn't

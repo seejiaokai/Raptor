@@ -7,7 +7,7 @@
    the types and the data cannot drift apart without a red test.
 
    New file, ordinary TS style (see the header of schema.ts). */
-import { describe, expect, it } from 'vitest'
+import { afterAll, describe, expect, it } from 'vitest'
 import { PEOPLE, QORDER } from './people'
 import { INPUTS, INPUT_META } from './inputs'
 import { DAYS } from './data'
@@ -16,7 +16,12 @@ import { SCHED } from './publish'
 import { VCONF, SHIFT_HARD } from './rules'
 import { SECTIONS } from './order'
 import { INPUT_TYPES, QLEVELS, SEATS, SECTION_KEYS, SHIFT_KINDS, VCONF_KEYS } from './schema'
-import type { Day, Input, Person, Sched } from './schema'
+import type { Day, Input, Person } from './schema'
+import { makeStandalone } from './waves'
+import { WAVETPL_CFG, addWaveTpl, addWaveTplLine, setWaveTplLine, waveFromTpl, waveTplReset } from './wavetpl'
+import { DUTYTPL_CFG, addTpl, setTplWave, blockFromTpl, dutyTplReset } from './dutytpl'
+import { inpId } from './inputs'
+import { alIssue, markEdit } from './publish'
 
 /* ---- the mini-DSL --------------------------------------------------------
    'string' | 'number' | 'boolean'   a primitive; a trailing '?' allows absent
@@ -87,7 +92,7 @@ const PERSON: Spec = {
 const inputSpec = (booted: boolean): Spec => ({
   iid: booted ? 'string' : 'string?', person: 'string', date: 'string', endDate: 'string?', yr: 'number?', allday: 'boolean',
   s: 'number?', e: 'number?', half: { $opt: { $lit: ['am', 'pm'] } }, type: { $lit: INPUT_TYPES }, remarks: 'string?',
-  mod: 'string', acc: { $opt: { $lit: ['g', 'u', 'r'] } }, lw: 'boolean?', docId: 'string?', docIds: { $opt: ['string'] },
+  mod: 'string', acc: { $opt: { $lit: ['g', 'u', 'r'] } }, lw: 'string?', docId: 'string?', docIds: { $opt: ['string'] },
   oil: { $opt: { $map: { $lit: [0, 0.5, 1] } } }, sans: { $opt: { f: { $opt: { $lit: [true] } }, o: { $opt: { $lit: [true] } }, a: { $opt: { $lit: [true] } } } },
 })
 const FLAGS = { cx: 'boolean?', cxr: 'string?', flag: 'boolean?' }
@@ -95,7 +100,7 @@ const ALLHANDS: Spec = { ...FLAGS, prog: 'string', str: 'string', end: 'string',
 const GROUND: Spec = { ...(ALLHANDS as object), rmks: 'string?', src: 'string?' }
 const SAKIND: Spec = { $lit: ['sc', 'avalon', 'bb'] }
 const SEAT: Spec = { ...FLAGS, p: 'string', w: 'string', area: 'string', rmks: 'string', opts: { $map: { $or: ['boolean', 'string'] } }, spare: 'boolean?', role: { $opt: { $lit: ['MAIN', 'SPARE'] } } }
-const FORMATION: Spec = { cs: 'string', msn: 'string', shift: 'string?', to: 'string', ld: 'string', br: 'string?', aircraft: [SEAT], cx: 'boolean?', cxr: 'string?' }
+const FORMATION: Spec = { cs: 'string', msn: 'string', shift: 'string?', to: 'string', ld: 'string', br: 'string?', area: 'string?', atime: 'string?', aircraft: [SEAT], cx: 'boolean?', cxr: 'string?' }
 const WAVE: Spec = { label: 'string', night: 'boolean', intimes: ['string'], traffic: ['string'], formations: [FORMATION], standalone: 'boolean?', kind: { $opt: SAKIND }, noconf: 'boolean?' }
 const SIM: Spec = { ...FLAGS, label: 'string', str: 'string', end: 'string', rmks: 'string?', p: 'string?', w: 'string?', pax: { $opt: ['string'] }, who: 'string?', more: { $opt: ['string'] } }
 const DUTYROW: Spec = { ...FLAGS, role: 'string', id: 'string', str: 'string', end: 'string', more: { $opt: ['string'] } }
@@ -236,10 +241,57 @@ describe('after boot', () => {
   })
 })
 
-/* type-level sanity: the live exports are `any`, so these only prove the
-   declared types are importable and shaped as the engine's readers expect —
-   no cast is needed, which is the point */
-const _p: Person = PEOPLE['bane']
-const _d: Day = DAYS[0]
-const _s: Sched = SCHED
-void _p; void _d; void _s
+describe('after edits — fields the seeds never carry', () => {
+  /* Review, 9 Sep 26: everything above judges data as SHIPPED or as BOOTED.
+     Most fields the app writes arrive later — a minted wave or duty block, a
+     typed-over area strip, a synced leave, an issued amendment — and the
+     checker could not see them (it missed `area`/`atime` and the type of
+     `lw` on day one). These cases build those records the way the app does,
+     headlessly, and hold them to the same specs. LAST in the file: case (e)
+     publishes the live SCHED, and nothing may follow it. */
+  afterAll(() => { waveTplReset(); dutyTplReset() })
+
+  it('a minted standalone wave, per kind', () => {
+    for (const k of ['sc', 'avalon', 'bb'] as const) conform(makeStandalone(k), WAVE, `makeStandalone(${k})`)
+  })
+  it('a wave minted from a template, per kind, and a standby template with a spare line', () => {
+    for (const k of ['fly', 'sc', 'avalon', 'bb'] as const) {
+      const t = addWaveTpl('T ' + k, k)!
+      if (k === 'sc') { addWaveTplLine(t.id); setWaveTplLine(t.id, 1, 'spare', true) }
+      conform(waveFromTpl(t.id), WAVE, `waveFromTpl(${k})`)
+    }
+    expect(WAVETPL_CFG.length).toBe(4)
+  })
+  it('a duty block minted from the standard set and from an AVALON template', () => {
+    conform(blockFromTpl(DUTYTPL_CFG[0].id), DUTYBLOCK, 'blockFromTpl(std)')
+    const t = addTpl('N')!; setTplWave(t.id, 'avalon')
+    const b = blockFromTpl(t.id)
+    conform(b, DUTYBLOCK, 'blockFromTpl(avalon)')
+    expect(b.sa).toBe('avalon'); expect(b.noconf).toBe(true)
+  })
+  it('a formation with a typed-over area strip (ui/textedit.ts)', () => {
+    const f = clone(DAYS0[0]).waves[0].formations[0]
+    f.area = 'NORTH'; f.atime = '0800-0900'
+    conform(f, FORMATION, 'formation+area')
+  })
+  it('a leave synced from the Leave War carries the war id as its lw tag (leavewar/sync.ts)', () => {
+    const row: any = { person: 'bane', type: 'LL', date: 'Jul 13', yr: 2026, allday: true, remarks: '', mod: 'now', lw: 'y2026' }
+    inpId(row)
+    conform(row, inputSpec(true), 'synced leave')
+  })
+  it('an issued amendment: SCHED, the AL and the day snapshots conform', async () => {
+    const { histSnap } = await import('../state/history')
+    markEdit('dn:0.0'); alIssue(1, ['dn:0.0'])
+    expect(SCHED.al).toBe(1); expect(SCHED.cur[0]).toBe(1)
+    conform(SCHED, SCHED_SPEC, 'SCHED after AL 1')
+    conform(JSON.parse(histSnap()), WEEK_SNAP, 'histSnap after AL 1')
+  })
+})
+
+/* type-level sanity, checked by `tsc -b` (tests are in tsconfig.app.json):
+   a literal must satisfy the declared type, so a new required field or a
+   narrowed union fails the build. (The live exports are `any`; assigning one
+   to a type proves nothing, which is why no such line is here.) */
+;({ cs: 'X', seat: 'FCP', q: 'A', quals: {} }) satisfies Person
+;({ person: 'x', date: 'Jul 1', allday: true, type: 'LL', mod: 'now' }) satisfies Input
+;({ dow: 'Mon', dt: '1 Jul', wc: '', notes: [], allhands: [], waves: [], sims: { amt: [], oft: [] }, dutywaves: [], ground: [] }) satisfies Day

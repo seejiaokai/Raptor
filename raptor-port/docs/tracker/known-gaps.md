@@ -63,14 +63,20 @@
 >   course under the same name and type a student under an old linked name,
 >   and that student comes back linked to the old person along with their
 >   old marks — coherent, but worth knowing.
-> - **Loads are serial and the roster writers wait for them (9 Sep 26).**
->   `loadCourse` reads a dozen records with an await between each and then
->   replaces the roster with what it fetched; a `+ Add` or a removal finishing
->   inside that window used to be applied over by the load's stale copy (CI
->   showed it: two adds, one student). `loadCourse` now queues behind the last
->   load on one promise chain and `addStudent`/`removeStudent` `await
->   whenLoaded()` first. A NEW writer that touches the roster does the same;
->   the mark writers read `active`, which the load sets, and are not gated.
+> - **Loads and roster writes share ONE queue (9 Sep 26).** `loadCourse`
+>   reads a dozen records with an await between each and then replaces the
+>   roster with what it fetched; a `+ Add` or a removal finishing inside that
+>   window used to be applied over by the load's stale copy (CI showed it: two
+>   adds, one student), and — the review's finding — a switch STARTING inside a
+>   write's tail flipped the syllabus name under the write's later saves. So
+>   `onChain(fn)` in `core.js` queues every load AND every roster-write body
+>   (`addStudent`, `removeStudent`, `saveCrewOrder`) and every syllabus-name
+>   flip (`switchSyllabus`, `switchSylNow` for duplicate/add/rename/delete) on
+>   one promise chain. A NEW writer that touches the roster or `plan.sylName`
+>   goes through `onChain` too, AFTER its dialog (a queued load must never wait
+>   on a human), and must not call `loadCourse`/`onChain` from inside (it would
+>   wait on itself). The mark writers read `active`, which the load sets, and
+>   are not gated. `whenLoaded()` drains the queue (the smoke suite uses it).
 > - **Its layout is a viewport-tall column, not a scrolling page.** The chart
 >   and the side panel scroll inside their own boxes. While the tab is up the
 >   document is locked and Raptor's 120px body pad is dropped (`body.tr-on`,

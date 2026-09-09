@@ -39,10 +39,17 @@ let wired = false
    visited, so there is nothing to unsubscribe on), pushes the first
    projection at once, and wires whoami for the by-stamp. Idempotent: a second
    mount (logout → login swaps the Shell) must not stack a second subscriber. */
+/* Raptor answers 'Unknown' with no session (engine/hooks.ts, state/store.ts);
+   the bridge's contract is '' = nobody known, and core.js then OMITS the `by`
+   field rather than stamping a mark with a name that names nobody. */
+export function whoamiForTracker(): string {
+  const v = HOOKS.whoami()
+  return v === 'Unknown' ? '' : v
+}
 export function wireTrackerPeople(): void {
   if (wired) return
   wired = true
-  setWhoami(() => HOOKS.whoami())
+  setWhoami(whoamiForTracker)
   const push = () => setPeople(projectForTracker(PEOPLE))
   subscribe(push)
   push()

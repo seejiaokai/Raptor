@@ -299,6 +299,15 @@ browser-proven.
   is deliberately NOT started here — it touches marks, undo, the smoke suite
   and `keys.ts` at once. The technical team's open questions are listed at the
   end of `data-model.md`.
+- **FOUND, NOT FIXED — the area/area-time strip and the restore keys (review,
+  9 Sep 26).** `src/ui/textedit.ts:184,194` write a typed-over area strip on
+  the FORMATION (`f.area`, `f.atime`; read back by `ui/html.ts:751-755`), but
+  `src/engine/restore.ts:72-73` builds the `ar:`/`at:` restore marks from the
+  per-AIRCRAFT `a.area`/`a.atime`, which nothing writes. Two reviewers
+  disagreed whether the aircraft read is dead code or a real gap (a typed
+  strip not captured for rollback / the AL). Engine behaviour, parity-
+  sensitive: settle it with its own test in a separate change — not folded
+  into the schema PR. (The types now declare `Formation.area/atime`.)
 - **THE TRACKER GOES BACK OUT AS A STANDALONE APP (owner, 9 Sep 26).** He will
   keep adding Tracker features here, then export the Tracker to its own repo
   (`seejiaokai/Tracker`), where students are created by typing a name and there

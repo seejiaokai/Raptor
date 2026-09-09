@@ -618,6 +618,49 @@ describe('the person bridge and the link (peoplewire.ts → people.js → core.j
     expect(C.curSyl()).toBe(orig)
   })
 
+  it("a syllabus switch that STARTS during a + Add's tail saves the add under the syllabus it began on", async () => {
+    /* review, 9 Sep 26: the gate was one-way. The add had passed the gate,
+       then a switch flipped the syllabus name mid-tail and the add's later
+       saves (marks, dates) keyed on the NEW syllabus while its roster entry
+       sat under the OLD one. Loads and roster writes share one queue now. */
+    if (C.sylDirty) await C.saveChangesClick()
+    const orig = C.curSyl(), other = (C.allSylNames() as string[]).find(n => n !== orig)!
+    const rosterKey = `v3:${C.course}:${orig}:roster`
+    const realSet = storage.set; let fired = false; let sw: Promise<any> | null = null
+    storage.set = async function (k: string, v: string) {
+      const r = await realSet.call(storage, k, v)
+      if (!fired && k === rosterKey) { fired = true; sw = C.switchSyllabus(other); await tick(); await tick(); await tick() }
+      return r
+    } as any
+    try { const p = C.addStudent(); await tick(); C.dlgClose('RACER'); await p; await sw } finally { storage.set = realSet }
+    expect(fired, 'the switch started inside the add').toBe(true)
+    const val = async (k: string) => (await storage.get(k))?.value ?? null
+    expect(JSON.parse((await val(rosterKey))!), 'roster, old syllabus').toContain('RACER')
+    expect(await val(`v3:${C.course}:${orig}:m:RACER`), 'marks, old syllabus').toBe('{}')
+    expect(JSON.parse((await val(`v3:${C.course}:${orig}:d:RACER`))!), 'dates, old syllabus').toEqual({ lastSyll: null, lastCurr: null })
+    expect(await val(`v3:${C.course}:${other}:m:RACER`), 'no marks strayed under the new syllabus').toBeNull()
+    expect(JSON.parse((await val(`v3:${C.course}:${other}:roster`)) || '[]')).not.toContain('RACER')
+    expect(C.curSyl(), 'the switch landed afterwards').toBe(other)
+    expect(C.roster).not.toContain('RACER')
+    /* leave things as the tests around this one expect them */
+    await C.switchSyllabus(orig)
+    const rm = C.removeStudent('RACER'); await tick(); C.dlgClose(true); await rm
+    expect(C.roster).not.toContain('RACER')
+  })
+
+  it("the by-stamp is omitted when Raptor's whoami is its 'Unknown' placeholder", async () => {
+    /* review, 9 Sep 26: HOOKS.whoami defaults to the literal 'Unknown' with no
+       session; the bridge contract is '' = omit, so a logged-out mark was
+       stamped with a name that names nobody */
+    const { HOOKS } = await import('../engine/hooks')
+    const { whoamiForTracker } = await import('./peoplewire')
+    const real = HOOKS.whoami
+    try {
+      HOOKS.whoami = () => 'Unknown'; expect(whoamiForTracker()).toBe('')
+      HOOKS.whoami = () => 'Bane'; expect(whoamiForTracker()).toBe('Bane')
+    } finally { HOOKS.whoami = real }
+  })
+
   it('with no roster handed over — the standalone app — + Add is the old "Student callsign:" prompt, byte for byte', async () => {
     /* owner, 9 Sep 26: the Tracker goes back out to its standalone repo, where
        a student is created by typing a name and nothing feeds people.js. An
@@ -732,6 +775,28 @@ describe('the person bridge and the link (peoplewire.ts → people.js → core.j
     await refuse(C.addSyl, 'New:syl'); expect(C.allSylNames()).toEqual(syls)
     await refuse(C.renSyl, 'x:y'); expect(C.curSyl()).toBe(syl); expect(C.allSylNames()).toEqual(syls)
     expect(seen).toEqual([COLON, COLON, COLON, COLON, COLON])
+  })
+
+  it('Duplicate syllabus and Import “Add as new” refuse a colon too', async () => {
+    /* review, 9 Sep 26: the two syllabus-creating paths the colon guard missed —
+       a colon name written here made the user's own Export refuse the store */
+    const syls = C.allSylNames().slice(), seen: string[] = []
+    const alert = async () => { await until(() => C.dlg && C.dlg.cancel === false); seen.push(C.dlg.msg); C.dlgClose(true) }
+    const q = C.dupSyl(); await answer('dup:x'); await alert(); await q
+    expect(C.allSylNames()).toEqual(syls)
+    /* a chart whose name is already here asks replace / add as new; the new name carries the colon */
+    const name = C.curSyl()
+    const charts: any = { order: [name], syllabi: { [name]: [{ id: 'ST-01', type: 'acad', prereqs: [] }] }, layouts: {}, eventInfo: {} }
+    ;(window as any).__pickOpenForTests = async () => ({ name: 'x.json', text: JSON.stringify(FMT.buildFile({ savedAt: 'x', charts })) })
+    try {
+      const p = C.importClick()
+      await until(() => C.dlg && /already exists/.test(C.dlg.msg)); C.dlgClose('__alt__')     /* Add as new */
+      await answer('new:x')
+      await alert()                                                                          /* the refusal … */
+      await until(() => C.dlg); seen.push(C.dlg.msg); C.dlgClose(true); await p              /* … then the closing report */
+    } finally { delete (window as any).__pickOpenForTests }
+    expect(C.allSylNames()).toEqual(syls)
+    expect(seen).toEqual([COLON, COLON, 'Nothing was brought in.'])
   })
 
   it('removing the student drops the link; renaming the course carries it', async () => {

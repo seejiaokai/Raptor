@@ -135,6 +135,8 @@ function checkStudents(s) {
     for (const f of ['plan', 'lulls', 'pace']) {
       if (cv[f] != null && !isPlainObject(cv[f]))
         throw new Error('Course “' + course + '” in that file is damaged, so it has not been opened.');
+      /* lulls and pace are keyed by crew member too (kLulls / kPace) */
+      if (f !== 'plan') Object.keys(cv[f] || {}).forEach(n => noColon('crew member', n, ' on course “' + course + '”'));
     }
   }
 }

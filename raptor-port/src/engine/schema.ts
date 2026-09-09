@@ -92,9 +92,9 @@ export type Person = {
   q: QLevel
   /** SXO-qualified — seed; screen (Quals page). */
   sxo?: boolean
-  /** Initials, ground crew only — seed. */
+  /** Initials — seed (ground crew); screen (the Quals page writes it for aircrew too). */
   initials?: string
-  /** Flight, ground crew only — seed. */
+  /** Flight — seed (ground crew); screen (the Quals page writes it for aircrew too). */
   flight?: string
   /** Free-text note, ground crew — seed; screen (Personnel table). */
   remarks?: string
@@ -171,8 +171,8 @@ export type Input = {
   mod: string
   /** Landing state — engine (slots.ts acceptInput / unacceptInput). */
   acc?: InputAcc
-  /** Written by the Leave War sync as its loop-breaker — screen (src/leavewar/sync.ts). */
-  lw?: boolean
+  /** The Leave War's loop-breaker: the id of the war this leave came from (never a boolean) — screen (src/leavewar/sync.ts). */
+  lw?: string
   /** Attachment id — screen (state/docs.ts). */
   docId?: string
   /** Every attachment id when there is more than one — screen. */
@@ -260,6 +260,10 @@ export type Formation = {
   ld: string
   /** Typed SC in-time 'HH:MM' — screen (board SC B-box editor). */
   br?: string
+  /** A typed-over AREA strip for the whole formation (the derived per-seat areas otherwise) — screen (ui/textedit.ts). */
+  area?: string
+  /** A typed-over area-TIME strip for the whole formation ('0800-0900' form) — screen (ui/textedit.ts). */
+  atime?: string
   /** The seat pairs — seed; engine. */
   aircraft: AircraftSeat[]
   /** Whole-line cancel — engine (cxCommit / rollCx). */

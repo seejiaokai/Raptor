@@ -2212,3 +2212,18 @@ gate's. Keep verdict-bearing commands unpiped.
 **Suggested improvement:** For any race: (1) write down the exact losing order as three steps; (2) build the test to FORCE that order — hook the boundary (the storage read, the network call) and perform the foreign write from inside the hook, after the value is fetched and before it is returned; (3) assert the guard that proves the hook fired (a `staged` flag), so a green test cannot be a test that never reached the race; (4) confirm red with the DEFECT's message before fixing.
 
 **Principle:** A concurrency test is a scheduler, not a stopwatch: it must dictate the interleaving, prove the interleaving happened, and fail with the defect's own message before the fix.
+
+### Observation 146: The pkill/pgrep self-kill trap recurred despite two logged observations — needs a structural rule, not a reminder
+
+**Status:** OPEN
+**Date:** 2026-09-09
+**Session context:** RAPTOR review pass. Observations #140 and #142 already record the trap (a `pgrep -f`/`pkill -f <substring>` whose substring appears in the caller's own command line kills the caller's shell). This session did it a THIRD time: `pgrep -f "vite preview --port 4179" | xargs -r kill` inside a compound command that then ran the build — the shell died with exit 144 and the build never ran.
+**Skill:** task-observer (and CLAUDE.md §Build & verify — the process-hygiene line)
+**Type:** open-source
+**Phase/Area:** shell hygiene / verification commands
+
+**Issue:** A remembered rule ("kill by PID") does not survive cognitive load; the pattern is written reflexively because it reads as the obvious one-liner. Two prior observations did not prevent the third occurrence — evidence that a reminder is the wrong enforcement.
+
+**Suggested improvement:** Make it structural: (1) never put a process-name pattern and a kill in the SAME command line — capture PIDs in one call (`pgrep -f <pattern>`; read the output), then kill by number in a SEPARATE call; (2) exclude shells by construction when a pattern must be used: `pgrep -f "<pattern>" | xargs -r ps -o pid=,comm= -p | awk '$2!="bash"{print $1}'`; (3) prefer the server's own PID file or `lsof -ti :<port>` (port-based, matches no command line) for a stray dev server: `lsof -ti :4179 | xargs -r kill`; (4) add the port-based form to the repo's CLAUDE.md so the next session copies that instead of inventing a pattern.
+
+**Principle:** A rule that has been broken three times under load is not a rule, it is a wish — replace it with a form that cannot express the mistake (port-based or PID-only kills; pattern matching and killing never in one command).

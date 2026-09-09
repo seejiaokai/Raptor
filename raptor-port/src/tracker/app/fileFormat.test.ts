@@ -32,6 +32,11 @@ describe('a name with a colon is refused, naming the part (fileFormat.js)', () =
     const s = people('26ABSG', '2026', 'STUDENT A')
     s.byCourse['26ABSG'].bySyllabus['2026'].marks['X:Y'] = {}
     expect(() => readFile(file({ students: s }))).toThrow(/crew member .*“X:Y”.*colon/)
+    /* review, 9 Sep 26: the course-level pace and lull maps are keyed by crew member too */
+    const t = people('26ABSG', '2026', 'STUDENT A'); (t.byCourse['26ABSG'] as any).pace = { 'P:Q': {} }
+    expect(() => readFile(file({ students: t }))).toThrow(/crew member .*“P:Q”.*colon/)
+    const u = people('26ABSG', '2026', 'STUDENT A'); (u.byCourse['26ABSG'] as any).lulls = { 'L:M': [] }
+    expect(() => readFile(file({ students: u }))).toThrow(/crew member .*“L:M”.*colon/)
   })
   it('plain names still pass', () => {
     const f = file({ charts: chart('A/G - A/A 2026'), students: people('26ABSG', 'A/G - A/A 2026', "O'BRIEN J") })

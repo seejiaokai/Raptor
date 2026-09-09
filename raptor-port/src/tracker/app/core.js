@@ -174,16 +174,23 @@ export let calView = new Date();
    the file-unsaved flag; since 9 Sep 26 there is no file to flag (the store is
    the record) and it only marks the boot/switch window. */
 let loading = true;
-/* Loads are SERIAL and the roster writers WAIT for them (9 Sep 26). loadCourse
-   reads a dozen records with an await between each and then replaces the
-   roster array with what it fetched. A second switch started meanwhile
-   interleaved with the first, and a + Add finished while the load had already
-   FETCHED the roster but not yet applied it pushed and saved — then the load
-   applied its stale copy and the next save wrote that copy back: a slow CI
-   runner showed it as two adds, one student. One promise chain: every load
-   queues behind the last, and anything that writes the roster awaits the chain
-   first. `loading` above is the flag; this is the gate. */
+/* Loads and roster writes share ONE queue (9 Sep 26). loadCourse reads a dozen
+   records with an await between each and then replaces the roster array with
+   what it fetched. A second switch started meanwhile interleaved with the
+   first, and a + Add finished while the load had already FETCHED the roster
+   but not yet applied it pushed and saved — then the load applied its stale
+   copy and the next save wrote that copy back: a slow CI runner showed it as
+   two adds, one student. The first cut had writers merely WAIT for the chain;
+   the review found that one-way: a switch STARTING inside a write's tail
+   flipped the syllabus name under the write's later saves. So every load and
+   every roster write body is queued on the chain with onChain(): a load never
+   starts inside a write, a write never starts inside a load. Dialogs stay
+   OUTSIDE the chain — a queued load must never wait on a human. Nothing run
+   on the chain may call loadCourse or onChain (it would wait on itself);
+   notify() runs inside it, and no subscriber loads (React subscribers only).
+   `loading` above is the flag; this is the gate. */
 let loadChain = Promise.resolve();
+function onChain(fn) { const p = loadChain.then(fn); loadChain = p.catch(() => {}); return p; }   /* a failed step must not jam the chain */
 export function whenLoaded() { return loadChain; }
 export let arrangeMode = false, layout = {}, drag = null, AUTO = {}, BORROW = null;
 /* ---- per-edge routing metadata layered on top of the prereq graph ---- */
@@ -473,11 +480,7 @@ async function migrateRosters(c) {
    also runs when the user picks a syllabus themselves, and restoring there
    overwrote their choice the instant they made it — so on any course where
    something had been marked, the syllabus could not be changed at all. */
-function loadCourse(c, restoreLastSyllabus = false) {
-  const p = loadChain.then(() => loadCourseNow(c, restoreLastSyllabus));
-  loadChain = p.catch(() => {});        /* a failed load must not jam the chain */
-  return p;
-}
+function loadCourse(c, restoreLastSyllabus = false) { return onChain(() => loadCourseNow(c, restoreLastSyllabus)); }
 async function loadCourseNow(c, restoreLastSyllabus) {
   loading = true;
   course = c;
@@ -2611,17 +2614,22 @@ export async function addStudent() {
   } else v = (r || '').trim().toUpperCase();
   if (!v) return;
   if (await refuseColon(v)) return;
-  await whenLoaded();                   /* a switch still loading would throw this push away */
-  if (!roster.includes(v)) {
-    roster.push(v); marks[v] = {}; dates[v] = { lastSyll: null, lastCurr: null };
-    await saveRoster(); await saveMarks(v); await saveDates(v);
-  }
-  if (link && linkOf(course, v) !== link) { LINKS[course] = LINKS[course] || {}; LINKS[course][v] = link; await saveLinks(); }
-  active = v; refreshActive(); renderBoard(); renderSide();
+  /* on the chain: a switch still loading would throw this push away, and a
+     switch starting mid-way would re-key the saves below */
+  await onChain(async () => {
+    if (!roster.includes(v)) {
+      roster.push(v); marks[v] = {}; dates[v] = { lastSyll: null, lastCurr: null };
+      await saveRoster(); await saveMarks(v); await saveDates(v);
+    }
+    if (link && linkOf(course, v) !== link) { LINKS[course] = LINKS[course] || {}; LINKS[course][v] = link; await saveLinks(); }
+    active = v; refreshActive(); renderBoard(); renderSide();
+  });
 }
 export async function removeStudent(v) {
   if (!await uiConfirm('Remove ' + v + ' from ' + plan.sylName + '?\n\nTheir marks, dates, pace and lull periods on this syllabus are deleted.')) return;
-  await whenLoaded();
+  await onChain(() => removeStudentNow(v));
+}
+async function removeStudentNow(v) {
   roster = roster.filter(x => x !== v); delete marks[v]; delete dates[v];
   /* Their undo steps go with them: an Undo that brought a removed student's
      mark back would put a mark on nobody's chart. */
@@ -2772,7 +2780,9 @@ async function leaveFlowEdits(what) {
 }
 export async function switchSyllabus(v) {
   if (!await leaveFlowEdits('Discard them and switch to “' + v + '”?')) { refreshSyl(); return; }
-  plan.sylName = v; plan.custom = false; await savePlan(); await loadCourse(course);
+  /* the name flip rides the chain with the load: kMarks/kDates key on curSyl(),
+     so a flip landing inside a roster write's tail re-keyed its saves */
+  await onChain(async () => { plan.sylName = v; plan.custom = false; await savePlan(); await loadCourseNow(course); });
   refreshCourses(); refreshSyl(); refreshActive(); renderBoard(); renderSide(); setSaveStatus('switched to ' + v, 'ok');
 }
 /* ---------- reorder syllabi, courses or crew (modal is <OrdModal/>) ----------
@@ -2807,7 +2817,7 @@ export async function saveCourseOrder(list) {
    index, so without it the key re-orders while the balls keep the old
    assignment until the next grade. */
 export async function saveCrewOrder(list) {
-  roster = reranked(list, roster); await saveRoster();
+  await onChain(async () => { roster = reranked(list, roster); await saveRoster(); });
   closeOrd(); refreshActive(); renderBoard(); renderSide();
   setSaveStatus('crew order saved', 'ok');
 }
@@ -2940,10 +2950,21 @@ export async function persistSyl() {
   return true;
 }
 
+/* The syllabus-editing commands (duplicate, add, rename, delete) all end by
+   pointing the plan at a syllabus, flushing, and reloading. The flip and the
+   load ride the chain together, as switchSyllabus's do — see loadChain. */
+async function switchSylNow(nm) {
+  await onChain(async () => {
+    plan.sylName = nm; plan.custom = false; await savePlan();
+    if (typeof flushNow === 'function') { try { await flushNow(); } catch (_) {} }
+    clearDirty(); await loadCourseNow(course);
+  });
+}
 export async function dupSyl() {
   const src = plan.sylName;
   const nm = ((await uiPrompt('Name for the duplicated syllabus:', src + ' copy')) || '').trim();
   if (!nm) return;
+  if (await refuseColon(nm)) return;
   if (allSylNames().includes(nm)) { await uiAlert('A syllabus with that name already exists.'); return; }
   try {
     if (SYL_TOMB[nm]) { delete SYL_TOMB[nm]; await saveSylPrefs(); }
@@ -2959,9 +2980,7 @@ export async function dupSyl() {
     }
     await sSet(kRosterFor(course, nm), JSON.stringify(roster));   /* same students on the copy */
     /* 4) switch to the copy, flush to storage, then reload cleanly */
-    plan.sylName = nm; plan.custom = false; await savePlan();
-    if (typeof flushNow === 'function') { try { await flushNow(); } catch (_) {} }
-    clearDirty(); await loadCourse(course);
+    await switchSylNow(nm);
     refreshSyl(); refreshActive(); renderBoard(); renderSide();
     setSaveStatus('duplicated as “' + nm + '”', 'ok');
   } catch (err) {
@@ -2983,9 +3002,7 @@ export async function addSyl() {
     await sSet(kSyls(course), JSON.stringify(CUSTOMS));
     await sSet(kLayoutFor(course, nm), JSON.stringify({}));  /* blank canvas */
     await sSet(kRosterFor(course, nm), JSON.stringify([]));  /* no students yet */
-    plan.sylName = nm; plan.custom = false; await savePlan();
-    if (typeof flushNow === 'function') { try { await flushNow(); } catch (_) {} }
-    clearDirty(); await loadCourse(course);
+    await switchSylNow(nm);
     refreshSyl(); refreshActive(); renderBoard(); renderSide();
     setSaveStatus('added empty syllabus “' + nm + '”', 'ok');
     if (!arrangeMode) flashHint('Empty sheet ready — hit “✎ Edit”, then use + Flight / + Acad / + Test / + Sim / + CFT to add events.');
@@ -3019,9 +3036,7 @@ export async function renSyl() {
     if (SYLLABI[old] && !isHidden(old)) SYL_HIDDEN.push(old);
     await saveSylPrefs();
     SYL_ORDER = SYL_ORDER.map(n => n === old ? nm : n); await saveSylOrder();
-    plan.sylName = nm; plan.custom = false; await savePlan();
-    if (typeof flushNow === 'function') { try { await flushNow(); } catch (_) {} }
-    clearDirty(); await loadCourse(course);
+    await switchSylNow(nm);
     refreshCourses(); refreshSyl(); refreshActive(); renderBoard(); renderSide();
     setSaveStatus('renamed “' + old + '” → “' + nm + '”', 'ok');
   } catch (err) {
@@ -3063,9 +3078,7 @@ export async function delSyl() {
     await moveSylData(nm, null);
     await saveSylPrefs();
     SYL_ORDER = SYL_ORDER.filter(n => n !== nm); await saveSylOrder();
-    plan.sylName = firstSylName(); plan.custom = false; await savePlan();
-    if (typeof flushNow === 'function') { try { await flushNow(); } catch (_) {} }
-    clearDirty(); await loadCourse(course);
+    await switchSylNow(firstSylName());
     refreshCourses(); refreshSyl(); refreshActive(); renderBoard(); renderSide();
     setSaveStatus('deleted syllabus “' + nm + '”', 'ok');
   } catch (err) {
@@ -3557,6 +3570,7 @@ export async function importClick() { if (fileLocked) return;
       }
       const to = ((await uiPrompt('Name for the incoming syllabus:', name + ' (new)')) || '').trim();
       if (!to || allSylNames().includes(to)) { await uiAlert('That name is blank or already taken.'); continue; }
+      if (await refuseColon(to)) continue;   /* a storage-key segment, like every other name typed here */
       await applyCharts(charts, { names: [name], mode: 'add', rename: { from: name, to } });
       done.push(to);
     }
