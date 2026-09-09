@@ -15,6 +15,7 @@ import * as FMT from './fileFormat.js';
 import * as FS from './fileStore.js';
 import { findEvents } from './eventOrder.js';
 import { isFileLocked, onFileLocked } from '../role.js';
+import { getPeople, onPeople, whoami } from '../people.js';
 
 export { SYLLABI, SYL_NAMES, DEFAULT_SYL_NAME, DEFAULT_SYL_ORDER, DEFAULT_LAYOUTS, EVENT_INFO };
 
@@ -368,6 +369,57 @@ async function loadCourses() {
   await sSet(kCourses, JSON.stringify(COURSES));
 }
 async function saveCourses() { await sSet(kCourses, JSON.stringify(COURSES)); }
+
+/* ---------- THE LINK: student name → Raptor person (9 Sep 26) ----------
+   Raptor's PEOPLE id is the person id app-wide, and the owner's ask was that
+   "a person is also linked to the tracker and can be selected to be placed
+   in a course". Students are NOT re-keyed by it — marks, dates, rosters, undo
+   and the smoke suite all file a student under the typed name, and re-keying
+   is stage-2 (stable row ids) work. Instead ONE record maps
+   { [course]: { [studentName]: personId } }, additive: a student with no link
+   behaves exactly as before. Per COURSE, like pace and lull periods, because
+   the same person on two syllabi of a course is one student. Loaded once at
+   init (absent or corrupt → {}), saved on every change, carried by a course
+   rename, dropped with the student, and a third block in the export file
+   beside charts and students. The person list itself never touches storage:
+   it is Raptor's, read live through the bridge (../people.js). */
+const kLinks = 'v3:links';
+export let LINKS = {};
+/* Sanitised one level deeper than the other records: a course whose value is
+   not a map (a stray string, a number, an array) would make the next pick or
+   import throw on `LINKS[course][name] = id`, with the student already on the
+   roster and the link never saved. Keep only plain maps of non-empty strings —
+   the same test the file check applies — and read anything else as absent. */
+async function loadLinks() {
+  const raw = sParse(await sGet(kLinks), {}, 'object'); LINKS = {};
+  for (const c of Object.keys(raw)) {
+    const m = raw[c]; if (!m || typeof m !== 'object' || Array.isArray(m)) continue;
+    const o = {}; for (const n of Object.keys(m)) if (typeof m[n] === 'string' && m[n]) o[n] = m[n];
+    if (Object.keys(o).length) LINKS[c] = o;
+  }
+}
+async function saveLinks() { await sSet(kLinks, JSON.stringify(LINKS)); }
+export function linkOf(c, name) { const m = LINKS[c]; const id = m && m[name]; return (typeof id === 'string' && id) ? id : null; }
+/* The bridge person a student on the CURRENT course is linked to, or null —
+   null too when the link names somebody Raptor no longer offers (archived
+   since), so the chip never claims a roster entry that is not there. */
+export function linkedPerson(name) {
+  const id = linkOf(course, name); if (!id) return null;
+  return getPeople().find(p => p.id === id) || null;
+}
+/* The roster chips read linkedPerson on every paint, so a change to Raptor's
+   people (a callsign edit, an archive) repaints them; the bridge's own guard
+   already swallows every notify that changed nobody. */
+onPeople(() => notify());
+/* Seat as the squadron says it: the Tracker's list sub-text, beside the CAT. */
+const seatWord = s => s === 'FCP' ? 'Pilot' : s === 'RCP' ? 'WSO' : (s || '');
+
+/* Course, syllabus and student names are segments of the storage key
+   ('v3:' + course + ':' + syllabus + ':m:' + student), so a colon inside one
+   files the record under a different key. Refused at every typing point,
+   with one message; fileFormat.js refuses a file carrying one. */
+const COLON_MSG = "A name can't contain a colon (:), because the app uses it to file the record.";
+async function refuseColon(name) { if (typeof name === 'string' && name.includes(':')) { await uiAlert(COLON_MSG); return true; } return false; }
 /* Split the legacy flat roster into per-syllabus rosters; runs once per course. */
 async function migrateRosters(c) {
   try {
@@ -554,10 +606,15 @@ async function saveDates(s) { await sSet(kDates(course, s), JSON.stringify(dates
 /* ---------- in-page dialogs (promise-based, rendered by <DlgModal/>) ---------- */
 export let dlg = null; export let dlgSerial = 0;
 let _dlgRes = null;
-function _dlgShow(msg, { input = false, def = '', cancel = true, ok = 'OK', alt = null } = {}) {
+/* `list` + `filter` (9 Sep 26): a searchable list of { key, label, sub }
+   drawn ABOVE the text box; a click on an entry resolves { pick: key }, OK
+   still resolves the typed text. Without a list the dialog is the old prompt
+   to the byte — the extra fields are null/false/'' and DlgModal draws nothing
+   for them. */
+function _dlgShow(msg, { input = false, def = '', cancel = true, ok = 'OK', alt = null, list = null, filter = false, placeholder = '', listTitle = '' } = {}) {
   return new Promise(res => {
     _dlgRes = res;
-    dlg = { msg, input, def, cancel, ok, alt };
+    dlg = { msg, input, def, cancel, ok, alt, list, filter, placeholder, listTitle };
     dlgSerial++;
     notify();
   });
@@ -569,6 +626,13 @@ export function dlgClose(val) {
 export async function uiConfirm(msg) { return await _dlgShow(msg); }
 export async function uiPrompt(msg, def) { const v = await _dlgShow(msg, { input: true, def }); return v === null ? null : (v + ''); }
 export async function uiAlert(msg) { await _dlgShow(msg, { cancel: false }); }
+/* Pick from a list, or type: resolves { pick: key } for a click on an entry,
+   the typed string for OK, null for Cancel. */
+export async function uiPick(msg, list, { input = false, placeholder = '', listTitle = '' } = {}) {
+  const v = await _dlgShow(msg, { input, list: list || [], filter: true, placeholder, listTitle });
+  if (v && typeof v === 'object' && 'pick' in v) return v;
+  return v === null ? null : (v + '');
+}
 /* Three-way ask: returns 'ok', 'alt' or 'cancel'. */
 export async function uiChoice(msg, okLabel, altLabel) {
   const r = await _dlgShow(msg, { ok: okLabel, alt: altLabel });
@@ -2101,11 +2165,26 @@ export function sliceBg(cols) {
   return `linear-gradient(90deg,${st.join(',')})`;
 }
 
+/* ---------- provenance (9 Sep 26) ----------
+   Every mark and date write stamps WHO (`by`, the editor's display name from
+   Raptor through the bridge — omitted, never '', when nobody is wired) and
+   WHEN (`at`, an ISO instant) on the record it changed: marks[s][id] for a
+   grade, a failure or either of their days; dates[s] for the panel's four
+   boxes and the Last Flown advance. Extra fields on the same records, so
+   the file check's shape tests already tolerate them and undo snapshots —
+   whole-record JSON — restore the stamp of the time verbatim. No screen
+   reads them yet; the database step does. */
+function stamp(rec) {
+  if (!rec || typeof rec !== 'object') return;
+  rec.at = new Date().toISOString();
+  const by = whoami(); if (by) rec.by = by; else delete rec.by;
+}
+
 /* ---------- side panel actions (inputs live in <SidePanel/>) ---------- */
-export async function setLastSyll(s, v) { pushMarkUndo(s, 'Last Flown (Syllabus)', 'lastSyll'); dates[s].lastSyll = v; dates[s].lastCurr = v; await saveDates(s); renderSide(); }
-export async function setLastCurr(s, v) { pushMarkUndo(s, 'Last Flown (Currency)', 'lastCurr'); dates[s].lastCurr = v; await saveDates(s); renderSide(); }
-export async function setDownDays(s, v) { pushMarkUndo(s, 'the down days', 'downDays'); dates[s].downDays = v; await saveDates(s); renderSide(); }
-export async function setUpchit(s, v) { pushMarkUndo(s, 'the upchit date', 'upchit'); dates[s].upchit = v; await saveDates(s); renderSide(); }
+export async function setLastSyll(s, v) { pushMarkUndo(s, 'Last Flown (Syllabus)', 'lastSyll'); dates[s].lastSyll = v; dates[s].lastCurr = v; stamp(dates[s]); await saveDates(s); renderSide(); }
+export async function setLastCurr(s, v) { pushMarkUndo(s, 'Last Flown (Currency)', 'lastCurr'); dates[s].lastCurr = v; stamp(dates[s]); await saveDates(s); renderSide(); }
+export async function setDownDays(s, v) { pushMarkUndo(s, 'the down days', 'downDays'); dates[s].downDays = v; stamp(dates[s]); await saveDates(s); renderSide(); }
+export async function setUpchit(s, v) { pushMarkUndo(s, 'the upchit date', 'upchit'); dates[s].upchit = v; stamp(dates[s]); await saveDates(s); renderSide(); }
 /* v is kept verbatim — an empty or half-typed box must stay as typed. epwOf()
    does the coercion for the arithmetic. */
 export async function setEpw(s, v) { pace[s] = { ...paceOf(s), epw: v }; await savePace(s); renderSide(); }
@@ -2321,6 +2400,7 @@ export async function popGrade(v) {
      in the pop-up, today unless changed first); Not done and N.A. carry no
      day, so the date goes with the grade. */
   if (DONE.has(v)) m.d = popDoneDate || isoToday(); else delete m.d;
+  stamp(m);
   await saveMarks(s);
   if (byid[popId] && byid[popId].type === 'flight' && DONE.has(v)) await flownOn(s, m.d);
   redrawKeepView(); closePop();
@@ -2341,6 +2421,7 @@ export async function popFail(delta) {
   for (let k = 0; k < delta; k++) fd.push(popFailDate || isoToday());
   for (let k = 0; k < -delta && fd.length; k++) fd.pop();
   m.f = fd.length; m.fd = fd;
+  stamp(m);
   await saveMarks(s); redrawKeepView();
 }
 /* The pop-up's "Failed on" box: only where the NEXT + lands. Nothing is saved
@@ -2360,6 +2441,7 @@ export async function setDoneDate(s, id, iso) {
   if (!s || !marks[s] || !marks[s][id] || !DONE.has(gradeOf(s, id))) return;
   pushMarkUndo(s, 'the date on ' + id, 'doneDate:' + id);
   marks[s][id].d = iso || isoToday();
+  stamp(marks[s][id]);
   await saveMarks(s); renderSide();
   if (byid[id] && byid[id].type === 'flight') await flownOn(s, marks[s][id].d);
 }
@@ -2370,6 +2452,7 @@ export async function setFailDate(s, id, i, iso) {
   const fd = failDates(s, id); if (i < 0 || i >= fd.length) return;
   pushMarkUndo(s, 'the date of ' + failLabel(id, i), 'failDate:' + id + ':' + i);
   fd[i] = iso || null; marks[s][id].fd = fd;
+  stamp(marks[s][id]);
   await saveMarks(s); renderSide();
 }
 /* The full lowdown of one student's failures, opened from the Failures title
@@ -2389,7 +2472,7 @@ async function flownOn(s, d) {
   const later = (a, b) => (a && a > b) ? a : b;   /* ISO yyyy-mm-dd compares as text */
   const nc = later(dates[s].lastCurr, d), ns = later(dates[s].lastSyll, d);
   if (nc === dates[s].lastCurr && ns === dates[s].lastSyll) return;
-  dates[s].lastCurr = nc; dates[s].lastSyll = ns; await saveDates(s); renderSide();
+  dates[s].lastCurr = nc; dates[s].lastSyll = ns; stamp(dates[s]); await saveDates(s); renderSide();
 }
 function hideDetailBubble() { const b = document.getElementById('detailBubble'); if (b) b.style.display = 'none'; }
 function showDetailBubble(id, anchorEl, html) {
@@ -2487,12 +2570,27 @@ export function openShowAll() { showAllOpen = true; notify(); }
 export function closeShowAll() { showAllOpen = false; notify(); }
 
 /* ---------- roster / course ops ---------- */
+/* + Add (9 Sep 26): the same dialog it always was, with the squadron roster
+   above the text box. A PICK adds the person under their callsign — upper-
+   cased, as every roster name is — and records the link; a TYPED name adds an
+   unlinked student exactly as before (a visitor from another unit, or the
+   smoke suite's #dlgInput flow). Somebody already on the roster is not added
+   twice (the silent dedupe of old) but the link is recorded for them. */
 export async function addStudent() {
-  const v = ((await uiPrompt('Student callsign:')) || '').trim().toUpperCase(); if (!v) return;
+  const people = getPeople().map(p => ({ key: p.id, label: p.cs, sub: seatWord(p.seat) + (p.q ? ' · ' + p.q : '') }));
+  const r = await uiPick('Add a crew member', people, { input: true, placeholder: 'Or type a callsign', listTitle: 'From the squadron roster' });
+  let v, link = null;
+  if (r && typeof r === 'object') {
+    const p = getPeople().find(x => x.id === r.pick); if (!p) return;
+    v = String(p.cs || '').trim().toUpperCase(); link = p.id;
+  } else v = (r || '').trim().toUpperCase();
+  if (!v) return;
+  if (await refuseColon(v)) return;
   if (!roster.includes(v)) {
     roster.push(v); marks[v] = {}; dates[v] = { lastSyll: null, lastCurr: null };
     await saveRoster(); await saveMarks(v); await saveDates(v);
   }
+  if (link && linkOf(course, v) !== link) { LINKS[course] = LINKS[course] || {}; LINKS[course][v] = link; await saveLinks(); }
   active = v; refreshActive(); renderBoard(); renderSide();
 }
 export async function removeStudent(v) {
@@ -2519,6 +2617,9 @@ export async function removeStudent(v) {
     try { const rr = await sGet(kRosterFor(course, sn)); if ((rr ? JSON.parse(rr) : []).includes(v)) { elsewhere = true; break; } } catch (_) {}
   }
   if (!elsewhere) { await delKey(kPace(course, v)); await delKey(kLulls(course, v)); delete pace[v]; delete lulls[v]; }
+  /* The link is the course's too (one person, however many syllabi), so it
+     goes when the person is off the last chart of the course, with the pace. */
+  if (!elsewhere && linkOf(course, v)) { delete LINKS[course][v]; if (!Object.keys(LINKS[course]).length) delete LINKS[course]; await saveLinks(); }
   if ((await sGet(kLastStudent(course))) === v) await delKey(kLastStudent(course));
   if (prefGet('lastCrew:' + course) === v) prefSet('lastCrew:' + course, '');
   if (active === v) active = roster[0] || null;
@@ -2704,6 +2805,7 @@ export async function switchCourse(v) {
 export async function addCourse() {
   if (!await leaveFlowEdits('Discard them and add a course?')) return;
   const v = ((await uiPrompt('New course name (e.g. 26BBSG):')) || '').trim().toUpperCase(); if (!v) return;
+  if (await refuseColon(v)) return;
   /* Front, not back: the newest course is the one being set up, so it should be
      the one the dropdown offers first and the one the app falls back to. */
   if (!COURSES.includes(v)) { COURSES.unshift(v); await saveCourses(); }
@@ -2719,6 +2821,7 @@ export async function renCourse() {
   const old = course;
   const v = ((await uiPrompt('Rename course “' + old + '” to:', old)) || '').trim().toUpperCase();
   if (!v || v === old) return;
+  if (await refuseColon(v)) return;
   if (COURSES.includes(v)) { await uiAlert('A course named ' + v + ' already exists.'); return; }
   const sylNames = [...new Set([...SYL_NAMES, ...Object.keys(CUSTOMS || {}), plan.sylName])];
   const move = async (a, b) => { const val = await sGet(a); if (val != null) await sSet(b, val); };
@@ -2752,6 +2855,8 @@ export async function renCourse() {
   await move(kLastStudent(old), kLastStudent(v));
   const myCrew = prefGet('lastCrew:' + old);
   if (myCrew) prefSet('lastCrew:' + v, myCrew);
+  /* the links are keyed by course too — one record, so a move, not a key walk */
+  if (LINKS[old]) { LINKS[v] = LINKS[old]; delete LINKS[old]; await saveLinks(); }
   COURSES = COURSES.map(c => c === old ? v : c); await saveCourses();
   await loadCourse(v); refreshCourses(); refreshSyl(); refreshActive(); renderBoard(); renderSide();
   setSaveStatus('renamed ' + old + ' → ' + v, 'ok');
@@ -2843,6 +2948,7 @@ export async function dupSyl() {
 export async function addSyl() {
   const nm = ((await uiPrompt('Name for the new (empty) syllabus:', 'New syllabus')) || '').trim();
   if (!nm) return;
+  if (await refuseColon(nm)) return;
   if (allSylNames().includes(nm)) { await uiAlert('A syllabus with that name already exists.'); return; }
   try {
     if (SYL_TOMB[nm]) { delete SYL_TOMB[nm]; await saveSylPrefs(); }
@@ -2868,6 +2974,7 @@ export async function renSyl() {
   const old = plan.sylName;
   const nm = ((await uiPrompt('Rename syllabus “' + old + '” to:', old)) || '').trim();
   if (!nm || nm === old) return;
+  if (await refuseColon(nm)) return;
   if (allSylNames().includes(nm)) { await uiAlert('A syllabus named “' + nm + '” already exists.'); return; }
   try {
     if (SYL_TOMB[nm]) delete SYL_TOMB[nm];
@@ -3212,6 +3319,20 @@ export async function collectStudents() {
   return { courses: COURSES.slice(), byCourse };
 }
 
+/* Links: the students' ties to Raptor's people, for the courses that are
+   exported (collectStudents exports every course, so: all of them). People
+   data, so it rides the file only when students do. A course with no links
+   is absent, not {}. */
+export function collectLinks() {
+  const out = {};
+  for (const c of COURSES) {
+    const m = LINKS[c]; if (!m) continue;
+    const o = {}; for (const n in m) if (typeof m[n] === 'string' && m[n]) o[n] = m[n];
+    if (Object.keys(o).length) out[c] = o;
+  }
+  return out;
+}
+
 /* ---------- writing state back in, from the user's file ---------- */
 
 /* Charts only. Writes syllabus definitions, layouts and event info — and
@@ -3282,6 +3403,31 @@ export async function applyStudents(students) {
   return { courses: courses.slice() };
 }
 
+/* Links from a file, AFTER applyStudents has written its rosters: merged per
+   course, and only for a name on some roster of that course — the file's own
+   rosters and the store's, so a link to a student who is not here (edited out
+   of the file by hand, or on a chart the reader declined) is dropped rather
+   than left pointing at nobody. Never called on the students-"no" path. */
+export async function applyLinks(links, students) {
+  let changed = false;
+  for (const c in (links || {})) {
+    const names = new Set();
+    const fromFile = ((students && students.byCourse && students.byCourse[c]) || {}).bySyllabus || {};
+    for (const n of new Set([...allSylNames(), ...Object.keys(fromFile)])) {
+      try { const rr = await sGet(kRosterFor(c, n)); (rr ? JSON.parse(rr) : []).forEach(s => names.add(s)); } catch (_) {}
+      ((fromFile[n] || {}).roster || []).forEach(s => names.add(s));
+    }
+    for (const s in links[c]) {
+      const id = links[c][s]; if (!names.has(s) || typeof id !== 'string' || !id) continue;
+      if (linkOf(c, s) === id) continue;
+      LINKS[c] = LINKS[c] || {}; LINKS[c][s] = id; changed = true;
+    }
+  }
+  if (changed) await saveLinks();
+  renderSide();
+  return changed;
+}
+
 /* ---------- the File menu: Import, Export ----------
    THE FILE IS A FORMAT, NOT A STORE (owner, 9 Sep 26 — "the file feature is
    for admin to import newly created flow charts … from external areas", and
@@ -3323,10 +3469,16 @@ export async function saveCopyClick() { if (fileLocked) return;
   const opts = { ...copyOpts };
   const name = FMT.suggestedFileName(opts, savedAt);
   let handle = null;
-  if (FS.canWriteInPlace()) { handle = await FS.pickSave(name); if (!handle) return; }
+  /* The save picker is the Open picker's twin: Playwright cannot drive it and
+     the module's exports cannot be patched, so a test hands in a fake handle
+     through window.__pickSaveForTests (the smoke reads the file it wrote). */
+  const pickSave = (typeof window !== 'undefined' && window.__pickSaveForTests) || null;
+  if (pickSave) { handle = await pickSave(name); if (!handle) return; }
+  else if (FS.canWriteInPlace()) { handle = await FS.pickSave(name); if (!handle) return; }
   const text = JSON.stringify(FMT.buildFile({
     charts: opts.charts ? await collectCharts(names) : null,
-    students: opts.students ? await collectStudents() : null, savedAt }), null, 2);
+    students: opts.students ? await collectStudents() : null,
+    links: opts.students ? collectLinks() : null, savedAt }), null, 2);
   try {
     if (handle) await FS.writeTo(handle, text); else FS.downloadInstead(name, text);
   } catch (err) {
@@ -3360,7 +3512,7 @@ export async function importClick() { if (fileLocked) return;
   let info; try { info = FMT.describeFile(obj); } catch (e) { await uiAlert(e.message); return; }
   const hasCharts = !!(info.charts && info.syllabusNames.length);
   if (!hasCharts && !info.students) { await uiAlert('That file holds no charts and no students.'); return; }
-  const { charts, students } = FMT.readFile(obj);
+  const { charts, students, links } = FMT.readFile(obj);
   const done = [];
   if (hasCharts) {
     for (const name of info.syllabusNames) {
@@ -3385,7 +3537,8 @@ export async function importClick() { if (fileLocked) return;
   let people = false;
   if (info.students && students) {
     people = await uiConfirm('This file also contains students and marks.\n\nBring them in too? They are added to what is here; nothing else is touched.');
-    if (people) await applyStudents(students);
+    /* the links are people data: they come in with the students or not at all */
+    if (people) { await applyStudents(students); if (links) await applyLinks(links, students); }
   }
   const what = [done.length ? 'brought in ' + done.join(', ') : null, people ? 'students & marks restored' : null].filter(Boolean).join(' · ');
   if (what) setSaveStatus(what, 'ok');
@@ -3407,6 +3560,7 @@ export async function init() {
   if (initStarted) return; initStarted = true;
   await applyBundle();
   await loadCourses();
+  await loadLinks();
   await loadSylPrefs();
   /* After loadCourses, which is what fills COURSES — a course that was deleted,
      renamed, or only ever existed in someone else's browser simply fails the
@@ -3442,8 +3596,8 @@ export async function init() {
   /* The board is rendered imperatively and this module exports nothing to the
      page, so scripts/smoke.mjs has no other way to reach these. */
   if (typeof window !== 'undefined') {
-    window.__coreForTests = { layoutSnapshotFor, collectCharts, collectStudents,
-      applyCharts, applyStudents, SYLLABI, DEFAULT_LAYOUTS };
+    window.__coreForTests = { layoutSnapshotFor, collectCharts, collectStudents, collectLinks,
+      applyCharts, applyStudents, applyLinks, loadLinks, SYLLABI, DEFAULT_LAYOUTS };
     window.__fileFormatForTests = FMT;
     window.__fileStoreForTests = FS;
     /* Save changes is only on screen while there is an unsaved flow edit, so a

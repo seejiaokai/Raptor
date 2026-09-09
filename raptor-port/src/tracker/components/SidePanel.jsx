@@ -249,9 +249,15 @@ export default function SidePanel({ zoom }) {
             title="Change the order crew appear in the dropdown and which slice of every ball is theirs" onClick={core.openOrdCrew}>⇅ Reorder</button>
           <button className="sm" id="addStu" onClick={core.addStudent}>+ Add</button></span></h3>
         <div className="chips">
-          {core.roster.map((r, i) => (
-            <span key={r} className="chip"><b>{i + 1}</b> {r} <span className="x" data-rm={r} onClick={() => core.removeStudent(r)}>×</span></span>
-          ))}
+          {/* A student linked to Raptor's roster (9 Sep 26) wears a dot and
+              says who they are there; an unlinked chip is untouched. */}
+          {core.roster.map((r, i) => {
+            const p = core.linkedPerson(r);
+            return (
+              <span key={r} className={p ? 'chip linked' : 'chip'} title={p ? 'On the squadron roster as ' + p.cs : undefined}>
+                <b>{i + 1}</b> {r} <span className="x" data-rm={r} onClick={() => core.removeStudent(r)}>×</span></span>
+            );
+          })}
         </div>
         {/* Wrapped so the phone can shrink it — it is the tallest card there. */}
         <div className="keyball" dangerouslySetInnerHTML={{ __html: core.renderKeyBall() }} />

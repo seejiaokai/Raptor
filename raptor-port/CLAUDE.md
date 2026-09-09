@@ -624,12 +624,24 @@ backup before the database move, or a handover). The old model — 📁 Open bin
 wrote back to — is gone; don't re-add a bound file. **Nothing of it boots in
 `main.tsx`** — the screen is a lazy chunk and `core.init()` runs on the tab's
 first mount, which is also why the section is KEPT MOUNTED afterwards (the flow
-board is drawn imperatively once). **Two seams cross the boundary, and only
-two:** `resetSession`/`toggleRole` write the role through `tracker/role.js` (a
+board is drawn imperatively once). **Three seams cross the boundary, and only
+three:** `resetSession`/`toggleRole` write the role through `tracker/role.js` (a
 no-import module — importing `core.js` there would put ~280 KB of syllabus data
-into every Raptor visit; `tracker.test.tsx` guards it), and `TrackerPage.tsx` is
-the page. **No data crosses yet** (owner, 7 Sep 26 — students are the Tracker's
-own list; linking them to Raptor's OCU people is a later step). **Everyone
+into every Raptor visit; `tracker.test.tsx` guards it); `TrackerPage.tsx` is
+the page; and **the people bridge `tracker/people.js`** (9 Sep 26, same
+no-import shape as `role.js`): `TrackerPage.tsx` wires `tracker/peoplewire.ts`
+once, which projects Raptor's `PEOPLE` into the bridge on every notify
+(signature-guarded, like Leave War's `reprojectRoster`) and hands it
+`HOOKS.whoami()`. That is how a person from the squadron roster is picked into
+a course (the Students card's `+ Add` lists the roster above the free-text box)
+and how every mark and date write is stamped `by`/`at`. **Students are still
+keyed by their typed NAME** — the link is a separate record
+(`raptor:tracker/v3:links`, `{course: {studentName: personId}}`), additive, so
+an unlinked student behaves exactly as before; re-keying students by person id
+is the storage seam's stage-2 (stable ids) work. Course, syllabus and student
+names refuse a colon (they are storage-key segments). Design:
+`docs/superpowers/specs/2026-09-09-schema-hardening-design.md`; the target
+model for the database step: `docs/data-model.md`. **Everyone
 edits — marking, charts, students, courses, syllabi — and only the FILE portion
 (Import / Export) is the admin's** (owner, 7 Sep 26, second word),
 enforced at the file entry points in `core.js` AND at the File menu in
@@ -1226,6 +1238,7 @@ ledger). Read it before any layout/render/drag-touching change.
 |---|---|
 | Validation, VCONF, publishing/AL, auth, history | `docs/engine-rules.md` |
 | **What is stored, every record's fields, the three storage seams** (read before the shared-database step) | `docs/data-schema.md` |
+| **The designed data model for the database step** (entities, ids, Person ↔ Enrolment ↔ Attempt, migration recipe — the technical team's document) | `docs/data-model.md`; the scheduler's declared record types `src/engine/schema.ts` (pinned to the seeds by `schema.test.ts`) |
 | **Storage: the whiteboard, postman, backends, boot gate** | `src/storage/` — the ONE route to a backend (whiteboard → postman → Memory/Browser backend); `src/state/persist.ts` hydrates/persists live scheduler state. **The rule (8 Sep 26 bug pass):** every mutation of DAYS/SCHED/INPUTS/PEOPLE/PLAN must end in `HOOKS.histPush` (never the raw `histPush`), undo/redo, `loadWeek`, or an explicit `persistPeople()` — anything else is silently unsaved after a reload. Leave War: whatever it owns about a person beyond the projection goes in a persisted record laid back on by `setPeople`. **Medical documents (photos/PDFs) are too big for that text seam, so they get their OWN per-browser drawer** — IndexedDB `raptor-docs` (`src/storage/docstore.ts`), wired by `docBoot` from `main.tsx` on the browser backend only; `state/docs`' in-memory map is the sync read path, `docAdd` writes through, `docBoot` hydrates it at boot (8 Sep 26). |
 | Rendering, drag & drop, text editing, AL marks | `docs/ui-contracts.md` |
 | **Which surfaces a feature touches + how one edit flows** | `docs/feature-impact.md` |

@@ -9,22 +9,29 @@
                     roster: string[], marks: {student: object},
                     dates: {student: object} }}}} }
 
-   Nested objects rather than joined key strings on purpose: course, syllabus
-   and student names are free text and may contain any separator character.
+     links    = { course: { studentName: personId } }   (9 Sep 26 — the
+                student's link to Raptor's person record; additive, a file
+                without it is the older format)
 
-   See docs/superpowers/specs/2026-08-07-syllabus-file-design.md */
+   Nested objects rather than joined key strings on purpose: course, syllabus
+   and student names are free text and may contain any separator character —
+   EXCEPT a colon, since 9 Sep 26 (see noColon below).
+
+   See docs/superpowers/specs/2026-08-07-syllabus-file-design.md and
+   docs/superpowers/specs/2026-09-09-schema-hardening-design.md */
 export const FILE_FORMAT = 'ocu-tracker';
 export const FILE_VERSION = 1;
 
-export function buildFile({ charts = null, students = null, savedAt }) {
+export function buildFile({ charts = null, students = null, links = null, savedAt }) {
   const out = {
     format: FILE_FORMAT,
     version: FILE_VERSION,
     savedAt: savedAt || null,
-    contains: { charts: !!charts, students: !!students },
+    contains: { charts: !!charts, students: !!students, links: !!links },
   };
   if (charts) out.charts = charts;
   if (students) out.students = students;
+  if (links) out.links = links;
   return out;
 }
 
@@ -39,10 +46,25 @@ export function buildFile({ charts = null, students = null, savedAt }) {
    nobody any wiser. */
 const isPlainObject = v => !!v && typeof v === 'object' && !Array.isArray(v);
 
+/* A course, syllabus or student name is a SEGMENT of the storage key the app
+   files the record under ('v3:' + course + ':' + syllabus + ':m:' + student),
+   so a colon inside one makes the key read as a different record: marks filed
+   under "A:B" on syllabus "x" are the same key as course "A" on syllabus "B:x".
+   The app refuses the character at every typing point (core.js); a file that
+   carries one — written elsewhere, or by an older build — is refused here,
+   naming the part, before a single key is written. A chart's name is checked
+   too: it becomes a syllabus name the moment it is imported. */
+function noColon(part, name, where) {
+  if (typeof name === 'string' && name.includes(':'))
+    throw new Error('The ' + part + ' name “' + name + '”' + (where || '') + ' in that file contains a colon (:), which the app cannot file, so it has not been opened.');
+}
+
 function checkCharts(c) {
   if (!isPlainObject(c)) throw new Error('The charts in that file are damaged, so it has not been opened.');
   if (c.order != null && (!Array.isArray(c.order) || c.order.some(n => typeof n !== 'string')))
     throw new Error('The list of chart names in that file is damaged, so it has not been opened.');
+  (c.order || []).forEach(n => noColon('chart', n));
+  Object.keys(c.syllabi || {}).forEach(n => noColon('chart', n));
   if (c.syllabi != null && !isPlainObject(c.syllabi))
     throw new Error('The charts in that file are damaged, so it has not been opened.');
   if (c.layouts != null && !isPlainObject(c.layouts))
@@ -90,24 +112,46 @@ function checkStudents(s) {
     throw new Error('The list of courses in that file is damaged, so it has not been opened.');
   if (s.byCourse != null && !isPlainObject(s.byCourse))
     throw new Error('The courses in that file are damaged, so it has not been opened.');
+  (s.courses || []).forEach(c => noColon('course', c));
   for (const [course, cv] of Object.entries(s.byCourse || {})) {
+    noColon('course', course);
     if (!isPlainObject(cv))
       throw new Error('Course “' + course + '” in that file is damaged, so it has not been opened.');
     if (cv.bySyllabus != null && !isPlainObject(cv.bySyllabus))
       throw new Error('Course “' + course + '” in that file is damaged, so it has not been opened.');
     for (const [syl, sv] of Object.entries(cv.bySyllabus || {})) {
+      noColon('syllabus', syl, ' on course “' + course + '”');
       if (!isPlainObject(sv))
         throw new Error('“' + syl + '” on course “' + course + '” in that file is damaged, so it has not been opened.');
       if (sv.roster != null && (!Array.isArray(sv.roster) || sv.roster.some(n => typeof n !== 'string')))
         throw new Error('The crew list for “' + syl + '” on course “' + course + '” is damaged, so that file has not been opened.');
+      (sv.roster || []).forEach(n => noColon('crew member', n, ' on course “' + course + '”'));
       for (const f of ['marks', 'dates']) {
         if (sv[f] != null && !isPlainObject(sv[f]))
           throw new Error('The ' + (f === 'marks' ? 'marks' : 'dates') + ' for “' + syl + '” on course “' + course + '” are damaged, so that file has not been opened.');
+        Object.keys(sv[f] || {}).forEach(n => noColon('crew member', n, ' on course “' + course + '”'));
       }
     }
     for (const f of ['plan', 'lulls', 'pace']) {
       if (cv[f] != null && !isPlainObject(cv[f]))
         throw new Error('Course “' + course + '” in that file is damaged, so it has not been opened.');
+    }
+  }
+}
+
+/* course → student name → person id, every leaf a non-empty string. The id is
+   Raptor's PEOPLE key; whether it still names somebody is the app's business
+   when the file is applied (core.js applyLinks keeps only names on a roster),
+   not the format's. */
+function checkLinks(l) {
+  if (!isPlainObject(l)) throw new Error('The links in that file are damaged, so it has not been opened.');
+  for (const [course, m] of Object.entries(l)) {
+    noColon('course', course);
+    if (!isPlainObject(m)) throw new Error('The links for course “' + course + '” in that file are damaged, so it has not been opened.');
+    for (const [name, id] of Object.entries(m)) {
+      noColon('crew member', name, ' on course “' + course + '”');
+      if (typeof id !== 'string' || !id)
+        throw new Error('The links for course “' + course + '” in that file are damaged (' + name + '), so it has not been opened.');
     }
   }
 }
@@ -119,12 +163,15 @@ export function readFile(obj) {
     throw new Error('That file was written by a newer version of the app.');
   if (obj.charts != null) checkCharts(obj.charts);
   if (obj.students != null) checkStudents(obj.students);
+  if (obj.links != null) checkLinks(obj.links);
   return {
     charts: obj.charts || null,
     students: obj.students || null,
+    links: obj.links || null,
     contains: {
       charts: !!(obj.contains && obj.contains.charts),
       students: !!(obj.contains && obj.contains.students),
+      links: !!(obj.contains && obj.contains.links),
     },
   };
 }

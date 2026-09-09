@@ -5,25 +5,62 @@ import * as core from '../app/core.js';
 export function DlgModal() {
   const d = core.dlg;
   const [val, setVal] = useState('');
+  const [q, setQ] = useState('');
   const serialRef = useRef(-1);
   const inputRef = useRef(null);
+  const filterRef = useRef(null);
+  /* A list (9 Sep 26, the + Add roster picker): the search box and the list
+     sit ABOVE the text box, so the roster is the first thing offered and the
+     free-text box the fallback. An empty list draws nothing — the dialog is
+     then the old prompt to the byte. */
+  const list = (d && Array.isArray(d.list) && d.list.length) ? d.list : null;
   useEffect(() => {
     if (d && serialRef.current !== core.dlgSerial) {
       serialRef.current = core.dlgSerial;
-      setVal(d.def || '');
-      if (d.input) setTimeout(() => { const el = inputRef.current; if (el) { el.focus(); el.select(); } }, 30);
+      setVal(d.def || ''); setQ('');
+      /* the search box takes the focus when there is a list to search — the
+         text box otherwise, as always */
+      setTimeout(() => {
+        const el = (list && d.filter) ? filterRef.current : inputRef.current;
+        if (el) { el.focus(); el.select(); }
+      }, 30);
     }
   });
   if (!d) return null;
   const ok = () => core.dlgClose(d.input ? val : true);
   const cancel = () => core.dlgClose(d.input ? null : false);
+  const needle = q.trim().toLowerCase();
+  const shown = list ? list.filter(it => !needle || (it.label + ' ' + (it.sub || '')).toLowerCase().includes(needle)) : [];
+  const pick = key => core.dlgClose({ pick: key });
   return (
     <>
       <div className="overlay" id="dlgOverlay" style={{ zIndex: 70, display: 'block' }} onClick={cancel}></div>
       <div className="modal" id="dlgModal" style={{ zIndex: 71, width: 'min(420px, 92vw)', display: 'block' }}>
         <div id="dlgMsg" style={{ fontSize: 13.5, whiteSpace: 'pre-wrap', marginBottom: 12 }}>{d.msg}</div>
+        {list && (
+          <>
+            {d.listTitle && <div className="mini dlg-listtitle">{d.listTitle}</div>}
+            {d.filter && (
+              <input id="dlgFilter" ref={filterRef} type="search" placeholder="Search by callsign" value={q}
+                onChange={e => setQ(e.target.value)}
+                /* Enter on the search box picks the one entry left — the keyboard
+                   route through a long roster */
+                onKeyDown={e => { if (e.key === 'Enter' && shown.length === 1) { e.preventDefault(); pick(shown[0].key); } }} />
+            )}
+            <div id="dlgList" role="listbox">
+              {shown.map(it => (
+                <button type="button" className="dlg-item" key={it.key} data-key={it.key} role="option" onClick={() => pick(it.key)}>
+                  <span className="dlg-lbl">{it.label}</span>
+                  {it.sub ? <span className="dlg-sub">{it.sub}</span> : null}
+                </button>
+              ))}
+              {!shown.length && <div className="mini dlg-none">Nobody on the roster matches “{q.trim()}”.</div>}
+            </div>
+          </>
+        )}
         {d.input && (
           <input id="dlgInput" ref={inputRef} style={{ width: '100%', marginBottom: 12 }} value={val}
+            placeholder={d.placeholder || undefined}
             onChange={e => setVal(e.target.value)}
             /* Escape is left to the app's own handler (core.handleEscapeKey), which
                closes this dialog and stops. Cancelling here as well let the same

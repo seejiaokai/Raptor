@@ -20,11 +20,19 @@ import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from
 import { act } from 'react'
 import { createRoot } from 'react-dom/client'
 import { isFileLocked, setFileLocked } from './role.js'
+import { getPeople, setPeople, setWhoami } from './people.js'
+import { projectForTracker, wireTrackerPeople } from './peoplewire'
 import * as core from './app/core.js'
+import * as FMT from './app/fileFormat.js'
+import { storage } from './storage.js'
 import Header from './components/Header.jsx'
-import { initStore, resetSession, toggleRole } from '../state/store'
-import { readFileSync } from 'node:fs'
+import SidePanel from './components/SidePanel.jsx'
+import { DlgModal } from './components/Modals.jsx'
+import { initStore, notify as raptorNotify, resetSession, toggleRole } from '../state/store'
+import { PEOPLE } from '../engine/people'
+import { readFileSync, readdirSync } from 'node:fs'
 import { join } from 'node:path'
+import { useSyncExternalStore } from 'react'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 const $ = (sel: string) => document.querySelector(sel)
@@ -494,5 +502,289 @@ describe('the seam stays light', () => {
     expect(hdr).not.toMatch(/id="(undoBtn|redoBtn)"/)
     expect(hdr).toMatch(/id="trUndoBtn"/)
     expect(hdr).toMatch(/id="trRedoBtn"/)
+  })
+})
+
+/* 9 Sep 26 (owner: "a person is also linked to the tracker and can be
+   selected to be placed in a course"): Raptor's PEOPLE id is the person id
+   app-wide. The squadron roster crosses into the Tracker through a third
+   no-import bridge (people.js), the + Add dialog offers it above the text
+   box, and a pick records a LINK (course → student name → person id) beside
+   the student — additive, so a typed name still adds an unlinked student and
+   nothing else on screen changes. Same round: a colon is refused in every
+   name (it is a storage-key separator), and every mark and date write stamps
+   who and when. Spec: docs/superpowers/specs/2026-09-09-schema-hardening-design.md */
+describe('the person bridge and the link (peoplewire.ts → people.js → core.js)', () => {
+  /* core.js and fileFormat.js are plain JS; TypeScript infers `dlg` as null
+     and `course` as never-assigned from their initialisers, so these tests
+     read them untyped, as the vendored code itself does */
+  const C: any = core, F: any = FMT
+  const COLON = "A name can't contain a colon (:), because the app uses it to file the record."
+  const at = { clientX: 1, clientY: 1 }
+  const tick = () => new Promise(r => setTimeout(r, 0))
+  /* dialogs raised after an await (a course rename asks about unsaved edits
+     first) come up a microtask later; a file export runs its collectors first */
+  const until = async (f: () => any) => { for (let i = 0; i < 500; i++) { if (f()) return; await tick() } throw new Error('timed out waiting for a dialog') }
+  const answer = async (v: any) => { await until(() => C.dlg); C.dlgClose(v) }
+  const P = [
+    { id: 'p1', cs: 'Ranger', seat: 'FCP', q: 'OCU', sxo: false },
+    { id: 'p2', cs: 'Bravo', seat: 'RCP', q: 'D', sxo: true },
+  ]
+  let board: HTMLElement
+  beforeAll(async () => {
+    board = document.createElement('div'); board.id = 'board'; document.body.appendChild(board); await C.init()
+    /* the Find-box tests above leave a flow edit unsaved; a course or syllabus
+       rename would ask about it first, and these tests answer ONE question */
+    if (C.sylDirty) await C.saveChangesClick()
+  })
+  afterAll(() => board.remove())
+  beforeEach(() => { setPeople(P); setWhoami(null); setFileLocked(false); document.body.querySelectorAll('.host').forEach(h => h.remove()) })
+
+  it('the projection: OCU first, pilots before WSOs, then callsign — no archived, sentinel or ground body, five fields each', () => {
+    const l = projectForTracker(PEOPLE)
+    expect(l.length).toBeGreaterThan(10)
+    for (const p of l) {
+      const src = PEOPLE[p.id]
+      expect(!!(src.archived || src.special || src.pers || src.seat === 'GND'), p.id + ' should not be offered').toBe(false)
+      expect(Object.keys(p)).toEqual(['id', 'cs', 'seat', 'q', 'sxo'])
+      expect(p.q, 'q is always a string').toBe(src.q || '')
+      expect(p.sxo, 'sxo is always a boolean').toBe(!!src.sxo)
+    }
+    expect(l.filter(p => p.q === 'OCU').length, 'the demo roster has trainees').toBeGreaterThan(0)
+    const rank = (p: any) => [p.q === 'OCU' ? 0 : 1, p.seat === 'FCP' ? 0 : 1]
+    for (let i = 1; i < l.length; i++) {
+      const a = rank(l[i - 1]), b = rank(l[i])
+      const cmp = (a[0] - b[0]) || (a[1] - b[1]) || l[i - 1].cs.localeCompare(l[i].cs)
+      expect(cmp, l[i - 1].cs + ' before ' + l[i].cs).toBeLessThanOrEqual(0)
+    }
+    expect(l[0].q).toBe('OCU'); expect(l[0].seat).toBe('FCP')
+    /* an explicit fixture proves each filter on its own */
+    const fx = { z: { cs: 'Z', seat: 'RCP', q: 'OCU' }, a: { cs: 'A', seat: 'FCP', q: 'A' }, g: { cs: 'G', seat: 'GND', pers: true, q: '' }, x: { cs: 'X', seat: 'FCP', q: 'A', archived: true }, s: { cs: 'S', seat: 'FCP', q: 'A', special: true, archived: true }, o: { cs: 'O', seat: 'FCP', q: 'OCU', sxo: true } }
+    expect(projectForTracker(fx).map(p => p.id)).toEqual(['o', 'z', 'a'])
+  })
+
+  it('+ Add offers the roster with the production copy; a pick adds under the callsign, upper-cased, links, and is saved', async () => {
+    const p = C.addStudent()
+    expect(C.dlg).toMatchObject({ msg: 'Add a crew member', input: true, filter: true, placeholder: 'Or type a callsign', listTitle: 'From the squadron roster' })
+    expect(C.dlg.list).toEqual([{ key: 'p1', label: 'Ranger', sub: 'Pilot · OCU' }, { key: 'p2', label: 'Bravo', sub: 'WSO · D' }])
+    C.dlgClose({ pick: 'p1' }); await p
+    expect(C.roster).toContain('RANGER')
+    expect(C.active).toBe('RANGER')
+    expect(C.linkOf(C.course, 'RANGER')).toBe('p1')
+    expect(C.linkedPerson('RANGER')).toEqual(P[0])
+    const stored = await storage.get('v3:links')
+    expect(JSON.parse(stored!.value)[C.course]).toEqual({ RANGER: 'p1' })
+    /* picking somebody already here is the silent dedupe of old — one entry */
+    const n = C.roster.length
+    const q = C.addStudent(); C.dlgClose({ pick: 'p1' }); await q
+    expect(C.roster.length).toBe(n)
+  })
+
+  it('a corrupt links record reads as absent one level down too — the next pick still links and saves', async () => {
+    /* review finding, 9 Sep 26: a course whose stored value is not a map made
+       `LINKS[course][name] = id` throw on the next pick, with the student
+       already on the roster and the link never saved */
+    const bad = { [C.course]: 'x', NUM: 7, ARR: ['p1'], OK: { KEEP: 'p2', EMPTY: '', NOTSTR: 3 } }
+    await storage.set('v3:links', JSON.stringify(bad))
+    await (window as any).__coreForTests.loadLinks()
+    expect(C.LINKS).toEqual({ OK: { KEEP: 'p2' } })
+    const p = C.addStudent(); C.dlgClose({ pick: 'p2' }); await p
+    expect(C.linkOf(C.course, 'BRAVO')).toBe('p2')
+    expect(JSON.parse((await storage.get('v3:links'))!.value)[C.course]).toEqual({ BRAVO: 'p2' })
+    /* leave the course as the earlier tests expect it */
+    await storage.set('v3:links', JSON.stringify({ [C.course]: { RANGER: 'p1', BRAVO: 'p2' } }))
+    await (window as any).__coreForTests.loadLinks()
+  })
+
+  it('the dialog draws the search box and the list above the text box, narrows on typing, and a click picks', async () => {
+    const Live = () => { useSyncExternalStore(C.subscribe, C.getVersion); return <DlgModal /> }
+    const host = document.createElement('div'); host.className = 'host'; document.body.appendChild(host)
+    const root = createRoot(host)
+    await act(async () => { root.render(<Live />) })
+    expect($('#dlgModal')).toBeNull()
+    /* a plain question is byte-for-byte the old prompt: no list, no filter, no placeholder */
+    let p: Promise<any> = C.uiPrompt('Student callsign:')
+    await act(async () => { await tick() })
+    expect($('#dlgInput')).toBeTruthy(); expect($('#dlgFilter')).toBeNull(); expect($('#dlgList')).toBeNull()
+    expect(($('#dlgInput') as HTMLInputElement).getAttribute('placeholder')).toBeNull()
+    await act(async () => { C.dlgClose(null) }); await p
+    p = C.addStudent()
+    await act(async () => { await tick() })
+    expect($('#dlgFilter')).toBeTruthy(); expect($('#dlgList')).toBeTruthy(); expect($('#dlgInput')).toBeTruthy()
+    expect(($('#dlgInput') as HTMLInputElement).placeholder).toBe('Or type a callsign')
+    expect($('#dlgModal')!.textContent).toContain('From the squadron roster')
+    const order = [...$('#dlgModal')!.querySelectorAll('#dlgList, #dlgInput')].map(e => e.id)
+    expect(order, 'list above the text box').toEqual(['dlgList', 'dlgInput'])
+    const items = () => [...document.querySelectorAll('#dlgList button.dlg-item')].map(b => (b as HTMLElement).dataset.key)
+    expect(items()).toEqual(['p1', 'p2'])
+    expect($('#dlgList .dlg-item[data-key="p2"]')!.textContent).toContain('Bravo')
+    expect($('#dlgList .dlg-item[data-key="p2"]')!.textContent).toContain('WSO · D')
+    const { fireEvent } = await import('@testing-library/react')
+    await act(async () => { fireEvent.change($('#dlgFilter')!, { target: { value: 'bra' } }) })
+    expect(items()).toEqual(['p2'])
+    await act(async () => { ($('#dlgList .dlg-item[data-key="p2"]') as HTMLElement).click() })
+    expect(await p).toBeUndefined()
+    expect(C.roster).toContain('BRAVO'); expect(C.linkOf(C.course, 'BRAVO')).toBe('p2')
+    expect($('#dlgModal')).toBeNull()
+    await act(async () => { root.unmount() }); host.remove()
+  })
+
+  it("a linked student's chip says so; an unlinked one is untouched", async () => {
+    const host = document.createElement('div'); host.className = 'host'; document.body.appendChild(host)
+    const root = createRoot(host)
+    await act(async () => { root.render(<SidePanel zoom={1} />) })
+    const chip = $('.c-students .chip.linked') as HTMLElement
+    expect(chip).toBeTruthy()
+    expect(chip.title).toBe('On the squadron roster as Ranger')
+    expect(chip.textContent).toContain('RANGER')
+    expect(document.querySelectorAll('.c-students .chip.linked').length).toBe(2)
+    const plain = [...document.querySelectorAll('.c-students .chip:not(.linked)')] as HTMLElement[]
+    expect(plain.length).toBeGreaterThan(0)
+    for (const c of plain) expect(c.getAttribute('title')).toBeNull()
+    await act(async () => { root.unmount() }); host.remove()
+  })
+
+  it('a typed callsign still adds an unlinked crew member, exactly as before', async () => {
+    const n = C.roster.length
+    const p = C.addStudent(); C.dlgClose('  visitor '); await p
+    expect(C.roster).toContain('VISITOR'); expect(C.roster.length).toBe(n + 1)
+    expect(C.linkOf(C.course, 'VISITOR')).toBeNull()
+    expect(C.linkedPerson('VISITOR')).toBeNull()
+    const q = C.addStudent(); C.dlgClose(null); await q
+    expect(C.roster.length, 'cancel adds nobody').toBe(n + 1)
+  })
+
+  it('a colon is refused at every typing point, with the one message', async () => {
+    let p: Promise<any> = C.addStudent(); await answer('A:B'); await answer(undefined)
+    /* the alert is the dialog that came up second */
+    await p; expect(C.roster).not.toContain('A:B')
+    const seen: string[] = []
+    const refuse = async (start: () => Promise<any>, typed: string) => {
+      const q = start(); await answer(typed)
+      await until(() => C.dlg); seen.push(C.dlg.msg); expect(C.dlg.cancel, 'an alert, not a question').toBe(false)
+      C.dlgClose(true); await q
+    }
+    await refuse(C.addStudent, 'A:B'); expect(C.roster).not.toContain('A:B')
+    const course = C.course, courses = C.COURSES.slice()
+    await refuse(C.addCourse, '26:X'); expect(C.COURSES).toEqual(courses)
+    await refuse(C.renCourse, '26:X'); expect(C.course).toBe(course); expect(C.COURSES).toEqual(courses)
+    const syl = C.curSyl(), syls = C.allSylNames().slice()
+    await refuse(C.addSyl, 'New:syl'); expect(C.allSylNames()).toEqual(syls)
+    await refuse(C.renSyl, 'x:y'); expect(C.curSyl()).toBe(syl); expect(C.allSylNames()).toEqual(syls)
+    expect(seen).toEqual([COLON, COLON, COLON, COLON, COLON])
+  })
+
+  it('removing the student drops the link; renaming the course carries it', async () => {
+    let p: Promise<any> = C.removeStudent('RANGER'); await answer(true); await p
+    expect(C.roster).not.toContain('RANGER')
+    expect(C.linkOf(C.course, 'RANGER')).toBeNull()
+    expect(JSON.parse((await storage.get('v3:links'))!.value)[C.course]).toEqual({ BRAVO: 'p2' })
+    const old = C.course
+    p = C.renCourse(); await answer('LINKTEST'); await p
+    expect(C.course).toBe('LINKTEST')
+    expect(C.linkOf('LINKTEST', 'BRAVO')).toBe('p2')
+    expect(C.linkOf(old, 'BRAVO')).toBeNull()
+    expect(C.linkedPerson('BRAVO')).toEqual(P[1])
+    p = C.renCourse(); await answer(old); await p
+    expect(C.course).toBe(old)
+    expect(C.linkOf(old, 'BRAVO')).toBe('p2')
+    expect(JSON.parse((await storage.get('v3:links'))!.value)).toEqual({ [old]: { BRAVO: 'p2' } })
+  })
+
+  it('every mark and date write stamps who and when; undo restores the earlier stamp verbatim', async () => {
+    const ISO = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/
+    while (C.canUndo()) await C.doUndo()
+    setWhoami(() => 'Tester')
+    C.setActive('BRAVO')
+    C.openPop('ST-01', at); await C.popGrade('dco')
+    const m1 = { ...(C.marks as any)['BRAVO']['ST-01'] }
+    expect(m1.by).toBe('Tester'); expect(m1.at).toMatch(ISO)
+    await new Promise(r => setTimeout(r, 5))
+    setWhoami(() => 'Second')
+    C.openPop('ST-01', at); await C.popFail(1)
+    const m2 = (C.marks as any)['BRAVO']['ST-01']
+    expect(m2.by).toBe('Second'); expect(m2.at).toMatch(ISO); expect(m2.at).not.toBe(m1.at)
+    await C.doUndo()
+    expect((C.marks as any)['BRAVO']['ST-01']).toEqual(m1)
+    await C.doRedo()
+    expect((C.marks as any)['BRAVO']['ST-01']).toEqual(m2)
+    /* the two date writers on the mark, then the four on the dates record */
+    await C.setDoneDate('BRAVO', 'ST-01', '2026-08-10')
+    expect((C.marks as any)['BRAVO']['ST-01'].by).toBe('Second')
+    await C.setFailDate('BRAVO', 'ST-01', 0, '2026-08-11')
+    expect((C.marks as any)['BRAVO']['ST-01'].at).not.toBe(m2.at)
+    ;(C.dates as any)['BRAVO'] = { lastSyll: null, lastCurr: null }
+    await C.setLastCurr('BRAVO', '2026-01-05')
+    expect((C.dates as any)['BRAVO']).toMatchObject({ lastCurr: '2026-01-05', by: 'Second' })
+    expect((C.dates as any)['BRAVO'].at).toMatch(ISO)
+    /* nobody wired: `by` is omitted, never an empty name */
+    setWhoami(null)
+    await C.setDownDays('BRAVO', '2')
+    expect((C.dates as any)['BRAVO'].downDays).toBe('2')
+    expect('by' in (C.dates as any)['BRAVO']).toBe(false)
+    expect((C.dates as any)['BRAVO'].at).toMatch(ISO)
+    await C.setUpchit('BRAVO', '2026-02-01'); await C.setLastSyll('BRAVO', '2026-01-06')
+    expect((C.dates as any)['BRAVO']).toMatchObject({ upchit: '2026-02-01', lastSyll: '2026-01-06', lastCurr: '2026-01-06' })
+    while (C.canUndo()) await C.doUndo()
+  })
+
+  it('Export carries the links beside the students; Import applies them only when the students come in, and only for names on a roster', async () => {
+    let text = ''
+    ;(window as any).__pickSaveForTests = async (name: string) => ({ name, createWritable: async () => ({ write: async (t: string) => { text = t }, close: async () => {} }) })
+    C.openCopy(); C.setCopyOpt('students', true)
+    let p: Promise<any> = C.saveCopyClick(); await answer(true); await p
+    let f = JSON.parse(text)
+    expect(f.contains).toEqual({ charts: true, students: true, links: true })
+    expect(f.links).toEqual({ [C.course]: { BRAVO: 'p2' } })
+    /* charts only: no names, no links */
+    C.openCopy(); p = C.saveCopyClick(); await answer(true); await p
+    f = JSON.parse(text)
+    expect(f.contains.links).toBe(false); expect('links' in f).toBe(false)
+    delete (window as any).__pickSaveForTests
+
+    const syl = C.curSyl()
+    const students = { courses: ['LINKIMP'], byCourse: { LINKIMP: { plan: { sylName: syl }, lulls: {}, pace: {}, bySyllabus: { [syl]: { roster: ['ALPHA'], marks: {}, dates: {} } } } } }
+    const links = { LINKIMP: { ALPHA: 'p1', GHOST: 'p2' } }
+    const feed = () => { (window as any).__pickOpenForTests = async () => ({ name: 'x.json', text: JSON.stringify(F.buildFile({ students, links, savedAt: 'x' })) }) }
+    feed(); p = C.importClick()
+    await until(() => C.dlg && /students and marks/.test(C.dlg.msg)); C.dlgClose(false)
+    await until(() => C.dlg && /Nothing was brought in/.test(C.dlg.msg)); C.dlgClose(true); await p
+    expect(C.COURSES).not.toContain('LINKIMP')
+    expect((C.LINKS as any).LINKIMP).toBeUndefined()
+    feed(); p = C.importClick()
+    await until(() => C.dlg && /students and marks/.test(C.dlg.msg)); C.dlgClose(true)
+    await until(() => C.dlg && /restored/.test(C.dlg.msg)); C.dlgClose(true); await p
+    expect(C.COURSES).toContain('LINKIMP')
+    expect((C.LINKS as any).LINKIMP, 'GHOST is on no roster of that course').toEqual({ ALPHA: 'p1' })
+    expect(JSON.parse((await storage.get('v3:links'))!.value).LINKIMP).toEqual({ ALPHA: 'p1' })
+    delete (window as any).__pickOpenForTests
+  })
+
+  it('TrackerPage wires the bridge once; an unrelated Raptor notify is a no-op; the chunk never imports the engine', () => {
+    wireTrackerPeople()
+    const first = getPeople()
+    expect(first).toEqual(projectForTracker(PEOPLE))
+    let n = 0
+    const off = C.subscribe(() => { n++ })
+    raptorNotify()
+    expect(getPeople(), 'same roster, same array').toBe(first)
+    expect(n, 'and the Tracker was not told').toBe(0)
+    wireTrackerPeople(); raptorNotify()
+    expect(n, 'a second wire is not a second subscriber').toBe(0)
+    off()
+    const page = readFileSync(join(__dirname, 'TrackerPage.tsx'), 'utf8')
+    expect(page).toMatch(/from '\.\/peoplewire'/)
+    expect(page).toMatch(/wireTrackerPeople\(\)/)
+    /* people.js is import-free like role.js, and the lazy chunk reaches Raptor
+       through it alone — nothing under app/ or components/ imports the wire,
+       the engine or the store */
+    expect(readFileSync(join(__dirname, 'people.js'), 'utf8')).not.toMatch(/^\s*import /m)
+    for (const dir of ['app', 'components']) {
+      for (const f of readdirSync(join(__dirname, dir))) {
+        if (!/\.(jsx?|tsx?)$/.test(f) || /\.test\./.test(f)) continue
+        const src = readFileSync(join(__dirname, dir, f), 'utf8')
+        expect(src, dir + '/' + f).not.toMatch(/from '[^']*(peoplewire|\/engine\/|\/state\/)/)
+      }
+    }
   })
 })

@@ -42,10 +42,20 @@
 >   with `scripts/tracker/bake-user-charts.mjs` (reads only the `charts`
 >   half), and he Imports the charts-only file he gets back (no students
 >   question — a charts-only file never asks).
-> - **Students are NOT linked to Raptor's people** (owner, 7 Sep 26 —
->   "standalone first"). The roster is the Tracker's own list, as in his file.
->   Linking OCU trainees to Raptor's pucks is a later, separate step, the way
->   the Leave War sync followed its merge.
+> - **Students are LINKED to Raptor's people, but still keyed by name**
+>   (superseding the 7 Sep 26 "standalone first" — owner, 9 Sep 26: "a person
+>   is also linked to the tracker and can be selected to be placed in a
+>   course"). `+ Add` in the Students card lists the squadron roster (via the
+>   no-import bridge `people.js`, fed by `TrackerPage.tsx`); picking one adds
+>   them under their callsign and records `v3:links` (`{course: {name:
+>   personId}}`). A typed name still adds an unlinked student. The roster,
+>   marks, dates and undo all stay name-keyed — re-keying by person id is the
+>   storage seam's stage 2. Nothing flows back to Raptor yet (no pucks, no
+>   quals) — the link is the hook for that. Deleting a course leaves its
+>   links in storage the way it leaves its marks (a safety net): re-create a
+>   course under the same name and type a student under an old linked name,
+>   and that student comes back linked to the old person along with their
+>   old marks — coherent, but worth knowing.
 > - **Its layout is a viewport-tall column, not a scrolling page.** The chart
 >   and the side panel scroll inside their own boxes. While the tab is up the
 >   document is locked and Raptor's 120px body pad is dropped (`body.tr-on`,

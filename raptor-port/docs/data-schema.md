@@ -352,11 +352,35 @@ students = { courses: string[],
                  dates:  { student: { eventId: date } } } } } } }
 ```
 
+A mark record is `{ g, f, fd, d, by?, at? }` — grade code, failure count,
+one ISO date per failure (oldest first, null when undated), the done date,
+and since 9 Sep 26 **who** made the last write (Raptor's `HOOKS.whoami()`
+display name, absent when unknown) and **when** (ISO instant). `dates[s]`
+(`lastSyll, lastCurr, downDays, upchit`) carries the same two stamps. Undo
+snapshots restore them verbatim.
+
+### The person link — `v3:links`
+
+`{ [course]: { [studentName]: personId } }` — the one record that ties a
+Tracker student to a Raptor `PEOPLE` id (9 Sep 26). Written when a student
+is added by picking them off the squadron roster (the Students card's
+`+ Add` lists the roster via the no-import bridge `src/tracker/people.js`,
+fed by `TrackerPage.tsx` → `src/tracker/peoplewire.ts`), dropped with the
+student, moved by a course rename, and carried by Export/Import as a third
+block `links`. Additive: a typed-in student has no link and behaves exactly
+as before. Students are STILL keyed by their typed name everywhere else —
+the person id becomes the key at storage-seam stage 2.
+
+Course, syllabus and student names are storage-key segments joined by `:`,
+so a name containing a colon is refused at every entry point and by the
+file check.
+
 ### The syllabus file
 
-`{ format: 'ocu-tracker', version: 1, savedAt, contains: { charts, students }, charts?, students? }`
+`{ format: 'ocu-tracker', version: 1, savedAt, contains: { charts, students, links }, charts?, students?, links? }`
 — a FORMAT, not a store (9 Sep 26): ⤓ Export writes one from the store, ⇪ Import
-reads one back in (charts always; students & marks only after a yes). Nothing
+reads one back in (charts always; students & marks — and the links that ride
+with them — only after a yes). Nothing
 binds a file; the store above is the record. The database migration's recipe
 is exactly this shape: Export (both boxes ticked) → wipe → Import, answer yes.
 
@@ -366,10 +390,13 @@ is exactly this shape: Export (both boxes ticked) → wipe → Import, answer ye
 
 Listed in the order they would bite.
 
-1. **Nothing declares a scheduler schema.** PEOPLE, DAYS, INPUTS and SCHED
-   are typed `any`; the Leave War is fully typed. The scheduler shapes above
-   are read from the code, not enforced by it. Writing them as types is the
-   first step and changes no behaviour.
+1. **The scheduler schema is declared but not yet enforced by the compiler.**
+   Since 9 Sep 26 `src/engine/schema.ts` types every record above and
+   `src/engine/schema.test.ts` walks the shipped seeds, the initial `SCHED`
+   and a week snapshot against those types — an unknown field or a wrong
+   primitive is a red test. The live exports (PEOPLE, DAYS, INPUTS, SCHED)
+   still read `any` (the verbatim-port rule); flipping them is a later,
+   behaviour-free step. The Leave War is fully typed.
 2. **Three date conventions.** Scheduler: `'Jul 13'` display strings, a
    0..6 day index, minutes-from-midnight; Leave War: ISO `'yyyy-mm-dd'`;
    Tracker: free text. A shared store wants one (ISO).
@@ -395,6 +422,20 @@ Listed in the order they would bite.
 8. **The three worlds do not share a style** (sync vs async doors, three
    prefixes, TS vs JS). Unifying them behind one async door is the
    storage-seam work; the shapes above do not change for it.
+9. **One person, three records.** The scheduler roster is the identity;
+   the Leave War projects it (same ids) and the Tracker now LINKS to it
+   (`v3:links`, 9 Sep 26) — but Tracker students, courses and syllabi are
+   still keyed by typed name, and their storage keys are those names joined
+   with `:`. The designed model (`data-model.md`) makes Enrolment
+   (person × course × syllabus) the row and the name an attribute.
+10. **Progression is a summary, not a history.** A Tracker mark holds the
+    latest grade, a failure count with dates, the done date and (since
+    9 Sep 26) who last wrote it and when. It cannot answer "what happened on
+    each attempt". `data-model.md` records each Attempt and derives today's
+    mark from them.
+11. **Hours are display text** (`'2.0 Hrs'`) in the event details, not a
+    number, so nothing totals them. Left as-is on purpose — the owner is
+    replacing the event details himself; the model types hours as a number.
 
 ## Suggested first cut of tables
 

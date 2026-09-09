@@ -2166,3 +2166,18 @@ gate's. Keep verdict-bearing commands unpiped.
 **Suggested improvement:** Replace the rule with a mechanism. Never start a server inline; start it with its PID captured (`cmd & echo $! > file`) and stop it with `kill $(cat file)` — and if a pattern kill is unavoidable, exclude the caller with `pgrep -f PATTERN | grep -v $$` or use `pkill -f -x`/a PID list filtered by command name. Add this as a one-line checklist item to the build-and-verify section that the screenshot recipe lives in.
 
 **Principle:** A rule an agent has already violated twice in one session is not a rule problem but a design problem: convert it into a habit that cannot self-match (PID files, exclusion of $$), because the trigger — typing the pattern into the command that runs it — is invisible at the moment of writing.
+
+### Observation 143: A red-first proof must revert the FIX HUNK, not the file — a whole-file stash proved the test red for the wrong reason
+
+**Status:** OPEN
+**Date:** 2026-09-09
+**Session context:** RAPTOR schema hardening; pinning a reviewer's finding (a corrupt links record) with a test that must fail before the fix
+**Skill:** RAPTOR build-and-verify loop / test-driven bug-fix habit
+**Type:** open-source
+**Phase/Area:** proving a regression test is red before its fix
+
+**Issue:** To show the new test failing on the old code, the agent ran `git stash push -- core.js`. The stash removed EVERY uncommitted change in that file — a sub-agent's whole feature, including the test seam the new test called — so the test went red with "is not a function", not with the defect. The proof was worthless and looked like a pass of the red step. The correct move was to swap only the fixed function body back to its old text (a scripted replace from a saved copy), run, then restore.
+
+**Suggested improvement:** In the red-first checklist: "revert only the hunk that IS the fix (a scripted replace of the function body, or `git stash -p`-equivalent), never the file, when the file also carries unrelated uncommitted work — and read the failure message: it must be the DEFECT's message, not a missing-symbol error."
+
+**Principle:** A red test only proves something when it fails for the reason the fix addresses; verify the failure message, not just the colour, and scope the temporary revert to the fix itself when the file carries other in-flight work.

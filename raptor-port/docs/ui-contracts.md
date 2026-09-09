@@ -6908,3 +6908,23 @@ screen:
   brings it back; Escape and ✕ clear it. The list is always in the DOM
   (`.on` shows it). Pins: `tracker.test.tsx`, the smoke suite (desktop and
   phone, hit-tested).
+- **`+ Add` in the Students card offers the squadron roster (9 Sep 26).** The
+  dialog is the same `DlgModal`, now with a list section ABOVE the free-text
+  box when the people bridge holds anyone: a heading "From the squadron
+  roster", a search box (`#dlgFilter`), and one `button.dlg-item[data-key]`
+  per person — the callsign, then a muted "Pilot · OCU" / "WSO · C" sub-line
+  (seat, then the category when there is one). Order is OCU first, pilots
+  before WSOs, then callsign — the trainees the card is for come first. The
+  search narrows by callsign as you type; Enter in the search picks a sole
+  match; a click picks. A pick adds the person under their callsign
+  (upper-cased, as every roster name is) and records the link; the free-text
+  box below ("Or type a callsign") still adds an unlinked name exactly as
+  before, so the old flow and the smoke suite's `#dlgInput` path are
+  unchanged. With nobody in the bridge (a standalone Tracker) the dialog is
+  byte-identical to the old prompt. A linked student's roster chip carries
+  `.linked` (a small accent dot before the name) and the title "On the
+  squadron roster as <callsign>". Names containing a colon are refused at
+  every add/rename with one message. Pins: `tracker.test.tsx` (the live
+  dialog render, order, narrowing, the linked chip, the refusal), the smoke
+  suite (12 checks after the `addStudent` helper, incl. a real Export
+  carrying `links`). Wiring: `docs/data-schema.md` §The person link.

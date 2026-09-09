@@ -1887,6 +1887,62 @@ const addStudent = async name => {
   await pg.fill('#dlgInput', name);
   await pg.click('#dlgOk'); await pg.waitForTimeout(700);
 };
+
+/* ---- the person → Tracker link (9 Sep 26) ----
+   Raptor's squadron roster reaches the + Add dialog through the people bridge
+   (tracker/people.js, wired by TrackerPage.tsx): it is listed above the text
+   box, a pick adds the person under their callsign and links them, a typed
+   name still adds an unlinked student (the helper above), and the export file
+   carries the links beside the students. Both are removed again at the end so
+   the lull checks below see the roster they always did. */
+{
+  await pg.click('#addStu'); await pg.waitForSelector('#dlgList');
+  const first = await pg.evaluate(() => {
+    const b = document.querySelector('#dlgList .dlg-item');
+    return b ? { key: b.dataset.key, label: b.querySelector('.dlg-lbl').textContent, sub: (b.querySelector('.dlg-sub') || {}).textContent || '' } : null;
+  });
+  const dlgText = ((await pg.textContent('#dlgModal')) || '').replace(/\s+/g, ' ');
+  ok('+ Add opens with the squadron roster listed above the text box',
+    !!first && /Add a crew member/.test(dlgText) && /From the squadron roster/.test(dlgText) && await pg.locator('#dlgInput').count() === 1, dlgText.slice(0, 90));
+  ok('a roster entry reads callsign, then seat and category', !!first && !!first.label && /^(Pilot|WSO)/.test(first.sub), JSON.stringify(first));
+  ok('the text box says it is the other way in', (await pg.getAttribute('#dlgInput', 'placeholder')) === 'Or type a callsign');
+  ok('the list sits above the text box', await pg.evaluate(() =>
+    [...document.querySelectorAll('#dlgModal #dlgList, #dlgModal #dlgInput')].map(e => e.id).join('>') === 'dlgList>dlgInput'));
+  await pg.fill('#dlgFilter', first.label); await pg.waitForTimeout(150);
+  const narrowed = await pg.evaluate(lbl =>
+    [...document.querySelectorAll('#dlgList .dlg-item .dlg-lbl')].map(e => e.textContent).every(t => t.toLowerCase().includes(lbl.toLowerCase())), first.label);
+  ok('the search box narrows the list to the typed callsign', narrowed && await pg.locator('#dlgList .dlg-item').count() >= 1);
+  await pg.click(`#dlgList .dlg-item[data-key="${first.key}"]`); await pg.waitForTimeout(700);
+  const picked = first.label.toUpperCase();
+  const rosterNow = () => pg.evaluate(() => [...document.querySelectorAll('#activeSel option')].map(o => o.value));
+  ok('picking a person adds them under their callsign, upper-cased', (await rosterNow()).includes(picked), (await rosterNow()).join(', '));
+  ok('and marks their chip as linked to the squadron roster',
+    await pg.locator(`.c-students .chip.linked[title="On the squadron roster as ${first.label}"]`).count() === 1);
+  await addStudent('STUDENT SMOKE3');
+  ok('a typed callsign still adds an unlinked crew member',
+    (await rosterNow()).includes('STUDENT SMOKE3') && await pg.locator('.c-students .chip.linked').count() === 1);
+  /* the file, through the real Export button: the OS save picker cannot be
+     driven, so a fake handle (window.__pickSaveForTests) collects what the
+     app wrote — the twin of the Import hook at the end of this suite */
+  await pg.evaluate(() => {
+    window.__pickSaveForTests = async name => ({ name, createWritable: async () => ({ write: async t => { window.__exportedForTests = t; }, close: async () => {} }) });
+  });
+  await viaMenu('file', '#exportBtn'); await pg.waitForTimeout(500);
+  await pg.check('#copyStudents'); await pg.click('#copyOk'); await pg.waitForTimeout(1500);
+  const exported = await pg.evaluate(() => { try { return JSON.parse(window.__exportedForTests || 'null'); } catch (_) { return null; } });
+  const courseNow = await pg.evaluate(() => document.querySelector('#courseSel').value);
+  ok('the export file carries the links beside the students',
+    !!exported && exported.contains.links === true && !!exported.links && !!exported.links[courseNow] && exported.links[courseNow][picked] === first.key,
+    exported ? JSON.stringify(exported.links) : 'no file was written');
+  ok('an unlinked crew member has no link in it', !!exported && !((exported.links || {})[courseNow] || {})['STUDENT SMOKE3']);
+  if (await pg.locator('#dlgOk').count()) { await pg.click('#dlgOk'); await pg.waitForTimeout(300); }
+  await pg.evaluate(() => { delete window.__pickSaveForTests; delete window.__exportedForTests; });
+  for (const n of [picked, 'STUDENT SMOKE3']) {
+    await pg.click(`.c-students .chip .x[data-rm="${n}"]`); await pg.waitForSelector('#dlgOk'); await pg.click('#dlgOk'); await pg.waitForTimeout(700);
+  }
+  ok('removing a linked crew member takes the link with them',
+    !(await rosterNow()).includes(picked) && await pg.locator('.c-students .chip.linked').count() === 0);
+}
 if ((await pg.locator('#activeSel option').count()) < 2) await addStudent('STUDENT SMOKE2');
 const roster0 = await pg.evaluate(() => [...document.querySelectorAll('#activeSel option')].map(o => o.value));
 ok('the course has two students to test lull periods against', roster0.length >= 2, roster0.join(', '));
@@ -3513,11 +3569,14 @@ const chartsOnly = FF.buildFile({ charts: CHARTS_FIX, students: null, savedAt: '
 ok('charts-only file says so', chartsOnly.contains.students === false);
 ok('charts-only file has no students key', !('students' in chartsOnly));
 ok('charts-only file names nobody', !JSON.stringify(chartsOnly).includes('STUDENT A'));
-ok('a name containing a colon still round-trips', (() => {
+/* Reversed 9 Sep 26 (the schema-hardening round): a colon is a storage-key
+   separator, so a name carrying one is refused — naming the part — where it
+   used to round-trip. The app refuses it at every typing point too. */
+ok('a name containing a colon is refused, naming the part', (() => {
   const odd = { courses: ['A:B'], byCourse: { 'A:B': { plan: {}, bySyllabus: { 'x:y': {
     roster: ['LEE J: JR'], marks: {}, dates: {} } } } } };
-  return JSON.stringify(FF.readFile(FF.buildFile({ charts: null, students: odd, savedAt: 'x' })).students)
-    === JSON.stringify(odd);
+  try { FF.readFile(FF.buildFile({ charts: null, students: odd, savedAt: 'x' })); return false; }
+  catch (e) { return /course name “A:B”.*colon/.test(e.message); }
 })());
 
 /* ---- a damaged file must be refused, not half-applied ----
