@@ -216,9 +216,14 @@ far-right corner (on a phone Save takes an auto margin to hold that corner).
 Same behaviours, tidier bar; contract in `docs/ui-contracts.md` §The Tracker
 tab, pinned in `tracker.test.tsx` + the smoke suite, driven in a real browser
 at 1440 and 390. Merged live as PR #377 (9 Sep 26); the leftover cross-session
-PRs (#184, #314, #357, #372, #376) were closed unmerged at the owner's ask,
-and **work now lands on `main` directly** (owner, 9 Sep 26: "continue working
-on main henceforth"). **Then (9 Sep 26, on main) two Tracker asks:** the Find
+PRs (#184, #314, #357, #372, #376) were closed unmerged at the owner's ask.
+**HOLD BEFORE LIVE (owner, 9 Sep 26, superseding "continue working on main
+henceforth"):** work on a BRANCH, not main — push auto-deploys, so main stays
+clean until he says so. Push the change, run every gate, hand him a link to
+test, and merge to main ONLY on his explicit "merge live". This restores the
+2 Sep NO-AUTO-MERGE rule (CLAUDE.md §Vercel). He asked why a fix was merged
+live without him; the earlier "work on main / done means live" pair had been
+followed instead of this hold. **Then (9 Sep 26, on main) two Tracker asks:** the Find
 box lists its PREDICTIONS as you type (every matching event with its name,
 ↓ ↑ / click to pick, phone full-width), and **↶ ↷ moved from the edit strip
 to the bar for everyone** — one history that takes back a grade, a failure
