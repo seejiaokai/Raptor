@@ -100,14 +100,17 @@ This reading satisfies each stated goal:
                                        ▼
                          ┌─────────────────────────────┐
                          │   one database               │
-                         │   shared: Person, Course,    │
-                         │           Calendar, Audit    │
+                         │   shell-owned: Person, User, │
+                         │     Qualification, QualMark, │
+                         │     Setting, SchemaVersion   │
                          │   owned per module: the rest │
                          └─────────────────────────────┘
 ```
 
 **Ownership rule.** A table is owned by exactly one module, which is the only
-writer. Shared tables (Person, Course, Calendar, Audit) are owned by the shell.
+writer. Shared tables (Person, User, Qualification, QualMark, Setting) are
+owned by the shell; the table-by-table assignment is `data-model.md` §8
+(Course is the Tracker's until a second module needs it).
 Another module reads them through the API, never joins to them in its own
 queries. Cross-module derivations (OIL credited from the published schedule;
 a qualification picture from Tracker marks) are *derived* by the owning
