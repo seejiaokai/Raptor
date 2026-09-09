@@ -885,10 +885,10 @@ ok('Course follows Crew, and each edit pencil sits right after its dropdown',
    there is something unsaved; the ✎ Edit toggle is now inside the Syllabus
    pencil, so it is not a bar control; hSearchBtn is 0-wide on a desktop (the
    search shows as an inline box, hSearch + hSearchClear). */
-ok('the bar reads Crew · Course ✎ · Syllabus ✎ · ⓘ · ↶ ↷ · Show All · File · search',
+ok('the bar reads Crew · Course ✎ · Syllabus ✎ · ⓘ · ↶ ↷ · Show All · File · search · Hide',
   crewFirst.ids.join(',') === ['activeSel', 'courseSel', 'courseMenuBtn',
     'sylSel', 'sylMenuBtn', 'detailsBtn', 'trUndoBtn', 'trRedoBtn', 'showAllBtn',
-    'fileMenuBtn', 'hSearch', 'hSearchClear'].join(','),
+    'fileMenuBtn', 'hSearch', 'hSearchClear', 'barHideBtn'].join(','),
   crewFirst.ids.join(' → '));
 
 /* WHERE THE GAP FALLS, which the id list can't see: the spacer is a <span>, so
@@ -1839,6 +1839,30 @@ await pg.waitForSelector('#flowSvg .ball');
 await pg.waitForTimeout(400);
 ok('the desktop chart is still shown full size, not shrunk to fit',
   Math.abs((await pg.evaluate(() => parseFloat(getComputedStyle(document.querySelector('.flowwrap')).zoom) || 1)) - 1) < 0.01);
+
+/* ---- hide the bar to maximise the chart (owner phone ask, 9 Sep 26) ----
+   A per-browser choice: the bar collapses to a slim strip that names the crew
+   and brings it back, and the chart grows into the freed height on its own. */
+{
+  const boardH = () => pg.evaluate(() => { const b = document.getElementById('board'); return b ? Math.round(b.getBoundingClientRect().height) : 0; });
+  const headerN = () => pg.locator('#page-tracker header').count();
+  ok('the bar carries a Hide control', await pg.locator('#barHideBtn').count() === 1);
+  const shownFirst = await headerN(), peekFirst = await pg.locator('#barShowBtn').count();
+  ok('the bar is shown to begin with', shownFirst === 1 && peekFirst === 0);
+  const bdBefore = await boardH();
+  await pg.click('#barHideBtn'); await pg.waitForTimeout(200);
+  ok('hiding the bar removes it', (await headerN()) === 0);
+  const who = (await pg.locator('#barShowBtn .barpeek-who').textContent().catch(() => '')).trim();
+  ok('hiding leaves a way back that names the crew', (await pg.locator('#barShowBtn').count()) === 1 && who.length > 0, `crew="${who}"`);
+  const bdAfter = await boardH();
+  ok('the chart grows into the freed space', bdAfter > bdBefore + 20, `${bdBefore} → ${bdAfter}px`);
+  ok('the choice is remembered per browser (ocuLocal, not the shared file)',
+    (await pg.evaluate(() => localStorage.getItem('ocuLocal:barHidden'))) === '1' &&
+    (await pg.evaluate(() => localStorage.getItem('ocu:barHidden'))) === null);
+  await pg.click('#barShowBtn'); await pg.waitForTimeout(200);
+  ok('showing the bar brings it back', (await headerN()) === 1 && (await pg.locator('#barShowBtn').count()) === 0);
+  ok('showing the bar clears the remembered choice', (await pg.evaluate(() => localStorage.getItem('ocuLocal:barHidden'))) === '0');
+}
 
 /* ---- lull periods ----
    Course-wide, set through a calendar mode dropdown that also duplicated the

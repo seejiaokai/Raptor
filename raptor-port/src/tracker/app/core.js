@@ -152,6 +152,16 @@ const PP = 'ocuLocal:';
 function prefGet(k) { try { return localStorage.getItem(PP + k); } catch (e) { return null; } }
 function prefSet(k, v) { try { localStorage.setItem(PP + k, v); } catch (e) {} }
 
+/* The toolbar hides on demand so the chart gets the whole column (owner phone
+   ask, 9 Sep 26 — "have the option to hide this bar so that the space can be
+   maximised"). It is a per-BROWSER view choice, so it rides ocuLocal: and NOT
+   a shared ocu: key — one saved into the shared file/database would decide the
+   bar for everyone. Defaults to SHOWN, so nothing changes until it is chosen.
+   The board grows into the freed height on its own (.layout is flex:1), so
+   there is nothing to re-measure and no resize to fire. */
+export let barHidden = prefGet('barHidden') === '1';
+export function toggleBar() { barHidden = !barHidden; prefSet('barHidden', barHidden ? '1' : '0'); notify(); }
+
 /* ---------- app state ---------- */
 export let COURSES = [], course = null, active = null;
 export let SYL = [], byid = {}, roster = [], marks = {}, dates = {}, plan = {};

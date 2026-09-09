@@ -65,6 +65,16 @@ body.tr-on{padding-bottom:0;overflow:hidden}
 & .tr-root>*{min-width:0;max-width:100%}
 .restricted{background:#7a1414;color:#fff;text-align:center;font-weight:700;letter-spacing:3px;font-size:11px;padding:3px}
 header{display:flex;align-items:center;gap:14px;padding:10px 16px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+/* The slim strip that stands in for the hidden bar — the one way back, so it is
+   always full width and reads as a button. It names the crew you are on (the
+   control the bar is changed for most) so hiding the bar never loses track of
+   who is on screen, and the ⌄ says "opens downward". One thin line whatever the
+   width, where the bar was two rows on a phone. */
+.barpeek{display:flex;align-items:center;gap:10px;width:100%;padding:5px 12px;border:0;border-bottom:1px solid var(--line);border-radius:0;background:var(--panel);color:var(--muted);font-size:12px;text-align:left}
+.barpeek:hover{background:var(--panel2);border-color:var(--line)}
+.barpeek-chev{font-size:15px;line-height:1;color:var(--accent)}
+.barpeek-who{color:var(--ink);font-weight:600;letter-spacing:.3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.barpeek-lbl{margin-left:auto;font-size:11px;flex:0 0 auto}
 header h1{font-size:16px;margin:0;letter-spacing:.5px}
 .sub{color:var(--muted);font-size:12px}
 /* The bar now starts with Crew and ends with the save slot, with .hspacer

@@ -257,6 +257,14 @@ export default function Header() {
             9 Sep 26). On a phone it is a 🔍 that opens a full-width strip. */}
         <HeaderSearch />
 
+        {/* Hide the whole bar to give the chart the column (owner phone ask,
+            9 Sep 26). It sits at the END of the choose/act group, LEFT of the
+            spacer — everything you choose or do stays left of the save corner
+            (owner, 9 Sep 26), and hiding the bar is a thing you do. The way back
+            is the slim strip App draws in the bar's place, so the bar is never
+            hidden without one — the way a hidden wave keeps its "N hidden" line. */}
+        <button className="sm icon barhide" id="barHideBtn" title="Hide this bar to make more room for the chart" onClick={core.toggleBar}>⌃</button>
+
         {/* The spacer now falls between the search and the save corner, so Save
             changes sits alone at the far right. A real element rather than
             margin-left:auto: with a wrapping bar an auto margin applies per

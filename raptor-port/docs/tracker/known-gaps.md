@@ -72,6 +72,18 @@ toolbar shows `saved N KB at HH:MM` — if he reports it again, ask whether that
 time changed.
 
 **Worth raising when he next looks:**
+- **The toolbar hides on demand** (owner, 9 Sep 26 — phone ask, "have the
+  option to hide this bar so that the space can be maximised"). The ⌃ at the
+  end of the bar (left of the Save corner — everything you do stays left of it)
+  collapses the whole controls bar to a slim strip that names the crew you are
+  on and is itself the button back (`.barpeek`, `#barShowBtn`); the chart grows
+  into the freed height on its own because `.layout` is `flex:1`. The choice is
+  a per-BROWSER view preference, so it rides `ocuLocal:barHidden` and NOT a
+  shared `ocu:` key (one saved into the shared file/database would decide the
+  bar for everyone), defaulting to SHOWN. Works on a desktop too, where the
+  Flow/Info tabs aren't drawn and the strip is the only handle. `core.barHidden`
+  / `core.toggleBar`; pinned in `smoke.mjs` (hide removes the bar, the strip
+  names the crew, the chart grows, the choice persists under ocuLocal).
 - Everything fits one phone screen at two students; a fifth may start it
   scrolling.
 - Switching student LANDS ON THAT STUDENT'S LATEST WORK (owner, 9 Sep 26:
