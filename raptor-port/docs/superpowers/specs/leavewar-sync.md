@@ -307,7 +307,7 @@ draw the counter the moment they land. The Openings/Ledger stay Leave
 War's own. The one Raptor-side surface worth adding later: the balance
 beside a person in the Inputs add form, read from Leave War's
 `balanceOf` — display only, never a refusal (negative balances are shown,
-never blocked — the squadron's own workbook runs negative).
+never blocked — a balance is allowed to run negative).
 
 ## Wire 4 — weekend/PH work earns OIL (the owner's rule, 16 Aug 26)
 

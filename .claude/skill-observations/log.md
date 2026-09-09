@@ -2136,3 +2136,18 @@ gate's. Keep verdict-bearing commands unpiped.
 **Suggested improvement:** Stop a background task with the harness tool (TaskStop) or by PID, never with `pkill -f <substring>` from a command whose own text contains that substring. After stopping, check for orphaned children (a dev/preview server on a fixed port) by PID before restarting.
 
 **Principle:** A process-matching kill from inside a shell matches the shell too; kill by identity (task id or PID), and after any forced stop look for the orphans the stopped task left behind before relaunching.
+
+### Observation 141: Masking demo data is a repo-wide sweep of the TRAIL, not just the values
+
+**Status:** OPEN
+**Date:** 2026-09-09
+**Session context:** Owner asked to mask demo data in a public repo (invented airspace/orders wording, drop the citation of the document the course maps were transcribed from, drop comments saying seed callsigns came from the real crew's workbook).
+**Skill:** task-observer (general practice; candidate note for any "public repo hygiene" skill)
+**Type:** open-source
+**Phase/Area:** Scoping and verifying a data-masking change
+
+**Issue:** The values to mask sat in two seed files, but the trail sat in ~25 other places: code comments quoting the old codes, unit tests asserting them, docs using them as parser examples, a generator script whose section headers were the source document's page numbers, and provenance fields in a JSON file that no code read. A byte-parity gate against a read-only reference copy also deep-compared the seed, so the change needed a position-mirror step (an existing idiom) rather than an edit to the reference. The first count-asserted swap failed because a longer token contained a shorter one; counting standalone occurrences after the longer swap fixed it.
+
+**Suggested improvement:** For a masking ask: (1) grep the whole repo (comments, tests, docs, scripts, JSON metadata) for every old token AND for provenance words (source, read_from, screenshot, page numbers, file formats); (2) swap with per-file asserted counts, longest token first; (3) add a tripwire test that fails on the old patterns; (4) if a read-only oracle carries the originals, mirror by position instead of editing it; (5) report what still remains (git history, the read-only oracle) so the owner can decide.
+
+**Principle:** Sensitive-content removal is about every place that points back to the source, not the data field itself; assert counts on each swap and leave a test that keeps the old wording out.

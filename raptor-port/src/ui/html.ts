@@ -745,7 +745,7 @@ export function intimesInner(w:any,ek?:any){
 /* AREA and TIME are not the model fields they are edited through. Until a
    scheduler types over them they READ OFF THE AIRCRAFT: the distinct area codes on
    the formation, and the formation's own TO–LD. Both surfaces have to agree on that
-   or clearing the cell would heal it to '' while the renderer still says AA2NS —
+   or clearing the cell would heal it to '' while the renderer still says SOUTH —
    the model unchanged, the markup unchanged, and the strip blank for good. So the
    derivation lives here once and both callers use it. */
 export function areaCodesOf(f:any){

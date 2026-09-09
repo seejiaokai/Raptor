@@ -161,7 +161,7 @@ export function routeFocusOut(e: FocusEvent) {
      (owner, 6 Aug 26). These two are the only cells whose displayed value is
      DERIVED — area codes off the aircraft, the window off the formation's
      TO–LD — so `f.area`/`f.atime` are null while the cell already reads
-     "D1415 · AA2NS" and "1240-1405". Comparing the text to '' therefore said
+     "NORTH · SOUTH" and "1240-1405". Comparing the text to '' therefore said
      "changed" for a cell nobody had touched: clicking in and straight back
      out, or tabbing through, wrote the derived value into the model as if a
      scheduler had typed it.

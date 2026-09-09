@@ -41,6 +41,7 @@ export async function refWindow(): Promise<any> {
   reduty(w)
   recs(w)
   reground(w)
+  reday(w)
   w.eval('validate()')
   return w
 }
@@ -92,6 +93,34 @@ export function reground(w: any) {
       + `if(D.allhands)D.allhands.forEach((r,j)=>{if(p.allhands[j]!=null)r.prog=p.allhands[j].prog;});`
       + `if(D.ground)D.ground.forEach((r,j)=>{if(p.ground[j]!=null){r.prog=p.ground[j].prog;r.who=p.ground[j].who;}});`
       + `['amt','oft'].forEach(k=>{if(D.sims&&D.sims[k])D.sims[k].forEach((r,j)=>{const s=(p.sims[k]||[])[j];if(s!=null){r.label=s.label;if('who' in s)r.who=s.who;if('rmks' in s)r.rmks=s.rmks;}});});`
+      + `})(${p})`)
+  })
+}
+
+/* The second scrub (owner, 9 Sep 26 — "put more made up areas and generic
+   wording"): the demo week's AREA codes, day NOTES (the orders line, the EP of
+   the day) and the wave TRAFFIC line were rewritten to invented values so no
+   real airspace, orders reference or visiting-aircraft detail ships in the
+   public demo. Same idiom as reground — the read-only reference still carries
+   the originals, so the in-memory copy is overwritten BY POSITION from the
+   port's seed before either engine runs, keeping the seed-DAYS deep-equal and
+   every rendered byte exact. Pure data; no rule moves. */
+export function reday(w: any) {
+  const refn = w.eval('DAYS.length')
+  DAYS.slice(0, refn).forEach((d: any, i: number) => {
+    const p = JSON.stringify({
+      notes: d.notes || [],
+      waves: (d.waves || []).map((wv: any) => ({
+        traffic: wv.traffic || [],
+        forms: (wv.formations || []).map((f: any) => (f.aircraft || []).map((a: any) => a.area)),
+      })),
+    })
+    w.eval(`(function(p){const D=DAYS[${i}];`
+      + `if(D.notes)D.notes.forEach((_,j)=>{if(p.notes[j]!=null)D.notes[j]=p.notes[j];});`
+      + `if(D.waves)D.waves.forEach((wv,g)=>{const q=p.waves[g];if(!q)return;`
+      + `if(wv.traffic)wv.traffic.forEach((_,j)=>{if(q.traffic[j]!=null)wv.traffic[j]=q.traffic[j];});`
+      + `(wv.formations||[]).forEach((f,k)=>{const fa=q.forms[k];if(!fa)return;`
+      + `(f.aircraft||[]).forEach((a,j)=>{if(fa[j]!=null)a.area=fa[j];});});});`
       + `})(${p})`)
   })
 }

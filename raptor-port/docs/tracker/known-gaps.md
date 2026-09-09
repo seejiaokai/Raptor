@@ -142,7 +142,7 @@ time changed.
   the smoke suite are consulted before every map comparison. Add to them;
   never "correct" the syllabus back to the map. The two course maps are
   transcribed and pinned in `scripts/tracker/course-map-*.json`; the map is
-  authoritative over the document's tables — every page says so.
+  authoritative over the tables that accompany it — the owner confirmed.
 - **`gen-agaa-layout.mjs` is history, not the source of truth.** The owner has
   moved 132 boxes and drawn 68 lines on top of what it generated; re-running
   it would throw his work away. Kept for the record only.
@@ -190,11 +190,11 @@ time changed.
   `#trRedoBtn` are on the BAR (9 Sep 26) and `disabled` while their stack is
   empty — a Playwright `click()` on one then waits 30s for it to enable, so
   press an expectedly-greyed one the DOM way (`el.click()` in `evaluate`).
-- **Reading the syllabus `.docx`:** do not trust chart pages unzipped from the
-  document — Word overlays (red X strikes, the IEPE ellipse) are separate
-  images and go missing, which produced five confidently wrong readings once.
-  Ask the owner for screenshots of the rendered pages. Page-join letters are
-  wires, not events.
+- **Reading the course map:** do not trust chart images exported from its
+  source file — overlays (red X strikes, the IEPE ellipse) are separate layers
+  and go missing, which produced five confidently wrong readings once. Ask the
+  owner for pictures of the rendered pages. Page-join letters are wires, not
+  events.
 - **The repository is public.** No student name, mark or date may enter it. The
   smoke suite checks the seed and the sample file for placeholder names only;
   `bake-user-charts.mjs` re-checks after every bake.

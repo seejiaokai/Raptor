@@ -1,10 +1,9 @@
-/* Rebuild the baked "A/G - A/A 2026" chart layout to mirror the FG Master
- * Annex B course map (pages B-23..B-32) as rendered in the user's screenshots
- * (9 Aug 2026). The document reads bottom-to-top, page after page; the app
- * draws top-to-bottom, so each page is flipped and the pages are stacked in
- * course order. x/y below come from reading positions off the screenshots
- * (doc pixels), flipped and scaled so rows sit ~88px apart like every other
- * chart in the app.
+/* Rebuild the baked "A/G - A/A 2026" chart layout to mirror the owner's
+ * ten-page course map as he supplied it (9 Aug 2026). The map reads
+ * bottom-to-top, page after page; the app draws top-to-bottom, so each page is
+ * flipped and the pages are stacked in course order. x/y below come from
+ * reading positions off the pages, flipped and scaled so rows sit ~88px apart
+ * like every other chart in the app.
  *
  * Vocabulary used to mirror the drawing:
  *  - chains down a column      -> plain prerequisite edges (straight verticals)
@@ -39,7 +38,7 @@ const put = (id, x, y) => {
 const K = (p, c) => p + '▸' + c;
 const em = (p, c, m) => { EM[K(p, c)] = m; };
 
-/* ---------------- B-23 : ST-01 .. T-02 / OPS-01 ---------------- */
+/* ---------------- page 1 : ST-01 .. T-02 / OPS-01 ---------------- */
 put('ST-01', 417, 60);
 put('ACG-01', 417, 158);
 put('ST-02', 643, 210);
@@ -63,7 +62,7 @@ em('ST-06', 'CFT-01', { fromSide: 'W', toSide: 'N' });
 for (const c of ['ACG-03', 'ACG-04', 'ACG-05', 'ACG-06'])
   em('ACG-02', c, { mid: { x: N[c].x, y: 340 } });
 
-/* ---------------- B-24 : AVI-06..TR(S)-1 ---------------- */
+/* ---------------- page 2 : AVI-06..TR(S)-1 ---------------- */
 put('AVI-06', 237, 1618); put('AVI-07', 345, 1618); put('AVI-08', 460, 1618); put('AVI-09', 566, 1618);
 put('IAT-02', 345, 1757); put('AVI-10', 460, 1757);
 put('T-03', 400, 1887);
@@ -84,7 +83,7 @@ em('ST-05', 'TR(S)-1', { fromSide: 'E', toSide: 'N' });
 em('OPS-03', 'TR(S)-1', { fromSide: 'W', toSide: 'N' });
 em('OPS-02', 'TR(S)-1', { mid: { x: 400, y: 2616 } });  /* joins the riser between ST-04 and ST-05 */
 
-/* ---------------- B-25 : sim column, TR chain, radar column ---------------- */
+/* ---------------- page 3 : sim column, TR chain, radar column ---------------- */
 put('ST-16', 200, 2992); put('TR(S)-2', 470, 2992); put('T-05', 737, 2992);
 put('JMP-01', 200, 3067); put('CFT-02', 470, 3072); put('EPT-01', 110, 3086);
 put('RDR-01', 737, 3139); put('CFT-03', 470, 3161); put('EPT-02', 110, 3168);
@@ -111,7 +110,7 @@ em('TR(S)-4', 'TR-2', { fromSide: 'W', toSide: 'N' });
 em('TR(S)-6', 'TR-3', { fromSide: 'W', toSide: 'N' });
 em('EPE', 'TR-4', { fromSide: 'W', toSide: 'N' });
 
-/* ---------------- B-26 : AAW bus, AAM column, INT sims, H-wire start ---------------- */
+/* ---------------- page 4 : AAW bus, AAM column, INT sims, H-wire start ---------------- */
 put('AAW-01', 630, 4350); put('AAW-02', 734, 4350);
 put('AAS-04', 352, 4361);
 put('IEPE/IPC', 435, 4430);
@@ -151,7 +150,7 @@ em('INT(S)-2', 'DAAR', { fromSide: 'W', toSide: 'N' });
    elbow lands arrowless on the ball's shoulder (agent-audit find, 9 Aug) */
 em('T-10', 'INT(S)-4', { fromSide: 'W', toSide: 'E' });
 
-/* ---------------- B-27 : LASDT, AGR/AGD/AGS ladder, SA(S)-1 ---------------- */
+/* ---------------- page 5 : LASDT, AGR/AGD/AGS ladder, SA(S)-1 ---------------- */
 put('JMP-03', 390, 5926); put('AAM-09', 573, 5926); put('AGR-01', 757, 5926);
 put('OPS-05', 390, 6020); put('ST-10 LASDT', 573, 6020); put('AGR-02', 757, 6022);
 put('LASDT(S)-1', 480, 6073);
@@ -181,7 +180,7 @@ em('LASDT(S)-1', 'LASDT-1', { fromSide: 'W', toSide: 'N' });
 em('ST-13', 'SA(S)-1', { fromSide: 'E', toSide: 'N' });
 em('AGW-01', 'SA(S)-1', { fromSide: 'W', toSide: 'E' });
 
-/* ---------------- B-28 : SA ladder and its sims, AGS-04..AGW-03 ---------------- */
+/* ---------------- page 6 : SA ladder and its sims, AGS-04..AGW-03 ---------------- */
 put('SA(S)-2', 480, 7551);
 put('ST-17', 345, 7626);
 put('AGS-04', 700, 7704);
@@ -210,7 +209,7 @@ em('SA(S)-5', 'SA-4', { fromSide: 'W', toSide: 'N' });
 em('IAT-12', 'SA(S)-5', { fromSide: 'W', toSide: 'E' });
 em('AGW-03', 'T-14', { mid: { x: 578, y: 8514 } });
 
-/* ---------------- B-29 : SA-5/6, BFM start, SA(S)-6/7 ---------------- */
+/* ---------------- page 7 : SA-5/6, BFM start, SA(S)-6/7 ---------------- */
 put('OPS-06', 563, 9187);
 put('SA(S)-6', 480, 9336);
 put('SA-5', 260, 9523); put('SA(S)-7', 480, 9523);
@@ -225,11 +224,11 @@ em('OPS-06', 'SA(S)-6', { fromSide: 'W', toSide: 'N' });
 em('SA(S)-7', 'SA-5', { fromSide: 'W', toSide: 'E' });
 em('AAM-06', 'BFM-1', { fromSide: 'W', toSide: 'N' });
 em('AAM-07', 'BFM-3', { fromSide: 'W', toSide: 'N' });
-/* the SS wire: SA(S)-7 out of its E side, then one long drop into SAN-1 (B-32) */
+/* the SS wire: SA(S)-7 out of its E side, then one long drop into SAN-1 (page 10) */
 em('SA(S)-7', 'SAN-1', { fromSide: 'E', mid: { x: 645, y: 9523 } });
 em('SA(S)-7', 'ACM(S)-1', { fromSide: 'S', toSide: 'N' }); /* the T wire, straight down the sim lane */
 
-/* ---------------- B-30 : BFM-4..7, ACM start, ST-10 ACM column ---------------- */
+/* ---------------- page 8 : BFM-4..7, ACM start, ST-10 ACM column ---------------- */
 put('BFM-4', 260, 10836);
 put('JMP-02', 185, 10996); put('AAM-08', 320, 10996);
 put('BFM-5', 260, 11121);
@@ -248,7 +247,7 @@ em('ST-10 ACM', 'ACM(S)-1', { fromSide: 'W', toSide: 'N' });
 em('AAM-11', 'ACM(S)-1', { fromSide: 'W', toSide: 'E' });
 em('AAM-10', 'ACM-1', { fromSide: 'W', toSide: 'N' });
 
-/* ---------------- B-31 : ACM-2/3, TI sims, TI-1/2, LASDT-3 ---------------- */
+/* ---------------- page 9 : ACM-2/3, TI sims, TI-1/2, LASDT-3 ---------------- */
 put('ACM-2', 260, 12405);
 put('ACM(S)-2', 480, 12549);
 put('ST-12', 370, 12618); put('AAM-12', 700, 12618);
@@ -267,7 +266,7 @@ em('AAM-13', 'TI(S)-2', { fromSide: 'W', toSide: 'N' });
 em('TI(S)-2', 'TI-1', { fromSide: 'W', toSide: 'N' });
 em('TI(S)-3', 'TI-2', { fromSide: 'W', toSide: 'N' });
 
-/* ---------------- B-32 : TI-3..ST-18, night column, SAT/SATN finish ---------------- */
+/* ---------------- page 10 : TI-3..ST-18, night column, SAT/SATN finish ---------------- */
 put('AAM-14', 190, 13614);
 put('NVG-01', 770, 13672);
 put('TI-3', 260, 13733);

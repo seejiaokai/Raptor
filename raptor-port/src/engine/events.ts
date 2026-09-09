@@ -160,7 +160,7 @@ function standaloneHits(di:any,id:any,s:any,e:any,selfKey:any,kind:any,seatsOnly
 /* The time WRITTEN in an in-time line (owner, 21 Aug 26 — "can u accept any
    form of combination"): 0900 · 09:00 · 0900H · 09:00H · 0900L · 09:00L, any
    case on the suffix. The FIRST token that reads as a real clock time wins;
-   a token glued to letters (FL240, D15R) never matches, and out-of-range
+   a token glued to letters (FL240, R15W) never matches, and out-of-range
    digits (2590) are skipped rather than misread. Shared by intimeMap and
    waveInTime so the report time and the wave windows can never read one line
    two ways. */

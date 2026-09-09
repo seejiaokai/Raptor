@@ -30,8 +30,7 @@ describe('seed', () => {
   })
 
   // The seeded war is a WHOLE YEAR, not a quarter. A quarter was the first
-  // shape this took, and it is still the common case in the reference
-  // workbook — but the owner reads the year at once and jumps to a month to
+  // shape this took — but the owner reads the year at once and jumps to a month to
   // navigate, so the seed has to be the thing they actually look at.
   it('covers the whole of 2026', () => {
     const period = seedPeriod()

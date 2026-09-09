@@ -1,7 +1,4 @@
 {
- "source": "FG Master Syllabi Annex B, EFF DATE JUL 26, A/G - A/A COURSE MAP, pages B-23..B-32",
- "read_from": "user screenshots of the rendered document (IMG_3269-3278), not images unzipped from the .docx",
- "note": "Every page states: \"Flowchart is authoritative and the table prerequisites are treated as superseded.\"",
  "renamed": {
   "AVI-12A/B": "AVI-12",
   "IEPE": "IEPE/IPC",
@@ -665,9 +662,9 @@
   ]
  },
  "app_keeps_links_this_map_does_not_draw": {
-  "SA(S)-3": "app keeps SA(S)-2. The user confirmed the SA(S)-2 -> -3 -> -4 -> -5 sim chain twice; the 2026 map draws that run continuously across B-18..B-20. Pinned by AGAA_SIM_CHAIN.",
+  "SA(S)-3": "app keeps SA(S)-2. The user confirmed the SA(S)-2 -> -3 -> -4 -> -5 sim chain twice; the 2026 map draws that run continuously across three pages. Pinned by AGAA_SIM_CHAIN.",
   "SA(S)-5": "app keeps SA(S)-4. Same sim chain, same confirmation. Pinned by AGAA_SIM_CHAIN.",
-  "DAAR": "app keeps AAS-04. Approved by the user and pinned by AGAA_ADDED; on B-26 the leftward segment to DAAR leaves the TR-4 wire at the point AAS-04 arrows into it, so both readings are defensible from the drawing.",
+  "DAAR": "app keeps AAS-04. Approved by the user and pinned by AGAA_ADDED; on its page the leftward segment to DAAR leaves the TR-4 wire at the point AAS-04 arrows into it, so both readings are defensible from the drawing.",
   "AAS-04": "app keeps EPE. Legacy from the original port; neither map nor table shows it, and 2026 and Tx have none \u2014 but dropping a prerequisite can only unlock an event earlier, so it is left for the user to decide."
  }
 }

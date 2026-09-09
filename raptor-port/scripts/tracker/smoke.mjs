@@ -2900,9 +2900,8 @@ const wrong = Object.entries(CHART_2026).filter(([id, want0]) => {
 ok('2026 prereqs match the course map', wrong.length === 0,
   wrong.map(([id]) => `${id}=[${(by26[id]?.prereqs || []).join(',')}]`).join(' | '));
 
-/* The WHOLE of the 2026 map, all 206 events, transcribed from the user's own
-   screenshots of the rendered document and resolved through the page-join
-   letters. The spot-checks above pin the links that have been misread before;
+/* The WHOLE of the 2026 map, all 206 events, transcribed from the owner's
+   course-map pages and resolved through the page-join letters. The spot-checks above pin the links that have been misread before;
    this pins everything else too, so a future edit cannot quietly move one.
    Naming and the deliberate DAAR/NAAR split are recorded in the JSON itself. */
 const MAP26 = JSON.parse(readFileSync(import.meta.dirname + '/course-map-2026.json', 'utf8'));
@@ -2924,7 +2923,7 @@ ok('every prerequisite on the 2026 map matches the syllabus', mapWrong.length ==
 const revived = MAP26.struck_on_the_map.filter(id => by26full[id]);
 ok('no event the map strikes through is still in 2026', revived.length === 0, revived.join(', '));
 
-/* The WHOLE of the A/G - A/A map, all ten pages, from the user's screenshots.
+/* The WHOLE of the A/G - A/A map, all ten pages, from the owner's course-map pages.
    Its structure genuinely differs from 2026 — surface attack comes BEFORE basic
    fighting manoeuvres here — so reading one into the other is the standing
    hazard. Every page of it says the flowchart supersedes the tables. */
@@ -3064,7 +3063,7 @@ ok('Tx SA-1 bridges to TI-2, not LASDT-2', (() => {
    years had the day sortie waiting on its sim alone. The user's call, 8 Aug —
    they asked for it on both years, so both are pinned.
 
-   Since confirmed against the document itself (FG Master Syllabi Annex B, Jul 26):
+   Since confirmed against the course map itself:
    the SHORT CONVERSION "Tx" flying module gives SAT-1 [SA-5, SAT(S)-2], and the
    Tx track sheet annotates its own SA-05 as "(BCTM SA-6)" — the very flight the
    long course makes SAT-1 wait for. SAT(S)-2 carries no serial number on the Tx
@@ -3203,7 +3202,7 @@ ok('Tx NTR-1 waits for SA-4', JSON.stringify((txById['NTR-1']?.prereqs || []).sl
 
 /* A/G - A/A has its OWN ten-page map (images 20-29). Reading it into 2026 by
    mistake is what broke that chart, so these pin the pairs the map draws in an
-   order the app had reversed, plus the page B-32 tail that was never entered. */
+   order the app had reversed, plus the last page's tail that was never entered. */
 const CHART_AGAA = {
   'TI(S)-3': ['TI(S)-2'], 'DCA(S)-1': ['TI(S)-3'],
   'TI-2': ['LASDT-3', 'TI(S)-3'], 'TI-3': ['TI-2', 'AAM-14'], 'DCA-1': ['TI-3', 'DCA(S)-1'],
@@ -3236,14 +3235,13 @@ const badRef = Object.entries(REFRESHER_2026).filter(([id, want]) =>
 ok('2026 carries the DAAR / NAAR refresher chain', badRef.length === 0,
   badRef.map(([id]) => `${id}=${by26r[id] ? '[' + (by26r[id].prereqs || []).join(',') + ']' : 'MISSING'}`).join(' | '));
 
-/* Links that keep being "corrected" WRONGLY, because the chart images extracted from the .docx
-   are INCOMPLETE. The Word file draws each page as a base picture with extra pieces laid over
-   it — the red X strike-throughs, the IEPE ellipse on B-14, a TR(S)-7 ellipse, an INT-1 aircraft
-   (they come out as word/media/image4,5,9,10,13,14). Unzipping gets the base and loses the
-   overlays, so a reader working from the extracted pages sees a box missing from a chain and
-   "helpfully" reads straight through it. Every entry below was read that way at least once and
-   is wrong; each was then settled against the user's own screenshots of the rendered document.
-   If a future pass wants to change one of these, get a fresh screenshot first. */
+/* Links that keep being "corrected" WRONGLY, because chart images EXPORTED from the map's
+   source file are INCOMPLETE. Each page is a base picture with extra pieces laid over it — the
+   red X strike-throughs, the IEPE ellipse, a TR(S)-7 ellipse, an INT-1 aircraft — and an export
+   keeps the base and loses the overlays, so a reader working from exported pages sees a box
+   missing from a chain and "helpfully" reads straight through it. Every entry below was read
+   that way at least once and is wrong; each was then settled against the owner's rendered
+   pages. If a future pass wants to change one of these, ask the owner for the page first. */
 const CHART_2026_OVERLAY_TRAPS = {
   'TR(S)-7': ['TR(S)-LAO'],                              /* not TR(S)-6: TR(S)-LAO is drawn grey */
   'INT(S)-1': ['ST-09', 'ST-11', 'IEPE/IPC', 'IAT-07'],  /* not EPE: IEPE sits in the F column */
@@ -3251,7 +3249,7 @@ const CHART_2026_OVERLAY_TRAPS = {
   'LASDT-1': ['JMP-03', 'INT-1', 'LASDT(S)-1'],          /* not BFM-7: INT-1 sits between them */
   'ACM-3': ['ACM(S)-2', 'ACM-2'],                        /* not INT-1 */
   'INT-1': ['BFM-7', 'INT(S)-4'],                        /* not ACM-2 */
-  'T-10': ['AAS-04', 'IAT-08'],                          /* AAS-04 arrives via join K from B-14 */
+  'T-10': ['AAS-04', 'IAT-08'],                          /* AAS-04 arrives via join K from an earlier page */
 };
 const by26t = Object.fromEntries(SYLLABI['2026'].map(e => [e.id, e]));
 const trapped = Object.entries(CHART_2026_OVERLAY_TRAPS).filter(([id, want0]) => {
@@ -3261,13 +3259,13 @@ const trapped = Object.entries(CHART_2026_OVERLAY_TRAPS).filter(([id, want0]) =>
 ok('2026 links that the extracted chart images get wrong stay right', trapped.length === 0,
   trapped.map(([id]) => `${id}=[${(by26t[id]?.prereqs || []).join(',')}]`).join(' | '));
 
-/* The A/G - A/A surface-attack sim chain. Page B-28 appears to break it: SA(S)-2's only line
+/* The A/G - A/A surface-attack sim chain. Its page appears to break it: SA(S)-2's only line
    runs left into SA-1, SA(S)-3 looks fed only by AGW-02, and SA(S)-5 only by IAT-12. Three
    independent readings all concluded the links were absent and should be deleted. THEY MUST
    NOT BE. The user, who owns the syllabus, confirmed twice that the chain runs
    SA(S)-2 -> SA(S)-3 -> SA(S)-4 -> SA(S)-5; on the 2026 map the same run is drawn continuously
-   across pages B-18 to B-20 via joins EE and II. Deleting these would let a student fly a sim
-   out of order. Pinned so the next reading of B-28 cannot quietly undo it. */
+   across three pages via joins EE and II. Deleting these would let a student fly a sim
+   out of order. Pinned so the next reading of that page cannot quietly undo it. */
 const AGAA_SIM_CHAIN = {
   'SA(S)-2': ['SA(S)-1'],
   'SA(S)-3': ['SA(S)-2', 'AGW-02'],
@@ -3300,7 +3298,7 @@ ok('A/G - A/A prereqs match its own course map', wrongAG.length === 0,
   wrongAG.map(([id]) => `${id}=[${(byAG[id]?.prereqs || []).join(',')}]`).join(' | '));
 
 /* 9 Aug: the A/G - A/A chart was redrawn to mirror the course map's own pages
-   (B-23..B-32 flipped and stacked, read from the user's screenshots). Pin the
+   (its ten pages flipped and stacked, read from the owner's pages). Pin the
    shape, not just the links: every event placed, nothing overlapping, the long
    lettered wires straight, and the drawn NN wire still carrying SA-4 -> NTR-1. */
 {
@@ -3336,7 +3334,7 @@ ok('A/G - A/A prereqs match its own course map', wrongAG.length === 0,
 
 /* Each syllabus should funnel to one final event. A second endpoint means
    something is dangling off the end of the chart, which is how the missing
-   B-32 tail showed up: A/G - A/A stopped dead at TI-3. */
+   last-page tail showed up: A/G - A/A stopped dead at TI-3. */
 /* Tx 2026 funnels to one event now. It briefly had three: correcting AGR-01 (an
    academic that was waiting on TI-2, a flight) left both TI sorties gating
    nothing, because the events that consumed them — TI-3 and DCA-1 — are cut from
@@ -3399,7 +3397,7 @@ const SPAN_LIMIT = 1000;
    AGR-01 correction, the DAAR spine) cross space no wire was drawn for. Links
    right, routing ugly; recorded, and the user can redraw lines in the app. */
 /* 9 Aug: A/G - A/A was rebuilt to mirror the course map's own geometry
-   (pages B-23..B-32 stacked). Its long arrows are now exactly the map's
+   (its ten pages stacked). Its long arrows are now exactly the map's
    lettered page-spanning wires, so they are pinned BY NAME: a new long arrow
    fails even if an old one goes away. */
 const SPAN_ALLOWED = {

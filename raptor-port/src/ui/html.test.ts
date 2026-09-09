@@ -608,7 +608,7 @@ describe('version dropdown and preview build', () => {
   it('the preview shows the frozen day, read-only, wearing its frozen marks', () => {
     txtSet('dn:0.0', 'EVEN LATER')          // live pending edit after AL1
     const orig = dayPreviewHTML(0, 'orig', true)
-    expect(orig).toContain('EP: AB BURN THROUGH ON TAKE OFF')
+    expect(orig).toContain('EP: ENGINE FIRE ON TAKE OFF')
     expect(orig).not.toContain('EVEN LATER')
     expect(orig).toContain('dprev-bar')
     expect(orig).toContain('data-restore="0"')
@@ -675,7 +675,7 @@ describe('version dropdown and preview build', () => {
     expect(SCHED.pending).toBe(p0)
     expect(dayHTML(0, false)).not.toContain('dprev-bar')   // PV flag came back down
     /* leave the file's shared state as the next suite expects */
-    txtSet('dn:0.0', 'EP: AB BURN THROUGH ON TAKE OFF')
+    txtSet('dn:0.0', 'EP: ENGINE FIRE ON TAKE OFF')
     SCHED.pending = {}; SCHED.changes = {}; SCHED.als = []
     SCHED.al = 0; SCHED.dayOK = {}; SCHED.sign = {}; SCHED.orig = {}; SCHED.cur = {}
     DPREV.clear()
