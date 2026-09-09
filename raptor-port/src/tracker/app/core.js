@@ -2575,10 +2575,19 @@ export function closeShowAll() { showAllOpen = false; notify(); }
    cased, as every roster name is — and records the link; a TYPED name adds an
    unlinked student exactly as before (a visitor from another unit, or the
    smoke suite's #dlgInput flow). Somebody already on the roster is not added
-   twice (the silent dedupe of old) but the link is recorded for them. */
+   twice (the silent dedupe of old) but the link is recorded for them.
+   NO ROSTER = THE OLD PROMPT, byte for byte. The owner will export this app
+   back out to its standalone repo, where students are created by typing a
+   name and nothing feeds the people bridge (owner, 9 Sep 26: "it's just going
+   to be the same old way of typing and creating a student by text"). An empty
+   list must not draw an empty roster section, a search box or a "nobody
+   matches" line — so the picker only exists when Raptor has handed people
+   over. Everything Raptor-specific about + Add lives in this one branch. */
 export async function addStudent() {
   const people = getPeople().map(p => ({ key: p.id, label: p.cs, sub: seatWord(p.seat) + (p.q ? ' · ' + p.q : '') }));
-  const r = await uiPick('Add a crew member', people, { input: true, placeholder: 'Or type a callsign', listTitle: 'From the squadron roster' });
+  const r = people.length
+    ? await uiPick('Add a crew member', people, { input: true, placeholder: 'Or type a callsign', listTitle: 'From the squadron roster' })
+    : await uiPrompt('Student callsign:');
   let v, link = null;
   if (r && typeof r === 'object') {
     const p = getPeople().find(x => x.id === r.pick); if (!p) return;

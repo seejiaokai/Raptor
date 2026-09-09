@@ -639,7 +639,12 @@ keyed by their typed NAME** — the link is a separate record
 (`raptor:tracker/v3:links`, `{course: {studentName: personId}}`), additive, so
 an unlinked student behaves exactly as before; re-keying students by person id
 is the storage seam's stage-2 (stable ids) work. Course, syllabus and student
-names refuse a colon (they are storage-key segments). Design:
+names refuse a colon (they are storage-key segments). **The Tracker will be
+exported back out as a standalone app** (owner, 9 Sep 26), where students are
+typed and nothing feeds the bridge — so every Raptor-fed feature degrades to the
+old behaviour when the bridge is empty (`+ Add` with no roster IS the old
+prompt, pinned), and Raptor-specific code stays in `people.js` /
+`peoplewire.ts` / `TrackerPage.tsx` plus the one `people.length` branch. Design:
 `docs/superpowers/specs/2026-09-09-schema-hardening-design.md`; the target
 model for the database step: `docs/data-model.md`. **Everyone
 edits — marking, charts, students, courses, syllabi — and only the FILE portion

@@ -580,6 +580,28 @@ describe('the person bridge and the link (peoplewire.ts → people.js → core.j
     expect(C.roster.length).toBe(n)
   })
 
+  it('with no roster handed over — the standalone app — + Add is the old "Student callsign:" prompt, byte for byte', async () => {
+    /* owner, 9 Sep 26: the Tracker goes back out to its standalone repo, where
+       a student is created by typing a name and nothing feeds people.js. An
+       empty list must not draw an empty roster section, a search box or a
+       "nobody matches" line over the text box — the dialog is the old prompt */
+    setPeople([])
+    const Live = () => { useSyncExternalStore(C.subscribe, C.getVersion); return <DlgModal /> }
+    const host = document.createElement('div'); host.className = 'host'; document.body.appendChild(host)
+    const root = createRoot(host)
+    await act(async () => { root.render(<Live />) })
+    const p = C.addStudent()
+    await act(async () => { await tick() })
+    expect(C.dlg).toMatchObject({ msg: 'Student callsign:', input: true, filter: false, listTitle: '' })
+    expect(C.dlg.list ?? null).toBeNull()
+    expect($('#dlgInput')).toBeTruthy(); expect($('#dlgFilter')).toBeNull(); expect($('#dlgList')).toBeNull()
+    expect($('#dlgModal')!.textContent).not.toContain('roster')
+    expect(($('#dlgInput') as HTMLInputElement).getAttribute('placeholder')).toBeNull()
+    await act(async () => { C.dlgClose('solo') }); await p
+    expect(C.roster).toContain('SOLO'); expect(C.linkOf(C.course, 'SOLO')).toBeNull()
+    await act(async () => { root.unmount() }); host.remove()
+  })
+
   it('a corrupt links record reads as absent one level down too — the next pick still links and saves', async () => {
     /* review finding, 9 Sep 26: a course whose stored value is not a map made
        `LINKS[course][name] = id` throw on the next pick, with the student

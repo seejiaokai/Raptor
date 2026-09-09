@@ -298,6 +298,14 @@ browser-proven.
   is deliberately NOT started here — it touches marks, undo, the smoke suite
   and `keys.ts` at once. The technical team's open questions are listed at the
   end of `data-model.md`.
+- **THE TRACKER GOES BACK OUT AS A STANDALONE APP (owner, 9 Sep 26).** He will
+  keep adding Tracker features here, then export the Tracker to its own repo
+  (`seejiaokai/Tracker`), where students are created by typing a name and there
+  is no roster picker. Rule for every Tracker feature from now on: anything
+  that needs Raptor's people rides the `people.js` bridge and degrades to the
+  old behaviour when nothing feeds it (`+ Add` with no roster IS the old
+  prompt — `core.js addStudent`, pinned in `tracker.test.tsx`). Never let a
+  Raptor-only path become the only path.
 - **OWNER'S DEVICE PASS — the just-shipped Leave War + Tracker work awaits his
   own eyeball (7 Sep 26).** Everything is merged and live, but verified here
   only in Chromium; the owner still confirms feel and appearance on his iPhone

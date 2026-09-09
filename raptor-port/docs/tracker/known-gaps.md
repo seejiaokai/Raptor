@@ -48,7 +48,14 @@
 >   course"). `+ Add` in the Students card lists the squadron roster (via the
 >   no-import bridge `people.js`, fed by `TrackerPage.tsx`); picking one adds
 >   them under their callsign and records `v3:links` (`{course: {name:
->   personId}}`). A typed name still adds an unlinked student. The roster,
+>   personId}}`). A typed name still adds an unlinked student — and with NO
+>   roster handed over the dialog IS the old `Student callsign:` prompt, byte
+>   for byte. **That is the standalone rule** (owner, 9 Sep 26): the Tracker
+>   goes back out to `seejiaokai/Tracker` one day, where a student is created
+>   by typing a name and nothing feeds `people.js`; the picker, the link and
+>   the `by` stamp exist only where Raptor hands people over, and everything
+>   Raptor-specific about `+ Add` is the one `people.length` branch in
+>   `core.js addStudent` (pinned in `tracker.test.tsx`). The roster,
 >   marks, dates and undo all stay name-keyed — re-keying by person id is the
 >   storage seam's stage 2. Nothing flows back to Raptor yet (no pucks, no
 >   quals) — the link is the hook for that. Deleting a course leaves its

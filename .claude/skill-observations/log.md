@@ -2181,3 +2181,18 @@ gate's. Keep verdict-bearing commands unpiped.
 **Suggested improvement:** In the red-first checklist: "revert only the hunk that IS the fix (a scripted replace of the function body, or `git stash -p`-equivalent), never the file, when the file also carries unrelated uncommitted work — and read the failure message: it must be the DEFECT's message, not a missing-symbol error."
 
 **Principle:** A red test only proves something when it fails for the reason the fix addresses; verify the failure message, not just the colour, and scope the temporary revert to the fix itself when the file carries other in-flight work.
+
+### Observation 144: An optional list in a dialog must distinguish "no list" from "an empty list"
+
+**Status:** OPEN
+**Date:** 2026-09-09
+**Session context:** RAPTOR Tracker — the owner noted "just for context" that the Tracker will be exported standalone (text-only student add). Checking the code found that the new roster picker passed `list || []` to the modal, and an empty array is still truthy, so a Tracker with nobody feeding the people bridge drew an empty roster section, a search box and a "nobody matches" line above the text box.
+**Skill:** task-observer (general engineering practice; candidate line for any "build a feature behind a bridge/seam" checklist)
+**Type:** open-source
+**Phase/Area:** feature build — optional data sources / degraded modes
+
+**Issue:** A feature fed through a seam (a bridge, an optional data source) was built and tested only with the source present. The "nothing feeds it" case was never exercised, and the default value chosen for absence (an empty array) was indistinguishable from a real, empty list to the renderer. The gap surfaced only because the owner mentioned a future deployment where the source is absent, and the code was checked against that rather than asserted from memory.
+
+**Suggested improvement:** When a feature reads from an optional seam, add to the build checklist: (1) write the "source absent" test first — it should reproduce the OLD behaviour byte for byte; (2) never default absence to an empty collection if the renderer treats "empty" and "absent" differently — branch at the call site on presence; (3) when the owner mentions a context "just for context", verify the code against it before agreeing.
+
+**Principle:** A feature behind an optional seam has two shapes — fed and unfed — and the unfed one must be pinned as the old behaviour, not assumed. An empty collection is not the same as "no collection"; pick the absence value the renderer actually branches on.
