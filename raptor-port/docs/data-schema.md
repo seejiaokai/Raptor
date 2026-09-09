@@ -384,6 +384,10 @@ Listed in the order they would bite.
 6. **Attachments are blobs in a per-browser file store** (IndexedDB
    `raptor-docs`, since 8 Sep 26). The database step gives them a **shared**
    file store, not a table column; inputs already reference them by id only.
+   Ids are minted globally unique (`doc-`+UUID, 9 Sep 26) so a shared store
+   never collides two files under one id; the DB layer still owns write-verify
+   and cross-store referential integrity (see the storage-seam spec's
+   "Database-stage requirements").
 7. **`null` means "standard"** for every `sqn142_*` key. The migration must
    keep that meaning (absent row = shipped default), not store the default.
 8. **The three worlds do not share a style** (sync vs async doors, three

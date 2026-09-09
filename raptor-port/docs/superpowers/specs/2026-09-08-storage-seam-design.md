@@ -297,9 +297,64 @@ documents on medical"). Blobs are still deliberately OFF the ~5 MB text seam;
 they get their own drawer instead — IndexedDB `raptor-docs`
 (`src/storage/docstore.ts`), wired by `docBoot` from `main.tsx` on the browser
 backend only. `state/docs`' in-memory map stays the synchronous read path the
-viewer needs in render; `docAdd` writes through, `docBoot` fills the cache
-back at boot and advances the id counter past every stored id. A SHARED file
-store (visible across people/devices) is still the later database step.
+viewer needs in render; `docAdd` writes through and `docBoot` fills the cache
+back at boot. Document ids are minted GLOBALLY UNIQUE (`doc-` + a UUID, 9 Sep
+26) — never a per-context counter, so two tabs or (at the shared stage) two
+people cannot mint the same id for different files and corrupt a
+cross-reference. A SHARED file store (visible across people/devices) is still
+the later database step.
+
+## Database-stage requirements — the 9 Sep 26 stress test
+
+Owner asked to "bug-test the database side" by faking a network database.
+Six fault-dimension finders + an adversarial verify pass drove the REAL seam
+against the MemoryBackend turned into a network DB (latency, dropped/lost
+acks, out-of-order, and two independent clients sharing one backend), pinned
+by `src/storage/dbreadiness.test.ts`. Verdict: the stage-1 seam HOLDS under
+these faults for a single client (slow DB never blocks; per-record failure
+isolation; per-key order preserved; retry/backoff; latest-value-wins). One
+CONFIRMED current-code fix came out of it — globally-unique document ids
+(above). Everything else is a genuine DATABASE-STAGE requirement, not a
+stage-1 bug — carry these forward when the shared backend is built:
+
+- **Write-verify, don't trust the ack.** A network DB can ack a write that
+  never durably landed (or lose the ack). The whiteboard then reports `saved`
+  and nothing reconciles → silent loss; a later retry of a lost-ack write can
+  also resurrect a stale value over a newer one. Needs a version/ETag or
+  read-back confirmation, not fire-and-forget acceptance.
+- **Per-row / field-level writes (or merge) for the big blobs.** `inputs/all`
+  (the whole INPUTS array), `people/all` (the whole roster), and
+  `leavewar/wars` (every war's grid + states) are each ONE record: two people
+  editing the same collection — even unrelated rows — clobber each other
+  whole-record. The largest surface is `leavewar/wars`.
+- **Incoming sync + ownership.** `persistAll` reconciles by deleting every
+  `weeks/*` record nothing local backs — correct per-browser, but against a
+  shared store it would delete OTHER people's weeks. Whole-collection
+  ownership assumptions must go before stage-3 incoming sync.
+- **Boot resilience.** The boot gate awaits `loadAll` with no timeout or
+  loading UI — a slow/hung network load blanks the app forever; a PARTIAL
+  load half-hydrates and `isHydrated` (which latches on `inputs/all` alone)
+  can re-seed the demo world over real data. Needs a timeout, a loading
+  state, and an all-or-nothing hydrate.
+- **Empty-store first boot must NOT seed the demo world into the shared DB.**
+- **A never-settling write must time out / retry, not wedge its record**
+  (later edits to that record would then never send).
+- **Unload on an async backend.** `beforeunload`'s prompt is effectively
+  dead against a network put (the edit is still in flight, status reads
+  `saving`, no prompt) — needs keepalive/sendBeacon or an accepted-loss-
+  with-warning design. Latent today (both stage-1 backends resolve puts
+  synchronously); real once puts cross the network.
+- **The document drawer needs the postman's guarantees** at the DB stage —
+  write-behind retry/backoff, an ack/durability confirmation, and a surfaced
+  failed-status (today a dropped IndexedDB write is fire-and-forget: rare, but
+  silent — owner may want an interim "couldn't save that document" warning).
+- **Housekeeping the DB layer must own:** cross-store referential integrity
+  (the text seam references doc ids in the separate drawer); cross-key write
+  atomicity (rename/reconcile does delete-old + put-new with no transaction);
+  a legacy-import migration path that runs ONCE for the shared store, not
+  per browser; the Tracker door's async verbs assume a synchronously-warm,
+  never-refreshed whiteboard; and a per-record SaveStatus so one wedged
+  record does not poison the whole indicator.
 
 ## What the 8 Sep 26 bug pass changed (implementation deltas)
 

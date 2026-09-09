@@ -10,7 +10,8 @@ describe('the document store', () => {
   it('stores a photo or a PDF and hands back a stable id', () => {
     const { id, why } = docAdd(png())
     expect(why).toBe('')
-    expect(id).toMatch(/^doc\d+$/)
+    expect(id).toMatch(/^doc-/)                  // globally-unique, not a per-context counter
+    expect(docAdd(png()).id, 'two uploads never share an id').not.toBe(id)
     expect(docHas(id)).toBe(true)
     expect(docGet(id)!.mime).toBe('image/png')
     expect(docGet(id)!.name, 'a bare blob still gets a name').toBe('document')
@@ -86,11 +87,15 @@ describe('the durable drawer behind the cache', () => {
     expect(docGet('doc4002')!.mime).toBe('image/png')
   })
 
-  it('a new upload after a reload cannot reuse a stored id (seq advances past it)', async () => {
-    await docBoot(new FakeDrawer([rec('doc9999')]))
+  it('a new upload mints a globally-unique id that cannot collide with a stored one (or another minter)', async () => {
+    /* the id is random, not a per-context counter, so two tabs / two people
+       sharing one drawer never mint the same id for different files — the
+       fix for the medical-document cross-reference corruption (9 Sep 26) */
+    await docBoot(new FakeDrawer([rec('doc9999'), rec('doc-legacy')]))
     const { id } = docAdd(png())
-    expect(id).not.toBe('doc9999')          // no collision with the hydrated file
-    expect(docHas('doc9999'), 'the hydrated file is untouched').toBe(true)
+    expect(id).toMatch(/^doc-/)
+    expect(id).not.toBe('doc9999')                        // no collision with a hydrated file
+    expect(docHas('doc9999'), 'a legacy doc<N> id still resolves').toBe(true)
     expect(docGet(id)!.name).toBe('document')
   })
 

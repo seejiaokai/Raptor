@@ -38,12 +38,11 @@ export const docBackend: any = { impl: mem }
 let durable: DocDurable | null = null
 
 /* Boot the durable drawer (main.tsx, browser backend only). Fill the cache
-   from it so the viewer's synchronous docGet finds a reloaded file, and
-   advance the id counter past every stored id so a new upload this session
-   cannot reuse one (seq resets to 0 each load — without this a fresh `doc1`
-   would overwrite a hydrated `doc1`). A null store keeps memory-only.
-   Fail-soft: a drawer whose load rejects leaves the store memory-only rather
-   than blocking boot — the same posture the storage seam takes. */
+   from it so the viewer's synchronous docGet finds a reloaded file. A null
+   store keeps memory-only. Fail-soft: a drawer whose load rejects leaves the
+   store memory-only rather than blocking boot — the same posture the storage
+   seam takes. (Ids are globally unique at mint, see newDocId, so boot needs
+   no counter to advance — a fresh upload can never collide with a stored id.) */
 export async function docBoot(store: DocDurable | null): Promise<void> {
   durable = store
   if (!store) return
@@ -55,8 +54,6 @@ export async function docBoot(store: DocDurable | null): Promise<void> {
        reach the viewer, where createObjectURL(non-Blob) throws */
     if (!r || typeof r.id !== 'string' || !(r.blob instanceof Blob)) continue
     docBackend.impl.set(r.id, { name: r.name, mime: r.mime, size: r.size, blob: r.blob })
-    const m = /^doc(\d+)$/.exec(r.id)
-    if (m) seq = Math.max(seq, +m[1])
   }
 }
 
@@ -66,14 +63,27 @@ export async function docBoot(store: DocDurable | null): Promise<void> {
 export const DOC_MAX = 8 * 1024 * 1024
 export const docAccepts = (mime: any) => /^image\//.test(String(mime || '')) || String(mime || '') === 'application/pdf'
 
-let seq = 0
+/* A GLOBALLY-UNIQUE id — never a per-context counter. Two tabs of one browser
+   share ONE drawer, and at the shared-database stage two PEOPLE share one file
+   store; a sequential `doc1, doc2 …` (reset to 0 every boot) lets any two of
+   them mint the SAME id for DIFFERENT files, so the second blob overwrites the
+   first under that key and an input then resolves to the WRONG person's
+   medical document — a corrupt cross-reference, not a clean overwrite. A random
+   id cannot collide across minters. The `doc-` prefix keeps it recognisable;
+   the id is opaque everywhere (rowDocIds/docFields carry it as a string), and
+   legacy `doc<N>` ids still resolve unchanged. */
+function newDocId(): string {
+  const c: any = typeof globalThis !== 'undefined' ? (globalThis as any).crypto : undefined
+  if (c && typeof c.randomUUID === 'function') return 'doc-' + c.randomUUID()
+  return 'doc-' + Date.now().toString(36) + '-' + Math.floor(Math.random() * 0xffffffff).toString(36)
+}
 /* store one file; returns the id the input record carries, or '' with a
    toastable reason in `why` when refused */
 export function docAdd(file: { name?: any, type?: any, size?: any } & Blob): { id: string, why: string } {
   if (!file) return { id: '', why: 'No file was chosen' }
   if (!docAccepts(file.type)) return { id: '', why: 'That file is not a photo or a PDF' }
   if (+file.size > DOC_MAX) return { id: '', why: 'That file is over 8 MB — attach a smaller photo or PDF' }
-  const id = 'doc' + (++seq)
+  const id = newDocId()
   const rec = { name: String(file.name || 'document'), mime: String(file.type), size: +file.size, blob: file as Blob }
   docBackend.impl.set(id, rec)
   /* write through to the durable drawer so a reload keeps it — no-op when

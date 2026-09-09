@@ -186,7 +186,16 @@ Verified in a real browser: a medical document survives a reload. Known
 stage-1 gaps: two tabs of one browser overwrite each other's whole-record
 writes (stage 3's incoming side is the fix); and a browser that persisted
 INPUTS before the drawer existed reads its few pre-drawer demo docs as "no
-document on file" (never fabricated) until cleared. **Merge only on the
+document on file" (never fabricated) until cleared. **Then (9 Sep 26) a
+database-readiness stress test** (owner: "bug-test the database side by faking
+a database") drove the real seam against a faked network DB — latency, dropped
+acks, two writers — pinned by `src/storage/dbreadiness.test.ts`. The seam
+HOLDS for a single client; one current-code fix came out of it: document ids
+are now globally unique (`doc-`+UUID) so two tabs / two people can't mint the
+same id and cross-reference the wrong medical file. Everything else it found
+is genuine shared-database work (write-verify, per-row writes, incoming sync,
+boot resilience), captured as "Database-stage requirements" in the storage-seam
+spec. **Merge only on the
 owner's explicit "merge live" — NOT merged.**
 
 Everything before the audit fixes is merged — three PRs landed 7 Sep 26:
