@@ -225,7 +225,10 @@ to the bar for everyone** — one history that takes back a grade, a failure
 count or a date box as well as a chart edit, greyed when empty, the Crew
 picker following an undone mark to its student, Ctrl+Z / Ctrl+Y. Contract in
 `docs/ui-contracts.md` §The Tracker tab; pinned in `tracker.test.tsx` + the
-smoke suite.
+smoke suite. **Then a bug from his screenshot:** the Crew picker never
+redrew the chart, so the yellow "can be planned next" rings stayed the LAST
+student's (ST-01 done for A → B still showed ACG-01 lit). `setActive` now
+redraws (and closes an open grading pop-up); pinned in `tracker.test.tsx`.
 
 Everything before the audit fixes is merged — three PRs landed 7 Sep 26:
 **PR #371** (the Leave War figures drawer, bulk balance

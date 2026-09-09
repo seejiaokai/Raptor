@@ -2076,3 +2076,18 @@ gate's. Keep verdict-bearing commands unpiped.
 **Suggested improvement:** When a change adds a disabled, hidden or conditionally-rendered state to an existing control, grep every test suite for that control's id/selector and re-read each click: assert the new state explicitly (a greyed button is a contract worth pinning) and press expectedly-inert controls the DOM way rather than through the actionability-waiting click.
 
 **Principle:** A state added to a control changes the meaning of every existing test interaction with it; a swallowed timeout is a green test that lies about cost.
+
+### Observation 137: A state setter that skips one of the redraws its siblings do is a silent bug
+
+**Status:** OPEN
+**Date:** 2026-09-09
+**Session context:** Tracker tab — the Crew picker left the previous student's "can be planned next" rings on the chart (owner screenshot)
+**Skill:** task-observer (bug-check checklist)
+**Type:** open-source
+**Phase/Area:** Bug hunting / verification
+
+**Issue:** `setActive` (the Crew picker) called `renderSide()` but not `renderBoard()`, while every other path that changed the same variable (add/remove student, undo, reload) called both. The chart bakes a per-student ring at draw time, so the one path without the redraw showed the previous student's rings. The bug had shipped since the app was first vendored; the undo work the same day walked "the picker follows an undone mark" and redrew correctly, without noticing the ordinary picker did not.
+
+**Suggested improvement:** When a bug check touches a module-level state variable, grep every ASSIGNMENT of it and tabulate which refresh calls follow each one. A row that is missing a call its siblings all make is a finding, even with no symptom yet.
+
+**Principle:** For state that several code paths set, the refresh calls after each assignment should form an identical set; audit assignments as a table, not one path at a time.

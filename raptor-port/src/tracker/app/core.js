@@ -2333,13 +2333,26 @@ export async function removeStudent(v) {
   refreshActive(); renderBoard(); renderSide();
 }
 export function setActive(v) {
-  active = v; renderSide();
+  active = v;
+  /* The pop-up's buttons would now grade somebody else. */
+  if (pop) closePop();
+  /* The yellow "can be planned next" rings are baked into the chart for ONE
+     student (renderBoard → isAvail(active, …)), so the chart has to be drawn
+     again for the one just picked. It was not (owner, 9 Sep 26): with ST-01
+     done for student A, picking student B kept A's rings — ACG-01 lit for B,
+     whose own next event is ST-01. Every other path that moves the picker
+     (adding or removing a student, an undone mark, a reload) already redraws;
+     this was the only one that did not. */
+  renderBoard(); renderSide();
   /* Merely looking at someone counts. Before this, only grading was remembered,
      so picking a crew member and coming back tomorrow forgot them. */
   prefSet('lastCrew:' + course, v);
   /* Jump to where this student was last marked, so picking someone halfway
-     through their course does not land at the top of the chart. */
-  showLastEdit(v);
+     through their course does not land at the top of the chart. After the
+     frame, as jumpTo does: the redraw's zoom has not landed in this tick and a
+     measurement now reads the old scale. */
+  if (typeof requestAnimationFrame !== 'undefined') requestAnimationFrame(() => { if (active === v) showLastEdit(v); });
+  else showLastEdit(v);
 }
 
 /* ---- syllabus display order ---- */

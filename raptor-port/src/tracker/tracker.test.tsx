@@ -16,7 +16,7 @@
    The flag lives in role.js so Raptor can write it WITHOUT loading the chart
    engine — a regression there would put ~280 KB of syllabus data back into
    Raptor's first download; the last test guards that by construction. */
-import { beforeEach, describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { act } from 'react'
 import { createRoot } from 'react-dom/client'
 import { isFileLocked, setFileLocked } from './role.js'
@@ -296,6 +296,52 @@ describe('the Find box lists its predictions (core.js + Header.jsx)', () => {
     expect(list.classList.contains('on')).toBe(false)
     await act(async () => { root.unmount() })
   })
+})
+
+/* 9 Sep 26 (owner, with a screenshot): ST-01 done for student A; pick student
+   B and the chart still lit ACG-01 as B's next event, when B has done nothing
+   and their next event is ST-01. The yellow rings are baked into the chart for
+   the picked student, and the Crew picker was the one way of moving the picker
+   that did not draw the chart again. */
+describe('the Crew picker redraws the chart for the student it picks', () => {
+  const ringed = () => [...document.querySelectorAll('#board #flowSvg .ball')]
+    .filter(g => g.querySelector('circle.avail')).map(g => (g as HTMLElement).dataset.id)
+  let board: HTMLElement, A: string, B: string
+  beforeEach(async () => {
+    board = document.createElement('div'); board.id = 'board'; document.body.appendChild(board)
+    /* The chart engine boots once (App.jsx does this on the tab's first mount);
+       the seeded roster is two placeholder students on the first syllabus. */
+    await core.init()
+    while (core.canUndo()) await core.doUndo()
+    ;[A, B] = core.roster as string[]
+    expect(A && B, 'the seed carries two students').toBeTruthy()
+    core.setActive(A)
+  })
+
+  it("the rings follow the picked student, not the last one's marks", async () => {
+    expect(ringed(), 'nothing done: the first event is the one to plan').toContain('ST-01')
+    core.openPop('ST-01', { clientX: 1, clientY: 1 }); await core.popGrade('dco')
+    expect(ringed()).not.toContain('ST-01')
+    expect(ringed(), 'ST-01 done: what follows it lights up').toContain('ACG-01')
+
+    core.setActive(B)
+    expect(core.active).toBe(B)
+    expect(ringed(), B + ' has done nothing — ST-01 is theirs to plan').toContain('ST-01')
+    expect(ringed(), 'ACG-01 was ' + A + "'s next event, not " + B + "'s").not.toContain('ACG-01')
+
+    core.setActive(A)
+    expect(ringed()).toContain('ACG-01')
+    expect(ringed()).not.toContain('ST-01')
+  })
+
+  it('an open grading pop-up closes, so its buttons cannot grade the wrong student', () => {
+    core.openPop('ST-02', { clientX: 1, clientY: 1 })
+    expect(core.pop).not.toBeNull()
+    core.setActive(B)
+    expect(core.pop).toBeNull()
+  })
+
+  afterEach(async () => { while (core.canUndo()) await core.doUndo(); board.remove() })
 })
 
 describe('a second mount redraws the chart (logout → login)', () => {
