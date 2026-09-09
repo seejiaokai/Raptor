@@ -81,7 +81,11 @@ time changed.
   landing itself). `setActive` captures the board's scroll across the redraw,
   puts it back, then scrolls to the last mark after the frame; a student with
   no mark on this chart stays where the view was, never the top. Switching
-  student still does not switch syllabus.
+  student still does not switch syllabus. **A tap on another student's wedge
+  on any ball also picks them** (same day) — that route deliberately does NOT
+  land: the user is looking at the ball they tapped. With five or six
+  students the wedges get thin on a phone; the centre stays the easy target
+  for the details — raise it if he reports mis-taps.
 - `SA(S)-3` on Tx: the source document contradicts itself. **User chose keep,
   twice, 8 Aug.**
 - The edit-mode hint overlays the colour legend. Move it if he misses the

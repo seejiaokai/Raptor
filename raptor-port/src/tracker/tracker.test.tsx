@@ -341,6 +341,34 @@ describe('the Crew picker redraws the chart for the student it picks', () => {
     expect(core.pop).toBeNull()
   })
 
+  /* 9 Sep 26 (owner): the ring on every ball is a second crew picker — one
+     wedge per student. Tapping somebody else's wedge picks them (and every
+     ball edges that wedge in cyan); tapping the selected student's wedge, or
+     the centre, opens the details as before. */
+  const tap = (sel: string) => {
+    const el = document.querySelector(sel)!
+    expect(el, sel).toBeTruthy()
+    el.dispatchEvent(new MouseEvent('click', { bubbles: true, clientX: 5, clientY: 5 }))
+  }
+  const mine = () => [...document.querySelectorAll('#board #flowSvg .ball')]
+    .map(g => g.querySelector('path.mine')?.getAttribute('data-wi') ?? null)
+  it("a tap on another student's wedge picks them and opens nothing", () => {
+    expect(mine().every(w => w === '0'), 'every ball edges the first student').toBe(true)
+    tap('#board .ball[data-id="ST-01"] .wedge[data-wi="1"]')
+    expect(core.active).toBe(B)
+    expect(core.pop).toBeNull()
+    expect(mine().every(w => w === '1'), 'every ball now edges the second student').toBe(true)
+  })
+  it("a tap on the selected student's own wedge, or the centre, opens the details", () => {
+    tap('#board .ball[data-id="ST-01"] .wedge[data-wi="0"]')
+    expect(core.active).toBe(A)
+    expect((core.pop as any)?.id).toBe('ST-01')
+    core.closePop()
+    tap('#board .ball[data-id="ST-02"] .core')
+    expect((core.pop as any)?.id).toBe('ST-02')
+    core.closePop()
+  })
+
   afterEach(async () => { while (core.canUndo()) await core.doUndo(); board.remove() })
 })
 

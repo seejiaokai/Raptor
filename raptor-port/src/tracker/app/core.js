@@ -627,7 +627,8 @@ function ballGroup(ev, available) {
     const s = roster[i]; const g = gradeOf(s, ev.id);
     const fill = (g && g !== 'na' && g !== 0) ? GRADE_FILL[g] : (g === 'na' ? GRADE_FILL.na : '#ffffff');
     const [a0, a1] = wedge(i, n);
-    segs += `<path d="${sector(cx, cy, rO, rI, a0, a1)}" fill="${fill}" stroke="#111" stroke-width="0.8"/>`;
+    /* Each wedge is a tap target of its own (ballTap): data-wi says whose. */
+    segs += `<path class="wedge" data-wi="${i}" d="${sector(cx, cy, rO, rI, a0, a1)}" fill="${fill}" stroke="#111" stroke-width="0.8"/>`;
     /* No failure ticks on an event marked N.A. — it never had to be flown, so
        red marks against it read as a contradiction. The count is only hidden,
        not thrown away; it comes back if the grade does. */
@@ -641,6 +642,12 @@ function ballGroup(ev, available) {
       }
     }
   }
+  /* The selected crew's wedge wears a cyan edge on EVERY ball (owner, 9 Sep 26
+     — picked "cyan edge only" over a fill, so a DCO/DPCO colour is never
+     hidden; the same cyan the key ball uses). Drawn after the wedges so it
+     sits above its neighbours' black outlines; no hit of its own. */
+  const ai = roster.indexOf(active);
+  if (ai >= 0) { const [a0, a1] = wedge(ai, n); segs += `<path class="mine" data-wi="${ai}" d="${sector(cx, cy, rO, rI, a0, a1)}" fill="none" stroke="#36c2ff" stroke-width="2.4" stroke-linejoin="round" pointer-events="none"/>`; }
   const dark = DARKC.has(ev.type) ? 'lbl' : 'lbl lbll';
   let hl = available ? `<circle cx="${cx}" cy="${cy}" r="${rO + 3}" fill="none" stroke="#ffd23f" stroke-width="2.6" class="avail"/>` : '';
   /* The search ring sits at rO+8. Its inner edge is 34.06, clear of the yellow
@@ -656,8 +663,8 @@ function ballGroup(ev, available) {
      gap between the wedge ring and the inner icon fires pointerleave/enter as you cross it */
   const hit = `<circle cx="${cx}" cy="${cy}" r="${(rO + 1).toFixed(2)}" fill="none" pointer-events="all"/>`;
   return `<g class="ball" data-id="${escapeId(ev.id)}" transform="translate(${(x - cx).toFixed(1)},${(y - cy).toFixed(1)})">
-  ${hit}${hl}${segs}${innerShape(ev.type, cx, cy)}
-  <text class="${dark}" x="${cx}" y="${cy + 3}" text-anchor="middle" style="font-size:${ballFontFor(ev.id)}px">${label}</text>${num}${cap}</g>`;
+  ${hit}${hl}${segs}<g class="core">${innerShape(ev.type, cx, cy)}
+  <text class="${dark}" x="${cx}" y="${cy + 3}" text-anchor="middle" style="font-size:${ballFontFor(ev.id)}px">${label}</text></g>${num}${cap}</g>`;
 }
 
 /* Continuous top-to-bottom flow following the real prerequisite graph. */
@@ -1488,7 +1495,7 @@ function wireBoard() {
       g.addEventListener('click', ev => { ev.stopPropagation(); showDetailBubble(g.dataset.id, g); });
       g.addEventListener('pointerenter', () => showDetailBubble(g.dataset.id, g));
       g.addEventListener('pointerleave', hideDetailBubble);
-    } else { g.addEventListener('click', ev => openPop(g.dataset.id, ev)); }
+    } else { g.addEventListener('click', ev => ballTap(g.dataset.id, ev)); }
   });
   if (arrangeMode) {
     document.querySelectorAll('#flowSvg .edgehit').forEach(p => {
@@ -2091,6 +2098,22 @@ export function openPop(id, evt) {
   notify();
 }
 export function closePop() { pop = null; notify(); }
+/* A tap on a ball, outside arrange mode (owner, 9 Sep 26 — "click exactly at
+   the portion of the pokeball that person exist in"): the ring is the crew
+   picker, one wedge per student — tapping somebody else's wedge PICKS them
+   (every ball then edges their wedge in cyan) and opens nothing; tapping the
+   selected student's own wedge, or the centre icon, opens the details
+   (DCO / DPCO / fail…) as any tap did before. Picking this way keeps the
+   view where it is — the user is looking at the ball they tapped; only the
+   Crew dropdown lands on the student's latest work. */
+export function ballTap(id, ev) {
+  const w = ev && ev.target && ev.target.closest ? ev.target.closest('.wedge') : null;
+  if (w) {
+    const s = roster[+w.dataset.wi];
+    if (s && s !== active) { setActive(s, { land: false }); return; }
+  }
+  openPop(id, ev);
+}
 
 /* ---------- where each student was last marking ---------- */
 async function noteLastEdit(s, id) {
@@ -2332,8 +2355,10 @@ export async function removeStudent(v) {
   if (active === v) active = roster[0] || null;
   refreshActive(); renderBoard(); renderSide();
 }
-export function setActive(v) {
+export function setActive(v, opts) {
   active = v;
+  /* ballTap passes land:false — a pick made ON the chart stays put. */
+  const land = !(opts && opts.land === false);
   /* The pop-up's buttons would now grade somebody else. */
   if (pop) closePop();
   /* The yellow "can be planned next" rings are baked into the chart for ONE
@@ -2362,9 +2387,10 @@ export function setActive(v) {
      measuring in the same tick reads a stale one (same reason jumpTo and init
      defer). Guarded on `active`: a quick second pick before the frame must not
      scroll to the first one's mark. */
-  const land = () => { if (active === v) showLastEdit(v); };
-  if (typeof requestAnimationFrame !== 'undefined') requestAnimationFrame(land);
-  else land();
+  const go = () => { if (active === v) showLastEdit(v); };
+  if (!land) { /* stay */ }
+  else if (typeof requestAnimationFrame !== 'undefined') requestAnimationFrame(go);
+  else go();
   /* Merely looking at someone counts. Before this, only grading was remembered,
      so picking a crew member and coming back tomorrow forgot them. */
   prefSet('lastCrew:' + course, v);

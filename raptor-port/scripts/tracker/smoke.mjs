@@ -2022,6 +2022,44 @@ if (two.length >= 2) {
   ok('picking a crew member with no marks yet leaves the view where it was, no snap to the top',
     parked > 100 && Math.abs(afterFresh - parked) <= 4,
     `parked ${parked}px, after picking them ${afterFresh}px`);
+
+  /* The ring on every ball is a second crew picker (owner, 9 Sep 26): a real
+     mouse click on another student's wedge picks them, every ball edges that
+     wedge in cyan, nothing opens and the view stays; the same spot again, or
+     the centre, opens the details. Driven by screen coordinates so the SVG
+     hit-test is the one under test. */
+  const names = await pg.evaluate(() => [...document.querySelectorAll('#activeSel option')].map(o => o.value));
+  await pg.selectOption('#activeSel', marker); await pg.waitForTimeout(600);   /* lands on deep.id */
+  const wi = names.indexOf(otherS);
+  const spot = await pg.evaluate(([id, i, n]) => {
+    const g = [...document.querySelectorAll('#flowSvg .ball')].find(x => x.dataset.id === id);
+    const r = g.querySelector('circle').getBoundingClientRect();        /* the hit disc, radius rO+1 */
+    const cx = r.left + r.width / 2, cy = r.top + r.height / 2, R = r.width / 2 * 0.82;   /* mid-ring */
+    const a = (-90 + i * 360 / n) * Math.PI / 180;
+    return { x: cx + R * Math.cos(a), y: cy + R * Math.sin(a), cx, cy };
+  }, [deep.id, wi, names.length]);
+  const before = await pg.evaluate(() => Math.round(document.getElementById('board').scrollTop));
+  await pg.mouse.click(spot.x, spot.y); await pg.waitForTimeout(500);
+  const edged = await pg.evaluate(() => {
+    const balls = [...document.querySelectorAll('#flowSvg .ball')];
+    return { balls: balls.length, mine: balls.filter(g => g.querySelector('path.mine')).length,
+      wi: [...new Set(balls.map(g => (g.querySelector('path.mine') || {}).getAttribute && g.querySelector('path.mine').getAttribute('data-wi')))] };
+  });
+  ok("a click on another crew member's wedge picks them, and opens nothing",
+    (await pg.inputValue('#activeSel')) === otherS && await pg.locator('#pop:visible').count() === 0,
+    `picker reads ${await pg.inputValue('#activeSel')}, pop-ups open: ${await pg.locator('#pop:visible').count()}`);
+  ok("every ball edges the picked crew member's wedge in cyan",
+    edged.mine === edged.balls && edged.wi.length === 1 && edged.wi[0] === String(wi),
+    `${edged.mine}/${edged.balls} balls, wedge ${edged.wi.join('/')} (expected ${wi})`);
+  const afterPick = await pg.evaluate(() => Math.round(document.getElementById('board').scrollTop));
+  ok('picking by wedge leaves the view where it is', Math.abs(afterPick - before) <= 4, `${before}px → ${afterPick}px`);
+  await pg.mouse.click(spot.x, spot.y); await pg.waitForTimeout(400);
+  ok("the same wedge again — now the selected crew member's — opens the details",
+    await pg.locator('#pop:visible').count() === 1);
+  await pg.keyboard.press('Escape'); await pg.waitForTimeout(300);
+  await pg.mouse.click(spot.cx, spot.cy); await pg.waitForTimeout(400);
+  ok('the centre of the ball opens the details too', await pg.locator('#pop:visible').count() === 1);
+  await pg.keyboard.press('Escape'); await pg.waitForTimeout(300);
 }
 
 /* A recorded syllabus that has since been deleted must not break the load.

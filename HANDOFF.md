@@ -239,7 +239,13 @@ snap; he first asked for "the view stays put", then, once the old rule was
 explained, for it back: **a crew pick lands on that student's latest work;
 a student with no mark yet leaves the view where it is** (scroll captured
 across the redraw, then `showLastEdit` after the frame). Pinned in the smoke
-suite; `docs/tracker/known-gaps.md`.
+suite; `docs/tracker/known-gaps.md`. **Then his idea, the same evening: the
+ring on every ball is a SECOND crew picker** — tap another student's wedge
+to pick them (every ball edges that wedge in cyan — "cyan edge only", his
+pick from a comp, so a mark's colour is never hidden; the view stays put),
+tap the selected student's wedge or the centre for the details. Contract in
+`docs/ui-contracts.md` §The Tracker tab; pinned in `tracker.test.tsx` + the
+smoke suite.
 
 Everything before the audit fixes is merged — three PRs landed 7 Sep 26:
 **PR #371** (the Leave War figures drawer, bulk balance

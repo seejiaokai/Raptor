@@ -6856,6 +6856,19 @@ screen:
   `tracker.test.tsx` (the menu shape, Save watches flow edits only) and the
   smoke suite (Save never opens a save-file dialog; event details save
   themselves).
+- **The ring on every ball is a SECOND crew picker (owner, 9 Sep 26 — "click
+  exactly at the portion of the pokeball that person exist in").** Each
+  wedge (`path.wedge[data-wi]`, one per student, student 0 at the top) is
+  its own tap target outside arrange mode (`core.js ballTap`): tapping
+  somebody else's wedge PICKS them — the Crew dropdown follows, every ball
+  edges that student's wedge in cyan (`path.mine`, the key ball's `#36c2ff`,
+  a 2.4px edge and never a fill, so a DCO/DPCO colour is never hidden — the
+  owner picked "cyan edge only" from a three-way comp) and nothing opens;
+  tapping the SELECTED student's own wedge, or the centre icon (`g.core`),
+  opens the details pop-up as any tap did before. A pick made on the chart
+  keeps the view where it is (`setActive(s, {land:false})`); only the
+  dropdown lands on the student's latest work. Pins: `tracker.test.tsx` +
+  the smoke suite (real mouse clicks at ring / centre coordinates).
 - **↶ ↷ are on the bar for EVERYONE, and take back marks as well as chart
   edits (owner, 9 Sep 26 — "not only isolated to under edit").** The pair
   (`#trUndoBtn` / `#trRedoBtn`, `.sm.icon`, right after ⓘ) left the edit

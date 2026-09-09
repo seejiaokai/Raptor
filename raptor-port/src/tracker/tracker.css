@@ -219,6 +219,8 @@ button:disabled:hover{border-color:var(--line)}
 .ev .chev{color:#454e60;font-size:15px;margin:0 1px;user-select:none}
 .ball{width:60px;height:60px;cursor:pointer;flex:0 0 auto}
 .ball{cursor:pointer}.ball:hover{filter:brightness(1.12)}
+/* the ring is the crew picker: a hovered wedge hints it is its own target */
+#flowSvg:not(.arrange) .ball .wedge:hover{stroke:#36c2ff;stroke-width:1.6}
 svg.perf{shape-rendering:optimizeSpeed;text-rendering:optimizeSpeed}
 svg.perf #viewport{will-change:transform}
 svg.perf .avail{filter:none;stroke-width:3.4}
