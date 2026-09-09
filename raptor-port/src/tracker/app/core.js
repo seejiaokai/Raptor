@@ -408,7 +408,7 @@ async function loadCourse(c, restoreLastSyllabus = false) {
   prefSet('lastCourse', c);
   /* A ring left over from another syllabus would re-light the moment the user
      came back to it. Cleared without redrawing: every caller renders anyway. */
-  searchHit = null; searchQ = ''; searchCount = 0; searchAt = 0;
+  searchHit = null; searchQ = ''; searchCount = 0; searchAt = 0; searchHits = [];
   /* History belongs to the chart it was recorded on. Switching COURSE never
      went through clearDirty, so an Undo pressed afterwards stamped the old
      course's chart onto the new one's syllabus and saved it immediately. */
@@ -1256,10 +1256,90 @@ function bounds() { let W = 480, H = 480; SYL.forEach(ev => { const p = nodePos(
 /* ---------- board (with editor-style pan / zoom / connect in arrange mode) ---------- */
 let view = { x: 0, y: 0, k: 1 };
 export let tool = 'move'; let connectSrc = null, undoStack = [], pan = null;
-function pushUndo() { undoStack.push({ syl: JSON.stringify(SYL), lay: JSON.stringify(layout) }); if (undoStack.length > 60) undoStack.shift(); redoStack = []; }
+/* ---------- undo / redo ----------
+   ONE history, two kinds of entry, since 9 Sep 26 (owner: "undo and redo …
+   for all users … not only isolated to under edit"). The pair sits on the
+   main bar now, so it has to take back what EVERYONE does, not only what edit
+   mode does:
+   · a STRUCTURE entry {syl, lay} — the chart: events, prerequisites, lines,
+     arrows, fonts, moved balls, the JSON editor, Reset layout. Restoring one
+     marks the syllabus dirty (✓ Save changes lights) and writes the positions,
+     exactly as the edit itself did.
+   · a MARK entry {who, m, d, what} — one student's marks AND dates together
+     (a flight graded done moves Last Flown forward, so the two are one step).
+     Restoring one saves itself, as the mark did, and SWITCHES THE CREW PICKER
+     to that student if it has moved on: an undo you cannot see is a
+     mystery, and the picker moving is the honest way to show whose mark it was.
+   Both stacks are cleared when the chart changes (loadCourse — history belongs
+   to the chart it was recorded on) and on ✓ Save changes (clearDirty — the
+   editing session is a unit). A removed student's entries are dropped with
+   them (removeStudent). Not in the history, deliberately: adding / removing /
+   renaming students, courses and syllabi, event details, Import — each asks
+   first or has its own editor, and a syllabus delete cannot be re-materialised
+   from a snapshot of the marks. The disabled state on the bar's buttons reads
+   canUndo/canRedo, so every push notifies. */
+function trimUndo() { if (undoStack.length > 60) undoStack.shift(); }
+function pushUndo() { undoStack.push({ syl: JSON.stringify(SYL), lay: JSON.stringify(layout) }); trimUndo(); redoStack = []; notify(); }
+function markSnap(s, what) { return { who: s, m: JSON.stringify(marks[s] || {}), d: dates[s] ? JSON.stringify(dates[s]) : null, what: what || null, t: Date.now() }; }
+/* `field` coalesces: the date and down-days boxes fire on every keystroke, and
+   nine undo steps for one typed date would be absurd. Keystrokes into the SAME
+   box within two seconds of the first are one step (the first snapshot is the
+   one kept — it holds the value before any of them). A grade or a failure
+   count passes no field, so each press is its own step. */
+function pushMarkUndo(s, what, field) {
+  if (!s) return;
+  const top = undoStack[undoStack.length - 1];
+  if (field && top && top.who === s && top.field === field && Date.now() - top.t < 2000) { top.t = Date.now(); return; }
+  const e = markSnap(s, what); if (field) e.field = field;
+  undoStack.push(e); trimUndo(); redoStack = []; notify();
+}
 function applyHist(u) { SYL = JSON.parse(u.syl); byid = {}; SYL.forEach(e => byid[e.id] = e); layout = JSON.parse(u.lay); loadEdgeMeta(); selEdge = null; markDirty(); saveLayout(); renderBoard(); renderSide(); }
-export async function doUndo() { const u = undoStack.pop(); if (!u) return; redoStack.push({ syl: JSON.stringify(SYL), lay: JSON.stringify(layout) }); applyHist(u); }
-export async function doRedo() { const u = redoStack.pop(); if (!u) return; undoStack.push({ syl: JSON.stringify(SYL), lay: JSON.stringify(layout) }); applyHist(u); }
+async function applyMarkHist(u) {
+  const s = u.who;
+  marks[s] = JSON.parse(u.m);
+  if (u.d == null) delete dates[s]; else dates[s] = JSON.parse(u.d);
+  /* The pop-up's buttons describe a grade that just changed under it — or,
+     when the picker is about to move, somebody else's. */
+  if (pop) closePop();
+  if (active !== s) { active = s; prefSet('lastCrew:' + course, s); refreshActive(); }
+  await saveMarks(s); if (dates[s]) await saveDates(s);
+  renderBoard(); renderSide();
+}
+/* The snapshot that a step's reverse pushes onto the other stack: the SAME
+   kind as the entry it undoes, taken from the live state before it is applied. */
+function reverseOf(u) { return u.who != null ? markSnap(u.who, u.what) : { syl: JSON.stringify(SYL), lay: JSON.stringify(layout) }; }
+/* A mark entry for a student who is gone (removed on another syllabus, or the
+   roster reloaded from a file) is skipped, not applied — removeStudent drops
+   them, this is the belt to its braces. */
+function liveEntry(stack) { while (stack.length && stack[stack.length - 1].who != null && !marks[stack[stack.length - 1].who]) stack.pop(); return stack[stack.length - 1] || null; }
+export function canUndo() { return !!liveEntry(undoStack); }
+export function canRedo() { return !!liveEntry(redoStack); }
+/* What the next press takes back, for the buttons' tooltips. */
+function whatOf(u) { return !u ? '' : u.who != null ? (u.what || 'a mark') + ' for ' + u.who : 'a chart edit'; }
+export function undoWhat() { return whatOf(liveEntry(undoStack)); }
+export function redoWhat() { return whatOf(liveEntry(redoStack)); }
+async function step(from, to) {
+  const u = liveEntry(from); if (!u) return false;
+  from.pop(); to.push(reverseOf(u));
+  if (u.who != null) await applyMarkHist(u); else applyHist(u);
+  notify(); return true;
+}
+export async function doUndo() { return step(undoStack, redoStack); }
+export async function doRedo() { return step(redoStack, undoStack); }
+/* Ctrl/⌘+Z undoes, Ctrl+Y and Ctrl/⌘+Shift+Z redo — everywhere on the tab
+   EXCEPT inside a text box (the box's own undo is what the user means there)
+   and under a question dialog (the answer comes first; App.jsx binds this to
+   the document only while the tab is up). */
+export function handleUndoKey(e) {
+  if (!(e.ctrlKey || e.metaKey) || e.altKey) return;
+  const k = String(e.key || '').toLowerCase();
+  if (k !== 'z' && k !== 'y') return;
+  const t = e.target;
+  if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.tagName === 'SELECT' || t.isContentEditable)) return;
+  if (dlg) return;
+  e.preventDefault();
+  if (k === 'y' || e.shiftKey) doRedo(); else doUndo();
+}
 export function setTool(t) {
   tool = t; connectSrc = null; mergeFirst = null; marquee = null; drawing = null;
   if (t !== 'line' && t !== 'editlines' && t !== 'delball') selLine = null;
@@ -1747,7 +1827,7 @@ function startGroupDrag(ev) {
 }
 function onGroupDrag(ev) {
   if (!groupDrag) return; const p = svgPt(ev); const dx = p.x - groupDrag.px, dy = p.y - groupDrag.py;
-  if (!groupDrag.moved && !groupDrag.pushed) { undoStack.push(groupDrag.snap); if (undoStack.length > 60) undoStack.shift(); redoStack = []; groupDrag.pushed = true; }
+  if (!groupDrag.moved && !groupDrag.pushed) { undoStack.push(groupDrag.snap); trimUndo(); redoStack = []; groupDrag.pushed = true; notify(); }
   groupDrag.moved = true;
   selBalls.forEach(bid => {
     const st = groupDrag.start[bid]; const nx = st.x + dx, ny = st.y + dy; layout[bid] = { x: nx, y: ny };
@@ -1768,7 +1848,7 @@ function startDrag(ev) {
 }
 function onDrag(ev) {
   if (!drag) return; const p = svgPt(ev); let nx = p.x - drag.dx, ny = p.y - drag.dy;
-  if (!drag.moved && !drag.pushed) { undoStack.push(drag.snap); if (undoStack.length > 60) undoStack.shift(); redoStack = []; drag.pushed = true; }
+  if (!drag.moved && !drag.pushed) { undoStack.push(drag.snap); trimUndo(); redoStack = []; drag.pushed = true; notify(); }
   /* smart-align: snap to any other ball's x or y within threshold */
   const TH = 6; alignGuides = []; let gx = null, gy = null;
   SYL.forEach(e => {
@@ -1918,10 +1998,10 @@ export function sliceBg(cols) {
 }
 
 /* ---------- side panel actions (inputs live in <SidePanel/>) ---------- */
-export async function setLastSyll(s, v) { dates[s].lastSyll = v; dates[s].lastCurr = v; await saveDates(s); renderSide(); }
-export async function setLastCurr(s, v) { dates[s].lastCurr = v; await saveDates(s); renderSide(); }
-export async function setDownDays(s, v) { dates[s].downDays = v; await saveDates(s); renderSide(); }
-export async function setUpchit(s, v) { dates[s].upchit = v; await saveDates(s); renderSide(); }
+export async function setLastSyll(s, v) { pushMarkUndo(s, 'Last Flown (Syllabus)', 'lastSyll'); dates[s].lastSyll = v; dates[s].lastCurr = v; await saveDates(s); renderSide(); }
+export async function setLastCurr(s, v) { pushMarkUndo(s, 'Last Flown (Currency)', 'lastCurr'); dates[s].lastCurr = v; await saveDates(s); renderSide(); }
+export async function setDownDays(s, v) { pushMarkUndo(s, 'the down days', 'downDays'); dates[s].downDays = v; await saveDates(s); renderSide(); }
+export async function setUpchit(s, v) { pushMarkUndo(s, 'the upchit date', 'upchit'); dates[s].upchit = v; await saveDates(s); renderSide(); }
 /* v is kept verbatim — an empty or half-typed box must stay as typed. epwOf()
    does the coercion for the arithmetic. */
 export async function setEpw(s, v) { pace[s] = { ...paceOf(s), epw: v }; await savePace(s); renderSide(); }
@@ -2034,6 +2114,11 @@ export function scrollToEvent(id) {
    The ring is baked into the SVG string, so changing the hit means redrawing
    the board, not just notifying React. */
 export let searchHit = null, searchQ = '', searchCount = 0, searchAt = 0;
+/* Every id the query matches, in findEvents' order — the header's list of
+   predictions under the box reads it (owner, 9 Sep 26: "a drop down menu on
+   the prediction of the syllabus related to the typed text"); searchAt is
+   which of them wears the ring. */
+export let searchHits = [];
 /* App.jsx owns the phone's Flow/Info tab. Searching from the Info tab would
    measure a display:none board and scroll to nowhere, so the search switches
    back first — same sink arrangement as setCloudSinks. */
@@ -2053,7 +2138,7 @@ function jumpTo(id) {
 export function runSearch(q, step) {
   searchQ = q == null ? '' : q;
   const hits = findEvents(SYL, searchQ);
-  searchCount = hits.length;
+  searchCount = hits.length; searchHits = hits.map(h => h.id);
   if (!hits.length) {
     /* A search that finds nothing is not "another search": the board stays put
        and whatever was ringed stays ringed. */
@@ -2063,8 +2148,17 @@ export function runSearch(q, step) {
   const done = jumpTo(hits[searchAt].id);
   notify(); return done;
 }
+/* Pick one of the predictions outright (a click on the list), or walk them
+   (↑ ↓ in the box; Enter still walks forward through runSearch). */
+export function searchGo(i) {
+  if (!searchHits.length) return false;
+  searchAt = ((i % searchHits.length) + searchHits.length) % searchHits.length;
+  const done = jumpTo(searchHits[searchAt]);
+  notify(); return done;
+}
+export function searchStep(d) { return searchGo(searchAt + d); }
 export function clearSearch() {
-  searchQ = ''; searchCount = 0; searchAt = 0;
+  searchQ = ''; searchCount = 0; searchAt = 0; searchHits = [];
   if (searchHit) { searchHit = null; renderBoard(); }
   notify();
 }
@@ -2083,6 +2177,7 @@ export async function popGrade(v) {
      on marks[null][id]. Clicking an event on an empty course should do nothing,
      not break the page. */
   if (!s) { closePop(); return; }
+  pushMarkUndo(s, 'the mark on ' + popId);
   await noteLastEdit(s, popId);
   marks[s] = marks[s] || {};
   marks[s][popId] = marks[s][popId] || { g: 0, f: 0 }; marks[s][popId].g = v === '0' ? 0 : v;
@@ -2099,6 +2194,7 @@ export async function popFail(delta) {
      N/A colour. Existing counts are kept, not wiped — mark it back to a real
      grade and the history is still there. */
   if (delta > 0 && gradeOf(s, popId) === 'na') { flashHint('“' + popId + '” is marked N.A., so it cannot be failed.'); return; }
+  pushMarkUndo(s, 'the failure count on ' + popId);
   marks[s][popId].f = Math.max(0, (marks[s][popId].f || 0) + delta);
   await saveMarks(s); renderBoard(); renderSide();
 }
@@ -2146,7 +2242,7 @@ export function hideEventBubble() { hideDetailBubble(); }
 export function showEvent(id) {
   if (!byid[id]) return false;
   hideDetailBubble();
-  searchQ = id; searchCount = 1; searchAt = 0;
+  searchQ = id; searchCount = 1; searchAt = 0; searchHits = [id];
   const done = jumpTo(id); notify(); return done;
 }
 export function toggleDetails() {
@@ -2210,6 +2306,9 @@ export async function addStudent() {
 export async function removeStudent(v) {
   if (!await uiConfirm('Remove ' + v + ' from ' + plan.sylName + '?\n\nTheir marks, dates, pace and lull periods on this syllabus are deleted.')) return;
   roster = roster.filter(x => x !== v); delete marks[v]; delete dates[v];
+  /* Their undo steps go with them: an Undo that brought a removed student's
+     mark back would put a mark on nobody's chart. */
+  undoStack = undoStack.filter(e => e.who !== v); redoStack = redoStack.filter(e => e.who !== v);
   await saveRoster();
   /* Deleting the roster entry alone left their name and every mark sitting in
      storage — and on a shared tracker, in the file the whole team reads. Worse,
@@ -3122,5 +3221,7 @@ export async function init() {
     /* Save changes is only on screen while there is an unsaved flow edit, so a
        test that wants to press it has to put the app in that state first. */
     window.__markDirtyForTests = () => markDirty();
+    /* Live reads for the undo checks: a mark's grade, and the stacks' depth. */
+    window.__undoForTests = () => ({ undo: undoStack.length, redo: redoStack.length, grade: (id, s) => ((marks[s || active] || {})[id] || {}).g || 0, active });
   }
 }

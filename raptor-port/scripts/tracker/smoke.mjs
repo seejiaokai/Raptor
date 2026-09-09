@@ -885,9 +885,9 @@ ok('Course follows Crew, and each edit pencil sits right after its dropdown',
    there is something unsaved; the ✎ Edit toggle is now inside the Syllabus
    pencil, so it is not a bar control; hSearchBtn is 0-wide on a desktop (the
    search shows as an inline box, hSearch + hSearchClear). */
-ok('the bar reads Crew · Course ✎ · Syllabus ✎ · ⓘ · Show All · File · search',
+ok('the bar reads Crew · Course ✎ · Syllabus ✎ · ⓘ · ↶ ↷ · Show All · File · search',
   crewFirst.ids.join(',') === ['activeSel', 'courseSel', 'courseMenuBtn',
-    'sylSel', 'sylMenuBtn', 'detailsBtn', 'showAllBtn',
+    'sylSel', 'sylMenuBtn', 'detailsBtn', 'trUndoBtn', 'trRedoBtn', 'showAllBtn',
     'fileMenuBtn', 'hSearch', 'hSearchClear'].join(','),
   crewFirst.ids.join(' → '));
 
@@ -1023,12 +1023,104 @@ ok('the spacer falls after the search, with only the Save slot to its right',
   ok('clearing the box takes the ring off',
     await pg.evaluate(() => document.querySelectorAll('#flowSvg circle.found').length) === 0);
 
+  /* THE PREDICTIONS UNDER THE BOX (owner, 9 Sep 26: "a drop down menu on the
+     prediction of the syllabus related to the typed text and it changes as
+     there's more text"). Every match, in the order Enter walks them, the
+     ringed one lit; ↓ moves ring and light together; a click on a row rings
+     that one and shuts the list; the list follows the text. Hit-tested, not
+     just measured — the phone strip's lesson. */
+  await pg.click('#hSearch'); await pg.keyboard.type('ST'); await pg.waitForTimeout(500);
+  const pred = await pg.evaluate(() => {
+    const ul = document.getElementById('hSearchList'), rows = [...ul.querySelectorAll('.findrow')];
+    const first = rows[0] && rows[0].getBoundingClientRect();
+    const hit = first ? document.elementFromPoint(first.left + 20, first.top + first.height / 2) : null;
+    return { on: ul.classList.contains('on'), n: rows.length, lit: rows.findIndex(r => r.classList.contains('on')),
+      stat: document.getElementById('hSearchStat').textContent, hit: !!(hit && hit.closest('.findrow')),
+      named: rows.filter(r => r.querySelector('.fname')).length, ids: rows.map(r => r.dataset.id) };
+  });
+  ok('typing opens a list of every matching event, the ringed one lit, and it can be clicked',
+    pred.on && pred.n > 1 && pred.lit === 0 && pred.stat === `1 of ${pred.n}` && pred.hit,
+    `${pred.n} rows, lit ${pred.lit}, "${pred.stat}", first row hit ${pred.hit}`);
+  ok('each prediction shows the event\'s name beside its code', pred.named === pred.n, `${pred.named} of ${pred.n} named`);
+  await pg.keyboard.type('-1'); await pg.waitForTimeout(500);
+  const narrowed = await pg.evaluate(() => [...document.querySelectorAll('#hSearchList .findrow')].map(r => r.dataset.id));
+  ok('more text narrows the list', narrowed.length < pred.n && narrowed.length > 1 && narrowed.every(id => /^st-1/i.test(id)),
+    `${pred.n} → ${narrowed.length}: ${narrowed.slice(0, 4).join(', ')}`);
+  await pg.keyboard.press('ArrowDown'); await pg.waitForTimeout(400);
+  const down = await pg.evaluate(() => {
+    const rows = [...document.querySelectorAll('#hSearchList .findrow')];
+    const ring = document.querySelector('#flowSvg circle.found');
+    return { lit: rows.findIndex(r => r.classList.contains('on')), ringed: ring ? ring.closest('.ball').dataset.id : null, second: rows[1] && rows[1].dataset.id };
+  });
+  ok('↓ moves the light and the ring to the next prediction together',
+    down.lit === 1 && down.ringed === down.second, `lit ${down.lit}, ringed ${down.ringed}, second row ${down.second}`);
+  await pg.click('#hSearchList .findrow:nth-child(3)'); await pg.waitForTimeout(500);
+  const picked = await pg.evaluate(() => {
+    const ring = document.querySelector('#flowSvg circle.found');
+    return { on: document.getElementById('hSearchList').classList.contains('on'), ringed: ring ? ring.closest('.ball').dataset.id : null,
+      q: document.getElementById('hSearch').value, stat: document.getElementById('hSearchStat').textContent };
+  });
+  ok('clicking a prediction rings that event, keeps the text and shuts the list',
+    !picked.on && picked.ringed === narrowed[2] && picked.q === 'ST-1' && picked.stat === `3 of ${narrowed.length}`,
+    `ringed ${picked.ringed} (wanted ${narrowed[2]}), list on ${picked.on}, "${picked.q}" ${picked.stat}`);
+  await pg.click('#hSearch'); await pg.waitForTimeout(300);
+  ok('clicking back into the box brings the list back',
+    await pg.evaluate(() => document.getElementById('hSearchList').classList.contains('on')));
+  await pg.keyboard.press('Escape'); await pg.waitForTimeout(300);
+  ok('Escape clears the box and the list with it',
+    await pg.evaluate(() => !document.getElementById('hSearchList').classList.contains('on') && document.getElementById('hSearch').value === ''));
+
   /* Hand the bar back clean. Switching syllabus writes the plan, which marks
      the file unsaved, and the Save-changes checks below are about a bar with
      nothing to save. */
   await openTracker(pg);
   await pg.waitForSelector('#flowSvg .ball');
   await pg.waitForTimeout(300);
+}
+
+/* ---- ↶ ↷ on the bar, for everyone (owner, 9 Sep 26) ----
+   Not in the edit strip any more: a grade made in plain marking mode is one
+   undo step, the button is greyed while there is nothing to take back, and the
+   keyboard pair works outside a text box. */
+{
+  /* The search block above leaves the TALLEST chart selected, and a chart
+     nobody is on has no Crew to grade — a click on a ball there does nothing
+     (by design). Back to the seeded syllabus, which has students. */
+  await pg.selectOption('#sylSel', '2026'); await pg.waitForTimeout(900);
+  ok('the undo checks run with a student on the roster',
+    !!(await pg.evaluate(() => document.getElementById('activeSel').value)),
+    `crew "${await pg.evaluate(() => document.getElementById('activeSel').value)}"`);
+  const st = () => pg.evaluate(() => {
+    const u = window.__undoForTests();
+    return { g: u.grade('ST-01'), undo: u.undo, redo: u.redo,
+      undoOff: document.getElementById('trUndoBtn').disabled, redoOff: document.getElementById('trRedoBtn').disabled,
+      undoTip: document.getElementById('trUndoBtn').title, editing: document.getElementById('arrTools').classList.contains('on'),
+      inStrip: !!document.querySelector('#arrTools #trUndoBtn'), inBar: !!document.querySelector('header .controls #trUndoBtn') };
+  });
+  const s0 = await st();
+  ok('↶ ↷ sit on the bar, not in the edit strip, and are greyed with nothing to undo',
+    s0.inBar && !s0.inStrip && s0.undoOff && s0.redoOff && !s0.editing, `bar ${s0.inBar}, strip ${s0.inStrip}, greyed ${s0.undoOff}/${s0.redoOff}`);
+  await pg.evaluate(() => { const g = [...document.querySelectorAll('#flowSvg .ball')].find(x => x.dataset.id === 'ST-01'); g.scrollIntoView({ block: 'center' }); g.dispatchEvent(new MouseEvent('click', { bubbles: true })); });
+  await pg.waitForSelector('#pop');
+  await pg.locator('#pop .opts button', { hasText: 'DCO' }).click(); await pg.waitForTimeout(500);
+  const s1 = await st();
+  ok('a grade lights ↶ outside edit mode, and the tooltip says what it takes back',
+    s1.g === 'dco' && !s1.undoOff && /Undo the mark on ST-01 for /.test(s1.undoTip) && !s1.editing, `grade ${s1.g}, greyed ${s1.undoOff}, "${s1.undoTip}"`);
+  await pg.click('#trUndoBtn'); await pg.waitForTimeout(500);
+  const s2 = await st();
+  ok('↶ takes the grade back and lights ↷', s2.g === 0 && s2.undoOff && !s2.redoOff, `grade ${s2.g}, undo greyed ${s2.undoOff}, redo greyed ${s2.redoOff}`);
+  await pg.click('#trRedoBtn'); await pg.waitForTimeout(500);
+  ok('↷ puts it back', (await st()).g === 'dco');
+  await pg.keyboard.press('Control+z'); await pg.waitForTimeout(400);
+  ok('Ctrl+Z undoes from the keyboard', (await st()).g === 0);
+  ok('the mark undone is the mark saved: storage holds no grade for ST-01', await pg.evaluate(() => {
+    const c = document.getElementById('courseSel').value, s = document.getElementById('activeSel').value;
+    const syl = document.getElementById('sylSel').value;
+    const raw = localStorage.getItem('raptor:tracker/v3:' + c + ':' + syl + ':m:' + s);
+    return !raw || !((JSON.parse(raw)['ST-01'] || {}).g);
+  }));
+  await pg.keyboard.press('Control+y'); await pg.waitForTimeout(400);
+  await pg.keyboard.press('Control+z'); await pg.waitForTimeout(400);
 }
 
 /* Grouping must hide nothing: every action still has to be reachable. Named by
@@ -1050,8 +1142,8 @@ for (const [btn, items] of Object.entries(MENUS)) {
 ok('every grouped action is still reachable from its menu', unreachable.length === 0,
   unreachable.join(', '));
 
-ok('the three dropdowns, Show All and the ⓘ info icon stay out of the menus', await pg.evaluate(() => {
-  const out = ['#courseSel', '#sylSel', '#activeSel', '#showAllBtn', '#detailsBtn'];
+ok('the three dropdowns, Show All, the ⓘ info icon and ↶ ↷ stay out of the menus', await pg.evaluate(() => {
+  const out = ['#courseSel', '#sylSel', '#activeSel', '#showAllBtn', '#detailsBtn', '#trUndoBtn', '#trRedoBtn'];
   return out.every(s => { const e = document.querySelector(s); return e && e.getBoundingClientRect().width > 0; });
 }));
 /* Reorder crew is about the students, so it sits with + Add in the Students
@@ -1430,6 +1522,17 @@ ok('on a phone Crew is the leftmost control, reachable without scrolling the bar
   ok('tapping the magnifier opens a box that fills the width and can be typed in',
     open.w >= open.vw * 0.7 && open.below && open.hit === 'hSearch',
     `${open.w}px of ${open.vw}px, below the bar ${open.below}, tap hits ${open.hit}`);
+  /* The predictions hang off the fixed strip, full width, and take a tap. */
+  await pg.keyboard.type('ST'); await pg.waitForTimeout(500);
+  const plist = await pg.evaluate(() => {
+    const ul = document.getElementById('hSearchList'), r = ul.getBoundingClientRect();
+    const row = ul.querySelector('.findrow'); const rr = row && row.getBoundingClientRect();
+    const hit = rr ? document.elementFromPoint(rr.left + 30, rr.top + rr.height / 2) : null;
+    const strip = document.getElementById('hSearchPanel').getBoundingClientRect();
+    return { on: ul.classList.contains('on'), w: Math.round(r.width), vw: innerWidth, below: r.top >= strip.bottom - 1, hit: !!(hit && hit.closest('.findrow')) };
+  });
+  ok('on a phone the predictions fill the width under the strip and take a tap',
+    plist.on && plist.w >= plist.vw * 0.8 && plist.below && plist.hit, `${plist.w}px of ${plist.vw}px, below ${plist.below}, tap hits a row ${plist.hit}`);
   await pg.keyboard.press('Escape'); await pg.waitForTimeout(300);
 }
 
@@ -2149,9 +2252,13 @@ await pg.waitForSelector('#flowSvg .ball', { timeout: 15000 });
   const txBefore = await txBoxes();
   await pg.selectOption('#sylSel', 'Tx 2026'); await pg.waitForTimeout(700);
   if (await pg.isVisible('#dlgModal')) { await pg.click('#dlgOk'); await pg.waitForTimeout(1000); }
-  await pg.click('#trRedoBtn').catch(() => {}); await pg.waitForTimeout(800);
-  ok('Redo after changing syllabus cannot stamp the old chart onto the new one',
-    await txBoxes() === txBefore, `Tx 2026 held ${txBefore} moved boxes, now ${await txBoxes()}`);
+  /* The bar's ↷ is greyed once the chart changes (9 Sep 26) — a Playwright
+     click would wait 30s for it to enable, so press it the DOM way, which a
+     disabled button ignores exactly as it ignores a finger. */
+  const redoGreyed = await pg.evaluate(() => { const b = document.getElementById('trRedoBtn'); b.click(); return b.disabled; });
+  await pg.waitForTimeout(800);
+  ok('Redo after changing syllabus cannot stamp the old chart onto the new one — the button is greyed',
+    redoGreyed && await txBoxes() === txBefore, `greyed ${redoGreyed}; Tx 2026 held ${txBefore} moved boxes, now ${await txBoxes()}`);
   await arr(); await pg.waitForTimeout(300);
 
   /* 5. Event details: the Save button, and the note that used to come back. */

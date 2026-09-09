@@ -131,7 +131,10 @@ time changed.
   `#importFileBtn`, `#exportBtn`). Most sit inside a menu
   (`#courseMenuBtn`, `#sylMenuBtn`, `#fileMenuBtn`) — open it first.
   `#saveChanges` exists only while a flow edit is unsaved. The app uses its
-  own confirm (`#dlgModal`), not native `prompt()`.
+  own confirm (`#dlgModal`), not native `prompt()`. `#trUndoBtn` /
+  `#trRedoBtn` are on the BAR (9 Sep 26) and `disabled` while their stack is
+  empty — a Playwright `click()` on one then waits 30s for it to enable, so
+  press an expectedly-greyed one the DOM way (`el.click()` in `evaluate`).
 - **Reading the syllabus `.docx`:** do not trust chart pages unzipped from the
   document — Word overlays (red X strikes, the IEPE ellipse) are separate
   images and go missing, which produced five confidently wrong readings once.

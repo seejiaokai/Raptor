@@ -2061,3 +2061,18 @@ gate's. Keep verdict-bearing commands unpiped.
 **Suggested improvement:** Add a fixed "machine rules" block to every subagent brief when the controller runs gates concurrently: which suites/ports/directories the controller owns; run only named files, in the foreground, one at a time; never re-run a suite you already started; copy any artefact you serve. Make the controller state these, not hope the agent infers them.
 
 **Principle:** Parallel agents share one machine but not one view of it; resource ownership must be declared in the brief, because an agent cannot observe another's intent, only its side-effects.
+
+### Observation 136: A newly disabled control silently stalls existing test clicks
+
+**Status:** OPEN
+**Date:** 2026-09-09
+**Session context:** Moving the Tracker's undo/redo pair onto the main bar with a native `disabled` state while the stack is empty; the vendored browser smoke suite already clicked those ids with `.click().catch(() => {})`.
+**Skill:** New skill candidate: ui-change-checklist (or the project's verification step)
+**Type:** open-source
+**Phase/Area:** Implementation — adding a disabled/hidden state to an existing control
+
+**Issue:** Adding `disabled` to a button that tests already click is a silent 30-second stall per click (Playwright waits for actionability, then the `.catch` swallows the timeout), not a failure — the suite stays green and just gets slower. Found only by reading the suite for every click on the ids before running it.
+
+**Suggested improvement:** When a change adds a disabled, hidden or conditionally-rendered state to an existing control, grep every test suite for that control's id/selector and re-read each click: assert the new state explicitly (a greyed button is a contract worth pinning) and press expectedly-inert controls the DOM way rather than through the actionability-waiting click.
+
+**Principle:** A state added to a control changes the meaning of every existing test interaction with it; a swallowed timeout is a green test that lies about cost.

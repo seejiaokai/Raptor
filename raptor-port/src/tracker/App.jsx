@@ -83,15 +83,21 @@ export default function App({ active = true }) {
     if (!active) return;
     const esc = e => core.handleEscapeKey(e);
     const del = e => core.handleDeleteKey(e);
+    /* Ctrl/⌘+Z, Ctrl+Y, Ctrl/⌘+Shift+Z — the bar's ↶ ↷ from the keyboard
+       (9 Sep 26). Bound only while the tab is up, like Escape and Delete, so a
+       shortcut on a Raptor page never undoes a Tracker mark. */
+    const undo = e => core.handleUndoKey(e);
     const clickAway = e => { if (core.pop && !e.target.closest('#pop') && !e.target.closest('.ball')) core.closePop(); };
     const unload = e => { if (core.sylDirty) { e.preventDefault(); e.returnValue = ''; } };
     document.addEventListener('keydown', esc);
     document.addEventListener('keydown', del);
+    document.addEventListener('keydown', undo);
     document.addEventListener('click', clickAway);
     window.addEventListener('beforeunload', unload);
     return () => {
       document.removeEventListener('keydown', esc);
       document.removeEventListener('keydown', del);
+      document.removeEventListener('keydown', undo);
       document.removeEventListener('click', clickAway);
       window.removeEventListener('beforeunload', unload);
     };

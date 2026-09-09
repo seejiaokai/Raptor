@@ -6820,8 +6820,8 @@ screen:
   the vendored smoke suite's (`npm run smoke:tracker`).
 - **The bar layout, reordered 9 Sep 26 (owner).** Left to right: Crew ·
   Course dropdown + a ✎ pencil · Syllabus dropdown + a ✎ pencil · ⓘ info ·
-  ☰ Show All · ⇪ File (admin) · 🔍 Find event, then a spacer and ✓ Save
-  changes alone in the far-right corner. The wide "Course ▾" / "Syllabus ▾"
+  ↶ ↷ undo/redo · ☰ Show All · ⇪ File (admin) · 🔍 Find event, then a spacer
+  and ✓ Save changes alone in the far-right corner. The wide "Course ▾" / "Syllabus ▾"
   menus are now glyph **✎ pencils** sitting right after the dropdown each
   edits (`Menu icon` prop drops the caret). **Edit chart layout** (the old
   standalone ✎ Edit button, `#arrangeBtn`) folded into the **Syllabus**
@@ -6856,3 +6856,38 @@ screen:
   `tracker.test.tsx` (the menu shape, Save watches flow edits only) and the
   smoke suite (Save never opens a save-file dialog; event details save
   themselves).
+- **↶ ↷ are on the bar for EVERYONE, and take back marks as well as chart
+  edits (owner, 9 Sep 26 — "not only isolated to under edit").** The pair
+  (`#trUndoBtn` / `#trRedoBtn`, `.sm.icon`, right after ⓘ) left the edit
+  strip; ONE history holds two kinds of step (`core.js`, the undo section):
+  a **chart step** (events, prerequisites, drawn lines, arrows, fonts, a moved
+  ball, the JSON editor, Reset layout — restoring one lights ✓ Save changes
+  and writes the positions, as the edit did) and a **mark step** — one
+  student's grade, failure count or a date box (Last Flown ×2, down days,
+  upchit), marks AND dates snapshotted together because a flight graded done
+  moves Last Flown forward. Restoring a mark step saves itself, closes the
+  grading pop-up, and **moves the Crew picker to that student** when it has
+  moved on (an undo you cannot see is a mystery). Keystrokes into ONE date
+  box within two seconds are one step. The buttons are greyed
+  (`disabled`) with nothing to take back and their tooltip names the next
+  step ("Undo the mark on ST-05 for STUDENT A (Ctrl+Z)"); Ctrl/⌘+Z undoes,
+  Ctrl+Y and Ctrl/⌘+Shift+Z redo, bound only while the tab is up and never
+  from inside a text box or under a question dialog. Both stacks clear when
+  the chart changes (course/syllabus switch, Import) and on ✓ Save changes;
+  a removed student's steps go with them. NOT undoable, deliberately: adding
+  / removing / renaming students, courses and syllabi, event details, Import
+  — each asks first or has its own editor. Pins: `tracker.test.tsx` (the
+  history's cases) and the smoke suite (a grade undone from the bar outside
+  edit mode, the greyed ↷ after a chart change).
+- **The Find box lists its predictions (owner, 9 Sep 26).** Typing opens a
+  list under the box (`#hSearchList`, `.findlist`, hung off `.findwrap` on a
+  desktop and off the fixed strip full-width on a phone) of every event the
+  text matches — `core.searchHits`, the same order Enter walks, each row the
+  code as the ball prints it, a dot in the type colour and the event's name;
+  the ringed hit is lit and kept scrolled into view. More text narrows it;
+  ↓ ↑ move the ring and the light together; Enter still walks forward; a
+  click on a row rings that event, keeps the typed text, shuts the list and
+  drops focus (the phone's keyboard goes away); clicking back into the box
+  brings it back; Escape and ✕ clear it. The list is always in the DOM
+  (`.on` shows it). Pins: `tracker.test.tsx`, the smoke suite (desktop and
+  phone, hit-tested).

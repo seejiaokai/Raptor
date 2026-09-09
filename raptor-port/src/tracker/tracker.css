@@ -96,6 +96,23 @@ button.sm{padding:3px 7px;font-size:11px}
 /* The Course / Syllabus edit pencils and the ⓘ info toggle are glyph-only: a
    touch bigger than the 11px .sm text so the icon reads, and centred. */
 button.sm.icon{font-size:14px;padding:3px 8px;line-height:1}
+/* ↶ ↷ on the bar are greyed while there is nothing to take back — a live
+   button that does nothing reads as broken. */
+button:disabled{opacity:.38;cursor:default}
+button:disabled:hover{border-color:var(--line)}
+/* The predictions under the Find box (9 Sep 26): the menu panels' recipe,
+   hung off .findwrap (position:relative) on a desktop, and off the fixed
+   .findpanel strip on a phone (below). Always in the DOM; .on shows it. */
+.findlist{position:absolute;top:calc(100% + 4px);left:0;z-index:53;min-width:260px;max-width:360px;max-height:264px;overflow:auto;display:none;margin:0;padding:4px;list-style:none;
+  background:var(--panel2);border:1px solid var(--line);border-radius:10px;box-shadow:0 12px 32px rgba(0,0,0,.6)}
+.findlist.on{display:block}
+.findrow{display:flex;align-items:center;gap:7px;padding:5px 8px;border-radius:6px;cursor:pointer;font-size:12px;white-space:nowrap;min-width:0}
+.findrow:hover{background:var(--panel)}
+.findrow.on{background:#16384a}
+.findrow b{flex:0 0 auto}
+.fname{color:var(--muted);font-size:11px;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.fdot{width:8px;height:8px;border-radius:50%;flex:0 0 auto;background:var(--muted)}
+.fdot.t-flight{background:var(--flight)}.fdot.t-acad{background:var(--acad)}.fdot.t-test{background:var(--test)}.fdot.t-sim{background:var(--sim)}.fdot.t-device{background:var(--device)}
 &{--sideW:350px}
 .layout{display:grid;grid-template-columns:minmax(0,1fr) 6px var(--sideW);flex:1;min-height:0}
 /* Grid items default to min-height:auto, which lets the board's chart push the
@@ -488,6 +505,8 @@ small.hint{color:var(--muted);font-size:11px}
    box-shadow:0 8px 26px rgba(0,0,0,.5)}
  .findpanel.on{display:flex}
  #hSearch{flex:1 1 auto;min-width:0;width:auto}
+ /* The strip is position:fixed, so the list hangs off IT, full width. */
+ .findpanel .findlist{left:0;right:0;max-width:none}
  /* 204px of the 865px the bar wants was this slot, because .savestat is capped
     at 170px for a desktop row. The words still ellipsis; the full text is in
     the File menu beside the file name. */

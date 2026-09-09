@@ -56,8 +56,9 @@ export default function ArrangeTools() {
       <button id="selectAllBtn" title="Select every ball so the font box applies to all" onClick={core.selectAllClick}>▣ Select all</button>
       <FontBox />
       <span className="sep"></span>
-      <button id="trUndoBtn" title="Undo last flow edit" onClick={core.doUndo}>↶ Undo</button>
-      <button id="trRedoBtn" title="Redo" onClick={core.doRedo}>↷ Redo</button>
+      {/* ↶ Undo / ↷ Redo left this strip for the main bar on 9 Sep 26 (owner):
+          they take back marks as well as chart edits now, so they belong where
+          everyone can reach them, not only inside edit mode. Header.jsx. */}
       <button id="fitBtn" title="Fit the whole flow in view" onClick={core.fitView}>⤢ Fit</button>
       {/* Moved out of the header, where showing up only in edit mode pushed
           Marking as onto another row and slid the buttons under the pointer.

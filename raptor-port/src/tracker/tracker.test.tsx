@@ -102,7 +102,7 @@ describe('the header hides only the File menu for a member', () => {
   }
   beforeEach(() => { document.body.innerHTML = '' })
 
-  const EVERYONE = ['activeSel', 'showAllBtn', 'hSearchBtn', 'courseSel', 'courseMenuBtn', 'sylSel', 'sylMenuBtn', 'arrangeBtn', 'detailsBtn', 'saveStat']
+  const EVERYONE = ['activeSel', 'showAllBtn', 'hSearchBtn', 'courseSel', 'courseMenuBtn', 'sylSel', 'sylMenuBtn', 'arrangeBtn', 'detailsBtn', 'trUndoBtn', 'trRedoBtn', 'saveStat']
 
   it('admin: every control including the File menu', async () => {
     setFileLocked(false)
@@ -159,6 +159,145 @@ describe('the header hides only the File menu for a member', () => {
   })
 })
 
+/* 9 Sep 26 (owner: "undo and redo … for all users … not only isolated to
+   under edit"): ONE history of two kinds of step — chart edits, and one
+   student's marks + dates — behind the bar's ↶ ↷, with the weird cases walked:
+   the picker follows an undone mark to its student, a removed student's steps
+   are skipped, typing into a date box is one step, and a shortcut inside a
+   text box is the box's own. */
+describe('undo / redo on the bar, for everyone (core.js)', () => {
+  const drain = async () => { while (core.canUndo()) await core.doUndo(); while (core.canRedo()) await core.doRedo(); while (core.canUndo()) await core.doUndo() }
+  const grade = (s: string, id: string) => (((core.marks as any)[s] || {})[id] || {}).g || 0
+  beforeEach(async () => { await drain(); core.setActive('STUDENT Z') })
+
+  it('a grade is one undo step, greyed-out state and tooltip included; redo puts it back', async () => {
+    expect(core.canUndo()).toBe(false); expect(core.canRedo()).toBe(false)
+    core.openPop('ST-01', { clientX: 1, clientY: 1 }); await core.popGrade('dco')
+    expect(grade('STUDENT Z', 'ST-01')).toBe('dco')
+    expect(core.canUndo()).toBe(true)
+    expect(core.undoWhat()).toBe('the mark on ST-01 for STUDENT Z')
+    await core.doUndo()
+    expect(grade('STUDENT Z', 'ST-01')).toBe(0)
+    expect(core.canUndo()).toBe(false); expect(core.canRedo()).toBe(true)
+    expect(core.redoWhat()).toBe('the mark on ST-01 for STUDENT Z')
+    await core.doRedo()
+    expect(grade('STUDENT Z', 'ST-01')).toBe('dco')
+  })
+
+  it('a failure count is its own step, and a mark and a chart edit share one history in order', async () => {
+    core.openPop('ST-02', { clientX: 1, clientY: 1 }); await core.popGrade('marg')
+    core.openPop('ST-02', { clientX: 1, clientY: 1 }); await core.popFail(1)
+    expect((core.marks as any)['STUDENT Z']['ST-02'].f).toBe(1)
+    expect(core.undoWhat()).toBe('the failure count on ST-02 for STUDENT Z')
+    await core.doUndo()
+    expect((core.marks as any)['STUDENT Z']['ST-02'].f).toBe(0)
+    expect(grade('STUDENT Z', 'ST-02')).toBe('marg')
+    expect(core.undoWhat()).toBe('the mark on ST-02 for STUDENT Z')
+  })
+
+  it('the crew picker follows an undone mark to the student it belonged to', async () => {
+    core.openPop('ST-03', { clientX: 1, clientY: 1 }); await core.popGrade('dco')
+    core.setActive('STUDENT Y')
+    expect(core.active).toBe('STUDENT Y')
+    await core.doUndo()
+    expect(core.active).toBe('STUDENT Z')
+    expect(grade('STUDENT Z', 'ST-03')).toBe(0)
+    expect(core.pop).toBeNull()
+  })
+
+  it("a student who is gone leaves no live step — Undo skips it rather than marking nobody's chart", async () => {
+    core.setActive('STUDENT GONE')
+    core.openPop('ST-04', { clientX: 1, clientY: 1 }); await core.popGrade('dco')
+    expect(core.canUndo()).toBe(true)
+    delete (core.marks as any)['STUDENT GONE']
+    expect(core.canUndo()).toBe(false)
+    expect(await core.doUndo()).toBe(false)
+  })
+
+  it('keystrokes into one date box within two seconds are ONE step', async () => {
+    ;(core.dates as any)['STUDENT Z'] = { lastSyll: null, lastCurr: null }
+    await core.setLastCurr('STUDENT Z', '2026-01-0'); await core.setLastCurr('STUDENT Z', '2026-01-05')
+    expect(core.undoWhat()).toBe('Last Flown (Currency) for STUDENT Z')
+    await core.doUndo()
+    expect((core.dates as any)['STUDENT Z'].lastCurr).toBeNull()
+    expect(core.canUndo()).toBe(false)
+    /* …but a different box is a different step */
+    await core.setDownDays('STUDENT Z', '3'); await core.setUpchit('STUDENT Z', '2026-02-01')
+    await core.doUndo()
+    expect((core.dates as any)['STUDENT Z'].upchit).toBeUndefined()
+    expect((core.dates as any)['STUDENT Z'].downDays).toBe('3')
+  })
+
+  it('Ctrl+Z undoes, Ctrl+Y / Ctrl+Shift+Z redo — never from inside a text box or under a question', async () => {
+    core.openPop('ST-05', { clientX: 1, clientY: 1 }); await core.popGrade('dco')
+    const key = (k: string, extra: any = {}) => {
+      const e: any = { ctrlKey: true, key: k, target: { tagName: 'DIV' }, preventDefault: () => { e.prevented = true }, ...extra }
+      core.handleUndoKey(e); return e
+    }
+    expect(key('z', { target: { tagName: 'INPUT' } }).prevented).toBeUndefined()
+    await new Promise(r => setTimeout(r, 0))
+    expect(grade('STUDENT Z', 'ST-05')).toBe('dco')
+    expect(key('z').prevented).toBe(true)
+    await new Promise(r => setTimeout(r, 0))
+    expect(grade('STUDENT Z', 'ST-05')).toBe(0)
+    key('y'); await new Promise(r => setTimeout(r, 0))
+    expect(grade('STUDENT Z', 'ST-05')).toBe('dco')
+    key('z'); await new Promise(r => setTimeout(r, 0))
+    expect(grade('STUDENT Z', 'ST-05')).toBe(0)
+    key('z', { shiftKey: true }); await new Promise(r => setTimeout(r, 0))
+    expect(grade('STUDENT Z', 'ST-05')).toBe('dco')
+    /* no modifier, or Alt, is not the shortcut */
+    expect(key('z', { ctrlKey: false }).prevented).toBeUndefined()
+    expect(key('z', { altKey: true }).prevented).toBeUndefined()
+  })
+})
+
+/* 9 Sep 26 (owner: "a drop down menu on the prediction of the syllabus related
+   to the typed text"): the box exposes every match, not just a count, and the
+   list under it is walked and picked from. */
+describe('the Find box lists its predictions (core.js + Header.jsx)', () => {
+  const SYL3 = [{ id: 'ST-01', type: 'flight' }, { id: 'ST-02', type: 'flight' }, { id: 'ACG-01', type: 'acad' }]
+  beforeEach(async () => {
+    expect(await core.saveSylText(JSON.stringify(SYL3))).toBeNull()
+    core.clearSearch()
+    document.body.innerHTML = ''
+  })
+
+  it('runSearch exposes the hits in order; ↑ ↓ walk them, a pick lands on one, clearing empties them', () => {
+    core.runSearch('ST', false)
+    expect(core.searchHits).toEqual(['ST-01', 'ST-02'])
+    expect(core.searchAt).toBe(0)
+    core.searchStep(1); expect(core.searchAt).toBe(1)
+    core.searchStep(1); expect(core.searchAt).toBe(0)
+    core.searchStep(-1); expect(core.searchAt).toBe(1)
+    core.searchGo(0); expect(core.searchAt).toBe(0)
+    expect(core.searchHit).toBe('ST-01')
+    core.runSearch('ZZZ', false)
+    expect(core.searchHits).toEqual([])
+    core.clearSearch()
+    expect(core.searchHits).toEqual([]); expect(core.searchHit).toBeNull()
+  })
+
+  it('the list shows while the box has focus and something matches; the ringed hit is lit; blur hides it', async () => {
+    const host = document.createElement('div'); document.body.appendChild(host)
+    const root = createRoot(host)
+    await act(async () => { root.render(<Header />) })
+    const input = $('#hSearch') as HTMLInputElement
+    const list = $('#hSearchList')!
+    expect(list.classList.contains('on')).toBe(false)
+    core.runSearch('ST', false)
+    await act(async () => { input.focus() })
+    expect(list.classList.contains('on')).toBe(true)
+    const rows = [...list.querySelectorAll('.findrow')]
+    expect(rows.map(r => (r as HTMLElement).dataset.id)).toEqual(['ST-01', 'ST-02'])
+    expect(rows[0].classList.contains('on')).toBe(true)
+    expect(rows[1].classList.contains('on')).toBe(false)
+    await act(async () => { input.blur() })
+    expect(list.classList.contains('on')).toBe(false)
+    await act(async () => { root.unmount() })
+  })
+})
+
 describe('a second mount redraws the chart (logout → login)', () => {
   it('the board is drawn again on a fresh #board after the engine already booted', async () => {
     /* ui/App.tsx swaps the whole Shell for the login screen on logout, so the
@@ -194,9 +333,12 @@ describe('the seam stays light', () => {
     expect(role).not.toMatch(/^\s*import /m)
   })
 
-  it('the two arrange-strip ids Raptor already owns were renamed', () => {
+  it('the two undo ids Raptor already owns were renamed — and the pair lives on the bar now', () => {
     const tools = readFileSync(join(__dirname, 'components/ArrangeTools.jsx'), 'utf8')
-    expect(tools).not.toMatch(/id="(undoBtn|redoBtn)"/)
-    expect(tools).toMatch(/id="trUndoBtn"/)
+    const hdr = readFileSync(join(__dirname, 'components/Header.jsx'), 'utf8')
+    expect(tools).not.toMatch(/id="(undoBtn|redoBtn|trUndoBtn|trRedoBtn)"/)
+    expect(hdr).not.toMatch(/id="(undoBtn|redoBtn)"/)
+    expect(hdr).toMatch(/id="trUndoBtn"/)
+    expect(hdr).toMatch(/id="trRedoBtn"/)
   })
 })

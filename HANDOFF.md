@@ -215,8 +215,17 @@ group, and Find event moved to sit after File with Save changes alone in the
 far-right corner (on a phone Save takes an auto margin to hold that corner).
 Same behaviours, tidier bar; contract in `docs/ui-contracts.md` §The Tracker
 tab, pinned in `tracker.test.tsx` + the smoke suite, driven in a real browser
-at 1440 and 390. **Merge only on the owner's explicit "merge live" — NOT
-merged.**
+at 1440 and 390. Merged live as PR #377 (9 Sep 26); the leftover cross-session
+PRs (#184, #314, #357, #372, #376) were closed unmerged at the owner's ask,
+and **work now lands on `main` directly** (owner, 9 Sep 26: "continue working
+on main henceforth"). **Then (9 Sep 26, on main) two Tracker asks:** the Find
+box lists its PREDICTIONS as you type (every matching event with its name,
+↓ ↑ / click to pick, phone full-width), and **↶ ↷ moved from the edit strip
+to the bar for everyone** — one history that takes back a grade, a failure
+count or a date box as well as a chart edit, greyed when empty, the Crew
+picker following an undone mark to its student, Ctrl+Z / Ctrl+Y. Contract in
+`docs/ui-contracts.md` §The Tracker tab; pinned in `tracker.test.tsx` + the
+smoke suite.
 
 Everything before the audit fixes is merged — three PRs landed 7 Sep 26:
 **PR #371** (the Leave War figures drawer, bulk balance

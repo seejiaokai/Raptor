@@ -62,10 +62,42 @@ function Menu({ id, label, title, children, icon, active }) {
    reason the menu panels are: an overflow container clips its own absolutely
    positioned children, so an absolute strip is drawn and then cut off at the
    41px header. */
+/* One row of the predictions list: the code as the ball prints it, a dot in the
+   event's type colour, and the event's name — the second and third are what
+   tell ST-10 ACM from ST-11 when only the code was typed. */
+function FindRow({ id, on, i, pick }) {
+  const ev = core.byid[id] || {};
+  const name = (core.infoFor(id) || {}).name || '';
+  return (
+    <li role="option" aria-selected={on} className={'findrow' + (on ? ' on' : '')} data-id={id}
+      /* mousedown, not click, and preventDefault: a click would blur the box
+         first and the list would be gone before the click landed. */
+      onMouseDown={e => { e.preventDefault(); pick(i); }}>
+      <span className={'fdot t-' + (ev.type || '')} />
+      <b>{ev.label || id}</b>
+      {name ? <span className="fname">{name}</span> : null}
+    </li>
+  );
+}
+
 function HeaderSearch() {
   const [open, setOpen] = useState(false);
   const [at, setAt] = useState(null);
-  const wrap = useRef(null), input = useRef(null);
+  /* The predictions under the box (owner, 9 Sep 26): every event the typed
+     text matches, in the order Enter walks them, the ringed one lit. Shown
+     while the box has focus and something to show; a pick closes it and drops
+     focus (on a phone that is what puts the keyboard away so the ringed ball
+     can be seen). Typing or clicking back in brings it back. */
+  const [list, setList] = useState(false);
+  const wrap = useRef(null), input = useRef(null), ul = useRef(null);
+  const hitIds = core.searchHits;
+  const showList = list && !!core.searchQ && hitIds.length > 0;
+  useEffect(() => {
+    if (!showList || !ul.current) return;
+    const li = ul.current.querySelector('.findrow.on');
+    if (li && li.scrollIntoView) li.scrollIntoView({ block: 'nearest' });
+  }, [showList, core.searchAt, hitIds]);
+  const pick = i => { core.searchGo(i); setList(false); if (input.current) input.current.blur(); };
   useLayoutEffect(() => {
     if (!open) { setAt(null); return; }
     const place = () => {
@@ -92,9 +124,14 @@ function HeaderSearch() {
       <span className={'findpanel' + (open ? ' on' : '')} id="hSearchPanel"
         style={at ? { top: at.top + 'px' } : undefined}>
         <input id="hSearch" ref={input} placeholder="Find event…" value={core.searchQ}
-          onChange={e => core.runSearch(e.target.value, false)}
+          role="combobox" aria-autocomplete="list" aria-expanded={showList} aria-controls="hSearchList"
+          autoComplete="off"
+          onFocus={() => setList(true)} onBlur={() => setList(false)}
+          onChange={e => { setList(true); core.runSearch(e.target.value, false); }}
           onKeyDown={e => {
             if (e.key === 'Enter') { e.preventDefault(); core.runSearch(core.searchQ, true); }
+            if (e.key === 'ArrowDown') { e.preventDefault(); setList(true); core.searchStep(1); }
+            if (e.key === 'ArrowUp') { e.preventDefault(); setList(true); core.searchStep(-1); }
             /* Not stopPropagation: Escape still has to reach the app's own
                handler, it simply clears the box first. */
             if (e.key === 'Escape') { core.clearSearch(); e.currentTarget.blur(); setOpen(false); }
@@ -102,6 +139,12 @@ function HeaderSearch() {
         <button className="sm" id="hSearchClear" title="Clear the search"
           onClick={() => { core.clearSearch(); if (input.current) input.current.focus(); }}>✕</button>
         <span className="findstat" id="hSearchStat">{stat}</span>
+        {/* Always in the DOM, hidden by CSS (the menu panels' rule): the list
+            is measured by the smoke suite while shut, and the ref has to
+            exist for the keep-in-view scroll. */}
+        <ul className={'findlist' + (showList ? ' on' : '')} id="hSearchList" role="listbox" ref={ul}>
+          {showList ? hitIds.map((id, i) => <FindRow key={id} id={id} i={i} on={i === core.searchAt} pick={pick} />) : null}
+        </ul>
       </span>
     </span>
   );
@@ -184,6 +227,15 @@ export default function Header() {
             Turn it on and hovering an event (tapping on a phone) pops its
             title, type, crew & prerequisites; marking is off while it is on. */}
         <button className={'sm icon' + (core.showDetails ? ' primary' : '')} id="detailsBtn" title="Show each event's title, type, crew & prerequisites on hover (tap on a phone) — marking is off while this is on" onClick={core.toggleDetails}>ⓘ</button>
+
+        {/* ↶ Undo / ↷ Redo, on the bar for everyone (owner, 9 Sep 26 — "not
+            only isolated to under edit"). They take back a mark, a failure
+            count or a date as well as a chart edit (core.js, the undo section);
+            greyed when there is nothing to take back, and the tooltip names
+            what the next press would do. Same ids the edit strip used, so the
+            smoke suite's presses land here. */}
+        <button className="sm icon" id="trUndoBtn" disabled={!core.canUndo()} title={core.canUndo() ? 'Undo ' + core.undoWhat() + ' (Ctrl+Z)' : 'Nothing to undo'} onClick={core.doUndo}>↶</button>
+        <button className="sm icon" id="trRedoBtn" disabled={!core.canRedo()} title={core.canRedo() ? 'Redo ' + core.redoWhat() + ' (Ctrl+Y)' : 'Nothing to redo'} onClick={core.doRedo}>↷</button>
 
         {/* Show All moved to the right of the syllabus group (owner, 9 Sep 26).
             On a phone the button is hidden: the Show All tab under the bar is
