@@ -1438,6 +1438,20 @@ export function renderBoard() {
   if (boardPad.x || boardPad.y) { board.scrollLeft = boardPad.x; board.scrollTop = boardPad.y; }
   notify();   /* header event count etc. */
 }
+/* Redraw the board WITHOUT moving the view. Rebuilding the SVG (which a mark
+   has to do — the ball's fill and the yellow "can plan next" rings change)
+   resets the scroll to the chart's corner, so grading a ball well down the
+   chart threw the view back up to the top (owner, 9 Sep 26: skip ahead, "put
+   DCO a pokeball down the flow chart. The view jumps back up to the above
+   last empty pokeball"). The chart is the SAME size before and after a mark
+   — only the colours differ — so the offset still points at the same place:
+   capture it and put it straight back, exactly as the crew picker does. */
+function redrawKeepView() {
+  const board = document.getElementById('board');
+  const sx = board ? board.scrollLeft : 0, sy = board ? board.scrollTop : 0;
+  renderBoard(); renderSide();
+  if (board) { board.scrollLeft = sx; board.scrollTop = sy; }
+}
 export let flowZoom = 1;
 let zoomIsMine = false;   /* the user has taken the zoom over; stop auto-fitting */
 
@@ -2245,7 +2259,7 @@ export async function popGrade(v) {
   marks[s][popId] = marks[s][popId] || { g: 0, f: 0 }; marks[s][popId].g = v === '0' ? 0 : v;
   await saveMarks(s);
   if (byid[popId] && byid[popId].type === 'flight' && DONE.has(v)) await flownOn(s, popFlightDate || isoToday());
-  renderBoard(); renderSide(); closePop();
+  redrawKeepView(); closePop();
 }
 export async function popFail(delta) {
   const s = active; const popId = pop && pop.id; if (!popId || !s) return;
@@ -2258,7 +2272,7 @@ export async function popFail(delta) {
   if (delta > 0 && gradeOf(s, popId) === 'na') { flashHint('“' + popId + '” is marked N.A., so it cannot be failed.'); return; }
   pushMarkUndo(s, 'the failure count on ' + popId);
   marks[s][popId].f = Math.max(0, (marks[s][popId].f || 0) + delta);
-  await saveMarks(s); renderBoard(); renderSide();
+  await saveMarks(s); redrawKeepView();
 }
 export async function popFlightChanged(v) {
   const s = active; const popId = pop && pop.id;

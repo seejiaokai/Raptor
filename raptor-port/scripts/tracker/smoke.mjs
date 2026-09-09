@@ -2071,6 +2071,40 @@ if (two.length >= 2) {
   await pg.mouse.click(spot.cx, spot.cy); await pg.waitForTimeout(400);
   ok('the centre of the ball opens the details too', await pg.locator('#pop:visible').count() === 1);
   await pg.keyboard.press('Escape'); await pg.waitForTimeout(300);
+
+  /* Marking a ball must NOT move the view (owner, 9 Sep 26: skip ahead and
+     "put DCO a pokeball down the flow chart. The view jumps back up to the
+     above last empty pokeball"). Grading rebuilds the whole SVG, which reset
+     the scroll to the chart's top. Pick a student, park the board partway,
+     grade whichever ball is sitting under the middle — the view must hold.
+     Runs last: a grade changes the marked student's latest work, so the
+     landing checks above must have taken their measurements first. */
+  await pg.selectOption('#activeSel', marker); await pg.waitForTimeout(600);
+  await pg.evaluate(() => { const bd = document.getElementById('board'); bd.scrollTop = Math.round(bd.scrollHeight * 0.45); bd.scrollLeft = 0; });
+  await pg.waitForTimeout(150);
+  const gradeTarget = await pg.evaluate(() => {
+    const bd = document.getElementById('board'), b = bd.getBoundingClientRect(), mid = b.top + b.height / 2;
+    let best = null, bestOff = Infinity;
+    for (const g of document.querySelectorAll('#flowSvg .ball')) {
+      const r = g.getBoundingClientRect();
+      if (r.top < b.top || r.bottom > b.bottom) continue;     /* fully in view */
+      const off = Math.abs((r.top + r.height / 2) - mid);
+      if (off < bestOff) { bestOff = off; best = g.dataset.id; }
+    }
+    return best;
+  });
+  const beforeGrade = await pg.evaluate(() => Math.round(document.getElementById('board').scrollTop));
+  await pg.evaluate(id => {
+    const g = [...document.querySelectorAll('#flowSvg .ball')].find(x => x.dataset.id === id);
+    g.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+  }, gradeTarget);
+  await pg.waitForSelector('#pop');
+  await pg.locator('#pop .opts button', { hasText: 'DCO' }).click();
+  await pg.waitForTimeout(700);
+  const afterGrade = await pg.evaluate(() => Math.round(document.getElementById('board').scrollTop));
+  ok('grading a ball leaves the view where it is', gradeTarget && Math.abs(afterGrade - beforeGrade) <= 4,
+    `graded ${gradeTarget}: ${beforeGrade}px → ${afterGrade}px`);
+  await pg.keyboard.press('Escape'); await pg.waitForTimeout(200);
 }
 
 /* A recorded syllabus that has since been deleted must not break the load.

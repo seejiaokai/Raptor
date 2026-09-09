@@ -88,7 +88,13 @@ time changed.
   even the first and last events can sit in the middle; `renderBoard` parks
   a fresh draw at the chart's own corner so a chart switch looks unchanged,
   and `setFlowZoom`'s anchor maths subtracts the slack. Switching student
-  still does not switch syllabus. **A tap on another student's wedge
+  still does not switch syllabus. **Placing a mark leaves the view exactly
+  where it is** (owner, 9 Sep 26: skip ahead and "put DCO a pokeball down the
+  flow chart. The view jumps back up to the above last empty pokeball") — the
+  grade rebuilds the SVG the same way a crew pick does, so `popGrade`/`popFail`
+  go through `redrawKeepView`, which captures the board scroll across the
+  redraw and puts it straight back; you are looking at the ball you marked, so
+  the chart must not move under you. **A tap on another student's wedge
   on any ball also picks them** (same day) — that route deliberately does NOT
   land: the user is looking at the ball they tapped. With five or six
   students the wedges get thin on a phone; the centre stays the easy target
