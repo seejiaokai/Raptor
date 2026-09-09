@@ -1885,7 +1885,13 @@ ok('the lull calendar is shut until it is asked for', await pg.locator('#lullCal
 const addStudent = async name => {
   await pg.click('#addStu'); await pg.waitForSelector('#dlgInput');
   await pg.fill('#dlgInput', name);
-  await pg.click('#dlgOk'); await pg.waitForTimeout(700);
+  await pg.click('#dlgOk');
+  /* wait for the roster to SHOW the name, not a fixed 700ms: the add itself now
+     waits for any syllabus load still in flight, and on a slow runner that took
+     longer than the pause (9 Sep 26 — one student where two were added) */
+  await pg.waitForFunction(n => [...document.querySelectorAll('#activeSel option')].some(o => o.value === n),
+    name.trim().toUpperCase(), { timeout: 15000 });
+  await pg.waitForTimeout(300);
 };
 
 /* ---- the person → Tracker link (9 Sep 26) ----
@@ -2074,12 +2080,15 @@ await pg.waitForSelector('#flowSvg .ball');
 {
   const opts = await pg.evaluate(() => [...document.querySelectorAll('#sylSel option')].map(o => o.value));
   let best = null, bestN = -1;
+  /* each switch is a load; count the balls only once it has settled, or a slow
+     runner counts the previous chart and picks the wrong syllabus */
+  const settled = () => pg.evaluate(() => window.__coreForTests.whenLoaded());
   for (const o of opts) {
-    await pg.selectOption('#sylSel', o); await pg.waitForTimeout(500);
+    await pg.selectOption('#sylSel', o); await settled(); await pg.waitForTimeout(500);
     const n = await pg.locator('#flowSvg .ball').count();
     if (n > bestN) { bestN = n; best = o; }
   }
-  await pg.selectOption('#sylSel', best); await pg.waitForTimeout(900);
+  await pg.selectOption('#sylSel', best); await settled(); await pg.waitForTimeout(900);
 }
 const bigBoard = await pg.evaluate(() => {
   const bd = document.getElementById('board');

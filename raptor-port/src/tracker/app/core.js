@@ -174,6 +174,17 @@ export let calView = new Date();
    the file-unsaved flag; since 9 Sep 26 there is no file to flag (the store is
    the record) and it only marks the boot/switch window. */
 let loading = true;
+/* Loads are SERIAL and the roster writers WAIT for them (9 Sep 26). loadCourse
+   reads a dozen records with an await between each and then replaces the
+   roster array with what it fetched. A second switch started meanwhile
+   interleaved with the first, and a + Add finished while the load had already
+   FETCHED the roster but not yet applied it pushed and saved — then the load
+   applied its stale copy and the next save wrote that copy back: a slow CI
+   runner showed it as two adds, one student. One promise chain: every load
+   queues behind the last, and anything that writes the roster awaits the chain
+   first. `loading` above is the flag; this is the gate. */
+let loadChain = Promise.resolve();
+export function whenLoaded() { return loadChain; }
 export let arrangeMode = false, layout = {}, drag = null, AUTO = {}, BORROW = null;
 /* ---- per-edge routing metadata layered on top of the prereq graph ---- */
 let edgeMeta = {}, merges = new Set(), unmerges = new Set(), selEdge = null, mergeFirst = null, selBalls = new Set(), redoStack = [], alignGuides = [];
@@ -462,7 +473,12 @@ async function migrateRosters(c) {
    also runs when the user picks a syllabus themselves, and restoring there
    overwrote their choice the instant they made it — so on any course where
    something had been marked, the syllabus could not be changed at all. */
-async function loadCourse(c, restoreLastSyllabus = false) {
+function loadCourse(c, restoreLastSyllabus = false) {
+  const p = loadChain.then(() => loadCourseNow(c, restoreLastSyllabus));
+  loadChain = p.catch(() => {});        /* a failed load must not jam the chain */
+  return p;
+}
+async function loadCourseNow(c, restoreLastSyllabus) {
   loading = true;
   course = c;
   /* One site covers init, switchCourse, addCourse, renCourse and delCourse.
@@ -2595,6 +2611,7 @@ export async function addStudent() {
   } else v = (r || '').trim().toUpperCase();
   if (!v) return;
   if (await refuseColon(v)) return;
+  await whenLoaded();                   /* a switch still loading would throw this push away */
   if (!roster.includes(v)) {
     roster.push(v); marks[v] = {}; dates[v] = { lastSyll: null, lastCurr: null };
     await saveRoster(); await saveMarks(v); await saveDates(v);
@@ -2604,6 +2621,7 @@ export async function addStudent() {
 }
 export async function removeStudent(v) {
   if (!await uiConfirm('Remove ' + v + ' from ' + plan.sylName + '?\n\nTheir marks, dates, pace and lull periods on this syllabus are deleted.')) return;
+  await whenLoaded();
   roster = roster.filter(x => x !== v); delete marks[v]; delete dates[v];
   /* Their undo steps go with them: an Undo that brought a removed student's
      mark back would put a mark on nobody's chart. */
@@ -3606,7 +3624,7 @@ export async function init() {
      page, so scripts/smoke.mjs has no other way to reach these. */
   if (typeof window !== 'undefined') {
     window.__coreForTests = { layoutSnapshotFor, collectCharts, collectStudents, collectLinks,
-      applyCharts, applyStudents, applyLinks, loadLinks, SYLLABI, DEFAULT_LAYOUTS };
+      applyCharts, applyStudents, applyLinks, loadLinks, whenLoaded, SYLLABI, DEFAULT_LAYOUTS };
     window.__fileFormatForTests = FMT;
     window.__fileStoreForTests = FS;
     /* Save changes is only on screen while there is an unsaved flow edit, so a

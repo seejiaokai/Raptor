@@ -2196,3 +2196,19 @@ gate's. Keep verdict-bearing commands unpiped.
 **Suggested improvement:** When a feature reads from an optional seam, add to the build checklist: (1) write the "source absent" test first — it should reproduce the OLD behaviour byte for byte; (2) never default absence to an empty collection if the renderer treats "empty" and "absent" differently — branch at the call site on presence; (3) when the owner mentions a context "just for context", verify the code against it before agreeing.
 
 **Principle:** A feature behind an optional seam has two shapes — fed and unfed — and the unfed one must be pinned as the old behaviour, not assumed. An empty collection is not the same as "no collection"; pick the absence value the renderer actually branches on.
+
+### Observation 145: A race test must stage the losing ORDER, not add delays and hope
+
+**Status:** OPEN
+**Date:** 2026-09-09
+**Session context:** RAPTOR Tracker — CI failed "two adds, one student" on a slow runner; local runs passed. Root cause: an async load fetches the roster, a write lands, the load applies its stale copy. Two red-first attempts PASSED on the unfixed code: (1) a zero-delay tick — the unit store answers in microtasks, so the whole load finished before the tick; (2) a 1 ms delay on every read — but the wrapper fetched the value AFTER the delay, so it always saw the write. Only the third version went red: the store wrapper let the load fetch the roster, then finished the write from inside the wrapper, then returned the stale value.
+
+**Skill:** task-observer (general engineering practice; complements #143 on scoping a red-first revert)
+**Type:** open-source
+**Phase/Area:** test writing — races / lost updates
+
+**Issue:** "Add a delay and run the two things concurrently" does not reproduce a lost-update race deterministically; the losing interleaving is specific (fetch → foreign write → stale apply) and a delay in the wrong place (before the fetch instead of after it) produces a different, harmless order. Each green-on-broken-code attempt cost a run and could have been mistaken for "the race isn't real".
+
+**Suggested improvement:** For any race: (1) write down the exact losing order as three steps; (2) build the test to FORCE that order — hook the boundary (the storage read, the network call) and perform the foreign write from inside the hook, after the value is fetched and before it is returned; (3) assert the guard that proves the hook fired (a `staged` flag), so a green test cannot be a test that never reached the race; (4) confirm red with the DEFECT's message before fixing.
+
+**Principle:** A concurrency test is a scheduler, not a stopwatch: it must dictate the interleaving, prove the interleaving happened, and fail with the defect's own message before the fix.

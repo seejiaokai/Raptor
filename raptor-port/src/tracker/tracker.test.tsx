@@ -580,6 +580,44 @@ describe('the person bridge and the link (peoplewire.ts → people.js → core.j
     expect(C.roster.length).toBe(n)
   })
 
+  it('a + Add pressed while a syllabus switch is still loading lands on the new syllabus, not in the bin', async () => {
+    /* CI, 9 Sep 26: loadCourse reads a dozen records with an await between
+       each and then replaces the roster array. An add during that window
+       pushed onto the OLD array, which the load threw away — a slow runner
+       showed it as two adds, one student. Loads are serial now and the roster
+       writers wait for them. */
+    if (C.sylDirty) await C.saveChangesClick()
+    const orig = C.curSyl(); const other = (C.allSylNames() as string[]).find(n => n !== orig)
+    expect(other, 'two syllabi to switch between').toBeTruthy()
+    /* The unit store answers in a microtask, so an un-slowed load is over
+       before anything else runs; in the browser every read crosses the storage
+       seam and takes real time. The losing order is: the load has FETCHED the
+       new roster, the user finishes + Add (push, save), then the load applies
+       the stale roster it fetched — so that is the order staged here. */
+    const rosterKey = `v3:${C.course}:${other}:roster`
+    const realGet = storage.get; let staged = false
+    storage.get = async function (k: string) {
+      const r = await realGet.call(storage, k)
+      if (!staged && k === rosterKey) { staged = true; C.dlgClose('RACER'); await tick(); await tick(); await tick() }
+      return r
+    } as any
+    try {
+      const sw = C.switchSyllabus(other!)          /* NOT awaited: the load is in flight */
+      const p = C.addStudent()                     /* the dialog is up; the wrapper answers it */
+      await Promise.all([sw, p])
+    } finally { storage.get = realGet }
+    expect(staged, 'the load read the new roster while the dialog was up').toBe(true)
+    expect(C.curSyl()).toBe(other)
+    expect(C.roster, 'on screen').toContain('RACER')
+    const stored = await storage.get(`v3:${C.course}:${other}:roster`)
+    expect(JSON.parse(stored!.value), 'in the store, under the new syllabus').toContain('RACER')
+    /* leave things as the tests around this one expect them */
+    const rm = C.removeStudent('RACER'); await tick(); C.dlgClose(true); await rm
+    expect(C.roster).not.toContain('RACER')
+    await C.switchSyllabus(orig)
+    expect(C.curSyl()).toBe(orig)
+  })
+
   it('with no roster handed over — the standalone app — + Add is the old "Student callsign:" prompt, byte for byte', async () => {
     /* owner, 9 Sep 26: the Tracker goes back out to its standalone repo, where
        a student is created by typing a name and nothing feeds people.js. An

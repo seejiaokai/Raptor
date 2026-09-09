@@ -63,6 +63,14 @@
 >   course under the same name and type a student under an old linked name,
 >   and that student comes back linked to the old person along with their
 >   old marks — coherent, but worth knowing.
+> - **Loads are serial and the roster writers wait for them (9 Sep 26).**
+>   `loadCourse` reads a dozen records with an await between each and then
+>   replaces the roster with what it fetched; a `+ Add` or a removal finishing
+>   inside that window used to be applied over by the load's stale copy (CI
+>   showed it: two adds, one student). `loadCourse` now queues behind the last
+>   load on one promise chain and `addStudent`/`removeStudent` `await
+>   whenLoaded()` first. A NEW writer that touches the roster does the same;
+>   the mark writers read `active`, which the load sets, and are not gated.
 > - **Its layout is a viewport-tall column, not a scrolling page.** The chart
 >   and the side panel scroll inside their own boxes. While the tab is up the
 >   document is locked and Raptor's 120px body pad is dropped (`body.tr-on`,
