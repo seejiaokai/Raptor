@@ -13,6 +13,7 @@ import { boardHTML } from './board'
 import { HOOKS } from '../engine/hooks'
 import { secOrder } from '../engine'
 import { SECDEFOFFER, setSecDefOffer } from './pops'
+import { ensureRowIds } from '../engine/rowids'
 
 const DSNAP = JSON.stringify(DAYS)
 let host: HTMLElement, off: () => void
@@ -205,6 +206,11 @@ describe('wireRowDrag', () => {
 
     it('a section drag is DISPLAY only — no pending edit, no amendment', () => withEdit(() => {
       host.innerHTML = boardHTML(0)
+      /* a real session has every row minted (engine/rowids.ts) before any
+         drag ever runs; the "nothing changed" snapshot must be taken from
+         that same state, or the drag epilogue's own mint (histPush ->
+         ensureRowIds) reads as a change nothing here actually made. */
+      ensureRowIds(DAYS)
       const before = JSON.stringify(DAYS[0].waves)   // model rows untouched by a section move
       const grip = host.querySelector('[data-secmove="0.sims"] .secgrip') as HTMLElement
       const target = host.querySelector('[data-secmove="0.prog"]') as HTMLElement
