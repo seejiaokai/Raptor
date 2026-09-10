@@ -459,6 +459,28 @@ async function migrateRosters(c) {
   } catch (_) {}
 }
 const has = (o, k) => Object.prototype.hasOwnProperty.call(o, k);
+/* EVERY syllabus the STORE knows this course has — never the list this boot
+   happens to have loaded, and never the list the hidden pref happens to show.
+   Two holes it closes, both of which would leave a roster sitting in names
+   while the course was flagged converted, which is the one way this migration
+   can lose somebody: migrateAllCourses runs at init BEFORE any course is
+   opened, so CUSTOMS is still empty and a duplicated chart's crew would be
+   skipped; and allSylNames() drops a HIDDEN built-in, whose crew are still
+   real. So: the built-ins unfiltered, the global custom store, both legacy
+   per-course custom stores, whatever is already in memory, and the course's
+   own plan — its current syllabus and the pre-rename name its marks may still
+   be filed under. The same unfiltered union removeStudentNow and renCourse
+   already walk, plus the store reads that make it independent of boot order. */
+async function storeSylNames(c) {
+  const out = new Set(SYL_NAMES);
+  for (const k of [kSyls(c), kSylsOwn(c), kSylsOldMaster()])
+    for (const n of Object.keys(sParse(await sGet(k), {}, 'object'))) out.add(n);
+  for (const n of Object.keys(CUSTOMS || {})) out.add(n);
+  const p = sParse(await sGet(kPlan(c)), {}, 'object');
+  if (p.sylName) out.add(p.sylName);
+  if (p.__oldSyl) out.add(p.__oldSyl);
+  return [...out];
+}
 /* Name keys → enrolment ids, once per course (stable ids, 10 Sep 26).
    sSet swallows a failed write (it only shows "local only"), so this cannot
    trust a write it did not read back, and it cannot write the roster — the
@@ -480,11 +502,14 @@ async function migrateIds(c) {
        the demo pair), and it needs the course's own plan — so it runs when the
        course is opened, not here. Flagging a course done before it ran would
        leave those names unconverted for good, which is the one way this
-       migration could lose someone's marks. A course still waiting for the
-       split converts the moment it is opened; until then an export converts it
-       on the fly (collectStudents) and a rename carries its records by name. */
+       migration could lose someone's marks. Such a course converts on its
+       FIRST OPEN, which is where migrateRosters runs; until then its crew are
+       still under the pre-syllabus flat roster key, so an export carries no
+       roster for it — exactly as it did before this change — and a rename
+       carries its records by name (moveSylData and renCourse both read that
+       flat key and both carry a bare string). */
     if (!(await sGet(kRosterMig(c)))) return;
-    const syls = allSylNames(), ids = Object.create(null), rosters = {};
+    const syls = await storeSylNames(c), ids = Object.create(null), rosters = {};
     for (const n of syls) { rosters[n] = sParse(await sGet(kRosterFor(c, n)), [], 'array'); for (const e of rosters[n]) if (isEntry(e) && !has(ids, e.name)) ids[e.name] = e.id; }
     const names = new Set();
     for (const n of syls) for (const e of rosters[n]) { if (typeof e === 'string' && e) names.add(e); else if (isEntry(e)) names.add(e.name); }
@@ -533,7 +558,12 @@ export async function migrateAllCourses() { for (const c of COURSES) await migra
    under the name rather than under an id. */
 async function readCourseBlock(c, withNames) {
   const bySyllabus = {}, names = new Set();
-  for (const n of orderedSylNames()) {
+  /* The store's whole list, so a hidden chart or one this boot has not loaded
+     still exports its crew — put in display order where the display has an
+     opinion, and the rest after. */
+  const all = await storeSylNames(c);
+  const ranked = orderedSylNames().filter(n => all.includes(n));
+  for (const n of [...ranked, ...all.filter(n => !ranked.includes(n))]) {
     const roster = sParse(await sGet(kRosterFor(c, n)), [], 'array');
     if (!roster.length) continue;
     const marks = {}, dates = {};
@@ -649,8 +679,8 @@ async function loadCourseNow(c, restoreLastSyllabus) {
      the membership guard quietly handles remembering someone who is not on the
      syllabus being opened. */
   const __myS = prefGet('lastCrew:' + c);
-  const has = id => !!id && roster.some(r => r.id === id);
-  active = has(__myS) ? __myS : (has(__lastS2) ? __lastS2 : (roster[0] ? roster[0].id : null));
+  const onRoster = id => !!id && roster.some(r => r.id === id);
+  active = onRoster(__myS) ? __myS : (onRoster(__lastS2) ? __lastS2 : (roster[0] ? roster[0].id : null));
   await loadLayout();
   await loadStudent();
   /* one-time marks + layout migration from the old syllabus name */
@@ -2707,10 +2737,13 @@ export function closeShowAll() { showAllOpen = false; notify(); }
    are filed under it, so the same person added to a second chart of the
    course must land under the SAME id. Looked up across every roster of the
    course — the person id first (a callsign can change in Raptor), then the
-   name — and the existing entry's name is kept so every chart agrees. */
+   name — and the existing entry's name is kept so every chart agrees. Every
+   syllabus the STORE knows, not the visible ones: somebody enrolled only on a
+   chart that is currently hidden is still enrolled, and minting them a second
+   id would split their pace and lull periods off their marks. */
 export async function findEnrolment(pid, name) {
   let byPid = null, byNm = null;
-  for (const n of allSylNames()) {
+  for (const n of await storeSylNames(course)) {
     const r = (n === plan.sylName) ? roster : sParse(await sGet(kRosterFor(course, n)), [], 'array').filter(isEntry);
     for (const e of r) { if (pid && e.pid === pid && !byPid) byPid = e; if (e.name === name && !byNm) byNm = e; }
   }
@@ -3465,7 +3498,20 @@ export async function collectStudents() {
        still exports whole: converted on the fly, its old links folded in */
     if (await sGet(kIdMig(c))) { byCourse[c] = block; continue; }
     const links = sParse(await sGet(kLinks), {}, 'object')[c] || null;
-    byCourse[c] = upgradeCourseBlock(block, links).block;
+    /* ids.js REFUSES an inconsistent block by throwing, which is right when it
+       guards a file being opened — but here one damaged course would take the
+       whole export down with it, and before stable ids this collector could
+       not throw at all. So the conversion is per course: a course that refuses
+       is exported exactly as it is filed, still name-keyed, and the reason is
+       named in the console. There is no per-item user channel on this path —
+       saveCopyClick's only failure message covers the whole write — and a
+       collector must not raise a dialog of its own: it is also what the tests
+       and the smoke suite call. */
+    try { byCourse[c] = upgradeCourseBlock(block, links).block; }
+    catch (err) {
+      byCourse[c] = block;
+      try { console.warn('Tracker export: course “' + c + '” could not be re-keyed to enrolment ids, so it is exported as it is filed. ' + ((err && err.message) || err)); } catch (_) {}
+    }
   }
   return { courses: COURSES.slice(), byCourse };
 }

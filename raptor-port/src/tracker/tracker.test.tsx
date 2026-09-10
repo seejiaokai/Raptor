@@ -970,6 +970,31 @@ describe('the person bridge and the link (peoplewire.ts → people.js → core.j
     }
   })
 
+  /* 10 Sep 26: the enrolment belongs to the COURSE, and a chart being hidden
+     does not un-enrol anybody. + Add looked at the VISIBLE syllabi only, so a
+     student sitting on a hidden chart earned a second id — and their pace and
+     lull periods, which hang off the course, would have split away from it. */
+  it('+ Add reuses the enrolment of somebody who is only on a HIDDEN chart, rather than minting a second id', async () => {
+    setPeople(P)
+    const syl = C.curSyl()
+    const other = (C.allSylNames() as string[]).find((n: string) => n !== syl)!
+    const entry = { id: 'sHIDDENONE', name: 'RANGER', pid: 'p1' }
+    await storage.set(`v3:${C.course}:${other}:roster`, JSON.stringify([entry]))
+    ;(C.SYL_HIDDEN as string[]).push(other)
+    try {
+      const n = C.roster.length
+      const p = C.addStudent(); C.dlgClose({ pick: 'p1' }); await p; await C.whenLoaded()
+      const r = C.byName('RANGER')!
+      expect(r.id, 'the same enrolment, not a second one').toBe(entry.id)
+      expect(C.roster.length, 'one new row on this chart, one enrolment across the course').toBe(n + 1)
+      expect(C.active).toBe(entry.id)
+    } finally {
+      ;(C.SYL_HIDDEN as string[]).splice((C.SYL_HIDDEN as string[]).indexOf(other), 1)
+      await storage.delete(`v3:${C.course}:${other}:roster`)
+      const rm = C.removeStudent(entry.id); await answer(true); await rm
+    }
+  })
+
   it('+ Add mints an entry: a typed name has no pid, a picked person carries theirs; same name or same person is not added twice', async () => {
     setPeople(P)
     let p = C.addStudent(); C.dlgClose({ pick: 'p1' }); await p; await C.whenLoaded()
@@ -1004,6 +1029,35 @@ describe('the person bridge and the link (peoplewire.ts → people.js → core.j
     await storage.set('v3:' + c + ':last:ALPHA', JSON.stringify({ syl: '2026', event: 'ST-01' }))
     await storage.set('v3:' + c + ':lastStudent', 'BRAVO')   /* the SECOND entry, so a fallback to the first cannot pass */
     await storage.set('v3:links', JSON.stringify({ [c]: { ALPHA: 'p1' } }))
+    /* Two charts the LIVE module state cannot see at init: a custom one that
+       only exists in this course's own store (CUSTOMS is empty until a course
+       is opened) and a built-in somebody has hidden (allSylNames drops it).
+       Both carry crew, and the course is flagged converted for good — so if
+       the migration reads anything but the store, their names are lost. */
+    const hidden = (C.SYL_NAMES as string[]).find((n: string) => n !== '2026')!
+    ;(C.SYL_HIDDEN as string[]).push(hidden)
+    await storage.set('v3:' + c + ':syls', JSON.stringify({ 'CUSTOM CHART': [{ id: 'ST-01', type: 'acad', prereqs: [] }] }))
+    await storage.set('v3:' + c + ':CUSTOM CHART:roster', JSON.stringify(['CHARLIE']))
+    await storage.set('v3:' + c + ':CUSTOM CHART:m:CHARLIE', JSON.stringify({ 'ST-01': { g: 'dpco' } }))
+    await storage.set('v3:' + c + ':' + hidden + ':roster', JSON.stringify(['DELTA']))
+    await storage.set('v3:' + c + ':' + hidden + ':m:DELTA', JSON.stringify({ 'ST-01': { g: 'marg' } }))
+    /* the init path, verbatim: a course in the list that this boot has never
+       opened, so nothing of its own is in memory */
+    ;(C.COURSES as string[]).push(c)
+    await C.migrateAllCourses()
+    const entryOn = async (syl: string, name: string) => {
+      const r = JSON.parse((await storage.get(`v3:${c}:${syl}:roster`))!.value)
+      return r.find((e: any) => e && e.name === name) || null
+    }
+    const ch = await entryOn('CUSTOM CHART', 'CHARLIE')
+    expect(ch, 'a chart only the store knows about converts too').toEqual({ id: expect.stringMatching(/^s/), name: 'CHARLIE' })
+    expect((await storage.get(`v3:${c}:CUSTOM CHART:m:${ch.id}`))!.value).toContain('dpco')
+    expect(await storage.get(`v3:${c}:CUSTOM CHART:m:CHARLIE`)).toBeNull()
+    const de = await entryOn(hidden, 'DELTA')
+    expect(de, 'a hidden built-in chart converts too').toEqual({ id: expect.stringMatching(/^s/), name: 'DELTA' })
+    expect((await storage.get(`v3:${c}:${hidden}:m:${de.id}`))!.value).toContain('marg')
+    expect(await storage.get(`v3:${c}:${hidden}:m:DELTA`)).toBeNull()
+    ;(C.SYL_HIDDEN as string[]).splice((C.SYL_HIDDEN as string[]).indexOf(hidden), 1)
     await C.loadCourse(c); await C.whenLoaded()
     const a = C.byName('ALPHA')!, b = C.byName('BRAVO')!
     expect(a).toEqual({ id: expect.stringMatching(/^s/), name: 'ALPHA', pid: 'p1' }); expect(b).toEqual({ id: expect.stringMatching(/^s/), name: 'BRAVO' })
