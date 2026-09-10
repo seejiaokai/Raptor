@@ -2276,3 +2276,18 @@ Checkpoint (tasks #53-#58 complete): no further observations.
 **Principle:** A green test proves something only if it could have failed; an empty fixture and a leaked global both make failure impossible. Restore what you switch, assert what you assume, and treat "already green before the change" as a defect until explained.
 
 Checkpoint (tasks #59, #60 complete): no further observations.
+
+### Observation 150: A plan snippet that rewrites a validation branch drops the guard the original had
+
+**Status:** OPEN
+**Date:** 2026-09-10
+**Session context:** stable-ids round, Tracker Tasks 3 and 4 (ids.js converter, fileFormat.js roster shapes)
+**Skill:** writing-plans (also subagent-driven-development, pre-flight scan)
+**Type:** open-source
+**Phase/Area:** plan code blocks that replace existing validation; task-reviewer findings labelled plan-mandated
+
+**Issue:** Two consecutive briefs carried code the implementer transcribed faithfully, and both reached the reviewer with the same defect class: the snippet replaced an existing check (`!Array.isArray(x) || x.some(...)`) with a new one that called `.every`/`for…of` on the value BEFORE the array guard, so a non-list value threw a raw TypeError instead of the named friendly error the surrounding file promises. The original short-circuit had the guard; the rewrite lost it. Neither the plan self-review nor the pre-flight scan compares a replacement snippet against the condition it replaces, so the loss only surfaced as a plan-mandated finding after implementation, costing a fix round each time.
+
+**Suggested improvement:** writing-plans Self-Review: add a fourth check — "Replacement snippets: for every code block that REPLACES existing lines (a `Modify: file:L-M` range), list the guards/early-returns in the original range and confirm each survives in the snippet or is deliberately dropped with a reason." subagent-driven-development pre-flight scan: same check for any task whose snippet replaces a validation branch. Implementer template: when a brief's snippet replaces lines that contained a type/shape guard, keep the guard unless the brief says why it goes.
+
+**Principle:** A rewrite of a validation branch must be diffed against the original for guards, not just for the new behaviour it adds; a snippet that reads correctly in isolation can still drop the protection the surrounding code relied on, and a faithful transcription of it carries the loss straight to review.
