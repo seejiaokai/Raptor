@@ -1208,59 +1208,89 @@ describe('the person bridge and the link (peoplewire.ts → people.js → core.j
 
   it('a course whose conversion cannot finish goes read-only rather than losing the names still on its roster', async () => {
     const c = 'STUCK', rosterKey = 'v3:' + c + ':2026:roster'
-    ;(C.COURSES as string[]).push(c); await storage.set('v3:courses', JSON.stringify(C.COURSES))
-    await storage.set('v3:' + c + ':rostermig', '1'); await storage.set('v3:' + c + ':plan', JSON.stringify({ sylName: '2026', custom: false }))
-    await storage.set(rosterKey, JSON.stringify(['MIKE', 'NOVEMBER']))
-    await storage.set('v3:' + c + ':2026:m:MIKE', JSON.stringify({ 'ST-01': { g: 'dco' } }))
-    await storage.set('v3:' + c + ':2026:m:NOVEMBER', JSON.stringify({ 'ST-02': { g: 'marg' } }))
-    /* the ROSTER write is the one refused, so the conversion cannot finish
-       however often it retries and the roster is left holding names */
-    const realSet = storage.set
-    storage.set = ((k: string, v: string) => (k === rosterKey ? Promise.reject(new Error('disk full')) : realSet.call(storage, k, v))) as any
-    try { await C.loadCourse(c); await C.whenLoaded() } finally { storage.set = realSet }
-    expect(await storage.get('v3:' + c + ':idmig')).toBeNull()
-    expect(JSON.parse((await storage.get(rosterKey))!.value), 'the names are still the roster').toEqual(['MIKE', 'NOVEMBER'])
-    expect(C.roster, 'half a converted roster is not shown').toEqual([])
-    expect(C.rosterHeld, 'so every roster write is refused until it converts').toBe(true)
-    /* + Add is where this used to be lost: it wrote the one entry on screen
-       over a roster still holding both names */
-    const p: Promise<any> = C.addStudent()
-    expect(C.dlg.cancel, 'a notice, not a question').toBe(false)
-    expect(C.dlg.msg).toMatch(/cannot be changed yet/)
-    C.dlgClose(true); await p; await C.whenLoaded()
-    expect(C.roster).toEqual([])
-    expect(JSON.parse((await storage.get(rosterKey))!.value), 'both names untouched').toEqual(['MIKE', 'NOVEMBER'])
-    /* the next load, with the store taking writes again, finishes the job —
-       and every mark is under the id the interrupted run had already used */
-    await C.loadCourse(c); await C.whenLoaded()
-    expect(C.rosterHeld).toBe(false)
-    expect((await storage.get('v3:' + c + ':idmig'))!.value).toBe('1')
-    const m = C.byName('MIKE')!, n = C.byName('NOVEMBER')!
-    expect(C.gradeOf(m.id, 'ST-01')).toBe('dco'); expect(C.gradeOf(n.id, 'ST-02')).toBe('marg')
-    for (const k of ['2026:m:MIKE', '2026:m:NOVEMBER', 'idmap']) expect(await storage.get('v3:' + c + ':' + k), k).toBeNull()
+    /* a fixture course goes on COURSES and into the stored list; both come off
+       again in the finally, with the course this pin started on reloaded, so
+       nothing after it runs on STUCK or sees it listed */
+    const prevCourse = C.course, prevCourses = (C.COURSES as string[]).slice()
+    const prevList = (await storage.get('v3:courses'))?.value ?? null
+    try {
+      ;(C.COURSES as string[]).push(c); await storage.set('v3:courses', JSON.stringify(C.COURSES))
+      await storage.set('v3:' + c + ':rostermig', '1'); await storage.set('v3:' + c + ':plan', JSON.stringify({ sylName: '2026', custom: false }))
+      await storage.set(rosterKey, JSON.stringify(['MIKE', 'NOVEMBER']))
+      await storage.set('v3:' + c + ':2026:m:MIKE', JSON.stringify({ 'ST-01': { g: 'dco' } }))
+      await storage.set('v3:' + c + ':2026:m:NOVEMBER', JSON.stringify({ 'ST-02': { g: 'marg' } }))
+      /* the ROSTER write is the one refused, so the conversion cannot finish
+         however often it retries and the roster is left holding names */
+      const realSet = storage.set
+      storage.set = ((k: string, v: string) => (k === rosterKey ? Promise.reject(new Error('disk full')) : realSet.call(storage, k, v))) as any
+      try { await C.loadCourse(c); await C.whenLoaded() } finally { storage.set = realSet }
+      expect(await storage.get('v3:' + c + ':idmig')).toBeNull()
+      expect(JSON.parse((await storage.get(rosterKey))!.value), 'the names are still the roster').toEqual(['MIKE', 'NOVEMBER'])
+      expect(C.roster, 'half a converted roster is not shown').toEqual([])
+      expect(C.rosterHeld, 'so every roster write is refused until it converts').toBe(true)
+      /* + Add is where this used to be lost: it wrote the one entry on screen
+         over a roster still holding both names */
+      const p: Promise<any> = C.addStudent()
+      expect(C.dlg.cancel, 'a notice, not a question').toBe(false)
+      expect(C.dlg.msg).toMatch(/cannot be changed yet/)
+      C.dlgClose(true); await p; await C.whenLoaded()
+      expect(C.roster).toEqual([])
+      expect(JSON.parse((await storage.get(rosterKey))!.value), 'both names untouched').toEqual(['MIKE', 'NOVEMBER'])
+      /* the next load, with the store taking writes again, finishes the job —
+         and every mark is under the id the interrupted run had already used */
+      await C.loadCourse(c); await C.whenLoaded()
+      expect(C.rosterHeld).toBe(false)
+      expect((await storage.get('v3:' + c + ':idmig'))!.value).toBe('1')
+      const m = C.byName('MIKE')!, n = C.byName('NOVEMBER')!
+      expect(C.gradeOf(m.id, 'ST-01')).toBe('dco'); expect(C.gradeOf(n.id, 'ST-02')).toBe('marg')
+      for (const k of ['2026:m:MIKE', '2026:m:NOVEMBER', 'idmap']) expect(await storage.get('v3:' + c + ':' + k), k).toBeNull()
+    } finally {
+      ;(C.COURSES as string[]).splice(0, (C.COURSES as string[]).length, ...prevCourses)
+      if (prevList == null) await storage.delete('v3:courses'); else await storage.set('v3:courses', prevList)
+      await C.loadCourse(prevCourse); await C.whenLoaded()
+    }
   })
 
   it('a rename that cannot carry everything keeps the old course listed, with the records it left behind', async () => {
     if (C.sylDirty) await C.saveChangesClick()
-    const c = 'CARRY', id = 'sCARRY1', mk = 'v3:' + c + ':2026:m:' + id
-    ;(C.COURSES as string[]).push(c); await storage.set('v3:courses', JSON.stringify(C.COURSES))
-    await storage.set('v3:' + c + ':rostermig', '1'); await storage.set('v3:' + c + ':idmig', '1')
-    await storage.set('v3:' + c + ':plan', JSON.stringify({ sylName: '2026', custom: false }))
-    await storage.set('v3:' + c + ':2026:roster', JSON.stringify([{ id, name: 'CARLA' }]))
-    await storage.set(mk, JSON.stringify({ 'ST-01': { g: 'dco' } }))
-    await C.loadCourse(c); await C.whenLoaded()
-    expect(C.byName('CARLA')!.id).toBe(id)
-    /* the store refuses the copy of CARLA's marks to the new name */
-    const realSet = storage.set
-    storage.set = ((k: string, v: string) => (k === 'v3:CARRIED:2026:m:' + id ? Promise.reject(new Error('disk full')) : realSet.call(storage, k, v))) as any
-    try { const p: Promise<any> = C.renCourse(); await answer('CARRIED'); await answer(true); await p; await C.whenLoaded() }
-    finally { storage.set = realSet }
-    expect(C.course).toBe('CARRIED')
-    expect(C.COURSES).toContain('CARRIED')
-    expect(C.COURSES, 'the half-carried course stays on the list — off it, nothing could reach it again').toContain(c)
-    expect(JSON.parse((await storage.get(mk))!.value)['ST-01'].g, 'and the record that did not copy is still under the old name').toBe('dco')
-    expect(C.saveStat.cls, 'the toolbar says it went wrong').toBe('err')
-    expect(C.saveStat.text).toContain(c)
+    const c = 'CARRY', id = 'sCARRY1', mk = 'v3:' + c + ':2026:m:' + id, rk = 'v3:' + c + ':2026:roster'
+    /* same shape as the pin above: the fixture course and the course list go
+       back, and the rename leaves C.course on CARRIED without it */
+    const prevCourse = C.course, prevCourses = (C.COURSES as string[]).slice()
+    const prevList = (await storage.get('v3:courses'))?.value ?? null
+    try {
+      ;(C.COURSES as string[]).push(c); await storage.set('v3:courses', JSON.stringify(C.COURSES))
+      await storage.set('v3:' + c + ':rostermig', '1'); await storage.set('v3:' + c + ':idmig', '1')
+      await storage.set('v3:' + c + ':plan', JSON.stringify({ sylName: '2026', custom: false }))
+      await storage.set(rk, JSON.stringify([{ id, name: 'CARLA' }]))
+      await storage.set(mk, JSON.stringify({ 'ST-01': { g: 'dco' } }))
+      await C.loadCourse(c); await C.whenLoaded()
+      expect(C.byName('CARLA')!.id).toBe(id)
+      /* the store refuses the copy of CARLA's marks to the new name */
+      const realSet = storage.set
+      storage.set = ((k: string, v: string) => (k === 'v3:CARRIED:2026:m:' + id ? Promise.reject(new Error('disk full')) : realSet.call(storage, k, v))) as any
+      try { const p: Promise<any> = C.renCourse(); await answer('CARRIED'); await answer(true); await p; await C.whenLoaded() }
+      finally { storage.set = realSet }
+      expect(C.course).toBe('CARRIED')
+      expect(C.COURSES).toContain('CARRIED')
+      expect(C.COURSES, 'the half-carried course stays on the list — off it, nothing could reach it again').toContain(c)
+      expect(C.saveStat.cls, 'the toolbar says it went wrong').toBe('err')
+      expect(C.saveStat.text).toContain(c)
+      /* and the old course is left WHOLE, not stripped of the keys that did
+         copy — a course with its marks but no crew list would show nobody and
+         export nothing, which is not "the complete one" the alert promises */
+      const oldRoster = await storage.get(rk)
+      expect(oldRoster, 'its crew list is still there — a course with marks but no crew list shows nobody').not.toBeNull()
+      expect(JSON.parse(oldRoster!.value)).toEqual([{ id, name: 'CARLA' }])
+      expect(JSON.parse((await storage.get(mk))!.value)['ST-01'].g, 'and so are the marks').toBe('dco')
+      await C.loadCourse(c); await C.whenLoaded()
+      expect(C.byName('CARLA')!.id, 'so opening it again shows the crew').toBe(id)
+      expect(C.gradeOf(id, 'ST-01'), 'with their marks').toBe('dco')
+    } finally {
+      ;(C.COURSES as string[]).splice(0, (C.COURSES as string[]).length, ...prevCourses)
+      if (prevList == null) await storage.delete('v3:courses'); else await storage.set('v3:courses', prevList)
+      await C.loadCourse(prevCourse); await C.whenLoaded()
+    }
   })
 
   it('a second course nobody opened since the upgrade: its links survive an export and a global syllabus rename moves its marks (review finding 3)', async () => {

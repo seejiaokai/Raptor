@@ -699,7 +699,12 @@ async function loadCourseNow(c, restoreLastSyllabus) {
      know them, would not carry their records, and would not even keep them in
      its id map: marks half under names and half under ids, orphaned for good.
      So while the flag is unset every roster write is refused, with a message,
-     and the block lifts by itself on the load that converts the course. */
+     and the block lifts by itself on the load that converts the course.
+     The flag alone is the condition, which holds the course read-only in one
+     case where the data is actually fine — every record moved and every roster
+     written, and only the final flag write refused — and that is the right way
+     round: the next load re-runs a conversion that has nothing left to do, the
+     flag lands, and the block lifts. It fails safe and it self-heals. */
   rosterHeld = !(await sGet(kIdMig(c)));
   /* Read the last-graded student AGAIN, because migrateIds has just rewritten
      that key from a name to an id. The copy taken further up is the one the
@@ -3127,16 +3132,24 @@ export async function renCourse() {
   await move(kLastStudent(old), kLastStudent(v));
   const myCrew = prefGet('lastCrew:' + old);
   if (myCrew) prefSet('lastCrew:' + v, myCrew);
+  /* THE DELETE PASS IS ALL OR NOTHING, and it VERIFIES BEFORE IT DELETES
+     ANYTHING. Deleting each source as its own copy verified looked safe per
+     record and was not, because these records are only useful together: the
+     roster copies fine, its key is deleted, one student's marks do not — and
+     the old course is then a course with no crew list, so opening it shows
+     nobody and an export carries nothing for it, while the marks that stayed
+     behind sit under a course that cannot name them. On any miss the OLD
+     course is left exactly as it was, whole; the new one holds whatever did
+     copy; and the user picks which to keep. */
   let whole = true;
-  for (const [a, b, val] of carried) { if ((await sGet(b)) === val) await delKey(a); else whole = false; }
+  for (const [, b, val] of carried) if ((await sGet(b)) !== val) { whole = false; break; }
+  if (whole) for (const [a] of carried) await delKey(a);
   COURSES = COURSES.map(c => c === old ? v : c);
-  /* A copy that did not land keeps its source, which is right — but the old
-     NAME is about to leave COURSES, and nothing lists, exports or migrates a
-     course that is not on it. The record would be intact and unreachable, with
-     no way back: renaming the new course to the old name is refused because
-     that name is taken. So when anything failed to carry, the old name STAYS
-     listed beside the new one. Two courses on the dropdown is a state the user
-     can see and act on; a silently stranded course is not. */
+  /* And the old NAME stays on COURSES beside the new one, because nothing
+     lists, exports, migrates or opens a course that is not on it — the records
+     would be intact and unreachable, with no way back (renaming the new course
+     to the old name is refused, the name is taken). Two courses on the dropdown
+     is a state the user can see and act on; a stranded one is not. */
   if (!whole && !COURSES.includes(old)) COURSES.push(old);
   await saveCourses();
   await loadCourse(v); refreshCourses(); refreshSyl(); refreshActive(); renderBoard(); renderSide();
@@ -3145,8 +3158,8 @@ export async function renCourse() {
     /* setSaveStatus is this function's own channel, but the toolbar line is
        transient and the next write overwrites it — so a partial carry, which
        needs a decision, also raises the alert every other refusal here uses. */
-    setSaveStatus('renamed ' + old + ' → ' + v + ', but some records could not be copied — ' + old + ' is still listed', 'err');
-    await uiAlert('Renamed ' + old + ' to ' + v + ', but some records could not be copied — the browser’s storage would not take them.\n\nNothing has been lost: ' + old + ' is still in the course list with the records that stayed behind. Free up some space and rename it again, or copy the missing work across by hand.');
+    setSaveStatus('could not finish renaming ' + old + ' → ' + v + ' — both courses are listed, ' + old + ' is the complete one', 'err');
+    await uiAlert('Could not finish renaming ' + old + ' to ' + v + ' — the browser’s storage would not take some of the records.\n\nNothing has been lost, and both courses are now in the list. ' + old + ' still has EVERYTHING, exactly as it was. ' + v + ' has only the part that copied across.\n\nUse ' + old + ' and delete ' + v + ', or free up some space and try the rename again.');
   }
 }
 export async function delCourse() {
