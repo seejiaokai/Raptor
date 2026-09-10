@@ -185,10 +185,12 @@ function checkStudents(s) {
   }
 }
 
-/* course → student name → person id, every leaf a non-empty string. The id is
-   Raptor's PEOPLE key; whether it still names somebody is the app's business
-   when the file is applied (core.js applyLinks keeps only names on a roster),
-   not the format's. */
+/* course → student name → person id, every leaf a non-empty string — the
+   LEGACY links block of a pre-10 Sep 26 export. The id is Raptor's PEOPLE
+   key; whether it still names somebody is the app's business when the file
+   is applied (core.js applyStudents folds it into the roster entry's pid
+   through app/ids.js, and a name on no roster is ignored), not the format's.
+   Export has not written this block since students became entries. */
 function checkLinks(l) {
   if (!isPlainObject(l)) throw new Error('The links in that file are damaged, so it has not been opened.');
   for (const [course, m] of Object.entries(l)) {

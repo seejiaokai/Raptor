@@ -221,11 +221,13 @@ branch.**
 
 Relationships: n–1 `Person`, `Course`, `Syllabus`; 1–n `Attempt`; 0–1
 `CoursePlan`. Unique on (`courseId`, `syllabusId`, `personId`).
-From today: the roster key `v3:<course>:<syl>:roster` (a string array), the
-`dates` container, and `v3:links` = `{ course: { studentName: personId } }`.
-App change: the links record disappears — it becomes `Enrolment.personId`.
-Re-keying students by id is stage 2; until then `studentName` carries the
-app's addressing.
+From today: the roster key `v3:<course>:<syl>:roster` — an array of
+`{ id, name, pid? }` since 10 Sep 26 — the `dates` container keyed by that
+id, and `pid` (the person). The row's id IS the entry's `id` (the
+migration key); `studentName` is `name`; `personId` is `pid` (null where
+the student was typed). The 9 Sep 26 `v3:links` record is already folded
+into `pid` by the app's own migration and is gone from every converted
+browser. App change: none — the re-key is done.
 
 ### Attempt
 
@@ -336,7 +338,11 @@ stage 2 the snapshot column empties as the rows take over.
 Owner: **Scheduler**. The stage-2 normalisation of a week. Every row gets a
 **stable id** and a `sortIndex`; the positional slot key becomes an address
 derived from the ids, so inserting a row no longer renumbers the ones after
-it. Every row also carries `pendingSince` (datetime, set by an edit, cleared
+it. **The id half is done (10 Sep 26):** every row already carries `rid`
+(`engine/rowids.ts`), minted before the first baseline, kept by moves, undo
+and restores, re-minted on a copy — that is the migration key for every row
+table below. Still to do: the address derived from the ids (`keys.ts`, the
+amendment book, the edit log) and the `Attempt` history. Every row also carries `pendingSince` (datetime, set by an edit, cleared
 at issue — today `SCHED.pending[key]`) and `changedFrom` (ref Amendment,
 nullable — the AL this row was last issued under, today `SCHED.changes[key]
 = n`, cleared when the row is edited again), so "what is pending" and "what

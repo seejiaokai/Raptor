@@ -292,14 +292,20 @@ browser-proven.
 
 ## Open / deferred / queued
 
-- **STAGE 2 OF THE DATABASE PATH — stable ids (9 Sep 26).** The designed model
-  (`raptor-port/docs/data-model.md`) keys a Tracker student by Enrolment
-  (person × course × syllabus) and a schedule row by its own id; today students
-  are keyed by typed name (the `v3:links` record is the bridge, additive) and
-  schedule rows by position. Re-keying both is the storage seam's stage 2 and
-  is deliberately NOT started here — it touches marks, undo, the smoke suite
-  and `keys.ts` at once. The technical team's open questions are listed at the
-  end of `data-model.md`.
+- **STAGE 2 OF THE DATABASE PATH — stable ids: the id half SHIPPED (10 Sep
+  26, spec `raptor-port/docs/superpowers/specs/2026-09-10-stable-ids-design.md`).**
+  A Tracker student is `{ id, name, pid? }` keyed by an opaque enrolment id
+  (migration once per course, resumable; `v3:links` folded into `pid`; the
+  smoke suite drives students by label) and every schedule row carries `rid`
+  (`engine/rowids.ts`). Follow-ups, in order: (1) the addressing rewrite —
+  `keys.ts`, the amendment book and the edit log derive the slot key from
+  `rid` so an insert no longer renumbers; `EditLog.rowId`; (2) course and
+  syllabus ids (still name keys joined with `:`); (3) a student rename
+  control (the name is a label now; nothing edits it); (4) `Attempt` history.
+  Known edges left by design: a course rename that cannot carry every record
+  keeps the old course listed beside the new; legacy `v3:<old>:syls`/`:syl`
+  are not carried by a rename. The technical team's open questions are listed
+  at the end of `data-model.md`.
 - **FOUND, NOT FIXED — the area/area-time strip and the restore keys (review,
   9 Sep 26).** `src/ui/textedit.ts:184,194` write a typed-over area strip on
   the FORMATION (`f.area`, `f.atime`; read back by `ui/html.ts:751-755`), but

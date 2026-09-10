@@ -12,10 +12,13 @@ For the person designing RAPTOR's Dataverse tables. Written 10 Sep 26.
   write one adapter behind that doorway, to your schema, and the screens do
   not change. Nothing on our side is built against a guessed schema before
   then.
-- **Before that, we key everything by id.** Two things are still keyed by a
-  human string today — Tracker students by their typed name, schedule rows by
-  their position. We change both to stable ids first, on our side, so your
-  keys map cleanly onto ours.
+- **Before that, we key everything by id — done (10 Sep 26).** Two things
+  were keyed by a human string — Tracker students by their typed name,
+  schedule rows by their position. A student is now `{ id, name, pid? }`
+  (an opaque enrolment id, the name a label, the person id where they came
+  off the roster) and every schedule row carries a stable `rid`; rows are
+  still addressed by position inside the app, which is our concern, not
+  yours — the id is what your keys map onto.
 
 ## Read in this order
 
@@ -70,7 +73,7 @@ For the person designing RAPTOR's Dataverse tables. Written 10 Sep 26.
 
 ## What happens next, on our side
 
-1. Stable ids (the two string keys become ids) — our change, with tests.
+1. Stable ids (the two string keys become ids) — done, with tests (10 Sep 26).
 2. When your schema is shared: the adapter behind the storage doorway, written
    to your tables, passing the doorway's existing contract tests; then a
    one-time import of what is in the browsers today; then sign-in.
