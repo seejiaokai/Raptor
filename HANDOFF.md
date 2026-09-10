@@ -299,7 +299,16 @@ browser-proven.
   smoke suite drives students by label) and every schedule row carries `rid`
   (`engine/rowids.ts`). Follow-ups, in order: (1) the addressing rewrite —
   `keys.ts`, the amendment book and the edit log derive the slot key from
-  `rid` so an insert no longer renumbers; `EditLog.rowId`; (2) course and
+  `rid` so an insert no longer renumbers; `EditLog.rowId`. **SCOPE for #1
+  (next up, 10 Sep 26):** the row already HAS its id — `rid` ships and is
+  minted before every baseline/snapshot — so this is NOT "mint ids", it is
+  "make the slot-key grammar resolve a row by its `rid` instead of by its
+  position", with a fallback to position for any row or persisted snapshot
+  still without one. It rewrites the addressing grammar and touches the
+  amendment machinery and persisted state (byte-exact parity sits on the
+  key strings), so it is a HEAVY task: run brainstorm → spec → plan →
+  subagent build-with-review, exactly as the student-side ids were done —
+  not a straight-to-code change. (2) course and
   syllabus ids (still name keys joined with `:`); (3) `Attempt` history.
   A student rename control shipped 10 Sep 26 (the pencil on each chip edits
   the label only — `core.js:renameStudent`, id and records untouched).
