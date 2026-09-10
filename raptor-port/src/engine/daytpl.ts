@@ -3,6 +3,7 @@ import { SCHED, dayApproved } from './publish'
 import { keyDay } from './keys'
 import { store } from './hooks'
 import { SECTIONS } from './order'
+import { stripRowIds } from './rowids'
 /* a captured section order, cleaned to known keys with no repeats — used both
    when minting a template off a live day and when loading a hand-edited file. */
 const cleanSecOrder = (v: any): string[] | undefined => {
@@ -144,6 +145,10 @@ function mintBlob(d: any): DayTplBlob {
     if (Array.isArray(r.more)) r.more = r.more.map(() => '')
   })
 
+  /* a template is a shape, not a set of rows — it carries no ids (review
+     finding 2): applying it seats brand-new rows, never the source day's own */
+  stripRowIds({ allhands, waves, sims, dutywaves, ground })
+
   return {
     notes, allhands, waves, sims, dutywaves, ground,
     simnotes: String(d.simnotes || ''),
@@ -227,6 +232,10 @@ export function applyDayTpl(di: number, id: string): boolean {
   /* restore the section arrangement the template captured; absent ⇒ the new day
      has no d.secOrder and renders in the default order (secOrder handles both). */
   const so = cleanSecOrder(t.d.secOrder); if (so) nd.secOrder = so
+  /* belt for a template stored by an older build (before mintBlob stripped
+     ids) — applying it must still mint fresh ids, never carry the source
+     day's across, so strip here too rather than trust the stored blob */
+  stripRowIds(nd)
   DAYS[di] = nd
   /* Every address the old day's marks pointed at may now name something else
      entirely (the swap does not try to line up old and new row indices), so

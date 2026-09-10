@@ -2,6 +2,7 @@ import { DAYS } from './data'
 import { SCHED, dayApproved, approvedDays, verLabel, dayCurVer, daySnapOf, deletionKey, trackStructuralAdd, isDeleteKey, isMoveKey } from './publish'
 import { dayKeys } from './restore'
 import { keyDay } from './keys'
+import { stripRowIds, ensureRowIds } from './rowids'
 
 /* PER-DAY ALTERNATE DRAFTS (owner ask, 15 Aug 26 — "allow me to duplicate the
    current day's schedule and edit over it… if one variable change, they can
@@ -99,8 +100,12 @@ export function draftDup(di: any) {
   SCHED.curDraft = SCHED.curDraft || {}
   const list = SCHED.drafts[di] = SCHED.drafts[di] || []
   if (!list.length) {
+    /* Draft 1 is the STOW of the live day — it IS the live day, so it keeps
+       every id. Draft 2 is the new copy: strip then re-mint immediately, so
+       it has ids of its own from the moment it exists, never the live day's. */
     list.push({ id: newId(list), name: 'Draft 1', d: clone(DAYS[di]) })
     const t = { id: newId(list), name: 'Draft 2', d: clone(DAYS[di]) }
+    stripRowIds(t.d); ensureRowIds([t.d])
     list.push(t)
     SCHED.curDraft[di] = t.id
     return t
@@ -108,6 +113,7 @@ export function draftDup(di: any) {
   const cur = list.find((x: any) => x.id === SCHED.curDraft[di])
   if (cur) cur.d = clone(DAYS[di])
   const t = { id: newId(list), name: 'Draft ' + nextNum(list), d: clone(DAYS[di]) }
+  stripRowIds(t.d); ensureRowIds([t.d])
   list.push(t)
   SCHED.curDraft[di] = t.id
   return t

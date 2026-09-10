@@ -19,7 +19,7 @@ import { lookaheadLoad } from '../engine/lookahead'
 import { rulesLoad } from '../engine/rules'
 import { mintInpIds, INPUTS, DATES, isPersonal, baseYear, dateIx } from '../engine/inputs'
 import { DAYS } from '../engine/data'
-import { ensureRowIds } from '../engine/rowids'
+import { ensureRowIds, backfillSnapshotIds } from '../engine/rowids'
 import { CURWEEK, setCurWeek } from '../engine/waves'
 import { weekBundle, otherWeekInputs } from '../engine/weeks-data'
 import { seedDemoSans, seedDemoMedical } from './demoseed'
@@ -483,6 +483,12 @@ export function loadWeek(v: any) {
        initStore's: a mint after the yardstick would read a just-loaded,
        untouched week as edited and get it persisted */
     ensureRowIds(DAYS)
+    /* THE BACKFILL (review finding 6, engine/rowids.ts backfillSnapshotIds):
+       a week's amendment book — SCHED.orig, every AL's day snapshots, the
+       drafts — rides this same stash, so a book written before ids existed
+       must be given them here too, still before the baseline, or every
+       restore off it would mint a fresh id instead of the stable one. */
+    backfillSnapshotIds(SCHED, DAYS)
     weekBaseline = weekStashSnap()   // the stash-on-leave yardstick (see its comment)
   } finally {
     weekSwapEnd()
@@ -621,6 +627,11 @@ export function initStore() {
      DAYS, and a mint after the yardstick would make the pristine seed week
      read as edited and get persisted — the trap weekstash.ts documents */
   ensureRowIds(DAYS)
+  /* THE BACKFILL — same reasoning as loadWeek's own call just above this
+     comment's twin: SCHED can arrive here already carrying an amendment book
+     (a hydrated boot, engine/rowids.ts backfillSnapshotIds's own header) from
+     before ids existed, and it must be given them before the baseline too. */
+  backfillSnapshotIds(SCHED, DAYS)
   weekBaseline = weekStashSnap()   // the stash-on-leave yardstick (see its comment)
   validate()
   histInit()

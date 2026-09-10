@@ -6,6 +6,7 @@
 import { describe, expect, it } from 'vitest'
 import { ensureRowIds, mintRowId, rowsOf } from './rowids'
 import { DAYS } from './data'
+import { WEEKS } from './waves'
 
 const clone = (v: any) => JSON.parse(JSON.stringify(v))
 
@@ -118,5 +119,99 @@ describe('the walk runs before every baseline and snapshot', () => {
     expect(rowsOf(DAYS[0]).some(r => r.rid === undefined)).toBe(true)
     HOOKS.histPush()
     expect(rowsOf(DAYS[0]).every(r => typeof r.rid === 'string')).toBe(true)
+  })
+})
+
+describe('identity rules — a copy is a new row, a move/undo/restore is the same row', () => {
+  const ids = (d: any) => rowsOf(d).map(r => r.rid)
+  it('a day template carries no rids; applied to an EARLIER day the original keeps its ids and the copy gets fresh ones', async () => {
+    const { initStore } = await import('../state/store'); const { HOOKS } = await import('./hooks')
+    const { addDayTpl, applyDayTpl, dayTplReset } = await import('./daytpl')
+    initStore()
+    const src = ids(DAYS[3])
+    const t = addDayTpl(3, 'T')!
+    expect(rowsOf(t.d).some((r: any) => 'rid' in r)).toBe(false)
+    expect(applyDayTpl(0, t.id)).toBe(true); HOOKS.histPush()
+    expect(ids(DAYS[3])).toEqual(src)
+    const copy = ids(DAYS[0])
+    expect(copy.every(x => typeof x === 'string' && !src.includes(x))).toBe(true)
+    expect(new Set(copy).size).toBe(copy.length)
+    dayTplReset()
+  })
+  it('a template applied on ANOTHER week carries none of the first week\'s ids', async () => {
+    const { initStore, loadWeek } = await import('../state/store'); const { HOOKS } = await import('./hooks')
+    const { addDayTpl, applyDayTpl, dayTplReset } = await import('./daytpl')
+    /* the brief's `import { WEEKS } from './data'` doesn't exist — the week-key
+       list `loadWeek`'s callers actually pass lives in `./waves` (WEEKS/CURWEEK,
+       see state/store.ts's own imports and weekstash.test.ts's wkFor helper) */
+    initStore()
+    const t = addDayTpl(0, 'X')!; const wk1 = DAYS.flatMap(ids)
+    loadWeek(WEEKS[1].v)
+    expect(applyDayTpl(0, t.id)).toBe(true); HOOKS.histPush()
+    expect(ids(DAYS[0]).some(x => wk1.includes(x))).toBe(false)
+    dayTplReset()
+  })
+  it('a move keeps every id', async () => {
+    const { initStore } = await import('../state/store'); const { HOOKS } = await import('./hooks')
+    const { moveWave } = await import('./reorder')
+    initStore()
+    const d = DAYS.find(x => x.waves.length >= 2)!; const di = DAYS.indexOf(d)
+    const before = ids(d).slice().sort()
+    moveWave(di, 0, 1); HOOKS.histPush()
+    expect(ids(d).slice().sort()).toEqual(before)
+    expect(d.waves[1].rid).toBe(before.length ? d.waves[1].rid : undefined)
+  })
+  it('a duplicated draft has fresh ids from the moment it is made; switching A→B→A returns A\'s ids and B\'s stay stable', async () => {
+    const { initStore } = await import('../state/store'); const { HOOKS } = await import('./hooks')
+    const { draftDup, draftSelect, dayDrafts } = await import('./drafts')
+    initStore()
+    const a = ids(DAYS[1])
+    const t = draftDup(1)!; HOOKS.histPush()
+    const b = ids(t.d)
+    expect(b.every(x => typeof x === 'string' && !a.includes(x))).toBe(true)
+    const [d1] = dayDrafts(1)
+    draftSelect(1, d1.id); HOOKS.histPush(); expect(ids(DAYS[1])).toEqual(a)
+    draftSelect(1, t.id); HOOKS.histPush(); expect(ids(DAYS[1])).toEqual(b)
+    draftSelect(1, d1.id); HOOKS.histPush(); expect(ids(DAYS[1])).toEqual(a)
+  })
+  it('restoring an issued version twice returns the same ids; undo and redo return the same ids', async () => {
+    const { initStore, undo, redo } = await import('../state/store'); const { HOOKS } = await import('./hooks')
+    const { alIssue, markEdit } = await import('./publish'); const { restoreDayVersion } = await import('./restore')
+    initStore()
+    const orig = ids(DAYS[0])
+    /* the brief's own text restores 'orig' — SCHED.orig[di] is only stamped by
+       setDayApproved, which this day never goes through (see rowids.test.ts's
+       own earlier fix, same file, same reason), so SCHED.orig[0] stays
+       undefined and daySnapOf(0,'orig') resolves nothing. alIssue freezes its
+       OWN per-day snapshot (AL1's rec.snap) regardless of approval, so version
+       1 is the snapshot this case can actually restore from. */
+    markEdit('dn:0.0'); alIssue(1, ['dn:0.0'])
+    DAYS[0].waves[0].formations.push({ cs: '', msn: '', to: '', ld: '', aircraft: [{ p: '', w: '', area: '', rmks: '', opts: {} }] }); HOOKS.histPush()
+    restoreDayVersion(0, 1); HOOKS.histPush(); const r1 = ids(DAYS[0])
+    DAYS[0].notes.push('x'); HOOKS.histPush()
+    restoreDayVersion(0, 1); HOOKS.histPush(); const r2 = ids(DAYS[0])
+    expect(r1).toEqual(orig); expect(r2).toEqual(orig)
+    undo(); expect(ids(DAYS[0])).toEqual(orig); redo(); expect(ids(DAYS[0])).toEqual(orig)
+  })
+  it('an amendment book written before ids existed is backfilled once: same address → the live id, a snapshot-only row → a minted one, idempotent, and it persists', async () => {
+    const { initStore, weekStashSnap } = await import('../state/store'); const { HOOKS } = await import('./hooks')
+    const { SCHED, alIssue, markEdit } = await import('./publish'); const { restoreDayVersion } = await import('./restore')
+    const { backfillSnapshotIds, pathsOf } = await import('./rowids')
+    initStore()
+    markEdit('dn:0.0'); alIssue(1, ['dn:0.0'])
+    /* same substitution as the test above: AL1's own snap stands in for
+       SCHED.orig[0], which this unapproved day never gets */
+    rowsOf(SCHED.als[0].snap[0].d).forEach((r: any) => { delete r.rid })             // the pre-change book
+    DAYS[0].waves[0].formations.splice(0, 1); HOOKS.histPush()                       // one issued row is gone live
+    const n = backfillSnapshotIds(SCHED, DAYS)
+    expect(n).toBe(rowsOf(SCHED.als[0].snap[0].d).length)
+    const live = new Map(pathsOf(DAYS[0])), snap = pathsOf(SCHED.als[0].snap[0].d)
+    for (const [p, r] of snap) { if (live.has(p) && p !== 'waves.0.formations.0') expect(r.rid, p).toBe(live.get(p).rid) }
+    expect(typeof rowsOf(SCHED.als[0].snap[0].d).every((r: any) => r.rid)).toBe('boolean')
+    expect(backfillSnapshotIds(SCHED, DAYS)).toBe(0)
+    expect(JSON.parse(weekStashSnap()).a[0].snap[0].d.waves[0].rid).toBe(SCHED.als[0].snap[0].d.waves[0].rid)
+    restoreDayVersion(0, 1); HOOKS.histPush(); const r1 = ids(DAYS[0])
+    DAYS[0].notes.push('y'); HOOKS.histPush()
+    restoreDayVersion(0, 1); HOOKS.histPush(); expect(ids(DAYS[0])).toEqual(r1)
   })
 })
