@@ -5,9 +5,9 @@
    by the flip — so the way back always exists and a member can never climb.
    Rendered through the real App so the badge, the nav gating and the store
    wiring are the ones the user gets. */
-import { beforeAll, describe, expect, it } from 'vitest'
+import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { act } from 'react'
-import { createRoot } from 'react-dom/client'
+import { createRoot, type Root } from 'react-dom/client'
 import { App } from './App'
 import { initStore, notify, resetSession, toggleRole } from '../state/store'
 import { SESSION, canEditSched, canToggleRole } from '../state/auth'
@@ -23,11 +23,24 @@ const click = async (el: Element | null) => {
 const login = async (user: string, role: string) =>
   act(async () => { resetSession({ user, role }); notify() })
 
+let host: HTMLDivElement
+let root: Root
+
 beforeAll(async () => {
   initStore()
-  const host = document.createElement('div')
+  host = document.createElement('div')
   document.body.appendChild(host)
-  await act(async () => { createRoot(host).render(<App />) })
+  root = createRoot(host)
+  await act(async () => { root.render(<App />) })
+})
+
+/* Unmount before the file ends: a render task left queued by the last test
+   would otherwise fire after vitest tears jsdom down and die with "window is
+   not defined" — an unhandled error that fails the job while every test
+   passed (the teardown race closed across the suite, 10 Sep 26). */
+afterAll(async () => {
+  await act(async () => { root.unmount() })
+  host.remove()
 })
 
 describe('the admin role toggle', () => {

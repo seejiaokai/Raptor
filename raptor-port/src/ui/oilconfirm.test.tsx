@@ -7,9 +7,9 @@
    (row.oil) in the SAME undo step as the save. Driven through the REAL
    InputEditor over the real store, the upconfirm harness idiom. The demo
    week is Mon 13 – Sun 19 Jul 26, so Jul 18/19 are the weekend. */
-import { beforeAll, beforeEach, describe, expect, it } from 'vitest'
+import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { act } from 'react'
-import { createRoot } from 'react-dom/client'
+import { createRoot, type Root } from 'react-dom/client'
 import { App } from './App'
 import { initStore, setSession, notify, writeInputsBatch, HIST } from '../state/store'
 import { INPUTS, oilAsks, inpId } from '../engine/inputs'
@@ -21,6 +21,7 @@ import { commitInputEdit, draftOf, oilGate, oilAnswered } from './inputedit'
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
 let host: HTMLDivElement
+let root: Root
 const $ = (sel: string) => document.querySelector(sel) as HTMLElement
 const click = async (el: Element | null) => {
   expect(el, 'click target exists').toBeTruthy()
@@ -33,9 +34,19 @@ beforeAll(async () => {
   initStore()
   host = document.createElement('div')
   document.body.appendChild(host)
-  await act(async () => { createRoot(host).render(<App />) })
+  root = createRoot(host)
+  await act(async () => { root.render(<App />) })
   await act(async () => { setSession({ user: 'a', role: 'admin' }); notify() })
   HOOKS.toast = (m: any) => { TOASTS.push(String(m)) }
+})
+
+/* Unmount before the file ends: a render task left queued by the last test
+   would otherwise fire after vitest tears jsdom down and die with "window is
+   not defined" — an unhandled error that fails the job while every test
+   passed (the teardown race closed across the suite, 10 Sep 26). */
+afterAll(async () => {
+  await act(async () => { root.unmount() })
+  host.remove()
 })
 beforeEach(async () => {
   if (INPEDIT) await act(async () => { setInpEdit(null); notify() })

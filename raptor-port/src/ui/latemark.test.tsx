@@ -19,9 +19,9 @@
    The seed carries four genuinely late inputs, all on Jul 14 (day 1), and the
    deadline is derived from CURWEEK rather than the clock — so this is
    deterministic whatever day it is run on. */
-import { beforeAll, beforeEach, describe, expect, it } from 'vitest'
+import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { act } from 'react'
-import { createRoot } from 'react-dom/client'
+import { createRoot, type Root } from 'react-dom/client'
 import { App } from './App'
 import { initStore, setSession, notify, resetSession } from '../state/store'
 import { INPUTS, isLateInput, inpId } from '../engine/inputs'
@@ -35,6 +35,7 @@ import { DAYS } from '../engine/data'
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
 let host: HTMLDivElement
+let root: Root
 const $ = (sel: string) => document.querySelector(sel) as HTMLElement
 const $$ = (sel: string) => [...document.querySelectorAll(sel)] as HTMLElement[]
 const click = async (el: Element | null) => {
@@ -51,13 +52,23 @@ beforeAll(async () => {
   initStore()
   host = document.createElement('div')
   document.body.appendChild(host)
-  await act(async () => { createRoot(host).render(<App />) })
+  root = createRoot(host)
+  await act(async () => { root.render(<App />) })
   await act(async () => { setSession({ user: 'a', role: 'admin' }); notify() })
   /* the board's controls are gated on HOOKS.editMode(), which is
      canEditSched() AND being on Edit Schedule — a duty crew who left the page
      with a board open must not get live controls */
   await click($$('.nav a[data-page]').find(a => a.dataset.page === 'editsched')!)
   HOOKS.toast = (m: any) => { TOASTS.push(String(m)) }
+})
+
+/* Unmount before the file ends: a render task left queued by the last test
+   would otherwise fire after vitest tears jsdom down and die with "window is
+   not defined" — an unhandled error that fails the job while every test
+   passed (the teardown race closed across the suite, 10 Sep 26). */
+afterAll(async () => {
+  await act(async () => { root.unmount() })
+  host.remove()
 })
 beforeEach(async () => {
   TOASTS = []

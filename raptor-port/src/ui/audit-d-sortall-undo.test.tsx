@@ -10,9 +10,9 @@
    - a second Sort all on the tidy day pushes nothing and pends nothing;
    - an armed slot on the sorted day is DISARMED by the sort (REORDERED_DI),
      while a slot armed on a DIFFERENT day stays armed. */
-import { beforeAll, describe, expect, it } from 'vitest'
+import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { act } from 'react'
-import { createRoot } from 'react-dom/client'
+import { createRoot, type Root } from 'react-dom/client'
 import { App } from './App'
 import { initStore, setSession, notify, HIST, undo, redo } from '../state/store'
 import { DAYS } from '../engine/data'
@@ -35,15 +35,28 @@ const click = async (el: Element | null) => {
    same fields histSnap carries (minus INPUTS, untouched here) */
 const snap = () => JSON.stringify({ d: DAYS[0], p: SCHED.pending, c: SCHED.changes, ad: SCHED.added, a: SCHED.als })
 
+let host: HTMLDivElement
+let root: Root
+
 beforeAll(async () => {
   initStore()
-  const host = document.createElement('div')
+  host = document.createElement('div')
   document.body.appendChild(host)
-  await act(async () => { createRoot(host).render(<App />) })
+  root = createRoot(host)
+  await act(async () => { root.render(<App />) })
   await act(async () => { setSession({ user: 'a', role: 'admin' }); notify() })
   await click($$('.nav a[data-page]').find(a => a.dataset.page === 'editsched')!)
   await click($('#eWeek .day[data-day="0"] .dt.sb-open'))
   expect(view.SBDAY).toBe(0)
+})
+
+/* Unmount before the file ends: a render task left queued by the last test
+   would otherwise fire after vitest tears jsdom down and die with "window is
+   not defined" — an unhandled error that fails the job while every test
+   passed (the teardown race closed across the suite, 10 Sep 26). */
+afterAll(async () => {
+  await act(async () => { root.unmount() })
+  host.remove()
 })
 
 /* un-sort day 0 through the real mutation path (applyMove + afterSchedMutate),

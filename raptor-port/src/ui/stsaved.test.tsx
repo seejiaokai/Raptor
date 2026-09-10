@@ -11,9 +11,9 @@
    window is open. These pin the three halves: a changed commit flashes and
    the flash SURVIVES the repaint; an untouched blur claims nothing; and an
    expired window renders clean again (with the registry pruned on read). */
-import { beforeAll, describe, expect, it } from 'vitest'
+import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { act } from 'react'
-import { createRoot } from 'react-dom/client'
+import { createRoot, type Root } from 'react-dom/client'
 import { App } from './App'
 import { initStore, setSession, notify } from '../state/store'
 import { HOOKS } from '../engine/hooks'
@@ -34,14 +34,27 @@ const blur = async (el: Element) => {
   await act(async () => { await new Promise(r => setTimeout(r, 5)) })
 }
 
+let host: HTMLDivElement
+let root: Root
+
 beforeAll(async () => {
   initStore()
   HOOKS.isPhone = () => false
-  const host = document.createElement('div')
+  host = document.createElement('div')
   document.body.appendChild(host)
-  await act(async () => { createRoot(host).render(<App />) })
+  root = createRoot(host)
+  await act(async () => { root.render(<App />) })
   await act(async () => { setSession({ user: 'a', role: 'admin' }); notify() })
   await click($$('.nav a[data-page]').find(a => a.dataset.page === 'editsched')!)
+})
+
+/* Unmount before the file ends: a render task left queued by the last test
+   would otherwise fire after vitest tears jsdom down and die with "window is
+   not defined" — an unhandled error that fails the job while every test
+   passed (the teardown race closed across the suite, 10 Sep 26). */
+afterAll(async () => {
+  await act(async () => { root.unmount() })
+  host.remove()
 })
 
 describe('the .stsaved confirm on the stores free-text box', () => {

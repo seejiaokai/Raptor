@@ -3,9 +3,9 @@
    its own $ / $$ / click and boots the app in beforeAll. This preamble is
    src/ui/interact.test.tsx:16-32 verbatim, plus the fake storeBackend the
    engine needs headless. Do not extract a helper module for this. */
-import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 import { act } from 'react'
-import { createRoot } from 'react-dom/client'
+import { createRoot, type Root } from 'react-dom/client'
 import { App } from './App'
 import { initStore, setSession, notify } from '../state/store'
 import { storeBackend } from '../engine/hooks'
@@ -16,6 +16,7 @@ import { SCHED } from '../engine/publish'
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
 let host: HTMLDivElement
+let root: Root
 const $ = (sel: string) => host.querySelector(sel) as HTMLElement
 const $$ = (sel: string) => [...host.querySelectorAll(sel)] as HTMLElement[]
 const click = async (el: Element | null) => {
@@ -39,8 +40,18 @@ beforeAll(async () => {
   initStore()
   host = document.createElement('div')
   document.body.appendChild(host)
-  await act(async () => { createRoot(host).render(<App />) })
+  root = createRoot(host)
+  await act(async () => { root.render(<App />) })
   await act(async () => { setSession({ user: 'a', role: 'admin' }); notify() })
+})
+
+/* Unmount before the file ends: a render task left queued by the last test
+   would otherwise fire after vitest tears jsdom down and die with "window is
+   not defined" — an unhandled error that fails the job while every test
+   passed (the teardown race closed across the suite, 10 Sep 26). */
+afterAll(async () => {
+  await act(async () => { root.unmount() })
+  host.remove()
 })
 
 /* the list is module state, so each test starts from the standard six —

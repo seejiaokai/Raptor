@@ -3,9 +3,9 @@
    weeks promise), the heading sort's time-of-day ordering, DOM-vs-model row
    addressing under sort + a narrowed window, and the independence of the two
    RangeCal instances the page mounts (add form vs the #inRangeBtn window). */
-import { beforeAll, describe, expect, it, vi } from 'vitest'
+import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest'
 import { act } from 'react'
-import { createRoot } from 'react-dom/client'
+import { createRoot, type Root } from 'react-dom/client'
 import { InputsPage } from './InputsPage'
 import { initStore, setSession, notify, writeInputs } from '../state/store'
 import { INPUTS } from '../engine/inputs'
@@ -14,6 +14,7 @@ import { removeInput } from './inputedit'
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
 let host: HTMLDivElement
+let root: Root
 const $ = (sel: string) => host.querySelector(sel) as HTMLElement
 const $$ = (sel: string) => [...host.querySelectorAll(sel)] as HTMLElement[]
 const click = async (el: Element | null) => {
@@ -41,7 +42,17 @@ beforeAll(async () => {
   await act(async () => { setSession({ user: 'a', role: 'admin' }); notify() })
   host = document.createElement('div')
   document.body.appendChild(host)
-  await act(async () => { createRoot(host).render(<InputsPage />) })
+  root = createRoot(host)
+  await act(async () => { root.render(<InputsPage />) })
+})
+
+/* Unmount before the file ends: a render task left queued by the last test
+   would otherwise fire after vitest tears jsdom down and die with "window is
+   not defined" — an unhandled error that fails the job while every test
+   passed (the teardown race closed across the suite, 10 Sep 26). */
+afterAll(async () => {
+  await act(async () => { root.unmount() })
+  host.remove()
 })
 
 describe('the window\'s edges — today → +14 days, overlap membership', () => {
@@ -76,7 +87,8 @@ describe('the window\'s edges — today → +14 days, overlap membership', () =>
   it('the window label survives an add, an edit and a delete without jumping', async () => {
     /* re-establish the mount default: initialRange is only read at mount, so
        remount fresh under the same clock */
-    await act(async () => { createRoot(host.appendChild(document.createElement('div'))).render(<InputsPage />) })
+    const root2 = createRoot(host.appendChild(document.createElement('div')))
+    await act(async () => { root2.render(<InputsPage />) })
     const btns = $$('#inRangeBtn')
     const btn = btns[btns.length - 1]
     const label = btn.textContent
@@ -89,6 +101,10 @@ describe('the window\'s edges — today → +14 days, overlap membership', () =>
     expect(btn.textContent, 'after an edit').toBe(label)
     await act(async () => { removeInput(r) })
     expect(btn.textContent, 'after a delete').toBe(label)
+    /* this test's own second mount (not the file's shared root) — drain it
+       here rather than leaving it for the shared afterAll, same reasoning
+       as the file-level unmount above. */
+    await act(async () => { root2.unmount() })
   })
 })
 

@@ -2,15 +2,16 @@
 /* AUDIT E — RangeCal on its own: a range across a month boundary, backwards
    clicks across months, a same-day range, and the untouched picker opening on
    the demo month whatever the clock says. */
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { act } from 'react'
 import { useState } from 'react'
-import { createRoot } from 'react-dom/client'
+import { createRoot, type Root } from 'react-dom/client'
 import { RangeCal } from './RangeCal'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
 let host: HTMLDivElement
+let root: Root
 let picked: { s: string, e: string }
 function Harness() {
   const [r, setR] = useState({ s: '', e: '' })
@@ -30,7 +31,18 @@ beforeEach(async () => {
   document.body.innerHTML = ''
   host = document.createElement('div')
   document.body.appendChild(host)
-  await act(async () => { createRoot(host).render(<Harness />) })
+  root = createRoot(host)
+  await act(async () => { root.render(<Harness />) })
+})
+
+/* Unmount after every test: a render task left queued by the last test
+   would otherwise fire after vitest tears jsdom down and die with "window is
+   not defined" — an unhandled error that fails the job while every test
+   passed (the teardown race closed across the suite, 10 Sep 26). Root is
+   per-test here (beforeEach), so the unmount pairs with afterEach. */
+afterEach(async () => {
+  await act(async () => { root.unmount() })
+  host.remove()
 })
 
 describe('RangeCal', () => {
@@ -40,7 +52,8 @@ describe('RangeCal', () => {
     document.body.innerHTML = ''
     host = document.createElement('div')
     document.body.appendChild(host)
-    await act(async () => { createRoot(host).render(<Harness />) })
+    root = createRoot(host)
+    await act(async () => { root.render(<Harness />) })
     expect($('#auCal .rc-mon').textContent).toBe('Jul 2026')
     vi.useRealTimers()
   })

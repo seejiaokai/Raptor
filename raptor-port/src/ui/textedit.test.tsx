@@ -1,9 +1,9 @@
 // @vitest-environment jsdom
 /* Inline text editing, the day-details panel and Insights — the tfin H group
    and the blur/Enter/Escape commit semantics, driven through the React app. */
-import { beforeAll, describe, expect, it } from 'vitest'
+import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { act } from 'react'
-import { createRoot } from 'react-dom/client'
+import { createRoot, type Root } from 'react-dom/client'
 import { App } from './App'
 import { initStore, setSession, notify, undo } from '../state/store'
 import { SCHED } from '../engine/publish'
@@ -13,6 +13,7 @@ import { validate, WARN } from '../engine/validate'
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
 let host: HTMLDivElement
+let root: Root
 const $ = (sel: string) => host.querySelector(sel) as HTMLElement
 const $$ = (sel: string) => [...host.querySelectorAll(sel)] as HTMLElement[]
 const click = async (el: Element | null) => {
@@ -25,9 +26,19 @@ beforeAll(async () => {
   initStore()
   host = document.createElement('div')
   document.body.appendChild(host)
-  await act(async () => { createRoot(host).render(<App />) })
+  root = createRoot(host)
+  await act(async () => { root.render(<App />) })
   await act(async () => { setSession({ user: 'a', role: 'admin' }); notify() })
   await click($$('.nav a[data-page]').find(a => a.dataset.page === 'editsched')!)
+})
+
+/* Unmount before the file ends: a render task left queued by the last test
+   would otherwise fire after vitest tears jsdom down and die with "window is
+   not defined" — an unhandled error that fails the job while every test
+   passed (the teardown race closed across the suite, 10 Sep 26). */
+afterAll(async () => {
+  await act(async () => { root.unmount() })
+  host.remove()
 })
 
 describe('inline text editing (tfin text-funnel semantics)', () => {

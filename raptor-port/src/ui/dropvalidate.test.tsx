@@ -8,9 +8,9 @@
    EVD are reassigned by validate — a spread copy would freeze them) straight
    through to the real module. Its own file so the counting mock never
    touches drag.test.tsx's module graph. */
-import { beforeAll, describe, expect, it, vi } from 'vitest'
+import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest'
 import { act } from 'react'
-import { createRoot } from 'react-dom/client'
+import { createRoot, type Root } from 'react-dom/client'
 
 const CALLS = { validate: 0 }
 vi.mock('../engine/validate', async (orig) => {
@@ -38,14 +38,27 @@ const dnd = async (from: Element, to: Element) => {
   })
 }
 
+let host: HTMLDivElement
+let root: Root
+
 beforeAll(async () => {
   initStore()
-  const host = document.createElement('div'); document.body.appendChild(host)
-  await act(async () => { createRoot(host).render(<App />) })
+  host = document.createElement('div'); document.body.appendChild(host)
+  root = createRoot(host)
+  await act(async () => { root.render(<App />) })
   await act(async () => { setSession({ user: 'a', role: 'admin' }); notify() })
   await act(async () => { $$('.nav a[data-page]').find(a => a.dataset.page === 'editsched')!.dispatchEvent(new MouseEvent('click', { bubbles: true })) })
   await act(async () => { AVSHUT.clear(); notify() })
   HOOKS.toast = () => {}
+})
+
+/* Unmount before the file ends: a render task left queued by the last test
+   would otherwise fire after vitest tears jsdom down and die with "window is
+   not defined" — an unhandled error that fails the job while every test
+   passed (the teardown race closed across the suite, 10 Sep 26). */
+afterAll(async () => {
+  await act(async () => { root.unmount() })
+  host.remove()
 })
 
 describe('a drop validates exactly once', () => {
