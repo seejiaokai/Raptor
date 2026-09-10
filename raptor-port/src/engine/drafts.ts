@@ -100,29 +100,33 @@ export function draftDup(di: any) {
   SCHED.curDraft = SCHED.curDraft || {}
   const list = SCHED.drafts[di] = SCHED.drafts[di] || []
   if (!list.length) {
-    /* Draft 1 is the STOW of the ORIGINAL, frozen right here — it keeps the
-       original ids. The NEW draft is the live day itself (this module's own
-       model: DAYS[di] IS the working copy of the selected draft), so it is
-       the live day that gets fresh ids, IN PLACE — never a fresh object, so
-       every other reference to DAYS[di] keeps working. Draft 2's stored blob
-       is then a clone taken AFTER that re-mint, so it agrees with the live
-       day from the moment either exists — cloning before the re-mint is
-       exactly the bug this once was (the clone kept the original's ids, and
-       the very next draftSelect overwrote it with another clone of the same
-       still-un-reminted live day, so both entries ended up identical). */
-    list.push({ id: newId(list), name: 'Draft 1', d: clone(DAYS[di]) })
-    stripRowIds(DAYS[di]); ensureRowIds([DAYS[di]])
+    /* THE DAY ON SCREEN KEEPS ITS IDENTITY; THE PARKED DRAFT IS THE COPY.
+       Duplicating parks a frozen "Draft 1" and leaves the user editing the
+       same day they were already editing — so the rows in front of them are
+       the rows they had, and their ids must not move. What is new here is the
+       PARKED blob: a copy of the day, and a copy is a new set of rows, so it
+       is the copy that mints fresh ids (the same rule a day template and a
+       duplicated wave follow, engine/rowids.ts).
+       Doing it the other way round — re-minting the live day — silently broke
+       the identity chain the moment the user pressed Duplicate: the issued
+       snapshot and every AL snapshot of a day nobody had touched still named
+       the OLD ids, so the chain the database step wants led to the parked
+       copy instead of the day being shown and published. Draft 2's blob is
+       therefore a plain clone of the untouched live day: the live day and the
+       blob it currently IS agree, on the ORIGINAL ids. */
+    const parked = clone(DAYS[di]); stripRowIds(parked); ensureRowIds([parked])
+    list.push({ id: newId(list), name: 'Draft 1', d: parked })
     const t = { id: newId(list), name: 'Draft 2', d: clone(DAYS[di]) }
     list.push(t)
     SCHED.curDraft[di] = t.id
     return t
   }
   const cur = list.find((x: any) => x.id === SCHED.curDraft[di])
-  if (cur) cur.d = clone(DAYS[di])
-  /* same fix as above: re-mint the live day in place AFTER stowing it into
-     `cur`, THEN clone it into the new entry, so the new draft's blob and the
-     live day agree from the moment the new entry exists */
-  stripRowIds(DAYS[di]); ensureRowIds([DAYS[di]])
+  /* the same rule on a later dup: the stow into the entry being left behind is
+     the copy, so it mints fresh ids, while the live day carries its own ids
+     into the new draft it now is — and that new entry's blob is a plain clone
+     of it, so the two agree from the moment the entry exists */
+  if (cur) { const parked = clone(DAYS[di]); stripRowIds(parked); ensureRowIds([parked]); cur.d = parked }
   const t = { id: newId(list), name: 'Draft ' + nextNum(list), d: clone(DAYS[di]) }
   list.push(t)
   SCHED.curDraft[di] = t.id

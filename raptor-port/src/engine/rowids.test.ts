@@ -187,7 +187,7 @@ describe('identity rules — a copy is a new row, a move/undo/restore is the sam
     expect(ids(d).slice().sort()).toEqual(before)
     expect(d.waves[1].rid).toBe(w0)            // the wave that WAS at 0 is now at 1, carrying the same id
   })
-  it('a duplicated draft is live from the moment it is made: Draft 1 is the frozen original and keeps its ids, the new draft IS the live day and mints fresh ones in place; switching A→B→A returns each their own', async () => {
+  it('a duplicated day keeps its ids on screen and the PARKED draft mints fresh ones; switching A→B→A returns each their own', async () => {
     const { initStore } = await import('../state/store'); const { HOOKS } = await import('./hooks')
     const { draftDup, draftSelect, dayDrafts } = await import('./drafts')
     initStore()
@@ -200,21 +200,21 @@ describe('identity rules — a copy is a new row, a move/undo/restore is the sam
        the day actually has rows, so a future leak fails LOUD, here. */
     expect(a.length).toBeGreaterThan(0)
     const t = draftDup(1)!; HOOKS.histPush()
-    /* controller ruling: the brief had this backwards. draftDup's own model
-       is that DAYS[di] IS the working copy of the SELECTED draft — so the
-       NEW draft (`t`) is the live day itself, re-minted fresh IN PLACE, and
-       Draft 1 is the STOW of the ORIGINAL, frozen with the original's ids.
-       `b` is therefore read off the LIVE day right after the dup, not off
-       `t.d` — the two must still agree (t.d is a clone taken after the
-       re-mint), which the next assertion checks. */
-    const b = ids(DAYS[1])
-    expect(b.every(x => typeof x === 'string' && !a.includes(x))).toBe(true)
-    expect(ids(t.d)).toEqual(b)                     // t.d agrees with the live day it was cloned from
+    /* THE DAY ON SCREEN KEEPS ITS IDENTITY. The user is still editing the day
+       they were editing, so its rows are the same rows and carry the same ids
+       — which is what keeps the issued snapshot and every AL snap of an
+       untouched day naming the rows that are actually live. What is new is
+       the PARKED "Draft 1": it is a COPY of the day, and a copy is a new set
+       of rows, so it is the one that mints fresh ids. */
+    expect(ids(DAYS[1])).toEqual(a)                 // the live day is untouched
+    expect(ids(t.d)).toEqual(a)                     // and its current-draft blob agrees with it
     const [d1] = dayDrafts(1)
-    expect(ids(d1.d)).toEqual(a)                    // Draft 1 is the frozen original, unchanged
-    draftSelect(1, d1.id); HOOKS.histPush(); expect(ids(DAYS[1])).toEqual(a)
-    draftSelect(1, t.id); HOOKS.histPush(); expect(ids(DAYS[1])).toEqual(b)
-    draftSelect(1, d1.id); HOOKS.histPush(); expect(ids(DAYS[1])).toEqual(a)
+    const b = ids(d1.d)
+    expect(b.length).toBe(a.length)
+    expect(b.every(x => typeof x === 'string' && !a.includes(x)), 'the parked copy is a new set of rows').toBe(true)
+    draftSelect(1, d1.id); HOOKS.histPush(); expect(ids(DAYS[1])).toEqual(b)
+    draftSelect(1, t.id); HOOKS.histPush(); expect(ids(DAYS[1])).toEqual(a)
+    draftSelect(1, d1.id); HOOKS.histPush(); expect(ids(DAYS[1])).toEqual(b)
   })
   it('restoring an issued version twice returns the same ids; undo and redo return the same ids', async () => {
     const { initStore, undo, redo } = await import('../state/store'); const { HOOKS } = await import('./hooks')
