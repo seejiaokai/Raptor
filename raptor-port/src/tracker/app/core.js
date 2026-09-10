@@ -264,6 +264,7 @@ const kPace = (c, s) => 'v3:' + c + ':pace:' + s;
 const kLast = (c, s) => 'v3:' + c + ':last:' + s;
 const kLastStudent = c => 'v3:' + c + ':lastStudent';
 const kIdMig = c => 'v3:' + c + ':idmig';  /* one-shot name → id migration flag */
+const kIdMap = c => 'v3:' + c + ':idmap';  /* the name → id mapping of a run still in progress; gone once the flag is in */
 export function curSyl() { return (plan && plan.sylName) || DEFAULT_SYL_NAME; }
 const kMarks = (c, s) => 'v3:' + c + ':' + curSyl() + ':m:' + s;
 const kDatesOld = (c, s) => 'v3:' + c + ':d:' + s;              /* legacy: dates per course only */
@@ -514,7 +515,25 @@ async function migrateIds(c) {
     const names = new Set();
     for (const n of syls) for (const e of rosters[n]) { if (typeof e === 'string' && e) names.add(e); else if (isEntry(e)) names.add(e.name); }
     if (![...names].length) { await sSet(kIdMig(c), '1'); return; }
+    /* A RUN THAT STOPS HALF-WAY HAS TO RESUME WITH THE SAME IDS. The records
+       move before the roster is written (see above — a roster written first
+       would show entries whose marks are still filed under the name), so an
+       interrupted run leaves records under ids that no roster names. A retry
+       that minted fresh ones would look for those records under the NAME,
+       find nothing, and write a roster pointing at empty keys: the marks
+       already moved would be stranded for good, which is the one loss this
+       whole routine exists to prevent. So the mapping is written down FIRST
+       and read back — nothing moves until it is durable — and the next
+       attempt reuses it. It goes when the flag goes in. */
+    const saved = sParse(await sGet(kIdMap(c)), {}, 'object');
+    for (const nm of names) if (!has(ids, nm) && has(saved, nm) && typeof saved[nm] === 'string' && saved[nm]) ids[nm] = saved[nm];
     for (const nm of names) if (!has(ids, nm)) ids[nm] = mintId();
+    /* Object.create(null) for the same reason ids.js uses it: a student
+       literally named "__proto__" must land as a data key, not as a silent
+       call to the inherited setter. JSON.parse gives `saved` own keys too. */
+    const map = Object.create(null); for (const nm of names) map[nm] = ids[nm];
+    const mapStr = JSON.stringify(map);
+    if ((await sGet(kIdMap(c))) !== mapStr) { await sSet(kIdMap(c), mapStr); if ((await sGet(kIdMap(c))) !== mapStr) return; }
     const links = sParse(await sGet(kLinks), {}, 'object')[c] || null;
     /* move one record: absent → nothing to do; present → write under the id
        (unless the id already holds it — a retry), read back, only then delete.
@@ -546,6 +565,7 @@ async function migrateIds(c) {
     const lc = prefGet('lastCrew:' + c); if (lc && has(ids, lc)) prefSet('lastCrew:' + c, ids[lc]);
     if (links) { const all = sParse(await sGet(kLinks), {}, 'object'); delete all[c]; if (Object.keys(all).length) await sSet(kLinks, JSON.stringify(all)); else await delKey(kLinks); }
     await sSet(kIdMig(c), '1');
+    await delKey(kIdMap(c));   /* the run is over; the scratch mapping has no reader left */
   } catch (_) {}
 }
 /* every course, at init (review finding 3): an export or a global syllabus
@@ -2773,6 +2793,16 @@ export async function addStudent() {
       r = src ? { id: src.id, name: src.name } : { id: mintId(), name: v };
       const pid = (src && src.pid) || link; if (pid) r.pid = pid;
       roster.push(r); marks[r.id] = {}; dates[r.id] = { lastSyll: null, lastCurr: null };
+      /* An enrolment REUSED from another chart of this course already has a
+         pace and lull periods, and both hang off the course rather than the
+         syllabus — but loadStudent only fills those maps for the roster it
+         loaded, so without this read the panel offered the same person the
+         default two events a week, and the first touch of that box would have
+         saved it over the real one. One enrolment, one pace. */
+      if (src) {
+        const pr = await sGet(kPace(course, r.id)); if (pr) { try { pace[r.id] = JSON.parse(pr); } catch (_) {} }
+        const l = await sGet(kLulls(course, r.id)); if (l) { try { lulls[r.id] = JSON.parse(l); } catch (_) {} }
+      }
       await saveRoster(); await saveMarks(r.id); await saveDates(r.id);
     } else if (link && !r.pid) { r.pid = link; await saveRoster(); }
     active = r.id; refreshActive(); renderBoard(); renderSide();
@@ -3024,11 +3054,22 @@ export async function renCourse() {
   if (await refuseColon(v)) return;
   if (COURSES.includes(v)) { await uiAlert('A course named ' + v + ' already exists.'); return; }
   const sylNames = [...new Set([...SYL_NAMES, ...Object.keys(CUSTOMS || {}), plan.sylName])];
-  const move = async (a, b) => { const val = await sGet(a); if (val != null) await sSet(b, val); };
+  /* A rename MOVES the course's records. Until 10 Sep 26 it only COPIED them:
+     every mark, date, pace and lull period stayed behind under the old course
+     name as a second, unreachable copy of the whole course — invisible (the
+     old name is off COURSES, so nothing exports or lists it) and waiting to
+     be half-read by a later course that happened to take that name back.
+     The deletes are a SECOND pass, after every copy has been made, and each
+     one only runs on a source whose new home reads back byte-identical: sSet
+     swallows a failed write, so deleting as we went could have thrown the
+     record away on the one browser where the copy never landed. */
+  const carried = [];
+  const move = async (a, b) => { const val = await sGet(a); if (val != null) { await sSet(b, val); carried.push([a, b, val]); } };
   await move(kPlan(old), kPlan(v));
   await move(kRoster(old), kRoster(v));
   await move(kRosterMig(old), kRosterMig(v));
   await move(kIdMig(old), kIdMig(v));
+  await move(kIdMap(old), kIdMap(v));   /* a conversion interrupted mid-run keeps its ids across the rename */
   for (const sn of sylNames) {
     await move(kRosterFor(old, sn), kRosterFor(v, sn));
     /* enrolment ids, plus any string still on a roster the migration could
@@ -3059,6 +3100,7 @@ export async function renCourse() {
   await move(kLastStudent(old), kLastStudent(v));
   const myCrew = prefGet('lastCrew:' + old);
   if (myCrew) prefSet('lastCrew:' + v, myCrew);
+  for (const [a, b, val] of carried) if ((await sGet(b)) === val) await delKey(a);
   COURSES = COURSES.map(c => c === old ? v : c); await saveCourses();
   await loadCourse(v); refreshCourses(); refreshSyl(); refreshActive(); renderBoard(); renderSide();
   setSaveStatus('renamed ' + old + ' → ' + v, 'ok');
