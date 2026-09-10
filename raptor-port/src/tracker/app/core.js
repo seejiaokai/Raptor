@@ -514,7 +514,7 @@ async function migrateIds(c) {
     for (const n of syls) { rosters[n] = sParse(await sGet(kRosterFor(c, n)), [], 'array'); for (const e of rosters[n]) if (isEntry(e) && !has(ids, e.name)) ids[e.name] = e.id; }
     const names = new Set();
     for (const n of syls) for (const e of rosters[n]) { if (typeof e === 'string' && e) names.add(e); else if (isEntry(e)) names.add(e.name); }
-    if (![...names].length) { await sSet(kIdMig(c), '1'); return; }
+    if (![...names].length) { await sSet(kIdMig(c), '1'); await delKey(kIdMap(c)); return; }
     /* A RUN THAT STOPS HALF-WAY HAS TO RESUME WITH THE SAME IDS. The records
        move before the roster is written (see above — a roster written first
        would show entries whose marks are still filed under the name), so an
@@ -681,11 +681,26 @@ async function loadCourseNow(c, restoreLastSyllabus) {
   byid = {}; SYL.forEach(e => byid[e.id] = e);
   await migrateRosters(c);
   await migrateIds(c);
+  /* ONE RETRY ON THIS SAME LOAD. A conversion that stopped half-way is not a
+     state to sit in: the roster below keeps only entries, so the course comes
+     up EMPTY, and an empty crew list is exactly what invites the write that
+     destroys it (see rosterHeld). A second attempt costs one pass and usually
+     succeeds — the first failure is normally a single refused write. */
+  if (!(await sGet(kIdMig(c)))) await migrateIds(c);
   const rr = await sGet(kRosterFor(c, plan.sylName));
   /* Only entries: a string here means the migration above could not finish
      (a write that did not land), and half a converted roster on screen is
      worse than none — the next load retries the whole thing. */
   roster = sParse(rr, [], 'array').filter(isEntry);
+  /* AND THE ROSTER IS READ-ONLY UNTIL IT DOES FINISH. The course showing empty
+     was the trap: the first + Add called saveRoster, which writes whatever is
+     on screen — one entry — over a roster still holding everybody's NAMES. The
+     names would then be on no roster at all, so the next migrateIds would not
+     know them, would not carry their records, and would not even keep them in
+     its id map: marks half under names and half under ids, orphaned for good.
+     So while the flag is unset every roster write is refused, with a message,
+     and the block lifts by itself on the load that converts the course. */
+  rosterHeld = !(await sGet(kIdMig(c)));
   /* Read the last-graded student AGAIN, because migrateIds has just rewritten
      that key from a name to an id. The copy taken further up is the one the
      syllabus restore needed — it had to be the NAME, since that is what the
@@ -739,7 +754,13 @@ async function loadCourseNow(c, restoreLastSyllabus) {
    it should be auto synced"), so a mark is saved the moment it lands and nothing
    here lights a button. Only flow edits (markDirty) still wait for Save. */
 async function saveSyl() { await sSet(kSyl(course), JSON.stringify(SYL)); }
-async function saveRoster() { await sSet(kRosterFor(course, plan.sylName), JSON.stringify(roster)); }
+/* The crew list of a course whose name → id conversion has not finished is
+   READ-ONLY (loadCourseNow sets the flag and says why). This is the write
+   path, so the guard sits here as well as at the three commands that reach
+   it — a new caller cannot get past it by accident. */
+export let rosterHeld = false;
+const HELD_MSG = 'The crew list for this course is still being moved to the new student records, so it cannot be changed yet. Nothing has been lost — reload the page and it will finish, then try again.';
+async function saveRoster() { if (rosterHeld) return; await sSet(kRosterFor(course, plan.sylName), JSON.stringify(roster)); }
 async function savePlan() { await sSet(kPlan(course), JSON.stringify(plan)); }
 async function loadStudent() {
   marks = {}; dates = {}; lulls = {}; lastEdit = {}; pace = {};
@@ -2770,6 +2791,10 @@ export async function findEnrolment(pid, name) {
   return { byPid, byNm };
 }
 export async function addStudent() {
+  /* the guard is a BARE read, not an awaited helper: every entry point here
+     raises its dialog before the first await (the browser spends the click),
+     and one extra microtask in front of the picker breaks that. */
+  if (rosterHeld) { await uiAlert(HELD_MSG); return; }
   const people = getPeople().map(p => ({ key: p.id, label: p.cs, sub: seatWord(p.seat) + (p.q ? ' · ' + p.q : '') }));
   const r = people.length
     ? await uiPick('Add a crew member', people, { input: true, placeholder: 'Or type a callsign', listTitle: 'From the squadron roster' })
@@ -2809,6 +2834,7 @@ export async function addStudent() {
   });
 }
 export async function removeStudent(v) {
+  if (rosterHeld) { await uiAlert(HELD_MSG); return; }
   if (!await uiConfirm('Remove ' + nameOf(v) + ' from ' + plan.sylName + '?\n\nTheir marks, dates, pace and lull periods on this syllabus are deleted.')) return;
   await onChain(() => removeStudentNow(v));
 }
@@ -3002,6 +3028,7 @@ export async function saveCourseOrder(list) {
    index, so without it the key re-orders while the balls keep the old
    assignment until the next grade. */
 export async function saveCrewOrder(list) {
+  if (rosterHeld) { closeOrd(); await uiAlert(HELD_MSG); return; }
   await onChain(async () => {
     /* the modal lists names; rank the entries by them, anyone it did not
        name (added meanwhile) keeps their place after */
@@ -3100,10 +3127,27 @@ export async function renCourse() {
   await move(kLastStudent(old), kLastStudent(v));
   const myCrew = prefGet('lastCrew:' + old);
   if (myCrew) prefSet('lastCrew:' + v, myCrew);
-  for (const [a, b, val] of carried) if ((await sGet(b)) === val) await delKey(a);
-  COURSES = COURSES.map(c => c === old ? v : c); await saveCourses();
+  let whole = true;
+  for (const [a, b, val] of carried) { if ((await sGet(b)) === val) await delKey(a); else whole = false; }
+  COURSES = COURSES.map(c => c === old ? v : c);
+  /* A copy that did not land keeps its source, which is right — but the old
+     NAME is about to leave COURSES, and nothing lists, exports or migrates a
+     course that is not on it. The record would be intact and unreachable, with
+     no way back: renaming the new course to the old name is refused because
+     that name is taken. So when anything failed to carry, the old name STAYS
+     listed beside the new one. Two courses on the dropdown is a state the user
+     can see and act on; a silently stranded course is not. */
+  if (!whole && !COURSES.includes(old)) COURSES.push(old);
+  await saveCourses();
   await loadCourse(v); refreshCourses(); refreshSyl(); refreshActive(); renderBoard(); renderSide();
-  setSaveStatus('renamed ' + old + ' → ' + v, 'ok');
+  if (whole) setSaveStatus('renamed ' + old + ' → ' + v, 'ok');
+  else {
+    /* setSaveStatus is this function's own channel, but the toolbar line is
+       transient and the next write overwrites it — so a partial carry, which
+       needs a decision, also raises the alert every other refusal here uses. */
+    setSaveStatus('renamed ' + old + ' → ' + v + ', but some records could not be copied — ' + old + ' is still listed', 'err');
+    await uiAlert('Renamed ' + old + ' to ' + v + ', but some records could not be copied — the browser’s storage would not take them.\n\nNothing has been lost: ' + old + ' is still in the course list with the records that stayed behind. Free up some space and rename it again, or copy the missing work across by hand.');
+  }
 }
 export async function delCourse() {
   if (COURSES.length <= 1) { await uiAlert('Keep at least one course.'); return; }
@@ -3168,6 +3212,7 @@ async function switchSylNow(nm) {
   });
 }
 export async function dupSyl() {
+  if (rosterHeld) { await uiAlert(HELD_MSG); return; }   /* the copy would carry an empty crew list */
   const src = plan.sylName;
   const nm = ((await uiPrompt('Name for the duplicated syllabus:', src + ' copy')) || '').trim();
   if (!nm) return;
