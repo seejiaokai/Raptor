@@ -22,6 +22,14 @@ import { HIST, histInit, histApply, histPush, histSnap } from '../state/history'
 /* drafts swap DAYS[0] wholesale — every test starts from the pristine day,
    same discipline daytpl.test.ts and restore.test.ts use */
 const D0 = JSON.parse(JSON.stringify(DAYS[0]))
+/* Stable-ids identity fix (10 Sep 26 review): draftDup now mints the LIVE
+   day's rids in place the moment a new draft is made — DAYS[di] IS the new
+   draft, per this module's own model, so it can no longer sit id-less like
+   the day this file never runs through initStore/ensureRowIds. A handful of
+   byte-for-byte JSON comparisons below predate that and were written when
+   neither side ever carried an id; they still hold for every OTHER field,
+   so compare with `rid` dropped rather than weaken them to something looser. */
+const ridless = (_k: string, v: any) => (_k === 'rid' ? undefined : v)
 
 const sign = (di: number) => {
   const g = signOf(di)
@@ -50,9 +58,15 @@ describe('duplicating a day', () => {
     /* both blobs are the day as it stood — deep clones, not references */
     expect(list[0].d).not.toBe(DAYS[0])
     expect(list[1].d).not.toBe(DAYS[0])
-    expect(JSON.stringify(list[0].d)).toBe(JSON.stringify(DAYS[0]))
-    /* the live day itself is untouched by duplicating */
-    expect(JSON.stringify(DAYS[0])).toBe(JSON.stringify(D0))
+    /* content-identical to the live day — ids aside: Draft 1 is the frozen
+       ORIGINAL (never minted here), while DAYS[0] is now the NEW draft,
+       minted fresh in place the moment it was made (stable-ids identity fix,
+       10 Sep 26) */
+    expect(JSON.stringify(list[0].d, ridless)).toBe(JSON.stringify(DAYS[0], ridless))
+    /* the live day's CONTENT is untouched by duplicating; only its ids move,
+       from none (this file never mints any) to the fresh set the new draft
+       just got */
+    expect(JSON.stringify(DAYS[0], ridless)).toBe(JSON.stringify(D0, ridless))
   })
 
   it('a later dup stows live into the selected entry and mints Draft N', () => {

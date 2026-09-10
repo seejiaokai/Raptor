@@ -100,20 +100,30 @@ export function draftDup(di: any) {
   SCHED.curDraft = SCHED.curDraft || {}
   const list = SCHED.drafts[di] = SCHED.drafts[di] || []
   if (!list.length) {
-    /* Draft 1 is the STOW of the live day — it IS the live day, so it keeps
-       every id. Draft 2 is the new copy: strip then re-mint immediately, so
-       it has ids of its own from the moment it exists, never the live day's. */
+    /* Draft 1 is the STOW of the ORIGINAL, frozen right here — it keeps the
+       original ids. The NEW draft is the live day itself (this module's own
+       model: DAYS[di] IS the working copy of the selected draft), so it is
+       the live day that gets fresh ids, IN PLACE — never a fresh object, so
+       every other reference to DAYS[di] keeps working. Draft 2's stored blob
+       is then a clone taken AFTER that re-mint, so it agrees with the live
+       day from the moment either exists — cloning before the re-mint is
+       exactly the bug this once was (the clone kept the original's ids, and
+       the very next draftSelect overwrote it with another clone of the same
+       still-un-reminted live day, so both entries ended up identical). */
     list.push({ id: newId(list), name: 'Draft 1', d: clone(DAYS[di]) })
+    stripRowIds(DAYS[di]); ensureRowIds([DAYS[di]])
     const t = { id: newId(list), name: 'Draft 2', d: clone(DAYS[di]) }
-    stripRowIds(t.d); ensureRowIds([t.d])
     list.push(t)
     SCHED.curDraft[di] = t.id
     return t
   }
   const cur = list.find((x: any) => x.id === SCHED.curDraft[di])
   if (cur) cur.d = clone(DAYS[di])
+  /* same fix as above: re-mint the live day in place AFTER stowing it into
+     `cur`, THEN clone it into the new entry, so the new draft's blob and the
+     live day agree from the moment the new entry exists */
+  stripRowIds(DAYS[di]); ensureRowIds([DAYS[di]])
   const t = { id: newId(list), name: 'Draft ' + nextNum(list), d: clone(DAYS[di]) }
-  stripRowIds(t.d); ensureRowIds([t.d])
   list.push(t)
   SCHED.curDraft[di] = t.id
   return t

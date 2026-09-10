@@ -6,7 +6,7 @@
 import { describe, expect, it } from 'vitest'
 import { ensureRowIds, mintRowId, rowsOf } from './rowids'
 import { DAYS } from './data'
-import { WEEKS } from './waves'
+import { WEEKS, CURWEEK } from './waves'
 
 const clone = (v: any) => JSON.parse(JSON.stringify(v))
 
@@ -145,11 +145,35 @@ describe('identity rules — a copy is a new row, a move/undo/restore is the sam
        list `loadWeek`'s callers actually pass lives in `./waves` (WEEKS/CURWEEK,
        see state/store.ts's own imports and weekstash.test.ts's wkFor helper) */
     initStore()
+    /* capture the SEED week's own key (CURWEEK, live-binding import from
+       ./waves) rather than assuming a WEEKS[] index — WEEKS[0].v is
+       '29/06/2026', a blank/generic week, NOT the authored seed week
+       ('13/07/2026'); an earlier version of this fix restored to WEEKS[0]
+       and left every later test in this file on a near-empty week, which is
+       exactly the kind of silent-vacuous-pass this whole describe exists to
+       rule out (caught by "a move keeps every id" throwing on undefined
+       waves rather than passing quietly, which is the one upside of picking
+       a day by `.find` instead of a fixed index). */
+    const seedWeek = CURWEEK
     const t = addDayTpl(0, 'X')!; const wk1 = DAYS.flatMap(ids)
-    loadWeek(WEEKS[1].v)
-    expect(applyDayTpl(0, t.id)).toBe(true); HOOKS.histPush()
-    expect(ids(DAYS[0]).some(x => wk1.includes(x))).toBe(false)
-    dayTplReset()
+    expect(wk1.length).toBeGreaterThan(0)
+    try {
+      loadWeek(WEEKS[1].v)
+      expect(applyDayTpl(0, t.id)).toBe(true); HOOKS.histPush()
+      expect(ids(DAYS[0]).some(x => wk1.includes(x))).toBe(false)
+    } finally {
+      /* reviewer finding (Important 2 / Minor 3): leaving CURWEEK parked on
+         another week leaks into every later test in this file — initStore()
+         only rebuilds DAYS from the seed when the CURRENT week has never
+         been stashed, so once this test moves off the seed week, every later
+         test's DAYS[0]/[1]/[3] would silently address the other week's own
+         (much sparser) days instead of the seed content they were written
+         against. Restore before this test ends, in a finally, so a failed
+         assertion above still leaves the file on the seed week for
+         everything after it. */
+      loadWeek(seedWeek)
+      dayTplReset()
+    }
   })
   it('a move keeps every id', async () => {
     const { initStore } = await import('../state/store'); const { HOOKS } = await import('./hooks')
@@ -157,19 +181,37 @@ describe('identity rules — a copy is a new row, a move/undo/restore is the sam
     initStore()
     const d = DAYS.find(x => x.waves.length >= 2)!; const di = DAYS.indexOf(d)
     const before = ids(d).slice().sort()
+    expect(before.length).toBeGreaterThan(0)   // a leaked week-2 day would read this as [] (Minor 3)
+    const w0 = d.waves[0].rid                  // reviewer Minor 4: the old line compared a value to itself
     moveWave(di, 0, 1); HOOKS.histPush()
     expect(ids(d).slice().sort()).toEqual(before)
-    expect(d.waves[1].rid).toBe(before.length ? d.waves[1].rid : undefined)
+    expect(d.waves[1].rid).toBe(w0)            // the wave that WAS at 0 is now at 1, carrying the same id
   })
-  it('a duplicated draft has fresh ids from the moment it is made; switching A→B→A returns A\'s ids and B\'s stay stable', async () => {
+  it('a duplicated draft is live from the moment it is made: Draft 1 is the frozen original and keeps its ids, the new draft IS the live day and mints fresh ones in place; switching A→B→A returns each their own', async () => {
     const { initStore } = await import('../state/store'); const { HOOKS } = await import('./hooks')
     const { draftDup, draftSelect, dayDrafts } = await import('./drafts')
     initStore()
     const a = ids(DAYS[1])
+    /* a leaked week-2 day (Important 2 — the previous version of this test
+       ran on whatever week the file's earlier tests left CURWEEK pointed at)
+       would read every id array in this test as [], and every `toEqual`
+       below would then pass VACUOUSLY — proving nothing. Week 1 is restored
+       by the template test above before this one runs; this still pins that
+       the day actually has rows, so a future leak fails LOUD, here. */
+    expect(a.length).toBeGreaterThan(0)
     const t = draftDup(1)!; HOOKS.histPush()
-    const b = ids(t.d)
+    /* controller ruling: the brief had this backwards. draftDup's own model
+       is that DAYS[di] IS the working copy of the SELECTED draft — so the
+       NEW draft (`t`) is the live day itself, re-minted fresh IN PLACE, and
+       Draft 1 is the STOW of the ORIGINAL, frozen with the original's ids.
+       `b` is therefore read off the LIVE day right after the dup, not off
+       `t.d` — the two must still agree (t.d is a clone taken after the
+       re-mint), which the next assertion checks. */
+    const b = ids(DAYS[1])
     expect(b.every(x => typeof x === 'string' && !a.includes(x))).toBe(true)
+    expect(ids(t.d)).toEqual(b)                     // t.d agrees with the live day it was cloned from
     const [d1] = dayDrafts(1)
+    expect(ids(d1.d)).toEqual(a)                    // Draft 1 is the frozen original, unchanged
     draftSelect(1, d1.id); HOOKS.histPush(); expect(ids(DAYS[1])).toEqual(a)
     draftSelect(1, t.id); HOOKS.histPush(); expect(ids(DAYS[1])).toEqual(b)
     draftSelect(1, d1.id); HOOKS.histPush(); expect(ids(DAYS[1])).toEqual(a)
@@ -179,6 +221,7 @@ describe('identity rules — a copy is a new row, a move/undo/restore is the sam
     const { alIssue, markEdit } = await import('./publish'); const { restoreDayVersion } = await import('./restore')
     initStore()
     const orig = ids(DAYS[0])
+    expect(orig.length).toBeGreaterThan(0)   // a leaked week-2 day would read this as [] (Minor 3)
     /* the brief's own text restores 'orig' — SCHED.orig[di] is only stamped by
        setDayApproved, which this day never goes through (see rowids.test.ts's
        own earlier fix, same file, same reason), so SCHED.orig[0] stays
@@ -201,15 +244,34 @@ describe('identity rules — a copy is a new row, a move/undo/restore is the sam
     markEdit('dn:0.0'); alIssue(1, ['dn:0.0'])
     /* same substitution as the test above: AL1's own snap stands in for
        SCHED.orig[0], which this unapproved day never gets */
-    rowsOf(SCHED.als[0].snap[0].d).forEach((r: any) => { delete r.rid })             // the pre-change book
+    const snapDay = SCHED.als[0].snap[0].d
+    expect(DAYS[0].waves[0].formations.length).toBeGreaterThan(1)   // a leaked week-2 day would fail this (Minor 3)
+    rowsOf(snapDay).forEach((r: any) => { delete r.rid })                           // the pre-change book
     DAYS[0].waves[0].formations.splice(0, 1); HOOKS.histPush()                       // one issued row is gone live
     const n = backfillSnapshotIds(SCHED, DAYS)
-    expect(n).toBe(rowsOf(SCHED.als[0].snap[0].d).length)
-    const live = new Map(pathsOf(DAYS[0])), snap = pathsOf(SCHED.als[0].snap[0].d)
-    for (const [p, r] of snap) { if (live.has(p) && p !== 'waves.0.formations.0') expect(r.rid, p).toBe(live.get(p).rid) }
-    expect(typeof rowsOf(SCHED.als[0].snap[0].d).every((r: any) => r.rid)).toBe('boolean')
+    expect(n).toBe(rowsOf(snapDay).length)
+    const live = new Map(pathsOf(DAYS[0])), snapPaths = pathsOf(snapDay)
+    /* reviewer Minor 6: the old `p !== 'waves.0.formations.0'` exclusion was
+       dead — the backfill pairs BY ADDRESS, not content, so that address (now
+       occupied by the formation that used to sit at .1, shifted down into the
+       gap) is paired exactly like every other surviving address, and the
+       check holds there for the same reason it holds everywhere else. Assert
+       it unconditionally instead of carving out a corner that never differed. */
+    for (const [p, r] of snapPaths) { if (live.has(p)) expect(r.rid, p).toBe(live.get(p).rid) }
+    /* reviewer Minor 5: `expect(typeof x.every(...)).toBe('boolean')` asserts
+       nothing — `typeof` always returns a string. The real claim is that
+       every snapshot row now carries an actual id. */
+    expect(rowsOf(snapDay).every((r: any) => typeof r.rid === 'string')).toBe(true)
+    /* reviewer Minor 5, second half: the one snapshot address the splice
+       actually erased from live (out of range once the array shrank) gets a
+       MINTED id, not a copied one — and that fresh id appears nowhere among
+       the live day's own ids, because no live row was ever given it. */
+    const missing = snapPaths.find(([p]) => !live.has(p))!
+    expect(missing).toBeTruthy()
+    const liveIds = new Set(rowsOf(DAYS[0]).map((r: any) => r.rid))
+    expect(liveIds.has(missing[1].rid)).toBe(false)
     expect(backfillSnapshotIds(SCHED, DAYS)).toBe(0)
-    expect(JSON.parse(weekStashSnap()).a[0].snap[0].d.waves[0].rid).toBe(SCHED.als[0].snap[0].d.waves[0].rid)
+    expect(JSON.parse(weekStashSnap()).a[0].snap[0].d.waves[0].rid).toBe(snapDay.waves[0].rid)
     restoreDayVersion(0, 1); HOOKS.histPush(); const r1 = ids(DAYS[0])
     DAYS[0].notes.push('y'); HOOKS.histPush()
     restoreDayVersion(0, 1); HOOKS.histPush(); expect(ids(DAYS[0])).toEqual(r1)
