@@ -2242,3 +2242,20 @@ gate's. Keep verdict-bearing commands unpiped.
 **Suggested improvement:** On any mode change that forbids edits: (1) list live background agents; (2) stop every one that can write; (3) run `git status` and revert partial edits before planning; (4) record in the plan that the agent must be re-launched after approval, with the same brief.
 
 **Principle:** A delegate inherits the operator's constraints only if the operator propagates them — a mode change is an event to broadcast to every running agent, and the working tree is checked afterwards, not assumed.
+
+### Observation 148: A pipeline whose second stage fails still writes the file — an empty file was committed
+
+**Status:** OPEN
+**Date:** 2026-09-10
+**Session context:** Copying the approved plan from the plan-mode file into the repo with `sed … | sed … > file`; the second sed's regex was invalid, the redirect still created an empty file, and the commit that followed committed 0 lines. Caught only by a `wc -l` afterwards; fixed by a Python rewrite and an amend.
+**Skill:** writing-plans / subagent-driven-development (Task 0 "put the plan in the repo")
+**Type:** open-source
+**Phase/Area:** Setup — copying a plan into the repo before dispatch
+
+**Issue:** A shell pipeline that ends in a redirect writes the file whether or not an upstream stage failed, and `git add` + `commit` happily commit the empty result. A subagent reading that brief would have received nothing. The pre-commit check that would have caught it (a line count, or `test -s`) was not part of the step.
+
+**Suggested improvement:** In writing-plans' "Save plans to" step and SDD's setup, add one line: after writing the plan file, verify it is non-empty and contains the first task heading (`test -s FILE && grep -q "### Task 1" FILE`) BEFORE committing. Prefer a single-tool write (Write tool, or Python) over a sed pipeline for text transforms.
+
+**Principle:** A redirect creates the file before the pipeline runs, so "the command produced a file" proves nothing about its contents. Verify size and one expected marker before committing any generated file.
+
+Checkpoint (tasks #53-#58 complete): no further observations.
