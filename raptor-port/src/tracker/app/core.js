@@ -3667,7 +3667,32 @@ export async function applyStudents(students, links) {
        lands both as entries with pids — the same path the store's own data took */
     const { block } = upgradeCourseBlock({ plan: cs.plan, lulls: cs.lulls, pace: cs.pace, bySyllabus: cs.bySyllabus }, (links || {})[c] || null);
     await writeCourseBlock(c, block);
-    await sSet(kIdMig(c), '1');
+    /* THE IMPORT CONVERTS THE COURSE; IT DOES NOT DECLARE IT CONVERTED. Stamping
+       the flag here was a claim about the whole COURSE made on the strength of
+       one FILE, and the file only ever carries what somebody exported — never
+       whatever else the store is still holding under a name. Two upgrade-time
+       shapes lost people that way. A course caught HALF-CONVERTED (rosterHeld,
+       its flag still unset) took the stamp, so migrateIds never ran again: any
+       syllabus of it the file did not carry kept its string roster, which the
+       next load filters away to an empty crew list with the read-only block now
+       lifted — and the first + Add writes that empty list over their names. And
+       a course nobody had opened since the roster split took the stamp before
+       migrateRosters had even run, so the names that split later out of its flat
+       roster were forbidden from ever converting.
+       So: lend the flag only where it is honestly true — the roster split has
+       nothing left to do because there is no flat legacy roster to split — and
+       then run the real conversion. migrateIds takes the imported entries' own
+       ids as the mapping, moves whatever is still filed under a name, and sets
+       the flag itself; with nothing left to move it takes its no-names path and
+       sets the flag just the same. A course that still has a flat roster is left
+       unflagged on purpose: migrateIds refuses it until the split has run, and
+       that happens on the course's first open, which is where migrateRosters
+       lives — the same way such a course has always converted. */
+    if (!(await sGet(kRosterMig(c)))) {
+      const flat = await sGet(kRoster(c));
+      if (flat == null || flat === '' || flat === '[]') await sSet(kRosterMig(c), '1');
+    }
+    await migrateIds(c);
   }
   /* Merge, never replace. Overwriting the list dropped every course of the
      person doing the opening: their marks stayed in storage but the course was

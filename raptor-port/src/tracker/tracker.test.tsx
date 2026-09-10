@@ -1251,6 +1251,58 @@ describe('the person bridge and the link (peoplewire.ts → people.js → core.j
     }
   })
 
+  it('an import into a half-converted course finishes the conversion instead of sealing it, and the syllabus the file did not carry converts too', async () => {
+    const c = 'IMPHELD', sylA = '2026', sylB = '2024'
+    /* same fixture shape as the pin above: the course and the stored list come
+       back off, with the course this pin started on reloaded */
+    const prevCourse = C.course, prevCourses = (C.COURSES as string[]).slice()
+    const prevList = (await storage.get('v3:courses'))?.value ?? null
+    try {
+      ;(C.COURSES as string[]).push(c); await storage.set('v3:courses', JSON.stringify(C.COURSES))
+      await storage.set('v3:' + c + ':rostermig', '1'); await storage.set('v3:' + c + ':plan', JSON.stringify({ sylName: sylA, custom: false }))
+      await storage.set('v3:' + c + ':' + sylA + ':roster', JSON.stringify(['ALPHA']))
+      await storage.set('v3:' + c + ':' + sylB + ':roster', JSON.stringify(['BRAVO']))
+      await storage.set('v3:' + c + ':' + sylA + ':m:ALPHA', JSON.stringify({ 'ST-01': { g: 'dco' } }))
+      await storage.set('v3:' + c + ':' + sylB + ':m:BRAVO', JSON.stringify({ 'ST-02': { g: 'marg' } }))
+      /* interrupt the conversion the way the store's own "local only" path
+         does: every write of a record under an ID is refused, so not one
+         record moves and BOTH rosters are left holding names */
+      const realSet = storage.set
+      storage.set = ((k: string, v: string) => (k.startsWith('v3:' + c + ':') && /:m:s/.test(k) ? Promise.reject(new Error('disk full')) : realSet.call(storage, k, v))) as any
+      try { await C.loadCourse(c); await C.whenLoaded() } finally { storage.set = realSet }
+      expect(await storage.get('v3:' + c + ':idmig'), 'the conversion did not finish').toBeNull()
+      expect(C.rosterHeld, 'so the course is read-only').toBe(true)
+      expect(JSON.parse((await storage.get('v3:' + c + ':' + sylA + ':roster'))!.value)).toEqual(['ALPHA'])
+      expect(JSON.parse((await storage.get('v3:' + c + ':' + sylB + ':roster'))!.value)).toEqual(['BRAVO'])
+      /* the user restores a backup that carries only ONE of the two syllabi.
+         Stamping the flag on the strength of it sealed the other one's names
+         out of the conversion for good. */
+      await C.applyStudents({
+        courses: [c],
+        byCourse: { [c]: { plan: { sylName: sylA, custom: false }, lulls: {}, pace: {}, bySyllabus: { [sylA]: { roster: [{ id: 'sIMPA1', name: 'ALPHA' }], marks: { sIMPA1: { 'ST-01': { g: 'dco' } } }, dates: {} } } } },
+      }, null)
+      await C.loadCourse(c); await C.whenLoaded()
+      expect((await storage.get('v3:' + c + ':idmig'))!.value, 'the conversion ran and finished').toBe('1')
+      expect(C.rosterHeld, 'so the crew list takes writes again').toBe(false)
+      /* the syllabus the file carried: the imported entry, with its own id */
+      const a = C.byName('ALPHA')!
+      expect(a.id).toBe('sIMPA1'); expect(C.gradeOf(a.id, 'ST-01')).toBe('dco')
+      expect(JSON.parse((await storage.get('v3:' + c + ':' + sylA + ':roster'))!.value)).toEqual([{ id: 'sIMPA1', name: 'ALPHA' }])
+      /* and the one it did NOT: BRAVO is an entry now, the mark is under the
+         id on that entry, and nothing is left filed under the name */
+      const rb = JSON.parse((await storage.get('v3:' + c + ':' + sylB + ':roster'))!.value)
+      expect(rb.length).toBe(1)
+      expect(rb[0], 'a string here would be a name the next + Add overwrites').toEqual({ id: expect.stringMatching(/^s/), name: 'BRAVO' })
+      expect(JSON.parse((await storage.get('v3:' + c + ':' + sylB + ':m:' + rb[0].id))!.value)['ST-02'].g).toBe('marg')
+      expect(await storage.get('v3:' + c + ':' + sylB + ':m:BRAVO'), 'the name key is gone').toBeNull()
+      expect(await storage.get('v3:' + c + ':idmap'), 'the scratch mapping is cleared with the flag').toBeNull()
+    } finally {
+      ;(C.COURSES as string[]).splice(0, (C.COURSES as string[]).length, ...prevCourses)
+      if (prevList == null) await storage.delete('v3:courses'); else await storage.set('v3:courses', prevList)
+      await C.loadCourse(prevCourse); await C.whenLoaded()
+    }
+  })
+
   it('a rename that cannot carry everything keeps the old course listed, with the records it left behind', async () => {
     if (C.sylDirty) await C.saveChangesClick()
     const c = 'CARRY', id = 'sCARRY1', mk = 'v3:' + c + ':2026:m:' + id, rk = 'v3:' + c + ':2026:roster'
