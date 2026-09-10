@@ -36,6 +36,7 @@ as of 4 Sep 26) — search it for "why did we do X", don't re-read it.
 | the architecture direction — modular apps on ONE backend and ONE database, the order of work for the server step (read before any backend/API work) | `raptor-port/docs/architecture-direction.md` |
 | the Dataverse handover — what the table designer (Manfred) reads, what we need from him, what is not negotiable, what we do on our side | `raptor-port/docs/handover-dataverse.md` |
 | skill-improvement observations captured during sessions | `.claude/skill-observations/log.md` |
+| picking work up on the desktop — where task #1 stands, the cross-device / multi-model (Claude + Codex) setup, and the model/workflow advisor to paste | `raptor-port/docs/superpowers/DESKTOP-HANDOFF.md` |
 
 
 ## Gate status
@@ -308,18 +309,25 @@ browser-proven.
   amendment machinery and persisted state (byte-exact parity sits on the
   key strings), so it is a HEAVY task: run brainstorm → spec → plan →
   subagent build-with-review, exactly as the student-side ids were done —
-  not a straight-to-code change. **#1 IN FLIGHT (branch
-  `claude/read-handoff-docs-wuftw9`, 10 Sep 26):** the design + task plan and
-  the pos↔rid translation FOUNDATION are built, tested and pushed —
+  not a straight-to-code change. **#1 FOUNDATION MERGED (`fa46c70`, PR #384,
+  10 Sep 26; live-verified on the deployed site):** the design + task plan and
+  the pos↔rid translation FOUNDATION are on `main` —
   `engine/rowids.ts` `ridKey`/`posKey`/`migrateBookKeys` (round-trips every
   `dayKeys` prefix, a delete leaves survivors' stored keys untouched, migration
-  idempotent), spec
+  idempotent; `migrateBookKeys` anchors an AL snapshot slice against `snap.d`,
+  not live DAYS — Fable bug-check fix), spec
   `raptor-port/docs/superpowers/specs/2026-09-10-addressing-by-rid-design.md`.
-  Additive, wires nothing — all gates green. Remaining = that spec's tasks 2–7
-  (the interlocking engine wiring: `dayKeys`→rid, the write/read/edit-log
-  boundary, the delete-mark sweep, migration wiring, UI audit, and re-anchoring
-  the `audit-d` keyspace oracle to rid WITHOUT weakening it); it wants a Fable
-  bug-check and HOLD before live. (2) course and
+  Additive, wires nothing — all gates green. **NEXT UP (start a fresh branch
+  FROM `main`):** that spec's tasks 2–7 — the interlocking engine wiring:
+  `dayKeys`→rid, the write/read/edit-log boundary, the delete-mark sweep,
+  migration wiring, UI audit, and re-anchoring the `audit-d` keyspace oracle to
+  rid WITHOUT weakening it. This is the atomic, silent-defect-critical half:
+  build it with Opus high, run the "Confirmed traps for the wiring" checklist in
+  the spec (structuralAddExists / deletionWasIssued / rowKeyOf / keyLabel must
+  translate; label-before-translate ordering; keep `ridKey` O(1) on the
+  `alAttr` hot path, `posKey` off it), then a Fable independent bug-check, and
+  **HOLD before live — merge to `main` ONLY on the owner's explicit "merge
+  live".** (2) course and
   syllabus ids (still name keys joined with `:`); (3) `Attempt` history.
   A student rename control shipped 10 Sep 26 (the pencil on each chip edits
   the label only — `core.js:renameStudent`, id and records untouched).
