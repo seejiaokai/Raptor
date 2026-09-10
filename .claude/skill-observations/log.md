@@ -2227,3 +2227,18 @@ gate's. Keep verdict-bearing commands unpiped.
 **Suggested improvement:** Make it structural: (1) never put a process-name pattern and a kill in the SAME command line — capture PIDs in one call (`pgrep -f <pattern>`; read the output), then kill by number in a SEPARATE call; (2) exclude shells by construction when a pattern must be used: `pgrep -f "<pattern>" | xargs -r ps -o pid=,comm= -p | awk '$2!="bash"{print $1}'`; (3) prefer the server's own PID file or `lsof -ti :<port>` (port-based, matches no command line) for a stray dev server: `lsof -ti :4179 | xargs -r kill`; (4) add the port-based form to the repo's CLAUDE.md so the next session copies that instead of inventing a pattern.
 
 **Principle:** A rule that has been broken three times under load is not a rule, it is a wish — replace it with a form that cannot express the mistake (port-based or PID-only kills; pattern matching and killing never in one command).
+
+### Observation 147: A background agent launched seconds before plan mode must be stopped, not left to edit
+
+**Status:** OPEN
+**Date:** 2026-09-10
+**Session context:** RAPTOR review pass. A document-rewrite agent was launched; the user switched to plan mode moments later. Plan mode forbids edits, but a delegate already running would have edited two files. It was stopped (TaskStop) before it wrote anything, and re-launched after approval. (Checkpoint entry: three tasks completed since the last log write.)
+**Skill:** task-observer / subagent-driven-development
+**Type:** open-source
+**Phase/Area:** delegation under a mode change
+
+**Issue:** A mode change (plan mode, a "stop" from the user) applies to the orchestrator's delegates too, but nothing stops them automatically; an agent mid-flight keeps editing unless the orchestrator explicitly stops it and checks the tree.
+
+**Suggested improvement:** On any mode change that forbids edits: (1) list live background agents; (2) stop every one that can write; (3) run `git status` and revert partial edits before planning; (4) record in the plan that the agent must be re-launched after approval, with the same brief.
+
+**Principle:** A delegate inherits the operator's constraints only if the operator propagates them — a mode change is an event to broadcast to every running agent, and the working tree is checked afterwards, not assumed.
