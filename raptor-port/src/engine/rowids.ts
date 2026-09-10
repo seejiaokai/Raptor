@@ -70,7 +70,10 @@ export function pathsOf(d:any):Array<[string,any]>{
    the field/seat selector, the .xN overflow, the crew index .k and pax.k all
    stay literal. A position component reads `\d+`; a rid never does, so the two
    forms are always told apart. */
-const NONROW = new Set(['dn', 'sn', 'pn', 'dtn', 'gn', 'del', 'mov', 'inp']);
+/* `iu:<iid>` is here too (Fable review): it addresses an INPUT, carries NO day
+   component (slots.ts:297), and must pass through untouched — without this
+   posKey read its missing day as "the row is gone" and returned null. */
+const NONROW = new Set(['dn', 'sn', 'pn', 'dtn', 'gn', 'del', 'mov', 'inp', 'iu']);
 /* per prefix, the position slots (index into the dot-parts) and the array each
    one indexes — parents first, so slot i's row is found inside slot i-1's. The
    first level indexes off the DAY, later levels off the row resolved above. */
@@ -122,7 +125,11 @@ export function posKey(key: any, days: any[]): string | null {
   const out = parts.slice(); let container: any = day;
   for (const { slot, arr } of lv) {
     const a = arr(container); if (!Array.isArray(a)) return null;
-    const comp = parts[slot]!;
+    const comp = parts[slot];
+    /* a short/malformed key leaves this slot undefined; without the guard the
+       findIndex below would match the first row that has NO rid (r.rid ===
+       undefined) and hand back a real-looking address for the wrong row */
+    if (typeof comp !== 'string' || !comp) return null;
     const ix = /^\d+$/.test(comp) ? +comp : a.findIndex((r: any) => r && r.rid === comp);
     if (ix < 0 || !a[ix]) return null;                          // the addressed row is gone
     out[slot] = String(ix); container = a[ix];

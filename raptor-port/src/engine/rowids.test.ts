@@ -7,6 +7,7 @@ import { describe, expect, it } from 'vitest'
 import { ensureRowIds, mintRowId, rowsOf, ridKey, posKey, migrateBookKeys } from './rowids'
 import { DAYS } from './data'
 import { dayKeys } from './restore'
+import { keyDay } from './keys'
 import { WEEKS, CURWEEK } from './waves'
 
 const clone = (v: any) => JSON.parse(JSON.stringify(v))
@@ -124,6 +125,39 @@ describe('ridKey / posKey / migrateBookKeys — addressing by rid (addressing-by
     expect(sched.als[0].snap[di].c['wl:' + di + '.rSNAPW1']).toBe(1)  // snap.c → snap.d's id
     expect(sched.als[0].snap[di].c[`wl:${di}.${w1}`]).toBeUndefined() // NOT the live wave's id
     expect(migrateBookKeys(sched, days)).toBe(0)                       // already rid form → a no-op
+  })
+
+  /* ---- Fable review pins (10 Sep 26) ---------------------------------- */
+  it('keyDay still reads the day off a rid-form key — prefixed and the bare seat', () => {
+    /* every per-day filter, snapshot slice and AL day-list rides keyDay; a rid
+       is base36 (no "." / ":") so the day stays the first component */
+    const days = seed()
+    const di = days.findIndex((d: any) => (d.waves || []).length > 0)
+    expect(keyDay(ridKey(`wl:${di}.0`, days))).toBe(di)
+    expect(keyDay(ridKey(`${di}.0.0.0.p`, days))).toBe(di)
+    expect(keyDay(ridKey(`s:${di}.amt.0.label`, days))).toBe(di)
+  })
+
+  it('iu:<iid> (an input, no day component) passes through BOTH ways — never read as a deleted row', () => {
+    const days = seed()
+    expect(ridKey('iu:abc123', days)).toBe('iu:abc123')
+    expect(posKey('iu:abc123', days)).toBe('iu:abc123')           // was null before the guard
+  })
+
+  it('a malformed/short rid-form key is null, and never matches a row that merely lacks a rid', () => {
+    const days = seed()
+    delete days[0].waves[0].formations[0].rid                    // an id-less formation lurking at index 0
+    /* 'ff:0.<wave rid>' is missing its formation slot — the old findIndex on an
+       undefined slot matched that id-less row and returned 'ff:0.0.0' */
+    const short = `ff:0.${days[0].waves[0].rid}`
+    expect(posKey(short, days)).toBe(null)
+  })
+
+  it('a ".+" append tail rides through ridKey literally (it is never a position slot)', () => {
+    const days = seed()
+    const di = days.findIndex((d: any) => (d.allhands || []).length > 0)
+    const r = days[di].allhands[0].rid
+    expect(ridKey(`a:${di}.0.+`, days)).toBe(`a:${di}.${r}.+`)
   })
 })
 

@@ -204,6 +204,31 @@ keeps its positional key and still works, exactly as today.
    assumes all sections are `rid`-anchored uniformly (e.g. a generic remap that
    would now skip notes).
 
+**Confirmed traps for the wiring (Fable bug-check of the foundation, 10 Sep 26)**
+— none are foundation bugs; each is a site that PARSES positional components and
+will silently break the moment the book holds `rid` keys:
+
+5. **Positional parsers that must resolve through `posKey` first:**
+   `publish.ts:structuralAddExists` (`(d.waves||[])[+a[1]]` → `NaN` on a rid
+   → always `false`), `publish.ts:deletionWasIssued` (builds positional
+   identity keys and looks them up in `SCHED.added`), `drafts.ts:rowKeyOf`
+   (rebuilds a row key from parts), and `editlog.ts:keyLabel` (`DAYS[+a[0]]
+   .waves[+a[1]]…`). Each either translates the stored key back with `posKey`
+   or resolves the row by `rid` directly.
+6. **Ordering at the write funnel:** `keyLabel` is frozen INTO the log row at
+   `logEdit` time from the key it is handed. Compute the label from the
+   POSITIONAL key, then store the `rid` key — translate *after* labelling,
+   or `keyLabel` sees a `rid` and falls through to `'Schedule'`.
+7. **Keep the hot path cheap:** `alAttr` runs for every cell on every paint,
+   and `ridKey` is direct array indexing (O(depth)) — keep it there. `posKey`
+   resolves by `findIndex` (O(n) per key) and belongs OFF the paint path (flash
+   / migrate / label only). Re-check `npm run perf` after wiring.
+8. **Migration ordering:** `migrateBookKeys` must run AFTER
+   `backfillSnapshotIds` (so `snap.d` rows carry ids) and BEFORE
+   `weekBaseline`; a snapshot slice translates against its OWN `snap.d`, never
+   the live day (a moved row would map onto the wrong id — caught and fixed in
+   the foundation, pinned by test).
+
 ## Surfaces — the map (from the survey)
 
 Every site that reads/writes `SCHED.pending`/`changes`/`added` by key, or emits
