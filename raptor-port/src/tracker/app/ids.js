@@ -119,6 +119,22 @@ export function reconcileIds(block, existing) {
     if (!t || t.id === e.id || taken.has(t.id)) continue;
     map[e.id] = t.id; taken.add(t.id);
   }
+  /* SAME LABEL, TWO DIFFERENT PEOPLE (bug-check, 11 Sep 26). A file entry that
+     shares a NAME with an enrolment already on the course, but is a
+     demonstrably different person (both carry a pid and they differ), cannot be
+     merged — reconcileIds leaves it its own id above. Writing it anyway used to
+     leave the course with two students both named "BRAVO": the store one was
+     then dropped by applyStudents' name guard, orphaning its marks, and an
+     export of the two-BRAVO roster could never be re-imported (fileFormat.js /
+     upgradeCourseBlock both refuse a repeated name). So flag it here and let the
+     caller REFUSE the import, the same conflict + Add and upgradeCourseBlock
+     already hand the user. One per clashing name. */
+  const conflicts = [], seenC = new Set();
+  for (const syl of Object.keys(syls)) for (const e of ((syls[syl] || {}).roster || [])) {
+    if (!isEntry(e) || seenC.has(e.name)) continue;
+    const mate = has(byName, e.name) ? byName[e.name] : null;
+    if (mate && (has(map, e.id) ? map[e.id] : e.id) !== mate.id) { conflicts.push({ name: e.name, fileId: e.id, storeId: mate.id }); seenC.add(e.name); }
+  }
   const re = id => has(map, id) ? map[id] : id;
   const rekey = m => { const o = Object.create(null); for (const k of Object.keys(m || {})) o[re(k)] = m[k]; return o; };
   const bySyllabus = Object.create(null);
@@ -133,5 +149,5 @@ export function reconcileIds(block, existing) {
     bySyllabus[syl] = { ...sv, roster, marks: rekey(sv.marks), dates: rekey(sv.dates) };
   }
   const out = { ...src, bySyllabus, lulls: rekey(src.lulls), pace: rekey(src.pace) };
-  return { block: JSON.parse(JSON.stringify(out)), remapped: Object.assign({}, map) };
+  return { block: JSON.parse(JSON.stringify(out)), remapped: Object.assign({}, map), conflicts };
 }

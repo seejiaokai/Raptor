@@ -1303,6 +1303,31 @@ describe('the person bridge and the link (peoplewire.ts → people.js → core.j
     expect(C.lulls[s1].length, 'the lull period filed under the id is still theirs').toBe(1)
   })
 
+  it('an import naming a DIFFERENT person under an existing callsign is REFUSED whole — the student here keeps their id and marks (bug-check 11 Sep 26)', async () => {
+    const prevCourse = C.course, prevCourses = (C.COURSES as string[]).slice()
+    const prevList = (await storage.get('v3:courses'))?.value ?? null
+    try {
+      let p: Promise<any> = C.addCourse(); await answer('CLASH'); await p; await C.whenLoaded()
+      const syl = C.curSyl()
+      p = C.addStudent(); C.dlgClose({ pick: 'p1' }); await p; await C.whenLoaded()   // RANGER, linked to person p1
+      const sR = C.byName('RANGER')!.id
+      C.setActive(sR); C.openPop('ST-01', at); await C.popGrade('dco')
+      /* a file bringing a DIFFERENT person also called RANGER (a different pid).
+         Old behaviour: the store's RANGER silently dropped, its 'dco' orphaned. */
+      const bring = () => C.applyStudents({ courses: ['CLASH'], byCourse: { CLASH: { plan: { sylName: syl }, lulls: {}, pace: {},
+        bySyllabus: { [syl]: { roster: [{ id: 'fZ', name: 'RANGER', pid: 'pZZ' }], marks: { fZ: { 'ST-01': { g: 'marg' } } }, dates: {} } } } } }, null)
+      await expect(bring()).rejects.toThrow(/different person/)
+      await C.whenLoaded()
+      expect(C.byName('RANGER')!.id, 'the student here is untouched').toBe(sR)
+      expect(C.gradeOf(sR, 'ST-01'), 'their mark is intact, not orphaned').toBe('dco')
+      expect(await storage.get('v3:CLASH:' + syl + ':m:fZ'), 'nothing was written under the file id').toBeNull()
+    } finally {
+      ;(C.COURSES as string[]).splice(0, (C.COURSES as string[]).length, ...prevCourses)
+      if (prevList == null) await storage.delete('v3:courses'); else await storage.set('v3:courses', prevList)
+      await C.loadCourse(prevCourse); await C.whenLoaded()
+    }
+  })
+
   it('an interrupted migration loses nothing and finishes on the next load (review finding 1)', async () => {
     const c = 'HALF'
     ;(C.COURSES as string[]).push(c); await storage.set('v3:courses', JSON.stringify(C.COURSES))

@@ -3702,6 +3702,35 @@ export async function applyCharts(charts, opts) {
 /* People only. Never writes a syllabus or layout key. */
 export async function applyStudents(students, links) {
   const courses = (students && students.courses) || [];
+  /* REFUSE A FILE THAT NAMES TWO DIFFERENT PEOPLE UNDER ONE CALLSIGN (bug-check,
+     11 Sep 26 — Astra/Fable). applyStudents writes course-by-course; a clash
+     caught mid-loop would leave earlier courses written and the list unmerged,
+     and the old code silently DROPPED the store's student (name guard below),
+     orphaning their marks. So check EVERY course first — against the enrolments
+     already here (reconcileIds) AND the legacy names still carried under a link
+     (a course not yet id-converted) — and throw before anything is written. The
+     message reads like the conflict ids.js/fileFormat.js already hand the user;
+     importClick catches it and nothing is touched. This also hoists the
+     upgradeCourseBlock validation ahead of the first write, so a bad file
+     (empty name, etc.) no longer half-imports either. */
+  for (const c of courses) {
+    const pcs = (students.byCourse || {})[c] || {};
+    const pUp = upgradeCourseBlock({ plan: pcs.plan, lulls: pcs.lulls, pace: pcs.pace, bySyllabus: pcs.bySyllabus }, (links || {})[c] || null).block;
+    const pExisting = [], pSyls = await storeSylNames(c);
+    for (const n of pSyls) for (const e of sParse(await sGet(kRosterFor(c, n)), [], 'array')) if (isEntry(e)) pExisting.push(e);
+    const { conflicts } = reconcileIds(pUp, pExisting);
+    /* a course still on its legacy bare-string roster carries its people as
+       names with a v3:links link; reconcileIds cannot see them (not entries),
+       so match the file's linked people against those names by hand */
+    const storeLinks = sParse(await sGet(kLinks), {}, 'object')[c] || null;
+    const legacyPid = Object.create(null);
+    if (storeLinks) for (const n of pSyls) for (const e of sParse(await sGet(kRosterFor(c, n)), [], 'array'))
+      if (typeof e === 'string' && e && has(storeLinks, e) && typeof storeLinks[e] === 'string' && storeLinks[e]) legacyPid[e] = storeLinks[e];
+    const clash = new Set(conflicts.map(x => x.name));
+    for (const n in pUp.bySyllabus) for (const e of (pUp.bySyllabus[n].roster || []))
+      if (isEntry(e) && e.pid && has(legacyPid, e.name) && legacyPid[e.name] !== e.pid) clash.add(e.name);
+    if (clash.size) throw new Error('The file could not be brought in: “' + [...clash][0] + '” names a different person than the one already on ' + c + '. Rename one of them, then import again — nothing has been changed.');
+  }
   for (const c of courses) {
     const cs = (students.byCourse || {})[c] || {};
     /* an older file is name-keyed and may carry a links block; the converter
@@ -3891,8 +3920,13 @@ export async function importClick() { if (fileLocked) return;
   if (info.students && students) {
     people = await uiConfirm('This file also contains students and marks.\n\nBring them in too? They are added to what is here; nothing else is touched.');
     /* an older file's links are people data too: they come in WITH the
-       students, folded into each entry's pid by the converter */
-    if (people) await applyStudents(students, links);
+       students, folded into each entry's pid by the converter. A same-name /
+       different-person clash (or a bad file) refuses the WHOLE student import
+       before it writes anything — surface it and carry on, students untouched. */
+    if (people) {
+      try { await applyStudents(students, links); }
+      catch (e) { await uiAlert((e && e.message) || 'The students could not be brought in.'); people = false; }
+    }
   }
   const what = [done.length ? 'brought in ' + done.join(', ') : null, people ? 'students & marks restored' : null].filter(Boolean).join(' · ');
   if (what) setSaveStatus(what, 'ok');
