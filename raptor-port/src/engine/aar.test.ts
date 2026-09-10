@@ -78,7 +78,7 @@ describe('AAR written after some other text', () => {
   it('a word ending in A before a colon is harmless — it still reads as front seat', () => {
     /* "AREA:" ends in A, so the segmenter treats it as a front-seat tag. Front
        is what an untagged remark defaults to anyway, so nothing changes. */
-    expect(N('AREA: D4445, AAR')).toBe('DAAR')
+    expect(N('AREA: EAST, AAR')).toBe('DAAR')
   })
 
   it('BUT a word ending in B before a colon swallows the rest of the line', () => {

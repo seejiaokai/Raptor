@@ -1,6 +1,6 @@
-// Demo data, shaped like the squadron's own quarterly sheet so the matrix
-// looks like the real thing on first run. Callsigns are the reference
-// workbook's. Replaced by real data once a backend exists.
+// Demo data, shaped like a squadron leave sheet so the matrix has something
+// realistic to show on first run. Callsigns are invented. Replaced by real
+// data once a backend exists.
 
 import { buildDays, type Period } from './period'
 import type { Person } from './people'
@@ -251,10 +251,9 @@ export function seedStates(): States {
   }
 }
 
-// Opening balances, and the ledger that has moved them since. Shaped like
-// the squadron's real figures rather than round numbers: §Counters records
-// that balances already go negative in the workbook — annual at −14, OIL at
-// −5.5 — so CROSS opens deep in the red and DECAL's OIL is negative too.
+// Opening balances, and the ledger that has moved them since. Deliberately
+// not round numbers: §Counters records that a balance is allowed to run
+// negative, so CROSS opens deep in the red and DECAL's OIL is negative too.
 // Both must render on first run, because "negative shows red and is never
 // refused" is a rule nobody can judge against an all-positive screen.
 export function seedOpenings(): Openings {

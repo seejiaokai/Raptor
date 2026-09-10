@@ -98,10 +98,10 @@ export function BidPicker({
   }
 
   const write = (code: string) => {
-    // Ask before taking someone below zero. Never REFUSE: the squadron's own
-    // workbook runs negative and the owner was explicit that it must stay
-    // possible — annual at −14, OIL at −5.5. What was wrong was doing it
-    // silently, so this is a confirmation, not a rule.
+    // Ask before taking someone below zero. Never REFUSE: a balance is allowed
+    // to run negative and the owner was explicit that it must stay possible.
+    // What was wrong was doing it silently, so this is a confirmation, not a
+    // rule.
     const after = code && wouldLeave ? wouldLeave(code, dayCount()) : null
     if (after && after.after < 0 && confirming !== code) {
       setConfirming(code)

@@ -12,7 +12,7 @@
 //
 // The negative-balance confirm the single sheet shows is deliberately NOT
 // carried here: it is per-person, and a block spanning ten people asking ten
-// "are you sure" questions would be worse than the workbook running negative,
+// "are you sure" questions would be worse than a balance running negative,
 // which the owner allows. The single-cell path keeps the confirm.
 
 import { useState } from 'react'

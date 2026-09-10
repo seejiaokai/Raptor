@@ -35,7 +35,7 @@ applies it to that jet, not the second one.
 **The one trap:** the tag is detected as *"an optional digit, then A or B, then
 a colon"*, and that shape turns up inside ordinary words.
 
-- `AREA: D4445, AAR` — harmless. `AREA:` ends in `A`, so it reads as a
+- `AREA: EAST, AAR` — harmless. `AREA:` ends in `A`, so it reads as a
   front-seat tag, and front is the default anyway.
 - `SUB: AAR` — **the AAR is lost.** `SUB:` ends in `B`, so everything after it
   is read as rear-seat text, and the rear seat is dropped outright (a WSO holds

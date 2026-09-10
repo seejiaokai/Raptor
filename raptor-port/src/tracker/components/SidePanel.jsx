@@ -129,6 +129,59 @@ function EventChip({ id, className, style, title }) {
   );
 }
 
+/* One failure on the Failures card (owner, 9 Sep 26: "indicate each failure
+   individually … ST-01, ST-01X"). Mouse over: a bubble with the day it
+   happened. On a phone a tap shows the same bubble, and the next touch
+   anywhere puts it away — the same arrangement as the event chips' long
+   press, but on a plain tap because the owner asked for a click. */
+function FailChip({ s, id, i, date }) {
+  const ref = useRef(null);
+  const label = core.failLabel(id, i);
+  const show = () => core.showFailBubble(s, id, i, ref.current);
+  return (
+    <span ref={ref} className="chip failchip" data-ev={id} data-fi={i} data-date={date || ''}
+      title={`${label} — ${core.ordinal(i + 1)} failure on ${id}${date ? ' · ' + core.fmt(core.parseD(date)) : ' · date not recorded'}`}
+      onPointerEnter={e => { if (e.pointerType === 'mouse') show(); }}
+      onPointerLeave={e => { if (e.pointerType === 'mouse') core.hideEventBubble(); }}
+      onClick={() => {
+        show();
+        document.addEventListener('pointerdown', () => core.hideEventBubble(), { once: true, capture: true });
+      }}>{label}</span>
+  );
+}
+
+/* The full lowdown behind the Failures title: every failure the student has on
+   this chart, in chart order, each with a date box — the one place the day of
+   an earlier failure can be corrected. z 70, like the lull calendar: over the
+   panel and the grading pop-up, under a confirm. */
+function FailLog() {
+  const s = core.failLog;
+  const list = core.roster.includes(s) ? core.failList(s) : [];
+  return (
+    <>
+      <div className="lullback" onClick={core.closeFailLog} />
+      <div className="lullcal on faillog" id="failLog">
+        <div className="lullhd">
+          <b>Failures — {s}</b>
+          <span className="failtot" id="failLogTotal">{list.length} fail{list.length === 1 ? '' : 's'}</span>
+          <button className="sm" id="failLogClose" onClick={core.closeFailLog}>✕</button>
+        </div>
+        {list.length
+          ? list.map(x => (
+            <div className="frow" key={x.id + ':' + x.i} data-ev={x.id} data-fi={x.i}>
+              <span className="chip failchip">{x.label}</span>
+              <span className="mini">{core.ordinal(x.i + 1)} failure{core.infoFor(x.id).name ? ' · ' + core.infoFor(x.id).name : ''}</span>
+              <input type="date" value={x.date || ''} title={x.date ? 'The day this failure happened' : 'No day recorded for this failure — set one'}
+                onChange={e => core.setFailDate(s, x.id, x.i, e.target.value)} />
+            </div>
+          ))
+          : <div className="mini" style={{ margin: '6px 0' }}>No failures recorded for {s} on this chart.</div>}
+        <div className="mini" style={{ marginTop: 8 }}>A failure is recorded from the ball’s pop-up (Fails +), on the day in its “Failed on” box. Escape closes this.</div>
+      </div>
+    </>
+  );
+}
+
 export default function SidePanel({ zoom }) {
   const ref = useRef(null);
   useEffect(() => { if (ref.current) core.dragScroll(ref.current); }, []);
@@ -196,9 +249,15 @@ export default function SidePanel({ zoom }) {
             title="Change the order crew appear in the dropdown and which slice of every ball is theirs" onClick={core.openOrdCrew}>⇅ Reorder</button>
           <button className="sm" id="addStu" onClick={core.addStudent}>+ Add</button></span></h3>
         <div className="chips">
-          {core.roster.map((r, i) => (
-            <span key={r} className="chip"><b>{i + 1}</b> {r} <span className="x" data-rm={r} onClick={() => core.removeStudent(r)}>×</span></span>
-          ))}
+          {/* A student linked to Raptor's roster (9 Sep 26) wears a dot and
+              says who they are there; an unlinked chip is untouched. */}
+          {core.roster.map((r, i) => {
+            const p = core.linkedPerson(r);
+            return (
+              <span key={r} className={p ? 'chip linked' : 'chip'} title={p ? 'On the squadron roster as ' + p.cs : undefined}>
+                <b>{i + 1}</b> {r} <span className="x" data-rm={r} onClick={() => core.removeStudent(r)}>×</span></span>
+            );
+          })}
         </div>
         {/* Wrapped so the phone can shrink it — it is the tallest card there. */}
         <div className="keyball" dangerouslySetInnerHTML={{ __html: core.renderKeyBall() }} />
@@ -310,8 +369,11 @@ export default function SidePanel({ zoom }) {
           It goes full width past ten entries, dropping Lull to its own row: Lull
           is the least-consulted card on this panel and already the shortest.
           Notation is the user's, 16 Aug: the first failure shows the plain code
-          and every further one adds an X, so the X count is one less than the
-          number of failures. The total counts failures, not events. */}
+          and every further one adds an X. Since 9 Sep 26 EACH failure is its
+          own chip (owner: "when someone fails twice, it should show ST-01,
+          ST-01X"), each carrying the day it happened — hover or tap for it;
+          the title opens the full list with a date box per failure. Worst
+          event first, its failures oldest first. The total counts failures. */}
       {(() => {
         const fails = core.SYL
           .map(e => ({ id: e.id, n: core.failOf(s, e.id) }))
@@ -319,18 +381,17 @@ export default function SidePanel({ zoom }) {
           .sort((a, b) => b.n - a.n || a.id.localeCompare(b.id));
         const total = fails.reduce((t, x) => t + x.n, 0);
         return (
-          <div className={'card c-fails' + (fails.length > 10 ? ' wide' : '')} id="failsCard">
-            <h3>Failures <span className="who">— {s}</span>
+          <div className={'card c-fails' + (total > 10 ? ' wide' : '')} id="failsCard">
+            <h3><span className="failTitle" id="failTitle" role="button" tabIndex={0}
+              title="Every failure with its date" onClick={() => core.openFailLog(s)}
+              onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); core.openFailLog(s); } }}>Failures</span>{' '}
+              <span className="who">— {s}</span>
               {total ? <span className="failtot" id="failTotal">
                 {total} fail{total === 1 ? '' : 's'}</span> : null}</h3>
             <div className="chips failchips" id="failChips">
               {fails.length
-                ? fails.map(x => (
-                  <span key={x.id} className="chip failchip" data-fails={x.n}
-                    title={`${x.id} — failed ${x.n} time${x.n === 1 ? '' : 's'}`}>
-                    {x.id + 'X'.repeat(x.n - 1)}
-                  </span>
-                ))
+                ? fails.flatMap(x => core.failDates(s, x.id).map((d, i) =>
+                  <FailChip key={x.id + ':' + i} s={s} id={x.id} i={i} date={d} />))
                 : <span className="mini">none</span>}
             </div>
           </div>
@@ -362,6 +423,7 @@ export default function SidePanel({ zoom }) {
       </div>
       {core.lullPick ? <LullCalendar /> : null}
       {core.lullCopy ? <LullCopy /> : null}
+      {core.failLog ? <FailLog /> : null}
     </div>
   );
 }

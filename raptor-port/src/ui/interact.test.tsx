@@ -475,7 +475,7 @@ describe('text edits carry amendment marks (area/atime commit + AL colouring)', 
   /* THE OTHER DIRECTION, which is what actually shipped broken (owner spotted
      it on screen, 6 Aug 26). AREA and AREA TIME are the only cells whose
      displayed value is DERIVED, so the model field is null while the cell
-     already reads "D1415 · AA2NS" / "1240-1405". The commit compared the text
+     already reads "NORTH · SOUTH" / "1240-1405". The commit compared the text
      to '' and therefore called every focusout a change: clicking in and
      straight back out, or tabbing through, stored the derived value as a typed
      one. The dashed "edited" hint is what gets noticed; the damage is that the

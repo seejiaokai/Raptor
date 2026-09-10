@@ -93,19 +93,22 @@ truth for what each type means; the fields below are what a record carries.
 
 | Field | Type | Meaning |
 |---|---|---|
-| `iid` | string | minted `'i' + n`, session-monotonic; the stable handle (never address by index) |
+| `iid` | string | minted `'i' + n`, monotonic; the stable handle (never address by index). At boot the counter is seeded past the highest stored id (`src/state/persist.ts:55`), so a reload never re-mints one |
 | `person` | string | a PEOPLE id |
 | `date` | string | day, display form (`'Jul 13'`) |
 | `endDate` | string? | last day of a multi-day input |
+| `yr` | number | the anchor year the bare date label belongs to — written on create/edit (`src/ui/inputedit.tsx:712`, `src/ui/InputsPage.tsx:391`, `src/leavewar/sync.ts:323`) and back-filled at boot on any row without one (`src/state/store.ts:602`); part of the content key `inpKey` |
 | `allday` | boolean | all day, or a window |
 | `s`, `e` | number? | window start / end in **minutes from midnight** (when not all-day) |
 | `half` | string? | half-day marker for types that allow it |
 | `type` | string | one of the catalogue codes below |
-| `remarks` | string | free text |
-| `mod` | string | last-modified date, ISO `yyyy-mm-dd` |
+| `remarks` | string? | free text, may be `''`; absent on the seed SANS rows |
+| `mod` | string | last-modified date, ISO `yyyy-mm-dd` on the seeds — but **the app writes the literal `'now'`** on every create, edit and trim (`src/ui/inputedit.tsx:348`, `:712`) and the Leave War sync does the same (`src/leavewar/sync.ts:334`); the reader resolves `'now'` to today's date (`src/engine/inputs.ts:683`). A store that keeps `'now'` keeps "modified today" for ever |
 | `acc` | `undefined \| 'g' \| 'u' \| 'r'` | never landed / landed on the Ground Programme / actioned to Unavailable / **removed by a scheduler (dormant)** |
-| `lw` | boolean? | written by the Leave War sync (the loop-breaker — see Sync below) |
+| `lw` | string? | the **war id** the row was derived from, written by the Leave War sync (`src/leavewar/sync.ts:340`) — the loop-breaker, see Sync below |
 | `docId` / `docIds` | string / string[] | attachment ids (see Attachments) |
+| `oil` | `{ 'yyyy-mm-dd': 0 \| 0.5 \| 1 }`? | the per-day OIL credit decision from the OilConfirm ask-flow — written after a create or edit (`src/ui/InputsPage.tsx:425`, `:599`, `:631`; `src/ui/inputedit.tsx:1325`, `:1335`) |
+| `sans` | `{ f?, o?, a? }`? | SANS Availability only: which of Fly / OFT / AMT are offered (`src/ui/inputedit.tsx:715`, `:861`; `src/ui/InputsPage.tsx:397`) |
 
 **Type catalogue** (`code` → group; each entry also carries `name, work,
 local, ground, half, shiftHard` flags):
@@ -145,10 +148,30 @@ One record per day of the loaded week, Monday first. Times inside a day are
 
 `p` / `w` / `who` / `id` / `pax[]` are PEOPLE ids. Rows also carry flags the
 engine sets as the day is worked: `cx` (cancelled) with `cxr` (the cancel
-reason, from the cancel-reasons list), `info` (info-only), `spare` /
-`spareAcs` (spare aircraft), and late marks. Sections are addressed by
-**slot keys** of the form `d:<day>.<section>.<index>…` — positional, which
-is one of the loose spots noted at the end.
+reason, from the cancel-reasons list), `info` (info-only), and on a
+standalone crew row `spare` with its `role` label (`MAIN` / `SPARE`,
+`src/engine/waves.ts:40`, `src/engine/wavetpl.ts:190`). Two things that
+look like row fields are **not**: the engine's `spareAcs` is rebuilt from
+the `spare` rows on every validate (`src/engine/events.ts:343-388`) and
+never stored, and the late mark is derived from the input's `mod` plus a
+session-only forgiven set (`LATEOFF`, `src/state/view.ts:139`) — nothing on
+a row records it. Sections are addressed by **slot keys** of the form
+`d:<day>.<section>.<index>…` — positional, which is one of the loose spots
+noted at the end.
+
+**Fields written only after boot** — absent from the seed literals, so a
+seed-walking check never sees them; each with its writer:
+
+| Where | Field | Writer |
+|---|---|---|
+| wave | `standalone`, `kind` (`sc \| avalon \| bb`), `noconf` | `makeStandalone` (`src/engine/waves.ts:43`), the + Wave picker (`src/ui/board.ts:994`), a placed template (`src/engine/wavetpl.ts:239-240`) |
+| formation | `shift` | `makeStandalone` (`src/engine/waves.ts:51`), a standby template (`src/engine/wavetpl.ts:225`) |
+| formation | `br` (typed SC in-time) | the board's B box (`src/ui/board.ts:195`) through the `ff:…br` text key (`src/engine/slots.ts:252`) |
+| formation | `area`, `atime` (the typed-over area strip) | `src/ui/textedit.ts:184`, `:194` |
+| seat pair | `spare`, `role` | `saCrewRow` (`src/engine/waves.ts:40`), a standby template (`src/engine/wavetpl.ts:190`), the MAIN/SPARE badge flip |
+| duty block | `sa` (which standalone wave the desk serves), `noconf` | `waveDutyBlock` (`src/engine/waves.ts:96`), `blockFromTpl` (`src/engine/dutytpl.ts:184`) |
+| ground row | `rmks`, `src` (the landed input's content key) | `acceptInput` (`src/engine/slots.ts:367`) |
+| day | `gman` (ground list frozen to hand order) | a ground-row drag / Sort (`src/engine/reorder.ts:237`, `:425`) |
 
 ### The publish book — `SCHED`, `src/engine/publish.ts`
 
@@ -158,11 +181,11 @@ Everything about a week's publication state, keyed by day index 0..6.
 |---|---|---|
 | `al` | number | amendment counter |
 | `pending` | `{ key: 1 }` | edits made since the last publish |
-| `changes` | `{ key: … }` | what each pending key changed |
+| `changes` | `{ key: alNumber }` | **issued** keys → the AL number that issued them (`src/engine/publish.ts:359`); a key edited again is deleted from here as it goes pending (`:294`) |
 | `added` | `{ key: 1 }` | structural adds (a new line/wave/row) |
-| `als` | `[{ n, keys[], sign, days[], n0, adds, structAdds }]` | every published amendment (AL), newest last |
+| `als` | `[{ n, keys[], sign, days[], n0, adds, structAdds, snap }]` | every published amendment (AL), newest last; `sign` here is the four **callsigns** frozen at issue, `snap` the covered days as issued |
 | `dayOK` | `{ di: 1 }` | which days are **published — approval is per day, not per week** |
-| `sign` | `{ di: { cur, sked, plan, appr } }` | the four sign-off names per day |
+| `sign` | `{ di: { cur, sked, plan, appr } }` | the four sign-off slots per day; each value is a **PEOPLE id** when signed (the picker's options are ids, `src/ui/html.ts:1538-1539`, written by `src/ui/Shell.tsx:169`) and `''` when unsigned |
 | `orig` | `{ di: snapshot }` | the day as first published |
 | `cur` | `{ di: 'orig' \| n }` | which version each day currently shows |
 | `drafts`, `curDraft` | `{ di: [blob] }`, `{ di }` | per-day alternate drafts and which is live |
@@ -170,25 +193,43 @@ Everything about a week's publication state, keyed by day index 0..6.
 Synthetic keys ride the same book: `del:<day>.<n>.<kind>` (a deletion),
 `mov:…` (a move), `inp:<day>.<token>` (an input filing).
 
-### The week snapshot — `histSnap()` / the week stash
+### The week record — `weekStashSnap()` / the week stash
 
-The **one whole-state record** the app already builds, used for undo and for
-remembering a week while you navigate away. It is the natural unit for a
-first database migration (see the last section).
+Two snapshots share one field list (`schedFields()`, `src/state/history.ts:22`),
+and only one of them is stored.
+
+**The week record** is `weekStashSnap()` (`src/state/store.ts:300-302`) —
+what the stash holds for every visited week and what `raptor:weeks/<week>`
+persists:
 
 ```
-{ d: DAYS, i: INPUTS,
+{ d: DAYS,
   c, p, ad, a, al, ok, sg, o, cv, dr, cd,   // the SCHED fields, short names
   wo: string[],                             // muted warning ids
-  pp: PLANPUCKS, dm: DAYRMK }               // the planning layer
+  un: string[] }                            // content keys (inpKey) of inputs a
+                                            //   scheduler removed on this week
 ```
 
-The week stash (`src/engine/weekstash.ts`) keys these by week-start
-`'dd/mm/yyyy'`, session-only, with a per-week change counter.
+It carries **no inputs and no planning layer** — those are global, and
+their own records (`raptor:inputs/all`, `raptor:plan/all`, written
+separately in `src/state/persist.ts:89-91`).
+
+**The undo snapshot** is `histSnap()` (`src/state/history.ts:43`): the same
+fields plus `i: INPUTS`, `pp: PLANPUCKS`, `dm: DAYRMK`. It is the undo
+stack's unit only and is never stored.
+
+The week stash (`src/engine/weekstash.ts`) keys week records by week-start
+`'dd/mm/yyyy'` with a per-week change counter, and **it persists**: at
+boot every `weeks/*` record is put back into the stash
+(`src/state/persist.ts:80-83`), and every history step writes every stashed
+week plus the loaded one — the loaded one only once it has changed since
+load, so a pristine seed week is never written (`:96-105`). The record id
+is the key with `/` replaced by `-` (`raptor:weeks/13-07-2026`). This is
+what the persistence table at the top calls "per-week stash — Yes".
 
 ### Planning layer — `src/state/plan.ts`
 
-- `PLANPUCKS[]`: `{ id: 'pp'+n, iso: 'yyyy-mm-dd', kind: 'note' | 'pucks', text?, ids?: personId[] }` — a section dropped on a calendar day
+- `PLANPUCKS[]`: `{ id: 'pp'+n, date: 'yyyy-mm-dd', kind?: 'pucks', text?, ids?: personId[] }` — a section dropped on a calendar day; the day column is `date` (`src/state/plan.ts:79`, `:130`), a note carries `text` and no `kind`, a pucks row carries `kind: 'pucks'` and `ids`
 - `DAYRMK`: `{ 'yyyy-mm-dd': title }` — the day's free-text title
 
 ### Attachments — `src/state/docs.ts`
@@ -309,7 +350,7 @@ write only the difference — never a queue):
 
 - approved leave, and the four medical markers (`ATT B`, `ATT C`, `HL`,
   `OML`), cross from the war grid to the schedule as an input tagged
-  `lw: true`;
+  `lw: <war id>` (`src/leavewar/sync.ts:340`);
 - leave / medical filed on the Inputs page crosses to the grid as a cell
   whose `BidRecord.source` is `'raptor'`.
 
@@ -352,11 +393,35 @@ students = { courses: string[],
                  dates:  { student: { eventId: date } } } } } } }
 ```
 
+A mark record is `{ g, f, fd, d, by?, at? }` — grade code, failure count,
+one ISO date per failure (oldest first, null when undated), the done date,
+and since 9 Sep 26 **who** made the last write (Raptor's `HOOKS.whoami()`
+display name, absent when unknown) and **when** (ISO instant). `dates[s]`
+(`lastSyll, lastCurr, downDays, upchit`) carries the same two stamps. Undo
+snapshots restore them verbatim.
+
+### The person link — `v3:links`
+
+`{ [course]: { [studentName]: personId } }` — the one record that ties a
+Tracker student to a Raptor `PEOPLE` id (9 Sep 26). Written when a student
+is added by picking them off the squadron roster (the Students card's
+`+ Add` lists the roster via the no-import bridge `src/tracker/people.js`,
+fed by `TrackerPage.tsx` → `src/tracker/peoplewire.ts`), dropped with the
+student, moved by a course rename, and carried by Export/Import as a third
+block `links`. Additive: a typed-in student has no link and behaves exactly
+as before. Students are STILL keyed by their typed name everywhere else —
+the person id becomes the key at storage-seam stage 2.
+
+Course, syllabus and student names are storage-key segments joined by `:`,
+so a name containing a colon is refused at every entry point and by the
+file check.
+
 ### The syllabus file
 
-`{ format: 'ocu-tracker', version: 1, savedAt, contains: { charts, students }, charts?, students? }`
+`{ format: 'ocu-tracker', version: 1, savedAt, contains: { charts, students, links }, charts?, students?, links? }`
 — a FORMAT, not a store (9 Sep 26): ⤓ Export writes one from the store, ⇪ Import
-reads one back in (charts always; students & marks only after a yes). Nothing
+reads one back in (charts always; students & marks — and the links that ride
+with them — only after a yes). Nothing
 binds a file; the store above is the record. The database migration's recipe
 is exactly this shape: Export (both boxes ticked) → wipe → Import, answer yes.
 
@@ -366,10 +431,17 @@ is exactly this shape: Export (both boxes ticked) → wipe → Import, answer ye
 
 Listed in the order they would bite.
 
-1. **Nothing declares a scheduler schema.** PEOPLE, DAYS, INPUTS and SCHED
-   are typed `any`; the Leave War is fully typed. The scheduler shapes above
-   are read from the code, not enforced by it. Writing them as types is the
-   first step and changes no behaviour.
+1. **The scheduler schema is declared but not yet enforced by the compiler.**
+   Since 9 Sep 26 `src/engine/schema.ts` types every record above and
+   `src/engine/schema.test.ts` walks the shipped seeds, the initial `SCHED`
+   and both week snapshots against those types — an unknown field or a
+   wrong primitive is a red test. The seeds never carry the after-boot
+   fields tabled under the schedule day (a typed `br`, a landed `src`, a
+   template's `sa`), so those are declared from their writers and the same
+   test's "after edits" block exercises the writers to check them. The live
+   exports (PEOPLE, DAYS, INPUTS, SCHED) still read `any` (the verbatim-port
+   rule); flipping them is a later, behaviour-free step. The Leave War is
+   fully typed.
 2. **Three date conventions.** Scheduler: `'Jul 13'` display strings, a
    0..6 day index, minutes-from-midnight; Leave War: ISO `'yyyy-mm-dd'`;
    Tracker: free text. A shared store wants one (ISO).
@@ -395,6 +467,20 @@ Listed in the order they would bite.
 8. **The three worlds do not share a style** (sync vs async doors, three
    prefixes, TS vs JS). Unifying them behind one async door is the
    storage-seam work; the shapes above do not change for it.
+9. **One person, three records.** The scheduler roster is the identity;
+   the Leave War projects it (same ids) and the Tracker now LINKS to it
+   (`v3:links`, 9 Sep 26) — but Tracker students, courses and syllabi are
+   still keyed by typed name, and their storage keys are those names joined
+   with `:`. The designed model (`data-model.md`) makes Enrolment
+   (person × course × syllabus) the row and the name an attribute.
+10. **Progression is a summary, not a history.** A Tracker mark holds the
+    latest grade, a failure count with dates, the done date and (since
+    9 Sep 26) who last wrote it and when. It cannot answer "what happened on
+    each attempt". `data-model.md` records each Attempt and derives today's
+    mark from them.
+11. **Hours are display text** (`'2.0 Hrs'`) in the event details, not a
+    number, so nothing totals them. Left as-is on purpose — the owner is
+    replacing the event details himself; the model types hours as a number.
 
 ## Suggested first cut of tables
 
@@ -405,7 +491,7 @@ normalising on day one:
 |---|---|---|
 | `People` | one person | PEOPLE record (+ Leave War `Person` extras) |
 | `Inputs` | one filed input | INPUTS record |
-| `Weeks` | one week, JSON snapshot column | `histSnap()` — DAYS + SCHED + planning layer, exactly what undo already serialises |
+| `Weeks` | one week, JSON snapshot column | `weekStashSnap()` — DAYS + SCHED + muted warnings + removed-input keys, exactly the record `raptor:weeks/*` already holds (inputs and the planning layer are their own rows, not part of it) |
 | `Amendments` | one published AL | `SCHED.als[n]` (also inside the week snapshot; split out when reporting needs it) |
 | `EditLog` | one edit | `ELogRow` |
 | `Settings` | one `sqn142_*` key | key + JSON value, absent = standard |

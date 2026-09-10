@@ -112,7 +112,21 @@ export default function App({ active = true }) {
      survives. */
   return (
     <div className={'tr-root tab-' + tab}>
-      <Header />
+      {/* The bar hides on demand to hand the chart the whole column (owner
+          phone ask, 9 Sep 26). When it is hidden the Header is not rendered at
+          all — a display:none header would still cost nothing but keep its
+          menus/search mounted, and there is no reason to — and a slim strip
+          stands in as the one way back: it names the crew you are on so hiding
+          the bar never loses track of who you are viewing, and the whole strip
+          is the button that brings the bar back. Works on a desktop too, where
+          the Flow/Info tabs are not drawn and this is the only handle. */}
+      {core.barHidden
+        ? <button className="barpeek" id="barShowBtn" title="Show the bar" onClick={core.toggleBar}>
+            <span className="barpeek-chev" aria-hidden="true">⌄</span>
+            <span className="barpeek-who">{core.active || ''}</span>
+            <span className="barpeek-lbl">Show bar</span>
+          </button>
+        : <Header />}
       <ArrangeTools />
       {/* Zero-height wrapper: the hint FLOATS over the legend/board instead of
           occupying flow space. Its height changes with every tool switch and

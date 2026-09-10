@@ -38,7 +38,7 @@ describe('intimeTime — the spellings', () => {
     expect(intimeTime('0900H: RU IN TIME, BRIEF 1000H')).toBe(9 * 60)
   })
   it('never misreads glued tokens or impossible clocks', () => {
-    expect(intimeTime('FL240 D15R IN TIME')).toBe(null)
+    expect(intimeTime('FL240 WEST IN TIME')).toBe(null)
     expect(intimeTime('2590: IN TIME')).toBe(null)
     expect(intimeTime('12:75 IN TIME')).toBe(null)
     expect(intimeTime('IN TIME + WX/NOTAMS')).toBe(null)

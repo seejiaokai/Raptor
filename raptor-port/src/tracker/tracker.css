@@ -65,6 +65,16 @@ body.tr-on{padding-bottom:0;overflow:hidden}
 & .tr-root>*{min-width:0;max-width:100%}
 .restricted{background:#7a1414;color:#fff;text-align:center;font-weight:700;letter-spacing:3px;font-size:11px;padding:3px}
 header{display:flex;align-items:center;gap:14px;padding:10px 16px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+/* The slim strip that stands in for the hidden bar — the one way back, so it is
+   always full width and reads as a button. It names the crew you are on (the
+   control the bar is changed for most) so hiding the bar never loses track of
+   who is on screen, and the ⌄ says "opens downward". One thin line whatever the
+   width, where the bar was two rows on a phone. */
+.barpeek{display:flex;align-items:center;gap:10px;width:100%;padding:5px 12px;border:0;border-bottom:1px solid var(--line);border-radius:0;background:var(--panel);color:var(--muted);font-size:12px;text-align:left}
+.barpeek:hover{background:var(--panel2);border-color:var(--line)}
+.barpeek-chev{font-size:15px;line-height:1;color:var(--accent)}
+.barpeek-who{color:var(--ink);font-weight:600;letter-spacing:.3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.barpeek-lbl{margin-left:auto;font-size:11px;flex:0 0 auto}
 header h1{font-size:16px;margin:0;letter-spacing:.5px}
 .sub{color:var(--muted);font-size:12px}
 /* The bar now starts with Crew and ends with the save slot, with .hspacer
@@ -159,7 +169,24 @@ button:disabled:hover{border-color:var(--line)}
 .c-fails h3{display:flex;align-items:center;gap:6px}
 .failtot{margin-left:auto;background:#ff2b2b1f;border:1px solid #ff2b2b88;color:#ff9b9b;border-radius:20px;padding:1px 8px;font-size:10.5px;font-weight:600;letter-spacing:0}
 .failchips{max-height:104px;overflow:auto;align-content:flex-start}
-.failchip{border:1px solid #ff2b2b88;color:#ff9b9b;background:transparent;white-space:nowrap}
+.failchip{border:1px solid #ff2b2b88;color:#ff9b9b;background:transparent;white-space:nowrap;cursor:default;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.failchips .failchip:hover{border-color:#ff2b2b}
+/* The card's title opens the full list — dotted underline so it reads as a
+   thing you can press, the same colour as the heading until hovered. */
+.failTitle{cursor:pointer;text-decoration:underline dotted;text-underline-offset:3px}
+.failTitle:hover,.failTitle:focus-visible{color:var(--accent);outline:none}
+/* The full lowdown (a .lullcal, z 70): one row per failure — chip, which
+   failure it is, a date box. minmax(0,1fr), never 1fr (a date box would push
+   the row wider than the panel). */
+.faillog .frow{display:grid;grid-template-columns:auto minmax(0,1fr) 128px;gap:8px;align-items:center;padding:5px 0;border-bottom:1px solid var(--line)}
+.faillog .frow input[type=date]{width:100%;min-width:0}
+.faillog .frow .mini{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.faillog .lullhd .failtot{margin-left:0}
+/* The pop-up's list of this student's failures on the event, each with its day. */
+.pop .fdates{margin-top:5px;display:flex;flex-wrap:wrap;gap:3px 8px;font-size:10.5px;color:#ff9b9b;line-height:1.4}
+.pop .fdates b{font-weight:600}
+/* The student's own record inside the details bubble, under the event's details. */
+#detailBubble .mkrec{margin-top:5px;padding-top:5px;border-top:1px dashed var(--line)}
 /* Status badge: dark ink on the grade's own fill, matching the ring colours on
    the board so one vocabulary covers both surfaces. */
 .sst{display:inline-block;margin-left:6px;padding:1px 7px;border-radius:20px;font-size:10.5px;font-weight:600;vertical-align:1px}
@@ -219,6 +246,8 @@ button:disabled:hover{border-color:var(--line)}
 .ev .chev{color:#454e60;font-size:15px;margin:0 1px;user-select:none}
 .ball{width:60px;height:60px;cursor:pointer;flex:0 0 auto}
 .ball{cursor:pointer}.ball:hover{filter:brightness(1.12)}
+/* the ring is the crew picker: a hovered wedge hints it is its own target */
+#flowSvg:not(.arrange) .ball .wedge:hover{stroke:#36c2ff;stroke-width:1.6}
 svg.perf{shape-rendering:optimizeSpeed;text-rendering:optimizeSpeed}
 svg.perf #viewport{will-change:transform}
 svg.perf .avail{filter:none;stroke-width:3.4}
@@ -320,6 +349,21 @@ svg.perf .edgehit{pointer-events:none}
 .cal .lull{background:#3a3030;color:#ffb3a0}.cal .end{background:#16384a}.cal .ls{background:#2a3550}.cal .lc{background:#203a2a}
 .chips{display:flex;flex-wrap:wrap;gap:5px}.chip{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:3px 9px;font-size:12px;display:flex;align-items:center;gap:6px}
 .chip b{font-weight:600}.chip .x{cursor:pointer;color:var(--muted)}.chip .x:hover{color:var(--red)}
+/* A student linked to the squadron roster (9 Sep 26): a small accent dot
+   before the number; the chip's title says who they are on the roster. */
+.chip.linked::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--accent);flex:0 0 auto}
+/* The + Add dialog's roster picker: search box, then a scrolling list of
+   plain rows (the base button recipe is reset — these are list entries, not
+   buttons), then the free-text box the dialog always had. */
+#dlgFilter{width:100%;margin-bottom:8px}
+.dlg-listtitle{margin-bottom:6px}
+#dlgList{max-height:30vh;overflow:auto;border:1px solid var(--line);border-radius:8px;margin-bottom:12px}
+#dlgList .dlg-item{display:flex;align-items:baseline;justify-content:space-between;gap:10px;width:100%;text-align:left;background:none;border:0;border-bottom:1px solid var(--line);border-radius:0;padding:7px 10px;font-size:12.5px;color:var(--ink)}
+#dlgList .dlg-item:last-child{border-bottom:0}
+#dlgList .dlg-item:hover,#dlgList .dlg-item:focus-visible{background:var(--panel);border-color:var(--line);outline:0}
+#dlgList .dlg-lbl{font-weight:600}
+#dlgList .dlg-sub{color:var(--muted);font-size:11px;white-space:nowrap}
+#dlgList .dlg-none{padding:8px 10px}
 .seg-key{display:flex;gap:5px;flex-wrap:wrap;font-size:11px}
 .mini{font-size:11px;color:var(--muted)}
 .field{display:flex;gap:7px;align-items:center;margin:5px 0}.field label{min-width:120px;color:var(--muted);font-size:12px}

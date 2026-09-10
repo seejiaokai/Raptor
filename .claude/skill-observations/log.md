@@ -2091,3 +2091,154 @@ gate's. Keep verdict-bearing commands unpiped.
 **Suggested improvement:** When a bug check touches a module-level state variable, grep every ASSIGNMENT of it and tabulate which refresh calls follow each one. A row that is missing a call its siblings all make is a finding, even with no symptom yet.
 
 **Principle:** For state that several code paths set, the refresh calls after each assignment should form an identical set; audit assignments as a table, not one path at a time.
+
+### Observation 138: A "don't snap" complaint was read as "don't move" — ask what the user EXPECTED before removing a rule
+
+**Status:** OPEN
+**Date:** 2026-09-09
+**Session context:** Tracker crew-switch view behaviour. A fix (redraw on crew switch) had a side effect: the board's scroll reset to the top. The owner's phone screenshot said "the view should remain the same and not snap to something else". The session removed the app's long-standing rule (land on the picked student's last mark) and made the view stay put. Within the hour, after asking what the old rule was, the owner asked for the old rule back: land on the latest work. The snap he saw was the top-of-chart reset, not the landing.
+**Skill:** CLAUDE.md §How to work here (95% confidence rule) / task-observer
+**Type:** open-source
+**Phase/Area:** bug triage from a user report
+
+**Issue:** A symptom report ("it snaps") was mapped straight to a behaviour removal without checking which of TWO movements the user was objecting to. The regression introduced by the previous fix (scroll reset) and the deliberate behaviour (land on the last mark) were both "movement"; only the first was the bug. Removing the second cost a second round-trip, a second PR revision and a reversal in the docs.
+
+**Suggested improvement:** When a user reports unwanted movement/change on screen right after a fix that redraws, FIRST check whether the fix itself introduced a new movement, and ask one question: "should it stay exactly where it was, or go to X like before?" — before removing an existing rule. Add to the bug-triage checklist: "did my last change cause this symptom on top of the existing behaviour?"
+
+**Principle:** A symptom rarely names its cause. When two behaviours could produce the same complaint and one of them is a rule the app had on purpose, confirm which one the user means before deleting the deliberate one — a one-line question is cheaper than a reversal.
+
+### Observation 139: A new e2e check that mutates shared fixture state must run after the checks that read the pre-mutation state
+
+**Status:** OPEN
+**Date:** 2026-09-09
+**Session context:** Fixing a Tracker flow-chart bug (marking a ball reset the board scroll to the top). Added a new browser smoke check that grades a ball and asserts the view holds.
+**Skill:** task-observer (general testing principle; no dedicated skill)
+**Type:** open-source
+**Phase/Area:** Adding a check to a long single-session end-to-end suite that shares one running app across hundreds of checks.
+
+**Issue:** I inserted the new "grading keeps the view" check BEFORE an existing wedge-picker block. Grading gave the active student a new "latest work", so when the later block re-selected that student it no longer landed on the ball whose on-screen coordinates the block had precomputed — four previously-green checks failed at screen coordinates that now pointed at the wrong ball. The fix was purely positional: move the new check to run AFTER every check that depended on the pre-grade state.
+
+**Suggested improvement:** When adding a check to a shared-fixture e2e suite, ask what persistent state it mutates and which later checks read that same state; place a state-mutating check last within its block, or give it its own throwaway fixture (a fresh student/course), rather than assuming insertion point is free.
+
+**Principle:** In a suite where one long-lived instance is threaded through many checks, ordering is part of correctness: a check that mutates shared state is only safe after everything that relies on the unmutated state, or when it isolates its own fixture.
+
+### Observation 140: pkill -f with a pattern that names the running script kills the caller's own shell
+
+**Status:** OPEN
+**Date:** 2026-09-09
+**Session context:** Restarting a Playwright smoke run after a selector edit; needed the old run (and its vite preview server on a strict port) gone first.
+**Skill:** New skill candidate: background-task hygiene (or a note in any skill that restarts long-running gates)
+**Type:** open-source
+**Phase/Area:** Stopping/restarting background gates
+
+**Issue:** `pkill -f "smoke.mjs"` was issued from the same Bash command that then ran the smoke. The caller's own shell command line contained "smoke.mjs", so pkill matched and killed the shell (exit 144), the restart never happened, and a stale preview server was left holding the strict port — which would have failed the next start too.
+
+**Suggested improvement:** Stop a background task with the harness tool (TaskStop) or by PID, never with `pkill -f <substring>` from a command whose own text contains that substring. After stopping, check for orphaned children (a dev/preview server on a fixed port) by PID before restarting.
+
+**Principle:** A process-matching kill from inside a shell matches the shell too; kill by identity (task id or PID), and after any forced stop look for the orphans the stopped task left behind before relaunching.
+
+### Observation 141: Masking demo data is a repo-wide sweep of the TRAIL, not just the values
+
+**Status:** OPEN
+**Date:** 2026-09-09
+**Session context:** Owner asked to mask demo data in a public repo (invented airspace/orders wording, drop the citation of the document the course maps were transcribed from, drop comments saying seed callsigns came from the real crew's workbook).
+**Skill:** task-observer (general practice; candidate note for any "public repo hygiene" skill)
+**Type:** open-source
+**Phase/Area:** Scoping and verifying a data-masking change
+
+**Issue:** The values to mask sat in two seed files, but the trail sat in ~25 other places: code comments quoting the old codes, unit tests asserting them, docs using them as parser examples, a generator script whose section headers were the source document's page numbers, and provenance fields in a JSON file that no code read. A byte-parity gate against a read-only reference copy also deep-compared the seed, so the change needed a position-mirror step (an existing idiom) rather than an edit to the reference. The first count-asserted swap failed because a longer token contained a shorter one; counting standalone occurrences after the longer swap fixed it.
+
+**Suggested improvement:** For a masking ask: (1) grep the whole repo (comments, tests, docs, scripts, JSON metadata) for every old token AND for provenance words (source, read_from, screenshot, page numbers, file formats); (2) swap with per-file asserted counts, longest token first; (3) add a tripwire test that fails on the old patterns; (4) if a read-only oracle carries the originals, mirror by position instead of editing it; (5) report what still remains (git history, the read-only oracle) so the owner can decide.
+
+**Principle:** Sensitive-content removal is about every place that points back to the source, not the data field itself; assert counts on each swap and leave a test that keeps the old wording out.
+
+### Observation 142: The pkill -f self-kill trap fired AGAIN one turn after being re-read — a documented rule is not a guard
+
+**Status:** OPEN
+**Date:** 2026-09-09
+**Session context:** RAPTOR masking pass; stopping a vite preview after a Playwright drive
+**Skill:** task-observer (meta) / RAPTOR build-and-verify loop
+**Type:** open-source
+**Phase/Area:** shell hygiene in one-shot compound commands
+
+**Issue:** Observation 140 (same session) recorded that `pkill -f <substring>` kills the caller when the caller's own command line contains the substring. One turn later the same agent wrote `pgrep -f "vite preview --port 4173" && pkill -9 -f "vite preview --port 4173"` inside a compound command — the substring was in its own command line, the shell killed itself, the tool reported exit 1, and the preview server it meant to stop was orphaned. Knowing the rule (it was in the compaction summary) did not prevent the slip because the failure is structural: any `-f` pattern typed into the command that runs it matches itself.
+
+**Suggested improvement:** Replace the rule with a mechanism. Never start a server inline; start it with its PID captured (`cmd & echo $! > file`) and stop it with `kill $(cat file)` — and if a pattern kill is unavoidable, exclude the caller with `pgrep -f PATTERN | grep -v $$` or use `pkill -f -x`/a PID list filtered by command name. Add this as a one-line checklist item to the build-and-verify section that the screenshot recipe lives in.
+
+**Principle:** A rule an agent has already violated twice in one session is not a rule problem but a design problem: convert it into a habit that cannot self-match (PID files, exclusion of $$), because the trigger — typing the pattern into the command that runs it — is invisible at the moment of writing.
+
+### Observation 143: A red-first proof must revert the FIX HUNK, not the file — a whole-file stash proved the test red for the wrong reason
+
+**Status:** OPEN
+**Date:** 2026-09-09
+**Session context:** RAPTOR schema hardening; pinning a reviewer's finding (a corrupt links record) with a test that must fail before the fix
+**Skill:** RAPTOR build-and-verify loop / test-driven bug-fix habit
+**Type:** open-source
+**Phase/Area:** proving a regression test is red before its fix
+
+**Issue:** To show the new test failing on the old code, the agent ran `git stash push -- core.js`. The stash removed EVERY uncommitted change in that file — a sub-agent's whole feature, including the test seam the new test called — so the test went red with "is not a function", not with the defect. The proof was worthless and looked like a pass of the red step. The correct move was to swap only the fixed function body back to its old text (a scripted replace from a saved copy), run, then restore.
+
+**Suggested improvement:** In the red-first checklist: "revert only the hunk that IS the fix (a scripted replace of the function body, or `git stash -p`-equivalent), never the file, when the file also carries unrelated uncommitted work — and read the failure message: it must be the DEFECT's message, not a missing-symbol error."
+
+**Principle:** A red test only proves something when it fails for the reason the fix addresses; verify the failure message, not just the colour, and scope the temporary revert to the fix itself when the file carries other in-flight work.
+
+### Observation 144: An optional list in a dialog must distinguish "no list" from "an empty list"
+
+**Status:** OPEN
+**Date:** 2026-09-09
+**Session context:** RAPTOR Tracker — the owner noted "just for context" that the Tracker will be exported standalone (text-only student add). Checking the code found that the new roster picker passed `list || []` to the modal, and an empty array is still truthy, so a Tracker with nobody feeding the people bridge drew an empty roster section, a search box and a "nobody matches" line above the text box.
+**Skill:** task-observer (general engineering practice; candidate line for any "build a feature behind a bridge/seam" checklist)
+**Type:** open-source
+**Phase/Area:** feature build — optional data sources / degraded modes
+
+**Issue:** A feature fed through a seam (a bridge, an optional data source) was built and tested only with the source present. The "nothing feeds it" case was never exercised, and the default value chosen for absence (an empty array) was indistinguishable from a real, empty list to the renderer. The gap surfaced only because the owner mentioned a future deployment where the source is absent, and the code was checked against that rather than asserted from memory.
+
+**Suggested improvement:** When a feature reads from an optional seam, add to the build checklist: (1) write the "source absent" test first — it should reproduce the OLD behaviour byte for byte; (2) never default absence to an empty collection if the renderer treats "empty" and "absent" differently — branch at the call site on presence; (3) when the owner mentions a context "just for context", verify the code against it before agreeing.
+
+**Principle:** A feature behind an optional seam has two shapes — fed and unfed — and the unfed one must be pinned as the old behaviour, not assumed. An empty collection is not the same as "no collection"; pick the absence value the renderer actually branches on.
+
+### Observation 145: A race test must stage the losing ORDER, not add delays and hope
+
+**Status:** OPEN
+**Date:** 2026-09-09
+**Session context:** RAPTOR Tracker — CI failed "two adds, one student" on a slow runner; local runs passed. Root cause: an async load fetches the roster, a write lands, the load applies its stale copy. Two red-first attempts PASSED on the unfixed code: (1) a zero-delay tick — the unit store answers in microtasks, so the whole load finished before the tick; (2) a 1 ms delay on every read — but the wrapper fetched the value AFTER the delay, so it always saw the write. Only the third version went red: the store wrapper let the load fetch the roster, then finished the write from inside the wrapper, then returned the stale value.
+
+**Skill:** task-observer (general engineering practice; complements #143 on scoping a red-first revert)
+**Type:** open-source
+**Phase/Area:** test writing — races / lost updates
+
+**Issue:** "Add a delay and run the two things concurrently" does not reproduce a lost-update race deterministically; the losing interleaving is specific (fetch → foreign write → stale apply) and a delay in the wrong place (before the fetch instead of after it) produces a different, harmless order. Each green-on-broken-code attempt cost a run and could have been mistaken for "the race isn't real".
+
+**Suggested improvement:** For any race: (1) write down the exact losing order as three steps; (2) build the test to FORCE that order — hook the boundary (the storage read, the network call) and perform the foreign write from inside the hook, after the value is fetched and before it is returned; (3) assert the guard that proves the hook fired (a `staged` flag), so a green test cannot be a test that never reached the race; (4) confirm red with the DEFECT's message before fixing.
+
+**Principle:** A concurrency test is a scheduler, not a stopwatch: it must dictate the interleaving, prove the interleaving happened, and fail with the defect's own message before the fix.
+
+### Observation 146: The pkill/pgrep self-kill trap recurred despite two logged observations — needs a structural rule, not a reminder
+
+**Status:** OPEN
+**Date:** 2026-09-09
+**Session context:** RAPTOR review pass. Observations #140 and #142 already record the trap (a `pgrep -f`/`pkill -f <substring>` whose substring appears in the caller's own command line kills the caller's shell). This session did it a THIRD time: `pgrep -f "vite preview --port 4179" | xargs -r kill` inside a compound command that then ran the build — the shell died with exit 144 and the build never ran.
+**Skill:** task-observer (and CLAUDE.md §Build & verify — the process-hygiene line)
+**Type:** open-source
+**Phase/Area:** shell hygiene / verification commands
+
+**Issue:** A remembered rule ("kill by PID") does not survive cognitive load; the pattern is written reflexively because it reads as the obvious one-liner. Two prior observations did not prevent the third occurrence — evidence that a reminder is the wrong enforcement.
+
+**Suggested improvement:** Make it structural: (1) never put a process-name pattern and a kill in the SAME command line — capture PIDs in one call (`pgrep -f <pattern>`; read the output), then kill by number in a SEPARATE call; (2) exclude shells by construction when a pattern must be used: `pgrep -f "<pattern>" | xargs -r ps -o pid=,comm= -p | awk '$2!="bash"{print $1}'`; (3) prefer the server's own PID file or `lsof -ti :<port>` (port-based, matches no command line) for a stray dev server: `lsof -ti :4179 | xargs -r kill`; (4) add the port-based form to the repo's CLAUDE.md so the next session copies that instead of inventing a pattern.
+
+**Principle:** A rule that has been broken three times under load is not a rule, it is a wish — replace it with a form that cannot express the mistake (port-based or PID-only kills; pattern matching and killing never in one command).
+
+### Observation 147: A background agent launched seconds before plan mode must be stopped, not left to edit
+
+**Status:** OPEN
+**Date:** 2026-09-10
+**Session context:** RAPTOR review pass. A document-rewrite agent was launched; the user switched to plan mode moments later. Plan mode forbids edits, but a delegate already running would have edited two files. It was stopped (TaskStop) before it wrote anything, and re-launched after approval. (Checkpoint entry: three tasks completed since the last log write.)
+**Skill:** task-observer / subagent-driven-development
+**Type:** open-source
+**Phase/Area:** delegation under a mode change
+
+**Issue:** A mode change (plan mode, a "stop" from the user) applies to the orchestrator's delegates too, but nothing stops them automatically; an agent mid-flight keeps editing unless the orchestrator explicitly stops it and checks the tree.
+
+**Suggested improvement:** On any mode change that forbids edits: (1) list live background agents; (2) stop every one that can write; (3) run `git status` and revert partial edits before planning; (4) record in the plan that the agent must be re-launched after approval, with the same brief.
+
+**Principle:** A delegate inherits the operator's constraints only if the operator propagates them — a mode change is an event to broadcast to every running agent, and the working tree is checked afterwards, not assumed.

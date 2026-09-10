@@ -1,5 +1,5 @@
 // The demo re-key: the demo world the standalone Leave War app shipped,
-// worn by the owner's real crew.
+// dressed onto Raptor's own roster.
 //
 // The seed (engine/seed.ts) is written against sixteen invented callsigns,
 // and the 609 vendored unit tests read it PRISTINE — so nothing here touches
@@ -119,10 +119,10 @@ export const DEMO_OIL: { grid: Grid; states: States; ledger: Ledger } = {
     slammed: { '2026-01-10': earned('FLT'), '2026-01-14': APPROVED },
   },
   ledger: [
-    grant('dol-1', 'ramp', 2, '2026-03-14', 'Ex Forging Sabre recovery', 'SQNCDR', 'OC Ops'),
+    grant('dol-1', 'ramp', 2, '2026-03-14', 'Exercise recovery', 'SQNCDR', 'OC Ops'),
     grant('dol-2', 'asics', 1, '2026-06-06', 'Night flying week', 'SQNCDR', 'SQNCDR'),
     grant('dol-3', 'miles', -1, '2026-05-20', 'Correction: double credit', 'SQNCDR'),
-    grant('dol-4', 'reset', 2, '2027-01-09', 'Ex Cope Tiger', 'SQNCDR', 'OC Ops'),
+    grant('dol-4', 'reset', 2, '2027-01-09', 'Overseas exercise', 'SQNCDR', 'OC Ops'),
   ],
 }
 

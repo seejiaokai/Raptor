@@ -32,6 +32,9 @@ as of 4 Sep 26) — search it for "why did we do X", don't re-read it.
 | every typed remark that switches a rule on (the user-guide seed) | `raptor-port/docs/remarks-vocabulary.md` |
 | the history — how each past thing was found, fixed and shipped | `HANDOFF-ARCHIVE.md`, then `git log` |
 | the Tracker tab's known gaps and carried-over traps | `raptor-port/docs/tracker/known-gaps.md` |
+| what is stored today (as-is) / the designed model for the database step (to-be) | `raptor-port/docs/data-schema.md` / `raptor-port/docs/data-model.md` |
+| the architecture direction — modular apps on ONE backend and ONE database, the order of work for the server step (read before any backend/API work) | `raptor-port/docs/architecture-direction.md` |
+| the Dataverse handover — what the table designer (Manfred) reads, what we need from him, what is not negotiable, what we do on our side | `raptor-port/docs/handover-dataverse.md` |
 | skill-improvement observations captured during sessions | `.claude/skill-observations/log.md` |
 
 
@@ -234,6 +237,20 @@ smoke suite. **Then a bug from his screenshot:** the Crew picker never
 redrew the chart, so the yellow "can be planned next" rings stayed the LAST
 student's (ST-01 done for A → B still showed ACG-01 lit). `setActive` now
 redraws (and closes an open grading pop-up); pinned in `tracker.test.tsx`.
+That redraw reset the board's scroll to the top, which his phone read as a
+snap; he first asked for "the view stays put", then, once the old rule was
+explained, for it back: **a crew pick lands on that student's latest work;
+a student with no mark yet lands on the chart's first event — and every
+landing is CENTRED** (scroll captured across the redraw, then `showLastEdit`
+— or `firstEventId` — after the frame; `padBoard` gives the chart half a view
+of slack each side so the first and last events can sit in the middle too). Pinned in the smoke
+suite; `docs/tracker/known-gaps.md`. **Then his idea, the same evening: the
+ring on every ball is a SECOND crew picker** — tap another student's wedge
+to pick them (every ball edges that wedge in cyan — "cyan edge only", his
+pick from a comp, so a mark's colour is never hidden; the view stays put),
+tap the selected student's wedge or the centre for the details. Contract in
+`docs/ui-contracts.md` §The Tracker tab; pinned in `tracker.test.tsx` + the
+smoke suite.
 
 Everything before the audit fixes is merged — three PRs landed 7 Sep 26:
 **PR #371** (the Leave War figures drawer, bulk balance
@@ -275,6 +292,31 @@ browser-proven.
 
 ## Open / deferred / queued
 
+- **STAGE 2 OF THE DATABASE PATH — stable ids (9 Sep 26).** The designed model
+  (`raptor-port/docs/data-model.md`) keys a Tracker student by Enrolment
+  (person × course × syllabus) and a schedule row by its own id; today students
+  are keyed by typed name (the `v3:links` record is the bridge, additive) and
+  schedule rows by position. Re-keying both is the storage seam's stage 2 and
+  is deliberately NOT started here — it touches marks, undo, the smoke suite
+  and `keys.ts` at once. The technical team's open questions are listed at the
+  end of `data-model.md`.
+- **FOUND, NOT FIXED — the area/area-time strip and the restore keys (review,
+  9 Sep 26).** `src/ui/textedit.ts:184,194` write a typed-over area strip on
+  the FORMATION (`f.area`, `f.atime`; read back by `ui/html.ts:751-755`), but
+  `src/engine/restore.ts:72-73` builds the `ar:`/`at:` restore marks from the
+  per-AIRCRAFT `a.area`/`a.atime`, which nothing writes. Two reviewers
+  disagreed whether the aircraft read is dead code or a real gap (a typed
+  strip not captured for rollback / the AL). Engine behaviour, parity-
+  sensitive: settle it with its own test in a separate change — not folded
+  into the schema PR. (The types now declare `Formation.area/atime`.)
+- **THE TRACKER GOES BACK OUT AS A STANDALONE APP (owner, 9 Sep 26).** He will
+  keep adding Tracker features here, then export the Tracker to its own repo
+  (`seejiaokai/Tracker`), where students are created by typing a name and there
+  is no roster picker. Rule for every Tracker feature from now on: anything
+  that needs Raptor's people rides the `people.js` bridge and degrades to the
+  old behaviour when nothing feeds it (`+ Add` with no roster IS the old
+  prompt — `core.js addStudent`, pinned in `tracker.test.tsx`). Never let a
+  Raptor-only path become the only path.
 - **OWNER'S DEVICE PASS — the just-shipped Leave War + Tracker work awaits his
   own eyeball (7 Sep 26).** Everything is merged and live, but verified here
   only in Chromium; the owner still confirms feel and appearance on his iPhone
@@ -301,6 +343,14 @@ browser-proven.
   enabled in the environment; Dataverse available. NOTHING of this is built —
   keep every write through the store doorway (`HOOKS.storeBackend`, Leave War's
   `state/storage.ts`) so the backend swap stays bounded.
+  **Decided 10 Sep 26: the technical expert (Manfred) designs the Dataverse
+  tables himself.** `raptor-port/docs/data-model.md` is our PROPOSAL and
+  `data-schema.md` the INVENTORY he works from; the handover note is
+  `raptor-port/docs/handover-dataverse.md`. When he shares his schema, we
+  write ONE adapter behind the storage doorway to HIS tables (passing
+  `src/storage/` `contractTests`), then the one-time import, then sign-in. Do
+  NOT pre-build an adapter, tables or tenant pieces before that. Stage 2
+  (stable ids) is ours, independent, and goes first.
 - **QUEUED, deferred by the owner — multiple documents per medical input
   (28 Aug 26).** `state/docs.ts` holds exactly one document per input (`docId`
   a single string) and the upload field replaces rather than adds. The fuller
@@ -662,6 +712,7 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 |---|---|
 | `TrackerPage.tsx` | The ONE page seam: renders the standalone app's `<App/>` inside `#page-tracker`, measures `--tr-top` (the section's top edge — the column is the viewport minus that), locks the document (`body.tr-on`) while the tab is up, kicks a `resize` on show. Kept mounted once visited (Shell.tsx `trEverRef`) because the board is drawn imperatively once. |
 | `role.js` | The FILE-LOCK flag and its listeners — a NO-IMPORT module so Raptor's `resetSession`/`toggleRole` can write it without loading the chart engine (the seam `tracker.test.tsx` guards). Locked = a member/logout: Import and Export refuse; everything else is everyone's. |
+| `people.js` · `peoplewire.ts` · `people.test.ts` | The PEOPLE BRIDGE (9 Sep 26): `people.js` is a second no-import module (the roster list + `whoami`, signature-guarded setter, subscribe); `peoplewire.ts` is the Raptor side — projects `PEOPLE` (no archived/sentinel/ground) OCU-first into the bridge on every store notify and hands it `HOOKS.whoami()`; wired once by `TrackerPage.tsx`, imported by nothing under `app/` or `components/`. This is how `+ Add` in the Students card offers the squadron roster, and how marks get their `by`/`at` stamp. The link itself is `v3:links` (`{course: {studentName: personId}}`); students stay name-keyed until stage 2. |
 | `storage.js` | The storage doorway: async get/set/delete/list over localStorage (`ocu:` keys), `flushNow`/`loadLatest` no-ops. Replaced `sync/cloud.js` + `sync/local.js`. The database plugs in here. |
 | `App.jsx` | The standalone app's root, adapted: `.tr-root` column (was `<body>`/`#root`), phone tab classes on the page section (was `body.tab-*`), the resizer's `--sideW` on the section, document listeners gated on `active`. |
 | `app/core.js` | The whole model + the imperatively rendered SVG flow board (3.1k lines, verbatim port). Adapted: imports `../storage.js` + `../role.js`, `fileLocked` mirrored from role.js, and `if (fileLocked) return` at the head of the file entry points only (`importClick`, `openCopy`/`saveCopyClick`). The cloud button state and sinks are gone. **The file is a format, not a store (9 Sep 26):** the bound file handle, `fileDirty`, `saveToFileClick` and the menu's Charts/Students boxes are deleted; ✓ Save changes = `persistSyl()` only; `importClick` is ONE import for both jobs — charts chart by chart, then one "bring students & marks in too?" question when the file holds them (owner: "just have 1 button"). |
@@ -669,8 +720,8 @@ which looks like an outage and is not): `CLAUDE.md` §Build & verify.
 | `components/` | Header (the File menu hidden while the file is locked; everything else drawn for every login), ArrangeTools (`#trUndoBtn`/`#trRedoBtn` renamed from Raptor's ids), SidePanel, ShowAllPanel, Pop, Legend, Modals, ZoomControls — otherwise unchanged. |
 | `data/` | `syllabi.js` (one single-line JSON blob per syllabus — edit by replacing the LINE), `layouts.js`, `eventInfo.js`, `seedState.js` — verbatim, no student names (public repo). |
 | `tracker.css` | The standalone stylesheet wrapped under `#page-tracker` (native nesting, the Leave War recipe) with FIVE Raptor collision resets first (`.day`, `.day.today`, `.legend`, `.modal`, `.sub`); `#detailBubble` and `body.tr-on` sit outside the wrapper on purpose. |
-| `tracker.test.tsx` | The seam pins: the file lock rides the session both ways, only the file entry points refuse (count pinned), the header hides only the File menu, role.js imports nothing, the renamed ids. |
-| `../../scripts/tracker/smoke.mjs` | The vendored 345-check browser suite; `openTracker()` (login + tab) replaced every `goto`/`reload`. `npm run smoke:tracker`; CI job `tracker (smoke)`. |
+| `tracker.test.tsx` · `app/fileFormat.test.ts` | The seam pins: the file lock rides the session both ways, only the file entry points refuse (count pinned), the header hides only the File menu, role.js and people.js import nothing, the renamed ids; the people projection, the picker link/unlinked paths, the colon guard, the `by`/`at` stamps and undo, links on Export/Import. `fileFormat.test.ts` pins the file check's colon refusals and the `links` block. |
+| `../../scripts/tracker/smoke.mjs` | The vendored ~400-check browser suite; `openTracker()` (login + tab) replaced every `goto`/`reload`. `npm run smoke:tracker`; CI job `tracker (smoke)`. |
 | `../../scripts/tracker/bake-user-charts.mjs` + `course-map-*.json` + `gen-agaa-layout.mjs` | The owner's chart-file loop (bake his file's `charts` half into `data/`), the two transcribed course maps the smoke pins the charts against, and the historical A/G–A/A layout generator (do NOT re-run — his hand edits sit on top). |
 | `../../sample-data/OCU_state_sample.json` | Legacy state export, a smoke fixture only. |
 | `../../docs/tracker/` | `known-gaps.md` (carried gaps + traps, with the merge preamble) and `specs/` (the three design docs the standalone app was built from). |

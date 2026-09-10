@@ -22,6 +22,7 @@
    rule LeaveWarPage follows for its own re-measure. */
 import { memo, useEffect } from 'react'
 import App, { PAGE_ID } from './App.jsx'
+import { wireTrackerPeople } from './peoplewire'
 import './tracker.css'
 
 /* The render firewall (LeaveWarPage.tsx has the measured why): every Raptor
@@ -34,6 +35,14 @@ const TrBody = memo(function TrBody({ active }: { active: boolean }) {
 })
 
 export function TrackerPage({ active = true }: { active?: boolean }) {
+  /* The people bridge (9 Sep 26): this page is the one seam Raptor's store
+     and the Tracker share, so the squadron roster is projected into the
+     Tracker's no-import bridge from here — once, on the first mount (the
+     wire is idempotent; a logout → login remount is a second call, not a
+     second subscriber). Before the effect the chart engine may already be
+     booting; the + Add dialog reads the bridge when it opens, so the order
+     does not matter. */
+  useEffect(() => { wireTrackerPeople() }, [])
   useEffect(() => {
     if (!active) return
     const el = document.getElementById(PAGE_ID)

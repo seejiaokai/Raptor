@@ -400,6 +400,13 @@ probes), `npm run perf` (the DOM ceilings and two behavioural checks, with
 the reference-vs-port timings printed alongside) — all against that same
 preview.
 A fresh container needs `npm ci` first — `node_modules/` is not in the image.
+**Stopping a stray preview server: kill by PORT, never by a command-line
+pattern** — `lsof -ti :4173 | xargs -r kill` (or `:4179` for the smoke suite's).
+`pkill -f "vite preview"` / `pgrep -f … | xargs kill` inside a compound command
+matches the CALLER's own shell (its command line carries the pattern) and kills
+it — exit 144, the rest of the line never runs. It happened three times in one
+day (9 Sep 26) despite two logged warnings; the port form cannot express the
+mistake.
 Any NEW Playwright script must pass `executablePath:'/opt/pw-browsers/chromium'`
 (a stable symlink): the pinned Playwright looks for a browser build the image
 doesn't ship, so a bare `chromium.launch()` dies with "Executable doesn't
@@ -624,12 +631,29 @@ backup before the database move, or a handover). The old model — 📁 Open bin
 wrote back to — is gone; don't re-add a bound file. **Nothing of it boots in
 `main.tsx`** — the screen is a lazy chunk and `core.init()` runs on the tab's
 first mount, which is also why the section is KEPT MOUNTED afterwards (the flow
-board is drawn imperatively once). **Two seams cross the boundary, and only
-two:** `resetSession`/`toggleRole` write the role through `tracker/role.js` (a
+board is drawn imperatively once). **Three seams cross the boundary, and only
+three:** `resetSession`/`toggleRole` write the role through `tracker/role.js` (a
 no-import module — importing `core.js` there would put ~280 KB of syllabus data
-into every Raptor visit; `tracker.test.tsx` guards it), and `TrackerPage.tsx` is
-the page. **No data crosses yet** (owner, 7 Sep 26 — students are the Tracker's
-own list; linking them to Raptor's OCU people is a later step). **Everyone
+into every Raptor visit; `tracker.test.tsx` guards it); `TrackerPage.tsx` is
+the page; and **the people bridge `tracker/people.js`** (9 Sep 26, same
+no-import shape as `role.js`): `TrackerPage.tsx` wires `tracker/peoplewire.ts`
+once, which projects Raptor's `PEOPLE` into the bridge on every notify
+(signature-guarded, like Leave War's `reprojectRoster`) and hands it
+`HOOKS.whoami()`. That is how a person from the squadron roster is picked into
+a course (the Students card's `+ Add` lists the roster above the free-text box)
+and how every mark and date write is stamped `by`/`at`. **Students are still
+keyed by their typed NAME** — the link is a separate record
+(`raptor:tracker/v3:links`, `{course: {studentName: personId}}`), additive, so
+an unlinked student behaves exactly as before; re-keying students by person id
+is the storage seam's stage-2 (stable ids) work. Course, syllabus and student
+names refuse a colon (they are storage-key segments). **The Tracker will be
+exported back out as a standalone app** (owner, 9 Sep 26), where students are
+typed and nothing feeds the bridge — so every Raptor-fed feature degrades to the
+old behaviour when the bridge is empty (`+ Add` with no roster IS the old
+prompt, pinned), and Raptor-specific code stays in `people.js` /
+`peoplewire.ts` / `TrackerPage.tsx` plus the one `people.length` branch. Design:
+`docs/superpowers/specs/2026-09-09-schema-hardening-design.md`; the target
+model for the database step: `docs/data-model.md`. **Everyone
 edits — marking, charts, students, courses, syllabi — and only the FILE portion
 (Import / Export) is the admin's** (owner, 7 Sep 26, second word),
 enforced at the file entry points in `core.js` AND at the File menu in
@@ -1226,6 +1250,9 @@ ledger). Read it before any layout/render/drag-touching change.
 |---|---|
 | Validation, VCONF, publishing/AL, auth, history | `docs/engine-rules.md` |
 | **What is stored, every record's fields, the three storage seams** (read before the shared-database step) | `docs/data-schema.md` |
+| **The designed data model for the database step** (entities, ids, Person ↔ Enrolment ↔ Attempt, migration recipe — the technical team's document) | `docs/data-model.md`; the scheduler's declared record types `src/engine/schema.ts` (pinned to the seeds by `schema.test.ts`) |
+| **The Dataverse handover** — the technical expert designs the tables himself (owner, 10 Sep 26); this is what he reads, what we need from him, the non-negotiables, and what we do on our side (stable ids first, then ONE adapter to HIS tables — never pre-built) | `docs/handover-dataverse.md` |
+| **The architecture direction** — modular apps on a common data source: what the recommendation means here (a modular monolith front end, ONE backend, ONE database, an API contract per module, feature flags), the target shape, the order of work, the practices to hold to (read before any backend / server / API work, and before proposing to split a module out) | `docs/architecture-direction.md` |
 | **Storage: the whiteboard, postman, backends, boot gate** | `src/storage/` — the ONE route to a backend (whiteboard → postman → Memory/Browser backend); `src/state/persist.ts` hydrates/persists live scheduler state. **The rule (8 Sep 26 bug pass):** every mutation of DAYS/SCHED/INPUTS/PEOPLE/PLAN must end in `HOOKS.histPush` (never the raw `histPush`), undo/redo, `loadWeek`, or an explicit `persistPeople()` — anything else is silently unsaved after a reload. Leave War: whatever it owns about a person beyond the projection goes in a persisted record laid back on by `setPeople`. **Medical documents (photos/PDFs) are too big for that text seam, so they get their OWN per-browser drawer** — IndexedDB `raptor-docs` (`src/storage/docstore.ts`), wired by `docBoot` from `main.tsx` on the browser backend only; `state/docs`' in-memory map is the sync read path, `docAdd` writes through, `docBoot` hydrates it at boot (8 Sep 26). |
 | Rendering, drag & drop, text editing, AL marks | `docs/ui-contracts.md` |
 | **Which surfaces a feature touches + how one edit flows** | `docs/feature-impact.md` |

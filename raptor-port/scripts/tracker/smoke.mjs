@@ -885,10 +885,10 @@ ok('Course follows Crew, and each edit pencil sits right after its dropdown',
    there is something unsaved; the ✎ Edit toggle is now inside the Syllabus
    pencil, so it is not a bar control; hSearchBtn is 0-wide on a desktop (the
    search shows as an inline box, hSearch + hSearchClear). */
-ok('the bar reads Crew · Course ✎ · Syllabus ✎ · ⓘ · ↶ ↷ · Show All · File · search',
+ok('the bar reads Crew · Course ✎ · Syllabus ✎ · ⓘ · ↶ ↷ · Show All · File · search · Hide',
   crewFirst.ids.join(',') === ['activeSel', 'courseSel', 'courseMenuBtn',
     'sylSel', 'sylMenuBtn', 'detailsBtn', 'trUndoBtn', 'trRedoBtn', 'showAllBtn',
-    'fileMenuBtn', 'hSearch', 'hSearchClear'].join(','),
+    'fileMenuBtn', 'hSearch', 'hSearchClear', 'barHideBtn'].join(','),
   crewFirst.ids.join(' → '));
 
 /* WHERE THE GAP FALLS, which the id list can't see: the spacer is a <span>, so
@@ -1354,18 +1354,125 @@ await pg.waitForTimeout(800);
 
   await bump('ST-01', 3);
   await bump('ST-02', 1);
+  /* Since 9 Sep 26 (owner): EACH failure is its own chip — "when someone fails
+     twice, it should show ST-01, ST-01X" — and each carries the day it
+     happened. Today, as the app reckons it (Singapore), is the day a + records
+     unless the box is changed first. */
+  const today = await pg.evaluate(() => new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Singapore', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date()));
   const card = await pg.evaluate(() => ({
     chips: [...document.querySelectorAll('#failChips .failchip')].map(c => c.textContent.trim()),
+    dates: [...document.querySelectorAll('#failChips .failchip')].map(c => c.dataset.date),
     total: (document.getElementById('failTotal') || {}).textContent || '',
   }));
-  ok('a failed event carries one X per failure after the first',
-    card.chips[0] === 'ST-01XX', `chips: ${card.chips.join(', ')}`);
+  ok('every failure is its own chip — ST-01, ST-01X, ST-01XX for three',
+    card.chips.slice(0, 3).join(',') === 'ST-01,ST-01X,ST-01XX', `chips: ${card.chips.join(', ')}`);
   ok('a single failure shows the plain code',
-    card.chips.includes('ST-02'), `chips: ${card.chips.join(', ')}`);
+    card.chips.includes('ST-02') && card.chips.length === 4, `chips: ${card.chips.join(', ')}`);
   ok('the worst offender is listed first',
-    card.chips.indexOf('ST-01XX') === 0, card.chips.join(', '));
+    card.chips.indexOf('ST-01') === 0, card.chips.join(', '));
   ok('the total counts failures, not events',
     /\b4 fails\b/.test(card.total), `total: "${card.total}"`);
+  ok('a failure is recorded on the day it is pressed',
+    card.dates.length === 4 && card.dates.every(d => d === today), `dates: ${card.dates.join(', ')} (today ${today})`);
+
+  /* Mouse over a chip: the bubble says which failure it is and the day. */
+  await pg.hover('#failChips .failchip:nth-child(2)'); await pg.waitForTimeout(250);
+  const hov = await pg.evaluate(() => { const b = document.getElementById('detailBubble'); return b && b.style.display !== 'none' ? b.textContent : ''; });
+  ok('hovering a failure chip shows the day it happened',
+    /ST-01X/.test(hov) && /2nd failure/.test(hov) && /\d{2}\/\d{2}\/\d{2}/.test(hov), `bubble: "${hov.trim().slice(0, 80)}"`);
+  await pg.mouse.move(5, 5); await pg.waitForTimeout(150);
+  ok('the bubble goes when the mouse leaves',
+    await pg.evaluate(() => { const b = document.getElementById('detailBubble'); return !b || b.style.display === 'none'; }));
+  /* A tap (a click, on a phone) shows the same bubble; the next touch anywhere puts it away. */
+  await pg.click('#failChips .failchip:nth-child(4)'); await pg.waitForTimeout(200);
+  const tapped = await pg.evaluate(() => { const b = document.getElementById('detailBubble'); return b && b.style.display !== 'none' ? b.textContent : ''; });
+  ok('clicking a failure chip shows its day too', /ST-02/.test(tapped) && /1st failure/.test(tapped), `bubble: "${tapped.trim().slice(0, 60)}"`);
+  await pg.mouse.click(5, 5); await pg.waitForTimeout(200);
+  ok('the next touch anywhere puts the tapped bubble away',
+    await pg.evaluate(() => { const b = document.getElementById('detailBubble'); return !b || b.style.display === 'none'; }));
+
+  /* The title opens the full lowdown: every failure, in chart order, with a
+     date box each — and a day changed there shows on the chip. */
+  await pg.click('#failTitle'); await pg.waitForTimeout(300);
+  const log = await pg.evaluate(() => ({
+    open: !!document.querySelector('#failLog'),
+    rows: [...document.querySelectorAll('#failLog .frow')].map(r => r.querySelector('.failchip').textContent.trim()),
+    dates: [...document.querySelectorAll('#failLog .frow input[type=date]')].map(i => i.value),
+    total: (document.getElementById('failLogTotal') || {}).textContent || '',
+  }));
+  ok('the Failures title opens the full list, one row per failure with its date',
+    log.open && log.rows.join(',') === 'ST-01,ST-01X,ST-01XX,ST-02' && log.dates.every(d => d === today) && /4 fails/.test(log.total),
+    `rows: ${log.rows.join(', ')} · dates: ${log.dates.join(', ')} · ${log.total}`);
+  await pg.fill('#failLog .frow[data-ev="ST-01"][data-fi="1"] input[type=date]', '2026-08-01'); await pg.waitForTimeout(300);
+  const redated = await pg.evaluate(() => [...document.querySelectorAll('#failChips .failchip')].map(c => c.dataset.date));
+  ok('changing a day in the list re-dates that one failure and its chip',
+    redated[1] === '2026-08-01' && redated[0] === redated[2] && redated[0] !== '2026-08-01', `chip dates: ${redated.join(', ')}`);
+  await pg.keyboard.press('Escape'); await pg.waitForTimeout(250);
+  ok('Escape closes the failures list', !(await pg.locator('#failLog').count()));
+
+  /* The pop-up: this student's failures on the event with their days, and a
+     "Failed on" box that the next + lands on. */
+  await pg.evaluate(() => { const g = [...document.querySelectorAll('#flowSvg .ball')].find(x => x.dataset.id === 'ST-01'); g.dispatchEvent(new MouseEvent('click', { bubbles: true })); });
+  await pg.waitForSelector('#popFailDate');
+  const popList = await pg.evaluate(() => ({
+    box: document.getElementById('popFailDate').value,
+    days: [...document.querySelectorAll('#popFailDates .fdate')].map(e => e.dataset.date),
+    labels: [...document.querySelectorAll('#popFailDates .fdate b')].map(e => e.textContent),
+  }));
+  ok('the pop-up lists this student’s failures on the event with their days',
+    popList.box === today && popList.labels.join(',') === 'ST-01,ST-01X,ST-01XX' && popList.days[1] === '2026-08-01',
+    `box ${popList.box} · ${popList.labels.join(', ')} · ${popList.days.join(', ')}`);
+  await pg.fill('#popFailDate', '2026-08-15'); await pg.waitForTimeout(150);
+  await pg.click('#popFailPlus'); await pg.waitForTimeout(400);
+  const dated = await pg.evaluate(() => [...document.querySelectorAll('#failChips .failchip')].map(c => c.textContent.trim() + '@' + c.dataset.date));
+  ok('a + records the failure on the day in the "Failed on" box',
+    dated.includes('ST-01XXX@2026-08-15'), dated.join(', '));
+  await pg.click('#popFailMinus'); await pg.waitForTimeout(300);
+  ok('a − takes the latest failure back',
+    (await pg.evaluate(() => document.querySelectorAll('#failChips .failchip').length)) === 4);
+  await pg.keyboard.press('Escape'); await pg.waitForTimeout(250);
+
+  /* Each student's own data: another crew member sees none of these. */
+  const crew = await pg.evaluate(() => [...document.querySelectorAll('#activeSel option')].map(o => o.value));
+  if (crew.length >= 2) {
+    const me = await pg.inputValue('#activeSel'); const other = crew.find(c => c !== me);
+    await pg.selectOption('#activeSel', other); await pg.waitForTimeout(500);
+    const theirs = await pg.evaluate(() => ({ chips: document.querySelectorAll('#failChips .failchip').length, txt: (document.getElementById('failChips') || {}).textContent || '' }));
+    ok('another student’s Failures card shows their own record, not this one’s', theirs.chips === 0 && /none/i.test(theirs.txt), `${theirs.chips} chips`);
+    await pg.selectOption('#activeSel', me); await pg.waitForTimeout(500);
+    ok('switching back brings the failures back',
+      (await pg.evaluate(() => document.querySelectorAll('#failChips .failchip').length)) === 4);
+  }
+
+  /* Done on (owner, 9 Sep 26: "the details portion … will reflect the date
+     accomplished automatically as the date updated. But the user can also
+     manually change the date after"): a grade is dated the day it is pressed,
+     the box re-dates it afterwards, Not done drops the day. */
+  const openPop = async id => {
+    await pg.evaluate(i => { const g = [...document.querySelectorAll('#flowSvg .ball')].find(x => x.dataset.id === i); g.dispatchEvent(new MouseEvent('click', { bubbles: true })); }, id);
+    await pg.waitForSelector('#popDoneDate');
+  };
+  await openPop('ST-02');
+  ok('the Done on box offers today before a grade', (await pg.inputValue('#popDoneDate')) === today, await pg.inputValue('#popDoneDate'));
+  await pg.locator('#pop .opts button', { hasText: 'DCO' }).click(); await pg.waitForTimeout(500);
+  await openPop('ST-02');
+  ok('marking DCO dates the event the day it was pressed', (await pg.inputValue('#popDoneDate')) === today, await pg.inputValue('#popDoneDate'));
+  await pg.fill('#popDoneDate', '2026-08-10'); await pg.waitForTimeout(300);
+  await pg.keyboard.press('Escape'); await pg.waitForTimeout(200);
+  await openPop('ST-02');
+  ok('the day can be changed afterwards, and it sticks', (await pg.inputValue('#popDoneDate')) === '2026-08-10', await pg.inputValue('#popDoneDate'));
+  await pg.keyboard.press('Escape'); await pg.waitForTimeout(200);
+  /* Details mode's bubble answers for THIS student: grade, day, failures. */
+  await pg.hover('#failChips .failchip:nth-child(4)'); await pg.waitForTimeout(200);
+  const rec = await pg.evaluate(() => { const b = document.getElementById('detailBubble'); return b ? b.textContent : ''; });
+  const whose = await pg.inputValue('#activeSel');
+  ok('the failure bubble names the student it belongs to', rec.includes(whose) && /failure of 1 on ST-02/.test(rec), rec.trim().slice(0, 80));
+  await pg.mouse.move(5, 5); await pg.waitForTimeout(150);
+  await openPop('ST-02');
+  await pg.locator('#pop .opts button', { hasText: 'Not done' }).click(); await pg.waitForTimeout(500);
+  await openPop('ST-02');
+  ok('Not done drops the day again', (await pg.inputValue('#popDoneDate')) === today, await pg.inputValue('#popDoneDate'));
+  await pg.keyboard.press('Escape'); await pg.waitForTimeout(200);
 
   /* Unbounded by nature, so the list must never grow the panel without limit. */
   const capped = await pg.evaluate(() => {
@@ -1733,6 +1840,30 @@ await pg.waitForTimeout(400);
 ok('the desktop chart is still shown full size, not shrunk to fit',
   Math.abs((await pg.evaluate(() => parseFloat(getComputedStyle(document.querySelector('.flowwrap')).zoom) || 1)) - 1) < 0.01);
 
+/* ---- hide the bar to maximise the chart (owner phone ask, 9 Sep 26) ----
+   A per-browser choice: the bar collapses to a slim strip that names the crew
+   and brings it back, and the chart grows into the freed height on its own. */
+{
+  const boardH = () => pg.evaluate(() => { const b = document.getElementById('board'); return b ? Math.round(b.getBoundingClientRect().height) : 0; });
+  const headerN = () => pg.locator('#page-tracker header').count();
+  ok('the bar carries a Hide control', await pg.locator('#barHideBtn').count() === 1);
+  const shownFirst = await headerN(), peekFirst = await pg.locator('#barShowBtn').count();
+  ok('the bar is shown to begin with', shownFirst === 1 && peekFirst === 0);
+  const bdBefore = await boardH();
+  await pg.click('#barHideBtn'); await pg.waitForTimeout(200);
+  ok('hiding the bar removes it', (await headerN()) === 0);
+  const who = (await pg.locator('#barShowBtn .barpeek-who').textContent().catch(() => '')).trim();
+  ok('hiding leaves a way back that names the crew', (await pg.locator('#barShowBtn').count()) === 1 && who.length > 0, `crew="${who}"`);
+  const bdAfter = await boardH();
+  ok('the chart grows into the freed space', bdAfter > bdBefore + 20, `${bdBefore} → ${bdAfter}px`);
+  ok('the choice is remembered per browser (ocuLocal, not the shared file)',
+    (await pg.evaluate(() => localStorage.getItem('ocuLocal:barHidden'))) === '1' &&
+    (await pg.evaluate(() => localStorage.getItem('ocu:barHidden'))) === null);
+  await pg.click('#barShowBtn'); await pg.waitForTimeout(200);
+  ok('showing the bar brings it back', (await headerN()) === 1 && (await pg.locator('#barShowBtn').count()) === 0);
+  ok('showing the bar clears the remembered choice', (await pg.evaluate(() => localStorage.getItem('ocuLocal:barHidden'))) === '0');
+}
+
 /* ---- lull periods ----
    Course-wide, set through a calendar mode dropdown that also duplicated the
    two Last Flown dates and the end date already in the panel above. Now: per
@@ -1754,8 +1885,70 @@ ok('the lull calendar is shut until it is asked for', await pg.locator('#lullCal
 const addStudent = async name => {
   await pg.click('#addStu'); await pg.waitForSelector('#dlgInput');
   await pg.fill('#dlgInput', name);
-  await pg.click('#dlgOk'); await pg.waitForTimeout(700);
+  await pg.click('#dlgOk');
+  /* wait for the roster to SHOW the name, not a fixed 700ms: the add itself now
+     waits for any syllabus load still in flight, and on a slow runner that took
+     longer than the pause (9 Sep 26 — one student where two were added) */
+  await pg.waitForFunction(n => [...document.querySelectorAll('#activeSel option')].some(o => o.value === n),
+    name.trim().toUpperCase(), { timeout: 15000 });
+  await pg.waitForTimeout(300);
 };
+
+/* ---- the person → Tracker link (9 Sep 26) ----
+   Raptor's squadron roster reaches the + Add dialog through the people bridge
+   (tracker/people.js, wired by TrackerPage.tsx): it is listed above the text
+   box, a pick adds the person under their callsign and links them, a typed
+   name still adds an unlinked student (the helper above), and the export file
+   carries the links beside the students. Both are removed again at the end so
+   the lull checks below see the roster they always did. */
+{
+  await pg.click('#addStu'); await pg.waitForSelector('#dlgList');
+  const first = await pg.evaluate(() => {
+    const b = document.querySelector('#dlgList .dlg-item');
+    return b ? { key: b.dataset.key, label: b.querySelector('.dlg-lbl').textContent, sub: (b.querySelector('.dlg-sub') || {}).textContent || '' } : null;
+  });
+  const dlgText = ((await pg.textContent('#dlgModal')) || '').replace(/\s+/g, ' ');
+  ok('+ Add opens with the squadron roster listed above the text box',
+    !!first && /Add a crew member/.test(dlgText) && /From the squadron roster/.test(dlgText) && await pg.locator('#dlgInput').count() === 1, dlgText.slice(0, 90));
+  ok('a roster entry reads callsign, then seat and category', !!first && !!first.label && /^(Pilot|WSO)/.test(first.sub), JSON.stringify(first));
+  ok('the text box says it is the other way in', (await pg.getAttribute('#dlgInput', 'placeholder')) === 'Or type a callsign');
+  ok('the list sits above the text box', await pg.evaluate(() =>
+    [...document.querySelectorAll('#dlgModal #dlgList, #dlgModal #dlgInput')].map(e => e.id).join('>') === 'dlgList>dlgInput'));
+  await pg.fill('#dlgFilter', first.label); await pg.waitForTimeout(150);
+  const narrowed = await pg.evaluate(lbl =>
+    [...document.querySelectorAll('#dlgList .dlg-item .dlg-lbl')].map(e => e.textContent).every(t => t.toLowerCase().includes(lbl.toLowerCase())), first.label);
+  ok('the search box narrows the list to the typed callsign', narrowed && await pg.locator('#dlgList .dlg-item').count() >= 1);
+  await pg.click(`#dlgList .dlg-item[data-key="${first.key}"]`); await pg.waitForTimeout(700);
+  const picked = first.label.toUpperCase();
+  const rosterNow = () => pg.evaluate(() => [...document.querySelectorAll('#activeSel option')].map(o => o.value));
+  ok('picking a person adds them under their callsign, upper-cased', (await rosterNow()).includes(picked), (await rosterNow()).join(', '));
+  ok('and marks their chip as linked to the squadron roster',
+    await pg.locator(`.c-students .chip.linked[title="On the squadron roster as ${first.label}"]`).count() === 1);
+  await addStudent('STUDENT SMOKE3');
+  ok('a typed callsign still adds an unlinked crew member',
+    (await rosterNow()).includes('STUDENT SMOKE3') && await pg.locator('.c-students .chip.linked').count() === 1);
+  /* the file, through the real Export button: the OS save picker cannot be
+     driven, so a fake handle (window.__pickSaveForTests) collects what the
+     app wrote — the twin of the Import hook at the end of this suite */
+  await pg.evaluate(() => {
+    window.__pickSaveForTests = async name => ({ name, createWritable: async () => ({ write: async t => { window.__exportedForTests = t; }, close: async () => {} }) });
+  });
+  await viaMenu('file', '#exportBtn'); await pg.waitForTimeout(500);
+  await pg.check('#copyStudents'); await pg.click('#copyOk'); await pg.waitForTimeout(1500);
+  const exported = await pg.evaluate(() => { try { return JSON.parse(window.__exportedForTests || 'null'); } catch (_) { return null; } });
+  const courseNow = await pg.evaluate(() => document.querySelector('#courseSel').value);
+  ok('the export file carries the links beside the students',
+    !!exported && exported.contains.links === true && !!exported.links && !!exported.links[courseNow] && exported.links[courseNow][picked] === first.key,
+    exported ? JSON.stringify(exported.links) : 'no file was written');
+  ok('an unlinked crew member has no link in it', !!exported && !((exported.links || {})[courseNow] || {})['STUDENT SMOKE3']);
+  if (await pg.locator('#dlgOk').count()) { await pg.click('#dlgOk'); await pg.waitForTimeout(300); }
+  await pg.evaluate(() => { delete window.__pickSaveForTests; delete window.__exportedForTests; });
+  for (const n of [picked, 'STUDENT SMOKE3']) {
+    await pg.click(`.c-students .chip .x[data-rm="${n}"]`); await pg.waitForSelector('#dlgOk'); await pg.click('#dlgOk'); await pg.waitForTimeout(700);
+  }
+  ok('removing a linked crew member takes the link with them',
+    !(await rosterNow()).includes(picked) && await pg.locator('.c-students .chip.linked').count() === 0);
+}
 if ((await pg.locator('#activeSel option').count()) < 2) await addStudent('STUDENT SMOKE2');
 const roster0 = await pg.evaluate(() => [...document.querySelectorAll('#activeSel option')].map(o => o.value));
 ok('the course has two students to test lull periods against', roster0.length >= 2, roster0.join(', '));
@@ -1887,12 +2080,15 @@ await pg.waitForSelector('#flowSvg .ball');
 {
   const opts = await pg.evaluate(() => [...document.querySelectorAll('#sylSel option')].map(o => o.value));
   let best = null, bestN = -1;
+  /* each switch is a load; count the balls only once it has settled, or a slow
+     runner counts the previous chart and picks the wrong syllabus */
+  const settled = () => pg.evaluate(() => window.__coreForTests.whenLoaded());
   for (const o of opts) {
-    await pg.selectOption('#sylSel', o); await pg.waitForTimeout(500);
+    await pg.selectOption('#sylSel', o); await settled(); await pg.waitForTimeout(500);
     const n = await pg.locator('#flowSvg .ball').count();
     if (n > bestN) { bestN = n; best = o; }
   }
-  await pg.selectOption('#sylSel', best); await pg.waitForTimeout(900);
+  await pg.selectOption('#sylSel', best); await settled(); await pg.waitForTimeout(900);
 }
 const bigBoard = await pg.evaluate(() => {
   const bd = document.getElementById('board');
@@ -1961,29 +2157,150 @@ ok('opening the app lands on the last event marked, not at the top of the chart'
   await pg.selectOption('#sylSel', before); await pg.waitForTimeout(900);
 }
 
-/* Switching student jumps to that student's own last mark. */
+/* Picking a crew member lands on THEIR latest work (owner, 9 Sep 26: "when u
+   pick a crew it will land on their latest work without having to scroll") —
+   and a crew member with no mark on this chart yet leaves the view where it
+   is, never snapping to the top (his phone screenshot the same day: the redraw
+   that fixed the rings had reset the scroll). */
 const two = await pg.evaluate(() => [...document.querySelectorAll('#activeSel option')].map(o => o.value));
 /* Whoever the app came back on is the one who did the marking — not
    necessarily the first name in the list. */
 const marker = await pg.inputValue('#activeSel');
+const ballView = id => pg.evaluate(i => {
+  const bd = document.getElementById('board');
+  const g = [...document.querySelectorAll('#flowSvg .ball')].find(x => x.dataset.id === i);
+  if (!g) return { found: false };
+  const r = g.getBoundingClientRect(), b = bd.getBoundingClientRect();
+  return { found: true, scrollTop: Math.round(bd.scrollTop),
+    inView: r.top >= b.top - 2 && r.bottom <= b.bottom + 2,
+    /* how far the ball's middle sits from the view's middle, vertically */
+    off: Math.round(Math.abs((r.top + r.height / 2) - (b.top + b.height / 2))) };
+}, id);
+/* "Centralise the view if its possible" (owner, 9 Sep 26): the chart carries
+   half a view of slack above and below, so even the first and last events can
+   sit in the middle — a landing is centred, not merely in view. */
+const CENTRED = 4;
 if (two.length >= 2) {
   const otherS = two.find(r => r !== marker);
+  /* Give the other student a mark of their own, near the TOP of the chart, so
+     the two last marks are far apart and a landing is unmistakable. */
   await pg.selectOption('#activeSel', otherS); await pg.waitForTimeout(600);
-  /* Scroll right away from the mark first. Without this the board never moved
-     between the two reads and the check passed on a view that had not changed. */
-  await pg.evaluate(() => { document.getElementById('board').scrollTop = 0; });
-  await pg.waitForTimeout(200);
-  const away = await pg.evaluate(() => Math.round(document.getElementById('board').scrollTop));
-  await pg.selectOption('#activeSel', marker); await pg.waitForTimeout(800);
-  const back = await pg.evaluate(id => {
-    const bd = document.getElementById('board');
+  const shallow = await pg.evaluate(() => {
+    const balls = [...document.querySelectorAll('#flowSvg .ball')];
+    const withY = balls.map(g => ({ id: g.dataset.id, y: g.getBBox().y })).sort((a, b) => a.y - b.y);
+    return withY[Math.floor(withY.length * 0.15)];
+  });
+  await pg.evaluate(id => {
     const g = [...document.querySelectorAll('#flowSvg .ball')].find(x => x.dataset.id === id);
-    const r = g.getBoundingClientRect(), b = bd.getBoundingClientRect();
-    return { scrollTop: Math.round(bd.scrollTop), inView: r.top >= b.top - 2 && r.bottom <= b.bottom + 2 };
-  }, deep.id);
-  ok('switching back to a student returns to their own last mark',
-    back.inView && away === 0 && back.scrollTop > 100,
-    `scrolled to ${away}px, switching back moved to ${back.scrollTop}px`);
+    g.scrollIntoView({ block: 'center' });
+    g.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+  }, shallow.id);
+  await pg.waitForSelector('#pop');
+  await pg.locator('#pop .opts button', { hasText: 'DCO' }).click();
+  await pg.waitForTimeout(700);
+
+  await pg.selectOption('#activeSel', marker); await pg.waitForTimeout(600);
+  const onDeep = await ballView(deep.id);
+  ok('picking a crew member lands on their latest work, well down the chart, centred',
+    onDeep.found && onDeep.inView && onDeep.scrollTop > 100 && onDeep.off <= CENTRED,
+    `${deep.id}: scrolled ${onDeep.scrollTop}px, in view ${onDeep.found ? onDeep.inView : 'n/a'}, ${onDeep.off}px off centre`);
+  await pg.selectOption('#activeSel', otherS); await pg.waitForTimeout(600);
+  const onShallow = await ballView(shallow.id);
+  ok("picking the other one lands on THEIR latest work, near the top, centred",
+    onShallow.found && onShallow.inView && onShallow.scrollTop < onDeep.scrollTop && onShallow.off <= CENTRED,
+    `${shallow.id}: scrolled ${onShallow.scrollTop}px, in view ${onShallow.found ? onShallow.inView : 'n/a'}, ${onShallow.off}px off centre`);
+
+  /* Someone with no marks yet lands on the chart's FIRST event (owner, 9 Sep
+     26: "if nothing is clocked … it will show the view based on the first
+     item"). Park the board well down first, so the landing is a real move.
+     (Adding a student selects them and redraws, so pick a marked student
+     again before parking.) */
+  await addStudent('STUDENT FRESH');
+  await pg.selectOption('#activeSel', marker); await pg.waitForTimeout(600);
+  await pg.evaluate(() => { const bd = document.getElementById('board'); bd.scrollTop = Math.round(bd.scrollHeight * 0.6); bd.scrollLeft = 0; });
+  await pg.waitForTimeout(200);
+  const parked = await pg.evaluate(() => Math.round(document.getElementById('board').scrollTop));
+  const firstId = await pg.evaluate(() => {
+    const balls = [...document.querySelectorAll('#flowSvg .ball')];
+    return balls.map(g => ({ id: g.dataset.id, y: g.getBBox().y })).sort((a, b) => a.y - b.y)[0].id;
+  });
+  await pg.selectOption('#activeSel', 'STUDENT FRESH'); await pg.waitForTimeout(600);
+  const onFirst = await ballView(firstId);
+  ok("picking a crew member with no marks yet lands on the chart's first event, centred",
+    parked > 100 && onFirst.found && onFirst.inView && onFirst.scrollTop < parked && onFirst.off <= CENTRED,
+    `parked ${parked}px; ${firstId} in view ${onFirst.found ? onFirst.inView : 'n/a'} at ${onFirst.scrollTop}px, ${onFirst.off}px off centre`);
+
+  /* The ring on every ball is a second crew picker (owner, 9 Sep 26): a real
+     mouse click on another student's wedge picks them, every ball edges that
+     wedge in cyan, nothing opens and the view stays; the same spot again, or
+     the centre, opens the details. Driven by screen coordinates so the SVG
+     hit-test is the one under test. */
+  const names = await pg.evaluate(() => [...document.querySelectorAll('#activeSel option')].map(o => o.value));
+  await pg.selectOption('#activeSel', marker); await pg.waitForTimeout(600);   /* lands on deep.id */
+  const wi = names.indexOf(otherS);
+  const spot = await pg.evaluate(([id, i, n]) => {
+    const g = [...document.querySelectorAll('#flowSvg .ball')].find(x => x.dataset.id === id);
+    const r = g.querySelector('circle').getBoundingClientRect();        /* the hit disc, radius rO+1 */
+    const cx = r.left + r.width / 2, cy = r.top + r.height / 2, R = r.width / 2 * 0.82;   /* mid-ring */
+    const a = (-90 + i * 360 / n) * Math.PI / 180;
+    return { x: cx + R * Math.cos(a), y: cy + R * Math.sin(a), cx, cy };
+  }, [deep.id, wi, names.length]);
+  const before = await pg.evaluate(() => Math.round(document.getElementById('board').scrollTop));
+  await pg.mouse.click(spot.x, spot.y); await pg.waitForTimeout(500);
+  const edged = await pg.evaluate(() => {
+    const balls = [...document.querySelectorAll('#flowSvg .ball')];
+    return { balls: balls.length, mine: balls.filter(g => g.querySelector('path.mine')).length,
+      wi: [...new Set(balls.map(g => (g.querySelector('path.mine') || {}).getAttribute && g.querySelector('path.mine').getAttribute('data-wi')))] };
+  });
+  ok("a click on another crew member's wedge picks them, and opens nothing",
+    (await pg.inputValue('#activeSel')) === otherS && await pg.locator('#pop:visible').count() === 0,
+    `picker reads ${await pg.inputValue('#activeSel')}, pop-ups open: ${await pg.locator('#pop:visible').count()}`);
+  ok("every ball edges the picked crew member's wedge in cyan",
+    edged.mine === edged.balls && edged.wi.length === 1 && edged.wi[0] === String(wi),
+    `${edged.mine}/${edged.balls} balls, wedge ${edged.wi.join('/')} (expected ${wi})`);
+  const afterPick = await pg.evaluate(() => Math.round(document.getElementById('board').scrollTop));
+  ok('picking by wedge leaves the view where it is', Math.abs(afterPick - before) <= 4, `${before}px → ${afterPick}px`);
+  await pg.mouse.click(spot.x, spot.y); await pg.waitForTimeout(400);
+  ok("the same wedge again — now the selected crew member's — opens the details",
+    await pg.locator('#pop:visible').count() === 1);
+  await pg.keyboard.press('Escape'); await pg.waitForTimeout(300);
+  await pg.mouse.click(spot.cx, spot.cy); await pg.waitForTimeout(400);
+  ok('the centre of the ball opens the details too', await pg.locator('#pop:visible').count() === 1);
+  await pg.keyboard.press('Escape'); await pg.waitForTimeout(300);
+
+  /* Marking a ball must NOT move the view (owner, 9 Sep 26: skip ahead and
+     "put DCO a pokeball down the flow chart. The view jumps back up to the
+     above last empty pokeball"). Grading rebuilds the whole SVG, which reset
+     the scroll to the chart's top. Pick a student, park the board partway,
+     grade whichever ball is sitting under the middle — the view must hold.
+     Runs last: a grade changes the marked student's latest work, so the
+     landing checks above must have taken their measurements first. */
+  await pg.selectOption('#activeSel', marker); await pg.waitForTimeout(600);
+  await pg.evaluate(() => { const bd = document.getElementById('board'); bd.scrollTop = Math.round(bd.scrollHeight * 0.45); bd.scrollLeft = 0; });
+  await pg.waitForTimeout(150);
+  const gradeTarget = await pg.evaluate(() => {
+    const bd = document.getElementById('board'), b = bd.getBoundingClientRect(), mid = b.top + b.height / 2;
+    let best = null, bestOff = Infinity;
+    for (const g of document.querySelectorAll('#flowSvg .ball')) {
+      const r = g.getBoundingClientRect();
+      if (r.top < b.top || r.bottom > b.bottom) continue;     /* fully in view */
+      const off = Math.abs((r.top + r.height / 2) - mid);
+      if (off < bestOff) { bestOff = off; best = g.dataset.id; }
+    }
+    return best;
+  });
+  const beforeGrade = await pg.evaluate(() => Math.round(document.getElementById('board').scrollTop));
+  await pg.evaluate(id => {
+    const g = [...document.querySelectorAll('#flowSvg .ball')].find(x => x.dataset.id === id);
+    g.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+  }, gradeTarget);
+  await pg.waitForSelector('#pop');
+  await pg.locator('#pop .opts button', { hasText: 'DCO' }).click();
+  await pg.waitForTimeout(700);
+  const afterGrade = await pg.evaluate(() => Math.round(document.getElementById('board').scrollTop));
+  ok('grading a ball leaves the view where it is', gradeTarget && Math.abs(afterGrade - beforeGrade) <= 4,
+    `graded ${gradeTarget}: ${beforeGrade}px → ${afterGrade}px`);
+  await pg.keyboard.press('Escape'); await pg.waitForTimeout(200);
 }
 
 /* A recorded syllabus that has since been deleted must not break the load.
@@ -2416,9 +2733,14 @@ await pg.waitForSelector('#flowSvg .ball', { timeout: 15000 });
    area". The chart is 10,000px tall, so the vertical anchor is the one that
    matters; the horizontal one only exists once the width overflows. */
 const zread = () => pg.evaluate(() => {
-  const b = document.getElementById('board');
-  const z = +(getComputedStyle(document.querySelector('#board .flowwrap')).zoom || 1);
-  return { cx: (b.scrollLeft + b.clientWidth / 2) / z, cy: (b.scrollTop + b.clientHeight / 2) / z, z };
+  const b = document.getElementById('board'), w = document.querySelector('#board .flowwrap'), s = w.querySelector('svg');
+  const z = +(getComputedStyle(w).zoom || 1);
+  /* the chart wears half a view of slack on each side (screen-constant, so a
+     landing can centre the first/last event); take it off before dividing
+     by the zoom, or the slack itself reads as a drift */
+  const px = s.getBoundingClientRect().left - w.getBoundingClientRect().left;
+  const py = s.getBoundingClientRect().top - w.getBoundingClientRect().top;
+  return { cx: (b.scrollLeft + b.clientWidth / 2 - px) / z, cy: (b.scrollTop + b.clientHeight / 2 - py) / z, z };
 });
 await pg.evaluate(() => { const b = document.getElementById('board'); b.scrollTop = 3000; });
 const z0 = await zread();
@@ -2643,9 +2965,8 @@ const wrong = Object.entries(CHART_2026).filter(([id, want0]) => {
 ok('2026 prereqs match the course map', wrong.length === 0,
   wrong.map(([id]) => `${id}=[${(by26[id]?.prereqs || []).join(',')}]`).join(' | '));
 
-/* The WHOLE of the 2026 map, all 206 events, transcribed from the user's own
-   screenshots of the rendered document and resolved through the page-join
-   letters. The spot-checks above pin the links that have been misread before;
+/* The WHOLE of the 2026 map, all 206 events, transcribed from the owner's
+   course-map pages and resolved through the page-join letters. The spot-checks above pin the links that have been misread before;
    this pins everything else too, so a future edit cannot quietly move one.
    Naming and the deliberate DAAR/NAAR split are recorded in the JSON itself. */
 const MAP26 = JSON.parse(readFileSync(import.meta.dirname + '/course-map-2026.json', 'utf8'));
@@ -2667,7 +2988,7 @@ ok('every prerequisite on the 2026 map matches the syllabus', mapWrong.length ==
 const revived = MAP26.struck_on_the_map.filter(id => by26full[id]);
 ok('no event the map strikes through is still in 2026', revived.length === 0, revived.join(', '));
 
-/* The WHOLE of the A/G - A/A map, all ten pages, from the user's screenshots.
+/* The WHOLE of the A/G - A/A map, all ten pages, from the owner's course-map pages.
    Its structure genuinely differs from 2026 — surface attack comes BEFORE basic
    fighting manoeuvres here — so reading one into the other is the standing
    hazard. Every page of it says the flowchart supersedes the tables. */
@@ -2807,7 +3128,7 @@ ok('Tx SA-1 bridges to TI-2, not LASDT-2', (() => {
    years had the day sortie waiting on its sim alone. The user's call, 8 Aug —
    they asked for it on both years, so both are pinned.
 
-   Since confirmed against the document itself (FG Master Syllabi Annex B, Jul 26):
+   Since confirmed against the course map itself:
    the SHORT CONVERSION "Tx" flying module gives SAT-1 [SA-5, SAT(S)-2], and the
    Tx track sheet annotates its own SA-05 as "(BCTM SA-6)" — the very flight the
    long course makes SAT-1 wait for. SAT(S)-2 carries no serial number on the Tx
@@ -2946,7 +3267,7 @@ ok('Tx NTR-1 waits for SA-4', JSON.stringify((txById['NTR-1']?.prereqs || []).sl
 
 /* A/G - A/A has its OWN ten-page map (images 20-29). Reading it into 2026 by
    mistake is what broke that chart, so these pin the pairs the map draws in an
-   order the app had reversed, plus the page B-32 tail that was never entered. */
+   order the app had reversed, plus the last page's tail that was never entered. */
 const CHART_AGAA = {
   'TI(S)-3': ['TI(S)-2'], 'DCA(S)-1': ['TI(S)-3'],
   'TI-2': ['LASDT-3', 'TI(S)-3'], 'TI-3': ['TI-2', 'AAM-14'], 'DCA-1': ['TI-3', 'DCA(S)-1'],
@@ -2979,14 +3300,13 @@ const badRef = Object.entries(REFRESHER_2026).filter(([id, want]) =>
 ok('2026 carries the DAAR / NAAR refresher chain', badRef.length === 0,
   badRef.map(([id]) => `${id}=${by26r[id] ? '[' + (by26r[id].prereqs || []).join(',') + ']' : 'MISSING'}`).join(' | '));
 
-/* Links that keep being "corrected" WRONGLY, because the chart images extracted from the .docx
-   are INCOMPLETE. The Word file draws each page as a base picture with extra pieces laid over
-   it — the red X strike-throughs, the IEPE ellipse on B-14, a TR(S)-7 ellipse, an INT-1 aircraft
-   (they come out as word/media/image4,5,9,10,13,14). Unzipping gets the base and loses the
-   overlays, so a reader working from the extracted pages sees a box missing from a chain and
-   "helpfully" reads straight through it. Every entry below was read that way at least once and
-   is wrong; each was then settled against the user's own screenshots of the rendered document.
-   If a future pass wants to change one of these, get a fresh screenshot first. */
+/* Links that keep being "corrected" WRONGLY, because chart images EXPORTED from the map's
+   source file are INCOMPLETE. Each page is a base picture with extra pieces laid over it — the
+   red X strike-throughs, the IEPE ellipse, a TR(S)-7 ellipse, an INT-1 aircraft — and an export
+   keeps the base and loses the overlays, so a reader working from exported pages sees a box
+   missing from a chain and "helpfully" reads straight through it. Every entry below was read
+   that way at least once and is wrong; each was then settled against the owner's rendered
+   pages. If a future pass wants to change one of these, ask the owner for the page first. */
 const CHART_2026_OVERLAY_TRAPS = {
   'TR(S)-7': ['TR(S)-LAO'],                              /* not TR(S)-6: TR(S)-LAO is drawn grey */
   'INT(S)-1': ['ST-09', 'ST-11', 'IEPE/IPC', 'IAT-07'],  /* not EPE: IEPE sits in the F column */
@@ -2994,7 +3314,7 @@ const CHART_2026_OVERLAY_TRAPS = {
   'LASDT-1': ['JMP-03', 'INT-1', 'LASDT(S)-1'],          /* not BFM-7: INT-1 sits between them */
   'ACM-3': ['ACM(S)-2', 'ACM-2'],                        /* not INT-1 */
   'INT-1': ['BFM-7', 'INT(S)-4'],                        /* not ACM-2 */
-  'T-10': ['AAS-04', 'IAT-08'],                          /* AAS-04 arrives via join K from B-14 */
+  'T-10': ['AAS-04', 'IAT-08'],                          /* AAS-04 arrives via join K from an earlier page */
 };
 const by26t = Object.fromEntries(SYLLABI['2026'].map(e => [e.id, e]));
 const trapped = Object.entries(CHART_2026_OVERLAY_TRAPS).filter(([id, want0]) => {
@@ -3004,13 +3324,13 @@ const trapped = Object.entries(CHART_2026_OVERLAY_TRAPS).filter(([id, want0]) =>
 ok('2026 links that the extracted chart images get wrong stay right', trapped.length === 0,
   trapped.map(([id]) => `${id}=[${(by26t[id]?.prereqs || []).join(',')}]`).join(' | '));
 
-/* The A/G - A/A surface-attack sim chain. Page B-28 appears to break it: SA(S)-2's only line
+/* The A/G - A/A surface-attack sim chain. Its page appears to break it: SA(S)-2's only line
    runs left into SA-1, SA(S)-3 looks fed only by AGW-02, and SA(S)-5 only by IAT-12. Three
    independent readings all concluded the links were absent and should be deleted. THEY MUST
    NOT BE. The user, who owns the syllabus, confirmed twice that the chain runs
    SA(S)-2 -> SA(S)-3 -> SA(S)-4 -> SA(S)-5; on the 2026 map the same run is drawn continuously
-   across pages B-18 to B-20 via joins EE and II. Deleting these would let a student fly a sim
-   out of order. Pinned so the next reading of B-28 cannot quietly undo it. */
+   across three pages via joins EE and II. Deleting these would let a student fly a sim
+   out of order. Pinned so the next reading of that page cannot quietly undo it. */
 const AGAA_SIM_CHAIN = {
   'SA(S)-2': ['SA(S)-1'],
   'SA(S)-3': ['SA(S)-2', 'AGW-02'],
@@ -3043,7 +3363,7 @@ ok('A/G - A/A prereqs match its own course map', wrongAG.length === 0,
   wrongAG.map(([id]) => `${id}=[${(byAG[id]?.prereqs || []).join(',')}]`).join(' | '));
 
 /* 9 Aug: the A/G - A/A chart was redrawn to mirror the course map's own pages
-   (B-23..B-32 flipped and stacked, read from the user's screenshots). Pin the
+   (its ten pages flipped and stacked, read from the owner's pages). Pin the
    shape, not just the links: every event placed, nothing overlapping, the long
    lettered wires straight, and the drawn NN wire still carrying SA-4 -> NTR-1. */
 {
@@ -3079,7 +3399,7 @@ ok('A/G - A/A prereqs match its own course map', wrongAG.length === 0,
 
 /* Each syllabus should funnel to one final event. A second endpoint means
    something is dangling off the end of the chart, which is how the missing
-   B-32 tail showed up: A/G - A/A stopped dead at TI-3. */
+   last-page tail showed up: A/G - A/A stopped dead at TI-3. */
 /* Tx 2026 funnels to one event now. It briefly had three: correcting AGR-01 (an
    academic that was waiting on TI-2, a flight) left both TI sorties gating
    nothing, because the events that consumed them — TI-3 and DCA-1 — are cut from
@@ -3142,7 +3462,7 @@ const SPAN_LIMIT = 1000;
    AGR-01 correction, the DAAR spine) cross space no wire was drawn for. Links
    right, routing ugly; recorded, and the user can redraw lines in the app. */
 /* 9 Aug: A/G - A/A was rebuilt to mirror the course map's own geometry
-   (pages B-23..B-32 stacked). Its long arrows are now exactly the map's
+   (its ten pages stacked). Its long arrows are now exactly the map's
    lettered page-spanning wires, so they are pinned BY NAME: a new long arrow
    fails even if an old one goes away. */
 const SPAN_ALLOWED = {
@@ -3258,11 +3578,14 @@ const chartsOnly = FF.buildFile({ charts: CHARTS_FIX, students: null, savedAt: '
 ok('charts-only file says so', chartsOnly.contains.students === false);
 ok('charts-only file has no students key', !('students' in chartsOnly));
 ok('charts-only file names nobody', !JSON.stringify(chartsOnly).includes('STUDENT A'));
-ok('a name containing a colon still round-trips', (() => {
+/* Reversed 9 Sep 26 (the schema-hardening round): a colon is a storage-key
+   separator, so a name carrying one is refused — naming the part — where it
+   used to round-trip. The app refuses it at every typing point too. */
+ok('a name containing a colon is refused, naming the part', (() => {
   const odd = { courses: ['A:B'], byCourse: { 'A:B': { plan: {}, bySyllabus: { 'x:y': {
     roster: ['LEE J: JR'], marks: {}, dates: {} } } } } };
-  return JSON.stringify(FF.readFile(FF.buildFile({ charts: null, students: odd, savedAt: 'x' })).students)
-    === JSON.stringify(odd);
+  try { FF.readFile(FF.buildFile({ charts: null, students: odd, savedAt: 'x' })); return false; }
+  catch (e) { return /course name “A:B”.*colon/.test(e.message); }
 })());
 
 /* ---- a damaged file must be refused, not half-applied ----
@@ -3452,8 +3775,8 @@ await openTracker(pg); await pg.waitForSelector('#flowSvg .ball'); await pg.wait
     .map(g => g.dataset.id).slice(0, 2));
   ok('two flight events found to test Last Flown with', flights.length === 2, flights.join(', '));
   const grade = async (id, iso, what) => {
-    await clickBall(id); await pg.waitForSelector('#popFlightDate');
-    await pg.fill('#popFlightDate', iso); await pg.waitForTimeout(150);
+    await clickBall(id); await pg.waitForSelector('#popDoneDate');
+    await pg.fill('#popDoneDate', iso); await pg.waitForTimeout(150);
     await pg.locator('#pop button', { hasText: what }).click(); await pg.waitForTimeout(400);
   };
   const flown = async () => `${await pg.inputValue('#lastCurr')} / ${await pg.inputValue('#lastSyll')}`;

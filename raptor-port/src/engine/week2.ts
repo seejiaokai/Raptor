@@ -21,20 +21,20 @@
    fictional handles as week 1. */
 export const WEEK2_DAYS:any[]=[
  {dow:'Monday',dt:'Jul 20',wc:'4 X 2 X 0',
-  notes:['DEMO — SECOND SCHEDULE WEEK','ORDERS: FG SOP CHAP 2 PARA 1-2'],
+  notes:['DEMO — SECOND SCHEDULE WEEK','ORDERS: FLYING ORDERS SECTION 2'],
   allhands:[{prog:'SODB',str:'0745',end:'0800'},{prog:'MASS BRIEF',str:'0800',end:'0830'},{prog:'STANDARDISATION MEETING',str:'1330',end:'1430',who:'pump'}],
   waves:[
    {label:'WAVE 1',night:false,intimes:['0700H: FIRST WAVE VL IN TIME + WX/NOTAMS','0700H: FIRST WAVE RU IN TIME + WX/NOTAMS'],traffic:[],formations:[
      {cs:'VL',msn:'BFM',to:'08:40',ld:'10:05',aircraft:[
-       {p:'bane',w:'freak',area:'D1415',rmks:'1B: BFM-4',opts:{tk2:true,tpod:true,nav:false,bombs:''}},
-       {p:'bapster',w:'nick',area:'AA2NS',rmks:'2A: OCU CREW SOLO',opts:{tk2:false,tpod:false,nav:false,bombs:''}}]},
+       {p:'bane',w:'freak',area:'NORTH',rmks:'1B: BFM-4',opts:{tk2:true,tpod:true,nav:false,bombs:''}},
+       {p:'bapster',w:'nick',area:'SOUTH',rmks:'2A: OCU CREW SOLO',opts:{tk2:false,tpod:false,nav:false,bombs:''}}]},
      {cs:'RU',msn:'BFM',to:'08:40',ld:'10:05',aircraft:[
-       {p:'fantom',w:'rocky',area:'D1415',rmks:'1A: CO APPR PAIR',opts:{tk2:true,tpod:false,nav:false,bombs:''}},
-       {p:'casper',w:'shrek',area:'AA2NS',rmks:'2A: BFM-5 (ALSO ON SIM)',opts:{tk2:true,tpod:false,nav:false,bombs:''}}]}]},
+       {p:'fantom',w:'rocky',area:'NORTH',rmks:'1A: CO APPR PAIR',opts:{tk2:true,tpod:false,nav:false,bombs:''}},
+       {p:'casper',w:'shrek',area:'SOUTH',rmks:'2A: BFM-5 (ALSO ON SIM)',opts:{tk2:true,tpod:false,nav:false,bombs:''}}]}]},
    {label:'WAVE 2',night:false,intimes:['1000H: SECOND WAVE VL IN TIME + WX/NOTAMS'],traffic:[],formations:[
      {cs:'VL',msn:'ACM',to:'10:30',ld:'11:55',aircraft:[
-       {p:'bane',w:'freak',area:'D1415',rmks:'1B: ACM // TIGHT TURN OFF WAVE 1',opts:{tk2:true,tpod:false,nav:false,bombs:''}},
-       {p:'slash',w:'dirty',area:'AA2NS',rmks:'2A: ACM-2',opts:{tk2:true,tpod:false,nav:false,bombs:''}}]}]}],
+       {p:'bane',w:'freak',area:'NORTH',rmks:'1B: ACM // TIGHT TURN OFF WAVE 1',opts:{tk2:true,tpod:false,nav:false,bombs:''}},
+       {p:'slash',w:'dirty',area:'SOUTH',rmks:'2A: ACM-2',opts:{tk2:true,tpod:false,nav:false,bombs:''}}]}]}],
   sims:{amt:[{label:'BRIEF',str:'1100',end:'',rmks:'PAX @ AMT BLDG'},
              {label:'BOX',str:'1130',end:'1230',pax:['prowler','drill','taipan','nasty'],rmks:'2 X 2-SHIP'},
              {label:'DEBRIEF',str:'1230',end:''}],
@@ -44,53 +44,53 @@ export const WEEK2_DAYS:any[]=[
   ground:[{prog:'MEDICAL APPT',str:'1030',end:'1230',who:'vegas'},{prog:'AIRCREW ADMIN',str:'1400',end:'1500'}]},
 
  {dow:'Tuesday',dt:'Jul 21',wc:'4 X 2 X 0',
-  notes:['ORDERS: FG SOP CHAP 3 PARA 4'],
+  notes:['ORDERS: FLYING ORDERS SECTION 3'],
   allhands:[{prog:'SODB',str:'0545',end:'0600'},{prog:'MASS BRIEF',str:'0600',end:'0630'}],
   waves:[
    {label:'WAVE 1',night:false,intimes:['0500H: FIRST WAVE VL IN TIME + WX/NOTAMS'],traffic:[],formations:[
      {cs:'VL',msn:'SAT',to:'09:00',ld:'10:25',aircraft:[
-       {p:'harpoon',w:'glass',area:'D4445',rmks:'1B: SAT-2',opts:{tk2:true,tpod:true,nav:false,bombs:'2 X GBU-12'}},
-       {p:'ignite',w:'freak',area:'AA2NS',rmks:'2A: SAT-REF',opts:{tk2:true,tpod:false,nav:false,bombs:''}}]},
+       {p:'harpoon',w:'glass',area:'EAST',rmks:'1B: SAT-2',opts:{tk2:true,tpod:true,nav:false,bombs:'2 X GBU-12'}},
+       {p:'ignite',w:'freak',area:'SOUTH',rmks:'2A: SAT-REF',opts:{tk2:true,tpod:false,nav:false,bombs:''}}]},
      {cs:'RU',msn:'BFM',to:'09:00',ld:'10:25',aircraft:[
-       {p:'prism',w:'nick',area:'D4445',rmks:'1A: OCU // FORMATION HAS NO IP',opts:{tk2:false,tpod:false,nav:false,bombs:''}},
-       {p:'bapster',w:'bullet',area:'AA2NS',rmks:'2A: OCU',opts:{tk2:false,tpod:false,nav:false,bombs:''}}]}]},
+       {p:'prism',w:'nick',area:'EAST',rmks:'1A: OCU // FORMATION HAS NO IP',opts:{tk2:false,tpod:false,nav:false,bombs:''}},
+       {p:'bapster',w:'bullet',area:'SOUTH',rmks:'2A: OCU',opts:{tk2:false,tpod:false,nav:false,bombs:''}}]}]},
    {label:'WAVE 2',night:false,intimes:[],traffic:[],formations:[
      {cs:'VL',msn:'BFM',to:'13:00',ld:'14:25',aircraft:[
-       {p:'harpoon',w:'ignite',area:'D15R',rmks:'1B: ILLEGAL SEAT — PILOT IN BACK',opts:{tk2:true,tpod:false,nav:false,bombs:''}}]}]}],
+       {p:'harpoon',w:'ignite',area:'WEST',rmks:'1B: ILLEGAL SEAT — PILOT IN BACK',opts:{tk2:true,tpod:false,nav:false,bombs:''}}]}]}],
   sims:{amt:[],oft:[{label:'EP-5',str:'1000',end:'1130',p:'stiff',w:'plasma'},{label:'SIMS (EXT SQN)',str:'1200',end:'1330',who:'EXT SQN'}]},
   dutywaves:[{label:'1st wave',rows:[{role:'SDO',id:'boosh',str:'0530',end:'1200'},{role:'SXO',id:'snap',str:'0500',end:'1200'}]}],
   ground:[{prog:'GROUND SCHOOL - EW',str:'0900',end:'1100',who:'chaps'},{prog:'MEDICAL APPT',str:'1330',end:'1500',who:'yeti'}]},
 
  {dow:'Wednesday',dt:'Jul 22',wc:'2 X 2 X 0',
-  notes:['ORDERS: FG SOP CHAP 2 PARA 1-2'],
+  notes:['ORDERS: FLYING ORDERS SECTION 2'],
   allhands:[{prog:'SODB',str:'0745',end:'0800'}],
   waves:[
    {label:'WAVE 1',night:false,intimes:[],traffic:[],formations:[
      {cs:'VL',msn:'ACM',to:'10:00',ld:'11:25',aircraft:[
-       {p:'pump',w:'dirty',area:'D4445',rmks:'1B: ACM-4',opts:{tk2:true,tpod:false,nav:false,bombs:''}},
-       {p:'bruise',w:'rocky',area:'AA2NS',rmks:'2A: ACM ADD',opts:{tk2:true,tpod:false,nav:false,bombs:''}}]}]},
+       {p:'pump',w:'dirty',area:'EAST',rmks:'1B: ACM-4',opts:{tk2:true,tpod:false,nav:false,bombs:''}},
+       {p:'bruise',w:'rocky',area:'SOUTH',rmks:'2A: ACM ADD',opts:{tk2:true,tpod:false,nav:false,bombs:''}}]}]},
    {label:'WAVE 2',night:true,intimes:['1900H: NIGHT WAVE VL IN TIME + WX/NOTAMS'],traffic:[],formations:[
      {cs:'VL',msn:'BFM',to:'20:05',ld:'21:30',aircraft:[
-       {p:'salsa',w:'stuff',area:'D15R',rmks:'1B: NIGHT BFM — EARLY SORTIE THU',opts:{tk2:true,tpod:false,nav:true,bombs:''}},
-       {p:'nact',w:'freak',area:'AA2NS',rmks:'2A: NIGHT // LONG DAY',opts:{tk2:true,tpod:false,nav:true,bombs:''}}]}]}],
+       {p:'salsa',w:'stuff',area:'WEST',rmks:'1B: NIGHT BFM — EARLY SORTIE THU',opts:{tk2:true,tpod:false,nav:true,bombs:''}},
+       {p:'nact',w:'freak',area:'SOUTH',rmks:'2A: NIGHT // LONG DAY',opts:{tk2:true,tpod:false,nav:true,bombs:''}}]}]}],
   sims:{amt:[],oft:[]},
   dutywaves:[{label:'1st wave',rows:[{role:'SDO',id:'shaft',str:'0800',end:'1400'}]}],
   ground:[{prog:'MET BRIEF',str:'0600',end:'0630',who:'nact'},{prog:'STAFF MTG @ HQ',str:'1400',end:'1600',who:'vegas'}]},
 
  {dow:'Thursday',dt:'Jul 23',wc:'2 X 0 X 0',
-  notes:['ORDERS: FG SOP CHAP 2 PARA 8'],
+  notes:['ORDERS: FLYING ORDERS SECTION 4'],
   allhands:[{prog:'SODB',str:'0700',end:'0715'}],
   waves:[
    {label:'WAVE 1',night:false,intimes:['0600H: FIRST WAVE VL IN TIME + WX/NOTAMS'],traffic:[],formations:[
      {cs:'VL',msn:'BFM',to:'07:30',ld:'08:55',aircraft:[
-       {p:'salsa',w:'pain',area:'D4445',rmks:'1B: EARLY — CREW REST TIGHT',opts:{tk2:true,tpod:false,nav:false,bombs:''}},
-       {p:'bruise',w:'spaceman',area:'AA2NS',rmks:'2A: BFM // MED DOWN',opts:{tk2:true,tpod:false,nav:false,bombs:''}}]}]}],
+       {p:'salsa',w:'pain',area:'EAST',rmks:'1B: EARLY — CREW REST TIGHT',opts:{tk2:true,tpod:false,nav:false,bombs:''}},
+       {p:'bruise',w:'spaceman',area:'SOUTH',rmks:'2A: BFM // MED DOWN',opts:{tk2:true,tpod:false,nav:false,bombs:''}}]}]}],
   sims:{amt:[],oft:[]},
   dutywaves:[{label:'1st wave',rows:[{role:'SDO',id:'beams',str:'0630',end:'1300'}]}],
   ground:[{prog:'DENTAL APPT',str:'1000',end:'1130',who:'yeti'}]},
 
  {dow:'Friday',dt:'Jul 24',wc:'0 X 0 X 0',
-  notes:['NO FLYING - GROUND TRAINING DAY','ORDERS: FG SOP CHAP 5'],
+  notes:['NO FLYING - GROUND TRAINING DAY','ORDERS: FLYING ORDERS SECTION 5'],
   allhands:[{prog:'SODB',str:'0745',end:'0800'},{prog:'SQN PT',str:'1500',end:'1630'},{prog:'MASS DEBRIEF + BEER CALL',str:'1700',end:''}],
   waves:[],
   sims:{amt:[],oft:[{label:'EP-6',str:'1400',end:'1530',p:'boosh',w:'shaft'}]},

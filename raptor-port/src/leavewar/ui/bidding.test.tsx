@@ -273,9 +273,9 @@ describe('marking medical on the grid (owner, 17 Aug 26)', () => {
 /* The negative-balance confirm, pinned for the first time (6 Sep 26). It has
    lived in `BidPicker.write` since the counters landed and nothing about it
    changed in this batch — a bid that would take someone below zero WARNS once
-   and writes on the second tap of the SAME leave, because the squadron's own
-   workbook runs negative (the owner was explicit: annual at −14, OIL at −5.5)
-   and what was wrong was doing it silently. It is pinned now because the OIL
+   and writes on the second tap of the SAME leave, because a balance is
+   allowed to run negative (the owner was explicit) and what was wrong was
+   doing it silently. It is pinned now because the OIL
    path around it moved: an admin's OIL write no longer leaves the grid for the
    tracker, so this note is the whole of what he sees, and it must not be able
    to go quiet unnoticed. The rule is per COUNTER, not one flag for the sheet,

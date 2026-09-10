@@ -182,8 +182,7 @@ describe('the counter column', () => {
     expect(label.toLowerCase()).toContain('choose')
   })
 
-  // §Counters: a balance already goes negative in the squadron's own
-  // workbook, and negative shows red — with its minus — and is never
+  // §Counters: a balance is allowed to run negative, and negative shows red — with its minus — and is never
   // refused; a USED number never carries one (the column title's own minus,
   // and the colour, already say it is spent). RESET is the seed's standing
   // example: opens at 2 annual, less four LL days pending in the 2027 war
@@ -439,8 +438,8 @@ describe('reordering the figures', () => {
 })
 
 describe('going negative is asked about, never refused', () => {
-  // §Counters, and the owner twice: balances already run negative in the
-  // squadron's own workbook, so this can never be a refusal. What was wrong
+  // §Counters, and the owner twice: a balance is allowed to run negative,
+  // so this can never be a refusal. What was wrong
   // was doing it silently.
   it('asks before a bid takes someone below zero, and writes nothing yet', () => {
     render(<Matrix />)

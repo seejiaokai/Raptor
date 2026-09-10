@@ -85,7 +85,7 @@ describe('tplFromDay — the crew-blanked mint', () => {
     expect(d.waves[0].formations[0].cs).toBe('VL')
     expect(d.waves[0].formations[0].msn).toBe('BFM')
     expect(d.waves[0].formations[0].to).toBe('12:40')
-    expect(d.waves[0].formations[0].aircraft[0].area).toBe('D1415')
+    expect(d.waves[0].formations[0].aircraft[0].area).toBe('NORTH')
     expect(d.waves[0].formations[0].aircraft[0].opts).toEqual({ tk2: true, tpod: true, nav: false, bombs: '' })
     expect(d.dutywaves[0].label).toBe('1st wave')
     expect(d.dutywaves[0].rows[0].role).toBe('SDO')

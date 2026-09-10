@@ -4169,7 +4169,7 @@ body.dnd .availpuck::after,body.dnd .eroster::after{content:'drop to unassign';p
    `hyphens:auto` is tried FIRST by the line-breaker, so a word that has a
    legal hyphenation point breaks there with a visible hyphen, and
    `overflow-wrap` stays as the last resort for the words that have none
-   (callsigns, `D4445`, run-together codes). Nothing about the box changes:
+   (callsigns, `EAST`, run-together codes). Nothing about the box changes:
    the column cannot widen either way, so no measured contract moves.
    `-webkit-` is not optional — Safari, the phone this was reported on, still
    needs it, and the page carries `lang="en"` for the dictionary to load. */
