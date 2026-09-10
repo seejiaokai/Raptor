@@ -1002,7 +1002,7 @@ describe('the person bridge and the link (peoplewire.ts → people.js → core.j
     await storage.set('v3:' + c + ':pace:ALPHA', JSON.stringify({ epw: '4' }))
     await storage.set('v3:' + c + ':lulls:ALPHA', JSON.stringify([{ start: '2026-03-01', end: '2026-03-02' }]))
     await storage.set('v3:' + c + ':last:ALPHA', JSON.stringify({ syl: '2026', event: 'ST-01' }))
-    await storage.set('v3:' + c + ':lastStudent', 'ALPHA')
+    await storage.set('v3:' + c + ':lastStudent', 'BRAVO')   /* the SECOND entry, so a fallback to the first cannot pass */
     await storage.set('v3:links', JSON.stringify({ [c]: { ALPHA: 'p1' } }))
     await C.loadCourse(c); await C.whenLoaded()
     const a = C.byName('ALPHA')!, b = C.byName('BRAVO')!
@@ -1011,9 +1011,9 @@ describe('the person bridge and the link (peoplewire.ts → people.js → core.j
     expect(C.paceOf(a.id).epw).toBe('4'); expect(C.lulls[a.id].length).toBe(1)
     expect((await storage.get('v3:' + c + ':2026:m:' + a.id))!.value).toContain('dco')
     for (const k of ['2026:m:ALPHA', '2026:d:BRAVO', 'pace:ALPHA', 'lulls:ALPHA', 'last:ALPHA']) expect(await storage.get('v3:' + c + ':' + k), k).toBeNull()
-    expect((await storage.get('v3:' + c + ':lastStudent'))!.value).toBe(a.id)
+    expect((await storage.get('v3:' + c + ':lastStudent'))!.value).toBe(b.id)
     expect((await storage.get('v3:' + c + ':idmig'))!.value).toBe('1')
     expect(JSON.parse((await storage.get('v3:links'))?.value || '{}')[c]).toBeUndefined()
-    expect(C.active).toBe(a.id)
+    expect(C.active, 'the migrating load lands on the last-graded student, not the top of the list').toBe(b.id)
   })
 })

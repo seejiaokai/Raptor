@@ -636,13 +636,21 @@ async function loadCourseNow(c, restoreLastSyllabus) {
      (a write that did not land), and half a converted roster on screen is
      worse than none — the next load retries the whole thing. */
   roster = sParse(rr, [], 'array').filter(isEntry);
+  /* Read the last-graded student AGAIN, because migrateIds has just rewritten
+     that key from a name to an id. The copy taken further up is the one the
+     syllabus restore needed — it had to be the NAME, since that is what the
+     record was still filed under at the time — but using it here would miss
+     every id on the roster on the ONE load that converts a course, and the
+     trainer would open on whoever happens to be first instead of the person
+     last marked. Every later load reads the same value either way. */
+  const __lastS2 = await sGet(kLastStudent(c));
   /* Your own last pick first, then the last person anyone GRADED on this course
      (kLastStudent), then whoever is at the top. The roster is per syllabus, so
      the membership guard quietly handles remembering someone who is not on the
      syllabus being opened. */
   const __myS = prefGet('lastCrew:' + c);
   const has = id => !!id && roster.some(r => r.id === id);
-  active = has(__myS) ? __myS : (has(__lastS) ? __lastS : (roster[0] ? roster[0].id : null));
+  active = has(__myS) ? __myS : (has(__lastS2) ? __lastS2 : (roster[0] ? roster[0].id : null));
   await loadLayout();
   await loadStudent();
   /* one-time marks + layout migration from the old syllabus name */
