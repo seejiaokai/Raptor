@@ -18,6 +18,7 @@ import {
   loadVersionToWorkingCopy, reconcileIssuedMarks,
 } from './drafts'
 import { HIST, histInit, histApply, histPush, histSnap } from '../state/history'
+import { rowsOf } from './rowids'
 
 /* drafts swap DAYS[0] wholesale — every test starts from the pristine day,
    same discipline daytpl.test.ts and restore.test.ts use */
@@ -63,10 +64,16 @@ describe('duplicating a day', () => {
        minted fresh in place the moment it was made (stable-ids identity fix,
        10 Sep 26) */
     expect(JSON.stringify(list[0].d, ridless)).toBe(JSON.stringify(DAYS[0], ridless))
+    /* …ids aside — assert they ARE aside: Draft 1 is the frozen original (never
+       minted in this file, which does not call initStore/ensureRowIds), DAYS[0]
+       is the new draft, minted fresh in place */
+    expect(rowsOf(list[0].d).some((r: any) => 'rid' in r)).toBe(false)
+    expect(rowsOf(DAYS[0]).every((r: any) => typeof r.rid === 'string')).toBe(true)
     /* the live day's CONTENT is untouched by duplicating; only its ids move,
        from none (this file never mints any) to the fresh set the new draft
        just got */
     expect(JSON.stringify(DAYS[0], ridless)).toBe(JSON.stringify(D0, ridless))
+    expect(rowsOf(D0).some((r: any) => 'rid' in r)).toBe(false)   // D0 was never minted either
   })
 
   it('a later dup stows live into the selected entry and mints Draft N', () => {
