@@ -37,6 +37,8 @@ as of 4 Sep 26) — search it for "why did we do X", don't re-read it.
 | the Dataverse handover — what the table designer (Manfred) reads, what we need from him, what is not negotiable, what we do on our side | `raptor-port/docs/handover-dataverse.md` |
 | skill-improvement observations captured during sessions | `.claude/skill-observations/log.md` |
 | picking work up on the desktop — where task #1 stands, the cross-device / multi-model (Claude + Codex) setup, and the model/workflow advisor to paste | `raptor-port/docs/superpowers/DESKTOP-HANDOFF.md` |
+| the 11 Sep 26 overnight bug-check (Astra + Fable) — 3 Tracker/storage data-loss findings, what was FIXED (PR #386 import-conflict + honest wording; PR #387 resumable/grandfathered legacy import) and what is an OWNER DECISION still open (Decision A: migration/rename "verify before delete" reads memory not disk — a DB-step fix) | `raptor-port/docs/superpowers/OVERNIGHT-BUGCHECK-REPORT.md` |
+| the rid engine-wiring RED-TEAM findings (must-fix before building spec tasks 2–7) | `raptor-port/docs/superpowers/specs/2026-09-11-addressing-by-rid-REDTEAM.md` |
 
 
 ## Gate status
@@ -321,11 +323,16 @@ browser-proven.
   FROM `main`):** that spec's tasks 2–7 — the interlocking engine wiring:
   `dayKeys`→rid, the write/read/edit-log boundary, the delete-mark sweep,
   migration wiring, UI audit, and re-anchoring the `audit-d` keyspace oracle to
-  rid WITHOUT weakening it. This is the atomic, silent-defect-critical half:
-  build it with Opus high, run the "Confirmed traps for the wiring" checklist in
-  the spec (structuralAddExists / deletionWasIssued / rowKeyOf / keyLabel must
-  translate; label-before-translate ordering; keep `ridKey` O(1) on the
-  `alAttr` hot path, `posKey` off it), then a Fable independent bug-check, and
+  rid WITHOUT weakening it. This is the atomic, silent-defect-critical half.
+  **The spec was RED-TEAMED 11 Sep 26 (Astra + Fable, both REVISE) — READ
+  `raptor-port/docs/superpowers/specs/2026-09-11-addressing-by-rid-REDTEAM.md`
+  and REVISE the design spec to close its findings, then re-review with both
+  models, BEFORE building.** Six convergent must-fixes (new-row id minted too
+  late = the primary silent-loss; delete cleanup wired in the wrong file;
+  key-shape mismatch foundation-vs-spec; draftDup re-mint breaks rebase; reorder
+  reads `SCHED.added` positionally; legacy migration pairs rows by position),
+  plus two OWNER DECISIONS to raise first (the key shape, and the draft-identity
+  approach). Then build with Opus high, a Fable independent bug-check, and
   **HOLD before live — merge to `main` ONLY on the owner's explicit "merge
   live".** (2) course and
   syllabus ids (still name keys joined with `:`); (3) `Attempt` history.
