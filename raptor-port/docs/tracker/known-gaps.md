@@ -65,6 +65,14 @@
 >   old roster comes back, entries, links and marks together — coherent, but
 >   worth knowing. Export carries the entries (no `links` block); Import
 >   reads both the entry shape and a legacy string roster with its `links`.
+>   **A course whose id conversion cannot finish is HELD (10 Sep 26):** after
+>   one retry on the same load, `core.js` keeps `rosterHeld` and refuses
+>   `+ Add`, remove, reorder and duplicate-syllabus with a notice, so the old
+>   name-keyed roster is never overwritten. The gap: no component reads the
+>   flag — the Students card shows an EMPTY list and a `+ Add` that looks
+>   live until pressed. A one-line notice in the card is the follow-up. The
+>   way out is a reload that converts (or an Import, which converts the
+>   course through the same migration).
 > - **Loads and roster writes share ONE queue (9 Sep 26).** `loadCourse`
 >   reads a dozen records with an await between each and then replaces the
 >   roster with what it fetched; a `+ Add` or a removal finishing inside that

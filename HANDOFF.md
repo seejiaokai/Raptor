@@ -304,8 +304,13 @@ browser-proven.
   control (the name is a label now; nothing edits it); (4) `Attempt` history.
   Known edges left by design: a course rename that cannot carry every record
   keeps the old course listed beside the new; legacy `v3:<old>:syls`/`:syl`
-  are not carried by a rename. The technical team's open questions are listed
-  at the end of `data-model.md`.
+  are not carried by a rename; a held (unconvertible) course shows an empty
+  Students card with no notice until `+ Add` is pressed (`known-gaps.md`);
+  a schedule week that was persisted BEFORE this change gets its row ids
+  re-minted on every reload until its first edit after the upgrade (a
+  pristine week is never persisted), so ids become permanent at that first
+  edit. The technical team's open questions are listed at the end of
+  `data-model.md`.
 - **FOUND, NOT FIXED — the area/area-time strip and the restore keys (review,
   9 Sep 26).** `src/ui/textedit.ts:184,194` write a typed-over area strip on
   the FORMATION (`f.area`, `f.atime`; read back by `ui/html.ts:751-755`), but
