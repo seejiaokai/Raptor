@@ -104,7 +104,19 @@ describe('the walk runs before every baseline and snapshot', () => {
        match the true value, same as Task 1's miscount. */
     markEdit('dn:0.0'); alIssue(1, ['dn:0.0'])
     rowsOf(SCHED.als[0].snap[0].d).forEach((r: any) => { delete r.rid })   // an amendment book written by a pre-change browser
-    restoreDayVersion(0, 1); HOOKS.histPush()
+    /* restoreDayVersion returns `false` only when the snapshot can't be
+       found, otherwise the count of pending marks it dropped — a plain
+       `.toBe(true)` fails here because there is nothing pending left to drop
+       on day 0 (alIssue already cleared it), so the true success value is
+       "didn't come back false", not the literal boolean true. */
+    expect(restoreDayVersion(0, 1)).not.toBe(false)
+    /* pin the RED case, not just the GREEN one: without this, a restore that
+       never actually installed the id-less snapshot would still pass the
+       final assertion (DAYS[0] was already fully minted from initStore) —
+       a vacuous pass. This proves the live day really is missing ids right
+       after the restore, before the epilogue below puts them back. */
+    expect(rowsOf(DAYS[0]).some(r => r.rid === undefined)).toBe(true)
+    HOOKS.histPush()
     expect(rowsOf(DAYS[0]).every(r => typeof r.rid === 'string')).toBe(true)
   })
 })

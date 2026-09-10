@@ -38,14 +38,6 @@ import * as view from '../state/view'
 const BASE = '01/01/2024'
 const wkFor = (i: number) => shiftWeekKey(BASE, i * 10)
 
-/* the mutation epilogue mints a `rid` (engine/rowids.ts) the moment this
-   test's pushed row takes its first history snapshot, and the round trip
-   through the stash carries it — strip it before comparing against a literal
-   that (rightly) never names one, same idiom as parity.test.ts's stripKeys. */
-const stripRid = (v: any): any => Array.isArray(v) ? v.map(stripRid)
-  : v && typeof v === 'object' ? Object.fromEntries(Object.entries(v).filter(([k]) => k !== 'rid').map(([k, x]) => [k, stripRid(x)]))
-  : v
-
 beforeAll(() => { initStore() })
 /* every test is free to load whatever weeks it needs; return to the seed
    week so the next test starts from the same place (crossweek.test.ts's own
@@ -60,10 +52,17 @@ describe('round trip: an edited week keeps its edit, its amendment marks and its
     ;(DAYS[6] as any).dutywaves.push({ label: 'Duty', rows: [{ role: 'SDO', id: 'waldo', str: '1900', end: '2300' }] })
     markStructuralAdd('dl:6.0')
     afterSchedMutate()
+    /* afterSchedMutate's markEdit()->histPush() epilogue just minted this
+       block's rid (engine/rowids.ts) — capture it so the round trip below
+       can assert the STASH CARRIES THE SAME ID, which is the whole point of
+       a stable id: a row's address may reshuffle, its identity must not. */
+    const blk = (DAYS[6] as any).dutywaves[0]
+    const rid = blk.rid, rowRid = blk.rows[0].rid
+    expect(typeof rid).toBe('string')
     view.WARNOFF.add('CREW_REST|waldo|dummy')
     loadWeek(wkFor(1))          // leave WK — stashes it (it changed since load)
     loadWeek(WK)                // and back
-    expect(stripRid((DAYS[6] as any).dutywaves[0])).toEqual({ label: 'Duty', rows: [{ role: 'SDO', id: 'waldo', str: '1900', end: '2300' }] })
+    expect((DAYS[6] as any).dutywaves[0]).toEqual({ label: 'Duty', rid, rows: [{ role: 'SDO', id: 'waldo', str: '1900', end: '2300', rid: rowRid }] })
     expect(SCHED.pending['dl:6.0']).toBe(1)
     expect(SCHED.added['dl:6.0']).toBe(1)
     expect(view.WARNOFF.has('CREW_REST|waldo|dummy'), 'a muted warning stays muted across the round trip').toBe(true)
