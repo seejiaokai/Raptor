@@ -658,7 +658,10 @@ resumable and read-back-verified — `app/ids.js` is the one converter, shared
 with Import). Same person or same name on the course = the same enrolment
 (`findEnrolment`, course-wide, hidden charts included). Course, syllabus and
 chart names refuse a colon (they are storage-key segments); a student name is a
-label and may carry one. No rename control yet. **The Tracker will be
+label and may carry one. The pencil on each Students-card chip renames that
+label (`core.js:renameStudent`, 10 Sep 26 — everyone may, like + Add and
+Remove; refuses a name another enrolment on the course already holds; the id
+and every id-keyed record are untouched). **The Tracker will be
 exported back out as a standalone app** (owner, 9 Sep 26), where students are
 typed and nothing feeds the bridge — so every Raptor-fed feature degrades to the
 old behaviour when the bridge is empty (`+ Add` with no roster IS the old

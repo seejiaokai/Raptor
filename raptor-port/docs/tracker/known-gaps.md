@@ -58,7 +58,8 @@
 >   Raptor-specific about `+ Add` is the one `people.length` branch in
 >   `core.js addStudent` (pinned in `tracker.test.tsx`). The roster,
 >   marks, dates, pace, lulls and undo are all keyed by the entry's id; the
->   name is a label (no rename control yet) and may contain a colon. Nothing
+>   name is a label (renamed by the pencil on each chip, `renameStudent`, id
+>   and records untouched — 10 Sep 26) and may contain a colon. Nothing
 >   flows back to Raptor yet (no pucks, no quals) — `pid` is the hook for
 >   that. Deleting a course leaves its records in storage the way it leaves
 >   its marks (a safety net): re-create a course under the same name and its

@@ -1964,6 +1964,21 @@ const addStudent = async name => {
   await addStudent('STUDENT SMOKE3');
   ok('a typed callsign still adds an unlinked crew member',
     (await rosterNow()).includes('STUDENT SMOKE3') && await pg.locator('.c-students .chip.linked').count() === 1);
+  /* Rename (10 Sep 26): the pencil on a chip renames the LABEL only — the
+     enrolment id and the squadron link ride along untouched. */
+  const linkedId = await idOf(picked);
+  await pg.locator('.c-students .chip', { hasText: picked }).locator('.ren').click();
+  await pg.waitForSelector('#dlgInput'); await pg.fill('#dlgInput', 'RENAMED SMOKE'); await pg.click('#dlgOk');
+  await pg.waitForFunction(() => [...document.querySelectorAll('#activeSel option')].some(o => o.textContent === 'RENAMED SMOKE'), null, { timeout: 4000 }).catch(() => {});
+  ok('the pencil renames a student — new label on the dropdown, old one gone',
+    (await rosterNow()).includes('RENAMED SMOKE') && !(await rosterNow()).includes(picked));
+  ok('a rename keeps the enrolment id and the squadron link',
+    await idOf('RENAMED SMOKE') === linkedId
+    && await pg.locator(`.c-students .chip.linked[title="On the squadron roster as ${first.label}"]`).count() === 1);
+  /* rename back so the Export and removal checks below still find the callsign */
+  await pg.locator('.c-students .chip', { hasText: 'RENAMED SMOKE' }).locator('.ren').click();
+  await pg.waitForSelector('#dlgInput'); await pg.fill('#dlgInput', picked); await pg.click('#dlgOk');
+  await pg.waitForFunction(n => [...document.querySelectorAll('#activeSel option')].some(o => o.textContent === n), picked, { timeout: 4000 }).catch(() => {});
   /* the file, through the real Export button: the OS save picker cannot be
      driven, so a fake handle (window.__pickSaveForTests) collects what the
      app wrote — the twin of the Import hook at the end of this suite */

@@ -349,6 +349,7 @@ svg.perf .edgehit{pointer-events:none}
 .cal .lull{background:#3a3030;color:#ffb3a0}.cal .end{background:#16384a}.cal .ls{background:#2a3550}.cal .lc{background:#203a2a}
 .chips{display:flex;flex-wrap:wrap;gap:5px}.chip{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:3px 9px;font-size:12px;display:flex;align-items:center;gap:6px}
 .chip b{font-weight:600}.chip .x{cursor:pointer;color:var(--muted)}.chip .x:hover{color:var(--red)}
+.chip .ren{cursor:pointer;color:var(--muted);font-size:11px}.chip .ren:hover{color:var(--accent)}
 /* A student linked to the squadron roster (9 Sep 26): a small accent dot
    before the number; the chip's title says who they are on the roster. */
 .chip.linked::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--accent);flex:0 0 auto}

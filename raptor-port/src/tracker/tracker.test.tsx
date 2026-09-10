@@ -847,6 +847,84 @@ describe('the person bridge and the link (peoplewire.ts → people.js → core.j
     expect(seen).toEqual([COLON, COLON, 'Nothing was brought in.'])
   })
 
+  it('a student rename changes only the label — the enrolment id, the person link and the id-keyed records stay put', async () => {
+    /* 10 Sep 26: the whole point of the enrolment id is that the name is just
+       a label. A rename must move nothing in storage but the roster entry's
+       own name; every record still files under the id. */
+    let p: Promise<any> = C.addStudent(); C.dlgClose({ pick: 'p1' }); await p; await C.whenLoaded()
+    const before = C.byName('RANGER')!                 /* on the course, linked to p1 */
+    const markKey = `v3:${C.course}:${C.curSyl()}:m:${before.id}`
+    const marksVal = (await storage.get(markKey))!.value
+    p = C.renameStudent(before.id); await answer('viper'); await p; await C.whenLoaded()
+    const after = C.byName('VIPER')!
+    expect(C.byName('RANGER'), 'the old label is gone').toBeNull()
+    expect(after.id, 'the same enrolment id').toBe(before.id)
+    expect(after.pid, 'still linked to the same person').toBe('p1')
+    expect(C.linkedPerson(after.id)).toEqual(P[0])
+    const stored = JSON.parse((await storage.get(`v3:${C.course}:${C.curSyl()}:roster`))!.value)
+    expect(stored.find((r: any) => r.id === before.id).name, 'the roster carries the new label under the same id').toBe('VIPER')
+    expect((await storage.get(markKey))!.value, 'the id-keyed mark record is untouched').toBe(marksVal)
+    expect(await storage.get(`v3:${C.course}:${C.curSyl()}:m:VIPER`), 'nothing is filed under the label').toBeNull()
+    /* rename back so the neighbouring tests still find RANGER */
+    p = C.renameStudent(after.id); await answer('ranger'); await p; await C.whenLoaded()
+    expect(C.byName('RANGER')!.id).toBe(before.id)
+  })
+
+  it('a rename is refused when another student on the course already has that name', async () => {
+    /* two enrolments sharing a name is the ambiguity + Add refuses — byName and
+       the dropdown would resolve one of them at random. Checked course-wide. */
+    let p: Promise<any> = C.addStudent(); await answer('renalpha'); await p; await C.whenLoaded()
+    p = C.addStudent(); await answer('renbravo'); await p; await C.whenLoaded()
+    const a = C.byName('RENALPHA')!, b = C.byName('RENBRAVO')!
+    p = C.renameStudent(a.id); await answer('renbravo')
+    await until(() => C.dlg && C.dlg.cancel === false)
+    expect(C.dlg.msg, 'an alert, not a question').toMatch(/already on this course/)
+    C.dlgClose(true); await p; await C.whenLoaded()
+    expect(C.byName('RENALPHA')!.id, 'the rename was refused; the old name stands').toBe(a.id)
+    expect(C.byName('RENBRAVO')!.id, 'and the other student is untouched').toBe(b.id)
+    let rm = C.removeStudent(a.id); await answer(true); await rm
+    rm = C.removeStudent(b.id); await answer(true); await rm
+  })
+
+  it('a student rename may carry a colon (a label, not a key); blank, unchanged and cancelled are no-ops', async () => {
+    let p: Promise<any> = C.addStudent(); await answer('rentemp'); await p; await C.whenLoaded()
+    const t = C.byName('RENTEMP')!
+    p = C.renameStudent(t.id); await answer('a:b'); await p; await C.whenLoaded()   /* colon accepted */
+    expect(C.byName('A:B')!.id, 'a colon in a student label is fine').toBe(t.id)
+    for (const v of [null, '   ', 'A:B', 'a:b']) { p = C.renameStudent(t.id); await answer(v); await p; await C.whenLoaded() }
+    expect(C.roster.filter((r: any) => r.id === t.id).length, 'still exactly one entry').toBe(1)
+    expect(C.byName('A:B')!.id, 'unchanged').toBe(t.id)
+    const rm = C.removeStudent(t.id); await answer(true); await rm
+  })
+
+  it('a rename is NOT admin-gated — it works while the file portion is locked (everyone edits)', async () => {
+    let p: Promise<any> = C.addStudent(); await answer('renlock'); await p; await C.whenLoaded()
+    const l = C.byName('RENLOCK')!
+    setFileLocked(true)
+    p = C.renameStudent(l.id); await answer('renfree'); await p; await C.whenLoaded()
+    expect(C.byName('RENFREE')!.id, 'the file lock gates Import/Export, not editing students').toBe(l.id)
+    setFileLocked(false)
+    const rm = C.removeStudent(l.id); await answer(true); await rm
+  })
+
+  it('a rename keeps every chart of the course in step — one enrolment reads one label on all its syllabi', async () => {
+    /* findEnrolment relies on every chart agreeing on the name; a person can be
+       on several syllabi under one id, so a rename must reach them all. */
+    const origSyl = C.curSyl()
+    let p: Promise<any> = C.addStudent(); await answer('rensync'); await p; await C.whenLoaded()
+    const id = C.byName('RENSYNC')!.id
+    p = C.dupSyl(); await answer(origSyl + ' copy'); await p; await C.whenLoaded()
+    expect(C.curSyl(), 'now on the copy').toBe(origSyl + ' copy')
+    expect(C.byName('RENSYNC')!.id, 'the same enrolment rode across to the copy').toBe(id)
+    p = C.renameStudent(id); await answer('rensynced'); await p; await C.whenLoaded()
+    const labelOn = (k: string) => storage.get(`v3:${C.course}:${k}:roster`).then((v: any) => JSON.parse(v.value).find((r: any) => r.id === id)?.name)
+    expect(await labelOn(origSyl + ' copy'), 'the visible chart').toBe('RENSYNCED')
+    expect(await labelOn(origSyl), 'and the other syllabus the id sits on').toBe('RENSYNCED')
+    p = C.delSyl(); await answer(true); await p; await C.whenLoaded()      /* drop the copy, back to the source */
+    expect(C.curSyl()).toBe(origSyl)
+    const rm = C.removeStudent(id); await answer(true); await rm
+  })
+
   it('removing the student takes their entry with them; renaming the course carries the id and the person on it', async () => {
     const ranger = C.byName('RANGER')!, bravo = C.byName('BRAVO')!
     let p: Promise<any> = C.removeStudent(ranger.id); await answer(true); await p
