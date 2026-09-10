@@ -51,6 +51,109 @@ export function pathsOf(d:any):Array<[string,any]>{
   (d.ground||[]).forEach((r:any,i:number)=>out.push(['ground.'+i,r]));
   return out;
 }
+/* =====================================================================
+   ADDRESSING BY rid (addressing-by-rid, 10 Sep 26) — the amendment book
+   resolves a row by its stable `rid`, not its array position, so a delete or
+   reorder never renumbers another row's stored key across the shared database.
+   ===================================================================== */
+/* The DOM stays POSITIONAL: html.ts builds every data-slot / data-area / the
+   alAttr colour from the loop index and stringifies no row, which is what keeps
+   the byte-parity gate (tfin.js 728/0, html.test.ts) identical. So the two
+   worlds meet at a translation boundary — a positional key in from the DOM
+   becomes a rid-anchored key in the book (`ridKey`); a stored rid key becomes
+   the row's CURRENT positional key to find a live cell (`posKey`).
+   restore.ts:dayKeys is the executable grammar these two mirror, prefix for
+   prefix; its tests pin every one.
+   A key is `prefix:di.…` (or the bare flying seat `di.…`, no prefix); the day
+   index is always the first component and stays literal (keyDay depends on it).
+   ONLY the position components collapse to a rid — the sim `kind` (amt/oft),
+   the field/seat selector, the .xN overflow, the crew index .k and pax.k all
+   stay literal. A position component reads `\d+`; a rid never does, so the two
+   forms are always told apart. */
+const NONROW = new Set(['dn', 'sn', 'pn', 'dtn', 'gn', 'del', 'mov', 'inp']);
+/* per prefix, the position slots (index into the dot-parts) and the array each
+   one indexes — parents first, so slot i's row is found inside slot i-1's. The
+   first level indexes off the DAY, later levels off the row resolved above. */
+function keyLevels(prefix: string, parts: string[]): Array<{ slot: number; arr: (p: any) => any }> | null {
+  const W = { slot: 1, arr: (d: any) => d.waves }, F = { slot: 2, arr: (w: any) => w.formations }, A = { slot: 3, arr: (f: any) => f.aircraft };
+  switch (prefix) {
+    case '': return [W, F, A];                                   // bare flying seat di.gi.li.ai.seat
+    case 'wl': case 'it': case 'tr': return [W];
+    case 'ff': case 'ar': case 'at': return [W, F];
+    case 'fr': case 'st': return [W, F, A];
+    case 'dl': return [{ slot: 1, arr: (d: any) => d.dutywaves }];
+    case 'dr': case 'd': return [{ slot: 1, arr: (d: any) => d.dutywaves }, { slot: 2, arr: (b: any) => b.rows }];
+    case 'sr': case 's': return [{ slot: 2, arr: (d: any) => ((d.sims || {})[parts[1]!] || []) }];  // parts[1]=kind, literal
+    case 'ap': case 'a': return [{ slot: 1, arr: (d: any) => d.allhands }];
+    case 'gr': case 'g': return [{ slot: 1, arr: (d: any) => d.ground }];
+    default: return null;                                        // dn:/sn: etc. never reach here (NONROW)
+  }
+}
+/* a positional key → its rid-anchored form. All-or-nothing: if EVERY row on the
+   path carries a rid, each position slot becomes that row's rid; if any row is
+   missing a rid (a legacy/pristine row) or a slot is already a rid, the key is
+   returned UNCHANGED — the "fallback to position" the scope names, and also what
+   makes this idempotent (a rid slot is non-numeric, so the walk bails). */
+export function ridKey(key: any, days: any[]): string {
+  const s = String(key), c = s.indexOf(':'), prefix = c < 0 ? '' : s.slice(0, c);
+  if (NONROW.has(prefix)) return s;
+  const parts = (c < 0 ? s : s.slice(c + 1)).split('.'), day = (days || [])[+parts[0]!];
+  if (!day) return s;
+  const lv = keyLevels(prefix, parts); if (!lv) return s;
+  const out = parts.slice(); let container: any = day;
+  for (const { slot, arr } of lv) {
+    const a = arr(container), comp = parts[slot]!;
+    if (!/^\d+$/.test(comp)) return s;                           // already a rid / not positional → leave it
+    const row = Array.isArray(a) ? a[+comp] : null;
+    if (!row || typeof row.rid !== 'string' || !row.rid) return s;   // no id here → positional fallback
+    out[slot] = row.rid; container = row;
+  }
+  return (c < 0 ? '' : prefix + ':') + out.join('.');
+}
+/* a rid-anchored key → the row's CURRENT positional key, or null if the row is
+   gone (a deleted rid). Tolerant of a mixed key: a numeric slot is kept as-is
+   (a legacy/fallback address), a rid slot is resolved to the row's live index. */
+export function posKey(key: any, days: any[]): string | null {
+  const s = String(key), c = s.indexOf(':'), prefix = c < 0 ? '' : s.slice(0, c);
+  if (NONROW.has(prefix)) return s;
+  const parts = (c < 0 ? s : s.slice(c + 1)).split('.'), day = (days || [])[+parts[0]!];
+  if (!day) return null;
+  const lv = keyLevels(prefix, parts); if (!lv) return s;
+  const out = parts.slice(); let container: any = day;
+  for (const { slot, arr } of lv) {
+    const a = arr(container); if (!Array.isArray(a)) return null;
+    const comp = parts[slot]!;
+    const ix = /^\d+$/.test(comp) ? +comp : a.findIndex((r: any) => r && r.rid === comp);
+    if (ix < 0 || !a[ix]) return null;                          // the addressed row is gone
+    out[slot] = String(ix); container = a[ix];
+  }
+  return (c < 0 ? '' : prefix + ':') + out.join('.');
+}
+/* MIGRATE A PERSISTED BOOK written with positional keys (the storage seam now
+   persists SCHED per browser). Runs once per boot/week-load AFTER
+   backfillSnapshotIds (every row has a rid) and BEFORE the baseline, so a
+   re-keying is not read as a dirtying edit. Rewrites the live book — pending,
+   changes, added, and every AL's keys/adds/structAdds/snap.c — from positional
+   to rid form against the live DAYS; an unresolvable key is left positional
+   (fallback). Idempotent: an already-rid key returns itself. Returns how many
+   keys changed. NOTE: not wired into store.ts in this foundation step — a pure
+   function, tested in isolation; the wiring is task 5. */
+export function migrateBookKeys(sched: any, days: any[]): number {
+  if (!sched) return 0;
+  let n = 0;
+  const one = (k: any) => { const m = ridKey(k, days); if (m !== k) n++; return m; };
+  const remap = (o: any) => { const out: any = {}; for (const k of Object.keys(o || {})) out[one(k)] = o[k]; return out; };
+  sched.pending = remap(sched.pending);
+  sched.changes = remap(sched.changes);
+  sched.added = remap(sched.added);
+  (sched.als || []).forEach((al: any) => {
+    if (al.keys) al.keys = al.keys.map(one);
+    if (al.adds) al.adds = al.adds.map(one);
+    if (al.structAdds) al.structAdds = al.structAdds.map(one);
+    if (al.snap) Object.keys(al.snap).forEach((di: any) => { const sd = al.snap[di]; if (sd && sd.c) sd.c = remap(sd.c); });
+  });
+  return n;
+}
 /* THE BACKFILL (review finding 6): the amendment book — SCHED.orig, every
    AL's day snapshots, the drafts — is persisted with the week, so a book
    written before ids existed would mint a DIFFERENT id on every restore. Run

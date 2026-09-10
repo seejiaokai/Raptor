@@ -4,8 +4,9 @@
    missing id is minted, a duplicate (a copied row) is re-minted, an existing
    id is never touched, and the walk covers every row kind. */
 import { describe, expect, it } from 'vitest'
-import { ensureRowIds, mintRowId, rowsOf } from './rowids'
+import { ensureRowIds, mintRowId, rowsOf, ridKey, posKey, migrateBookKeys } from './rowids'
 import { DAYS } from './data'
+import { dayKeys } from './restore'
 import { WEEKS, CURWEEK } from './waves'
 
 const clone = (v: any) => JSON.parse(JSON.stringify(v))
@@ -41,6 +42,82 @@ describe('ensureRowIds', () => {
   it('mintRowId is opaque and unique', () => {
     const a = mintRowId(), b = mintRowId()
     expect(a).toMatch(/^r[0-9a-z]+$/); expect(a).not.toBe(b)
+  })
+})
+
+describe('ridKey / posKey / migrateBookKeys — addressing by rid (addressing-by-rid, 10 Sep 26)', () => {
+  const seed = () => { const d = clone(DAYS); ensureRowIds(d); return d }
+
+  it('round-trips EVERY key of the grammar: positional → rid → positional', () => {
+    /* dayKeys is the executable slot-key grammar (engine/restore.ts): its key
+       set is every prefix the app addresses. A rid round-trip that returns the
+       exact positional key for all of them is the completeness proof. */
+    const days = seed()
+    const keys = [...dayKeys(days[0], 0).keys()]
+    expect(keys.length).toBeGreaterThan(20)                   // the grammar is wide — a stubbed day would fail loud
+    const bad = keys.filter(k => posKey(ridKey(k, days), days) !== k)
+    expect(bad, bad.join('  ')).toEqual([])
+  })
+
+  it('a row-addressing key actually CHANGES under ridKey (the round-trip is not vacuous)', () => {
+    const days = seed()
+    const di = days.findIndex((d: any) => (d.waves || []).length > 0)
+    const w0 = days[di].waves[0].rid
+    expect(ridKey(`wl:${di}.0`, days)).toBe(`wl:${di}.${w0}`)
+    // a deep one: the bare flying seat collapses wave.formation.aircraft all to rids
+    const f0 = days[di].waves[0].formations[0], a0 = f0.aircraft[0]
+    expect(ridKey(`${di}.0.0.0.p`, days)).toBe(`${di}.${w0}.${f0.rid}.${a0.rid}.p`)
+  })
+
+  it('a day-level / synthetic key is passed through untouched, both directions', () => {
+    const days = seed()
+    for (const k of ['dn:0.2', 'sn:0', 'pn:0', 'del:0.1.wave', 'mov:0.2.duty', 'inp:0.abc']) {
+      expect(ridKey(k, days)).toBe(k)
+      expect(posKey(k, days)).toBe(k)
+    }
+  })
+
+  it('a row without a rid falls back to its positional key (never invents one)', () => {
+    const days = seed()
+    delete days[0].waves[0].rid                                // a legacy / pristine row
+    expect(ridKey('wl:0.0', days)).toBe('wl:0.0')             // no id here → unchanged
+    // all-or-nothing: a formation under an id-less wave stays positional too
+    expect(ridKey('ff:0.0.0.cs', days)).toBe('ff:0.0.0.cs')
+  })
+
+  it('a deleted rid resolves to null; a survivor keeps its stored key and re-resolves to its NEW position', () => {
+    const days = seed()
+    const di = days.findIndex((d: any) => (d.waves || []).length >= 2)
+    expect(di).toBeGreaterThanOrEqual(0)
+    const survivor = days[di].waves[1].rid
+    const stored = `wl:${di}.${survivor}`                     // the book stores the rid form
+    expect(posKey(stored, days)).toBe(`wl:${di}.1`)           // resolves to the live cell
+    const goneRid = days[di].waves[0].rid
+    days[di].waves.splice(0, 1)                                // delete wave 0 — NOTHING renumbers the book
+    expect(posKey(`wl:${di}.${goneRid}`, days)).toBe(null)   // the deleted row's key is now dead
+    /* THE WHOLE POINT: the survivor's stored key string never changed, and it
+       now resolves to the row's NEW positional address — no shiftKeys, no
+       renumber, so a second client's copy of this key is never disturbed. */
+    expect(posKey(stored, days)).toBe(`wl:${di}.0`)
+  })
+
+  it('migrateBookKeys rewrites a positional book to rid form, idempotently, leaving unresolvable keys positional', () => {
+    const days = seed()
+    const di = days.findIndex((d: any) => (d.waves || []).length >= 2)
+    const w0 = days[di].waves[0].rid, w1 = days[di].waves[1].rid
+    const sched: any = {
+      pending: { [`wl:${di}.1`]: 1 },
+      changes: { [`wl:${di}.0`]: 2 },
+      added: {},
+      als: [{ n: 1, keys: [`wl:${di}.0`, 'dn:0.0'], adds: [], structAdds: [], snap: { [di]: { c: { [`wl:${di}.1`]: 1 } } } }],
+    }
+    const n = migrateBookKeys(sched, days)
+    expect(n).toBeGreaterThan(0)
+    expect(sched.pending[`wl:${di}.${w1}`]).toBe(1)
+    expect(sched.changes[`wl:${di}.${w0}`]).toBe(2)
+    expect(sched.als[0].keys).toEqual([`wl:${di}.${w0}`, 'dn:0.0'])   // the note key stays positional (no rid)
+    expect(sched.als[0].snap[di].c[`wl:${di}.${w1}`]).toBe(1)
+    expect(migrateBookKeys(sched, days)).toBe(0)                       // already rid form → a no-op
   })
 })
 
