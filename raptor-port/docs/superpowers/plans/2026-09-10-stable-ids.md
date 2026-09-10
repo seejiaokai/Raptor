@@ -12,6 +12,65 @@
 
 The Dataverse handover (`docs/handover-dataverse.md`) promises the table designer stable ids on our side first. Owner, 10 Sep 26: scope option 1 — Tracker fully re-keyed, schedule rows given an id carried alongside, addressing unchanged; no student rename control. Spec (approved): `raptor-port/docs/superpowers/specs/2026-09-10-stable-ids-design.md`. Explorers mapped ~40 name-keyed sites in `core.js`, the name in undo/file/DOM, and the scheduler's positional key machinery (left alone).
 
+## Review amendments (10 Sep 26, after Task 1)
+
+A technical review of this plan raised six findings; each was verified
+against the code before the plan was amended. Verdicts and the rules they
+produced — every later task is written to these:
+
+1. **Migration recovery — confirmed.** `core.js sSet` swallows a failed write
+   (it shows "local only"); the original Task 5 wrote the roster (the index)
+   before the records, so an interrupted run stranded name-keyed marks and a
+   retry keyed off the roster shape never looked for them. **Rule:** the
+   mapping is derived from every roster first (an entry lends its id, a
+   string mints one), records move under their ids with a read-back
+   verification, the roster is written LAST, legacy keys are deleted only
+   after their replacement is verified, the flag is set only when every move
+   verified, and the run is idempotent (a retry finds objects on some rosters
+   and strings on others and finishes the job). Pinned by an interruption
+   test (Task 6).
+2. **Copied row identity — confirmed.** `daytpl.ts mintBlob`/`applyDayTpl`
+   and `drafts.ts draftDup` clone rows by JSON, so a copy carries its source's
+   `rid` across days and weeks; first-seen dedupe would re-id the ORIGINAL
+   when the copy lands on an earlier day. **Rule:** a copy mints fresh ids
+   explicitly (`stripRowIds` at every copy site: template capture, template
+   apply, draft duplicate); a move (`reorder.ts` splices the same objects),
+   undo/redo, a draft switch and an amendment restore PRESERVE ids; the
+   dedupe in `ensureRowIds` stays only as a safety net. Task 2b.
+3. **Unopened courses — confirmed.** Migration ran per course at open; the
+   export no longer wrote `links`, so an unopened course's links vanished,
+   and a global syllabus rename skipped a string roster. **Rule:** every
+   course migrates at `init` (`migrateAllCourses`), the per-open call stays
+   as a belt, and `collectStudents` converts an un-migrated course on the fly
+   so a file never carries strings or loses a link. Pinned with a second
+   course never opened (Task 6).
+4. **Course-wide enrolments — confirmed.** `+ Add` looked only at the open
+   chart's roster, so the same student on a second chart minted a second id
+   and split pace/lulls. **Rule:** the enrolment is the course's —
+   `findEnrolment(pid, name)` searches every roster of the course, pid first
+   then name, and reuses the id (and the existing name); a picked person
+   whose callsign is already on the course under a DIFFERENT pid is refused
+   with a message, never given a silent second id. Task 5 + Task 6.
+5. **Import safety — partly confirmed.** The rekey used a plain-object
+   lookup (a key like `constructor` leaks through the prototype) and ran on
+   maps whether or not their roster was legacy; no duplicate-id validation
+   existed. **Rule:** `upgradeCourseBlock` re-keys ONLY syllabi whose roster
+   was strings, looks ids up with `hasOwnProperty`, and throws on a
+   conflict (two entries with one id on a roster, one id with two names
+   across syllabi, two entries with one name on a roster); `fileFormat.js`
+   refuses the same conflicts before anything is written. Tasks 3 + 4.
+6. **Historical identity — confirmed.** The amendment book (`SCHED.orig`,
+   `als[].snap`, `drafts`) is persisted with the week, so an old snapshot
+   without ids would mint different ids on every restore. **Rule:**
+   `backfillSnapshotIds` runs once at boot/week-load before the baseline:
+   a snapshot row at the same address as a live row inherits the live id,
+   any other gets one minted, written INTO the snapshot so it persists;
+   thereafter restoring, undoing, switching drafts or reloading returns the
+   SAME ids, pinned by repeated-restore tests. Task 2b.
+
+Scope unchanged: positional addressing stays, no rename control, no merge
+before "merge live".
+
 ## Global Constraints
 
 - Run everything from `raptor-port/`. Iterate with `npx vitest run <file>`; the full gates ONCE in Task 8: `npm run build`, `node reference/tfin.js` (728/0), `npm test`, `npm run test:e2e`, `npm run smoke:tracker`.
@@ -260,6 +319,150 @@ placed BEFORE the issued-amendment case (nothing may follow it).
 
 ---
 
+### Task 2b: Identity rules — copies mint fresh, moves/undo/restore preserve, old snapshots backfilled
+
+**Files:**
+- Modify: `src/engine/rowids.ts` (add `stripRowIds`, `pathsOf`, `backfillSnapshotIds`)
+- Modify: `src/engine/daytpl.ts:93-99` (`mintBlob`) and `:217-230` (`applyDayTpl`)
+- Modify: `src/engine/drafts.ts:95-114` (`draftDup`)
+- Modify: `src/state/store.ts` (initStore and loadWeek: `backfillSnapshotIds(SCHED, DAYS)` right after the `ensureRowIds(DAYS)` call Task 2 added, still before `weekBaseline`)
+- Test: `src/engine/rowids.test.ts` (third describe)
+
+**Interfaces:**
+- Consumes: `rowsOf`, `ensureRowIds`, `mintRowId` (Task 1); `SCHED` (`./publish`), `DAYS`.
+- Produces: `stripRowIds(day): void`, `pathsOf(day): Array<[string, any]>` (address → row), `backfillSnapshotIds(sched, days): number` (count assigned).
+
+- [ ] **Step 1: failing tests** — append to `rowids.test.ts`:
+
+```ts
+describe('identity rules — a copy is a new row, a move/undo/restore is the same row', () => {
+  const ids = (d: any) => rowsOf(d).map(r => r.rid)
+  it('a day template carries no rids; applied to an EARLIER day the original keeps its ids and the copy gets fresh ones', async () => {
+    const { initStore } = await import('../state/store'); const { HOOKS } = await import('./hooks')
+    const { addDayTpl, applyDayTpl, dayTplReset } = await import('./daytpl')
+    initStore()
+    const src = ids(DAYS[3])
+    const t = addDayTpl(3, 'T')!
+    expect(rowsOf(t.d).some((r: any) => 'rid' in r)).toBe(false)
+    expect(applyDayTpl(0, t.id)).toBe(true); HOOKS.histPush()
+    expect(ids(DAYS[3])).toEqual(src)
+    const copy = ids(DAYS[0])
+    expect(copy.every(x => typeof x === 'string' && !src.includes(x))).toBe(true)
+    expect(new Set(copy).size).toBe(copy.length)
+    dayTplReset()
+  })
+  it('a template applied on ANOTHER week carries none of the first week\'s ids', async () => {
+    const { initStore, loadWeek } = await import('../state/store'); const { HOOKS } = await import('./hooks')
+    const { addDayTpl, applyDayTpl, dayTplReset } = await import('./daytpl')
+    const { WEEKS } = await import('./data')
+    initStore()
+    const t = addDayTpl(0, 'X')!; const wk1 = DAYS.flatMap(ids)
+    loadWeek(WEEKS[1])
+    expect(applyDayTpl(0, t.id)).toBe(true); HOOKS.histPush()
+    expect(ids(DAYS[0]).some(x => wk1.includes(x))).toBe(false)
+    dayTplReset()
+  })
+  it('a move keeps every id', async () => {
+    const { initStore } = await import('../state/store'); const { HOOKS } = await import('./hooks')
+    const { moveWave } = await import('./reorder')
+    initStore()
+    const d = DAYS.find(x => x.waves.length >= 2)!; const di = DAYS.indexOf(d)
+    const before = ids(d).slice().sort()
+    moveWave(di, 0, 1); HOOKS.histPush()
+    expect(ids(d).slice().sort()).toEqual(before)
+    expect(d.waves[1].rid).toBe(before.length ? d.waves[1].rid : undefined)
+  })
+  it('a duplicated draft has fresh ids from the moment it is made; switching A→B→A returns A\'s ids and B\'s stay stable', async () => {
+    const { initStore } = await import('../state/store'); const { HOOKS } = await import('./hooks')
+    const { draftDup, draftSelect, dayDrafts } = await import('./drafts')
+    initStore()
+    const a = ids(DAYS[1])
+    const t = draftDup(1)!; HOOKS.histPush()
+    const b = ids(t.d)
+    expect(b.every(x => typeof x === 'string' && !a.includes(x))).toBe(true)
+    const [d1] = dayDrafts(1)
+    draftSelect(1, d1.id); HOOKS.histPush(); expect(ids(DAYS[1])).toEqual(a)
+    draftSelect(1, t.id); HOOKS.histPush(); expect(ids(DAYS[1])).toEqual(b)
+    draftSelect(1, d1.id); HOOKS.histPush(); expect(ids(DAYS[1])).toEqual(a)
+  })
+  it('restoring an issued version twice returns the same ids; undo and redo return the same ids', async () => {
+    const { initStore, undo, redo } = await import('../state/store'); const { HOOKS } = await import('./hooks')
+    const { alIssue, markEdit } = await import('./publish'); const { restoreDayVersion } = await import('./restore')
+    initStore()
+    const orig = ids(DAYS[0])
+    markEdit('dn:0.0'); alIssue(1, ['dn:0.0'])
+    DAYS[0].waves[0].formations.push({ cs: '', msn: '', to: '', ld: '', aircraft: [{ p: '', w: '', area: '', rmks: '', opts: {} }] }); HOOKS.histPush()
+    restoreDayVersion(0, 'orig'); HOOKS.histPush(); const r1 = ids(DAYS[0])
+    DAYS[0].notes.push('x'); HOOKS.histPush()
+    restoreDayVersion(0, 'orig'); HOOKS.histPush(); const r2 = ids(DAYS[0])
+    expect(r1).toEqual(orig); expect(r2).toEqual(orig)
+    undo(); expect(ids(DAYS[0])).toEqual(orig); redo(); expect(ids(DAYS[0])).toEqual(orig)
+  })
+  it('an amendment book written before ids existed is backfilled once: same address → the live id, a snapshot-only row → a minted one, idempotent, and it persists', async () => {
+    const { initStore, weekStashSnap } = await import('../state/store'); const { HOOKS } = await import('./hooks')
+    const { SCHED, alIssue, markEdit } = await import('./publish'); const { restoreDayVersion } = await import('./restore')
+    const { backfillSnapshotIds, pathsOf } = await import('./rowids')
+    initStore()
+    markEdit('dn:0.0'); alIssue(1, ['dn:0.0'])
+    rowsOf(SCHED.orig[0].d).forEach((r: any) => { delete r.rid })                       // the pre-change book
+    DAYS[0].waves[0].formations.splice(0, 1); HOOKS.histPush()                          // one issued row is gone live
+    const n = backfillSnapshotIds(SCHED, DAYS)
+    expect(n).toBe(rowsOf(SCHED.orig[0].d).length)
+    const live = new Map(pathsOf(DAYS[0])), snap = pathsOf(SCHED.orig[0].d)
+    for (const [p, r] of snap) { if (live.has(p) && p !== 'waves.0.formations.0') expect(r.rid, p).toBe(live.get(p).rid) }
+    expect(typeof rowsOf(SCHED.orig[0].d).every((r: any) => r.rid)).toBe('boolean')
+    expect(backfillSnapshotIds(SCHED, DAYS)).toBe(0)
+    expect(JSON.parse(weekStashSnap()).o[0].d.waves[0].rid).toBe(SCHED.orig[0].d.waves[0].rid)
+    restoreDayVersion(0, 'orig'); HOOKS.histPush(); const r1 = ids(DAYS[0])
+    DAYS[0].notes.push('y'); HOOKS.histPush()
+    restoreDayVersion(0, 'orig'); HOOKS.histPush(); expect(ids(DAYS[0])).toEqual(r1)
+  })
+})
+```
+(If `WEEKS` is not the exported week list in `./data`, use whatever `loadWeek`'s callers pass — see `state/store.ts` `loadWeek` and its tests — and say so in the report. If `moveWave`'s signature differs, read `reorder.ts:112` and adjust the call, not the assertion.)
+
+- [ ] **Step 2:** run → FAIL (template copies share ids; draft copies share ids; backfill missing).
+
+- [ ] **Step 3: implementation.** `rowids.ts` additions (verbatim-port style):
+```ts
+/* a COPY is a new row: template capture/apply and a duplicated draft strip
+   the ids so the copy mints its own — never the first-seen dedupe deciding
+   which of two identical rows was "first" */
+export function stripRowIds(d:any){for(const r of rowsOf(d||{}))if(r&&typeof r==='object')delete r.rid;}
+/* every row with its ADDRESS (section.index… path) — the pairing key for a
+   snapshot written before ids existed: the row at the same address in the
+   live day is the same row */
+export function pathsOf(d:any):Array<[string,any]>{
+  const out:Array<[string,any]>=[];
+  (d.allhands||[]).forEach((r:any,i:number)=>out.push(['allhands.'+i,r]));
+  (d.waves||[]).forEach((w:any,gi:number)=>{out.push(['waves.'+gi,w]);(w.formations||[]).forEach((f:any,li:number)=>{out.push(['waves.'+gi+'.formations.'+li,f]);(f.aircraft||[]).forEach((a:any,ai:number)=>out.push(['waves.'+gi+'.formations.'+li+'.aircraft.'+ai,a]));});});
+  const s=d.sims||{};(s.amt||[]).forEach((r:any,i:number)=>out.push(['sims.amt.'+i,r]));(s.oft||[]).forEach((r:any,i:number)=>out.push(['sims.oft.'+i,r]));
+  (d.dutywaves||[]).forEach((b:any,wi:number)=>{out.push(['dutywaves.'+wi,b]);(b.rows||[]).forEach((r:any,ri:number)=>out.push(['dutywaves.'+wi+'.rows.'+ri,r]));});
+  (d.ground||[]).forEach((r:any,i:number)=>out.push(['ground.'+i,r]));
+  return out;
+}
+/* THE BACKFILL (review finding 6): the amendment book — SCHED.orig, every
+   AL's day snapshots, the drafts — is persisted with the week, so a book
+   written before ids existed would mint a DIFFERENT id on every restore. Run
+   once per boot/week-load, after ensureRowIds(DAYS) and before the baseline:
+   a snapshot row still without an id takes the live row's id at the same
+   address, or a minted one when the address is gone; written into the
+   snapshot so it persists. Idempotent — rows that have an id are untouched. */
+export function backfillSnapshotIds(sched:any,days:any[]):number{
+  let n=0;const fill=(snapDay:any,di:number)=>{if(!snapDay)return;const live=new Map(pathsOf(days[di]||{}));
+    for(const [p,r] of pathsOf(snapDay)){if(!r||typeof r!=='object'||(typeof r.rid==='string'&&r.rid))continue;const l=live.get(p);r.rid=(l&&typeof l.rid==='string'&&l.rid)?l.rid:mintRowId();n++;}};
+  Object.keys(sched.orig||{}).forEach((k:any)=>fill(sched.orig[k]&&sched.orig[k].d,+k));
+  (sched.als||[]).forEach((al:any)=>Object.keys(al.snap||{}).forEach((k:any)=>fill(al.snap[k]&&al.snap[k].d,+k)));
+  Object.keys(sched.drafts||{}).forEach((k:any)=>(sched.drafts[k]||[]).forEach((t:any)=>fill(t&&t.d,+k)));
+  return n;
+}
+```
+`daytpl.ts mintBlob`: after the six clones, `stripRowIds({ allhands, waves, sims, dutywaves, ground })` with the comment "a template is a shape, not a set of rows — it carries no ids (review finding 2)"; `applyDayTpl`: `stripRowIds(nd)` before `DAYS[di] = nd` as the belt for a template stored by an older build. `drafts.ts draftDup`: after each `const t = { …, d: clone(DAYS[di]) }`, `stripRowIds(t.d); ensureRowIds([t.d])` — "the duplicate is a new set of rows with ids of its own from the moment it exists; the stowed live copy keeps its ids (it IS the live day)". `store.ts`: `backfillSnapshotIds(SCHED, DAYS)` after each `ensureRowIds(DAYS)` (initStore and loadWeek), import from `'../engine/rowids'`; `SCHED` is already imported there or import from `'../engine/publish'`.
+
+- [ ] **Step 4:** `npx vitest run src/engine/rowids.test.ts src/engine/schema.test.ts src/engine/drafts.test.ts src/engine/daytpl.test.ts src/engine/restore.test.ts src/state/persist.test.ts src/state/weekstash.test.ts` → PASS; `npm run build`. Commit `feat(engine): row identity rules — a copy mints fresh ids, a move/undo/restore keeps them, the amendment book is backfilled once`.
+
+---
+
 ### Task 3: `tracker/app/ids.js` — the pure converter
 
 **Files:**
@@ -320,6 +523,30 @@ describe('upgradeCourseBlock', () => {
     const src = legacy(); const copy = JSON.parse(JSON.stringify(src))
     upgradeCourseBlock(src, null); expect(src).toEqual(copy)
   })
+  it('re-keys ONLY a syllabus whose roster was strings; an entry-keyed syllabus and its maps are left exactly as they are (review finding 5)', () => {
+    const src: any = legacy()
+    src.bySyllabus.B = { roster: [{ id: 'sfixed', name: 'STUDENT A' }], marks: { sfixed: { 'ST-02': { g: 'dpco' } }, 'STUDENT A': { stray: 1 } }, dates: {} }
+    const { block } = upgradeCourseBlock(src, null)
+    expect(block.bySyllabus.B.marks).toEqual({ sfixed: { 'ST-02': { g: 'dpco' } }, 'STUDENT A': { stray: 1 } })
+    expect(block.bySyllabus.A.marks).toEqual({ sfixed: { 'ST-01': { g: 'dco' } } })
+  })
+  it('a prototype-named key never leaks through the lookup', () => {
+    const src: any = legacy(); src.bySyllabus.A.marks.constructor = { x: 1 }; src.bySyllabus.A.marks.__proto__ = { y: 2 }
+    const { block, ids } = upgradeCourseBlock(src, null)
+    expect(Object.prototype.hasOwnProperty.call(block.bySyllabus.A.marks, 'constructor')).toBe(true)
+    expect(block.bySyllabus.A.marks.constructor).toEqual({ x: 1 })
+    expect(Object.keys(block.bySyllabus.A.marks).sort()).toEqual([ids['STUDENT A'], 'constructor'].sort())
+  })
+  it('refuses a conflict: two entries with one id on a roster, one id with two names across syllabi, two entries with one name on a roster', () => {
+    const dup: any = legacy(); dup.bySyllabus.A.roster = [{ id: 's1', name: 'X' }, { id: 's1', name: 'Y' }]
+    expect(() => upgradeCourseBlock(dup, null)).toThrow(/id .*s1.* twice on “A”/)
+    const two: any = legacy(); two.bySyllabus.A.roster = [{ id: 's1', name: 'X' }]; two.bySyllabus.B.roster = [{ id: 's1', name: 'Z' }]
+    expect(() => upgradeCourseBlock(two, null)).toThrow(/s1.* two names/)
+    const nm: any = legacy(); nm.bySyllabus.A.roster = [{ id: 's1', name: 'X' }, { id: 's2', name: 'X' }]
+    expect(() => upgradeCourseBlock(nm, null)).toThrow(/“X” twice on “A”/)
+    const mixed: any = legacy(); mixed.bySyllabus.A.roster = ['X', 'X']
+    expect(() => upgradeCourseBlock(mixed, null)).toThrow(/“X” twice on “A”/)
+  })
   it('isEntry and mintId', () => {
     expect(isEntry({ id: 'x', name: 'N' })).toBe(true); expect(isEntry('N')).toBe(false); expect(isEntry({ id: '', name: 'N' })).toBe(false)
     expect(mintId()).not.toBe(mintId())
@@ -351,29 +578,51 @@ export const isEntry = e => !!e && typeof e === 'object' && !Array.isArray(e) &&
    { name: personId } map, folded into `pid`. Returns the new block and the
    name → id map (the caller moves the course-level keys the block does not
    carry: last-edit, lastStudent, the per-browser lastCrew pref). */
+/* Own-property lookups only: a mark keyed "constructor" in a hand-edited file
+   must read as a mark, never as Object.prototype's (review finding 5). */
+const has = (o, k) => Object.prototype.hasOwnProperty.call(o, k);
+const conflict = msg => { throw new Error('The people in that file are inconsistent: ' + msg + ', so it has not been opened.'); };
 export function upgradeCourseBlock(block, links) {
-  const ids = {};
+  const ids = Object.create(null);          // name → id, one per course
+  const nameOfId = Object.create(null);     // id → name, to catch one id under two names
   const src = block || {};
   const syls = src.bySyllabus || {};
-  for (const syl in syls) for (const e of (syls[syl].roster || [])) if (isEntry(e) && !ids[e.name]) ids[e.name] = e.id;
-  const idFor = name => ids[name] || (ids[name] = mintId());
-  const rekey = m => { const o = {}; for (const k in (m || {})) o[ids[k] || k] = m[k]; return o; };
+  /* pass 1 — every entry lends its id; the conflicts a file can carry are
+     refused here, before anything is written (fileFormat.js refuses the same
+     three; this is the belt for a block that did not come through it) */
+  for (const syl of Object.keys(syls)) {
+    const seenId = new Set(), seenNm = new Set();
+    for (const e of ((syls[syl] || {}).roster || [])) {
+      const nm = isEntry(e) ? e.name : (typeof e === 'string' ? e : null); if (nm == null) continue;
+      if (seenNm.has(nm)) conflict('“' + nm + '” twice on “' + syl + '”'); seenNm.add(nm);
+      if (!isEntry(e)) continue;
+      if (seenId.has(e.id)) conflict('id ' + e.id + ' twice on “' + syl + '”'); seenId.add(e.id);
+      if (has(nameOfId, e.id) && nameOfId[e.id] !== nm) conflict('id ' + e.id + ' carries two names');
+      nameOfId[e.id] = nm; if (!has(ids, nm)) ids[nm] = e.id;
+    }
+  }
+  const idFor = name => has(ids, name) ? ids[name] : (ids[name] = mintId());
+  /* re-key a map by the names that were legacy on THIS syllabus (or, for the
+     course-level maps, on any syllabus); a key that is already an id — or a
+     name nobody on a legacy roster carries — is left exactly as it is */
+  const rekey = (m, legacyNames) => { const o = {}; for (const k of Object.keys(m || {})) o[legacyNames.has(k) && has(ids, k) ? ids[k] : k] = m[k]; return o; };
+  const legacyAll = new Set();
   const bySyllabus = {};
-  for (const syl in syls) {
+  for (const syl of Object.keys(syls)) {
     const sv = syls[syl] || {};
-    const roster = [];
+    const roster = [], legacyHere = new Set();
     for (const e of (sv.roster || [])) {
       if (isEntry(e)) { roster.push({ ...e }); continue; }
       if (typeof e !== 'string' || !e) continue;
-      const entry = { id: idFor(e), name: e };
-      const pid = links && links[e];
+      const entry = { id: idFor(e), name: e }; legacyHere.add(e); legacyAll.add(e);
+      const pid = links && has(links, e) ? links[e] : null;
       if (typeof pid === 'string' && pid) entry.pid = pid;
       roster.push(entry);
     }
-    bySyllabus[syl] = { ...sv, roster, marks: rekey(sv.marks), dates: rekey(sv.dates) };
+    bySyllabus[syl] = { ...sv, roster, marks: rekey(sv.marks, legacyHere), dates: rekey(sv.dates, legacyHere) };
   }
-  const out = { ...src, bySyllabus, lulls: rekey(src.lulls), pace: rekey(src.pace) };
-  return { block: JSON.parse(JSON.stringify(out)), ids };
+  const out = { ...src, bySyllabus, lulls: rekey(src.lulls, legacyAll), pace: rekey(src.pace, legacyAll) };
+  return { block: JSON.parse(JSON.stringify(out)), ids: Object.assign({}, ids) };
 }
 ```
 
@@ -413,8 +662,16 @@ describe('the roster shape (stable ids, 10 Sep 26)', () => {
   it('a roster mixing strings and entries is refused', () => {
     expect(() => readFile(file({ students: entries('C', 'S', ['STUDENT A', { id: 's1', name: 'B' }]) }))).toThrow(/crew list for “S”/)
   })
+  it('conflicts are refused, naming them: one id twice on a roster, one name twice on a roster, one id under two names across syllabi (review finding 5)', () => {
+    expect(() => readFile(file({ students: entries('C', 'S', [{ id: 's1', name: 'A' }, { id: 's1', name: 'B' }]) }))).toThrow(/id s1 twice on “S”/)
+    expect(() => readFile(file({ students: entries('C', 'S', [{ id: 's1', name: 'A' }, { id: 's2', name: 'A' }]) }))).toThrow(/“A” twice on “S”/)
+    expect(() => readFile(file({ students: entries('C', 'S', ['A', 'A']) }))).toThrow(/“A” twice on “S”/)
+    const two: any = entries('C', 'S', [{ id: 's1', name: 'A' }]); two.byCourse.C.bySyllabus.T = { roster: [{ id: 's1', name: 'Z' }], marks: {}, dates: {} }
+    expect(() => readFile(file({ students: two }))).toThrow(/id s1 .*two names/)
+  })
 })
 ```
+The validator gains, per course, a `Map` id → name across its syllabi and per roster two `Set`s (ids, names); the messages: `'The crew list for “' + syl + '” on course “' + course + '” lists id ' + id + ' twice, so that file has not been opened.'`, `… lists “' + name + '” twice …`, and `'Course “' + course + '” in that file gives id ' + id + ' two names, so it has not been opened.'`.
 - [ ] **Step 2:** run → FAIL (colon refused / mixed accepted).
 - [ ] **Step 3:** in `fileFormat.js` replace lines 126-128 with:
 ```js
@@ -508,37 +765,61 @@ export function linkedPerson(id) { const pid = pidOf(id); if (!pid) return null;
 ```
      keep `onPeople(() => notify());` and `seatWord`. Delete `LINKS`, `loadLinks`, `saveLinks`, `linkOf`.
   5. `refuseColon` stays (courses/syllabi). Remove the call at `:2616` (addStudent) only.
-  6. After `migrateRosters` add:
+  6. After `migrateRosters` add (review finding 1 — resumable, verified, roster last):
 ```js
-/* Name keys → enrolment ids, once per course (stable ids, 10 Sep 26). Reads
-   the course into the file-shaped block, converts through the one converter,
-   writes the id-keyed records, deletes the name-keyed ones, moves the
-   course-level extras the block does not carry, folds the old links record
-   in. Every move is read-then-write-then-delete, so a throw mid-way leaves
-   the flag unset and the next load finds either the old key or the new. */
+const has = (o, k) => Object.prototype.hasOwnProperty.call(o, k);
+/* Name keys → enrolment ids, once per course (stable ids, 10 Sep 26).
+   sSet swallows a failed write (it only shows "local only"), so this cannot
+   trust a write it did not read back, and it cannot write the roster — the
+   index every reader keys off — before the records it points at: an
+   interrupted run that had converted the roster first would hide marks still
+   filed under the name, and a retry keyed off the roster shape would never
+   look for them. So: the mapping is derived from EVERY roster first (an
+   entry lends its id — the name on it is the way back to a record still
+   under the name — a string mints one); each record moves under its id and
+   is read back before the legacy key goes; the roster is written LAST and
+   read back; the flag is set only when everything verified. Any failure
+   leaves the flag unset and the legacy keys in place, and the next load
+   finishes the job — the same routine, idempotent. */
 async function migrateIds(c) {
   try {
     if (await sGet(kIdMig(c))) return;
-    const { block: old, names } = await readCourseBlock(c, true);
+    const syls = allSylNames(), ids = Object.create(null), rosters = {};
+    for (const n of syls) { rosters[n] = sParse(await sGet(kRosterFor(c, n)), [], 'array'); for (const e of rosters[n]) if (isEntry(e) && !has(ids, e.name)) ids[e.name] = e.id; }
+    const names = new Set();
+    for (const n of syls) for (const e of rosters[n]) { if (typeof e === 'string' && e) names.add(e); else if (isEntry(e)) names.add(e.name); }
+    if (![...names].length) { await sSet(kIdMig(c), '1'); return; }
+    for (const nm of names) if (!has(ids, nm)) ids[nm] = mintId();
     const links = sParse(await sGet(kLinks), {}, 'object')[c] || null;
-    const { block, ids } = upgradeCourseBlock(old, links);
-    await writeCourseBlock(c, block);
-    for (const syl in old.bySyllabus) for (const n of names) {
-      if (!ids[n] || ids[n] === n) continue;
-      await delKey(kMarksFor(c, syl, n)); await delKey(kDatesFor(c, syl, n));
+    /* move one record: absent → nothing to do; present → write under the id
+       (unless the id already holds it — a retry), read back, only then delete */
+    const moved = async (from, to) => {
+      const v = await sGet(from); if (v == null || v === '') return true;
+      if ((await sGet(to)) == null) { await sSet(to, v); if ((await sGet(to)) !== v) return false; }
+      await delKey(from); return (await sGet(from)) == null;
+    };
+    let ok = true;
+    for (const n of syls) for (const nm of names) {
+      ok = (await moved(kMarksFor(c, n, nm), kMarksFor(c, n, ids[nm]))) && ok;
+      ok = (await moved(kDatesFor(c, n, nm), kDatesFor(c, n, ids[nm]))) && ok;
     }
-    for (const n of names) {
-      const id = ids[n]; if (!id) continue;
-      await delKey(kLulls(c, n)); await delKey(kPace(c, n));
-      const le = await sGet(kLast(c, n)); if (le) { await sSet(kLast(c, id), le); await delKey(kLast(c, n)); }
-      const od = await sGet(kDatesOld(c, n)); if (od) { await sSet(kDatesOld(c, id), od); await delKey(kDatesOld(c, n)); }
+    for (const nm of names) for (const k of [kLulls, kPace, kLast, kDatesOld]) ok = (await moved(k(c, nm), k(c, ids[nm]))) && ok;
+    if (!ok) return;
+    for (const n of syls) {
+      const r = rosters[n]; if (!r.length || r.every(isEntry)) continue;
+      const out = r.map(e => isEntry(e) ? e : (typeof e === 'string' && e ? Object.assign({ id: ids[e], name: e }, (links && has(links, e) && typeof links[e] === 'string' && links[e]) ? { pid: links[e] } : {}) : null)).filter(Boolean);
+      await sSet(kRosterFor(c, n), JSON.stringify(out));
+      if ((await sGet(kRosterFor(c, n))) !== JSON.stringify(out)) return;
     }
-    const ls = await sGet(kLastStudent(c)); if (ls && ids[ls]) await sSet(kLastStudent(c), ids[ls]);
-    const lc = prefGet('lastCrew:' + c); if (lc && ids[lc]) prefSet('lastCrew:' + c, ids[lc]);
+    const ls = await sGet(kLastStudent(c)); if (ls && has(ids, ls)) await sSet(kLastStudent(c), ids[ls]);
+    const lc = prefGet('lastCrew:' + c); if (lc && has(ids, lc)) prefSet('lastCrew:' + c, ids[lc]);
     if (links) { const all = sParse(await sGet(kLinks), {}, 'object'); delete all[c]; if (Object.keys(all).length) await sSet(kLinks, JSON.stringify(all)); else await delKey(kLinks); }
     await sSet(kIdMig(c), '1');
   } catch (_) {}
 }
+/* every course, at init (review finding 3): an export or a global syllabus
+   rename must never meet a course nobody has opened since the upgrade */
+export async function migrateAllCourses() { for (const c of COURSES) await migrateIds(c); }
 /* One course as the file-shaped block { plan, bySyllabus: { syl: { roster,
    marks, dates } }, lulls, pace } — collectStudents and migrateIds read it,
    applyStudents and migrateIds write it. `withNames` also returns every
@@ -592,21 +873,40 @@ async function writeCourseBlock(c, block) {
   11. Undo `:1462` → `' for ' + nameOf(u.who)`; `applyMarkHist` unchanged.
   12. `renderKeyBall` `:2270` → `const r = roster[i]; const on = !!r && r.id === active;`; `:2275` → `escapeId(r ? r.name : '')`.
   13. `ballTap` `:2313-2314` → `const r = roster[+w.dataset.wi]; if (r && r.id !== active) { setActive(r.id, { land: false }); return; }`.
-  14. `addStudent` `:2616-2626`:
+  14. `addStudent` `:2616-2626` (review finding 4 — the enrolment is the course's):
 ```js
+/* The enrolment belongs to the COURSE, not the chart: pace and lull periods
+   are filed under it, so the same person added to a second chart of the
+   course must land under the SAME id. Looked up across every roster of the
+   course — the person id first (a callsign can change in Raptor), then the
+   name — and the existing entry's name is kept so every chart agrees. */
+async function findEnrolment(pid, name) {
+  let byPid = null, byNm = null;
+  for (const n of allSylNames()) {
+    const r = (n === plan.sylName) ? roster : sParse(await sGet(kRosterFor(course, n)), [], 'array').filter(isEntry);
+    for (const e of r) { if (pid && e.pid === pid && !byPid) byPid = e; if (e.name === name && !byNm) byNm = e; }
+  }
+  return { byPid, byNm };
+}
+```
+      and in `addStudent`, after `if (!v) return;` (the `refuseColon(v)` line and the `LINKS` line are dropped):
+```js
+  const { byPid, byNm } = await findEnrolment(link, v);
+  /* a picked person whose callsign is already on the course under SOMEBODY
+     ELSE is a conflict the user resolves, never a silent second id */
+  if (link && byNm && byNm.pid && byNm.pid !== link) { await uiAlert('A student named ' + v + ' is already on this course, linked to a different person on the roster. Remove them first, or pick the other name.'); return; }
+  const src = byPid || byNm;
   await onChain(async () => {
-    /* the same name on this chart, or the same person, is the student already
-       here — picked again with a link, an unlinked entry gains the pid */
-    let r = roster.find(x => x.name === v) || (link ? roster.find(x => x.pid === link) : null);
+    let r = src ? roster.find(x => x.id === src.id) : null;
     if (!r) {
-      r = { id: mintId(), name: v }; if (link) r.pid = link;
+      r = src ? { id: src.id, name: src.name } : { id: mintId(), name: v };
+      const pid = (src && src.pid) || link; if (pid) r.pid = pid;
       roster.push(r); marks[r.id] = {}; dates[r.id] = { lastSyll: null, lastCurr: null };
       await saveRoster(); await saveMarks(r.id); await saveDates(r.id);
     } else if (link && !r.pid) { r.pid = link; await saveRoster(); }
     active = r.id; refreshActive(); renderBoard(); renderSide();
   });
 ```
-      (drop the `refuseColon(v)` line and the `LINKS` line.)
   15. `removeStudent(v)` `:2629`: `'Remove ' + nameOf(v) + ' from '`. `removeStudentNow(v)`: `:2633` → `roster = roster.filter(x => x.id !== v);`; `:2652` → `if (sParse(rr, [], 'array').some(x => isEntry(x) && x.id === v))`; delete `:2655-2657` (the LINKS lines); `:2660` → `if (active === v) active = roster[0] ? roster[0].id : null;`.
   16. `saveCrewOrder` `:2819-2823`:
 ```js
@@ -623,11 +923,18 @@ export async function saveCrewOrder(list) {
   17. `moveSylData` `:2739-2748`: build `const ids = new Set(); const add = arr => (arr || []).forEach(e => { if (isEntry(e)) ids.add(e.id); });` — `add(sParse(rr, [], 'array'))`; drop the `kRoster(c)` legacy merge line `:2741`; `if (c === course && …) add(roster);` then `for (const s of ids)`.
   18. `renCourse` `:2863-2896`: add `await move(kIdMig(old), kIdMig(v));` after `:2867`; `:2870-2876` → `const rs = sParse(await sGet(kRosterFor(old, sn)), [], 'array').filter(isEntry).map(e => e.id); const ids = sn === plan.sylName ? [...new Set([...rs, ...roster.map(r => r.id)])] : rs; for (const s of ids) { … }`; `:2878` → `for (const { id: s } of roster)`; `:2883-2886` → `const everyone = new Set(roster.map(r => r.id)); … .filter(isEntry).forEach(e => everyone.add(e.id))`; delete `:2895-2896` (LINKS).
   19. `dupSyl` `:2977-2980` → `for (const { id: s } of roster) {`.
-  20. `collectStudents` `:3325-3360` →
+  20. `collectStudents` `:3325-3360` (review finding 3 — a file never carries a string roster or drops a link):
 ```js
 export async function collectStudents() {
   const byCourse = {};
-  for (const c of COURSES) byCourse[c] = (await readCourseBlock(c, false)).block;
+  for (const c of COURSES) {
+    const { block } = await readCourseBlock(c, false);
+    /* a course the migration could not finish (a write that did not land)
+       still exports whole: converted on the fly, its old links folded in */
+    if (await sGet(kIdMig(c))) { byCourse[c] = block; continue; }
+    const links = sParse(await sGet(kLinks), {}, 'object')[c] || null;
+    byCourse[c] = upgradeCourseBlock(block, links).block;
+  }
   return { courses: COURSES.slice(), byCourse };
 }
 ```
@@ -648,7 +955,8 @@ export async function applyStudents(students, links) {
 ```
       Delete `applyLinks` `:3446-3469`.
   22. Export `:3518-3521`: drop the `links:` line. Import `:3555` → `const { charts, students, links } = FMT.readFile(obj);` stays; `:3582` → `if (people) await applyStudents(students, links);`.
-  23. `init` `:3604`: delete `await loadLinks();`. `:3640-3641` → `window.__coreForTests = { layoutSnapshotFor, collectCharts, collectStudents, applyCharts, applyStudents, whenLoaded, SYLLABI, DEFAULT_LAYOUTS, rosterNow: () => roster, nameOf, byName };`.
+  23. `init` `:3604`: replace `await loadLinks();` with `await migrateAllCourses();` (after `loadCourses()`, before `loadSylPrefs()`). `:3640-3641` → `window.__coreForTests = { layoutSnapshotFor, collectCharts, collectStudents, applyCharts, applyStudents, whenLoaded, migrateAllCourses, SYLLABI, DEFAULT_LAYOUTS, rosterNow: () => roster, nameOf, byName };`. Export `migrateAllCourses` and `findEnrolment` from core (the tests call them).
+  25. `moveSylData` and `renCourse` walk rosters through `.filter(isEntry)`; with every course migrated at init a string roster there means the migration could not finish — ALSO carry any string entries by name (`typeof e === 'string' ? e : e.id`) so a legacy record is moved with its syllabus or course rather than left behind (review finding 3).
   24. Anywhere else `linkOf(` or `LINKS` remains: `grep -n "linkOf\|LINKS\b\|saveLinks\|loadLinks\|collectLinks\|applyLinks" src/tracker/app/core.js` must return nothing.
 
 - [ ] **Step 4: components.**
@@ -730,6 +1038,66 @@ export async function applyStudents(students, links) {
     expect(out.byCourse.LEG.bySyllabus['2026'].roster[0]).toEqual(a)
     expect(Object.keys(out.byCourse.LEG.bySyllabus['2026'].marks)).toEqual([a.id])
     expect(FMT.buildFile({ students: out, savedAt: 'x' }).contains.links).toBe(false)
+  })
+  it('an interrupted migration loses nothing and finishes on the next load (review finding 1)', async () => {
+    const c = 'HALF'
+    await storage.set('v3:courses', JSON.stringify([C.course, c]))
+    await storage.set('v3:' + c + ':rostermig', '1'); await storage.set('v3:' + c + ':plan', JSON.stringify({ sylName: '2026', custom: false }))
+    await storage.set('v3:' + c + ':2026:roster', JSON.stringify(['ALPHA', 'BRAVO']))
+    await storage.set('v3:' + c + ':2026:m:ALPHA', JSON.stringify({ 'ST-01': { g: 'dco' } }))
+    await storage.set('v3:' + c + ':2026:m:BRAVO', JSON.stringify({ 'ST-02': { g: 'dpco' } }))
+    await storage.set('v3:' + c + ':pace:BRAVO', JSON.stringify({ epw: '5' }))
+    /* the storage refuses the third write of the run — the "local only" path sSet swallows */
+    const realSet = storage.set; let writes = 0
+    storage.set = async (k: string, v: string) => { if (k.startsWith('v3:' + c + ':') && ++writes === 3) throw new Error('disk full'); return realSet.call(storage, k, v) }
+    try { await C.loadCourse(c); await C.whenLoaded() } finally { storage.set = realSet }
+    expect(await storage.get('v3:' + c + ':idmig')).toBeNull()                            // not finished
+    const rosterRaw = (await storage.get('v3:' + c + ':2026:roster'))!.value
+    const marksUnderName = ['ALPHA', 'BRAVO'].filter(n => n !== null).length
+    expect(marksUnderName).toBe(2)
+    /* every mark is still reachable: either under the name or under an id the roster or a key names */
+    const keys = (await storage.list('v3:' + c + ':')).keys
+    expect(keys.filter(k => k.includes(':m:')).length).toBe(2)
+    await C.loadCourse(c); await C.whenLoaded()                                              // the retry
+    expect((await storage.get('v3:' + c + ':idmig'))!.value).toBe('1')
+    const a = C.byName('ALPHA')!, b = C.byName('BRAVO')!
+    expect(C.gradeOf(a.id, 'ST-01')).toBe('dco'); expect(C.gradeOf(b.id, 'ST-02')).toBe('dpco'); expect(C.paceOf(b.id).epw).toBe('5')
+    expect(JSON.parse(rosterRaw).every((e: any) => typeof e === 'string') || JSON.parse(rosterRaw).every((e: any) => typeof e === 'object')).toBe(true)
+    for (const k of ['2026:m:ALPHA', '2026:m:BRAVO', 'pace:BRAVO']) expect(await storage.get('v3:' + c + ':' + k), k).toBeNull()
+  })
+  it('a second course nobody opened since the upgrade: its links survive an export and a global syllabus rename moves its marks (review finding 3)', async () => {
+    const c = 'SHUT'
+    await storage.set('v3:courses', JSON.stringify([C.course, c]))
+    await storage.set('v3:' + c + ':rostermig', '1'); await storage.set('v3:' + c + ':plan', JSON.stringify({ sylName: C.curSyl(), custom: false }))
+    await storage.set('v3:' + c + ':' + C.curSyl() + ':roster', JSON.stringify(['ZULU']))
+    await storage.set('v3:' + c + ':' + C.curSyl() + ':m:ZULU', JSON.stringify({ 'ST-01': { g: 'dco' } }))
+    await storage.set('v3:links', JSON.stringify({ [c]: { ZULU: 'p2' } }))
+    await C.loadCourses(); await C.migrateAllCourses()                                      // what init does
+    const out = await C.collectStudents()
+    const z = out.byCourse[c].bySyllabus[C.curSyl()].roster[0]
+    expect(z).toEqual({ id: expect.stringMatching(/^s/), name: 'ZULU', pid: 'p2' })
+    expect(out.byCourse[c].bySyllabus[C.curSyl()].marks[z.id]['ST-01'].g).toBe('dco')
+    const from = C.curSyl(), p: Promise<any> = C.renSyl(); await answer(from + ' R'); await p; await C.whenLoaded()
+    expect((await storage.get('v3:' + c + ':' + from + ' R:m:' + z.id))!.value).toContain('dco')
+    expect(await storage.get('v3:' + c + ':' + from + ':m:' + z.id)).toBeNull()
+    const q: Promise<any> = C.renSyl(); await answer(from); await q; await C.whenLoaded()   // put the name back for the tests after
+  })
+  it('the same student on a second chart of the course reuses the enrolment id; a callsign already on the course under another person is refused (review finding 4)', async () => {
+    let p: Promise<any> = C.addStudent(); C.dlgClose({ pick: 'p1' }); await p; await C.whenLoaded()
+    const r = C.byName('RANGER')!; await C.setEpw(r.id, '7')
+    const first = C.curSyl(), other = C.allSylNames().find(n => n !== first)!
+    await C.switchSyllabus(other); await C.whenLoaded()
+    expect(C.byName('RANGER')).toBeNull()
+    p = C.addStudent(); C.dlgClose({ pick: 'p1' }); await p; await C.whenLoaded()
+    expect(C.byName('RANGER')).toEqual(r); expect(C.paceOf(r.id).epw).toBe('7')             // one enrolment, one pace
+    p = C.addStudent(); C.dlgClose('ranger'); await p; await C.whenLoaded()
+    expect(C.roster.filter(x => x.name === 'RANGER').length).toBe(1)                        // typed again: the same entry
+    /* a different person on the roster whose callsign collides */
+    setPeople([...P, { id: 'p3', cs: 'Ranger', seat: 'FCP', q: 'A', sxo: false }])
+    let seen = ''; p = C.addStudent(); C.dlgClose({ pick: 'p3' }); await until(() => C.dlg); seen = C.dlg.msg; C.dlgClose(true); await p
+    expect(seen).toMatch(/already on this course, linked to a different person/)
+    expect(C.roster.filter(x => x.name === 'RANGER').length).toBe(1)
+    setPeople(P); await C.switchSyllabus(first); await C.whenLoaded()
   })
 ```
   Fill the rename/duplicate case from the existing rename test's mechanics (it is in the file at ~:800-816); no placeholder may remain.
