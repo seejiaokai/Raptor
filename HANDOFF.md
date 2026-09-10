@@ -308,7 +308,18 @@ browser-proven.
   amendment machinery and persisted state (byte-exact parity sits on the
   key strings), so it is a HEAVY task: run brainstorm → spec → plan →
   subagent build-with-review, exactly as the student-side ids were done —
-  not a straight-to-code change. (2) course and
+  not a straight-to-code change. **#1 IN FLIGHT (branch
+  `claude/read-handoff-docs-wuftw9`, 10 Sep 26):** the design + task plan and
+  the pos↔rid translation FOUNDATION are built, tested and pushed —
+  `engine/rowids.ts` `ridKey`/`posKey`/`migrateBookKeys` (round-trips every
+  `dayKeys` prefix, a delete leaves survivors' stored keys untouched, migration
+  idempotent), spec
+  `raptor-port/docs/superpowers/specs/2026-09-10-addressing-by-rid-design.md`.
+  Additive, wires nothing — all gates green. Remaining = that spec's tasks 2–7
+  (the interlocking engine wiring: `dayKeys`→rid, the write/read/edit-log
+  boundary, the delete-mark sweep, migration wiring, UI audit, and re-anchoring
+  the `audit-d` keyspace oracle to rid WITHOUT weakening it); it wants a Fable
+  bug-check and HOLD before live. (2) course and
   syllabus ids (still name keys joined with `:`); (3) `Attempt` history.
   A student rename control shipped 10 Sep 26 (the pencil on each chip edits
   the label only — `core.js:renameStudent`, id and records untouched).
