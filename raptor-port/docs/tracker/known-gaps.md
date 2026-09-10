@@ -72,7 +72,12 @@
 >   flag — the Students card shows an EMPTY list and a `+ Add` that looks
 >   live until pressed. A one-line notice in the card is the follow-up. The
 >   way out is a reload that converts (or an Import, which converts the
->   course through the same migration).
+>   course through the same migration). Narrow edge of that Import route: if
+>   the interrupted run had already moved a mark under its parked `idmap` id
+>   and the file carries the same student under a DIFFERENT id, the
+>   already-moved record is left as a dead key under the old id (nothing is
+>   overwritten; the file's id wins the roster). Only after an interrupted
+>   conversion followed by a restore.
 > - **Loads and roster writes share ONE queue (9 Sep 26).** `loadCourse`
 >   reads a dozen records with an await between each and then replaces the
 >   roster with what it fetched; a `+ Add` or a removal finishing inside that
