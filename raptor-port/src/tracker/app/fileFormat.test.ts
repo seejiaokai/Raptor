@@ -27,20 +27,39 @@ describe('a name with a colon is refused, naming the part (fileFormat.js)', () =
   it('a syllabus name on a course', () => {
     expect(() => readFile(file({ students: people('26ABSG', 'x:y', 'STUDENT A') }))).toThrow(/syllabus .*“x:y”.*colon/)
   })
-  it('a crew member on a roster, or filed under marks or dates', () => {
-    expect(() => readFile(file({ students: people('26ABSG', '2026', 'A: B') }))).toThrow(/crew member .*“A: B”.*colon/)
-    const s = people('26ABSG', '2026', 'STUDENT A')
-    s.byCourse['26ABSG'].bySyllabus['2026'].marks['X:Y'] = {}
-    expect(() => readFile(file({ students: s }))).toThrow(/crew member .*“X:Y”.*colon/)
-    /* review, 9 Sep 26: the course-level pace and lull maps are keyed by crew member too */
-    const t = people('26ABSG', '2026', 'STUDENT A'); (t.byCourse['26ABSG'] as any).pace = { 'P:Q': {} }
-    expect(() => readFile(file({ students: t }))).toThrow(/crew member .*“P:Q”.*colon/)
-    const u = people('26ABSG', '2026', 'STUDENT A'); (u.byCourse['26ABSG'] as any).lulls = { 'L:M': [] }
-    expect(() => readFile(file({ students: u }))).toThrow(/crew member .*“L:M”.*colon/)
+  it('a crew member MAY contain a colon — the name is a label now, not a key (stable ids, 10 Sep 26)', () => {
+    const s = people('26ABSG', '2026', 'A: B'); (s.byCourse['26ABSG'] as any).pace = { 'P:Q': {} }
+    expect(() => readFile(file({ students: s }))).not.toThrow()
   })
   it('plain names still pass', () => {
     const f = file({ charts: chart('A/G - A/A 2026'), students: people('26ABSG', 'A/G - A/A 2026', "O'BRIEN J") })
     expect(() => readFile(f)).not.toThrow()
+  })
+})
+
+describe('the roster shape (stable ids, 10 Sep 26)', () => {
+  const entries = (course: string, syl: string, roster: any[]) => ({
+    courses: [course], byCourse: { [course]: { plan: {}, bySyllabus: { [syl]: { roster, marks: {}, dates: {} } } } },
+  })
+  it('a legacy string roster still reads', () => {
+    expect(() => readFile(file({ students: entries('C', 'S', ['STUDENT A']) }))).not.toThrow()
+  })
+  it('an entry roster reads — id and name strings, pid optional', () => {
+    expect(() => readFile(file({ students: entries('C', 'S', [{ id: 's1', name: 'STUDENT A' }, { id: 's2', name: 'STUDENT B', pid: 'p2' }]) }))).not.toThrow()
+  })
+  it('a damaged entry is refused, naming the syllabus', () => {
+    for (const bad of [{ id: '', name: 'X' }, { id: 's1' }, { name: 'X' }, 5, null])
+      expect(() => readFile(file({ students: entries('C', 'S', [bad]) })), JSON.stringify(bad)).toThrow(/crew list for “S”/)
+  })
+  it('a roster mixing strings and entries is refused', () => {
+    expect(() => readFile(file({ students: entries('C', 'S', ['STUDENT A', { id: 's1', name: 'B' }]) }))).toThrow(/crew list for “S”/)
+  })
+  it('conflicts are refused, naming them: one id twice on a roster, one name twice on a roster, one id under two names across syllabi (review finding 5)', () => {
+    expect(() => readFile(file({ students: entries('C', 'S', [{ id: 's1', name: 'A' }, { id: 's1', name: 'B' }]) }))).toThrow(/id s1 twice on “S”/)
+    expect(() => readFile(file({ students: entries('C', 'S', [{ id: 's1', name: 'A' }, { id: 's2', name: 'A' }]) }))).toThrow(/“A” twice on “S”/)
+    expect(() => readFile(file({ students: entries('C', 'S', ['A', 'A']) }))).toThrow(/“A” twice on “S”/)
+    const two: any = entries('C', 'S', [{ id: 's1', name: 'A' }]); two.byCourse.C.bySyllabus.T = { roster: [{ id: 's1', name: 'Z' }], marks: {}, dates: {} }
+    expect(() => readFile(file({ students: two }))).toThrow(/id s1 .*two names/)
   })
 })
 
