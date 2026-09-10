@@ -1018,56 +1018,220 @@ describe('the person bridge and the link (peoplewire.ts → people.js → core.j
      into the entry's pid. */
   it('existing data converts once per course: names become entries, records re-file under the id, links fold into pid, old keys go', async () => {
     const c = 'MIGR'
-    await storage.set('v3:courses', JSON.stringify([c]))
-    await storage.set('v3:' + c + ':rostermig', '1')
-    await storage.set('v3:' + c + ':plan', JSON.stringify({ sylName: '2026', custom: false }))
+    /* MIGR is a fixture course, and loading it rewrites module state the tests
+       after this one read: it goes onto COURSES, its own custom chart is
+       ADOPTED into the GLOBAL customs store (loadCourseNow copies v3:MIGR:syls
+       into v3:master:syls), and the course list in the store is replaced. Put
+       all four back in a finally — a phantom course or a phantom chart
+       inherited by a later test is a failure nobody would read as this one's. */
+    const prevCourse = C.course, prevCourses = (C.COURSES as string[]).slice()
+    const prevHidden = (C.SYL_HIDDEN as string[]).slice()
+    const prevList = (await storage.get('v3:courses'))?.value ?? null
+    const prevCustoms = (await storage.get('v3:master:syls'))?.value ?? null
+    try {
+      await storage.set('v3:courses', JSON.stringify([c]))
+      await storage.set('v3:' + c + ':rostermig', '1')
+      await storage.set('v3:' + c + ':plan', JSON.stringify({ sylName: '2026', custom: false }))
+      await storage.set('v3:' + c + ':2026:roster', JSON.stringify(['ALPHA', 'BRAVO']))
+      await storage.set('v3:' + c + ':2026:m:ALPHA', JSON.stringify({ 'ST-01': { g: 'dco' } }))
+      await storage.set('v3:' + c + ':2026:d:BRAVO', JSON.stringify({ lastSyll: '2026-01-02', lastCurr: null }))
+      await storage.set('v3:' + c + ':pace:ALPHA', JSON.stringify({ epw: '4' }))
+      await storage.set('v3:' + c + ':lulls:ALPHA', JSON.stringify([{ start: '2026-03-01', end: '2026-03-02' }]))
+      await storage.set('v3:' + c + ':last:ALPHA', JSON.stringify({ syl: '2026', event: 'ST-01' }))
+      await storage.set('v3:' + c + ':lastStudent', 'BRAVO')   /* the SECOND entry, so a fallback to the first cannot pass */
+      await storage.set('v3:links', JSON.stringify({ [c]: { ALPHA: 'p1' } }))
+      /* Two charts the LIVE module state cannot see at init: a custom one that
+         only exists in this course's own store (CUSTOMS is empty until a course
+         is opened) and a built-in somebody has hidden (allSylNames drops it).
+         Both carry crew, and the course is flagged converted for good — so if
+         the migration reads anything but the store, their names are lost. */
+      const hidden = (C.SYL_NAMES as string[]).find((n: string) => n !== '2026')!
+      ;(C.SYL_HIDDEN as string[]).push(hidden)
+      await storage.set('v3:' + c + ':syls', JSON.stringify({ 'CUSTOM CHART': [{ id: 'ST-01', type: 'acad', prereqs: [] }] }))
+      await storage.set('v3:' + c + ':CUSTOM CHART:roster', JSON.stringify(['CHARLIE']))
+      await storage.set('v3:' + c + ':CUSTOM CHART:m:CHARLIE', JSON.stringify({ 'ST-01': { g: 'dpco' } }))
+      await storage.set('v3:' + c + ':' + hidden + ':roster', JSON.stringify(['DELTA']))
+      await storage.set('v3:' + c + ':' + hidden + ':m:DELTA', JSON.stringify({ 'ST-01': { g: 'marg' } }))
+      /* the init path, verbatim: a course in the list that this boot has never
+         opened, so nothing of its own is in memory */
+      ;(C.COURSES as string[]).push(c)
+      await C.migrateAllCourses()
+      const entryOn = async (syl: string, name: string) => {
+        const r = JSON.parse((await storage.get(`v3:${c}:${syl}:roster`))!.value)
+        return r.find((e: any) => e && e.name === name) || null
+      }
+      const ch = await entryOn('CUSTOM CHART', 'CHARLIE')
+      expect(ch, 'a chart only the store knows about converts too').toEqual({ id: expect.stringMatching(/^s/), name: 'CHARLIE' })
+      expect((await storage.get(`v3:${c}:CUSTOM CHART:m:${ch.id}`))!.value).toContain('dpco')
+      expect(await storage.get(`v3:${c}:CUSTOM CHART:m:CHARLIE`)).toBeNull()
+      const de = await entryOn(hidden, 'DELTA')
+      expect(de, 'a hidden built-in chart converts too').toEqual({ id: expect.stringMatching(/^s/), name: 'DELTA' })
+      expect((await storage.get(`v3:${c}:${hidden}:m:${de.id}`))!.value).toContain('marg')
+      expect(await storage.get(`v3:${c}:${hidden}:m:DELTA`)).toBeNull()
+      ;(C.SYL_HIDDEN as string[]).splice((C.SYL_HIDDEN as string[]).indexOf(hidden), 1)
+      await C.loadCourse(c); await C.whenLoaded()
+      const a = C.byName('ALPHA')!, b = C.byName('BRAVO')!
+      expect(a).toEqual({ id: expect.stringMatching(/^s/), name: 'ALPHA', pid: 'p1' }); expect(b).toEqual({ id: expect.stringMatching(/^s/), name: 'BRAVO' })
+      expect(C.gradeOf(a.id, 'ST-01')).toBe('dco'); expect(C.dates[b.id].lastSyll).toBe('2026-01-02')
+      expect(C.paceOf(a.id).epw).toBe('4'); expect(C.lulls[a.id].length).toBe(1)
+      expect((await storage.get('v3:' + c + ':2026:m:' + a.id))!.value).toContain('dco')
+      for (const k of ['2026:m:ALPHA', '2026:d:BRAVO', 'pace:ALPHA', 'lulls:ALPHA', 'last:ALPHA']) expect(await storage.get('v3:' + c + ':' + k), k).toBeNull()
+      expect((await storage.get('v3:' + c + ':lastStudent'))!.value).toBe(b.id)
+      expect((await storage.get('v3:' + c + ':idmig'))!.value).toBe('1')
+      expect(JSON.parse((await storage.get('v3:links'))?.value || '{}')[c]).toBeUndefined()
+      expect(C.active, 'the migrating load lands on the last-graded student, not the top of the list').toBe(b.id)
+    } finally {
+      ;(C.SYL_HIDDEN as string[]).splice(0, (C.SYL_HIDDEN as string[]).length, ...prevHidden)
+      ;(C.COURSES as string[]).splice(0, (C.COURSES as string[]).length, ...prevCourses)
+      if (prevList == null) await storage.delete('v3:courses'); else await storage.set('v3:courses', prevList)
+      if (prevCustoms == null) await storage.delete('v3:master:syls'); else await storage.set('v3:master:syls', prevCustoms)
+      /* the reload is what puts CUSTOMS, the roster, the marks and the undo
+         history back to the course the tests around this one work on */
+      await C.loadCourse(prevCourse); await C.whenLoaded()
+    }
+  })
+
+  /* 10 Sep 26, the stable-ids round, the remaining pins. The enrolment id is
+     the record's key everywhere a student is filed, and the name is a label
+     read off the roster entry — so these walk the surfaces where the two used
+     to be the same thing: one mark and its undo step, a removal, a course
+     rename, a syllabus duplicate, a second load, a legacy file coming in, an
+     interrupted conversion, a course nobody has opened since the upgrade, and
+     the one-enrolment-per-person-per-course rule. */
+  it('a mark files under the id, never the name; undo carries the id and the tooltip reads the name', async () => {
+    let r = C.byName('SOLO')
+    if (!r) { const p = C.addStudent(); C.dlgClose('solo'); await p; await C.whenLoaded(); r = C.byName('SOLO')! }
+    C.setActive(r.id); C.openPop('ST-01', { clientX: 0, clientY: 0 }); await C.popGrade('dco')
+    expect(C.gradeOf(r.id, 'ST-01')).toBe('dco')
+    expect(JSON.parse((await storage.get(`v3:${C.course}:${C.curSyl()}:m:${r.id}`))!.value)['ST-01'].g).toBe('dco')
+    expect(await storage.get(`v3:${C.course}:${C.curSyl()}:m:SOLO`), 'nothing is filed under the name').toBeNull()
+    expect(C.undoWhat(), 'the step carries the id; the tooltip reads the name off the entry').toMatch(/for SOLO$/)
+    await C.doUndo(); expect(C.gradeOf(r.id, 'ST-01')).toBe(0)
+  })
+
+  it('removing a student drops the id-keyed records and prunes their undo steps', async () => {
+    const r = C.byName('SOLO')!; C.setActive(r.id); C.openPop('ST-01', { clientX: 0, clientY: 0 }); await C.popGrade('dco')
+    const p = C.removeStudent(r.id); C.dlgClose(true); await p; await C.whenLoaded()
+    expect(C.byName('SOLO')).toBeNull(); expect((C.marks as any)[r.id]).toBeUndefined()
+    /* the store deletes for real here (storage.js has its own delete), so a
+       dropped record reads back as null rather than as delKey's '' tombstone */
+    for (const k of [C.curSyl() + ':m:' + r.id, C.curSyl() + ':d:' + r.id, 'pace:' + r.id, 'lulls:' + r.id, 'last:' + r.id])
+      expect(await storage.get('v3:' + C.course + ':' + k), k).toBeNull()
+    expect(C.canUndo(), 'their step went with them — an Undo cannot mark nobody’s chart').toBe(false)
+  })
+
+  it('a course rename and a syllabus duplicate move and copy the id-keyed records; the pid rides along', async () => {
+    if (C.sylDirty) await C.saveChangesClick()   /* these tests answer ONE question per dialog */
+    let p: Promise<any> = C.addStudent(); C.dlgClose({ pick: 'p2' }); await p; await C.whenLoaded()
+    const b = C.byName('BRAVO')!; C.setActive(b.id)
+    C.openPop('ST-01', { clientX: 0, clientY: 0 }); await C.popGrade('dco')
+    const old = C.course, syl = C.curSyl()
+    p = C.renCourse(); await answer('IDTEST'); await p; await C.whenLoaded()
+    expect(C.course).toBe('IDTEST')
+    expect(C.byName('BRAVO')).toEqual(b)                                   // same id, same pid, on the renamed course
+    expect(C.gradeOf(b.id, 'ST-01')).toBe('dco')
+    expect((await storage.get('v3:IDTEST:' + syl + ':m:' + b.id))!.value).toContain('dco')
+    expect(await storage.get('v3:' + old + ':' + syl + ':m:' + b.id), 'a rename MOVES the record, it does not leave a copy behind').toBeNull()
+    expect((await storage.get('v3:IDTEST:idmig'))!.value).toBe('1')
+    p = C.dupSyl(); await answer(syl + ' copy'); await p; await C.whenLoaded()
+    expect(C.curSyl()).toBe(syl + ' copy')
+    expect(C.byName('BRAVO')).toEqual(b); expect(C.gradeOf(b.id, 'ST-01')).toBe('dco')
+    expect((await storage.get('v3:IDTEST:' + syl + ' copy:m:' + b.id))!.value).toContain('dco')
+    p = C.delSyl(); await answer(true); await p; await C.whenLoaded()
+    /* delSyl lands on firstSylName(), which is the source chart here but is not
+       promised to be — put the picker back on it so the checks below read the
+       roster this test built */
+    if (C.curSyl() !== syl) { await C.switchSyllabus(syl); await C.whenLoaded() }
+    p = C.renCourse(); await answer(old); await p; await C.whenLoaded()
+    expect(C.course).toBe(old); expect(C.byName('BRAVO')).toEqual(b)
+  })
+
+  it('the migration is a no-op on a second load, and an entry roster written by an import is left alone', async () => {
+    const before = JSON.stringify(C.roster); await C.loadCourse(C.course); await C.whenLoaded()
+    expect(JSON.stringify(C.roster)).toBe(before)
+  })
+
+  it('a legacy export (string roster + links block) imports as entries with pids; a new export carries no links block', async () => {
+    await C.applyStudents({ courses: ['LEG'], byCourse: { LEG: { plan: { sylName: '2026' }, lulls: {}, pace: {}, bySyllabus: { '2026': { roster: ['ALPHA'], marks: { ALPHA: { 'ST-01': { g: 'dco' } } }, dates: {} } } } } }, { LEG: { ALPHA: 'p1' } })
+    await C.loadCourse('LEG'); await C.whenLoaded()
+    const a = C.byName('ALPHA')!; expect(a.pid).toBe('p1'); expect(C.gradeOf(a.id, 'ST-01')).toBe('dco')
+    const out = await C.collectStudents()
+    expect(out.byCourse.LEG.bySyllabus['2026'].roster[0]).toEqual(a)
+    expect(Object.keys(out.byCourse.LEG.bySyllabus['2026'].marks)).toEqual([a.id])
+    expect(FMT.buildFile({ students: out, savedAt: 'x' }).contains.links, 'the separate links block is retired').toBe(false)
+  })
+
+  it('an interrupted migration loses nothing and finishes on the next load (review finding 1)', async () => {
+    const c = 'HALF'
+    ;(C.COURSES as string[]).push(c); await storage.set('v3:courses', JSON.stringify(C.COURSES))
+    await storage.set('v3:' + c + ':rostermig', '1'); await storage.set('v3:' + c + ':plan', JSON.stringify({ sylName: '2026', custom: false }))
     await storage.set('v3:' + c + ':2026:roster', JSON.stringify(['ALPHA', 'BRAVO']))
     await storage.set('v3:' + c + ':2026:m:ALPHA', JSON.stringify({ 'ST-01': { g: 'dco' } }))
-    await storage.set('v3:' + c + ':2026:d:BRAVO', JSON.stringify({ lastSyll: '2026-01-02', lastCurr: null }))
-    await storage.set('v3:' + c + ':pace:ALPHA', JSON.stringify({ epw: '4' }))
-    await storage.set('v3:' + c + ':lulls:ALPHA', JSON.stringify([{ start: '2026-03-01', end: '2026-03-02' }]))
-    await storage.set('v3:' + c + ':last:ALPHA', JSON.stringify({ syl: '2026', event: 'ST-01' }))
-    await storage.set('v3:' + c + ':lastStudent', 'BRAVO')   /* the SECOND entry, so a fallback to the first cannot pass */
-    await storage.set('v3:links', JSON.stringify({ [c]: { ALPHA: 'p1' } }))
-    /* Two charts the LIVE module state cannot see at init: a custom one that
-       only exists in this course's own store (CUSTOMS is empty until a course
-       is opened) and a built-in somebody has hidden (allSylNames drops it).
-       Both carry crew, and the course is flagged converted for good — so if
-       the migration reads anything but the store, their names are lost. */
-    const hidden = (C.SYL_NAMES as string[]).find((n: string) => n !== '2026')!
-    ;(C.SYL_HIDDEN as string[]).push(hidden)
-    await storage.set('v3:' + c + ':syls', JSON.stringify({ 'CUSTOM CHART': [{ id: 'ST-01', type: 'acad', prereqs: [] }] }))
-    await storage.set('v3:' + c + ':CUSTOM CHART:roster', JSON.stringify(['CHARLIE']))
-    await storage.set('v3:' + c + ':CUSTOM CHART:m:CHARLIE', JSON.stringify({ 'ST-01': { g: 'dpco' } }))
-    await storage.set('v3:' + c + ':' + hidden + ':roster', JSON.stringify(['DELTA']))
-    await storage.set('v3:' + c + ':' + hidden + ':m:DELTA', JSON.stringify({ 'ST-01': { g: 'marg' } }))
-    /* the init path, verbatim: a course in the list that this boot has never
-       opened, so nothing of its own is in memory */
-    ;(C.COURSES as string[]).push(c)
-    await C.migrateAllCourses()
-    const entryOn = async (syl: string, name: string) => {
-      const r = JSON.parse((await storage.get(`v3:${c}:${syl}:roster`))!.value)
-      return r.find((e: any) => e && e.name === name) || null
-    }
-    const ch = await entryOn('CUSTOM CHART', 'CHARLIE')
-    expect(ch, 'a chart only the store knows about converts too').toEqual({ id: expect.stringMatching(/^s/), name: 'CHARLIE' })
-    expect((await storage.get(`v3:${c}:CUSTOM CHART:m:${ch.id}`))!.value).toContain('dpco')
-    expect(await storage.get(`v3:${c}:CUSTOM CHART:m:CHARLIE`)).toBeNull()
-    const de = await entryOn(hidden, 'DELTA')
-    expect(de, 'a hidden built-in chart converts too').toEqual({ id: expect.stringMatching(/^s/), name: 'DELTA' })
-    expect((await storage.get(`v3:${c}:${hidden}:m:${de.id}`))!.value).toContain('marg')
-    expect(await storage.get(`v3:${c}:${hidden}:m:DELTA`)).toBeNull()
-    ;(C.SYL_HIDDEN as string[]).splice((C.SYL_HIDDEN as string[]).indexOf(hidden), 1)
-    await C.loadCourse(c); await C.whenLoaded()
-    const a = C.byName('ALPHA')!, b = C.byName('BRAVO')!
-    expect(a).toEqual({ id: expect.stringMatching(/^s/), name: 'ALPHA', pid: 'p1' }); expect(b).toEqual({ id: expect.stringMatching(/^s/), name: 'BRAVO' })
-    expect(C.gradeOf(a.id, 'ST-01')).toBe('dco'); expect(C.dates[b.id].lastSyll).toBe('2026-01-02')
-    expect(C.paceOf(a.id).epw).toBe('4'); expect(C.lulls[a.id].length).toBe(1)
-    expect((await storage.get('v3:' + c + ':2026:m:' + a.id))!.value).toContain('dco')
-    for (const k of ['2026:m:ALPHA', '2026:d:BRAVO', 'pace:ALPHA', 'lulls:ALPHA', 'last:ALPHA']) expect(await storage.get('v3:' + c + ':' + k), k).toBeNull()
-    expect((await storage.get('v3:' + c + ':lastStudent'))!.value).toBe(b.id)
+    await storage.set('v3:' + c + ':2026:m:BRAVO', JSON.stringify({ 'ST-02': { g: 'dpco' } }))
+    await storage.set('v3:' + c + ':pace:BRAVO', JSON.stringify({ epw: '5' }))
+    /* the storage refuses a write PARTWAY THROUGH the run — the marks have
+       moved, the pace has not — the way sSet swallows one on the "local only"
+       path. Named by key rather than by ordinal so it stays the middle of the
+       run whatever else the routine writes. */
+    const realSet = storage.set; let refused = 0
+    storage.set = (async (k: string, v: string) => { if (k.startsWith('v3:' + c + ':pace:')) { refused++; throw new Error('disk full') } return realSet.call(storage, k, v) }) as any
+    try { await C.loadCourse(c); await C.whenLoaded() } finally { storage.set = realSet }
+    expect(refused, 'a write really was refused').toBeGreaterThan(0)
+    expect(await storage.get('v3:' + c + ':idmig'), 'not finished, so the next load runs it again').toBeNull()
+    const rosterRaw = (await storage.get('v3:' + c + ':2026:roster'))!.value
+    /* every mark is still reachable and nothing was duplicated: two records,
+       whatever key each of them currently sits under */
+    const mkeys = (await storage.list('v3:' + c + ':')).keys.filter(k => k.includes(':m:'))
+    expect(mkeys.length).toBe(2)
+    const grades: string[] = []
+    for (const k of mkeys) for (const m of Object.values(JSON.parse((await storage.get(k))!.value) as any)) grades.push((m as any).g)
+    expect(grades.sort()).toEqual(['dco', 'dpco'])
+    expect(JSON.parse((await storage.get('v3:' + c + ':pace:BRAVO'))!.value).epw, 'the refused move left its source alone').toBe('5')
+    expect(JSON.parse(rosterRaw).every((e: any) => typeof e === 'string') || JSON.parse(rosterRaw).every((e: any) => typeof e === 'object'), 'never half a converted roster').toBe(true)
+    await C.loadCourse(c); await C.whenLoaded()                                              // the retry
     expect((await storage.get('v3:' + c + ':idmig'))!.value).toBe('1')
-    expect(JSON.parse((await storage.get('v3:links'))?.value || '{}')[c]).toBeUndefined()
-    expect(C.active, 'the migrating load lands on the last-graded student, not the top of the list').toBe(b.id)
+    const a = C.byName('ALPHA')!, b = C.byName('BRAVO')!
+    expect(C.gradeOf(a.id, 'ST-01')).toBe('dco'); expect(C.gradeOf(b.id, 'ST-02')).toBe('dpco'); expect(C.paceOf(b.id).epw).toBe('5')
+    for (const k of ['2026:m:ALPHA', '2026:m:BRAVO', 'pace:BRAVO', 'idmap']) expect(await storage.get('v3:' + c + ':' + k), k).toBeNull()
+  })
+
+  it('a second course nobody opened since the upgrade: its links survive an export and a global syllabus rename moves its marks (review finding 3)', async () => {
+    const c = 'SHUT'
+    /* the init path: a course sitting in the list that this boot has never
+       opened. loadCourses() is module-private, so the list is pushed the way
+       the migration test above pushes its own. */
+    ;(C.COURSES as string[]).push(c); await storage.set('v3:courses', JSON.stringify(C.COURSES))
+    await storage.set('v3:' + c + ':rostermig', '1'); await storage.set('v3:' + c + ':plan', JSON.stringify({ sylName: C.curSyl(), custom: false }))
+    await storage.set('v3:' + c + ':' + C.curSyl() + ':roster', JSON.stringify(['ZULU']))
+    await storage.set('v3:' + c + ':' + C.curSyl() + ':m:ZULU', JSON.stringify({ 'ST-01': { g: 'dco' } }))
+    await storage.set('v3:links', JSON.stringify({ [c]: { ZULU: 'p2' } }))
+    await C.migrateAllCourses()                                      // what init does
+    const out = await C.collectStudents()
+    const z = out.byCourse[c].bySyllabus[C.curSyl()].roster[0]
+    expect(z).toEqual({ id: expect.stringMatching(/^s/), name: 'ZULU', pid: 'p2' })
+    expect(out.byCourse[c].bySyllabus[C.curSyl()].marks[z.id]['ST-01'].g).toBe('dco')
+    const from = C.curSyl(), p: Promise<any> = C.renSyl(); await answer(from + ' R'); await p; await C.whenLoaded()
+    expect((await storage.get('v3:' + c + ':' + from + ' R:m:' + z.id))!.value).toContain('dco')
+    expect(await storage.get('v3:' + c + ':' + from + ':m:' + z.id)).toBeNull()
+    const q: Promise<any> = C.renSyl(); await answer(from); await q; await C.whenLoaded()   // put the name back for the tests after
+    expect(C.curSyl()).toBe(from)
+  })
+
+  it('the same student on a second chart of the course reuses the enrolment id; a callsign already on the course under another person is refused (review finding 4)', async () => {
+    let p: Promise<any> = C.addStudent(); C.dlgClose({ pick: 'p1' }); await p; await C.whenLoaded()
+    const r = C.byName('RANGER')!; await C.setEpw(r.id, '7')
+    const first = C.curSyl(), other = (C.allSylNames() as string[]).find((n: string) => n !== first)!
+    await C.switchSyllabus(other); await C.whenLoaded()
+    expect(C.byName('RANGER')).toBeNull()
+    p = C.addStudent(); C.dlgClose({ pick: 'p1' }); await p; await C.whenLoaded()
+    expect(C.byName('RANGER')).toEqual(r); expect(C.paceOf(r.id).epw).toBe('7')             // one enrolment, one pace
+    p = C.addStudent(); C.dlgClose('ranger'); await p; await C.whenLoaded()
+    expect(C.roster.filter((x: any) => x.name === 'RANGER').length).toBe(1)                 // typed again: the same entry
+    /* a different person on the roster whose callsign collides */
+    setPeople([...P, { id: 'p3', cs: 'Ranger', seat: 'FCP', q: 'A', sxo: false }])
+    let seen = ''; p = C.addStudent(); C.dlgClose({ pick: 'p3' }); await until(() => C.dlg); seen = C.dlg.msg; C.dlgClose(true); await p
+    expect(seen).toMatch(/already on this course, linked to a different person/)
+    expect(C.roster.filter((x: any) => x.name === 'RANGER').length).toBe(1)
+    setPeople(P); await C.switchSyllabus(first); await C.whenLoaded()
   })
 })
