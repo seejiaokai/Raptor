@@ -1248,6 +1248,61 @@ describe('the person bridge and the link (peoplewire.ts → people.js → core.j
     expect(FMT.buildFile({ students: out, savedAt: 'x' }).contains.links, 'the separate links block is retired').toBe(false)
   })
 
+  /* THE STORE'S IDS WIN ON IMPORT (bug-check, 10 Sep 26). The id is random by
+     design, so two browsers that converted the same names minted different
+     ids for the same people; a laptop's export brought into the phone then
+     landed each student a second time, under the file's id — the same name on
+     two charts under two ids, pace and lull periods under one and marks under
+     the other. Import now matches the file's students to the enrolments the
+     course already has (ids.js reconcileIds), adds to the chart instead of
+     writing it over, and carries the label to the charts the file did not
+     touch. */
+  it('an import from another browser lands on the enrolments already here — one id each, by name for a typed student and by person for a linked one, marks reachable, every chart agreeing', async () => {
+    let p: Promise<any> = C.addCourse(); await answer('XBROWSER'); await p; await C.whenLoaded()
+    const syl1 = C.curSyl()
+    p = C.addStudent(); C.dlgClose('pilot one'); await p; await C.whenLoaded()
+    p = C.addStudent(); C.dlgClose({ pick: 'p1' }); await p; await C.whenLoaded()
+    const s1 = C.byName('PILOT ONE')!.id, sR = C.byName('RANGER')!.id
+    p = C.addSyl(); await answer('XB TWO'); await p; await C.whenLoaded()
+    p = C.addStudent(); C.dlgClose('pilot one'); await p; await C.whenLoaded()
+    p = C.addStudent(); C.dlgClose({ pick: 'p1' }); await p; await C.whenLoaded()
+    expect(C.byName('PILOT ONE')!.id, 'one enrolment on both charts').toBe(s1); expect(C.byName('RANGER')!.id).toBe(sR)
+    /* the laptop's export: the same two under the ids minted THERE, the linked
+       one renamed there too, on the one chart the laptop has */
+    await C.applyStudents({ courses: ['XBROWSER'], byCourse: { XBROWSER: { plan: { sylName: syl1 }, lulls: {}, pace: { sLAPTOP: { epw: '3' } },
+      bySyllabus: { [syl1]: { roster: [{ id: 'sLAPTOP', name: 'PILOT ONE' }, { id: 'sLAPR', name: 'RANGER NEW', pid: 'p1' }], marks: { sLAPTOP: { 'ST-01': { g: 'dco' } }, sLAPR: { 'ST-01': { g: 'marg' } } }, dates: {} } } } } }, null)
+    await C.whenLoaded()
+    expect(C.course).toBe('XBROWSER'); expect(C.curSyl()).toBe(syl1)
+    expect(C.byName('PILOT ONE')!.id, 'the store’s id, not the file’s').toBe(s1)
+    expect(C.byName('RANGER NEW')!.id, 'matched by the person, whatever the callsign').toBe(sR); expect(C.byName('RANGER')).toBeNull()
+    expect(C.gradeOf(s1, 'ST-01')).toBe('dco'); expect(C.gradeOf(sR, 'ST-01')).toBe('marg')
+    expect(await storage.get('v3:XBROWSER:' + syl1 + ':m:sLAPTOP'), 'nothing filed under the file’s id').toBeNull()
+    expect(C.paceOf(s1).epw, 'the file’s pace, under the one id').toBe('3')
+    expect(JSON.parse((await storage.get('v3:XBROWSER:XB TWO:roster'))!.value), 'the chart the file did not carry reads the label it brought').toEqual([{ id: s1, name: 'PILOT ONE' }, { id: sR, name: 'RANGER NEW', pid: 'p1' }])
+  })
+  it('a student added since the export is still on the chart after the file comes in — added to what is here, not written over it', async () => {
+    let p: Promise<any> = C.addStudent(); C.dlgClose('pilot two'); await p; await C.whenLoaded()
+    const s2 = C.byName('PILOT TWO')!.id, syl1 = C.curSyl()
+    C.setActive(s2); C.openPop('ST-02', at); await C.popGrade('dpco')
+    await C.applyStudents({ courses: ['XBROWSER'], byCourse: { XBROWSER: { plan: { sylName: syl1 }, lulls: {}, pace: {},
+      bySyllabus: { [syl1]: { roster: [{ id: 'sLAPTOP', name: 'PILOT ONE' }], marks: { sLAPTOP: { 'ST-01': { g: 'marg' } } }, dates: {} } } } } }, null)
+    await C.whenLoaded()
+    expect(C.roster.map((r: any) => r.name)).toEqual(['PILOT ONE', 'RANGER NEW', 'PILOT TWO'])
+    expect(C.byName('PILOT TWO')!.id).toBe(s2)
+    expect(C.gradeOf(s2, 'ST-02'), 'their marks are untouched').toBe('dpco')
+    expect(C.gradeOf(C.byName('PILOT ONE')!.id, 'ST-01'), 'the file’s mark for its own student lands').toBe('marg')
+  })
+  it('an older, name-keyed backup restored over a converted course lands on the existing ids — nothing filed under them is orphaned', async () => {
+    const s1 = C.byName('PILOT ONE')!.id, syl1 = C.curSyl()
+    await storage.set('v3:XBROWSER:lulls:' + s1, JSON.stringify([{ start: '2026-01-01', end: '2026-01-02' }]))
+    await C.applyStudents({ courses: ['XBROWSER'], byCourse: { XBROWSER: { plan: { sylName: syl1 },
+      bySyllabus: { [syl1]: { roster: ['PILOT ONE'], marks: { 'PILOT ONE': { 'ST-03': { g: 'dco' } } }, dates: {} } } } } }, null)
+    await C.whenLoaded()
+    expect(C.byName('PILOT ONE')!.id).toBe(s1)
+    expect(C.gradeOf(s1, 'ST-03')).toBe('dco')
+    expect(C.lulls[s1].length, 'the lull period filed under the id is still theirs').toBe(1)
+  })
+
   it('an interrupted migration loses nothing and finishes on the next load (review finding 1)', async () => {
     const c = 'HALF'
     ;(C.COURSES as string[]).push(c); await storage.set('v3:courses', JSON.stringify(C.COURSES))

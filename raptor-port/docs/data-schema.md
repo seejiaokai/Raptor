@@ -445,7 +445,10 @@ file check. A student name is a label, not a key, and may contain one.
 `{ format: 'ocu-tracker', version: 1, savedAt, contains: { charts, students, links }, charts?, students?, links? }`
 — a FORMAT, not a store (9 Sep 26): ⤓ Export writes one from the store, ⇪ Import
 reads one back in (charts always; students & marks — and the links that ride
-with them — only after a yes). Nothing
+with them — only after a yes; the file's students are matched to the
+enrolments the course already has, by person id then by name, so the store's
+id wins and a student it does not carry keeps their place — `ids.js
+reconcileIds`, 10 Sep 26). Nothing
 binds a file; the store above is the record. The database migration's recipe
 is exactly this shape: Export (both boxes ticked) → wipe → Import, answer yes.
 

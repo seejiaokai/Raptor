@@ -3,7 +3,7 @@
    used once per course at load (core.js migrateIds) and on every import
    (applyStudents), so the two paths cannot drift. */
 import { describe, expect, it } from 'vitest'
-import { isEntry, mintId, upgradeCourseBlock } from './ids.js'
+import { isEntry, mintId, reconcileIds, upgradeCourseBlock } from './ids.js'
 
 const legacy = () => ({
   plan: { sylName: 'A' },
@@ -99,5 +99,41 @@ describe('upgradeCourseBlock', () => {
   it('isEntry and mintId', () => {
     expect(isEntry({ id: 'x', name: 'N' })).toBe(true); expect(isEntry('N')).toBe(false); expect(isEntry({ id: '', name: 'N' })).toBe(false)
     expect(mintId()).not.toBe(mintId())
+  })
+})
+
+/* The store's ids win on import (bug-check, 10 Sep 26): a file from another
+   browser, or an older name-keyed backup, must land on the enrolments the
+   course already has — one id per person — never a second id beside them. */
+describe('reconcileIds', () => {
+  const file = (): any => ({ plan: {}, lulls: { fA: [1] }, pace: { fA: { epw: '3' }, fB: { epw: '4' } }, bySyllabus: {
+    A: { roster: [{ id: 'fA', name: 'ALPHA' }, { id: 'fB', name: 'BRAVO', pid: 'p2' }], marks: { fA: { 'ST-01': { g: 'dco' } }, fB: {} }, dates: { fA: { lastSyll: '2026-01-01' } } } } })
+  it('matches by name and rewrites the id everywhere; a link the store knows rides onto the entry', () => {
+    const { block, remapped } = reconcileIds(file(), [{ id: 'sA', name: 'ALPHA', pid: 'p1' }])
+    expect(remapped).toEqual({ fA: 'sA' })
+    expect(block.bySyllabus.A.roster[0]).toEqual({ id: 'sA', name: 'ALPHA', pid: 'p1' })
+    expect(block.bySyllabus.A.marks).toEqual({ sA: { 'ST-01': { g: 'dco' } }, fB: {} })
+    expect(block.bySyllabus.A.dates).toEqual({ sA: { lastSyll: '2026-01-01' } })
+    expect(block.lulls).toEqual({ sA: [1] }); expect(block.pace).toEqual({ sA: { epw: '3' }, fB: { epw: '4' } })
+  })
+  it('matches by person id before name — a callsign renamed on one side is still one person — and keeps the file’s label', () => {
+    const { block, remapped } = reconcileIds(file(), [{ id: 'sB', name: 'BRAVO OLD', pid: 'p2' }])
+    expect(remapped).toEqual({ fB: 'sB' })
+    expect(block.bySyllabus.A.roster[1]).toEqual({ id: 'sB', name: 'BRAVO', pid: 'p2' })
+  })
+  it('two different people under one callsign are NOT merged', () => {
+    expect(reconcileIds(file(), [{ id: 'sX', name: 'BRAVO', pid: 'p9' }]).remapped).toEqual({})
+  })
+  it('a store id the file already carries is that entry’s own — nobody else is mapped onto it', () => {
+    const f = file(); f.bySyllabus.A.roster[0] = { id: 'sA', name: 'NEW NAME' }; f.bySyllabus.A.marks = { sA: {}, fB: {} }
+    f.bySyllabus.A.roster.push({ id: 'fC', name: 'ALPHA' })   // someone else took the old callsign where the file came from
+    expect(reconcileIds(f, [{ id: 'sA', name: 'ALPHA' }]).remapped).toEqual({})
+  })
+  it('a legacy file, once upgraded, lands on the existing ids; nothing to match leaves the block as it is; the input is untouched', () => {
+    const up = upgradeCourseBlock({ bySyllabus: { A: { roster: ['ALPHA'], marks: { ALPHA: { 'ST-01': { g: 'dco' } } }, dates: {} } } }, null).block
+    const { block } = reconcileIds(up, [{ id: 'sA', name: 'ALPHA' }])
+    expect(block.bySyllabus.A.roster).toEqual([{ id: 'sA', name: 'ALPHA' }]); expect(Object.keys(block.bySyllabus.A.marks)).toEqual(['sA'])
+    const src = file(), copy = JSON.parse(JSON.stringify(src))
+    expect(reconcileIds(src, []).block).toEqual(copy); expect(src).toEqual(copy)
   })
 })

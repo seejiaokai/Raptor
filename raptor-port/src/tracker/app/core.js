@@ -16,7 +16,7 @@ import * as FS from './fileStore.js';
 import { findEvents } from './eventOrder.js';
 import { isFileLocked, onFileLocked } from '../role.js';
 import { getPeople, onPeople, whoami } from '../people.js';
-import { mintId, isEntry, upgradeCourseBlock } from './ids.js';
+import { mintId, isEntry, upgradeCourseBlock, reconcileIds } from './ids.js';
 
 export { SYLLABI, SYL_NAMES, DEFAULT_SYL_NAME, DEFAULT_SYL_ORDER, DEFAULT_LAYOUTS, EVENT_INFO };
 export { mintId };
@@ -3706,8 +3706,41 @@ export async function applyStudents(students, links) {
     const cs = (students.byCourse || {})[c] || {};
     /* an older file is name-keyed and may carry a links block; the converter
        lands both as entries with pids — the same path the store's own data took */
-    const { block } = upgradeCourseBlock({ plan: cs.plan, lulls: cs.lulls, pace: cs.pace, bySyllabus: cs.bySyllabus }, (links || {})[c] || null);
+    const up = upgradeCourseBlock({ plan: cs.plan, lulls: cs.lulls, pace: cs.pace, bySyllabus: cs.bySyllabus }, (links || {})[c] || null).block;
+    /* THE FILE'S STUDENTS ARE MATCHED TO THE ENROLMENTS ALREADY HERE (bug-check,
+       10 Sep 26 — ids.js reconcileIds says why): every roster the store holds
+       for the course, so a chart the file does not carry still counts. */
+    const existing = [];
+    for (const n of await storeSylNames(c)) for (const e of sParse(await sGet(kRosterFor(c, n)), [], 'array')) if (isEntry(e)) existing.push(e);
+    const { block } = reconcileIds(up, existing);
+    /* ADDED TO WHAT IS HERE, NOT WRITTEN OVER IT — the promise the Import
+       dialog makes. Writing the file's roster whole dropped every student
+       added to that chart since the export (their marks stayed in storage,
+       reachable by nothing). Anyone on the chart now whom the file does not
+       name keeps their place, after the file's people; a bare string (a course
+       whose conversion has not finished) rides along the same way and the
+       migration below converts it. The file's marks and dates are written per
+       student, so a student it does not carry keeps theirs untouched. */
+    for (const n in block.bySyllabus) {
+      const b = block.bySyllabus[n], roster = b.roster || [];
+      const ids = new Set(roster.map(e => isEntry(e) ? e.id : e)), names = new Set(roster.map(e => isEntry(e) ? e.name : e));
+      for (const e of sParse(await sGet(kRosterFor(c, n)), [], 'array')) {
+        if (isEntry(e) ? (!ids.has(e.id) && !names.has(e.name)) : (typeof e === 'string' && e && !names.has(e))) roster.push(e);
+      }
+      b.roster = roster;
+    }
     await writeCourseBlock(c, block);
+    /* One label per enrolment across the course (the rule renameStudent keeps):
+       the name the file brought in goes onto every chart it did NOT write too,
+       or the charts would disagree and findEnrolment would read two students. */
+    const label = Object.create(null);
+    for (const n in block.bySyllabus) for (const e of (block.bySyllabus[n].roster || [])) if (isEntry(e) && !has(label, e.id)) label[e.id] = e.name;
+    for (const n of await storeSylNames(c)) {
+      if (has(block.bySyllabus, n)) continue;
+      const rr = sParse(await sGet(kRosterFor(c, n)), [], 'array'); let changed = false;
+      for (const e of rr) if (isEntry(e) && has(label, e.id) && e.name !== label[e.id]) { e.name = label[e.id]; changed = true; }
+      if (changed) await sSet(kRosterFor(c, n), JSON.stringify(rr));
+    }
     /* THE IMPORT CONVERTS THE COURSE; IT DOES NOT DECLARE IT CONVERTED. Stamping
        the flag here was a claim about the whole COURSE made on the strength of
        one FILE, and the file only ever carries what somebody exported — never
