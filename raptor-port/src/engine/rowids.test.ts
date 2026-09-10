@@ -105,18 +105,24 @@ describe('ridKey / posKey / migrateBookKeys — addressing by rid (addressing-by
     const days = seed()
     const di = days.findIndex((d: any) => (d.waves || []).length >= 2)
     const w0 = days[di].waves[0].rid, w1 = days[di].waves[1].rid
+    /* the snapshot's wave-at-1 carries a DIFFERENT id than the live wave-at-1,
+       so a snap.c key resolving to 'rSNAPW1' proves it was translated against
+       snap.d (its own rows) and NOT the live day (bug caught in review: a row
+       that moved after issue would otherwise map onto the wrong id). */
+    const snapDay = clone(days[di]); snapDay.waves[1].rid = 'rSNAPW1'
     const sched: any = {
       pending: { [`wl:${di}.1`]: 1 },
       changes: { [`wl:${di}.0`]: 2 },
       added: {},
-      als: [{ n: 1, keys: [`wl:${di}.0`, 'dn:0.0'], adds: [], structAdds: [], snap: { [di]: { c: { [`wl:${di}.1`]: 1 } } } }],
+      als: [{ n: 1, keys: [`wl:${di}.0`, 'dn:0.0'], adds: [], structAdds: [], snap: { [di]: { d: snapDay, c: { [`wl:${di}.1`]: 1 } } } }],
     }
     const n = migrateBookKeys(sched, days)
     expect(n).toBeGreaterThan(0)
     expect(sched.pending[`wl:${di}.${w1}`]).toBe(1)
     expect(sched.changes[`wl:${di}.${w0}`]).toBe(2)
     expect(sched.als[0].keys).toEqual([`wl:${di}.${w0}`, 'dn:0.0'])   // the note key stays positional (no rid)
-    expect(sched.als[0].snap[di].c[`wl:${di}.${w1}`]).toBe(1)
+    expect(sched.als[0].snap[di].c['wl:' + di + '.rSNAPW1']).toBe(1)  // snap.c → snap.d's id
+    expect(sched.als[0].snap[di].c[`wl:${di}.${w1}`]).toBeUndefined() // NOT the live wave's id
     expect(migrateBookKeys(sched, days)).toBe(0)                       // already rid form → a no-op
   })
 })

@@ -141,16 +141,29 @@ export function posKey(key: any, days: any[]): string | null {
 export function migrateBookKeys(sched: any, days: any[]): number {
   if (!sched) return 0;
   let n = 0;
-  const one = (k: any) => { const m = ridKey(k, days); if (m !== k) n++; return m; };
-  const remap = (o: any) => { const out: any = {}; for (const k of Object.keys(o || {})) out[one(k)] = o[k]; return out; };
-  sched.pending = remap(sched.pending);
-  sched.changes = remap(sched.changes);
-  sched.added = remap(sched.added);
+  const one = (k: any, d: any[]) => { const m = ridKey(k, d); if (m !== k) n++; return m; };
+  const remap = (o: any, d: any[]) => { const out: any = {}; for (const k of Object.keys(o || {})) out[one(k, d)] = o[k]; return out; };
+  sched.pending = remap(sched.pending, days);
+  sched.changes = remap(sched.changes, days);
+  sched.added = remap(sched.added, days);
   (sched.als || []).forEach((al: any) => {
-    if (al.keys) al.keys = al.keys.map(one);
-    if (al.adds) al.adds = al.adds.map(one);
-    if (al.structAdds) al.structAdds = al.structAdds.map(one);
-    if (al.snap) Object.keys(al.snap).forEach((di: any) => { const sd = al.snap[di]; if (sd && sd.c) sd.c = remap(sd.c); });
+    /* keys/adds/structAdds address the LIVE model (they paint live cells), so
+       they translate against the live day. */
+    if (al.keys) al.keys = al.keys.map((k: any) => one(k, days));
+    if (al.adds) al.adds = al.adds.map((k: any) => one(k, days));
+    if (al.structAdds) al.structAdds = al.structAdds.map((k: any) => one(k, days));
+    /* a snapshot's changes-slice addresses the SNAPSHOT's OWN rows (restore
+       installs snap.c alongside snap.d), so it translates against snap.d — which
+       backfillSnapshotIds has already given rids. Translating it against the
+       live day would map a row that has since moved onto the wrong rid, the
+       exact mis-attribution this change exists to prevent. A legacy snap with
+       no day blob falls back to the live day. */
+    if (al.snap) Object.keys(al.snap).forEach((di: any) => {
+      const sd = al.snap[di]; if (!sd || !sd.c) return;
+      let ref = days;
+      if (sd.d) { ref = []; ref[+di] = sd.d; }
+      sd.c = remap(sd.c, ref);
+    });
   });
   return n;
 }
