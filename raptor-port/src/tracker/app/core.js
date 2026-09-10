@@ -2900,7 +2900,10 @@ export async function renameStudent(id) {
        visible chart. No per-student record moves: they are keyed by the id. */
     let hit = false;
     const r = roster.find(x => x.id === id); if (r) { r.name = v; hit = true; await saveRoster(); }
-    for (const sn of [...new Set([...SYL_NAMES, ...Object.keys(CUSTOMS || {})])]) {
+    /* the SAME breadth findEnrolment uses for the duplicate check above, so a
+       chart the refusal counts as part of the course is a chart the rename
+       reaches — no syllabus is left reading the old label */
+    for (const sn of await storeSylNames(course)) {
       if (sn === plan.sylName) continue;
       const rr = sParse(await sGet(kRosterFor(course, sn)), [], 'array');
       let changed = false;
