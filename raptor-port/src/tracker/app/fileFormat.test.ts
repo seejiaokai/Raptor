@@ -54,6 +54,10 @@ describe('the roster shape (stable ids, 10 Sep 26)', () => {
   it('a roster mixing strings and entries is refused', () => {
     expect(() => readFile(file({ students: entries('C', 'S', ['STUDENT A', { id: 's1', name: 'B' }]) }))).toThrow(/crew list for “S”/)
   })
+  it('a roster that is not a list is refused by name, not by a TypeError', () => {
+    for (const bad of ['oops', 5, {}, true])
+      expect(() => readFile(file({ students: entries('C', 'S', bad as any) })), JSON.stringify(bad)).toThrow(/crew list for “S”/)
+  })
   it('conflicts are refused, naming them: one id twice on a roster, one name twice on a roster, one id under two names across syllabi (review finding 5)', () => {
     expect(() => readFile(file({ students: entries('C', 'S', [{ id: 's1', name: 'A' }, { id: 's1', name: 'B' }]) }))).toThrow(/id s1 twice on “S”/)
     expect(() => readFile(file({ students: entries('C', 'S', [{ id: 's1', name: 'A' }, { id: 's2', name: 'A' }]) }))).toThrow(/“A” twice on “S”/)

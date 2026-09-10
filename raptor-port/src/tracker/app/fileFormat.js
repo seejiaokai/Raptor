@@ -141,10 +141,17 @@ function checkStudents(s) {
       /* two roster shapes (stable ids, 10 Sep 26): the legacy string list, or
          entries { id, name, pid? } — one or the other, never a mix, so the
          reader cannot half-upgrade a file */
+      /* the array check MUST run before either .every() below: a damaged
+         file names its part ("the crew list … is damaged"), so a truthy
+         non-array roster (a string, a number, a plain object) has to be
+         turned away here — reaching .every() on it throws a raw, unnamed
+         TypeError instead, which leaves nobody any wiser (review fix). */
+      if (sv.roster != null && !Array.isArray(sv.roster))
+        throw new Error('The crew list for “' + syl + '” on course “' + course + '” is damaged, so that file has not been opened.');
       const rs = sv.roster || [];
       const isEntry = e => !!e && typeof e === 'object' && !Array.isArray(e) && typeof e.id === 'string' && !!e.id && typeof e.name === 'string' && (e.pid == null || (typeof e.pid === 'string' && !!e.pid));
       const allStr = rs.every(n => typeof n === 'string'), allEntry = rs.every(isEntry);
-      if (sv.roster != null && (!Array.isArray(sv.roster) || !(allStr || allEntry)))
+      if (!(allStr || allEntry))
         throw new Error('The crew list for “' + syl + '” on course “' + course + '” is damaged, so that file has not been opened.');
       /* per roster: no id twice, no name twice; an entry id also can't
          disagree with the name it already carries on an earlier syllabus */
