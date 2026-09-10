@@ -71,6 +71,25 @@ async function openTracker(page) {
   await page.waitForTimeout(300);
 }
 
+/* ---- students are named on screen and keyed by id in storage (10 Sep 26) ----
+   Since the stable-ids work a roster entry is { id, name, pid? }: the Crew
+   picker's option VALUE is the enrolment id — a minted string that carries no
+   name at all — and its TEXT is the callsign. Every per-student storage key
+   (:m:, :d:, pace:, lulls:, last:) is filed under the id too.
+   These checks are about PEOPLE, so they go on saying the name: it is what the
+   trainer reads, types and removes, and a check written in ids would pass just
+   as happily against a roster that had lost every name. So: read the option
+   TEXT, pick by LABEL, and resolve an id only where a raw key has to be built.
+   Reading o.value as if it were a name is what turned this whole suite red. */
+const rosterNames = () => pg.evaluate(() => [...document.querySelectorAll('#activeSel option')].map(o => o.textContent));
+const activeName = () => pg.evaluate(() => {
+  const s = document.getElementById('activeSel'), o = s && s.selectedOptions[0];
+  return o ? o.textContent : '';
+});
+const pickStudent = name => pg.selectOption('#activeSel', { label: name });
+/* The id the app itself would use for that name on the course now loaded. */
+const idOf = name => pg.evaluate(n => { const e = window.__coreForTests.byName(n); return e ? e.id : null; }, name);
+
 const execPath = process.env.CHROMIUM_PATH
   || (existsSync('/opt/pw-browsers/chromium') ? '/opt/pw-browsers/chromium' : undefined);
 const b = await chromium.launch(execPath ? { executablePath: execPath } : {});
@@ -636,10 +655,20 @@ const stApplied = await pg.evaluate(async () => {
       marks: { 'STUDENT Z': { 'ST-01': { g: 'dco', f: 3 } } },
       dates: { 'STUDENT Z': { lastSyll: '2026-02-03', lastCurr: null } } } } } } });
   await new Promise(r => setTimeout(r, 600));   // wait for the write-behind postman to flush to raptor:tracker/*
-  return { roster: localStorage['raptor:tracker/v3:SMOKE COURSE:2026:roster'],
-           marks: localStorage['raptor:tracker/v3:SMOKE COURSE:2026:m:STUDENT Z'] };
+  /* A name-keyed file is re-keyed on the way in (stable ids, 10 Sep 26): the
+     roster lands as { id, name } entries and the marks under the MINTED id, so
+     there is no `…:m:STUDENT Z` key to read any more. The roster is the index
+     that names the id, exactly as every reader in the app uses it, so go
+     through it rather than guessing a key — and the id is not knowable here
+     because this course is not the one loaded. */
+  const roster = localStorage['raptor:tracker/v3:SMOKE COURSE:2026:roster'];
+  let entry = null; try { entry = (JSON.parse(roster || '[]') || []).find(e => e && e.name === 'STUDENT Z'); } catch (_) {}
+  return { roster, id: entry ? entry.id : null,
+           marks: entry ? localStorage['raptor:tracker/v3:SMOKE COURSE:2026:m:' + entry.id] : null };
 });
 ok('applying students writes the roster', !!stApplied && (stApplied.roster || '').includes('STUDENT Z'));
+ok('the roster it writes carries an enrolment id, not a bare name',
+  !!stApplied && !!stApplied.id, stApplied ? String(stApplied.roster).slice(0, 80) : 'no result');
 ok('applying students writes marks and failure counts',
   !!stApplied && (stApplied.marks || '').includes('"f":3'));
 
@@ -1087,9 +1116,10 @@ ok('the spacer falls after the search, with only the Save slot to its right',
      nobody is on has no Crew to grade — a click on a ball there does nothing
      (by design). Back to the seeded syllabus, which has students. */
   await pg.selectOption('#sylSel', '2026'); await pg.waitForTimeout(900);
+  /* Named, not id'd: an empty picker and a picker on somebody are told apart by
+     the callsign the trainer would read, which is the option's TEXT. */
   ok('the undo checks run with a student on the roster',
-    !!(await pg.evaluate(() => document.getElementById('activeSel').value)),
-    `crew "${await pg.evaluate(() => document.getElementById('activeSel').value)}"`);
+    !!(await activeName()), `crew "${await activeName()}"`);
   const st = () => pg.evaluate(() => {
     const u = window.__undoForTests();
     return { g: u.grade('ST-01'), undo: u.undo, redo: u.redo,
@@ -1114,9 +1144,12 @@ ok('the spacer falls after the search, with only the Save slot to its right',
   await pg.keyboard.press('Control+z'); await pg.waitForTimeout(400);
   ok('Ctrl+Z undoes from the keyboard', (await st()).g === 0);
   ok('the mark undone is the mark saved: storage holds no grade for ST-01', await pg.evaluate(() => {
-    const c = document.getElementById('courseSel').value, s = document.getElementById('activeSel').value;
+    /* Marks are filed under the ENROLMENT ID since 10 Sep 26, and the picker's
+       option value IS that id — so the select still hands over the right key
+       segment, it just is not the callsign any more. */
+    const c = document.getElementById('courseSel').value, id = document.getElementById('activeSel').value;
     const syl = document.getElementById('sylSel').value;
-    const raw = localStorage.getItem('raptor:tracker/v3:' + c + ':' + syl + ':m:' + s);
+    const raw = localStorage.getItem('raptor:tracker/v3:' + c + ':' + syl + ':m:' + id);
     return !raw || !((JSON.parse(raw)['ST-01'] || {}).g);
   }));
   await pg.keyboard.press('Control+y'); await pg.waitForTimeout(400);
@@ -1433,13 +1466,13 @@ await pg.waitForTimeout(800);
   await pg.keyboard.press('Escape'); await pg.waitForTimeout(250);
 
   /* Each student's own data: another crew member sees none of these. */
-  const crew = await pg.evaluate(() => [...document.querySelectorAll('#activeSel option')].map(o => o.value));
+  const crew = await rosterNames();
   if (crew.length >= 2) {
-    const me = await pg.inputValue('#activeSel'); const other = crew.find(c => c !== me);
-    await pg.selectOption('#activeSel', other); await pg.waitForTimeout(500);
+    const me = await activeName(); const other = crew.find(c => c !== me);
+    await pickStudent(other); await pg.waitForTimeout(500);
     const theirs = await pg.evaluate(() => ({ chips: document.querySelectorAll('#failChips .failchip').length, txt: (document.getElementById('failChips') || {}).textContent || '' }));
     ok('another student’s Failures card shows their own record, not this one’s', theirs.chips === 0 && /none/i.test(theirs.txt), `${theirs.chips} chips`);
-    await pg.selectOption('#activeSel', me); await pg.waitForTimeout(500);
+    await pickStudent(me); await pg.waitForTimeout(500);
     ok('switching back brings the failures back',
       (await pg.evaluate(() => document.querySelectorAll('#failChips .failchip').length)) === 4);
   }
@@ -1465,7 +1498,9 @@ await pg.waitForTimeout(800);
   /* Details mode's bubble answers for THIS student: grade, day, failures. */
   await pg.hover('#failChips .failchip:nth-child(4)'); await pg.waitForTimeout(200);
   const rec = await pg.evaluate(() => { const b = document.getElementById('detailBubble'); return b ? b.textContent : ''; });
-  const whose = await pg.inputValue('#activeSel');
+  /* The bubble prints the CALLSIGN, so compare it with the callsign — the
+     picker's value is the enrolment id and would never appear in the prose. */
+  const whose = await activeName();
   ok('the failure bubble names the student it belongs to', rec.includes(whose) && /failure of 1 on ST-02/.test(rec), rec.trim().slice(0, 80));
   await pg.mouse.move(5, 5); await pg.waitForTimeout(150);
   await openPop('ST-02');
@@ -1888,8 +1923,10 @@ const addStudent = async name => {
   await pg.click('#dlgOk');
   /* wait for the roster to SHOW the name, not a fixed 700ms: the add itself now
      waits for any syllabus load still in flight, and on a slow runner that took
-     longer than the pause (9 Sep 26 — one student where two were added) */
-  await pg.waitForFunction(n => [...document.querySelectorAll('#activeSel option')].some(o => o.value === n),
+     longer than the pause (9 Sep 26 — one student where two were added).
+     The name is the option's TEXT since stable ids — its value is the minted
+     enrolment id, which this helper cannot know and would never match. */
+  await pg.waitForFunction(n => [...document.querySelectorAll('#activeSel option')].some(o => o.textContent === n),
     name.trim().toUpperCase(), { timeout: 15000 });
   await pg.waitForTimeout(300);
 };
@@ -1920,7 +1957,7 @@ const addStudent = async name => {
   ok('the search box narrows the list to the typed callsign', narrowed && await pg.locator('#dlgList .dlg-item').count() >= 1);
   await pg.click(`#dlgList .dlg-item[data-key="${first.key}"]`); await pg.waitForTimeout(700);
   const picked = first.label.toUpperCase();
-  const rosterNow = () => pg.evaluate(() => [...document.querySelectorAll('#activeSel option')].map(o => o.value));
+  const rosterNow = rosterNames;
   ok('picking a person adds them under their callsign, upper-cased', (await rosterNow()).includes(picked), (await rosterNow()).join(', '));
   ok('and marks their chip as linked to the squadron roster',
     await pg.locator(`.c-students .chip.linked[title="On the squadron roster as ${first.label}"]`).count() === 1);
@@ -1937,24 +1974,101 @@ const addStudent = async name => {
   await pg.check('#copyStudents'); await pg.click('#copyOk'); await pg.waitForTimeout(1500);
   const exported = await pg.evaluate(() => { try { return JSON.parse(window.__exportedForTests || 'null'); } catch (_) { return null; } });
   const courseNow = await pg.evaluate(() => document.querySelector('#courseSel').value);
-  ok('the export file carries the links beside the students',
-    !!exported && exported.contains.links === true && !!exported.links && !!exported.links[courseNow] && exported.links[courseNow][picked] === first.key,
-    exported ? JSON.stringify(exported.links) : 'no file was written');
-  ok('an unlinked crew member has no link in it', !!exported && !((exported.links || {})[courseNow] || {})['STUDENT SMOKE3']);
+  const sylNow = await pg.inputValue('#sylSel');
+  /* THE LINK MOVED ONTO THE STUDENT (stable ids, 10 Sep 26). There is no
+     separate `links` block in the file any more — the roster entry itself
+     carries `pid`, the squadron-roster person it belongs to — so this asserts
+     the new home AND that the old one is gone, or the block could quietly come
+     back beside it and nothing would notice. */
+  const rosterOut = ((((((exported || {}).students || {}).byCourse || {})[courseNow] || {}).bySyllabus || {})[sylNow] || {}).roster;
+  const pickedOut = (rosterOut || []).find(r => r && r.name === picked);
+  ok('the export file carries the link ON the student, not in a block of its own',
+    !!pickedOut && pickedOut.pid === first.key
+    && !!exported && exported.contains.links === false && !exported.links,
+    exported ? JSON.stringify(pickedOut || rosterOut || null) : 'no file was written');
+  ok('an unlinked crew member has no link in it',
+    !!(rosterOut || []).find(r => r && r.name === 'STUDENT SMOKE3')
+    && !((rosterOut || []).find(r => r && r.name === 'STUDENT SMOKE3') || {}).pid);
   if (await pg.locator('#dlgOk').count()) { await pg.click('#dlgOk'); await pg.waitForTimeout(300); }
   await pg.evaluate(() => { delete window.__pickSaveForTests; delete window.__exportedForTests; });
+  /* The × carries data-rm = the enrolment id now, so reach the chip by the name
+     printed on it — the same way the trainer finds the person to remove. */
   for (const n of [picked, 'STUDENT SMOKE3']) {
-    await pg.click(`.c-students .chip .x[data-rm="${n}"]`); await pg.waitForSelector('#dlgOk'); await pg.click('#dlgOk'); await pg.waitForTimeout(700);
+    await pg.locator('.c-students .chip', { hasText: n }).locator('.x').click();
+    await pg.waitForSelector('#dlgOk'); await pg.click('#dlgOk'); await pg.waitForTimeout(700);
   }
   ok('removing a linked crew member takes the link with them',
     !(await rosterNow()).includes(picked) && await pg.locator('.c-students .chip.linked').count() === 0);
+
+  /* ---- a store written BEFORE stable ids converts itself on load (10 Sep 26) ----
+     Every other check here runs on data this suite created, which the app has
+     already keyed by enrolment id — so none of them can say whether a tracker
+     that has been in use since before the change still opens. That is the only
+     upgrade that exists in the wild: a roster of bare names, marks filed under
+     those names, and the person → student links in their own `v3:links`
+     record. So plant exactly that shape, reopen the app, and watch the whole
+     conversion land: the name still reads on screen, the link is now carried on
+     the student, the mark has MOVED to the id key, and the name key it came
+     from is gone. Asserting the move rather than just the arrival is the point
+     — a conversion that copied would leave a second, unreachable set of marks
+     under every old name, which is invisible until two of them disagree.
+     The course is planted and put back afterwards so the lull checks below meet
+     the course and chart they have always run on. */
+  {
+    const backCourse = await pg.evaluate(() => document.getElementById('courseSel').value);
+    const backSyl = await pg.inputValue('#sylSel');
+    await pg.evaluate(pid => {
+      const P = 'raptor:tracker/';
+      const cs = JSON.parse(localStorage.getItem(P + 'v3:courses') || '["26ABSG"]');
+      if (!cs.includes('LEGACY')) cs.push('LEGACY');
+      localStorage.setItem(P + 'v3:courses', JSON.stringify(cs));
+      localStorage.setItem(P + 'v3:LEGACY:2026:roster', JSON.stringify(['OLD A']));
+      localStorage.setItem(P + 'v3:LEGACY:2026:m:OLD A', JSON.stringify({ 'ST-01': { g: 'dco' } }));
+      /* The per-syllabus roster SPLIT is already done on a store of this
+         vintage, and the id migration deliberately refuses a course where it
+         has not run — without the flag this would plant a shape that never
+         converts, and the check would be measuring the refusal. */
+      localStorage.setItem(P + 'v3:LEGACY:rostermig', '1');
+      localStorage.setItem(P + 'v3:links', JSON.stringify({ LEGACY: { 'OLD A': pid } }));
+    }, first.key);
+    await openTracker(pg); await pg.waitForSelector('#flowSvg .ball', { timeout: 15000 });
+    await pg.selectOption('#courseSel', 'LEGACY'); await pg.waitForTimeout(1000);
+    const conv = await pg.evaluate(() => {
+      const P = 'raptor:tracker/';
+      const e = window.__coreForTests.byName('OLD A');
+      return {
+        options: [...document.querySelectorAll('#activeSel option')].map(o => o.textContent).join(','),
+        id: e ? e.id : null, pid: e ? e.pid : null,
+        underId: e ? localStorage.getItem(P + 'v3:LEGACY:2026:m:' + e.id) : null,
+        underName: localStorage.getItem(P + 'v3:LEGACY:2026:m:OLD A'),
+        flag: localStorage.getItem(P + 'v3:LEGACY:idmig'),
+        map: localStorage.getItem(P + 'v3:LEGACY:idmap'),
+        links: localStorage.getItem(P + 'v3:links'),
+      };
+    });
+    ok('a course stored under the old name keys still reads its student by name',
+      conv.options === 'OLD A' && !!conv.id && conv.id !== 'OLD A',
+      `picker reads "${conv.options}", enrolment ${conv.id}`);
+    ok('the person they were linked to comes across onto the student',
+      conv.pid === first.key
+      && await pg.locator('.c-students .chip.linked', { hasText: 'OLD A' }).count() === 1,
+      `pid ${conv.pid}, wanted ${first.key}`);
+    ok('their mark MOVED to the id key — it is not left under the name as well',
+      !!conv.underId && conv.underId.includes('dco') && !conv.underName,
+      `under the id: ${conv.underId}; under the name: ${conv.underName}`);
+    ok('a finished conversion is flagged and drops its scratch mapping and the old links record',
+      conv.flag === '1' && !conv.map && !conv.links,
+      `flag ${conv.flag}, mapping ${conv.map}, links ${conv.links}`);
+    await pg.selectOption('#courseSel', backCourse); await pg.waitForTimeout(900);
+    await pg.selectOption('#sylSel', backSyl).catch(() => {}); await pg.waitForTimeout(900);
+  }
 }
 if ((await pg.locator('#activeSel option').count()) < 2) await addStudent('STUDENT SMOKE2');
-const roster0 = await pg.evaluate(() => [...document.querySelectorAll('#activeSel option')].map(o => o.value));
+const roster0 = await rosterNames();
 ok('the course has two students to test lull periods against', roster0.length >= 2, roster0.join(', '));
 /* Adding a student makes them the one being marked, so say explicitly who this
    period belongs to rather than trusting whoever is selected. */
-await pg.selectOption('#activeSel', roster0[0]); await pg.waitForTimeout(500);
+await pickStudent(roster0[0]); await pg.waitForTimeout(500);
 await pg.click('#setLullBtn'); await pg.waitForSelector('#lullCal.on');
 await pg.click('#lullCal .day:not(.out)');           /* start */
 await pg.click('#lullNext'); await pg.waitForTimeout(200);
@@ -1992,21 +2106,22 @@ const other = roster0.find(r => r !== roster0[0]);
      this check keep passing. */
   await openTracker(pg);
   await pg.waitForSelector('#flowSvg .ball'); await pg.waitForTimeout(500);
-  await pg.selectOption('#activeSel', other); await pg.waitForTimeout(600);
+  await pickStudent(other); await pg.waitForTimeout(600);
   ok('a lull period belongs to one student, not the whole course',
     await pg.locator('#lullChips .chip').count() === 0, `${other} shows ${await pg.locator('#lullChips .chip').count()}`);
-  await pg.selectOption('#activeSel', roster0[0]); await pg.waitForTimeout(500);
+  await pickStudent(roster0[0]); await pg.waitForTimeout(500);
   ok('switching back shows the first student their own periods again',
     await pg.locator('#lullChips .chip').count() === 1);
 
-  /* Copy to… */
+  /* Copy to… — the tick-boxes are valued by enrolment id, so tick the row that
+     READS the other student's name rather than building a selector from it. */
   await pg.click('#copyLullBtn'); await pg.waitForSelector('#lullCopy.on');
-  await pg.check(`#lullCopy input[type=checkbox][value="${other}"]`);
+  await pg.locator('#lullCopy .lullpick', { hasText: other }).locator('input[type=checkbox]').check();
   await pg.click('#lullCopyOk'); await pg.waitForTimeout(600);
-  await pg.selectOption('#activeSel', other); await pg.waitForTimeout(500);
+  await pickStudent(other); await pg.waitForTimeout(500);
   ok('Copy to… puts the periods on the student that was ticked',
     await pg.locator('#lullChips .chip').count() === 1);
-  await pg.selectOption('#activeSel', roster0[0]); await pg.waitForTimeout(400);
+  await pickStudent(roster0[0]); await pg.waitForTimeout(400);
 }
 
 /* Editing: tapping a period reopens the calendar on it. */
@@ -2021,7 +2136,7 @@ await pg.keyboard.press('Escape'); await pg.waitForTimeout(250);
    new number became 2 and the field could never be changed. */
 {
   const A = roster0[0], B = roster0.find(r => r !== roster0[0]);
-  await pg.selectOption('#activeSel', A); await pg.waitForTimeout(400);
+  await pickStudent(A); await pg.waitForTimeout(400);
   await pg.fill('#epwIn', '');
   await pg.waitForTimeout(250);
   ok('the pace box can be cleared to type a new number',
@@ -2031,14 +2146,14 @@ await pg.keyboard.press('Escape'); await pg.waitForTimeout(250);
   const aPace = await pg.inputValue('#epwIn'), aTgt = await pg.inputValue('#targetIn');
   ok('a pace typed in stays put', aPace === '3.5', `shows "${aPace}"`);
 
-  await pg.selectOption('#activeSel', B); await pg.waitForTimeout(500);
+  await pickStudent(B); await pg.waitForTimeout(500);
   const bPace = await pg.inputValue('#epwIn'), bTgt = await pg.inputValue('#targetIn');
   ok('a second student has their own pace, not the first one\'s',
     bPace !== '3.5', `${A}=${aPace} ${B}=${bPace}`);
   ok('a second student has their own end date',
     bTgt !== aTgt, `${A}=${aTgt} ${B}=${bTgt}`);
 
-  await pg.selectOption('#activeSel', A); await pg.waitForTimeout(500);
+  await pickStudent(A); await pg.waitForTimeout(500);
   ok('switching back returns that student\'s own pace and end date',
     (await pg.inputValue('#epwIn')) === '3.5' && (await pg.inputValue('#targetIn')) === '2027-03-01',
     `pace=${await pg.inputValue('#epwIn')} end=${await pg.inputValue('#targetIn')}`);
@@ -2046,10 +2161,10 @@ await pg.keyboard.press('Escape'); await pg.waitForTimeout(250);
   /* And it must survive a reload, which is where a per-course store would show. */
   await openTracker(pg);
   await pg.waitForSelector('#flowSvg .ball'); await pg.waitForTimeout(600);
-  await pg.selectOption('#activeSel', B); await pg.waitForTimeout(500);
+  await pickStudent(B); await pg.waitForTimeout(500);
   ok('per-student pace survives a reload',
     (await pg.inputValue('#epwIn')) !== '3.5', `${B} shows ${await pg.inputValue('#epwIn')}`);
-  await pg.selectOption('#activeSel', A); await pg.waitForTimeout(500);
+  await pickStudent(A); await pg.waitForTimeout(500);
   ok('per-student end date survives a reload',
     (await pg.inputValue('#targetIn')) === '2027-03-01', `${A} shows ${await pg.inputValue('#targetIn')}`);
 }
@@ -2162,10 +2277,10 @@ ok('opening the app lands on the last event marked, not at the top of the chart'
    and a crew member with no mark on this chart yet leaves the view where it
    is, never snapping to the top (his phone screenshot the same day: the redraw
    that fixed the rings had reset the scroll). */
-const two = await pg.evaluate(() => [...document.querySelectorAll('#activeSel option')].map(o => o.value));
+const two = await rosterNames();
 /* Whoever the app came back on is the one who did the marking — not
    necessarily the first name in the list. */
-const marker = await pg.inputValue('#activeSel');
+const marker = await activeName();
 const ballView = id => pg.evaluate(i => {
   const bd = document.getElementById('board');
   const g = [...document.querySelectorAll('#flowSvg .ball')].find(x => x.dataset.id === i);
@@ -2184,7 +2299,7 @@ if (two.length >= 2) {
   const otherS = two.find(r => r !== marker);
   /* Give the other student a mark of their own, near the TOP of the chart, so
      the two last marks are far apart and a landing is unmistakable. */
-  await pg.selectOption('#activeSel', otherS); await pg.waitForTimeout(600);
+  await pickStudent(otherS); await pg.waitForTimeout(600);
   const shallow = await pg.evaluate(() => {
     const balls = [...document.querySelectorAll('#flowSvg .ball')];
     const withY = balls.map(g => ({ id: g.dataset.id, y: g.getBBox().y })).sort((a, b) => a.y - b.y);
@@ -2199,12 +2314,12 @@ if (two.length >= 2) {
   await pg.locator('#pop .opts button', { hasText: 'DCO' }).click();
   await pg.waitForTimeout(700);
 
-  await pg.selectOption('#activeSel', marker); await pg.waitForTimeout(600);
+  await pickStudent(marker); await pg.waitForTimeout(600);
   const onDeep = await ballView(deep.id);
   ok('picking a crew member lands on their latest work, well down the chart, centred',
     onDeep.found && onDeep.inView && onDeep.scrollTop > 100 && onDeep.off <= CENTRED,
     `${deep.id}: scrolled ${onDeep.scrollTop}px, in view ${onDeep.found ? onDeep.inView : 'n/a'}, ${onDeep.off}px off centre`);
-  await pg.selectOption('#activeSel', otherS); await pg.waitForTimeout(600);
+  await pickStudent(otherS); await pg.waitForTimeout(600);
   const onShallow = await ballView(shallow.id);
   ok("picking the other one lands on THEIR latest work, near the top, centred",
     onShallow.found && onShallow.inView && onShallow.scrollTop < onDeep.scrollTop && onShallow.off <= CENTRED,
@@ -2216,7 +2331,7 @@ if (two.length >= 2) {
      (Adding a student selects them and redraws, so pick a marked student
      again before parking.) */
   await addStudent('STUDENT FRESH');
-  await pg.selectOption('#activeSel', marker); await pg.waitForTimeout(600);
+  await pickStudent(marker); await pg.waitForTimeout(600);
   await pg.evaluate(() => { const bd = document.getElementById('board'); bd.scrollTop = Math.round(bd.scrollHeight * 0.6); bd.scrollLeft = 0; });
   await pg.waitForTimeout(200);
   const parked = await pg.evaluate(() => Math.round(document.getElementById('board').scrollTop));
@@ -2224,7 +2339,7 @@ if (two.length >= 2) {
     const balls = [...document.querySelectorAll('#flowSvg .ball')];
     return balls.map(g => ({ id: g.dataset.id, y: g.getBBox().y })).sort((a, b) => a.y - b.y)[0].id;
   });
-  await pg.selectOption('#activeSel', 'STUDENT FRESH'); await pg.waitForTimeout(600);
+  await pickStudent('STUDENT FRESH'); await pg.waitForTimeout(600);
   const onFirst = await ballView(firstId);
   ok("picking a crew member with no marks yet lands on the chart's first event, centred",
     parked > 100 && onFirst.found && onFirst.inView && onFirst.scrollTop < parked && onFirst.off <= CENTRED,
@@ -2235,8 +2350,8 @@ if (two.length >= 2) {
      wedge in cyan, nothing opens and the view stays; the same spot again, or
      the centre, opens the details. Driven by screen coordinates so the SVG
      hit-test is the one under test. */
-  const names = await pg.evaluate(() => [...document.querySelectorAll('#activeSel option')].map(o => o.value));
-  await pg.selectOption('#activeSel', marker); await pg.waitForTimeout(600);   /* lands on deep.id */
+  const names = await rosterNames();
+  await pickStudent(marker); await pg.waitForTimeout(600);   /* lands on deep.id */
   const wi = names.indexOf(otherS);
   const spot = await pg.evaluate(([id, i, n]) => {
     const g = [...document.querySelectorAll('#flowSvg .ball')].find(x => x.dataset.id === id);
@@ -2253,8 +2368,8 @@ if (two.length >= 2) {
       wi: [...new Set(balls.map(g => (g.querySelector('path.mine') || {}).getAttribute && g.querySelector('path.mine').getAttribute('data-wi')))] };
   });
   ok("a click on another crew member's wedge picks them, and opens nothing",
-    (await pg.inputValue('#activeSel')) === otherS && await pg.locator('#pop:visible').count() === 0,
-    `picker reads ${await pg.inputValue('#activeSel')}, pop-ups open: ${await pg.locator('#pop:visible').count()}`);
+    (await activeName()) === otherS && await pg.locator('#pop:visible').count() === 0,
+    `picker reads ${await activeName()}, pop-ups open: ${await pg.locator('#pop:visible').count()}`);
   ok("every ball edges the picked crew member's wedge in cyan",
     edged.mine === edged.balls && edged.wi.length === 1 && edged.wi[0] === String(wi),
     `${edged.mine}/${edged.balls} balls, wedge ${edged.wi.join('/')} (expected ${wi})`);
@@ -2275,7 +2390,7 @@ if (two.length >= 2) {
      grade whichever ball is sitting under the middle — the view must hold.
      Runs last: a grade changes the marked student's latest work, so the
      landing checks above must have taken their measurements first. */
-  await pg.selectOption('#activeSel', marker); await pg.waitForTimeout(600);
+  await pickStudent(marker); await pg.waitForTimeout(600);
   await pg.evaluate(() => { const bd = document.getElementById('board'); bd.scrollTop = Math.round(bd.scrollHeight * 0.45); bd.scrollLeft = 0; });
   await pg.waitForTimeout(150);
   const gradeTarget = await pg.evaluate(() => {
@@ -2373,10 +2488,12 @@ await pg.waitForSelector('#flowSvg .ball', { timeout: 15000 });
      white, so a fill comparison would pass without renderBoard ever being
      called — the "grading an empty roster is a no-op" trap in another costume. */
   await pg.selectOption('#courseSel', '26ABSG'); await pg.waitForTimeout(800);
-  const crew = () => pg.evaluate(() => [...document.querySelectorAll('#activeSel option')].map(o => o.value));
+  /* By NAME: the order this check is about is the order the trainer reads in
+     the dropdown, and a list of ids would compare equal-looking gibberish. */
+  const crew = rosterNames;
   const roster0 = await crew();
   if (roster0.length >= 2) {
-    await pg.selectOption('#activeSel', roster0[0]); await pg.waitForTimeout(300);
+    await pickStudent(roster0[0]); await pg.waitForTimeout(300);
     await clickBall('ST-01'); await pg.waitForSelector('#pop');
     await pg.locator('#pop .opts button', { hasText: 'DCO' }).click();
     await pg.waitForTimeout(700);
@@ -2450,16 +2567,18 @@ await pg.waitForSelector('#flowSvg .ball', { timeout: 15000 });
   /* Selecting a crew member has to count on its own. Only grading did before,
      so choosing someone and coming back tomorrow forgot them. Pick the person
      who is NOT the one graded above, or the check passes either way. */
-  const crewNow = await pg.evaluate(() => [...document.querySelectorAll('#activeSel option')].map(o => o.value));
-  const opening = await pg.inputValue('#activeSel');
+  const crewNow = await rosterNames();
+  const opening = await activeName();
   const other = crewNow.find(n => n !== opening);
   if (other) {
-    await pg.selectOption('#activeSel', other); await pg.waitForTimeout(500);
+    await pickStudent(other); await pg.waitForTimeout(500);
     await openTracker(pg);
     await pg.waitForSelector('#flowSvg .ball', { timeout: 15000 });
+    /* The remembered pick is stored as the enrolment id now, so this is also a
+       check that the id survives a reload and still resolves to the person. */
     ok('the app reopens on the crew member you last looked at, without grading anyone',
-      await pg.inputValue('#activeSel') === other,
-      `wanted ${other}, got ${await pg.inputValue('#activeSel')}`);
+      await activeName() === other,
+      `wanted ${other}, got ${await activeName()}`);
   } else {
     ok('the crew-memory check has someone other than the opening pick to choose',
       false, `roster ${crewNow.join(',')}, opened on ${opening}`);
@@ -2616,47 +2735,83 @@ await pg.waitForSelector('#flowSvg .ball', { timeout: 15000 });
     await pg.click('#ifCancel').catch(() => {}); await pg.waitForTimeout(300);
   }
 
-  /* 6. Pace and lulls: carried on rename, gone on remove. */
+  /* 6. Pace and lulls: carried on rename, gone on remove.
+     THESE TWO SEED A REAL KEY, so they have to seed the key the app actually
+     uses. Pace and lulls are filed under the ENROLMENT ID since 10 Sep 26, and
+     the id is only knowable once the course has loaded and minted it — seeding
+     `pace:STUDENT A` before the load would plant a key nothing ever reads, and
+     both checks would then be measuring an untouched orphan rather than the
+     record the app carries. So: load first, ask the app for the id, seed under
+     it, and reload so the app reads it back the way a returning user would. */
   await wipe();
-  await pg.evaluate(() => {
+  const paceA = await idOf('STUDENT A');
+  ok('the pace-and-lulls checks know which enrolment they are seeding', !!paceA, `id ${paceA}`);
+  await pg.evaluate(id => {
     const c = document.getElementById('courseSel').value;
-    localStorage.setItem('raptor:tracker/v3:' + c + ':pace:STUDENT A', JSON.stringify({ epw: '3.5', target: '2027-01-01' }));
-    localStorage.setItem('raptor:tracker/v3:' + c + ':lulls:STUDENT A', JSON.stringify([{ a: 1, b: 2 }]));
-  });
+    localStorage.setItem('raptor:tracker/v3:' + c + ':pace:' + id, JSON.stringify({ epw: '3.5', target: '2027-01-01' }));
+    localStorage.setItem('raptor:tracker/v3:' + c + ':lulls:' + id, JSON.stringify([{ a: 1, b: 2 }]));
+  }, paceA);
   await openTracker(pg); await pg.waitForSelector('#flowSvg .ball'); await pg.waitForTimeout(700);
   await viaMenu('course', '#renCourse'); await pg.waitForTimeout(250);
   await pg.fill('#dlgInput', 'RENAMEDC'); await pg.click('#dlgOk'); await pg.waitForTimeout(1100);
-  const carried = await pg.evaluate(() => {
+  /* A rename MOVES the keys now (04036d7): the old course's are deleted once
+     the new ones read back, so this asserts the records arrived AND that the
+     course they came from was left with nothing — a copy would be a slow leak
+     of one person's pacing into a course name nobody uses again. */
+  const carried = await pg.evaluate(id => {
     const c = document.getElementById('courseSel').value;
-    return { c, pace: localStorage.getItem('raptor:tracker/v3:' + c + ':pace:STUDENT A'),
-      lulls: localStorage.getItem('raptor:tracker/v3:' + c + ':lulls:STUDENT A') };
-  });
+    /* Only the per-person records and the roster that indexes them — a course
+       keeps other things under its name (its custom charts, its own layouts)
+       that a rename is not asked to move. An emptied key counts as gone: where
+       the store has no delete of its own, that is the tombstone it writes. */
+    const stale = Object.keys(localStorage).filter(k =>
+      k.startsWith('raptor:tracker/v3:26ABSG:')
+      && (/:m:|:d:|:pace:|:lulls:|:last:/.test(k) || k.endsWith(':roster'))
+      && localStorage.getItem(k));
+    return { c, stale: stale.length, staleKeys: stale.slice(0, 3).join(' | '),
+      pace: localStorage.getItem('raptor:tracker/v3:' + c + ':pace:' + id),
+      lulls: localStorage.getItem('raptor:tracker/v3:' + c + ':lulls:' + id) };
+  }, paceA);
   ok('renaming a course carries each crew member\'s pace and lull periods',
     !!carried.pace && carried.pace.includes('3.5') && !!carried.lulls,
     `on ${carried.c}: pace ${carried.pace}, lulls ${carried.lulls}`);
+  ok('and leaves none of those records behind under the old course name',
+    carried.stale === 0, `${carried.stale} keys still under 26ABSG${carried.staleKeys ? ': ' + carried.staleKeys : ''}`);
 
   await wipe();
-  await pg.evaluate(() => {
+  const paceB = await idOf('STUDENT B');
+  await pg.evaluate(id => {
     const c = document.getElementById('courseSel').value;
-    localStorage.setItem('raptor:tracker/v3:' + c + ':pace:STUDENT B', JSON.stringify({ epw: '9.9' }));
-  });
+    localStorage.setItem('raptor:tracker/v3:' + c + ':pace:' + id, JSON.stringify({ epw: '9.9' }));
+  }, paceB);
   await openTracker(pg); await pg.waitForSelector('#flowSvg .ball'); await pg.waitForTimeout(700);
-  await pg.selectOption('#activeSel', 'STUDENT B'); await pg.waitForTimeout(300);
+  await pickStudent('STUDENT B'); await pg.waitForTimeout(300);
   await clickBall('ST-01'); await pg.waitForSelector('#pop');
   await pg.locator('#pop .opts button', { hasText: 'DCO' }).click(); await pg.waitForTimeout(600);
   await pg.keyboard.press('Escape'); await pg.waitForTimeout(200);
-  await pg.evaluate(() => { document.querySelector('.chips .x[data-rm="STUDENT B"]').click(); });
+  /* Their id is re-read here: the reload above re-minted nothing, but reading
+     it from the live roster is what makes the sweep below name the right keys. */
+  const bId = await idOf('STUDENT B');
+  await pg.locator('.c-students .chip', { hasText: 'STUDENT B' }).locator('.x').click();
   await pg.waitForTimeout(300);
   if (await pg.isVisible('#dlgOk')) { await pg.click('#dlgOk'); await pg.waitForTimeout(800); }
-  const leftBehind = await pg.evaluate(() => Object.keys(localStorage).filter(k => k.includes('STUDENT B')));
+  /* Sweep for the NAME and the ID both. The name alone stopped proving anything
+     the moment records moved to id keys — a whole abandoned mark file would sit
+     there under an id and the check would still read "nothing left behind". */
+  const leftBehind = await pg.evaluate(id =>
+    Object.keys(localStorage).filter(k => k.includes('STUDENT B') || (id && k.includes(id))), bId);
   ok('removing a crew member takes their name and their work with them',
     leftBehind.length === 0, leftBehind.join(' | ') || 'nothing left behind');
   await pg.click('#addStu'); await pg.waitForTimeout(250);
   await pg.fill('#dlgInput', 'STUDENT B'); await pg.click('#dlgOk'); await pg.waitForTimeout(800);
-  const revived = await pg.evaluate(() => {
+  /* The same callsign back is a NEW enrolment with a new id, so read the pace
+     under whatever id they have now — reading the old one would pass by
+     accident, on a key the app can no longer reach at all. */
+  const newBId = await idOf('STUDENT B');
+  const revived = await pg.evaluate(id => {
     const c = document.getElementById('courseSel').value;
-    return localStorage.getItem('raptor:tracker/v3:' + c + ':pace:STUDENT B');
-  });
+    return localStorage.getItem('raptor:tracker/v3:' + c + ':pace:' + id);
+  }, newBId);
   ok('adding the same callsign back starts them clean',
     !revived || !revived.includes('9.9'), `pace after re-adding: ${revived}`);
 
