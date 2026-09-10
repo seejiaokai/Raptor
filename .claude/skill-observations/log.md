@@ -2306,3 +2306,18 @@ Checkpoint (tasks #59, #60 complete): no further observations.
 **Suggested improvement:** When a dispatch or brief asks for a new pre-condition on an existing command entry point, state the entry point's timing contract explicitly ("this command must raise its dialog before its first await; a guard here must be synchronous — read a flag set at load, do not await storage"). More generally, the implementer template's "facts about the harness" block should carry the ordering contracts of the code being changed, not only the helper names. Reviewer prompts for such fixes should ask "does the guard add an await before the first UI raise?".
 
 **Principle:** A test harness that answers UI synchronously encodes an ordering contract on the code (UI before the first await); any guard inserted at an entry point must be told that contract up front, because it is invisible in the guard's own logic and only shows as a wall of unrelated red tests.
+
+### Observation 152: A local gate that runs a different partition than CI passes where CI fails — and a flake's fix is structural, never a re-run
+
+**Status:** OPEN
+**Date:** 2026-09-10
+**Session context:** Stable-ids PR at "merge": CI's `unit (raptor)` job red with all 3007 tests passing — one unhandled "window is not defined" from a React scheduler task firing after jsdom teardown. The local gate (`npm test`, unsharded, all projects) had passed on the same commit.
+**Skill:** subagent-driven-development (final gates) / repo Build & verify convention
+**Type:** open-source
+**Phase/Area:** Task 8 gates → PR → merge readiness
+
+**Issue:** The plan's gate list runs `npm test` as one unsharded pass; CI runs `npx vitest run --project <p>` per project. Same tests, different scheduling — a teardown race that never fired locally fired in CI. The instinct at that point is "re-run it"; the discipline that actually worked was: (1) diff-check the failing file (untouched by the PR), (2) check the base branch (green), (3) reproduce the exact CI shard locally (passed → non-deterministic), (4) read the test for the mechanism (root mounted in beforeAll, never unmounted). Step 4 turned a "flake" into a real defect with a 3-line fix, and a one-line survey (`grep -l createRoot | xargs grep -L unmount`) showed the same latent gap in 60 sibling files.
+
+**Suggested improvement:** In the gates step of plans for this repo, run the unit gate the way CI partitions it (`--project` per project) rather than one unsharded pass, so timing-order differences surface before the PR. And in the CI-red handling guidance: before any re-run, read the failing test's lifecycle hooks — a mount without a matching unmount, a timer without a clear, a listener without a remove — because "passed everywhere, one escaped error" is the signature of a resource outliving its test, which a re-run hides and a teardown fixes. Consider a repo convention line (CLAUDE.md § Coding conventions): every test file that creates a React root unmounts it in `afterAll`.
+
+**Principle:** A green local gate only proves the partition it ran; when CI partitions differently, run the gate the way CI does. And a failure where every test passes but one error escapes is not a flake to re-run — it is a resource that outlived its test, and the fix is the teardown, which also usually reveals the same gap across the suite.
