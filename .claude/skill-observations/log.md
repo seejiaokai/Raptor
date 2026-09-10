@@ -2291,3 +2291,18 @@ Checkpoint (tasks #59, #60 complete): no further observations.
 **Suggested improvement:** writing-plans Self-Review: add a fourth check — "Replacement snippets: for every code block that REPLACES existing lines (a `Modify: file:L-M` range), list the guards/early-returns in the original range and confirm each survives in the snippet or is deliberately dropped with a reason." subagent-driven-development pre-flight scan: same check for any task whose snippet replaces a validation branch. Implementer template: when a brief's snippet replaces lines that contained a type/shape guard, keep the guard unless the brief says why it goes.
 
 **Principle:** A rewrite of a validation branch must be diffed against the original for guards, not just for the new behaviour it adds; a snippet that reads correctly in isolation can still drop the protection the surrounding code relied on, and a faithful transcription of it carries the loss straight to review.
+
+### Observation 151: A guard added to an entry point must not move its first UI raise behind an await
+
+**Status:** OPEN
+**Date:** 2026-09-10
+**Session context:** stable-ids round, Task 6 fix round (a mid-conversion lock on Tracker roster writes)
+**Skill:** subagent-driven-development (implementer template / dispatch context); writing-plans
+**Type:** open-source
+**Phase/Area:** dispatch context for guards on existing command entry points; brief "facts about the harness"
+
+**Issue:** The fix asked for "refuse roster writes while a course is mid-conversion". The implementer's first cut was `if (await refuseHeldRoster()) return;` at the top of each command. One extra microtask before the command raised its dialog broke thirteen existing tests, because the file's own rule is that an entry point raises its dialog BEFORE its first await (the browser spends the click; the tests answer the dialog synchronously). The guard had to become a bare synchronous flag read. The dispatch named the harness facts (`dlgClose` answers synchronously) but did not state the consequence for a new guard, so the constraint was rediscovered the expensive way.
+
+**Suggested improvement:** When a dispatch or brief asks for a new pre-condition on an existing command entry point, state the entry point's timing contract explicitly ("this command must raise its dialog before its first await; a guard here must be synchronous — read a flag set at load, do not await storage"). More generally, the implementer template's "facts about the harness" block should carry the ordering contracts of the code being changed, not only the helper names. Reviewer prompts for such fixes should ask "does the guard add an await before the first UI raise?".
+
+**Principle:** A test harness that answers UI synchronously encodes an ordering contract on the code (UI before the first await); any guard inserted at an entry point must be told that contract up front, because it is invisible in the guard's own logic and only shows as a wall of unrelated red tests.
