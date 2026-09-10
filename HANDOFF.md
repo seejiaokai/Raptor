@@ -300,8 +300,9 @@ browser-proven.
   (`engine/rowids.ts`). Follow-ups, in order: (1) the addressing rewrite —
   `keys.ts`, the amendment book and the edit log derive the slot key from
   `rid` so an insert no longer renumbers; `EditLog.rowId`; (2) course and
-  syllabus ids (still name keys joined with `:`); (3) a student rename
-  control (the name is a label now; nothing edits it); (4) `Attempt` history.
+  syllabus ids (still name keys joined with `:`); (3) `Attempt` history.
+  A student rename control shipped 10 Sep 26 (the pencil on each chip edits
+  the label only — `core.js:renameStudent`, id and records untouched).
   Known edges left by design: a course rename that cannot carry every record
   keeps the old course listed beside the new; legacy `v3:<old>:syls`/`:syl`
   are not carried by a rename; a held (unconvertible) course shows an empty

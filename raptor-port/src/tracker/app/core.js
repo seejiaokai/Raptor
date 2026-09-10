@@ -2872,6 +2872,47 @@ async function removeStudentNow(v) {
   if (active === v) active = roster[0] ? roster[0].id : null;
   refreshActive(); renderBoard(); renderSide();
 }
+/* RENAME A STUDENT (10 Sep 26). A student IS an enrolment id and the name is
+   only a label (stable ids), so a rename touches ONE thing — the entry's
+   `name` — and nothing filed under the id moves. The pencil on each chip opens
+   this. Everyone may rename, exactly as everyone may + Add and Remove; only the
+   file portion (Import / Export) is the admin's, so this is NOT gated on the
+   file lock. It IS held while the id-migration is still running, the same as
+   adding and removing are, because saveRoster is a no-op then. A colon is
+   allowed: a student name is never a storage-key segment, unlike a course or
+   syllabus name. */
+export async function renameStudent(id) {
+  if (rosterHeld) { await uiAlert(HELD_MSG); return; }
+  const cur = roster.find(x => x.id === id); if (!cur) return;
+  const v = ((await uiPrompt('Rename “' + cur.name + '” to:', cur.name)) || '').trim().toUpperCase();
+  if (!v || v === cur.name) return;
+  /* Two students on the course sharing a name is the ambiguity + Add refuses:
+     byName and the dropdown would then resolve one of them at random. Looked up
+     course-wide, hidden charts included, the same way + Add finds an enrolment
+     — but a match on THIS enrolment (its own name) is not a clash. */
+  const { byNm } = await findEnrolment(null, v);
+  if (byNm && byNm.id !== id) { await uiAlert('A student named ' + v + ' is already on this course. Pick a different name.'); return; }
+  await onChain(async () => {
+    /* The name is the enrolment's ONE label, and findEnrolment relies on every
+       chart of the course agreeing on it (a person can sit on several syllabi
+       under the same id). So set it on every roster the id appears in — the
+       live roster here plus each other syllabus's stored one — not just the
+       visible chart. No per-student record moves: they are keyed by the id. */
+    let hit = false;
+    const r = roster.find(x => x.id === id); if (r) { r.name = v; hit = true; await saveRoster(); }
+    /* the SAME breadth findEnrolment uses for the duplicate check above, so a
+       chart the refusal counts as part of the course is a chart the rename
+       reaches — no syllabus is left reading the old label */
+    for (const sn of await storeSylNames(course)) {
+      if (sn === plan.sylName) continue;
+      const rr = sParse(await sGet(kRosterFor(course, sn)), [], 'array');
+      let changed = false;
+      for (const e of rr) { if (isEntry(e) && e.id === id && e.name !== v) { e.name = v; changed = true; } }
+      if (changed) { await sSet(kRosterFor(course, sn), JSON.stringify(rr)); hit = true; }
+    }
+    if (hit) { refreshActive(); renderBoard(); renderSide(); }
+  });
+}
 export function setActive(v, opts) {
   active = v;
   /* ballTap passes land:false — a pick made ON the chart stays put. */

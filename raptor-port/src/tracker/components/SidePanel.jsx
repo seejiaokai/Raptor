@@ -255,7 +255,7 @@ export default function SidePanel({ zoom }) {
             const p = core.linkedPerson(r.id);
             return (
               <span key={r.id} className={p ? 'chip linked' : 'chip'} title={p ? 'On the squadron roster as ' + p.cs : undefined}>
-                <b>{i + 1}</b> {r.name} <span className="x" data-rm={r.id} onClick={() => core.removeStudent(r.id)}>×</span></span>
+                <b>{i + 1}</b> {r.name} <span className="ren" data-ren={r.id} title="Rename this student" onClick={() => core.renameStudent(r.id)}>✎</span> <span className="x" data-rm={r.id} onClick={() => core.removeStudent(r.id)}>×</span></span>
             );
           })}
         </div>
