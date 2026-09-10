@@ -2321,3 +2321,18 @@ Checkpoint (tasks #59, #60 complete): no further observations.
 **Suggested improvement:** In the gates step of plans for this repo, run the unit gate the way CI partitions it (`--project` per project) rather than one unsharded pass, so timing-order differences surface before the PR. And in the CI-red handling guidance: before any re-run, read the failing test's lifecycle hooks — a mount without a matching unmount, a timer without a clear, a listener without a remove — because "passed everywhere, one escaped error" is the signature of a resource outliving its test, which a re-run hides and a teardown fixes. Consider a repo convention line (CLAUDE.md § Coding conventions): every test file that creates a React root unmounts it in `afterAll`.
 
 **Principle:** A green local gate only proves the partition it ran; when CI partitions differently, run the gate the way CI does. And a failure where every test passes but one error escapes is not a flake to re-run — it is a resource that outlived its test, and the fix is the teardown, which also usually reveals the same gap across the suite.
+
+### Observation 153: Name the model and thinking level per task in every plan and report, and compact at task boundaries, not at a fill percentage
+
+**Status:** OPEN
+**Date:** 2026-09-10
+**Session context:** After the stable-ids merge the owner asked two process things at once: decide when to auto-compact "to prevent hallucination" (his heuristic: ~30% context fill), and state for each upcoming task which model and thinking level should execute it.
+**Skill:** CLAUDE.md § How to work here (MODELS rule) / subagent-driven-development (dispatch) / writing-plans (task header)
+**Type:** open-source
+**Phase/Area:** planning and reporting
+
+**Issue:** The repo's MODELS rule says WHICH model does what kind of work, but nothing makes a plan or report SAY it per task, so the owner has to ask. Separately, the owner's worry about context degradation is real but his proposed trigger (a percentage) is the wrong lever: the agent cannot read its own fill precisely, and compacting mid-task is what loses in-flight state (this session's earlier compaction landed mid-Task-8 and the summary had to carry the whole live state). The safe trigger is a TASK BOUNDARY — nothing in flight, everything committed and pushed — which is also when the least context is worth keeping.
+
+**Suggested improvement:** (1) writing-plans task header and every task-completion report carry one line: "Model: <x> · Thinking: <level> · Why: <one clause>" — chosen by the MODELS rule (voluminous/mechanical → Opus 4.8 default; hard-reasoning/verify → Fable high). (2) Add to CLAUDE.md § How to work here: "Compact at task boundaries. When a task is fully shipped (pushed, nothing in flight) and another is about to start, SAY 'good moment to compact' before starting the next — never mid-task. Do not compact on a fill percentage." (3) The agent should say this line proactively; the owner types /compact.
+
+**Principle:** Process choices the owner keeps asking about belong in the artefact he reads (the plan/report), not in a rule he has to remember to invoke. And the cost of compaction is measured in lost in-flight state, not in tokens — so its trigger is a state boundary, not a size threshold.

@@ -5,9 +5,9 @@
    uniform: a same-day timed input carries its whole span in Start and an empty
    End (so the card hides it), an all-day one-day input reads just its date, a
    span keeps both cells, and Last-modified reads 'D Mon YY'. */
-import { beforeAll, describe, expect, it } from 'vitest'
+import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { act } from 'react'
-import { createRoot } from 'react-dom/client'
+import { createRoot, type Root } from 'react-dom/client'
 import { InputsPage } from './InputsPage'
 import { initStore, setSession, notify, writeInputs } from '../state/store'
 import { INPUTS } from '../engine/inputs'
@@ -33,7 +33,7 @@ describe('the Inputs page date helpers', () => {
 })
 
 describe('a rendered input row is compact and uniform', () => {
-  let host: HTMLDivElement, root: any
+  let host: HTMLDivElement, root: Root
   const rowOf = (person: string) =>
     [...host.querySelectorAll('#inBody tr')].find(tr => (tr.textContent || '').includes(person)) as HTMLElement
   const cell = (tr: HTMLElement, label: string) => $(tr, `td[data-label="${label}"]`)
@@ -55,6 +55,15 @@ describe('a rendered input row is compact and uniform', () => {
     // show everything so the July rows are certainly on screen
     if (!host.querySelector('#inRangePop')) await act(async () => { $(host, '#inRangeBtn').dispatchEvent(new MouseEvent('click', { bubbles: true })) })
     await act(async () => { $(host, '#inRangeAll').dispatchEvent(new MouseEvent('click', { bubbles: true })) })
+  })
+
+  /* Unmount before the file ends: a render task left queued by the last test
+     would otherwise fire after vitest tears jsdom down and die with "window is
+     not defined" — an unhandled error that fails the job while every test
+     passed (the teardown race closed across the suite, 10 Sep 26). */
+  afterAll(async () => {
+    await act(async () => { root.unmount() })
+    host.remove()
   })
 
   it('a same-day TIMED input carries its whole span in Start, and hides End', () => {

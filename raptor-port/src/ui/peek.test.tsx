@@ -4,9 +4,9 @@
    through the real App, the same shape swipeweeks.test.tsx and pan.test.tsx
    already use for a width-gated surface: jsdom has no layout, so "desktop"
    here means window.innerWidth alone, exactly what peekKey() itself reads. */
-import { afterEach, beforeAll, describe, expect, it } from 'vitest'
+import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest'
 import { act } from 'react'
-import { createRoot } from 'react-dom/client'
+import { createRoot, type Root } from 'react-dom/client'
 import { App } from './App'
 import { initStore, setSession, notify, loadWeek, writeSlot, afterSchedMutate } from '../state/store'
 import { markStructuralAdd } from '../engine/publish'
@@ -18,6 +18,7 @@ import * as view from '../state/view'
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
 let host: HTMLDivElement
+let root: Root
 const $ = (sel: string) => host.querySelector(sel) as HTMLElement
 const $$ = (sel: string) => [...host.querySelectorAll(sel)] as HTMLElement[]
 
@@ -29,8 +30,18 @@ beforeAll(async () => {
   Object.defineProperty(window, 'innerWidth', { value: 1024, configurable: true, writable: true })
   host = document.createElement('div')
   document.body.appendChild(host)
-  await act(async () => { createRoot(host).render(<App />) })
+  root = createRoot(host)
+  await act(async () => { root.render(<App />) })
   await act(async () => { setSession({ user: 'a', role: 'admin' }); notify() })
+})
+
+/* Unmount before the file ends: a render task left queued by the last test
+   would otherwise fire after vitest tears jsdom down and die with "window is
+   not defined" — an unhandled error that fails the job while every test
+   passed (the teardown race closed across the suite, 10 Sep 26). */
+afterAll(async () => {
+  await act(async () => { root.unmount() })
+  host.remove()
 })
 
 /* every test below is free to load a different week; return to the seed week

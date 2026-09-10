@@ -6,9 +6,9 @@
    re-snaps after a programmatic scroll, iOS Safari does not — so on the phone
    the write stopped the still-settling snap where it stood and days rested
    60–100px off. jsdom cannot snap, but it can count the writes. */
-import { afterEach, beforeAll, describe, expect, it } from 'vitest'
+import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest'
 import { act } from 'react'
-import { createRoot } from 'react-dom/client'
+import { createRoot, type Root } from 'react-dom/client'
 import { App } from './App'
 import { initStore, setSession, notify, loadWeek } from '../state/store'
 import { DAYS } from '../engine/data'
@@ -22,12 +22,25 @@ const spyScroll = (el: HTMLElement, at: number) => {
   return writes
 }
 
+let host: HTMLDivElement
+let root: Root
+
 beforeAll(async () => {
   initStore()
   Object.defineProperty(window, 'innerWidth', { value: 400, configurable: true, writable: true })
-  const host = document.createElement('div'); document.body.appendChild(host)
-  await act(async () => { createRoot(host).render(<App />) })
+  host = document.createElement('div'); document.body.appendChild(host)
+  root = createRoot(host)
+  await act(async () => { root.render(<App />) })
   await act(async () => { setSession({ user: 'a', role: 'admin' }); notify() })
+})
+
+/* Unmount before the file ends: a render task left queued by the last test
+   would otherwise fire after vitest tears jsdom down and die with "window is
+   not defined" — an unhandled error that fails the job while every test
+   passed (the teardown race closed across the suite, 10 Sep 26). */
+afterAll(async () => {
+  await act(async () => { root.unmount() })
+  host.remove()
 })
 afterEach(async () => { if (CURWEEK !== '13/07/2026') await act(async () => { loadWeek('13/07/2026') }) })
 

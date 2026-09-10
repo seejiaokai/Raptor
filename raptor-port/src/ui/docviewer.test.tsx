@@ -1,9 +1,9 @@
 // @vitest-environment jsdom
 /* The document viewer (owner, 27 Aug 26): ungated viewing, gated actions.
    jsdom has no object URLs, so they are stubbed the way refwin does. */
-import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 import { act } from 'react'
-import { createRoot } from 'react-dom/client'
+import { createRoot, type Root } from 'react-dom/client'
 import { DocViewer } from './DocViewer'
 import { setDocView } from './pops'
 import { initStore, setSession, notify } from '../state/store'
@@ -13,13 +13,26 @@ import { setMe } from '../state/auth'
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 const $ = (sel: string) => document.querySelector(sel) as HTMLElement
 
+let host: HTMLDivElement
+let root: Root
+
 beforeAll(async () => {
   ;(URL as any).createObjectURL = vi.fn(() => 'blob:stub')
   ;(URL as any).revokeObjectURL = vi.fn()
   initStore()
-  const host = document.createElement('div')
+  host = document.createElement('div')
   document.body.appendChild(host)
-  await act(async () => { createRoot(host).render(<DocViewer />) })
+  root = createRoot(host)
+  await act(async () => { root.render(<DocViewer />) })
+})
+
+/* Unmount before the file ends: a render task left queued by the last test
+   would otherwise fire after vitest tears jsdom down and die with "window is
+   not defined" — an unhandled error that fails the job while every test
+   passed (the teardown race closed across the suite, 10 Sep 26). */
+afterAll(async () => {
+  await act(async () => { root.unmount() })
+  host.remove()
 })
 beforeEach(async () => { await act(async () => { setDocView(null); notify() }) })
 

@@ -11,9 +11,9 @@
       carries, and its drop then resolves against the NEW day's markup — a
       plant on a day nobody aimed at. The strip now refuses the gesture while
       a touch drag is in flight (drag.ts's touchDragBusy). */
-import { beforeAll, beforeEach, describe, expect, it } from 'vitest'
+import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { act } from 'react'
-import { createRoot } from 'react-dom/client'
+import { createRoot, type Root } from 'react-dom/client'
 import { App } from './App'
 import { initStore, notify, subscribeBoard } from '../state/store'
 import { setSession } from '../state/auth'
@@ -47,14 +47,27 @@ const layOutDots = () => {
    `SBDAY expected 6 got 2`). Stub it the way caldrag.test.tsx already does for
    the same reason; null = "nothing under the finger", which is a harmless drop
    for every gesture this file drives. */
+let host: HTMLDivElement
+let root: Root
+
 beforeAll(async () => {
   (document as any).elementFromPoint = () => null
   initStore()
-  const host = document.createElement('div')
+  host = document.createElement('div')
   document.body.appendChild(host)
-  await act(async () => { createRoot(host).render(<App />) })
+  root = createRoot(host)
+  await act(async () => { root.render(<App />) })
   await act(async () => { setSession({ user: 'a', role: 'admin' }); notify() })
   await act(async () => { view.setPage('editsched'); notify() })
+})
+
+/* Unmount before the file ends: a render task left queued by the last test
+   would otherwise fire after vitest tears jsdom down and die with "window is
+   not defined" — an unhandled error that fails the job while every test
+   passed (the teardown race closed across the suite, 10 Sep 26). */
+afterAll(async () => {
+  await act(async () => { root.unmount() })
+  host.remove()
 })
 
 beforeEach(async () => {

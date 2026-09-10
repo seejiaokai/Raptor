@@ -2,16 +2,16 @@
 /* The "Set default order?" snackbar (owner, 29 Aug 26 pt.3). After a section drag
    it offers to make that day's order the squadron house default. Driven through the
    real component + store, the oilconfirm harness idiom. */
-import { beforeEach, describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { act } from 'react'
-import { createRoot } from 'react-dom/client'
+import { createRoot, type Root } from 'react-dom/client'
 import { SecDefaultSnackbar } from './SecDefaultSnackbar'
 import { initStore, setSession, notify, moveSectionTo, loadWeek, setPage } from '../state/store'
 import { DAYS } from '../engine/data'
 import { secOrder, secDefault, secDefaultReset, SECTIONS } from '../engine'
 import { setSecDefOffer, SECDEFOFFER } from './pops'
 
-let root: any, host: HTMLElement
+let root: Root, host: HTMLElement
 
 beforeEach(() => {
   initStore()
@@ -21,6 +21,16 @@ beforeEach(() => {
   document.body.innerHTML = '<div id="root"></div>'
   host = document.getElementById('root')!
   root = createRoot(host)
+})
+
+/* Unmount after every test: a render task left queued by the previous test
+   would otherwise fire after vitest tears jsdom down and die with "window is
+   not defined" — an unhandled error that fails the job while every test
+   passed (the teardown race closed across the suite, 10 Sep 26). Root is
+   per-test here (beforeEach), so the unmount pairs with afterEach. */
+afterEach(async () => {
+  await act(async () => { root.unmount() })
+  host.remove()
 })
 
 const mount = () => act(() => { root.render(<SecDefaultSnackbar />) })

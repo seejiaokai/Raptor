@@ -5,9 +5,9 @@
    loads the previous week and lands on Sunday. jsdom has no layout, so the
    week's scroll metrics are stubbed to place it at an edge; the real geometry is
    the geometry gate's job. */
-import { afterEach, beforeAll, describe, expect, it } from 'vitest'
+import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest'
 import { act } from 'react'
-import { createRoot } from 'react-dom/client'
+import { createRoot, type Root } from 'react-dom/client'
 import { App } from './App'
 import { initStore, setSession, notify, loadWeek } from '../state/store'
 import { DAYS } from '../engine/data'
@@ -43,14 +43,27 @@ const touch = async (
   await act(async () => { el.dispatchEvent(ev) })
 }
 
+let host: HTMLDivElement
+let root: Root
+
 beforeAll(async () => {
   initStore()
   Object.defineProperty(window, 'innerWidth', { value: 400, configurable: true, writable: true })
-  const host = document.createElement('div')
+  host = document.createElement('div')
   document.body.appendChild(host)
-  await act(async () => { createRoot(host).render(<App />) })
+  root = createRoot(host)
+  await act(async () => { root.render(<App />) })
   await act(async () => { setSession({ user: 'a', role: 'admin' }); notify() })
   await act(async () => { view.setPage('viewsched'); notify() })
+})
+
+/* Unmount before the file ends: a render task left queued by the last test
+   would otherwise fire after vitest tears jsdom down and die with "window is
+   not defined" — an unhandled error that fails the job while every test
+   passed (the teardown race closed across the suite, 10 Sep 26). */
+afterAll(async () => {
+  await act(async () => { root.unmount() })
+  host.remove()
 })
 
 afterEach(async () => {

@@ -3,9 +3,9 @@
    an as-of date that replays history, and the document viewer behind every
    card. Rendered through the real App so the INPVIEW routing, the title-row
    button and the store wiring are all the ones the user gets. */
-import { beforeAll, describe, expect, it, vi } from 'vitest'
+import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest'
 import { act } from 'react'
-import { createRoot } from 'react-dom/client'
+import { createRoot, type Root } from 'react-dom/client'
 import { App } from './App'
 import { initStore, setSession, notify, writeInputsBatch } from '../state/store'
 import { INPUTS, inpId } from '../engine/inputs'
@@ -26,13 +26,17 @@ const plant = async (r: any) => {
 }
 const cardsIn = (sec: string) => $$(`.medsec.${sec} .medcard`)
 
+let host: HTMLDivElement
+let root: Root
+
 beforeAll(async () => {
   ;(URL as any).createObjectURL = vi.fn(() => 'blob:stub')
   ;(URL as any).revokeObjectURL = vi.fn()
   initStore()
-  const host = document.createElement('div')
+  host = document.createElement('div')
   document.body.appendChild(host)
-  await act(async () => { createRoot(host).render(<App />) })
+  root = createRoot(host)
+  await act(async () => { root.render(<App />) })
   await act(async () => { setSession({ user: 'a', role: 'admin' }); notify() })
   await click($$('.nav a[data-page]').find(a => a.dataset.page === 'inputs')!)
   /* the notional today is 13 Jul 26 (weeknav.TODAY): bane is down across it,
@@ -43,6 +47,15 @@ beforeAll(async () => {
   await plant({ person: 'shrek', type: 'OML', date: 'Jul 1', endDate: 'Jul 5' })
   await plant({ person: 'yeti', type: 'ATT B', date: 'Jun 20', endDate: 'Jul 8' })
   await plant({ person: 'yeti', type: 'Upchit', date: 'Jul 8' })
+})
+
+/* Unmount before the file ends: a render task left queued by the last test
+   would otherwise fire after vitest tears jsdom down and die with "window is
+   not defined" — an unhandled error that fails the job while every test
+   passed (the teardown race closed across the suite, 10 Sep 26). */
+afterAll(async () => {
+  await act(async () => { root.unmount() })
+  host.remove()
 })
 
 describe('the Medical view', () => {
