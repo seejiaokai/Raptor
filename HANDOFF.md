@@ -34,6 +34,7 @@ as of 4 Sep 26) — search it for "why did we do X", don't re-read it.
 | the Tracker tab's known gaps and carried-over traps | `raptor-port/docs/tracker/known-gaps.md` |
 | what is stored today (as-is) / the designed model for the database step (to-be) | `raptor-port/docs/data-schema.md` / `raptor-port/docs/data-model.md` |
 | the architecture direction — modular apps on ONE backend and ONE database, the order of work for the server step (read before any backend/API work) | `raptor-port/docs/architecture-direction.md` |
+| the Dataverse handover — what the table designer (Manfred) reads, what we need from him, what is not negotiable, what we do on our side | `raptor-port/docs/handover-dataverse.md` |
 | skill-improvement observations captured during sessions | `.claude/skill-observations/log.md` |
 
 
@@ -342,6 +343,14 @@ browser-proven.
   enabled in the environment; Dataverse available. NOTHING of this is built —
   keep every write through the store doorway (`HOOKS.storeBackend`, Leave War's
   `state/storage.ts`) so the backend swap stays bounded.
+  **Decided 10 Sep 26: the technical expert (Manfred) designs the Dataverse
+  tables himself.** `raptor-port/docs/data-model.md` is our PROPOSAL and
+  `data-schema.md` the INVENTORY he works from; the handover note is
+  `raptor-port/docs/handover-dataverse.md`. When he shares his schema, we
+  write ONE adapter behind the storage doorway to HIS tables (passing
+  `src/storage/` `contractTests`), then the one-time import, then sign-in. Do
+  NOT pre-build an adapter, tables or tenant pieces before that. Stage 2
+  (stable ids) is ours, independent, and goes first.
 - **QUEUED, deferred by the owner — multiple documents per medical input
   (28 Aug 26).** `state/docs.ts` holds exactly one document per input (`docId`
   a single string) and the upload field replaces rather than adds. The fuller
