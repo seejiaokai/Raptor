@@ -22,6 +22,13 @@ import { HIST, histInit, histApply, histPush, histSnap } from '../state/history'
 /* drafts swap DAYS[0] wholesale — every test starts from the pristine day,
    same discipline daytpl.test.ts and restore.test.ts use */
 const D0 = JSON.parse(JSON.stringify(DAYS[0]))
+/* D0 is captured before this file's store ever runs a snapshot, so it carries
+   no `rid` (engine/rowids.ts). A byte compare against a day that HAS gone
+   through histInit/histPush picks up the minted ids as a false diff — strip
+   them the same way parity.test.ts excises its own port-only `key` field. */
+const stripRid = (v: any): any => Array.isArray(v) ? v.map(stripRid)
+  : v && typeof v === 'object' ? Object.fromEntries(Object.entries(v).filter(([k]) => k !== 'rid').map(([k, x]) => [k, stripRid(x)]))
+  : v
 
 const sign = (di: number) => {
   const g = signOf(di)
@@ -375,7 +382,7 @@ describe('undo carries the drafts', () => {
     histApply(0)
     expect(dayDrafts(0)).toEqual([])
     expect(curDraftId(0)).toBeUndefined()
-    expect(JSON.stringify(DAYS[0])).toBe(JSON.stringify(D0))
+    expect(stripRid(DAYS[0])).toEqual(stripRid(D0))
     histApply(1)                                    // redo brings both drafts back
     expect(dayDrafts(0).map((x: any) => x.name)).toEqual(['Draft 1', 'Draft 2'])
   })

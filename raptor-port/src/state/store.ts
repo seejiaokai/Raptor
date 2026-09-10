@@ -19,6 +19,7 @@ import { lookaheadLoad } from '../engine/lookahead'
 import { rulesLoad } from '../engine/rules'
 import { mintInpIds, INPUTS, DATES, isPersonal, baseYear, dateIx } from '../engine/inputs'
 import { DAYS } from '../engine/data'
+import { ensureRowIds } from '../engine/rowids'
 import { CURWEEK, setCurWeek } from '../engine/waves'
 import { weekBundle, otherWeekInputs } from '../engine/weeks-data'
 import { seedDemoSans, seedDemoMedical } from './demoseed'
@@ -478,6 +479,10 @@ export function loadWeek(v: any) {
     view.setHistMode(false)
     view.setRosDay(0)
     view.LATEOFF.clear()
+    /* stable row ids (engine/rowids.ts) BEFORE the baseline — same trap as
+       initStore's: a mint after the yardstick would read a just-loaded,
+       untouched week as edited and get it persisted */
+    ensureRowIds(DAYS)
     weekBaseline = weekStashSnap()   // the stash-on-leave yardstick (see its comment)
   } finally {
     weekSwapEnd()
@@ -612,6 +617,10 @@ export function initStore() {
      re-lands the inputs — otherwise the seed lands as before */
   if (stashHas(CURWEEK)) applyWeekModel(CURWEEK)
   else autoAcceptSeedInputs()
+  /* stable row ids (engine/rowids.ts) BEFORE the baseline: the walk mutates
+     DAYS, and a mint after the yardstick would make the pristine seed week
+     read as edited and get persisted — the trap weekstash.ts documents */
+  ensureRowIds(DAYS)
   weekBaseline = weekStashSnap()   // the stash-on-leave yardstick (see its comment)
   validate()
   histInit()

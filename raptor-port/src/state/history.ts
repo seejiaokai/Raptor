@@ -3,6 +3,7 @@ import { INPUTS } from '../engine/inputs'
 import { SCHED } from '../engine/publish'
 import { HOOKS } from '../engine/hooks'
 import { logAction } from '../engine/editlog'
+import { ensureRowIds } from '../engine/rowids'
 import { armDrop, prunePreviews, WARNOFF } from './view'
 import { PLANPUCKS, DAYRMK } from './plan'
 
@@ -41,9 +42,12 @@ export const HIST:any={stack:[],ix:-1,lock:false,cap:60};
    same Ctrl+Z safety net as every other edit, and riding the ordinary
    snapshot is free — it is already whole-state JSON. */
 export function histSnap(){return JSON.stringify({d:DAYS,i:INPUTS,...schedFields(),wo:[...WARNOFF],pp:PLANPUCKS,dm:DAYRMK});}
-export function histInit(){HIST.stack=[histSnap()];HIST.ix=0;syncHistBtns();}
+/* the stable-ids walk (engine/rowids.ts) runs before EVERY snapshot so undo
+   never hands back an id-less row */
+export function histInit(){ensureRowIds(DAYS);HIST.stack=[histSnap()];HIST.ix=0;syncHistBtns();}
 export function histPush(){
   if(HIST.lock)return;
+  ensureRowIds(DAYS);
   const s=histSnap();
   if(HIST.stack[HIST.ix]===s)return;
   HIST.stack.splice(HIST.ix+1);
