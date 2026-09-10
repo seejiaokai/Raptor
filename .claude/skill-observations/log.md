@@ -2259,3 +2259,20 @@ gate's. Keep verdict-bearing commands unpiped.
 **Principle:** A redirect creates the file before the pipeline runs, so "the command produced a file" proves nothing about its contents. Verify size and one expected marker before committing any generated file.
 
 Checkpoint (tasks #53-#58 complete): no further observations.
+
+### Observation 149: A test that switches global state and never restores it makes every later test run on a different fixture — and an empty fixture passes everything
+
+**Status:** OPEN
+**Date:** 2026-09-10
+**Session context:** Stable-ids Task 2b. A plan-supplied test called `loadWeek(week 2)` and never switched back; every later test in the file booted onto an empty week, so the duplicated-draft test compared `[]` to `[]` and passed while the behaviour it pinned was broken (the fresh ids never reached the live day). The reviewer found it by running the test alone (`-t`), where it failed. The implementer's RED phase had reported the test "already passing pre-implementation" — the tell was there, unread.
+**Skill:** writing-plans / test-driven-development / subagent-driven-development
+**Type:** open-source
+**Phase/Area:** Plan-authored tests; the RED phase; task review
+
+**Issue:** Three compounding gaps: (1) the plan's test switched shared module state (the loaded week) with no restore; (2) no test asserted a non-empty precondition, so an empty fixture satisfied every `every()`/`toEqual`; (3) a test that was green BEFORE the implementation was reported but not treated as a red flag. Separately, the plan's mechanism sentence ("the stowed copy keeps its ids because it IS the live day") contradicted the plan's own rule — the implementer followed the sentence and violated the rule; the reviewer caught it only because the vacuous test led them to probe.
+
+**Suggested improvement:** writing-plans: any plan-authored test that mutates module-level or global state must restore it in a `finally` (or the file must reset in `beforeEach`), and a test over a collection must first assert the collection is non-empty. test-driven-development: a new test that passes BEFORE the implementation is a finding, not a footnote — the implementer must explain why (vacuity, wrong fixture, or already-implemented) before proceeding. subagent-driven-development task-reviewer template: add one check — "run at least one new test in isolation (`-t`) when the file mutates shared state".
+
+**Principle:** A green test proves something only if it could have failed; an empty fixture and a leaked global both make failure impossible. Restore what you switch, assert what you assume, and treat "already green before the change" as a defect until explained.
+
+Checkpoint (tasks #59, #60 complete): no further observations.
