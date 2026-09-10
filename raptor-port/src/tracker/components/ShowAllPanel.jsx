@@ -83,7 +83,7 @@ export default function ShowAllPanel() {
                   const label = { dco: 'DCO', dpco: 'DPCO', marg: 'Marginal', na: 'N.A.' }[g];
                   return <span className={'sst' + (label ? '' : ' undone')}
                     style={label ? { background: core.GRADE_FILL[g], color: g === 'dco' ? '#fff' : '#10131a' } : undefined}
-                    title={`${core.active}: ${label || 'not done'}`}>{label || 'not done'}</span>;
+                    title={`${core.nameOf(core.active)}: ${label || 'not done'}`}>{label || 'not done'}</span>;
                 })() : null}
                 {editing ? <SaEdit key={e.id} id={e.id} onDone={() => setEditId(null)} /> : (
                   <div className="smeta">

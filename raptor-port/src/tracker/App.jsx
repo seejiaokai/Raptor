@@ -123,7 +123,7 @@ export default function App({ active = true }) {
       {core.barHidden
         ? <button className="barpeek" id="barShowBtn" title="Show the bar" onClick={core.toggleBar}>
             <span className="barpeek-chev" aria-hidden="true">⌄</span>
-            <span className="barpeek-who">{core.active || ''}</span>
+            <span className="barpeek-who">{core.nameOf(core.active)}</span>
             <span className="barpeek-lbl">Show bar</span>
           </button>
         : <Header />}

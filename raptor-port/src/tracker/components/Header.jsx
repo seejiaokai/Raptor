@@ -181,7 +181,7 @@ export default function Header() {
             drop out of them. */}
         <label className="sub"><span className="lbltx">Crew</span>{' '}
           <select id="activeSel" value={core.active || ''} onChange={e => core.setActive(e.target.value)}>
-            {core.roster.map(r => <option key={r} value={r}>{r}</option>)}
+            {core.roster.map(r => <option key={r.id} value={r.id}>{r.name}</option>)}
           </select>
         </label>
         {/* Course: pick from the dropdown; the ✎ pencil beside it holds add /

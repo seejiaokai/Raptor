@@ -72,7 +72,10 @@ describe('only the file portion is locked, at the write path (core.js)', () => {
     core.openInfo('ST-01'); expect(core.infoId).toBe('ST-01'); core.closeInfo?.()
     core.openModal(); expect(core.sylModalOpen).toBe(true); core.closeModal()
     core.openOrdCrew(); expect(core.ordMode).toBe('crew'); core.closeOrd?.()
-    core.openLullCopy('STUDENT A'); expect(core.lullCopy).toEqual({ from: 'STUDENT A', picked: [] }); core.closeLullCopy()
+    /* a student is an enrolment id since 10 Sep 26; this runs before the chart
+       engine boots, so there is no roster to look one up on — the point of the
+       check is that the panel opens for a member, whoever it is opened on */
+    core.openLullCopy('sSTUDENTA'); expect(core.lullCopy).toEqual({ from: 'sSTUDENTA', picked: [] }); core.closeLullCopy()
   })
 
   it('Save a copy refuses a member and opens for the admin', () => {
@@ -174,66 +177,78 @@ describe('the header hides only the File menu for a member', () => {
    are skipped, typing into a date box is one step, and a shortcut inside a
    text box is the box's own. */
 describe('undo / redo on the bar, for everyone (core.js)', () => {
+  /* 10 Sep 26: a student IS an enrolment id and the name is a label on the
+     roster entry, so the two the tooltips name sit on the roster for these
+     checks — the pins below still read "for STUDENT Z", off that entry. */
+  const Z = 'sTESTZ', Y = 'sTESTY'
+  const seat = () => {
+    for (const [id, name] of [[Z, 'STUDENT Z'], [Y, 'STUDENT Y']])
+      if (!core.byName(name)) (core.roster as any).push({ id, name })
+  }
+  const unseat = () => {
+    for (const id of [Z, Y]) { const i = core.roster.findIndex((r: any) => r.id === id); if (i >= 0) (core.roster as any).splice(i, 1) }
+  }
   const drain = async () => { while (core.canUndo()) await core.doUndo(); while (core.canRedo()) await core.doRedo(); while (core.canUndo()) await core.doUndo() }
   const grade = (s: string, id: string) => (((core.marks as any)[s] || {})[id] || {}).g || 0
-  beforeEach(async () => { await drain(); core.setActive('STUDENT Z') })
+  beforeEach(async () => { await drain(); seat(); core.setActive(Z) })
+  afterAll(unseat)
 
   it('a grade is one undo step, greyed-out state and tooltip included; redo puts it back', async () => {
     expect(core.canUndo()).toBe(false); expect(core.canRedo()).toBe(false)
     core.openPop('ST-01', { clientX: 1, clientY: 1 }); await core.popGrade('dco')
-    expect(grade('STUDENT Z', 'ST-01')).toBe('dco')
+    expect(grade(Z, 'ST-01')).toBe('dco')
     expect(core.canUndo()).toBe(true)
     expect(core.undoWhat()).toBe('the mark on ST-01 for STUDENT Z')
     await core.doUndo()
-    expect(grade('STUDENT Z', 'ST-01')).toBe(0)
+    expect(grade(Z, 'ST-01')).toBe(0)
     expect(core.canUndo()).toBe(false); expect(core.canRedo()).toBe(true)
     expect(core.redoWhat()).toBe('the mark on ST-01 for STUDENT Z')
     await core.doRedo()
-    expect(grade('STUDENT Z', 'ST-01')).toBe('dco')
+    expect(grade(Z, 'ST-01')).toBe('dco')
   })
 
   it('a failure count is its own step, and a mark and a chart edit share one history in order', async () => {
     core.openPop('ST-02', { clientX: 1, clientY: 1 }); await core.popGrade('marg')
     core.openPop('ST-02', { clientX: 1, clientY: 1 }); await core.popFail(1)
-    expect((core.marks as any)['STUDENT Z']['ST-02'].f).toBe(1)
+    expect((core.marks as any)[Z]['ST-02'].f).toBe(1)
     expect(core.undoWhat()).toBe('the failure count on ST-02 for STUDENT Z')
     await core.doUndo()
-    expect((core.marks as any)['STUDENT Z']['ST-02'].f).toBe(0)
-    expect(grade('STUDENT Z', 'ST-02')).toBe('marg')
+    expect((core.marks as any)[Z]['ST-02'].f).toBe(0)
+    expect(grade(Z, 'ST-02')).toBe('marg')
     expect(core.undoWhat()).toBe('the mark on ST-02 for STUDENT Z')
   })
 
   it('the crew picker follows an undone mark to the student it belonged to', async () => {
     core.openPop('ST-03', { clientX: 1, clientY: 1 }); await core.popGrade('dco')
-    core.setActive('STUDENT Y')
-    expect(core.active).toBe('STUDENT Y')
+    core.setActive(Y)
+    expect(core.active).toBe(Y)
     await core.doUndo()
-    expect(core.active).toBe('STUDENT Z')
-    expect(grade('STUDENT Z', 'ST-03')).toBe(0)
+    expect(core.active).toBe(Z)
+    expect(grade(Z, 'ST-03')).toBe(0)
     expect(core.pop).toBeNull()
   })
 
   it("a student who is gone leaves no live step — Undo skips it rather than marking nobody's chart", async () => {
-    core.setActive('STUDENT GONE')
+    core.setActive('sGONE')
     core.openPop('ST-04', { clientX: 1, clientY: 1 }); await core.popGrade('dco')
     expect(core.canUndo()).toBe(true)
-    delete (core.marks as any)['STUDENT GONE']
+    delete (core.marks as any)['sGONE']
     expect(core.canUndo()).toBe(false)
     expect(await core.doUndo()).toBe(false)
   })
 
   it('keystrokes into one date box within two seconds are ONE step', async () => {
-    ;(core.dates as any)['STUDENT Z'] = { lastSyll: null, lastCurr: null }
-    await core.setLastCurr('STUDENT Z', '2026-01-0'); await core.setLastCurr('STUDENT Z', '2026-01-05')
+    ;(core.dates as any)[Z] = { lastSyll: null, lastCurr: null }
+    await core.setLastCurr(Z, '2026-01-0'); await core.setLastCurr(Z, '2026-01-05')
     expect(core.undoWhat()).toBe('Last Flown (Currency) for STUDENT Z')
     await core.doUndo()
-    expect((core.dates as any)['STUDENT Z'].lastCurr).toBeNull()
+    expect((core.dates as any)[Z].lastCurr).toBeNull()
     expect(core.canUndo()).toBe(false)
     /* …but a different box is a different step */
-    await core.setDownDays('STUDENT Z', '3'); await core.setUpchit('STUDENT Z', '2026-02-01')
+    await core.setDownDays(Z, '3'); await core.setUpchit(Z, '2026-02-01')
     await core.doUndo()
-    expect((core.dates as any)['STUDENT Z'].upchit).toBeUndefined()
-    expect((core.dates as any)['STUDENT Z'].downDays).toBe('3')
+    expect((core.dates as any)[Z].upchit).toBeUndefined()
+    expect((core.dates as any)[Z].downDays).toBe('3')
   })
 
   it('Ctrl+Z undoes, Ctrl+Y / Ctrl+Shift+Z redo — never from inside a text box or under a question', async () => {
@@ -244,16 +259,16 @@ describe('undo / redo on the bar, for everyone (core.js)', () => {
     }
     expect(key('z', { target: { tagName: 'INPUT' } }).prevented).toBeUndefined()
     await new Promise(r => setTimeout(r, 0))
-    expect(grade('STUDENT Z', 'ST-05')).toBe('dco')
+    expect(grade(Z, 'ST-05')).toBe('dco')
     expect(key('z').prevented).toBe(true)
     await new Promise(r => setTimeout(r, 0))
-    expect(grade('STUDENT Z', 'ST-05')).toBe(0)
+    expect(grade(Z, 'ST-05')).toBe(0)
     key('y'); await new Promise(r => setTimeout(r, 0))
-    expect(grade('STUDENT Z', 'ST-05')).toBe('dco')
+    expect(grade(Z, 'ST-05')).toBe('dco')
     key('z'); await new Promise(r => setTimeout(r, 0))
-    expect(grade('STUDENT Z', 'ST-05')).toBe(0)
+    expect(grade(Z, 'ST-05')).toBe(0)
     key('z', { shiftKey: true }); await new Promise(r => setTimeout(r, 0))
-    expect(grade('STUDENT Z', 'ST-05')).toBe('dco')
+    expect(grade(Z, 'ST-05')).toBe('dco')
     /* no modifier, or Alt, is not the shortcut */
     expect(key('z', { ctrlKey: false }).prevented).toBeUndefined()
     expect(key('z', { altKey: true }).prevented).toBeUndefined()
@@ -278,9 +293,19 @@ describe('dated failures and the day an event was done (core.js)', () => {
      booted — the same one-off boot the crew-picker tests do; init() guards
      against a second run. */
   let board: HTMLElement
-  beforeAll(async () => { board = document.createElement('div'); board.id = 'board'; document.body.appendChild(board); await core.init() })
-  afterAll(() => board.remove())
-  beforeEach(async () => { await drain(); core.setActive('STUDENT Z') })
+  /* students are enrolment ids (10 Sep 26); these two ride the roster so the
+     details bubble below can read their NAME off the entry */
+  const Z = 'sTESTZ', Y = 'sTESTY'
+  const seat = () => {
+    for (const [id, name] of [[Z, 'STUDENT Z'], [Y, 'STUDENT Y']])
+      if (!core.byName(name)) (core.roster as any).push({ id, name })
+  }
+  beforeAll(async () => { board = document.createElement('div'); board.id = 'board'; document.body.appendChild(board); await core.init(); seat() })
+  afterAll(() => {
+    for (const id of [Z, Y]) { const i = core.roster.findIndex((r: any) => r.id === id); if (i >= 0) (core.roster as any).splice(i, 1) }
+    board.remove()
+  })
+  beforeEach(async () => { await drain(); seat(); core.setActive(Z) })
   afterEach(async () => { core.closePop(); await drain() })
 
   it('+ records a failure on the pop-up’s day — today unless changed — and − takes the latest back', async () => {
@@ -289,57 +314,57 @@ describe('dated failures and the day an event was done (core.js)', () => {
     await core.popFail(1)
     core.popFailDateChanged('2026-08-02')
     await core.popFail(1)
-    expect(((core.marks as any)['STUDENT Z']['ST-01']).f, 'the count the ball’s ticks read').toBe(2)
-    expect(core.failDates('STUDENT Z', 'ST-01')).toEqual([today, '2026-08-02'])
-    expect(core.failList('STUDENT Z').map(x => x.label), 'each failure its own entry').toEqual(['ST-01', 'ST-01X'])
+    expect(((core.marks as any)[Z]['ST-01']).f, 'the count the ball’s ticks read').toBe(2)
+    expect(core.failDates(Z, 'ST-01')).toEqual([today, '2026-08-02'])
+    expect(core.failList(Z).map(x => x.label), 'each failure its own entry').toEqual(['ST-01', 'ST-01X'])
     await core.popFail(-1)
-    expect(core.failDates('STUDENT Z', 'ST-01')).toEqual([today])
-    expect(core.failDates('STUDENT Y', 'ST-01'), 'the other student’s record is untouched').toEqual([])
+    expect(core.failDates(Z, 'ST-01')).toEqual([today])
+    expect(core.failDates(Y, 'ST-01'), 'the other student’s record is untouched').toEqual([])
   })
 
   it('a count from before days were kept reads as that many undated failures; the notation adds an X per failure', () => {
-    ;(core.marks as any)['STUDENT Z']['ST-03'] = { g: 0, f: 2 }
-    expect(core.failDates('STUDENT Z', 'ST-03')).toEqual([null, null])
-    expect(core.failList('STUDENT Z').filter(x => x.id === 'ST-03').map(x => x.label)).toEqual(['ST-03', 'ST-03X'])
+    ;(core.marks as any)[Z]['ST-03'] = { g: 0, f: 2 }
+    expect(core.failDates(Z, 'ST-03')).toEqual([null, null])
+    expect(core.failList(Z).filter(x => x.id === 'ST-03').map(x => x.label)).toEqual(['ST-03', 'ST-03X'])
     expect(core.failLabel('ST-03', 2)).toBe('ST-03XX')
-    delete (core.marks as any)['STUDENT Z']['ST-03']
+    delete (core.marks as any)[Z]['ST-03']
   })
 
   it('re-dating one failure from the full list is one step per box and leaves the others alone', async () => {
     core.openPop('ST-02', at); await core.popFail(1); await core.popFail(1); core.closePop()
-    await core.setFailDate('STUDENT Z', 'ST-02', 0, '2026-07-01')
-    await core.setFailDate('STUDENT Z', 'ST-02', 0, '2026-07-02')
-    expect(core.failDates('STUDENT Z', 'ST-02')).toEqual(['2026-07-02', today])
+    await core.setFailDate(Z, 'ST-02', 0, '2026-07-01')
+    await core.setFailDate(Z, 'ST-02', 0, '2026-07-02')
+    expect(core.failDates(Z, 'ST-02')).toEqual(['2026-07-02', today])
     expect(core.undoWhat()).toBe('the date of ST-02 for STUDENT Z')
     await core.doUndo()
-    expect(core.failDates('STUDENT Z', 'ST-02'), 'both keystrokes were one step').toEqual([today, today])
+    expect(core.failDates(Z, 'ST-02'), 'both keystrokes were one step').toEqual([today, today])
   })
 
   it('a grade is dated the day it is pressed; the box re-dates it afterwards; Not done drops the day', async () => {
     core.openPop('ST-01', at)
     expect(core.popDoneDate).toBe(today)
     await core.popGrade('dco')
-    expect(core.doneDate('STUDENT Z', 'ST-01')).toBe(today)
+    expect(core.doneDate(Z, 'ST-01')).toBe(today)
     core.openPop('ST-01', at)
     await core.popDoneChanged('2026-08-10')
-    expect(core.doneDate('STUDENT Z', 'ST-01')).toBe('2026-08-10')
+    expect(core.doneDate(Z, 'ST-01')).toBe('2026-08-10')
     expect(core.undoWhat()).toBe('the date on ST-01 for STUDENT Z')
     core.closePop()
-    expect(core.doneDate('STUDENT Y', 'ST-01'), 'per student').toBeNull()
+    expect(core.doneDate(Y, 'ST-01'), 'per student').toBeNull()
     core.openPop('ST-01', at)
     expect(core.popDoneDate, 'the box opens on the day already recorded').toBe('2026-08-10')
     await core.popGrade('0')
-    expect(core.doneDate('STUDENT Z', 'ST-01')).toBeNull()
+    expect(core.doneDate(Z, 'ST-01')).toBeNull()
   })
 
   it('the details bubble carries the student’s own record, and nothing for a student with none', async () => {
     core.openPop('ST-02', at); await core.popFail(1)
     core.openPop('ST-02', at); await core.popGrade('dpco')
-    const html = core.markHtml('STUDENT Z', 'ST-02')
+    const html = core.markHtml(Z, 'ST-02')
     expect(html).toContain('STUDENT Z')
     expect(html).toContain('DPCO on')
     expect(html).toContain('Failed')
-    expect(core.markHtml('STUDENT Y', 'ST-02')).toBe('')
+    expect(core.markHtml(Y, 'ST-02')).toBe('')
   })
 })
 
@@ -394,15 +419,18 @@ describe('the Find box lists its predictions (core.js + Header.jsx)', () => {
 describe('the Crew picker redraws the chart for the student it picks', () => {
   const ringed = () => [...document.querySelectorAll('#board #flowSvg .ball')]
     .filter(g => g.querySelector('circle.avail')).map(g => (g as HTMLElement).dataset.id)
-  let board: HTMLElement, A: string, B: string
+  let board: HTMLElement, A: string, B: string, AN: string, BN: string
   beforeEach(async () => {
     board = document.createElement('div'); board.id = 'board'; document.body.appendChild(board)
     /* The chart engine boots once (App.jsx does this on the tab's first mount);
-       the seeded roster is two placeholder students on the first syllabus. */
+       the seeded roster is two placeholder students on the first syllabus.
+       A student is an enrolment id since 10 Sep 26 — the name is the label on
+       the entry, kept here only for the assertion messages. */
     await core.init()
     while (core.canUndo()) await core.doUndo()
-    ;[A, B] = core.roster as string[]
-    expect(A && B, 'the seed carries two students').toBeTruthy()
+    const [ra, rb] = core.roster as any[]
+    expect(ra && rb, 'the seed carries two students').toBeTruthy()
+    A = ra.id; B = rb.id; AN = ra.name; BN = rb.name
     core.setActive(A)
   })
 
@@ -414,8 +442,8 @@ describe('the Crew picker redraws the chart for the student it picks', () => {
 
     core.setActive(B)
     expect(core.active).toBe(B)
-    expect(ringed(), B + ' has done nothing — ST-01 is theirs to plan').toContain('ST-01')
-    expect(ringed(), 'ACG-01 was ' + A + "'s next event, not " + B + "'s").not.toContain('ACG-01')
+    expect(ringed(), BN + ' has done nothing — ST-01 is theirs to plan').toContain('ST-01')
+    expect(ringed(), 'ACG-01 was ' + AN + "'s next event, not " + BN + "'s").not.toContain('ACG-01')
 
     core.setActive(A)
     expect(ringed()).toContain('ACG-01')
@@ -568,12 +596,15 @@ describe('the person bridge and the link (peoplewire.ts → people.js → core.j
     expect(C.dlg).toMatchObject({ msg: 'Add a crew member', input: true, filter: true, placeholder: 'Or type a callsign', listTitle: 'From the squadron roster' })
     expect(C.dlg.list).toEqual([{ key: 'p1', label: 'Ranger', sub: 'Pilot · OCU' }, { key: 'p2', label: 'Bravo', sub: 'WSO · D' }])
     C.dlgClose({ pick: 'p1' }); await p
-    expect(C.roster).toContain('RANGER')
-    expect(C.active).toBe('RANGER')
-    expect(C.linkOf(C.course, 'RANGER')).toBe('p1')
-    expect(C.linkedPerson('RANGER')).toEqual(P[0])
-    const stored = await storage.get('v3:links')
-    expect(JSON.parse(stored!.value)[C.course]).toEqual({ RANGER: 'p1' })
+    expect(C.roster.map((r: any) => r.name)).toContain('RANGER')
+    const r = C.byName('RANGER')!
+    expect(C.active).toBe(r.id)
+    expect(r.pid, 'the person rides the entry now, not a separate record').toBe('p1')
+    expect(C.pidOf(r.id)).toBe('p1')
+    expect(C.linkedPerson(r.id)).toEqual(P[0])
+    const stored = JSON.parse((await storage.get(`v3:${C.course}:${C.curSyl()}:roster`))!.value)
+    expect(stored.find((e: any) => e.name === 'RANGER')).toEqual(r)
+    expect(await storage.get('v3:links'), 'no separate links record is written').toBeNull()
     /* picking somebody already here is the silent dedupe of old — one entry */
     const n = C.roster.length
     const q = C.addStudent(); C.dlgClose({ pick: 'p1' }); await q
@@ -608,12 +639,12 @@ describe('the person bridge and the link (peoplewire.ts → people.js → core.j
     } finally { storage.get = realGet }
     expect(staged, 'the load read the new roster while the dialog was up').toBe(true)
     expect(C.curSyl()).toBe(other)
-    expect(C.roster, 'on screen').toContain('RACER')
+    expect(C.roster.map((r: any) => r.name), 'on screen').toContain('RACER')
     const stored = await storage.get(`v3:${C.course}:${other}:roster`)
-    expect(JSON.parse(stored!.value), 'in the store, under the new syllabus').toContain('RACER')
+    expect(JSON.parse(stored!.value).map((e: any) => e.name), 'in the store, under the new syllabus').toContain('RACER')
     /* leave things as the tests around this one expect them */
-    const rm = C.removeStudent('RACER'); await tick(); C.dlgClose(true); await rm
-    expect(C.roster).not.toContain('RACER')
+    const rm = C.removeStudent(C.byName('RACER')!.id); await tick(); C.dlgClose(true); await rm
+    expect(C.byName('RACER')).toBeNull()
     await C.switchSyllabus(orig)
     expect(C.curSyl()).toBe(orig)
   })
@@ -635,17 +666,20 @@ describe('the person bridge and the link (peoplewire.ts → people.js → core.j
     try { const p = C.addStudent(); await tick(); C.dlgClose('RACER'); await p; await sw } finally { storage.set = realSet }
     expect(fired, 'the switch started inside the add').toBe(true)
     const val = async (k: string) => (await storage.get(k))?.value ?? null
-    expect(JSON.parse((await val(rosterKey))!), 'roster, old syllabus').toContain('RACER')
-    expect(await val(`v3:${C.course}:${orig}:m:RACER`), 'marks, old syllabus').toBe('{}')
-    expect(JSON.parse((await val(`v3:${C.course}:${orig}:d:RACER`))!), 'dates, old syllabus').toEqual({ lastSyll: null, lastCurr: null })
-    expect(await val(`v3:${C.course}:${other}:m:RACER`), 'no marks strayed under the new syllabus').toBeNull()
-    expect(JSON.parse((await val(`v3:${C.course}:${other}:roster`)) || '[]')).not.toContain('RACER')
+    /* the add landed as an ENTRY on the old syllabus; every key below is its id */
+    const saved = JSON.parse((await val(rosterKey))!)
+    const racer = saved.find((e: any) => e.name === 'RACER')
+    expect(racer, 'roster, old syllabus').toBeTruthy()
+    expect(await val(`v3:${C.course}:${orig}:m:${racer.id}`), 'marks, old syllabus').toBe('{}')
+    expect(JSON.parse((await val(`v3:${C.course}:${orig}:d:${racer.id}`))!), 'dates, old syllabus').toEqual({ lastSyll: null, lastCurr: null })
+    expect(await val(`v3:${C.course}:${other}:m:${racer.id}`), 'no marks strayed under the new syllabus').toBeNull()
+    expect(JSON.parse((await val(`v3:${C.course}:${other}:roster`)) || '[]').map((e: any) => e.name)).not.toContain('RACER')
     expect(C.curSyl(), 'the switch landed afterwards').toBe(other)
-    expect(C.roster).not.toContain('RACER')
+    expect(C.byName('RACER')).toBeNull()
     /* leave things as the tests around this one expect them */
     await C.switchSyllabus(orig)
-    const rm = C.removeStudent('RACER'); await tick(); C.dlgClose(true); await rm
-    expect(C.roster).not.toContain('RACER')
+    const rm = C.removeStudent(C.byName('RACER')!.id); await tick(); C.dlgClose(true); await rm
+    expect(C.byName('RACER')).toBeNull()
   })
 
   it("the by-stamp is omitted when Raptor's whoami is its 'Unknown' placeholder", async () => {
@@ -679,24 +713,29 @@ describe('the person bridge and the link (peoplewire.ts → people.js → core.j
     expect($('#dlgModal')!.textContent).not.toContain('roster')
     expect(($('#dlgInput') as HTMLInputElement).getAttribute('placeholder')).toBeNull()
     await act(async () => { C.dlgClose('solo') }); await p
-    expect(C.roster).toContain('SOLO'); expect(C.linkOf(C.course, 'SOLO')).toBeNull()
+    expect(C.byName('SOLO'), 'a typed name mints an entry with no person on it').toEqual({ id: expect.stringMatching(/^s/), name: 'SOLO' })
+    expect(C.pidOf(C.byName('SOLO')!.id)).toBeNull()
     await act(async () => { root.unmount() }); host.remove()
   })
 
-  it('a corrupt links record reads as absent one level down too — the next pick still links and saves', async () => {
-    /* review finding, 9 Sep 26: a course whose stored value is not a map made
-       `LINKS[course][name] = id` throw on the next pick, with the student
-       already on the roster and the link never saved */
+  it('a corrupt leftover links record cannot break the conversion — the roster survives and the next pick still lands on the entry', async () => {
+    /* was the 9 Sep 26 finding that a course whose links value is not a map
+       made the next pick throw. That record is retired (10 Sep 26 — the person
+       rides the entry), so what has to hold now is that a corrupt one left in
+       the store cannot stop the once-per-course conversion or a pick's save. */
     const bad = { [C.course]: 'x', NUM: 7, ARR: ['p1'], OK: { KEEP: 'p2', EMPTY: '', NOTSTR: 3 } }
     await storage.set('v3:links', JSON.stringify(bad))
-    await (window as any).__coreForTests.loadLinks()
-    expect(C.LINKS).toEqual({ OK: { KEEP: 'p2' } })
-    const p = C.addStudent(); C.dlgClose({ pick: 'p2' }); await p
-    expect(C.linkOf(C.course, 'BRAVO')).toBe('p2')
-    expect(JSON.parse((await storage.get('v3:links'))!.value)[C.course]).toEqual({ BRAVO: 'p2' })
-    /* leave the course as the earlier tests expect it */
-    await storage.set('v3:links', JSON.stringify({ [C.course]: { RANGER: 'p1', BRAVO: 'p2' } }))
-    await (window as any).__coreForTests.loadLinks()
+    await storage.delete(`v3:${C.course}:idmig`)        /* make the migration run again */
+    const before = C.roster.map((r: any) => ({ ...r }))
+    await C.loadCourse(C.course); await C.whenLoaded()
+    expect(C.roster, 'every entry kept its id and its person').toEqual(before)
+    expect((await storage.get(`v3:${C.course}:idmig`))!.value, 'and the course is flagged done again').toBe('1')
+    const p = C.addStudent(); C.dlgClose({ pick: 'p2' }); await p; await C.whenLoaded()
+    expect(C.byName('BRAVO')!.pid).toBe('p2')
+    const stored = JSON.parse((await storage.get(`v3:${C.course}:${C.curSyl()}:roster`))!.value)
+    expect(stored.find((e: any) => e.name === 'BRAVO')).toEqual(C.byName('BRAVO'))
+    /* leave the store as the tests around this one expect it */
+    await storage.delete('v3:links')
   })
 
   it('the dialog draws the search box and the list above the text box, narrows on typing, and a click picks', async () => {
@@ -727,7 +766,8 @@ describe('the person bridge and the link (peoplewire.ts → people.js → core.j
     expect(items()).toEqual(['p2'])
     await act(async () => { ($('#dlgList .dlg-item[data-key="p2"]') as HTMLElement).click() })
     expect(await p).toBeUndefined()
-    expect(C.roster).toContain('BRAVO'); expect(C.linkOf(C.course, 'BRAVO')).toBe('p2')
+    expect(C.roster.map((r: any) => r.name)).toContain('BRAVO')
+    expect(C.pidOf(C.byName('BRAVO')!.id)).toBe('p2')
     expect($('#dlgModal')).toBeNull()
     await act(async () => { root.unmount() }); host.remove()
   })
@@ -750,31 +790,39 @@ describe('the person bridge and the link (peoplewire.ts → people.js → core.j
   it('a typed callsign still adds an unlinked crew member, exactly as before', async () => {
     const n = C.roster.length
     const p = C.addStudent(); C.dlgClose('  visitor '); await p
-    expect(C.roster).toContain('VISITOR'); expect(C.roster.length).toBe(n + 1)
-    expect(C.linkOf(C.course, 'VISITOR')).toBeNull()
-    expect(C.linkedPerson('VISITOR')).toBeNull()
+    expect(C.roster.map((r: any) => r.name)).toContain('VISITOR'); expect(C.roster.length).toBe(n + 1)
+    const v = C.byName('VISITOR')!
+    expect(v.pid).toBeUndefined()
+    expect(C.pidOf(v.id)).toBeNull()
+    expect(C.linkedPerson(v.id)).toBeNull()
     const q = C.addStudent(); C.dlgClose(null); await q
     expect(C.roster.length, 'cancel adds nobody').toBe(n + 1)
   })
 
-  it('a colon is refused at every typing point, with the one message', async () => {
-    let p: Promise<any> = C.addStudent(); await answer('A:B'); await answer(undefined)
-    /* the alert is the dialog that came up second */
-    await p; expect(C.roster).not.toContain('A:B')
+  it('a colon is still refused for a course and a syllabus — but a student name is only a label now', async () => {
+    /* 10 Sep 26: a student's name stopped being a segment of the storage key
+       (the enrolment id is), so a colon in it is accepted and files nothing
+       anywhere odd. Course and syllabus names ARE still key segments, and are
+       still refused at every typing point with the one message. */
+    const p: Promise<any> = C.addStudent(); await answer('A:B'); await p; await C.whenLoaded()
+    const ab = C.byName('A:B')!
+    expect(ab, 'a colon in a student name is a label, not a key').toBeTruthy()
+    expect((await storage.get(`v3:${C.course}:${C.curSyl()}:m:${ab.id}`))!.value, 'their marks file under the id').toBe('{}')
     const seen: string[] = []
     const refuse = async (start: () => Promise<any>, typed: string) => {
       const q = start(); await answer(typed)
       await until(() => C.dlg); seen.push(C.dlg.msg); expect(C.dlg.cancel, 'an alert, not a question').toBe(false)
       C.dlgClose(true); await q
     }
-    await refuse(C.addStudent, 'A:B'); expect(C.roster).not.toContain('A:B')
     const course = C.course, courses = C.COURSES.slice()
     await refuse(C.addCourse, '26:X'); expect(C.COURSES).toEqual(courses)
     await refuse(C.renCourse, '26:X'); expect(C.course).toBe(course); expect(C.COURSES).toEqual(courses)
     const syl = C.curSyl(), syls = C.allSylNames().slice()
     await refuse(C.addSyl, 'New:syl'); expect(C.allSylNames()).toEqual(syls)
     await refuse(C.renSyl, 'x:y'); expect(C.curSyl()).toBe(syl); expect(C.allSylNames()).toEqual(syls)
-    expect(seen).toEqual([COLON, COLON, COLON, COLON, COLON])
+    expect(seen).toEqual([COLON, COLON, COLON, COLON])
+    /* leave the roster as the tests around this one expect it */
+    const rm = C.removeStudent(ab.id); await answer(true); await rm
   })
 
   it('Duplicate syllabus and Import “Add as new” refuse a colon too', async () => {
@@ -799,75 +847,83 @@ describe('the person bridge and the link (peoplewire.ts → people.js → core.j
     expect(seen).toEqual([COLON, COLON, 'Nothing was brought in.'])
   })
 
-  it('removing the student drops the link; renaming the course carries it', async () => {
-    let p: Promise<any> = C.removeStudent('RANGER'); await answer(true); await p
-    expect(C.roster).not.toContain('RANGER')
-    expect(C.linkOf(C.course, 'RANGER')).toBeNull()
-    expect(JSON.parse((await storage.get('v3:links'))!.value)[C.course]).toEqual({ BRAVO: 'p2' })
+  it('removing the student takes their entry with them; renaming the course carries the id and the person on it', async () => {
+    const ranger = C.byName('RANGER')!, bravo = C.byName('BRAVO')!
+    let p: Promise<any> = C.removeStudent(ranger.id); await answer(true); await p
+    expect(C.roster.map((r: any) => r.name)).not.toContain('RANGER')
+    expect(C.byName('RANGER')).toBeNull()
     const old = C.course
     p = C.renCourse(); await answer('LINKTEST'); await p
     expect(C.course).toBe('LINKTEST')
-    expect(C.linkOf('LINKTEST', 'BRAVO')).toBe('p2')
-    expect(C.linkOf(old, 'BRAVO')).toBeNull()
-    expect(C.linkedPerson('BRAVO')).toEqual(P[1])
+    /* the moved keys carry the ID, and the person survives on the entry */
+    expect(C.byName('BRAVO')!.id, 'the same enrolment, under the new course name').toBe(bravo.id)
+    expect(C.byName('BRAVO')!.pid).toBe('p2')
+    expect((await storage.get(`v3:LINKTEST:${C.curSyl()}:m:${bravo.id}`)), 'their marks moved under the id').toBeTruthy()
+    expect(C.linkedPerson(bravo.id)).toEqual(P[1])
     p = C.renCourse(); await answer(old); await p
     expect(C.course).toBe(old)
-    expect(C.linkOf(old, 'BRAVO')).toBe('p2')
-    expect(JSON.parse((await storage.get('v3:links'))!.value)).toEqual({ [old]: { BRAVO: 'p2' } })
+    expect(C.byName('BRAVO')!.pid).toBe('p2')
+    expect(await storage.get('v3:links'), 'and no separate links record was ever written back').toBeNull()
   })
 
   it('every mark and date write stamps who and when; undo restores the earlier stamp verbatim', async () => {
     const ISO = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/
     while (C.canUndo()) await C.doUndo()
     setWhoami(() => 'Tester')
-    C.setActive('BRAVO')
+    const B = C.byName('BRAVO')!.id           /* a student is an enrolment id */
+    C.setActive(B)
     C.openPop('ST-01', at); await C.popGrade('dco')
-    const m1 = { ...(C.marks as any)['BRAVO']['ST-01'] }
+    const m1 = { ...(C.marks as any)[B]['ST-01'] }
     expect(m1.by).toBe('Tester'); expect(m1.at).toMatch(ISO)
     await new Promise(r => setTimeout(r, 5))
     setWhoami(() => 'Second')
     C.openPop('ST-01', at); await C.popFail(1)
-    const m2 = (C.marks as any)['BRAVO']['ST-01']
+    const m2 = (C.marks as any)[B]['ST-01']
     expect(m2.by).toBe('Second'); expect(m2.at).toMatch(ISO); expect(m2.at).not.toBe(m1.at)
     await C.doUndo()
-    expect((C.marks as any)['BRAVO']['ST-01']).toEqual(m1)
+    expect((C.marks as any)[B]['ST-01']).toEqual(m1)
     await C.doRedo()
-    expect((C.marks as any)['BRAVO']['ST-01']).toEqual(m2)
+    expect((C.marks as any)[B]['ST-01']).toEqual(m2)
     /* the two date writers on the mark, then the four on the dates record */
-    await C.setDoneDate('BRAVO', 'ST-01', '2026-08-10')
-    expect((C.marks as any)['BRAVO']['ST-01'].by).toBe('Second')
-    await C.setFailDate('BRAVO', 'ST-01', 0, '2026-08-11')
-    expect((C.marks as any)['BRAVO']['ST-01'].at).not.toBe(m2.at)
-    ;(C.dates as any)['BRAVO'] = { lastSyll: null, lastCurr: null }
-    await C.setLastCurr('BRAVO', '2026-01-05')
-    expect((C.dates as any)['BRAVO']).toMatchObject({ lastCurr: '2026-01-05', by: 'Second' })
-    expect((C.dates as any)['BRAVO'].at).toMatch(ISO)
+    await C.setDoneDate(B, 'ST-01', '2026-08-10')
+    expect((C.marks as any)[B]['ST-01'].by).toBe('Second')
+    await C.setFailDate(B, 'ST-01', 0, '2026-08-11')
+    expect((C.marks as any)[B]['ST-01'].at).not.toBe(m2.at)
+    ;(C.dates as any)[B] = { lastSyll: null, lastCurr: null }
+    await C.setLastCurr(B, '2026-01-05')
+    expect((C.dates as any)[B]).toMatchObject({ lastCurr: '2026-01-05', by: 'Second' })
+    expect((C.dates as any)[B].at).toMatch(ISO)
     /* nobody wired: `by` is omitted, never an empty name */
     setWhoami(null)
-    await C.setDownDays('BRAVO', '2')
-    expect((C.dates as any)['BRAVO'].downDays).toBe('2')
-    expect('by' in (C.dates as any)['BRAVO']).toBe(false)
-    expect((C.dates as any)['BRAVO'].at).toMatch(ISO)
-    await C.setUpchit('BRAVO', '2026-02-01'); await C.setLastSyll('BRAVO', '2026-01-06')
-    expect((C.dates as any)['BRAVO']).toMatchObject({ upchit: '2026-02-01', lastSyll: '2026-01-06', lastCurr: '2026-01-06' })
+    await C.setDownDays(B, '2')
+    expect((C.dates as any)[B].downDays).toBe('2')
+    expect('by' in (C.dates as any)[B]).toBe(false)
+    expect((C.dates as any)[B].at).toMatch(ISO)
+    await C.setUpchit(B, '2026-02-01'); await C.setLastSyll(B, '2026-01-06')
+    expect((C.dates as any)[B]).toMatchObject({ upchit: '2026-02-01', lastSyll: '2026-01-06', lastCurr: '2026-01-06' })
     while (C.canUndo()) await C.doUndo()
   })
 
-  it('Export carries the links beside the students; Import applies them only when the students come in, and only for names on a roster', async () => {
+  it('Export carries the person on the entry; a LEGACY file’s string roster and links block import as entries with a pid', async () => {
     let text = ''
     ;(window as any).__pickSaveForTests = async (name: string) => ({ name, createWritable: async () => ({ write: async (t: string) => { text = t }, close: async () => {} }) })
     C.openCopy(); C.setCopyOpt('students', true)
     let p: Promise<any> = C.saveCopyClick(); await answer(true); await p
     let f = JSON.parse(text)
-    expect(f.contains).toEqual({ charts: true, students: true, links: true })
-    expect(f.links).toEqual({ [C.course]: { BRAVO: 'p2' } })
-    /* charts only: no names, no links */
+    expect(f.contains).toEqual({ charts: true, students: true, links: false })
+    expect('links' in f, 'the separate links record is gone from the file').toBe(false)
+    const syl = C.curSyl()
+    const out = f.students.byCourse[C.course].bySyllabus[syl].roster
+    expect(out.find((e: any) => e.name === 'BRAVO')).toEqual({ id: C.byName('BRAVO')!.id, name: 'BRAVO', pid: 'p2' })
+    /* charts only: no names, no people */
     C.openCopy(); p = C.saveCopyClick(); await answer(true); await p
     f = JSON.parse(text)
-    expect(f.contains.links).toBe(false); expect('links' in f).toBe(false)
+    expect(f.contains.students).toBe(false); expect(f.contains.links).toBe(false); expect('students' in f).toBe(false)
     delete (window as any).__pickSaveForTests
 
-    const syl = C.curSyl()
+    /* a file written BEFORE stable ids: a string roster and a links block
+       beside it. The converter lands both as entries carrying their pid —
+       and drops a link naming somebody who is on no roster of that course. */
     const students = { courses: ['LINKIMP'], byCourse: { LINKIMP: { plan: { sylName: syl }, lulls: {}, pace: {}, bySyllabus: { [syl]: { roster: ['ALPHA'], marks: {}, dates: {} } } } } }
     const links = { LINKIMP: { ALPHA: 'p1', GHOST: 'p2' } }
     const feed = () => { (window as any).__pickOpenForTests = async () => ({ name: 'x.json', text: JSON.stringify(F.buildFile({ students, links, savedAt: 'x' })) }) }
@@ -875,13 +931,14 @@ describe('the person bridge and the link (peoplewire.ts → people.js → core.j
     await until(() => C.dlg && /students and marks/.test(C.dlg.msg)); C.dlgClose(false)
     await until(() => C.dlg && /Nothing was brought in/.test(C.dlg.msg)); C.dlgClose(true); await p
     expect(C.COURSES).not.toContain('LINKIMP')
-    expect((C.LINKS as any).LINKIMP).toBeUndefined()
+    expect(await storage.get(`v3:LINKIMP:${syl}:roster`), 'nothing was written on the "no" path').toBeNull()
     feed(); p = C.importClick()
     await until(() => C.dlg && /students and marks/.test(C.dlg.msg)); C.dlgClose(true)
     await until(() => C.dlg && /restored/.test(C.dlg.msg)); C.dlgClose(true); await p
     expect(C.COURSES).toContain('LINKIMP')
-    expect((C.LINKS as any).LINKIMP, 'GHOST is on no roster of that course').toEqual({ ALPHA: 'p1' })
-    expect(JSON.parse((await storage.get('v3:links'))!.value).LINKIMP).toEqual({ ALPHA: 'p1' })
+    const r = JSON.parse((await storage.get(`v3:LINKIMP:${syl}:roster`))!.value)
+    expect(r, 'GHOST is on no roster of that course').toEqual([{ id: expect.stringMatching(/^s/), name: 'ALPHA', pid: 'p1' }])
+    expect((await storage.get('v3:LINKIMP:idmig'))!.value, 'the imported course is already id-keyed').toBe('1')
     delete (window as any).__pickOpenForTests
   })
 
@@ -911,5 +968,52 @@ describe('the person bridge and the link (peoplewire.ts → people.js → core.j
         expect(src, dir + '/' + f).not.toMatch(/from '[^']*(peoplewire|\/engine\/|\/state\/)/)
       }
     }
+  })
+
+  it('+ Add mints an entry: a typed name has no pid, a picked person carries theirs; same name or same person is not added twice', async () => {
+    setPeople(P)
+    let p = C.addStudent(); C.dlgClose({ pick: 'p1' }); await p; await C.whenLoaded()
+    const r = C.byName('RANGER')!
+    expect(r).toEqual({ id: expect.stringMatching(/^s/), name: 'RANGER', pid: 'p1' })
+    expect(C.active).toBe(r.id); expect(C.linkedPerson(r.id)).toEqual(P[0])
+    p = C.addStudent(); C.dlgClose('solo'); await p; await C.whenLoaded()
+    expect(C.byName('SOLO')).toEqual({ id: expect.stringMatching(/^s/), name: 'SOLO' })
+    const n = C.roster.length
+    p = C.addStudent(); C.dlgClose({ pick: 'p1' }); await p; await C.whenLoaded()
+    p = C.addStudent(); C.dlgClose('SOLO'); await p; await C.whenLoaded()
+    expect(C.roster.length).toBe(n)
+    expect((await storage.get('v3:' + C.course + ':' + C.curSyl() + ':m:' + r.id))!.value).toBe('{}')
+    expect(await storage.get('v3:' + C.course + ':' + C.curSyl() + ':m:RANGER')).toBeNull()
+  })
+
+  /* 10 Sep 26, the stable-ids round: a student is no longer their typed name.
+     A roster entry is { id, name, pid? } and every per-student record files
+     under the id, so a browser that already holds name-keyed data has to be
+     converted — once per course, at the load — and the old links record folds
+     into the entry's pid. */
+  it('existing data converts once per course: names become entries, records re-file under the id, links fold into pid, old keys go', async () => {
+    const c = 'MIGR'
+    await storage.set('v3:courses', JSON.stringify([c]))
+    await storage.set('v3:' + c + ':rostermig', '1')
+    await storage.set('v3:' + c + ':plan', JSON.stringify({ sylName: '2026', custom: false }))
+    await storage.set('v3:' + c + ':2026:roster', JSON.stringify(['ALPHA', 'BRAVO']))
+    await storage.set('v3:' + c + ':2026:m:ALPHA', JSON.stringify({ 'ST-01': { g: 'dco' } }))
+    await storage.set('v3:' + c + ':2026:d:BRAVO', JSON.stringify({ lastSyll: '2026-01-02', lastCurr: null }))
+    await storage.set('v3:' + c + ':pace:ALPHA', JSON.stringify({ epw: '4' }))
+    await storage.set('v3:' + c + ':lulls:ALPHA', JSON.stringify([{ start: '2026-03-01', end: '2026-03-02' }]))
+    await storage.set('v3:' + c + ':last:ALPHA', JSON.stringify({ syl: '2026', event: 'ST-01' }))
+    await storage.set('v3:' + c + ':lastStudent', 'ALPHA')
+    await storage.set('v3:links', JSON.stringify({ [c]: { ALPHA: 'p1' } }))
+    await C.loadCourse(c); await C.whenLoaded()
+    const a = C.byName('ALPHA')!, b = C.byName('BRAVO')!
+    expect(a).toEqual({ id: expect.stringMatching(/^s/), name: 'ALPHA', pid: 'p1' }); expect(b).toEqual({ id: expect.stringMatching(/^s/), name: 'BRAVO' })
+    expect(C.gradeOf(a.id, 'ST-01')).toBe('dco'); expect(C.dates[b.id].lastSyll).toBe('2026-01-02')
+    expect(C.paceOf(a.id).epw).toBe('4'); expect(C.lulls[a.id].length).toBe(1)
+    expect((await storage.get('v3:' + c + ':2026:m:' + a.id))!.value).toContain('dco')
+    for (const k of ['2026:m:ALPHA', '2026:d:BRAVO', 'pace:ALPHA', 'lulls:ALPHA', 'last:ALPHA']) expect(await storage.get('v3:' + c + ':' + k), k).toBeNull()
+    expect((await storage.get('v3:' + c + ':lastStudent'))!.value).toBe(a.id)
+    expect((await storage.get('v3:' + c + ':idmig'))!.value).toBe('1')
+    expect(JSON.parse((await storage.get('v3:links'))?.value || '{}')[c]).toBeUndefined()
+    expect(C.active).toBe(a.id)
   })
 })
