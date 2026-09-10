@@ -2242,3 +2242,82 @@ gate's. Keep verdict-bearing commands unpiped.
 **Suggested improvement:** On any mode change that forbids edits: (1) list live background agents; (2) stop every one that can write; (3) run `git status` and revert partial edits before planning; (4) record in the plan that the agent must be re-launched after approval, with the same brief.
 
 **Principle:** A delegate inherits the operator's constraints only if the operator propagates them — a mode change is an event to broadcast to every running agent, and the working tree is checked afterwards, not assumed.
+
+### Observation 148: A pipeline whose second stage fails still writes the file — an empty file was committed
+
+**Status:** OPEN
+**Date:** 2026-09-10
+**Session context:** Copying the approved plan from the plan-mode file into the repo with `sed … | sed … > file`; the second sed's regex was invalid, the redirect still created an empty file, and the commit that followed committed 0 lines. Caught only by a `wc -l` afterwards; fixed by a Python rewrite and an amend.
+**Skill:** writing-plans / subagent-driven-development (Task 0 "put the plan in the repo")
+**Type:** open-source
+**Phase/Area:** Setup — copying a plan into the repo before dispatch
+
+**Issue:** A shell pipeline that ends in a redirect writes the file whether or not an upstream stage failed, and `git add` + `commit` happily commit the empty result. A subagent reading that brief would have received nothing. The pre-commit check that would have caught it (a line count, or `test -s`) was not part of the step.
+
+**Suggested improvement:** In writing-plans' "Save plans to" step and SDD's setup, add one line: after writing the plan file, verify it is non-empty and contains the first task heading (`test -s FILE && grep -q "### Task 1" FILE`) BEFORE committing. Prefer a single-tool write (Write tool, or Python) over a sed pipeline for text transforms.
+
+**Principle:** A redirect creates the file before the pipeline runs, so "the command produced a file" proves nothing about its contents. Verify size and one expected marker before committing any generated file.
+
+Checkpoint (tasks #53-#58 complete): no further observations.
+
+### Observation 149: A test that switches global state and never restores it makes every later test run on a different fixture — and an empty fixture passes everything
+
+**Status:** OPEN
+**Date:** 2026-09-10
+**Session context:** Stable-ids Task 2b. A plan-supplied test called `loadWeek(week 2)` and never switched back; every later test in the file booted onto an empty week, so the duplicated-draft test compared `[]` to `[]` and passed while the behaviour it pinned was broken (the fresh ids never reached the live day). The reviewer found it by running the test alone (`-t`), where it failed. The implementer's RED phase had reported the test "already passing pre-implementation" — the tell was there, unread.
+**Skill:** writing-plans / test-driven-development / subagent-driven-development
+**Type:** open-source
+**Phase/Area:** Plan-authored tests; the RED phase; task review
+
+**Issue:** Three compounding gaps: (1) the plan's test switched shared module state (the loaded week) with no restore; (2) no test asserted a non-empty precondition, so an empty fixture satisfied every `every()`/`toEqual`; (3) a test that was green BEFORE the implementation was reported but not treated as a red flag. Separately, the plan's mechanism sentence ("the stowed copy keeps its ids because it IS the live day") contradicted the plan's own rule — the implementer followed the sentence and violated the rule; the reviewer caught it only because the vacuous test led them to probe.
+
+**Suggested improvement:** writing-plans: any plan-authored test that mutates module-level or global state must restore it in a `finally` (or the file must reset in `beforeEach`), and a test over a collection must first assert the collection is non-empty. test-driven-development: a new test that passes BEFORE the implementation is a finding, not a footnote — the implementer must explain why (vacuity, wrong fixture, or already-implemented) before proceeding. subagent-driven-development task-reviewer template: add one check — "run at least one new test in isolation (`-t`) when the file mutates shared state".
+
+**Principle:** A green test proves something only if it could have failed; an empty fixture and a leaked global both make failure impossible. Restore what you switch, assert what you assume, and treat "already green before the change" as a defect until explained.
+
+Checkpoint (tasks #59, #60 complete): no further observations.
+
+### Observation 150: A plan snippet that rewrites a validation branch drops the guard the original had
+
+**Status:** OPEN
+**Date:** 2026-09-10
+**Session context:** stable-ids round, Tracker Tasks 3 and 4 (ids.js converter, fileFormat.js roster shapes)
+**Skill:** writing-plans (also subagent-driven-development, pre-flight scan)
+**Type:** open-source
+**Phase/Area:** plan code blocks that replace existing validation; task-reviewer findings labelled plan-mandated
+
+**Issue:** Two consecutive briefs carried code the implementer transcribed faithfully, and both reached the reviewer with the same defect class: the snippet replaced an existing check (`!Array.isArray(x) || x.some(...)`) with a new one that called `.every`/`for…of` on the value BEFORE the array guard, so a non-list value threw a raw TypeError instead of the named friendly error the surrounding file promises. The original short-circuit had the guard; the rewrite lost it. Neither the plan self-review nor the pre-flight scan compares a replacement snippet against the condition it replaces, so the loss only surfaced as a plan-mandated finding after implementation, costing a fix round each time.
+
+**Suggested improvement:** writing-plans Self-Review: add a fourth check — "Replacement snippets: for every code block that REPLACES existing lines (a `Modify: file:L-M` range), list the guards/early-returns in the original range and confirm each survives in the snippet or is deliberately dropped with a reason." subagent-driven-development pre-flight scan: same check for any task whose snippet replaces a validation branch. Implementer template: when a brief's snippet replaces lines that contained a type/shape guard, keep the guard unless the brief says why it goes.
+
+**Principle:** A rewrite of a validation branch must be diffed against the original for guards, not just for the new behaviour it adds; a snippet that reads correctly in isolation can still drop the protection the surrounding code relied on, and a faithful transcription of it carries the loss straight to review.
+
+### Observation 151: A guard added to an entry point must not move its first UI raise behind an await
+
+**Status:** OPEN
+**Date:** 2026-09-10
+**Session context:** stable-ids round, Task 6 fix round (a mid-conversion lock on Tracker roster writes)
+**Skill:** subagent-driven-development (implementer template / dispatch context); writing-plans
+**Type:** open-source
+**Phase/Area:** dispatch context for guards on existing command entry points; brief "facts about the harness"
+
+**Issue:** The fix asked for "refuse roster writes while a course is mid-conversion". The implementer's first cut was `if (await refuseHeldRoster()) return;` at the top of each command. One extra microtask before the command raised its dialog broke thirteen existing tests, because the file's own rule is that an entry point raises its dialog BEFORE its first await (the browser spends the click; the tests answer the dialog synchronously). The guard had to become a bare synchronous flag read. The dispatch named the harness facts (`dlgClose` answers synchronously) but did not state the consequence for a new guard, so the constraint was rediscovered the expensive way.
+
+**Suggested improvement:** When a dispatch or brief asks for a new pre-condition on an existing command entry point, state the entry point's timing contract explicitly ("this command must raise its dialog before its first await; a guard here must be synchronous — read a flag set at load, do not await storage"). More generally, the implementer template's "facts about the harness" block should carry the ordering contracts of the code being changed, not only the helper names. Reviewer prompts for such fixes should ask "does the guard add an await before the first UI raise?".
+
+**Principle:** A test harness that answers UI synchronously encodes an ordering contract on the code (UI before the first await); any guard inserted at an entry point must be told that contract up front, because it is invisible in the guard's own logic and only shows as a wall of unrelated red tests.
+
+### Observation 152: A local gate that runs a different partition than CI passes where CI fails — and a flake's fix is structural, never a re-run
+
+**Status:** OPEN
+**Date:** 2026-09-10
+**Session context:** Stable-ids PR at "merge": CI's `unit (raptor)` job red with all 3007 tests passing — one unhandled "window is not defined" from a React scheduler task firing after jsdom teardown. The local gate (`npm test`, unsharded, all projects) had passed on the same commit.
+**Skill:** subagent-driven-development (final gates) / repo Build & verify convention
+**Type:** open-source
+**Phase/Area:** Task 8 gates → PR → merge readiness
+
+**Issue:** The plan's gate list runs `npm test` as one unsharded pass; CI runs `npx vitest run --project <p>` per project. Same tests, different scheduling — a teardown race that never fired locally fired in CI. The instinct at that point is "re-run it"; the discipline that actually worked was: (1) diff-check the failing file (untouched by the PR), (2) check the base branch (green), (3) reproduce the exact CI shard locally (passed → non-deterministic), (4) read the test for the mechanism (root mounted in beforeAll, never unmounted). Step 4 turned a "flake" into a real defect with a 3-line fix, and a one-line survey (`grep -l createRoot | xargs grep -L unmount`) showed the same latent gap in 60 sibling files.
+
+**Suggested improvement:** In the gates step of plans for this repo, run the unit gate the way CI partitions it (`--project` per project) rather than one unsharded pass, so timing-order differences surface before the PR. And in the CI-red handling guidance: before any re-run, read the failing test's lifecycle hooks — a mount without a matching unmount, a timer without a clear, a listener without a remove — because "passed everywhere, one escaped error" is the signature of a resource outliving its test, which a re-run hides and a teardown fixes. Consider a repo convention line (CLAUDE.md § Coding conventions): every test file that creates a React root unmounts it in `afterAll`.
+
+**Principle:** A green local gate only proves the partition it ran; when CI partitions differently, run the gate the way CI does. And a failure where every test passes but one error escapes is not a flake to re-run — it is a resource that outlived its test, and the fix is the teardown, which also usually reveals the same gap across the suite.

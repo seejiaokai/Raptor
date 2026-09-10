@@ -37,7 +37,7 @@ function LullCalendar() {
       <div className="lullback" onClick={core.closeLullPicker} />
       <div className="lullcal on" id="lullCal">
         <div className="lullhd">
-          <b>{editing ? 'Change lull period' : 'Set lull period'} — {s}</b>
+          <b>{editing ? 'Change lull period' : 'Set lull period'} — {core.nameOf(s)}</b>
           <button className="sm" id="lullClose" onClick={core.closeLullPicker}>✕</button>
         </div>
         <div className="mini" id="lullStep">
@@ -65,24 +65,24 @@ function LullCalendar() {
 /* Copy one student's periods onto others. */
 function LullCopy() {
   const c = core.lullCopy;
-  const others = core.roster.filter(r => r !== c.from);
+  const others = core.roster.filter(r => r.id !== c.from);
   return (
     <>
       <div className="lullback" onClick={core.closeLullCopy} />
       <div className="lullcal on" id="lullCopy">
         <div className="lullhd">
-          <b>Copy {c.from}’s lull periods to</b>
+          <b>Copy {core.nameOf(c.from)}’s lull periods to</b>
           <button className="sm" id="lullCopyClose" onClick={core.closeLullCopy}>✕</button>
         </div>
         {others.length
           ? others.map(r => (
-            <label className="sub lullpick" key={r}>
-              <input type="checkbox" value={r} checked={c.picked.includes(r)}
-                onChange={e => core.toggleLullCopy(r, e.target.checked)} /> {r}
+            <label className="sub lullpick" key={r.id}>
+              <input type="checkbox" value={r.id} checked={c.picked.includes(r.id)}
+                onChange={e => core.toggleLullCopy(r.id, e.target.checked)} /> {r.name}
             </label>
           ))
           : <div className="mini">Nobody else on this course yet.</div>}
-        <div className="mini" style={{ marginTop: 6 }}>This replaces their periods with a copy of {c.from}’s.</div>
+        <div className="mini" style={{ marginTop: 6 }}>This replaces their periods with a copy of {core.nameOf(c.from)}’s.</div>
         <div className="lullbtns">
           <button className="sm" onClick={core.closeLullCopy}>Cancel</button>
           <button className="sm primary" id="lullCopyOk" disabled={!c.picked.length} onClick={core.applyLullCopy}>Copy</button>
@@ -156,13 +156,13 @@ function FailChip({ s, id, i, date }) {
    panel and the grading pop-up, under a confirm. */
 function FailLog() {
   const s = core.failLog;
-  const list = core.roster.includes(s) ? core.failList(s) : [];
+  const list = core.roster.some(r => r.id === s) ? core.failList(s) : [];
   return (
     <>
       <div className="lullback" onClick={core.closeFailLog} />
       <div className="lullcal on faillog" id="failLog">
         <div className="lullhd">
-          <b>Failures — {s}</b>
+          <b>Failures — {core.nameOf(s)}</b>
           <span className="failtot" id="failLogTotal">{list.length} fail{list.length === 1 ? '' : 's'}</span>
           <button className="sm" id="failLogClose" onClick={core.closeFailLog}>✕</button>
         </div>
@@ -175,7 +175,7 @@ function FailLog() {
                 onChange={e => core.setFailDate(s, x.id, x.i, e.target.value)} />
             </div>
           ))
-          : <div className="mini" style={{ margin: '6px 0' }}>No failures recorded for {s} on this chart.</div>}
+          : <div className="mini" style={{ margin: '6px 0' }}>No failures recorded for {core.nameOf(s)} on this chart.</div>}
         <div className="mini" style={{ marginTop: 8 }}>A failure is recorded from the ball’s pop-up (Fails +), on the day in its “Failed on” box. Escape closes this.</div>
       </div>
     </>
@@ -252,10 +252,10 @@ export default function SidePanel({ zoom }) {
           {/* A student linked to Raptor's roster (9 Sep 26) wears a dot and
               says who they are there; an unlinked chip is untouched. */}
           {core.roster.map((r, i) => {
-            const p = core.linkedPerson(r);
+            const p = core.linkedPerson(r.id);
             return (
-              <span key={r} className={p ? 'chip linked' : 'chip'} title={p ? 'On the squadron roster as ' + p.cs : undefined}>
-                <b>{i + 1}</b> {r} <span className="x" data-rm={r} onClick={() => core.removeStudent(r)}>×</span></span>
+              <span key={r.id} className={p ? 'chip linked' : 'chip'} title={p ? 'On the squadron roster as ' + p.cs : undefined}>
+                <b>{i + 1}</b> {r.name} <span className="x" data-rm={r.id} onClick={() => core.removeStudent(r.id)}>×</span></span>
             );
           })}
         </div>
@@ -263,7 +263,7 @@ export default function SidePanel({ zoom }) {
         <div className="keyball" dangerouslySetInnerHTML={{ __html: core.renderKeyBall() }} />
       </div>
       <div className="card c-overall">
-        <h3>Overall <span className="who">— {s}</span></h3>
+        <h3>Overall <span className="who">— {core.nameOf(s)}</span></h3>
         <div className="big">
           <div className="num"><div className="v">{(st.totPct * 100).toFixed(1)}%</div><div className="l">Complete</div></div>
           <div className="num"><div className="v">{st.totDone}</div><div className="l">Done</div></div>
@@ -308,7 +308,7 @@ export default function SidePanel({ zoom }) {
       <div className="card c-plan">
         <h3>{/* One flex child, or space-between spreads the three pieces across the
             whole heading. */}
-          <span>Plannable now <span className="mini" style={{ fontWeight: 400 }}>(shows up to 5 rows)</span><span className="who"> — {s}</span></span></h3>
+          <span>Plannable now <span className="mini" style={{ fontWeight: 400 }}>(shows up to 5 rows)</span><span className="who"> — {core.nameOf(s)}</span></span></h3>
         <div className="chips">
           {near.length
             ? near.map(e => <EventChip key={e.id} id={e.id} className="chip" style={{ borderColor: core.TYPE_COLOR[e.type], fontWeight: 600 }} />)
@@ -334,7 +334,7 @@ export default function SidePanel({ zoom }) {
         <div className="mini" style={{ marginTop: 5 }}>Landing currency = days since last currency (minus down days). Flex requirement uses days since last <b>syllabus</b> flight, so updating currency won’t change it.</div>
       </div>
       <div className="card wide c-pace">
-        <h3>Pace &amp; expected end <span className="who">— {s}</span></h3>
+        <h3>Pace &amp; expected end <span className="who">— {core.nameOf(s)}</span></h3>
         {/* Set pace takes the whole width; the two end dates share the row below.
             Three across needed 419px in a 301px panel and pushed End date B off
             the right edge of the window. */}
@@ -385,7 +385,7 @@ export default function SidePanel({ zoom }) {
             <h3><span className="failTitle" id="failTitle" role="button" tabIndex={0}
               title="Every failure with its date" onClick={() => core.openFailLog(s)}
               onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); core.openFailLog(s); } }}>Failures</span>{' '}
-              <span className="who">— {s}</span>
+              <span className="who">— {core.nameOf(s)}</span>
               {total ? <span className="failtot" id="failTotal">
                 {total} fail{total === 1 ? '' : 's'}</span> : null}</h3>
             <div className="chips failchips" id="failChips">
@@ -399,7 +399,7 @@ export default function SidePanel({ zoom }) {
       })()}
 
       <div className="card c-lull">
-        <h3>Lull periods <span className="who">— {s}</span></h3>
+        <h3>Lull periods <span className="who">— {core.nameOf(s)}</span></h3>
         <div className="chips" id="lullChips">
           {(core.lulls[s] || []).length
             ? (core.lulls[s] || []).map((l, i) => (

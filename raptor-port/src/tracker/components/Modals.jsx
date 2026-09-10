@@ -215,7 +215,7 @@ const ORD_MODES = {
   crew: {
     title: 'Crew order',
     note: 'Drag a row, or use ▲/▼. This also sets which slice of every ball belongs to whom — first in the list is the first slice.',
-    read: () => core.roster.slice(),
+    read: () => core.roster.map(r => r.name),
     tag: (n, i) => '#' + (i + 1),
     save: l => core.saveCrewOrder(l),
   },

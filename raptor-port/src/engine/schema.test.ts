@@ -96,15 +96,15 @@ const inputSpec = (booted: boolean): Spec => ({
   oil: { $opt: { $map: { $lit: [0, 0.5, 1] } } }, sans: { $opt: { f: { $opt: { $lit: [true] } }, o: { $opt: { $lit: [true] } }, a: { $opt: { $lit: [true] } } } },
 })
 const FLAGS = { cx: 'boolean?', cxr: 'string?', flag: 'boolean?' }
-const ALLHANDS: Spec = { ...FLAGS, prog: 'string', str: 'string', end: 'string', who: { $opt: { $or: ['string', ['string']] } }, more: { $opt: ['string'] }, info: 'boolean?' }
+const ALLHANDS: Spec = { ...FLAGS, prog: 'string', str: 'string', end: 'string', who: { $opt: { $or: ['string', ['string']] } }, more: { $opt: ['string'] }, info: 'boolean?', rid: 'string?' }
 const GROUND: Spec = { ...(ALLHANDS as object), rmks: 'string?', src: 'string?' }
 const SAKIND: Spec = { $lit: ['sc', 'avalon', 'bb'] }
-const SEAT: Spec = { ...FLAGS, p: 'string', w: 'string', area: 'string', rmks: 'string', opts: { $map: { $or: ['boolean', 'string'] } }, spare: 'boolean?', role: { $opt: { $lit: ['MAIN', 'SPARE'] } } }
-const FORMATION: Spec = { cs: 'string', msn: 'string', shift: 'string?', to: 'string', ld: 'string', br: 'string?', area: 'string?', atime: 'string?', aircraft: [SEAT], cx: 'boolean?', cxr: 'string?' }
-const WAVE: Spec = { label: 'string', night: 'boolean', intimes: ['string'], traffic: ['string'], formations: [FORMATION], standalone: 'boolean?', kind: { $opt: SAKIND }, noconf: 'boolean?' }
-const SIM: Spec = { ...FLAGS, label: 'string', str: 'string', end: 'string', rmks: 'string?', p: 'string?', w: 'string?', pax: { $opt: ['string'] }, who: 'string?', more: { $opt: ['string'] } }
-const DUTYROW: Spec = { ...FLAGS, role: 'string', id: 'string', str: 'string', end: 'string', more: { $opt: ['string'] } }
-const DUTYBLOCK: Spec = { label: 'string', rows: [DUTYROW], sa: { $opt: SAKIND }, noconf: 'boolean?' }
+const SEAT: Spec = { ...FLAGS, p: 'string', w: 'string', area: 'string', rmks: 'string', opts: { $map: { $or: ['boolean', 'string'] } }, spare: 'boolean?', role: { $opt: { $lit: ['MAIN', 'SPARE'] } }, rid: 'string?' }
+const FORMATION: Spec = { cs: 'string', msn: 'string', shift: 'string?', to: 'string', ld: 'string', br: 'string?', area: 'string?', atime: 'string?', aircraft: [SEAT], cx: 'boolean?', cxr: 'string?', rid: 'string?' }
+const WAVE: Spec = { label: 'string', night: 'boolean', intimes: ['string'], traffic: ['string'], formations: [FORMATION], standalone: 'boolean?', kind: { $opt: SAKIND }, noconf: 'boolean?', rid: 'string?' }
+const SIM: Spec = { ...FLAGS, label: 'string', str: 'string', end: 'string', rmks: 'string?', p: 'string?', w: 'string?', pax: { $opt: ['string'] }, who: 'string?', more: { $opt: ['string'] }, rid: 'string?' }
+const DUTYROW: Spec = { ...FLAGS, role: 'string', id: 'string', str: 'string', end: 'string', more: { $opt: ['string'] }, rid: 'string?' }
+const DUTYBLOCK: Spec = { label: 'string', rows: [DUTYROW], sa: { $opt: SAKIND }, noconf: 'boolean?', rid: 'string?' }
 const DAY: Spec = {
   dow: 'string', dt: 'string', wc: 'string', today: 'boolean?', notes: ['string'], allhands: [ALLHANDS], waves: [WAVE],
   sims: { amt: [SIM], oft: [SIM] }, dutywaves: [DUTYBLOCK], ground: [GROUND],
@@ -238,6 +238,8 @@ describe('after boot', () => {
     conform(DAYS, [DAY], 'DAYS')
     conform(SCHED, SCHED_SPEC, 'SCHED')
     Object.keys(PEOPLE).forEach(id => expect(isObj(PEOPLE[id].quals), `PEOPLE.${id}.quals`).toBe(true))
+    const { rowsOf } = await import('./rowids')
+    DAYS.forEach((d, i) => rowsOf(d).forEach((r: any, j) => expect(typeof r.rid, `DAYS[${i}] row ${j} rid`).toBe('string')))
   })
 })
 
@@ -278,6 +280,13 @@ describe('after edits — fields the seeds never carry', () => {
     const row: any = { person: 'bane', type: 'LL', date: 'Jul 13', yr: 2026, allday: true, remarks: '', mod: 'now', lw: 'y2026' }
     inpId(row)
     conform(row, inputSpec(true), 'synced leave')
+  })
+  it('a minted wave, template wave and duty block carry rids once the walk has run', async () => {
+    const { ensureRowIds, rowsOf } = await import('./rowids')
+    const d: any = { waves: [makeStandalone('sc'), waveFromTpl(WAVETPL_CFG[0].id)], dutywaves: [blockFromTpl(DUTYTPL_CFG[0].id)] }
+    ensureRowIds([d])
+    expect(rowsOf(d).every((r: any) => typeof r.rid === 'string')).toBe(true)
+    conform(d.waves[0], WAVE, 'sc+rid'); conform(d.dutywaves[0], DUTYBLOCK, 'block+rid')
   })
   it('an issued amendment: SCHED, the AL and the day snapshots conform', async () => {
     const { histSnap } = await import('../state/history')

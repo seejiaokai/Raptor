@@ -211,6 +211,8 @@ export type AllhandsRow = RowFlags & {
   more?: string[]
   /** Info-only, not checked — screen. */
   info?: boolean
+  /** Stable row id — engine (rowids.ts); minted before the first baseline, never printed, optional only in a seed literal. */
+  rid?: string
 }
 
 /** A Ground Programme row (day.ground[i]); same family as AllhandsRow plus the input it was promoted from. */
@@ -243,6 +245,8 @@ export type AircraftSeat = RowFlags & {
   spare?: boolean
   /** Mirrors `spare` as the row label — engine/screen. */
   role?: 'MAIN' | 'SPARE'
+  /** Stable row id — engine (rowids.ts); minted before the first baseline, never printed, optional only in a seed literal. */
+  rid?: string
 }
 export type Aircraft = AircraftSeat
 
@@ -270,6 +274,8 @@ export type Formation = {
   cx?: boolean
   /** Cancel reason — engine. */
   cxr?: string
+  /** Stable row id — engine (rowids.ts); minted before the first baseline, never printed, optional only in a seed literal. */
+  rid?: string
 }
 
 /** A wave (day.waves[i]). */
@@ -290,6 +296,8 @@ export type Wave = {
   kind?: SaKind
   /** Whole wave exempt from cross-checks (AVALON / BB) — engine. */
   noconf?: boolean
+  /** Stable row id — engine (rowids.ts); minted before the first baseline, never printed, optional only in a seed literal. */
+  rid?: string
 }
 
 /** A sim row (day.sims.amt[i] / day.sims.oft[i]); crewed as {p,w}, or {pax}, or {who}. */
@@ -312,6 +320,8 @@ export type SimRow = RowFlags & {
   who?: string
   /** Overflow crew — engine (slots.ts). */
   more?: string[]
+  /** Stable row id — engine (rowids.ts); minted before the first baseline, never printed, optional only in a seed literal. */
+  rid?: string
 }
 
 /** A duty row (block.rows[i]). */
@@ -326,6 +336,8 @@ export type DutyRow = RowFlags & {
   end: string
   /** Overflow crew — engine (slots.ts). */
   more?: string[]
+  /** Stable row id — engine (rowids.ts); minted before the first baseline, never printed, optional only in a seed literal. */
+  rid?: string
 }
 
 /** A duty block (day.dutywaves[i]). */
@@ -338,6 +350,8 @@ export type DutyBlock = {
   sa?: SaKind
   /** Mirrors the wave's cross-check exemption — engine. */
   noconf?: boolean
+  /** Stable row id — engine (rowids.ts); minted before the first baseline, never printed, optional only in a seed literal. */
+  rid?: string
 }
 
 /** One day of the loaded week. */

@@ -52,10 +52,17 @@ describe('round trip: an edited week keeps its edit, its amendment marks and its
     ;(DAYS[6] as any).dutywaves.push({ label: 'Duty', rows: [{ role: 'SDO', id: 'waldo', str: '1900', end: '2300' }] })
     markStructuralAdd('dl:6.0')
     afterSchedMutate()
+    /* afterSchedMutate's markEdit()->histPush() epilogue just minted this
+       block's rid (engine/rowids.ts) — capture it so the round trip below
+       can assert the STASH CARRIES THE SAME ID, which is the whole point of
+       a stable id: a row's address may reshuffle, its identity must not. */
+    const blk = (DAYS[6] as any).dutywaves[0]
+    const rid = blk.rid, rowRid = blk.rows[0].rid
+    expect(typeof rid).toBe('string')
     view.WARNOFF.add('CREW_REST|waldo|dummy')
     loadWeek(wkFor(1))          // leave WK — stashes it (it changed since load)
     loadWeek(WK)                // and back
-    expect((DAYS[6] as any).dutywaves[0]).toEqual({ label: 'Duty', rows: [{ role: 'SDO', id: 'waldo', str: '1900', end: '2300' }] })
+    expect((DAYS[6] as any).dutywaves[0]).toEqual({ label: 'Duty', rid, rows: [{ role: 'SDO', id: 'waldo', str: '1900', end: '2300', rid: rowRid }] })
     expect(SCHED.pending['dl:6.0']).toBe(1)
     expect(SCHED.added['dl:6.0']).toBe(1)
     expect(view.WARNOFF.has('CREW_REST|waldo|dummy'), 'a muted warning stays muted across the round trip').toBe(true)

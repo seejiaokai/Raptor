@@ -42,13 +42,14 @@
 >   with `scripts/tracker/bake-user-charts.mjs` (reads only the `charts`
 >   half), and he Imports the charts-only file he gets back (no students
 >   question — a charts-only file never asks).
-> - **Students are LINKED to Raptor's people, but still keyed by name**
->   (superseding the 7 Sep 26 "standalone first" — owner, 9 Sep 26: "a person
->   is also linked to the tracker and can be selected to be placed in a
->   course"). `+ Add` in the Students card lists the squadron roster (via the
->   no-import bridge `people.js`, fed by `TrackerPage.tsx`); picking one adds
->   them under their callsign and records `v3:links` (`{course: {name:
->   personId}}`). A typed name still adds an unlinked student — and with NO
+> - **Students are LINKED to Raptor's people, and keyed by an enrolment id
+>   since 10 Sep 26** (superseding the 7 Sep 26 "standalone first" — owner,
+>   9 Sep 26: "a person is also linked to the tracker and can be selected to
+>   be placed in a course"). `+ Add` in the Students card lists the squadron
+>   roster (via the no-import bridge `people.js`, fed by `TrackerPage.tsx`);
+>   picking one adds an entry `{ id, name, pid }` under their callsign (the
+>   9 Sep 26 `v3:links` record is folded into `pid` by the once-per-course
+>   migration and gone). A typed name still adds an unlinked student — and with NO
 >   roster handed over the dialog IS the old `Student callsign:` prompt, byte
 >   for byte. **That is the standalone rule** (owner, 9 Sep 26): the Tracker
 >   goes back out to `seejiaokai/Tracker` one day, where a student is created
@@ -56,13 +57,27 @@
 >   the `by` stamp exist only where Raptor hands people over, and everything
 >   Raptor-specific about `+ Add` is the one `people.length` branch in
 >   `core.js addStudent` (pinned in `tracker.test.tsx`). The roster,
->   marks, dates and undo all stay name-keyed — re-keying by person id is the
->   storage seam's stage 2. Nothing flows back to Raptor yet (no pucks, no
->   quals) — the link is the hook for that. Deleting a course leaves its
->   links in storage the way it leaves its marks (a safety net): re-create a
->   course under the same name and type a student under an old linked name,
->   and that student comes back linked to the old person along with their
->   old marks — coherent, but worth knowing.
+>   marks, dates, pace, lulls and undo are all keyed by the entry's id; the
+>   name is a label (no rename control yet) and may contain a colon. Nothing
+>   flows back to Raptor yet (no pucks, no quals) — `pid` is the hook for
+>   that. Deleting a course leaves its records in storage the way it leaves
+>   its marks (a safety net): re-create a course under the same name and its
+>   old roster comes back, entries, links and marks together — coherent, but
+>   worth knowing. Export carries the entries (no `links` block); Import
+>   reads both the entry shape and a legacy string roster with its `links`.
+>   **A course whose id conversion cannot finish is HELD (10 Sep 26):** after
+>   one retry on the same load, `core.js` keeps `rosterHeld` and refuses
+>   `+ Add`, remove, reorder and duplicate-syllabus with a notice, so the old
+>   name-keyed roster is never overwritten. The gap: no component reads the
+>   flag — the Students card shows an EMPTY list and a `+ Add` that looks
+>   live until pressed. A one-line notice in the card is the follow-up. The
+>   way out is a reload that converts (or an Import, which converts the
+>   course through the same migration). Narrow edge of that Import route: if
+>   the interrupted run had already moved a mark under its parked `idmap` id
+>   and the file carries the same student under a DIFFERENT id, the
+>   already-moved record is left as a dead key under the old id (nothing is
+>   overwritten; the file's id wins the roster). Only after an interrupted
+>   conversion followed by a restore.
 > - **Loads and roster writes share ONE queue (9 Sep 26).** `loadCourse`
 >   reads a dozen records with an await between each and then replaces the
 >   roster with what it fetched; a `+ Add` or a removal finishing inside that

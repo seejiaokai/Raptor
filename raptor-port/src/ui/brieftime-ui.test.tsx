@@ -6,9 +6,9 @@
    (editMode() is admin-only), the CSV export, and the read-only view page.
    Driven through the React app the same way editweek.test.tsx and
    board.test.tsx do. */
-import { beforeAll, describe, expect, it } from 'vitest'
+import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { act } from 'react'
-import { createRoot } from 'react-dom/client'
+import { createRoot, type Root } from 'react-dom/client'
 import { App } from './App'
 import { initStore, setSession, notify } from '../state/store'
 import { DAYS } from '../engine/data'
@@ -22,6 +22,7 @@ import { schedRows } from './export'
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
 let host: HTMLDivElement
+let root: Root
 const $ = (sel: string) => host.querySelector(sel) as HTMLElement
 const $$ = (sel: string) => [...host.querySelectorAll(sel)] as HTMLElement[]
 const click = async (el: Element | null) => {
@@ -54,9 +55,21 @@ beforeAll(async () => {
   initStore()
   host = document.createElement('div')
   document.body.appendChild(host)
-  await act(async () => { createRoot(host).render(<App />) })
+  root = createRoot(host)
+  await act(async () => { root.render(<App />) })
   await act(async () => { setSession({ user: 'a', role: 'admin' }); notify() })
   await click($$('.nav a[data-page]').find(a => a.dataset.page === 'editsched')!)
+})
+
+/* Unmount before the file ends. The last test's click/notify can leave a
+   React scheduler task pending; with the root still mounted that task fires
+   AFTER vitest tears jsdom down and dies with "window is not defined" — an
+   unhandled error that fails the whole `unit (raptor)` job while every test
+   in it passed (CI, 10 Sep 26; the same commit ran clean locally — a timing
+   flake, not a regression). Unmounting inside act() drains the queue first. */
+afterAll(async () => {
+  await act(async () => { root.unmount() })
+  host.remove()
 })
 
 describe('B on the edit week', () => {

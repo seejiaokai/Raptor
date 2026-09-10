@@ -5,20 +5,32 @@
      charts   = { order: string[], syllabi: {name: event[]},
                   layouts: {name: object}, eventInfo: object }
      students = { courses: string[],
-                  byCourse: {course: {plan: object, bySyllabus: {syl: {
-                    roster: string[], marks: {student: object},
-                    dates: {student: object} }}}} }
+                  byCourse: {course: {plan: object, lulls: object, pace: object,
+                    bySyllabus: {syl: {
+                    roster: string[] | {id, name, pid?}[],
+                    marks: {id: object}, dates: {id: object} }}}} }
+                (stable ids, 10 Sep 26: a roster is EITHER the legacy string
+                list, keyed by name, OR entries {id, name, pid?}, and then
+                marks/dates/lulls/pace are keyed by the entry id — never a
+                mix on one roster. A later step converts a legacy file's
+                names to ids on import; this format only reads both.)
 
      links    = { course: { studentName: personId } }   (9 Sep 26 — the
-                student's link to Raptor's person record; additive, a file
-                without it is the older format)
+                student's link to Raptor's person record; LEGACY ONLY since
+                10 Sep 26 — a file this app writes now carries ids on the
+                roster instead, so `links` is read for an older file but
+                never written)
 
-   Nested objects rather than joined key strings on purpose: course, syllabus
-   and student names are free text and may contain any separator character —
-   EXCEPT a colon, since 9 Sep 26 (see noColon below).
+   Nested objects rather than joined key strings on purpose: course and
+   syllabus names are free text and may contain any separator character —
+   EXCEPT a colon, since 9 Sep 26 (see noColon below). A student NAME is no
+   longer a storage key (stable ids, 10 Sep 26) — it is a label carried on
+   the roster entry — so it may contain anything, including a colon; only
+   the entry's id is a key, and ids are minted by the app, never typed.
 
-   See docs/superpowers/specs/2026-08-07-syllabus-file-design.md and
-   docs/superpowers/specs/2026-09-09-schema-hardening-design.md */
+   See docs/superpowers/specs/2026-08-07-syllabus-file-design.md,
+   docs/superpowers/specs/2026-09-09-schema-hardening-design.md and
+   docs/superpowers/sdd/2026-09-10-stable-ids/ */
 export const FILE_FORMAT = 'ocu-tracker';
 export const FILE_VERSION = 1;
 
@@ -119,32 +131,66 @@ function checkStudents(s) {
       throw new Error('Course “' + course + '” in that file is damaged, so it has not been opened.');
     if (cv.bySyllabus != null && !isPlainObject(cv.bySyllabus))
       throw new Error('Course “' + course + '” in that file is damaged, so it has not been opened.');
+    /* one id must not carry two names across this course's syllabi (review
+       finding 5): a Map remembers the name each id was first seen under. */
+    const idToName = new Map();
     for (const [syl, sv] of Object.entries(cv.bySyllabus || {})) {
       noColon('syllabus', syl, ' on course “' + course + '”');
       if (!isPlainObject(sv))
         throw new Error('“' + syl + '” on course “' + course + '” in that file is damaged, so it has not been opened.');
-      if (sv.roster != null && (!Array.isArray(sv.roster) || sv.roster.some(n => typeof n !== 'string')))
+      /* two roster shapes (stable ids, 10 Sep 26): the legacy string list, or
+         entries { id, name, pid? } — one or the other, never a mix, so the
+         reader cannot half-upgrade a file */
+      /* the array check MUST run before either .every() below: a damaged
+         file names its part ("the crew list … is damaged"), so a truthy
+         non-array roster (a string, a number, a plain object) has to be
+         turned away here — reaching .every() on it throws a raw, unnamed
+         TypeError instead, which leaves nobody any wiser (review fix). */
+      if (sv.roster != null && !Array.isArray(sv.roster))
         throw new Error('The crew list for “' + syl + '” on course “' + course + '” is damaged, so that file has not been opened.');
-      (sv.roster || []).forEach(n => noColon('crew member', n, ' on course “' + course + '”'));
+      const rs = sv.roster || [];
+      const isEntry = e => !!e && typeof e === 'object' && !Array.isArray(e) && typeof e.id === 'string' && !!e.id && typeof e.name === 'string' && (e.pid == null || (typeof e.pid === 'string' && !!e.pid));
+      const allStr = rs.every(n => typeof n === 'string'), allEntry = rs.every(isEntry);
+      if (!(allStr || allEntry))
+        throw new Error('The crew list for “' + syl + '” on course “' + course + '” is damaged, so that file has not been opened.');
+      /* per roster: no id twice, no name twice; an entry id also can't
+         disagree with the name it already carries on an earlier syllabus */
+      const ids = new Set(), names = new Set();
+      for (const n of rs) {
+        const id = allEntry ? n.id : null, name = allEntry ? n.name : n;
+        if (allEntry) {
+          if (ids.has(id))
+            throw new Error('The crew list on course “' + course + '” lists id ' + id + ' twice on “' + syl + '”, so that file has not been opened.');
+          ids.add(id);
+        }
+        if (names.has(name))
+          throw new Error('The crew list on course “' + course + '” lists “' + name + '” twice on “' + syl + '”, so that file has not been opened.');
+        names.add(name);
+        if (allEntry) {
+          const prev = idToName.get(id);
+          if (prev != null && prev !== name)
+            throw new Error('Course “' + course + '” in that file gives id ' + id + ' two names, so it has not been opened.');
+          idToName.set(id, name);
+        }
+      }
       for (const f of ['marks', 'dates']) {
         if (sv[f] != null && !isPlainObject(sv[f]))
           throw new Error('The ' + (f === 'marks' ? 'marks' : 'dates') + ' for “' + syl + '” on course “' + course + '” are damaged, so that file has not been opened.');
-        Object.keys(sv[f] || {}).forEach(n => noColon('crew member', n, ' on course “' + course + '”'));
       }
     }
     for (const f of ['plan', 'lulls', 'pace']) {
       if (cv[f] != null && !isPlainObject(cv[f]))
         throw new Error('Course “' + course + '” in that file is damaged, so it has not been opened.');
-      /* lulls and pace are keyed by crew member too (kLulls / kPace) */
-      if (f !== 'plan') Object.keys(cv[f] || {}).forEach(n => noColon('crew member', n, ' on course “' + course + '”'));
     }
   }
 }
 
-/* course → student name → person id, every leaf a non-empty string. The id is
-   Raptor's PEOPLE key; whether it still names somebody is the app's business
-   when the file is applied (core.js applyLinks keeps only names on a roster),
-   not the format's. */
+/* course → student name → person id, every leaf a non-empty string — the
+   LEGACY links block of a pre-10 Sep 26 export. The id is Raptor's PEOPLE
+   key; whether it still names somebody is the app's business when the file
+   is applied (core.js applyStudents folds it into the roster entry's pid
+   through app/ids.js, and a name on no roster is ignored), not the format's.
+   Export has not written this block since students became entries. */
 function checkLinks(l) {
   if (!isPlainObject(l)) throw new Error('The links in that file are damaged, so it has not been opened.');
   for (const [course, m] of Object.entries(l)) {

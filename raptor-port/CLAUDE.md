@@ -526,7 +526,15 @@ reassign across modules. `WARN`/`REST`/`EVD` are reassigned by every
 `validate()`: always re-read, never cache.
 
 **The slot-key grammar** — everything addresses through this, and the day
-index is always first after the prefix (`keyDay()` depends on it):
+index is always first after the prefix (`keyDay()` depends on it). Every
+row also carries `rid` (`engine/rowids.ts`, 10 Sep 26) — identity for the
+database, never an address: minted by one walk before every baseline and
+snapshot (`initStore`/`loadWeek`/`histInit`/`histPush`), kept by a move, an
+undo, a restore, re-minted on a copy (day template, duplicated wave, draft),
+never printed (parity stays byte-identical) and never compared by the
+amendment machinery. A new row-creating path needs no code: the walk mints
+what it finds missing; a new row-COPYING path must strip ids
+(`stripRowIds`) so the copy is a new row.
 
 - Flying seat `di.gi.li.ai.seat` (no prefix) — day, wave, formation,
   aircraft, seat `p` (FCP) or `w` (RCP).
@@ -641,12 +649,16 @@ once, which projects Raptor's `PEOPLE` into the bridge on every notify
 (signature-guarded, like Leave War's `reprojectRoster`) and hands it
 `HOOKS.whoami()`. That is how a person from the squadron roster is picked into
 a course (the Students card's `+ Add` lists the roster above the free-text box)
-and how every mark and date write is stamped `by`/`at`. **Students are still
-keyed by their typed NAME** — the link is a separate record
-(`raptor:tracker/v3:links`, `{course: {studentName: personId}}`), additive, so
-an unlinked student behaves exactly as before; re-keying students by person id
-is the storage seam's stage-2 (stable ids) work. Course, syllabus and student
-names refuse a colon (they are storage-key segments). **The Tracker will be
+and how every mark and date write is stamped `by`/`at`. **A student is an
+ENROLMENT ID (stable ids, 10 Sep 26)**: a roster entry is `{ id, name, pid? }`,
+every per-student key (`:m:`, `:d:`, `pace:`, `lulls:`, `last:`, `lastStudent`)
+takes the id, `nameOf`/`byName`/`pidOf`/`linkedPerson` read the entry, and the
+`v3:links` record is gone (folded into `pid` by `migrateIds`, once per course,
+resumable and read-back-verified — `app/ids.js` is the one converter, shared
+with Import). Same person or same name on the course = the same enrolment
+(`findEnrolment`, course-wide, hidden charts included). Course, syllabus and
+chart names refuse a colon (they are storage-key segments); a student name is a
+label and may carry one. No rename control yet. **The Tracker will be
 exported back out as a standalone app** (owner, 9 Sep 26), where students are
 typed and nothing feeds the bridge — so every Raptor-fed feature degrades to the
 old behaviour when the bridge is empty (`+ Add` with no roster IS the old

@@ -26,7 +26,7 @@ export default function Pop() {
 
   return (
     <div className="pop" id="pop" ref={ref} style={style}>
-      <div className="t" id="popTitle">{p.id}  ·  {s}</div>
+      <div className="t" id="popTitle">{p.id}  ·  {core.nameOf(s)}</div>
       <div className="opts">
         <button onClick={() => core.popGrade('0')}><span className="dot" style={{ background: '#fff' }}></span>Not done</button>
         <button onClick={() => core.popGrade('dco')}><span className="dot" style={{ background: '#000' }}></span>DCO</button>

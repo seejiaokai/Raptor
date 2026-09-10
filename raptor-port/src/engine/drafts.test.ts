@@ -18,10 +18,20 @@ import {
   loadVersionToWorkingCopy, reconcileIssuedMarks,
 } from './drafts'
 import { HIST, histInit, histApply, histPush, histSnap } from '../state/history'
+import { rowsOf } from './rowids'
 
 /* drafts swap DAYS[0] wholesale — every test starts from the pristine day,
    same discipline daytpl.test.ts and restore.test.ts use */
 const D0 = JSON.parse(JSON.stringify(DAYS[0]))
+/* Stable-ids identity rule (10 Sep 26 review): duplicating leaves the LIVE
+   day's rids alone — the user is still editing the day they were editing —
+   and mints fresh ones on the PARKED copy, because a copy is a new set of
+   rows. So a parked blob carries ids in this file even though the file never
+   runs the day through initStore/ensureRowIds. A handful of byte-for-byte
+   JSON comparisons below predate ids entirely and were written when neither
+   side ever carried one; they still hold for every OTHER field, so compare
+   with `rid` dropped rather than weaken them to something looser. */
+const ridless = (_k: string, v: any) => (_k === 'rid' ? undefined : v)
 
 const sign = (di: number) => {
   const g = signOf(di)
@@ -50,9 +60,20 @@ describe('duplicating a day', () => {
     /* both blobs are the day as it stood — deep clones, not references */
     expect(list[0].d).not.toBe(DAYS[0])
     expect(list[1].d).not.toBe(DAYS[0])
-    expect(JSON.stringify(list[0].d)).toBe(JSON.stringify(DAYS[0]))
-    /* the live day itself is untouched by duplicating */
-    expect(JSON.stringify(DAYS[0])).toBe(JSON.stringify(D0))
+    /* content-identical to the live day — ids aside: Draft 1 is the PARKED
+       COPY, and a copy is a new set of rows, so it is the one carrying fresh
+       ids (stable-ids identity rule, 10 Sep 26) */
+    expect(JSON.stringify(list[0].d, ridless)).toBe(JSON.stringify(DAYS[0], ridless))
+    /* …ids aside — assert they ARE aside: Draft 1 is the parked copy, minted
+       fresh, while DAYS[0] is the day on screen and keeps whatever identity it
+       had — none at all in this file, which never calls initStore/ensureRowIds */
+    expect(rowsOf(list[0].d).every((r: any) => typeof r.rid === 'string')).toBe(true)
+    expect(rowsOf(DAYS[0]).some((r: any) => 'rid' in r)).toBe(false)
+    /* Draft 2 IS the live day, so its blob agrees with it — ids included */
+    expect(rowsOf(list[1].d).some((r: any) => 'rid' in r)).toBe(false)
+    /* the live day is untouched by duplicating, ids and content alike */
+    expect(JSON.stringify(DAYS[0], ridless)).toBe(JSON.stringify(D0, ridless))
+    expect(rowsOf(D0).some((r: any) => 'rid' in r)).toBe(false)   // D0 was never minted either
   })
 
   it('a later dup stows live into the selected entry and mints Draft N', () => {
@@ -368,6 +389,11 @@ describe('undo carries the drafts', () => {
 
   it('a draftDup is ONE undoable step, and undoing it removes the blobs', () => {
     histInit()
+    /* histInit's own mint (engine/rowids.ts) already ran, so DAYS[0] carries
+       its rids from here on — capture the byte string AFTER that, not
+       before, so the compare below also proves undo hands back the SAME
+       ids, not merely the same content. */
+    const init = JSON.stringify(DAYS[0])
     expect(HIST.stack.length).toBe(1)
     draftDup(0)
     histPush()                                      // the UI caller's afterSchedMutate step
@@ -375,7 +401,7 @@ describe('undo carries the drafts', () => {
     histApply(0)
     expect(dayDrafts(0)).toEqual([])
     expect(curDraftId(0)).toBeUndefined()
-    expect(JSON.stringify(DAYS[0])).toBe(JSON.stringify(D0))
+    expect(JSON.stringify(DAYS[0])).toBe(init)
     histApply(1)                                    // redo brings both drafts back
     expect(dayDrafts(0).map((x: any) => x.name)).toEqual(['Draft 1', 'Draft 2'])
   })

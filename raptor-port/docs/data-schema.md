@@ -388,10 +388,33 @@ students = { courses: string[],
              byCourse: { course: {
                plan: object,
                bySyllabus: { syl: {
-                 roster: string[],
-                 marks:  { student: { eventId: { g, f } } },   // g = grade (0 = none), f = failure ticks
-                 dates:  { student: { eventId: date } } } } } } }
+                 roster: { id, name, pid? }[],                 // legacy files: string[] (names)
+                 marks:  { enrolmentId: { eventId: { g, f } } },   // g = grade (0 = none), f = failure ticks
+                 dates:  { enrolmentId: { eventId: date } } } } } } }
 ```
+
+**A student is an enrolment id since 10 Sep 26 (stable ids).** A roster entry
+is `{ id, name, pid? }` — `id` opaque (`s` + base-36 time + random, minted
+when the student is added), `name` the typed callsign (a label, renamable
+in principle, no control for it yet), `pid` the Raptor `PEOPLE` id when the
+student was picked off the roster. Every per-student record files under the
+id: `v3:<course>:<syl>:m:<id>`, `:d:<id>`, `v3:<course>:pace:<id>`,
+`lulls:<id>`, `last:<id>`, and `lastStudent` holds an id. The same name on
+two syllabi of one course is ONE enrolment (pace and lulls are per course).
+Existing browser data converts once per course — `v3:<course>:idmig` = `'1'`
+marks it done — by `core.js migrateIds` through the one converter
+`app/ids.js upgradeCourseBlock`: the name → id mapping is built from every
+roster first and parked in `v3:<course>:idmap` (read back before anything
+moves, reused if the run is interrupted so a retry lands every record under
+the same id), each record is written under the id and read back before its
+name key is deleted, the roster is written last and the flag after it; the
+map is deleted with the flag. A course whose conversion did not finish
+(the roster still a string list after the retry) refuses roster writes
+until a later load converts it. `migrateAllCourses()` at init converts
+courses nobody has opened; a course still waiting for the older roster
+split (`rostermig`) converts on its first open. A course rename MOVES every
+key (written, read back, then the old deleted); if any record could not be
+carried the old course stays listed beside the new so nothing is stranded.
 
 A mark record is `{ g, f, fd, d, by?, at? }` — grade code, failure count,
 one ISO date per failure (oldest first, null when undated), the done date,
@@ -400,21 +423,22 @@ display name, absent when unknown) and **when** (ISO instant). `dates[s]`
 (`lastSyll, lastCurr, downDays, upchit`) carries the same two stamps. Undo
 snapshots restore them verbatim.
 
-### The person link — `v3:links`
+### The person link — `pid` on the entry (`v3:links` is legacy)
 
-`{ [course]: { [studentName]: personId } }` — the one record that ties a
-Tracker student to a Raptor `PEOPLE` id (9 Sep 26). Written when a student
-is added by picking them off the squadron roster (the Students card's
+The Raptor `PEOPLE` id a student was picked with (the Students card's
 `+ Add` lists the roster via the no-import bridge `src/tracker/people.js`,
-fed by `TrackerPage.tsx` → `src/tracker/peoplewire.ts`), dropped with the
-student, moved by a course rename, and carried by Export/Import as a third
-block `links`. Additive: a typed-in student has no link and behaves exactly
-as before. Students are STILL keyed by their typed name everywhere else —
-the person id becomes the key at storage-seam stage 2.
+fed by `TrackerPage.tsx` → `src/tracker/peoplewire.ts`) rides the roster
+entry as `pid` since 10 Sep 26. Picking the same person again, or typing a
+name already on the course, lands on the existing enrolment (a pid that
+already belongs to a differently named entry, or a name already linked to
+another person, is refused with a message). The 9 Sep 26 record
+`v3:links` = `{ [course]: { [studentName]: personId } }` is read once by
+the migration, folded into `pid`, and deleted; a file's `links` block is
+read the same way on Import and never written by Export.
 
-Course, syllabus and student names are storage-key segments joined by `:`,
+Course, syllabus and chart names are storage-key segments joined by `:`,
 so a name containing a colon is refused at every entry point and by the
-file check.
+file check. A student name is a label, not a key, and may contain one.
 
 ### The syllabus file
 
@@ -445,10 +469,17 @@ Listed in the order they would bite.
 2. **Three date conventions.** Scheduler: `'Jul 13'` display strings, a
    0..6 day index, minutes-from-midnight; Leave War: ISO `'yyyy-mm-dd'`;
    Tracker: free text. A shared store wants one (ISO).
-3. **Positional slot keys.** Schedule rows are addressed by
+3. **Positional slot keys — the id half is done (10 Sep 26).** Every
+   schedule row (wave, formation, seat pair, duty block and row, sim,
+   programme and ground row) carries `rid`: opaque, minted by one walk
+   (`engine/rowids.ts ensureRowIds`) that runs before every baseline and
+   snapshot, never printed, never used for addressing. A copy (a day
+   template, a duplicated wave, a draft) is a new row and mints fresh; a
+   move, an undo, a restore keeps the id; snapshots written before ids
+   existed are back-filled by address once. Rows are STILL addressed by
    `day.section.index`, so inserting a row renumbers the ones after it
-   (`keys.ts` remaps the book and the edit log to cope). A database row
-   wants a stable id, the way `iid` already gives inputs one.
+   (`keys.ts` remaps the book and the edit log to cope); the addressing
+   rewrite is the next step.
 4. **The demo seed is code.** PEOPLE, DAYS and INPUTS are literals in
    `people.ts` / `data.ts` / `inputs.ts`. A database replaces the seed; the
    seed then becomes test fixtures only. The repository is public: no real
@@ -467,12 +498,13 @@ Listed in the order they would bite.
 8. **The three worlds do not share a style** (sync vs async doors, three
    prefixes, TS vs JS). Unifying them behind one async door is the
    storage-seam work; the shapes above do not change for it.
-9. **One person, three records.** The scheduler roster is the identity;
-   the Leave War projects it (same ids) and the Tracker now LINKS to it
-   (`v3:links`, 9 Sep 26) — but Tracker students, courses and syllabi are
-   still keyed by typed name, and their storage keys are those names joined
-   with `:`. The designed model (`data-model.md`) makes Enrolment
-   (person × course × syllabus) the row and the name an attribute.
+9. **One person, three records — the student half is done (10 Sep 26).**
+   The scheduler roster is the identity; the Leave War projects it (same
+   ids) and a Tracker student is an enrolment id carrying `pid` where they
+   were picked off that roster. Courses and syllabi are still keyed by
+   typed name, and their storage keys are those names joined with `:`. The
+   designed model (`data-model.md`) makes Enrolment (person × course ×
+   syllabus) the row and the name an attribute.
 10. **Progression is a summary, not a history.** A Tracker mark holds the
     latest grade, a failure count with dates, the done date and (since
     9 Sep 26) who last wrote it and when. It cannot answer "what happened on
