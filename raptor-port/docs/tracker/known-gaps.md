@@ -66,6 +66,15 @@
 >   old roster comes back, entries, links and marks together — coherent, but
 >   worth knowing. Export carries the entries (no `links` block); Import
 >   reads both the entry shape and a legacy string roster with its `links`.
+>   **Import matches the file's students to the enrolments the course already
+>   has (bug-check, 10 Sep 26 — `ids.js reconcileIds`):** by person id first,
+>   then by name — the store's id wins, the file's label rides onto every
+>   chart, a link the store knows is kept — and it ADDS to a chart rather than
+>   writing it over, so a student added since the export stays. Before this a
+>   laptop's export brought into the phone (the two browsers minted different
+>   ids for the same names) put the same student on the course twice, under
+>   two ids. Two different people under one callsign (both linked, to
+>   different people) are still not merged.
 >   **A course whose id conversion cannot finish is HELD (10 Sep 26):** after
 >   one retry on the same load, `core.js` keeps `rosterHeld` and refuses
 >   `+ Add`, remove, reorder and duplicate-syllabus with a notice, so the old

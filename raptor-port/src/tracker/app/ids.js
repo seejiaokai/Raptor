@@ -76,3 +76,62 @@ export function upgradeCourseBlock(block, links) {
   const out = { ...src, bySyllabus, lulls: rekey(src.lulls, legacyAll), pace: rekey(src.pace, legacyAll) };
   return { block: JSON.parse(JSON.stringify(out)), ids: Object.assign({}, ids) };
 }
+
+/* THE STORE'S IDS WIN ON IMPORT (bug-check, 10 Sep 26). Two browsers that
+   converted the same names minted DIFFERENT ids for the same people (the id
+   is random by design), so a laptop's export brought into the phone landed
+   each student a second time under the file's id: one chart under the file's
+   id, another under the store's, the same name twice on one course — the very
+   ambiguity + Add refuses, and a split that leaves a person's pace and lull
+   periods under one id and their marks under the other. And an OLDER,
+   name-keyed backup minted fresh ids for everyone on the way in, orphaning
+   every id-keyed record the store already held for them. So before a block
+   is written, every entry it carries is matched to the enrolment the course
+   already has — by person id first (a callsign can be renamed on either
+   side), then by name — the same rule findEnrolment applies at + Add, and the
+   file's id is rewritten to the store's throughout: the roster, the marks and
+   dates keyed under it, the lulls and pace. The file's NAME is kept on the
+   entries it writes (a rename made where the file came from is the label
+   being brought in; core.js carries it to the charts the file does not
+   touch), and a person id the store knows but the file does not rides onto
+   the entry so a link survives the round trip. Two entries that name two
+   different people under one callsign — both carry a person id, and they
+   differ — are NOT merged, the same conflict + Add hands the user; and a
+   store id the file already carries is that entry's own, so nobody else is
+   mapped onto it. `existing` is every entry on every roster of the course. */
+export function reconcileIds(block, existing) {
+  const byPid = Object.create(null), byName = Object.create(null), storeOf = Object.create(null);
+  for (const e of (existing || [])) {
+    if (!isEntry(e)) continue;
+    if (!has(storeOf, e.id)) storeOf[e.id] = e;
+    if (e.pid && !has(byPid, e.pid)) byPid[e.pid] = e;
+    if (!has(byName, e.name)) byName[e.name] = e;
+  }
+  const src = block || {}, syls = src.bySyllabus || {};
+  const map = Object.create(null);   // file id → store id
+  const taken = new Set();           // ids no other file entry may be mapped onto
+  for (const syl of Object.keys(syls)) for (const e of ((syls[syl] || {}).roster || [])) if (isEntry(e)) taken.add(e.id);
+  for (const syl of Object.keys(syls)) for (const e of ((syls[syl] || {}).roster || [])) {
+    if (!isEntry(e) || has(map, e.id)) continue;
+    let t = null;
+    if (e.pid && has(byPid, e.pid)) t = byPid[e.pid];
+    else if (has(byName, e.name) && !(e.pid && byName[e.name].pid && byName[e.name].pid !== e.pid)) t = byName[e.name];
+    if (!t || t.id === e.id || taken.has(t.id)) continue;
+    map[e.id] = t.id; taken.add(t.id);
+  }
+  const re = id => has(map, id) ? map[id] : id;
+  const rekey = m => { const o = Object.create(null); for (const k of Object.keys(m || {})) o[re(k)] = m[k]; return o; };
+  const bySyllabus = Object.create(null);
+  for (const syl of Object.keys(syls)) {
+    const sv = syls[syl] || {};
+    const roster = (sv.roster || []).map(e => {
+      if (!isEntry(e)) return e;
+      const out = { ...e, id: re(e.id) };
+      const s = storeOf[out.id]; if (s && s.pid && !out.pid) out.pid = s.pid;
+      return out;
+    });
+    bySyllabus[syl] = { ...sv, roster, marks: rekey(sv.marks), dates: rekey(sv.dates) };
+  }
+  const out = { ...src, bySyllabus, lulls: rekey(src.lulls), pace: rekey(src.pace) };
+  return { block: JSON.parse(JSON.stringify(out)), remapped: Object.assign({}, map) };
+}
