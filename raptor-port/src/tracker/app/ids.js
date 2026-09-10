@@ -28,13 +28,18 @@ export function upgradeCourseBlock(block, links) {
   const nameOfId = Object.create(null);     // id → name, to catch one id under two names
   const src = block || {};
   const syls = src.bySyllabus || {};
-  /* pass 1 — every entry lends its id; the conflicts a file can carry are
-     refused here, before anything is written (fileFormat.js refuses the same
-     three; this is the belt for a block that did not come through it) */
+  /* fileFormat.js refuses a bad file before anything is written; this module
+     is the belt for a block that did NOT come through it — an import path, a
+     hand-edited store. Pass 1 walks every syllabus's roster once, refusing a
+     roster that is not a list, an empty name, and the three id/name
+     conflicts, before anything below mints an id or writes a key. */
   for (const syl of Object.keys(syls)) {
+    const sv = syls[syl] || {};
+    if (sv.roster != null && !Array.isArray(sv.roster)) conflict('the crew list for “' + syl + '” is not a list');
     const seenId = new Set(), seenNm = new Set();
-    for (const e of ((syls[syl] || {}).roster || [])) {
+    for (const e of (sv.roster || [])) {
       const nm = isEntry(e) ? e.name : (typeof e === 'string' ? e : null); if (nm == null) continue;
+      if (nm === '') conflict('an empty name on “' + syl + '”');
       if (seenNm.has(nm)) conflict('“' + nm + '” twice on “' + syl + '”'); seenNm.add(nm);
       if (!isEntry(e)) continue;
       if (seenId.has(e.id)) conflict('id ' + e.id + ' twice on “' + syl + '”'); seenId.add(e.id);
@@ -45,10 +50,16 @@ export function upgradeCourseBlock(block, links) {
   const idFor = name => has(ids, name) ? ids[name] : (ids[name] = mintId());
   /* re-key a map by the names that were legacy on THIS syllabus (or, for the
      course-level maps, on any syllabus); a key that is already an id — or a
-     name nobody on a legacy roster carries — is left exactly as it is */
-  const rekey = (m, legacyNames) => { const o = {}; for (const k of Object.keys(m || {})) o[legacyNames.has(k) && has(ids, k) ? ids[k] : k] = m[k]; return o; };
+     name nobody on a legacy roster carries — is left exactly as it is.
+     Object.create(null): a genuine own key named "__proto__" (JSON.parse
+     makes one a literal data property, not an accessor call) must land as
+     data here too — assigning it into a plain {} would hit the inherited
+     setter and silently reassign the prototype instead of writing the key.
+     The final JSON round-trip below re-clones everything back to ordinary
+     objects, so the null prototype never leaks out to the caller. */
+  const rekey = (m, legacyNames) => { const o = Object.create(null); for (const k of Object.keys(m || {})) o[legacyNames.has(k) && has(ids, k) ? ids[k] : k] = m[k]; return o; };
   const legacyAll = new Set();
-  const bySyllabus = {};
+  const bySyllabus = Object.create(null); // same reasoning: a syllabus literally named "__proto__"
   for (const syl of Object.keys(syls)) {
     const sv = syls[syl] || {};
     const roster = [], legacyHere = new Set();

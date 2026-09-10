@@ -70,6 +70,32 @@ describe('upgradeCourseBlock', () => {
     const mixed: any = legacy(); mixed.bySyllabus.A.roster = ['X', 'X']
     expect(() => upgradeCourseBlock(mixed, null)).toThrow(/“X” twice on “A”/)
   })
+  it('a syllabus literally named "__proto__" round-trips as data, and a mark keyed "__proto__" on an entry-keyed syllabus survives', () => {
+    // Object.defineProperty, not assignment: `obj.__proto__ = x` or an
+    // object-literal `{'__proto__': x}` key hits the inherited accessor and
+    // sets the object's actual prototype instead of creating an own
+    // property. defineProperty (like JSON.parse on a real file) always
+    // writes a genuine own data property named "__proto__".
+    const src: any = legacy()
+    src.bySyllabus.C = { roster: [{ id: 'sfixed2', name: 'STUDENT Q' }], marks: {}, dates: {} }
+    Object.defineProperty(src.bySyllabus, '__proto__', { value: { roster: ['Q'], marks: {}, dates: {} }, enumerable: true, writable: true, configurable: true })
+    Object.defineProperty(src.bySyllabus.C.marks, '__proto__', { value: { g: 'dco' }, enumerable: true, writable: true, configurable: true })
+    const { block, ids } = upgradeCourseBlock(src, null)
+    expect(Object.prototype.hasOwnProperty.call(block.bySyllabus, '__proto__')).toBe(true)
+    expect(block.bySyllabus.__proto__.roster).toEqual([{ id: ids['Q'], name: 'Q' }])
+    expect(Object.prototype.hasOwnProperty.call(block.bySyllabus.C.marks, '__proto__')).toBe(true)
+    expect(block.bySyllabus.C.marks.__proto__).toEqual({ g: 'dco' })
+  })
+  it('refuses a roster that is not a list, whether a string or a plain object', () => {
+    const strRoster: any = legacy(); strRoster.bySyllabus.A.roster = 'STUDENT A'
+    expect(() => upgradeCourseBlock(strRoster, null)).toThrow(/crew list for “A” is not a list/)
+    const objRoster: any = legacy(); objRoster.bySyllabus.A.roster = { 0: 'STUDENT A' }
+    expect(() => upgradeCourseBlock(objRoster, null)).toThrow(/crew list for “A” is not a list/)
+  })
+  it('refuses an empty legacy name rather than silently dropping it', () => {
+    const src: any = legacy(); src.bySyllabus.A.roster = ['']
+    expect(() => upgradeCourseBlock(src, null)).toThrow(/empty name on “A”/)
+  })
   it('isEntry and mintId', () => {
     expect(isEntry({ id: 'x', name: 'N' })).toBe(true); expect(isEntry('N')).toBe(false); expect(isEntry({ id: '', name: 'N' })).toBe(false)
     expect(mintId()).not.toBe(mintId())
