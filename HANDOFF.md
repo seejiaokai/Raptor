@@ -356,6 +356,15 @@ browser-proven.
   pristine week is never persisted), so ids become permanent at that first
   edit. The technical team's open questions are listed at the end of
   `data-model.md`.
+- **OPEN — amendment-model review (owner concern, 11 Sep 26).** Owner finds the
+  publish/draft/amend/undo flow unintuitive; AL numbers run WEEK-WIDE (Tue's first
+  amendment shows AL2, not its own AL1) — confirmed intentional (supports one AL
+  over several days), not a bug. Whether to make AL numbering PER-DAY is an OPEN
+  owner decision (large amendment-engine rework, not a toggle). Astra+Claude review
+  also found two real bugs: unpublishing an OLDER AL leaves the day contradictory,
+  and the day-head reopen button isn't scoped to a previewed version. Full findings,
+  blast radius and repros: `docs/superpowers/specs/2026-09-11-amendment-model-review.md`.
+  Decide numbering direction FIRST; HEAVY, design-first, red-team both providers.
 - **FOUND, NOT FIXED — the area/area-time strip and the restore keys (review,
   9 Sep 26).** `src/ui/textedit.ts:184,194` write a typed-over area strip on
   the FORMATION (`f.area`, `f.atime`; read back by `ui/html.ts:751-755`), but
