@@ -320,8 +320,14 @@ browser-proven.
   not live DAYS — Fable bug-check fix), spec
   `raptor-port/docs/superpowers/specs/2026-09-10-addressing-by-rid-design.md`.
   Additive, wires nothing — all gates green. **#1 ADDRESSING REWRITE — the
-  interlocking engine wiring (spec tasks 2–7) — BUILT on branch
-  `claude/rid-engine-wiring` (Opus 4.8, TDD), holding for "merge live".** The
+  interlocking engine wiring (spec tasks 2–7) — MERGED as #389; a follow-up
+  independent bug-check (Fable) then fixed 3 issues on `claude/rid-bugcheck-fixes`
+  (Opus 4.8, TDD): the legacy migration only strips a book whose keys are still
+  positional and never re-strips a keep-ids book on a future version bump (an
+  unstamped-but-already-rid book — an intermediate preview — was being wiped);
+  `alAttr`'s empty-book short-circuit no longer allocates on the paint path; and
+  `migrateBookKeys` runs only on an actual legacy upgrade, not every boot (a
+  leftover positional-fallback key could otherwise re-bind to a later row).** The
   amendment book now RESOLVES rows by `rid`, not position, translated at the
   DOM↔book boundary so nothing rendered changes (parity 728/0, html.test.ts
   byte-identical, full vitest 4507/0). Shape: `ridWriteKey` self-heal on write-in
@@ -334,9 +340,8 @@ browser-proven.
   structural diff (add reordered off the tail still credited right, RID-02) and a
   positional fallback for a pre-ids snapshot; delete sweep (`dropRowMarks`) scoped
   to the LIVE book, never an issued AL (RID-R5-03); migration wired at boot/week-load
-  (`migrateBookKeys` + `repairForeignDraftIds`); HistoryModal keeps rids out of the
-  DOM (RID-05). One deliberate deferral flagged for the bug-check: the Fable-#2
-  stow-hardening mint (the tested write-in self-heal already covers it). The three
+  (`migrateLegacyIds` version-gated strip, then `migrateBookKeys` on a legacy
+  upgrade only); HistoryModal keeps rids out of the DOM (RID-05). The three
   browser gates (e2e/smoke/perf) run in CI on the PR — they cannot launch a browser
   on the win32 dev box (hardcoded Linux chromium path). (2) course and
   syllabus ids (still name keys joined with `:`); (3) `Attempt` history.

@@ -10,11 +10,11 @@
    inputs stay present; each week's SCHEDULE still shows only its own because the
    day builders match by date. That global-ness is pinned below too. */
 import { beforeEach, describe, expect, it } from 'vitest'
-import { initStore, loadWeek } from './store'
+import { initStore, loadWeek, weekStashSnap } from './store'
 import { DAYS } from '../engine/data'
 import { DATES, INPUTS, inputCoversDate } from '../engine/inputs'
 import { autoAcceptInput, unacceptInput, inpKey } from '../engine'
-import { stashClear } from '../engine/weekstash'
+import { stashClear, stashPut } from '../engine/weekstash'
 import { SCHED, setDayApproved } from '../engine/publish'
 import { HIST } from './history'
 
@@ -91,6 +91,31 @@ describe('loadWeek', () => {
     loadWeek('20/07/2026')
     expect(HIST.stack.length).toBe(1)
     expect(HIST.ix).toBe(0)
+  })
+
+  /* A MODERN (rid-keyed) BOOK IS NOT RE-KEY-MIGRATED ON LOAD (Fable RID-REV2-03).
+     migrateBookKeys runs only on an actual legacy upgrade, never every boot: a
+     positional-fallback key left in a modern book must stay positional, or on a
+     later load it would silently RE-BIND to whatever row now sits at that index.
+     Plant a modern book (ridV present) carrying a positional changes key that
+     WOULD resolve against a live wave, reload it, and assert it was left alone. */
+  it('a modern book\'s positional key is not silently re-bound on reload', () => {
+    const W = '20/07/2026'
+    loadWeek(W)
+    const di = DAYS.findIndex((d: any) => (d.waves || []).length > 0)
+    expect(di).toBeGreaterThanOrEqual(0)
+    const rid0 = DAYS[di].waves[0].rid
+    /* capture W's modern book WHILE on it, then leave (W is clean, so loadWeek
+       does not auto-stash it), then plant the edited book — planting before the
+       leave would be clobbered when leaving re-stashes W. */
+    const snap = JSON.parse(weekStashSnap())
+    expect(snap.v).toBe(2)                                   // the book is modern (schedFields' `v`)
+    loadWeek('13/07/2026')
+    snap.c = { [`wl:${di}.0`]: 3 }                           // a positional changes key that WOULD resolve to wave 0
+    stashPut(W, JSON.stringify(snap))
+    loadWeek(W)                                              // restore the planted book
+    expect(SCHED.changes[`wl:${di}.0`]).toBe(3)              // left POSITIONAL — no re-key on a modern boot
+    expect(SCHED.changes[`wl:${di}.${rid0}`]).toBeUndefined()// NOT re-bound to the live rid
   })
 
   /* A DELIBERATELY UNACCEPTED INPUT STAYS OFF THE GROUND ACROSS A WEEK ROUND-TRIP

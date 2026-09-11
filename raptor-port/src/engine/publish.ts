@@ -175,6 +175,11 @@ export function verLabel(ver:any){return ver==='live'?'Live':(ver==='orig'?'Orig
 export const AL_COLORS:any[]=['','#3BC6E8','#E5C24A','#3DE86B','#FFFFFF','#B388FF','#FF7FC4','#E5872B'];
 export function alColor(n:any){return AL_COLORS[n]||AL_COLORS[AL_COLORS.length-1];}
 export function pendCount(){return Object.keys(SCHED.pending).length;}
+/* alAttr runs per cell on every repaint — thousands of calls — so its
+   "nothing is marked anywhere" short-circuit must not allocate. Object.keys().length
+   builds a whole array each call; a for-in with an early return does not (a
+   plain object has no enumerable prototype keys, so it sees only own keys). */
+function bookEmpty(){for(const _ in SCHED.changes)return false;for(const _ in SCHED.pending)return false;return true;}
 /* A deletion has no live cell left to carry its amendment mark. Reusing the
    deleted address would tint whatever row shifted into it, so removals use an
    inert synthetic key instead: del:DAY.SEQ.KIND. The day stays first after
@@ -357,7 +362,7 @@ export function alAttr(key:any){
      when nothing is marked anywhere — a GLOBAL empty check, not a per-day scan
      (Fable #9). On a pristine model (the parity/html gates) this returns '' with
      no walk, so the emitted HTML stays byte-identical. */
-  if(!Object.keys(SCHED.changes).length && !pendCount())return '';
+  if(bookEmpty())return '';
   key=ridKey(key,DAYS);
   const n=SCHED.changes[key];
   if(n)return ` data-alc="${n}" title="Changed at AL${n}"`;
