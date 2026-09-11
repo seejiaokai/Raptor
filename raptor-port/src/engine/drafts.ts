@@ -2,6 +2,7 @@ import { DAYS } from './data'
 import { SCHED, dayApproved, approvedDays, verLabel, dayCurVer, daySnapOf, deletionKey, moveKey, trackStructuralAdd, isDeleteKey, isMoveKey } from './publish'
 import { dayKeys } from './restore'
 import { keyDay } from './keys'
+import { groundOrder } from './order'
 import { ridKey, posKey, rowsOf, ensureRowIds } from './rowids'
 
 /* PER-DAY ALTERNATE DRAFTS (owner ask, 15 Aug 26 — "allow me to duplicate the
@@ -356,7 +357,11 @@ export function rebaseDayPending(di: any) {
   movIf('wave', nowD.waves, wasD.waves)
   movIf('programme', nowD.allhands, wasD.allhands)
   movIf('dutyblock', nowD.dutywaves, wasD.dutywaves)
-  movIf('ground', nowD.ground, wasD.ground)
+  /* GROUND is displayed through groundOrder(rows, gman) — a manual drag freezes
+     the SORTED order into gman and can leave the raw array unchanged, so compare
+     the effective DISPLAY order, not the raw array, or a manual ground move is
+     missed (Astra RID-REV-03). */
+  movIf('ground', groundOrder(nowD.ground, nowD.gman).map((x: any) => x.row), groundOrder(wasD.ground, wasD.gman).map((x: any) => x.row))
   ;[...new Set([...Object.keys(nowD.sims || {}), ...Object.keys(wasD.sims || {})])].forEach((kind: any) => movIf('sim', (nowD.sims || {})[kind], (wasD.sims || {})[kind]))
   /* nested sections, matched by the parent's rid so an add/delete of a whole
      parent never reads as a move of its children */

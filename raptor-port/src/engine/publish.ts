@@ -442,8 +442,19 @@ export function unpublishAL(n:any){
   n=+n; const ix=SCHED.als.findIndex((a:any)=>a.n===n); if(ix<0)return;
   const rec=SCHED.als.splice(ix,1)[0];
   rec.keys.forEach((k:any)=>{ if(SCHED.changes[k]===n){delete SCHED.changes[k]; SCHED.pending[k]=1;} });
-  const surviving=new Set((SCHED.als||[]).flatMap((a:any)=>a.structAdds||a.adds||[]).filter(structuralAddExists));
   SCHED.added=SCHED.added||{};
+  /* A structural add is still OWNED by the issued document only if it is in the
+     day's CURRENTLY-EFFECTIVE version — dayCurVer(di), which every later AL
+     carries forward (alIssue's `carried`). Unioning EVERY historical AL's
+     structAdds was wrong for an add→delete→resurrect chain: an add issued at AL1
+     then deleted at AL2 (the effective doc) is NOT owned, but AL1's stale
+     structAdds still claimed it — so unpublishing a later AL failed to return the
+     resurrected row to draft-added and a delete then minted a false removal
+     (Astra RID-REV-01). Judge ownership by the effective version, by rid. */
+  const surviving=new Set<string>();
+  (SCHED.als||[]).forEach((a:any)=>(a.structAdds||a.adds||[]).forEach((k:any)=>{
+    if(dayCurVer(keyDay(k))===a.n&&structuralAddExists(k))surviving.add(k);
+  }));
   /* The last surviving snapshot that carried a structural addition may not be
      the AL that originally added it. When that final owner is unpublished,
      the still-live row becomes draft again even if its field key was owned by

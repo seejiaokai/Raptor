@@ -7,10 +7,10 @@ import { beforeEach, describe, expect, it } from 'vitest'
 import { DAYS } from './data'
 import {
   SCHED, signOf, setDayApproved, dayApproved, daySnapOf, dayCurVer,
-  publishALDay, unpublishAL, deleteCount, deletionWasIssued, alAttr, markStructuralAdd,
+  publishALDay, unpublishAL, deleteCount, deletionWasIssued, alAttr, markStructuralAdd, markDeletion, markEdit, dropRowMarks,
 } from './publish'
 import { txtSet, txtGet, setSlotVal, fillSlot } from './slots'
-import { moveDutyRow } from './reorder'
+import { moveDutyRow, moveGroundRow } from './reorder'
 import { keyDay } from './keys'
 import { dayKeys } from './restore'
 import {
@@ -427,6 +427,51 @@ describe('switching drafts on a PUBLISHED day — rid-native', () => {
     draftSelect(0, d2.id)                                         // back to the B-deleted draft → rebase
     expect(SCHED.changes[bKey], 'B is gone from the draft, so its AL1 tint is not resurrected into the live map').toBeUndefined()
     expect(Object.keys(SCHED.pending).some((k: any) => k === bKey), 'and no dangling B field key is pending').toBe(false)
+  })
+
+  it('a formation-level AREA override edit survives reconcile (Astra RID-REV-02)', () => {
+    ensureRowIds(DAYS)
+    sign(0); setDayApproved(0, 1)                                  // issue with the derived area
+    const f = DAYS[0].waves[0].formations[0]
+    f.area = 'D99X'; markEdit('ar:0.0.0')                          // a FORMATION override (ui/textedit writes f.area)
+    reconcileIssuedMarks()
+    expect(SCHED.pending[rk('ar:0.0.0')], 'the override differs from the issued day — kept').toBe(1)
+    f.area = null; reconcileIssuedMarks()                          // back to the derived value
+    expect(SCHED.pending[rk('ar:0.0.0')], 'reverted → cleared').toBeUndefined()
+  })
+
+  it('add→AL1, delete→AL2, resurrect via draft→AL3, unpublish AL3: the row returns to draft-added, no false removal (Astra RID-REV-01)', () => {
+    DAYS[0].ground = [{ prog: 'A', str: '', end: '', who: '', rmks: '' }]
+    ensureRowIds(DAYS)
+    sign(0); setDayApproved(0, 1)                                  // Original: [A]
+    DAYS[0].ground.push({ prog: 'B', str: '', end: '', who: '', rmks: '' })
+    ensureRowIds(DAYS)
+    const addKey = markStructuralAdd('gr:0.1.prog')                // add B
+    sign(0); publishALDay(0)                                       // AL1 issues [A, B]
+    draftDup(0)
+    const [d1] = dayDrafts(0)                                      // a parked draft still holding B
+    const bRid = DAYS[0].ground[1].rid
+    const issued = deletionWasIssued(0, 'ground', 1)
+    DAYS[0].ground.splice(1, 1); dropRowMarks([bRid]); markDeletion(0, 'ground', issued)
+    sign(0); publishALDay(0)                                       // AL2 issues [A] (B removed)
+    draftSelect(0, d1.id)                                          // switch to the draft → B resurrected with its rid
+    sign(0); publishALDay(0)                                       // AL3
+    unpublishAL(3)
+    const bi = DAYS[0].ground.findIndex((r: any) => r.rid === bRid)
+    expect(SCHED.added[rk(`gr:0.${bi}.prog`)], 'B is draft-added again — AL1 is superseded by AL2, which has no B').toBe(1)
+    expect(deletionWasIssued(0, 'ground', bi), 'so deleting B nets out, no false removal').toBe(false)
+  })
+
+  it('a manual ground move whose model order equals the issued model still records a mov: (Astra RID-REV-03)', () => {
+    /* issued auto-ordered [Late, Early] → displays [Early, Late] */
+    DAYS[0].ground = [{ prog: 'Late', str: '10:00', end: '', who: '', rmks: '' }, { prog: 'Early', str: '08:00', end: '', who: '', rmks: '' }]
+    ensureRowIds(DAYS)
+    sign(0); setDayApproved(0, 1)
+    draftDup(0)
+    const [d1, d2] = dayDrafts(0)
+    moveGroundRow(0, 0, 1)                                         // drag Late below — freezes display order, sets gman
+    draftSelect(0, d1.id); draftSelect(0, d2.id)                   // away and back → rebase
+    expect(Object.keys(SCHED.pending).some((k: any) => /^mov:0\.\d+\.ground$/.test(String(k))), 'the display-order move is recorded').toBe(true)
   })
 
   it('a stow mints ids first, so no id-less row is ever parked (RID-IR-05)', () => {
