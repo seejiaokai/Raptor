@@ -1,8 +1,8 @@
 import { DAYS } from './data'
-import { SCHED, dayApproved, approvedDays, verLabel, dayCurVer, daySnapOf, deletionKey, trackStructuralAdd, isDeleteKey, isMoveKey } from './publish'
+import { SCHED, dayApproved, approvedDays, verLabel, dayCurVer, daySnapOf, deletionKey, moveKey, trackStructuralAdd, isDeleteKey, isMoveKey } from './publish'
 import { dayKeys } from './restore'
 import { keyDay } from './keys'
-import { stripRowIds, ensureRowIds } from './rowids'
+import { ridKey, posKey, rowsOf } from './rowids'
 
 /* PER-DAY ALTERNATE DRAFTS (owner ask, 15 Aug 26 — "allow me to duplicate the
    current day's schedule and edit over it… if one variable change, they can
@@ -100,33 +100,29 @@ export function draftDup(di: any) {
   SCHED.curDraft = SCHED.curDraft || {}
   const list = SCHED.drafts[di] = SCHED.drafts[di] || []
   if (!list.length) {
-    /* THE DAY ON SCREEN KEEPS ITS IDENTITY; THE PARKED DRAFT IS THE COPY.
-       Duplicating parks a frozen "Draft 1" and leaves the user editing the
-       same day they were already editing — so the rows in front of them are
-       the rows they had, and their ids must not move. What is new here is the
-       PARKED blob: a copy of the day, and a copy is a new set of rows, so it
-       is the copy that mints fresh ids (the same rule a day template and a
-       duplicated wave follow, engine/rowids.ts).
-       Doing it the other way round — re-minting the live day — silently broke
-       the identity chain the moment the user pressed Duplicate: the issued
-       snapshot and every AL snapshot of a day nobody had touched still named
-       the OLD ids, so the chain the database step wants led to the parked
-       copy instead of the day being shown and published. Draft 2's blob is
-       therefore a plain clone of the untouched live day: the live day and the
-       blob it currently IS agree, on the ORIGINAL ids. */
-    const parked = clone(DAYS[di]); stripRowIds(parked); ensureRowIds([parked])
-    list.push({ id: newId(list), name: 'Draft 1', d: parked })
+    /* DRAFTS KEEP THEIR IDS (11 Sep 26, revised after five red-team rounds).
+       A saved draft is an alternate VERSION of the same day, not an independent
+       copy — the live day, its parked drafts and its issued document all speak
+       ONE rid-space, so switching between them installs a blob that already
+       resolves against every frozen amendment. So draftDup no longer strips or
+       re-mints: both blobs are plain clones of the live day, sharing its ids.
+       (Contrast a DAY TEMPLATE / DUPLICATED WAVE, which genuinely COEXIST in the
+       live model and must still strip — ensureRowIds would otherwise dedupe them;
+       a parked draft never coexists in DAYS, so its shared ids never meet the
+       first-seen dedupe.) A genuinely new row added inside a draft still gets a
+       fresh id at the next histPush, so a real add is never read as a survivor —
+       which is what let the swap-time adoption gate (and its RID-R4-01 hole) be
+       removed entirely. */
+    list.push({ id: newId(list), name: 'Draft 1', d: clone(DAYS[di]) })
     const t = { id: newId(list), name: 'Draft 2', d: clone(DAYS[di]) }
     list.push(t)
     SCHED.curDraft[di] = t.id
     return t
   }
   const cur = list.find((x: any) => x.id === SCHED.curDraft[di])
-  /* the same rule on a later dup: the stow into the entry being left behind is
-     the copy, so it mints fresh ids, while the live day carries its own ids
-     into the new draft it now is — and that new entry's blob is a plain clone
-     of it, so the two agree from the moment the entry exists */
-  if (cur) { const parked = clone(DAYS[di]); stripRowIds(parked); ensureRowIds([parked]); cur.d = parked }
+  /* a later dup: stow live into the entry being left behind and mint a new
+     entry as a plain clone of live — both keep live's ids (keep-ids, above) */
+  if (cur) cur.d = clone(DAYS[di])
   const t = { id: newId(list), name: 'Draft ' + nextNum(list), d: clone(DAYS[di]) }
   list.push(t)
   SCHED.curDraft[di] = t.id
@@ -224,59 +220,134 @@ export function rebaseDayPending(di: any) {
     Object.keys(SCHED.added || {}).forEach((k: any) => { if (keyDay(k) === di) delete SCHED.added[k] })
     return
   }
-  const now = dayKeys(DAYS[di], di)
-  const was = dayKeys(snap.d, di)
+  const nowD = DAYS[di], wasD = snap.d
+  const snapArr: any[] = []; snapArr[di] = wasD
+  const now = dayKeys(nowD, di)
+  const was = dayKeys(wasD, di)
   Object.keys(SCHED.pending).forEach((k: any) => {
     if (keyDay(k) === di && !/^inp:/.test(String(k))) delete SCHED.pending[k]
   })
   Object.keys(SCHED.added || {}).forEach((k: any) => { if (keyDay(k) === di) delete SCHED.added[k] })
   Object.keys(SCHED.changes).forEach((k: any) => { if (keyDay(k) === di) delete SCHED.changes[k] })
+  /* re-install the issued marks — single-hop: keep-ids means the snapshot's
+     changes slice is already keyed in the SAME rid-space the live day speaks */
   Object.keys(snap.c || {}).forEach((k: any) => { SCHED.changes[k] = snap.c[k] })
   /* markEdit's invariant: a pending key never also wears a changes-mark —
      only the preserved inp: keys can collide here */
   Object.keys(SCHED.pending).forEach((k: any) => { if (keyDay(k) === di) delete SCHED.changes[k] })
   const pend = (k: any) => { SCHED.pending[k] = 1; delete SCHED.changes[k] }
-  now.forEach((v: any, k: any) => { if (!was.has(k) || was.get(k) !== v) pend(k) })
+
+  /* ---- VALUE DIFF, joined by rid ------------------------------------------
+     A shared rid may sit at DIFFERENT positions in the live day and the issued
+     snapshot (an edit-then-move), so each field is compared to the SAME ROW's
+     issued value — located by translating the positional key to rid and back
+     into the other structure — never to whatever now shares its position (Astra
+     RID-R5-01, which a positional diff drops as a false negative reconcile can
+     never repair). A snapshot written before ids cannot resolve the rid and
+     falls back to the same position (legacy position-pairing). Marks are STORED
+     rid-anchored. */
+  const snapPos = (k: any) => { const p = posKey(ridKey(k, DAYS), snapArr); return p == null ? String(k) : p }
+  const livePos = (k: any) => { const p = posKey(ridKey(k, snapArr), DAYS); return p == null ? String(k) : p }
+  now.forEach((v: any, k: any) => {
+    const sp = snapPos(k)
+    if (!was.has(sp) || was.get(sp) !== v) pend(ridKey(k, DAYS))
+  })
   was.forEach((_v: any, k: any) => {
-    if (now.has(k)) return
-    const rk = rowKeyOf(String(k))
-    if (rk && now.has(rk)) pend(k)
+    const lk = livePos(k)
+    if (now.has(lk)) return                       // survives with a value → the pass above handled it
+    const rowK = rowKeyOf(String(k))              // only a variable-length sub-list key can outlive its row
+    if (!rowK) return                             // a row-level key gone → structural, owned by the set-diff
+    if (now.has(livePos(rowK))) pend(ridKey(lk, DAYS))   // a who[]/more[]/pax[] hole on a SURVIVING row
   })
-  /* section-by-section structural diff — tombstones for shrink, add
-     identities for growth, at the board delete/add handlers' granularity */
-  const wasD = snap.d, nowD = DAYS[di]
+
+  /* ---- STRUCTURAL DIFF = rid SET-DIFFERENCE, ancestor-collapsing ----------
+     Attribution is by IDENTITY, not tail index, so an add reordered off the
+     tail is still credited to the row that was added and a delete to the row
+     that went (Astra RID-02, which the old length+tail form mis-attributed).
+     Only the TOPMOST changed rid emits (a whole wave gone is ONE wave
+     tombstone, not one per aircraft); the per-kind expansion keeps the exact
+     keys/counts the board's own +/✕ buttons mint. A row with no rid falls back
+     to its positional path, reducing this to the old length diff for a
+     legacy/pristine day. Notes carry no rid, so they stay on the length diff. */
+  const enumRows = (d: any): any[] => {
+    const out: any[] = []
+    ;(d.waves || []).forEach((w: any, gi: number) => {
+      const wid = w.rid || `#w${gi}`
+      out.push({ id: wid, parent: null, kind: 'wave', gi })
+      ;(w.formations || []).forEach((f: any, li: number) => {
+        const fid = f.rid || `#w${gi}f${li}`
+        out.push({ id: fid, parent: wid, kind: 'formation', gi, li, aircraftN: (f.aircraft || []).length })
+        ;(f.aircraft || []).forEach((a: any, ai: number) => out.push({ id: a.rid || `#w${gi}f${li}a${ai}`, parent: fid, kind: 'aircraft', gi, li, ai }))
+      })
+    })
+    ;(d.allhands || []).forEach((r: any, i: number) => out.push({ id: r.rid || `#a${i}`, parent: null, kind: 'programme', i }))
+    const s = d.sims || {}
+    Object.keys(s).forEach((kind: any) => (s[kind] || []).forEach((r: any, i: number) => out.push({ id: r.rid || `#s${kind}${i}`, parent: null, kind: 'sim', simkind: kind, i })))
+    ;(d.dutywaves || []).forEach((b: any, wi: number) => {
+      const bid = b.rid || `#b${wi}`
+      out.push({ id: bid, parent: null, kind: 'dutyblock', wi })
+      ;(b.rows || []).forEach((r: any, ri: number) => out.push({ id: r.rid || `#b${wi}r${ri}`, parent: bid, kind: 'duty', wi, ri }))
+    })
+    ;(d.ground || []).forEach((r: any, i: number) => out.push({ id: r.rid || `#g${i}`, parent: null, kind: 'ground', i }))
+    return out
+  }
+  const nowRows = enumRows(nowD), wasRows = enumRows(wasD)
+  const nowIds = new Set(nowRows.map((r: any) => r.id)), wasIds = new Set(wasRows.map((r: any) => r.id))
   const tomb = (kind: string, n: number) => { for (let i = 0; i < n; i++) pend(deletionKey(di, kind)) }
-  const lenDiff = (kind: string, wasLen: number, nowLen: number, addKey: (i: number) => string) => {
-    if (wasLen > nowLen) tomb(kind, wasLen - nowLen)
-    for (let i = wasLen; i < nowLen; i++) trackStructuralAdd(addKey(i))
-  }
-  lenDiff('wave', (wasD.waves || []).length, (nowD.waves || []).length, i => `wl:${di}.${i}`)
-  const wn = Math.min((wasD.waves || []).length, (nowD.waves || []).length)
-  for (let gi = 0; gi < wn; gi++) {
-    const wf = (wasD.waves[gi].formations || []), nf = (nowD.waves[gi].formations || [])
-    const fn = Math.min(wf.length, nf.length)
-    for (let li = 0; li < fn; li++)
-      lenDiff('line', (wf[li].aircraft || []).length, (nf[li].aircraft || []).length, ai => `fr:${di}.${gi}.${li}.${ai}`)
-    /* a formation gone whole: its aircraft are line removals (no 'formation'
-       tombstone kind exists); a formation added whole: one ff: identity, its
-       aircraft covered by the ancestor check deletionWasIssued already does */
-    for (let li = nf.length; li < wf.length; li++) tomb('line', (wf[li].aircraft || []).length)
-    for (let li = wf.length; li < nf.length; li++) trackStructuralAdd(`ff:${di}.${gi}.${li}.cs`)
-  }
-  /* a wave added whole mirrors the board's + Wave: wl: plus ff: per formation */
-  for (let gi = (wasD.waves || []).length; gi < (nowD.waves || []).length; gi++)
-    ((nowD.waves[gi].formations || []) as any[]).forEach((_f: any, li: number) => trackStructuralAdd(`ff:${di}.${gi}.${li}.cs`))
-  lenDiff('note', (wasD.notes || []).length, (nowD.notes || []).length, i => `dn:${di}.${i}`)
-  lenDiff('programme', (wasD.allhands || []).length, (nowD.allhands || []).length, i => `ap:${di}.${i}.prog`)
-  lenDiff('dutyblock', (wasD.dutywaves || []).length, (nowD.dutywaves || []).length, i => `dl:${di}.${i}`)
-  const bn = Math.min((wasD.dutywaves || []).length, (nowD.dutywaves || []).length)
-  for (let wi = 0; wi < bn; wi++)
-    lenDiff('duty', (wasD.dutywaves[wi].rows || []).length, (nowD.dutywaves[wi].rows || []).length, ri => `dr:${di}.${wi}.${ri}.role`)
-  const kinds = new Set([...Object.keys(wasD.sims || {}), ...Object.keys(nowD.sims || {})])
-  kinds.forEach((kind: any) => {
-    lenDiff('sim', ((wasD.sims || {})[kind] || []).length, ((nowD.sims || {})[kind] || []).length, ri => `sr:${di}.${kind}.${ri}.label`)
+  nowRows.forEach((r: any) => {
+    if (wasIds.has(r.id)) return                                  // a survivor
+    if (r.parent != null && !wasIds.has(r.parent)) return         // parent also added → its expansion covers it
+    if (r.kind === 'wave') { trackStructuralAdd(`wl:${di}.${r.gi}`); (nowD.waves[r.gi].formations || []).forEach((_f: any, li: number) => trackStructuralAdd(`ff:${di}.${r.gi}.${li}.cs`)) }
+    else if (r.kind === 'formation') trackStructuralAdd(`ff:${di}.${r.gi}.${r.li}.cs`)
+    else if (r.kind === 'aircraft') trackStructuralAdd(`fr:${di}.${r.gi}.${r.li}.${r.ai}`)
+    else if (r.kind === 'programme') trackStructuralAdd(`ap:${di}.${r.i}.prog`)
+    else if (r.kind === 'sim') trackStructuralAdd(`sr:${di}.${r.simkind}.${r.i}.label`)
+    else if (r.kind === 'dutyblock') trackStructuralAdd(`dl:${di}.${r.wi}`)
+    else if (r.kind === 'duty') trackStructuralAdd(`dr:${di}.${r.wi}.${r.ri}.role`)
+    else if (r.kind === 'ground') trackStructuralAdd(`gr:${di}.${r.i}.prog`)
   })
-  lenDiff('ground', (wasD.ground || []).length, (nowD.ground || []).length, i => `gr:${di}.${i}.prog`)
+  wasRows.forEach((r: any) => {
+    if (nowIds.has(r.id)) return
+    if (r.parent != null && !nowIds.has(r.parent)) return         // parent also removed → collapsed into it
+    if (r.kind === 'formation') tomb('line', r.aircraftN)         // a formation gone → one line per aircraft
+    else if (r.kind === 'aircraft') tomb('line', 1)
+    else tomb(r.kind, 1)                                          // wave/programme/sim/dutyblock/duty/ground
+  })
+  /* notes have no rid → a plain length diff, positional adds and tombstones */
+  const wasNotes = (wasD.notes || []).length, nowNotes = (nowD.notes || []).length
+  if (wasNotes > nowNotes) tomb('note', wasNotes - nowNotes)
+  for (let i = wasNotes; i < nowNotes; i++) trackStructuralAdd(`dn:${di}.${i}`)
+
+  /* ---- mov: on a reorder that changed nothing else -------------------------
+     An order-only change leaves equal values and empty set-differences, so
+     nothing above records it — but reorder.ts requires an issued-row move to be
+     an amendment (Fable #1). Compare the SURVIVING rids' order per section; a
+     difference mints one mov: for that section. Rid-only (a legacy/no-rid day
+     cannot reorder detectably) and survivors only, so displacement caused
+     purely by adds/deletes never counts. */
+  const wasRidSet = new Set(rowsOf(wasD).map((r: any) => r.rid).filter(Boolean))
+  const nowRidSet = new Set(rowsOf(nowD).map((r: any) => r.rid).filter(Boolean))
+  const movIf = (kind: string, nowArr: any, wasArr: any) => {
+    const a = (nowArr || []).map((r: any) => r.rid).filter((id: any) => id && wasRidSet.has(id))
+    const b = (wasArr || []).map((r: any) => r.rid).filter((id: any) => id && nowRidSet.has(id))
+    if (a.length > 1 && a.join('') !== b.join('')) pend(moveKey(di, kind))
+  }
+  movIf('wave', nowD.waves, wasD.waves)
+  movIf('programme', nowD.allhands, wasD.allhands)
+  movIf('dutyblock', nowD.dutywaves, wasD.dutywaves)
+  movIf('ground', nowD.ground, wasD.ground)
+  ;[...new Set([...Object.keys(nowD.sims || {}), ...Object.keys(wasD.sims || {})])].forEach((kind: any) => movIf('sim', (nowD.sims || {})[kind], (wasD.sims || {})[kind]))
+  /* nested sections, matched by the parent's rid so an add/delete of a whole
+     parent never reads as a move of its children */
+  const byRid = (arr: any) => { const m = new Map(); (arr || []).forEach((x: any) => { if (x && x.rid) m.set(x.rid, x) }); return m }
+  const wWas = byRid(wasD.waves)
+  ;(nowD.waves || []).forEach((w: any) => { const ww = w.rid && wWas.get(w.rid); if (ww) {
+    movIf('formation', w.formations, ww.formations)
+    const fWas = byRid(ww.formations)
+    ;(w.formations || []).forEach((f: any) => { const wf = f.rid && fWas.get(f.rid); if (wf) movIf('aircraft', f.aircraft, wf.aircraft) })
+  } })
+  const bWas = byRid(wasD.dutywaves)
+  ;(nowD.dutywaves || []).forEach((b: any) => { const wb = b.rid && bWas.get(b.rid); if (wb) movIf('duty', b.rows, wb.rows) })
 }
 
 /* the key whose presence in the live walk means a was-only key's ROW is still
@@ -370,24 +441,34 @@ export function reconcileIssuedMarks() {
     if (!pend.length) return                              // nothing to reconcile — skip the walk
     const ver = dayCurVer(di), snap = ver != null ? daySnapOf(di, ver) : null
     if (!snap) return
+    const snapArr: any[] = []; snapArr[di] = snap.d
     const iss = dayKeys(snap.d, di)
     let live: any = null
     pend.forEach((k: any) => {
       if (isDeleteKey(k) || isMoveKey(k) || /^inp:/.test(String(k))) return   // inert marks — never field diffs
+      /* the pending key is rid-anchored; resolve the SAME row's positional
+         address INDEPENDENTLY in the live day and in the issued snapshot (a
+         shared rid does NOT imply a shared position — after an edit-then-move
+         the two differ, and a one-sided lookup would compare two different rows
+         and drop a real mark, Astra RID-R3-02). A snapshot written before ids
+         cannot resolve the rid, so fall back to the live position — the same
+         position-pairing backfillSnapshotIds uses for a legacy book. */
+      const livePk = posKey(k, DAYS)
+      if (livePk == null) { delete SCHED.pending[k]; return }   // the row is gone from live entirely
       if (!live) live = dayKeys(DAYS[di], di)
-      if (!iss.has(k)) {
-        /* A key the issued day never had. If the live day no longer has it
-           either, the field was raised in passing and is gone from BOTH
-           documents — a drop onto an occupied row parks a man at an overflow/
-           append address the issued day lacks, and dragging him back trims
-           the entry away again (owner, 16 Aug 26 — "swap the pucks and swap
-           it back… it shouldn't register as a change"). Left alone, that
-           phantom mark keeps the day reading edited and mints an AL over a
-           net no-op. In live only = a genuine add — keep its mark. */
-        if (!live.has(k)) delete SCHED.pending[k]
-        return
-      }
-      if (live.get(k) === iss.get(k)) {
+      let issPk = posKey(k, snapArr); if (issPk == null) issPk = livePk
+      const lv = live.get(livePk), iv = iss.get(issPk)
+      /* the four-way table (Fable #2):
+         - gone from BOTH documents → a phantom (an overflow/append raised then
+           trimmed, owner's swap-and-swap-back) → drop;
+         - live only  → a genuine add → keep;
+         - issued only → a genuine clear of a surviving row (a who[] hole) → keep;
+         - both, equal → back to the issued value → drop + restore the issued tint;
+         - both, differ → a real change → keep. */
+      if (lv === undefined && iv === undefined) { delete SCHED.pending[k]; return }
+      if (iv === undefined) return
+      if (lv === undefined) return
+      if (lv === iv) {
         delete SCHED.pending[k]
         if (snap.c && snap.c[k] != null) SCHED.changes[k] = snap.c[k]
       }

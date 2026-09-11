@@ -339,34 +339,35 @@ describe('identity rules — a copy is a new row, a move/undo/restore is the sam
     expect(ids(d).slice().sort()).toEqual(before)
     expect(d.waves[1].rid).toBe(w0)            // the wave that WAS at 0 is now at 1, carrying the same id
   })
-  it('a duplicated day keeps its ids on screen and the PARKED draft mints fresh ones; switching A→B→A returns each their own', async () => {
+  it('a duplicated day KEEPS its ids across every draft (keep-ids); only a genuinely new row mints a fresh one', async () => {
     const { initStore } = await import('../state/store'); const { HOOKS } = await import('./hooks')
     const { draftDup, draftSelect, dayDrafts } = await import('./drafts')
     initStore()
     const a = ids(DAYS[1])
-    /* a leaked week-2 day (Important 2 — the previous version of this test
-       ran on whatever week the file's earlier tests left CURWEEK pointed at)
-       would read every id array in this test as [], and every `toEqual`
-       below would then pass VACUOUSLY — proving nothing. Week 1 is restored
-       by the template test above before this one runs; this still pins that
-       the day actually has rows, so a future leak fails LOUD, here. */
+    /* a leaked week-2 day would read every id array as [] and pass VACUOUSLY;
+       pin that the day actually has rows so a future leak fails LOUD here */
     expect(a.length).toBeGreaterThan(0)
     const t = draftDup(1)!; HOOKS.histPush()
-    /* THE DAY ON SCREEN KEEPS ITS IDENTITY. The user is still editing the day
-       they were editing, so its rows are the same rows and carry the same ids
-       — which is what keeps the issued snapshot and every AL snap of an
-       untouched day naming the rows that are actually live. What is new is
-       the PARKED "Draft 1": it is a COPY of the day, and a copy is a new set
-       of rows, so it is the one that mints fresh ids. */
+    /* DRAFTS KEEP THEIR IDS (11 Sep 26, addressing-by-rid). A parked draft is
+       an alternate VERSION of the same day, not an independent copy, so it
+       shares the day's rids — one rid-space across the live day, its drafts and
+       its issued snapshots, which is what lets a switch install a blob that
+       already resolves against every frozen amendment (no adopt, no gate). */
     expect(ids(DAYS[1])).toEqual(a)                 // the live day is untouched
-    expect(ids(t.d)).toEqual(a)                     // and its current-draft blob agrees with it
+    expect(ids(t.d)).toEqual(a)                     // Draft 2's blob shares its ids
     const [d1] = dayDrafts(1)
-    const b = ids(d1.d)
-    expect(b.length).toBe(a.length)
-    expect(b.every(x => typeof x === 'string' && !a.includes(x)), 'the parked copy is a new set of rows').toBe(true)
-    draftSelect(1, d1.id); HOOKS.histPush(); expect(ids(DAYS[1])).toEqual(b)
+    expect(ids(d1.d)).toEqual(a)                    // and so does the parked Draft 1
+    /* switching just installs the blob — the shared ids ride along either way,
+       and no re-mint fires (a parked draft never coexists in DAYS) */
+    draftSelect(1, d1.id); HOOKS.histPush(); expect(ids(DAYS[1])).toEqual(a)
     draftSelect(1, t.id); HOOKS.histPush(); expect(ids(DAYS[1])).toEqual(a)
-    draftSelect(1, d1.id); HOOKS.histPush(); expect(ids(DAYS[1])).toEqual(b)
+    /* but a genuinely NEW row added inside a draft mints a FRESH id, so a real
+       add is never mistaken for a survivor */
+    DAYS[1].waves[0].formations.push({ cs: '', msn: '', to: '', ld: '', aircraft: [{ p: '', w: '', area: '', rmks: '', opts: {} }] })
+    HOOKS.histPush()
+    const added = DAYS[1].waves[0].formations.slice(-1)[0].rid
+    expect(typeof added).toBe('string')
+    expect(a.includes(added)).toBe(false)
   })
   it('restoring an issued version twice returns the same ids; undo and redo return the same ids', async () => {
     const { initStore, undo, redo } = await import('../state/store'); const { HOOKS } = await import('./hooks')

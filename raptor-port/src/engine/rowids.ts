@@ -12,8 +12,12 @@
    (store.ts initStore/loadWeek, history.ts histInit/histPush), so nothing
    is rendered or saved before a row has its id — inputs.ts's lesson that an
    id minted later than the snapshot it should be in is worse than none. A
-   DUPLICATE is re-minted: a day template, a duplicated wave, a draft copy a
-   row by JSON, and the copy is a new row; the first one seen keeps its id. */
+   DUPLICATE is re-minted: a day template or a duplicated wave copies a row by
+   JSON, and that copy is a new row; the first one seen keeps its id. A parked
+   DRAFT is the deliberate EXCEPTION (drafts.ts, 11 Sep 26): it is an alternate
+   VERSION of the same day, not an independent copy, so it KEEPS the source ids
+   — and it never coexists with the live day in DAYS, so the dedupe below never
+   sees the two together. */
 export function mintRowId(){return 'r'+Date.now().toString(36)+Math.random().toString(36).slice(2,8);}
 /* every row object of one day, parents before children, in section order */
 export function rowsOf(d:any):any[]{
@@ -35,9 +39,11 @@ export function ensureRowIds(days:any[]):number{
   }
   return n;
 }
-/* a COPY is a new row: template capture/apply and a duplicated draft strip
-   the ids so the copy mints its own — never the first-seen dedupe deciding
-   which of two identical rows was "first" */
+/* a COPY is a new row: the day-template capture/apply strips the ids so the
+   copy mints its own, rather than leaving the first-seen dedupe to decide which
+   of two identical rows was "first". (A parked DRAFT does NOT strip — keep-ids,
+   drafts.ts; a duplicated wave leans on ensureRowIds' dedupe as it coexists in
+   the live model.) */
 export function stripRowIds(d:any){for(const r of rowsOf(d||{}))if(r&&typeof r==='object')delete r.rid;}
 /* every row with its ADDRESS (section.index… path) — the pairing key for a
    snapshot written before ids existed: the row at the same address in the
