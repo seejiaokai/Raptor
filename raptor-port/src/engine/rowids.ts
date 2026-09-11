@@ -238,19 +238,33 @@ export const RID_BOOK_VERSION = 2;
    id-space by position — the same legacy-faithful position-pairing the backfill
    already uses, reused rather than reinvented. Runs BEFORE ensureRowIds. Sets the
    version so it is a no-op ever after. Returns true when it migrated. */
-/* Does this book's LIVE-addressing keys already carry a resolvable rid? A
-   positional key round-trips through posKey unchanged (a numeric slot stays
-   itself); a rid-anchored key resolves to a DIFFERENT positional string. So a
-   key whose posKey is non-null and differs was written in the new format. Only
-   the live-resolving books are scanned (pending/changes/added and each AL's
-   keys/adds/structAdds — all address live rows); snap.c/orig.c resolve against
-   their OWN snapshot day, not `days`, so they are deliberately left out. */
-function bookIsRidAnchored(sched: any, days: any[]): boolean {
-  const anchored = (k: any) => { const p = posKey(k, days); return p != null && p !== String(k); };
-  const some = (o: any) => Object.keys(o || {}).some(anchored);
-  if (some(sched.pending) || some(sched.changes) || some(sched.added)) return true;
+/* Is this key rid-SHAPED — does any POSITION slot hold a rid instead of a numeric
+   index? This asks about the key's FORM, not whether the row still exists, which
+   is the point (Astra RID-REV2-01): an issued AL retains keys for DELETED rows,
+   rid-shaped but no longer resolvable, and a resolve-based check would miss them
+   and call the whole book legacy. A position slot is `\d+` in positional form and
+   a rid (non-numeric) in rid form; a field selector (.cs, .role, …) is never a
+   position slot, so keyLevels tells the two apart. NONROW/unknown keys are never
+   rid-shaped. */
+function keyIsRidShaped(key: any): boolean {
+  const s = String(key), c = s.indexOf(':'), prefix = c < 0 ? '' : s.slice(0, c);
+  if (NONROW.has(prefix)) return false;
+  const parts = (c < 0 ? s : s.slice(c + 1)).split('.');
+  const lv = keyLevels(prefix, parts); if (!lv) return false;
+  return lv.some(({ slot }) => { const comp = parts[slot]; return typeof comp === 'string' && comp !== '' && !/^\d+$/.test(comp); });
+}
+/* Does this book carry ANY rid-anchored key? Scans every stored-key space —
+   pending/changes/added, each AL's keys/adds/structAdds and snap[di].c, and
+   SCHED.orig[di].c — by SHAPE, so a key on a since-deleted row still counts.
+   Day-independent (shape only), so it needs no `days`. */
+function bookIsRidAnchored(sched: any): boolean {
+  const objShaped = (o: any) => Object.keys(o || {}).some(keyIsRidShaped);
+  const arrShaped = (a: any) => (a || []).some(keyIsRidShaped);
+  const snapShaped = (snap: any) => Object.keys(snap || {}).some((di: any) => snap[di] && objShaped(snap[di].c));
+  if (objShaped(sched.pending) || objShaped(sched.changes) || objShaped(sched.added)) return true;
+  if (snapShaped(sched.orig)) return true;
   return (sched.als || []).some((al: any) =>
-    (al.keys || []).some(anchored) || (al.adds || []).some(anchored) || (al.structAdds || []).some(anchored));
+    arrShaped(al.keys) || arrShaped(al.adds) || arrShaped(al.structAdds) || snapShaped(al.snap));
 }
 export function migrateLegacyIds(sched: any, days: any[]): boolean {
   if (!sched) return false;
@@ -264,11 +278,11 @@ export function migrateLegacyIds(sched: any, days: any[]): boolean {
      build (a branch preview written after the rid-anchored key form landed but
      before the ridV stamp existed) has NO ridV yet its KEYS are already
      rid-anchored. Stripping it would orphan every one of those keys (migrateBookKeys
-     then bails on an id-shaped slot and cannot repair them). So if the book's
-     row-addressing keys already resolve through a rid, it is new-format: stamp
-     it and skip the strip. A book with only note/positional keys is not detected
-     here, but stripping it is harmless — nothing references a row rid. */
-  if (bookIsRidAnchored(sched, days)) { sched.ridV = RID_BOOK_VERSION; return false; }
+     then bails on an id-shaped slot and cannot repair them). So if any stored key
+     is rid-SHAPED — by form, so a key on a since-deleted row still counts — it is
+     new-format: stamp it and skip the strip. A book with only note/positional keys
+     is not detected here, but stripping it is harmless — nothing references a rid. */
+  if (bookIsRidAnchored(sched)) { sched.ridV = RID_BOOK_VERSION; return false; }
   (days || []).forEach((d: any) => stripRowIds(d));
   Object.keys(sched.drafts || {}).forEach((k: any) => (sched.drafts[k] || []).forEach((t: any) => { if (t && t.d) stripRowIds(t.d); }));
   Object.keys(sched.orig || {}).forEach((k: any) => { const o = sched.orig[k]; if (o && o.d) stripRowIds(o.d); });
