@@ -4,7 +4,7 @@
    missing id is minted, a duplicate (a copied row) is re-minted, an existing
    id is never touched, and the walk covers every row kind. */
 import { describe, expect, it } from 'vitest'
-import { ensureRowIds, mintRowId, rowsOf, ridKey, posKey, migrateBookKeys, ridWriteKey, isRowKey } from './rowids'
+import { ensureRowIds, mintRowId, rowsOf, ridKey, posKey, migrateBookKeys, ridWriteKey, isRowKey, repairForeignDraftIds } from './rowids'
 import { DAYS } from './data'
 import { dayKeys } from './restore'
 import { keyDay } from './keys'
@@ -125,6 +125,33 @@ describe('ridKey / posKey / migrateBookKeys — addressing by rid (addressing-by
     expect(sched.als[0].snap[di].c['wl:' + di + '.rSNAPW1']).toBe(1)  // snap.c → snap.d's id
     expect(sched.als[0].snap[di].c[`wl:${di}.${w1}`]).toBeUndefined() // NOT the live wave's id
     expect(migrateBookKeys(sched, days)).toBe(0)                       // already rid form → a no-op
+  })
+
+  it('migrateBookKeys migrates SCHED.orig[di].c against its OWN snapshot day (Fable-B)', () => {
+    const days = seed()
+    const di = days.findIndex((d: any) => (d.waves || []).length > 0)
+    const w0 = days[di].waves[0].rid
+    /* the Original snapshot's wave-0 carries a DIFFERENT id than the live one,
+       so a mark keyed to 'rORIGW0' proves it was re-keyed against orig[di].d and
+       not the live day (the reissue/Original preview reads this slice) */
+    const origDay = clone(days[di]); origDay.waves[0].rid = 'rORIGW0'
+    const sched: any = { pending: {}, changes: {}, added: {}, als: [], orig: { [di]: { d: origDay, c: { [`wl:${di}.0`]: 1 } } } }
+    migrateBookKeys(sched, days)
+    expect(sched.orig[di].c['wl:' + di + '.rORIGW0']).toBe(1)          // orig's own id
+    expect(sched.orig[di].c[`wl:${di}.${w0}`]).toBeUndefined()        // NOT the live wave's id
+  })
+
+  it('repairForeignDraftIds re-pairs a pre-upgrade re-minted draft, leaves a shared one, idempotent (Astra RID-R5-02)', () => {
+    const days = seed()
+    const di = days.findIndex((d: any) => (d.waves || []).length > 0)
+    const liveW0 = days[di].waves[0].rid
+    const foreign = clone(days[di]); rowsOf(foreign).forEach((r: any) => { r.rid = mintRowId() })   // #384's re-mint
+    const shared = clone(days[di])                                     // keep-ids: a plain clone
+    const sched: any = { drafts: { [di]: [{ id: 'dr1', d: foreign }, { id: 'dr2', d: shared }] } }
+    expect(repairForeignDraftIds(sched, days)).toBeGreaterThan(0)
+    expect(foreign.waves[0].rid).toBe(liveW0)                          // adopted the live id-space
+    expect(shared.waves[0].rid).toBe(liveW0)                           // was already shared — untouched
+    expect(repairForeignDraftIds(sched, days)).toBe(0)                 // idempotent once re-paired
   })
 
   /* ---- Fable review pins (10 Sep 26) ---------------------------------- */

@@ -207,6 +207,48 @@ export function migrateBookKeys(sched: any, days: any[]): number {
       sd.c = remap(sd.c, ref);
     });
   });
+  /* Fable-B: SCHED.orig[di].c drives the reissue/Original preview and rides
+     this same stash. Missing here, its marks are lost on migration. Re-key it
+     against its OWN snapshot day (orig[di].d), exactly as al.snap.c above —
+     backfillSnapshotIds has already given orig[di].d its rids. */
+  Object.keys(sched.orig || {}).forEach((di: any) => {
+    const o = sched.orig[di]; if (!o || !o.c) return;
+    let ref = days;
+    if (o.d) { ref = []; ref[+di] = o.d; }
+    o.c = remap(o.c, ref);
+  });
+  return n;
+}
+/* PRE-UPGRADE DRAFT BLOBS (Astra RID-R5-02). The merged foundation (#384)
+   RE-MINTED parked drafts, and drafts persist with the week — so a draft saved
+   by that build carries rids FOREIGN to its live day. Under keep-ids its first
+   switch after this upgrade would read as whole-day tombstones+adds.
+   backfillSnapshotIds skips non-empty rids, so it won't fix them. This one-shot
+   does: a persisted draft blob that shares ZERO rids with its live day is
+   pathsOf-paired into the day's id-space (adopting the live rid at each address,
+   minting where the address is gone) — exact for an unchanged clone, the common
+   case, and the same position-pairing rule the backfill uses. A draft that
+   shares ANY rid is already in the shared space and is left alone; a blob with
+   no rids at all is the backfill's job. Idempotent after the first run (it then
+   shares ids). Returns how many rows it re-paired. */
+export function repairForeignDraftIds(sched: any, days: any[]): number {
+  if (!sched || !sched.drafts) return 0;
+  let n = 0;
+  Object.keys(sched.drafts).forEach((k: any) => {
+    const di = +k, liveRids = new Set(rowsOf(days[di] || {}).map((r: any) => r.rid).filter(Boolean));
+    (sched.drafts[k] || []).forEach((t: any) => {
+      if (!t || !t.d) return;
+      const draftRids = rowsOf(t.d).map((r: any) => r.rid).filter(Boolean);
+      if (!draftRids.length) return;                         // no ids → backfill's job, not this
+      if (draftRids.some((r: any) => liveRids.has(r))) return;  // shares ≥1 → already this id-space
+      const live = new Map(pathsOf(days[di] || {}));
+      for (const [p, r] of pathsOf(t.d)) {
+        if (!r || typeof r !== 'object') continue;
+        const l: any = live.get(p);
+        r.rid = (l && typeof l.rid === 'string' && l.rid) ? l.rid : mintRowId(); n++;
+      }
+    });
+  });
   return n;
 }
 /* THE BACKFILL (review finding 6): the amendment book — SCHED.orig, every

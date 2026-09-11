@@ -19,7 +19,7 @@ import { lookaheadLoad } from '../engine/lookahead'
 import { rulesLoad } from '../engine/rules'
 import { mintInpIds, INPUTS, DATES, isPersonal, baseYear, dateIx } from '../engine/inputs'
 import { DAYS } from '../engine/data'
-import { ensureRowIds, backfillSnapshotIds } from '../engine/rowids'
+import { ensureRowIds, backfillSnapshotIds, migrateBookKeys, repairForeignDraftIds } from '../engine/rowids'
 import { CURWEEK, setCurWeek } from '../engine/waves'
 import { weekBundle, otherWeekInputs } from '../engine/weeks-data'
 import { seedDemoSans, seedDemoMedical } from './demoseed'
@@ -489,6 +489,12 @@ export function loadWeek(v: any) {
        must be given them here too, still before the baseline, or every
        restore off it would mint a fresh id instead of the stable one. */
     backfillSnapshotIds(SCHED, DAYS)
+    /* ADDRESSING BY rid (task 5): re-pair any pre-upgrade re-minted draft blob
+       into the day's id-space, then rewrite a positional book to rid form —
+       AFTER the backfill (every row has a rid) and BEFORE the baseline (so the
+       re-keying is not read as a dirtying edit). Both are idempotent. */
+    repairForeignDraftIds(SCHED, DAYS)
+    migrateBookKeys(SCHED, DAYS)
     weekBaseline = weekStashSnap()   // the stash-on-leave yardstick (see its comment)
   } finally {
     weekSwapEnd()
@@ -632,6 +638,11 @@ export function initStore() {
      (a hydrated boot, engine/rowids.ts backfillSnapshotIds's own header) from
      before ids existed, and it must be given them before the baseline too. */
   backfillSnapshotIds(SCHED, DAYS)
+  /* ADDRESSING BY rid (task 5) — same as loadWeek's twin above: re-pair a
+     pre-upgrade draft blob, then migrate a positional book to rid form, after
+     the backfill and before the baseline. Idempotent. */
+  repairForeignDraftIds(SCHED, DAYS)
+  migrateBookKeys(SCHED, DAYS)
   weekBaseline = weekStashSnap()   // the stash-on-leave yardstick (see its comment)
   validate()
   histInit()

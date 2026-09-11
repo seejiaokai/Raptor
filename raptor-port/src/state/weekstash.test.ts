@@ -30,6 +30,12 @@ import { seedRunIn, prevSundaySeed } from '../engine/weekctx'
 import { VCONF } from '../engine/rules'
 import { storeBackend } from '../engine/hooks'
 import * as view from '../state/view'
+import { ridKey } from '../engine/rowids'
+
+/* the amendment book is stored rid-anchored (addressing-by-rid) — read a raw
+   stored ROW key in that form; it survives the stash round trip because the
+   row keeps its rid (the point of a stable id) */
+const rk = (k: string) => ridKey(k, DAYS)
 
 /* an arbitrary base far from both the real seed weeks (Jul 2026) and each
    other — 10 weeks apart, the same discipline weekctx.test.ts uses so no
@@ -63,8 +69,8 @@ describe('round trip: an edited week keeps its edit, its amendment marks and its
     loadWeek(wkFor(1))          // leave WK — stashes it (it changed since load)
     loadWeek(WK)                // and back
     expect((DAYS[6] as any).dutywaves[0]).toEqual({ label: 'Duty', rid, rows: [{ role: 'SDO', id: 'waldo', str: '1900', end: '2300', rid: rowRid }] })
-    expect(SCHED.pending['dl:6.0']).toBe(1)
-    expect(SCHED.added['dl:6.0']).toBe(1)
+    expect(SCHED.pending[rk('dl:6.0')]).toBe(1)
+    expect(SCHED.added[rk('dl:6.0')]).toBe(1)
     expect(view.WARNOFF.has('CREW_REST|waldo|dummy'), 'a muted warning stays muted across the round trip').toBe(true)
   })
 })
