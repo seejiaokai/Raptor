@@ -2,7 +2,7 @@ import { DAYS } from './data'
 import { SCHED, dayApproved, approvedDays, verLabel, dayCurVer, daySnapOf, deletionKey, moveKey, trackStructuralAdd, isDeleteKey, isMoveKey } from './publish'
 import { dayKeys } from './restore'
 import { keyDay } from './keys'
-import { ridKey, posKey, rowsOf } from './rowids'
+import { ridKey, posKey, rowsOf, ensureRowIds } from './rowids'
 
 /* PER-DAY ALTERNATE DRAFTS (owner ask, 15 Aug 26 — "allow me to duplicate the
    current day's schedule and edit over it… if one variable change, they can
@@ -99,6 +99,14 @@ export function draftDup(di: any) {
   SCHED.drafts = SCHED.drafts || {}
   SCHED.curDraft = SCHED.curDraft || {}
   const list = SCHED.drafts[di] = SCHED.drafts[di] || []
+  /* STOW HARDENING (Fable #2 / Astra RID-IR-05): mint any missing id on the live
+     day BEFORE cloning it into a blob, so a parked draft never carries an id-less
+     row. UI paths already histPush (mint) between an add and a stow, but a
+     programmatic path (e.g. applyDayTpl, which strips ids, then draftDup before
+     the caller's histPush epilogue) could otherwise stow id-less rows that
+     backfillSnapshotIds would later position-pair to an unrelated live row. In
+     production the day already carries its ids, so this is a no-op. */
+  ensureRowIds(DAYS)
   if (!list.length) {
     /* DRAFTS KEEP THEIR IDS (11 Sep 26, revised after five red-team rounds).
        A saved draft is an alternate VERSION of the same day, not an independent
@@ -163,8 +171,10 @@ export function draftSelect(di: any, id: any) {
   if (id === curId) return false
   const cur = list.find((x: any) => x.id === curId)
   /* a stale/missing selection stamp means there is no entry that owns the
-     live content — skip the stow rather than guess which blob to overwrite */
-  if (cur) cur.d = clone(DAYS[di])
+     live content — skip the stow rather than guess which blob to overwrite.
+     Mint before the stow (Astra RID-IR-05) so the stowed blob never carries an
+     id-less row; a no-op in production where the day already has its ids. */
+  if (cur) { ensureRowIds(DAYS); cur.d = clone(DAYS[di]) }
   const nd = clone(t.d)
   nd.today = !!(DAYS[di] && DAYS[di].today)
   DAYS[di] = nd
@@ -230,8 +240,13 @@ export function rebaseDayPending(di: any) {
   Object.keys(SCHED.added || {}).forEach((k: any) => { if (keyDay(k) === di) delete SCHED.added[k] })
   Object.keys(SCHED.changes).forEach((k: any) => { if (keyDay(k) === di) delete SCHED.changes[k] })
   /* re-install the issued marks — single-hop: keep-ids means the snapshot's
-     changes slice is already keyed in the SAME rid-space the live day speaks */
-  Object.keys(snap.c || {}).forEach((k: any) => { SCHED.changes[k] = snap.c[k] })
+     changes slice is already keyed in the SAME rid-space the live day speaks.
+     Only reinstall a mark whose ROW is present in the incoming draft: a mark on
+     a row the draft DELETED must not be resurrected into the live changes map, or
+     unpublishAL would return a field key no live row holds to pending — a
+     dangling amendment (Astra RID-IR-04). A NONROW key (dn:/del:) resolves via
+     posKey to itself (non-null) and is kept; the frozen AL record is untouched. */
+  Object.keys(snap.c || {}).forEach((k: any) => { if (posKey(k, DAYS) != null) SCHED.changes[k] = snap.c[k] })
   /* markEdit's invariant: a pending key never also wears a changes-mark —
      only the preserved inp: keys can collide here */
   Object.keys(SCHED.pending).forEach((k: any) => { if (keyDay(k) === di) delete SCHED.changes[k] })
@@ -246,18 +261,24 @@ export function rebaseDayPending(di: any) {
      never repair). A snapshot written before ids cannot resolve the rid and
      falls back to the same position (legacy position-pairing). Marks are STORED
      rid-anchored. */
-  const snapPos = (k: any) => { const p = posKey(ridKey(k, DAYS), snapArr); return p == null ? String(k) : p }
-  const livePos = (k: any) => { const p = posKey(ridKey(k, snapArr), DAYS); return p == null ? String(k) : p }
+  /* Only a snapshot written BEFORE ids (no rid on any row) may be position-paired;
+     when it carries rids, a rid absent from it is a genuine ADD/REMOVAL, so return
+     null (honour null-as-absent) instead of a positional coincidence — Astra
+     RID-IR-01, the same rule reconcile applies. */
+  const snapHasRids = rowsOf(wasD).some((r: any) => r && r.rid)
+  const snapPos = (k: any) => { const p = posKey(ridKey(k, DAYS), snapArr); if (p != null) return p; return snapHasRids ? null : String(k) }
+  const livePos = (k: any) => { const p = posKey(ridKey(k, snapArr), DAYS); if (p != null) return p; return snapHasRids ? null : String(k) }
   now.forEach((v: any, k: any) => {
     const sp = snapPos(k)
-    if (!was.has(sp) || was.get(sp) !== v) pend(ridKey(k, DAYS))
+    if (sp == null || !was.has(sp) || was.get(sp) !== v) pend(ridKey(k, DAYS))   // sp null = absent from a rid-bearing snapshot = a genuine add
   })
   was.forEach((_v: any, k: any) => {
     const lk = livePos(k)
-    if (now.has(lk)) return                       // survives with a value → the pass above handled it
+    if (lk == null || now.has(lk)) return         // lk null = the snap row is gone from live → structural (tombstone owns it); has = survives with a value (handled above)
     const rowK = rowKeyOf(String(k))              // only a variable-length sub-list key can outlive its row
     if (!rowK) return                             // a row-level key gone → structural, owned by the set-diff
-    if (now.has(livePos(rowK))) pend(ridKey(lk, DAYS))   // a who[]/more[]/pax[] hole on a SURVIVING row
+    const rowLk = livePos(rowK)
+    if (rowLk != null && now.has(rowLk)) pend(ridKey(lk, DAYS))   // a who[]/more[]/pax[] hole on a SURVIVING row
   })
 
   /* ---- STRUCTURAL DIFF = rid SET-DIFFERENCE, ancestor-collapsing ----------
@@ -443,6 +464,13 @@ export function reconcileIssuedMarks() {
     if (!snap) return
     const snapArr: any[] = []; snapArr[di] = snap.d
     const iss = dayKeys(snap.d, di)
+    /* Only a snapshot written BEFORE ids (no rid on any row) may be position-paired
+       — the legacy-faithful fallback backfillSnapshotIds uses. When the snapshot
+       DOES carry rids, a rid that does not resolve in it is genuinely ABSENT (a new
+       row), NOT a positional coincidence: honour null-as-absent, or an add whose
+       value happens to equal an unrelated issued row at that position has its mark
+       wrongly dropped (Astra RID-IR-01). */
+    const snapHasRids = rowsOf(snap.d).some((r: any) => r && r.rid)
     let live: any = null
     pend.forEach((k: any) => {
       if (isDeleteKey(k) || isMoveKey(k) || /^inp:/.test(String(k))) return   // inert marks — never field diffs
@@ -450,14 +478,13 @@ export function reconcileIssuedMarks() {
          address INDEPENDENTLY in the live day and in the issued snapshot (a
          shared rid does NOT imply a shared position — after an edit-then-move
          the two differ, and a one-sided lookup would compare two different rows
-         and drop a real mark, Astra RID-R3-02). A snapshot written before ids
-         cannot resolve the rid, so fall back to the live position — the same
-         position-pairing backfillSnapshotIds uses for a legacy book. */
+         and drop a real mark, Astra RID-R3-02). */
       const livePk = posKey(k, DAYS)
       if (livePk == null) { delete SCHED.pending[k]; return }   // the row is gone from live entirely
       if (!live) live = dayKeys(DAYS[di], di)
-      let issPk = posKey(k, snapArr); if (issPk == null) issPk = livePk
-      const lv = live.get(livePk), iv = iss.get(issPk)
+      let issPk = posKey(k, snapArr)
+      if (issPk == null && !snapHasRids) issPk = livePk         // legacy rid-less snapshot only → position-pair
+      const lv = live.get(livePk), iv = issPk == null ? undefined : iss.get(issPk)
       /* the four-way table (Fable #2):
          - gone from BOTH documents → a phantom (an overflow/append raised then
            trimmed, owner's swap-and-swap-back) → drop;
