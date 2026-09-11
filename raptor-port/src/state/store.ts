@@ -486,7 +486,7 @@ export function loadWeek(v: any) {
        parked drafts, so its identities are inconsistent with keep-ids — strip
        them ALL first (gated on the version, so a modern book is never touched),
        then ensureRowIds + backfill rebuild one consistent id-space by position. */
-    migrateLegacyIds(SCHED, DAYS)
+    const wasLegacy = migrateLegacyIds(SCHED, DAYS)
     ensureRowIds(DAYS)
     /* THE BACKFILL (review finding 6, engine/rowids.ts backfillSnapshotIds):
        a week's amendment book — SCHED.orig, every AL's day snapshots, the
@@ -494,11 +494,15 @@ export function loadWeek(v: any) {
        must be given them here too, still before the baseline, or every
        restore off it would mint a fresh id instead of the stable one. */
     backfillSnapshotIds(SCHED, DAYS)
-    /* ADDRESSING BY rid (task 5): rewrite a positional book to rid form — AFTER
-       the backfill (every row has a rid) and BEFORE the baseline (so the
-       re-keying is not read as a dirtying edit). Idempotent: a no-op on a book
-       already in rid form. */
-    migrateBookKeys(SCHED, DAYS)
+    /* ADDRESSING BY rid (task 5): rewrite a positional book to rid form — ONLY
+       when this boot actually upgraded a legacy book. A modern book is already
+       rid-keyed (every runtime write goes through ridWriteKey), and re-running
+       the rewrite every boot would let a leftover positional-fallback key
+       silently RE-BIND to whatever new row later occupies that index (a stale
+       AL structAdd claiming a fresh row). Runs AFTER the backfill (every row has
+       a rid) and BEFORE the baseline (so the re-keying is not read as a dirtying
+       edit). */
+    if (wasLegacy) migrateBookKeys(SCHED, DAYS)
     weekBaseline = weekStashSnap()   // the stash-on-leave yardstick (see its comment)
   } finally {
     weekSwapEnd()
@@ -639,17 +643,18 @@ export function initStore() {
   /* ADDRESSING BY rid (task 5) — same as loadWeek's twin: a foundation-era book
      (no ridV) has inconsistent identities, so strip them first (gated on the
      version), then rebuild one id-space via ensureRowIds + backfill. */
-  migrateLegacyIds(SCHED, DAYS)
+  const wasLegacy = migrateLegacyIds(SCHED, DAYS)
   ensureRowIds(DAYS)
   /* THE BACKFILL — same reasoning as loadWeek's own call just above this
      comment's twin: SCHED can arrive here already carrying an amendment book
      (a hydrated boot, engine/rowids.ts backfillSnapshotIds's own header) from
      before ids existed, and it must be given them before the baseline too. */
   backfillSnapshotIds(SCHED, DAYS)
-  /* ADDRESSING BY rid (task 5) — same as loadWeek's twin above: migrate a
-     positional book to rid form, after the backfill and before the baseline.
-     Idempotent — a no-op on a book already in rid form. */
-  migrateBookKeys(SCHED, DAYS)
+  /* ADDRESSING BY rid (task 5) — same as loadWeek's twin above: rewrite a
+     positional book to rid form ONLY on an actual legacy upgrade, never every
+     boot (a modern book is already rid-keyed, and re-running would let a
+     leftover positional-fallback key re-bind to a later row). */
+  if (wasLegacy) migrateBookKeys(SCHED, DAYS)
   weekBaseline = weekStashSnap()   // the stash-on-leave yardstick (see its comment)
   validate()
   histInit()

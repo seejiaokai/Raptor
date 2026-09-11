@@ -152,6 +152,47 @@ describe('ridKey / posKey / migrateBookKeys — addressing by rid (addressing-by
     expect(migrateLegacyIds(sched, days)).toBe(false)                 // one-time — never again
   })
 
+  it('migrateLegacyIds — an UNSTAMPED book whose keys are ALREADY rid-anchored is stamped, never stripped (Fable RID-REV2-01)', () => {
+    /* an INTERMEDIATE build (a branch preview between task 2 and the version
+       stamp) wrote the new rid-anchored key form but no ridV. Version-absence
+       alone would misread it as foundation-era and strip every id, orphaning
+       every key migrateBookKeys then cannot repair (it bails on an id-shaped
+       slot). The keys' SHAPE, not just the stamp, has to gate the strip. */
+    const days = seed()
+    const di = days.findIndex((d: any) => (d.waves || []).length > 0)
+    const w0 = days[di].waves[0].rid
+    const before = rowsOf(days[di]).map((r: any) => r.rid)
+    const sched: any = { pending: { [`wl:${di}.${w0}`]: 1 }, changes: {}, added: {}, als: [], orig: {}, drafts: {} }   // NO ridV, keys already rid
+    expect(migrateLegacyIds(sched, days)).toBe(false)                 // already new-format → do not strip
+    expect(rowsOf(days[di]).map((r: any) => r.rid)).toEqual(before)   // every id intact
+    expect(sched.ridV).toBe(2)                                        // stamped so it is never re-examined
+    expect(posKey(`wl:${di}.${w0}`, days)).toBe(`wl:${di}.0`)         // the mark still resolves to its row
+  })
+
+  it('migrateLegacyIds — an UNSTAMPED book with rid-anchored AL keys is also detected (not just live-book keys)', () => {
+    const days = seed()
+    const di = days.findIndex((d: any) => (d.waves || []).length > 0)
+    const w0 = days[di].waves[0].rid
+    const before = rowsOf(days[di]).map((r: any) => r.rid)
+    const sched: any = { pending: {}, changes: {}, added: {}, orig: {}, drafts: {},
+      als: [{ n: 1, keys: [`wl:${di}.${w0}`], adds: [], structAdds: [], snap: {} }] }   // the rid only appears in an AL record
+    expect(migrateLegacyIds(sched, days)).toBe(false)
+    expect(rowsOf(days[di]).map((r: any) => r.rid)).toEqual(before)
+    expect(sched.ridV).toBe(2)
+  })
+
+  it('migrateLegacyIds — a stamped keep-ids book (ridV 2) is never stripped, guarding a future version bump', () => {
+    /* the gate must be "below the keep-ids version (2)", NOT "below the current
+       RID_BOOK_VERSION": when the format version is bumped later, a healthy v2
+       book must not be re-stripped (that is finding 1's corruption in reverse). */
+    const days = seed()
+    const di = days.findIndex((d: any) => (d.waves || []).length > 0)
+    const before = rowsOf(days[di]).map((r: any) => r.rid)
+    const sched: any = { ridV: 2, pending: {}, changes: {}, added: {}, als: [], orig: {}, drafts: {} }
+    expect(migrateLegacyIds(sched, days)).toBe(false)
+    expect(rowsOf(days[di]).map((r: any) => r.rid)).toEqual(before)
+  })
+
   it('migrateBookKeys migrates SCHED.orig[di].c against its OWN snapshot day (Fable-B)', () => {
     const days = seed()
     const di = days.findIndex((d: any) => (d.waves || []).length > 0)

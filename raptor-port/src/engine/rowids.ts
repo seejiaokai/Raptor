@@ -238,8 +238,37 @@ export const RID_BOOK_VERSION = 2;
    id-space by position — the same legacy-faithful position-pairing the backfill
    already uses, reused rather than reinvented. Runs BEFORE ensureRowIds. Sets the
    version so it is a no-op ever after. Returns true when it migrated. */
+/* Does this book's LIVE-addressing keys already carry a resolvable rid? A
+   positional key round-trips through posKey unchanged (a numeric slot stays
+   itself); a rid-anchored key resolves to a DIFFERENT positional string. So a
+   key whose posKey is non-null and differs was written in the new format. Only
+   the live-resolving books are scanned (pending/changes/added and each AL's
+   keys/adds/structAdds — all address live rows); snap.c/orig.c resolve against
+   their OWN snapshot day, not `days`, so they are deliberately left out. */
+function bookIsRidAnchored(sched: any, days: any[]): boolean {
+  const anchored = (k: any) => { const p = posKey(k, days); return p != null && p !== String(k); };
+  const some = (o: any) => Object.keys(o || {}).some(anchored);
+  if (some(sched.pending) || some(sched.changes) || some(sched.added)) return true;
+  return (sched.als || []).some((al: any) =>
+    (al.keys || []).some(anchored) || (al.adds || []).some(anchored) || (al.structAdds || []).some(anchored));
+}
 export function migrateLegacyIds(sched: any, days: any[]): boolean {
-  if (!sched || sched.ridV >= RID_BOOK_VERSION) return false;   // modern / already migrated — never touch
+  if (!sched) return false;
+  /* Gate on the KEEP-IDS version (2), NOT the current RID_BOOK_VERSION: the
+     strip repairs a v<2 (foundation-era) book only. A v2+ book already speaks
+     keep-ids, so stripping it would re-mint every row and orphan every
+     rid-anchored key — finding 1's corruption in reverse — and that must not
+     happen when the format version is bumped to 3 later either. */
+  if ((sched.ridV || 0) >= 2) return false;                     // already migrated — never touch
+  /* Version-absence alone is NOT proof of a foundation book. An INTERMEDIATE
+     build (a branch preview written after the rid-anchored key form landed but
+     before the ridV stamp existed) has NO ridV yet its KEYS are already
+     rid-anchored. Stripping it would orphan every one of those keys (migrateBookKeys
+     then bails on an id-shaped slot and cannot repair them). So if the book's
+     row-addressing keys already resolve through a rid, it is new-format: stamp
+     it and skip the strip. A book with only note/positional keys is not detected
+     here, but stripping it is harmless — nothing references a row rid. */
+  if (bookIsRidAnchored(sched, days)) { sched.ridV = RID_BOOK_VERSION; return false; }
   (days || []).forEach((d: any) => stripRowIds(d));
   Object.keys(sched.drafts || {}).forEach((k: any) => (sched.drafts[k] || []).forEach((t: any) => { if (t && t.d) stripRowIds(t.d); }));
   Object.keys(sched.orig || {}).forEach((k: any) => { const o = sched.orig[k]; if (o && o.d) stripRowIds(o.d); });
