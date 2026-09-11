@@ -21,6 +21,14 @@ import { shiftKeys } from './keys'
 import { moveDutyRow } from './reorder'
 import { HOOKS } from './hooks'
 import { ELOG, elogClear, elogFor, elogAllFor, elogGroups, elogRows, logEdit, logAction } from './editlog'
+import { ridKey } from './rowids'
+
+/* addressing-by-rid: the book stores keys rid-anchored, and keys.ts's
+   shiftKeys/permuteKeys are INERT on them — a delete/reorder no longer
+   renumbers the stored string, the row's identity rides along instead. So the
+   OUTCOME the audit pins is unchanged (history stays on its row), but a raw
+   positional expectation must read the row's rid form. */
+const rk = (k: string) => ridKey(k, DAYS)
 
 let who: any
 beforeEach(() => {
@@ -53,8 +61,8 @@ describe('renumbering and the log (delete)', () => {
       /* the model and the amendment bookkeeping agree: the edited man now
          sits at B, and pending followed him there */
       expect(rows[B].id).toBe('bane')
-      expect(SCHED.pending[`d:0.0.${B}`]).toBe(1)
-      expect(SCHED.pending[`d:0.0.${B + 1}`]).toBeUndefined()
+      expect(SCHED.pending[rk(`d:0.0.${B}`)]).toBe(1)              // the mark rode the row (rid-anchored)
+      expect(SCHED.pending[rk(`d:0.0.${B + 1}`)]).toBeUndefined()  // the untouched neighbour carries nothing
 
       /* the log followed (elogRemap, called from shiftKeys): the row that
          holds the edit owns its history, the untouched neighbour has none */
@@ -82,8 +90,8 @@ describe('renumbering and the log (reorder)', () => {
       moveDutyRow(0, 0, B, B + 1)                   // the edited row slides down one
 
       expect(rows[B + 1].id).toBe('bane')
-      /* pending moved with him (permuteKeys is a bijection) … */
-      expect(SCHED.pending[`d:0.0.${B + 1}`]).toBe(1)
+      /* pending rode with him — the rid-anchored key resolves to his new index … */
+      expect(SCHED.pending[rk(`d:0.0.${B + 1}`)]).toBe(1)
       /* … and so did the log (elogRemap rides the same permutation) */
       const moved = elogFor(`d:0.0.${B + 1}`)
       expect(moved, 'his history moved with him').toBeTruthy()

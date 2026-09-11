@@ -7,6 +7,7 @@ import { shiftKeys } from './keys'
 import { VCONF } from './rules'
 import { HOOKS } from './hooks'
 import { logEdit } from './editlog'
+import { ridWriteKey } from './rowids'
 export function whoArr(r:any){return Array.isArray(r.who)?r.who.slice():(r.who?[r.who]:[]);}
 /* Blanks are HELD, not filtered out: a cleared slot has to keep its index or
    every person after it shifts up one and the amendment marks — and the keys
@@ -84,7 +85,10 @@ export function slotVal(key:any){
    needs to remember WHICH item changed for the amendment-level marks.
    `was`/`now` are the edit log's, and optional: a caller that does not know
    both values logs nothing rather than logging a half-truth (editlog.ts). */
-export function noteChange(key:any,was?:any,now?:any){ if(key){SCHED.pending[String(key)]=1; delete SCHED.changes[String(key)]; logEdit(key,was,now);} }
+/* store the mark rid-anchored (ridWriteKey self-heals a just-created row's
+   missing id); logEdit translates independently on its own read side, so it
+   takes the original positional key. */
+export function noteChange(key:any,was?:any,now?:any){ if(key){const rk=ridWriteKey(String(key),DAYS); SCHED.pending[rk]=1; delete SCHED.changes[rk]; logEdit(key,was,now);} }
 export function setSlotVal(key:any,id:any){
   key=String(key);const c=key.indexOf(':');
   if(c<0&&!flyRef(key))return;                   // a stale flying key: nothing to write, nothing to mark

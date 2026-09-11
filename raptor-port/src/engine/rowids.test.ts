@@ -4,7 +4,7 @@
    missing id is minted, a duplicate (a copied row) is re-minted, an existing
    id is never touched, and the walk covers every row kind. */
 import { describe, expect, it } from 'vitest'
-import { ensureRowIds, mintRowId, rowsOf, ridKey, posKey, migrateBookKeys } from './rowids'
+import { ensureRowIds, mintRowId, rowsOf, ridKey, posKey, migrateBookKeys, ridWriteKey, isRowKey } from './rowids'
 import { DAYS } from './data'
 import { dayKeys } from './restore'
 import { keyDay } from './keys'
@@ -158,6 +158,41 @@ describe('ridKey / posKey / migrateBookKeys — addressing by rid (addressing-by
     const di = days.findIndex((d: any) => (d.allhands || []).length > 0)
     const r = days[di].allhands[0].rid
     expect(ridKey(`a:${di}.0.+`, days)).toBe(`a:${di}.${r}.+`)
+  })
+})
+
+describe('ridWriteKey / isRowKey — the self-healing write-in translate (addressing-by-rid task 2)', () => {
+  it('isRowKey tells a row prefix (and the bare seat) from a note / synthetic / unknown one', () => {
+    expect(isRowKey('ff:0.0.0.cs')).toBe(true)
+    expect(isRowKey('0.0.0.0.p')).toBe(true)        // bare flying seat
+    expect(isRowKey('wl:0.0')).toBe(true)
+    expect(isRowKey('dn:0.0')).toBe(false)          // note — NONROW
+    expect(isRowKey('del:0.1.line')).toBe(false)    // synthetic
+    expect(isRowKey('iu:abc')).toBe(false)
+    expect(isRowKey('zz:0.0')).toBe(false)          // unknown prefix — no keyLevels
+  })
+
+  it('mints the rid a row lacks, then anchors the key — where ridKey alone cannot', () => {
+    const days = clone(DAYS)                          // NO ensureRowIds: rows carry no rid yet
+    const k = 'ff:0.0.0.cs'
+    expect(ridKey(k, days)).toBe(k)                   // ridKey cannot anchor an id-less row
+    const out = ridWriteKey(k, days)
+    expect(out).not.toBe(k)                           // it self-healed: minted, then anchored
+    expect(posKey(out, days)).toBe(k)                 // and the result round-trips back
+    expect(days[0].waves[0].formations[0].rid).toMatch(/^r/)
+  })
+
+  it('leaves a NONROW / note key positional and does not walk (no wasted mint)', () => {
+    const days = clone(DAYS)
+    expect(ridWriteKey('dn:0.0', days)).toBe('dn:0.0')
+    expect(days[0].waves[0].rid).toBeUndefined()      // never minted anything
+  })
+
+  it('is idempotent on a key that already carries its rids', () => {
+    const days = clone(DAYS); ensureRowIds(days)
+    const rk = ridKey('wl:0.0', days)
+    expect(ridWriteKey(rk, days)).toBe(rk)
+    expect(ridWriteKey('wl:0.0', days)).toBe(rk)
   })
 })
 

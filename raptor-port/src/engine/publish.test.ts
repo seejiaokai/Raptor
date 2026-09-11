@@ -10,6 +10,9 @@ import { noteChange, txtSet, txtGet } from './slots'
 import { keyDay, shiftKeys } from './keys'
 import { moveNote } from './reorder'
 import { restoreDayVersion } from './restore'
+import { ridKey } from './rowids'
+
+const rk = (k: string) => ridKey(k, DAYS)
 
 const sign = (di: number) => {
   const g = signOf(di)
@@ -198,6 +201,28 @@ describe('publishing an AL (tfin B49 / B26)', () => {
     expect(alAttr('dn:1.0')).toBe('')             // a draft-day edit carries no mark at all
   })
 
+  /* ADDRESSING BY rid (task 2 — the write/read boundary). A ROW mark is stored
+     rid-anchored, so inserting a wave ABOVE the edited one does NOT drag the
+     mark onto the wrong row: the stored key never changes, and alAttr on the
+     row's NEW positional address still finds it. Before this, noteChange stored
+     the positional key and alAttr read it back positionally, so the mark stayed
+     glued to the old index and lit the inserted wave instead. */
+  it('a row mark rides its row across an insert above it (rid-anchored, not positional)', () => {
+    sign(0); setDayApproved(0, 1)                     // approve → alAttr previews pending
+    const gi = DAYS[0].waves.length - 1
+    txtSet(`wl:0.${gi}`, 'RID-TASK2')                 // edit the LAST wave's label (a row key)
+    expect(SCHED.pending[`wl:0.${gi}`]).toBeUndefined()   // NOT stored positionally
+    expect(SCHED.pending[rk(`wl:0.${gi}`)]).toBe(1)       // stored rid-anchored
+    expect(alAttr(`wl:0.${gi}`)).toContain('data-aln')    // alAttr finds it via translation
+    DAYS[0].waves.unshift({ formations: [], label: 'INSERTED' })   // shift the edited wave to gi+1
+    try {
+      expect(alAttr(`wl:0.${gi + 1}`)).toContain('data-aln')   // the mark rode its row
+      expect(alAttr(`wl:0.${gi}`)).toBe('')                    // and did NOT stay at the old index
+    } finally {
+      DAYS[0].waves.shift()                            // net zero on the demo data
+    }
+  })
+
   it('the preview number tracks nextAL as amendments are issued', () => {
     sign(0); setDayApproved(0, 1)
     noteChange('dn:0.0')
@@ -334,7 +359,7 @@ describe('structural-deletion tombstones', () => {
       expect(deletionWasIssued(0, 'programme', 0)).toBe(true)
       DAYS[0].allhands.splice(0, 1); shiftKeys('ap:0.', 0, 0)
     }
-    expect(SCHED.added['ap:0.0.prog']).toBe(1)
+    expect(SCHED.added[addKey]).toBe(1)   // rid-anchored: the add marker rides the row across the shift
     expect(deletionWasIssued(0, 'programme', 0), 'the draft row stays identifiable after shifting onto an Original address').toBe(false)
   })
 

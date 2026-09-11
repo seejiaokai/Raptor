@@ -4,6 +4,7 @@ import { keyDay, uniqDays } from './keys'
 import { isScheduler } from './people'
 import { HOOKS } from './hooks'
 import { logEdit } from './editlog'
+import { ridKey, posKey, ridWriteKey } from './rowids'
 
 /* the reference calls straight into the UI here; the engine routes those four
    calls through injected hooks (no-ops until the app provides them) so the
@@ -209,10 +210,20 @@ export function moveLabel(key:any){const k=String(key).split('.').pop()||'';retu
 export function moveCount(keys:any){return (keys||[]).filter(isMoveKey).length;}
 export function moveKey(di:any,kind:any){kind=MOVE_LABELS[kind]?String(kind):'item';return syntheticKey('mov',di,kind);}
 export function markMove(di:any,kind:any){const key=moveKey(di,kind);markEdit(key);return key;}
-export function trackStructuralAdd(key:any){if(!key)return '';SCHED.added=SCHED.added||{};SCHED.added[String(key)]=1;return String(key);}
-export function markStructuralAdd(key:any){trackStructuralAdd(key);markEdit(key);HOOKS.flashAdded(key);return String(key);}
+/* the added-marker is stored rid-anchored (ridWriteKey self-heals a just-added
+   row's missing id). Returns the STORED (rid) key, so a caller that indexes
+   SCHED.added by the return value stays correct across any later splice. */
+export function trackStructuralAdd(key:any){if(!key)return '';SCHED.added=SCHED.added||{};const rk=ridWriteKey(String(key),DAYS);SCHED.added[rk]=1;return rk;}
+/* flashAdded gets the POSITIONAL key untranslated — paintFreshAdds matches it
+   against the row's data-bfld DOM attribute, which the renderer builds from the
+   loop index, never from a rid. */
+export function markStructuralAdd(key:any){const rk=trackStructuralAdd(key);markEdit(key);HOOKS.flashAdded(key);return rk;}
 export function structuralAddExists(key:any){
-  const s=String(key),c=s.indexOf(':'),p=c<0?'':s.slice(0,c),a=(c<0?s:s.slice(c+1)).split('.'),di=+a[0],d=DAYS[di];
+  /* the stored key is rid-anchored; resolve it to the CURRENT positional
+     address first (null → the row is gone → it no longer exists). A NONROW
+     note key and a legacy positional key pass through posKey unchanged. */
+  const pk=posKey(key,DAYS); if(pk===null)return false;
+  const s=String(pk),c=s.indexOf(':'),p=c<0?'':s.slice(0,c),a=(c<0?s:s.slice(c+1)).split('.'),di=+a[0],d=DAYS[di];
   if(!d)return false;
   if(p==='wl')return !!(d.waves||[])[+a[1]];
   if(p==='ff'){const w=(d.waves||[])[+a[1]];return !!(w&&(w.formations||[])[+a[2]]);}
@@ -233,7 +244,11 @@ export function structuralAddExists(key:any){
    Accepted Ground inputs also pass their stable source token. */
 export function deletionWasIssued(di:any,kind:any,...at:any[]){di=+di;
   const added=SCHED.added||{};
-  const has=(...keys:any[])=>keys.some((k:any)=>!!added[k]);
+  /* the identity keys below are BUILT positional from live indices; SCHED.added
+     is now rid-anchored, so translate each built key before the lookup. `issued`
+     is computed before the delete splice (board.ts / slots.ts), so the live rows
+     still resolve. A note key (dn:) passes through ridKey unchanged. */
+  const has=(...keys:any[])=>keys.some((k:any)=>!!added[ridKey(k,DAYS)]);
   if(kind==='line'&&has(`wl:${di}.${+at[0]}`,`ff:${di}.${+at[0]}.${+at[1]}.cs`,`fr:${di}.${+at[0]}.${+at[1]}.${+at[2]}`))return false;
   if(kind==='wave'&&has(`wl:${di}.${+at[0]}`))return false;
   if(kind==='note'&&has(`dn:${di}.${+at[0]}`))return false;
@@ -291,7 +306,10 @@ export function markInputFiling(di:any,token:any){const id=encodeURIComponent(St
    bare epilogue in afterSchedMutate() passes nothing at all. Only the first
    reaches the log, which is what keeps a phantom row off every mutation. */
 export function markEdit(key?:any,was?:any,now?:any){
-  if(key){ SCHED.pending[key]=1; delete SCHED.changes[key]; logEdit(key,was,now); }
+  /* store the mark rid-anchored (self-healing translate); logEdit translates
+     independently on the read side, so it takes the original key. A synthetic
+     del:/mov:/inp: key is NONROW and passes through untranslated. */
+  if(key){ const rk=ridWriteKey(key,DAYS); SCHED.pending[rk]=1; delete SCHED.changes[rk]; logEdit(key,was,now); }
   renderStatus();
   histPush();
 }
@@ -306,6 +324,13 @@ export function markEdit(key?:any,was?:any,now?:any){
    colour can be wrong, and it corrects itself on publish. */
 export function alAttr(key:any){
   if(!key)return '';
+  /* HOT PAINT PATH. The stored book is rid-anchored, so the positional DOM key
+     is translated (ridKey, O(depth)) before the lookup. Skip that walk entirely
+     when nothing is marked anywhere — a GLOBAL empty check, not a per-day scan
+     (Fable #9). On a pristine model (the parity/html gates) this returns '' with
+     no walk, so the emitted HTML stays byte-identical. */
+  if(!Object.keys(SCHED.changes).length && !pendCount())return '';
+  key=ridKey(key,DAYS);
   const n=SCHED.changes[key];
   if(n)return ` data-alc="${n}" title="Changed at AL${n}"`;
   if(SCHED.pending[key]){

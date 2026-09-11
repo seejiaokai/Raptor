@@ -13,6 +13,11 @@ import { SCHED, markEdit } from './publish'
 import { setSlotVal, txtSet, txtGet } from './slots'
 import { HOOKS } from './hooks'
 import { ELOG, elogClear, elogRows, elogFor, elogWhen, keyLabel, logEdit, logAction } from './editlog'
+import { ridKey } from './rowids'
+
+/* the log stores keys rid-anchored (addressing-by-rid); wrap a raw stored-key
+   expectation so it reads the row's rid form, exactly as the write path does */
+const rk = (k: string) => ridKey(k, DAYS)
 
 /* the first FCP seat of the first formation of day 0, and a text field on the
    same line — read off the grammar rather than hard-coded, so a change to the
@@ -82,7 +87,7 @@ describe('what gets recorded', () => {
     expect(elogRows(0).length).toBe(1)
     expect(elogRows(1).length).toBe(1)
     expect(elogRows().length).toBe(2)
-    expect(elogRows(0)[0]!.key).toBe(SEAT)
+    expect(elogRows(0)[0]!.key).toBe(rk(SEAT))     // stored rid-anchored
   })
 
   it('the name comes from the hook, so a server session can fill it later', () => {

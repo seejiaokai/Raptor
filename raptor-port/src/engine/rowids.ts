@@ -136,6 +136,35 @@ export function posKey(key: any, days: any[]): string | null {
   }
   return (c < 0 ? '' : prefix + ':') + out.join('.');
 }
+/* Is this key a ROW address — a keyLevels-known prefix, or the bare flying
+   seat — rather than a note / synthetic (NONROW) or an unknown key? The
+   write-in self-heal gates on this so a note or del:/mov: key never triggers a
+   wasted mint walk (posKey returns the string, not null, for an unknown prefix,
+   so an ungated check could not tell them apart). */
+export function isRowKey(key:any):boolean{
+  const s=String(key),c=s.indexOf(':'),prefix=c<0?'':s.slice(0,c);
+  if(NONROW.has(prefix))return false;
+  const parts=(c<0?s:s.slice(c+1)).split('.');
+  return keyLevels(prefix,parts)!==null;
+}
+/* THE WRITE-IN TRANSLATE, self-healing (review finding 1). A mark is stored
+   rid-anchored, but ridKey can only anchor a row that ALREADY carries a rid —
+   and a freshly-created row is marked (noteChange / markEdit / trackStructuralAdd)
+   BEFORE the next histPush mints its id. So when ridKey returns the key
+   unchanged AND it is a row key, mint the whole week's ids (ensureRowIds —
+   whole-week, never per-day, so a cross-day duplicate is re-minted before it
+   can orphan the mark) and translate once more. This is the SAFETY mechanism:
+   a missed per-site mint at any creation path cannot silently store a positional
+   key, so the board's per-site mints are an optimisation, not the guarantee.
+   A NONROW / unknown key returns unchanged with no walk; an already-rid key is
+   idempotent (ridKey bails on the first non-numeric slot, so no walk). */
+export function ridWriteKey(key:any,days:any[]):string{
+  const s=String(key),m=ridKey(s,days);
+  if(m!==s)return m;                       // anchored, or already rid
+  if(!isRowKey(s))return m;                // note / synthetic / unknown — leave positional
+  ensureRowIds(days);
+  return ridKey(s,days);
+}
 /* MIGRATE A PERSISTED BOOK written with positional keys (the storage seam now
    persists SCHED per browser). Runs once per boot/week-load AFTER
    backfillSnapshotIds (every row has a rid) and BEFORE the baseline, so a
