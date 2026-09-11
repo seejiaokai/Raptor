@@ -190,6 +190,21 @@ describe('publishing an AL (tfin B49 / B26)', () => {
     expect(alAttr('')).toBe('')
   })
 
+  /* alAttr's empty-book short-circuit must read OWN keys only (Astra RID-REV2-02).
+     A for-in early-exit is allocation-free but also sees inherited enumerable
+     keys; on a genuinely empty book (the parity/html gates) it must still return
+     '' even if Object.prototype is polluted, or a stray inherited mark would leak
+     an amendment attribute into byte-compared HTML. */
+  it('alAttr treats an empty book as empty even under an inherited enumerable key', () => {
+    const polluted = rk('wl:0.0')                       // the exact key alAttr looks up for wave 0
+    ;(Object.prototype as any)[polluted] = 2            // an inherited "changed at AL2" that is NOT an own key
+    try {
+      expect(alAttr('wl:0.0')).toBe('')                 // own-keys empty → no paint, prototype ignored
+    } finally {
+      delete (Object.prototype as any)[polluted]        // never leak the pollution to another test
+    }
+  })
+
   /* the AL preview: a pending edit on a PUBLISHED day carries the number it
      will go out as (data-aln), so the edit surfaces can paint it in that AL's
      colour before the AL exists. Draft-day pending must NOT carry it — an edit

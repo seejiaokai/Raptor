@@ -177,9 +177,12 @@ export function alColor(n:any){return AL_COLORS[n]||AL_COLORS[AL_COLORS.length-1
 export function pendCount(){return Object.keys(SCHED.pending).length;}
 /* alAttr runs per cell on every repaint — thousands of calls — so its
    "nothing is marked anywhere" short-circuit must not allocate. Object.keys().length
-   builds a whole array each call; a for-in with an early return does not (a
-   plain object has no enumerable prototype keys, so it sees only own keys). */
-function bookEmpty(){for(const _ in SCHED.changes)return false;for(const _ in SCHED.pending)return false;return true;}
+   builds a whole array each call; a for-in with an early return does not. The
+   hasOwnProperty guard keeps it EXACTLY equivalent to the old Object.keys check —
+   own keys only, ignoring any inherited enumerable property — so a polluted
+   Object.prototype can never leak a phantom mark into the byte-compared HTML
+   (Astra RID-REV2-02). */
+function bookEmpty(){const H=Object.prototype.hasOwnProperty;for(const k in SCHED.changes)if(H.call(SCHED.changes,k))return false;for(const k in SCHED.pending)if(H.call(SCHED.pending,k))return false;return true;}
 /* A deletion has no live cell left to carry its amendment mark. Reusing the
    deleted address would tint whatever row shifted into it, so removals use an
    inert synthetic key instead: del:DAY.SEQ.KIND. The day stays first after

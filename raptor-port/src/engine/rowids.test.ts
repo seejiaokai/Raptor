@@ -181,6 +181,23 @@ describe('ridKey / posKey / migrateBookKeys — addressing by rid (addressing-by
     expect(sched.ridV).toBe(2)
   })
 
+  it('migrateLegacyIds — an unstamped book whose only rid key is on a DELETED row is still recognised new (Astra RID-REV2-01)', () => {
+    /* an issued AL retains a key for a row that has since been deleted — that key
+       is rid-SHAPED but no longer RESOLVES against the live day. A resolve-based
+       check would call the whole book legacy and strip it, orphaning the mark. The
+       shape check must recognise the rid form even when it does not resolve. */
+    const days = seed()
+    const di = days.findIndex((d: any) => (d.waves || []).length > 0)
+    const goneRid = days[di].waves[0].rid
+    days[di].waves.splice(0, 1)                                    // the wave is gone from live
+    const before = rowsOf(days[di]).map((r: any) => r.rid)
+    const sched: any = { pending: {}, changes: {}, added: {}, orig: {}, drafts: {},
+      als: [{ n: 1, keys: [`wl:${di}.${goneRid}`], adds: [], structAdds: [], snap: {} }] }   // the only mark, on a deleted row
+    expect(migrateLegacyIds(sched, days)).toBe(false)             // rid-SHAPED key recognised → not legacy, not stripped
+    expect(rowsOf(days[di]).map((r: any) => r.rid)).toEqual(before)
+    expect(sched.ridV).toBe(2)
+  })
+
   it('migrateLegacyIds — a stamped keep-ids book (ridV 2) is never stripped, guarding a future version bump', () => {
     /* the gate must be "below the keep-ids version (2)", NOT "below the current
        RID_BOOK_VERSION": when the format version is bumped later, a healthy v2
