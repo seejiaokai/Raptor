@@ -16,7 +16,7 @@ import { applyMove, sortDay, sortWaves, sortDutyBlocks, sortGround, moveGroundRo
 import { dayKeys } from './restore'
 import { groundOrder } from './order'
 import { makeStandalone, waveDutyBlock, saDutyIx } from './waves'
-import { ridKey, posKey } from './rowids'
+import { ridKey, posKey, ensureRowIds } from './rowids'
 
 /* addressing-by-rid: a mark is stored rid-anchored once its row carries a rid
    (a funnel write self-heals one in). rk() reads a positional key in that
@@ -159,6 +159,42 @@ describe('key-space integrity under add + delete + drag + Sort all (scenario 1)'
     added.forEach(k => expect(structuralAddExists(k), k).toBe(true))
     /* added holds rid keys; the oracle m1 is positional, so resolve each back */
     expect(added.map(k => String(m1.get(pk(k) ?? '')).split('␟')[0]).sort()).toEqual(['A-ADDED', 'ADDED-F'])
+  })
+})
+
+/* RID-NATIVE keyspace integrity (Astra RID-REVIEW-02). The scenario above seeds
+   POSITIONAL AL keys and deletes through shiftKeys, so it exercises the legacy
+   renumber path (kept — that fallback is real). This one establishes the NEW
+   contract the addressing rewrite promised: with rows carrying ids and the book
+   keyed rid-anchored, a live delete goes through the ACTUAL dropRowMarks sweep,
+   the issued AL record is IMMUTABLE, the deleted row's marks leave ONLY the live
+   book, and every surviving stored key still resolves to a live cell. */
+describe('rid-anchored keyspace integrity under a live delete (scenario 1, RID-native)', () => {
+  it('the sweep touches only the live book; the issued AL is immutable; survivors resolve, none orphaned', () => {
+    const d = scrambleDay0()
+    ensureRowIds(DAYS)                                              // the production invariant: every row has an id
+    const alKeys = [...dayKeys(d, 0).keys()].map(k => ridKey(k, DAYS))   // an issued AL, keyed rid-anchored
+    expect(alKeys.some(k => /r[0-9a-z]{6,}/.test(k)), 'the keys really are rid-anchored').toBe(true)
+    const snapC: any = {}; alKeys.forEach((k, i) => { snapC[k] = i + 1; SCHED.changes[k] = i + 1 })
+    SCHED.als = [{ n: 1, keys: alKeys.slice(), snap: { 0: { d: JSON.parse(JSON.stringify(d)), c: { ...snapC } } }, sign: {} }]
+    const alFrozen = JSON.stringify(SCHED.als[0])
+    /* delete duty block 0 row 1 through the REAL sweep: capture the rid, splice,
+       dropRowMarks — exactly what board.ts's drdel now does */
+    const goneRid = d.dutywaves[0].rows[1].rid
+    const deadLive = alKeys.filter(k => k.split(/[.:]/).includes(goneRid))
+    expect(deadLive.length, 'the doomed row owns several stored keys').toBeGreaterThanOrEqual(4)
+    d.dutywaves[0].rows.splice(1, 1)
+    dropRowMarks([goneRid])
+    /* the issued AL record was NOT mutated — a resurrected draft must be able to
+       return these marks via unpublishAL (RID-R5-03) */
+    expect(JSON.stringify(SCHED.als[0])).toBe(alFrozen)
+    /* the deleted row's marks left the LIVE book, and ONLY those */
+    deadLive.forEach(k => expect(SCHED.changes[k], k).toBeUndefined())
+    const survivors = Object.keys(SCHED.changes)
+    expect(survivors.length).toBe(alKeys.length - deadLive.length)
+    /* and every survivor still resolves to a live cell — no orphan, no collision */
+    expect(new Set(survivors).size).toBe(survivors.length)
+    survivors.forEach(k => expect(posKey(k, DAYS), k).not.toBeNull())
   })
 })
 

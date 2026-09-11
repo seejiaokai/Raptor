@@ -4,7 +4,7 @@
    missing id is minted, a duplicate (a copied row) is re-minted, an existing
    id is never touched, and the walk covers every row kind. */
 import { describe, expect, it } from 'vitest'
-import { ensureRowIds, mintRowId, rowsOf, ridKey, posKey, migrateBookKeys, ridWriteKey, isRowKey } from './rowids'
+import { ensureRowIds, mintRowId, rowsOf, ridKey, posKey, migrateBookKeys, ridWriteKey, isRowKey, migrateLegacyIds } from './rowids'
 import { DAYS } from './data'
 import { dayKeys } from './restore'
 import { keyDay } from './keys'
@@ -125,6 +125,31 @@ describe('ridKey / posKey / migrateBookKeys — addressing by rid (addressing-by
     expect(sched.als[0].snap[di].c['wl:' + di + '.rSNAPW1']).toBe(1)  // snap.c → snap.d's id
     expect(sched.als[0].snap[di].c[`wl:${di}.${w1}`]).toBeUndefined() // NOT the live wave's id
     expect(migrateBookKeys(sched, days)).toBe(0)                       // already rid form → a no-op
+  })
+
+  it('migrateLegacyIds — a MODERN book (ridV set) is never touched, even a disjoint draft (Astra RID-IR-02)', () => {
+    const days = seed()
+    const di = days.findIndex((d: any) => (d.waves || []).length > 0)
+    const disjoint = clone(days[di]); rowsOf(disjoint).forEach((r: any) => { r.rid = mintRowId() })   // a modern draft that replaced all its rows
+    const before = rowsOf(disjoint).map((r: any) => r.rid)
+    const sched: any = { ridV: 2, drafts: { [di]: [{ id: 'dr1', d: disjoint }] }, orig: {}, als: [] }
+    expect(migrateLegacyIds(sched, days)).toBe(false)                 // modern → skip
+    expect(rowsOf(disjoint).map((r: any) => r.rid)).toEqual(before)   // identity untouched
+    expect(rowsOf(days[di]).every((r: any) => typeof r.rid === 'string')).toBe(true)   // live day untouched
+  })
+
+  it('migrateLegacyIds — a FOUNDATION book (no ridV) strips the whole book so it rebuilds one id-space (Astra RID-REVIEW-01)', () => {
+    const days = seed()
+    const di = days.findIndex((d: any) => (d.waves || []).length > 0)
+    const draft = clone(days[di]); rowsOf(draft).forEach((r: any) => { r.rid = mintRowId() })   // #384's re-minted parked draft
+    const origSnap = clone(days[di])                                  // an issued snapshot
+    const sched: any = { drafts: { [di]: [{ id: 'dr1', d: draft }] }, orig: { [di]: { d: origSnap, c: {} } }, als: [] }
+    expect(migrateLegacyIds(sched, days)).toBe(true)                  // foundation → migrate
+    expect(rowsOf(days[di]).some((r: any) => r.rid)).toBe(false)      // live day stripped
+    expect(rowsOf(draft).some((r: any) => r.rid)).toBe(false)         // the foreign draft stripped
+    expect(rowsOf(origSnap).some((r: any) => r.rid)).toBe(false)      // the snapshot stripped — all rebuild together
+    expect(sched.ridV).toBe(2)                                        // stamped modern
+    expect(migrateLegacyIds(sched, days)).toBe(false)                 // one-time — never again
   })
 
   it('migrateBookKeys migrates SCHED.orig[di].c against its OWN snapshot day (Fable-B)', () => {

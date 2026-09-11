@@ -219,18 +219,34 @@ export function migrateBookKeys(sched: any, days: any[]): number {
   });
   return n;
 }
-/* NOTE — there is deliberately NO draft-blob "re-pair by zero rid overlap"
-   migration (the design's Astra RID-R5-02 proposed one; removed after the build
-   bug-check, Astra RID-IR-02/03). Two reasons it was unsound: (1) a MODERN draft
-   that legitimately replaced all its rows also shares zero rids with the live
-   day, so a zero-overlap heuristic cannot tell it from a pre-upgrade blob and
-   would corrupt its identity on the next week-stash restore; (2) SCHED is
-   SESSION-ONLY (no localStorage envelope — see weekstash.ts / weekstash.test.ts),
-   so a pre-`rid` book written by an older build never reaches this build across a
-   reload, which is the only situation the re-pair targeted. migrateBookKeys below
-   (idempotent, a no-op on an already-rid book) is the whole safe migration; a
-   future persistent (database-era) book would carry an explicit format/version
-   to gate any migration on, not infer legacy-ness from row-id overlap. */
+/* THE FORMAT VERSION this build writes into every persisted book (schedFields'
+   `v`, engine → state/history.ts). A book WITHOUT it was written before the
+   addressing-by-rid change (the foundation build #384 and earlier), and its row
+   identities are INCONSISTENT with the keep-ids model: #384's draftDup re-minted
+   the parked copy, so a parked (or selected-then-live) draft carries rids foreign
+   to the issued snapshots. Persisted books DO reach this build (state/persist.ts
+   files week snapshots — drafts and amendments included, schedFields — to the
+   localStorage whiteboard and hydrates them at boot), so this must be migrated. */
+export const RID_BOOK_VERSION = 2;
+/* LEGACY BOOK MIGRATION (Astra RID-REVIEW-01, RID-IR-02/03). One-time, gated on
+   the persisted version so it runs ONLY on a foundation-era book and NEVER on a
+   modern one — a modern draft may legitimately share zero rids with its live day
+   (all rows replaced), so legacy-ness must be an explicit version, never inferred
+   from id overlap. For a legacy book it STRIPS every row id across the whole book
+   (the live days, the parked drafts, SCHED.orig and every AL snapshot), so the
+   ensureRowIds + backfillSnapshotIds pass that follows rebuilds ONE consistent
+   id-space by position — the same legacy-faithful position-pairing the backfill
+   already uses, reused rather than reinvented. Runs BEFORE ensureRowIds. Sets the
+   version so it is a no-op ever after. Returns true when it migrated. */
+export function migrateLegacyIds(sched: any, days: any[]): boolean {
+  if (!sched || sched.ridV >= RID_BOOK_VERSION) return false;   // modern / already migrated — never touch
+  (days || []).forEach((d: any) => stripRowIds(d));
+  Object.keys(sched.drafts || {}).forEach((k: any) => (sched.drafts[k] || []).forEach((t: any) => { if (t && t.d) stripRowIds(t.d); }));
+  Object.keys(sched.orig || {}).forEach((k: any) => { const o = sched.orig[k]; if (o && o.d) stripRowIds(o.d); });
+  (sched.als || []).forEach((al: any) => Object.keys(al.snap || {}).forEach((k: any) => { const sd = al.snap[k]; if (sd && sd.d) stripRowIds(sd.d); }));
+  sched.ridV = RID_BOOK_VERSION;
+  return true;
+}
 /* THE BACKFILL (review finding 6): the amendment book — SCHED.orig, every
    AL's day snapshots, the drafts — is persisted with the week, so a book
    written before ids existed would mint a DIFFERENT id on every restore. Run

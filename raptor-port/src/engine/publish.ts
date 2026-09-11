@@ -4,7 +4,7 @@ import { keyDay, uniqDays } from './keys'
 import { isScheduler } from './people'
 import { HOOKS } from './hooks'
 import { logEdit } from './editlog'
-import { ridKey, posKey, ridWriteKey } from './rowids'
+import { ridKey, posKey, ridWriteKey, RID_BOOK_VERSION } from './rowids'
 
 /* the reference calls straight into the UI here; the engine routes those four
    calls through injected hooks (no-ops until the app provides them) so the
@@ -28,7 +28,11 @@ const renderStatus=()=>HOOKS.renderStatus();
                     Stamped by alIssue and by restoreDayVersion; read through
                     dayCurVer(), which self-heals when the stamped version's
                     snapshot has gone (unpublishAL, undo past the issue).      */
-export let SCHED:any={al:0, pending:{}, changes:{}, added:{}, als:[], dayOK:{}, sign:{}, orig:{}, cur:{}};
+/* `ridV` stamps the addressing-by-rid book format (engine/rowids.ts). A book
+   restored from a persisted snapshot WITHOUT it is foundation-era and is migrated
+   once at load (migrateLegacyIds); a fresh/modern book carries it, so it is never
+   re-migrated. */
+export let SCHED:any={al:0, pending:{}, changes:{}, added:{}, als:[], dayOK:{}, sign:{}, orig:{}, cur:{}, ridV:RID_BOOK_VERSION};
 /* Reset ALL of SCHED in place. Every field is keyed by day INDEX (0..6), so
    loading a different week without this would let one week's approvals, pending
    edits, AL colouring and per-day drafts bleed onto the next week's identical
@@ -39,6 +43,7 @@ export function resetSched(){
   SCHED.al=0; SCHED.pending={}; SCHED.changes={}; SCHED.added={};
   SCHED.als=[]; SCHED.dayOK={}; SCHED.sign={}; SCHED.orig={};
   SCHED.cur={}; SCHED.drafts={}; SCHED.curDraft={};
+  SCHED.ridV=RID_BOOK_VERSION;   // a fresh book is modern — never re-migrated
 }
 export function dayApproved(di:any){return !!SCHED.dayOK[di];}
 export function approvedDays(){return DAYS.map((_:any,i:any)=>i).filter(dayApproved);}

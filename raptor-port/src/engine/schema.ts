@@ -453,6 +453,8 @@ export type Sched = {
   drafts?: Record<number, DayDraft[]>
   /** The live draft id per day — engine (drafts.ts). */
   curDraft?: Record<number, string>
+  /** Addressing-by-rid book-format version — engine (rowids.ts `RID_BOOK_VERSION`). A live SCHED always carries it; a persisted snapshot WITHOUT it (`SchedFields.v` absent) is foundation-era and is migrated once at load. */
+  ridV: number
 }
 
 /* ---------------------------------------------------------------------------
@@ -502,6 +504,8 @@ export type SchedFields = {
   cv: Sched['cur']
   dr?: Sched['drafts']
   cd?: Sched['curDraft']
+  /** Book-format version — absent on a foundation-era snapshot, which loads through migrateLegacyIds. */
+  v?: Sched['ridV']
 }
 
 /** The whole-state undo record — `histSnap()`. */

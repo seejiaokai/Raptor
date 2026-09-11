@@ -118,11 +118,13 @@ const SCHED_SPEC: Spec = {
   al: 'number', pending: { $map: ONE }, changes: { $map: 'number' }, added: { $map: ONE }, als: [AL], dayOK: { $map: ONE },
   sign: { $map: SIGNSET }, orig: { $map: DAYSNAP }, cur: { $map: { $or: ['number', { $lit: ['orig'] }] } },
   drafts: { $opt: { $map: [{ id: 'string', name: 'string', d: DAY }] } }, curDraft: { $opt: { $map: 'string' } },
+  ridV: 'number',   // the addressing-by-rid book-format version (engine/rowids.ts)
 }
 const SCHED_FIELDS = {
   c: { $map: 'number' }, p: { $map: ONE }, ad: { $map: ONE }, a: [AL], al: 'number', ok: { $map: ONE }, sg: { $map: SIGNSET },
   o: { $map: DAYSNAP }, cv: { $map: { $or: ['number', { $lit: ['orig'] }] } },
   dr: { $opt: { $map: [{ id: 'string', name: 'string', d: DAY }] } }, cd: { $opt: { $map: 'string' } },
+  v: { $opt: 'number' },   // book-format version; ABSENT on a foundation-era snapshot (triggers migrateLegacyIds)
 }
 const PUCK: Spec = { $or: [
   { id: 'string', date: 'string', kind: { $opt: { $lit: ['note'] } }, text: 'string' },
