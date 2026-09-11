@@ -39,6 +39,8 @@ as of 4 Sep 26) — search it for "why did we do X", don't re-read it.
 | picking work up on the desktop — where task #1 stands, the cross-device / multi-model (Claude + Codex) setup, and the model/workflow advisor to paste | `raptor-port/docs/superpowers/DESKTOP-HANDOFF.md` |
 | the 11 Sep 26 overnight bug-check (Astra + Fable) — 3 Tracker/storage data-loss findings, what was FIXED (PR #386 import-conflict + honest wording; PR #387 resumable/grandfathered legacy import) and what is an OWNER DECISION still open (Decision A: migration/rename "verify before delete" reads memory not disk — a DB-step fix) | `raptor-port/docs/superpowers/OVERNIGHT-BUGCHECK-REPORT.md` |
 | the rid engine-wiring RED-TEAM findings (must-fix before building spec tasks 2–7) | `raptor-port/docs/superpowers/specs/2026-09-11-addressing-by-rid-REDTEAM.md` |
+| the standby/backlog of parked tasks — priority order, per-task context, maintenance rule | `OUTSTANDING.md` (repo root) |
+| the amendment-engine redesign — settled decisions, open owner calls, Astra findings, rationale + mockup links | `raptor-port/docs/superpowers/specs/2026-09-11-amendment-model-decisions.md` |
 
 
 ## Gate status
