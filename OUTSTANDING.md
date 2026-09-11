@@ -40,8 +40,8 @@ future-milestone work last.
 
 1. **[TRK-IMPORT] + [TRK-LEDGER]** — built on branches, fix real silent data-loss.
    Batch: re-check vs current `main`, then one merge-live.
-2. **[AMEND]** — the main project. Unblock with the two owner decisions, then
-   revise → Astra → build. **[BUG2]** folds in here.
+2. **[AMEND]** — the main project. **Design COMPLETE + twice-reviewed (12 Sep); ready
+   to build.** Build is HEAVY/saved-data/test-first; do it after #1. **[BUG2]** folds in.
 3. **[OIL]** — depends on [AMEND]; do straight after.
 4. **[TRK-CSID]** — next Tracker stable-ids step; independent, medium, not urgent.
 5. **[TRK-ATTEMPTS]** — small new feature, low urgency.
@@ -62,8 +62,9 @@ One line each, no jargon:
   one-time copy of old data into the new format could stop halfway and the app would
   think it was finished. Fixed (it resumes now) — built, waiting to go live.
 - **[AMEND] — The amendment engine rebuild (the big one).** Each day gets its own
-  amendments, published is locked, every change is a new AL, no take-backs. Design
-  nearly done — waiting on your two decisions (plans, signatures).
+  amendments, published is locked, every change is a new AL, no take-backs. Design is
+  DONE and checked twice (by both Codex and Fable); ready to build after the two
+  Tracker fixes. Backups (Plan A/B) survive, all four re-sign, crew see the "live draft".
 - **[OIL] — Don't wipe off-in-lieu someone already earned.** Removing a person by
   amendment currently erases their weekend/holiday OIL — wrong if they'd already
   worked the day. Lock it once the day's been worked. After the amendment rebuild.
@@ -87,26 +88,33 @@ One line each, no jargon:
 
 ## Items
 
-### [AMEND] Amendment engine redesign — DESIGN IN PROGRESS (blocked on 2 owner decisions)
+### [AMEND] Amendment engine redesign — DESIGN COMPLETE, ready to build (12 Sep 2026)
 Rebuild the publish/amend/version model: per-day isolated numbering (never
 week-wide), published = immutable, every change a new AL, supersede-never-retract,
 undo cannot cross a publish, load-old-version → republish-as-next-AL as the safe
 recovery path.
-- **Blocked on owner:** #1 plans (disappear at publish vs survive as contingencies);
-  #3 signatures (all four roles re-sign each amendment vs fewer).
-- **Must-build (Astra review):** AM-01 unique date-qualified version IDs; AM-02
-  versioned saved-week migration (incl. Leave War's direct saved-week reads); AM-04
-  define what a published version captures (availability leak); AM-06 bind
-  signatures to content.
-- **Then:** revise brief → re-run Astra on a **frozen** file → build (heavy,
-  saved-data, test-first) → fresh Codex inspection.
-- **Model:** build on Opus; each Astra round + final inspection on Codex; a tricky
-  design call worth a Fable-high check.
-- **Context & records (read to resume):** the decisions doc
-  `raptor-port/docs/superpowers/specs/2026-09-11-amendment-model-decisions.md` now
-  carries the full rationale, the industry research, the reopen/undo/correct
-  reasoning and the interactive mockup links (§10) — plus `-design-brief.md` and
-  `-review.md`.
+- **Decisions RESOLVED (owner, 12 Sep):** #1 plans → SURVIVE as backups (+ safeguards);
+  #3 signatures → all four re-sign every amendment; crew SEE the live draft (renamed
+  from "working copy") badged "not yet issued", issued version stays authority.
+- **Design DONE:** build-ready brief `2026-09-12-amendment-model-design-brief.md`
+  (Rev 3), reviewed by BOTH providers (Astra/Codex + Fable/Claude), both converged,
+  all design-level findings folded in; the residual is test-pinned build work (§12).
+  Approved UI mockup: https://claude.ai/code/artifact/90a30794-acb2-45f9-80ce-57f79b3edc27
+- **Build contracts (from the brief):** §5.0 canonical issued-content schema (source
+  = `engine/schema.ts`) driving snapshot+diff+signature; publish trigger = digest, not
+  pending-key count; remove ALL retraction paths (reopen beak, restoreDayVersion,
+  discardPending-on-published, publishAL(n)); AM-01 full-date version IDs; AM-02
+  migration (all readers incl. Leave War/weekctx/peek, absent/valid/insufficient/failed);
+  AM-04 frozen availability+membership; AM-06 signature-digest binding; AM-09 durable
+  publish + `navigator.locks` single-writer + size budget; §8b crew projection; §9 undo
+  apply-list; OIL past-date guard (SGT). BUG2 folds into the retraction-handler replace.
+- **NEXT = build** (HEAVY, saved-data, test-first, Opus, cross-provider code inspection).
+  Sequenced AFTER [TRK-IMPORT]/[TRK-LEDGER] (priority #1); nothing merges without
+  owner's "merge live".
+- **Model:** build on Opus; cross-provider bug-check (Codex + Fable-high) on the code.
+- **Context & records:** decisions doc
+  `raptor-port/docs/superpowers/specs/2026-09-11-amendment-model-decisions.md`
+  (rationale, research, mockup links §10); the Rev 3 brief; `-review.md` (original).
 
 ### [OIL] Lock earned OIL on an already-worked day — STANDBY (after [AMEND])
 An amendment that removes a person re-derives Leave War auto-OIL from the current

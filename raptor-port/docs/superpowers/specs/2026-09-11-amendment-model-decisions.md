@@ -46,13 +46,21 @@ no code written yet. Companion to the Codex/Astra review brief
 - **Recommendation:** start with **(a)** unless the squadron genuinely relies on
   standby contingencies; **(b)** is doable but adds the silent-data bugs in §7.
 
-## 4. Still open — owner's calls
+## 4. Owner's calls — ALL RESOLVED (12 Sep 2026)
 
-- **#1 Plans:** disappear at publish, or survive as contingencies? (see §3)
-- **#3 Signatures:** must all four roles (CUR / SKED / PLAN / APPR) re-sign every
-  amendment, or fewer for a small one?
-- **SETTLED:** #2 corrections → none (every change is a new AL). Withdrawal →
+- **#1 Plans → SURVIVE as backups** (option b), with the §7 safeguards designed in
+  (never auto-issues, re-validate on activation, stale-backup trap caught). Owner
+  confirmed the riskier option because the squadron keeps ready-made contingencies.
+- **#3 Signatures → ALL FOUR re-sign every amendment** (CUR/SKED/PLAN/APPR), bound to
+  content; the sign-off UI is the app's existing `.signoff`, unchanged.
+- **Crew visibility → option (a):** crew SEE the live draft (renamed from "working
+  copy"), badged "not yet issued", on all three surfaces (view-only schedule,
+  scheduler view, edit board) — the current issued version stays the authority.
+- **SETTLED earlier:** #2 corrections → none (every change is a new AL). Withdrawal →
   none (supersede only). Per-day numbering → fixed.
+- The build-ready brief is **`2026-09-12-amendment-model-design-brief.md` (Rev 3)**,
+  reviewed by BOTH providers (Astra/Codex R-01…R-13+N-01…N-03, Fable/Claude
+  F-01…F-12), both converged, all design-level findings incorporated.
 - **Cross-feature — OIL on worked days (leaning, 11 Sep 26):** an amendment that
   removes a person re-derives Leave War auto-OIL from the current published
   version and sweeps it away — right for a future day, wrong for a day already
@@ -113,15 +121,17 @@ delete, and keep an immutable audit trail. An "Amendment List" for a flying
 programme belongs in the second camp — so hard-freeze + new-AL + supersede
 matches the norm for this class of artefact.
 
-## 9. Next steps
+## 9. Next steps — DESIGN COMPLETE (12 Sep 2026)
 
-1. Owner decides **#1 (plans)** and **#3 (signatures)**.
-2. Rewrite the design brief to reflect all settled decisions + Astra's must-fixes
-   (AM-01 IDs, AM-02 migration, AM-04 issued-document boundary, AM-06 approval
-   binding).
-3. Re-run Astra on the revised, **frozen** brief.
-4. Build — heavy, saved-data, test-first — with a fresh Codex inspection of the
-   final code. (The AM-08 security fix is **done** — PR #393, merged & live 11 Sep 26.)
+1. ~~Owner decides #1 (plans) and #3 (signatures).~~ DONE (§4) — plus crew-visibility.
+2. ~~Rewrite the design brief.~~ DONE — Rev 3 `2026-09-12-amendment-model-design-brief.md`.
+3. ~~Re-run the review on the frozen brief.~~ DONE — TWO independent cross-provider
+   reviews (Astra/Codex + Fable/Claude), both converged, all design-level findings
+   folded into Rev 3; the residual is test-pinned build work (brief §12).
+4. **NEXT — build** (HEAVY, saved-data, test-first, on Opus, cross-provider code
+   inspection), but it sits BEHIND the two Tracker fixes in `/OUTSTANDING.md` priority
+   order, and nothing merges without the owner's "merge live". The AM-08 security fix
+   is done (PR #393, live 11 Sep 26).
 
 ## 10. Context & rationale (from the design chat, 11 Sep 2026)
 
