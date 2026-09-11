@@ -10,12 +10,21 @@
    Snapshot/restore of DAYS follows sort.test.ts so mutations cannot leak. */
 import { beforeEach, describe, expect, it } from 'vitest'
 import { DAYS } from './data'
-import { SCHED, markStructuralAdd, structuralAddExists, markDeletion, deletionWasIssued } from './publish'
+import { SCHED, markStructuralAdd, structuralAddExists, markDeletion, deletionWasIssued, dropRowMarks } from './publish'
 import { shiftKeys } from './keys'
 import { applyMove, sortDay, sortWaves, sortDutyBlocks, sortGround, moveGroundRow, popReorderedDay } from './reorder'
 import { dayKeys } from './restore'
 import { groundOrder } from './order'
 import { makeStandalone, waveDutyBlock, saDutyIx } from './waves'
+import { ridKey, posKey } from './rowids'
+
+/* addressing-by-rid: a mark is stored rid-anchored once its row carries a rid
+   (a funnel write self-heals one in). rk() reads a positional key in that
+   stored form; pk() goes the other way, to read a stored rid key against the
+   positional dayKeys oracle. A synthetic del:/mov:/inp: or a note dn: key is
+   NONROW and unchanged either way. */
+const rk = (k: string) => ridKey(k, DAYS)
+const pk = (k: string) => posKey(k, DAYS)
 
 const DSNAP = JSON.stringify(DAYS)
 beforeEach(() => {
@@ -148,7 +157,8 @@ describe('key-space integrity under add + delete + drag + Sort all (scenario 1)'
     const added = Object.keys(SCHED.added)
     expect(added.length).toBe(2)
     added.forEach(k => expect(structuralAddExists(k), k).toBe(true))
-    expect(added.map(k => String(m1.get(k)).split('␟')[0]).sort()).toEqual(['A-ADDED', 'ADDED-F'])
+    /* added holds rid keys; the oracle m1 is positional, so resolve each back */
+    expect(added.map(k => String(m1.get(pk(k) ?? '')).split('␟')[0]).sort()).toEqual(['A-ADDED', 'ADDED-F'])
   })
 })
 
@@ -279,7 +289,7 @@ describe('Ground: manual freeze vs Sort all vs a time-less add (scenario 8)', ()
     expect(sortGround(0)).toBe(true)          // the flag flipping IS a change
     expect(d.gman).toBe(false)
     expect(d.ground).toBe(rowsRef)             // same array object — no permutation
-    expect(SCHED.pending['gr:0.0.prog']).toBe(1)
+    expect(SCHED.pending[rk('gr:0.0.prog')]).toBe(1)
     /* no permutation happened, so no row changed identity and the armed-slot
        disarm signal must NOT fire for this path */
     expect(popReorderedDay()).toBe(null)
@@ -299,8 +309,8 @@ describe('deletionWasIssued composes with the sort (the add→reorder→delete r
     /* Sort all moves the draft wave ABOVE the issued one */
     expect(sortWaves(0)).toBe(true)
     expect(d.waves.map((w: any) => w.label)).toEqual(['DRAFT', 'ISSUED'])
-    /* the add identity followed it to index 0 */
-    expect(SCHED.added['wl:0.0']).toBe(1)
+    /* the add identity followed it to index 0 (rid-anchored — it never moved) */
+    expect(SCHED.added[rk('wl:0.0')]).toBe(1)
     /* deleting the DRAFT wave at its new address is a no-op for the AL … */
     expect(deletionWasIssued(0, 'wave', 0)).toBe(false)
     /* … while deleting the ISSUED wave — now at index 1, PAST the one-wave
@@ -309,15 +319,19 @@ describe('deletionWasIssued composes with the sort (the add→reorder→delete r
        section outruns the issued one by exactly the outstanding adds, so
        the surplus row must be issued. */
     expect(deletionWasIssued(0, 'wave', 1)).toBe(true)
-    /* run the delete to the end, board-idiom: splice, shift, tombstone */
+    /* run the delete to the end, board-idiom: capture the root rid, splice,
+       shift (inert on rid / live for the positional-fallback), dropRowMarks the
+       LIVE book, tombstone — exactly what board.ts's gdel now does */
     const p0 = Object.keys(SCHED.pending).filter(k => k.startsWith('del:')).length
+    const draftRid = d.waves[0].rid
     const issued = deletionWasIssued(0, 'wave', 0)
     d.waves.splice(0, 1)
     ;['wl:0.', 'ff:0.', 'fr:0.', 'st:0.', 'ar:0.', 'at:0.', 'it:0.', 'tr:0.', '0.'].forEach(h => shiftKeys(h, 0, 0))
+    dropRowMarks([draftRid])
     markDeletion(0, 'wave', issued)
     expect(Object.keys(SCHED.pending).filter(k => k.startsWith('del:')).length).toBe(p0)  // no false removal
-    /* and the shift dropped the draft identity with its row */
-    expect(SCHED.added['wl:0.0']).toBeUndefined()
+    /* and dropRowMarks took the draft identity with its row */
+    expect(SCHED.added[rk('wl:0.0')]).toBeUndefined()
     expect(Object.keys(SCHED.added)).toEqual([])
   })
 })

@@ -1,6 +1,6 @@
 import { DAYS } from './data'
 import { PEOPLE, nameToId, ID_BY_CS } from './people'
-import { SCHED, markEdit, markDeletion, deletionWasIssued, markInputFiling, markStructuralAdd, dayApproved } from './publish'
+import { SCHED, markEdit, markDeletion, deletionWasIssued, markInputFiling, markStructuralAdd, dayApproved, dropRowMarks } from './publish'
 import { parseHM, hhmm, hmOK } from './time'
 import { INPUTS, DATES, inpId, inputCoversDate, isUnavail, isPersonal, inpLabel, dateIx } from './inputs'
 import { shiftKeys } from './keys'
@@ -449,11 +449,13 @@ export function unacceptInput(di:any,inp:any){
       const i=g.findIndex((r:any)=>r.src===key);
       if(i<0)continue;
       const issued=deletionWasIssued(d2,'ground',i,key);
+      const rid=g[i]&&g[i].rid;                      // captured before the splice
       g.splice(i,1);
-      /* every other ground delete renumbers the key space (see board.ts's
-         grdel). Skipping it slid every g:/gr: mark after the cut onto the
-         wrong row — permanently, including inside an issued AL's keys. */
+      /* the shift* calls stay — inert on the rid-anchored keys, still live for
+         the positional-fallback/legacy space — and dropRowMarks sweeps the
+         removed row's marks from the LIVE book (its old shiftKeys drop-half). */
       [`g:${d2}.`,`gr:${d2}.`].forEach((h:any)=>shiftKeys(h,0,i));
+      dropRowMarks([rid]);
       markDeletion(d2,'ground',issued);
       break;
     }

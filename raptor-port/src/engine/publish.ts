@@ -290,6 +290,29 @@ export function deletionWasIssued(di:any,kind:any,...at:any[]){di=+di;
   if(ix<was.length&&(kind==='note'||!!was[ix]))return true;
   return sectOf(DAYS[di]).length>was.length;
 }
+/* DELETE CLEANUP (addressing-by-rid finding 2). A deleted row's stored marks
+   have no live cell left to carry them, and — because keys are rid-anchored and
+   keys.ts's renumber is now inert on them — nothing renumbers them away either.
+   So the real delete sites (board.ts, slots.ts:unacceptInput) capture the
+   removed ROOT rid(s) BEFORE the splice and call this after: it drops every
+   stored key whose ancestry PATH contains one of those rids. Ancestor-retaining
+   keys mean a deleted PARENT rid alone sweeps its children (their keys carry the
+   parent rid), so only the root rid(s) need capturing.
+   Scoped to the LIVE book (pending/changes/added) ONLY — NEVER an issued AL's
+   keys/adds/structAdds or snap.c (Astra RID-R5-03 ≡ Fable #1): a deleted row is
+   routinely RESURRECTED by switching to a parked draft that still holds it, after
+   which rebaseDayPending re-tints it from snap.c and unpublishAL can return the
+   mark. Emptying the AL record would strand a tint that outlives its AL. Left
+   intact, a stale AL entry on a day whose row is gone is inert (unpublishAL finds
+   no live match, structuralAddExists is posKey→null→false). */
+export function dropRowMarks(rids:any){
+  const set=new Set((rids||[]).filter(Boolean));
+  if(!set.size)return;
+  const hit=(k:any)=>String(k).split(/[.:]/).some((seg:any)=>set.has(seg));
+  [SCHED.pending,SCHED.changes,SCHED.added].forEach((book:any)=>{
+    if(!book)return; Object.keys(book).forEach((k:any)=>{if(hit(k))delete book[k];});
+  });
+}
 export function markDeletion(di:any,kind:any,wasIssued:any=true){if(!wasIssued)return '';const key=deletionKey(di,kind);markEdit(key);return key;}
 /* Filing a personal input under Unavailable changes the issued day but has no
    programme row to tint. The permanent input ID makes one stable inert address per

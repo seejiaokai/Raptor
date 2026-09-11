@@ -1,6 +1,7 @@
 import { DAYS } from './data'
 import { markEdit, markMove, dayApproved, SCHED } from './publish'
 import { permuteKeys, moveKeys } from './keys'
+import { ridKey } from './rowids'
 import { groundOrder } from './order'
 import { parseHM } from './time'
 import { store } from './hooks'
@@ -57,7 +58,10 @@ const moveKindOf=(key:any)=>{const s=String(key),c=s.indexOf(':');return MOVE_KI
    a real permutation; the ground flag-only clear path passes none and stays a plain
    field mark. */
 const done=(key:any,di?:any)=>{
-  if(di!=null && dayApproved(di) && !SCHED.added[String(key)]) markMove(di,moveKindOf(key));
+  /* the added-gate reads the now rid-anchored SCHED.added, so translate the
+     positional head key first (finding 5). Runs AFTER the permute, so ridKey
+     resolves the row now at this address — correct. */
+  if(di!=null && dayApproved(di) && !SCHED.added[ridKey(String(key),DAYS)]) markMove(di,moveKindOf(key));
   else markEdit(key);
   if(di!=null)REORDERED_DI=di; return true;};
 /* Which row a SORTER hands `done`. A mover hands the one row it dragged, so
@@ -86,7 +90,7 @@ const sortedKey=(oldOf:any,keyAt:(n:number)=>string)=>{
   for(let n=0;n<oldOf.length;n++){
     const moved=oldOf[n]!==n;
     if(moved&&mv<0)mv=n;
-    if((SCHED.added||{})[keyAt(n)])continue;   // a pending draft add — not issued
+    if((SCHED.added||{})[ridKey(keyAt(n),DAYS)])continue;   // a pending draft add (rid-anchored) — not issued
     if(moved&&mvIss<0)mvIss=n;
     if(oldOf[n]<prev)overtake=true;            // issued rows changed relative order
     prev=oldOf[n];

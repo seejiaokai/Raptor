@@ -16,6 +16,12 @@ import { sortDay, sortDutyBlocks, sortWaves, applyMove, moveNote, popReorderedDa
 import { reconcileIssuedMarks } from './drafts'
 import { shiftKeys } from './keys'
 import { dayKeys } from './restore'
+import { ridKey } from './rowids'
+
+/* addressing-by-rid: marks are stored rid-anchored. dayKeys reads stay
+   positional (the oracle is positional); a raw stored-key expectation reads
+   the row's rid form via rk(). mov:/del: stay positional (NONROW). */
+const rk = (k: string) => ridKey(k, DAYS)
 
 const DSNAP = JSON.stringify(DAYS)
 const sign = (di: number) => {
@@ -86,28 +92,28 @@ describe('pending marks follow their rows (scenario 2a)', () => {
        read the MODEL there. */
     const m = dayKeys(DAYS[0], 0)
     expect(m.get('0.1.0.0.p'), 'seat mark followed wave→1, formation→0').toBe('edited-seat')
-    expect(SCHED.pending['0.1.0.0.p']).toBe(1)
+    expect(SCHED.pending[rk('0.1.0.0.p')]).toBe(1)
     expect(String(m.get('dr:0.1.1.rmks'))).toBe('edited-duty')
-    expect(SCHED.pending['dr:0.1.1.rmks']).toBe(1)
+    expect(SCHED.pending[rk('dr:0.1.1.rmks')]).toBe(1)
     expect(String(m.get('sr:0.amt.1.label'))).toContain('edited-sim')
-    expect(SCHED.pending['sr:0.amt.1.label']).toBe(1)
-    /* no mark still sits at the OLD addresses about to be occupied by other
-       rows — that would tint someone else's sortie in the next AL */
-    expect(SCHED.pending['0.0.1.0.p']).toBeUndefined()
-    expect(SCHED.pending['dr:0.0.1.rmks']).toBeUndefined()
+    expect(SCHED.pending[rk('sr:0.amt.1.label')]).toBe(1)
+    /* the marks RIDE their rows by rid, so the row now at each OLD address
+       carries nothing — no one else's sortie is tinted in the next AL */
+    expect(SCHED.pending[rk('0.0.1.0.p')]).toBeUndefined()
+    expect(SCHED.pending[rk('dr:0.0.1.rmks')]).toBeUndefined()
     /* the ridden sim EDIT rode to amt.1 (asserted above); the sort's OWN record
        of the sim move is now an inert mov: tombstone (published-day reorders of
        issued rows, owner 31 Aug 26), NOT a field mark at the new head — so amt.0
        carries nothing, and a sim reorder tombstone is present instead */
-    expect(SCHED.pending['sr:0.amt.0.label']).toBeUndefined()
+    expect(SCHED.pending[rk('sr:0.amt.0.label')]).toBeUndefined()
     expect(Object.keys(SCHED.pending).some(k => /^mov:0\.\d+\.sim$/.test(k))).toBe(true)
     /* and the AL that goes out addresses the edited rows, not the addresses */
     sign(0)
     publishAL(1)
     const rec = SCHED.als[0]
-    expect(rec.keys).toContain('0.1.0.0.p')
-    expect(rec.keys).toContain('dr:0.1.1.rmks')
-    expect(rec.keys).toContain('sr:0.amt.1.label')
+    expect(rec.keys).toContain(rk('0.1.0.0.p'))
+    expect(rec.keys).toContain(rk('dr:0.1.1.rmks'))
+    expect(rec.keys).toContain(rk('sr:0.amt.1.label'))
   })
 
   it('a pending mark follows a hand-dragged duty row on a published day', () => {
@@ -116,12 +122,12 @@ describe('pending marks follow their rows (scenario 2a)', () => {
     DAYS[0].dutywaves[0].rows[1].rmks = 'dragged-row'
     markEdit('dr:0.0.1.rmks')
     expect(applyMove('mv:d.0.0.1', 'mv:d.0.0.0')).toBe(true)
-    expect(SCHED.pending['dr:0.0.0.rmks'], 'the mark rode the row to index 0').toBe(1)
+    expect(SCHED.pending[rk('dr:0.0.0.rmks')], 'the mark rode the row to index 0').toBe(1)
     expect(DAYS[0].dutywaves[0].rows[0].rmks).toBe('dragged-row')
     /* the drag itself now records the move as an inert mov: tombstone rather than
        a field mark at the row's new head (published-day reorder of an issued row,
        owner 31 Aug 26) — so pending is the ridden edit plus one duty reorder */
-    expect(SCHED.pending['dr:0.0.0.role']).toBeUndefined()
+    expect(SCHED.pending[rk('dr:0.0.0.role')]).toBeUndefined()
     expect(Object.keys(SCHED.pending).filter(k => /^mov:0\.\d+\.duty$/.test(k))).toHaveLength(1)
     expect(Object.keys(SCHED.pending)).toHaveLength(2)
   })
@@ -250,7 +256,7 @@ describe('a sort with a draft add on top still records the issued reorder', () =
     expect(sortWaves(0)).toBe(true)
     /* the add sorted to the top… */
     expect(d.waves.map((w: any) => w.label)).toEqual(['W-NEW', 'W-EARLY', 'W-LATE'])
-    expect(SCHED.added['wl:0.0']).toBe(1)
+    expect(SCHED.added[rk('wl:0.0')]).toBe(1)
     /* …and the issued waves ALSO swapped (EARLY overtook LATE): that reorder is
        a durable tombstone, not the add's field mark the old index-0 gate left */
     expect(Object.keys(SCHED.pending).filter(k => /^mov:0\.\d+\.wave$/.test(k))).toHaveLength(1)
@@ -268,6 +274,6 @@ describe('a sort with a draft add on top still records the issued reorder', () =
        by the add, which is the add's own business exactly as in a mover drag */
     expect(Object.keys(SCHED.pending).some(k => /^mov:/.test(k))).toBe(false)
     /* the sort still counted: the add's head (now on top) wears the field mark */
-    expect(SCHED.pending['wl:0.0']).toBe(1)
+    expect(SCHED.pending[rk('wl:0.0')]).toBe(1)
   })
 })

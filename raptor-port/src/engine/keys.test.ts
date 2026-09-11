@@ -22,6 +22,37 @@ describe('slot / text key parsing (tfin K)', () => {
     expect(keyDay('nonsense')).toBe(-1)
     expect(keyDay('xx:zz')).toBe(-1)
   })
+
+  /* keyDay still reads the day off a rid-anchored key — the day index stays a
+     literal first component, only the position slots collapse to rids */
+  it('keyDay reads the day off a rid-anchored key too', () => {
+    expect(keyDay('wl:0.r1abc')).toBe(0)
+    expect(keyDay('3.r1.r2.r3.p')).toBe(3)
+    expect(keyDay('ff:2.rW.rF.cs')).toBe(2)
+  })
+})
+
+/* ADDRESSING BY rid (task 4): shiftKeys/permuteKeys renumber POSITIONAL keys but
+   are automatically INERT on a rid-anchored one — +«rid» is NaN, so the key is
+   returned unchanged (never renumbered, never dropped). The renumber's "effect"
+   stops; the calls stay, still live for the positional-fallback and note space. */
+describe('shiftKeys / permuteKeys are inert on rid-anchored keys', () => {
+  it('a delete renumbers a positional neighbour but leaves a rid key untouched', () => {
+    SCHED.pending = {}
+    SCHED.changes = { 'wl:0.rWAVE': 1, 'wl:0.2': 2, 'dn:0.2': 3 }
+    shiftKeys('wl:0.', 0, 1)                 // delete positional wave 1
+    expect(SCHED.changes['wl:0.rWAVE']).toBe(1)   // the rid key rode through unchanged
+    expect(SCHED.changes['wl:0.1']).toBe(2)       // the positional neighbour shifted 2→1
+    expect(SCHED.changes['dn:0.2']).toBe(3)       // a different key space is untouched
+  })
+  it('a reorder permutes positional keys but leaves a rid key untouched', () => {
+    SCHED.pending = {}
+    SCHED.changes = { 'wl:0.rWAVE': 1, 'wl:0.0': 2, 'wl:0.1': 3 }
+    permuteKeys('wl:0.', 0, [1, 0])          // swap positional waves 0 and 1
+    expect(SCHED.changes['wl:0.rWAVE']).toBe(1)   // the rid key did not move
+    expect(SCHED.changes['wl:0.1']).toBe(2)       // positional 0 → 1
+    expect(SCHED.changes['wl:0.0']).toBe(3)       // positional 1 → 0
+  })
 })
 
 describe('shiftKeys renumbering (tfin B48)', () => {

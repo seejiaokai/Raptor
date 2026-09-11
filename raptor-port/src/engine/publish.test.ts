@@ -6,11 +6,12 @@ import { beforeEach, describe, expect, it } from 'vitest'
 import { DAYS } from './data'
 import { PEOPLE, isScheduler } from './people'
 import { SCHED, signOf, signMissing, daySigned, signClear, signNames, signPeople, setDayApproved, dayApproved, publishableKeys, pendDays, dayPendCount, canPublishAL, alUnsignedDays, publishAL, publishALDay, unpublishAL, discardPending, alIssue, alCount, alDays, alUsed, nextAL, markEdit, markStructuralAdd, markDeletion, deletionWasIssued, isDeleteKey, deleteCount, pendCount, alColor, alAttr, daySnapOf, dayVersions, verLabel, dayCurVer } from './publish'
+import { dropRowMarks } from './publish'
 import { noteChange, txtSet, txtGet } from './slots'
 import { keyDay, shiftKeys } from './keys'
 import { moveNote } from './reorder'
 import { restoreDayVersion } from './restore'
-import { ridKey } from './rowids'
+import { ridKey, ensureRowIds } from './rowids'
 
 const rk = (k: string) => ridKey(k, DAYS)
 
@@ -375,6 +376,32 @@ describe('structural-deletion tombstones', () => {
     expect(restoreDayVersion(0, 'orig')).not.toBe(false)
     expect(SCHED.added[key]).toBeUndefined()
     expect(deletionWasIssued(0, 'note', ni)).toBe(true)
+  })
+})
+
+describe('dropRowMarks — the delete sweep (addressing-by-rid task 4)', () => {
+  it('sweeps a deleted rid AND its descendants from the LIVE book, but never an issued AL', () => {
+    ensureRowIds(DAYS)
+    const waveRid = DAYS[0].waves[0].rid
+    /* three marks in the wave's subtree — ancestor-retaining keys all carry the
+       wave rid, so a single root capture must sweep every one */
+    markEdit('wl:0.0'); markEdit('ff:0.0.0.cs'); markEdit('0.0.0.0.p')
+    const wl = rk('wl:0.0'), ff = rk('ff:0.0.0.cs'), seat = rk('0.0.0.0.p')
+    expect(wl).not.toBe('wl:0.0')                       // it really is rid-anchored
+    expect([SCHED.pending[wl], SCHED.pending[ff], SCHED.pending[seat]]).toEqual([1, 1, 1])
+    /* an issued AL and its frozen snapshot slice carry the wave's key too */
+    SCHED.changes[wl] = 1
+    SCHED.als = [{ n: 1, keys: [wl], snap: { 0: { d: {}, c: { [wl]: 1 } } }, sign: {} }]
+    dropRowMarks([waveRid])
+    /* the whole live subtree is gone — the wave, its formation, its seat */
+    expect(SCHED.pending[wl]).toBeUndefined()
+    expect(SCHED.pending[ff]).toBeUndefined()
+    expect(SCHED.pending[seat]).toBeUndefined()
+    expect(SCHED.changes[wl]).toBeUndefined()
+    /* but the issued AL record is IMMUTABLE — a resurrected draft must be able to
+       return this mark to pending via unpublishAL (Astra RID-R5-03) */
+    expect(SCHED.als[0].keys).toEqual([wl])
+    expect(SCHED.als[0].snap[0].c[wl]).toBe(1)
   })
 })
 
