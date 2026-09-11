@@ -17,6 +17,12 @@ import { DAYS } from '../engine/data'
 import { SCHED } from '../engine/publish'
 import { setSlotVal, slotVal, txtSet, txtGet } from '../engine/slots'
 import { ELOG, elogClear, elogRows, elogFor } from '../engine/editlog'
+import { ridKey } from '../engine/rowids'
+
+/* the amendment book and the edit log store keys rid-anchored (addressing-by-rid);
+   wrap a raw stored-key expectation so it reads that form. elogFor translates the
+   query in, so it still takes a positional DOM key. */
+const rk = (k: string) => ridKey(k, DAYS)
 import { HOOKS } from '../engine/hooks'
 import * as view from '../state/view'
 import { openScheduler, closeScheduler } from './board'
@@ -189,7 +195,7 @@ describe('the wave label (wl:) and the jump', () => {
       const r = elogFor('wl:0.0')
       expect(r, 'the retitle is in the changes list').toBeTruthy()
       expect(r!.to).toBe('Night wave')
-      expect(SCHED.pending['wl:0.0'], 'and the amendment machinery saw it').toBeTruthy()
+      expect(SCHED.pending[rk('wl:0.0')], 'and the amendment machinery saw it').toBeTruthy()
     } finally {
       w.label = wasLabel; w.night = wasNight
       await mutate()
@@ -281,7 +287,7 @@ describe('undo and redo against the log', () => {
     expect(afterUndo.length, 'the edit row still stands, plus the undo itself').toBe(2)
     expect(afterUndo[0]!.lbl).toBe('Undo')
     expect(afterUndo[0]!.key, 'a structural sentence, not a value pair').toBe('')
-    expect(afterUndo[1]!.key).toBe(key)
+    expect(afterUndo[1]!.key).toBe(rk(key))     // the log stores the rid form
 
     await act(async () => { redo(); notify() })
     expect(slotVal(key), 'redo re-applies').toBe(to)

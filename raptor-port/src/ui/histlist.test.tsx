@@ -15,6 +15,8 @@ import { createRoot, type Root } from 'react-dom/client'
 import { App } from './App'
 import { initStore, setSession, notify } from '../state/store'
 import { setSlotVal, slotVal, txtSet } from '../engine/slots'
+import { DAYS } from '../engine/data'
+import { rowsOf } from '../engine/rowids'
 import { elogClear, elogAllFor, elogGroups, logAction } from '../engine/editlog'
 import { HOOKS } from '../engine/hooks'
 import * as view from '../state/view'
@@ -277,7 +279,9 @@ describe('grouped by detail', () => {
 
     const heads = $$('#histBody .hl-ghead')
     expect(heads.length, 'the seat with two changes folds; the other is a plain row').toBe(1)
-    expect(heads[0]!.dataset.hgrp).toBe(a)
+    /* the fold handle is the group INDEX now (no rid in the DOM — RID-05), not
+       the row key; the seat's own key rides data-hkey on the jump rows instead */
+    expect(heads[0]!.dataset.hgrp).toBe('0')
     expect(heads[0]!.textContent).toContain('2 changes')
     expect($$('#histBody .hl-sub').length, 'shut to begin with').toBe(0)
 
@@ -290,6 +294,22 @@ describe('grouped by detail', () => {
     expect(sub[1]!.textContent).toContain(all[1]!.to)
     /* and a sub-row still jumps */
     expect(sub[0]!.className).toContain('hit')
+  })
+
+  /* THE DOM STAYS DETERMINISTIC (RID-05). The log now stores rid-anchored keys,
+     but a rid is random per browser, so none may reach the rendered HTML — the
+     jump handle is the row's positional address, the fold handle is the group's
+     index. Assert every actual rid in the model is absent from the history. */
+  it('the rendered history leaks no rid — positional jump handles, index fold handles', async () => {
+    await seed()
+    await openList()
+    await click($('#histGrouped'))
+    const html = $('#histBody').innerHTML
+    const rids = DAYS.flatMap(rowsOf).map((r: any) => r.rid).filter(Boolean)
+    expect(rids.length, 'the model really carries rids to leak').toBeGreaterThan(0)
+    rids.forEach((rid: string) => expect(html.includes(rid), `rid ${rid} must not reach the DOM`).toBe(false))
+    $$('#histBody .hl-ghead').forEach(h => expect(h.dataset.hgrp, 'fold handle is an index').toMatch(/^\d+$/))
+    $$('#histBody .hl-row.hit').forEach(h => expect(h.dataset.hkey, 'jump handle is a positional key').toBeTruthy())
   })
 
   it('a detail changed once is a plain row, not a fold that reveals itself', async () => {
@@ -317,10 +337,10 @@ describe('grouped by detail', () => {
   })
 
   it('jumping from a grouped row also forgets the grouped view', async () => {
-    const { a } = await seed()
+    await seed()
     await openList()
     await click($('#histGrouped'))
-    await click($(`[data-hgrp="${a}"]`))
+    await click($('#histBody .hl-ghead'))          // the fold head (index handle now)
     await click($('#histBody .hl-sub .hl-row.hit'))
     await settle()
     expect(HISTOPEN.size, 'the old fold is not kept behind the closed list').toBe(0)

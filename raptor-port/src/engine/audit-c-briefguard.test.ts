@@ -26,7 +26,9 @@ import { SCHED } from './publish'
 import { VCONF } from './rules'
 import { HOOKS } from './hooks'
 import { ELOG, elogClear, elogFor } from './editlog'
+import { ridKey } from './rowids'
 
+const rk = (k: string) => ridKey(k, DAYS)
 const DSNAP = JSON.stringify(DAYS)
 const ISNAP = JSON.stringify(INPUTS)
 let said: string[] = []
@@ -117,7 +119,7 @@ describe('moving the take-off earlier past an existing brief', () => {
     const f: any = F()
     f.to = '12:00'; f.br = '10:30'
     txtSet(`${P}.to`, '09:00')
-    expect(SCHED.pending[`${P}.br`], 'the cleared brief is an amendment of its own').toBeTruthy()
+    expect(SCHED.pending[rk(`${P}.br`)], 'the cleared brief is an amendment of its own').toBeTruthy()
     const r = elogFor(`${P}.br`)
     expect(r, 'and it is in the changes list').toBeTruthy()
     expect(r!.from).toBe('10:30')

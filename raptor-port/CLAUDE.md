@@ -528,13 +528,20 @@ reassign across modules. `WARN`/`REST`/`EVD` are reassigned by every
 **The slot-key grammar** — everything addresses through this, and the day
 index is always first after the prefix (`keyDay()` depends on it). Every
 row also carries `rid` (`engine/rowids.ts`, 10 Sep 26) — identity for the
-database, never an address: minted by one walk before every baseline and
-snapshot (`initStore`/`loadWeek`/`histInit`/`histPush`), kept by a move, an
-undo, a restore, re-minted on a copy (day template, duplicated wave, draft),
-never printed (parity stays byte-identical) and never compared by the
-amendment machinery. A new row-creating path needs no code: the walk mints
-what it finds missing; a new row-COPYING path must strip ids
-(`stripRowIds`) so the copy is a new row.
+database: minted by one walk before every baseline and snapshot
+(`initStore`/`loadWeek`/`histInit`/`histPush`), kept by a move, an undo, a
+restore, re-minted on a copy (day template, duplicated wave), never printed
+(parity stays byte-identical). **Since addressing-by-rid (11 Sep 26) the
+amendment book RESOLVES rows by `rid`, not by position** — the persisted keys
+(`SCHED.pending`/`changes`/`added`, every `al.keys`/`snap.c`, the edit log) are
+`rid`-anchored, translated to/from the positional DOM address at the write-in
+(`ridWriteKey`) and paint (`ridKey` in `alAttr`) boundary, so a delete or
+reorder never renumbers another row's stored key. A new row-creating path needs
+no code: the walk mints what it finds missing, and the write-in translate
+self-heals a still-id-less row. A day-template / duplicated-wave COPY must strip
+ids (`stripRowIds`) so the copy is a new row — but a parked DRAFT deliberately
+KEEPS them (`drafts.ts`, 11 Sep 26): it is an alternate VERSION of the same day,
+so the live day, its drafts and its issued document share ONE `rid`-space.
 
 - Flying seat `di.gi.li.ai.seat` (no prefix) — day, wave, formation,
   aircraft, seat `p` (FCP) or `w` (RCP).

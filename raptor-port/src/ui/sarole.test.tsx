@@ -16,6 +16,7 @@ import { createRoot, type Root } from 'react-dom/client'
 import { App } from './App'
 import { initStore, setSession, notify, setPage } from '../state/store'
 import { DAYS } from '../engine/data'
+import { ridKey } from '../engine/rowids'
 import { makeStandalone, scSpare } from '../engine/waves'
 import { SCHED } from '../engine/publish'
 import { validate } from '../engine/validate'
@@ -26,6 +27,7 @@ import { openScheduler } from './board'
 
 let host: HTMLDivElement
 let root: Root
+const rk = (k: string) => ridKey(k, DAYS)
 const $ = (sel: string) => host.querySelector(sel) as HTMLElement
 const click = async (el: Element | null) => {
   expect(el, 'click target exists').toBeTruthy()
@@ -86,7 +88,7 @@ describe('the MAIN/SPARE badge on an SC line', () => {
     expect(a.spare, 'the flag flipped').toBe(false)
     expect(a.role, 'the label followed').toBe('MAIN')
     expect(scSpare(w, f, a), 'the engine stops exempting the line').toBe(false)
-    expect(SCHED.pending[`st:0.${WI}.0.${ai}`], 'the line key is pending for the next AL').toBeTruthy()
+    expect(SCHED.pending[rk(`st:0.${WI}.0.${ai}`)], 'the line key is pending for the next AL').toBeTruthy()
     /* and back — the flip is symmetric */
     await click($(`#eWeek [data-sarole="0.${WI}.0.${ai}"]`))
     expect(a.spare).toBe(true)

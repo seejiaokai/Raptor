@@ -4,7 +4,7 @@
    missing id is minted, a duplicate (a copied row) is re-minted, an existing
    id is never touched, and the walk covers every row kind. */
 import { describe, expect, it } from 'vitest'
-import { ensureRowIds, mintRowId, rowsOf, ridKey, posKey, migrateBookKeys } from './rowids'
+import { ensureRowIds, mintRowId, rowsOf, ridKey, posKey, migrateBookKeys, ridWriteKey, isRowKey, migrateLegacyIds } from './rowids'
 import { DAYS } from './data'
 import { dayKeys } from './restore'
 import { keyDay } from './keys'
@@ -127,6 +127,46 @@ describe('ridKey / posKey / migrateBookKeys — addressing by rid (addressing-by
     expect(migrateBookKeys(sched, days)).toBe(0)                       // already rid form → a no-op
   })
 
+  it('migrateLegacyIds — a MODERN book (ridV set) is never touched, even a disjoint draft (Astra RID-IR-02)', () => {
+    const days = seed()
+    const di = days.findIndex((d: any) => (d.waves || []).length > 0)
+    const disjoint = clone(days[di]); rowsOf(disjoint).forEach((r: any) => { r.rid = mintRowId() })   // a modern draft that replaced all its rows
+    const before = rowsOf(disjoint).map((r: any) => r.rid)
+    const sched: any = { ridV: 2, drafts: { [di]: [{ id: 'dr1', d: disjoint }] }, orig: {}, als: [] }
+    expect(migrateLegacyIds(sched, days)).toBe(false)                 // modern → skip
+    expect(rowsOf(disjoint).map((r: any) => r.rid)).toEqual(before)   // identity untouched
+    expect(rowsOf(days[di]).every((r: any) => typeof r.rid === 'string')).toBe(true)   // live day untouched
+  })
+
+  it('migrateLegacyIds — a FOUNDATION book (no ridV) strips the whole book so it rebuilds one id-space (Astra RID-REVIEW-01)', () => {
+    const days = seed()
+    const di = days.findIndex((d: any) => (d.waves || []).length > 0)
+    const draft = clone(days[di]); rowsOf(draft).forEach((r: any) => { r.rid = mintRowId() })   // #384's re-minted parked draft
+    const origSnap = clone(days[di])                                  // an issued snapshot
+    const sched: any = { drafts: { [di]: [{ id: 'dr1', d: draft }] }, orig: { [di]: { d: origSnap, c: {} } }, als: [] }
+    expect(migrateLegacyIds(sched, days)).toBe(true)                  // foundation → migrate
+    expect(rowsOf(days[di]).some((r: any) => r.rid)).toBe(false)      // live day stripped
+    expect(rowsOf(draft).some((r: any) => r.rid)).toBe(false)         // the foreign draft stripped
+    expect(rowsOf(origSnap).some((r: any) => r.rid)).toBe(false)      // the snapshot stripped — all rebuild together
+    expect(sched.ridV).toBe(2)                                        // stamped modern
+    expect(migrateLegacyIds(sched, days)).toBe(false)                 // one-time — never again
+  })
+
+  it('migrateBookKeys migrates SCHED.orig[di].c against its OWN snapshot day (Fable-B)', () => {
+    const days = seed()
+    const di = days.findIndex((d: any) => (d.waves || []).length > 0)
+    const w0 = days[di].waves[0].rid
+    /* the Original snapshot's wave-0 carries a DIFFERENT id than the live one,
+       so a mark keyed to 'rORIGW0' proves it was re-keyed against orig[di].d and
+       not the live day (the reissue/Original preview reads this slice) */
+    const origDay = clone(days[di]); origDay.waves[0].rid = 'rORIGW0'
+    const sched: any = { pending: {}, changes: {}, added: {}, als: [], orig: { [di]: { d: origDay, c: { [`wl:${di}.0`]: 1 } } } }
+    migrateBookKeys(sched, days)
+    expect(sched.orig[di].c['wl:' + di + '.rORIGW0']).toBe(1)          // orig's own id
+    expect(sched.orig[di].c[`wl:${di}.${w0}`]).toBeUndefined()        // NOT the live wave's id
+  })
+
+
   /* ---- Fable review pins (10 Sep 26) ---------------------------------- */
   it('keyDay still reads the day off a rid-form key — prefixed and the bare seat', () => {
     /* every per-day filter, snapshot slice and AL day-list rides keyDay; a rid
@@ -158,6 +198,41 @@ describe('ridKey / posKey / migrateBookKeys — addressing by rid (addressing-by
     const di = days.findIndex((d: any) => (d.allhands || []).length > 0)
     const r = days[di].allhands[0].rid
     expect(ridKey(`a:${di}.0.+`, days)).toBe(`a:${di}.${r}.+`)
+  })
+})
+
+describe('ridWriteKey / isRowKey — the self-healing write-in translate (addressing-by-rid task 2)', () => {
+  it('isRowKey tells a row prefix (and the bare seat) from a note / synthetic / unknown one', () => {
+    expect(isRowKey('ff:0.0.0.cs')).toBe(true)
+    expect(isRowKey('0.0.0.0.p')).toBe(true)        // bare flying seat
+    expect(isRowKey('wl:0.0')).toBe(true)
+    expect(isRowKey('dn:0.0')).toBe(false)          // note — NONROW
+    expect(isRowKey('del:0.1.line')).toBe(false)    // synthetic
+    expect(isRowKey('iu:abc')).toBe(false)
+    expect(isRowKey('zz:0.0')).toBe(false)          // unknown prefix — no keyLevels
+  })
+
+  it('mints the rid a row lacks, then anchors the key — where ridKey alone cannot', () => {
+    const days = clone(DAYS)                          // NO ensureRowIds: rows carry no rid yet
+    const k = 'ff:0.0.0.cs'
+    expect(ridKey(k, days)).toBe(k)                   // ridKey cannot anchor an id-less row
+    const out = ridWriteKey(k, days)
+    expect(out).not.toBe(k)                           // it self-healed: minted, then anchored
+    expect(posKey(out, days)).toBe(k)                 // and the result round-trips back
+    expect(days[0].waves[0].formations[0].rid).toMatch(/^r/)
+  })
+
+  it('leaves a NONROW / note key positional and does not walk (no wasted mint)', () => {
+    const days = clone(DAYS)
+    expect(ridWriteKey('dn:0.0', days)).toBe('dn:0.0')
+    expect(days[0].waves[0].rid).toBeUndefined()      // never minted anything
+  })
+
+  it('is idempotent on a key that already carries its rids', () => {
+    const days = clone(DAYS); ensureRowIds(days)
+    const rk = ridKey('wl:0.0', days)
+    expect(ridWriteKey(rk, days)).toBe(rk)
+    expect(ridWriteKey('wl:0.0', days)).toBe(rk)
   })
 })
 
@@ -304,34 +379,35 @@ describe('identity rules — a copy is a new row, a move/undo/restore is the sam
     expect(ids(d).slice().sort()).toEqual(before)
     expect(d.waves[1].rid).toBe(w0)            // the wave that WAS at 0 is now at 1, carrying the same id
   })
-  it('a duplicated day keeps its ids on screen and the PARKED draft mints fresh ones; switching A→B→A returns each their own', async () => {
+  it('a duplicated day KEEPS its ids across every draft (keep-ids); only a genuinely new row mints a fresh one', async () => {
     const { initStore } = await import('../state/store'); const { HOOKS } = await import('./hooks')
     const { draftDup, draftSelect, dayDrafts } = await import('./drafts')
     initStore()
     const a = ids(DAYS[1])
-    /* a leaked week-2 day (Important 2 — the previous version of this test
-       ran on whatever week the file's earlier tests left CURWEEK pointed at)
-       would read every id array in this test as [], and every `toEqual`
-       below would then pass VACUOUSLY — proving nothing. Week 1 is restored
-       by the template test above before this one runs; this still pins that
-       the day actually has rows, so a future leak fails LOUD, here. */
+    /* a leaked week-2 day would read every id array as [] and pass VACUOUSLY;
+       pin that the day actually has rows so a future leak fails LOUD here */
     expect(a.length).toBeGreaterThan(0)
     const t = draftDup(1)!; HOOKS.histPush()
-    /* THE DAY ON SCREEN KEEPS ITS IDENTITY. The user is still editing the day
-       they were editing, so its rows are the same rows and carry the same ids
-       — which is what keeps the issued snapshot and every AL snap of an
-       untouched day naming the rows that are actually live. What is new is
-       the PARKED "Draft 1": it is a COPY of the day, and a copy is a new set
-       of rows, so it is the one that mints fresh ids. */
+    /* DRAFTS KEEP THEIR IDS (11 Sep 26, addressing-by-rid). A parked draft is
+       an alternate VERSION of the same day, not an independent copy, so it
+       shares the day's rids — one rid-space across the live day, its drafts and
+       its issued snapshots, which is what lets a switch install a blob that
+       already resolves against every frozen amendment (no adopt, no gate). */
     expect(ids(DAYS[1])).toEqual(a)                 // the live day is untouched
-    expect(ids(t.d)).toEqual(a)                     // and its current-draft blob agrees with it
+    expect(ids(t.d)).toEqual(a)                     // Draft 2's blob shares its ids
     const [d1] = dayDrafts(1)
-    const b = ids(d1.d)
-    expect(b.length).toBe(a.length)
-    expect(b.every(x => typeof x === 'string' && !a.includes(x)), 'the parked copy is a new set of rows').toBe(true)
-    draftSelect(1, d1.id); HOOKS.histPush(); expect(ids(DAYS[1])).toEqual(b)
+    expect(ids(d1.d)).toEqual(a)                    // and so does the parked Draft 1
+    /* switching just installs the blob — the shared ids ride along either way,
+       and no re-mint fires (a parked draft never coexists in DAYS) */
+    draftSelect(1, d1.id); HOOKS.histPush(); expect(ids(DAYS[1])).toEqual(a)
     draftSelect(1, t.id); HOOKS.histPush(); expect(ids(DAYS[1])).toEqual(a)
-    draftSelect(1, d1.id); HOOKS.histPush(); expect(ids(DAYS[1])).toEqual(b)
+    /* but a genuinely NEW row added inside a draft mints a FRESH id, so a real
+       add is never mistaken for a survivor */
+    DAYS[1].waves[0].formations.push({ cs: '', msn: '', to: '', ld: '', aircraft: [{ p: '', w: '', area: '', rmks: '', opts: {} }] })
+    HOOKS.histPush()
+    const added = DAYS[1].waves[0].formations.slice(-1)[0].rid
+    expect(typeof added).toBe('string')
+    expect(a.includes(added)).toBe(false)
   })
   it('restoring an issued version twice returns the same ids; undo and redo return the same ids', async () => {
     const { initStore, undo, redo } = await import('../state/store'); const { HOOKS } = await import('./hooks')

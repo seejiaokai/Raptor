@@ -6,10 +6,14 @@ import { beforeEach, describe, expect, it } from 'vitest'
 import { DAYS } from './data'
 import { PEOPLE, isScheduler } from './people'
 import { SCHED, signOf, signMissing, daySigned, signClear, signNames, signPeople, setDayApproved, dayApproved, publishableKeys, pendDays, dayPendCount, canPublishAL, alUnsignedDays, publishAL, publishALDay, unpublishAL, discardPending, alIssue, alCount, alDays, alUsed, nextAL, markEdit, markStructuralAdd, markDeletion, deletionWasIssued, isDeleteKey, deleteCount, pendCount, alColor, alAttr, daySnapOf, dayVersions, verLabel, dayCurVer } from './publish'
+import { dropRowMarks } from './publish'
 import { noteChange, txtSet, txtGet } from './slots'
 import { keyDay, shiftKeys } from './keys'
 import { moveNote } from './reorder'
 import { restoreDayVersion } from './restore'
+import { ridKey, ensureRowIds } from './rowids'
+
+const rk = (k: string) => ridKey(k, DAYS)
 
 const sign = (di: number) => {
   const g = signOf(di)
@@ -198,6 +202,28 @@ describe('publishing an AL (tfin B49 / B26)', () => {
     expect(alAttr('dn:1.0')).toBe('')             // a draft-day edit carries no mark at all
   })
 
+  /* ADDRESSING BY rid (task 2 — the write/read boundary). A ROW mark is stored
+     rid-anchored, so inserting a wave ABOVE the edited one does NOT drag the
+     mark onto the wrong row: the stored key never changes, and alAttr on the
+     row's NEW positional address still finds it. Before this, noteChange stored
+     the positional key and alAttr read it back positionally, so the mark stayed
+     glued to the old index and lit the inserted wave instead. */
+  it('a row mark rides its row across an insert above it (rid-anchored, not positional)', () => {
+    sign(0); setDayApproved(0, 1)                     // approve → alAttr previews pending
+    const gi = DAYS[0].waves.length - 1
+    txtSet(`wl:0.${gi}`, 'RID-TASK2')                 // edit the LAST wave's label (a row key)
+    expect(SCHED.pending[`wl:0.${gi}`]).toBeUndefined()   // NOT stored positionally
+    expect(SCHED.pending[rk(`wl:0.${gi}`)]).toBe(1)       // stored rid-anchored
+    expect(alAttr(`wl:0.${gi}`)).toContain('data-aln')    // alAttr finds it via translation
+    DAYS[0].waves.unshift({ formations: [], label: 'INSERTED' })   // shift the edited wave to gi+1
+    try {
+      expect(alAttr(`wl:0.${gi + 1}`)).toContain('data-aln')   // the mark rode its row
+      expect(alAttr(`wl:0.${gi}`)).toBe('')                    // and did NOT stay at the old index
+    } finally {
+      DAYS[0].waves.shift()                            // net zero on the demo data
+    }
+  })
+
   it('the preview number tracks nextAL as amendments are issued', () => {
     sign(0); setDayApproved(0, 1)
     noteChange('dn:0.0')
@@ -334,7 +360,7 @@ describe('structural-deletion tombstones', () => {
       expect(deletionWasIssued(0, 'programme', 0)).toBe(true)
       DAYS[0].allhands.splice(0, 1); shiftKeys('ap:0.', 0, 0)
     }
-    expect(SCHED.added['ap:0.0.prog']).toBe(1)
+    expect(SCHED.added[addKey]).toBe(1)   // rid-anchored: the add marker rides the row across the shift
     expect(deletionWasIssued(0, 'programme', 0), 'the draft row stays identifiable after shifting onto an Original address').toBe(false)
   })
 
@@ -350,6 +376,32 @@ describe('structural-deletion tombstones', () => {
     expect(restoreDayVersion(0, 'orig')).not.toBe(false)
     expect(SCHED.added[key]).toBeUndefined()
     expect(deletionWasIssued(0, 'note', ni)).toBe(true)
+  })
+})
+
+describe('dropRowMarks — the delete sweep (addressing-by-rid task 4)', () => {
+  it('sweeps a deleted rid AND its descendants from the LIVE book, but never an issued AL', () => {
+    ensureRowIds(DAYS)
+    const waveRid = DAYS[0].waves[0].rid
+    /* three marks in the wave's subtree — ancestor-retaining keys all carry the
+       wave rid, so a single root capture must sweep every one */
+    markEdit('wl:0.0'); markEdit('ff:0.0.0.cs'); markEdit('0.0.0.0.p')
+    const wl = rk('wl:0.0'), ff = rk('ff:0.0.0.cs'), seat = rk('0.0.0.0.p')
+    expect(wl).not.toBe('wl:0.0')                       // it really is rid-anchored
+    expect([SCHED.pending[wl], SCHED.pending[ff], SCHED.pending[seat]]).toEqual([1, 1, 1])
+    /* an issued AL and its frozen snapshot slice carry the wave's key too */
+    SCHED.changes[wl] = 1
+    SCHED.als = [{ n: 1, keys: [wl], snap: { 0: { d: {}, c: { [wl]: 1 } } }, sign: {} }]
+    dropRowMarks([waveRid])
+    /* the whole live subtree is gone — the wave, its formation, its seat */
+    expect(SCHED.pending[wl]).toBeUndefined()
+    expect(SCHED.pending[ff]).toBeUndefined()
+    expect(SCHED.pending[seat]).toBeUndefined()
+    expect(SCHED.changes[wl]).toBeUndefined()
+    /* but the issued AL record is IMMUTABLE — a resurrected draft must be able to
+       return this mark to pending via unpublishAL (Astra RID-R5-03) */
+    expect(SCHED.als[0].keys).toEqual([wl])
+    expect(SCHED.als[0].snap[0].c[wl]).toBe(1)
   })
 })
 

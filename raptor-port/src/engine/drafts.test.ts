@@ -7,9 +7,10 @@ import { beforeEach, describe, expect, it } from 'vitest'
 import { DAYS } from './data'
 import {
   SCHED, signOf, setDayApproved, dayApproved, daySnapOf, dayCurVer,
-  publishALDay, unpublishAL, deleteCount, deletionWasIssued,
+  publishALDay, unpublishAL, deleteCount, deletionWasIssued, alAttr, markStructuralAdd, markDeletion, markEdit, dropRowMarks,
 } from './publish'
 import { txtSet, txtGet, setSlotVal, fillSlot } from './slots'
+import { moveDutyRow, moveGroundRow } from './reorder'
 import { keyDay } from './keys'
 import { dayKeys } from './restore'
 import {
@@ -18,19 +19,22 @@ import {
   loadVersionToWorkingCopy, reconcileIssuedMarks,
 } from './drafts'
 import { HIST, histInit, histApply, histPush, histSnap } from '../state/history'
-import { rowsOf } from './rowids'
+import { rowsOf, ridKey, ensureRowIds } from './rowids'
+
+/* a ROW key is stored rid-anchored once its row carries a rid (a funnel write
+   self-heals one in); wrap a raw stored-key expectation so it reads that form.
+   dn:/del:/inp: are NONROW and unchanged, so they need no wrap. */
+const rk = (k: string) => ridKey(k, DAYS)
 
 /* drafts swap DAYS[0] wholesale — every test starts from the pristine day,
    same discipline daytpl.test.ts and restore.test.ts use */
 const D0 = JSON.parse(JSON.stringify(DAYS[0]))
-/* Stable-ids identity rule (10 Sep 26 review): duplicating leaves the LIVE
-   day's rids alone — the user is still editing the day they were editing —
-   and mints fresh ones on the PARKED copy, because a copy is a new set of
-   rows. So a parked blob carries ids in this file even though the file never
-   runs the day through initStore/ensureRowIds. A handful of byte-for-byte
-   JSON comparisons below predate ids entirely and were written when neither
-   side ever carried one; they still hold for every OTHER field, so compare
-   with `rid` dropped rather than weaken them to something looser. */
+/* DRAFTS KEEP THEIR IDS (11 Sep 26, addressing-by-rid): a parked draft is an
+   alternate VERSION of the same day, so draftDup no longer strips/re-mints —
+   both blobs are plain clones of the live day, byte-identical to it (ids and
+   all). draftDup ALSO mints any missing id on the live day before cloning (the
+   stow-hardening, Astra RID-IR-05), so after a dup the live day and both blobs
+   share one rid-space. `ridless` strips rid to compare CONTENT alone. */
 const ridless = (_k: string, v: any) => (_k === 'rid' ? undefined : v)
 
 const sign = (di: number) => {
@@ -60,20 +64,14 @@ describe('duplicating a day', () => {
     /* both blobs are the day as it stood — deep clones, not references */
     expect(list[0].d).not.toBe(DAYS[0])
     expect(list[1].d).not.toBe(DAYS[0])
-    /* content-identical to the live day — ids aside: Draft 1 is the PARKED
-       COPY, and a copy is a new set of rows, so it is the one carrying fresh
-       ids (stable-ids identity rule, 10 Sep 26) */
-    expect(JSON.stringify(list[0].d, ridless)).toBe(JSON.stringify(DAYS[0], ridless))
-    /* …ids aside — assert they ARE aside: Draft 1 is the parked copy, minted
-       fresh, while DAYS[0] is the day on screen and keeps whatever identity it
-       had — none at all in this file, which never calls initStore/ensureRowIds */
-    expect(rowsOf(list[0].d).every((r: any) => typeof r.rid === 'string')).toBe(true)
-    expect(rowsOf(DAYS[0]).some((r: any) => 'rid' in r)).toBe(false)
-    /* Draft 2 IS the live day, so its blob agrees with it — ids included */
-    expect(rowsOf(list[1].d).some((r: any) => 'rid' in r)).toBe(false)
-    /* the live day is untouched by duplicating, ids and content alike */
+    /* KEEP-IDS + stow-hardening: both blobs are plain clones, byte-identical to
+       the live day (ids and all), and share its rids — which the dup minted */
+    expect(JSON.stringify(list[0].d)).toBe(JSON.stringify(DAYS[0]))
+    expect(JSON.stringify(list[1].d)).toBe(JSON.stringify(DAYS[0]))
+    expect(rowsOf(list[0].d).map((r: any) => r.rid)).toEqual(rowsOf(DAYS[0]).map((r: any) => r.rid))   // one shared id-space
+    expect(rowsOf(DAYS[0]).every((r: any) => typeof r.rid === 'string')).toBe(true)                    // the stow-hardening mint ran
+    /* the live day's CONTENT is untouched by duplicating (ids aside) */
     expect(JSON.stringify(DAYS[0], ridless)).toBe(JSON.stringify(D0, ridless))
-    expect(rowsOf(D0).some((r: any) => 'rid' in r)).toBe(false)   // D0 was never minted either
   })
 
   it('a later dup stows live into the selected entry and mints Draft N', () => {
@@ -169,7 +167,12 @@ describe('switching drafts', () => {
    hand-edit to the same result would have carried. */
 describe('switching drafts on a PUBLISHED day — the pending rebase', () => {
   const dayPend = () => Object.keys(SCHED.pending).filter((k: any) => keyDay(k) === 0).sort()
-  const pub = () => { sign(0); setDayApproved(0, 1) }
+  /* mint ids BEFORE publishing, exactly as boot does (initStore → ensureRowIds
+     → then the day is approved), so the frozen snapshot and the live day share
+     one rid-space — the production invariant the rebase's rid join relies on.
+     Without it the snapshot is id-less while a stow mints the live day, and the
+     structural diff (identity = rid) would read every row as removed+added. */
+  const pub = () => { ensureRowIds(DAYS); sign(0); setDayApproved(0, 1) }
 
   it('switching to a draft that matches the issued day leaves zero pending', () => {
     pub()
@@ -248,7 +251,7 @@ describe('switching drafts on a PUBLISHED day — the pending rebase', () => {
     draftSelect(0, d1.id)
     expect(dayPend()).toEqual([])
     draftSelect(0, d2.id)
-    expect(dayPend()).toEqual(['a:0.1.1'])          // the hole, on a row that survives
+    expect(dayPend()).toEqual([rk('a:0.1.1')])      // the hole, rid-anchored to the row that survives
   })
 
   it('an A→B→A round trip ends clean — no pending, no added, no tombstones', () => {
@@ -301,6 +304,185 @@ describe('switching drafts on a PUBLISHED day — the pending rebase', () => {
     draftSelect(0, d1.id)
     expect(SCHED.pending['dn:1.0']).toBe(1)
     expect(SCHED.added['wl:1.9']).toBe(1)
+  })
+})
+
+/* THE RID-NATIVE PATH (addressing-by-rid, 11 Sep 26). The pins above run
+   id-less (this file never boots), so they exercise the positional fallback.
+   These mint rids first — production reality, where the live day, its drafts
+   and its issued snapshots share ONE rid-space — and pin the behaviours that
+   only the rid join gets right. */
+describe('switching drafts on a PUBLISHED day — rid-native', () => {
+  const dayPend = () => Object.keys(SCHED.pending).filter((k: any) => keyDay(k) === 0)
+  const twoWaves = () => { while (DAYS[0].waves.length < 2) DAYS[0].waves.push({ formations: [], label: '', night: false, kind: 'sc' }) }
+
+  it('AL tint survives a published-day draft switch, and unpublish returns the mark (the core pin)', () => {
+    ensureRowIds(DAYS)
+    twoWaves(); ensureRowIds(DAYS)
+    sign(0); setDayApproved(0, 1)                       // Original
+    txtSet('wl:0.0', 'AMENDED WAVE'); sign(0); publishALDay(0)   // AL1 on a ROW key
+    const cs = rk('wl:0.0')
+    expect(SCHED.changes[cs]).toBe(1)
+    draftDup(0)
+    const [d1] = dayDrafts(0)
+    draftSelect(0, d1.id)                               // Draft 1 == AL1 content
+    expect(alAttr('wl:0.0')).toContain('data-alc="1"')  // the switched draft carries the issued ids — the tint paints
+    unpublishAL(1)
+    expect(SCHED.pending[cs]).toBe(1)                    // and the mark comes back to pending
+  })
+
+  it('draftDup keeps ids; a genuinely new row still gets a fresh one (the decision pin)', () => {
+    ensureRowIds(DAYS)
+    const src = rowsOf(DAYS[0]).map((r: any) => r.rid)
+    draftDup(0)
+    const [d1] = dayDrafts(0)
+    expect(rowsOf(d1.d).map((r: any) => r.rid)).toEqual(src)   // the parked draft KEEPS the source ids
+    DAYS[0].waves.push({ formations: [], label: 'NEW', night: false, kind: 'sc' })
+    ensureRowIds(DAYS)                                   // the next mint
+    const added = DAYS[0].waves[DAYS[0].waves.length - 1].rid
+    expect(src.includes(added)).toBe(false)             // a real add is never confused with a survivor
+  })
+
+  it('a reorder-only draft swap still records a mov: (Fable #1)', () => {
+    ensureRowIds(DAYS)
+    twoWaves()
+    DAYS[0].waves[0].label = 'SAME'; DAYS[0].waves[1].label = 'SAME'   // equal values hide the move from a value diff
+    ensureRowIds(DAYS)
+    sign(0); setDayApproved(0, 1)
+    draftDup(0)
+    const [d1, d2] = dayDrafts(0)
+    const w = DAYS[0].waves;[w[0], w[1]] = [w[1], w[0]]  // swap the two waves in the live draft
+    draftSelect(0, d1.id); draftSelect(0, d2.id)         // away and back → rebase
+    expect(dayPend().some((k: any) => /^mov:0\./.test(String(k)))).toBe(true)
+  })
+
+  it('reorder + edit does NOT lose the edit (Astra RID-R5-01)', () => {
+    DAYS[0].ground = [
+      { prog: 'A', str: '08:30', end: '', who: '', rmks: '' },
+      { prog: 'B', str: '09:00', end: '', who: '', rmks: '' },
+    ]
+    ensureRowIds(DAYS)
+    sign(0); setDayApproved(0, 1)                        // issue [A(08:30), B(09:00)]
+    draftDup(0)
+    const [d1, d2] = dayDrafts(0)
+    const g = DAYS[0].ground;[g[0], g[1]] = [g[1], g[0]]  // reorder → [B, A]
+    g[0].str = '08:30'                                    // and edit B's time to match A's
+    draftSelect(0, d1.id); draftSelect(0, d2.id)          // away and back → rebase
+    /* B now sits at index 0 with 08:30 vs its ISSUED 09:00 — a positional diff
+       would compare index-0 08:30 to index-0 08:30 (A) and miss it; the rid
+       join finds B's real change */
+    expect(SCHED.pending[rk('gr:0.0.str')]).toBe(1)
+  })
+
+  it('add → reorder → delete both the add and an issued neighbour: attribution is by id (Astra RID-02)', () => {
+    DAYS[0].ground = [
+      { prog: 'A', str: '', end: '', who: '', rmks: '' },
+      { prog: 'B', str: '', end: '', who: '', rmks: '' },
+    ]
+    ensureRowIds(DAYS)
+    sign(0); setDayApproved(0, 1)                        // issue [A, B]
+    draftDup(0)
+    const [, d2] = dayDrafts(0)
+    /* add X, then reorder so the ADD is NOT at the tail — the case the old
+       length+tail diff mis-attributed */
+    DAYS[0].ground.push({ prog: 'X', str: '', end: '', who: '', rmks: '' })
+    ensureRowIds(DAYS)
+    const g = DAYS[0].ground;[g[0], g[2]] = [g[2], g[0]]  // [X, B, A]
+    draftSelect(0, dayDrafts(0)[0].id); draftSelect(0, d2.id)   // rebase
+    const xRid = DAYS[0].ground.findIndex((r: any) => r.prog === 'X')
+    expect(SCHED.added[rk(`gr:0.${xRid}.prog`)], 'the ADD is credited to X, wherever it sits').toBe(1)
+    expect(deletionWasIssued(0, 'ground', DAYS[0].ground.findIndex((r: any) => r.prog === 'A')),
+      'A was issued, so deleting it is a real removal').toBe(true)
+  })
+
+  /* ---- the build bug-check's regression cases (Astra RID-IR-01/04/05) ---- */
+
+  it('an add whose field values equal an issued row keeps its mark after a move (RID-IR-01)', () => {
+    DAYS[0].dutywaves = [{ label: 'D', rows: [{ role: 'SDO', id: '', str: '0700', end: '1300' }] }]
+    ensureRowIds(DAYS)
+    sign(0); setDayApproved(0, 1)                                  // issue [A]
+    /* add B with IDENTICAL field values, then move it ABOVE A on the published
+       day — the case where a positional fallback would compare B against the
+       matching issued A at index 0 and wrongly drop B's mark */
+    DAYS[0].dutywaves[0].rows.push({ role: 'SDO', id: '', str: '0700', end: '1300' })
+    ensureRowIds(DAYS)
+    markStructuralAdd('dr:0.0.1.role')                            // B added at index 1
+    moveDutyRow(0, 0, 1, 0)                                       // B moves to index 0 (above A)
+    reconcileIssuedMarks()
+    expect(SCHED.added[rk('dr:0.0.0.role')], 'B keeps its structural add').toBe(1)
+    expect(SCHED.pending[rk('dr:0.0.0.role')], 'and its field mark survives reconcile — it is genuinely absent from the issued day, not a positional match').toBe(1)
+  })
+
+  it('a mark on a row deleted in a draft is not reinstated on switch-back (RID-IR-04)', () => {
+    DAYS[0].ground = [{ prog: 'A', str: '', end: '', who: '', rmks: '' }, { prog: 'B', str: '', end: '', who: '', rmks: '' }]
+    ensureRowIds(DAYS)
+    sign(0); setDayApproved(0, 1)
+    txtSet('gr:0.1.prog', 'B-AMENDED'); sign(0); publishALDay(0)  // AL1 tints B.prog
+    const bKey = rk('gr:0.1.prog')
+    expect(SCHED.changes[bKey]).toBe(1)
+    draftDup(0)
+    const [d1, d2] = dayDrafts(0)
+    DAYS[0].ground.splice(1, 1)                                   // delete B in the live draft
+    draftSelect(0, d1.id)                                         // away (d1 still has B)
+    draftSelect(0, d2.id)                                         // back to the B-deleted draft → rebase
+    expect(SCHED.changes[bKey], 'B is gone from the draft, so its AL1 tint is not resurrected into the live map').toBeUndefined()
+    expect(Object.keys(SCHED.pending).some((k: any) => k === bKey), 'and no dangling B field key is pending').toBe(false)
+  })
+
+  it('a formation-level AREA override edit survives reconcile (Astra RID-REV-02)', () => {
+    ensureRowIds(DAYS)
+    sign(0); setDayApproved(0, 1)                                  // issue with the derived area
+    const f = DAYS[0].waves[0].formations[0]
+    f.area = 'D99X'; markEdit('ar:0.0.0')                          // a FORMATION override (ui/textedit writes f.area)
+    reconcileIssuedMarks()
+    expect(SCHED.pending[rk('ar:0.0.0')], 'the override differs from the issued day — kept').toBe(1)
+    f.area = null; reconcileIssuedMarks()                          // back to the derived value
+    expect(SCHED.pending[rk('ar:0.0.0')], 'reverted → cleared').toBeUndefined()
+  })
+
+  it('add→AL1, delete→AL2, resurrect via draft→AL3, unpublish AL3: the row returns to draft-added, no false removal (Astra RID-REV-01)', () => {
+    DAYS[0].ground = [{ prog: 'A', str: '', end: '', who: '', rmks: '' }]
+    ensureRowIds(DAYS)
+    sign(0); setDayApproved(0, 1)                                  // Original: [A]
+    DAYS[0].ground.push({ prog: 'B', str: '', end: '', who: '', rmks: '' })
+    ensureRowIds(DAYS)
+    const addKey = markStructuralAdd('gr:0.1.prog')                // add B
+    sign(0); publishALDay(0)                                       // AL1 issues [A, B]
+    draftDup(0)
+    const [d1] = dayDrafts(0)                                      // a parked draft still holding B
+    const bRid = DAYS[0].ground[1].rid
+    const issued = deletionWasIssued(0, 'ground', 1)
+    DAYS[0].ground.splice(1, 1); dropRowMarks([bRid]); markDeletion(0, 'ground', issued)
+    sign(0); publishALDay(0)                                       // AL2 issues [A] (B removed)
+    draftSelect(0, d1.id)                                          // switch to the draft → B resurrected with its rid
+    sign(0); publishALDay(0)                                       // AL3
+    unpublishAL(3)
+    const bi = DAYS[0].ground.findIndex((r: any) => r.rid === bRid)
+    expect(SCHED.added[rk(`gr:0.${bi}.prog`)], 'B is draft-added again — AL1 is superseded by AL2, which has no B').toBe(1)
+    expect(deletionWasIssued(0, 'ground', bi), 'so deleting B nets out, no false removal').toBe(false)
+  })
+
+  it('a manual ground move whose model order equals the issued model still records a mov: (Astra RID-REV-03)', () => {
+    /* issued auto-ordered [Late, Early] → displays [Early, Late] */
+    DAYS[0].ground = [{ prog: 'Late', str: '10:00', end: '', who: '', rmks: '' }, { prog: 'Early', str: '08:00', end: '', who: '', rmks: '' }]
+    ensureRowIds(DAYS)
+    sign(0); setDayApproved(0, 1)
+    draftDup(0)
+    const [d1, d2] = dayDrafts(0)
+    moveGroundRow(0, 0, 1)                                         // drag Late below — freezes display order, sets gman
+    draftSelect(0, d1.id); draftSelect(0, d2.id)                   // away and back → rebase
+    expect(Object.keys(SCHED.pending).some((k: any) => /^mov:0\.\d+\.ground$/.test(String(k))), 'the display-order move is recorded').toBe(true)
+  })
+
+  it('a stow mints ids first, so no id-less row is ever parked (RID-IR-05)', () => {
+    /* an id-less row (as applyDayTpl leaves one) then a dup BEFORE any histPush */
+    DAYS[0].ground = [{ prog: 'X', str: '', end: '', who: '', rmks: '' }]   // no rid minted
+    expect(rowsOf(DAYS[0]).some((r: any) => !r.rid)).toBe(true)
+    draftDup(0)
+    const [d1] = dayDrafts(0)
+    expect(rowsOf(DAYS[0]).every((r: any) => typeof r.rid === 'string'), 'the stow minted the live day first').toBe(true)
+    expect(rowsOf(d1.d).every((r: any) => typeof r.rid === 'string'), 'so the parked blob carries no id-less row').toBe(true)
+    expect(rowsOf(d1.d).map((r: any) => r.rid)).toEqual(rowsOf(DAYS[0]).map((r: any) => r.rid))   // shared identities
   })
 })
 
@@ -468,10 +650,10 @@ describe('reconcileIssuedMarks — a mark stranded at an address in neither docu
     const key = 'd:0.0.0.x0'
     fillSlot('d:0.0.0.+', 'razer')                  // SDO row already holds mamba — parks razer at .x0
     reconcileIssuedMarks()
-    expect(SCHED.pending[key], 'mid-flight this is a genuine add').toBe(1)
+    expect(SCHED.pending[rk(key)], 'mid-flight this is a genuine add').toBe(1)
     setSlotVal(key, '')                             // drag him back off — the trailing trim deletes the entry
     reconcileIssuedMarks()
-    expect(SCHED.pending[key], 'the phantom mark clears — the address is gone from both documents').toBeUndefined()
+    expect(SCHED.pending[rk(key)], 'the phantom mark clears — the address is gone from both documents').toBeUndefined()
     expect(dayPend(), 'the day reads unedited — publishing would not mint an AL').toEqual([])
   })
 
@@ -479,7 +661,7 @@ describe('reconcileIssuedMarks — a mark stranded at an address in neither docu
     pub()
     fillSlot('d:0.0.0.+', 'razer')
     reconcileIssuedMarks()
-    expect(SCHED.pending['d:0.0.0.x0'], 'live-only = a genuine add, not a phantom').toBe(1)
+    expect(SCHED.pending[rk('d:0.0.0.x0')], 'live-only = a genuine add, not a phantom').toBe(1)
   })
 
   it('a del: tombstone and an inp: key are inert marks — reconcile never touches them by name', () => {
@@ -498,10 +680,10 @@ describe('reconcileIssuedMarks — a mark stranded at an address in neither docu
     pub()
     setSlotVal(key, 'razer')                         // overwrite — a genuine change
     reconcileIssuedMarks()
-    expect(SCHED.pending[key]).toBe(1)
+    expect(SCHED.pending[rk(key)]).toBe(1)
     setSlotVal(key, 'nact')                          // back to the same man — setSlotVal stores his callsign 'Warden'
     reconcileIssuedMarks()
-    expect(SCHED.pending[key], 'canonical compare: callsign live vs id issued still match').toBeUndefined()
+    expect(SCHED.pending[rk(key)], 'canonical compare: callsign live vs id issued still match').toBeUndefined()
   })
 
   it('an ⓘ info-only flip on a published day is a real amendment — reconcile keeps the mark, and drops it when flipped back', () => {

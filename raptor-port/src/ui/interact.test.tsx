@@ -17,8 +17,11 @@ import { SCHED } from '../engine/publish'
 import { HOOKS } from '../engine/hooks'
 import { HIST, histPush } from '../state/history'
 import * as view from '../state/view'
+import { ridKey } from '../engine/rowids'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
+
+const rk = (k: string) => ridKey(k, DAYS)
 
 let host: HTMLDivElement
 let root: Root
@@ -378,7 +381,7 @@ describe('stores configs — the C picker (owner, Aug 26; + became C, 7 Aug 26)'
     expect(item, 'the menu offers CL').toBeTruthy()
     await click(item)
     expect(a.opts.cl).toBe(true)
-    expect(SCHED.pending[`st:${di}.${gi}.${li}.${ai}`]).toBeTruthy()
+    expect(SCHED.pending[rk(`st:${di}.${gi}.${li}.${ai}`)]).toBeTruthy()
     expect($(`#eWeek .stchip[data-store="${di}.${gi}.${li}.${ai}.cl"]`), 'the CL chip now shows').toBeTruthy()
     expect($(`#eWeek .stcfg[data-stcfg="${di}.${gi}.${li}.${ai}"]`), 'C remains').toBeTruthy()
     a.opts.cl = false; await act(async () => notify())
@@ -411,7 +414,7 @@ describe('stores configs — the C picker (owner, Aug 26; + became C, 7 Aug 26)'
     await act(async () => { bo.dispatchEvent(new FocusEvent('focusout', { bubbles: true })) })
     await act(async () => { await new Promise(r => setTimeout(r, 5)) })
     expect(a.opts.bombs).toBe('2 X GBU-38')
-    expect(SCHED.pending[`st:${di}.${gi}.${li}.${ai}`]).toBeTruthy()
+    expect(SCHED.pending[rk(`st:${di}.${gi}.${li}.${ai}`)]).toBeTruthy()
     await click($$('.nav a[data-page]').find(x => x.dataset.page === 'viewsched')!)
     const chip = [...document.querySelectorAll('#vWeek .stchip.bomb')].find(x => x.textContent!.includes('2 X GBU-38'))
     expect(chip, 'the view week shows the typed bombs').toBeTruthy()
@@ -460,8 +463,8 @@ describe('text edits carry amendment marks (area/atime commit + AL colouring)', 
     await act(async () => { ar.dispatchEvent(new FocusEvent('focusout', { bubbles: true })) })
     await act(async () => { await new Promise(r => setTimeout(r, 5)) })
     expect(f.area).toBe('D99X')
-    expect(SCHED.pending[`ar:${di}.${gi}.${li}`]).toBeTruthy()
-    f.area = was; delete SCHED.pending[`ar:${di}.${gi}.${li}`]
+    expect(SCHED.pending[rk(`ar:${di}.${gi}.${li}`)]).toBeTruthy()
+    f.area = was; delete SCHED.pending[rk(`ar:${di}.${gi}.${li}`)]
     await act(async () => { const { afterSchedMutate } = await import('../state/view'); const { notify } = await import('../state/store'); afterSchedMutate(); notify() })
   })
 
@@ -478,8 +481,8 @@ describe('text edits carry amendment marks (area/atime commit + AL colouring)', 
     await act(async () => { at.dispatchEvent(new FocusEvent('focusout', { bubbles: true })) })
     await act(async () => { await new Promise(r => setTimeout(r, 5)) })
     expect(f.atime).toBe('0900-1000')
-    expect(SCHED.pending[`at:${di}.${gi}.${li}`]).toBeTruthy()
-    f.atime = was; delete SCHED.pending[`at:${di}.${gi}.${li}`]
+    expect(SCHED.pending[rk(`at:${di}.${gi}.${li}`)]).toBeTruthy()
+    f.atime = was; delete SCHED.pending[rk(`at:${di}.${gi}.${li}`)]
     await act(async () => { const { afterSchedMutate } = await import('../state/view'); const { notify } = await import('../state/store'); afterSchedMutate(); notify() })
   })
 
@@ -566,17 +569,17 @@ describe('text edits carry amendment marks (area/atime commit + AL colouring)', 
     /* the edit is TRACKED as pending (the machinery is unchanged) but, on a
        still-draft day, carries NO amendment mark — before publishing there is
        nothing to amend (owner, 25 Aug 26). */
-    expect(SCHED.pending[key]).toBeTruthy()
+    expect(SCHED.pending[rk(key)]).toBeTruthy()
     let el = document.querySelector(`#eWeek [data-txt="${key}"]`) as HTMLElement
     expect(el.hasAttribute('data-alp'), 'a draft-day edit shows no amendment mark').toBe(false)
-    await act(async () => { alIssue(8, [key]); const { notify } = await import('../state/store'); notify() })
+    await act(async () => { alIssue(8, [rk(key)]); const { notify } = await import('../state/store'); notify() })
     el = document.querySelector(`#eWeek [data-txt="${key}"]`) as HTMLElement
     expect(el.getAttribute('data-alc'), 'AL colour rendered on the text').toBe('8')
     /* and the read-only view carries the same mark */
     await click($$('.nav a[data-page]').find(x => x.dataset.page === 'viewsched')!)
     const vw = [...document.querySelectorAll('#vWeek [data-alc="8"]')].find(x => x.textContent!.includes('AL MARK TEST'))
     expect(vw, 'the view week shows the AL-coloured text').toBeTruthy()
-    await act(async () => { unpublishAL(8); txtSet(key, was); delete SCHED.pending[key]; const { notify } = await import('../state/store'); notify() })
+    await act(async () => { unpublishAL(8); txtSet(key, was); delete SCHED.pending[rk(key)]; const { notify } = await import('../state/store'); notify() })
   })
 })
 

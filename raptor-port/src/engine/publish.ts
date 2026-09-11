@@ -4,6 +4,7 @@ import { keyDay, uniqDays } from './keys'
 import { isScheduler } from './people'
 import { HOOKS } from './hooks'
 import { logEdit } from './editlog'
+import { ridKey, posKey, ridWriteKey, RID_BOOK_VERSION } from './rowids'
 
 /* the reference calls straight into the UI here; the engine routes those four
    calls through injected hooks (no-ops until the app provides them) so the
@@ -27,7 +28,11 @@ const renderStatus=()=>HOOKS.renderStatus();
                     Stamped by alIssue and by restoreDayVersion; read through
                     dayCurVer(), which self-heals when the stamped version's
                     snapshot has gone (unpublishAL, undo past the issue).      */
-export let SCHED:any={al:0, pending:{}, changes:{}, added:{}, als:[], dayOK:{}, sign:{}, orig:{}, cur:{}};
+/* `ridV` stamps the addressing-by-rid book format (engine/rowids.ts). A book
+   restored from a persisted snapshot WITHOUT it is foundation-era and is migrated
+   once at load (migrateLegacyIds); a fresh/modern book carries it, so it is never
+   re-migrated. */
+export let SCHED:any={al:0, pending:{}, changes:{}, added:{}, als:[], dayOK:{}, sign:{}, orig:{}, cur:{}, ridV:RID_BOOK_VERSION};
 /* Reset ALL of SCHED in place. Every field is keyed by day INDEX (0..6), so
    loading a different week without this would let one week's approvals, pending
    edits, AL colouring and per-day drafts bleed onto the next week's identical
@@ -38,6 +43,7 @@ export function resetSched(){
   SCHED.al=0; SCHED.pending={}; SCHED.changes={}; SCHED.added={};
   SCHED.als=[]; SCHED.dayOK={}; SCHED.sign={}; SCHED.orig={};
   SCHED.cur={}; SCHED.drafts={}; SCHED.curDraft={};
+  SCHED.ridV=RID_BOOK_VERSION;   // a fresh book is modern — never re-migrated
 }
 export function dayApproved(di:any){return !!SCHED.dayOK[di];}
 export function approvedDays(){return DAYS.map((_:any,i:any)=>i).filter(dayApproved);}
@@ -209,10 +215,20 @@ export function moveLabel(key:any){const k=String(key).split('.').pop()||'';retu
 export function moveCount(keys:any){return (keys||[]).filter(isMoveKey).length;}
 export function moveKey(di:any,kind:any){kind=MOVE_LABELS[kind]?String(kind):'item';return syntheticKey('mov',di,kind);}
 export function markMove(di:any,kind:any){const key=moveKey(di,kind);markEdit(key);return key;}
-export function trackStructuralAdd(key:any){if(!key)return '';SCHED.added=SCHED.added||{};SCHED.added[String(key)]=1;return String(key);}
-export function markStructuralAdd(key:any){trackStructuralAdd(key);markEdit(key);HOOKS.flashAdded(key);return String(key);}
+/* the added-marker is stored rid-anchored (ridWriteKey self-heals a just-added
+   row's missing id). Returns the STORED (rid) key, so a caller that indexes
+   SCHED.added by the return value stays correct across any later splice. */
+export function trackStructuralAdd(key:any){if(!key)return '';SCHED.added=SCHED.added||{};const rk=ridWriteKey(String(key),DAYS);SCHED.added[rk]=1;return rk;}
+/* flashAdded gets the POSITIONAL key untranslated — paintFreshAdds matches it
+   against the row's data-bfld DOM attribute, which the renderer builds from the
+   loop index, never from a rid. */
+export function markStructuralAdd(key:any){const rk=trackStructuralAdd(key);markEdit(key);HOOKS.flashAdded(key);return rk;}
 export function structuralAddExists(key:any){
-  const s=String(key),c=s.indexOf(':'),p=c<0?'':s.slice(0,c),a=(c<0?s:s.slice(c+1)).split('.'),di=+a[0],d=DAYS[di];
+  /* the stored key is rid-anchored; resolve it to the CURRENT positional
+     address first (null → the row is gone → it no longer exists). A NONROW
+     note key and a legacy positional key pass through posKey unchanged. */
+  const pk=posKey(key,DAYS); if(pk===null)return false;
+  const s=String(pk),c=s.indexOf(':'),p=c<0?'':s.slice(0,c),a=(c<0?s:s.slice(c+1)).split('.'),di=+a[0],d=DAYS[di];
   if(!d)return false;
   if(p==='wl')return !!(d.waves||[])[+a[1]];
   if(p==='ff'){const w=(d.waves||[])[+a[1]];return !!(w&&(w.formations||[])[+a[2]]);}
@@ -233,7 +249,11 @@ export function structuralAddExists(key:any){
    Accepted Ground inputs also pass their stable source token. */
 export function deletionWasIssued(di:any,kind:any,...at:any[]){di=+di;
   const added=SCHED.added||{};
-  const has=(...keys:any[])=>keys.some((k:any)=>!!added[k]);
+  /* the identity keys below are BUILT positional from live indices; SCHED.added
+     is now rid-anchored, so translate each built key before the lookup. `issued`
+     is computed before the delete splice (board.ts / slots.ts), so the live rows
+     still resolve. A note key (dn:) passes through ridKey unchanged. */
+  const has=(...keys:any[])=>keys.some((k:any)=>!!added[ridKey(k,DAYS)]);
   if(kind==='line'&&has(`wl:${di}.${+at[0]}`,`ff:${di}.${+at[0]}.${+at[1]}.cs`,`fr:${di}.${+at[0]}.${+at[1]}.${+at[2]}`))return false;
   if(kind==='wave'&&has(`wl:${di}.${+at[0]}`))return false;
   if(kind==='note'&&has(`dn:${di}.${+at[0]}`))return false;
@@ -275,6 +295,29 @@ export function deletionWasIssued(di:any,kind:any,...at:any[]){di=+di;
   if(ix<was.length&&(kind==='note'||!!was[ix]))return true;
   return sectOf(DAYS[di]).length>was.length;
 }
+/* DELETE CLEANUP (addressing-by-rid finding 2). A deleted row's stored marks
+   have no live cell left to carry them, and — because keys are rid-anchored and
+   keys.ts's renumber is now inert on them — nothing renumbers them away either.
+   So the real delete sites (board.ts, slots.ts:unacceptInput) capture the
+   removed ROOT rid(s) BEFORE the splice and call this after: it drops every
+   stored key whose ancestry PATH contains one of those rids. Ancestor-retaining
+   keys mean a deleted PARENT rid alone sweeps its children (their keys carry the
+   parent rid), so only the root rid(s) need capturing.
+   Scoped to the LIVE book (pending/changes/added) ONLY — NEVER an issued AL's
+   keys/adds/structAdds or snap.c (Astra RID-R5-03 ≡ Fable #1): a deleted row is
+   routinely RESURRECTED by switching to a parked draft that still holds it, after
+   which rebaseDayPending re-tints it from snap.c and unpublishAL can return the
+   mark. Emptying the AL record would strand a tint that outlives its AL. Left
+   intact, a stale AL entry on a day whose row is gone is inert (unpublishAL finds
+   no live match, structuralAddExists is posKey→null→false). */
+export function dropRowMarks(rids:any){
+  const set=new Set((rids||[]).filter(Boolean));
+  if(!set.size)return;
+  const hit=(k:any)=>String(k).split(/[.:]/).some((seg:any)=>set.has(seg));
+  [SCHED.pending,SCHED.changes,SCHED.added].forEach((book:any)=>{
+    if(!book)return; Object.keys(book).forEach((k:any)=>{if(hit(k))delete book[k];});
+  });
+}
 export function markDeletion(di:any,kind:any,wasIssued:any=true){if(!wasIssued)return '';const key=deletionKey(di,kind);markEdit(key);return key;}
 /* Filing a personal input under Unavailable changes the issued day but has no
    programme row to tint. The permanent input ID makes one stable inert address per
@@ -291,7 +334,10 @@ export function markInputFiling(di:any,token:any){const id=encodeURIComponent(St
    bare epilogue in afterSchedMutate() passes nothing at all. Only the first
    reaches the log, which is what keeps a phantom row off every mutation. */
 export function markEdit(key?:any,was?:any,now?:any){
-  if(key){ SCHED.pending[key]=1; delete SCHED.changes[key]; logEdit(key,was,now); }
+  /* store the mark rid-anchored (self-healing translate); logEdit translates
+     independently on the read side, so it takes the original key. A synthetic
+     del:/mov:/inp: key is NONROW and passes through untranslated. */
+  if(key){ const rk=ridWriteKey(key,DAYS); SCHED.pending[rk]=1; delete SCHED.changes[rk]; logEdit(key,was,now); }
   renderStatus();
   histPush();
 }
@@ -306,6 +352,13 @@ export function markEdit(key?:any,was?:any,now?:any){
    colour can be wrong, and it corrects itself on publish. */
 export function alAttr(key:any){
   if(!key)return '';
+  /* HOT PAINT PATH. The stored book is rid-anchored, so the positional DOM key
+     is translated (ridKey, O(depth)) before the lookup. Skip that walk entirely
+     when nothing is marked anywhere — a GLOBAL empty check, not a per-day scan
+     (Fable #9). On a pristine model (the parity/html gates) this returns '' with
+     no walk, so the emitted HTML stays byte-identical. */
+  if(!Object.keys(SCHED.changes).length && !pendCount())return '';
+  key=ridKey(key,DAYS);
   const n=SCHED.changes[key];
   if(n)return ` data-alc="${n}" title="Changed at AL${n}"`;
   if(SCHED.pending[key]){
@@ -389,8 +442,19 @@ export function unpublishAL(n:any){
   n=+n; const ix=SCHED.als.findIndex((a:any)=>a.n===n); if(ix<0)return;
   const rec=SCHED.als.splice(ix,1)[0];
   rec.keys.forEach((k:any)=>{ if(SCHED.changes[k]===n){delete SCHED.changes[k]; SCHED.pending[k]=1;} });
-  const surviving=new Set((SCHED.als||[]).flatMap((a:any)=>a.structAdds||a.adds||[]).filter(structuralAddExists));
   SCHED.added=SCHED.added||{};
+  /* A structural add is still OWNED by the issued document only if it is in the
+     day's CURRENTLY-EFFECTIVE version — dayCurVer(di), which every later AL
+     carries forward (alIssue's `carried`). Unioning EVERY historical AL's
+     structAdds was wrong for an add→delete→resurrect chain: an add issued at AL1
+     then deleted at AL2 (the effective doc) is NOT owned, but AL1's stale
+     structAdds still claimed it — so unpublishing a later AL failed to return the
+     resurrected row to draft-added and a delete then minted a false removal
+     (Astra RID-REV-01). Judge ownership by the effective version, by rid. */
+  const surviving=new Set<string>();
+  (SCHED.als||[]).forEach((a:any)=>(a.structAdds||a.adds||[]).forEach((k:any)=>{
+    if(dayCurVer(keyDay(k))===a.n&&structuralAddExists(k))surviving.add(k);
+  }));
   /* The last surviving snapshot that carried a structural addition may not be
      the AL that originally added it. When that final owner is unpublished,
      the still-live row becomes draft again even if its field key was owned by

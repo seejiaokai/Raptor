@@ -69,8 +69,14 @@ export function dayKeys(d:any,di:any){
       m.set(`ff:${di}.${gi}.${li}.msn`,S(f.msn));
       m.set(`ff:${di}.${gi}.${li}.to`,T(f.to)); m.set(`ff:${di}.${gi}.${li}.ld`,T(f.ld));
       m.set(`ff:${di}.${gi}.${li}.br`,T(f.br));   // the indicated brief time — rolls back with its line
-      m.set(`ar:${di}.${gi}.${li}`,J((f.aircraft||[]).map((a:any)=>a.area==null?null:String(a.area))));
-      m.set(`at:${di}.${gi}.${li}`,J((f.aircraft||[]).map((a:any)=>a.atime==null?null:String(a.atime))));
+      /* the FORMATION-level override f.area/f.atime rides the fingerprint beside
+         the per-aircraft values: ui/textedit.ts writes the override (what the
+         cell shows, areaText/atimeText) and html.ts renders it, so a diff that
+         watched only the aircraft values missed an override edit and reconcile
+         then dropped its pending mark (Astra RID-REV-02). null stays distinct
+         from '' so unset never reads as an explicit clear. */
+      m.set(`ar:${di}.${gi}.${li}`,J([f.area==null?null:String(f.area),(f.aircraft||[]).map((a:any)=>a.area==null?null:String(a.area))]));
+      m.set(`at:${di}.${gi}.${li}`,J([f.atime==null?null:String(f.atime),(f.aircraft||[]).map((a:any)=>a.atime==null?null:String(a.atime))]));
       (f.aircraft||[]).forEach((a:any,ai:any)=>{
         m.set(`${di}.${gi}.${li}.${ai}.p`,P(a.p)); m.set(`${di}.${gi}.${li}.${ai}.w`,P(a.w));
         m.set(`fr:${di}.${gi}.${li}.${ai}`,S(a.rmks)+'␟'+(a.cx?1:0)+'␟'+S(a.cxr)+'␟'+(a.flag?1:0)+'␟'+S(a.role)+'␟'+(a.spare?1:0));

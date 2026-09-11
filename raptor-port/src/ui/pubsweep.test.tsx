@@ -35,6 +35,7 @@
    publish strip is boardSignHTML, which is a string builder and is asserted. */
 import { beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { DAYS } from '../engine/data'
+import { ridKey } from '../engine/rowids'
 import {
   SCHED, signOf, setDayApproved, dayApproved, dayPendCount, dayCurVer,
   daySnapOf, publishALDay, unpublishAL, isDeleteKey, nextAL,
@@ -54,6 +55,7 @@ import { HOOKS } from '../engine/hooks'
    the amendment machinery walks is present on it. */
 const DI = 0
 let pristine: any
+const rk = (k: string) => ridKey(k, DAYS)
 
 beforeAll(() => {
   initStore()
@@ -306,7 +308,7 @@ describe('3 · edit-and-revert: a round trip must leave NOTHING pending', () => 
   it('(a) a TIME cell changed and changed back — the owner’s 0830→0835→0830', () => {
     publishDay(DI)
     writeText('ff:0.0.0.to', '12:45')
-    expect(Object.keys(SCHED.pending)).toEqual(['ff:0.0.0.to'])
+    expect(Object.keys(SCHED.pending)).toEqual(['ff:0.0.0.to'].map(rk))
     writeText('ff:0.0.0.to', '12:40')
     quiet(DI)
     /* and the publish path agrees with the chips: there is nothing to issue */
@@ -338,7 +340,7 @@ describe('3 · edit-and-revert: a round trip must leave NOTHING pending', () => 
     /* drag.ts:182's own swap shape — two setSlotVal writes, ONE
        afterSchedMutate, because one drag is one undo step */
     setSlotVal(A, b0); setSlotVal(B, a0); afterSchedMutate()
-    expect(Object.keys(SCHED.pending).sort()).toEqual([A, B])
+    expect(Object.keys(SCHED.pending).sort()).toEqual([A, B].map(rk).sort())
     setSlotVal(A, a0); setSlotVal(B, b0); afterSchedMutate()
     quiet(DI)
   })
@@ -351,7 +353,7 @@ describe('3 · edit-and-revert: a round trip must leave NOTHING pending', () => 
        goes through fillSlot: the duty row's primary seat is taken, so he lands
        at the overflow address d:0.0.0.x0, which the issued day has no key for */
     setSlotVal(seat, ''); writeFill('d:0.0.0.+', who)
-    expect(Object.keys(SCHED.pending).sort()).toEqual(['0.0.0.0.p', 'd:0.0.0.x0'])
+    expect(Object.keys(SCHED.pending).sort()).toEqual(['0.0.0.0.p', 'd:0.0.0.x0'].map(rk).sort())
     /* and back: the overflow entry is trimmed away entirely, so the key is
        gone from the live walk as well as the issued one. Before the 16 Aug 26
        fix that phantom kept the day reading edited over a net no-op. */
@@ -364,7 +366,7 @@ describe('3 · edit-and-revert: a round trip must leave NOTHING pending', () => 
     publishDay(DI)
     const who = 'wolf'
     writeFill('g:0.0.+', who)                         // ground row 0 already has "dj"
-    expect(Object.keys(SCHED.pending)).toEqual(['g:0.0.x0'])
+    expect(Object.keys(SCHED.pending)).toEqual(['g:0.0.x0'].map(rk))
     writeSlot('g:0.0.x0', '')
     quiet(DI)
   })
@@ -386,8 +388,8 @@ describe('4 · structural round trip on a published day: add then delete nets ou
        structural add on that surface carries */
     addWave(DI, null)
     expect(DAYS[DI].waves.length).toBe(n + 1)
-    expect(Object.keys(SCHED.pending)).toEqual([`wl:${DI}.${n}`])
-    expect(Object.keys(SCHED.added)).toEqual([`wl:${DI}.${n}`])
+    expect(Object.keys(SCHED.pending)).toEqual([`wl:${DI}.${n}`].map(rk))
+    expect(Object.keys(SCHED.added)).toEqual([`wl:${DI}.${n}`].map(rk))
     expect(pubState(weekEdit(DI)).pend).toBe('1 pending')
 
     mbtn({ gdel: `${DI}.${n}` })
@@ -404,7 +406,7 @@ describe('4 · structural round trip on a published day: add then delete nets ou
     publishDay(DI)
     const n = DAYS[DI].dutywaves[0].rows.length
     mbtn({ dradd: `${DI}.0` })
-    expect(Object.keys(SCHED.pending)).toEqual([`dr:${DI}.0.${n}.role`])
+    expect(Object.keys(SCHED.pending)).toEqual([`dr:${DI}.0.${n}.role`].map(rk))
     mbtn({ drdel: `${DI}.0.${n}` })
     expect(DAYS[DI].dutywaves[0].rows.length).toBe(n)
     expect(Object.keys(SCHED.pending)).toEqual([])

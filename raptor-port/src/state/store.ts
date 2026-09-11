@@ -19,7 +19,7 @@ import { lookaheadLoad } from '../engine/lookahead'
 import { rulesLoad } from '../engine/rules'
 import { mintInpIds, INPUTS, DATES, isPersonal, baseYear, dateIx } from '../engine/inputs'
 import { DAYS } from '../engine/data'
-import { ensureRowIds, backfillSnapshotIds } from '../engine/rowids'
+import { ensureRowIds, backfillSnapshotIds, migrateBookKeys, migrateLegacyIds } from '../engine/rowids'
 import { CURWEEK, setCurWeek } from '../engine/waves'
 import { weekBundle, otherWeekInputs } from '../engine/weeks-data'
 import { seedDemoSans, seedDemoMedical } from './demoseed'
@@ -384,7 +384,7 @@ function applyWeekModel(v: any): any {
     SCHED.changes = s.c || {}; SCHED.pending = s.p || {}; SCHED.added = s.ad || {}
     SCHED.als = s.a || []; SCHED.al = s.al || 0; SCHED.dayOK = s.ok || {}
     SCHED.sign = s.sg || {}; SCHED.orig = s.o || {}; SCHED.cur = s.cv || {}
-    SCHED.drafts = s.dr || {}; SCHED.curDraft = s.cd || {}
+    SCHED.drafts = s.dr || {}; SCHED.curDraft = s.cd || {}; SCHED.ridV = s.v   // undefined on a foundation-era book → migrateLegacyIds runs
   } else {
     const wk = weekBundle(v)
     DAYS.length = 0; wk.days.forEach((d: any) => DAYS.push(d))
@@ -482,6 +482,11 @@ export function loadWeek(v: any) {
     /* stable row ids (engine/rowids.ts) BEFORE the baseline — same trap as
        initStore's: a mint after the yardstick would read a just-loaded,
        untouched week as edited and get it persisted */
+    /* ADDRESSING BY rid (task 5): a FOUNDATION-era book (no ridV) re-minted its
+       parked drafts, so its identities are inconsistent with keep-ids — strip
+       them ALL first (gated on the version, so a modern book is never touched),
+       then ensureRowIds + backfill rebuild one consistent id-space by position. */
+    migrateLegacyIds(SCHED, DAYS)
     ensureRowIds(DAYS)
     /* THE BACKFILL (review finding 6, engine/rowids.ts backfillSnapshotIds):
        a week's amendment book — SCHED.orig, every AL's day snapshots, the
@@ -489,6 +494,11 @@ export function loadWeek(v: any) {
        must be given them here too, still before the baseline, or every
        restore off it would mint a fresh id instead of the stable one. */
     backfillSnapshotIds(SCHED, DAYS)
+    /* ADDRESSING BY rid (task 5): rewrite a positional book to rid form — AFTER
+       the backfill (every row has a rid) and BEFORE the baseline (so the
+       re-keying is not read as a dirtying edit). Idempotent: a no-op on a book
+       already in rid form. */
+    migrateBookKeys(SCHED, DAYS)
     weekBaseline = weekStashSnap()   // the stash-on-leave yardstick (see its comment)
   } finally {
     weekSwapEnd()
@@ -626,12 +636,20 @@ export function initStore() {
   /* stable row ids (engine/rowids.ts) BEFORE the baseline: the walk mutates
      DAYS, and a mint after the yardstick would make the pristine seed week
      read as edited and get persisted — the trap weekstash.ts documents */
+  /* ADDRESSING BY rid (task 5) — same as loadWeek's twin: a foundation-era book
+     (no ridV) has inconsistent identities, so strip them first (gated on the
+     version), then rebuild one id-space via ensureRowIds + backfill. */
+  migrateLegacyIds(SCHED, DAYS)
   ensureRowIds(DAYS)
   /* THE BACKFILL — same reasoning as loadWeek's own call just above this
      comment's twin: SCHED can arrive here already carrying an amendment book
      (a hydrated boot, engine/rowids.ts backfillSnapshotIds's own header) from
      before ids existed, and it must be given them before the baseline too. */
   backfillSnapshotIds(SCHED, DAYS)
+  /* ADDRESSING BY rid (task 5) — same as loadWeek's twin above: migrate a
+     positional book to rid form, after the backfill and before the baseline.
+     Idempotent — a no-op on a book already in rid form. */
+  migrateBookKeys(SCHED, DAYS)
   weekBaseline = weekStashSnap()   // the stash-on-leave yardstick (see its comment)
   validate()
   histInit()

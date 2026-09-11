@@ -319,22 +319,26 @@ browser-proven.
   idempotent; `migrateBookKeys` anchors an AL snapshot slice against `snap.d`,
   not live DAYS — Fable bug-check fix), spec
   `raptor-port/docs/superpowers/specs/2026-09-10-addressing-by-rid-design.md`.
-  Additive, wires nothing — all gates green. **NEXT UP (start a fresh branch
-  FROM `main`):** that spec's tasks 2–7 — the interlocking engine wiring:
-  `dayKeys`→rid, the write/read/edit-log boundary, the delete-mark sweep,
-  migration wiring, UI audit, and re-anchoring the `audit-d` keyspace oracle to
-  rid WITHOUT weakening it. This is the atomic, silent-defect-critical half.
-  **The spec was RED-TEAMED 11 Sep 26 (Astra + Fable, both REVISE) — READ
-  `raptor-port/docs/superpowers/specs/2026-09-11-addressing-by-rid-REDTEAM.md`
-  and REVISE the design spec to close its findings, then re-review with both
-  models, BEFORE building.** Six convergent must-fixes (new-row id minted too
-  late = the primary silent-loss; delete cleanup wired in the wrong file;
-  key-shape mismatch foundation-vs-spec; draftDup re-mint breaks rebase; reorder
-  reads `SCHED.added` positionally; legacy migration pairs rows by position),
-  plus two OWNER DECISIONS to raise first (the key shape, and the draft-identity
-  approach). Then build with Opus high, a Fable independent bug-check, and
-  **HOLD before live — merge to `main` ONLY on the owner's explicit "merge
-  live".** (2) course and
+  Additive, wires nothing — all gates green. **#1 ADDRESSING REWRITE — the
+  interlocking engine wiring (spec tasks 2–7) — BUILT on branch
+  `claude/rid-engine-wiring` (Opus 4.8, TDD), holding for "merge live".** The
+  amendment book now RESOLVES rows by `rid`, not position, translated at the
+  DOM↔book boundary so nothing rendered changes (parity 728/0, html.test.ts
+  byte-identical, full vitest 4507/0). Shape: `ridWriteKey` self-heal on write-in
+  (the safety mechanism, so a missed per-site mint cannot store a positional
+  key); `alAttr`/edit-log translate on read; **drafts KEEP their ids** (owner
+  decision — a parked draft is an alternate VERSION, so the live day, its drafts
+  and its issued document share ONE rid-space, which deleted the swap-time adopt
+  gate and its RID-R4-01 hole); `rebaseDayPending`/`reconcileIssuedMarks` join by
+  `rid` (edit-then-move no longer lost, RID-R5-01/R3-02) with a rid set-difference
+  structural diff (add reordered off the tail still credited right, RID-02) and a
+  positional fallback for a pre-ids snapshot; delete sweep (`dropRowMarks`) scoped
+  to the LIVE book, never an issued AL (RID-R5-03); migration wired at boot/week-load
+  (`migrateBookKeys` + `repairForeignDraftIds`); HistoryModal keeps rids out of the
+  DOM (RID-05). One deliberate deferral flagged for the bug-check: the Fable-#2
+  stow-hardening mint (the tested write-in self-heal already covers it). The three
+  browser gates (e2e/smoke/perf) run in CI on the PR — they cannot launch a browser
+  on the win32 dev box (hardcoded Linux chromium path). (2) course and
   syllabus ids (still name keys joined with `:`); (3) `Attempt` history.
   A student rename control shipped 10 Sep 26 (the pencil on each chip edits
   the label only — `core.js:renameStudent`, id and records untouched).

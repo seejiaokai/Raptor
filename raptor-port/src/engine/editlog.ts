@@ -1,6 +1,7 @@
 import { DAYS } from './data'
 import { PEOPLE } from './people'
 import { HOOKS } from './hooks'
+import { ridKey, posKey } from './rowids'
 
 /* THE EDIT LOG (owner, 11 Aug 26) — who changed which detail, when, and what
    it was before. The board's History toggle reads it two ways: a bubble on
@@ -143,7 +144,13 @@ function jetOf(f: any, ai: any) {
 }
 
 export function keyLabel(key: any): string {
-  const k = String(key), c = k.indexOf(':')
+  /* accepts EITHER key form (Fable #7): the stored log key is rid-anchored,
+     but this reads live rows by position, so resolve a rid key to its current
+     positional address first. A note / positional / gone-row key is unchanged
+     by posKey (a gone row → null → keep the raw key, which falls through to the
+     'Schedule' fallback below). */
+  const pk = posKey(key, DAYS)
+  const k = String(pk == null ? key : pk), c = k.indexOf(':')
   try {
     /* a flying seat: di.gi.li.ai.seat — named by the line it is in, then the
        jet, then the seat */
@@ -194,10 +201,15 @@ function push(row: ELogRow) {
    reaches here, so neither leaves a phantom row. */
 export function logEdit(key: any, from: any, to: any) {
   if (key == null || from === undefined || to === undefined) return
-  const k = String(key)
-  const a = say(k, from), b = say(k, to)
+  /* stored rid-anchored, so a delete or reorder never renumbers the log's
+     addresses (keys.ts is inert on a rid key) and elogFor/elogAllFor find the
+     row by translating the query in. say() only reads the prefix, and keyLabel
+     accepts either form, so both take the incoming key. The log is session-only
+     and never migrated, so an id-less row simply logs its positional key. */
+  const store = String(ridKey(key, DAYS))
+  const a = say(store, from), b = say(store, to)
   if (a === b) return
-  push({ t: Date.now(), who: HOOKS.whoami(), di: dayOf(k), key: k, lbl: keyLabel(k), from: a, to: b })
+  push({ t: Date.now(), who: HOOKS.whoami(), di: dayOf(store), key: store, lbl: keyLabel(key), from: a, to: b })
 }
 
 /* Record something that is not a value change — a line, wave, row or note
@@ -218,7 +230,7 @@ export function elogRows(di?: any): ELogRow[] {
 
 /* the newest entry for one detail — what the bubble shows collapsed */
 export function elogFor(key: any): ELogRow | null {
-  const k = String(key)
+  const k = String(ridKey(key, DAYS))            // translate the DOM key in — the log stores rid keys
   for (let i = ELOG.rows.length - 1; i >= 0; i--) if (ELOG.rows[i]!.key === k) return ELOG.rows[i]!
   return null
 }
@@ -231,7 +243,7 @@ export function elogFor(key: any): ELogRow | null {
    deliberately so — that answers "what just happened", this answers "how did
    this end up like this". */
 export function elogAllFor(key: any): ELogRow[] {
-  const k = String(key)
+  const k = String(ridKey(key, DAYS))            // translate the DOM key in — the log stores rid keys
   return ELOG.rows.filter(r => r.key === k)
 }
 

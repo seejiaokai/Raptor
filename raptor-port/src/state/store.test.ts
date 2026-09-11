@@ -17,7 +17,9 @@ import { armSlot, disarmSlot, armedKey, placeArmed, selectPerson, SELID, ARM } f
 import * as view from './view'
 import { setSession } from './auth'
 import { histInit } from './history'
+import { ridKey } from '../engine/rowids'
 
+const rk = (k: string) => ridKey(k, DAYS)
 const DSNAP = JSON.stringify(DAYS)
 const ISNAP = JSON.stringify(INPUTS)
 const sign = (di: number) => { const g = signOf(di); g.cur = 'ignite'; g.sked = 'bane'; g.plan = 'stiff'; g.appr = 'pump' }
@@ -38,7 +40,7 @@ describe('the one write path (tfin M / P2, through the store)', () => {
     const before = slotVal(key)
     writeSlot(key, 'casper')
     expect(slotVal(key)).toBe('casper')
-    expect(SCHED.pending[key]).toBe(1)
+    expect(SCHED.pending[rk(key)]).toBe(1)
     /* revalidated: WARN reflects the new body in the seat */
     expect(WARN.all.length).toBeGreaterThan(0)
     writeSlot(key, before)
@@ -64,7 +66,7 @@ describe('the one write path (tfin M / P2, through the store)', () => {
 
   it('writeFill appends through fillSlot', () => {
     writeFill('g:0.0.+', 'casper')
-    expect(SCHED.pending['g:0.0.x0'] || SCHED.pending['g:0.0']).toBe(1)
+    expect(SCHED.pending[rk('g:0.0.x0')] || SCHED.pending[rk('g:0.0')]).toBe(1)
   })
 
   it('every write notifies subscribers', () => {
@@ -125,7 +127,7 @@ describe('undo / redo (tfin, through the store)', () => {
     expect(dayCurVer(0)).toBe('orig')
     undo()
     expect(slotVal(key)).toBe('casper')   // one step back = the pre-rollback state
-    expect(SCHED.pending[key]).toBe(1)    // the discarded edit is pending again
+    expect(SCHED.pending[rk(key)]).toBe(1)    // the discarded edit is pending again
     /* the cur stamp itself rides the stack: gone on undo, back on redo */
     expect(SCHED.cur[0]).toBeUndefined()
     redo()
@@ -322,15 +324,15 @@ describe('AL flow through the store (tfin B49)', () => {
     const key = 'd:0.0.0'
     const before = slotVal(key)
     writeSlot(key, before === 'casper' ? 'vinci' : 'casper')
-    expect(SCHED.pending[key]).toBe(1)
+    expect(SCHED.pending[rk(key)]).toBe(1)
     sign(0)
     publishALDay(0)
-    expect(SCHED.changes[key]).toBe(1)
-    expect(SCHED.pending[key]).toBeUndefined()
+    expect(SCHED.changes[rk(key)]).toBe(1)
+    expect(SCHED.pending[rk(key)]).toBeUndefined()
     unpublishAL(1)
-    expect(SCHED.pending[key]).toBe(1)
+    expect(SCHED.pending[rk(key)]).toBe(1)
     undo()                                      // unpublish is an undo step too
-    expect(SCHED.changes[key]).toBe(1)
+    expect(SCHED.changes[rk(key)]).toBe(1)
   })
 })
 

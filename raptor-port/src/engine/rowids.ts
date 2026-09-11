@@ -12,8 +12,12 @@
    (store.ts initStore/loadWeek, history.ts histInit/histPush), so nothing
    is rendered or saved before a row has its id — inputs.ts's lesson that an
    id minted later than the snapshot it should be in is worse than none. A
-   DUPLICATE is re-minted: a day template, a duplicated wave, a draft copy a
-   row by JSON, and the copy is a new row; the first one seen keeps its id. */
+   DUPLICATE is re-minted: a day template or a duplicated wave copies a row by
+   JSON, and that copy is a new row; the first one seen keeps its id. A parked
+   DRAFT is the deliberate EXCEPTION (drafts.ts, 11 Sep 26): it is an alternate
+   VERSION of the same day, not an independent copy, so it KEEPS the source ids
+   — and it never coexists with the live day in DAYS, so the dedupe below never
+   sees the two together. */
 export function mintRowId(){return 'r'+Date.now().toString(36)+Math.random().toString(36).slice(2,8);}
 /* every row object of one day, parents before children, in section order */
 export function rowsOf(d:any):any[]{
@@ -35,9 +39,11 @@ export function ensureRowIds(days:any[]):number{
   }
   return n;
 }
-/* a COPY is a new row: template capture/apply and a duplicated draft strip
-   the ids so the copy mints its own — never the first-seen dedupe deciding
-   which of two identical rows was "first" */
+/* a COPY is a new row: the day-template capture/apply strips the ids so the
+   copy mints its own, rather than leaving the first-seen dedupe to decide which
+   of two identical rows was "first". (A parked DRAFT does NOT strip — keep-ids,
+   drafts.ts; a duplicated wave leans on ensureRowIds' dedupe as it coexists in
+   the live model.) */
 export function stripRowIds(d:any){for(const r of rowsOf(d||{}))if(r&&typeof r==='object')delete r.rid;}
 /* every row with its ADDRESS (section.index… path) — the pairing key for a
    snapshot written before ids existed: the row at the same address in the
@@ -136,6 +142,35 @@ export function posKey(key: any, days: any[]): string | null {
   }
   return (c < 0 ? '' : prefix + ':') + out.join('.');
 }
+/* Is this key a ROW address — a keyLevels-known prefix, or the bare flying
+   seat — rather than a note / synthetic (NONROW) or an unknown key? The
+   write-in self-heal gates on this so a note or del:/mov: key never triggers a
+   wasted mint walk (posKey returns the string, not null, for an unknown prefix,
+   so an ungated check could not tell them apart). */
+export function isRowKey(key:any):boolean{
+  const s=String(key),c=s.indexOf(':'),prefix=c<0?'':s.slice(0,c);
+  if(NONROW.has(prefix))return false;
+  const parts=(c<0?s:s.slice(c+1)).split('.');
+  return keyLevels(prefix,parts)!==null;
+}
+/* THE WRITE-IN TRANSLATE, self-healing (review finding 1). A mark is stored
+   rid-anchored, but ridKey can only anchor a row that ALREADY carries a rid —
+   and a freshly-created row is marked (noteChange / markEdit / trackStructuralAdd)
+   BEFORE the next histPush mints its id. So when ridKey returns the key
+   unchanged AND it is a row key, mint the whole week's ids (ensureRowIds —
+   whole-week, never per-day, so a cross-day duplicate is re-minted before it
+   can orphan the mark) and translate once more. This is the SAFETY mechanism:
+   a missed per-site mint at any creation path cannot silently store a positional
+   key, so the board's per-site mints are an optimisation, not the guarantee.
+   A NONROW / unknown key returns unchanged with no walk; an already-rid key is
+   idempotent (ridKey bails on the first non-numeric slot, so no walk). */
+export function ridWriteKey(key:any,days:any[]):string{
+  const s=String(key),m=ridKey(s,days);
+  if(m!==s)return m;                       // anchored, or already rid
+  if(!isRowKey(s))return m;                // note / synthetic / unknown — leave positional
+  ensureRowIds(days);
+  return ridKey(s,days);
+}
 /* MIGRATE A PERSISTED BOOK written with positional keys (the storage seam now
    persists SCHED per browser). Runs once per boot/week-load AFTER
    backfillSnapshotIds (every row has a rid) and BEFORE the baseline, so a
@@ -172,7 +207,45 @@ export function migrateBookKeys(sched: any, days: any[]): number {
       sd.c = remap(sd.c, ref);
     });
   });
+  /* Fable-B: SCHED.orig[di].c drives the reissue/Original preview and rides
+     this same stash. Missing here, its marks are lost on migration. Re-key it
+     against its OWN snapshot day (orig[di].d), exactly as al.snap.c above —
+     backfillSnapshotIds has already given orig[di].d its rids. */
+  Object.keys(sched.orig || {}).forEach((di: any) => {
+    const o = sched.orig[di]; if (!o || !o.c) return;
+    let ref = days;
+    if (o.d) { ref = []; ref[+di] = o.d; }
+    o.c = remap(o.c, ref);
+  });
   return n;
+}
+/* THE FORMAT VERSION this build writes into every persisted book (schedFields'
+   `v`, engine → state/history.ts). A book WITHOUT it was written before the
+   addressing-by-rid change (the foundation build #384 and earlier), and its row
+   identities are INCONSISTENT with the keep-ids model: #384's draftDup re-minted
+   the parked copy, so a parked (or selected-then-live) draft carries rids foreign
+   to the issued snapshots. Persisted books DO reach this build (state/persist.ts
+   files week snapshots — drafts and amendments included, schedFields — to the
+   localStorage whiteboard and hydrates them at boot), so this must be migrated. */
+export const RID_BOOK_VERSION = 2;
+/* LEGACY BOOK MIGRATION (Astra RID-REVIEW-01, RID-IR-02/03). One-time, gated on
+   the persisted version so it runs ONLY on a foundation-era book and NEVER on a
+   modern one — a modern draft may legitimately share zero rids with its live day
+   (all rows replaced), so legacy-ness must be an explicit version, never inferred
+   from id overlap. For a legacy book it STRIPS every row id across the whole book
+   (the live days, the parked drafts, SCHED.orig and every AL snapshot), so the
+   ensureRowIds + backfillSnapshotIds pass that follows rebuilds ONE consistent
+   id-space by position — the same legacy-faithful position-pairing the backfill
+   already uses, reused rather than reinvented. Runs BEFORE ensureRowIds. Sets the
+   version so it is a no-op ever after. Returns true when it migrated. */
+export function migrateLegacyIds(sched: any, days: any[]): boolean {
+  if (!sched || sched.ridV >= RID_BOOK_VERSION) return false;   // modern / already migrated — never touch
+  (days || []).forEach((d: any) => stripRowIds(d));
+  Object.keys(sched.drafts || {}).forEach((k: any) => (sched.drafts[k] || []).forEach((t: any) => { if (t && t.d) stripRowIds(t.d); }));
+  Object.keys(sched.orig || {}).forEach((k: any) => { const o = sched.orig[k]; if (o && o.d) stripRowIds(o.d); });
+  (sched.als || []).forEach((al: any) => Object.keys(al.snap || {}).forEach((k: any) => { const sd = al.snap[k]; if (sd && sd.d) stripRowIds(sd.d); }));
+  sched.ridV = RID_BOOK_VERSION;
+  return true;
 }
 /* THE BACKFILL (review finding 6): the amendment book — SCHED.orig, every
    AL's day snapshots, the drafts — is persisted with the week, so a book

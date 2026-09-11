@@ -10,7 +10,7 @@ import { WARN, validate, WCODE, wlbl } from '../engine/validate'
 import { hhmm, fmtHM, minus, parseHM } from '../engine/time'
 import { VCONF } from '../engine/rules'
 import { slotVal, txtGet, txtSet, acRef, rollCx, whoArr, unacceptInput, TIME_TXT } from '../engine/slots'
-import { markEdit, markDeletion, deletionWasIssued, markStructuralAdd, alAttr, dayApproved, dayCurVer, dayPendCount, verLabel, nextAL } from '../engine/publish'
+import { markEdit, markDeletion, deletionWasIssued, markStructuralAdd, alAttr, dayApproved, dayCurVer, dayPendCount, verLabel, nextAL, dropRowMarks } from '../engine/publish'
 import { logAction, ELOG } from '../engine/editlog'
 import { hideHistBub } from './histbubble'
 import { touchDragBusy } from './drag'
@@ -718,9 +718,13 @@ export function boardMbtn(e: MouseEvent) {
     /* what the line HELD, read off r.f/r.a before the splice below empties
        either — the formation may vanish with it if this was its last aircraft */
     const said = 'Line removed' + desc([r.f.cs, r.f.msn].filter(Boolean).join(' · '), timeSpan(r.f.to, r.f.ld), [PEOPLE[r.a.p]?.cs, PEOPLE[r.a.w]?.cs].filter(Boolean).join('/'))
+    /* the removed ROOT rid(s), captured BEFORE the splice: the aircraft always,
+       and the formation too when this was its last aircraft (it goes with it) */
+    const rids: any[] = [r.a && r.a.rid]
     r.f.aircraft.splice(r.ai, 1)
     shiftAircraft(dI, gI, r.li, r.ai)
-    if (!r.f.aircraft.length) { r.w.formations.splice(r.li, 1); shiftFormation(dI, gI, r.li) } else rollCx(r.f)
+    if (!r.f.aircraft.length) { rids.push(r.f.rid); r.w.formations.splice(r.li, 1); shiftFormation(dI, gI, r.li) } else rollCx(r.f)
+    dropRowMarks(rids)
     markDeletion(dI, 'line', issued); afterSchedMutate(); notify(); return act(dI, said)
   }
   if (ds.lac != null) {
@@ -748,7 +752,9 @@ export function boardMbtn(e: MouseEvent) {
     const nf = gw ? gw.formations.length : 0
     const na = gw ? gw.formations.reduce((n: number, f: any) => n + f.aircraft.length, 0) : 0
     const said = 'Wave removed' + desc(gw && gw.label, nf ? `${nf} formation${nf > 1 ? 's' : ''} · ${na} aircraft` : '')
+    const waveRid = gw && gw.rid    // the root rid — sweeps its formations/aircraft too (ancestor-retaining keys)
     DAYS[di].waves.splice(gi, 1); shiftWave(di, gi)
+    dropRowMarks([waveRid])
     /* DELETING A WAVE LEAVES THE DUTY BLOCKS ALONE (owner, 13 Aug 26 — duties
        are decoupled from waves). A desk is placed from a template now and owned
        by nothing on the flying side, so a wave's removal no longer walks the
@@ -782,8 +788,10 @@ export function boardMbtn(e: MouseEvent) {
     /* the item's own line, before the splice below takes it */
     const x = DAYS[di].allhands[ri]
     const said = 'Item removed' + desc([x.prog, x.sub].filter(Boolean).join(' · '), timeSpan(x.str, x.end), whoText(x))
+    const rid = x && x.rid
     DAYS[di].allhands.splice(ri, 1)
     ;[`ap:${di}.`, `a:${di}.`].forEach(h => shiftKeys(h, 0, ri))
+    dropRowMarks([rid])
     markDeletion(di, 'programme', issued); afterSchedMutate(); notify(); return act(di, said)
   }
   if (ds.pcx != null) { const [di, ri] = ds.pcx.split('.').map(Number); return askCx(DAYS[di].allhands[ri], `ap:${di}.${ri}.prog`, 'this item') }
@@ -834,8 +842,10 @@ export function boardMbtn(e: MouseEvent) {
     /* the block's own label and row count, before the splice below empties it */
     const dw = DAYS[di].dutywaves[wi], n = dw ? dw.rows.length : 0
     const said = 'Duty block removed' + desc(dw && dw.label, n ? `${n} row${n > 1 ? 's' : ''}` : '')
+    const rid = dw && dw.rid    // sweeps the block and its rows (ancestor-retaining)
     DAYS[di].dutywaves.splice(wi, 1)
     ;[`d:${di}.`, `dr:${di}.`, `dl:${di}.`].forEach(h => shiftKeys(h, 0, wi))
+    dropRowMarks([rid])
     markDeletion(di, 'dutyblock', issued); afterSchedMutate(); notify(); return act(di, said)
   }
   if (ds.dradd != null) {
@@ -850,8 +860,10 @@ export function boardMbtn(e: MouseEvent) {
     /* the row's role, who was in it and its hours, before the splice below */
     const row = DAYS[di].dutywaves[wi].rows[ri]
     const said = 'Duty row removed' + desc(row.role, PEOPLE[row.id]?.cs || row.id, timeSpan(row.str, row.end))
+    const rid = row && row.rid
     DAYS[di].dutywaves[wi].rows.splice(ri, 1)
     ;[`d:${di}.${wi}.`, `dr:${di}.${wi}.`].forEach(h => shiftKeys(h, 0, ri))
+    dropRowMarks([rid])
     markDeletion(di, 'duty', issued); afterSchedMutate(); notify(); return act(di, said)
   }
   if (ds.drcx != null) { const [di, wi, ri] = ds.drcx.split('.').map(Number); return askCx(DAYS[di].dutywaves[wi].rows[ri], `dr:${di}.${wi}.${ri}.role`, 'this duty') }
@@ -887,8 +899,10 @@ export function boardMbtn(e: MouseEvent) {
     /* the row's kind (AMT/OFT), label and hours, before the splice below */
     const row = DAYS[+di].sims[kind][+ri]
     const said = 'Sim row removed' + desc([kind.toUpperCase(), row.label].filter(Boolean).join(' · '), timeSpan(row.str, row.end))
+    const rid = row && row.rid
     DAYS[+di].sims[kind].splice(+ri, 1)
     ;[`s:${di}.${kind}.`, `sr:${di}.${kind}.`].forEach(h => shiftKeys(h, 0, +ri))
+    dropRowMarks([rid])
     markDeletion(+di, 'sim', issued); afterSchedMutate(); notify(); return act(+di, said)
   }
   if (ds.srcx != null) { const [di, kind, ri] = ds.srcx.split('.'); return askCx(DAYS[+di].sims[kind][+ri], `sr:${di}.${kind}.${ri}.label`, 'this sim') }
@@ -921,8 +935,10 @@ export function boardMbtn(e: MouseEvent) {
     }
     const issued = deletionWasIssued(di, 'ground', ri, row && row.src)
     const said = 'Ground item removed' + desc(row && row.prog, row && timeSpan(row.str, row.end), row && whoText(row))
+    const rid = row && row.rid
     DAYS[di].ground.splice(ri, 1)
     ;[`g:${di}.`, `gr:${di}.`].forEach(h => shiftKeys(h, 0, ri))
+    dropRowMarks([rid])
     markDeletion(di, 'ground', issued); afterSchedMutate(); notify(); return act(di, said)
   }
   if (ds.grcx != null) { const [di, ri] = ds.grcx.split('.').map(Number); return askCx(DAYS[di].ground[ri], `gr:${di}.${ri}.prog`, 'this item') }

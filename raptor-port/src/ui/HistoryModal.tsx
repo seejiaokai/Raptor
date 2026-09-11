@@ -7,6 +7,7 @@ import { HISTLIST, setHistList, HISTGROUP, setHistGroup, HISTOPEN, toggleHistOpe
 import { jumpToChange } from './interactions'
 import { histJumpable } from './histbubble'
 import { useVersion } from './useStore'
+import { posKey } from '../engine/rowids'
 
 /* THE LISTED VIEW (owner, 11 Aug 26) — every edit in time order, newest
    first, each line saying which day of the schedule it landed on, with a
@@ -48,12 +49,18 @@ const meta = (r: ELogRow) => `<span class="hl-meta">${esc(r.who)} · ${esc(elogW
    untrue as well ("no longer on this day" for a detail sitting safely on the
    week). */
 function rowHTML(r: ELogRow, cls = 'hl-row') {
-  const hit = histJumpable(r.key)
+  /* the log key is stored rid-anchored, but the board addresses cells
+     POSITIONALLY (data-slot / data-bfld are built from loop indices, which is
+     what keeps the parity gate byte-identical). So the jump handle is the row's
+     CURRENT positional address (posKey), never the rid — no non-deterministic
+     value ever reaches the DOM (RID-05). A row that no longer resolves (its row
+     was deleted since the edit) is rendered without a live jump. */
+  const pk = histJumpable(r.key) ? posKey(r.key, DAYS) : null
   const body = r.key
     ? `<span class="hl-what">${esc(r.lbl)}</span><span class="hl-chg">${chg(r)}</span>`
     : `<span class="hl-what struct">${esc(r.lbl)}</span>`
-  return hit
-    ? `<button class="${cls} hit" data-hkey="${esc(r.key)}" data-hdi="${r.di == null ? '' : r.di}"
+  return pk
+    ? `<button class="${cls} hit" data-hkey="${esc(pk)}" data-hdi="${r.di == null ? '' : r.di}"
          title="Go to this detail on the board">${dow(r.di)}${body}${meta(r)}</button>`
     : `<div class="${cls}">${dow(r.di)}${body}${meta(r)}</div>`
 }
@@ -76,14 +83,18 @@ function flatHTML(di: any) {
 function groupedHTML(di: any) {
   const groups = elogGroups(di)
   if (!groups.length) return emptyHTML(di)
-  return `<ol class="hl-list">` + groups.map(g => {
+  return `<ol class="hl-list">` + groups.map((g, i) => {
     /* a group of ONE is just a row — a fold that opens to reveal the line
        already on screen is a tap for nothing */
     if (g.rows.length < 2) return `<li>${rowHTML(g.rows[0]!)}</li>`
     const open = HISTOPEN.has(g.key)
     const newest = g.rows[g.rows.length - 1]!
+    /* the fold handle is the group's INDEX, not its (rid) key — no rid in the
+       DOM (RID-05); onBody maps the index back through elogGroups(di)[i].key.
+       The fold STATE (HISTOPEN) stays keyed on the stored rid key, which is
+       stable across a delete above it where a positional handle would shift. */
     return `<li class="hl-grp${open ? ' open' : ''}">`
-      + `<button class="hl-row hl-ghead" data-hgrp="${esc(g.key)}" aria-expanded="${open}"
+      + `<button class="hl-row hl-ghead" data-hgrp="${i}" aria-expanded="${open}"
            title="${open ? 'Fold this detail up' : 'Show every change to this detail'}">`
       + dow(g.di)
       + `<span class="hl-what">${esc(g.lbl)}</span>`
@@ -111,7 +122,7 @@ export function HistoryModal() {
   const onBody = (e: any) => {
     const t = e.target as HTMLElement
     const g = t.closest('[data-hgrp]') as HTMLElement | null
-    if (g) { toggleHistOpen(g.dataset.hgrp!); notify(); return }
+    if (g) { const grp = elogGroups(di)[+g.dataset.hgrp!]; if (grp) toggleHistOpen(grp.key); notify(); return }
     const h = t.closest('[data-hkey]') as HTMLElement | null
     if (h) jumpToChange(h.dataset.hkey!, h.dataset.hdi === '' ? null : +h.dataset.hdi!)
   }
