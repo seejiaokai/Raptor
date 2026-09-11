@@ -10,7 +10,9 @@ import {
   moveGroundRow, moveProgRow, moveNote, applyMove,
 } from './reorder'
 import { groundOrder } from './order'
+import { ridKey, ensureRowIds } from './rowids'
 
+const rk = (k: string) => ridKey(k, DAYS)
 const DSNAP = JSON.stringify(DAYS)
 beforeEach(() => {
   DAYS.length = 0; JSON.parse(DSNAP).forEach((d: any) => DAYS.push(d))
@@ -56,7 +58,7 @@ describe('moveWave', () => {
   it('marks the moved wave at its NEW address so the day goes out amended', () => {
     twoWaves()
     moveWave(0, 0, 1)
-    expect(SCHED.pending['wl:0.1']).toBe(1)
+    expect(SCHED.pending[rk('wl:0.1')]).toBe(1)
   })
   it('refuses an out-of-range index and a no-op, changing nothing', () => {
     twoWaves()
@@ -99,7 +101,7 @@ describe('moveFormation', () => {
 
   it('marks the moved row at its NEW address so the day goes out amended', () => {
     moveFormation(0, 0, 1, 0)
-    expect(SCHED.pending['ff:0.0.0.cs']).toBe(1)
+    expect(SCHED.pending[rk('ff:0.0.0.cs')]).toBe(1)
   })
 
   it('refuses an out-of-range index and a no-op, changing nothing', () => {
@@ -141,7 +143,7 @@ describe('moveAircraft', () => {
        retire an old AL tag on a re-edit). Preloading there would collide
        with the mark and prove nothing about carry-over. */
     expect(SCHED.changes[`fr:0.0.${li}.1`]).toBe(2)
-    expect(SCHED.pending[`fr:0.0.${li}.0`]).toBe(1)
+    expect(SCHED.pending[rk(`fr:0.0.${li}.0`)]).toBe(1)
   })
 })
 
@@ -164,12 +166,13 @@ describe('moveDutyRow / moveSimRow / moveProgRow / moveNote', () => {
        see the fr: comment above moveAircraft's test. Preloading there would
        collide with the mark and prove nothing about carry-over. */
     expect(SCHED.changes['dr:0.0.1.role']).toBe(2)
-    expect(SCHED.pending['dr:0.0.0.role']).toBe(1)
+    expect(SCHED.pending[rk('dr:0.0.0.role')]).toBe(1)
   })
 
   it('a sim row moves inside its own kind and leaves the other kind alone', () => {
     const di = DAYS.findIndex((d: any) => ((d.sims || {}).amt || []).length > 1)
     if (di < 0) throw new Error('seed week needs a day with two AMT rows')
+    ensureRowIds(DAYS)
     const amt = DAYS[di].sims.amt
     const oft = JSON.stringify(DAYS[di].sims.oft || [])
     const was = amt.map((r: any) => r.label)
@@ -200,7 +203,7 @@ describe('moveDutyRow / moveSimRow / moveProgRow / moveNote', () => {
        with the mark and prove nothing about carry-over. */
     expect(SCHED.changes[`ap:${di}.1.prog`]).toBe(1)
     expect(SCHED.changes[`a:${di}.0.0`]).toBe(2)
-    expect(SCHED.pending[`ap:${di}.0.prog`]).toBe(1)
+    expect(SCHED.pending[rk(`ap:${di}.0.prog`)]).toBe(1)
   })
 
   it('a note line moves and carries its key', () => {

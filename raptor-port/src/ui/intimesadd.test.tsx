@@ -27,6 +27,7 @@ import { createRoot, type Root } from 'react-dom/client'
 import { App } from './App'
 import { initStore, setSession, notify } from '../state/store'
 import { DAYS } from '../engine/data'
+import { ridKey } from '../engine/rowids'
 import { waveInTime, intimeFold } from '../engine/events'
 import { hhmm } from '../engine/time'
 import { makeStandalone } from '../engine/waves'
@@ -38,6 +39,7 @@ import { dayHTML } from './html'
 
 let host: HTMLDivElement
 let root: Root
+const rk = (k: string) => ridKey(k, DAYS)
 const $ = (sel: string) => document.querySelector(sel) as HTMLElement
 const $$ = (sel: string) => [...document.querySelectorAll(sel)] as HTMLElement[]
 const click = async (el: Element | null) => {
@@ -177,7 +179,7 @@ describe('adding and removing in-time lines', () => {
     expect(waveInTime(w), 'derived in-time unmoved by the seed').toBe(t0)
     /* no callsign — "<CS> IN TIME" would set a formation report time */
     expect(line).not.toMatch(/\b[A-Z]{2}\s+IN\s+TIME/)
-    const row = elogRows(0).find(r => r.key === 'it:0.0')
+    const row = elogRows(0).find(r => r.key === rk('it:0.0'))
     expect(row, 'the changes list carries the it: row').toBeTruthy()
     expect(row!.lbl).toContain('in-times')
     await drain()

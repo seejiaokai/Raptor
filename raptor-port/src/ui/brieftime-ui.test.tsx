@@ -18,8 +18,11 @@ import { VCONF } from '../engine/rules'
 import { minus } from '../engine/time'
 import { isStandalone } from '../engine/waves'
 import { schedRows } from './export'
+import { ridKey } from '../engine/rowids'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
+
+const rk = (k: string) => ridKey(k, DAYS)
 
 let host: HTMLDivElement
 let root: Root
@@ -83,9 +86,9 @@ describe('B on the edit week', () => {
     expect(ghost.textContent).toBe(want)
     await click(ghost)
     expect(f.br).toBe(want)
-    expect(SCHED.pending[key]).toBe(1)
+    expect(SCHED.pending[rk(key)]).toBe(1)
     expect($(`#eWeek .bsug[data-bacc="${key}"]`), 'the ghost is gone once B is set').toBeFalsy()
-    await act(async () => { f.br = was; delete SCHED.pending[key]; notify() })
+    await act(async () => { f.br = was; delete SCHED.pending[rk(key)]; notify() })
   })
 
   it('a typed B needs no suggestion at all', async () => {
@@ -108,7 +111,7 @@ describe('B on the edit week', () => {
     await settle()
     expect(txtGet(key)).toBe('06:10')
     expect(f.br).toBe('06:10')
-    expect(SCHED.pending[key]).toBe(1)
+    expect(SCHED.pending[rk(key)]).toBe(1)
     /* the commit above changed the day's rendered string, so EditWeek's
        per-day diff swapped in a fresh section (outerHTML) — `el` is now a
        detached node whose events never reach the document-level listener.
@@ -121,7 +124,7 @@ describe('B on the edit week', () => {
       live.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true }))
     })
     expect(live.textContent).toBe('06:10')
-    await act(async () => { f.br = was; delete SCHED.pending[key]; notify() })
+    await act(async () => { f.br = was; delete SCHED.pending[rk(key)]; notify() })
   })
 })
 
@@ -161,12 +164,12 @@ describe('B on the scheduler board', () => {
       inp.dispatchEvent(new Event('change', { bubbles: true }))
     })
     expect(txtGet(key)).toBe('07:15')
-    expect(SCHED.pending[key]).toBe(1)
+    expect(SCHED.pending[rk(key)]).toBe(1)
     await act(async () => {
       inp.value = before
       inp.dispatchEvent(new Event('change', { bubbles: true }))
     })
-    delete SCHED.pending[key]
+    delete SCHED.pending[rk(key)]
   })
 
   it('a blank B on the board offers the same accept ghost as the week', async () => {
@@ -178,8 +181,8 @@ describe('B on the scheduler board', () => {
     expect(ghost.dataset.bval).toBe(want)
     await click(ghost)
     expect(f.br).toBe(want)
-    expect(SCHED.pending[key]).toBe(1)
-    await act(async () => { f.br = was; delete SCHED.pending[key]; notify() })
+    expect(SCHED.pending[rk(key)]).toBe(1)
+    await act(async () => { f.br = was; delete SCHED.pending[rk(key)]; notify() })
   })
 })
 

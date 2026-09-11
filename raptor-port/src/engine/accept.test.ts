@@ -13,7 +13,9 @@ import { SCHED, signOf, setDayApproved, publishALDay } from './publish'
 import { makeStandalone } from './waves'
 import { validate } from './validate'
 import { HOOKS } from './hooks'
+import { ridKey } from './rowids'
 
+const rk = (k: string) => ridKey(k, DAYS)
 const DSNAP = JSON.stringify(DAYS)
 const ISNAP = JSON.stringify(INPUTS)
 
@@ -62,7 +64,7 @@ describe('accepting a personal input', () => {
       const ri = DAYS[0].ground.length
       expect(acceptInput(0, inp, 'g')).toBe(true)
       expect(flashed).toEqual([`gr:0.${ri}.prog`])
-      expect(SCHED.added[`gr:0.${ri}.prog`]).toBe(1)
+      expect(SCHED.added[rk(`gr:0.${ri}.prog`)]).toBe(1)
     } finally { HOOKS.flashAdded = orig }
   })
 
@@ -87,7 +89,7 @@ describe('accepting a personal input', () => {
     const inp = findInp('Meeting')!
     const ri = DAYS[0].ground.length
     acceptInput(0, inp, 'g')
-    expect(SCHED.pending[`gr:0.${ri}.prog`]).toBe(1)
+    expect(SCHED.pending[rk(`gr:0.${ri}.prog`)]).toBe(1)
   })
 
   it('an all-day input becomes an all-day row, not 00:00–00:00', () => {

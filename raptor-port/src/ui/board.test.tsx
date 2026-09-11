@@ -22,8 +22,11 @@ import { openScheduler, closeScheduler, boardArmClick, boardChange, boardMbtn, b
 import { applyMove } from '../engine/reorder'
 import { WARN } from '../engine/validate'
 import { HOOKS } from '../engine/hooks'
+import { ridKey } from '../engine/rowids'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
+
+const rk = (k: string) => ridKey(k, DAYS)
 
 let host: HTMLDivElement
 let root: Root
@@ -160,7 +163,7 @@ describe('the scheduler board (tfin board group)', () => {
     expect([f.cs, f.msn, f.to, f.ld]).toEqual(['', '', '', ''])
     expect(f.aircraft.length).toBe(1)
     /* the new line's key is marked pending so the line can be published */
-    const key = `ff:0.${d.waves.length - 1}.${w.formations.length - 1}.cs`
+    const key = rk(`ff:0.${d.waves.length - 1}.${w.formations.length - 1}.cs`)
     expect(SCHED.pending[key]).toBeTruthy()
     /* put it back */
     w.formations.pop()
@@ -182,7 +185,7 @@ describe('the scheduler board (tfin board group)', () => {
     const d = DAYS[0], nBefore = d.waves.length
     await click($('.wavemenu [data-wmkind=""]'))
     expect(d.waves.length).toBe(nBefore + 1)
-    expect(SCHED.pending[`wl:0.${d.waves.length - 1}`]).toBeTruthy()
+    expect(SCHED.pending[rk(`wl:0.${d.waves.length - 1}`)]).toBeTruthy()
     expect($('.wavemenu')).toBeFalsy()
   })
 
@@ -341,7 +344,7 @@ describe('the scheduler board (tfin board group)', () => {
     expect(inp).toBeTruthy()
     const key = inp.dataset.bfld!, before = inp.value
     await change(inp, 'BFM 2V2')
-    expect(SCHED.pending[key]).toBeTruthy()
+    expect(SCHED.pending[rk(key)]).toBeTruthy()
     const d = DAYS[0]
     const [, gi, li] = key.replace('ff:', '').split('.').map(Number)
     expect(d.waves[gi!].formations[li!].msn).toBe('BFM 2V2')
@@ -525,7 +528,7 @@ describe('duty / sim / ground panels on the board (owner request, Aug 26)', () =
     expect(inp).toBeTruthy()
     const key = inp.dataset.bfld!, before = inp.value
     await change(inp, 'TEST DUTY')
-    expect(SCHED.pending[key]).toBeTruthy()
+    expect(SCHED.pending[rk(key)]).toBeTruthy()
     await change(document.querySelector(`#sbBoard [data-bfld="${key}"]`) as HTMLInputElement, before)
   })
 
@@ -2179,7 +2182,7 @@ describe('the board carries the edit week\'s publish controls (owner ask)', () =
     const d = DAYS[0]
     const gi = d.waves.length - 1
     await click($(`#sbBoard [data-gline="0.${gi}"]`))
-    const key = `ff:0.${gi}.${d.waves[gi].formations.length - 1}.cs`
+    const key = rk(`ff:0.${gi}.${d.waves[gi].formations.length - 1}.cs`)
     expect(SCHED.pending[key], 'the new line is pending, same funnel as the week').toBeTruthy()
 
     expect($('#sbSignBar .dpend'), 'the pending-count chip appears once the published day carries an edit').toBeTruthy()

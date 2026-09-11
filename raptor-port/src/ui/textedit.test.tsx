@@ -9,8 +9,12 @@ import { initStore, setSession, notify, undo } from '../state/store'
 import { SCHED } from '../engine/publish'
 import { txtGet } from '../engine/slots'
 import { validate, WARN } from '../engine/validate'
+import { DAYS } from '../engine/data'
+import { ridKey } from '../engine/rowids'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
+
+const rk = (k: string) => ridKey(k, DAYS)
 
 let host: HTMLDivElement
 let root: Root
@@ -51,7 +55,7 @@ describe('inline text editing (tfin text-funnel semantics)', () => {
     })
     await settle()
     expect(txtGet('fr:0.0.0.0')).toBe('NEW REMARK')
-    expect(SCHED.pending['fr:0.0.0.0']).toBe(1)
+    expect(SCHED.pending[rk('fr:0.0.0.0')]).toBe(1)
     await act(async () => { undo() })
   })
 

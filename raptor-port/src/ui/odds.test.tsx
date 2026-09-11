@@ -8,6 +8,7 @@ import { createRoot, type Root } from 'react-dom/client'
 import { App } from './App'
 import { initStore, setSession, notify, loadWeek } from '../state/store'
 import { DAYS } from '../engine/data'
+import { ridKey } from '../engine/rowids'
 import { CURWEEK, WEEKS } from '../engine/waves'
 import { SCHED } from '../engine/publish'
 import { USERS } from '../state/users'
@@ -18,6 +19,7 @@ import { openScheduler, closeScheduler } from './board'
 
 let host: HTMLDivElement
 let root: Root
+const rk = (k: string) => ridKey(k, DAYS)
 const $ = (sel: string) => document.querySelector(sel) as HTMLElement
 const $$ = (sel: string) => [...document.querySelectorAll(sel)] as HTMLElement[]
 const click = async (el: Element | null) => {
@@ -196,7 +198,7 @@ describe('the airspace popup (tr: funnel)', () => {
     const n = (g.traffic || []).length
     await click($('#airAdd'))
     expect(g.traffic.length).toBe(n + 1)
-    expect(SCHED.pending[`tr:${di}.${gi}`]).toBeTruthy()
+    expect(SCHED.pending[rk(`tr:${di}.${gi}`)]).toBeTruthy()
     expect($$('#airBody [data-airi]').length).toBe(n + 1)
   })
 

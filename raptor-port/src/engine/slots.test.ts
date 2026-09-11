@@ -7,7 +7,9 @@ import { DAYS } from './data'
 import { slotVal, setSlotVal, fillSlot, flyRef, rowRef, rowCrew, txtRef, txtGet, txtSet, whoSet, armTargetExists, renameCallsign } from './slots'
 import { PEOPLE, ID_BY_CS, nameToId } from './people'
 import { SCHED } from './publish'
+import { ridKey } from './rowids'
 
+const rk = (k: string) => ridKey(k, DAYS)
 const SNAP = JSON.stringify(DAYS)
 beforeEach(() => {
   DAYS.length = 0; JSON.parse(SNAP).forEach((d: any) => DAYS.push(d))
@@ -37,7 +39,7 @@ describe('the mutation funnel (tfin edit-board group)', () => {
     const k = 'd:0.0.0'
     const b = slotVal(k)
     setSlotVal(k, b === 'bane' ? 'stiff' : 'bane')
-    expect(SCHED.pending[k]).toBe(1)
+    expect(SCHED.pending[rk(k)]).toBe(1)
     setSlotVal(k, b)
   })
 

@@ -9,7 +9,9 @@ import { beforeEach, describe, expect, it } from 'vitest'
 import { DAYS } from './data'
 import { SCHED } from './publish'
 import { sortWave, sortWaves, sortDutyBlock, sortDutyBlocks, sortSims, sortGround, sortProg, sortDay } from './reorder'
+import { ridKey, ensureRowIds } from './rowids'
 
+const rk = (k: string) => ridKey(k, DAYS)
 const DSNAP = JSON.stringify(DAYS)
 beforeEach(() => {
   DAYS.length = 0; JSON.parse(DSNAP).forEach((d: any) => DAYS.push(d))
@@ -114,7 +116,7 @@ describe('sortWaves', () => {
     expect(SCHED.changes['it:0.1']).toBe(1)
     expect(SCHED.als[0].keys).toEqual(['0.1.0.0.p', 'wl:0.1'])
     /* the wave now sitting on top is what the sort itself marks pending */
-    expect(SCHED.pending['wl:0.0']).toBe(1)
+    expect(SCHED.pending[rk('wl:0.0')]).toBe(1)
   })
 
   it('is a no-op — returns false and marks nothing — on waves already in take-off order', () => {
@@ -162,7 +164,7 @@ describe('sortDutyBlocks', () => {
     expect(SCHED.changes['d:0.1.0']).toBe(1)
     expect(SCHED.changes['dr:0.1.0.role']).toBe(1)
     expect(SCHED.changes['dl:0.1']).toBe(1)
-    expect(SCHED.pending['dl:0.0']).toBe(1)
+    expect(SCHED.pending[rk('dl:0.0')]).toBe(1)
   })
 
   it('sinks a block with no start time anywhere in it to the bottom', () => {
@@ -220,6 +222,7 @@ describe('sortSims', () => {
       amt: [{ label: 'B', str: '1000' }, { label: 'A', str: '0800' }],
       oft: [{ label: 'Y', str: '1500' }, { label: 'X', str: '0900' }],
     }
+    ensureRowIds(DAYS)
     const oftWas = JSON.stringify(DAYS[0].sims.oft)
     expect(sortSims(0, 'amt')).toBe(true)
     expect(DAYS[0].sims.amt.map((r: any) => r.label)).toEqual(['A', 'B'])
@@ -290,7 +293,7 @@ describe('a sort carries a pending mark, a changes entry and an issued AL key wi
     expect(SCHED.changes['gr:0.1.prog']).toBe(1)
     expect(SCHED.als[0].keys).toEqual(['gr:0.1.prog'])
     /* the moved-into-place row (A, now at index 0) is what the sort itself marks pending */
-    expect(SCHED.pending['gr:0.0.prog']).toBe(1)
+    expect(SCHED.pending[rk('gr:0.0.prog')]).toBe(1)
   })
 })
 
