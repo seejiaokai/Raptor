@@ -73,3 +73,18 @@ Codex confirmed the quarantine (R3-02), week-identity (R3-03) and template-workf
 | P2-R4-01 | med | The filing fingerprint's 3 states collapse fresh/unfiled (absent) with removed/dormant `'r'` (what `unacceptInput` sets, `slots.ts:463-477`); a fresh input flags conflicts, a `'r'` one is dormant — so `absent→u→r` changes behaviour with DAYS unchanged but reads as no-op. | ACCEPT. Fingerprint carries FOUR distinct states (`u`/`g`/`r`/absent) in live + frozen, preserved through nav/persist/recovery; only a same-actual-state round trip (`r→u→r`) is a no-op, `absent→u→r` is a delta. §1/§3. |
 
 Host action: revise the plan (the 1), then round 5 (the cap) to confirm APPROVED.
+
+## Round 5 — verdict APPROVED (Codex GPT-6 Astra, high; resumed session 01a0950a…)
+
+Approved plan SHA256: `c4f028395aa3e5503e4d5e8950204140b80439ef40c2b291613dc90968e00f62`
+(matches the committed plan; `runner check` = "Approval matches the current plan").
+0 findings. Summary: "P2-R4-01 is closed at the design level… No material unresolved
+defect was found within the plan's stated Phase 2 scope."
+Approval scope (Codex limitations): covers the implementation PLAN, not completed
+code; runtime/round-trip behaviour to be verified after implementation; explicitly
+deferred later-phase contracts (undo boundary §Phase 3, migration §Phase 5,
+signatures, durable write, crew) are outside this approval.
+
+**Trend across the loop: 9 → 7 → 4 → 1 → 0 findings.** Plan hardened and
+cross-provider-approved. Build is authorised only on the owner's go-ahead; the
+finished CODE still gets a fresh Codex inspection before any "merge live".
