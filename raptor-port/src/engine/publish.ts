@@ -5,6 +5,9 @@ import { isScheduler } from './people'
 import { HOOKS } from './hooks'
 import { logEdit } from './editlog'
 import { ridKey, posKey, ridWriteKey, RID_BOOK_VERSION } from './rowids'
+import { canonicalDiff, digest } from './canonical'
+import type { DeltaEntry } from './canonical'
+import { INPUTS, inpId, inputCoversDate } from './inputs'
 
 /* the reference calls straight into the UI here; the engine routes those four
    calls through injected hooks (no-ops until the app provides them) so the
@@ -143,7 +146,53 @@ function reissueReopened(di:any){di=+di;
    Nothing here persists past the session — neither does the AL list itself. */
 export function daySnap(di:any){di=+di;
   const c:any={}; Object.keys(SCHED.changes).forEach((k:any)=>{if(keyDay(k)===di)c[k]=SCHED.changes[k];});
-  return {d:JSON.parse(JSON.stringify(DAYS[di])),c};}
+  return {d:JSON.parse(JSON.stringify(DAYS[di])),c,fil:dayFilingFingerprint(di)};}
+/* ---- Phase 2: the FILING FINGERPRINT (P2-R3-01 / P2-R4-01) ------------------
+   The publication delta has a fourth axis — input filings — that day content
+   does NOT carry: filing an input changes INPUTS.acc, not DAYS. To detect a
+   filing change against the issued version WITHOUT trusting the live `inp:`
+   pending mark (which survives a file-then-unfile) and WITHOUT depending on live
+   INPUTS after navigation (store.ts clears acc), each issued snapshot freezes a
+   fingerprint: per input covering this day's date, its acc state. FOUR distinct
+   states — 'u' filed-unavailable, 'g' accepted-ground, 'r' removed/dormant, and
+   '' fresh/unfiled — because a fresh input still flags conflicts while a 'r' one
+   is dormant, so absent→u→r is a real change even though DAYS is unchanged. This
+   is NOT AM-04's freezing of full input VALUES/identities into content. */
+export function dayFilingFingerprint(di:any):any{di=+di;
+  const dt=(DAYS[di]||{}).dt, fil:any={};
+  if(dt==null)return fil;
+  (INPUTS||[]).forEach((inp:any)=>{ if(inputCoversDate(inp,dt))fil[inpId(inp)]=inp.acc||''; });
+  return fil;}
+/* the filing axis: entries for any input whose frozen state differs from now.
+   A same-actual-state round trip (r→u→r) is a no-op; absent→u→r is a delta. */
+function filingDelta(di:any,issuedFil:any):DeltaEntry[]{
+  const now=dayFilingFingerprint(di), was=issuedFil||{}, out:DeltaEntry[]=[];
+  const ids=new Set([...Object.keys(now),...Object.keys(was)]);
+  ids.forEach((id:any)=>{ const a=was[id]||'', b=now[id]||''; if(a!==b)out.push({addr:`inp:${di}.${id}`,kind:'input',from:a,to:b}); });
+  return out;}
+/* ---- Phase 2: the ONE normalized publication delta (F-02) ------------------
+   Eligibility, the panel counts and the stored diff ALL derive from this — never
+   from the accumulated pending marks. Compares the live day against the CURRENT
+   issued version (dayCurVerIn/daySnapOf). A never-published day has no issued
+   baseline, so its delta is empty (publishing it is the first approve, not an AL).
+   Parameterized on a SCHED-shaped object so the same body serves a stashed week
+   (the Leave War OIL wire's read) as well as the live book. */
+export function dayDeltaIn(sc:any,di:any):DeltaEntry[]{di=+di;
+  if(!((sc&&sc.dayOK)||{})[di])return [];
+  const ver=dayCurVerIn(sc,di), snap=ver!=null?daySnapIn(sc,di,ver):null;
+  if(!snap||!snap.d)return [];
+  return canonicalDiff(snap.d,DAYS[di],di).concat(filingDelta(di,snap.fil));}
+export function dayDelta(di:any):DeltaEntry[]{return dayDeltaIn(SCHED,di);}
+/* the publish trigger + every publication affordance (P2-02/P2-07): a published
+   day has changes iff its delta is non-empty. Fast path: a content difference
+   flips the digest; only when digests match do we pay for the order + filing
+   axes (a content-identical reorder or an input-only filing). */
+export function dayHasChanges(di:any):boolean{di=+di;
+  if(!dayApproved(di))return false;
+  const ver=dayCurVer(di), snap=ver!=null?daySnapOf(di,ver):null;
+  if(!snap||!snap.d)return false;
+  if(digest(snap.d,di)!==digest(DAYS[di],di))return true;
+  return dayDelta(di).length>0;}
 export function daySnapIn(sc:any,di:any,ver:any){di=+di;
   if(ver==='orig')return ((sc&&sc.orig)||{})[di]||null;
   /* 'd:<id>' — a pre-publish DRAFT blob (engine/drafts.ts; SCHED.drafts rides
