@@ -10,7 +10,7 @@ import { slotVal, txtGet, TIME_TXT, whoArr, rowCrew, rowRef, inpKey } from '../e
    click that follows it read one test */
 import { WARN, sevOf, chipOf, dashOf, traceOf, traceLeads, traceChip, traceIx, tracesOn, chipText, wlbl, WCODE, SEVWORD, CHIP_LABEL, ordinal } from '../engine/validate'
 import { availByWave, personBusy, dayOff, dayEngaged, personWarns } from '../engine/avail'
-import { SCHED, alAttr, dayApproved, dayCurVer, dayPendCount, dayDelta, dayDiscardCount, alColor, signOf, signMissing, signPeople, SIGN_ROLES, daySigned, nextSeq, dowShort, alCount, daySnapOf, dayVersions, verLabel } from '../engine/publish'
+import { SCHED, alAttr, dayApproved, dayCurVer, dayPendCount, dayDelta, dayDiscardCount, alColor, signOf, signMissing, signPeople, SIGN_ROLES, daySigned, nextSeq, dowShort, alCount, daySnapOf, dayVersions, verLabel, protectedWeek } from '../engine/publish'
 import { verSeq } from '../engine/verid'
 import { dayDrafts, curDraftId, isDraftVer, draftVerLabel } from '../engine/drafts'
 import { keyDay } from '../engine/keys'
@@ -98,6 +98,15 @@ function dayUnsupportedHTML(di:any){
    in-progress edits stay invisible to viewers until the next AL goes out.
    Quiet mode (PVQ above): no preview banner, no Restore, class `issued`. */
 export function dayIssuedHTML(di:any){
+  /* Classify AUTHORITY by the WEEK/BOOK, never by whether verIds resolve
+     (P2-REV2-03): an unsupported book (wrong amV, or content filed under the
+     wrong week) can still carry valid verIds a changed draft resolves — but it is
+     NOT authoritative and must never be shown as the issued document. Show the
+     unavailable notice for an approved day; the plain draft for a never-approved
+     one. Checked BEFORE dayCurVer so a resolvable-but-unsupported record can't slip
+     past the ver==null branch below. */
+  if(protectedWeek())
+    return dayApproved(di)?dayUnsupportedHTML(di):dayHTML(di,false)
   const ver=dayCurVer(di)
   if(ver==null){
     /* an approved day with NO resolvable issued snapshot is a legacy/unsupported

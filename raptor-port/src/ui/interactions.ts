@@ -7,7 +7,7 @@ import { slotVal, inpKey, acceptInput, unacceptInput, txtSet } from '../engine/s
 import { INPUTS, DATES, withRemarksTail, inpId, defaultAllday } from '../engine/inputs'
 import { DAYS } from '../engine/data'
 import { PEOPLE, isSpecial } from '../engine/people'
-import { dayApproved, setDayApproved, publishALDay, signClear, markEdit, dayCurVer, dayDiscardCount, verLabel } from '../engine/publish'
+import { dayApproved, setDayApproved, publishALDay, signClear, markEdit, dayCurVer, dayDiscardCount, verLabel, protectedWeek } from '../engine/publish'
 import { draftSelect, draftVerLabel, loadVersionToWorkingCopy } from '../engine/drafts'
 import { HOOKS } from '../engine/hooks'
 import { canEditSched } from '../state/auth'
@@ -803,6 +803,11 @@ export function routeClick(e: MouseEvent) {
   if (dgo) {
     e.stopPropagation()
     if (!canEditSched() || !(view.CURPAGE === 'editsched' || view.SBDAY != null)) return
+    /* a protected (unsupported/wrong-week) book is read-only — the preview stays
+       viewable but its "Switch to this plan" is inert (P2-REV2-02). Engine
+       draftSelect also refuses, but gating here keeps the misleading "no longer
+       available" toast off a button that is merely frozen. */
+    if (protectedWeek()) return
     const di = +dgo.dataset.draftgo!, id = dgo.dataset.draftid!
     const nm = draftVerLabel(di, 'd:' + id)
     if (view.ARM && view.ARM.di === di) view.disarmSlot()
@@ -825,6 +830,7 @@ export function routeClick(e: MouseEvent) {
   if (rst) {
     e.stopPropagation()
     if (!canEditSched() || !(view.CURPAGE === 'editsched' || view.SBDAY != null)) return
+    if (protectedWeek()) return   // read-only quarantine — recovery is inert (P2-REV2-02); loadVersionToWorkingCopy also refuses
     /* never for a draft ('d:<id>') — the banner renders "Switch to this plan"
        for one, not this button, but a stale element must not roll a stowed
        draft blob over the live day either: switching drafts is draftSelect's

@@ -1,5 +1,5 @@
 import { DAYS } from './data'
-import { SCHED, dayApproved } from './publish'
+import { SCHED, dayApproved, protectedWeek } from './publish'
 import { rebaseDayPending } from './drafts'
 import { keyDay } from './keys'
 import { store } from './hooks'
@@ -215,6 +215,12 @@ export function moveDayTpl(from: number, to: number): boolean {
    amendment. A template replaces the DRAFT, not the record. */
 export function applyDayTpl(di: number, id: string): boolean {
   di = +di
+  /* READ-ONLY QUARANTINE (P2-REV2-02): a whole-day template replace mutates
+     DAYS[di] on the loaded week — refused on an unsupported/wrong-week book, whose
+     result the preserved-blob writeback would silently discard. Same guard the
+     draft-switch / recovery paths carry; protectedWeek() addresses the loaded
+     week, which is the only one applyDayTpl touches. */
+  if (protectedWeek()) return false
   const t = DAYTPL_CFG.find(t => t.id === id)
   if (!t) return false
   const cur = DAYS[di]

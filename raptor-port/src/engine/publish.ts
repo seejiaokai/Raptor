@@ -162,6 +162,13 @@ export function pendDays(){return uniqDays(Object.keys(SCHED.pending));}
 export function publishableKeys(){return Object.keys(SCHED.pending).filter((k:any)=>dayApproved(keyDay(k)));}
 export function setDayApproved(di:any,on:any){
   di=+di;
+  /* READ-ONLY QUARANTINE (P2-REV2-03): an unsupported / wrong-week book is frozen.
+     First-publishing a day stamps SCHED.orig/dayOK and the preserved-blob
+     writeback would then discard them on reload — a silent lost publish. Refuse
+     at the entry, before the signed/no-op checks below, so the quarantine is the
+     first word. Unsupported ≠ unresolvable: this is checked by the WEEK key
+     (protectedWeek → amFormatOf(SCHED,CURWEEK)), not by whether verIds resolve. */
+  if(on&&protectedWeek())return toast(`${(DAYS[di]||{}).dow||'This day'} is locked — it was published by an older version and can’t be amended here`);
   /* Phase 2 (§9): a published day can NEVER be un-approved — the reopen "beak"
      lost its un-publish job. This path only ever FIRST-approves a draft day;
      changing a published day means editing its working draft and publishing the
@@ -538,6 +545,11 @@ export function canPublishAL(){return pendingPublishDays().length>0&&alUnsignedD
    issue simply CLEARS the day's SCHED.added entries (they are now frozen in the
    snapshot) and records nothing for a future unpublish (there is none). */
 export function alIssue(di:any){di=+di;
+  /* READ-ONLY QUARANTINE backstop (P2-REV2-03): the shared final step of every
+     publish path — refuse to push a record onto an unsupported/wrong-week book,
+     so any caller that reached here (present or future) cannot issue onto frozen
+     data. Returns a zero-count result rather than throwing, matching its shape. */
+  if(protectedWeek())return {seq:0,id:null,sign:{},count:0};
   stampAmFormat();   // defensive: an AL on a validated (supported) book keeps it 'current' (P2-IMPL-04)
   const seq=nextSeq(di), iso=dayIso(CURWEEK,di), id=verId(iso,seq);
   /* the canonical delta vs the CURRENT issued version, captured BEFORE the marks
@@ -564,6 +576,11 @@ export function alIssue(di:any){di=+di;
    reason) is publishable even if it left no pending field mark. */
 export function publishALDay(di:any){
   di=+di;
+  /* READ-ONLY QUARANTINE (P2-REV2-03): refuse a new AL on an unsupported/wrong-week
+     book FIRST — before the draft/changes/signature checks — so it cannot slip
+     through on a book whose verIds merely happen to resolve. The preserved-blob
+     writeback would otherwise discard the issue on reload (a silent lost AL). */
+  if(protectedWeek())return toast(`${(DAYS[di]||{}).dow||'This day'} is locked — it was published by an older version and can’t be amended here`);
   if(!dayApproved(di))return toast(`${DAYS[di].dow} is still draft — publish the day before publishing its changes`);
   if(!dayHasChanges(di))return toast(`No changes to publish on ${DAYS[di].dow}`);
   const seq=nextSeq(di);

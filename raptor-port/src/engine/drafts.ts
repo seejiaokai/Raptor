@@ -1,5 +1,5 @@
 import { DAYS } from './data'
-import { SCHED, dayApproved, approvedDays, verLabel, dayCurVer, daySnapOf, deletionKey, moveKey, trackStructuralAdd, isDeleteKey, isMoveKey } from './publish'
+import { SCHED, dayApproved, approvedDays, verLabel, dayCurVer, daySnapOf, deletionKey, moveKey, trackStructuralAdd, isDeleteKey, isMoveKey, protectedWeek } from './publish'
 import { dayKeys } from './restore'
 import { keyDay } from './keys'
 import { groundOrder } from './order'
@@ -97,6 +97,13 @@ const nextNum = (list: any[]) => {
 export function draftDup(di: any) {
   di = +di
   if (!DAYS[di]) return null
+  /* READ-ONLY QUARANTINE (P2-REV2-02): an unsupported / wrong-week book is frozen
+     and its engine cannot safely re-key it, so no structural mutation is accepted.
+     draftDup stows the live day into a blob and installs a clone — a DAYS[di]
+     mutation whose result the preserved-blob writeback would silently discard on
+     reload. Every draft/recovery/whole-day mutator carries this same guard; it
+     addresses only the loaded week, so protectedWeek() is the exact test. */
+  if (protectedWeek()) return null
   SCHED.drafts = SCHED.drafts || {}
   SCHED.curDraft = SCHED.curDraft || {}
   const list = SCHED.drafts[di] = SCHED.drafts[di] || []
@@ -165,6 +172,7 @@ export function draftDup(di: any) {
 export function draftSelect(di: any, id: any) {
   di = +di
   if (!DAYS[di]) return false
+  if (protectedWeek()) return false   // read-only quarantine — never swap a frozen day (P2-REV2-02)
   const list = dayDrafts(di)
   const t = list.find((x: any) => x.id === id)
   if (!t) return false
@@ -396,6 +404,7 @@ const rowKeyOf = (k: string) => {
    labels and the picker ambiguous at once */
 export function draftRename(di: any, id: any, name: any) {
   di = +di
+  if (protectedWeek()) return false   // read-only quarantine — the draft list rides the frozen blob (P2-REV2-02)
   const list = dayDrafts(di)
   const t = list.find((x: any) => x.id === id)
   if (!t) return false
@@ -413,6 +422,7 @@ export function draftRename(di: any, id: any, name: any) {
    others just leaves the selected plan as the only named one. */
 export function draftDelete(di: any, id: any) {
   di = +di
+  if (protectedWeek()) return false   // read-only quarantine — the draft list rides the frozen blob (P2-REV2-02)
   if (id === curDraftId(di)) return false
   const list = dayDrafts(di)
   const i = list.findIndex((x: any) => x.id === id)
@@ -434,6 +444,7 @@ export function draftDelete(di: any, id: any) {
    draftSelect and restoreDayVersion carry. Refuses (false) an unknown version. */
 export function loadVersionToWorkingCopy(di: any, ver: any) {
   di = +di
+  if (protectedWeek()) return false   // read-only quarantine — never roll a version over a frozen day (P2-REV2-02)
   const snap = daySnapOf(di, ver)
   if (!snap) return false
   const nd = clone(snap.d)
