@@ -208,3 +208,27 @@ describe('the relink preserves scheduler additions (fixed 12 Aug 26)', () => {
     scrap(inp)
   })
 })
+
+/* A 'u' FILING SURVIVES AN OFF-WEEK EDIT (P2-REV2-06). 'u' (filed unavailable)
+   is a GLOBAL filing DECISION on the input itself, not a per-week ground landing
+   — it has no DAYS row to relink. Keeping acc='u' across a week load (the
+   P2-IMPL-05 fix) exposed an off-week loss: editing only the REMARKS of a 'u'
+   input whose dates are NOT in the loaded week captured wasAcc='u', unaccepted
+   it, found no covered day in the loaded DATES, reported "Moved outside the
+   programmed week" and deleted the parked 'r' — silently turning a filed-
+   unavailable input into a fresh, flagging one. The fix: an off-week 'u' edit
+   restores the filing rather than dropping it. */
+describe("a 'u' filing survives an off-week remarks edit (P2-REV2-06)", () => {
+  it('editing only the remarks of a filed-unavailable input on another week keeps it filed', () => {
+    // a Meeting filed 'u' (unavailable) for a date NOT in the loaded week
+    const offDate = DATES.some((d: string) => d === 'Sep 4') ? 'Sep 5' : 'Sep 4'
+    const inp: any = plant({ person: 'bane', date: offDate, allday: true, type: 'Meeting', acc: 'u', yr: 2026, remarks: 'AWOL cover', mod: '' })
+    expect(DATES.some((d: string) => d === offDate), 'the date is genuinely off the loaded week').toBe(false)
+    const d = draftOf(inp); d.remarks = 'AWOL cover — updated'
+    expect(commitInputEdit(inp, d), 'the edit is accepted').toBe(true)
+    expect(inp.remarks, 'the remark landed').toBe('AWOL cover — updated')
+    expect(inp.acc, 'still filed unavailable — not silently turned fresh').toBe('u')
+    expect(TOASTS.join('|'), 'no false "moved outside" toast — nothing was in the loaded week to move out of').not.toMatch(/Moved outside/i)
+    scrap(inp)
+  })
+})

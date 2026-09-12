@@ -17,7 +17,7 @@ import { slotVal, setSlotVal, fillSlot, txtSet } from '../engine/slots'
 import { validate } from '../engine/validate'
 import { lookaheadLoad } from '../engine/lookahead'
 import { rulesLoad } from '../engine/rules'
-import { mintInpIds, INPUTS, DATES, isPersonal, baseYear, dateIx } from '../engine/inputs'
+import { mintInpIds, INPUTS, DATES, isPersonal, baseYear, dateIx, inputCoversDate } from '../engine/inputs'
 import { DAYS } from '../engine/data'
 import { ensureRowIds, backfillSnapshotIds, migrateBookKeys, migrateLegacyIds } from '../engine/rowids'
 import { CURWEEK, setCurWeek } from '../engine/waves'
@@ -31,7 +31,7 @@ import { markDeletion, resetSched, SCHED, dayApproved, protectedWeek, amFormatOf
 import { stashPut, stashGet, stashHas, stashKeys, setPreservedBlob, clearPreservedBlob, isPreservedWeek, preservedBlob } from '../engine/weekstash'
 import { afterSchedMutate } from './view'
 import * as view from './view'
-import { histPush, histInit, schedFields } from './history'
+import { histPush, histInit, histSnap, histRestore, schedFields } from './history'
 import { setSession as authSetSession, canEditSched, SESSION, ACCOUNTS, canToggleRole, setEffectiveRole, setLgEdit, setMe } from './auth'
 import { setRole as lwSetRole } from '../leavewar/state/store'
 import { setFileLocked as trSetFileLocked } from '../tracker/role.js'
@@ -87,22 +87,78 @@ export function writeDelete(fn: () => void, di?: number, kind: any = 'programme'
   afterSchedMutate()
 }
 
+/* ---- THE INPUT QUARANTINE CHOKE-POINT (P2-REV2-04, quarantine redesign) ----
+   Every INPUTS mutation passes through one of the two funnels below for its
+   render/reflow/history epilogue. The read-only quarantine is enforced HERE,
+   ONCE, instead of at each of the ever-growing set of writers: three Codex
+   rounds each found another INPUTS writer the per-site protectedInput() guards
+   had missed (the Inputs-page Add's bare unshift, the medical creation cascade,
+   the Leave-War outbound sync). Because those writers ALL end in this funnel,
+   guarding the funnel catches every one of them — and any NEW writer added
+   later — with no guard of its own, which is the convergence three rounds of
+   spot-guards never reached.
+   When any week is quarantined, the funnel snapshots the whole model before the
+   batch and, if the batch added/removed/changed an input covering a protected
+   date (or touched a protected LOADED week's schedule), rolls the model back and
+   refuses. When nothing is quarantined — the overwhelmingly common case — it is
+   a no-op fast path, byte-identical to the pre-redesign funnel, so ordinary
+   weeks (and the never-quarantined parity harness) are untouched. */
+function protectedTouched(before: any, prot: string[]): boolean {
+  /* the LOADED week is itself protected and its schedule was mutated (an input
+     auto-landing a ground row onto a frozen day). Only fires when protectedWeek()
+     — an edit on a different, unprotected week never changes the loaded DAYS. */
+  if (protectedWeek() && JSON.stringify(DAYS) !== JSON.stringify(before.d)) return true
+  /* the sorted multiset of inputs covering a protected date must be unchanged.
+     A row added onto, removed from, edited on, or MOVED off a protected date all
+     change this set; a pure reorder of unrelated rows (unshift) does not. */
+  const cover = (rows: any[]) => {
+    const sig: string[] = []
+    for (const r of rows || []) if (r && prot.some(dt => inputCoversDate(r, dt))) sig.push(JSON.stringify(r))
+    return sig.sort()
+  }
+  const a = cover(before.i), b = cover(INPUTS)
+  if (a.length !== b.length) return true
+  for (let i = 0; i < a.length; i++) if (a[i] !== b[i]) return true
+  return false
+}
+/* run the caller's INPUTS mutation `fn` behind the quarantine backstop, then the
+   `renderInputs/reflow/histPush` epilogue only if the batch was legal. Rolls the
+   whole model back (the same restore undo runs) on an illegal touch, pushing no
+   history and persisting nothing — the write never happened. `suppressHist`
+   swallows engine helpers' own history pushes so a batch action is ONE undo
+   step (writeInputsBatch's original reason to exist). */
+function runInputWrite(fn: () => void, suppressHist: boolean): boolean {
+  const prot = protectedDates()
+  const snap = prot.length ? histSnap() : null
+  const push = HOOKS.histPush
+  if (suppressHist) HOOKS.histPush = () => {}
+  try { fn() } finally { if (suppressHist) HOOKS.histPush = push }
+  if (snap && protectedTouched(JSON.parse(snap), prot)) {
+    /* roll the model back to before the batch and repaint it — an engine helper
+       (markEdit → renderStatus) may have notified mid-batch — but push NO history
+       step and persist nothing. armDrop: a slot armed on a now-restored row. */
+    histRestore(snap)
+    view.armDrop()
+    HOOKS.toast('This week is locked — it was published by an older version and can’t be edited', 'warn')
+    HOOKS.renderInputs(); HOOKS.reflow()
+    return false
+  }
+  HOOKS.renderInputs(); HOOKS.reflow(); HOOKS.histPush()
+  return true
+}
+
 /* personal inputs (the Inputs page): mutate INPUTS, then the reference's
    add/delete epilogue — renderInputs(); reflow(); histPush(); */
-export function writeInputs(fn: () => void) {
-  fn()
-  HOOKS.renderInputs(); HOOKS.reflow(); HOOKS.histPush()
+export function writeInputs(fn: () => void): boolean {
+  return runInputWrite(fn, false)
 }
 
 /* Same as writeInputs, but for an action that calls engine helpers which push
    history of their OWN (markEdit does). Without this a single ✓ left two
    snapshots, so the first Undo landed the user in a half-applied state they
    never created — old fields, but already un-accepted. One action, one step. */
-export function writeInputsBatch(fn: () => void) {
-  const push = HOOKS.histPush
-  HOOKS.histPush = () => {}
-  try { fn() } finally { HOOKS.histPush = push }
-  HOOKS.renderInputs(); HOOKS.reflow(); HOOKS.histPush()
+export function writeInputsBatch(fn: () => void): boolean {
+  return runInputWrite(fn, true)
 }
 
 /* THE SCHEDULE SECTION ORDER — its one write path (owner, 29 Aug 26). Re-arrange

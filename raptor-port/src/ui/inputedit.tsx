@@ -989,6 +989,15 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
           }
         }
       }
+      /* 'u' (filed unavailable) is a GLOBAL filing DECISION on the input itself,
+         not a per-week ground landing — it has no DAYS row that must live in the
+         loaded week, so it SURVIVES an edit that leaves the input covering no
+         loaded day (P2-REV2-06). Restore the decision instead of the false
+         "moved outside the programmed week" toast + drop, which used to turn an
+         off-week remarks edit into a fresh, flagging input (the acc-clear below
+         would then delete the parked 'r'). A 'g' input's row genuinely cannot
+         exist off the loaded week, so it still drops and says so. */
+      else if (wasAcc === 'u') r.acc = 'u'
       else HOOKS.toast('Moved outside the programmed week — it is no longer accepted', 'warn')
       /* the un-accept above parks the input as 'r' (removed — dormant); every
          SUCCESSFUL re-accept overwrites it, so an 'r' still here means the
