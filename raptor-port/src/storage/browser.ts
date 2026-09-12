@@ -18,6 +18,10 @@ const LEGACY: Array<[string, Collection]> = [['sqn142_', 'settings'], ['ocu:', '
    every legacy record it had not reached, for good.) */
 const LEGACY_DONE = BROWSER_PREFIX + '__legacy__/done'
 const LEGACY_LEDGER = BROWSER_PREFIX + '__legacy__/ledger'
+/* written BEFORE the first copy, so a partial import whose ledger write ALSO
+   failed on a full store is still recognisable as mid-flight next boot and is
+   never mistaken for an existing install (bug-check, 11 Sep 26 — second pass). */
+const LEGACY_STARTED = BROWSER_PREFIX + '__legacy__/started'
 function parseKeyList(raw: string | null): string[] {
   if (raw == null) return []
   try { const a = JSON.parse(raw); return Array.isArray(a) ? a.filter(x => typeof x === 'string') : [] } catch (e) { return [] }
@@ -56,12 +60,21 @@ export class BrowserBackend implements Backend {
 
   private importLegacy(snap: Snapshot, hasRecords: boolean): void {
     const ledgerRaw = this.ls.getItem(LEGACY_LEDGER)
-    /* No ledger but real records already here → an EXISTING install whose
-       one-time import ran under the old code (or never needed to). Grandfather
-       it: mark done, import nothing. Only a ledger (which only this importer
-       writes) means an import is genuinely mid-flight and should resume. */
-    if (ledgerRaw == null && hasRecords) { this.markLegacyDone(); return }
+    const started = this.ls.getItem(LEGACY_STARTED) != null
+    /* No ledger, no `started` marker, but real records already here → an
+       EXISTING install whose one-time import ran under the old code (or never
+       needed to). Grandfather it: mark done, import nothing. Either bookkeeping
+       key (ledger OR started — both written only by this importer) means an
+       import is genuinely mid-flight and must RESUME, even one whose ledger
+       write itself failed on a full store, so it is never mistaken for an
+       existing install. */
+    if (ledgerRaw == null && !started && hasRecords) { this.markLegacyDone(); return }
     const done = new Set<string>(parseKeyList(ledgerRaw))
+    /* stamp the attempt BEFORE copying anything, so a copy that persists a
+       record but then cannot persist the ledger is still resumable next boot.
+       If this write fails too the store was already full, so nothing is copied
+       either and the fresh no-records state simply retries. */
+    if (!started) { try { this.ls.setItem(LEGACY_STARTED, '1') } catch (e) { /* full: retries next boot */ } }
     const keys: string[] = []
     for (let i = 0; i < this.ls.length; i++) { const k = this.ls.key(i); if (k) keys.push(k) }
     let clean = true, changed = false

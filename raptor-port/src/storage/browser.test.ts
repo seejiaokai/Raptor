@@ -21,6 +21,8 @@ function fakeStorage() {
   return s as Storage & { failOn: (k: string) => boolean }
 }
 const DONE = BROWSER_PREFIX + '__legacy__/done'
+const LEDGER = BROWSER_PREFIX + '__legacy__/ledger'
+const STARTED = BROWSER_PREFIX + '__legacy__/started'
 
 describe('BrowserBackend', () => {
   it('stores each record at raptor:<collection>/<id>', async () => {
@@ -81,6 +83,33 @@ describe('BrowserBackend', () => {
     ;(ls as any).failOn = () => false                                                  // space freed
     const snap2 = await new BrowserBackend(ls).loadAll()
     expect(snap2.tracker['v3:courses'], 'the missing record is imported on the retry').toBe('["A"]')
+    expect(ls.getItem(BROWSER_PREFIX + 'tracker/v3:courses')).toBe('["A"]')
+    expect(ls.getItem(DONE), 'now the clean pass marks it done').toBe('1')
+  })
+
+  /* bug-check 11 Sep 26 (Astra/Codex, second pass): the resume above relied on
+     the LEDGER being written on the interrupted boot. If the store is so full
+     that even the tiny ledger write fails too, the next boot saw records-but-no-
+     ledger and GRANDFATHERED — hiding the un-copied rest, the very loss the
+     resume exists to prevent. A `started` marker, written before any copy, marks
+     an import as genuinely mid-flight so it can never be mistaken for an existing
+     install. */
+  it('a partial import whose LEDGER write ALSO fails still RESUMES — it is not grandfathered away', async () => {
+    const ls = fakeStorage()
+    ls.setItem('sqn142_rules', '{"a":1}')
+    ls.setItem('ocu:v3:courses', '["A"]')
+    /* the store is so full that BOTH the 2nd record and the ledger are refused */
+    ;(ls as any).failOn = (k: string) => k === BROWSER_PREFIX + 'tracker/v3:courses' || k === LEDGER
+    const snap1 = await new BrowserBackend(ls).loadAll()
+    expect(snap1.settings['rules'], 'both served this boot from memory').toBe('{"a":1}')
+    expect(snap1.tracker['v3:courses']).toBe('["A"]')
+    expect(ls.getItem(BROWSER_PREFIX + 'settings/rules'), 'the first is durable').toBe('{"a":1}')
+    expect(ls.getItem(LEDGER), 'the ledger could not be written').toBeNull()
+    expect(ls.getItem(STARTED), 'but the import is marked STARTED').toBe('1')
+    expect(ls.getItem(DONE), 'and it is NOT marked done').toBeNull()
+    ;(ls as any).failOn = () => false                                                  // space freed
+    const snap2 = await new BrowserBackend(ls).loadAll()
+    expect(snap2.tracker['v3:courses'], 'the missing record is imported on retry, NOT grandfathered away').toBe('["A"]')
     expect(ls.getItem(BROWSER_PREFIX + 'tracker/v3:courses')).toBe('["A"]')
     expect(ls.getItem(DONE), 'now the clean pass marks it done').toBe('1')
   })
