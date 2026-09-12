@@ -161,15 +161,17 @@ describe('the credit reads EVERY week, not just the loaded one (owner, 29 Aug 26
     expect(ownedBy('plasma', SAT)).toMatchObject({ state: 'approved', source: 'raptor' })
   })
 
-  it('a corrupt stash blob contributes nothing and throws nothing', () => {
+  it('a corrupt stash blob PROTECTS its standing credits and throws nothing (P2-REREVIEW-05)', () => {
     publish(5)
     runOilPass()
+    expect(cellOf('plasma', SAT)).toBe('FO')
     loadWeek('20/07/2026')
     stashPut('13/07/2026', '{broken')             // truncated write / foreign data
     expect(() => runOilPass()).not.toThrow()
-    /* unreadable = as if never stashed, so the reverse sweep collects the
-       cell — degraded, never wrong-way-round or crashed */
-    expect(cellOf('plasma', SAT)).toBeUndefined()
+    /* an UNREADABLE stash cannot be verified, so its earned credit must STAND
+       rather than be swept away over a transient/corrupt blob (never delete a
+       credit we cannot re-derive) */
+    expect(cellOf('plasma', SAT)).toBe('FO')
   })
 })
 
@@ -193,6 +195,20 @@ describe('an unsupported / unresolvable book protects its landed OIL credits (P2
     runOilPass()
     expect(cellOf('plasma', SAT), 'the issued credit stands — no draft substitution, no deletion').toBe('FO')
     expect(ownedBy('plasma', SAT)).toMatchObject({ source: 'raptor' })
+  })
+
+  it('a FUTURE-version (am:999) book whose snapshots still resolve is classified unsupported → credit protected (P2-REREVIEW-05)', () => {
+    publish(5)
+    runOilPass()
+    expect(cellOf('plasma', SAT)).toBe('FO')
+    /* the snapshots remain resolvable (verIds intact), but the format version is
+       from the future — amFormatOf must quarantine it, or the reverse pass could
+       still delete/replace the standing credit. Drop the duty on the draft to make
+       the danger concrete. */
+    SCHED.amV = 999
+    DAYS[5].dutywaves = []
+    runOilPass()
+    expect(cellOf('plasma', SAT), 'a future-format book cannot rewrite the credit').toBe('FO')
   })
 })
 

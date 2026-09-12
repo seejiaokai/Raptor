@@ -28,7 +28,7 @@ import { persistPeople } from '../state/persist'
 import { docFields, rowDocIds } from '../state/docs'
 import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
-import { dayApproved, dayCurVer, dayCurVerIn, daySnapIn, daySnapOf } from '../engine/publish'
+import { SCHED, dayApproved, dayCurVer, dayCurVerIn, daySnapIn, daySnapOf, amFormatOf } from '../engine/publish'
 import { dayOilWork, inputOilAmt, envMin, uniformOil, oilWorkWhy, type OilWork } from '../engine/oil'
 import { stashKeys, stashGet } from '../engine/weekstash'
 import { CURWEEK } from '../engine/waves'
@@ -751,7 +751,10 @@ function stashOilWeek(v: string): { days: any[], sc: any } | null {
   try {
     const s = JSON.parse(src)
     if (s && Array.isArray(s.d))
-      wk = { days: s.d, sc: { dayOK: s.ok, cur: s.cv, als: s.a, orig: s.o, drafts: s.dr } }
+      /* amV (s.am) is carried so the OIL wire can CLASSIFY the stashed book
+         (P2-REREVIEW-05) — an unsupported/future-version book whose snapshots
+         still resolve must not be treated as authoritative. */
+      wk = { days: s.d, sc: { dayOK: s.ok, cur: s.cv, als: s.a, orig: s.o, drafts: s.dr, amV: s.am } }
   } catch (_e) { /* a bad blob reads as never stashed — never throw in a pass */ }
   STASH_OIL_CACHE.set(v, { src, wk })
   return wk
@@ -812,14 +815,17 @@ function desiredOilCells(): { desired: Map<string, DesiredOil>; protectedDates: 
     arr.push(...spans)
     pool.set(k, arr)
   }
+  /* CLASSIFY the live book FIRST (P2-REREVIEW-05): an unsupported / wrong-week /
+     future-version book must be quarantined even if its snapshots still resolve,
+     so the whole loaded week's credit-bearing dates are protected up front. */
+  const liveUnsupported = amFormatOf(SCHED, CURWEEK) === 'unsupported'
   for (let di = 0; di < DAYS.length; di++) {
-    if (!dayApproved(di)) continue
     const iso = labelToISO(DATES[di])
-    if (!iso || !warHolding(wars, iso)) continue
-    if (!isNonWorkingISO(iso)) continue
+    if (!iso || !warHolding(wars, iso) || !isNonWorkingISO(iso)) continue
+    if (liveUnsupported) { protectedDates.add(iso); continue }
+    if (!dayApproved(di)) continue
     /* only ever credit from the RESOLVED ISSUED snapshot — never the live draft.
-       No snapshot (an unsupported/pre-Phase-2 book, or an orphaned approved day)
-       → the date is protected and left exactly as it stands (P2-IMPL-01). */
+       No snapshot (an orphaned approved day) → protect it (P2-IMPL-01). */
     const snap = daySnapOf(di, dayCurVer(di))
     if (!snap || !snap.d) { protectedDates.add(iso); continue }
     const spans = dayOilWork(snap.d, { expandAll: win => availableFor(iso, win) })
@@ -832,22 +838,24 @@ function desiredOilCells(): { desired: Map<string, DesiredOil>; protectedDates: 
      dd/mm/yyyy) — no label parsing, no year-convention trap. */
   for (const v of stashKeys()) {
     if (String(v) === String(CURWEEK)) continue
+    if (stashGet(String(v)) == null) continue
     const wk = stashOilWeek(String(v))
-    if (!wk) continue
+    /* CLASSIFY the stashed book (P2-REREVIEW-05): an UNREADABLE stash (wk null)
+       or one whose book is unsupported / wrong-week / future-version must have
+       ALL its credit-bearing dates PROTECTED — never derived from, never deleted
+       — even though a future-version book's snapshots might still resolve. */
+    const stashUnsupported = !wk || amFormatOf(wk.sc, String(v)) === 'unsupported'
     for (let di = 0; di < 7; di++) {
-      if (!(wk.sc.dayOK || {})[di]) continue
       const iso = weekDayISO(String(v), di)
-      if (!iso || !warHolding(wars, iso)) continue
-      if (!isNonWorkingISO(iso)) continue
+      if (!iso || !warHolding(wars, iso) || !isNonWorkingISO(iso)) continue
+      if (stashUnsupported) { protectedDates.add(iso); continue }
+      if (!(wk!.sc.dayOK || {})[di]) continue
       /* the stash's OWN week key (v = its Monday, dd/mm/yyyy) is the trusted
          identity threaded into the resolver, so a book self-consistent but filed
          under the WRONG week is rejected here rather than credited to these dates
-         (P2-R3-03). */
-      const snap = daySnapIn(wk.sc, di, dayCurVerIn(wk.sc, di, String(v)), String(v))
-      /* same rule as the live loop: credit ONLY from a resolved issued snapshot.
-         A stash that is pre-Phase-2, filed under the WRONG week (the week-key
-         check above returns null), or orphaned yields no snapshot → protect the
-         date, never fall back to its stashed draft (P2-IMPL-01). */
+         (P2-R3-03). Credit ONLY from a resolved issued snapshot; no snapshot →
+         protect the date, never fall back to its stashed draft (P2-IMPL-01). */
+      const snap = daySnapIn(wk!.sc, di, dayCurVerIn(wk!.sc, di, String(v)), String(v))
       if (!snap || !snap.d) { protectedDates.add(iso); continue }
       const spans = dayOilWork(snap.d, { expandAll: win => availableFor(iso, win) })
       for (const [person, sp] of Object.entries(spans)) add(person, iso, sp)

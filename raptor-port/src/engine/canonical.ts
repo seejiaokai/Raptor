@@ -54,17 +54,20 @@ export function canonicalContent(d: any, di: any): Map<string, string> {
   /* keep null distinct from '' (an unset override must not read as an explicit
      clear), matching dayKeys' JSON idiom for the composites we replace below. */
   const N = (v: any) => JSON.stringify(v == null ? null : String(v))
+  /* DECOMPOSE the ar:/at: composites (Phase 2, P2-R2-03). dayKeys packs the
+     formation override + an aircraft-index-ordered array into ONE value per
+     formation, so a canonical diff joined at the formation rid would fake a
+     formation change when two aircraft swap or one is deleted. Split into a
+     formation-level override address (fa:/ft:) and a per-AIRCRAFT address
+     (aa:/au:) so each joins by its own rid. dayKeys keeps its ar:/at: for the
+     marks system; canonicalContent replaces them here.
+     Every OTHER content-bearing field dayKeys once omitted — a wave's
+     standalone/noconf, a formation's shift + line-cxr, a duty block's sa/noconf,
+     a duty row's cxr, a ground row's src — now rides its OWN dayKeys row
+     composite (restore.ts, P2-IMPL-08 / P2-REREVIEW-10), so the mark system sees
+     it too and no canonicalContent-only synthetic (wx/fx/bx/bxr/gx) is needed. */
   ;(d.waves || []).forEach((w: any, gi: number) => {
-    m.set(`wx:${di}.${gi}`, (w.standalone ? 1 : 0) + U + (w.noconf ? 1 : 0))
     ;(w.formations || []).forEach((f: any, li: number) => {
-      m.set(`fx:${di}.${gi}.${li}`, S(f.shift) + U + S(f.cxr))
-      /* DECOMPOSE the ar:/at: composites (Phase 2, P2-R2-03). dayKeys packs the
-         formation override + an aircraft-index-ordered array into ONE value per
-         formation, so a canonical diff joined at the formation rid would fake a
-         formation change when two aircraft swap or one is deleted. Split into a
-         formation-level override address (fa:/ft:) and a per-AIRCRAFT address
-         (aa:/au:) so each joins by its own rid. dayKeys keeps its ar:/at: for the
-         marks system; canonicalContent drops them for these. */
       m.delete(`ar:${di}.${gi}.${li}`); m.delete(`at:${di}.${gi}.${li}`)
       m.set(`fa:${di}.${gi}.${li}`, N(f.area))
       m.set(`ft:${di}.${gi}.${li}`, N(f.atime))
@@ -73,20 +76,6 @@ export function canonicalContent(d: any, di: any): Map<string, string> {
         m.set(`au:${di}.${gi}.${li}.${ai}`, N(a.atime))
       })
     })
-  })
-  ;(d.dutywaves || []).forEach((dw: any, wi: number) => {
-    m.set(`bx:${di}.${wi}`, S(dw.sa) + U + (dw.noconf ? 1 : 0))
-    /* a duty row's cancel REASON (cxr) rides its dr:...role composite now
-       (restore.ts:dayKeys, P2-IMPL-08) — exactly as ap:/fr: carry their cxr — so
-       it needs no separate synthetic here. The old bxr: address double-counted a
-       reason change once dr:...role learned to carry cxr, so it is retired. */
-  })
-  /* ground[].src — the accepted-input linkage (P2-09). dayKeys omits it, yet it
-     is canonical content: two ground rows identical on screen but linked to
-     different inputs are genuinely different documents (slots.ts unaccept,
-     store.ts INPUTS.acc→'g'). One synthetic address per ground row. */
-  ;(d.ground || []).forEach((r: any, ri: number) => {
-    m.set(`gx:${di}.${ri}`, S(r.src))
   })
   return m
 }
@@ -181,8 +170,14 @@ export function canonicalDiff(prevD: any, newD: any, di: any): DeltaEntry[] {
          hole loop below only sees removals, so without this a real addition to a
          surviving row yields an empty diff while the digest flips — an AL issued
          with diff:[] that recovery reads as nd=0 and can discard (P2-IMPL-06).
-         Mirror the removal hole: emit it as a change from '' to the new value. */
-      out.push({ addr: String(k), kind: 'change', from: '', to: String(v) })
+         Mirror the removal hole EXACTLY, including its guard: emit ONLY for a
+         genuine sub-list key (rowKeyOf resolves) whose ROW still exists. A
+         positional note (dn:) or any address the STRUCTURE axis already owns has
+         no rowKeyOf and is left to that axis — otherwise appending one note would
+         be counted twice (a change here AND an add below, P2-REREVIEW-09). */
+      const rowK = rowKeyOf(String(k)); if (!rowK) return
+      const rowPk = toPrev(rowK)
+      if (rowPk != null && wasC.has(rowPk)) out.push({ addr: String(k), kind: 'change', from: '', to: String(v) })
       return
     }
     if (wasC.get(pk) !== v) out.push({ addr: String(k), kind: 'change', from: String(wasC.get(pk)), to: String(v) })

@@ -28,7 +28,7 @@ import { storesLoad, cxReasonsLoad, dutyTplLoad, waveTplLoad, dayTplLoad, autoAc
 import { qualColsLoad } from '../engine/qualcols'
 import { elogClear } from '../engine/editlog'
 import { markDeletion, resetSched, SCHED, dayApproved, protectedWeek, amFormatOf } from '../engine/publish'
-import { stashPut, stashGet, stashHas, setPreservedBlob, clearPreservedBlob, isPreservedWeek, preservedBlob } from '../engine/weekstash'
+import { stashPut, stashGet, stashHas, stashKeys, setPreservedBlob, clearPreservedBlob, isPreservedWeek, preservedBlob } from '../engine/weekstash'
 import { afterSchedMutate } from './view'
 import * as view from './view'
 import { histPush, histInit, schedFields } from './history'
@@ -318,6 +318,30 @@ let weekBaseline = ''
    persisted; see weekstash.ts's "persisted pristine copy is a trap") */
 export function weekDirty() { return weekStashSnap() !== weekBaseline }
 
+/* THE DATE LABELS OF EVERY WEEK UNDER READ-ONLY QUARANTINE (P2-REREVIEW-02).
+   INPUTS is GLOBAL, so an input belonging to an unsupported/wrong-week book must
+   be refused from ANY loaded week, not only when that week is the one on screen.
+   Covers the loaded week (if its own book is unsupported) AND every STASHED week
+   whose book classifies unsupported — an UNREADABLE stash is treated as protected
+   (it cannot be verified safe). The input write paths (ui/inputedit.tsx) test an
+   input's covered dates against these before landing/editing/removing it. */
+export function protectedDates(): string[] {
+  const out: string[] = []
+  if (protectedWeek()) out.push(...DATES)
+  for (const k of stashKeys()) {
+    if (k === CURWEEK) continue
+    const j = stashGet(k)
+    if (j == null) continue
+    let unsup = false
+    try {
+      const sc: any = JSON.parse(j)
+      unsup = amFormatOf({ amV: sc.am, als: sc.a, orig: sc.o, cur: sc.cv }, k) === 'unsupported'
+    } catch { unsup = true }   // an unreadable stash cannot be verified → protect it
+    if (unsup) out.push(...weekBundle(k).dates)
+  }
+  return out
+}
+
 /* THE autoAcceptSeedInputs LANDING-MECHANICS GOTCHA a stash restore runs
    into: acceptInput (engine/slots.ts) does not just set `row.acc='g'`, it
    PUSHES a real ground row onto DAYS. A stash restore hands back DAYS with
@@ -335,8 +359,11 @@ export function weekDirty() { return weekStashSnap() !== weekBaseline }
 function reconcileLandedAcc() {
   INPUTS.forEach((r: any) => {
     if (r.acc || !isPersonal(r.type)) return
-    const di = dateIx(r.date, r.yr)
-    if (di < 0) return
+    /* the LANDING is proven by an existing ground row keyed to this input, on ANY
+       loaded day — NOT by the input's start date being in the loaded week. A
+       multi-day input can start in a prior week yet land on this week's Monday
+       (P2-REREVIEW-07); the old dateIx(start) guard dropped its 'g' on
+       navigation, and the frozen fingerprint then read a phantom amendment. */
     const key = inpKey(r)
     if (DAYS.some((d: any) => ((d && d.ground) || []).some((g: any) => g.src === key))) r.acc = 'g'
   })
@@ -397,7 +424,7 @@ function applyWeekModel(v: any): any {
      id migrations and state/persist.ts writes it back verbatim, never a
      re-serialization that would overwrite the recovery evidence. A current-format
      week, or a pure-seed one, is never preserved. */
-  if (s && stashedJson && amFormatOf(SCHED) === 'unsupported') setPreservedBlob(v, stashedJson)
+  if (s && stashedJson && amFormatOf(SCHED, v) === 'unsupported') setPreservedBlob(v, stashedJson)
   else clearPreservedBlob(v)
   /* INPUTS IS GLOBAL (owner, 22 Aug 26) — NOT swapped with the week. The
      Inputs page shows every week's inputs; each week's schedule still shows

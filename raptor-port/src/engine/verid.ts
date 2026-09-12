@@ -50,6 +50,24 @@ export function parseVerId(id: string): { iso: string; seq: number } {
 export function verIso(id: string): string { return parseVerId(id).iso }
 export function verSeq(id: string): number { return parseVerId(id).seq }
 
+/** Strict SYNTAX validity of a verId (§1, P2-REREVIEW-11). parseVerId is lenient
+ *  — it coerces, so `2026-07-13#` reads as sequence 0 and `iso#-1` / `iso#1.5`
+ *  slip through — but a resolver that must reject a malformed identity tests this
+ *  first. Requires a REAL yyyy-mm-dd calendar date, a single `#`, and a
+ *  nonnegative safe-integer sequence (digits only: no sign, decimal or empty). */
+export function isValidVerId(id: any): boolean {
+  const s = String(id)
+  const i = s.lastIndexOf('#')
+  if (i < 0) return false
+  const iso = s.slice(0, i), seqStr = s.slice(i + 1)
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(iso)) return false
+  const [y, m, d] = iso.split('-').map(n => +n)
+  const dt = new Date(Date.UTC(y, m - 1, d))
+  if (dt.getUTCFullYear() !== y || dt.getUTCMonth() !== m - 1 || dt.getUTCDate() !== d) return false   // a real calendar date
+  if (!/^\d+$/.test(seqStr)) return false            // digits only → nonnegative integer
+  return Number.isSafeInteger(+seqStr)
+}
+
 /** The display label for a sequence: 0 (or below) = Original, else AL<seq>. The
  *  per-day AL number lives here, in display, never in a key. */
 export function verSeqLabel(seq: number): string {

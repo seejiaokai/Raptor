@@ -11,6 +11,7 @@ import { CalIcon, HistIcon, HlIcon } from './icons'
 import { HlChips } from './hlchips'
 import { wireHistBubble, hideHistBub, histBubRecheck } from './histbubble'
 import { daySnapOf, alColor, dayDiscardCount } from '../engine/publish'
+import { verSeq } from '../engine/verid'
 import { isDraftVer, draftVerLabel } from '../engine/drafts'
 import { withDaySnap } from './html'
 import { notify } from '../state/store'
@@ -215,7 +216,7 @@ export function SchedBoard() {
          with the week renderer and the recovery handler (P2-IMPL-09). */
       const pvd = isDraftVer(ver), armed = restArmed(di, ver), pend = dayDiscardCount(di)
       set(warnRef.current!, 'warn',
-        `<div class="dprev-bar"${ver !== 'orig' && !pvd ? ` style="--alc:${alColor(+ver)}"` : ''}>`
+        `<div class="dprev-bar"${(!pvd && verSeq(ver) !== 0) ? ` style="--alc:${alColor(verSeq(ver))}"` : ''}>`
         + `<button class="dbeak dprev-back" data-golive="${di}" title="Return to your live working copy">← Back to live copy</button>`
         + (pvd
           ? `👁 Viewing plan <b>${esc(draftVerLabel(di, ver))}</b> — read-only. Switch to it to make it your working copy.`

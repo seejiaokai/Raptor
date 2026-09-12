@@ -832,6 +832,24 @@ describe('the weekend days render (owner, Aug 26)', () => {
   })
 })
 
+describe('a legacy published day shows an unavailable notice, never the draft as Published (P2-REREVIEW-06)', () => {
+  const sgn = (di: number) => { const g = signOf(di); g.cur = 'ignite'; g.sked = 'bane'; g.plan = 'stiff'; g.appr = 'pump' }
+  it('dayIssuedHTML renders the unsupported notice for an approved day with no resolvable issued snapshot', () => {
+    SCHED.pending = {}; SCHED.changes = {}; SCHED.als = []; SCHED.al = 0
+    SCHED.dayOK = {}; SCHED.sign = {}; SCHED.orig = {}; SCHED.cur = {}; SCHED.drafts = {}; SCHED.curDraft = {}
+    const di = 0
+    sgn(di); setDayApproved(di, true)
+    DAYS[di].notes.push('LIVE DRAFT SECRET')                 // a live-draft-only detail
+    // make the book legacy: approved, but no resolvable issued snapshot
+    SCHED.orig = {}; SCHED.cur = { [di]: 'orig' } as any; SCHED.als = []
+    const h = dayIssuedHTML(di)
+    expect(h).toContain('older version of the app')          // the explicit unavailable notice
+    expect(h).not.toContain('LIVE DRAFT SECRET')             // the live draft is NOT shown
+    expect(h).not.toContain('✓ Published')                   // and not under a Published label
+    SCHED.dayOK = {}; SCHED.cur = {}
+  })
+})
+
 describe('the recovery confirm shows the LIVE unpublished-edit count (P2-IMPL-09)', () => {
   const sgn = (di: number) => { const g = signOf(di); g.cur = 'ignite'; g.sked = 'bane'; g.plan = 'stiff'; g.appr = 'pump' }
   it('the discard-and-load button reads the live delta count, not 0 (withDaySnap zeroes pending)', () => {

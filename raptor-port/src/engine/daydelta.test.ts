@@ -51,6 +51,14 @@ describe('canonicalDiff — additions on a SURVIVING row (P2-IMPL-06)', () => {
     expect(d[0].to).toBe('p2')
   })
 
+  it('appending a positional NOTE is exactly one add, not a change+add double-count (P2-REREVIEW-09)', () => {
+    const prev = day({ notes: ['first'] })
+    const next = day({ notes: ['first', 'second'] })
+    const d = canonicalDiff(prev, next, 0)
+    expect(kinds(d)).toEqual(['add'])              // the structure/notes axis owns it — the value axis must NOT also fire
+    expect(d[0].addr).toBe('dn:0.1')
+  })
+
   it('an overflow sim more[] slot added on a surviving row is a change', () => {
     const prev = day({ sims: { amt: [{ rid: 'S', label: 'AMT', str: '', end: '', rmks: '', p: 'p1', w: 'p2' }], oft: [] } })
     const next = JSON.parse(JSON.stringify(prev)); next.sims.amt[0].more = ['p3']
@@ -68,6 +76,25 @@ describe('canonicalDiff — additions on a SURVIVING row (P2-IMPL-06)', () => {
     expect(chg[0].addr).toBe('dr:0.0.0.role')
     expect(chg[0].to).toContain('weather')
     expect(d.some(e => String(e.addr).startsWith('bxr:'))).toBe(false)
+  })
+})
+
+describe('canonical-only fields are attributed to their ROW composite, no synthetic (P2-REREVIEW-10)', () => {
+  it('wave standalone, dutyblock sa and ground src each land on the row composite (wl:/dl:/gr:), not wx/bx/gx', () => {
+    const prev = day({
+      waves: [wave('W', [f('V', [ac('p', 'A')], 'F')], 'WV')],
+      dutywaves: [{ rid: 'B', label: 'D', rows: [{ rid: 'R', role: 'SOF', str: '', end: '', rmks: '' }] }],
+      ground: [g('E', 'G1')],
+    })
+    const next = JSON.parse(JSON.stringify(prev))
+    next.waves[0].standalone = true
+    next.dutywaves[0].sa = 'sc'
+    next.ground[0].src = 'inp9'
+    const addrs = canonicalDiff(prev, next, 0).filter(e => e.kind === 'change').map(e => e.addr)
+    expect(addrs).toContain('wl:0.0')          // wave standalone → the wave header (a dayKeys key the mark system walks)
+    expect(addrs).toContain('dl:0.0')          // dutyblock sa → the block header
+    expect(addrs).toContain('gr:0.0.prog')     // ground src → the ground row
+    expect(addrs.some(a => /^(wx|fx|bx|gx):/.test(String(a))), 'no canonicalContent-only synthetic remains').toBe(false)
   })
 })
 
@@ -116,7 +143,7 @@ describe('canonicalDiff — order axis (P2-R2-01)', () => {
     const d = canonicalDiff(prev, next, 0)
     const change = d.filter(e => e.kind === 'change')
     expect(change.length).toBe(1)
-    expect(change[0].to).toBe('TOMCAT␟0')          // the cs composite for the row that moved+changed
+    expect(change[0].to).toBe('TOMCAT␟0␟␟')        // cs composite (cs␟cx␟shift␟cxr) for the row that moved+changed
     expect(d.some(e => e.kind === 'move')).toBe(true)
   })
 })

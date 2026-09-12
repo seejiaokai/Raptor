@@ -7,7 +7,7 @@ import { beforeEach, describe, expect, it } from 'vitest'
 import { DAYS } from './data'
 import {
   SCHED, signOf, setDayApproved, dayApproved, daySnapOf, dayCurVer,
-  publishALDay, deleteCount, deletionWasIssued, alAttr, markStructuralAdd, markEdit,
+  publishALDay, deleteCount, deletionWasIssued, alAttr, markStructuralAdd, markEdit, dayHasChanges,
 } from './publish'
 import { txtSet, txtGet, setSlotVal, fillSlot } from './slots'
 import { moveDutyRow, moveGroundRow } from './reorder'
@@ -595,6 +595,18 @@ describe('loadVersionToWorkingCopy — an issued version onto the working copy (
     /* the working copy now differs from AL1, so it carries a pending mark that a
        future AL2 would issue */
     expect(SCHED.pending[key], 'the difference from AL1 shows as pending').toBe(1)
+  })
+})
+
+describe('a canonical-only field change survives reconcile — the mark system sees it now (P2-REREVIEW-10)', () => {
+  it('changing a dutyblock sa keeps its mark on the block composite and is publishable', () => {
+    sign(0); setDayApproved(0, 1)                          // issue the Original
+    const block = DAYS[0].dutywaves[0]
+    block.sa = (block.sa === 'sc') ? '' : 'sc'             // a canonical-only field change
+    markEdit('dl:0.0')                                     // marked on the block header
+    reconcileIssuedMarks()
+    expect(SCHED.pending[rk('dl:0.0')], 'the sa change is a real diff on the composite → mark survives reconcile').toBe(1)
+    expect(dayHasChanges(0)).toBe(true)
   })
 })
 

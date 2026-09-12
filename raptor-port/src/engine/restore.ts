@@ -56,11 +56,18 @@ export function dayKeys(d:any,di:any){
     who.forEach((nm:any,k:any)=>m.set(`a:${di}.${ri}.${k}`,P(nm)));
   });
   (d.waves||[]).forEach((w:any,gi:any)=>{
-    m.set(`wl:${di}.${gi}`,S(w.label)+'␟'+(w.night?1:0)+'␟'+S(w.kind));
+    /* standalone/noconf ride the composite (P2-REREVIEW-10), as the cancel fields
+       do on ap:/dr:/etc — so a draft-switch/recovery/issue that differs only in
+       these is SEEN by the mark system (rebase/reconcile), attributed to the wave
+       header, and no longer needs a canonicalContent-only wx: synthetic. */
+    m.set(`wl:${di}.${gi}`,S(w.label)+'␟'+(w.night?1:0)+'␟'+S(w.kind)+'␟'+(w.standalone?1:0)+'␟'+(w.noconf?1:0));
     m.set(`it:${di}.${gi}`,J(w.intimes||[]));
     m.set(`tr:${di}.${gi}`,J(w.traffic||[]));
     (w.formations||[]).forEach((f:any,li:any)=>{
-      m.set(`ff:${di}.${gi}.${li}.cs`,S(f.cs)+'␟'+(f.cx?1:0));
+      /* + shift + line-cxr on the composite (P2-REREVIEW-10): the formation's
+         SHIFT and its line-level cancel REASON now ride ff:...cs, so a change to
+         either is attributed to the line and survives reconcile (was the fx: synthetic). */
+      m.set(`ff:${di}.${gi}.${li}.cs`,S(f.cs)+'␟'+(f.cx?1:0)+'␟'+S(f.shift)+'␟'+S(f.cxr));
       m.set(`ff:${di}.${gi}.${li}.msn`,S(f.msn));
       m.set(`ff:${di}.${gi}.${li}.to`,T(f.to)); m.set(`ff:${di}.${gi}.${li}.ld`,T(f.ld));
       m.set(`ff:${di}.${gi}.${li}.br`,T(f.br));   // the indicated brief time — rolls back with its line
@@ -80,7 +87,10 @@ export function dayKeys(d:any,di:any){
     });
   });
   (d.dutywaves||[]).forEach((dw:any,wi:any)=>{
-    m.set(`dl:${di}.${wi}`,S(dw.label));
+    /* + sa (the desk's wave) + noconf on the composite (P2-REREVIEW-10): a change
+       to a duty block's wave or its no-conflict flag is attributed to the block
+       header and seen by the mark system (was the bx: synthetic). */
+    m.set(`dl:${di}.${wi}`,S(dw.label)+'␟'+S(dw.sa)+'␟'+(dw.noconf?1:0));
     (dw.rows||[]).forEach((r:any,ri:any)=>{
       /* cxr (the cancel REASON) rides the composite, as ap:/fr: already do —
          without it, changing only a cancelled duty's reason left role/cx/flag
@@ -102,7 +112,7 @@ export function dayKeys(d:any,di:any){
     });
   });
   (d.ground||[]).forEach((r:any,ri:any)=>{
-    m.set(`gr:${di}.${ri}.prog`,S(r.prog)+'␟'+(r.cx?1:0)+'␟'+(r.flag?1:0)+'␟'+(r.info?1:0)+'␟'+S(r.cxr));   // + info + cxr, as ap: above (P2-IMPL-08)
+    m.set(`gr:${di}.${ri}.prog`,S(r.prog)+'␟'+(r.cx?1:0)+'␟'+(r.flag?1:0)+'␟'+(r.info?1:0)+'␟'+S(r.cxr)+'␟'+S(r.src));   // + info + cxr + src, as ap: above (P2-IMPL-08 / P2-REREVIEW-10)
     m.set(`gr:${di}.${ri}.str`,T(r.str)); m.set(`gr:${di}.${ri}.end`,T(r.end)); m.set(`gr:${di}.${ri}.rmks`,S(r.rmks));
     m.set(`g:${di}.${ri}`,P(r.who));
     (r.more||[]).forEach((v:any,x:any)=>m.set(`g:${di}.${ri}.x${x}`,P(v)));

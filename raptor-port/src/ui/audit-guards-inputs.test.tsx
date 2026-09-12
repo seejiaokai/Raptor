@@ -12,9 +12,10 @@ import { beforeEach, afterEach, describe, expect, it } from 'vitest'
 import { INPUTS, dateOrd, inputCoversDate } from '../engine/inputs'
 import { DAYS } from '../engine/data'
 import { HOOKS } from '../engine/hooks'
-import { commitInputEdit, setInpField, draftOf, removeInput } from './inputedit'
+import { commitInputEdit, setInpField, draftOf, removeInput, commitNewInput } from './inputedit'
 import { SESSION, ME, setSession, setMe } from '../state/auth'
 import { SCHED } from '../engine/publish'
+import { stashClear, stashPut } from '../engine/weekstash'
 
 const ISNAP = JSON.stringify(INPUTS)
 let said: string[] = []
@@ -48,6 +49,32 @@ describe('an unsupported (protected) week is read-only from the input surfaces (
       expect(INPUTS.includes(r), 'the input was not removed').toBe(true)
       expect(said.join(' ')).toMatch(/locked/i)
     } finally { SCHED.amV = amV; SCHED.cur = cur }
+  })
+
+  it('CREATING an input on a protected week is refused — the check reads the NORMALIZED draft, not raw draft.date (P2-REREVIEW-01)', () => {
+    const amV = SCHED.amV, cur = SCHED.cur
+    SCHED.amV = undefined; SCHED.cur = { 0: 'orig' }        // loaded week protected
+    const before = INPUTS.length
+    try {
+      // an EDITOR draft: it carries `start`, not the model's `date` field
+      const drafted: any = { person: 'dj', type: 'Meeting', allday: true, start: '2026-07-13' }
+      expect(commitNewInput(drafted), 'create refused on a locked week').toBe(false)
+      expect(INPUTS.length, 'no input was added').toBe(before)
+      expect(said.join(' ')).toMatch(/locked/i)
+    } finally { SCHED.amV = amV; SCHED.cur = cur }
+  })
+
+  it('an input belonging to a STASHED protected week is refused even while a SUPPORTED week is loaded (P2-REREVIEW-02)', () => {
+    // loaded week (Jul 13) stays supported; week B (Jul 20) is a stashed unsupported book
+    stashClear()
+    stashPut('20/07/2026', JSON.stringify({ o: { 0: { d: {}, c: {} } }, cv: { 0: 'orig' } }))
+    const r: any = INPUTS[0]; r.date = 'Jul 20'; delete r.endDate; r.allday = true; r.yr = 2026
+    try {
+      const d: any = draftOf(r); d.allday = true
+      expect(commitInputEdit(r, d), 'refused: the input is on a stashed protected week').toBe(false)
+      expect(removeInput(r), 'delete refused too').toBe(false)
+      expect(said.join(' ')).toMatch(/locked/i)
+    } finally { stashClear() }
   })
 })
 

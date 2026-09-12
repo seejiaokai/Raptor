@@ -325,6 +325,32 @@ describe('publishing an AL (tfin B49 / B26)', () => {
   })
 })
 
+describe('daySnapIn rejects a MALFORMED verId (P2-REREVIEW-11)', () => {
+  it('a coerced/malformed identity resolves to null, a well-formed one resolves', () => {
+    const iso = dayIso(CURWEEK, 0)
+    SCHED.dayOK = { 0: 1 }
+    SCHED.orig = { 0: { id: verId(iso, 0), d: { notes: ['orig'] }, c: {} } }
+    // the exact, well-formed Original resolves
+    expect(daySnapOf(0, verId(iso, 0))).toBeTruthy()
+    // malformed identities parseVerId would coerce must all be rejected
+    expect(daySnapOf(0, iso + '#'), 'empty seq (coerces to 0)').toBeNull()
+    expect(daySnapOf(0, iso + '#-1'), 'negative seq').toBeNull()
+    expect(daySnapOf(0, iso + '#1.5'), 'fractional seq').toBeNull()
+    expect(daySnapOf(0, 'notadate#0'), 'non-ISO date').toBeNull()
+    expect(daySnapOf(0, '2026-13-40#0'), 'impossible calendar date').toBeNull()
+  })
+
+  it('nextSeq ignores a non-positive / non-integer sequence', () => {
+    const iso = dayIso(CURWEEK, 0)
+    SCHED.als = [
+      { id: verId(iso, 1), di: 0, iso, seq: 1, snap: { d: {}, c: {} }, diff: [], sign: {} },
+      { id: verId(iso, 2), di: 0, iso, seq: -3 as any, snap: { d: {}, c: {} }, diff: [], sign: {} },   // bogus seq must not count
+      { id: verId(iso, 3), di: 0, iso, seq: 1.5 as any, snap: { d: {}, c: {} }, diff: [], sign: {} },
+    ]
+    expect(nextSeq(0)).toBe(2)   // only the valid seq 1 counts → next is 2
+  })
+})
+
 describe('dayCurVerIn falls back to the highest VALIDATING record, not just the highest seq (P2-IMPL-12)', () => {
   it('a higher-seq wrong-week record is skipped for a valid lower-seq AL, not the Original', () => {
     const iso = dayIso(CURWEEK, 0)

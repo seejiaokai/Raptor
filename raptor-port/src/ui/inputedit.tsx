@@ -20,13 +20,12 @@ import { OilConfirm } from './OilConfirm'
 import { docAdd, docFields, docGet, rowDocIds } from '../state/docs'
 import { UploadIcon } from './icons'
 import { acceptInput, autoAcceptInput, unacceptInput, acceptedDay, inpKey } from '../engine/slots'
-import { protectedWeek } from '../engine/publish'
 import { DAYS } from '../engine/data'
 import { PEOPLE, isSpecial } from '../engine/people'
 import { hhmm, parseHM, hmOK } from '../engine/time'
 import { HOOKS } from '../engine/hooks'
 import { logAction, elogSweep } from '../engine/editlog'
-import { writeInputsBatch, notify } from '../state/store'
+import { writeInputsBatch, notify, protectedDates } from '../state/store'
 /* The Leave War seam (sync.ts is the one crossing point, CLAUDE.md §The Leave
    War tab): retracting a synced row's war cells when it is edited or deleted
    here — not a new seam, a Raptor-side caller of the existing one. */
@@ -692,22 +691,30 @@ export const TYPE_ALLOW: any = {
    the button on that panel puts the item where the button is. One undo step
    still — writeInputsBatch swallows acceptInput's own history pushes exactly
    as commitInputEdit's relink already relies on. */
-/* an UNSUPPORTED (pre-Phase-2) loaded week is read-only (P2-IMPL-03). An input
-   op that touches a date on that week — the row's own date OR a draft's target
-   date — would land/edit/remove a ground row on the frozen schedule, so refuse
-   it at the UI entry and say why. The engine's acceptInput/unacceptInput are the
-   hard backstop; this stops the input row's own fields diverging from the frozen
-   day too, and gives the user a reason rather than a silent no-op. */
+/* an UNSUPPORTED (pre-Phase-2 / wrong-week) book is read-only (P2-IMPL-03). An
+   input op that touches a date on such a week — the row's own date (source) OR a
+   normalized destination date — would land/edit/remove/re-file a row on a frozen
+   schedule, so refuse it at the UI entry and say why. Date-based and GLOBAL
+   (P2-REREVIEW-02): protectedDates() spans the loaded week AND every stashed
+   protected week, so an input for an unvisited protected week is refused from any
+   loaded week. The engine's acceptInput/unacceptInput are the hard backstop; this
+   also stops the input row's own fields diverging from the frozen day, and gives
+   the user a reason rather than a silent no-op. Callers pass NORMALIZED
+   destinations (P2-REREVIEW-01) so the date fields it reads actually exist. */
 function protectedInput(...rows: any[]): boolean {
-  if (!protectedWeek()) return false
-  const hit = rows.some(r => r && DATES.some((dt: any) => inputCoversDate(r, dt)))
+  const dates = protectedDates()
+  if (!dates.length) return false
+  const hit = rows.some(r => r && dates.some((dt: any) => inputCoversDate(r, dt)))
   if (hit) HOOKS.toast('This week is locked — it was published by an older version and can’t be edited', 'warn')
   return hit
 }
+/* a row-like {date,endDate,yr} built from a NORMALIZED draft, for the protection
+   check on the DESTINATION dates (the editor draft carries sTime/eTime/start/end,
+   not the model's date/endDate — reading those raw was the P2-REREVIEW-01 no-op). */
+const normDest = (n: { date: string, endDate: string | undefined }, yr: any) => ({ date: n.date, endDate: n.endDate, yr })
 
 export function commitNewInput(draft: any, toGround?: boolean, keepTail?: any, entryEnd?: any): boolean {
   if (!draft) return false
-  if (protectedInput(draft)) return false
   /* write-path role backstop (owner, 22 Aug 26 — a member files inputs only
      for whoever they are viewing as; the Person choice is a scheduler's).
      The member-reachable seeds (the calendar's openAdd) already carry ME and
@@ -718,6 +725,7 @@ export function commitNewInput(draft: any, toGround?: boolean, keepTail?: any, e
   if (!canEditSched()) draft = { ...draft, person: ME }
   const n = normalizeInputDraft(draft, null)
   if (!n) return false
+  if (protectedInput(normDest(n, draft.yr))) return false   // read-only quarantine, NORMALIZED destination (P2-REREVIEW-01/02)
   const { s, e, date, endDate, half } = n
   const flags = isSansAvail(draft.type) ? sansFlags(draft.sans) : {}
   const row: any = {
@@ -782,7 +790,10 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
     HOOKS.toast('That input is no longer there — nothing was saved', 'warn')
     return false
   }
-  if (protectedInput(r, draft)) return false   // read-only quarantine, source + destination date (P2-IMPL-03)
+  /* the SOURCE date is checked here (r is a model row with real date/endDate);
+     the normalized DESTINATION is checked after normalizeInputDraft below, so a
+     move INTO a protected week is refused too (P2-REREVIEW-01/02). */
+  if (protectedInput(r)) return false
   /* write-path role backstop (owner, 27 Aug 26): a LOGGED-IN MEMBER edits only
      their OWN inputs. The row's ✎ is hidden on everyone else's, so a real
      gesture cannot reach here; this refuses a hand-made call. "Member" is any
@@ -812,6 +823,7 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
   }
   const n = normalizeInputDraft(draft, r)
   if (!n) return false
+  if (protectedInput(normDest(n, draft.yr))) return false   // refuse a move INTO a protected week (P2-REREVIEW-01/02)
   const { s, e, date, endDate, half } = n
   writeInputsBatch(() => {
     /* A Leave-War-synced row (owner, 17 Aug 26 — full two-way): editing the

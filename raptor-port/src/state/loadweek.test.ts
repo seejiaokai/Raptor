@@ -59,6 +59,21 @@ describe('loadWeek', () => {
     expect(dayHasChanges(0), 'no amendment appears from navigation alone').toBe(false)
   })
 
+  it('a SPANNING accepted input keeps its "g" landing across navigation, even when its start is in another week (P2-REREVIEW-07)', () => {
+    // a two-day input starting the prior Sunday (Jul 12), landed on Monday (Jul 13)
+    const inp: any = { person: 'divot', type: 'Meeting', date: 'Jul 12', endDate: 'Jul 13', allday: true, remarks: '', mod: 'now', yr: 2026, _t: 1 }
+    INPUTS.push(inp)
+    expect(acceptInput(0, inp, 'g')).toBe(true)          // lands a ground row on day 0 (Jul 13)
+    expect(inp.acc).toBe('g')
+    const g = signOf(0); g.cur = 'ignite'; g.sked = 'bane'; g.plan = 'stiff'; g.appr = 'pump'
+    setDayApproved(0, true)                                // fingerprint freezes acc='g'
+    expect(dayHasChanges(0)).toBe(false)
+    loadWeek('20/07/2026')
+    loadWeek('13/07/2026')
+    expect(inp.acc, 'the ground landing survived navigation despite a foreign start date').toBe('g')
+    expect(dayHasChanges(0), 'no phantom amendment from navigation').toBe(false)
+  })
+
   it('a non-authored chip loads a blank, editable seven-day week', () => {
     loadWeek('29/06/2026')
     expect(DAYS.length).toBe(7)

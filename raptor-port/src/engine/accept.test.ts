@@ -9,7 +9,7 @@ import { isSpecial } from './people'
 import { acceptInput, unacceptInput, inpKey, slotVal, txtGet, txtSet } from './slots'
 import { keyDay } from './keys'
 import { dayKeys } from './restore'
-import { SCHED, signOf, setDayApproved, publishALDay, protectedWeek } from './publish'
+import { SCHED, signOf, setDayApproved, publishALDay, protectedWeek, dayHasChanges, dayDiscardCount } from './publish'
 import { makeStandalone } from './waves'
 import { validate } from './validate'
 import { HOOKS } from './hooks'
@@ -52,6 +52,19 @@ describe('an unsupported (protected) week refuses input landings/removals (P2-IM
         expect(other.acc).toBeUndefined()
       }
     } finally { SCHED.amV = 1; SCHED.cur = {} }
+  })
+})
+
+describe('recovery discard count is CONTENT-only, filing retained (P2-REREVIEW-08)', () => {
+  it('a filing-only change is publishable but is NOT counted as a discardable recovery edit', () => {
+    const inp = findInp('Meeting')!                 // covers Jul 13 (day 0)
+    expect(acceptInput(0, inp, 'u')).toBe(true)      // file the person unavailable
+    sign(0); setDayApproved(0, true)                 // freezes the filing fingerprint with 'u'
+    expect(dayHasChanges(0)).toBe(false)
+    expect(unacceptInput(0, inp)).toBe(true)         // unfile → acc 'r': a filing-only change
+    expect(inp.acc).toBe('r')
+    expect(dayHasChanges(0), 'still publishable — the filing IS a real divergence').toBe(true)
+    expect(dayDiscardCount(0), 'but recovery replaces content only, so nothing is discardable').toBe(0)
   })
 })
 

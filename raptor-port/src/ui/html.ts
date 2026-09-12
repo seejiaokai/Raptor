@@ -81,14 +81,30 @@ export function withDaySnap(di:any,ver:any,fn:any){
 export function dayPreviewHTML(di:any,ver:any,edFallback:any){
   return withDaySnap(di,ver,(ok:any)=>ok?dayHTML(di,false,true):dayHTML(di,edFallback,true))
 }
+/* an APPROVED day whose issued snapshot cannot be resolved — a legacy /
+   unsupported book, whose 'orig'/numeric identities no longer resolve. The crew
+   must NOT be shown the live working DRAFT under a "Published" label
+   (P2-REREVIEW-06); render an explicit, read-only unavailable notice instead. */
+function dayUnsupportedHTML(di:any){
+  const d=DAYS[di]
+  return `<section class="day ${d.today?'today':''} dok issued" data-day="${di}">`
+    +`<div class="day-head"><span class="dow di-open" data-dayinfo="${di}" title="Day details">${d.dow}</span>`
+    +`<span class="dt di-open" data-dayinfo="${di}" title="Day details">${esc(d.dt)}${d.today?' · Today':''}</span></div>`
+    +`<div class="dprev-bar">This day's published schedule was created by an older version of the app and can't be shown here. It has not changed — open it on the device that created it.</div>`
+    +`</section>`
+}
 /* the VIEW page's default render for a PUBLISHED day (owner, 15 Aug 26): the
    frozen issued document, not the live working copy — a scheduler's
    in-progress edits stay invisible to viewers until the next AL goes out.
-   Quiet mode (PVQ above): no preview banner, no Restore, class `issued`.
-   Falls back to the live render if the day somehow has no snapshot. */
+   Quiet mode (PVQ above): no preview banner, no Restore, class `issued`. */
 export function dayIssuedHTML(di:any){
   const ver=dayCurVer(di)
-  if(ver==null)return dayHTML(di,false)
+  if(ver==null){
+    /* an approved day with NO resolvable issued snapshot is a legacy/unsupported
+       book — show the unavailable notice, NEVER the live draft (P2-REREVIEW-06).
+       A never-approved day (not reached from ViewWeek) keeps the plain render. */
+    return dayApproved(di)?dayUnsupportedHTML(di):dayHTML(di,false)
+  }
   PVQ=true
   try{ return withDaySnap(di,ver,(ok:any)=>ok?dayHTML(di,false):dayHTML(di,false)) }
   finally{ PVQ=false }

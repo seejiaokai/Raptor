@@ -9,7 +9,7 @@ import { canonicalDiff } from './canonical'
 import type { DeltaEntry } from './canonical'
 import { INPUTS, inpId, inputCoversDate } from './inputs'
 import { CURWEEK } from './waves'
-import { dayIso, verId, parseVerId, verSeq, verSeqLabel } from './verid'
+import { dayIso, verId, parseVerId, verSeq, verSeqLabel, isValidVerId } from './verid'
 
 /* the reference calls straight into the UI here; the engine routes those four
    calls through injected hooks (no-ops until the app provides them) so the
@@ -68,16 +68,39 @@ export function resetSched(){
    as-is. This classifier makes that isolation EXPLICIT so no NEW edit is accepted
    onto data the engine cannot safely re-key: an unsupported week is READ-ONLY.
    Full migration to the new shape is Phase 5. */
-export function amFormatOf(sc:any){
+/* every published record's identity BELONGS to the outer week key: its verId's
+   ISO date must be that day in `weekKey`. A book self-consistent internally but
+   filed under the WRONG week (P2-REREVIEW-04) fails this — its resolvers reject
+   the foreign dates, so it must be quarantined + byte-preserved, not left
+   editable and silently re-saved. Only a DEFINITE mismatch (a valid verId whose
+   iso is wrong) fails; a malformed/absent id is left to the resolver. */
+function recordsBelongToWeek(sc:any,weekKey:any):boolean{
+  const orig=sc.orig||{};
+  for(const di of Object.keys(orig)){const o=orig[di];
+    if(o&&o.id&&isValidVerId(o.id)&&parseVerId(o.id).iso!==dayIso(weekKey,+di))return false;}
+  for(const a of (sc.als||[])){
+    if(a&&a.id&&isValidVerId(a.id)&&parseVerId(a.id).iso!==dayIso(weekKey,+a.di))return false;}
+  return true;
+}
+export function amFormatOf(sc:any,weekKey?:any){
   if(!sc)return 'current';
-  if(sc.amV===AMBOOK_VERSION)return 'current';
+  const has=(o:any)=>!!o&&Object.keys(o).length>0;
+  const hasContent=(sc.als&&sc.als.length)||has(sc.orig)||has(sc.cur);
+  if(sc.amV===AMBOOK_VERSION){
+    /* a STAMPED current-format book is 'current' — UNLESS it carries publication
+       content whose identity does not belong to the week it is filed under (a
+       wrong-week book, P2-REREVIEW-04). weekKey is optional: an identity-only
+       classification (no key threaded) keeps the old "stamped ⇒ current" reading. */
+    if(weekKey!=null&&hasContent&&!recordsBelongToWeek(sc,weekKey))return 'unsupported';
+    return 'current';
+  }
   /* no stamp → unsupported ONLY if it actually carries publication content; an
      empty book has nothing to misread and is a fresh book (treated as current). */
-  const has=(o:any)=>!!o&&Object.keys(o).length>0;
-  return ((sc.als&&sc.als.length)||has(sc.orig)||has(sc.cur))?'unsupported':'current';
+  return hasContent?'unsupported':'current';
 }
-/* the LIVE loaded week is protected (read-only) when its book is unsupported. */
-export function protectedWeek(){return amFormatOf(SCHED)==='unsupported';}
+/* the LIVE loaded week is protected (read-only) when its book is unsupported —
+   checked against CURWEEK so a wrong-week book is caught too (P2-REREVIEW-04). */
+export function protectedWeek(){return amFormatOf(SCHED,CURWEEK)==='unsupported';}
 /* Phase 2 (P2-IMPL-04): a PRE-Phase-2 book saved EMPTY (a parked draft with no
    publication content) classifies as 'current' and stays editable — but it has no
    amV stamp, so the instant it gains content (its first approve/AL) it would
@@ -228,7 +251,17 @@ export function dayHasChanges(di:any):boolean{di=+di;return dayDelta(di).length>
    pending count (which a canonical-only change leaves at 0, and which withDaySnap
    zeroes during a preview render). MUST be read on the LIVE day, before any
    withDaySnap swap. */
-export function dayDiscardCount(di:any):number{di=+di;return dayHasChanges(di)?dayDelta(di).length:0;}
+export function dayDiscardCount(di:any):number{di=+di;
+  /* CONTENT ONLY — the count of working-draft edits that "Load onto working copy"
+     actually DISCARDS. Recovery replaces DAYS (content) but NOT the global input
+     filing state, so the filing axis must be EXCLUDED here or the confirm claims
+     to discard a filing change it then leaves in place (P2-REREVIEW-08). Publish
+     eligibility (dayHasChanges/dayDelta) still counts filing — that IS a real
+     divergence — but it is retained across a recovery, not discarded. */
+  if(!dayApproved(di))return 0;
+  const ver=dayCurVer(di), snap=ver!=null?daySnapOf(di,ver):null;
+  if(!snap||!snap.d)return 0;
+  return canonicalDiff(snap.d,DAYS[di],di).length;}
 /* THE ONE PLACE records are found by identity (§1, P2-R2-05/P2-R3-03). `ver` is
    a verId (`iso#seq`) — the Original is `iso#0`, an AL is `iso#seq`. It also
    still resolves a `d:<id>` DRAFT blob (unchanged). It MUST validate that the
@@ -252,8 +285,11 @@ export function daySnapIn(sc:any,di:any,ver:any,weekKey?:any){di=+di;
     return t?{d:t.d,c:{}}:null;}
   /* a verId is the ONLY other accepted shape — a bare number/'orig'/foreign
      string resolves to null (quarantined-book back-compat is a load-time
-     concern, §5, not this authoritative resolver). */
-  if(typeof ver!=='string'||ver.indexOf('#')<0)return null;
+     concern, §5, not this authoritative resolver). Validate the SYNTAX strictly
+     (§1, P2-REREVIEW-11): parseVerId coerces, so `iso#` (→ seq 0), `iso#-1`,
+     `iso#1.5` and a non-date left part would otherwise resolve — isValidVerId
+     rejects them (real ISO date + nonnegative safe-integer sequence). */
+  if(typeof ver!=='string'||!isValidVerId(ver))return null;
   const {iso,seq}=parseVerId(ver);
   /* week-key validation: the id's ISO date must BE this day in the passed week
      (live = CURWEEK, stash = the stash's own key). Skipped only when no key is
@@ -571,5 +607,11 @@ export function signPeople(schedOnly:any,keep?:any){
    (Original is seq 0, so a day's first amendment is AL1). Per-day, so Monday's
    AL1 and Tuesday's AL1 are independent — the old week-wide nextAL is gone. */
 export function nextSeq(di:any){di=+di;
-  let mx=0; (SCHED.als||[]).forEach((a:any)=>{if(a&&+a.di===di&&+a.seq>mx)mx=+a.seq;});
+  /* number ABOVE every existing sequence for THIS day, counting only a POSITIVE
+     safe-integer seq (§1, P2-REREVIEW-11): a fractional / negative / NaN seq no
+     longer skews the next number. Any real positive seq still raises the ceiling,
+     so a fresh AL can never collide with an existing one. */
+  let mx=0; (SCHED.als||[]).forEach((a:any)=>{
+    if(!a||+a.di!==di)return;
+    const s=+a.seq; if(Number.isSafeInteger(s)&&s>0&&s>mx)mx=s;});
   return mx+1;}

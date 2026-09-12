@@ -6,6 +6,7 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import { SCHED, AMBOOK_VERSION, amFormatOf, protectedWeek, resetSched, dayApproved, dayHasChanges, daySnapOf, dayCurVer, signOf, setDayApproved } from './publish'
 import { schedFields } from '../state/history'
+import { dayIso, verId } from './verid'
 
 beforeEach(() => { resetSched() })
 
@@ -32,6 +33,22 @@ describe('amFormatOf — the classifier', () => {
 
   it('a book stamped with a DIFFERENT (future) version that carries content is unsupported', () => {
     expect(amFormatOf({ amV: 999, als: [{ n: 1 }], orig: {}, cur: {} })).toBe('unsupported')
+  })
+})
+
+describe('a STAMPED book filed under the WRONG week is quarantined (P2-REREVIEW-04)', () => {
+  it('a self-consistent week-A book classified under week B reads as unsupported', () => {
+    const isoA0 = dayIso('13/07/2026', 0)
+    const bookA: any = {
+      amV: AMBOOK_VERSION, dayOK: { 0: 1 },
+      orig: { 0: { id: verId(isoA0, 0), d: { notes: ['x'] }, c: {} } },
+      cur: { 0: verId(isoA0, 0) }, als: [],
+    }
+    // classified under its OWN week → current; under a different week → unsupported
+    expect(amFormatOf(bookA, '13/07/2026')).toBe('current')
+    expect(amFormatOf(bookA, '20/07/2026')).toBe('unsupported')
+    // with no week key threaded, the stamped book still reads current (identity-only)
+    expect(amFormatOf(bookA)).toBe('current')
   })
 })
 
