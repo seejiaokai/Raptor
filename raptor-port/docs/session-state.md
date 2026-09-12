@@ -46,18 +46,36 @@ Owner also asked (13 Sep) for a dedicated cross-provider look at what UNDO does
 and does NOT restore across platforms (Leave War, medical docs, edit log) — a
 guardrail-or-reconcile question. Folded into the round-2 re-review scope.
 
-## What's NEXT (do this before merge)
-1. **Cross-provider bug-check is IN FLIGHT** (owner wants BOTH — important/robust):
-   - **Codex/Astra** — the inspect runner was launched with `--base 169e85a` (focuses the
-     review on the redesign), `--model gpt-6-astra --effort high`, `PYTHONUTF8=1
-     PYTHONIOENCODING=utf-8`. READ `reply.txt` for the verdict+findings (the runner can stamp
-     `result.json` status `failed` on a `limitations` schema quirk while the verdict is valid).
-   - **Fable 5.1 high** — an independent adversarial bug-check subagent was launched on the
-     same diff.
-   Triage any findings; new bugs → fix test-first, keep all gates green, never weaken an
-   assertion.
-2. **Do NOT merge** until the owner says "merge live" AND Codex is clean. No-auto-merge stands.
-   PR #395 and the EOD feature stay untouched.
+## ROUND-2 RE-REVIEW DONE (13 Sep 26) — a small OPEN set remains → round 3
+Both providers re-checked the round-2 fixes (@`08c5a86`). Fable VERIFIED most closed
+(A1, A4, B1/B2, C, D, E, G). A small set is still open — full list + PRECISE fix specs
+in `docs/superpowers/specs/2026-09-13-amendment-phase2-quarantine-round2-findings.md`
+(the "RE-REVIEW" + "UNDO cross-platform audit" sections). Headlines:
+- **Medical cascade LW withdrawal (HIGH, EXECUTED, PERSISTENT — 2 Opus attempts):** the
+  preflight covers only the first kept segment; `mintMedSegments` + edit-path upchit
+  removals still fire `retractLwRow` unpreflighted. Precise fix: gate `retractLwRow` at
+  source (`leavewar/sync.ts`: `if(!row?.lw||inputProtected(row))return`) + preflight
+  inside `applyMedPlan`/`mintMedSegments`.
+- **Sync boundary (MED), reconcile/nav global-acc (HIGH), classifier totality (HIGH,
+  regression), date labels (HIGH, pre-existing), notice layer (MED), empty-string stash,
+  OIL span, callsign rename (rare), nav close/open (LOW).**
+- **UNDO (owner's question):** mostly self-heals (Leave War re-derives on undo); ONE real
+  pre-existing bug — **U1:** delete-leave → undo → redo → undo silently erases a synced
+  leave on both sides. Fix = RECONCILE the stale-splice against the live war, not a
+  session set.
+
+## ROUND-3 PLAN (owner rules, 13 Sep 26)
+- The PERSISTENT deep ones (medical cascade / sync / reconcile-nav quarantine web, and
+  U1) → HAND to Codex/Fable to FIX with the detailed specs above as the work order
+  (`[[escalate-persistent-bug-to-fixer]]` + `[[reviewer-must-give-detailed-fix-specs]]`):
+  they survived Opus attempts, advanced model has the better chance. Mechanism:
+  claudex-loop `codex-build` / runner build mode; or a Fable fix subagent.
+- The small clear ones (classifier catch totality, empty-string, date-labels-to-ISO,
+  notice-layer-into-dayHTML, nav close/open) → Opus can fix directly, test-first.
+- Keep every gate green (unit 4615+, parity 728/0, build). Keep the tree QUIESCENT during
+  any Codex inspect (a mid-inspection commit flags "code changed").
+- Re-run BOTH bug-checks after. **Do NOT merge** until owner says "merge live" AND Codex is
+  clean. No-auto-merge stands. PR #395 and the EOD feature stay untouched.
 
 ## Standing constraints (unchanged)
 Both this repo's sessions share ONE working folder — only one runs git at a time; put the tree
