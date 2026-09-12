@@ -62,3 +62,14 @@ Codex confirmed all Round-2 dispositions are addressed at plan level. 4 findings
 | P2-R3-04 | med | `applyDayTpl` refuses published days ("Reopen first"); removing reopen strands the template-on-published-day workflow — plan left it unchanged. | ACCEPT. Convert: apply to the working draft with replacement confirm → next AL, issued records/pointer untouched; update `board.ts` message + tests. §4. |
 
 Host action: revise the plan (all 4), then round 4 (resume) to confirm.
+
+## Round 4 — verdict REVISE (Codex GPT-6 Astra, high; resumed session 01a0950a…)
+
+Codex confirmed the quarantine (R3-02), week-identity (R3-03) and template-workflow
+(R3-04) fixes are addressed. ONE finding (trend 9→7→4→1), ACCEPTED:
+
+| ID | Sev | Finding (short) | Disposition |
+|---|---|---|---|
+| P2-R4-01 | med | The filing fingerprint's 3 states collapse fresh/unfiled (absent) with removed/dormant `'r'` (what `unacceptInput` sets, `slots.ts:463-477`); a fresh input flags conflicts, a `'r'` one is dormant — so `absent→u→r` changes behaviour with DAYS unchanged but reads as no-op. | ACCEPT. Fingerprint carries FOUR distinct states (`u`/`g`/`r`/absent) in live + frozen, preserved through nav/persist/recovery; only a same-actual-state round trip (`r→u→r`) is a no-op, `absent→u→r` is a delta. §1/§3. |
+
+Host action: revise the plan (the 1), then round 5 (the cap) to confirm APPROVED.

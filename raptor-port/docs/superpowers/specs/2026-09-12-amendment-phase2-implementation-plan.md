@@ -170,13 +170,22 @@ every row joined by stable `rid` resolved INDEPENDENTLY in each snapshot:
    incl `'u'` on navigation, so a filed-unavailable input can't be reconstructed live).
    So each snapshot (Original AND every AL) gains a **minimal per-date filing
    fingerprint** `fil` = `{ inputId → filing-state }` for the inputs touching that
-   date (state = filed-unavailable `'u'` / accepted-ground `'g'` / not-filed), frozen
-   at issue. The axis = current filing fingerprint vs the issued `fil`. Define its live
-   writer (the filing/unfiling path already mints `inp:`), its capture at publish, its
-   restoration on navigation, and recovery. This is a small identity-keyed fingerprint,
-   **NOT** AM-04's freezing of full input VALUES/person-identities into content — that
-   stays deferred. Pin: file-before-Original vs file-after-Original (distinct
-   histories), file-then-unfile (net no-op), and a week/reload round-trip.
+   date, frozen at issue. **The state set is FOUR values, not three (P2-R4-01):**
+   `'u'` filed-unavailable · `'g'` accepted-ground · `'r'` removed/dormant · absent =
+   fresh/unfiled. `'r'` (what `unacceptInput` sets, `slots.ts:463-477`) is NOT the same
+   as fresh/unfiled: a fresh input still participates in availability checks
+   (`inputs.ts:423-438`, `events.ts:28-42`) while a `'r'` one is dormant/excluded, so
+   collapsing them would hide a real amendment (issue with a late input unfiled; file it
+   Unavailable then unfile → lands at `'r'`, stops flagging conflicts, DAYS unchanged —
+   a genuine change the 3-state fingerprint would miss). Keep all four distinct in the
+   LIVE and the FROZEN fingerprint and preserve the distinction through navigation,
+   persistence and recovery (update the filing writers, incl retyping paths that clear
+   dormancy). The axis = current fingerprint vs the issued `fil`. This is a small
+   identity-keyed fingerprint, **NOT** AM-04's freezing of full input VALUES/person-
+   identities into content — that stays deferred. Pin: file-before-Original vs
+   file-after-Original (distinct histories); a **same-actual-state** round trip is the
+   only no-op (`r→u→r`), while `absent→u→r` MUST produce an input delta; and a
+   week/reload round-trip preserves the four states.
 
 **Rid translator gap (P2-R2-02).** `rowids.ts:keyLevels`/`ridKey`/`posKey` don't
 recognise the canonical-only address families (`wx/fx/bx/bxr` and the new `gx`), so
@@ -388,9 +397,10 @@ Never weaken a failing assertion — understand it.
   - **Recovery over a canonical-only divergence with zero pending keys** still confirms
     + reports the real replacement, doesn't silently discard (P2-R2-06) — `interact.test.tsx`.
 - **New/extended pins (Round-3 findings):**
-  - **File-before-Original vs file-after-Original** are distinct histories; **file-then-
-    unfile** nets to no change; filing fingerprint survives a week/reload round-trip
-    (P2-R3-01) — `publish.test.ts` / `accept.test.ts`.
+  - **File-before-Original vs file-after-Original** are distinct histories; the filing
+    fingerprint keeps four states (`u`/`g`/`r`/fresh) so `absent→u→r` IS a delta while
+    only a same-state round trip (`r→u→r`) is a no-op; survives a week/reload round-trip
+    (P2-R3-01 / P2-R4-01) — `publish.test.ts` / `accept.test.ts`.
   - **Edit an unsupported (quarantined) week → navigate → reload:** no accepted edit is
     silently dropped (the week is read-only) (P2-R3-02) — `amformat.test.ts`.
   - **A self-consistent book filed under the WRONG week key** is rejected (week-key
