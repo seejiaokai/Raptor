@@ -3721,15 +3721,26 @@ export async function applyStudents(students, links) {
     const { conflicts } = reconcileIds(pUp, pExisting);
     /* a course still on its legacy bare-string roster carries its people as
        names with a v3:links link; reconcileIds cannot see them (not entries),
-       so match the file's linked people against those names by hand */
+       so match the file's linked people against those names by hand. Read the
+       per-syllabus rosters AND the pre-syllabus FLAT roster (v3:<c>:roster) —
+       a course never opened since the roster split still holds its people only
+       there, with empty per-syllabus rosters, and missing it let a conflicting
+       import write straight over them (bug-check, 12 Sep 26 — Astra 2nd pass). */
     const storeLinks = sParse(await sGet(kLinks), {}, 'object')[c] || null;
     const legacyPid = Object.create(null);
-    if (storeLinks) for (const n of pSyls) for (const e of sParse(await sGet(kRosterFor(c, n)), [], 'array'))
-      if (typeof e === 'string' && e && has(storeLinks, e) && typeof storeLinks[e] === 'string' && storeLinks[e]) legacyPid[e] = storeLinks[e];
+    if (storeLinks) {
+      const legRosters = [await sGet(kRoster(c))];
+      for (const n of pSyls) legRosters.push(await sGet(kRosterFor(c, n)));
+      for (const raw of legRosters) for (const e of sParse(raw, [], 'array'))
+        if (typeof e === 'string' && e && has(storeLinks, e) && typeof storeLinks[e] === 'string' && storeLinks[e]) legacyPid[e] = storeLinks[e];
+    }
     const clash = new Set(conflicts.map(x => x.name));
     for (const n in pUp.bySyllabus) for (const e of (pUp.bySyllabus[n].roster || []))
       if (isEntry(e) && e.pid && has(legacyPid, e.name) && legacyPid[e.name] !== e.pid) clash.add(e.name);
-    if (clash.size) throw new Error('The file could not be brought in: “' + [...clash][0] + '” names a different person than the one already on ' + c + '. Rename one of them, then import again — nothing has been changed.');
+    /* say "no students" rather than "nothing changed": charts import first, on
+       the user's own per-chart yes, so a chart may already be in — but the whole
+       student import is refused here before it writes a thing (Astra 2nd pass). */
+    if (clash.size) throw new Error('The students could not be brought in: “' + [...clash][0] + '” names a different person than the one already on ' + c + '. Rename one of them, then import again — no students or marks have been changed.');
   }
   for (const c of courses) {
     const cs = (students.byCourse || {})[c] || {};

@@ -1328,6 +1328,36 @@ describe('the person bridge and the link (peoplewire.ts → people.js → core.j
     }
   })
 
+  /* Astra/Codex second pass, 12 Sep 26: the conflict scan looked only at the
+     per-syllabus rosters. A course still on the ORIGINAL pre-syllabus flat
+     roster — one never opened since the roster split, so its per-syllabus
+     rosters are still empty — hid its people from the scan, and a conflicting
+     import would have written straight over them, the very orphaning this fix
+     exists to stop. The scan now reads the flat roster + its links too. */
+  it('an import naming a DIFFERENT person under a LEGACY flat-roster callsign (a course not yet split) is REFUSED, not silently orphaned', async () => {
+    const c = 'FLATCLASH', syl = '2026'
+    const prevLinks = (await storage.get('v3:links'))?.value ?? null
+    try {
+      /* the pre-syllabus shape: bare-string names under v3:<c>:roster, a pid in
+         v3:links, NO rostermig flag, and empty per-syllabus rosters. GHOST's
+         marks are filed under the name, legacy-style. */
+      await storage.set('v3:' + c + ':roster', JSON.stringify(['GHOST']))
+      await storage.set('v3:' + c + ':' + syl + ':m:GHOST', JSON.stringify({ 'ST-01': { g: 'dco' } }))
+      await storage.set('v3:links', JSON.stringify({ ...(prevLinks ? JSON.parse(prevLinks) : {}), [c]: { GHOST: 'p1' } }))
+      /* a file bringing a DIFFERENT person (pid pZZ) also called GHOST */
+      const bring = () => C.applyStudents({ courses: [c], byCourse: { [c]: { plan: { sylName: syl }, lulls: {}, pace: {},
+        bySyllabus: { [syl]: { roster: [{ id: 'fZ', name: 'GHOST', pid: 'pZZ' }], marks: { fZ: { 'ST-01': { g: 'marg' } } }, dates: {} } } } } }, null)
+      await expect(bring()).rejects.toThrow(/different person/)
+      expect(await storage.get('v3:' + c + ':' + syl + ':roster'), 'the refusal wrote no per-syllabus roster').toBeNull()
+      expect(await storage.get('v3:' + c + ':' + syl + ':m:fZ'), 'nothing under the file id').toBeNull()
+      expect((await storage.get('v3:' + c + ':' + syl + ':m:GHOST'))!.value, 'the flat-roster student’s marks are intact').toContain('dco')
+    } finally {
+      await storage.delete('v3:' + c + ':roster')
+      await storage.delete('v3:' + c + ':' + syl + ':m:GHOST')
+      if (prevLinks == null) await storage.delete('v3:links'); else await storage.set('v3:links', prevLinks)
+    }
+  })
+
   it('an interrupted migration loses nothing and finishes on the next load (review finding 1)', async () => {
     const c = 'HALF'
     ;(C.COURSES as string[]).push(c); await storage.set('v3:courses', JSON.stringify(C.COURSES))
