@@ -3,9 +3,15 @@
 **Status:** building. Branch `claude/amendment-engine-core` off `main`.
 **Progress (12 Sep 2026):** Phase 1a DONE & committed (`09f49ab`) — canonical
 day-content schema + digest, test-pinned (`engine/canonical.ts` +
-`canonical.test.ts`, completeness + per-field visibility green). **Resume at
-Phase 1c** (version identity, AM-01), then Phase 2 onward. Full gate set not yet
-run (run it when Phase 1 completes, before moving to Phase 2).
+`canonical.test.ts`, completeness + per-field visibility green). **Phase 1c DONE**
+— version identity (AM-01) primitive test-pinned (`engine/verid.ts` +
+`verid.test.ts`: immutable full-date-incl-year id, no Mon/Tue AL1 collision,
+sequence vs display label separated). Phase-1 gates run: `npm test` 4545/4545,
+`npm run build` clean, `reference/tfin.js` 728/0. The two browser gates
+(`test:e2e`, `smoke:tracker`) have a documented Windows-local-only failure
+(commit `d9fbb81`); authoritative on CI Linux, run on push. **Resume at Phase 2**
+(locked publishing) — where the immutable id is wired onto the AL record (the
+AM-01 "convert every reference off numeric `a.n`" through-line).
 **Spec (frozen):** `2026-09-12-amendment-core-build-brief.md` (Rev 5, core scope).
 **Decisions/rationale:** `2026-09-11-amendment-model-decisions.md`.
 **Scope:** the Rev 3-converged core + four must-fixes + durability/undo/crew.
