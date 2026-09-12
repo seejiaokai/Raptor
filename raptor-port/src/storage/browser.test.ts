@@ -114,6 +114,28 @@ describe('BrowserBackend', () => {
     expect(ls.getItem(DONE), 'now the clean pass marks it done').toBe('1')
   })
 
+  /* the invariant behind the marker: a record is persisted ONLY when the
+     marker is durable, so a later boot can never find records with neither
+     marker nor ledger and wrongly grandfather them (Astra 2nd pass). */
+  it('if the STARTED marker cannot be written, NOTHING is persisted this boot and it resumes next boot', async () => {
+    const ls = fakeStorage()
+    ls.setItem('sqn142_rules', '{"a":1}')
+    ls.setItem('ocu:v3:courses', '["A"]')
+    ;(ls as any).failOn = (k: string) => k === STARTED           // the marker itself is refused
+    const snap1 = await new BrowserBackend(ls).loadAll()
+    expect(snap1.settings['rules'], 'still served this boot from memory').toBe('{"a":1}')
+    expect(snap1.tracker['v3:courses']).toBe('["A"]')
+    expect(ls.getItem(BROWSER_PREFIX + 'settings/rules'), 'but nothing is persisted without a durable marker').toBeNull()
+    expect(ls.getItem(BROWSER_PREFIX + 'tracker/v3:courses')).toBeNull()
+    expect(ls.getItem(STARTED)).toBeNull()
+    expect(ls.getItem(DONE), 'and not marked done').toBeNull()
+    ;(ls as any).failOn = () => false                            // space freed
+    const snap2 = await new BrowserBackend(ls).loadAll()
+    expect(snap2.settings['rules'], 'the retry imports everything').toBe('{"a":1}')
+    expect(snap2.tracker['v3:courses']).toBe('["A"]')
+    expect(ls.getItem(DONE)).toBe('1')
+  })
+
   it('a completed import never repeats, and a record deleted afterwards is NOT resurrected', async () => {
     const ls = fakeStorage()
     ls.setItem('ocu:v3:courses', '["A"]')

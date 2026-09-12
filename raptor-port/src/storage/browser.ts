@@ -72,9 +72,21 @@ export class BrowserBackend implements Backend {
     const done = new Set<string>(parseKeyList(ledgerRaw))
     /* stamp the attempt BEFORE copying anything, so a copy that persists a
        record but then cannot persist the ledger is still resumable next boot.
-       If this write fails too the store was already full, so nothing is copied
-       either and the fresh no-records state simply retries. */
-    if (!started) { try { this.ls.setItem(LEGACY_STARTED, '1') } catch (e) { /* full: retries next boot */ } }
+       Persisting a record is GATED on this marker being durable (already set,
+       or written now): that keeps the invariant "a persisted record implies the
+       marker is present", so the next boot can never see records with neither
+       marker nor ledger and wrongly grandfather them — even if the store's quota
+       failures were non-monotonic (a small write failing while a later larger
+       one somehow succeeded). If the marker cannot be written the store is full:
+       serve legacy from memory this boot, persist nothing, and retry next boot.
+       KNOWN, ACCEPTED trade-off (Astra 2nd pass): if a record IS persisted but
+       its ledger write then fails, and the user deletes that just-migrated
+       record before the next boot, it is re-copied — resume without a durable
+       ledger cannot tell "not yet copied" from "copied then deleted". The
+       resurrection guarantee is firm once the ledger persists; this window is
+       only a record migrated seconds earlier on an already-full store. */
+    let canPersist = started
+    if (!started) { try { this.ls.setItem(LEGACY_STARTED, '1'); canPersist = true } catch (e) { canPersist = false } }
     const keys: string[] = []
     for (let i = 0; i < this.ls.length; i++) { const k = this.ls.key(i); if (k) keys.push(k) }
     let clean = true, changed = false
@@ -85,6 +97,7 @@ export class BrowserBackend implements Backend {
         const v = this.ls.getItem(k)
         if (v == null) continue
         snap[c][id] = v                                       // serve it THIS boot regardless
+        if (!canPersist) { clean = false; continue }          // no durable marker → persist nothing; retry next boot
         try { this.ls.setItem(BROWSER_PREFIX + recordKey(c, id), v); done.add(k); changed = true }
         catch (e) { clean = false }                           // out of space: leave it for the next boot to resume
       }
