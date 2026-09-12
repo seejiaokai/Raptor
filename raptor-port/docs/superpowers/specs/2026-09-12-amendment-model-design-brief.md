@@ -7,9 +7,10 @@ verdicts: the model is sound; the contracts needed pinning. Rev 3 pins them and
 marks the true implementation work as explicitly deferred + test-pinned (§12).
 **Rev 4 (12 Sep 2026) — post-review owner refinements (NOT yet re-reviewed):** OIL
 simplified to "the latest published record is the sole truth" (§6, supersedes the
-SGT-cutoff); **EOD** (End-of-Day actuals) added (§3b — needs a short design pass);
-plan **names** are scheduler-entered free labels (§4). Everything in Rev 3 stands;
-these three are the deltas to design/review before the EOD-touching build tasks.
+SGT-cutoff); **EOD** (End-of-Day actuals) designed and SETTLED (§3b — a flagged
+end-of-day publish, no sign-off; the one open item is a Codex review of its
+no-sign bypass surface); plan **names** are scheduler-entered free labels (§4).
+Everything in Rev 3 stands; these are the deltas to re-review before the build.
 **Supersedes:** `2026-09-11-amendment-model-design-brief.md`.
 **Companion:** `2026-09-11-amendment-model-decisions.md` (decisions + rationale);
 UI mockup: https://claude.ai/code/artifact/90a30794-acb2-45f9-80ce-57f79b3edc27
@@ -109,24 +110,39 @@ keys (`cx`/`cxr` cancellation).
 - **Undo is scoped to the live draft, cannot cross a publish** (§9 defines what
   `histApply` may apply).
 - **Signatures: all four (CUR/SKED/PLAN/APPR) re-sign every amendment, bound to
-  content** (§5 AM-06). Sign-off UI unchanged (`.signoff`).
+  content** (§5 AM-06). Sign-off UI unchanged (`.signoff`). **One exception: an EOD
+  actuals-record publish takes NO sign-off — it just publishes (§3b).**
 - **Highlight = the canonical diff (§5.0) vs the current issued version.**
 
 ## 3. Closed forks
 Per-day numbering; correct-in-place removed; withdrawal/unpublish removed; plans
 SURVIVE as backups (§4); re-sign every amendment (all four).
 
-## 3b. EOD (End of Day) — the actuals record (owner, 12 Sep — NEW; needs a short design pass before build)
+## 3b. EOD (End of Day) — the actuals record (owner, 12 Sep — SETTLED; not yet cross-provider-reviewed)
 - **EOD = what ACTUALLY happened** on a day (the actuals), distinct from the plan.
-- Published **only when reality differed** from the current published version; if
-  nothing changed there is no EOD and the latest published version stands as the record.
-- A past day's EOD **can still be corrected** later (issuing a new version, adjusting OIL).
-- OIL and the historical record read from the day's **latest published record — the EOD
-  if present, else the latest AL/Original** (§6).
-- Uses the **same immutable-publish machinery** (an EOD is a published version).
-- **OPEN for the build's first design pass** (give it the care plans got): EOD's exact
-  relationship to the AL sequence (labelled AL vs distinct record type), whether/when
-  publishing an EOD is prompted, and its UI. NOT yet cross-provider-reviewed.
+- **An EOD is a special flagged publish on the day's own version stack** (Original → AL1
+  → … → **EOD**), NOT a separate record. At end of day, if reality differed, the
+  scheduler edits the live draft to match what flew and publishes it via a distinct
+  **"Close day — record actuals"** action; that closing version is stamped **EOD** and
+  shown distinctly in the version history (owner: label it).
+- Published **only when reality differed**; no change → no EOD, and the latest plan
+  version stands as the record.
+- **No four-role sign-off — an EOD just publishes** (owner): it is a record of fact, not
+  a plan to approve. Show a light **"recorded by <person> at <time>"** in place of the
+  sign-off pills. This is the ONE exception to "all four sign every published version"
+  (§2, AM-06).
+- **INTEGRITY GUARD (build, review with Codex):** because the EOD path skips sign-off it
+  MUST be scoped to *recording actuals* — available only for the current/past day — and
+  must NOT become a backdoor to issue an unsigned PLAN change. A plan amendment
+  (future/plan content) still requires all four. This bypass surface is the one part of
+  EOD that needs an independent review before building.
+- After an EOD the day shows a **"recorded"** state but is **still correctable** (owner):
+  a correction is a fresh publish that supersedes it (never in-place); OIL re-reads the
+  new latest.
+- The EOD shows its **deviations from the plan for free** — the diff marks vs the prior
+  version are exactly what changed at end of day.
+- OIL & history read the day's **latest published record — the EOD if present, else the
+  latest AL/Original** (§6). Uses the **same immutable-publish machinery**.
 
 ## 5.0 KEYSTONE — canonical issued-content schema + publish trigger (R-02, F-02/F-03)
 ONE canonical representation of a day's issued content, used identically by

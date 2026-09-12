@@ -63,9 +63,12 @@ no code written yet. Companion to the Codex/Astra review brief
   F-01…F-12), both converged; **Rev 4 (12 Sep) adds owner refinements, NOT yet
   re-reviewed:** OIL simplified to "the latest published record (EOD, else latest
   AL/Original) is the sole truth" — negative OIL allowed, no date cutoff, keep the
-  read-failure protection; **EOD** (End-of-Day actuals record) added and flagged for a
-  short design pass before the EOD-touching build; plan **names** are scheduler-typed
-  free labels (auto A/B letter kept).
+  read-failure protection; **EOD** (End-of-Day actuals record) DESIGNED & settled — a
+  flagged end-of-day publish on the day's own stack, published only when reality
+  differed, labelled distinctly, **no sign-off (just publish, "recorded by X")**,
+  correctable later; the one open item is a Codex review of the no-sign bypass surface
+  (EOD must record actuals only, never a backdoor for unsigned plan changes). Plan
+  **names** are scheduler-typed free labels (auto A/B letter kept).
 - **Cross-feature — OIL on worked days (leaning, 11 Sep 26):** an amendment that
   removes a person re-derives Leave War auto-OIL from the current published
   version and sweeps it away — right for a future day, wrong for a day already
