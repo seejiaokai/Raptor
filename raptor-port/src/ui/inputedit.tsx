@@ -1030,7 +1030,7 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
          off-week remarks edit into a fresh, flagging input (the acc-clear below
          would then delete the parked 'r'). A 'g' input's row genuinely cannot
          exist off the loaded week, so it still drops and says so. */
-      else if (wasAcc === 'u') r.acc = 'u'
+      else if (wasAcc === 'u' && r.type === wasType) r.acc = 'u'   // an off-week edit that KEEPS the type preserves the filing; a type change lets it re-derive (P2-QREV/Fable-9)
       else HOOKS.toast('Moved outside the programmed week — it is no longer accepted', 'warn')
       /* the un-accept above parks the input as 'r' (removed — dormant); every
          SUCCESSFUL re-accept overwrites it, so an 'r' still here means the

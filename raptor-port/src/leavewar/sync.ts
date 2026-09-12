@@ -690,10 +690,16 @@ export function oilAskPlan(row: { person?: any; date: string; endDate?: string; 
 export function oilPendingFor(personId: any): { iid: string; iso: string }[] {
   const out: { iid: string; iso: string }[] = []
   if (!personId) return out
+  /* a protected (quarantined) day is never asked (P2-QREV-06/Fable-6): the OIL
+     pass already treats it as "credit stands", and the answer write would be
+     rolled back by the input funnel — so the bell would stay lit forever. Skip
+     those days from the scan. */
+  const prot = protectedDates()
+  const isoProt = (iso: string) => prot.length > 0 && prot.some((dt: any) => inputCoversDate({ date: isoToLabel(iso), yr: baseYear() }, dt))
   for (const row of INPUTS) {
     if (row.person !== personId || !oilAsks(row.type) || row.acc === 'r') continue
     const answered = (row.oil ?? {}) as Record<string, number>
-    const hit = oilAskPlan(row).find(p => answered[p.iso] == null)
+    const hit = oilAskPlan(row).find(p => answered[p.iso] == null && !isoProt(p.iso))
     if (hit && row.iid) out.push({ iid: row.iid, iso: hit.iso })
   }
   return out

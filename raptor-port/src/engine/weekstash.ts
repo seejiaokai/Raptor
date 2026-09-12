@@ -50,7 +50,13 @@ export function stashClear(){ for(const k in WEEKSTASH)delete WEEKSTASH[k]; for(
 export function stashKeys(){ return Object.keys(WEEKSTASH); }
 export function stashDrop(v:any){ const k=String(v);
   if(!Object.prototype.hasOwnProperty.call(WEEKSTASH,k))return false;
-  delete WEEKSTASH[k]; GEN[k]=(GEN[k]||0)+1; return true; }
+  delete WEEKSTASH[k];
+  /* also drop any preserved (byte-frozen) blob for this week (P2-QREV/Fable-12):
+     the Admin "clear old data" sweep calls stashDrop, and leaving PRESERVED set
+     let state/persist.ts rewrite the frozen blob back on the next history step,
+     so a cleared damaged/legacy week came straight back. */
+  delete PRESERVED[k];
+  GEN[k]=(GEN[k]||0)+1; return true; }
 export function stashGet(v:any){ return WEEKSTASH[String(v)]||null; }
 /* PRESERVED (byte-frozen) BOOKS — a week loaded from a PRE-Phase-2 (unsupported)
    snapshot is READ-ONLY and its engine cannot safely re-key it, so it must round-

@@ -915,6 +915,10 @@ export function routeClick(e: MouseEvent) {
   const sc = t.closest('[data-signclear]') as HTMLElement | null
   if (sc) {
     e.stopPropagation()
+    /* read-only quarantine (P2-QREV/Fable-11): clearing a signature mutates the
+       loaded week's SCHED and pushes history — inert on a frozen week, and the
+       button can render from stale DOM after a role/preview change, so gate it. */
+    if (!canEditSched() || protectedWeek()) return
     signClear(+sc.dataset.signclear!); HOOKS.histPush(); HOOKS.reflow(); return
   }
 

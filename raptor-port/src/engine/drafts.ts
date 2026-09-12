@@ -188,6 +188,11 @@ export function draftSelect(di: any, id: any) {
   const nd = clone(t.d)
   nd.today = !!(DAYS[di] && DAYS[di].today)
   DAYS[di] = nd
+  /* reconcile the ground filing on EVERY replacement, approved or not (P2-QREV-07):
+     the round-1 reconcile ran only via rebaseDayPending (approved days), so an
+     UNPUBLISHED replace that dropped a 'g' row froze a phantom filing at first
+     publish. Run it here, right after the swap, before any Original/AL fingerprint. */
+  reconcileDayFiling(di)
   if (dayApproved(di)) {
     rebaseDayPending(di)
   } else {
@@ -231,13 +236,6 @@ export function draftSelect(di: any, id: any) {
    No histPush/reflow here either — this runs inside draftSelect's step. */
 export function rebaseDayPending(di: any) {
   di = +di
-  /* the ONE chokepoint every approved-day whole-day REPLACEMENT funnels through
-     (draftSelect / loadVersionToWorkingCopy / applyDayTpl). Reconcile the day's
-     ground filing FIRST — before the snapshot diff below and before any AL freezes
-     the fingerprint — so a 'g' input whose row the replacement dropped no longer
-     lies as filed, and navigation cannot later flip it into a phantom amendment
-     (P2-REV2-05). */
-  reconcileDayFiling(di)
   const ver = dayCurVer(di)
   const snap = ver != null ? daySnapOf(di, ver) : null
   if (!snap) {
@@ -458,6 +456,7 @@ export function loadVersionToWorkingCopy(di: any, ver: any) {
   const nd = clone(snap.d)
   nd.today = !!(DAYS[di] && DAYS[di].today)
   DAYS[di] = nd
+  reconcileDayFiling(di)   // every replacement, approved or not (P2-QREV-07)
   if (dayApproved(di)) {
     rebaseDayPending(di)
   } else {

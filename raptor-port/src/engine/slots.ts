@@ -465,8 +465,21 @@ export function acceptedDay(inp:any){
 export function reconcileDayFiling(di:any){
   const dt=(DAYS[+di]||{}).dt; if(dt==null)return;
   INPUTS.forEach((inp:any)=>{
-    if(inp.acc!=='g'||!inputCoversDate(inp,dt))return;
-    if(acceptedDay(inp)<0)delete inp.acc;   // the landing row is gone everywhere → no longer filed 'g'
+    if(!inputCoversDate(inp,dt))return;
+    /* 'u' (a global filing DECISION with no ground row) and 'r' (dormant) are not
+       per-week ground landings — untouched. */
+    if(inp.acc==='u'||inp.acc==='r')return;
+    /* is there a ground row for this input on ANY loaded day? Scanned by content
+       key directly (NOT acceptedDay, which early-returns unless acc is already
+       'g' and so cannot re-derive) — the same scan reconcileLandedAcc uses. */
+    const key=inpKey(inp);
+    const landed=DAYS.some((d:any)=>((d&&d.ground)||[]).some((g:any)=>g.src===key));
+    /* BOTH directions (P2-REV2-05 + its round-2 regression P2-QREV/Fable-2): a 'g'
+       whose row a replacement DROPPED is unfiled; a falsy-acc personal input whose
+       row a replacement RESTORED (a draft round-trip) is re-filed 'g' — the old
+       delete-only form left it stranded, phantom-amending on the next navigation. */
+    if(landed){ if(inp.acc!=='g'&&isPersonal(inp.type))inp.acc='g'; }
+    else if(inp.acc==='g')delete inp.acc;
   });
 }
 export function unacceptInput(di:any,inp:any){

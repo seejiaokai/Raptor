@@ -105,8 +105,14 @@ export function dayIssuedHTML(di:any){
      unavailable notice for an approved day; the plain draft for a never-approved
      one. Checked BEFORE dayCurVer so a resolvable-but-unsupported record can't slip
      past the ver==null branch below. */
+  /* a PROTECTED week shows the unavailable notice for EVERY day, not only its
+     approved ones (P2-QREV/Fable-7): an unreadable/damaged book loads the SEED as
+     a placeholder whose days are unapproved, so the old `dayApproved ? notice :
+     seed` reading rendered that seed as if it were the real schedule, with no
+     indication the week is quarantined. The whole book is frozen, so the whole
+     week reads as unavailable. */
   if(protectedWeek())
-    return dayApproved(di)?dayUnsupportedHTML(di):dayHTML(di,false)
+    return dayUnsupportedHTML(di)
   const ver=dayCurVer(di)
   if(ver==null){
     /* an approved day with NO resolvable issued snapshot is a legacy/unsupported

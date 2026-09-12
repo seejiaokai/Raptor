@@ -130,10 +130,16 @@ function protectedTouched(before: any, prot: string[]): boolean {
    step (writeInputsBatch's original reason to exist). */
 function runInputWrite(fn: () => void, suppressHist: boolean): boolean {
   const prot = protectedDates()
+  /* snapshot whenever a quarantine is active — used to roll back an illegal batch
+     below, AND to restore a half-mutated model if fn() THROWS (P2-QREV/Fable-13):
+     without this a mid-batch exception left the model partly written with no undo
+     step to recover it. */
   const snap = prot.length ? histSnap() : null
   const push = HOOKS.histPush
   if (suppressHist) HOOKS.histPush = () => {}
-  try { fn() } finally { if (suppressHist) HOOKS.histPush = push }
+  try { fn() }
+  catch (e) { if (snap) { histRestore(snap); view.armDrop() } HOOKS.histPush = push; HOOKS.renderInputs(); HOOKS.reflow(); throw e }
+  finally { if (suppressHist) HOOKS.histPush = push }
   if (snap && protectedTouched(JSON.parse(snap), prot)) {
     /* roll the model back to before the batch and repaint it — an engine helper
        (markEdit → renderStatus) may have notified mid-batch — but push NO history

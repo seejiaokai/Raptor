@@ -2315,6 +2315,14 @@ describe('day-template apply — arm scoping and slot disarm (P2-IMPL-10 / 11)',
     expect(dayTplArmKey(0, 'tpl-nav'), 'the arm key changes after a navigation').not.toBe(k1)
   })
 
+  it('a board-day change bumps the nav token so a stale template confirm re-arms (P2-QREV-08)', () => {
+    view.setBoardDay(0)                 // open the board on day 0
+    const before = view.navGen()
+    view.setBoardDay(1)                 // step to day 1 — a navigation gesture
+    expect(view.navGen(), 'a board-day change is a navigation too').toBeGreaterThan(before)
+    view.setBoardDay(null)
+  })
+
   it('a page change bumps the nav token (P2-REV2-07)', () => {
     const before = view.navGen()
     const wasPage = view.CURPAGE

@@ -271,6 +271,11 @@ export function setBoardDay(n:any){
      focus is not for the day being switched TO (WFOCUS.di!==n) — landing on
      the focused warning's own day must keep it lit. */
   if(SBDAY!=null&&n!==SBDAY&&WFOCUS&&WFOCUS.di!==n)WFOCUS=null;
+  /* a board-day CHANGE is a navigation gesture too (P2-QREV-08): it must
+     invalidate a pending day-template-apply confirm, or arming on Monday's board,
+     stepping to Tuesday and back, then one pick would apply the stale confirm.
+     Only on a real day change (not the null->open, or a repaint to the same day). */
+  if(SBDAY!=null&&n!=null&&n!==SBDAY)NAVGEN++;
   BOARDREV++;
   SBDAY=n;
 }

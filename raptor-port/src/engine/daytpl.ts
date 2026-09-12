@@ -5,6 +5,7 @@ import { keyDay } from './keys'
 import { store } from './hooks'
 import { SECTIONS } from './order'
 import { stripRowIds } from './rowids'
+import { reconcileDayFiling } from './slots'
 /* a captured section order, cleaned to known keys with no repeats — used both
    when minting a template off a live day and when loading a hand-edited file. */
 const cleanSecOrder = (v: any): string[] | undefined => {
@@ -244,6 +245,7 @@ export function applyDayTpl(di: number, id: string): boolean {
   stripRowIds(nd)
   const wasApproved = dayApproved(di)
   DAYS[di] = nd
+  reconcileDayFiling(di)   // every replacement, approved or not (P2-QREV-07): a template's fresh rows carry no input src, so a dangling 'g' is unfiled
   if (wasApproved) {
     /* PUBLISHED DAY (§4, P2-R3-04): a published version is frozen — you cannot
        "reopen" and apply over it. Applying a template is just a large
