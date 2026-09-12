@@ -82,7 +82,11 @@ export function dayKeys(d:any,di:any){
   (d.dutywaves||[]).forEach((dw:any,wi:any)=>{
     m.set(`dl:${di}.${wi}`,S(dw.label));
     (dw.rows||[]).forEach((r:any,ri:any)=>{
-      m.set(`dr:${di}.${wi}.${ri}.role`,S(r.role)+'␟'+(r.cx?1:0)+'␟'+(r.flag?1:0));
+      /* cxr (the cancel REASON) rides the composite, as ap:/fr: already do —
+         without it, changing only a cancelled duty's reason left role/cx/flag
+         unchanged, so reconcile dropped the mark and the revised reason reached
+         no AL (P2-IMPL-08). canonicalContent inherits this, so bxr: is retired. */
+      m.set(`dr:${di}.${wi}.${ri}.role`,S(r.role)+'␟'+(r.cx?1:0)+'␟'+(r.flag?1:0)+'␟'+S(r.cxr));
       m.set(`dr:${di}.${wi}.${ri}.str`,T(r.str)); m.set(`dr:${di}.${wi}.${ri}.end`,T(r.end)); m.set(`dr:${di}.${wi}.${ri}.rmks`,S(r.rmks));
       m.set(`d:${di}.${wi}.${ri}`,P(r.id));
       (r.more||[]).forEach((v:any,x:any)=>m.set(`d:${di}.${wi}.${ri}.x${x}`,P(v)));
@@ -90,7 +94,7 @@ export function dayKeys(d:any,di:any){
   });
   Object.keys(d.sims||{}).forEach((kind:any)=>{
     (d.sims[kind]||[]).forEach((r:any,ri:any)=>{
-      m.set(`sr:${di}.${kind}.${ri}.label`,S(r.label)+'␟'+S(r.who)+'␟'+(r.cx?1:0)+'␟'+(r.flag?1:0));
+      m.set(`sr:${di}.${kind}.${ri}.label`,S(r.label)+'␟'+S(r.who)+'␟'+(r.cx?1:0)+'␟'+(r.flag?1:0)+'␟'+S(r.cxr));   // + cxr, as dr:/ap:/fr: (P2-IMPL-08)
       m.set(`sr:${di}.${kind}.${ri}.str`,T(r.str)); m.set(`sr:${di}.${kind}.${ri}.end`,T(r.end)); m.set(`sr:${di}.${kind}.${ri}.rmks`,S(r.rmks));
       if(Array.isArray(r.pax))r.pax.forEach((v:any,k:any)=>m.set(`s:${di}.${kind}.${ri}.pax.${k}`,P(v)));
       else {m.set(`s:${di}.${kind}.${ri}.p`,P(r.p)); m.set(`s:${di}.${kind}.${ri}.w`,P(r.w));}
@@ -98,7 +102,7 @@ export function dayKeys(d:any,di:any){
     });
   });
   (d.ground||[]).forEach((r:any,ri:any)=>{
-    m.set(`gr:${di}.${ri}.prog`,S(r.prog)+'␟'+(r.cx?1:0)+'␟'+(r.flag?1:0)+'␟'+(r.info?1:0));   // + info, as ap: above
+    m.set(`gr:${di}.${ri}.prog`,S(r.prog)+'␟'+(r.cx?1:0)+'␟'+(r.flag?1:0)+'␟'+(r.info?1:0)+'␟'+S(r.cxr));   // + info + cxr, as ap: above (P2-IMPL-08)
     m.set(`gr:${di}.${ri}.str`,T(r.str)); m.set(`gr:${di}.${ri}.end`,T(r.end)); m.set(`gr:${di}.${ri}.rmks`,S(r.rmks));
     m.set(`g:${di}.${ri}`,P(r.who));
     (r.more||[]).forEach((v:any,x:any)=>m.set(`g:${di}.${ri}.x${x}`,P(v)));

@@ -12,7 +12,7 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { INPUTS } from '../engine/inputs'
 import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
-import { SCHED, signOf, setDayApproved, publishALDay } from '../engine/publish'
+import { SCHED, signOf, setDayApproved, publishALDay, dayApproved } from '../engine/publish'
 import { stashClear, stashPut } from '../engine/weekstash'
 import { initStore as raptorInitStore, loadWeek } from '../state/store'
 import { projectPeople } from './state/raptorRoster'
@@ -170,6 +170,29 @@ describe('the credit reads EVERY week, not just the loaded one (owner, 29 Aug 26
     /* unreadable = as if never stashed, so the reverse sweep collects the
        cell — degraded, never wrong-way-round or crashed */
     expect(cellOf('plasma', SAT)).toBeUndefined()
+  })
+})
+
+describe('an unsupported / unresolvable book protects its landed OIL credits (P2-IMPL-01)', () => {
+  it('a pre-Phase-2 (unsupported) live book neither draft-substitutes nor deletes an earned credit', () => {
+    /* first land the credit through a normal publish */
+    publish(5)
+    runOilPass()
+    expect(cellOf('plasma', SAT)).toBe('FO')
+    /* now the book reads as a PRE-Phase-2 one: approved days, but the current
+       pointer is the old 'orig' string and there is no resolvable verId snapshot,
+       so dayCurVer→null. The live DRAFT has since dropped the duty — the exact
+       trap where the old code fell back to the draft, found no work, and the
+       reverse sweep DELETED the credit. */
+    SCHED.amV = undefined
+    SCHED.orig = {}
+    SCHED.cur = { 5: 'orig' as any }
+    SCHED.als = []
+    DAYS[5].dutywaves = []                          // the draft dropped the duty
+    expect(dayApproved(5)).toBe(true)
+    runOilPass()
+    expect(cellOf('plasma', SAT), 'the issued credit stands — no draft substitution, no deletion').toBe('FO')
+    expect(ownedBy('plasma', SAT)).toMatchObject({ source: 'raptor' })
   })
 })
 

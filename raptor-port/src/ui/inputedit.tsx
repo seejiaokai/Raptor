@@ -20,6 +20,7 @@ import { OilConfirm } from './OilConfirm'
 import { docAdd, docFields, docGet, rowDocIds } from '../state/docs'
 import { UploadIcon } from './icons'
 import { acceptInput, autoAcceptInput, unacceptInput, acceptedDay, inpKey } from '../engine/slots'
+import { protectedWeek } from '../engine/publish'
 import { DAYS } from '../engine/data'
 import { PEOPLE, isSpecial } from '../engine/people'
 import { hhmm, parseHM, hmOK } from '../engine/time'
@@ -691,8 +692,22 @@ export const TYPE_ALLOW: any = {
    the button on that panel puts the item where the button is. One undo step
    still — writeInputsBatch swallows acceptInput's own history pushes exactly
    as commitInputEdit's relink already relies on. */
+/* an UNSUPPORTED (pre-Phase-2) loaded week is read-only (P2-IMPL-03). An input
+   op that touches a date on that week — the row's own date OR a draft's target
+   date — would land/edit/remove a ground row on the frozen schedule, so refuse
+   it at the UI entry and say why. The engine's acceptInput/unacceptInput are the
+   hard backstop; this stops the input row's own fields diverging from the frozen
+   day too, and gives the user a reason rather than a silent no-op. */
+function protectedInput(...rows: any[]): boolean {
+  if (!protectedWeek()) return false
+  const hit = rows.some(r => r && DATES.some((dt: any) => inputCoversDate(r, dt)))
+  if (hit) HOOKS.toast('This week is locked — it was published by an older version and can’t be edited', 'warn')
+  return hit
+}
+
 export function commitNewInput(draft: any, toGround?: boolean, keepTail?: any, entryEnd?: any): boolean {
   if (!draft) return false
+  if (protectedInput(draft)) return false
   /* write-path role backstop (owner, 22 Aug 26 — a member files inputs only
      for whoever they are viewing as; the Person choice is a scheduler's).
      The member-reachable seeds (the calendar's openAdd) already carry ME and
@@ -767,6 +782,7 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
     HOOKS.toast('That input is no longer there — nothing was saved', 'warn')
     return false
   }
+  if (protectedInput(r, draft)) return false   // read-only quarantine, source + destination date (P2-IMPL-03)
   /* write-path role backstop (owner, 27 Aug 26): a LOGGED-IN MEMBER edits only
      their OWN inputs. The row's ✎ is hidden on everyone else's, so a real
      gesture cannot reach here; this refuses a hand-made call. "Member" is any
@@ -997,6 +1013,7 @@ export function reassignInput(iid: any, personId: any) {
   if (!canEditSched()) return false
   const r = INPUTS.find((i: any) => i.iid === iid)
   if (!r) { HOOKS.toast('That input is no longer there — nothing was changed', 'warn'); return false }
+  if (protectedInput(r)) return false          // read-only quarantine (P2-IMPL-03)
   /* the roster PALETTE (unlike rosterOptions() above) still carries the
      SPECIALS — sentinel placeholders like ALL AVAIL, never real aircrew — so
      a drag or an armed tap can reach here with one even though the dialog's
@@ -1069,6 +1086,7 @@ export function setInpField(inp: any, field: 'str' | 'end' | 'rmks', text: any) 
 export function removeInput(r: any) {
   const inx = INPUTS.indexOf(r)
   if (inx < 0) { HOOKS.toast('That input is no longer there', 'warn'); return false }
+  if (protectedInput(r)) return false          // read-only quarantine (P2-IMPL-03)
   /* write-path role backstop (owner, 27 Aug 26): a LOGGED-IN MEMBER deletes
      only their OWN inputs — the row's ✕ is hidden on everyone else's, this
      refuses a hand-made call. Same predicate as commitInputEdit's gate above

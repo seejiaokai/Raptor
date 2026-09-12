@@ -91,7 +91,7 @@ function keyLevels(prefix: string, parts: string[]): Array<{ slot: number; arr: 
     case 'ff': case 'ar': case 'at': case 'fx': case 'fa': case 'ft': return [W, F];  // fx/fa/ft: canonical formation content (Phase 2)
     case 'fr': case 'st': case 'aa': case 'au': return [W, F, A]; // aa/au: canonical per-aircraft area/atime (Phase 2)
     case 'dl': return [{ slot: 1, arr: (d: any) => d.dutywaves }];
-    case 'dr': case 'd': case 'bxr': return [{ slot: 1, arr: (d: any) => d.dutywaves }, { slot: 2, arr: (b: any) => b.rows }];  // bxr: canonical duty-row cxr (Phase 2)
+    case 'dr': case 'd': return [{ slot: 1, arr: (d: any) => d.dutywaves }, { slot: 2, arr: (b: any) => b.rows }];  // (bxr retired — a duty row's cxr rides dr:...role now, P2-IMPL-08)
     case 'bx': return [{ slot: 1, arr: (d: any) => d.dutywaves }];  // bx: canonical duty-block flags (Phase 2)
     case 'sr': case 's': return [{ slot: 2, arr: (d: any) => ((d.sims || {})[parts[1]!] || []) }];  // parts[1]=kind, literal
     case 'ap': case 'a': return [{ slot: 1, arr: (d: any) => d.allhands }];

@@ -41,7 +41,7 @@ export function stashHas(v:any){ return Object.prototype.hasOwnProperty.call(WEE
    which tests can't; call it to return the stash to first-boot (no week
    remembered). Not wired to any product path: the app only ever grows this
    store during a session, exactly as the header comment describes. */
-export function stashClear(){ for(const k in WEEKSTASH)delete WEEKSTASH[k]; for(const k in GEN)delete GEN[k]; }
+export function stashClear(){ for(const k in WEEKSTASH)delete WEEKSTASH[k]; for(const k in GEN)delete GEN[k]; for(const k in PRESERVED)delete PRESERVED[k]; }
 /* DROP ONE WEEK's memory — the Admin clear-old-data sweep (owner, 25 Aug 26).
    The gen is BUMPED, never reset: ui/peek.ts caches previews keyed by
    (week, gen), so resetting to 0 and then stashing again could re-serve a
@@ -52,6 +52,17 @@ export function stashDrop(v:any){ const k=String(v);
   if(!Object.prototype.hasOwnProperty.call(WEEKSTASH,k))return false;
   delete WEEKSTASH[k]; GEN[k]=(GEN[k]||0)+1; return true; }
 export function stashGet(v:any){ return WEEKSTASH[String(v)]||null; }
+/* PRESERVED (byte-frozen) BOOKS — a week loaded from a PRE-Phase-2 (unsupported)
+   snapshot is READ-ONLY and its engine cannot safely re-key it, so it must round-
+   trip byte-for-byte: state/store.ts skips every id migration/normalization for
+   it and registers its ORIGINAL blob here, and state/persist.ts writes THAT blob
+   back verbatim instead of a re-serialization that would overwrite the recovery
+   evidence (P2-IMPL-02). Keyed by the dd/mm/yyyy week key, like the stash. */
+const PRESERVED:Record<string,string>={};
+export function setPreservedBlob(v:any,json:any){ PRESERVED[String(v)]=String(json); }
+export function preservedBlob(v:any){ return Object.prototype.hasOwnProperty.call(PRESERVED,String(v))?PRESERVED[String(v)]:null; }
+export function isPreservedWeek(v:any){ return Object.prototype.hasOwnProperty.call(PRESERVED,String(v)); }
+export function clearPreservedBlob(v:any){ delete PRESERVED[String(v)]; }
 /* A FRESH deep copy, in weekBundle's {days,dates} shape, for engine readers
    (weekctx.ts's bundle()) — NEVER cached, unlike the pure seed bundle it
    stands in for: stash content changes as the user keeps editing the week it

@@ -10,7 +10,7 @@ import { slotVal, txtGet, TIME_TXT, whoArr, rowCrew, rowRef, inpKey } from '../e
    click that follows it read one test */
 import { WARN, sevOf, chipOf, dashOf, traceOf, traceLeads, traceChip, traceIx, tracesOn, chipText, wlbl, WCODE, SEVWORD, CHIP_LABEL, ordinal } from '../engine/validate'
 import { availByWave, personBusy, dayOff, dayEngaged, personWarns } from '../engine/avail'
-import { SCHED, alAttr, dayApproved, dayCurVer, dayPendCount, dayDelta, alColor, signOf, signMissing, signPeople, SIGN_ROLES, daySigned, nextSeq, dowShort, alCount, daySnapOf, dayVersions, verLabel } from '../engine/publish'
+import { SCHED, alAttr, dayApproved, dayCurVer, dayPendCount, dayDelta, dayDiscardCount, alColor, signOf, signMissing, signPeople, SIGN_ROLES, daySigned, nextSeq, dowShort, alCount, daySnapOf, dayVersions, verLabel } from '../engine/publish'
 import { verSeq } from '../engine/verid'
 import { dayDrafts, curDraftId, isDraftVer, draftVerLabel } from '../engine/drafts'
 import { keyDay } from '../engine/keys'
@@ -40,6 +40,10 @@ const editMode=()=>HOOKS.editMode()
    labelling) and the section class reads `issued`, not `preview`, so the
    preview dimming and its CSS never apply to the page's default face. */
 let PV=false, PVV:any=null, PVQ=false
+/* the LIVE unpublished-edit count captured by withDaySnap BEFORE it zeroes
+   pending — what the discard-confirm button must show (P2-IMPL-09). Read only
+   under PV; withDaySnap sets it before the swap and restores it in finally. */
+let PVND=0
 const sev=(di:any,id:any)=>PV?null:sevOf(di,id)
 /* THE PREVIOUS-DAY TRACE (owner, 6 Aug 26; made a standing mark 6 Aug 26).
    A crew-rest breach is raised on the day the man is told to report, but the
@@ -65,11 +69,14 @@ const dsh=(di:any,id:any)=>PV?false:dashOf(di,id)
 export function withDaySnap(di:any,ver:any,fn:any){
   const snap=daySnapOf(di,ver)
   if(!snap)return fn(false)
-  const d0=DAYS[di], c0=SCHED.changes, p0=SCHED.pending
+  /* capture the LIVE discard count BEFORE the swap zeroes pending (P2-IMPL-09) —
+     the confirm button reads it as PVND, so it never shows "Discard 0 edits". */
+  const nd0=dayDiscardCount(di)
+  const d0=DAYS[di], c0=SCHED.changes, p0=SCHED.pending, nd=PVND
   DAYS[di]=snap.d; SCHED.changes=snap.c||{}; SCHED.pending={}
-  PV=true; PVV=ver
+  PV=true; PVV=ver; PVND=nd0
   try { return fn(true) }
-  finally { DAYS[di]=d0; SCHED.changes=c0; SCHED.pending=p0; PV=false; PVV=null }
+  finally { DAYS[di]=d0; SCHED.changes=c0; SCHED.pending=p0; PV=false; PVV=null; PVND=nd }
 }
 export function dayPreviewHTML(di:any,ver:any,edFallback:any){
   return withDaySnap(di,ver,(ok:any)=>ok?dayHTML(di,false,true):dayHTML(di,edFallback,true))
@@ -1026,7 +1033,7 @@ export function dayHTML(di:any,ed:any,vsel?:any){
        version" — the word read like "publish it"). Loading discards the day's
        unpublished edits, so when there are any it takes a confirming second
        tap: restArmed drives the two-state button. */
-    const armed=restArmed(di,PVV), pend=dayPendCount(di);
+    const armed=restArmed(di,PVV), pend=PV?PVND:dayPendCount(di);
     const pvBar=(PV&&!PVQ)
       ? `<div class="dprev-bar"${(!pvDraft&&verSeq(PVV)!==0)?` style="--alc:${alColor(verSeq(PVV))}"`:''}>`
         +(pvDraft

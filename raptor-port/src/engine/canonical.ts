@@ -45,8 +45,10 @@ const S = (v: any) => String(v == null ? '' : v)
    each given a SYNTHETIC address (brief §5.0) so alAttr / the AL panel can paint
    and list a change with no slot cell of its own. The omitted fields (verified
    against restore.ts:dayKeys, 12 Sep): a wave's `standalone`/`noconf`, a
-   formation's `shift` and its line-level `cxr`, a duty block's `sa`/`noconf`,
-   and a duty row's `cxr`. */
+   formation's `shift` and its line-level `cxr`, and a duty block's `sa`/`noconf`.
+   A DUTY ROW's `cxr` is NOT omitted — dayKeys folds it into the dr:...role
+   composite (P2-IMPL-08), as ap:/fr: already do for theirs, so it needs no
+   synthetic (the retired bxr: address). */
 export function canonicalContent(d: any, di: any): Map<string, string> {
   const m = new Map(dayKeys(d, di))
   /* keep null distinct from '' (an unset override must not read as an explicit
@@ -74,9 +76,10 @@ export function canonicalContent(d: any, di: any): Map<string, string> {
   })
   ;(d.dutywaves || []).forEach((dw: any, wi: number) => {
     m.set(`bx:${di}.${wi}`, S(dw.sa) + U + (dw.noconf ? 1 : 0))
-    ;(dw.rows || []).forEach((r: any, ri: number) => {
-      if (r.cxr != null) m.set(`bxr:${di}.${wi}.${ri}`, S(r.cxr))
-    })
+    /* a duty row's cancel REASON (cxr) rides its dr:...role composite now
+       (restore.ts:dayKeys, P2-IMPL-08) — exactly as ap:/fr: carry their cxr — so
+       it needs no separate synthetic here. The old bxr: address double-counted a
+       reason change once dr:...role learned to carry cxr, so it is retired. */
   })
   /* ground[].src — the accepted-input linkage (P2-09). dayKeys omits it, yet it
      is canonical content: two ground rows identical on screen but linked to
@@ -172,7 +175,16 @@ export function canonicalDiff(prevD: any, newD: any, di: any): DeltaEntry[] {
   nowC.forEach((v: any, k: any) => {
     const pk = toPrev(k)
     if (pk == null) return                       // row absent from prev → an add, structure axis owns it
-    if (!wasC.has(pk)) return                     // sub-cell new on a surviving row → handled by structure/hole below
+    if (!wasC.has(pk)) {                          // the OWNING ROW survives (pk resolved) but this address did not
+      /* a new sub-cell on a surviving row: a variable-length crew slot grew
+         (who[]/more[]/pax[]). The structure axis only sees whole rows and the
+         hole loop below only sees removals, so without this a real addition to a
+         surviving row yields an empty diff while the digest flips — an AL issued
+         with diff:[] that recovery reads as nd=0 and can discard (P2-IMPL-06).
+         Mirror the removal hole: emit it as a change from '' to the new value. */
+      out.push({ addr: String(k), kind: 'change', from: '', to: String(v) })
+      return
+    }
     if (wasC.get(pk) !== v) out.push({ addr: String(k), kind: 'change', from: String(wasC.get(pk)), to: String(v) })
   })
   wasC.forEach((_v: any, k: any) => {

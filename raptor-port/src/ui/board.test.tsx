@@ -18,7 +18,9 @@ import { DUTYTPL_CFG } from '../engine/dutytpl'
 import { SBDAY, afterSchedMutate } from '../state/view'
 import * as view from '../state/view'
 import { cxText, dayHTML } from './html'
-import { openScheduler, closeScheduler, boardArmClick, boardChange, boardMbtn, boardHTML, askSortAll, sortAllCommit, SORTALL, addLine, addWave, askCx, cxCommit, CXT } from './board'
+import { openScheduler, closeScheduler, boardArmClick, boardChange, boardMbtn, boardHTML, askSortAll, sortAllCommit, SORTALL, addLine, addWave, askCx, cxCommit, CXT, pickDayTpl, dayTplArmKey } from './board'
+import { setCurWeek, CURWEEK } from '../engine/waves'
+import { addDayTpl, DAYTPL_CFG } from '../engine'
 import { applyMove } from '../engine/reorder'
 import { WARN } from '../engine/validate'
 import { HOOKS } from '../engine/hooks'
@@ -2225,5 +2227,81 @@ describe('an empty Programme people cell says nothing', () => {
     expect(cell![1], 'holds only the "+ add" drop strip').toBe('<span class="addz" aria-hidden="true">+ add</span>')
     expect(h).not.toContain('<span class="itxt">all</span>')
     ;(DAYS[0] as any).allhands.pop()
+  })
+})
+
+describe('day-template apply — arm scoping and slot disarm (P2-IMPL-10 / 11)', () => {
+  const sgn = (di: number) => { const g = signOf(di); g.cur = 'ignite'; g.sked = 'bane'; g.plan = 'stiff'; g.appr = 'pump' }
+  beforeEach(() => {
+    SCHED.pending = {}; SCHED.changes = {}; SCHED.als = []; SCHED.al = 0
+    SCHED.dayOK = {}; SCHED.sign = {}; SCHED.orig = {}; SCHED.cur = {}; SCHED.drafts = {}; SCHED.curDraft = {}
+    if (view.ARM) view.disarmSlot()
+  })
+
+  it('the arm key is bound to the WEEK, so the same template+day on another week is not a stale match (P2-IMPL-10)', () => {
+    const wk = CURWEEK
+    const k1 = dayTplArmKey(0, 'tpl-x')
+    try {
+      setCurWeek('20/07/2026')
+      expect(dayTplArmKey(0, 'tpl-x'), 'a different week yields a different arm key').not.toBe(k1)
+    } finally { setCurWeek(wk) }
+    expect(dayTplArmKey(0, 'tpl-x')).toBe(k1)   // back on the original week it matches again
+  })
+
+  it('the arm key changes when the working-draft content changes between taps (P2-IMPL-10)', () => {
+    const k1 = dayTplArmKey(0, 'tpl-x')
+    ;(DAYS[0] as any).notes = [...((DAYS[0] as any).notes || []), 'ARMSCOPE-NOTE']
+    try {
+      expect(dayTplArmKey(0, 'tpl-x')).not.toBe(k1)
+    } finally { (DAYS[0] as any).notes.pop() }
+  })
+
+  it('the arm key changes when the template content changes between taps (P2-IMPL-10)', () => {
+    DAYTPL_CFG.push({ id: 'tpl-rev', title: 'REV', notes: [] } as any)
+    try {
+      const t = DAYTPL_CFG.find((x: any) => x.id === 'tpl-rev')!
+      const k1 = dayTplArmKey(0, 'tpl-rev')
+      t.title = 'REV-EDITED'
+      expect(dayTplArmKey(0, 'tpl-rev')).not.toBe(k1)
+    } finally {
+      const ix = DAYTPL_CFG.findIndex((x: any) => x.id === 'tpl-rev'); if (ix >= 0) DAYTPL_CFG.splice(ix, 1)
+    }
+  })
+
+  it('a first pick ARMS a published day with edits; an unchanged pick confirms, a CHANGED one re-arms (P2-IMPL-10)', () => {
+    const d0 = JSON.parse(JSON.stringify(DAYS[0]))
+    const t = addDayTpl(0)!
+    try {
+      sgn(0); setDayApproved(0, true)                         // freezes the Original
+      ;(DAYS[0] as any).notes.push('AN EDIT')                 // a real unpublished edit → delta 1
+      expect(dayApproved(0)).toBe(true)
+      expect(pickDayTpl(0, t.id), 'first pick arms').toBe('armed')
+      /* the working draft changes between taps → the scoped arm key no longer
+         matches, so it must RE-arm rather than silently apply (this is the same
+         staleness that let a bare `${di}:${id}` key carry across weeks). */
+      ;(DAYS[0] as any).notes.push('ANOTHER EDIT')
+      expect(pickDayTpl(0, t.id), 'a changed working draft re-arms').toBe('armed')
+      /* an unchanged confirming pick applies */
+      expect(pickDayTpl(0, t.id), 'the confirming pick applies').toBe('applied')
+    } finally {
+      DAYS[0] = d0
+      const ix = DAYTPL_CFG.findIndex((x: any) => x.id === t.id); if (ix >= 0) DAYTPL_CFG.splice(ix, 1)
+    }
+  })
+
+  it('applying a template disarms an armed crew slot on that day (P2-IMPL-11)', () => {
+    const d0 = JSON.parse(JSON.stringify(DAYS[0]))
+    const t = addDayTpl(0)!
+    try {
+      view.armSlot('0.0.0.0.p')                       // arm a seat on day 0
+      expect(view.ARM && view.ARM.di).toBe(0)
+      // day 0 is NOT approved (beforeEach cleared the book) → pickDayTpl applies straight away
+      expect(pickDayTpl(0, t.id)).toBe('applied')
+      expect(view.armedKey(), 'the stale arm was cleared before the replacement').toBe('')
+    } finally {
+      if (view.ARM) view.disarmSlot()
+      DAYS[0] = d0
+      const ix = DAYTPL_CFG.findIndex((x: any) => x.id === t.id); if (ix >= 0) DAYTPL_CFG.splice(ix, 1)
+    }
   })
 })

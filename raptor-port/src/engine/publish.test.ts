@@ -11,12 +11,14 @@ import { DAYS } from './data'
 import { PEOPLE, isScheduler } from './people'
 import { SCHED, signOf, signMissing, daySigned, signClear, signNames, signPeople, setDayApproved, dayApproved, publishableKeys, pendDays, dayPendCount, canPublishAL, alUnsignedDays, pendingPublishDays, publishALDay, discardPending, alIssue, alCount, alDays, dayALs, nextSeq, diffCounts, dayDelta, dayHasChanges, markEdit, markStructuralAdd, markDeletion, deletionWasIssued, isDeleteKey, deleteCount, pendCount, alColor, alAttr, daySnapOf, dayVersions, verLabel, dayCurVer } from './publish'
 import { dropRowMarks } from './publish'
-import { loadVersionToWorkingCopy } from './drafts'
+import { loadVersionToWorkingCopy, reconcileIssuedMarks } from './drafts'
 import { noteChange, txtSet, txtGet } from './slots'
 import { keyDay, shiftKeys } from './keys'
 import { moveNote } from './reorder'
 import { ridKey, ensureRowIds } from './rowids'
-import { verSeq } from './verid'
+import { verSeq, verId, dayIso } from './verid'
+import { CURWEEK } from './waves'
+import { digest } from './canonical'
 import { schedFields } from '../state/history'
 
 const rk = (k: string) => ridKey(k, DAYS)
@@ -151,11 +153,31 @@ describe('publishing an AL (tfin B49 / B26)', () => {
     expect(dayALs(0)).toEqual([1])
   })
 
-  it('a bare mark with no content change is NOT publishable (digest trigger, F-02)', () => {
+  it('a bare mark with no content change is NOT publishable (delta trigger, F-02)', () => {
     sign(0); setDayApproved(0, true)
     noteChange('dn:0.0')                          // marks pending but changes no content
     expect(dayHasChanges(0)).toBe(false)
     publishALDay(0)                               // refused
+    expect(SCHED.als).toEqual([])
+  })
+
+  it('a reorder that leaves the effective display order unchanged is NOT publishable (P2-IMPL-07 — dayHasChanges derives only from the canonical delta)', () => {
+    /* two timed ground rows whose MODEL order differs from the time-sorted DISPLAY
+       order: swapping the model array flips the positional digest, while the
+       effective (time-sorted) order — and every rid-joined value — is unchanged. The
+       old digest fast-path read that as a change; the delta correctly reads none. */
+    DAYS[0].ground = [
+      { rid: 'gA', prog: 'ALPHA', str: '10:00', who: '' },
+      { rid: 'gB', prog: 'BRAVO', str: '09:00', who: '' },
+    ] as any
+    delete (DAYS[0] as any).gman
+    sign(0); setDayApproved(0, true)
+    DAYS[0].ground = [DAYS[0].ground[1], DAYS[0].ground[0]] as any   // swap the model order only
+    const issued = daySnapOf(0, dayCurVer(0)!)!.d
+    expect(digest(issued, 0), 'the positional digest DID flip (the old fast-path would fire)').not.toBe(digest(DAYS[0], 0))
+    expect(dayDelta(0), 'but the normalized delta is empty').toEqual([])
+    expect(dayHasChanges(0)).toBe(false)
+    publishALDay(0)
     expect(SCHED.als).toEqual([])
   })
 
@@ -300,6 +322,45 @@ describe('publishing an AL (tfin B49 / B26)', () => {
       const ratio = (lum(alColor(n)) + 0.05) / (ink + 0.05)
       expect(ratio, `AL${n} ${alColor(n)}`).toBeGreaterThanOrEqual(4.5)
     }
+  })
+})
+
+describe('dayCurVerIn falls back to the highest VALIDATING record, not just the highest seq (P2-IMPL-12)', () => {
+  it('a higher-seq wrong-week record is skipped for a valid lower-seq AL, not the Original', () => {
+    const iso = dayIso(CURWEEK, 0)
+    SCHED.dayOK = { 0: 1 }
+    SCHED.orig = { 0: { id: verId(iso, 0), d: { notes: ['orig'] }, c: {} } }
+    const al1 = { id: verId(iso, 1), di: 0, iso, seq: 1, snap: { d: { notes: ['al1'] }, c: {} }, diff: [], sign: {} }
+    /* AL2 is the highest seq but carries a FOREIGN week's iso, so daySnapIn rejects
+       it. The old code validated only the highest-seq candidate and then fell through
+       to the Original; the fix iterates by descending seq and returns AL1. */
+    const al2bad = { id: verId('2099-01-02', 2), di: 0, iso: '2099-01-02', seq: 2, snap: { d: { notes: ['al2'] }, c: {} }, diff: [], sign: {} }
+    SCHED.als = [al1, al2bad]
+    SCHED.cur = { 0: al2bad.id }                       // stamped at the invalid higher-seq record
+    expect(dayCurVer(0)).toBe(al1.id)
+    expect(verSeq(dayCurVer(0)!)).toBe(1)
+  })
+})
+
+describe('a canonical-only cancel-reason edit keeps its AL attribution (P2-IMPL-08)', () => {
+  it('changing a cancelled DUTY row\'s reason survives reconcile and goes out marked on the duty row', () => {
+    /* the duty row is cancelled WITH a reason before the day is published, so the
+       Original freezes cx=true/cxr='WX'. Then only the REASON changes. The
+       dr:...role composite must reflect cxr, or reconcile drops the mark (role/cx
+       unchanged) and the revised reason gets no AL attribution. */
+    const row = DAYS[0].dutywaves[0].rows[0]
+    row.cx = true; row.cxr = 'WX'
+    sign(0); setDayApproved(0, true)                 // Original frozen with cx=true, cxr='WX'
+    row.cxr = 'OPS'; markEdit('dr:0.0.0.role')        // mimic cxCommit: reason changes, marks the duty row
+    reconcileIssuedMarks()
+    expect(SCHED.pending[rk('dr:0.0.0.role')], 'the reason-change mark must survive reconcile').toBe(1)
+    expect(dayHasChanges(0)).toBe(true)
+    sign(0); publishALDay(0)
+    expect(SCHED.changes[rk('dr:0.0.0.role')], 'the revised reason goes out attributed to the duty row').toBe(1)
+    /* the frozen record counts it exactly once (no bxr double-count) */
+    const rec = SCHED.als.find((a: any) => +a.di === 0 && +a.seq === 1)
+    expect(rec.diff.filter((e: any) => e.kind === 'change' && String(e.addr).startsWith('dr:0.0.0')).length).toBe(1)
+    expect(rec.diff.some((e: any) => String(e.addr).startsWith('bxr:'))).toBe(false)
   })
 })
 

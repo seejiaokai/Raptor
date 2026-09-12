@@ -13,7 +13,7 @@ import { SCHED, signOf, setDayApproved, alIssue } from '../engine/publish'
 import { dayDrafts, draftDup } from '../engine/drafts'
 import { txtSet, txtGet } from '../engine/slots'
 import { parseHM } from '../engine/time'
-import { setDayPreview, DPREV, VWORK, setPage } from '../state/view'
+import { setDayPreview, DPREV, VWORK, setPage, setRestArm } from '../state/view'
 import { setSession } from '../state/auth'
 import { acceptInput, unacceptInput } from '../engine/slots'
 import { PIOPEN } from '../state/view'
@@ -829,5 +829,24 @@ describe('the weekend days render (owner, Aug 26)', () => {
     expect(week.length).toBe(7)
     expect(week[5]).toContain('Saturday')
     expect(week[6]).toContain('Sunday')
+  })
+})
+
+describe('the recovery confirm shows the LIVE unpublished-edit count (P2-IMPL-09)', () => {
+  const sgn = (di: number) => { const g = signOf(di); g.cur = 'ignite'; g.sked = 'bane'; g.plan = 'stiff'; g.appr = 'pump' }
+  it('the discard-and-load button reads the live delta count, not 0 (withDaySnap zeroes pending)', () => {
+    /* stand alone — clear the amendment book so no earlier test's marks leak in */
+    SCHED.pending = {}; SCHED.changes = {}; SCHED.als = []; SCHED.al = 0
+    SCHED.dayOK = {}; SCHED.sign = {}; SCHED.orig = {}; SCHED.cur = {}; SCHED.drafts = {}; SCHED.curDraft = {}
+    const di = 0
+    sgn(di); setDayApproved(di, 1)
+    const ver = SCHED.orig[di].id                    // the issued Original
+    txtSet(`dn:${di}.0`, 'AN UNPUBLISHED EDIT')      // one real unpublished edit → delta 1
+    setRestArm(di, ver)                              // arm the two-tap confirm
+    const h = dayPreviewHTML(di, ver, true)          // renders through withDaySnap (pending zeroed)
+    expect(h, 'the count is the live delta, captured before the snap zeroes pending').toContain('Discard 1 edit')
+    expect(h).not.toContain('Discard 0 edit')
+    setRestArm(null, null)
+    SCHED.pending = {}; SCHED.changes = {}; SCHED.als = []; SCHED.dayOK = {}; SCHED.orig = {}; SCHED.cur = {}
   })
 })

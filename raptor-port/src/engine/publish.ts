@@ -5,7 +5,7 @@ import { isScheduler } from './people'
 import { HOOKS } from './hooks'
 import { logEdit } from './editlog'
 import { ridKey, posKey, ridWriteKey, RID_BOOK_VERSION } from './rowids'
-import { canonicalDiff, digest } from './canonical'
+import { canonicalDiff } from './canonical'
 import type { DeltaEntry } from './canonical'
 import { INPUTS, inpId, inputCoversDate } from './inputs'
 import { CURWEEK } from './waves'
@@ -78,6 +78,14 @@ export function amFormatOf(sc:any){
 }
 /* the LIVE loaded week is protected (read-only) when its book is unsupported. */
 export function protectedWeek(){return amFormatOf(SCHED)==='unsupported';}
+/* Phase 2 (P2-IMPL-04): a PRE-Phase-2 book saved EMPTY (a parked draft with no
+   publication content) classifies as 'current' and stays editable — but it has no
+   amV stamp, so the instant it gains content (its first approve/AL) it would
+   re-classify as 'unsupported' and go read-only. Stamp the format version at the
+   publish path so a validated, currently-supported book stays supported once it
+   holds content. A content-bearing legacy/unknown book is already 'unsupported'
+   here, so the guard leaves it unstamped — the quarantine holds. */
+function stampAmFormat(){if(amFormatOf(SCHED)==='current')SCHED.amV=AMBOOK_VERSION;}
 export function dayApproved(di:any){return !!SCHED.dayOK[di];}
 export function approvedDays(){return DAYS.map((_:any,i:any)=>i).filter(dayApproved);}
 export function dowShort(di:any){return String((DAYS[di]||{}).dow||('day '+di)).slice(0,3);}
@@ -115,9 +123,12 @@ export function dayCurVerIn(sc:any,di:any,weekKey?:any){di=+di;
      record is single-day now, so `a.di===di` picks this day's versions). Every
      candidate is re-validated through daySnapIn, so the identity + week-key
      checks (§1, P2-R2-05/P2-R3-03) guard the fallback too. */
-  let best:any=null;
-  ((sc&&sc.als)||[]).forEach((a:any)=>{ if(a&&+a.di===di&&a.snap&&a.snap.d&&(best==null||+a.seq>+best.seq))best=a; });
-  if(best&&daySnapIn(sc,di,best.id,weekKey))return best.id;
+  /* iterate this day's issued records by DESCENDING seq and return the HIGHEST
+     that VALIDATES through daySnapIn — a higher-seq record filed under the wrong
+     week / an inconsistent identity is skipped in favour of a valid lower AL, not
+     abandoned to the Original (P2-IMPL-12). */
+  const cands=((sc&&sc.als)||[]).filter((a:any)=>a&&+a.di===di&&a.snap&&a.snap.d).sort((a:any,b:any)=>+b.seq-+a.seq);
+  for(const a of cands){ if(daySnapIn(sc,di,a.id,weekKey))return a.id; }
   const o=((sc&&sc.orig)||{})[di];
   return (o&&o.id&&daySnapIn(sc,di,o.id,weekKey))?o.id:null;}
 export function dayCurVer(di:any){return dayCurVerIn(SCHED,di,CURWEEK);}
@@ -134,6 +145,7 @@ export function setDayApproved(di:any,on:any){
      next AL. An `on=false` (or a repeat approve) is a no-op. */
   if(!on||SCHED.dayOK[di])return;
   if(!daySigned(di))return toast(`${DAYS[di].dow} needs ${signMissing(di).join(', ')} before it can be published`);
+  stampAmFormat();   // first publish of a validated empty pre-Phase-2 draft keeps it 'current' (P2-IMPL-04)
   /* the day goes out AS IT STANDS. Everything pending on it up to this moment
      is the draft build, not an amendment to something previously issued —
      leaving those marks meant the day's first AL re-issued the whole day and
@@ -200,15 +212,23 @@ export function dayDeltaIn(sc:any,di:any,weekKey?:any):DeltaEntry[]{di=+di;
   return canonicalDiff(snap.d,DAYS[di],di).concat(filingDelta(di,snap.fil));}
 export function dayDelta(di:any):DeltaEntry[]{return dayDeltaIn(SCHED,di,CURWEEK);}
 /* the publish trigger + every publication affordance (P2-02/P2-07): a published
-   day has changes iff its delta is non-empty. Fast path: a content difference
-   flips the digest; only when digests match do we pay for the order + filing
-   axes (a content-identical reorder or an input-only filing). */
-export function dayHasChanges(di:any):boolean{di=+di;
-  if(!dayApproved(di))return false;
-  const ver=dayCurVer(di), snap=ver!=null?daySnapOf(di,ver):null;
-  if(!snap||!snap.d)return false;
-  if(digest(snap.d,di)!==digest(DAYS[di],di))return true;
-  return dayDelta(di).length>0;}
+   day has changes iff its normalized delta is non-empty. Derived SOLELY from
+   dayDelta — the one authority for eligibility, the panel counts and the stored
+   diff (F-02). The old digest fast-path is gone (P2-IMPL-07): the positional
+   digest flips on a reorder whose EFFECTIVE display order is unchanged (a ground
+   move a gman/time-sort compensates), which enabled a zero-change AL the panel
+   then offered no way to publish. dayDelta already gates on dayApproved + a
+   resolvable issued snapshot, so this reads straight through it. */
+export function dayHasChanges(di:any):boolean{di=+di;return dayDelta(di).length>0;}
+/* the number of unpublished edits a "Load onto working copy" would DISCARD — the
+   count the recovery confirm shows and the recovery handler acts on. ONE authority
+   (P2-IMPL-09): the two button renderers (ui/html.ts week, ui/SchedBoard.tsx board)
+   and the handler (ui/interactions.ts) all read this, so the confirmed number and
+   the discarded number can never drift, and none of them re-derives it from a live
+   pending count (which a canonical-only change leaves at 0, and which withDaySnap
+   zeroes during a preview render). MUST be read on the LIVE day, before any
+   withDaySnap swap. */
+export function dayDiscardCount(di:any):number{di=+di;return dayHasChanges(di)?dayDelta(di).length:0;}
 /* THE ONE PLACE records are found by identity (§1, P2-R2-05/P2-R3-03). `ver` is
    a verId (`iso#seq`) — the Original is `iso#0`, an AL is `iso#seq`. It also
    still resolves a `d:<id>` DRAFT blob (unchanged). It MUST validate that the
@@ -482,6 +502,7 @@ export function canPublishAL(){return pendingPublishDays().length>0&&alUnsignedD
    issue simply CLEARS the day's SCHED.added entries (they are now frozen in the
    snapshot) and records nothing for a future unpublish (there is none). */
 export function alIssue(di:any){di=+di;
+  stampAmFormat();   // defensive: an AL on a validated (supported) book keeps it 'current' (P2-IMPL-04)
   const seq=nextSeq(di), iso=dayIso(CURWEEK,di), id=verId(iso,seq);
   /* the canonical delta vs the CURRENT issued version, captured BEFORE the marks
      move to changes — this is the frozen record of what this AL changed. */

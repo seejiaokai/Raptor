@@ -788,8 +788,17 @@ function stashOilWeek(v: string): { days: any[], sc: any } | null {
  *  type name — owner, 2 Sep 26). */
 export interface DesiredOil { code: 'FO' | 'HO'; why: string }
 
-function desiredOilCells(): Map<string, DesiredOil> {
+/* A date is PROTECTED when the schedule evidence behind it cannot be read as an
+   ISSUED document — a pre-Phase-2 (unsupported) book, a stash filed under the
+   wrong week, or an approved day whose snapshot was undone away. For such a date
+   the OIL wire must neither DERIVE a credit from the live/stashed DRAFT (which
+   may have dropped the duty) NOR DELETE a credit already landed by the build that
+   issued it: the issued evidence is unavailable, so the standing credit is the
+   best truth we have (P2-IMPL-01). Never substitute draft content for missing
+   issued content, and never reverse-collect a protected date. */
+function desiredOilCells(): { desired: Map<string, DesiredOil>; protectedDates: Set<string> } {
   const { people, wars } = getState()
+  const protectedDates = new Set<string>()
   const known = new Set(people.map(p => p.id))
   /* person|iso -> that day's work spans; their ENVELOPE faces the threshold */
   const pool = new Map<string, OilWork[]>()
@@ -808,8 +817,12 @@ function desiredOilCells(): Map<string, DesiredOil> {
     const iso = labelToISO(DATES[di])
     if (!iso || !warHolding(wars, iso)) continue
     if (!isNonWorkingISO(iso)) continue
+    /* only ever credit from the RESOLVED ISSUED snapshot — never the live draft.
+       No snapshot (an unsupported/pre-Phase-2 book, or an orphaned approved day)
+       → the date is protected and left exactly as it stands (P2-IMPL-01). */
     const snap = daySnapOf(di, dayCurVer(di))
-    const spans = dayOilWork(snap ? snap.d : DAYS[di], { expandAll: win => availableFor(iso, win) })
+    if (!snap || !snap.d) { protectedDates.add(iso); continue }
+    const spans = dayOilWork(snap.d, { expandAll: win => availableFor(iso, win) })
     for (const [person, sp] of Object.entries(spans)) add(person, iso, sp)
   }
   /* every OTHER week, out of its stash entry — the loaded week is skipped
@@ -831,11 +844,12 @@ function desiredOilCells(): Map<string, DesiredOil> {
          under the WRONG week is rejected here rather than credited to these dates
          (P2-R3-03). */
       const snap = daySnapIn(wk.sc, di, dayCurVerIn(wk.sc, di, String(v)), String(v))
-      /* same fallback rule as the live loop: an approved day without a
-         snapshot (legacy/session data) reads its stashed model */
-      const d = snap ? snap.d : wk.days[di]
-      if (!d) continue
-      const spans = dayOilWork(d, { expandAll: win => availableFor(iso, win) })
+      /* same rule as the live loop: credit ONLY from a resolved issued snapshot.
+         A stash that is pre-Phase-2, filed under the WRONG week (the week-key
+         check above returns null), or orphaned yields no snapshot → protect the
+         date, never fall back to its stashed draft (P2-IMPL-01). */
+      if (!snap || !snap.d) { protectedDates.add(iso); continue }
+      const spans = dayOilWork(snap.d, { expandAll: win => availableFor(iso, win) })
       for (const [person, sp] of Object.entries(spans)) add(person, iso, sp)
     }
   }
@@ -855,6 +869,7 @@ function desiredOilCells(): Map<string, DesiredOil> {
       if (!(typeof amt === 'number' && amt > 0)) continue
       const o = +String(iso).replace(/-/g, '')
       if (!(o >= a && o <= b)) continue                    // moved dates → stale yes is inert
+      if (protectedDates.has(iso)) continue                // hands off a protected date entirely (P2-IMPL-01)
       if (!warHolding(wars, iso)) continue
       if (!isNonWorkingISO(iso)) continue                  // a day that stopped being PH stops crediting
       /* the reason is the input's own type name (Training, CSE, Duty…) —
@@ -864,17 +879,18 @@ function desiredOilCells(): Map<string, DesiredOil> {
   }
   const out = new Map<string, DesiredOil>()
   for (const [k, spans] of pool) {
+    if (protectedDates.has(k.slice(k.indexOf('|') + 1))) continue   // never desire a protected date (P2-IMPL-01)
     const amt = uniformOil(envMin(spans.map(w => [w.s, w.e] as [number, number])))
     if (amt) out.set(k, { code: amt === 1 ? 'FO' : 'HO', why: oilWorkWhy(spans) })
   }
-  return out
+  return { desired: out, protectedDates }
 }
 
 export function runOilPass(): void {
   if (SYNCING) return
   SYNCING = true
   try {
-    const desired = desiredOilCells()
+    const { desired, protectedDates } = desiredOilCells()
 
     /* Forward: land what the published schedule earns. Already-landed cells
        are skipped so an unchanged world writes nothing. */
@@ -904,6 +920,7 @@ export function runOilPass(): void {
           if (rec.source !== 'raptor') continue
           const code = war.grid[person]?.[date]
           if (code !== 'FO' && code !== 'HO') continue
+          if (protectedDates.has(date)) continue          // issued evidence unavailable → the landed credit stands (P2-IMPL-01)
           if (desired.has(`${person}|${date}`)) continue
           clearRaptorCell(person, date)
         }

@@ -27,8 +27,8 @@ import { docAdd } from './docs'
 import { storesLoad, cxReasonsLoad, dutyTplLoad, waveTplLoad, dayTplLoad, autoAcceptSeedInputs, autoAcceptInput, inpKey, secOrder, moveSectionModel, reorderSectionTo, secDefaultLoad, waveDefaultLoad } from '../engine'
 import { qualColsLoad } from '../engine/qualcols'
 import { elogClear } from '../engine/editlog'
-import { markDeletion, resetSched, SCHED, dayApproved, protectedWeek } from '../engine/publish'
-import { stashPut, stashGet, stashHas } from '../engine/weekstash'
+import { markDeletion, resetSched, SCHED, dayApproved, protectedWeek, amFormatOf } from '../engine/publish'
+import { stashPut, stashGet, stashHas, setPreservedBlob, clearPreservedBlob, isPreservedWeek, preservedBlob } from '../engine/weekstash'
 import { afterSchedMutate } from './view'
 import * as view from './view'
 import { histPush, histInit, schedFields } from './history'
@@ -392,6 +392,13 @@ function applyWeekModel(v: any): any {
     DATES.length = 0; wk.dates.forEach((x: any) => DATES.push(x))
     resetSched()
   }
+  /* P2-IMPL-02: a restored book that classifies as UNSUPPORTED (a pre-Phase-2
+     snapshot) is byte-frozen — register its ORIGINAL blob so loadWeek skips its
+     id migrations and state/persist.ts writes it back verbatim, never a
+     re-serialization that would overwrite the recovery evidence. A current-format
+     week, or a pure-seed one, is never preserved. */
+  if (s && stashedJson && amFormatOf(SCHED) === 'unsupported') setPreservedBlob(v, stashedJson)
+  else clearPreservedBlob(v)
   /* INPUTS IS GLOBAL (owner, 22 Aug 26) — NOT swapped with the week. The
      Inputs page shows every week's inputs; each week's schedule still shows
      only its own because autoAcceptSeedInputs and the day builders match by
@@ -399,11 +406,15 @@ function applyWeekModel(v: any): any {
      comment says the same) — clear it so autoAcceptSeedInputs (or the
      restore-landing pass below) re-derives it fresh for THIS week's DAYS,
      whichever shape they just took above. 'r' (removed — dormant, engine/
-     inputs.ts inputDormant) is the one value that SURVIVES the clear: it is
-     not a landing record but a mark on the input itself, and keeping it is
-     what lets the cross-week seeds (weekctx.ts) and autoAccept's truthy-acc
-     guard honour a removal without re-deriving it from the stash. */
-  INPUTS.forEach((r: any) => { if (r.acc && r.acc !== 'r') delete r.acc })
+     inputs.ts inputDormant) and 'u' (FILED unavailable, engine/slots.ts
+     acceptInput dest='u') are the two values that SURVIVE the clear: neither is
+     a per-week ground-LANDING record — both are filing DECISIONS on the input
+     itself. Only 'g' (the auto-landed ground row) is re-derived per week.
+     Keeping 'u' is P2-IMPL-05: without it, navigation wiped a filed-unavailable
+     input, so its issued filing fingerprint read fresh on return and a phantom
+     amendment appeared from navigation alone. reconcileLandedAcc and
+     autoAcceptInput both skip a truthy acc, so a kept 'u' is never re-landed. */
+  INPUTS.forEach((r: any) => { if (r.acc && r.acc !== 'r' && r.acc !== 'u') delete r.acc })
   reconcileLandedAcc()
   mintInpIds()
   if (s) {
@@ -449,7 +460,9 @@ function applyWeekModel(v: any): any {
    the same pure-bundle path as always. */
 export function loadWeek(v: any) {
   const leaveSnap = weekStashSnap()
-  if (stashHas(CURWEEK) || leaveSnap !== weekBaseline) stashPut(CURWEEK, leaveSnap)
+  /* a preserved (byte-frozen) week keeps its ORIGINAL blob in the stash, never a
+     re-serialization of the un-migrated live model (P2-IMPL-02). */
+  if (stashHas(CURWEEK) || leaveSnap !== weekBaseline) stashPut(CURWEEK, isPreservedWeek(CURWEEK) ? (preservedBlob(CURWEEK) ?? leaveSnap) : leaveSnap)
   /* THE SWAP WINDOW (state/persist.ts `swapping`): from here until the new
      baseline is set, CURWEEK names v while DAYS/SCHED still hold the week
      being left — persistAll must not file the live days under v. try/finally
@@ -482,28 +495,35 @@ export function loadWeek(v: any) {
     view.LATEOFF.clear()
     /* stable row ids (engine/rowids.ts) BEFORE the baseline — same trap as
        initStore's: a mint after the yardstick would read a just-loaded,
-       untouched week as edited and get it persisted */
-    /* ADDRESSING BY rid (task 5): a FOUNDATION-era book (no ridV) re-minted its
-       parked drafts, so its identities are inconsistent with keep-ids — strip
-       them ALL first (gated on the version, so a modern book is never touched),
-       then ensureRowIds + backfill rebuild one consistent id-space by position. */
-    const wasLegacy = migrateLegacyIds(SCHED, DAYS)
-    ensureRowIds(DAYS)
-    /* THE BACKFILL (review finding 6, engine/rowids.ts backfillSnapshotIds):
-       a week's amendment book — SCHED.orig, every AL's day snapshots, the
-       drafts — rides this same stash, so a book written before ids existed
-       must be given them here too, still before the baseline, or every
-       restore off it would mint a fresh id instead of the stable one. */
-    backfillSnapshotIds(SCHED, DAYS)
-    /* ADDRESSING BY rid (task 5): rewrite a positional book to rid form — ONLY
-       when this boot actually upgraded a legacy book. A modern book is already
-       rid-keyed (every runtime write goes through ridWriteKey), and re-running
-       the rewrite every boot would let a leftover positional-fallback key
-       silently RE-BIND to whatever new row later occupies that index (a stale
-       AL structAdd claiming a fresh row). Runs AFTER the backfill (every row has
-       a rid) and BEFORE the baseline (so the re-keying is not read as a dirtying
-       edit). */
-    if (wasLegacy) migrateBookKeys(SCHED, DAYS)
+       untouched week as edited and get it persisted.
+       P2-IMPL-02: an UNSUPPORTED (pre-Phase-2) book is byte-frozen and read-only
+       — skip EVERY id migration/normalization so DAYS/SCHED stay exactly as
+       loaded; applyWeekModel registered its original blob and state/persist.ts
+       writes THAT back verbatim. Its ids cannot be safely re-keyed and it takes
+       no new edit, so it needs none. */
+    if (!protectedWeek()) {
+      /* ADDRESSING BY rid (task 5): a FOUNDATION-era book (no ridV) re-minted its
+         parked drafts, so its identities are inconsistent with keep-ids — strip
+         them ALL first (gated on the version, so a modern book is never touched),
+         then ensureRowIds + backfill rebuild one consistent id-space by position. */
+      const wasLegacy = migrateLegacyIds(SCHED, DAYS)
+      ensureRowIds(DAYS)
+      /* THE BACKFILL (review finding 6, engine/rowids.ts backfillSnapshotIds):
+         a week's amendment book — SCHED.orig, every AL's day snapshots, the
+         drafts — rides this same stash, so a book written before ids existed
+         must be given them here too, still before the baseline, or every
+         restore off it would mint a fresh id instead of the stable one. */
+      backfillSnapshotIds(SCHED, DAYS)
+      /* ADDRESSING BY rid (task 5): rewrite a positional book to rid form — ONLY
+         when this boot actually upgraded a legacy book. A modern book is already
+         rid-keyed (every runtime write goes through ridWriteKey), and re-running
+         the rewrite every boot would let a leftover positional-fallback key
+         silently RE-BIND to whatever new row later occupies that index (a stale
+         AL structAdd claiming a fresh row). Runs AFTER the backfill (every row has
+         a rid) and BEFORE the baseline (so the re-keying is not read as a dirtying
+         edit). */
+      if (wasLegacy) migrateBookKeys(SCHED, DAYS)
+    }
     weekBaseline = weekStashSnap()   // the stash-on-leave yardstick (see its comment)
   } finally {
     weekSwapEnd()

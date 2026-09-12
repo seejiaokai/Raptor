@@ -13,9 +13,9 @@ import { beforeEach, describe, expect, it } from 'vitest'
 import { initStore, loadWeek, weekStashSnap } from './store'
 import { DAYS } from '../engine/data'
 import { DATES, INPUTS, inputCoversDate } from '../engine/inputs'
-import { autoAcceptInput, unacceptInput, inpKey } from '../engine'
+import { autoAcceptInput, unacceptInput, inpKey, acceptInput } from '../engine'
 import { stashClear, stashPut } from '../engine/weekstash'
-import { SCHED } from '../engine/publish'
+import { SCHED, signOf, setDayApproved, dayHasChanges } from '../engine/publish'
 import { HIST } from './history'
 
 /* is this input's ground row currently sitting on some day of the loaded week? */
@@ -42,6 +42,21 @@ describe('loadWeek', () => {
     expect(DATES[6]).toBe('Jul 26')
     // week-2's own inputs land on it — the Thu medical downchit
     expect(INPUTS.some((r: any) => r.person === 'bruise' && r.type === 'OML')).toBe(true)
+  })
+
+  it('a filed-unavailable input keeps its "u" state across navigation — no phantom amendment (P2-IMPL-05)', () => {
+    const inp: any = { person: 'divot', type: 'Training', date: 'Jul 13', allday: true, remarks: '', mod: 'now', yr: 2026, _t: 1 }
+    INPUTS.push(inp)
+    expect(acceptInput(0, inp, 'u')).toBe(true)          // file the person unavailable for it
+    expect(inp.acc).toBe('u')
+    const g = signOf(0); g.cur = 'ignite'; g.sked = 'bane'; g.plan = 'stiff'; g.appr = 'pump'
+    setDayApproved(0, true)                                // the issued fingerprint freezes acc='u'
+    expect(dayHasChanges(0)).toBe(false)
+    /* navigate away and back — the acc-clear must NOT wipe the filing decision */
+    loadWeek('20/07/2026')
+    loadWeek('13/07/2026')
+    expect(inp.acc, 'the filed-unavailable state survived navigation').toBe('u')
+    expect(dayHasChanges(0), 'no amendment appears from navigation alone').toBe(false)
   })
 
   it('a non-authored chip loads a blank, editable seven-day week', () => {

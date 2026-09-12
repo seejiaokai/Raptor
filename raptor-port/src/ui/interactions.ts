@@ -7,7 +7,7 @@ import { slotVal, inpKey, acceptInput, unacceptInput, txtSet } from '../engine/s
 import { INPUTS, DATES, withRemarksTail, inpId, defaultAllday } from '../engine/inputs'
 import { DAYS } from '../engine/data'
 import { PEOPLE, isSpecial } from '../engine/people'
-import { dayApproved, setDayApproved, publishALDay, signClear, markEdit, dayCurVer, dayDelta, dayHasChanges, verLabel } from '../engine/publish'
+import { dayApproved, setDayApproved, publishALDay, signClear, markEdit, dayCurVer, dayDiscardCount, verLabel } from '../engine/publish'
 import { draftSelect, draftVerLabel, loadVersionToWorkingCopy } from '../engine/drafts'
 import { HOOKS } from '../engine/hooks'
 import { canEditSched } from '../state/auth'
@@ -833,12 +833,14 @@ export function routeClick(e: MouseEvent) {
     const di = +rst.dataset.restore!
     const ver = rst.dataset.rver!   // a verId string — carried through verbatim, no numeric coercion (P2-04)
     /* the divergence at risk is the live delta vs the CURRENT issued version
-       (P2-R2-06): with the digest trigger a day can carry real changes and ZERO
-       pending marks (a canonical-only edit / reorder / input filing), so the
-       dirty-check reads dayDelta — dayPendCount would silently bypass the confirm
-       and discard that work. Captured HERE, before loadVersionToWorkingCopy
-       swaps the day (and outside any withDaySnap that would zero it). */
-    const nd = dayHasChanges(di) ? dayDelta(di).length : 0
+       (P2-R2-06): with the canonical-delta trigger a day can carry real changes
+       and ZERO pending marks (a canonical-only edit / reorder / input filing), so
+       the dirty-check reads dayDiscardCount (the delta) — a live pending count
+       would silently bypass the confirm and discard that work. ONE authority, so
+       the confirm button and this handler can never disagree (P2-IMPL-09).
+       Captured HERE, before loadVersionToWorkingCopy swaps the day (and outside
+       any withDaySnap that would zero it). */
+    const nd = dayDiscardCount(di)
     /* already the current version with nothing diverging — close the preview
        without a history step */
     if (String(dayCurVer(di)) === String(ver) && nd === 0) {

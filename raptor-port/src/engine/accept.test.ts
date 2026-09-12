@@ -9,7 +9,7 @@ import { isSpecial } from './people'
 import { acceptInput, unacceptInput, inpKey, slotVal, txtGet, txtSet } from './slots'
 import { keyDay } from './keys'
 import { dayKeys } from './restore'
-import { SCHED, signOf, setDayApproved, publishALDay } from './publish'
+import { SCHED, signOf, setDayApproved, publishALDay, protectedWeek } from './publish'
 import { makeStandalone } from './waves'
 import { validate } from './validate'
 import { HOOKS } from './hooks'
@@ -28,6 +28,32 @@ beforeEach(() => {
 
 const findInp = (t: string) => INPUTS.find((x: any) => x.type === t && x.date === 'Jul 13')
 const sign = (di: number) => { const g = signOf(di); g.cur = 'ignite'; g.sked = 'bane'; g.plan = 'stiff'; g.appr = 'pump' }
+
+describe('an unsupported (protected) week refuses input landings/removals (P2-IMPL-03)', () => {
+  it('acceptInput and unacceptInput refuse while the loaded book is unsupported — the frozen day is not mutated', () => {
+    /* land a row while the book is CURRENT, then flip the book to a PRE-Phase-2
+       (unsupported → read-only) shape and confirm the schedule cannot be mutated
+       through the input paths despite the quarantine. */
+    const inp = findInp('Meeting')!
+    expect(acceptInput(0, inp, 'g')).toBe(true)
+    const n = DAYS[0].ground.length
+    SCHED.amV = undefined
+    SCHED.cur = { 0: 'orig' }
+    try {
+      expect(protectedWeek()).toBe(true)
+      // an already-landed row cannot be unaccepted (would splice the frozen day)
+      expect(unacceptInput(0, inp), 'no removal from a quarantined week').toBe(false)
+      expect(DAYS[0].ground.length, 'the ground row stays put').toBe(n)
+      // and a fresh landing is refused too — no new ground row pushed
+      const other = INPUTS.find((x: any) => isPersonal(x.type) && !x.acc && x.date === 'Jul 13')
+      if (other) {
+        expect(acceptInput(0, other, 'g'), 'no new landing onto a quarantined week').toBe(false)
+        expect(DAYS[0].ground.length).toBe(n)
+        expect(other.acc).toBeUndefined()
+      }
+    } finally { SCHED.amV = 1; SCHED.cur = {} }
+  })
+})
 
 describe('accepting a personal input', () => {
   it('promotes it into the ground programme as a real row', () => {

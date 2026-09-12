@@ -111,6 +111,10 @@ describe('digest — visibility of canonical vs excluded changes', () => {
       ['dutyblock.sa', d => { d.dutywaves[0].sa = 'sc' }],
       ['dutyblock.noconf', d => { d.dutywaves[0].noconf = true }],
       ['dutyrow.cxr', d => { d.dutywaves[0].rows[0].cx = true; d.dutywaves[0].rows[0].cxr = 'wx' }],
+      // P2-IMPL-08: a cancel REASON on a sim / ground row is now visible too
+      // (folded into the sr:/gr: composites, matching dr:/ap:/fr:).
+      ['sim.cxr', d => { d.sims.amt[0].cx = true; d.sims.amt[0].cxr = 'u/s' }],
+      ['ground.cxr', d => { d.ground[0].cx = true; d.ground[0].cxr = 'wx' }],
       // Phase 2 additions — dayKeys packed these into composites (ar:/at:) or
       // omitted them (ground src); canonicalContent must surface each on its own:
       ['ground.src', d => { d.ground[0].src = 'inp99' }],

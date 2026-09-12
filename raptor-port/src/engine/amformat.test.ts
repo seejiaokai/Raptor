@@ -4,10 +4,13 @@
    verId resolvers already suppress publication for it and it round-trips
    byte-for-byte (persistAll re-serializes SCHED verbatim). Full migration = Phase 5. */
 import { beforeEach, describe, expect, it } from 'vitest'
-import { SCHED, AMBOOK_VERSION, amFormatOf, protectedWeek, resetSched, dayApproved, dayHasChanges, daySnapOf, dayCurVer } from './publish'
+import { SCHED, AMBOOK_VERSION, amFormatOf, protectedWeek, resetSched, dayApproved, dayHasChanges, daySnapOf, dayCurVer, signOf, setDayApproved } from './publish'
 import { schedFields } from '../state/history'
 
 beforeEach(() => { resetSched() })
+
+/* fill the four sign-off roles with appointed schedulers so a day can publish */
+const sign = (di: number) => { const g = signOf(di); g.cur = 'ignite'; g.sked = 'bane'; g.plan = 'stiff'; g.appr = 'pump' }
 
 describe('amFormatOf — the classifier', () => {
   it('a fresh book is stamped and current, and not protected', () => {
@@ -54,6 +57,36 @@ describe('an unsupported week is read-only and cannot publish (P2-R3-02 / P2-05)
     expect(dayCurVer(0), 'a bare "orig"/no-id book resolves to no current version').toBeNull()
     expect(daySnapOf(0, 'orig'), 'a bare "orig" is not a verId → null').toBeNull()
     expect(dayHasChanges(0), 'no resolvable issued snapshot → nothing publishable').toBe(false)
+  })
+})
+
+describe('an EMPTY un-stamped book is stamped on its first publish, not left to go read-only (P2-IMPL-04)', () => {
+  it('a validated empty pre-deployment draft stamps amV when it first publishes → stays editable', () => {
+    /* a parked PRE-Phase-2 draft: no amV stamp, but NO publication content yet, so
+       it classifies as 'current' and is editable. */
+    SCHED.amV = undefined
+    expect(amFormatOf(SCHED)).toBe('current')
+    expect(protectedWeek()).toBe(false)
+    /* publishing day 0 (its first approve) gives the book orig/cur content — which,
+       without a stamp, would re-classify it as 'unsupported' and lock the week. */
+    sign(0)
+    setDayApproved(0, true)
+    expect(dayApproved(0)).toBe(true)
+    expect(SCHED.amV, 'the publish path stamped the format version').toBe(AMBOOK_VERSION)
+    expect(amFormatOf(SCHED)).toBe('current')
+    expect(protectedWeek(), 'the week stays editable, not quarantined').toBe(false)
+  })
+
+  it('a content-bearing legacy book is NOT stamped by the publish path (quarantine holds)', () => {
+    /* an already-unsupported book (old content, no amV): approving another day must
+       not silently upgrade it to the current format. */
+    SCHED.amV = undefined
+    SCHED.orig = { 0: { d: { notes: ['issued'] }, c: {} } }   // pre-existing content → unsupported
+    expect(amFormatOf(SCHED)).toBe('unsupported')
+    sign(1)
+    setDayApproved(1, true)
+    expect(SCHED.amV, 'still unstamped → quarantine preserved').toBeUndefined()
+    expect(amFormatOf(SCHED)).toBe('unsupported')
   })
 })
 

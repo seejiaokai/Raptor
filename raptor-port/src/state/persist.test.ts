@@ -10,6 +10,7 @@ import { initStore, writeInputs, weekStashSnap, weekDirty, loadWeek, moveSection
 import { undo } from './history'
 import { setSession } from './auth'
 import { hydrate, persistAll, persistPeople, wirePersist, isHydrated, weekId, weekKey } from './persist'
+import { protectedWeek } from '../engine/publish'
 import { bootStorage } from '../storage/boot'
 import { settingsAdapter } from '../storage/adapters'
 import { MemoryBackend } from '../storage/memory'
@@ -105,6 +106,35 @@ describe('hydrate', () => {
     await boot(be2)
     expect(stashHas(CURWEEK)).toBe(true)
     expect(DAYS[0].notes).toContain('PERSISTED NOTE')
+  })
+})
+
+describe('an unsupported (pre-Phase-2) book is preserved byte-for-byte (P2-IMPL-02)', () => {
+  it('a legacy book survives load + an unrelated save without being reconstructed', async () => {
+    /* build a PRE-Phase-2 blob for WEEK_B: real days, but the OLD amendment
+       shape and NO amV/ridV, so it classifies as unsupported. */
+    const be0 = new MemoryBackend()
+    await boot(be0)
+    loadWeek(WEEK_B)
+    DAYS[0].notes.push('LEGACY EVIDENCE')
+    const base: any = JSON.parse(weekStashSnap())
+    delete base.am; delete base.v
+    base.ok = { 0: 1 }
+    base.o = { 0: { d: JSON.parse(JSON.stringify(DAYS[0])), c: {} } }   // old orig: no id
+    base.cv = { 0: 'orig' }                                             // old pointer
+    base.a = [{ n: 1, keys: ['dn:0.0'] }]                              // old AL record
+    const legacyBlob = JSON.stringify(base)
+    resetWorld()
+
+    const be = new MemoryBackend()
+    be.seed({ weeks: { [weekId(WEEK_B)]: legacyBlob } })
+    const { wb } = await boot(be)
+    loadWeek(WEEK_B)
+    expect(protectedWeek(), 'classified unsupported → read-only').toBe(true)
+    /* an UNRELATED save (any history step) must NOT reconstruct the frozen week */
+    HOOKS.histPush()
+    expect(wb.get('weeks', weekId(WEEK_B)), 'the original blob is preserved byte-for-byte').toBe(legacyBlob)
+    expect(wb.get('weeks', weekId(WEEK_B))).toContain('LEGACY EVIDENCE')   // the recovery evidence still reads
   })
 })
 

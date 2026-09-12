@@ -41,6 +41,36 @@ describe('canonicalDiff — value axis (rid-joined)', () => {
   })
 })
 
+describe('canonicalDiff — additions on a SURVIVING row (P2-IMPL-06)', () => {
+  it('appending a person to a programme who[] is a change on the surviving row', () => {
+    const prev = day({ allhands: [{ rid: 'AH', prog: 'BRIEF', str: '', end: '', rmks: '', who: ['p1'] }] })
+    const next = JSON.parse(JSON.stringify(prev)); next.allhands[0].who = ['p1', 'p2']
+    const d = canonicalDiff(prev, next, 0)
+    expect(kinds(d)).toEqual(['change'])          // NOT empty — the new crew slot must be seen
+    expect(d[0].addr).toBe('a:0.0.1')
+    expect(d[0].to).toBe('p2')
+  })
+
+  it('an overflow sim more[] slot added on a surviving row is a change', () => {
+    const prev = day({ sims: { amt: [{ rid: 'S', label: 'AMT', str: '', end: '', rmks: '', p: 'p1', w: 'p2' }], oft: [] } })
+    const next = JSON.parse(JSON.stringify(prev)); next.sims.amt[0].more = ['p3']
+    const d = canonicalDiff(prev, next, 0)
+    expect(d.some(e => e.kind === 'change' && e.addr === 's:0.amt.0.x0' && e.to === 'p3')).toBe(true)
+  })
+
+  it('a newly-appearing cancelled-duty reason on a surviving row is captured on the duty-row composite (P2-IMPL-08 — cxr folded into dr:...role, no bxr)', () => {
+    const prev = day({ dutywaves: [{ rid: 'B', label: 'D', rows: [{ rid: 'R', role: 'SOF', str: '', end: '', rmks: '' }] }] })
+    const next = JSON.parse(JSON.stringify(prev)); next.dutywaves[0].rows[0].cx = true; next.dutywaves[0].rows[0].cxr = 'weather'
+    const d = canonicalDiff(prev, next, 0)
+    // ONE change on the duty row's role composite (which now carries cx + cxr), no bxr, no double-count
+    const chg = d.filter(e => e.kind === 'change')
+    expect(chg.length).toBe(1)
+    expect(chg[0].addr).toBe('dr:0.0.0.role')
+    expect(chg[0].to).toContain('weather')
+    expect(d.some(e => String(e.addr).startsWith('bxr:'))).toBe(false)
+  })
+})
+
 describe('canonicalDiff — structure axis (P2-R2-03)', () => {
   it('deleting the FIRST of two ground rows is ONE delete, not a chain of changes', () => {
     const prev = day({ ground: [g('A', 'G1'), g('B', 'G2')] })
