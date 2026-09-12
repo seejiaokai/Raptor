@@ -121,8 +121,14 @@ describe('reconcileIds', () => {
     expect(remapped).toEqual({ fB: 'sB' })
     expect(block.bySyllabus.A.roster[1]).toEqual({ id: 'sB', name: 'BRAVO', pid: 'p2' })
   })
-  it('two different people under one callsign are NOT merged', () => {
-    expect(reconcileIds(file(), [{ id: 'sX', name: 'BRAVO', pid: 'p9' }]).remapped).toEqual({})
+  it('two different people under one callsign are NOT merged, and are REPORTED as a conflict (bug-check 11 Sep 26)', () => {
+    const r = reconcileIds(file(), [{ id: 'sX', name: 'BRAVO', pid: 'p9' }])
+    expect(r.remapped).toEqual({})
+    expect(r.conflicts).toEqual([{ name: 'BRAVO', fileId: 'fB', storeId: 'sX' }])
+  })
+  it('a clean reconcile reports no conflicts', () => {
+    expect(reconcileIds(file(), [{ id: 'sA', name: 'ALPHA', pid: 'p1' }]).conflicts).toEqual([])
+    expect(reconcileIds(file(), [{ id: 'sB', name: 'BRAVO OLD', pid: 'p2' }]).conflicts).toEqual([])
   })
   it('a store id the file already carries is that entry’s own — nobody else is mapped onto it', () => {
     const f = file(); f.bySyllabus.A.roster[0] = { id: 'sA', name: 'NEW NAME' }; f.bySyllabus.A.marks = { sA: {}, fB: {} }

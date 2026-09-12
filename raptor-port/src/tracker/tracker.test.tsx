@@ -1303,6 +1303,61 @@ describe('the person bridge and the link (peoplewire.ts → people.js → core.j
     expect(C.lulls[s1].length, 'the lull period filed under the id is still theirs').toBe(1)
   })
 
+  it('an import naming a DIFFERENT person under an existing callsign is REFUSED whole — the student here keeps their id and marks (bug-check 11 Sep 26)', async () => {
+    const prevCourse = C.course, prevCourses = (C.COURSES as string[]).slice()
+    const prevList = (await storage.get('v3:courses'))?.value ?? null
+    try {
+      let p: Promise<any> = C.addCourse(); await answer('CLASH'); await p; await C.whenLoaded()
+      const syl = C.curSyl()
+      p = C.addStudent(); C.dlgClose({ pick: 'p1' }); await p; await C.whenLoaded()   // RANGER, linked to person p1
+      const sR = C.byName('RANGER')!.id
+      C.setActive(sR); C.openPop('ST-01', at); await C.popGrade('dco')
+      /* a file bringing a DIFFERENT person also called RANGER (a different pid).
+         Old behaviour: the store's RANGER silently dropped, its 'dco' orphaned. */
+      const bring = () => C.applyStudents({ courses: ['CLASH'], byCourse: { CLASH: { plan: { sylName: syl }, lulls: {}, pace: {},
+        bySyllabus: { [syl]: { roster: [{ id: 'fZ', name: 'RANGER', pid: 'pZZ' }], marks: { fZ: { 'ST-01': { g: 'marg' } } }, dates: {} } } } } }, null)
+      await expect(bring()).rejects.toThrow(/different person/)
+      await C.whenLoaded()
+      expect(C.byName('RANGER')!.id, 'the student here is untouched').toBe(sR)
+      expect(C.gradeOf(sR, 'ST-01'), 'their mark is intact, not orphaned').toBe('dco')
+      expect(await storage.get('v3:CLASH:' + syl + ':m:fZ'), 'nothing was written under the file id').toBeNull()
+    } finally {
+      ;(C.COURSES as string[]).splice(0, (C.COURSES as string[]).length, ...prevCourses)
+      if (prevList == null) await storage.delete('v3:courses'); else await storage.set('v3:courses', prevList)
+      await C.loadCourse(prevCourse); await C.whenLoaded()
+    }
+  })
+
+  /* Astra/Codex second pass, 12 Sep 26: the conflict scan looked only at the
+     per-syllabus rosters. A course still on the ORIGINAL pre-syllabus flat
+     roster — one never opened since the roster split, so its per-syllabus
+     rosters are still empty — hid its people from the scan, and a conflicting
+     import would have written straight over them, the very orphaning this fix
+     exists to stop. The scan now reads the flat roster + its links too. */
+  it('an import naming a DIFFERENT person under a LEGACY flat-roster callsign (a course not yet split) is REFUSED, not silently orphaned', async () => {
+    const c = 'FLATCLASH', syl = '2026'
+    const prevLinks = (await storage.get('v3:links'))?.value ?? null
+    try {
+      /* the pre-syllabus shape: bare-string names under v3:<c>:roster, a pid in
+         v3:links, NO rostermig flag, and empty per-syllabus rosters. GHOST's
+         marks are filed under the name, legacy-style. */
+      await storage.set('v3:' + c + ':roster', JSON.stringify(['GHOST']))
+      await storage.set('v3:' + c + ':' + syl + ':m:GHOST', JSON.stringify({ 'ST-01': { g: 'dco' } }))
+      await storage.set('v3:links', JSON.stringify({ ...(prevLinks ? JSON.parse(prevLinks) : {}), [c]: { GHOST: 'p1' } }))
+      /* a file bringing a DIFFERENT person (pid pZZ) also called GHOST */
+      const bring = () => C.applyStudents({ courses: [c], byCourse: { [c]: { plan: { sylName: syl }, lulls: {}, pace: {},
+        bySyllabus: { [syl]: { roster: [{ id: 'fZ', name: 'GHOST', pid: 'pZZ' }], marks: { fZ: { 'ST-01': { g: 'marg' } } }, dates: {} } } } } }, null)
+      await expect(bring()).rejects.toThrow(/different person/)
+      expect(await storage.get('v3:' + c + ':' + syl + ':roster'), 'the refusal wrote no per-syllabus roster').toBeNull()
+      expect(await storage.get('v3:' + c + ':' + syl + ':m:fZ'), 'nothing under the file id').toBeNull()
+      expect((await storage.get('v3:' + c + ':' + syl + ':m:GHOST'))!.value, 'the flat-roster student’s marks are intact').toContain('dco')
+    } finally {
+      await storage.delete('v3:' + c + ':roster')
+      await storage.delete('v3:' + c + ':' + syl + ':m:GHOST')
+      if (prevLinks == null) await storage.delete('v3:links'); else await storage.set('v3:links', prevLinks)
+    }
+  })
+
   it('an interrupted migration loses nothing and finishes on the next load (review finding 1)', async () => {
     const c = 'HALF'
     ;(C.COURSES as string[]).push(c); await storage.set('v3:courses', JSON.stringify(C.COURSES))
