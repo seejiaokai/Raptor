@@ -9,9 +9,37 @@ day-content schema + digest, test-pinned (`engine/canonical.ts` +
 sequence vs display label separated). Phase-1 gates run: `npm test` 4545/4545,
 `npm run build` clean, `reference/tfin.js` 728/0. The two browser gates
 (`test:e2e`, `smoke:tracker`) have a documented Windows-local-only failure
-(commit `d9fbb81`); authoritative on CI Linux, run on push. **Resume at Phase 2**
-(locked publishing) — where the immutable id is wired onto the AL record (the
-AM-01 "convert every reference off numeric `a.n`" through-line).
+(commit `d9fbb81`); authoritative on CI Linux, run on push.
+
+**Phase 2 STARTED (12 Sep 2026).** First lock committed: `discardPending`
+restricted to never-published days (F-01), pinned in `publish.test.ts`. Full
+unit suite green (4546/4546), build clean, parity 728/0.
+
+**Phase 2 sequencing finding (act on this next).** The take-back removal is NOT
+a set of independent button-deletions — it is a COUPLED rewrite, best done as
+one deliberate test-first unit rather than piecemeal:
+- `unpublishAL` and `restoreDayVersion` are woven into the structural-add
+  OWNERSHIP machinery (`SCHED.added`/`structAdds`, the `surviving` computation),
+  probed by ~40 test references across ~12 files (`publish.test.ts`,
+  `restore.test.ts`, `rowids.test.ts`, `drafts.test.ts`, UI suites). Removing
+  them in isolation would force a rewrite of that machinery that the per-day /
+  diff-not-keys AL-record restructure (below) would then rewrite AGAIN.
+- The three remaining Phase-2 pieces are interdependent and should land together
+  or in a tight sequence, each test-first: (a) digest-based publish trigger
+  (`digest(draft) ≠ digest(issued)`, F-02) using Phase 1a's `digest`; (b) AL
+  record stores the canonical DIFF, not `keys`; (c) per-day SEQUENCE keyed by
+  the immutable `verId` (Phase 1c) — this is where `unpublishAL`,
+  `restoreDayVersion` (→ `loadVersionToWorkingCopy`), `reissueReopened`,
+  caller-numbered `publishAL(n)` and the reopen-beak are removed/replaced, and
+  BUG-1/BUG-2 close.
+- Recommended next step: write a focused Phase-2 implementation plan (the new
+  AL-record shape, how structural-add ownership behaves with no take-back, the
+  per-path replacement map, and the test-rewrite list), then build it test-first
+  as a coherent unit. HEAVY, silent-defect, saved-data territory.
+
+**Resume at Phase 2 (b/c) — the coupled record rewrite** (per-day sequence +
+verId key + stored diff + take-back removal), following the sequencing note
+above.
 **Spec (frozen):** `2026-09-12-amendment-core-build-brief.md` (Rev 5, core scope).
 **Decisions/rationale:** `2026-09-11-amendment-model-decisions.md`.
 **Scope:** the Rev 3-converged core + four must-fixes + durability/undo/crew.
