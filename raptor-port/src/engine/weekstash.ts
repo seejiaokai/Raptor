@@ -78,7 +78,13 @@ export function stashDays(v:any){
      "as if never edited" — callers fall back to the pure seed. Never throw:
      this is read inside validate(), which runs on every keystroke. */
   try{
-    const days=JSON.parse(s).d, dates=weekBundle(v).dates;
+    const parsed=JSON.parse(s);
+    /* a blob that parses but carries NO days array is UNREADABLE, not empty
+       (P2-REV2-01): return null so the caller falls back to the pure seed, the
+       same as an unparseable blob — never a {days:undefined} shape that crashes
+       bundle()'s cross-week readers (nextMondayWorked/prevSunday). */
+    if(!Array.isArray(parsed.d))return null;
+    const days=parsed.d, dates=weekBundle(v).dates;
     /* RE-LABEL every day for the year convention NOW in force (24 Aug 26).
        The stash was written while ITS week was loaded, so its labels leave
        that week's own year implicit — read later under a different loaded

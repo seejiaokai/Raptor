@@ -30,7 +30,7 @@ import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
 import { SCHED, dayApproved, dayCurVer, dayCurVerIn, daySnapIn, daySnapOf, amFormatOf } from '../engine/publish'
 import { dayOilWork, inputOilAmt, envMin, uniformOil, oilWorkWhy, type OilWork } from '../engine/oil'
-import { stashKeys, stashGet } from '../engine/weekstash'
+import { stashKeys, stashGet, isPreservedWeek } from '../engine/weekstash'
 import { CURWEEK } from '../engine/waves'
 import { validate } from '../engine/validate'
 import { notify as raptorNotify, subscribe as raptorSubscribe, writeInputsBatch } from '../state/store'
@@ -818,7 +818,10 @@ function desiredOilCells(): { desired: Map<string, DesiredOil>; protectedDates: 
   /* CLASSIFY the live book FIRST (P2-REREVIEW-05): an unsupported / wrong-week /
      future-version book must be quarantined even if its snapshots still resolve,
      so the whole loaded week's credit-bearing dates are protected up front. */
-  const liveUnsupported = amFormatOf(SCHED, CURWEEK) === 'unsupported'
+  /* a DAMAGED loaded week (P2-REV2-01) shows the seed as a placeholder, so
+     amFormatOf(SCHED) would read 'current' — isPreservedWeek catches it so its
+     credit-bearing dates are protected, never derived from the seed. */
+  const liveUnsupported = amFormatOf(SCHED, CURWEEK) === 'unsupported' || isPreservedWeek(CURWEEK)
   for (let di = 0; di < DAYS.length; di++) {
     const iso = labelToISO(DATES[di])
     if (!iso || !warHolding(wars, iso) || !isNonWorkingISO(iso)) continue

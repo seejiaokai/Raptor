@@ -10,6 +10,7 @@ import type { DeltaEntry } from './canonical'
 import { INPUTS, inpId, inputCoversDate } from './inputs'
 import { CURWEEK } from './waves'
 import { dayIso, verId, parseVerId, verSeq, verSeqLabel, isValidVerId } from './verid'
+import { isPreservedWeek } from './weekstash'
 
 /* the reference calls straight into the UI here; the engine routes those four
    calls through injected hooks (no-ops until the app provides them) so the
@@ -99,8 +100,15 @@ export function amFormatOf(sc:any,weekKey?:any){
   return hasContent?'unsupported':'current';
 }
 /* the LIVE loaded week is protected (read-only) when its book is unsupported —
-   checked against CURWEEK so a wrong-week book is caught too (P2-REREVIEW-04). */
-export function protectedWeek(){return amFormatOf(SCHED,CURWEEK)==='unsupported';}
+   checked against CURWEEK so a wrong-week book is caught too (P2-REREVIEW-04) —
+   OR when the week is byte-PRESERVED (P2-REV2-01): a DAMAGED saved week (a stash
+   that would not parse, or parsed without a days array) loads the seed as a
+   placeholder VIEW, so amFormatOf(SCHED) reads that seed as 'current' — but its
+   original bytes are retained in the preserved registry and must never be
+   overwritten or edited. isPreservedWeek is set for BOTH the unsupported and the
+   unreadable case (state/store.ts applyWeekModel), so this one term makes the
+   loaded damaged week read-only just like an unsupported one. */
+export function protectedWeek(){return amFormatOf(SCHED,CURWEEK)==='unsupported'||isPreservedWeek(CURWEEK);}
 /* Phase 2 (P2-IMPL-04): a PRE-Phase-2 book saved EMPTY (a parked draft with no
    publication content) classifies as 'current' and stays editable — but it has no
    amV stamp, so the instant it gains content (its first approve/AL) it would

@@ -447,12 +447,19 @@ function reconcileLandedAcc() {
    than it saves. */
 function applyWeekModel(v: any): any {
   const stashedJson = stashGet(v)
-  /* guarded like weekstash's own stashDays: an entry that fails to parse
-     reads as "never stashed" and the week loads from the pure seed —
-     loadWeek must never throw over a bad snapshot */
+  /* DISTINGUISH MISSING FROM UNREADABLE (P2-REV2-01). A week with NO stash entry
+     is genuinely absent → load the pure seed, editable. A week WITH a stash entry
+     that will not parse (truncated/foreign JSON) or parses without a days array is
+     DAMAGED, not absent: it must NOT be treated as never-stashed and seeded over —
+     that destroyed the saved book and let persistAll serialize the seed on top of
+     it. It loads the seed as a best-effort placeholder VIEW, but its ORIGINAL
+     bytes are byte-preserved below and the week is held read-only (protectedWeek
+     via isPreservedWeek), so the damaged data round-trips untouched and no edit or
+     seed re-serialization can overwrite it. */
   let s: any = null
-  try { s = stashedJson ? JSON.parse(stashedJson) : null } catch (_e) { s = null }
-  if (s && !Array.isArray(s.d)) s = null
+  let unreadable = false
+  try { s = stashedJson ? JSON.parse(stashedJson) : null } catch (_e) { s = null; unreadable = true }
+  if (s && !Array.isArray(s.d)) { s = null; unreadable = true }
   if (s) {
     DAYS.length = 0; s.d.forEach((d: any) => DAYS.push(d))
     /* DATES is not carried in the stash at all (weekstash.ts's own comment)
@@ -475,12 +482,16 @@ function applyWeekModel(v: any): any {
     DATES.length = 0; wk.dates.forEach((x: any) => DATES.push(x))
     resetSched()
   }
-  /* P2-IMPL-02: a restored book that classifies as UNSUPPORTED (a pre-Phase-2
-     snapshot) is byte-frozen — register its ORIGINAL blob so loadWeek skips its
-     id migrations and state/persist.ts writes it back verbatim, never a
-     re-serialization that would overwrite the recovery evidence. A current-format
-     week, or a pure-seed one, is never preserved. */
-  if (s && stashedJson && amFormatOf(SCHED, v) === 'unsupported') setPreservedBlob(v, stashedJson)
+  /* PRESERVATION (P2-IMPL-02 + P2-REV2-01): byte-freeze the ORIGINAL blob so
+     loadWeek skips its id migrations and state/persist.ts writes it back verbatim,
+     never a re-serialization that would overwrite the recovery evidence, for
+     EITHER quarantine case:
+       · a restored book that classifies UNSUPPORTED (a pre-Phase-2 / wrong-week
+         snapshot); or
+       · a DAMAGED saved week (stash present but unreadable) — the seed loaded
+         above is only a placeholder view; the real bytes are these.
+     A missing week (no stash) or a clean current-format one is never preserved. */
+  if ((unreadable && stashedJson) || (s && stashedJson && amFormatOf(SCHED, v) === 'unsupported')) setPreservedBlob(v, stashedJson)
   else clearPreservedBlob(v)
   /* INPUTS IS GLOBAL (owner, 22 Aug 26) — NOT swapped with the week. The
      Inputs page shows every week's inputs; each week's schedule still shows

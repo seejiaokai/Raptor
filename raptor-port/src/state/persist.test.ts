@@ -138,6 +138,42 @@ describe('an unsupported (pre-Phase-2) book is preserved byte-for-byte (P2-IMPL-
   })
 })
 
+describe('a DAMAGED saved week is quarantined, never seeded over (P2-REV2-01)', () => {
+  it('an UNREADABLE (unparseable) stored week loads read-only and its bytes survive an unrelated save', async () => {
+    /* a truncated / corrupt JSON blob — it will not parse. Before the fix,
+       applyWeekModel treated this as "never stashed", loaded the seed, cleared
+       preservation, and the next persistAll serialized the SEED over the damaged
+       record — destroying it. */
+    const damaged = '{"d":[{"dow":"Mon","notes":["DAMAGED EVIDENCE"'
+    const be = new MemoryBackend()
+    be.seed({ weeks: { [weekId(WEEK_B)]: damaged } })
+    const { wb } = await boot(be)
+    loadWeek(WEEK_B)
+    expect(protectedWeek(), 'a damaged saved week is held read-only').toBe(true)
+    /* an unrelated history step must NOT reconstruct or seed over the damaged week */
+    HOOKS.histPush()
+    expect(wb.get('weeks', weekId(WEEK_B)), 'the original damaged bytes are preserved verbatim').toBe(damaged)
+  })
+
+  it('a stored week that parses but has NO days array is treated as damaged, not absent', async () => {
+    const noDays = JSON.stringify({ ok: { 0: 1 }, note: 'no d array here' })
+    const be = new MemoryBackend()
+    be.seed({ weeks: { [weekId(WEEK_B)]: noDays } })
+    const { wb } = await boot(be)
+    loadWeek(WEEK_B)
+    expect(protectedWeek(), 'read-only — not silently seeded over as if missing').toBe(true)
+    HOOKS.histPush()
+    expect(wb.get('weeks', weekId(WEEK_B)), 'the original bytes are preserved, not a seed re-serialization').toBe(noDays)
+  })
+
+  it('a MISSING week (no stash at all) still loads the seed and is EDITABLE — not falsely quarantined', async () => {
+    const be = new MemoryBackend()
+    await boot(be)
+    loadWeek(WEEK_C)                       // never stored → genuinely absent, not damaged
+    expect(protectedWeek(), 'an absent week is editable, not read-only').toBe(false)
+  })
+})
+
 describe('persistAll and the hooks', () => {
   it('an undoable edit lands on the whiteboard at once and reaches the backend after the coalesce wait', async () => {
     const be = new MemoryBackend()
