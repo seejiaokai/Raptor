@@ -65,11 +65,22 @@ unused number — which is exactly why Tuesday's first amendment is labelled "AL
 
 **Identity resolution — the ONE place records are found by identity:**
 `daySnapIn(sc, di, ver)` becomes the single resolver. It accepts a `verId`
-(splits with `parseVerId`; seq 0 → `sc.orig[di]`; else finds the `als` record
-whose `id === ver`), still accepts a `'d:<id>'` draft blob (unchanged draft-preview
-branch), and — for legacy in-session robustness only — still resolves a bare
-number/`'orig'` by mapping it to this day's record of that seq (a thin
-back-compat shim; genuine legacy saved data is Phase 5's migration, not this).
+(splits with `parseVerId`) and still accepts a `'d:<id>'` draft blob (unchanged
+draft-preview branch). **It MUST validate that the identity belongs to the requested
+day (P2-R2-05), because the flat `als` list no longer implies day-membership the way
+the old `snap[di]` lookup did:**
+- seq 0 → return `sc.orig[di]` ONLY if `sc.orig[di].id === ver` (an exact Original-id
+  match — not "any id ending `#0`", which would let Tuesday's `iso#0` resolve for Monday);
+- else find the `als` record whose `id === ver` AND `di === di` AND (defensively)
+  `iso`/`seq` agree with the parsed id; a record for another day or a malformed/foreign
+  id resolves to `null`, never to a wrong day's snapshot.
+- The `iso` used for validation is derived from the SUPPLIED snapshot context `sc`
+  (the stashed week's own date), NOT live `CURWEEK`, so a stashed-week read stays
+  correct. `loadVersionToWorkingCopy` installs the returned day at `DAYS[di]`, so a
+  wrong-day resolve would be a silent cross-day corruption — hence the hard checks.
+- Legacy back-compat: a bare number/`'orig'` from an OLD-format book is NOT resolved
+  here — an old-format book is quarantined at load (§5, P2-05), so it never reaches
+  this resolver as authoritative.
 
 `dayCurVerIn(sc, di)` returns a **`verId`** now: the stamped `cur[di]` if its snap
 still resolves, else the newest surviving `als` record for `di` by `seq` (array
@@ -112,74 +123,62 @@ carries `adds`/`structAdds` any more.
 
 ---
 
-## 3. The publication projection + the change-detecting publish trigger (F-02)
+## 3. ONE normalized delta drives eligibility, counts AND the stored diff (F-02)
 
-> **Revised after Round-1 review (P2-02, P2-03, P2-07, P2-09).** The trigger is NOT
-> a bare day-content digest — a bare digest is blind to two amendments the app
-> supports: an **input filing** (`slots.ts` changes `INPUTS.acc` and mints an `inp:`
-> mark with NO change to `DAYS` → equal day digest) and a **content-identical
-> reorder** (two blank waves swapped → equal `canonicalContent`, only a `mov:` mark).
-> A digest-only gate would refuse to publish either. And a naive positional
-> set-difference misreads a deletion before a surviving row. Both are fixed here.
+> **Revised twice.** Round-1 (P2-02/03/07/09): a bare day digest is blind to an
+> input filing (`INPUTS.acc`, no `DAYS` change) and to a content-identical reorder.
+> Round-2 (P2-R2-01/02/03): eligibility and the stored diff must NOT be two different
+> computations, the reorder axis must come from ACTUAL surviving order (not
+> accumulated `mov:` marks, which survive a move-and-move-back), the rid translator
+> must cover the new canonical addresses, and the `ar:`/`at:` composites hide
+> positional aircraft data inside a formation-level value.
 
-**ONE publication projection, used for BOTH eligibility AND the stored diff.**
-`pubProjection(di, {sched})` returns the day's full publishable state:
-- `canonicalContent(d, di)` (Phase 1a) — **extended to include `ground[].src`
-  linkage** (P2-09; see §3a), the completeness the digest gate depends on; PLUS
-- the day's pending synthetic marks that live outside day content — `inp:` (input
-  filings, addressing INPUTS) and `mov:` (reorders that leave content equal).
+**ONE function `dayDelta(di, {sched})` — the single source of truth.** Eligibility,
+the panel counts, and the record's stored `diff` ALL derive from it; nothing reads
+the accumulated pending `mov:`/`inp:` marks as the authority (those stay a DISPLAY
+concern only). `dayDelta` compares the live draft against the current issued snapshot
+(`daySnapOf(di, dayCurVerIn(sched, di))`) on **three independent axes plus inputs**,
+every row joined by stable `rid` resolved INDEPENDENTLY in each snapshot:
 
-**Trigger.** `dayHasChanges(di)` = `dayApproved(di)` AND the projection of the live
-draft differs from the projection of the current issued version
-(`daySnapOf(di, dayCurVerIn(SCHED, di))`). This is what `publishALDay(di)` gates on
-AND — critically (P2-07) — what **every** publication affordance reads: the per-day
-publish button/visibility (`html.ts:973`, today gated on `dayPendCount`), the panel
-enable/disable, and the pending summary. A day whose only change is canonical-only
-(e.g. a cancelled formation's reason, which lives in `fx` but not `dayKeys`) must
-still show as publishable even if the live pending mark was reconciled away.
+1. **Values** — `canonicalContent` field values, rid-joined. Excludes `gman` (a
+   workspace field, §1). `ar:`/`at:` are **decomposed** (P2-R2-03): the formation-level
+   override and each aircraft's area/time become SEPARATE addresses joined by the
+   aircraft's own rid, so swapping/deleting an aircraft can't fake a formation-field
+   change. Includes `ground[].src` linkage (P2-09, was §3a): a per-ground-row `gx:`
+   address carrying `S(r.src)`.
+2. **Structure** — rid set-difference (add / remove), ancestor-collapsing (a whole
+   wave gone = ONE entry), exactly the `enumRows` pattern in `drafts.ts:294-337`.
+3. **Order** — per section, compare the order of the SURVIVING rids (draft vs issued)
+   — the `movIf` pattern (`drafts.ts:352-376`). This is computed from actual order, so
+   a move-and-move-back nets to no change (P2-R2-01). Ground uses its EFFECTIVE display
+   order `groundOrder(rows, gman)` (a `gman`-driven reorder IS a real order change even
+   though the raw `gman` value is excluded from axis 1); notes (no rid) use positional
+   order, and swapping two identical notes is a no-op (no positional value difference).
+4. **Inputs** — the day's input-filing state (which `inp:` filings apply), compared
+   draft vs issued, not read off accumulated marks.
 
-**Stored diff — joined by `rid`, never by raw position (P2-03).** On issue compute
-`diff = canonicalDiff(prevIssued.d, newDraft.d, di)` by the SAME rid-join the code
-already uses (`drafts.ts:rebaseDayPending` / `reconcileIssuedMarks`): resolve each
-row's address to its `rid` and back **independently in each snapshot**, so a shared
-rid is compared to the same row even after an edit-then-move, and a deletion before a
-surviving row is attributed to the row that actually went — not misread as a chain of
-field changes + a false tail removal. Structure is diffed as a **rid set-difference**
-(add / remove), reorder as a per-section rid-order compare (the `enumRows` / `movIf`
-patterns in `drafts.ts:294-376`), and only NOTES (no rid) fall back to positional
-pairing. The diff entries:
-- rid present in new, absent in old → `{addr, kind:'add'}`
-- rid present in old, absent in new → `{addr, kind:'delete'}` (topmost rid only —
-  a whole wave gone is ONE wave entry, ancestor-collapsing, as `rebaseDayPending` does)
-- surviving rid, field value differs → `{addr, kind:'change', from, to}`
-- surviving-set order differs per section → `{addr, kind:'move'}`
-- pending `inp:` for the day → `{addr, kind:'input'}` (input-filing amendment)
+**Rid translator gap (P2-R2-02).** `rowids.ts:keyLevels`/`ridKey`/`posKey` don't
+recognise the canonical-only address families (`wx/fx/bx/bxr` and the new `gx`), so
+they pass through positionally — which would reintroduce the edit-plus-move error for
+exactly these addresses. Teach the translator each family's ancestry (`wx`→wave,
+`fx`→formation, `bx`→dutyblock, `bxr`→duty row, `gx`→ground row) so canonical
+addresses translate by rid, and use it in `dayDelta`, `rebaseDayPending` AND
+`reconcileIssuedMarks`.
 
-The panel counts (items / removals / reorders / input filings) derive from `diff` by
-`kind`, replacing `deleteCount/moveCount/inputActionCount(rec.keys)`.
+**Trigger + affordances.** `dayHasChanges(di)` = `dayApproved(di)` AND `dayDelta` is
+non-empty. This gates `publishALDay(di)` AND **every** publication affordance — the
+per-day publish button (`html.ts:973`, today `dayPendCount`), panel enable/disable,
+pending summary. So a canonical-only change (e.g. a cancelled formation's reason,
+in `fx` not `dayKeys`) shows publishable even if its live pending mark was reconciled
+away. The stored `diff` = the four `dayDelta` axes serialized (`{addr, kind:'add'|
+'delete'|'change'|'move'|'input', from?, to?}`); counts derive from it by `kind`.
 
-**Marks and reconcile — the ONE change forced here (P2-07).** The live pending/changes
-marks and `alAttr` tinting keep driving on-screen highlight, and the record's `diff`
-is the authoritative account of what changed. But `reconcileIssuedMarks` /
-`rebaseDayPending` currently compare only `dayKeys`, so they can ERASE a pending mark
-whose difference lives in a canonical-only field (`wx/fx/bx/bxr`) — leaving the day
-looking unchanged while the projection says it changed. Extend both to compare the
-canonical-only addresses too, so a real difference can never be reconciled to
-invisible. `SCHED.changes[key]` still carries the seq for colour; `alColor` keys on
-seq (§1). Full marks-off-diff rewiring stays out of scope; this is the minimal
-consistency fix the digest trigger requires.
-
-## 3a. Phase-1a touch-up — `ground[].src` in canonical content (P2-09)
-
-Phase 1a's `canonicalContent` (built on `dayKeys` + wave/duty extras) omits
-`ground[].src` — the accepted-input linkage — although the build plan classes it as
-canonical content. Add a synthetic address per ground row carrying its `src` token
-(e.g. `gx:${di}.${ri}` = `S(r.src)`), so two ground rows identical on screen but
-linked to different inputs have different digests and a visible diff. Add a
-src-link-only mutation case to `canonical.test.ts`'s per-field-visibility set, and
-verify it stays visible through a backup/recovery publish (the reason it matters:
-`slots.ts` uses `src` for unaccept/removal and `store.ts:341` promotes `INPUTS.acc`
-to `'g'` from it). This is distinct from AM-04's deferred freezing of input VALUES.
+**Reconcile/rebase (P2-07).** Extend `reconcileIssuedMarks`/`rebaseDayPending` to the
+canonical-only addresses (via the same translator) so they cannot erase a mark whose
+only difference lives in `wx/fx/bx/bxr/gx`. Marks remain display; `dayDelta` is the
+authority. `SCHED.changes[key]` still carries the seq for colour; `alColor` keys on
+seq (§1). Full marks-off-delta rewiring stays out of scope — this is the minimal
+consistency the trigger requires.
 
 ---
 
@@ -231,20 +230,32 @@ behaviour, refresh the comment pointers.
   remaining undo-across-publish reuse hazard is closed by Phase 3's undo contract.
   Word the tests and the report to that precise scope; do not pin undo-across-publish
   behaviour in Phase 2.
-- **Legacy-format isolation — REQUIRED in Phase 2, not deferred (P2-05).** The
-  amendment book IS persisted: `persistAll` (persist.ts:99-105) writes each week's
-  `weekSnap()` (= `schedFields`, incl `als/cur/orig`) to the backend, and
-  `store.ts:384-387` restores them at load guarded ONLY by `ridV`. An OLD-shape book
-  (`n`/`'orig'|n`) restored after Phase 2 would be silently misread by the new verId
-  resolver (legacy AL not found by id/di/seq → falls back to Original), changing
-  issued rendering AND the OIL authority (`sync.ts:811/829`), then written back.
-  So Phase 2 adds an **amendment-book format stamp** (following the `ridV` precedent —
-  e.g. `SCHED.amV`) and a **load-time guard**: a book without the current `amV` is
-  treated as unsupported — its blob is PRESERVED untouched, but publication, the
-  authoritative issued-fallback, and destructive OIL reconciliation are SUPPRESSED for
-  those weeks (the AM-02 `insufficient-evidence` posture) until Phase 5's real
-  migration. A prose caveat does not enforce this; the guard does. Pin it:
-  a saved OLD-shape week loads without corrupting or being written back as new-shape.
+- **Legacy-format isolation — a SHARED classifier across every reader AND writer
+  (P2-05, sharpened by P2-R2-04), not a single load guard.** The amendment book IS
+  persisted (`persistAll` persist.ts:99-105 writes each week's `weekSnap()`;
+  `store.ts:384-387` restores it, guarded only by `ridV`), and — critically — it is
+  reached by MORE than the scheduler load: `sync.ts:745-754` independently decodes
+  UNVISITED stashes and rebuilds `sc` without ever passing `applyWeekModel`, so an
+  old-shape week can reach OIL directly; and `runOilPass:897-904` DELETES existing
+  credits absent from the desired map (so "return null / skip" is NOT safe — missing
+  desired work reads as "clear these dates"). Writers also hazard it:
+  `store.ts:451` replaces a stash on departure, `persist.ts:105` re-serializes the
+  loaded week even when unchanged. So Phase 2 adds:
+  - an **amendment-book format stamp** `SCHED.amV` (the `ridV` precedent) and a ONE
+    shared classifier `amFormatOf(sc)` → `current | unsupported`, plus a
+    `protectedWeek/protectedDate` predicate;
+  - **consulted by ALL of:** hydration (`persist.ts`), scheduler load
+    (`applyWeekModel`), the stashed-week OIL decode (`sync.ts:745`), BOTH OIL
+    reconciliation directions (`runOilPass` desired-map build AND its credit-delete
+    at 897), stash-on-leave (`store.ts:451`), and `persistAll` (persist.ts:105);
+  - **behaviour for an unsupported book:** preserve its raw blob byte-for-byte through
+    navigation and unrelated saves (never re-serialize it as new-shape), suppress
+    publication and the authoritative issued-fallback for its dates, and treat its OIL
+    dates as PROTECTED — missing desired work must NOT delete their credits (the AM-02
+    `insufficient-evidence` posture). Full migration stays Phase 5.
+  - **Pins:** an unsupported week that is never opened keeps its OIL credits; navigating
+    away from / an unrelated save while such a week is loaded does not rewrite it; a
+    supported new-shape week round-trips normally.
 - **Parity stays 728/0.** The book is internal state; `alAttr` short-circuits on a
   pristine model (`bookEmpty()`), so no marks emit and the printed bytes are
   unchanged. Phase 2 touches no renderer / no `dayKeys` output. Run `node reference/tfin.js`.
@@ -254,10 +265,21 @@ behaviour, refresh the comment pointers.
 ## 6. Ecosystem ripple (the standing "whole-app" walk)
 
 - **Leave War OIL** reads publish state out of a stashed week snapshot via
-  `daySnapIn(wk.sc, di, dayCurVerIn(wk.sc, di))` (`sync.ts:829`). Because both readers
-  stay parameterized `(sc,…)` and are updated in one place (§1), the OIL wire keeps
-  working; the verIds it reads come from the same `schedFields` short keys the stash
-  already carries. **Test:** the `oilsync` suite must stay green with the new shape.
+  `daySnapIn(wk.sc, di, dayCurVerIn(wk.sc, di))` (`sync.ts:829`) AND independently
+  decodes unvisited stashes (`sync.ts:745`). Updating the parameterized `(sc,…)`
+  resolvers is necessary but NOT sufficient (P2-R2-04): the OIL wire must ALSO consult
+  the shared `amFormatOf`/`protectedWeek` classifier (§5) so an old-shape stash it
+  decodes directly is protected, not misread — and its credit-delete pass must treat
+  protected dates as "leave alone", never "clear". **Test:** the `oilsync` suite stays
+  green with the new shape AND an unsupported stash keeps its credits.
+- **Recovery control ("Load onto working copy", P2-R2-06).** Its no-change shortcut
+  and its "N edits will be replaced" confirmation currently read `dayPendCount`
+  (`interactions.ts:834,842`). With the digest trigger, a day can have real changes and
+  ZERO pending marks — so these must read the live `dayDelta`, not `dayPendCount`, or
+  loading an older version silently bypasses the confirm and discards real draft work.
+  Capture that live delta BEFORE the preview snapshot is swapped in — `withDaySnap`
+  (`html.ts:68`) temporarily clears `SCHED.pending`, so a count taken inside it reads
+  zero. Keep the existing disarm + single mutation epilogue.
 - **History bubble / changes list** find cells by key + edit log, not by the AL
   record — unaffected. The AL list rendering (ALPanel) is the visible change (counts
   from `diff`, no unpublish ✕).
@@ -282,8 +304,10 @@ Never weaken a failing assertion — understand it.
   `publishAL(n)`/`unpublishAL`/`reissueReopened` assertion. New pins: per-day
   sequence (Mon-AL1 and Tue-AL1 are distinct verIds, both seq 1); record carries
   `id/di/iso/seq/diff`; **BUG-1 impossible** (no `unpublishAL` export; an older AL
-  cannot be retracted); `dayHasChanges` digest trigger (equal digest → no publish);
-  publish → undo → redo round-trips the shape.
+  cannot be retracted); `dayHasChanges` fires on `dayDelta` — including an input-only
+  or content-identical-reorder-only change (NOT "equal day digest → no publish", which
+  Round-2 P2-R2-01/-07 corrected); **record shape survives a plain JSON serialization
+  round-trip** (NOT a `publish → undo → redo` test — undo-across-publish is Phase 3, §5).
 - **`engine/restore.test.ts` (~15 refs).** `restoreDayVersion` is gone — delete its
   cases or repoint to `loadVersionToWorkingCopy` (working-copy load leaves `cur`
   untouched until republish). Keep the `dayKeys` slot-grammar pins.
@@ -294,8 +318,8 @@ Never weaken a failing assertion — understand it.
 - **`engine/drafts.test.ts` (~7).** `rebaseDayPending`/`loadVersionToWorkingCopy`
   against verId-addressed snapshots; draft-switch on a published day still rebases.
 - **`state/store.test.ts` (~4)**, **`ui/html.test.ts` (~3)**, **`engine/audit-d-published.test.ts` (~3)**,
-  **`leavewar/oilsync.test.ts` (~3)**, **`ui/interact.test.tsx` (~2)** (BUG-2: beak
-  is Amend, cannot un-publish the live day), **`engine/daytpl.test.ts` (~2)**,
+  **`leavewar/oilsync.test.ts` (~3)**, **`ui/interact.test.tsx` (~2)** (BUG-2: the
+  beak is inert on a published day — cannot un-publish the live day; §9), **`engine/daytpl.test.ts` (~2)**,
   **`state/loadweek.test.ts` (~1)**, **`engine/audit-d-keyspace.test.ts` (~1)**.
 - **`ui/ALPanel.test.tsx`** (if present) — panel no longer renders the unpublish ✕
   or the week-wide number select; Publish is per-day.
@@ -317,27 +341,49 @@ Never weaken a failing assertion — understand it.
     `publish.test.ts` (P2-01).
   - Old-identity UI consumers no longer coerce a verId to a number (P2-04) —
     `interact.test.tsx` / a Shell/render test.
+- **New/extended pins (Round-2 findings):**
+  - **Move-and-move-back nets to no change** (order axis from actual surviving order,
+    not accumulated `mov:` marks); **identical-note swap** is a no-op; a **`gman`-only
+    ground reorder** IS a change (P2-R2-01) — `publish.test.ts`.
+  - **Canonical-only edit combined with a parent move/delete** diffs correctly (the rid
+    translator covers `wx/fx/bx/bxr/gx`) (P2-R2-02).
+  - **Aircraft move / delete with distinct area/time** produces no spurious
+    formation-field change (`ar:`/`at:` decomposed) (P2-R2-03) — `canonical.test.ts`.
+  - **Cross-day / cross-week / malformed version id** resolves to `null`, never a wrong
+    day's snapshot (P2-R2-05) — `restore.test.ts` / `publish.test.ts`.
+  - **Unsupported stash reaching OIL keeps its credits**; navigation/unrelated save
+    doesn't rewrite it (P2-R2-04) — `oilsync.test.ts` / `amformat.test.ts`.
+  - **Recovery over a canonical-only divergence with zero pending keys** still confirms
+    + reports the real replacement, doesn't silently discard (P2-R2-06) — `interact.test.tsx`.
 
 ---
 
 ## 8. Build order (test-first, one coherent unit)
 
-0. Phase-1a touch-up: add `ground[].src` to `canonicalContent` + completeness test (§3a).
-1. Projection + diff primitives: `pubProjection(di)`, `canonicalDiff(a,b,di)` (rid-joined,
-   §3), `dayHasChanges(di)` — pin input-only / reorder-only / delete-before-survivor /
-   canonical-only first.
+0. Canonical foundation: add `ground[].src` (`gx:`) to `canonicalContent`, decompose
+   `ar:`/`at:` into per-aircraft rid-joined addresses, and add `wx/fx/bx/bxr/gx` to the
+   `rowids.ts` translator (§3, P2-09/P2-R2-02/03) — pin the completeness + src-only cases.
+1. The ONE delta: `dayDelta(di,{sched})` (values/structure/order/inputs, rid-joined,
+   §3) + `dayHasChanges(di)` — pin input-only, reorder-only, move-and-move-back,
+   identical-note, `gman`-only, delete-before-survivor, edit-plus-move, canonical-only.
 2. Identity re-key: `daySnapIn`/`dayCurVerIn`/`daySnapOf`/`dayVersions`/`verLabel`
-   over verId; `orig` gains `id`; `cur` stores verId. Pin the resolver + OIL-wire parity.
-3. Legacy-format guard: add `SCHED.amV`; load-time isolation of an unsupported book
-   (§5, P2-05) — pin a saved OLD-shape week loading without corruption/writeback.
-4. Issue rewrite: `nextSeq`, `alIssue`/`publishALDay` store the new record + `diff` +
-   stamp `cur=id`; gate on `dayHasChanges`; extend reconcile/rebase to canonical fields.
+   over verId; `orig` gains `id`; `cur` stores verId. **Resolver validates
+   identity-belongs-to-day** (§1, P2-R2-05). Pin the resolver + OIL-wire parity.
+3. Shared legacy-format classifier: `SCHED.amV` + `amFormatOf`/`protectedWeek`,
+   consulted by hydration, scheduler load, the stashed-week OIL decode, both OIL
+   directions, stash-on-leave and `persistAll` (§5, P2-05/P2-R2-04) — pin the
+   never-opened credit-keep + no-rewrite-on-navigation cases.
+4. Issue rewrite: `nextSeq`, `alIssue`/`publishALDay` store the new record + `diff`
+   (from `dayDelta`) + stamp `cur=id`; gate on `dayHasChanges`; extend reconcile/rebase
+   to the canonical addresses via the translator.
 5. Take-back removal: delete `unpublishAL`/`restoreDayVersion`/`reissueReopened`/
    `publishAL(n)`; strip `setDayApproved`'s `off` branch; simplify `alIssue` ownership
-   (§2); beak loses un-publish (no reload — §9); ALPanel per-day publish (no publish-all);
-   sweep the old-identity UI consumers (§4, P2-04); prune probe-bridge + store re-exports;
-   update `schema.ts` types.
-6. Sweep the test list (§7) to green, file by file.
+   (§2); beak inert on a published day (no reload — §9); ALPanel per-day publish (no
+   publish-all); recovery control's dirty-check reads `dayDelta` not `dayPendCount`
+   (§6, P2-R2-06); sweep the old-identity UI consumers (§4, P2-04); prune probe-bridge
+   + store re-exports; update `schema.ts` types.
+6. Sweep the test list (§7) to green, file by file. Record the shape via serialization
+   round-trip (NOT undo-across-publish, §5).
 7. Full gate set ONCE at green: `npm test`, `npm run build`, `node reference/tfin.js`
    (728/0), `npm run test:e2e`, `npm run smoke:tracker`. Then a plain report + a
    fresh Codex inspection of the finished diff before any "merge live".
@@ -346,16 +392,20 @@ Never weaken a failing assertion — understand it.
 
 ## 9. The reopen "beak" — RESOLVED (owner Q + Round-1 P2-06)
 
-The owner's instinct was right: **changing a published day = another AL, always** —
-there is no editing-in-place and no take-back. And a published day is **already
-editable** in this app: the scheduler edits it and publishing those edits becomes the
-next AL. So the beak does NOT need to "reload the issued version" (Round-1 P2-06
-showed that would destructively overwrite live edits). Resolution:
+The owner's instinct was right: **a published version is frozen forever — it can
+never be edited. Changing a published day always means issuing a NEW AL that
+supersedes it; the old version stays immutable in the history.** Precisely (correcting
+loose "the published day is editable" wording): each day has its frozen issued
+versions PLUS one **live working draft** on top. The scheduler edits the WORKING
+DRAFT — never a published version — and publishing the draft mints the next AL. Crew
+keep seeing the current issued version until that next AL goes out. So the beak does
+NOT need to "reload the issued version" (Round-1 P2-06 showed that would destructively
+overwrite the working draft). Resolution:
 - The beak simply **loses its un-publish job**. On a never-published day it still
   first-approves; on a published day it is inert/hidden — there is nothing to
   un-publish and no reload.
-- Editing a published day + Publish AL# = the next AL (the whole "amend" flow, no new
-  concept).
+- Editing the working draft + Publish AL# = the next AL (the whole "amend" flow, no new
+  concept; the frozen versions are never touched).
 - Pulling an OLD version's content forward stays the existing guarded **"Load onto
   working copy"** control (`loadVersionToWorkingCopy`, confirm-armed), untouched.
 

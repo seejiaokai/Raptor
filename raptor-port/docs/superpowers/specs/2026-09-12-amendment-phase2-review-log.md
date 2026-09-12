@@ -28,3 +28,22 @@ Coverage (Codex, self-reported): plan + frozen brief + phase plan; publish/canon
 Limitations (Codex): static review of a proposal, no diff/tests/build/browser; deferred phases (signatures/durable/migration/crew) not reviewed as features.
 
 Host action: revise the plan (all 9), then round 2 (resume) to confirm.
+
+## Round 2 — verdict REVISE (Codex GPT-6 Astra, high; 294s; resumed session 01a0950a…)
+
+Revised plan SHA256: `5c4a0290b38ddd30e80c6896d47b1b9f0264cdb7f4263117009b37785743d421`.
+Codex confirmed the Round-1 dispositions landed (non-destructive beak, per-day
+actions, UI identity conversion, explicit Phase-3 undo dependency). 7 deeper findings,
+ALL ACCEPTED:
+
+| ID | Sev | Finding (short) | Disposition |
+|---|---|---|---|
+| P2-R2-01 | high | Eligibility (projection incl pending `mov:`) and stored diff (rid-order) still two definitions: move-and-move-back leaves marks but empty order-diff; identical-note swap mints `mov:` with no positional diff; reusing effective-ground-order makes `gman` affect the diff though it's excluded. | ACCEPT. ONE `dayDelta` (values/structure/order/inputs) from ACTUAL surviving order, not accumulated marks; drives eligibility + counts + diff. Identical-note swap = no-op; `gman`-driven order IS a move (raw `gman` still excluded from values). §3 rewritten. |
+| P2-R2-02 | med | `rowids.ts` translator (`keyLevels`/`ridKey`/`posKey`) doesn't know `wx/fx/bx/bxr/gx`, so canonical addresses stay positional → edit-plus-move hole persists for them. | ACCEPT. Add those families to the translator; use in delta/rebase/reconcile. §3. |
+| P2-R2-03 | med | `ar:`/`at:` values embed aircraft-index-ordered data inside a formation value; a rid join at formation level still fakes a formation change when aircraft move/delete. | ACCEPT. Decompose `ar:`/`at:` into per-aircraft rid-joined addresses in canonical content/diff (renderer `dayKeys` unchanged). §3. |
+| P2-R2-04 | high | Load-time guard alone insufficient: `sync.ts:745` decodes unvisited stashes without `applyWeekModel`; `runOilPass:897` deletes credits absent from desired map; `store.ts:451`/`persist.ts:105` re-serialize. §6 "two resolvers suffice" is wrong. | ACCEPT. SHARED `amFormatOf`/`protectedWeek` classifier consulted by hydration, scheduler load, stashed-week OIL decode, both OIL directions, stash-on-leave, `persistAll`; preserve raw blob; protected dates never cleared by missing desired work. §5/§6. |
+| P2-R2-05 | med | Resolver doesn't check identity belongs to the day: `daySnapIn(sc,0,TuesdayAL1Id)` returns Tuesday's snap for Monday; any `…#0` → `orig[di]`. | ACCEPT. Require exact Original-id match; AL match on id+di+iso+seq; reject foreign/malformed; derive iso from `sc` not live CURWEEK. §1. |
+| P2-R2-06 | med | Recovery control still uses `dayPendCount` for its no-change shortcut + replacement confirm; with the digest trigger a day can have real changes + zero pending marks → bypasses confirm, discards draft. `withDaySnap` clears pending before the count. | ACCEPT. Recovery dirty-check + replacement summary read `dayDelta`; capture live context before the preview swap. §6. |
+| P2-R2-07 | low | Stale §7 bullets ("equal digest → no publish"; "publish→undo→redo round-trips"; beak called "Amend") contradict the accepted revisions. | ACCEPT. §7 corrected to the `dayDelta`/serialization/inert-beak contracts. |
+
+Host action: revise the plan (all 7), then round 3 (resume) to confirm.
