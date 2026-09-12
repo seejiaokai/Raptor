@@ -33,6 +33,19 @@ Commits on top of the gate-green base `169e85a` (`d949ea1` = the brief/handoff, 
   stale template-apply confirm on any navigation.
 - **08:** `shiftKeys`/`permuteKeys` remap keys/adds/structAdds only when present.
 
+## ROUND-2 fixes done (13 Sep 26) — awaiting re-review
+Both bug-checks (Codex/Astra + Fable) returned REVISE on the first redesign
+(8 findings P2-QREV-01..08, root cause: the input gate was run-then-rollback, not
+a preflight). All fixed across commits `0087e35` (A+C — preflight + one shared
+classifier) and `5e417f8` (B-G — filing reconcile, nav token, OIL bell,
+quarantine notice, edge guards). Findings + fix map:
+`docs/superpowers/specs/2026-09-13-amendment-phase2-quarantine-round2-findings.md`.
+All gates green again: **unit 4615/4615 · parity 728/0 · build clean.**
+
+Owner also asked (13 Sep) for a dedicated cross-provider look at what UNDO does
+and does NOT restore across platforms (Leave War, medical docs, edit log) — a
+guardrail-or-reconcile question. Folded into the round-2 re-review scope.
+
 ## What's NEXT (do this before merge)
 1. **Cross-provider bug-check is IN FLIGHT** (owner wants BOTH — important/robust):
    - **Codex/Astra** — the inspect runner was launched with `--base 169e85a` (focuses the
