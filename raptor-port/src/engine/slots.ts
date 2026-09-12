@@ -4,6 +4,7 @@ import { SCHED, markEdit, markDeletion, deletionWasIssued, markInputFiling, mark
 import { parseHM, hhmm, hmOK } from './time'
 import { INPUTS, DATES, inpId, inputCoversDate, isUnavail, isPersonal, inpLabel, dateIx } from './inputs'
 import { shiftKeys } from './keys'
+import { inputProtected } from './quarantine'
 import { VCONF } from './rules'
 import { HOOKS } from './hooks'
 import { logEdit } from './editlog'
@@ -336,14 +337,16 @@ export function inpKey(inp:any){return `${inp.person}|${inp.date}|${inp.type}|${
 const markInputDays=(inp:any,fallback:any)=>{const token=inpId(inp);let any=false;DAYS.forEach((d:any,i:any)=>{if(inputCoversDate(inp,d.dt)){markInputFiling(i,token);any=true;}});if(!any&&+fallback>=0)markInputFiling(+fallback,token);};
 export function acceptInput(di:any,inp:any,dest:any){
   const d=DAYS[di]; if(!d||!inp)return false;
-  /* an UNSUPPORTED (pre-Phase-2) loaded week is READ-ONLY (P2-IMPL-03): landing
-     an input pushes/edits a ground row on DAYS[di] — the loaded week — which
-     would mutate data the engine cannot safely re-key AND break its byte
-     preservation (P2-IMPL-02). Every accept path (the board control, the auto-
-     land on create, the boot/week-load pass) funnels through here, so this one
-     guard closes them all. acceptInput only ever addresses the loaded week, so
-     protectedWeek() is the exact test. */
-  if(protectedWeek())return false;
+  /* READ-ONLY QUARANTINE (P2-IMPL-03 + P2-QREV-02). Landing an input pushes/edits
+     a ground row on DAYS[di] — the loaded week — AND changes the input's GLOBAL
+     acc. Two tests, because filing is a GLOBAL input write, not only a loaded-week
+     one: protectedWeek() covers the loaded week's own book; inputProtected(inp)
+     covers a MULTI-DAY input that also spans a STASHED protected week (round-1
+     checked only the loaded week, so filing such an input mutated the frozen
+     week's global acc — the writer that bypassed the input funnel). Every accept
+     path (the board control, the auto-land on create, the boot/week-load pass)
+     funnels through here, so this one guard closes them all. */
+  if(protectedWeek()||inputProtected(inp))return false;
   /* 'r' (removed — see unacceptInput) is NOT "already actioned": it is the
      dormant parked state whose whole exit is this call, so the Accept button
      must come back through here. Landed ('g') and filed ('u') still refuse. */
@@ -467,7 +470,7 @@ export function reconcileDayFiling(di:any){
   });
 }
 export function unacceptInput(di:any,inp:any){
-  if(protectedWeek())return false;               // read-only quarantine — never splice a frozen day (P2-IMPL-03)
+  if(protectedWeek()||inputProtected(inp))return false;   // read-only quarantine — global filing write, so guard the input's every date (P2-IMPL-03 + P2-QREV-02)
   if(!inp||!inp.acc||inp.acc==='r')return false; // 'r' is already removed — nothing to undo
   const was=inp.acc;
   if(inp.acc==='g'){

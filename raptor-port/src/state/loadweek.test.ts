@@ -17,6 +17,7 @@ import { autoAcceptInput, unacceptInput, inpKey, acceptInput } from '../engine'
 import { reconcileDayFiling, acceptedDay } from '../engine/slots'
 import { rebaseDayPending } from '../engine/drafts'
 import { stashClear, stashPut } from '../engine/weekstash'
+import { weekBundle } from '../engine/weeks-data'
 import { SCHED, signOf, setDayApproved, dayHasChanges } from '../engine/publish'
 import { HIST } from './history'
 
@@ -113,6 +114,26 @@ describe('loadWeek', () => {
       expect(dayHasChanges(0), 'navigation did not silently change the amendment state').toBe(before)
       expect(acceptedDay(inp), 'still no ground row after navigation').toBe(-1)
     })
+  })
+
+  /* P2-QREV-02: filing (acceptInput/unacceptInput) is a GLOBAL input write that
+     bypassed the round-1 funnel and checked only the loaded week. A multi-day
+     input spanning the supported loaded week AND a stashed protected week must be
+     refused — filing it changes the protected input's global acc. */
+  it('filing a multi-day input that spans a stashed PROTECTED week is refused (P2-QREV-02)', () => {
+    // Jul 20 is a stashed unsupported (protected) week; the loaded Jul 13 week is supported
+    stashPut('20/07/2026', JSON.stringify({ d: weekBundle('20/07/2026').days, o: { 0: { d: {}, c: {} } }, cv: { 0: 'orig' } }))
+    const inp: any = { person: 'divot', type: 'Meeting', date: 'Jul 18', endDate: 'Jul 20', allday: true, remarks: '', mod: 'now', yr: 2026, _t: 1 }
+    INPUTS.push(inp)
+    // it covers no loaded day for a ground landing on day 0, so use a day it does cover:
+    inp.date = 'Jul 13'; inp.endDate = 'Jul 20'          // spans loaded Jul 13 → protected Jul 20
+    expect(acceptInput(0, inp, 'g'), 'accept refused — the input spans a protected week').toBe(false)
+    expect(inp.acc, 'no filing landed').toBeUndefined()
+    // and a pre-existing 'g' cannot be unfiled either
+    inp.acc = 'g'
+    expect(unacceptInput(0, inp), 'unaccept refused too').toBe(false)
+    expect(inp.acc, 'the filing decision is untouched').toBe('g')
+    stashClear()
   })
 
   it('a non-authored chip loads a blank, editable seven-day week', () => {

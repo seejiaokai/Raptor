@@ -112,6 +112,18 @@ describe('the input funnel is the quarantine choke-point (P2-REV2-04)', () => {
     expect(said.join(' ')).not.toMatch(/locked/i)
   })
 
+  it('returns false on a rejected batch and true on a committed one (P2-QREV-04)', () => {
+    stashProtected('20/07/2026')
+    const rejected = writeInputsBatch(() => {
+      INPUTS.unshift({ person: 'dj', type: 'Meeting', allday: true, date: 'Jul 20', yr: 2026, iid: 'zzr1' })
+    })
+    expect(rejected, 'a rolled-back batch reports false so callers can stop').toBe(false)
+    const committed = writeInputsBatch(() => {
+      INPUTS.unshift({ person: 'dj', type: 'Meeting', allday: true, date: 'Sep 4', yr: 2026, iid: 'zzr2' })
+    })
+    expect(committed, 'a legitimate batch reports true').toBe(true)
+  })
+
   it('guards the simple writeInputs funnel too, not only the batch form', () => {
     stashProtected('20/07/2026')
     const before = INPUTS.length

@@ -166,6 +166,16 @@ describe('a DAMAGED saved week is quarantined, never seeded over (P2-REV2-01)', 
     expect(wb.get('weeks', weekId(WEEK_B)), 'the original bytes are preserved, not a seed re-serialization').toBe(noDays)
   })
 
+  it("a stored week whose JSON is the text 'null' is damaged, not absent — preserved read-only (P2-QREV-06)", async () => {
+    const be = new MemoryBackend()
+    be.seed({ weeks: { [weekId(WEEK_B)]: 'null' } })      // parses to a falsy value — must not read as missing
+    const { wb } = await boot(be)
+    loadWeek(WEEK_B)
+    expect(protectedWeek(), 'read-only — a falsy-parsing blob is damaged, not absent').toBe(true)
+    HOOKS.histPush()
+    expect(wb.get('weeks', weekId(WEEK_B)), 'the original bytes are preserved, not overwritten with seed').toBe('null')
+  })
+
   it('a MISSING week (no stash at all) still loads the seed and is EDITABLE — not falsely quarantined', async () => {
     const be = new MemoryBackend()
     await boot(be)

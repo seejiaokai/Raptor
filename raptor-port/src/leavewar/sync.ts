@@ -22,7 +22,8 @@
 // reaches a fixed point. A SYNCING flag guards re-entrancy on top — every
 // store write notifies subscribers synchronously, and this module is one.
 
-import { INPUTS, DATES, baseYear, dateOrd, inpId, inpWin, isAway, isDownchit, isLeave, oilAsks, withRemarksTail } from '../engine/inputs'
+import { INPUTS, DATES, baseYear, dateOrd, inpId, inpWin, isAway, isDownchit, isLeave, oilAsks, withRemarksTail, inputCoversDate } from '../engine/inputs'
+import { protectedDates } from '../engine/quarantine'
 import { ME, SESSION } from '../state/auth'
 import { persistPeople } from '../state/persist'
 import { docFields, rowDocIds } from '../state/docs'
@@ -240,13 +241,24 @@ export function runOutbound(): void {
     const want = new Map(desiredRuns().map(r => [runSig(r), r]))
     const have = new Set<string>()
     const stale: any[] = []
+    /* READ-ONLY QUARANTINE (P2-QREV-03). A leave landing on a protected week must
+       NEVER enter this batch: the funnel would roll the WHOLE batch back (every
+       legit leave on normal weeks with it) and the protected mismatch would recur
+       on every notify — a permanent refuse-loop that kills all LW→Raptor sync.
+       So exclude protected-date operations here: a stale row on a frozen week is
+       LEFT in place (not spliced), and a missing run on a frozen week is not
+       minted — its evidence is unavailable, so the credit/leave already there
+       stands (the same reading the OIL pass takes). */
+    const prot = protectedDates()
+    const covered = (row: any) => prot.length > 0 && prot.some((dt: any) => inputCoversDate(row, dt))
+    const runRow = (r: any) => ({ date: isoToLabel(r.start), endDate: r.end !== r.start ? isoToLabel(r.end) : undefined, yr: baseYear() })
     for (const row of INPUTS) {
       if (!row.lw) continue
       const sig = rowSig(row)
       if (sig && want.has(sig) && !have.has(sig)) have.add(sig)
-      else stale.push(row)
+      else if (!covered(row)) stale.push(row)   // a stale row on a frozen week is left untouched
     }
-    const missing = [...want].filter(([sig]) => !have.has(sig)).map(([, r]) => r)
+    const missing = [...want].filter(([sig]) => !have.has(sig)).map(([, r]) => r).filter(r => !covered(runRow(r)))
 
     /* An empty diff must not touch anything — writeInputsBatch ends in a
        history push, and a no-op pass that left a snapshot behind would make

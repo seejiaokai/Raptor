@@ -28,7 +28,8 @@ import { storesLoad, cxReasonsLoad, dutyTplLoad, waveTplLoad, dayTplLoad, autoAc
 import { qualColsLoad } from '../engine/qualcols'
 import { elogClear } from '../engine/editlog'
 import { markDeletion, resetSched, SCHED, dayApproved, protectedWeek, amFormatOf } from '../engine/publish'
-import { stashPut, stashGet, stashHas, stashKeys, setPreservedBlob, clearPreservedBlob, isPreservedWeek, preservedBlob } from '../engine/weekstash'
+import { protectedDates } from '../engine/quarantine'
+import { stashPut, stashGet, stashHas, setPreservedBlob, clearPreservedBlob, isPreservedWeek, preservedBlob } from '../engine/weekstash'
 import { afterSchedMutate } from './view'
 import * as view from './view'
 import { histPush, histInit, histSnap, histRestore, schedFields } from './history'
@@ -376,30 +377,6 @@ let weekBaseline = ''
    persisted; see weekstash.ts's "persisted pristine copy is a trap") */
 export function weekDirty() { return weekStashSnap() !== weekBaseline }
 
-/* THE DATE LABELS OF EVERY WEEK UNDER READ-ONLY QUARANTINE (P2-REREVIEW-02).
-   INPUTS is GLOBAL, so an input belonging to an unsupported/wrong-week book must
-   be refused from ANY loaded week, not only when that week is the one on screen.
-   Covers the loaded week (if its own book is unsupported) AND every STASHED week
-   whose book classifies unsupported — an UNREADABLE stash is treated as protected
-   (it cannot be verified safe). The input write paths (ui/inputedit.tsx) test an
-   input's covered dates against these before landing/editing/removing it. */
-export function protectedDates(): string[] {
-  const out: string[] = []
-  if (protectedWeek()) out.push(...DATES)
-  for (const k of stashKeys()) {
-    if (k === CURWEEK) continue
-    const j = stashGet(k)
-    if (j == null) continue
-    let unsup = false
-    try {
-      const sc: any = JSON.parse(j)
-      unsup = amFormatOf({ amV: sc.am, als: sc.a, orig: sc.o, cur: sc.cv }, k) === 'unsupported'
-    } catch { unsup = true }   // an unreadable stash cannot be verified → protect it
-    if (unsup) out.push(...weekBundle(k).dates)
-  }
-  return out
-}
-
 /* THE autoAcceptSeedInputs LANDING-MECHANICS GOTCHA a stash restore runs
    into: acceptInput (engine/slots.ts) does not just set `row.acc='g'`, it
    PUSHES a real ground row onto DAYS. A stash restore hands back DAYS with
@@ -460,8 +437,16 @@ function applyWeekModel(v: any): any {
      seed re-serialization can overwrite it. */
   let s: any = null
   let unreadable = false
-  try { s = stashedJson ? JSON.parse(stashedJson) : null } catch (_e) { s = null; unreadable = true }
-  if (s && !Array.isArray(s.d)) { s = null; unreadable = true }
+  /* PRESENCE is decided by the stored bytes, NOT by the parsed value's
+     truthiness (P2-QREV-06): the JSON texts 'null'/'false'/'0' parse to falsy
+     values that the old `stashedJson ? …` / `s && …` tests skipped, so a damaged
+     record slipped to the seed branch and was overwritten. Any PRESENT blob that
+     is not an object carrying a `d` days array is DAMAGED — preserved + read-only,
+     never seeded over. */
+  if (stashedJson != null) {
+    try { s = JSON.parse(stashedJson) } catch (_e) { s = null; unreadable = true }
+    if (!unreadable && (!s || typeof s !== 'object' || !Array.isArray(s.d))) { s = null; unreadable = true }
+  }
   if (s) {
     DAYS.length = 0; s.d.forEach((d: any) => DAYS.push(d))
     /* DATES is not carried in the stash at all (weekstash.ts's own comment)
@@ -789,6 +774,12 @@ wireStore()
 /* the store's public surface: the writes above, plus the engine's publish
    actions and the history verbs, re-exported so the UI has one import */
 export { setDayApproved, publishALDay, discardPending, markEdit } from '../engine/publish'
+/* the quarantine classifier lives in the engine (so the engine's filing
+   primitives share it) but the UI imports it from here, its established home.
+   protectedDates is imported above for internal use (runInputWrite) and
+   re-exported here so ui/inputedit.tsx and ui/InputsPage.tsx keep their import. */
+export { protectedDates }
+export { inputProtected, stashProtected } from '../engine/quarantine'
 export { undo, redo, histInit, histApply, HIST } from './history'
 export { armSlot, disarmSlot, armedKey, placeArmed, selectPerson, selKeep, selRestore, selClear, selDrop, setBoardDay, setPage, afterSchedMutate } from './view'
 export { setSession, canEditSched, LGEDIT, setLgEdit } from './auth'

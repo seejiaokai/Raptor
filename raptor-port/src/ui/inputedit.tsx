@@ -25,7 +25,7 @@ import { PEOPLE, isSpecial } from '../engine/people'
 import { hhmm, parseHM, hmOK } from '../engine/time'
 import { HOOKS } from '../engine/hooks'
 import { logAction, elogSweep } from '../engine/editlog'
-import { writeInputsBatch, notify, protectedDates } from '../state/store'
+import { writeInputsBatch, notify, protectedDates, inputProtected } from '../state/store'
 /* The Leave War seam (sync.ts is the one crossing point, CLAUDE.md §The Leave
    War tab): retracting a synced row's war cells when it is edited or deleted
    here — not a new seam, a Raptor-side caller of the existing one. */
@@ -712,6 +712,16 @@ function protectedInput(...rows: any[]): boolean {
    check on the DESTINATION dates (the editor draft carries sTime/eTime/start/end,
    not the model's date/endDate — reading those raw was the P2-REREVIEW-01 no-op). */
 const normDest = (n: { date: string, endDate: string | undefined }, yr: any) => ({ date: n.date, endDate: n.endDate, yr })
+/* PREFLIGHT A MEDICAL PLAN (P2-QREV-01). The medical create/trim cascade
+   (applyMedPlan) mutates EXISTING rows — trims, deletes, and, for an lw-tagged
+   row, withdraws its Leave War cells (retractLwRow) as an immediate side effect
+   the input funnel's model-rollback cannot take back. So a plan that touches ANY
+   protected-date row must be refused BEFORE it runs, not rolled back after: this
+   preflights the whole plan (its target rows, and the surviving tail a split
+   would mint) so nothing executes on a frozen record. */
+export const medPlanProtected = (plan: any[]) => (plan || []).some((p: any) =>
+  (p.row && inputProtected(p.row)) ||
+  (p.tail && inputProtected({ date: ordLabel(p.tail.startOrd, p.row?.yr), endDate: p.tail.endOrd > p.tail.startOrd ? ordLabel(p.tail.endOrd, p.row?.yr) : undefined, yr: p.row?.yr })))
 
 export function commitNewInput(draft: any, toGround?: boolean, keepTail?: any, entryEnd?: any): boolean {
   if (!draft) return false
@@ -746,16 +756,25 @@ export function commitNewInput(draft: any, toGround?: boolean, keepTail?: any, e
   /* the row's own address, minted before the write so the snapshot this add
      pushes already carries it — the Inputs page add's own withId precedent */
   inpId(row)
-  writeInputsBatch(() => {
+  /* the medical trim cascade, computed and PREFLIGHTED before the batch (P2-QREV-01):
+     it mutates existing rows and fires Leave War withdrawals the funnel cannot undo,
+     so a plan touching a protected-date row is refused whole, before anything runs. */
+  const medPlan = isDownchit(row.type)
+    ? newMedTrimPlan(row.person, row.type, dateOrd(date, row.yr), dateOrd(endDate || date, row.yr), row, keepTail, entryEnd)
+    : isUpchit(row.type)
+      ? upchitTrimPlan(row.person, dateOrd(date, row.yr), row).map((p: any) => ({ ...p, why: 'closed by the upchit' }))
+      : null
+  if (medPlan && medPlanProtected(medPlan)) {
+    HOOKS.toast('This week is locked — it was published by an older version and can’t be edited', 'warn')
+    return false
+  }
+  const ok = writeInputsBatch(() => {
     INPUTS.unshift(row)
     /* a new medical input wins its overlapping days from a DIFFERENT-type
        downchit, and an upchit cuts everything covering its date to end the
        day before — the upchit day is a fit day (owner, 27 Aug 26) — planned
        pure, applied here so the add and its trims are ONE undo step */
-    if (isDownchit(row.type))
-      applyMedPlan(newMedTrimPlan(row.person, row.type, dateOrd(date, row.yr), dateOrd(endDate || date, row.yr), row, keepTail, entryEnd))
-    if (isUpchit(row.type))
-      applyMedPlan(upchitTrimPlan(row.person, dateOrd(date, row.yr), row).map((p: any) => ({ ...p, why: 'closed by the upchit' })))
+    if (medPlan) applyMedPlan(medPlan)
     if (toGround) {
       /* the board's Ground "+ Inputs" is a DELIBERATE scheduler act — it lands
          the row on the programme whatever the day's publish state (an ordinary
@@ -775,6 +794,9 @@ export function commitNewInput(draft: any, toGround?: boolean, keepTail?: any, e
       autoAcceptInput(row)
     }
   })
+  /* the funnel backstop rolled the batch back (a protected date slipped the
+     preflights above) — report failure, don't log a phantom "Input added" (P2-QREV-04) */
+  if (!ok) return false
   const cs = PEOPLE[row.person] ? PEOPLE[row.person].cs : row.person
   logAction(null, `Input added — ${cs}, ${row.type}, ${date}${endDate ? '–' + endDate : ''}${row.acc === 'g' ? ' (on the Ground Programme)' : ''}`)
   return true
@@ -825,7 +847,20 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
   if (!n) return false
   if (protectedInput(normDest(n, draft.yr))) return false   // refuse a move INTO a protected week (P2-REREVIEW-01/02)
   const { s, e, date, endDate, half } = n
-  writeInputsBatch(() => {
+  /* preflight the medical trim cascade this edit would trigger, BEFORE the batch
+     (P2-QREV-01) — its trims/deletes and Leave War withdrawals cannot be rolled
+     back. Computed with the edit's NEW values (== what the in-batch call uses once
+     r is mutated); `r` is excluded as self. */
+  const medPlan = isDownchit(draft.type)
+    ? newMedTrimPlan(draft.person, draft.type, dateOrd(date, baseYear()), dateOrd(endDate || date, baseYear()), r, keepTail, entryEnd)
+    : isUpchit(draft.type)
+      ? upchitTrimPlan(draft.person, dateOrd(date, baseYear()), r).map((p: any) => ({ ...p, why: 'closed by the upchit' }))
+      : null
+  if (medPlan && medPlanProtected(medPlan)) {
+    HOOKS.toast('This week is locked — it was published by an older version and can’t be edited', 'warn')
+    return false
+  }
+  const ok = writeInputsBatch(() => {
     /* A Leave-War-synced row (owner, 17 Aug 26 — full two-way): editing the
        LEAVE ITSELF — its person, type, dates or which half — changes the war
        too. The old grant is WITHDRAWN first, while the row still says what the
@@ -948,11 +983,9 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
        only Accept (or a retype) revives it, per the owner's removal rule. */
     if (wasDormant && r.type !== wasType && r.acc === 'r') delete r.acc
     /* an EDIT restates the span, so the same medical rules run against the
-       person's other rows — the row itself is excluded (except-style) */
-    if (isDownchit(r.type))
-      applyMedPlan(newMedTrimPlan(r.person, r.type, dateOrd(r.date, r.yr), dateOrd(r.endDate || r.date, r.yr), r, keepTail, entryEnd))
-    if (isUpchit(r.type))
-      applyMedPlan(upchitTrimPlan(r.person, dateOrd(r.date, r.yr), r).map((p: any) => ({ ...p, why: 'closed by the upchit' })))
+       person's other rows — the row itself is excluded (except-style). The plan
+       was computed + preflighted above, before the batch (P2-QREV-01). */
+    if (medPlan) applyMedPlan(medPlan)
     if (wasAcc) {
       /* put it back on the day it was on, if the edit still covers that day;
          otherwise its new start date — and if the START label is not itself
@@ -1010,7 +1043,9 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
       if (r.acc === 'r') delete r.acc
     }
   })
-  return true
+  /* the funnel backstop rolled the batch back — report failure so the editor
+     stays open and nothing typed is lost (P2-QREV-04) */
+  return ok
 }
 
 /* ---- CHANGING THE PUCK (owner, 14 Aug 26 — "allow Unavailable to be
@@ -1230,6 +1265,15 @@ export function clearHistoryData(mode: ClearMode, a: string, b?: string, dry?: b
   })
   const n = doomed.length + oldPucks.length + oldRmk.length + oldWeeks.length
   if (dry || !n) return n
+  /* PREFLIGHT the whole clear (P2-QREV-04): if any doomed input sits on a
+     protected week, refuse the ENTIRE operation before deleting anything — the
+     old code let the input batch be rolled back by the funnel yet still ran
+     stashDrop/persistAll and logged "Cleared N", a partial destructive op that
+     removed week records while the inputs survived. */
+  if (doomed.some((r: any) => inputProtected(r))) {
+    HOOKS.toast('Some of those records are on a locked week and can’t be cleared', 'warn')
+    return 0
+  }
   writeInputsBatch(() => {
     doomed.forEach((r: any) => dropInputRow(r))
     oldPucks.forEach((s: any) => { const ix = PLANPUCKS.indexOf(s); if (ix >= 0) PLANPUCKS.splice(ix, 1) })
