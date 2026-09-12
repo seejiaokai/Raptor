@@ -1,87 +1,43 @@
-# Session handoff — [AMEND] Phase 2: built + gates green, but Codex inspection = REVISE (fixes pending)
+# Session handoff — [AMEND] Phase 2: engine built + gate-green; quarantine REDESIGN is next
 
-## Where it stands
-Phase 2 — the coupled amendment-record rewrite — is **built and gate-green** on
-`claude/amendment-engine-core` (steps 2–7 + step 3), committed (not merged). BUT the
-**fresh Codex inspection came back REVISE with 12 findings (6 high)** — see
-`2026-09-12-amendment-phase2-code-inspection-log.md`. All 12 read as VALID; several
-refute the "safe-degradation" shortcut behind the minimal step-3 classifier, and two
-(P2-IMPL-06/07) expose a real `dayHasChanges`/`dayDelta` invariant gap partly in
-step-0/1 `canonical.ts`. **Do NOT merge. Next is the FIX CYCLE, then a fresh
-re-inspection, then the owner's explicit "merge live."**
+## Where it stands (branch `claude/amendment-engine-core`, HEAD `169e85a`)
+The Phase-2 coupled amendment-record rewrite is **built and gate-green**, and TWO
+full Codex fix-cycles are done and committed:
+- `4f39c35` — round-1 fixes (P2-IMPL-01..12)
+- `169e85a` — round-2 fixes (P2-REREVIEW-01..12), incl. 2 regressions round-1 caused
+All local gates green at `169e85a`: **unit 4575/4575 · parity 728/0 · build clean**.
+(Not pushed until the checkpoint is committed — see below. Not merged; owner says
+"merge live" gates the merge, and No-auto-merge stands.)
 
-## Gate set (run once at green, this session)
-- `npm test` (unit) — **4544 / 4544 pass** (isolated run; a concurrent run with e2e
-  produced 6 contention flakes that vanished in isolation — do NOT run heavy suites
-  in parallel, see the observation log).
-- `node reference/tfin.js` (parity) — **728 / 0**. The re-key touches no renderer /
-  no `dayKeys` output; marks short-circuit on a pristine book.
-- `npm run build` (tsc -b + vite) — **clean** (only the pre-existing
-  INEFFECTIVE_DYNAMIC_IMPORT warnings).
-- `npm run test:e2e` — **424 / 425**. The ONE failure (`geometry.spec.ts:1976`,
-  the board flying-line brief-cell inline at phone width) is **PRE-EXISTING and
-  environment**: it fails identically on the pre-re-key commit `889812e`, and the
-  e2e recipe is calibrated for the Linux CI, not this Windows box. Linux CI is the
-  arbiter for that gate. NOT caused by Phase 2.
-- `npm run smoke:tracker` — **426 / 0** (Tracker is a separate app, untouched).
+## What's NEXT — the quarantine REDESIGN (owner decision, 12 Sep 26)
+A **third** fresh Codex inspection (round 3, `--base d125fd5`) still returned
+**REVISE — 8 findings (P2-REV2-01..08)**. The pattern across all three rounds: the
+"unsupported/legacy book is READ-ONLY (quarantine)" rule was enforced by adding a
+guard at each write site as it was found, and every inspection finds another
+writer it missed — it does not converge. The owner chose to STOP spot-patching and
+do it properly: **ONE choke-point every edit/input/publish/draft path passes
+through**, plus explicit quarantine state through load/persist/OIL.
 
-## What shipped (branch commits, newest last)
-- `e8d2f4a` wip — identity re-key core (steps 2/4/5), publish.test green.
-- `5b4dd9f` test — full re-key + test sweep, unit suite 4537/4537.
-- `5c61dff` feat — step 3, the shared legacy-format classifier.
+**The full brief — the 8 round-3 findings + the one-checkpoint design + the
+ready-to-paste opening prompt — is:**
+`docs/superpowers/specs/2026-09-12-amendment-phase2-quarantine-redesign.md`
+(a scratchpad backup also exists this session). Read it first.
 
-## The model, in one paragraph
-`SCHED.als` is now a list of **single-day** records keyed by an immutable `verId`
-(`iso#seq`; Original = `iso#0`): `{id, di, iso, seq, snap:{d,c,fil}, diff, sign}`.
-`diff` (the frozen canonical `dayDelta` at issue) REPLACES the old `keys` list;
-`SCHED.cur[di]` and `SCHED.orig[di].id` are verId strings. Per-day sequence, so
-Monday-AL1 and Tuesday-AL1 are distinct. Publish eligibility is `dayHasChanges` =
-`dayApproved && dayDelta non-empty` (the canonical delta, F-02) — NOT a pending
-count. All take-backs are gone (`unpublishAL`/`publishAL(n)`/`restoreDayVersion`/
-`reissueReopened`/reopen); a published version is frozen — changing a day is a new
-AL that supersedes it. `applyDayTpl` on a published day now applies to the working
-draft (P2-R3-04). Resolver validates identity-belongs-to-day AND the passed-in week
-key (P2-R2-05/P2-R3-03). `nextSeq(di)` replaces `nextAL`.
+## Do it in a FRESH session, Opus 4.8 high
+This branch's chat ran long (2 fix cycles + 3 inspections); the redesign is a big
+new task, so start fresh (owner's own rule). The cross-provider bug-checks read the
+committed code + the brief, not the chat — so nothing is lost by starting clean.
+When green, bug-check across BOTH Codex/Astra (the inspect runner; PYTHONUTF8=1;
+read `reply.txt`, since the runner can stamp `status:failed` on a `limitations`
+schema quirk while the verdict+findings are valid) AND Fable 5.1 high.
 
-## Notes for the fresh Codex inspection (be adversarial here)
-- **Classifier scope (step 3).** Implemented DETECTION (`SCHED.amV` stamp,
-  `amFormatOf`, `protectedWeek`) + a read-only quarantine via `editMode()` (which
-  gates every rendered edit affordance AND the board mutation handlers, both edit
-  week and board). I did NOT add explicit `amFormatOf` consults to the OIL wire /
-  `persistAll` / hydration, or a slots-funnel guard, because those paths already
-  handle a pre-Phase-2 book SAFELY: the verId resolvers return null for old ids
-  (publication naturally suppressed), OIL falls back to the raw stashed days so
-  credits STAND (never deleted — a naive "skip" would delete them, which the plan
-  itself warned against), and `persistAll`/stash re-serialize `SCHED` verbatim so
-  the old book round-trips byte-for-byte (never upgraded). So P2-R3-02's "no edit
-  silently dropped" holds via preservation + editMode read-only, not via a funnel
-  refusal. **Codex should judge whether the fuller consult-everywhere guard is
-  warranted, or whether safe-degradation + editMode is sufficient.**
-- **P2-07 (reconcile/rebase).** No change made: canonical-only address families
-  (`wx/fx/bx/bxr/gx`) are NEVER raised as pending marks (only `dayKeys`-grammar
-  addresses are), so there is no such mark for reconcile to erase; eligibility comes
-  from `dayDelta`, which the step-0 translator already rid-joins for these families.
-- **`keys.ts`.** `shiftKeys`/`permuteKeys` still remap `a.keys`/`adds`/`structAdds`
-  — a no-op on a Phase-2 record (no live keys), legacy records remapped as before;
-  the frozen `snap`/`diff` are never touched.
+## Note for whoever drives git
+Both this repo's sessions share ONE working folder — only one should run git at a
+time (a parallel session switched this tree to `main` mid-work on 12 Sep; nothing
+was lost because everything was committed). Put the tree on
+`claude/amendment-engine-core` before working.
 
-## Pick up here — the FIX CYCLE (round-1 Codex findings)
-1. Work `2026-09-12-amendment-phase2-code-inspection-log.md` finding by finding.
-   Suggested order (contained first, then the design work):
-   - Quick/contained: P2-IMPL-04 (stamp `amV` on first publish), P2-IMPL-12
-     (validate each `dayCurVerIn` candidate by descending seq), P2-IMPL-09
-     (capture the recovery delta count before `withDaySnap`), P2-IMPL-10/11
-     (week/edit-scope the template arm + disarm the slot), P2-IMPL-07 (make
-     `dayHasChanges` derive only from `dayDelta`, drop the digest fast-path).
-   - Larger design: P2-IMPL-06 (`canonicalDiff` surviving-row field additions —
-     who[]/more[]/pax[]/bxr), P2-IMPL-08 (canonical-only mark attribution +
-     reconcile/rebase), P2-IMPL-01 (OIL protect-not-delete for unsupported/
-     wrong-week), P2-IMPL-02 (real byte-preservation: bypass migration/writeback
-     for an unsupported book), P2-IMPL-03 (input-path read-only guards),
-     P2-IMPL-05 (persist the 4-state filing across navigation).
-   Test-first each; keep the full gate set green; do NOT weaken assertions.
-2. **Re-inspect** in a fresh Codex session (`inspect` mode, same runner,
-   `PYTHONUTF8=1`, `--base d125fd5`) — MAX_INSPECTION_ROUNDS budget: this initial
-   round + one after fixes.
-3. **Merge only on the owner's explicit "merge live"** AND a clean Codex pass.
-   No-auto-merge stands (2 Sep 26). Leave PR #395 and the EOD feature alone.
+## Standing constraints (unchanged)
+Do NOT merge until the owner says "merge live" AND Codex is clean. Leave PR #395
+and the EOD feature alone. Every new persisted field still rides
+`schedFields()`+`histApply`; parity stays 728/0.
