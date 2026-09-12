@@ -557,7 +557,7 @@ export function alIssue(di:any){di=+di;
      publish path — refuse to push a record onto an unsupported/wrong-week book,
      so any caller that reached here (present or future) cannot issue onto frozen
      data. Returns a zero-count result rather than throwing, matching its shape. */
-  if(protectedWeek())return {seq:0,id:null,sign:{},count:0};
+  if(protectedWeek())return {seq:0,id:'',sign:{},count:0};
   stampAmFormat();   // defensive: an AL on a validated (supported) book keeps it 'current' (P2-IMPL-04)
   const seq=nextSeq(di), iso=dayIso(CURWEEK,di), id=verId(iso,seq);
   /* the canonical delta vs the CURRENT issued version, captured BEFORE the marks
