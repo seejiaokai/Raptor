@@ -19,7 +19,7 @@
 import { DATES, inputCoversDate } from './inputs'
 import { amFormatOf, protectedWeek } from './publish'
 import { stashKeys, stashGet, isPreservedWeek } from './weekstash'
-import { weekBundle } from './weeks-data'
+import { weekDatesAbs } from './weeks-data'
 import { CURWEEK } from './waves'
 
 /* is a STORED week's blob read-only? A present blob that will not parse, or
@@ -30,13 +30,23 @@ import { CURWEEK } from './waves'
    json (no stored record) is NOT protected — that is a genuinely missing week. */
 export function stashProtected(key: any, json: any): boolean {
   if (json == null) return false
-  if (isPreservedWeek(key)) return true
-  let sc: any
-  try { sc = JSON.parse(json) } catch { return true }
-  if (!sc || typeof sc !== 'object' || !Array.isArray(sc.d)) return true
-  /* map the stash's short keys onto amFormatOf's shape, threading the week key so
-     a wrong-week book is caught too (the same reading applyWeekModel/OIL use). */
-  return amFormatOf({ amV: sc.am, als: sc.a, orig: sc.o, cur: sc.cv }, key) === 'unsupported'
+  /* ANY failure to classify a PRESENT blob reads as UNREADABLE = protected, never
+     an escaped throw (Q2R-04, a regression). amFormatOf's records-belong-to-week
+     walk throws on a damaged `als` (a for..of over a non-iterable), and before this
+     wrap only JSON.parse was guarded — so the throw escaped protectedDates() and
+     broke the input funnel for EVERY week, not just the damaged one. The whole
+     classification — preserved check, parse, shape, format — sits inside the guard
+     so one damaged stash can never crash a reader. An empty-string blob ('' — a
+     truncated whiteboard read) parses-throws here too, so it is protected, not
+     mistaken for an absent week (Q2R-08, with the stashGet presence fix). */
+  try {
+    if (isPreservedWeek(key)) return true
+    const sc = JSON.parse(json)
+    if (!sc || typeof sc !== 'object' || !Array.isArray(sc.d)) return true
+    /* map the stash's short keys onto amFormatOf's shape, threading the week key so
+       a wrong-week book is caught too (the same reading applyWeekModel/OIL use). */
+    return amFormatOf({ amV: sc.am, als: sc.a, orig: sc.o, cur: sc.cv }, key) === 'unsupported'
+  } catch { return true }
 }
 
 /* every date label under read-only quarantine — the loaded week if its own book
@@ -47,7 +57,12 @@ export function protectedDates(): string[] {
   if (protectedWeek()) out.push(...DATES)
   for (const k of stashKeys()) {
     if (k === CURWEEK) continue
-    if (stashProtected(k, stashGet(k))) out.push(...weekBundle(k).dates)
+    /* weekDatesAbs, not weekBundle(k).dates (Q2R-03): a stashed AUTHORED week's
+       dates are the fixed BARE labels ('Jul 13'), which dateOrd re-resolves against
+       whatever year is LOADED — so a protected 2026 week checked while a 2027 week
+       was loaded locked the 2027 weekday of the same label. Year-qualified labels
+       compare as absolute dates regardless of the loaded year. */
+    if (stashProtected(k, stashGet(k))) out.push(...weekDatesAbs(k))
   }
   return out
 }

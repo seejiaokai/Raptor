@@ -57,7 +57,12 @@ export function stashDrop(v:any){ const k=String(v);
      so a cleared damaged/legacy week came straight back. */
   delete PRESERVED[k];
   GEN[k]=(GEN[k]||0)+1; return true; }
-export function stashGet(v:any){ return WEEKSTASH[String(v)]||null; }
+/* PRESENCE by explicit key, NOT by truthiness (Q2R-08): the old `||null` collapsed
+   a present-but-EMPTY blob ('' — a truncated/foreign whiteboard read) to null, so
+   protectedDates()/applyWeekModel/the OIL pass all read it as a genuinely ABSENT
+   week and seeded over it, instead of quarantining a damaged record. An empty
+   string is now returned as-is (present); only a truly missing key is null. */
+export function stashGet(v:any){ return stashHas(v)?WEEKSTASH[String(v)]:null; }
 /* PRESERVED (byte-frozen) BOOKS — a week loaded from a PRE-Phase-2 (unsupported)
    snapshot is READ-ONLY and its engine cannot safely re-key it, so it must round-
    trip byte-for-byte: state/store.ts skips every id migration/normalization for

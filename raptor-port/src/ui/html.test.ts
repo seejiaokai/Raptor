@@ -8,8 +8,11 @@ import { DAYS } from '../engine/data'
 import { INPUTS, inputCoversDate, isUnavail } from '../engine/inputs'
 import { validate, CHIP_LABEL, chipText } from '../engine/validate'
 import { dayHTML, dayPreviewHTML, dayIssuedHTML, withDaySnap, legendHTML, availHTML } from './html'
+import { boardHTML } from './board'
 import { PEOPLE, QORDER, SEATRANK } from '../engine/people'
-import { SCHED, signOf, setDayApproved, alIssue } from '../engine/publish'
+import { SCHED, signOf, setDayApproved, alIssue, protectedWeek } from '../engine/publish'
+import { setPreservedBlob, clearPreservedBlob } from '../engine/weekstash'
+import { CURWEEK } from '../engine/waves'
 import { dayDrafts, draftDup } from '../engine/drafts'
 import { txtSet, txtGet } from '../engine/slots'
 import { parseHM } from '../engine/time'
@@ -847,6 +850,24 @@ describe('a legacy published day shows an unavailable notice, never the draft as
     expect(h).not.toContain('LIVE DRAFT SECRET')             // the live draft is NOT shown
     expect(h).not.toContain('✓ Published')                   // and not under a Published label
     SCHED.dayOK = {}; SCHED.cur = {}
+  })
+})
+
+describe('a quarantined week surfaces the notice on the week AND the board (Q2R-06)', () => {
+  /* the round-2 fix routed the notice through dayIssuedHTML only — reachable on
+     the VIEW page's APPROVED days. A damaged/preserved week loads the seed as a
+     placeholder whose days are UNAPPROVED, so the edit week, the view week's
+     unapproved days and the scheduler board all fell through to the ordinary
+     builders and painted the seed as if it were the schedule. The check now sits
+     in dayHTML (view + edit) and boardHTML (the board), the shared builders. */
+  it('dayHTML and boardHTML both show the unavailable notice for a preserved week', () => {
+    setPreservedBlob(CURWEEK, 'x')     // force the loaded week read-only (isPreservedWeek → protectedWeek)
+    try {
+      expect(protectedWeek(), 'the loaded week is read-only').toBe(true)
+      expect(dayHTML(0, true), 'the edit week surfaces the notice').toContain('older version of the app')
+      expect(dayHTML(0, false), 'the view week too').toContain('older version of the app')
+      expect(boardHTML(0), 'and the scheduler board').toContain('older version of the app')
+    } finally { clearPreservedBlob(CURWEEK) }
   })
 })
 

@@ -77,6 +77,34 @@ in `docs/superpowers/specs/2026-09-13-amendment-phase2-quarantine-round2-finding
 - Re-run BOTH bug-checks after. **Do NOT merge** until owner says "merge live" AND Codex is
   clean. No-auto-merge stands. PR #395 and the EOD feature stay untouched.
 
+## ROUND-3 PILE 2 DONE (Opus, 13 Sep 26) — the five small clear ones, test-first
+All five Opus-assigned findings fixed and pinned; gates green (**unit 4624/4624 · parity
+728/0 · build clean**). Each fix + its test:
+- **Q2R-04 classifier totality** — `stashProtected` (engine/quarantine.ts) now wraps the
+  WHOLE classification in try/catch → a throw (amFormatOf's `for..of` over a damaged
+  non-iterable `als`) reads as unreadable=protected, no longer escapes protectedDates()
+  and breaks every week's input funnel. Pin: quarantine.test.ts.
+- **Q2R-08 empty-string stash** — `stashGet` (engine/weekstash.ts) presence is now by
+  explicit key (`stashHas`), not `||null`, so a present `''` blob is returned and
+  classified unreadable instead of read as an absent week (also closes the same hole in
+  applyWeekModel + the OIL pass, which read presence via stashGet). Pin: quarantine.test.ts.
+- **Q2R-03 date labels → absolute** — new `weekDatesAbs(v)` (engine/weeks-data.ts, always
+  year-qualified); protectedDates() uses it for stashed weeks so an authored week's bare
+  fixed labels no longer re-resolve against the LOADED year (cross-year mislock). Pin:
+  quarantine.test.ts.
+- **Q2R-06 notice layer** — the quarantine notice now sits in the SHARED builders
+  `dayHTML` (view+edit) and `boardHTML` (board), not only dayIssuedHTML (reachable only on
+  approved view days). One shared `QUARANTINE_NOTE` string. Parity untouched (protectedWeek
+  never true for seed weeks). Pin: html.test.ts.
+- **Q2R-10 nav close/open** — `setBoardDay` (state/view.ts) bumps NAVGEN on ANY real SBDAY
+  transition (open/close/day-change), not only day→day, so a board close+reopen invalidates
+  a stale day-template-apply confirm. Pin: navtoken.test.ts.
+
+STILL OPEN → Codex work order: the 4 PERSISTENT deep ones (medical cascade, sync boundary,
+reconcile/nav global-acc, U1) plus the remaining MED/LOW leftovers (OIL span Q2R-07,
+callsign rename Q2R-09, U2 toast, perf memoise, non-quarantine throw G3, rollback log
+residue, removeInput boolean) — see the RE-REVIEW + UNDO sections above for precise specs.
+
 ## Standing constraints (unchanged)
 Both this repo's sessions share ONE working folder — only one runs git at a time; put the tree
 on `claude/amendment-engine-core` first. Every new persisted field still rides

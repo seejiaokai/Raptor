@@ -10,14 +10,14 @@ import { WARN, validate, WCODE, wlbl } from '../engine/validate'
 import { hhmm, fmtHM, minus, parseHM } from '../engine/time'
 import { VCONF } from '../engine/rules'
 import { slotVal, txtGet, txtSet, acRef, rollCx, whoArr, unacceptInput, TIME_TXT } from '../engine/slots'
-import { markEdit, markDeletion, deletionWasIssued, markStructuralAdd, alAttr, dayApproved, dayCurVer, dayPendCount, dayHasChanges, verLabel, nextSeq, dropRowMarks } from '../engine/publish'
+import { markEdit, markDeletion, deletionWasIssued, markStructuralAdd, alAttr, dayApproved, dayCurVer, dayPendCount, dayHasChanges, verLabel, nextSeq, dropRowMarks, protectedWeek } from '../engine/publish'
 import { logAction, ELOG } from '../engine/editlog'
 import { hideHistBub } from './histbubble'
 import { touchDragBusy } from './drag'
 import { shiftAircraft, shiftFormation, shiftWave, shiftKeys, keyDay } from '../engine/keys'
 import { applyMove, sortWave, sortDutyBlock, sortSims, sortGround, sortProg, sortDay } from '../engine/reorder'
 import { HIST } from '../state/history'
-import { signoffHTML, cxText, storesView, intimesInner, areaText, atimeText, dayStatHTML, verSelBoardHTML, srcInput, saRoleHTML, availHTML } from './html'
+import { signoffHTML, cxText, storesView, intimesInner, areaText, atimeText, dayStatHTML, verSelBoardHTML, srcInput, saRoleHTML, availHTML, QUARANTINE_NOTE } from './html'
 import { setInpField } from './inputedit'
 import { STORE_CFG, DUTYTPL_CFG, blockFromTpl, DAYTPL_CFG, applyDayTpl, addDayTpl, dayTplSave, dayTplSummary, secOrder, waveInsertSlot, waveKindOf, moveWave } from '../engine'
 import { dayDrafts, curDraftId, draftDup, draftSelect } from '../engine/drafts'
@@ -40,6 +40,12 @@ const afterSchedMutate = () => view.afterSchedMutate()
    signatures live on the AL record; live sign selects against an old day
    would invite edits against the wrong document. */
 export function boardHTML(di: number, pv?: boolean) {
+  /* a QUARANTINED loaded week is read-only and its days are the seed placeholder;
+     the board is a third surface that reached the ordinary builder and painted the
+     seed as the schedule, with no quarantine indication (Q2R-06). Surface the same
+     one notice the week pages show — the mutators already refuse on a protected
+     week, this makes the state visible. */
+  if (protectedWeek()) return `<div class="sb-panel"><div class="dprev-bar">${QUARANTINE_NOTE}</div></div>`
   const d = DAYS[di]
   /* the stores chips/C follow HOOKS.editMode(), not just pv: the render gate
      is then EXACTLY the click gate interactions.ts uses for

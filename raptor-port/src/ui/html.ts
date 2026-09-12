@@ -85,12 +85,16 @@ export function dayPreviewHTML(di:any,ver:any,edFallback:any){
    unsupported book, whose 'orig'/numeric identities no longer resolve. The crew
    must NOT be shown the live working DRAFT under a "Published" label
    (P2-REREVIEW-06); render an explicit, read-only unavailable notice instead. */
+/* the ONE quarantine notice sentence, shared by the week's dayUnsupportedHTML and
+   the board's own guard (board.ts:boardHTML) so the two surfaces can never drift
+   (Q2R-06). */
+export const QUARANTINE_NOTE = "This day's published schedule was created by an older version of the app and can't be shown here. It has not changed — open it on the device that created it."
 function dayUnsupportedHTML(di:any){
   const d=DAYS[di]
   return `<section class="day ${d.today?'today':''} dok issued" data-day="${di}">`
     +`<div class="day-head"><span class="dow di-open" data-dayinfo="${di}" title="Day details">${d.dow}</span>`
     +`<span class="dt di-open" data-dayinfo="${di}" title="Day details">${esc(d.dt)}${d.today?' · Today':''}</span></div>`
-    +`<div class="dprev-bar">This day's published schedule was created by an older version of the app and can't be shown here. It has not changed — open it on the device that created it.</div>`
+    +`<div class="dprev-bar">${QUARANTINE_NOTE}</div>`
     +`</section>`
 }
 /* the VIEW page's default render for a PUBLISHED day (owner, 15 Aug 26): the
@@ -1040,6 +1044,14 @@ export function dayStatHTML(di:any,ed:any){
     return `${draftChip}${pendChip}${infoChip}${beak}${alpub}`;
 }
 export function dayHTML(di:any,ed:any,vsel?:any){
+  /* A QUARANTINED (unreadable / preserved / unsupported) LOADED week is read-only,
+     and its days are UNAPPROVED (the seed is loaded as a placeholder), so both the
+     edit week and the view week's unapproved days reach this shared builder — which
+     used to paint the seed as if it were the real schedule, with no indication the
+     week is frozen (Q2R-06). Surface the same notice dayIssuedHTML shows. Parity is
+     untouched: protectedWeek() is never true for the seed weeks the reference pins.
+     dayIssuedHTML checks protectedWeek() BEFORE calling dayHTML, so no double. */
+  if(protectedWeek()) return dayUnsupportedHTML(di);
   const d=DAYS[di];
     /* dayStatHTML (above) recomputes this same lookup for its own chips; kept
        here too because the <section> class needs it and dayApproved is a bare
