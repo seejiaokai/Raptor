@@ -38,12 +38,15 @@ Land what's **cheap, done, or in-flight and risk-reducing** before the big block
 build; keep the amendment (the main project) unblocked; leave feature-ish and
 future-milestone work last.
 
-1. **[AMEND]** — the main project. Unblock with the two owner decisions, then
-   revise → Astra → build. **[BUG2]** folds in here.
-2. **[OIL]** — depends on [AMEND]; do straight after.
-3. **[TRK-CSID]** — next Tracker stable-ids step; independent, medium, not urgent.
-4. **[TRK-ATTEMPTS]** — small new feature, low urgency.
-5. **[DB-STEP]** — the future database milestone; **[TRK-DISK]** (Decision A) is
+1. **[AMEND]** — the main project. Decisions resolved; brief re-frozen & re-reviewed;
+   **CORE now building** on `claude/amendment-engine-core` (the end-of-day feature is
+   split out to **[EOD]**). **[BUG2]** folds in here.
+2. **[EOD]** — the end-of-day feature split out of [AMEND]; design-first follow-on,
+   after the core lands.
+3. **[OIL]** — depends on [AMEND]; do straight after.
+4. **[TRK-CSID]** — next Tracker stable-ids step; independent, medium, not urgent.
+5. **[TRK-ATTEMPTS]** — small new feature, low urgency.
+6. **[DB-STEP]** — the future database milestone; **[TRK-DISK]** (Decision A) is
    fixed inside it.
 
 *(Done 12 Sep 2026: **[TRK-IMPORT]** and **[TRK-LEDGER]** — both merged live; see Done.)*
@@ -55,8 +58,12 @@ future-milestone work last.
 One line each, no jargon:
 
 - **[AMEND] — The amendment engine rebuild (the big one).** Each day gets its own
-  amendments, published is locked, every change is a new AL, no take-backs. Design
-  nearly done — waiting on your two decisions (plans, signatures).
+  amendments, published is locked, every change is a new AL, no take-backs. Decisions
+  made; now being built, phase by phase. The end-of-day "record actuals" part is split
+  off as **[EOD]** to build later.
+- **[EOD] — The end-of-day "what actually flew" record.** A quick end-of-day note of
+  what really happened (scrubs, changes), with no sign-off. Designed, but it needs its
+  own careful round before building — set aside so the main rebuild ships first.
 - **[OIL] — Don't wipe off-in-lieu someone already earned.** Removing a person by
   amendment currently erases their weekend/holiday OIL — wrong if they'd already
   worked the day. Lock it once the day's been worked. After the amendment rebuild.
@@ -80,26 +87,53 @@ One line each, no jargon:
 
 ## Items
 
-### [AMEND] Amendment engine redesign — DESIGN IN PROGRESS (blocked on 2 owner decisions)
+### [AMEND] Amendment engine redesign — CORE BUILDING (decisions resolved)
 Rebuild the publish/amend/version model: per-day isolated numbering (never
 week-wide), published = immutable, every change a new AL, supersede-never-retract,
 undo cannot cross a publish, load-old-version → republish-as-next-AL as the safe
 recovery path.
-- **Blocked on owner:** #1 plans (disappear at publish vs survive as contingencies);
-  #3 signatures (all four roles re-sign each amendment vs fewer).
-- **Must-build (Astra review):** AM-01 unique date-qualified version IDs; AM-02
-  versioned saved-week migration (incl. Leave War's direct saved-week reads); AM-04
-  define what a published version captures (availability leak); AM-06 bind
-  signatures to content.
-- **Then:** revise brief → re-run Astra on a **frozen** file → build (heavy,
-  saved-data, test-first) → fresh Codex inspection.
-- **Model:** build on Opus; each Astra round + final inspection on Codex; a tricky
-  design call worth a Fable-high check.
-- **Context & records (read to resume):** the decisions doc
-  `raptor-port/docs/superpowers/specs/2026-09-11-amendment-model-decisions.md` now
-  carries the full rationale, the industry research, the reopen/undo/correct
-  reasoning and the interactive mockup links (§10) — plus `-design-brief.md` and
-  `-review.md`.
+- **Decisions RESOLVED (owner, 12 Sep 26):** plans SURVIVE as backups; ALL FOUR roles
+  re-sign every amendment; crew SEE the live draft (issued stays authority). OIL for
+  this build = latest AL/Original per day, per-day, read-failure protection (the
+  worked-day lock stays **[OIL]**).
+- **Reviewed:** the design brief was re-frozen (Rev 3) and re-reviewed by BOTH providers
+  (converged), then Rev 4 owner additions (EOD, OIL simplification, plan names) got a
+  further Astra/Codex red-team → Rev 5. Plan naming passed clean; the EOD findings
+  (REV5-01…05) are why EOD is split out (see **[EOD]**).
+- **Must-build (still in scope):** AM-01 date-qualified version IDs; AM-02 versioned
+  saved-week migration (incl. Leave War's direct reads); AM-04 what a published version
+  captures; AM-06 signatures bound to content; AM-09 durable write/lease.
+- **Now:** building the CORE test-first on `claude/amendment-engine-core`, phase by
+  phase; full gates per phase; **no merge without "merge live"**; fresh Codex inspection
+  of the final code.
+- **Model:** build on Opus 4.8 (high); final code inspection on Codex; Fable reserved
+  for a single high-stakes finding.
+- **Context & records (read to resume):** the build plan
+  `raptor-port/docs/superpowers/specs/2026-09-12-amendment-core-build-plan.md` (phases +
+  proofs), the frozen spec `…-amendment-core-build-brief.md`, the decisions doc
+  `…-2026-09-11-amendment-model-decisions.md` (rationale, mockups §10), and the review
+  log `…-amendment-rev4-rev5-review-log.md`.
+
+### [EOD] End-of-Day "record actuals" — DEFERRED (design follow-on, after [AMEND] core)
+The end-of-day actuals record: a distinct end-of-day publish that captures what actually
+flew (scrubs, deviations), labelled EOD, with **no four-role sign-off** — just "recorded
+by X". Owner designed it 12 Sep; split out of the core build because an unsigned publish
+path in a clock-free app needs its own design cycle. Astra/Codex REV5 findings to resolve:
+- **REV5-01** the "day is closed" boundary is scheduler-asserted with no eligibility rule
+  → a future day could be closed+EOD'd to publish an unsigned plan change; the app has no
+  clock (`weeknav.ts TODAY` fixed). Needs a real "day is done" mechanism or a narrowed,
+  documented trust guarantee (EOD is never the forward-plan authority).
+- **REV5-04** "worked" ≠ "marked closed": a worked-as-planned day gets no EOD and stays
+  unclosed, so a later AL can still strip its OIL; legacy worked days too. Needs a
+  no-content-change closure path + treatment of unclosed/legacy worked dates.
+- **REV5-02** a late OIL acknowledgement (`reviseOil`→`row.oil`, no publication gate) has
+  no defined transition into an immutable/closed day.
+- **REV5-03** pick ONE correction transition (corrections are EOD-kind, not signed AL).
+- **REV5-05** closing a day doesn't freeze holiday eligibility (`setDayEvent` removing a
+  PH → `runOilPass` deletes the credit, no closed-day guard); freeze the non-working basis.
+- **Design record:** the EOD design is preserved in §3b of `…-amendment-core-build-brief.md`;
+  findings + dispositions in the review log. **Model:** design-first, red-team both
+  providers again before building; then Opus build + Codex inspection.
 
 ### [OIL] Lock earned OIL on an already-worked day — STANDBY (after [AMEND])
 An amendment that removes a person re-derives Leave War auto-OIL from the current
