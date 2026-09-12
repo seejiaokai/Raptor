@@ -1,5 +1,9 @@
 # Amendment / scheduling model — design-review brief (for independent Codex/Astra review)
 
+> **SUPERSEDED (12 Sep 2026) by `2026-09-12-amendment-model-design-brief.md`.**
+> This brief attacked an *unsettled* model with open forks; those forks are now
+> closed. Kept for history only — review the v2 brief, not this one.
+
 **Status:** design-first, NO code to be written yet. This is a brief for an
 INDEPENDENT cross-provider review of the *model*, not an implementation plan to
 approve.

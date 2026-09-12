@@ -1,51 +1,53 @@
-# Session handoff — amendment engine redesign (design-first) + backlog
+# Session handoff — amendment engine redesign: DESIGN COMPLETE (12 Sep 2026)
 
-## Where it started
-Owner (non-technical) resumed the amendment-model work from the 11 Sep review.
-Design-first, no code. This session settled the publish/amend model, cross-reviewed
-it with Astra (Codex), stood up a durable backlog (`/OUTSTANDING.md`), and captured
-the reasoning into committed docs so a future session can pull it back out.
+## Where it landed
+Owner (non-technical) resumed the amendment-model work and, this session, **settled
+the last decisions, approved the UI, and the design was taken to a build-ready,
+twice-reviewed brief.** Design-first — NO code written. Owner went to sleep partway
+and authorised autonomous completion of the design loop (his words: "self run these
+until the task is completed… u may call fable too").
+
+## Decisions settled this session
+- **#1 Plans → SURVIVE as backups** (the riskier option; squadron keeps ready-made
+  contingencies), with safeguards designed in (never auto-issues; re-validate on
+  activation; stale-backup trap caught via durable base-version provenance).
+- **#3 Signatures → all four (CUR/SKED/PLAN/APPR) re-sign every amendment**, bound to
+  content; sign-off UI = the app's existing `.signoff`, unchanged.
+- **Crew visibility → they SEE the live draft** (renamed from "working copy"), badged
+  "not yet issued", on all three surfaces; the issued version stays the authority.
+
+## Produced
+- **UI mockup (approved):** interactive, in the app's real palette/fonts, with the
+  app's real sign-off — https://claude.ai/code/artifact/90a30794-acb2-45f9-80ce-57f79b3edc27
+- **Build-ready brief:** `raptor-port/docs/superpowers/specs/2026-09-12-amendment-model-design-brief.md`
+  (Rev 3). It states the settled model + the pinned contracts + a §12 list of the
+  work explicitly deferred to the build (test-pinned).
+- **Two independent cross-provider reviews, both incorporated:** Astra/Codex
+  (R-01…R-13, N-01…N-03) and Fable/Claude (F-01…F-12). Both converged; Fable caught
+  extra design-level blockers (surviving retraction paths F-01; publish trigger keyed
+  on slot-keys F-02; `ground[].src` re-land F-04; `navigator.locks`/size-budget
+  F-07/F-08). Raw review outputs are in the session scratchpad (not committed).
+- Docs updated: `2026-09-11-amendment-model-decisions.md` (§4/§9 marked resolved),
+  `/OUTSTANDING.md` [AMEND] (DESIGN COMPLETE), the old `-design-brief.md` (SUPERSEDED
+  banner).
 
 ## Shipped
-- Nothing to `main`. New docs committed to the designated `claude/` branch and
-  pushed; PR open, awaiting the owner's "merge live". Docs-only.
-- (Not this session, for context: the AL-tooltip security fix merged as PR #393 and
-  is live — logged under Done in `/OUTSTANDING.md`.)
+- Docs-only. Committed to a `claude/` branch and pushed; PR open, awaiting the owner's
+  **"merge live"**. No gates (docs-only path skips them). Nothing merged to `main`.
 
-## Unfinished
-- **[AMEND] amendment redesign is DESIGN-ONLY, blocked on two owner decisions:**
-  #1 plans (disappear at publish vs survive as contingencies); #3 signatures (all
-  four roles re-sign each amendment vs fewer). Settled: per-day isolated numbering
-  (never week-wide), published = immutable, every change a new AL,
-  supersede-never-retract, undo can't cross a publish. Astra verdict = REVISE, with
-  4 must-fixes (unique date-qualified version IDs; saved-week migration incl. Leave
-  War's direct reads; define what a published version captures; bind signatures to
-  content). Full state + rationale + mockup links:
-  `raptor-port/docs/superpowers/specs/2026-09-11-amendment-model-decisions.md`
-  (§10 context, §6 findings); review brief `-design-brief.md`; original review
-  `-review.md`.
-- **Two built-but-unmerged Tracker fixes** (old branches — re-check vs current `main`
-  before landing): `claude/tracker-import-conflict-fix` (#386),
-  `claude/storage-legacy-import-ledger`. See `/OUTSTANDING.md` [TRK-IMPORT]/[TRK-LEDGER].
-- Nothing else in flight.
-
-## Branch state
-- Designated branch: the `claude/` branch this handoff was pushed to (docs).
-- Its PR is open, awaiting "merge live". Docs-only → no gates run.
-- If it has MERGED before the next session starts, reset first:
-  `git fetch origin main && git checkout -B <branch> origin/main`.
-
-## Gates
-- Not run — docs-only change (no code touched); `deploy.yml` skips `**.md` /
-  `.claude/**`, so no gate checks apply. Run from `raptor-port/` (with `npm ci`) only
-  when code work resumes.
-
-## Open questions
-- **[AMEND] #1 plans** and **#3 signatures** — the two the owner must answer to
-  unblock the rebuild (details in the decisions doc §4).
-- **[OIL]** lock earned-OIL on an already-worked day — owner leaning yes; confirm.
+## NEXT — the build (NOT started; needs the owner)
+- **[AMEND] build** — HEAVY, saved-data, test-first, on Opus, with cross-provider code
+  inspection. Its first tasks are the §12 test-pinned specs (enumerate the canonical
+  field list from `engine/schema.ts`; the deterministic migration mapping; the
+  signature-invalidation matrix; the undo apply-list; the crew field projection; the
+  `navigator.locks` lease). It sits BEHIND priority #1 in `/OUTSTANDING.md`:
+- **[TRK-IMPORT] + [TRK-LEDGER]** (priority #1) — two Tracker fixes already built on old
+  branches (`claude/tracker-import-conflict-fix` #386, `claude/storage-legacy-import-ledger`
+  #387); re-check vs current `main`, then merge-live. Real silent-data fixes.
 
 ## Pick up here
-Get the owner's **plans** and **signatures** decisions, then revise the design brief
-and re-run Astra on a **frozen** file (`claudex-loop`, host=claude reviewer=codex).
-The whole backlog, priority order and per-task context live in `/OUTSTANDING.md`.
+The design is done and shelf-ready. Next working session: either (a) land the two
+Tracker fixes (priority #1, quick — re-check + merge-live), or (b) start the [AMEND]
+build from the Rev 3 brief §12 task list. Read `/OUTSTANDING.md` first, then the Rev 3
+brief. The build is big and risky — keep it test-first and cross-provider-checked, and
+don't merge without the owner's "merge live".
