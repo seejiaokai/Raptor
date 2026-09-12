@@ -12,7 +12,7 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { INPUTS } from '../engine/inputs'
 import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
-import { SCHED, signOf, setDayApproved } from '../engine/publish'
+import { SCHED, signOf, setDayApproved, publishALDay } from '../engine/publish'
 import { stashClear, stashPut } from '../engine/weekstash'
 import { initStore as raptorInitStore, loadWeek } from '../state/store'
 import { projectPeople } from './state/raptorRoster'
@@ -123,23 +123,15 @@ describe('publish drives the credit', () => {
 })
 
 describe('reverse-and-replace — the credit follows the issued document', () => {
-  it('reopening the day takes the credit back', () => {
+  /* Phase 2 removed the reopen take-back: a published day is frozen and can only
+     be changed by a NEW AL. So "reopen takes the credit back" is gone; the credit
+     follows the CURRENT issued version, which a new AL updates. */
+  it('a new AL with shorter hours replaces FO with HO — the credit follows the current issued version', () => {
     publish(5)
     runOilPass()
     expect(cellOf('plasma', SAT)).toBe('FO')
-    setDayApproved(5, false)
-    runOilPass()
-    expect(cellOf('plasma', SAT)).toBeUndefined()
-    expect(ownedBy('plasma', SAT)).toBeUndefined()
-  })
-
-  it('a reissue with shorter hours replaces FO with HO', () => {
-    publish(5)
-    runOilPass()
-    expect(cellOf('plasma', SAT)).toBe('FO')
-    setDayApproved(5, false)                      // reopen
-    DAYS[5].dutywaves[0].rows[0].end = '1200'     // the duty shrank to 4h
-    publish(5)                                    // re-publish reissues the snapshot
+    DAYS[5].dutywaves[0].rows[0].end = '1200'     // the duty shrank to 4h on the working draft
+    sign(5); publishALDay(5)                       // publish it as the next AL → the issued snapshot updates
     runOilPass()
     expect(cellOf('plasma', SAT)).toBe('HO')
   })
@@ -167,17 +159,6 @@ describe('the credit reads EVERY week, not just the loaded one (owner, 29 Aug 26
     runOilPass()
     expect(cellOf('plasma', SAT)).toBe('FO')      // …and the credit stands, read from the week's stash
     expect(ownedBy('plasma', SAT)).toMatchObject({ state: 'approved', source: 'raptor' })
-  })
-
-  it('coming back and reopening the day still takes the credit back', () => {
-    publish(5)
-    runOilPass()
-    loadWeek('20/07/2026')
-    runOilPass()
-    loadWeek('13/07/2026')                        // stash restored — the day is still published
-    setDayApproved(5, false)
-    runOilPass()
-    expect(cellOf('plasma', SAT)).toBeUndefined()
   })
 
   it('a corrupt stash blob contributes nothing and throws nothing', () => {

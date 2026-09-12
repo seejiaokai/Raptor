@@ -9,7 +9,7 @@ import { createRoot, type Root } from 'react-dom/client'
 import { App } from './App'
 import { initStore, setSession, notify, HIST } from '../state/store'
 import { DAYS } from '../engine/data'
-import { SCHED, signOf, setDayApproved, dayApproved } from '../engine/publish'
+import { SCHED, signOf, setDayApproved, dayApproved, dayCurVer } from '../engine/publish'
 import { slotVal, setSlotVal, txtGet, autoAcceptInput, inpKey } from '../engine/slots'
 import { INPUTS, inpId } from '../engine/inputs'
 import { parseHM } from '../engine/time'
@@ -1042,7 +1042,7 @@ describe('board lifecycle', () => {
       openScheduler(0); notify()
     })
     expect($('#schedBoard select.dver')).toBeTruthy()
-    await act(async () => { view.setDayPreview(0, 'orig'); notify() })
+    await act(async () => { view.setDayPreview(0, dayCurVer(0)); notify() })
     const board = $('#sbBoard')
     expect(board.querySelector('.pv-frozen')).toBeTruthy()
     expect(board.querySelector('.pv-frozen .sb-panel.duty')).toBeTruthy()   // new panels render frozen too
@@ -2171,7 +2171,9 @@ describe('the board carries the edit week\'s publish controls (owner ask)', () =
   it('publishing flips it to ✓ Published; a pending edit after that shows the pending chip and Publish AL', async () => {
     await click($('#sbSignBar [data-beak="0"]'))
     expect(dayApproved(0)).toBe(true)
-    const beak = $('#sbSignBar [data-beak="0"]')
+    /* §9: once published the beak is an INERT .dbeak stamp (no data-beak — a
+       published day can't be reopened), not a button. */
+    const beak = $('#sbSignBar .dbeak')
     expect(beak.textContent).toContain('✓ Published')       // now names the issued version too
     expect(beak.querySelector('.dal.orig'), 'the stamp names the Original').toBeTruthy()
     expect(beak.classList.contains('ok')).toBe(true)
@@ -2195,7 +2197,7 @@ describe('the board carries the edit week\'s publish controls (owner ask)', () =
   })
 
   it('a frozen version preview renders no Publish day / Publish AL controls', async () => {
-    await act(async () => { view.setDayPreview(0, 'orig'); notify() })
+    await act(async () => { view.setDayPreview(0, dayCurVer(0)); notify() })
     expect($('#sbSignBar'), 'boardSignHTML(di, true) still returns nothing on a frozen preview').toBeFalsy()
     expect($$('#sbSign [data-beak]').length).toBe(0)
     expect($$('#sbSign [data-alpub]').length).toBe(0)

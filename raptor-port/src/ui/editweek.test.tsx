@@ -110,7 +110,9 @@ describe('the edit page (tfin)', () => {
     await click(dayBtn(0))
     expect(dayApproved(0)).toBe(true)
     expect($(`#eWeek .day[data-day="0"].dok`)).toBeTruthy()
-    expect(/Published/.test(dayBtn(0).textContent!)).toBe(true)
+    /* once published the beak is an INERT stamp (§9 — no reopen), a .dbeak span,
+       not a data-beak button — so read the stamp text, not dayBtn. */
+    expect(/Published/.test($(`#eWeek .day[data-day="0"] .dbeak`)!.textContent!)).toBe(true)
     expect([...$$(`#eWeek .day[data-day="0"] select[data-sign]`)].every((s: any) => s.value === '')).toBe(true)
     expect(/PART-PUBLISHED/.test($('#eBanner').textContent!)).toBe(true)
   })
@@ -133,10 +135,16 @@ describe('the edit page (tfin)', () => {
     expect(/AL1/.test($('#alPanel').textContent!)).toBe(true)
   })
 
-  it('unpublish returns the AL to pending', async () => {
-    await click($('#alPanel [data-alun]'))
-    expect(SCHED.als.length).toBe(0)
-    expect($$('#eWeek [data-alc="1"]').length).toBe(0)
+  it('the AL history has no unpublish control (BUG-1: an issued AL cannot be retracted)', async () => {
+    /* Phase 2 removed every take-back — the AL list is read-only history. */
+    expect($('#alPanel [data-alun]'), 'no unpublish ✕ on the AL history').toBeFalsy()
+    expect(SCHED.als.length).toBe(1)                 // AL1 stands, immutable
+    /* reset the shared state for the tests below (the old unpublish used to) */
+    await act(async () => {
+      SCHED.pending = {}; SCHED.changes = {}; SCHED.als = []; SCHED.al = 0
+      SCHED.dayOK = {}; SCHED.orig = {}; SCHED.sign = {}; SCHED.cur = {}
+      notify()
+    })
   })
 
   it('undo / redo buttons work the slot', async () => {
@@ -216,17 +224,23 @@ describe('the edit page (tfin)', () => {
      Driven through the real surfaces: the day-head <select> via the document
      change listener, the restore button via routeClick. Restore is a ROLLBACK:
      the version becomes live at once, the edit is discarded, nothing pends. */
-  it('version dropdown previews a published version and rolls back to it', async () => {
-    /* Monday is still published from the publish-day test above — dayBtn would
-       TOGGLE it back to draft. Publish only if some earlier state changed. */
-    if (!dayApproved(0)) { await signDay(0); await click(dayBtn(0)) }
+  it('version dropdown previews a published version and loads onto the working copy', async () => {
+    /* self-contained (Phase 2 — reopen is gone, so the old shared-state dance no
+       longer applies): clear any inherited state, then publish Monday's Original. */
+    await act(async () => {
+      SCHED.pending = {}; SCHED.changes = {}; SCHED.added = {}; SCHED.als = []; SCHED.al = 0
+      SCHED.dayOK = {}; SCHED.orig = {}; SCHED.sign = {}; SCHED.cur = {}
+      notify()
+    })
+    await signDay(0); await click(dayBtn(0))
     const key = '0.0.0.0.p', before = slotVal(key)
     await act(async () => { writeSlot(key, 'casper') })
     const sel = $(`#eWeek select[data-dver="0"]`) as unknown as HTMLSelectElement
     expect(sel, 'version dropdown on Monday').toBeTruthy()
     expect($$(`#eWeek select[data-dver]`).length).toBe(1)   // only the published day
     await act(async () => {
-      sel.value = 'orig'
+      /* the option values are verIds now (`iso#seq`) — pick the Original by label */
+      sel.value = [...sel.options].find(o => o.textContent === 'Original')!.value
       sel.dispatchEvent(new Event('change', { bubbles: true }))
     })
     const day = () => $(`#eWeek .day[data-day="0"]`)
@@ -265,6 +279,11 @@ describe('the edit page (tfin)', () => {
      working copy shows the difference as pending; a fresh edit still previews
      as AL2. */
   it('the published stamp names the issued version, and a load leaves viewers on it', async () => {
+    await act(async () => {
+      SCHED.pending = {}; SCHED.changes = {}; SCHED.added = {}; SCHED.als = []; SCHED.al = 0
+      SCHED.dayOK = {}; SCHED.orig = {}; SCHED.sign = {}; SCHED.cur = {}
+      notify()
+    })
     await signDay(0)
     await click(dayBtn(0))                     // publish → issued at the Original
     const chip = () => $(`#eWeek .day[data-day="0"] .dal`)
@@ -282,7 +301,7 @@ describe('the edit page (tfin)', () => {
        differs from AL1, which shows as pending */
     const sel = $(`#eWeek select[data-dver="0"]`) as unknown as HTMLSelectElement
     await act(async () => {
-      sel.value = 'orig'
+      sel.value = [...sel.options].find(o => o.textContent === 'Original')!.value
       sel.dispatchEvent(new Event('change', { bubbles: true }))
     })
     await click($(`#eWeek .day[data-day="0"] .dprev-restore`))

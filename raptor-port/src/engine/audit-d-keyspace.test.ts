@@ -104,12 +104,15 @@ describe('key-space integrity under add + delete + drag + Sort all (scenario 1)'
     d.allhands.push({ prog: 'A-ADDED', sub: 'as4', str: '0630', end: '0700', who: 'n4' })
     markStructuralAdd(`ap:0.${d.allhands.length - 1}.prog`)
 
-    /* the frozen truth: every key of the day and its value, stamped on an
-       issued AL in walk order */
+    /* the issued marks: every key of the day stamped into the LIVE changes book
+       in walk order (the value = its issue position). Phase 2 FROZE the AL record
+       (shiftKeys/permuteKeys no longer remap al.keys — engine/keys.ts), so the
+       renumber invariant this scenario pins now lives on the live book: a
+       reorder/delete/Sort-all keeps every LIVE mark attached to its own value.
+       The frozen AL record is exercised separately (the RID-native describe below). */
     const m0 = dayKeys(d, 0)
     const allKeys = [...m0.keys()]
     const origVals = allKeys.map(k => m0.get(k))
-    SCHED.als = [{ n: 1, keys: allKeys.slice(), sign: {} }]
     allKeys.forEach((k, i) => { SCHED.changes[k] = i + 1 })
 
     /* DELETE a middle duty row (block 0, row 1 — the free-text one, which
@@ -131,19 +134,20 @@ describe('key-space integrity under add + delete + drag + Sort all (scenario 1)'
     expect(sortDay(0)).toBe(true)
 
     const m1 = dayKeys(DAYS[0], 0)
-    const rec = SCHED.als[0]
+    /* the surviving LIVE marks, in issue order (the value we stamped rides the
+       renumber unchanged, so sorting on it recovers the original walk order) */
+    const survKeys = Object.keys(SCHED.changes).sort((a, b) => SCHED.changes[a] - SCHED.changes[b])
 
-    /* no address appears twice — a collision would silently merge two
-       amendments into one */
-    expect(new Set(rec.keys).size).toBe(rec.keys.length)
+    /* no address appears twice — a collision would silently merge two marks into one */
+    expect(new Set(survKeys).size).toBe(survKeys.length)
     /* the marks ON the deleted row are gone, and ONLY those */
-    expect(rec.keys.length).toBe(allKeys.length - deadKeys.size)
-    /* THE INVARIANT: read every surviving AL key against the live model — each
+    expect(survKeys.length).toBe(allKeys.length - deadKeys.size)
+    /* THE INVARIANT: read every surviving mark against the live model — each
        must resolve (no orphans) to exactly the value it was issued against, in
        issue order. One mis-permuted head anywhere in sortDay/applyMove/
        shiftKeys shows up here as a value mismatch. */
     const expectVals = allKeys.filter(k => !deadKeys.has(k)).map(k => m0.get(k))
-    expect(rec.keys.map((k: any) => m1.get(k))).toEqual(expectVals)
+    expect(survKeys.map((k: any) => m1.get(k))).toEqual(expectVals)
 
     /* and the whole day, walked fresh, is a value-multiset of the old day
        minus the deleted row — nothing duplicated, nothing lost */

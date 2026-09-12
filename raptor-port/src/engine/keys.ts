@@ -37,6 +37,9 @@ export function shiftKeys(head:any,pos:any,ix:any){
   SCHED.pending=remap(SCHED.pending);
   SCHED.changes=remap(SCHED.changes);
   SCHED.added=remap(SCHED.added);
+  /* A Phase-2 AL record carries a frozen `diff` + snapshot, not live keys, so the
+     map below is a no-op on it (`a.keys||[]` → []); a legacy record's keys are
+     remapped as before. The frozen `snap`/`diff` are never touched. */
   (SCHED.als||[]).forEach((a:any)=>{a.keys=(a.keys||[]).map(move).filter(Boolean);a.adds=(a.adds||[]).map(move).filter(Boolean);a.structAdds=(a.structAdds||[]).map(move).filter(Boolean);});
   elogRemap(move);   // the edit log addresses rows by the same keys (editlog.ts)
   HOOKS.remapViewKeys(move);   // and so does key-addressed view state (hooks.ts)
@@ -69,6 +72,7 @@ export function permuteKeys(head:any,pos:any,oldOf:any){
   SCHED.pending=remap(SCHED.pending);
   SCHED.changes=remap(SCHED.changes);
   SCHED.added=remap(SCHED.added);
+  /* no-op on a Phase-2 record (no live keys); legacy record keys remapped as before */
   (SCHED.als||[]).forEach((a:any)=>{a.keys=(a.keys||[]).map(move);a.adds=(a.adds||[]).map(move);a.structAdds=(a.structAdds||[]).map(move);});
   elogRemap(move);   // the edit log addresses rows by the same keys (editlog.ts)
   HOOKS.remapViewKeys(move);   // and so does key-addressed view state (hooks.ts)

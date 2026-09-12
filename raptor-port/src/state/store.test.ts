@@ -4,8 +4,7 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import { DAYS } from '../engine/data'
 import { INPUTS } from '../engine/inputs'
-import { SCHED, signOf, dayApproved, setDayApproved, publishALDay, unpublishAL, daySnapOf, dayCurVer } from '../engine/publish'
-import { restoreDayVersion } from '../engine/restore'
+import { SCHED, signOf, dayApproved, setDayApproved, publishALDay, daySnapOf } from '../engine/publish'
 import { HOOKS } from '../engine/hooks'
 import { slotVal, txtGet } from '../engine/slots'
 import { shiftKeys } from '../engine/keys'
@@ -103,35 +102,18 @@ describe('undo / redo (tfin, through the store)', () => {
   it('version snapshots ride the undo stack, and a dead preview is pruned', () => {
     sign(0)
     setDayApproved(0, true)
-    expect(daySnapOf(0, 'orig')).toBeTruthy()
+    /* the Original's immutable verId (Phase 2) — captured before the undo that
+       removes SCHED.orig, so it can still be looked up after */
+    const ov = SCHED.orig[0].id
+    expect(daySnapOf(0, ov)).toBeTruthy()
     /* previewing the Original, then undoing past its publish: the snapshot is
        gone, so the preview must not survive to render a ghost */
-    view.setDayPreview(0, 'orig')
+    view.setDayPreview(0, ov)
     undo()
-    expect(daySnapOf(0, 'orig')).toBeNull()
+    expect(daySnapOf(0, ov)).toBeNull()
     expect(view.DPREV.has(0)).toBe(false)
     redo()
-    expect(daySnapOf(0, 'orig')).toBeTruthy()
-  })
-
-  it('a rollback is one undo step, and dayCurVer rides the stack', () => {
-    sign(0)
-    setDayApproved(0, true)
-    const key = '0.0.0.0.p', before = slotVal(key)
-    writeSlot(key, 'casper')
-    /* the routeClick body: rollback, then the one afterSchedMutate */
-    restoreDayVersion(0, 'orig')
-    view.afterSchedMutate()
-    expect(slotVal(key)).toBe(before)
-    expect(SCHED.pending[key]).toBeUndefined()   // discarded, not re-pended
-    expect(dayCurVer(0)).toBe('orig')
-    undo()
-    expect(slotVal(key)).toBe('casper')   // one step back = the pre-rollback state
-    expect(SCHED.pending[rk(key)]).toBe(1)    // the discarded edit is pending again
-    /* the cur stamp itself rides the stack: gone on undo, back on redo */
-    expect(SCHED.cur[0]).toBeUndefined()
-    redo()
-    expect(SCHED.cur[0]).toBe('orig')
+    expect(daySnapOf(0, ov)).toBeTruthy()
   })
 
   it('personal inputs join the undo stack', () => {
@@ -164,10 +146,11 @@ describe('deletes through the store (tfin B48/P2)', () => {
   it('a delete does not re-mark the address it just deleted', () => {
     DAYS[0].notes = ['A', 'B', 'C']
     SCHED.pending = {}; SCHED.changes = { 'dn:0.2': 1 }
-    SCHED.als = [{ n: 1, keys: ['dn:0.2'], sign: {} }]
+    /* Phase 2: an issued AL's frozen snap.c is IMMUTABLE (never renumbered by a
+       later delete), so the "must not still name dn:0.2" check is scoped to the
+       LIVE book — pending + changes — which is where a re-mark would show. */
     writeDelete(() => { DAYS[0].notes.splice(1, 1); shiftKeys('dn:0.', 0, 1) }, 0, 'note')
     const live = Object.keys(SCHED.pending).concat(Object.keys(SCHED.changes))
-      .concat(SCHED.als[0].keys)
     expect(live.filter(k => k === 'dn:0.2')).toEqual([])       // renumbered, not re-marked
     expect(SCHED.changes['dn:0.1']).toBe(1)
     expect(Object.keys(SCHED.pending)).toEqual([expect.stringMatching(/^del:0\.\d+\.note$/)])
@@ -319,7 +302,10 @@ describe('a reorder disarms a stale-armed slot, not just a deleted one (finding 
 })
 
 describe('AL flow through the store (tfin B49)', () => {
-  it('an edit on a published day becomes pending, publishes as an AL, and unpublishes back', () => {
+  /* Phase 2: publishing an AL is the one supported way to change a published
+     day; unpublishing an AL is gone (undo-across-publish is Phase 3), so this
+     drives the edit → pending → publishALDay → issued path only. */
+  it('an edit on a published day becomes pending, then publishes as an AL', () => {
     sign(0); setDayApproved(0, true)
     const key = 'd:0.0.0'
     const before = slotVal(key)
@@ -329,10 +315,6 @@ describe('AL flow through the store (tfin B49)', () => {
     publishALDay(0)
     expect(SCHED.changes[rk(key)]).toBe(1)
     expect(SCHED.pending[rk(key)]).toBeUndefined()
-    unpublishAL(1)
-    expect(SCHED.pending[rk(key)]).toBe(1)
-    undo()                                      // unpublish is an undo step too
-    expect(SCHED.changes[rk(key)]).toBe(1)
   })
 })
 

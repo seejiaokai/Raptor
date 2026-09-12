@@ -556,8 +556,8 @@ describe('text edits carry amendment marks (area/atime commit + AL colouring)', 
     await act(async () => { afterSchedMutate(); notify() })
   })
 
-  it('an edited remark on a draft day carries no mark, then its AL colour once published', async () => {
-    const { SCHED, alIssue, unpublishAL } = await import('../engine/publish')
+  it('an edited remark on a draft day carries no mark, then its AL colour once issued', async () => {
+    const { SCHED } = await import('../engine/publish')
     const { txtGet, txtSet } = await import('../engine/slots')
     await click($$('.nav a[data-page]').find(a => a.dataset.page === 'editsched')!)
     const tx = document.querySelector('#eWeek [data-txt^="fr:"]') as HTMLElement
@@ -572,14 +572,17 @@ describe('text edits carry amendment marks (area/atime commit + AL colouring)', 
     expect(SCHED.pending[rk(key)]).toBeTruthy()
     let el = document.querySelector(`#eWeek [data-txt="${key}"]`) as HTMLElement
     expect(el.hasAttribute('data-alp'), 'a draft-day edit shows no amendment mark').toBe(false)
-    await act(async () => { alIssue(8, [rk(key)]); const { notify } = await import('../state/store'); notify() })
+    /* once the edit is an ISSUED change it wears its per-day AL colour: alAttr
+       reads SCHED.changes[key] = the per-day sequence (Phase 2). Mark it at seq 1
+       (what publishing the day's first AL does) and re-render. */
+    await act(async () => { delete SCHED.pending[rk(key)]; SCHED.changes[rk(key)] = 1; const { notify } = await import('../state/store'); notify() })
     el = document.querySelector(`#eWeek [data-txt="${key}"]`) as HTMLElement
-    expect(el.getAttribute('data-alc'), 'AL colour rendered on the text').toBe('8')
+    expect(el.getAttribute('data-alc'), 'AL colour rendered on the text').toBe('1')
     /* and the read-only view carries the same mark */
     await click($$('.nav a[data-page]').find(x => x.dataset.page === 'viewsched')!)
-    const vw = [...document.querySelectorAll('#vWeek [data-alc="8"]')].find(x => x.textContent!.includes('AL MARK TEST'))
+    const vw = [...document.querySelectorAll('#vWeek [data-alc="1"]')].find(x => x.textContent!.includes('AL MARK TEST'))
     expect(vw, 'the view week shows the AL-coloured text').toBeTruthy()
-    await act(async () => { unpublishAL(8); txtSet(key, was); delete SCHED.pending[rk(key)]; const { notify } = await import('../state/store'); notify() })
+    await act(async () => { delete SCHED.changes[rk(key)]; txtSet(key, was); delete SCHED.pending[rk(key)]; const { notify } = await import('../state/store'); notify() })
   })
 })
 
