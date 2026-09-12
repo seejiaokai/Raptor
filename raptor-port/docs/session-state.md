@@ -1,10 +1,14 @@
-# Session handoff — [AMEND] Phase 2 (coupled record rewrite): COMPLETE, all gates green
+# Session handoff — [AMEND] Phase 2: built + gates green, but Codex inspection = REVISE (fixes pending)
 
 ## Where it stands
-Phase 2 — the coupled amendment-record rewrite — is **built and green** on
-`claude/amendment-engine-core`. The whole plan §8 (steps 2–7) plus step 3 (the
-legacy-format classifier) is done, committed (not merged). **Not merged; awaiting
-a fresh Codex inspection of the finished code, then the owner's explicit "merge live."**
+Phase 2 — the coupled amendment-record rewrite — is **built and gate-green** on
+`claude/amendment-engine-core` (steps 2–7 + step 3), committed (not merged). BUT the
+**fresh Codex inspection came back REVISE with 12 findings (6 high)** — see
+`2026-09-12-amendment-phase2-code-inspection-log.md`. All 12 read as VALID; several
+refute the "safe-degradation" shortcut behind the minimal step-3 classifier, and two
+(P2-IMPL-06/07) expose a real `dayHasChanges`/`dayDelta` invariant gap partly in
+step-0/1 `canonical.ts`. **Do NOT merge. Next is the FIX CYCLE, then a fresh
+re-inspection, then the owner's explicit "merge live."**
 
 ## Gate set (run once at green, this session)
 - `npm test` (unit) — **4544 / 4544 pass** (isolated run; a concurrent run with e2e
@@ -61,10 +65,23 @@ key (P2-R2-05/P2-R3-03). `nextSeq(di)` replaces `nextAL`.
   — a no-op on a Phase-2 record (no live keys), legacy records remapped as before;
   the frozen `snap`/`diff` are never touched.
 
-## Pick up here
-1. **Fresh Codex inspection of the finished diff** (owner + plan require it before
-   merge). Route it cross-provider — `claudex-loop` / `codex-review`, host=claude,
-   reviewer=codex. On Windows set `PYTHONUTF8=1` first (see observation-log #1: a
-   `charmap` crash is display-only, the `result.json` may already be valid).
-2. **Merge only on the owner's explicit "merge live"** AND a clean Codex pass.
+## Pick up here — the FIX CYCLE (round-1 Codex findings)
+1. Work `2026-09-12-amendment-phase2-code-inspection-log.md` finding by finding.
+   Suggested order (contained first, then the design work):
+   - Quick/contained: P2-IMPL-04 (stamp `amV` on first publish), P2-IMPL-12
+     (validate each `dayCurVerIn` candidate by descending seq), P2-IMPL-09
+     (capture the recovery delta count before `withDaySnap`), P2-IMPL-10/11
+     (week/edit-scope the template arm + disarm the slot), P2-IMPL-07 (make
+     `dayHasChanges` derive only from `dayDelta`, drop the digest fast-path).
+   - Larger design: P2-IMPL-06 (`canonicalDiff` surviving-row field additions —
+     who[]/more[]/pax[]/bxr), P2-IMPL-08 (canonical-only mark attribution +
+     reconcile/rebase), P2-IMPL-01 (OIL protect-not-delete for unsupported/
+     wrong-week), P2-IMPL-02 (real byte-preservation: bypass migration/writeback
+     for an unsupported book), P2-IMPL-03 (input-path read-only guards),
+     P2-IMPL-05 (persist the 4-state filing across navigation).
+   Test-first each; keep the full gate set green; do NOT weaken assertions.
+2. **Re-inspect** in a fresh Codex session (`inspect` mode, same runner,
+   `PYTHONUTF8=1`, `--base d125fd5`) — MAX_INSPECTION_ROUNDS budget: this initial
+   round + one after fixes.
+3. **Merge only on the owner's explicit "merge live"** AND a clean Codex pass.
    No-auto-merge stands (2 Sep 26). Leave PR #395 and the EOD feature alone.
