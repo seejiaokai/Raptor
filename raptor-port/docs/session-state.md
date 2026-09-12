@@ -1,43 +1,52 @@
-# Session handoff — [AMEND] Phase 2: engine built + gate-green; quarantine REDESIGN is next
+# Session handoff — [AMEND] Phase 2: quarantine REDESIGN built + gate-green; cross-provider bug-check in flight
 
-## Where it stands (branch `claude/amendment-engine-core`, HEAD `169e85a`)
-The Phase-2 coupled amendment-record rewrite is **built and gate-green**, and TWO
-full Codex fix-cycles are done and committed:
-- `4f39c35` — round-1 fixes (P2-IMPL-01..12)
-- `169e85a` — round-2 fixes (P2-REREVIEW-01..12), incl. 2 regressions round-1 caused
-All local gates green at `169e85a`: **unit 4575/4575 · parity 728/0 · build clean**.
-(Not pushed until the checkpoint is committed — see below. Not merged; owner says
-"merge live" gates the merge, and No-auto-merge stands.)
+## Where it stands (branch `claude/amendment-engine-core`)
+The legacy-book QUARANTINE redesign (the round-3 REVISE, 8 findings P2-REV2-01..08)
+is **BUILT and gate-green**. All local gates pass:
+**unit 4601/4601 · parity 728/0 · build clean.**
 
-## What's NEXT — the quarantine REDESIGN (owner decision, 12 Sep 26)
-A **third** fresh Codex inspection (round 3, `--base d125fd5`) still returned
-**REVISE — 8 findings (P2-REV2-01..08)**. The pattern across all three rounds: the
-"unsupported/legacy book is READ-ONLY (quarantine)" rule was enforced by adding a
-guard at each write site as it was found, and every inspection finds another
-writer it missed — it does not converge. The owner chose to STOP spot-patching and
-do it properly: **ONE choke-point every edit/input/publish/draft path passes
-through**, plus explicit quarantine state through load/persist/OIL.
+Commits on top of the gate-green base `169e85a` (`d949ea1` = the brief/handoff, docs-only):
+- `661a1be` — cluster 1: the INPUT choke-point + off-week 'u' filing (P2-REV2-04, 06)
+- `9390f0c` — cluster 2: schedule-mutation + publication + rendering gates (P2-REV2-02, 03)
+- `2180c87` — cluster 3: unreadable saved week preserved, never seeded over (P2-REV2-01)
+- `07d8386` — cluster 4: filing knock-on, template-arm lifecycle, legacy no-op (P2-REV2-05, 07, 08)
+- `4546887` — a tsc type fix on the alIssue guard
 
-**The full brief — the 8 round-3 findings + the one-checkpoint design + the
-ready-to-paste opening prompt — is:**
-`docs/superpowers/specs/2026-09-12-amendment-phase2-quarantine-redesign.md`
-(a scratchpad backup also exists this session). Read it first.
+## The redesign in one line per finding
+- **04 (choke-point):** `writeInputs`/`writeInputsBatch` (state/store.ts) now snapshot the
+  model and roll it back (via a new `histRestore`, the same restore undo runs) if the batch
+  touched an input covering a protected date or a protected loaded week's schedule. EVERY
+  input writer already funnels through these two, so a new writer is caught automatically —
+  the convergence the per-site guards lacked. No-op fast path when nothing is quarantined.
+- **06:** a `'u'` filed-unavailable input survives an off-week remarks edit (inputedit.tsx).
+- **02/03:** every structural schedule mutator refuses on `protectedWeek()` —
+  draftSelect/draftDup/loadVersionToWorkingCopy/draftDelete/draftRename, applyDayTpl,
+  setDayApproved/publishALDay/alIssue (refuses FIRST). `dayIssuedHTML` classifies by the
+  week/book, not id resolution. UI preview buttons inert on a protected week.
+- **01:** `applyWeekModel` distinguishes MISSING from UNREADABLE; a damaged stash loads the
+  seed as a placeholder VIEW but byte-preserves its original bytes and is read-only.
+  `protectedWeek()` now also true for a preserved week; `stashDays` returns null for a
+  no-days blob; the OIL pass protects a preserved loaded week.
+- **05:** `reconcileDayFiling` (engine/slots.ts), from `rebaseDayPending` (the chokepoint every
+  approved-day replacement funnels through), unfiles a `'g'` whose row a replacement dropped.
+- **07:** a monotonic nav token (`view.navGen()`) folded into `dayTplArmKey` invalidates a
+  stale template-apply confirm on any navigation.
+- **08:** `shiftKeys`/`permuteKeys` remap keys/adds/structAdds only when present.
 
-## Do it in a FRESH session, Opus 4.8 high
-This branch's chat ran long (2 fix cycles + 3 inspections); the redesign is a big
-new task, so start fresh (owner's own rule). The cross-provider bug-checks read the
-committed code + the brief, not the chat — so nothing is lost by starting clean.
-When green, bug-check across BOTH Codex/Astra (the inspect runner; PYTHONUTF8=1;
-read `reply.txt`, since the runner can stamp `status:failed` on a `limitations`
-schema quirk while the verdict+findings are valid) AND Fable 5.1 high.
-
-## Note for whoever drives git
-Both this repo's sessions share ONE working folder — only one should run git at a
-time (a parallel session switched this tree to `main` mid-work on 12 Sep; nothing
-was lost because everything was committed). Put the tree on
-`claude/amendment-engine-core` before working.
+## What's NEXT (do this before merge)
+1. **Cross-provider bug-check is IN FLIGHT** (owner wants BOTH — important/robust):
+   - **Codex/Astra** — the inspect runner was launched with `--base 169e85a` (focuses the
+     review on the redesign), `--model gpt-6-astra --effort high`, `PYTHONUTF8=1
+     PYTHONIOENCODING=utf-8`. READ `reply.txt` for the verdict+findings (the runner can stamp
+     `result.json` status `failed` on a `limitations` schema quirk while the verdict is valid).
+   - **Fable 5.1 high** — an independent adversarial bug-check subagent was launched on the
+     same diff.
+   Triage any findings; new bugs → fix test-first, keep all gates green, never weaken an
+   assertion.
+2. **Do NOT merge** until the owner says "merge live" AND Codex is clean. No-auto-merge stands.
+   PR #395 and the EOD feature stay untouched.
 
 ## Standing constraints (unchanged)
-Do NOT merge until the owner says "merge live" AND Codex is clean. Leave PR #395
-and the EOD feature alone. Every new persisted field still rides
+Both this repo's sessions share ONE working folder — only one runs git at a time; put the tree
+on `claude/amendment-engine-core` first. Every new persisted field still rides
 `schedFields()`+`histApply`; parity stays 728/0.
