@@ -58,9 +58,14 @@ no code written yet. Companion to the Codex/Astra review brief
   scheduler view, edit board) — the current issued version stays the authority.
 - **SETTLED earlier:** #2 corrections → none (every change is a new AL). Withdrawal →
   none (supersede only). Per-day numbering → fixed.
-- The build-ready brief is **`2026-09-12-amendment-model-design-brief.md` (Rev 3)**,
-  reviewed by BOTH providers (Astra/Codex R-01…R-13+N-01…N-03, Fable/Claude
-  F-01…F-12), both converged, all design-level findings incorporated.
+- The build-ready brief is **`2026-09-12-amendment-model-design-brief.md`** —
+  Rev 3 reviewed by BOTH providers (Astra/Codex R-01…R-13+N-01…N-03, Fable/Claude
+  F-01…F-12), both converged; **Rev 4 (12 Sep) adds owner refinements, NOT yet
+  re-reviewed:** OIL simplified to "the latest published record (EOD, else latest
+  AL/Original) is the sole truth" — negative OIL allowed, no date cutoff, keep the
+  read-failure protection; **EOD** (End-of-Day actuals record) added and flagged for a
+  short design pass before the EOD-touching build; plan **names** are scheduler-typed
+  free labels (auto A/B letter kept).
 - **Cross-feature — OIL on worked days (leaning, 11 Sep 26):** an amendment that
   removes a person re-derives Leave War auto-OIL from the current published
   version and sweeps it away — right for a future day, wrong for a day already

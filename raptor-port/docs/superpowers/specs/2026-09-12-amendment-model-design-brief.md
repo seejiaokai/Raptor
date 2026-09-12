@@ -5,6 +5,11 @@
 reviews: Astra/Codex (R-01…R-13 + N-01…N-03) and Fable/Claude (F-01…F-12). Both
 verdicts: the model is sound; the contracts needed pinning. Rev 3 pins them and
 marks the true implementation work as explicitly deferred + test-pinned (§12).
+**Rev 4 (12 Sep 2026) — post-review owner refinements (NOT yet re-reviewed):** OIL
+simplified to "the latest published record is the sole truth" (§6, supersedes the
+SGT-cutoff); **EOD** (End-of-Day actuals) added (§3b — needs a short design pass);
+plan **names** are scheduler-entered free labels (§4). Everything in Rev 3 stands;
+these three are the deltas to design/review before the EOD-touching build tasks.
 **Supersedes:** `2026-09-11-amendment-model-design-brief.md`.
 **Companion:** `2026-09-11-amendment-model-decisions.md` (decisions + rationale);
 UI mockup: https://claude.ai/code/artifact/90a30794-acb2-45f9-80ce-57f79b3edc27
@@ -111,6 +116,18 @@ keys (`cx`/`cxr` cancellation).
 Per-day numbering; correct-in-place removed; withdrawal/unpublish removed; plans
 SURVIVE as backups (§4); re-sign every amendment (all four).
 
+## 3b. EOD (End of Day) — the actuals record (owner, 12 Sep — NEW; needs a short design pass before build)
+- **EOD = what ACTUALLY happened** on a day (the actuals), distinct from the plan.
+- Published **only when reality differed** from the current published version; if
+  nothing changed there is no EOD and the latest published version stands as the record.
+- A past day's EOD **can still be corrected** later (issuing a new version, adjusting OIL).
+- OIL and the historical record read from the day's **latest published record — the EOD
+  if present, else the latest AL/Original** (§6).
+- Uses the **same immutable-publish machinery** (an EOD is a published version).
+- **OPEN for the build's first design pass** (give it the care plans got): EOD's exact
+  relationship to the AL sequence (labelled AL vs distinct record type), whether/when
+  publishing an EOD is prompted, and its UI. NOT yet cross-provider-reviewed.
+
 ## 5.0 KEYSTONE — canonical issued-content schema + publish trigger (R-02, F-02/F-03)
 ONE canonical representation of a day's issued content, used identically by
 **snapshot** (what publish freezes), **diff** (highlighting / rebase), and
@@ -140,6 +157,12 @@ Usual case ONE plan (no labels/cue). Labels + crew cue only with 2+ plans. One p
 is the live draft; others are parked backups. Crew see `Backup: Plan X ›`
 (`Backups: N ›` for several) and may VIEW a backup ("Backup · not issued · for
 planning only", subject to the crew projection §8b).
+
+**Plan names (owner, 12 Sep).** The scheduler TYPES each plan's name — a free-text
+LABEL (no key constraints; plans are id-tracked, so a rename never moves data), set
+when a 2nd plan is added and renamable via a pencil. The auto **A / B** letter is kept
+alongside the name (e.g. "Plan A · Standard"). In the app this is the existing
+per-day **Drafts** control, evolved into the named plan switcher.
 
 **Backup record (hardened).** Persist, beyond `{id,name,d}`: `baseIssuedVersionId`
 (§5 AM-01) and a **base content REFERENCE by digest** (never a copy — F-08 size
@@ -248,14 +271,19 @@ require a recorded acknowledgement** (default; the exact hard/soft split is pinn
   bullets above — the book must not claim immutability it cannot persist.
 
 ## 6. Cross-feature / ecosystem
-- **OIL (R-12, F-10):** a minimal past-date protection is an **acceptance condition of
-  THIS build** — neither forward replacement nor reverse removal may alter protected
-  worked-date credits. **Cutoff = the squadron's local date in Singapore time
-  (SGT, UTC+8): protect any date before "today" in SGT, or any day already flown.**
-  For future days, `desiredOilCells` must consume the **issued version's resolved
-  membership** (AM-04), not re-expand `availableFor` (which stays only for the
-  live-draft preview). The broader earned-OIL redesign stays separate
-  (`/OUTSTANDING.md` `[OIL]`).
+- **OIL — the latest published record is the sole truth (owner, 12 Sep — REVISED,
+  supersedes the SGT-cutoff model above):** each day's OIL is derived ONLY from that
+  day's **latest published record — its EOD (§3b) if one exists, else its latest
+  AL/Original**. If the record shows a person working a weekend/PH they earn OIL; if a
+  later version removes them, they don't. **Negative balances are allowed**, so removing
+  a credit is never an error and needs no special-casing. There is **no date-based
+  "already worked" cutoff** — OIL simply follows the latest record per day, and a change
+  to day X never touches day Y's OIL (**derive per-day, not globally** — the original
+  bug). For future days still read the **issued/EOD resolved membership** (AM-04), not a
+  live `availableFor` re-expansion (F-10). **KEEP the read-failure protection:** a saved
+  week that can't be read (AM-02 `migration-failed` / `insufficient-evidence`) must NOT
+  be treated as "no work" and wipe credits — preserve until it can be read. The broader
+  earned-OIL redesign stays separate (`/OUTSTANDING.md` `[OIL]`).
 - **Marks** are published-day only (`alAttr`); live draft shows draft highlighting;
   backups render as preview.
 - **Mutation** via the slot funnel AND the supported wholesale day-replacement + one
