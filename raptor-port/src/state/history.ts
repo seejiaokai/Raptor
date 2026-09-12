@@ -20,7 +20,7 @@ const syncHistBtns=()=>HOOKS.syncHistBtns()
    added. Same key ORDER as histSnap always wrote them in, so splicing this
    in with `...schedFields()` leaves histSnap's JSON.stringify output
    byte-identical to before this existed. */
-export function schedFields(){return {c:SCHED.changes,p:SCHED.pending,ad:SCHED.added,a:SCHED.als,al:SCHED.al,ok:SCHED.dayOK,sg:SCHED.sign,o:SCHED.orig,cv:SCHED.cur,dr:SCHED.drafts,cd:SCHED.curDraft,v:SCHED.ridV}}
+export function schedFields(){return {c:SCHED.changes,p:SCHED.pending,ad:SCHED.added,a:SCHED.als,al:SCHED.al,ok:SCHED.dayOK,sg:SCHED.sign,o:SCHED.orig,cv:SCHED.cur,dr:SCHED.drafts,cd:SCHED.curDraft,v:SCHED.ridV,am:SCHED.amV}}
 export const HIST:any={stack:[],ix:-1,lock:false,cap:60};
 /* `ok` carries SCHED.dayOK — the per-day publish state. It replaced the old
    week-wide ap/dr pair, so publishing or reopening a single day is an ordinary
@@ -69,6 +69,7 @@ export function histApply(i:any){
   SCHED.cur=s.cv||{};   // stale entries are inert — dayCurVer self-heals
   SCHED.drafts=s.dr||{}; SCHED.curDraft=s.cd||{};
   SCHED.ridV=s.v;   // absent (undefined) on a foundation-era snapshot → migrateLegacyIds runs
+  SCHED.amV=s.am;   // absent (undefined) on a PRE-Phase-2 snapshot → amFormatOf flags it unsupported
   WARNOFF.clear(); (s.wo||[]).forEach((k:any)=>WARNOFF.add(k));   // muted checks are an undo step
   /* PLANPUCKS/DAYRMK restored IN PLACE, the same live-binding idiom DAYS and
      INPUTS use above — every reader (the calendar UI) holds these two array

@@ -126,12 +126,14 @@ const SCHED_SPEC: Spec = {
   sign: { $map: SIGNSET }, orig: { $map: DAYSNAP }, cur: { $map: 'string' },
   drafts: { $opt: { $map: [{ id: 'string', name: 'string', d: DAY }] } }, curDraft: { $opt: { $map: 'string' } },
   ridV: 'number',   // the addressing-by-rid book-format version (engine/rowids.ts)
+  amV: { $opt: 'number' },   // the Phase-2 amendment-record format version (§5); absent on a PRE-Phase-2 book
 }
 const SCHED_FIELDS = {
   c: { $map: 'number' }, p: { $map: ONE }, ad: { $map: ONE }, a: [AL], al: 'number', ok: { $map: ONE }, sg: { $map: SIGNSET },
   o: { $map: DAYSNAP }, cv: { $map: 'string' },
   dr: { $opt: { $map: [{ id: 'string', name: 'string', d: DAY }] } }, cd: { $opt: { $map: 'string' } },
   v: { $opt: 'number' },   // book-format version; ABSENT on a foundation-era snapshot (triggers migrateLegacyIds)
+  am: { $opt: 'number' },  // Phase-2 amendment-record format version; ABSENT on a PRE-Phase-2 snapshot
 }
 const PUCK: Spec = { $or: [
   { id: 'string', date: 'string', kind: { $opt: { $lit: ['note'] } }, text: 'string' },

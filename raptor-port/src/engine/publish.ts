@@ -41,8 +41,11 @@ const renderStatus=()=>HOOKS.renderStatus();
 /* `ridV` stamps the addressing-by-rid book format (engine/rowids.ts). A book
    restored from a persisted snapshot WITHOUT it is foundation-era and is migrated
    once at load (migrateLegacyIds); a fresh/modern book carries it, so it is never
-   re-migrated. */
-export let SCHED:any={al:0, pending:{}, changes:{}, added:{}, als:[], dayOK:{}, sign:{}, orig:{}, cur:{}, ridV:RID_BOOK_VERSION};
+   re-migrated. `amV` stamps the Phase-2 amendment-record format (§5, P2-05); a
+   book WITHOUT it that still carries publication content is a PRE-Phase-2 book the
+   new verId resolvers cannot re-key — see amFormatOf below. */
+export const AMBOOK_VERSION=1;
+export let SCHED:any={al:0, pending:{}, changes:{}, added:{}, als:[], dayOK:{}, sign:{}, orig:{}, cur:{}, ridV:RID_BOOK_VERSION, amV:AMBOOK_VERSION};
 /* Reset ALL of SCHED in place. Every field is keyed by day INDEX (0..6), so
    loading a different week without this would let one week's approvals, pending
    edits, AL colouring and per-day drafts bleed onto the next week's identical
@@ -54,7 +57,27 @@ export function resetSched(){
   SCHED.als=[]; SCHED.dayOK={}; SCHED.sign={}; SCHED.orig={};
   SCHED.cur={}; SCHED.drafts={}; SCHED.curDraft={};
   SCHED.ridV=RID_BOOK_VERSION;   // a fresh book is modern — never re-migrated
+  SCHED.amV=AMBOOK_VERSION;      // and carries the Phase-2 amendment-record format
 }
+/* ---- Phase 2: legacy-format isolation — the ONE shared classifier (P2-05) ----
+   A book PERSISTED by a PRE-Phase-2 build carries the old shape (cur:'orig'|n,
+   als:[{n,keys,…}]) and NO amV stamp. The new verId resolvers already return
+   null for it (so publication is naturally suppressed and the OIL wire falls back
+   to the raw stashed days — credits stand, never deleted), and it round-trips
+   byte-for-byte because SCHED holds it verbatim and persistAll re-serializes it
+   as-is. This classifier makes that isolation EXPLICIT so no NEW edit is accepted
+   onto data the engine cannot safely re-key: an unsupported week is READ-ONLY.
+   Full migration to the new shape is Phase 5. */
+export function amFormatOf(sc:any){
+  if(!sc)return 'current';
+  if(sc.amV===AMBOOK_VERSION)return 'current';
+  /* no stamp → unsupported ONLY if it actually carries publication content; an
+     empty book has nothing to misread and is a fresh book (treated as current). */
+  const has=(o:any)=>!!o&&Object.keys(o).length>0;
+  return ((sc.als&&sc.als.length)||has(sc.orig)||has(sc.cur))?'unsupported':'current';
+}
+/* the LIVE loaded week is protected (read-only) when its book is unsupported. */
+export function protectedWeek(){return amFormatOf(SCHED)==='unsupported';}
 export function dayApproved(di:any){return !!SCHED.dayOK[di];}
 export function approvedDays(){return DAYS.map((_:any,i:any)=>i).filter(dayApproved);}
 export function dowShort(di:any){return String((DAYS[di]||{}).dow||('day '+di)).slice(0,3);}

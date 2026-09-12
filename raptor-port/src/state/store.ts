@@ -27,7 +27,7 @@ import { docAdd } from './docs'
 import { storesLoad, cxReasonsLoad, dutyTplLoad, waveTplLoad, dayTplLoad, autoAcceptSeedInputs, autoAcceptInput, inpKey, secOrder, moveSectionModel, reorderSectionTo, secDefaultLoad, waveDefaultLoad } from '../engine'
 import { qualColsLoad } from '../engine/qualcols'
 import { elogClear } from '../engine/editlog'
-import { markDeletion, resetSched, SCHED, dayApproved } from '../engine/publish'
+import { markDeletion, resetSched, SCHED, dayApproved, protectedWeek } from '../engine/publish'
 import { stashPut, stashGet, stashHas } from '../engine/weekstash'
 import { afterSchedMutate } from './view'
 import * as view from './view'
@@ -385,6 +385,7 @@ function applyWeekModel(v: any): any {
     SCHED.als = s.a || []; SCHED.al = s.al || 0; SCHED.dayOK = s.ok || {}
     SCHED.sign = s.sg || {}; SCHED.orig = s.o || {}; SCHED.cur = s.cv || {}
     SCHED.drafts = s.dr || {}; SCHED.curDraft = s.cd || {}; SCHED.ridV = s.v   // undefined on a foundation-era book → migrateLegacyIds runs
+    SCHED.amV = s.am   // undefined on a PRE-Phase-2 book → amFormatOf flags it unsupported (read-only, §5)
   } else {
     const wk = weekBundle(v)
     DAYS.length = 0; wk.days.forEach((d: any) => DAYS.push(d))
@@ -522,8 +523,14 @@ export function wireStore() {
      reload) can leave CURPAGE sitting on 'editsched' from the outgoing user.
      editMode() is what drives every data-drag="1" / contenteditable="true"
      attribute in html.ts, so one canEditSched() check here closes them all at
-     once rather than patching each rendered surface individually. */
-  HOOKS.editMode = () => canEditSched() && view.CURPAGE === 'editsched'
+     once rather than patching each rendered surface individually.
+     `!protectedWeek()` makes a PRE-Phase-2 (unsupported) week READ-ONLY (§5,
+     P2-R3-02): its data cannot be safely re-keyed by the new engine, so no new
+     edit is accepted onto it (its existing content round-trips untouched, and
+     the verId resolvers already suppress publication for it). Inert for every
+     current-format week — amFormatOf only flags a content-bearing un-stamped
+     book, which a fresh book never is. */
+  HOOKS.editMode = () => canEditSched() && view.CURPAGE === 'editsched' && !protectedWeek()
   HOOKS.reflow = () => { validate(); notify() }
   HOOKS.renderStatus = () => notify()
   HOOKS.histPush = () => histPush()

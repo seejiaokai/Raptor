@@ -461,6 +461,8 @@ export type Sched = {
   curDraft?: Record<number, string>
   /** Addressing-by-rid book-format version — engine (rowids.ts `RID_BOOK_VERSION`). A live SCHED always carries it; a persisted snapshot WITHOUT it (`SchedFields.v` absent) is foundation-era and is migrated once at load. */
   ridV: number
+  /** Phase-2 amendment-record format version — engine (`AMBOOK_VERSION`). A live SCHED always carries it; a persisted book WITHOUT it that still holds publication content is a PRE-Phase-2 book (`amFormatOf` → 'unsupported', read-only). */
+  amV?: number
 }
 
 /* ---------------------------------------------------------------------------
@@ -512,6 +514,8 @@ export type SchedFields = {
   cd?: Sched['curDraft']
   /** Book-format version — absent on a foundation-era snapshot, which loads through migrateLegacyIds. */
   v?: Sched['ridV']
+  /** Phase-2 amendment-record format version — absent on a PRE-Phase-2 snapshot (`amFormatOf` → 'unsupported'). */
+  am?: Sched['amV']
 }
 
 /** The whole-state undo record — `histSnap()`. */
