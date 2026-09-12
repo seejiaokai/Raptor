@@ -401,31 +401,37 @@ export type SignSet = { cur: string; sked: string; plan: string; appr: string }
 export type DaySnapshot = {
   /** Deep copy of the day. */
   d: Day
-  /** Slot key → AL number, for this day only. */
+  /** Slot key → per-day sequence, for this day only. */
   c: Record<string, number>
+  /** The filing fingerprint frozen at issue (inputId → 'u'|'g'|'r'|'') — Phase 2 (§3 axis 4). */
+  fil?: Record<string, string>
+  /** The Original snapshot (SCHED.orig[di]) carries its own verId (`iso#0`); AL snapshots do not (the record does). */
+  id?: string
 }
 
 /** A per-day alternate draft blob — engine (drafts.ts). */
 export type DayDraft = { id: string; name: string; d: Day }
 
-/** One published amendment (SCHED.als[i]) — engine (`alIssue`). */
+/** One canonical delta entry in an AL's frozen `diff` — engine (canonical.ts `DeltaEntry`). */
+export type AlDiffEntry = { addr: string; kind: 'add' | 'delete' | 'change' | 'move' | 'input'; from?: any; to?: any }
+
+/** One published amendment (SCHED.als[i]) — engine (`alIssue`). Phase 2: SINGLE-DAY,
+ *  identified by its immutable verId; `diff` replaces the old `keys` list. */
 export type AlRecord = {
-  /** AL number. */
-  n: number
-  /** Live slot keys touched. */
-  keys: string[]
-  /** Signatures at issue, by day index (callsigns). */
+  /** Immutable version id — `verId(iso, seq)` (`iso#seq`), e.g. `2026-07-13#1`. */
+  id: string
+  /** Day index (0..6) — one record = one day. */
+  di: number
+  /** The day's full ISO date (`yyyy-mm-dd`, incl the year). */
+  iso: string
+  /** Per-day display sequence: 1 = AL1, 2 = AL2 … */
+  seq: number
+  /** The frozen day document + issued marks slice + filing fingerprint. */
+  snap: DaySnapshot
+  /** The canonical delta vs the prior issued version, frozen at issue (replaces `keys`). */
+  diff: AlDiffEntry[]
+  /** Signatures at issue, by day index (callsigns) — Phase 3 binds them. */
   sign: Record<number, SignSet>
-  /** Day indices covered. */
-  days: number[]
-  /** Item count frozen at issue. */
-  n0: number
-  /** Structural-add keys carried. */
-  adds: string[]
-  /** Superset of `adds` used on restore. */
-  structAdds: string[]
-  /** Per-day frozen document, by day index. */
-  snap?: Record<number, DaySnapshot>
 }
 export type Amendment = AlRecord
 
@@ -435,7 +441,7 @@ export type Sched = {
   al: number
   /** Slot keys edited since the last publish — engine (`markEdit`). */
   pending: Record<string, 1>
-  /** Slot key → the AL number it was published under — engine. */
+  /** Slot key → the per-day sequence it was published under (drives the colour) — engine. */
   changes: Record<string, number>
   /** Structural adds not yet issued — engine (`markStructuralAdd`). */
   added: Record<string, 1>
@@ -445,10 +451,10 @@ export type Sched = {
   dayOK: Record<number, 1>
   /** Sign-off names per day — engine (`signOf`); screen picks them. */
   sign: Record<number, SignSet>
-  /** The day as first published — engine. */
+  /** The day as first published (seq 0), carrying its own verId — engine. */
   orig: Record<number, DaySnapshot>
-  /** Which version each day currently shows — engine. */
-  cur: Record<number, 'orig' | number>
+  /** Which version each day currently shows — a verId (`iso#seq`; Original = `iso#0`) — engine. */
+  cur: Record<number, string>
   /** Per-day alternate drafts — engine (drafts.ts); absent until first used. */
   drafts?: Record<number, DayDraft[]>
   /** The live draft id per day — engine (drafts.ts). */

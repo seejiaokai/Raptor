@@ -7,7 +7,7 @@ import { slotVal, inpKey, acceptInput, unacceptInput, txtSet } from '../engine/s
 import { INPUTS, DATES, withRemarksTail, inpId, defaultAllday } from '../engine/inputs'
 import { DAYS } from '../engine/data'
 import { PEOPLE, isSpecial } from '../engine/people'
-import { dayApproved, setDayApproved, publishALDay, signClear, markEdit, dayCurVer, dayPendCount, verLabel } from '../engine/publish'
+import { dayApproved, setDayApproved, publishALDay, signClear, markEdit, dayCurVer, dayDelta, dayHasChanges, verLabel } from '../engine/publish'
 import { draftSelect, draftVerLabel, loadVersionToWorkingCopy } from '../engine/drafts'
 import { HOOKS } from '../engine/hooks'
 import { canEditSched } from '../state/auth'
@@ -766,7 +766,10 @@ export function routeClick(e: MouseEvent) {
   if (beak) {
     e.stopPropagation()
     if (!canEditSched() || view.CURPAGE !== 'editsched') return
-    const di = +beak.dataset.beak!; setDayApproved(di, !dayApproved(di)); notify(); return
+    /* §9: the beak only ever FIRST-approves — html.ts emits data-beak only on a
+       never-published day (a published day shows an inert stamp). setDayApproved
+       is itself a no-op on an already-published day, so this is safe regardless. */
+    const di = +beak.dataset.beak!; setDayApproved(di, true); notify(); return
   }
   /* per-day AL publish — same gate */
   const alp = t.closest('button[data-alpub]') as HTMLElement | null
@@ -828,24 +831,31 @@ export function routeClick(e: MouseEvent) {
        job (data-draftgo above), which stows the outgoing day first */
     if (String(rst.dataset.rver || '').slice(0, 2) === 'd:') return
     const di = +rst.dataset.restore!
-    const ver = rst.dataset.rver === 'orig' ? 'orig' : +rst.dataset.rver!
-    /* already the current version with nothing pending — close the preview
+    const ver = rst.dataset.rver!   // a verId string — carried through verbatim, no numeric coercion (P2-04)
+    /* the divergence at risk is the live delta vs the CURRENT issued version
+       (P2-R2-06): with the digest trigger a day can carry real changes and ZERO
+       pending marks (a canonical-only edit / reorder / input filing), so the
+       dirty-check reads dayDelta — dayPendCount would silently bypass the confirm
+       and discard that work. Captured HERE, before loadVersionToWorkingCopy
+       swaps the day (and outside any withDaySnap that would zero it). */
+    const nd = dayHasChanges(di) ? dayDelta(di).length : 0
+    /* already the current version with nothing diverging — close the preview
        without a history step */
-    if (String(dayCurVer(di)) === String(ver) && dayPendCount(di) === 0) {
+    if (String(dayCurVer(di)) === String(ver) && nd === 0) {
       view.setDayPreview(di, null)
       HOOKS.toast(`${DAYS[di].dow} is already at ${verLabel(ver)}`)
       notify(); return
     }
-    /* the confirm gate: with unpublished edits on the day, arm on the first
-       tap and wait for the second on the same version. Any navigation
+    /* the confirm gate: with real unpublished divergence on the day, arm on the
+       first tap and wait for the second on the same version. Any navigation
        (dropdown change, Back to live) clears the arm via setDayPreview. */
-    if (dayPendCount(di) > 0 && !view.restArmed(di, rst.dataset.rver)) {
+    if (nd > 0 && !view.restArmed(di, rst.dataset.rver)) {
       view.setRestArm(di, rst.dataset.rver)
       notify(); return
     }
     view.setRestArm(null, null)   // consume the arm before loading
     if (view.ARM && view.ARM.di === di) view.disarmSlot()   // the load may remove the armed row
-    const replaced = dayPendCount(di)   // working-copy edits about to be replaced
+    const replaced = nd   // working-copy changes about to be replaced
     if (!loadVersionToWorkingCopy(di, ver)) { HOOKS.toast('That version is no longer available', 'warn'); notify(); return }
     view.setDayPreview(di, null)
     view.afterSchedMutate()

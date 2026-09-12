@@ -826,7 +826,11 @@ function desiredOilCells(): Map<string, DesiredOil> {
       const iso = weekDayISO(String(v), di)
       if (!iso || !warHolding(wars, iso)) continue
       if (!isNonWorkingISO(iso)) continue
-      const snap = daySnapIn(wk.sc, di, dayCurVerIn(wk.sc, di))
+      /* the stash's OWN week key (v = its Monday, dd/mm/yyyy) is the trusted
+         identity threaded into the resolver, so a book self-consistent but filed
+         under the WRONG week is rejected here rather than credited to these dates
+         (P2-R3-03). */
+      const snap = daySnapIn(wk.sc, di, dayCurVerIn(wk.sc, di, String(v)), String(v))
       /* same fallback rule as the live loop: an approved day without a
          snapshot (legacy/session data) reads its stashed model */
       const d = snap ? snap.d : wk.days[di]

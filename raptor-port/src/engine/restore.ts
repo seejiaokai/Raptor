@@ -1,22 +1,17 @@
-import { DAYS } from './data'
-import { SCHED, daySnapOf } from './publish'
-import { keyDay } from './keys'
 import { nameToId } from './people'
 import { parseHM, hhmm } from './time'
 /* =====================================================================
-   ROLL A DAY BACK TO A PUBLISHED VERSION
-   A rollback, not an amendment (owner decision, Aug 26): clicking Restore
-   makes that version the live document immediately — content, marks and the
-   header chip all become that AL. Nothing goes pending; unpublished edits on
-   the day are DISCARDED (reported to the caller); later ALs keep their
-   records and stay in the dropdown. Lives in its own module because slots.ts
-   already imports publish.ts — restore needs both sides of that edge.
+   THE SLOT-KEY GRAMMAR WALKER (dayKeys)
+   Phase 2 removed restoreDayVersion (the in-place rollback take-back): the
+   only supported way to pull an old version forward is now
+   loadVersionToWorkingCopy → publish the next AL (drafts.ts). The walker below
+   STAYS — it is the executable documentation of the slot-key grammar, its tests
+   pin every prefix, rebaseDayPending/reconcileIssuedMarks use it, and
+   probe-bridge exports it.
    ===================================================================== */
 /* Every user-meaningful field of a PASSED day object (never the global DAYS —
    live and snapshot are walked by the same function without any swap), keyed
-   by the address the app itself uses. restoreDayVersion no longer diffs, but
-   the walker stays: it is the executable documentation of the slot-key
-   grammar, its tests pin every prefix, and probe-bridge exports it.
+   by the address the app itself uses.
    Row state that has no text key of its own
    (cx / cx reason / red flag / night) rides as a composite on the row's name
    field — a CX toggle then marks the row it cancelled, which is where the
@@ -109,32 +104,4 @@ export function dayKeys(d:any,di:any){
     (r.more||[]).forEach((v:any,x:any)=>m.set(`g:${di}.${ri}.x${x}`,P(v)));
   });
   return m;
-}
-/* false = no such version. Otherwise the number of unpublished edits the
-   rollback DISCARDED (0 is the common answer) — that count is what the toast
-   owes the user. Deliberately NO histPush and NO reflow here — the UI
-   caller's afterSchedMutate() → markEdit() is the single undo step; a push
-   here would double-step the stack. Signatures, dayOK, orig and the AL
-   records are all untouched: the day stays published, rolling back neither
-   needs nor spends a sign-off, and later ALs keep their dropdown entries. */
-export function restoreDayVersion(di:any,ver:any){
-  di=+di;
-  const snap=daySnapOf(di,ver); if(!snap)return false;
-  const nd=JSON.parse(JSON.stringify(snap.d));
-  nd.today=!!(DAYS[di]&&DAYS[di].today);   // 'today' tracks the calendar, not the document
-  DAYS[di]=nd;
-  /* wipe the day's mark slices FIRST, then install the snapshot's own changes
-     slice, so the day wears exactly the marks it was issued with — a rollback
-     to the Original (whose slice is empty) shows no marks at all */
-  Object.keys(SCHED.changes).forEach((k:any)=>{if(keyDay(k)===di)delete SCHED.changes[k];});
-  let dropped=0;
-  Object.keys(SCHED.pending).forEach((k:any)=>{if(keyDay(k)===di){delete SCHED.pending[k];dropped++;}});
-  /* A rollback replaces the whole live day with issued content. Any draft-add
-     identities for that day belonged to rows just discarded; leaving them at
-     reused addresses can make a later deletion of an issued row look like a
-     draft no-op. */
-  Object.keys(SCHED.added||{}).forEach((k:any)=>{if(keyDay(k)===di)delete SCHED.added[k];});
-  Object.keys(snap.c||{}).forEach((k:any)=>{SCHED.changes[k]=snap.c[k];});
-  SCHED.cur=SCHED.cur||{}; SCHED.cur[di]=(ver==='orig')?'orig':+ver;
-  return dropped;
 }

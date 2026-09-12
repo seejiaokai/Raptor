@@ -10,7 +10,7 @@ import { WARN, validate, WCODE, wlbl } from '../engine/validate'
 import { hhmm, fmtHM, minus, parseHM } from '../engine/time'
 import { VCONF } from '../engine/rules'
 import { slotVal, txtGet, txtSet, acRef, rollCx, whoArr, unacceptInput, TIME_TXT } from '../engine/slots'
-import { markEdit, markDeletion, deletionWasIssued, markStructuralAdd, alAttr, dayApproved, dayCurVer, dayPendCount, verLabel, nextAL, dropRowMarks } from '../engine/publish'
+import { markEdit, markDeletion, deletionWasIssued, markStructuralAdd, alAttr, dayApproved, dayCurVer, dayPendCount, dayHasChanges, verLabel, nextSeq, dropRowMarks } from '../engine/publish'
 import { logAction, ELOG } from '../engine/editlog'
 import { hideHistBub } from './histbubble'
 import { touchDragBusy } from './drag'
@@ -552,6 +552,10 @@ export function cxCommit(cancel: boolean, reason: string) {
    confirmation naming the day, not a browser confirm() and not silence. ---- */
 export let SORTALL: any = null
 export function setSortAll(v: any) { SORTALL = v }
+/* the armed "apply a day-template over a published day's working-draft edits"
+   confirm (P2-R3-04) — keyed `${di}:${id}`, survives the menu close so the
+   second pick confirms; cleared on apply or a different pick. */
+let DAYTPL_ARM: string | null = null
 /* canEditSched() and the DPREV (frozen-preview) guard live HERE, not only on
    the button's render gate — a stale button left over from a role change, or
    a click that lands after a preview was armed, must not open the dialog
@@ -1261,22 +1265,34 @@ export function dayTplMenu(anchor: HTMLElement, di: any) {
     }
     const b = e.target.closest('[data-daytplpick]'); if (!b) return
     const id = b.dataset.daytplpick
-    close()
-    /* the refusal reads "Reopen the day first" rather than explaining WHY —
-       dayStatHTML's own Publish/Reopen button already uses "Reopen <day>",
-       so this names the same action the scheduler would actually take */
-    if (dayApproved(di)) { toast('Reopen the day first'); e.stopPropagation(); return }
     const t = DAYTPL_CFG.find((x: any) => x.id === id)
+    /* PUBLISHED DAY (§9 / P2-R3-04): no "reopen" any more — applying a template
+       is a WORKING-DRAFT edit that publishes as the next AL (applyDayTpl leaves
+       the issued records + current pointer untouched). Because it REPLACES any
+       unpublished working-draft edits, it takes a confirming SECOND pick when
+       such edits exist — the same replacement guard the recovery control uses,
+       as a two-tap across the menu (the arm survives the close in module state).
+       With no edits at risk it applies on the first pick. */
+    if (dayApproved(di) && dayHasChanges(di)) {
+      const armKey = `${di}:${id}`
+      if (DAYTPL_ARM !== armKey) {
+        DAYTPL_ARM = armKey; close()
+        toast(`Applying "${t ? t.title : 'template'}" replaces your unpublished edits on ${d.dow} — open Templates and pick it again to confirm`)
+        e.stopPropagation(); return
+      }
+    }
+    DAYTPL_ARM = null
+    close()
     if (applyDayTpl(di, id)) {
-      /* one undo step for the whole swap (afterSchedMutate's own markEdit()
-         call carries no key, so nothing is marked pending by it — applyDayTpl
-         already did the real work) — same contract restoreDayVersion's own
-         caller uses. No markStructuralAdd / flashAdded here: that mechanism
-         is keyed to ONE funnel address, and a whole-day replace has no single
-         address to hang a blue box on — see the board button's own comment
-         for the rest of that decision. A named toast carries the news instead. */
+      /* one undo step for the whole swap (afterSchedMutate's own markEdit() call
+         carries no key, so nothing is marked pending by it — applyDayTpl already
+         did the real work). No markStructuralAdd / flashAdded: that mechanism is
+         keyed to ONE funnel address, and a whole-day replace has no single
+         address to hang a blue box on. A named toast carries the news instead. */
       afterSchedMutate(); notify()
-      toast(`Applied "${t ? t.title : 'template'}" to ${d.dow}`)
+      toast(dayApproved(di)
+        ? `Applied "${t ? t.title : 'template'}" to ${d.dow}'s working draft — publish AL${nextSeq(di)} to issue it`
+        : `Applied "${t ? t.title : 'template'}" to ${d.dow}`)
       logAction(di, `Day template "${t ? t.title : 'template'}" applied`)
     }
     e.stopPropagation()
@@ -1339,7 +1355,7 @@ export function draftsMenu(anchor: HTMLElement, di: any) {
      says so once for the whole menu rather than per row */
   const pub = dayApproved(di), cv = pub ? dayCurVer(di) : null
   const liveSub = (pub && cv != null)
-    ? `live now — differences from ${esc(verLabel(cv))} go out as AL${nextAL()}`
+    ? `live now — differences from ${esc(verLabel(cv))} go out as AL${nextSeq(di)}`
     : 'live now — this is what publishes'
   const html = `<h5>Drafts — ${esc(d.dow)}</h5>`
     + (pub ? `<div class="wm-note">This day is published — the issued ALs don't change. Switching drafts marks the differences as pending.</div>` : '')

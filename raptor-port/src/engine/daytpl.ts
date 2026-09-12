@@ -1,5 +1,6 @@
 import { DAYS } from './data'
 import { SCHED, dayApproved } from './publish'
+import { rebaseDayPending } from './drafts'
 import { keyDay } from './keys'
 import { store } from './hooks'
 import { SECTIONS } from './order'
@@ -214,7 +215,6 @@ export function moveDayTpl(from: number, to: number): boolean {
    amendment. A template replaces the DRAFT, not the record. */
 export function applyDayTpl(di: number, id: string): boolean {
   di = +di
-  if (dayApproved(di)) return false
   const t = DAYTPL_CFG.find(t => t.id === id)
   if (!t) return false
   const cur = DAYS[di]
@@ -236,22 +236,27 @@ export function applyDayTpl(di: number, id: string): boolean {
      ids) — applying it must still mint fresh ids, never carry the source
      day's across, so strip here too rather than trust the stored blob */
   stripRowIds(nd)
+  const wasApproved = dayApproved(di)
   DAYS[di] = nd
-  /* Every address the old day's marks pointed at may now name something else
-     entirely (the swap does not try to line up old and new row indices), so
-     the day's WHOLE mark state is retired — pending, added AND changes — the
-     same three slices restoreDayVersion wipes (restore.ts:96-106) before it
-     installs the restored version's own marks. A template has no issued marks
-     of its own to reinstall (it is a clean plan, never an AL), so applyDayTpl
-     just clears and installs nothing.
-     The changes slice MUST go too, and this is the corner an earlier build
-     missed: a template swap marks NOTHING pending (unlike an ordinary edit,
-     which marks the one field it touched and so clears that field's changes
-     mark on the way through markEdit). Left in place, every AL tint the day
-     wore before it was reopened would survive onto the template's brand-new,
-     unrelated rows — cells reading "changed in AL2" that AL2 never saw. The
-     failure was: publish → AL1 tints a note → reopen → apply a template whose
-     note differs → the new note still rendered in AL1 cyan (daytpl.test.ts). */
+  if (wasApproved) {
+    /* PUBLISHED DAY (§4, P2-R3-04): a published version is frozen — you cannot
+       "reopen" and apply over it. Applying a template is just a large
+       WORKING-DRAFT edit: the template becomes the live working draft, the
+       issued records + current pointer are UNTOUCHED, and rebaseDayPending
+       recomputes the day's pending set as the true diff vs the still-issued
+       version (exactly as loadVersionToWorkingCopy / draftSelect do on a
+       published day). Publishing it then becomes the next AL. */
+    rebaseDayPending(di)
+    return true
+  }
+  /* NEVER-PUBLISHED DAY: no issued baseline, so retire the day's WHOLE mark
+     state — pending, added AND changes. Every address the old day's marks
+     pointed at may now name something else entirely (the swap does not line up
+     old and new row indices), and a template has no issued marks of its own to
+     reinstall (it is a clean plan, never an AL), so applyDayTpl just clears.
+     The changes slice MUST go too: a template swap marks NOTHING pending, so
+     without this every stale tint would survive onto the template's brand-new,
+     unrelated rows (daytpl.test.ts). */
   Object.keys(SCHED.pending).forEach((k: any) => { if (keyDay(k) === di) delete SCHED.pending[k] })
   Object.keys(SCHED.added || {}).forEach((k: any) => { if (keyDay(k) === di) delete SCHED.added[k] })
   Object.keys(SCHED.changes).forEach((k: any) => { if (keyDay(k) === di) delete SCHED.changes[k] })

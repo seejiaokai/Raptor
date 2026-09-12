@@ -664,7 +664,7 @@ wireStore()
 
 /* the store's public surface: the writes above, plus the engine's publish
    actions and the history verbs, re-exported so the UI has one import */
-export { setDayApproved, publishAL, publishALDay, unpublishAL, discardPending, markEdit } from '../engine/publish'
+export { setDayApproved, publishALDay, discardPending, markEdit } from '../engine/publish'
 export { undo, redo, histInit, histApply, HIST } from './history'
 export { armSlot, disarmSlot, armedKey, placeArmed, selectPerson, selKeep, selRestore, selClear, selDrop, setBoardDay, setPage, afterSchedMutate } from './view'
 export { setSession, canEditSched, LGEDIT, setLgEdit } from './auth'

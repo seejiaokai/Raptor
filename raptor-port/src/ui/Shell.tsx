@@ -8,7 +8,7 @@ import { PEOPLE } from '../engine/people'
 import { CURWEEK } from '../engine/waves'
 import { weekWindow } from './weeknav'
 import { CalIcon, XlsIcon, PdfIcon, HistIcon, HlIcon, SrchIcon } from './icons'
-import { SCHED, approvedDays, alColor, alCount, alDays, daysLabel, pendDays, pendCount } from '../engine/publish'
+import { SCHED, approvedDays, alColor, alCount, daysLabel, pendDays, pendCount, verLabel } from '../engine/publish'
 import { rulesOffCount } from '../engine/rules'
 import { SESSION, ME, setMe, canToggleRole } from '../state/auth'
 import { resetSession, toggleRole, notify, setPage } from '../state/store'
@@ -76,8 +76,8 @@ function banner() {
   const pd = pendDays(), np = pendCount()
   const extra = np ? ` · ${np} unpublished edit${np > 1 ? 's' : ''} on ${daysLabel(pd)}` : ''
   const alRoll = SCHED.als.length
-    ? `<span class="sb-als">` + SCHED.als.slice().sort((a: any, b: any) => a.n - b.n)
-      .map((a: any) => `<span class="sb-al" data-alc="${a.n}" title="AL${a.n} — ${alCount(a)} item${alCount(a) > 1 ? 's' : ''} on ${daysLabel(alDays(a))}"><b>AL${a.n}</b> ${daysLabel(alDays(a))}</span>`).join('') + `</span>`
+    ? `<span class="sb-als">` + SCHED.als.slice().sort((a: any, b: any) => a.iso === b.iso ? +a.seq - +b.seq : (a.iso < b.iso ? -1 : 1))
+      .map((a: any) => `<span class="sb-al" data-alc="${a.seq}" title="${verLabel(a.id)} — ${alCount(a)} item${alCount(a) > 1 ? 's' : ''} on ${daysLabel([a.di])}"><b>${verLabel(a.id)}</b> ${daysLabel([a.di])}</span>`).join('') + `</span>`
     : ''
   return { col, cls, html: `<span class="sb-badge">${txt}${which}${extra}</span>` + alRoll }
 }
@@ -149,9 +149,11 @@ export function Shell() {
       const dv = (e.target as HTMLElement).closest('select[data-dver]') as HTMLSelectElement | null
       if (dv) {
         const v = dv.value
-        /* 'd:<id>' is a draft preview (engine/drafts.ts) — kept as the string,
-           which daySnapOf resolves like any other version */
-        setDayPreview(+dv.dataset.dver!, v === 'live' ? null : (v === 'orig' || v.slice(0, 2) === 'd:' ? v : +v))
+        /* every option value is now a STRING the resolver understands: a verId
+           (`iso#seq`, incl the Original `iso#0`) or a 'd:<id>' draft preview.
+           'live' clears the preview; everything else is kept verbatim (P2-04 —
+           no numeric coercion of a verId). */
+        setDayPreview(+dv.dataset.dver!, v === 'live' ? null : v)
         notify(); return
       }
       /* the view page's issued-vs-working picker on a PUBLISHED day (owner,

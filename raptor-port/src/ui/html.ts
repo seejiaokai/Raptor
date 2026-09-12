@@ -10,7 +10,8 @@ import { slotVal, txtGet, TIME_TXT, whoArr, rowCrew, rowRef, inpKey } from '../e
    click that follows it read one test */
 import { WARN, sevOf, chipOf, dashOf, traceOf, traceLeads, traceChip, traceIx, tracesOn, chipText, wlbl, WCODE, SEVWORD, CHIP_LABEL, ordinal } from '../engine/validate'
 import { availByWave, personBusy, dayOff, dayEngaged, personWarns } from '../engine/avail'
-import { SCHED, alAttr, dayApproved, dayCurVer, dayPendCount, alColor, signOf, signMissing, signPeople, SIGN_ROLES, daySigned, nextAL, dowShort, alDays, daySnapOf, dayVersions, verLabel } from '../engine/publish'
+import { SCHED, alAttr, dayApproved, dayCurVer, dayPendCount, dayDelta, alColor, signOf, signMissing, signPeople, SIGN_ROLES, daySigned, nextSeq, dowShort, alCount, daySnapOf, dayVersions, verLabel } from '../engine/publish'
+import { verSeq } from '../engine/verid'
 import { dayDrafts, curDraftId, isDraftVer, draftVerLabel } from '../engine/drafts'
 import { keyDay } from '../engine/keys'
 import { VCONF } from '../engine/rules'
@@ -920,7 +921,12 @@ export function lateRowTitle(o:any){const inp=srcInput(o); return (inp&&isLateIn
    view-only page), and the board has no equivalent slot for it today. */
 export function dayStatHTML(di:any,ed:any){
     const d=DAYS[di];
-    const ok=dayApproved(di), dp=dayPendCount(di);
+    const ok=dayApproved(di);
+    /* the count/eligibility shown for a PUBLISHED day is the canonical delta vs
+       the issued version (F-02 — the ONE authority, §3), NOT the raw pending
+       marks; a still-DRAFT day has no issued baseline, so it shows its draft
+       pending count. `nd>0` on a published day IS dayHasChanges. */
+    const dv=ok?dayDelta(di):null, dp=dayPendCount(di), nd=ok?(dv as any[]).length:dp;
     /* a DRAFT preview must never wear the published day's clothes (owner,
        15 Aug 26 — "when I toggle to draft 1, it shouldn't say published"):
        under a d: preview the ✓ Published stamp and the AL chip are replaced
@@ -952,27 +958,33 @@ export function dayStatHTML(di:any,ed:any){
        .dal chip, which is why there is no separate version chip any more. */
     const cv=dayCurVer(di);
     const verTag=(ok&&!pvDraft&&!workView&&cv!=null)
-      ? (cv==='orig'
+      ? (verSeq(cv)===0
         ? ` · <span class="dal orig" title="${DAYS[di].dow} is issued as the Original">ORIG</span>`
-        : ` · <span class="dal" data-alc="${cv}" title="${DAYS[di].dow} is issued as AL${cv}">AL${cv}</span>`)
+        : ` · <span class="dal" data-alc="${verSeq(cv)}" title="${DAYS[di].dow} is issued as ${verLabel(cv)}">${verLabel(cv)}</span>`)
       : '';
-    const pendChip=dp?`<span class="dpend" title="${dp} unpublished edit${dp>1?'s':''} on this day${ok?' — ahead of the issued schedule until you publish an AL':' — publish the day before publishing an AL'}">${dp}&nbsp;pending</span>`:'';
+    const pendChip=nd?`<span class="dpend" title="${nd} ${ok?'change':'unpublished edit'}${nd>1?'s':''} on this day${ok?' — ahead of the issued schedule until you publish an AL':' — publish the day before publishing an AL'}">${nd}&nbsp;pending</span>`:'';
     const sgOK=daySigned(di);
+    /* THE BEAK (§9, closes BUG-2): on a NEVER-published day it first-approves;
+       on a PUBLISHED day it is INERT — a published version is frozen, there is
+       nothing to un-publish and no reload. Amending is: edit the working draft,
+       then Publish AL# (the alpub button below). So a published day shows a
+       read-only ✓ Published stamp, no data-beak. */
     const beak=pvDraft
       ? `<span class="dbeak ro" title="A stored draft — not the issued schedule">Draft</span>`
       : workView
       ? `<span class="dbeak ro work" title="${d.dow} is published, but this is the working draft — not what was issued">Working draft</span>`
-      : ed
-      ? `<button class="dbeak ${ok?'ok':''}${(!ok&&!sgOK)?' locked':''}" data-beak="${di}"${(!ok&&!sgOK)?' disabled':''} title="${ok?'Reopen '+d.dow+' to draft':(sgOK?'Publish '+d.dow+' — approve this day only':'Sign off '+signMissing(di).join(', ')+' before publishing '+d.dow)}">${ok?'✓ Published'+verTag:'Publish day'}</button>`
-      : `<span class="dbeak ro ${ok?'ok':''}" title="${ok?d.dow+' has been published':d.dow+' is still draft'}">${ok?'✓ Published'+verTag:'Draft'}</span>`;
-    /* per-day AL publish — lives beside the day's own publish button, only on a
-       PUBLISHED day that carries pending edits of its own. Locked (darkened,
-       like the publish-day lock) until the day's four sign-offs are in. The
-       view page gets no button — status only. */
-    const alN=nextAL();
-    const alpub=(ed&&ok&&dp)
+      : (ed&&!ok)
+      ? `<button class="dbeak ${!sgOK?'locked':''}" data-beak="${di}"${!sgOK?' disabled':''} title="${sgOK?'Publish '+d.dow+' — approve this day only':'Sign off '+signMissing(di).join(', ')+' before publishing '+d.dow}">Publish day</button>`
+      : `<span class="dbeak ro ${ok?'ok':''}" title="${ok?d.dow+' has been published — edit the working draft and publish an AL to amend it':d.dow+' is still draft'}">${ok?'✓ Published'+verTag:'Draft'}</span>`;
+    /* per-day AL publish — lives beside the day's own publish stamp, only on a
+       PUBLISHED day that has real changes vs its issued version (dayHasChanges,
+       i.e. nd>0 — the canonical delta, NOT the raw pending marks). Locked
+       (darkened) until the day's four sign-offs are in. The view page gets no
+       button — status only. Per-day only (P2-08 — never publish-all). */
+    const alN=nextSeq(di);
+    const alpub=(ed&&ok&&nd)
       ? `<button class="dbeak dalpub${sgOK?'':' locked'}" data-alpub="${di}"${sgOK?'':' disabled'} title="${sgOK
-          ?`Publish AL${alN} — ${dp} change${dp>1?'s':''} on ${d.dow} only`
+          ?`Publish AL${alN} — ${nd} change${nd>1?'s':''} on ${d.dow} only`
           :`Sign off ${signMissing(di).join(', ')} before publishing AL${alN}`}">Publish AL${alN}</button>`
       :'';
     /* the ⓘ chip is the ONLY way into the day panel on the view page, and it opens a
@@ -1016,7 +1028,7 @@ export function dayHTML(di:any,ed:any,vsel?:any){
        tap: restArmed drives the two-state button. */
     const armed=restArmed(di,PVV), pend=dayPendCount(di);
     const pvBar=(PV&&!PVQ)
-      ? `<div class="dprev-bar"${(PVV!=='orig'&&!pvDraft)?` style="--alc:${alColor(+PVV)}"`:''}>`
+      ? `<div class="dprev-bar"${(!pvDraft&&verSeq(PVV)!==0)?` style="--alc:${alColor(verSeq(PVV))}"`:''}>`
         +(pvDraft
           /* the Switch action is EDIT-SURFACE only. A preview always renders
              with ed=false (it is read-only), so the edit-week signal is `vsel`
@@ -1563,15 +1575,15 @@ export function dayInfoHTML(di:any){
   const eng=dayEngaged(d).size, off=dayOff(d).size;
   const A=availByWave(d), freeAll=A.anyWave.length;
   const row=(k:any,v:any)=>`<div class="dip-r"><span class="k">${k}</span><span class="v">${v}</span></div>`;
-  const alRecs=SCHED.als.filter((a:any)=>alDays(a).includes(di));
+  const alRecs=SCHED.als.filter((a:any)=>+a.di===di).slice().sort((a:any,b:any)=>+a.seq-+b.seq);
   const alRows=alRecs.length
-    ? alRecs.map((a:any)=>{const n=(a.keys||[]).filter((k:any)=>keyDay(k)===di).length;
-        return `<span class="dip-al" data-alc="${a.n}">AL${a.n}<i>${n} item${n===1?'':'s'}</i></span>`;}).join('')
+    ? alRecs.map((a:any)=>{const n=alCount(a);
+        return `<span class="dip-al" data-alc="${a.seq}">${verLabel(a.id)}<i>${n} item${n===1?'':'s'}</i></span>`;}).join('')
     : `<span class="dip-none">No amendment has touched this day yet</span>`;
   /* same visibility rule as the day-head chip: name the current version once
      amendments exist, so a rolled-back day says which document it is showing */
   const cv=dayCurVer(di);
-  const atVer=(ok&&cv!=null&&(cv!=='orig'||alRecs.length))?` · at ${verLabel(cv)}`:'';
+  const atVer=(ok&&cv!=null&&(verSeq(cv)!==0||alRecs.length))?` · at ${verLabel(cv)}`:'';
   let h=`<div class="dip-stat ${ok?'ok':'draft'}">${ok?'✓ Published — APPROVED'+atVer:'Draft — not yet published'}`
     +`${dp?`<span class="dip-pend">${dp} unpublished edit${dp>1?'s':''}</span>`:''}</div>`;
   h+=`<div class="dip-h">AL versions covering ${esc(d.dow)}</div><div class="dip-als">${alRows}</div>`;
