@@ -14,6 +14,8 @@ import { initStore, loadWeek, weekStashSnap } from './store'
 import { DAYS } from '../engine/data'
 import { DATES, INPUTS, inputCoversDate } from '../engine/inputs'
 import { autoAcceptInput, unacceptInput, inpKey, acceptInput } from '../engine'
+import { reconcileDayFiling, acceptedDay } from '../engine/slots'
+import { rebaseDayPending } from '../engine/drafts'
 import { stashClear, stashPut } from '../engine/weekstash'
 import { SCHED, signOf, setDayApproved, dayHasChanges } from '../engine/publish'
 import { HIST } from './history'
@@ -72,6 +74,45 @@ describe('loadWeek', () => {
     loadWeek('13/07/2026')
     expect(inp.acc, 'the ground landing survived navigation despite a foreign start date').toBe('g')
     expect(dayHasChanges(0), 'no phantom amendment from navigation').toBe(false)
+  })
+
+  /* P2-REV2-05: a recovery / draft-switch / template-apply can drop the ground row
+     an input was filed 'g' onto while leaving inp.acc='g' dangling. Left unreconciled
+     it lies in the AL filing fingerprint and a later navigation flips it into a
+     phantom amendment. reconcileDayFiling (run from rebaseDayPending, the chokepoint
+     every approved-day replacement funnels through) unfiles a 'g' with no row. */
+  describe("a dropped ground row reconciles the 'g' filing (P2-REV2-05)", () => {
+    it('reconcileDayFiling clears a DANGLING g but keeps a live g, a u, and a multi-day g landed elsewhere', () => {
+      const live: any = { person: 'divot', type: 'Meeting', date: 'Jul 13', allday: true, remarks: '', mod: 'now', yr: 2026, _t: 1 }
+      INPUTS.push(live); expect(acceptInput(0, live, 'g')).toBe(true)         // real row on day 0
+      const dangling: any = { person: 'ranger', type: 'Meeting', date: 'Jul 13', allday: true, remarks: '', mod: 'now', yr: 2026, _t: 1 }
+      INPUTS.push(dangling); expect(acceptInput(0, dangling, 'g')).toBe(true)
+      // simulate a recovery content-replace that drops ONLY the dangling row
+      const ix = DAYS[0].ground.findIndex((r: any) => r.src === inpKey(dangling))
+      DAYS[0].ground.splice(ix, 1)
+      const filed: any = { person: 'bane', type: 'Meeting', date: 'Jul 13', allday: true, remarks: '', mod: 'now', yr: 2026, _t: 1 }
+      INPUTS.push(filed); expect(acceptInput(0, filed, 'u')).toBe(true)       // a 'u' filing decision — no row
+      reconcileDayFiling(0)
+      expect(dangling.acc, 'the dangling g was unfiled — its row is gone').toBeUndefined()
+      expect(live.acc, 'a g whose row still exists is untouched').toBe('g')
+      expect(filed.acc, "a 'u' filing decision is untouched").toBe('u')
+    })
+
+    it('a recovery-style replacement + navigation raises NO phantom: the filing state is stable', () => {
+      const inp: any = { person: 'divot', type: 'Meeting', date: 'Jul 13', allday: true, remarks: '', mod: 'now', yr: 2026, _t: 1 }
+      INPUTS.push(inp); expect(acceptInput(0, inp, 'g')).toBe(true)
+      const g = signOf(0); g.cur = 'ignite'; g.sked = 'bane'; g.plan = 'stiff'; g.appr = 'pump'
+      setDayApproved(0, true)
+      // recovery-style: the replacement drops the row; without the fix acc='g' dangles
+      const ix = DAYS[0].ground.findIndex((r: any) => r.src === inpKey(inp))
+      DAYS[0].ground.splice(ix, 1)
+      rebaseDayPending(0)                                    // the chokepoint reconciles the filing
+      expect(inp.acc, 'reconciled — no dangling g to freeze').toBeUndefined()
+      const before = dayHasChanges(0)
+      loadWeek('20/07/2026'); loadWeek('13/07/2026')
+      expect(dayHasChanges(0), 'navigation did not silently change the amendment state').toBe(before)
+      expect(acceptedDay(inp), 'still no ground row after navigation').toBe(-1)
+    })
   })
 
   it('a non-authored chip loads a blank, editable seven-day week', () => {

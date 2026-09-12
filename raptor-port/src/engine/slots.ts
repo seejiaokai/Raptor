@@ -444,6 +444,28 @@ export function acceptedDay(inp:any){
   }
   return -1;
 }
+/* RECONCILE A DAY'S GROUND FILING AFTER A WHOLE-DAY REPLACEMENT (P2-REV2-05).
+   A recovery (loadVersionToWorkingCopy), a draft switch (draftSelect) or a
+   template apply (applyDayTpl) replaces DAYS[di] wholesale — and the replacement
+   content may not carry the ground row an input was filed 'g' onto. But those
+   paths touch DAYS, not INPUTS, so the input keeps acc='g' with NO row behind it:
+   a DANGLING filing. Left alone, a later AL freezes that 'g' into its snapshot
+   fingerprint (a filing with no row), and the next navigation's acc-clear then
+   re-derives '' (no row to reconstruct) — so a phantom input-amendment appears
+   from navigation alone. Reconcile it HERE, right after the replacement and
+   BEFORE any snapshot freezes it, exactly as the navigation reconciler
+   (state/store.ts reconcileLandedAcc) would: an input covering this day whose 'g'
+   landing no longer exists on ANY loaded day is unfiled. 'u' (a global filing
+   decision with no ground row) and 'r' (dormant) are filing DECISIONS, not
+   landings, and are untouched — as is a 'g' whose row still exists (the ordinary
+   recovery that keeps the row), and a multi-day 'g' still landed on another day. */
+export function reconcileDayFiling(di:any){
+  const dt=(DAYS[+di]||{}).dt; if(dt==null)return;
+  INPUTS.forEach((inp:any)=>{
+    if(inp.acc!=='g'||!inputCoversDate(inp,dt))return;
+    if(acceptedDay(inp)<0)delete inp.acc;   // the landing row is gone everywhere → no longer filed 'g'
+  });
+}
 export function unacceptInput(di:any,inp:any){
   if(protectedWeek())return false;               // read-only quarantine — never splice a frozen day (P2-IMPL-03)
   if(!inp||!inp.acc||inp.acc==='r')return false; // 'r' is already removed — nothing to undo

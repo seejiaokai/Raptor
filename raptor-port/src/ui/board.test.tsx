@@ -2304,4 +2304,39 @@ describe('day-template apply — arm scoping and slot disarm (P2-IMPL-10 / 11)',
       const ix = DAYTPL_CFG.findIndex((x: any) => x.id === t.id); if (ix >= 0) DAYTPL_CFG.splice(ix, 1)
     }
   })
+
+  it('a NAVIGATION between taps re-arms even with unchanged content (P2-REV2-07)', () => {
+    /* the content-scoped arm key is IDENTICAL on a navigate-away-and-back, so
+       without the nav token a stale arm applied on one pick. The token
+       (view.navGen(), bumped by every navigation gesture) makes the recomputed
+       key differ, forcing a fresh confirm. */
+    const k1 = dayTplArmKey(0, 'tpl-nav')
+    view.bumpNav()                                    // any navigation gesture
+    expect(dayTplArmKey(0, 'tpl-nav'), 'the arm key changes after a navigation').not.toBe(k1)
+  })
+
+  it('a page change bumps the nav token (P2-REV2-07)', () => {
+    const before = view.navGen()
+    const wasPage = view.CURPAGE
+    try {
+      view.setPage(wasPage === 'viewsched' ? 'editsched' : 'viewsched')
+      expect(view.navGen(), 'setPage to a different page bumped the token').toBeGreaterThan(before)
+    } finally { view.setPage(wasPage) }
+  })
+
+  it('a first pick arms; a navigation before the second pick re-arms rather than applying (P2-REV2-07)', () => {
+    const d0 = JSON.parse(JSON.stringify(DAYS[0]))
+    const t = addDayTpl(0)!
+    try {
+      sgn(0); setDayApproved(0, true)
+      ;(DAYS[0] as any).notes.push('AN EDIT')                 // a real unpublished edit → delta 1
+      expect(pickDayTpl(0, t.id), 'first pick arms').toBe('armed')
+      view.bumpNav()                                          // navigate away and back (content unchanged)
+      expect(pickDayTpl(0, t.id), 'the navigation forced a fresh confirm').toBe('armed')
+      expect(pickDayTpl(0, t.id), 'now the confirming pick applies').toBe('applied')
+    } finally {
+      DAYS[0] = d0
+      const ix = DAYTPL_CFG.findIndex((x: any) => x.id === t.id); if (ix >= 0) DAYTPL_CFG.splice(ix, 1)
+    }
+  })
 })

@@ -202,6 +202,7 @@ export function moveSectionTo(di: number, fromKey: string, toKey: string): boole
    change always drags the whole view back to a safe, page-1 default. */
 export function resetSession(s: any) {
   authSetSession(s)
+  view.bumpNav()                  // a session change invalidates a pending day-template-apply confirm (P2-REV2-07)
   view.setPage('viewsched')
   view.setBoardDay(null)          // also disarms a slot armed on the outgoing session's day
   view.selDrop()                  // SELID, SELSEEN, SELPREV, PFOCUS, WFOCUS, DWOPEN
@@ -288,6 +289,7 @@ export function resetSession(s: any) {
    through the other role's eyes. */
 export function toggleRole() {
   if (!canToggleRole()) return
+  view.bumpNav()                  // a role change invalidates a pending day-template-apply confirm (P2-REV2-07)
   const toAdmin = !(SESSION && SESSION.role === 'admin')
   setEffectiveRole(toAdmin ? 'admin' : 'main')
   if (!toAdmin) {
@@ -566,6 +568,7 @@ export function loadWeek(v: any) {
     setCurWeek(v)
     HOOKS.weekSwapped()         // pan.ts drops its arrow-burst corridor (stale-target fix)
     const s = applyWeekModel(v)
+    view.bumpNav()              // a week swap invalidates a pending day-template-apply confirm (P2-REV2-07)
     view.setBoardDay(null)      // closes the phone board and disarms
     view.armDrop()
     view.selDrop()

@@ -1,6 +1,7 @@
 import { DAYS } from './data'
 import { SCHED, dayApproved, approvedDays, verLabel, dayCurVer, daySnapOf, deletionKey, moveKey, trackStructuralAdd, isDeleteKey, isMoveKey, protectedWeek } from './publish'
 import { dayKeys } from './restore'
+import { reconcileDayFiling } from './slots'
 import { keyDay } from './keys'
 import { groundOrder } from './order'
 import { ridKey, posKey, rowsOf, ensureRowIds } from './rowids'
@@ -230,6 +231,13 @@ export function draftSelect(di: any, id: any) {
    No histPush/reflow here either — this runs inside draftSelect's step. */
 export function rebaseDayPending(di: any) {
   di = +di
+  /* the ONE chokepoint every approved-day whole-day REPLACEMENT funnels through
+     (draftSelect / loadVersionToWorkingCopy / applyDayTpl). Reconcile the day's
+     ground filing FIRST — before the snapshot diff below and before any AL freezes
+     the fingerprint — so a 'g' input whose row the replacement dropped no longer
+     lies as filed, and navigation cannot later flip it into a phantom amendment
+     (P2-REV2-05). */
+  reconcileDayFiling(di)
   const ver = dayCurVer(di)
   const snap = ver != null ? daySnapOf(di, ver) : null
   if (!snap) {

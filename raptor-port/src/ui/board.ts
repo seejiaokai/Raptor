@@ -565,7 +565,12 @@ let DAYTPL_ARM: string | null = null
 export function dayTplArmKey(di: any, id: any): string {
   di = +di
   const t = DAYTPL_CFG.find((x: any) => x.id === id) || null
-  return [CURWEEK, di, id, curDraftId(di) || '', JSON.stringify(t), JSON.stringify(DAYS[di])].join('␟')
+  /* view.navGen() (P2-REV2-07): a navigation gesture between the two taps — a week
+     swap, a page change, a session/role change — bumps it, so a navigate-away-and-
+     back with UNCHANGED content no longer yields the same arm key and silently
+     applies; the confirm re-arms instead. The content/week/draft terms still catch
+     an intervening edit or draft switch. */
+  return [CURWEEK, di, id, curDraftId(di) || '', view.navGen(), JSON.stringify(t), JSON.stringify(DAYS[di])].join('␟')
 }
 /* Decide + perform a day-template pick, extracted from the menu handler so the
    arm scoping and the slot disarm are unit-testable (P2-IMPL-10/11). Returns
