@@ -111,6 +111,13 @@ describe('digest — visibility of canonical vs excluded changes', () => {
       ['dutyblock.sa', d => { d.dutywaves[0].sa = 'sc' }],
       ['dutyblock.noconf', d => { d.dutywaves[0].noconf = true }],
       ['dutyrow.cxr', d => { d.dutywaves[0].rows[0].cx = true; d.dutywaves[0].rows[0].cxr = 'wx' }],
+      // Phase 2 additions — dayKeys packed these into composites (ar:/at:) or
+      // omitted them (ground src); canonicalContent must surface each on its own:
+      ['ground.src', d => { d.ground[0].src = 'inp99' }],
+      ['aircraft.area', d => { d.waves[0].formations[0].aircraft[0].area = 'SOUTH' }],
+      ['aircraft.atime', d => { d.waves[0].formations[0].aircraft[0].atime = '08:00-09:00' }],
+      ['formation.area', d => { d.waves[0].formations[0].area = 'EAST' }],
+      ['formation.atime', d => { d.waves[0].formations[0].atime = '10:00-11:00' }],
     ]
     for (const [name, mut] of changes) {
       const d = fixture(); mut(d)

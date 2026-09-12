@@ -87,14 +87,15 @@ function keyLevels(prefix: string, parts: string[]): Array<{ slot: number; arr: 
   const W = { slot: 1, arr: (d: any) => d.waves }, F = { slot: 2, arr: (w: any) => w.formations }, A = { slot: 3, arr: (f: any) => f.aircraft };
   switch (prefix) {
     case '': return [W, F, A];                                   // bare flying seat di.gi.li.ai.seat
-    case 'wl': case 'it': case 'tr': return [W];
-    case 'ff': case 'ar': case 'at': return [W, F];
-    case 'fr': case 'st': return [W, F, A];
+    case 'wl': case 'it': case 'tr': case 'wx': return [W];       // wx: canonical wave flags (Phase 2)
+    case 'ff': case 'ar': case 'at': case 'fx': case 'fa': case 'ft': return [W, F];  // fx/fa/ft: canonical formation content (Phase 2)
+    case 'fr': case 'st': case 'aa': case 'au': return [W, F, A]; // aa/au: canonical per-aircraft area/atime (Phase 2)
     case 'dl': return [{ slot: 1, arr: (d: any) => d.dutywaves }];
-    case 'dr': case 'd': return [{ slot: 1, arr: (d: any) => d.dutywaves }, { slot: 2, arr: (b: any) => b.rows }];
+    case 'dr': case 'd': case 'bxr': return [{ slot: 1, arr: (d: any) => d.dutywaves }, { slot: 2, arr: (b: any) => b.rows }];  // bxr: canonical duty-row cxr (Phase 2)
+    case 'bx': return [{ slot: 1, arr: (d: any) => d.dutywaves }];  // bx: canonical duty-block flags (Phase 2)
     case 'sr': case 's': return [{ slot: 2, arr: (d: any) => ((d.sims || {})[parts[1]!] || []) }];  // parts[1]=kind, literal
     case 'ap': case 'a': return [{ slot: 1, arr: (d: any) => d.allhands }];
-    case 'gr': case 'g': return [{ slot: 1, arr: (d: any) => d.ground }];
+    case 'gr': case 'g': case 'gx': return [{ slot: 1, arr: (d: any) => d.ground }];  // gx: canonical ground src (Phase 2)
     default: return null;                                        // dn:/sn: etc. never reach here (NONROW)
   }
 }

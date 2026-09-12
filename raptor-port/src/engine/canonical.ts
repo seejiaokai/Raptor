@@ -47,10 +47,27 @@ const S = (v: any) => String(v == null ? '' : v)
    and a duty row's `cxr`. */
 export function canonicalContent(d: any, di: any): Map<string, string> {
   const m = new Map(dayKeys(d, di))
+  /* keep null distinct from '' (an unset override must not read as an explicit
+     clear), matching dayKeys' JSON idiom for the composites we replace below. */
+  const N = (v: any) => JSON.stringify(v == null ? null : String(v))
   ;(d.waves || []).forEach((w: any, gi: number) => {
     m.set(`wx:${di}.${gi}`, (w.standalone ? 1 : 0) + U + (w.noconf ? 1 : 0))
     ;(w.formations || []).forEach((f: any, li: number) => {
       m.set(`fx:${di}.${gi}.${li}`, S(f.shift) + U + S(f.cxr))
+      /* DECOMPOSE the ar:/at: composites (Phase 2, P2-R2-03). dayKeys packs the
+         formation override + an aircraft-index-ordered array into ONE value per
+         formation, so a canonical diff joined at the formation rid would fake a
+         formation change when two aircraft swap or one is deleted. Split into a
+         formation-level override address (fa:/ft:) and a per-AIRCRAFT address
+         (aa:/au:) so each joins by its own rid. dayKeys keeps its ar:/at: for the
+         marks system; canonicalContent drops them for these. */
+      m.delete(`ar:${di}.${gi}.${li}`); m.delete(`at:${di}.${gi}.${li}`)
+      m.set(`fa:${di}.${gi}.${li}`, N(f.area))
+      m.set(`ft:${di}.${gi}.${li}`, N(f.atime))
+      ;(f.aircraft || []).forEach((a: any, ai: number) => {
+        m.set(`aa:${di}.${gi}.${li}.${ai}`, N(a.area))
+        m.set(`au:${di}.${gi}.${li}.${ai}`, N(a.atime))
+      })
     })
   })
   ;(d.dutywaves || []).forEach((dw: any, wi: number) => {
@@ -58,6 +75,13 @@ export function canonicalContent(d: any, di: any): Map<string, string> {
     ;(dw.rows || []).forEach((r: any, ri: number) => {
       if (r.cxr != null) m.set(`bxr:${di}.${wi}.${ri}`, S(r.cxr))
     })
+  })
+  /* ground[].src — the accepted-input linkage (P2-09). dayKeys omits it, yet it
+     is canonical content: two ground rows identical on screen but linked to
+     different inputs are genuinely different documents (slots.ts unaccept,
+     store.ts INPUTS.acc→'g'). One synthetic address per ground row. */
+  ;(d.ground || []).forEach((r: any, ri: number) => {
+    m.set(`gx:${di}.${ri}`, S(r.src))
   })
   return m
 }
