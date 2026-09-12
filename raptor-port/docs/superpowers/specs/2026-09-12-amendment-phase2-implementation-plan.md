@@ -51,7 +51,7 @@ unused number — which is exactly why Tuesday's first amendment is labelled "AL
     di,      // day index (0..6) — one record = one day
     iso,     // the day's full ISO date (verid.ts:dayIso), incl the year
     seq,     // per-day sequence: 1 = AL1, 2 = AL2 … (DISPLAY number, per day)
-    snap,    // { d, c }  the frozen day + its issued marks slice (unchanged shape)
+    snap,    // { d, c, fil }  frozen day + issued marks slice + filing fingerprint (§3 axis 4)
     diff,    // the canonical diff vs the PRIOR issued version (see §3) — REPLACES keys
     sign }   // { di: {cur,sked,plan,appr} } the four callsigns (Phase 3 binds them)
   ```
@@ -74,10 +74,17 @@ the old `snap[di]` lookup did:**
 - else find the `als` record whose `id === ver` AND `di === di` AND (defensively)
   `iso`/`seq` agree with the parsed id; a record for another day or a malformed/foreign
   id resolves to `null`, never to a wrong day's snapshot.
-- The `iso` used for validation is derived from the SUPPLIED snapshot context `sc`
-  (the stashed week's own date), NOT live `CURWEEK`, so a stashed-week read stays
-  correct. `loadVersionToWorkingCopy` installs the returned day at `DAYS[di]`, so a
-  wrong-day resolve would be a silent cross-day corruption — hence the hard checks.
+- **The trusted week identity must be PASSED IN, not derived from the records
+  (P2-R3-03).** `schedFields` stores no week key and `sync.ts:754` builds `sc` from
+  publication fields only — the outer stash week key (`v`) is OUTSIDE `sc`. So
+  checking `id/di/iso/seq` against each other proves internal consistency, NOT that
+  the book belongs to the week it is filed under; a self-consistent week-A book stored
+  under week-B would pass while `sync.ts:826` credits week-B dates. Thread the
+  authoritative outer week key into the resolver/classifier context and validate every
+  Original/AL `iso` against `dayIso(weekKey, di)` (live path: `CURWEEK`; stash path:
+  the stash's own key). Apply the same check to the `dayCurVerIn` current-pointer
+  fallback. `loadVersionToWorkingCopy` installs the returned day at `DAYS[di]`, so a
+  wrong-day/wrong-week resolve would be silent corruption — hence the hard checks.
 - Legacy back-compat: a bare number/`'orig'` from an OLD-format book is NOT resolved
   here — an old-format book is quarantined at load (§5, P2-05), so it never reaches
   this resolver as authoritative.
@@ -154,8 +161,22 @@ every row joined by stable `rid` resolved INDEPENDENTLY in each snapshot:
    order `groundOrder(rows, gman)` (a `gman`-driven reorder IS a real order change even
    though the raw `gman` value is excluded from axis 1); notes (no rid) use positional
    order, and swapping two identical notes is a no-op (no positional value difference).
-4. **Inputs** — the day's input-filing state (which `inp:` filings apply), compared
-   draft vs issued, not read off accumulated marks.
+4. **Inputs** — the day's input-filing state, compared draft vs issued. This axis
+   needs a **frozen issued filing baseline** (P2-R3-01): today Original is `{id,d,c}`
+   and an AL snapshot is `{d,c}` (`publish.ts:144-146` captures only `DAYS` + colour
+   marks), so there is nothing to compare a live filing against — and the `inp:`
+   pending mark cannot be the authority (it persists through a file-then-unfile, the
+   same move-and-move-back hazard as axis 3; and `store.ts:405` clears `INPUTS.acc`
+   incl `'u'` on navigation, so a filed-unavailable input can't be reconstructed live).
+   So each snapshot (Original AND every AL) gains a **minimal per-date filing
+   fingerprint** `fil` = `{ inputId → filing-state }` for the inputs touching that
+   date (state = filed-unavailable `'u'` / accepted-ground `'g'` / not-filed), frozen
+   at issue. The axis = current filing fingerprint vs the issued `fil`. Define its live
+   writer (the filing/unfiling path already mints `inp:`), its capture at publish, its
+   restoration on navigation, and recovery. This is a small identity-keyed fingerprint,
+   **NOT** AM-04's freezing of full input VALUES/person-identities into content — that
+   stays deferred. Pin: file-before-Original vs file-after-Original (distinct
+   histories), file-then-unfile (net no-op), and a week/reload round-trip.
 
 **Rid translator gap (P2-R2-02).** `rowids.ts:keyLevels`/`ridKey`/`posKey` don't
 recognise the canonical-only address families (`wx/fx/bx/bxr` and the new `gx`), so
@@ -195,6 +216,7 @@ consistency the trigger requires.
 | `publish.ts publishAL(n)` (caller-numbered, week-wide, multi-day) | **DELETE.** Only the per-day `publishALDay(di)` issue remains, numbered by the day's own next sequence. |
 | `ALPanel.tsx` week-wide AL-number `<select>` + one `publishAL(value)` button | **REPLACE with PER-DAY publish (P2-08 — brief §10 forbids "publish all days").** Each pending published day gets its OWN "Publish AL#" action; one click issues exactly that one day (`publishALDay(di)`), leaving every other day's draft and signatures untouched. Drop the week-wide number dropdown; a single button that loops over all changed days is NOT allowed. |
 | **Old-identity UI consumers (P2-04)** | **CONVERT off numeric `'orig'\|n`.** `Shell.tsx:154` (`+v` on an issued selection → NaN on a verId) → keep verId strings, compare as strings; `Shell.tsx:79-80` + `html.ts:1568-1569` (read `a.n`/`a.keys`) → read `seq`/`diff`; `html.ts:955-957` (renders `cv` as an AL number) → label via `verSeqLabel(verSeq(cv))`; `interactions.ts:831` (`rver==='orig'?'orig':+rver` recovery payload) → carry the verId string through the action; every `nextAL()` caller → `nextSeq(di)`. Update the declared `AlRecord`/`Sched` types in `engine/schema.ts` to the new shape. Verify each line during the build (grep `a\.n\b`, `a\.keys`, `\+.*rver`, `nextAL`). |
+| `daytpl.ts applyDayTpl` + `board.ts:1268` "Reopen the day first" (P2-R3-04) | **CONVERT, don't strand.** `applyDayTpl` refuses every published day and tells the user to reopen first — but Phase 2 removes reopen, so applying a day-template to a published day would become permanently impossible. Since a published day is amended by editing its working draft, applying a template IS just a large working-draft edit: on a published day, apply the template to the **working draft** with the same replacement confirmation the recovery control uses, rebuild the day's delta against the current issue, keep the issued records + current pointer untouched, and publish the result as the next AL. Update the `board.ts` message and the template-refusal / reopen tests. (This is the model, not a new product choice — a published day only changes via the next AL.) |
 | `publish.ts nextAL()` / `SCHED.al` (week-wide next number) | **REPLACE** with `nextSeq(di)` = max seq among `di`'s issued versions + 1. `SCHED.al` (week-wide max) is dropped as a numbering source; keep a no-op shim only if a straggler reads it. |
 | `publish.ts discardPending()` | **KEEP** (Phase 2a already restricted it to never-published days). |
 | `publishALDay(di)` | **KEEP, rewire:** gate on `dayHasChanges(di)` (digest) not `pendCount`; number via `nextSeq(di)`; `alIssue` stores `id/di/iso/seq/diff` and stamps `cur[di]=id`. |
@@ -253,6 +275,16 @@ behaviour, refresh the comment pointers.
     publication and the authoritative issued-fallback for its dates, and treat its OIL
     dates as PROTECTED — missing desired work must NOT delete their credits (the AM-02
     `insufficient-evidence` posture). Full migration stays Phase 5.
+  - **an unsupported week is READ-ONLY (P2-R3-02).** Preserving the OLD blob is not
+    enough — protecting old data does not protect NEW work. Today edit authorisation is
+    a role check only (`auth.ts:31`) and the board mutation guards check role/edit-mode/
+    preview, NOT `protectedWeek`; so an admin could edit an isolated week's draft, get
+    normal feedback, then LOSE those edits when navigation skips stash/writeback and
+    restores the preserved blob. So an unsupported week is explicitly read-only at BOTH
+    the UI affordance and the mutation-entry boundary (`protectedWeek` consulted there),
+    including wholesale day-replacement and input actions targeting its dates. Pin: an
+    edit attempt on an isolated week + navigate + reload leaves no accepted edit
+    silently dropped.
   - **Pins:** an unsupported week that is never opened keeps its OIL credits; navigating
     away from / an unrelated save while such a week is loaded does not rewrite it; a
     supported new-shape week round-trips normally.
@@ -355,6 +387,16 @@ Never weaken a failing assertion — understand it.
     doesn't rewrite it (P2-R2-04) — `oilsync.test.ts` / `amformat.test.ts`.
   - **Recovery over a canonical-only divergence with zero pending keys** still confirms
     + reports the real replacement, doesn't silently discard (P2-R2-06) — `interact.test.tsx`.
+- **New/extended pins (Round-3 findings):**
+  - **File-before-Original vs file-after-Original** are distinct histories; **file-then-
+    unfile** nets to no change; filing fingerprint survives a week/reload round-trip
+    (P2-R3-01) — `publish.test.ts` / `accept.test.ts`.
+  - **Edit an unsupported (quarantined) week → navigate → reload:** no accepted edit is
+    silently dropped (the week is read-only) (P2-R3-02) — `amformat.test.ts`.
+  - **A self-consistent book filed under the WRONG week key** is rejected (week-key
+    validation), not credited to the wrong dates (P2-R3-03) — `oilsync.test.ts`.
+  - **Apply a day-template to a published day** works via the working draft + confirm →
+    next AL (no "reopen first"), issued records untouched (P2-R3-04) — `daytpl.test.ts`.
 
 ---
 
@@ -364,15 +406,19 @@ Never weaken a failing assertion — understand it.
    `ar:`/`at:` into per-aircraft rid-joined addresses, and add `wx/fx/bx/bxr/gx` to the
    `rowids.ts` translator (§3, P2-09/P2-R2-02/03) — pin the completeness + src-only cases.
 1. The ONE delta: `dayDelta(di,{sched})` (values/structure/order/inputs, rid-joined,
-   §3) + `dayHasChanges(di)` — pin input-only, reorder-only, move-and-move-back,
-   identical-note, `gman`-only, delete-before-survivor, edit-plus-move, canonical-only.
+   §3) + `dayHasChanges(di)` + the snapshot **filing fingerprint** `fil` (§3 axis 4,
+   P2-R3-01) — pin input-only, reorder-only, move-and-move-back, identical-note,
+   `gman`-only, delete-before-survivor, edit-plus-move, canonical-only, file-before/
+   after-Original, file-then-unfile.
 2. Identity re-key: `daySnapIn`/`dayCurVerIn`/`daySnapOf`/`dayVersions`/`verLabel`
    over verId; `orig` gains `id`; `cur` stores verId. **Resolver validates
-   identity-belongs-to-day** (§1, P2-R2-05). Pin the resolver + OIL-wire parity.
+   identity-belongs-to-day AND to the passed-in week key** (§1, P2-R2-05/P2-R3-03).
+   Pin the resolver + OIL-wire parity + wrong-week rejection.
 3. Shared legacy-format classifier: `SCHED.amV` + `amFormatOf`/`protectedWeek`,
    consulted by hydration, scheduler load, the stashed-week OIL decode, both OIL
-   directions, stash-on-leave and `persistAll` (§5, P2-05/P2-R2-04) — pin the
-   never-opened credit-keep + no-rewrite-on-navigation cases.
+   directions, stash-on-leave and `persistAll` (§5, P2-05/P2-R2-04); an unsupported
+   week is **read-only** at UI + mutation entry (P2-R3-02) — pin never-opened
+   credit-keep, no-rewrite-on-navigation, and edit-attempt-not-lost.
 4. Issue rewrite: `nextSeq`, `alIssue`/`publishALDay` store the new record + `diff`
    (from `dayDelta`) + stamp `cur=id`; gate on `dayHasChanges`; extend reconcile/rebase
    to the canonical addresses via the translator.
@@ -380,8 +426,9 @@ Never weaken a failing assertion — understand it.
    `publishAL(n)`; strip `setDayApproved`'s `off` branch; simplify `alIssue` ownership
    (§2); beak inert on a published day (no reload — §9); ALPanel per-day publish (no
    publish-all); recovery control's dirty-check reads `dayDelta` not `dayPendCount`
-   (§6, P2-R2-06); sweep the old-identity UI consumers (§4, P2-04); prune probe-bridge
-   + store re-exports; update `schema.ts` types.
+   (§6, P2-R2-06); convert `applyDayTpl` on a published day to working-draft + confirm
+   → next AL (§4, P2-R3-04); sweep the old-identity UI consumers (§4, P2-04); prune
+   probe-bridge + store re-exports; update `schema.ts` types.
 6. Sweep the test list (§7) to green, file by file. Record the shape via serialization
    round-trip (NOT undo-across-publish, §5).
 7. Full gate set ONCE at green: `npm test`, `npm run build`, `node reference/tfin.js`

@@ -47,3 +47,18 @@ ALL ACCEPTED:
 | P2-R2-07 | low | Stale §7 bullets ("equal digest → no publish"; "publish→undo→redo round-trips"; beak called "Amend") contradict the accepted revisions. | ACCEPT. §7 corrected to the `dayDelta`/serialization/inert-beak contracts. |
 
 Host action: revise the plan (all 7), then round 3 (resume) to confirm.
+
+## Round 3 — verdict REVISE (Codex GPT-6 Astra, high; 215s; resumed session 01a0950a…)
+
+Revised plan SHA256: `cc3564418dd8d14345a742fc3b037c17a6108a0501c257fad1fb24266199bf01`.
+Codex confirmed all Round-2 dispositions are addressed at plan level. 4 findings
+(trend 9→7→4), ALL ACCEPTED — new consequences of the fixes, not re-litigation:
+
+| ID | Sev | Finding (short) | Disposition |
+|---|---|---|---|
+| P2-R3-01 | high | The new input axis needs issued filing state the records don't store (Original `{id,d,c}`, AL `{d,c}`); file-before vs file-after-Original are indistinguishable; navigation clears `INPUTS.acc` so live can't reconstruct `'u'`. | ACCEPT. Snapshot gains a minimal per-date **filing fingerprint** `fil` (`inputId→state`), frozen in Original + every AL; axis 4 compares current vs issued `fil`. Separate from AM-04's value freezing. §1/§3. |
+| P2-R3-02 | med | Quarantine preserves the OLD blob but doesn't stop EDITS: role-only auth, guards don't check `protectedWeek`; an admin edits an isolated week then loses it on navigation. | ACCEPT. Unsupported week is READ-ONLY at UI + mutation entry (incl wholesale replace + input actions). §5. |
+| P2-R3-03 | med | Resolver validates against the supplied snapshot's week, but `sc` carries NO week key (`schedFields` stores none; `sync.ts:754` builds `sc` from publication fields); a week-A book under week-B passes id/di/iso/seq and is credited to B. | ACCEPT. Thread the authoritative outer week key into resolver/classifier; validate every date against `dayIso(weekKey,di)`; apply to the current-pointer fallback. §1. |
+| P2-R3-04 | med | `applyDayTpl` refuses published days ("Reopen first"); removing reopen strands the template-on-published-day workflow — plan left it unchanged. | ACCEPT. Convert: apply to the working draft with replacement confirm → next AL, issued records/pointer untouched; update `board.ts` message + tests. §4. |
+
+Host action: revise the plan (all 4), then round 4 (resume) to confirm.
