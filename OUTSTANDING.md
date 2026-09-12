@@ -32,21 +32,21 @@ tricky design call → **Fable 5.1, high**; mechanical / low-risk → a cheaper 
 
 ---
 
-## Priority — logical order (updated 11 Sep 2026)
+## Priority — logical order (updated 12 Sep 2026)
 
 Land what's **cheap, done, or in-flight and risk-reducing** before the big blocked
 build; keep the amendment (the main project) unblocked; leave feature-ish and
 future-milestone work last.
 
-1. **[TRK-IMPORT] + [TRK-LEDGER]** — built on branches, fix real silent data-loss.
-   Batch: re-check vs current `main`, then one merge-live.
-2. **[AMEND]** — the main project. Unblock with the two owner decisions, then
+1. **[AMEND]** — the main project. Unblock with the two owner decisions, then
    revise → Astra → build. **[BUG2]** folds in here.
-3. **[OIL]** — depends on [AMEND]; do straight after.
-4. **[TRK-CSID]** — next Tracker stable-ids step; independent, medium, not urgent.
-5. **[TRK-ATTEMPTS]** — small new feature, low urgency.
-6. **[DB-STEP]** — the future database milestone; **[TRK-DISK]** (Decision A) is
+2. **[OIL]** — depends on [AMEND]; do straight after.
+3. **[TRK-CSID]** — next Tracker stable-ids step; independent, medium, not urgent.
+4. **[TRK-ATTEMPTS]** — small new feature, low urgency.
+5. **[DB-STEP]** — the future database milestone; **[TRK-DISK]** (Decision A) is
    fixed inside it.
+
+*(Done 12 Sep 2026: **[TRK-IMPORT]** and **[TRK-LEDGER]** — both merged live; see Done.)*
 
 ---
 
@@ -54,13 +54,6 @@ future-milestone work last.
 
 One line each, no jargon:
 
-- **[TRK-IMPORT] — Importing a file could silently drop a person.** If a file named a
-  different person under a callsign already on the course, the old person used to
-  vanish quietly. Fixed (it now refuses and asks you to rename first) — built,
-  waiting to go live.
-- **[TRK-LEDGER] — An interrupted first-load could hide your old data forever.** The
-  one-time copy of old data into the new format could stop halfway and the app would
-  think it was finished. Fixed (it resumes now) — built, waiting to go live.
 - **[AMEND] — The amendment engine rebuild (the big one).** Each day gets its own
   amendments, published is locked, every change is a new AL, no take-backs. Design
   nearly done — waiting on your two decisions (plans, signatures).
@@ -125,21 +118,6 @@ Astra says the original Bug 2 may **not** reproduce (EditWeek `ed=false`; SchedB
 `pv=true` → no controls emitted). Verify; keep the defensive handler guards.
 - **Model:** Fable, high — short, focused verification.
 
-### [TRK-IMPORT] Tracker import-conflict refusal (#386) — BUILT, NOT MERGED
-Import refuses when a file names a *different person* under an existing callsign,
-before writing anything.
-- **Status:** branch `claude/tracker-import-conflict-fix` (PR #386), gates green
-  when built. **Not on `main`** — needs re-check vs current `main` + merge-live.
-- **Related wording gap:** the import dialog says "nothing else is touched," but it
-  *does* overwrite a carried student's marks — restoring an old backup would quietly
-  revert newer marks. Decide the message alongside this.
-
-### [TRK-LEDGER] Tracker legacy-import ledger — Decision B — BUILT, NOT MERGED
-A half-finished first-time import used to seal itself and hide the rest forever; the
-fix resumes instead and grandfathers existing browsers.
-- **Status:** branch `claude/storage-legacy-import-ledger` (PR #387), built. **Not
-  on `main`** — needs re-check vs current `main` + merge-live.
-
 ### [TRK-CSID] Give courses & syllabuses their own hidden ids — OPEN (medium)
 Students and schedule rows now carry stable hidden ids (rename/reorder-safe);
 **courses and syllabuses do not** — they're still keyed by name, so renaming a
@@ -176,6 +154,31 @@ save signal) and the Tracker's dropped SharePoint/Dataverse/Firebase layers.
 ---
 
 ## Done
+
+### [TRK-IMPORT] Tracker import-conflict refusal — DONE (12 Sep 2026)
+Import now refuses when a file names a *different person* under a callsign already
+on the course, before writing anything — so the existing student is no longer
+silently dropped and their marks orphaned. Rebased on current `main`, full gates
+green, independent Astra/Codex bug-check run **on the fix**: it found the refusal
+scan read only the per-syllabus rosters and missed a course still on the ORIGINAL
+pre-syllabus flat roster (v3:<c>:roster), which a conflicting import could still
+overwrite. Closed that (the scan reads the flat roster + its links too) and made
+the refusal message honest that charts imported first may already be in. Astra
+re-check: sound. Merged as **PR #386**, deployed, confirmed live (Tracker renders,
+no console errors).
+
+### [TRK-LEDGER] Tracker legacy-import ledger (Decision B) — DONE (12 Sep 2026)
+A half-finished first-time legacy import used to seal itself done on the first
+`raptor:` key and hide the rest forever; it now resumes via a per-key ledger and
+grandfathers existing installs. Rebased on `main`, gates green, Astra bug-check on
+the fix found a residual: if the store was so full that even the ledger write
+failed, the next boot grandfathered and lost the rest. Closed with a
+`__legacy__/started` marker written before the first copy, and gated persistence on
+that marker being durable (a persisted record always has its marker). One inherent
+corner documented (a record deleted seconds after migration on an already-full
+store can be re-copied — resume without a durable ledger can't tell "not copied"
+from "copied then deleted"). Astra re-check: sound. Merged as **PR #387**, deployed,
+confirmed live.
 
 ### [SEC-ALTIP] AL panel tooltip HTML injection (AM-08) — DONE (11 Sep 2026)
 The amendment sign-off tooltip could run injected code from a crafted callsign;

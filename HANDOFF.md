@@ -80,6 +80,17 @@ on that tree (superseded by the #373 baseline above; the traps stand):
 | `perf` | **4/0** — board DOM 1023 ≤ **1150** (the ceiling is a SETTLED owner decision since 28 Aug 26 — `CLAUDE.md` §Stable decisions). |
 | CI `unit (raptor)` | can go red with EVERY test green: the summary's `Errors 1` line — an unhandled error after a file ended. Run 899 was the 6-second fresh-add timer (`view.ts flashAdded`) firing into a torn-down jsdom (`paintFreshAdds` now returns with no `document`); run 903 was the Shell's self-re-arming pre-warm poll (`Shell.tsx`) firing after a test that never unmounts the App (it now returns with no `window`, #369). Both shapes — a long one-shot timer and a re-arming poll in a production module — outlive a test file; read the "Unhandled Errors" block before calling a red run a flake (obs 85). A docs-only push on a PR CANCELS its running gate job and starts no new one (`paths-ignore`) — re-run the cancelled run rather than pushing again. |
 
+**On a local WINDOWS dev box, two e2e specs fail deterministically yet are NOT
+bugs** (12 Sep 26): `geometry.spec.ts` "the board flying line carries the brief
+inline between MSN and TO at phone width" (raptor) and `leavewar.spec.ts` "a
+finger behind an open sheet scrolls the grid itself…" (lw-phone). Both reproduce
+on clean `main` and both pass in CI on Linux (a merged-green PR's own checks
+confirm it), so they are a Windows browser/layout/touch-emulation quirk — trust
+CI for them, don't chase them locally. Also `smoke:tracker`'s `addStudent` step
+can hit a Playwright timeout near the end of the run on Windows — re-run before
+treating it as a finding (it passed 426/0 on the re-run). None of these gate a
+tracker- or storage-only change.
+
 **How the gates lie — the durable traps, worth more than any count:**
 
 - **`npm run perf` asserts FOUR things, not seven, since 10 Aug 26** — two
