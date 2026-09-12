@@ -166,6 +166,19 @@ describe('publishing an AL (tfin B49 / B26)', () => {
     expect(pendCount()).toBe(0)
   })
 
+  /* Phase 2 lock (F-01): discardPending is restricted to NEVER-PUBLISHED days.
+     On a published day a discard would silently drop a live-vs-issued
+     divergence — the only supported way to change a published day is to publish
+     it as the next AL. */
+  it('discardPending keeps a PUBLISHED day’s pending, clears a DRAFT day’s', () => {
+    sign(0); setDayApproved(0, true)          // day 0 published (has an Original)
+    noteChange('dn:0.0')                        // a new draft edit on the published day
+    noteChange('dn:1.0')                        // a draft edit on never-published day 1
+    discardPending()
+    expect(SCHED.pending['dn:0.0'], 'published day pending must survive a discard').toBe(1)
+    expect(SCHED.pending['dn:1.0'], 'draft day pending must clear').toBeUndefined()
+  })
+
   it('nextAL is the lowest unused number', () => {
     expect(nextAL()).toBe(1)
     SCHED.als = [{ n: 1, keys: [], sign: {} }, { n: 3, keys: [], sign: {} }]

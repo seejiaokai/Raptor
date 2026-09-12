@@ -472,7 +472,16 @@ export function unpublishAL(n:any){
   reflow(); histPush();
   toast(`AL${n} (${daysLabel(alDays(rec))}) unpublished · ${rec.keys.length} change${rec.keys.length>1?'s':''} back to pending`);
 }
-export function discardPending(){ SCHED.pending={}; reflow(); histPush(); toast('Pending marks cleared'); }
+/* Restricted to NEVER-PUBLISHED days (Phase 2 lock, F-01). On a day that has
+   an issued Original, discarding its pending marks would silently drop a
+   live-vs-issued divergence — the only supported way to change a published day
+   is to publish it as the next AL. So keep pending on any day that carries an
+   Original, and clear only the draft-build marks on never-published days. */
+export function discardPending(){
+  const orig=SCHED.orig||{};
+  Object.keys(SCHED.pending).forEach((k:any)=>{ if(!orig[keyDay(k)])delete SCHED.pending[k]; });
+  reflow(); histPush(); toast('Pending marks cleared');
+}
 /* re-validate + repaint every visible surface */
 export const SIGN_ROLES:any[]=[['cur','CUR CK',false],['sked','SKED CK',true],['plan','PLANNED BY',true],['appr','APPROVED BY',true]];
 export function signOf(di:any){SCHED.sign=SCHED.sign||{}; return (SCHED.sign[+di]=SCHED.sign[+di]||{cur:'',sked:'',plan:'',appr:''});}
