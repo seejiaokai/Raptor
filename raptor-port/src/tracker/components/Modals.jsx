@@ -236,7 +236,10 @@ function OrdModalInner({ mode }) {
   const move = (i, j) => setList(l => { const a = [...l]; [a[i], a[j]] = [a[j], a[i]]; return a; });
   const restore = async item => {
     await core.restoreHiddenSyl(item.id);
-    setList(l => (l.includes(item.name) ? l : [...l, item.name]));
+    /* the actual label may have gained a suffix (ensureUniqueLabel), so read it
+       back rather than reuse the shipped name (review CSID-REV-11) */
+    const label = core.sylName(item.id) || item.name;
+    setList(l => (l.includes(label) ? l : [...l, label]));
   };
   return (
     <>

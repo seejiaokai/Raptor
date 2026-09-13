@@ -1205,6 +1205,11 @@ describe('the person bridge and the link (peoplewire.ts → people.js → core.j
     await expect(C.applyStudents({ courses: ['LEG'], byCourse: { LEG: { plan: { sylName: '2026' }, lulls: {}, pace: {}, bySyllabus: { '2026': { roster: [{ id: 's9', name: 'ALPHA' }], marks: { s9: { 'ST-01': { g: 'dco' } } }, dates: {} } } } } }, null))
       .rejects.toThrow(/older version/)
     expect(C.courseIdOf('LEG'), 'nothing was written — the whole student import was refused').toBeNull()
+    /* a legacy plan pointer with an EMPTY bySyllabus must ALSO be refused, not slip
+       through the no-references shortcut (review CSID-REV-09) */
+    await expect(C.applyStudents({ courses: ['LEG2'], byCourse: { LEG2: { plan: { sylName: 'Training' }, bySyllabus: {} } } }, null))
+      .rejects.toThrow(/older version/)
+    expect(C.courseIdOf('LEG2'), 'the dangling legacy plan pointer wrote nothing').toBeNull()
     /* and a genuine v3 export (collectStudents) carries the identity sylcat and no links block */
     const out = await C.collectStudents()
     expect(Array.isArray(out.sylcat), 'a v3 export carries an identity-only sylcat').toBe(true)

@@ -414,7 +414,9 @@ export function sylHasOwnDef(id) { return !!(customDefs && has(customDefs, id));
 /* builtinOf(id) — truthy (the id) for a built-in id that the catalogue holds,
    else null; kept as the name delSyl/UI already read. */
 export function builtinOf(id) { return (isBuiltinSylId(id) && sylEntry(id)) ? id : null; }
-function sylSource(id) { return (customDefs && customDefs[id]) || (baseOf(id) ? SYLLABI[baseOf(id)] : null); }
+/* own-property lookup so a def keyed "__proto__"/"constructor" reads as a def,
+   never as Object.prototype's (review CSID-REV-08, mirror ids.js's has()). */
+function sylSource(id) { if (customDefs && has(customDefs, id)) return customDefs[id]; const b = baseOf(id); return b ? SYLLABI[b] : null; }
 export function allSylIds() { return SYLS.map(e => e.id).filter(id => !isHidden(id)); }
 export function orderedSylIds() {
   const all = allSylIds();
@@ -452,31 +454,46 @@ function padId(id) {
   if (!m) return id;
   return m[1] + '-' + (m[2].length === 1 ? ('0' + m[2]) : m[2]) + (m[3] || '');
 }
-/* Translate a LEGACY layout's event-id keys onto the shipped ids (§17
-   CSID2-R4-02, §18 CSID2-R5-03): the built-in charts renumbered sorties
-   (padId/SPECIAL), and a hand-drawn layout folded onto a built-in id must have
-   its position keys — and the event-id-keyed font/routing metadata — mapped to
-   the NEW ids or nodePos misses them and the layout is silently lost. Marks are
-   RESET (§5.3) / refused on import (§19 guardrail), so no MARK translation
-   exists; this is layout-only, used by the migration's KEEP half.
-   Exact-match-first: a key the target already contains is kept; else padId; the
-   non-event __all font key and any key the target does not contain are dropped. */
+/* Translate a LEGACY layout's event-id references onto the shipped ids (§17
+   CSID2-R4-02, §18 CSID2-R5-03; review CSID-REV-01/02). The built-in charts
+   renumbered sorties (padId/SPECIAL), so a hand-drawn layout folded onto a
+   built-in id must have its position keys, its event-keyed __font, AND its
+   id-referencing routing metadata mapped to the NEW ids — or nodePos/anchorPt
+   miss them and the hand-drawn work is silently lost. Marks are RESET (§5.3) /
+   refused on import (§19), so no MARK translation exists; layout-only, KEEP half.
+   - position keys + __font keys: exact-match-first (padId fallback), __all kept;
+   - __edgeMeta keys are `<id>▸<id>` — split and map each side;
+   - the routing ARRAYS (__lines/__derived/__merges/__unmerges) and every value
+     are walked, translating only a STRING that is a legacy event id resolving to
+     a shipped id (a line id / side / coordinate is left — padId is a no-op and it
+     is not in the target's id set), so an anchor {t:'ball',id:'IEPE'} becomes
+     'IEPE/IPC' while nothing else is disturbed.
+   COLLISION = FAIL CLOSED (§14 CSID2-03/§16): if two source keys map to one
+   destination with DIFFERING values, return { ok:false } so the migration fails
+   closed and the differing source is never silently dropped. Returns { layout, ok }. */
 function translateLayoutKeys(lay, idSet) {
-  if (!lay || typeof lay !== 'object') return lay;
+  if (!lay || typeof lay !== 'object') return { layout: lay, ok: true };
   const mapKey = k => idSet.has(k) ? k : (idSet.has(padId(k)) ? padId(k) : null);
-  const out = {};
-  const meta = new Set(['__edgeMeta', '__merges', '__unmerges', '__lines', '__derived', '__font']);
+  const tstr = s => (typeof s === 'string') ? (idSet.has(s) ? s : (idSet.has(padId(s)) ? padId(s) : s)) : s;
+  const twalk = v => Array.isArray(v) ? v.map(twalk) : (v && typeof v === 'object' ? Object.fromEntries(Object.keys(v).map(k => [k, twalk(v[k])])) : tstr(v));
+  const out = {}; let ok = true;
+  const put = (o, k, val) => { if (Object.prototype.hasOwnProperty.call(o, k)) { if (JSON.stringify(o[k]) !== JSON.stringify(val)) ok = false; } else o[k] = val; };
   for (const k in lay) {
     if (k === '__font') {
       const f = lay.__font || {}, nf = {};
-      for (const fk in f) { if (fk === '__all') { nf.__all = f.__all; continue; } const nk = mapKey(fk); if (nk && !(nk in nf)) nf[nk] = f[fk]; }
+      for (const fk in f) { if (fk === '__all') { nf.__all = f.__all; continue; } const nk = mapKey(fk); if (nk) put(nf, nk, f[fk]); }
       out.__font = nf; continue;
     }
-    if (meta.has(k)) { out[k] = lay[k]; continue; }   /* routing arrays carry their own ids; kept verbatim */
+    if (k === '__edgeMeta') {
+      const em = lay.__edgeMeta || {}, ne = {};
+      for (const ek in em) { const nk = ek.split('▸').map(p => mapKey(p) || p).join('▸'); put(ne, nk, twalk(em[ek])); }
+      out.__edgeMeta = ne; continue;
+    }
+    if (k === '__merges' || k === '__unmerges' || k === '__lines' || k === '__derived') { out[k] = twalk(lay[k]); continue; }
     if (k.indexOf('__') === 0) { out[k] = lay[k]; continue; }
-    const nk = mapKey(k); if (nk && !(nk in out)) out[nk] = lay[k];
+    const nk = mapKey(k); if (nk) put(out, nk, lay[k]);
   }
-  return out;
+  return { layout: out, ok };
 }
 /* the retired global syllabus-source "course" — never a real course, filtered
    out whether the store still lists it as a bare string (pre-migration) or as an
@@ -888,13 +905,16 @@ async function buildSylJournal() {
     }
     rawLayoutById[id] = raw; layoutSrcById[id] = srcKey;
   }
-  /* build the id-keyed layout payloads, event-id-translated onto the target def */
+  /* build the id-keyed layout payloads, event-id-translated onto the target def;
+     a differing-value collision fails closed (§14 CSID2-03, review CSID-REV-02). */
   const layoutOut = Object.create(null);   // destKey → payload
   for (const id of Object.keys(rawLayoutById)) {
     const base = isBuiltinSylId(id) ? builtinBaseOf(id) : null;
     const def = defById[id] || (base ? SYLLABI[base] : null) || [];
     const idSet = new Set((def || []).map(e => e.id));
-    layoutOut[SYL_NS + ':lay:' + id] = translateLayoutKeys(raw2plain(rawLayoutById[id]), idSet);
+    const t = translateLayoutKeys(raw2plain(rawLayoutById[id]), idSet);
+    if (!t.ok) { setBootError('Two saved layout positions point at the same event under the new ids, so the Tracker could not finish upgrading safely. Reload to try again — nothing has been changed.'); return null; }
+    layoutOut[SYL_NS + ':lay:' + id] = t.layout;
   }
 
   /* the id-forms of the prefs */
@@ -962,8 +982,11 @@ async function applyResetJournal(j) {
          roster, lulls, pace, last, lastStudent and the legacy per-course dates.
          NEVER the plan or the flags, and never a legacy DEF key (v3:c:syl /
          v3:c:syls — those are the KEEP half's to purge). */
-      if (seg === 'plan' || seg === 'rostermig' || seg === 'idmig' || seg === 'idmap' || seg === 'syl' || seg === 'syls') continue;
-      if (tail === 'roster' || tail.startsWith('m:') || tail.startsWith('d:')      /* v3:c:<seg>:roster|m:*|d:* */
+      /* protect the EXACT course-level keys only (tail empty) — a SYLLABUS
+         literally named 'plan' etc. has a tail (roster/m:/d:) and must still be
+         swept (review CSID-REV-07); the def keys (syl/syls) are the KEEP half's */
+      if (tail === '' && (seg === 'plan' || seg === 'rostermig' || seg === 'idmig' || seg === 'idmap' || seg === 'syl' || seg === 'syls')) continue;
+      if (tail === 'roster' || tail.startsWith('m:') || tail.startsWith('d:')      /* v3:c:<seg>:roster|m:*|d:* — any middle seg */
         || seg === 'roster' || seg === 'lulls' || seg === 'pace' || seg === 'last' || seg === 'lastStudent'
         || seg === 'd') await delKey(k);                                            /* legacy flat dates v3:c:d:* */
     }
@@ -3382,9 +3405,13 @@ async function saveSylPrefs() { await sSet(kSylHidden(), JSON.stringify(SYL_HIDD
    truth every reader keys off. Load it, then reconcile against the code table. */
 async function loadSylCat() {
   try { const r = await sGet(kSylCat()); const a = r ? JSON.parse(r) : null; SYLS = (Array.isArray(a) ? a.filter(isSylEntry) : []); } catch (e) { SYLS = []; }
-  /* base is authoritative from the table for every built-in id (§16 R3-03), and
-     an unknown sb… id has no shipped source, so it is dropped at load. */
-  SYLS = SYLS.filter(e => !(isBuiltinSylId(e.id) && !builtinSylById(e.id)));
+  /* Every catalogue id MUST match the grammar (review CSID-REV-08): a separator-
+     or __proto__-shaped id must never reach a storage-key builder or sylSource's
+     definition lookup. Drop an entry whose id is not a valid syllabus id, and an
+     sb… id the code table does not know (base is authoritative from the table,
+     §16 R3-03 — an unknown sb… has no shipped source). Dedupe by id (first wins). */
+  const seen = new Set();
+  SYLS = SYLS.filter(e => isSylId(e.id) && !(isBuiltinSylId(e.id) && !builtinSylById(e.id)) && !seen.has(e.id) && seen.add(e.id));
   for (const e of SYLS) { if (isBuiltinSylId(e.id)) e.base = builtinBaseOf(e.id); else if (e.base) delete e.base; }
 }
 async function saveSylCat() { await sSet(kSylCat(), JSON.stringify(SYLS)); }
@@ -4060,7 +4087,10 @@ function upsertSylEntry(id, label, fileEntry, isAddNew) {
     SYLS.push(e); return;
   }
   if (isBuiltinSylId(id)) e.base = builtinBaseOf(id);
-  if (fileUserNamed && !e.userNamed && label) { e.name = ensureUniqueLabel(id, label); e.userNamed = true; }
+  /* §15 CSID2-R2-05: the file's userNamed label WINS whenever the file carries
+     that provenance (even over a local userNamed label); a plain incoming label
+     never overwrites a local one. */
+  if (fileUserNamed && label) { e.name = ensureUniqueLabel(id, label); e.userNamed = true; }
 }
 export async function applyCharts(charts, opts) {
   const o = opts || {};
@@ -4118,8 +4148,12 @@ function reconcileStudentsSyllabi(students) {
     if (cv.plan && cv.plan.sylName != null) nameKeyed = true;          /* a name-keyed plan pointer = pre-v3 */
     if (cv.plan && cv.plan.sylId) refs.add(cv.plan.sylId);
   }
+  /* a legacy plan pointer (plan.sylName) or a name-keyed bySyllabus is pre-v3 —
+     REFUSE it before the empty-refs shortcut, or a course with a legacy plan and
+     an empty bySyllabus would slip its dangling pointer through (CSID-REV-09). */
+  if (nameKeyed) throw new Error(STUDENT_GUARD_MSG);
   if (!refs.size) return s;                       /* no student syllabus refs (courses-only) — nothing to guard */
-  if (nameKeyed || !Array.isArray(s.sylcat)) throw new Error(STUDENT_GUARD_MSG);
+  if (!Array.isArray(s.sylcat)) throw new Error(STUDENT_GUARD_MSG);
   for (const r of refs) if (!isSylId(r)) throw new Error(STUDENT_GUARD_MSG);
   /* reconcile the file's syllabus ids to the store's (one map), refuse a clash */
   const { remapped, conflicts } = reconcileSylIds(buildUnionSylcat(null, s.sylcat), SYLS);
@@ -4357,22 +4391,32 @@ export async function saveCopyClick() { if (fileLocked) return;
    can never restore someone's marks by accident; a wipe-then-import finds
    nothing to ask about on the chart side and one question on the people side.
    applyStudents merges (never overwrites the course list). */
-/* ONE normalize + ONE reconcile across the whole file (§14 CSID2-05): readFile
-   is pure and never mints; normalizeImport upgrades a name-keyed (v1/v2) charts
-   block to ids ONCE, then reconciles the file's syllabus ids to the store's with
-   a single map (built-ins by deterministic id; customs by name, store id wins;
-   a name/id clash refuses). The reconciled, id-keyed charts feed every later step
-   — the per-chart dialog, replace vs add-as-new, applyCharts. Students carry
-   their own sylcat and are reconciled + guardrail-checked inside applyStudents. */
+/* ONE normalize + ONE reconcile across the WHOLE file (§14 CSID2-05, §15
+   CSID2-R2-03 — review CSID-REV-03/04/05). readFile is pure and never mints.
+   normalizeImport decides id/name by the envelope VERSION, never by a key's
+   spelling (a v1/v2 key is a name even if it is spelled like an id); upgrades a
+   v1/v2 charts block to ids ONCE; builds the UNION of the charts and students
+   catalogues and validates their cross-agreement; reconciles that union to the
+   store with a SINGLE map (built-ins by deterministic id; customs by name, store
+   id wins; a clash refuses); and applies that one map to BOTH the charts and the
+   v3 students block (bySyllabus keys, plan.sylId, sylcat). A pre-v3 students
+   block has no sylcat and is left name-keyed for the §19 guardrail in
+   applyStudents to refuse. Returns the reconciled charts + students + version. */
 export function normalizeImport(parsed) {
+  const version = parsed.version;
   let charts = parsed.charts ? JSON.parse(JSON.stringify(parsed.charts)) : null;
+  let students = parsed.students ? JSON.parse(JSON.stringify(parsed.students)) : null;
+  if (charts && (version == null || version < 3)) charts = upgradeSyllabi(charts).charts;   /* v1/v2 → id + derived sylcat */
+  const chartsCat = (charts && Array.isArray(charts.sylcat)) ? charts.sylcat : null;
+  const studentsCat = (students && version >= 3 && Array.isArray(students.sylcat)) ? students.sylcat : null;
+  let re = id => id;
+  if (chartsCat || studentsCat) {
+    const union = buildUnionSylcat(chartsCat, studentsCat);   /* throws on cross-catalogue disagreement / bad id */
+    const { remapped, conflicts } = reconcileSylIds(union, SYLS);
+    if (conflicts.length) { const x = conflicts[0]; throw new Error('That file could not be brought in: the syllabus “' + x.name + '” is a different chart than one already here. Rename one, then import again — nothing has been changed.'); }
+    re = id => has(remapped, id) ? remapped[id] : id;
+  }
   if (charts) {
-    const ks = Object.keys(charts.syllabi || {});
-    if (ks.length && ks.some(k => !isSylId(k))) charts = upgradeSyllabi(charts).charts;   // v1/v2 → id + derived sylcat
-    const cat = Array.isArray(charts.sylcat) ? charts.sylcat : [];
-    const { remapped, conflicts } = reconcileSylIds(buildUnionSylcat(cat, null), SYLS);
-    if (conflicts.length) { const x = conflicts[0]; throw new Error('That file could not be brought in: the chart “' + x.name + '” is a different syllabus than one already here. Rename one, then import again — nothing has been changed.'); }
-    const re = id => has(remapped, id) ? remapped[id] : id;
     const rk = obj => { const o = {}; for (const k of Object.keys(obj || {})) o[re(k)] = obj[k]; return o; };
     const out = { ...charts };
     if (charts.syllabi) out.syllabi = rk(charts.syllabi);
@@ -4381,11 +4425,12 @@ export function normalizeImport(parsed) {
     if (Array.isArray(charts.sylcat)) out.sylcat = charts.sylcat.map(e => ({ ...e, id: re(e.id) }));
     charts = out;
   }
-  return { charts };
+  if (students && studentsCat) students = remapStudentsSyl(students, re);   /* the SAME map — v3 students only */
+  return { charts, students, version };
 }
-/* add-as-new remaps a chart to a fresh id; its imported students follow (§CSID2-05). */
-function remapStudentsSyl(students, map) {
-  const re = id => has(map, id) ? map[id] : id;
+/* remap a students block's syllabus ids by a mapping FUNCTION (the one import map,
+   or an add-as-new fileId→newId step whose students must follow, §CSID2-05). */
+function remapStudentsSyl(students, re) {
   const byCourse = {};
   for (const c of Object.keys(students.byCourse || {})) {
     const cv = students.byCourse[c] || {}, nb = {};
@@ -4438,10 +4483,12 @@ export async function importClick() { if (fileLocked) return;
     people = await uiConfirm('This file also contains students and marks.\n\nBring them in too? A student already here who is ALSO in the file will have their marks replaced by the file’s. Anyone the file does not name keeps theirs, untouched.');
     /* the student guardrail (§19) lives in applyStudents: a pre-v3 / unresolved
        student block is refused with a plain message; charts (above) still import.
-       An add-as-new chart carries its students onto the new id. */
+       normalizeImport already reconciled a v3 block through the ONE import map;
+       an add-as-new chart composes onto it here so its students follow the new id
+       (§CSID2-05). A pre-v3 block (norm.students still name-keyed) is refused. */
     if (people) {
-      let block = parsed.students;
-      if (Object.keys(addAsNew).length) block = remapStudentsSyl(block, addAsNew);
+      let block = norm.students || parsed.students;
+      if (Object.keys(addAsNew).length) block = remapStudentsSyl(block, id => has(addAsNew, id) ? addAsNew[id] : id);
       try { await applyStudents(block, parsed.links); }
       catch (e) { await uiAlert((e && e.message) || 'The students could not be brought in.'); people = false; }
     }

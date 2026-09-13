@@ -62,14 +62,6 @@ function checkSylcat(cat, where) {
     ids.add(e.id); names.add(e.name);
   }
 }
-/* keys of an id-or-name-keyed map: all ids, all names, or refuse a mix. */
-function keyShape(obj) {
-  const ks = Object.keys(obj || {});
-  if (!ks.length) return 'empty';
-  if (ks.every(isSylId)) return 'id';
-  if (ks.every(k => !isSylId(k))) return 'name';
-  return 'mix';
-}
 
 export function buildFile({ charts = null, students = null, links = null, savedAt }) {
   const out = {
@@ -108,7 +100,7 @@ function noColon(part, name, where) {
     throw new Error('The ' + part + ' name “' + name + '”' + (where || '') + ' in that file contains a colon (:), which the app cannot file, so it has not been opened.');
 }
 
-function checkCharts(c) {
+function checkCharts(c, version) {
   if (!isPlainObject(c)) throw new Error('The charts in that file are damaged, so it has not been opened.');
   if (c.order != null && (!Array.isArray(c.order) || c.order.some(n => typeof n !== 'string')))
     throw new Error('The list of chart names in that file is damaged, so it has not been opened.');
@@ -120,11 +112,21 @@ function checkCharts(c) {
     throw new Error('The chart positions in that file are damaged, so it has not been opened.');
   if (c.eventInfo != null && !isPlainObject(c.eventInfo))
     throw new Error('The event details in that file are damaged, so it has not been opened.');
-  /* dual-shape (v1/v2 name-keyed OR v3 id-keyed, never a mix); a v3 file carries
-     a sylcat labelling every id (§10 / CSID2-04). */
-  if (keyShape(c.syllabi) === 'mix' || keyShape(c.layouts) === 'mix')
-    throw new Error('The charts in that file mix syllabus names and ids, so it has not been opened.');
   checkSylcat(c.sylcat, 'charts');
+  /* A v3 file (version 3) is ID-native: its charts keys are syllabus ids, every
+     one MUST be labelled by the sylcat (reference completeness, review
+     CSID-REV-06), and a v1/v2 file is name-keyed whatever a name is spelled — so
+     the id/name shape is decided by the VERSION, never by the key spelling
+     (CSID-REV-04). Only enforce the id-shape + completeness on a v3 file. */
+  if (version >= 3) {
+    const catIds = new Set((c.sylcat || []).filter(isSylEntry).map(e => e.id));
+    const refs = new Set([...(c.order || []), ...Object.keys(c.syllabi || {}), ...Object.keys(c.layouts || {})]);
+    for (const id of refs) {
+      if (!isSylId(id)) continue;   /* a name at v3 (a legacy/test payload) is not an id reference to complete */
+      if (isBuiltinSylId(id) && !builtinSylById(id)) throw new Error('The charts in that file name a built-in syllabus (' + id + ') this app does not ship, so it has not been opened.');
+      if (!catIds.has(id)) throw new Error('The charts in that file reference the syllabus “' + id + '” but do not describe it, so it has not been opened.');
+    }
+  }
   for (const [name, events] of Object.entries(c.syllabi || {})) {
     if (!Array.isArray(events))
       throw new Error('The “' + name + '” chart in that file is damaged, so it has not been opened.');
@@ -286,13 +288,17 @@ export function readFile(obj) {
     throw new Error('That file is not an OCU Tracker file.');
   if (typeof obj.version !== 'number' || obj.version > FILE_VERSION)
     throw new Error('That file was written by a newer version of the app.');
-  if (obj.charts != null) checkCharts(obj.charts);
+  if (obj.charts != null) checkCharts(obj.charts, obj.version);
   if (obj.students != null) checkStudents(obj.students);
   if (obj.links != null) checkLinks(obj.links);
   return {
     charts: obj.charts || null,
     students: obj.students || null,
     links: obj.links || null,
+    /* the envelope version is the id/name provenance normalizeImport keys off —
+       a v1/v2 syllabus key is a NAME whatever it is spelled, a v3 key is an id
+       (§10, review CSID-REV-04); never guess from the spelling. */
+    version: obj.version,
     contains: {
       charts: !!(obj.contains && obj.contains.charts),
       students: !!(obj.contains && obj.contains.students),

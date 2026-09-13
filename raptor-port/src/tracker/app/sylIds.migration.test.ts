@@ -122,4 +122,35 @@ describe('migrateSylIds — KEEP the catalogue, RESET the student layer', () => 
     expect(cat.map((e: any) => e.id).sort()).toEqual(['sb2024', 'sb2026', 'sbagaa2026', 'sbtx2026'])
     expect(builtinIdByName('2026')).toBe('sb2026')
   })
+
+  it('FAILS CLOSED when two layout keys collide onto one event with DIFFERING values (review CSID-REV-02)', async () => {
+    /* the old id ST-1 pads to ST-01, which the layout ALSO holds under a
+       different position — a silent first-wins keep would lose one, so the
+       migration must refuse (bootError) and leave the source intact. */
+    makeStore({
+      'v3:courses': [{ id: 'cx1', name: '26ABSG' }],
+      'v3:master:lay:2026': { 'ST-1': { x: 1, y: 1 }, 'ST-01': { x: 9, y: 9 } },
+    })
+    expect(await core.migrateCourseIds()).toBe(true)
+    expect(await core.migrateSylIds(), 'the differing collision fails closed').toBe(false)
+    expect(core.bootError, 'a fail-closed boot error is set').toBeTruthy()
+    expect(await get('v3:sylcatmig'), 'nothing was stamped').toBeNull()
+    expect(await get('v3:master:lay:2026'), 'the source layout is left intact').toBeTruthy()
+  })
+
+  it('RESET sweeps a syllabus literally named "plan" but keeps the exact plan key (review CSID-REV-07)', async () => {
+    makeStore({
+      'v3:courses': [{ id: 'cx1', name: '26ABSG' }],
+      'v3:cx1:plan': { sylName: '2026', epw: 2 },
+      'v3:cx1:rostermig': '1', 'v3:cx1:idmig': '1',
+      'v3:cx1:plan:m:sZ': { 'ST-01': { g: 'dco' } },   /* a syllabus NAMED 'plan' — a student record, not the plan */
+      'v3:cx1:plan:roster': [{ id: 'sZ', name: 'ZED' }],
+    })
+    expect(await core.migrateCourseIds()).toBe(true)
+    expect(await core.migrateSylIds()).toBe(true)
+    expect(await get('v3:cx1:plan:m:sZ'), 'the plan-named syllabus student record is swept').toBeNull()
+    expect(await get('v3:cx1:plan:roster'), 'and its roster').toBeNull()
+    const plan = await getJSON('v3:cx1:plan')
+    expect(plan && plan.sylId, 'the real plan survives, converted to a sylId').toBe('sb2026')
+  })
 })
