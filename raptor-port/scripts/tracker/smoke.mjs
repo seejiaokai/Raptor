@@ -655,16 +655,15 @@ const stApplied = await pg.evaluate(async () => {
       marks: { 'STUDENT Z': { 'ST-01': { g: 'dco', f: 3 } } },
       dates: { 'STUDENT Z': { lastSyll: '2026-02-03', lastCurr: null } } } } } } });
   await new Promise(r => setTimeout(r, 600));   // wait for the write-behind postman to flush to raptor:tracker/*
-  /* A name-keyed file is re-keyed on the way in (stable ids, 10 Sep 26): the
-     roster lands as { id, name } entries and the marks under the MINTED id, so
-     there is no `…:m:STUDENT Z` key to read any more. The roster is the index
-     that names the id, exactly as every reader in the app uses it, so go
-     through it rather than guessing a key — and the id is not knowable here
-     because this course is not the one loaded. */
-  const roster = localStorage['raptor:tracker/v3:SMOKE COURSE:2026:roster'];
+  /* A name-keyed file is re-keyed on the way in: the roster lands as { id, name }
+     entries and the marks under the MINTED id (stable ids, 10 Sep 26). The COURSE
+     is id-keyed too now (course ids, 1B-i), and an imported course that is new
+     here gets a MINTED course id — so read under that, resolved via the bridge. */
+  const cid = t.courseIdOf('SMOKE COURSE');
+  const roster = localStorage['raptor:tracker/v3:' + cid + ':2026:roster'];
   let entry = null; try { entry = (JSON.parse(roster || '[]') || []).find(e => e && e.name === 'STUDENT Z'); } catch (_) {}
   return { roster, id: entry ? entry.id : null,
-           marks: entry ? localStorage['raptor:tracker/v3:SMOKE COURSE:2026:m:' + entry.id] : null };
+           marks: entry ? localStorage['raptor:tracker/v3:' + cid + ':2026:m:' + entry.id] : null };
 });
 ok('applying students writes the roster', !!stApplied && (stApplied.roster || '').includes('STUDENT Z'));
 ok('the roster it writes carries an enrolment id, not a bare name',
@@ -2047,23 +2046,32 @@ const addStudent = async name => {
       localStorage.setItem(P + 'v3:links', JSON.stringify({ LEGACY: { 'OLD A': pid } }));
     }, first.key);
     await openTracker(pg); await pg.waitForSelector('#flowSvg .ball', { timeout: 15000 });
-    await pg.selectOption('#courseSel', 'LEGACY'); await pg.waitForTimeout(1000);
+    /* the dropdown value is the course id now (course ids, 1B-i) — pick by label;
+       the legacy name-keyed course was converted to an id on this reload (the
+       stray-string-in-index path), so its records live under that id */
+    await pg.selectOption('#courseSel', { label: 'LEGACY' }); await pg.waitForTimeout(1000);
     const conv = await pg.evaluate(() => {
       const P = 'raptor:tracker/';
+      const legId = window.__coreForTests.courseIdOf('LEGACY');
       const e = window.__coreForTests.byName('OLD A');
       return {
         options: [...document.querySelectorAll('#activeSel option')].map(o => o.textContent).join(','),
+        legId,
         id: e ? e.id : null, pid: e ? e.pid : null,
-        underId: e ? localStorage.getItem(P + 'v3:LEGACY:2026:m:' + e.id) : null,
+        underId: e ? localStorage.getItem(P + 'v3:' + legId + ':2026:m:' + e.id) : null,
         underName: localStorage.getItem(P + 'v3:LEGACY:2026:m:OLD A'),
-        flag: localStorage.getItem(P + 'v3:LEGACY:idmig'),
-        map: localStorage.getItem(P + 'v3:LEGACY:idmap'),
+        nameCourseGone: localStorage.getItem(P + 'v3:LEGACY:2026:roster'),
+        flag: localStorage.getItem(P + 'v3:' + legId + ':idmig'),
+        map: localStorage.getItem(P + 'v3:' + legId + ':idmap'),
         links: localStorage.getItem(P + 'v3:links'),
       };
     });
     ok('a course stored under the old name keys still reads its student by name',
       conv.options === 'OLD A' && !!conv.id && conv.id !== 'OLD A',
       `picker reads "${conv.options}", enrolment ${conv.id}`);
+    ok('the legacy name-keyed course was re-based onto a course id, its name keys gone',
+      /^c[0-9a-z]+$/.test(conv.legId || '') && !conv.nameCourseGone,
+      `course id ${conv.legId}, name-roster ${conv.nameCourseGone}`);
     ok('the person they were linked to comes across onto the student',
       conv.pid === first.key
       && await pg.locator('.c-students .chip.linked', { hasText: 'OLD A' }).count() === 1,
@@ -2464,7 +2472,9 @@ await pg.waitForSelector('#flowSvg .ball', { timeout: 15000 });
    one shipped default and the expected orders can be stated outright rather
    than compared against "whatever was there before". */
 {
-  const courses = () => pg.evaluate(() => [...document.querySelectorAll('#courseSel option')].map(o => o.value));
+  /* the option VALUE is the course id now (course ids, 1B-i); this block is
+     about the order the trainer reads, so compare the visible labels */
+  const courses = () => pg.evaluate(() => [...document.querySelectorAll('#courseSel option')].map(o => o.textContent));
   /* Expectations are written out in full rather than derived from what the app
      just did. Deriving them is how a reorder check ends up comparing broken
      output against itself and reporting "wanted SMOKE FIRST | SMOKE FIRST". */
@@ -2502,7 +2512,7 @@ await pg.waitForSelector('#flowSvg .ball', { timeout: 15000 });
      Grade somebody FIRST too: on an ungraded ball every wedge is the same
      white, so a fill comparison would pass without renderBoard ever being
      called — the "grading an empty roster is a no-op" trap in another costume. */
-  await pg.selectOption('#courseSel', '26ABSG'); await pg.waitForTimeout(800);
+  await pg.selectOption('#courseSel', { label: '26ABSG' }); await pg.waitForTimeout(800);
   /* By NAME: the order this check is about is the order the trainer reads in
      the dropdown, and a list of ids would compare equal-looking gibberish. */
   const crew = rosterNames;
@@ -2547,11 +2557,13 @@ await pg.waitForSelector('#flowSvg .ball', { timeout: 15000 });
    It always opened on COURSES[0] before, so a second course could never be the
    one that greeted you. Runs on from the two-course state above. */
 {
-  await pg.selectOption('#courseSel', 'SMOKE FIRST'); await pg.waitForTimeout(800);
+  await pg.selectOption('#courseSel', { label: 'SMOKE FIRST' }); await pg.waitForTimeout(800);
   await openTracker(pg);
   await pg.waitForSelector('#flowSvg .ball', { timeout: 15000 });
+  /* the dropdown value is the course id now — read the selected option's label */
+  const selectedCourse = () => pg.evaluate(() => { const s = document.getElementById('courseSel'); return s.selectedOptions[0] ? s.selectedOptions[0].textContent : null; });
   ok('the app reopens on the course you were last on',
-    await pg.inputValue('#courseSel') === 'SMOKE FIRST', await pg.inputValue('#courseSel'));
+    await selectedCourse() === 'SMOKE FIRST', await selectedCourse());
 
   /* Both halves matter. The negative alone passes when nothing is stored at
      all, which is exactly how a feature that never wrote anything would look. */
@@ -2646,7 +2658,7 @@ await pg.waitForSelector('#flowSvg .ball', { timeout: 15000 });
   const merged = await pg.evaluate(async () => {
     await window.__coreForTests.applyStudents({ courses: ['THEIRS'], byCourse: { THEIRS: {
       plan: { sylName: '2026' }, bySyllabus: { '2026': { roster: ['VISITOR'], marks: {}, dates: {} } } } } });
-    return [...document.querySelectorAll('#courseSel option')].map(o => o.value);
+    return [...document.querySelectorAll('#courseSel option')].map(o => o.textContent);
   });
   ok('opening a file adds its courses without deleting yours',
     merged.includes('MINE') && merged.includes('26ABSG') && merged.includes('THEIRS'), merged.join(' | '));
@@ -4044,7 +4056,7 @@ await openTracker(pg); await pg.waitForSelector('#flowSvg .ball'); await pg.wait
     { id: 'SI-01', type: 'acad', seq: 0, prereqs: [], phase: 'P' }, { id: 'SI-02', type: 'flight', seq: 1, prereqs: ['SI-01'], phase: 'P' }] }, layouts: {}, eventInfo: {} };
   const students = { courses: ['SMOKE IMP COURSE'], byCourse: { 'SMOKE IMP COURSE': { plan: { sylName: 'SMOKE IMP' }, lulls: {}, pace: {},
     bySyllabus: { 'SMOKE IMP': { roster: ['SMOKE IMP STU'], marks: {}, dates: {} } } } } };
-  const courses = () => pg.evaluate(() => [...document.querySelectorAll('#courseSel option')].map(o => o.value));
+  const courses = () => pg.evaluate(() => [...document.querySelectorAll('#courseSel option')].map(o => o.textContent));
   const marksBefore = await pg.evaluate(() => Object.keys(localStorage).filter(k => k.includes(':m:')).length);
 
   await feed(charts, null);

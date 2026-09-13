@@ -129,7 +129,7 @@ describe('the course shape (course ids, 1B-i)', () => {
     expect(() => readFile(file({ students: v2(['ALPHA'], { 'A:B': { plan: {}, bySyllabus: {} } }) }))).toThrow(/colon/)
   })
   it('refuses a file written by a newer version', () => {
-    const f = buildFile({ savedAt: 'x', students: v2(['ALPHA']) }) as any
+    const f = file({ students: v2(['ALPHA']) })
     f.version = FILE_VERSION + 1
     expect(() => readFile(f)).toThrow(/newer version/)
   })

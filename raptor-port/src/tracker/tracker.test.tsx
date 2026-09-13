@@ -1553,7 +1553,11 @@ describe('the person bridge and the link (peoplewire.ts → people.js → core.j
     /* the init path: a course sitting in the list that this boot has never
        opened. loadCourses() is module-private, so the list is pushed the way
        the migration test above pushes its own — as an { id, name } entry (course
-       ids, 1B-i), the id equal to the name so the v3:<name>:... keys are unchanged. */
+       ids, 1B-i), the id equal to the name so the v3:<name>:... keys are unchanged.
+       Snapshot the list + module COURSES BEFORE the push and restore in finally,
+       so the id-equals-name fixture entry does not leak into a later test's
+       COURSES (a non-c id would fail the migrateCourseIds preflight). */
+    const prevCoursesShut = (C.COURSES as any[]).slice(), prevListShut = (await storage.get('v3:courses'))?.value ?? null
     ;(C.COURSES as any[]).push({ id: c, name: c }); await storage.set('v3:courses', JSON.stringify(C.COURSES))
     /* renSyl below renames the current BUILT-IN globally and back, and that is
        not symmetrical: on the way out it hides the built-in and tombstones the
@@ -1594,6 +1598,8 @@ describe('the person bridge and the link (peoplewire.ts → people.js → core.j
       }
       for (const [k, val] of prevSyl) { if (val == null) await storage.delete(k); else await storage.set(k, val) }
       if (prevLinks == null) await storage.delete('v3:links'); else await storage.set('v3:links', prevLinks)
+      ;(C.COURSES as any[]).splice(0, (C.COURSES as any[]).length, ...prevCoursesShut)
+      if (prevListShut == null) await storage.delete('v3:courses'); else await storage.set('v3:courses', prevListShut)
       await C.loadCourse(prevCourse); await C.whenLoaded()   /* re-reads CUSTOMS off the restored store */
     }
   })
@@ -1708,6 +1714,32 @@ describe('course ids — migration, links translation, fail-closed boot, boundar
       expect(ok).toBe(false)
       expect(C.bootError).toMatch(/colon/)
       expect(await val('v3:courseidmig')).toBeNull()
+    })
+  })
+
+  it('a persistent write-swallow makes migrateCourseIds return false, and it does NOT set bootError on a retriable read-back miss (Fable F1)', async () => {
+    await runMig(['SWALLOW'], { 'v3:SWALLOW:plan': JSON.stringify({ sylName: '2026' }) }, async () => {
+      const realSet = storage.set
+      storage.set = (async () => {}) as any            // a store that keeps nothing (full / blocked)
+      let ok: any
+      try { ok = await C.migrateCourseIds() } finally { storage.set = realSet }
+      expect(ok, 'the migration could not finish').toBe(false)
+      /* the retriable read-back miss must NOT set bootError here — init sets it
+         only after both attempts fail, so a first-try miss that the retry fixes
+         never leaves the App gated on a stale error */
+      expect(C.bootError, 'migrateCourseIds leaves the message to init (Fable F1)').toBeNull()
+    })
+  })
+
+  it('a bare-string course left in the index after the flag is set is still converted, not addressed as v3:undefined (Fable F3)', async () => {
+    await runMig([...C.COURSES.slice(), 'STRAY'], { 'v3:STRAY:plan': JSON.stringify({ sylName: '2026' }) }, async () => {
+      await storage.set('v3:courseidmig', '1')          // the one-shot flag is already set…
+      const ok = await C.migrateCourseIds()             // …but a stray string must still convert
+      expect(ok).toBe(true)
+      const id = C.courseIdOf('STRAY')
+      expect(id, 'the stray got a real id').toMatch(/^c[0-9a-z]+$/)
+      expect(await val(`v3:${id}:plan`), 'its keys moved under the id').toBeTruthy()
+      expect(await val('v3:STRAY:plan'), 'nothing left under the name').toBeNull()
     })
   })
 

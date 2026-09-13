@@ -635,17 +635,24 @@ export function clearBootError() { bootError = null; }
 const RESERVED_KEY_SEG = new Set(['courses', 'links', 'master', 'lay', 'SYLLABUS EDIT']);
 export async function migrateCourseIds() {
   try {
-    if (await sGet(kCourseIdMig)) return true;
     const raw = sParse(await sGet(kCourses), [DEFAULT_COURSE_NAME], 'array').filter(c => !isRetiredCourse(c));
     const list = raw.length ? raw : [DEFAULT_COURSE_NAME];
+    /* Done already — UNLESS a stray bare-string course slipped into the index
+       after the flag was set (a hand-edited store, or a future cross-device sync
+       from an unmigrated browser): convert it too, rather than leave an un-id'd
+       course that every id reader would address as v3:undefined:... (Fable F3).
+       The resumable body below mints/reuses its id and prefix-moves its keys. */
+    if ((await sGet(kCourseIdMig)) && list.every(isCourseEntry)) return true;
     /* PREFLIGHT — a reserved or colon-bearing legacy name would make the
        2nd-segment prefix match ambiguous (sweep a global, or split at the wrong
-       colon). Fail closed: move nothing, stamp nothing. */
+       colon), and an entry that already carries a non-minted id would file under
+       an unsafe segment. Fail closed: move nothing, stamp nothing. */
     for (const c of list) {
       const nm = isCourseEntry(c) ? c.name : c;
       if (typeof nm !== 'string' || nm === '') { setBootError('A course in your saved Tracker data has no name, so it could not finish upgrading. Reload to try again.'); return false; }
       if (nm.includes(':')) { setBootError('A course named “' + nm + '” contains a colon, which the Tracker can no longer file, so it could not finish upgrading. Reload to try again.'); return false; }
       if (isReservedCourseName(nm)) { setBootError('A course named “' + nm + '” clashes with a name the Tracker reserves, so it could not finish upgrading. Reload to try again.'); return false; }
+      if (isCourseEntry(c) && !isCourseId(c.id)) { setBootError('A course in your saved Tracker data has an invalid id, so it could not finish upgrading. Reload to try again.'); return false; }
     }
     /* derive name → id: an entry lends its id (a resumed/partly-done store);
        reuse the durable scratch map on a retry; a bare-string course mints one */
@@ -4089,7 +4096,15 @@ export async function init() {
      board and no writers (review CSID-04 / R2-03). */
   let cmig = await migrateCourseIds();
   if (!cmig) cmig = await migrateCourseIds();
-  if (!cmig) { loading = false; return; }
+  if (!cmig) {
+    loading = false;
+    /* A read-back miss (a browser that would not keep the write — Safari private
+       mode, a full quota) returns false WITHOUT a bootError, unlike the preflight
+       rejections; without this the App would sit on its loading placeholder for
+       good (review Fable F1). Fail closed with a message either way. */
+    if (!bootError) setBootError('The Tracker could not finish upgrading your data — the browser did not keep what was written. Reload to try again.');
+    return;
+  }
   /* Every course, not just the one about to open: an export, or a global
      syllabus rename, must never meet a course nobody has opened since the
      upgrade and find half its records still filed under a name. */
@@ -4132,8 +4147,9 @@ export async function init() {
      page, so scripts/smoke.mjs has no other way to reach these. */
   if (typeof window !== 'undefined') {
     window.__coreForTests = { layoutSnapshotFor, collectCharts, collectStudents, applyCharts,
-      applyStudents, whenLoaded, migrateAllCourses, SYLLABI, DEFAULT_LAYOUTS,
-      rosterNow: () => roster, nameOf, byName };
+      applyStudents, whenLoaded, migrateAllCourses, migrateCourseIds, SYLLABI, DEFAULT_LAYOUTS,
+      rosterNow: () => roster, nameOf, byName, courseIdOf, courseName, curCourseName,
+      coursesNow: () => COURSES.slice() };
     window.__fileFormatForTests = FMT;
     window.__fileStoreForTests = FS;
     /* Save changes is only on screen while there is an unsaved flow edit, so a
