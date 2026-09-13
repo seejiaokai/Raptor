@@ -207,6 +207,12 @@ export function reconcileSylIds(sylcat, existing) {
   const conflicts = [], seenC = new Set();
   for (const e of listIn) {
     if (seenC.has(e.name)) continue;
+    /* identity settled by ID needs no name reconcile, so a mere LABEL clash is
+       not a conflict: a built-in matches by its deterministic id, and any id the
+       store already holds IS that syllabus. Without this, importing a file whose
+       built-in wears a label the store had given a DIFFERENT custom was refused
+       spuriously (mirrors the remap loop's own two skips above). */
+    if (isBuiltinSylId(e.id) || storeIds.has(e.id)) continue;
     const mate = has(byName, e.name) ? byName[e.name] : null;
     const resolved = has(remap, e.id) ? remap[e.id] : e.id;
     if (mate && resolved !== mate.id) { conflicts.push({ name: e.name, fileId: e.id, storeId: mate.id }); seenC.add(e.name); }

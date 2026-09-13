@@ -247,4 +247,90 @@ describe('migrateSylIds — KEEP the catalogue, RESET the student layer', () => 
     const plan = await getJSON('v3:cx1:plan')
     expect(plan.sylId).toBe('sb2026')
   })
+
+  /* ---- second-provider review (Fable, 14 Sep 26): the migration must preserve
+     what the OLD READER showed, not what the identity model says the data meant.
+     The old app hid/tombstoned a built-in ONLY by its CURRENT shipped name and
+     adopted a v3:master:syls def into CUSTOMS unconditionally. ---- */
+
+  it('an alias-era hidden/tomb NAME does not hide or delete the live built-in (Fable finding 1)', async () => {
+    /* 'FG JUL 26' is a retired shipped name for the 2026 built-in. The old
+       reader hid a built-in only by its CURRENT name ('2026'), so this stale
+       alias entry was DEAD — the chart showed. A shipped rename even UN-deleted
+       such a built-in. Folding the alias onto sb2026 would wrongly hide+delete a
+       chart the owner was using. */
+    makeStore({
+      'v3:courses': [{ id: 'cx1', name: '26ABSG' }],
+      'v3:cx1:plan': { sylName: '2026', epw: 2 },
+      'v3:cx1:rostermig': '1', 'v3:cx1:idmig': '1',
+      'v3:master:sylhidden': ['FG JUL 26'],
+      'v3:master:syltomb': { 'FG JUL 26': 1 },
+    })
+    expect(await core.migrateCourseIds()).toBe(true)
+    expect(await core.migrateSylIds()).toBe(true)
+    const cat = await getJSON('v3:master:sylcat')
+    expect(cat.some((e: any) => e.id === 'sb2026'), '2026 is still catalogued').toBe(true)
+    expect(await getJSON('v3:master:sylhidden'), 'the dead alias hides nothing').toEqual([])
+    expect(await getJSON('v3:master:syltomb'), 'and tombstones nothing').toEqual({})
+    expect((await getJSON('v3:cx1:plan')).sylId, 'the course still opens on 2026').toBe('sb2026')
+  })
+
+  it('a def under a DELETED canonical name stays a SHOWN custom; the built-in stays tombstoned (Fable finding 2)', async () => {
+    /* the old app deleted the built-in '2026' (hidden+tomb) and then let a
+       custom chart also named '2026' live in v3:master:syls, shown
+       unconditionally as CUSTOMS['2026']. Classifying that def onto sb2026 would
+       make it a hidden built-in override — a chart the owner sees would vanish. */
+    makeStore({
+      'v3:courses': [{ id: 'cx1', name: '26ABSG' }],
+      'v3:cx1:plan': { sylName: '2026', epw: 2 },
+      'v3:cx1:rostermig': '1', 'v3:cx1:idmig': '1',
+      'v3:master:syls': { '2026': [{ id: 'Q-1', type: 'acad', prereqs: [] }] },
+      'v3:master:sylhidden': ['2026'],
+      'v3:master:syltomb': { '2026': 1 },
+    })
+    expect(await core.migrateCourseIds()).toBe(true)
+    expect(await core.migrateSylIds()).toBe(true)
+    const cat = await getJSON('v3:master:sylcat')
+    const custom = cat.find((e: any) => e.name === '2026')
+    expect(custom && isSylId(custom.id) && !isBuiltinSylId(custom.id), 'the def is an independent custom, not the built-in override').toBe(true)
+    expect(cat.some((e: any) => e.id === 'sb2026'), 'the shipped built-in is NOT re-added').toBe(false)
+    const defs = await getJSON('v3:master:syls')
+    expect(defs[custom.id], 'the def is filed under the custom id').toEqual([{ id: 'Q-1', type: 'acad', prereqs: [] }])
+    expect(defs['sb2026'], 'nothing under the built-in id').toBeUndefined()
+    expect((await getJSON('v3:master:sylhidden')).includes(custom.id), 'the shown custom is not hidden').toBe(false)
+    expect((await getJSON('v3:cx1:plan')).sylId, 'the course points at the shown custom').toBe(custom.id)
+  })
+
+  it('FAILS CLOSED when two courses hold DIFFERING own layouts for one chart with no master (Fable finding 3, §14 CSID2-03)', async () => {
+    /* per-course own layouts pre-dated the global catalogue; two courses each
+       hand-drew '2026' differently and neither was opened since. Both rank
+       'own' — a silent first-wins would throw one hand-drawn layout away, the
+       exact "keep charts" loss. It must fail closed with both sources intact. */
+    makeStore({
+      'v3:courses': [{ id: 'cx1', name: '26ABSG' }, { id: 'cx2', name: '27ABSG' }],
+      'v3:cx1:plan': { sylName: '2026', epw: 2 }, 'v3:cx2:plan': { sylName: '2026', epw: 2 },
+      'v3:cx1:rostermig': '1', 'v3:cx1:idmig': '1', 'v3:cx2:rostermig': '1', 'v3:cx2:idmig': '1',
+      'v3:lay:cx1:2026': { 'ST-01': { x: 1, y: 1 } },
+      'v3:lay:cx2:2026': { 'ST-01': { x: 9, y: 9 } },
+    })
+    expect(await core.migrateCourseIds()).toBe(true)
+    expect(await core.migrateSylIds(), 'the differing same-rank layouts fail closed').toBe(false)
+    expect(core.bootError, 'a fail-closed boot error is set').toBeTruthy()
+    expect(await get('v3:sylcatmig'), 'nothing was stamped').toBeNull()
+    expect(await get('v3:lay:cx1:2026'), 'both source layouts are left intact').toBeTruthy()
+    expect(await get('v3:lay:cx2:2026')).toBeTruthy()
+  })
+
+  it('two courses with the SAME own layout for one chart converts cleanly (finding 3 is differing-only)', async () => {
+    makeStore({
+      'v3:courses': [{ id: 'cx1', name: '26ABSG' }, { id: 'cx2', name: '27ABSG' }],
+      'v3:cx1:plan': { sylName: '2026', epw: 2 }, 'v3:cx2:plan': { sylName: '2026', epw: 2 },
+      'v3:cx1:rostermig': '1', 'v3:cx1:idmig': '1', 'v3:cx2:rostermig': '1', 'v3:cx2:idmig': '1',
+      'v3:lay:cx1:2026': { 'ST-01': { x: 5, y: 5 } },
+      'v3:lay:cx2:2026': { 'ST-01': { x: 5, y: 5 } },
+    })
+    expect(await core.migrateCourseIds()).toBe(true)
+    expect(await core.migrateSylIds(), 'identical layouts do not conflict').toBe(true)
+    expect(await getJSON('v3:master:lay:sb2026')).toEqual({ 'ST-01': { x: 5, y: 5 } })
+  })
 })
