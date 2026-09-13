@@ -1,7 +1,8 @@
 # [TRK-CSID] Phase 2 — stable hidden ids for Tracker SYLLABUSES (spec)
 
-**Status:** REV 5 — Astra R1–R4 dispositions folded in (§14, §15, §16, §17 are BINDING
-and supersede any earlier clause they touch) · 13 Sep 26 · awaiting Astra R5
+**Status:** REV 6 — Astra R1–R5 dispositions folded in (§14–§18 are BINDING and
+supersede any earlier clause they touch) · 13 Sep 26 · awaiting Astra R6 (one round past
+the default cap; see §18 host note)
 **Part of:** `[ARCH-STACK]` step 1 (stable ids everywhere) · `[TRK-CSID]` 1B-ii
 **Predecessor:** Phase 1 — COURSE ids (`2026-09-13-trk-csid-course-ids-spec.md`,
 4-round Astra red-team, APPROVED, LIVE). This phase MIRRORS its shape; where a
@@ -877,3 +878,72 @@ Changed plan → **re-review by Astra** (approval binds to the new SHA). R5 conf
 2 fixes; on APPROVED the plan is ready to build. (Round 5 is the last of the cap; if
 material findings remain they are presented to the owner with the host's position rather
 than forcing convergence.)
+
+---
+
+## 18. R5 — Astra dispositions & BINDING revisions
+
+Astra R5 verdict **REVISE** — 3 findings (1 HIGH + 2 MEDIUM), all confirmed. **All 3
+ACCEPTED.** §18 is authoritative where it conflicts with §§1–17. Plan SHA reviewed:
+`cb732c92…`. (Session `01a09b1c-814e-76f0-90d0-785f152170ae`.)
+
+**Round-cap note (host):** this reaches the default 5-round cap on a REVISE. The core
+architecture (ids, payload journal, KEEP/RESET, deterministic built-ins, boot reconcile)
+has been stable and unchallenged since REV 3; every round since has only refined the
+import/legacy-file edge, and the findings are narrow and converging. Because the owner's
+process requires an APPROVED spec before this HEAVY build, the host extends by one round
+(R6) to close these three rather than build on a REVISE — a process decision, recorded
+here.
+
+### CSID2-R5-01 (HIGH — RESOLVE precedence puts the alias fallback before an exact custom match) — ACCEPT, REORDER PRECEDENCE.
+CLASSIFY permits a destination custom named `'FG JUL 26'` (`sc1`, it has a def). A v2
+student-only backref to that name (no `sylcat`) hits §17 RESOLVE clause (b)
+[alias→`2026` built-in] BEFORE clause (c) [destination custom], so marks attach to the
+built-in, not `sc1`. `collectStudents`/`readCourseBlock` export these name-only refs
+independently of defs (`core.js:733–759, 3737–3762`) and `writeCourseBlock` writes marks
+under the resolved id (`761–769`) — wrong chart. **Binding fix — RESOLVE precedence is:**
+(1) an explicit `sylcat` id (union reconcile); (2) **the identity already assigned to that
+name by CLASSIFY in THIS operation, OR an exact destination/union catalogue name match**
+(custom OR canonical built-in); (3) **historical-alias→built-in fallback ONLY when (1)–(2)
+yield nothing**; (4) two conflicting candidates → **refuse without writing**. Test:
+student-only and mixed-file refs to an alias-named CUSTOM resolve to that custom (`sc1`),
+never the built-in; plan pointers included.
+
+### CSID2-R5-02 (MEDIUM — the absent-chart refusal covers customs only; a tombstoned built-in can take imported marks) — ACCEPT, VALIDATE AVAILABILITY FOR BUILT-INS TOO.
+Export students on a built-in, delete it (tombstoned), import the student-only file: its
+known `sb…` id + catalogue pass the identity checks, but the destination tombstones it;
+student-only import goes through `applyStudents`/`writeCourseBlock`, NOT `applyCharts`
+(which is the only path that clears tomb/hidden, `core.js:3782–3783`), and
+`reconcileBuiltins` never re-adds a tombstoned id — so marks land under a deleted chart
+and a later restore exposes them, breaking the "restore comes back empty" promise (§14
+CSID2-08). **Binding fix:** after reconciliation, **validate destination AVAILABILITY for
+built-in ids as well as customs** — refuse student records and plan pointers targeting a
+**tombstoned** syllabus (built-in or custom) unless that same import **explicitly restores
+the chart** (carries its def through `applyCharts`, clearing the tomb). Hidden-but-not-
+deleted syllabuses stay eligible. Test: delete a built-in → student-only import targeting
+it is refused → an import that also restores the chart is accepted → restore-then-check.
+
+### CSID2-R5-03 (MEDIUM — legacy metadata translation omits `__font`, which is event-id-keyed) — ACCEPT, TRANSLATE `__font` TOO.
+`setFont` writes per-event sizes to `layout.__font[id]` (`core.js:3586–3590`) and
+`ballFontFor` reads by the current event id (`:249`). §17's translation list
+(`__edgeMeta/__merges/__unmerges/__lines/__derived`) omitted `__font`, so a folded legacy
+`__font.IEPE = 14` is left unreachable after the position key is translated to
+`IEPE/IPC` → the saved font falls back to `__all`/8.5, silently changing formatting.
+**Binding fix:** translate event-id keys inside `__font` with the same exact-match-first
+mapping, **preserve the non-event `__all` key**, and detect collisions. Add per-event AND
+chart-wide font settings to the interrupted-replay layout-preservation test.
+
+### Net effect on §§1–17
+- §17 RESOLVE precedence reordered: exact id/catalogue/just-classified match BEFORE the
+  historical-alias fallback; conflicts refuse (CSID2-R5-01).
+- §14 CSID2-08 / §15 import: availability validation extended to **tombstoned built-ins**;
+  marks/plan pointers at a tombstoned id are refused unless the chart is restored in the
+  same import (CSID2-R5-02).
+- §17 CSID2-R4-02 legacy-layout translation set gains `__font` (keys translated, `__all`
+  preserved) (CSID2-R5-03).
+
+### Round 6 (extension beyond the default cap — see host note above)
+Changed plan → **re-review by Astra** (approval binds to the new SHA). R6 confirms these
+3 fixes; on APPROVED the plan is ready to build. If R6 still returns material findings,
+the host stops and presents them to the owner with a recommendation rather than
+extending indefinitely.
