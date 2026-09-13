@@ -852,13 +852,21 @@ async function buildSylJournal() {
     if (p && p.custom) { const sr = await sGet(kSyl(cE.id)); const legacy = sr ? sParse(sr, null) : null; if (legacy) { const syl = p.sylName || DEFAULT_SYL_NAME; customPlanDefs.push({ courseId: cE.id, syl, name: syl + ' (edited)', def: legacy }); } }
   }
   /* CLASSIFY every name that carries a DEFINITION (§17 CSID2-R4-01): current
-     canonical → built-in id (def becomes its override); else a custom id. */
+     canonical → built-in id (def becomes its override); else a custom id.
+     EXCEPT a canonical name the user had DELETED (its name in the legacy syltomb
+     pref): the old app showed such a def as an INDEPENDENT custom — a
+     v3:master:syls key was adopted into CUSTOMS unconditionally and rendered,
+     while the shipped built-in stayed hidden+tombstoned — so folding it onto the
+     built-in id here would HIDE a chart the owner was using (review: a migration
+     must preserve what the old READER showed). Mint it a custom id; the built-in
+     is left tombstoned (it was never seeded into the catalogue above). */
   for (const name of Object.keys(defByName)) {
     const cls = classifyDefinedName(name);
-    const id = cls.builtin ? cls.id : (idByName[name] || (idByName[name] = mintSylId()));
+    const asBuiltin = cls.builtin && tombNames.indexOf(name) < 0;
+    const id = asBuiltin ? cls.id : mintSylId();
     idByName[name] = id;
     if (!has(defById, id)) defById[id] = defByName[name];
-    addCat(id, name, cls.builtin ? cls.base : undefined);
+    addCat(id, name, asBuiltin ? cls.base : undefined);
   }
   /* now the per-course plan.custom charts: a fresh id + a label unique in the
      catalogue for each, so neither is lost when the sylNames collide. */
@@ -899,14 +907,24 @@ async function buildSylJournal() {
   const legacyLayKeys = [];                         // legacy layout keys to purge after the fold
   const masterLayKeys = [];                         // v3:master:lay:<name> (rewritten to id form)
   const rank = { master: 0, oldmaster: 1, own: 2 };
+  let layConflict = null;   // a same-rank differing source → fail closed (finding 3)
   const consider = (name, raw, srcKey, kind) => {
-    if (!(name in layByName) || rank[kind] < rank[layByName[name].kind]) layByName[name] = { raw, srcKey, kind };
+    const held = layByName[name];
+    if (!held || rank[kind] < rank[held.kind]) { layByName[name] = { raw, srcKey, kind }; return; }
+    /* a LOWER-precedence source is ignored (as before); but a SAME-rank source
+       that DIFFERS and is non-empty must NOT be silently dropped (§14 CSID2-03):
+       two courses' OWN hand-drawn layouts for one chart with no master both rank
+       'own', and first-wins would throw one of the owner's hand-drawn layouts
+       away — the exact "keep charts" loss this phase exists to prevent. Fail
+       closed; nothing is written or purged, so the losing source stays intact. */
+    if (rank[kind] === rank[held.kind] && !jsonEq(held.raw, raw) && Object.keys(raw || {}).length) layConflict = name;
   };
   for (const k of allKeys) {
     if (k.startsWith(SYL_NS + ':lay:')) { const name = k.slice((SYL_NS + ':lay:').length); masterLayKeys.push({ k, name }); const raw = sParse(await sGet(k), null, 'object'); if (raw) consider(name, raw, k, 'master'); continue; }
     if (k.startsWith('v3:lay:SYLLABUS EDIT:')) { const name = k.slice('v3:lay:SYLLABUS EDIT:'.length); legacyLayKeys.push(k); const raw = sParse(await sGet(k), null, 'object'); if (raw) consider(name, raw, k, 'oldmaster'); continue; }
     if (k.startsWith('v3:lay:')) { const rest = k.slice('v3:lay:'.length), i = rest.indexOf(':'); if (i > 0) { const cid = rest.slice(0, i), name = rest.slice(i + 1); if (COURSES.some(c => c.id === cid)) { legacyLayKeys.push(k); const raw = sParse(await sGet(k), null, 'object'); if (raw) { const eid = editedLayKey.get(k); if (eid) { if (!has(rawLayoutById, eid)) { rawLayoutById[eid] = raw; layoutSrcById[eid] = k; } } else consider(name, raw, k, 'own'); } } } continue; }
   }
+  if (layConflict) { setBootError('Two different saved chart layouts were found for the same syllabus, so the Tracker could not finish upgrading safely. Reload to try again — nothing has been changed.'); return null; }
 
   /* prefs (name-keyed pre-mig) */
   const orderNames = sParse(await sGet(kSylOrder()), [], 'array').filter(x => typeof x === 'string');
@@ -946,10 +964,19 @@ async function buildSylJournal() {
     layoutOut[SYL_NS + ':lay:' + id] = t.layout;
   }
 
-  /* the id-forms of the prefs */
+  /* the id-forms of the prefs. HIDDEN and TOMB map through the CANONICAL
+     built-in name ONLY (builtinIdByName), NEVER the alias fold: the old reader
+     hid a built-in only when its CURRENT shipped name was in the set
+     (SYL_NAMES.filter(!isHidden)) and never hid a custom at all, so a stale alias
+     name (e.g. 'FG JUL 26' after the shipped rename to '2026') or a custom name
+     sitting in these prefs was DEAD. Folding it onto the live built-in id would
+     hide/delete a chart the owner could see before the upgrade — a shipped rename
+     even UN-deleted such a built-in in the old app (review: preserve what the old
+     READER showed). order stays alias-tolerant: it is display-only and filtered
+     to visible ids at render, so a dead entry there can resurrect nothing. */
   const order = []; for (const n of orderNames) { const id = idByName[n]; if (id && !order.includes(id)) order.push(id); }
-  const hidden = []; for (const n of hiddenNames) { const id = idByName[n]; if (id && isBuiltinSylId(id) && !hidden.includes(id)) hidden.push(id); }
-  const tomb = Object.create(null); for (const n of tombNames) { const id = idByName[n]; if (id && isBuiltinSylId(id)) tomb[id] = 1; }
+  const hidden = []; for (const n of hiddenNames) { const id = builtinIdByName(n); if (id && !hidden.includes(id)) hidden.push(id); }
+  const tomb = Object.create(null); for (const n of tombNames) { const id = builtinIdByName(n); if (id) tomb[id] = 1; }
 
   /* EVERY persisted course namespace, not just the visible index (review
      CSID-IR-02): delCourse drops a course from v3:courses but KEEPS its records,
@@ -3847,7 +3874,11 @@ export async function renSyl() {
   if (!nm || nm === old) return;
   if (SYLS.some(e => e.id !== id && e.name === nm)) { await uiAlert('A syllabus named “' + nm + '” already exists.'); return; }
   try {
-    const e = sylEntry(id); if (e) { e.name = nm; if (isBuiltinSylId(id)) e.userNamed = true; }
+    /* mark userNamed on EVERY rename, not just built-ins (review finding 5): a
+       custom's relabel must travel through export/import too — sylcatEntryOf only
+       emits userNamed when set and upsertSylEntry only adopts a file's label when
+       it is, so without this a custom rename was silently lost on re-import. */
+    const e = sylEntry(id); if (e) { e.name = nm; e.userNamed = true; }
     await saveSylCat();
     refreshCourses(); refreshSyl(); refreshActive(); renderBoard(); renderSide();
     setSaveStatus('renamed “' + old + '” → “' + nm + '”', 'ok');

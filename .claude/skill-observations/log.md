@@ -2396,3 +2396,33 @@ Checkpoint (tasks #59, #60 complete): no further observations.
 **Suggested improvement:** In the claudex-loop / codex-review skill, add a one-line role table at the invocation point: "to get a CODEX review, run `--host claude`; to get a CLAUDE review, run `--host codex` — `--host` is the coordinator, the reviewer is the other provider." Note that a review that returns in a few seconds almost certainly failed (wrong CLI/model/flags), and that runner exit 0 ≠ APPROVED — always read `result.json`'s `verdict`.
 
 **Principle:** Name the axis explicitly when a flag's plain reading inverts its effect; and treat suspiciously fast tool completions as failure signals, not success.
+
+### Observation 158: Migration review — diff legacy-pref folds against the OLD reader, not the identity model
+
+**Status:** OPEN
+**Date:** 2026-09-14
+**Session context:** Fable independent bug-check of the [TRK-CSID] 1B-ii syllabus-id migration (PR #400) after five Codex rounds
+**Skill:** code-review / claudex-loop:codex-review (review methodology)
+**Type:** open-source
+**Phase/Area:** reviewing a data migration that re-keys persisted prefs (hidden/tombstone/order) through a name→id resolver
+
+**Issue:** Five prior review rounds validated the migration against the spec's identity model (alias → built-in id) and missed that the OLD app never canonicalised hidden/tombstone NAMES through the shipped alias table — it filtered canonical names only. So folding an alias-era hidden/tomb entry onto the built-in id changes observable state: a chart the user could see before the upgrade is hidden and stamped deleted after it. The same blind spot let a custom chart stored under a deleted built-in's name become that built-in's hidden override. Both were found only by reading the pre-change reader (git show of the parent commit) and re-running the exact legacy seed through the new migration in a throwaway test.
+
+**Suggested improvement:** For any migration/re-keying review, add an explicit step: for every legacy pref or store the converter reads, open the PRE-change code that READ it and write down what the old app actually did with each shape (esp. stale/alias/tombstoned names); the observable pre-upgrade state is the contract, not the spec's ideal model. Then seed those exact shapes in a throwaway test and assert the post-upgrade visible set equals the pre-upgrade visible set.
+
+**Principle:** A data migration must preserve what the old READER showed, not what the new identity model says the data meant; review it by diffing old-reader behaviour against new-converter output on the same seed.
+
+### Observation 159: A deterministic LOCAL test failure can still be a local-env artifact — confirm against CI before believing it
+
+**Status:** OPEN
+**Date:** 2026-09-14
+**Session context:** Opus fixing the 1B-ii migration findings; the full local e2e run showed 2 failures (scheduler geometry + Leave War), in suites the change did not touch
+**Skill:** verification-before-completion
+**Type:** open-source
+**Phase/Area:** interpreting a gate failure that is outside the diff's blast radius
+
+**Issue:** Two browser e2e tests failed locally and REPRODUCED at workers=1 (so not a parallelism/starvation flake), which normally reads as "real". But the diff was confined to an unrelated module, so before treating them as blocking I checked the parent merge's CI: those exact jobs had passed in CI, and they also fail on the pre-change baseline locally. Conclusion: a local-environment rendering quirk (browser build/fonts/viewport), green in CI. Re-running locally alone would never have revealed this — only comparing against CI did.
+
+**Suggested improvement:** verification-before-completion should say: when a failing gate lies OUTSIDE the change's blast radius, don't stop at a local re-run (deterministic-locally ≠ real). Confirm against an independent runner — the parent branch's CI conclusion and/or the same test on the pre-change baseline — before either blocking on it or dismissing it. State the blast-radius reasoning explicitly.
+
+**Principle:** A failing check outside the diff's reach is triaged by cross-checking an independent environment (CI, baseline), not by local repetition; local determinism does not distinguish a real failure from a local-environment artifact.

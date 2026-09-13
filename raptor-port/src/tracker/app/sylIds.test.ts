@@ -142,4 +142,13 @@ describe('reconcileSylIds (store id wins; built-ins by deterministic id)', () =>
     const dests = [remapped['scF1'] || 'scF1', remapped['scF2'] || 'scF2']
     expect(new Set(dests).size).toBe(2)   // no two share a destination id
   })
+  it('a file built-in is NOT a conflict when the store gave its label to a different custom (Fable finding 4)', () => {
+    /* the store holds a custom labelled '2026' plus the built-in (relabelled).
+       The built-in matches by its deterministic id, so the label clash must not
+       refuse the import. */
+    const store2 = [{ id: 'scLOCAL', name: '2026' }, { id: 'sb2026', name: '2026 (2)', base: '2026' }]
+    const { remapped, conflicts } = reconcileSylIds([{ id: 'sb2026', name: '2026', base: '2026' }], store2)
+    expect(conflicts, 'the label clash is not a conflict — identity is by id').toEqual([])
+    expect(remapped, 'the built-in id is authoritative, not remapped').toEqual({})
+  })
 })

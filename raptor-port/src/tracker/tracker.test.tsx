@@ -847,6 +847,25 @@ describe('the person bridge and the link (peoplewire.ts → people.js → core.j
     await C.switchSyllabus(backTo); expect(C.curSylId()).toBe(backTo)
   })
 
+  it('renaming a CUSTOM marks it userNamed so the label travels through export (Fable finding 5)', async () => {
+    /* sylcatEntryOf emits userNamed only when set, and upsertSylEntry only adopts
+       a file's label when it is — so a custom rename was silently lost on
+       re-import. renSyl now stamps userNamed on EVERY rename, not just built-ins. */
+    const backTo = C.curSylId()
+    let p: Promise<any> = C.addSyl(); await answer('Draft'); await p; await C.whenLoaded()
+    const id = C.curSylId()
+    expect(id.startsWith('sc'), 'a fresh custom, not a built-in').toBe(true)
+    p = C.renSyl(); await answer('Instructor Copy'); await p; await C.whenLoaded()
+    expect(C.curSylName()).toBe('Instructor Copy')
+    const charts = await C.collectCharts([id])
+    const entry = (charts.sylcat || []).find((e: any) => e.id === id)
+    expect(entry && entry.base, 'a custom carries no base').toBeUndefined()
+    expect(entry && entry.userNamed, 'the custom rename is stamped userNamed so it survives a round trip').toBe(true)
+    /* cleanup: delete the custom, back to the source */
+    p = C.delSyl(); await answer(true); await p; await C.whenLoaded()
+    await C.switchSyllabus(backTo)
+  })
+
   it('§8: Duplicate syllabus and Import “Add as new” ACCEPT a colon label', async () => {
     if (C.sylDirty) await C.saveChangesClick()
     const backTo = C.curSylId()
