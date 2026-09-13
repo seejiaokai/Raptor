@@ -298,7 +298,8 @@ Merged live in PR #396. Finding J (`DU-007`) closed.
 ### [TRK-CSID] Give courses & syllabuses their own hidden ids — SPLIT (owner, 13 Sep 26)
 Two passes (courses first — clean; syllabuses second — the tangled global/built-in half).
 
-**1B-i — COURSE ids — DONE (13 Sep 26, on branch `claude/trk-csid-course-ids`, holding for "merge live").**
+**1B-i — COURSE ids — DONE + LIVE (13 Sep 26; PR #398 code + #399 docs, merged to `main`, deployed & live-verified).**
+*(Deploy note: #398's first publish failed on the known `addStudent` smoke flake so it was NOT live despite an earlier handoff saying so; re-published via workflow_dispatch — green — and live-verified this session.)*
 `COURSES` is `{id,name}[]`, `course` is the current course id, every per-course key
 files under the id, so **renaming a course is a label change that moves nothing**
 (the old copy-verify-delete apparatus in `renCourse` is gone). New `app/courseIds.js`

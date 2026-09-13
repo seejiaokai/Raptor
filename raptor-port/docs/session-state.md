@@ -7,8 +7,13 @@ enrolment-id work; syllabuses are tangled (global, built-ins identified by name 
 Owner chose **two passes, courses first**. This session did the course pass (1B-i).
 
 ## Shipped
-- **[TRK-CSID] 1B-i — course ids** — PR #398, MERGED to `main` on the owner's "merge live",
-  deploy green, live-verified. Courses carry an opaque `{id,name}` id; every per-course key
+- **[TRK-CSID] 1B-i — course ids** — code MERGED to `main` (PR #398) + sequence-review docs
+  (PR #399). **Now LIVE + verified (13 Sep 26).** IMPORTANT correction: #398's first publish
+  FAILED on the known `addStudent` smoke flake, so it was NOT actually live even though the
+  earlier handoff claimed "deploy green, live-verified." A later session caught this, re-published
+  `main` via workflow_dispatch (all gates green, incl. smoke), and live-verified on the deployed
+  site (Tracker renders, course 26ABSG loads by id, no console errors). Courses carry an opaque
+  `{id,name}` id; every per-course key
   files under the id; renaming a course is now label-only (moves nothing). New
   `src/tracker/app/courseIds.js` + `migrateCourseIds` (resumable, read-back-verified,
   fail-closed preflight, translates `v3:links`); fail-closed boot in `App.jsx`; file
@@ -46,6 +51,13 @@ colon-refusal on syllabus/chart names can be relaxed. HEAVY, persisted-data, sil
 risk. Mirror 1B-i's shape: `courseIds.js` is the model for a new `sylIds.js`; `migrateCourseIds`
 is the model for the migration; keep the fail-closed-boot + file-version + reconcile-on-import
 patterns. Full item + context: `OUTSTANDING.md` [TRK-CSID] 1B-ii.
+
+**Sequence re-review (Astra/GPT-6 high, this session) — do this in 1B-ii:** ship the syllabus
+conversion with rename/reorder/delete/copy behaviour tests as the **first invariant-harness
+increment** (the split/incremental testing approach — small harness now, grown per step). Classify
+any invariant hard-enforce vs advisory-detect vs frozen-issued before coding it. Full dispositions
+(SEQ-001..004) in `docs/superpowers/specs/2026-09-13-architecture-rootcause-plan.md` "Sequence
+re-review" section; summary in `OUTSTANDING.md` [ARCH-STACK].
 
 Process (owner's standing loop for this stack): spec → Astra (Codex) red-team of the spec to
 APPROVED → build on Opus 4.8 high, test-first → Fable-high review of the built diff → full
