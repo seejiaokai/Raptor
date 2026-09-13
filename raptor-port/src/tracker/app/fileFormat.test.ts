@@ -19,7 +19,7 @@ const file = (parts: any): any => buildFile({ savedAt: 'x', ...parts })
 
 describe('colon relaxation (§8, [TRK-CSID] 1B-ii): chart/syllabus names MAY contain a colon; course names still refuse', () => {
   it('a chart name MAY contain a colon — it is a label now, not a key segment', () => {
-    expect(() => readFile(file({ charts: chart('A/G: A/A') }))).not.toThrow()
+    expect(() => readFile(file({ charts: chart('A/G: A/A'), version: 2 }))).not.toThrow()
   })
   it('a course name is STILL refused (its id is the key segment, but reconcile shows the name)', () => {
     expect(() => readFile(file({ students: people('26:A', '2026', 'STUDENT A') }))).toThrow(/course .*“26:A”.*colon/)
@@ -32,7 +32,7 @@ describe('colon relaxation (§8, [TRK-CSID] 1B-ii): chart/syllabus names MAY con
     expect(() => readFile(file({ students: s }))).not.toThrow()
   })
   it('plain names still pass', () => {
-    const f = file({ charts: chart('A/G - A/A 2026'), students: people('26ABSG', 'A/G - A/A 2026', "O'BRIEN J") })
+    const f = file({ version: 2, charts: chart('A/G - A/A 2026'), students: people('26ABSG', 'A/G - A/A 2026', "O'BRIEN J") })
     expect(() => readFile(f)).not.toThrow()
   })
 })
@@ -80,7 +80,7 @@ describe('the links block (fileFormat.js)', () => {
   })
 
   it('an older file with no links reads as none', () => {
-    const f = file({ charts: chart('2026') })
+    const f = file({ charts: chart('2026'), version: 2 })
     expect('links' in f).toBe(false)
     expect(f.contains.links).toBe(false)
     const r = readFile(f)

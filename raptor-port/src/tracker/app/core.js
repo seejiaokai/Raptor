@@ -415,8 +415,10 @@ export function sylHasOwnDef(id) { return !!(customDefs && has(customDefs, id));
    else null; kept as the name delSyl/UI already read. */
 export function builtinOf(id) { return (isBuiltinSylId(id) && sylEntry(id)) ? id : null; }
 /* own-property lookup so a def keyed "__proto__"/"constructor" reads as a def,
-   never as Object.prototype's (review CSID-REV-08, mirror ids.js's has()). */
-function sylSource(id) { if (customDefs && has(customDefs, id)) return customDefs[id]; const b = baseOf(id); return b ? SYLLABI[b] : null; }
+   never as Object.prototype's (review CSID-REV-08). Resolve an override ONLY for
+   a live catalogue entry, so a stale/orphan customDefs id (no entry) does not
+   resurrect an identity the catalogue excludes (review CSID-B07). */
+function sylSource(id) { if (customDefs && has(customDefs, id) && sylEntry(id)) return customDefs[id]; const b = baseOf(id); return b ? SYLLABI[b] : null; }
 export function allSylIds() { return SYLS.map(e => e.id).filter(id => !isHidden(id)); }
 export function orderedSylIds() {
   const all = allSylIds();
@@ -834,9 +836,14 @@ async function buildSylJournal() {
   addDefs(sParse(await sGet(kSyls()), {}, 'object'));
   addDefs(sParse(await sGet(kSylsOldMaster()), {}, 'object'));
   for (const cE of COURSES) addDefs(sParse(await sGet(kSylsOwn(cE.id)), {}, 'object'));
+  /* a plan.custom course keeps its edited chart under its OWN name '<syl> (edited)';
+     record that per course so the plan re-points at the EDITED entry, not the
+     shipped built-in the raw sylName maps to (review CSID-B04, the old loader's
+     plan.sylName switch). */
+  const editedPlanName = Object.create(null);
   for (const cE of COURSES) {
     const p = sParse(await sGet(kPlan(cE.id)), {}, 'object');
-    if (p && p.custom) { const sr = await sGet(kSyl(cE.id)); const legacy = sr ? sParse(sr, null) : null; if (legacy) { const nm = (p.sylName || DEFAULT_SYL_NAME) + ' (edited)'; if (!has(defByName, nm)) defByName[nm] = legacy; } }
+    if (p && p.custom) { const sr = await sGet(kSyl(cE.id)); const legacy = sr ? sParse(sr, null) : null; if (legacy) { const nm = (p.sylName || DEFAULT_SYL_NAME) + ' (edited)'; if (!has(defByName, nm)) defByName[nm] = legacy; editedPlanName[cE.id] = nm; } }
   }
   /* CLASSIFY every name that carries a DEFINITION (§17 CSID2-R4-01): current
      canonical → built-in id (def becomes its override); else a custom id. */
@@ -925,7 +932,12 @@ async function buildSylJournal() {
   /* per-course plan target id (drops __oldSyl; unresolved → the default built-in) */
   const plans = Object.create(null);
   const fallbackId = builtinIdByName(DEFAULT_SYL_NAME) || (BUILTIN_SYL[0] && BUILTIN_SYL[0].id);
-  for (const cE of COURSES) { const p = planSylByCourse[cE.id]; const nm = p && p.sylName; plans[cE.id] = (nm && idByName[nm]) || fallbackId; }
+  for (const cE of COURSES) {
+    const p = planSylByCourse[cE.id];
+    /* a plan.custom course points at its EDITED chart's id, else the sylName's id (CSID-B04) */
+    const nm = has(editedPlanName, cE.id) ? editedPlanName[cE.id] : (p && p.sylName);
+    plans[cE.id] = (nm && idByName[nm]) || fallbackId;
+  }
 
   /* the id-keyed definition store: built-in overrides + customs under their id */
   const defs = Object.create(null); for (const id of Object.keys(defById)) defs[id] = defById[id];
@@ -3404,14 +3416,23 @@ async function saveSylPrefs() { await sSet(kSylHidden(), JSON.stringify(SYL_HIDD
 /* the catalogue index (SYLS) — written LAST by the migration, the source of
    truth every reader keys off. Load it, then reconcile against the code table. */
 async function loadSylCat() {
-  try { const r = await sGet(kSylCat()); const a = r ? JSON.parse(r) : null; SYLS = (Array.isArray(a) ? a.filter(isSylEntry) : []); } catch (e) { SYLS = []; }
-  /* Every catalogue id MUST match the grammar (review CSID-REV-08): a separator-
-     or __proto__-shaped id must never reach a storage-key builder or sylSource's
-     definition lookup. Drop an entry whose id is not a valid syllabus id, and an
-     sb… id the code table does not know (base is authoritative from the table,
-     §16 R3-03 — an unknown sb… has no shipped source). Dedupe by id (first wins). */
+  let a = null;
+  try { const r = await sGet(kSylCat()); a = r ? JSON.parse(r) : null; } catch (e) { a = null; }
+  const raw = Array.isArray(a) ? a.filter(isSylEntry) : [];
+  /* FAIL CLOSED on an invalid stored id (§16 CSID2-R3-03, review CSID-REV-08/B07):
+     a separator-/__proto__-shaped id, or an sb… id the code table does not ship,
+     must NEVER reach a storage-key builder or sylSource's override lookup — the
+     migration only ever writes valid ids, so one here is corruption / a bad
+     cross-device sync. Reject it with the reload panel rather than silently
+     dropping it (which could still resolve via a stale customDefs override). */
+  for (const e of raw) {
+    if (!isSylId(e.id) || (isBuiltinSylId(e.id) && !builtinSylById(e.id))) {
+      setBootError('Your saved Tracker data holds a syllabus with an id this version does not recognise, so it could not be opened safely. Reload to try again.');
+      SYLS = []; return;
+    }
+  }
   const seen = new Set();
-  SYLS = SYLS.filter(e => isSylId(e.id) && !(isBuiltinSylId(e.id) && !builtinSylById(e.id)) && !seen.has(e.id) && seen.add(e.id));
+  SYLS = raw.filter(e => !seen.has(e.id) && seen.add(e.id));
   for (const e of SYLS) { if (isBuiltinSylId(e.id)) e.base = builtinBaseOf(e.id); else if (e.base) delete e.base; }
 }
 async function saveSylCat() { await sSet(kSylCat(), JSON.stringify(SYLS)); }
@@ -3647,13 +3668,33 @@ function firstOtherSylId(id) {
   const o = orderedSylIds().filter(x => x !== id);
   return o[0] || def || 'sb2026';
 }
+/* EVERY course namespace present in storage — the live COURSES plus any a
+   delCourse dropped from the index while KEEPING its records (review CSID-B05):
+   a syllabus delete must sweep those too, or a later re-import of the deleted
+   course would resurface records under a since-restored built-in. Scanned by the
+   2nd colon-bounded segment being a course id. */
+async function allCourseNamespaces() {
+  const out = new Set(COURSES.map(c => c.id));
+  for (const k of ((await storage.list('v3:')).keys || [])) {
+    const rest = k.slice(3), i = rest.indexOf(':'); if (i <= 0) continue;
+    const seg = rest.slice(0, i); if (isCourseId(seg)) out.add(seg);
+  }
+  return [...out];
+}
 /* sweep every per-course student record filed under a syllabus id (delete). */
 async function sweepSylRecords(c, sylId) {
   const pre = 'v3:' + c + ':' + sylId + ':';
   for (const k of ((await storage.list(pre)).keys || [])) await delKey(k);
+  /* clear this course's last-edit pointers that name the deleted syllabus, and
+     lastStudent when it points at one — else loadCourseNow's restore reopens the
+     (deleted, maybe later restored-empty) chart (§15 CSID2-R2-04, review CSID-B06). */
+  const lastS = await sGet(kLastStudent(c));
+  for (const k of ((await storage.list('v3:' + c + ':last:')).keys || [])) {
+    try { const rec = JSON.parse((await sGet(k)) || 'null'); if (rec && rec.syl === sylId) { await delKey(k); if (lastS && k === kLast(c, lastS)) await delKey(kLastStudent(c)); } } catch (_) {}
+  }
 }
 /* repoint any course's plan.sylId that names the deleted id (§15 CSID2-R2-04) —
-   every course, not just the live one, so no dangling pointer is exported. */
+   every course namespace, not just the live one, so no dangling pointer is left. */
 async function repairPlanSyl(c, sylId, fallback) {
   try {
     const pr = await sGet(kPlan(c)); if (!pr) return;
@@ -3761,7 +3802,7 @@ export async function delSyl() {
     (isB ? '\n\nIt is a built-in — you can bring it back later from ⇅ Reorder.' : '\nThis cannot be undone.'))) return;
   try {
     const fallback = firstOtherSylId(id);
-    for (const cE of COURSES) { await sweepSylRecords(cE.id, id); await repairPlanSyl(cE.id, id, fallback); }
+    for (const cid of await allCourseNamespaces()) { await sweepSylRecords(cid, id); await repairPlanSyl(cid, id, fallback); }
     SYLS = SYLS.filter(e => e.id !== id);
     if (isB) { if (!isHidden(id)) SYL_HIDDEN.push(id); SYL_TOMB[id] = 1; }
     delete customDefs[id];
@@ -3984,6 +4025,7 @@ async function reloadFromStore() {
   await loadCourses();
   try { await loadSylPrefs(); } catch (_) {}
   await loadSylCat();
+  if (bootError) { notify(); return; }   /* an invalid stored id fails closed (CSID-B07); App shows the reload panel */
   await reconcileBuiltins();
   await loadSylOrder();
   await loadEventInfo();
@@ -4139,7 +4181,7 @@ export async function applyCharts(charts, opts) {
    the file path). Runs AFTER applyCharts (so a chart restored in the same import
    already exists / cleared its tomb). */
 const STUDENT_GUARD_MSG = 'These student marks were saved by an older version and can’t be brought in safely. Import the charts, then re-enter marks — or export a fresh backup from the current app and import that.';
-function reconcileStudentsSyllabi(students) {
+function reconcileStudentsSyllabi(students, version) {
   const s = students || {};
   const refs = new Set(); let nameKeyed = false;
   for (const c of Object.keys(s.byCourse || {})) {
@@ -4148,9 +4190,12 @@ function reconcileStudentsSyllabi(students) {
     if (cv.plan && cv.plan.sylName != null) nameKeyed = true;          /* a name-keyed plan pointer = pre-v3 */
     if (cv.plan && cv.plan.sylId) refs.add(cv.plan.sylId);
   }
-  /* a legacy plan pointer (plan.sylName) or a name-keyed bySyllabus is pre-v3 —
-     REFUSE it before the empty-refs shortcut, or a course with a legacy plan and
-     an empty bySyllabus would slip its dangling pointer through (CSID-REV-09). */
+  /* a PRE-v3 student payload is refused OUTRIGHT (§19, review CSID-B03): the file
+     version is the id/name provenance, so an id-SHAPED legacy name (e.g. a chart
+     literally named 'sb2026') must never be read as an id and imported as the
+     built-in. Also refuse a name-keyed block / legacy plan pointer even when the
+     version is absent (a direct call), before the empty-refs shortcut (CSID-REV-09). */
+  if ((refs.size || nameKeyed) && version != null && version < 3) throw new Error(STUDENT_GUARD_MSG);
   if (nameKeyed) throw new Error(STUDENT_GUARD_MSG);
   if (!refs.size) return s;                       /* no student syllabus refs (courses-only) — nothing to guard */
   if (!Array.isArray(s.sylcat)) throw new Error(STUDENT_GUARD_MSG);
@@ -4174,10 +4219,11 @@ function reconcileStudentsSyllabi(students) {
 }
 
 /* People only. Never writes a syllabus or layout key. */
-export async function applyStudents(students, links) {
+export async function applyStudents(students, links, version) {
   /* GUARDRAIL FIRST (§19): refuse a pre-v3 / unresolved student block outright,
-     before any write; reconcile+remap syllabus ids for a valid v3 block. */
-  students = reconcileStudentsSyllabi(students);
+     before any write; reconcile+remap syllabus ids for a valid v3 block. The
+     file version (when known — the import path) is the id/name provenance. */
+  students = reconcileStudentsSyllabi(students, version);
   /* COURSE-ID LAYER (stable ids 1B-i). A v1 file keys courses by NAME (and
      carries a name-keyed links block); a v2 file keys by course id. Upgrade to
      id-keyed, then reconcile the file's course ids against the store's — a
@@ -4488,8 +4534,15 @@ export async function importClick() { if (fileLocked) return;
        (§CSID2-05). A pre-v3 block (norm.students still name-keyed) is refused. */
     if (people) {
       let block = norm.students || parsed.students;
-      if (Object.keys(addAsNew).length) block = remapStudentsSyl(block, id => has(addAsNew, id) ? addAsNew[id] : id);
-      try { await applyStudents(block, parsed.links); }
+      if (Object.keys(addAsNew).length) {
+        block = remapStudentsSyl(block, id => has(addAsNew, id) ? addAsNew[id] : id);
+        /* the add-as-new chart got a NEW id AND a new label; refresh the student
+           catalogue's label for every id that is now a live store entry, or the
+           re-reconcile would see the new id under the SOURCE chart's old name and
+           refuse the students as a name clash (review CSID-B01). */
+        if (Array.isArray(block.sylcat)) block = { ...block, sylcat: block.sylcat.map(e => (sylEntry(e.id) ? { ...e, name: sylName(e.id) } : e)) };
+      }
+      try { await applyStudents(block, parsed.links, norm.version); }
       catch (e) { await uiAlert((e && e.message) || 'The students could not be brought in.'); people = false; }
     }
   }
@@ -4549,6 +4602,7 @@ export async function init() {
      (add newly-shipped built-ins, repoint base on a shipped rename, respect a
      user relabel) and the id order — all BEFORE loadCourse reads a syllabus. */
   await loadSylCat();
+  if (bootError) { loading = false; return; }   /* loadSylCat fails closed on an invalid stored id (CSID-B07) */
   await reconcileBuiltins();
   await loadSylOrder();
   /* After loadCourses + course-id migration, which fill COURSES with {id,name}

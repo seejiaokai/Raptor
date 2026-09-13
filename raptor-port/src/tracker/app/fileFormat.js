@@ -63,10 +63,13 @@ function checkSylcat(cat, where) {
   }
 }
 
-export function buildFile({ charts = null, students = null, links = null, savedAt }) {
+/* `version` defaults to the current FILE_VERSION; a caller (a test building a
+   genuine older-format file) may stamp an earlier one so the reader treats its
+   syllabus keys as NAMES, not ids (the id/name provenance is the version). */
+export function buildFile({ charts = null, students = null, links = null, savedAt, version = FILE_VERSION }) {
   const out = {
     format: FILE_FORMAT,
-    version: FILE_VERSION,
+    version,
     savedAt: savedAt || null,
     contains: { charts: !!charts, students: !!students, links: !!links },
   };
@@ -121,8 +124,12 @@ function checkCharts(c, version) {
   if (version >= 3) {
     const catIds = new Set((c.sylcat || []).filter(isSylEntry).map(e => e.id));
     const refs = new Set([...(c.order || []), ...Object.keys(c.syllabi || {}), ...Object.keys(c.layouts || {})]);
+    /* a v3 file is ID-NATIVE (its version is the provenance, review CSID-REV-04):
+       EVERY chart reference must be a valid syllabus id, labelled by the sylcat,
+       and an sb… id must be one this app ships — a nonconforming v3 reference is
+       refused, never persisted for loadSylCat to later discard (CSID-B02). */
     for (const id of refs) {
-      if (!isSylId(id)) continue;   /* a name at v3 (a legacy/test payload) is not an id reference to complete */
+      if (!isSylId(id)) throw new Error('The charts in that file reference “' + id + '”, which is not a valid syllabus id, so it has not been opened.');
       if (isBuiltinSylId(id) && !builtinSylById(id)) throw new Error('The charts in that file name a built-in syllabus (' + id + ') this app does not ship, so it has not been opened.');
       if (!catIds.has(id)) throw new Error('The charts in that file reference the syllabus “' + id + '” but do not describe it, so it has not been opened.');
     }

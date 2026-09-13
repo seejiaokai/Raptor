@@ -3744,11 +3744,11 @@ const STUDENTS_FIX = {
     roster: ['STUDENT A'], marks: { 'STUDENT A': { 'ST-01': { g: 'dco', f: 2 } } },
     dates: { 'STUDENT A': { lastSyll: '2026-01-02', lastCurr: null } } } } } },
 };
-const ffBoth = FF.readFile(FF.buildFile({ charts: CHARTS_FIX, students: STUDENTS_FIX, savedAt: 'x' }));
+const ffBoth = FF.readFile(FF.buildFile({ charts: CHARTS_FIX, students: STUDENTS_FIX, savedAt: 'x', version: 2 }));
 ok('charts survive the round trip intact', JSON.stringify(ffBoth.charts) === JSON.stringify(CHARTS_FIX));
 ok('students survive the round trip intact', JSON.stringify(ffBoth.students) === JSON.stringify(STUDENTS_FIX));
 
-const chartsOnly = FF.buildFile({ charts: CHARTS_FIX, students: null, savedAt: 'x' });
+const chartsOnly = FF.buildFile({ charts: CHARTS_FIX, students: null, savedAt: 'x', version: 2 });
 ok('charts-only file says so', chartsOnly.contains.students === false);
 ok('charts-only file has no students key', !('students' in chartsOnly));
 ok('charts-only file names nobody', !JSON.stringify(chartsOnly).includes('STUDENT A'));
@@ -3792,7 +3792,7 @@ ok('every kind of damaged file is refused, with a message saying what is wrong',
   leaked.length === 0, leaked.length ? leaked.join('; ') : `${Object.keys(BAD).length} kinds all refused`);
 /* The guard must not become so keen it refuses real files. */
 ok('a good file is still accepted after all that',
-  (() => { try { FF.readFile(FF.buildFile({ charts: CHARTS_FIX, students: STUDENTS_FIX, savedAt: 'x' })); return true; } catch (_) { return false; } })());
+  (() => { try { FF.readFile(FF.buildFile({ charts: CHARTS_FIX, students: STUDENTS_FIX, savedAt: 'x', version: 2 })); return true; } catch (_) { return false; } })());
 ok('a chart with no loop in it is not reported as circular',
   FF.firstCycle([{ id: 'A', prereqs: [] }, { id: 'B', prereqs: ['A'] }, { id: 'C', prereqs: ['A', 'B'] }]) === null);
 ok('a loop is reported with the events that form it',

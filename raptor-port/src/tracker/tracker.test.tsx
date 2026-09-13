@@ -1210,6 +1210,11 @@ describe('the person bridge and the link (peoplewire.ts → people.js → core.j
     await expect(C.applyStudents({ courses: ['LEG2'], byCourse: { LEG2: { plan: { sylName: 'Training' }, bySyllabus: {} } } }, null))
       .rejects.toThrow(/older version/)
     expect(C.courseIdOf('LEG2'), 'the dangling legacy plan pointer wrote nothing').toBeNull()
+    /* a PRE-v3 (version 2) block with an ID-SHAPED syllabus name + a sylcat must
+       still be refused — the version is the provenance, not the spelling (CSID-B03) */
+    await expect(C.applyStudents({ courses: ['LEG3'], sylcat: [{ id: 'sb2026', name: '2026' }], byCourse: { LEG3: { plan: { sylId: 'sb2026' }, bySyllabus: { sb2026: { roster: [{ id: 's8', name: 'Q' }], marks: {}, dates: {} } } } } }, null, 2))
+      .rejects.toThrow(/older version/)
+    expect(C.courseIdOf('LEG3'), 'a v2 id-shaped block wrote nothing').toBeNull()
     /* and a genuine v3 export (collectStudents) carries the identity sylcat and no links block */
     const out = await C.collectStudents()
     expect(Array.isArray(out.sylcat), 'a v3 export carries an identity-only sylcat').toBe(true)
