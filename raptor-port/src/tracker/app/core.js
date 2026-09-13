@@ -846,10 +846,10 @@ async function buildSylJournal() {
      DIFFERENT edited charts, so each gets its OWN minted id + unique label and
      its plan points at its own chart — never silently collapsing onto the first
      (review CSID-REVIEW-01; the old loader switched plan.sylName to '<syl> (edited)'). */
-  const customPlanDefs = [];   // { courseId, def }
+  const customPlanDefs = [];   // { courseId, syl, name, def }
   for (const cE of COURSES) {
     const p = sParse(await sGet(kPlan(cE.id)), {}, 'object');
-    if (p && p.custom) { const sr = await sGet(kSyl(cE.id)); const legacy = sr ? sParse(sr, null) : null; if (legacy) customPlanDefs.push({ courseId: cE.id, name: (p.sylName || DEFAULT_SYL_NAME) + ' (edited)', def: legacy }); }
+    if (p && p.custom) { const sr = await sGet(kSyl(cE.id)); const legacy = sr ? sParse(sr, null) : null; if (legacy) { const syl = p.sylName || DEFAULT_SYL_NAME; customPlanDefs.push({ courseId: cE.id, syl, name: syl + ' (edited)', def: legacy }); } }
   }
   /* CLASSIFY every name that carries a DEFINITION (§17 CSID2-R4-01): current
      canonical → built-in id (def becomes its override); else a custom id. */
@@ -867,6 +867,15 @@ async function buildSylJournal() {
   for (const { courseId, name, def } of customPlanDefs) {
     const id = mintSylId(); defById[id] = def; addCat(id, uniqLabel(name)); editedPlanId[courseId] = id;
   }
+  /* the course's OWN hand-drawn layout (v3:lay:<course>:<sylName>) belongs to
+     ITS edited chart, not to the built-in the sylName spells (review CSID-IR-01):
+     that layout name collides with the built-in name, so routing it by name would
+     hang it on e.g. sb2026 and DROP the edited chart's positions (then purge the
+     source). Claim those exact keys for the minted edited id here, keyed by the
+     precise source key so a DIFFERENT course's built-in layout under the same name
+     is untouched. */
+  const editedLayKey = new Map();   // 'v3:lay:<course>:<sylName>' → edited id
+  for (const { courseId, syl } of customPlanDefs) if (has(editedPlanId, courseId)) editedLayKey.set('v3:lay:' + courseId + ':' + syl, editedPlanId[courseId]);
 
   /* RESOLVE the rest — names with NO definition (a pref entry, a layout-only
      name, a plan pointer): a canonical name or a historical alias folds onto the
@@ -896,7 +905,7 @@ async function buildSylJournal() {
   for (const k of allKeys) {
     if (k.startsWith(SYL_NS + ':lay:')) { const name = k.slice((SYL_NS + ':lay:').length); masterLayKeys.push({ k, name }); const raw = sParse(await sGet(k), null, 'object'); if (raw) consider(name, raw, k, 'master'); continue; }
     if (k.startsWith('v3:lay:SYLLABUS EDIT:')) { const name = k.slice('v3:lay:SYLLABUS EDIT:'.length); legacyLayKeys.push(k); const raw = sParse(await sGet(k), null, 'object'); if (raw) consider(name, raw, k, 'oldmaster'); continue; }
-    if (k.startsWith('v3:lay:')) { const rest = k.slice('v3:lay:'.length), i = rest.indexOf(':'); if (i > 0) { const cid = rest.slice(0, i), name = rest.slice(i + 1); if (COURSES.some(c => c.id === cid)) { legacyLayKeys.push(k); const raw = sParse(await sGet(k), null, 'object'); if (raw) consider(name, raw, k, 'own'); } } continue; }
+    if (k.startsWith('v3:lay:')) { const rest = k.slice('v3:lay:'.length), i = rest.indexOf(':'); if (i > 0) { const cid = rest.slice(0, i), name = rest.slice(i + 1); if (COURSES.some(c => c.id === cid)) { legacyLayKeys.push(k); const raw = sParse(await sGet(k), null, 'object'); if (raw) { const eid = editedLayKey.get(k); if (eid) { if (!has(rawLayoutById, eid)) { rawLayoutById[eid] = raw; layoutSrcById[eid] = k; } } else consider(name, raw, k, 'own'); } } } continue; }
   }
 
   /* prefs (name-keyed pre-mig) */
@@ -942,6 +951,17 @@ async function buildSylJournal() {
   const hidden = []; for (const n of hiddenNames) { const id = idByName[n]; if (id && isBuiltinSylId(id) && !hidden.includes(id)) hidden.push(id); }
   const tomb = Object.create(null); for (const n of tombNames) { const id = idByName[n]; if (id && isBuiltinSylId(id)) tomb[id] = 1; }
 
+  /* EVERY persisted course namespace, not just the visible index (review
+     CSID-IR-02): delCourse drops a course from v3:courses but KEEPS its records,
+     so a deleted legacy course still holds v3:<id>:<sylName>:roster|m:|d: student
+     data. The RESET must sweep and repair those too, or a later re-import of that
+     course under its old id would surface the stale marks — the global reset flags
+     then block any cleanup. allCourseNamespaces already unions the index with a
+     v3: prefix scan; deleted namespaces are repaired WITHOUT re-adding them to the
+     visible index (applyResetJournal only writes their per-course records). */
+  const namespaces = await allCourseNamespaces();
+  for (const c of namespaces) if (!(c in planSylByCourse)) { const p = sParse(await sGet(kPlan(c)), null, 'object'); if (p) planSylByCourse[c] = p; }
+
   /* per-course plan target id (drops __oldSyl). The fallback and every target are
      validated against the LIVE, non-tombstoned catalogue being built (review
      CSID-04): a course pointing at a vanished/tombstoned chart is repaired to a
@@ -950,12 +970,12 @@ async function buildSylJournal() {
   const liveIds = new Set(sylcat.map(e => e.id));
   const preferred = builtinIdByName(DEFAULT_SYL_NAME);
   const fallbackId = liveIds.has(preferred) ? preferred : (sylcat[0] && sylcat[0].id);
-  for (const cE of COURSES) {
-    const p = planSylByCourse[cE.id];
+  for (const c of namespaces) {
+    const p = planSylByCourse[c];
     /* a plan.custom course points at ITS OWN edited chart id; else the sylName's id (CSID-B04/REVIEW-01) */
-    let t = has(editedPlanId, cE.id) ? editedPlanId[cE.id] : ((p && p.sylName) ? idByName[p.sylName] : null);
+    let t = has(editedPlanId, c) ? editedPlanId[c] : ((p && p.sylName) ? (idByName[p.sylName] || resolve(p.sylName)) : null);
     if (!t || !liveIds.has(t)) t = fallbackId;
-    plans[cE.id] = t;
+    plans[c] = t;
   }
 
   /* the id-keyed definition store: built-in overrides + customs under their id */
@@ -974,7 +994,7 @@ async function buildSylJournal() {
   return {
     defs, sylcat, layouts: layoutOut, order, hidden, tomb, plans,
     purge: [...purge].filter(k => !destKeys.has(k)),
-    courseIds: COURSES.map(c => c.id),
+    courseIds: namespaces,   /* review CSID-IR-02: RESET sweeps every persisted namespace, incl. deleted courses */
   };
 }
 /* re-clone through JSON so a null-proto or shared ref never leaks into a payload */
@@ -4263,13 +4283,17 @@ function reconcileStudentsSyllabi(students, version) {
   if (!refs.size) return s;                       /* no student syllabus refs (courses-only) — nothing to guard */
   if (!Array.isArray(s.sylcat)) throw new Error(STUDENT_GUARD_MSG);
   for (const r of refs) if (!isSylId(r)) throw new Error(STUDENT_GUARD_MSG);
-  /* REFERENCE COMPLETENESS (§14 CSID2-04, review CSID-REVIEW-02): every referenced
-     id MUST be labelled by the file's sylcat — an unlabelled reference (e.g. a
-     bySyllabus block for a store id the file's own catalogue never described)
-     could otherwise collide with a legitimate reconcile target and silently drop
-     a block. Refuse the whole student import instead. */
+  /* REFERENCE COMPLETENESS (§14 CSID2-04, §15 CSID2-R2-03, review CSID-REVIEW-02 +
+     CSID-IR-03): every referenced id must be a KNOWN identity — labelled by the
+     file's own sylcat, OR already an existing store syllabus. This runs AFTER
+     applyCharts, so a chart brought in by the SAME import (its identity carried in
+     charts.sylcat, not students.sylcat) is in the store and resolves here; that is
+     the union of both catalogues §15 asks for, not students.sylcat alone. An
+     unlabelled reference to NEITHER is refused — it could otherwise collide with a
+     reconcile target and silently drop a block. Existence at the destination and
+     no-two-refs-onto-one-dest are still enforced below, so this stays fail-closed. */
   const catIds = new Set((s.sylcat || []).filter(isSylEntry).map(e => e.id));
-  for (const r of refs) if (!catIds.has(r)) throw new Error(STUDENT_GUARD_MSG);
+  for (const r of refs) if (!catIds.has(r) && !sylEntry(r)) throw new Error(STUDENT_GUARD_MSG);
   /* reconcile the file's syllabus ids to the store's (one map), refuse a clash */
   const { remapped, conflicts } = reconcileSylIds(buildUnionSylcat(null, s.sylcat), SYLS);
   if (conflicts.length) { const x = conflicts[0]; throw new Error('The students could not be brought in: the syllabus “' + x.name + '” in the file is a different chart than the one already here. Nothing has been changed.'); }
@@ -4530,8 +4554,10 @@ export function normalizeImport(parsed) {
   const chartsCat = (charts && Array.isArray(charts.sylcat)) ? charts.sylcat : null;
   const studentsCat = (students && version >= 3 && Array.isArray(students.sylcat)) ? students.sylcat : null;
   let re = id => id;
+  let unionIds = null;   /* §15 CSID2-R2-03: the id set every reference is completeness-checked against */
   if (chartsCat || studentsCat) {
     const union = buildUnionSylcat(chartsCat, studentsCat);   /* throws on cross-catalogue disagreement / bad id */
+    unionIds = new Set(union.map(e => e.id));
     const { remapped, conflicts } = reconcileSylIds(union, SYLS);
     if (conflicts.length) { const x = conflicts[0]; throw new Error('That file could not be brought in: the syllabus “' + x.name + '” is a different chart than one already here. Rename one, then import again — nothing has been changed.'); }
     re = id => has(remapped, id) ? remapped[id] : id;
@@ -4554,7 +4580,12 @@ export function normalizeImport(parsed) {
      file. A pre-v3 block stays raw and is refused by the version guardrail. */
   let studentsRefused = false;
   if (students && studentsCat) {
-    const catIds = new Set(studentsCat.filter(isSylEntry).map(e => e.id));
+    /* completeness is checked against the UNION of both catalogues, not
+       students.sylcat alone (review CSID-IR-03, §15 CSID2-R2-03): a v3 file may
+       carry the full identity in charts.sylcat with students.sylcat=[] yet a
+       student block still references it — that is a resolvable reference, not a
+       refusal. unionIds is the id set buildUnionSylcat validated above. */
+    const catIds = unionIds || new Set(studentsCat.filter(isSylEntry).map(e => e.id));
     const refs = new Set();
     for (const c of Object.keys(students.byCourse || {})) { const cv = students.byCourse[c] || {}; for (const k of Object.keys(cv.bySyllabus || {})) refs.add(k); if (cv.plan && cv.plan.sylId) refs.add(cv.plan.sylId); }
     let bad = false; const dests = new Set();

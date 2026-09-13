@@ -1,10 +1,26 @@
-# Session handoff — [TRK-CSID] 1B-ii (Tracker SYLLABUS ids): BUILT, awaiting review → gates → merge
+# Session handoff — [TRK-CSID] 1B-ii (Tracker SYLLABUS ids): BUILT + REVIEWED + GATED, at HOLD for "merge live"
 
 ## Where it is
-1B-ii is **BUILT** on branch `claude/trk-csid-syllabus-ids` (off `main`, NOT merged).
-Implementation complete, compiles, and the **unit suite is green** (149 tests incl. the
-new migration harness). Remaining before merge: Fable-high review of the built diff →
-full gates → push + Vercel link → HOLD for owner "merge live".
+1B-ii is **BUILT, reviewed and gated** on branch `claude/trk-csid-syllabus-ids` (off
+`main`, NOT merged). Five cross-provider Codex review rounds ran on the built diff; all
+28 findings across the rounds were fixed with regression pins. **All local gates green**
+(unit **4697**, build ✓, tfin **728/0**, smoke:tracker ✓). Resting state: branch pushed,
+Vercel preview link handed to the owner, PR unsubscribed. **HOLD for owner "merge live".**
+
+## Round-5 (final) review — 3 findings, all fixed with pins
+- **CSID-IR-01** (silent loss): a `plan.custom` legacy course's OWN hand-drawn layout
+  was misfiled onto the built-in the sylName spells and its source purged — the edited
+  chart lost its positions. Fixed: the course's own layout key is claimed for the minted
+  edited-chart id (`editedLayKey`), keyed by the exact source key. Pin in the migration
+  harness.
+- **CSID-IR-02** (stale-marks resurface): the RESET only swept courses still in the
+  visible index; a deleted course keeps its records, so a later re-import surfaced old
+  marks. Fixed: the journal's course list is now `allCourseNamespaces()` (every persisted
+  namespace), swept + plan-repaired without re-adding to the index. Pin added.
+- **CSID-IR-03** (over-strict refusal): reference completeness is against the UNION of
+  the charts + students catalogues (§15), not `students.sylcat` alone. Fixed in
+  `normalizeImport`, `reconcileStudentsSyllabi`, and `fileFormat.checkCharts`
+  (union passed from `readFile`). Pins in tracker + fileFormat tests.
 
 ## What was built (the spec's §§14–19, binding)
 - **New pure module `src/tracker/app/sylIds.js`** (mirrors `courseIds.js`): the
@@ -29,21 +45,16 @@ full gates → push + Vercel link → HOLD for owner "merge live".
 - **Docs**: CLAUDE.md Tracker section flipped to DONE; OUTSTANDING.md 1B-ii → BUILT.
 
 ## Tests
-- `app/sylIds.test.ts` (19, pure), `app/sylIds.migration.test.ts` (3, KEEP/RESET
-  journal harness), `app/fileFormat.test.ts` (§8 colon relaxation), `tracker.test.tsx`
-  re-baselined (dup=empty, rename=catalogue-only, guardrail import, v3 reconcile;
-  the legacy enrolment-migration / rosterHeld / rename-moves-marks tests were removed —
-  coverage moved to the migration harness). `npm test` for tracker+app: **149 green**.
+- `app/sylIds.test.ts` (pure), `app/sylIds.migration.test.ts` (KEEP/RESET journal
+  harness — now incl. the IR-01 edited-layout and IR-02 deleted-namespace pins),
+  `app/fileFormat.test.ts` (§8 colon relaxation + the IR-03 union-completeness pins),
+  `tracker.test.tsx` re-baselined (dup=empty, rename=catalogue-only, guardrail import,
+  v3 reconcile, + the IR-03 union-reference pin). Whole suite `npm test`: **4697 green**.
 
 ## Remaining steps (owner's loop)
-1. **Fable-high review of the built diff** (persisted data, silent-defect risk) — the
-   reserved smart review. Route via claudex-loop (host=claude, reviewer=codex is the
-   token-cheaper default per memory; Fable for the uncertain/high-stakes findings).
-2. **Full gates** from `raptor-port/`: `npm test`, `npm run build`,
-   `node reference/tfin.js` (728/0 — scheduler parity, unaffected), `npm run test:e2e`,
-   `npm run smoke:tracker` (the guardrail/id fixtures were updated; re-run to confirm).
-3. **Push** the branch, hand the owner the **Vercel preview link**, unsubscribe the PR.
-4. **HOLD for "merge live".** Nothing merges without it.
+1. **DONE** — review (5 Codex rounds) + full gates + push + Vercel link + PR unsubscribed.
+2. **HOLD for "merge live".** Nothing merges without it. On the owner's word: merge on
+   green → wait for Pages → load the live Tracker tab and look → one "it's live" notification.
 
 ## Gotcha learned this session
 - Course ids are lowercase base36 (`^c[0-9a-z]+$`); a test fixture id with an
@@ -53,8 +64,8 @@ full gates → push + Vercel link → HOLD for owner "merge live".
   so `npm run build` first.
 
 ## Opening prompt for a fresh chat (if handing off)
-> Picking up Raptor on `claude/trk-csid-syllabus-ids`. [TRK-CSID] 1B-ii is BUILT and
-> the unit suite is green (149). Read raptor-port/docs/session-state.md. Remaining:
-> Fable-high review of the built diff, then full gates (npm test / build / tfin 728/0 /
-> test:e2e / smoke:tracker — from raptor-port/, npm ci first in a fresh container),
-> then push + Vercel link, then HOLD for my "merge live". Do NOT merge without it.
+> Picking up Raptor on `claude/trk-csid-syllabus-ids`. [TRK-CSID] 1B-ii is BUILT,
+> reviewed (5 Codex rounds, all findings fixed) and fully gated (unit 4697 / build /
+> tfin 728/0 / smoke:tracker). Read raptor-port/docs/session-state.md. It is at HOLD:
+> branch pushed, Vercel link given, PR unsubscribed. Do NOT merge until I say "merge
+> live"; on that word run the "done means live" chain and send one notification.

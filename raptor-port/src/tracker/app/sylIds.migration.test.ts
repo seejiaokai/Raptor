@@ -179,6 +179,56 @@ describe('migrateSylIds — KEEP the catalogue, RESET the student layer', () => 
     expect(plan.sylId, 'not the deleted default').not.toBe('sb2026')
   })
 
+  it('a plan.custom course keeps its OWN hand-drawn layout on its edited chart (review CSID-IR-01)', async () => {
+    /* a legacy plan.custom course: an edited def under v3:<c>:syl and the course's
+       own hand-drawn layout under v3:lay:<c>:<sylName>. The layout name collides
+       with the built-in name '2026'; routing it by name would hang it on sb2026 and
+       DROP the edited chart's positions. It must land on the minted edited id. */
+    makeStore({
+      'v3:courses': [{ id: 'cx1', name: '26ABSG' }],
+      'v3:cx1:plan': { sylName: '2026', custom: true, epw: 2 },
+      'v3:cx1:rostermig': '1', 'v3:cx1:idmig': '1',
+      'v3:cx1:syl': [{ id: 'X-1', type: 'acad', prereqs: [] }],   /* the plan.custom single legacy def */
+      'v3:lay:cx1:2026': { 'X-1': { x: 7, y: 8 } },               /* the course's OWN hand-drawn layout */
+    })
+    expect(await core.migrateCourseIds()).toBe(true)
+    expect(await core.migrateSylIds()).toBe(true)
+    expect(core.bootError, 'no fail-closed boot').toBeNull()
+    const cat = await getJSON('v3:master:sylcat')
+    const edited = cat.find((e: any) => e.name === '2026 (edited)')
+    expect(edited && isSylId(edited.id) && !isBuiltinSylId(edited.id), 'the edited chart got an sc… id').toBe(true)
+    /* the KEY assertion: the hand-drawn layout is kept, on the EDITED chart's id */
+    expect(await getJSON(`v3:master:lay:${edited.id}`)).toEqual({ 'X-1': { x: 7, y: 8 } })
+    /* NOT misfiled onto the built-in the sylName spells */
+    expect(await get('v3:master:lay:sb2026'), 'the edited layout did not leak onto the built-in').toBeNull()
+    expect(await get('v3:lay:cx1:2026'), 'the source layout key is purged').toBeNull()
+    const plan = await getJSON('v3:cx1:plan')
+    expect(plan.sylId, 'the course points at its own edited chart').toBe(edited.id)
+  })
+
+  it('RESET sweeps records under a DELETED course namespace, not just the visible index (review CSID-IR-02)', async () => {
+    /* delCourse drops a course from v3:courses but keeps its records. A deleted
+       legacy course still holds name-keyed student data; the migration must sweep
+       it too, or a later re-import would surface the stale marks. */
+    makeStore({
+      'v3:courses': [{ id: 'cx1', name: '26ABSG' }],
+      'v3:cx1:plan': { sylName: '2026', epw: 2 },
+      'v3:cx1:rostermig': '1', 'v3:cx1:idmig': '1',
+      /* cx2: a DELETED course — absent from the index, records retained */
+      'v3:cx2:2026:roster': [{ id: 'sD', name: 'DELTA' }],
+      'v3:cx2:2026:m:sD': { 'ST-01': { g: 'dco' } },
+      'v3:cx2:2026:d:sD': { 'ST-01': '2026-01-01' },
+    })
+    expect(await core.migrateCourseIds()).toBe(true)
+    expect(await core.migrateSylIds()).toBe(true)
+    expect(await get('v3:cx2:2026:roster'), 'the deleted course roster is swept').toBeNull()
+    expect(await get('v3:cx2:2026:m:sD'), 'its marks are swept').toBeNull()
+    expect(await get('v3:cx2:2026:d:sD'), 'its dates are swept').toBeNull()
+    /* the deleted course is NOT re-added to the visible index */
+    const courses = await getJSON('v3:courses')
+    expect(courses.some((c: any) => c.id === 'cx2'), 'the deleted course stays out of the index').toBe(false)
+  })
+
   it('an interrupted flag write keeps the journal and resumes cleanly (review CSID-01)', async () => {
     /* the RESET flag write is swallowed once (a "local only" drop); migrateSylIds
        must NOT report success or delete the journal, so the next run finishes. */

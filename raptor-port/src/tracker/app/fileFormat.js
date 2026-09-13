@@ -103,7 +103,7 @@ function noColon(part, name, where) {
     throw new Error('The ' + part + ' name “' + name + '”' + (where || '') + ' in that file contains a colon (:), which the app cannot file, so it has not been opened.');
 }
 
-function checkCharts(c, version) {
+function checkCharts(c, version, otherCat) {
   if (!isPlainObject(c)) throw new Error('The charts in that file are damaged, so it has not been opened.');
   if (c.order != null && (!Array.isArray(c.order) || c.order.some(n => typeof n !== 'string')))
     throw new Error('The list of chart names in that file is damaged, so it has not been opened.');
@@ -122,10 +122,17 @@ function checkCharts(c, version) {
      the id/name shape is decided by the VERSION, never by the key spelling
      (CSID-REV-04). Only enforce the id-shape + completeness on a v3 file. */
   if (version >= 3) {
-    const catIds = new Set((c.sylcat || []).filter(isSylEntry).map(e => e.id));
+    /* completeness is against the UNION of the charts and students catalogues
+       (§15 CSID2-R2-03, review CSID-IR-03): a v3 file may describe a syllabus
+       identity in students.sylcat while the charts block references it, and that
+       is a resolvable reference across the file, not a malformed one. The charts
+       and students catalogues are cross-checked for AGREEMENT at import
+       (buildUnionSylcat); the file boundary only needs every ref to be labelled
+       SOMEWHERE in the file. */
+    const catIds = new Set([...(c.sylcat || []), ...(otherCat || [])].filter(isSylEntry).map(e => e.id));
     const refs = new Set([...(c.order || []), ...Object.keys(c.syllabi || {}), ...Object.keys(c.layouts || {})]);
     /* a v3 file is ID-NATIVE (its version is the provenance, review CSID-REV-04):
-       EVERY chart reference must be a valid syllabus id, labelled by the sylcat,
+       EVERY chart reference must be a valid syllabus id, labelled by the union,
        and an sb… id must be one this app ships — a nonconforming v3 reference is
        refused, never persisted for loadSylCat to later discard (CSID-B02). */
     for (const id of refs) {
@@ -295,7 +302,10 @@ export function readFile(obj) {
     throw new Error('That file is not an OCU Tracker file.');
   if (typeof obj.version !== 'number' || obj.version > FILE_VERSION)
     throw new Error('That file was written by a newer version of the app.');
-  if (obj.charts != null) checkCharts(obj.charts, obj.version);
+  /* the students catalogue is passed to checkCharts so a v3 chart reference
+     described in students.sylcat (the union, §15) is not falsely refused
+     (review CSID-IR-03). */
+  if (obj.charts != null) checkCharts(obj.charts, obj.version, obj.students && obj.students.sylcat);
   if (obj.students != null) checkStudents(obj.students);
   if (obj.links != null) checkLinks(obj.links);
   return {

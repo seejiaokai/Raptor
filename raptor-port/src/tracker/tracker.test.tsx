@@ -1221,6 +1221,22 @@ describe('the person bridge and the link (peoplewire.ts → people.js → core.j
     expect(FMT.buildFile({ students: out, savedAt: 'x' }).contains.links, 'the separate links block is retired').toBe(false)
   })
 
+  it('a v3 student reference described in the CHARTS catalogue (not students.sylcat) resolves — completeness is the UNION (review CSID-IR-03)', () => {
+    /* §15 completeness is against the union of both catalogues. A v3 file can carry
+       the full identity in charts.sylcat with students.sylcat=[] and still reference
+       it from a student block — that is a resolvable reference, not a refusal. */
+    const parsed = {
+      version: 3,
+      charts: { sylcat: [{ id: 'sb2026', name: '2026', base: '2026' }], syllabi: { sb2026: [{ id: 'ST-01', type: 'acad', prereqs: [] }] }, order: ['sb2026'], layouts: {}, eventInfo: {} },
+      students: { sylcat: [], courses: ['XCOURSE'], byCourse: { XCOURSE: { plan: { sylId: 'sb2026' }, lulls: {}, pace: {}, bySyllabus: { sb2026: { roster: [{ id: 'z1', name: 'ZED' }], marks: {}, dates: {} } } } } },
+      links: null,
+    }
+    const norm = C.normalizeImport(parsed)
+    expect(norm.studentsRefused, 'the union resolves the reference — the student block is not refused').toBe(false)
+    expect(norm.students, 'the student block survives').not.toBeNull()
+    expect(Object.keys(norm.students.byCourse.XCOURSE.bySyllabus), 'the sb2026 block is carried through').toEqual(['sb2026'])
+  })
+
   /* THE STORE'S IDS WIN ON IMPORT (bug-check, 10 Sep 26). The id is random by
      design, so two browsers that converted the same names minted different
      ids for the same people; a laptop's export brought into the phone then

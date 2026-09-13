@@ -134,3 +134,25 @@ describe('the course shape (course ids, 1B-i)', () => {
     expect(() => readFile(f)).toThrow(/newer version/)
   })
 })
+
+describe('v3 reference completeness is against the UNION of both catalogues (§15, review CSID-IR-03)', () => {
+  /* a v3 file may describe a syllabus identity in the students block while the
+     charts block references it — that is resolvable across the file, not a
+     malformed reference, so it must NOT be refused at the boundary. */
+  it('accepts a chart reference described only in students.sylcat', () => {
+    const obj: any = {
+      format: 'ocu-tracker', version: 3,
+      charts: { order: ['sc0aa'], syllabi: { sc0aa: [{ id: 'X-1', type: 'acad', prereqs: [] }] }, layouts: {}, eventInfo: {}, sylcat: [] },
+      students: { sylcat: [{ id: 'sc0aa', name: 'MY CHART' }], courses: [], byCourse: {} },
+    }
+    expect(() => readFile(obj)).not.toThrow()
+  })
+  it('still refuses a chart reference described in NEITHER catalogue', () => {
+    const obj: any = {
+      format: 'ocu-tracker', version: 3,
+      charts: { order: ['sc0aa'], syllabi: { sc0aa: [{ id: 'X-1', type: 'acad', prereqs: [] }] }, layouts: {}, eventInfo: {}, sylcat: [] },
+      students: { sylcat: [], courses: [], byCourse: {} },
+    }
+    expect(() => readFile(obj)).toThrow(/do not describe/)
+  })
+})
