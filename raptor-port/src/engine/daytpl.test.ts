@@ -11,6 +11,7 @@ import {
   tplFromDay, addDayTpl, delDayTpl, renameDayTpl, moveDayTpl,
   applyDayTpl, dayTplSave, dayTplLoad, dayTplReset, MAX_DAYTPL,
 } from './daytpl'
+import { ensureRowIds } from './rowids'
 
 /* templates are minted off DAYS[0] and applyDayTpl overwrites it wholesale —
    every test starts from the pristine day, same discipline restore.test.ts uses */
@@ -41,6 +42,28 @@ describe('the seeded library', () => {
     expect(DAYTPL_CFG).toEqual([])
     expect(DAYTPL_STD).toEqual([])
     expect(dayTplAreStandard()).toBe(true)
+  })
+})
+
+describe('day-note identity through a template (Astra/Fable inspect SID-03/04)', () => {
+  it('carries the note TEXT and re-mints a distinct note id per applied copy', () => {
+    const D1 = JSON.parse(JSON.stringify(DAYS[1]))
+    try {
+      DAYS[0].notes = [{ t: 'TEMPLATE NOTE' } as any]
+      ensureRowIds(DAYS)                                   // mints the source note's rid
+      const tpl = addDayTpl(0, 'Noted')!
+      /* capture keeps the TEXT (SID-03: not filtered away) and drops the id (SID-04) */
+      expect(tpl.d.notes.map((n: any) => n.t)).toEqual(['TEMPLATE NOTE'])
+      expect(tpl.d.notes.every((n: any) => !n.rid)).toBe(true)
+      // apply the SAME template to two days, then mint ids as the app's baseline does
+      expect(applyDayTpl(0, tpl.id)).toBe(true)
+      expect(applyDayTpl(1, tpl.id)).toBe(true)
+      ensureRowIds(DAYS)
+      expect(DAYS[0].notes.map((n: any) => n.t), 'text survives apply on day 0').toEqual(['TEMPLATE NOTE'])
+      expect(DAYS[1].notes.map((n: any) => n.t), 'text survives apply on day 1').toEqual(['TEMPLATE NOTE'])
+      expect(DAYS[0].notes[0].rid && DAYS[1].notes[0].rid, 'both copies get an id').toBeTruthy()
+      expect(DAYS[0].notes[0].rid, 'two independent copies do NOT share a note id (SID-04)').not.toBe(DAYS[1].notes[0].rid)
+    } finally { DAYS[1] = D1 }
   })
 })
 

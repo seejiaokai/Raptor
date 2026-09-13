@@ -108,8 +108,16 @@ renewed for independent copies — see 2.4.
   `shiftKeys('dn:di.',…)` (addressing unchanged).
 - Read-`.t` sites, addresses unchanged: `engine/canonical.ts:217-218`, `engine/drafts.ts:355`,
   `engine/restore.ts:43`, `engine/publish.ts:428`, `engine/reorder.ts` (dn move).
-- Seed/demo notes literals → objects with **fixed** ids (deterministic; never `newId()` at module
-  scope — the parity harness reads pristine; mirrors the rid seed rule).
+- Seed/demo notes literals → `{ t }` objects with **NO id in the literal** — the id is minted at
+  boot by the rowids walk, exactly like a schedule row's `rid` (never `newId()` at module scope; the
+  parity harness reads pristine and never boots, so it sees id-less notes and the adapter projects
+  their text). This deliberately mirrors the rid convention rather than baking fixed ids: notes then
+  behave EXACTLY like every other row. (Consequence, same as for rows — Astra inspect SID-IR-03: an
+  UNTOUCHED week is not stashed, so revisiting it re-mints fresh note rids; the identity is stable
+  within a loaded/stashed week but not across a pristine-week navigation. This is a property of the
+  whole rid system, not notes alone, and is a STEP-2 concern — when addressing moves from positional
+  to id, pristine-seed identity stability must be solved for rows AND notes together. In 1A the note
+  rid is carried but unused for addressing, so the instability changes no behaviour.)
 
 ### 2.4 day templates (SID-03 + SID-04) — the note-object blast radius
 - **SID-03:** `engine/daytpl.ts` `sanitiseBlob` (~299), `DayTplBlob`, `mintBlob` (~231) currently

@@ -32,7 +32,7 @@ import { writeInputsBatch, notify, protectedDates, inputProtected } from '../sta
 import { retractLwRow, rowSig, oilAskPlan } from '../leavewar/sync'
 import { inputOilAmt } from '../engine/oil'
 import { PLANPUCKS, DAYRMK } from '../state/plan'
-import { stashKeys, stashDrop } from '../engine/weekstash'
+import { stashKeys, stashDrop, stashGet } from '../engine/weekstash'
 import { persistAll } from '../state/persist'
 import { canEditSched, ME, SESSION } from '../state/auth'
 import { INPEDIT, setInpEdit, OILASK, setOilAsk } from './pops'
@@ -817,12 +817,41 @@ export function commitNewInput(draft: any, toGround?: boolean, keepTail?: any, e
    the caller keeps its editor open on a false, so nothing typed is lost.
    Runs through writeInputsBatch like every other mutation, so an edit joins
    the undo stack as ONE step and re-validates the week. */
+/* ACCEPTED ONTO A WEEK THAT IS NOT LOADED (13 Sep 26, Astra/Fable inspect
+   finding 1). An accepted input's ground row lives on ONE week; leaving that
+   week clears the input's `acc` (store.ts) but the row stays behind in the
+   week's stash, keyed by the input's stable id. Editing or deleting the input
+   from another week cannot reach that row, so the old row would survive with
+   its stale times/person — a SILENT mismatch once landings address by a stable
+   id (before, the changed content minted a visible DUPLICATE instead). So refuse
+   the edit/delete and name the week to load first. Returns that week's date
+   label, or '' when it is safe to proceed (the row is on a loaded day, or the
+   input has no landing at all — the ordinary paths handle those). Its landing on
+   a LOADED day is found by acceptedDay; only a landing on a STASHED (unloaded)
+   week is the trap. */
+function landedOnUnloadedWeek(r: any): string {
+  if (!r || acceptedDay(r) >= 0) return ''
+  const id = inpId(r)
+  for (const k of stashKeys()) {
+    const json = stashGet(k); if (!json) continue
+    let parsed: any; try { parsed = JSON.parse(json) } catch { continue }
+    const days = parsed && parsed.d
+    if (Array.isArray(days) && days.some((d: any) => ((d && d.ground) || []).some((g: any) => g && g.src === id)))
+      return String(r.date || 'that week')
+  }
+  return ''
+}
+
 export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: any) {
   if (!r || !draft) return false
   if (INPUTS.indexOf(r) < 0) {                 // deleted or undone underneath us
     HOOKS.toast('That input is no longer there — nothing was saved', 'warn')
     return false
   }
+  /* its ground row is on a week that is not loaded — editing here would strand
+     it with stale content (finding 1). Point the scheduler at the week first. */
+  const stuck = landedOnUnloadedWeek(r)
+  if (stuck) { HOOKS.toast(`Load the week of ${stuck} to edit this accepted input`, 'warn'); return false }
   /* the SOURCE date is checked here (r is a model row with real date/endDate);
      the normalized DESTINATION is checked after normalizeInputDraft below, so a
      move INTO a protected week is refused too (P2-REREVIEW-01/02). */
@@ -1154,6 +1183,10 @@ export function removeInput(r: any) {
   const inx = INPUTS.indexOf(r)
   if (inx < 0) { HOOKS.toast('That input is no longer there', 'warn'); return false }
   if (protectedInput(r)) return false          // read-only quarantine (P2-IMPL-03)
+  /* its ground row is on a week that is not loaded — deleting here would leave
+     that row behind with a dead source link (finding 1). Load the week first. */
+  const stuck = landedOnUnloadedWeek(r)
+  if (stuck) { HOOKS.toast(`Load the week of ${stuck} to delete this accepted input`, 'warn'); return false }
   /* write-path role backstop (owner, 27 Aug 26): a LOGGED-IN MEMBER deletes
      only their OWN inputs — the row's ✕ is hidden on everyone else's, this
      refuses a hand-made call. Same predicate as commitInputEdit's gate above

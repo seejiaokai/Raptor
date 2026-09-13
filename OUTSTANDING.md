@@ -202,6 +202,13 @@ what to stop):** `raptor-port/docs/superpowers/specs/2026-09-13-architecture-roo
   crux) → build → inspect → gates → hold for "merge live". Start with (1) — cheap, independent.
 - **Context:** the plan doc above (synthesises both reviews); memories
   `architectural-root-cause-before-minute-fixes`, `future-undo-semantics-multiuser`.
+- **1A follow-ups (post-build inspection, 13 Sep 26):** two faces of the cross-week accepted-input
+  LANDING model that step (4) "one Absence record" dissolves. (a) **DONE now (owner: guard):** editing/
+  deleting an accepted input whose ground row is on a non-loaded week is refused with "Load the week
+  of <date>…" (was a silent stale link under stable ids) — `inputedit.tsx:landedOnUnloadedWeek`. (b)
+  **DEFERRED to step (4):** an accepted `Other` whose input is later deleted loses its hard-clash
+  grade (orphaned row → `shiftHardGround` can't resolve the type; narrow — Fable inspect #2). Fix
+  when landings become the one Absence record, or a cheap `srcType` on the ground row if it surfaces.
 
 ### [SYNC-INTEG] Leave War ↔ inputs guardrails (NON-undo part) — small, ready
 A read-only cross-provider audit (Codex + Fable, 13 Sep 26) of DELETE/UNDO across the

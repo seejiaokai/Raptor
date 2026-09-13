@@ -60,3 +60,14 @@ Result: `scratchpad/astra-review-1a/round4/…/result.json`. SID-01..08 all reso
 Proceeding to build (Opus): Item 1 (input action-routing by id + iid) → Item 2/3 (notes + storage
 reset + parity adapter). Full gates before any merge. HOLD for owner "merge live". Final code
 inspection by a fresh Codex/Astra session after build (plan review ≠ code review).
+
+## Post-build code inspection — Codex (gpt-6-astra) + Fable (independent), 13 Sep 26
+Reviewed the built diff 156ee39..HEAD. Both read the real code; full unit suite green at review.
+Dispositions:
+- Codex SID-IR-02 / Fable #3 (reset failure swallowed → next boot wipes new work): FIXED — resetPreSchema now PROPAGATES failure so bootStorage rejects to the Retry screen; never a half-reset write-enabled app. Pin updated.
+- Codex SID-IR-01 / Fable #5 (reload leaves auto-landed inputs accepted with no row — pre-existing, both reproduced; the spec's Work item 3 promised to cover reload): FIXED — the no-stash boot path now clears a hydrated 'g' before re-landing (mirrors applyWeekModel). New pin in persist.test.
+- Fable #1 (edit/delete an accepted input whose row is on a NON-loaded week → silent stale link, a 1A regression from the stable id): FIXED per owner's "guard now" call — commitInputEdit/removeInput refuse with "Load the week of <date>…". New pin in loadweek.test.
+- Fable #2 (an accepted 'Other' whose input is later deleted loses its hard-clash grade): DEFERRED to step 4 (one Absence record) — very narrow; noted in OUTSTANDING. (Owner call.)
+- Codex SID-IR-03 (seed note ids minted at boot, not fixed in the literal): spec §2.3 reconciled — mirrors the rid convention; pristine-navigation id stability is a rid-system-wide step-2 concern.
+- Codex SID-IR-04 / Fable #4 (missing regressions; weak note pins): ADDED — note-identity-through-template (SID-03/04), reload-landing pin, cross-week refusal pin; persist.test note pins use mkNote + noteText.
+Both providers confirmed clean: no content-key action address left, every note reader via noteText, rid sharing safe on copy, reset stamp-last/verified, twins/idempotency, parity, deterministic elogGroups.

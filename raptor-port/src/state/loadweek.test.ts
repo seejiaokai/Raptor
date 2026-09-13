@@ -19,6 +19,8 @@ import { stashClear, stashPut } from '../engine/weekstash'
 import { weekBundle } from '../engine/weeks-data'
 import { SCHED, signOf, setDayApproved, dayHasChanges } from '../engine/publish'
 import { HIST } from './history'
+import { commitInputEdit, removeInput, draftOf } from '../ui/inputedit'
+import { HOOKS } from '../engine/hooks'
 
 /* is this input's ground row currently sitting on some day of the loaded week? */
 const landed = (inp: any) =>
@@ -293,5 +295,29 @@ describe('loadWeek', () => {
     expect(landed(inp), 'still refused by the published day — not landed, but not removed either').toBe(false)
     expect(INPUTS.some((r: any) => r.person === 'divot' && r.type === 'Training' && (r as any)._t),
       'still a live personal input that will land once its day is a draft again').toBe(true)
+  })
+
+  /* FINDING 1 (Astra/Fable inspect, 13 Sep 26): editing or deleting an accepted
+     input whose ground row is on a NON-loaded week must be refused — otherwise the
+     stashed row is stranded with stale content (a silent mismatch, since landings
+     address by the stable id now). */
+  it('refuses to edit or delete an accepted input whose row is on a non-loaded week, and allows it once loaded', () => {
+    const X: any = { person: 'divot', type: 'Meeting', date: 'Jul 13', allday: false, s: 540, e: 600, remarks: '', mod: 'now', yr: 2026, _t: 1 }
+    INPUTS.push(X); expect(acceptInput(0, X, 'g')).toBe(true)      // land X on the loaded week (its row makes the week dirty)
+    expect(landed(X)).toBe(true)
+    loadWeek('20/07/2026')                                        // leave — the week is stashed WITH X's row, X.acc cleared
+    expect(acceptedDay(X), 'no landing on the loaded week now').toBeLessThan(0)
+    const toasts: string[] = []
+    const realToast = HOOKS.toast
+    HOOKS.toast = ((m: any) => { toasts.push(String(m)) }) as any
+    try {
+      expect(commitInputEdit(X, draftOf(X)), 'edit refused').toBe(false)
+      expect(removeInput(X), 'delete refused').toBe(false)
+      expect(toasts.some(t => /Load the week/.test(t)), 'told to load the week first').toBe(true)
+    } finally { HOOKS.toast = realToast }
+    expect(INPUTS.indexOf(X), 'the input is untouched — nothing was stranded').toBeGreaterThanOrEqual(0)
+    loadWeek('13/07/2026')                                        // back on X's own week
+    expect(acceptedDay(X), 'its row is loaded again').toBeGreaterThanOrEqual(0)
+    expect(removeInput(X), 'now the delete goes through').toBe(true)
   })
 })

@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
-import { INPUTS, inpId } from '../engine/inputs'
+import { INPUTS, inpId, isPersonal } from '../engine/inputs'
 import { PEOPLE, ID_BY_CS, nameToId } from '../engine/people'
 import { DAYS } from '../engine/data'
 import { CURWEEK } from '../engine/waves'
@@ -15,6 +15,7 @@ import { bootStorage } from '../storage/boot'
 import { settingsAdapter } from '../storage/adapters'
 import { MemoryBackend } from '../storage/memory'
 import { SCHEMA_VERSION } from '../storage/reset'
+import { mkNote, noteText } from '../engine/note'
 
 const ISNAP = JSON.stringify(INPUTS)
 const PSNAP = JSON.stringify(PEOPLE)
@@ -108,14 +109,14 @@ describe('hydrate', () => {
   it('a stored week snapshot is restored into the loaded week at boot', async () => {
     const be1 = new MemoryBackend()
     await boot(be1)
-    DAYS[0].notes.push('PERSISTED NOTE')
+    DAYS[0].notes.push(mkNote('PERSISTED NOTE'))
     const snap = weekStashSnap()
     resetWorld()
     const be2 = new MemoryBackend()
     be2.seed({ weeks: { [weekId(CURWEEK)]: snap } })
     await boot(be2)
     expect(stashHas(CURWEEK)).toBe(true)
-    expect(DAYS[0].notes).toContain('PERSISTED NOTE')
+    expect(DAYS[0].notes.map(noteText)).toContain('PERSISTED NOTE')
   })
 })
 
@@ -211,7 +212,7 @@ describe('persistAll and the hooks', () => {
     writeInputs(() => { INPUTS.push({ ...ROW }) })     // inputs landing changes the week's `un`/acc → dirty
     HOOKS.histPush()
     expect(wb.has('weeks', weekId(CURWEEK)) || weekDirty() === false).toBe(true)
-    DAYS[0].notes.push('X'); HOOKS.histPush()
+    DAYS[0].notes.push(mkNote('X')); HOOKS.histPush()
     expect(wb.has('weeks', weekId(CURWEEK))).toBe(true)
   })
 
@@ -277,21 +278,38 @@ describe('the week swap and the stored week records (8 Sep 26 bug pass)', () => 
     const be = new MemoryBackend()
     const { wb } = await boot(be)
     const A = CURWEEK
-    DAYS[0].notes.push('WEEK-A-NOTE'); HOOKS.histPush()
+    DAYS[0].notes.push(mkNote('WEEK-A-NOTE')); HOOKS.histPush()
     loadWeek(WEEK_C)
     expect(wb.has('weeks', weekId(WEEK_C))).toBe(false)
     expect(wb.get('weeks', weekId(A))).toContain('WEEK-A-NOTE')
     loadWeek(A)                                            // and back: A's record is not overwritten with C's blank days
     expect(wb.has('weeks', weekId(WEEK_C))).toBe(false)
     expect(wb.get('weeks', weekId(A))).toContain('WEEK-A-NOTE')
-    expect(DAYS[0].notes).toContain('WEEK-A-NOTE')
+    expect(DAYS[0].notes.map(noteText)).toContain('WEEK-A-NOTE')
     await vi.advanceTimersByTimeAsync(300)
     resetWorld()                                           // the reload
     await boot(be)
-    expect(DAYS[0].notes).toContain('WEEK-A-NOTE')
+    expect(DAYS[0].notes.map(noteText)).toContain('WEEK-A-NOTE')
     loadWeek(WEEK_C)
-    expect(DAYS[0].notes).not.toContain('WEEK-A-NOTE')
+    expect(DAYS[0].notes.map(noteText)).not.toContain('WEEK-A-NOTE')
     expect(DAYS[0].waves.length).toBe(0)
+  })
+
+  it('reload landing invariant (SID-IR-01/finding 5): auto-landed inputs come back WITH their ground rows', async () => {
+    const be = new MemoryBackend()
+    await boot(be)                                   // seeds + auto-lands activity inputs (acc='g' + rows)
+    expect(INPUTS.some((r: any) => r.acc === 'g' && isPersonal(r.type)), 'the seed auto-lands at least one activity input').toBe(true)
+    persistAll()                                     // INPUTS saved with acc='g'; the pristine week is NOT stored
+    await vi.advanceTimersByTimeAsync(300)
+    expect(be.peek('inputs', 'all')).not.toBeNull()
+    expect(be.peek('weeks', weekId(BOOT_WEEK)), 'a pristine week is deliberately not stored').toBeNull()
+    resetWorld()                                     // a fresh reload: module state cleared, same backend
+    await boot(be)
+    /* every accepted activity input must have its ground row back — before the fix,
+       the no-stash boot skipped a hydrated 'g' and left them accepted with no row */
+    const orphaned = INPUTS.filter((r: any) => r.acc === 'g' && isPersonal(r.type))
+      .filter((r: any) => !DAYS.some((d: any) => (d.ground || []).some((g: any) => g.src === inpId(r))))
+    expect(orphaned.map((r: any) => inpId(r)), 'no input is accepted with no ground row').toEqual([])
   })
 
   it('a week merely visited is not persisted, even though an input lands on it during the swap', async () => {
@@ -305,7 +323,7 @@ describe('the week swap and the stored week records (8 Sep 26 bug pass)', () => 
   it('undo back to the load state removes the stored record, so the undone edit does not come back after a reload', async () => {
     const be = new MemoryBackend()
     const { wb } = await boot(be)
-    DAYS[0].notes.push('UNDONE'); HOOKS.histPush()
+    DAYS[0].notes.push(mkNote('UNDONE')); HOOKS.histPush()
     expect(wb.has('weeks', weekId(CURWEEK))).toBe(true)
     undo()
     expect(wb.has('weeks', weekId(CURWEEK))).toBe(false)
@@ -317,7 +335,7 @@ describe('the week swap and the stored week records (8 Sep 26 bug pass)', () => 
     const be = new MemoryBackend()
     const { wb } = await boot(be)
     const A = CURWEEK
-    DAYS[0].notes.push('OLD'); HOOKS.histPush()
+    DAYS[0].notes.push(mkNote('OLD')); HOOKS.histPush()
     loadWeek(WEEK_C)                                       // A is stashed and stored
     expect(wb.has('weeks', weekId(A))).toBe(true)
     stashDrop(A); persistAll()

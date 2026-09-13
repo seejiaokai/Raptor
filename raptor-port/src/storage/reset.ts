@@ -37,25 +37,22 @@ async function writeStamp(backend: Backend, snap: Snapshot): Promise<void> {
 /* Reset any pre-1A persisted scheduler data BEFORE the whiteboard or hydration
    can see it, and stamp the new version LAST — only after the durable deletes are
    verified gone (SID-07). Runs against the real Backend, never the concurrent,
-   failure-swallowing Postman queue. Restart-safe: the in-memory snapshot is
-   cleared immediately, so this boot never hydrates a pre-1A shape even if a
-   durable delete fails; on any failure the stamp is left unset so the next boot
-   retries the cleanup. Mutates `snap` in place. */
+   failure-swallowing Postman queue.
+
+   Restart-safe, and it never leaves the app half-reset (Astra SID-IR-02): a
+   failed delete/verify/stamp is PROPAGATED, so bootStorage rejects and main.tsx
+   shows its Retry screen — the app never proceeds to a write-enabled state on an
+   unstamped store, where new (current-format) work the user then saved would be
+   wiped by the next boot's retry. The in-memory snapshot is also cleared up front,
+   so nothing pre-1A can hydrate even on the path to the throw. Mutates `snap`. */
 export async function resetPreSchema(backend: Backend, snap: Snapshot): Promise<void> {
   if (storedVersion(snap) >= SCHEMA_VERSION) return
-  // clear the in-memory snapshot NOW — whatever happens to the durable delete,
-  // this boot must not hydrate an incompatible record.
   const pending: Array<[Collection, string]> = []
   for (const c of RESET) { for (const id of Object.keys(snap[c] || {})) pending.push([c, id]); snap[c] = {} }
   // a fresh/empty store has nothing to clear: just stamp it so later boots skip.
-  if (pending.length === 0) { try { await writeStamp(backend, snap) } catch { /* retry next boot */ } return }
-  try {
-    for (const [c, id] of pending) await backend.remove(c, id)   // awaited durable deletes
-    const after = await backend.loadAll()                        // verify gone, THEN stamp
-    if (!RESET.every(c => Object.keys(after[c] || {}).length === 0)) return   // not clean → leave unstamped, retry next boot
-    await writeStamp(backend, snap)
-  } catch {
-    // a failed delete/verify/put: leave the stamp unset (next boot retries); the
-    // snapshot is already cleared, so no pre-1A record hydrates this boot.
-  }
+  if (pending.length === 0) { await writeStamp(backend, snap); return }
+  for (const [c, id] of pending) await backend.remove(c, id)   // awaited durable deletes
+  const after = await backend.loadAll()                        // verify gone, THEN stamp
+  if (!RESET.every(c => Object.keys(after[c] || {}).length === 0)) throw new Error('storage reset: cleanup not durable')
+  await writeStamp(backend, snap)
 }

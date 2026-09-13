@@ -50,18 +50,17 @@ describe('resetPreSchema — ARCH-STACK 1A storage reset (Astra SID-05/07)', () 
     expect(JSON.parse(be.peek('settings', 'schema')!)).toBe(SCHEMA_VERSION)
   })
 
-  it('SID-07: a failed delete leaves the stamp UNSET and hydrates nothing pre-1A — next boot retries and completes', async () => {
+  it('SID-07/IR-02: a failed delete THROWS (boot rejects to Retry) and leaves the stamp unset — the next boot completes', async () => {
     const be = withPreV1AData()
     const snap = await be.loadAll()
     be.failNext(1)                                          // the first backend.remove throws
-    await resetPreSchema(be, snap)
-    // this boot: the in-memory snapshot is cleared, so no pre-1A record can hydrate
-    expect(snap.inputs).toEqual({})
-    expect(snap.weeks).toEqual({})
-    // the stamp is NOT written (cleanup was not verified durable), so a retry will run
+    // the failure propagates so bootStorage rejects → main.tsx Retry; the app never
+    // proceeds to a write-enabled state on an unstamped store (IR-02).
+    await expect(resetPreSchema(be, snap)).rejects.toThrow()
+    // the stamp is NOT written, and the pre-1A record is still there for the retry
     expect(be.peek('settings', 'schema')).toBeNull()
-    expect(be.peek('weeks', '2026-07-13')).not.toBeNull()  // the failed delete left the record in place
-    // next boot re-reads the still-present data and the reset completes
+    expect(be.peek('weeks', '2026-07-13')).not.toBeNull()
+    // next boot (no injected failure) re-reads the still-present data and completes
     const snap2 = await be.loadAll()
     await resetPreSchema(be, snap2)
     expect(be.peek('inputs', 'all')).toBeNull()

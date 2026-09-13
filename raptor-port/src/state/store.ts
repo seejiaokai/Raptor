@@ -758,7 +758,19 @@ export function initStore() {
      it) is restored exactly as loadWeek would — applyWeekModel also
      re-lands the inputs — otherwise the seed lands as before */
   if (stashHas(CURWEEK)) applyWeekModel(CURWEEK)
-  else autoAcceptSeedInputs()
+  else {
+    /* CLEAR a hydrated 'g' BEFORE the seed lands (13 Sep 26, Astra/Fable inspect
+       SID-IR-01/finding 5). INPUTS is global and persisted with its acc; a
+       pristine CURWEEK is deliberately NOT stashed, so on a plain reload the
+       accepted inputs come back 'g' while the seed week has no rows for them —
+       and autoAcceptSeedInputs skips a truthy acc, leaving every auto-landed
+       input "accepted with no ground row" (the validator/picker then lose those
+       commitments). applyWeekModel already does this clear for a stashed week
+       (its INPUTS acc-clear above reconcileLandedAcc); mirror it here so the
+       no-stash boot re-lands too. 'r'/'u' are deliberate decisions, kept. */
+    INPUTS.forEach((r: any) => { if (r.acc && r.acc !== 'r' && r.acc !== 'u' && !inputProtected(r)) delete r.acc })
+    autoAcceptSeedInputs()
+  }
   /* stable row ids (engine/rowids.ts) BEFORE the baseline: the walk mutates
      DAYS, and a mint after the yardstick would make the pristine seed week
      read as edited and get persisted — the trap weekstash.ts documents */
