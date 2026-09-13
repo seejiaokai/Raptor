@@ -251,6 +251,17 @@ time changed.
   and go missing, which produced five confidently wrong readings once. Ask the
   owner for pictures of the rendered pages. Page-join letters are wires, not
   events.
+- **Course-id migration durability + two tabs (inherited, `[TRK-DISK]`/`[DB-STEP]`).**
+  `migrateCourseIds` (course ids, 1B-i) re-bases every per-course key onto a
+  minted course id, resumably and read-back-verified — but the read-back reads
+  the in-memory whiteboard, not the backend (`adapters.ts` → whiteboard → async
+  Postman), exactly as the enrolment `migrateIds` already does, and the two are
+  equally un-serialised across concurrent tabs. So a backend write that fails
+  after the source is deleted, or two tabs converting at once, are the same
+  narrow gaps the shipped enrolment migration has (`[TRK-DISK]`). Not patched
+  here on purpose — the record-oriented storage door with acknowledged durable
+  writes and revision checks is the `[DB-STEP]` (RC5) that closes it for every
+  migration at once; a bespoke journal/lock now would be thrown away by it.
 - **The repository is public.** No student name, mark or date may enter it. The
   smoke suite checks the seed and the sample file for placeholder names only;
   `bake-user-charts.mjs` re-checks after every bake.

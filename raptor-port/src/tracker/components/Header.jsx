@@ -169,7 +169,7 @@ export default function Header() {
   return (
     <header>
       <div>
-        <h1 id="courseTitle">{core.course || ''} PROGRESS TRACKER</h1>
+        <h1 id="courseTitle">{core.courseName(core.course) || ''} PROGRESS TRACKER</h1>
         <div className="sub sub-strap">Multi-student · single platform · <span id="evCount">{core.SYL.length} events</span></div>
       </div>
       <div className="controls">
@@ -189,7 +189,7 @@ export default function Header() {
             menu became an edit icon that sits right after its dropdown). */}
         <label className="sub"><span className="lbltx">Course</span>{' '}
           <select id="courseSel" value={core.course || ''} onChange={e => core.switchCourse(e.target.value)}>
-            {core.COURSES.map(c => <option key={c} value={c}>{c}</option>)}
+            {core.COURSES.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
           </select>
         </label>
         <Menu id="course" label="✎" icon title="Edit courses — add, rename, reorder or delete">
