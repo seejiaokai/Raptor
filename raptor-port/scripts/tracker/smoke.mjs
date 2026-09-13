@@ -2566,14 +2566,17 @@ await pg.waitForSelector('#flowSvg .ball', { timeout: 15000 });
     await selectedCourse() === 'SMOKE FIRST', await selectedCourse());
 
   /* Both halves matter. The negative alone passes when nothing is stored at
-     all, which is exactly how a feature that never wrote anything would look. */
+     all, which is exactly how a feature that never wrote anything would look.
+     lastCourse is the course ID now (course ids, 1B-i), not the name — compare
+     it to the current course's id (the dropdown value). */
+  const curCourseId = await pg.inputValue('#courseSel');
   const where = await pg.evaluate(() => ({
     mine: localStorage.getItem('ocuLocal:lastCourse'),
     shared: Object.keys(localStorage).filter(k => k.startsWith('raptor:tracker/') && /lastCourse/i.test(k)),
   }));
   ok('that memory is this browser\'s alone, not in the shared file',
-    where.mine === 'SMOKE FIRST' && where.shared.length === 0,
-    `mine=${where.mine}, shared=[${where.shared.join(',')}]`);
+    where.mine === curCourseId && where.shared.length === 0,
+    `mine=${where.mine}, curId=${curCourseId}, shared=[${where.shared.join(',')}]`);
 
   /* Remembering a course that has since gone must not strand the app. */
   await pg.evaluate(() => localStorage.setItem('ocuLocal:lastCourse', 'NO SUCH COURSE'));
@@ -3733,7 +3736,8 @@ ok('demo rosters use placeholder names only', rosterLeaks.length === 0,
 const FF = await import('../../src/tracker/app/fileFormat.js');
 const envelope = FF.buildFile({ charts: null, students: null, savedAt: '2026-01-01T00:00:00.000Z' });
 ok('envelope names its format and version',
-  envelope.format === 'ocu-tracker' && envelope.version === 1);
+  envelope.format === 'ocu-tracker' && envelope.version === FF.FILE_VERSION,
+  `format ${envelope.format}, version ${envelope.version} (expected ${FF.FILE_VERSION})`);
 ok('envelope records that it holds nothing',
   envelope.contains.charts === false && envelope.contains.students === false);
 let ffRejected = false;
