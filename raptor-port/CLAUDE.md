@@ -663,9 +663,26 @@ takes the id, `nameOf`/`byName`/`pidOf`/`linkedPerson` read the entry, and the
 `v3:links` record is gone (folded into `pid` by `migrateIds`, once per course,
 resumable and read-back-verified — `app/ids.js` is the one converter, shared
 with Import). Same person or same name on the course = the same enrolment
-(`findEnrolment`, course-wide, hidden charts included). Course, syllabus and
-chart names refuse a colon (they are storage-key segments); a student name is a
-label and may carry one. The pencil on each Students-card chip renames that
+(`findEnrolment`, course-wide, hidden charts included). **A COURSE is a
+COURSE ID too (stable ids, 13 Sep 26 — ARCH-STACK 1B-i)**: `COURSES` is
+`{ id, name }[]`, `course` is the current course's id, every per-course key
+files under the id (`v3:<courseId>:…`), so **renaming a course is a label
+change that moves nothing** (`renCourse` sets the entry's name; the old
+copy-verify-delete apparatus is gone). `app/courseIds.js` is the one converter
+(mint/upgrade/reconcile), and `migrateCourseIds` re-bases a name-keyed browser
+once — resumable, read-back-verified, a `storage.list()` prefix-move with an
+explicit reserved-namespace skiplist (`courses`/`links`/`master`/`lay`/`SYLLABUS
+EDIT`) and a fail-closed preflight (a reserved or colon-bearing legacy course
+name stops the boot: `bootError` → App's reload panel, no board, no writers). It
+also translates the `v3:links` payload (keyed by course name) to the id. Import
+carries `{id,name}` courses (file v2), reconciles a file's course ids to the
+store's by name (store id wins, conflicts refused), and refuses a reserved name
+or a non-`^c[0-9a-z]+$` id at the file boundary. **Syllabus ids are Phase 2
+(`[TRK-CSID]` 1B-ii) — syllabus names are STILL name-keyed** (global catalogue,
+built-ins identified by name in code). Course, syllabus and chart names refuse a
+colon (course names are id-keyed now, but keep the refusal until 1B-ii; syllabus
+and chart names are still key segments); a student name is a label and may carry
+one. The pencil on each Students-card chip renames that
 label (`core.js:renameStudent`, 10 Sep 26 — everyone may, like + Add and
 Remove; refuses a name another enrolment on the course already holds; the id
 and every id-keyed record are untouched). **The Tracker will be

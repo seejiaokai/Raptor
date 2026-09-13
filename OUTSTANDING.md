@@ -188,7 +188,9 @@ Astra says the original Bug 2 may **not** reproduce (EditWeek `ed=false`; SchedB
 `iid` (`[INP-CSID]` done), day notes as `{rid,t}` objects, coordinated storage-format reset;
 plus a history-ordering determinism fix and a cross-week accepted-input edit/delete guard. Both
 providers inspected the built code; all findings fixed. Remaining in step 1: **1B** (`[TRK-CSID]`,
-Tracker ids — Fable-high final) and **1C** (`who→personId`, parity-sensitive, its own pass). One
+Tracker ids — split 13 Sep 26: **1B-i COURSE ids DONE** and holding for "merge live" on
+`claude/trk-csid-course-ids`; **1B-ii SYLLABUS ids OPEN**) and **1C** (`who→personId`,
+parity-sensitive, its own pass). One
 deferred follow-up (finding 2, orphaned `Other` hard-grade) noted below.
 A whole-app architectural review by BOTH Astra and Fable (read-only) converged on one story:
 the app is **one store-pattern built three times** (Scheduler / Leave War / Tracker), and it
@@ -284,15 +286,33 @@ stable opaque `iid` (`newId('i')`), not the content key `inpKey`. Twins file ind
 the accept guard is a same-input idempotency check; `inpKey` stays only as a display/dedup hint.
 Merged live in PR #396. Finding J (`DU-007`) closed.
 
-### [TRK-CSID] Give courses & syllabuses their own hidden ids — OPEN (medium)
-Students and schedule rows now carry stable hidden ids (rename/reorder-safe);
-**courses and syllabuses do not** — they're still keyed by name, so renaming a
-course/syllabus still moves data by name and is not as safe as renaming a student.
-Give them their own ids so a rename becomes identity-stable too. (Verified open:
-no course/syllabus id in `tracker/app/core.js`/`ids.js`; CLAUDE.md still treats
-their names as storage-key segments.)
-- **Model:** build on Opus (multi-file plumbing); a Fable-high final review
-  (persisted data, silent-defect risk).
+### [TRK-CSID] Give courses & syllabuses their own hidden ids — SPLIT (owner, 13 Sep 26)
+Two passes (courses first — clean; syllabuses second — the tangled global/built-in half).
+
+**1B-i — COURSE ids — DONE (13 Sep 26, on branch `claude/trk-csid-course-ids`, holding for "merge live").**
+`COURSES` is `{id,name}[]`, `course` is the current course id, every per-course key
+files under the id, so **renaming a course is a label change that moves nothing**
+(the old copy-verify-delete apparatus in `renCourse` is gone). New `app/courseIds.js`
+(mint/upgrade/reconcile) + `migrateCourseIds` (resumable, read-back-verified,
+`list()`-prefix move with a reserved skiplist + fail-closed preflight, translates
+`v3:links`). Fail-closed boot (`bootError` → App reload panel). Import carries
+`{id,name}` courses (file v2), reconciles to the store's ids by name, refuses a
+reserved name / bad id. Spec + 4-round Astra red-team (APPROVED):
+`raptor-port/docs/superpowers/specs/2026-09-13-trk-csid-course-ids-spec.md`.
+Known limitation (inherited, NOT new): the migration's durability + two-tab safety
+match the shipped enrolment migration (read-back proves the in-memory whiteboard,
+not the backend) — this is `[TRK-DISK]`, owned by `[DB-STEP]` (RC5); no interim
+patch built. Fable-high final review of the built diff before merge.
+
+**1B-ii — SYLLABUS ids — OPEN (larger, its own spec/red-team/review).**
+Syllabuses are GLOBAL and built-in syllabus templates are identified by **name in
+shipped code** (`SYLLABI`, `DEFAULT_LAYOUTS`, `SYL_ALIAS` bases, `SYL_ORDER`,
+`SYL_RENAME`) plus a web of name-keyed prefs (`SYL_HIDDEN`/`SYL_ALIAS`/`SYL_TOMB`/
+`SYL_ORDER`) — so renaming a syllabus still moves data by name (`moveSylData`).
+Give syllabuses stable ids and re-base the global + per-(course,syllabus) keys.
+This is where the colon-refusal on syllabus/chart names can be relaxed too.
+- **Model:** build on Opus (multi-file plumbing); Astra red-team the spec; a
+  Fable-high final review (persisted data, silent-defect risk).
 
 ### [TRK-ATTEMPTS] Keep a student's attempt history — OPEN (small, feature)
 Remember a student's *earlier* tries at an event, not just the latest grade. More a

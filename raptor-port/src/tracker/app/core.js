@@ -17,6 +17,7 @@ import { findEvents } from './eventOrder.js';
 import { isFileLocked, onFileLocked } from '../role.js';
 import { getPeople, onPeople, whoami } from '../people.js';
 import { mintId, isEntry, upgradeCourseBlock, reconcileIds } from './ids.js';
+import { mintCourseId, isCourseEntry, isCourseId, isReservedCourseName, upgradeCourses, reconcileCourseIds } from './courseIds.js';
 
 export { SYLLABI, SYL_NAMES, DEFAULT_SYL_NAME, DEFAULT_SYL_ORDER, DEFAULT_LAYOUTS, EVENT_INFO };
 export { mintId };
@@ -166,7 +167,20 @@ export let barHidden = prefGet('barHidden') === '1';
 export function toggleBar() { barHidden = !barHidden; prefSet('barHidden', barHidden ? '1' : '0'); notify(); }
 
 /* ---------- app state ---------- */
+/* COURSES is [{ id, name }] since 13 Sep 26 (stable ids, ARCH-STACK 1B-i): the
+   id is the course — minted once, never printed — and every per-course storage
+   key files under it, so a rename is a label change that moves nothing. `course`
+   is the current course's ID. app/courseIds.js is the converter; migrateCourseIds
+   below folds a name-keyed browser over to ids once. (Pre-migration, during boot,
+   COURSES may briefly hold bare-string names — loadCourses reads raw and the
+   migration converts; nothing but the migration reads COURSES before it runs.) */
 export let COURSES = [], course = null, active = null;
+const DEFAULT_COURSE_NAME = '26ABSG';
+/* the label for a course id (''=unknown); the id for a name (null=unknown) */
+export function courseName(id) { const e = COURSES.find(c => isCourseEntry(c) && c.id === id); return e ? e.name : (typeof id === 'string' ? '' : ''); }
+export function courseEntry(id) { return COURSES.find(c => isCourseEntry(c) && c.id === id) || null; }
+export function courseIdOf(name) { const e = COURSES.find(c => isCourseEntry(c) && c.name === name); return e ? e.id : null; }
+export function curCourseName() { return courseName(course); }
 /* `roster` is [{ id, name, pid? }] since 10 Sep 26 (stable ids): the id is the
    enrolment — minted once, never re-used — the name is a label the user can
    change, and `pid` is the Raptor PEOPLE id the student was picked off the
@@ -244,6 +258,8 @@ function flashHint(msg) {
 }
 
 const kCourses = 'v3:courses';
+const kCourseIdMig = 'v3:courseidmig';   /* one-shot course name → id migration flag (global) */
+const kCourseIdMap = 'v3:courseidmap';   /* name → id mapping of a run still in progress; gone once the flag is in */
 /* ---- syllabi are global (see original comments) ---- */
 const SYL_NS = 'v3:master';
 const kSyl = c => 'v3:' + c + ':syl';
@@ -388,11 +404,18 @@ function translateMarks(old, ids) {
   }
   return out;
 }
+/* the retired global syllabus-source "course" — never a real course, filtered
+   out whether the store still lists it as a bare string (pre-migration) or as an
+   entry object (review CSID-R2-01: the filter must handle BOTH shapes, because
+   loadCourses runs before migrateCourseIds when entries are still strings) */
+const isRetiredCourse = c => (typeof c === 'string' ? c : (isCourseEntry(c) ? c.name : '')) === 'SYLLABUS EDIT';
 async function loadCourses() {
   const r = await sGet(kCourses);
-  COURSES = sParse(r, ['26ABSG'], 'array');
-  COURSES = COURSES.filter(c => c !== 'SYLLABUS EDIT');   /* retired: syllabi are global now */
-  if (!COURSES.length) COURSES = ['26ABSG'];
+  COURSES = sParse(r, [DEFAULT_COURSE_NAME], 'array').filter(c => !isRetiredCourse(c));
+  if (!COURSES.length) COURSES = [DEFAULT_COURSE_NAME];
+  /* Left raw here (strings pre-migration, entries after) — migrateCourseIds owns
+     the string → entry conversion so it rides the durable one-shot flag. Persist
+     only the retired-course filter, keeping the shape untouched otherwise. */
   await sSet(kCourses, JSON.stringify(COURSES));
 }
 async function saveCourses() { await sSet(kCourses, JSON.stringify(COURSES)); }
@@ -427,8 +450,10 @@ async function migrateRosters(c) {
     if (await sGet(kRosterMig(c))) return;
     const rr = await sGet(kRoster(c));
     if (rr == null || rr === '') {
-      /* brand-new file: seed the demo pair once, on the syllabus that's showing */
-      if (c === '26ABSG') {
+      /* brand-new file: seed the demo pair once, on the syllabus that's showing.
+         Since course ids (1B-i), `c` is the opaque course id — match the default
+         course by its NAME, not the id literal (review CSID-R2-04). */
+      if (courseName(c) === DEFAULT_COURSE_NAME) {
         let any = false;
         for (const n of allSylNames()) { const r = await sGet(kRosterFor(c, n)); if (r != null && r !== '') { any = true; break; } }
         if (!any) {
@@ -568,9 +593,131 @@ async function migrateIds(c) {
     await delKey(kIdMap(c));   /* the run is over; the scratch mapping has no reader left */
   } catch (_) {}
 }
+/* THE FAIL-CLOSED BOOT (stable ids 1B-i, 13 Sep 26; review CSID-04/R2-03/R3-02).
+   If migrateCourseIds cannot finish, the app must not run half-converted: init
+   sets bootError, does NOT loadCourse and does NOT set `ready`, and App renders a
+   "couldn't finish upgrading — reload" panel with no board and no writers. The
+   error MUST go through setBootError so it NOTIFIES the store subscription —
+   assigning the field alone would leave App on its loading state forever
+   (App subscribes to getVersion, which only changes on notify). */
+export let bootError = null;
+function setBootError(msg) { bootError = msg; notify(); }
+/* test-support: the fail-closed boot error is only ever cleared by a reload in
+   production; the tracker suite clears it between fixtures so one fail-closed
+   pin does not leave the App gated for the next test */
+export function clearBootError() { bootError = null; }
+
+/* Course NAMES → course IDS, once per browser (mirror of migrateIds for
+   enrolments). Every per-course storage key embeds the course name in its 2nd
+   segment; this re-bases them all onto a minted id so a rename moves nothing.
+   Resumable and read-back-verified with the SAME discipline as migrateIds:
+   derive the name → id map and write it down FIRST (durably, read back) so an
+   interrupted run resumes with the same ids; move each key and read it back
+   before deleting the source; write the COURSES index LAST and read it back; set
+   the one-shot flag only when everything verified. Any failure leaves the flag
+   unset and the old keys in place, and the next boot finishes the job.
+
+   The course name sits in the MIDDLE of composite keys
+   (v3:<name>:<syl>:m:<student>), so enumerating per-record keys would need every
+   syllabus and student reconstructed before the enrolment migration has run and
+   could MISS one. It moves by KEY PREFIX via storage.list() instead — every key
+   whose 2nd colon-bounded segment equals the course name, plus the legacy
+   own-layout keys v3:lay:<name>:* — which cannot miss a key. Over-matching is
+   bounded by an EXPLICIT reserved-namespace skiplist and a fail-closed preflight
+   that refuses a legacy course whose name is reserved or carries a colon (review
+   CSID-08 / R2-01 / R2-02) — either would make the 2nd-segment match ambiguous.
+
+   Durability (review CSID-01/02): the read-back reads the in-memory whiteboard,
+   not the backend (adapters → whiteboard → async Postman), exactly as migrateIds
+   does — it proves the whiteboard write and gives resumability, not backend
+   durability, which is the DB step's job ([TRK-DISK]). Two concurrent tabs are
+   un-serialised, as migrateIds is; cross-tab safety is also the DB step. */
+const RESERVED_KEY_SEG = new Set(['courses', 'links', 'master', 'lay', 'SYLLABUS EDIT']);
+export async function migrateCourseIds() {
+  try {
+    if (await sGet(kCourseIdMig)) return true;
+    const raw = sParse(await sGet(kCourses), [DEFAULT_COURSE_NAME], 'array').filter(c => !isRetiredCourse(c));
+    const list = raw.length ? raw : [DEFAULT_COURSE_NAME];
+    /* PREFLIGHT — a reserved or colon-bearing legacy name would make the
+       2nd-segment prefix match ambiguous (sweep a global, or split at the wrong
+       colon). Fail closed: move nothing, stamp nothing. */
+    for (const c of list) {
+      const nm = isCourseEntry(c) ? c.name : c;
+      if (typeof nm !== 'string' || nm === '') { setBootError('A course in your saved Tracker data has no name, so it could not finish upgrading. Reload to try again.'); return false; }
+      if (nm.includes(':')) { setBootError('A course named “' + nm + '” contains a colon, which the Tracker can no longer file, so it could not finish upgrading. Reload to try again.'); return false; }
+      if (isReservedCourseName(nm)) { setBootError('A course named “' + nm + '” clashes with a name the Tracker reserves, so it could not finish upgrading. Reload to try again.'); return false; }
+    }
+    /* derive name → id: an entry lends its id (a resumed/partly-done store);
+       reuse the durable scratch map on a retry; a bare-string course mints one */
+    const saved = sParse(await sGet(kCourseIdMap), {}, 'object');
+    const idByName = Object.create(null);
+    for (const c of list) if (isCourseEntry(c)) idByName[c.name] = c.id;
+    for (const c of list) { const nm = isCourseEntry(c) ? c.name : c; if (!has(idByName, nm)) idByName[nm] = (has(saved, nm) && isCourseId(saved[nm])) ? saved[nm] : mintCourseId(); }
+    /* write the map down FIRST and read it back — nothing moves until it is
+       durable, and the next attempt reuses it (mirror migrateIds' kIdMap) */
+    const map = Object.create(null); for (const c of list) { const nm = isCourseEntry(c) ? c.name : c; map[nm] = idByName[nm]; }
+    const mapStr = JSON.stringify(map);
+    if ((await sGet(kCourseIdMap)) !== mapStr) { await sSet(kCourseIdMap, mapStr); if ((await sGet(kCourseIdMap)) !== mapStr) return false; }
+    /* move one key: absent/empty → nothing; else write dest (unless it already
+       holds it — a retry), read back, only then delete source (mirror migrateIds
+       moved()). An empty string reads as absent (the delKey tombstone). */
+    const moved = async (from, to) => {
+      const v = await sGet(from); if (v == null || v === '') return true;
+      const cur = await sGet(to);
+      if (cur == null || cur === '') { await sSet(to, v); if ((await sGet(to)) !== v) return false; }
+      await delKey(from); const back = await sGet(from); return back == null || back === '';
+    };
+    let ok = true;
+    const all = (await storage.list()).keys || [];
+    for (const k of all) {
+      if (!k.startsWith('v3:')) continue;
+      const rest = k.slice(3), ci = rest.indexOf(':'); if (ci <= 0) continue;
+      const seg = rest.slice(0, ci);
+      if (RESERVED_KEY_SEG.has(seg)) {
+        /* legacy own-layout keys carry the course at the 3rd segment
+           (v3:lay:<course>:<syl>) — move those, skip every other global */
+        if (seg === 'lay') {
+          const after = rest.slice(ci + 1), ci2 = after.indexOf(':');
+          if (ci2 > 0) { const cn = after.slice(0, ci2); if (has(idByName, cn) && idByName[cn] !== cn) ok = (await moved(k, 'v3:lay:' + idByName[cn] + ':' + after.slice(ci2 + 1))) && ok; }
+        }
+        continue;
+      }
+      if (has(idByName, seg) && idByName[seg] !== seg) ok = (await moved(k, 'v3:' + idByName[seg] + ':' + rest.slice(ci + 1))) && ok;
+    }
+    /* per-browser prefs (localStorage, not the seam): last-crew per course */
+    for (const c of list) { const nm = isCourseEntry(c) ? c.name : c, id = idByName[nm]; if (id === nm) continue; const lc = prefGet('lastCrew:' + nm); if (lc != null) prefSet('lastCrew:' + id, lc); }
+    /* v3:links payload is keyed by course NAME (review CSID-03): rewrite its
+       top-level keys name → id so the enrolment migration and collect/apply find
+       each course's person links under the id. */
+    {
+      const linksRaw = await sGet(kLinks);
+      if (linksRaw != null && linksRaw !== '') {
+        const lk = sParse(linksRaw, null, 'object');
+        if (lk && typeof lk === 'object') {
+          const out = Object.create(null); let changed = false;
+          for (const nm of Object.keys(lk)) { const id = has(idByName, nm) ? idByName[nm] : nm; out[id] = lk[nm]; if (id !== nm) changed = true; }
+          if (changed) { const s = JSON.stringify(out); await sSet(kLinks, s); if ((await sGet(kLinks)) !== s) ok = false; }
+        }
+      }
+    }
+    if (!ok) return false;
+    const lastC = prefGet('lastCourse'); if (lastC != null && has(idByName, lastC)) prefSet('lastCourse', idByName[lastC]);
+    /* write the index LAST and read it back — every reader keys off it */
+    const entries = list.map(c => { const nm = isCourseEntry(c) ? c.name : c; return { id: idByName[nm], name: nm }; });
+    const entStr = JSON.stringify(entries);
+    await sSet(kCourses, entStr); if ((await sGet(kCourses)) !== entStr) return false;
+    COURSES = entries;
+    await sSet(kCourseIdMig, '1');
+    await delKey(kCourseIdMap);
+    return true;
+  } catch (err) {
+    try { setBootError('The Tracker could not finish upgrading your data. Reload to try again.'); } catch (_) {}
+    return false;
+  }
+}
 /* every course, at init (review finding 3): an export or a global syllabus
    rename must never meet a course nobody has opened since the upgrade */
-export async function migrateAllCourses() { for (const c of COURSES) await migrateIds(c); }
+export async function migrateAllCourses() { for (const c of COURSES) await migrateIds(isCourseEntry(c) ? c.id : c); }
 /* One course as the file-shaped block { plan, bySyllabus: { syl: { roster,
    marks, dates } }, lulls, pace } — collectStudents and migrateIds read it,
    applyStudents writes it. `withNames` also returns every name still sitting
@@ -2976,7 +3123,7 @@ async function loadSylPrefs() {
 async function saveSylPrefs() { await sSet(kSylHidden(), JSON.stringify(SYL_HIDDEN)); await sSet(kSylAlias(), JSON.stringify(SYL_ALIAS)); await sSet(kSylTomb(), JSON.stringify(SYL_TOMB)); }
 /* Scrub a syllabus name out of the LEGACY storage keys. */
 async function purgeLegacySyl(nm) {
-  const keys = [kSylsOldMaster(), ...COURSES.map(c => kSylsOwn(c))];
+  const keys = [kSylsOldMaster(), ...COURSES.map(c => kSylsOwn(c.id))];
   for (const k of keys) {
     try {
       const raw = await sGet(k); if (!raw) continue;
@@ -2988,7 +3135,8 @@ async function purgeLegacySyl(nm) {
 async function delKey(k) { try { if (storage && storage.delete) { await storage.delete(k); } else { await sSet(k, ''); } } catch (_) { try { await sSet(k, ''); } catch (e) {} } }
 /* Move (newNm set) or purge (newNm null) every trace of a syllabus name. */
 async function moveSylData(oldNm, newNm) {
-  for (const c of COURSES) {
+  for (const cE of COURSES) {
+    const c = cE.id;   /* course keys file under the id since 1B-i (review CSID-05) */
     /* Keyed by enrolment id since 10 Sep 26. A STRING on a roster means that
        course's migration could not finish, so carry the record under its name
        as well — otherwise a syllabus rename would strand it. */
@@ -3066,7 +3214,13 @@ export async function saveOrderList(list) {
 }
 /* COURSES is itself the display order, so there is no separate ranking key. */
 export async function saveCourseOrder(list) {
-  COURSES = reranked(list, COURSES); await saveCourses();
+  /* the modal lists NAMES (course names are unique among courses), so rank the
+     entries by them — the saveCrewOrder pattern (review CSID-09). Anyone the
+     modal did not name (added meanwhile) keeps their place after. */
+  const byN = new Map(COURSES.map(c => [c.name, c]));
+  const ranked = list.map(n => byN.get(n)).filter(Boolean);
+  COURSES = [...ranked, ...COURSES.filter(c => !ranked.includes(c))];
+  await saveCourses();
   closeOrd(); refreshCourses();
   setSaveStatus('course order saved', 'ok');
 }
@@ -3094,121 +3248,63 @@ export async function restoreHiddenSyl(n) {
   setSaveStatus('restored built-in “' + n + '”', 'ok');
 }
 export async function switchCourse(v) {
+  /* v is a course ID (the dropdown's option value since 1B-i). */
+  const nm = courseName(v) || v;
   /* refreshCourses on refusal: the dropdown already shows the new name, and
      only a re-render puts the current course back into it. */
-  if (!await leaveFlowEdits('Discard them and switch to course “' + v + '”?')) { refreshCourses(); return; }
+  if (!await leaveFlowEdits('Discard them and switch to course “' + nm + '”?')) { refreshCourses(); return; }
   /* Picking a different course is like opening the app on it, so it does
      restore that course's last-marked syllabus. Picking a syllabus does not. */
   await loadCourse(v, true); refreshCourses(); refreshSyl(); refreshActive(); renderBoard(); renderSide();
   /* Same words as a syllabus switch. Left alone, the status kept saying
      "unsaved flow edits" about a chart that had just been discarded. */
-  setSaveStatus('switched to ' + v, 'ok');
+  setSaveStatus('switched to ' + nm, 'ok');
 }
 export async function addCourse() {
   if (!await leaveFlowEdits('Discard them and add a course?')) return;
   const v = ((await uiPrompt('New course name (e.g. 26BBSG):')) || '').trim().toUpperCase(); if (!v) return;
   if (await refuseColon(v)) return;
-  /* Front, not back: the newest course is the one being set up, so it should be
+  if (isReservedCourseName(v)) { await uiAlert('“' + v + '” is a name the app reserves internally — pick a different course name.'); return; }
+  if (COURSES.some(c => c.name === v)) { await uiAlert('A course named ' + v + ' already exists.'); return; }
+  /* Born id-keyed (review CSID-05): mint the id, file everything under it.
+     Front, not back: the newest course is the one being set up, so it should be
      the one the dropdown offers first and the one the app falls back to. */
-  if (!COURSES.includes(v)) { COURSES.unshift(v); await saveCourses(); }
+  const id = mintCourseId();
+  COURSES.unshift({ id, name: v }); await saveCourses();
   const chosen = curSyl(); const useName = allSylNames().indexOf(chosen) >= 0 ? chosen : firstSylName();
-  await sSet(kPlan(v), JSON.stringify({ lulls: [], mode: 'pace', epw: 2, target: null, sylName: useName, custom: false }));
-  for (const sn of allSylNames()) await sSet(kRosterFor(v, sn), JSON.stringify([]));
-  await sSet(kRosterMig(v), '1');   /* clean start: add students yourself, no marks carried over */
-  await sSet(kIdMig(v), '1');       /* born id-keyed — there is nothing to convert */
-  await loadCourse(v); refreshCourses(); refreshSyl(); refreshActive(); renderBoard(); renderSide();
+  await sSet(kPlan(id), JSON.stringify({ lulls: [], mode: 'pace', epw: 2, target: null, sylName: useName, custom: false }));
+  for (const sn of allSylNames()) await sSet(kRosterFor(id, sn), JSON.stringify([]));
+  await sSet(kRosterMig(id), '1');   /* clean start: add students yourself, no marks carried over */
+  await sSet(kIdMig(id), '1');       /* born id-keyed — there is nothing to convert */
+  await loadCourse(id); refreshCourses(); refreshSyl(); refreshActive(); renderBoard(); renderSide();
   setSaveStatus('course ' + v + ' created on the ' + useName + ' syllabus — add students to begin', 'ok');
 }
 export async function renCourse() {
   if (!await leaveFlowEdits('Discard them and rename the course?')) return;
-  const old = course;
-  const v = ((await uiPrompt('Rename course “' + old + '” to:', old)) || '').trim().toUpperCase();
-  if (!v || v === old) return;
+  const old = course;                       /* the course ID — unchanged by a rename */
+  const oldNm = courseName(old);
+  const v = ((await uiPrompt('Rename course “' + oldNm + '” to:', oldNm)) || '').trim().toUpperCase();
+  if (!v || v === oldNm) return;
   if (await refuseColon(v)) return;
-  if (COURSES.includes(v)) { await uiAlert('A course named ' + v + ' already exists.'); return; }
-  const sylNames = [...new Set([...SYL_NAMES, ...Object.keys(CUSTOMS || {}), plan.sylName])];
-  /* A rename MOVES the course's records. Until 10 Sep 26 it only COPIED them:
-     every mark, date, pace and lull period stayed behind under the old course
-     name as a second, unreachable copy of the whole course — invisible (the
-     old name is off COURSES, so nothing exports or lists it) and waiting to
-     be half-read by a later course that happened to take that name back.
-     The deletes are a SECOND pass, after every copy has been made, and each
-     one only runs on a source whose new home reads back byte-identical: sSet
-     swallows a failed write, so deleting as we went could have thrown the
-     record away on the one browser where the copy never landed. */
-  const carried = [];
-  const move = async (a, b) => { const val = await sGet(a); if (val != null) { await sSet(b, val); carried.push([a, b, val]); } };
-  await move(kPlan(old), kPlan(v));
-  await move(kRoster(old), kRoster(v));
-  await move(kRosterMig(old), kRosterMig(v));
-  await move(kIdMig(old), kIdMig(v));
-  await move(kIdMap(old), kIdMap(v));   /* a conversion interrupted mid-run keeps its ids across the rename */
-  for (const sn of sylNames) {
-    await move(kRosterFor(old, sn), kRosterFor(v, sn));
-    /* enrolment ids, plus any string still on a roster the migration could
-       not finish converting — its records are keyed by that name */
-    const raw = sParse(await sGet(kRosterFor(old, sn)), [], 'array');
-    const rs = raw.map(e => isEntry(e) ? e.id : (typeof e === 'string' ? e : null)).filter(Boolean);
-    const ids = sn === plan.sylName ? [...new Set([...rs, ...roster.map(r => r.id)])] : rs;
-    for (const s of ids) {
-      await move(kMarksFor(old, sn, s), kMarksFor(v, sn, s));
-      await move(kDatesFor(old, sn, s), kDatesFor(v, sn, s));
-    }
-  }
-  for (const { id: s } of roster) await move(kDatesOld(old, s), kDatesOld(v, s));
-  /* Pace, target dates and lull periods hang off the COURSE, not a syllabus,
-     so the per-syllabus loop above never reached them and a rename silently
-     wiped every student's pacing. Gather everyone who appears on any roster of
-     the old course, not just the one on screen. */
-  const everyone = new Set(roster.map(r => r.id));
-  for (const sn of sylNames) {
-    sParse(await sGet(kRosterFor(old, sn)), [], 'array')
-      .forEach(e => { if (isEntry(e)) everyone.add(e.id); else if (typeof e === 'string' && e) everyone.add(e); });
-  }
-  for (const s of everyone) {
-    await move(kPace(old, s), kPace(v, s));
-    await move(kLulls(old, s), kLulls(v, s));
-    await move(kLast(old, s), kLast(v, s));
-  }
-  await move(kLastStudent(old), kLastStudent(v));
-  const myCrew = prefGet('lastCrew:' + old);
-  if (myCrew) prefSet('lastCrew:' + v, myCrew);
-  /* THE DELETE PASS IS ALL OR NOTHING, and it VERIFIES BEFORE IT DELETES
-     ANYTHING. Deleting each source as its own copy verified looked safe per
-     record and was not, because these records are only useful together: the
-     roster copies fine, its key is deleted, one student's marks do not — and
-     the old course is then a course with no crew list, so opening it shows
-     nobody and an export carries nothing for it, while the marks that stayed
-     behind sit under a course that cannot name them. On any miss the OLD
-     course is left exactly as it was, whole; the new one holds whatever did
-     copy; and the user picks which to keep. */
-  let whole = true;
-  for (const [, b, val] of carried) if ((await sGet(b)) !== val) { whole = false; break; }
-  if (whole) for (const [a] of carried) await delKey(a);
-  COURSES = COURSES.map(c => c === old ? v : c);
-  /* And the old NAME stays on COURSES beside the new one, because nothing
-     lists, exports, migrates or opens a course that is not on it — the records
-     would be intact and unreachable, with no way back (renaming the new course
-     to the old name is refused, the name is taken). Two courses on the dropdown
-     is a state the user can see and act on; a stranded one is not. */
-  if (!whole && !COURSES.includes(old)) COURSES.push(old);
+  if (isReservedCourseName(v)) { await uiAlert('“' + v + '” is a name the app reserves internally — pick a different course name.'); return; }
+  if (COURSES.some(c => c.name === v)) { await uiAlert('A course named ' + v + ' already exists.'); return; }
+  /* LABEL-ONLY since course ids (1B-i): the course IS its id, which does not
+     change, and every record — plan, rosters, marks, dates, pace, lulls,
+     last-crew — files under that id. So a rename sets the entry's name and moves
+     nothing. This replaces a ~65-line copy-every-record-then-verify-then-delete
+     apparatus and, with it, the half-carry failure it guarded (a rename that
+     stranded a course when storage refused one write). */
+  const e = courseEntry(old); if (e) e.name = v;
   await saveCourses();
-  await loadCourse(v); refreshCourses(); refreshSyl(); refreshActive(); renderBoard(); renderSide();
-  if (whole) setSaveStatus('renamed ' + old + ' → ' + v, 'ok');
-  else {
-    /* setSaveStatus is this function's own channel, but the toolbar line is
-       transient and the next write overwrites it — so a partial carry, which
-       needs a decision, also raises the alert every other refusal here uses. */
-    setSaveStatus('could not finish renaming ' + old + ' → ' + v + ' — both courses are listed, ' + old + ' is the complete one', 'err');
-    await uiAlert('Could not finish renaming ' + old + ' to ' + v + ' — the browser’s storage would not take some of the records.\n\nNothing has been lost, and both courses are now in the list. ' + old + ' still has EVERYTHING, exactly as it was. ' + v + ' has only the part that copied across.\n\nUse ' + old + ' and delete ' + v + ', or free up some space and try the rename again.');
-  }
+  refreshCourses(); refreshSyl(); refreshActive(); renderBoard(); renderSide();
+  setSaveStatus('renamed ' + oldNm + ' → ' + v, 'ok');
 }
 export async function delCourse() {
   if (COURSES.length <= 1) { await uiAlert('Keep at least one course.'); return; }
   if (!await leaveFlowEdits('Discard them and delete the course?')) return;
-  if (!await uiConfirm('Delete course ' + course + '? (marks remain in storage)')) return;
-  COURSES = COURSES.filter(c => c !== course); await saveCourses();
-  await loadCourse(COURSES[0]); refreshCourses(); refreshActive(); renderBoard(); renderSide();
+  if (!await uiConfirm('Delete course ' + curCourseName() + '? (marks remain in storage)')) return;
+  COURSES = COURSES.filter(c => c.id !== course); await saveCourses();
+  await loadCourse(COURSES[0] && COURSES[0].id); refreshCourses(); refreshActive(); renderBoard(); renderSide();
 }
 
 /* ---------- syllabus editor (JSON modal) ---------- */
@@ -3600,7 +3696,7 @@ async function reloadFromStore() {
   try { await loadSylPrefs(); } catch (_) {}
   await loadSylOrder();
   await loadEventInfo();
-  const c = (COURSES.indexOf(course) >= 0) ? course : COURSES[0];
+  const c = COURSES.some(x => isCourseEntry(x) && x.id === course) ? course : (COURSES[0] && COURSES[0].id);
   await loadCourse(c);
   if (keepActive && roster.some(r => r.id === keepActive)) active = keepActive;
   if (keepCal) calView = keepCal;
@@ -3633,7 +3729,8 @@ export async function collectCharts(names) {
    key here and migrates from plan.lulls when it is opened). */
 export async function collectStudents() {
   const byCourse = {};
-  for (const c of COURSES) {
+  for (const cE of COURSES) {
+    const c = cE.id;   /* export keys byCourse by the course id since 1B-i */
     const { block } = await readCourseBlock(c, false);
     /* a course the migration could not finish (a write that did not land)
        still exports whole: converted on the fly, its old links folded in */
@@ -3651,9 +3748,10 @@ export async function collectStudents() {
     try { byCourse[c] = upgradeCourseBlock(block, links).block; }
     catch (err) {
       byCourse[c] = block;
-      try { console.warn('Tracker export: course “' + c + '” could not be re-keyed to enrolment ids, so it is exported as it is filed. ' + ((err && err.message) || err)); } catch (_) {}
+      try { console.warn('Tracker export: course “' + cE.name + '” could not be re-keyed to enrolment ids, so it is exported as it is filed. ' + ((err && err.message) || err)); } catch (_) {}
     }
   }
+  /* courses ride out as {id,name} entries (file v2); byCourse is keyed by id */
   return { courses: COURSES.slice(), byCourse };
 }
 
@@ -3701,7 +3799,25 @@ export async function applyCharts(charts, opts) {
 
 /* People only. Never writes a syllabus or layout key. */
 export async function applyStudents(students, links) {
-  const courses = (students && students.courses) || [];
+  /* COURSE-ID LAYER (stable ids 1B-i). A v1 file keys courses by NAME (and
+     carries a name-keyed links block); a v2 file keys by course id. Upgrade to
+     id-keyed, then reconcile the file's course ids against the store's — a
+     name-match adopts the STORE's id (mirror of the enrolment reconcile), a
+     name/id contradiction is REFUSED, and a file course named a reserved
+     namespace or carrying an invalid id is turned away — all before a single
+     record is written. After this, `students.byCourse` and `links` are keyed by
+     course id, and `courseEntries` are the {id,name} entries to merge in. */
+  const up0 = upgradeCourses(students || {}, links || null);
+  for (const e of (up0.students.courses || [])) {
+    if (isReservedCourseName(e.name)) throw new Error('That file could not be brought in: a course named “' + e.name + '” clashes with a name the app reserves internally. Rename it in the file, then import again — nothing has been changed.');
+    if (!isCourseId(e.id)) throw new Error('That file could not be brought in: a course in it has an invalid id. Nothing has been changed.');
+  }
+  const rec = reconcileCourseIds(up0.students, up0.links, COURSES);
+  if (rec.conflicts.length) { const x = rec.conflicts[0]; throw new Error('The courses could not be brought in: “' + x.name + '” in the file is a different course than the one already here. Rename one of them, then import again — nothing has been changed.'); }
+  students = rec.students; links = rec.links || {};
+  const courseEntries = students.courses || [];       /* {id,name}[] */
+  const courses = courseEntries.map(e => e.id);        /* course IDS to write */
+  const cName = id => { const e = courseEntries.find(x => x.id === id); return (e && e.name) || courseName(id) || id; };
   /* REFUSE A FILE THAT NAMES TWO DIFFERENT PEOPLE UNDER ONE CALLSIGN (bug-check,
      11 Sep 26 — Astra/Fable). applyStudents writes course-by-course; a clash
      caught mid-loop would leave earlier courses written and the list unmerged,
@@ -3740,7 +3856,7 @@ export async function applyStudents(students, links) {
     /* say "no students" rather than "nothing changed": charts import first, on
        the user's own per-chart yes, so a chart may already be in — but the whole
        student import is refused here before it writes a thing (Astra 2nd pass). */
-    if (clash.size) throw new Error('The students could not be brought in: “' + [...clash][0] + '” names a different person than the one already on ' + c + '. Rename one of them, then import again — no students or marks have been changed.');
+    if (clash.size) throw new Error('The students could not be brought in: “' + [...clash][0] + '” names a different person than the one already on ' + cName(c) + '. Rename one of them, then import again — no students or marks have been changed.');
   }
   for (const c of courses) {
     const cs = (students.byCourse || {})[c] || {};
@@ -3811,14 +3927,16 @@ export async function applyStudents(students, links) {
   /* Merge, never replace. Overwriting the list dropped every course of the
      person doing the opening: their marks stayed in storage but the course was
      no longer in the dropdown, so there was no way back to them. Their own
-     courses stay first; the file's are appended. */
-  if (courses.length) {
+     courses (entries) stay first; a file course that reconciled to one already
+     here keeps the store's entry, and a genuinely new one is appended. */
+  if (courseEntries.length) {
     const mine = COURSES.slice();
-    const merged = [...mine, ...courses.filter(c => !mine.includes(c))];
+    const haveId = new Set(mine.map(c => c.id));
+    const merged = [...mine, ...courseEntries.filter(e => !haveId.has(e.id))];
     await sSet(kCourses, JSON.stringify(merged));
   }
   await reloadFromStore();
-  return { courses: courses.slice() };
+  return { courses: courseEntries.slice() };
 }
 
 /* ---------- the File menu: Import, Export ----------
@@ -3963,18 +4081,29 @@ export async function init() {
   if (initStarted) return; initStarted = true;
   await applyBundle();
   await loadCourses();
+  /* Course NAMES → course IDS, once per browser, BEFORE anything reads a
+     per-course key (migrateAllCourses/enrolment migration key off the id). ONE
+     retry on this boot — a half-done conversion is not a state to run in. If it
+     still cannot finish, FAIL CLOSED: bootError is set (and has notified), and
+     we do NOT loadCourse and do NOT set ready — App shows a reload panel with no
+     board and no writers (review CSID-04 / R2-03). */
+  let cmig = await migrateCourseIds();
+  if (!cmig) cmig = await migrateCourseIds();
+  if (!cmig) { loading = false; return; }
   /* Every course, not just the one about to open: an export, or a global
      syllabus rename, must never meet a course nobody has opened since the
      upgrade and find half its records still filed under a name. */
   await migrateAllCourses();
   await loadSylPrefs();
-  /* After loadCourses, which is what fills COURSES — a course that was deleted,
-     renamed, or only ever existed in someone else's browser simply fails the
-     membership test and falls back to the top of the list. */
+  /* After loadCourses + course-id migration, which fill COURSES with {id,name}
+     entries — a course that was deleted, renamed, or only ever existed in
+     someone else's browser simply fails the membership test and falls back to
+     the top of the list. lastCourse is a course id. */
   const __want = prefGet('lastCourse');
-  await loadCourse((__want && COURSES.includes(__want)) ? __want : COURSES[0], true);
+  await loadCourse((__want && COURSES.some(c => isCourseEntry(c) && c.id === __want)) ? __want : (COURSES[0] && COURSES[0].id), true);
   await loadEventInfo(); await loadSylOrder();
   ready = true;
+  notify();   /* the boot gate (App) subscribes to getVersion — flip it off BootLoading */
   refreshCourses(); refreshSyl(); refreshActive(); renderBoard(); renderSide();
   /* After the first paint, so the balls exist to measure. No last mark → the
      chart's first event, the same landing a crew pick makes. */

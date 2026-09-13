@@ -8,7 +8,7 @@
    · `links` — course → student name → Raptor person id — rides beside charts
      and students, is checked like them, and survives the round trip. */
 import { describe, expect, it } from 'vitest'
-import { buildFile, readFile } from './fileFormat.js'
+import { buildFile, readFile, FILE_VERSION } from './fileFormat.js'
 
 const chart = (name: string) => ({ order: [name], syllabi: { [name]: [{ id: 'ST-01', type: 'acad', prereqs: [] }] }, layouts: {}, eventInfo: {} })
 const people = (course: string, syl: string, who: string) => ({
@@ -98,5 +98,39 @@ describe('the links block (fileFormat.js)', () => {
   it('refuses a colon in a linked course or crew member name too', () => {
     expect(() => readFile(file({ links: { 'A:B': { 'STUDENT A': 'bane' } } }))).toThrow(/course .*“A:B”.*colon/)
     expect(() => readFile(file({ links: { '26ABSG': { 'A:B': 'bane' } } }))).toThrow(/crew member .*“A:B”.*colon/)
+  })
+})
+
+/* course ids (ARCH-STACK 1B-i, 13 Sep 26): a v2 file keys courses by id; the
+   reader accepts either shape but refuses reserved names, bad ids and dups. */
+const v2 = (courses: any[], byCourse: any = {}) => ({ courses, byCourse })
+describe('the course shape (course ids, 1B-i)', () => {
+  it('accepts a v1 string course list and a v2 { id, name } entry list, but not a mix', () => {
+    expect(() => readFile(file({ students: v2(['ALPHA'], { ALPHA: { plan: {}, bySyllabus: {} } }) }))).not.toThrow()
+    expect(() => readFile(file({ students: v2([{ id: 'c1a', name: 'ALPHA' }], { c1a: { plan: {}, bySyllabus: {} } }) }))).not.toThrow()
+    expect(() => readFile(file({ students: v2(['ALPHA', { id: 'c1a', name: 'BRAVO' }]) }))).toThrow(/list of courses .*damaged/)
+  })
+  it('refuses a reserved course name (either shape, case-insensitive) — it would collide with a global on import', () => {
+    for (const n of ['master', 'LINKS', 'Lay', 'courses', 'Syllabus Edit'])
+      expect(() => readFile(file({ students: v2([n]) })), n).toThrow(/reserves/)
+    expect(() => readFile(file({ students: v2([{ id: 'c1a', name: 'MASTER' }]) }))).toThrow(/reserves/)
+  })
+  it('refuses a v2 course id that is not a valid minted id (a separator would clobber a global — CSID-07)', () => {
+    expect(() => readFile(file({ students: v2([{ id: 'master:lay', name: 'ALPHA' }]) }))).toThrow(/invalid id/)
+    expect(() => readFile(file({ students: v2([{ id: 'ALPHA', name: 'ALPHA' }]) }))).toThrow(/invalid id/)
+  })
+  it('refuses a duplicate course id or name', () => {
+    expect(() => readFile(file({ students: v2([{ id: 'c1a', name: 'A' }, { id: 'c1a', name: 'B' }]) }))).toThrow(/id c1a twice/)
+    expect(() => readFile(file({ students: v2([{ id: 'c1a', name: 'A' }, { id: 'c2b', name: 'A' }]) }))).toThrow(/“A” is listed twice/)
+    expect(() => readFile(file({ students: v2(['A', 'A']) }))).toThrow(/“A” is listed twice/)
+  })
+  it('refuses a byCourse key that is a reserved name or a colon', () => {
+    expect(() => readFile(file({ students: v2(['ALPHA'], { master: { plan: {}, bySyllabus: {} } }) }))).toThrow(/reserves/)
+    expect(() => readFile(file({ students: v2(['ALPHA'], { 'A:B': { plan: {}, bySyllabus: {} } }) }))).toThrow(/colon/)
+  })
+  it('refuses a file written by a newer version', () => {
+    const f = buildFile({ savedAt: 'x', students: v2(['ALPHA']) }) as any
+    f.version = FILE_VERSION + 1
+    expect(() => readFile(f)).toThrow(/newer version/)
   })
 })

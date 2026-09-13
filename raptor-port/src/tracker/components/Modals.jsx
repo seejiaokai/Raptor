@@ -208,8 +208,12 @@ const ORD_MODES = {
   course: {
     title: 'Course order',
     note: 'Drag a row, or use ▲/▼. This sets the order of the Course dropdown, and everyone sharing this tracker sees it.',
-    read: () => core.COURSES.slice(),
-    tag: n => (n === core.course ? 'current' : ''),
+    /* names, not entries: the shared OrdModal renders each row as a string and
+       sorts by localeCompare, and course names are unique among courses, so it
+       reorders by name and saveCourseOrder maps names back to entries (the
+       saveCrewOrder pattern, review CSID-09) */
+    read: () => core.COURSES.map(c => c.name),
+    tag: n => (n === core.curCourseName() ? 'current' : ''),
     save: l => core.saveCourseOrder(l),
   },
   crew: {

@@ -31,8 +31,15 @@
    See docs/superpowers/specs/2026-08-07-syllabus-file-design.md,
    docs/superpowers/specs/2026-09-09-schema-hardening-design.md and
    docs/superpowers/sdd/2026-09-10-stable-ids/ */
+import { isCourseId, isCourseEntry, isReservedCourseName } from './courseIds.js'
+
 export const FILE_FORMAT = 'ocu-tracker';
-export const FILE_VERSION = 1;
+/* v2 (13 Sep 26, course ids 1B-i): `students.courses` may be the legacy string
+   list (v1, keyed by course NAME) OR { id, name } entries (v2, keyed by course
+   ID), and byCourse/links are keyed to match — never a mix. A later step
+   reconciles a file's course ids to the store's on import; this format reads
+   both. An older build reading a v2 file refuses it (version > FILE_VERSION). */
+export const FILE_VERSION = 2;
 
 export function buildFile({ charts = null, students = null, links = null, savedAt }) {
   const out = {
@@ -120,13 +127,46 @@ export function firstCycle(events) {
 
 function checkStudents(s) {
   if (!isPlainObject(s)) throw new Error('The people in that file are damaged, so it has not been opened.');
-  if (s.courses != null && (!Array.isArray(s.courses) || s.courses.some(n => typeof n !== 'string')))
-    throw new Error('The list of courses in that file is damaged, so it has not been opened.');
+  /* courses: the legacy string[] (v1, name-keyed) OR { id, name } entries (v2,
+     id-keyed) — one or the other, never a mix, so the reader cannot
+     half-upgrade a file (mirror of the dual roster shape below). */
+  if (s.courses != null) {
+    if (!Array.isArray(s.courses))
+      throw new Error('The list of courses in that file is damaged, so it has not been opened.');
+    const allStr = s.courses.every(n => typeof n === 'string');
+    const allEnt = s.courses.every(isCourseEntry);
+    if (!(allStr || allEnt))
+      throw new Error('The list of courses in that file is damaged, so it has not been opened.');
+    const cids = new Set(), cnames = new Set();
+    for (const c of s.courses) {
+      const name = allEnt ? c.name : c;
+      noColon('course', name);
+      /* a course NAME may not be one the app reserves at the top level — it
+         would collide with a global on import (review CSID-08 / R3-01) */
+      if (isReservedCourseName(name))
+        throw new Error('The course “' + name + '” in that file uses a name the app reserves, so it has not been opened.');
+      if (cnames.has(name)) throw new Error('The course “' + name + '” is listed twice in that file, so it has not been opened.');
+      cnames.add(name);
+      if (allEnt) {
+        /* a v2 course id becomes a top-level storage-key segment, so it must
+           match the minted grammar — a nonempty check alone would let a
+           separator-bearing id clobber a global (review CSID-07) */
+        if (!isCourseId(c.id))
+          throw new Error('The course “' + name + '” in that file has an invalid id, so it has not been opened.');
+        if (cids.has(c.id)) throw new Error('That file lists course id ' + c.id + ' twice, so it has not been opened.');
+        cids.add(c.id);
+      }
+    }
+  }
   if (s.byCourse != null && !isPlainObject(s.byCourse))
     throw new Error('The courses in that file are damaged, so it has not been opened.');
-  (s.courses || []).forEach(c => noColon('course', c));
   for (const [course, cv] of Object.entries(s.byCourse || {})) {
+    /* a v1 byCourse key is a course NAME; a v2 key is a course ID. Refuse a
+       colon either way, a reserved NAME, and an id-shaped key that is not a
+       valid course id (so a hand-edited v2 file cannot smuggle a bad segment). */
     noColon('course', course);
+    if (isReservedCourseName(course))
+      throw new Error('The course “' + course + '” in that file uses a name the app reserves, so it has not been opened.');
     if (!isPlainObject(cv))
       throw new Error('Course “' + course + '” in that file is damaged, so it has not been opened.');
     if (cv.bySyllabus != null && !isPlainObject(cv.bySyllabus))
