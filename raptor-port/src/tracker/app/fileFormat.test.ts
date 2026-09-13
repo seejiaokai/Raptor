@@ -17,15 +17,15 @@ const people = (course: string, syl: string, who: string) => ({
 })
 const file = (parts: any): any => buildFile({ savedAt: 'x', ...parts })
 
-describe('a name with a colon is refused, naming the part (fileFormat.js)', () => {
-  it('a chart name', () => {
-    expect(() => readFile(file({ charts: chart('A:B') }))).toThrow(/chart .*“A:B”.*colon/)
+describe('colon relaxation (§8, [TRK-CSID] 1B-ii): chart/syllabus names MAY contain a colon; course names still refuse', () => {
+  it('a chart name MAY contain a colon — it is a label now, not a key segment', () => {
+    expect(() => readFile(file({ charts: chart('A/G: A/A') }))).not.toThrow()
   })
-  it('a course name', () => {
+  it('a course name is STILL refused (its id is the key segment, but reconcile shows the name)', () => {
     expect(() => readFile(file({ students: people('26:A', '2026', 'STUDENT A') }))).toThrow(/course .*“26:A”.*colon/)
   })
-  it('a syllabus name on a course', () => {
-    expect(() => readFile(file({ students: people('26ABSG', 'x:y', 'STUDENT A') }))).toThrow(/syllabus .*“x:y”.*colon/)
+  it('a syllabus name on a course MAY contain a colon', () => {
+    expect(() => readFile(file({ students: people('26ABSG', 'x:y', 'STUDENT A') }))).not.toThrow()
   })
   it('a crew member MAY contain a colon — the name is a label now, not a key (stable ids, 10 Sep 26)', () => {
     const s = people('26ABSG', '2026', 'A: B'); (s.byCourse['26ABSG'] as any).pace = { 'P:Q': {} }

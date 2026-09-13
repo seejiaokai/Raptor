@@ -32,14 +32,44 @@
    docs/superpowers/specs/2026-09-09-schema-hardening-design.md and
    docs/superpowers/sdd/2026-09-10-stable-ids/ */
 import { isCourseId, isCourseEntry, isReservedCourseName } from './courseIds.js'
+import { isSylId, isSylEntry, isBuiltinSylId, builtinSylById } from './sylIds.js'
 
 export const FILE_FORMAT = 'ocu-tracker';
-/* v2 (13 Sep 26, course ids 1B-i): `students.courses` may be the legacy string
-   list (v1, keyed by course NAME) OR { id, name } entries (v2, keyed by course
-   ID), and byCourse/links are keyed to match — never a mix. A later step
-   reconciles a file's course ids to the store's on import; this format reads
-   both. An older build reading a v2 file refuses it (version > FILE_VERSION). */
-export const FILE_VERSION = 2;
+/* v3 ([TRK-CSID] 1B-ii): syllabus IDENTITY joins course and student ids. Charts
+   (syllabi/layouts/order) and each course's bySyllabus may be keyed by syllabus
+   NAME (v1/v2) OR by syllabus ID (v3) — never a mix — and a v3 file carries a
+   `sylcat` ({id,name,base?,userNamed?}[]) giving each id its label, in the charts
+   block AND (identity-only) in the students block so a student-only export still
+   labels every id. A later step upgrades a name-keyed file and reconciles ids on
+   import; this format reads both shapes. v2 kept course ids; v3 adds syllabus
+   ids. An older build reading a v3 file refuses it (version > FILE_VERSION). */
+export const FILE_VERSION = 3;
+
+/* an identity catalogue { id, name, base?, userNamed? }[] — a v3 file's sylcat.
+   Every id must match the grammar; an sb… id must be one this app ships and its
+   base is the app's, not the file's (checked again in core); no id or name
+   twice. Named errors, before a key is written. */
+function checkSylcat(cat, where) {
+  if (cat == null) return;
+  if (!Array.isArray(cat)) throw new Error('The syllabus list in the ' + where + ' of that file is damaged, so it has not been opened.');
+  const ids = new Set(), names = new Set();
+  for (const e of cat) {
+    if (!isSylEntry(e)) throw new Error('A syllabus in the ' + where + ' of that file has no id or name, so it has not been opened.');
+    if (!isSylId(e.id)) throw new Error('A syllabus in that file has an invalid id (' + e.id + '), so it has not been opened.');
+    if (isBuiltinSylId(e.id) && !builtinSylById(e.id)) throw new Error('That file names a built-in syllabus (' + e.id + ') this app does not ship, so it has not been opened.');
+    if (ids.has(e.id)) throw new Error('That file lists syllabus id ' + e.id + ' twice, so it has not been opened.');
+    if (names.has(e.name)) throw new Error('That file lists the syllabus label “' + e.name + '” twice, so it has not been opened.');
+    ids.add(e.id); names.add(e.name);
+  }
+}
+/* keys of an id-or-name-keyed map: all ids, all names, or refuse a mix. */
+function keyShape(obj) {
+  const ks = Object.keys(obj || {});
+  if (!ks.length) return 'empty';
+  if (ks.every(isSylId)) return 'id';
+  if (ks.every(k => !isSylId(k))) return 'name';
+  return 'mix';
+}
 
 export function buildFile({ charts = null, students = null, links = null, savedAt }) {
   const out = {
@@ -82,14 +112,19 @@ function checkCharts(c) {
   if (!isPlainObject(c)) throw new Error('The charts in that file are damaged, so it has not been opened.');
   if (c.order != null && (!Array.isArray(c.order) || c.order.some(n => typeof n !== 'string')))
     throw new Error('The list of chart names in that file is damaged, so it has not been opened.');
-  (c.order || []).forEach(n => noColon('chart', n));
-  Object.keys(c.syllabi || {}).forEach(n => noColon('chart', n));
+  /* colon relaxation (§8): a chart / syllabus name is a LABEL now, not a key
+     segment, so it may contain a colon (course names keep the refusal). */
   if (c.syllabi != null && !isPlainObject(c.syllabi))
     throw new Error('The charts in that file are damaged, so it has not been opened.');
   if (c.layouts != null && !isPlainObject(c.layouts))
     throw new Error('The chart positions in that file are damaged, so it has not been opened.');
   if (c.eventInfo != null && !isPlainObject(c.eventInfo))
     throw new Error('The event details in that file are damaged, so it has not been opened.');
+  /* dual-shape (v1/v2 name-keyed OR v3 id-keyed, never a mix); a v3 file carries
+     a sylcat labelling every id (§10 / CSID2-04). */
+  if (keyShape(c.syllabi) === 'mix' || keyShape(c.layouts) === 'mix')
+    throw new Error('The charts in that file mix syllabus names and ids, so it has not been opened.');
+  checkSylcat(c.sylcat, 'charts');
   for (const [name, events] of Object.entries(c.syllabi || {})) {
     if (!Array.isArray(events))
       throw new Error('The “' + name + '” chart in that file is damaged, so it has not been opened.');
@@ -127,6 +162,7 @@ export function firstCycle(events) {
 
 function checkStudents(s) {
   if (!isPlainObject(s)) throw new Error('The people in that file are damaged, so it has not been opened.');
+  checkSylcat(s.sylcat, 'students');   /* identity-only catalogue in a v3 student export (CSID2-04) */
   /* courses: the legacy string[] (v1, name-keyed) OR { id, name } entries (v2,
      id-keyed) — one or the other, never a mix, so the reader cannot
      half-upgrade a file (mirror of the dual roster shape below). */
@@ -175,7 +211,8 @@ function checkStudents(s) {
        finding 5): a Map remembers the name each id was first seen under. */
     const idToName = new Map();
     for (const [syl, sv] of Object.entries(cv.bySyllabus || {})) {
-      noColon('syllabus', syl, ' on course “' + course + '”');
+      /* a bySyllabus key is a syllabus NAME (v1/v2) or a syllabus ID (v3); a
+         colon is allowed either way now (§8 — a syllabus name is a label). */
       if (!isPlainObject(sv))
         throw new Error('“' + syl + '” on course “' + course + '” in that file is damaged, so it has not been opened.');
       /* two roster shapes (stable ids, 10 Sep 26): the legacy string list, or

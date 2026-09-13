@@ -2336,3 +2336,18 @@ Checkpoint (tasks #59, #60 complete): no further observations.
 **Suggested improvement:** (1) writing-plans task header and every task-completion report carry one line: "Model: <x> · Thinking: <level> · Why: <one clause>" — chosen by the MODELS rule (voluminous/mechanical → Opus 4.8 default; hard-reasoning/verify → Fable high). (2) Add to CLAUDE.md § How to work here: "Compact at task boundaries. When a task is fully shipped (pushed, nothing in flight) and another is about to start, SAY 'good moment to compact' before starting the next — never mid-task. Do not compact on a fill percentage." (3) The agent should say this line proactively; the owner types /compact.
 
 **Principle:** Process choices the owner keeps asking about belong in the artefact he reads (the plan/report), not in a rule he has to remember to invoke. And the cost of compaction is measured in lost in-flight state, not in tokens — so its trigger is a state boundary, not a size threshold.
+
+### Observation 154: Match a pre-build "execution guide" pass to spec thinness, not by default
+
+**Status:** OPEN
+**Date:** 2026-09-13
+**Session context:** [TRK-CSID] 1B-ii syllabus-ids build. Owner asked, mid-build, whether Fable/Astra should first write a tighter builder-facing guide (scope, how the builder should execute, watch-areas, good-code bar) so the builder doesn't drift and the after-review is cheaper — and which option burns fewer tokens.
+**Skill:** claudex-loop (and receiving-code-review / requesting-code-review); relates to memory [[reviewer-must-give-detailed-fix-specs]]
+**Type:** internal
+**Phase/Area:** review→build handoff; cross-provider (Claude/Codex) flow
+
+**Issue:** The instinct "reviewer hands the builder an execution contract + watch-areas so the build doesn't drift" is sound, but its token economics depend on spec thickness. Here the spec was already 7-round red-teamed with exact function names, ordering, precedence and per-finding tests — so a separate pre-build guide would largely REPEAT the spec, cost an extra review round-trip, and recover little rework: net token LOSS. On a thin/vague spec the same pass is a net WIN (prevents costly drift/rework). There was no rule of thumb tying the decision to spec detail, nor a note that the cheaper substitute is (a) writing tests first + (b) reviewing the real diff, not a hypothetical plan.
+
+**Suggested improvement:** In the plan→build handoff guidance, add a decision rule: only insert a dedicated pre-build "execution contract / watch-areas / good-code bar" pass when the spec is THIN or the reviewer's fix directions were vague; when the spec is already detailed (exact symbols, ordering, tests), skip it and rely on test-first + one review of the real diff. When a pre-build guide IS wanted, route it to the token-cheaper / non-scarce provider (here Astra/Codex, preserving the scarce Fable budget per [[prefer-codex-for-bug-checks-fable-scarce]]). Have the builder self-author a lightweight build-contract inline (free) instead of commissioning a provider round-trip.
+
+**Principle:** A review artifact's value is marginal over what the plan already carries; a pre-build execution guide pays off in inverse proportion to how specific the approved spec already is. Reviewing real code beats reviewing a hypothetical plan, and tests-first is the cheapest anti-drift mechanism. Choose the anti-drift instrument by the gap it actually closes, and by which budget it spends.
