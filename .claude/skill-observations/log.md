@@ -2396,3 +2396,18 @@ Checkpoint (tasks #59, #60 complete): no further observations.
 **Suggested improvement:** In the claudex-loop / codex-review skill, add a one-line role table at the invocation point: "to get a CODEX review, run `--host claude`; to get a CLAUDE review, run `--host codex` — `--host` is the coordinator, the reviewer is the other provider." Note that a review that returns in a few seconds almost certainly failed (wrong CLI/model/flags), and that runner exit 0 ≠ APPROVED — always read `result.json`'s `verdict`.
 
 **Principle:** Name the axis explicitly when a flag's plain reading inverts its effect; and treat suspiciously fast tool completions as failure signals, not success.
+
+### Observation 158: Migration review — diff legacy-pref folds against the OLD reader, not the identity model
+
+**Status:** OPEN
+**Date:** 2026-09-14
+**Session context:** Fable independent bug-check of the [TRK-CSID] 1B-ii syllabus-id migration (PR #400) after five Codex rounds
+**Skill:** code-review / claudex-loop:codex-review (review methodology)
+**Type:** open-source
+**Phase/Area:** reviewing a data migration that re-keys persisted prefs (hidden/tombstone/order) through a name→id resolver
+
+**Issue:** Five prior review rounds validated the migration against the spec's identity model (alias → built-in id) and missed that the OLD app never canonicalised hidden/tombstone NAMES through the shipped alias table — it filtered canonical names only. So folding an alias-era hidden/tomb entry onto the built-in id changes observable state: a chart the user could see before the upgrade is hidden and stamped deleted after it. The same blind spot let a custom chart stored under a deleted built-in's name become that built-in's hidden override. Both were found only by reading the pre-change reader (git show of the parent commit) and re-running the exact legacy seed through the new migration in a throwaway test.
+
+**Suggested improvement:** For any migration/re-keying review, add an explicit step: for every legacy pref or store the converter reads, open the PRE-change code that READ it and write down what the old app actually did with each shape (esp. stale/alias/tombstoned names); the observable pre-upgrade state is the contract, not the spec's ideal model. Then seed those exact shapes in a throwaway test and assert the post-upgrade visible set equals the pre-upgrade visible set.
+
+**Principle:** A data migration must preserve what the old READER showed, not what the new identity model says the data meant; review it by diffing old-reader behaviour against new-converter output on the same seed.
