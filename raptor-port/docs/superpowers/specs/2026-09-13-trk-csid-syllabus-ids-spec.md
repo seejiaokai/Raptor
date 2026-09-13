@@ -1,6 +1,7 @@
 # [TRK-CSID] Phase 2 — stable hidden ids for Tracker SYLLABUSES (spec)
 
-**Status:** REV 1 — pre-red-team draft · 13 Sep 26 · awaiting Astra R1
+**Status:** REV 2 — Astra R1 dispositions folded in (§14 is BINDING and supersedes
+any earlier clause it touches) · 13 Sep 26 · awaiting Astra R2
 **Part of:** `[ARCH-STACK]` step 1 (stable ids everywhere) · `[TRK-CSID]` 1B-ii
 **Predecessor:** Phase 1 — COURSE ids (`2026-09-13-trk-csid-course-ids-spec.md`,
 4-round Astra red-team, APPROVED, LIVE). This phase MIRRORS its shape; where a
@@ -410,3 +411,203 @@ Plus `smoke:tracker` green (CI arbiter). Full gate set once before the PR.
 re-binds to the new SHA, as Phase 1 did (R1→R4). Then build on Opus 4.8 high,
 test-first; Fable-high inspects the built diff; full gates; push + Vercel; HOLD for
 "merge live".*
+
+---
+
+## 14. R1 — Astra (Codex GPT-6, high) red-team dispositions & BINDING revisions
+
+Astra R1 verdict **REVISE** — 10 findings (5 HIGH + 5 MEDIUM), every one
+evidence-backed and confirmed against the real code by the host. **All 10 ACCEPTED.**
+This section is authoritative where it conflicts with §§1–13. Plan SHA reviewed:
+`fcd780f5…`. (Session `01a09b03-e6f7-78c3-82a7-6c97e8295077`.)
+
+The findings cluster on four things §§1–13 under-specified: (i) the in-place KEEP
+rewrite is not safely resumable; (ii) KEEP must collect MORE legacy chart sources,
+and MERGE aliases that collapse onto one id without data loss; (iii) the file/import
+identity path needs one normalize + one whole-file reconcile, and an
+always-present identity catalogue; (iv) deterministic ids still need a boot
+reconcile and a defined delete/restore semantics. Binding fixes below.
+
+### CSID2-01 (HIGH — KEEP in-place rewrite is not resumably self-describing) — ACCEPT, REDESIGN §5.2 RESUMABILITY.
+Phase 1 was safe because `COURSES` carries `{id,name}` — a half-done index is
+self-describing. Re-keying `v3:master:syls`/prefs/layout **in place** to id-only
+loses the name, so a retry that re-reads `Object.keys(syls)` sees ids and
+mis-treats them as names (and an id-shaped legacy name defeats regex detection).
+**Binding fix — drive every conversion off a durable, self-describing map; never
+re-discover from mutated stores:**
+- **Discovery runs ONCE (fresh run only).** Assemble the name set (§5.2 step 1) only
+  when `kSylIdMap` is absent. Write the full **name→id map** to `kSylIdMap` and read
+  it back before moving anything (mirror `migrateCourseIds`). Also write the
+  **`v3:master:sylcat` `{id,name,base?}[]` index** at this point as the durable,
+  self-describing source of truth (it carries BOTH id and name, so a resumed run is
+  never ambiguous).
+- **A resumed run (map present) drives off the map/sylcat, NOT off re-reading `syls`.**
+  Each in-place object conversion is idempotent by construction: for `syls` and each
+  pref, rebuild the id-keyed object from `(name→id map) × (whatever the source holds,
+  under name OR id)`, so running it twice is a no-op. A key already in id form is left.
+- **`plan.sylId` already written is preserved** — the plan conversion (§5.3) checks
+  for an existing `sylId` before mapping `sylName`.
+- **Two flags, KEEP then RESET.** Split the one-shot flag into `kSylCatMig`
+  (catalogue converted + verified) and `kSylReset` (student layer cleared). KEEP sets
+  `kSylCatMig` after the catalogue verifies; RESET sets `kSylReset` after the sweep.
+  A KEEP that verified is never redone if RESET later fails; boot is "ready" only when
+  both are set (else fail-closed retry). (Answers §13 Q2.)
+- Tests add: interrupt after each in-place rewrite, after KEEP-completes-RESET-fails,
+  and an id-shaped legacy syllabus name.
+
+### CSID2-02 (HIGH — KEEP omits legacy chart layout + definition sources the loader still adopts) — ACCEPT, MUST FIX (this is the "lose a hand-drawn chart" risk).
+`loadLayout` (`core.js:292–296`) adopts `v3:lay:SYLLABUS EDIT:<name>` and
+`v3:lay:<courseId>:<name>` as chart layouts; `loadCourse` (`core.js:802–811`) adopts
+the single legacy definition `v3:<courseId>:syl` when `plan.custom`. §5.2 collected
+neither, so a course never opened through those paths could **lose its hand-drawn
+layout or definition** on conversion — the exact thing the owner's "keep charts"
+decision must not do. **Binding fix — KEEP collects ALL chart sources before
+retiring any loader:**
+- **Definitions**, precedence highest-wins, per syllabus id: `v3:master:syls[name]` →
+  legacy master `v3:SYLLABUS EDIT:syls[name]` → per-course own `v3:<courseId>:syls[name]`
+  → the `plan.custom` single `v3:<courseId>:syl` (converted to its own catalogue entry).
+- **Layouts**, precedence per syllabus id: `v3:master:lay:<name>` → legacy master
+  `v3:lay:SYLLABUS EDIT:<name>` → per-course `v3:lay:<courseId>:<name>`.
+- Fold into the id-keyed catalogue/layout FIRST, verify, and only THEN purge the
+  legacy source keys. `plan.custom` is cleared only after its def is safely an entry.
+- Tests add: a chart whose only layout/def is under each legacy namespace survives.
+
+### CSID2-03 (HIGH — aliases collapse onto one id with no merge/collision policy) — ACCEPT, MUST FIX.
+Historical aliases (`'FG JUL 26'`,`'Default July 26'`) and the canonical name all map
+to one built-in id, but §5.2 had no policy for their competing definitions, layouts,
+labels, hidden/tomb state — and the inherited `moved()` **deletes a source whenever
+the destination is non-empty, without checking equal content** (`core.js:671–675`), so
+two different layouts collapse by enumeration order; and "one catalogue entry per
+discovered name" mints **duplicate entries** for one id. **Binding fix:**
+- **Group sources by TARGET id before writing** (never a blind prefix-move for the
+  many-to-one built-in case). Deduplicate catalogue entries: exactly one `{id,name,base}`
+  per id.
+- **Canonical precedence among alias sources:** the canonical shipped name's records
+  win, then aliases in the code table's declared order; the winner's label is the
+  entry `name`.
+- **Never delete a DIFFERING source because its destination exists.** For a
+  many-to-one merge, only the chosen winner is written; losing sources are deleted
+  only if byte-equal to the winner, else **retained as a recovery copy and the boot
+  fails closed** with a diagnostic (do not silently drop a user's differing layout).
+- Distinguish a stale alias record from an **independent custom chart that merely uses
+  an old shipped name as its typed name** — the latter is NOT a built-in (it has a
+  custom def and no built-in provenance), so it takes a minted `sc…`, not the built-in id.
+- Tests add: a store holding both `'FG JUL 26'` and `'2026'` layouts (differing) →
+  fail-closed, nothing deleted; a custom chart literally named `'FG JUL 26'` → its own
+  `sc…` id.
+
+### CSID2-04 (HIGH — student-only / partial exports carry no syllabus labels) — ACCEPT, MUST FIX (file format).
+Labels lived only in `charts.sylcat`, but student-only export (charts OFF, students
+ON, `core.js:3983–3998`) and `collectStudents` export all courses/syllabuses
+independently of chart selection — so a v3 student-only file's custom syllabus id can
+never reconcile by name at the destination. **Binding fix:** the file carries an
+**always-present, identity-only syllabus catalogue** `students.sylcat`
+(`{id,name,base?}[]`, definitions-free) covering **every syllabus id referenced by any
+exported `bySyllabus` block or `plan.sylId`**, emitted in student-only and
+partial-chart exports too. `charts.sylcat` (when charts are present) may carry the
+richer entries; `reconcileSylIds` reads whichever catalogue is present. Import
+**validates reference completeness** (every referenced id has a catalogue entry) and
+**defines the absent-chart case:** importing students for a custom syllabus not at the
+destination and not in the file's charts is **refused with a named message** (no
+unreachable records written). Tests add: student-only round trip reconciles by name;
+a student block referencing an uncatalogued id is refused.
+
+### CSID2-05 (HIGH — import upgrade mints twice; per-chart reconcile can't reserve across the file) — ACCEPT, MUST FIX (import architecture).
+`importClick` calls `describeFile` (→`readFile`, `core.js:4029`) then `readFile` again
+(`4032`); if the name→id upgrade mints inside `readFile`, the display list and the
+applied charts get **different ids** for the same legacy custom chart, and
+`applyCharts` can't find it. The per-name apply loop (`4034–4053`) also can't enforce
+§10's whole-file target reservation. **Binding fix — normalize once, reconcile once:**
+- `readFile`/`describeFile` are **pure and never mint** (they read + validate only,
+  accepting name- or id-keyed shapes).
+- `importClick` runs a **single `normalizeImport(obj)`** step that upgrades name→id
+  (minting once for legacy customs), then computes **one complete `reconcileSylIds`
+  map across the whole file** (built-ins by deterministic id; customs by name, store
+  id wins; whole-file target reservation; conflicts → refuse). Every later step —
+  the display/duplicate list, replace vs add-as-new, `applyCharts`, `applyStudents`
+  plan pointers — consumes THAT one normalized+reconciled result.
+- **Add-as-new mints a fresh `sc…` identity** and its imported students (if any) are
+  attached to that new id, not the source id.
+- Tests add: a legacy custom chart imports and is found by apply (one id end to end);
+  two file charts that would reserve the same store id are handled by the one map.
+
+### CSID2-06 (MEDIUM — deterministic ids still require a boot-time catalogue reconcile) — ACCEPT, ADD §5a BOOT RECONCILE.
+Deterministic ids remove minting/matching for built-ins but NOT catalogue
+maintenance: after the one-shot migration the persisted `sylcat` lacks a
+newly-shipped built-in; a stored `base` can name a `SYLLABI` key removed by a shipped
+rename (→ `sylSource` returns nothing); and shipped label changes must not clobber a
+user relabel. **Binding fix — a boot reconcile (`reconcileBuiltins()`), idempotent,
+runs every boot after the catalogue loads AND inside `reloadFromStore`:**
+- **Add** each shipped built-in (canonical id from the `BUILTIN_SYL` table) that has
+  no `sylcat` entry and is not tombstoned.
+- **Repoint `base`** to the canonical shipped key when the stored `base` is now only
+  an alias-source (shipped rename), so `sylSource` keeps resolving.
+- **Provenance for labels:** the entry carries `userNamed:true` once a user renames it;
+  `reconcileBuiltins` updates the label from the shipped name only when `!userNamed`.
+- Never mints (built-in ids are deterministic); never touches custom entries.
+- Tests add: a newly-shipped built-in appears after migration; a shipped rename keeps
+  the id + repoints base; a user-renamed built-in is not relabelled by a shipped change.
+
+### CSID2-07 (MEDIUM — plan legacy student-fallback fields re-seed cleared state) — ACCEPT, MUST FIX.
+`loadStudent` (`core.js:940–942`) seeds a student lacking a per-student record from
+`plan.lulls` / `plan.epw` / `plan.target` / `plan.target2`, so after RESET a reseeded
+or newly-added student **inherits supposedly-cleared scheduling state**. **Binding
+fix — RESET zeroes the legacy fallbacks on each course's plan:** `plan.lulls = []`,
+`plan.target = null`, `plan.target2 = null`; keep `plan.epw` at the default (2) as a
+genuine course pace default (documented), or reset it too — RED-TEAM R2 which. Drop
+`plan.__oldSyl`. Test: add a student after conversion + reload → no inherited
+lulls/targets.
+
+### CSID2-08 (MEDIUM — deleted built-in records are not inert; restore/import reattaches them) — ACCEPT, DEFINE DELETE = SWEEP.
+With a deterministic id, a deleted-then-restored built-in reuses the same id and
+reconnects old roster/marks/dates; import un-tombs an id (`core.js:3782–3783`);
+`storeSylNames` includes hidden built-ins so `readCourseBlock`/`findEnrolment` still
+see retained enrolments. **Binding fix — deletion is a real sweep (matches today's
+`moveSylData(nm,null)` and the delete confirmation "removes … every student's marks
+on it, in every course"):** `delSyl` sweeps `v3:<courseId>:<sylId>:roster|m:*|d:*`
+across ALL courses (bounded `storage.list()` scan), then tombs the id. **HIDDEN ≠
+DELETED:** a hidden built-in keeps its records (it is only hidden, still exported/
+matched); a **tombstoned** id has none (swept) and `reconcileBuiltins` never re-adds
+it. This also disposes of the orphan-record open questions (§13 Q3): delete sweeps;
+`dupSyl`'s copy legitimately starts with an empty student layer. Tests add: delete a
+built-in with marks → records gone in every course; restore it → comes back empty
+(shipped def, no marks); hidden built-in keeps its records.
+
+### CSID2-09 (MEDIUM — OrdModalInner syllabus mode / hidden-restore / tag need id adaptation) — ACCEPT, CORRECT §9.
+`Modals.jsx:233` filters shipped NAMES through `isHidden` (finds no hidden ids);
+`235–237` passes a NAME to `restoreHiddenSyl` and appends it to a names list; the
+syllabus-tag callback (`:205`) passes names to `builtinOf` / indexes `CUSTOMS` by name.
+**Binding fix:** the reorder list may still present labels, but syllabus-mode hidden
+enumeration, restore and tagging switch to ids — enumerate hidden catalogue/table
+entries by id, resolve visible labels→ids for `builtinOf`/`sylSource`, pass **ids** to
+`restoreHiddenSyl`, and append the entry's **display label** to the modal list; handle
+a label collision when restoring (two entries sharing a label). Confirm against the
+real `Modals.jsx` at build. (Supersedes §9's "shared component needs no change.")
+
+### CSID2-10 (MEDIUM — colon relaxation misses the import "Add as new" path) — ACCEPT, MUST FIX.
+`importClick` still calls `refuseColon(to)` (`core.js:4050`). **Binding fix:** drop the
+syllabus colon refusal there too (keep the blank/duplicate-label checks). Add §8 to
+the list; test the Add-as-new dialog path, not only file validation and rename.
+
+### Net effect on §§1–13
+- §5.2 rewritten per CSID2-01 (discover-once + durable self-describing map/sylcat,
+  two flags), CSID2-02 (collect all legacy layout/def sources, verify-then-purge),
+  CSID2-03 (group-by-target, precedence, never-delete-differing, dedupe entries).
+- **New §5a** boot reconcile (`reconcileBuiltins`, also in `reloadFromStore`) per
+  CSID2-06 — design A (deterministic ids) STANDS, with this reconcile.
+- §5.3 RESET zeroes `plan.lulls/target/target2` (CSID2-07).
+- §6 `delSyl` = sweep-then-tomb; hidden≠deleted (CSID2-08).
+- §9 OrdModal syllabus-mode/hidden/restore/tag id-adapted (CSID2-09).
+- §8 colon relaxation includes the import Add-as-new path (CSID2-10).
+- §10 file: `sylcat` is an always-present identity catalogue (student-only too,
+  CSID2-04); one `normalizeImport` + one whole-file `reconcileSylIds`, `readFile`
+  pure/non-minting (CSID2-05).
+- §12 tests extended per every disposition above.
+
+### Round 2
+These revisions are a changed plan → **re-review by Astra required** (approval binds to
+the new SHA). Open for R2: (a) the two-flag KEEP/RESET split + discover-once
+resumability — airtight, or any residual re-discovery path? (b) the group-by-target
+merge's fail-closed-on-differing-source — right call, or too aggressive? (c) reset
+`plan.epw` too, or keep as a course default? (d) any remaining file/import path where
+a syllabus id is minted or reconciled more than once.
