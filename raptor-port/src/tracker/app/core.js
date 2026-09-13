@@ -803,6 +803,13 @@ async function buildSylJournal() {
   const layoutSrcById = Object.create(null); // id → source key the layout came from
   const addCat = (id, name, base) => { if (catById[id]) return catById[id]; const e = { id, name }; if (base) e.base = base; catById[id] = e; sylcat.push(e); return e; };
 
+  /* EVERY shipped built-in is in the catalogue (§5.2 step 1) — even one no data
+     references yet — so a fresh store's index is complete without waiting for the
+     boot reconcile. A built-in the user had DELETED (its name in the legacy
+     syltomb pref) is left out and stays tombstoned (hidden ≠ deleted). */
+  const tombNames = Object.keys(sParse(await sGet(kSylTomb()), {}, 'object') || {});
+  for (const b of BUILTIN_SYL) { idByName[b.name] = b.id; if (tombNames.indexOf(b.name) < 0) addCat(b.id, b.name, b.name); }
+
   /* definitions, precedence highest-first: master → legacy master → per-course
      own → the plan.custom single legacy def (§14 CSID2-02) */
   const defByName = Object.create(null);
@@ -858,7 +865,7 @@ async function buildSylJournal() {
   /* prefs (name-keyed pre-mig) */
   const orderNames = sParse(await sGet(kSylOrder()), [], 'array').filter(x => typeof x === 'string');
   const hiddenNames = sParse(await sGet(kSylHidden()), [], 'array').filter(x => typeof x === 'string');
-  const tombNames = Object.keys(sParse(await sGet(kSylTomb()), {}, 'object') || {});
+  /* tombNames already read above (built-in seeding) */
 
   /* discover every remaining name (prefs, layouts, plan pointers) so an id is
      assigned (or the name is knowingly dropped) before anything is written */
@@ -950,10 +957,15 @@ async function applyResetJournal(j) {
     for (const k of ((await storage.list(pre)).keys || [])) {
       const rest = k.slice(pre.length), i = rest.indexOf(':'); const seg = i > 0 ? rest.slice(0, i) : rest;
       const tail = i > 0 ? rest.slice(i + 1) : '';
-      /* student-layer keys only — never plan / the flags themselves */
-      if ((isSylId(seg) && (tail === 'roster' || tail.startsWith('m:') || tail.startsWith('d:')))
+      /* the whole student layer, under ANY middle segment (name OR id — §5.3):
+         per-(course,syllabus) roster/marks/dates, plus the course-level flat
+         roster, lulls, pace, last, lastStudent and the legacy per-course dates.
+         NEVER the plan or the flags, and never a legacy DEF key (v3:c:syl /
+         v3:c:syls — those are the KEEP half's to purge). */
+      if (seg === 'plan' || seg === 'rostermig' || seg === 'idmig' || seg === 'idmap' || seg === 'syl' || seg === 'syls') continue;
+      if (tail === 'roster' || tail.startsWith('m:') || tail.startsWith('d:')      /* v3:c:<seg>:roster|m:*|d:* */
         || seg === 'roster' || seg === 'lulls' || seg === 'pace' || seg === 'last' || seg === 'lastStudent'
-        || tail.startsWith('d:') /* legacy per-course dates v3:c:d:* */) await delKey(k);
+        || seg === 'd') await delKey(k);                                            /* legacy flat dates v3:c:d:* */
     }
     /* the plan: keep mode + epw (a genuine course pace default), zero lulls /
        targets, point at the mapped syllabus id, drop the legacy fields */
