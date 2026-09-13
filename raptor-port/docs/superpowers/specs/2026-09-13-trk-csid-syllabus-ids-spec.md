@@ -1,8 +1,8 @@
 # [TRK-CSID] Phase 2 — stable hidden ids for Tracker SYLLABUSES (spec)
 
-**Status:** REV 6 — Astra R1–R5 dispositions folded in (§14–§18 are BINDING and
-supersede any earlier clause they touch) · 13 Sep 26 · awaiting Astra R6 (one round past
-the default cap; see §18 host note)
+**Status:** REV 7 — Astra R1–R6 dispositions folded in; §19 records the OWNER GUARDRAIL
+decision that closes the legacy-marks-import corner (§14–§19 are BINDING and supersede
+any earlier clause they touch) · 13 Sep 26 · awaiting Astra R7
 **Part of:** `[ARCH-STACK]` step 1 (stable ids everywhere) · `[TRK-CSID]` 1B-ii
 **Predecessor:** Phase 1 — COURSE ids (`2026-09-13-trk-csid-course-ids-spec.md`,
 4-round Astra red-team, APPROVED, LIVE). This phase MIRRORS its shape; where a
@@ -947,3 +947,70 @@ Changed plan → **re-review by Astra** (approval binds to the new SHA). R6 conf
 3 fixes; on APPROVED the plan is ready to build. If R6 still returns material findings,
 the host stops and presents them to the owner with a recommendation rather than
 extending indefinitely.
+
+---
+
+## 19. R6 — Astra dispositions + the OWNER GUARDRAIL DECISION (BINDING)
+
+Astra R6 verdict **REVISE** — 2 findings (1 HIGH + 1 MEDIUM), both confirmed, both again
+in the ONE corner every round since R4 has probed: **importing an OLDER (name-keyed)
+backup's student MARKS.** Plan SHA reviewed: `a8e74363…`. (Session
+`01a09b20-da93-73e2-9d4b-a75171185b71`.) The core architecture has been stable and
+unchallenged since REV 3; the cascade is confined to legacy-student reconciliation.
+
+Per the "when bugs cluster on one feature, question the feature" doctrine
+(`prefer-guardrail-over-bug-cascade`), the host stopped and put the scope choice to the
+owner. **Owner decision (13 Sep 26): add the GUARDRAIL — do NOT keep hardening
+legacy-marks import.** This §19 is authoritative and supersedes any earlier clause it
+touches.
+
+### The guardrail (BINDING)
+- **Charts import from ANY backup** (v1/v2/v3), exactly as today — the owner's charts-only
+  backup and all chart sharing are unaffected. Chart identity is resolved by CLASSIFY
+  (§17) + `reconcileSylIds` for v3, or minted/name-reconciled for v1/v2 charts.
+- **Student MARKS / dates / rosters and `plan` pointers import ONLY from an id-native v3
+  file that carries a `sylcat`.** A pre-v3 file's student blocks (name-keyed
+  `bySyllabus`), or ANY student/plan reference whose syllabus id does not resolve to an
+  existing id-native identity (a `sylcat` entry reconciled via §15 union, or an exact
+  destination id), is **REFUSED** — the student import is turned away with a clear,
+  plain message (charts, if any, still import): *"These student marks were saved by an
+  older version and can't be brought in safely. Import the charts, then re-enter marks —
+  or export a fresh backup from the current app and import that."*
+- **No historical-alias→built-in fallback in the FILE path, ever** (this removes §17/§18
+  RESOLVE step (3) from import): the file path never guesses a built-in for a name-only
+  reference. That fallback survives **only in STORE migration**, where complete source
+  discovery + a stored definition give positive evidence (§16/§17 CLASSIFY/RESOLVE for
+  the in-store KEEP half).
+- Because legacy name-keyed student blocks are refused, **legacy MARK event-id
+  translation is NOT needed anywhere** (R6-02 is dissolved, not patched): store marks are
+  RESET (§5.3), not migrated; file legacy marks are refused. Legacy **layout** event-id
+  translation (§17 CSID2-R4-02, §18 CSID2-R5-03 incl. `__font`) STILL applies to the KEEP
+  half's layout folds — layouts are the hand-drawn work being preserved.
+
+### Disposition of the R6 findings under the guardrail
+- **CSID2-R6-01 (HIGH — absent-custom alias fallback writes to the built-in):** RESOLVED
+  by the guardrail — the file path has no alias→built-in fallback and refuses an
+  unresolved name-only student reference instead of writing it to the built-in.
+- **CSID2-R6-02 (MEDIUM — legacy mark event-keys untranslated):** DISSOLVED — legacy
+  name-keyed student blocks are refused, so their marks are never written; there is no
+  in-store mark migration (marks reset). No mark translation path exists to be wrong.
+
+### Net effect on §§1–18
+- **§10 / §15 / §17 / §18 import:** add the guardrail — student/plan import requires v3
+  id-native identity (a `sylcat`); pre-v3 or unresolved student blocks are refused with a
+  plain message; charts import from any version.
+- **§17 / §18 RESOLVE step (3)** (historical-alias→built-in fallback) is **removed from
+  the file path**; it remains STORE-migration-only.
+- **Legacy MARK event-id translation** is struck from scope (R6-02 dissolved); legacy
+  **LAYOUT** translation (`padId`/`SPECIAL`, incl. `__font`) stays for the KEEP-half
+  layout folds.
+- §12 tests: replace the legacy-marks-import cases with **guardrail** cases — a pre-v3
+  student file is refused (charts still import), a v3 student file round-trips, an
+  unresolved v3 student reference is refused; keep the KEEP-half layout-translation tests
+  (incl. `IEPE`/`T-9`/`__font`, interrupted replay).
+
+### Round 7
+Changed plan → **re-review by Astra** (approval binds to the new SHA). The guardrail
+removes the root of the R4–R6 cascade rather than patching its latest facet; R7 confirms
+it and looks for any remaining defect OUTSIDE the now-closed legacy-marks-import corner.
+On APPROVED the plan is ready to build.
