@@ -39,15 +39,21 @@ build; keep the amendment (the main project) unblocked; leave feature-ish and
 future-milestone work last.
 
 1. **[AMEND]** — the main project. Decisions resolved; brief re-frozen & re-reviewed;
-   **CORE now building** on `claude/amendment-engine-core` (the end-of-day feature is
-   split out to **[EOD]**). **[BUG2]** folds in here.
-2. **[EOD]** — the end-of-day feature split out of [AMEND]; design-first follow-on,
+   **CORE built + round-3 in progress** on `claude/amendment-engine-core`. **[BUG2]**
+   folds in here.
+2. **[SYNC-INTEG]** — the active round-3 continuation: Leave War/inputs delete-undo
+   data-integrity + permission fixes. **Phase 1 building next (before-live), Phase 2
+   (undo done right) straight after.** Highest active priority alongside [AMEND].
+3. **[EOD]** — the end-of-day feature split out of [AMEND]; design-first follow-on,
    after the core lands.
-3. **[OIL]** — depends on [AMEND]; do straight after.
-4. **[TRK-CSID]** — next Tracker stable-ids step; independent, medium, not urgent.
-5. **[TRK-ATTEMPTS]** — small new feature, low urgency.
-6. **[DB-STEP]** — the future database milestone; **[TRK-DISK]** (Decision A) is
-   fixed inside it.
+4. **[OIL]** — depends on [AMEND]; do straight after.
+5. **[TRK-CSID]** / **[INP-CSID]** — the stable-id work (Tracker courses/syllabuses;
+   schedule personal inputs); independent, medium, not urgent.
+6. **[TRK-ATTEMPTS]** — small new feature, low urgency.
+7. **[RECALL]** / **[XWEEK-UNDO]** — future features (fresh recall from archive;
+   cross-week snap-to-page undo); design when reached.
+8. **[DB-STEP]** / **[XFER]** — the future database milestone and multi-squadron
+   transfer; **[TRK-DISK]** (Decision A) is fixed inside [DB-STEP].
 
 *(Done 12 Sep 2026: **[TRK-IMPORT]** and **[TRK-LEDGER]** — both merged live; see Done.)*
 
@@ -70,6 +76,19 @@ One line each, no jargon:
 - **[BUG2] — Double-check one suspected bug.** A reopen button might act on the wrong
   version while you're viewing history — Astra thinks it may not actually happen.
   Quick check, folded into the amendment work.
+- **[SYNC-INTEG] — Make deletes and undo behave sensibly for leave.** Deleting a leave
+  should clear it everywhere and stick; undo should cleanly put it back; the "clear old
+  data" button must never wipe leave or change leave balances; and a member must not be
+  able to undo an admin's decisions. Full context in the sync spec (13 Sep 26).
+- **[RECALL] — Bring a posted-out person back, fresh.** When someone leaves the whole app
+  and returns, they come back with new quals and new leave balances (past kept as record) —
+  not their old ones. Future feature.
+- **[XWEEK-UNDO] — Undo across weeks.** If you undo something on a week you're not viewing,
+  the app takes you to that week and shows what changed. Future.
+- **[XFER] — Move a person to another squadron, data intact.** In the multi-squadron future,
+  transferring someone carries all their data across (unlike leaving the system, which resets).
+- **[INP-CSID] — Give leave/personal inputs a permanent hidden tag.** Like schedule rows and
+  students already have, so two look-alike entries can't cross when one is deleted.
 - **[TRK-CSID] — Give courses and syllabuses a permanent hidden tag.** Students and
   schedule rows already have one (so they survive being moved or renamed); courses
   and syllabuses don't yet, so renaming one is riskier. Medium job, not urgent.
@@ -151,6 +170,51 @@ published version and sweeps it away — correct for a **future** day, wrong for
 Astra says the original Bug 2 may **not** reproduce (EditWeek `ed=false`; SchedBoard
 `pv=true` → no controls emitted). Verify; keep the defensive handler guards.
 - **Model:** Fable, high — short, focused verification.
+
+### [SYNC-INTEG] Leave War ↔ inputs delete/undo integrity — Phase 1 building next (part of [AMEND] round 3)
+A read-only cross-provider audit (Codex + Fable, 13 Sep 26) of DELETE/UNDO across the
+Leave War ↔ inputs ↔ documents seams found a family of data-integrity + permission
+issues. **All decisions, findings and the fix plan are recorded in**
+`raptor-port/docs/superpowers/specs/2026-09-13-sync-delete-undo-integrity-spec.md`.
+- **Phase 1 (before-live, build first):** provenance-aware war-side delete; medical
+  member-filed only; Leave War undo permission gate; Clear-old-data guard (never touch
+  leave or balances); fix the false-green test; Quals ✕ confirm; doc fix.
+- **Phase 2 (closely following):** the undo-family fixes + per-week undo that survives
+  navigating away and back (session-scoped, per-user, forward-compatible with the future
+  multi-user undo rules).
+- **Model/process:** HEAVY. Spec → Astra red-team → Astra build → Opus inspect + gates →
+  one Fable-high verify on the data-loss/permission fixes → hold for "merge live".
+- **Context:** the spec/record above (per-finding mechanisms, dispositions, fix specs).
+
+### [RECALL] Fresh recall from archive — FUTURE FEATURE
+An admin recalls an archived person back into Quals. **Behaviour (owner, 13 Sep 26):**
+leaving the whole app SYSTEM then being posted back = **FRESH** — new/updated quals and
+new Leave War balances; only past history stays frozen. NOT "restored exactly as they
+left." Replaces the current Quals ✕ / "Restore exactly" behaviour (see [SYNC-INTEG] P6).
+- **Context:** the sync spec §Parked; memories `multi-squadron-and-person-transfer`,
+  `future-undo-semantics-multiuser`.
+
+### [XWEEK-UNDO] Cross-week "snap-to-page" undo — FUTURE FEATURE
+**Behaviour (owner, 13 Sep 26):** undoing something not on the current page snaps you to
+that week and shows what the undo did. Builds on Phase 2's per-week persistent undo.
+Future multi-user rules: undo is scoped to the login SESSION (logout clears it), never
+affects another user, but others see every change live from the shared DB.
+- **Context:** the sync spec §Parked; memory `future-undo-semantics-multiuser`.
+
+### [XFER] Multi-squadron + transfer a person with their data — FUTURE MILESTONE (with [DB-STEP])
+**Behaviour (owner, 13 Sep 26):** many squadrons on one app / one backend; transferring a
+person BETWEEN squadrons carries ALL their data across (quals, history, leave) — distinct
+from leaving the system entirely, which is a fresh return. The identity model must let one
+person move between squadrons with data intact.
+- **Context:** memory `multi-squadron-and-person-transfer`; ties to
+  `docs/architecture-direction.md` and [DB-STEP].
+
+### [INP-CSID] Stable ids for personal inputs — OPEN (rides the stable-id work)
+Two inputs that share the content key `inpKey` can cross filing/deletion — deleting one can
+remove the other's landing. Give inputs a stable hidden id (sibling of the schedule `rid`
+and the Tracker [TRK-CSID] work) so filing/accept/delete address identity, not a shared
+content key.
+- **Context:** the sync spec, finding J (`DU-007`).
 
 ### [TRK-CSID] Give courses & syllabuses their own hidden ids — OPEN (medium)
 Students and schedule rows now carry stable hidden ids (rename/reorder-safe);
