@@ -71,3 +71,13 @@ Dispositions:
 - Codex SID-IR-03 (seed note ids minted at boot, not fixed in the literal): spec §2.3 reconciled — mirrors the rid convention; pristine-navigation id stability is a rid-system-wide step-2 concern.
 - Codex SID-IR-04 / Fable #4 (missing regressions; weak note pins): ADDED — note-identity-through-template (SID-03/04), reload-landing pin, cross-week refusal pin; persist.test note pins use mkNote + noteText.
 Both providers confirmed clean: no content-key action address left, every note reader via noteText, rid sharing safe on copy, reset stamp-last/verified, twins/idempotency, parity, deterministic elogGroups.
+
+## Pushed + gate verdict (13 Sep 26)
+Pushed 156ee39..79669d2 → PR #396, Vercel preview:
+https://raptor-git-claude-amendment-engine-core-kai-e2f5.vercel.app
+Gates: unit 4648/4648, build clean, parity 728/0. Browser gates: 2 e2e failures
+(board brief-inline geometry; LW touch-sheet) + the Tracker addStudent smoke are
+ALL PRE-EXISTING/flaky — proven identical on the pre-1A base commit (156ee39):
+e2e fails the same 2 on base; smoke flakes on base too (run1 426/0, run2 260+timeout,
+the documented slow-runner addStudent race). Reset ruled out (disabling it changed
+nothing). None are caused by 1A. HELD for owner "merge live".
