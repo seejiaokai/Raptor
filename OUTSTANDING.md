@@ -32,11 +32,17 @@ tricky design call → **Fable 5.1, high**; mechanical / low-risk → a cheaper 
 
 ---
 
-## Priority — logical order (updated 12 Sep 2026)
+## Priority — logical order (updated 13 Sep 2026)
 
-Land what's **cheap, done, or in-flight and risk-reducing** before the big blocked
-build; keep the amendment (the main project) unblocked; leave feature-ish and
-future-milestone work last.
+**NEW backbone (owner, 13 Sep 26): [ARCH-STACK]** — a whole-app architectural review (both
+providers) reframed much of the backlog as ONE ordered stack (stable ids → one write/command
+layer → global undo → one-Absence-record → storage door/DB → remove quarantine). Owner's rule:
+**fix the architecture first, then individual bugs.** `[GLOBAL-UNDO]`, `[INP-CSID]`, `[TRK-CSID]`,
+`[DB-STEP]` are STEPS of it. The immediate next build is **stable ids (step 1)** — cheap,
+independent. STOP: interim two-system undo patches + further quarantine rounds.
+
+Below is the older item ordering (kept for the non-stack items); land what's **cheap, done, or
+in-flight and risk-reducing** first.
 
 1. **[AMEND]** — the main project. Decisions resolved; brief re-frozen & re-reviewed;
    **CORE built + round-3 in progress** on `claude/amendment-engine-core`. **[BUG2]**
@@ -176,6 +182,26 @@ published version and sweeps it away — correct for a **future** day, wrong for
 Astra says the original Bug 2 may **not** reproduce (EditWeek `ed=false`; SchedBoard
 `pv=true` → no controls emitted). Verify; keep the defensive handler guards.
 - **Model:** Fable, high — short, focused verification.
+
+### [ARCH-STACK] The architectural root-cause stack — the backbone (both providers, 13 Sep 26)
+A whole-app architectural review by BOTH Astra and Fable (read-only) converged on one story:
+the app is **one store-pattern built three times** (Scheduler / Leave War / Tracker), and it
+knows only THAT something changed, never WHAT. The fix is a **record-level change stream over
+stable ids** that undo, persistence, sync and the database all consume — build once, not four
+times. Several existing items are STEPS of this stack. **Full plan (root causes, order, effort,
+what to stop):** `raptor-port/docs/superpowers/specs/2026-09-13-architecture-rootcause-plan.md`.
+- **Order:** (1) stable ids everywhere [INP-CSID]/[TRK-CSID] + `who→personId`/note-ids/`iid`→UUID;
+  (1b) quick wins — landing-on-row, a session-reset registry, ISO dates, the `mod:'now'`
+  late-mark fix; (2) ONE write/command layer (all 3 modules, PEOPLE/settings included);
+  (3) global per-session undo as inverse-patch [GLOBAL-UNDO]; (4) ONE Absence record (design NOW,
+  before the Dataverse tables freeze); (5) record-oriented storage door → Dataverse [DB-STEP];
+  (6) remove the quarantine/legacy machinery.
+- **Stop now:** interim two-system undo patches and further quarantine rounds (both replaced by
+  steps 2–3 and 6). Only the small [SYNC-INTEG] guardrails remain worth doing pre-stack.
+- **Model/process:** HEAVY, foundational. Each step: design → red-team (Astra lead, Fable for the
+  crux) → build → inspect → gates → hold for "merge live". Start with (1) — cheap, independent.
+- **Context:** the plan doc above (synthesises both reviews); memories
+  `architectural-root-cause-before-minute-fixes`, `future-undo-semantics-multiuser`.
 
 ### [SYNC-INTEG] Leave War ↔ inputs guardrails (NON-undo part) — small, ready
 A read-only cross-provider audit (Codex + Fable, 13 Sep 26) of DELETE/UNDO across the
