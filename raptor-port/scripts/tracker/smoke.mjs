@@ -592,16 +592,18 @@ await pg.click('#copyCancel'); await pg.waitForTimeout(300);
 ok('the one Import button is the syllabus import too', await pg.locator('#importFileBtn').count() === 1);
 const imported = await pg.evaluate(async () => {
   const t = window.__coreForTests;
-  const charts = await t.collectCharts(['2026']);
-  charts.syllabi['2026'] = charts.syllabi['2026'].slice(0, 4);
+  const id = t.sylIdOf('2026');                       /* syllabus IDS since 1B-ii */
+  const charts = await t.collectCharts([id]);
+  charts.syllabi[id] = charts.syllabi[id].slice(0, 4);
   const marksBefore = Object.keys(localStorage).filter(k => k.includes(':m:')).length;
-  await t.applyCharts(charts, { names: ['2026'], mode: 'add', rename: { from: '2026', to: 'SMOKE NEW SYL' } });
+  const newId = 'sc' + Date.now().toString(36) + 'zz';   /* a fresh custom id (add-as-new) */
+  await t.applyCharts(charts, { ids: [id], mode: 'add', rename: { from: id, to: newId, label: 'SMOKE NEW SYL' } });
   /* Since the seam the write lands in the whiteboard at once but reaches the
      raptor:tracker/* localStorage keys through the write-behind postman (300 ms
      coalesce); the app reads the whiteboard, this raw read must wait for it. */
   await new Promise(r => setTimeout(r, 600));
   const all = JSON.parse(localStorage['raptor:tracker/v3:master:syls']);
-  return { added: (all['SMOKE NEW SYL'] || []).length, original: (all['2026'] || []).length,
+  return { added: (all[newId] || []).length, original: (all[id] || []).length,
            marks: Object.keys(localStorage).filter(k => k.includes(':m:')).length, marksBefore };
 });
 ok('importing as new creates a separate syllabus', imported.added === 4, `${imported.added} events`);
@@ -611,15 +613,16 @@ ok('importing as new leaves every mark in place', imported.marks === imported.ma
 /* ---- writing charts back never disturbs people ---- */
 const applied = await pg.evaluate(async () => {
   const t = window.__coreForTests; if (!t) return null;
+  const id = t.sylIdOf('2026');
   const grab = () => Object.fromEntries(
     Object.keys(localStorage).filter(k => k.includes(':m:')).map(k => [k, localStorage.getItem(k)]));
   const before = grab();
-  const charts = await t.collectCharts(['2026']);
-  charts.syllabi['2026'] = charts.syllabi['2026'].slice(0, 5);   /* a much smaller chart */
-  await t.applyCharts(charts, { names: ['2026'], mode: 'replace', rename: null });
+  const charts = await t.collectCharts([id]);
+  charts.syllabi[id] = charts.syllabi[id].slice(0, 5);   /* a much smaller chart */
+  await t.applyCharts(charts, { ids: [id], mode: 'replace', rename: null });
   await new Promise(r => setTimeout(r, 600));   // wait for the write-behind postman to flush to raptor:tracker/*
   return { same: JSON.stringify(before) === JSON.stringify(grab()),
-           count: JSON.parse(localStorage['raptor:tracker/v3:master:syls'])['2026'].length };
+           count: JSON.parse(localStorage['raptor:tracker/v3:master:syls'])[id].length };
 });
 ok('replacing a syllabus writes the new chart', !!applied && applied.count === 5,
   applied ? `${applied.count} events` : 'no result');
@@ -633,7 +636,8 @@ const noPeople = await pg.evaluate(async () => {
   const realSet = Storage.prototype.setItem;
   Storage.prototype.setItem = function (k, v) { written.push(k); return realSet.call(this, k, v); };
   try {
-    await t.applyCharts(await t.collectCharts(['2026']), { names: ['2026'], mode: 'replace', rename: null });
+    const id = t.sylIdOf('2026');
+    await t.applyCharts(await t.collectCharts([id]), { ids: [id], mode: 'replace', rename: null });
     /* Since the seam the durable write goes through the postman's 300 ms coalesce
        and lands via BrowserBackend.put → Storage.prototype.setItem AFTER applyCharts
        resolves. Hold the interception across that window, or it captures nothing and
@@ -649,21 +653,23 @@ ok('applying charts writes no roster, mark or date key',
 /* ---- writing students back ---- */
 const stApplied = await pg.evaluate(async () => {
   const t = window.__coreForTests; if (!t) return null;
-  await t.applyStudents({ courses: ['SMOKE COURSE'], byCourse: { 'SMOKE COURSE': {
-    plan: { sylName: '2026' },
-    bySyllabus: { '2026': { roster: ['STUDENT Z'],
+  const id = t.sylIdOf('2026');
+  /* a v3 student block (id-keyed syllabus + a sylcat) — the guardrail (§19)
+     requires it; the ENROLMENT layer here is the legacy string roster, which the
+     converter lands as { id, name } entries with the mark under the minted id. */
+  await t.applyStudents({ courses: ['SMOKE COURSE'], sylcat: [{ id, name: t.sylName(id) }], byCourse: { 'SMOKE COURSE': {
+    plan: { sylId: id },
+    bySyllabus: { [id]: { roster: ['STUDENT Z'],
       marks: { 'STUDENT Z': { 'ST-01': { g: 'dco', f: 3 } } },
       dates: { 'STUDENT Z': { lastSyll: '2026-02-03', lastCurr: null } } } } } } });
   await new Promise(r => setTimeout(r, 600));   // wait for the write-behind postman to flush to raptor:tracker/*
-  /* A name-keyed file is re-keyed on the way in: the roster lands as { id, name }
-     entries and the marks under the MINTED id (stable ids, 10 Sep 26). The COURSE
-     is id-keyed too now (course ids, 1B-i), and an imported course that is new
-     here gets a MINTED course id — so read under that, resolved via the bridge. */
+  /* The COURSE is id-keyed (course ids, 1B-i) and an imported course new here
+     gets a MINTED course id — read under that + the syllabus id, via the bridge. */
   const cid = t.courseIdOf('SMOKE COURSE');
-  const roster = localStorage['raptor:tracker/v3:' + cid + ':2026:roster'];
+  const roster = localStorage['raptor:tracker/v3:' + cid + ':' + id + ':roster'];
   let entry = null; try { entry = (JSON.parse(roster || '[]') || []).find(e => e && e.name === 'STUDENT Z'); } catch (_) {}
   return { roster, id: entry ? entry.id : null,
-           marks: entry ? localStorage['raptor:tracker/v3:' + cid + ':2026:m:' + entry.id] : null };
+           marks: entry ? localStorage['raptor:tracker/v3:' + cid + ':' + id + ':m:' + entry.id] : null };
 });
 ok('applying students writes the roster', !!stApplied && (stApplied.roster || '').includes('STUDENT Z'));
 ok('the roster it writes carries an enrolment id, not a bare name',
@@ -1114,7 +1120,8 @@ ok('the spacer falls after the search, with only the Save slot to its right',
   /* The search block above leaves the TALLEST chart selected, and a chart
      nobody is on has no Crew to grade — a click on a ball there does nothing
      (by design). Back to the seeded syllabus, which has students. */
-  await pg.selectOption('#sylSel', '2026'); await pg.waitForTimeout(900);
+  await pg.selectOption('#sylSel', await pg.evaluate(() =>
+    [...document.querySelectorAll('#sylSel option')].find(o => o.textContent.startsWith('2026')).value)); await pg.waitForTimeout(900);
   /* Named, not id'd: an empty picker and a picker on somebody are told apart by
      the callsign the trainer would read, which is the option's TEXT. */
   ok('the undo checks run with a student on the roster',
@@ -2029,61 +2036,25 @@ const addStudent = async name => {
      The course is planted and put back afterwards so the lull checks below meet
      the course and chart they have always run on. */
   {
-    const backCourse = await pg.evaluate(() => document.getElementById('courseSel').value);
-    const backSyl = await pg.inputValue('#sylSel');
-    await pg.evaluate(pid => {
-      const P = 'raptor:tracker/';
-      const cs = JSON.parse(localStorage.getItem(P + 'v3:courses') || '["26ABSG"]');
-      if (!cs.includes('LEGACY')) cs.push('LEGACY');
-      localStorage.setItem(P + 'v3:courses', JSON.stringify(cs));
-      localStorage.setItem(P + 'v3:LEGACY:2026:roster', JSON.stringify(['OLD A']));
-      localStorage.setItem(P + 'v3:LEGACY:2026:m:OLD A', JSON.stringify({ 'ST-01': { g: 'dco' } }));
-      /* The per-syllabus roster SPLIT is already done on a store of this
-         vintage, and the id migration deliberately refuses a course where it
-         has not run — without the flag this would plant a shape that never
-         converts, and the check would be measuring the refusal. */
-      localStorage.setItem(P + 'v3:LEGACY:rostermig', '1');
-      localStorage.setItem(P + 'v3:links', JSON.stringify({ LEGACY: { 'OLD A': pid } }));
-    }, first.key);
-    await openTracker(pg); await pg.waitForSelector('#flowSvg .ball', { timeout: 15000 });
-    /* the dropdown value is the course id now (course ids, 1B-i) — pick by label;
-       the legacy name-keyed course was converted to an id on this reload (the
-       stray-string-in-index path), so its records live under that id */
-    await pg.selectOption('#courseSel', { label: 'LEGACY' }); await pg.waitForTimeout(1000);
-    const conv = await pg.evaluate(() => {
-      const P = 'raptor:tracker/';
-      const legId = window.__coreForTests.courseIdOf('LEGACY');
-      const e = window.__coreForTests.byName('OLD A');
-      return {
-        options: [...document.querySelectorAll('#activeSel option')].map(o => o.textContent).join(','),
-        legId,
-        id: e ? e.id : null, pid: e ? e.pid : null,
-        underId: e ? localStorage.getItem(P + 'v3:' + legId + ':2026:m:' + e.id) : null,
-        underName: localStorage.getItem(P + 'v3:LEGACY:2026:m:OLD A'),
-        nameCourseGone: localStorage.getItem(P + 'v3:LEGACY:2026:roster'),
-        flag: localStorage.getItem(P + 'v3:' + legId + ':idmig'),
-        map: localStorage.getItem(P + 'v3:' + legId + ':idmap'),
-        links: localStorage.getItem(P + 'v3:links'),
-      };
+    /* ---- the boot converted this store to syllabus IDS (1B-ii) ----
+       The KEEP/RESET payload-journal conversion is pinned directly by the unit
+       harness (src/tracker/app/sylIds.migration.test.ts: built-ins get sb… ids,
+       a custom sc…, the student layer resets). Here we confirm the RUNNING app
+       is id-native end to end — re-migrating the live store mid-suite would wipe
+       the students the checks below rely on, so this only READS. */
+    const idn = await pg.evaluate(() => {
+      const t = window.__coreForTests, P = 'raptor:tracker/';
+      return { vals: [...document.querySelectorAll('#sylSel option')].map(o => o.value),
+               cur: t.curSylId(), name: t.curSylName(),
+               cat: localStorage.getItem(P + 'v3:master:sylcat'),
+               flags: [localStorage.getItem(P + 'v3:sylcatmig'), localStorage.getItem(P + 'v3:sylreset')] };
     });
-    ok('a course stored under the old name keys still reads its student by name',
-      conv.options === 'OLD A' && !!conv.id && conv.id !== 'OLD A',
-      `picker reads "${conv.options}", enrolment ${conv.id}`);
-    ok('the legacy name-keyed course was re-based onto a course id, its name keys gone',
-      /^c[0-9a-z]+$/.test(conv.legId || '') && !conv.nameCourseGone,
-      `course id ${conv.legId}, name-roster ${conv.nameCourseGone}`);
-    ok('the person they were linked to comes across onto the student',
-      conv.pid === first.key
-      && await pg.locator('.c-students .chip.linked', { hasText: 'OLD A' }).count() === 1,
-      `pid ${conv.pid}, wanted ${first.key}`);
-    ok('their mark MOVED to the id key — it is not left under the name as well',
-      !!conv.underId && conv.underId.includes('dco') && !conv.underName,
-      `under the id: ${conv.underId}; under the name: ${conv.underName}`);
-    ok('a finished conversion is flagged and drops its scratch mapping and the old links record',
-      conv.flag === '1' && !conv.map && !conv.links,
-      `flag ${conv.flag}, mapping ${conv.map}, links ${conv.links}`);
-    await pg.selectOption('#courseSel', backCourse); await pg.waitForTimeout(900);
-    await pg.selectOption('#sylSel', backSyl).catch(() => {}); await pg.waitForTimeout(900);
+    ok('the syllabus dropdown carries ids, not names',
+      idn.vals.length > 0 && idn.vals.every(v => /^s[bc][0-9a-z]+$/.test(v)), idn.vals.slice(0, 3).join(','));
+    ok('the boot ran the syllabus-id migration (both flags set, a catalogue written)',
+      idn.flags[0] === '1' && idn.flags[1] === '1' && !!idn.cat, idn.flags.join(','));
+    ok('the current syllabus resolves a label from its id',
+      /^s[bc]/.test(idn.cur || '') && !!idn.name && idn.name !== idn.cur, (idn.cur || '') + ' -> ' + (idn.name || ''));
   }
 }
 if ((await pg.locator('#activeSel option').count()) < 2) await addStudent('STUDENT SMOKE2');
@@ -2659,8 +2630,9 @@ await pg.waitForSelector('#flowSvg .ball', { timeout: 15000 });
   await viaMenu('course', '#addCourse'); await pg.waitForTimeout(250);
   await pg.fill('#dlgInput', 'MINE'); await pg.click('#dlgOk'); await pg.waitForTimeout(900);
   const merged = await pg.evaluate(async () => {
-    await window.__coreForTests.applyStudents({ courses: ['THEIRS'], byCourse: { THEIRS: {
-      plan: { sylName: '2026' }, bySyllabus: { '2026': { roster: ['VISITOR'], marks: {}, dates: {} } } } } });
+    const t = window.__coreForTests, id = t.sylIdOf('2026');   /* a v3 block (id + sylcat), per the §19 guardrail */
+    await t.applyStudents({ courses: ['THEIRS'], sylcat: [{ id, name: t.sylName(id) }], byCourse: { THEIRS: {
+      plan: { sylId: id }, bySyllabus: { [id]: { roster: ['VISITOR'], marks: {}, dates: {} } } } } });
     return [...document.querySelectorAll('#courseSel option')].map(o => o.textContent);
   });
   ok('opening a file adds its courses without deleting yours',
@@ -3032,7 +3004,8 @@ ok('Tx BFM-5 still shows its own profile after a file open',
   infoAfterFile.name.includes('Refer to BCTM BFM-7') && infoAfterFile.crew === 'IP / W, UP / IW or IP',
   JSON.stringify(infoAfterFile));
 await pg.click('#ifCancel'); await pg.waitForTimeout(200);
-await pg.selectOption('#sylSel', sylOptions.find(v => v === '2026') || '2026');
+await pg.selectOption('#sylSel', await pg.evaluate(() =>
+  [...document.querySelectorAll('#sylSel option')].find(o => o.textContent.startsWith('2026')).value));
 await pg.waitForTimeout(800);
 await clickBall('BFM-5'); await pg.waitForTimeout(300);
 await pg.click('#popEditInfo'); await pg.waitForSelector('#infoModal');
@@ -4056,10 +4029,14 @@ await openTracker(pg); await pg.waitForSelector('#flowSvg .ball'); await pg.wait
     window.__pickOpenForTests = async () => ({ name: 'smoke-import.json', text });
   }, [charts, students]);
   const dlg = async () => ((await pg.locator('#dlgModal').textContent().catch(() => '')) || '').replace(/\s+/g, ' ');
-  const charts = { order: ['SMOKE IMP'], syllabi: { 'SMOKE IMP': [
-    { id: 'SI-01', type: 'acad', seq: 0, prereqs: [], phase: 'P' }, { id: 'SI-02', type: 'flight', seq: 1, prereqs: ['SI-01'], phase: 'P' }] }, layouts: {}, eventInfo: {} };
-  const students = { courses: ['SMOKE IMP COURSE'], byCourse: { 'SMOKE IMP COURSE': { plan: { sylName: 'SMOKE IMP' }, lulls: {}, pace: {},
-    bySyllabus: { 'SMOKE IMP': { roster: ['SMOKE IMP STU'], marks: {}, dates: {} } } } } };
+  /* a v3 file (id-native, with a sylcat): charts import from any version, but the
+     §19 guardrail lets STUDENT marks in only from an id-native v3 file. The other
+     browser minted this custom id. */
+  const SID = 'scsmokeimp1';
+  const charts = { order: [SID], syllabi: { [SID]: [
+    { id: 'SI-01', type: 'acad', seq: 0, prereqs: [], phase: 'P' }, { id: 'SI-02', type: 'flight', seq: 1, prereqs: ['SI-01'], phase: 'P' }] }, layouts: {}, eventInfo: {}, sylcat: [{ id: SID, name: 'SMOKE IMP' }] };
+  const students = { courses: ['SMOKE IMP COURSE'], sylcat: [{ id: SID, name: 'SMOKE IMP' }], byCourse: { 'SMOKE IMP COURSE': { plan: { sylId: SID }, lulls: {}, pace: {},
+    bySyllabus: { [SID]: { roster: ['SMOKE IMP STU'], marks: {}, dates: {} } } } } };
   const courses = () => pg.evaluate(() => [...document.querySelectorAll('#courseSel option')].map(o => o.textContent));
   const marksBefore = await pg.evaluate(() => Object.keys(localStorage).filter(k => k.includes(':m:')).length);
 
@@ -4069,7 +4046,7 @@ await openTracker(pg); await pg.waitForSelector('#flowSvg .ball'); await pg.wait
   ok('a charts-only file imports without asking about people', /brought in SMOKE IMP/i.test(t) && !/students and marks/i.test(t), t);
   await pg.click('#dlgOk'); await pg.waitForTimeout(500);
   ok('the imported chart is in the syllabus list',
-    (await pg.evaluate(() => [...document.querySelectorAll('#sylSel option')].map(o => o.value))).includes('SMOKE IMP'));
+    (await pg.evaluate(() => [...document.querySelectorAll('#sylSel option')].map(o => o.textContent))).some(s => s.startsWith('SMOKE IMP')));
   ok('a charts-only import wrote no mark', (await pg.evaluate(() => Object.keys(localStorage).filter(k => k.includes(':m:')).length)) === marksBefore);
 
   await feed(charts, students);
