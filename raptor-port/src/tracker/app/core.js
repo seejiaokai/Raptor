@@ -841,14 +841,15 @@ async function buildSylJournal() {
   addDefs(sParse(await sGet(kSyls()), {}, 'object'));
   addDefs(sParse(await sGet(kSylsOldMaster()), {}, 'object'));
   for (const cE of COURSES) addDefs(sParse(await sGet(kSylsOwn(cE.id)), {}, 'object'));
-  /* a plan.custom course keeps its edited chart under its OWN name '<syl> (edited)';
-     record that per course so the plan re-points at the EDITED entry, not the
-     shipped built-in the raw sylName maps to (review CSID-B04, the old loader's
-     plan.sylName switch). */
-  const editedPlanName = Object.create(null);
+  /* the plan.custom single legacy def (v3:<course>:syl) is collected PER COURSE,
+     not merged by name: two unopened courses can share a sylName but hold
+     DIFFERENT edited charts, so each gets its OWN minted id + unique label and
+     its plan points at its own chart — never silently collapsing onto the first
+     (review CSID-REVIEW-01; the old loader switched plan.sylName to '<syl> (edited)'). */
+  const customPlanDefs = [];   // { courseId, def }
   for (const cE of COURSES) {
     const p = sParse(await sGet(kPlan(cE.id)), {}, 'object');
-    if (p && p.custom) { const sr = await sGet(kSyl(cE.id)); const legacy = sr ? sParse(sr, null) : null; if (legacy) { const nm = (p.sylName || DEFAULT_SYL_NAME) + ' (edited)'; if (!has(defByName, nm)) defByName[nm] = legacy; editedPlanName[cE.id] = nm; } }
+    if (p && p.custom) { const sr = await sGet(kSyl(cE.id)); const legacy = sr ? sParse(sr, null) : null; if (legacy) customPlanDefs.push({ courseId: cE.id, name: (p.sylName || DEFAULT_SYL_NAME) + ' (edited)', def: legacy }); }
   }
   /* CLASSIFY every name that carries a DEFINITION (§17 CSID2-R4-01): current
      canonical → built-in id (def becomes its override); else a custom id. */
@@ -858,6 +859,13 @@ async function buildSylJournal() {
     idByName[name] = id;
     if (!has(defById, id)) defById[id] = defByName[name];
     addCat(id, name, cls.builtin ? cls.base : undefined);
+  }
+  /* now the per-course plan.custom charts: a fresh id + a label unique in the
+     catalogue for each, so neither is lost when the sylNames collide. */
+  const uniqLabel = desired => { const taken = new Set(sylcat.map(e => e.name)); let nm = desired, n = 2; while (taken.has(nm)) nm = desired + ' (' + (n++) + ')'; return nm; };
+  const editedPlanId = Object.create(null);
+  for (const { courseId, name, def } of customPlanDefs) {
+    const id = mintSylId(); defById[id] = def; addCat(id, uniqLabel(name)); editedPlanId[courseId] = id;
   }
 
   /* RESOLVE the rest — names with NO definition (a pref entry, a layout-only
@@ -944,9 +952,8 @@ async function buildSylJournal() {
   const fallbackId = liveIds.has(preferred) ? preferred : (sylcat[0] && sylcat[0].id);
   for (const cE of COURSES) {
     const p = planSylByCourse[cE.id];
-    /* a plan.custom course points at its EDITED chart's id, else the sylName's id (CSID-B04) */
-    const nm = has(editedPlanName, cE.id) ? editedPlanName[cE.id] : (p && p.sylName);
-    let t = nm ? idByName[nm] : null;
+    /* a plan.custom course points at ITS OWN edited chart id; else the sylName's id (CSID-B04/REVIEW-01) */
+    let t = has(editedPlanId, cE.id) ? editedPlanId[cE.id] : ((p && p.sylName) ? idByName[p.sylName] : null);
     if (!t || !liveIds.has(t)) t = fallbackId;
     plans[cE.id] = t;
   }
@@ -1053,7 +1060,22 @@ function validSylJournal(j) {
   if (Array.isArray(j.order) && !j.order.every(ok)) return false;
   if (Array.isArray(j.hidden) && !j.hidden.every(ok)) return false;
   if (j.tomb && !Object.keys(j.tomb).every(ok)) return false;
-  if (!Array.isArray(j.courseIds)) return false;
+  if (!Array.isArray(j.courseIds) || !j.courseIds.every(isCourseId)) return false;
+  /* DESTINATIONS + PURGE must stay inside the migration's own namespaces (review
+     CSID-REVIEW-03), so a tampered/corrupt journal can never write the course
+     index or delete unrelated data on replay. A layout dest is v3:master:lay:<id>
+     for a valid id; a purge entry is a known LEGACY source key and disjoint from
+     every destination. */
+  const layPre = SYL_NS + ':lay:';
+  const destKeys = new Set([kSyls(), kSylOrder(), kSylHidden(), kSylTomb(), kSylCat()]);
+  if (j.layouts && typeof j.layouts === 'object') {
+    for (const dk of Object.keys(j.layouts)) { if (!(typeof dk === 'string' && dk.startsWith(layPre) && ok(dk.slice(layPre.length)))) return false; destKeys.add(dk); }
+  } else if (j.layouts != null) return false;
+  const legalPurge = pk => typeof pk === 'string' && !destKeys.has(pk) && (
+    pk === kSylsOldMaster() || pk === kSylAliasLegacy || pk.startsWith(layPre) ||          /* old master lay + retired alias pref */
+    pk.startsWith('v3:lay:') ||                                                            /* legacy own/old-master layout keys */
+    /^v3:c[0-9a-z]+:syls?$/.test(pk));                                                     /* per-course legacy def stores */
+  if (Array.isArray(j.purge)) { if (!j.purge.every(legalPurge)) return false; } else if (j.purge != null) return false;
   return true;
 }
 export async function migrateSylIds() {
@@ -4241,6 +4263,13 @@ function reconcileStudentsSyllabi(students, version) {
   if (!refs.size) return s;                       /* no student syllabus refs (courses-only) — nothing to guard */
   if (!Array.isArray(s.sylcat)) throw new Error(STUDENT_GUARD_MSG);
   for (const r of refs) if (!isSylId(r)) throw new Error(STUDENT_GUARD_MSG);
+  /* REFERENCE COMPLETENESS (§14 CSID2-04, review CSID-REVIEW-02): every referenced
+     id MUST be labelled by the file's sylcat — an unlabelled reference (e.g. a
+     bySyllabus block for a store id the file's own catalogue never described)
+     could otherwise collide with a legitimate reconcile target and silently drop
+     a block. Refuse the whole student import instead. */
+  const catIds = new Set((s.sylcat || []).filter(isSylEntry).map(e => e.id));
+  for (const r of refs) if (!catIds.has(r)) throw new Error(STUDENT_GUARD_MSG);
   /* reconcile the file's syllabus ids to the store's (one map), refuse a clash */
   const { remapped, conflicts } = reconcileSylIds(buildUnionSylcat(null, s.sylcat), SYLS);
   if (conflicts.length) { const x = conflicts[0]; throw new Error('The students could not be brought in: the syllabus “' + x.name + '” in the file is a different chart than the one already here. Nothing has been changed.'); }
@@ -4248,10 +4277,14 @@ function reconcileStudentsSyllabi(students, version) {
   /* every referenced id must resolve to a syllabus that EXISTS and is NOT
      tombstoned at the destination (§CSID2-04 / §CSID2-R5-02) */
   for (const r of refs) { const t = re(r); if (!sylEntry(t) || SYL_TOMB[t]) throw new Error(STUDENT_GUARD_MSG); }
+  /* two distinct referenced ids MUST NOT reconcile onto one destination — that
+     would collapse two student blocks into one, silently losing marks (CSID-REVIEW-02). */
+  const seenDest = new Map();
+  for (const r of refs) { const t = re(r); if (seenDest.has(t) && seenDest.get(t) !== r) throw new Error(STUDENT_GUARD_MSG); seenDest.set(t, r); }
   const byCourse = {};
   for (const c of Object.keys(s.byCourse || {})) {
     const cv = s.byCourse[c] || {}, nb = {};
-    for (const k of Object.keys(cv.bySyllabus || {})) nb[re(k)] = cv.bySyllabus[k];
+    for (const k of Object.keys(cv.bySyllabus || {})) { const nk = re(k); if (has(nb, nk)) throw new Error(STUDENT_GUARD_MSG); nb[nk] = cv.bySyllabus[k]; }
     const ncv = { ...cv, bySyllabus: nb };
     if (ncv.plan && ncv.plan.sylId) ncv.plan = { ...ncv.plan, sylId: re(ncv.plan.sylId) };
     byCourse[c] = ncv;
@@ -4512,8 +4545,24 @@ export function normalizeImport(parsed) {
     if (Array.isArray(charts.sylcat)) out.sylcat = charts.sylcat.map(e => ({ ...e, id: re(e.id) }));
     charts = out;
   }
-  if (students && studentsCat) students = remapStudentsSyl(students, re);   /* the SAME map — v3 students only */
-  return { charts, students, version };
+  /* the v3 students block, reconciled through the SAME map. REFERENCE
+     COMPLETENESS + COLLISION are checked on the ORIGINAL refs BEFORE remapping
+     (review CSID-REVIEW-02): a bySyllabus/plan id absent from the file's own
+     sylcat, or two refs that reconcile onto one destination, would silently
+     collapse or mis-file a student block — so the STUDENT import is refused
+     (studentsRefused; charts still import), rather than throwing away the whole
+     file. A pre-v3 block stays raw and is refused by the version guardrail. */
+  let studentsRefused = false;
+  if (students && studentsCat) {
+    const catIds = new Set(studentsCat.filter(isSylEntry).map(e => e.id));
+    const refs = new Set();
+    for (const c of Object.keys(students.byCourse || {})) { const cv = students.byCourse[c] || {}; for (const k of Object.keys(cv.bySyllabus || {})) refs.add(k); if (cv.plan && cv.plan.sylId) refs.add(cv.plan.sylId); }
+    let bad = false; const dests = new Set();
+    for (const r of refs) { if (!isSylId(r) || !catIds.has(r)) { bad = true; break; } const t = re(r); if (dests.has(t)) { bad = true; break; } dests.add(t); }
+    if (bad) { students = null; studentsRefused = true; }
+    else students = remapStudentsSyl(students, re);
+  }
+  return { charts, students, version, studentsRefused };
 }
 /* remap a students block's syllabus ids by a mapping FUNCTION (the one import map,
    or an add-as-new fileId→newId step whose students must follow, §CSID2-05). */
@@ -4521,7 +4570,9 @@ function remapStudentsSyl(students, re) {
   const byCourse = {};
   for (const c of Object.keys(students.byCourse || {})) {
     const cv = students.byCourse[c] || {}, nb = {};
-    for (const k of Object.keys(cv.bySyllabus || {})) nb[re(k)] = cv.bySyllabus[k];
+    /* two source ids must never collide onto one dest — that would silently drop
+       a student block before the guardrail sees it (review CSID-REVIEW-02). */
+    for (const k of Object.keys(cv.bySyllabus || {})) { const nk = re(k); if (has(nb, nk)) throw new Error(STUDENT_GUARD_MSG); nb[nk] = cv.bySyllabus[k]; }
     const ncv = { ...cv, bySyllabus: nb };
     if (ncv.plan && ncv.plan.sylId) ncv.plan = { ...ncv.plan, sylId: re(ncv.plan.sylId) };
     byCourse[c] = ncv;
@@ -4573,7 +4624,13 @@ export async function importClick() { if (fileLocked) return;
        normalizeImport already reconciled a v3 block through the ONE import map;
        an add-as-new chart composes onto it here so its students follow the new id
        (§CSID2-05). A pre-v3 block (norm.students still name-keyed) is refused. */
-    if (people) {
+    if (people && norm.studentsRefused) {
+      /* normalizeImport turned the students away (incomplete / colliding v3 refs),
+         but the charts above still imported */
+      await uiAlert(STUDENT_GUARD_MSG); people = false;
+    } else if (people) {
+      /* norm.students is the v3 block reconciled through the ONE import map (or the
+         raw pre-v3 block, which the version guardrail refuses in applyStudents). */
       let block = norm.students || parsed.students;
       if (Object.keys(addAsNew).length) {
         block = remapStudentsSyl(block, id => has(addAsNew, id) ? addAsNew[id] : id);
