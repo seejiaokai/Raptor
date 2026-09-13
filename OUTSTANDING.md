@@ -41,18 +41,19 @@ future-milestone work last.
 1. **[AMEND]** — the main project. Decisions resolved; brief re-frozen & re-reviewed;
    **CORE built + round-3 in progress** on `claude/amendment-engine-core`. **[BUG2]**
    folds in here.
-2. **[SYNC-INTEG]** — the active round-3 continuation: Leave War/inputs delete-undo
-   data-integrity + permission fixes. **Phase 1 building next (before-live), Phase 2
-   (undo done right) straight after.** Highest active priority alongside [AMEND].
+2. **[SYNC-INTEG]** — now just the small NON-undo guardrails (medical member-filed,
+   clutter-only clear-data, Quals ✕ confirm, doc fix). Low urgency (pre-live); cheap batch.
+   *The undo/permission half was pulled out into [GLOBAL-UNDO] (owner, 13 Sep 26).*
 3. **[EOD]** — the end-of-day feature split out of [AMEND]; design-first follow-on,
    after the core lands.
 4. **[OIL]** — depends on [AMEND]; do straight after.
 5. **[TRK-CSID]** / **[INP-CSID]** — the stable-id work (Tracker courses/syllabuses;
    schedule personal inputs); independent, medium, not urgent.
 6. **[TRK-ATTEMPTS]** — small new feature, low urgency.
-7. **[RECALL]** / **[XWEEK-UNDO]** — future features (fresh recall from archive;
-   cross-week snap-to-page undo); design when reached.
-8. **[DB-STEP]** / **[XFER]** — the future database milestone and multi-squadron
+7. **[RECALL]** — future feature (fresh recall from archive); design when reached.
+8. **[GLOBAL-UNDO]** — the one-global-undo re-architecture; a step **before** [DB-STEP]
+   (must land before going live). Absorbs [XWEEK-UNDO] and the whole delete/undo bug family.
+9. **[DB-STEP]** / **[XFER]** — the future database milestone and multi-squadron
    transfer; **[TRK-DISK]** (Decision A) is fixed inside [DB-STEP].
 
 *(Done 12 Sep 2026: **[TRK-IMPORT]** and **[TRK-LEDGER]** — both merged live; see Done.)*
@@ -76,15 +77,20 @@ One line each, no jargon:
 - **[BUG2] — Double-check one suspected bug.** A reopen button might act on the wrong
   version while you're viewing history — Astra thinks it may not actually happen.
   Quick check, folded into the amendment work.
-- **[SYNC-INTEG] — Make deletes and undo behave sensibly for leave.** Deleting a leave
-  should clear it everywhere and stick; undo should cleanly put it back; the "clear old
-  data" button must never wipe leave or change leave balances; and a member must not be
-  able to undo an admin's decisions. Full context in the sync spec (13 Sep 26).
+- **[SYNC-INTEG] — Small safety guardrails for leave.** Medical can only be filed by the
+  member (not created on the Leave War); the "clear old data" button only clears clutter and
+  never touches leave/balances; a warning on the Quals ✕; a doc fix. (The bigger delete/undo
+  fixes moved to [GLOBAL-UNDO].) Low urgency — we're not live yet.
+- **[GLOBAL-UNDO] — One undo for the whole app, before the database step.** Today each
+  section has its own separate undo, and that's the root of the weird delete/undo bugs. One
+  shared undo (per login session, never touching another user) removes that whole class of
+  bugs instead of patching each. A step to do before going live / before the database.
 - **[RECALL] — Bring a posted-out person back, fresh.** When someone leaves the whole app
   and returns, they come back with new quals and new leave balances (past kept as record) —
   not their old ones. Future feature.
-- **[XWEEK-UNDO] — Undo across weeks.** If you undo something on a week you're not viewing,
-  the app takes you to that week and shows what changed. Future.
+- **[XWEEK-UNDO] — Undo across weeks (part of [GLOBAL-UNDO]).** If you undo something on a
+  week you're not viewing, the app takes you to that week and shows what changed. Built as
+  part of the one-global-undo step.
 - **[XFER] — Move a person to another squadron, data intact.** In the multi-squadron future,
   transferring someone carries all their data across (unlike leaving the system, which resets).
 - **[INP-CSID] — Give leave/personal inputs a permanent hidden tag.** Like schedule rows and
@@ -171,20 +177,44 @@ Astra says the original Bug 2 may **not** reproduce (EditWeek `ed=false`; SchedB
 `pv=true` → no controls emitted). Verify; keep the defensive handler guards.
 - **Model:** Fable, high — short, focused verification.
 
-### [SYNC-INTEG] Leave War ↔ inputs delete/undo integrity — Phase 1 building next (part of [AMEND] round 3)
+### [SYNC-INTEG] Leave War ↔ inputs guardrails (NON-undo part) — small, ready
 A read-only cross-provider audit (Codex + Fable, 13 Sep 26) of DELETE/UNDO across the
 Leave War ↔ inputs ↔ documents seams found a family of data-integrity + permission
-issues. **All decisions, findings and the fix plan are recorded in**
+issues. **All decisions, findings and the fix plan are in**
 `raptor-port/docs/superpowers/specs/2026-09-13-sync-delete-undo-integrity-spec.md`.
-- **Phase 1 (before-live, build first):** provenance-aware war-side delete; medical
-  member-filed only; Leave War undo permission gate; Clear-old-data guard (never touch
-  leave or balances); fix the false-green test; Quals ✕ confirm; doc fix.
-- **Phase 2 (closely following):** the undo-family fixes + per-week undo that survives
-  navigating away and back (session-scoped, per-user, forward-compatible with the future
-  multi-user undo rules).
-- **Model/process:** HEAVY. Spec → Astra red-team → Astra build → Opus inspect + gates →
-  one Fable-high verify on the data-loss/permission fixes → hold for "merge live".
-- **Context:** the spec/record above (per-finding mechanisms, dispositions, fix specs).
+**DECISION 13 Sep 26 (owner):** the whole UNDO/permission half of this — the delete-vs-undo
+resurrection, the undo-family bugs, and the member-undoes-admin gap — is NOT patched here;
+it is dissolved wholesale by a single **global undo re-architecture → see [GLOBAL-UNDO]**,
+done as a step BEFORE the database. Do NOT build interim two-system undo patches (they'd be
+thrown away). Rationale: pre-promulgation demo data (no live users), and the root cause is
+having two separate undo systems over shared data — remove the root, don't patch each face.
+- **What REMAINS here (independent of undo, small guardrails):** P2 medical is member-filed
+  only (block creation on the war for all roles + hide the war medical pickers; existing =
+  demo, reset — no migration); P4 "Clear old data" is CLUTTER-ONLY (old pucks/day-notes/empty
+  past weeks; never deletes any leave/medical/duty input; never the loaded week); P6 a Quals ✕
+  confirm; P7 fix CLAUDE.md's stale "Leave War session-only" line.
+- **Urgency:** low (pre-live); do as a cheap batch when convenient. Model: Opus build,
+  gates, no merge without "merge live".
+- **Context:** the spec/record above (findings, dispositions).
+
+### [GLOBAL-UNDO] One global per-session undo — a step BEFORE the database
+**Decision (owner, 13 Sep 26):** replace the current SEPARATE per-section undo stacks
+(schedule / Leave War / Tracker) with ONE global, per-session, per-user undo timeline. The
+whole delete/undo weird-behaviour family exists BECAUSE two independent undo systems sit over
+the same synced data and disagree; one timeline removes that class of bugs at the root instead
+of patching each. **Do this as a dedicated step BEFORE [DB-STEP]** (it unifies the section
+stores' history, which the DB step needs anyway), NOT as a mid-fix patch now.
+- **Absorbs (do not fix separately):** the delete-vs-undo resurrection (finding A/P1), the
+  undo-family bugs (D, E, F, I), the member-undoes-admin permission gap (C/DU-001/P3), per-week
+  undo that survives navigation, and the [XWEEK-UNDO] snap-to-page idea.
+- **Rules to honour (owner):** undo scoped to the LOGIN SESSION (logout clears it), never
+  affects another user, others see every change live from the shared DB; undo only reverses
+  your own actions; a role/viewer PREVIEW must not wipe an admin's undo.
+- **Gate:** must be done before promulgation / real users (the interim bugs are tolerable only
+  because it's demo data).
+- **Context:** the sync spec (findings A/C/D/E/F/I + the red-team on why the two-system patch
+  is the wrong approach); memories `future-undo-semantics-multiuser` (architecture direction),
+  `multi-squadron-and-person-transfer`; ties to `docs/architecture-direction.md` + [DB-STEP].
 
 ### [RECALL] Fresh recall from archive — FUTURE FEATURE
 An admin recalls an archived person back into Quals. **Behaviour (owner, 13 Sep 26):**

@@ -10,6 +10,19 @@ The audit ran on both providers (Codex/GPT-6-Astra high, and Fable 5.1) as a
 read-only review; their raw outputs lived in a scratch dir that does not persist, so
 the findings are recorded below.
 
+> **DIRECTION CHANGE (owner, 13 Sep 26) — read first.** The whole UNDO/permission half
+> of this (findings A/P1, C/P3/DU-001, D, E, F, I) is NO LONGER patched here. The root
+> cause is two SEPARATE per-section undo systems over shared data; the owner chose to
+> remove that root wholesale via **one global per-session undo (`[GLOBAL-UNDO]` in
+> OUTSTANDING), built as a step BEFORE the database** — not interim two-system patches
+> (which would be thrown away), and safe to defer because the app is pre-promulgation
+> (demo data, no live users). An Astra red-team of the interim two-system plan (REVISE,
+> 6 findings — recorded below) is what exposed how fragile the two-system approach is and
+> prompted this. **What remains actionable from this spec is only the small NON-undo
+> guardrails: P2 (medical member-filed), P4 (clutter-only clear-data), P6 (Quals ✕
+> confirm), P7 (doc fix).** The findings/decisions below stand as the record for
+> `[GLOBAL-UNDO]` and `[SYNC-INTEG]`.
+
 ---
 
 ## Owner decisions (13 Sep 26) — settled
