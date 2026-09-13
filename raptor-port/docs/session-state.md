@@ -1,111 +1,61 @@
-# Session handoff — [AMEND] Phase 2: quarantine REDESIGN built + gate-green; cross-provider bug-check in flight
+# Session handoff — amendment round-3 landed, then a whole-app architecture review reframed the roadmap
 
-## Where it stands (branch `claude/amendment-engine-core`)
-The legacy-book QUARANTINE redesign (the round-3 REVISE, 8 findings P2-REV2-01..08)
-is **BUILT and gate-green**. All local gates pass:
-**unit 4601/4601 · parity 728/0 · build clean.**
+## Where it started
+Continuing `[AMEND]` round 3 on `claude/amendment-engine-core`: two piles of quarantine
+findings to fix. Fixing them surfaced a delete/undo bug FAMILY across the Leave War ↔ inputs
+↔ documents seams; a cross-provider audit + a long owner design discussion turned into a
+whole-app ARCHITECTURAL review that reframed the backlog. Nothing merged; nothing live.
 
-Commits on top of the gate-green base `169e85a` (`d949ea1` = the brief/handoff, docs-only):
-- `661a1be` — cluster 1: the INPUT choke-point + off-week 'u' filing (P2-REV2-04, 06)
-- `9390f0c` — cluster 2: schedule-mutation + publication + rendering gates (P2-REV2-02, 03)
-- `2180c87` — cluster 3: unreadable saved week preserved, never seeded over (P2-REV2-01)
-- `07d8386` — cluster 4: filing knock-on, template-arm lifecycle, legacy no-op (P2-REV2-05, 07, 08)
-- `4546887` — a tsc type fix on the alIssue guard
+## Shipped
+- Nothing merged. Six commits on the branch (`1a6c242..HEAD`), NOT pushed at handoff time
+  (push is part of this handoff). Two are CODE (gate-green), four are docs.
+  - `054d3d7` Pile 2 (Opus, test-first): 5 small quarantine findings — classifier totality,
+    empty-string stash, absolute date labels, notice-layer in shared builders, nav close/open.
+  - `bcb473a` Pile 1 (Codex/Astra build, Opus-inspected): the 4 persistent deep findings —
+    medical cascade LW withdrawal, sync boundary, reconcile/nav global-acc, U1 undo→redo→undo.
+  - Docs: the sync-integrity spec, its Phase-1 red-team revision, the pivot to one global undo,
+    and the architecture root-cause plan.
 
-## The redesign in one line per finding
-- **04 (choke-point):** `writeInputs`/`writeInputsBatch` (state/store.ts) now snapshot the
-  model and roll it back (via a new `histRestore`, the same restore undo runs) if the batch
-  touched an input covering a protected date or a protected loaded week's schedule. EVERY
-  input writer already funnels through these two, so a new writer is caught automatically —
-  the convergence the per-site guards lacked. No-op fast path when nothing is quarantined.
-- **06:** a `'u'` filed-unavailable input survives an off-week remarks edit (inputedit.tsx).
-- **02/03:** every structural schedule mutator refuses on `protectedWeek()` —
-  draftSelect/draftDup/loadVersionToWorkingCopy/draftDelete/draftRename, applyDayTpl,
-  setDayApproved/publishALDay/alIssue (refuses FIRST). `dayIssuedHTML` classifies by the
-  week/book, not id resolution. UI preview buttons inert on a protected week.
-- **01:** `applyWeekModel` distinguishes MISSING from UNREADABLE; a damaged stash loads the
-  seed as a placeholder VIEW but byte-preserves its original bytes and is read-only.
-  `protectedWeek()` now also true for a preserved week; `stashDays` returns null for a
-  no-days blob; the OIL pass protects a preserved loaded week.
-- **05:** `reconcileDayFiling` (engine/slots.ts), from `rebaseDayPending` (the chokepoint every
-  approved-day replacement funnels through), unfiles a `'g'` whose row a replacement dropped.
-- **07:** a monotonic nav token (`view.navGen()`) folded into `dayTplArmKey` invalidates a
-  stale template-apply confirm on any navigation.
-- **08:** `shiftKeys`/`permuteKeys` remap keys/adds/structAdds only when present.
+## Unfinished
+- **THE ROADMAP CHANGED — read `docs/superpowers/specs/2026-09-13-architecture-rootcause-plan.md`
+  and OUTSTANDING `[ARCH-STACK]` first.** A whole-app architectural review by BOTH providers
+  (Astra + Fable) converged: the app is one store-pattern built three times and knows only THAT
+  something changed, not WHAT. Fix order: (1) stable ids everywhere; (1b) ISO dates + a
+  session-reset registry + the `mod:'now'` late-mark fix; (2) one write/command layer; (3) global
+  per-session undo (inverse-patch, not snapshot); (4) one Absence record (design before the
+  Dataverse tables freeze); (5) record storage door → Dataverse; (6) remove quarantine/legacy.
+- **STOP doing:** interim two-system undo patches and further quarantine rounds — both replaced
+  by the stack (owner ruled: reset demo data, don't migrate). The Phase-1 sync-integrity build
+  was deliberately STOPPED mid-flight and its partial edits are in `git stash@{0}` (discard it;
+  it was the interim two-system undo patch the review said not to build).
+- **Small pre-stack guardrails still worth doing** (low urgency, pre-live), in OUTSTANDING
+  `[SYNC-INTEG]`: P2 medical member-filed only, P4 clutter-only clear-data, P6 Quals ✕ confirm,
+  P7 doc fix (CLAUDE.md's "Leave War session-only" line is stale).
+- Owner's decisions + process principles from this session are captured in the auto-memory
+  (guardrail-over-bug-cascade, dev-phase-reset-demo-data-not-migrate,
+  architectural-root-cause-before-minute-fixes, future-undo-semantics-multiuser,
+  multi-squadron-and-person-transfer, persist-per-task-context) — they load automatically.
 
-## ROUND-2 fixes done (13 Sep 26) — awaiting re-review
-Both bug-checks (Codex/Astra + Fable) returned REVISE on the first redesign
-(8 findings P2-QREV-01..08, root cause: the input gate was run-then-rollback, not
-a preflight). All fixed across commits `0087e35` (A+C — preflight + one shared
-classifier) and `5e417f8` (B-G — filing reconcile, nav token, OIL bell,
-quarantine notice, edge guards). Findings + fix map:
-`docs/superpowers/specs/2026-09-13-amendment-phase2-quarantine-round2-findings.md`.
-All gates green again: **unit 4615/4615 · parity 728/0 · build clean.**
+## Branch state
+- Designated branch: `claude/amendment-engine-core`.
+- Its PR is <push at handoff; open/none — see chat>. NOT merged. No "merge live" given.
+- If it has MERGED by the time you read this, reset before new work:
+  `git fetch origin main && git checkout -B claude/amendment-engine-core origin/main`.
 
-Owner also asked (13 Sep) for a dedicated cross-provider look at what UNDO does
-and does NOT restore across platforms (Leave War, medical docs, edit log) — a
-guardrail-or-reconcile question. Folded into the round-2 re-review scope.
+## Gates
+- At the last CODE commit (`bcb473a`), run first-hand this session: `npm test` **4641/4641**,
+  `node reference/tfin.js` **728/0**, `npm run build` clean. All commits since are docs-only,
+  so HEAD's code == `bcb473a`.
+- `npm run test:e2e`, `npm run smoke:tracker`, `probes:adapted`, `perf` — NOT run this session
+  (the round-3 changes touch quarantine/sync/undo, not geometry or the Tracker tab). Run before
+  any merge. From `raptor-port/`; a fresh container needs `npm ci` first.
 
-## ROUND-2 RE-REVIEW DONE (13 Sep 26) — a small OPEN set remains → round 3
-Both providers re-checked the round-2 fixes (@`08c5a86`). Fable VERIFIED most closed
-(A1, A4, B1/B2, C, D, E, G). A small set is still open — full list + PRECISE fix specs
-in `docs/superpowers/specs/2026-09-13-amendment-phase2-quarantine-round2-findings.md`
-(the "RE-REVIEW" + "UNDO cross-platform audit" sections). Headlines:
-- **Medical cascade LW withdrawal (HIGH, EXECUTED, PERSISTENT — 2 Opus attempts):** the
-  preflight covers only the first kept segment; `mintMedSegments` + edit-path upchit
-  removals still fire `retractLwRow` unpreflighted. Precise fix: gate `retractLwRow` at
-  source (`leavewar/sync.ts`: `if(!row?.lw||inputProtected(row))return`) + preflight
-  inside `applyMedPlan`/`mintMedSegments`.
-- **Sync boundary (MED), reconcile/nav global-acc (HIGH), classifier totality (HIGH,
-  regression), date labels (HIGH, pre-existing), notice layer (MED), empty-string stash,
-  OIL span, callsign rename (rare), nav close/open (LOW).**
-- **UNDO (owner's question):** mostly self-heals (Leave War re-derives on undo); ONE real
-  pre-existing bug — **U1:** delete-leave → undo → redo → undo silently erases a synced
-  leave on both sides. Fix = RECONCILE the stale-splice against the live war, not a
-  session set.
+## Open questions
+- The owner was deciding how to start the stack: (1) I start step 1 (stable ids) now, or
+  (2) start it in a fresh chat. He asked to hand off to a new chat — so option 2.
 
-## ROUND-3 PLAN (owner rules, 13 Sep 26)
-- The PERSISTENT deep ones (medical cascade / sync / reconcile-nav quarantine web, and
-  U1) → HAND to Codex/Fable to FIX with the detailed specs above as the work order
-  (`[[escalate-persistent-bug-to-fixer]]` + `[[reviewer-must-give-detailed-fix-specs]]`):
-  they survived Opus attempts, advanced model has the better chance. Mechanism:
-  claudex-loop `codex-build` / runner build mode; or a Fable fix subagent.
-- The small clear ones (classifier catch totality, empty-string, date-labels-to-ISO,
-  notice-layer-into-dayHTML, nav close/open) → Opus can fix directly, test-first.
-- Keep every gate green (unit 4615+, parity 728/0, build). Keep the tree QUIESCENT during
-  any Codex inspect (a mid-inspection commit flags "code changed").
-- Re-run BOTH bug-checks after. **Do NOT merge** until owner says "merge live" AND Codex is
-  clean. No-auto-merge stands. PR #395 and the EOD feature stay untouched.
-
-## ROUND-3 PILE 2 DONE (Opus, 13 Sep 26) — the five small clear ones, test-first
-All five Opus-assigned findings fixed and pinned; gates green (**unit 4624/4624 · parity
-728/0 · build clean**). Each fix + its test:
-- **Q2R-04 classifier totality** — `stashProtected` (engine/quarantine.ts) now wraps the
-  WHOLE classification in try/catch → a throw (amFormatOf's `for..of` over a damaged
-  non-iterable `als`) reads as unreadable=protected, no longer escapes protectedDates()
-  and breaks every week's input funnel. Pin: quarantine.test.ts.
-- **Q2R-08 empty-string stash** — `stashGet` (engine/weekstash.ts) presence is now by
-  explicit key (`stashHas`), not `||null`, so a present `''` blob is returned and
-  classified unreadable instead of read as an absent week (also closes the same hole in
-  applyWeekModel + the OIL pass, which read presence via stashGet). Pin: quarantine.test.ts.
-- **Q2R-03 date labels → absolute** — new `weekDatesAbs(v)` (engine/weeks-data.ts, always
-  year-qualified); protectedDates() uses it for stashed weeks so an authored week's bare
-  fixed labels no longer re-resolve against the LOADED year (cross-year mislock). Pin:
-  quarantine.test.ts.
-- **Q2R-06 notice layer** — the quarantine notice now sits in the SHARED builders
-  `dayHTML` (view+edit) and `boardHTML` (board), not only dayIssuedHTML (reachable only on
-  approved view days). One shared `QUARANTINE_NOTE` string. Parity untouched (protectedWeek
-  never true for seed weeks). Pin: html.test.ts.
-- **Q2R-10 nav close/open** — `setBoardDay` (state/view.ts) bumps NAVGEN on ANY real SBDAY
-  transition (open/close/day-change), not only day→day, so a board close+reopen invalidates
-  a stale day-template-apply confirm. Pin: navtoken.test.ts.
-
-STILL OPEN → Codex work order: the 4 PERSISTENT deep ones (medical cascade, sync boundary,
-reconcile/nav global-acc, U1) plus the remaining MED/LOW leftovers (OIL span Q2R-07,
-callsign rename Q2R-09, U2 toast, perf memoise, non-quarantine throw G3, rollback log
-residue, removeInput boolean) — see the RE-REVIEW + UNDO sections above for precise specs.
-
-## Standing constraints (unchanged)
-Both this repo's sessions share ONE working folder — only one runs git at a time; put the tree
-on `claude/amendment-engine-core` first. Every new persisted field still rides
-`schedFields()`+`histApply`; parity stays 728/0.
+## Pick up here
+Start `[ARCH-STACK]` **step 1 — stable ids** (cheap, independent, no deps; the foundation the
+rest keys on): give personal inputs a UUID `iid` and make `ground.src`/filing address it,
+`who`→`personId`, note ids, Tracker course/syllabus ids — per the plan doc. Spec → Astra
+red-team → build → gates. Fable is ~18% until Mon 19:00; lead with Astra, save Fable for a crux.
