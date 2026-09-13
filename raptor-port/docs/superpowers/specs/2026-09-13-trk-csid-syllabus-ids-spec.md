@@ -1,7 +1,7 @@
 # [TRK-CSID] Phase 2 — stable hidden ids for Tracker SYLLABUSES (spec)
 
-**Status:** REV 3 — Astra R1+R2 dispositions folded in (§14, §15 are BINDING and
-supersede any earlier clause they touch) · 13 Sep 26 · awaiting Astra R3
+**Status:** REV 4 — Astra R1+R2+R3 dispositions folded in (§14, §15, §16 are BINDING
+and supersede any earlier clause they touch) · 13 Sep 26 · awaiting Astra R4
 **Part of:** `[ARCH-STACK]` step 1 (stable ids everywhere) · `[TRK-CSID]` 1B-ii
 **Predecessor:** Phase 1 — COURSE ids (`2026-09-13-trk-csid-course-ids-spec.md`,
 4-round Astra red-team, APPROVED, LIVE). This phase MIRRORS its shape; where a
@@ -736,3 +736,79 @@ build. Open for R3: (a) does the payload journal fully remove name-vs-id ambigui
 the legacy-name-equals-destination-id case? (b) is "historical alias → custom" the right
 conservative call, or does any real store rely on the alias→built-in fold? (c) does the
 union catalogue + `userNamed` rule close the round-trip and partial-export gaps?
+
+---
+
+## 16. R3 — Astra dispositions & BINDING revisions
+
+Astra R3 verdict **REVISE** — 3 findings (2 HIGH + 1 MEDIUM), all confirmed. **All 3
+ACCEPTED.** §16 is authoritative where it conflicts with §§1–15. Plan SHA reviewed:
+`287f8f81…`. (Session `01a09b13-68fa-76c2-b725-99c89526b4b8`.) Converging (10→6→3); the
+two HIGHs both sharpen §15's own fixes.
+
+### CSID2-R3-01 (HIGH — journal purge can delete a destination that is also a legacy source key) — ACCEPT, PURGE = SOURCES ∖ DESTINATIONS.
+The B/C collision at cleanup: legacy custom named `B` (=shipped id for `2026`) gets id
+`C`. Original layout keys `lay:2026`,`lay:B`; final keys `lay:B` (2026's),`lay:C`
+(custom's). Replaying then purging BOTH original keys deletes the just-written `lay:B`.
+**Binding fix:** when building the journal, compute the **complete destination-key set**;
+**purge only legacy source keys NOT in that set** (`purge = sources ∖ destinations`); and
+**verify all final outputs AFTER all purges** (not only immediately after each write)
+before setting `kSylCatMig`. Applies to `v3:master:lay:*`, `v3:master:syls`, and any
+key whose id-form can equal another entry's legacy name. Test: legacy label equal to
+another chart's destination id → destination survives cleanup and a repeated replay.
+
+### CSID2-R3-02 (HIGH — definition-less historical aliases become unusable under "alias→custom") — ACCEPT, REFINE THE CLASSIFIER BY PRESENCE OF A DEFINITION.
+An unopened legacy course can hold `plan.sylName='FG JUL 26'` with a hand-drawn layout
+under that name but **no stored definition** — it relies on the SHIPPED built-in def.
+§15's blunt "historical alias → custom (`sc…`, no base)" makes `sylSource` return null,
+stranding the layout and forcing the course onto another chart. And this migration runs
+**before** `loadCourse`, so the `core.js:814` canonicalization has NOT happened for
+unopened courses. **Binding fix — the one shared `classifySyllabus(name, hasOwnDef)`
+decides by whether a custom DEFINITION is stored for that name** (provenance from data,
+not from the label; identical in store-migration and file-normalization):
+- **current canonical built-in name** → its deterministic `sb…` id (`base`=canonical;
+  any stored custom def becomes its override).
+- **historical alias name (a `SYL_RENAME` source) WITH its own stored def** →
+  independent custom `sc…` (keeps its def; never merged — the R2-02 safety).
+- **historical alias name WITHOUT its own def** (definition-less; resolves via the
+  shipped built-in) → **the built-in** `sb…` it aliases (`base`=canonical): fold its
+  legacy layout key onto the built-in id (event ids are the shipped ids, unchanged), so
+  the shipped def + hand-drawn layout both resolve. This is the narrow, provenanced
+  alias→built-in fold `SYL_RENAME` exists for.
+- **ordinary name with own def** → custom `sc…`. **Ordinary name with no def** (e.g. a
+  `plan.sylName` pointing at a vanished chart) → no entry; the plan repair (§5.3/§15
+  CSID2-R2-04) repoints it to a valid syllabus.
+Fold the legacy layout/marks keys for the definition-less-alias case through the journal
+(lossless) before retiring `loadLayout`'s `880–897` / `814` adoption paths. Test:
+an unopened course on a definition-less `'FG JUL 26'` with a hand-drawn layout →
+resolves the shipped def AND keeps its layout after conversion.
+
+### CSID2-R3-03 (MEDIUM — `sb` ids / `base` not bound to the shipped table) — ACCEPT, AUTHORITATIVE FROM `BUILTIN_SYL`.
+Grammar + catalogue-agreement checks still let a file/store carry the known `2026` id
+with `base='Tx 2026'`, or an unallocated `sb…` id; since `sylSource`/default-layouts/
+event-info resolve through `base`, a wrong base exposes the wrong shipped syllabus, and
+the boot reconcile only repaired alias bases. **Binding fix — the `sb…` namespace is the
+code table's alone and `base` is always authoritative from it:**
+- every `sb…` id MUST exist in `BUILTIN_SYL`; an unknown `sb…` id is **rejected** at
+  import and **fails closed** in the store/journal (never written).
+- an entry's `base` is always **derived from `BUILTIN_SYL[id]`**, never trusted from
+  file/store data; a supplied `base` that disagrees is ignored (import may warn) — for a
+  built-in id the table is the source of truth.
+- only `sc…` ids may be independent customs (no `base`).
+Apply in `checkCharts`/`checkStudents` (import), catalogue load, `reconcileBuiltins`,
+and journal loading — including after the migration flags are set (a later cross-device
+sync of a bad `sb…` must still be rejected). Test: a file with a mismatched `sb` base or
+an unknown `sb` id is refused; a stored one fails closed.
+
+### Net effect on §§1–15
+- §14/§15 journal apply: `purge = sources ∖ destinations`, final verify after all purges
+  (CSID2-R3-01).
+- §15 CSID2-R2-02 classifier is REFINED by CSID2-R3-02: alias handling now splits on
+  presence of a stored definition (definition-less alias folds onto the built-in;
+  alias-with-def stays custom).
+- §3/§7/§10 gain the `BUILTIN_SYL`-authoritative `sb`-id/`base` binding (CSID2-R3-03).
+
+### Round 4
+Changed plan → **re-review by Astra** (approval binds to the new SHA). R4 confirms these
+3 fixes and looks for any further emergent defect; on APPROVED the plan is ready to
+build.
