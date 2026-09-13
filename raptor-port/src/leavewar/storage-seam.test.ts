@@ -1,5 +1,6 @@
 // src/leavewar/storage-seam.test.ts
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
+import { SCHEMA_VERSION } from '../storage/reset'
 import { INPUTS } from '../engine/inputs'
 import { storeBackend } from '../engine/hooks'
 import { stashClear } from '../engine/weekstash'
@@ -28,6 +29,7 @@ function approve(person: string, dates: string[], code = 'LL') {
 describe('storage seam ⇄ Leave War sync', () => {
   it('an approved leave with SLOW saves reaches the backend exactly once, and a second pass sends nothing', async () => {
     const be = new MemoryBackend(); be.latency = 200
+    be.seed({ settings: { schema: JSON.stringify(SCHEMA_VERSION) } })   // current schema → the pre-1A reset is a no-op here
     const p = bootStorage(be)
     await vi.advanceTimersByTimeAsync(200)
     const { wb } = await p

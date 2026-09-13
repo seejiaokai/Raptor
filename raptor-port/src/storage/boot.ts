@@ -6,9 +6,15 @@ import { Whiteboard } from './whiteboard'
 import { Postman } from './postman'
 import { MemoryBackend } from './memory'
 import { BrowserBackend } from './browser'
+import { resetPreSchema } from './reset'
 
 export async function bootStorage(backend: Backend): Promise<{ wb: Whiteboard; postman: Postman }> {
   const snap = await backend.loadAll()
+  /* clear any pre-1A persisted scheduler data and stamp the schema version BEFORE
+     the whiteboard fills or the postman attaches (ARCH-STACK 1A, Astra SID-05/07):
+     an incompatible shape must never reach hydration, and the durable cleanup must
+     go through the real backend, not the postman's queued writes. */
+  await resetPreSchema(backend, snap)
   const wb = new Whiteboard()
   wb.fill(snap)
   const postman = new Postman(backend)

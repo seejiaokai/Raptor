@@ -14,6 +14,7 @@ import { protectedWeek } from '../engine/publish'
 import { bootStorage } from '../storage/boot'
 import { settingsAdapter } from '../storage/adapters'
 import { MemoryBackend } from '../storage/memory'
+import { SCHEMA_VERSION } from '../storage/reset'
 
 const ISNAP = JSON.stringify(INPUTS)
 const PSNAP = JSON.stringify(PEOPLE)
@@ -35,6 +36,10 @@ function resetWorld() {
 }
 
 async function boot(be: MemoryBackend) {
+  /* these tests exercise HYDRATION of a store already on the current schema, so
+     stamp it — otherwise the pre-1A reset (its own coverage in reset.test.ts)
+     would clear the very inputs/weeks the test seeded to hydrate. */
+  be.seed({ settings: { schema: JSON.stringify(SCHEMA_VERSION) } })
   const p = bootStorage(be)
   await vi.advanceTimersByTimeAsync(be.latency)
   const { wb, postman } = await p
