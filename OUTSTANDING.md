@@ -184,6 +184,12 @@ Astra says the original Bug 2 may **not** reproduce (EditWeek `ed=false`; SchedB
 - **Model:** Fable, high — short, focused verification.
 
 ### [ARCH-STACK] The architectural root-cause stack — the backbone (both providers, 13 Sep 26)
+**STEP 1A DONE + LIVE (13 Sep 26, PR #396):** stable ids on the scheduler side — input filing by
+`iid` (`[INP-CSID]` done), day notes as `{rid,t}` objects, coordinated storage-format reset;
+plus a history-ordering determinism fix and a cross-week accepted-input edit/delete guard. Both
+providers inspected the built code; all findings fixed. Remaining in step 1: **1B** (`[TRK-CSID]`,
+Tracker ids — Fable-high final) and **1C** (`who→personId`, parity-sensitive, its own pass). One
+deferred follow-up (finding 2, orphaned `Other` hard-grade) noted below.
 A whole-app architectural review by BOTH Astra and Fable (read-only) converged on one story:
 the app is **one store-pattern built three times** (Scheduler / Leave War / Tracker), and it
 knows only THAT something changed, never WHAT. The fix is a **record-level change stream over
@@ -272,12 +278,11 @@ person move between squadrons with data intact.
 - **Context:** memory `multi-squadron-and-person-transfer`; ties to
   `docs/architecture-direction.md` and [DB-STEP].
 
-### [INP-CSID] Stable ids for personal inputs — OPEN (rides the stable-id work)
-Two inputs that share the content key `inpKey` can cross filing/deletion — deleting one can
-remove the other's landing. Give inputs a stable hidden id (sibling of the schedule `rid`
-and the Tracker [TRK-CSID] work) so filing/accept/delete address identity, not a shared
-content key.
-- **Context:** the sync spec, finding J (`DU-007`).
+### [INP-CSID] Stable ids for personal inputs — DONE (13 Sep 2026, ARCH-STACK 1A item 1)
+Delivered by ARCH-STACK step 1A: personal inputs are filed/accepted/undone/edited by their
+stable opaque `iid` (`newId('i')`), not the content key `inpKey`. Twins file independently and
+the accept guard is a same-input idempotency check; `inpKey` stays only as a display/dedup hint.
+Merged live in PR #396. Finding J (`DU-007`) closed.
 
 ### [TRK-CSID] Give courses & syllabuses their own hidden ids — OPEN (medium)
 Students and schedule rows now carry stable hidden ids (rename/reorder-safe);
