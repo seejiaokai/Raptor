@@ -306,6 +306,7 @@ export const ordISO = (o: any) => `${Math.floor(o / 10000)}-${String(Math.floor(
    while the typist's own words stay. inpKey is person|date|type|s — an
    end-trim moves none of them, so no accepted-row relink is needed. */
 export function applyMedPlan(plan: any[]) {
+  if (medPlanProtected(plan)) { medicalLocked(); return false }
   const cs = (r: any) => (PEOPLE[r.person] ? PEOPLE[r.person].cs : r.person)
   for (const p of plan || []) {
     const r = p.row
@@ -374,6 +375,7 @@ export function medKeptSegments(aOrd: any, bOrd: any, clashes: any[], choices: s
    outside every segment by construction. Runs INSIDE the caller's
    writeInputsBatch so the whole resolution is one undo step. */
 export function mintMedSegments(base: any, segs: any[], keepTail?: any, entryEnd?: any) {
+  if (medSegmentsProtected(base, segs, keepTail, entryEnd)) { medicalLocked(); return false }
   const cs = PEOPLE[base.person] ? PEOPLE[base.person].cs : base.person
   for (const g of segs) {
     const t: any = { ...base, date: ordLabel(g.startOrd, base.yr), mod: 'now' }
@@ -722,6 +724,14 @@ const normDest = (n: { date: string, endDate: string | undefined }, yr: any) => 
 export const medPlanProtected = (plan: any[]) => (plan || []).some((p: any) =>
   (p.row && inputProtected(p.row)) ||
   (p.tail && inputProtected({ date: ordLabel(p.tail.startOrd, p.row?.yr), endDate: p.tail.endOrd > p.tail.startOrd ? ordLabel(p.tail.endOrd, p.row?.yr) : undefined, yr: p.row?.yr })))
+
+const medicalLocked = () => HOOKS.toast('This week is locked — it was published by an older version and can’t be edited', 'warn')
+
+/* Check every kept segment and its cascade against the unchanged model. Forms
+   run this before committing segment one; the sibling writer also guards itself. */
+export const medSegmentsProtected = (base: any, segs: any[], keepTail?: any, entryEnd?: any, except = base) =>
+  segs.some(g => inputProtected({ ...base, date: ordLabel(g.startOrd, base.yr), endDate: ordLabel(g.endOrd, base.yr) }) ||
+    medPlanProtected(newMedTrimPlan(base.person, base.type, g.startOrd, g.endOrd, except, keepTail, entryEnd)))
 
 export function commitNewInput(draft: any, toGround?: boolean, keepTail?: any, entryEnd?: any): boolean {
   if (!draft) return false
@@ -1399,6 +1409,7 @@ export function InputEditor() {
      refusal there is no way back from: the row went (an undo under the modal),
      and there is nothing left to hold the typing for */
   const doSave = (removals: any[], oilDec?: Record<string, number>) => {
+    if (medPlanProtected(removals.map(row => ({ row })))) return medicalLocked()
     if (isNew) {
       let ok = false
       writeInputsBatch(() => {
@@ -1427,6 +1438,7 @@ export function InputEditor() {
   const doMedSave = (choices: string[], keepTail: any[]) => {
     const segs = medKeptSegments(medConf.a, medConf.b, medConf.clashes, choices)
     if (!segs.length) return          // toasted; the form stays open, unwritten
+    if (medSegmentsProtected({ ...draft, yr: isNew ? baseYear() : r.yr }, segs, keepTail, medConf.b, isNew ? null : r)) return medicalLocked()
     const g0 = segs[0]
     const d2 = {
       ...draft,

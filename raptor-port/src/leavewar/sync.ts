@@ -23,7 +23,7 @@
 // store write notifies subscribers synchronously, and this module is one.
 
 import { INPUTS, DATES, baseYear, dateOrd, inpId, inpWin, isAway, isDownchit, isLeave, oilAsks, withRemarksTail, inputCoversDate } from '../engine/inputs'
-import { protectedDates } from '../engine/quarantine'
+import { inputProtected, protectedDates } from '../engine/quarantine'
 import { ME, SESSION } from '../state/auth'
 import { persistPeople } from '../state/persist'
 import { docFields, rowDocIds } from '../state/docs'
@@ -197,16 +197,6 @@ function desiredRuns(): Run[] {
    never overlap. */
 const runSig = (r: Run) => `${r.person}|${r.type}|${r.portion}|${r.start}|${r.end}`
 
-/* Signatures of lw rows whose war cells RAPTOR ITSELF withdrew (an edit or
-   delete of the input ran retractLwRow). If a row with such a signature turns
-   up lw-tagged and stale again, it did not sneak past the retraction — a
-   HISTORY RESTORE (undo) brought it back, and the war, which has no history
-   of its own, still lacks the cells. Splicing it again would turn Undo into a
-   double delete on both sides (27 Aug 26 overnight find); it is DEMOTED to an
-   ordinary Raptor-owned input instead. A fresh mint of the same signature
-   clears the entry, so a later WAR-side revocation of the re-approved leave
-   splices exactly as before. Session-only, like both stores. */
-const RETRACTED = new Set<string>()
 /* The member's own remark wording (and a medical row's document id), kept
    ACROSS passes keyed by the exact leave. The in-pass carry below handles a
    date change; this survives a refuse-then-re-approve, where the splice and
@@ -218,6 +208,17 @@ const RETAINED = new Map<string, { remarks: string; docIds?: string[] }>()
    round-OUT rule or the two sides of the diff would disagree about the same
    row. */
 const portionOfRow = (row: any): Portion => (isDownchit(row.type) ? medRowPortion(row) : rowPortion(row))
+const rowPair = (row: any) => `${row.person}|${lwTypeOf(row.type)}|${portionOfRow(row)}`
+const runPair = (run: Run) => `${run.person}|${run.type}|${run.portion}`
+
+/* History can restore a stale tag repeatedly. Only a live non-Raptor cell
+   supersedes it (including pending/refused bids and changed/coalesced runs).
+   Empty or Raptor-owned cells let inbound restore the leave on every undo. */
+function warSupersedes(row: any): boolean {
+  return getState().wars.some(war => Object.keys(war.grid[row.person] || {}).some(date =>
+    war.grid[row.person][date] && !raptorOwns(war.states, row.person, date) &&
+    inputCoversDate(row, isoToLabel(date))))
+}
 
 /* Exported so the Inputs-page editor can ask "does this edit change the leave
    itself, or only its remarks?" — a remarks-only edit leaves this signature
@@ -252,13 +253,19 @@ export function runOutbound(): void {
     const prot = protectedDates()
     const covered = (row: any) => prot.length > 0 && prot.some((dt: any) => inputCoversDate(row, dt))
     const runRow = (r: any) => ({ date: isoToLabel(r.start), endDate: r.end !== r.start ? isoToLabel(r.end) : undefined, yr: baseYear() })
+    /* Removing the old run and minting its replacement are one diff. Freeze
+       both halves of a person/type/portion pair if either touches quarantine. */
+    const frozen = new Set<string>()
+    for (const row of INPUTS) if (row.lw && covered(row)) frozen.add(rowPair(row))
+    for (const run of want.values()) if (covered(runRow(run))) frozen.add(runPair(run))
     for (const row of INPUTS) {
       if (!row.lw) continue
       const sig = rowSig(row)
+      if (frozen.has(rowPair(row))) { if (sig) have.add(sig); continue }
       if (sig && want.has(sig) && !have.has(sig)) have.add(sig)
-      else if (!covered(row)) stale.push(row)   // a stale row on a frozen week is left untouched
+      else stale.push(row)
     }
-    const missing = [...want].filter(([sig]) => !have.has(sig)).map(([, r]) => r).filter(r => !covered(runRow(r)))
+    const missing = [...want].filter(([sig, r]) => !have.has(sig) && !frozen.has(runPair(r))).map(([, r]) => r)
 
     /* An empty diff must not touch anything — writeInputsBatch ends in a
        history push, and a no-op pass that left a snapshot behind would make
@@ -290,12 +297,7 @@ export function runOutbound(): void {
       const priorLoose = new Map<string, { remarks: string; docIds?: string[] }>()
       for (const row of stale) {
         const sig = rowSig(row)
-        /* the undo case — see RETRACTED above: Raptor retracted this row's
-           cells itself, so its lw-tagged reappearance is a history restore.
-           Demote, never re-splice: the tag drops, the row is an ordinary
-           input again, and inbound re-lands it as Raptor-owned cells. */
-        if (sig && RETRACTED.has(sig)) {
-          RETRACTED.delete(sig)
+        if (!warSupersedes(row)) {
           delete row.lw
           continue
         }
@@ -322,7 +324,6 @@ export function runOutbound(): void {
           ?? RETAINED.get(sig)
         /* a fresh mint supersedes whatever history the same leave had */
         RETAINED.delete(sig)
-        RETRACTED.delete(sig)
         const row: any = {
           person: r.person,
           /* Back to Raptor's own spelling — an 'ATTB' run lands as an
@@ -400,14 +401,9 @@ export function runOutbound(): void {
  * the full converging pass once everything is settled.
  */
 export function retractLwRow(row: any): void {
-  if (!row?.lw) return
+  if (!row?.lw || inputProtected(row)) return
   const start = labelToISO(row.date, row.yr)
   if (!start) return
-  /* Remember that RAPTOR withdrew this leave's cells — the mark that lets a
-     history restore of this row read as an undo (demoted) rather than as a
-     war-side revocation (spliced). See RETRACTED at the top. */
-  const sig = rowSig(row)
-  if (sig) RETRACTED.add(sig)
   let end = row.endDate ? labelToISO(row.endDate, row.yr) ?? start : start
   if (end < start) end = start
   const type = lwTypeOf(row.type)

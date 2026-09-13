@@ -28,7 +28,7 @@ import { storesLoad, cxReasonsLoad, dutyTplLoad, waveTplLoad, dayTplLoad, autoAc
 import { qualColsLoad } from '../engine/qualcols'
 import { elogClear } from '../engine/editlog'
 import { markDeletion, resetSched, SCHED, dayApproved, protectedWeek, amFormatOf } from '../engine/publish'
-import { protectedDates } from '../engine/quarantine'
+import { inputProtected, protectedDates } from '../engine/quarantine'
 import { stashPut, stashGet, stashHas, setPreservedBlob, clearPreservedBlob, isPreservedWeek, preservedBlob } from '../engine/weekstash'
 import { afterSchedMutate } from './view'
 import * as view from './view'
@@ -399,7 +399,7 @@ export function weekDirty() { return weekStashSnap() !== weekBaseline }
    for something that was never actually re-added. */
 function reconcileLandedAcc() {
   INPUTS.forEach((r: any) => {
-    if (r.acc || !isPersonal(r.type)) return
+    if (r.acc || !isPersonal(r.type) || inputProtected(r)) return
     /* the LANDING is proven by an existing ground row keyed to this input, on ANY
        loaded day — NOT by the input's start date being in the loaded week. A
        multi-day input can start in a prior week yet land on this week's Monday
@@ -501,7 +501,9 @@ function applyWeekModel(v: any): any {
      input, so its issued filing fingerprint read fresh on return and a phantom
      amendment appeared from navigation alone. reconcileLandedAcc and
      autoAcceptInput both skip a truthy acc, so a kept 'u' is never re-landed. */
-  INPUTS.forEach((r: any) => { if (r.acc && r.acc !== 'r' && r.acc !== 'u') delete r.acc })
+  /* Ground rows belong to the loaded week; acc belongs to the global input.
+     A protected-spanning row keeps its filing even when this week has no landing. */
+  INPUTS.forEach((r: any) => { if (r.acc && r.acc !== 'r' && r.acc !== 'u' && !inputProtected(r)) delete r.acc })
   reconcileLandedAcc()
   mintInpIds()
   if (s) {
@@ -515,6 +517,7 @@ function applyWeekModel(v: any): any {
        would read as fresh and start flagging again the moment the week is
        re-entered — the exact surprise the owner reported (26 Aug 26). */
     INPUTS.forEach((r: any) => {
+      if (inputProtected(r)) return
       if (un.has(inpKey(r))) { if (isPersonal(r.type)) r.acc = 'r' }
       else autoAcceptInput(r)
     })

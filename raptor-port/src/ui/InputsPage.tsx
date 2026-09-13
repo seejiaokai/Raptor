@@ -31,7 +31,7 @@ import {
   draftOf, commitInputEdit, removeInput, SansPicker, sansRefusal, sansOverlapRefusal, sansFlags,
   medOverlapRefusal, upchitRefusal, downOverUpchitRefusal, applyMedPlan, normalizeInputDraft,
   medKeptSegments, mintMedSegments, ordISO, DocField, oilGate, oilAnswered,
-  rosterOptions as people, inputTone, medPlanProtected,
+  rosterOptions as people, inputTone, medPlanProtected, medSegmentsProtected,
 } from './inputedit'
 import { docFields, docHas, rowDocIds } from '../state/docs'
 import { useVersion } from './useStore'
@@ -489,7 +489,7 @@ export function InputsPage() {
             const segs = medKeptSegments(aOrd, bOrd, clashes, choices)
             if (!segs.length) return          // toasted; nothing written
             /* preflight the trim cascade before any withdrawal/write (P2-QREV-01) */
-            if (medPlanProtected(newMedTrimPlan(filedFor(), type, segs[0].startOrd, segs[0].endOrd, null, keepTail, bOrd))) {
+            if (medSegmentsProtected({ person: filedFor(), type, yr: baseYear() }, segs, keepTail, bOrd, null)) {
               return HOOKS.toast('This week is locked — it was published by an older version and can’t be edited', 'warn')
             }
             const ok = writeInputsBatch(() => {
@@ -560,6 +560,9 @@ export function InputsPage() {
         dateLabel,
         effects: upchitEffects(draft.person, dateOrd(dateLabel, editRow.yr), editRow),
         commit: (removals: any[]) => {
+          if (medPlanProtected(removals.map(row => ({ row })))) {
+            return HOOKS.toast('This week is locked — it was published by an older version and can’t be edited', 'warn')
+          }
           let ok = false
           writeInputsBatch(() => {
             ok = commitInputEdit(editRow, draft)
@@ -589,6 +592,9 @@ export function InputsPage() {
           commit: (choices: string[], keepTail: any[]) => {
             const segs = medKeptSegments(aOrd, bOrd, clashes, choices)
             if (!segs.length) return
+            if (medSegmentsProtected({ ...draft, yr: editRow.yr }, segs, keepTail, bOrd, editRow)) {
+              return HOOKS.toast('This week is locked — it was published by an older version and can’t be edited', 'warn')
+            }
             const g0 = segs[0]
             const d2 = {
               ...draft,

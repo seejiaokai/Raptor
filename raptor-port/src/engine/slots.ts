@@ -465,7 +465,7 @@ export function acceptedDay(inp:any){
 export function reconcileDayFiling(di:any){
   const dt=(DAYS[+di]||{}).dt; if(dt==null)return;
   INPUTS.forEach((inp:any)=>{
-    if(!inputCoversDate(inp,dt))return;
+    if(!inputCoversDate(inp,dt)||inputProtected(inp))return;
     /* 'u' (a global filing DECISION with no ground row) and 'r' (dormant) are not
        per-week ground landings — untouched. */
     if(inp.acc==='u'||inp.acc==='r')return;
