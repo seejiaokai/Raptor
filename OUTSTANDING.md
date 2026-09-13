@@ -188,8 +188,9 @@ Astra says the original Bug 2 may **not** reproduce (EditWeek `ed=false`; SchedB
 `iid` (`[INP-CSID]` done), day notes as `{rid,t}` objects, coordinated storage-format reset;
 plus a history-ordering determinism fix and a cross-week accepted-input edit/delete guard. Both
 providers inspected the built code; all findings fixed. Remaining in step 1: **1B** (`[TRK-CSID]`,
-Tracker ids — split 13 Sep 26: **1B-i COURSE ids DONE** and holding for "merge live" on
-`claude/trk-csid-course-ids`; **1B-ii SYLLABUS ids OPEN**) and **1C** (`who→personId`,
+Tracker ids — split 13 Sep 26: **1B-i COURSE ids DONE + LIVE**; **1B-ii SYLLABUS ids
+BUILT**, awaiting Fable review + gates + "merge live" on `claude/trk-csid-syllabus-ids`)
+and **1C** (`who→personId`,
 parity-sensitive, its own pass). One
 deferred follow-up (finding 2, orphaned `Other` hard-grade) noted below.
 A whole-app architectural review by BOTH Astra and Fable (read-only) converged on one story:
@@ -314,15 +315,31 @@ match the shipped enrolment migration (read-back proves the in-memory whiteboard
 not the backend) — this is `[TRK-DISK]`, owned by `[DB-STEP]` (RC5); no interim
 patch built. Fable-high final review of the built diff before merge.
 
-**1B-ii — SYLLABUS ids — OPEN (larger, its own spec/red-team/review).**
-Syllabuses are GLOBAL and built-in syllabus templates are identified by **name in
-shipped code** (`SYLLABI`, `DEFAULT_LAYOUTS`, `SYL_ALIAS` bases, `SYL_ORDER`,
-`SYL_RENAME`) plus a web of name-keyed prefs (`SYL_HIDDEN`/`SYL_ALIAS`/`SYL_TOMB`/
-`SYL_ORDER`) — so renaming a syllabus still moves data by name (`moveSylData`).
-Give syllabuses stable ids and re-base the global + per-(course,syllabus) keys.
-This is where the colon-refusal on syllabus/chart names can be relaxed too.
-- **Model:** build on Opus (multi-file plumbing); Astra red-team the spec; a
-  Fable-high final review (persisted data, silent-defect risk).
+**1B-ii — SYLLABUS ids — BUILT (13 Sep 26; on `claude/trk-csid-syllabus-ids`, awaiting Fable-high review → gates → owner "merge live"; NOT merged).**
+Syllabuses now carry stable hidden ids: built-ins get **deterministic shipped ids**
+from a `BUILTIN_SYL` table (`app/sylIds.js` — `sb2024`/`sb2026`/`sbtx2026`/
+`sbagaa2026`), user charts a minted `sc…`; grammar `^s[bc][0-9a-z]+$`. The global
+catalogue is `SYLS`=`{id,name,base?,userNamed?}[]` (`v3:master:sylcat`), `base`
+authoritative from the table. **Renaming a syllabus is a label change that moves
+nothing** (`renSyl` = set name + `userNamed`; `moveSylData`/`purgeLegacySyl`/
+`SYL_ALIAS`/`SYL_RENAME` all deleted). Conversion = **"keep charts, reset marks"**
+(owner): `migrateSylIds` converts the global catalogue IN PLACE via a durable
+**payload journal** (compute-once, whole-object writes, `purge = sources ∖
+destinations`, verify after all purges; two flags `kSylCatMig`/`kSylReset`; legacy
+layout event-ids translated via `padId`/`SPECIAL` incl. `__font`) and RESETS the
+per-(course,syllabus) student layer. Boot reconcile `reconcileBuiltins` (also in
+`reloadFromStore`). `plan.sylId` replaces `plan.sylName`. **Import guardrail
+(owner, §19):** charts import from any version; student marks/dates/rosters import
+ONLY from an id-native v3 file with a `sylcat` (pre-v3 / unresolved → refused, plain
+message; charts still import). File version → 3. **Colon relaxed** on syllabus/
+chart names (course names keep the refusal). One converter `app/sylIds.js` shared
+with Import. Spec + 7-round Astra red-team (APPROVED):
+`raptor-port/docs/superpowers/specs/2026-09-13-trk-csid-syllabus-ids-spec.md` (§§14–19 binding).
+Tests: `app/sylIds.test.ts` (pure), `app/sylIds.migration.test.ts` (KEEP/RESET
+journal harness), tracker.test.tsx re-baselined (rename/reorder/delete/dup/guardrail),
+smoke fixtures → ids + v3. Inherited `[TRK-DISK]` durability limitation stands.
+- **Remaining:** Fable-high review of the built diff → full gates → push + Vercel →
+  HOLD for owner "merge live".
 
 ### [TRK-ATTEMPTS] Keep a student's attempt history — OPEN (small, feature)
 Remember a student's *earlier* tries at an event, not just the latest grade. More a

@@ -202,7 +202,8 @@ const ORD_MODES = {
     title: 'Syllabus order',
     note: 'Drag a row, or use ▲/▼. This sets the order of the Syllabus dropdown for every course.',
     read: () => core.orderedSylNames(),
-    tag: n => (core.builtinOf(n) ? (core.CUSTOMS[n] ? 'built-in ✎ edited' : 'built-in') : 'custom'),
+    /* the modal lists LABELS (unique per catalogue, §9); resolve label→id to tag */
+    tag: n => { const id = core.sylIdOf(n); return (id && core.builtinOf(id)) ? (core.sylHasOwnDef(id) ? 'built-in ✎ edited' : 'built-in') : 'custom'; },
     save: l => core.saveOrderList(l),
   },
   course: {
@@ -230,11 +231,15 @@ function OrdModalInner({ mode }) {
   const fromRef = useRef(null);
   /* Deleted built-ins can only be restored for syllabi; courses and crew have
      no shipped originals to come back from. */
-  const hid = mode === 'syllabus' ? core.SYL_NAMES.filter(n => core.isHidden(n)) : [];
+  /* deleted built-ins to offer for restore — {id,name} (§9 CSID2-09) */
+  const hid = mode === 'syllabus' ? core.hiddenBuiltins() : [];
   const move = (i, j) => setList(l => { const a = [...l]; [a[i], a[j]] = [a[j], a[i]]; return a; });
-  const restore = async n => {
-    await core.restoreHiddenSyl(n);
-    setList(l => (l.includes(n) ? l : [...l, n]));
+  const restore = async item => {
+    await core.restoreHiddenSyl(item.id);
+    /* the actual label may have gained a suffix (ensureUniqueLabel), so read it
+       back rather than reuse the shipped name (review CSID-REV-11) */
+    const label = core.sylName(item.id) || item.name;
+    setList(l => (l.includes(label) ? l : [...l, label]));
   };
   return (
     <>
@@ -270,10 +275,10 @@ function OrdModalInner({ mode }) {
           <div id="ordHiddenWrap" style={{ marginTop: 12 }}>
             <div className="mini" style={{ marginBottom: 6 }}>Deleted built-in syllabi — restore to bring one back into the dropdown.</div>
             <div id="ordHidden" style={{ maxHeight: '22vh', overflow: 'auto', border: '1px solid var(--line)', borderRadius: 8 }}>
-              {hid.map(n => (
-                <div key={n} className="ordrow">
-                  <span className="onm">{n}</span><span className="otag">deleted</span>
-                  <button title="Restore this built-in syllabus" onClick={() => restore(n)}>↺ Restore</button>
+              {hid.map(item => (
+                <div key={item.id} className="ordrow">
+                  <span className="onm">{item.name}</span><span className="otag">deleted</span>
+                  <button title="Restore this built-in syllabus" onClick={() => restore(item)}>↺ Restore</button>
                 </div>
               ))}
             </div>
@@ -301,8 +306,8 @@ export function OrdModal() {
    default). The ids keep their `copy` prefix — the mechanism is the same copy
    the "Save a copy" dialog made; only its job widened. */
 function CopyModalInner() {
-  const names = core.orderedSylNames();
-  const picked = names.filter(n => core.copyPick[n]).length;
+  const ids = core.orderedSylIds();          /* copyPick keys by syllabus id (§9) */
+  const picked = ids.filter(id => core.copyPick[id]).length;
   return (
     <>
       <div className="overlay" id="copyOverlay" style={{ zIndex: 90, display: 'block' }} onClick={core.closeCopy}></div>
@@ -326,10 +331,10 @@ function CopyModalInner() {
         </div>
         <div className="mini" style={{ marginBottom: 6 }}>Syllabi to include ({picked} ticked)</div>
         <div id="copySylList" style={{ maxHeight: '30vh', overflow: 'auto', border: '1px solid var(--line)', borderRadius: 8, padding: 6 }}>
-          {names.map(n => (
-            <label key={n} style={{ display: 'block', padding: '2px 4px' }}>
-              <input type="checkbox" checked={!!core.copyPick[n]}
-                onChange={e => core.setCopyPick(n, e.target.checked)} /> {n}
+          {ids.map(id => (
+            <label key={id} style={{ display: 'block', padding: '2px 4px' }}>
+              <input type="checkbox" checked={!!core.copyPick[id]}
+                onChange={e => core.setCopyPick(id, e.target.checked)} /> {core.sylName(id)}
             </label>
           ))}
         </div>

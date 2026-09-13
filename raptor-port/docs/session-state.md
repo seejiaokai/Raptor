@@ -1,77 +1,71 @@
-# Session handoff — [ARCH-STACK] 1B-i (Tracker COURSE ids) shipped; next is 1B-ii (SYLLABUS ids)
+# Session handoff — [TRK-CSID] 1B-ii (Tracker SYLLABUS ids): BUILT + REVIEWED + GATED, at HOLD for "merge live"
 
-## Where it started
-Owner asked to do ARCH-STACK step 1B ([TRK-CSID]) — stable hidden ids for Tracker
-COURSES and SYLLABUSES. On recon it split cleanly: courses are a clean mirror of the
-enrolment-id work; syllabuses are tangled (global, built-ins identified by name in code).
-Owner chose **two passes, courses first**. This session did the course pass (1B-i).
+## Where it is
+1B-ii is **BUILT, reviewed and gated** on branch `claude/trk-csid-syllabus-ids` (off
+`main`, NOT merged). Five cross-provider Codex review rounds ran on the built diff; all
+28 findings across the rounds were fixed with regression pins. **All local gates green**
+(unit **4697**, build ✓, tfin **728/0**, smoke:tracker ✓). Resting state: branch pushed,
+Vercel preview link handed to the owner, PR unsubscribed. **HOLD for owner "merge live".**
 
-## Shipped
-- **[TRK-CSID] 1B-i — course ids** — code MERGED to `main` (PR #398) + sequence-review docs
-  (PR #399). **Now LIVE + verified (13 Sep 26).** IMPORTANT correction: #398's first publish
-  FAILED on the known `addStudent` smoke flake, so it was NOT actually live even though the
-  earlier handoff claimed "deploy green, live-verified." A later session caught this, re-published
-  `main` via workflow_dispatch (all gates green, incl. smoke), and live-verified on the deployed
-  site (Tracker renders, course 26ABSG loads by id, no console errors). Courses carry an opaque
-  `{id,name}` id; every per-course key
-  files under the id; renaming a course is now label-only (moves nothing). New
-  `src/tracker/app/courseIds.js` + `migrateCourseIds` (resumable, read-back-verified,
-  fail-closed preflight, translates `v3:links`); fail-closed boot in `App.jsx`; file
-  version 2 in `app/fileFormat.js`. Spec (4-round Astra red-team APPROVED + Fable-high
-  built-diff review, all fixed): `docs/superpowers/specs/2026-09-13-trk-csid-course-ids-spec.md`.
+## Round-5 (final) review — 3 findings, all fixed with pins
+- **CSID-IR-01** (silent loss): a `plan.custom` legacy course's OWN hand-drawn layout
+  was misfiled onto the built-in the sylName spells and its source purged — the edited
+  chart lost its positions. Fixed: the course's own layout key is claimed for the minted
+  edited-chart id (`editedLayKey`), keyed by the exact source key. Pin in the migration
+  harness.
+- **CSID-IR-02** (stale-marks resurface): the RESET only swept courses still in the
+  visible index; a deleted course keeps its records, so a later re-import surfaced old
+  marks. Fixed: the journal's course list is now `allCourseNamespaces()` (every persisted
+  namespace), swept + plan-repaired without re-adding to the index. Pin added.
+- **CSID-IR-03** (over-strict refusal): reference completeness is against the UNION of
+  the charts + students catalogues (§15), not `students.sylcat` alone. Fixed in
+  `normalizeImport`, `reconcileStudentsSyllabi`, and `fileFormat.checkCharts`
+  (union passed from `readFile`). Pins in tracker + fileFormat tests.
 
-## Unfinished
-- none. (1B-ii below is the next planned step, not leftover work — it is recorded in
-  `OUTSTANDING.md` [TRK-CSID] / [ARCH-STACK]. This file stays only to tee up that next task,
-  as the owner asked; delete it once 1B-ii starts on its own branch.)
+## What was built (the spec's §§14–19, binding)
+- **New pure module `src/tracker/app/sylIds.js`** (mirrors `courseIds.js`): the
+  `BUILTIN_SYL` deterministic-id table (`sb2024`/`sb2026`/`sbtx2026`/`sbagaa2026`),
+  `mintSylId`, grammar `SYL_ID_RE=^s[bc][0-9a-z]+$`, `classifyDefinedName`,
+  `upgradeSyllabi` (name-keyed→id + sylcat), `buildUnionSylcat`, `reconcileSylIds`.
+- **`core.js`**: the `SYLS` catalogue + id helpers (`sylName`/`sylIdOf`/`curSylId`/
+  `curSylName`/`sylSource`/`baseOf`/`builtinOf`/`isHidden`/`sylHasOwnDef`/
+  `ensureUniqueLabel`); id-keyed key builders (`kMarks`/`kDates`/`kLayout` via
+  `curSylId()`); `plan.sylId`; **`migrateSylIds`** (payload journal — build-once,
+  KEEP catalogue in place + RESET student layer, two flags `kSylCatMig`/`kSylReset`,
+  `purge = sources ∖ destinations`, verify after all purges, legacy layout event-id
+  translation incl. `__font`); **`reconcileBuiltins`** (boot + `reloadFromStore`);
+  `renSyl`/`delSyl`(sweep + all-course plan repair)/`dupSyl`(empty layer)/`addSyl`
+  catalogue-only; `moveSylData`/`purgeLegacySyl`/`SYL_ALIAS`/`SYL_RENAME` deleted;
+  file `collectCharts`/`applyCharts`/`collectStudents`/`applyStudents`/`normalizeImport`/
+  `importClick` id-keyed + the **v3 student-import guardrail (§19)**.
+- **`fileFormat.js`**: `FILE_VERSION=3`, dual-shape charts/students, `sylcat`
+  validation, colon relaxed on chart/syllabus names (course names keep it).
+- **UI**: Header syllabus `<select>` by id; Modals OrdModal syllabus-mode + copy
+  picker by id (names-in-modal kept).
+- **Docs**: CLAUDE.md Tracker section flipped to DONE; OUTSTANDING.md 1B-ii → BUILT.
 
-## Branch state
-- Designated branch this session: `claude/trk-csid-course-ids` — its PR (#398) is MERGED.
-- **The next session must reset before new work** (do not stack onto merged history):
-  `git fetch origin main && git checkout -B claude/trk-csid-syllabus-ids origin/main`
+## Tests
+- `app/sylIds.test.ts` (pure), `app/sylIds.migration.test.ts` (KEEP/RESET journal
+  harness — now incl. the IR-01 edited-layout and IR-02 deleted-namespace pins),
+  `app/fileFormat.test.ts` (§8 colon relaxation + the IR-03 union-completeness pins),
+  `tracker.test.tsx` re-baselined (dup=empty, rename=catalogue-only, guardrail import,
+  v3 reconcile, + the IR-03 union-reference pin). Whole suite `npm test`: **4697 green**.
 
-## Gates (this session, watched)
-- `npm test` 4670/275 files · `npm run build` clean · `node reference/tfin.js` 728/0 ·
-  `npm run test:e2e` 423 passed/0 failed in CI (2 specs — geometry + lw-phone — fail only on
-  a loaded local Windows box; trust CI) · `npm run smoke:tracker` 427/0 in CI (its
-  `addStudent` step is the documented slow-local-machine flake; trust CI).
-- `probes:adapted` / `perf` not run — this PR was Tracker-only (no scheduler/UI/perf touch).
-- Run all from `raptor-port/`; a fresh container needs `npm ci` first.
+## Remaining steps (owner's loop)
+1. **DONE** — review (5 Codex rounds) + full gates + push + Vercel link + PR unsubscribed.
+2. **HOLD for "merge live".** Nothing merges without it. On the owner's word: merge on
+   green → wait for Pages → load the live Tracker tab and look → one "it's live" notification.
 
-## Open questions
-- none.
+## Gotcha learned this session
+- Course ids are lowercase base36 (`^c[0-9a-z]+$`); a test fixture id with an
+  uppercase letter fails the migration preflight (returns false, no bootError there).
+- The smoke suite HALTS on the first uncaught error (linear script), so fix all
+  syllabus-key references (names→ids) before a run is informative; it serves `dist/`,
+  so `npm run build` first.
 
-## Pick up here — 1B-ii: SYLLABUS ids (the second, harder pass)
-Give syllabuses stable hidden ids and re-base the global + per-(course,syllabus) keys, so
-renaming a syllabus becomes label-only too (today `moveSylData` moves data by name). Harder
-than courses because syllabuses are GLOBAL and built-in templates are identified by NAME in
-shipped code (`SYLLABI`, `DEFAULT_LAYOUTS`, `SYL_ALIAS` bases, `SYL_ORDER`, `SYL_RENAME`) plus
-name-keyed prefs (`SYL_HIDDEN`/`SYL_ALIAS`/`SYL_TOMB`/`SYL_ORDER`). This is also where the
-colon-refusal on syllabus/chart names can be relaxed. HEAVY, persisted-data, silent-defect
-risk. Mirror 1B-i's shape: `courseIds.js` is the model for a new `sylIds.js`; `migrateCourseIds`
-is the model for the migration; keep the fail-closed-boot + file-version + reconcile-on-import
-patterns. Full item + context: `OUTSTANDING.md` [TRK-CSID] 1B-ii.
-
-**Sequence re-review (Astra/GPT-6 high, this session) — do this in 1B-ii:** ship the syllabus
-conversion with rename/reorder/delete/copy behaviour tests as the **first invariant-harness
-increment** (the split/incremental testing approach — small harness now, grown per step). Classify
-any invariant hard-enforce vs advisory-detect vs frozen-issued before coding it. Full dispositions
-(SEQ-001..004) in `docs/superpowers/specs/2026-09-13-architecture-rootcause-plan.md` "Sequence
-re-review" section; summary in `OUTSTANDING.md` [ARCH-STACK].
-
-Process (owner's standing loop for this stack): spec → Astra (Codex) red-team of the spec to
-APPROVED → build on Opus 4.8 high, test-first → Fable-high review of the built diff → full
-gates (npm test, build, tfin 728/0, test:e2e, smoke:tracker) → push, Vercel link, HOLD for
-"merge live". Nothing merges without it.
-
-### Ready-to-paste opening prompt for the next chat
-> Picking up Raptor (fresh clone, main). ARCH-STACK step 1B-i (course ids) is DONE and live on
-> main. Now do **1B-ii — [TRK-CSID]: stable hidden ids for Tracker SYLLABUSES** (the second
-> pass; courses are already done). Read first, in order: raptor-port/docs/session-state.md,
-> then raptor-port/docs/superpowers/specs/2026-09-13-trk-csid-course-ids-spec.md (the course
-> pass — mirror its shape), then the [TRK-CSID] and [ARCH-STACK] items in OUTSTANDING.md.
-> Follow my auto-memories. Treat this as HEAVY (persisted data, silent-defect risk): syllabuses
-> are GLOBAL and built-in templates are name-identified in shipped code, so it is bigger than
-> courses. New branch off main: claude/trk-csid-syllabus-ids. Process: spec → Astra red-team →
-> build (Opus) → Fable-high review of the built diff → full gates → push, Vercel link, HOLD for
-> "merge live".
+## Opening prompt for a fresh chat (if handing off)
+> Picking up Raptor on `claude/trk-csid-syllabus-ids`. [TRK-CSID] 1B-ii is BUILT,
+> reviewed (5 Codex rounds, all findings fixed) and fully gated (unit 4697 / build /
+> tfin 728/0 / smoke:tracker). Read raptor-port/docs/session-state.md. It is at HOLD:
+> branch pushed, Vercel link given, PR unsubscribed. Do NOT merge until I say "merge
+> live"; on that word run the "done means live" chain and send one notification.
