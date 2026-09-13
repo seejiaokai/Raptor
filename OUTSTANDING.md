@@ -210,6 +210,15 @@ what to stop):** `raptor-port/docs/superpowers/specs/2026-09-13-architecture-roo
   crux) → build → inspect → gates → hold for "merge live". Start with (1) — cheap, independent.
 - **Context:** the plan doc above (synthesises both reviews); memories
   `architectural-root-cause-before-minute-fixes`, `future-undo-semantics-multiuser`.
+- **Sequence re-review (Astra/GPT-6 high, 13 Sep 26) — REVISE, backbone SOUND.** Adds a
+  **split/incremental invariant + property-testing layer** (small harness now → grown per step →
+  property tests at the command layer → persistence fault tests at the DB step; NOT big-bang, NOT
+  DB-eve). Invariants must be CLASSIFIED first (hard-enforce vs advisory-detect vs frozen-issued) —
+  don't enforce example rules literally (double-booking is intentionally warn-not-block; only the
+  ISSUED snapshot is immutable). Order refinements: undo (3) must respect the amendment publish
+  boundary; pull the transaction/conflict contract + storage test-double ahead of undo (into 2);
+  do one-Absence (4) before retiring the 3 undo stacks. Full dispositions in the plan doc's
+  "Sequence re-review" section.
 - **1A follow-ups (post-build inspection, 13 Sep 26):** two faces of the cross-week accepted-input
   LANDING model that step (4) "one Absence record" dissolves. (a) **DONE now (owner: guard):** editing/
   deleting an accepted input whose ground row is on a non-loaded week is refused with "Load the week
