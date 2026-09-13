@@ -115,6 +115,39 @@ Independent of the undo rework; these are the data-loss / authorization risks.
 
 ---
 
+## Phase 1 — RED-TEAM REVISION (Astra, 13 Sep 26)
+Astra red-teamed the Phase 1 plan (verdict REVISE, 6 findings). Re-processed through
+the owner's dev-phase rule (`[[dev-phase-reset-demo-data-not-migrate]]` — pre-promulgation,
+demo data is reset not migrated) and the guardrail-simplify rule, three findings dissolve
+and three are real forward-behaviour fixes. The revised Phase 1:
+
+- **P1 (real, HIGH) — delete-vs-undo needs a real signal, not `HIST.lock`.** There are TWO
+  HIST objects; a scheduler-undo restores the input under the SCHEDULER lock while the Leave
+  War lock is false, so "unlocked = deliberate delete" would delete a leave an undo is
+  restoring (breaks `quarantine-pile1.test.ts:108`). Fix: an explicit RECONCILIATION CONTEXT
+  distinguishing (deliberate war mutation) / (scheduler-history restore) / (Leave War history
+  restore) / (ordinary sync), carried across the whole synchronous notify cycle; propagate a
+  delete ONLY on a deliberate war mutation; keep both undo paths working.
+- **P2 (revised) — block medical creation on the war for ALL roles** at every writer
+  (`setCell`/`setCellRange`/`setCells`/`setBidState`/`shiftBid`) AND hide medical from the war
+  pickers (`Matrix.tsx`, `BidPicker.tsx`); keep member-filed medical DISPLAY + `ingestFromRaptor`.
+  **Existing war-originated medical is demo data → reset it, NO migration/back-compat code**
+  (owner rule). The builder must only ensure blocking creation doesn't break on existing rows.
+- **P3 (real) — reset Leave War undo history only at GENUINE login/logout**, NOT on a
+  role/viewer PREVIEW toggle (the admin "view as member" contract preserves history); enforce
+  permissions against the actual restoration diff; make `lwCanUndo`/`lwCanRedo` reflect whether
+  restoration is permitted.
+- **P4 (SIMPLIFIED) — "Clear old data" is CLUTTER-ONLY.** It removes only old plan pucks, old
+  day notes, and genuinely-empty past weeks. It **never deletes any leave, medical, or duty
+  input**, so the OIL-balance dependency (P4-001) and the "which records are leave" predicate
+  (P4-002) both fall away. Never touch the loaded week in ANY collection; dry-run selection ==
+  execute selection; honest confirm.
+- **P5** fix the false-green test with a real approved non-medical leave fixture, assertions
+  over ALL matching inputs, and the real bidirectional notify; **P6** Quals ✕ confirm; **P7** doc fix.
+
+DISSOLVED by the dev-phase rule / clutter-only simplification: P2-001 (existing-medical
+migration), P4-001 (duty-sourced OIL balance), P4-002 (leave-retention predicate).
+
 ## Process (owner's standing rules)
 HEAVY (silent data loss / permissions). Phase 1: this spec → **Astra red-team of the
 plan** (Fable is ~18% until Mon 19:00, so Astra leads) → Astra build with per-finding
