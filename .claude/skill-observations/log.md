@@ -2351,3 +2351,48 @@ Checkpoint (tasks #59, #60 complete): no further observations.
 **Suggested improvement:** In the plan→build handoff guidance, add a decision rule: only insert a dedicated pre-build "execution contract / watch-areas / good-code bar" pass when the spec is THIN or the reviewer's fix directions were vague; when the spec is already detailed (exact symbols, ordering, tests), skip it and rely on test-first + one review of the real diff. When a pre-build guide IS wanted, route it to the token-cheaper / non-scarce provider (here Astra/Codex, preserving the scarce Fable budget per [[prefer-codex-for-bug-checks-fable-scarce]]). Have the builder self-author a lightweight build-contract inline (free) instead of commissioning a provider round-trip.
 
 **Principle:** A review artifact's value is marginal over what the plan already carries; a pre-build execution guide pays off in inverse proportion to how specific the approved spec already is. Reviewing real code beats reviewing a hypothetical plan, and tests-first is the cheapest anti-drift mechanism. Choose the anti-drift instrument by the gap it actually closes, and by which budget it spends.
+
+### Observation 155: Re-baselining an order-dependent test block after a deliberate behavior change
+
+**Status:** OPEN
+**Date:** 2026-09-14
+**Session context:** [TRK-CSID] 1B-ii build. A spec's owner decisions deliberately DELETED behaviors a large, order-dependent test block asserted (dup-copies-marks, legacy-marks-import, an enrolment migration). 25 tests failed; naively "making them pass" risks weakening assertions to match a bug.
+**Skill:** test-driven-development (and verification-before-completion)
+**Type:** open-source
+**Phase/Area:** test maintenance when requirements change
+
+**Issue:** When an approved change removes behavior, failing tests fall into three kinds that need different handling, and conflating them is dangerous: (a) still-valid invariants that only need a FIXTURE update (e.g. an id that used to be a name); (b) tests asserting now-DELETED behavior — these must be rewritten to the NEW contract or removed, never softened to pass; (c) coverage of the new behavior that does not exist yet. A further trap: order-dependent shared-state blocks cascade — one root failure breaks many downstream tests, so the true failure count is smaller than it looks.
+
+**Suggested improvement:** Add a recipe to the TDD/verification skills for re-baselining after a deliberate behavior change: (1) triage failures into fixture-fix / behavior-changed / missing-coverage before editing; (2) fixture-fix the still-valid ones; (3) for deleted behavior, REMOVE or rewrite to the new contract (cite the spec clause), never weaken an assertion to green; (4) add a NEW order-INDEPENDENT harness for the new behavior (each test seeds its own state) rather than extending the fragile shared-state block; (5) fix root failures first and re-run, since cascades inflate the count.
+
+**Principle:** A failing test after a requirements change is a question ("is this behavior still wanted?"), not a defect to silence. Sort failures by WHY before touching them, delete tests for deleted behavior openly, and grow new coverage in an order-independent harness — never make a red test green by lowering the bar.
+
+### Observation 156: On Windows/git-bash, a whole-file diff is usually a CRLF↔LF flip — verify and normalize before a PR
+
+**Status:** OPEN
+**Date:** 2026-09-14
+**Session context:** Same build. `git diff main...HEAD` showed a smoke-test file as ~8000 changed lines when the real edits were ~15; the file had flipped to CRLF while `main` was LF, which would have polluted the PR and the reviewer's diff.
+**Skill:** requesting-code-review (pre-PR hygiene)
+**Type:** open-source
+**Phase/Area:** pre-push diff hygiene on mixed-EOL / Windows checkouts
+
+**Issue:** A tool that rewrites a whole file (a scripted line edit, some formatters) can flip its line endings, producing a diff that reads as a total rewrite and buries the real change. Two detection tools are UNRELIABLE on git-bash for this: `grep -c $'\r'` reported every line as matching even on an LF file, and `sed -i 's/\r$//'` silently did nothing. The reliable checks were `git diff --ignore-cr-at-eol --stat` (collapsed the fake 8000-line diff to the real ~200) and a binary read/replace in Python (`b.replace(b'\r\n', b'\n')`).
+
+**Suggested improvement:** In requesting-code-review's pre-PR checklist, add: before pushing, run `git diff --ignore-cr-at-eol --stat <base>...HEAD`; if a file's normal stat is far larger than its `--ignore-cr-at-eol` stat, it flipped line endings — renormalize to the repo's convention with a binary tool (Python `b.replace(b'\r\n', b'\n')`), not shell `grep $'\r'` / `sed 's/\r$//'`, which misbehave on git-bash. Keep the PR to real content so the reviewer's attention (and any diff-size budget) is not wasted.
+
+**Principle:** Diff noise is a reviewer tax and a place for real defects to hide; confirm a diff is content, not encoding, before asking anyone (or another model) to review it — and pick detection/fix tools that actually work on the platform, not ones that merely look right.
+
+### Observation 157: claudex-loop `review --host X` sets the reviewer to the OTHER provider — easy to invert
+
+**Status:** OPEN
+**Date:** 2026-09-14
+**Session context:** Same build. Wanting Codex to review the built diff, the runner was invoked as `review --host codex`; that made the REVIEWER Claude (host=codex → reviewer=claude) and it exited in 2.45s. The correct cross-provider call for a Codex review is `--host claude` (host=claude → reviewer=codex), as the codex-review skill states ("host=claude, reviewer Codex").
+**Skill:** claudex-loop (codex-review / claudex-route)
+**Type:** open-source
+**Phase/Area:** runner invocation / role mapping
+
+**Issue:** `--host` names the HOST/coordinator; the reviewer is the cross-provider partner. So `--host codex` yields a Claude reviewer and `--host claude` yields a Codex reviewer — the opposite of the intuitive reading "host = who reviews". A fast non-zero exit (a couple of seconds) is the tell that the wrong reviewer CLI ran or rejected the call; exit 0 from the runner still is not APPROVED (verdict may be REVISE/failed).
+
+**Suggested improvement:** In the claudex-loop / codex-review skill, add a one-line role table at the invocation point: "to get a CODEX review, run `--host claude`; to get a CLAUDE review, run `--host codex` — `--host` is the coordinator, the reviewer is the other provider." Note that a review that returns in a few seconds almost certainly failed (wrong CLI/model/flags), and that runner exit 0 ≠ APPROVED — always read `result.json`'s `verdict`.
+
+**Principle:** Name the axis explicitly when a flag's plain reading inverts its effect; and treat suspiciously fast tool completions as failure signals, not success.
