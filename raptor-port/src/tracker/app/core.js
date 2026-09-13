@@ -476,7 +476,12 @@ function padId(id) {
 function translateLayoutKeys(lay, idSet) {
   if (!lay || typeof lay !== 'object') return { layout: lay, ok: true };
   const mapKey = k => idSet.has(k) ? k : (idSet.has(padId(k)) ? padId(k) : null);
-  const tstr = s => (typeof s === 'string') ? (idSet.has(s) ? s : (idSet.has(padId(s)) ? padId(s) : s)) : s;
+  const tok = s => idSet.has(s) ? s : (idSet.has(padId(s)) ? padId(s) : s);
+  /* a string may be a bare event id OR a COMPOSITE key: an edge is `<id>▸<id>`
+     and a crossing pair is `<edgekey>|<edgekey>` (__derived/__merges/__unmerges,
+     review CSID-02). Translate each event-id token in place; a non-event token
+     (a line id, a side) resolves to itself (padId is a no-op, not in the set). */
+  const tstr = s => (typeof s === 'string') ? ((s.indexOf('▸') >= 0 || s.indexOf('|') >= 0) ? s.replace(/[^▸|]+/g, tok) : tok(s)) : s;
   const twalk = v => Array.isArray(v) ? v.map(twalk) : (v && typeof v === 'object' ? Object.fromEntries(Object.keys(v).map(k => [k, twalk(v[k])])) : tstr(v));
   const out = {}; let ok = true;
   const put = (o, k, val) => { if (Object.prototype.hasOwnProperty.call(o, k)) { if (JSON.stringify(o[k]) !== JSON.stringify(val)) ok = false; } else o[k] = val; };
@@ -929,14 +934,21 @@ async function buildSylJournal() {
   const hidden = []; for (const n of hiddenNames) { const id = idByName[n]; if (id && isBuiltinSylId(id) && !hidden.includes(id)) hidden.push(id); }
   const tomb = Object.create(null); for (const n of tombNames) { const id = idByName[n]; if (id && isBuiltinSylId(id)) tomb[id] = 1; }
 
-  /* per-course plan target id (drops __oldSyl; unresolved → the default built-in) */
+  /* per-course plan target id (drops __oldSyl). The fallback and every target are
+     validated against the LIVE, non-tombstoned catalogue being built (review
+     CSID-04): a course pointing at a vanished/tombstoned chart is repaired to a
+     real remaining syllabus, never to a deleted default. */
   const plans = Object.create(null);
-  const fallbackId = builtinIdByName(DEFAULT_SYL_NAME) || (BUILTIN_SYL[0] && BUILTIN_SYL[0].id);
+  const liveIds = new Set(sylcat.map(e => e.id));
+  const preferred = builtinIdByName(DEFAULT_SYL_NAME);
+  const fallbackId = liveIds.has(preferred) ? preferred : (sylcat[0] && sylcat[0].id);
   for (const cE of COURSES) {
     const p = planSylByCourse[cE.id];
     /* a plan.custom course points at its EDITED chart's id, else the sylName's id (CSID-B04) */
     const nm = has(editedPlanName, cE.id) ? editedPlanName[cE.id] : (p && p.sylName);
-    plans[cE.id] = (nm && idByName[nm]) || fallbackId;
+    let t = nm ? idByName[nm] : null;
+    if (!t || !liveIds.has(t)) t = fallbackId;
+    plans[cE.id] = t;
   }
 
   /* the id-keyed definition store: built-in overrides + customs under their id */
@@ -1006,8 +1018,13 @@ async function applyResetJournal(j) {
        targets, point at the mapped syllabus id, drop the legacy fields */
     let p = sParse(await sGet(kPlan(c)), {}, 'object') || {};
     const np = { sylId: j.plans[c] || (BUILTIN_SYL[0] && BUILTIN_SYL[0].id), mode: p.mode || 'pace', epw: (p.epw != null ? p.epw : 2), target: null, target2: null, lulls: [] };
-    await sSet(kPlan(c), JSON.stringify(np));
-    await sSet(kRosterMig(c), '1'); await sSet(kIdMig(c), '1'); await delKey(kIdMap(c));
+    const npStr = JSON.stringify(np);
+    /* verify the plan + flag writes (review CSID-01) — sSet swallows a failed
+       write, so a stamped flag over an unwritten plan would strand the reset. */
+    await sSet(kPlan(c), npStr); if ((await sGet(kPlan(c))) !== npStr) return false;
+    await sSet(kRosterMig(c), '1'); await sSet(kIdMig(c), '1');
+    if ((await sGet(kRosterMig(c))) !== '1' || (await sGet(kIdMig(c))) !== '1') return false;
+    await delKey(kIdMap(c));
   }
   /* re-seed the demo pair on the default course, id-native (entries), exactly as
      a fresh store's born-clean course would have them. */
@@ -1024,13 +1041,33 @@ async function applyResetJournal(j) {
 
 /* Runs once per browser in init(), after migrateCourseIds()+loadCourses() and
    BEFORE loadCourse(). One retry on the same boot (mirror the course retry). */
+/* a persisted journal is REPLAYED, so its identities must be valid BEFORE any
+   write (§16, review CSID-03): every id a real syllabus id, every sb… id one the
+   code table ships. */
+function validSylJournal(j) {
+  if (!j || typeof j !== 'object') return false;
+  const ok = id => isSylId(id) && !(isBuiltinSylId(id) && !builtinSylById(id));
+  if (!Array.isArray(j.sylcat) || !j.sylcat.every(e => isSylEntry(e) && ok(e.id))) return false;
+  if (j.defs && !Object.keys(j.defs).every(ok)) return false;
+  if (j.plans && !Object.values(j.plans).every(id => id == null || ok(id))) return false;
+  if (Array.isArray(j.order) && !j.order.every(ok)) return false;
+  if (Array.isArray(j.hidden) && !j.hidden.every(ok)) return false;
+  if (j.tomb && !Object.keys(j.tomb).every(ok)) return false;
+  if (!Array.isArray(j.courseIds)) return false;
+  return true;
+}
 export async function migrateSylIds() {
   try {
-    const catDone = await sGet(kSylCatMig), resetDone = await sGet(kSylReset);
-    if (catDone && resetDone) return true;
+    if ((await sGet(kSylCatMig)) && (await sGet(kSylReset))) return true;
     let journal = null;
     const jraw = await sGet(kSylIdJournal);
-    if (jraw) { try { journal = JSON.parse(jraw); } catch (_) { journal = null; } }
+    if (jraw) {
+      try { journal = JSON.parse(jraw); } catch (_) { journal = null; }
+      /* a partial KEEP has already re-keyed some stores, so REDISCOVERY would
+         mis-read id-keyed data as names — a bad existing journal FAILS CLOSED,
+         it is never rebuilt (review CSID-03). */
+      if (!journal || !validSylJournal(journal)) { setBootError('The Tracker could not finish upgrading your syllabus data (the saved upgrade record was unreadable). Reload to try again.'); return false; }
+    }
     if (!journal) {
       journal = await buildSylJournal();
       if (!journal) return false;                 // buildSylJournal set bootError, or a read failure
@@ -1038,8 +1075,12 @@ export async function migrateSylIds() {
       await sSet(kSylIdJournal, jstr);
       if ((await sGet(kSylIdJournal)) !== jstr) return false;   // durable BEFORE any mutation
     }
-    if (!catDone) { if (!(await applyKeepJournal(journal))) return false; await sSet(kSylCatMig, '1'); }
-    if (!(await sGet(kSylReset))) { if (!(await applyResetJournal(journal))) return false; await sSet(kSylReset, '1'); }
+    /* Read-back BOTH flags before retiring the journal (review CSID-01): sSet
+       swallows a failed write, so a stamped-but-unwritten flag with the journal
+       deleted would send the next boot into rediscovery over converted data.
+       The replay is idempotent, so keeping the journal on any miss is safe. */
+    if (!(await sGet(kSylCatMig))) { if (!(await applyKeepJournal(journal))) return false; await sSet(kSylCatMig, '1'); if ((await sGet(kSylCatMig)) !== '1') return false; }
+    if (!(await sGet(kSylReset))) { if (!(await applyResetJournal(journal))) return false; await sSet(kSylReset, '1'); if ((await sGet(kSylReset)) !== '1') return false; }
     await delKey(kSylIdJournal);
     return true;
   } catch (err) {

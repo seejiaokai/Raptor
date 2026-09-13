@@ -18,10 +18,18 @@ import { useStorageImpl, storage } from '../storage.js'
 import { isSylId, isBuiltinSylId, builtinIdByName } from './sylIds.js'
 
 /* a Map-backed store so a seed is deterministic and isolated from localStorage */
-function makeStore(seed: Record<string, any>) {
+function makeStore(seed: Record<string, any>, failOnce?: string) {
   const m = new Map<string, string>()
   for (const [k, v] of Object.entries(seed)) m.set(k, typeof v === 'string' ? v : JSON.stringify(v))
-  useStorageImpl({ get: (k: string) => (m.has(k) ? m.get(k)! : null), set: (k: string, v: string) => { m.set(k, v) }, remove: (k: string) => { m.delete(k) }, keys: () => [...m.keys()] })
+  let failed = false
+  useStorageImpl({
+    get: (k: string) => (m.has(k) ? m.get(k)! : null),
+    /* failOnce: swallow the FIRST write to this key (the way sSet drops a "local
+       only" failure) so a resumability test can interrupt a specific step */
+    set: (k: string, v: string) => { if (failOnce && k === failOnce && !failed) { failed = true; return } m.set(k, v) },
+    remove: (k: string) => { m.delete(k) },
+    keys: () => [...m.keys()],
+  })
   return m
 }
 const get = async (k: string) => { const r = await storage.get(k); return r ? r.value : null }
@@ -152,5 +160,41 @@ describe('migrateSylIds — KEEP the catalogue, RESET the student layer', () => 
     expect(await get('v3:cx1:plan:roster'), 'and its roster').toBeNull()
     const plan = await getJSON('v3:cx1:plan')
     expect(plan && plan.sylId, 'the real plan survives, converted to a sylId').toBe('sb2026')
+  })
+
+  it('a course pointing at a vanished chart repairs to a LIVE non-tombstoned id, never a deleted default (review CSID-04)', async () => {
+    makeStore({
+      'v3:courses': [{ id: 'cx1', name: '26ABSG' }],
+      'v3:master:syltomb': { '2026': 1 },                 /* the default built-in is DELETED */
+      'v3:cx1:plan': { sylName: 'VANISHED CHART' },       /* points at a chart that no longer exists */
+      'v3:cx1:rostermig': '1', 'v3:cx1:idmig': '1',
+    })
+    expect(await core.migrateCourseIds()).toBe(true)
+    expect(await core.migrateSylIds()).toBe(true)
+    const cat = await getJSON('v3:master:sylcat')
+    const liveIds = new Set(cat.map((e: any) => e.id))
+    expect(liveIds.has('sb2026'), 'the tombstoned default is NOT in the catalogue').toBe(false)
+    const plan = await getJSON('v3:cx1:plan')
+    expect(liveIds.has(plan.sylId), 'the plan repaired to a live syllabus').toBe(true)
+    expect(plan.sylId, 'not the deleted default').not.toBe('sb2026')
+  })
+
+  it('an interrupted flag write keeps the journal and resumes cleanly (review CSID-01)', async () => {
+    /* the RESET flag write is swallowed once (a "local only" drop); migrateSylIds
+       must NOT report success or delete the journal, so the next run finishes. */
+    makeStore(seed(), 'v3:sylreset')
+    expect(await core.migrateCourseIds()).toBe(true)
+    expect(await core.migrateSylIds(), 'the interrupted run does not claim success').toBe(false)
+    expect(await get('v3:syljournal'), 'the journal survives for the resume').toBeTruthy()
+    expect(await get('v3:sylreset'), 'the reset flag never landed').toBeNull()
+    /* the store is fresh (no failOnce) for the resume */
+    const m2 = new Map<string, string>()
+    for (const k of (await storage.list()).keys) { const v = await get(k); if (v != null) m2.set(k, v) }
+    useStorageImpl({ get: (k: string) => (m2.has(k) ? m2.get(k)! : null), set: (k: string, v: string) => { m2.set(k, v) }, remove: (k: string) => { m2.delete(k) }, keys: () => [...m2.keys()] })
+    expect(await core.migrateSylIds(), 'the resume completes').toBe(true)
+    expect(await get('v3:sylreset')).toBe('1')
+    expect(await get('v3:syljournal'), 'journal retired once both flags verified').toBeNull()
+    const plan = await getJSON('v3:cx1:plan')
+    expect(plan.sylId).toBe('sb2026')
   })
 })
