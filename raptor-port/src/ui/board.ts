@@ -2,6 +2,7 @@
    delegated handlers — the reference's bodies, verbatim, with repaint via the
    store's notify(). The CX-with-a-reason dialog state lives here too. */
 import { DAYS } from '../engine/data'
+import { mkNote, noteText } from '../engine/note'
 import { INPUTS, inputCoversDate, inpById, inpTimeText } from '../engine/inputs'
 import { PEOPLE, nameToId, isSpecial } from '../engine/people'
 import { isStandalone, makeStandalone, DUTY_PICK, SAWAVE } from '../engine/waves'
@@ -10,14 +11,14 @@ import { WARN, validate, WCODE, wlbl } from '../engine/validate'
 import { hhmm, fmtHM, minus, parseHM } from '../engine/time'
 import { VCONF } from '../engine/rules'
 import { slotVal, txtGet, txtSet, acRef, rollCx, whoArr, unacceptInput, TIME_TXT } from '../engine/slots'
-import { markEdit, markDeletion, deletionWasIssued, markStructuralAdd, alAttr, dayApproved, dayCurVer, dayPendCount, verLabel, nextAL, dropRowMarks } from '../engine/publish'
+import { markEdit, markDeletion, deletionWasIssued, markStructuralAdd, alAttr, dayApproved, dayCurVer, dayPendCount, dayHasChanges, verLabel, nextSeq, dropRowMarks, protectedWeek } from '../engine/publish'
 import { logAction, ELOG } from '../engine/editlog'
 import { hideHistBub } from './histbubble'
 import { touchDragBusy } from './drag'
 import { shiftAircraft, shiftFormation, shiftWave, shiftKeys, keyDay } from '../engine/keys'
 import { applyMove, sortWave, sortDutyBlock, sortSims, sortGround, sortProg, sortDay } from '../engine/reorder'
 import { HIST } from '../state/history'
-import { signoffHTML, cxText, storesView, intimesInner, areaText, atimeText, dayStatHTML, verSelBoardHTML, srcInput, saRoleHTML, availHTML } from './html'
+import { signoffHTML, cxText, storesView, intimesInner, areaText, atimeText, dayStatHTML, verSelBoardHTML, srcInput, saRoleHTML, availHTML, QUARANTINE_NOTE } from './html'
 import { setInpField } from './inputedit'
 import { STORE_CFG, DUTYTPL_CFG, blockFromTpl, DAYTPL_CFG, applyDayTpl, addDayTpl, dayTplSave, dayTplSummary, secOrder, waveInsertSlot, waveKindOf, moveWave } from '../engine'
 import { dayDrafts, curDraftId, draftDup, draftSelect } from '../engine/drafts'
@@ -40,6 +41,12 @@ const afterSchedMutate = () => view.afterSchedMutate()
    signatures live on the AL record; live sign selects against an old day
    would invite edits against the wrong document. */
 export function boardHTML(di: number, pv?: boolean) {
+  /* a QUARANTINED loaded week is read-only and its days are the seed placeholder;
+     the board is a third surface that reached the ordinary builder and painted the
+     seed as the schedule, with no quarantine indication (Q2R-06). Surface the same
+     one notice the week pages show — the mutators already refuse on a protected
+     week, this makes the state visible. */
+  if (protectedWeek()) return `<div class="sb-panel"><div class="dprev-bar">${QUARANTINE_NOTE}</div></div>`
   const d = DAYS[di]
   /* the stores chips/C follow HOOKS.editMode(), not just pv: the render gate
      is then EXACTLY the click gate interactions.ts uses for
@@ -552,6 +559,49 @@ export function cxCommit(cancel: boolean, reason: string) {
    confirmation naming the day, not a browser confirm() and not silence. ---- */
 export let SORTALL: any = null
 export function setSortAll(v: any) { SORTALL = v }
+/* the armed "apply a day-template over a published day's working-draft edits"
+   confirm (P2-R3-04) — survives the menu close so the second pick confirms;
+   cleared on apply or a different pick. The arm key is scoped by dayTplArmKey
+   (P2-IMPL-10), never the bare `${di}:${id}` — that collided across weeks. */
+let DAYTPL_ARM: string | null = null
+/* The template-apply confirm key. Bound to the ABSOLUTE date (CURWEEK + di — the
+   same template id on another WEEK's same weekday must NOT match a stale arm, the
+   P2-IMPL-10 bug), the selected DRAFT, the TEMPLATE's content and the WORKING
+   DRAFT's content, so a change to the week, the draft, the template or the day's
+   edits between the two taps forces a fresh confirm rather than silently applying. */
+export function dayTplArmKey(di: any, id: any): string {
+  di = +di
+  const t = DAYTPL_CFG.find((x: any) => x.id === id) || null
+  /* view.navGen() (P2-REV2-07): a navigation gesture between the two taps — a week
+     swap, a page change, a session/role change — bumps it, so a navigate-away-and-
+     back with UNCHANGED content no longer yields the same arm key and silently
+     applies; the confirm re-arms instead. The content/week/draft terms still catch
+     an intervening edit or draft switch. */
+  return [CURWEEK, di, id, curDraftId(di) || '', view.navGen(), JSON.stringify(t), JSON.stringify(DAYS[di])].join('␟')
+}
+/* Decide + perform a day-template pick, extracted from the menu handler so the
+   arm scoping and the slot disarm are unit-testable (P2-IMPL-10/11). Returns
+   'armed' (a published day with unpublished edits on its FIRST matching pick —
+   the caller toasts the confirm prompt), 'applied' (the template was applied), or
+   'noop' (applyDayTpl declined). A published day's apply is a WORKING-DRAFT edit
+   that publishes as the next AL (§9 / P2-R3-04); the issued records + current
+   pointer are untouched. */
+export function pickDayTpl(di: any, id: any): 'armed' | 'applied' | 'noop' {
+  di = +di
+  if (dayApproved(di) && dayHasChanges(di)) {
+    const armKey = dayTplArmKey(di, id)
+    if (DAYTPL_ARM !== armKey) { DAYTPL_ARM = armKey; return 'armed' }
+  }
+  DAYTPL_ARM = null
+  /* disarm any crew slot armed on THIS day BEFORE the replacement — a whole-day
+     swap leaves the slot's address occupied by a new row, so afterSchedMutate's
+     "target gone?" disarm does not fire and a stale arm would plant into the
+     replacement sortie (P2-IMPL-11). Mirrors the recovery / draft-switch paths. */
+  if (view.ARM && view.ARM.di === di) view.disarmSlot()
+  if (!applyDayTpl(di, id)) return 'noop'
+  afterSchedMutate()
+  return 'applied'
+}
 /* canEditSched() and the DPREV (frozen-preview) guard live HERE, not only on
    the button's render gate — a stale button left over from a role change, or
    a click that lands after a preview was armed, must not open the dialog
@@ -762,7 +812,7 @@ export function boardMbtn(e: MouseEvent) {
     markDeletion(di, 'wave', issued); afterSchedMutate(); notify(); return act(di, said)
   }
   if (ds.nadd != null) {
-    const d = DAYS[+ds.nadd]; d.notes = d.notes || []; d.notes.push('')
+    const d = DAYS[+ds.nadd]; d.notes = d.notes || []; d.notes.push(mkNote(''))
     markStructuralAdd(`dn:${+ds.nadd}.${d.notes.length - 1}`); logAction(+ds.nadd, 'Note added'); afterSchedMutate(); notify(); return
   }
   if (ds.ndel != null) {
@@ -772,7 +822,7 @@ export function boardMbtn(e: MouseEvent) {
        text fit whole. A note long enough to clip already ends in clip's own
        ellipsis, and a quote mark stitched on after that would read as part of
        the sentence rather than as the record trimming it. */
-    const raw = String(DAYS[di].notes[ni] ?? '').trim(), text = clip(raw)
+    const raw = noteText(DAYS[di].notes[ni]).trim(), text = clip(raw)
     const said = 'Note removed' + (text ? ` — "${text}${text === raw ? '"' : ''}` : '')
     DAYS[di].notes.splice(ni, 1); shiftKeys(`dn:${di}.`, 0, ni)
     markDeletion(di, 'note', issued); afterSchedMutate(); notify(); return act(di, said)
@@ -1261,22 +1311,31 @@ export function dayTplMenu(anchor: HTMLElement, di: any) {
     }
     const b = e.target.closest('[data-daytplpick]'); if (!b) return
     const id = b.dataset.daytplpick
-    close()
-    /* the refusal reads "Reopen the day first" rather than explaining WHY —
-       dayStatHTML's own Publish/Reopen button already uses "Reopen <day>",
-       so this names the same action the scheduler would actually take */
-    if (dayApproved(di)) { toast('Reopen the day first'); e.stopPropagation(); return }
     const t = DAYTPL_CFG.find((x: any) => x.id === id)
-    if (applyDayTpl(di, id)) {
-      /* one undo step for the whole swap (afterSchedMutate's own markEdit()
-         call carries no key, so nothing is marked pending by it — applyDayTpl
-         already did the real work) — same contract restoreDayVersion's own
-         caller uses. No markStructuralAdd / flashAdded here: that mechanism
-         is keyed to ONE funnel address, and a whole-day replace has no single
-         address to hang a blue box on — see the board button's own comment
-         for the rest of that decision. A named toast carries the news instead. */
-      afterSchedMutate(); notify()
-      toast(`Applied "${t ? t.title : 'template'}" to ${d.dow}`)
+    /* PUBLISHED DAY (§9 / P2-R3-04): no "reopen" any more — applying a template
+       is a WORKING-DRAFT edit that publishes as the next AL (applyDayTpl leaves
+       the issued records + current pointer untouched). Because it REPLACES any
+       unpublished working-draft edits, it takes a confirming SECOND pick when
+       such edits exist (pickDayTpl arms the first, applies the second). The arm
+       key is week/draft/template/content scoped (P2-IMPL-10) and the apply
+       disarms any crew slot on the day first (P2-IMPL-11) — both in pickDayTpl. */
+    const r = pickDayTpl(di, id)
+    if (r === 'armed') {
+      close()
+      toast(`Applying "${t ? t.title : 'template'}" replaces your unpublished edits on ${d.dow} — open Templates and pick it again to confirm`)
+      e.stopPropagation(); return
+    }
+    close()
+    if (r === 'applied') {
+      /* one undo step for the whole swap (afterSchedMutate's own markEdit() call
+         carries no key, so nothing is marked pending by it — applyDayTpl already
+         did the real work). No markStructuralAdd / flashAdded: that mechanism is
+         keyed to ONE funnel address, and a whole-day replace has no single
+         address to hang a blue box on. A named toast carries the news instead. */
+      notify()
+      toast(dayApproved(di)
+        ? `Applied "${t ? t.title : 'template'}" to ${d.dow}'s working draft — publish AL${nextSeq(di)} to issue it`
+        : `Applied "${t ? t.title : 'template'}" to ${d.dow}`)
       logAction(di, `Day template "${t ? t.title : 'template'}" applied`)
     }
     e.stopPropagation()
@@ -1339,7 +1398,7 @@ export function draftsMenu(anchor: HTMLElement, di: any) {
      says so once for the whole menu rather than per row */
   const pub = dayApproved(di), cv = pub ? dayCurVer(di) : null
   const liveSub = (pub && cv != null)
-    ? `live now — differences from ${esc(verLabel(cv))} go out as AL${nextAL()}`
+    ? `live now — differences from ${esc(verLabel(cv))} go out as AL${nextSeq(di)}`
     : 'live now — this is what publishes'
   const html = `<h5>Drafts — ${esc(d.dow)}</h5>`
     + (pub ? `<div class="wm-note">This day is published — the issued ALs don't change. Switching drafts marks the differences as pending.</div>` : '')

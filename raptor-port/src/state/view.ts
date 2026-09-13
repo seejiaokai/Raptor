@@ -271,6 +271,14 @@ export function setBoardDay(n:any){
      focus is not for the day being switched TO (WFOCUS.di!==n) — landing on
      the focused warning's own day must keep it lit. */
   if(SBDAY!=null&&n!==SBDAY&&WFOCUS&&WFOCUS.di!==n)WFOCUS=null;
+  /* a board-day TRANSITION is a navigation gesture too (P2-QREV-08, extended by
+     Q2R-10 to cover close/open): it must invalidate a pending day-template-apply
+     confirm, or arming on Monday's board, stepping away and back — OR closing the
+     board and reopening it on the SAME day — then one pick would apply the stale
+     confirm. Bump on ANY real SBDAY transition (open null->day, close day->null,
+     or day->day), but never on a repaint to the same day (n===SBDAY) or a
+     redundant close of an already-closed board (null->null). */
+  if(n!==SBDAY)NAVGEN++;
   BOARDREV++;
   SBDAY=n;
 }
@@ -328,7 +336,19 @@ export function setSecDefOffer(v: number | null){ SECDEFOFFER = v; if(v!=null) s
 export function secDefOfferSeq(){ return secDefSeq }
 /* the two pages that ARE a week, and the scroller each one owns */
 export const WEEK_EL:any={viewsched:'vWeek',editsched:'eWeek'}
+/* A MONOTONIC NAVIGATION TOKEN (P2-REV2-07). The day-template apply confirm
+   (board.ts DAYTPL_ARM) is content-scoped, so an intervening edit or draft
+   switch re-arms it — but a navigate-away-and-back with UNCHANGED content
+   yields the identical arm key, so a stale arm silently applied on one pick.
+   Folding this token into the arm key makes any navigation gesture — a week
+   swap (loadWeek), a page change (setPage), a session/role change
+   (resetSession/toggleRole) — bump it, so the recomputed key can never match an
+   arm raised before the gesture. Read-only to everyone but bumpNav(). */
+let NAVGEN=0
+export function bumpNav(){ NAVGEN++ }
+export function navGen(){ return NAVGEN }
 export function setPage(p:any){
+  if(p!==CURPAGE)NAVGEN++;   // a real page change invalidates a pending template-apply confirm
   /* a page navigation dismisses the transient "set default?" offer — it belongs
      to the drag that raised it on the page being left (31 Aug 26 bug pass). */
   SECDEFOFFER=null;

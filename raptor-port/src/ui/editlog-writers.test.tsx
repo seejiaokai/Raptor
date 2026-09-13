@@ -21,8 +21,10 @@ import { App } from './App'
 import { initStore, setSession, notify } from '../state/store'
 import { DAYS } from '../engine/data'
 import { SCHED } from '../engine/publish'
-import { INPUTS, isUnavail } from '../engine/inputs'
-import { inpKey, setSlotVal, unacceptInput } from '../engine/slots'
+import { dayIso, verId } from '../engine/verid'
+import { CURWEEK } from '../engine/waves'
+import { INPUTS, isUnavail, inpId } from '../engine/inputs'
+import { setSlotVal, unacceptInput } from '../engine/slots'
 import { DATES } from '../engine/inputs'
 import { ELOG, elogRows, elogFor, elogClear, keyLabel } from '../engine/editlog'
 import { HOOKS } from '../engine/hooks'
@@ -207,7 +209,7 @@ describe('the three actions that carried no key at all', () => {
        The DAY comes off the button, not from the input: a multi-day input
        renders an Accept on every day it spans, so which one it lands on is
        whichever control was pressed. */
-    const btn = $$('[data-acc]').find(b => b.dataset.acck === inpKey(inp) && b.dataset.acc === 'g')
+    const btn = $$('[data-acc]').find(b => b.dataset.acck === inpId(inp) && b.dataset.acc === 'g')
     expect(btn, 'an Accept control renders for it').toBeTruthy()
     const di = +btn!.dataset.accd!
     const before = DAYS[di].ground.length
@@ -243,13 +245,17 @@ describe('the three actions that carried no key at all', () => {
   it('loading a version onto the working copy is a line in the list', async () => {
     await goEdit()
     const di = 2
+    /* Phase 2: the Original snapshot carries its own verId; a version is previewed
+       by that verId (not the old 'orig' string). */
+    const origId = verId(dayIso(CURWEEK, di), 0)
     SCHED.orig = SCHED.orig || {}
-    SCHED.orig[di] = { d: JSON.parse(JSON.stringify(DAYS[di])), c: {} }
+    SCHED.orig[di] = { id: origId, d: JSON.parse(JSON.stringify(DAYS[di])), c: {} }
+    SCHED.dayOK[di] = 1                       // a published day (so the load's dirty-check sees the delta)
     const wasCs = DAYS[di].waves[0].formations[0].cs
     DAYS[di].waves[0].formations[0].cs = 'ZULU'
     SCHED.pending[`ff:${di}.0.0.cs`] = 1
 
-    await act(async () => { view.setDayPreview(di, 'orig'); notify() })
+    await act(async () => { view.setDayPreview(di, origId); notify() })
     const rst = $$('button[data-restore]').find(b => b.dataset.restore === String(di))
     expect(rst, 'the preview offers Load onto working copy').toBeTruthy()
     /* a pending edit is on the day, so the load confirms: first tap arms, the

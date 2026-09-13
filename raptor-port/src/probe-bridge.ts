@@ -15,8 +15,8 @@ import { STORE_CFG, STORE_STD, storeKey, addStore, delStore, renameStore, moveSt
 import { CXR_CFG, CXR_STD, addCxReason, delCxReason, renameCxReason, moveCxReason, cxReasonsSave, cxReasonsLoad, cxReasonsReset, cxrAreStandard } from './engine/cxreasons'
 import { DAYTPL_CFG, DAYTPL_STD, tplFromDay, addDayTpl, delDayTpl, renameDayTpl, moveDayTpl, applyDayTpl, dayTplSave, dayTplLoad, dayTplReset, dayTplAreStandard } from './engine/daytpl'
 import { dayOilCredits, dayOilSpans, envMin, uniformOil, inputOilAmt } from './engine/oil'
-import { SCHED, SIGN_ROLES, markEdit, publishALDay, setDayApproved, signOf, dayApproved, alColor, alCount, alDays, signMissing, unpublishAL, pendDays, pendCount, approvedDays, daysLabel, daySnapOf, dayVersions, verLabel, dayCurVer } from './engine/publish'
-import { restoreDayVersion, dayKeys } from './engine/restore'
+import { SCHED, SIGN_ROLES, markEdit, publishALDay, setDayApproved, signOf, dayApproved, alColor, alCount, alDays, signMissing, nextSeq, pendDays, pendCount, approvedDays, daysLabel, daySnapOf, dayVersions, verLabel, dayCurVer } from './engine/publish'
+import { dayKeys } from './engine/restore'
 import { dayDrafts, curDraftId, draftDup, draftSelect, draftRename, draftDelete, draftVerLabel, isDraftVer, rebaseDayPending, loadVersionToWorkingCopy, reconcileIssuedMarks } from './engine/drafts'
 import * as V from './engine/validate'
 import { validate, WCODE, wlbl, chipOf, sevOf, CHIP_LABEL, RANK, restClear, dayEvents, traceOf, traceLeads, traceIx } from './engine/validate'
@@ -130,7 +130,7 @@ export function installProbeBridge() {
   w.waveDefault = waveDefault; w.waveDefaultView = waveDefaultView; w.setWaveDefault = setWaveDefault
   w.moveWaveDefault = moveWaveDefault; w.waveInsertSlot = waveInsertSlot
   w.hhmm = hhmm; w.parseHM = parseHM; w.hmOK = hmOK; w.minus = minus
-  w.dayApproved = dayApproved; w.alColor = alColor; w.signMissing = signMissing; w.unpublishAL = unpublishAL
+  w.dayApproved = dayApproved; w.alColor = alColor; w.signMissing = signMissing; w.nextSeq = nextSeq
   w.isScheduler = isScheduler; w.isLead = isLead; w.isInstr = isInstr; w.isInstrPilot = isInstrPilot; w.isOcu = isOcu; w.isPersonnel = isPersonnel
   w.sanStatus = sanStatus; w.nameToId = nameToId
   w.aarNeed = aarNeed; w.aarOK = aarOK; w.WCODE = WCODE; w.wlbl = wlbl
@@ -188,7 +188,7 @@ export function installProbeBridge() {
   w.elogClear = elogClear; w.elogRemap = elogRemap; w.keyLabel = keyLabel
   w.alCount = alCount; w.alDays = alDays; w.pendDays = pendDays; w.pendCount = pendCount; w.approvedDays = approvedDays
   w.daySnapOf = daySnapOf; w.dayVersions = dayVersions; w.verLabel = verLabel; w.dayCurVer = dayCurVer
-  w.restoreDayVersion = restoreDayVersion; w.dayKeys = dayKeys
+  w.dayKeys = dayKeys
   /* per-day alternate drafts (owner, 15 Aug 26) — engine/drafts.ts */
   w.dayDrafts = dayDrafts; w.curDraftId = curDraftId; w.draftDup = draftDup
   w.draftSelect = draftSelect; w.draftRename = draftRename; w.draftDelete = draftDelete

@@ -1,9 +1,10 @@
 import { DAYS } from './data'
 import { PEOPLE, nameToId, ID_BY_CS } from './people'
-import { SCHED, markEdit, markDeletion, deletionWasIssued, markInputFiling, markStructuralAdd, dayApproved, dropRowMarks } from './publish'
+import { SCHED, markEdit, markDeletion, deletionWasIssued, markInputFiling, markStructuralAdd, dayApproved, dropRowMarks, protectedWeek } from './publish'
 import { parseHM, hhmm, hmOK } from './time'
 import { INPUTS, DATES, inpId, inputCoversDate, isUnavail, isPersonal, inpLabel, dateIx } from './inputs'
 import { shiftKeys } from './keys'
+import { inputProtected } from './quarantine'
 import { VCONF } from './rules'
 import { HOOKS } from './hooks'
 import { logEdit } from './editlog'
@@ -196,7 +197,10 @@ export function txtRef(path:any){
   const s=String(path),c=s.indexOf(':'); if(c<0)return null;
   const k=s.slice(0,c),a=s.slice(c+1).split('.'),d=DAYS[+a[0]]; if(!d)return null;
   try{
-    if(k==='dn'){d.notes=d.notes||[];return{o:d.notes,k:+a[1]};}
+    /* a day-note line is `{id,t}` now (engine/note.ts) — edit targets its TEXT,
+       leaving the id intact; addressing stays positional (dn:di.i). A missing or
+       legacy non-object note yields null → txtGet '' / txtSet no-op. */
+    if(k==='dn'){const nt=(d.notes||[])[+a[1]];return nt&&typeof nt==='object'?{o:nt,k:'t'}:null;}
     if(k==='sn')return{o:d,k:'simnotes'};
     if(k==='pn')return{o:d,k:'prognotes'};
     if(k==='dtn')return{o:d,k:'dutynotes'};
@@ -336,6 +340,16 @@ export function inpKey(inp:any){return `${inp.person}|${inp.date}|${inp.type}|${
 const markInputDays=(inp:any,fallback:any)=>{const token=inpId(inp);let any=false;DAYS.forEach((d:any,i:any)=>{if(inputCoversDate(inp,d.dt)){markInputFiling(i,token);any=true;}});if(!any&&+fallback>=0)markInputFiling(+fallback,token);};
 export function acceptInput(di:any,inp:any,dest:any){
   const d=DAYS[di]; if(!d||!inp)return false;
+  /* READ-ONLY QUARANTINE (P2-IMPL-03 + P2-QREV-02). Landing an input pushes/edits
+     a ground row on DAYS[di] — the loaded week — AND changes the input's GLOBAL
+     acc. Two tests, because filing is a GLOBAL input write, not only a loaded-week
+     one: protectedWeek() covers the loaded week's own book; inputProtected(inp)
+     covers a MULTI-DAY input that also spans a STASHED protected week (round-1
+     checked only the loaded week, so filing such an input mutated the frozen
+     week's global acc — the writer that bypassed the input funnel). Every accept
+     path (the board control, the auto-land on create, the boot/week-load pass)
+     funnels through here, so this one guard closes them all. */
+  if(protectedWeek()||inputProtected(inp))return false;
   /* 'r' (removed — see unacceptInput) is NOT "already actioned": it is the
      dormant parked state whose whole exit is this call, so the Accept button
      must come back through here. Landed ('g') and filed ('u') still refuse. */
@@ -348,15 +362,15 @@ export function acceptInput(di:any,inp:any,dest:any){
      site honest. */
   if(isUnavail(inp.type))return false;
   if(dest==='u'){ inp.acc='u'; markInputDays(inp,di); return true; }
-  /* inpKey is a CONTENT key, and content keys are not unique: two inputs that
-     agree on person, date, type AND start minute mint the same `src`. Both
-     acceptedDay and unacceptInput resolve a row by taking the FIRST match, so a
-     second row carrying an existing key makes the link ambiguous — unaccepting
-     one input would silently remove the other's row, and re-accepting would
-     duplicate rather than restore. Refuse the second accept instead of minting
-     the ambiguity; the caller reports it. Narrow (it needs an identical start
-     minute) but silent, which is the part worth closing. */
-  const key=inpKey(inp);
+  /* THE FILING ADDRESS IS THE INPUT'S STABLE ID (13 Sep 26, ARCH-STACK 1A;
+     was the content key inpKey). Content keys are not unique — two inputs
+     agreeing on person·date·type·start-minute (twins) minted the same `src`, so
+     acceptedDay/unacceptInput/reconcile resolved the FIRST match and unaccepting
+     one silently removed the other's row. The old mitigation REFUSED the second
+     accept; the id fix lets both twins file independently. The guard below now
+     means "this EXACT input already has a landing" — a correct idempotency check
+     (re-accepting the same input never duplicates), not a twin refusal. */
+  const key=inpId(inp);
   if(DAYS.some((dd:any)=>((dd&&dd.ground)||[]).some((r:any)=>r.src===key)))return false;
   d.ground=d.ground||[];
   const ri=d.ground.length;
@@ -429,21 +443,57 @@ export function autoAcceptSeedInputs(){
    onto any of them — the start date is a guess that silently misses. */
 export function acceptedDay(inp:any){
   if(!inp||inp.acc!=='g')return -1;
-  const key=inpKey(inp);
+  const key=inpId(inp);
   for(let i=0;i<DAYS.length;i++){
     const g=(DAYS[i]||{}).ground;
     if(g&&g.some((r:any)=>r.src===key))return i;
   }
   return -1;
 }
+/* RECONCILE A DAY'S GROUND FILING AFTER A WHOLE-DAY REPLACEMENT (P2-REV2-05).
+   A recovery (loadVersionToWorkingCopy), a draft switch (draftSelect) or a
+   template apply (applyDayTpl) replaces DAYS[di] wholesale — and the replacement
+   content may not carry the ground row an input was filed 'g' onto. But those
+   paths touch DAYS, not INPUTS, so the input keeps acc='g' with NO row behind it:
+   a DANGLING filing. Left alone, a later AL freezes that 'g' into its snapshot
+   fingerprint (a filing with no row), and the next navigation's acc-clear then
+   re-derives '' (no row to reconstruct) — so a phantom input-amendment appears
+   from navigation alone. Reconcile it HERE, right after the replacement and
+   BEFORE any snapshot freezes it, exactly as the navigation reconciler
+   (state/store.ts reconcileLandedAcc) would: an input covering this day whose 'g'
+   landing no longer exists on ANY loaded day is unfiled. 'u' (a global filing
+   decision with no ground row) and 'r' (dormant) are filing DECISIONS, not
+   landings, and are untouched — as is a 'g' whose row still exists (the ordinary
+   recovery that keeps the row), and a multi-day 'g' still landed on another day. */
+export function reconcileDayFiling(di:any){
+  const dt=(DAYS[+di]||{}).dt; if(dt==null)return;
+  INPUTS.forEach((inp:any)=>{
+    if(!inputCoversDate(inp,dt)||inputProtected(inp))return;
+    /* 'u' (a global filing DECISION with no ground row) and 'r' (dormant) are not
+       per-week ground landings — untouched. */
+    if(inp.acc==='u'||inp.acc==='r')return;
+    /* is there a ground row for this input on ANY loaded day? Scanned by content
+       key directly (NOT acceptedDay, which early-returns unless acc is already
+       'g' and so cannot re-derive) — the same scan reconcileLandedAcc uses. */
+    const key=inpId(inp);
+    const landed=DAYS.some((d:any)=>((d&&d.ground)||[]).some((g:any)=>g.src===key));
+    /* BOTH directions (P2-REV2-05 + its round-2 regression P2-QREV/Fable-2): a 'g'
+       whose row a replacement DROPPED is unfiled; a falsy-acc personal input whose
+       row a replacement RESTORED (a draft round-trip) is re-filed 'g' — the old
+       delete-only form left it stranded, phantom-amending on the next navigation. */
+    if(landed){ if(inp.acc!=='g'&&isPersonal(inp.type))inp.acc='g'; }
+    else if(inp.acc==='g')delete inp.acc;
+  });
+}
 export function unacceptInput(di:any,inp:any){
+  if(protectedWeek()||inputProtected(inp))return false;   // read-only quarantine — global filing write, so guard the input's every date (P2-IMPL-03 + P2-QREV-02)
   if(!inp||!inp.acc||inp.acc==='r')return false; // 'r' is already removed — nothing to undo
   const was=inp.acc;
   if(inp.acc==='g'){
     /* search by content key across the week rather than trusting di — see
        acceptedDay. Guessing the day left the real row orphaned on another day
        AND let the next accept push a duplicate. */
-    const key=inpKey(inp);
+    const key=inpId(inp);
     for(let d2=0;d2<DAYS.length;d2++){
       const g=(DAYS[d2]||{}).ground; if(!g||!g.length)continue;
       const i=g.findIndex((r:any)=>r.src===key);

@@ -11,10 +11,10 @@
      sort.test.ts (DAYS snapshot). */
 import { beforeEach, describe, expect, it } from 'vitest'
 import { DAYS } from './data'
-import { SCHED, signOf, setDayApproved, publishAL, markEdit, pendCount, moveCount, markStructuralAdd, markDeletion, deletionWasIssued } from './publish'
+import { SCHED, signOf, setDayApproved, publishALDay, markEdit, pendCount, moveCount, markStructuralAdd, markDeletion, deletionWasIssued } from './publish'
 import { sortDay, sortDutyBlocks, sortWaves, applyMove, moveNote, popReorderedDay } from './reorder'
 import { reconcileIssuedMarks } from './drafts'
-import { shiftKeys } from './keys'
+import { shiftKeys, keyDay } from './keys'
 import { dayKeys } from './restore'
 import { ridKey } from './rowids'
 
@@ -107,13 +107,16 @@ describe('pending marks follow their rows (scenario 2a)', () => {
        carries nothing, and a sim reorder tombstone is present instead */
     expect(SCHED.pending[rk('sr:0.amt.0.label')]).toBeUndefined()
     expect(Object.keys(SCHED.pending).some(k => /^mov:0\.\d+\.sim$/.test(k))).toBe(true)
-    /* and the AL that goes out addresses the edited rows, not the addresses */
+    /* and the AL that goes out addresses the edited rows, not the addresses:
+       the marks (now display, keyed by per-day seq) go out under AL1 at the
+       rows' NEW rid-anchored addresses. The frozen record carries the canonical
+       diff; eligibility + the marks are what pin "addresses the edited rows". */
     sign(0)
-    publishAL(1)
-    const rec = SCHED.als[0]
-    expect(rec.keys).toContain(rk('0.1.0.0.p'))
-    expect(rec.keys).toContain(rk('dr:0.1.1.rmks'))
-    expect(rec.keys).toContain(rk('sr:0.amt.1.label'))
+    publishALDay(0)
+    expect(SCHED.als[0].seq).toBe(1)
+    expect(SCHED.changes[rk('0.1.0.0.p')]).toBe(1)
+    expect(SCHED.changes[rk('dr:0.1.1.rmks')]).toBe(1)
+    expect(SCHED.changes[rk('sr:0.amt.1.label')]).toBe(1)
   })
 
   it('a pending mark follows a hand-dragged duty row on a published day', () => {
@@ -150,12 +153,16 @@ describe('Sort all on a published day with NO other edits is a sane diff (scenar
        duty-row reorder */
     const kinds = pend.map(k => k.split('.').pop()).sort()
     expect(kinds).toEqual(['dutyblock', 'formation', 'ground', 'programme', 'sim', 'wave'])
-    /* and that is the whole AL — six reorders, nothing else */
+    /* and that is the whole AL — six reorders, nothing else. Each reorder
+       tombstone goes out under AL1 (SCHED.changes[key]===seq); the marks ARE the
+       six reorders, and no other mark rode along. */
     sign(0)
-    publishAL(1)
-    expect(SCHED.als[0].keys.slice().sort()).toEqual(pend)
-    expect(SCHED.als[0].n0).toBe(pend.length)
-    expect(moveCount(SCHED.als[0].keys)).toBe(6)
+    publishALDay(0)
+    expect(SCHED.als[0].seq).toBe(1)
+    const issued = Object.keys(SCHED.changes).filter(k => keyDay(k) === 0).sort()
+    expect(issued).toEqual(pend)
+    pend.forEach(k => expect(SCHED.changes[k]).toBe(1))
+    expect(moveCount(issued)).toBe(6)
   })
 
   it('a second Sort all right after is a pure no-op: nothing new pends', () => {
@@ -173,17 +180,16 @@ describe('a sort that moves an AL-tinted block keeps the tint and records the mo
     scramble()
     publishDay0()
     /* AL1 changed the AM desk's label; the sort then moves the AM desk to
-       index 0. permuteKeys remaps the changes tag and the AL record 1 → 0. */
+       index 0. permuteKeys remaps the live changes-tag 1 → 0. Phase 2: the frozen
+       AL record is NOT remapped (it holds a diff + snapshot, not live keys), so
+       the tint's home is the live SCHED.changes map alone. */
     SCHED.changes['dl:0.1'] = 1
-    SCHED.als = [{ n: 1, keys: ['dl:0.1'], sign: {} }]
     expect(sortDutyBlocks(0)).toBe(true)
-    /* the AL record followed the block (1 → 0) … */
-    expect(SCHED.als[0].keys).toEqual(['dl:0.0'])
-    /* … and unlike the old field-head proxy — which re-marked dl:0.0 and thereby
-       retired the AL1 tint — the reorder is now an inert mov: tombstone, so the
-       block KEEPS its "changed at AL1" tint at its new position (a move no longer
-       masquerades as a re-edit of the moved cell). The move is recorded alongside
-       it, not on the block's own key. */
+    /* the AL1 tint FOLLOWED the block (1 → 0) — and unlike the old field-head
+       proxy — which re-marked dl:0.0 and thereby retired the AL1 tint — the reorder
+       is now an inert mov: tombstone, so the block KEEPS its "changed at AL1" tint
+       at its new position (a move no longer masquerades as a re-edit of the cell).
+       The move is recorded alongside it, not on the block's own key. */
     expect(SCHED.changes['dl:0.0']).toBe(1)
     expect(SCHED.pending['dl:0.0']).toBeUndefined()
     expect(Object.keys(SCHED.pending).filter(k => /^mov:0\.\d+\.dutyblock$/.test(k))).toHaveLength(1)
@@ -215,9 +221,10 @@ describe('a reorder of identical-looking issued rows still records on a publishe
     expect(mov, 'the move is recorded as a durable reorder tombstone').toHaveLength(1)
     expect(pendCount()).toBe(1)
     sign(0)
-    publishAL(1)
-    expect(SCHED.als[0].keys).toEqual(mov)
-    expect(moveCount(SCHED.als[0].keys)).toBe(1)
+    publishALDay(0)
+    expect(SCHED.als[0].seq).toBe(1)
+    expect(SCHED.changes[mov[0]]).toBe(1)                     // the reorder went out under AL1
+    expect(moveCount(Object.keys(SCHED.changes))).toBe(1)
   })
 
   it('a draft-added row reordered then deleted before its AL is still a net no-op — no reorder minted', () => {

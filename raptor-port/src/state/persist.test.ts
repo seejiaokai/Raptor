@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
-import { INPUTS, inpId } from '../engine/inputs'
+import { INPUTS, inpId, isPersonal } from '../engine/inputs'
 import { PEOPLE, ID_BY_CS, nameToId } from '../engine/people'
 import { DAYS } from '../engine/data'
 import { CURWEEK } from '../engine/waves'
@@ -10,9 +10,12 @@ import { initStore, writeInputs, weekStashSnap, weekDirty, loadWeek, moveSection
 import { undo } from './history'
 import { setSession } from './auth'
 import { hydrate, persistAll, persistPeople, wirePersist, isHydrated, weekId, weekKey } from './persist'
+import { protectedWeek } from '../engine/publish'
 import { bootStorage } from '../storage/boot'
 import { settingsAdapter } from '../storage/adapters'
 import { MemoryBackend } from '../storage/memory'
+import { SCHEMA_VERSION } from '../storage/reset'
+import { mkNote, noteText } from '../engine/note'
 
 const ISNAP = JSON.stringify(INPUTS)
 const PSNAP = JSON.stringify(PEOPLE)
@@ -34,6 +37,10 @@ function resetWorld() {
 }
 
 async function boot(be: MemoryBackend) {
+  /* these tests exercise HYDRATION of a store already on the current schema, so
+     stamp it — otherwise the pre-1A reset (its own coverage in reset.test.ts)
+     would clear the very inputs/weeks the test seeded to hydrate. */
+  be.seed({ settings: { schema: JSON.stringify(SCHEMA_VERSION) } })
   const p = bootStorage(be)
   await vi.advanceTimersByTimeAsync(be.latency)
   const { wb, postman } = await p
@@ -62,14 +69,19 @@ describe('hydrate', () => {
     expect(INPUTS.length).toBeGreaterThan(0)
   })
 
-  it('stored inputs REPLACE the seed and the seed merges are skipped; new ids do not collide', async () => {
+  it('stored inputs REPLACE the seed and keep their ids; a fresh opaque id cannot collide', async () => {
     const be = new MemoryBackend()
     const stored = [{ ...ROW, iid: 'i57', yr: 2026 }, { ...ROW, date: 'Jul 15', iid: 'i58', yr: 2026 }]
     be.seed({ inputs: { all: JSON.stringify(stored) } })
     await boot(be)
     expect(isHydrated()).toBe(true)
     expect(INPUTS).toHaveLength(2)
-    expect(inpId({} as any)).toBe('i59')
+    expect(INPUTS.map((r: any) => r.iid)).toEqual(['i57', 'i58'])   // stored ids kept verbatim
+    /* iid is opaque now (engine/newid.ts) — no counter to seed past the stored
+       ids; a freshly minted id is prefixed 'i' and cannot collide with them */
+    const fresh = inpId({} as any)
+    expect(fresh).toMatch(/^i/)
+    expect(['i57', 'i58']).not.toContain(fresh)
   })
 
   it('stored people replace the roster', async () => {
@@ -97,14 +109,89 @@ describe('hydrate', () => {
   it('a stored week snapshot is restored into the loaded week at boot', async () => {
     const be1 = new MemoryBackend()
     await boot(be1)
-    DAYS[0].notes.push('PERSISTED NOTE')
+    DAYS[0].notes.push(mkNote('PERSISTED NOTE'))
     const snap = weekStashSnap()
     resetWorld()
     const be2 = new MemoryBackend()
     be2.seed({ weeks: { [weekId(CURWEEK)]: snap } })
     await boot(be2)
     expect(stashHas(CURWEEK)).toBe(true)
-    expect(DAYS[0].notes).toContain('PERSISTED NOTE')
+    expect(DAYS[0].notes.map(noteText)).toContain('PERSISTED NOTE')
+  })
+})
+
+describe('an unsupported (pre-Phase-2) book is preserved byte-for-byte (P2-IMPL-02)', () => {
+  it('a legacy book survives load + an unrelated save without being reconstructed', async () => {
+    /* build a PRE-Phase-2 blob for WEEK_B: real days, but the OLD amendment
+       shape and NO amV/ridV, so it classifies as unsupported. */
+    const be0 = new MemoryBackend()
+    await boot(be0)
+    loadWeek(WEEK_B)
+    DAYS[0].notes.push('LEGACY EVIDENCE')
+    const base: any = JSON.parse(weekStashSnap())
+    delete base.am; delete base.v
+    base.ok = { 0: 1 }
+    base.o = { 0: { d: JSON.parse(JSON.stringify(DAYS[0])), c: {} } }   // old orig: no id
+    base.cv = { 0: 'orig' }                                             // old pointer
+    base.a = [{ n: 1, keys: ['dn:0.0'] }]                              // old AL record
+    const legacyBlob = JSON.stringify(base)
+    resetWorld()
+
+    const be = new MemoryBackend()
+    be.seed({ weeks: { [weekId(WEEK_B)]: legacyBlob } })
+    const { wb } = await boot(be)
+    loadWeek(WEEK_B)
+    expect(protectedWeek(), 'classified unsupported → read-only').toBe(true)
+    /* an UNRELATED save (any history step) must NOT reconstruct the frozen week */
+    HOOKS.histPush()
+    expect(wb.get('weeks', weekId(WEEK_B)), 'the original blob is preserved byte-for-byte').toBe(legacyBlob)
+    expect(wb.get('weeks', weekId(WEEK_B))).toContain('LEGACY EVIDENCE')   // the recovery evidence still reads
+  })
+})
+
+describe('a DAMAGED saved week is quarantined, never seeded over (P2-REV2-01)', () => {
+  it('an UNREADABLE (unparseable) stored week loads read-only and its bytes survive an unrelated save', async () => {
+    /* a truncated / corrupt JSON blob — it will not parse. Before the fix,
+       applyWeekModel treated this as "never stashed", loaded the seed, cleared
+       preservation, and the next persistAll serialized the SEED over the damaged
+       record — destroying it. */
+    const damaged = '{"d":[{"dow":"Mon","notes":["DAMAGED EVIDENCE"'
+    const be = new MemoryBackend()
+    be.seed({ weeks: { [weekId(WEEK_B)]: damaged } })
+    const { wb } = await boot(be)
+    loadWeek(WEEK_B)
+    expect(protectedWeek(), 'a damaged saved week is held read-only').toBe(true)
+    /* an unrelated history step must NOT reconstruct or seed over the damaged week */
+    HOOKS.histPush()
+    expect(wb.get('weeks', weekId(WEEK_B)), 'the original damaged bytes are preserved verbatim').toBe(damaged)
+  })
+
+  it('a stored week that parses but has NO days array is treated as damaged, not absent', async () => {
+    const noDays = JSON.stringify({ ok: { 0: 1 }, note: 'no d array here' })
+    const be = new MemoryBackend()
+    be.seed({ weeks: { [weekId(WEEK_B)]: noDays } })
+    const { wb } = await boot(be)
+    loadWeek(WEEK_B)
+    expect(protectedWeek(), 'read-only — not silently seeded over as if missing').toBe(true)
+    HOOKS.histPush()
+    expect(wb.get('weeks', weekId(WEEK_B)), 'the original bytes are preserved, not a seed re-serialization').toBe(noDays)
+  })
+
+  it("a stored week whose JSON is the text 'null' is damaged, not absent — preserved read-only (P2-QREV-06)", async () => {
+    const be = new MemoryBackend()
+    be.seed({ weeks: { [weekId(WEEK_B)]: 'null' } })      // parses to a falsy value — must not read as missing
+    const { wb } = await boot(be)
+    loadWeek(WEEK_B)
+    expect(protectedWeek(), 'read-only — a falsy-parsing blob is damaged, not absent').toBe(true)
+    HOOKS.histPush()
+    expect(wb.get('weeks', weekId(WEEK_B)), 'the original bytes are preserved, not overwritten with seed').toBe('null')
+  })
+
+  it('a MISSING week (no stash at all) still loads the seed and is EDITABLE — not falsely quarantined', async () => {
+    const be = new MemoryBackend()
+    await boot(be)
+    loadWeek(WEEK_C)                       // never stored → genuinely absent, not damaged
+    expect(protectedWeek(), 'an absent week is editable, not read-only').toBe(false)
   })
 })
 
@@ -125,7 +212,7 @@ describe('persistAll and the hooks', () => {
     writeInputs(() => { INPUTS.push({ ...ROW }) })     // inputs landing changes the week's `un`/acc → dirty
     HOOKS.histPush()
     expect(wb.has('weeks', weekId(CURWEEK)) || weekDirty() === false).toBe(true)
-    DAYS[0].notes.push('X'); HOOKS.histPush()
+    DAYS[0].notes.push(mkNote('X')); HOOKS.histPush()
     expect(wb.has('weeks', weekId(CURWEEK))).toBe(true)
   })
 
@@ -191,21 +278,38 @@ describe('the week swap and the stored week records (8 Sep 26 bug pass)', () => 
     const be = new MemoryBackend()
     const { wb } = await boot(be)
     const A = CURWEEK
-    DAYS[0].notes.push('WEEK-A-NOTE'); HOOKS.histPush()
+    DAYS[0].notes.push(mkNote('WEEK-A-NOTE')); HOOKS.histPush()
     loadWeek(WEEK_C)
     expect(wb.has('weeks', weekId(WEEK_C))).toBe(false)
     expect(wb.get('weeks', weekId(A))).toContain('WEEK-A-NOTE')
     loadWeek(A)                                            // and back: A's record is not overwritten with C's blank days
     expect(wb.has('weeks', weekId(WEEK_C))).toBe(false)
     expect(wb.get('weeks', weekId(A))).toContain('WEEK-A-NOTE')
-    expect(DAYS[0].notes).toContain('WEEK-A-NOTE')
+    expect(DAYS[0].notes.map(noteText)).toContain('WEEK-A-NOTE')
     await vi.advanceTimersByTimeAsync(300)
     resetWorld()                                           // the reload
     await boot(be)
-    expect(DAYS[0].notes).toContain('WEEK-A-NOTE')
+    expect(DAYS[0].notes.map(noteText)).toContain('WEEK-A-NOTE')
     loadWeek(WEEK_C)
-    expect(DAYS[0].notes).not.toContain('WEEK-A-NOTE')
+    expect(DAYS[0].notes.map(noteText)).not.toContain('WEEK-A-NOTE')
     expect(DAYS[0].waves.length).toBe(0)
+  })
+
+  it('reload landing invariant (SID-IR-01/finding 5): auto-landed inputs come back WITH their ground rows', async () => {
+    const be = new MemoryBackend()
+    await boot(be)                                   // seeds + auto-lands activity inputs (acc='g' + rows)
+    expect(INPUTS.some((r: any) => r.acc === 'g' && isPersonal(r.type)), 'the seed auto-lands at least one activity input').toBe(true)
+    persistAll()                                     // INPUTS saved with acc='g'; the pristine week is NOT stored
+    await vi.advanceTimersByTimeAsync(300)
+    expect(be.peek('inputs', 'all')).not.toBeNull()
+    expect(be.peek('weeks', weekId(BOOT_WEEK)), 'a pristine week is deliberately not stored').toBeNull()
+    resetWorld()                                     // a fresh reload: module state cleared, same backend
+    await boot(be)
+    /* every accepted activity input must have its ground row back — before the fix,
+       the no-stash boot skipped a hydrated 'g' and left them accepted with no row */
+    const orphaned = INPUTS.filter((r: any) => r.acc === 'g' && isPersonal(r.type))
+      .filter((r: any) => !DAYS.some((d: any) => (d.ground || []).some((g: any) => g.src === inpId(r))))
+    expect(orphaned.map((r: any) => inpId(r)), 'no input is accepted with no ground row').toEqual([])
   })
 
   it('a week merely visited is not persisted, even though an input lands on it during the swap', async () => {
@@ -219,7 +323,7 @@ describe('the week swap and the stored week records (8 Sep 26 bug pass)', () => 
   it('undo back to the load state removes the stored record, so the undone edit does not come back after a reload', async () => {
     const be = new MemoryBackend()
     const { wb } = await boot(be)
-    DAYS[0].notes.push('UNDONE'); HOOKS.histPush()
+    DAYS[0].notes.push(mkNote('UNDONE')); HOOKS.histPush()
     expect(wb.has('weeks', weekId(CURWEEK))).toBe(true)
     undo()
     expect(wb.has('weeks', weekId(CURWEEK))).toBe(false)
@@ -231,7 +335,7 @@ describe('the week swap and the stored week records (8 Sep 26 bug pass)', () => 
     const be = new MemoryBackend()
     const { wb } = await boot(be)
     const A = CURWEEK
-    DAYS[0].notes.push('OLD'); HOOKS.histPush()
+    DAYS[0].notes.push(mkNote('OLD')); HOOKS.histPush()
     loadWeek(WEEK_C)                                       // A is stashed and stored
     expect(wb.has('weeks', weekId(A))).toBe(true)
     stashDrop(A); persistAll()

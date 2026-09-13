@@ -28,6 +28,7 @@
    trailing children of the same `.week` container their own live-day diff
    loop never touches, so a one-day edit still rewrites only that day's node. */
 import { PEOPLE, nameToId, QCHIP, QCLASS } from '../engine/people'
+import { noteText } from '../engine/note'
 import { isStandalone, mColor, dayCount, CURWEEK } from '../engine/waves'
 import { groundOrder } from '../engine/order'
 import { whoArr } from '../engine/slots'
@@ -127,7 +128,7 @@ function peekCommon(d: any): string {
   const hasNotes = !!(d.notes && d.notes.length), hasAH = !!(d.allhands && d.allhands.length)
   if (!hasNotes && !hasAH) return ''
   let h = `<div class="allhands sec sec-prog"><div class="ah-h">Common Programme</div>`
-  ;(d.notes || []).forEach((n: any) => { h += `<div class="ah-note">${esc(n)}</div>` })
+  ;(d.notes || []).forEach((n: any) => { h += `<div class="ah-note">${esc(noteText(n))}</div>` })
   if (hasAH) {
     h += `<div class="ah-cols"><span>Name</span><span>Start</span><span>End</span><span>People</span><span>Rmks</span></div>`
     d.allhands.forEach((x: any) => {

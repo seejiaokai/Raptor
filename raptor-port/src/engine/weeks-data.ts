@@ -37,6 +37,21 @@ function weekLabels(v:any){
 /* the cross-week engine reads (events.ts, weekctx.ts) need this under a name
    that says what it hands back — a thin re-export, same function */
 export {weekLabels as weekDateLabels};
+/* seven ALWAYS year-qualified labels ('Jul 13 2026') from a dd/mm/yyyy week key,
+   INDEPENDENT of baseYear() — unlike weekLabels, which drops the year for a day in
+   the LOADED week's own year. For readers that compare a stashed week's dates
+   against inputs while a DIFFERENT year is loaded: quarantine.ts protectedDates
+   pushed weekBundle(k).dates, but an AUTHORED week's dates are the fixed, bare
+   WEEK1_DATES/WEEK2_DATES ('Jul 13'), which dateOrd then re-resolved against the
+   loaded year — so a protected 2026 week read while a 2027 week was loaded locked
+   the 2027 weekday of the same label (Q2R-03 cross-year mislock). A trailing year
+   makes dateOrd read the absolute date regardless of what is loaded. */
+export function weekDatesAbs(v:any){
+  const parts=String(v).split('/').map((x:any)=>parseInt(x,10));
+  let d=parts[0]||1,m=parts[1]||1,y=parts[2]||2026; const out:any[]=[];
+  for(let i=0;i<7;i++){out.push(`${MON[m-1]} ${d} ${y}`); d++; if(d>dim(m,y)){d=1;m++;if(m>12){m=1;y++;}}}
+  return out;
+}
 /* a dd/mm/yyyy Monday key, shifted by 7·n days (n may be negative), still a
    dd/mm/yyyy Monday key. WHY a second implementation instead of importing
    ui/weeknav.ts:shiftWeek, which does the identical ±7n-day walk: that walker

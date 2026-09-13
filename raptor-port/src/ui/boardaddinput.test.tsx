@@ -15,7 +15,7 @@ import { createRoot, type Root } from 'react-dom/client'
 import { App } from './App'
 import { initStore, setSession, notify } from '../state/store'
 import { INPUTS, DATES, isPersonal, isUnavail, isSansAvail } from '../engine/inputs'
-import { inpKey } from '../engine/slots'
+import { inpId } from '../engine/inputs'
 import { HOOKS } from '../engine/hooks'
 import { PEOPLE } from '../engine/people'
 import * as view from '../state/view'
@@ -132,7 +132,7 @@ describe('commitNewInput', () => {
     expect(row.acc, 'accepted, not waiting').toBe('g')
     const g = DAYS[0].ground || []
     expect(g.length).toBe(gBefore + 1)
-    const gr = g.find((x: any) => x.src === inpKey(row))!
+    const gr = g.find((x: any) => x.src === inpId(row))!
     expect(gr, 'the ground row links back to its input').toBeTruthy()
     expect(gr.prog).toBe('MEETING')
     removeInput(row)                                     // unaccepts + splices

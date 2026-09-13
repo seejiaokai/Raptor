@@ -20,7 +20,7 @@ const syncHistBtns=()=>HOOKS.syncHistBtns()
    added. Same key ORDER as histSnap always wrote them in, so splicing this
    in with `...schedFields()` leaves histSnap's JSON.stringify output
    byte-identical to before this existed. */
-export function schedFields(){return {c:SCHED.changes,p:SCHED.pending,ad:SCHED.added,a:SCHED.als,al:SCHED.al,ok:SCHED.dayOK,sg:SCHED.sign,o:SCHED.orig,cv:SCHED.cur,dr:SCHED.drafts,cd:SCHED.curDraft,v:SCHED.ridV}}
+export function schedFields(){return {c:SCHED.changes,p:SCHED.pending,ad:SCHED.added,a:SCHED.als,al:SCHED.al,ok:SCHED.dayOK,sg:SCHED.sign,o:SCHED.orig,cv:SCHED.cur,dr:SCHED.drafts,cd:SCHED.curDraft,v:SCHED.ridV,am:SCHED.amV}}
 export const HIST:any={stack:[],ix:-1,lock:false,cap:60};
 /* `ok` carries SCHED.dayOK — the per-day publish state. It replaced the old
    week-wide ap/dr pair, so publishing or reopening a single day is an ordinary
@@ -56,10 +56,17 @@ export function histPush(){
   HIST.ix=HIST.stack.length-1;
   syncHistBtns();
 }
-export function histApply(i:any){
-  if(i<0||i>=HIST.stack.length)return;
-  const s=JSON.parse(HIST.stack[i]);
-  HIST.ix=i; HIST.lock=true;
+/* RESTORE THE WHOLE MODEL from a histSnap() string, IN PLACE — the pure
+   deserialize half of histApply, with none of its stack/UX epilogue. histApply
+   uses it for undo/redo; the input funnel's quarantine backstop
+   (state/store.ts writeInputs/writeInputsBatch) uses it to ROLL BACK a batch
+   that turned out to touch a protected week — the same battle-tested restore the
+   undo path runs, rather than a second hand-written one that could drift. Every
+   binding is restored in place (DAYS/INPUTS/PLANPUCKS/DAYRMK arrays and object
+   identities every reader holds), and NOTHING here notifies, persists or pushes
+   history — the caller owns what happens next. */
+export function histRestore(snapStr:any){
+  const s=JSON.parse(snapStr);
   DAYS.length=0; s.d.forEach((x:any)=>DAYS.push(x));
   INPUTS.length=0; (s.i||[]).forEach((x:any)=>INPUTS.push(x));
   SCHED.changes=s.c||{}; SCHED.pending=s.p||{}; SCHED.added=s.ad||{}; SCHED.als=s.a||[];
@@ -69,6 +76,7 @@ export function histApply(i:any){
   SCHED.cur=s.cv||{};   // stale entries are inert — dayCurVer self-heals
   SCHED.drafts=s.dr||{}; SCHED.curDraft=s.cd||{};
   SCHED.ridV=s.v;   // absent (undefined) on a foundation-era snapshot → migrateLegacyIds runs
+  SCHED.amV=s.am;   // absent (undefined) on a PRE-Phase-2 snapshot → amFormatOf flags it unsupported
   WARNOFF.clear(); (s.wo||[]).forEach((k:any)=>WARNOFF.add(k));   // muted checks are an undo step
   /* PLANPUCKS/DAYRMK restored IN PLACE, the same live-binding idiom DAYS and
      INPUTS use above — every reader (the calendar UI) holds these two array
@@ -79,6 +87,12 @@ export function histApply(i:any){
   PLANPUCKS.length=0; (s.pp||[]).forEach((x:any)=>PLANPUCKS.push(x));
   for(const k of Object.keys(DAYRMK))delete DAYRMK[k];
   Object.assign(DAYRMK,s.dm||{});
+  return s;
+}
+export function histApply(i:any){
+  if(i<0||i>=HIST.stack.length)return;
+  HIST.ix=i; HIST.lock=true;
+  histRestore(HIST.stack[i]);
   /* the model has just been swapped wholesale — an armed slot may now point at a
      wave, row or aircraft that no longer exists. The arm strip stayed on screen
      and the next tap threw "Cannot read properties of undefined" out of flyRef

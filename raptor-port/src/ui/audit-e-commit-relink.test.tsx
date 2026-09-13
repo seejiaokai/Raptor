@@ -11,7 +11,7 @@ import { initStore, setSession, undo, writeInputs } from '../state/store'
 import { INPUTS, DATES, inpId } from '../engine/inputs'
 import { DAYS } from '../engine/data'
 import { SCHED } from '../engine/publish'
-import { acceptInput, acceptedDay, inpKey } from '../engine/slots'
+import { acceptInput, acceptedDay } from '../engine/slots'
 import { commitInputEdit, removeInput, setInpField, draftOf } from './inputedit'
 import { HOOKS } from '../engine/hooks'
 import { afterSchedMutate } from '../state/view'
@@ -19,7 +19,7 @@ import { PEOPLE } from '../engine/people'
 
 let TOASTS: string[] = []
 const groundRows = () => DAYS.flatMap((d: any, di: number) => (d.ground || []).map((r: any) => ({ di, row: r })))
-const rowsFor = (inp: any) => groundRows().filter(g => g.row.src === inpKey(inp))
+const rowsFor = (inp: any) => groundRows().filter(g => g.row.src === inpId(inp))
 
 beforeAll(() => {
   initStore()
@@ -50,7 +50,7 @@ describe('commitInputEdit — the keep branch and the moved-outside-week branch'
     const inp: any = plant({ person: 'bane', date: 'Jul 14', allday: false, s: 600, e: 660, type: 'Meeting', remarks: 'leaving', mod: '' })
     expect(acceptInput(1, inp, 'g')).toBe(true)
     afterSchedMutate()
-    const key = inpKey(inp)
+    const key = inpId(inp)
     const d = draftOf(inp); d.start = '2026-07-25'; d.end = ''
     expect(commitInputEdit(inp, d)).toBe(true)
     expect(inp.date).toBe('Jul 25')
@@ -69,7 +69,7 @@ describe('commitInputEdit — the keep branch and the moved-outside-week branch'
     expect(commitInputEdit(inp, d)).toBe(true)
     expect(acceptedDay(inp), 'the row followed the date').toBe(3)
     expect(rowsFor(inp).length).toBe(1)
-    expect((DAYS[0].ground || []).some((r: any) => r.src === inpKey(inp)), 'nothing left on Monday').toBe(false)
+    expect((DAYS[0].ground || []).some((r: any) => r.src === inpId(inp)), 'nothing left on Monday').toBe(false)
     scrap(inp)
   })
 
@@ -105,18 +105,21 @@ describe('commitInputEdit — reassigning an ACCEPTED input to another person', 
      only), so this drives the call under the session the real gesture has */
   beforeEach(() => setSession({ user: 'a', role: 'admin' }))
   afterEach(() => setSession(null))
-  it('relinks the ground row to the new person, leaving nothing of the old', () => {
+  it('relinks the ground row to the new person, keeping its stable id', () => {
     const inp: any = plant({ person: 'bane', date: 'Jul 13', allday: false, s: 600, e: 660, type: 'Meeting', remarks: 'handover', mod: '' })
     expect(acceptInput(0, inp, 'g')).toBe(true)
     afterSchedMutate()
-    const oldKey = inpKey(inp)
+    const id = inpId(inp)
     const d = draftOf(inp); d.person = 'stiff'
     expect(commitInputEdit(inp, d)).toBe(true)
     expect(inp.person).toBe('stiff')
-    /* the old person's filed copy is gone — its content key matches nothing */
-    expect(groundRows().some(g => g.row.src === oldKey), 'no row keyed to the old person').toBe(false)
+    /* the input's stable id does NOT change when the person is reassigned (person
+       was part of the old content key, so re-personing used to orphan the row and
+       mint a fresh one). The row is now relinked in place: one row, src unchanged,
+       who updated to the new person's callsign. */
     const rows = rowsFor(inp)
-    expect(rows.length, 'one row under the new key').toBe(1)
+    expect(rows.length, 'still exactly one row, under the unchanged id').toBe(1)
+    expect(rows[0].row.src, 'src is the input\'s stable id, unchanged by the re-person').toBe(id)
     expect(rows[0].row.who, 'who is the new person\'s CALLSIGN').toBe(PEOPLE.stiff.cs)
     scrap(inp)
   })
@@ -156,7 +159,7 @@ describe('removeInput — filed copies and undo coherence', () => {
     const inp: any = plant({ person: 'stiff', date: 'Jul 13', allday: false, s: 600, e: 660, type: 'Meeting', remarks: 'undo me', mod: '' })
     expect(acceptInput(0, inp, 'g')).toBe(true)
     afterSchedMutate()
-    const key = inpKey(inp)
+    const key = inpId(inp)
     expect(removeInput(inp)).toBe(true)
     expect(INPUTS.indexOf(inp)).toBe(-1)
     expect(groundRows().some(g => g.row.src === key), 'row gone with it').toBe(false)
@@ -205,6 +208,30 @@ describe('the relink preserves scheduler additions (fixed 12 Aug 26)', () => {
     expect(fresh.rmks, 'the edit itself landed').toBe('probe — retouched')
     expect(fresh.more, 'extra crew survived the relink').toEqual(['bane'])
     expect(fresh.flag, 'the red flag survived the relink').toBe(1)
+    scrap(inp)
+  })
+})
+
+/* A 'u' FILING SURVIVES AN OFF-WEEK EDIT (P2-REV2-06). 'u' (filed unavailable)
+   is a GLOBAL filing DECISION on the input itself, not a per-week ground landing
+   — it has no DAYS row to relink. Keeping acc='u' across a week load (the
+   P2-IMPL-05 fix) exposed an off-week loss: editing only the REMARKS of a 'u'
+   input whose dates are NOT in the loaded week captured wasAcc='u', unaccepted
+   it, found no covered day in the loaded DATES, reported "Moved outside the
+   programmed week" and deleted the parked 'r' — silently turning a filed-
+   unavailable input into a fresh, flagging one. The fix: an off-week 'u' edit
+   restores the filing rather than dropping it. */
+describe("a 'u' filing survives an off-week remarks edit (P2-REV2-06)", () => {
+  it('editing only the remarks of a filed-unavailable input on another week keeps it filed', () => {
+    // a Meeting filed 'u' (unavailable) for a date NOT in the loaded week
+    const offDate = DATES.some((d: string) => d === 'Sep 4') ? 'Sep 5' : 'Sep 4'
+    const inp: any = plant({ person: 'bane', date: offDate, allday: true, type: 'Meeting', acc: 'u', yr: 2026, remarks: 'AWOL cover', mod: '' })
+    expect(DATES.some((d: string) => d === offDate), 'the date is genuinely off the loaded week').toBe(false)
+    const d = draftOf(inp); d.remarks = 'AWOL cover — updated'
+    expect(commitInputEdit(inp, d), 'the edit is accepted').toBe(true)
+    expect(inp.remarks, 'the remark landed').toBe('AWOL cover — updated')
+    expect(inp.acc, 'still filed unavailable — not silently turned fresh').toBe('u')
+    expect(TOASTS.join('|'), 'no false "moved outside" toast — nothing was in the loaded week to move out of').not.toMatch(/Moved outside/i)
     scrap(inp)
   })
 })

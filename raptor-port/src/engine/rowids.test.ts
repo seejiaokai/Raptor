@@ -13,13 +13,18 @@ import { WEEKS, CURWEEK } from './waves'
 const clone = (v: any) => JSON.parse(JSON.stringify(v))
 
 describe('ensureRowIds', () => {
-  it('mints a rid on every row of the seed week, once', () => {
+  it('mints a rid on every row and an id on every note of the seed week, once', () => {
     const days = clone(DAYS)
     const n = ensureRowIds(days)
     const rows = days.flatMap(rowsOf)
-    expect(n).toBe(rows.length)
+    const notes = days.flatMap((d: any) => d.notes || [])
+    /* the walk mints rids for rows AND ids for day-note lines (13 Sep 26) */
+    expect(n).toBe(rows.length + notes.length)
     expect(rows.every((r: any) => typeof r.rid === 'string' && r.rid.startsWith('r'))).toBe(true)
-    expect(new Set(rows.map((r: any) => r.rid)).size).toBe(rows.length)
+    expect(notes.every((nt: any) => typeof nt.rid === 'string' && nt.rid.startsWith('r'))).toBe(true)
+    /* rows and notes share ONE rid space — no id collides across the two */
+    const allIds = [...rows.map((r: any) => r.rid), ...notes.map((nt: any) => nt.rid)]
+    expect(new Set(allIds).size).toBe(allIds.length)
     expect(ensureRowIds(days)).toBe(0)
   })
   it('walks waves, formations, seats, duty blocks and rows, sims, programme and ground rows', () => {
@@ -344,28 +349,24 @@ describe('the walk runs before every baseline and snapshot', () => {
   it('a day restored from a snapshot without ids gets them at the epilogue', async () => {
     const { initStore } = await import('../state/store')
     const { HOOKS } = await import('./hooks')
-    const { SCHED, alIssue, markEdit } = await import('./publish')
-    const { restoreDayVersion } = await import('./restore')
+    const { SCHED, alIssue, markEdit, dayCurVer } = await import('./publish')
+    const { loadVersionToWorkingCopy } = await import('./drafts')
     initStore()
-    /* the brief's own text restored 'orig' — SCHED.orig[di] is only stamped by
-       setDayApproved, which this day never goes through (it isn't signed off),
-       so SCHED.orig[0] stays undefined and the test cannot reach it. alIssue
-       freezes its OWN per-day snapshot (rec.snap) regardless of approval, so
-       that is the snapshot this case can actually restore from — fixed to
-       match the true value, same as Task 1's miscount. */
-    markEdit('dn:0.0'); alIssue(1, ['dn:0.0'])
-    rowsOf(SCHED.als[0].snap[0].d).forEach((r: any) => { delete r.rid })   // an amendment book written by a pre-change browser
-    /* restoreDayVersion returns `false` only when the snapshot can't be
-       found, otherwise the count of pending marks it dropped — a plain
-       `.toBe(true)` fails here because there is nothing pending left to drop
-       on day 0 (alIssue already cleared it), so the true success value is
-       "didn't come back false", not the literal boolean true. */
-    expect(restoreDayVersion(0, 1)).not.toBe(false)
-    /* pin the RED case, not just the GREEN one: without this, a restore that
+    /* Phase 2: restoreDayVersion (the in-place rollback) is gone; the sanctioned
+       way to pull an old version onto the live day is now loadVersionToWorkingCopy
+       (it installs the content but does NOT touch SCHED.cur). alIssue freezes its
+       OWN per-day snapshot (rec.snap) regardless of approval, so AL1 is the version
+       this case restores from. */
+    markEdit('dn:0.0'); alIssue(0)
+    const ver = dayCurVer(0)                                              // the AL1 verId
+    rowsOf(SCHED.als[0].snap.d).forEach((r: any) => { delete r.rid })     // an amendment book written by a pre-change browser
+    /* loadVersionToWorkingCopy returns true on a found version */
+    expect(loadVersionToWorkingCopy(0, ver)).toBe(true)
+    /* pin the RED case, not just the GREEN one: without this, a load that
        never actually installed the id-less snapshot would still pass the
        final assertion (DAYS[0] was already fully minted from initStore) —
        a vacuous pass. This proves the live day really is missing ids right
-       after the restore, before the epilogue below puts them back. */
+       after the load, before the epilogue below puts them back. */
     expect(rowsOf(DAYS[0]).some(r => r.rid === undefined)).toBe(true)
     HOOKS.histPush()
     expect(rowsOf(DAYS[0]).every(r => typeof r.rid === 'string')).toBe(true)
@@ -467,64 +468,61 @@ describe('identity rules — a copy is a new row, a move/undo/restore is the sam
     expect(typeof added).toBe('string')
     expect(a.includes(added)).toBe(false)
   })
-  it('restoring an issued version twice returns the same ids; undo and redo return the same ids', async () => {
+  it('loading an issued version twice returns the same ids; undo and redo return the same ids', async () => {
     const { initStore, undo, redo } = await import('../state/store'); const { HOOKS } = await import('./hooks')
-    const { alIssue, markEdit } = await import('./publish'); const { restoreDayVersion } = await import('./restore')
+    const { alIssue, markEdit, dayCurVer } = await import('./publish'); const { loadVersionToWorkingCopy } = await import('./drafts')
     initStore()
     const orig = ids(DAYS[0])
     expect(orig.length).toBeGreaterThan(0)   // a leaked week-2 day would read this as [] (Minor 3)
-    /* the brief's own text restores 'orig' — SCHED.orig[di] is only stamped by
-       setDayApproved, which this day never goes through (see rowids.test.ts's
-       own earlier fix, same file, same reason), so SCHED.orig[0] stays
-       undefined and daySnapOf(0,'orig') resolves nothing. alIssue freezes its
-       OWN per-day snapshot (AL1's rec.snap) regardless of approval, so version
-       1 is the snapshot this case can actually restore from. */
-    markEdit('dn:0.0'); alIssue(1, ['dn:0.0'])
+    /* Phase 2: restoreDayVersion is gone — loadVersionToWorkingCopy pulls a version
+       onto the live day now. SCHED.orig[0] is only stamped by setDayApproved, which
+       this unsigned day never goes through, so it stays undefined; alIssue freezes
+       its OWN per-day snapshot (AL1's rec.snap) regardless of approval, so AL1 is
+       the version this case loads from. */
+    markEdit('dn:0.0'); alIssue(0)
+    const ver = dayCurVer(0)                  // the AL1 verId
     DAYS[0].waves[0].formations.push({ cs: '', msn: '', to: '', ld: '', aircraft: [{ p: '', w: '', area: '', rmks: '', opts: {} }] }); HOOKS.histPush()
-    restoreDayVersion(0, 1); HOOKS.histPush(); const r1 = ids(DAYS[0])
+    loadVersionToWorkingCopy(0, ver); HOOKS.histPush(); const r1 = ids(DAYS[0])
     DAYS[0].notes.push('x'); HOOKS.histPush()
-    restoreDayVersion(0, 1); HOOKS.histPush(); const r2 = ids(DAYS[0])
+    loadVersionToWorkingCopy(0, ver); HOOKS.histPush(); const r2 = ids(DAYS[0])
     expect(r1).toEqual(orig); expect(r2).toEqual(orig)
     undo(); expect(ids(DAYS[0])).toEqual(orig); redo(); expect(ids(DAYS[0])).toEqual(orig)
   })
   it('an amendment book written before ids existed is backfilled once: same address → the live id, a snapshot-only row → a minted one, idempotent, and it persists', async () => {
     const { initStore, weekStashSnap } = await import('../state/store'); const { HOOKS } = await import('./hooks')
-    const { SCHED, alIssue, markEdit } = await import('./publish'); const { restoreDayVersion } = await import('./restore')
+    const { SCHED } = await import('./publish')
     const { backfillSnapshotIds, pathsOf } = await import('./rowids')
     initStore()
-    markEdit('dn:0.0'); alIssue(1, ['dn:0.0'])
-    /* same substitution as the test above: AL1's own snap stands in for
-       SCHED.orig[0], which this unapproved day never gets */
-    const snapDay = SCHED.als[0].snap[0].d
+    /* "written before ids existed" = a FOUNDATION-ERA book, which also predates
+       the Phase-2 per-day-verId record — so it carries the Phase-1 snap[di] shape.
+       backfillSnapshotIds is the load-time migration for exactly that shape (it is
+       wired into store.ts's hydrate/restore path); build one directly, the same way
+       the migrateBookKeys pins above build a legacy record. */
+    const snapDay = JSON.parse(JSON.stringify(DAYS[0]))
     expect(DAYS[0].waves[0].formations.length).toBeGreaterThan(1)   // a leaked week-2 day would fail this (Minor 3)
     rowsOf(snapDay).forEach((r: any) => { delete r.rid })                           // the pre-change book
+    SCHED.als = [{ n: 1, keys: ['dn:0.0'], snap: { 0: { d: snapDay, c: {} } } }]
     DAYS[0].waves[0].formations.splice(0, 1); HOOKS.histPush()                       // one issued row is gone live
     const n = backfillSnapshotIds(SCHED, DAYS)
     expect(n).toBe(rowsOf(snapDay).length)
     const live = new Map(pathsOf(DAYS[0])), snapPaths = pathsOf(snapDay)
-    /* reviewer Minor 6: the old `p !== 'waves.0.formations.0'` exclusion was
-       dead — the backfill pairs BY ADDRESS, not content, so that address (now
-       occupied by the formation that used to sit at .1, shifted down into the
-       gap) is paired exactly like every other surviving address, and the
-       check holds there for the same reason it holds everywhere else. Assert
-       it unconditionally instead of carving out a corner that never differed. */
+    /* the backfill pairs BY ADDRESS, not content — every surviving address takes
+       the live row's id (incl. the address now occupied by the formation that
+       shifted down into the splice gap). */
     for (const [p, r] of snapPaths) { if (live.has(p)) expect(r.rid, p).toBe(live.get(p).rid) }
-    /* reviewer Minor 5: `expect(typeof x.every(...)).toBe('boolean')` asserts
-       nothing — `typeof` always returns a string. The real claim is that
-       every snapshot row now carries an actual id. */
+    /* every snapshot row now carries an actual id */
     expect(rowsOf(snapDay).every((r: any) => typeof r.rid === 'string')).toBe(true)
-    /* reviewer Minor 5, second half: the one snapshot address the splice
-       actually erased from live (out of range once the array shrank) gets a
-       MINTED id, not a copied one — and that fresh id appears nowhere among
-       the live day's own ids, because no live row was ever given it. */
+    /* the one snapshot address the splice erased from live (out of range once the
+       array shrank) gets a MINTED id, not a copied one — and that fresh id appears
+       nowhere among the live day's own ids, because no live row was ever given it. */
     const missing = snapPaths.find(([p]) => !live.has(p))!
     expect(missing).toBeTruthy()
     const liveIds = new Set(rowsOf(DAYS[0]).map((r: any) => r.rid))
     expect(liveIds.has(missing[1].rid)).toBe(false)
-    expect(backfillSnapshotIds(SCHED, DAYS)).toBe(0)
-    expect(JSON.parse(weekStashSnap()).a[0].snap[0].d.waves[0].rid).toBe(snapDay.waves[0].rid)
-    restoreDayVersion(0, 1); HOOKS.histPush(); const r1 = ids(DAYS[0])
-    DAYS[0].notes.push('y'); HOOKS.histPush()
-    restoreDayVersion(0, 1); HOOKS.histPush(); expect(ids(DAYS[0])).toEqual(r1)
+    expect(backfillSnapshotIds(SCHED, DAYS)).toBe(0)                                 // idempotent
+    expect(JSON.parse(weekStashSnap()).a[0].snap[0].d.waves[0].rid).toBe(snapDay.waves[0].rid)   // persists through the stash
+    /* Phase 2 removed restoreDayVersion (the in-place rollback), so the old
+       "restore twice returns the same backfilled ids" tail is no longer reachable
+       from a legacy record and is dropped. */
   })
 })

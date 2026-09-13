@@ -144,3 +144,37 @@ describe('permuteKeys / moveKeys reordering', () => {
     expect(SCHED.changes).toEqual({ 'g:0.0': 'c', 'g:0.1': 'a', 'g:0.2': 'b' })
   })
 })
+
+/* A PHASE-2 AL RECORD IS NEVER GIVEN LEGACY FIELDS (P2-REV2-08). A current-format
+   record carries a frozen `diff` + `snap`, not live keys/adds/structAdds — those
+   were removed from the record contract. The old remap assigned an EMPTY array to
+   each absent field, re-adding all three to every issued record (unrelated days
+   included), so the serialized document diverged from the contract though
+   snap/diff stayed intact. The remap must touch a field only when it is present. */
+describe('shiftKeys / permuteKeys leave a Phase-2 record byte-shaped (P2-REV2-08)', () => {
+  const phase2Rec = () => ({ id: 'v1', di: 3, iso: '2026-07-16', seq: 1, snap: { d: {} }, diff: [{ kind: 'change' }] })
+
+  it('shiftKeys does not add keys/adds/structAdds to a record that never had them', () => {
+    SCHED.als = [phase2Rec()]
+    shiftKeys('gr:0.', 0, 1)                       // a delete on an UNRELATED day (0), record is on day 3
+    const a: any = SCHED.als[0]
+    expect('keys' in a, 'no empty keys array bolted on').toBe(false)
+    expect('adds' in a, 'no empty adds array bolted on').toBe(false)
+    expect('structAdds' in a, 'no empty structAdds array bolted on').toBe(false)
+    expect(a.diff, 'the frozen diff is untouched').toEqual([{ kind: 'change' }])
+    expect(a.snap, 'the frozen snapshot is untouched').toEqual({ d: {} })
+  })
+
+  it('permuteKeys does not add keys/adds/structAdds either', () => {
+    SCHED.als = [phase2Rec()]
+    permuteKeys('wl:0.', 0, [1, 0])               // a reorder on an unrelated day
+    const a: any = SCHED.als[0]
+    expect('keys' in a || 'adds' in a || 'structAdds' in a, 'none of the three legacy fields appear').toBe(false)
+  })
+
+  it('a LEGACY record with live keys is still remapped', () => {
+    SCHED.als = [{ n: 1, di: 0, keys: ['gr:0.2.prog'], adds: [], structAdds: [] } as any]
+    shiftKeys('gr:0.', 0, 1)                       // delete row 1 → row 2 slides to 1
+    expect((SCHED.als[0] as any).keys, 'the legacy key was renumbered').toEqual(['gr:0.1.prog'])
+  })
+})

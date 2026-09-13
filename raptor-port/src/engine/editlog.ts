@@ -254,21 +254,27 @@ export function elogAllFor(key: any): ELogRow[] {
    line removed and a wave added are different events that happen to share an
    empty address. Each stays its own group of one, keyed by its position in
    the log so two identical sentences never fold together. */
-export type ELogGroup = { key: string; lbl: string; di: number | null; rows: ELogRow[]; last: number }
+export type ELogGroup = { key: string; lbl: string; di: number | null; rows: ELogRow[]; last: number; lastIx: number }
 export function elogGroups(di?: any): ELogGroup[] {
   const src = (di == null) ? ELOG.rows : ELOG.rows.filter(r => r.di === +di)
   const by = new Map<string, ELogGroup>()
   src.forEach((r, i) => {
     const id = r.key || ` act${i}`
     let g = by.get(id)
-    if (!g) { g = { key: r.key, lbl: r.lbl, di: r.di, rows: [], last: 0 }; by.set(id, g) }
+    if (!g) { g = { key: r.key, lbl: r.lbl, di: r.di, rows: [], last: 0, lastIx: -1 }; by.set(id, g) }
     g.rows.push(r)
     /* the group's NAME is the newest one's — keyLabel is frozen per row, so a
        line renamed between two edits would otherwise head its own group with
        the name it has since stopped having */
-    g.lbl = r.lbl; g.di = r.di; g.last = r.t
+    g.lbl = r.lbl; g.di = r.di; g.last = r.t; g.lastIx = i
   })
-  return [...by.values()].sort((a, b) => b.last - a.last)
+  /* NEWEST-TOUCHED FIRST, DETERMINISTICALLY (13 Sep 26): order by the newest
+     row's POSITION in the log, not its wall-clock stamp. Edits made in one tick
+     can share a millisecond, and a ms-tie left the order to depend on how fast
+     the loop ran — a flake once the per-edit work grew (a note takes a rid at
+     each baseline). The log is appended in edit order, so lastIx is exact
+     recency and never ties. `last` is kept for the display stamp only. */
+  return [...by.values()].sort((a, b) => b.lastIx - a.lastIx)
 }
 
 /* "11/8 14:32" — ALWAYS the date, day/month, then the clock (owner, 11 Aug 26:

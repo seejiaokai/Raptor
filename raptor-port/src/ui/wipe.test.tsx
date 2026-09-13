@@ -32,8 +32,12 @@ const seed = () => {
   DAYRMK['2026-01-11'] = 'old title'
   DAYRMK['2026-07-16'] = 'new title'
   stashClear()
-  stashPut('05/01/2026', '{}')   // week ends Jan 11 — before the cutoff
-  stashPut('02/03/2026', '{}')   // week of the cutoff (Mar 1) — kept whole
+  /* a REALISTIC stash blob carries a `d` days array (weekStashSnap always
+     serialises DAYS) — a bare '{}' now classifies as a damaged/unreadable week
+     (P2-QREV-06) and would be quarantined, which is not what these week-drop
+     pins are exercising. An empty-days snapshot is a normal, droppable week. */
+  stashPut('05/01/2026', '{"d":[]}')   // week ends Jan 11 — before the cutoff
+  stashPut('02/03/2026', '{"d":[]}')   // week of the cutoff (Mar 1) — kept whole
 }
 
 beforeEach(() => {

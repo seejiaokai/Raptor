@@ -38,8 +38,9 @@ import { DAYS } from '../engine/data'
 import { ridKey } from '../engine/rowids'
 import {
   SCHED, signOf, setDayApproved, dayApproved, dayPendCount, dayCurVer,
-  daySnapOf, publishALDay, unpublishAL, isDeleteKey, nextAL,
+  daySnapOf, publishALDay, isDeleteKey,
 } from '../engine/publish'
+import { verSeq } from '../engine/verid'
 import { setSlotVal, slotVal, txtGet } from '../engine/slots'
 import { validate } from '../engine/validate'
 import { initStore, writeText, writeSlot, writeFill } from '../state/store'
@@ -56,6 +57,10 @@ import { HOOKS } from '../engine/hooks'
 const DI = 0
 let pristine: any
 const rk = (k: string) => ridKey(k, DAYS)
+/* Phase 2: versions are immutable verIds now, not 'orig' | n. These resolve the
+   day's current record ids from the book so the tests can name them. */
+const origId = (di: number) => SCHED.orig[di].id
+const alId = (di: number, seq: number) => (SCHED.als.find((a: any) => +a.di === di && +a.seq === seq) as any).id
 
 beforeAll(() => {
   initStore()
@@ -156,7 +161,7 @@ describe('1 · lifecycle: unpublished day → sign → publish the Original', ()
        dayCurVer resolves to 'orig' and every surface names ORIG — including a
        day no AL has ever touched, which is the 16 Aug 26 change: "published…
        what? Original Published makes sense". */
-    expect(dayCurVer(DI)).toBe('orig')
+    expect(verSeq(dayCurVer(DI))).toBe(0)   // the Original (seq 0)
     expect(pubState(weekEdit(DI)).stamp).toBe('✓ Published · ORIG')
     expect(pubState(boardStrip(DI)).stamp).toBe('✓ Published · ORIG')
     expect(el(weekView(DI)).querySelector('.dbeak')!.textContent).toBe('✓ Published · ORIG')
@@ -259,7 +264,7 @@ describe('2 · editing after publish: pending on the edit surfaces, frozen for t
     expect(SCHED.pending['dn:0.0']).toBeUndefined()
     expect(SCHED.changes['dn:0.0']).toBe(1)
     expect(dayPendCount(DI)).toBe(0)
-    expect(dayCurVer(DI)).toBe(1)
+    expect(verSeq(dayCurVer(DI))).toBe(1)
     /* every surface now names AL1 */
     expect(pubState(weekEdit(DI)).stamp).toBe('✓ Published · AL1')
     expect(pubState(weekEdit(DI)).pend).toBeNull()
@@ -312,7 +317,7 @@ describe('3 · edit-and-revert: a round trip must leave NOTHING pending', () => 
     writeText('ff:0.0.0.to', '12:40')
     quiet(DI)
     /* and the publish path agrees with the chips: there is nothing to issue */
-    expect(withToasts(() => publishALDay(DI))).toEqual(['No unpublished edits on Monday'])
+    expect(withToasts(() => publishALDay(DI))).toEqual(['No changes to publish on Monday'])
     expect(SCHED.als.length).toBe(0)
   })
 
@@ -326,7 +331,7 @@ describe('3 · edit-and-revert: a round trip must leave NOTHING pending', () => 
      0700 → 07:00. dayKeys' T() fold (restore.ts) closed it the same hour. */
   it('(a) reverting a duty start to the time the ISSUED document shows clears its mark', () => {
     publishDay(DI)
-    expect(daySnapOf(DI, 'orig')!.d.dutywaves[0].rows[0].str).toBe('0700')   // as issued
+    expect(daySnapOf(DI, origId(DI))!.d.dutywaves[0].rows[0].str).toBe('0700')   // as issued
     writeText('dr:0.0.0.str', '0730')
     writeText('dr:0.0.0.str', '0700')                                        // back to what is shown
     expect(dayPendCount(DI)).toBe(0)
@@ -470,8 +475,8 @@ describe('5 · drafts on a published day: the diff is rebased against the ISSUED
     writeText('dn:0.0', 'PLAN B NOTE')
     sign(DI); publishALDay(DI)
     /* AL1 IS Draft 2 now: the issued document says PLAN B NOTE */
-    expect(dayCurVer(DI)).toBe(1)
-    expect(daySnapOf(DI, 1)!.d.notes[0]).toBe('PLAN B NOTE')
+    expect(verSeq(dayCurVer(DI))).toBe(1)
+    expect(daySnapOf(DI, alId(DI, 1))!.d.notes[0].t).toBe('PLAN B NOTE')
     expect(dayPendCount(DI)).toBe(0)
 
     draftSelect(DI, d1); afterSchedMutate()
@@ -498,17 +503,18 @@ describe('6 · load a version onto the working copy: the viewer keeps seeing the
        copy": it is NOT a rollback. */
     publishDay(DI)
     const orig = txtGet('dn:0.0')
+    const oid = origId(DI)
     writeText('dn:0.0', 'AMENDED NOTE')
     sign(DI); publishALDay(DI)
-    expect(dayCurVer(DI)).toBe(1)
+    expect(verSeq(dayCurVer(DI))).toBe(1)
 
-    expect(loadVersionToWorkingCopy(DI, 'orig')).toBe(true)
+    expect(loadVersionToWorkingCopy(DI, oid)).toBe(true)
     afterSchedMutate()
     /* the working copy is the Original's content … */
     expect(txtGet('dn:0.0')).toBe(orig)
     /* … but the issued pointer never moved, so the view page still answers AL1 */
-    expect(SCHED.cur[DI]).toBe(1)
-    expect(dayCurVer(DI)).toBe(1)
+    expect(verSeq(SCHED.cur[DI])).toBe(1)
+    expect(verSeq(dayCurVer(DI))).toBe(1)
     const v = el(weekView(DI))
     expect(v.querySelector('.dbeak')!.textContent).toBe('✓ Published · AL1')
     expect(v.textContent).toContain('AMENDED NOTE')
@@ -524,7 +530,7 @@ describe('6 · load a version onto the working copy: the viewer keeps seeing the
 
   it('loading the version the day is already at, with nothing pending, marks nothing', () => {
     publishDay(DI)
-    expect(loadVersionToWorkingCopy(DI, 'orig')).toBe(true)
+    expect(loadVersionToWorkingCopy(DI, origId(DI))).toBe(true)
     afterSchedMutate()
     expect(dayPendCount(DI)).toBe(0)
     expect(pubState(weekEdit(DI)).pend).toBeNull()
@@ -534,116 +540,24 @@ describe('6 · load a version onto the working copy: the viewer keeps seeing the
 })
 
 /* ===================================================================== 7 */
-describe('7 · reopen → re-publish re-issues the CURRENT version in place', () => {
-  it('the issued face catches up while the version LABEL stays the same', () => {
-    /* engine-rules §Version snapshots: setDayApproved(true) on a day that
-       already has an Original came back through REOPEN, so it calls
-       reissueReopened instead of stamping a second Original. Without it a
-       viewer keeps reading pre-reopen content for ever, with no pending mark
-       anywhere to flag the split. */
+describe('7 · the ordinary amendment flow never rewrites the Original', () => {
+  /* Phase 2 (§9): a published day can NEVER be reopened — setDayApproved(di,false)
+     is a no-op and reissueReopened is gone, so the old reopen → re-issue-in-place
+     tests went with the feature. What stands is the guarantee that issuing an AL
+     freezes a NEW immutable snapshot and leaves the Original untouched. */
+  it('issuing an AL freezes a new version and never rewrites the Original', () => {
     publishDay(DI)
-    const issuedBefore = weekView(DI)
-    setDayApproved(DI, false)
-    expect(dayApproved(DI)).toBe(false)
-    expect(el(weekEdit(DI)).querySelector('.dbeak')!.textContent).toBe('Publish day')
-
-    writeText('dn:0.0', 'POST REOPEN')
-    sign(DI)                                    // reopening voided the signature
-    setDayApproved(DI, true)
-
-    /* the label did NOT change — a reopen+republish is a re-issue of that
-       version, not a fresh AL number appearing unasked */
-    expect(dayCurVer(DI)).toBe('orig')
-    expect(SCHED.als.length).toBe(0)
-    expect(pubState(weekEdit(DI)).stamp).toBe('✓ Published · ORIG')
-    expect(pubState(boardStrip(DI)).stamp).toBe('✓ Published · ORIG')
-    /* but the document the view page resolves DID move */
-    const v = el(weekView(DI))
-    expect(v.querySelector('.dbeak')!.textContent).toBe('✓ Published · ORIG')
-    expect(v.textContent).toContain('POST REOPEN')
-    expect(weekView(DI)).not.toBe(issuedBefore)
-    expect(daySnapOf(DI, 'orig')!.d.notes[0]).toBe('POST REOPEN')
-    /* the edit was folded into the re-issue, so nothing is left pending */
-    expect(dayPendCount(DI)).toBe(0)
-    expect(pubState(weekEdit(DI)).pend).toBeNull()
-  })
-
-  it('a day at AL1 re-issues AL1, not the Original', () => {
-    publishDay(DI)
+    const origSnap = JSON.stringify(daySnapOf(DI, origId(DI)))
     writeText('dn:0.0', 'AMENDED NOTE')
     sign(DI); publishALDay(DI)
-    const origSnap = JSON.stringify(daySnapOf(DI, 'orig'))
-    setDayApproved(DI, false)
-    writeText('dn:0.0', 'AMENDED AGAIN')
-    sign(DI); setDayApproved(DI, true)
-    expect(dayCurVer(DI)).toBe(1)
-    expect(daySnapOf(DI, 1)!.d.notes[0]).toBe('AMENDED AGAIN')
-    expect(JSON.stringify(daySnapOf(DI, 'orig'))).toBe(origSnap)   // the Original is untouched
-    expect(pubState(weekEdit(DI)).stamp).toBe('✓ Published · AL1')
-    expect(el(weekView(DI)).textContent).toContain('AMENDED AGAIN')
-  })
-
-  it('the ordinary amendment flow — no reopen — never rewrites the Original', () => {
-    publishDay(DI)
-    const origSnap = JSON.stringify(daySnapOf(DI, 'orig'))
-    writeText('dn:0.0', 'AMENDED NOTE')
-    sign(DI); publishALDay(DI)
-    expect(JSON.stringify(daySnapOf(DI, 'orig'))).toBe(origSnap)
-    expect(daySnapOf(DI, 1)!.d.notes[0]).toBe('AMENDED NOTE')
+    expect(JSON.stringify(daySnapOf(DI, origId(DI)))).toBe(origSnap)
+    expect(daySnapOf(DI, alId(DI, 1))!.d.notes[0].t).toBe('AMENDED NOTE')
   })
 })
 
-/* ===================================================================== 8 */
-describe('8 · unpublishing an AL returns its changes to pending and falls the day back', () => {
-  it('every surface returns coherently to the Original with the change pending again', () => {
-    publishDay(DI)
-    const orig = txtGet('dn:0.0')
-    writeText('dn:0.0', 'AMENDED NOTE')
-    sign(DI); publishALDay(DI)
-    expect(pubState(weekEdit(DI)).stamp).toBe('✓ Published · AL1')
-
-    unpublishAL(1)
-    /* the AL record is gone, so its snapshot is gone with it — dayCurVer's
-       fallback is the orphan guard, and it lands on the Original */
-    expect(SCHED.als.length).toBe(0)
-    expect(dayCurVer(DI)).toBe('orig')
-    expect(SCHED.changes['dn:0.0']).toBeUndefined()
-    expect(SCHED.pending['dn:0.0']).toBe(1)
-    expect(nextAL()).toBe(1)                       // AL1 is free to be issued again
-
-    /* the day STAYS published — unpublishing an AL is not reopening a day */
-    expect(dayApproved(DI)).toBe(true)
-    const e = pubState(weekEdit(DI))
-    expect(e.stamp).toBe('✓ Published · ORIG')
-    expect(e.pend).toBe('1 pending')
-    expect(e.alpub).toBe('Publish AL1')
-    expect(pubState(boardStrip(DI))).toEqual(e)
-
-    /* the viewer's issued face is the Original again, and the amendment's
-       text is back to being invisible work in progress */
-    const v = el(weekView(DI))
-    expect(v.querySelector('.dbeak')!.textContent).toBe('✓ Published · ORIG')
-    expect(v.textContent).toContain(orig)
-    expect(v.textContent).not.toContain('AMENDED NOTE')
-    expect(v.querySelector('[data-alc]')).toBeNull()   // no AL tint survives its AL
-    /* the live working copy still holds the edit — unpublish re-pends, it
-       does not roll the day back */
-    expect(txtGet('dn:0.0')).toBe('AMENDED NOTE')
-  })
-
-  it('re-publishing after an unpublish issues AL1 again and the surfaces follow', () => {
-    publishDay(DI)
-    writeText('dn:0.0', 'AMENDED NOTE')
-    sign(DI); publishALDay(DI)
-    unpublishAL(1)
-    sign(DI); publishALDay(DI)
-    expect(dayCurVer(DI)).toBe(1)
-    expect(SCHED.changes['dn:0.0']).toBe(1)
-    expect(pubState(weekEdit(DI)).stamp).toBe('✓ Published · AL1')
-    expect(pubState(weekEdit(DI)).pend).toBeNull()
-    expect(el(weekView(DI)).textContent).toContain('AMENDED NOTE')
-  })
-})
+/* Phase 2: unpublishing an AL is GONE (undo-across-publish is Phase 3). The old
+   "8 . unpublishing an AL ." describe -- every assertion pinned unpublishAL /
+   nextAL -- was removed with the feature. */
 
 /* ===================================================================== 9 */
 describe('9 · cross-surface agreement: the week and the board read one state', () => {

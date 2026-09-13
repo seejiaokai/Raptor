@@ -22,15 +22,16 @@
 // reaches a fixed point. A SYNCING flag guards re-entrancy on top — every
 // store write notifies subscribers synchronously, and this module is one.
 
-import { INPUTS, DATES, baseYear, dateOrd, inpId, inpWin, isAway, isDownchit, isLeave, oilAsks, withRemarksTail } from '../engine/inputs'
+import { INPUTS, DATES, baseYear, dateOrd, inpId, inpWin, isAway, isDownchit, isLeave, oilAsks, withRemarksTail, inputCoversDate } from '../engine/inputs'
+import { inputProtected, protectedDates } from '../engine/quarantine'
 import { ME, SESSION } from '../state/auth'
 import { persistPeople } from '../state/persist'
 import { docFields, rowDocIds } from '../state/docs'
 import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
-import { dayApproved, dayCurVer, dayCurVerIn, daySnapIn, daySnapOf } from '../engine/publish'
+import { SCHED, dayApproved, dayCurVer, dayCurVerIn, daySnapIn, daySnapOf, amFormatOf } from '../engine/publish'
 import { dayOilWork, inputOilAmt, envMin, uniformOil, oilWorkWhy, type OilWork } from '../engine/oil'
-import { stashKeys, stashGet } from '../engine/weekstash'
+import { stashKeys, stashGet, isPreservedWeek } from '../engine/weekstash'
 import { CURWEEK } from '../engine/waves'
 import { validate } from '../engine/validate'
 import { notify as raptorNotify, subscribe as raptorSubscribe, writeInputsBatch } from '../state/store'
@@ -196,16 +197,6 @@ function desiredRuns(): Run[] {
    never overlap. */
 const runSig = (r: Run) => `${r.person}|${r.type}|${r.portion}|${r.start}|${r.end}`
 
-/* Signatures of lw rows whose war cells RAPTOR ITSELF withdrew (an edit or
-   delete of the input ran retractLwRow). If a row with such a signature turns
-   up lw-tagged and stale again, it did not sneak past the retraction — a
-   HISTORY RESTORE (undo) brought it back, and the war, which has no history
-   of its own, still lacks the cells. Splicing it again would turn Undo into a
-   double delete on both sides (27 Aug 26 overnight find); it is DEMOTED to an
-   ordinary Raptor-owned input instead. A fresh mint of the same signature
-   clears the entry, so a later WAR-side revocation of the re-approved leave
-   splices exactly as before. Session-only, like both stores. */
-const RETRACTED = new Set<string>()
 /* The member's own remark wording (and a medical row's document id), kept
    ACROSS passes keyed by the exact leave. The in-pass carry below handles a
    date change; this survives a refuse-then-re-approve, where the splice and
@@ -217,6 +208,17 @@ const RETAINED = new Map<string, { remarks: string; docIds?: string[] }>()
    round-OUT rule or the two sides of the diff would disagree about the same
    row. */
 const portionOfRow = (row: any): Portion => (isDownchit(row.type) ? medRowPortion(row) : rowPortion(row))
+const rowPair = (row: any) => `${row.person}|${lwTypeOf(row.type)}|${portionOfRow(row)}`
+const runPair = (run: Run) => `${run.person}|${run.type}|${run.portion}`
+
+/* History can restore a stale tag repeatedly. Only a live non-Raptor cell
+   supersedes it (including pending/refused bids and changed/coalesced runs).
+   Empty or Raptor-owned cells let inbound restore the leave on every undo. */
+function warSupersedes(row: any): boolean {
+  return getState().wars.some(war => Object.keys(war.grid[row.person] || {}).some(date =>
+    war.grid[row.person][date] && !raptorOwns(war.states, row.person, date) &&
+    inputCoversDate(row, isoToLabel(date))))
+}
 
 /* Exported so the Inputs-page editor can ask "does this edit change the leave
    itself, or only its remarks?" — a remarks-only edit leaves this signature
@@ -240,13 +242,30 @@ export function runOutbound(): void {
     const want = new Map(desiredRuns().map(r => [runSig(r), r]))
     const have = new Set<string>()
     const stale: any[] = []
+    /* READ-ONLY QUARANTINE (P2-QREV-03). A leave landing on a protected week must
+       NEVER enter this batch: the funnel would roll the WHOLE batch back (every
+       legit leave on normal weeks with it) and the protected mismatch would recur
+       on every notify — a permanent refuse-loop that kills all LW→Raptor sync.
+       So exclude protected-date operations here: a stale row on a frozen week is
+       LEFT in place (not spliced), and a missing run on a frozen week is not
+       minted — its evidence is unavailable, so the credit/leave already there
+       stands (the same reading the OIL pass takes). */
+    const prot = protectedDates()
+    const covered = (row: any) => prot.length > 0 && prot.some((dt: any) => inputCoversDate(row, dt))
+    const runRow = (r: any) => ({ date: isoToLabel(r.start), endDate: r.end !== r.start ? isoToLabel(r.end) : undefined, yr: baseYear() })
+    /* Removing the old run and minting its replacement are one diff. Freeze
+       both halves of a person/type/portion pair if either touches quarantine. */
+    const frozen = new Set<string>()
+    for (const row of INPUTS) if (row.lw && covered(row)) frozen.add(rowPair(row))
+    for (const run of want.values()) if (covered(runRow(run))) frozen.add(runPair(run))
     for (const row of INPUTS) {
       if (!row.lw) continue
       const sig = rowSig(row)
+      if (frozen.has(rowPair(row))) { if (sig) have.add(sig); continue }
       if (sig && want.has(sig) && !have.has(sig)) have.add(sig)
       else stale.push(row)
     }
-    const missing = [...want].filter(([sig]) => !have.has(sig)).map(([, r]) => r)
+    const missing = [...want].filter(([sig, r]) => !have.has(sig) && !frozen.has(runPair(r))).map(([, r]) => r)
 
     /* An empty diff must not touch anything — writeInputsBatch ends in a
        history push, and a no-op pass that left a snapshot behind would make
@@ -278,12 +297,7 @@ export function runOutbound(): void {
       const priorLoose = new Map<string, { remarks: string; docIds?: string[] }>()
       for (const row of stale) {
         const sig = rowSig(row)
-        /* the undo case — see RETRACTED above: Raptor retracted this row's
-           cells itself, so its lw-tagged reappearance is a history restore.
-           Demote, never re-splice: the tag drops, the row is an ordinary
-           input again, and inbound re-lands it as Raptor-owned cells. */
-        if (sig && RETRACTED.has(sig)) {
-          RETRACTED.delete(sig)
+        if (!warSupersedes(row)) {
           delete row.lw
           continue
         }
@@ -310,7 +324,6 @@ export function runOutbound(): void {
           ?? RETAINED.get(sig)
         /* a fresh mint supersedes whatever history the same leave had */
         RETAINED.delete(sig)
-        RETRACTED.delete(sig)
         const row: any = {
           person: r.person,
           /* Back to Raptor's own spelling — an 'ATTB' run lands as an
@@ -388,14 +401,9 @@ export function runOutbound(): void {
  * the full converging pass once everything is settled.
  */
 export function retractLwRow(row: any): void {
-  if (!row?.lw) return
+  if (!row?.lw || inputProtected(row)) return
   const start = labelToISO(row.date, row.yr)
   if (!start) return
-  /* Remember that RAPTOR withdrew this leave's cells — the mark that lets a
-     history restore of this row read as an undo (demoted) rather than as a
-     war-side revocation (spliced). See RETRACTED at the top. */
-  const sig = rowSig(row)
-  if (sig) RETRACTED.add(sig)
   let end = row.endDate ? labelToISO(row.endDate, row.yr) ?? start : start
   if (end < start) end = start
   const type = lwTypeOf(row.type)
@@ -678,10 +686,16 @@ export function oilAskPlan(row: { person?: any; date: string; endDate?: string; 
 export function oilPendingFor(personId: any): { iid: string; iso: string }[] {
   const out: { iid: string; iso: string }[] = []
   if (!personId) return out
+  /* a protected (quarantined) day is never asked (P2-QREV-06/Fable-6): the OIL
+     pass already treats it as "credit stands", and the answer write would be
+     rolled back by the input funnel — so the bell would stay lit forever. Skip
+     those days from the scan. */
+  const prot = protectedDates()
+  const isoProt = (iso: string) => prot.length > 0 && prot.some((dt: any) => inputCoversDate({ date: isoToLabel(iso), yr: baseYear() }, dt))
   for (const row of INPUTS) {
     if (row.person !== personId || !oilAsks(row.type) || row.acc === 'r') continue
     const answered = (row.oil ?? {}) as Record<string, number>
-    const hit = oilAskPlan(row).find(p => answered[p.iso] == null)
+    const hit = oilAskPlan(row).find(p => answered[p.iso] == null && !isoProt(p.iso))
     if (hit && row.iid) out.push({ iid: row.iid, iso: hit.iso })
   }
   return out
@@ -751,7 +765,10 @@ function stashOilWeek(v: string): { days: any[], sc: any } | null {
   try {
     const s = JSON.parse(src)
     if (s && Array.isArray(s.d))
-      wk = { days: s.d, sc: { dayOK: s.ok, cur: s.cv, als: s.a, orig: s.o, drafts: s.dr } }
+      /* amV (s.am) is carried so the OIL wire can CLASSIFY the stashed book
+         (P2-REREVIEW-05) — an unsupported/future-version book whose snapshots
+         still resolve must not be treated as authoritative. */
+      wk = { days: s.d, sc: { dayOK: s.ok, cur: s.cv, als: s.a, orig: s.o, drafts: s.dr, amV: s.am } }
   } catch (_e) { /* a bad blob reads as never stashed — never throw in a pass */ }
   STASH_OIL_CACHE.set(v, { src, wk })
   return wk
@@ -788,8 +805,17 @@ function stashOilWeek(v: string): { days: any[], sc: any } | null {
  *  type name — owner, 2 Sep 26). */
 export interface DesiredOil { code: 'FO' | 'HO'; why: string }
 
-function desiredOilCells(): Map<string, DesiredOil> {
+/* A date is PROTECTED when the schedule evidence behind it cannot be read as an
+   ISSUED document — a pre-Phase-2 (unsupported) book, a stash filed under the
+   wrong week, or an approved day whose snapshot was undone away. For such a date
+   the OIL wire must neither DERIVE a credit from the live/stashed DRAFT (which
+   may have dropped the duty) NOR DELETE a credit already landed by the build that
+   issued it: the issued evidence is unavailable, so the standing credit is the
+   best truth we have (P2-IMPL-01). Never substitute draft content for missing
+   issued content, and never reverse-collect a protected date. */
+function desiredOilCells(): { desired: Map<string, DesiredOil>; protectedDates: Set<string> } {
   const { people, wars } = getState()
+  const protectedDates = new Set<string>()
   const known = new Set(people.map(p => p.id))
   /* person|iso -> that day's work spans; their ENVELOPE faces the threshold */
   const pool = new Map<string, OilWork[]>()
@@ -803,13 +829,23 @@ function desiredOilCells(): Map<string, DesiredOil> {
     arr.push(...spans)
     pool.set(k, arr)
   }
+  /* CLASSIFY the live book FIRST (P2-REREVIEW-05): an unsupported / wrong-week /
+     future-version book must be quarantined even if its snapshots still resolve,
+     so the whole loaded week's credit-bearing dates are protected up front. */
+  /* a DAMAGED loaded week (P2-REV2-01) shows the seed as a placeholder, so
+     amFormatOf(SCHED) would read 'current' — isPreservedWeek catches it so its
+     credit-bearing dates are protected, never derived from the seed. */
+  const liveUnsupported = amFormatOf(SCHED, CURWEEK) === 'unsupported' || isPreservedWeek(CURWEEK)
   for (let di = 0; di < DAYS.length; di++) {
-    if (!dayApproved(di)) continue
     const iso = labelToISO(DATES[di])
-    if (!iso || !warHolding(wars, iso)) continue
-    if (!isNonWorkingISO(iso)) continue
+    if (!iso || !warHolding(wars, iso) || !isNonWorkingISO(iso)) continue
+    if (liveUnsupported) { protectedDates.add(iso); continue }
+    if (!dayApproved(di)) continue
+    /* only ever credit from the RESOLVED ISSUED snapshot — never the live draft.
+       No snapshot (an orphaned approved day) → protect it (P2-IMPL-01). */
     const snap = daySnapOf(di, dayCurVer(di))
-    const spans = dayOilWork(snap ? snap.d : DAYS[di], { expandAll: win => availableFor(iso, win) })
+    if (!snap || !snap.d) { protectedDates.add(iso); continue }
+    const spans = dayOilWork(snap.d, { expandAll: win => availableFor(iso, win) })
     for (const [person, sp] of Object.entries(spans)) add(person, iso, sp)
   }
   /* every OTHER week, out of its stash entry — the loaded week is skipped
@@ -819,19 +855,26 @@ function desiredOilCells(): Map<string, DesiredOil> {
      dd/mm/yyyy) — no label parsing, no year-convention trap. */
   for (const v of stashKeys()) {
     if (String(v) === String(CURWEEK)) continue
+    if (stashGet(String(v)) == null) continue
     const wk = stashOilWeek(String(v))
-    if (!wk) continue
+    /* CLASSIFY the stashed book (P2-REREVIEW-05): an UNREADABLE stash (wk null)
+       or one whose book is unsupported / wrong-week / future-version must have
+       ALL its credit-bearing dates PROTECTED — never derived from, never deleted
+       — even though a future-version book's snapshots might still resolve. */
+    const stashUnsupported = !wk || amFormatOf(wk.sc, String(v)) === 'unsupported'
     for (let di = 0; di < 7; di++) {
-      if (!(wk.sc.dayOK || {})[di]) continue
       const iso = weekDayISO(String(v), di)
-      if (!iso || !warHolding(wars, iso)) continue
-      if (!isNonWorkingISO(iso)) continue
-      const snap = daySnapIn(wk.sc, di, dayCurVerIn(wk.sc, di))
-      /* same fallback rule as the live loop: an approved day without a
-         snapshot (legacy/session data) reads its stashed model */
-      const d = snap ? snap.d : wk.days[di]
-      if (!d) continue
-      const spans = dayOilWork(d, { expandAll: win => availableFor(iso, win) })
+      if (!iso || !warHolding(wars, iso) || !isNonWorkingISO(iso)) continue
+      if (stashUnsupported) { protectedDates.add(iso); continue }
+      if (!(wk!.sc.dayOK || {})[di]) continue
+      /* the stash's OWN week key (v = its Monday, dd/mm/yyyy) is the trusted
+         identity threaded into the resolver, so a book self-consistent but filed
+         under the WRONG week is rejected here rather than credited to these dates
+         (P2-R3-03). Credit ONLY from a resolved issued snapshot; no snapshot →
+         protect the date, never fall back to its stashed draft (P2-IMPL-01). */
+      const snap = daySnapIn(wk!.sc, di, dayCurVerIn(wk!.sc, di, String(v)), String(v))
+      if (!snap || !snap.d) { protectedDates.add(iso); continue }
+      const spans = dayOilWork(snap.d, { expandAll: win => availableFor(iso, win) })
       for (const [person, sp] of Object.entries(spans)) add(person, iso, sp)
     }
   }
@@ -851,6 +894,7 @@ function desiredOilCells(): Map<string, DesiredOil> {
       if (!(typeof amt === 'number' && amt > 0)) continue
       const o = +String(iso).replace(/-/g, '')
       if (!(o >= a && o <= b)) continue                    // moved dates → stale yes is inert
+      if (protectedDates.has(iso)) continue                // hands off a protected date entirely (P2-IMPL-01)
       if (!warHolding(wars, iso)) continue
       if (!isNonWorkingISO(iso)) continue                  // a day that stopped being PH stops crediting
       /* the reason is the input's own type name (Training, CSE, Duty…) —
@@ -860,17 +904,18 @@ function desiredOilCells(): Map<string, DesiredOil> {
   }
   const out = new Map<string, DesiredOil>()
   for (const [k, spans] of pool) {
+    if (protectedDates.has(k.slice(k.indexOf('|') + 1))) continue   // never desire a protected date (P2-IMPL-01)
     const amt = uniformOil(envMin(spans.map(w => [w.s, w.e] as [number, number])))
     if (amt) out.set(k, { code: amt === 1 ? 'FO' : 'HO', why: oilWorkWhy(spans) })
   }
-  return out
+  return { desired: out, protectedDates }
 }
 
 export function runOilPass(): void {
   if (SYNCING) return
   SYNCING = true
   try {
-    const desired = desiredOilCells()
+    const { desired, protectedDates } = desiredOilCells()
 
     /* Forward: land what the published schedule earns. Already-landed cells
        are skipped so an unchanged world writes nothing. */
@@ -900,6 +945,7 @@ export function runOilPass(): void {
           if (rec.source !== 'raptor') continue
           const code = war.grid[person]?.[date]
           if (code !== 'FO' && code !== 'HO') continue
+          if (protectedDates.has(date)) continue          // issued evidence unavailable → the landed credit stands (P2-IMPL-01)
           if (desired.has(`${person}|${date}`)) continue
           clearRaptorCell(person, date)
         }

@@ -1,22 +1,18 @@
-import { DAYS } from './data'
-import { SCHED, daySnapOf } from './publish'
-import { keyDay } from './keys'
 import { nameToId } from './people'
 import { parseHM, hhmm } from './time'
+import { noteText } from './note'
 /* =====================================================================
-   ROLL A DAY BACK TO A PUBLISHED VERSION
-   A rollback, not an amendment (owner decision, Aug 26): clicking Restore
-   makes that version the live document immediately — content, marks and the
-   header chip all become that AL. Nothing goes pending; unpublished edits on
-   the day are DISCARDED (reported to the caller); later ALs keep their
-   records and stay in the dropdown. Lives in its own module because slots.ts
-   already imports publish.ts — restore needs both sides of that edge.
+   THE SLOT-KEY GRAMMAR WALKER (dayKeys)
+   Phase 2 removed restoreDayVersion (the in-place rollback take-back): the
+   only supported way to pull an old version forward is now
+   loadVersionToWorkingCopy → publish the next AL (drafts.ts). The walker below
+   STAYS — it is the executable documentation of the slot-key grammar, its tests
+   pin every prefix, rebaseDayPending/reconcileIssuedMarks use it, and
+   probe-bridge exports it.
    ===================================================================== */
 /* Every user-meaningful field of a PASSED day object (never the global DAYS —
    live and snapshot are walked by the same function without any swap), keyed
-   by the address the app itself uses. restoreDayVersion no longer diffs, but
-   the walker stays: it is the executable documentation of the slot-key
-   grammar, its tests pin every prefix, and probe-bridge exports it.
+   by the address the app itself uses.
    Row state that has no text key of its own
    (cx / cx reason / red flag / night) rides as a composite on the row's name
    field — a CX toggle then marks the row it cancelled, which is where the
@@ -45,7 +41,7 @@ export function dayKeys(d:any,di:any){
      JSON only if this class ever bites there. */
   const P=(v:any)=>{const s=S(v);return nameToId(s)||s;};
   const T=(v:any)=>{const s=S(v);const min=parseHM(s);return min==null?s:hhmm(min);};
-  (d.notes||[]).forEach((t:any,ni:any)=>m.set(`dn:${di}.${ni}`,S(t)));
+  (d.notes||[]).forEach((t:any,ni:any)=>m.set(`dn:${di}.${ni}`,S(noteText(t))));
   m.set(`sn:${di}`,S(d.simnotes));
   m.set(`pn:${di}`,S(d.prognotes));
   m.set(`dtn:${di}`,S(d.dutynotes));
@@ -61,11 +57,18 @@ export function dayKeys(d:any,di:any){
     who.forEach((nm:any,k:any)=>m.set(`a:${di}.${ri}.${k}`,P(nm)));
   });
   (d.waves||[]).forEach((w:any,gi:any)=>{
-    m.set(`wl:${di}.${gi}`,S(w.label)+'␟'+(w.night?1:0)+'␟'+S(w.kind));
+    /* standalone/noconf ride the composite (P2-REREVIEW-10), as the cancel fields
+       do on ap:/dr:/etc — so a draft-switch/recovery/issue that differs only in
+       these is SEEN by the mark system (rebase/reconcile), attributed to the wave
+       header, and no longer needs a canonicalContent-only wx: synthetic. */
+    m.set(`wl:${di}.${gi}`,S(w.label)+'␟'+(w.night?1:0)+'␟'+S(w.kind)+'␟'+(w.standalone?1:0)+'␟'+(w.noconf?1:0));
     m.set(`it:${di}.${gi}`,J(w.intimes||[]));
     m.set(`tr:${di}.${gi}`,J(w.traffic||[]));
     (w.formations||[]).forEach((f:any,li:any)=>{
-      m.set(`ff:${di}.${gi}.${li}.cs`,S(f.cs)+'␟'+(f.cx?1:0));
+      /* + shift + line-cxr on the composite (P2-REREVIEW-10): the formation's
+         SHIFT and its line-level cancel REASON now ride ff:...cs, so a change to
+         either is attributed to the line and survives reconcile (was the fx: synthetic). */
+      m.set(`ff:${di}.${gi}.${li}.cs`,S(f.cs)+'␟'+(f.cx?1:0)+'␟'+S(f.shift)+'␟'+S(f.cxr));
       m.set(`ff:${di}.${gi}.${li}.msn`,S(f.msn));
       m.set(`ff:${di}.${gi}.${li}.to`,T(f.to)); m.set(`ff:${di}.${gi}.${li}.ld`,T(f.ld));
       m.set(`ff:${di}.${gi}.${li}.br`,T(f.br));   // the indicated brief time — rolls back with its line
@@ -85,9 +88,16 @@ export function dayKeys(d:any,di:any){
     });
   });
   (d.dutywaves||[]).forEach((dw:any,wi:any)=>{
-    m.set(`dl:${di}.${wi}`,S(dw.label));
+    /* + sa (the desk's wave) + noconf on the composite (P2-REREVIEW-10): a change
+       to a duty block's wave or its no-conflict flag is attributed to the block
+       header and seen by the mark system (was the bx: synthetic). */
+    m.set(`dl:${di}.${wi}`,S(dw.label)+'␟'+S(dw.sa)+'␟'+(dw.noconf?1:0));
     (dw.rows||[]).forEach((r:any,ri:any)=>{
-      m.set(`dr:${di}.${wi}.${ri}.role`,S(r.role)+'␟'+(r.cx?1:0)+'␟'+(r.flag?1:0));
+      /* cxr (the cancel REASON) rides the composite, as ap:/fr: already do —
+         without it, changing only a cancelled duty's reason left role/cx/flag
+         unchanged, so reconcile dropped the mark and the revised reason reached
+         no AL (P2-IMPL-08). canonicalContent inherits this, so bxr: is retired. */
+      m.set(`dr:${di}.${wi}.${ri}.role`,S(r.role)+'␟'+(r.cx?1:0)+'␟'+(r.flag?1:0)+'␟'+S(r.cxr));
       m.set(`dr:${di}.${wi}.${ri}.str`,T(r.str)); m.set(`dr:${di}.${wi}.${ri}.end`,T(r.end)); m.set(`dr:${di}.${wi}.${ri}.rmks`,S(r.rmks));
       m.set(`d:${di}.${wi}.${ri}`,P(r.id));
       (r.more||[]).forEach((v:any,x:any)=>m.set(`d:${di}.${wi}.${ri}.x${x}`,P(v)));
@@ -95,7 +105,7 @@ export function dayKeys(d:any,di:any){
   });
   Object.keys(d.sims||{}).forEach((kind:any)=>{
     (d.sims[kind]||[]).forEach((r:any,ri:any)=>{
-      m.set(`sr:${di}.${kind}.${ri}.label`,S(r.label)+'␟'+S(r.who)+'␟'+(r.cx?1:0)+'␟'+(r.flag?1:0));
+      m.set(`sr:${di}.${kind}.${ri}.label`,S(r.label)+'␟'+S(r.who)+'␟'+(r.cx?1:0)+'␟'+(r.flag?1:0)+'␟'+S(r.cxr));   // + cxr, as dr:/ap:/fr: (P2-IMPL-08)
       m.set(`sr:${di}.${kind}.${ri}.str`,T(r.str)); m.set(`sr:${di}.${kind}.${ri}.end`,T(r.end)); m.set(`sr:${di}.${kind}.${ri}.rmks`,S(r.rmks));
       if(Array.isArray(r.pax))r.pax.forEach((v:any,k:any)=>m.set(`s:${di}.${kind}.${ri}.pax.${k}`,P(v)));
       else {m.set(`s:${di}.${kind}.${ri}.p`,P(r.p)); m.set(`s:${di}.${kind}.${ri}.w`,P(r.w));}
@@ -103,38 +113,10 @@ export function dayKeys(d:any,di:any){
     });
   });
   (d.ground||[]).forEach((r:any,ri:any)=>{
-    m.set(`gr:${di}.${ri}.prog`,S(r.prog)+'␟'+(r.cx?1:0)+'␟'+(r.flag?1:0)+'␟'+(r.info?1:0));   // + info, as ap: above
+    m.set(`gr:${di}.${ri}.prog`,S(r.prog)+'␟'+(r.cx?1:0)+'␟'+(r.flag?1:0)+'␟'+(r.info?1:0)+'␟'+S(r.cxr)+'␟'+S(r.src));   // + info + cxr + src, as ap: above (P2-IMPL-08 / P2-REREVIEW-10)
     m.set(`gr:${di}.${ri}.str`,T(r.str)); m.set(`gr:${di}.${ri}.end`,T(r.end)); m.set(`gr:${di}.${ri}.rmks`,S(r.rmks));
     m.set(`g:${di}.${ri}`,P(r.who));
     (r.more||[]).forEach((v:any,x:any)=>m.set(`g:${di}.${ri}.x${x}`,P(v)));
   });
   return m;
-}
-/* false = no such version. Otherwise the number of unpublished edits the
-   rollback DISCARDED (0 is the common answer) — that count is what the toast
-   owes the user. Deliberately NO histPush and NO reflow here — the UI
-   caller's afterSchedMutate() → markEdit() is the single undo step; a push
-   here would double-step the stack. Signatures, dayOK, orig and the AL
-   records are all untouched: the day stays published, rolling back neither
-   needs nor spends a sign-off, and later ALs keep their dropdown entries. */
-export function restoreDayVersion(di:any,ver:any){
-  di=+di;
-  const snap=daySnapOf(di,ver); if(!snap)return false;
-  const nd=JSON.parse(JSON.stringify(snap.d));
-  nd.today=!!(DAYS[di]&&DAYS[di].today);   // 'today' tracks the calendar, not the document
-  DAYS[di]=nd;
-  /* wipe the day's mark slices FIRST, then install the snapshot's own changes
-     slice, so the day wears exactly the marks it was issued with — a rollback
-     to the Original (whose slice is empty) shows no marks at all */
-  Object.keys(SCHED.changes).forEach((k:any)=>{if(keyDay(k)===di)delete SCHED.changes[k];});
-  let dropped=0;
-  Object.keys(SCHED.pending).forEach((k:any)=>{if(keyDay(k)===di){delete SCHED.pending[k];dropped++;}});
-  /* A rollback replaces the whole live day with issued content. Any draft-add
-     identities for that day belonged to rows just discarded; leaving them at
-     reused addresses can make a later deletion of an issued row look like a
-     draft no-op. */
-  Object.keys(SCHED.added||{}).forEach((k:any)=>{if(keyDay(k)===di)delete SCHED.added[k];});
-  Object.keys(snap.c||{}).forEach((k:any)=>{SCHED.changes[k]=snap.c[k];});
-  SCHED.cur=SCHED.cur||{}; SCHED.cur[di]=(ver==='orig')?'orig':+ver;
-  return dropped;
 }

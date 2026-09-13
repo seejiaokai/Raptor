@@ -11,7 +11,7 @@ import { App } from './App'
 import { initStore, setSession, notify, writeInputsBatch } from '../state/store'
 import { INPUTS, inpId, inpTimeText } from '../engine/inputs'
 import { DAYS } from '../engine/data'
-import { acceptInput, inpKey } from '../engine/slots'
+import { acceptInput } from '../engine/slots'
 import { afterSchedMutate, PIOPEN } from '../state/view'
 import { setInpField, removeInput, HALF_PM } from './inputedit'
 import { sbUnavailPanel, sbInputsGroupPanel } from './board-html'
@@ -103,12 +103,12 @@ describe('half-days and clears against the ACCEPTED filing', () => {
     await act(async () => { expect(acceptInput(0, inp, 'g')).toBe(true); afterSchedMutate(); notify() })
     await type(cell(inp, 'str'), '00:00')
     await type(cell(inp, 'end'), '12:00')
-    const row = (DAYS[0].ground || []).find((r: any) => r.src === inpKey(inp))
+    const row = (DAYS[0].ground || []).find((r: any) => r.src === inpId(inp))
     expect(row, 'still exactly one linked row').toBeTruthy()
     expect([row.str, row.end], 'the row follows the input\'s window').toEqual(['00:00', '12:00'])
     /* and clearing a time regenerates it TIME-LESS, the all-day row shape */
     await type(cell(inp, 'str'), '')
-    const row2 = (DAYS[0].ground || []).find((r: any) => r.src === inpKey(inp))
+    const row2 = (DAYS[0].ground || []).find((r: any) => r.src === inpId(inp))
     expect(row2).toBeTruthy()
     expect([row2.str, row2.end], 'an all-day promotion is a time-less row').toEqual(['', ''])
     await scrap(inp)

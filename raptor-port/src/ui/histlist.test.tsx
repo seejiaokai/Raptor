@@ -280,8 +280,12 @@ describe('grouped by detail', () => {
     const heads = $$('#histBody .hl-ghead')
     expect(heads.length, 'the seat with two changes folds; the other is a plain row').toBe(1)
     /* the fold handle is the group INDEX now (no rid in the DOM — RID-05), not
-       the row key; the seat's own key rides data-hkey on the jump rows instead */
-    expect(heads[0]!.dataset.hgrp).toBe('0')
+       the row key; the seat's own key rides data-hkey on the jump rows instead.
+       Groups order newest-touched first and deterministically (13 Sep 26): seat B
+       was edited LAST, so its one-change plain row leads at index 0 and seat A's
+       two-change fold sits at index 1. (Was a ms-timestamp sort that tied when the
+       three edits shared a millisecond and flaked once per-edit work grew.) */
+    expect(heads[0]!.dataset.hgrp).toBe('1')
     expect(heads[0]!.textContent).toContain('2 changes')
     expect($$('#histBody .hl-sub').length, 'shut to begin with').toBe(0)
 

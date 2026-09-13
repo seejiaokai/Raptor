@@ -5,6 +5,12 @@ import { isScheduler } from './people'
 import { HOOKS } from './hooks'
 import { logEdit } from './editlog'
 import { ridKey, posKey, ridWriteKey, RID_BOOK_VERSION } from './rowids'
+import { canonicalDiff } from './canonical'
+import type { DeltaEntry } from './canonical'
+import { INPUTS, inpId, inputCoversDate } from './inputs'
+import { CURWEEK } from './waves'
+import { dayIso, verId, parseVerId, verSeq, verSeqLabel, isValidVerId } from './verid'
+import { isPreservedWeek } from './weekstash'
 
 /* the reference calls straight into the UI here; the engine routes those four
    calls through injected hooks (no-ops until the app provides them) so the
@@ -16,23 +22,31 @@ const renderStatus=()=>HOOKS.renderStatus();
 /* =====================================================================
    PUBLISH DAY (approve) + PUBLISH AL (amendment level, whole-schedule tint)
    ===================================================================== */
-/* SCHED.pending  — keys edited since the last publish (no AL number yet)
-   SCHED.changes  — key -> AL number it was published under (drives the colour)
-   SCHED.als      — [{n, keys:[…]}] every published amendment, newest last
+/* SCHED.pending  — keys edited since the last publish (no seq yet)
+   SCHED.changes  — key -> per-day SEQ it was published under (drives the colour)
+   SCHED.als      — every published amendment, newest last. Phase 2 shape: each
+                    record is SINGLE-DAY and identified by its immutable verId —
+                    {id, di, iso, seq, snap:{d,c,fil}, diff, sign}. `seq` is the
+                    per-day display number (1 = AL1 …); `id` = verId(iso, seq) is
+                    the key; `diff` (the canonical dayDelta at issue) REPLACES the
+                    old `keys` list. There is no week-wide `n` any more.
    SCHED.dayOK    — {di:1} the days that have been published (approved) INDIVIDUALLY.
                     Approval is per day, not per week: Monday can be published and
                     flown while Thursday is still being built. The week banner is a
                     summary of this object, never the source of truth. There is no
                     SCHED.approved / SCHED.dirty any more — both are derived.
-   SCHED.cur      — {di: 'orig'|n} which version each day is CURRENTLY showing.
-                    Stamped by alIssue and by restoreDayVersion; read through
+   SCHED.cur      — {di: verId} which version each day is CURRENTLY showing (the
+                    Original is verId(iso,0)). Stamped by alIssue; read through
                     dayCurVer(), which self-heals when the stamped version's
-                    snapshot has gone (unpublishAL, undo past the issue).      */
+                    snapshot has gone (undo past the issue).                   */
 /* `ridV` stamps the addressing-by-rid book format (engine/rowids.ts). A book
    restored from a persisted snapshot WITHOUT it is foundation-era and is migrated
    once at load (migrateLegacyIds); a fresh/modern book carries it, so it is never
-   re-migrated. */
-export let SCHED:any={al:0, pending:{}, changes:{}, added:{}, als:[], dayOK:{}, sign:{}, orig:{}, cur:{}, ridV:RID_BOOK_VERSION};
+   re-migrated. `amV` stamps the Phase-2 amendment-record format (§5, P2-05); a
+   book WITHOUT it that still carries publication content is a PRE-Phase-2 book the
+   new verId resolvers cannot re-key — see amFormatOf below. */
+export const AMBOOK_VERSION=1;
+export let SCHED:any={al:0, pending:{}, changes:{}, added:{}, als:[], dayOK:{}, sign:{}, orig:{}, cur:{}, ridV:RID_BOOK_VERSION, amV:AMBOOK_VERSION};
 /* Reset ALL of SCHED in place. Every field is keyed by day INDEX (0..6), so
    loading a different week without this would let one week's approvals, pending
    edits, AL colouring and per-day drafts bleed onto the next week's identical
@@ -44,40 +58,111 @@ export function resetSched(){
   SCHED.als=[]; SCHED.dayOK={}; SCHED.sign={}; SCHED.orig={};
   SCHED.cur={}; SCHED.drafts={}; SCHED.curDraft={};
   SCHED.ridV=RID_BOOK_VERSION;   // a fresh book is modern — never re-migrated
+  SCHED.amV=AMBOOK_VERSION;      // and carries the Phase-2 amendment-record format
 }
+/* ---- Phase 2: legacy-format isolation — the ONE shared classifier (P2-05) ----
+   A book PERSISTED by a PRE-Phase-2 build carries the old shape (cur:'orig'|n,
+   als:[{n,keys,…}]) and NO amV stamp. The new verId resolvers already return
+   null for it (so publication is naturally suppressed and the OIL wire falls back
+   to the raw stashed days — credits stand, never deleted), and it round-trips
+   byte-for-byte because SCHED holds it verbatim and persistAll re-serializes it
+   as-is. This classifier makes that isolation EXPLICIT so no NEW edit is accepted
+   onto data the engine cannot safely re-key: an unsupported week is READ-ONLY.
+   Full migration to the new shape is Phase 5. */
+/* every published record's identity BELONGS to the outer week key: its verId's
+   ISO date must be that day in `weekKey`. A book self-consistent internally but
+   filed under the WRONG week (P2-REREVIEW-04) fails this — its resolvers reject
+   the foreign dates, so it must be quarantined + byte-preserved, not left
+   editable and silently re-saved. Only a DEFINITE mismatch (a valid verId whose
+   iso is wrong) fails; a malformed/absent id is left to the resolver. */
+function recordsBelongToWeek(sc:any,weekKey:any):boolean{
+  const orig=sc.orig||{};
+  for(const di of Object.keys(orig)){const o=orig[di];
+    if(o&&o.id&&isValidVerId(o.id)&&parseVerId(o.id).iso!==dayIso(weekKey,+di))return false;}
+  for(const a of (sc.als||[])){
+    if(a&&a.id&&isValidVerId(a.id)&&parseVerId(a.id).iso!==dayIso(weekKey,+a.di))return false;}
+  return true;
+}
+export function amFormatOf(sc:any,weekKey?:any){
+  if(!sc)return 'current';
+  const has=(o:any)=>!!o&&Object.keys(o).length>0;
+  const hasContent=(sc.als&&sc.als.length)||has(sc.orig)||has(sc.cur);
+  if(sc.amV===AMBOOK_VERSION){
+    /* a STAMPED current-format book is 'current' — UNLESS it carries publication
+       content whose identity does not belong to the week it is filed under (a
+       wrong-week book, P2-REREVIEW-04). weekKey is optional: an identity-only
+       classification (no key threaded) keeps the old "stamped ⇒ current" reading. */
+    if(weekKey!=null&&hasContent&&!recordsBelongToWeek(sc,weekKey))return 'unsupported';
+    return 'current';
+  }
+  /* no stamp → unsupported ONLY if it actually carries publication content; an
+     empty book has nothing to misread and is a fresh book (treated as current). */
+  return hasContent?'unsupported':'current';
+}
+/* the LIVE loaded week is protected (read-only) when its book is unsupported —
+   checked against CURWEEK so a wrong-week book is caught too (P2-REREVIEW-04) —
+   OR when the week is byte-PRESERVED (P2-REV2-01): a DAMAGED saved week (a stash
+   that would not parse, or parsed without a days array) loads the seed as a
+   placeholder VIEW, so amFormatOf(SCHED) reads that seed as 'current' — but its
+   original bytes are retained in the preserved registry and must never be
+   overwritten or edited. isPreservedWeek is set for BOTH the unsupported and the
+   unreadable case (state/store.ts applyWeekModel), so this one term makes the
+   loaded damaged week read-only just like an unsupported one. */
+export function protectedWeek(){return amFormatOf(SCHED,CURWEEK)==='unsupported'||isPreservedWeek(CURWEEK);}
+/* Phase 2 (P2-IMPL-04): a PRE-Phase-2 book saved EMPTY (a parked draft with no
+   publication content) classifies as 'current' and stays editable — but it has no
+   amV stamp, so the instant it gains content (its first approve/AL) it would
+   re-classify as 'unsupported' and go read-only. Stamp the format version at the
+   publish path so a validated, currently-supported book stays supported once it
+   holds content. A content-bearing legacy/unknown book is already 'unsupported'
+   here, so the guard leaves it unstamped — the quarantine holds. */
+function stampAmFormat(){if(amFormatOf(SCHED)==='current')SCHED.amV=AMBOOK_VERSION;}
 export function dayApproved(di:any){return !!SCHED.dayOK[di];}
 export function approvedDays(){return DAYS.map((_:any,i:any)=>i).filter(dayApproved);}
 export function dowShort(di:any){return String((DAYS[di]||{}).dow||('day '+di)).slice(0,3);}
 export function daysLabel(list:any){return list.length?list.map(dowShort).join(', '):'—';}
-/* An AL is a document that went out. Deleting a row afterwards renumbers or
-   drops its keys, and the record used to shrink with them — "AL3 · 0 item" for
-   an amendment the squadron is holding a printed copy of. What was ISSUED is
-   stamped on the record and never recalculated; the live keys still drive the
-   marks on screen. */
-export function alDays(rec:any){ if(!rec)return [];
-  const live=uniqDays(rec.keys);
-  return live.length?live:(rec.days||[]).filter((i:any)=>i>=0&&i<DAYS.length);}
-export function alCount(rec:any){return rec&&rec.n0!=null?rec.n0:((rec&&rec.keys||[]).length);}
-export function dayALs(di:any){return SCHED.als.filter((a:any)=>alDays(a).includes(di)).map((a:any)=>a.n).sort((a:any,b:any)=>a-b);}
-/* the version a day is currently showing. The stamp only counts while its
-   snapshot still exists; otherwise fall back to the NEWEST ISSUE with a snap
-   for this day — array order, not max-n, because publishAL can legally issue
-   a lower number after a higher one was freed — then the Original, then null
-   (never published). This derivation IS the orphan guard: a stale SCHED.cur
-   entry after unpublishAL or an undo is inert, no cleanup pass exists.
-   PARAMETERIZED 29 Aug 26 (one body, two callers — the forward-trace
-   precedent): the *In forms take any SCHED-shaped object {cur,als,orig,
-   drafts}, which is how the Leave War OIL wire reads publish state out of a
-   STASHED week's snapshot (state/store.ts weekStashSnap carries these under
-   schedFields' short keys) without loading that week; the bare forms are
-   the live-SCHED wrappers every existing caller keeps using. */
-export function dayCurVerIn(sc:any,di:any){di=+di;
+/* An AL is a document that went out — now a SINGLE day, so its "days" is just
+   [di]. What was ISSUED is frozen on the record (the `diff` and the `snap`) and
+   never recalculated; the live keys still drive the marks on screen. */
+export function alDays(rec:any){ if(!rec)return []; return rec.di!=null?[+rec.di]:[]; }
+/* the item count is the length of the frozen canonical diff (§3 — counts derive
+   from the diff, not from a live key list that a later delete could shrink). */
+export function alCount(rec:any){return rec&&rec.diff?rec.diff.length:0;}
+/* the per-day sequence numbers this day has issued, ascending (1 = AL1 …). */
+export function dayALs(di:any){di=+di;return SCHED.als.filter((a:any)=>+a.di===di).map((a:any)=>+a.seq).sort((a:any,b:any)=>a-b);}
+/* per-kind counts off a frozen canonical diff — for the AL history and the
+   pending summary (kinds: add | delete | change | move | input). */
+export function diffCounts(diff:any){const d=diff||[];const by=(k:any)=>d.filter((e:any)=>e.kind===k).length;
+  return {total:d.length,add:by('add'),del:by('delete'),chg:by('change'),mov:by('move'),inp:by('input')};}
+/* the verId a day is currently showing. The stamped cur[di] counts only while
+   its snapshot still resolves; otherwise fall back to the NEWEST surviving issue
+   for this day by per-day SEQ, then the Original, then null (never published).
+   This derivation IS the orphan guard: a stale SCHED.cur entry after an undo
+   past the issue is inert, no cleanup pass exists.
+   PARAMETERIZED 29 Aug 26 (one body, two callers — the forward-trace precedent):
+   the *In forms take any SCHED-shaped object {cur,als,orig,drafts}, which is how
+   the Leave War OIL wire reads publish state out of a STASHED week's snapshot
+   (state/store.ts weekStashSnap carries these under schedFields' short keys)
+   without loading that week; the bare forms are the live-SCHED wrappers every
+   existing caller keeps using. The optional `weekKey` is the trusted week
+   identity threaded into the identity/week validation (§1) — CURWEEK on the
+   live path, the stash's own key on the OIL stash path. */
+export function dayCurVerIn(sc:any,di:any,weekKey?:any){di=+di;
   const v=((sc&&sc.cur)||{})[di];
-  if(v!=null&&daySnapIn(sc,di,v))return v;
-  const als=(sc&&sc.als)||[];
-  for(let i=als.length-1;i>=0;i--){const a=als[i];if(a&&a.snap&&a.snap[di])return a.n;}
-  return ((sc&&sc.orig)||{})[di]?'orig':null;}
-export function dayCurVer(di:any){return dayCurVerIn(SCHED,di);}
+  if(v!=null&&daySnapIn(sc,di,v,weekKey))return v;
+  /* fall back to the NEWEST surviving issue for this day, by per-day SEQ (each
+     record is single-day now, so `a.di===di` picks this day's versions). Every
+     candidate is re-validated through daySnapIn, so the identity + week-key
+     checks (§1, P2-R2-05/P2-R3-03) guard the fallback too. */
+  /* iterate this day's issued records by DESCENDING seq and return the HIGHEST
+     that VALIDATES through daySnapIn — a higher-seq record filed under the wrong
+     week / an inconsistent identity is skipped in favour of a valid lower AL, not
+     abandoned to the Original (P2-IMPL-12). */
+  const cands=((sc&&sc.als)||[]).filter((a:any)=>a&&+a.di===di&&a.snap&&a.snap.d).sort((a:any,b:any)=>+b.seq-+a.seq);
+  for(const a of cands){ if(daySnapIn(sc,di,a.id,weekKey))return a.id; }
+  const o=((sc&&sc.orig)||{})[di];
+  return (o&&o.id&&daySnapIn(sc,di,o.id,weekKey))?o.id:null;}
+export function dayCurVer(di:any){return dayCurVerIn(SCHED,di,CURWEEK);}
 export function dayPendCount(di:any){return Object.keys(SCHED.pending).filter((k:any)=>keyDay(k)===di).length;}
 export function pendDays(){return uniqDays(Object.keys(SCHED.pending));}
 /* pending edits only become publishable amendments once their day is published —
@@ -85,67 +170,124 @@ export function pendDays(){return uniqDays(Object.keys(SCHED.pending));}
 export function publishableKeys(){return Object.keys(SCHED.pending).filter((k:any)=>dayApproved(keyDay(k)));}
 export function setDayApproved(di:any,on:any){
   di=+di;
-  if(on&&!daySigned(di))return toast(`${DAYS[di].dow} needs ${signMissing(di).join(', ')} before it can be published`);
-  if(on){
-    /* the day goes out AS IT STANDS. Everything pending on it up to this moment
-       is the draft build, not an amendment to something previously issued —
-       leaving those marks meant the day's first AL re-issued the whole day and
-       claimed to have "changed" every field the schedulers had ever typed. */
-    Object.keys(SCHED.pending).forEach((k:any)=>{if(keyDay(k)===di)delete SCHED.pending[k];});
-    Object.keys(SCHED.added||{}).forEach((k:any)=>{if(keyDay(k)===di)delete SCHED.added[k];});
-    SCHED.dayOK[di]=1; signClear(di);          // the signature is spent on the issue
-    /* Original = the day as FIRST published. A FIRST publish stamps it; a
-       re-publish (orig already there → we came back through reopen) re-issues
-       the current version in place instead, see reissueReopened. */
-    SCHED.orig=SCHED.orig||{};
-    if(!SCHED.orig[di])SCHED.orig[di]=daySnap(di);
-    else reissueReopened(di);}
-  else {delete SCHED.dayOK[di]; signClear(di);} // reopening voids it — resign to reissue
+  /* READ-ONLY QUARANTINE (P2-REV2-03): an unsupported / wrong-week book is frozen.
+     First-publishing a day stamps SCHED.orig/dayOK and the preserved-blob
+     writeback would then discard them on reload — a silent lost publish. Refuse
+     at the entry, before the signed/no-op checks below, so the quarantine is the
+     first word. Unsupported ≠ unresolvable: this is checked by the WEEK key
+     (protectedWeek → amFormatOf(SCHED,CURWEEK)), not by whether verIds resolve. */
+  if(on&&protectedWeek())return toast(`${(DAYS[di]||{}).dow||'This day'} is locked — it was published by an older version and can’t be amended here`);
+  /* Phase 2 (§9): a published day can NEVER be un-approved — the reopen "beak"
+     lost its un-publish job. This path only ever FIRST-approves a draft day;
+     changing a published day means editing its working draft and publishing the
+     next AL. An `on=false` (or a repeat approve) is a no-op. */
+  if(!on||SCHED.dayOK[di])return;
+  if(!daySigned(di))return toast(`${DAYS[di].dow} needs ${signMissing(di).join(', ')} before it can be published`);
+  stampAmFormat();   // first publish of a validated empty pre-Phase-2 draft keeps it 'current' (P2-IMPL-04)
+  /* the day goes out AS IT STANDS. Everything pending on it up to this moment
+     is the draft build, not an amendment to something previously issued —
+     leaving those marks meant the day's first AL re-issued the whole day and
+     claimed to have "changed" every field the schedulers had ever typed. */
+  Object.keys(SCHED.pending).forEach((k:any)=>{if(keyDay(k)===di)delete SCHED.pending[k];});
+  Object.keys(SCHED.added||{}).forEach((k:any)=>{if(keyDay(k)===di)delete SCHED.added[k];});
+  SCHED.dayOK[di]=1; signClear(di);          // the signature is spent on the issue
+  /* Original = the day as FIRST published, per-day sequence 0. Its immutable
+     verId (dayIso#0) is what the resolvers name it by, and cur is stamped to it
+     so the day now shows its Original. Frozen forever once issued. */
+  SCHED.orig=SCHED.orig||{};
+  const iso=dayIso(CURWEEK,di);
+  SCHED.orig[di]={id:verId(iso,0),...daySnap(di)};
+  SCHED.cur=SCHED.cur||{}; SCHED.cur[di]=verId(iso,0);
   reflow(); histPush();
-  toast(on?`${DAYS[di].dow} published — APPROVED`:`${DAYS[di].dow} reopened to draft`);
+  toast(`${DAYS[di].dow} published — APPROVED`);
 }
-/* RE-PUBLISHING A REOPENED DAY (owner, 15 Aug 26 — "when I reopen a day,
-   change it and publish it again, everyone should see the new version").
-   Reopening a published day keeps its version history (it voids the signature,
-   not the record), so a day re-published after reopen is still "at" whichever
-   version it was — but that version's frozen snapshot, the document the view
-   page reads through dayIssuedHTML → daySnapOf, was captured BEFORE the reopen
-   and no longer matches the live day. Left alone, viewers keep seeing the
-   pre-reopen content while the scheduler's live view has moved on, with no
-   pending marker to flag the split — it reproduced with a plain note edit as
-   much as with a whole-day template swap.
-   The fix re-issues the CURRENT version in place: refresh the snapshot
-   dayCurVer points at to the day as it now stands. The version LABEL does not
-   change — a reopen+republish is a deliberate re-issue of that version, not a
-   fresh amendment number appearing unasked. Whatever the day is currently at
-   is what gets refreshed: a never-amended day (cur='orig') re-issues its
-   Original, an amended day (cur=ALn) re-issues that AL. This is the deliberate
-   part the earlier "first-publish-wins, never restamp" rule ruled out, and the
-   owner chose it: an EXPLICIT reopen+republish is a re-issue, not the accidental
-   rewrite that rule guarded against — and the ordinary amendment flow (edit a
-   published day, Publish AL) never comes through here at all, so a normal
-   Original is still frozen the moment it is first issued. daySnap re-reads
-   DAYS[di] and the day's live changes slice, so content and marks are both
-   current. Runs only on a re-publish — the caller's `else`, orig already
-   existed. */
-function reissueReopened(di:any){di=+di;
-  const cv=dayCurVer(di);
-  if(cv==='orig'){SCHED.orig=SCHED.orig||{}; SCHED.orig[di]=daySnap(di); return;}
-  if(cv==null)return;
-  const rec=(SCHED.als||[]).find((a:any)=>a.n===cv);
-  if(rec){rec.snap=rec.snap||{}; rec.snap[di]=daySnap(di);}
-}
+/* Phase 2 (§9) removed reissueReopened: a published version is FROZEN — it is
+   never re-issued in place. A reopen no longer exists; changing a published day
+   is always a NEW AL that supersedes the old, which stays immutable in history. */
 /* ---- per-day version snapshots -------------------------------------------
    A snapshot is the frozen day plus ITS slice of the changes map, taken at the
-   moment of issue — it reproduces the day "as issued, wearing its marks". AL
-   snapshots live ON the AL record (rec.snap) and the Original in SCHED.orig,
-   so both ride the undo stack and unpublishAL with the state they belong to.
+   moment of issue — it reproduces the day "as issued, wearing its marks". An AL
+   snapshot lives ON the AL record (rec.snap = {d,c,fil}) and the Original in
+   SCHED.orig, so both ride the undo stack with the state they belong to.
    Nothing here persists past the session — neither does the AL list itself. */
 export function daySnap(di:any){di=+di;
   const c:any={}; Object.keys(SCHED.changes).forEach((k:any)=>{if(keyDay(k)===di)c[k]=SCHED.changes[k];});
-  return {d:JSON.parse(JSON.stringify(DAYS[di])),c};}
-export function daySnapIn(sc:any,di:any,ver:any){di=+di;
-  if(ver==='orig')return ((sc&&sc.orig)||{})[di]||null;
+  return {d:JSON.parse(JSON.stringify(DAYS[di])),c,fil:dayFilingFingerprint(di)};}
+/* ---- Phase 2: the FILING FINGERPRINT (P2-R3-01 / P2-R4-01) ------------------
+   The publication delta has a fourth axis — input filings — that day content
+   does NOT carry: filing an input changes INPUTS.acc, not DAYS. To detect a
+   filing change against the issued version WITHOUT trusting the live `inp:`
+   pending mark (which survives a file-then-unfile) and WITHOUT depending on live
+   INPUTS after navigation (store.ts clears acc), each issued snapshot freezes a
+   fingerprint: per input covering this day's date, its acc state. FOUR distinct
+   states — 'u' filed-unavailable, 'g' accepted-ground, 'r' removed/dormant, and
+   '' fresh/unfiled — because a fresh input still flags conflicts while a 'r' one
+   is dormant, so absent→u→r is a real change even though DAYS is unchanged. This
+   is NOT AM-04's freezing of full input VALUES/identities into content. */
+export function dayFilingFingerprint(di:any):any{di=+di;
+  const dt=(DAYS[di]||{}).dt, fil:any={};
+  if(dt==null)return fil;
+  (INPUTS||[]).forEach((inp:any)=>{ if(inputCoversDate(inp,dt))fil[inpId(inp)]=inp.acc||''; });
+  return fil;}
+/* the filing axis: entries for any input whose frozen state differs from now.
+   A same-actual-state round trip (r→u→r) is a no-op; absent→u→r is a delta. */
+function filingDelta(di:any,issuedFil:any):DeltaEntry[]{
+  const now=dayFilingFingerprint(di), was=issuedFil||{}, out:DeltaEntry[]=[];
+  const ids=new Set([...Object.keys(now),...Object.keys(was)]);
+  ids.forEach((id:any)=>{ const a=was[id]||'', b=now[id]||''; if(a!==b)out.push({addr:`inp:${di}.${id}`,kind:'input',from:a,to:b}); });
+  return out;}
+/* ---- Phase 2: the ONE normalized publication delta (F-02) ------------------
+   Eligibility, the panel counts and the stored diff ALL derive from this — never
+   from the accumulated pending marks. Compares the live day against the CURRENT
+   issued version (dayCurVerIn/daySnapOf). A never-published day has no issued
+   baseline, so its delta is empty (publishing it is the first approve, not an AL).
+   Parameterized on a SCHED-shaped object so the same body serves a stashed week
+   (the Leave War OIL wire's read) as well as the live book. */
+export function dayDeltaIn(sc:any,di:any,weekKey?:any):DeltaEntry[]{di=+di;
+  if(!((sc&&sc.dayOK)||{})[di])return [];
+  const ver=dayCurVerIn(sc,di,weekKey), snap=ver!=null?daySnapIn(sc,di,ver,weekKey):null;
+  if(!snap||!snap.d)return [];
+  return canonicalDiff(snap.d,DAYS[di],di).concat(filingDelta(di,snap.fil));}
+export function dayDelta(di:any):DeltaEntry[]{return dayDeltaIn(SCHED,di,CURWEEK);}
+/* the publish trigger + every publication affordance (P2-02/P2-07): a published
+   day has changes iff its normalized delta is non-empty. Derived SOLELY from
+   dayDelta — the one authority for eligibility, the panel counts and the stored
+   diff (F-02). The old digest fast-path is gone (P2-IMPL-07): the positional
+   digest flips on a reorder whose EFFECTIVE display order is unchanged (a ground
+   move a gman/time-sort compensates), which enabled a zero-change AL the panel
+   then offered no way to publish. dayDelta already gates on dayApproved + a
+   resolvable issued snapshot, so this reads straight through it. */
+export function dayHasChanges(di:any):boolean{di=+di;return dayDelta(di).length>0;}
+/* the number of unpublished edits a "Load onto working copy" would DISCARD — the
+   count the recovery confirm shows and the recovery handler acts on. ONE authority
+   (P2-IMPL-09): the two button renderers (ui/html.ts week, ui/SchedBoard.tsx board)
+   and the handler (ui/interactions.ts) all read this, so the confirmed number and
+   the discarded number can never drift, and none of them re-derives it from a live
+   pending count (which a canonical-only change leaves at 0, and which withDaySnap
+   zeroes during a preview render). MUST be read on the LIVE day, before any
+   withDaySnap swap. */
+export function dayDiscardCount(di:any):number{di=+di;
+  /* CONTENT ONLY — the count of working-draft edits that "Load onto working copy"
+     actually DISCARDS. Recovery replaces DAYS (content) but NOT the global input
+     filing state, so the filing axis must be EXCLUDED here or the confirm claims
+     to discard a filing change it then leaves in place (P2-REREVIEW-08). Publish
+     eligibility (dayHasChanges/dayDelta) still counts filing — that IS a real
+     divergence — but it is retained across a recovery, not discarded. */
+  if(!dayApproved(di))return 0;
+  const ver=dayCurVer(di), snap=ver!=null?daySnapOf(di,ver):null;
+  if(!snap||!snap.d)return 0;
+  return canonicalDiff(snap.d,DAYS[di],di).length;}
+/* THE ONE PLACE records are found by identity (§1, P2-R2-05/P2-R3-03). `ver` is
+   a verId (`iso#seq`) — the Original is `iso#0`, an AL is `iso#seq`. It also
+   still resolves a `d:<id>` DRAFT blob (unchanged). It MUST validate that the
+   identity belongs to the requested day AND — when a `weekKey` is passed — to
+   that week: the flat `als` list no longer implies day-membership, and a
+   self-consistent book filed under the WRONG week key would otherwise be
+   credited to the wrong dates. A legacy bare number / 'orig' is NOT resolved
+   here — an old-format book is quarantined at load (§5), never reaching this
+   resolver as authoritative. Returns null for a cross-day / cross-week /
+   malformed / foreign id, never a wrong day's snapshot. */
+export function daySnapIn(sc:any,di:any,ver:any,weekKey?:any){di=+di;
   /* 'd:<id>' — a pre-publish DRAFT blob (engine/drafts.ts; SCHED.drafts rides
      this object so it undoes with everything else). Resolved here so the whole
      preview machinery — withDaySnap, dayPreviewHTML, DPREV, prunePreviews —
@@ -156,15 +298,34 @@ export function daySnapIn(sc:any,di:any,ver:any){di=+di;
   if(typeof ver==='string'&&ver.slice(0,2)==='d:'){
     const t=((((sc&&sc.drafts)||{})[di])||[]).find((x:any)=>'d:'+x.id===ver);
     return t?{d:t.d,c:{}}:null;}
-  const r=((sc&&sc.als)||[]).find((a:any)=>a.n===+ver);
-  return (r&&r.snap&&r.snap[di])||null;}   // records from before snapshots carry none
-export function daySnapOf(di:any,ver:any){return daySnapIn(SCHED,di,ver);}
+  /* a verId is the ONLY other accepted shape — a bare number/'orig'/foreign
+     string resolves to null (quarantined-book back-compat is a load-time
+     concern, §5, not this authoritative resolver). Validate the SYNTAX strictly
+     (§1, P2-REREVIEW-11): parseVerId coerces, so `iso#` (→ seq 0), `iso#-1`,
+     `iso#1.5` and a non-date left part would otherwise resolve — isValidVerId
+     rejects them (real ISO date + nonnegative safe-integer sequence). */
+  if(typeof ver!=='string'||!isValidVerId(ver))return null;
+  const {iso,seq}=parseVerId(ver);
+  /* week-key validation: the id's ISO date must BE this day in the passed week
+     (live = CURWEEK, stash = the stash's own key). Skipped only when no key is
+     threaded (identity-only, e.g. the live delta's internal read). */
+  if(weekKey!=null&&iso!==dayIso(weekKey,di))return null;
+  if(seq===0){
+    const o=((sc&&sc.orig)||{})[di];
+    return (o&&o.id===ver)?o:null;   // exact Original-id match — not "any id ending #0"
+  }
+  const r=((sc&&sc.als)||[]).find((a:any)=>a&&a.id===ver&&+a.di===di&&a.iso===iso&&+a.seq===seq);
+  return (r&&r.snap&&r.snap.d)?r.snap:null;}
+export function daySnapOf(di:any,ver:any){return daySnapIn(SCHED,di,ver,CURWEEK);}
 export function dayVersions(di:any){di=+di;
   const v:any[]=['live'];
-  if((SCHED.orig||{})[di])v.push('orig');
-  SCHED.als.slice().sort((a:any,b:any)=>a.n-b.n).forEach((a:any)=>{if(a.snap&&a.snap[di])v.push(a.n);});
+  const o=(SCHED.orig||{})[di]; if(o&&o.id)v.push(o.id);
+  SCHED.als.filter((a:any)=>+a.di===di&&a.snap&&a.snap.d).slice().sort((a:any,b:any)=>+a.seq-+b.seq).forEach((a:any)=>v.push(a.id));
   return v;}
-export function verLabel(ver:any){return ver==='live'?'Live':(ver==='orig'?'Original':'AL'+ver);}
+/* the label a verId reads as: 'Live' for the live working copy, else the
+   sequence's per-day label ('Original', 'AL1' …). Draft ('d:<id>') vers are
+   relabelled by drafts.ts:draftVerLabel BEFORE they reach here. */
+export function verLabel(ver:any){return ver==='live'?'Live':verSeqLabel(verSeq(ver));}
 /* AL1 cyan · AL2 amber · AL3 bright green · AL4 white · AL5 purple · AL6 pink ·
    AL7 orange. Every entry has to read as an ALn tag in dark ink (#08131b) on top
    of itself, so the ramp stays light and saturated — the old AL5 magenta (#C21E93)
@@ -312,12 +473,11 @@ export function deletionWasIssued(di:any,kind:any,...at:any[]){di=+di;
    keys mean a deleted PARENT rid alone sweeps its children (their keys carry the
    parent rid), so only the root rid(s) need capturing.
    Scoped to the LIVE book (pending/changes/added) ONLY — NEVER an issued AL's
-   keys/adds/structAdds or snap.c (Astra RID-R5-03 ≡ Fable #1): a deleted row is
-   routinely RESURRECTED by switching to a parked draft that still holds it, after
-   which rebaseDayPending re-tints it from snap.c and unpublishAL can return the
-   mark. Emptying the AL record would strand a tint that outlives its AL. Left
-   intact, a stale AL entry on a day whose row is gone is inert (unpublishAL finds
-   no live match, structuralAddExists is posKey→null→false). */
+   diff or snap.c (Astra RID-R5-03 ≡ Fable #1): a deleted row is routinely
+   RESURRECTED by switching to a parked draft that still holds it, after which
+   rebaseDayPending re-tints it from snap.c. Emptying the frozen AL record would
+   strand a tint that outlives its issue. Left intact, a stale AL entry on a day
+   whose row is gone is inert (structuralAddExists is posKey→null→false). */
 export function dropRowMarks(rids:any){
   const set=new Set((rids||[]).filter(Boolean));
   if(!set.size)return;
@@ -353,11 +513,9 @@ export function markEdit(key?:any,was?:any,now?:any){
    A pending edit on a PUBLISHED day is different from draft work: publishing a
    day clears its pending marks (the day goes out as it stands), so anything
    pending on it afterwards is exactly what the next AL will carry. Those keys
-   also get data-aln — the AL number they will go out as — so the edit surfaces
-   can paint them in that AL's colour before it exists (owner request, Aug 26;
-   the view page ignores the attribute). nextAL() is the panel's default pick;
-   choosing a different number in the dropdown is the one case the preview
-   colour can be wrong, and it corrects itself on publish. */
+   also get data-aln — the per-day sequence they will go out as (nextSeq(di)) —
+   so the edit surfaces can paint them in that AL's colour before it exists
+   (owner request, Aug 26; the view page ignores the attribute). */
 export function alAttr(key:any){
   if(!key)return '';
   /* HOT PAINT PATH. The stored book is rid-anchored, so the positional DOM key
@@ -378,101 +536,80 @@ export function alAttr(key:any){
        (data-aln, painted in that AL's colour on the edit surfaces); draft day →
        NO mark. History still finds the cell by its own key + the edit log, not by
        this attribute, so the changes list and hover are unaffected. */
-    if(dayApproved(keyDay(key))){const x=nextAL();return ` data-alp="1" data-aln="${x}" title="Edited — goes out as AL${x}"`;}
+    if(dayApproved(keyDay(key))){const x=nextSeq(keyDay(key));return ` data-alp="1" data-aln="${x}" title="Edited — goes out as AL${x}"`;}
     return '';
   }
   return '';
 }
-export function alUsed(){return SCHED.als.map((a:any)=>a.n);}
-/* which days an AL would cover, and which of those are not signed right now */
-export function alUnsignedDays(){return uniqDays(publishableKeys()).filter((di:any)=>!daySigned(di));}
-export function canPublishAL(){return publishableKeys().length>0&&alUnsignedDays().length===0;}
-export function publishAL(n:any){
-  n=+n; if(!n||alUsed().includes(n))return toast('AL'+n+' already exists');
-  if(!pendCount())return toast('Nothing to publish');
-  const uns=alUnsignedDays();
-  if(uns.length)return toast(`Sign off ${daysLabel(uns)} before publishing — ${signMissing(uns[0]).join(', ')} still open on ${dowShort(uns[0])}`);
-  /* only edits on published days go out as an amendment; anything on a day still in
-     draft stays pending until that day is published, so an AL never claims to amend
-     something that was never issued in the first place */
-  const keys=publishableKeys();
-  if(!keys.length)return toast('Nothing to publish — publish a day first, then publish its changes');
-  const {days,sign}=alIssue(n,keys);
-  const who=sign[days[0]]||{};
-  const held=pendCount();
-  toast(`Published AL${n} · ${keys.length} item${keys.length>1?'s':''} on ${daysLabel(days)}`
-    +(who.appr?` · approved by ${who.appr}`:'')
-    +(held?` · ${held} change${held>1?'s':''} held on unpublished days`:''));
-}
-/* the shared issue step: mark the keys, record the AL with a name per covered
-   day, and SPEND those days' signatures — the next amendment on them is signed
-   for on its own merits. The days stay published; only the sign-off resets. */
-export function alIssue(n:any,keys:any){
-  const days=uniqDays(keys);
-  const adds=Object.keys(SCHED.added||{}).filter((k:any)=>days.includes(keyDay(k)));
-  /* A discarded add mark can still be present in the live day. If some other
-     edit now issues that day, the snapshot issues the addition too, so put its
-     identity key back into this AL explicitly rather than losing ownership. */
-  adds.forEach((k:any)=>{if(!keys.includes(k))keys.push(k);});
-  const carried=(SCHED.als||[]).flatMap((a:any)=>a.structAdds||a.adds||[]);
-  const structAdds=[...new Set(carried.concat(adds))]
-    .filter((k:any)=>days.includes(keyDay(k))&&structuralAddExists(k));
-  keys.forEach((k:any)=>{SCHED.changes[k]=n; delete SCHED.pending[k];});
-  const sign:any={}; days.forEach((di:any)=>{sign[di]=signNames(di);});
-  SCHED.als.push({n,keys,sign,days:days.slice(),n0:keys.length,adds,structAdds});
-  adds.forEach((k:any)=>delete SCHED.added[k]);
-  /* freeze every covered day AFTER its marks are on — this is the document */
-  const rec=SCHED.als[SCHED.als.length-1];
-  rec.snap={}; days.forEach((di:any)=>{rec.snap[di]=daySnap(di);});
-  SCHED.cur=SCHED.cur||{}; days.forEach((di:any)=>{SCHED.cur[di]=n;});   // issuing makes it current
-  days.forEach((di:any)=>signClear(di));
-  SCHED.al=Math.max(...alUsed());
+/* which published days have changes to go out, and which of those are not
+   signed right now — the ALPanel's per-day publish affordance reads these. */
+export function pendingPublishDays(){return approvedDays().filter((di:any)=>dayHasChanges(di));}
+export function alUnsignedDays(){return pendingPublishDays().filter((di:any)=>!daySigned(di));}
+export function canPublishAL(){return pendingPublishDays().length>0&&alUnsignedDays().length===0;}
+/* the shared issue step, now SINGLE-DAY (§1/§2/§4): freeze the day as the next
+   per-day sequence, storing the immutable verId, the canonical `diff` (from
+   dayDelta, the ONE authority) and the day's signatures; stamp cur=id. The old
+   structural-add ownership tangle (carried/structAdds/adds) is gone (§2) — an
+   issue simply CLEARS the day's SCHED.added entries (they are now frozen in the
+   snapshot) and records nothing for a future unpublish (there is none). */
+export function alIssue(di:any){di=+di;
+  /* READ-ONLY QUARANTINE backstop (P2-REV2-03): the shared final step of every
+     publish path — refuse to push a record onto an unsupported/wrong-week book,
+     so any caller that reached here (present or future) cannot issue onto frozen
+     data. Returns a zero-count result rather than throwing, matching its shape. */
+  if(protectedWeek())return {seq:0,id:'',sign:{},count:0};
+  stampAmFormat();   // defensive: an AL on a validated (supported) book keeps it 'current' (P2-IMPL-04)
+  const seq=nextSeq(di), iso=dayIso(CURWEEK,di), id=verId(iso,seq);
+  /* the canonical delta vs the CURRENT issued version, captured BEFORE the marks
+     move to changes — this is the frozen record of what this AL changed. */
+  const diff=dayDelta(di);
+  const keys=Object.keys(SCHED.pending).filter((k:any)=>keyDay(k)===di);
+  /* a still-outstanding draft add on this day becomes part of the frozen
+     snapshot, so it wears this AL's colour and its live-only marker is cleared. */
+  Object.keys(SCHED.added||{}).forEach((k:any)=>{if(keyDay(k)===di&&!keys.includes(k))keys.push(k);});
+  keys.forEach((k:any)=>{SCHED.changes[k]=seq; delete SCHED.pending[k];});
+  Object.keys(SCHED.added||{}).forEach((k:any)=>{if(keyDay(k)===di)delete SCHED.added[k];});
+  const sign=signNames(di);
+  /* freeze the day AFTER its marks are on — this is the document */
+  const snap=daySnap(di);
+  SCHED.als.push({id,di,iso,seq,snap,diff,sign:{[di]:sign}});
+  SCHED.cur=SCHED.cur||{}; SCHED.cur[di]=id;   // issuing makes it current
+  signClear(di);
   reflow(); histPush();   // publishing is its own undo step, not a silent baseline shift
-  return {days,sign};
+  return {seq,id,sign,count:diff.length};
 }
-/* publish ONE day's pending edits as the next AL — pending on other days is
-   untouched, and only this day's signature is spent. */
+/* publish ONE day's changes as its next per-day AL (P2-08 — never publish-all).
+   Gates on dayHasChanges (the canonical delta, F-02), NOT on a live pending
+   count: a canonical-only change (order, an input filing, a cancelled-formation
+   reason) is publishable even if it left no pending field mark. */
 export function publishALDay(di:any){
   di=+di;
+  /* READ-ONLY QUARANTINE (P2-REV2-03): refuse a new AL on an unsupported/wrong-week
+     book FIRST — before the draft/changes/signature checks — so it cannot slip
+     through on a book whose verIds merely happen to resolve. The preserved-blob
+     writeback would otherwise discard the issue on reload (a silent lost AL). */
+  if(protectedWeek())return toast(`${(DAYS[di]||{}).dow||'This day'} is locked — it was published by an older version and can’t be amended here`);
   if(!dayApproved(di))return toast(`${DAYS[di].dow} is still draft — publish the day before publishing its changes`);
-  const keys=Object.keys(SCHED.pending).filter((k:any)=>keyDay(k)===di&&dayApproved(di));
-  if(!keys.length)return toast(`No unpublished edits on ${DAYS[di].dow}`);
-  const n=nextAL();
-  if(!daySigned(di))return toast(`Sign off ${signMissing(di).join(', ')} before publishing AL${n}`);
-  const {sign}=alIssue(n,keys);
-  const who=sign[di]||{};
-  const held=pendCount();
-  toast(`Published AL${n} · ${keys.length} item${keys.length>1?'s':''} on ${dowShort(di)} only`
+  if(!dayHasChanges(di))return toast(`No changes to publish on ${DAYS[di].dow}`);
+  const seq=nextSeq(di);
+  if(!daySigned(di))return toast(`Sign off ${signMissing(di).join(', ')} before publishing AL${seq}`);
+  const {sign,count}=alIssue(di);
+  const who=sign||{};
+  const held=pendingPublishDays().length;
+  toast(`Published AL${seq} · ${count} item${count===1?'':'s'} on ${dowShort(di)} only`
     +(who.appr?` · approved by ${who.appr}`:'')
-    +(held?` · ${held} change${held>1?'s':''} held on other days`:''));
+    +(held?` · ${held} day${held>1?'s':''} with changes still held`:''));
 }
-export function unpublishAL(n:any){
-  n=+n; const ix=SCHED.als.findIndex((a:any)=>a.n===n); if(ix<0)return;
-  const rec=SCHED.als.splice(ix,1)[0];
-  rec.keys.forEach((k:any)=>{ if(SCHED.changes[k]===n){delete SCHED.changes[k]; SCHED.pending[k]=1;} });
-  SCHED.added=SCHED.added||{};
-  /* A structural add is still OWNED by the issued document only if it is in the
-     day's CURRENTLY-EFFECTIVE version — dayCurVer(di), which every later AL
-     carries forward (alIssue's `carried`). Unioning EVERY historical AL's
-     structAdds was wrong for an add→delete→resurrect chain: an add issued at AL1
-     then deleted at AL2 (the effective doc) is NOT owned, but AL1's stale
-     structAdds still claimed it — so unpublishing a later AL failed to return the
-     resurrected row to draft-added and a delete then minted a false removal
-     (Astra RID-REV-01). Judge ownership by the effective version, by rid. */
-  const surviving=new Set<string>();
-  (SCHED.als||[]).forEach((a:any)=>(a.structAdds||a.adds||[]).forEach((k:any)=>{
-    if(dayCurVer(keyDay(k))===a.n&&structuralAddExists(k))surviving.add(k);
-  }));
-  /* The last surviving snapshot that carried a structural addition may not be
-     the AL that originally added it. When that final owner is unpublished,
-     the still-live row becomes draft again even if its field key was owned by
-     a different AL, so restore from structAdds rather than only rec.adds. */
-  (rec.structAdds||rec.adds||[]).forEach((k:any)=>{if(!surviving.has(k)&&structuralAddExists(k))SCHED.added[k]=1;});
-  SCHED.al=SCHED.als.length?Math.max(...alUsed()):0;
-  reflow(); histPush();
-  toast(`AL${n} (${daysLabel(alDays(rec))}) unpublished · ${rec.keys.length} change${rec.keys.length>1?'s':''} back to pending`);
+/* Restricted to NEVER-PUBLISHED days (Phase 2 lock, F-01). On a day that has
+   an issued Original, discarding its pending marks would silently drop a
+   live-vs-issued divergence — the only supported way to change a published day
+   is to publish it as the next AL. So keep pending on any day that carries an
+   Original, and clear only the draft-build marks on never-published days. */
+export function discardPending(){
+  const orig=SCHED.orig||{};
+  Object.keys(SCHED.pending).forEach((k:any)=>{ if(!orig[keyDay(k)])delete SCHED.pending[k]; });
+  reflow(); histPush(); toast('Pending marks cleared');
 }
-export function discardPending(){ SCHED.pending={}; reflow(); histPush(); toast('Pending marks cleared'); }
 /* re-validate + repaint every visible surface */
 export const SIGN_ROLES:any[]=[['cur','CUR CK',false],['sked','SKED CK',true],['plan','PLANNED BY',true],['appr','APPROVED BY',true]];
 export function signOf(di:any){SCHED.sign=SCHED.sign||{}; return (SCHED.sign[+di]=SCHED.sign[+di]||{cur:'',sked:'',plan:'',appr:''});}
@@ -491,5 +628,15 @@ export function signPeople(schedOnly:any,keep?:any){
   if(keep&&PEOPLE[keep]&&!ids.includes(keep))ids.push(keep);
   return ids.sort((a:any,b:any)=>PEOPLE[a].cs.localeCompare(PEOPLE[b].cs));
 }
-/* lowest unused AL number */
-export function nextAL(){const used=alUsed(); let n=1; while(used.includes(n))n++; return n;}
+/* the next per-day sequence for a day: highest issued seq for THIS day + 1
+   (Original is seq 0, so a day's first amendment is AL1). Per-day, so Monday's
+   AL1 and Tuesday's AL1 are independent — the old week-wide nextAL is gone. */
+export function nextSeq(di:any){di=+di;
+  /* number ABOVE every existing sequence for THIS day, counting only a POSITIVE
+     safe-integer seq (§1, P2-REREVIEW-11): a fractional / negative / NaN seq no
+     longer skews the next number. Any real positive seq still raises the ceiling,
+     so a fresh AL can never collide with an existing one. */
+  let mx=0; (SCHED.als||[]).forEach((a:any)=>{
+    if(!a||+a.di!==di)return;
+    const s=+a.seq; if(Number.isSafeInteger(s)&&s>0&&s>mx)mx=s;});
+  return mx+1;}

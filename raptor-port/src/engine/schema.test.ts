@@ -106,25 +106,34 @@ const SIM: Spec = { ...FLAGS, label: 'string', str: 'string', end: 'string', rmk
 const DUTYROW: Spec = { ...FLAGS, role: 'string', id: 'string', str: 'string', end: 'string', more: { $opt: ['string'] }, rid: 'string?' }
 const DUTYBLOCK: Spec = { label: 'string', rows: [DUTYROW], sa: { $opt: SAKIND }, noconf: 'boolean?', rid: 'string?' }
 const DAY: Spec = {
-  dow: 'string', dt: 'string', wc: 'string', today: 'boolean?', notes: ['string'], allhands: [ALLHANDS], waves: [WAVE],
+  dow: 'string', dt: 'string', wc: 'string', today: 'boolean?', notes: [{ rid: 'string?', t: 'string' }], allhands: [ALLHANDS], waves: [WAVE],
   sims: { amt: [SIM], oft: [SIM] }, dutywaves: [DUTYBLOCK], ground: [GROUND],
   simnotes: 'string?', prognotes: 'string?', dutynotes: 'string?', grndnotes: 'string?', secOrder: { $opt: ['string'] }, gman: 'boolean?',
 }
 const SIGNSET: Spec = { cur: 'string', sked: 'string', plan: 'string', appr: 'string' }
-const DAYSNAP: Spec = { d: DAY, c: { $map: 'number' } }
-const AL: Spec = { n: 'number', keys: ['string'], sign: { $map: SIGNSET }, days: ['number'], n0: 'number', adds: ['string'], structAdds: ['string'], snap: { $opt: { $map: DAYSNAP } } }
+/* Phase 2 DaySnapshot: the frozen day, its issued-marks slice, the filing
+   fingerprint, and (on SCHED.orig only) the Original's own verId. */
+const DAYSNAP: Spec = { d: DAY, c: { $map: 'number' }, fil: { $opt: { $map: 'string' } }, id: 'string?' }
+/* Phase 2 AlRecord: SINGLE-DAY, keyed by its immutable verId; the canonical
+   `diff` replaces the old `keys` list, and there is no n/days/n0/adds/structAdds. */
+const ANYV: Spec = { $or: ['string', 'number', 'boolean'] }
+const ALDIFF: Spec = { addr: 'string', kind: { $lit: ['add', 'delete', 'change', 'move', 'input'] }, from: { $opt: ANYV }, to: { $opt: ANYV } }
+const AL: Spec = { id: 'string', di: 'number', iso: 'string', seq: 'number', snap: DAYSNAP, diff: [ALDIFF], sign: { $map: SIGNSET } }
 const ONE: Spec = { $lit: [1] }
+/* Phase 2: cur is a verId STRING per day (Original = `iso#0`); orig carries an id. */
 const SCHED_SPEC: Spec = {
   al: 'number', pending: { $map: ONE }, changes: { $map: 'number' }, added: { $map: ONE }, als: [AL], dayOK: { $map: ONE },
-  sign: { $map: SIGNSET }, orig: { $map: DAYSNAP }, cur: { $map: { $or: ['number', { $lit: ['orig'] }] } },
+  sign: { $map: SIGNSET }, orig: { $map: DAYSNAP }, cur: { $map: 'string' },
   drafts: { $opt: { $map: [{ id: 'string', name: 'string', d: DAY }] } }, curDraft: { $opt: { $map: 'string' } },
   ridV: 'number',   // the addressing-by-rid book-format version (engine/rowids.ts)
+  amV: { $opt: 'number' },   // the Phase-2 amendment-record format version (§5); absent on a PRE-Phase-2 book
 }
 const SCHED_FIELDS = {
   c: { $map: 'number' }, p: { $map: ONE }, ad: { $map: ONE }, a: [AL], al: 'number', ok: { $map: ONE }, sg: { $map: SIGNSET },
-  o: { $map: DAYSNAP }, cv: { $map: { $or: ['number', { $lit: ['orig'] }] } },
+  o: { $map: DAYSNAP }, cv: { $map: 'string' },
   dr: { $opt: { $map: [{ id: 'string', name: 'string', d: DAY }] } }, cd: { $opt: { $map: 'string' } },
   v: { $opt: 'number' },   // book-format version; ABSENT on a foundation-era snapshot (triggers migrateLegacyIds)
+  am: { $opt: 'number' },  // Phase-2 amendment-record format version; ABSENT on a PRE-Phase-2 snapshot
 }
 const PUCK: Spec = { $or: [
   { id: 'string', date: 'string', kind: { $opt: { $lit: ['note'] } }, text: 'string' },
@@ -292,8 +301,10 @@ describe('after edits — fields the seeds never carry', () => {
   })
   it('an issued amendment: SCHED, the AL and the day snapshots conform', async () => {
     const { histSnap } = await import('../state/history')
-    markEdit('dn:0.0'); alIssue(1, ['dn:0.0'])
-    expect(SCHED.al).toBe(1); expect(SCHED.cur[0]).toBe(1)
+    markEdit('dn:0.0'); alIssue(0)               // Phase 2: single-arg, a day index
+    expect(SCHED.als.length).toBe(1)
+    expect(SCHED.als[0].seq).toBe(1)             // the day's first amendment
+    expect(SCHED.cur[0]).toBe(SCHED.als[0].id)   // cur is the issued verId
     conform(SCHED, SCHED_SPEC, 'SCHED after AL 1')
     conform(JSON.parse(histSnap()), WEEK_SNAP, 'histSnap after AL 1')
   })

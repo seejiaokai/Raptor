@@ -16,7 +16,7 @@ import { HOOKS } from '../engine/hooks'
 import { autoAcceptInput } from '../engine/slots'
 import { LOOK_CFG, LOOK_MAX, LOOK_MIN, lookaheadLabel, lookaheadRange, setLookahead } from '../engine/lookahead'
 import { ME, SESSION, canEditSched } from '../state/auth'
-import { writeInputsBatch, notify } from '../state/store'
+import { writeInputsBatch, notify, inputProtected } from '../state/store'
 import { INPVIEW, setInpView } from '../state/view'
 import { setDocView } from './pops'
 import { ClipIcon, MedIcon } from './icons'
@@ -31,7 +31,7 @@ import {
   draftOf, commitInputEdit, removeInput, SansPicker, sansRefusal, sansOverlapRefusal, sansFlags,
   medOverlapRefusal, upchitRefusal, downOverUpchitRefusal, applyMedPlan, normalizeInputDraft,
   medKeptSegments, mintMedSegments, ordISO, DocField, oilGate, oilAnswered,
-  rosterOptions as people, inputTone,
+  rosterOptions as people, inputTone, medPlanProtected, medSegmentsProtected,
 } from './inputedit'
 import { docFields, docHas, rowDocIds } from '../state/docs'
 import { useVersion } from './useStore'
@@ -337,6 +337,14 @@ export function InputsPage() {
        click anyway and quietly dating it Monday was a trap */
     if (!start) return HOOKS.toast('Pick a start date on the calendar first', 'warn')
     const date = fmt(start), endDate = end && fmt(end) !== date ? fmt(end) : undefined
+    /* READ-ONLY QUARANTINE preflight (P2-QREV-01/04): refuse an add onto a
+       protected week BEFORE any branch, confirm sheet, or write — so a rejection
+       never leaves partial state (a Leave War withdrawal, a finishAdd flash on an
+       unrelated row, a cleared form and an orphaned document). The medical trim
+       cascade is preflighted separately in each commit path below. */
+    if (inputProtected({ date, endDate, yr: baseYear(), person: filedFor() })) {
+      return HOOKS.toast('This week is locked — it was published by an older version and can’t be edited', 'warn')
+    }
     /* SANS AVAILABILITY IS RESTRICTED TO SANS AIRCREW, AND NEEDS AT LEAST ONE
        BOX TICKED (owner, 14 Aug 26) — checked here, ahead of the timing
        refusals below, through the one shared check every editor's commit
@@ -418,7 +426,17 @@ export function InputsPage() {
       setDocIds([])
     }
     const commit = (removals: any[], oilDec?: Record<string, number>) => {
-      writeInputsBatch(() => {
+      /* preflight the medical trim cascade (P2-QREV-01): its trims/deletes and
+         Leave War withdrawals cannot be rolled back, so refuse the whole op if any
+         trimmed row — or an upchit removal — falls on a protected week. `null`
+         except == the in-batch INPUTS[0] except (the new row is not filed yet). */
+      const aOrd = dateOrd(date, baseYear()), bOrd = dateOrd(endDate || date, baseYear())
+      const checkPlan = isDownchit(type) ? newMedTrimPlan(filedFor(), type, aOrd, bOrd, null)
+        : isUpchit(type) ? upchitTrimPlan(filedFor(), aOrd, null) : []
+      if (medPlanProtected(checkPlan) || medPlanProtected((removals || []).map((lr: any) => ({ row: lr })))) {
+        return HOOKS.toast('This week is locked — it was published by an older version and can’t be edited', 'warn')
+      }
+      const ok = writeInputsBatch(() => {
         INPUTS.unshift(rowBody(date, endDate, remarks.trim()))
         /* the OIL answers land on the just-unshifted row inside the same
            batch — add plus acknowledgment is ONE undo step (owner, 28 Aug 26) */
@@ -441,7 +459,7 @@ export function InputsPage() {
            is one undo step, exactly as commitNewInput's toGround already is. */
         autoAcceptInput(INPUTS[0])
       })
-      finishAdd()
+      if (ok) finishAdd()   // don't flash/clear the form if the funnel rolled the add back (P2-QREV-04)
     }
     /* an upchit is NEVER saved silently (owner, 27 Aug 26): the summary sheet
        says what it ends and puts every later-dated entry to the filer as an
@@ -470,7 +488,11 @@ export function InputsPage() {
           commit: (choices: string[], keepTail: any[]) => {
             const segs = medKeptSegments(aOrd, bOrd, clashes, choices)
             if (!segs.length) return          // toasted; nothing written
-            writeInputsBatch(() => {
+            /* preflight the trim cascade before any withdrawal/write (P2-QREV-01) */
+            if (medSegmentsProtected({ person: filedFor(), type, yr: baseYear() }, segs, keepTail, bOrd, null)) {
+              return HOOKS.toast('This week is locked — it was published by an older version and can’t be edited', 'warn')
+            }
+            const ok = writeInputsBatch(() => {
               const g0 = segs[0]
               INPUTS.unshift(rowBody(
                 ordLabel(g0.startOrd, baseYear()),
@@ -480,7 +502,7 @@ export function InputsPage() {
               mintMedSegments(INPUTS[0], segs.slice(1), keepTail, bOrd)
               autoAcceptInput(INPUTS[0])
             })
-            finishAdd()
+            if (ok) finishAdd()
           },
         })
         return
@@ -538,6 +560,9 @@ export function InputsPage() {
         dateLabel,
         effects: upchitEffects(draft.person, dateOrd(dateLabel, editRow.yr), editRow),
         commit: (removals: any[]) => {
+          if (medPlanProtected(removals.map(row => ({ row })))) {
+            return HOOKS.toast('This week is locked — it was published by an older version and can’t be edited', 'warn')
+          }
           let ok = false
           writeInputsBatch(() => {
             ok = commitInputEdit(editRow, draft)
@@ -567,6 +592,9 @@ export function InputsPage() {
           commit: (choices: string[], keepTail: any[]) => {
             const segs = medKeptSegments(aOrd, bOrd, clashes, choices)
             if (!segs.length) return
+            if (medSegmentsProtected({ ...draft, yr: editRow.yr }, segs, keepTail, bOrd, editRow)) {
+              return HOOKS.toast('This week is locked — it was published by an older version and can’t be edited', 'warn')
+            }
             const g0 = segs[0]
             const d2 = {
               ...draft,

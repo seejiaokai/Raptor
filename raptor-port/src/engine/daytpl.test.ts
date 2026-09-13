@@ -1,17 +1,17 @@
 /* Whole-day schedule templates — mirrors dutytpl.test.ts's shape (mutators,
    caps, save/load/reset, untrusted-load garbage) plus the day-specific pieces:
-   tplFromDay's crew-blanking and cx/flag strip, and applyDayTpl's refusal on
-   a published day and its restoreDayVersion-style direct write. */
+   tplFromDay's crew-blanking and cx/flag strip, and (Phase 2) applyDayTpl's
+   working-draft rebase on a published day and its direct day-object write. */
 import { beforeEach, describe, expect, it } from 'vitest'
 import { storeBackend } from './hooks'
 import { DAYS } from './data'
-import { SCHED, signOf, setDayApproved, dayApproved, publishALDay } from './publish'
-import { txtSet } from './slots'
+import { SCHED, signOf, setDayApproved, dayApproved, dayCurVer } from './publish'
 import {
   DAYTPL_STD, DAYTPL_CFG, dayTplAreStandard,
   tplFromDay, addDayTpl, delDayTpl, renameDayTpl, moveDayTpl,
   applyDayTpl, dayTplSave, dayTplLoad, dayTplReset, MAX_DAYTPL,
 } from './daytpl'
+import { ensureRowIds } from './rowids'
 
 /* templates are minted off DAYS[0] and applyDayTpl overwrites it wholesale —
    every test starts from the pristine day, same discipline restore.test.ts uses */
@@ -42,6 +42,28 @@ describe('the seeded library', () => {
     expect(DAYTPL_CFG).toEqual([])
     expect(DAYTPL_STD).toEqual([])
     expect(dayTplAreStandard()).toBe(true)
+  })
+})
+
+describe('day-note identity through a template (Astra/Fable inspect SID-03/04)', () => {
+  it('carries the note TEXT and re-mints a distinct note id per applied copy', () => {
+    const D1 = JSON.parse(JSON.stringify(DAYS[1]))
+    try {
+      DAYS[0].notes = [{ t: 'TEMPLATE NOTE' } as any]
+      ensureRowIds(DAYS)                                   // mints the source note's rid
+      const tpl = addDayTpl(0, 'Noted')!
+      /* capture keeps the TEXT (SID-03: not filtered away) and drops the id (SID-04) */
+      expect(tpl.d.notes.map((n: any) => n.t)).toEqual(['TEMPLATE NOTE'])
+      expect(tpl.d.notes.every((n: any) => !n.rid)).toBe(true)
+      // apply the SAME template to two days, then mint ids as the app's baseline does
+      expect(applyDayTpl(0, tpl.id)).toBe(true)
+      expect(applyDayTpl(1, tpl.id)).toBe(true)
+      ensureRowIds(DAYS)
+      expect(DAYS[0].notes.map((n: any) => n.t), 'text survives apply on day 0').toEqual(['TEMPLATE NOTE'])
+      expect(DAYS[1].notes.map((n: any) => n.t), 'text survives apply on day 1').toEqual(['TEMPLATE NOTE'])
+      expect(DAYS[0].notes[0].rid && DAYS[1].notes[0].rid, 'both copies get an id').toBeTruthy()
+      expect(DAYS[0].notes[0].rid, 'two independent copies do NOT share a note id (SID-04)').not.toBe(DAYS[1].notes[0].rid)
+    } finally { DAYS[1] = D1 }
   })
 })
 
@@ -152,12 +174,19 @@ describe('tplFromDay — the crew-blanked mint', () => {
 })
 
 describe('applyDayTpl', () => {
-  it('refuses a published day', () => {
+  /* Phase 2 (§4, P2-R3-04): a published version is frozen and there is no reopen,
+     so applying a template on a published day is a large WORKING-DRAFT edit — it
+     succeeds, the crewless template becomes the live draft, the issued record and
+     current pointer are UNTOUCHED, and publishing it becomes the next AL. */
+  it('a published day takes a template as a working-draft edit — the issued version is untouched', () => {
     sign(0); setDayApproved(0, 1)
     expect(dayApproved(0)).toBe(true)
+    const issued = dayCurVer(0)                    // the Original verId
     const t = addDayTpl(0)!
-    expect(applyDayTpl(0, t.id)).toBe(false)
-    expect(DAYS[0].ground[0]!.who).not.toBe('')   // untouched
+    expect(applyDayTpl(0, t.id)).toBe(true)
+    expect(DAYS[0].ground[0]!.who).toBe('')        // the crewless template is now live
+    expect(dayApproved(0)).toBe(true)              // still published
+    expect(dayCurVer(0)).toBe(issued)              // viewers still see the issued version
   })
 
   it('returns false for an unknown template id', () => {
@@ -214,24 +243,11 @@ describe('applyDayTpl', () => {
     expect(SCHED.added['wl:0.0']).toBeUndefined()
   })
 
-  /* the corner an earlier build missed: applying a template to a day that was
-     PUBLISHED and then REOPENED must clear the day's issued AL changes-marks
-     too, not just pending/added. Reopen keeps those marks (it voids the
-     signature, not the history), and a template swap marks NOTHING pending —
-     so a surviving mark would render the template's brand-new rows in a past
-     AL's colour. restoreDayVersion wipes all three slices for the same reason;
-     applyDayTpl now mirrors it. */
-  it('drops the day’s issued AL changes-marks — no stale AL tint on template content', () => {
-    sign(0); setDayApproved(0, 1)             // publish Monday
-    txtSet('dn:0.0', 'AMENDED NOTE')          // amend a note
-    sign(0); publishALDay(0)                  // issue AL1 → changes['dn:0.0']=1
-    expect(SCHED.changes['dn:0.0']).toBe(1)
-    setDayApproved(0, 0)                       // reopen to draft — keeps the AL1 mark
-    expect(SCHED.changes['dn:0.0']).toBe(1)
-    const t = addDayTpl(0)!                    // capture + apply a template on the reopened day
-    expect(applyDayTpl(0, t.id)).toBe(true)
-    expect(SCHED.changes['dn:0.0']).toBeUndefined()   // the AL1 tint is gone
-  })
+  /* Phase 2 removed the reopen take-back (setDayApproved(di,false) is a no-op),
+     so the old "PUBLISHED then REOPENED, apply a template, its AL changes-marks
+     must be cleared" case no longer has a reachable state — a published day is
+     never returned to draft. Applying a template on a published day is now the
+     working-draft rebase pinned above, not a mark-wipe. Test deleted. */
 
   it('does not push history or reflow itself — the caller owns that step', () => {
     let pushed = 0
@@ -273,7 +289,7 @@ describe('persistence, like dutytpl', () => {
     dayTplLoad()
     expect(DAYTPL_CFG.map(t => t.title)).toEqual(['Ok', 'also ok'])
     expect(DAYTPL_CFG[0]!.d.allhands).toEqual([])     // non-array coerced to empty
-    expect(DAYTPL_CFG[0]!.d.notes).toEqual(['n'])
+    expect(DAYTPL_CFG[0]!.d.notes).toEqual([{ t: 'n' }])   // a stored bare-string note is coerced to { t } (rid minted on apply)
     expect(DAYTPL_CFG[0]!.d.simnotes).toBe('')        // non-string coerced to empty
     expect(DAYTPL_CFG[1]!.d).toEqual({
       notes: [], allhands: [], waves: [], sims: {}, dutywaves: [], ground: [],

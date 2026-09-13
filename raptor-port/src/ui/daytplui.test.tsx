@@ -156,7 +156,7 @@ describe('the picker (dayTplMenu, opened from either entry point)', () => {
     }
   })
 
-  it('refuses a published day, with the reopen toast, and changes nothing', async () => {
+  it('applies to a PUBLISHED day’s working draft (no reopen), leaving the issued version untouched', async () => {
     await resetLib()
     await click($('#eWeek .day[data-day="0"] .dt.sb-open'))
     await click($('#sbBoard [data-daytpladd="0"]'))
@@ -167,18 +167,24 @@ describe('the picker (dayTplMenu, opened from either entry point)', () => {
     g.cur = 'ignite'; g.sked = 'bane'; g.plan = 'stiff'; g.appr = 'pump'
     setDayApproved(2, 1)
     expect(dayApproved(2)).toBe(true)
+    const origId = SCHED.cur[2]                     // the frozen Original id
     const toasts: string[] = []
     const real = HOOKS.toast
     HOOKS.toast = (m: any) => { toasts.push(String(m)) }
     try {
+      /* Phase 2 (P2-R3-04): no "reopen first" — with no working-draft edits at
+         risk the template applies straight onto the working draft; the issued
+         records + current pointer are untouched, and publishing it is the next AL. */
       await click($('#eWeek .day[data-day="2"] .dt.sb-open'))
       await click($('#sbBoard [data-daytpladd="2"]'))
       await click($('.wavemenu [data-daytplpick]'))
-      expect(toasts).toEqual(['Reopen the day first'])
-      expect(JSON.stringify(DAYS[2])).toBe(before)
+      expect(dayApproved(2), 'still published').toBe(true)
+      expect(SCHED.cur[2], 'the current issued pointer is untouched').toBe(origId)
+      expect(JSON.stringify(DAYS[2]), 'the working draft took the template').not.toBe(before)
+      expect(toasts.join(' ')).toContain('working draft')
     } finally {
       HOOKS.toast = real
-      setDayApproved(2, 0)
+      SCHED.pending = {}; delete SCHED.dayOK[2]; delete (SCHED.orig as any)[2]; delete (SCHED.cur as any)[2]; delete (SCHED.sign as any)[2]
     }
   })
 

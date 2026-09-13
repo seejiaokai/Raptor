@@ -1,9 +1,13 @@
 import { DAYS } from './data'
-import { SCHED, dayApproved } from './publish'
+import { SCHED, dayApproved, protectedWeek } from './publish'
+import { rebaseDayPending } from './drafts'
 import { keyDay } from './keys'
 import { store } from './hooks'
 import { SECTIONS } from './order'
 import { stripRowIds } from './rowids'
+import { noteText } from './note'
+import type { Note } from './note'
+import { reconcileDayFiling } from './slots'
 /* a captured section order, cleaned to known keys with no repeats — used both
    when minting a template off a live day and when loading a hand-edited file. */
 const cleanSecOrder = (v: any): string[] | undefined => {
@@ -41,7 +45,7 @@ const cleanSecOrder = (v: any): string[] | undefined => {
    tplFromDay below) so the template is a shape, not a crew list. */
 
 export type DayTplBlob = {
-  notes: string[]
+  notes: Note[]
   allhands: any[]
   waves: any[]
   sims: Record<string, any[]>
@@ -92,7 +96,7 @@ export function dayTplAreStandard() {
 function blankWho(w: any) { return Array.isArray(w) ? [] : '' }
 
 function mintBlob(d: any): DayTplBlob {
-  const notes: string[] = JSON.parse(JSON.stringify(d.notes || []))
+  const notes: Note[] = JSON.parse(JSON.stringify(d.notes || []))
   const allhands: any[] = JSON.parse(JSON.stringify(d.allhands || []))
   const waves: any[] = JSON.parse(JSON.stringify(d.waves || []))
   const sims: Record<string, any[]> = JSON.parse(JSON.stringify(d.sims || {}))
@@ -146,8 +150,11 @@ function mintBlob(d: any): DayTplBlob {
   })
 
   /* a template is a shape, not a set of rows — it carries no ids (review
-     finding 2): applying it seats brand-new rows, never the source day's own */
-  stripRowIds({ allhands, waves, sims, dutywaves, ground })
+     finding 2): applying it seats brand-new rows, never the source day's own.
+     NOTE lines carry an id too now (13 Sep 26), so they must be in the strip —
+     otherwise one template applied to two days copies the same note id onto both
+     (Astra SID-04). ensureRowIds mints a fresh id per applied copy at the baseline. */
+  stripRowIds({ notes, allhands, waves, sims, dutywaves, ground })
 
   return {
     notes, allhands, waves, sims, dutywaves, ground,
@@ -214,7 +221,12 @@ export function moveDayTpl(from: number, to: number): boolean {
    amendment. A template replaces the DRAFT, not the record. */
 export function applyDayTpl(di: number, id: string): boolean {
   di = +di
-  if (dayApproved(di)) return false
+  /* READ-ONLY QUARANTINE (P2-REV2-02): a whole-day template replace mutates
+     DAYS[di] on the loaded week — refused on an unsupported/wrong-week book, whose
+     result the preserved-blob writeback would silently discard. Same guard the
+     draft-switch / recovery paths carry; protectedWeek() addresses the loaded
+     week, which is the only one applyDayTpl touches. */
+  if (protectedWeek()) return false
   const t = DAYTPL_CFG.find(t => t.id === id)
   if (!t) return false
   const cur = DAYS[di]
@@ -236,22 +248,28 @@ export function applyDayTpl(di: number, id: string): boolean {
      ids) — applying it must still mint fresh ids, never carry the source
      day's across, so strip here too rather than trust the stored blob */
   stripRowIds(nd)
+  const wasApproved = dayApproved(di)
   DAYS[di] = nd
-  /* Every address the old day's marks pointed at may now name something else
-     entirely (the swap does not try to line up old and new row indices), so
-     the day's WHOLE mark state is retired — pending, added AND changes — the
-     same three slices restoreDayVersion wipes (restore.ts:96-106) before it
-     installs the restored version's own marks. A template has no issued marks
-     of its own to reinstall (it is a clean plan, never an AL), so applyDayTpl
-     just clears and installs nothing.
-     The changes slice MUST go too, and this is the corner an earlier build
-     missed: a template swap marks NOTHING pending (unlike an ordinary edit,
-     which marks the one field it touched and so clears that field's changes
-     mark on the way through markEdit). Left in place, every AL tint the day
-     wore before it was reopened would survive onto the template's brand-new,
-     unrelated rows — cells reading "changed in AL2" that AL2 never saw. The
-     failure was: publish → AL1 tints a note → reopen → apply a template whose
-     note differs → the new note still rendered in AL1 cyan (daytpl.test.ts). */
+  reconcileDayFiling(di)   // every replacement, approved or not (P2-QREV-07): a template's fresh rows carry no input src, so a dangling 'g' is unfiled
+  if (wasApproved) {
+    /* PUBLISHED DAY (§4, P2-R3-04): a published version is frozen — you cannot
+       "reopen" and apply over it. Applying a template is just a large
+       WORKING-DRAFT edit: the template becomes the live working draft, the
+       issued records + current pointer are UNTOUCHED, and rebaseDayPending
+       recomputes the day's pending set as the true diff vs the still-issued
+       version (exactly as loadVersionToWorkingCopy / draftSelect do on a
+       published day). Publishing it then becomes the next AL. */
+    rebaseDayPending(di)
+    return true
+  }
+  /* NEVER-PUBLISHED DAY: no issued baseline, so retire the day's WHOLE mark
+     state — pending, added AND changes. Every address the old day's marks
+     pointed at may now name something else entirely (the swap does not line up
+     old and new row indices), and a template has no issued marks of its own to
+     reinstall (it is a clean plan, never an AL), so applyDayTpl just clears.
+     The changes slice MUST go too: a template swap marks NOTHING pending, so
+     without this every stale tint would survive onto the template's brand-new,
+     unrelated rows (daytpl.test.ts). */
   Object.keys(SCHED.pending).forEach((k: any) => { if (keyDay(k) === di) delete SCHED.pending[k] })
   Object.keys(SCHED.added || {}).forEach((k: any) => { if (keyDay(k) === di) delete SCHED.added[k] })
   Object.keys(SCHED.changes).forEach((k: any) => { if (keyDay(k) === di) delete SCHED.changes[k] })
@@ -283,7 +301,11 @@ function sanitiseBlob(raw: any): DayTplBlob {
   const sims: Record<string, any[]> = {}
   Object.keys(simsIn).forEach(k => { sims[k] = arr(simsIn[k]) })
   return {
-    notes: arr(raw && raw.notes).filter((n: any) => typeof n === 'string'),
+    /* coerce each note to a { t } object (13 Sep 26): a template FILE may hold
+       old bare-string notes or the new objects — keep the text from either, drop
+       neither (Astra SID-03: filtering to strings dropped every new-format note).
+       No id here; ensureRowIds mints one when the template is applied. */
+    notes: arr(raw && raw.notes).filter((n: any) => typeof n === 'string' || (n && typeof n === 'object')).map((n: any) => ({ t: noteText(n) })),
     allhands: arr(raw && raw.allhands),
     waves: arr(raw && raw.waves),
     sims,

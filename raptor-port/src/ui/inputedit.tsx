@@ -19,20 +19,20 @@ import { MedClashConfirm } from './MedClashConfirm'
 import { OilConfirm } from './OilConfirm'
 import { docAdd, docFields, docGet, rowDocIds } from '../state/docs'
 import { UploadIcon } from './icons'
-import { acceptInput, autoAcceptInput, unacceptInput, acceptedDay, inpKey } from '../engine/slots'
+import { acceptInput, autoAcceptInput, unacceptInput, acceptedDay } from '../engine/slots'
 import { DAYS } from '../engine/data'
 import { PEOPLE, isSpecial } from '../engine/people'
 import { hhmm, parseHM, hmOK } from '../engine/time'
 import { HOOKS } from '../engine/hooks'
 import { logAction, elogSweep } from '../engine/editlog'
-import { writeInputsBatch, notify } from '../state/store'
+import { writeInputsBatch, notify, protectedDates, inputProtected } from '../state/store'
 /* The Leave War seam (sync.ts is the one crossing point, CLAUDE.md §The Leave
    War tab): retracting a synced row's war cells when it is edited or deleted
    here — not a new seam, a Raptor-side caller of the existing one. */
 import { retractLwRow, rowSig, oilAskPlan } from '../leavewar/sync'
 import { inputOilAmt } from '../engine/oil'
 import { PLANPUCKS, DAYRMK } from '../state/plan'
-import { stashKeys, stashDrop } from '../engine/weekstash'
+import { stashKeys, stashDrop, stashGet } from '../engine/weekstash'
 import { persistAll } from '../state/persist'
 import { canEditSched, ME, SESSION } from '../state/auth'
 import { INPEDIT, setInpEdit, OILASK, setOilAsk } from './pops'
@@ -197,10 +197,11 @@ export function sansRefusal(person: any, sans: any): string {
 
 /* ONE SANS RECORD PER DAY (bug-test fix). SANS Availability is one window per
    record: two records covering the same person on the same day break silently —
-   sansGate/sansAvailOn (engine/inputs.ts) read only the FIRST, the card grid
-   draws BOTH, and because inpKey is `person|date|type|s` two same-day records
-   share an edit address, so clicking one card can edit — or delete — the other
-   (engine/slots.ts inpKey). So refuse a new/edited record whose date RANGE
+   sansGate/sansAvailOn (engine/inputs.ts) read only the FIRST, and the card grid
+   draws BOTH. (The edit-address half of this hazard is gone since 13 Sep 26:
+   cards address the input by its stable inpId, not the shared inpKey, so a click
+   can no longer edit or delete the wrong record — but sansGate still reads only
+   the first, which is reason enough to keep the rule.) So refuse a new/edited record whose date RANGE
    overlaps an existing SANS record for the same person; `except` is the row
    being edited, which never clashes with itself. To offer two windows on one
    day the member ticks both events on the one record — the feature's own model.
@@ -306,6 +307,7 @@ export const ordISO = (o: any) => `${Math.floor(o / 10000)}-${String(Math.floor(
    while the typist's own words stay. inpKey is person|date|type|s — an
    end-trim moves none of them, so no accepted-row relink is needed. */
 export function applyMedPlan(plan: any[]) {
+  if (medPlanProtected(plan)) { medicalLocked(); return false }
   const cs = (r: any) => (PEOPLE[r.person] ? PEOPLE[r.person].cs : r.person)
   for (const p of plan || []) {
     const r = p.row
@@ -374,6 +376,7 @@ export function medKeptSegments(aOrd: any, bOrd: any, clashes: any[], choices: s
    outside every segment by construction. Runs INSIDE the caller's
    writeInputsBatch so the whole resolution is one undo step. */
 export function mintMedSegments(base: any, segs: any[], keepTail?: any, entryEnd?: any) {
+  if (medSegmentsProtected(base, segs, keepTail, entryEnd)) { medicalLocked(); return false }
   const cs = PEOPLE[base.person] ? PEOPLE[base.person].cs : base.person
   for (const g of segs) {
     const t: any = { ...base, date: ordLabel(g.startOrd, base.yr), mod: 'now' }
@@ -691,6 +694,46 @@ export const TYPE_ALLOW: any = {
    the button on that panel puts the item where the button is. One undo step
    still — writeInputsBatch swallows acceptInput's own history pushes exactly
    as commitInputEdit's relink already relies on. */
+/* an UNSUPPORTED (pre-Phase-2 / wrong-week) book is read-only (P2-IMPL-03). An
+   input op that touches a date on such a week — the row's own date (source) OR a
+   normalized destination date — would land/edit/remove/re-file a row on a frozen
+   schedule, so refuse it at the UI entry and say why. Date-based and GLOBAL
+   (P2-REREVIEW-02): protectedDates() spans the loaded week AND every stashed
+   protected week, so an input for an unvisited protected week is refused from any
+   loaded week. The engine's acceptInput/unacceptInput are the hard backstop; this
+   also stops the input row's own fields diverging from the frozen day, and gives
+   the user a reason rather than a silent no-op. Callers pass NORMALIZED
+   destinations (P2-REREVIEW-01) so the date fields it reads actually exist. */
+function protectedInput(...rows: any[]): boolean {
+  const dates = protectedDates()
+  if (!dates.length) return false
+  const hit = rows.some(r => r && dates.some((dt: any) => inputCoversDate(r, dt)))
+  if (hit) HOOKS.toast('This week is locked — it was published by an older version and can’t be edited', 'warn')
+  return hit
+}
+/* a row-like {date,endDate,yr} built from a NORMALIZED draft, for the protection
+   check on the DESTINATION dates (the editor draft carries sTime/eTime/start/end,
+   not the model's date/endDate — reading those raw was the P2-REREVIEW-01 no-op). */
+const normDest = (n: { date: string, endDate: string | undefined }, yr: any) => ({ date: n.date, endDate: n.endDate, yr })
+/* PREFLIGHT A MEDICAL PLAN (P2-QREV-01). The medical create/trim cascade
+   (applyMedPlan) mutates EXISTING rows — trims, deletes, and, for an lw-tagged
+   row, withdraws its Leave War cells (retractLwRow) as an immediate side effect
+   the input funnel's model-rollback cannot take back. So a plan that touches ANY
+   protected-date row must be refused BEFORE it runs, not rolled back after: this
+   preflights the whole plan (its target rows, and the surviving tail a split
+   would mint) so nothing executes on a frozen record. */
+export const medPlanProtected = (plan: any[]) => (plan || []).some((p: any) =>
+  (p.row && inputProtected(p.row)) ||
+  (p.tail && inputProtected({ date: ordLabel(p.tail.startOrd, p.row?.yr), endDate: p.tail.endOrd > p.tail.startOrd ? ordLabel(p.tail.endOrd, p.row?.yr) : undefined, yr: p.row?.yr })))
+
+const medicalLocked = () => HOOKS.toast('This week is locked — it was published by an older version and can’t be edited', 'warn')
+
+/* Check every kept segment and its cascade against the unchanged model. Forms
+   run this before committing segment one; the sibling writer also guards itself. */
+export const medSegmentsProtected = (base: any, segs: any[], keepTail?: any, entryEnd?: any, except = base) =>
+  segs.some(g => inputProtected({ ...base, date: ordLabel(g.startOrd, base.yr), endDate: ordLabel(g.endOrd, base.yr) }) ||
+    medPlanProtected(newMedTrimPlan(base.person, base.type, g.startOrd, g.endOrd, except, keepTail, entryEnd)))
+
 export function commitNewInput(draft: any, toGround?: boolean, keepTail?: any, entryEnd?: any): boolean {
   if (!draft) return false
   /* write-path role backstop (owner, 22 Aug 26 — a member files inputs only
@@ -703,6 +746,7 @@ export function commitNewInput(draft: any, toGround?: boolean, keepTail?: any, e
   if (!canEditSched()) draft = { ...draft, person: ME }
   const n = normalizeInputDraft(draft, null)
   if (!n) return false
+  if (protectedInput(normDest(n, draft.yr))) return false   // read-only quarantine, NORMALIZED destination (P2-REREVIEW-01/02)
   const { s, e, date, endDate, half } = n
   const flags = isSansAvail(draft.type) ? sansFlags(draft.sans) : {}
   const row: any = {
@@ -723,16 +767,25 @@ export function commitNewInput(draft: any, toGround?: boolean, keepTail?: any, e
   /* the row's own address, minted before the write so the snapshot this add
      pushes already carries it — the Inputs page add's own withId precedent */
   inpId(row)
-  writeInputsBatch(() => {
+  /* the medical trim cascade, computed and PREFLIGHTED before the batch (P2-QREV-01):
+     it mutates existing rows and fires Leave War withdrawals the funnel cannot undo,
+     so a plan touching a protected-date row is refused whole, before anything runs. */
+  const medPlan = isDownchit(row.type)
+    ? newMedTrimPlan(row.person, row.type, dateOrd(date, row.yr), dateOrd(endDate || date, row.yr), row, keepTail, entryEnd)
+    : isUpchit(row.type)
+      ? upchitTrimPlan(row.person, dateOrd(date, row.yr), row).map((p: any) => ({ ...p, why: 'closed by the upchit' }))
+      : null
+  if (medPlan && medPlanProtected(medPlan)) {
+    HOOKS.toast('This week is locked — it was published by an older version and can’t be edited', 'warn')
+    return false
+  }
+  const ok = writeInputsBatch(() => {
     INPUTS.unshift(row)
     /* a new medical input wins its overlapping days from a DIFFERENT-type
        downchit, and an upchit cuts everything covering its date to end the
        day before — the upchit day is a fit day (owner, 27 Aug 26) — planned
        pure, applied here so the add and its trims are ONE undo step */
-    if (isDownchit(row.type))
-      applyMedPlan(newMedTrimPlan(row.person, row.type, dateOrd(date, row.yr), dateOrd(endDate || date, row.yr), row, keepTail, entryEnd))
-    if (isUpchit(row.type))
-      applyMedPlan(upchitTrimPlan(row.person, dateOrd(date, row.yr), row).map((p: any) => ({ ...p, why: 'closed by the upchit' })))
+    if (medPlan) applyMedPlan(medPlan)
     if (toGround) {
       /* the board's Ground "+ Inputs" is a DELIBERATE scheduler act — it lands
          the row on the programme whatever the day's publish state (an ordinary
@@ -752,6 +805,9 @@ export function commitNewInput(draft: any, toGround?: boolean, keepTail?: any, e
       autoAcceptInput(row)
     }
   })
+  /* the funnel backstop rolled the batch back (a protected date slipped the
+     preflights above) — report failure, don't log a phantom "Input added" (P2-QREV-04) */
+  if (!ok) return false
   const cs = PEOPLE[row.person] ? PEOPLE[row.person].cs : row.person
   logAction(null, `Input added — ${cs}, ${row.type}, ${date}${endDate ? '–' + endDate : ''}${row.acc === 'g' ? ' (on the Ground Programme)' : ''}`)
   return true
@@ -761,12 +817,45 @@ export function commitNewInput(draft: any, toGround?: boolean, keepTail?: any, e
    the caller keeps its editor open on a false, so nothing typed is lost.
    Runs through writeInputsBatch like every other mutation, so an edit joins
    the undo stack as ONE step and re-validates the week. */
+/* ACCEPTED ONTO A WEEK THAT IS NOT LOADED (13 Sep 26, Astra/Fable inspect
+   finding 1). An accepted input's ground row lives on ONE week; leaving that
+   week clears the input's `acc` (store.ts) but the row stays behind in the
+   week's stash, keyed by the input's stable id. Editing or deleting the input
+   from another week cannot reach that row, so the old row would survive with
+   its stale times/person — a SILENT mismatch once landings address by a stable
+   id (before, the changed content minted a visible DUPLICATE instead). So refuse
+   the edit/delete and name the week to load first. Returns that week's date
+   label, or '' when it is safe to proceed (the row is on a loaded day, or the
+   input has no landing at all — the ordinary paths handle those). Its landing on
+   a LOADED day is found by acceptedDay; only a landing on a STASHED (unloaded)
+   week is the trap. */
+function landedOnUnloadedWeek(r: any): string {
+  if (!r || acceptedDay(r) >= 0) return ''
+  const id = inpId(r)
+  for (const k of stashKeys()) {
+    const json = stashGet(k); if (!json) continue
+    let parsed: any; try { parsed = JSON.parse(json) } catch { continue }
+    const days = parsed && parsed.d
+    if (Array.isArray(days) && days.some((d: any) => ((d && d.ground) || []).some((g: any) => g && g.src === id)))
+      return String(r.date || 'that week')
+  }
+  return ''
+}
+
 export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: any) {
   if (!r || !draft) return false
   if (INPUTS.indexOf(r) < 0) {                 // deleted or undone underneath us
     HOOKS.toast('That input is no longer there — nothing was saved', 'warn')
     return false
   }
+  /* its ground row is on a week that is not loaded — editing here would strand
+     it with stale content (finding 1). Point the scheduler at the week first. */
+  const stuck = landedOnUnloadedWeek(r)
+  if (stuck) { HOOKS.toast(`Load the week of ${stuck} to edit this accepted input`, 'warn'); return false }
+  /* the SOURCE date is checked here (r is a model row with real date/endDate);
+     the normalized DESTINATION is checked after normalizeInputDraft below, so a
+     move INTO a protected week is refused too (P2-REREVIEW-01/02). */
+  if (protectedInput(r)) return false
   /* write-path role backstop (owner, 27 Aug 26): a LOGGED-IN MEMBER edits only
      their OWN inputs. The row's ✎ is hidden on everyone else's, so a real
      gesture cannot reach here; this refuses a hand-made call. "Member" is any
@@ -796,8 +885,22 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
   }
   const n = normalizeInputDraft(draft, r)
   if (!n) return false
+  if (protectedInput(normDest(n, draft.yr))) return false   // refuse a move INTO a protected week (P2-REREVIEW-01/02)
   const { s, e, date, endDate, half } = n
-  writeInputsBatch(() => {
+  /* preflight the medical trim cascade this edit would trigger, BEFORE the batch
+     (P2-QREV-01) — its trims/deletes and Leave War withdrawals cannot be rolled
+     back. Computed with the edit's NEW values (== what the in-batch call uses once
+     r is mutated); `r` is excluded as self. */
+  const medPlan = isDownchit(draft.type)
+    ? newMedTrimPlan(draft.person, draft.type, dateOrd(date, baseYear()), dateOrd(endDate || date, baseYear()), r, keepTail, entryEnd)
+    : isUpchit(draft.type)
+      ? upchitTrimPlan(draft.person, dateOrd(date, baseYear()), r).map((p: any) => ({ ...p, why: 'closed by the upchit' }))
+      : null
+  if (medPlan && medPlanProtected(medPlan)) {
+    HOOKS.toast('This week is locked — it was published by an older version and can’t be edited', 'warn')
+    return false
+  }
+  const ok = writeInputsBatch(() => {
     /* A Leave-War-synced row (owner, 17 Aug 26 — full two-way): editing the
        LEAVE ITSELF — its person, type, dates or which half — changes the war
        too. The old grant is WITHDRAWN first, while the row still says what the
@@ -841,7 +944,7 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
        and put back onto the regenerated row after the re-accept. */
     let extras: any = null
     if (wasDi >= 0) {
-      const oldRow = ((DAYS[wasDi] || {}).ground || []).find((g: any) => g.src === inpKey(r))
+      const oldRow = ((DAYS[wasDi] || {}).ground || []).find((g: any) => g.src === inpId(r))
       if (oldRow && (oldRow.more?.length || oldRow.flag || oldRow.cx))
         extras = { more: oldRow.more, flag: oldRow.flag, cx: oldRow.cx }
     }
@@ -920,11 +1023,9 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
        only Accept (or a retype) revives it, per the owner's removal rule. */
     if (wasDormant && r.type !== wasType && r.acc === 'r') delete r.acc
     /* an EDIT restates the span, so the same medical rules run against the
-       person's other rows — the row itself is excluded (except-style) */
-    if (isDownchit(r.type))
-      applyMedPlan(newMedTrimPlan(r.person, r.type, dateOrd(r.date, r.yr), dateOrd(r.endDate || r.date, r.yr), r, keepTail, entryEnd))
-    if (isUpchit(r.type))
-      applyMedPlan(upchitTrimPlan(r.person, dateOrd(r.date, r.yr), r).map((p: any) => ({ ...p, why: 'closed by the upchit' })))
+       person's other rows — the row itself is excluded (except-style). The plan
+       was computed + preflighted above, before the batch (P2-QREV-01). */
+    if (medPlan) applyMedPlan(medPlan)
     if (wasAcc) {
       /* put it back on the day it was on, if the edit still covers that day;
          otherwise its new start date — and if the START label is not itself
@@ -953,7 +1054,7 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
             ? `${r.type} does not go on the Ground Programme — its row has been removed`
             : 'An identical row is already on the Ground Programme — this one was not put back', 'warn')
         else if (extras && wasAcc === 'g') {
-          const nr = ((DAYS[di] || {}).ground || []).find((g: any) => g.src === inpKey(r))
+          const nr = ((DAYS[di] || {}).ground || []).find((g: any) => g.src === inpId(r))
           if (nr) {
             if (extras.more?.length) nr.more = extras.more
             if (extras.flag) nr.flag = extras.flag
@@ -961,6 +1062,15 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
           }
         }
       }
+      /* 'u' (filed unavailable) is a GLOBAL filing DECISION on the input itself,
+         not a per-week ground landing — it has no DAYS row that must live in the
+         loaded week, so it SURVIVES an edit that leaves the input covering no
+         loaded day (P2-REV2-06). Restore the decision instead of the false
+         "moved outside the programmed week" toast + drop, which used to turn an
+         off-week remarks edit into a fresh, flagging input (the acc-clear below
+         would then delete the parked 'r'). A 'g' input's row genuinely cannot
+         exist off the loaded week, so it still drops and says so. */
+      else if (wasAcc === 'u' && r.type === wasType) r.acc = 'u'   // an off-week edit that KEEPS the type preserves the filing; a type change lets it re-derive (P2-QREV/Fable-9)
       else HOOKS.toast('Moved outside the programmed week — it is no longer accepted', 'warn')
       /* the un-accept above parks the input as 'r' (removed — dormant); every
          SUCCESSFUL re-accept overwrites it, so an 'r' still here means the
@@ -973,7 +1083,9 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
       if (r.acc === 'r') delete r.acc
     }
   })
-  return true
+  /* the funnel backstop rolled the batch back — report failure so the editor
+     stays open and nothing typed is lost (P2-QREV-04) */
+  return ok
 }
 
 /* ---- CHANGING THE PUCK (owner, 14 Aug 26 — "allow Unavailable to be
@@ -997,6 +1109,7 @@ export function reassignInput(iid: any, personId: any) {
   if (!canEditSched()) return false
   const r = INPUTS.find((i: any) => i.iid === iid)
   if (!r) { HOOKS.toast('That input is no longer there — nothing was changed', 'warn'); return false }
+  if (protectedInput(r)) return false          // read-only quarantine (P2-IMPL-03)
   /* the roster PALETTE (unlike rosterOptions() above) still carries the
      SPECIALS — sentinel placeholders like ALL AVAIL, never real aircrew — so
      a drag or an armed tap can reach here with one even though the dialog's
@@ -1069,6 +1182,11 @@ export function setInpField(inp: any, field: 'str' | 'end' | 'rmks', text: any) 
 export function removeInput(r: any) {
   const inx = INPUTS.indexOf(r)
   if (inx < 0) { HOOKS.toast('That input is no longer there', 'warn'); return false }
+  if (protectedInput(r)) return false          // read-only quarantine (P2-IMPL-03)
+  /* its ground row is on a week that is not loaded — deleting here would leave
+     that row behind with a dead source link (finding 1). Load the week first. */
+  const stuck = landedOnUnloadedWeek(r)
+  if (stuck) { HOOKS.toast(`Load the week of ${stuck} to delete this accepted input`, 'warn'); return false }
   /* write-path role backstop (owner, 27 Aug 26): a LOGGED-IN MEMBER deletes
      only their OWN inputs — the row's ✕ is hidden on everyone else's, this
      refuses a hand-made call. Same predicate as commitInputEdit's gate above
@@ -1191,6 +1309,15 @@ export function clearHistoryData(mode: ClearMode, a: string, b?: string, dry?: b
   })
   const n = doomed.length + oldPucks.length + oldRmk.length + oldWeeks.length
   if (dry || !n) return n
+  /* PREFLIGHT the whole clear (P2-QREV-04): if any doomed input sits on a
+     protected week, refuse the ENTIRE operation before deleting anything — the
+     old code let the input batch be rolled back by the funnel yet still ran
+     stashDrop/persistAll and logged "Cleared N", a partial destructive op that
+     removed week records while the inputs survived. */
+  if (doomed.some((r: any) => inputProtected(r))) {
+    HOOKS.toast('Some of those records are on a locked week and can’t be cleared', 'warn')
+    return 0
+  }
   writeInputsBatch(() => {
     doomed.forEach((r: any) => dropInputRow(r))
     oldPucks.forEach((s: any) => { const ix = PLANPUCKS.indexOf(s); if (ix >= 0) PLANPUCKS.splice(ix, 1) })
@@ -1316,6 +1443,7 @@ export function InputEditor() {
      refusal there is no way back from: the row went (an undo under the modal),
      and there is nothing left to hold the typing for */
   const doSave = (removals: any[], oilDec?: Record<string, number>) => {
+    if (medPlanProtected(removals.map(row => ({ row })))) return medicalLocked()
     if (isNew) {
       let ok = false
       writeInputsBatch(() => {
@@ -1344,6 +1472,7 @@ export function InputEditor() {
   const doMedSave = (choices: string[], keepTail: any[]) => {
     const segs = medKeptSegments(medConf.a, medConf.b, medConf.clashes, choices)
     if (!segs.length) return          // toasted; the form stays open, unwritten
+    if (medSegmentsProtected({ ...draft, yr: isNew ? baseYear() : r.yr }, segs, keepTail, medConf.b, isNew ? null : r)) return medicalLocked()
     const g0 = segs[0]
     const d2 = {
       ...draft,

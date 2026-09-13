@@ -7,9 +7,9 @@ import { act } from 'react'
 import { createRoot } from 'react-dom/client'
 import { App } from './App'
 import { initStore, setSession, notify, undo } from '../state/store'
-import { INPUTS, INPUT_TYPES, DATES, inputRuleText } from '../engine/inputs'
+import { INPUTS, INPUT_TYPES, DATES, inputRuleText, inpId } from '../engine/inputs'
 import { DAYS } from '../engine/data'
-import { acceptInput, inpKey, acceptedDay } from '../engine/slots'
+import { acceptInput, acceptedDay } from '../engine/slots'
 import { canEditSched } from '../state/auth'
 import { HIST } from '../state/history'
 import { validate } from '../engine/validate'
@@ -788,7 +788,7 @@ beforeAll(async () => {
     const inp = INPUTS[0]
     await act(async () => { acceptInput(0, inp, 'g'); notify() })
     const nGround = DAYS[0].ground.length
-    expect(DAYS[0].ground.some((r: any) => r.src === inpKey(inp))).toBe(true)
+    expect(DAYS[0].ground.some((r: any) => r.src === inpId(inp))).toBe(true)
 
     await click(rowFor(0).querySelector('[data-edit]'))
     const ty = $('#inBody tr.ined [data-ed="type"]') as HTMLSelectElement
@@ -801,8 +801,8 @@ beforeAll(async () => {
     expect(inp.type).toBe('Appointment')
     expect(DAYS[0].ground.length, 'no duplicate row left behind').toBe(nGround)
     // the link followed the edit, so the row is still reachable
-    expect(DAYS[0].ground.some((r: any) => r.src === inpKey(inp)), 'src re-linked').toBe(true)
-    const row = DAYS[0].ground.find((r: any) => r.src === inpKey(inp))
+    expect(DAYS[0].ground.some((r: any) => r.src === inpId(inp)), 'src re-linked').toBe(true)
+    const row = DAYS[0].ground.find((r: any) => r.src === inpId(inp))
     expect(row.prog).toBe('APPOINTMENT')      // and it re-reads under the new type
     await act(async () => { INPUTS.splice(INPUTS.indexOf(inp), 1); notify() })
   })
@@ -839,13 +839,13 @@ describe('accepted rows are never stranded', () => {
     const inp = INPUTS[0]
     await act(async () => { acceptInput(4, inp, 'g'); notify() })   // accepted on the LAST day
     expect(acceptedDay(inp)).toBe(4)
-    const before = groundRows().filter(r => r.src === inpKey(inp)).length
+    const before = groundRows().filter(r => r.src === inpId(inp)).length
     expect(before).toBe(1)
 
     await click(rowFor(0).querySelector('[data-edit]'))
     await click($('#inBody tr.ined [data-save]'))                  // change nothing
 
-    const after = groundRows().filter(r => r.src === inpKey(inp))
+    const after = groundRows().filter(r => r.src === inpId(inp))
     expect(after.length, 'still exactly one row').toBe(1)
     expect(after[0].di, 'and still on the day it was accepted on').toBe(4)
     await act(async () => { INPUTS.splice(INPUTS.indexOf(inp), 1); notify() })
@@ -855,7 +855,7 @@ describe('accepted rows are never stranded', () => {
     INPUTS.unshift({ person: 'yeti', date: 'Jul 13', allday: false, s: 600, e: 660, type: 'Meeting', remarks: 'del me', mod: '' })
     const inp = INPUTS[0]
     await act(async () => { acceptInput(0, inp, 'g'); notify() })
-    const key = inpKey(inp)
+    const key = inpId(inp)
     expect(groundRows().some(r => r.src === key)).toBe(true)
     await click(rowFor(0).querySelector('.rmx'))
     expect(INPUTS.indexOf(inp)).toBe(-1)

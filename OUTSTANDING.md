@@ -32,19 +32,35 @@ tricky design call → **Fable 5.1, high**; mechanical / low-risk → a cheaper 
 
 ---
 
-## Priority — logical order (updated 12 Sep 2026)
+## Priority — logical order (updated 13 Sep 2026)
 
-Land what's **cheap, done, or in-flight and risk-reducing** before the big blocked
-build; keep the amendment (the main project) unblocked; leave feature-ish and
-future-milestone work last.
+**NEW backbone (owner, 13 Sep 26): [ARCH-STACK]** — a whole-app architectural review (both
+providers) reframed much of the backlog as ONE ordered stack (stable ids → one write/command
+layer → global undo → one-Absence-record → storage door/DB → remove quarantine). Owner's rule:
+**fix the architecture first, then individual bugs.** `[GLOBAL-UNDO]`, `[INP-CSID]`, `[TRK-CSID]`,
+`[DB-STEP]` are STEPS of it. The immediate next build is **stable ids (step 1)** — cheap,
+independent. STOP: interim two-system undo patches + further quarantine rounds.
 
-1. **[AMEND]** — the main project. Unblock with the two owner decisions, then
-   revise → Astra → build. **[BUG2]** folds in here.
-2. **[OIL]** — depends on [AMEND]; do straight after.
-3. **[TRK-CSID]** — next Tracker stable-ids step; independent, medium, not urgent.
-4. **[TRK-ATTEMPTS]** — small new feature, low urgency.
-5. **[DB-STEP]** — the future database milestone; **[TRK-DISK]** (Decision A) is
-   fixed inside it.
+Below is the older item ordering (kept for the non-stack items); land what's **cheap, done, or
+in-flight and risk-reducing** first.
+
+1. **[AMEND]** — the main project. Decisions resolved; brief re-frozen & re-reviewed;
+   **CORE built + round-3 in progress** on `claude/amendment-engine-core`. **[BUG2]**
+   folds in here.
+2. **[SYNC-INTEG]** — now just the small NON-undo guardrails (medical member-filed,
+   clutter-only clear-data, Quals ✕ confirm, doc fix). Low urgency (pre-live); cheap batch.
+   *The undo/permission half was pulled out into [GLOBAL-UNDO] (owner, 13 Sep 26).*
+3. **[EOD]** — the end-of-day feature split out of [AMEND]; design-first follow-on,
+   after the core lands.
+4. **[OIL]** — depends on [AMEND]; do straight after.
+5. **[TRK-CSID]** / **[INP-CSID]** — the stable-id work (Tracker courses/syllabuses;
+   schedule personal inputs); independent, medium, not urgent.
+6. **[TRK-ATTEMPTS]** — small new feature, low urgency.
+7. **[RECALL]** — future feature (fresh recall from archive); design when reached.
+8. **[GLOBAL-UNDO]** — the one-global-undo re-architecture; a step **before** [DB-STEP]
+   (must land before going live). Absorbs [XWEEK-UNDO] and the whole delete/undo bug family.
+9. **[DB-STEP]** / **[XFER]** — the future database milestone and multi-squadron
+   transfer; **[TRK-DISK]** (Decision A) is fixed inside [DB-STEP].
 
 *(Done 12 Sep 2026: **[TRK-IMPORT]** and **[TRK-LEDGER]** — both merged live; see Done.)*
 
@@ -55,14 +71,36 @@ future-milestone work last.
 One line each, no jargon:
 
 - **[AMEND] — The amendment engine rebuild (the big one).** Each day gets its own
-  amendments, published is locked, every change is a new AL, no take-backs. Design
-  nearly done — waiting on your two decisions (plans, signatures).
+  amendments, published is locked, every change is a new AL, no take-backs. Decisions
+  made; now being built, phase by phase. The end-of-day "record actuals" part is split
+  off as **[EOD]** to build later.
+- **[EOD] — The end-of-day "what actually flew" record.** A quick end-of-day note of
+  what really happened (scrubs, changes), with no sign-off. Designed, but it needs its
+  own careful round before building — set aside so the main rebuild ships first.
 - **[OIL] — Don't wipe off-in-lieu someone already earned.** Removing a person by
   amendment currently erases their weekend/holiday OIL — wrong if they'd already
   worked the day. Lock it once the day's been worked. After the amendment rebuild.
 - **[BUG2] — Double-check one suspected bug.** A reopen button might act on the wrong
   version while you're viewing history — Astra thinks it may not actually happen.
   Quick check, folded into the amendment work.
+- **[SYNC-INTEG] — Small safety guardrails for leave.** Medical can only be filed by the
+  member (not created on the Leave War); the "clear old data" button only clears clutter and
+  never touches leave/balances; a warning on the Quals ✕; a doc fix. (The bigger delete/undo
+  fixes moved to [GLOBAL-UNDO].) Low urgency — we're not live yet.
+- **[GLOBAL-UNDO] — One undo for the whole app, before the database step.** Today each
+  section has its own separate undo, and that's the root of the weird delete/undo bugs. One
+  shared undo (per login session, never touching another user) removes that whole class of
+  bugs instead of patching each. A step to do before going live / before the database.
+- **[RECALL] — Bring a posted-out person back, fresh.** When someone leaves the whole app
+  and returns, they come back with new quals and new leave balances (past kept as record) —
+  not their old ones. Future feature.
+- **[XWEEK-UNDO] — Undo across weeks (part of [GLOBAL-UNDO]).** If you undo something on a
+  week you're not viewing, the app takes you to that week and shows what changed. Built as
+  part of the one-global-undo step.
+- **[XFER] — Move a person to another squadron, data intact.** In the multi-squadron future,
+  transferring someone carries all their data across (unlike leaving the system, which resets).
+- **[INP-CSID] — Give leave/personal inputs a permanent hidden tag.** Like schedule rows and
+  students already have, so two look-alike entries can't cross when one is deleted.
 - **[TRK-CSID] — Give courses and syllabuses a permanent hidden tag.** Students and
   schedule rows already have one (so they survive being moved or renamed); courses
   and syllabuses don't yet, so renaming one is riskier. Medium job, not urgent.
@@ -80,26 +118,53 @@ One line each, no jargon:
 
 ## Items
 
-### [AMEND] Amendment engine redesign — DESIGN IN PROGRESS (blocked on 2 owner decisions)
+### [AMEND] Amendment engine redesign — CORE BUILDING (decisions resolved)
 Rebuild the publish/amend/version model: per-day isolated numbering (never
 week-wide), published = immutable, every change a new AL, supersede-never-retract,
 undo cannot cross a publish, load-old-version → republish-as-next-AL as the safe
 recovery path.
-- **Blocked on owner:** #1 plans (disappear at publish vs survive as contingencies);
-  #3 signatures (all four roles re-sign each amendment vs fewer).
-- **Must-build (Astra review):** AM-01 unique date-qualified version IDs; AM-02
-  versioned saved-week migration (incl. Leave War's direct saved-week reads); AM-04
-  define what a published version captures (availability leak); AM-06 bind
-  signatures to content.
-- **Then:** revise brief → re-run Astra on a **frozen** file → build (heavy,
-  saved-data, test-first) → fresh Codex inspection.
-- **Model:** build on Opus; each Astra round + final inspection on Codex; a tricky
-  design call worth a Fable-high check.
-- **Context & records (read to resume):** the decisions doc
-  `raptor-port/docs/superpowers/specs/2026-09-11-amendment-model-decisions.md` now
-  carries the full rationale, the industry research, the reopen/undo/correct
-  reasoning and the interactive mockup links (§10) — plus `-design-brief.md` and
-  `-review.md`.
+- **Decisions RESOLVED (owner, 12 Sep 26):** plans SURVIVE as backups; ALL FOUR roles
+  re-sign every amendment; crew SEE the live draft (issued stays authority). OIL for
+  this build = latest AL/Original per day, per-day, read-failure protection (the
+  worked-day lock stays **[OIL]**).
+- **Reviewed:** the design brief was re-frozen (Rev 3) and re-reviewed by BOTH providers
+  (converged), then Rev 4 owner additions (EOD, OIL simplification, plan names) got a
+  further Astra/Codex red-team → Rev 5. Plan naming passed clean; the EOD findings
+  (REV5-01…05) are why EOD is split out (see **[EOD]**).
+- **Must-build (still in scope):** AM-01 date-qualified version IDs; AM-02 versioned
+  saved-week migration (incl. Leave War's direct reads); AM-04 what a published version
+  captures; AM-06 signatures bound to content; AM-09 durable write/lease.
+- **Now:** building the CORE test-first on `claude/amendment-engine-core`, phase by
+  phase; full gates per phase; **no merge without "merge live"**; fresh Codex inspection
+  of the final code.
+- **Model:** build on Opus 4.8 (high); final code inspection on Codex; Fable reserved
+  for a single high-stakes finding.
+- **Context & records (read to resume):** the build plan
+  `raptor-port/docs/superpowers/specs/2026-09-12-amendment-core-build-plan.md` (phases +
+  proofs), the frozen spec `…-amendment-core-build-brief.md`, the decisions doc
+  `…-2026-09-11-amendment-model-decisions.md` (rationale, mockups §10), and the review
+  log `…-amendment-rev4-rev5-review-log.md`.
+
+### [EOD] End-of-Day "record actuals" — DEFERRED (design follow-on, after [AMEND] core)
+The end-of-day actuals record: a distinct end-of-day publish that captures what actually
+flew (scrubs, deviations), labelled EOD, with **no four-role sign-off** — just "recorded
+by X". Owner designed it 12 Sep; split out of the core build because an unsigned publish
+path in a clock-free app needs its own design cycle. Astra/Codex REV5 findings to resolve:
+- **REV5-01** the "day is closed" boundary is scheduler-asserted with no eligibility rule
+  → a future day could be closed+EOD'd to publish an unsigned plan change; the app has no
+  clock (`weeknav.ts TODAY` fixed). Needs a real "day is done" mechanism or a narrowed,
+  documented trust guarantee (EOD is never the forward-plan authority).
+- **REV5-04** "worked" ≠ "marked closed": a worked-as-planned day gets no EOD and stays
+  unclosed, so a later AL can still strip its OIL; legacy worked days too. Needs a
+  no-content-change closure path + treatment of unclosed/legacy worked dates.
+- **REV5-02** a late OIL acknowledgement (`reviseOil`→`row.oil`, no publication gate) has
+  no defined transition into an immutable/closed day.
+- **REV5-03** pick ONE correction transition (corrections are EOD-kind, not signed AL).
+- **REV5-05** closing a day doesn't freeze holiday eligibility (`setDayEvent` removing a
+  PH → `runOilPass` deletes the credit, no closed-day guard); freeze the non-working basis.
+- **Design record:** the EOD design is preserved in §3b of `…-amendment-core-build-brief.md`;
+  findings + dispositions in the review log. **Model:** design-first, red-team both
+  providers again before building; then Opus build + Codex inspection.
 
 ### [OIL] Lock earned OIL on an already-worked day — STANDBY (after [AMEND])
 An amendment that removes a person re-derives Leave War auto-OIL from the current
@@ -117,6 +182,102 @@ published version and sweeps it away — correct for a **future** day, wrong for
 Astra says the original Bug 2 may **not** reproduce (EditWeek `ed=false`; SchedBoard
 `pv=true` → no controls emitted). Verify; keep the defensive handler guards.
 - **Model:** Fable, high — short, focused verification.
+
+### [ARCH-STACK] The architectural root-cause stack — the backbone (both providers, 13 Sep 26)
+A whole-app architectural review by BOTH Astra and Fable (read-only) converged on one story:
+the app is **one store-pattern built three times** (Scheduler / Leave War / Tracker), and it
+knows only THAT something changed, never WHAT. The fix is a **record-level change stream over
+stable ids** that undo, persistence, sync and the database all consume — build once, not four
+times. Several existing items are STEPS of this stack. **Full plan (root causes, order, effort,
+what to stop):** `raptor-port/docs/superpowers/specs/2026-09-13-architecture-rootcause-plan.md`.
+- **Order:** (1) stable ids everywhere [INP-CSID]/[TRK-CSID] + `who→personId`/note-ids/`iid`→UUID;
+  (1b) quick wins — landing-on-row, a session-reset registry, ISO dates, the `mod:'now'`
+  late-mark fix; (2) ONE write/command layer (all 3 modules, PEOPLE/settings included);
+  (3) global per-session undo as inverse-patch [GLOBAL-UNDO]; (4) ONE Absence record (design NOW,
+  before the Dataverse tables freeze); (5) record-oriented storage door → Dataverse [DB-STEP];
+  (6) remove the quarantine/legacy machinery.
+- **Stop now:** interim two-system undo patches and further quarantine rounds (both replaced by
+  steps 2–3 and 6). Only the small [SYNC-INTEG] guardrails remain worth doing pre-stack.
+- **Model/process:** HEAVY, foundational. Each step: design → red-team (Astra lead, Fable for the
+  crux) → build → inspect → gates → hold for "merge live". Start with (1) — cheap, independent.
+- **Context:** the plan doc above (synthesises both reviews); memories
+  `architectural-root-cause-before-minute-fixes`, `future-undo-semantics-multiuser`.
+- **1A follow-ups (post-build inspection, 13 Sep 26):** two faces of the cross-week accepted-input
+  LANDING model that step (4) "one Absence record" dissolves. (a) **DONE now (owner: guard):** editing/
+  deleting an accepted input whose ground row is on a non-loaded week is refused with "Load the week
+  of <date>…" (was a silent stale link under stable ids) — `inputedit.tsx:landedOnUnloadedWeek`. (b)
+  **DEFERRED to step (4):** an accepted `Other` whose input is later deleted loses its hard-clash
+  grade (orphaned row → `shiftHardGround` can't resolve the type; narrow — Fable inspect #2). Fix
+  when landings become the one Absence record, or a cheap `srcType` on the ground row if it surfaces.
+
+### [SYNC-INTEG] Leave War ↔ inputs guardrails (NON-undo part) — small, ready
+A read-only cross-provider audit (Codex + Fable, 13 Sep 26) of DELETE/UNDO across the
+Leave War ↔ inputs ↔ documents seams found a family of data-integrity + permission
+issues. **All decisions, findings and the fix plan are in**
+`raptor-port/docs/superpowers/specs/2026-09-13-sync-delete-undo-integrity-spec.md`.
+**DECISION 13 Sep 26 (owner):** the whole UNDO/permission half of this — the delete-vs-undo
+resurrection, the undo-family bugs, and the member-undoes-admin gap — is NOT patched here;
+it is dissolved wholesale by a single **global undo re-architecture → see [GLOBAL-UNDO]**,
+done as a step BEFORE the database. Do NOT build interim two-system undo patches (they'd be
+thrown away). Rationale: pre-promulgation demo data (no live users), and the root cause is
+having two separate undo systems over shared data — remove the root, don't patch each face.
+- **What REMAINS here (independent of undo, small guardrails):** P2 medical is member-filed
+  only (block creation on the war for all roles + hide the war medical pickers; existing =
+  demo, reset — no migration); P4 "Clear old data" is CLUTTER-ONLY (old pucks/day-notes/empty
+  past weeks; never deletes any leave/medical/duty input; never the loaded week); P6 a Quals ✕
+  confirm; P7 fix CLAUDE.md's stale "Leave War session-only" line.
+- **Urgency:** low (pre-live); do as a cheap batch when convenient. Model: Opus build,
+  gates, no merge without "merge live".
+- **Context:** the spec/record above (findings, dispositions).
+
+### [GLOBAL-UNDO] One global per-session undo — a step BEFORE the database
+**Decision (owner, 13 Sep 26):** replace the current SEPARATE per-section undo stacks
+(schedule / Leave War / Tracker) with ONE global, per-session, per-user undo timeline. The
+whole delete/undo weird-behaviour family exists BECAUSE two independent undo systems sit over
+the same synced data and disagree; one timeline removes that class of bugs at the root instead
+of patching each. **Do this as a dedicated step BEFORE [DB-STEP]** (it unifies the section
+stores' history, which the DB step needs anyway), NOT as a mid-fix patch now.
+- **Absorbs (do not fix separately):** the delete-vs-undo resurrection (finding A/P1), the
+  undo-family bugs (D, E, F, I), the member-undoes-admin permission gap (C/DU-001/P3), per-week
+  undo that survives navigation, and the [XWEEK-UNDO] snap-to-page idea.
+- **Rules to honour (owner):** undo scoped to the LOGIN SESSION (logout clears it), never
+  affects another user, others see every change live from the shared DB; undo only reverses
+  your own actions; a role/viewer PREVIEW must not wipe an admin's undo.
+- **Gate:** must be done before promulgation / real users (the interim bugs are tolerable only
+  because it's demo data).
+- **Context:** the sync spec (findings A/C/D/E/F/I + the red-team on why the two-system patch
+  is the wrong approach); memories `future-undo-semantics-multiuser` (architecture direction),
+  `multi-squadron-and-person-transfer`; ties to `docs/architecture-direction.md` + [DB-STEP].
+
+### [RECALL] Fresh recall from archive — FUTURE FEATURE
+An admin recalls an archived person back into Quals. **Behaviour (owner, 13 Sep 26):**
+leaving the whole app SYSTEM then being posted back = **FRESH** — new/updated quals and
+new Leave War balances; only past history stays frozen. NOT "restored exactly as they
+left." Replaces the current Quals ✕ / "Restore exactly" behaviour (see [SYNC-INTEG] P6).
+- **Context:** the sync spec §Parked; memories `multi-squadron-and-person-transfer`,
+  `future-undo-semantics-multiuser`.
+
+### [XWEEK-UNDO] Cross-week "snap-to-page" undo — FUTURE FEATURE
+**Behaviour (owner, 13 Sep 26):** undoing something not on the current page snaps you to
+that week and shows what the undo did. Builds on Phase 2's per-week persistent undo.
+Future multi-user rules: undo is scoped to the login SESSION (logout clears it), never
+affects another user, but others see every change live from the shared DB.
+- **Context:** the sync spec §Parked; memory `future-undo-semantics-multiuser`.
+
+### [XFER] Multi-squadron + transfer a person with their data — FUTURE MILESTONE (with [DB-STEP])
+**Behaviour (owner, 13 Sep 26):** many squadrons on one app / one backend; transferring a
+person BETWEEN squadrons carries ALL their data across (quals, history, leave) — distinct
+from leaving the system entirely, which is a fresh return. The identity model must let one
+person move between squadrons with data intact.
+- **Context:** memory `multi-squadron-and-person-transfer`; ties to
+  `docs/architecture-direction.md` and [DB-STEP].
+
+### [INP-CSID] Stable ids for personal inputs — OPEN (rides the stable-id work)
+Two inputs that share the content key `inpKey` can cross filing/deletion — deleting one can
+remove the other's landing. Give inputs a stable hidden id (sibling of the schedule `rid`
+and the Tracker [TRK-CSID] work) so filing/accept/delete address identity, not a shared
+content key.
+- **Context:** the sync spec, finding J (`DU-007`).
 
 ### [TRK-CSID] Give courses & syllabuses their own hidden ids — OPEN (medium)
 Students and schedule rows now carry stable hidden ids (rename/reorder-safe);

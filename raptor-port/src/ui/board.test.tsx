@@ -9,8 +9,8 @@ import { createRoot, type Root } from 'react-dom/client'
 import { App } from './App'
 import { initStore, setSession, notify, HIST } from '../state/store'
 import { DAYS } from '../engine/data'
-import { SCHED, signOf, setDayApproved, dayApproved } from '../engine/publish'
-import { slotVal, setSlotVal, txtGet, autoAcceptInput, inpKey } from '../engine/slots'
+import { SCHED, signOf, setDayApproved, dayApproved, dayCurVer } from '../engine/publish'
+import { slotVal, setSlotVal, txtGet, autoAcceptInput } from '../engine/slots'
 import { INPUTS, inpId } from '../engine/inputs'
 import { parseHM } from '../engine/time'
 import { isStandalone } from '../engine/waves'
@@ -18,7 +18,9 @@ import { DUTYTPL_CFG } from '../engine/dutytpl'
 import { SBDAY, afterSchedMutate } from '../state/view'
 import * as view from '../state/view'
 import { cxText, dayHTML } from './html'
-import { openScheduler, closeScheduler, boardArmClick, boardChange, boardMbtn, boardHTML, askSortAll, sortAllCommit, SORTALL, addLine, addWave, askCx, cxCommit, CXT } from './board'
+import { openScheduler, closeScheduler, boardArmClick, boardChange, boardMbtn, boardHTML, askSortAll, sortAllCommit, SORTALL, addLine, addWave, askCx, cxCommit, CXT, pickDayTpl, dayTplArmKey } from './board'
+import { setCurWeek, CURWEEK } from '../engine/waves'
+import { addDayTpl, DAYTPL_CFG } from '../engine'
 import { applyMove } from '../engine/reorder'
 import { WARN } from '../engine/validate'
 import { HOOKS } from '../engine/hooks'
@@ -494,7 +496,7 @@ describe('duty / sim / ground panels on the board (owner request, Aug 26)', () =
     inpId(m); INPUTS.push(m)
     expect(autoAcceptInput(m), 'the day is editable, so it lands').toBe(true)
     await act(async () => { afterSchedMutate(); notify() })
-    const key = inpKey(m)
+    const key = inpId(m)
     const ri = DAYS[di].ground.findIndex((r: any) => r.src === key)
     expect(ri, 'the auto-landed row is on the day').toBeGreaterThanOrEqual(0)
     await click(document.querySelector(`#sbBoard .sb-panel.grnd [data-grdel="${di}.${ri}"]`))
@@ -1042,7 +1044,7 @@ describe('board lifecycle', () => {
       openScheduler(0); notify()
     })
     expect($('#schedBoard select.dver')).toBeTruthy()
-    await act(async () => { view.setDayPreview(0, 'orig'); notify() })
+    await act(async () => { view.setDayPreview(0, dayCurVer(0)); notify() })
     const board = $('#sbBoard')
     expect(board.querySelector('.pv-frozen')).toBeTruthy()
     expect(board.querySelector('.pv-frozen .sb-panel.duty')).toBeTruthy()   // new panels render frozen too
@@ -2171,7 +2173,9 @@ describe('the board carries the edit week\'s publish controls (owner ask)', () =
   it('publishing flips it to ✓ Published; a pending edit after that shows the pending chip and Publish AL', async () => {
     await click($('#sbSignBar [data-beak="0"]'))
     expect(dayApproved(0)).toBe(true)
-    const beak = $('#sbSignBar [data-beak="0"]')
+    /* §9: once published the beak is an INERT .dbeak stamp (no data-beak — a
+       published day can't be reopened), not a button. */
+    const beak = $('#sbSignBar .dbeak')
     expect(beak.textContent).toContain('✓ Published')       // now names the issued version too
     expect(beak.querySelector('.dal.orig'), 'the stamp names the Original').toBeTruthy()
     expect(beak.classList.contains('ok')).toBe(true)
@@ -2195,7 +2199,7 @@ describe('the board carries the edit week\'s publish controls (owner ask)', () =
   })
 
   it('a frozen version preview renders no Publish day / Publish AL controls', async () => {
-    await act(async () => { view.setDayPreview(0, 'orig'); notify() })
+    await act(async () => { view.setDayPreview(0, dayCurVer(0)); notify() })
     expect($('#sbSignBar'), 'boardSignHTML(di, true) still returns nothing on a frozen preview').toBeFalsy()
     expect($$('#sbSign [data-beak]').length).toBe(0)
     expect($$('#sbSign [data-alpub]').length).toBe(0)
@@ -2223,5 +2227,124 @@ describe('an empty Programme people cell says nothing', () => {
     expect(cell![1], 'holds only the "+ add" drop strip').toBe('<span class="addz" aria-hidden="true">+ add</span>')
     expect(h).not.toContain('<span class="itxt">all</span>')
     ;(DAYS[0] as any).allhands.pop()
+  })
+})
+
+describe('day-template apply — arm scoping and slot disarm (P2-IMPL-10 / 11)', () => {
+  const sgn = (di: number) => { const g = signOf(di); g.cur = 'ignite'; g.sked = 'bane'; g.plan = 'stiff'; g.appr = 'pump' }
+  beforeEach(() => {
+    SCHED.pending = {}; SCHED.changes = {}; SCHED.als = []; SCHED.al = 0
+    SCHED.dayOK = {}; SCHED.sign = {}; SCHED.orig = {}; SCHED.cur = {}; SCHED.drafts = {}; SCHED.curDraft = {}
+    if (view.ARM) view.disarmSlot()
+  })
+
+  it('the arm key is bound to the WEEK, so the same template+day on another week is not a stale match (P2-IMPL-10)', () => {
+    const wk = CURWEEK
+    const k1 = dayTplArmKey(0, 'tpl-x')
+    try {
+      setCurWeek('20/07/2026')
+      expect(dayTplArmKey(0, 'tpl-x'), 'a different week yields a different arm key').not.toBe(k1)
+    } finally { setCurWeek(wk) }
+    expect(dayTplArmKey(0, 'tpl-x')).toBe(k1)   // back on the original week it matches again
+  })
+
+  it('the arm key changes when the working-draft content changes between taps (P2-IMPL-10)', () => {
+    const k1 = dayTplArmKey(0, 'tpl-x')
+    ;(DAYS[0] as any).notes = [...((DAYS[0] as any).notes || []), 'ARMSCOPE-NOTE']
+    try {
+      expect(dayTplArmKey(0, 'tpl-x')).not.toBe(k1)
+    } finally { (DAYS[0] as any).notes.pop() }
+  })
+
+  it('the arm key changes when the template content changes between taps (P2-IMPL-10)', () => {
+    DAYTPL_CFG.push({ id: 'tpl-rev', title: 'REV', notes: [] } as any)
+    try {
+      const t = DAYTPL_CFG.find((x: any) => x.id === 'tpl-rev')!
+      const k1 = dayTplArmKey(0, 'tpl-rev')
+      t.title = 'REV-EDITED'
+      expect(dayTplArmKey(0, 'tpl-rev')).not.toBe(k1)
+    } finally {
+      const ix = DAYTPL_CFG.findIndex((x: any) => x.id === 'tpl-rev'); if (ix >= 0) DAYTPL_CFG.splice(ix, 1)
+    }
+  })
+
+  it('a first pick ARMS a published day with edits; an unchanged pick confirms, a CHANGED one re-arms (P2-IMPL-10)', () => {
+    const d0 = JSON.parse(JSON.stringify(DAYS[0]))
+    const t = addDayTpl(0)!
+    try {
+      sgn(0); setDayApproved(0, true)                         // freezes the Original
+      ;(DAYS[0] as any).notes.push('AN EDIT')                 // a real unpublished edit → delta 1
+      expect(dayApproved(0)).toBe(true)
+      expect(pickDayTpl(0, t.id), 'first pick arms').toBe('armed')
+      /* the working draft changes between taps → the scoped arm key no longer
+         matches, so it must RE-arm rather than silently apply (this is the same
+         staleness that let a bare `${di}:${id}` key carry across weeks). */
+      ;(DAYS[0] as any).notes.push('ANOTHER EDIT')
+      expect(pickDayTpl(0, t.id), 'a changed working draft re-arms').toBe('armed')
+      /* an unchanged confirming pick applies */
+      expect(pickDayTpl(0, t.id), 'the confirming pick applies').toBe('applied')
+    } finally {
+      DAYS[0] = d0
+      const ix = DAYTPL_CFG.findIndex((x: any) => x.id === t.id); if (ix >= 0) DAYTPL_CFG.splice(ix, 1)
+    }
+  })
+
+  it('applying a template disarms an armed crew slot on that day (P2-IMPL-11)', () => {
+    const d0 = JSON.parse(JSON.stringify(DAYS[0]))
+    const t = addDayTpl(0)!
+    try {
+      view.armSlot('0.0.0.0.p')                       // arm a seat on day 0
+      expect(view.ARM && view.ARM.di).toBe(0)
+      // day 0 is NOT approved (beforeEach cleared the book) → pickDayTpl applies straight away
+      expect(pickDayTpl(0, t.id)).toBe('applied')
+      expect(view.armedKey(), 'the stale arm was cleared before the replacement').toBe('')
+    } finally {
+      if (view.ARM) view.disarmSlot()
+      DAYS[0] = d0
+      const ix = DAYTPL_CFG.findIndex((x: any) => x.id === t.id); if (ix >= 0) DAYTPL_CFG.splice(ix, 1)
+    }
+  })
+
+  it('a NAVIGATION between taps re-arms even with unchanged content (P2-REV2-07)', () => {
+    /* the content-scoped arm key is IDENTICAL on a navigate-away-and-back, so
+       without the nav token a stale arm applied on one pick. The token
+       (view.navGen(), bumped by every navigation gesture) makes the recomputed
+       key differ, forcing a fresh confirm. */
+    const k1 = dayTplArmKey(0, 'tpl-nav')
+    view.bumpNav()                                    // any navigation gesture
+    expect(dayTplArmKey(0, 'tpl-nav'), 'the arm key changes after a navigation').not.toBe(k1)
+  })
+
+  it('a board-day change bumps the nav token so a stale template confirm re-arms (P2-QREV-08)', () => {
+    view.setBoardDay(0)                 // open the board on day 0
+    const before = view.navGen()
+    view.setBoardDay(1)                 // step to day 1 — a navigation gesture
+    expect(view.navGen(), 'a board-day change is a navigation too').toBeGreaterThan(before)
+    view.setBoardDay(null)
+  })
+
+  it('a page change bumps the nav token (P2-REV2-07)', () => {
+    const before = view.navGen()
+    const wasPage = view.CURPAGE
+    try {
+      view.setPage(wasPage === 'viewsched' ? 'editsched' : 'viewsched')
+      expect(view.navGen(), 'setPage to a different page bumped the token').toBeGreaterThan(before)
+    } finally { view.setPage(wasPage) }
+  })
+
+  it('a first pick arms; a navigation before the second pick re-arms rather than applying (P2-REV2-07)', () => {
+    const d0 = JSON.parse(JSON.stringify(DAYS[0]))
+    const t = addDayTpl(0)!
+    try {
+      sgn(0); setDayApproved(0, true)
+      ;(DAYS[0] as any).notes.push('AN EDIT')                 // a real unpublished edit → delta 1
+      expect(pickDayTpl(0, t.id), 'first pick arms').toBe('armed')
+      view.bumpNav()                                          // navigate away and back (content unchanged)
+      expect(pickDayTpl(0, t.id), 'the navigation forced a fresh confirm').toBe('armed')
+      expect(pickDayTpl(0, t.id), 'now the confirming pick applies').toBe('applied')
+    } finally {
+      DAYS[0] = d0
+      const ix = DAYTPL_CFG.findIndex((x: any) => x.id === t.id); if (ix >= 0) DAYTPL_CFG.splice(ix, 1)
+    }
   })
 })

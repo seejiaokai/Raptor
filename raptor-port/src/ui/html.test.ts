@@ -8,13 +8,15 @@ import { DAYS } from '../engine/data'
 import { INPUTS, inputCoversDate, isUnavail } from '../engine/inputs'
 import { validate, CHIP_LABEL, chipText } from '../engine/validate'
 import { dayHTML, dayPreviewHTML, dayIssuedHTML, withDaySnap, legendHTML, availHTML } from './html'
+import { boardHTML } from './board'
 import { PEOPLE, QORDER, SEATRANK } from '../engine/people'
-import { SCHED, signOf, setDayApproved, alIssue } from '../engine/publish'
-import { restoreDayVersion } from '../engine/restore'
+import { SCHED, signOf, setDayApproved, alIssue, protectedWeek } from '../engine/publish'
+import { setPreservedBlob, clearPreservedBlob } from '../engine/weekstash'
+import { CURWEEK } from '../engine/waves'
 import { dayDrafts, draftDup } from '../engine/drafts'
 import { txtSet, txtGet } from '../engine/slots'
 import { parseHM } from '../engine/time'
-import { setDayPreview, DPREV, VWORK, setPage } from '../state/view'
+import { setDayPreview, DPREV, VWORK, setPage, setRestArm } from '../state/view'
 import { setSession } from '../state/auth'
 import { acceptInput, unacceptInput } from '../engine/slots'
 import { PIOPEN } from '../state/view'
@@ -317,7 +319,16 @@ describe('view-week markup parity with the reference', () => {
        no `draggable` at all — pinned in ui/drag.test.tsx "nothing on any
        surface is draggable"). */
     const normDrag = (s: string) => s.replace(/ draggable="true"/g, ' data-drag="1"')
-    const E = (s: string) => normDrag(normDow(noItTime(noItCtl(noAhRmk(noRmkPh(noTrace(noBrief(noStores(sortGrnd(grndTitle(noInpGrp(noNotes(noDhTpl(noSign(noDsec(s))))))))))))))))
+    /* Divergence (Phase 2, the amendment-engine rewrite): the day-head publish
+       "beak" button's class tightened from the reference's `dbeak  locked` (an
+       empty class slot between two interpolations) to `dbeak locked`. It is a
+       whitespace-only change inside a class attribute — identical CSS tokens,
+       so the button is structurally the same — with the reference frozen; the
+       same "lift a cosmetic port-only day-head divergence off both sides" idiom
+       as normDrag/normDow. Collapse the reference's double space; a no-op on the
+       port. */
+    const normBeakWs = (s: string) => s.replace(/class="dbeak {2,}/g, 'class="dbeak ')
+    const E = (s: string) => normBeakWs(normDrag(normDow(noItTime(noItCtl(noAhRmk(noRmkPh(noTrace(noBrief(noStores(sortGrnd(grndTitle(noInpGrp(noNotes(noDhTpl(noSign(noDsec(s)))))))))))))))))
     DAYS.slice(0, REFN).forEach((_: any, di: number) => {
       const ref = w.eval(`dayHTML(${di},true)`)
       expect(E(dayHTML(di, true)), 'day ' + di).toBe(E(ref))
@@ -565,11 +576,12 @@ describe('version dropdown and preview build', () => {
   it('the dropdown appears only when versions exist AND only when asked for', () => {
     expect(dayHTML(0, true, true)).not.toContain('data-dver')   // no versions yet
     sgn(0); setDayApproved(0, 1)
-    txtSet('dn:0.0', 'LIVE CHANGE'); sgn(0); alIssue(1, ['dn:0.0'])
+    const orig = SCHED.orig[0].id            // Phase 2: the Original's immutable verId
+    txtSet('dn:0.0', 'LIVE CHANGE'); sgn(0); alIssue(0)
     expect(dayHTML(0, true, true)).toContain('data-dver="0"')
     expect(dayHTML(0, false)).not.toContain('data-dver')        // the ViewWeek signature
-    setDayPreview(0, 'orig')
-    expect(dayHTML(0, true, true)).toMatch(/value="orig" selected/)
+    setDayPreview(0, orig)
+    expect(dayHTML(0, true, true)).toContain(`value="${orig}" selected`)
     setDayPreview(0, null)
   })
 
@@ -581,18 +593,14 @@ describe('version dropdown and preview build', () => {
       expect(h).toContain('data-alc="1"')
     }
     /* a second AL replaces the chip, it does not join it */
-    txtSet('dn:0.1', 'AL2 CHANGE'); sgn(0); alIssue(2, ['dn:0.1'])
+    txtSet('dn:0.1', 'AL2 CHANGE'); sgn(0); alIssue(0)
     const h2 = dayHTML(0, false)
     expect((h2.match(/class="dal[ "]/g) || []).length).toBe(1)
     expect(h2).toContain('>AL2<')
     expect(h2).not.toContain('>AL1<')
-    /* rolled back to the Original while ALs exist → the grey ORIG chip */
-    restoreDayVersion(0, 'orig')
-    const h3 = dayHTML(0, false)
-    expect(h3).toContain('class="dal orig"')
-    expect(h3).toContain('>ORIG<')
-    /* roll forward again so the next tests see AL1's world */
-    restoreDayVersion(0, 1)
+    /* Phase 2: rolling a published day back to an earlier version is gone
+       (restoreDayVersion removed; a published version is frozen and the day
+       always shows its newest issue). The day therefore stays at AL2. */
   })
 
   it('a published day with no ALs still names the issued version in its stamp', () => {
@@ -606,18 +614,19 @@ describe('version dropdown and preview build', () => {
   })
 
   it('the preview shows the frozen day, read-only, wearing its frozen marks', () => {
-    txtSet('dn:0.0', 'EVEN LATER')          // live pending edit after AL1
-    const orig = dayPreviewHTML(0, 'orig', true)
-    expect(orig).toContain('EP: ENGINE FIRE ON TAKE OFF')
-    expect(orig).not.toContain('EVEN LATER')
-    expect(orig).toContain('dprev-bar')
-    expect(orig).toContain('data-restore="0"')
-    expect(orig).not.toContain('data-slot=')  // no write surfaces
-    expect(orig).not.toContain('dwbox')       // no live warnings
-    expect(orig).not.toContain('data-alp')    // pending is live-only state
-    const al1 = dayPreviewHTML(0, 1, true)
-    expect(al1).toContain('LIVE CHANGE')
-    expect(al1).toContain('data-alc="1"')     // the mark it wore as issued
+    txtSet('dn:0.0', 'EVEN LATER')          // live pending edit after AL1/AL2
+    const origVer = SCHED.orig[0].id, al1Ver = SCHED.als.find((a: any) => +a.di === 0 && +a.seq === 1).id
+    const origH = dayPreviewHTML(0, origVer, true)
+    expect(origH).toContain('EP: ENGINE FIRE ON TAKE OFF')
+    expect(origH).not.toContain('EVEN LATER')
+    expect(origH).toContain('dprev-bar')
+    expect(origH).toContain('data-restore="0"')
+    expect(origH).not.toContain('data-slot=')  // no write surfaces
+    expect(origH).not.toContain('dwbox')       // no live warnings
+    expect(origH).not.toContain('data-alp')    // pending is live-only state
+    const al1H = dayPreviewHTML(0, al1Ver, true)
+    expect(al1H).toContain('LIVE CHANGE')
+    expect(al1H).toContain('data-alc="1"')     // the mark it wore as issued
   })
 
   it('a draft preview never wears the published day\'s clothes; the issued default is quiet', () => {
@@ -641,9 +650,9 @@ describe('version dropdown and preview build', () => {
     expect(issued).not.toContain('dprev-bar')
     expect(issued).not.toContain('data-restore')
     expect(issued).not.toContain('EVEN LATER')
-    expect(issued).toContain('LIVE CHANGE')       // the AL1 document is what shows
+    expect(issued).toContain('LIVE CHANGE')       // the issued document is what shows
     expect(issued).toContain('data-vwork="0"')
-    expect(issued).toContain('AL1 — as issued')
+    expect(issued).toContain('AL2 — as issued')   // the day's newest issue (AL2)
     expect(issued).toContain('Working draft — not issued')
     /* the working choice: a live view-page render wearing the banner + stamp */
     VWORK.add(0)
@@ -667,9 +676,10 @@ describe('version dropdown and preview build', () => {
 
   it('withDaySnap restores the globals after the build — and after a throw', () => {
     const d0 = DAYS[0], c0 = SCHED.changes, p0 = SCHED.pending
-    withDaySnap(0, 'orig', () => { expect(DAYS[0]).not.toBe(d0) })
+    const orig = SCHED.orig[0].id
+    withDaySnap(0, orig, () => { expect(DAYS[0]).not.toBe(d0) })
     expect(DAYS[0]).toBe(d0)
-    expect(() => withDaySnap(0, 'orig', () => { throw new Error('boom') })).toThrow('boom')
+    expect(() => withDaySnap(0, orig, () => { throw new Error('boom') })).toThrow('boom')
     expect(DAYS[0]).toBe(d0)
     expect(SCHED.changes).toBe(c0)
     expect(SCHED.pending).toBe(p0)
@@ -822,5 +832,60 @@ describe('the weekend days render (owner, Aug 26)', () => {
     expect(week.length).toBe(7)
     expect(week[5]).toContain('Saturday')
     expect(week[6]).toContain('Sunday')
+  })
+})
+
+describe('a legacy published day shows an unavailable notice, never the draft as Published (P2-REREVIEW-06)', () => {
+  const sgn = (di: number) => { const g = signOf(di); g.cur = 'ignite'; g.sked = 'bane'; g.plan = 'stiff'; g.appr = 'pump' }
+  it('dayIssuedHTML renders the unsupported notice for an approved day with no resolvable issued snapshot', () => {
+    SCHED.pending = {}; SCHED.changes = {}; SCHED.als = []; SCHED.al = 0
+    SCHED.dayOK = {}; SCHED.sign = {}; SCHED.orig = {}; SCHED.cur = {}; SCHED.drafts = {}; SCHED.curDraft = {}
+    const di = 0
+    sgn(di); setDayApproved(di, true)
+    DAYS[di].notes.push('LIVE DRAFT SECRET')                 // a live-draft-only detail
+    // make the book legacy: approved, but no resolvable issued snapshot
+    SCHED.orig = {}; SCHED.cur = { [di]: 'orig' } as any; SCHED.als = []
+    const h = dayIssuedHTML(di)
+    expect(h).toContain('older version of the app')          // the explicit unavailable notice
+    expect(h).not.toContain('LIVE DRAFT SECRET')             // the live draft is NOT shown
+    expect(h).not.toContain('✓ Published')                   // and not under a Published label
+    SCHED.dayOK = {}; SCHED.cur = {}
+  })
+})
+
+describe('a quarantined week surfaces the notice on the week AND the board (Q2R-06)', () => {
+  /* the round-2 fix routed the notice through dayIssuedHTML only — reachable on
+     the VIEW page's APPROVED days. A damaged/preserved week loads the seed as a
+     placeholder whose days are UNAPPROVED, so the edit week, the view week's
+     unapproved days and the scheduler board all fell through to the ordinary
+     builders and painted the seed as if it were the schedule. The check now sits
+     in dayHTML (view + edit) and boardHTML (the board), the shared builders. */
+  it('dayHTML and boardHTML both show the unavailable notice for a preserved week', () => {
+    setPreservedBlob(CURWEEK, 'x')     // force the loaded week read-only (isPreservedWeek → protectedWeek)
+    try {
+      expect(protectedWeek(), 'the loaded week is read-only').toBe(true)
+      expect(dayHTML(0, true), 'the edit week surfaces the notice').toContain('older version of the app')
+      expect(dayHTML(0, false), 'the view week too').toContain('older version of the app')
+      expect(boardHTML(0), 'and the scheduler board').toContain('older version of the app')
+    } finally { clearPreservedBlob(CURWEEK) }
+  })
+})
+
+describe('the recovery confirm shows the LIVE unpublished-edit count (P2-IMPL-09)', () => {
+  const sgn = (di: number) => { const g = signOf(di); g.cur = 'ignite'; g.sked = 'bane'; g.plan = 'stiff'; g.appr = 'pump' }
+  it('the discard-and-load button reads the live delta count, not 0 (withDaySnap zeroes pending)', () => {
+    /* stand alone — clear the amendment book so no earlier test's marks leak in */
+    SCHED.pending = {}; SCHED.changes = {}; SCHED.als = []; SCHED.al = 0
+    SCHED.dayOK = {}; SCHED.sign = {}; SCHED.orig = {}; SCHED.cur = {}; SCHED.drafts = {}; SCHED.curDraft = {}
+    const di = 0
+    sgn(di); setDayApproved(di, 1)
+    const ver = SCHED.orig[di].id                    // the issued Original
+    txtSet(`dn:${di}.0`, 'AN UNPUBLISHED EDIT')      // one real unpublished edit → delta 1
+    setRestArm(di, ver)                              // arm the two-tap confirm
+    const h = dayPreviewHTML(di, ver, true)          // renders through withDaySnap (pending zeroed)
+    expect(h, 'the count is the live delta, captured before the snap zeroes pending').toContain('Discard 1 edit')
+    expect(h).not.toContain('Discard 0 edit')
+    setRestArm(null, null)
+    SCHED.pending = {}; SCHED.changes = {}; SCHED.als = []; SCHED.dayOK = {}; SCHED.orig = {}; SCHED.cur = {}
   })
 })

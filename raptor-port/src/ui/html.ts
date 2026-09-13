@@ -1,16 +1,18 @@
 import { DAYS } from '../engine/data'
+import { noteText } from '../engine/note'
 import { PEOPLE, isSpecial, nameToId, QCHIP, QCLASS, LEVELNAME, byCrew } from '../engine/people'
 import { INPUTS, inputCoversDate, inpLabel, inpId, inpTimeText, isOffType, offWord, isLeave, isDownchit, isPersonal, isUnavail, isSansAvail, isUpchit, sansBadge, sansAvailOn, sansWindow, sansLetters, isLateInput, lateNote } from '../engine/inputs'
 import { isStandalone, scSpare, dayCount, mColor, saExempt, SAWAVE } from '../engine/waves'
 import { intimeFold } from '../engine/events'
 import { parseHM, hhmm, hm24, minus } from '../engine/time'
-import { slotVal, txtGet, TIME_TXT, whoArr, rowCrew, rowRef, inpKey } from '../engine/slots'
+import { slotVal, txtGet, TIME_TXT, whoArr, rowCrew, rowRef } from '../engine/slots'
 /* RANK left with the focus-scoped trace: ranking the CR chip against the day's
    own worst is traceLeads' job now, in the engine, so both the chip and the
    click that follows it read one test */
 import { WARN, sevOf, chipOf, dashOf, traceOf, traceLeads, traceChip, traceIx, tracesOn, chipText, wlbl, WCODE, SEVWORD, CHIP_LABEL, ordinal } from '../engine/validate'
 import { availByWave, personBusy, dayOff, dayEngaged, personWarns } from '../engine/avail'
-import { SCHED, alAttr, dayApproved, dayCurVer, dayPendCount, alColor, signOf, signMissing, signPeople, SIGN_ROLES, daySigned, nextAL, dowShort, alDays, daySnapOf, dayVersions, verLabel } from '../engine/publish'
+import { SCHED, alAttr, dayApproved, dayCurVer, dayPendCount, dayDelta, dayDiscardCount, alColor, signOf, signMissing, signPeople, SIGN_ROLES, daySigned, nextSeq, dowShort, alCount, daySnapOf, dayVersions, verLabel, protectedWeek } from '../engine/publish'
+import { verSeq } from '../engine/verid'
 import { dayDrafts, curDraftId, isDraftVer, draftVerLabel } from '../engine/drafts'
 import { keyDay } from '../engine/keys'
 import { VCONF } from '../engine/rules'
@@ -39,6 +41,10 @@ const editMode=()=>HOOKS.editMode()
    labelling) and the section class reads `issued`, not `preview`, so the
    preview dimming and its CSS never apply to the page's default face. */
 let PV=false, PVV:any=null, PVQ=false
+/* the LIVE unpublished-edit count captured by withDaySnap BEFORE it zeroes
+   pending — what the discard-confirm button must show (P2-IMPL-09). Read only
+   under PV; withDaySnap sets it before the swap and restores it in finally. */
+let PVND=0
 const sev=(di:any,id:any)=>PV?null:sevOf(di,id)
 /* THE PREVIOUS-DAY TRACE (owner, 6 Aug 26; made a standing mark 6 Aug 26).
    A crew-rest breach is raised on the day the man is told to report, but the
@@ -64,23 +70,61 @@ const dsh=(di:any,id:any)=>PV?false:dashOf(di,id)
 export function withDaySnap(di:any,ver:any,fn:any){
   const snap=daySnapOf(di,ver)
   if(!snap)return fn(false)
-  const d0=DAYS[di], c0=SCHED.changes, p0=SCHED.pending
+  /* capture the LIVE discard count BEFORE the swap zeroes pending (P2-IMPL-09) —
+     the confirm button reads it as PVND, so it never shows "Discard 0 edits". */
+  const nd0=dayDiscardCount(di)
+  const d0=DAYS[di], c0=SCHED.changes, p0=SCHED.pending, nd=PVND
   DAYS[di]=snap.d; SCHED.changes=snap.c||{}; SCHED.pending={}
-  PV=true; PVV=ver
+  PV=true; PVV=ver; PVND=nd0
   try { return fn(true) }
-  finally { DAYS[di]=d0; SCHED.changes=c0; SCHED.pending=p0; PV=false; PVV=null }
+  finally { DAYS[di]=d0; SCHED.changes=c0; SCHED.pending=p0; PV=false; PVV=null; PVND=nd }
 }
 export function dayPreviewHTML(di:any,ver:any,edFallback:any){
   return withDaySnap(di,ver,(ok:any)=>ok?dayHTML(di,false,true):dayHTML(di,edFallback,true))
 }
+/* an APPROVED day whose issued snapshot cannot be resolved — a legacy /
+   unsupported book, whose 'orig'/numeric identities no longer resolve. The crew
+   must NOT be shown the live working DRAFT under a "Published" label
+   (P2-REREVIEW-06); render an explicit, read-only unavailable notice instead. */
+/* the ONE quarantine notice sentence, shared by the week's dayUnsupportedHTML and
+   the board's own guard (board.ts:boardHTML) so the two surfaces can never drift
+   (Q2R-06). */
+export const QUARANTINE_NOTE = "This day's published schedule was created by an older version of the app and can't be shown here. It has not changed — open it on the device that created it."
+function dayUnsupportedHTML(di:any){
+  const d=DAYS[di]
+  return `<section class="day ${d.today?'today':''} dok issued" data-day="${di}">`
+    +`<div class="day-head"><span class="dow di-open" data-dayinfo="${di}" title="Day details">${d.dow}</span>`
+    +`<span class="dt di-open" data-dayinfo="${di}" title="Day details">${esc(d.dt)}${d.today?' · Today':''}</span></div>`
+    +`<div class="dprev-bar">${QUARANTINE_NOTE}</div>`
+    +`</section>`
+}
 /* the VIEW page's default render for a PUBLISHED day (owner, 15 Aug 26): the
    frozen issued document, not the live working copy — a scheduler's
    in-progress edits stay invisible to viewers until the next AL goes out.
-   Quiet mode (PVQ above): no preview banner, no Restore, class `issued`.
-   Falls back to the live render if the day somehow has no snapshot. */
+   Quiet mode (PVQ above): no preview banner, no Restore, class `issued`. */
 export function dayIssuedHTML(di:any){
+  /* Classify AUTHORITY by the WEEK/BOOK, never by whether verIds resolve
+     (P2-REV2-03): an unsupported book (wrong amV, or content filed under the
+     wrong week) can still carry valid verIds a changed draft resolves — but it is
+     NOT authoritative and must never be shown as the issued document. Show the
+     unavailable notice for an approved day; the plain draft for a never-approved
+     one. Checked BEFORE dayCurVer so a resolvable-but-unsupported record can't slip
+     past the ver==null branch below. */
+  /* a PROTECTED week shows the unavailable notice for EVERY day, not only its
+     approved ones (P2-QREV/Fable-7): an unreadable/damaged book loads the SEED as
+     a placeholder whose days are unapproved, so the old `dayApproved ? notice :
+     seed` reading rendered that seed as if it were the real schedule, with no
+     indication the week is quarantined. The whole book is frozen, so the whole
+     week reads as unavailable. */
+  if(protectedWeek())
+    return dayUnsupportedHTML(di)
   const ver=dayCurVer(di)
-  if(ver==null)return dayHTML(di,false)
+  if(ver==null){
+    /* an approved day with NO resolvable issued snapshot is a legacy/unsupported
+       book — show the unavailable notice, NEVER the live draft (P2-REREVIEW-06).
+       A never-approved day (not reached from ViewWeek) keeps the plain render. */
+    return dayApproved(di)?dayUnsupportedHTML(di):dayHTML(di,false)
+  }
   PVQ=true
   try{ return withDaySnap(di,ver,(ok:any)=>ok?dayHTML(di,false):dayHTML(di,false)) }
   finally{ PVQ=false }
@@ -478,8 +522,8 @@ export function availHTML(d:any,di:any,ed:any){
    as plain text, the offered-event letters (--san purple, the .sansb
    family), and the remarks, ellipsized. The whole card is the click target —
    it carries the SAME data-inpedit address inpEditLabel already builds
-   (inpKey(inp)), so the delegated click router in interactions.ts needs no
-   new wiring to open the input-edit dialog from it. `ro` (a read-only board)
+   (the input's stable inpId), so the delegated click router in interactions.ts
+   needs no new wiring to open the input-edit dialog from it. `ro` (a read-only board)
    withholds that attribute and draws a plain, unclickable div instead of a
    button — the same editable/read-only split every other input row already
    makes (see inpEditLabel itself). */
@@ -520,7 +564,7 @@ export function sansCardsHTML(rows:any[],di:any,ro?:any){
       +(rmk?`<span class="sanscard-r" title="${esc(rmk)}">${esc(rmk)}</span>`:'');
     return ro
       ? `<div class="sanscard">${inner}</div>`
-      : `<button class="sanscard" data-inpedit="${esc(inpKey(inp))}" title="Edit this input — times, type, remarks or delete">${inner}</button>`;
+      : `<button class="sanscard" data-inpedit="${esc(inpId(inp))}" title="Edit this input — times, type, remarks or delete">${inner}</button>`;
   }).join('')+`</div>`;
 }
 /* the week's own wrapper — same `.sub.plist.one.sec.sec-sans` shape (and the
@@ -876,7 +920,7 @@ export function lateChip(inp:any){
    promotion or it would vanish exactly where the squadron reads the day. */
 export function srcInput(o:any){
   const k=o&&o.src; if(!k)return null;
-  return INPUTS.find((x:any)=>inpKey(x)===k)||null;}
+  return INPUTS.find((x:any)=>inpId(x)===k)||null;}
 export function lateTagOf(o:any){return lateTag(srcInput(o));}
 /* The board's duty/sim/ground rows are a SEVEN-item grid whose header reserves
    exactly seven tracks, and every cell is a bare <input> with nowhere to nest
@@ -920,7 +964,12 @@ export function lateRowTitle(o:any){const inp=srcInput(o); return (inp&&isLateIn
    view-only page), and the board has no equivalent slot for it today. */
 export function dayStatHTML(di:any,ed:any){
     const d=DAYS[di];
-    const ok=dayApproved(di), dp=dayPendCount(di);
+    const ok=dayApproved(di);
+    /* the count/eligibility shown for a PUBLISHED day is the canonical delta vs
+       the issued version (F-02 — the ONE authority, §3), NOT the raw pending
+       marks; a still-DRAFT day has no issued baseline, so it shows its draft
+       pending count. `nd>0` on a published day IS dayHasChanges. */
+    const dv=ok?dayDelta(di):null, dp=dayPendCount(di), nd=ok?(dv as any[]).length:dp;
     /* a DRAFT preview must never wear the published day's clothes (owner,
        15 Aug 26 — "when I toggle to draft 1, it shouldn't say published"):
        under a d: preview the ✓ Published stamp and the AL chip are replaced
@@ -952,27 +1001,33 @@ export function dayStatHTML(di:any,ed:any){
        .dal chip, which is why there is no separate version chip any more. */
     const cv=dayCurVer(di);
     const verTag=(ok&&!pvDraft&&!workView&&cv!=null)
-      ? (cv==='orig'
+      ? (verSeq(cv)===0
         ? ` · <span class="dal orig" title="${DAYS[di].dow} is issued as the Original">ORIG</span>`
-        : ` · <span class="dal" data-alc="${cv}" title="${DAYS[di].dow} is issued as AL${cv}">AL${cv}</span>`)
+        : ` · <span class="dal" data-alc="${verSeq(cv)}" title="${DAYS[di].dow} is issued as ${verLabel(cv)}">${verLabel(cv)}</span>`)
       : '';
-    const pendChip=dp?`<span class="dpend" title="${dp} unpublished edit${dp>1?'s':''} on this day${ok?' — ahead of the issued schedule until you publish an AL':' — publish the day before publishing an AL'}">${dp}&nbsp;pending</span>`:'';
+    const pendChip=nd?`<span class="dpend" title="${nd} ${ok?'change':'unpublished edit'}${nd>1?'s':''} on this day${ok?' — ahead of the issued schedule until you publish an AL':' — publish the day before publishing an AL'}">${nd}&nbsp;pending</span>`:'';
     const sgOK=daySigned(di);
+    /* THE BEAK (§9, closes BUG-2): on a NEVER-published day it first-approves;
+       on a PUBLISHED day it is INERT — a published version is frozen, there is
+       nothing to un-publish and no reload. Amending is: edit the working draft,
+       then Publish AL# (the alpub button below). So a published day shows a
+       read-only ✓ Published stamp, no data-beak. */
     const beak=pvDraft
       ? `<span class="dbeak ro" title="A stored draft — not the issued schedule">Draft</span>`
       : workView
       ? `<span class="dbeak ro work" title="${d.dow} is published, but this is the working draft — not what was issued">Working draft</span>`
-      : ed
-      ? `<button class="dbeak ${ok?'ok':''}${(!ok&&!sgOK)?' locked':''}" data-beak="${di}"${(!ok&&!sgOK)?' disabled':''} title="${ok?'Reopen '+d.dow+' to draft':(sgOK?'Publish '+d.dow+' — approve this day only':'Sign off '+signMissing(di).join(', ')+' before publishing '+d.dow)}">${ok?'✓ Published'+verTag:'Publish day'}</button>`
-      : `<span class="dbeak ro ${ok?'ok':''}" title="${ok?d.dow+' has been published':d.dow+' is still draft'}">${ok?'✓ Published'+verTag:'Draft'}</span>`;
-    /* per-day AL publish — lives beside the day's own publish button, only on a
-       PUBLISHED day that carries pending edits of its own. Locked (darkened,
-       like the publish-day lock) until the day's four sign-offs are in. The
-       view page gets no button — status only. */
-    const alN=nextAL();
-    const alpub=(ed&&ok&&dp)
+      : (ed&&!ok)
+      ? `<button class="dbeak ${!sgOK?'locked':''}" data-beak="${di}"${!sgOK?' disabled':''} title="${sgOK?'Publish '+d.dow+' — approve this day only':'Sign off '+signMissing(di).join(', ')+' before publishing '+d.dow}">Publish day</button>`
+      : `<span class="dbeak ro ${ok?'ok':''}" title="${ok?d.dow+' has been published — edit the working draft and publish an AL to amend it':d.dow+' is still draft'}">${ok?'✓ Published'+verTag:'Draft'}</span>`;
+    /* per-day AL publish — lives beside the day's own publish stamp, only on a
+       PUBLISHED day that has real changes vs its issued version (dayHasChanges,
+       i.e. nd>0 — the canonical delta, NOT the raw pending marks). Locked
+       (darkened) until the day's four sign-offs are in. The view page gets no
+       button — status only. Per-day only (P2-08 — never publish-all). */
+    const alN=nextSeq(di);
+    const alpub=(ed&&ok&&nd)
       ? `<button class="dbeak dalpub${sgOK?'':' locked'}" data-alpub="${di}"${sgOK?'':' disabled'} title="${sgOK
-          ?`Publish AL${alN} — ${dp} change${dp>1?'s':''} on ${d.dow} only`
+          ?`Publish AL${alN} — ${nd} change${nd>1?'s':''} on ${d.dow} only`
           :`Sign off ${signMissing(di).join(', ')} before publishing AL${alN}`}">Publish AL${alN}</button>`
       :'';
     /* the ⓘ chip is the ONLY way into the day panel on the view page, and it opens a
@@ -990,6 +1045,14 @@ export function dayStatHTML(di:any,ed:any){
     return `${draftChip}${pendChip}${infoChip}${beak}${alpub}`;
 }
 export function dayHTML(di:any,ed:any,vsel?:any){
+  /* A QUARANTINED (unreadable / preserved / unsupported) LOADED week is read-only,
+     and its days are UNAPPROVED (the seed is loaded as a placeholder), so both the
+     edit week and the view week's unapproved days reach this shared builder — which
+     used to paint the seed as if it were the real schedule, with no indication the
+     week is frozen (Q2R-06). Surface the same notice dayIssuedHTML shows. Parity is
+     untouched: protectedWeek() is never true for the seed weeks the reference pins.
+     dayIssuedHTML checks protectedWeek() BEFORE calling dayHTML, so no double. */
+  if(protectedWeek()) return dayUnsupportedHTML(di);
   const d=DAYS[di];
     /* dayStatHTML (above) recomputes this same lookup for its own chips; kept
        here too because the <section> class needs it and dayApproved is a bare
@@ -1014,9 +1077,9 @@ export function dayHTML(di:any,ed:any,vsel?:any){
        version" — the word read like "publish it"). Loading discards the day's
        unpublished edits, so when there are any it takes a confirming second
        tap: restArmed drives the two-state button. */
-    const armed=restArmed(di,PVV), pend=dayPendCount(di);
+    const armed=restArmed(di,PVV), pend=PV?PVND:dayPendCount(di);
     const pvBar=(PV&&!PVQ)
-      ? `<div class="dprev-bar"${(PVV!=='orig'&&!pvDraft)?` style="--alc:${alColor(+PVV)}"`:''}>`
+      ? `<div class="dprev-bar"${(!pvDraft&&verSeq(PVV)!==0)?` style="--alc:${alColor(verSeq(PVV))}"`:''}>`
         +(pvDraft
           /* the Switch action is EDIT-SURFACE only. A preview always renders
              with ed=false (it is read-only), so the edit-week signal is `vsel`
@@ -1073,7 +1136,7 @@ export function dayHTML(di:any,ed:any,vsel?:any){
     const hasNotes=!!(d.notes&&d.notes.length), hasAH=!!(d.allhands&&d.allhands.length);
     if(hasNotes||hasAH||ed){
       h+=`<div class="allhands sec sec-prog"><div class="ah-h">Common Programme</div>`;
-      (d.notes||[]).forEach((n:any,ni:any)=>h+=ted(`dn:${di}.${ni}`,n,ed,'ah-note','div'));
+      (d.notes||[]).forEach((n:any,ni:any)=>h+=ted(`dn:${di}.${ni}`,noteText(n),ed,'ah-note','div'));
       if(hasAH){
         h+=`<div class="ah-cols"><span>Name</span><span>Start</span><span>End</span><span>People</span><span>Rmks</span></div>`;
         d.allhands.forEach((x:any,ri:any)=>{
@@ -1499,7 +1562,7 @@ export function inpRmkCell(inp:any,ed:any,dt?:any){
 export function inpEditLabel(inp:any,ed:any,txt:any,cls:any){
   const t=esc(txt);
   if(!ed)return `<span class="${cls}">${t}</span>`;
-  return `<button class="${cls} inpedit" data-inpedit="${esc(inpKey(inp))}" title="Edit this input — times, type, remarks or delete">${t}</button>`;
+  return `<button class="${cls} inpedit" data-inpedit="${esc(inpId(inp))}" title="Edit this input — times, type, remarks or delete">${t}</button>`;
 }
 /* The accept control on a personal-input row. "Other" is the one type whose
    destination is genuinely ambiguous — it can be something the squadron has to
@@ -1508,7 +1571,7 @@ export function inpEditLabel(inp:any,ed:any,txt:any,cls:any){
    shows Undo instead, which removes the ground row it created. */
 export function accCtl(di:any,inp:any){
   if(!canEditSched())return `<span class="accs"></span>`;
-  const k=esc(inpKey(inp));
+  const k=esc(inpId(inp));
   /* 'r' (removed — dormant, see engine/inputs.ts inputDormant) is NOT
      "accepted": the row was undone, so this offers Accept again, which is the
      one way back to a flagging state. Only 'g'/'u' show Undo. */
@@ -1563,15 +1626,15 @@ export function dayInfoHTML(di:any){
   const eng=dayEngaged(d).size, off=dayOff(d).size;
   const A=availByWave(d), freeAll=A.anyWave.length;
   const row=(k:any,v:any)=>`<div class="dip-r"><span class="k">${k}</span><span class="v">${v}</span></div>`;
-  const alRecs=SCHED.als.filter((a:any)=>alDays(a).includes(di));
+  const alRecs=SCHED.als.filter((a:any)=>+a.di===di).slice().sort((a:any,b:any)=>+a.seq-+b.seq);
   const alRows=alRecs.length
-    ? alRecs.map((a:any)=>{const n=(a.keys||[]).filter((k:any)=>keyDay(k)===di).length;
-        return `<span class="dip-al" data-alc="${a.n}">AL${a.n}<i>${n} item${n===1?'':'s'}</i></span>`;}).join('')
+    ? alRecs.map((a:any)=>{const n=alCount(a);
+        return `<span class="dip-al" data-alc="${a.seq}">${verLabel(a.id)}<i>${n} item${n===1?'':'s'}</i></span>`;}).join('')
     : `<span class="dip-none">No amendment has touched this day yet</span>`;
   /* same visibility rule as the day-head chip: name the current version once
      amendments exist, so a rolled-back day says which document it is showing */
   const cv=dayCurVer(di);
-  const atVer=(ok&&cv!=null&&(cv!=='orig'||alRecs.length))?` · at ${verLabel(cv)}`:'';
+  const atVer=(ok&&cv!=null&&(verSeq(cv)!==0||alRecs.length))?` · at ${verLabel(cv)}`:'';
   let h=`<div class="dip-stat ${ok?'ok':'draft'}">${ok?'✓ Published — APPROVED'+atVer:'Draft — not yet published'}`
     +`${dp?`<span class="dip-pend">${dp} unpublished edit${dp>1?'s':''}</span>`:''}</div>`;
   h+=`<div class="dip-h">AL versions covering ${esc(d.dow)}</div><div class="dip-als">${alRows}</div>`;

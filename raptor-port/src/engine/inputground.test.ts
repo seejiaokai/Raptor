@@ -14,7 +14,7 @@ import { PEOPLE } from './people'
 import { validate, WARN } from './validate'
 import { inpShow } from './events'
 import { slotBar, slotRules, dayEngaged } from './avail'
-import { setSlotVal, acceptInput, unacceptInput, autoAcceptInput, autoAcceptSeedInputs, inpKey } from './slots'
+import { setSlotVal, acceptInput, unacceptInput, autoAcceptInput, autoAcceptSeedInputs } from './slots'
 import { SCHED, resetSched } from './publish'
 
 const DSNAP = JSON.stringify(DAYS)
@@ -108,7 +108,7 @@ describe('the deferral is per-day: the picker cannot go silent where the validat
     expect(autoAcceptInput(m)).toBe(true)
     /* strip the ground row WITHOUT clearing acc — the exact half-state the row's
        own ✕ used to leave (before it routed through unacceptInput) */
-    DAYS[0].ground = (DAYS[0].ground || []).filter((r: any) => r.src !== inpKey(m))
+    DAYS[0].ground = (DAYS[0].ground || []).filter((r: any) => r.src !== inpId(m))
     validate()
     expect(inpShow(m, DAYS[0].dt), 'no row anywhere → visible, never silenced').toBe(true)
     expect(slotBar(P, KEY)).toMatch(/^already on Meeting /)
@@ -122,7 +122,7 @@ describe('autoAcceptInput — the one gate', () => {
     expect(autoAcceptInput(m)).toBe(true)
     expect(m.acc).toBe('g')
     expect((DAYS[0].ground || []).length).toBe(g0 + 1)
-    expect(DAYS[0].ground.some((row: any) => row.src === inpKey(m))).toBe(true)
+    expect(DAYS[0].ground.some((row: any) => row.src === inpId(m))).toBe(true)
   })
 
   it('refuses a non-activity type (leave stays under Unavailable)', () => {
@@ -144,13 +144,13 @@ describe('the ground round-trip', () => {
   it('remove sends it back to Personal Inputs, and it can be re-added', () => {
     const m = fileMeeting(freePilot(), 600, 700)
     expect(autoAcceptInput(m)).toBe(true)
-    expect(DAYS[0].ground.some((row: any) => row.src === inpKey(m))).toBe(true)
+    expect(DAYS[0].ground.some((row: any) => row.src === inpId(m))).toBe(true)
     /* remove from the programme → the input returns, parked DORMANT ('r' —
        owner, 26 Aug 26): still listed, but flagging nothing and NOT eligible
        for auto-relanding, or a week reload would silently undo the removal */
     unacceptInput(0, m)
     expect(m.acc).toBe('r')
-    expect(DAYS.some((d: any) => (d.ground || []).some((row: any) => row.src === inpKey(m)))).toBe(false)
+    expect(DAYS.some((d: any) => (d.ground || []).some((row: any) => row.src === inpId(m)))).toBe(false)
     expect(INPUTS.includes(m)).toBe(true)
     expect(autoAcceptInput(m), 'the auto-land pass must respect the removal').toBe(false)
     /* the way back is the scheduler's own Accept — that is what wakes it */

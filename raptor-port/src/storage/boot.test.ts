@@ -2,6 +2,7 @@ import { describe, it, expect, vi, afterEach } from 'vitest'
 import { bootStorage, chooseBackend, guardUnload } from './boot'
 import { MemoryBackend } from './memory'
 import { BrowserBackend } from './browser'
+import { SCHEMA_VERSION } from './reset'
 
 afterEach(() => { vi.useRealTimers() })
 
@@ -9,7 +10,9 @@ describe('bootStorage', () => {
   it('waits for loadAll before returning a filled whiteboard with the postman attached', async () => {
     vi.useFakeTimers()
     const be = new MemoryBackend(); be.latency = 100
-    be.seed({ settings: { rules: '{"v":{"dur":99},"s":{}}' } })
+    /* already on the current schema, so the pre-1A reset (tested in reset.test.ts)
+       is a no-op here and boot waits on the single loadAll this test measures */
+    be.seed({ settings: { rules: '{"v":{"dur":99},"s":{}}', schema: JSON.stringify(SCHEMA_VERSION) } })
     let done = false
     const p = bootStorage(be).then(r => { done = true; return r })
     await vi.advanceTimersByTimeAsync(50)

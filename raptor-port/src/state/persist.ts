@@ -7,11 +7,11 @@
    ignores unchanged strings, so this is cheap and sends no idle letters).
    No import of state/store.ts here — store.ts imports isHydrated from us,
    and the two snapshot helpers it owns arrive through wirePersist. */
-import { INPUTS, seedIidCounter } from '../engine/inputs'
+import { INPUTS } from '../engine/inputs'
 import { PEOPLE, ID_BY_CS } from '../engine/people'
 import { CURWEEK } from '../engine/waves'
 import { HOOKS } from '../engine/hooks'
-import { stashPut, stashKeys, stashGet, stashHas } from '../engine/weekstash'
+import { stashPut, stashKeys, stashGet, stashHas, isPreservedWeek, preservedBlob } from '../engine/weekstash'
 import { PLANPUCKS, DAYRMK, seedPuckCounter } from './plan'
 import type { Whiteboard } from '../storage/whiteboard'
 
@@ -52,7 +52,8 @@ export function hydrate(wb: Whiteboard): void {
   if (Array.isArray(inputs)) {
     INPUTS.length = 0
     inputs.forEach((r: any) => { if (isRow(r)) INPUTS.push(r) })
-    seedIidCounter(maxNum(INPUTS.map((r: any) => String(r.iid ?? '')), 'i'))
+    /* iid is opaque now (engine/newid.ts) — no counter to seed past stored ids;
+       a stored iid is kept as-is and a row missing one mints via mintInpIds. */
     hydrated = true
   }
   const people = parse(wb.get('people', 'all'))
@@ -95,14 +96,24 @@ export function persistAll(): void {
   const keep = new Set<string>()
   for (const k of stashKeys()) {
     if (k === CURWEEK && !swapping) continue
-    const j = stashGet(k)
+    /* a preserved (pre-Phase-2, byte-frozen) week is written from its retained
+       ORIGINAL blob, never a re-serialization (P2-IMPL-02). */
+    const j = isPreservedWeek(k) ? preservedBlob(k) : stashGet(k)
     if (j) { wbRef.set('weeks', weekId(k), j); keep.add(weekId(k)) }
   }
   if (swapping) return
-  /* the loaded week: only once it has changed since load (or was already
-     stashed) — a byte-copy of the pristine seed must never be persisted */
   const live = weekId(CURWEEK)
-  if (stashHas(CURWEEK) || snaps.weekDirty()) { wbRef.set('weeks', live, snaps.weekSnap()); keep.add(live) }
+  if (isPreservedWeek(CURWEEK)) {
+    /* the loaded week is a byte-frozen pre-Phase-2 book: write its retained
+       original blob verbatim, never weekSnap() (which would overwrite the
+       recovery evidence with a reconstruction — P2-IMPL-02). */
+    const j = preservedBlob(CURWEEK)
+    if (j) { wbRef.set('weeks', live, j); keep.add(live) }
+  } else if (stashHas(CURWEEK) || snaps.weekDirty()) {
+    /* the loaded week: only once it has changed since load (or was already
+       stashed) — a byte-copy of the pristine seed must never be persisted */
+    wbRef.set('weeks', live, snaps.weekSnap()); keep.add(live)
+  }
   /* a record nothing backs any more goes too: the loaded week undone back to
      its load state (its earlier dirty snapshot would come back on the next
      boot), or a week the Admin sweep dropped from the stash (8 Sep 26 bug

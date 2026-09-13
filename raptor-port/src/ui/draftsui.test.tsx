@@ -61,6 +61,11 @@ const withToasts = async (fn: () => Promise<void>) => {
 /* drafts ride SCHED, so a per-block reset is a plain field wipe */
 const resetDrafts = async () => {
   SCHED.drafts = {}; SCHED.curDraft = {}
+  /* Phase 2: reopen (setDayApproved(di,false)) is gone, so a published day can no
+     longer be reset back to draft that way — clear the whole publish state here so
+     each test starts from a clean, unpublished slate (tests re-publish as needed). */
+  SCHED.pending = {}; SCHED.changes = {}; SCHED.added = {}; SCHED.als = []
+  SCHED.al = 0; SCHED.dayOK = {}; SCHED.sign = {}; SCHED.orig = {}; SCHED.cur = {}
   DPREV.clear()
   await act(async () => { notify() })
 }

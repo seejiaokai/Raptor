@@ -1,17 +1,25 @@
 /* Ported from reference/tfin.js — the per-day sign-off / publish-day /
    amendment-level flow (B22/B26/B47/B49) and the B53 #14 history stamp.
-   The reference drives these through buttons; the same model contracts are
-   driven here through the engine (with the UI hooks left as no-ops). */
+   Phase 2 (the coupled record rewrite): amendments are SINGLE-DAY and keyed by
+   an immutable verId; publish eligibility is the canonical dayDelta (F-02), not
+   a live pending count; the take-backs (unpublishAL / restoreDayVersion /
+   reissueReopened / publishAL(n) / reopen) are gone, and undo-across-publish is
+   Phase 3 — so the record SHAPE is pinned by a plain serialization round-trip,
+   never a publish→undo→redo. */
 import { beforeEach, describe, expect, it } from 'vitest'
 import { DAYS } from './data'
 import { PEOPLE, isScheduler } from './people'
-import { SCHED, signOf, signMissing, daySigned, signClear, signNames, signPeople, setDayApproved, dayApproved, publishableKeys, pendDays, dayPendCount, canPublishAL, alUnsignedDays, publishAL, publishALDay, unpublishAL, discardPending, alIssue, alCount, alDays, alUsed, nextAL, markEdit, markStructuralAdd, markDeletion, deletionWasIssued, isDeleteKey, deleteCount, pendCount, alColor, alAttr, daySnapOf, dayVersions, verLabel, dayCurVer } from './publish'
+import { SCHED, signOf, signMissing, daySigned, signClear, signNames, signPeople, setDayApproved, dayApproved, publishableKeys, pendDays, dayPendCount, canPublishAL, alUnsignedDays, pendingPublishDays, publishALDay, discardPending, alIssue, alCount, alDays, dayALs, nextSeq, diffCounts, dayDelta, dayHasChanges, markEdit, markStructuralAdd, markDeletion, deletionWasIssued, isDeleteKey, deleteCount, pendCount, alColor, alAttr, daySnapOf, dayVersions, verLabel, dayCurVer } from './publish'
 import { dropRowMarks } from './publish'
+import { loadVersionToWorkingCopy, reconcileIssuedMarks } from './drafts'
 import { noteChange, txtSet, txtGet } from './slots'
 import { keyDay, shiftKeys } from './keys'
 import { moveNote } from './reorder'
-import { restoreDayVersion } from './restore'
 import { ridKey, ensureRowIds } from './rowids'
+import { verSeq, verId, dayIso } from './verid'
+import { CURWEEK } from './waves'
+import { digest } from './canonical'
+import { schedFields } from '../state/history'
 
 const rk = (k: string) => ridKey(k, DAYS)
 
@@ -20,9 +28,16 @@ const sign = (di: number) => {
   g.cur = 'ignite'; g.sked = 'bane'; g.plan = 'stiff'; g.appr = 'pump'
 }
 
+/* DAYS[0]/DAYS[1] are mutated by many tests (txtSet, pushed notes); clone-restore
+   them per test so order can never leak — the SCHED reset alone is not enough. */
+const D0 = JSON.parse(JSON.stringify(DAYS[0]))
+const D1 = JSON.parse(JSON.stringify(DAYS[1]))
 beforeEach(() => {
   SCHED.pending = {}; SCHED.changes = {}; SCHED.added = {}; SCHED.als = []
   SCHED.al = 0; SCHED.dayOK = {}; SCHED.sign = {}; SCHED.orig = {}; SCHED.cur = {}
+  SCHED.drafts = {}; SCHED.curDraft = {}
+  DAYS[0] = JSON.parse(JSON.stringify(D0))
+  DAYS[1] = JSON.parse(JSON.stringify(D1))
 })
 
 describe('per-day sign-off (tfin B22/B24)', () => {
@@ -92,11 +107,19 @@ describe('publishing a day (tfin B26/B47)', () => {
     expect(SCHED.pending['dn:1.0']).toBe(1)
   })
 
-  it('reopening a day voids its signature too', () => {
-    sign(0); setDayApproved(0, true); sign(0)
-    setDayApproved(0, false)
-    expect(dayApproved(0)).toBe(false)
-    expect(Object.values(signOf(0)).every(v => v === '')).toBe(true)
+  it('a published day can NEVER be un-approved (§9 — the beak lost its un-publish job)', () => {
+    sign(0); setDayApproved(0, true)
+    expect(dayApproved(0)).toBe(true)
+    setDayApproved(0, false)                 // no-op now
+    expect(dayApproved(0)).toBe(true)        // still published
+  })
+
+  it('first publish stamps the Original (seq 0) and points cur at it', () => {
+    sign(0); setDayApproved(0, true)
+    const cur = dayCurVer(0)
+    expect(cur).toBe((SCHED.orig[0] as any).id)
+    expect(verSeq(cur)).toBe(0)
+    expect(verLabel(cur)).toBe('Original')
   })
 
   it('signNames records callsigns for the record', () => {
@@ -116,49 +139,70 @@ describe('publishing an AL (tfin B49 / B26)', () => {
     expect(dayPendCount(0)).toBe(1)
   })
 
-  it('publishing an AL needs that day signed', () => {
+  it('a real change on a published day makes it publishable, and it needs signing', () => {
     sign(0); setDayApproved(0, true)
-    noteChange('dn:0.0')
+    txtSet('dn:0.0', 'AMENDED')                   // a REAL content edit → a canonical delta
+    expect(dayHasChanges(0)).toBe(true)
     expect(canPublishAL()).toBe(false)            // the publish spent the signature
     expect(alUnsignedDays()).toEqual([0])
     sign(0)
     expect(canPublishAL()).toBe(true)
-    publishAL(1)
-    expect(SCHED.changes['dn:0.0']).toBe(1)
-    expect(SCHED.pending['dn:0.0']).toBeUndefined()
-    expect(alUsed()).toEqual([1])
+    publishALDay(0)
+    expect(SCHED.changes[rk('dn:0.0')]).toBe(1)   // marked with its per-day SEQ
+    expect(SCHED.pending[rk('dn:0.0')]).toBeUndefined()
+    expect(dayALs(0)).toEqual([1])
   })
 
-  it('a per-day AL takes only that day\'s keys', () => {
+  it('a bare mark with no content change is NOT publishable (delta trigger, F-02)', () => {
+    sign(0); setDayApproved(0, true)
+    noteChange('dn:0.0')                          // marks pending but changes no content
+    expect(dayHasChanges(0)).toBe(false)
+    publishALDay(0)                               // refused
+    expect(SCHED.als).toEqual([])
+  })
+
+  it('a reorder that leaves the effective display order unchanged is NOT publishable (P2-IMPL-07 — dayHasChanges derives only from the canonical delta)', () => {
+    /* two timed ground rows whose MODEL order differs from the time-sorted DISPLAY
+       order: swapping the model array flips the positional digest, while the
+       effective (time-sorted) order — and every rid-joined value — is unchanged. The
+       old digest fast-path read that as a change; the delta correctly reads none. */
+    DAYS[0].ground = [
+      { rid: 'gA', prog: 'ALPHA', str: '10:00', who: '' },
+      { rid: 'gB', prog: 'BRAVO', str: '09:00', who: '' },
+    ] as any
+    delete (DAYS[0] as any).gman
+    sign(0); setDayApproved(0, true)
+    DAYS[0].ground = [DAYS[0].ground[1], DAYS[0].ground[0]] as any   // swap the model order only
+    const issued = daySnapOf(0, dayCurVer(0)!)!.d
+    expect(digest(issued, 0), 'the positional digest DID flip (the old fast-path would fire)').not.toBe(digest(DAYS[0], 0))
+    expect(dayDelta(0), 'but the normalized delta is empty').toEqual([])
+    expect(dayHasChanges(0)).toBe(false)
+    publishALDay(0)
+    expect(SCHED.als).toEqual([])
+  })
+
+  it('a per-day AL takes only that day\'s changes', () => {
     sign(0); setDayApproved(0, true)
     sign(1); setDayApproved(1, true)
-    noteChange('dn:0.0'); noteChange('dn:1.0')
+    txtSet('dn:0.0', 'A'); txtSet('dn:1.0', 'B')
     sign(0)
     publishALDay(0)
-    expect(SCHED.changes['dn:0.0']).toBe(1)
-    expect(SCHED.pending['dn:1.0']).toBe(1)       // held on the other day
+    expect(SCHED.changes[rk('dn:0.0')]).toBe(1)
+    expect(SCHED.pending[rk('dn:1.0')]).toBe(1)   // held on the other day
     expect(pendCount()).toBe(1)
+    expect(dayApproved(0) && dayApproved(1)).toBe(true)
   })
 
-  it('the published AL records a name per day and spends the signature again', () => {
+  it('the published AL records a name for its day and spends the signature again', () => {
     sign(0); setDayApproved(0, true)
-    noteChange('dn:0.0'); sign(0)
+    txtSet('dn:0.0', 'A'); sign(0)
     publishALDay(0)
     const rec = SCHED.als[0]
-    expect(rec.n).toBe(1)
+    expect(rec.seq).toBe(1)
+    expect(rec.di).toBe(0)
     expect(rec.sign[0].appr).toBe('Piston')
     expect(Object.values(signOf(0)).every(v => v === '')).toBe(true)
     expect(dayApproved(0)).toBe(true)             // the day stays published
-  })
-
-  it('unpublish clears the AL marks back to pending', () => {
-    sign(0); setDayApproved(0, true)
-    noteChange('dn:0.0'); sign(0); publishALDay(0)
-    unpublishAL(1)
-    expect(SCHED.als).toEqual([])
-    expect(SCHED.changes['dn:0.0']).toBeUndefined()
-    expect(SCHED.pending['dn:0.0']).toBe(1)
-    expect(SCHED.al).toBe(0)
   })
 
   it('discardPending clears the marks', () => {
@@ -166,10 +210,29 @@ describe('publishing an AL (tfin B49 / B26)', () => {
     expect(pendCount()).toBe(0)
   })
 
-  it('nextAL is the lowest unused number', () => {
-    expect(nextAL()).toBe(1)
-    SCHED.als = [{ n: 1, keys: [], sign: {} }, { n: 3, keys: [], sign: {} }]
-    expect(nextAL()).toBe(2)
+  /* Phase 2 lock (F-01): discardPending is restricted to NEVER-PUBLISHED days.
+     On a published day a discard would silently drop a live-vs-issued
+     divergence — the only supported way to change a published day is to publish
+     it as the next AL. */
+  it('discardPending keeps a PUBLISHED day’s pending, clears a DRAFT day’s', () => {
+    sign(0); setDayApproved(0, true)          // day 0 published (has an Original)
+    noteChange('dn:0.0')                        // a new draft edit on the published day
+    noteChange('dn:1.0')                        // a draft edit on never-published day 1
+    discardPending()
+    expect(SCHED.pending['dn:0.0'], 'published day pending must survive a discard').toBe(1)
+    expect(SCHED.pending['dn:1.0'], 'draft day pending must clear').toBeUndefined()
+  })
+
+  it('nextSeq is per-day: the day’s max issued seq + 1', () => {
+    expect(nextSeq(0)).toBe(1)
+    SCHED.als = [
+      { id: 'a#1', di: 0, iso: 'a', seq: 1, snap: { d: {}, c: {} }, diff: [], sign: {} },
+      { id: 'a#2', di: 0, iso: 'a', seq: 2, snap: { d: {}, c: {} }, diff: [], sign: {} },
+      { id: 'b#1', di: 1, iso: 'b', seq: 1, snap: { d: {}, c: {} }, diff: [], sign: {} },
+    ]
+    expect(nextSeq(0)).toBe(3)
+    expect(nextSeq(1)).toBe(2)
+    expect(nextSeq(2)).toBe(1)                  // Tuesday and a fresh day are independent
   })
 
   it('markEdit with no key re-marks nothing', () => {
@@ -178,10 +241,8 @@ describe('publishing an AL (tfin B49 / B26)', () => {
   })
 
   it('alAttr marks pending and published items apart', () => {
-    /* a pending edit on a still-DRAFT day carries NO mark now (owner, 25 Aug 26
-       — an amendment mark before anything is issued misleads); an ISSUED change
-       still carries its AL colour. The published-day pending preview is the next
-       test. */
+    /* a pending edit on a still-DRAFT day carries NO mark (owner, 25 Aug 26); an
+       ISSUED change carries its per-day-seq colour. */
     noteChange('dn:0.0')
     expect(alAttr('dn:0.0')).toBe('')
     SCHED.changes['dn:0.1'] = 2
@@ -190,61 +251,53 @@ describe('publishing an AL (tfin B49 / B26)', () => {
     expect(alAttr('')).toBe('')
   })
 
-  /* alAttr's empty-book short-circuit must read OWN keys only (Astra RID-REV2-02).
-     A for-in early-exit is allocation-free but also sees inherited enumerable
-     keys; on a genuinely empty book (the parity/html gates) it must still return
-     '' even if Object.prototype is polluted, or a stray inherited mark would leak
-     an amendment attribute into byte-compared HTML. */
+  /* alAttr's empty-book short-circuit must read OWN keys only (Astra RID-REV2-02). */
   it('alAttr treats an empty book as empty even under an inherited enumerable key', () => {
-    const polluted = rk('wl:0.0')                       // the exact key alAttr looks up for wave 0
-    ;(Object.prototype as any)[polluted] = 2            // an inherited "changed at AL2" that is NOT an own key
+    const polluted = rk('wl:0.0')
+    ;(Object.prototype as any)[polluted] = 2
     try {
-      expect(alAttr('wl:0.0')).toBe('')                 // own-keys empty → no paint, prototype ignored
+      expect(alAttr('wl:0.0')).toBe('')
     } finally {
-      delete (Object.prototype as any)[polluted]        // never leak the pollution to another test
+      delete (Object.prototype as any)[polluted]
     }
   })
 
-  /* the AL preview: a pending edit on a PUBLISHED day carries the number it
-     will go out as (data-aln), so the edit surfaces can paint it in that AL's
-     colour before the AL exists. Draft-day pending must NOT carry it — an edit
-     on an unpublished day is draft work and will not ride the next AL. */
+  /* the AL preview: a pending edit on a PUBLISHED day carries the per-day seq it
+     will go out as (data-aln); a draft-day edit carries nothing. */
   it('pending on a published day previews the AL it will go out as', () => {
     sign(0); setDayApproved(0, 1)
     noteChange('dn:0.0')
     expect(alAttr('dn:0.0')).toContain('data-aln="1"')
     noteChange('dn:1.0')                          // day 1 still draft
-    expect(alAttr('dn:1.0')).toBe('')             // a draft-day edit carries no mark at all
+    expect(alAttr('dn:1.0')).toBe('')
   })
 
-  /* ADDRESSING BY rid (task 2 — the write/read boundary). A ROW mark is stored
-     rid-anchored, so inserting a wave ABOVE the edited one does NOT drag the
-     mark onto the wrong row: the stored key never changes, and alAttr on the
-     row's NEW positional address still finds it. Before this, noteChange stored
-     the positional key and alAttr read it back positionally, so the mark stayed
-     glued to the old index and lit the inserted wave instead. */
+  /* ADDRESSING BY rid (task 2 — the write/read boundary). */
   it('a row mark rides its row across an insert above it (rid-anchored, not positional)', () => {
-    sign(0); setDayApproved(0, 1)                     // approve → alAttr previews pending
+    sign(0); setDayApproved(0, 1)
     const gi = DAYS[0].waves.length - 1
-    txtSet(`wl:0.${gi}`, 'RID-TASK2')                 // edit the LAST wave's label (a row key)
-    expect(SCHED.pending[`wl:0.${gi}`]).toBeUndefined()   // NOT stored positionally
-    expect(SCHED.pending[rk(`wl:0.${gi}`)]).toBe(1)       // stored rid-anchored
-    expect(alAttr(`wl:0.${gi}`)).toContain('data-aln')    // alAttr finds it via translation
-    DAYS[0].waves.unshift({ formations: [], label: 'INSERTED' })   // shift the edited wave to gi+1
+    txtSet(`wl:0.${gi}`, 'RID-TASK2')
+    expect(SCHED.pending[`wl:0.${gi}`]).toBeUndefined()
+    expect(SCHED.pending[rk(`wl:0.${gi}`)]).toBe(1)
+    expect(alAttr(`wl:0.${gi}`)).toContain('data-aln')
+    DAYS[0].waves.unshift({ formations: [], label: 'INSERTED' })
     try {
-      expect(alAttr(`wl:0.${gi + 1}`)).toContain('data-aln')   // the mark rode its row
-      expect(alAttr(`wl:0.${gi}`)).toBe('')                    // and did NOT stay at the old index
+      expect(alAttr(`wl:0.${gi + 1}`)).toContain('data-aln')
+      expect(alAttr(`wl:0.${gi}`)).toBe('')
     } finally {
-      DAYS[0].waves.shift()                            // net zero on the demo data
+      DAYS[0].waves.shift()
     }
   })
 
-  it('the preview number tracks nextAL as amendments are issued', () => {
+  it('the preview number tracks nextSeq(di) as amendments are issued', () => {
     sign(0); setDayApproved(0, 1)
     noteChange('dn:0.0')
-    SCHED.als = [{ n: 1, keys: [], sign: {} }, { n: 3, keys: [], sign: {} }]
-    expect(alAttr('dn:0.0')).toContain('data-aln="2"')
-    expect(alAttr('dn:0.0')).toContain('AL2')     // the tooltip names it too
+    SCHED.als = [
+      { id: 'a#1', di: 0, iso: 'a', seq: 1, snap: { d: {}, c: {} }, diff: [], sign: {} },
+      { id: 'a#2', di: 0, iso: 'a', seq: 2, snap: { d: {}, c: {} }, diff: [], sign: {} },
+    ]
+    expect(alAttr('dn:0.0')).toContain('data-aln="3"')
+    expect(alAttr('dn:0.0')).toContain('AL3')
   })
 
   it('AL colours follow the fixed sequence', () => {
@@ -256,10 +309,6 @@ describe('publishing an AL (tfin B49 / B26)', () => {
     expect(alColor(7)).toBe('#E5872B')   // orange
   })
 
-  /* every colour is also a background the ALn tag is printed on in #08131b, so a
-     dark entry makes its own tag unreadable — the AL5 magenta this replaced sat
-     at 3.5:1. Pin the floor rather than the hexes alone, or the next recolour
-     re-introduces the fault the recolour was for. */
   it('every AL colour carries its own tag in dark ink', () => {
     const lum = (hex: string) => {
       const ch = [1, 3, 5].map(i => {
@@ -276,20 +325,93 @@ describe('publishing an AL (tfin B49 / B26)', () => {
   })
 })
 
-describe('an issued AL is history (tfin B53 #14)', () => {
-  it('the issue stamps its own day list and item count', () => {
-    sign(0)
-    const { days } = alIssue(1, ['dn:0.0', 'dn:0.1'])
-    expect(days).toEqual([0])
-    expect(SCHED.als[0].n0).toBe(2)
-    expect(SCHED.als[0].days).toEqual([0])
+describe('daySnapIn rejects a MALFORMED verId (P2-REREVIEW-11)', () => {
+  it('a coerced/malformed identity resolves to null, a well-formed one resolves', () => {
+    const iso = dayIso(CURWEEK, 0)
+    SCHED.dayOK = { 0: 1 }
+    SCHED.orig = { 0: { id: verId(iso, 0), d: { notes: ['orig'] }, c: {} } }
+    // the exact, well-formed Original resolves
+    expect(daySnapOf(0, verId(iso, 0))).toBeTruthy()
+    // malformed identities parseVerId would coerce must all be rejected
+    expect(daySnapOf(0, iso + '#'), 'empty seq (coerces to 0)').toBeNull()
+    expect(daySnapOf(0, iso + '#-1'), 'negative seq').toBeNull()
+    expect(daySnapOf(0, iso + '#1.5'), 'fractional seq').toBeNull()
+    expect(daySnapOf(0, 'notadate#0'), 'non-ISO date').toBeNull()
+    expect(daySnapOf(0, '2026-13-40#0'), 'impossible calendar date').toBeNull()
   })
 
-  it('a delete cannot shrink an amendment that already went out', () => {
-    SCHED.als = [{ n: 1, keys: ['dn:0.0', 'dn:0.1'], sign: {}, days: [0], n0: 2 }]
-    const rec = SCHED.als[0]; rec.keys = []
+  it('nextSeq ignores a non-positive / non-integer sequence', () => {
+    const iso = dayIso(CURWEEK, 0)
+    SCHED.als = [
+      { id: verId(iso, 1), di: 0, iso, seq: 1, snap: { d: {}, c: {} }, diff: [], sign: {} },
+      { id: verId(iso, 2), di: 0, iso, seq: -3 as any, snap: { d: {}, c: {} }, diff: [], sign: {} },   // bogus seq must not count
+      { id: verId(iso, 3), di: 0, iso, seq: 1.5 as any, snap: { d: {}, c: {} }, diff: [], sign: {} },
+    ]
+    expect(nextSeq(0)).toBe(2)   // only the valid seq 1 counts → next is 2
+  })
+})
+
+describe('dayCurVerIn falls back to the highest VALIDATING record, not just the highest seq (P2-IMPL-12)', () => {
+  it('a higher-seq wrong-week record is skipped for a valid lower-seq AL, not the Original', () => {
+    const iso = dayIso(CURWEEK, 0)
+    SCHED.dayOK = { 0: 1 }
+    SCHED.orig = { 0: { id: verId(iso, 0), d: { notes: ['orig'] }, c: {} } }
+    const al1 = { id: verId(iso, 1), di: 0, iso, seq: 1, snap: { d: { notes: ['al1'] }, c: {} }, diff: [], sign: {} }
+    /* AL2 is the highest seq but carries a FOREIGN week's iso, so daySnapIn rejects
+       it. The old code validated only the highest-seq candidate and then fell through
+       to the Original; the fix iterates by descending seq and returns AL1. */
+    const al2bad = { id: verId('2099-01-02', 2), di: 0, iso: '2099-01-02', seq: 2, snap: { d: { notes: ['al2'] }, c: {} }, diff: [], sign: {} }
+    SCHED.als = [al1, al2bad]
+    SCHED.cur = { 0: al2bad.id }                       // stamped at the invalid higher-seq record
+    expect(dayCurVer(0)).toBe(al1.id)
+    expect(verSeq(dayCurVer(0)!)).toBe(1)
+  })
+})
+
+describe('a canonical-only cancel-reason edit keeps its AL attribution (P2-IMPL-08)', () => {
+  it('changing a cancelled DUTY row\'s reason survives reconcile and goes out marked on the duty row', () => {
+    /* the duty row is cancelled WITH a reason before the day is published, so the
+       Original freezes cx=true/cxr='WX'. Then only the REASON changes. The
+       dr:...role composite must reflect cxr, or reconcile drops the mark (role/cx
+       unchanged) and the revised reason gets no AL attribution. */
+    const row = DAYS[0].dutywaves[0].rows[0]
+    row.cx = true; row.cxr = 'WX'
+    sign(0); setDayApproved(0, true)                 // Original frozen with cx=true, cxr='WX'
+    row.cxr = 'OPS'; markEdit('dr:0.0.0.role')        // mimic cxCommit: reason changes, marks the duty row
+    reconcileIssuedMarks()
+    expect(SCHED.pending[rk('dr:0.0.0.role')], 'the reason-change mark must survive reconcile').toBe(1)
+    expect(dayHasChanges(0)).toBe(true)
+    sign(0); publishALDay(0)
+    expect(SCHED.changes[rk('dr:0.0.0.role')], 'the revised reason goes out attributed to the duty row').toBe(1)
+    /* the frozen record counts it exactly once (no bxr double-count) */
+    const rec = SCHED.als.find((a: any) => +a.di === 0 && +a.seq === 1)
+    expect(rec.diff.filter((e: any) => e.kind === 'change' && String(e.addr).startsWith('dr:0.0.0')).length).toBe(1)
+    expect(rec.diff.some((e: any) => String(e.addr).startsWith('bxr:'))).toBe(false)
+  })
+})
+
+describe('an issued AL is history (tfin B53 #14)', () => {
+  it('the issue is single-day, verId-keyed, with a frozen canonical diff', () => {
+    sign(0); setDayApproved(0, 1)
+    txtSet('dn:0.0', 'A'); txtSet('dn:0.1', 'B'); sign(0)
+    const { id, seq } = alIssue(0)
+    const rec = SCHED.als[0]
+    expect(rec.di).toBe(0)
+    expect(rec.seq).toBe(1)
+    expect(seq).toBe(1)
+    expect(rec.id).toBe(id)
+    expect(verSeq(rec.id)).toBe(1)
+    expect(rec.diff.length).toBeGreaterThan(0)     // the canonical delta is frozen
+    expect(alCount(rec)).toBe(rec.diff.length)
+    expect(alDays(rec)).toEqual([0])
+  })
+
+  it('the frozen diff count survives later live edits (the printed copy does not shrink)', () => {
+    SCHED.als = [{ id: 'x#1', di: 0, iso: 'x', seq: 1, snap: { d: {}, c: {} }, diff: [{ addr: 'a', kind: 'change' }, { addr: 'b', kind: 'delete' }], sign: {} }]
+    const rec = SCHED.als[0]
     expect(alCount(rec)).toBe(2)
-    expect(alDays(rec).join(',')).toBe('0')
+    expect(alDays(rec)).toEqual([0])
+    expect(diffCounts(rec.diff)).toMatchObject({ total: 2, chg: 1, del: 1 })
   })
 })
 
@@ -304,18 +426,18 @@ describe('structural-deletion tombstones', () => {
     expect(a.startsWith('gr:')).toBe(false)
   })
 
-  it('publishes, snapshots and unpublishes a removal like any other AL item', () => {
+  it('publishes and snapshots a real removal like any other AL item', () => {
     sign(0); setDayApproved(0, 1)
-    const key = markDeletion(0, 'note')
-    expect(publishableKeys()).toEqual([key])
+    const ni = DAYS[0].notes.length - 1
+    const issued = deletionWasIssued(0, 'note', ni)
+    DAYS[0].notes.splice(ni, 1); shiftKeys('dn:0.', 0, ni)     // a REAL removal → a canonical delta
+    const key = markDeletion(0, 'note', issued)
+    expect(dayHasChanges(0)).toBe(true)
     sign(0); publishALDay(0)
     expect(SCHED.pending[key]).toBeUndefined()
     expect(SCHED.changes[key]).toBe(1)
-    expect(SCHED.als[0].keys).toEqual([key])
-    expect(daySnapOf(0, 1).c[key]).toBe(1)
-    unpublishAL(1)
-    expect(SCHED.changes[key]).toBeUndefined()
-    expect(SCHED.pending[key]).toBe(1)
+    const s = daySnapOf(0, dayCurVer(0))
+    expect(s.c[key]).toBe(1)
   })
 
   it('does not publish a false removal when a draft-only row is added, reordered, then deleted', () => {
@@ -331,66 +453,29 @@ describe('structural-deletion tombstones', () => {
     expect(SCHED.added).toEqual({})
   })
 
-  it('restores draft-add identity when the AL that issued it is unpublished', () => {
-    sign(0); setDayApproved(0, 1)
-    const ni = DAYS[0].notes.length
-    DAYS[0].notes.push('new issued note')
-    const key = markStructuralAdd(`dn:0.${ni}`)
-    sign(0); publishALDay(0)
-    expect(SCHED.added[key]).toBeUndefined()
-    unpublishAL(1)
-    expect(SCHED.added[key]).toBe(1)
-    expect(SCHED.pending[key]).toBe(1)
-  })
-
-  it('does not restore an old add marker while a later AL still owns that row', () => {
+  it('a later AL re-marks a row it re-issues with its own per-day seq', () => {
     sign(0); setDayApproved(0, 1)
     const ni = DAYS[0].notes.length
     DAYS[0].notes.push('new note')
     const key = markStructuralAdd(`dn:0.${ni}`)
-    sign(0); publishALDay(0)                  // AL1 adds it
+    sign(0); publishALDay(0)                  // AL1 (seq 1) adds it
+    expect(SCHED.changes[key]).toBe(1)
+    expect(SCHED.added[key]).toBeUndefined()  // the add is now frozen in the snapshot
     DAYS[0].notes[ni] = 'new note, revised'; markEdit(key)
-    sign(0); publishALDay(0)                  // AL2 now owns the key
-    unpublishAL(1)
+    sign(0); publishALDay(0)                  // AL2 (seq 2) owns the key
     expect(SCHED.changes[key]).toBe(2)
-    expect(SCHED.added[key]).toBeUndefined()
     expect(deletionWasIssued(0, 'note', ni)).toBe(true)
   })
 
-  it('keeps structural ownership when the later AL changed a different field', () => {
+  it('loading a version onto the working copy clears colliding draft-add identities', () => {
     sign(0); setDayApproved(0, 1)
-    const ri = DAYS[0].allhands.length
-    DAYS[0].allhands.push({ prog: 'NEW', sub: '', str: '', end: '', who: [] })
-    const addKey = markStructuralAdd(`ap:0.${ri}.prog`)
-    sign(0); publishALDay(0)                  // AL1 adds the row
-    DAYS[0].allhands[ri].sub = 'detail'; markEdit(`ap:0.${ri}.sub`)
-    sign(0); publishALDay(0)                  // AL2 owns the current row snapshot
-    unpublishAL(1)
-    expect(SCHED.pending[addKey]).toBe(1)     // field history returns, identity does not
-    expect(SCHED.added[addKey]).toBeUndefined()
-    expect(deletionWasIssued(0, 'programme', ri)).toBe(true)
-    unpublishAL(2)                            // the last snapshot carrying the row goes
-    expect(SCHED.added[addKey]).toBe(1)
-    for (let i = 0; i < ri; i++) {
-      expect(deletionWasIssued(0, 'programme', 0)).toBe(true)
-      DAYS[0].allhands.splice(0, 1); shiftKeys('ap:0.', 0, 0)
-    }
-    expect(SCHED.added[addKey]).toBe(1)   // rid-anchored: the add marker rides the row across the shift
-    expect(deletionWasIssued(0, 'programme', 0), 'the draft row stays identifiable after shifting onto an Original address').toBe(false)
-  })
-
-  it('rollback clears draft-add identities that collide with restored issued rows', () => {
-    sign(0); setDayApproved(0, 1)
-    const ni = DAYS[0].notes.length - 1
-    const issued = deletionWasIssued(0, 'note', ni)
-    DAYS[0].notes.splice(ni, 1); shiftKeys('dn:0.', 0, ni); markDeletion(0, 'note', issued)
-    sign(0); publishALDay(0)
+    const orig = dayCurVer(0)
+    const ni = DAYS[0].notes.length
     DAYS[0].notes.push('temporary replacement')
     const key = markStructuralAdd(`dn:0.${ni}`)
     expect(SCHED.added[key]).toBe(1)
-    expect(restoreDayVersion(0, 'orig')).not.toBe(false)
-    expect(SCHED.added[key]).toBeUndefined()
-    expect(deletionWasIssued(0, 'note', ni)).toBe(true)
+    expect(loadVersionToWorkingCopy(0, orig)).toBe(true)   // pull the Original back onto the working copy
+    expect(SCHED.added[key]).toBeUndefined()               // the stray add identity is gone
   })
 })
 
@@ -398,153 +483,117 @@ describe('dropRowMarks — the delete sweep (addressing-by-rid task 4)', () => {
   it('sweeps a deleted rid AND its descendants from the LIVE book, but never an issued AL', () => {
     ensureRowIds(DAYS)
     const waveRid = DAYS[0].waves[0].rid
-    /* three marks in the wave's subtree — ancestor-retaining keys all carry the
-       wave rid, so a single root capture must sweep every one */
     markEdit('wl:0.0'); markEdit('ff:0.0.0.cs'); markEdit('0.0.0.0.p')
     const wl = rk('wl:0.0'), ff = rk('ff:0.0.0.cs'), seat = rk('0.0.0.0.p')
-    expect(wl).not.toBe('wl:0.0')                       // it really is rid-anchored
+    expect(wl).not.toBe('wl:0.0')
     expect([SCHED.pending[wl], SCHED.pending[ff], SCHED.pending[seat]]).toEqual([1, 1, 1])
     /* an issued AL and its frozen snapshot slice carry the wave's key too */
     SCHED.changes[wl] = 1
-    SCHED.als = [{ n: 1, keys: [wl], snap: { 0: { d: {}, c: { [wl]: 1 } } }, sign: {} }]
+    SCHED.als = [{ id: 'x#1', di: 0, iso: 'x', seq: 1, snap: { d: {}, c: { [wl]: 1 } }, diff: [], sign: {} }]
     dropRowMarks([waveRid])
-    /* the whole live subtree is gone — the wave, its formation, its seat */
     expect(SCHED.pending[wl]).toBeUndefined()
     expect(SCHED.pending[ff]).toBeUndefined()
     expect(SCHED.pending[seat]).toBeUndefined()
     expect(SCHED.changes[wl]).toBeUndefined()
-    /* but the issued AL record is IMMUTABLE — a resurrected draft must be able to
-       return this mark to pending via unpublishAL (Astra RID-R5-03) */
-    expect(SCHED.als[0].keys).toEqual([wl])
-    expect(SCHED.als[0].snap[0].c[wl]).toBe(1)
+    /* the issued AL record is IMMUTABLE — the frozen snapshot slice is untouched */
+    expect(SCHED.als[0].snap.c[wl]).toBe(1)
   })
 })
 
 describe('per-day version snapshots', () => {
-  it('first publish stamps the Original; a reopen+republish re-issues it (owner, 15 Aug 26)', () => {
+  it('first publish stamps the Original, deep-cloned and frozen', () => {
     const note0 = DAYS[0].notes[0]
     sign(0); setDayApproved(0, 1)
-    expect(daySnapOf(0, 'orig')).toBeTruthy()
-    expect(daySnapOf(0, 'orig').d.notes[0]).toBe(note0)
-    /* reopen, change the model, republish — the Original now CATCHES UP to the
-       re-issued content (was: frozen). A deliberate reopen+republish is a
-       re-issue, and the view page must show what was just published; the
-       ordinary amendment flow, which never reopens, still leaves the Original
-       frozen (its own test below). */
-    setDayApproved(0, 0)
-    DAYS[0].notes[0] = 'CHANGED AFTER REOPEN'
-    sign(0); setDayApproved(0, 1)
-    expect(daySnapOf(0, 'orig').d.notes[0]).toBe('CHANGED AFTER REOPEN')
-    DAYS[0].notes[0] = note0
-  })
-
-  it('the snapshot is a deep clone — later edits cannot reach back into it', () => {
-    const note0 = DAYS[0].notes[0]
-    sign(0); setDayApproved(0, 1)
+    const orig = dayCurVer(0)
+    expect(daySnapOf(0, orig)).toBeTruthy()
+    expect(daySnapOf(0, orig).d.notes[0]).toEqual(note0)   // a note is a { rid, t } object now — compare by content
     DAYS[0].notes[0] = 'LIVE EDIT'
-    expect(daySnapOf(0, 'orig').d.notes[0]).toBe(note0)
-    DAYS[0].notes[0] = note0
+    expect(daySnapOf(0, orig).d.notes[0]).toEqual(note0)   // deep clone — later edits can't reach in
   })
 
-  it('alIssue freezes every covered day wearing its own new marks', () => {
+  it('alIssue freezes the day wearing its own new mark', () => {
     sign(0); setDayApproved(0, 1)
-    sign(1); setDayApproved(1, 1)
-    sign(0); sign(1)
-    alIssue(2, ['dn:0.0', 'dn:1.0'])
-    const s0 = daySnapOf(0, 2), s1 = daySnapOf(1, 2)
-    expect(s0 && s1).toBeTruthy()
-    expect(s0.c['dn:0.0']).toBe(2)         // the AL's own mark is IN the snapshot
-    expect(s0.c['dn:1.0']).toBeUndefined() // and only this day's slice
-    expect(s1.c['dn:1.0']).toBe(2)
-    /* the record's issued fields are untouched by the stamp */
-    expect(SCHED.als[0].n0).toBe(2)
-    expect(SCHED.als[0].days).toEqual([0, 1])
+    txtSet('dn:0.0', 'X'); sign(0)
+    const { id } = alIssue(0)
+    const s = daySnapOf(0, id)
+    expect(s).toBeTruthy()
+    expect(s.c[rk('dn:0.0')]).toBe(1)        // the AL's own mark is IN the snapshot
   })
 
-  it('dayVersions lists live, orig and snapshot-bearing ALs; unpublish drops one', () => {
+  it('dayVersions lists live, then the Original and snapshot-bearing ALs as verIds', () => {
     expect(dayVersions(0)).toEqual(['live'])
     sign(0); setDayApproved(0, 1)
-    sign(0); alIssue(1, ['dn:0.0'])
-    expect(dayVersions(0)).toEqual(['live', 'orig', 1])
-    /* a record from before snapshots existed offers no version and breaks nothing */
-    SCHED.als.push({ n: 2, keys: ['dn:0.1'], sign: {}, days: [0], n0: 1 })
-    expect(dayVersions(0)).toEqual(['live', 'orig', 1])
-    expect(daySnapOf(0, 2)).toBeNull()
-    unpublishAL(1)
-    expect(dayVersions(0)).toEqual(['live', 'orig'])
-    expect(verLabel('live') + verLabel('orig') + verLabel(1)).toBe('LiveOriginalAL1')
+    const orig = dayCurVer(0)
+    txtSet('dn:0.0', 'X'); sign(0)
+    const { id } = alIssue(0)
+    expect(dayVersions(0)).toEqual(['live', orig, id])
+    expect(verLabel('live')).toBe('Live')
+    expect(verLabel(orig)).toBe('Original')
+    expect(verLabel(id)).toBe('AL1')
+  })
+
+  it('a cross-day / foreign / wrong-week version id resolves to null, never a wrong day (P2-R2-05/P2-R3-03)', () => {
+    sign(0); setDayApproved(0, 1)
+    const orig0 = dayCurVer(0)
+    expect(daySnapOf(0, orig0)).toBeTruthy()      // its own day resolves
+    expect(daySnapOf(1, orig0)).toBeNull()        // the SAME id for another day → null
+    expect(daySnapOf(0, 'not-an-id')).toBeNull()  // malformed → null
+    expect(daySnapOf(0, '1999-01-01#0')).toBeNull() // wrong date/week → null
   })
 })
 
 describe('dayCurVer — the version a day is currently showing', () => {
-  it('null before publish, orig after the first publish, n after an issue', () => {
+  it('null before publish, the Original after first publish, the AL after an issue', () => {
     expect(dayCurVer(0)).toBeNull()
     sign(0); setDayApproved(0, 1)
-    expect(dayCurVer(0)).toBe('orig')
-    sign(0); alIssue(1, ['dn:0.0'])
-    expect(dayCurVer(0)).toBe(1)
+    expect(verSeq(dayCurVer(0))).toBe(0)
+    txtSet('dn:0.0', 'X'); sign(0)
+    const { id } = alIssue(0)
+    expect(dayCurVer(0)).toBe(id)
+    expect(verSeq(dayCurVer(0))).toBe(1)
   })
 
-  it('falls back by ISSUE ORDER, not AL number, when the stamp is gone', () => {
+  it('when the stamp is gone, falls back to the newest surviving issue by seq', () => {
     sign(0); setDayApproved(0, 1)
-    /* AL2 goes out first, then AL1 fills the freed lower number — legal via
-       the AL panel's number picker. The most recent ISSUE is AL1. */
-    sign(0); alIssue(2, ['dn:0.0'])
-    sign(0); alIssue(1, ['dn:0.1'])
-    expect(dayCurVer(0)).toBe(1)          // stamped by the later issue
+    txtSet('dn:0.0', 'A'); sign(0); alIssue(0)                 // seq 1
+    txtSet('dn:0.1', 'B'); sign(0); const { id: id2 } = alIssue(0)   // seq 2
+    expect(dayCurVer(0)).toBe(id2)
     delete SCHED.cur[0]
-    expect(dayCurVer(0)).toBe(1)          // derived: newest issue, not max n
-  })
-
-  it('an unpublished cur AL falls back to the remaining newest issue, then orig', () => {
-    sign(0); setDayApproved(0, 1)
-    sign(0); alIssue(1, ['dn:0.0'])
-    sign(0); alIssue(2, ['dn:0.1'])
-    expect(dayCurVer(0)).toBe(2)
-    unpublishAL(2)                         // its snapshot vanishes with the record
-    expect(dayCurVer(0)).toBe(1)
-    unpublishAL(1)
-    expect(dayCurVer(0)).toBe('orig')
+    expect(dayCurVer(0)).toBe(id2)                            // derived: newest seq
   })
 })
 
-/* RE-PUBLISHING A REOPENED DAY refreshes what the view page shows (owner,
-   15 Aug 26). Reopen keeps the version history, but the frozen snapshot the
-   view page reads was captured before the reopen — so without this, a viewer
-   keeps seeing pre-reopen content after the scheduler re-publishes. Pins the
-   content refresh AND that the ordinary amendment flow never rewrites the
-   Original. */
-describe('re-publishing a reopened day re-issues the current version in place', () => {
-  const D0 = JSON.parse(JSON.stringify(DAYS[0]))
-  beforeEach(() => { DAYS[0] = JSON.parse(JSON.stringify(D0)) })
-  const issuedNote = (di: number) => { const cv = dayCurVer(di); const s = cv != null ? daySnapOf(di, cv) : null; return s ? s.d.notes[0] : '(none)' }
-
-  it('a day at the Original: reopen, hand-edit, re-publish — the issued view catches up', () => {
-    sign(0); setDayApproved(0, 1)                 // first publish → Original
-    setDayApproved(0, 0)                          // reopen
-    txtSet('dn:0.0', 'NEW BY HAND')
-    sign(0); setDayApproved(0, 1)                 // Publish day again
-    expect(dayCurVer(0)).toBe('orig')             // same version label
-    expect(issuedNote(0)).toBe('NEW BY HAND')     // but the document caught up
-    expect(issuedNote(0)).toBe(txtGet('dn:0.0'))  // issued == live, no split
+describe('Phase 2 — the per-day verId record', () => {
+  it('per-day sequence: Monday-AL1 and Tuesday-AL1 are distinct verIds, both seq 1', () => {
+    sign(0); setDayApproved(0, 1); txtSet('dn:0.0', 'A'); sign(0); const a = alIssue(0)
+    sign(1); setDayApproved(1, 1); txtSet('dn:1.0', 'B'); sign(1); const b = alIssue(1)
+    expect(a.seq).toBe(1); expect(b.seq).toBe(1)
+    expect(a.id).not.toBe(b.id)                    // different days → different ids
+    expect(verSeq(a.id)).toBe(1); expect(verSeq(b.id)).toBe(1)
   })
 
-  it('a day at AL1: reopen, edit, re-publish — AL1’s document catches up', () => {
+  /* the record SHAPE is pinned by a plain JSON serialization round-trip — NOT a
+     publish→undo→redo, which would retract the AL and let nextSeq reuse its id
+     for different content. Undo-across-publish is Phase 3 (§5). */
+  it('the new record shape survives a plain JSON serialization round-trip (P2-01)', () => {
+    sign(0); setDayApproved(0, 1); txtSet('dn:0.0', 'A'); sign(0); alIssue(0)
+    const before = JSON.stringify(schedFields())
+    const round = JSON.parse(before)
+    expect(round.a[0].id).toBe(SCHED.als[0].id)
+    expect(round.a[0].seq).toBe(1)
+    expect(round.a[0].di).toBe(0)
+    expect(round.a[0].diff).toEqual(SCHED.als[0].diff)
+    expect(round.cv[0]).toBe(SCHED.cur[0])          // the verId cur survives verbatim
+    expect(JSON.stringify(round)).toBe(before)      // byte-identical round-trip
+  })
+
+  it('the ordinary amendment flow never rewrites the Original', () => {
+    const orig = DAYS[0].notes[0].t
     sign(0); setDayApproved(0, 1)
-    txtSet('dn:0.0', 'AMENDED'); sign(0); publishALDay(0)   // AL1
-    expect(dayCurVer(0)).toBe(1)
-    setDayApproved(0, 0)                          // reopen
-    txtSet('dn:0.0', 'NEW AFTER REOPEN')
-    sign(0); setDayApproved(0, 1)                 // Publish day again
-    expect(dayCurVer(0)).toBe(1)
-    expect(issuedNote(0)).toBe('NEW AFTER REOPEN')
-  })
-
-  it('the ordinary amendment flow (no reopen) never rewrites the Original', () => {
-    const orig = D0.notes[0]
-    sign(0); setDayApproved(0, 1)                 // Original = seed note
-    txtSet('dn:0.0', 'AMENDED'); sign(0); publishALDay(0)   // AL1 — no reopen
-    expect(daySnapOf(0, 'orig').d.notes[0]).toBe(orig)      // Original frozen as first issued
-    expect(daySnapOf(0, 1).d.notes[0]).toBe('AMENDED')
+    const origId = dayCurVer(0)
+    txtSet('dn:0.0', 'AMENDED'); sign(0); publishALDay(0)
+    expect(daySnapOf(0, origId).d.notes[0].t).toBe(orig)          // Original frozen as first issued
+    const cur = dayCurVer(0)
+    expect(daySnapOf(0, cur).d.notes[0].t).toBe(txtGet('dn:0.0'))  // AL1's snapshot carries the amendment
   })
 })

@@ -12,7 +12,7 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { INPUTS } from '../engine/inputs'
 import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
-import { SCHED, signOf, setDayApproved } from '../engine/publish'
+import { SCHED, signOf, setDayApproved, publishALDay, dayApproved } from '../engine/publish'
 import { stashClear, stashPut } from '../engine/weekstash'
 import { initStore as raptorInitStore, loadWeek } from '../state/store'
 import { projectPeople } from './state/raptorRoster'
@@ -123,23 +123,15 @@ describe('publish drives the credit', () => {
 })
 
 describe('reverse-and-replace — the credit follows the issued document', () => {
-  it('reopening the day takes the credit back', () => {
+  /* Phase 2 removed the reopen take-back: a published day is frozen and can only
+     be changed by a NEW AL. So "reopen takes the credit back" is gone; the credit
+     follows the CURRENT issued version, which a new AL updates. */
+  it('a new AL with shorter hours replaces FO with HO — the credit follows the current issued version', () => {
     publish(5)
     runOilPass()
     expect(cellOf('plasma', SAT)).toBe('FO')
-    setDayApproved(5, false)
-    runOilPass()
-    expect(cellOf('plasma', SAT)).toBeUndefined()
-    expect(ownedBy('plasma', SAT)).toBeUndefined()
-  })
-
-  it('a reissue with shorter hours replaces FO with HO', () => {
-    publish(5)
-    runOilPass()
-    expect(cellOf('plasma', SAT)).toBe('FO')
-    setDayApproved(5, false)                      // reopen
-    DAYS[5].dutywaves[0].rows[0].end = '1200'     // the duty shrank to 4h
-    publish(5)                                    // re-publish reissues the snapshot
+    DAYS[5].dutywaves[0].rows[0].end = '1200'     // the duty shrank to 4h on the working draft
+    sign(5); publishALDay(5)                       // publish it as the next AL → the issued snapshot updates
     runOilPass()
     expect(cellOf('plasma', SAT)).toBe('HO')
   })
@@ -169,26 +161,54 @@ describe('the credit reads EVERY week, not just the loaded one (owner, 29 Aug 26
     expect(ownedBy('plasma', SAT)).toMatchObject({ state: 'approved', source: 'raptor' })
   })
 
-  it('coming back and reopening the day still takes the credit back', () => {
+  it('a corrupt stash blob PROTECTS its standing credits and throws nothing (P2-REREVIEW-05)', () => {
     publish(5)
     runOilPass()
-    loadWeek('20/07/2026')
-    runOilPass()
-    loadWeek('13/07/2026')                        // stash restored — the day is still published
-    setDayApproved(5, false)
-    runOilPass()
-    expect(cellOf('plasma', SAT)).toBeUndefined()
-  })
-
-  it('a corrupt stash blob contributes nothing and throws nothing', () => {
-    publish(5)
-    runOilPass()
+    expect(cellOf('plasma', SAT)).toBe('FO')
     loadWeek('20/07/2026')
     stashPut('13/07/2026', '{broken')             // truncated write / foreign data
     expect(() => runOilPass()).not.toThrow()
-    /* unreadable = as if never stashed, so the reverse sweep collects the
-       cell — degraded, never wrong-way-round or crashed */
-    expect(cellOf('plasma', SAT)).toBeUndefined()
+    /* an UNREADABLE stash cannot be verified, so its earned credit must STAND
+       rather than be swept away over a transient/corrupt blob (never delete a
+       credit we cannot re-derive) */
+    expect(cellOf('plasma', SAT)).toBe('FO')
+  })
+})
+
+describe('an unsupported / unresolvable book protects its landed OIL credits (P2-IMPL-01)', () => {
+  it('a pre-Phase-2 (unsupported) live book neither draft-substitutes nor deletes an earned credit', () => {
+    /* first land the credit through a normal publish */
+    publish(5)
+    runOilPass()
+    expect(cellOf('plasma', SAT)).toBe('FO')
+    /* now the book reads as a PRE-Phase-2 one: approved days, but the current
+       pointer is the old 'orig' string and there is no resolvable verId snapshot,
+       so dayCurVer→null. The live DRAFT has since dropped the duty — the exact
+       trap where the old code fell back to the draft, found no work, and the
+       reverse sweep DELETED the credit. */
+    SCHED.amV = undefined
+    SCHED.orig = {}
+    SCHED.cur = { 5: 'orig' as any }
+    SCHED.als = []
+    DAYS[5].dutywaves = []                          // the draft dropped the duty
+    expect(dayApproved(5)).toBe(true)
+    runOilPass()
+    expect(cellOf('plasma', SAT), 'the issued credit stands — no draft substitution, no deletion').toBe('FO')
+    expect(ownedBy('plasma', SAT)).toMatchObject({ source: 'raptor' })
+  })
+
+  it('a FUTURE-version (am:999) book whose snapshots still resolve is classified unsupported → credit protected (P2-REREVIEW-05)', () => {
+    publish(5)
+    runOilPass()
+    expect(cellOf('plasma', SAT)).toBe('FO')
+    /* the snapshots remain resolvable (verIds intact), but the format version is
+       from the future — amFormatOf must quarantine it, or the reverse pass could
+       still delete/replace the standing credit. Drop the duty on the draft to make
+       the danger concrete. */
+    SCHED.amV = 999
+    DAYS[5].dutywaves = []
+    runOilPass()
+    expect(cellOf('plasma', SAT), 'a future-format book cannot rewrite the credit').toBe('FO')
   })
 })
 

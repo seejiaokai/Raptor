@@ -37,7 +37,19 @@ export function shiftKeys(head:any,pos:any,ix:any){
   SCHED.pending=remap(SCHED.pending);
   SCHED.changes=remap(SCHED.changes);
   SCHED.added=remap(SCHED.added);
-  (SCHED.als||[]).forEach((a:any)=>{a.keys=(a.keys||[]).map(move).filter(Boolean);a.adds=(a.adds||[]).map(move).filter(Boolean);a.structAdds=(a.structAdds||[]).map(move).filter(Boolean);});
+  /* A Phase-2 AL record carries a frozen `diff` + snapshot, not live keys/adds/
+     structAdds — those three fields were removed from the record contract. The old
+     `a.keys=(a.keys||[]).map(...)` form ASSIGNED an empty array to an ABSENT field,
+     re-adding all three onto every issued current-format record (on unrelated days
+     too), so the serialized document diverged from the contract though snap/diff
+     stayed intact (P2-REV2-08). Remap ONLY a field that is actually present — a
+     legacy record's keys as before, a Phase-2 record genuinely untouched. The
+     frozen `snap`/`diff` are never touched either way. */
+  (SCHED.als||[]).forEach((a:any)=>{
+    if(a.keys)a.keys=a.keys.map(move).filter(Boolean);
+    if(a.adds)a.adds=a.adds.map(move).filter(Boolean);
+    if(a.structAdds)a.structAdds=a.structAdds.map(move).filter(Boolean);
+  });
   elogRemap(move);   // the edit log addresses rows by the same keys (editlog.ts)
   HOOKS.remapViewKeys(move);   // and so does key-addressed view state (hooks.ts)
 }
@@ -69,7 +81,14 @@ export function permuteKeys(head:any,pos:any,oldOf:any){
   SCHED.pending=remap(SCHED.pending);
   SCHED.changes=remap(SCHED.changes);
   SCHED.added=remap(SCHED.added);
-  (SCHED.als||[]).forEach((a:any)=>{a.keys=(a.keys||[]).map(move);a.adds=(a.adds||[]).map(move);a.structAdds=(a.structAdds||[]).map(move);});
+  /* remap ONLY a present field — never assign an empty array onto an absent one, or
+     a Phase-2 record gains three fields its contract removed (P2-REV2-08). A legacy
+     record's keys are remapped as before; a Phase-2 record is genuinely untouched. */
+  (SCHED.als||[]).forEach((a:any)=>{
+    if(a.keys)a.keys=a.keys.map(move);
+    if(a.adds)a.adds=a.adds.map(move);
+    if(a.structAdds)a.structAdds=a.structAdds.map(move);
+  });
   elogRemap(move);   // the edit log addresses rows by the same keys (editlog.ts)
   HOOKS.remapViewKeys(move);   // and so does key-addressed view state (hooks.ts)
 }

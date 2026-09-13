@@ -7,7 +7,7 @@ import { beforeEach, describe, expect, it } from 'vitest'
 import { DAYS } from './data'
 import {
   SCHED, signOf, setDayApproved, dayApproved, daySnapOf, dayCurVer,
-  publishALDay, unpublishAL, deleteCount, deletionWasIssued, alAttr, markStructuralAdd, markDeletion, markEdit, dropRowMarks,
+  publishALDay, deleteCount, deletionWasIssued, alAttr, markStructuralAdd, markEdit, dayHasChanges,
 } from './publish'
 import { txtSet, txtGet, setSlotVal, fillSlot } from './slots'
 import { moveDutyRow, moveGroundRow } from './reorder'
@@ -20,6 +20,8 @@ import {
 } from './drafts'
 import { HIST, histInit, histApply, histPush, histSnap } from '../state/history'
 import { rowsOf, ridKey, ensureRowIds } from './rowids'
+import { verSeq, verId, dayIso } from './verid'
+import { CURWEEK } from './waves'
 
 /* a ROW key is stored rid-anchored once its row carries a rid (a funnel write
    self-heals one in); wrap a raw stored-key expectation so it reads that form.
@@ -81,8 +83,8 @@ describe('duplicating a day', () => {
     expect(t!.name).toBe('Draft 3')
     expect(curDraftId(0)).toBe(t!.id)
     const d2 = dayDrafts(0).find((x: any) => x.name === 'Draft 2')
-    expect(d2.d.notes[0]).toBe('PLAN B NOTE')       // the stow caught the edit
-    expect(t!.d.notes[0]).toBe('PLAN B NOTE')       // the new draft copies live
+    expect(d2.d.notes[0].t).toBe('PLAN B NOTE')       // the stow caught the edit
+    expect(t!.d.notes[0].t).toBe('PLAN B NOTE')       // the new draft copies live
   })
 
   it('default numbering is highest existing Draft N + 1, surviving renames and deletes', () => {
@@ -118,12 +120,12 @@ describe('switching drafts', () => {
     txtSet('dn:0.0', 'DRAFT 2 EDIT')
     expect(draftSelect(0, d1.id)).toBe(true)
     expect(curDraftId(0)).toBe(d1.id)
-    expect(txtGet('dn:0.0')).toBe(D0.notes[0])      // Draft 1 is the day as it stood
+    expect(txtGet('dn:0.0')).toBe(D0.notes[0].t)      // Draft 1 is the day as it stood
     expect(draftSelect(0, d2.id)).toBe(true)
     expect(txtGet('dn:0.0')).toBe('DRAFT 2 EDIT')   // the stow held the edit
     /* and the installed blob is a clone — editing live must not reach the stowed copy */
     txtSet('dn:0.0', 'LATER STILL')
-    expect(dayDrafts(0).find((x: any) => x.id === d2.id).d.notes[0]).toBe('DRAFT 2 EDIT')
+    expect(dayDrafts(0).find((x: any) => x.id === d2.id).d.notes[0].t).toBe('DRAFT 2 EDIT')
   })
 
   it('re-stamps .today from the live day — the calendar, not the document', () => {
@@ -154,7 +156,7 @@ describe('switching drafts', () => {
     const [, d2] = dayDrafts(0)
     expect(draftSelect(0, 'nope')).toBe(false)
     expect(draftSelect(0, d2.id)).toBe(false)       // already live
-    expect(txtGet('dn:0.0')).toBe(D0.notes[0])      // nothing moved
+    expect(txtGet('dn:0.0')).toBe(D0.notes[0].t)      // nothing moved
   })
 })
 
@@ -182,7 +184,7 @@ describe('switching drafts on a PUBLISHED day — the pending rebase', () => {
     expect(dayPend()).toEqual(['dn:0.0'])
     expect(draftSelect(0, d1.id)).toBe(true)
     expect(dayPend()).toEqual([])                   // Draft 1 IS the issued day
-    expect(txtGet('dn:0.0')).toBe(D0.notes[0])
+    expect(txtGet('dn:0.0')).toBe(D0.notes[0].t)
   })
 
   it('switching back to the edited draft re-marks exactly the differences', () => {
@@ -277,7 +279,10 @@ describe('switching drafts on a PUBLISHED day — the pending rebase', () => {
     expect(dayPend()).toEqual(['inp:0.leave%2Dabc'])
   })
 
-  it('publishing the diff issues it as the AL, and unpublishing returns it to pending', () => {
+  /* Phase 2 removed unpublishAL (undo-across-publish is Phase 3, no take-back),
+     so the "unpublishing returns it to pending" tail is gone; the rebase→publish
+     flow it led with is repointed here to the verId contract. */
+  it('publishing the rebased diff issues it as the AL', () => {
     pub()
     draftDup(0)
     const [d1, d2] = dayDrafts(0)
@@ -288,11 +293,9 @@ describe('switching drafts on a PUBLISHED day — the pending rebase', () => {
     publishALDay(0)
     expect(SCHED.changes['dn:0.0']).toBe(1)
     expect(dayPend()).toEqual([])
-    expect(dayCurVer(0)).toBe(1)
-    expect(daySnapOf(0, 1).d.notes[0]).toBe('PLAN B')
-    unpublishAL(1)
-    expect(dayPend()).toEqual(['dn:0.0'])
-    expect(dayCurVer(0)).toBe('orig')
+    const al1 = dayCurVer(0)
+    expect(verSeq(al1)).toBe(1)
+    expect(daySnapOf(0, al1).d.notes[0].t).toBe('PLAN B')
   })
 
   it('other days\' pending and added keys are untouched by the rebase', () => {
@@ -316,7 +319,9 @@ describe('switching drafts on a PUBLISHED day — rid-native', () => {
   const dayPend = () => Object.keys(SCHED.pending).filter((k: any) => keyDay(k) === 0)
   const twoWaves = () => { while (DAYS[0].waves.length < 2) DAYS[0].waves.push({ formations: [], label: '', night: false, kind: 'sc' }) }
 
-  it('AL tint survives a published-day draft switch, and unpublish returns the mark (the core pin)', () => {
+  /* Phase 2 removed unpublishAL — the "unpublish returns the mark" tail is gone;
+     the core pin (the AL tint survives a published-day draft switch) stays. */
+  it('AL tint survives a published-day draft switch (the core pin)', () => {
     ensureRowIds(DAYS)
     twoWaves(); ensureRowIds(DAYS)
     sign(0); setDayApproved(0, 1)                       // Original
@@ -327,8 +332,6 @@ describe('switching drafts on a PUBLISHED day — rid-native', () => {
     const [d1] = dayDrafts(0)
     draftSelect(0, d1.id)                               // Draft 1 == AL1 content
     expect(alAttr('wl:0.0')).toContain('data-alc="1"')  // the switched draft carries the issued ids — the tint paints
-    unpublishAL(1)
-    expect(SCHED.pending[cs]).toBe(1)                    // and the mark comes back to pending
   })
 
   it('draftDup keeps ids; a genuinely new row still gets a fresh one (the decision pin)', () => {
@@ -440,27 +443,10 @@ describe('switching drafts on a PUBLISHED day — rid-native', () => {
     expect(SCHED.pending[rk('ar:0.0.0')], 'reverted → cleared').toBeUndefined()
   })
 
-  it('add→AL1, delete→AL2, resurrect via draft→AL3, unpublish AL3: the row returns to draft-added, no false removal (Astra RID-REV-01)', () => {
-    DAYS[0].ground = [{ prog: 'A', str: '', end: '', who: '', rmks: '' }]
-    ensureRowIds(DAYS)
-    sign(0); setDayApproved(0, 1)                                  // Original: [A]
-    DAYS[0].ground.push({ prog: 'B', str: '', end: '', who: '', rmks: '' })
-    ensureRowIds(DAYS)
-    const addKey = markStructuralAdd('gr:0.1.prog')                // add B
-    sign(0); publishALDay(0)                                       // AL1 issues [A, B]
-    draftDup(0)
-    const [d1] = dayDrafts(0)                                      // a parked draft still holding B
-    const bRid = DAYS[0].ground[1].rid
-    const issued = deletionWasIssued(0, 'ground', 1)
-    DAYS[0].ground.splice(1, 1); dropRowMarks([bRid]); markDeletion(0, 'ground', issued)
-    sign(0); publishALDay(0)                                       // AL2 issues [A] (B removed)
-    draftSelect(0, d1.id)                                          // switch to the draft → B resurrected with its rid
-    sign(0); publishALDay(0)                                       // AL3
-    unpublishAL(3)
-    const bi = DAYS[0].ground.findIndex((r: any) => r.rid === bRid)
-    expect(SCHED.added[rk(`gr:0.${bi}.prog`)], 'B is draft-added again — AL1 is superseded by AL2, which has no B').toBe(1)
-    expect(deletionWasIssued(0, 'ground', bi), 'so deleting B nets out, no false removal').toBe(false)
-  })
+  /* DELETED (Phase 2): this scenario's terminal assertions all read state AFTER
+     unpublishAL(3) — the row returns to draft-added only because AL3 is retracted.
+     unpublishAL is gone (undo-across-publish is Phase 3, no take-back), so the
+     asserted state is no longer reachable. */
 
   it('a manual ground move whose model order equals the issued model still records a mov: (Astra RID-REV-03)', () => {
     /* issued auto-ordered [Late, Early] → displays [Early, Late] */
@@ -520,7 +506,7 @@ describe('publish — unchanged, and that is the point', () => {
     sign(0); setDayApproved(0, 1)
     expect(dayApproved(0)).toBe(true)
     /* the Original froze the SELECTED draft's content, not Draft 1's */
-    expect(SCHED.orig[0].d.notes[0]).toBe('THE WET PLAN')
+    expect(SCHED.orig[0].d.notes[0].t).toBe('THE WET PLAN')
     /* and the day's pending marks were spent on the issue as always */
     expect(Object.keys(SCHED.pending).filter(k => k.indexOf(':0.') > 0 || /^dn:0\./.test(k))).toEqual([])
   })
@@ -548,11 +534,14 @@ describe('daySnapOf resolves d:<id>', () => {
     draftDup(0)
     const [d1] = dayDrafts(0)
     draftRename(0, d1.id, 'Wet weather')
+    /* Phase 2: draftVerLabel defers a non-draft ver to verLabel, which speaks
+       verIds — the Original is `iso#0`, an AL is `iso#seq`, never 'orig'/a number. */
+    const iso = dayIso(CURWEEK, 0)
     expect(draftVerLabel(0, 'd:' + d1.id)).toBe('Wet weather')
     expect(draftVerLabel(0, 'd:nope')).toBe('Draft')
     expect(draftVerLabel(0, 'live')).toBe('Live')
-    expect(draftVerLabel(0, 'orig')).toBe('Original')
-    expect(draftVerLabel(0, 3)).toBe('AL3')
+    expect(draftVerLabel(0, verId(iso, 0))).toBe('Original')
+    expect(draftVerLabel(0, verId(iso, 3))).toBe('AL3')
   })
 })
 
@@ -594,16 +583,30 @@ describe('loadVersionToWorkingCopy — an issued version onto the working copy (
     const key = 'dn:0.0'
     const orig = txtGet(key)
     sign(0); setDayApproved(0, 1)                    // issued at the Original
+    const origVer = (SCHED.orig[0] as any).id        // the Original verId
     txtSet(key, 'AMENDED'); sign(0); publishALDay(0) // now issued at AL1
-    expect(dayCurVer(0)).toBe(1)
+    const al1 = dayCurVer(0)
+    expect(verSeq(al1)).toBe(1)
     txtSet(key, 'IN PROGRESS')                       // a working-copy edit
-    const ok = loadVersionToWorkingCopy(0, 'orig')   // bring the Original back
+    const ok = loadVersionToWorkingCopy(0, origVer)  // bring the Original back
     expect(ok).toBe(true)
     expect(txtGet(key), 'the working copy took the Original content').toBe(orig)
-    expect(dayCurVer(0), 'the issued version stays AL1 — viewers are untouched').toBe(1)
+    expect(dayCurVer(0), 'the issued version stays AL1 — viewers are untouched').toBe(al1)
     /* the working copy now differs from AL1, so it carries a pending mark that a
        future AL2 would issue */
     expect(SCHED.pending[key], 'the difference from AL1 shows as pending').toBe(1)
+  })
+})
+
+describe('a canonical-only field change survives reconcile — the mark system sees it now (P2-REREVIEW-10)', () => {
+  it('changing a dutyblock sa keeps its mark on the block composite and is publishable', () => {
+    sign(0); setDayApproved(0, 1)                          // issue the Original
+    const block = DAYS[0].dutywaves[0]
+    block.sa = (block.sa === 'sc') ? '' : 'sc'             // a canonical-only field change
+    markEdit('dl:0.0')                                     // marked on the block header
+    reconcileIssuedMarks()
+    expect(SCHED.pending[rk('dl:0.0')], 'the sa change is a real diff on the composite → mark survives reconcile').toBe(1)
+    expect(dayHasChanges(0)).toBe(true)
   })
 })
 

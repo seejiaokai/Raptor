@@ -25,6 +25,7 @@
 import { readFileSync } from 'node:fs'
 import { JSDOM, VirtualConsole } from 'jsdom'
 import { INPUTS, inputFlags } from '../engine/inputs'
+import { noteText } from '../engine/note'
 import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
 
@@ -109,7 +110,11 @@ export function reday(w: any) {
   const refn = w.eval('DAYS.length')
   DAYS.slice(0, refn).forEach((d: any, i: number) => {
     const p = JSON.stringify({
-      notes: d.notes || [],
+      /* the reference's notes are bare strings; the port's are { id, t } objects
+         since 13 Sep 26 (ARCH-STACK 1A). Project the port note's TEXT so the
+         reference stays string-shaped and every rendered byte matches — the id
+         is never printed, so it is excluded here (Astra SID-06). */
+      notes: (d.notes || []).map((n: any) => noteText(n)),
       waves: (d.waves || []).map((wv: any) => ({
         traffic: wv.traffic || [],
         forms: (wv.formations || []).map((f: any) => (f.aircraft || []).map((a: any) => a.area)),

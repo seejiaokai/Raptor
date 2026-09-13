@@ -3,11 +3,11 @@
    blank-space clear), with the state halves in src/state/view.ts and the
    repaint replaced by the store's notify() (the week re-renders and the
    highlight pass re-runs from ViewWeek's effect). */
-import { slotVal, inpKey, acceptInput, unacceptInput, txtSet } from '../engine/slots'
+import { slotVal, acceptInput, unacceptInput, txtSet } from '../engine/slots'
 import { INPUTS, DATES, withRemarksTail, inpId, defaultAllday } from '../engine/inputs'
 import { DAYS } from '../engine/data'
 import { PEOPLE, isSpecial } from '../engine/people'
-import { dayApproved, setDayApproved, publishALDay, signClear, markEdit, dayCurVer, dayPendCount, verLabel } from '../engine/publish'
+import { dayApproved, setDayApproved, publishALDay, signClear, markEdit, dayCurVer, dayDiscardCount, verLabel, protectedWeek } from '../engine/publish'
 import { draftSelect, draftVerLabel, loadVersionToWorkingCopy } from '../engine/drafts'
 import { HOOKS } from '../engine/hooks'
 import { canEditSched } from '../state/auth'
@@ -476,7 +476,7 @@ export function routeClick(e: MouseEvent) {
     e.stopPropagation()
     if (!canEditSched()) { HOOKS.toast('Only a scheduler can accept inputs', 'warn'); return }
     const di = +ab.dataset.accd!, k = ab.dataset.acck!, dest = ab.dataset.acc!
-    const inp = INPUTS.find((x: any) => inpKey(x) === k)
+    const inp = INPUTS.find((x: any) => inpId(x) === k)
     if (!inp) { HOOKS.toast('That input is no longer there', 'warn'); return }
     const ok = dest === 'x' ? unacceptInput(di, inp) : acceptInput(di, inp, dest)
     if (ok) {
@@ -653,7 +653,7 @@ export function routeClick(e: MouseEvent) {
   if (ib) {
     e.stopPropagation()
     if (!canEditSched()) { HOOKS.toast('Only a scheduler can edit inputs from here', 'warn'); return }
-    const inp = INPUTS.find((x: any) => inpKey(x) === ib.dataset.inpedit!)
+    const inp = INPUTS.find((x: any) => inpId(x) === ib.dataset.inpedit!)
     if (!inp) { HOOKS.toast('That input is no longer there', 'warn'); return }
     setInpEdit(inp)
     notify()
@@ -766,7 +766,10 @@ export function routeClick(e: MouseEvent) {
   if (beak) {
     e.stopPropagation()
     if (!canEditSched() || view.CURPAGE !== 'editsched') return
-    const di = +beak.dataset.beak!; setDayApproved(di, !dayApproved(di)); notify(); return
+    /* §9: the beak only ever FIRST-approves — html.ts emits data-beak only on a
+       never-published day (a published day shows an inert stamp). setDayApproved
+       is itself a no-op on an already-published day, so this is safe regardless. */
+    const di = +beak.dataset.beak!; setDayApproved(di, true); notify(); return
   }
   /* per-day AL publish — same gate */
   const alp = t.closest('button[data-alpub]') as HTMLElement | null
@@ -800,6 +803,11 @@ export function routeClick(e: MouseEvent) {
   if (dgo) {
     e.stopPropagation()
     if (!canEditSched() || !(view.CURPAGE === 'editsched' || view.SBDAY != null)) return
+    /* a protected (unsupported/wrong-week) book is read-only — the preview stays
+       viewable but its "Switch to this plan" is inert (P2-REV2-02). Engine
+       draftSelect also refuses, but gating here keeps the misleading "no longer
+       available" toast off a button that is merely frozen. */
+    if (protectedWeek()) return
     const di = +dgo.dataset.draftgo!, id = dgo.dataset.draftid!
     const nm = draftVerLabel(di, 'd:' + id)
     if (view.ARM && view.ARM.di === di) view.disarmSlot()
@@ -822,30 +830,40 @@ export function routeClick(e: MouseEvent) {
   if (rst) {
     e.stopPropagation()
     if (!canEditSched() || !(view.CURPAGE === 'editsched' || view.SBDAY != null)) return
+    if (protectedWeek()) return   // read-only quarantine — recovery is inert (P2-REV2-02); loadVersionToWorkingCopy also refuses
     /* never for a draft ('d:<id>') — the banner renders "Switch to this plan"
        for one, not this button, but a stale element must not roll a stowed
        draft blob over the live day either: switching drafts is draftSelect's
        job (data-draftgo above), which stows the outgoing day first */
     if (String(rst.dataset.rver || '').slice(0, 2) === 'd:') return
     const di = +rst.dataset.restore!
-    const ver = rst.dataset.rver === 'orig' ? 'orig' : +rst.dataset.rver!
-    /* already the current version with nothing pending — close the preview
+    const ver = rst.dataset.rver!   // a verId string — carried through verbatim, no numeric coercion (P2-04)
+    /* the divergence at risk is the live delta vs the CURRENT issued version
+       (P2-R2-06): with the canonical-delta trigger a day can carry real changes
+       and ZERO pending marks (a canonical-only edit / reorder / input filing), so
+       the dirty-check reads dayDiscardCount (the delta) — a live pending count
+       would silently bypass the confirm and discard that work. ONE authority, so
+       the confirm button and this handler can never disagree (P2-IMPL-09).
+       Captured HERE, before loadVersionToWorkingCopy swaps the day (and outside
+       any withDaySnap that would zero it). */
+    const nd = dayDiscardCount(di)
+    /* already the current version with nothing diverging — close the preview
        without a history step */
-    if (String(dayCurVer(di)) === String(ver) && dayPendCount(di) === 0) {
+    if (String(dayCurVer(di)) === String(ver) && nd === 0) {
       view.setDayPreview(di, null)
       HOOKS.toast(`${DAYS[di].dow} is already at ${verLabel(ver)}`)
       notify(); return
     }
-    /* the confirm gate: with unpublished edits on the day, arm on the first
-       tap and wait for the second on the same version. Any navigation
+    /* the confirm gate: with real unpublished divergence on the day, arm on the
+       first tap and wait for the second on the same version. Any navigation
        (dropdown change, Back to live) clears the arm via setDayPreview. */
-    if (dayPendCount(di) > 0 && !view.restArmed(di, rst.dataset.rver)) {
+    if (nd > 0 && !view.restArmed(di, rst.dataset.rver)) {
       view.setRestArm(di, rst.dataset.rver)
       notify(); return
     }
     view.setRestArm(null, null)   // consume the arm before loading
     if (view.ARM && view.ARM.di === di) view.disarmSlot()   // the load may remove the armed row
-    const replaced = dayPendCount(di)   // working-copy edits about to be replaced
+    const replaced = nd   // working-copy changes about to be replaced
     if (!loadVersionToWorkingCopy(di, ver)) { HOOKS.toast('That version is no longer available', 'warn'); notify(); return }
     view.setDayPreview(di, null)
     view.afterSchedMutate()
@@ -897,6 +915,10 @@ export function routeClick(e: MouseEvent) {
   const sc = t.closest('[data-signclear]') as HTMLElement | null
   if (sc) {
     e.stopPropagation()
+    /* read-only quarantine (P2-QREV/Fable-11): clearing a signature mutates the
+       loaded week's SCHED and pushes history — inert on a frozen week, and the
+       button can render from stale DOM after a role/preview change, so gate it. */
+    if (!canEditSched() || protectedWeek()) return
     signClear(+sc.dataset.signclear!); HOOKS.histPush(); HOOKS.reflow(); return
   }
 

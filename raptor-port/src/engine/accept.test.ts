@@ -3,13 +3,13 @@
    the issued programme when a scheduler accepts it. */
 import { beforeEach, describe, expect, it } from 'vitest'
 import { DAYS } from './data'
-import { INPUTS, isPersonal, isUnavail, inpLabel } from './inputs'
+import { INPUTS, isPersonal, isUnavail, inpLabel, inpId } from './inputs'
 import { collectEvents } from './events'
 import { isSpecial } from './people'
 import { acceptInput, unacceptInput, inpKey, slotVal, txtGet, txtSet } from './slots'
 import { keyDay } from './keys'
 import { dayKeys } from './restore'
-import { SCHED, signOf, setDayApproved, publishALDay } from './publish'
+import { SCHED, signOf, setDayApproved, publishALDay, protectedWeek, dayHasChanges, dayDiscardCount } from './publish'
 import { makeStandalone } from './waves'
 import { validate } from './validate'
 import { HOOKS } from './hooks'
@@ -28,6 +28,45 @@ beforeEach(() => {
 
 const findInp = (t: string) => INPUTS.find((x: any) => x.type === t && x.date === 'Jul 13')
 const sign = (di: number) => { const g = signOf(di); g.cur = 'ignite'; g.sked = 'bane'; g.plan = 'stiff'; g.appr = 'pump' }
+
+describe('an unsupported (protected) week refuses input landings/removals (P2-IMPL-03)', () => {
+  it('acceptInput and unacceptInput refuse while the loaded book is unsupported — the frozen day is not mutated', () => {
+    /* land a row while the book is CURRENT, then flip the book to a PRE-Phase-2
+       (unsupported → read-only) shape and confirm the schedule cannot be mutated
+       through the input paths despite the quarantine. */
+    const inp = findInp('Meeting')!
+    expect(acceptInput(0, inp, 'g')).toBe(true)
+    const n = DAYS[0].ground.length
+    SCHED.amV = undefined
+    SCHED.cur = { 0: 'orig' }
+    try {
+      expect(protectedWeek()).toBe(true)
+      // an already-landed row cannot be unaccepted (would splice the frozen day)
+      expect(unacceptInput(0, inp), 'no removal from a quarantined week').toBe(false)
+      expect(DAYS[0].ground.length, 'the ground row stays put').toBe(n)
+      // and a fresh landing is refused too — no new ground row pushed
+      const other = INPUTS.find((x: any) => isPersonal(x.type) && !x.acc && x.date === 'Jul 13')
+      if (other) {
+        expect(acceptInput(0, other, 'g'), 'no new landing onto a quarantined week').toBe(false)
+        expect(DAYS[0].ground.length).toBe(n)
+        expect(other.acc).toBeUndefined()
+      }
+    } finally { SCHED.amV = 1; SCHED.cur = {} }
+  })
+})
+
+describe('recovery discard count is CONTENT-only, filing retained (P2-REREVIEW-08)', () => {
+  it('a filing-only change is publishable but is NOT counted as a discardable recovery edit', () => {
+    const inp = findInp('Meeting')!                 // covers Jul 13 (day 0)
+    expect(acceptInput(0, inp, 'u')).toBe(true)      // file the person unavailable
+    sign(0); setDayApproved(0, true)                 // freezes the filing fingerprint with 'u'
+    expect(dayHasChanges(0)).toBe(false)
+    expect(unacceptInput(0, inp)).toBe(true)         // unfile → acc 'r': a filing-only change
+    expect(inp.acc).toBe('r')
+    expect(dayHasChanges(0), 'still publishable — the filing IS a real divergence').toBe(true)
+    expect(dayDiscardCount(0), 'but recovery replaces content only, so nothing is discardable').toBe(0)
+  })
+})
 
 describe('accepting a personal input', () => {
   it('promotes it into the ground programme as a real row', () => {
@@ -126,7 +165,7 @@ describe('accepting a personal input', () => {
     DAYS[0].ground.splice(0, 1)                      // something else deleted meanwhile
     expect(unacceptInput(0, inp)).toBe(true)
     expect(DAYS[0].ground.length).toBe(n - 2)
-    expect(DAYS[0].ground.some((r: any) => r.src === inpKey(inp))).toBe(false)
+    expect(DAYS[0].ground.some((r: any) => r.src === inpId(inp))).toBe(false)
     /* 'r', not undefined, since 26 Aug 26 (owner): a removal parks the input
        DORMANT rather than resetting it to fresh — see inputDormant */
     expect(inp.acc).toBe('r')
@@ -426,39 +465,44 @@ describe('an Other input reads by its remarks', () => {
   })
 })
 
-/* THE CONTENT KEY IS NOT UNIQUE (11 Aug 26). inpKey is person|date|type|start,
-   so two inputs agreeing on all four mint the same `src`. acceptedDay and
-   unacceptInput both resolve a row by the FIRST match, so a second row carrying
-   an existing key makes the link ambiguous — unaccepting one input would remove
-   the other's row, and re-accepting would duplicate rather than restore. */
-describe('a second accept that would mint a duplicate content key', () => {
+/* FILING ADDRESSES THE INPUT'S STABLE ID, NOT ITS CONTENT KEY (13 Sep 26,
+   ARCH-STACK 1A). inpKey is person|date|type|start, so two inputs agreeing on
+   all four share it. The ground row's `src` (and accept/unaccept resolution) is
+   now the input's unique inpId, so two content-key twins file INDEPENDENTLY: the
+   old code REFUSED the second accept to dodge an ambiguous link; now both land
+   and each unaccepts on its own, and re-accepting the SAME input is idempotent. */
+describe('two content-key twins file by their own stable id', () => {
   const twin = () => ({ person: 'pike', date: 'Jul 13', allday: false, s: 540, e: 600,
                         type: 'Appointment', remarks: '', mod: '' } as any)
 
-  it('is refused rather than minting an ambiguous link', () => {
+  it('both accept and land two distinct rows', () => {
     const a = twin(), b = twin()
     b.e = 700                                  // a genuinely different input...
     INPUTS.push(a); INPUTS.push(b)
-    expect(inpKey(a)).toBe(inpKey(b))          // ...that nonetheless shares the key
+    expect(inpKey(a)).toBe(inpKey(b))          // ...that shares the content key
+    expect(inpId(a)).not.toBe(inpId(b))        // but not the stable id
     expect(acceptInput(0, a, 'g')).toBe(true)
-    expect(acceptInput(0, b, 'g')).toBe(false)
-    expect(b.acc).toBeFalsy()
-    expect((DAYS[0].ground || []).filter((r: any) => r.src === inpKey(a)).length).toBe(1)
+    expect(acceptInput(0, b, 'g')).toBe(true)  // no longer refused
+    expect(b.acc).toBe('g')
+    expect((DAYS[0].ground || []).filter((r: any) => r.src === inpId(a)).length).toBe(1)
+    expect((DAYS[0].ground || []).filter((r: any) => r.src === inpId(b)).length).toBe(1)
   })
 
-  it('and the first input can still be unaccepted cleanly afterwards', () => {
+  it('unaccepting one twin leaves the other landed', () => {
     const a = twin(), b = twin(); b.e = 700
     INPUTS.push(a); INPUTS.push(b)
     acceptInput(0, a, 'g'); acceptInput(0, b, 'g')
     expect(unacceptInput(0, a)).toBe(true)
-    expect((DAYS[0].ground || []).filter((r: any) => r.src === inpKey(a)).length).toBe(0)
+    expect((DAYS[0].ground || []).filter((r: any) => r.src === inpId(a)).length).toBe(0)
+    expect((DAYS[0].ground || []).filter((r: any) => r.src === inpId(b)).length).toBe(1)  // twin B intact
+    expect(b.acc).toBe('g')
   })
 
-  it('a different start minute is a different key, and both are accepted', () => {
-    const a = twin(), b = twin(); b.s = 541
-    INPUTS.push(a); INPUTS.push(b)
-    expect(inpKey(a)).not.toBe(inpKey(b))
+  it('re-accepting the SAME input is idempotent — no duplicate row', () => {
+    const a = twin()
+    INPUTS.push(a)
     expect(acceptInput(0, a, 'g')).toBe(true)
-    expect(acceptInput(0, b, 'g')).toBe(true)
+    expect(acceptInput(0, a, 'g')).toBe(false)   // already landed — the guard now means "this exact input"
+    expect((DAYS[0].ground || []).filter((r: any) => r.src === inpId(a)).length).toBe(1)
   })
 })

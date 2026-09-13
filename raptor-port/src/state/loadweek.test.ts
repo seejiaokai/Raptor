@@ -13,14 +13,18 @@ import { beforeEach, describe, expect, it } from 'vitest'
 import { initStore, loadWeek, weekStashSnap } from './store'
 import { DAYS } from '../engine/data'
 import { DATES, INPUTS, inputCoversDate } from '../engine/inputs'
-import { autoAcceptInput, unacceptInput, inpKey } from '../engine'
+import { autoAcceptInput, unacceptInput, inpId, acceptInput } from '../engine'
+import { reconcileDayFiling, acceptedDay } from '../engine/slots'
 import { stashClear, stashPut } from '../engine/weekstash'
-import { SCHED, setDayApproved } from '../engine/publish'
+import { weekBundle } from '../engine/weeks-data'
+import { SCHED, signOf, setDayApproved, dayHasChanges } from '../engine/publish'
 import { HIST } from './history'
+import { commitInputEdit, removeInput, draftOf } from '../ui/inputedit'
+import { HOOKS } from '../engine/hooks'
 
 /* is this input's ground row currently sitting on some day of the loaded week? */
 const landed = (inp: any) =>
-  DAYS.some((d: any) => ((d && d.ground) || []).some((g: any) => g.src === inpKey(inp)))
+  DAYS.some((d: any) => ((d && d.ground) || []).some((g: any) => g.src === inpId(inp)))
 
 /* INPUTS and the week stash are BOTH module-level session state, and neither
    initStore nor loadWeek wipes them — a real reload discards the module, which
@@ -42,6 +46,112 @@ describe('loadWeek', () => {
     expect(DATES[6]).toBe('Jul 26')
     // week-2's own inputs land on it — the Thu medical downchit
     expect(INPUTS.some((r: any) => r.person === 'bruise' && r.type === 'OML')).toBe(true)
+  })
+
+  it('a filed-unavailable input keeps its "u" state across navigation — no phantom amendment (P2-IMPL-05)', () => {
+    const inp: any = { person: 'divot', type: 'Training', date: 'Jul 13', allday: true, remarks: '', mod: 'now', yr: 2026, _t: 1 }
+    INPUTS.push(inp)
+    expect(acceptInput(0, inp, 'u')).toBe(true)          // file the person unavailable for it
+    expect(inp.acc).toBe('u')
+    const g = signOf(0); g.cur = 'ignite'; g.sked = 'bane'; g.plan = 'stiff'; g.appr = 'pump'
+    setDayApproved(0, true)                                // the issued fingerprint freezes acc='u'
+    expect(dayHasChanges(0)).toBe(false)
+    /* navigate away and back — the acc-clear must NOT wipe the filing decision */
+    loadWeek('20/07/2026')
+    loadWeek('13/07/2026')
+    expect(inp.acc, 'the filed-unavailable state survived navigation').toBe('u')
+    expect(dayHasChanges(0), 'no amendment appears from navigation alone').toBe(false)
+  })
+
+  it('a SPANNING accepted input keeps its "g" landing across navigation, even when its start is in another week (P2-REREVIEW-07)', () => {
+    // a two-day input starting the prior Sunday (Jul 12), landed on Monday (Jul 13)
+    const inp: any = { person: 'divot', type: 'Meeting', date: 'Jul 12', endDate: 'Jul 13', allday: true, remarks: '', mod: 'now', yr: 2026, _t: 1 }
+    INPUTS.push(inp)
+    expect(acceptInput(0, inp, 'g')).toBe(true)          // lands a ground row on day 0 (Jul 13)
+    expect(inp.acc).toBe('g')
+    const g = signOf(0); g.cur = 'ignite'; g.sked = 'bane'; g.plan = 'stiff'; g.appr = 'pump'
+    setDayApproved(0, true)                                // fingerprint freezes acc='g'
+    expect(dayHasChanges(0)).toBe(false)
+    loadWeek('20/07/2026')
+    loadWeek('13/07/2026')
+    expect(inp.acc, 'the ground landing survived navigation despite a foreign start date').toBe('g')
+    expect(dayHasChanges(0), 'no phantom amendment from navigation').toBe(false)
+  })
+
+  /* P2-REV2-05: a recovery / draft-switch / template-apply can drop the ground row
+     an input was filed 'g' onto while leaving inp.acc='g' dangling. Left unreconciled
+     it lies in the AL filing fingerprint and a later navigation flips it into a
+     phantom amendment. reconcileDayFiling (run at every whole-day replacement site,
+     approved or not — P2-QREV-07) unfiles a 'g' with no row, and re-files one whose
+     row a replacement restored (the round-2 regression). */
+  describe("a dropped ground row reconciles the 'g' filing (P2-REV2-05)", () => {
+    it('reconcileDayFiling clears a DANGLING g but keeps a live g, a u, and a multi-day g landed elsewhere', () => {
+      const live: any = { person: 'divot', type: 'Meeting', date: 'Jul 13', allday: true, remarks: '', mod: 'now', yr: 2026, _t: 1 }
+      INPUTS.push(live); expect(acceptInput(0, live, 'g')).toBe(true)         // real row on day 0
+      const dangling: any = { person: 'ranger', type: 'Meeting', date: 'Jul 13', allday: true, remarks: '', mod: 'now', yr: 2026, _t: 1 }
+      INPUTS.push(dangling); expect(acceptInput(0, dangling, 'g')).toBe(true)
+      // simulate a recovery content-replace that drops ONLY the dangling row
+      const ix = DAYS[0].ground.findIndex((r: any) => r.src === inpId(dangling))
+      DAYS[0].ground.splice(ix, 1)
+      const filed: any = { person: 'bane', type: 'Meeting', date: 'Jul 13', allday: true, remarks: '', mod: 'now', yr: 2026, _t: 1 }
+      INPUTS.push(filed); expect(acceptInput(0, filed, 'u')).toBe(true)       // a 'u' filing decision — no row
+      reconcileDayFiling(0)
+      expect(dangling.acc, 'the dangling g was unfiled — its row is gone').toBeUndefined()
+      expect(live.acc, 'a g whose row still exists is untouched').toBe('g')
+      expect(filed.acc, "a 'u' filing decision is untouched").toBe('u')
+    })
+
+    it('RE-DERIVES g when a replacement restores the row — the round-2 regression (P2-QREV/Fable-2)', () => {
+      const inp: any = { person: 'divot', type: 'Meeting', date: 'Jul 13', allday: true, remarks: '', mod: 'now', yr: 2026, _t: 1 }
+      INPUTS.push(inp); expect(acceptInput(0, inp, 'g')).toBe(true)
+      const key = inpId(inp)
+      const rowIx = DAYS[0].ground.findIndex((r: any) => r.src === key)
+      const rowCopy = DAYS[0].ground[rowIx]
+      // a draft switch AWAY drops the row → reconcile unfiles (correct)
+      DAYS[0].ground.splice(rowIx, 1)
+      reconcileDayFiling(0)
+      expect(inp.acc, 'unfiled when the row is gone').toBeUndefined()
+      // a draft switch BACK restores the row → reconcile must RE-FILE, not strand it
+      DAYS[0].ground.push(rowCopy)
+      reconcileDayFiling(0)
+      expect(inp.acc, 're-filed when the row is back — the old delete-only form left it stranded').toBe('g')
+    })
+
+    it('a recovery-style replacement + navigation raises NO phantom: the filing state is stable', () => {
+      const inp: any = { person: 'divot', type: 'Meeting', date: 'Jul 13', allday: true, remarks: '', mod: 'now', yr: 2026, _t: 1 }
+      INPUTS.push(inp); expect(acceptInput(0, inp, 'g')).toBe(true)
+      const g = signOf(0); g.cur = 'ignite'; g.sked = 'bane'; g.plan = 'stiff'; g.appr = 'pump'
+      setDayApproved(0, true)
+      // recovery-style: the replacement drops the row; without the fix acc='g' dangles
+      const ix = DAYS[0].ground.findIndex((r: any) => r.src === inpId(inp))
+      DAYS[0].ground.splice(ix, 1)
+      reconcileDayFiling(0)                                  // now runs at every replacement site (P2-QREV-07), not only in rebaseDayPending
+      expect(inp.acc, 'reconciled — no dangling g to freeze').toBeUndefined()
+      const before = dayHasChanges(0)
+      loadWeek('20/07/2026'); loadWeek('13/07/2026')
+      expect(dayHasChanges(0), 'navigation did not silently change the amendment state').toBe(before)
+      expect(acceptedDay(inp), 'still no ground row after navigation').toBe(-1)
+    })
+  })
+
+  /* P2-QREV-02: filing (acceptInput/unacceptInput) is a GLOBAL input write that
+     bypassed the round-1 funnel and checked only the loaded week. A multi-day
+     input spanning the supported loaded week AND a stashed protected week must be
+     refused — filing it changes the protected input's global acc. */
+  it('filing a multi-day input that spans a stashed PROTECTED week is refused (P2-QREV-02)', () => {
+    // Jul 20 is a stashed unsupported (protected) week; the loaded Jul 13 week is supported
+    stashPut('20/07/2026', JSON.stringify({ d: weekBundle('20/07/2026').days, o: { 0: { d: {}, c: {} } }, cv: { 0: 'orig' } }))
+    const inp: any = { person: 'divot', type: 'Meeting', date: 'Jul 18', endDate: 'Jul 20', allday: true, remarks: '', mod: 'now', yr: 2026, _t: 1 }
+    INPUTS.push(inp)
+    // it covers no loaded day for a ground landing on day 0, so use a day it does cover:
+    inp.date = 'Jul 13'; inp.endDate = 'Jul 20'          // spans loaded Jul 13 → protected Jul 20
+    expect(acceptInput(0, inp, 'g'), 'accept refused — the input spans a protected week').toBe(false)
+    expect(inp.acc, 'no filing landed').toBeUndefined()
+    // and a pre-existing 'g' cannot be unfiled either
+    inp.acc = 'g'
+    expect(unacceptInput(0, inp), 'unaccept refused too').toBe(false)
+    expect(inp.acc, 'the filing decision is untouched').toBe('g')
+    stashClear()
   })
 
   it('a non-authored chip loads a blank, editable seven-day week', () => {
@@ -164,22 +274,50 @@ describe('loadWeek', () => {
   })
 
   /* A NEVER-LANDED INPUT MUST NOT COME BACK DORMANT (26 Aug 26 bug pass). An
-     input filed onto a then-PUBLISHED day is refused by auto-accept and sits
+     input filed onto a PUBLISHED day is refused by auto-accept and sits
      acc-less — which is not a removal, and it correctly still counts. The un
      set used to record it anyway (acc-less + unlanded read as "unaccepted"),
-     so after the day was reopened and the week round-tripped, the restore
-     re-parked it acc:'r': an input no scheduler ever removed silently stopped
-     flagging. unacceptedKeys now records only the explicit 'r' mark. */
-  it('an input filed onto a published day, after a reopen and a round-trip, lands and is not dormant', () => {
+     so after a week round-trip the restore re-parked it acc:'r': an input no
+     scheduler ever removed silently stopped flagging. unacceptedKeys now
+     records only the explicit 'r' mark.
+     Phase 2 removed the reopen take-back (setDayApproved(di,false) is a no-op),
+     so the round-trip now happens with the day STILL published — the input
+     stays refused (never lands) and must still never be parked dormant. */
+  it('an input filed onto a published day is not parked dormant after a week round-trip', () => {
     SCHED.dayOK[0] = 1                           // Monday published (mark set directly — the sign-off gate is not under test)
     const inp: any = { person: 'divot', date: 'Jul 13', type: 'Training', allday: false, s: 540, e: 660, _t: true }
     INPUTS.push(inp)
     expect(autoAcceptInput(inp), 'a published day refuses the landing').toBe(false)
     expect(inp.acc).toBeUndefined()
-    setDayApproved(0, false)                     // the scheduler reopens the day
     loadWeek('20/07/2026')                       // leave — the week stashes (publish state changed)
     loadWeek('13/07/2026')                       // return via the restore path
     expect(inp.acc, 'never removed → never dormant').not.toBe('r')
-    expect(landed(inp), 'the reopened day takes the landing').toBe(true)
+    expect(landed(inp), 'still refused by the published day — not landed, but not removed either').toBe(false)
+    expect(INPUTS.some((r: any) => r.person === 'divot' && r.type === 'Training' && (r as any)._t),
+      'still a live personal input that will land once its day is a draft again').toBe(true)
+  })
+
+  /* FINDING 1 (Astra/Fable inspect, 13 Sep 26): editing or deleting an accepted
+     input whose ground row is on a NON-loaded week must be refused — otherwise the
+     stashed row is stranded with stale content (a silent mismatch, since landings
+     address by the stable id now). */
+  it('refuses to edit or delete an accepted input whose row is on a non-loaded week, and allows it once loaded', () => {
+    const X: any = { person: 'divot', type: 'Meeting', date: 'Jul 13', allday: false, s: 540, e: 600, remarks: '', mod: 'now', yr: 2026, _t: 1 }
+    INPUTS.push(X); expect(acceptInput(0, X, 'g')).toBe(true)      // land X on the loaded week (its row makes the week dirty)
+    expect(landed(X)).toBe(true)
+    loadWeek('20/07/2026')                                        // leave — the week is stashed WITH X's row, X.acc cleared
+    expect(acceptedDay(X), 'no landing on the loaded week now').toBeLessThan(0)
+    const toasts: string[] = []
+    const realToast = HOOKS.toast
+    HOOKS.toast = ((m: any) => { toasts.push(String(m)) }) as any
+    try {
+      expect(commitInputEdit(X, draftOf(X)), 'edit refused').toBe(false)
+      expect(removeInput(X), 'delete refused').toBe(false)
+      expect(toasts.some(t => /Load the week/.test(t)), 'told to load the week first').toBe(true)
+    } finally { HOOKS.toast = realToast }
+    expect(INPUTS.indexOf(X), 'the input is untouched — nothing was stranded').toBeGreaterThanOrEqual(0)
+    loadWeek('13/07/2026')                                        // back on X's own week
+    expect(acceptedDay(X), 'its row is loaded again').toBeGreaterThanOrEqual(0)
+    expect(removeInput(X), 'now the delete goes through').toBe(true)
   })
 })
