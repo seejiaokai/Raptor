@@ -1,7 +1,7 @@
 # [TRK-CSID] Phase 2 — stable hidden ids for Tracker SYLLABUSES (spec)
 
-**Status:** REV 2 — Astra R1 dispositions folded in (§14 is BINDING and supersedes
-any earlier clause it touches) · 13 Sep 26 · awaiting Astra R2
+**Status:** REV 3 — Astra R1+R2 dispositions folded in (§14, §15 are BINDING and
+supersede any earlier clause they touch) · 13 Sep 26 · awaiting Astra R3
 **Part of:** `[ARCH-STACK]` step 1 (stable ids everywhere) · `[TRK-CSID]` 1B-ii
 **Predecessor:** Phase 1 — COURSE ids (`2026-09-13-trk-csid-course-ids-spec.md`,
 4-round Astra red-team, APPROVED, LIVE). This phase MIRRORS its shape; where a
@@ -611,3 +611,128 @@ resumability — airtight, or any residual re-discovery path? (b) the group-by-t
 merge's fail-closed-on-differing-source — right call, or too aggressive? (c) reset
 `plan.epw` too, or keep as a course default? (d) any remaining file/import path where
 a syllabus id is minted or reconciled more than once.
+
+---
+
+## 15. R2 — Astra dispositions & BINDING revisions
+
+Astra R2 verdict **REVISE** — 6 findings (2 HIGH + 4 MEDIUM), all emergent from the
+R1 revisions, all confirmed. **All 6 ACCEPTED.** §15 is authoritative where it
+conflicts with §§1–14. Plan SHA reviewed: `a2490c91…`. (Session
+`01a09b0c-a940-79c2-af3e-70cd7610cb1f`.) The R2 theme: the resumable rewrite must not
+guess name-vs-id (use a payload journal); alias classification must be ONE conservative
+rule shared by store + file; the file catalogue must be a validated union carrying
+`userNamed`; delete must repair every course's plan; and a single unique-label policy
+must cover every catalogue writer.
+
+### CSID2-R2-01 (HIGH — the "name OR id" resumable lookup is still ambiguous) — ACCEPT, REPLACE with a PAYLOAD JOURNAL.
+Counterexample (confirmed): shipped id for `2026` is `B`; a legacy custom chart is
+literally NAMED `B` and gets `sc…` id `C`. Original `v3:master:syls` is `{2026:D1, B:D2}`;
+converted it is `{B:D1, C:D2}`. On retry, name-first lookup mis-assigns `D1` to the
+custom; id-first mis-reads the original. `addSyl` only refuses colons/dupes
+(`core.js:3403–3412`) so a name equal to another chart's destination id is accepted,
+and the two flags don't record which representation a half-written object is in.
+**Binding fix — a durable PAYLOAD JOURNAL; never guess name-vs-id, never re-derive from
+a mutated store:**
+- Replace `kSylIdMap` (name→id only) with `kSylIdJournal` — a single durable record,
+  written and read back BEFORE any store mutation, holding the COMPLETE intended
+  outputs, computed ONCE from the original sources: the name→id map; the full id-keyed
+  `sylcat` (`{id,name,base?,userNamed?}[]`); the full id-keyed `syls` object **with its
+  event payloads**; every layout as `{ destKey: payload }` (payload carried, not moved
+  from a possibly-clobbered live key); the id-forms of order/hidden/tomb/alias; the
+  per-course `plan.sylId` map; and the explicit lists of legacy keys to purge and (at
+  RESET) student-layer keys to sweep.
+- **Apply = replay the journal**: whole-object writes for `syls`/`sylcat`/prefs, and
+  each layout written from the journal's carried payload to its dest key, then source
+  purge — read-back-verified. Whole-object/whole-key writes from carried payloads are
+  idempotent, so a retry simply re-applies; there is no live-object to mis-parse.
+- **Journal atomicity:** `kSylIdJournal` is written+read-back before any mutation; the
+  KEEP flag lands only after the whole replay verifies. If the journal write itself is
+  interrupted, no mutation has begun. (Map/catalogue init is one durable record, closing
+  the "separate writes" gap R2 flagged.)
+- Test: a legacy label equal to another chart's destination id, differing
+  defs/layouts/prefs, interrupted after each apply step → resumes correctly, no swap.
+
+### CSID2-R2-02 (HIGH — alias→built-in classification lacks provenance and diverges store vs file) — ACCEPT, ONE SHARED CONSERVATIVE CLASSIFIER.
+Legacy data carries no provenance (`persistSyl` stores name→events, `collectCharts`
+exports names/defs/layouts only), and §10 mapped every historical alias name to the
+built-in id while §14 wanted an independent custom of that name to get `sc…` — so a v2
+backup of such a custom could silently become an override of `2026` on import while
+store-migration kept it separate. **Binding fix — ONE `classifySyllabus(name, def)` used
+by BOTH store conversion and file normalization, provenance-free and conservative:**
+- **Only a CURRENT canonical shipped name resolves to its deterministic `sb…` id.**
+- **A historical alias name** (a `SYL_RENAME` source such as `'FG JUL 26'`) is treated
+  as an **independent custom (`sc…`)**, NOT auto-folded onto the built-in — in both
+  paths. It never merges two distinct charts, needs no provenance, and cannot diverge.
+  (Cost is nil in practice: the app already rewrites `plan.sylName` alias→canonical at
+  load (`core.js:814`), so a live store's *current* built-in is under the canonical
+  name; and the owner re-imports from a clean current-named backup.)
+- `SYL_RENAME`/`aliases` keep ONE narrow, well-provenanced role: the boot reconcile
+  (§5a) repointing an existing built-in entry's `base` when a *shipped* build renames a
+  built-in (the entry's prior `base` was the old canonical name — clear provenance).
+  This is distinct from classifying an arbitrary legacy stored/file name.
+- Test the SAME ambiguous chart through migration AND backup import → same outcome
+  (separate custom), never a silent override.
+
+### CSID2-R2-03 (MEDIUM — file catalogue must be a validated UNION, not "whichever present") — ACCEPT, MUST FIX.
+A partial export can have `charts.sylcat` covering A while `students.sylcat` covers B;
+neither alone covers the file. **Binding fix:** `normalizeImport` builds the **union** of
+`charts.sylcat` ∪ `students.sylcat` before reconciliation; overlapping ids must AGREE on
+identity metadata (name/base/userNamed) or the file is refused; enforce id- and
+name-uniqueness across the union; every id referenced by any chart, `bySyllabus` block
+or `plan.sylId` must be present in the union (reference-completeness against the union).
+Retain the one union map through the whole apply (charts, students via `upgradeCourses`/
+`reconcileCourseIds`, plan pointers). Test: charts-of-A + students-of-B partial export
+reconciles; a cross-catalogue metadata disagreement is refused.
+
+### CSID2-R2-04 (MEDIUM — delete sweep omits the all-course plan repair moveSylData did) — ACCEPT, MUST FIX.
+`moveSylData` rewrites every course's persisted plan (`core.js:3167–3172`); the R1 sweep
+dropped that, so an unopened course selecting the deleted id keeps a dangling
+`plan.sylId`, which `collectStudents` exports (`733–759, 3737–3741`) and reference-
+completeness then refuses on re-import. **Binding fix:** `delSyl` walks **every** course
+(persisted plans included, not just the live one) and repoints any `plan.sylId` equal to
+the deleted id to a valid remaining syllabus (`firstSylName`-equivalent by id); clear
+matching `lastStudent`/last-edit pointers where they name the deleted id. Test:
+delete → export → import WITHOUT opening the affected courses.
+
+### CSID2-R2-05 (MEDIUM — `userNamed` provenance is not in the file schema, so it is lost on round trip) — ACCEPT, MUST FIX (schema).
+Rename built-in `2026`→`'Instructor Edition'`, export, import into a fresh browser: the
+label arrives without `userNamed`, so `reconcileBuiltins` sees `!userNamed` and restores
+the shipped label on reload — breaking the id+label round trip. **Binding fix:** the
+file `sylcat` entry shape is `{ id, name, base?, userNamed? }`; `userNamed` is validated
+and preserved through normalize/apply. Define the incoming-label rule: importing a
+built-in id that the store already holds keeps the STORE's label if the store's is
+`userNamed` and the file's is not (store user-edit wins), else adopts the file's
+`userNamed` label; a plain (non-userNamed) incoming label never overwrites a local
+userNamed one. Test: rename → export → fresh import → reload keeps the label; a later
+shipped rename still respects it.
+
+### CSID2-R2-06 (MEDIUM — catalogue writers can create duplicate labels) — ACCEPT, ONE UNIQUE-LABEL POLICY.
+A user owns custom `'2027'`; a later build renames built-in `2026`→`'2027'` → two entries
+share a label, breaking `sylIdOf`'s first-match and names-in-modal. **Binding fix — a
+single `ensureUniqueLabel(id, desiredName)` applied by EVERY catalogue writer**
+(`reconcileBuiltins` additions and shipped renames, `renSyl`, `addSyl`, `dupSyl`,
+`restoreHiddenSyl`, import apply): preserve an existing user label, and disambiguate the
+INCOMING one (a shipped rename that collides with a user's custom label appends a
+distinguishing suffix, or retains the prior built-in label when available — never
+silently duplicates). Because the id is the true key, this is a display/lookup guard;
+pair it with making `reconcile`/modal id-first (§9, §10) so a transient collision can
+never resolve the wrong record. Test: newly-shipped built-in AND shipped rename each
+colliding with an existing custom label → labels stay unique, ids untouched.
+
+### Net effect on §§1–14
+- §14 CSID2-01 resumability is REPLACED by the payload journal (CSID2-R2-01).
+- §14 CSID2-03/§10 alias handling is REPLACED by the one shared conservative classifier;
+  historical aliases → custom, not built-in (CSID2-R2-02).
+- §10/§14 CSID2-04 file catalogue becomes a validated UNION carrying `userNamed`
+  (CSID2-R2-03, R2-05).
+- §6/§14 CSID2-08 `delSyl` also repairs every course's plan (CSID2-R2-04).
+- §5a/§9 gain the single `ensureUniqueLabel` writer policy (CSID2-R2-06).
+
+### Round 3
+Changed plan → **re-review by Astra** (approval binds to the new SHA). R3 confirms these
+6 fixes and looks for any further emergent defect; on APPROVED the plan is ready to
+build. Open for R3: (a) does the payload journal fully remove name-vs-id ambiguity, incl.
+the legacy-name-equals-destination-id case? (b) is "historical alias → custom" the right
+conservative call, or does any real store rely on the alias→built-in fold? (c) does the
+union catalogue + `userNamed` rule close the round-trip and partial-export gaps?
