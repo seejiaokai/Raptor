@@ -2411,3 +2411,18 @@ Checkpoint (tasks #59, #60 complete): no further observations.
 **Suggested improvement:** For any migration/re-keying review, add an explicit step: for every legacy pref or store the converter reads, open the PRE-change code that READ it and write down what the old app actually did with each shape (esp. stale/alias/tombstoned names); the observable pre-upgrade state is the contract, not the spec's ideal model. Then seed those exact shapes in a throwaway test and assert the post-upgrade visible set equals the pre-upgrade visible set.
 
 **Principle:** A data migration must preserve what the old READER showed, not what the new identity model says the data meant; review it by diffing old-reader behaviour against new-converter output on the same seed.
+
+### Observation 159: A deterministic LOCAL test failure can still be a local-env artifact — confirm against CI before believing it
+
+**Status:** OPEN
+**Date:** 2026-09-14
+**Session context:** Opus fixing the 1B-ii migration findings; the full local e2e run showed 2 failures (scheduler geometry + Leave War), in suites the change did not touch
+**Skill:** verification-before-completion
+**Type:** open-source
+**Phase/Area:** interpreting a gate failure that is outside the diff's blast radius
+
+**Issue:** Two browser e2e tests failed locally and REPRODUCED at workers=1 (so not a parallelism/starvation flake), which normally reads as "real". But the diff was confined to an unrelated module, so before treating them as blocking I checked the parent merge's CI: those exact jobs had passed in CI, and they also fail on the pre-change baseline locally. Conclusion: a local-environment rendering quirk (browser build/fonts/viewport), green in CI. Re-running locally alone would never have revealed this — only comparing against CI did.
+
+**Suggested improvement:** verification-before-completion should say: when a failing gate lies OUTSIDE the change's blast radius, don't stop at a local re-run (deterministic-locally ≠ real). Confirm against an independent runner — the parent branch's CI conclusion and/or the same test on the pre-change baseline — before either blocking on it or dismissing it. State the blast-radius reasoning explicitly.
+
+**Principle:** A failing check outside the diff's reach is triaged by cross-checking an independent environment (CI, baseline), not by local repetition; local determinism does not distinguish a real failure from a local-environment artifact.
