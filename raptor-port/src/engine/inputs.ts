@@ -1,6 +1,7 @@
 import { VCONF } from './rules'
 import { hhmm, hm24 } from './time'
 import { CURWEEK } from './waves'
+import { newId } from './newid'
 /* A STABLE ADDRESS FOR ONE INPUT (owner, 10 Aug 26 — editing an input's times
    and remarks in place, on the week and on the board).
    Every other editable row in this app is addressed by its position in the
@@ -28,12 +29,13 @@ export function inpTimeText(inp:any,field:any){
    row that then minted a DIFFERENT one, and anything still holding the old
    address was pointing at nothing. Minting at creation puts the id in every
    snapshot the row appears in. The lazy branch stays as a backstop for a row
-   that reaches a builder without having gone through either path. */
-let IIDN=0;
-/* hydration seeds the counter past every stored iid so a row minted this
-   session cannot collide with one that came back from storage */
-export function seedIidCounter(n:number){ if(n>IIDN)IIDN=n; }
-export function inpId(inp:any){return inp.iid||(inp.iid='i'+(++IIDN));}
+   that reaches a builder without having gone through either path.
+   OPAQUE ID (13 Sep 26, ARCH-STACK 1A): the id was a session counter `'i'+n`,
+   which two devices both mint as `i5`. It is now the shared opaque `newId('i')`
+   (engine/newid.ts) — unique across sessions and devices, which is what filing
+   now addresses by (below) and what the Dataverse step needs. No counter to
+   seed on hydrate any more; a stored iid is just kept. */
+export function inpId(inp:any){return inp.iid||(inp.iid=newId('i'));}
 export function mintInpIds(){INPUTS.forEach(inpId);}
 export function inpById(id:any){return INPUTS.find((r:any)=>r.iid===id)||null;}
 

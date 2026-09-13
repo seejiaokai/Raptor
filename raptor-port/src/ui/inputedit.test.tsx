@@ -12,7 +12,7 @@ import { App } from './App'
 import { initStore, setSession, notify, undo, writeInputsBatch } from '../state/store'
 import { INPUTS } from '../engine/inputs'
 import { DAYS } from '../engine/data'
-import { acceptInput, acceptedDay, unacceptInput, inpKey } from '../engine/slots'
+import { acceptInput, acceptedDay, unacceptInput } from '../engine/slots'
 import { inpId } from '../engine/inputs'
 import { INPEDIT, setInpEdit } from './pops'
 import { PIOPEN } from '../state/view'
@@ -47,7 +47,7 @@ const MON = 'Jul 13'
 const monRows = () => INPUTS.filter((i: any) => i.date === MON)
 /* a row's own label on the edit week, addressed by the content key it carries
    — two rows can print the same words, so the words are not an address */
-const weekBtn = (inp: any) => $(`#eWeek .day[data-day="0"] [data-inpedit="${inpKey(inp)}"]`)
+const weekBtn = (inp: any) => $(`#eWeek .day[data-day="0"] [data-inpedit="${inpId(inp)}"]`)
 
 beforeAll(async () => {
   initStore()
@@ -350,14 +350,14 @@ describe('retyping an accepted input into a never-accepted type', () => {
     const r: any = { person: 'split', date: DATES[0], allday: false, s: 540, e: 1020, type: 'Meeting', remarks: 'sqn brief' }
     INPUTS.push(r)
     expect(acceptInput(0, r, 'g')).toBe(true)
-    expect((DAYS[0].ground || []).filter((g: any) => g.src === inpKey(r)).length).toBe(1)
+    expect((DAYS[0].ground || []).filter((g: any) => g.src === inpId(r)).length).toBe(1)
 
     const said: string[] = []
     const orig = HOOKS.toast
     HOOKS.toast = (m: any) => { said.push(String(m)) }
     try { commitInputEdit(r, draftOf(r, 'LL')) } finally { HOOKS.toast = orig }
 
-    expect((DAYS[0].ground || []).filter((g: any) => g.src === inpKey(r)).length).toBe(0)
+    expect((DAYS[0].ground || []).filter((g: any) => g.src === inpId(r)).length).toBe(0)
     expect(r.acc).toBeFalsy()
     expect(said.some(m => /does not go on the Ground Programme/.test(m)), said.join(' | ')).toBe(true)
   })
@@ -372,7 +372,7 @@ describe('retyping an accepted input into a never-accepted type', () => {
     HOOKS.toast = (m: any) => { said.push(String(m)) }
     try { commitInputEdit(r, draftOf(r, 'Appointment')) } finally { HOOKS.toast = orig }
 
-    expect((DAYS[0].ground || []).filter((g: any) => g.src === inpKey(r)).length).toBe(1)
+    expect((DAYS[0].ground || []).filter((g: any) => g.src === inpId(r)).length).toBe(1)
     expect(r.acc).toBe('g')
     expect(said.some(m => /does not go on the Ground Programme/.test(m))).toBe(false)
   })
@@ -421,8 +421,9 @@ describe('editing a dormant (removed) input', () => {
 })
 
 /* ONE SANS RECORD PER DAY — the overlap guard that stops two records colliding
-   on one person+day (they'd share an inpKey and clicking one card could edit or
-   delete the other). Pure logic over INPUTS, tested directly. */
+   on one person+day. sansGate reads only the first such record, so two silently
+   break (the edit-address half of the old hazard is gone since cards address by
+   the stable inpId, not the shared inpKey). Pure logic over INPUTS, tested directly. */
 describe('sansOverlapRefusal', () => {
   const SNAP = JSON.stringify(INPUTS)
   const restore = () => { INPUTS.length = 0; JSON.parse(SNAP).forEach((i: any) => INPUTS.push(i)) }

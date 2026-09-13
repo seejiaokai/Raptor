@@ -63,14 +63,19 @@ describe('hydrate', () => {
     expect(INPUTS.length).toBeGreaterThan(0)
   })
 
-  it('stored inputs REPLACE the seed and the seed merges are skipped; new ids do not collide', async () => {
+  it('stored inputs REPLACE the seed and keep their ids; a fresh opaque id cannot collide', async () => {
     const be = new MemoryBackend()
     const stored = [{ ...ROW, iid: 'i57', yr: 2026 }, { ...ROW, date: 'Jul 15', iid: 'i58', yr: 2026 }]
     be.seed({ inputs: { all: JSON.stringify(stored) } })
     await boot(be)
     expect(isHydrated()).toBe(true)
     expect(INPUTS).toHaveLength(2)
-    expect(inpId({} as any)).toBe('i59')
+    expect(INPUTS.map((r: any) => r.iid)).toEqual(['i57', 'i58'])   // stored ids kept verbatim
+    /* iid is opaque now (engine/newid.ts) — no counter to seed past the stored
+       ids; a freshly minted id is prefixed 'i' and cannot collide with them */
+    const fresh = inpId({} as any)
+    expect(fresh).toMatch(/^i/)
+    expect(['i57', 'i58']).not.toContain(fresh)
   })
 
   it('stored people replace the roster', async () => {

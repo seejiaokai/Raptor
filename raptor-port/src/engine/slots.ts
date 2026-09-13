@@ -359,15 +359,15 @@ export function acceptInput(di:any,inp:any,dest:any){
      site honest. */
   if(isUnavail(inp.type))return false;
   if(dest==='u'){ inp.acc='u'; markInputDays(inp,di); return true; }
-  /* inpKey is a CONTENT key, and content keys are not unique: two inputs that
-     agree on person, date, type AND start minute mint the same `src`. Both
-     acceptedDay and unacceptInput resolve a row by taking the FIRST match, so a
-     second row carrying an existing key makes the link ambiguous — unaccepting
-     one input would silently remove the other's row, and re-accepting would
-     duplicate rather than restore. Refuse the second accept instead of minting
-     the ambiguity; the caller reports it. Narrow (it needs an identical start
-     minute) but silent, which is the part worth closing. */
-  const key=inpKey(inp);
+  /* THE FILING ADDRESS IS THE INPUT'S STABLE ID (13 Sep 26, ARCH-STACK 1A;
+     was the content key inpKey). Content keys are not unique — two inputs
+     agreeing on person·date·type·start-minute (twins) minted the same `src`, so
+     acceptedDay/unacceptInput/reconcile resolved the FIRST match and unaccepting
+     one silently removed the other's row. The old mitigation REFUSED the second
+     accept; the id fix lets both twins file independently. The guard below now
+     means "this EXACT input already has a landing" — a correct idempotency check
+     (re-accepting the same input never duplicates), not a twin refusal. */
+  const key=inpId(inp);
   if(DAYS.some((dd:any)=>((dd&&dd.ground)||[]).some((r:any)=>r.src===key)))return false;
   d.ground=d.ground||[];
   const ri=d.ground.length;
@@ -440,7 +440,7 @@ export function autoAcceptSeedInputs(){
    onto any of them — the start date is a guess that silently misses. */
 export function acceptedDay(inp:any){
   if(!inp||inp.acc!=='g')return -1;
-  const key=inpKey(inp);
+  const key=inpId(inp);
   for(let i=0;i<DAYS.length;i++){
     const g=(DAYS[i]||{}).ground;
     if(g&&g.some((r:any)=>r.src===key))return i;
@@ -472,7 +472,7 @@ export function reconcileDayFiling(di:any){
     /* is there a ground row for this input on ANY loaded day? Scanned by content
        key directly (NOT acceptedDay, which early-returns unless acc is already
        'g' and so cannot re-derive) — the same scan reconcileLandedAcc uses. */
-    const key=inpKey(inp);
+    const key=inpId(inp);
     const landed=DAYS.some((d:any)=>((d&&d.ground)||[]).some((g:any)=>g.src===key));
     /* BOTH directions (P2-REV2-05 + its round-2 regression P2-QREV/Fable-2): a 'g'
        whose row a replacement DROPPED is unfiled; a falsy-acc personal input whose
@@ -490,7 +490,7 @@ export function unacceptInput(di:any,inp:any){
     /* search by content key across the week rather than trusting di — see
        acceptedDay. Guessing the day left the real row orphaned on another day
        AND let the next accept push a duplicate. */
-    const key=inpKey(inp);
+    const key=inpId(inp);
     for(let d2=0;d2<DAYS.length;d2++){
       const g=(DAYS[d2]||{}).ground; if(!g||!g.length)continue;
       const i=g.findIndex((r:any)=>r.src===key);

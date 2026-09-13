@@ -7,7 +7,7 @@
    ignores unchanged strings, so this is cheap and sends no idle letters).
    No import of state/store.ts here — store.ts imports isHydrated from us,
    and the two snapshot helpers it owns arrive through wirePersist. */
-import { INPUTS, seedIidCounter } from '../engine/inputs'
+import { INPUTS } from '../engine/inputs'
 import { PEOPLE, ID_BY_CS } from '../engine/people'
 import { CURWEEK } from '../engine/waves'
 import { HOOKS } from '../engine/hooks'
@@ -52,7 +52,8 @@ export function hydrate(wb: Whiteboard): void {
   if (Array.isArray(inputs)) {
     INPUTS.length = 0
     inputs.forEach((r: any) => { if (isRow(r)) INPUTS.push(r) })
-    seedIidCounter(maxNum(INPUTS.map((r: any) => String(r.iid ?? '')), 'i'))
+    /* iid is opaque now (engine/newid.ts) — no counter to seed past stored ids;
+       a stored iid is kept as-is and a row missing one mints via mintInpIds. */
     hydrated = true
   }
   const people = parse(wb.get('people', 'all'))

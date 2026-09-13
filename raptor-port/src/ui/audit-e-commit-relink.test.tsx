@@ -11,7 +11,7 @@ import { initStore, setSession, undo, writeInputs } from '../state/store'
 import { INPUTS, DATES, inpId } from '../engine/inputs'
 import { DAYS } from '../engine/data'
 import { SCHED } from '../engine/publish'
-import { acceptInput, acceptedDay, inpKey } from '../engine/slots'
+import { acceptInput, acceptedDay } from '../engine/slots'
 import { commitInputEdit, removeInput, setInpField, draftOf } from './inputedit'
 import { HOOKS } from '../engine/hooks'
 import { afterSchedMutate } from '../state/view'
@@ -19,7 +19,7 @@ import { PEOPLE } from '../engine/people'
 
 let TOASTS: string[] = []
 const groundRows = () => DAYS.flatMap((d: any, di: number) => (d.ground || []).map((r: any) => ({ di, row: r })))
-const rowsFor = (inp: any) => groundRows().filter(g => g.row.src === inpKey(inp))
+const rowsFor = (inp: any) => groundRows().filter(g => g.row.src === inpId(inp))
 
 beforeAll(() => {
   initStore()
@@ -50,7 +50,7 @@ describe('commitInputEdit — the keep branch and the moved-outside-week branch'
     const inp: any = plant({ person: 'bane', date: 'Jul 14', allday: false, s: 600, e: 660, type: 'Meeting', remarks: 'leaving', mod: '' })
     expect(acceptInput(1, inp, 'g')).toBe(true)
     afterSchedMutate()
-    const key = inpKey(inp)
+    const key = inpId(inp)
     const d = draftOf(inp); d.start = '2026-07-25'; d.end = ''
     expect(commitInputEdit(inp, d)).toBe(true)
     expect(inp.date).toBe('Jul 25')
@@ -69,7 +69,7 @@ describe('commitInputEdit — the keep branch and the moved-outside-week branch'
     expect(commitInputEdit(inp, d)).toBe(true)
     expect(acceptedDay(inp), 'the row followed the date').toBe(3)
     expect(rowsFor(inp).length).toBe(1)
-    expect((DAYS[0].ground || []).some((r: any) => r.src === inpKey(inp)), 'nothing left on Monday').toBe(false)
+    expect((DAYS[0].ground || []).some((r: any) => r.src === inpId(inp)), 'nothing left on Monday').toBe(false)
     scrap(inp)
   })
 
@@ -105,18 +105,21 @@ describe('commitInputEdit — reassigning an ACCEPTED input to another person', 
      only), so this drives the call under the session the real gesture has */
   beforeEach(() => setSession({ user: 'a', role: 'admin' }))
   afterEach(() => setSession(null))
-  it('relinks the ground row to the new person, leaving nothing of the old', () => {
+  it('relinks the ground row to the new person, keeping its stable id', () => {
     const inp: any = plant({ person: 'bane', date: 'Jul 13', allday: false, s: 600, e: 660, type: 'Meeting', remarks: 'handover', mod: '' })
     expect(acceptInput(0, inp, 'g')).toBe(true)
     afterSchedMutate()
-    const oldKey = inpKey(inp)
+    const id = inpId(inp)
     const d = draftOf(inp); d.person = 'stiff'
     expect(commitInputEdit(inp, d)).toBe(true)
     expect(inp.person).toBe('stiff')
-    /* the old person's filed copy is gone — its content key matches nothing */
-    expect(groundRows().some(g => g.row.src === oldKey), 'no row keyed to the old person').toBe(false)
+    /* the input's stable id does NOT change when the person is reassigned (person
+       was part of the old content key, so re-personing used to orphan the row and
+       mint a fresh one). The row is now relinked in place: one row, src unchanged,
+       who updated to the new person's callsign. */
     const rows = rowsFor(inp)
-    expect(rows.length, 'one row under the new key').toBe(1)
+    expect(rows.length, 'still exactly one row, under the unchanged id').toBe(1)
+    expect(rows[0].row.src, 'src is the input\'s stable id, unchanged by the re-person').toBe(id)
     expect(rows[0].row.who, 'who is the new person\'s CALLSIGN').toBe(PEOPLE.stiff.cs)
     scrap(inp)
   })
@@ -156,7 +159,7 @@ describe('removeInput — filed copies and undo coherence', () => {
     const inp: any = plant({ person: 'stiff', date: 'Jul 13', allday: false, s: 600, e: 660, type: 'Meeting', remarks: 'undo me', mod: '' })
     expect(acceptInput(0, inp, 'g')).toBe(true)
     afterSchedMutate()
-    const key = inpKey(inp)
+    const key = inpId(inp)
     expect(removeInput(inp)).toBe(true)
     expect(INPUTS.indexOf(inp)).toBe(-1)
     expect(groundRows().some(g => g.row.src === key), 'row gone with it').toBe(false)

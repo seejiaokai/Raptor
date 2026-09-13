@@ -17,14 +17,14 @@ import { slotVal, setSlotVal, fillSlot, txtSet } from '../engine/slots'
 import { validate } from '../engine/validate'
 import { lookaheadLoad } from '../engine/lookahead'
 import { rulesLoad } from '../engine/rules'
-import { mintInpIds, INPUTS, DATES, isPersonal, baseYear, dateIx, inputCoversDate } from '../engine/inputs'
+import { mintInpIds, INPUTS, DATES, isPersonal, baseYear, dateIx, inputCoversDate, inpId } from '../engine/inputs'
 import { DAYS } from '../engine/data'
 import { ensureRowIds, backfillSnapshotIds, migrateBookKeys, migrateLegacyIds } from '../engine/rowids'
 import { CURWEEK, setCurWeek } from '../engine/waves'
 import { weekBundle, otherWeekInputs } from '../engine/weeks-data'
 import { seedDemoSans, seedDemoMedical } from './demoseed'
 import { docAdd } from './docs'
-import { storesLoad, cxReasonsLoad, dutyTplLoad, waveTplLoad, dayTplLoad, autoAcceptSeedInputs, autoAcceptInput, inpKey, secOrder, moveSectionModel, reorderSectionTo, secDefaultLoad, waveDefaultLoad } from '../engine'
+import { storesLoad, cxReasonsLoad, dutyTplLoad, waveTplLoad, dayTplLoad, autoAcceptSeedInputs, autoAcceptInput, secOrder, moveSectionModel, reorderSectionTo, secDefaultLoad, waveDefaultLoad } from '../engine'
 import { qualColsLoad } from '../engine/qualcols'
 import { elogClear } from '../engine/editlog'
 import { markDeletion, resetSched, SCHED, dayApproved, protectedWeek, amFormatOf } from '../engine/publish'
@@ -337,7 +337,10 @@ export function toggleRole() {
    rows carry the explicit removal mark (acc 'r') on an editable day, and the
    restore skips the auto-land for those. A row NEW since this week was last open is not in the
    set (it had no chance to be unaccepted here), so it still lands as intended.
-   Content key (inpKey), so an id renumber between visits can't lose the mark. */
+   Stable input id (inpId) since 13 Sep 26 (ARCH-STACK 1A): two content-identical
+   inputs (twins) used to share one inpKey, so unaccepting one recorded a token
+   the other also wore and the restore re-parked the twin under its live row.
+   The id is unique per input, so the mark now names exactly the row removed. */
 function unacceptedKeys(): string[] {
   const out: string[] = []
   INPUTS.forEach((r: any) => {
@@ -354,10 +357,11 @@ function unacceptedKeys(): string[] {
     if (!isPersonal(r.type) || r.acc !== 'r') return
     const di = dateIx(r.date, r.yr)
     if (di < 0 || dayApproved(di)) return
-    /* the landed filter stays: content keys are not unique, so an 'r' row
-       whose key a landed TWIN also wears must not be recorded — the restore
-       loop matches by key and would re-park the twin under its live row */
-    const key = inpKey(r)
+    /* the landed filter stays as a plain correctness guard (an 'r' row with its
+       OWN landing still on a day is not recorded): the id is unique, so the old
+       twin hazard this guarded against can no longer arise, but the guard costs
+       nothing and keeps the "only record a genuinely-unlanded removal" invariant */
+    const key = inpId(r)
     const landed = DAYS.some((d: any) => ((d && d.ground) || []).some((g: any) => g.src === key))
     if (!landed) out.push(key)
   })
@@ -405,7 +409,7 @@ function reconcileLandedAcc() {
        multi-day input can start in a prior week yet land on this week's Monday
        (P2-REREVIEW-07); the old dateIx(start) guard dropped its 'g' on
        navigation, and the frozen fingerprint then read a phantom amendment. */
-    const key = inpKey(r)
+    const key = inpId(r)
     if (DAYS.some((d: any) => ((d && d.ground) || []).some((g: any) => g.src === key))) r.acc = 'g'
   })
 }
@@ -518,7 +522,7 @@ function applyWeekModel(v: any): any {
        re-entered — the exact surprise the owner reported (26 Aug 26). */
     INPUTS.forEach((r: any) => {
       if (inputProtected(r)) return
-      if (un.has(inpKey(r))) { if (isPersonal(r.type)) r.acc = 'r' }
+      if (un.has(inpId(r))) { if (isPersonal(r.type)) r.acc = 'r' }
       else autoAcceptInput(r)
     })
     SCHED.pending = savedPending; SCHED.changes = savedChanges; SCHED.added = savedAdded

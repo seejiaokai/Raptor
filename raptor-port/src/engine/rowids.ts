@@ -1,4 +1,5 @@
 // src/engine/rowids.ts
+import { newId } from './newid'
 /* STABLE ROW IDS (10 Sep 26, the stable-ids round). A schedule row — a wave,
    a Go, a seat pair, a duty block or desk, a sim row, a programme or ground
    row — is addressed by its POSITION (the slot-key grammar, keys.ts), and
@@ -18,7 +19,9 @@
    VERSION of the same day, not an independent copy, so it KEEPS the source ids
    — and it never coexists with the live day in DAYS, so the dedupe below never
    sees the two together. */
-export function mintRowId(){return 'r'+Date.now().toString(36)+Math.random().toString(36).slice(2,8);}
+/* the opaque-id minter now lives in newid.ts (shared with inputs' iid and note
+   lines, 13 Sep 26); mintRowId keeps its name and its 'r' prefix. */
+export function mintRowId(){return newId('r');}
 /* every row object of one day, parents before children, in section order */
 export function rowsOf(d:any):any[]{
   const out:any[]=[];

@@ -8,7 +8,7 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import { DAYS } from '../engine/data'
 import { INPUTS } from '../engine/inputs'
-import { inpKey } from '../engine/slots'
+import { inpId } from '../engine/inputs'
 import { esc } from '../state/view'
 import { sansCardsHTML, sansSectionHTML } from './html'
 import { sbSansPanel } from './board-html'
@@ -60,10 +60,10 @@ describe('sansCardsHTML — the shared SANS card grid', () => {
     expect(order).toEqual(['waldo', 'nick', 'bullet', 'cards', 'badger', 'wrangler'])
   })
 
-  it('a card carries the exact data-inpedit address inpEditLabel uses (esc(inpKey(inp)))', () => {
+  it('a card carries the exact data-inpedit address inpEditLabel uses (esc(inpId(inp)))', () => {
     const rec = { person: 'ipman', date: dt(), allday: true, type: 'SANS Availability', sans: { f: true }, remarks: 'keen', mod: 'now' }
     const html = sansCardsHTML([rec], 0)
-    expect(html).toContain(`data-inpedit="${esc(inpKey(rec))}"`)
+    expect(html).toContain(`data-inpedit="${esc(inpId(rec))}"`)
     expect(html).toContain('<button class="sanscard"')
   })
 

@@ -1,9 +1,9 @@
 // @vitest-environment jsdom
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { initStore, loadWeek } from './store'
-import { INPUTS } from '../engine/inputs'
+import { INPUTS, inpId } from '../engine/inputs'
 import { DAYS } from '../engine/data'
-import { inpKey, reconcileDayFiling } from '../engine/slots'
+import { reconcileDayFiling } from '../engine/slots'
 import { stashClear, stashPut } from '../engine/weekstash'
 
 const seed = JSON.stringify(INPUTS)
@@ -18,7 +18,7 @@ const span = (acc?: string) => {
 describe('Pile 1 protected spanning global filing', () => {
   it.each(['g', undefined])('reconcile preserves global acc=%s despite the normal week landing', acc => {
     const row = span(acc)
-    if (!acc) DAYS[4].ground.push({ src: inpKey(row) })
+    if (!acc) DAYS[4].ground.push({ src: inpId(row) })
     reconcileDayFiling(4)
     expect(row.acc).toBe(acc)
   })
@@ -34,7 +34,7 @@ describe('Pile 1 protected spanning global filing', () => {
     INPUTS.push(row)
     reconcileDayFiling(4)
     expect(row.acc).toBeUndefined()
-    DAYS[4].ground.push({ src: inpKey(row) })
+    DAYS[4].ground.push({ src: inpId(row) })
     reconcileDayFiling(4)
     expect(row.acc).toBe('g')
   })

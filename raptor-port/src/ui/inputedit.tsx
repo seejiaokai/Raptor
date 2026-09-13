@@ -19,7 +19,7 @@ import { MedClashConfirm } from './MedClashConfirm'
 import { OilConfirm } from './OilConfirm'
 import { docAdd, docFields, docGet, rowDocIds } from '../state/docs'
 import { UploadIcon } from './icons'
-import { acceptInput, autoAcceptInput, unacceptInput, acceptedDay, inpKey } from '../engine/slots'
+import { acceptInput, autoAcceptInput, unacceptInput, acceptedDay } from '../engine/slots'
 import { DAYS } from '../engine/data'
 import { PEOPLE, isSpecial } from '../engine/people'
 import { hhmm, parseHM, hmOK } from '../engine/time'
@@ -197,10 +197,11 @@ export function sansRefusal(person: any, sans: any): string {
 
 /* ONE SANS RECORD PER DAY (bug-test fix). SANS Availability is one window per
    record: two records covering the same person on the same day break silently —
-   sansGate/sansAvailOn (engine/inputs.ts) read only the FIRST, the card grid
-   draws BOTH, and because inpKey is `person|date|type|s` two same-day records
-   share an edit address, so clicking one card can edit — or delete — the other
-   (engine/slots.ts inpKey). So refuse a new/edited record whose date RANGE
+   sansGate/sansAvailOn (engine/inputs.ts) read only the FIRST, and the card grid
+   draws BOTH. (The edit-address half of this hazard is gone since 13 Sep 26:
+   cards address the input by its stable inpId, not the shared inpKey, so a click
+   can no longer edit or delete the wrong record — but sansGate still reads only
+   the first, which is reason enough to keep the rule.) So refuse a new/edited record whose date RANGE
    overlaps an existing SANS record for the same person; `except` is the row
    being edited, which never clashes with itself. To offer two windows on one
    day the member ticks both events on the one record — the feature's own model.
@@ -914,7 +915,7 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
        and put back onto the regenerated row after the re-accept. */
     let extras: any = null
     if (wasDi >= 0) {
-      const oldRow = ((DAYS[wasDi] || {}).ground || []).find((g: any) => g.src === inpKey(r))
+      const oldRow = ((DAYS[wasDi] || {}).ground || []).find((g: any) => g.src === inpId(r))
       if (oldRow && (oldRow.more?.length || oldRow.flag || oldRow.cx))
         extras = { more: oldRow.more, flag: oldRow.flag, cx: oldRow.cx }
     }
@@ -1024,7 +1025,7 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
             ? `${r.type} does not go on the Ground Programme — its row has been removed`
             : 'An identical row is already on the Ground Programme — this one was not put back', 'warn')
         else if (extras && wasAcc === 'g') {
-          const nr = ((DAYS[di] || {}).ground || []).find((g: any) => g.src === inpKey(r))
+          const nr = ((DAYS[di] || {}).ground || []).find((g: any) => g.src === inpId(r))
           if (nr) {
             if (extras.more?.length) nr.more = extras.more
             if (extras.flag) nr.flag = extras.flag

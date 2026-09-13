@@ -12,8 +12,8 @@
    scheduler.css and covered by the geometry gate. */
 import { beforeEach, describe, expect, it } from 'vitest'
 import { DAYS } from '../engine/data'
-import { INPUTS, isLateInput, inputDueISO } from '../engine/inputs'
-import { acceptInput, inpKey } from '../engine/slots'
+import { INPUTS, isLateInput, inputDueISO, inpId } from '../engine/inputs'
+import { acceptInput } from '../engine/slots'
 import { validate, WARN } from '../engine/validate'
 import { VCONF, rulesReset } from '../engine/rules'
 import { dayHTML } from './html'
@@ -114,7 +114,7 @@ describe('a personal input promoted onto the programme', () => {
     const before = marks(dayHTML(di, false))
     expect(acceptInput(di, inp, 'g')).toBe(true)
     const row = DAYS[di].ground[DAYS[di].ground.length - 1]
-    expect(row.src, 'the promoted row keeps the source key').toBe(inpKey(inp))
+    expect(row.src, 'the promoted row keeps the source key').toBe(inpId(inp))
     const after = dayHTML(di, false)
     expect(marks(after), 'the view page gained exactly one').toBe(before + 1)
     /* and it landed in the promoted row's REMARKS cell like every other

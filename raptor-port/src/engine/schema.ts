@@ -145,7 +145,7 @@ export type SansOffer = { f?: true; o?: true; a?: true }
 
 /** One filed input (leave / away / medical / activity). */
 export type Input = {
-  /** Stable address, minted `'i' + n` at creation — engine (`mintInpIds` at boot, `inpId` on add). Absent only inside a seed literal before boot. */
+  /** Stable opaque id (`newId('i')`, engine/newid.ts), minted at creation — engine (`mintInpIds` at boot, `inpId` on add). What filing/accept/undo/edit address by (13 Sep 26, ARCH-STACK 1A). Absent only inside a seed literal before boot. */
   iid?: string
   /** A PEOPLE id — seed; screen. */
   person: string

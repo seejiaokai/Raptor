@@ -3,7 +3,7 @@
    the issued programme when a scheduler accepts it. */
 import { beforeEach, describe, expect, it } from 'vitest'
 import { DAYS } from './data'
-import { INPUTS, isPersonal, isUnavail, inpLabel } from './inputs'
+import { INPUTS, isPersonal, isUnavail, inpLabel, inpId } from './inputs'
 import { collectEvents } from './events'
 import { isSpecial } from './people'
 import { acceptInput, unacceptInput, inpKey, slotVal, txtGet, txtSet } from './slots'
@@ -165,7 +165,7 @@ describe('accepting a personal input', () => {
     DAYS[0].ground.splice(0, 1)                      // something else deleted meanwhile
     expect(unacceptInput(0, inp)).toBe(true)
     expect(DAYS[0].ground.length).toBe(n - 2)
-    expect(DAYS[0].ground.some((r: any) => r.src === inpKey(inp))).toBe(false)
+    expect(DAYS[0].ground.some((r: any) => r.src === inpId(inp))).toBe(false)
     /* 'r', not undefined, since 26 Aug 26 (owner): a removal parks the input
        DORMANT rather than resetting it to fresh — see inputDormant */
     expect(inp.acc).toBe('r')
@@ -465,39 +465,44 @@ describe('an Other input reads by its remarks', () => {
   })
 })
 
-/* THE CONTENT KEY IS NOT UNIQUE (11 Aug 26). inpKey is person|date|type|start,
-   so two inputs agreeing on all four mint the same `src`. acceptedDay and
-   unacceptInput both resolve a row by the FIRST match, so a second row carrying
-   an existing key makes the link ambiguous — unaccepting one input would remove
-   the other's row, and re-accepting would duplicate rather than restore. */
-describe('a second accept that would mint a duplicate content key', () => {
+/* FILING ADDRESSES THE INPUT'S STABLE ID, NOT ITS CONTENT KEY (13 Sep 26,
+   ARCH-STACK 1A). inpKey is person|date|type|start, so two inputs agreeing on
+   all four share it. The ground row's `src` (and accept/unaccept resolution) is
+   now the input's unique inpId, so two content-key twins file INDEPENDENTLY: the
+   old code REFUSED the second accept to dodge an ambiguous link; now both land
+   and each unaccepts on its own, and re-accepting the SAME input is idempotent. */
+describe('two content-key twins file by their own stable id', () => {
   const twin = () => ({ person: 'pike', date: 'Jul 13', allday: false, s: 540, e: 600,
                         type: 'Appointment', remarks: '', mod: '' } as any)
 
-  it('is refused rather than minting an ambiguous link', () => {
+  it('both accept and land two distinct rows', () => {
     const a = twin(), b = twin()
     b.e = 700                                  // a genuinely different input...
     INPUTS.push(a); INPUTS.push(b)
-    expect(inpKey(a)).toBe(inpKey(b))          // ...that nonetheless shares the key
+    expect(inpKey(a)).toBe(inpKey(b))          // ...that shares the content key
+    expect(inpId(a)).not.toBe(inpId(b))        // but not the stable id
     expect(acceptInput(0, a, 'g')).toBe(true)
-    expect(acceptInput(0, b, 'g')).toBe(false)
-    expect(b.acc).toBeFalsy()
-    expect((DAYS[0].ground || []).filter((r: any) => r.src === inpKey(a)).length).toBe(1)
+    expect(acceptInput(0, b, 'g')).toBe(true)  // no longer refused
+    expect(b.acc).toBe('g')
+    expect((DAYS[0].ground || []).filter((r: any) => r.src === inpId(a)).length).toBe(1)
+    expect((DAYS[0].ground || []).filter((r: any) => r.src === inpId(b)).length).toBe(1)
   })
 
-  it('and the first input can still be unaccepted cleanly afterwards', () => {
+  it('unaccepting one twin leaves the other landed', () => {
     const a = twin(), b = twin(); b.e = 700
     INPUTS.push(a); INPUTS.push(b)
     acceptInput(0, a, 'g'); acceptInput(0, b, 'g')
     expect(unacceptInput(0, a)).toBe(true)
-    expect((DAYS[0].ground || []).filter((r: any) => r.src === inpKey(a)).length).toBe(0)
+    expect((DAYS[0].ground || []).filter((r: any) => r.src === inpId(a)).length).toBe(0)
+    expect((DAYS[0].ground || []).filter((r: any) => r.src === inpId(b)).length).toBe(1)  // twin B intact
+    expect(b.acc).toBe('g')
   })
 
-  it('a different start minute is a different key, and both are accepted', () => {
-    const a = twin(), b = twin(); b.s = 541
-    INPUTS.push(a); INPUTS.push(b)
-    expect(inpKey(a)).not.toBe(inpKey(b))
+  it('re-accepting the SAME input is idempotent — no duplicate row', () => {
+    const a = twin()
+    INPUTS.push(a)
     expect(acceptInput(0, a, 'g')).toBe(true)
-    expect(acceptInput(0, b, 'g')).toBe(true)
+    expect(acceptInput(0, a, 'g')).toBe(false)   // already landed — the guard now means "this exact input"
+    expect((DAYS[0].ground || []).filter((r: any) => r.src === inpId(a)).length).toBe(1)
   })
 })

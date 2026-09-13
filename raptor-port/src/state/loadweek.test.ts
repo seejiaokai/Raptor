@@ -13,7 +13,7 @@ import { beforeEach, describe, expect, it } from 'vitest'
 import { initStore, loadWeek, weekStashSnap } from './store'
 import { DAYS } from '../engine/data'
 import { DATES, INPUTS, inputCoversDate } from '../engine/inputs'
-import { autoAcceptInput, unacceptInput, inpKey, acceptInput } from '../engine'
+import { autoAcceptInput, unacceptInput, inpId, acceptInput } from '../engine'
 import { reconcileDayFiling, acceptedDay } from '../engine/slots'
 import { stashClear, stashPut } from '../engine/weekstash'
 import { weekBundle } from '../engine/weeks-data'
@@ -22,7 +22,7 @@ import { HIST } from './history'
 
 /* is this input's ground row currently sitting on some day of the loaded week? */
 const landed = (inp: any) =>
-  DAYS.some((d: any) => ((d && d.ground) || []).some((g: any) => g.src === inpKey(inp)))
+  DAYS.some((d: any) => ((d && d.ground) || []).some((g: any) => g.src === inpId(inp)))
 
 /* INPUTS and the week stash are BOTH module-level session state, and neither
    initStore nor loadWeek wipes them — a real reload discards the module, which
@@ -89,7 +89,7 @@ describe('loadWeek', () => {
       const dangling: any = { person: 'ranger', type: 'Meeting', date: 'Jul 13', allday: true, remarks: '', mod: 'now', yr: 2026, _t: 1 }
       INPUTS.push(dangling); expect(acceptInput(0, dangling, 'g')).toBe(true)
       // simulate a recovery content-replace that drops ONLY the dangling row
-      const ix = DAYS[0].ground.findIndex((r: any) => r.src === inpKey(dangling))
+      const ix = DAYS[0].ground.findIndex((r: any) => r.src === inpId(dangling))
       DAYS[0].ground.splice(ix, 1)
       const filed: any = { person: 'bane', type: 'Meeting', date: 'Jul 13', allday: true, remarks: '', mod: 'now', yr: 2026, _t: 1 }
       INPUTS.push(filed); expect(acceptInput(0, filed, 'u')).toBe(true)       // a 'u' filing decision — no row
@@ -102,7 +102,7 @@ describe('loadWeek', () => {
     it('RE-DERIVES g when a replacement restores the row — the round-2 regression (P2-QREV/Fable-2)', () => {
       const inp: any = { person: 'divot', type: 'Meeting', date: 'Jul 13', allday: true, remarks: '', mod: 'now', yr: 2026, _t: 1 }
       INPUTS.push(inp); expect(acceptInput(0, inp, 'g')).toBe(true)
-      const key = inpKey(inp)
+      const key = inpId(inp)
       const rowIx = DAYS[0].ground.findIndex((r: any) => r.src === key)
       const rowCopy = DAYS[0].ground[rowIx]
       // a draft switch AWAY drops the row → reconcile unfiles (correct)
@@ -121,7 +121,7 @@ describe('loadWeek', () => {
       const g = signOf(0); g.cur = 'ignite'; g.sked = 'bane'; g.plan = 'stiff'; g.appr = 'pump'
       setDayApproved(0, true)
       // recovery-style: the replacement drops the row; without the fix acc='g' dangles
-      const ix = DAYS[0].ground.findIndex((r: any) => r.src === inpKey(inp))
+      const ix = DAYS[0].ground.findIndex((r: any) => r.src === inpId(inp))
       DAYS[0].ground.splice(ix, 1)
       reconcileDayFiling(0)                                  // now runs at every replacement site (P2-QREV-07), not only in rebaseDayPending
       expect(inp.acc, 'reconciled — no dangling g to freeze').toBeUndefined()

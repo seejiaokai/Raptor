@@ -4,8 +4,8 @@
    New file only — no source or existing test is touched. */
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { DAYS } from './data'
-import { INPUTS, DATES, inputCoversDate } from './inputs'
-import { inpKey, acceptInput, acceptedDay } from './slots'
+import { INPUTS, DATES, inputCoversDate, inpId } from './inputs'
+import { acceptInput, acceptedDay } from './slots'
 import { validate } from './validate'
 import { slotBar } from './avail'
 import { dayOff } from './avail'
@@ -53,7 +53,7 @@ describe('gap (a): the accepted-row relink branches of commitInputEdit', () => {
     expect(commitInputEdit(r, d)).toBe(true)
     expect(r.acc).toBe('g')
     expect(acceptedDay(r)).toBe(3)    // stayed on Jul 16, not moved to the new start date
-    expect(groundRowsWith(inpKey(r)).length).toBe(1)
+    expect(groundRowsWith(inpId(r)).length).toBe(1)
   })
 
   it('no keep: an edit off the accepted day moves the row to the new start date', () => {
@@ -63,7 +63,7 @@ describe('gap (a): the accepted-row relink branches of commitInputEdit', () => {
     expect(commitInputEdit(r, d)).toBe(true)
     expect(r.acc).toBe('g')
     expect(acceptedDay(r)).toBe(0)
-    expect(groundRowsWith(inpKey(r)).length).toBe(1)
+    expect(groundRowsWith(inpId(r)).length).toBe(1)
   })
 
   it('moved outside the programmed week: row removed, no longer accepted, and it SAYS so', () => {
@@ -72,7 +72,7 @@ describe('gap (a): the accepted-row relink branches of commitInputEdit', () => {
     d.start = '2026-07-20'; d.end = '' // past the last loaded DATES entry
     expect(commitInputEdit(r, d)).toBe(true)
     expect(r.acc).toBeUndefined()
-    expect(groundRowsWith(inpKey(r))).toEqual([])
+    expect(groundRowsWith(inpId(r))).toEqual([])
     // the toast string HANDOFF says only its definition mentions
     expect(toasts.some(t => /Moved outside the programmed week/.test(t)), toasts.join('|')).toBe(true)
   })
@@ -232,13 +232,13 @@ describe('gap (g): reassigning an accepted input to another person', () => {
     INPUTS.push({ person: 'split', date: 'Jul 15', allday: false, s: 600, e: 660, type: 'Meeting', remarks: 'audit', mod: '' })
     const r = INPUTS[INPUTS.length - 1]
     expect(acceptInput(2, r, 'g')).toBe(true)
-    expect(groundRowsWith(inpKey(r))[0].r.who).toBe('Vandal')
+    expect(groundRowsWith(inpId(r))[0].r.who).toBe('Vandal')
     const d = draftOf(r)
     d.person = 'plasma'
     expect(commitInputEdit(r, d)).toBe(true)
     expect(r.acc).toBe('g')
     expect(r.person).toBe('plasma')
-    const rows = groundRowsWith(inpKey(r))
+    const rows = groundRowsWith(inpId(r))
     expect(rows.length).toBe(1)                         // no orphan under the old key
     expect(rows[0].r.who).toBe('Fable')
     // no ground row anywhere still points at the OLD content key

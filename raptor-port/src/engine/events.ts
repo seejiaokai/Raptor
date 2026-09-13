@@ -1,5 +1,5 @@
 import { DAYS } from './data'
-import { INPUTS, inputCoversDate, inputFlags, inputDormant, inpWin, isSansAvail, inpMeta, shiftHardInput, shiftHardLabel } from './inputs'
+import { INPUTS, inputCoversDate, inputFlags, inputDormant, inpWin, isSansAvail, inpMeta, shiftHardInput, shiftHardLabel, inpById } from './inputs'
 import { PEOPLE, isSpecial, nameToId, aarNeed } from './people'
 import { toMin, parseHM, win, overlap } from './time'
 import { VCONF, SHIFT_HARD } from './rules'
@@ -59,8 +59,13 @@ export function shiftHardGround(e:any){
   const m=/^g:(\d+)\.(\d+)$/.exec(String(e.key||''));
   const row=m&&DAYS[+m[1]]&&((DAYS[+m[1]].ground||[])[+m[2]]);
   if(row&&row.src&&String(row.prog||'')===String(e.label||'')){
-    const t=String(row.src).split('|')[2];
-    if(inpMeta(t))return shiftHardInput(t);
+    /* row.src is the source input's STABLE ID (13 Sep 26, ARCH-STACK 1A) — resolve
+       the input and grade by its TYPE. Was String(row.src).split('|')[2] when src
+       was the content key person|date|type|s|yr; an opaque id has no such field,
+       so parsing it silently fell through to the label keywords (a 'ESCORT VISIT'
+       Other stopped grading hard by its source type). */
+    const inp=inpById(row.src);
+    if(inp&&inpMeta(inp.type))return shiftHardInput(inp.type);
   }
   return shiftHardLabel(e.label);
 }

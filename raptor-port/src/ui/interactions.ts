@@ -3,7 +3,7 @@
    blank-space clear), with the state halves in src/state/view.ts and the
    repaint replaced by the store's notify() (the week re-renders and the
    highlight pass re-runs from ViewWeek's effect). */
-import { slotVal, inpKey, acceptInput, unacceptInput, txtSet } from '../engine/slots'
+import { slotVal, acceptInput, unacceptInput, txtSet } from '../engine/slots'
 import { INPUTS, DATES, withRemarksTail, inpId, defaultAllday } from '../engine/inputs'
 import { DAYS } from '../engine/data'
 import { PEOPLE, isSpecial } from '../engine/people'
@@ -476,7 +476,7 @@ export function routeClick(e: MouseEvent) {
     e.stopPropagation()
     if (!canEditSched()) { HOOKS.toast('Only a scheduler can accept inputs', 'warn'); return }
     const di = +ab.dataset.accd!, k = ab.dataset.acck!, dest = ab.dataset.acc!
-    const inp = INPUTS.find((x: any) => inpKey(x) === k)
+    const inp = INPUTS.find((x: any) => inpId(x) === k)
     if (!inp) { HOOKS.toast('That input is no longer there', 'warn'); return }
     const ok = dest === 'x' ? unacceptInput(di, inp) : acceptInput(di, inp, dest)
     if (ok) {
@@ -653,7 +653,7 @@ export function routeClick(e: MouseEvent) {
   if (ib) {
     e.stopPropagation()
     if (!canEditSched()) { HOOKS.toast('Only a scheduler can edit inputs from here', 'warn'); return }
-    const inp = INPUTS.find((x: any) => inpKey(x) === ib.dataset.inpedit!)
+    const inp = INPUTS.find((x: any) => inpId(x) === ib.dataset.inpedit!)
     if (!inp) { HOOKS.toast('That input is no longer there', 'warn'); return }
     setInpEdit(inp)
     notify()

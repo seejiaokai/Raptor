@@ -10,7 +10,7 @@ import { App } from './App'
 import { initStore, setSession, notify, HIST } from '../state/store'
 import { DAYS } from '../engine/data'
 import { SCHED, signOf, setDayApproved, dayApproved, dayCurVer } from '../engine/publish'
-import { slotVal, setSlotVal, txtGet, autoAcceptInput, inpKey } from '../engine/slots'
+import { slotVal, setSlotVal, txtGet, autoAcceptInput } from '../engine/slots'
 import { INPUTS, inpId } from '../engine/inputs'
 import { parseHM } from '../engine/time'
 import { isStandalone } from '../engine/waves'
@@ -496,7 +496,7 @@ describe('duty / sim / ground panels on the board (owner request, Aug 26)', () =
     inpId(m); INPUTS.push(m)
     expect(autoAcceptInput(m), 'the day is editable, so it lands').toBe(true)
     await act(async () => { afterSchedMutate(); notify() })
-    const key = inpKey(m)
+    const key = inpId(m)
     const ri = DAYS[di].ground.findIndex((r: any) => r.src === key)
     expect(ri, 'the auto-landed row is on the day').toBeGreaterThanOrEqual(0)
     await click(document.querySelector(`#sbBoard .sb-panel.grnd [data-grdel="${di}.${ri}"]`))

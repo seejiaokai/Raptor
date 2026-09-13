@@ -4,7 +4,7 @@ import { INPUTS, inputCoversDate, inpLabel, inpId, inpTimeText, isOffType, offWo
 import { isStandalone, scSpare, dayCount, mColor, saExempt, SAWAVE } from '../engine/waves'
 import { intimeFold } from '../engine/events'
 import { parseHM, hhmm, hm24, minus } from '../engine/time'
-import { slotVal, txtGet, TIME_TXT, whoArr, rowCrew, rowRef, inpKey } from '../engine/slots'
+import { slotVal, txtGet, TIME_TXT, whoArr, rowCrew, rowRef } from '../engine/slots'
 /* RANK left with the focus-scoped trace: ranking the CR chip against the day's
    own worst is traceLeads' job now, in the engine, so both the chip and the
    click that follows it read one test */
@@ -521,8 +521,8 @@ export function availHTML(d:any,di:any,ed:any){
    as plain text, the offered-event letters (--san purple, the .sansb
    family), and the remarks, ellipsized. The whole card is the click target —
    it carries the SAME data-inpedit address inpEditLabel already builds
-   (inpKey(inp)), so the delegated click router in interactions.ts needs no
-   new wiring to open the input-edit dialog from it. `ro` (a read-only board)
+   (the input's stable inpId), so the delegated click router in interactions.ts
+   needs no new wiring to open the input-edit dialog from it. `ro` (a read-only board)
    withholds that attribute and draws a plain, unclickable div instead of a
    button — the same editable/read-only split every other input row already
    makes (see inpEditLabel itself). */
@@ -563,7 +563,7 @@ export function sansCardsHTML(rows:any[],di:any,ro?:any){
       +(rmk?`<span class="sanscard-r" title="${esc(rmk)}">${esc(rmk)}</span>`:'');
     return ro
       ? `<div class="sanscard">${inner}</div>`
-      : `<button class="sanscard" data-inpedit="${esc(inpKey(inp))}" title="Edit this input — times, type, remarks or delete">${inner}</button>`;
+      : `<button class="sanscard" data-inpedit="${esc(inpId(inp))}" title="Edit this input — times, type, remarks or delete">${inner}</button>`;
   }).join('')+`</div>`;
 }
 /* the week's own wrapper — same `.sub.plist.one.sec.sec-sans` shape (and the
@@ -919,7 +919,7 @@ export function lateChip(inp:any){
    promotion or it would vanish exactly where the squadron reads the day. */
 export function srcInput(o:any){
   const k=o&&o.src; if(!k)return null;
-  return INPUTS.find((x:any)=>inpKey(x)===k)||null;}
+  return INPUTS.find((x:any)=>inpId(x)===k)||null;}
 export function lateTagOf(o:any){return lateTag(srcInput(o));}
 /* The board's duty/sim/ground rows are a SEVEN-item grid whose header reserves
    exactly seven tracks, and every cell is a bare <input> with nowhere to nest
@@ -1561,7 +1561,7 @@ export function inpRmkCell(inp:any,ed:any,dt?:any){
 export function inpEditLabel(inp:any,ed:any,txt:any,cls:any){
   const t=esc(txt);
   if(!ed)return `<span class="${cls}">${t}</span>`;
-  return `<button class="${cls} inpedit" data-inpedit="${esc(inpKey(inp))}" title="Edit this input — times, type, remarks or delete">${t}</button>`;
+  return `<button class="${cls} inpedit" data-inpedit="${esc(inpId(inp))}" title="Edit this input — times, type, remarks or delete">${t}</button>`;
 }
 /* The accept control on a personal-input row. "Other" is the one type whose
    destination is genuinely ambiguous — it can be something the squadron has to
@@ -1570,7 +1570,7 @@ export function inpEditLabel(inp:any,ed:any,txt:any,cls:any){
    shows Undo instead, which removes the ground row it created. */
 export function accCtl(di:any,inp:any){
   if(!canEditSched())return `<span class="accs"></span>`;
-  const k=esc(inpKey(inp));
+  const k=esc(inpId(inp));
   /* 'r' (removed — dormant, see engine/inputs.ts inputDormant) is NOT
      "accepted": the row was undone, so this offers Accept again, which is the
      one way back to a flagging state. Only 'g'/'u' show Undo. */

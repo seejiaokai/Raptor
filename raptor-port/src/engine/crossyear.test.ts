@@ -13,7 +13,7 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import { initStore, loadWeek } from '../state/store'
 import { DAYS } from './data'
-import { DATES, INPUTS, inputCoversDate, dateOrd, baseYear } from './inputs'
+import { DATES, INPUTS, inputCoversDate, dateOrd, baseYear, inpId } from './inputs'
 import { autoAcceptInput, inpKey } from './slots'
 import { stashClear, stashDays } from './weekstash'
 import { draftOf, sansOverlapRefusal } from '../ui/inputedit'
@@ -65,7 +65,7 @@ describe('cross-year date anchoring', () => {
     const twin: any = { person: 'yeti', date: 'Jul 13', type: 'Meeting', allday: false, s: 600, e: 660, yr: 2027, _t: true }
     INPUTS.push(twin)
     expect(autoAcceptInput(twin)).toBe(false)
-    expect(DAYS.some((d: any) => ((d.ground || []) as any[]).some((g: any) => g.src === inpKey(twin)))).toBe(false)
+    expect(DAYS.some((d: any) => ((d.ground || []) as any[]).some((g: any) => g.src === inpId(twin)))).toBe(false)
   })
 
   it('same-content inputs a year apart carry distinct content keys', () => {
