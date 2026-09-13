@@ -1,7 +1,7 @@
 # [TRK-CSID] Phase 2 — stable hidden ids for Tracker SYLLABUSES (spec)
 
-**Status:** REV 4 — Astra R1+R2+R3 dispositions folded in (§14, §15, §16 are BINDING
-and supersede any earlier clause they touch) · 13 Sep 26 · awaiting Astra R4
+**Status:** REV 5 — Astra R1–R4 dispositions folded in (§14, §15, §16, §17 are BINDING
+and supersede any earlier clause they touch) · 13 Sep 26 · awaiting Astra R5
 **Part of:** `[ARCH-STACK]` step 1 (stable ids everywhere) · `[TRK-CSID]` 1B-ii
 **Predecessor:** Phase 1 — COURSE ids (`2026-09-13-trk-csid-course-ids-spec.md`,
 4-round Astra red-team, APPROVED, LIVE). This phase MIRRORS its shape; where a
@@ -812,3 +812,68 @@ an unknown `sb` id is refused; a stored one fails closed.
 Changed plan → **re-review by Astra** (approval binds to the new SHA). R4 confirms these
 3 fixes and looks for any further emergent defect; on APPROVED the plan is ready to
 build.
+
+---
+
+## 17. R4 — Astra dispositions & BINDING revisions
+
+Astra R4 verdict **REVISE** — 2 findings (both HIGH), both confirmed. **Both ACCEPTED.**
+§17 is authoritative where it conflicts with §§1–16. Plan SHA reviewed: `dcd5ec1a…`.
+(Session `01a09b18-6872-7943-87f9-bd7c99d7631a`.) Converging (10→6→3→2); both sharpen
+§16's legacy rules.
+
+### CSID2-R4-01 (HIGH — "omitted definition" ≠ "definition-less"; the classifier misfires on student-only files) — ACCEPT, SPLIT CLASSIFY vs RESOLVE.
+Student-only/partial exports deliberately omit chart definitions (`core.js:3737–3762,
+3996–3998`), so §16's "no stored def" test misfires in the FILE path: a v2 student-only
+backup referencing custom `'Training'` hits "ordinary name, no def → no entry" even when
+the destination HAS that chart; and `'FG JUL 26'` with no def in the file would fold onto
+the `2026` built-in while store-migration (def present) keeps it custom — the two paths
+diverge and can attach marks to the wrong syllabus. **Binding fix — separate the two
+operations; only CLASSIFY where a definition is actually present, otherwise RESOLVE by
+identity (one rule, store and file):**
+- **CLASSIFY** applies ONLY to a name that carries a real DEFINITION (a store custom def
+  in `v3:master:syls`/legacy sources, or a file `charts.syllabi` payload): current
+  canonical name → built-in `sb…` (def becomes its override); historical-alias-with-def
+  or ordinary-with-def → custom `sc…`.
+- **RESOLVE** applies to every reference WITHOUT a definition (a `plan` pointer, a
+  `bySyllabus` student block, a `lastStudent`): resolve its identity, never classify —
+  (a) a file `sylcat` id → through the union reconcile (§15 CSID2-R2-03); else by NAME:
+  (b) a current canonical built-in name OR a historical alias → the built-in `sb…` (via
+  `BUILTIN_SYL`/`aliases`); (c) a name matching a destination/union catalogue CUSTOM →
+  that custom's id; (d) **unresolved → refuse the import without writing** (file) /
+  **repair the plan to a valid syllabus** (store, vanished chart). This makes the store's
+  own "definition-less historical alias → built-in" case (a `plan.sylName='FG JUL 26'`
+  with a layout but no `CUSTOMS` entry — the old shipped built-in) just clause (b) of
+  RESOLVE, identical to the file path.
+- Test: v1/v2 student-only AND partial-chart imports for an ordinary custom AND a
+  historical-alias custom → resolve to the destination's existing syllabus, or refuse if
+  truly absent; never silently attach to the wrong one.
+
+### CSID2-R4-02 (HIGH — legacy event ids must be translated when folding a legacy layout) — ACCEPT, NORMALIZE VIA THE EXISTING MAP.
+`padId`/`SPECIAL` (`core.js:387–392`) map legacy event ids (`'IEPE'→'IEPE/IPC'`,
+`'T-9'→'T-09'`, …) and `loadLayout`'s `__oldSyl` path (`890–894`) applies that to legacy
+layout positions; the shipped syllabus carries the NEW ids. §16's "event ids unchanged"
+was wrong: replaying a definition-less `'FG JUL 26'` layout verbatim under the built-in id
+leaves positions keyed by OLD ids, and `nodePos` (`1066–1069`) looks up the NEW ids,
+misses them, and substitutes defaults — the hand-drawn layout is silently lost. **Binding
+fix:** when the journal constructs a layout payload for ANY legacy-adopted layout (the
+definition-less-alias fold AND the legacy layout-source adoption of §14 CSID2-02),
+**normalize every event key with the existing exact-match-first mapping** (`ids.has(k) ?
+k : padId(k)`, keeping only keys the target def contains), and translate id-referencing
+routing/anchor metadata (`__edgeMeta`/`__merges`/`__unmerges`/`__lines`/`__derived`)
+consistently; detect key collisions before writing. Custom-with-own-def layouts need no
+translation (their keys match their own def). Test: a legacy layout with `'IEPE'`/`'T-9'`
+positions folds so the shipped ids resolve the hand-drawn positions, incl. interrupted
+replay; student marks still reset per §5.3.
+
+### Net effect on §§1–16
+- §16 CSID2-R3-02 classifier is split into **CLASSIFY (def present) vs RESOLVE (reference
+  only)**, one rule shared by store + file (CSID2-R4-01).
+- §14 CSID2-02 / §16 legacy layout folds now **translate legacy event ids** via
+  `padId`/`SPECIAL` when building the journal payload (CSID2-R4-02).
+
+### Round 5
+Changed plan → **re-review by Astra** (approval binds to the new SHA). R5 confirms these
+2 fixes; on APPROVED the plan is ready to build. (Round 5 is the last of the cap; if
+material findings remain they are presented to the owner with the host's position rather
+than forcing convergence.)
