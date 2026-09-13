@@ -1,73 +1,60 @@
-# Session handoff — [TRK-CSID] 1B-ii (Tracker SYLLABUS ids): SPEC APPROVED, ready to BUILD
+# Session handoff — [TRK-CSID] 1B-ii (Tracker SYLLABUS ids): BUILT, awaiting review → gates → merge
 
 ## Where it is
-ARCH-STACK 1B-i (course ids) is DONE + live on `main`. This session did the **1B-ii
-spec + red-team**: stable hidden ids for Tracker SYLLABUSES.
+1B-ii is **BUILT** on branch `claude/trk-csid-syllabus-ids` (off `main`, NOT merged).
+Implementation complete, compiles, and the **unit suite is green** (149 tests incl. the
+new migration harness). Remaining before merge: Fable-high review of the built diff →
+full gates → push + Vercel link → HOLD for owner "merge live".
 
-**The spec is APPROVED** by Astra (Codex/GPT-6, high) — 7 rounds, findings 10→6→3→2→3→2→0,
-final verdict **APPROVED** bound to the committed REV 7 (SHA `39864b64…`). Spec + the full
-round-by-round dispositions:
-`docs/superpowers/specs/2026-09-13-trk-csid-syllabus-ids-spec.md` (§§14–19 are BINDING and
-supersede earlier clauses; read them — they carry every design decision).
+## What was built (the spec's §§14–19, binding)
+- **New pure module `src/tracker/app/sylIds.js`** (mirrors `courseIds.js`): the
+  `BUILTIN_SYL` deterministic-id table (`sb2024`/`sb2026`/`sbtx2026`/`sbagaa2026`),
+  `mintSylId`, grammar `SYL_ID_RE=^s[bc][0-9a-z]+$`, `classifyDefinedName`,
+  `upgradeSyllabi` (name-keyed→id + sylcat), `buildUnionSylcat`, `reconcileSylIds`.
+- **`core.js`**: the `SYLS` catalogue + id helpers (`sylName`/`sylIdOf`/`curSylId`/
+  `curSylName`/`sylSource`/`baseOf`/`builtinOf`/`isHidden`/`sylHasOwnDef`/
+  `ensureUniqueLabel`); id-keyed key builders (`kMarks`/`kDates`/`kLayout` via
+  `curSylId()`); `plan.sylId`; **`migrateSylIds`** (payload journal — build-once,
+  KEEP catalogue in place + RESET student layer, two flags `kSylCatMig`/`kSylReset`,
+  `purge = sources ∖ destinations`, verify after all purges, legacy layout event-id
+  translation incl. `__font`); **`reconcileBuiltins`** (boot + `reloadFromStore`);
+  `renSyl`/`delSyl`(sweep + all-course plan repair)/`dupSyl`(empty layer)/`addSyl`
+  catalogue-only; `moveSylData`/`purgeLegacySyl`/`SYL_ALIAS`/`SYL_RENAME` deleted;
+  file `collectCharts`/`applyCharts`/`collectStudents`/`applyStudents`/`normalizeImport`/
+  `importClick` id-keyed + the **v3 student-import guardrail (§19)**.
+- **`fileFormat.js`**: `FILE_VERSION=3`, dual-shape charts/students, `sylcat`
+  validation, colon relaxed on chart/syllabus names (course names keep it).
+- **UI**: Header syllabus `<select>` by id; Modals OrdModal syllabus-mode + copy
+  picker by id (names-in-modal kept).
+- **Docs**: CLAUDE.md Tracker section flipped to DONE; OUTSTANDING.md 1B-ii → BUILT.
 
-**Nothing is built yet.** Next step is the BUILD (Opus, test-first).
+## Tests
+- `app/sylIds.test.ts` (19, pure), `app/sylIds.migration.test.ts` (3, KEEP/RESET
+  journal harness), `app/fileFormat.test.ts` (§8 colon relaxation), `tracker.test.tsx`
+  re-baselined (dup=empty, rename=catalogue-only, guardrail import, v3 reconcile;
+  the legacy enrolment-migration / rosterHeld / rename-moves-marks tests were removed —
+  coverage moved to the migration harness). `npm test` for tracker+app: **149 green**.
 
-## Branch
-`claude/trk-csid-syllabus-ids` (off `main`). Spec commits d5e426b→c7c2c8b. Nothing merged.
+## Remaining steps (owner's loop)
+1. **Fable-high review of the built diff** (persisted data, silent-defect risk) — the
+   reserved smart review. Route via claudex-loop (host=claude, reviewer=codex is the
+   token-cheaper default per memory; Fable for the uncertain/high-stakes findings).
+2. **Full gates** from `raptor-port/`: `npm test`, `npm run build`,
+   `node reference/tfin.js` (728/0 — scheduler parity, unaffected), `npm run test:e2e`,
+   `npm run smoke:tracker` (the guardrail/id fixtures were updated; re-run to confirm).
+3. **Push** the branch, hand the owner the **Vercel preview link**, unsubscribe the PR.
+4. **HOLD for "merge live".** Nothing merges without it.
 
-## The approach the spec settled (owner decisions, all in the spec)
-- **Ids:** built-ins get **deterministic shipped ids** from a `BUILTIN_SYL` table
-  (`sb…`); user charts get **minted** ids (`sc…`). Grammar `^s[bc][0-9a-z]+$`; `base`
-  is authoritative from the table.
-- **Conversion = "keep charts, reset marks"** (owner): the global chart catalogue
-  (definitions, layouts, order/hidden/tomb/alias) is converted **in place** via a durable
-  **payload journal** (discover once, whole-object writes, purge = sources ∖ destinations,
-  verify after purge; two flags `kSylCatMig`/`kSylReset`); the per-(course,syllabus)
-  **student layer is RESET** (rosters/marks/dates/pace/lulls/last cleared; plan
-  `sylName→sylId`, `lulls/target/target2` zeroed). Legacy layout sources are folded in
-  first (with legacy event-id translation via `padId`/`SPECIAL`, incl. `__font`).
-- **Boot reconcile** (`reconcileBuiltins`, also in `reloadFromStore`): adds newly-shipped
-  built-ins, repoints `base` on a shipped rename, respects `userNamed`; single
-  `ensureUniqueLabel` on every catalogue writer.
-- **rename/delete/dup = catalogue-only** (`moveSylData`/`purgeLegacySyl` deleted);
-  `delSyl` sweeps records across ALL courses + repairs every course's plan; hidden ≠
-  deleted.
-- **Import guardrail (owner):** charts import from ANY backup; **student marks import ONLY
-  from an id-native v3 file with a `sylcat`** — older/unresolved student blocks are
-  refused with a plain message (no alias-guessing in the file path). File version → 3.
-- **Colon relaxation (owner):** syllabus/chart names may contain a colon now (course
-  names keep the refusal). Includes the import "Add as new" path.
+## Gotcha learned this session
+- Course ids are lowercase base36 (`^c[0-9a-z]+$`); a test fixture id with an
+  uppercase letter fails the migration preflight (returns false, no bootError there).
+- The smoke suite HALTS on the first uncaught error (linear script), so fix all
+  syllabus-key references (names→ids) before a run is informative; it serves `dist/`,
+  so `npm run build` first.
 
-## The owner already did his safety backup
-He exported a **charts-only** backup from the live app (⤓ File → Export, charts on,
-students off, all syllabuses) — insurance. The in-place catalogue conversion preserves
-charts anyway. **Do not ship anything that auto-wipes before he has loaded the new build;
-the reset only runs in his browser after merge-to-Pages + load, and Vercel previews use a
-different origin so they never touch his real Tracker data.**
-
-## Process (owner's standing loop) — remaining steps
-build on **Opus 4.8 high, test-first** (ship the conversion with rename/reorder/delete/
-duplicate/import behaviour tests as the FIRST invariant-harness increment — classify each
-invariant hard/advisory/frozen) → **Fable-high review of the built diff** (persisted-data,
-silent-defect risk; the reserved smart-review) → full gates (`npm test`, `npm run build`,
-`node reference/tfin.js` 728/0, `npm run test:e2e`, `npm run smoke:tracker` — from
-`raptor-port/`, `npm ci` first in a fresh container) → push, Vercel link, **HOLD for
-"merge live".** Nothing merges without it.
-
-## Windows/runner gotchas learned this session (for the review CLI)
-- Prefix the claudex-loop runner with `PYTHONUTF8=1 PYTHONIOENCODING=utf-8` (arrows crash
-  cp1252). Capture the runner's stdout to a stable file and parse the result from there.
-- Native Windows Python can't open git-bash `/c/...` paths — use the Read tool or `C:\...`.
-
-## Ready-to-paste opening prompt for a FRESH build chat
-> Picking up Raptor on branch `claude/trk-csid-syllabus-ids`. The [TRK-CSID] 1B-ii
-> syllabus-ids SPEC is APPROVED (Astra, 7 rounds). Read, in order:
-> raptor-port/docs/session-state.md, then the spec
-> raptor-port/docs/superpowers/specs/2026-09-13-trk-csid-syllabus-ids-spec.md —
-> §§14–19 are BINDING, they carry every decision. BUILD it now on Opus 4.8 high,
-> test-first, following my auto-memories. Ship the conversion with rename/reorder/
-> delete/duplicate/import behaviour tests as the first invariant-harness increment.
-> Then Fable-high review of the built diff → full gates → push + Vercel link → HOLD for
-> "merge live". This is HEAVY (persisted data, silent-defect risk): keep charts / reset
-> marks, deterministic built-in ids, the payload-journal migration, and the v3
-> student-import guardrail exactly as the spec's §§14–19 specify.
+## Opening prompt for a fresh chat (if handing off)
+> Picking up Raptor on `claude/trk-csid-syllabus-ids`. [TRK-CSID] 1B-ii is BUILT and
+> the unit suite is green (149). Read raptor-port/docs/session-state.md. Remaining:
+> Fable-high review of the built diff, then full gates (npm test / build / tfin 728/0 /
+> test:e2e / smoke:tracker — from raptor-port/, npm ci first in a fresh container),
+> then push + Vercel link, then HOLD for my "merge live". Do NOT merge without it.

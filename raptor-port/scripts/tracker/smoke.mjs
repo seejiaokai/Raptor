@@ -414,7 +414,7 @@ ok('clicking a ball opens the grading popup', await pg.evaluate(() => {
 await pg.keyboard.press('Escape'); await pg.waitForTimeout(300);
 const snapCover = await pg.evaluate(async () => {
   const t = window.__coreForTests; if (!t) return null;
-  const s = await t.layoutSnapshotFor('2026', t.SYLLABI['2026']);
+  const s = await t.layoutSnapshotFor(t.sylIdOf('2026'), t.SYLLABI['2026']);
   return Object.keys(s).filter(k => !k.startsWith('__')).length;
 });
 ok('layout snapshot covers every event, not only moved ones',
@@ -422,12 +422,13 @@ ok('layout snapshot covers every event, not only moved ones',
 
 const collected = await pg.evaluate(async () => {
   const t = window.__coreForTests; if (!t) return null;
-  return { charts: await t.collectCharts(['2026']), students: await t.collectStudents() };
+  const id = t.sylIdOf('2026');                     /* charts are id-keyed since 1B-ii */
+  return { id, charts: await t.collectCharts([id]), students: await t.collectStudents() };
 });
 ok('collected charts carry the syllabus and its layout',
-  !!collected && collected.charts.order[0] === '2026'
-  && collected.charts.syllabi['2026'].length > 200
-  && Object.keys(collected.charts.layouts['2026']).length > 200);
+  !!collected && collected.charts.order[0] === collected.id
+  && collected.charts.syllabi[collected.id].length > 200
+  && Object.keys(collected.charts.layouts[collected.id]).length > 200);
 ok('collected charts name nobody',
   !!collected && !JSON.stringify(collected.charts).includes('STUDENT '));
 ok('collected students carry the roster',
@@ -2640,19 +2641,25 @@ await pg.waitForSelector('#flowSvg .ball', { timeout: 15000 });
 
   /* 3. Reset layout: says what it deletes, and Undo takes it back. */
   await wipe();
-  const AG = 'A/G - A/A 2026';
-  await pg.selectOption('#sylSel', AG); await pg.waitForTimeout(1200);
-  /* force the shipped layout into storage so there is something real to lose */
-  await pg.evaluate(s => {
-    const L = window.__coreForTests.DEFAULT_LAYOUTS[s];
-    localStorage.setItem('raptor:tracker/v3:master:lay:' + s, JSON.stringify(L));
-  }, AG);
+  /* select A/G - A/A by its option TEXT (the value is a syllabus id now, 1B-ii) */
+  const selAG = async () => pg.selectOption('#sylSel', await pg.evaluate(() =>
+    [...document.querySelectorAll('#sylSel option')].find(o => o.textContent.startsWith('A/G')).value)).catch(() => {});
+  await openTracker(pg); await pg.waitForSelector('#flowSvg .ball');   /* fresh store, already converted to ids */
+  await selAG(); await pg.waitForTimeout(1000);
+  /* force the shipped layout into storage UNDER THE SYLLABUS ID, so there is
+     something real to lose. Done post-conversion (flags set), so the reload below
+     does not re-run the migration and the id-keyed key survives. */
+  await pg.evaluate(() => {
+    const t = window.__coreForTests, id = t.sylIdOf('A/G - A/A 2026');
+    localStorage.setItem('raptor:tracker/v3:master:lay:' + id, JSON.stringify(t.DEFAULT_LAYOUTS['A/G - A/A 2026']));
+  });
   await openTracker(pg); await pg.waitForSelector('#flowSvg .ball');
-  await pg.selectOption('#sylSel', AG).catch(() => {}); await pg.waitForTimeout(1200);
-  const linesOf = () => pg.evaluate(s => {
-    const raw = localStorage.getItem('raptor:tracker/v3:master:lay:' + s);
+  await selAG(); await pg.waitForTimeout(1200);
+  const linesOf = () => pg.evaluate(() => {
+    const t = window.__coreForTests, id = t.sylIdOf('A/G - A/A 2026');
+    const raw = localStorage.getItem('raptor:tracker/v3:master:lay:' + id);
     return raw ? (JSON.parse(raw).__lines || []).length : 0;
-  }, AG);
+  });
   const linesBefore = await linesOf();
   await arr(); await pg.waitForTimeout(500);
   await pg.click('#resetLayout'); await pg.waitForTimeout(400);
@@ -2669,7 +2676,8 @@ await pg.waitForSelector('#flowSvg .ball', { timeout: 15000 });
 
   /* 4. Undo/redo must not carry across a chart change. */
   await wipe();
-  await pg.selectOption('#sylSel', '2026'); await pg.waitForTimeout(900);
+  await pg.selectOption('#sylSel', await pg.evaluate(() =>
+    [...document.querySelectorAll('#sylSel option')].find(o => o.textContent.startsWith('2026')).value)); await pg.waitForTimeout(900);
   await arr(); await pg.waitForTimeout(400);
   await pg.click('#fitBtn'); await pg.waitForTimeout(500);
   const ballAt = id => pg.evaluate(i => {
@@ -2684,11 +2692,13 @@ await pg.waitForSelector('#flowSvg .ball', { timeout: 15000 });
   }
   await pg.click('#trUndoBtn'); await pg.waitForTimeout(500);
   const txBoxes = () => pg.evaluate(() => {
-    const raw = localStorage.getItem('raptor:tracker/v3:master:lay:Tx 2026');
+    const id = window.__coreForTests.sylIdOf('Tx 2026');
+    const raw = localStorage.getItem('raptor:tracker/v3:master:lay:' + id);
     return raw ? Object.keys(JSON.parse(raw)).filter(k => !k.startsWith('__')).length : 0;
   });
   const txBefore = await txBoxes();
-  await pg.selectOption('#sylSel', 'Tx 2026'); await pg.waitForTimeout(700);
+  await pg.selectOption('#sylSel', await pg.evaluate(() =>
+    [...document.querySelectorAll('#sylSel option')].find(o => o.textContent.startsWith('Tx 2026')).value)); await pg.waitForTimeout(700);
   if (await pg.isVisible('#dlgModal')) { await pg.click('#dlgOk'); await pg.waitForTimeout(1000); }
   /* The bar's ↷ is greyed once the chart changes (9 Sep 26) — a Playwright
      click would wait 30s for it to enable, so press it the DOM way, which a
@@ -2718,10 +2728,11 @@ await pg.waitForSelector('#flowSvg .ball', { timeout: 15000 });
   ok('changing an event\'s details saves itself — no Save button',
     await pg.locator('#saveChanges').count() === 0);
 
-  const txHas = (await pg.evaluate(() => [...document.querySelectorAll('#sylSel option')].map(o => o.value))).includes('Tx 2026');
+  const txHas = (await pg.evaluate(() => [...document.querySelectorAll('#sylSel option')].map(o => o.textContent))).some(s => s.startsWith('Tx 2026'));
   if (txHas) {
     await wipe();
-    await pg.selectOption('#sylSel', 'Tx 2026'); await pg.waitForTimeout(1000);
+    await pg.selectOption('#sylSel', await pg.evaluate(() =>
+      [...document.querySelectorAll('#sylSel option')].find(o => o.textContent.startsWith('Tx 2026')).value)); await pg.waitForTimeout(1000);
     await openDetails('SA-5');
     const filled = await pg.locator('#infoModal input').first().inputValue();
     const stripped = filled.replace(/\s*\(Refer to.*?\)\s*/i, '').trim();
@@ -2729,7 +2740,8 @@ await pg.waitForSelector('#flowSvg .ball', { timeout: 15000 });
     await pg.locator('#infoModal button', { hasText: /save/i }).first().click();
     await pg.waitForTimeout(600);
     await openTracker(pg); await pg.waitForSelector('#flowSvg .ball');
-    await pg.selectOption('#sylSel', 'Tx 2026').catch(() => {}); await pg.waitForTimeout(1000);
+    await pg.selectOption('#sylSel', await pg.evaluate(() =>
+      [...document.querySelectorAll('#sylSel option')].find(o => o.textContent.startsWith('Tx 2026')).value)).catch(() => {}); await pg.waitForTimeout(1000);
     await openDetails('SA-5');
     const back = await pg.locator('#infoModal input').first().inputValue();
     ok('deleting a syllabus-specific note stays deleted after a reload',
@@ -2959,9 +2971,12 @@ ok('the colour legend is not covered by the edit-mode hint', moveState.legendCle
   `Move: ${moveState.legendClear}, Line: ${lineState.legendClear}`);
 await pg.click('#arrTools button:has-text("✋ Move")'); await pg.waitForTimeout(200);
 await arr(); await pg.waitForTimeout(400);
-const sylOptions = await pg.evaluate(() =>
-  [...document.getElementById('sylSel').options].map(o => o.value));
-const txOpt = sylOptions.find(v => v === 'Tx 2026') || sylOptions.find(v => v.startsWith('Tx 2026'));
+/* option VALUES are syllabus ids now (1B-ii); find Tx 2026 by its label TEXT */
+const txOpt = await pg.evaluate(() => {
+  const o = [...document.getElementById('sylSel').options].find(o => o.textContent.startsWith('Tx 2026'));
+  return o ? o.value : null;
+});
+const sylOptions = await pg.evaluate(() => [...document.getElementById('sylSel').options].map(o => o.textContent));
 ok('the syllabus picker offers Tx 2026', !!txOpt, sylOptions.join(' | '));
 await pg.selectOption('#sylSel', txOpt);
 await pg.waitForTimeout(800);
@@ -2984,7 +2999,7 @@ await pg.click('#ifCancel'); await pg.waitForTimeout(200);
 const fileClobber = await pg.evaluate(async () => {
   const core = window.__coreForTests;
   const full = {};
-  const snap = await core.collectCharts(['2026']); /* full baked table + edits */
+  const snap = await core.collectCharts([core.sylIdOf('2026')]); /* full baked table + edits */
   Object.assign(full, snap.eventInfo);
   await core.applyCharts({ order: [], syllabi: {}, layouts: {}, eventInfo: full }, {});
   /* since the seam the Tracker's data lands in BrowserBackend under "raptor:tracker/" */
