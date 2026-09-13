@@ -476,7 +476,7 @@ describe('5 · drafts on a published day: the diff is rebased against the ISSUED
     sign(DI); publishALDay(DI)
     /* AL1 IS Draft 2 now: the issued document says PLAN B NOTE */
     expect(verSeq(dayCurVer(DI))).toBe(1)
-    expect(daySnapOf(DI, alId(DI, 1))!.d.notes[0]).toBe('PLAN B NOTE')
+    expect(daySnapOf(DI, alId(DI, 1))!.d.notes[0].t).toBe('PLAN B NOTE')
     expect(dayPendCount(DI)).toBe(0)
 
     draftSelect(DI, d1); afterSchedMutate()
@@ -551,7 +551,7 @@ describe('7 · the ordinary amendment flow never rewrites the Original', () => {
     writeText('dn:0.0', 'AMENDED NOTE')
     sign(DI); publishALDay(DI)
     expect(JSON.stringify(daySnapOf(DI, origId(DI)))).toBe(origSnap)
-    expect(daySnapOf(DI, alId(DI, 1))!.d.notes[0]).toBe('AMENDED NOTE')
+    expect(daySnapOf(DI, alId(DI, 1))!.d.notes[0].t).toBe('AMENDED NOTE')
   })
 })
 

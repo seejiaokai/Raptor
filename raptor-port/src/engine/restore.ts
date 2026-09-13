@@ -1,5 +1,6 @@
 import { nameToId } from './people'
 import { parseHM, hhmm } from './time'
+import { noteText } from './note'
 /* =====================================================================
    THE SLOT-KEY GRAMMAR WALKER (dayKeys)
    Phase 2 removed restoreDayVersion (the in-place rollback take-back): the
@@ -40,7 +41,7 @@ export function dayKeys(d:any,di:any){
      JSON only if this class ever bites there. */
   const P=(v:any)=>{const s=S(v);return nameToId(s)||s;};
   const T=(v:any)=>{const s=S(v);const min=parseHM(s);return min==null?s:hhmm(min);};
-  (d.notes||[]).forEach((t:any,ni:any)=>m.set(`dn:${di}.${ni}`,S(t)));
+  (d.notes||[]).forEach((t:any,ni:any)=>m.set(`dn:${di}.${ni}`,S(noteText(t))));
   m.set(`sn:${di}`,S(d.simnotes));
   m.set(`pn:${di}`,S(d.prognotes));
   m.set(`dtn:${di}`,S(d.dutynotes));

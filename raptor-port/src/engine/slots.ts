@@ -197,7 +197,10 @@ export function txtRef(path:any){
   const s=String(path),c=s.indexOf(':'); if(c<0)return null;
   const k=s.slice(0,c),a=s.slice(c+1).split('.'),d=DAYS[+a[0]]; if(!d)return null;
   try{
-    if(k==='dn'){d.notes=d.notes||[];return{o:d.notes,k:+a[1]};}
+    /* a day-note line is `{id,t}` now (engine/note.ts) — edit targets its TEXT,
+       leaving the id intact; addressing stays positional (dn:di.i). A missing or
+       legacy non-object note yields null → txtGet '' / txtSet no-op. */
+    if(k==='dn'){const nt=(d.notes||[])[+a[1]];return nt&&typeof nt==='object'?{o:nt,k:'t'}:null;}
     if(k==='sn')return{o:d,k:'simnotes'};
     if(k==='pn')return{o:d,k:'prognotes'};
     if(k==='dtn')return{o:d,k:'dutynotes'};

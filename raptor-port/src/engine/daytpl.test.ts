@@ -266,7 +266,7 @@ describe('persistence, like dutytpl', () => {
     dayTplLoad()
     expect(DAYTPL_CFG.map(t => t.title)).toEqual(['Ok', 'also ok'])
     expect(DAYTPL_CFG[0]!.d.allhands).toEqual([])     // non-array coerced to empty
-    expect(DAYTPL_CFG[0]!.d.notes).toEqual(['n'])
+    expect(DAYTPL_CFG[0]!.d.notes).toEqual([{ t: 'n' }])   // a stored bare-string note is coerced to { t } (rid minted on apply)
     expect(DAYTPL_CFG[0]!.d.simnotes).toBe('')        // non-string coerced to empty
     expect(DAYTPL_CFG[1]!.d).toEqual({
       notes: [], allhands: [], waves: [], sims: {}, dutywaves: [], ground: [],

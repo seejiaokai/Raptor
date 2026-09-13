@@ -506,9 +506,9 @@ describe('per-day version snapshots', () => {
     sign(0); setDayApproved(0, 1)
     const orig = dayCurVer(0)
     expect(daySnapOf(0, orig)).toBeTruthy()
-    expect(daySnapOf(0, orig).d.notes[0]).toBe(note0)
+    expect(daySnapOf(0, orig).d.notes[0]).toEqual(note0)   // a note is a { rid, t } object now — compare by content
     DAYS[0].notes[0] = 'LIVE EDIT'
-    expect(daySnapOf(0, orig).d.notes[0]).toBe(note0)   // deep clone — later edits can't reach in
+    expect(daySnapOf(0, orig).d.notes[0]).toEqual(note0)   // deep clone — later edits can't reach in
   })
 
   it('alIssue freezes the day wearing its own new mark', () => {
@@ -588,12 +588,12 @@ describe('Phase 2 — the per-day verId record', () => {
   })
 
   it('the ordinary amendment flow never rewrites the Original', () => {
-    const orig = DAYS[0].notes[0]
+    const orig = DAYS[0].notes[0].t
     sign(0); setDayApproved(0, 1)
     const origId = dayCurVer(0)
     txtSet('dn:0.0', 'AMENDED'); sign(0); publishALDay(0)
-    expect(daySnapOf(0, origId).d.notes[0]).toBe(orig)          // Original frozen as first issued
+    expect(daySnapOf(0, origId).d.notes[0].t).toBe(orig)          // Original frozen as first issued
     const cur = dayCurVer(0)
-    expect(daySnapOf(0, cur).d.notes[0]).toBe(txtGet('dn:0.0'))  // AL1's snapshot carries the amendment
+    expect(daySnapOf(0, cur).d.notes[0].t).toBe(txtGet('dn:0.0'))  // AL1's snapshot carries the amendment
   })
 })

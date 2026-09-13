@@ -207,7 +207,7 @@ describe('user-typed values in the History HTML', () => {
   it('a deleted note carrying markup lists as text, never as elements', async () => {
     const notes = DAYS[0].notes
     const ni = notes.length
-    notes.push('<img src=x onerror=alert(1)>')
+    notes.push({ t: '<img src=x onerror=alert(1)>' })
     await mutate()
     await click($(`#sbBoard [data-ndel="0.${ni}"]`))
     expect(newest()!.lbl, 'the sentence really carries the payload').toContain('<img')
@@ -221,7 +221,7 @@ describe('user-typed values in the History HTML', () => {
   it('a day-note value carrying markup reaches the bubble as text', async () => {
     const notes = DAYS[0].notes
     const ni = notes.length
-    notes.push('')
+    notes.push({ t: '' })
     await mutate()
     try {
       await act(async () => { txtSet(`dn:0.${ni}`, '</div><img src=x onerror=alert(1)>'); notify() })
@@ -242,7 +242,7 @@ describe('what a deletion sentence carries at the edges', () => {
   it('an empty note reads as a bare sentence, with no empty quotes', async () => {
     const notes = DAYS[0].notes
     const ni = notes.length
-    notes.push('')
+    notes.push({ t: '' })
     await mutate()
     await click($(`#sbBoard [data-ndel="0.${ni}"]`))
     const r = newest()!
@@ -256,7 +256,7 @@ describe('what a deletion sentence carries at the edges', () => {
   it('the 60-char clip cuts whole characters, never half an emoji', async () => {
     const notes = DAYS[0].notes
     const ni = notes.length
-    notes.push('😀'.repeat(70))                    // 70 code points — must clip
+    notes.push({ t: '😀'.repeat(70) })             // 70 code points — must clip
     await mutate()
     await click($(`#sbBoard [data-ndel="0.${ni}"]`))
     const r = newest()!

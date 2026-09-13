@@ -2,6 +2,7 @@
    sbProgPanel, sbSimPanel, sbSlot, labelToTitle/titleToLabel — verbatim. */
 import { INPUTS, inpMeta, inputCoversDate, inpLabel, inpId, inpTimeText, isPersonal, isUnavail, isSansAvail, isUpchit, sansBadge } from '../engine/inputs'
 import { PEOPLE, nameToId } from '../engine/people'
+import { noteText } from '../engine/note'
 import { hhmm, fmtHM } from '../engine/time'
 import { sevOf, chipOf } from '../engine/validate'
 import { whoArr } from '../engine/slots'
@@ -176,7 +177,7 @@ export function sbNotesPanel(d:any,di:any,pv?:any,ro?:any){
      growing `<textarea rows="1" class="nin">`; the .sb-nrow textarea CSS grows it.
      The placeholder stays — an Overall note line has always shown one. */
   n.forEach((t:any,ni:any)=>{ s+=`<div class="sb-nrow"${rowMove(`mv:n.${di}.${ni}`,ro)}>`+sbGrip(ro)+`<span class="nx">${ni+1}.</span>`
-    +boxHTML('nin',`data-bfld="dn:${di}.${ni}"${alAttr(`dn:${di}.${ni}`)}${ro?' disabled':''}`,t,'e.g. EP, ORDERS, NO FLY, SQN OFF')
+    +boxHTML('nin',`data-bfld="dn:${di}.${ni}"${alAttr(`dn:${di}.${ni}`)}${ro?' disabled':''}`,noteText(t),'e.g. EP, ORDERS, NO FLY, SQN OFF')
     +(ro?'':`<span class="lctl">`+sbNudge(`mv:n.${di}.${ni}`,ro)+`<button class="mbtn del" data-ndel="${di}.${ni}" title="Remove this note">✕</button></span>`)+`</div>`; });
   return s+`</div></div>`;
 }

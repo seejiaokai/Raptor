@@ -1,7 +1,7 @@
 /* ---- schedule data (week of Mon 13 Jul 26, Monday..Sunday) ---- */
 export const DAYS:any[]=[
  {dow:'Monday',dt:'Jul 13',wc:'4 X 4 X 0',today:true,
-  notes:['EP: ENGINE FIRE ON TAKE OFF','ORDERS: FLYING ORDERS SECTION 2'],
+  notes:[{t:'EP: ENGINE FIRE ON TAKE OFF'},{t:'ORDERS: FLYING ORDERS SECTION 2'}],
   allhands:[{prog:'SODB',str:'0745',end:'0815'},{prog:'MET + NOTAM BRIEF',str:'0815',end:'0830',who:'nact'},{prog:'FLIGHT SAFETY STAND-DOWN',str:'0830',end:'0900',who:'bane'},{prog:'WPNS & TACTICS SYNC',str:'1130',end:'1200',who:'harpoon'},{prog:'STANDARDISATION MEETING',str:'1330',end:'1430',who:'pump'},{prog:'OCU PROGRESS REVIEW',str:'1445',end:'1530',who:'bapster'},{prog:'INTEL UPDATE',str:'1600',end:'1620',who:'romeo'},{prog:'OPS SHARING + NAV SYS BRIEF',str:'1755',end:'',who:'stiff'},{prog:'DINNER WITH CMD',str:'1830',end:''},{prog:'CMD ENGAGEMENT @ CREW ROOM (ALL)',str:'2130',end:''}],
   waves:[
    {label:'WAVE 1',night:false,intimes:['1200H: FIRST WAVE VL IN TIME + WX/NOTAMS','1300H: FIRST WAVE RU IN TIME + WX/NOTAMS'],traffic:['1 X TRANSPORT / WEST HIGH / FL240 / 1300H - 1715H'],formations:[
@@ -30,7 +30,7 @@ export const DAYS:any[]=[
   ground:[{prog:'HQ ENGAGEMENT',str:'0845',end:'1630',who:'dj'},{prog:'STAFF MTG @ HQ',str:'0930',end:'1100',who:'vegas'},{prog:'MEDICAL APPT',str:'1030',end:'1230',who:'fantom'},{prog:'DENTAL APPT',str:'1200',end:'1330',who:'krait'},{prog:'TRAINING CMD VISIT',str:'1630',end:'1800',who:'dj'},{prog:'OPS/LOGS @ EXT SQN',str:'1400',end:'1530',who:'slash'}]},
 
  {dow:'Tuesday',dt:'Jul 14',wc:'4 X 4 X 0',
-  notes:['ORDERS: FLYING ORDERS SECTION 3'],
+  notes:[{t:'ORDERS: FLYING ORDERS SECTION 3'}],
   allhands:[{prog:'SODB',str:'0545',end:'0600'},{prog:'MASS BRIEF',str:'0600',end:'0630'}],
   waves:[
    {label:'WAVE 1',night:false,intimes:['0600H: FIRST WAVE VL IN TIME + WX/NOTAMS','0700H: FIRST WAVE RU IN TIME + WX/NOTAMS'],traffic:[],formations:[
@@ -54,7 +54,7 @@ export const DAYS:any[]=[
   ground:[{prog:'OPS BRIEFER / EP SUP',str:'0500',end:'',who:'dice'},{prog:'FLY W EXT SQN',str:'0845',end:'',who:'ipman'},{prog:'MEDICAL APPT',str:'1330',end:'1500',who:'yeti'}]},
 
  {dow:'Wednesday',dt:'Jul 15',wc:'4 X 4 X 0',
-  notes:['ORDERS: FLYING ORDERS SECTION 2'],
+  notes:[{t:'ORDERS: FLYING ORDERS SECTION 2'}],
   allhands:[{prog:'SODB',str:'0745',end:'0800'}],
   waves:[
    {label:'WAVE 1',night:false,intimes:['1000H: FIRST WAVE VL IN TIME + WX/NOTAMS','1000H: FIRST WAVE RU IN TIME + WX/NOTAMS'],traffic:[],formations:[
@@ -78,7 +78,7 @@ export const DAYS:any[]=[
   ground:[{prog:'MAINT CONF @ ENG WING',str:'1400',end:'1630',who:'dj'},{prog:'NAV-SYS TRIAL PREP',str:'1400',end:'',who:'vegas'}]},
 
  {dow:'Thursday',dt:'Jul 16',wc:'4 X 4 X 0',
-  notes:['EXAM PERIOD RESTRICTIONS / 21 JUL 0700H - 24 JUL 1800H','ORDERS: FLYING ORDERS SECTION 4'],
+  notes:[{t:'EXAM PERIOD RESTRICTIONS / 21 JUL 0700H - 24 JUL 1800H'},{t:'ORDERS: FLYING ORDERS SECTION 4'}],
   allhands:[{prog:'SODB',str:'0745',end:'0800'},{prog:'HQ ENGAGEMENT',str:'0845',end:'1630',who:'dj'}],
   waves:[
    {label:'WAVE 1',night:false,intimes:['1200H: FIRST WAVE VL IN TIME + WX/NOTAMS','1200H: FIRST WAVE RU IN TIME + WX/NOTAMS'],traffic:[],formations:[
@@ -102,7 +102,7 @@ export const DAYS:any[]=[
   ground:[{prog:'MEDICAL APPT',str:'1030',end:'1230',who:'fantom'},{prog:'DENTAL APPT',str:'1200',end:'1330',who:'krait'}]},
 
  {dow:'Friday',dt:'Jul 17',wc:'0 X 0 X 0',
-  notes:['NO FLYING - GROUND TRAINING DAY','ORDERS: FLYING ORDERS SECTION 5'],
+  notes:[{t:'NO FLYING - GROUND TRAINING DAY'},{t:'ORDERS: FLYING ORDERS SECTION 5'}],
   allhands:[{prog:'SODB',str:'0745',end:'0800'},{prog:'SQN PT',str:'1500',end:'1630'},{prog:'MASS DEBRIEF + BEER CALL',str:'1700',end:''}],
   waves:[],
   sims:{amt:[],oft:[{label:'SIMS (EXT SQN)',str:'0900',end:'1030',who:'EXT SQN'},{label:'EP-6',str:'1400',end:'1530',p:'bapster',w:'shaft'}]},
@@ -115,14 +115,14 @@ export const DAYS:any[]=[
     both. A duty crew still stands the weekend, which is what the squadron
     actually does, and gives the days something real to validate. */
  {dow:'Saturday',dt:'Jul 18',wc:'0 X 0 X 0',
-  notes:['WEEKEND - NO FLYING','DUTY CREW ON CALL'],
+  notes:[{t:'WEEKEND - NO FLYING'},{t:'DUTY CREW ON CALL'}],
   allhands:[],
   waves:[],
   sims:{amt:[],oft:[]},
   dutywaves:[{label:'Duty',rows:[{role:'SDO',id:'plasma',str:'0800',end:'1800'}]}],
   ground:[]},
  {dow:'Sunday',dt:'Jul 19',wc:'0 X 0 X 0',
-  notes:['WEEKEND - NO FLYING','DUTY CREW ON CALL'],
+  notes:[{t:'WEEKEND - NO FLYING'},{t:'DUTY CREW ON CALL'}],
   allhands:[],
   waves:[],
   sims:{amt:[],oft:[]},

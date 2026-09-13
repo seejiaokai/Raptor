@@ -106,7 +106,7 @@ const SIM: Spec = { ...FLAGS, label: 'string', str: 'string', end: 'string', rmk
 const DUTYROW: Spec = { ...FLAGS, role: 'string', id: 'string', str: 'string', end: 'string', more: { $opt: ['string'] }, rid: 'string?' }
 const DUTYBLOCK: Spec = { label: 'string', rows: [DUTYROW], sa: { $opt: SAKIND }, noconf: 'boolean?', rid: 'string?' }
 const DAY: Spec = {
-  dow: 'string', dt: 'string', wc: 'string', today: 'boolean?', notes: ['string'], allhands: [ALLHANDS], waves: [WAVE],
+  dow: 'string', dt: 'string', wc: 'string', today: 'boolean?', notes: [{ rid: 'string?', t: 'string' }], allhands: [ALLHANDS], waves: [WAVE],
   sims: { amt: [SIM], oft: [SIM] }, dutywaves: [DUTYBLOCK], ground: [GROUND],
   simnotes: 'string?', prognotes: 'string?', dutynotes: 'string?', grndnotes: 'string?', secOrder: { $opt: ['string'] }, gman: 'boolean?',
 }

@@ -84,7 +84,15 @@ describe('engine parity with the reference', () => {
   })
 
   it('seed data matches (DAYS) and day badges agree', () => {
-    expect(JSON.parse(JSON.stringify(DAYS.slice(0, REFN)))).toEqual(JSON.parse(w.eval('JSON.stringify(DAYS)')))
+    /* the port's day-notes are { id, t } objects since 13 Sep 26 (ARCH-STACK 1A)
+       while the reference keeps bare strings, so compare note CONTENT (the text),
+       with note identity excluded — the id is never printed and rides no
+       reference byte (Astra SID-06). reday already projected the port TEXT into
+       the reference, so both normalise to the same strings; the byte-exact render
+       parity below remains the independent proof that the text still renders. */
+    const noteText = (n: any) => (typeof n === 'string' ? n : (n && typeof n.t === 'string' ? n.t : ''))
+    const normNotes = (days: any[]) => days.map((d: any) => ({ ...d, notes: (d.notes || []).map(noteText) }))
+    expect(normNotes(JSON.parse(JSON.stringify(DAYS.slice(0, REFN))))).toEqual(normNotes(JSON.parse(w.eval('JSON.stringify(DAYS)'))))
     DAYS.slice(0, REFN).forEach((d: any, i: number) => expect(dayCount(d)).toBe(w.eval(`dayCount(DAYS[${i}])`)))
   })
 })

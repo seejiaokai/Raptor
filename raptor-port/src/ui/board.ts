@@ -2,6 +2,7 @@
    delegated handlers — the reference's bodies, verbatim, with repaint via the
    store's notify(). The CX-with-a-reason dialog state lives here too. */
 import { DAYS } from '../engine/data'
+import { mkNote, noteText } from '../engine/note'
 import { INPUTS, inputCoversDate, inpById, inpTimeText } from '../engine/inputs'
 import { PEOPLE, nameToId, isSpecial } from '../engine/people'
 import { isStandalone, makeStandalone, DUTY_PICK, SAWAVE } from '../engine/waves'
@@ -811,7 +812,7 @@ export function boardMbtn(e: MouseEvent) {
     markDeletion(di, 'wave', issued); afterSchedMutate(); notify(); return act(di, said)
   }
   if (ds.nadd != null) {
-    const d = DAYS[+ds.nadd]; d.notes = d.notes || []; d.notes.push('')
+    const d = DAYS[+ds.nadd]; d.notes = d.notes || []; d.notes.push(mkNote(''))
     markStructuralAdd(`dn:${+ds.nadd}.${d.notes.length - 1}`); logAction(+ds.nadd, 'Note added'); afterSchedMutate(); notify(); return
   }
   if (ds.ndel != null) {
@@ -821,7 +822,7 @@ export function boardMbtn(e: MouseEvent) {
        text fit whole. A note long enough to clip already ends in clip's own
        ellipsis, and a quote mark stitched on after that would read as part of
        the sentence rather than as the record trimming it. */
-    const raw = String(DAYS[di].notes[ni] ?? '').trim(), text = clip(raw)
+    const raw = noteText(DAYS[di].notes[ni]).trim(), text = clip(raw)
     const said = 'Note removed' + (text ? ` — "${text}${text === raw ? '"' : ''}` : '')
     DAYS[di].notes.splice(ni, 1); shiftKeys(`dn:${di}.`, 0, ni)
     markDeletion(di, 'note', issued); afterSchedMutate(); notify(); return act(di, said)

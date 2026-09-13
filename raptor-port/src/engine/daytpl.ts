@@ -5,6 +5,8 @@ import { keyDay } from './keys'
 import { store } from './hooks'
 import { SECTIONS } from './order'
 import { stripRowIds } from './rowids'
+import { noteText } from './note'
+import type { Note } from './note'
 import { reconcileDayFiling } from './slots'
 /* a captured section order, cleaned to known keys with no repeats — used both
    when minting a template off a live day and when loading a hand-edited file. */
@@ -43,7 +45,7 @@ const cleanSecOrder = (v: any): string[] | undefined => {
    tplFromDay below) so the template is a shape, not a crew list. */
 
 export type DayTplBlob = {
-  notes: string[]
+  notes: Note[]
   allhands: any[]
   waves: any[]
   sims: Record<string, any[]>
@@ -94,7 +96,7 @@ export function dayTplAreStandard() {
 function blankWho(w: any) { return Array.isArray(w) ? [] : '' }
 
 function mintBlob(d: any): DayTplBlob {
-  const notes: string[] = JSON.parse(JSON.stringify(d.notes || []))
+  const notes: Note[] = JSON.parse(JSON.stringify(d.notes || []))
   const allhands: any[] = JSON.parse(JSON.stringify(d.allhands || []))
   const waves: any[] = JSON.parse(JSON.stringify(d.waves || []))
   const sims: Record<string, any[]> = JSON.parse(JSON.stringify(d.sims || {}))
@@ -148,8 +150,11 @@ function mintBlob(d: any): DayTplBlob {
   })
 
   /* a template is a shape, not a set of rows — it carries no ids (review
-     finding 2): applying it seats brand-new rows, never the source day's own */
-  stripRowIds({ allhands, waves, sims, dutywaves, ground })
+     finding 2): applying it seats brand-new rows, never the source day's own.
+     NOTE lines carry an id too now (13 Sep 26), so they must be in the strip —
+     otherwise one template applied to two days copies the same note id onto both
+     (Astra SID-04). ensureRowIds mints a fresh id per applied copy at the baseline. */
+  stripRowIds({ notes, allhands, waves, sims, dutywaves, ground })
 
   return {
     notes, allhands, waves, sims, dutywaves, ground,
@@ -296,7 +301,11 @@ function sanitiseBlob(raw: any): DayTplBlob {
   const sims: Record<string, any[]> = {}
   Object.keys(simsIn).forEach(k => { sims[k] = arr(simsIn[k]) })
   return {
-    notes: arr(raw && raw.notes).filter((n: any) => typeof n === 'string'),
+    /* coerce each note to a { t } object (13 Sep 26): a template FILE may hold
+       old bare-string notes or the new objects — keep the text from either, drop
+       neither (Astra SID-03: filtering to strings dropped every new-format note).
+       No id here; ensureRowIds mints one when the template is applied. */
+    notes: arr(raw && raw.notes).filter((n: any) => typeof n === 'string' || (n && typeof n === 'object')).map((n: any) => ({ t: noteText(n) })),
     allhands: arr(raw && raw.allhands),
     waves: arr(raw && raw.waves),
     sims,

@@ -11,6 +11,7 @@ import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { DAYS } from './data'
 import { WEEK2_DAYS } from './week2'
+import { noteText } from './note'
 import { DEMO_OIL } from '../leavewar/state/demoworld'
 import { seedLedger } from '../leavewar/engine/seed'
 
@@ -29,7 +30,7 @@ describe('the demo weeks carry invented areas and generic wording', () => {
     })
     it(`${name}: notes, traffic, in-times and remarks name nothing real`, () => {
       for (const d of days as any[]) {
-        for (const n of d.notes || []) expect(n, `${d.dow} note`).not.toMatch(REAL)
+        for (const n of d.notes || []) expect(noteText(n), `${d.dow} note`).not.toMatch(REAL)
         for (const wv of d.waves || []) {
           for (const t of wv.traffic || []) expect(t, `${d.dow} traffic`).not.toMatch(REAL)
           for (const t of wv.intimes || []) expect(t, `${d.dow} in-time`).not.toMatch(REAL)

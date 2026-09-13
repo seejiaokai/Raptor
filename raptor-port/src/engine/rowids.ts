@@ -32,13 +32,29 @@ export function rowsOf(d:any):any[]{
   (d.ground||[]).forEach((r:any)=>out.push(r));
   return out;
 }
-/* mint a missing rid, re-mint a duplicate; returns how many were minted */
+/* mint a missing rid, re-mint a duplicate; returns how many were minted.
+   Day-NOTE lines ride the same walk since 13 Sep 26 (ARCH-STACK 1A): they are
+   `{rid,t}` objects now, so they take a stable `rid` the same way — minted here,
+   never in the seed literal, and re-minted on a duplicate so a day-template
+   applied to two days (which deep-copies the note objects) cannot leave the two
+   sharing one note id. Notes are NOT in rowsOf (they stay positionally addressed,
+   dn:di.i), so they get their own pass — but in the SAME `rid` field and `seen`
+   space as rows, which is what lets every rid-stripping path handle a note for
+   free. A legacy bare-string note from a pre-1A blob is skipped, not crashed on
+   (the storage reset coerces it). */
 export function ensureRowIds(days:any[]):number{
   const seen=new Set<string>();let n=0;
-  for(const d of days||[])for(const r of rowsOf(d||{})){
-    if(!r||typeof r!=='object')continue;
-    if(typeof r.rid!=='string'||!r.rid||seen.has(r.rid)){r.rid=mintRowId();n++;}
-    seen.add(r.rid);
+  for(const d of days||[]){
+    for(const r of rowsOf(d||{})){
+      if(!r||typeof r!=='object')continue;
+      if(typeof r.rid!=='string'||!r.rid||seen.has(r.rid)){r.rid=mintRowId();n++;}
+      seen.add(r.rid);
+    }
+    for(const note of (d&&Array.isArray(d.notes)?d.notes:[])){
+      if(!note||typeof note!=='object')continue;
+      if(typeof note.rid!=='string'||!note.rid||seen.has(note.rid)){note.rid=mintRowId();n++;}
+      seen.add(note.rid);
+    }
   }
   return n;
 }
@@ -47,7 +63,12 @@ export function ensureRowIds(days:any[]):number{
    of two identical rows was "first". (A parked DRAFT does NOT strip — keep-ids,
    drafts.ts; a duplicated wave leans on ensureRowIds' dedupe as it coexists in
    the live model.) */
-export function stripRowIds(d:any){for(const r of rowsOf(d||{}))if(r&&typeof r==='object')delete r.rid;}
+export function stripRowIds(d:any){
+  for(const r of rowsOf(d||{}))if(r&&typeof r==='object')delete r.rid;
+  /* note lines are a COPY boundary too (13 Sep 26): strip their rid so a captured
+     day template / duplicated day re-mints a fresh one via ensureRowIds */
+  for(const note of (d&&Array.isArray(d.notes)?d.notes:[]))if(note&&typeof note==='object')delete note.rid;
+}
 /* every row with its ADDRESS (section.index… path) — the pairing key for a
    snapshot written before ids existed: the row at the same address in the
    live day is the same row */

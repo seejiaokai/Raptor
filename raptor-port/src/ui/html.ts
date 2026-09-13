@@ -1,4 +1,5 @@
 import { DAYS } from '../engine/data'
+import { noteText } from '../engine/note'
 import { PEOPLE, isSpecial, nameToId, QCHIP, QCLASS, LEVELNAME, byCrew } from '../engine/people'
 import { INPUTS, inputCoversDate, inpLabel, inpId, inpTimeText, isOffType, offWord, isLeave, isDownchit, isPersonal, isUnavail, isSansAvail, isUpchit, sansBadge, sansAvailOn, sansWindow, sansLetters, isLateInput, lateNote } from '../engine/inputs'
 import { isStandalone, scSpare, dayCount, mColor, saExempt, SAWAVE } from '../engine/waves'
@@ -1135,7 +1136,7 @@ export function dayHTML(di:any,ed:any,vsel?:any){
     const hasNotes=!!(d.notes&&d.notes.length), hasAH=!!(d.allhands&&d.allhands.length);
     if(hasNotes||hasAH||ed){
       h+=`<div class="allhands sec sec-prog"><div class="ah-h">Common Programme</div>`;
-      (d.notes||[]).forEach((n:any,ni:any)=>h+=ted(`dn:${di}.${ni}`,n,ed,'ah-note','div'));
+      (d.notes||[]).forEach((n:any,ni:any)=>h+=ted(`dn:${di}.${ni}`,noteText(n),ed,'ah-note','div'));
       if(hasAH){
         h+=`<div class="ah-cols"><span>Name</span><span>Start</span><span>End</span><span>People</span><span>Rmks</span></div>`;
         d.allhands.forEach((x:any,ri:any)=>{

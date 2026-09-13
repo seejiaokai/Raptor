@@ -83,8 +83,8 @@ describe('duplicating a day', () => {
     expect(t!.name).toBe('Draft 3')
     expect(curDraftId(0)).toBe(t!.id)
     const d2 = dayDrafts(0).find((x: any) => x.name === 'Draft 2')
-    expect(d2.d.notes[0]).toBe('PLAN B NOTE')       // the stow caught the edit
-    expect(t!.d.notes[0]).toBe('PLAN B NOTE')       // the new draft copies live
+    expect(d2.d.notes[0].t).toBe('PLAN B NOTE')       // the stow caught the edit
+    expect(t!.d.notes[0].t).toBe('PLAN B NOTE')       // the new draft copies live
   })
 
   it('default numbering is highest existing Draft N + 1, surviving renames and deletes', () => {
@@ -120,12 +120,12 @@ describe('switching drafts', () => {
     txtSet('dn:0.0', 'DRAFT 2 EDIT')
     expect(draftSelect(0, d1.id)).toBe(true)
     expect(curDraftId(0)).toBe(d1.id)
-    expect(txtGet('dn:0.0')).toBe(D0.notes[0])      // Draft 1 is the day as it stood
+    expect(txtGet('dn:0.0')).toBe(D0.notes[0].t)      // Draft 1 is the day as it stood
     expect(draftSelect(0, d2.id)).toBe(true)
     expect(txtGet('dn:0.0')).toBe('DRAFT 2 EDIT')   // the stow held the edit
     /* and the installed blob is a clone — editing live must not reach the stowed copy */
     txtSet('dn:0.0', 'LATER STILL')
-    expect(dayDrafts(0).find((x: any) => x.id === d2.id).d.notes[0]).toBe('DRAFT 2 EDIT')
+    expect(dayDrafts(0).find((x: any) => x.id === d2.id).d.notes[0].t).toBe('DRAFT 2 EDIT')
   })
 
   it('re-stamps .today from the live day — the calendar, not the document', () => {
@@ -156,7 +156,7 @@ describe('switching drafts', () => {
     const [, d2] = dayDrafts(0)
     expect(draftSelect(0, 'nope')).toBe(false)
     expect(draftSelect(0, d2.id)).toBe(false)       // already live
-    expect(txtGet('dn:0.0')).toBe(D0.notes[0])      // nothing moved
+    expect(txtGet('dn:0.0')).toBe(D0.notes[0].t)      // nothing moved
   })
 })
 
@@ -184,7 +184,7 @@ describe('switching drafts on a PUBLISHED day — the pending rebase', () => {
     expect(dayPend()).toEqual(['dn:0.0'])
     expect(draftSelect(0, d1.id)).toBe(true)
     expect(dayPend()).toEqual([])                   // Draft 1 IS the issued day
-    expect(txtGet('dn:0.0')).toBe(D0.notes[0])
+    expect(txtGet('dn:0.0')).toBe(D0.notes[0].t)
   })
 
   it('switching back to the edited draft re-marks exactly the differences', () => {
@@ -295,7 +295,7 @@ describe('switching drafts on a PUBLISHED day — the pending rebase', () => {
     expect(dayPend()).toEqual([])
     const al1 = dayCurVer(0)
     expect(verSeq(al1)).toBe(1)
-    expect(daySnapOf(0, al1).d.notes[0]).toBe('PLAN B')
+    expect(daySnapOf(0, al1).d.notes[0].t).toBe('PLAN B')
   })
 
   it('other days\' pending and added keys are untouched by the rebase', () => {
@@ -506,7 +506,7 @@ describe('publish — unchanged, and that is the point', () => {
     sign(0); setDayApproved(0, 1)
     expect(dayApproved(0)).toBe(true)
     /* the Original froze the SELECTED draft's content, not Draft 1's */
-    expect(SCHED.orig[0].d.notes[0]).toBe('THE WET PLAN')
+    expect(SCHED.orig[0].d.notes[0].t).toBe('THE WET PLAN')
     /* and the day's pending marks were spent on the issue as always */
     expect(Object.keys(SCHED.pending).filter(k => k.indexOf(':0.') > 0 || /^dn:0\./.test(k))).toEqual([])
   })

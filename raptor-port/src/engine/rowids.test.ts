@@ -13,13 +13,18 @@ import { WEEKS, CURWEEK } from './waves'
 const clone = (v: any) => JSON.parse(JSON.stringify(v))
 
 describe('ensureRowIds', () => {
-  it('mints a rid on every row of the seed week, once', () => {
+  it('mints a rid on every row and an id on every note of the seed week, once', () => {
     const days = clone(DAYS)
     const n = ensureRowIds(days)
     const rows = days.flatMap(rowsOf)
-    expect(n).toBe(rows.length)
+    const notes = days.flatMap((d: any) => d.notes || [])
+    /* the walk mints rids for rows AND ids for day-note lines (13 Sep 26) */
+    expect(n).toBe(rows.length + notes.length)
     expect(rows.every((r: any) => typeof r.rid === 'string' && r.rid.startsWith('r'))).toBe(true)
-    expect(new Set(rows.map((r: any) => r.rid)).size).toBe(rows.length)
+    expect(notes.every((nt: any) => typeof nt.rid === 'string' && nt.rid.startsWith('r'))).toBe(true)
+    /* rows and notes share ONE rid space — no id collides across the two */
+    const allIds = [...rows.map((r: any) => r.rid), ...notes.map((nt: any) => nt.rid)]
+    expect(new Set(allIds).size).toBe(allIds.length)
     expect(ensureRowIds(days)).toBe(0)
   })
   it('walks waves, formations, seats, duty blocks and rows, sims, programme and ground rows', () => {

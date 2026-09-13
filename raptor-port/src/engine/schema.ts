@@ -25,6 +25,7 @@
 import type { WaveKind, WaveTpl, WaveTplLine } from './wavetpl'
 import type { DutyWave, DutyTpl, DutyTplRow } from './dutytpl'
 import type { DayTpl, DayTplBlob } from './daytpl'
+import type { Note } from './note'
 import type { QualCol } from './qualcols'
 import type { Lookahead } from './lookahead'
 import type { ELogRow } from './editlog'
@@ -364,8 +365,8 @@ export type Day = {
   wc: string
   /** Calendar today marker — seed; engine re-stamps on restore/draft. */
   today?: boolean
-  /** Overall Notes lines, may be [] — seed; screen. */
-  notes: string[]
+  /** Overall Notes lines, may be [] — each `{ rid?, t }` (engine/note.ts); addressed positionally by `dn:di.i`, rid minted at boot like a row's (13 Sep 26). Seed; screen. */
+  notes: Note[]
   /** Common Programme — seed; screen. */
   allhands: AllhandsRow[]
   /** Flying and standalone waves — seed; screen. */
