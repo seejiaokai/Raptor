@@ -191,14 +191,19 @@ providers inspected the built code; all findings fixed. Remaining in step 1: **1
 Tracker ids — split 13 Sep 26: **1B-i COURSE ids DONE + LIVE**; **1B-ii SYLLABUS ids DONE + LIVE**
 (14 Sep 26 — incl. a Fable review, then an independent Codex re-review that found RR-01/02/03 +
 owner-requested RR-03b, all fixed and merged via PR #402)) and **1C** (`who→personId`,
-parity-sensitive). **1C BUILT — HOLDING for "merge live" (14 Sep 26, branch
-`claude/arch-stack-1c-personid`).** Ground/Common-Programme `who` now store the stable person id
-(flying/duty/sim/inputs already did); rename is label-only (the DAYS-walk is gone); sim `who` is
-free text only; `addPerson` refuses an id-colliding callsign; coordinated storage reset
-(SCHEMA_VERSION 1→2). Plan + cross-provider red-team dispositions:
-`raptor-port/docs/superpowers/specs/2026-09-14-arch-stack-1c-personid-spec.md`. Gates green
-(tfin.js 728/0, vitest 4721/4721, build); browser gates + final cross-provider code inspection in
-progress. **With 1C, step 1 (stable ids everywhere) is complete.** Deferred
+parity-sensitive). **1C DONE + LIVE (14 Sep 26, PR #403, merged to `main`, deployed & live-verified).**
+Ground/Common-Programme `who` now store the stable person id (flying/duty/sim/inputs already did);
+rename is label-only (the DAYS-walk is gone); sim `who` is free text only; `addPerson` refuses an
+id-colliding callsign; coordinated storage reset (SCHEMA_VERSION 1→2). Process: design →
+cross-provider plan red-team (Claude + Codex, both REVISE → fixes folded) → Opus 4.8 build →
+independent cross-provider code inspection (Claude SHIP-READY; Codex REVISE → test-strength + a
+peek regression fixed + locked; two-tab reset limitation acknowledged as [DB-STEP]-owned). Gates:
+tfin.js 728/0, vitest 4728/4728, smoke 425/0, build; live-verified (ground/programme names resolve
+id→cs, sim `who` shows as text, all assets 200, no console errors). *(Deploy note: the first two
+publish runs hit the known `addStudent` smoke flake — deploy skipped; a fresh workflow_dispatch run
+was green and published, exactly the #398 pattern.)* Spec + dispositions:
+`raptor-port/docs/superpowers/specs/2026-09-14-arch-stack-1c-personid-spec.md` (§§12–13 binding).
+**With 1C, step 1 (stable ids everywhere) is COMPLETE.** Deferred
 follow-ups: (finding 2, orphaned `Other` hard-grade) noted below; and a
 **pre-existing** peek-preview cache nit surfaced by the 1C code inspection
 (Codex PID-R03) — the ViewWeek preview cache keys on the week only, so a person
