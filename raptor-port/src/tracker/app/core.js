@@ -889,7 +889,14 @@ async function buildSylJournal() {
        built-in (if any) is handled by seeding/hidden/tomb below (review RR-03). */
     if (!defFromMaster[name] && (hiddenNames.indexOf(name) >= 0 || tombNames.indexOf(name) >= 0)) continue;
     const cls = classifyDefinedName(name);
-    const asBuiltin = cls.builtin && tombNames.indexOf(name) < 0;
+    /* fold a def onto the built-in id ONLY when that built-in is LIVE — neither
+       tombstoned NOR hidden. The old reader's CUSTOMS was never filtered by hidden
+       or tomb, so a surviving def under a hidden (or deleted) built-in name SHOWED
+       as a custom; folding it onto the built-in id would make it a hidden override
+       that vanishes. Mint a visible custom instead; the built-in is still seeded
+       (if not tombstoned) and carried in the hidden set, exactly as the old model
+       held it (review: preserve what the old READER showed). */
+    const asBuiltin = cls.builtin && tombNames.indexOf(name) < 0 && hiddenNames.indexOf(name) < 0;
     const id = asBuiltin ? cls.id : mintSylId();
     idByName[name] = id;
     if (!has(defById, id)) defById[id] = defByName[name];

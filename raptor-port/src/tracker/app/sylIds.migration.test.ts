@@ -422,4 +422,33 @@ describe('migrateSylIds — KEEP the catalogue, RESET the student layer', () => 
     expect(Object.values(defs).some((d: any) => JSON.stringify(d) === JSON.stringify([{ id: 'H-1', type: 'acad', prereqs: [] }])), 'the suppressed def is not filed under any id').toBe(false)
     expect((await getJSON('v3:cx1:plan')).sylId, 'the course opens on the shown 2024 custom').toBe(shown.id)
   })
+
+  it('a HIDDEN (not deleted) built-in name with a global-master def shows as a custom, not a hidden override (review RR-03b)', async () => {
+    /* the owner edited the '2026' built-in (its def lives in v3:master:syls) and
+       then HID it. The old reader showed CUSTOMS['2026'] regardless of the hide, so
+       the chart was still on screen; folding it onto the built-in id makes it a
+       HIDDEN override that disappears. It must stay a visible custom, while the
+       built-in itself stays catalogued-but-hidden, mirroring the old model. */
+    makeStore({
+      'v3:courses': [{ id: 'cx1', name: '26ABSG' }],
+      'v3:cx1:plan': { sylName: '2026', epw: 2 },
+      'v3:cx1:rostermig': '1', 'v3:cx1:idmig': '1',
+      'v3:master:syls': { '2026': [{ id: 'Z-1', type: 'acad', prereqs: [] }] },
+      'v3:master:sylhidden': ['2026'],   // hidden, NOT tombstoned
+      'v3:master:syltomb': {},
+    })
+    expect(await core.migrateCourseIds()).toBe(true)
+    expect(await core.migrateSylIds()).toBe(true)
+    expect(core.bootError, 'no fail-closed boot').toBeNull()
+    const cat = await getJSON('v3:master:sylcat')
+    const shown = cat.find((e: any) => e.name === '2026' && !isBuiltinSylId(e.id))
+    expect(shown && isSylId(shown.id), 'the edited 2026 shows as a custom').toBe(true)
+    expect(cat.some((e: any) => e.id === 'sb2026'), 'the built-in stays catalogued').toBe(true)
+    const hidden = await getJSON('v3:master:sylhidden')
+    expect(hidden.includes('sb2026'), 'the built-in itself is hidden, as before').toBe(true)
+    expect(hidden.includes(shown.id), 'but the shown custom is NOT hidden').toBe(false)
+    const defs = await getJSON('v3:master:syls')
+    expect(defs[shown.id], 'the def is filed under the shown custom id').toEqual([{ id: 'Z-1', type: 'acad', prereqs: [] }])
+    expect((await getJSON('v3:cx1:plan')).sylId, 'the course opens on the shown custom').toBe(shown.id)
+  })
 })
