@@ -558,6 +558,22 @@ so the live day, its drafts and its issued document share ONE `rid`-space.
   `dl:/dr:` duty · `sr:` sim · `gr:` ground · `st:` stores ·
   `ar:/at:` area/area-time · `tr:` traffic.
 
+**Person identity is a stable hidden id (who→personId, ARCH-STACK 1C, 14 Sep
+26).** Every crew reference stores the PEOPLE key (`bane`), never the display
+callsign (`cs`): flying seats, duty `id`, sim `p/w/pax`, `more[]` and INPUTS
+`.person` always did; ground and Common-Programme `who` now do too
+(`setSlotVal`/`acceptInput` store the id). `whoId(v)` (engine/people.ts) is the
+ONE id-first resolver every ground/programme consumer shares
+(`PEOPLE[v]?v:nameToId(v)` — a stored id wins, a legacy callsign still
+resolves; free text like 'EXT SQN' stays text). So **renaming is a label change
+that moves nothing** (`renameCallsign` sets `cs` + remaps `ID_BY_CS`; the old
+DAYS-walk that rewrote row strings — and missed snapshots/drafts/other weeks —
+is gone), and no reused callsign can cross two people. `addPerson` refuses a
+callsign that resolves to any existing person by id OR callsign (the closed
+add back-door). Sim `who` is FREE TEXT only now — never resolved to a person.
+Parity holds byte-for-byte: `data-person` and the printed name both derive from
+the resolved id, so an id-form `who` renders identically to a callsign one.
+
 **The mutation funnel — bypassing it is always a bug.** All schedule
 writes go through `slotVal`/`setSlotVal`/`fillSlot`/`txtGet`/`txtSet` →
 `noteChange(key)` → `afterSchedMutate()`. A write that skips it is

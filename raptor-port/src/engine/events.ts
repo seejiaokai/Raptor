@@ -1,6 +1,6 @@
 import { DAYS } from './data'
 import { INPUTS, inputCoversDate, inputFlags, inputDormant, inpWin, isSansAvail, inpMeta, shiftHardInput, shiftHardLabel, inpById } from './inputs'
-import { PEOPLE, isSpecial, nameToId, aarNeed } from './people'
+import { PEOPLE, isSpecial, whoId, aarNeed } from './people'
 import { toMin, parseHM, win, overlap } from './time'
 import { VCONF, SHIFT_HARD } from './rules'
 import { isStandalone, saExempt, saExemptKind, CURWEEK } from './waves'
@@ -403,7 +403,7 @@ export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
          every check on that row was silently switched off. And the bodies
          dropped underneath the row (more[]) are as tasked as the two in seats. */
       const sw=win(st,en,VCONF.simLen); if(!sw)return;
-      [s.p,s.w,nameToId(s.who)].concat(s.pax||[]).concat(s.more||[])
+      [s.p,s.w].concat(s.pax||[]).concat(s.more||[])   // sim who is free text (1C), not a person
         .forEach((id:any)=>{ if(id&&PEOPLE[id]&&!isSpecial(id))events.push({id,s:sw[0],e:sw[1],label:'Sim '+s.label,kind:'sim',key:'s:'+di+'.'+k+'.'+ri}); }); }));
     /* ---- sim brief / debrief windows -------------------------------------
        An EP profile on the OFT briefs 15 min before the box — unless its
@@ -415,7 +415,7 @@ export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
        never clashes with itself.                                              */
     const simwin:any[]=[];
     const isB=(r:any)=>/^\s*BRIEF/i.test(r.label||''), isD=(r:any)=>/DEBRIEF/i.test(r.label||'');
-    const rowIds=(r:any)=>[r.p,r.w,nameToId(r.who)].concat(r.pax||[]).concat(r.more||[]).filter((id:any)=>id&&PEOPLE[id]&&!isSpecial(id));
+    const rowIds=(r:any)=>[r.p,r.w].concat(r.pax||[]).concat(r.more||[]).filter((id:any)=>id&&PEOPLE[id]&&!isSpecial(id));   // sim who free text (1C)
     ((d.sims&&d.sims.oft)||[]).forEach((s:any,ri:any)=>{ if(s.cx)return; if(!/EP/i.test(s.label||''))return;
       const st=parseHM(s.str); if(st==null)return;
       const en=parseHM(s.end)!=null?parseHM(s.end):st+VCONF.simLen, ids=rowIds(s); if(!ids.length)return;
@@ -476,14 +476,14 @@ export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
        all read day.events. Kept as a SEPARATE guard beside cx, not merged. */
     (d.ground||[]).forEach((g:any,ri:any)=>{ if(g.cx)return; if(g.info)return;
       const st=parseHM(g.str),en=parseHM(g.end);
-      push(nameToId(g.who),st,en,g.prog,'ground',`g:${di}.${ri}`);
+      push(whoId(g.who),st,en,g.prog,'ground',`g:${di}.${ri}`);
       extras(g).forEach((x:any)=>push(x,st,en,g.prog,'ground',`g:${di}.${ri}`)); });
     /* the squadron-wide Programme was never read here at all — a man booked to
        a 0845–1630 engagement could be scheduled to fly at 1245 with nothing
        said about it */
     (d.allhands||[]).forEach((x:any,ri:any)=>{ if(x.cx)return; if(x.info)return;
       const st=parseHM(x.str),en=parseHM(x.end);
-      whoArr(x).forEach((nm:any)=>push(nameToId(nm),st,en,x.prog||'programme','prog',`a:${di}.${ri}`));
+      whoArr(x).forEach((nm:any)=>push(whoId(nm),st,en,x.prog||'programme','prog',`a:${di}.${ri}`));
       extras(x).forEach((v:any)=>push(v,st,en,x.prog||'programme','prog',`a:${di}.${ri}`)); });
     /* through inpWin, so an absence typed across midnight rolls exactly as a
        duty row or a night sortie does — see inputs.ts. A record with no usable

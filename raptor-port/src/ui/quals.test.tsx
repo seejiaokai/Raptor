@@ -381,6 +381,24 @@ describe('the callsign / initials columns', () => {
     await act(async () => notify())
   })
 
+  it('Add person refuses a callsign that collides with an existing hidden id (1C add back-door)', async () => {
+    if (!$('#qCS')) await click($('#qAddToggle'))        // state is shared across tests — ensure the form is open
+    /* 'Bane' is nobody's callsign, but it IS the hidden id of the person whose
+       callsign is 'Ranger'. Pre-1C the add guard checked ID_BY_CS only, so this
+       slipped through and repointed the index — crossing every row that stored
+       the id 'bane'. The guard now refuses via the id-tolerant nameToId. */
+    await setV($('#qCS') as HTMLElement, 'Bane')
+    await setV($('#qInitials') as HTMLElement, 'bne')
+    const toasts: string[] = []
+    const origToast = HOOKS.toast
+    HOOKS.toast = (m: any) => { toasts.push(String(m)) }
+    try { await click($('#qAddPerson')) } finally { HOOKS.toast = origToast }
+    expect(toasts.some(t => /already taken/i.test(t)), 'refused, same words as a duplicate callsign').toBe(true)
+    expect(Object.keys(PEOPLE).some(k => PEOPLE[k].cs === 'Bane'), 'no newcomer minted').toBe(false)
+    expect(ID_BY_CS['bane'], 'the index was NOT repointed at a newcomer').toBeUndefined()
+    expect(PEOPLE['bane'].cs).toBe('Ranger')             // the id still belongs to the original person
+  })
+
   it('edit mode lets an existing person\'s initials be filled in', async () => {
     await click($('#qEdit'))
     const input = $('#qtbl input.qinit[data-init]') as HTMLInputElement

@@ -1,4 +1,4 @@
-import { nameToId } from './people'
+import { whoId } from './people'
 import { parseHM, hhmm } from './time'
 import { noteText } from './note'
 /* =====================================================================
@@ -27,10 +27,13 @@ export function dayKeys(d:any,di:any){
      person's id ('nact') where an app write stores his callsign ('Nact') —
      both name the same man, and comparing them raw made a moved-and-restored
      person on such a row read as a permanent diff (a pending mark that could
-     never clear, and a rebase diff that was never real). nameToId resolves a
-     callsign to its id and returns undefined for anything else — an id, free
-     text, a placeholder — so P() folds the two spellings together and leaves
-     every other value untouched. Keys and structure are unchanged.
+     never clear, and a rebase diff that was never real). whoId resolves id-first
+     (a stored id to itself, ARCH-STACK 1C) and a legacy callsign to its id, and
+     returns undefined for free text / a placeholder — so P() folds the two
+     spellings together and leaves every other value untouched. Reading id-first
+     (not callsign-first) keeps this canonical form matching the live read side,
+     so a reused callsign can never make the two disagree. Keys and structure are
+     unchanged.
      TIME cells fold the same way (owner's revert rule, 16 Aug 26): the seed
      stores '0700' where txtSet writes '07:00', so re-typing the very time the
      issued document shows read as a permanent pending edit — an AL whose whole
@@ -39,7 +42,7 @@ export function dayKeys(d:any,di:any){
      through raw. The JSON composites (it:/tr:/ar:/at:) are left raw — both
      documents reach them through one normalising write path; fold inside the
      JSON only if this class ever bites there. */
-  const P=(v:any)=>{const s=S(v);return nameToId(s)||s;};
+  const P=(v:any)=>{const s=S(v);return whoId(s)||s;};
   const T=(v:any)=>{const s=S(v);const min=parseHM(s);return min==null?s:hhmm(min);};
   (d.notes||[]).forEach((t:any,ni:any)=>m.set(`dn:${di}.${ni}`,S(noteText(t))));
   m.set(`sn:${di}`,S(d.simnotes));

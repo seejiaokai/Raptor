@@ -27,7 +27,7 @@
    ordinary repaint (perf-B). ViewWeek/EditWeek mount the cached markup as
    trailing children of the same `.week` container their own live-day diff
    loop never touches, so a one-day edit still rewrites only that day's node. */
-import { PEOPLE, nameToId, QCHIP, QCLASS } from '../engine/people'
+import { PEOPLE, whoId, QCHIP, QCLASS } from '../engine/people'
 import { noteText } from '../engine/note'
 import { isStandalone, mColor, dayCount, CURWEEK } from '../engine/waves'
 import { groundOrder } from '../engine/order'
@@ -132,7 +132,7 @@ function peekCommon(d: any): string {
   if (hasAH) {
     h += `<div class="ah-cols"><span>Name</span><span>Start</span><span>End</span><span>People</span><span>Rmks</span></div>`
     d.allhands.forEach((x: any) => {
-      const ids = whoArr(x).map((nm: any) => nameToId(nm))
+      const ids = whoArr(x).map((nm: any) => whoId(nm))
       const ppl = peekCrewCell(ids, '')
       const fy = fyiTag(x)
       h += `<div class="ah-row${rowCls(x)}"><span class="nm">${cxTag(x)}${flagTag(x)}<span class="ntx">${esc(x.prog || '')}</span>${x.sub ? `<span class="sub">${esc(x.sub)}</span>` : ''}</span>`
@@ -165,11 +165,18 @@ function peekSims(d: any): string {
     let s = `<div class="pl-sub">${title}</div>`
     rows.forEach((r: any) => {
       const pax = Array.isArray(r.pax) ? r.pax : null
-      /* mirrors html.ts's blk(): a crewed row shows its pax/seats; an
-         uncrewed row with only a free-text `who` ("ALL PILOTS") shows that
-         text in the people cell instead — never as a substitute remark. */
-      const ids = pax ? pax : (r.p || r.w) ? [r.p, r.w] : (r.who ? [r.who] : [])
-      const ppl = peekCrewCell([...ids, ...(r.more || [])], '')
+      const seatIds = pax ? pax : (r.p || r.w) ? [r.p, r.w] : []
+      const crew = [...seatIds, ...(r.more || [])]
+      /* mirrors html.ts's sim blk() exactly (html.ts:1355-1357): the free-text
+         `who` ("EXT SQN", "ALL PILOTS") shows as TEXT and ONLY when there are no
+         seated crew; overflow crew (more[]) render as pucks alongside it; the
+         whole cell is wrapped in lCell. Sim `who` is free text since ARCH-STACK
+         1C — never a person — so it is rendered directly, never resolved through
+         PEOPLE (which would turn a value equal to an id into a stray puck). */
+      const txt = (!seatIds.length && r.who) ? `<span class="itxt">${esc(r.who)}</span>` : ''
+      const pucks = crew.filter(Boolean).map((id: any) => PEOPLE[id] ? peekSeat(id) : `<span class="itxt">${esc(id)}</span>`).join('')
+      const count = crew.filter(Boolean).length + (txt ? 1 : 0)
+      const ppl = lCell(txt + pucks, null, false, count === 1 ? 'one' : '')
       s += peekRow(r.label, r.str, r.end, ppl, r.rmks, r)
     })
     return s
@@ -182,11 +189,11 @@ function peekGround(d: any): string {
   if (!d.ground || !d.ground.length) return ''
   let h = `<div class="sub plist one sec sec-grnd"><div class="sub-h">Ground Programme</div>` + plCols()
   groundOrder(d.ground, d.gman).forEach(({ row: x }: any) => {
-    /* nameToId can come back undefined for a name it does not resolve — fall
-       back to the raw text itself (peekCrewCell's own itxt path) rather than
+    /* whoId can come back undefined for a value it does not resolve (free text) —
+       fall back to the raw text itself (peekCrewCell's own itxt path) rather than
        silently dropping the row's only crew mention, matching html.ts's own
        `x.who ? itxt(x.who) : ''` fallback. */
-    const id = nameToId(x.who)
+    const id = whoId(x.who)
     const ppl = peekCrewCell([id != null ? id : x.who, ...(x.more || [])], '')
     h += peekRow(x.prog, x.str, x.end, ppl, x.rmks, x)
   })

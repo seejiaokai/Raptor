@@ -3,7 +3,8 @@
    is signed off after DAAR, SC NIGHT after SC DAY, and withdrawing the day
    qualification takes the night one with it. */
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { PEOPLE, QORDER, QCHIP, QCOLOR, LEVELNAME, deriveQuals, isInstrPilot, ID_BY_CS } from '../engine/people'
+import { PEOPLE, QORDER, QCHIP, QCOLOR, LEVELNAME, deriveQuals, isInstrPilot, ID_BY_CS, nameToId } from '../engine/people'
+import { newId } from '../engine/newid'
 import { renameCallsign } from '../engine/slots'
 import { validate } from '../engine/validate'
 import { HOOKS } from '../engine/hooks'
@@ -244,9 +245,11 @@ function qualsTable(cols: any[], qSeatView: string, qSort: any, qEditing: boolea
     const init = qEditing
       ? `<input class="qinit" data-init="${id}" value="${esc(p.initials || '')}" maxlength="12" aria-label="Initials for ${esc(p.cs)}" />`
       : esc(p.initials || '')
-    /* the callsign is editable in edit mode too, and renameCallsign rewrites
-       every stored `who` string with it, so the pucks re-print under the new
-       name (owner, Aug 26). Same commit-on-change reasoning as the initials. */
+    /* the callsign is editable in edit mode too. Since ARCH-STACK 1C
+       renameCallsign only changes `p.cs` (rows hold the stable id and resolve
+       id→cs via whoId), so the commit's notify() re-prints every puck under the
+       new name — including on other weeks and issued snapshots — without moving
+       anything. Same commit-on-change reasoning as the initials. */
     const cs = qEditing
       ? `<input class="qcs" data-cs="${id}" value="${esc(p.cs)}" maxlength="14" aria-label="Callsign for ${esc(p.cs)}" />`
       : esc(p.cs)
@@ -682,17 +685,19 @@ export function QualsPage() {
   const addPerson = () => {
     const cs = addP.cs.trim()
     if (!cs) return HOOKS.toast('A person needs a callsign')   // was a silent no-op
-    /* TWO PEOPLE CANNOT SHARE A CALLSIGN (audit, 12 Aug 26). renameCallsign
-       has refused this since Aug — "every stored `who` string would be
-       ambiguous, ID_BY_CS can only point one way" — and adding never made the
-       same check, so the ADD path could do what the RENAME path forbids. It
-       was not cosmetic: ID_BY_CS was repointed at the new, empty person, so
-       every ground, programme and sim row that stores a callsign STRING
-       changed owner to someone with no schedule, and three real conflicts on
-       the seed week — a hard clash and two brief-window warnings — silently
-       left the checks panel. Same refusal, same words as the rename. */
-    if (ID_BY_CS[cs.toLowerCase()]) return HOOKS.toast(`${cs} is already taken — callsigns must be unique`)
-    const id = 'p' + Date.now()
+    /* TWO PEOPLE CANNOT SHARE A CALLSIGN, AND A CALLSIGN CANNOT COLLIDE WITH AN
+       INTERNAL ID (audit 12 Aug 26; hardened ARCH-STACK 1C, 14 Sep 26). Since 1C
+       ground/programme rows store the stable id, so a new callsign that RESOLVES
+       to an existing person — by callsign OR by bare id (nameToId is id-tolerant)
+       — would let the add back-door reopen the crossing bug: adding callsign
+       "Bane" when `bane` is an id repoints ID_BY_CS['bane'] and any residual
+       callsign lookup at the new body (red-team PID-01). renameCallsign already
+       guards with nameToId; the add path now uses the SAME guard (was ID_BY_CS
+       alone, which missed the id collision). Same refusal, same words. */
+    if (nameToId(cs)) return HOOKS.toast(`${cs} is already taken — callsigns must be unique`)
+    /* an opaque, collision-resistant id (newId, shared with rid/iid) — not
+       'p'+Date.now(), which two adds in the same millisecond could duplicate. */
+    const id = newId('p')
     /* the callsign IS the person here — it is what every puck prints and what
        ID_BY_CS resolves — so it is the only required field; initials are the
        administrative record beside it (owner, Aug 26, replacing first/last). */

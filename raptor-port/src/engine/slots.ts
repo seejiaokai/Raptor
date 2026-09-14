@@ -1,5 +1,5 @@
 import { DAYS } from './data'
-import { PEOPLE, nameToId, ID_BY_CS } from './people'
+import { PEOPLE, nameToId, whoId, ID_BY_CS } from './people'
 import { SCHED, markEdit, markDeletion, deletionWasIssued, markInputFiling, markStructuralAdd, dayApproved, dropRowMarks, protectedWeek } from './publish'
 import { parseHM, hhmm, hmOK } from './time'
 import { INPUTS, DATES, inpId, inputCoversDate, isUnavail, isPersonal, inpLabel, dateIx } from './inputs'
@@ -53,7 +53,7 @@ export function rowCrew(k:any,a:any){
   const r=rowRef(k,a); if(!r)return [];
   const out:any[]=[];
   if(k==='d')out.push(PEOPLE[r.id]?r.id:'');
-  else if(k==='g')out.push(nameToId(r.who)||'');
+  else if(k==='g')out.push(whoId(r.who)||'');
   else if(k==='s'){
     if(Array.isArray(r.pax))r.pax.forEach((v:any)=>out.push(PEOPLE[v]?v:''));
     else {out.push(PEOPLE[r.p]?r.p:''); out.push(PEOPLE[r.w]?r.w:'');}
@@ -77,8 +77,8 @@ export function slotVal(key:any){
     if(k==='s'){const r=d.sims[a[1]][+a[2]]; if(!r)return '';
       if(a[3]==='pax'){const v=(r.pax||[])[+a[4]];return PEOPLE[v]?v:'';}
       return PEOPLE[r[a[3]]]?r[a[3]]:'';}
-    if(k==='g'){const r=d.ground[+a[1]];return r?(nameToId(r.who)||''):'';}
-    if(k==='a'){const r=d.allhands[+a[1]];return r?(nameToId(whoArr(r)[+a[2]])||''):'';}
+    if(k==='g'){const r=d.ground[+a[1]];return r?(whoId(r.who)||''):'';}
+    if(k==='a'){const r=d.allhands[+a[1]];return r?(whoId(whoArr(r)[+a[2]])||''):'';}
   }catch(_){}
   return '';
 }
@@ -114,13 +114,16 @@ export function setSlotVal(key:any,id:any){
          other pax keeps the slot key it already had (no re-render key drift). */
       if(a[3]==='pax'){r.pax=r.pax||[];r.pax[+a[4]]=id||'';return;}
       r[a[3]]=id||'';return;}
-    if(k==='g'){d.ground[+a[1]].who=id?PEOPLE[id].cs:'';return;}
+    /* store the stable person ID, not PEOPLE[id].cs (ARCH-STACK 1C, 14 Sep 26).
+       The renderers resolve who→id→cs (whoId), so the printed byte is unchanged,
+       and a rename now moves nothing — see renameCallsign. */
+    if(k==='g'){d.ground[+a[1]].who=id||'';return;}
     if(k==='a'){const r=d.allhands[+a[1]],arr=whoArr(r),i=+a[2];
       /* hold the index rather than splicing, exactly as the pax branch does.
          Splicing shifted every later person up one, so an amendment mark — and
          the key stored on a published AL — silently came to point at the wrong
          person. Trailing blanks are trimmed so the list does not grow forever. */
-      if(id){if(i>=arr.length)arr.push(PEOPLE[id].cs);else arr[i]=PEOPLE[id].cs;}
+      if(id){if(i>=arr.length)arr.push(id);else arr[i]=id;}
       else if(i<arr.length)arr[i]='';
       while(arr.length&&!arr[arr.length-1])arr.pop();
       whoSet(r,arr);return;}
@@ -374,14 +377,14 @@ export function acceptInput(di:any,inp:any,dest:any){
   if(DAYS.some((dd:any)=>((dd&&dd.ground)||[]).some((r:any)=>r.src===key)))return false;
   d.ground=d.ground||[];
   const ri=d.ground.length;
-  /* who must be the CALLSIGN — every other ground write stores cs (see setSlotVal's
-     'g' branch) and the renderers resolve nameToId(who), so an id like 'haowen'
-     (cs 'Hao Wen') would render as free text and never validate as that person.
+  /* who is the stable person ID (ARCH-STACK 1C, 14 Sep 26; was PEOPLE[id].cs).
+     inp.person is already an id, and the renderers resolve who→id→cs (whoId), so
+     the landed row prints the callsign unchanged while a rename moves nothing.
      Title is the TYPE and the submitter's remarks land in the row's rmks cell
      (owner, Aug 26): 'APPOINTMENT · dental review', not one mashed title. */
   d.ground.push({prog:inpLabel(inp).toUpperCase(),
                  str:inp.allday?'':hhmm(inp.s), end:inp.allday?'':hhmm(inp.e),
-                 who:PEOPLE[inp.person]?PEOPLE[inp.person].cs:inp.person,
+                 who:inp.person,
                  rmks:inp.remarks||'', src:key});
   inp.acc='g';
   /* markStructuralAdd, not trackStructuralAdd+noteChange (owner audit, 15 Aug
@@ -532,41 +535,33 @@ export function unacceptInput(di:any,inp:any){
   markEdit();
   return true;
 }
-/* RENAMING A CALLSIGN (owner, Aug 26).
+/* RENAMING A CALLSIGN — a label change that MOVES NOTHING (ARCH-STACK 1C,
+   14 Sep 26; was a DAYS-wide row rewrite).
 
-   The callsign is not a label — it is the identity half the model addresses by.
-   Crew SEATS, duty rows, sim p/w/pax and the `more[]` overflow all hold person
-   IDs and so ride a rename untouched; but ground rows, programme (allhands)
-   rows and sim `who` store the callsign as a STRING, resolved through
-   nameToId → ID_BY_CS. Change PEOPLE[id].cs alone and every one of those rows
-   stops resolving: the puck collapses to plain free text and the person drops
-   out of that row's crew.
+   Since 1C every person-reference field stores the stable PEOPLE id — flying
+   seats, duty rows, sim p/w/pax and more[] always did; ground and programme
+   (allhands) `who` now do too (setSlotVal/acceptInput store the id, and whoId
+   resolves id→cs at read/render). So a rename only changes the DISPLAY label:
+   set p.cs and remap ID_BY_CS, and every row keeps pointing at the same person
+   by id. The old DAYS-walk that rewrote ground/allhands/sim `who` STRINGS is
+   gone — it only existed because those rows stored the callsign, and it walked
+   the LIVE week alone, missing every snapshot/draft/other week, which let a
+   reused callsign later cross two people. That crossing is the bug 1C closes;
+   the walk is what it replaces. (This mirrors the Tracker's renCourse/renSyl.)
 
-   So the rename rewrites all three, and remaps ID_BY_CS. It does NOT mark
-   anything pending: rowCrew reads those rows back as IDs, so a published day
-   diffs identically — the person in the seat has not changed, only how their
-   name is spelt, and an AL full of spelling is noise. */
+   It marks nothing pending: no row moved, only how the person's name is spelt.
+   The uniqueness guard stays: a name that already resolves to someone else — by
+   callsign OR by bare id (nameToId is id-tolerant) — is refused, because
+   ID_BY_CS can point only one way; addPerson (QualsPage) enforces the same
+   guard so a new callsign can never collide with an existing id either. */
 export function renameCallsign(id:any,next:any){
   const p=PEOPLE[id]; if(!p)return false;
   const cs=String(next==null?'':next).trim();
   if(!cs||cs===p.cs)return false;
-  /* a name that already resolves to SOMEONE ELSE — by callsign OR by bare id
-     (nameToId is id-tolerant) — would make every stored `who` string
-     ambiguous; ID_BY_CS can only point one way */
   const taken=nameToId(cs);
   if(taken&&taken!==id)return false;
   const oldK=String(p.cs||'').toLowerCase().trim();
-  /* rewrite every stored who that resolves to THIS person: the old-callsign
-     form AND the bare-id form the seed uses in ground/programme rows */
-  const hit=(v:any)=>{const t=String(v).toLowerCase().trim();return t===oldK||t===String(id).toLowerCase();};
   p.cs=cs;
   delete ID_BY_CS[oldK]; ID_BY_CS[cs.toLowerCase()]=id;
-  const sw=(v:any)=>(typeof v==='string'&&hit(v))?cs:v;
-  const row=(r:any)=>{ if(r)r.who=Array.isArray(r.who)?r.who.map(sw):sw(r.who); };
-  DAYS.forEach((d:any)=>{
-    (d.ground||[]).forEach(row);
-    (d.allhands||[]).forEach(row);
-    ['amt','oft'].forEach((k:any)=>(((d.sims||{})[k])||[]).forEach(row));
-  });
   return true;
 }

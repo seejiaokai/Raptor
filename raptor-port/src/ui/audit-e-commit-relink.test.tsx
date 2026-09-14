@@ -15,7 +15,6 @@ import { acceptInput, acceptedDay } from '../engine/slots'
 import { commitInputEdit, removeInput, setInpField, draftOf } from './inputedit'
 import { HOOKS } from '../engine/hooks'
 import { afterSchedMutate } from '../state/view'
-import { PEOPLE } from '../engine/people'
 
 let TOASTS: string[] = []
 const groundRows = () => DAYS.flatMap((d: any, di: number) => (d.ground || []).map((r: any) => ({ di, row: r })))
@@ -116,11 +115,11 @@ describe('commitInputEdit — reassigning an ACCEPTED input to another person', 
     /* the input's stable id does NOT change when the person is reassigned (person
        was part of the old content key, so re-personing used to orphan the row and
        mint a fresh one). The row is now relinked in place: one row, src unchanged,
-       who updated to the new person's callsign. */
+       who updated to the new person's stable ID (1C; the renderers resolve id→cs). */
     const rows = rowsFor(inp)
     expect(rows.length, 'still exactly one row, under the unchanged id').toBe(1)
     expect(rows[0].row.src, 'src is the input\'s stable id, unchanged by the re-person').toBe(id)
-    expect(rows[0].row.who, 'who is the new person\'s CALLSIGN').toBe(PEOPLE.stiff.cs)
+    expect(rows[0].row.who, 'who is the new person\'s stable id').toBe('stiff')
     scrap(inp)
   })
 })
