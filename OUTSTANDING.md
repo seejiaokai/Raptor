@@ -203,7 +203,26 @@ id→cs, sim `who` shows as text, all assets 200, no console errors). *(Deploy n
 publish runs hit the known `addStudent` smoke flake — deploy skipped; a fresh workflow_dispatch run
 was green and published, exactly the #398 pattern.)* Spec + dispositions:
 `raptor-port/docs/superpowers/specs/2026-09-14-arch-stack-1c-personid-spec.md` (§§12–13 binding).
-**With 1C, step 1 (stable ids everywhere) is COMPLETE.** Deferred
+**With 1C, step 1 (stable ids everywhere) is COMPLETE.**
+
+**STEP 1b — PARTIAL, in review (14 Sep 26, PR #404, held for "merge live").** The two
+GENUINE quick wins of 1b are built on `claude/arch-stack-1b-quickwins`: (a) the `mod:'now'`
+late-mark freeze — input write paths stored the literal 'now' and re-resolved it to
+read-time "today", so an on-time input silently read LATE once re-read on a later day
+(latent until INPUTS persist at the DB step); now frozen to today's ISO at the write
+(`nowStamp()`, all 7 sites), display still reads "now" same-day. (b) A **SessionState reset
+registry** (`view.ts` `VIEW_RESET`) — `resetSession`/`loadWeek` hand-clear-lists had drifted;
+one declared per-field policy both iterate, plus a drift-guard test; closed two leaks it
+surfaced (HLGROUP, RESTARM). Gates: vitest 4737/4737, build, tfin 728/0 (e2e's 2 phone-width
+fails + tracker smoke `addStudent` timeout are pre-existing on `main`, verified). **The other
+two 1b items were NOT quick wins on inspection and are SPLIT OUT (owner-approved, 14 Sep 26):**
+**ISO dates** is a parity-sensitive record-shape change across ~20 files (`date`+`yr`+`endDate`
+→ ISO, Leave War sync, medical, quarantine, storage reset) — promote to its own item with a
+design + cross-provider red-team before building; **landing-on-the-row** is largely delivered
+by 1A (ground row `src`→stable iid) and its remainder is owned by **step 4** (one Absence
+record) — no separate 1b work.
+
+Deferred
 follow-ups: (finding 2, orphaned `Other` hard-grade) noted below; and a
 **pre-existing** peek-preview cache nit surfaced by the 1C code inspection
 (Codex PID-R03) — the ViewWeek preview cache keys on the week only, so a person
@@ -216,9 +235,10 @@ knows only THAT something changed, never WHAT. The fix is a **record-level chang
 stable ids** that undo, persistence, sync and the database all consume — build once, not four
 times. Several existing items are STEPS of this stack. **Full plan (root causes, order, effort,
 what to stop):** `raptor-port/docs/superpowers/specs/2026-09-13-architecture-rootcause-plan.md`.
-- **Order:** (1) stable ids everywhere [INP-CSID]/[TRK-CSID] + `who→personId`/note-ids/`iid`→UUID;
-  (1b) quick wins — landing-on-row, a session-reset registry, ISO dates, the `mod:'now'`
-  late-mark fix; (2) ONE write/command layer (all 3 modules, PEOPLE/settings included);
+- **Order:** (1) stable ids everywhere [INP-CSID]/[TRK-CSID] + `who→personId`/note-ids/`iid`→UUID
+  — DONE; (1b) quick wins — the `mod:'now'` late-mark fix + a session-reset registry DONE (PR #404,
+  in review); landing-on-row folded into step 4, ISO dates split to its own item (see 1b status
+  above); (2) ONE write/command layer (all 3 modules, PEOPLE/settings included);
   (3) global per-session undo as inverse-patch [GLOBAL-UNDO]; (4) ONE Absence record (design NOW,
   before the Dataverse tables freeze); (5) record-oriented storage door → Dataverse [DB-STEP];
   (6) remove the quarantine/legacy machinery.
