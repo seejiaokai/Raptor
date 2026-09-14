@@ -333,4 +333,93 @@ describe('migrateSylIds — KEEP the catalogue, RESET the student layer', () => 
     expect(await core.migrateSylIds(), 'identical layouts do not conflict').toBe(true)
     expect(await getJSON('v3:master:lay:sb2026')).toEqual({ 'ST-01': { x: 5, y: 5 } })
   })
+
+  /* ---- Codex re-review of the Fable fix (14 Sep 26): the fail-closed layout
+     guard and the tombstoned-name exception must not, in turn, brick a load the
+     old reader handled or resurrect a chart it suppressed. ---- */
+
+  it('a master layout read AFTER two differing course layouts still wins — no order-dependent brick (review RR-01)', async () => {
+    /* the two per-course layouts (read first here) differ, but a master layout for
+       the same chart exists; the old reader ALWAYS used the master. A sticky
+       first-seen conflict flag would brick this purely because of read order — the
+       winner is decided after the whole sweep, so the master settles it. */
+    makeStore({
+      'v3:courses': [{ id: 'cx1', name: '26ABSG' }, { id: 'cx2', name: '27ABSG' }],
+      'v3:cx1:plan': { sylName: '2026', epw: 2 }, 'v3:cx2:plan': { sylName: '2026', epw: 2 },
+      'v3:cx1:rostermig': '1', 'v3:cx1:idmig': '1', 'v3:cx2:rostermig': '1', 'v3:cx2:idmig': '1',
+      'v3:lay:cx1:2026': { 'ST-01': { x: 1, y: 1 } },   // inserted (hence read) BEFORE the master
+      'v3:lay:cx2:2026': { 'ST-01': { x: 9, y: 9 } },
+      'v3:master:lay:2026': { 'ST-01': { x: 3, y: 3 } },
+    })
+    expect(await core.migrateCourseIds()).toBe(true)
+    expect(await core.migrateSylIds(), 'the master settles the name — no brick').toBe(true)
+    expect(core.bootError, 'no fail-closed boot').toBeNull()
+    expect(await getJSON('v3:master:lay:sb2026'), 'the master layout won, not either course layout').toEqual({ 'ST-01': { x: 3, y: 3 } })
+  })
+
+  it('two course layouts equal but for KEY ORDER do not fail closed (review RR-02)', async () => {
+    /* identical positions, coordinate keys serialised in a different order. Raw
+       JSON-text equality would call them different and brick; structural equality
+       recognises them as the same layout. */
+    makeStore({
+      'v3:courses': [{ id: 'cx1', name: '26ABSG' }, { id: 'cx2', name: '27ABSG' }],
+      'v3:cx1:plan': { sylName: '2026', epw: 2 }, 'v3:cx2:plan': { sylName: '2026', epw: 2 },
+      'v3:cx1:rostermig': '1', 'v3:cx1:idmig': '1', 'v3:cx2:rostermig': '1', 'v3:cx2:idmig': '1',
+      'v3:lay:cx1:2026': { 'ST-01': { x: 5, y: 6 } },
+      'v3:lay:cx2:2026': { 'ST-01': { y: 6, x: 5 } },   // same layout, keys reversed
+    })
+    expect(await core.migrateCourseIds()).toBe(true)
+    expect(await core.migrateSylIds(), 'a re-ordered re-save is not a conflict').toBe(true)
+    expect(core.bootError, 'no fail-closed boot').toBeNull()
+    expect(await getJSON('v3:master:lay:sb2026')).toEqual({ 'ST-01': { x: 5, y: 6 } })
+  })
+
+  it('an EMPTY course layout beside a non-empty one keeps the non-empty, either order (review RR-02)', async () => {
+    /* the empty source is read first; it must not, by arriving first, make the
+       real hand-drawn layout look like a differing conflict. Empty candidates are
+       discarded when a non-empty one exists at the same precedence. */
+    makeStore({
+      'v3:courses': [{ id: 'cx1', name: '26ABSG' }, { id: 'cx2', name: '27ABSG' }],
+      'v3:cx1:plan': { sylName: '2026', epw: 2 }, 'v3:cx2:plan': { sylName: '2026', epw: 2 },
+      'v3:cx1:rostermig': '1', 'v3:cx1:idmig': '1', 'v3:cx2:rostermig': '1', 'v3:cx2:idmig': '1',
+      'v3:lay:cx1:2026': {},                            // empty, read first
+      'v3:lay:cx2:2026': { 'ST-01': { x: 4, y: 4 } },
+    })
+    expect(await core.migrateCourseIds()).toBe(true)
+    expect(await core.migrateSylIds(), 'an empty source is not a conflict').toBe(true)
+    expect(core.bootError, 'no fail-closed boot').toBeNull()
+    expect(await getJSON('v3:master:lay:sb2026'), 'the non-empty layout is kept').toEqual({ 'ST-01': { x: 4, y: 4 } })
+  })
+
+  it('a suppressed LEGACY-ONLY def stays hidden while a GLOBAL-master def under a deleted name shows (review RR-03)', async () => {
+    /* '2024': def in the GLOBAL master (v3:master:syls) — the old reader adopted it
+       into CUSTOMS unconditionally, so a deleted+hidden built-in name still SHOWS as
+       a custom. '2026': def ONLY in the legacy master (v3:SYLLABUS EDIT:syls) under a
+       hidden+tombstoned name — the old reader's guard refused it, so NOTHING showed;
+       minting a visible custom for it would resurrect a chart the owner had deleted. */
+    makeStore({
+      'v3:courses': [{ id: 'cx1', name: '26ABSG' }],
+      'v3:cx1:plan': { sylName: '2024', epw: 2 },
+      'v3:cx1:rostermig': '1', 'v3:cx1:idmig': '1',
+      'v3:master:syls': { '2024': [{ id: 'G-1', type: 'acad', prereqs: [] }] },
+      'v3:SYLLABUS EDIT:syls': { '2026': [{ id: 'H-1', type: 'acad', prereqs: [] }] },
+      'v3:master:sylhidden': ['2024', '2026'],
+      'v3:master:syltomb': { '2024': 1, '2026': 1 },
+    })
+    expect(await core.migrateCourseIds()).toBe(true)
+    expect(await core.migrateSylIds()).toBe(true)
+    expect(core.bootError, 'no fail-closed boot').toBeNull()
+    const cat = await getJSON('v3:master:sylcat')
+    /* the global-master '2024' shows as a custom (old reader showed it) */
+    const shown = cat.find((e: any) => e.name === '2024')
+    expect(shown && isSylId(shown.id) && !isBuiltinSylId(shown.id), '2024 is a shown custom').toBe(true)
+    expect(cat.some((e: any) => e.id === 'sb2024'), 'the deleted built-in is not re-added').toBe(false)
+    expect((await getJSON('v3:master:sylhidden')).includes(shown.id), 'the shown custom is not hidden').toBe(false)
+    /* the legacy-only '2026' is NOT resurrected — no custom, no built-in, nothing shown */
+    expect(cat.some((e: any) => e.name === '2026'), 'the suppressed legacy def shows nothing').toBe(false)
+    expect(cat.some((e: any) => e.id === 'sb2026'), 'and does not re-add the built-in').toBe(false)
+    const defs = await getJSON('v3:master:syls')
+    expect(Object.values(defs).some((d: any) => JSON.stringify(d) === JSON.stringify([{ id: 'H-1', type: 'acad', prereqs: [] }])), 'the suppressed def is not filed under any id').toBe(false)
+    expect((await getJSON('v3:cx1:plan')).sylId, 'the course opens on the shown 2024 custom').toBe(shown.id)
+  })
 })

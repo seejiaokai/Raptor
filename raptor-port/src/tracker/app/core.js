@@ -814,7 +814,21 @@ const kSylReset = 'v3:sylreset';         /* RESET half done */
 const kSylIdJournal = 'v3:syljournal';   /* the durable payload journal of a run in progress */
 const kSylAliasLegacy = SYL_NS + ':sylalias';   /* retired pref (§6); purged by the migration */
 
-const jsonEq = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+/* structural equality that ignores object KEY ORDER (arrays stay ordered): two
+   saved layouts holding the same positions serialised in a different key order
+   are the SAME layout, so the migration's differing-source guard must not treat a
+   re-ordered re-save as a conflict and brick the upgrade (review RR-02). */
+const layoutEq = (a, b) => {
+  if (a === b) return true;
+  if (!a || !b || typeof a !== 'object' || typeof b !== 'object') return a === b;
+  const aArr = Array.isArray(a), bArr = Array.isArray(b);
+  if (aArr !== bArr) return false;
+  if (aArr) { if (a.length !== b.length) return false; for (let i = 0; i < a.length; i++) if (!layoutEq(a[i], b[i])) return false; return true; }
+  const ak = Object.keys(a), bk = Object.keys(b);
+  if (ak.length !== bk.length) return false;
+  for (const k of ak) { if (!has(b, k) || !layoutEq(a[k], b[k])) return false; }
+  return true;
+};
 
 /* Compute the COMPLETE intended outputs ONCE from the ORIGINAL sources. Returns
    the journal object, or null after setBootError on an unrecoverable conflict. */
@@ -832,15 +846,22 @@ async function buildSylJournal() {
      boot reconcile. A built-in the user had DELETED (its name in the legacy
      syltomb pref) is left out and stays tombstoned (hidden ≠ deleted). */
   const tombNames = Object.keys(sParse(await sGet(kSylTomb()), {}, 'object') || {});
+  const hiddenNames = sParse(await sGet(kSylHidden()), [], 'array').filter(x => typeof x === 'string');   // read here too: the classify guard below needs it
   for (const b of BUILTIN_SYL) { idByName[b.name] = b.id; if (tombNames.indexOf(b.name) < 0) addCat(b.id, b.name, b.name); }
 
   /* definitions, precedence highest-first: master → legacy master → per-course
      own → the plan.custom single legacy def (§14 CSID2-02) */
   const defByName = Object.create(null);
-  const addDefs = obj => { if (obj && typeof obj === 'object' && !Array.isArray(obj)) for (const n of Object.keys(obj)) if (!has(defByName, n)) defByName[n] = obj[n]; };
-  addDefs(sParse(await sGet(kSyls()), {}, 'object'));
-  addDefs(sParse(await sGet(kSylsOldMaster()), {}, 'object'));
-  for (const cE of COURSES) addDefs(sParse(await sGet(kSylsOwn(cE.id)), {}, 'object'));
+  /* provenance: a def in the GLOBAL master (v3:master:syls) was adopted into the old
+     reader's CUSTOMS UNCONDITIONALLY and shown; a def from the legacy master or a
+     per-course store was adopted ONLY when its name was neither hidden nor
+     tombstoned. Track the global-master names so the classify step honours that
+     guard and does not resurrect a suppressed legacy def (review RR-03). */
+  const defFromMaster = Object.create(null);
+  const addDefs = (obj, fromMaster) => { if (obj && typeof obj === 'object' && !Array.isArray(obj)) for (const n of Object.keys(obj)) if (!has(defByName, n)) { defByName[n] = obj[n]; if (fromMaster) defFromMaster[n] = true; } };
+  addDefs(sParse(await sGet(kSyls()), {}, 'object'), true);
+  addDefs(sParse(await sGet(kSylsOldMaster()), {}, 'object'), false);
+  for (const cE of COURSES) addDefs(sParse(await sGet(kSylsOwn(cE.id)), {}, 'object'), false);
   /* the plan.custom single legacy def (v3:<course>:syl) is collected PER COURSE,
      not merged by name: two unopened courses can share a sylName but hold
      DIFFERENT edited charts, so each gets its OWN minted id + unique label and
@@ -861,6 +882,12 @@ async function buildSylJournal() {
      must preserve what the old READER showed). Mint it a custom id; the built-in
      is left tombstoned (it was never seeded into the catalogue above). */
   for (const name of Object.keys(defByName)) {
+    /* the old reader did NOT adopt a legacy-master / per-course def whose name was
+       hidden or tombstoned — it showed no chart for it — so minting a visible custom
+       (or a built-in override) here would RESURRECT a chart the owner had suppressed.
+       Only a GLOBAL-master def is unconditional. Skip the suppressed legacy def; the
+       built-in (if any) is handled by seeding/hidden/tomb below (review RR-03). */
+    if (!defFromMaster[name] && (hiddenNames.indexOf(name) >= 0 || tombNames.indexOf(name) >= 0)) continue;
     const cls = classifyDefinedName(name);
     const asBuiltin = cls.builtin && tombNames.indexOf(name) < 0;
     const id = asBuiltin ? cls.id : mintSylId();
@@ -903,33 +930,44 @@ async function buildSylJournal() {
      id below. A layout under an unresolved name is dropped (nothing to hang it
      on). Built-in fold layouts are event-id-translated (§17 CSID2-R4-02). */
   const allKeys = (await storage.list()).keys || [];
-  const layByName = Object.create(null);          // name → {raw, srcKey} highest precedence
+  const candByName = Object.create(null);           // name → [{raw, srcKey, kind}] every source
   const legacyLayKeys = [];                         // legacy layout keys to purge after the fold
   const masterLayKeys = [];                         // v3:master:lay:<name> (rewritten to id form)
   const rank = { master: 0, oldmaster: 1, own: 2 };
-  let layConflict = null;   // a same-rank differing source → fail closed (finding 3)
-  const consider = (name, raw, srcKey, kind) => {
-    const held = layByName[name];
-    if (!held || rank[kind] < rank[held.kind]) { layByName[name] = { raw, srcKey, kind }; return; }
-    /* a LOWER-precedence source is ignored (as before); but a SAME-rank source
-       that DIFFERS and is non-empty must NOT be silently dropped (§14 CSID2-03):
-       two courses' OWN hand-drawn layouts for one chart with no master both rank
-       'own', and first-wins would throw one of the owner's hand-drawn layouts
-       away — the exact "keep charts" loss this phase exists to prevent. Fail
-       closed; nothing is written or purged, so the losing source stays intact. */
-    if (rank[kind] === rank[held.kind] && !jsonEq(held.raw, raw) && Object.keys(raw || {}).length) layConflict = name;
-  };
+  /* COLLECT every candidate layout per name; the winner and any conflict are
+     decided AFTER the whole sweep, not inline. A later higher-precedence source
+     (a master read AFTER two differing per-course layouts) must then settle the
+     name the way the old reader did — always the master — instead of a sticky
+     first-seen flag bricking the upgrade regardless of read order (review RR-01). */
+  const consider = (name, raw, srcKey, kind) => { (candByName[name] || (candByName[name] = [])).push({ raw, srcKey, kind }); };
   for (const k of allKeys) {
     if (k.startsWith(SYL_NS + ':lay:')) { const name = k.slice((SYL_NS + ':lay:').length); masterLayKeys.push({ k, name }); const raw = sParse(await sGet(k), null, 'object'); if (raw) consider(name, raw, k, 'master'); continue; }
     if (k.startsWith('v3:lay:SYLLABUS EDIT:')) { const name = k.slice('v3:lay:SYLLABUS EDIT:'.length); legacyLayKeys.push(k); const raw = sParse(await sGet(k), null, 'object'); if (raw) consider(name, raw, k, 'oldmaster'); continue; }
     if (k.startsWith('v3:lay:')) { const rest = k.slice('v3:lay:'.length), i = rest.indexOf(':'); if (i > 0) { const cid = rest.slice(0, i), name = rest.slice(i + 1); if (COURSES.some(c => c.id === cid)) { legacyLayKeys.push(k); const raw = sParse(await sGet(k), null, 'object'); if (raw) { const eid = editedLayKey.get(k); if (eid) { if (!has(rawLayoutById, eid)) { rawLayoutById[eid] = raw; layoutSrcById[eid] = k; } } else consider(name, raw, k, 'own'); } } } continue; }
   }
-  if (layConflict) { setBootError('Two different saved chart layouts were found for the same syllabus, so the Tracker could not finish upgrading safely. Reload to try again — nothing has been changed.'); return null; }
+  /* pick each name's winner at its HIGHEST available precedence (§14 CSID2-03):
+     a same-rank DIFFERING non-empty pair (two courses' own hand-drawn layouts with
+     no master) fails closed — nothing written or purged, both sources intact — but
+     a re-ordered-but-equal re-save (layoutEq, not raw text) and empty sources never
+     trigger it, whichever order they were read (review RR-01/RR-02). */
+  const layByName = Object.create(null);            // name → {raw, srcKey, kind} winner
+  for (const name of Object.keys(candByName)) {
+    const cands = candByName[name];
+    let best = rank.own; for (const c of cands) if (rank[c.kind] < best) best = rank[c.kind];
+    const top = cands.filter(c => rank[c.kind] === best);
+    const nonEmpty = top.filter(c => Object.keys(c.raw || {}).length);
+    if (nonEmpty.length) {
+      const win = nonEmpty[0];
+      if (nonEmpty.some(c => !layoutEq(c.raw, win.raw))) { setBootError('Two different saved chart layouts were found for the same syllabus, so the Tracker could not finish upgrading safely. Reload to try again — nothing has been changed.'); return null; }
+      layByName[name] = { raw: win.raw, srcKey: win.srcKey, kind: win.kind };
+    } else {
+      layByName[name] = { raw: top[0].raw, srcKey: top[0].srcKey, kind: top[0].kind };   // all empty at the winning rank → keep an empty result
+    }
+  }
 
   /* prefs (name-keyed pre-mig) */
   const orderNames = sParse(await sGet(kSylOrder()), [], 'array').filter(x => typeof x === 'string');
-  const hiddenNames = sParse(await sGet(kSylHidden()), [], 'array').filter(x => typeof x === 'string');
-  /* tombNames already read above (built-in seeding) */
+  /* hiddenNames and tombNames already read above (built-in seeding + classify guard) */
 
   /* discover every remaining name (prefs, layouts, plan pointers) so an id is
      assigned (or the name is knowingly dropped) before anything is written */
@@ -947,7 +985,13 @@ async function buildSylJournal() {
     const id = idByName[name]; if (!id) continue;   // unresolved → drop
     const { raw, srcKey } = layByName[name];
     if (has(rawLayoutById, id)) {
-      if (!jsonEq(rawLayoutById[id], raw) && Object.keys(raw).length) { setBootError('Two different saved layouts point at the same syllabus, so the Tracker could not finish upgrading safely. Reload to try again — nothing has been changed.'); return null; }
+      const held = rawLayoutById[id];
+      const heldEmpty = !Object.keys(held || {}).length, rawEmpty = !Object.keys(raw || {}).length;
+      /* two NAMES onto one id: conflict only when BOTH are non-empty and structurally
+         differ (layoutEq ignores key order); an empty source never conflicts, and an
+         empty holder is upgraded to a non-empty one rather than lost (review RR-02). */
+      if (!heldEmpty && !rawEmpty && !layoutEq(held, raw)) { setBootError('Two different saved layouts point at the same syllabus, so the Tracker could not finish upgrading safely. Reload to try again — nothing has been changed.'); return null; }
+      if (heldEmpty && !rawEmpty) { rawLayoutById[id] = raw; layoutSrcById[id] = srcKey; }
       continue;
     }
     rawLayoutById[id] = raw; layoutSrcById[id] = srcKey;
