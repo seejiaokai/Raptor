@@ -33,14 +33,22 @@ Origin == local. Base is `main` @ ee78a69 (ARCH-STACK 1A). Do not start from `ma
   `backups.test.ts`) was built, then **REMOVED** (`git reset --hard 08243e2`, local-only,
   never pushed) once the owner simplified it away. Don't reintroduce it.
 
-## The ONE open item (owner's pending choice — ASK him first)
-- Saved plans are labelled **"Draft 1 / Draft 2"** in the app; the owner calls them
-  **"Plan A / Plan B"**. He confirmed "Plan A and B … works" but hadn't said go/skip on the
-  rename when we broke for a fresh chat. If **go**: rename to Plan A/B/… (auto-lettered) —
-  touches `drafts.ts` naming (`nextNum`/the "Draft N" mint) + `DraftsModal.tsx` and
-  `board.ts` draftsMenu copy ("Drafts"→"Plans") + update the tests that assert
-  "Draft 1"/"Draft 2" (`drafts.test.ts`, `draftsui.test.tsx`). Small, cosmetic. If **skip**:
-  the plans feature is effectively complete and move on.
+## NEXT: build the plans selector redesign (design LOCKED 15 Sep 26, not yet coded)
+- The rename question grew into a UX redesign of the day's top bar. Mockup v13:
+  https://claude.ai/artifact/KKwNPvFbPDeVcFx7xywU3K. Fable red-team + the owner's
+  binding decisions: `docs/superpowers/specs/2026-09-15-plans-selector-redteam.md`
+  — READ IT FIRST; it has file/line fix specs.
+- Summary: ONE white selector button per day (label = what you are viewing: "Live
+  working copy" / "Plan B" / amber "👁 AL2"); menu = editable copies on top (switch
+  instantly via `switchDraft`) → "Issued · read-only" (preview) → "+ Alt Plan" at the
+  bottom. Green title tag = issued version (ORIG/ALn); dashed "DRAFT" when unpublished.
+  REMOVE: PART-PUBLISHED week banner, "✓ Published · ALn" pill, green "Live copy" pill
+  (Back moves into the read-only bar), the "Drafts" button + old `<select data-dver>`
+  on edit surfaces. Publish ALn hidden under preview. "Draft" → "Plan", lettered A/B/C.
+  Delete-down-to-one clears the day's plans (option a). View page keeps its pickers.
+- Build on Opus high, test-first; one builder for week page + board; five-state
+  matrix test; then Codex + Fable bug-check of the diff; browser gates; then hold
+  for "merge live".
 
 ## After Phase 4 — confirm scope with the owner (don't assume)
 - Amendment brief phases NOT built: Phase 3's two leftovers — (a) availability/currency
