@@ -22,7 +22,7 @@
 // reaches a fixed point. A SYNCING flag guards re-entrancy on top — every
 // store write notifies subscribers synchronously, and this module is one.
 
-import { INPUTS, DATES, baseYear, dateOrd, inpId, inpWin, isAway, isDownchit, isLeave, oilAsks, withRemarksTail, inputCoversDate } from '../engine/inputs'
+import { INPUTS, DATES, baseYear, dateOrd, inpId, inpWin, isAway, isDownchit, isLeave, oilAsks, withRemarksTail, inputCoversDate, nowStamp } from '../engine/inputs'
 import { inputProtected, protectedDates } from '../engine/quarantine'
 import { ME, SESSION } from '../state/auth'
 import { persistPeople } from '../state/persist'
@@ -344,7 +344,7 @@ export function runOutbound(): void {
              re-minted; and when the DATES change, `prior` above carries the
              detail into the re-minted row with only the date token moved. */
           remarks: withRemarksTail(prior?.remarks ?? '', r.start, r.end, 'on'),
-          mod: 'now',
+          mod: nowStamp(),
           /* The ownership tag: which war this row is derived from. Inbound
              skips lw-tagged rows (the loop-breaker), and reconciliation
              removes exactly these when their cell is no longer approved.
