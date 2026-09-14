@@ -111,6 +111,9 @@ const DAY: Spec = {
   simnotes: 'string?', prognotes: 'string?', dutynotes: 'string?', grndnotes: 'string?', secOrder: { $opt: ['string'] }, gman: 'boolean?',
 }
 const SIGNSET: Spec = { cur: 'string', sked: 'string', plan: 'string', appr: 'string' }
+/* Phase 3 (AM-06): the content a signed role is bound to — canonical digest,
+   schedule date, current issued base id, candidate revision. */
+const SIGNBIND: Spec = { dg: 'string', iso: 'string', base: 'string', rev: 'string' }
 /* Phase 2 DaySnapshot: the frozen day, its issued-marks slice, the filing
    fingerprint, and (on SCHED.orig only) the Original's own verId. */
 const DAYSNAP: Spec = { d: DAY, c: { $map: 'number' }, fil: { $opt: { $map: 'string' } }, id: 'string?' }
@@ -123,14 +126,14 @@ const ONE: Spec = { $lit: [1] }
 /* Phase 2: cur is a verId STRING per day (Original = `iso#0`); orig carries an id. */
 const SCHED_SPEC: Spec = {
   al: 'number', pending: { $map: ONE }, changes: { $map: 'number' }, added: { $map: ONE }, als: [AL], dayOK: { $map: ONE },
-  sign: { $map: SIGNSET }, orig: { $map: DAYSNAP }, cur: { $map: 'string' },
+  sign: { $map: SIGNSET }, signBind: { $map: { $map: SIGNBIND } }, orig: { $map: DAYSNAP }, cur: { $map: 'string' },
   drafts: { $opt: { $map: [{ id: 'string', name: 'string', d: DAY }] } }, curDraft: { $opt: { $map: 'string' } },
   ridV: 'number',   // the addressing-by-rid book-format version (engine/rowids.ts)
   amV: { $opt: 'number' },   // the Phase-2 amendment-record format version (§5); absent on a PRE-Phase-2 book
 }
 const SCHED_FIELDS = {
   c: { $map: 'number' }, p: { $map: ONE }, ad: { $map: ONE }, a: [AL], al: 'number', ok: { $map: ONE }, sg: { $map: SIGNSET },
-  o: { $map: DAYSNAP }, cv: { $map: 'string' },
+  sb: { $map: { $map: SIGNBIND } }, o: { $map: DAYSNAP }, cv: { $map: 'string' },
   dr: { $opt: { $map: [{ id: 'string', name: 'string', d: DAY }] } }, cd: { $opt: { $map: 'string' } },
   v: { $opt: 'number' },   // book-format version; ABSENT on a foundation-era snapshot (triggers migrateLegacyIds)
   am: { $opt: 'number' },  // Phase-2 amendment-record format version; ABSENT on a PRE-Phase-2 snapshot

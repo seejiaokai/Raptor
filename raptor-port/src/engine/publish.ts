@@ -5,7 +5,7 @@ import { isScheduler } from './people'
 import { HOOKS } from './hooks'
 import { logEdit } from './editlog'
 import { ridKey, posKey, ridWriteKey, RID_BOOK_VERSION } from './rowids'
-import { canonicalDiff } from './canonical'
+import { canonicalDiff, digest } from './canonical'
 import type { DeltaEntry } from './canonical'
 import { INPUTS, inpId, inputCoversDate } from './inputs'
 import { CURWEEK } from './waves'
@@ -46,7 +46,7 @@ const renderStatus=()=>HOOKS.renderStatus();
    book WITHOUT it that still carries publication content is a PRE-Phase-2 book the
    new verId resolvers cannot re-key — see amFormatOf below. */
 export const AMBOOK_VERSION=1;
-export let SCHED:any={al:0, pending:{}, changes:{}, added:{}, als:[], dayOK:{}, sign:{}, orig:{}, cur:{}, ridV:RID_BOOK_VERSION, amV:AMBOOK_VERSION};
+export let SCHED:any={al:0, pending:{}, changes:{}, added:{}, als:[], dayOK:{}, sign:{}, signBind:{}, orig:{}, cur:{}, ridV:RID_BOOK_VERSION, amV:AMBOOK_VERSION};
 /* Reset ALL of SCHED in place. Every field is keyed by day INDEX (0..6), so
    loading a different week without this would let one week's approvals, pending
    edits, AL colouring and per-day drafts bleed onto the next week's identical
@@ -55,7 +55,7 @@ export let SCHED:any={al:0, pending:{}, changes:{}, added:{}, als:[], dayOK:{}, 
    (state/store.ts:loadWeek calls it). */
 export function resetSched(){
   SCHED.al=0; SCHED.pending={}; SCHED.changes={}; SCHED.added={};
-  SCHED.als=[]; SCHED.dayOK={}; SCHED.sign={}; SCHED.orig={};
+  SCHED.als=[]; SCHED.dayOK={}; SCHED.sign={}; SCHED.signBind={}; SCHED.orig={};
   SCHED.cur={}; SCHED.drafts={}; SCHED.curDraft={};
   SCHED.ridV=RID_BOOK_VERSION;   // a fresh book is modern — never re-migrated
   SCHED.amV=AMBOOK_VERSION;      // and carries the Phase-2 amendment-record format
@@ -613,12 +613,43 @@ export function discardPending(){
 /* re-validate + repaint every visible surface */
 export const SIGN_ROLES:any[]=[['cur','CUR CK',false],['sked','SKED CK',true],['plan','PLANNED BY',true],['appr','APPROVED BY',true]];
 export function signOf(di:any){SCHED.sign=SCHED.sign||{}; return (SCHED.sign[+di]=SCHED.sign[+di]||{cur:'',sked:'',plan:'',appr:''});}
+/* AM-06 — signatures bound to CONTENT (brief §5/§9). Beside the signer name in
+   SCHED.sign, each role that is signed through the sanctioned path (setSign)
+   records, in SCHED.signBind[di][role], the exact content it signed: the
+   canonical digest (§5.0), the schedule date, the current issued base id, and
+   the candidate (plan/draft) revision. A signature is content-valid only while
+   all four still match the live day. Validity is RECOMPUTED on every read here —
+   nothing "clears" a signature on an edit (Rev-4 command-layer §2.1): so an edit
+   silently invalidates it and an undo/revert back to the signed content makes it
+   valid again (F-09), with no invalidation hook to keep in step with every
+   mutation path. */
+export function signBindOf(di:any){SCHED.signBind=SCHED.signBind||{}; return (SCHED.signBind[+di]=SCHED.signBind[+di]||{});}
+/* the content fingerprint a signature is bound to, as it stands right now. */
+export function currentBind(di:any){di=+di; const d=DAYS[di];
+  return {dg:d?digest(d,di):'', iso:dayIso(CURWEEK,di), base:dayCurVer(di)||'', rev:(SCHED.curDraft||{})[di]||''};}
+/* set a role's signer through the ONE sanctioned write path (ui/Shell.tsx). A
+   truthy signer binds that role to the current content; clearing a role drops its
+   binding. Tests / a legacy demo book that write signOf(di)[role] directly leave
+   no binding — see signMissing's back-compat rule. */
+export function setSign(di:any,role:any,who:any){di=+di; signOf(di)[role]=who;
+  const b=signBindOf(di); if(who)b[role]=currentBind(di); else delete b[role];}
+/* a role's binding still matches the live content (or there is no binding — a
+   pre-Phase-3 / demo signature, appointment-checked only, as before). */
+function signBoundOk(di:any,role:any,cur?:any){const b=(SCHED.signBind||{})[+di]; const x=b&&b[role];
+  if(!x)return true; const c=cur||currentBind(di);
+  return x.dg===c.dg&&x.iso===c.iso&&x.base===c.base&&x.rev===c.rev;}
 /* a name only counts while it is still appointed — withdrawing someone's
-   Scheduler qual after they signed used to leave the day looking signed */
-export function signMissing(di:any){const g=signOf(di);
-  return SIGN_ROLES.filter((r:any)=>!g[r[0]]||(r[2]&&!isScheduler(g[r[0]]))).map((r:any)=>r[1]);}
+   Scheduler qual after they signed used to leave the day looking signed — AND
+   only while its content binding still holds (AM-06). currentBind is computed at
+   most once per call, and only if some role carries a binding. */
+export function signMissing(di:any){const g=signOf(di); const b=(SCHED.signBind||{})[+di]; let cur:any=null;
+  return SIGN_ROLES.filter((r:any)=>{
+    if(!g[r[0]]||(r[2]&&!isScheduler(g[r[0]])))return true;
+    if(b&&b[r[0]]){if(!cur)cur=currentBind(di); if(!signBoundOk(di,r[0],cur))return true;}
+    return false;
+  }).map((r:any)=>r[1]);}
 export function daySigned(di:any){return signMissing(di).length===0;}
-export function signClear(di:any){SCHED.sign[+di]={cur:'',sked:'',plan:'',appr:''};}
+export function signClear(di:any){SCHED.sign[+di]={cur:'',sked:'',plan:'',appr:''}; if(SCHED.signBind)SCHED.signBind[+di]={};}
 export function signNames(di:any){const g=signOf(di),o:any={};SIGN_ROLES.forEach((r:any)=>{const p=PEOPLE[g[r[0]]];o[r[0]]=p?p.cs:'';});return o;}
 export function signPeople(schedOnly:any,keep?:any){
   const ids=Object.keys(PEOPLE).filter((id:any)=>!PEOPLE[id].special&&!PEOPLE[id].archived

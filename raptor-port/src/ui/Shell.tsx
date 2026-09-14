@@ -16,7 +16,7 @@ import { HLSET, SEARCH, HLOPEN, toggleHlOpen, HLGROUP, setSearch, CURPAGE, setDa
 import { HlChips } from './hlchips'
 import { initDrag } from './drag'
 import { initPan, updateWeekNav, panDays } from './pan'
-import { signOf } from '../engine/publish'
+import { setSign } from '../engine/publish'
 import { HOOKS } from '../engine/hooks'
 import { canEditSched } from '../state/auth'
 import { slotVal, setSlotVal } from '../engine/slots'
@@ -168,7 +168,7 @@ export function Shell() {
       const sel = (e.target as HTMLElement).closest('select[data-sign]') as HTMLSelectElement | null
       if (!sel) return
       const di = +sel.dataset.signday!
-      signOf(di)[sel.dataset.sign!] = sel.value
+      setSign(di, sel.dataset.sign!, sel.value)   // AM-06: binds the signature to the content it signed
       HOOKS.histPush(); HOOKS.reflow()
     }
     /* right-click a filled slot in edit mode → clear it (reference verbatim,
