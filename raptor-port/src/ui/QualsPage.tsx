@@ -245,9 +245,11 @@ function qualsTable(cols: any[], qSeatView: string, qSort: any, qEditing: boolea
     const init = qEditing
       ? `<input class="qinit" data-init="${id}" value="${esc(p.initials || '')}" maxlength="12" aria-label="Initials for ${esc(p.cs)}" />`
       : esc(p.initials || '')
-    /* the callsign is editable in edit mode too, and renameCallsign rewrites
-       every stored `who` string with it, so the pucks re-print under the new
-       name (owner, Aug 26). Same commit-on-change reasoning as the initials. */
+    /* the callsign is editable in edit mode too. Since ARCH-STACK 1C
+       renameCallsign only changes `p.cs` (rows hold the stable id and resolve
+       id→cs via whoId), so the commit's notify() re-prints every puck under the
+       new name — including on other weeks and issued snapshots — without moving
+       anything. Same commit-on-change reasoning as the initials. */
     const cs = qEditing
       ? `<input class="qcs" data-cs="${id}" value="${esc(p.cs)}" maxlength="14" aria-label="Callsign for ${esc(p.cs)}" />`
       : esc(p.cs)

@@ -9,6 +9,9 @@ import { DAYS } from './data'
 import { slotVal, setSlotVal, fillSlot, rowCrew, renameCallsign } from './slots'
 import { PEOPLE, ID_BY_CS, nameToId, whoId } from './people'
 import { dayEngaged, personCount } from './avail'
+import { collectEvents } from './events'
+import { dayOilWork } from './oil'
+import { dayKeys } from './restore'
 import { SCHED } from './publish'
 
 const SNAP = JSON.stringify(DAYS)
@@ -60,24 +63,33 @@ describe('1C — rename is label-only and cannot cross two people', () => {
     expect(slotVal('g:0.0')).toBe('bane')
     expect(Object.keys(SCHED.pending).length).toBe(0)     // the rename is not an amendment
   })
-  it('a reused old callsign does NOT capture the row (id-first read)', () => {
-    setSlotVal('g:0.0', 'bane')                           // Ranger's row, by id
-    expect(renameCallsign('bane', 'Nightjar')).toBe(true) // frees the callsign "Ranger"
-    // a DIFFERENT person is now given the freed callsign
-    PEOPLE['xnew'] = { cs: 'Ranger', seat: 'FCP', q: 'C' } as any
-    ID_BY_CS['ranger'] = 'xnew'
-    // the stored id still resolves to the ORIGINAL person, never the newcomer
-    expect(whoId('bane')).toBe('bane')
+  it('a callsign colliding with an existing ID cannot capture the row (FAILS if whoId reverts to callsign-first)', () => {
+    setSlotVal('g:0.0', 'bane')                           // stored by id
+    /* the add back-door made concrete: a NEW person whose CALLSIGN equals the id
+       'bane'. This is the mapping that distinguishes whoId from the old resolver
+       — with it, callsign-first (nameToId) WOULD cross, id-first (whoId) does not. */
+    PEOPLE['xnew'] = { cs: 'Bane', seat: 'FCP', q: 'C' } as any
+    ID_BY_CS['bane'] = 'xnew'
+    expect(nameToId('bane')).toBe('xnew')                 // the trap the old resolver falls into
+    expect(whoId('bane')).toBe('bane')                    // id-first keeps the original person
     expect(slotVal('g:0.0')).toBe('bane')
-    expect(slotVal('g:0.0')).not.toBe('xnew')
+    expect(rowCrew('g', ['0', '0'])).toEqual(['bane'])
   })
-  it('the crossing survives a persisted snapshot (the case the old walk missed)', () => {
-    // a snapshot row, written before a rename, keeps the id and still resolves
-    const snapRow = { prog: 'X', str: '0900', end: '1000', who: 'bane' }
-    expect(renameCallsign('bane', 'Nightjar')).toBe(true)
+  it('rename + reuse of the freed callsign leaves the restore fingerprint stable (no phantom amendment)', () => {
+    setSlotVal('g:0.0', 'bane')
+    const before = dayKeys(DAYS[0], 0).get('g:0.0')
+    expect(before).toBe('bane')                           // canonical value is the id, not the callsign
+    expect(renameCallsign('bane', 'Nightjar')).toBe(true) // frees "Ranger"
     PEOPLE['xnew'] = { cs: 'Ranger', seat: 'FCP', q: 'C' } as any
-    ID_BY_CS['ranger'] = 'xnew'
-    expect(whoId(snapRow.who)).toBe('bane')               // not 'xnew'
+    ID_BY_CS['ranger'] = 'xnew'                           // a newcomer takes the freed callsign
+    expect(dayKeys(DAYS[0], 0).get('g:0.0')).toBe(before) // unchanged → the day diffs identically
+  })
+  it('deleting/reordering a ground row does not disturb another row\'s person', () => {
+    const base = DAYS[0].ground.length
+    DAYS[0].ground.push({ prog: 'A', str: '', end: '' } as any, { prog: 'B', str: '', end: '' } as any)
+    setSlotVal(`g:0.${base}`, 'bane'); setSlotVal(`g:0.${base + 1}`, 'stiff')
+    DAYS[0].ground.splice(base, 1)                        // delete the first of the two
+    expect(slotVal(`g:0.${base}`)).toBe('stiff')          // the survivor still resolves to its person
   })
 })
 
@@ -90,8 +102,9 @@ describe('1C — the add path refuses an id-colliding callsign (PID-01 guard)', 
   })
 })
 
-describe('1C — sim `who` is free text, never a person', () => {
-  const day = () => ({ waves: [], sims: { amt: [], oft: [{ label: 'X', str: '0900', end: '1000', who: 'bane' }] }, dutywaves: [], ground: [], allhands: [] })
+describe('1C — sim `who` is free text, never a person (busy, events AND oil)', () => {
+  // a value that IS a real person id, placed in a sim `who` — the contract says it counts for nothing
+  const day = () => ({ dt: '13/07/2026', notes: [], waves: [], sims: { amt: [], oft: [{ label: 'X', str: '0900', end: '1000', who: 'bane' }] }, dutywaves: [], ground: [], allhands: [] })
   it('dayEngaged does not task a person named in a sim who', () => {
     expect(dayEngaged(day() as any).has('bane')).toBe(false)
   })
@@ -99,8 +112,15 @@ describe('1C — sim `who` is free text, never a person', () => {
     DAYS.length = 0; DAYS.push(day() as any)
     expect(personCount('bane')).toBe(0)
   })
+  it('collectEvents makes no event for a sim who', () => {
+    DAYS.length = 0; DAYS.push(day() as any)
+    expect(collectEvents().some((e: any) => e.id === 'bane')).toBe(false)
+  })
+  it('dayOilWork mints no OIL for a sim who', () => {
+    expect(dayOilWork(day() as any)['bane']).toBeUndefined()
+  })
   it('but sim seats (p/w/pax) still count', () => {
-    const d: any = { waves: [], sims: { amt: [], oft: [{ label: 'X', str: '0900', end: '1000', p: 'bane' }] }, dutywaves: [], ground: [], allhands: [] }
+    const d: any = { dt: '13/07/2026', notes: [], waves: [], sims: { amt: [], oft: [{ label: 'X', str: '0900', end: '1000', p: 'bane' }] }, dutywaves: [], ground: [], allhands: [] }
     expect(dayEngaged(d).has('bane')).toBe(true)
   })
 })

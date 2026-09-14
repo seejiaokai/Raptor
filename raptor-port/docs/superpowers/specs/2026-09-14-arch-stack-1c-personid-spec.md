@@ -328,3 +328,35 @@ Both providers independently returned **REVISE**; backbone SOUND. They
 inspection of the FINAL DIFF (Codex lead, Fable for any crux); full gates; hold
 for "merge live". A second plan-review round is not run — the agreed fixes are
 concrete and the final-code inspection is the backstop.
+
+## 13. Final-code inspection dispositions (Claude + Codex/GPT-6-Astra, 2026-09-14)
+
+Both providers inspected the built diff in fresh sessions. **The code was found
+correct by both** (Claude: SHIP-READY, no BLOCKER/HIGH/MED, gates run first-hand
+728/0 + 4721/4721 + build; Codex: core conversion correct). Findings were about
+test strength and one preview path, not the identity logic:
+
+- **Codex PID-R01 (MEDIUM, ACTIONED)** — the new tests didn't lock in the fix
+  (the crossing test used `ID_BY_CS['ranger']`, which the OLD callsign-first
+  resolver would also pass; the "snapshot" test was an isolated object; missing
+  reorder/delete + real add-action coverage). → `personid.test.ts` strengthened:
+  a collision test that sets `ID_BY_CS['bane']` and asserts `whoId` stays id-first
+  while `nameToId` crosses (fails if reverted); a `dayKeys` restore-fingerprint
+  stability test (no phantom amendment on rename+reuse); a delete-integrity test;
+  sim-`who` now asserted against `dayEngaged`, `personCount`, `collectEvents` AND
+  `dayOilWork`. `quals.test.tsx` gains a real Add-action test that refuses "Bane"
+  (colliding with the id `bane`) — fails if the guard reverts to `ID_BY_CS`-only.
+- **Codex PID-R02 (LOW, ACTIONED)** — `peek.ts` sim preview resolved `who`
+  through the person cell (a who equal to a real id would show a stray puck),
+  inconsistent with §4.4. → sim `who` now rendered as escaped text when the row
+  has no seated crew, matching `html.ts:1355`.
+- **Codex PID-R03 (LOW, DEFERRED — pre-existing)** — the peek preview CACHE keys
+  on the week only, so a rename isn't reflected in the cached preview until a
+  week change. This predates 1C (rename display staleness existed before) and is
+  perf-cache-adjacent; logged as a follow-up in OUTSTANDING, not fixed here.
+- **Claude LOW-1 (ACTIONED)** — a stale comment in `QualsPage.tsx` still
+  described `renameCallsign` as rewriting `who` strings. → reworded to the
+  label-only reality.
+
+Re-inspection after these fixes: gates re-run green (728/0, build, full unit);
+a fresh cross-provider pass confirms no regression from the fixes.
