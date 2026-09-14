@@ -1,7 +1,7 @@
 import { VCONF } from './rules'
 import { parseHM } from './time'
 import { isStandalone, saExemptKind } from './waves'
-import { PEOPLE, realP, nameToId, isSpecial } from './people'
+import { PEOPLE, realP, whoId, isSpecial } from './people'
 import { whoArr } from './slots'
 /* =====================================================================
    WEEKEND / PUBLIC-HOLIDAY WORK EARNS OIL — Leave War sync wire 4
@@ -100,7 +100,7 @@ export interface OilWork{s:number;e:number;src:OilWorkSrc}
    Common Programme row into the people it stands for at that window. */
 export function dayOilWork(day:any,opts?:{expandAll?:(win:[number,number])=>string[]}){
   const out:Record<string,OilWork[]>={};
-  const rid=(v:any)=>{const id=PEOPLE[v]?v:nameToId(v);return realP(id)?id:null;};
+  const rid=(v:any)=>{const id=whoId(v);return realP(id)?id:null;};
   let src:OilWorkSrc='Duty';
   const put=(v:any,win:[number,number]|null)=>{if(!win)return;const id=rid(v);if(id)(out[id]=out[id]||[]).push({s:win[0],e:win[1],src});};
   const w2=(st:any,en:any):[number,number]|null=>{
@@ -111,7 +111,7 @@ export function dayOilWork(day:any,opts?:{expandAll?:(win:[number,number])=>stri
   /* a who value that names a sentinel (by id or callsign) expands or drops */
   const putWho=(v:any,win:[number,number]|null,more?:any[])=>{
     if(win){
-      const id=PEOPLE[v]?v:nameToId(v);
+      const id=whoId(v);
       if(id&&isSpecial(id)){ if(opts&&opts.expandAll)opts.expandAll(win).forEach((p:any)=>put(p,win)); }
       else put(v,win);
     }
@@ -140,8 +140,9 @@ export function dayOilWork(day:any,opts?:{expandAll?:(win:[number,number])=>stri
     if(r.cx)return;
     const win=w2(parseHM(r.str),parseHM(r.end));
     if(!win)return;
-    /* the same id set events.ts rowIds enumerates: seats, who, pax, extras */
-    [r.p,r.w,r.who?nameToId(r.who):null].concat(r.pax||[]).concat(r.more||[])
+    /* the same id set events.ts rowIds enumerates: seats, pax, extras — sim who
+       is free text (1C), never a person */
+    [r.p,r.w].concat(r.pax||[]).concat(r.more||[])
       .forEach((v:any)=>put(v,win));
   }));
   src='Duty';

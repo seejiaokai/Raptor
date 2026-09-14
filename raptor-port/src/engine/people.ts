@@ -274,6 +274,19 @@ export const SPECIALS=Object.keys(PEOPLE).filter((id:any)=>PEOPLE[id].special);
    lowercased, until the callsigns were rewritten for the demo scrub, 21 Aug 26),
    and so do several tests. Id-tolerance keeps every one of those resolving. */
 export function nameToId(nm:any){const k=(nm||'').toLowerCase().trim();return ID_BY_CS[k]||(PEOPLE[nm]?nm:(PEOPLE[k]?k:undefined));}
+/* RESOLVE A PERSON-REFERENCE FIELD, id-FIRST (ARCH-STACK 1C, who→personId, 14 Sep
+   26). Since 1C, ground/programme `who` store the stable PEOPLE id, so an id must
+   win: a stored id resolves to ITSELF even when some other person's CALLSIGN has
+   since been made equal to it. `nameToId` alone resolves the callsign first
+   (ID_BY_CS), so `nameToId('bane')` would return whoever later took the callsign
+   "Bane" — crossing every row that seats the person whose id is `bane` (the
+   Codex/Claude red-team's PID-01). `whoId` checks PEOPLE[v] first and falls back
+   to `nameToId` only for a legacy callsign string. This is the ONE resolver every
+   ground/programme who-consumer shares, so the sites cannot drift. The add/rename
+   guards (people uniqueness) still refuse a callsign that collides with an id, so
+   this is belt-and-suspenders — both, per the red-team. Free text ("EXT SQN") and
+   an empty string resolve to undefined, unchanged. */
+export function whoId(v:any){return (v!=null&&v!==''&&PEOPLE[v])?v:nameToId(v);}
 /* ---------------------------------------------------------------------------
    AAR from the remarks
    A line's remarks say whether it is refuelling. Remarks are written in seat

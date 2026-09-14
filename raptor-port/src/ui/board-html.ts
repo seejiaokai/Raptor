@@ -1,7 +1,7 @@
 /* The scheduler-board panel builders — sbInputsHTML, sbNotesPanel,
    sbProgPanel, sbSimPanel, sbSlot, labelToTitle/titleToLabel — verbatim. */
 import { INPUTS, inpMeta, inputCoversDate, inpLabel, inpId, inpTimeText, isPersonal, isUnavail, isSansAvail, isUpchit, sansBadge } from '../engine/inputs'
-import { PEOPLE, nameToId } from '../engine/people'
+import { PEOPLE, whoId } from '../engine/people'
 import { noteText } from '../engine/note'
 import { hhmm, fmtHM } from '../engine/time'
 import { sevOf, chipOf } from '../engine/validate'
@@ -205,7 +205,7 @@ export function sbProgPanel(d:any,di:any,pv?:any,ro?:any){
          ro, not pv, for the same reason every gate in this panel was widened
          (reviewer-found residual, 9 Aug 26) — these are the "36 draggable
          seats" the reviewer counted on a read-only board. */
-      const inner=arr.map((nm:any,k:any)=>{const id=nameToId(nm);
+      const inner=arr.map((nm:any,k:any)=>{const id=whoId(nm);
         if(id&&PEOPLE[id])return `<span class="seat"${ro?'':` data-slot="a:${di}.${ri}.${k}"`}${alAttr(`a:${di}.${ri}.${k}`)}${ro?'':' data-drag="1"'}>${puck(id,ro?null:sevOf(di,id),true,ro?null:chipOf(di,id))}</span>`;
         return String(nm||'').trim()?`<span class="itxt">${esc(nm)}</span>`:'';}).join('');
       s+=`<div class="sb-arow c6r${rowCls(x)}"${rowMove(`mv:p.${di}.${ri}`,ro)}>`+sbGrip(ro)
@@ -473,7 +473,7 @@ export function sbGroundPanel(d:any,di:any,pv?:any,ro?:any){
     s+=C6;
     /* same render-time ordering as the week — keys keep their model index */
     groundOrder(rows,d.gman).forEach(({row:x,ri}:any)=>{
-      const base=`g:${di}.${ri}`, t=`gr:${di}.${ri}`, id=nameToId(x.who);
+      const base=`g:${di}.${ri}`, t=`gr:${di}.${ri}`, id=whoId(x.who);
       const inner=((id&&PEOPLE[id])?sbSeat(di,base,id,ro):(x.who?`<span class="itxt">${esc(x.who)}</span>`:''))+sbMore(di,base,x,ro);
       s+=`<div class="sb-arow c6r${rowCls(x)}${lateRowCls(x)}"${lateRowTitle(x)}${rowMove(`mv:g.${di}.${ri}`,ro)}>`+sbGrip(ro)
         +sbTxt('ain',`${t}.prog`,x.prog,'OCU PROGRESS REVIEW',ro)+sbTxt('atm',`${t}.str`,x.str,'',ro)+sbTxt('atm',`${t}.end`,x.end,'',ro)

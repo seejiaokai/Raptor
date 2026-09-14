@@ -138,27 +138,30 @@ describe('renaming a callsign', () => {
     })
   })
 
-  it('carries every stored who-string with it, so the seat still resolves', () => {
-    // dj holds ground rows on day 0 (and a programme row on day 2)
+  it('is label-only (1C): the stored id is unchanged, and the seat still resolves', () => {
+    // dj holds ground rows on day 0 (and a programme row on day 2), stored by id
     const before = DAYS.flatMap((d: any, di: number) =>
       (d.ground || []).map((r: any, ri: number) => ({ di, ri, id: slotVal(`g:${di}.${ri}`) }))).filter(x => x.id === 'dj')
     expect(before.length, 'the seed plants dj on a ground row').toBeGreaterThan(0)
+    const storedBefore = DAYS[0].ground.filter((r: any) => r.who === 'dj').length
     expect(renameCallsign('dj', 'Deejay')).toBe(true)
     expect(PEOPLE.dj.cs).toBe('Deejay')
     // the rows still resolve to the same person — that is what keeps the puck
     before.forEach(x => expect(slotVal(`g:${x.di}.${x.ri}`)).toBe('dj'))
-    expect(DAYS[0].ground.find((r: any) => r.who === 'Deejay'), 'the stored string was rewritten').toBeTruthy()
+    // NOTHING moved: the rows still store the stable id, never the new callsign
+    expect(DAYS[0].ground.filter((r: any) => r.who === 'dj').length, 'the stored id is unchanged').toBe(storedBefore)
+    expect(DAYS[0].ground.find((r: any) => r.who === 'Deejay'), 'the callsign is NOT written into the row').toBeFalsy()
     expect(nameToId('Deejay')).toBe('dj')
     expect(nameToId('Ace')).toBeUndefined()     // the old CALLSIGN no longer resolves
     expect(nameToId('dj')).toBe('dj')           // the bare id always does (id-tolerant)
   })
 
-  it('rewrites programme rows, including multi-person who arrays', () => {
+  it('is label-only for programme rows too, including multi-person who arrays', () => {
     const r = DAYS[0].allhands.find((x: any) => x.who === 'nact')
     expect(r).toBeTruthy()
-    r.who = ['nact', 'bane']                     // a row carrying two people
+    r.who = ['nact', 'bane']                     // a row carrying two people, by id
     expect(renameCallsign('nact', 'Nacho')).toBe(true)
-    expect(r.who).toEqual(['Nacho', 'bane'])
+    expect(r.who).toEqual(['nact', 'bane'])      // unchanged — a rename moves nothing
     expect(slotVal(`a:0.${DAYS[0].allhands.indexOf(r)}.0`)).toBe('nact')
   })
 

@@ -76,10 +76,10 @@ describe('accepting a personal input', () => {
     expect(acceptInput(0, inp, 'g')).toBe(true)
     expect(DAYS[0].ground.length).toBe(before + 1)
     const row = DAYS[0].ground[DAYS[0].ground.length - 1]
-    /* who is the CALLSIGN, like every other ground write — an id would render
-       as free text for anyone whose id !== cs.toLowerCase(). Title is the bare
-       type; the submitter's remarks travel to the row's own rmks cell. */
-    expect(row.who).toBe('Zenith')
+    /* who is the stable person ID since ARCH-STACK 1C, like every other person
+       write — the renderers resolve id→cs (whoId). Title is the bare type; the
+       submitter's remarks travel to the row's own rmks cell. */
+    expect(row.who).toBe('vinci')
     expect(row.prog).toBe('MEETING')
     expect(row.rmks).toBe(inp.remarks)
     expect(row.str).toBe('09:00')            // 540 minutes from midnight
@@ -107,14 +107,15 @@ describe('accepting a personal input', () => {
     } finally { HOOKS.flashAdded = orig }
   })
 
-  /* regression: id and callsign diverge for some people ('haowen' → 'Talisman').
-     Storing the id made the row render as free text and never validate. */
-  it('stores the callsign even when it differs from the id', () => {
+  /* ARCH-STACK 1C: the landed row stores the stable ID (`inp.person`), even when
+     the id and callsign diverge ('haowen' → cs 'Talisman'). The renderers resolve
+     id→cs, and slotVal reads the id back — a rename now moves nothing. */
+  it('stores the id even when it differs from the callsign', () => {
     INPUTS.push({ person: 'haowen', date: 'Jul 13', allday: false, s: 600, e: 660, type: 'Appointment', remarks: 'x' })
     const inp = INPUTS[INPUTS.length - 1]
     expect(acceptInput(0, inp, 'g')).toBe(true)
     const ri = DAYS[0].ground.length - 1
-    expect(DAYS[0].ground[ri].who).toBe('Talisman')
+    expect(DAYS[0].ground[ri].who).toBe('haowen')
     expect(slotVal(`g:0.${ri}`)).toBe('haowen')
   })
 

@@ -27,7 +27,7 @@
    ordinary repaint (perf-B). ViewWeek/EditWeek mount the cached markup as
    trailing children of the same `.week` container their own live-day diff
    loop never touches, so a one-day edit still rewrites only that day's node. */
-import { PEOPLE, nameToId, QCHIP, QCLASS } from '../engine/people'
+import { PEOPLE, whoId, QCHIP, QCLASS } from '../engine/people'
 import { noteText } from '../engine/note'
 import { isStandalone, mColor, dayCount, CURWEEK } from '../engine/waves'
 import { groundOrder } from '../engine/order'
@@ -132,7 +132,7 @@ function peekCommon(d: any): string {
   if (hasAH) {
     h += `<div class="ah-cols"><span>Name</span><span>Start</span><span>End</span><span>People</span><span>Rmks</span></div>`
     d.allhands.forEach((x: any) => {
-      const ids = whoArr(x).map((nm: any) => nameToId(nm))
+      const ids = whoArr(x).map((nm: any) => whoId(nm))
       const ppl = peekCrewCell(ids, '')
       const fy = fyiTag(x)
       h += `<div class="ah-row${rowCls(x)}"><span class="nm">${cxTag(x)}${flagTag(x)}<span class="ntx">${esc(x.prog || '')}</span>${x.sub ? `<span class="sub">${esc(x.sub)}</span>` : ''}</span>`
@@ -182,11 +182,11 @@ function peekGround(d: any): string {
   if (!d.ground || !d.ground.length) return ''
   let h = `<div class="sub plist one sec sec-grnd"><div class="sub-h">Ground Programme</div>` + plCols()
   groundOrder(d.ground, d.gman).forEach(({ row: x }: any) => {
-    /* nameToId can come back undefined for a name it does not resolve — fall
-       back to the raw text itself (peekCrewCell's own itxt path) rather than
+    /* whoId can come back undefined for a value it does not resolve (free text) —
+       fall back to the raw text itself (peekCrewCell's own itxt path) rather than
        silently dropping the row's only crew mention, matching html.ts's own
        `x.who ? itxt(x.who) : ''` fallback. */
-    const id = nameToId(x.who)
+    const id = whoId(x.who)
     const ppl = peekCrewCell([id != null ? id : x.who, ...(x.more || [])], '')
     h += peekRow(x.prog, x.str, x.end, ppl, x.rmks, x)
   })

@@ -198,7 +198,7 @@ export type RowFlags = {
   flag?: boolean
 }
 
-/** A Common Programme item (day.allhands[i]). `who` may be a PEOPLE id, a callsign (after a rename), free text such as 'EXT SQN', or a list. */
+/** A Common Programme item (day.allhands[i]). Since ARCH-STACK 1C `who` stores the stable PEOPLE id (resolved id-first by whoId); a legacy callsign string still resolves, and genuine free text such as 'EXT SQN' or a list is left as-is. */
 export type AllhandsRow = RowFlags & {
   /** Item name — seed; screen. */
   prog: string
@@ -317,7 +317,7 @@ export type SimRow = RowFlags & {
   w?: string
   /** Any-size crew list of ids (box form) — seed; screen. */
   pax?: string[]
-  /** Free text ('EXT SQN') or an id — seed; screen. */
+  /** Free text ('EXT SQN') only — sim crew are p/w/pax, never `who`; since ARCH-STACK 1C the engine does NOT resolve this to a person — seed; screen. */
   who?: string
   /** Overflow crew — engine (slots.ts). */
   more?: string[]

@@ -1,6 +1,6 @@
 import { DAYS } from './data'
 import { INPUTS, inputCoversDate, isAway, awayAllDay, canSpare, canWork, offWord, inpWin, sansAvailOn, sansWindow, isPersonal, inpLabel } from './inputs'
-import { PEOPLE, isSpecial, nameToId, aarNeed, aarOK, scShiftKind, scQualOK } from './people'
+import { PEOPLE, isSpecial, whoId, aarNeed, aarOK, scShiftKind, scQualOK } from './people'
 import { parseHM, win, overlap, hm24 } from './time'
 import { SHIFT_HARD, VCONF } from './rules'
 import { isStandalone, scSpare, saExempt, saExemptKind } from './waves'
@@ -32,15 +32,17 @@ export function personBusy(d:any,id:any){
       if(to!=null&&ld!=null){if(ld<to)ld+=1440; out.push(shift?[to,ld]:[to-VCONF.step,ld+VCONF.dekit]);}}});});});
   /* both sim devices count, and a row's pax list counts as much as its p/w seats —
      an AMT box session with 8 aircrew makes all 8 of them busy for that window. */
+  /* sim `who` is FREE TEXT since 1C (an "EXT SQN" label), never a person — crew
+     are p/w/pax only, so it is not resolved to an id here (ARCH-STACK 1C). */
   const sm=d.sims||{}; ['amt','oft'].forEach((k:any)=>(sm[k]||[]).forEach((o:any)=>{ if(o.cx)return;
-    if(o.p===id||o.w===id||nameToId(o.who)===id||(o.pax||[]).includes(id)||has(o))
+    if(o.p===id||o.w===id||(o.pax||[]).includes(id)||has(o))
       add(parseHM(o.str),parseHM(o.end),VCONF.simLen); }));
   (d.dutywaves||[]).forEach((dw:any)=>dw.rows.forEach((r:any)=>{ if(r.cx)return; if(has(r,r.id))add(parseHM(r.str),parseHM(r.end)); }));
   /* an ⓘ info-only row never occupies anyone's time — same reasoning as its
      skip in events.ts: shown, never checked (owner, 1 Sep 26) */
-  (d.ground||[]).forEach((g:any)=>{ if(g.cx)return; if(g.info)return; if(has(g,nameToId(g.who)))add(parseHM(g.str),parseHM(g.end)); });
+  (d.ground||[]).forEach((g:any)=>{ if(g.cx)return; if(g.info)return; if(has(g,whoId(g.who)))add(parseHM(g.str),parseHM(g.end)); });
   (d.allhands||[]).forEach((x:any)=>{ if(x.cx)return; if(x.info)return;
-    if(whoArr(x).some((nm:any)=>nameToId(nm)===id)||has(x))add(parseHM(x.str),parseHM(x.end)); });
+    if(whoArr(x).some((nm:any)=>whoId(nm)===id)||has(x))add(parseHM(x.str),parseHM(x.end)); });
   return out;
 }
 /* engaged = tasked anywhere that day; off = leave/DNIF that day */
@@ -54,15 +56,15 @@ export function dayEngaged(d:any){const s=new Set(),add=(id:any)=>{if(id&&PEOPLE
      be planned for anything else, so he must read as free in the palette. */
   (d.waves||[]).forEach((w:any)=>w.formations.forEach((f:any)=>{if(f.cx)return;f.aircraft.forEach((a:any)=>{
     if(a.cx||scSpare(w,f,a))return;add(a.p);add(a.w);});}));
-  const sm=d.sims||{}; ['amt','oft'].forEach((k:any)=>(sm[k]||[]).forEach((o:any)=>{if(o.cx)return;add(o.p);add(o.w);add(nameToId(o.who));(o.pax||[]).forEach(add);}));
+  const sm=d.sims||{}; ['amt','oft'].forEach((k:any)=>(sm[k]||[]).forEach((o:any)=>{if(o.cx)return;add(o.p);add(o.w);(o.pax||[]).forEach(add);}));   // sim who is free text (1C), not a person
   /* the extras dropped under a row are tasked exactly as much as the person in
      its primary seat — they used to be counted as free all day */
   const more=(r:any)=>((r&&r.more)||[]).forEach(add);
   (d.dutywaves||[]).forEach((dw:any)=>dw.rows.forEach((r:any)=>{if(!r.cx){add(r.id);more(r);}}));
   /* crew on ONLY an ⓘ info-only row stay un-greyed in the palette — being
      listed for information is not being tasked (owner, 1 Sep 26) */
-  (d.ground||[]).forEach((g:any)=>{if(!g.cx&&!g.info){add(nameToId(g.who));more(g);}});
-  (d.allhands||[]).forEach((x:any)=>{if(x.cx)return;if(x.info)return;(Array.isArray(x.who)?x.who:(x.who?[x.who]:[])).forEach((w:any)=>add(nameToId(w)));more(x);});
+  (d.ground||[]).forEach((g:any)=>{if(!g.cx&&!g.info){add(whoId(g.who));more(g);}});
+  (d.allhands||[]).forEach((x:any)=>{if(x.cx)return;if(x.info)return;(Array.isArray(x.who)?x.who:(x.who?[x.who]:[])).forEach((w:any)=>add(whoId(w)));more(x);});
   ['amt','oft'].forEach((k:any)=>((d.sims||{})[k]||[]).forEach((o:any)=>{if(!o.cx)more(o);}));
   return s;}
 /* AWAY, split by whether the absence closes the DAY or only some HOURS
@@ -115,10 +117,10 @@ export function personCount(id:any){
   DAYS.forEach((d:any)=>{
     (d.waves||[]).forEach((w:any)=>(w.formations||[]).forEach((f:any)=>(f.aircraft||[]).forEach((a:any)=>{hit(a.p);hit(a.w);})));
     ['amt','oft'].forEach((k:any)=>((d.sims||{})[k]||[]).forEach((o:any)=>{
-      hit(o.p);hit(o.w);hit(nameToId(o.who));(o.pax||[]).forEach((x:any)=>hit(nameToId(x)||x));more(o);}));
+      hit(o.p);hit(o.w);(o.pax||[]).forEach((x:any)=>hit(whoId(x)||x));more(o);}));   // sim who free text (1C)
     (d.dutywaves||[]).forEach((dw:any)=>(dw.rows||[]).forEach((r:any)=>{hit(r.id);more(r);}));
-    (d.ground||[]).forEach((g:any)=>{hit(nameToId(g.who));more(g);});
-    (d.allhands||[]).forEach((x:any)=>{(Array.isArray(x.who)?x.who:(x.who?[x.who]:[])).forEach((v:any)=>hit(nameToId(v)));more(x);});
+    (d.ground||[]).forEach((g:any)=>{hit(whoId(g.who));more(g);});
+    (d.allhands||[]).forEach((x:any)=>{(Array.isArray(x.who)?x.who:(x.who?[x.who]:[])).forEach((v:any)=>hit(whoId(v)));more(x);});
   });
   return n;
 }

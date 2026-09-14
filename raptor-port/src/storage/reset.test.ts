@@ -32,6 +32,18 @@ describe('resetPreSchema — ARCH-STACK 1A storage reset (Astra SID-05/07)', () 
     expect(JSON.parse(be.peek('settings', 'schema')!)).toBe(SCHEMA_VERSION)
   })
 
+  it('1C: a v1-stamped (1A) store is still reset — the bump to 2 clears cs-form who weeks', async () => {
+    expect(SCHEMA_VERSION).toBeGreaterThanOrEqual(2)          // 1C bumped it
+    const be = withPreV1AData()
+    be.seed({ settings: { schema: JSON.stringify(1) } })      // an existing 1A store
+    const snap = await be.loadAll()
+    await resetPreSchema(be, snap)
+    expect(snap.inputs).toEqual({})
+    expect(snap.weeks).toEqual({})
+    expect(be.peek('weeks', '2026-07-13')).toBeNull()
+    expect(JSON.parse(be.peek('settings', 'schema')!)).toBe(SCHEMA_VERSION)
+  })
+
   it('is a no-op on an already-stamped store — no deletes, no re-stamp', async () => {
     const be = withPreV1AData()
     be.seed({ settings: { schema: JSON.stringify(SCHEMA_VERSION) } })
