@@ -1445,6 +1445,11 @@ export function planMenu(anchor: HTMLElement, di: any) {
       close()
       const t = draftDup(di)
       if (t) {
+        /* the new plan is now the live day, so drop any frozen preview this menu
+           was opened from — otherwise the day keeps showing the old read-only
+           version while the toast says the new plan is live and editable (Codex
+           PS-004). setDayPreview(di,null) also clears any armed restore confirm. */
+        view.setDayPreview(di, null)
         /* one undo step for the whole duplicate — histSnap carries the blobs */
         afterSchedMutate(); notify()
         const said = `${d.dow} — "${t.name}" is now the live day, edit over it`

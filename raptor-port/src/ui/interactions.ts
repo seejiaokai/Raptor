@@ -776,6 +776,10 @@ export function routeClick(e: MouseEvent) {
   if (alp) {
     e.stopPropagation()
     if (!canEditSched() || view.CURPAGE !== 'editsched') return
+    /* never publish while previewing a frozen version — it would publish the LIVE
+       copy, not what's on screen (A3, Codex PS-001); the button is hidden under a
+       preview, this guards a stale click. */
+    if (view.DPREV.has(+alp.dataset.alpub!)) return
     publishALDay(+alp.dataset.alpub!); notify(); return
   }
   /* Back to live copy — the home button on the version cluster (owner, 16 Aug

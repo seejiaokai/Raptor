@@ -1,5 +1,5 @@
-/* The Drafts manage modal (owner, 15 Aug 26) — opened from the drafts menu's
-   pencils (board.ts's draftsMenu), on either surface, and SCOPED TO ONE DAY:
+/* The plans manage modal (owner, 15 Aug 26; "Plan" rename 15 Sep 26) — opened
+   from the plans menu's pencils (board.ts's planMenu), and SCOPED TO ONE DAY:
    drafts are per-day alternate blobs, so unlike DayTplModal's global library
    this modal manages exactly the day whose menu opened it. Same shape
    otherwise: pops.ts flag, hidden shell when closed, App.tsx mount, tabs

@@ -387,6 +387,13 @@ export function setPage(p:any){
      reuses it rather than a second comparison. */
   const closedBoard=p!==CURPAGE&&p!=='editsched'&&SBDAY!=null;
   if(closedBoard)closeBoardState();
+  /* A 'd:' PLAN PREVIEW IS VIEW-PAGE-ONLY (owner, 15 Sep 26 — the redesign; Fable
+     #3). The edit surfaces switch plans instantly and never preview one, so a
+     'd:' preview set on View-only Sched must not carry onto Edit Schedule, where
+     it would render a stale frozen "Switch to this plan" bar. Clear only the 'd:'
+     entries on entering the edit page; issued (ORIG/ALn) previews are the edit
+     page's own and stay. */
+  if(p==='editsched'&&p!==CURPAGE)for(const [di,ver] of [...DPREV])if(typeof ver==='string'&&ver.slice(0,2)==='d:')DPREV.delete(+di);
   /* CARRY THE DAY (owner, 9 Aug 26). Read the outgoing week's leftmost day
      while it is still on screen — one line later CURPAGE moves, React swaps
      which .page carries `on`, and display:none takes its layout away. The

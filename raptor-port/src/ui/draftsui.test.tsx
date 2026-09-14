@@ -229,6 +229,20 @@ describe('the view-only week — unpublished days with plans', () => {
     setDayPreview(1, null)
     await act(async () => { setPage('editsched'); notify() })
   })
+
+  it('a d: plan preview set on the view page is cleared when entering the edit page (Fable #3)', async () => {
+    await resetDrafts()
+    await act(async () => { draftDup(0); setPage('viewsched'); notify() })
+    const planA = dayDrafts(0)[0].id
+    await act(async () => { setDayPreview(0, 'd:' + planA); notify() })
+    expect(DPREV.get(0)).toBe('d:' + planA)
+    /* the edit surfaces never preview a plan (they switch), so a lingering d:
+       preview must not carry over — it would show a stale "Switch to this plan" bar */
+    await act(async () => { setPage('editsched'); notify() })
+    expect(DPREV.has(0)).toBe(false)
+    /* an ISSUED preview, by contrast, is the edit page's own and would survive —
+       not exercised here to keep the state clean for the next describe */
+  })
 })
 
 describe('the view-only week — published days', () => {

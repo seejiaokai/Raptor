@@ -153,6 +153,7 @@ export function planSelectorHTML(di:any,cls?:any){
     :sel?esc(sel.name)
     :'Live working copy'
   const title=pv?`Viewing ${draftVerLabel(di,DPREV.get(di))} — tap to switch plan or look at another version`
+    :sel?`${sel.name} — tap to switch plan or look at another version`   /* A8: the full plan name in the tooltip, since the label clamps at 150px */
     :'Switch between your plans, or look back at an issued version'
   return `<button class="planselbtn${pv?' pv':''}${cls?' '+cls:''}" data-planmenu="${di}" title="${esc(title)}"><span class="psl">${label}</span><span class="psc">▾</span></button>`
 }
@@ -956,7 +957,16 @@ export function dayStatHTML(di:any,ed:any){
        the issued version (F-02 — the ONE authority, §3), NOT the raw pending
        marks; a still-DRAFT day has no issued baseline, so it shows its draft
        pending count. `nd>0` on a published day IS dayHasChanges. */
-    const dv=ok?dayDelta(di):null, dp=dayPendCount(di), nd=ok?(dv as any[]).length:dp;
+    /* UNDER AN ACTIVE PREVIEW (PV && !PVQ) the pending count is the LIVE discard
+       count captured before the snapshot swap (PVND), NOT dayDelta — withDaySnap
+       has replaced DAYS[di] with the frozen snapshot, so dayDelta here would diff
+       the PREVIEWED version against the issued one and report the wrong number.
+       PVND makes the "N pending" chip agree with the read-only bar's "Discard N
+       edits" count, which A3 requires (Codex PS-006 / Fable #2). The issued
+       DEFAULT face (PVQ, the view page's frozen render) is NOT an active preview:
+       it must stay byte-frozen against live edits, so it keeps dayDelta — which,
+       being the snapshot diffed against its own issued version, is 0 (no chip). */
+    const nd=(PV&&!PVQ)?PVND:(ok?(dayDelta(di) as any[]).length:dayPendCount(di));
     /* a DRAFT preview must never wear the published day's clothes (owner,
        15 Aug 26 — "when I toggle to draft 1, it shouldn't say published"):
        under a d: preview the ✓ Published stamp and the AL chip are replaced
@@ -1057,11 +1067,13 @@ export function dayHTML(di:any,ed:any,vsel?:any){
     const armed=restArmed(di,PVV), pend=PV?PVND:dayPendCount(di);
     const pvBar=(PV&&!PVQ)
       ? `<div class="dprev-bar"${(!pvDraft&&verSeq(PVV)!==0)?` style="--alc:${alColor(verSeq(PVV))}"`:''}>`
-        /* ← Back to live copy — the ONLY way home now the green "Live copy" pill
-           is gone (owner, 15 Sep 26 — A2). It lives in this read-only bar on BOTH
-           surfaces; the board already had it (SchedBoard.tsx), so match it here.
-           data-golive routes through routeClick (interactions.ts). */
-        +`<button class="dbeak dprev-back" data-golive="${di}" title="Return to your live working copy">← Back to live copy</button>`
+        /* ← Back to live copy — the way home now the green "Live copy" pill is
+           gone (owner, 15 Sep 26 — A2). EDIT-SURFACE only (`vsel`), same as the
+           Switch button below: the VIEW page's own 'd:' preview keeps its picker
+           (the 'live' option) as the way back, and this scheduler-worded button
+           would be out of place there (Fable #4). The board carries its own copy
+           in SchedBoard.tsx. data-golive routes through routeClick. */
+        +(vsel?`<button class="dbeak dprev-back" data-golive="${di}" title="Return to your live working copy">← Back to live copy</button>`:'')
         +(pvDraft
           /* the Switch action is EDIT-SURFACE only. A preview always renders
              with ed=false (it is read-only), so the edit-week signal is `vsel`
@@ -1082,7 +1094,7 @@ export function dayHTML(di:any,ed:any,vsel?:any){
         ? `<span class="dow crewday" data-crewday="${di}" title="Show this day's crew in the aircrew panel">${d.dow}</span><span class="dt sb-open" data-sbday="${di}" title="Open scheduler board">${d.dt}${d.today?' · Today':''}</span>`
         : `<span class="dow di-open" data-dayinfo="${di}" title="Day details">${d.dow}</span><span class="dt di-open" data-dayinfo="${di}" title="Day details">${d.dt}${d.today?' · Today':''}</span>`}${(ed||vsel)?`<span class="dhtpl">${verTagHTML(di)}${ed?`<button class="dhbtn" data-daytplopen="${di}" title="Save this day, or apply a saved template">Templates</button>`:''}${planSelectorHTML(di)}</span>`:''}
       <span class="badge" title="Aircraft per wave · standalone lines after the slash">${dayCount(d)}</span>
-      <span class="dstat">${ed?'':viewVerSelHTML(di)}${dayStatHTML(di,ed)}</span></div>`
+      <span class="dstat">${(!ed&&!vsel)?viewVerSelHTML(di):''}${dayStatHTML(di,ed)}</span></div>`
       +pvBar
       /* THE .dhtpl SPAN carries the day's version chrome, between the date (.dt)
          and the turn-pattern badge: the green title tag (verTagHTML), the

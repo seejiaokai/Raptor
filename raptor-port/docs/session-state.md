@@ -30,8 +30,30 @@ Built test-first on Opus, to the LOCKED spec
   "Live working copy" (`draftDelete`).
 - **New test**: `src/ui/planselector.test.tsx` — the five-state matrix + menu behaviours.
 
-## Gates
-- `npm test` **4661/4661** ✓ · `node reference/tfin.js` **728/0** ✓ · `npm run build` clean ✓
+## Cross-provider bug-check (Codex + Fable) — DONE, findings fixed
+Both reviewers inspected commit `43edb04`. They converged; a second commit fixed the real
+findings:
+- **HIGH (Codex PS-001):** `ALPanel.tsx`'s per-day "Publish AL" was NOT guarded under a
+  preview — a third publish surface I'd missed. Now locked while `DPREV.has(di)`, plus a
+  guard in the `data-alpub` handler.
+- **A3 pending-chip (both):** under an active preview the "N pending" chip read the previewed
+  snapshot's delta, not the live count. Now uses PVND (agrees with the restore bar); the
+  frozen issued-default face (PVQ) still shows nothing.
+- **nextName past-Z (both):** beyond 26 plans the numeric fallback could repeat "Plan 27".
+  Now a whole-name walk — always unique.
+- **PS-002 / Fable #3:** the view page's `d:` preview could bleed onto the edit surfaces.
+  `viewVerSelHTML` now gated `!ed&&!vsel`; `setPage` clears `d:` previews entering the edit page.
+- **PS-004:** "+ Alt Plan" during a preview now clears the preview.
+- **Fable #4:** the read-only bar's "← Back to live" is now edit-surface only (`vsel`).
+- **A8 (both):** the selector tooltip now carries the full plan name.
+- **Cleanup:** removed dead `.livebtn`/`.ddraft`/`.sb-dver` CSS + stale comments.
+- **DEFERRED / flag to owner (Codex PS-003):** the board hides its whole sign strip (and so
+  the selector) under a preview — long-standing behaviour; "← Back to live" is still in the
+  board's warn bar. Fable validated the current behaviour. Left as-is; confirm if you want the
+  selector kept visible under a board preview too.
+
+## Gates (re-run after the fixes)
+- `npm test` **4664/4664** ✓ · `node reference/tfin.js` **728/0** ✓ · `npm run build` clean ✓
 - `npm run test:e2e`: **2 failures, both PRE-EXISTING and unrelated** (proven by a clean
   `git stash -u` run on the base commit — they fail without any of this work; e2e had not
   been run since Phase 3): `geometry.spec.ts:1976` (board flying-line brief inline at phone

@@ -74,15 +74,19 @@ const newId = (list: any[]) => {
 }
 
 /* the next default name: LETTERED plans (owner, 15 Sep 26 — "Draft" became
-   "Plan", lettered A/B/C). Mint the LOWEST unused "Plan <letter>", so renaming
-   Plan A to "Wet weather" and duplicating again reuses the freed letter A (no
-   collision — draftRename refuses a name another entry already holds). Past Z
-   it falls back to "Plan 27", "Plan 28"… (C1). */
+   "Plan", lettered A/B/C). Walk the sequence Plan A … Plan Z, then Plan 27, Plan
+   28, … and return the first name NO existing entry holds. Comparing whole
+   candidate NAMES (not just the letter index) is load-bearing: past Z the fallback
+   is numeric, and a letter-only "used" set would never mark "Plan 27" used and so
+   would mint it forever (Codex PS-005 / Fable #1). It also means a rename to
+   "Plan C" frees C for reuse and blocks a fresh "Plan C" — one uniqueness rule,
+   the same day-wide invariant draftRename enforces. */
 const nextName = (list: any[]) => {
-  const used = new Set<number>()
-  list.forEach((t: any) => { const m = /^Plan ([A-Z])$/.exec(String(t.name)); if (m) used.add(m[1]!.charCodeAt(0) - 65) })
-  let i = 0; while (used.has(i)) i++
-  return 'Plan ' + (i < 26 ? String.fromCharCode(65 + i) : String(i + 1))
+  const names = new Set(list.map((t: any) => String(t.name)))
+  for (let i = 0; ; i++) {
+    const nm = 'Plan ' + (i < 26 ? String.fromCharCode(65 + i) : String(i + 1))
+    if (!names.has(nm)) return nm
+  }
 }
 
 /* Duplicate the live day into a new draft and switch the working copy to it.

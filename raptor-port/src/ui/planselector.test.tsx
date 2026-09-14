@@ -166,15 +166,39 @@ describe('the menu + the must-fix behaviours', () => {
     await click($('#eWeek .day[data-day="0"] .dhtpl [data-planmenu]'))
     await click($(`.wavemenu [data-planpv="${origVer}"]`))
     expect(DPREV.get(0)).toBe(origVer)               // previewing, not switched
+    /* the selector goes amber "👁 …" on the REAL preview render (EditWeek paints
+       via dayPreviewHTML → dayHTML(di,false,true)); Templates is hidden there */
+    expect($('#eWeek .day[data-day="0"] .planselbtn.pv')).toBeTruthy()
+    expect($('#eWeek .day[data-day="0"] [data-daytplopen]')).toBeFalsy()
     /* A2: the week's read-only bar carries the back button (the green pill is gone) */
     const bar = $('#eWeek .day[data-day="0"] .dprev-bar')
     expect(bar).toBeTruthy()
     expect(bar.querySelector('[data-golive]')).toBeTruthy()
     /* A3: Publish AL is NOT reachable while previewing */
     expect($('#eWeek .day[data-day="0"] [data-alpub]')).toBeFalsy()
+    /* A3 (Codex PS-006 / Fable #2): live == AL1, so nothing is pending — the
+       "N pending" chip must NOT appear under the preview (it used to read the
+       previewed snapshot's delta instead of the live discard count). */
+    expect($('#eWeek .day[data-day="0"] .dpend')).toBeFalsy()
     /* Back to live clears the preview */
     await click(bar.querySelector('[data-golive]'))
     expect(DPREV.has(0)).toBe(false)
+  })
+
+  it('A3 · ALPanel\'s per-day Publish AL is locked while that day is previewed (Codex PS-001)', async () => {
+    await reopen()
+    sign(0); setDayApproved(0, 1)
+    txtSet('dn:0.0', 'ALPANEL WIP'); sign(0)           // a signed, changed published day → ALPanel lists it
+    await act(async () => { notify() })
+    const alBtn = () => [...$$('#alPanel .al-pubday')].find(r => r.querySelector('.al-pd-lbl'))?.querySelector('.abtn.primary') as HTMLButtonElement | undefined
+    expect(alBtn(), 'ALPanel lists the day with a Publish AL button').toBeTruthy()
+    expect(alBtn()!.disabled, 'enabled when not previewing').toBe(false)
+    /* preview an issued version of that day → the ALPanel publish must lock, or it
+       would publish the LIVE copy while the day shows the frozen version */
+    const origVer = SCHED.orig[0].id
+    await act(async () => { setDayPreview(0, origVer); notify() })
+    expect(alBtn()!.disabled, 'locked while previewing day 0').toBe(true)
+    await act(async () => { setDayPreview(0, null); notify() })
   })
 
   it('A3 · Publish AL IS shown on a changed published day when NOT previewing', async () => {

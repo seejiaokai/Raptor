@@ -98,6 +98,18 @@ describe('duplicating a day', () => {
     expect(t!.name).toBe('Plan A')                  // the freed letter A is reused, not "Plan D"
   })
 
+  it('past Z the numeric fallback stays UNIQUE — never a duplicate "Plan 27" (Codex PS-005 / Fable #1)', () => {
+    /* mint 28 plans: A..Z then Plan 27, Plan 28. A letter-only "used" set would
+       never mark "Plan 27" used and would mint it forever — the day-wide name
+       uniqueness draftRename enforces must hold for the auto-mint too. */
+    for (let i = 0; i < 27; i++) draftDup(0)         // first dup makes A+B, then 26 more → 28 entries
+    const names = dayDrafts(0).map((x: any) => x.name)
+    expect(names.length).toBe(28)
+    expect(new Set(names).size).toBe(28)             // all distinct
+    expect(names.slice(0, 26)).toEqual([...Array(26)].map((_, i) => 'Plan ' + String.fromCharCode(65 + i)))
+    expect(names.slice(26)).toEqual(['Plan 27', 'Plan 28'])
+  })
+
   it('a published day duplicates too, and its pending marks ride along untouched', () => {
     /* dup changes no content — live is stowed and an identical copy selected —
        so whatever was already pending toward the next AL stays exactly as it

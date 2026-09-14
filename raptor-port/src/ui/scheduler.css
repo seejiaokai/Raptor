@@ -913,11 +913,6 @@ body.ros-open .eroster .ros-tab{background:var(--accent);color:var(--accent-ink)
 .day-head .dal.orig,.sb-pub .dal.orig{background:var(--ink-3)}
 .day-head .dpend,.sb-pub .dpend{font-size:10px;font-weight:700;color:#F2D699;background:rgba(229,194,74,.12);
   border:1px solid rgba(229,194,74,.4);padding:1px 7px;border-radius:999px;white-space:nowrap}
-/* which DRAFT the live day is (engine/drafts.ts) — the .dpend pill shape in
-   the app's accent so it reads as status, never as the amber pending count or
-   an AL colour; shared by the board's sign-off panel like its two siblings */
-.day-head .ddraft,.sb-pub .ddraft{font-size:10px;font-weight:700;color:var(--accent);background:rgba(59,198,232,.1);
-  border:1px solid rgba(59,198,232,.4);padding:1px 7px;border-radius:999px;white-space:nowrap}
 /* PUBLISH DAY is the primary action on a day, so it wears the same blue as the
    banner buttons rather than looking like one more grey chip. Published flips it
    green (and it is then the reopen control); unsigned darkens it — see the
@@ -926,14 +921,12 @@ body.ros-open .eroster .ros-tab{background:var(--accent);color:var(--accent-ink)
 .dbeak{font-family:inherit;font-size:11.5px;font-weight:700;letter-spacing:.02em;cursor:pointer;
   color:var(--accent-ink);background:var(--accent);border:1px solid var(--accent);
   padding:4px 11px;border-radius:8px;white-space:nowrap}
-/* ---- per-day version dropdown + published-version preview ---- */
-/* .sb-dver is the same select in the board's sign-off strip (owner, 26 Aug 26 —
-   moved down from the top bar); it reads exactly like the week's picker. It
-   sits first in .sb-pub, so a small right margin sets it off from the ✓ Published
-   stamp that follows. */
-.dstat .dver,.sb-pub .sb-dver{font-family:inherit;font-size:11px;font-weight:600;color:var(--ink);
+/* ---- the view-only week's version picker + published-version preview ---- */
+/* .dstat .dver is the VIEW page's own select (viewDraftSelHTML / viewVerSelHTML);
+   the edit surfaces no longer carry a select (the plans selector replaced it,
+   15 Sep 26). */
+.dstat .dver{font-family:inherit;font-size:11px;font-weight:600;color:var(--ink);
   background:var(--panel-2);border:1px solid var(--edge-2);border-radius:8px;padding:3px 6px;cursor:pointer}
-.sb-pub .sb-dver{margin-right:2px}
 /* the whole day wears the version's colour while previewing, dashed — the same
    dashed-vs-solid grammar the pending marks use: dashed means "not the issued
    live document" */
@@ -966,17 +959,8 @@ body.ros-open .eroster .ros-tab{background:var(--accent);color:var(--accent-ink)
    26) — "✓ Published · AL1". Slightly smaller than the stamp text and nudged to
    sit on its baseline; keeps its own AL colour (data-alc) / grey ORIG. */
 .dbeak .dal{font-size:9.5px;padding:0 5px;vertical-align:baseline;margin-left:1px}
-/* THE VERSION CLUSTER'S HOME BUTTON (owner, 16 Aug 26). A static green "you
-   are here" while on the live working copy; an active "← Back to live copy"
-   while previewing an older version. It only navigates — it never publishes. */
-.day-head .livebtn{font-family:inherit;font-size:11px;font-weight:700;letter-spacing:.01em;
-  padding:3px 10px;border-radius:8px;display:inline-flex;align-items:center;gap:5px;white-space:nowrap;line-height:1.55}
-.livebtn.on{color:#A8E6BC;background:rgba(87,201,122,.16);border:1px solid rgba(87,201,122,.55);cursor:default}
-.livebtn.on .dot{width:7px;height:7px;border-radius:50%;background:#57C97A;box-shadow:0 0 0 3px rgba(87,201,122,.22)}
-.livebtn.back{color:var(--accent);background:rgba(59,198,232,.12);border:1px solid rgba(59,198,232,.55);cursor:pointer}
-.livebtn.back:hover{border-color:var(--accent)}
-/* the board's banner carries the same home button (its bar has no room for a
-   permanent one) — pushed to the strip's left, the action button to the right */
+/* ← Back to live copy lives in the read-only preview bar on both surfaces now
+   (owner, 15 Sep 26 — the green "Live copy" pill is gone). */
 .dprev-bar .dprev-back{color:var(--accent);background:rgba(59,198,232,.12);border-color:rgba(59,198,232,.55);font-size:10.5px;padding:3px 9px}
 .dprev-bar .dprev-back:hover{filter:none;border-color:var(--accent)}
 /* the armed "Load onto working copy" confirm — amber, because it will discard
@@ -985,10 +969,6 @@ body.ros-open .eroster .ros-tab{background:var(--accent);color:var(--accent-ink)
 .dbeak.dprev-restore.warn:hover{filter:brightness(1.05)}
 .dprev-bar .dprev-cancel{margin-left:6px}
 .dprev-bar .dprev-switch{margin-left:auto}
-/* the "Publishes" sub-label inside the live-plan chip */
-.day-head .ddraft .k,.sb-pub .ddraft .k{font-size:8px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-3);font-weight:700;margin-right:2px}
-/* the two labelled groups in the version dropdown read as headers */
-.dver optgroup{font-size:10px;font-weight:700;color:var(--ink-3);background:var(--panel-2)}
 .dver option{color:var(--ink);font-weight:600}
 .day.dok{border-color:rgba(87,201,122,.34)}
 .day.dok .day-head{background:rgba(87,201,122,.055);border-bottom-color:rgba(87,201,122,.3)}
