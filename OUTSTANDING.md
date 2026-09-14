@@ -191,7 +191,14 @@ providers inspected the built code; all findings fixed. Remaining in step 1: **1
 Tracker ids — split 13 Sep 26: **1B-i COURSE ids DONE + LIVE**; **1B-ii SYLLABUS ids DONE + LIVE**
 (14 Sep 26 — incl. a Fable review, then an independent Codex re-review that found RR-01/02/03 +
 owner-requested RR-03b, all fixed and merged via PR #402)) and **1C** (`who→personId`,
-parity-sensitive, its own pass) — **1C is now the next step-1 build.** One
+parity-sensitive). **1C BUILT — HOLDING for "merge live" (14 Sep 26, branch
+`claude/arch-stack-1c-personid`).** Ground/Common-Programme `who` now store the stable person id
+(flying/duty/sim/inputs already did); rename is label-only (the DAYS-walk is gone); sim `who` is
+free text only; `addPerson` refuses an id-colliding callsign; coordinated storage reset
+(SCHEMA_VERSION 1→2). Plan + cross-provider red-team dispositions:
+`raptor-port/docs/superpowers/specs/2026-09-14-arch-stack-1c-personid-spec.md`. Gates green
+(tfin.js 728/0, vitest 4721/4721, build); browser gates + final cross-provider code inspection in
+progress. **With 1C, step 1 (stable ids everywhere) is complete.** One
 deferred follow-up (finding 2, orphaned `Other` hard-grade) noted below.
 A whole-app architectural review by BOTH Astra and Fable (read-only) converged on one story:
 the app is **one store-pattern built three times** (Scheduler / Leave War / Tracker), and it
