@@ -195,7 +195,12 @@ gate (per-collection authorization policy + derivation hooks with a FIXED-POINT 
 boundary + optimistic-concurrency conflict rejection + atomic apply + the ONE change stream + post-commit
 notify queue); the undo seam (inverse table, derived-recompute-not-invert; RC4-306 fresh-version rule); the
 versioned storage contract + fault-injecting test-double (SEQ-003); the invariant harness + property tests
-(SEQ-001, incl. cross-consumer consistency). Gates so far: **vitest 4771/4771, `npm run build` clean**
+(SEQ-001, incl. cross-consumer consistency). **Post-build cross-provider CODE inspection (Fable + independent
+Codex) run; both REVISE with real bugs, ALL fixed test-first** — the important ones: undo could clobber a
+later edit (now blocked by a content precondition), the store leaked live references (now clones in/out), a
+throwing subscriber failed the commit (now isolated), derived writes were unbounded (hooks now declare
+allowed collections); plus authoritative `before`, re-entrancy guard, delete no-op, non-plain-value equality,
+and the full fault set on the test-double. Gates so far: **vitest 4788/4788, `npm run build` clean**
 (tfin/e2e/smoke to run before any PR). Fixes RC1 (an LW undo creating a phantom scheduler undo step) BY
 DESIGN (sync writes are `system`-origin, never undo entries). Spec + review log:
 `raptor-port/docs/superpowers/specs/2026-09-14-arch-stack-2-command-layer-spec.md` (Rev 4) + `…-review-log.md`.
