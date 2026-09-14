@@ -2,7 +2,8 @@ import { describe, it, expect } from 'vitest'
 import { inverseChanges } from './undo'
 import { CommandCore } from './core'
 import { sameContent } from './equal'
-import type { Change, Command, GateView } from './core'
+import type { GateView } from './core'
+import type { Change, Command } from './types'
 
 const put = (id: string, after: unknown, baseVersion: number, before: unknown = null): Change =>
   ({ collection: 'inputs', id, op: 'put', before, after, baseVersion })
