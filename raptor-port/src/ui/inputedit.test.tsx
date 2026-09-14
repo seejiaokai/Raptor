@@ -10,7 +10,7 @@ import { act } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
 import { App } from './App'
 import { initStore, setSession, notify, undo, writeInputsBatch } from '../state/store'
-import { INPUTS } from '../engine/inputs'
+import { INPUTS, nowStamp } from '../engine/inputs'
 import { DAYS } from '../engine/data'
 import { acceptInput, acceptedDay, unacceptInput } from '../engine/slots'
 import { inpId } from '../engine/inputs'
@@ -244,7 +244,7 @@ describe('the dialog writes the row it was opened on', () => {
     await click($('#inpEditSave'))
     expect(INPEDIT).toBe(null)
     expect([inp.allday, inp.s, inp.e, inp.remarks]).toEqual([false, 540, 690, 'dentist'])
-    expect(inp.mod).toBe('now')
+    expect(inp.mod).toBe(nowStamp())   // stamped with today's frozen ISO, not the old 'now' sentinel (ARCH-STACK 1b)
     await act(async () => { undo(); notify() })
     expect(INPUTS.find((r: any) => r.remarks === 'dentist')).toBeUndefined()
   })

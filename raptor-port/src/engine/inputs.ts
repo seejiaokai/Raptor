@@ -677,12 +677,22 @@ export function inputWeekStartISO(inp:any){
 /* the running deadline: the last day THIS input may be touched and still
    count as on time, wherever the viewer happens to be */
 export function inputOwnDueISO(inp:any){ return dueOfWeekISO(inputWeekStartISO(inp)); }
-/* 'now' is what the Inputs page writes for anything touched this session, so
-   it resolves to today rather than reading as "no stamp" — an input edited
-   right now is exactly the case the deadline is about. */
+/* TODAY as an ISO 'yyyy-mm-dd' stamp — what every input WRITE path records as
+   `mod`, FROZEN at the moment of the edit (ARCH-STACK 1b). The literal 'now'
+   used to be stored instead and re-resolved to whatever "today" was at read
+   time, so an input filed on time silently grew a LATE tag once the record was
+   read back on a later day (harmless while INPUTS are session-only and reset
+   each reload; a real bug the moment they persist — the DB step). Freezing the
+   stamp at write time makes the mark judge the day the input was actually last
+   touched, wherever and whenever it is later read. */
+export function nowStamp(){ const d=new Date(); return `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`; }
+/* The stamp the late-mark measures. `mod` is now always a frozen ISO date, so
+   this is a plain read; the legacy 'now' branch stays as a defensive fallback
+   for any record minted before the freeze (none persist today — INPUTS are
+   session-only and demo data resets — but the guard costs nothing). */
 export function inputStampISO(inp:any){
   const m=inp&&inp.mod;
-  if(m==='now'){const d=new Date(); return `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`;}
+  if(m==='now')return nowStamp();
   return isISO(m)?String(m):'';
 }
 export function isLateInput(inp:any){

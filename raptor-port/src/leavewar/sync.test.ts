@@ -9,7 +9,7 @@
 // installed, exactly as main.tsx does.
 
 import { beforeEach, describe, expect, it } from 'vitest'
-import { INPUTS } from '../engine/inputs'
+import { INPUTS, nowStamp } from '../engine/inputs'
 import { HIST, initStore as raptorInitStore, writeInputs } from '../state/store'
 import { histApply } from '../state/history'
 import { balanceOf, figureParts, FIGURES } from './engine'
@@ -68,7 +68,7 @@ describe('outbound: Leave War approvals become Raptor inputs', () => {
       person: 'ammo', type: 'LL', date: 'Feb 2', endDate: 'Feb 4',
       // A span's remark names its LAST day, no leave code — the type column
       // already carries LL (owner, 18 Aug 26).
-      allday: true, remarks: 'till 4 Feb', mod: 'now', lw: 'y2026',
+      allday: true, remarks: 'till 4 Feb', mod: nowStamp(), lw: 'y2026',
     })
     // The iid is minted inside the write, so the history snapshot the row
     // first appears in already carries its address.

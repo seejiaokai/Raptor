@@ -12,7 +12,7 @@
    `till` remarks tail, the pins and the flashes. Those belong to a page that
    is a list; the dialog is a single row, opened from a day. */
 import { useEffect, useRef, useState } from 'react'
-import { INPUTS, INPUT_TYPES, TYPE_GROUPS, DATES, inpId, inpMeta, inpType, typeGroup, inputCoversDate, isPersonal, isUnavail, isSansAvail, isUpchit, isDownchit, needsDoc, defaultAllday, dateOrd, dateIx, baseYear, withRemarksTail, oilAsks } from '../engine/inputs'
+import { INPUTS, INPUT_TYPES, TYPE_GROUPS, DATES, inpId, inpMeta, inpType, typeGroup, inputCoversDate, isPersonal, isUnavail, isSansAvail, isUpchit, isDownchit, needsDoc, defaultAllday, dateOrd, dateIx, baseYear, withRemarksTail, oilAsks, nowStamp } from '../engine/inputs'
 import { upchitTrimPlan, upchitEffects, newMedTrimPlan, medClashes, subtractSpans, medStartOrd, medEndOrd, ordLabel } from '../engine/medical'
 import { UpchitConfirm } from './UpchitConfirm'
 import { MedClashConfirm } from './MedClashConfirm'
@@ -77,12 +77,16 @@ export const fmtDay = (iso: any) => {
 }
 /* ISO 'yyyy-mm-dd' → a 'day month year' STAMP with a two-digit year
    ('2026-07-06' → '6 Jul 26'), matching the app's own week voice ('13 Jul 26').
-   'now' (this session's edits) passes through unchanged. This is the one date
-   the owner named — the Inputs page's Last-modified column (owner, 21 Aug 26 —
-   "change the modified date to show day month year"). */
+   Anything stamped TODAY reads "now" — the display kept from when 'now' was
+   stored literally (ARCH-STACK 1b froze the stored stamp to an ISO date, so a
+   this-session edit is today's ISO; the column still says "now" for it, and
+   shows the real date once the record is a day old). The legacy literal 'now'
+   still maps through for any pre-freeze record. This is the one date the owner
+   named — the Inputs page's Last-modified column (owner, 21 Aug 26 — "change the
+   modified date to show day month year"). */
 export const fmtDMY = (iso: any) => {
   const s = String(iso || '')
-  if (!s || s === 'now') return s
+  if (!s || s === 'now' || s === nowStamp()) return s === '' ? s : 'now'
   const [y, m, da] = s.split('-')
   if (!m) return s
   return `${+da} ${MON[+m] || ''} ${String(y).slice(2)}`
@@ -319,7 +323,7 @@ export function applyMedPlan(plan: any[]) {
        days, and the man does not silently read as fit for the rest of a long
        downchit because a two-day one landed in the middle of it. */
     if (p.tail && p.tail.startOrd != null && p.tail.endOrd != null) {
-      const t: any = { ...r, date: ordLabel(p.tail.startOrd, r.yr), mod: 'now' }
+      const t: any = { ...r, date: ordLabel(p.tail.startOrd, r.yr), mod: nowStamp() }
       delete t.iid          // its own address, minted below — never a copy
       delete t.lw           // a plain Raptor row; the war re-lands it inbound
       delete t.acc
@@ -347,7 +351,7 @@ export function applyMedPlan(plan: any[]) {
     if (a != null && p.newEndOrd <= a) delete r.endDate
     else r.endDate = ordLabel(p.newEndOrd, r.yr)
     r.remarks = withRemarksTail(r.remarks, a != null ? ordISO(a) : '', ordISO(p.newEndOrd), 'till')
-    r.mod = 'now'
+    r.mod = nowStamp()
     logAction(null, `Input trimmed — ${cs(r)}, ${r.type}, now ends ${ordLabel(p.newEndOrd, r.yr)}`)
   }
 }
@@ -379,7 +383,7 @@ export function mintMedSegments(base: any, segs: any[], keepTail?: any, entryEnd
   if (medSegmentsProtected(base, segs, keepTail, entryEnd)) { medicalLocked(); return false }
   const cs = PEOPLE[base.person] ? PEOPLE[base.person].cs : base.person
   for (const g of segs) {
-    const t: any = { ...base, date: ordLabel(g.startOrd, base.yr), mod: 'now' }
+    const t: any = { ...base, date: ordLabel(g.startOrd, base.yr), mod: nowStamp() }
     delete t.iid          // its own address, minted below — never a copy
     delete t.lw           // a plain Raptor row; the war re-lands it inbound
     delete t.acc
@@ -753,7 +757,7 @@ export function commitNewInput(draft: any, toGround?: boolean, keepTail?: any, e
     person: draft.person, type: draft.type, allday: !!draft.allday,
     /* yr anchors the bare date labels to the year they were picked under —
        fmt leaves the loaded year implicit, and this is what reads it back */
-    s, e, date, yr: baseYear(), remarks: String(draft.remarks || '').trim(), mod: 'now',
+    s, e, date, yr: baseYear(), remarks: String(draft.remarks || '').trim(), mod: nowStamp(),
     ...(endDate ? { endDate } : {}),
     ...(half ? { half } : {}),
     ...(Object.keys(flags).length ? { sans: flags } : {}),
@@ -950,7 +954,7 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
     }
     if (wasAcc) unacceptInput(wasDi, r)
     r.person = draft.person; r.type = draft.type; r.allday = draft.allday
-    r.s = s; r.e = e; r.date = date; r.remarks = String(draft.remarks || '').trim(); r.mod = 'now'
+    r.s = s; r.e = e; r.date = date; r.remarks = String(draft.remarks || '').trim(); r.mod = nowStamp()
     /* the edit re-derived its labels against the CURRENT loaded year (fmt),
        so the anchor moves with them — an edit is a re-statement of the date */
     r.yr = baseYear()

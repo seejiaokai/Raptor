@@ -4,7 +4,7 @@
    member view-only, and both go through writeInputs so they join the undo
    stack and re-validate the week. */
 import { useEffect, useRef, useState } from 'react'
-import { INPUTS, INPUT_TYPES, TYPE_GROUPS, inpMeta, inputRuleText, inpId, typeGroup, isLateInput, lateNote, isSansAvail, isDownchit, isUpchit, needsDoc, sansLetters, defaultAllday, withRemarksTail, baseYear, dateOrd, oilAsks } from '../engine/inputs'
+import { INPUTS, INPUT_TYPES, TYPE_GROUPS, inpMeta, inputRuleText, inpId, typeGroup, isLateInput, lateNote, isSansAvail, isDownchit, isUpchit, needsDoc, sansLetters, defaultAllday, withRemarksTail, baseYear, dateOrd, oilAsks, nowStamp } from '../engine/inputs'
 import { upchitTrimPlan, upchitEffects, newMedTrimPlan, medClashes, ordLabel } from '../engine/medical'
 import { UpchitConfirm } from './UpchitConfirm'
 import { MedClashConfirm } from './MedClashConfirm'
@@ -103,8 +103,10 @@ export function initialRange(now = new Date()) {
    The minutes run 0–1439, so they are padded to FOUR digits — the shared
    two-digit pad() let '600' (10:00) sort before '65' (01:05), which put a
    mid-morning input above a small-hours one (audit, 12 Aug 26).
-   `mod` is 'now' for anything edited this session and a yyyy-mm-dd stamp
-   otherwise — 'now' IS the most recent, so it sorts above every stamp.
+   `mod` is a yyyy-mm-dd stamp, frozen at the edit (ARCH-STACK 1b). Anything
+   stamped TODAY is the most recent, so it sorts above every older stamp — the
+   same top-of-list position the literal 'now' used to hold (kept as a fallback
+   for any pre-freeze record).
    `?? 0`, not `|| 0` (found seeding the demo SANS records, 14 Aug 26): a
    timed row that genuinely starts AT midnight (an AM-half preset — s:0)
    has a real, meaningful minute value of 0, and `0 || 0` reads the same as
@@ -119,7 +121,7 @@ const SORTKEY: any = {
   end: (r: any) => unfmt(r.endDate || r.date) + pad4(r.allday ? 1439 : (r.e ?? 0)),
   type: (r: any) => String(r.type || '').toLowerCase(),
   remarks: (r: any) => String(r.remarks || '').toLowerCase(),
-  mod: (r: any) => (r.mod === 'now' ? '9999-99-99' : String(r.mod || '')),
+  mod: (r: any) => (r.mod === 'now' || r.mod === nowStamp() ? '9999-99-99' : String(r.mod || '')),
 }
 
 /* How long a just-added row stays lit — harmonized 15 Aug 26 to the board's
@@ -408,7 +410,7 @@ export function InputsPage() {
          medical pick, then the type switched to leave, must not ride onto
          the leave row */
       ...(needsDoc(type) ? docFields(docIds) : {}),
-      type, remarks: rem, mod: 'now',
+      type, remarks: rem, mod: nowStamp(),
     })
     /* the row INPUTS.unshift just made — pin it to the top of the table and
        light it, so the add is visible even from a view that would filter it
