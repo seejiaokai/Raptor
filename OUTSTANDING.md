@@ -188,10 +188,10 @@ Astra says the original Bug 2 may **not** reproduce (EditWeek `ed=false`; SchedB
 `iid` (`[INP-CSID]` done), day notes as `{rid,t}` objects, coordinated storage-format reset;
 plus a history-ordering determinism fix and a cross-week accepted-input edit/delete guard. Both
 providers inspected the built code; all findings fixed. Remaining in step 1: **1B** (`[TRK-CSID]`,
-Tracker ids — split 13 Sep 26: **1B-i COURSE ids DONE + LIVE**; **1B-ii SYLLABUS ids
-BUILT**, awaiting Fable review + gates + "merge live" on `claude/trk-csid-syllabus-ids`)
-and **1C** (`who→personId`,
-parity-sensitive, its own pass). One
+Tracker ids — split 13 Sep 26: **1B-i COURSE ids DONE + LIVE**; **1B-ii SYLLABUS ids DONE + LIVE**
+(14 Sep 26 — incl. a Fable review, then an independent Codex re-review that found RR-01/02/03 +
+owner-requested RR-03b, all fixed and merged via PR #402)) and **1C** (`who→personId`,
+parity-sensitive, its own pass) — **1C is now the next step-1 build.** One
 deferred follow-up (finding 2, orphaned `Other` hard-grade) noted below.
 A whole-app architectural review by BOTH Astra and Fable (read-only) converged on one story:
 the app is **one store-pattern built three times** (Scheduler / Leave War / Tracker), and it
@@ -315,7 +315,12 @@ match the shipped enrolment migration (read-back proves the in-memory whiteboard
 not the backend) — this is `[TRK-DISK]`, owned by `[DB-STEP]` (RC5); no interim
 patch built. Fable-high final review of the built diff before merge.
 
-**1B-ii — SYLLABUS ids — BUILT (13 Sep 26; on `claude/trk-csid-syllabus-ids`, awaiting Fable-high review → gates → owner "merge live"; NOT merged).**
+**1B-ii — SYLLABUS ids — DONE + LIVE (14 Sep 26; PR #400 build → #401 Fable-review fixes → #402 Codex re-review fixes).**
+*(Finished via an independent Codex re-review of the merged Fable fix: it found RR-01 an
+order-dependent layout-conflict brick, RR-02 raw-text layout equality + one-sided empty
+guard, RR-03 a suppressed legacy def resurrected as a visible custom; plus owner-requested
+RR-03b a hidden built-in's edited def vanishing. All fixed with fail-first tests and merged
+in PR #402; gates green, deployed.)*
 Syllabuses now carry stable hidden ids: built-ins get **deterministic shipped ids**
 from a `BUILTIN_SYL` table (`app/sylIds.js` — `sb2024`/`sb2026`/`sbtx2026`/
 `sbagaa2026`), user charts a minted `sc…`; grammar `^s[bc][0-9a-z]+$`. The global
@@ -338,8 +343,8 @@ with Import. Spec + 7-round Astra red-team (APPROVED):
 Tests: `app/sylIds.test.ts` (pure), `app/sylIds.migration.test.ts` (KEEP/RESET
 journal harness), tracker.test.tsx re-baselined (rename/reorder/delete/dup/guardrail),
 smoke fixtures → ids + v3. Inherited `[TRK-DISK]` durability limitation stands.
-- **Remaining:** Fable-high review of the built diff → full gates → push + Vercel →
-  HOLD for owner "merge live".
+- **Done:** merged and live 14 Sep 26 (PR #402). The inherited `[TRK-DISK]` durability
+  limitation still stands (owned by `[DB-STEP]`).
 
 ### [TRK-ATTEMPTS] Keep a student's attempt history — OPEN (small, feature)
 Remember a student's *earlier* tries at an event, not just the latest grade. More a
