@@ -73,13 +73,16 @@ const newId = (list: any[]) => {
   return 'dr' + (n + 1)
 }
 
-/* the next default name: highest existing "Draft N" + 1, so renaming Draft 2
-   to "Wet weather" then duplicating again still mints "Draft 3", and deleting
-   Draft 2 never lets a later mint collide with a surviving Draft 3 */
-const nextNum = (list: any[]) => {
-  let n = 0
-  list.forEach((t: any) => { const m = /^Draft (\d+)$/.exec(String(t.name)); if (m) n = Math.max(n, +m[1]!) })
-  return n + 1
+/* the next default name: LETTERED plans (owner, 15 Sep 26 — "Draft" became
+   "Plan", lettered A/B/C). Mint the LOWEST unused "Plan <letter>", so renaming
+   Plan A to "Wet weather" and duplicating again reuses the freed letter A (no
+   collision — draftRename refuses a name another entry already holds). Past Z
+   it falls back to "Plan 27", "Plan 28"… (C1). */
+const nextName = (list: any[]) => {
+  const used = new Set<number>()
+  list.forEach((t: any) => { const m = /^Plan ([A-Z])$/.exec(String(t.name)); if (m) used.add(m[1]!.charCodeAt(0) - 65) })
+  let i = 0; while (used.has(i)) i++
+  return 'Plan ' + (i < 26 ? String.fromCharCode(65 + i) : String(i + 1))
 }
 
 /* Duplicate the live day into a new draft and switch the working copy to it.
@@ -130,8 +133,8 @@ export function draftDup(di: any) {
        fresh id at the next histPush, so a real add is never read as a survivor —
        which is what let the swap-time adoption gate (and its RID-R4-01 hole) be
        removed entirely. */
-    list.push({ id: newId(list), name: 'Draft 1', d: clone(DAYS[di]) })
-    const t = { id: newId(list), name: 'Draft 2', d: clone(DAYS[di]) }
+    list.push({ id: newId(list), name: nextName(list), d: clone(DAYS[di]) })   // Plan A
+    const t = { id: newId(list), name: nextName(list), d: clone(DAYS[di]) }     // Plan B, selected
     list.push(t)
     SCHED.curDraft[di] = t.id
     return t
@@ -140,7 +143,7 @@ export function draftDup(di: any) {
   /* a later dup: stow live into the entry being left behind and mint a new
      entry as a plain clone of live — both keep live's ids (keep-ids, above) */
   if (cur) cur.d = clone(DAYS[di])
-  const t = { id: newId(list), name: 'Draft ' + nextNum(list), d: clone(DAYS[di]) }
+  const t = { id: newId(list), name: nextName(list), d: clone(DAYS[di]) }
   list.push(t)
   SCHED.curDraft[di] = t.id
   return t
@@ -424,8 +427,14 @@ export function draftRename(di: any, id: any, name: any) {
 /* delete: any entry EXCEPT the selected one — the selected draft IS the live
    day, and deleting the thing being edited from underneath itself is exactly
    the ambiguity this refusal exists to prevent (the caller toasts "Switch to
-   another draft first"). A list holding one entry is legal: deleting the
-   others just leaves the selected plan as the only named one. */
+   another draft first").
+   DELETE DOWN TO ONE CLEARS THE DAY'S PLANS (owner, 15 Sep 26 — B1 option a):
+   once only the selected plan is left, the list no longer holds an ALTERNATIVE,
+   so the "Plan A" label is meaningless — the day is just its live working copy
+   again. Drop SCHED.drafts[di]/curDraft[di] entirely so the selector returns to
+   "Live working copy" (the matrix's no-plans state). The live DAYS[di] IS the
+   surviving plan's content, so nothing is lost; histApply round-trips the empty
+   fields exactly as it round-trips a populated list. */
 export function draftDelete(di: any, id: any) {
   di = +di
   if (protectedWeek()) return false   // read-only quarantine — the draft list rides the frozen blob (P2-REV2-02)
@@ -434,6 +443,10 @@ export function draftDelete(di: any, id: any) {
   const i = list.findIndex((x: any) => x.id === id)
   if (i < 0) return false
   list.splice(i, 1)
+  if (list.length === 1) {
+    if (SCHED.drafts) delete SCHED.drafts[di]
+    if (SCHED.curDraft) delete SCHED.curDraft[di]
+  }
   return true
 }
 

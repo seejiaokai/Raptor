@@ -269,7 +269,21 @@ describe('view-week markup parity with the reference', () => {
        as noSign. The span nests no other <span>, so the lazy `</span>` ends on
        its own close; a no-op on the reference, and the move is pinned positively
        below. */
-    const noDhTpl = (s: string) => s.replace(/<span class="dhtpl">[\s\S]*?<\/span>/, '')
+    /* The .dhtpl span now nests its own <span>s (the plans selector's label/caret
+       and the green version tag — owner, 15 Sep 26), so a lazy `</span>` match
+       would cut too little. Walk span depth from the .dhtpl open to its matching
+       close and lift the whole thing — a balanced version of the same "lift a
+       divergence off both sides" idiom, like noDsec's div walk. A no-op on the
+       reference (no .dhtpl there). */
+    const noDhTpl = (s: string) => {
+      const open = '<span class="dhtpl">'
+      const idx = s.indexOf(open)
+      if (idx < 0) return s
+      const re = /<span\b|<\/span>/g; re.lastIndex = idx + open.length
+      let depth = 1, m: RegExpExecArray | null = null
+      while ((m = re.exec(s))) { if (m[0] === '</span>') { if (--depth === 0) break } else depth++ }
+      return m ? s.slice(0, idx) + s.slice(m.index + '</span>'.length) : s
+    }
     /* The Available-crew strip sits inside noInpGrp's cut on both sides (the
        port's first input group precedes it, the reference's strip is the cut's
        own start), so it is not byte-compared here; the pins below assert the
@@ -573,43 +587,51 @@ describe('version dropdown and preview build', () => {
     g.cur = 'ignite'; g.sked = 'bane'; g.plan = 'stiff'; g.appr = 'pump'
   }
 
-  it('the dropdown appears only when versions exist AND only when asked for', () => {
-    expect(dayHTML(0, true, true)).not.toContain('data-dver')   // no versions yet
+  it('the plans selector renders on edit surfaces; the view page keeps its own picker (owner, 15 Sep 26)', () => {
+    /* the old grouped <select data-dver> is gone from the EDIT surfaces — the ONE
+       white selector (data-planmenu) is there instead, and it ALWAYS renders (it
+       is the "+ Alt Plan" entry). The view page keeps its own data-dver picker. */
+    expect(dayHTML(0, true, true)).toContain('data-planmenu="0"')
+    expect(dayHTML(0, true, true)).not.toContain('data-dver')    // no dver select on the edit surface
+    expect(dayHTML(0, false)).not.toContain('data-planmenu')     // the view page has no .dhtpl selector
     sgn(0); setDayApproved(0, 1)
     const orig = SCHED.orig[0].id            // Phase 2: the Original's immutable verId
     txtSet('dn:0.0', 'LIVE CHANGE'); sgn(0); alIssue(0)
-    expect(dayHTML(0, true, true)).toContain('data-dver="0"')
-    expect(dayHTML(0, false)).not.toContain('data-dver')        // the ViewWeek signature
     setDayPreview(0, orig)
-    expect(dayHTML(0, true, true)).toContain(`value="${orig}" selected`)
+    const h = dayHTML(0, true, true)          // previewing → the selector goes amber "👁 …"
+    expect(h).toContain('planselbtn pv')
+    expect(h).toContain('👁')
     setDayPreview(0, null)
   })
 
-  it('the day head wears ONE chip — the current version, on view and edit alike', () => {
-    /* state from the previous test: day 0 published, AL1 issued */
-    for (const ed of [false, true]) {
-      const h = dayHTML(0, ed)
-      expect((h.match(/class="dal[ "]/g) || []).length).toBe(1)
-      expect(h).toContain('data-alc="1"')
-    }
-    /* a second AL replaces the chip, it does not join it */
+  it('the day head wears ONE version tag on the edit surface — the current issue', () => {
+    /* state from the previous test: day 0 published, AL1 issued. The green tag
+       (verTagHTML) replaced the "✓ Published · ALn" stamp; it is edit-surface only
+       (it rides the .dhtpl), so the view page names the version through its picker. */
+    const h = dayHTML(0, true, true)
+    expect((h.match(/class="verchip/g) || []).length).toBe(1)
+    expect(h).toContain('>AL1<')
+    /* a second AL replaces the tag, it does not join it */
     txtSet('dn:0.1', 'AL2 CHANGE'); sgn(0); alIssue(0)
-    const h2 = dayHTML(0, false)
-    expect((h2.match(/class="dal[ "]/g) || []).length).toBe(1)
+    const h2 = dayHTML(0, true, true)
+    expect((h2.match(/class="verchip/g) || []).length).toBe(1)
     expect(h2).toContain('>AL2<')
     expect(h2).not.toContain('>AL1<')
-    /* Phase 2: rolling a published day back to an earlier version is gone
-       (restoreDayVersion removed; a published version is frozen and the day
-       always shows its newest issue). The day therefore stays at AL2. */
+    /* the "✓ Published" stamp is retired (owner, 15 Sep 26) */
+    expect(h2).not.toContain('✓ Published')
   })
 
-  it('a published day with no ALs still names the issued version in its stamp', () => {
-    /* owner, 16 Aug 26 — "published… what? Original Published makes sense".
-       The version now always rides inside the ✓ Published stamp, ORIG included. */
+  it('a published day with no ALs names ORIG — the green tag on edit, the picker on view', () => {
+    /* owner, 15 Sep 26 — the "✓ Published · ORIG" stamp became the green title
+       tag on the edit surface; the view page names it through its issued picker. */
     sgn(1); setDayApproved(1, 1)
-    const h = dayHTML(1, false)
-    expect(h).toContain('✓ Published')
-    expect(h).toContain('class="dal orig"')   // "· ORIG" now lives inside the stamp
+    const e = dayHTML(1, true, true)
+    expect(e).toContain('class="verchip orig"')
+    expect(e).toContain('>ORIG<')
+    expect(e).not.toContain('✓ Published')
+    const v = dayHTML(1, false)
+    expect(v).toContain('as issued')          // the view picker names the issued version
+    expect(v).not.toContain('✓ Published')
     setDayApproved(1, 0)
   })
 
@@ -662,13 +684,14 @@ describe('version dropdown and preview build', () => {
     expect(wk).not.toContain('✓ Published')
     expect(wk).not.toContain('class="dal')
     /* the SAME VWORK choice must NOT bleed onto another surface's read-only
-       render: on the board's page context (editsched) the working stamp is
-       gone and the AL chip is back — VWORK is a view-page choice, not "any
-       read-only render". */
+       render: on the board's page context (editsched) the working stamp is gone
+       — VWORK is a view-page choice, not "any read-only render". (The AL chip
+       that used to prove this is now the edit-only green title tag, so the proof
+       is simply the absence of the working stamp.) */
     setPage('editsched')
     const board = dayHTML(0, false)
     expect(board).not.toContain('dprev-bar work')
-    expect(board).toContain('class="dal')
+    expect(board).not.toContain('dbeak ro work')   // the working-draft STAMP is a view-page thing
     setPage('viewsched')
     VWORK.delete(0)
     SCHED.drafts = {}; SCHED.curDraft = {}

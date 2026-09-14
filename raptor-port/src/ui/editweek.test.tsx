@@ -57,9 +57,12 @@ afterAll(async () => {
 })
 
 describe('the edit page (tfin)', () => {
-  it('draft banner, and it names no days', () => {
-    expect(/DRAFT/.test($('#eBanner').textContent!)).toBe(true)
-    expect(/no days published/.test($('#eBanner').textContent!)).toBe(true)
+  it('a fully-draft week: no week-status banner text; each day wears a DRAFT tag', () => {
+    /* the DRAFT/PART-PUBLISHED/APPROVED week-status text is retired (owner, 15
+       Sep 26) — the per-day green/DRAFT title tags carry it now. The banner keeps
+       only the amendment (AL) roll, which is empty on a fully-draft week. */
+    expect($('#eBanner').textContent!.trim()).toBe('')
+    expect($$('#eWeek .day:not(.peek) .verchip.draft').length).toBe($$('#eWeek .day:not(.peek)').length)
   })
 
   it('every day carries its own sign-off strip with the four roles', () => {
@@ -110,11 +113,13 @@ describe('the edit page (tfin)', () => {
     await click(dayBtn(0))
     expect(dayApproved(0)).toBe(true)
     expect($(`#eWeek .day[data-day="0"].dok`)).toBeTruthy()
-    /* once published the beak is an INERT stamp (§9 — no reopen), a .dbeak span,
-       not a data-beak button — so read the stamp text, not dayBtn. */
-    expect(/Published/.test($(`#eWeek .day[data-day="0"] .dbeak`)!.textContent!)).toBe(true)
+    /* the "✓ Published" beak stamp is retired (owner, 15 Sep 26): a published
+       day's status is now the green title tag (verchip) naming the issued version
+       — ORIG here, since nothing has been amended. */
+    expect(/ORIG/.test($(`#eWeek .day[data-day="0"] .verchip`)!.textContent!)).toBe(true)
     expect([...$$(`#eWeek .day[data-day="0"] select[data-sign]`)].every((s: any) => s.value === '')).toBe(true)
-    expect(/PART-PUBLISHED/.test($('#eBanner').textContent!)).toBe(true)
+    /* the PART-PUBLISHED week banner is gone — the day's own tag carries it */
+    expect($('#eBanner').textContent).not.toContain('PART-PUBLISHED')
   })
 
   it('an edit on the published day grows a per-day AL button, gated on signing', async () => {
@@ -220,11 +225,12 @@ describe('the edit page (tfin)', () => {
     expect($$('#vWeek [draggable="true"],#vWeek [data-drag]').length).toBe(0)
   })
 
-  /* the version dropdown: publish → edit → preview a version → restore it.
-     Driven through the real surfaces: the day-head <select> via the document
-     change listener, the restore button via routeClick. Restore is a ROLLBACK:
-     the version becomes live at once, the edit is discarded, nothing pends. */
-  it('version dropdown previews a published version and loads onto the working copy', async () => {
+  /* the plans selector: publish → edit → preview a version → load it.
+     Driven through the real surfaces: the day head's selector (data-planmenu)
+     opens the plans menu, its "Issued · read-only" row (data-planpv) previews;
+     the load button via routeClick. Load is a ROLLBACK onto the working copy:
+     the version becomes live, the edit is discarded, nothing pends. */
+  it('the plans selector previews a published version and loads onto the working copy', async () => {
     /* self-contained (Phase 2 — reopen is gone, so the old shared-state dance no
        longer applies): clear any inherited state, then publish Monday's Original. */
     await act(async () => {
@@ -235,14 +241,12 @@ describe('the edit page (tfin)', () => {
     await signDay(0); await click(dayBtn(0))
     const key = '0.0.0.0.p', before = slotVal(key)
     await act(async () => { writeSlot(key, 'casper') })
-    const sel = $(`#eWeek select[data-dver="0"]`) as unknown as HTMLSelectElement
-    expect(sel, 'version dropdown on Monday').toBeTruthy()
-    expect($$(`#eWeek select[data-dver]`).length).toBe(1)   // only the published day
-    await act(async () => {
-      /* the option values are verIds now (`iso#seq`) — pick the Original by label */
-      sel.value = [...sel.options].find(o => o.textContent === 'Original')!.value
-      sel.dispatchEvent(new Event('change', { bubbles: true }))
-    })
+    const selBtn = $(`#eWeek .day[data-day="0"] .dhtpl [data-planmenu]`)
+    expect(selBtn, 'plans selector on Monday').toBeTruthy()
+    await click(selBtn)
+    const origRow = [...document.querySelectorAll('.wavemenu [data-planpv]')].find(b => b.textContent!.includes('Original')) ?? null
+    expect(origRow, 'the Original in the Issued · read-only group').toBeTruthy()
+    await click(origRow)
     const day = () => $(`#eWeek .day[data-day="0"]`)
     expect(day().className).toContain('preview')
     expect(day().querySelectorAll('[data-slot],[data-fill],[draggable="true"],[data-drag]').length).toBe(0)
@@ -286,24 +290,25 @@ describe('the edit page (tfin)', () => {
     })
     await signDay(0)
     await click(dayBtn(0))                     // publish → issued at the Original
-    const chip = () => $(`#eWeek .day[data-day="0"] .dal`)
-    expect(chip(), 'the stamp names Original once published').toBeTruthy()
+    /* the issued version is named by the green title tag (verchip) now, not the
+       retired "✓ Published · ALn" stamp (owner, 15 Sep 26). */
+    const chip = () => $(`#eWeek .day[data-day="0"] .verchip`)
+    expect(chip(), 'the tag names Original once published').toBeTruthy()
     expect(chip()!.textContent).toBe('ORIG')
     expect(chip()!.classList.contains('orig'), 'grey ORIG tag').toBe(true)
     const key = '0.0.0.0.p'
     await act(async () => { writeSlot(key, 'casper') })
     await signDay(0)
     await click($(`#eWeek button[data-alpub="0"]`))         // AL1 goes out
-    expect(chip()!.textContent, 'stamp names AL1 after issue').toBe('AL1')
-    expect($$(`#eWeek .day[data-day="0"] .dal`).length).toBe(1)
+    expect(chip()!.textContent, 'tag names AL1 after issue').toBe('AL1')
+    expect($$(`#eWeek .day[data-day="0"] .verchip`).length).toBe(1)
     /* load the Original onto the working copy — the issued version stays AL1
-       (owner, 16 Aug 26), so the stamp still reads AL1 and the working copy now
+       (owner, 16 Aug 26), so the tag still reads AL1 and the working copy now
        differs from AL1, which shows as pending */
-    const sel = $(`#eWeek select[data-dver="0"]`) as unknown as HTMLSelectElement
-    await act(async () => {
-      sel.value = [...sel.options].find(o => o.textContent === 'Original')!.value
-      sel.dispatchEvent(new Event('change', { bubbles: true }))
-    })
+    const selBtn = $(`#eWeek .day[data-day="0"] .dhtpl [data-planmenu]`)
+    await click(selBtn)
+    const origRow = [...document.querySelectorAll('.wavemenu [data-planpv]')].find(b => b.textContent!.includes('Original')) ?? null
+    await click(origRow)
     await click($(`#eWeek .day[data-day="0"] .dprev-restore`))
     expect(chip()!.textContent, 'issued version unchanged by a load').toBe('AL1')
     expect(Object.keys(SCHED.pending).length, 'the loaded copy reads as pending vs AL1').toBeGreaterThan(0)

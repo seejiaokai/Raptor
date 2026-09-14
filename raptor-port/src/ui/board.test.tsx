@@ -1043,7 +1043,7 @@ describe('board lifecycle', () => {
       setDayApproved(0, 1)
       openScheduler(0); notify()
     })
-    expect($('#schedBoard select.dver')).toBeTruthy()
+    expect($('#schedBoard [data-planmenu]')).toBeTruthy()   // the plans selector (replaced the old select.dver)
     await act(async () => { view.setDayPreview(0, dayCurVer(0)); notify() })
     const board = $('#sbBoard')
     expect(board.querySelector('.pv-frozen')).toBeTruthy()
@@ -2170,15 +2170,16 @@ describe('the board carries the edit week\'s publish controls (owner ask)', () =
     expect(beak.classList.contains('locked')).toBe(false)
   })
 
-  it('publishing flips it to ✓ Published; a pending edit after that shows the pending chip and Publish AL', async () => {
+  it('publishing shows the green ORIG tag; a pending edit after that shows the pending chip and Publish AL', async () => {
     await click($('#sbSignBar [data-beak="0"]'))
     expect(dayApproved(0)).toBe(true)
-    /* §9: once published the beak is an INERT .dbeak stamp (no data-beak — a
-       published day can't be reopened), not a button. */
-    const beak = $('#sbSignBar .dbeak')
-    expect(beak.textContent).toContain('✓ Published')       // now names the issued version too
-    expect(beak.querySelector('.dal.orig'), 'the stamp names the Original').toBeTruthy()
-    expect(beak.classList.contains('ok')).toBe(true)
+    /* §9 + the plans-selector redesign (owner, 15 Sep 26): once published there
+       is no data-beak button and no "✓ Published" stamp — the day's status is the
+       green title tag (verchip) in the sign strip, naming the issued version. */
+    expect($('#sbSignBar [data-beak]'), 'no reopen button on a published day').toBeFalsy()
+    const chip = $('#sbSignBar .verchip')
+    expect(chip.textContent).toContain('ORIG')               // names the Original
+    expect(chip.classList.contains('orig'), 'grey ORIG tag').toBe(true)
     expect($('#sbSignBar [data-alpub="0"]'), 'no pending edits yet — no AL button').toBeFalsy()
 
     /* a pending edit through the ordinary mutation funnel, same "+ Line"

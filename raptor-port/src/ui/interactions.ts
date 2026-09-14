@@ -19,7 +19,7 @@ import { logAction } from '../engine/editlog'
 import { esc } from '../state/view'
 import { setDayPop, setAirKey, setDrawer, setInpEdit, setHistList, closeHistList } from './pops'
 import { reassignInput, rosterOptions, firstPersonalType, firstUnavailType, firstSansType, unfmt } from './inputedit'
-import { openScheduler, toggleSbwarn, boardTab, dayTplMenu, draftsMenu } from './board'
+import { openScheduler, toggleSbwarn, boardTab, dayTplMenu, planMenu } from './board'
 import { hideHistBub, pinHistBubAt, findHistCell } from './histbubble'
 import { pickRosDay } from './pan'
 import { isStandalone, CURWEEK } from '../engine/waves'
@@ -898,16 +898,17 @@ export function routeClick(e: MouseEvent) {
     return
   }
 
-  /* the edit week's "Drafts" button (owner, 15 Aug 26) — same one-menu-two-
-     doors shape as Templates just above: board.ts's draftsMenu is the single
-     builder, and the board's own copy of the button uses a different data
-     attribute (data-draftsadd, via boardMbtn) for the same
-     double-handling reason data-daytplopen/data-daytpladd are split. */
-  const drOpen = t.closest('[data-draftsopen]') as HTMLElement | null
+  /* the PLANS SELECTOR (owner, 15 Sep 26) — the ONE white button on both the
+     week day head and the board sign strip opens board.ts's planMenu. Unlike
+     Templates (week-only, data-daytplopen) this one attribute serves BOTH
+     surfaces: routeClick is document-level, so it catches the selector wherever
+     it renders, and editMode() is true on the edit week AND while the board is
+     open for editing — so no split attribute or second handler is needed. */
+  const drOpen = t.closest('[data-planmenu]') as HTMLElement | null
   if (drOpen) {
     e.stopPropagation()
     if (!canEditSched() || view.CURPAGE !== 'editsched') return
-    draftsMenu(drOpen, +drOpen.dataset.draftsopen!)
+    planMenu(drOpen, +drOpen.dataset.planmenu!)
     return
   }
 

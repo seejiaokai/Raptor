@@ -57,11 +57,11 @@ describe('duplicating a day', () => {
     expect(curDraftId(0)).toBeUndefined()
   })
 
-  it('the first dup stows the live day as Draft 1 AND mints Draft 2, selected', () => {
+  it('the first dup stows the live day as Plan A AND mints Plan B, selected', () => {
     const t = draftDup(0)
     const list = dayDrafts(0)
-    expect(list.map((x: any) => x.name)).toEqual(['Draft 1', 'Draft 2'])
-    expect(t!.name).toBe('Draft 2')
+    expect(list.map((x: any) => x.name)).toEqual(['Plan A', 'Plan B'])
+    expect(t!.name).toBe('Plan B')
     expect(curDraftId(0)).toBe(t!.id)
     /* both blobs are the day as it stood — deep clones, not references */
     expect(list[0].d).not.toBe(DAYS[0])
@@ -76,26 +76,26 @@ describe('duplicating a day', () => {
     expect(JSON.stringify(DAYS[0], ridless)).toBe(JSON.stringify(D0, ridless))
   })
 
-  it('a later dup stows live into the selected entry and mints Draft N', () => {
-    draftDup(0)                                     // Draft 1 + Draft 2 (selected)
-    txtSet('dn:0.0', 'PLAN B NOTE')                 // edit while Draft 2 is live
-    const t = draftDup(0)                           // stow into Draft 2, mint Draft 3
-    expect(t!.name).toBe('Draft 3')
+  it('a later dup stows live into the selected entry and mints the next Plan letter', () => {
+    draftDup(0)                                     // Plan A + Plan B (selected)
+    txtSet('dn:0.0', 'PLAN B NOTE')                 // edit while Plan B is live
+    const t = draftDup(0)                           // stow into Plan B, mint Plan C
+    expect(t!.name).toBe('Plan C')
     expect(curDraftId(0)).toBe(t!.id)
-    const d2 = dayDrafts(0).find((x: any) => x.name === 'Draft 2')
+    const d2 = dayDrafts(0).find((x: any) => x.name === 'Plan B')
     expect(d2.d.notes[0].t).toBe('PLAN B NOTE')       // the stow caught the edit
     expect(t!.d.notes[0].t).toBe('PLAN B NOTE')       // the new draft copies live
   })
 
-  it('default numbering is highest existing Draft N + 1, surviving renames and deletes', () => {
-    draftDup(0)                                     // Draft 1, Draft 2
-    draftDup(0)                                     // Draft 3
+  it('default naming is the LOWEST unused Plan letter — a rename frees its letter (C1)', () => {
+    draftDup(0)                                     // Plan A, Plan B
+    draftDup(0)                                     // Plan C  (list: A, B, C — C live)
     const d1 = dayDrafts(0)[0]
-    draftRename(0, d1.id, 'Wet weather')            // Draft 1 is gone by name
-    const d2 = dayDrafts(0).find((x: any) => x.name === 'Draft 2')
-    draftDelete(0, d2.id)
+    draftRename(0, d1.id, 'Wet weather')            // Plan A's letter A is freed
+    const d2 = dayDrafts(0).find((x: any) => x.name === 'Plan B')
+    draftDelete(0, d2.id)                           // list: Wet, Plan C (length 2 — no clear)
     const t = draftDup(0)
-    expect(t!.name).toBe('Draft 4')                 // 3 is the highest left, not the count
+    expect(t!.name).toBe('Plan A')                  // the freed letter A is reused, not "Plan D"
   })
 
   it('a published day duplicates too, and its pending marks ride along untouched', () => {
@@ -107,7 +107,7 @@ describe('duplicating a day', () => {
     txtSet('dn:0.0', 'AMEND ME')
     expect(SCHED.pending['dn:0.0']).toBe(1)
     const t = draftDup(0)
-    expect(t!.name).toBe('Draft 2')
+    expect(t!.name).toBe('Plan B')
     expect(dayDrafts(0).length).toBe(2)
     expect(SCHED.pending['dn:0.0']).toBe(1)
   })
@@ -479,7 +479,7 @@ describe('rename and delete', () => {
     expect(draftRename(0, d1.id, '  Wet weather  ')).toBe(true)
     expect(d1.name).toBe('Wet weather')
     expect(draftRename(0, d2.id, '   ')).toBe(false)
-    expect(d2.name).toBe('Draft 2')
+    expect(d2.name).toBe('Plan B')
     expect(draftRename(0, d2.id, 'Wet weather')).toBe(false)   // dup in the day
     expect(draftRename(0, d1.id, 'Wet weather')).toBe(true)    // its own name is not a dup
     expect(draftRename(0, d1.id, 'x'.repeat(40))).toBe(true)
@@ -487,25 +487,28 @@ describe('rename and delete', () => {
     expect(draftRename(0, 'nope', 'x')).toBe(false)
   })
 
-  it('delete refuses the selected draft; anything else goes, down to one entry', () => {
-    draftDup(0)
+  it('delete refuses the selected plan; deleting down to one CLEARS the day\'s plans (B1 option a)', () => {
+    draftDup(0)                                     // Plan A, Plan B (B live)
     const [d1, d2] = dayDrafts(0)
     expect(draftDelete(0, d2.id)).toBe(false)       // selected — the live day
     expect(dayDrafts(0).length).toBe(2)
-    expect(draftDelete(0, d1.id)).toBe(true)
-    expect(dayDrafts(0).length).toBe(1)             // a one-entry list is legal
-    expect(curDraftId(0)).toBe(d2.id)
-    expect(draftDelete(0, 'nope')).toBe(false)
+    expect(draftDelete(0, 'nope')).toBe(false)      // unknown id
+    expect(draftDelete(0, d1.id)).toBe(true)        // deletes Plan A, leaving only Plan B
+    /* B1 (owner, 15 Sep 26): once one plan is left there is no ALTERNATIVE, so the
+       day drops back to a plain live working copy — the list and the selection
+       stamp are cleared, and the live day (the surviving plan's content) is kept. */
+    expect(dayDrafts(0)).toEqual([])
+    expect(curDraftId(0)).toBeUndefined()
   })
 })
 
 describe('publish — unchanged, and that is the point', () => {
   it('setDayApproved publishes whatever is live, which is the selected draft', () => {
     draftDup(0)
-    txtSet('dn:0.0', 'THE WET PLAN')                // Draft 2 is live; edit it
+    txtSet('dn:0.0', 'THE WET PLAN')                // Plan B is live; edit it
     sign(0); setDayApproved(0, 1)
     expect(dayApproved(0)).toBe(true)
-    /* the Original froze the SELECTED draft's content, not Draft 1's */
+    /* the Original froze the SELECTED plan's content, not Plan A's */
     expect(SCHED.orig[0].d.notes[0].t).toBe('THE WET PLAN')
     /* and the day's pending marks were spent on the issue as always */
     expect(Object.keys(SCHED.pending).filter(k => k.indexOf(':0.') > 0 || /^dn:0\./.test(k))).toEqual([])
@@ -574,7 +577,7 @@ describe('undo carries the drafts', () => {
     expect(curDraftId(0)).toBeUndefined()
     expect(JSON.stringify(DAYS[0])).toBe(init)
     histApply(1)                                    // redo brings both drafts back
-    expect(dayDrafts(0).map((x: any) => x.name)).toEqual(['Draft 1', 'Draft 2'])
+    expect(dayDrafts(0).map((x: any) => x.name)).toEqual(['Plan A', 'Plan B'])
   })
 })
 

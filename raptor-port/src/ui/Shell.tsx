@@ -8,7 +8,7 @@ import { PEOPLE } from '../engine/people'
 import { CURWEEK } from '../engine/waves'
 import { weekWindow } from './weeknav'
 import { CalIcon, XlsIcon, PdfIcon, HistIcon, HlIcon, SrchIcon } from './icons'
-import { SCHED, approvedDays, alColor, alCount, daysLabel, pendDays, pendCount, verLabel } from '../engine/publish'
+import { SCHED, approvedDays, alColor, alCount, daysLabel, verLabel } from '../engine/publish'
 import { rulesOffCount } from '../engine/rules'
 import { SESSION, ME, setMe, canToggleRole } from '../state/auth'
 import { resetSession, toggleRole, notify, setPage } from '../state/store'
@@ -62,24 +62,28 @@ import { HelpPage } from './HelpPage'
 import { SaveStatus } from './SaveStatus'
 import { bugAlert, unseenReports } from '../state/reports'
 
-/* the week banner — the exact strings renderStatus builds, as a pure value */
+/* the week banner. The WEEK-STATUS TEXT ("PART-PUBLISHED · N of M days",
+   "DRAFT · no days published", "APPROVED …") is RETIRED (owner, 15 Sep 26 —
+   the plans-selector redesign): each day now wears its own green issued-version
+   tag (verTagHTML) / dashed DRAFT tag, so the week-level roll-up of the same
+   thing is the clutter the mockup removes. The amendment ROLL (.sb-als — one
+   chip per issued AL, with its day) is a distinct thing and STAYS; the banner's
+   accent colour still tracks the week's AL level (cls/col) so the roll reads in
+   its version colour. When there are no ALs the banner is empty. */
 function banner() {
   const al = SCHED.al, col = alColor(al)
   const okD = approvedDays(), okN = okD.length, tot = DAYS.length
-  let txt: string, cls: string
-  if (okN === 0 && SCHED.als.length) { txt = `REOPENED · ${SCHED.als.length} amendment${SCHED.als.length > 1 ? 's' : ''} still issued`; cls = 'part' }
-  else if (okN === 0) { txt = 'DRAFT · no days published'; cls = 'draft' }
-  else if (okN < tot) { txt = `PART-PUBLISHED · ${okN} of ${tot} days`; cls = 'part' }
-  else if (al > 0) { txt = `AL${al} PUBLISHED · all ${tot} days published`; cls = 'al' }
-  else { txt = `APPROVED · all ${tot} days published`; cls = 'approved' }
-  const which = okN && okN < tot ? ` · ${daysLabel(okD)}` : ''
-  const pd = pendDays(), np = pendCount()
-  const extra = np ? ` · ${np} unpublished edit${np > 1 ? 's' : ''} on ${daysLabel(pd)}` : ''
+  let cls: string
+  if (okN === 0 && SCHED.als.length) cls = 'part'
+  else if (okN === 0) cls = 'draft'
+  else if (okN < tot) cls = 'part'
+  else if (al > 0) cls = 'al'
+  else cls = 'approved'
   const alRoll = SCHED.als.length
     ? `<span class="sb-als">` + SCHED.als.slice().sort((a: any, b: any) => a.iso === b.iso ? +a.seq - +b.seq : (a.iso < b.iso ? -1 : 1))
       .map((a: any) => `<span class="sb-al" data-alc="${a.seq}" title="${verLabel(a.id)} — ${alCount(a)} item${alCount(a) > 1 ? 's' : ''} on ${daysLabel([a.di])}"><b>${verLabel(a.id)}</b> ${daysLabel([a.di])}</span>`).join('') + `</span>`
     : ''
-  return { col, cls, html: `<span class="sb-badge">${txt}${which}${extra}</span>` + alRoll }
+  return { col, cls, html: alRoll }
 }
 
 /* The HL_CHIPS lists moved to ui/hlchips.tsx (23 Aug 26) — one definition,

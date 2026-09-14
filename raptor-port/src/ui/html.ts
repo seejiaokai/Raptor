@@ -11,7 +11,7 @@ import { slotVal, txtGet, TIME_TXT, whoArr, rowCrew, rowRef } from '../engine/sl
    click that follows it read one test */
 import { WARN, sevOf, chipOf, dashOf, traceOf, traceLeads, traceChip, traceIx, tracesOn, chipText, wlbl, WCODE, SEVWORD, CHIP_LABEL, ordinal } from '../engine/validate'
 import { availByWave, personBusy, dayOff, dayEngaged, personWarns } from '../engine/avail'
-import { SCHED, alAttr, dayApproved, dayCurVer, dayPendCount, dayDelta, dayDiscardCount, alColor, signOf, signMissing, signPeople, SIGN_ROLES, daySigned, nextSeq, dowShort, alCount, daySnapOf, dayVersions, verLabel, protectedWeek } from '../engine/publish'
+import { SCHED, alAttr, dayApproved, dayCurVer, dayPendCount, dayDelta, dayDiscardCount, alColor, signOf, signMissing, signPeople, SIGN_ROLES, daySigned, nextSeq, dowShort, alCount, daySnapOf, verLabel, protectedWeek } from '../engine/publish'
 import { verSeq } from '../engine/verid'
 import { dayDrafts, curDraftId, isDraftVer, draftVerLabel } from '../engine/drafts'
 import { keyDay } from '../engine/keys'
@@ -129,65 +129,52 @@ export function dayIssuedHTML(di:any){
   try{ return withDaySnap(di,ver,(ok:any)=>ok?dayHTML(di,false):dayHTML(di,false)) }
   finally{ PVQ=false }
 }
-/* THE DAY'S VERSION CONTROL, REDESIGNED (owner, 16 Aug 26 — "I feel
-   confused"). The single mixed dropdown jammed two unlike things together —
-   the drafts you are weighing (only one is live, and the live one publishes)
-   and the issued documents (Original, ALn — frozen, never change). It now
-   reads as two things:
-     · a persistent Live-copy button — green "you are here" when you are on
-       the working copy, an active "← Back to live copy" when you have been
-       looking at an old version. It NEVER publishes; it only takes you home.
-     · one dropdown split into two labelled groups — "Your plans" and
-       "Issued · read-only" — so a plan can never be mistaken for a document
-       already sent out.
-   Same data-dver attribute and the same option values ('live' / 'd:<id>' /
-   'orig' / n), so Shell.tsx's one change listener routes it unchanged. Still
-   empty when there is nothing to navigate (the seed week), which is what keeps
-   the byte-parity day head untouched. */
-export function verSelHTML(di:any){
-  const s=dverSelectHTML(di); if(!s)return ''
-  /* the home button — a static green marker on live, an active control while
-     previewing. data-golive routes through routeClick (interactions.ts). */
-  const live=DPREV.has(di)
-    ? `<button class="livebtn back" data-golive="${di}" title="Return to your live working copy">← Back to live copy</button>`
-    : `<span class="livebtn on" title="You’re on your live working copy — this is what publishes"><span class="dot"></span>Live copy</span>`
-  return live+s
-}
-/* THE <select> HALF of the version picker, factored out so the scheduler board
-   can show the SAME picker — bare, without the Live-copy home button — inside
-   its sign-off strip. Moved there from the board's top bar on 26 Aug 26 (owner:
-   arrow drawn from the top-bar dropdown down to the sign-off area, "likewise for
-   desktop"). ONE body so the week's verSelHTML and the board's verSelBoardHTML
-   can never drift on the grouping or the option values, and the same data-dver
-   attribute means Shell.tsx's one change listener routes both with no new wiring
-   — which is why the board's old React <select className="dver"> could simply be
-   retired. `cls` is a caller hook (the board tags its copy `sb-dver` for its own
-   placement). Empty when there is nothing to navigate — same guard as before, so
-   the byte-parity day head is untouched.
-   The day's OTHER drafts join the picker (owner, 15 Aug 26) — only the
-   non-selected ones: the selected draft IS the live day, and a 'd:' entry for it
-   would freeze its stale stowed blob; Live is that draft, by name. */
-function dverSelectHTML(di:any,cls?:any){
-  const vs=dayVersions(di)
-  const others=dayDrafts(di).filter((t:any)=>t.id!==curDraftId(di))
-  if(vs.length<2&&!others.length)return ''
-  const cur=DPREV.has(di)?String(DPREV.get(di)):'live'
+/* THE PLANS SELECTOR (owner, 15 Sep 26 — the day-head redesign, LOCKED spec
+   docs/superpowers/specs/2026-09-15-plans-selector-redteam.md). ONE white
+   button per day whose LABEL is what you are looking at, opening a menu
+   (board.ts's planMenu) that both switches plans and previews issued versions.
+   It REPLACES three older controls at once — the green "Live copy" pill, the
+   "Drafts" button and the grouped <select data-dver> — so the day head reads as
+   one thing, not three. Shared verbatim by the week's day head and the board's
+   sign strip (A5), ONE body so the two surfaces can never drift.
+   The label:
+     · previewing an issued version → amber "👁 AL2" (what you are viewing)
+     · a named plan is live         → the plan's name ("Plan B")
+     · otherwise                    → "Live working copy"
+   It ALWAYS renders (it is also the "+ Alt Plan" entry point), which is why it
+   lives inside the day head's already-excised .dhtpl span — the byte-parity day
+   head is untouched (A6). Long plan names are clamped in CSS with the full name
+   in the tooltip (A8). */
+export function planSelectorHTML(di:any,cls?:any){
+  di=+di
+  const pv=DPREV.has(di)
   const sel=dayDrafts(di).find((t:any)=>t.id===curDraftId(di))
-  const liveOpt=sel?`${esc(sel.name)} · live`:'Live working copy'
-  const plans=`<option value="live"${cur==='live'?' selected':''}>${liveOpt}</option>`
-    +others.map((t:any)=>`<option value="d:${esc(t.id)}"${'d:'+t.id===cur?' selected':''}>${esc(t.name)}</option>`).join('')
-  const issuedVers=vs.filter((v:any)=>v!=='live')
-  const issued=issuedVers.length
-    ? `<optgroup label="Issued · read-only">`
-      +issuedVers.map((v:any)=>`<option value="${v}"${String(v)===cur?' selected':''}>${verLabel(v)}</option>`).join('')
-      +`</optgroup>`
-    : ''
-  return `<select class="dver${cls?' '+cls:''}" data-dver="${di}" title="Switch between your plans, or look back at an issued version">`
-    +`<optgroup label="${others.length?'Your plans':'Working copy'}">${plans}</optgroup>`
-    +issued+`</select>`
+  const label=pv?`👁 ${esc(draftVerLabel(di,DPREV.get(di)))}`
+    :sel?esc(sel.name)
+    :'Live working copy'
+  const title=pv?`Viewing ${draftVerLabel(di,DPREV.get(di))} — tap to switch plan or look at another version`
+    :'Switch between your plans, or look back at an issued version'
+  return `<button class="planselbtn${pv?' pv':''}${cls?' '+cls:''}" data-planmenu="${di}" title="${esc(title)}"><span class="psl">${label}</span><span class="psc">▾</span></button>`
 }
-/* the board's copy — bare select, tagged sb-dver, for the sign-off strip */
-export function verSelBoardHTML(di:any){ return dverSelectHTML(di,'sb-dver') }
+/* THE ISSUED-VERSION TITLE TAG (owner, 15 Sep 26). A green tag beside the day
+   title naming the issued version (ORIG / ALn) once the day is published, a
+   dashed "DRAFT" tag while it is not. It REPLACES the "✓ Published · ALn" pill
+   that used to ride the publish stamp (dayStatHTML) — the day's publish STATUS
+   is now the tag, and the publish ACTIONS (Publish day / Publish AL) stay as
+   buttons. It names the LIVE issued version (dayCurVer), so under a preview it
+   still says what the day IS while the selector says what you are viewing.
+   Edit-surface only: it rides the excised .dhtpl on the week and the board's
+   own sign strip, never the byte-compared view-week day head (the view page
+   keeps its own pickers). */
+export function verTagHTML(di:any){
+  di=+di
+  if(!dayApproved(di)) return `<span class="verchip draft" title="${esc(DAYS[di]?.dow||'')} is still a working draft — not yet published">DRAFT</span>`
+  const cv=dayCurVer(di)
+  if(cv==null) return ''   // published with no snapshot — probe/import state
+  return verSeq(cv)===0
+    ? `<span class="verchip orig" title="${esc(DAYS[di]?.dow||'')} is issued as the Original">ORIG</span>`
+    : `<span class="verchip pub" title="${esc(DAYS[di]?.dow||'')} is issued as ${verLabel(cv)}">${verLabel(cv)}</span>`
+}
 /* THE VIEW-ONLY WEEK'S DRAFT PICKER (owner, 15 Aug 26 — "on view schedule
    mode, you can also view the different drafts"). The view page deliberately
    never grew the version machinery — issued schedules only — and it still
@@ -989,43 +976,39 @@ export function dayStatHTML(di:any,ed:any){
        made on another surface. The bare !ed means "read-only render", which is
        not the same as "the view page". */
     const workView=!ed&&!PV&&ok&&VWORK.has(+di)&&CURPAGE==='viewsched';
-    /* THE PUBLISHED STAMP NAMES THE ISSUED VERSION (owner, 16 Aug 26 — "it's
-       misleading that it shows published… published what? Original Published /
-       AL1 Published"). "✓ Published" alone said the DAY was issued but not WHICH
-       version is the issued one, so it read the same on every view. The version
-       now rides INSIDE the stamp as its coloured tag (ORIG grey, ALn in its AL
-       colour), always — including a never-amended Original — which is what makes
-       "published… what?" answerable. It names the LIVE issued version (cv =
-       dayCurVer), so under an AL/ORIG preview the stamp still says what is issued
-       while the banner names what you are viewing. Replaces the old standalone
-       .dal chip, which is why there is no separate version chip any more. */
-    const cv=dayCurVer(di);
-    const verTag=(ok&&!pvDraft&&!workView&&cv!=null)
-      ? (verSeq(cv)===0
-        ? ` · <span class="dal orig" title="${DAYS[di].dow} is issued as the Original">ORIG</span>`
-        : ` · <span class="dal" data-alc="${verSeq(cv)}" title="${DAYS[di].dow} is issued as ${verLabel(cv)}">${verLabel(cv)}</span>`)
-      : '';
+    /* THE "✓ PUBLISHED · ALn" STAMP IS RETIRED (owner, 15 Sep 26 — the plans
+       selector redesign). The day's publish STATUS is now the green title tag
+       (verTagHTML) beside the day name; the publish ACTIONS (Publish day /
+       Publish AL) stay as the buttons below. So dayStatHTML no longer renders
+       the read-only "✓ Published"/version stamp on a published day — the
+       unpublished VIEW page keeps its plain "Draft" stamp (that IS byte-parity
+       with the reference on the seed week; only the published branch changed). */
     const pendChip=nd?`<span class="dpend" title="${nd} ${ok?'change':'unpublished edit'}${nd>1?'s':''} on this day${ok?' — ahead of the issued schedule until you publish an AL':' — publish the day before publishing an AL'}">${nd}&nbsp;pending</span>`:'';
     const sgOK=daySigned(di);
-    /* THE BEAK (§9, closes BUG-2): on a NEVER-published day it first-approves;
-       on a PUBLISHED day it is INERT — a published version is frozen, there is
-       nothing to un-publish and no reload. Amending is: edit the working draft,
-       then Publish AL# (the alpub button below). So a published day shows a
-       read-only ✓ Published stamp, no data-beak. */
+    /* THE BEAK (§9, closes BUG-2): on a NEVER-published day it first-approves
+       (Publish day). On a PUBLISHED day it renders NOTHING here — a published
+       version is frozen, and its status is the green title tag; amending is edit
+       the working draft, then Publish AL# (the alpub button below). */
     const beak=pvDraft
       ? `<span class="dbeak ro" title="A stored draft — not the issued schedule">Draft</span>`
       : workView
       ? `<span class="dbeak ro work" title="${d.dow} is published, but this is the working draft — not what was issued">Working draft</span>`
       : (ed&&!ok)
       ? `<button class="dbeak ${!sgOK?'locked':''}" data-beak="${di}"${!sgOK?' disabled':''} title="${sgOK?'Publish '+d.dow+' — approve this day only':'Sign off '+signMissing(di).join(', ')+' before publishing '+d.dow}">Publish day</button>`
-      : `<span class="dbeak ro ${ok?'ok':''}" title="${ok?d.dow+' has been published — edit the working draft and publish an AL to amend it':d.dow+' is still draft'}">${ok?'✓ Published'+verTag:'Draft'}</span>`;
+      : ok
+      ? ''   /* published: stamp retired — the green title tag names the issued version (verTagHTML) */
+      : `<span class="dbeak ro " title="${d.dow+' is still draft'}">Draft</span>`;   /* unpublished view — byte-parity with the reference seed week (keep the exact class/space) */
     /* per-day AL publish — lives beside the day's own publish stamp, only on a
        PUBLISHED day that has real changes vs its issued version (dayHasChanges,
        i.e. nd>0 — the canonical delta, NOT the raw pending marks). Locked
        (darkened) until the day's four sign-offs are in. The view page gets no
-       button — status only. Per-day only (P2-08 — never publish-all). */
+       button — status only. Per-day only (P2-08 — never publish-all).
+       HIDDEN UNDER PREVIEW (owner, 15 Sep 26 — A3): while you are looking at an
+       issued version, "Publish AL" would publish the LIVE working copy, not the
+       thing on screen — a foot-gun. The read-only bar's Load / Back are the
+       actions under a preview, so drop the button there. */
     const alN=nextSeq(di);
-    const alpub=(ed&&ok&&nd)
+    const alpub=(ed&&ok&&nd&&!DPREV.has(+di))
       ? `<button class="dbeak dalpub${sgOK?'':' locked'}" data-alpub="${di}"${sgOK?'':' disabled'} title="${sgOK
           ?`Publish AL${alN} — ${nd} change${nd>1?'s':''} on ${d.dow} only`
           :`Sign off ${signMissing(di).join(', ')} before publishing AL${alN}`}">Publish AL${alN}</button>`
@@ -1033,16 +1016,10 @@ export function dayStatHTML(di:any,ed:any){
     /* the ⓘ chip is the ONLY way into the day panel on the view page, and it opens a
        read-only panel — clicking a day in view mode must never lead into editing. */
     const infoChip=`<button class="dinfobtn" data-dayinfo="${di}" title="${d.dow} — approval, AL versions, advisories">i</button>`;
-    /* WHICH DRAFT IS LIVE (owner, 15 Aug 26): once a day has alternate drafts,
-       the edit surfaces say which one the schedule IS — beside the pending
-       chip, in the strip the board's sign-off panel shares, so both surfaces
-       read it off one builder. Edit-side only (`ed`): the view page's own
-       draft select already names the selected one. Empty until drafts exist,
-       which is also what keeps the seed week's byte-parity untouched. Its own
-       .ddraft class, never .dal — the "one version chip" pins count those. */
-    const selDraft=ed?dayDrafts(di).find((t:any)=>t.id===curDraftId(di)):null;
-    const draftChip=selDraft?`<span class="ddraft" title="${d.dow} has ${dayDrafts(di).length} plans — ${esc(selDraft.name)} is the live one, and is what publishes"><span class="k">Publishes</span> ${esc(selDraft.name)}</span>`:'';
-    return `${draftChip}${pendChip}${infoChip}${beak}${alpub}`;
+    /* the "Publishes Plan B" chip is RETIRED (owner, 15 Sep 26): the plans
+       selector's own label already names the live plan, so a second chip saying
+       the same thing is the clutter the redesign removes. */
+    return `${pendChip}${infoChip}${beak}${alpub}`;
 }
 export function dayHTML(di:any,ed:any,vsel?:any){
   /* A QUARANTINED (unreadable / preserved / unsupported) LOADED week is read-only,
@@ -1080,6 +1057,11 @@ export function dayHTML(di:any,ed:any,vsel?:any){
     const armed=restArmed(di,PVV), pend=PV?PVND:dayPendCount(di);
     const pvBar=(PV&&!PVQ)
       ? `<div class="dprev-bar"${(!pvDraft&&verSeq(PVV)!==0)?` style="--alc:${alColor(verSeq(PVV))}"`:''}>`
+        /* ← Back to live copy — the ONLY way home now the green "Live copy" pill
+           is gone (owner, 15 Sep 26 — A2). It lives in this read-only bar on BOTH
+           surfaces; the board already had it (SchedBoard.tsx), so match it here.
+           data-golive routes through routeClick (interactions.ts). */
+        +`<button class="dbeak dprev-back" data-golive="${di}" title="Return to your live working copy">← Back to live copy</button>`
         +(pvDraft
           /* the Switch action is EDIT-SURFACE only. A preview always renders
              with ed=false (it is read-only), so the edit-week signal is `vsel`
@@ -1098,26 +1080,27 @@ export function dayHTML(di:any,ed:any,vsel?:any){
     let h=`<section class="day ${d.today?'today':''} ${ok?'dok':''}${PV?(PVQ?' issued':' preview'):''}" data-day="${di}">
       <div class="day-head">${ed
         ? `<span class="dow crewday" data-crewday="${di}" title="Show this day's crew in the aircrew panel">${d.dow}</span><span class="dt sb-open" data-sbday="${di}" title="Open scheduler board">${d.dt}${d.today?' · Today':''}</span>`
-        : `<span class="dow di-open" data-dayinfo="${di}" title="Day details">${d.dow}</span><span class="dt di-open" data-dayinfo="${di}" title="Day details">${d.dt}${d.today?' · Today':''}</span>`}${ed?`<span class="dhtpl"><button class="dhbtn" data-daytplopen="${di}" title="Save this day, or apply a saved template">Templates</button><button class="dhbtn" data-draftsopen="${di}" title="Duplicate this day into drafts, switch between them, or manage them — the selected draft is what publishes">Drafts</button></span>`:''}
+        : `<span class="dow di-open" data-dayinfo="${di}" title="Day details">${d.dow}</span><span class="dt di-open" data-dayinfo="${di}" title="Day details">${d.dt}${d.today?' · Today':''}</span>`}${(ed||vsel)?`<span class="dhtpl">${verTagHTML(di)}${ed?`<button class="dhbtn" data-daytplopen="${di}" title="Save this day, or apply a saved template">Templates</button>`:''}${planSelectorHTML(di)}</span>`:''}
       <span class="badge" title="Aircraft per wave · standalone lines after the slash">${dayCount(d)}</span>
-      <span class="dstat">${vsel?verSelHTML(di):(ed?'':viewVerSelHTML(di))}${dayStatHTML(di,ed)}</span></div>`
+      <span class="dstat">${ed?'':viewVerSelHTML(di)}${dayStatHTML(di,ed)}</span></div>`
       +pvBar
-      /* TEMPLATES + DRAFTS MOVED UP INTO THE DAY-HEAD (owner, 24 Aug 26 — "move
-         templates and drafts button to between the date and turn pattern … then
-         the sign off buttons can now use the full width of the day"). They ride
-         in a `.dhtpl` span between the date (.dt) and the turn-pattern badge, so
-         the sign-off strip below is left to the four role pills alone and they
-         stretch the day's full width, equally spaced (scheduler.css).
+      /* THE .dhtpl SPAN carries the day's version chrome, between the date (.dt)
+         and the turn-pattern badge: the green title tag (verTagHTML), the
+         Templates button, and the plans selector (planSelectorHTML). The old
+         "Drafts" button folded into the selector's menu; the grouped version
+         <select> and the green "Live copy" pill are gone (owner, 15 Sep 26).
+         Gated on `ed||vsel` rather than `ed`, so the selector is present while
+         you PREVIEW an issued version too (a preview renders read-only, ed=false,
+         and `vsel` is the edit-week signal) — that is where its label reads the
+         amber "👁 AL2" state. Templates stays `ed`-only (you don't apply a
+         template while previewing).
          The day-head is otherwise byte-compared against the reference verbatim,
-         so html.test.ts gains a `noDhTpl` excision — the sanctioned noSign idiom
-         — that lifts the whole `.dhtpl` span off both strings before comparison;
-         the span nests no other <span>, so its lazy `</span>` match ends on its
-         own close. The buttons keep their data-daytplopen/data-draftsopen
-         routeClick doors (one picker each), only relocated; they wear a `.dhbtn`
-         class rather than the `.dbeak` they used to, because the day's publish
-         control is also `.dbeak` and now sits AFTER them — several tests read the
-         day's first `.dbeak` as the publish button (pubsweep), so a distinct
-         class keeps that selector pointing where it always did.
+         so html.test.ts's `noDhTpl` excision lifts the whole `.dhtpl` span off
+         both strings before comparison (A6). The selector and the tag nest their
+         own <span>s now, so that excision is a BALANCED span-depth walk (the
+         seed week is never previewed, so the compare only ever sees ed=true, and
+         the whole span is excised either way). The Templates button keeps its
+         `.dhbtn`/data-daytplopen routeClick door; the selector's is data-planmenu.
          The sign-off block stays exactly as it was minus the two buttons: still
          edit-mode only, still excised wholesale by noSign (signoffHTML nests no
          <div>, so the lazy match runs to this wrapper's own close). */

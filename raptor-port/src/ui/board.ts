@@ -11,14 +11,14 @@ import { WARN, validate, WCODE, wlbl } from '../engine/validate'
 import { hhmm, fmtHM, minus, parseHM } from '../engine/time'
 import { VCONF } from '../engine/rules'
 import { slotVal, txtGet, txtSet, acRef, rollCx, whoArr, unacceptInput, TIME_TXT } from '../engine/slots'
-import { markEdit, markDeletion, deletionWasIssued, markStructuralAdd, alAttr, dayApproved, dayCurVer, dayPendCount, dayHasChanges, verLabel, nextSeq, dropRowMarks, protectedWeek } from '../engine/publish'
+import { markEdit, markDeletion, deletionWasIssued, markStructuralAdd, alAttr, dayApproved, dayCurVer, dayPendCount, dayHasChanges, verLabel, nextSeq, dropRowMarks, protectedWeek, dayVersions, daySigned } from '../engine/publish'
 import { logAction, ELOG } from '../engine/editlog'
 import { hideHistBub } from './histbubble'
 import { touchDragBusy } from './drag'
 import { shiftAircraft, shiftFormation, shiftWave, shiftKeys, keyDay } from '../engine/keys'
 import { applyMove, sortWave, sortDutyBlock, sortSims, sortGround, sortProg, sortDay } from '../engine/reorder'
 import { HIST } from '../state/history'
-import { signoffHTML, cxText, storesView, intimesInner, areaText, atimeText, dayStatHTML, verSelBoardHTML, srcInput, saRoleHTML, availHTML, QUARANTINE_NOTE } from './html'
+import { signoffHTML, cxText, storesView, intimesInner, areaText, atimeText, dayStatHTML, planSelectorHTML, verTagHTML, srcInput, saRoleHTML, availHTML, QUARANTINE_NOTE } from './html'
 import { setInpField } from './inputedit'
 import { STORE_CFG, DUTYTPL_CFG, blockFromTpl, DAYTPL_CFG, applyDayTpl, addDayTpl, dayTplSave, dayTplSummary, secOrder, waveInsertSlot, waveKindOf, moveWave } from '../engine'
 import { dayDrafts, curDraftId, draftDup, draftSelect } from '../engine/drafts'
@@ -83,12 +83,10 @@ export function boardHTML(di: number, pv?: boolean) {
      the WHOLE day belongs at the top of the day's own content, not squeezed
      onto an already-full 30px bar. Withheld on mvRO like every other write
      control on this board. */
-  /* DRAFTS sits beside it (owner ask, 15 Aug 26) — same panel, same reasons:
-     a control that swaps the WHOLE day belongs at the top of the day's own
-     content. Handled by boardMbtn's data-draftsadd branch (the week's copy
-     of this button is data-draftsopen through routeClick — split attributes,
-     same double-handling reason as data-daytpladd/data-daytplopen). */
-  const dayTplHead = mvRO ? '' : `<div class="sb-panel dtpl"><div class="sb-ph">Templates &amp; drafts <span class="sub">save or apply this day's structure · plan alternatives</span><span class="gctl"><button class="mbtn add" data-daytpladd="${di}" title="Save this day, or apply a saved one">Templates</button><button class="mbtn add" data-draftsadd="${di}" title="Duplicate this day into drafts, switch between them, or manage them — the selected draft is what publishes">Drafts</button></span></div></div>`
+  /* The old "Drafts" button that sat here is GONE (owner, 15 Sep 26 — the plans
+     selector redesign): plans are now reached from the ONE selector in the sign
+     strip (planSelectorHTML → planMenu), so this panel is Templates alone. */
+  const dayTplHead = mvRO ? '' : `<div class="sb-panel dtpl"><div class="sb-ph">Templates <span class="sub">save or apply this day's structure</span><span class="gctl"><button class="mbtn add" data-daytpladd="${di}" title="Save this day, or apply a saved one">Templates</button></span></div></div>`
   /* Overall Notes and Common Programme are two separate sections now (owner, 31 Aug
      26 — "split them apart"); each is built and wrapped on its own below (sect). */
   let fly = ''
@@ -319,16 +317,16 @@ export function boardSignHTML(di: number, pv?: boolean) {
      #sbSignBar, right after the sign-off names, so signing and publishing
      read as one block instead of two disconnected panels. */
   const ed = HOOKS.editMode()
-  /* THE VERSION PICKER MOVED HERE FROM THE TOP BAR (owner, 26 Aug 26 — arrow
-     drawn from the "Live working" dropdown down to the sign-off area, phone and
-     desktop alike). It now heads the publish strip, beside the ✓ Published
-     stamp, where "which version am I on" reads next to "which version is
-     issued". String-built (verSelBoardHTML) rather than the old React select in
-     SchedBoard's .sb-actions, so it can live inside this innerHTML sign-off
-     block; it routes through the same data-dver change listener. */
+  /* THE PLANS SELECTOR + TITLE TAG head the publish strip (owner, 15 Sep 26 —
+     the redesign). planSelectorHTML is the SAME builder the week day head uses
+     (A5), so switching plans / previewing versions behaves identically on both
+     surfaces; verTagHTML is the green issued-version tag (dashed DRAFT while
+     unpublished) that replaced the "✓ Published · ALn" stamp. The selector's
+     data-planmenu routes through routeClick (document level), exactly as this
+     strip's data-alpub / data-beak already do. */
   return histLineHTML('histln-top')
     + `<div class="signoff board-sign" id="sbSignBar">${signoffHTML(di, true)}`
-    + `<div class="sb-pub">${verSelBoardHTML(di)}${dayStatHTML(di, ed)}</div></div>`
+    + `<div class="sb-pub">${planSelectorHTML(di)}${verTagHTML(di)}${dayStatHTML(di, ed)}</div></div>`
 }
 
 export function boardWarnHTML(di: number) {
@@ -882,10 +880,6 @@ export function boardMbtn(e: MouseEvent) {
     const di = +ds.daytpladd
     return dayTplMenu(t, di)
   }
-  /* the board's own "Drafts" button, beside Templates — see draftsMenu below */
-  if (ds.draftsadd != null) {
-    return draftsMenu(t, +ds.draftsadd)
-  }
   if (ds.dwdel != null) {
     const [di, wi] = ds.dwdel.split('.').map(Number)
     const issued = deletionWasIssued(di, 'dutyblock', wi)
@@ -1363,6 +1357,7 @@ export function switchDraft(di: any, id: any) {
   if (!t) return false
   if (id === curDraftId(di)) { toast(`"${t.name}" is already the live ${d.dow}`); return false }
   const pub = dayApproved(di), cv = pub ? dayCurVer(di) : null
+  const wasSigned = daySigned(di)   // capture BEFORE the swap — Phase 3 recomputes signature validity on the new content
   if (view.ARM && view.ARM.di === di) view.disarmSlot()   // the swap may remove the armed row
   if (!draftSelect(di, id)) return false
   view.setDayPreview(di, null)
@@ -1375,63 +1370,94 @@ export function switchDraft(di: any, id: any) {
     said += n ? ` · ${n} difference${n > 1 ? 's' : ''} from ${verLabel(cv)} pending`
       : ` · matches ${verLabel(cv)} — nothing pending`
   }
+  /* signatures are bound to content (Phase 3, AM-06): a plan switch changes the
+     day's content, so every signature that was in falls invalid — say so, since
+     the "N to sign" jumps and Publish AL locks until they are re-signed (C3). */
+  if (wasSigned && !daySigned(di)) said += ' · signatures reset'
   logAction(di, said)
   toast(said)
   return true
 }
-/* THE DRAFTS MENU (owner, 15 Aug 26) — the same popMenu idiom as dayTplMenu
-   above, serving BOTH entry points (the board's "Drafts" control and the edit
-   week's day-sign strip, via routeClick's data-draftsopen): one row per draft
-   — tap the name to switch, its own pencil into the manage modal pre-selected
-   on it, the selected one marked — then "Duplicate this day → new draft", then
-   the manage pencil. Duplicating toasts the new name rather than flashing
-   anything blue: there is no single funnel key for a whole-day copy to hang a
-   flash on, the same reasoning dayTplMenu records for applying a template. */
-export function draftsMenu(anchor: HTMLElement, di: any) {
+/* THE PLANS MENU (owner, 15 Sep 26 — the redesign, replacing the old drafts
+   menu). ONE menu, opened by the ONE selector (planSelectorHTML) on BOTH the
+   week day head and the board sign strip (A5), reached through routeClick's
+   data-planmenu. It reads top-to-bottom exactly as the mockup does:
+     · EDITABLE COPIES first — the live working copy / each named plan. Tapping
+       one SWITCHES to it instantly (switchDraft — stow-then-load, one undo
+       step); the live one is marked ● and, while you are previewing, tapping it
+       is "back to live". Each plan carries a ✎ into the rename/delete modal.
+     · ISSUED · READ-ONLY next — one row per issued version (ORIG / ALn). Tapping
+       one PREVIEWS it read-only (setDayPreview) — the edit surfaces never switch
+       to a frozen document, they only look. The row you are previewing is ●.
+     · + ALT PLAN last — draftDup, the "+ Alt Plan" entry the mockup names.
+   A quarantined (unsupported / wrong-week) book is read-only: "+ Alt Plan" is
+   withheld and the plan/preview rows are inert (C2), so a frozen day can't be
+   mutated or navigated into an edit. */
+export function planMenu(anchor: HTMLElement, di: any) {
   if (!canEditSched() || !HOOKS.editMode()) return
   di = +di
   const d = DAYS[di]; if (!d) return
+  const ro = protectedWeek()
   const list = dayDrafts(di), selId = curDraftId(di)
-  /* on a PUBLISHED day the sublabels change register (owner, 15 Aug 26): the
-     selected draft is no longer "what publishes" — the day already went out —
-     it is what the next AL's differences are measured against, and a note
-     says so once for the whole menu rather than per row */
+  const previewing = view.DPREV.has(di), pvVer = previewing ? String(view.DPREV.get(di)) : ''
+  /* on a PUBLISHED day the live row's sublabel changes register (owner, 15 Aug
+     26): it is no longer "what publishes" — the day already went out — it is
+     what the next AL's differences are measured against. */
   const pub = dayApproved(di), cv = pub ? dayCurVer(di) : null
   const liveSub = (pub && cv != null)
     ? `live now — differences from ${esc(verLabel(cv))} go out as AL${nextSeq(di)}`
     : 'live now — this is what publishes'
-  const html = `<h5>Drafts — ${esc(d.dow)}</h5>`
-    + (pub ? `<div class="wm-note">This day is published — the issued ALs don't change. Switching drafts marks the differences as pending.</div>` : '')
-    + (list.length
-      ? `<div class="wm-row" style="flex-direction:column;align-items:stretch">`
-        + list.map((t: any) => `<div style="display:flex;gap:4px;align-items:stretch">`
-          + `<button class="wm${t.id === selId ? ' sa' : ''}" style="flex:1" data-draftsel="${esc(t.id)}">${esc(t.name)}${t.id === selId ? ' ●' : ''}`
-          + `<span class="wm-sub">${t.id === selId ? liveSub : 'tap to make it the live day'}</span></button>`
-          + `<button class="wm-edit" data-draftedit="${esc(t.id)}" title="Rename or delete ${esc(t.name)}">✎</button></div>`).join('')
-        + `</div>`
-      : `<div class="wm-note">No drafts yet — duplicate this day to plan an alternative over it.</div>`)
-    + `<div class="wm-row" style="flex-direction:column;align-items:stretch">`
-    + `<button class="wm" data-draftdup="1">+ Duplicate this day → new draft</button></div>`
-    + `<div class="wm-note"><button class="wm-edit" data-draftmanage="1">✎ Manage drafts</button></div>`
+  /* one editable-copy row: the LIVE one carries data-plangolive (tap = stay /
+     return to live, clearing any preview); the others carry data-plansel (tap =
+     switch). Under quarantine every row is inert. */
+  const editRow = (id: string, name: string, isLive: boolean) => {
+    const mark = isLive && !previewing ? ' ●' : ''
+    const act = ro ? '' : isLive ? ` data-plangolive="${di}"` : ` data-plansel="${esc(id)}"`
+    const sub = isLive ? (previewing ? 'tap to return to your live working copy' : liveSub) : 'tap to make it the live day'
+    return `<div style="display:flex;gap:4px;align-items:stretch">`
+      + `<button class="wm${isLive && !previewing ? ' sa' : ''}" style="flex:1"${act}>${esc(name)}${mark}<span class="wm-sub">${sub}</span></button>`
+      + (id && !ro ? `<button class="wm-edit" data-planedit="${esc(id)}" title="Rename or delete ${esc(name)}">✎</button>` : '')
+      + `</div>`
+  }
+  const copies = list.length
+    ? list.map((t: any) => editRow(t.id, t.name, t.id === selId)).join('')
+    : editRow('', 'Live working copy', true)   // no plans yet — the day IS its live working copy
+  /* the issued documents, if any — preview-only (A4: the edit side never
+     switches to a frozen version, only looks) */
+  const issued = pub ? dayVersions(di).filter((v: any) => v !== 'live') : []
+  const issuedRows = issued.length
+    ? `<div class="wm-hdr">Issued · read-only</div><div class="wm-row" style="flex-direction:column;align-items:stretch">`
+      + issued.map((v: any) => `<button class="wm${pvVer === String(v) ? ' sa' : ''}"${ro ? '' : ` data-planpv="${esc(String(v))}"`}>${esc(verLabel(v))}${pvVer === String(v) ? ' ●' : ''}<span class="wm-sub">read-only — look, don't change</span></button>`).join('')
+      + `</div>`
+    : ''
+  const html = `<h5>Plans — ${esc(d.dow)}</h5>`
+    + (pub ? `<div class="wm-note">This day is published — the issued versions don't change. Switching plans marks the differences as the next AL.</div>` : '')
+    + `<div class="wm-row" style="flex-direction:column;align-items:stretch">${copies}</div>`
+    + issuedRows
+    + (ro ? '' : `<div class="wm-row" style="flex-direction:column;align-items:stretch"><button class="wm" data-plandup="1">+ Alt Plan</button></div>`)
+    + (list.length && !ro ? `<div class="wm-note"><button class="wm-edit" data-planmanage="1">✎ Manage plans</button></div>` : '')
   popMenu(anchor, html, (e, close) => {
-    const pencil = e.target.closest('[data-draftedit]')
-    if (pencil) { close(); setDraftsEdit({ di, id: pencil.dataset.draftedit }); notify(); e.stopPropagation(); return }
-    if (e.target.closest('[data-draftmanage]')) { close(); setDraftsEdit({ di }); notify(); e.stopPropagation(); return }
-    if (e.target.closest('[data-draftdup]')) {
+    const pencil = e.target.closest('[data-planedit]')
+    if (pencil) { close(); setDraftsEdit({ di, id: pencil.dataset.planedit }); notify(); e.stopPropagation(); return }
+    if (e.target.closest('[data-planmanage]')) { close(); setDraftsEdit({ di }); notify(); e.stopPropagation(); return }
+    if (e.target.closest('[data-plangolive]')) { close(); view.setDayPreview(di, null); notify(); e.stopPropagation(); return }
+    if (e.target.closest('[data-plandup]')) {
       close()
       const t = draftDup(di)
       if (t) {
         /* one undo step for the whole duplicate — histSnap carries the blobs */
         afterSchedMutate(); notify()
-        const said = `${d.dow} duplicated — "${t.name}" is now the live day, edit over it`
-        logAction(di, `Draft "${t.name}" created — a copy of the day as it stood`)
+        const said = `${d.dow} — "${t.name}" is now the live day, edit over it`
+        logAction(di, `Plan "${t.name}" created — a copy of the day as it stood`)
         toast(said)
       }
       e.stopPropagation(); return
     }
-    const b = e.target.closest('[data-draftsel]'); if (!b) return
+    const pv = e.target.closest('[data-planpv]')
+    if (pv) { close(); view.setDayPreview(di, pv.dataset.planpv); notify(); e.stopPropagation(); return }
+    const b = e.target.closest('[data-plansel]'); if (!b) return
     close()
-    switchDraft(di, b.dataset.draftsel)
+    switchDraft(di, b.dataset.plansel)
     e.stopPropagation()
   })
 }

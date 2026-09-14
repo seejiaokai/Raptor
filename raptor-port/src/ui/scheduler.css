@@ -872,6 +872,30 @@ body.ros-open .eroster .ros-tab{background:var(--accent);color:var(--accent-ink)
   color:var(--accent-ink);background:var(--accent);border:1px solid var(--accent);
   padding:3px 9px;border-radius:8px;white-space:nowrap}
 .day-head .dhtpl .dhbtn:hover{filter:brightness(1.07)}
+/* THE PLANS SELECTOR (owner, 15 Sep 26) — the ONE white button per day. It reads
+   as a quiet PANEL control, not the accent primary the Templates button is: it is
+   a picker/navigation, not the day's primary action. Amber (.pv) while previewing
+   an issued version, matching the "👁 AL2" label. The label is clamped so a long
+   plan name can't wrap the day head (A8 — MAX_DRAFT_NAME is 24 chars); the full
+   name is in the button's title. Shared by the week head (.dhtpl) and the board
+   sign strip (.sb-pub), one look. */
+.day-head .dhtpl .planselbtn,.sb-pub .planselbtn{font-family:inherit;font-size:10.5px;font-weight:700;letter-spacing:.02em;cursor:pointer;
+  color:var(--ink);background:var(--panel-2);border:1px solid var(--edge-2);
+  padding:3px 8px;border-radius:8px;display:inline-flex;align-items:center;gap:4px;white-space:nowrap;max-width:180px}
+.day-head .dhtpl .planselbtn:hover,.sb-pub .planselbtn:hover{border-color:var(--accent);color:var(--accent)}
+.planselbtn .psl{max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.planselbtn .psc{font-size:8px;color:var(--ink-3)}
+.planselbtn.pv{color:#F2D699;background:rgba(229,194,74,.12);border-color:rgba(229,194,74,.5)}
+.planselbtn.pv:hover{color:#F2D699;border-color:rgba(229,194,74,.85)}
+/* THE GREEN TITLE TAG (owner, 15 Sep 26) — names the issued version beside the
+   day title (ORIG/ALn) once published; a dashed grey DRAFT tag while it is not.
+   It REPLACED the "✓ Published · ALn" stamp. Rides the excised .dhtpl on the week
+   and the board's own sign strip. Green = issued (which version is in the label). */
+.day-head .dhtpl .verchip,.sb-pub .verchip{font-family:'Barlow Condensed','Inter Tight',sans-serif;font-size:10px;font-weight:800;
+  letter-spacing:.06em;padding:1px 6px;border-radius:5px;white-space:nowrap;align-self:center}
+.verchip.pub{color:#0b1f14;background:#57C97A}
+.verchip.orig{color:#08131b;background:var(--ink-3)}
+.verchip.draft{color:var(--ink-3);background:transparent;border:1px dashed var(--edge-2);font-weight:700}
 /* ---- per-day approval strip in the day head -------------------------------
    Approval is per day, so the publish control lives on the day itself rather than
    on the week banner. `.dstat` wraps onto its own line when the head is narrow
@@ -3461,28 +3485,20 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
   .day-head::before{content:'';order:4;flex-basis:100%;height:0}
   /* COMPRESS THE DAY-HEAD CONTROLS ON MOBILE (owner, 26 Aug 26 — "compress
      these buttons to reduce the amount of space used on the mobile"). The two
-     control spans (.dhtpl = Templates/Drafts, .dstat = Live-copy · version
-     picker · info · Published) were each their own wrapping box, so on a
-     published day with drafts the cluster stacked four rows high: Templates/
-     Drafts, then Live-copy + dropdown, then the info dot, then the Published
-     stamp — because .dstat could only wrap inside its own narrow width beside
-     .dhtpl. display:contents dissolves both boxes so all six controls become
-     direct children of the head's flex flow and pack greedily into two rows.
-     Their children inherit order:5 to stay after the title/date row (the
-     full-width ::before break above). The version dropdown is capped so a long
-     draft name can't hog a whole row. Desktop is untouched — one row there. */
+     control spans (.dhtpl = tag · Templates · plans selector; .dstat = pending ·
+     info · Publish) were each their own wrapping box, so the cluster stacked
+     several rows high. display:contents dissolves both boxes so every control
+     becomes a direct child of the head's flex flow and packs greedily into two
+     rows. Their children inherit order:5 to stay after the title/date row (the
+     full-width ::before break above). Desktop is untouched — one row there. */
   .day-head .dhtpl,.day-head .dstat{display:contents}
   .day-head .dhtpl>*,.day-head .dstat>*{order:5}
-  /* the two WIDE controls — the version dropdown and the Published stamp — drop
-     to a trailing row together, so the cluster reads as two tidy rows: the small
-     action chips (Templates · Drafts · Live copy · info) first, then the wide
-     status pair. Left as order:5 they scattered the Published stamp onto a
-     fourth row of its own. */
-  .day-head .dstat .dver,.day-head .dstat .dbeak{order:6}
-  .day-head .dstat .dver{max-width:150px}
+  /* the WIDE controls — the plans selector and the Publish button — drop to a
+     trailing row together, so the cluster reads as two tidy rows: the small
+     status chips (tag · Templates · pending · info) first, then the wide pair. */
+  .day-head .dhtpl .planselbtn,.day-head .dstat .dbeak{order:6}
   .day-head .dhtpl .dhbtn,
-  .day-head .livebtn,
-  .day-head .dstat .dver,
+  .day-head .dhtpl .planselbtn,
   .day-head .dstat .dbeak{padding-top:3px;padding-bottom:3px}
 }
 
@@ -3783,7 +3799,13 @@ body:not(.tdrag) .sb-slot.empty:hover{border-color:var(--accent);color:var(--acc
    the same distance apart everywhere in the app. */
 /* the add-wave menu */
 .wavemenu{position:fixed;z-index:480;background:var(--panel);border:1px solid var(--edge-2);border-radius:12px;
-  box-shadow:0 14px 34px rgba(0,0,0,.6);padding:9px;min-width:250px;max-width:min(94vw,340px)}
+  box-shadow:0 14px 34px rgba(0,0,0,.6);padding:9px;min-width:250px;max-width:min(94vw,340px);
+  /* a tall plans menu (a day at AL9 lists many issued rows) must scroll, not run
+     off the bottom of a phone (owner, 15 Sep 26 — A7). popMenu already clamps the
+     top; this caps the height so the overflow scrolls inside the box. */
+  max-height:calc(100dvh - 24px);overflow-y:auto}
+/* the plans menu's "Issued · read-only" sub-header */
+.wavemenu .wm-hdr{font-size:10px;font-weight:700;color:var(--ink-3);text-transform:uppercase;letter-spacing:.06em;margin:2px 0 5px;padding-top:6px;border-top:1px solid var(--edge)}
 .wavemenu h5{margin:0 0 7px;font-family:'Barlow Condensed','Inter Tight',sans-serif;text-transform:uppercase;
   letter-spacing:.1em;font-size:10px;color:var(--ink-3);font-weight:700}
 .wavemenu .wm-row{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:9px}
