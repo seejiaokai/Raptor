@@ -64,9 +64,18 @@ gates (e2e/smoke) deferred to pre-merge (logic-only change). **Hold for "merge l
   — the signature-content gate blocks a stale-signature publish today, but publish
   does not yet re-run `validate` with a hard/soft split.
 
-**Then Phase 4 (backups/contingency §4).** (Phase 5 migration SKIPPED — owner, 14 Sep:
-demo data is reset, not migrated; the DB step owns migration once. Rev-4 command-layer
-spec §9 flags the same.)
+**Phase 4 (backups/contingency §4) — SIMPLIFIED by owner (14–15 Sep). The elaborate
+activation flow (three-way base→issued→candidate diff, itemised keep/revert screen,
+stale-confirm) is REJECTED.** Owner: bringing out a saved plan is treated EXACTLY like
+manually editing the day into that shape — changed items show as the normal AL marks,
+sign, publish as the next AL; the old version stays frozen in history. This ALREADY works
+(`drafts.ts:draftSelect`→`rebaseDayPending` + publish; Phase 3 re-sets signatures on the
+change), so there is nothing to build for activation. A Phase-4a `planActivationReview` +
+`base`/`baseDg` provenance build was made then reverted (local-only, never pushed). The one
+open item is a cosmetic rename of "Draft 1/2" → "Plan A/B" (owner go/skip pending). See
+`docs/session-state.md` + memory `amendment-plan-activation-is-plain-edit`.
+(Phase 5 migration SKIPPED — owner, 14 Sep: reset demo data, don't migrate; the DB step
+owns migration once. Rev-4 command-layer spec §9 flags the same.)
 **Spec (frozen):** `2026-09-12-amendment-core-build-brief.md` (Rev 5, core scope).
 **Decisions/rationale:** `2026-09-11-amendment-model-decisions.md`.
 **Scope:** the Rev 3-converged core + four must-fixes + durability/undo/crew.

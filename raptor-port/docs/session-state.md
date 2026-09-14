@@ -1,61 +1,58 @@
-# Session handoff — amendment round-3 landed, then a whole-app architecture review reframed the roadmap
+# Session handoff — [AMEND] Phase 3 landed on the branch; Phase 4 simplified by owner
 
-## Where it started
-Continuing `[AMEND]` round 3 on `claude/amendment-engine-core`: two piles of quarantine
-findings to fix. Fixing them surfaced a delete/undo bug FAMILY across the Leave War ↔ inputs
-↔ documents seams; a cross-provider audit + a long owner design discussion turned into a
-whole-app ARCHITECTURAL review that reframed the backlog. Nothing merged; nothing live.
+## Branch (select THIS in the new-chat picker)
+`claude/amendment-engine-core` — in-flight, **NOT merged**, no "merge live" given.
+Origin == local. Base is `main` @ ee78a69 (ARCH-STACK 1A). Do not start from `main`.
 
-## Shipped
-- Nothing merged. Six commits on the branch (`1a6c242..HEAD`), NOT pushed at handoff time
-  (push is part of this handoff). Two are CODE (gate-green), four are docs.
-  - `054d3d7` Pile 2 (Opus, test-first): 5 small quarantine findings — classifier totality,
-    empty-string stash, absolute date labels, notice-layer in shared builders, nav close/open.
-  - `bcb473a` Pile 1 (Codex/Astra build, Opus-inspected): the 4 persistent deep findings —
-    medical cascade LW withdrawal, sync boundary, reconcile/nav global-acc, U1 undo→redo→undo.
-  - Docs: the sync-integrity spec, its Phase-1 red-team revision, the pivot to one global undo,
-    and the architecture root-cause plan.
+## Done this session (committed + pushed)
+- **Phase 3 — signatures bound to content (AM-06). COMPLETE — commit `08243e2`.**
+  A signature now records what it signed — canonical digest (§5.0) + schedule date +
+  current issued base id + candidate (plan/draft) revision — in a new `SCHED.signBind`
+  field. Validity is RECOMPUTED on every read (`signMissing`), never cleared by a hook
+  (Rev-4 command-layer §2.1): an edit invalidates every signature with no cell touched;
+  an undo or in-place revert to the signed content re-validates it (F-09); a plan switch
+  or a newer issued baseline invalidates it; issuing a day/AL clears the binding with the
+  signature. One production sign path (`ui/Shell.tsx` → `setSign`) binds; a legacy/demo
+  signer written straight into `signOf` stays appointment-only-valid (back-compat; demo
+  data is reset, not migrated). `signBind` rides `schedFields()`/`histApply`/`histRestore`
+  and the store stash. `schema.ts` `SignBinding` + `engine/signbind.test.ts` (9 tests).
+  Gates: `npm test` 4657/4657, `node reference/tfin.js` 728/0, `npm run build` clean.
+  **Browser gates (`test:e2e`, `smoke:tracker`) NOT run — logic-only; run before merge.**
 
-## Unfinished
-- **THE ROADMAP CHANGED — read `docs/superpowers/specs/2026-09-13-architecture-rootcause-plan.md`
-  and OUTSTANDING `[ARCH-STACK]` first.** A whole-app architectural review by BOTH providers
-  (Astra + Fable) converged: the app is one store-pattern built three times and knows only THAT
-  something changed, not WHAT. Fix order: (1) stable ids everywhere; (1b) ISO dates + a
-  session-reset registry + the `mod:'now'` late-mark fix; (2) one write/command layer; (3) global
-  per-session undo (inverse-patch, not snapshot); (4) one Absence record (design before the
-  Dataverse tables freeze); (5) record storage door → Dataverse; (6) remove quarantine/legacy.
-- **STOP doing:** interim two-system undo patches and further quarantine rounds — both replaced
-  by the stack (owner ruled: reset demo data, don't migrate). The Phase-1 sync-integrity build
-  was deliberately STOPPED mid-flight and its partial edits are in `git stash@{0}` (discard it;
-  it was the interim two-system undo patch the review said not to build).
-- **Small pre-stack guardrails still worth doing** (low urgency, pre-live), in OUTSTANDING
-  `[SYNC-INTEG]`: P2 medical member-filed only, P4 clutter-only clear-data, P6 Quals ✕ confirm,
-  P7 doc fix (CLAUDE.md's "Leave War session-only" line is stale).
-- Owner's decisions + process principles from this session are captured in the auto-memory
-  (guardrail-over-bug-cascade, dev-phase-reset-demo-data-not-migrate,
-  architectural-root-cause-before-minute-fixes, future-undo-semantics-multiuser,
-  multi-squadron-and-person-transfer, persist-per-task-context) — they load automatically.
+## Phase 4 — SIMPLIFIED by the owner (14–15 Sep). DO NOT rebuild the elaborate flow.
+- **Owner decision:** activating a saved plan is treated EXACTLY like manually editing the
+  day into that shape — the changed items show as the normal AL change-marks, you sign,
+  and it publishes as the next AL. **No itemised keep/revert review screen, no three-way
+  base→issued→candidate comparison, no stale-confirm dialog.** The brief §4 elaborate
+  activation flow is REJECTED (see the memory `amendment-plan-activation-is-plain-edit`).
+- **This already works** in the app today: `drafts.ts:draftSelect` on a published day →
+  `rebaseDayPending` recomputes the diff vs the issued snapshot → publish as the next AL.
+  Phase 3 makes the four signatures re-set on that content change, so it can't go out
+  still looking signed. Nothing to build for the activation itself.
+- A **Phase-4a** increment (`planActivationReview` + `base`/`baseDg` plan provenance +
+  `backups.test.ts`) was built, then **REMOVED** (`git reset --hard 08243e2`, local-only,
+  never pushed) once the owner simplified it away. Don't reintroduce it.
 
-## Branch state
-- Designated branch: `claude/amendment-engine-core`.
-- Its PR is <push at handoff; open/none — see chat>. NOT merged. No "merge live" given.
-- If it has MERGED by the time you read this, reset before new work:
-  `git fetch origin main && git checkout -B claude/amendment-engine-core origin/main`.
+## The ONE open item (owner's pending choice — ASK him first)
+- Saved plans are labelled **"Draft 1 / Draft 2"** in the app; the owner calls them
+  **"Plan A / Plan B"**. He confirmed "Plan A and B … works" but hadn't said go/skip on the
+  rename when we broke for a fresh chat. If **go**: rename to Plan A/B/… (auto-lettered) —
+  touches `drafts.ts` naming (`nextNum`/the "Draft N" mint) + `DraftsModal.tsx` and
+  `board.ts` draftsMenu copy ("Drafts"→"Plans") + update the tests that assert
+  "Draft 1"/"Draft 2" (`drafts.test.ts`, `draftsui.test.tsx`). Small, cosmetic. If **skip**:
+  the plans feature is effectively complete and move on.
 
-## Gates
-- At the last CODE commit (`bcb473a`), run first-hand this session: `npm test` **4641/4641**,
-  `node reference/tfin.js` **728/0**, `npm run build` clean. All commits since are docs-only,
-  so HEAD's code == `bcb473a`.
-- `npm run test:e2e`, `npm run smoke:tracker`, `probes:adapted`, `perf` — NOT run this session
-  (the round-3 changes touch quarantine/sync/undo, not geometry or the Tracker tab). Run before
-  any merge. From `raptor-port/`; a fresh container needs `npm ci` first.
+## After Phase 4 — confirm scope with the owner (don't assume)
+- Amendment brief phases NOT built: Phase 3's two leftovers — (a) availability/currency
+  invalidation needs AM-04 frozen-availability folded into the canonical digest; (b) the
+  publish-entry validation hard-block-vs-acknowledge matrix (§12 item 3) — and Phase 7
+  (crew live-draft badge + crew field projection). Phase 5 (migration) is SKIPPED
+  (reset demo data). Check which of these the owner still wants vs. what ARCH-STACK
+  supersedes: **[AMEND] merging unblocks ARCH-STACK step 2 increment 2** (scheduler
+  adoption of the command layer — branch `claude/arch-stack-2-command-core`, spec
+  `docs/superpowers/specs/2026-09-14-arch-stack-2-command-layer-spec.md` §7).
 
-## Open questions
-- The owner was deciding how to start the stack: (1) I start step 1 (stable ids) now, or
-  (2) start it in a fresh chat. He asked to hand off to a new chat — so option 2.
-
-## Pick up here
-Start `[ARCH-STACK]` **step 1 — stable ids** (cheap, independent, no deps; the foundation the
-rest keys on): give personal inputs a UUID `iid` and make `ground.src`/filing address it,
-`who`→`personId`, note ids, Tracker course/syllabus ids — per the plan doc. Spec → Astra
-red-team → build → gates. Fable is ~18% until Mon 19:00; lead with Astra, save Fable for a crux.
+## Merge / process
+Hold for the owner's explicit "merge live"; run the two browser gates first; don't watch
+the PR. Build on Opus, test-first; a Fable/Codex bug-check on the final diff before merge.
+Owner is non-technical — plain-language reports, no jargon dumps.
