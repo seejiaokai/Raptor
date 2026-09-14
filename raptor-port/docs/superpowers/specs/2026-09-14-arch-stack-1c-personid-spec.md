@@ -358,5 +358,37 @@ test strength and one preview path, not the identity logic:
   described `renameCallsign` as rewriting `who` strings. → reworded to the
   label-only reality.
 
-Re-inspection after these fixes: gates re-run green (728/0, build, full unit);
-a fresh cross-provider pass confirms no regression from the fixes.
+### Re-inspection round (Codex/GPT-6-Astra, 2026-09-14) — dispositions
+
+A fresh Codex inspection of the fixed diff returned REVISE with two findings:
+
+- **PID-F02 (LOW, ACTIONED)** — the peek sim fix I applied for PID-R02 had a
+  regression: for a sim row with a free-text `who` AND overflow crew
+  (`more:['bane']`), it dropped the `who` text; and a text-only row emitted a
+  bare `.itxt` span not wrapped in `lCell`. → `peek.ts` sim block rewritten to
+  mirror `html.ts:1355-1357` exactly: free-text `who` shown as text only when
+  there are no seated crew, overflow crew rendered alongside, wrapped in `lCell`,
+  and `who` never resolved through PEOPLE. Locked by 3 new `peek.test.tsx` tests
+  (text+overflow both shown; text-only; a who equal to a person id stays text).
+
+- **PID-F01 (MEDIUM, ACKNOWLEDGED — inherited limitation, DB-step owned).** A
+  pre-1C tab left open in another window can, after the upgrade tab resets and
+  stamps v2, still write cs-form `who` through `persistAll`/`BrowserBackend.put`
+  (which write unversioned keys with no schema check), and that data then
+  survives into the v2 store. This is **not introduced by 1C** — the 1A reset
+  (`SCHEMA_VERSION=1`) has the identical property, and both providers' FIRST
+  inspections already classified it as the documented **one-tab-per-browser**
+  limitation (`docs/.../leavewar` storage-seam spec; `[TRK-DISK]`). The real fix
+  is server-side, versioned, isolated records at **[DB-STEP]** (RC5), where
+  migration happens once — exactly the plan's §6 rationale for reset-not-migrate.
+  Building a new in-app format-isolation boundary now is out of 1C scope and
+  would be thrown away at the DB step. Logged as a known limitation; residual
+  impact is demo-only and narrow (a stale cs-form row still RENDERS correctly via
+  `whoId`→`nameToId`, losing only the crossing-guarantee for that one record
+  until overwritten). No 1C code change.
+
+**Inspection budget reached** (initial + 2 re-inspections). The core identity
+conversion was found correct by both providers across all rounds; the iterative
+findings were test-strength (fixed) and a self-introduced peek regression
+(fixed + locked by tests). Gates re-run green after every fix (tfin 728/0,
+build, full unit).

@@ -14,6 +14,7 @@ import { DAYS } from '../engine/data'
 import { CURWEEK } from '../engine/waves'
 import { weekBundle } from '../engine/weeks-data'
 import * as view from '../state/view'
+import { peekDayHTML } from './peek'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
@@ -145,5 +146,26 @@ describe('the preview reads the session stash, not just the pure seed', () => {
     await act(async () => { loadWeek('13/07/2026') })   // stashes the edited 20/07 on the way out
     const mon = $('#vWeek section.day.peek[data-peek-day="0"]')!
     expect(mon.textContent).toContain('ZZPEEKTEST')
+  })
+})
+
+/* ARCH-STACK 1C — sim `who` is FREE TEXT in the preview too (Codex PID-F02).
+   The 1C peek fix must show the free-text who AND any overflow crew, and must
+   never resolve a who that happens to equal a person id into a puck. */
+describe('1C — sim who is free text in the peek preview', () => {
+  const simDay = (oft: any[]): any => ({ dt: '13/07/2026', notes: [], waves: [], sims: { amt: [], oft }, dutywaves: [], ground: [], allhands: [] })
+  it('shows the free-text who AND overflow crew together (PID-F02)', () => {
+    const html = peekDayHTML(simDay([{ label: 'X', str: '0900', end: '1000', who: 'EXT SQN', more: ['bane'] }]), 0, false)
+    expect(html).toContain('EXT SQN')          // the free text is not dropped when overflow crew are present
+    expect(html).toContain('Ranger')           // and the overflow crew (bane) renders as its puck
+  })
+  it('renders a text-only who (no crew) as its text', () => {
+    const html = peekDayHTML(simDay([{ label: 'Y', str: '1000', end: '1100', who: 'EXT SQN' }]), 0, false)
+    expect(html).toContain('EXT SQN')
+  })
+  it('does not resolve a who equal to a person id into a puck', () => {
+    const html = peekDayHTML(simDay([{ label: 'Z', str: '1100', end: '1200', who: 'bane' }]), 0, false)
+    expect(html).toContain('bane')             // shown as escaped text
+    expect(html).not.toContain('Ranger')       // never resolved to the callsign puck
   })
 })

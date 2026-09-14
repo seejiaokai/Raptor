@@ -165,14 +165,18 @@ function peekSims(d: any): string {
     let s = `<div class="pl-sub">${title}</div>`
     rows.forEach((r: any) => {
       const pax = Array.isArray(r.pax) ? r.pax : null
-      const seats = pax ? pax : (r.p || r.w) ? [r.p, r.w] : []
-      const crew = [...seats, ...(r.more || [])]
-      /* mirrors html.ts's blk(): a crewed row shows its pax/seats; an uncrewed
-         row shows its free-text `who` ("EXT SQN", "ALL PILOTS") as TEXT. Sim
-         `who` is free text since ARCH-STACK 1C — never a person — so it is
-         rendered directly, not resolved through the person cell (which would
-         turn a value that happened to equal an id into a stray puck). */
-      const ppl = crew.length ? peekCrewCell(crew, '') : (r.who ? `<span class="itxt">${esc(r.who)}</span>` : '')
+      const seatIds = pax ? pax : (r.p || r.w) ? [r.p, r.w] : []
+      const crew = [...seatIds, ...(r.more || [])]
+      /* mirrors html.ts's sim blk() exactly (html.ts:1355-1357): the free-text
+         `who` ("EXT SQN", "ALL PILOTS") shows as TEXT and ONLY when there are no
+         seated crew; overflow crew (more[]) render as pucks alongside it; the
+         whole cell is wrapped in lCell. Sim `who` is free text since ARCH-STACK
+         1C — never a person — so it is rendered directly, never resolved through
+         PEOPLE (which would turn a value equal to an id into a stray puck). */
+      const txt = (!seatIds.length && r.who) ? `<span class="itxt">${esc(r.who)}</span>` : ''
+      const pucks = crew.filter(Boolean).map((id: any) => PEOPLE[id] ? peekSeat(id) : `<span class="itxt">${esc(id)}</span>`).join('')
+      const count = crew.filter(Boolean).length + (txt ? 1 : 0)
+      const ppl = lCell(txt + pucks, null, false, count === 1 ? 'one' : '')
       s += peekRow(r.label, r.str, r.end, ppl, r.rmks, r)
     })
     return s
