@@ -1,9 +1,10 @@
 # [ARCH-STACK] Step 1C — `who → personId` (the last piece of "stable ids")
 
-**Status:** DESIGN (pre-red-team). Parity-sensitive, foundational. Build only
-after a cross-provider red-team of this plan (Claude + Codex), on
-`claude/arch-stack-1c-personid` off `main`, and hold for the owner's explicit
-"merge live".
+**Status:** REVISED after cross-provider red-team (Claude + Codex, both REVISE →
+dispositions in §12); owner confirmed the §6 reset. **Approved to build** on
+`claude/arch-stack-1c-personid` off `main`, test-first on Opus 4.8 high;
+independent cross-provider inspection of the final code; full gates; hold for the
+owner's explicit "merge live". Parity-sensitive, foundational.
 
 **Companion records:** `2026-09-13-architecture-rootcause-plan.md` (the backbone;
 1C is RC3/ARCH-03 "identity is partial"), the 1A/1B specs
@@ -84,14 +85,39 @@ pure label change. No new id space is introduced (see §8 for why not).
   now-inverted comment at `slots.ts:377-381`.
 - `fillSlot` empty-seat checks read `r.who`/`r.id` truthiness only — unaffected.
 
-### 4.2 Read paths — already id-tolerant, no change required
+### 4.2 Read paths → **id-FIRST authoritative** (revised after red-team — BLOCKER)
 
-`slotVal`/`rowCrew` ground+allhands already resolve `nameToId(who)`
-(`slots.ts:80-81,56`), which is id-tolerant (`people.ts:276`). Reading an
-id-form `who` returns the id unchanged. (Optional simplification: ground/allhands
-`slotVal` could return `who` directly once writes are id-form, but keeping
-`nameToId` is harmless and tolerates any residual callsign — **keep it**, it is
-the safety net.)
+**Both reviewers (Claude Finding 1, Codex PID-01) found the original "keep
+`nameToId` as a harmless safety net" plan REOPENS the crossing bug**, because
+`nameToId` resolves **callsign FIRST**, id only as fallback (`people.ts:276`),
+and `addPerson` guards a new callsign only against existing *callsigns*, not
+existing *ids* (`QualsPage.tsx:694`). So after 1C stores `who='bane'`, a
+scheduler who **adds** a new person with callsign "Bane" sets
+`ID_BY_CS['bane']=<new id>`, and `nameToId('bane')` then returns the new person —
+crossing every row that seats Ranger, in issued history included. 1C would
+*widen* the exposure from seed rows to every scheduler-filled row.
+
+Resolution (do both):
+
+1. **Read person-reference fields id-FIRST.** Where a stored `who` is now
+   authoritatively an id, resolve `PEOPLE[who] ? who : nameToId(who)` — the id
+   wins, `nameToId` remains only the residual-callsign fallback. Apply at
+   `slotVal`/`rowCrew` ground+allhands (`slots.ts:56,80-81`) and every render/
+   read consumer of ground/allhands `who`: `html.ts:1150,1380`,
+   `board-html.ts:208,476`, `peek.ts:135,189`, and the `nameToId(g.who)` /
+   `nameToId(nm)` matchers in `avail.ts` and `events.ts` for ground+programme.
+   (A one small shared helper — `whoId(v)=PEOPLE[v]?v:nameToId(v)` — keeps the
+   sites from drifting; this is the §Architecture "one function, never a second
+   literal" rule.)
+2. **Harden `addPerson` with the id-tolerant guard `renameCallsign` already
+   uses.** Refuse a new callsign when `nameToId(cs)` (id-tolerant) resolves to
+   any existing person, not only when `ID_BY_CS[cs]` exists
+   (`QualsPage.tsx:694` → mirror `slots.ts:556-557`). This closes the add
+   back-door; rename is already guarded.
+
+Note: id-first does **not** close a person named identically to genuine free
+text (e.g. adding a callsign "EXT SQN"); that residual is inherent to a field
+that holds both text and person refs and is handled for sims in §4.4.
 
 ### 4.3 `renameCallsign` → label-only
 
@@ -100,14 +126,25 @@ remap. **Delete** the `DAYS.forEach` row-rewrite (`slots.ts:564-570`). Rewrite
 the header comment to state the new invariant (rename moves nothing; rows hold
 ids). This is the 1B `renCourse`/`renSyl` pattern.
 
-### 4.4 Sim `.who` — documented free text, not a person field
+### 4.4 Sim `.who` → **pure free text** (revised after red-team — Codex PID-02)
 
-Sim `who` never renders as a puck (`html.ts:1355` renders it as free text only
-when the row has no seated crew). Its only person use is the availability/event
-resolve via `nameToId` (`avail.ts:36`, `events.ts:406`), which stays id-tolerant.
-`setSlotVal` never writes it. So: it is **out of scope** as a person-storage
-field; dropping it from `renameCallsign`'s walk is correct. Document it as free
-text in `schema.ts`.
+Sim `who` is **displayed** as free text (`html.ts:1355`, `board-html.ts:450` —
+never a puck) but is still **resolved as a person** by `events.ts:406,418`,
+`avail.ts:36,57` and `oil.ts:144` via `nameToId`. That split is a latent
+inconsistency 1C must not inherit: with the seed's `who:'EXT SQN'` (`data.ts:26`),
+adding or renaming a person to callsign "EXT SQN" makes that external-squadron
+row start occupying the person's time — and it survives the storage reset.
+
+Resolution: make sim `who` **pure free text** — remove person-resolution
+(`nameToId(sim.who)`) from `events.ts`, `avail.ts` and `oil.ts`; sim crew is
+**exclusively** `p`/`w`/`pax[]`/`more[]` (all already ids). Drop sim `who` from
+`renameCallsign` entirely. Document it as free text in `schema.ts`.
+
+**Parity-safe:** the seed's only sim `who` is `'EXT SQN'`, which `nameToId`
+resolves to nobody today, so removing the resolution changes no compared byte
+(verify with the gate). **Verify during build** that no existing test/fixture
+relies on a person-valued sim `who`; if one does, narrow to a documented
+boundary rather than silently changing its result.
 
 ### 4.5 Free-text and sentinels — preserved
 
@@ -152,26 +189,35 @@ Why it holds:
 intact; a callsign the owner renames still never needs a dayHTML-side refwin
 edit, because a rename now changes only `cs` (already mirrored by `recs`).
 
-## 6. Storage format — DECISION REQUIRED (owner)
+## 6. Storage format — **Option A (reset), OWNER CONFIRMED 2026-09-14**
 
 Persisted week/day snapshots written by **interactive edits before 1C** may hold
-cs-form `who` on ground/allhands rows. They still render/validate correctly
-(id-tolerant `nameToId`), but they retain the narrow crossing exposure until
-overwritten, because `renameCallsign` no longer rewrites them.
+cs-form `who` on ground/allhands rows. Once `renameCallsign` stops walking rows
+(§4.3), a **loaded** pre-1C week whose `who` is still cs-form would, on a rename,
+**lose the person from the row** (`renameCallsign` deletes the old `ID_BY_CS`
+entry, so the stale callsign resolves to nobody) — a *visible* regression, not
+just a latent crossing (Claude Finding 3). So the storage question is part of
+1C's correctness and **must land in the same PR**.
 
-- **Option A — coordinated storage reset (recommended).** Bump the persist
-  format version; on boot from an older version, reset persisted weeks/books to
-  seed. Matches 1A's coordinated reset and the standing rule
-  `dev-phase-reset-demo-data-not-migrate`. Cheapest, lowest-risk, delivers the
-  guarantee immediately. **Cost: wipes the owner's current demo edits/weeks.**
-- **Option B — non-destructive normalize pass.** A one-time, version-gated walk
-  (shape of `backfillSnapshotIds`, `rowids.ts:325`) over persisted DAYS +
-  snapshots: `who = nameToId(who) || who` (cs→id where resolvable; free text
-  left as-is). Keeps edits. Costs more code + its own tests + a parity-safe
-  guarantee it never touches free text/sentinels.
+**Chosen: Option A — coordinated storage reset** (owner: "reset to the sample
+week" is fine; current on-screen edits cleared). Matches 1A's coordinated reset
+and the standing rule `dev-phase-reset-demo-data-not-migrate`. Delivers the
+guarantee immediately and needs no fragile historical-ownership recovery.
 
-Recommendation: **A**, per the standing reset rule and to keep a foundational
-step small — but this wipes current on-screen work, so it is the owner's call.
+**Option B (non-destructive normalize) — REJECTED by red-team.** Codex PID-03:
+a callsign renamed-then-reused before the upgrade cannot be recovered from the
+current callsign index (`nameToId('Ace')` is undefined for a stale snapshot, so
+the pass either preserves a crossable string or writes the *wrong* current id).
+Codex PID-04: the suggested `backfillSnapshotIds`-shaped traversal walks
+`al.snap[day].d` but current ALs store `al.snap.d` directly (`publish.ts:210`),
+so it would skip issued AL days — and `loadVersionToWorkingCopy` copies those
+back into DAYS (`drafts.ts:454-458`). Not worth the risk; reset is clean.
+
+**Build note (Claude Finding 3):** the persist whiteboard writes bare
+`(collection,id)` with no format-version field, so the reset gate must be built
+— follow exactly how **1A** did its coordinated storage-format reset (find its
+version stamp + boot reset path; mirror it). Confirm the mechanism first-hand
+before coding; do not invent a second reset idiom.
 
 ## 7. Cross-module ripple — none of substance
 
@@ -216,7 +262,20 @@ behaviour tests as the first harness increment"):
 5. **Parity**: full `tfin.js` (728/0), `html.test.ts`, `parity.test.ts`
    unchanged.
 6. Update `renameCallsign`'s existing tests to the label-only contract.
-7. Storage: a test for the chosen §6 option (reset gate, or the normalize pass).
+7. **Update the assertions that pin the callsign form** (Claude Finding 2 — these
+   go red the moment `who` stores an id): `accept.test.ts:82` (`'Zenith'`→`'vinci'`),
+   `accept.test.ts:117` (`'Talisman'`→`'haowen'`), `audit-c-gaps.test.ts:235`
+   (`'Vandal'`→`'split'`), `audit-c-gaps.test.ts:243` (`'Fable'`→`'plasma'`),
+   `audit-e-commit-relink.test.tsx:123` (`PEOPLE.stiff.cs`→`'stiff'`). Rewrite to
+   the id contract, not deleted.
+8. **New: add-back-door test** (PID-01) — add a person whose callsign equals an
+   existing person's id ("Bane" vs id `bane`); assert `addPerson` refuses it, and
+   that a seated row still resolves to the original person.
+9. **New: sim `who` free-text test** (PID-02) — a person renamed/added to a sim
+   `who` free-text value ("EXT SQN") does NOT get that sim's time in
+   avail/events/oil.
+10. Storage: a test for the §6 reset gate (older-format book resets to seed;
+    modern book untouched).
 
 ## 10. Gates & process
 
@@ -232,6 +291,40 @@ crux); **hold for "merge live"**.
 |---|---|---|
 | Parity byte-drift | Low | §5 — writes not on the parity path; render already resolves id→cs; refwin untouched. Gate proves it. |
 | A render path prints raw `who` instead of resolving | Low | Audited: ground/allhands resolve `nameToId`; sim `who` is deliberate free text. |
-| Residual cs-form `who` in old snapshots crosses after rename | Medium (demo only) | §6 decision (reset or normalize). |
+| Crossing reopened via `addPerson` (callsign = an existing id) | **was unhandled** | §4.2 — id-first reads + id-tolerant add guard (BLOCKER, both providers). |
+| Sim `who` free-text value captured by a same-named person | Medium | §4.4 — sim `who` becomes pure free text; resolution removed. |
+| Pre-1C loaded week loses person from row on rename | High if unhandled | §6 — Option A reset in the same PR. |
 | Added-person id collision (same-ms adds) | Very low | §4.6 `newId('p')`. |
-| A test asserts the old renameCallsign row-rewrite | Certain | §9.6 update tests to label-only. |
+| Callsign-form assertions in existing tests go red | Certain | §9.7 — update the 5 listed assertions to the id contract. |
+
+## 12. Red-team dispositions (Claude + Codex/GPT-6-Astra high, 2026-09-14)
+
+Both providers independently returned **REVISE**; backbone SOUND. They
+**converged on the same blocker**. Dispositions:
+
+- **PID-01 / Claude Finding 1 (HIGH, ACCEPTED)** — crossing reopened via
+  `addPerson` + cs-first `nameToId`. → §4.2 (id-first authoritative reads +
+  id-tolerant `addPerson` guard). This is the fix that makes 1C actually deliver
+  its guarantee.
+- **PID-02 (MEDIUM, ACCEPTED)** — sim `who` displayed as text but resolved as a
+  person. → §4.4 (sim `who` becomes pure free text; resolution removed from
+  avail/events/oil). Verify parity + no person-valued sim fixture.
+- **Claude Finding 3 (MED, ACCEPTED)** — dropping the DAYS-walk regresses a
+  pre-1C loaded week on rename; §6 not optional. → §6 Option A in the same PR;
+  build the reset gate off 1A's mechanism.
+- **PID-03 / PID-04 (ACCEPTED as rejection of Option B)** — non-destructive
+  normalize is unsafe (historical ownership unrecoverable; wrong traversal). →
+  §6 Option A (reset) chosen; Option B dropped.
+- **Claude Finding 2 (ACCEPTED)** — 5 callsign-form test assertions break. →
+  §9.7 lists them for rewrite.
+- **Verified-correct (both), no change:** parity architecture (§5) holds three
+  ways; `renameCallsign` label-only is safe for id-form; `acceptInput`/
+  `reconcile`/`unaccept` are `src`-keyed not `who`-keyed; `restore.ts` folds
+  cs/id to one fingerprint (no phantom amendments); all render/export/board/peek/
+  drag consumers resolve correctly; write-site enumeration complete;
+  `newId('p')` is clean.
+
+**Next:** build on Opus 4.8 high, test-first; then independent cross-provider
+inspection of the FINAL DIFF (Codex lead, Fable for any crux); full gates; hold
+for "merge live". A second plan-review round is not run — the agreed fixes are
+concrete and the final-code inspection is the backstop.
