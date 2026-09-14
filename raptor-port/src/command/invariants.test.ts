@@ -74,7 +74,7 @@ describe('invariant harness (SEQ-001) — structural HARD invariants hold under 
       if (cur && !cur.deleted && sameContent(cur.value, want)) return []
       return [{ collection: 'leavewar', id: 'p1/d1', op: 'put', before: cur && !cur.deleted ? cur.value : null, after: want, baseVersion: v.currentVersion('leavewar', 'p1/d1') }]
     }
-    core.registerHook(mirror)
+    core.registerHook(mirror, ['leavewar'])
     const rand = rng(42)
     for (let step = 0; step < 200; step++) {
       const snap = core.read('inputs', 'i1')
@@ -105,7 +105,9 @@ describe('invariant harness (SEQ-001) — structural HARD invariants hold under 
     core.commit(cmd([{ collection: 'inputs', id: 'a', op: 'put', before: { v: 1 }, after: { v: 2 }, baseVersion: 1 }]))
     // undo the second command
     const entry = core.stream().at(-1)!
-    const r = core.commit(cmd(inverseChanges(entry.causalChanges, core)))
+    const inv = inverseChanges(entry.causalChanges, core)
+    expect('changes' in inv).toBe(true)
+    const r = 'changes' in inv ? core.commit(cmd(inv.changes)) : { ok: false as const }
     expect(r.ok).toBe(true)
     expect(core.read('inputs', 'a')!.value).toEqual(beforeSecond) // value restored
     expect(core.currentVersion('inputs', 'a')).toBe(3)            // via a fresh version, not a rewind

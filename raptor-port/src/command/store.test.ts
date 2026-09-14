@@ -67,11 +67,22 @@ describe('RecordStore — versioned in-memory substrate', () => {
     expect(s.snapshot('people', 'x')!.value).toBe('B')
   })
 
-  it('snapshot returns a copy, not the live record (no external mutation)', () => {
+  it('snapshot returns a deep copy — mutating value or wrapper does not touch the store (F3)', () => {
     const s = new RecordStore()
-    s.apply(put('inputs', 'i1', { a: 1 }, 0))
+    s.apply(put('inputs', 'i1', { a: 1, nested: { b: 2 } }, 0))
     const snap = s.snapshot('inputs', 'i1')!
     snap.version = 999
+    ;(snap.value as { a: number; nested: { b: number } }).a = 888
+    ;(snap.value as { a: number; nested: { b: number } }).nested.b = 777
     expect(s.currentVersion('inputs', 'i1')).toBe(1)
+    expect(s.snapshot('inputs', 'i1')!.value).toEqual({ a: 1, nested: { b: 2 } })
+  })
+
+  it('stores a clone of the submitted value — later mutation of the caller object is inert (F3)', () => {
+    const s = new RecordStore()
+    const live = { a: 1 }
+    s.apply(put('inputs', 'i1', live, 0))
+    live.a = 999 // the caller keeps editing its object in place
+    expect(s.snapshot('inputs', 'i1')!.value).toEqual({ a: 1 })
   })
 })

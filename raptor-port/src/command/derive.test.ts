@@ -25,7 +25,7 @@ const mirrorHook = (view: GateView): Change[] => {
 describe('derivation hooks — inside the causal transaction (spec §2.4 step 2)', () => {
   it('a hook adds a derived change that commits atomically with the causal one', () => {
     const core = new CommandCore()
-    core.registerHook(mirrorHook)
+    core.registerHook(mirrorHook, ['leavewar'])
     const r = core.commit(cmd([put('inputs', 'i1', { person: 'ALPHA' }, 0)]))
     expect(r.ok).toBe(true)
     expect(core.read('inputs', 'i1')!.value).toEqual({ person: 'ALPHA' })
@@ -36,7 +36,7 @@ describe('derivation hooks — inside the causal transaction (spec §2.4 step 2)
 
   it('a well-behaved projection reaches a fixed point (second dry-run pass is empty)', () => {
     const core = new CommandCore()
-    core.registerHook(mirrorHook)
+    core.registerHook(mirrorHook, ['leavewar'])
     expect(core.commit(cmd([put('inputs', 'i1', { person: 'A' }, 0)])).ok).toBe(true)
     // re-committing an unrelated record still converges (mirror is a no-op the 2nd time)
     const r = core.commit(cmd([put('inputs', 'i2', { person: 'B' }, 0)]))
@@ -49,7 +49,7 @@ describe('derivation hooks — inside the causal transaction (spec §2.4 step 2)
     core.registerHook((view) => {
       // always wants a NEW value → the dry-run pass is never empty
       return [{ collection: 'derived', id: 'x', op: 'put', before: null, after: ++k, baseVersion: view.currentVersion('derived', 'x') }]
-    })
+    }, ['derived'])
     const r = core.commit(cmd([put('inputs', 'i1', 1, 0)]))
     expect(r.ok).toBe(false)
     if (!r.ok) expect(r.reason).toBe('derivation')
@@ -58,7 +58,7 @@ describe('derivation hooks — inside the causal transaction (spec §2.4 step 2)
 
   it('a hook that must refuse (throws) fails the whole command atomically', () => {
     const core = new CommandCore()
-    core.registerHook(() => { throw new Error('input lands on a quarantined week') })
+    core.registerHook(() => { throw new Error('input lands on a quarantined week') }, ['leavewar'])
     const r = core.commit(cmd([put('inputs', 'i1', 1, 0)]))
     expect(r.ok).toBe(false)
     if (!r.ok) { expect(r.reason).toBe('derivation'); expect(r.message).toContain('quarantined') }
@@ -68,7 +68,7 @@ describe('derivation hooks — inside the causal transaction (spec §2.4 step 2)
   it('a derived change is still subject to the frozen boundary', () => {
     const core = new CommandCore()
     core.registerFrozen((c) => c === 'leavewar')
-    core.registerHook(mirrorHook)
+    core.registerHook(mirrorHook, ['leavewar'])
     const r = core.commit(cmd([put('inputs', 'i1', { person: 'A' }, 0)]))
     expect(r.ok).toBe(false)
     if (!r.ok) expect(r.reason).toBe('frozen')
@@ -77,7 +77,7 @@ describe('derivation hooks — inside the causal transaction (spec §2.4 step 2)
 
   it('a hook may not change a record the command already targets (one change per record)', () => {
     const core = new CommandCore()
-    core.registerHook((view) => [put('inputs', 'i1', { person: 'HIJACK' }, view.currentVersion('inputs', 'i1'))])
+    core.registerHook((view) => [put('inputs', 'i1', { person: 'HIJACK' }, view.currentVersion('inputs', 'i1'))], ['inputs'])
     const r = core.commit(cmd([put('inputs', 'i1', { person: 'A' }, 0)]))
     expect(r.ok).toBe(false)
     if (!r.ok) expect(r.reason).toBe('derivation')

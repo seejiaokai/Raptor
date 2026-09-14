@@ -45,12 +45,53 @@ describe('versioned storage contract (SEQ-003) — proven against a fault-inject
     expect((await be.get('inputs', 'i1'))!.value).toBe('other')
   })
 
-  it('subscribers are notified of committed writes', async () => {
+  it('subscribers are notified of committed writes (incl. competing remote writes)', async () => {
     const be = new TestDouble()
     const seen: string[] = []
     be.subscribe((c, id) => seen.push(`${c}/${id}`))
     await be.put('people', 'p1', 'x', { ifVersion: 0 })
     await be.delete('people', 'p1', { ifVersion: 1 })
-    expect(seen).toEqual(['people/p1', 'people/p1'])
+    be.injectCompetingWrite('people', 'p2', 'remote') // a real remote write notifies too
+    expect(seen).toEqual(['people/p1', 'people/p1', 'people/p2'])
+  })
+
+  it('delay/reorder fault: two concurrent writes with the same ifVersion race — exactly one wins (F10)', async () => {
+    const be = new TestDouble()
+    await be.put('inputs', 'i1', 'v1', { ifVersion: 0 }) // v1
+    be.injectDelay(5)
+    const results = await Promise.allSettled([
+      be.put('inputs', 'i1', 'A', { ifVersion: 1 }),
+      be.put('inputs', 'i1', 'B', { ifVersion: 1 }),
+    ])
+    const ok = results.filter(r => r.status === 'fulfilled')
+    const bad = results.filter(r => r.status === 'rejected')
+    expect(ok).toHaveLength(1)
+    expect(bad).toHaveLength(1)
+    expect((bad[0] as PromiseRejectedResult).reason).toBeInstanceOf(ConflictError)
+  })
+
+  it('partial-write fault: a multi-record batch that fails midway leaves earlier writes durable (F10)', async () => {
+    const be = new TestDouble()
+    await expect(be.writeBatch([
+      { op: 'put', collection: 'inputs', id: 'i1', value: 'v1', ifVersion: 0 },
+      { op: 'put', collection: 'weeks', id: 'w1', value: 'W', ifVersion: 0 },
+    ], { failAtIndex: 1 })).rejects.toThrow(/partial write/)
+    // i1 landed, w1 did not — the caller must recover the whole envelope (step-5 journal)
+    expect((await be.get('inputs', 'i1'))!.value).toBe('v1')
+    expect(await be.get('weeks', 'w1')).toBeNull()
+  })
+
+  it('a dropped ack is bound to its own write, not consumed by a subscriber-triggered write (INC1-006)', async () => {
+    const be = new TestDouble()
+    be.injectDropAck(1)
+    let fired = false
+    be.subscribe(() => {
+      if (fired) return
+      fired = true
+      void be.put('inputs', 'B', 'b', { ifVersion: 0 }) // a write started from within A's notification
+    })
+    await expect(be.put('inputs', 'A', 'a', { ifVersion: 0 })).rejects.toThrow(/ack/i) // A's ack dropped
+    expect((await be.get('inputs', 'A'))!.value).toBe('a') // A durable
+    expect((await be.get('inputs', 'B'))!.value).toBe('b') // B unaffected by A's fault
   })
 })
