@@ -184,6 +184,25 @@ Astra says the original Bug 2 may **not** reproduce (EditWeek `ed=false`; SchedB
 - **Model:** Fable, high — short, focused verification.
 
 ### [ARCH-STACK] The architectural root-cause stack — the backbone (both providers, 13 Sep 26)
+**STEP 2 (RC4 — the ONE write/command layer) — DESIGN DONE + INCREMENT 1 BUILT (14 Sep 26; branch
+`claude/arch-stack-2-command-core`; NOT merged, holding for "merge live").** Design hardened over three
+cross-provider red-team rounds (Claude self-critique + Fable + independent Codex → REVISE → REVISE →
+NARROWED by owner) and **narrowed**: build the pure in-memory command core + prove the transaction/conflict
+contract against a storage test-double; **defer real durable multi-key/two-tab-safe saving to step 5** (the
+record-oriented door, built for it) — this removed a recurring finding cluster. **Increment 1 (the
+module-agnostic core) is BUILT test-first, zero production wiring:** versioned RecordStore; the `commit`
+gate (per-collection authorization policy + derivation hooks with a FIXED-POINT proof + frozen-record
+boundary + optimistic-concurrency conflict rejection + atomic apply + the ONE change stream + post-commit
+notify queue); the undo seam (inverse table, derived-recompute-not-invert; RC4-306 fresh-version rule); the
+versioned storage contract + fault-injecting test-double (SEQ-003); the invariant harness + property tests
+(SEQ-001, incl. cross-consumer consistency). Gates so far: **vitest 4771/4771, `npm run build` clean**
+(tfin/e2e/smoke to run before any PR). Fixes RC1 (an LW undo creating a phantom scheduler undo step) BY
+DESIGN (sync writes are `system`-origin, never undo entries). Spec + review log:
+`raptor-port/docs/superpowers/specs/2026-09-14-arch-stack-2-command-layer-spec.md` (Rev 4) + `…-review-log.md`.
+**NEXT: increment 2 — wire the SCHEDULER through `commit` — GATED on [AMEND] Phases 2–5 merging first**
+(they rewrite the `publish.ts` paths inc.2 re-plumbs); then 2b Leave War, 2c Tracker. Owner sub-decision
+parked: DECISION 4 (Tracker ✓ Save-changes shape) at 2c.
+
 **STEP 1A DONE + LIVE (13 Sep 26, PR #396):** stable ids on the scheduler side — input filing by
 `iid` (`[INP-CSID]` done), day notes as `{rid,t}` objects, coordinated storage-format reset;
 plus a history-ordering determinism fix and a cross-week accepted-input edit/delete guard. Both
