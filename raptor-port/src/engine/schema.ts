@@ -401,7 +401,7 @@ export type SignSet = { cur: string; sked: string; plan: string; appr: string }
  *  time: the canonical digest (§5.0), the schedule date, the current issued base
  *  id, and the candidate (plan/draft) revision. A signature is content-valid only
  *  while all four still match the live day; validity is recomputed, never cleared. */
-export type SignBinding = { dg: string; iso: string; base: string; rev: string }
+export type SignBinding = { dg: string; iso: string; base: string; rev: string; fil: string }
 /** Per-day, per-role bindings — only roles signed through `setSign` appear. */
 export type SignBindSet = Record<number, Partial<Record<keyof SignSet, SignBinding>>>
 

@@ -229,6 +229,14 @@ export function dayFilingFingerprint(di:any):any{di=+di;
   if(dt==null)return fil;
   (INPUTS||[]).forEach((inp:any)=>{ if(inputCoversDate(inp,dt))fil[inpId(inp)]=inp.acc||''; });
   return fil;}
+/* a STABLE string of the day's filing state, so a signature can bind to the filing
+   axis too (owner, 15 Sep 26 — Codex PSF-001). A filing-only change (an Other input
+   filed under Unavailable, a leave accepted onto the date) is counted by dayDelta but
+   leaves DAYS[di]'s digest untouched, so before this it could publish an AL on stale
+   signatures and never cleared the sign-offs. Empty acc == absent, matching
+   filingDelta's round-trip rule, so a no-op filing round trip does not invalidate. */
+export function filingKey(di:any):string{const f=dayFilingFingerprint(di);
+  return Object.keys(f).filter((k:any)=>f[k]).sort().map((k:any)=>`${k}=${f[k]}`).join(';');}
 /* the filing axis: entries for any input whose frozen state differs from now.
    A same-actual-state round trip (r→u→r) is a no-op; absent→u→r is a delta. */
 function filingDelta(di:any,issuedFil:any):DeltaEntry[]{
@@ -626,7 +634,7 @@ export function signOf(di:any){SCHED.sign=SCHED.sign||{}; return (SCHED.sign[+di
 export function signBindOf(di:any){SCHED.signBind=SCHED.signBind||{}; return (SCHED.signBind[+di]=SCHED.signBind[+di]||{});}
 /* the content fingerprint a signature is bound to, as it stands right now. */
 export function currentBind(di:any){di=+di; const d=DAYS[di];
-  return {dg:d?digest(d,di):'', iso:dayIso(CURWEEK,di), base:dayCurVer(di)||'', rev:(SCHED.curDraft||{})[di]||''};}
+  return {dg:d?digest(d,di):'', iso:dayIso(CURWEEK,di), base:dayCurVer(di)||'', rev:(SCHED.curDraft||{})[di]||'', fil:filingKey(di)};}
 /* set a role's signer through the ONE sanctioned write path (ui/Shell.tsx). A
    truthy signer binds that role to the current content; clearing a role drops its
    binding. Tests / a legacy demo book that write signOf(di)[role] directly leave
@@ -637,7 +645,9 @@ export function setSign(di:any,role:any,who:any){di=+di; signOf(di)[role]=who;
    pre-Phase-3 / demo signature, appointment-checked only, as before). */
 function signBoundOk(di:any,role:any,cur?:any){const b=(SCHED.signBind||{})[+di]; const x=b&&b[role];
   if(!x)return true; const c=cur||currentBind(di);
-  return x.dg===c.dg&&x.iso===c.iso&&x.base===c.base&&x.rev===c.rev;}
+  /* a binding written before the filing axis existed (x.fil undefined) must re-sign —
+     it cannot prove the filing was approved (dev-phase; sign state is session-scoped) */
+  return x.dg===c.dg&&x.iso===c.iso&&x.base===c.base&&x.rev===c.rev&&x.fil===c.fil;}
 /* a name only counts while it is still appointed — withdrawing someone's
    Scheduler qual after they signed used to leave the day looking signed — AND
    only while its content binding still holds (AM-06). currentBind is computed at

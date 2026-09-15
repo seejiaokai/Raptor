@@ -159,7 +159,16 @@ Both reviewed the committed diff; strong convergence. Fixes applied:
 - **Fable #4 (LOW, by-design):** legacy UNBOUND signatures still appointment-only
   across plans — pre-existing, dev-phase (reset demo data), left as-is by design.
 
-### SURFACE TO OWNER — Codex PSF-001 (HIGH, pre-existing, NOT fixed here)
+### Codex PSF-001 (HIGH) — FIXED (owner said "close it now", 15 Sep 26)
+Added `filingKey(di)` (stable string of `dayFilingFingerprint`, empty acc == absent);
+`currentBind` now carries `fil`, and `signBoundOk` compares it — so a filing change (a
+leave/Other input accepted onto the day's date) invalidates the signatures exactly like
+a content change: `daySigned` goes false, publish is blocked, `signShown` clears the
+greens. A pre-existing binding with no `fil` re-signs (dev-phase, session-scoped sign
+state). `SignBinding` type gains `fil`. Pinned in signbind.test.ts (filing change
+invalidates; revert restores). Original write-up below.
+
+### (original surface note) Codex PSF-001 (HIGH, pre-existing)
 A filing-only change (an Other input filed under Unavailable, a leave accepted onto
 the day's date) is counted by `dayDelta` but NOT by `currentBind` (digest is DAYS
 content only), so on a published signed day such a change keeps `daySigned` true and

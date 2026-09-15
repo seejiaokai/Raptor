@@ -12,6 +12,7 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import { DAYS } from './data'
 import { PEOPLE } from './people'
+import { INPUTS } from './inputs'
 import {
   SCHED, signOf, signMissing, daySigned, setSign, signBindOf,
   setDayApproved, dayApproved, dayCurVer,
@@ -128,5 +129,27 @@ describe('legacy / unbound signatures stay backward-compatible', () => {
     const g = signOf(0)
     g.cur = 'ignite'; g.sked = 'bane'; g.plan = 'stiff'; g.appr = 'pump'
     expect(daySigned(0)).toBe(true)              // no binding present → appointment-only, as before
+  })
+})
+
+
+describe('a signature binds to the FILING axis too (owner, 15 Sep 26 - Codex PSF-001)', () => {
+  it('a filing change on a signed day invalidates it; reverting the filing restores it', () => {
+    /* an input that covers day 0's date; acc '' is excluded from filingKey (empty ==
+       absent), so signing captures the day WITHOUT it, and flipping acc to a real
+       filing state is a genuine filing change dayDelta would count. */
+    const covering: any = { iid: 'itest_psf1', type: 'leave', date: DAYS[0].dt, acc: '' }
+    INPUTS.push(covering)
+    try {
+      signAll(0)
+      expect(daySigned(0)).toBe(true)
+      covering.acc = 'u'                        // a leave/availability filing onto the date
+      expect(daySigned(0), 'a filing change invalidates the signature (was publishable on stale sign-offs)').toBe(false)
+      expect(signMissing(0).length).toBe(4)
+      covering.acc = ''                         // revert the filing
+      expect(daySigned(0), 'reverting the filing restores the signature').toBe(true)
+    } finally {
+      const i = INPUTS.indexOf(covering); if (i >= 0) INPUTS.splice(i, 1)
+    }
   })
 })
