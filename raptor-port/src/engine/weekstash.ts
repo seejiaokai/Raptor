@@ -83,6 +83,21 @@ export function clearPreservedBlob(v:any){ delete PRESERVED[String(v)]; }
    somewhere better to spend its bytes than a value it could not disagree
    with anyway. Returns null when nothing is stashed for v — callers branch
    on that themselves (weekctx.ts's bundle, state/store.ts's loadWeek). */
+/* THE PUBLISH STATE of a stashed week, in the SCHED shape the parameterized
+   publish readers (dayCurVerIn/daySnapIn/dayDeltaIn) take (published-schedule
+   flagging, §5.3/§14.2). The blob rides these under schedFields' short keys
+   (state/history.ts): ok=dayOK, cv=cur, a=als, o=orig, dr=drafts, am=amV — the same
+   mapping the Leave War OIL wire (leavewar/sync.ts:stashOilWeek) uses to read a
+   non-loaded week's issued snapshots. null when nothing usable is stashed. Never
+   throws — read inside validate(), which runs on every keystroke. */
+export function stashSched(v:any){
+  const s=stashGet(v); if(!s)return null;
+  try{
+    const p=JSON.parse(s);
+    if(!Array.isArray(p.d))return null;
+    return {dayOK:p.ok||{},cur:p.cv||{},als:p.a||[],orig:p.o||{},drafts:p.dr||{},amV:p.am};
+  }catch(_e){ return null; }
+}
 export function stashDays(v:any){
   const s=stashGet(v); if(!s)return null;
   /* a blob that fails to parse (truncated write, foreign data) degrades to

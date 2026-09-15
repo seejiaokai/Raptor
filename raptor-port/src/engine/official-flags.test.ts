@@ -16,6 +16,8 @@ import { validate, officialWarn } from './validate'
 import { SCHED, signOf, setDayApproved } from './publish'
 import { dayIssuedHTML, dayHTML } from '../ui/html'
 import { DWOPEN } from '../state/view'
+import { stashPut, stashClear } from './weekstash'
+import { verId, dayIso } from './verid'
 
 const { MOCKS, weekBundleMock } = vi.hoisted(() => {
   const MOCKS: Record<string, any> = {}
@@ -154,5 +156,49 @@ describe('Phase 2 — the published (view) face shows OFFICIAL flags on frozen c
     const working = dayHTML(0, false)                    // the live working face (no official overlay)
     expect(issued, 'official/frozen face still flags waldo').toMatch(/data-person="waldo"[^>]*Crew rest/)
     expect(working, 'the working copy is clean — no crew-rest flag on waldo').not.toMatch(/data-person="waldo"[^>]*Crew rest/)
+  })
+})
+
+/* PHASE 3 (spec §5.3/§14.1/§14.2, F-2/CRP-001). The OFFICIAL world resolves each
+   NEIGHBOUR week's days at their SIGNED version too, so an unpublished amendment to
+   a prior Sunday cannot silence the loaded Monday's official crew-rest bust — and
+   the alias gate must widen over the whole dependency window, or a delta-free
+   loaded week would alias OFFICIAL=WORKING and miss it. The prev week is hand-built
+   as a STASH entry carrying both a WORKING Sunday and its issued snapshot. */
+describe('Phase 3 — cross-week: OFFICIAL judges the loaded Monday against the SIGNED previous Sunday', () => {
+  afterEach(() => stashClear())
+
+  /* a stashed previous week whose Sunday is PUBLISHED (issued end `issuedEnd`)
+     but whose WORKING copy has been amended to `workEnd` — the stash blob shape
+     state/store.ts:weekStashSnap writes (short keys d/ok/cv/a/o/dr). */
+  function stashPrevSunday(prevKey: string, workEnd: string, issuedEnd: string) {
+    const labels = weekDateLabels(prevKey)
+    const days = DOWS.map((dow, i) => ({ ...blankDay(dow, labels[i]) })) as any[]
+    days[6] = { ...blankDay('Sunday', labels[6]), ...dutyRow('waldo', '08:00', workEnd) }
+    const iso = dayIso(prevKey, 6)
+    const id = verId(iso, 0)
+    const issued = { ...blankDay('Sunday', labels[6]), ...dutyRow('waldo', '08:00', issuedEnd) }
+    const sc = { dayOK: { 6: 1 }, cur: { 6: id }, als: [], orig: { 6: { id, d: issued, c: {}, fil: {} } }, drafts: {} }
+    stashPut(prevKey, JSON.stringify({ d: days, ok: sc.dayOK, cv: sc.cur, a: sc.als, o: sc.orig, dr: sc.drafts }))
+  }
+
+  it("an unpublished amendment to the prev Sunday does NOT silence the loaded Monday's official bust", () => {
+    const WK = wkFor(20)
+    stashPrevSunday(shiftWeekKey(WK, -1), '15:20', '23:00')   // working amended clear; signed ends late
+    setCurWeek(WK)
+    flyMonday('waldo', '06:00', '07:25')                      // loaded Monday, NOT approved (delta-free loaded week)
+    const w = validate()
+    expect(crMon(w, 'waldo'), 'WORKING: the amended Sunday clears it').toBeFalsy()
+    expect(crMon(officialWarn(), 'waldo'), 'OFFICIAL: the signed Sunday still busts it').toBeTruthy()
+  })
+
+  it("a signed prev Sunday's late finish flags the loaded Monday on BOTH worlds when working matches", () => {
+    const WK = wkFor(21)
+    stashPrevSunday(shiftWeekKey(WK, -1), '23:00', '23:00')   // working == signed, both late
+    setCurWeek(WK)
+    flyMonday('waldo', '06:00', '07:25')
+    const w = validate()
+    expect(crMon(w, 'waldo')).toBeTruthy()
+    expect(crMon(officialWarn(), 'waldo')).toBeTruthy()
   })
 })

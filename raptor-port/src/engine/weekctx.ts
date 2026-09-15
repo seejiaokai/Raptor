@@ -31,7 +31,10 @@ import { weekBundle, shiftWeekKey } from './weeks-data'
 import { buildDay } from './events'
 import { INPUTS, inputCoversDate, isPersonal, inputDormant, baseYear } from './inputs'
 import { PEOPLE, isSpecial } from './people'
-import { stashDays } from './weekstash'
+import { stashDays, stashSched } from './weekstash'
+import { getWorld } from './world'
+import { dayCurVerIn, daySnapIn } from './publish'
+import { canonicalDiff } from './canonical'
 
 /* weekBundle(v) is a pure function of v for the two authored weeks and a
    fresh-but-identical blank for everything else (weeks-data.ts) — so caching
@@ -49,12 +52,37 @@ import { stashDays } from './weekstash'
    stashDays hands back a fresh copy every time (never itself cached), because
    unlike the seed it keeps changing while the scheduler is still editing it. */
 const bundleCache:any={};
+/* ONE DAY of a stashed week resolved to its OFFICIAL (signed) version
+   (published-schedule flagging, §5.3). An unapproved day has no other version, so
+   its working copy IS official. An approved day resolves through the SAME resolver
+   OIL uses — dayCurVerIn/daySnapIn against the stash's own SCHED and week key — so a
+   member's programme and their OIL credit can never disagree about "which version is
+   official". An approved day whose issued snapshot cannot be resolved is PROTECTED
+   (§14.1): its content is stripped so no cross-week flag is DERIVED from unavailable
+   evidence — never a fall-back to the unpublished draft. */
+function issuedDayIn(sc:any,di:number,v:any,working:any){
+  if(!(sc.dayOK||{})[di])return working;
+  const ver=dayCurVerIn(sc,di,v), snap=ver!=null?daySnapIn(sc,di,ver,v):null;
+  if(snap&&snap.d)return snap.d;
+  return {...working,waves:[],dutywaves:[],sims:{amt:[],oft:[]},ground:[],allhands:[]};
+}
 function bundle(v:any){
   /* stashDays, not stashHas-then-trust: a persisted blob that fails to parse
      comes back null and the read falls through to the pure seed — a corrupt
      localStorage entry must degrade to "as if never edited", never crash a
      validate() that runs on every keystroke. */
-  const st=stashDays(v); if(st)return st;
+  const st=stashDays(v);
+  if(st){
+    /* THE OFFICIAL WORLD (validate.ts's second pass) reads each stashed day at its
+       SIGNED version, so an unpublished amendment to a neighbour week cannot leak
+       into the loaded week's official flags. A never-stashed (pure-seed) week has no
+       publication state and no divergence, so working IS official for it. */
+    if(getWorld()==='official'){
+      const sc=stashSched(v);
+      if(sc)return {days:st.days.map((d:any,di:number)=>issuedDayIn(sc,di,v,d)),dates:st.dates};
+    }
+    return st;
+  }
   /* keyed by v AND the loaded year (24 Aug 26): a blank week's labels leave
      the CURRENT baseYear() implicit (weeks-data.ts weekLabels), so the same
      v generated under one loaded year reads wrong under another — real at a
@@ -183,4 +211,31 @@ export function nextMondaySeed(curWeek:any){
   const nextBundle=bundle(shiftWeekKey(curWeek,1));
   const built=buildDay(nextBundle.days[0],0,null,null,true);
   return {fly:built.fly,events:built.events,input:built.input,dow:built.dow,di:null};
+}
+/* THE ALIAS GATE'S CROSS-WEEK HALF (published-schedule flagging, §14.1/§14.2).
+   validate() aliases OFFICIAL=WORKING (skips the second pass) only when NOTHING in
+   the dependency window diverges. The loaded week's own approved-day deltas are
+   checked by validate() directly; this answers the NEIGHBOUR half — a prior Sunday
+   or next Monday that is PUBLISHED but carries an unpublished amendment in its
+   stash. Without it, a delta-free loaded week would alias and a neighbour's
+   amendment would silently drive the loaded week's official flags. Reads the
+   STASHED days (§14.2 — dayDeltaIn reads the LIVE DAYS and cannot diff a non-loaded
+   week) and diffs each approved day's signed snapshot against its stashed working
+   copy. An UNRESOLVABLE approved snapshot forces the official pass (so that week is
+   protected there), never an alias. Bounded to the same window the seeds read:
+   prev week (crew rest + run), next Monday, and the week-before when maxRun>7. */
+export function windowDiverges(curWeek:any,maxRun:any){
+  const keys=[shiftWeekKey(curWeek,-1),shiftWeekKey(curWeek,1)];
+  if(maxRun>7)keys.push(shiftWeekKey(curWeek,-2));
+  return keys.some((v:any)=>{
+    const days=stashDays(v), sc=stashSched(v);
+    if(!days||!sc)return false;                     // never edited → no unpublished amendment
+    for(let di=0;di<7;di++){
+      if(!(sc.dayOK||{})[di])continue;
+      const ver=dayCurVerIn(sc,di,v), snap=ver!=null?daySnapIn(sc,di,ver,v):null;
+      if(!snap||!snap.d)return true;                // unresolvable → compute official (protect), never alias
+      if(canonicalDiff(snap.d,days.days[di],di).length>0)return true;
+    }
+    return false;
+  });
 }

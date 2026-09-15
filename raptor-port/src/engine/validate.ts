@@ -5,7 +5,8 @@ import { overlap, hm24, lgT } from './time'
 import { collectEvents, shiftEvHard, scSeatHits, avSeatHits } from './events'
 import { HOOKS } from './hooks'
 import { sansGate, SANS_LABEL } from './avail'
-import { seedRunIn, prevSundaySeed, nextMondaySeed, nextMondayWorked } from './weekctx'
+import { seedRunIn, prevSundaySeed, nextMondaySeed, nextMondayWorked, windowDiverges } from './weekctx'
+import { setWorld } from './world'
 import { CURWEEK } from './waves'
 import { DAYS } from './data'
 import { keyDay } from './keys'
@@ -1146,7 +1147,12 @@ export function validate(){
    cross-week phase. dayDelta already gates on dayApproved + a resolvable issued
    snapshot, so an unresolvable snapshot never reads as "no delta". */
 function officialDiverges(){
-  return approvedDays().some((di:any)=>dayDelta(di).length>0);
+  /* the loaded week's own approved-day amendments, plus the cross-week half of the
+     dependency window (§14.1): a published neighbour Sunday/Monday whose stashed
+     working copy carries an unpublished amendment. Either forces the second pass;
+     otherwise OFFICIAL aliases WORKING (zero cost, cannot drift). */
+  if(approvedDays().some((di:any)=>dayDelta(di).length>0))return true;
+  return windowDiverges(CURWEEK,VCONF.maxRun);
 }
 function officialFor(working:any){
   if(!officialDiverges())return working;   // ALIAS — the exact same object, cannot drift
@@ -1163,13 +1169,19 @@ function withIssuedWeek(fn:any){
     const ver=dayCurVer(di); const snap=ver!=null?daySnapOf(di,ver):null;
     return (snap&&snap.d)?{di,snap}:null;
   }).filter(Boolean) as any[];
-  if(!days.length)return fn();       // nothing resolvable to install (defensive; the gate already filtered)
   const d0:any={}, ch0=SCHED.changes, pd0=SCHED.pending, changes:any={};
-  days.forEach(({di,snap}:any)=>{ d0[di]=DAYS[di]; DAYS[di]=snap.d; Object.assign(changes,snap.c||{}); });
-  SCHED.changes=changes; SCHED.pending={};
-  const g=snapGlobals();
+  /* install the loaded week's approved days at their issued snapshot (F-4/CRP-006).
+     Even with NONE to install, the pass still runs: world='official' makes the
+     cross-week seeds resolve neighbour weeks at their signed version (§5.3), which is
+     the whole point of the delta-free-loaded-week case (§14.1). */
+  if(days.length){
+    days.forEach(({di,snap}:any)=>{ d0[di]=DAYS[di]; DAYS[di]=snap.d; Object.assign(changes,snap.c||{}); });
+    SCHED.changes=changes; SCHED.pending={};
+  }
+  const g=snapGlobals(); setWorld('official');
   try{ return fn(); }
   finally{
+    setWorld('working');
     days.forEach(({di}:any)=>{ DAYS[di]=d0[di]; });
     SCHED.changes=ch0; SCHED.pending=pd0;
     restoreGlobals(g);

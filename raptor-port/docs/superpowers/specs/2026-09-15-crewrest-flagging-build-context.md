@@ -56,7 +56,9 @@ unavailable" (that week protected / no flags), NEVER "no delta → alias".
 |---|---|---|---|
 | 1 | Engine foundation: validateCore, OFFICIAL/officialFor/withIssuedWeek, loaded-week alias gate, officialWarn() accessor. WORKING behaviour unchanged (4770/4770 green). | §5.1,5.5 F-1/CRP-002/CRP-004 | **DONE** (d650a32) |
 | 2 | Render overlay: view week's published days show OFFICIAL flags on the frozen face via withOfficialWarn + OFW; content frozen. pubsweep flipped per §10. | §5.4,§8 F-3/CRP-007 | **DONE** |
-| 3 | Cross-week: world-aware seeds; stashed-window alias gate + days-param delta; unresolvable→protect. | §5.3,§14.1-2 F-2/CRP-001 | TODO |
+| 3 | Cross-week: world.ts wired; weekctx.bundle resolves neighbour weeks' issued days under world='official'; windowDiverges() widens the alias gate over the dependency window (stashed-day delta, §14.2); unresolvable→protect (content stripped). | §5.3,§14.1-2 F-2/CRP-001 | **DONE** |
+
+**Perf watch (for code inspection):** `windowDiverges` + `weekctx.bundle` re-parse stash blobs per validate (every keystroke). Existing code already parses the prev-week stash each validate; this adds next + prev-prev + a second parse (stashSched). Consider caching `stashSched`/`stashDays` by blob reference (the `stashOilWeek` pattern) if `npm run perf` flags it. Correctness-first for now.
 | 4 | Filing truth: install snapshot.fil override honoured by buildDay/inpShow/workedSet; xweek dedup. | §14.3 Codex V2-002/003 | TODO |
 | 5 | Click/focus world-identity + trace world-identity (defined no-op). | §14.4 F-3/CRP-007/V2-004 | TODO |
 | 6 | Divergence surfacing: "Not Yet Signed" marker (everyone) + in-list "goes away / new once signed" markings (keyed diff, computed on LIVE day before swap). | §6,§14.5 | TODO |
