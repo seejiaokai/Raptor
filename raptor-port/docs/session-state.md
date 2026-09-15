@@ -1,19 +1,26 @@
 # Session handoff — crew-rest / flagging on the PUBLISHED schedule: BUILD IN PROGRESS
 
-## RESUME HERE (overnight autonomous run, 15–16 Sep 26)
-Building [CRP-FLAG] on branch `claude/crewrest-published-flagging`, test-first, Opus.
-**Progress + locked design + phase table live in
-`raptor-port/docs/superpowers/specs/2026-09-15-crewrest-flagging-build-context.md` — READ THAT FIRST.**
-Committed so far (all on the branch, NOT merged — owner has NOT said "merge live"):
-phases 1–5 (d650a32, 89703c2, d72634a, ec14acc, c663bc7). Full unit suite 4777/4777
-green after each; build clean; tfin parity untouched.
-- **Phase 6 (next):** divergence surfacing — the "Not Yet Signed" day marker (everyone)
-  + in-list "goes away / new once signed" markings (§6, §14.5). IN PROGRESS.
-- **Phase 7:** full gates + live-view drive (desktop+phone) + fresh Codex + Fable code
-  inspection of the built diff (§14 spots). Then HOLD for "merge live".
-Then the overnight backlog (no merge, no owner-decision needed): **[FLAG-EXPORT]** (exports
-the published version). Do NOT start [REPO-CLEANUP] (needs owner sign-off on deletions) or
-the risky half of [AMEND-SEL-FOLLOWUPS] unattended.
+## RESUME HERE (overnight autonomous run finished, 16 Sep 26)
+**[CRP-FLAG] is BUILT + GATED + BUG-CHECKED on branch `claude/crewrest-published-flagging`,
+holding for "merge live" (NOT merged).** All 7 phases done + 3 rounds of Codex code review.
+- **Design + phase table:** `…/2026-09-15-crewrest-flagging-build-context.md`.
+- **Bug-check log + the flagged "phase 8" owner decisions:** `…/2026-09-15-crewrest-flagging-code-review.md` — READ THIS to decide what's next on the feature.
+- **Gates (all green):** vitest 4785/4785 · build · tfin 728/0 · smoke 425/0 · e2e 423
+  (2 pre-existing phone-width fails). Live-verified desktop + phone.
+- **Codex (GPT-6 Astra high) rounds 1–3:** fixed all the tractable/safe findings test-first;
+  FLAGGED a coherent phase 8 (none a safety gap): (1) the filing-membership model — an
+  AMENDMENT-ENGINE decision that intersects `[AMEND-SEL-FOLLOWUPS]`; (2) the pre-existing xweek
+  dedup; (3) accessor-completeness UI (day-detail modal, person-select, trace-world id).
+- **Fable pass could NOT run** — the standalone Claude CLI's OAuth session is expired
+  ("could not be refreshed"); re-auth the `claude` CLI to run a Fable cross-provider pass.
+- **Commits:** d650a32 89703c2 d72634a ec14acc c663bc7 7f130a3 (phases 1–6) · efa4611 89e9d22
+  3a59e66 (Codex fix rounds 1–3) + docs.
+
+**Next on the feature:** the owner decides the phase-8 items (esp. the filing-membership model,
+best done WITH [AMEND-SEL-FOLLOWUPS]). Everything else is done, holding for "merge live".
+
+**Second overnight task:** [FLAG-EXPORT] — export the PUBLISHED version + a nicer report-grade PDF
+(owner direction 16 Sep, samples for him to pick). See OUTSTANDING.md [FLAG-EXPORT].
 
 ---
 
