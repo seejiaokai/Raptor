@@ -61,10 +61,21 @@ findings:
   a separate app I never touched). **Flag to owner; spin off separately — NOT part of [AMEND].**
 - `npm run smoke:tracker`: run this session (see the report).
 
-## NEXT
-1. Codex + Fable bug-check of the diff (in flight / see report).
-2. Hold for the owner's explicit **"merge live"** — then the "done means live" chain.
-3. The two pre-existing e2e failures want their own fix session (offered as spawned tasks).
+## NEXT — owner follow-ups (15 Sep 26), BEFORE merge
+The owner tested PR #405 on Vercel and asked for **6 changes, incl. a real BUG**
+(sign-offs leak across plans — day-level, not per-plan). **Do these next, same branch,
+Opus high, test-first, then Codex+Fable bug-check.** **Do NOT merge #405 until they land.**
+**Full spec (READ FIRST): `docs/plans-selector-followups.md`.** In brief:
+1. BUG: signatures are per-DAY, not per-plan — Plan B's green sign-offs show on unsigned
+   Plan A. Design call: per-plan signatures (recommended) vs clear-on-switch. Ask the owner.
+2. Remove the amber AL-roll banner entirely (the whole week banner goes).
+3. Colour the version tag by AL number (AL1 cyan / AL2 amber / AL3 green…), not flat green.
+4. Move the version tag to the LEFT of the "4 X 4" wave-count badge.
+5. Show the version tag on the VIEW-only schedule too (watch byte-parity).
+6. Show warnings on the VIEW-only schedule, like edit schedule.
+
+Then hold for the owner's explicit **"merge live"**. The two pre-existing e2e failures
+(geometry board flying-line; Leave War tab) still want their own separate fix session.
 
 ## After merge — [AMEND] merging unblocks ARCH-STACK step 2 increment 2
 Scheduler adoption of the command layer — branch `claude/arch-stack-2-command-core`,

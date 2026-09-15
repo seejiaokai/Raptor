@@ -1,0 +1,91 @@
+# Plans selector redesign — owner follow-ups (batch, 15 Sep 26)
+
+After testing the redesign on the Vercel preview of PR #405 (branch
+`claude/amendment-engine-core`), the owner asked for six changes. **Do these in a
+fresh chat, on the SAME branch (PR #405 accumulates), test-first.** Until they are
+done, **PR #405 must NOT be merged** — item 1 is a real bug.
+
+Companion: `docs/superpowers/specs/2026-09-15-plans-selector-redteam.md` (the locked
+spec) and `docs/session-state.md`. The redesign itself is built + bug-checked (commits
+`43edb04`, `6337b02`).
+
+## Model / approach
+Opus high, test-first. Item 1 is HEAVY (it touches the Phase-3 signature machinery /
+persisted amendment state) — treat it with the rules-engine robustness bar. Items 2–4
+are light UI. Items 5–6 are medium but **byte-parity-sensitive on the view week** —
+watch `html.test.ts`. Bug-check the diff across BOTH Codex and Fable before merge, as
+before.
+
+## The six items
+
+### 1. BUG — signatures leak across plans (day-level, not per-plan)
+**What the owner saw:** on a day with plans, sign all four sign-offs green while **Plan
+B** is live, then switch to **Plan A** (which was never signed). Plan A shows the four
+sign-offs filled/green — it should show them EMPTY.
+**Root cause:** signatures are stored per-DAY (`SCHED.sign[di]` via `signOf`/`setSign` in
+`engine/publish.ts`), NOT per-plan. `draftSelect`/`draftDup` (`engine/drafts.ts`) stow and
+load the day CONTENT blob but do not carry signatures, so `SCHED.sign[di]` persists across
+a plan switch. Phase 3's `signBind` recomputes VALIDITY (so "N to sign" and the Publish-AL
+lock are right — that is why the switch toast already says "signatures reset", C3), but the
+rendered sign-off `<select>`s still show the stored names (green).
+**Design decision (owner's call — ASK):** either
+  (a) make signatures **per-plan** — carry the sign state in the plan blob so each plan
+      shows its own sign-offs (stow/load them in `draftDup`/`draftSelect`, add to
+      `state/history.ts:schedFields` so undo/stash carry them); OR
+  (b) **clear the displayed signatures on a plan switch** when they invalidate (reset the
+      `signOf` names so the selects go empty), matching the "signatures reset" toast.
+  Recommend (a) — a plan is an alternate version and should own its sign-offs — but it is
+  the bigger change; confirm with the owner. Reconcile the C3 toast wording either way.
+**Files:** `engine/publish.ts` (SCHED.sign, signOf, setSign, signMissing, daySigned,
+signBind), `engine/drafts.ts` (draftDup, draftSelect, the stow/load), `state/history.ts`
+(schedFields — what undo/stash serialize). Pin with a test in `engine/drafts.test.ts` and
+a driven one in `draftsui.test.tsx`.
+
+### 2. Remove the amber AL-roll banner ENTIRELY
+The thin amber bar showing "AL1 Mon · AL2 Mon" chips (the `sb-als` roll) — remove it. This
+finishes the banner removal: the WHOLE week-status banner goes (the status text was already
+removed; the owner now confirms the AL roll goes too).
+**File:** `ui/Shell.tsx` `banner()` — return nothing / drop the `schedbanner` render on both
+`#eBanner` and `#vBanner`. Check `app.test.tsx` / `editweek.test.tsx` don't assert the roll.
+
+### 3. Colour the version tag by AL number
+The green title tag (`verTagHTML`, `.verchip`) is currently flat green for any published
+version. The owner wants it coloured BY the AL number: **AL1 cyan, AL2 amber, AL3 green,**
+and so on — the existing `alColor(seq)` / `data-alc` palette (the old `.dal` chip used it).
+ORIG stays grey.
+**Files:** `ui/html.ts` `verTagHTML` (emit `data-alc="${verSeq(cv)}"` and drop the flat
+`.verchip.pub` green; keep `.verchip.orig` grey, `.verchip.draft` dashed); `ui/scheduler.css`
+(style `.verchip[data-alc]` off the AL palette like `.dal` did). Update
+`planselector.test.tsx` / `pubsweep.test.tsx` tag-colour assertions.
+
+### 4. Move the version tag to the LEFT of the "4 X 4" wave-count badge
+The tag currently sits by the day name (inside `.dhtpl`). Move it to sit immediately to the
+LEFT of the `.badge` (the `dayCount` "4 X 4" chip on the right of the day head).
+**File:** `ui/html.ts` `dayHTML` day-head — render `verTagHTML(di)` just before the
+`<span class="badge">` instead of inside `.dhtpl`. **Byte-parity:** the `.badge` region is
+byte-compared, and the seed week is unpublished, so a `DRAFT`/verchip there would break
+parity — gate/excise accordingly (see item 5; the two are linked). On the board, place it
+left of its own count if applicable.
+
+### 5. Show the version tag on the VIEW-only schedule too
+Currently `verTagHTML` is edit-surface only (rides `.dhtpl` / `.sb-pub`). Show it on the
+view week's day head as well (next to the 4X4 per item 4).
+**Watch byte-parity:** the view seed week is byte-compared in `html.test.ts`; every seed day
+is unpublished, so a `DRAFT` tag rendered in a compared region breaks parity. Options: add a
+`noVerTag`-style excision to the parity test (sanctioned idiom, like `noDhTpl`), OR render the
+tag in a wrapper that the existing excisions already cover. Decide and pin.
+
+### 6. Show warnings on the VIEW-only schedule (like edit schedule)
+The view page currently omits the day warnings panel ("N issues · N warning · tap to
+review", the `dwbox`/`daywarn`). The owner wants it shown on view-only too.
+**Care:** the standing rule is a snapshot/issued frozen face is never validated (no WARN
+reads under a preview). So scope this to the view page's LIVE render (the unpublished day /
+the working-copy view), NOT the frozen issued face. Confirm which faces show warnings.
+**Files:** `ui/html.ts` (the `dwbox`/`daywarn` render is currently gated — find the gate and
+open it for the view live render), and ensure `validate()` has run for the view week (it may
+already, since ViewWeek renders live days). Pins in `html.test.ts` / a view test.
+
+## When done
+Run all gates (npm test, tfin, build, test:e2e, smoke:tracker), note that test:e2e's only
+real failures are the 2 pre-existing ones (geometry board flying-line at phone width;
+Leave War tab). Bug-check across Codex + Fable. Then hold for the owner's "merge live".

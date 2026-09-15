@@ -47,6 +47,12 @@ in-flight and risk-reducing** first.
 1. **[AMEND]** — the main project. Decisions resolved; brief re-frozen & re-reviewed;
    **CORE built + round-3 in progress** on `claude/amendment-engine-core`. **[BUG2]**
    folds in here.
+   - **[AMEND-SEL-FOLLOWUPS] (owner, 15 Sep 26) — DO NEXT, blocks merge of PR #405.**
+     After testing the plans-selector redesign the owner asked for 6 changes, incl. a
+     real BUG (signatures leak across plans — day-level, not per-plan). Same branch
+     `claude/amendment-engine-core` (PR #405), Opus high, test-first, Codex+Fable
+     bug-check. **Do NOT merge #405 until these land.**
+     **Context (READ FIRST):** `raptor-port/docs/plans-selector-followups.md`.
 2. **[SYNC-INTEG]** — now just the small NON-undo guardrails (medical member-filed,
    clutter-only clear-data, Quals ✕ confirm, doc fix). Low urgency (pre-live); cheap batch.
    *The undo/permission half was pulled out into [GLOBAL-UNDO] (owner, 13 Sep 26).*
