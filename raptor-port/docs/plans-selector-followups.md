@@ -130,12 +130,16 @@ have caught it. The method is NOT a fixed checklist:
 - But recognise EQUIVALENCE: repeated instances of the same mechanism are one test, not N.
   Many ALs (AL1, AL2, AL3…) are the same code path — test one representative, don't re-prove
   every version. Same for "day 2 vs day 3", "Plan C vs Plan D": test the mechanism once.
-- Check ALL THREE SURFACES, not just the edit week (owner, 15 Sep 26): the **view-only
-  schedule** and the **scheduler board** render the same/related state, so a UI or logic change
-  that could affect them must be driven and eyeballed on each — confirm each reflects what it
-  should. (This app's recurring bugs are drift-seams between these surfaces — see
-  `docs/feature-impact.md`.) If a change genuinely can't reach a surface, skip it — judgement,
-  as always.
+- Check EVERY SURFACE/AREA the change reaches, not just the one you edited (owner, 15 Sep 26).
+  Start with the three schedule surfaces — **edit week, view-only schedule, scheduler board** —
+  which render the same state (a drift-seam; `docs/feature-impact.md`). But do NOT stop there:
+  if the change touches shared data or rules, follow it into the **vendored sub-apps too** —
+  **Leave War** and **Tracker** are separate apps wired to Raptor through seams (roster/PEOPLE
+  projection, role sync, OIL credit, the people bridge — see CLAUDE.md's Leave War / Tracker
+  sections). E.g. a change to people, roles, published schedule, or availability can surface in
+  Leave War; a change to people can surface in Tracker. Drive and eyeball each area the change
+  can reach; confirm each reflects what it should. Skip an area only when the change genuinely
+  can't reach it — judgement, as always.
 - Be token-smart: if an area is robust and this change doesn't touch it, DON'T re-test it.
   Make the scoping visible ("testing X/Y because the change reaches them; not Z, unaffected").
 Bug-check across Codex + Fable. Then hold for the owner's "merge live".
