@@ -130,6 +130,12 @@ have caught it. The method is NOT a fixed checklist:
 - But recognise EQUIVALENCE: repeated instances of the same mechanism are one test, not N.
   Many ALs (AL1, AL2, AL3…) are the same code path — test one representative, don't re-prove
   every version. Same for "day 2 vs day 3", "Plan C vs Plan D": test the mechanism once.
+- Check ALL THREE SURFACES, not just the edit week (owner, 15 Sep 26): the **view-only
+  schedule** and the **scheduler board** render the same/related state, so a UI or logic change
+  that could affect them must be driven and eyeballed on each — confirm each reflects what it
+  should. (This app's recurring bugs are drift-seams between these surfaces — see
+  `docs/feature-impact.md`.) If a change genuinely can't reach a surface, skip it — judgement,
+  as always.
 - Be token-smart: if an area is robust and this change doesn't touch it, DON'T re-test it.
   Make the scoping visible ("testing X/Y because the change reaches them; not Z, unaffected").
 Bug-check across Codex + Fable. Then hold for the owner's "merge live".
