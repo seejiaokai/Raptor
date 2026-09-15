@@ -1615,7 +1615,8 @@ export function signoffHTML(di:any,full:any){
     +`<span class="so-state ${miss.length?'no':'yes'}">${
         miss.length ? `${miss.length} to sign${full?' · '+miss.join(', '):''}`
         : !dayApproved(di) ? 'Signed — this day can be published'
-        : (()=>{const chg=dayDelta(di).length,cv=dayCurVer(di);
+        : (()=>{const cv=dayCurVer(di); if(cv==null) return 'Signed';   // approved but no resolvable snapshot (probe/import) → no ALNaN label (Fable #3)
+            const chg=dayDelta(di).length;
             return chg
               ? `Published at ${esc(verLabel(cv))} · ${chg} change${chg>1?'s':''} to publish — Publish AL${nextSeq(di)}`
               : `Published at ${esc(verLabel(cv))} — no changes to publish`;})()

@@ -3324,8 +3324,10 @@ old `.ddraft` "Publishes …" chip is retired.
 gone).** Switching WORKS on a published day: `switchDraft` lets `draftSelect`'s
 rebase re-mark the day's pending set as the true diff against the issued document
 (engine-rules §Drafts), and its toast reports what that came to — "Switched to
-"X" … · 2 differences from AL1 pending" / "· matches AL1 — nothing pending", and
-"· signatures reset" when a bound signature falls invalid (Phase 3, C3). The menu
+"X" … · 2 differences from AL1 pending" / "· matches AL1 — nothing pending". (The
+old "· signatures reset" clause is GONE since 15 Sep 26 — item 1a: each plan owns
+its four sign-offs, so a switch loads that plan's own sign state, it does not reset
+anything; an unsigned plan simply shows its own empty sign-off bar.) The menu
 carries a one-line note ("This day is published — the issued versions don't
 change. Switching plans marks the differences as the next AL."), the live row's
 sublabel reads "live now — differences from `<verLabel>` go out as AL`<next>`",

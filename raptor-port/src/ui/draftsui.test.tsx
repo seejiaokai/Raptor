@@ -180,11 +180,9 @@ describe('a published day: switch marks the diff toward the next AL', () => {
       await click($(`.wavemenu [data-plansel="${planB}"]`))
     })
     expect(t3.some(t => t.includes('1 difference from Original pending'))).toBe(true)
-    /* Phase 3 (C3): a plan switch on a day whose signatures are BOUND (signed via
-       the production sign-off path) invalidates them and the toast appends
-       "· signatures reset". This day was signed only to publish, and those were
-       spent on the issue, so there is nothing bound to reset here — the toast
-       flag is exercised in production, not from this legacy-signer setup. */
+    /* The old "· signatures reset" switch clause is GONE (15 Sep 26 — item 1a):
+       each plan now owns its own sign-offs, so a switch loads that plan's sign
+       state rather than resetting anything. The toast reports only the pending diff. */
     expect(dayPendCount(2)).toBe(1)
     await act(async () => { setDayApproved(2, 0); SCHED.pending = {}; notify() })
   })

@@ -138,6 +138,40 @@ Journeys (vary order, one representative per equivalent set, undo/redo at junctu
 Human-confusion lens throughout: any correct-but-silent state that reads as a bug →
 note it.
 
+## Cross-provider bug-check round (Codex/Astra + Fable, 15 Sep 26)
+Both reviewed the committed diff; strong convergence. Fixes applied:
+- **PSF-002 / Fable #1 (MEDIUM, both):** `rev` in the binding wiped valid greens on
+  dup / delete-to-one (a content-preserving plan op only changes plan-rev). FIXED —
+  `restampRev` re-points a binding's rev source→dest only when it matched the source
+  (dg/iso/base still checked, never revives a moved-out signature). Pinned in
+  drafts.test.ts (sign-then-dup, delete-to-one, later-dup, edit-still-invalidates).
+- **PSF-003 / Fable #2 (MEDIUM, both):** tag not truly "immediately left of the 4X4"
+  (mobile sorted it before the day name; desktop left an auto-margin gap). FIXED —
+  moved `margin-left:auto` from `.badge` to `.dhver`, added `.dhver{order:3}` on
+  mobile. Verified LIVE at 375px and desktop (tag adjacent-left of badge, after the
+  day name, same row).
+- **PSF-004 (LOW, Codex):** R2 toast re-fired on re-picking a signer. FIXED — fires
+  only on the transition INTO fully-signed (wasSigned guard).
+- **Fable #3 (LOW):** status line could read "Published at ALNaN" when a snapshot
+  doesn't resolve. FIXED — `cv==null` → "Signed". Pinned in pubsweep.test.tsx.
+- **Fable #5 (LOW):** kept types/docs in step — schema.ts DayDraft (+sign/signBind),
+  drafts.ts header, data-schema.md, ui-contracts.md (dropped stale "signatures reset").
+- **Fable #4 (LOW, by-design):** legacy UNBOUND signatures still appointment-only
+  across plans — pre-existing, dev-phase (reset demo data), left as-is by design.
+
+### SURFACE TO OWNER — Codex PSF-001 (HIGH, pre-existing, NOT fixed here)
+A filing-only change (an Other input filed under Unavailable, a leave accepted onto
+the day's date) is counted by `dayDelta` but NOT by `currentBind` (digest is DAYS
+content only), so on a published signed day such a change keeps `daySigned` true and
+can publish an AL on stale signatures; `signShown` won't clear either. It is
+PRE-EXISTING (Codex's own limitations note the filing/availability binding is
+"explicitly deferred in the core build plan"), Fable did not cover this axis, and
+whether a leave-filing SHOULD invalidate the flying sign-offs is a judgement/product
+call. Recommend fixing (add a filing fingerprint — `dayFilingFingerprint` already
+exists — to currentBind/signBoundOk so filing invalidates like content does), but it
+expands into the Phase-3 signature core, so it is the owner's call to include now or
+defer. NOT done in this batch.
+
 ## Progress
 - [x] 1  signatures per plan + display-follows-validity (signRoleOk/signShown; drafts stow/load sign+signBind; board toast clause dropped) — pinned drafts.test.ts, draftsui.test.tsx
 - [x] 2  remove AL-roll banner (banner() gone; #eBanner/#vBanner kept only as RULES MODIFIED host; dead CSS removed; --al style removed) — pinned app/editweek tests

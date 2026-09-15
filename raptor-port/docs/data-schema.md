@@ -188,7 +188,7 @@ Everything about a week's publication state, keyed by day index 0..6.
 | `sign` | `{ di: { cur, sked, plan, appr } }` | the four sign-off slots per day; each value is a **PEOPLE id** when signed (the picker's options are ids, `src/ui/html.ts:1538-1539`, written by `src/ui/Shell.tsx:169`) and `''` when unsigned |
 | `orig` | `{ di: snapshot }` | the day as first published |
 | `cur` | `{ di: 'orig' \| n }` | which version each day currently shows |
-| `drafts`, `curDraft` | `{ di: [blob] }`, `{ di }` | per-day alternate drafts and which is live |
+| `drafts`, `curDraft` | `{ di: [{id,name,d,sign?,signBind?}] }`, `{ di }` | per-day alternate plans and which is live; each blob carries its OWN sign-offs + AM-06 bindings since 15 Sep 26 (item 1a) |
 
 Synthetic keys ride the same book: `del:<day>.<n>.<kind>` (a deletion),
 `mov:…` (a move), `inp:<day>.<token>` (an input filing).

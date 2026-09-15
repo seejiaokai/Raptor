@@ -19,7 +19,9 @@ import { ridKey, posKey, rowsOf, ensureRowIds } from './rowids'
    that is the whole point of the shape.
 
    State rides SCHED (engine/publish.ts) rather than a module of its own:
-     SCHED.drafts   — {di: [{id, name, d}]}   the day's blobs
+     SCHED.drafts   — {di: [{id, name, d, sign?, signBind?}]}  the day's blobs
+                      (sign/signBind ride the blob since 15 Sep 26 — each plan owns
+                      its four sign-offs, item 1a)
      SCHED.curDraft — {di: id}                which entry the live day IS
    so it serializes with undo exactly like the AL records do —
    state/history.ts's histSnap/histApply carry both fields explicitly. Like
@@ -47,6 +49,19 @@ const signSnap = (di: number) => ({
   sign: clone((SCHED.sign || {})[di] || { cur: '', sked: '', plan: '', appr: '' }),
   signBind: clone((SCHED.signBind || {})[di] || {}),
 })
+
+/* A content-preserving plan transition (a duplicate, or a delete down to one) changes
+   only a signature binding's plan-REVISION (currentBind.rev = SCHED.curDraft[di]), not
+   the content it signed. Without this, duplicating or collapsing a SIGNED day would
+   silently blank its sign-offs (Codex PSF-002 / Fable #1): the copied binding still
+   names the old plan revision and fails the rev check. Re-stamp a binding's rev from
+   `from` to `to` ONLY when it currently reads `from` — dg/iso/base are still checked,
+   so this can never revive a signature the content or issued base has moved out from
+   under, it only carries an IDENTICAL-content signature onto its new plan id. */
+const restampRev = (bind: any, from: any, to: any) => {
+  if (!bind) return
+  for (const r of Object.keys(bind)) { if (bind[r] && bind[r].rev === from) bind[r].rev = to }
+}
 
 /* the day's draft list — empty array (not undefined) when the day has none,
    so every caller can .map/.length without a guard */
@@ -150,12 +165,19 @@ export function draftDup(di: any) {
        which is what let the swap-time adoption gate (and its RID-R4-01 hole) be
        removed entirely. */
     /* both blobs copy the live day's current sign state (they are identical copies
-       of the live day), so a day signed before it was duplicated carries its
-       sign-offs into both plans — validity is still recomputed per plan (item 1a). */
-    list.push({ id: newId(list), name: nextName(list), d: clone(DAYS[di]), ...signSnap(di) })   // Plan A
-    const t = { id: newId(list), name: nextName(list), d: clone(DAYS[di]), ...signSnap(di) }     // Plan B, selected
+       of the live day), so a day SIGNED before it was duplicated carries its
+       sign-offs into both plans — validity is still recomputed per plan (item 1a).
+       The pre-dup day had no plan (rev ''), so re-stamp each destination's binding
+       rev to its own id, and the live copy (which IS Plan B) to Plan B's id, or the
+       identical-content signatures would read invalid (restampRev above). */
+    const a = { id: newId(list), name: nextName(list), d: clone(DAYS[di]), ...signSnap(di) }   // Plan A
+    list.push(a)
+    const t = { id: newId(list), name: nextName(list), d: clone(DAYS[di]), ...signSnap(di) }   // Plan B, selected
     list.push(t)
     SCHED.curDraft[di] = t.id
+    restampRev(a.signBind, '', a.id)                       // Plan A IS the pre-dup day
+    restampRev(t.signBind, '', t.id)                       // Plan B is an identical copy
+    restampRev((SCHED.signBind || {})[di], '', t.id)       // the live day IS Plan B now
     return t
   }
   const cur = list.find((x: any) => x.id === SCHED.curDraft[di])
@@ -166,6 +188,12 @@ export function draftDup(di: any) {
   const t = { id: newId(list), name: nextName(list), d: clone(DAYS[di]), ...signSnap(di) }
   list.push(t)
   SCHED.curDraft[di] = t.id
+  /* the new plan is an identical copy of the plan just left (cur) — carry cur's
+     signatures onto the new plan id so an identical copy stays signed (cur's own
+     blob keeps its rev and stays valid for cur). */
+  const from = cur ? cur.id : ''
+  restampRev(t.signBind, from, t.id)
+  restampRev((SCHED.signBind || {})[di], from, t.id)
   return t
 }
 
@@ -472,6 +500,12 @@ export function draftDelete(di: any, id: any) {
   if (i < 0) return false
   list.splice(i, 1)
   if (list.length === 1) {
+    /* collapsing to one plan drops the plan structure (the live day is just its
+       working copy again, rev ''). Re-stamp the surviving live signatures from the
+       plan id to '' so a SIGNED survivor keeps its sign-offs — content is unchanged,
+       only the plan-revision (Codex PSF-002 / Fable #1). Do this BEFORE clearing
+       curDraft, while it still names the survivor. */
+    restampRev((SCHED.signBind || {})[di], String(curDraftId(di)), '')
     if (SCHED.drafts) delete SCHED.drafts[di]
     if (SCHED.curDraft) delete SCHED.curDraft[di]
   }

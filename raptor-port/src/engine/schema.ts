@@ -417,8 +417,12 @@ export type DaySnapshot = {
   id?: string
 }
 
-/** A per-day alternate draft blob — engine (drafts.ts). */
-export type DayDraft = { id: string; name: string; d: Day }
+/** A per-day alternate draft blob — engine (drafts.ts). Since 15 Sep 26 (item 1a)
+ *  each plan OWNS its four sign-offs: draftDup/draftSelect stow the day's sign state
+ *  (`sign`) and its AM-06 content bindings (`signBind`) on the blob, so switching
+ *  plans carries each plan's own sign-offs. Optional — a pre-15-Sep blob has neither
+ *  and loads as unsigned (fail closed). */
+export type DayDraft = { id: string; name: string; d: Day; sign?: SignSet; signBind?: Partial<Record<keyof SignSet, SignBinding>> }
 
 /** One canonical delta entry in an AL's frozen `diff` — engine (canonical.ts `DeltaEntry`). */
 export type AlDiffEntry = { addr: string; kind: 'add' | 'delete' | 'change' | 'move' | 'input'; from?: any; to?: any }

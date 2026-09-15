@@ -856,7 +856,10 @@ body.ros-open .eroster .ros-tab{background:var(--accent);color:var(--accent-ink)
 .day-head{display:flex;align-items:baseline;gap:9px;padding:13px 15px;background:rgba(255,255,255,.02);border-bottom:1px solid var(--edge)}
 .day-head .dow{font-size:16px;font-weight:700}
 .day-head .dt{color:var(--ink-3);font-size:12px}
-.day-head .badge{margin-left:auto;font-size:10.5px;color:var(--ink-2);background:var(--panel-2);border:1px solid var(--edge);padding:2px 8px;border-radius:6px}
+/* the badge no longer carries the right-push (margin-left:auto) — the version tag
+   (.dhver) does now, so the tag sits IMMEDIATELY left of the badge, both pushed to
+   the right together (owner, 15 Sep 26 — item 4; Codex PSF-003 / Fable #2). */
+.day-head .badge{font-size:10.5px;color:var(--ink-2);background:var(--panel-2);border:1px solid var(--edge);padding:2px 8px;border-radius:6px}
 /* Templates + Drafts moved into the day-head, between the date and the 4x4
    badge (owner, 24 Aug 26). A touch smaller than the sign-off strip's own
    .dbeak so the two solid pills read as a header control; centred against the
@@ -894,8 +897,10 @@ body.ros-open .eroster .ros-tab{background:var(--accent);color:var(--accent-ink)
 .day-head .verchip,.sb-pub .verchip{font-family:'Barlow Condensed','Inter Tight',sans-serif;font-size:10px;font-weight:800;
   letter-spacing:.06em;padding:1px 6px;border-radius:5px;white-space:nowrap;align-self:center}
 /* the tag rides its own .dhver span now (owner, 15 Sep 26 — item 4), immediately
-   LEFT of the .badge on every surface (item 5) */
-.day-head .dhver{display:inline-flex;align-items:center}
+   LEFT of the .badge on every surface (item 5). It carries the right-push so the
+   free space lands BEFORE the tag, keeping tag+badge adjacent (an empty .dhver — the
+   cv==null case — still pushes the badge right, so nothing regresses). */
+.day-head .dhver{display:inline-flex;align-items:center;margin-left:auto}
 /* COLOURED BY AL NUMBER (item 3): --alc comes from the shared [data-alc] palette
    (AL1 cyan · AL2 amber · AL3 green · …), so the tag and the amendment marks read
    the same ramp. ORIG grey, DRAFT dashed — unchanged. */
@@ -3461,6 +3466,9 @@ details.gp[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:
   .day-head{gap:6px;row-gap:6px}
   .day-head .dow{order:1}
   .day-head .dt{order:2}
+  /* the tag shares the badge's order so DOM order keeps tag-then-badge together on
+     row one, instead of the tag sorting before the day name (Codex PSF-003 / Fable #2) */
+  .day-head .dhver{order:3}
   .day-head .badge{order:3}
   .day-head::before{content:'';order:4;flex-basis:100%;height:0}
   /* COMPRESS THE DAY-HEAD CONTROLS ON MOBILE (owner, 26 Aug 26 — "compress

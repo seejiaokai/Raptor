@@ -623,3 +623,17 @@ describe('9 · cross-surface agreement: the week and the board read one state', 
     expect(verOf(view)).toBe('ORIG')
   })
 })
+
+describe('the sign-off status line is robust to a missing snapshot (Fable #3)', () => {
+  it('an approved day whose snapshot cannot resolve reads "Signed", never "ALNaN"', () => {
+    publishDay(DI)                                  // approved at ORIG
+    /* corrupt to a probe/import state: approved but no resolvable current version */
+    delete SCHED.orig[DI]; delete SCHED.cur[DI]; SCHED.als = []
+    sign(DI)                                        // re-sign (publish spent them); unbound → daySigned true
+    expect(dayApproved(DI)).toBe(true)
+    expect(dayCurVer(DI) == null).toBe(true)
+    const state = el(dayHTML(DI, true, true)).querySelector('.so-state')!.textContent!
+    expect(state).not.toContain('NaN')
+    expect(state).toContain('Signed')
+  })
+})

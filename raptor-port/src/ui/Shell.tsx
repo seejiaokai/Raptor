@@ -155,14 +155,17 @@ export function Shell() {
       const sel = (e.target as HTMLElement).closest('select[data-sign]') as HTMLSelectElement | null
       if (!sel) return
       const di = +sel.dataset.signday!
+      const wasSigned = daySigned(di)             // capture BEFORE, so the note fires only on COMPLETING the set
       setSign(di, sel.dataset.sign!, sel.value)   // AM-06: binds the signature to the content it signed
       /* R2 (owner, 15 Sep 26): completing the four sign-offs on an ALREADY-published
          day with nothing pending correctly shows NO publish button — which reads like
-         a bug ("I signed everything, where's publish?"). Say so, once, at the moment
-         it happens. Not on an unpublished day: there, signing IS what unlocks the
-         first publish, so the button appears and there is no confusion. dayHasChanges
-         is the one publish-eligibility authority (same one the status line reads). */
-      if (daySigned(di) && dayApproved(di) && !dayHasChanges(di))
+         a bug ("I signed everything, where's publish?"). Say so, once, only on the
+         transition INTO fully-signed (not when re-picking a name on an already-signed
+         day — Codex PSF-004). Not on an unpublished day: there, signing IS what
+         unlocks the first publish, so the button appears and there is no confusion.
+         dayHasChanges is the one publish-eligibility authority (same one the status
+         line reads). */
+      if (!wasSigned && daySigned(di) && dayApproved(di) && !dayHasChanges(di))
         HOOKS.toast('All signed — no changes to publish right now')
       HOOKS.histPush(); HOOKS.reflow()
     }

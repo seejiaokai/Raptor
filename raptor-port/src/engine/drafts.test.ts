@@ -787,3 +787,44 @@ describe('a CHANGE clears the displayed sign-offs (owner, 15 Sep 26 — R1)', ()
     expect(signShown(0).cur, 'an unbound (appointment-only) signature still shows').toBe('ignite')
   })
 })
+
+describe('per-plan sign-offs survive content-preserving plan ops (Codex PSF-002 / Fable #1)', () => {
+  it('signing BEFORE the first dup carries the sign-offs into BOTH plans', () => {
+    signBound(0)                                       // sign the plain live day (rev '')
+    expect(daySigned(0)).toBe(true)
+    draftDup(0)                                        // Plan A + Plan B (B live)
+    const [planA] = dayDrafts(0).map((t: any) => t.id)
+    expect(daySigned(0), 'Plan B (live) stays signed after the dup').toBe(true)
+    draftSelect(0, planA)
+    expect(daySigned(0), 'Plan A carries the identical-content sign-offs too').toBe(true)
+  })
+
+  it('deleting down to one plan keeps the survivor signed', () => {
+    draftDup(0)                                        // A + B (B live)
+    const [planA] = dayDrafts(0).map((t: any) => t.id)
+    signBound(0)                                       // sign Plan B (live)
+    expect(daySigned(0)).toBe(true)
+    expect(draftDelete(0, planA)).toBe(true)           // down to one → plan structure dropped
+    expect(curDraftId(0)).toBeUndefined()
+    expect(daySigned(0), 'the survivor keeps its greens — content unchanged, only rev').toBe(true)
+  })
+
+  it('a later dup of a signed plan carries the sign-offs to the copy, source keeps its own', () => {
+    draftDup(0)                                        // A + B (B live)
+    const planB = curDraftId(0)
+    signBound(0)                                       // sign Plan B
+    draftDup(0)                                        // stow B, mint C (live)
+    expect(daySigned(0), 'the new copy C is signed (identical content)').toBe(true)
+    draftSelect(0, planB)                              // back to the source B
+    expect(daySigned(0), 'the source B keeps its greens').toBe(true)
+  })
+
+  it('a real content EDIT after signing still invalidates (restamp never revives a moved-out signature)', () => {
+    signBound(0)
+    draftDup(0)                                        // both plans signed (identical)
+    expect(daySigned(0)).toBe(true)
+    DAYS[0].notes = DAYS[0].notes || []
+    DAYS[0].notes.push({ rid: 'nps2', t: 'edit on plan B' })
+    expect(daySigned(0), 'a content change still clears validity — dg/iso/base still checked').toBe(false)
+  })
+})
