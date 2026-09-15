@@ -4,6 +4,7 @@ import { PEOPLE } from '../engine/people'
 import { minus, parseHM } from '../engine/time'
 import { VCONF } from '../engine/rules'
 import { STORE_CFG } from '../engine'
+import { dayApproved, dayCurVer, daySnapOf, verLabel } from '../engine/publish'
 
 /* Excel does not sniff a .csv for UTF-8: with no byte-order mark it decodes the
    file in the machine's ANSI codepage, so every byte of a multi-byte character
@@ -40,9 +41,27 @@ export function exportCSV(name: string, rows: any[][]) {
   const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; a.click()
 }
 
-export function schedRows() {
+/* THE PUBLISHED VERSION of each day (owner, 15 Sep 26 — the export is a report to an
+   agency, so it must carry the SIGNED schedule, not a scheduler's in-progress working
+   copy). An approved day resolves to its issued snapshot's content; an unpublished day
+   has no signed version, so its working copy is the only thing to show. [FLAG-EXPORT] */
+export function publishedDays() {
+  return DAYS.map((d: any, di: number) => {
+    if (!dayApproved(di)) return d
+    const snap = daySnapOf(di, dayCurVer(di) as any)
+    return (snap && snap.d) ? snap.d : d
+  })
+}
+/* has this day gone out as a signed document? (drives the per-day "Published ALn /
+   Working draft" stamp the report carries). */
+export function dayIssuedLabel(di: number): string {
+  if (!dayApproved(di)) return 'Working draft — not yet signed'
+  const ver = dayCurVer(di)
+  return ver == null ? 'Published' : `Published — ${verLabel(ver)}`
+}
+export function schedRows(days: any[] = DAYS) {
   const rows = [['Day', 'Date', 'Wave', 'CS', 'Mission', 'Brief', 'TO', 'Land', 'FCP', 'FCP lvl', 'RCP', 'RCP lvl', 'Area', 'Area time', 'Rmks', 'Stores']]
-  DAYS.forEach((d: any) => (d.waves || []).forEach((w: any) => w.formations.forEach((f: any) => f.aircraft.forEach((a: any) => {
+  days.forEach((d: any) => (d.waves || []).forEach((w: any) => w.formations.forEach((f: any) => f.aircraft.forEach((a: any) => {
     const F = PEOPLE[a.p] || {}, W = PEOPLE[a.w] || {}, o = a.opts || {}
     const st = STORE_CFG.filter(([k]) => o[k]).map(([, lab]) => lab).concat(o.bombs ? [o.bombs] : []).join(' ')
     const at = f.atime != null ? f.atime : (a.area ? `${f.to.replace(':', '')}-${f.ld.replace(':', '')}` : '')
