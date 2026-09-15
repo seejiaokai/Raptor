@@ -47,6 +47,19 @@ in-flight and risk-reducing** first.
 1. **[AMEND]** — the main project. Decisions resolved; brief re-frozen & re-reviewed;
    **CORE built + round-3 in progress** on `claude/amendment-engine-core`. **[BUG2]**
    folds in here.
+   - **[AMEND-SEL-FOLLOWUPS] (owner, 15 Sep 26) — DO NEXT, blocks merge of PR #405.**
+     After testing the plans-selector redesign the owner asked for 7 changes, incl. a
+     real BUG (signatures leak across plans — day-level, not per-plan). Same branch
+     `claude/amendment-engine-core` (PR #405), Opus high, test-first, Codex+Fable
+     bug-check. **Do NOT merge #405 until these land.**
+     **Context (READ FIRST):** `raptor-port/docs/plans-selector-followups.md`.
+   - **[REPO-CLEANUP] (owner, 15 Sep 26) — SECOND task, AFTER the follow-ups merge.**
+     Delete the handoff screenshots (`raptor-port/docs/img/plans-selector-followups/`), then
+     do a repo-wide space/redundancy sweep (orphaned files, dead CSS, unused exports, stale
+     docs, build cruft). **CAUTION:** the repo deliberately keeps some dead-looking code
+     (CLAUDE.md §Stable decisions — `WEEKS`, `restoreDayVersion`, `openWarns`, etc.); grep for
+     refs and confirm before removing anything. Own gated PR, in batches. See the "SECOND
+     TASK" section of `raptor-port/docs/plans-selector-followups.md`.
 2. **[SYNC-INTEG]** — now just the small NON-undo guardrails (medical member-filed,
    clutter-only clear-data, Quals ✕ confirm, doc fix). Low urgency (pre-live); cheap batch.
    *The undo/permission half was pulled out into [GLOBAL-UNDO] (owner, 13 Sep 26).*

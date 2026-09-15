@@ -6,7 +6,8 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import { DAYS } from './data'
 import {
-  SCHED, signOf, setDayApproved, dayApproved, daySnapOf, dayCurVer,
+  SCHED, signOf, setSign, daySigned, signMissing, signShown,
+  setDayApproved, dayApproved, daySnapOf, dayCurVer,
   publishALDay, deleteCount, deletionWasIssued, alAttr, markStructuralAdd, markEdit, dayHasChanges,
 } from './publish'
 import { txtSet, txtGet, setSlotVal, fillSlot } from './slots'
@@ -48,8 +49,16 @@ beforeEach(() => {
   DAYS[0] = JSON.parse(JSON.stringify(D0))
   SCHED.pending = {}; SCHED.changes = {}; SCHED.added = {}; SCHED.als = []
   SCHED.al = 0; SCHED.dayOK = {}; SCHED.sign = {}; SCHED.orig = {}; SCHED.cur = {}
-  SCHED.drafts = {}; SCHED.curDraft = {}
+  SCHED.drafts = {}; SCHED.curDraft = {}; SCHED.signBind = {}
 })
+
+/* sign all four through the SANCTIONED (bound) path, so signBind is populated and
+   validity really depends on the plan/content — the legacy `sign` helper above uses
+   the unbound direct-assignment path and would read signed on every plan. */
+const signBound = (di: number) => {
+  setSign(di, 'cur', 'ignite'); setSign(di, 'sked', 'bane')
+  setSign(di, 'plan', 'stiff'); setSign(di, 'appr', 'pump')
+}
 
 describe('duplicating a day', () => {
   it('a day starts with no drafts, and dayDrafts always answers an array', () => {
@@ -57,11 +66,11 @@ describe('duplicating a day', () => {
     expect(curDraftId(0)).toBeUndefined()
   })
 
-  it('the first dup stows the live day as Draft 1 AND mints Draft 2, selected', () => {
+  it('the first dup stows the live day as Plan A AND mints Plan B, selected', () => {
     const t = draftDup(0)
     const list = dayDrafts(0)
-    expect(list.map((x: any) => x.name)).toEqual(['Draft 1', 'Draft 2'])
-    expect(t!.name).toBe('Draft 2')
+    expect(list.map((x: any) => x.name)).toEqual(['Plan A', 'Plan B'])
+    expect(t!.name).toBe('Plan B')
     expect(curDraftId(0)).toBe(t!.id)
     /* both blobs are the day as it stood — deep clones, not references */
     expect(list[0].d).not.toBe(DAYS[0])
@@ -76,26 +85,38 @@ describe('duplicating a day', () => {
     expect(JSON.stringify(DAYS[0], ridless)).toBe(JSON.stringify(D0, ridless))
   })
 
-  it('a later dup stows live into the selected entry and mints Draft N', () => {
-    draftDup(0)                                     // Draft 1 + Draft 2 (selected)
-    txtSet('dn:0.0', 'PLAN B NOTE')                 // edit while Draft 2 is live
-    const t = draftDup(0)                           // stow into Draft 2, mint Draft 3
-    expect(t!.name).toBe('Draft 3')
+  it('a later dup stows live into the selected entry and mints the next Plan letter', () => {
+    draftDup(0)                                     // Plan A + Plan B (selected)
+    txtSet('dn:0.0', 'PLAN B NOTE')                 // edit while Plan B is live
+    const t = draftDup(0)                           // stow into Plan B, mint Plan C
+    expect(t!.name).toBe('Plan C')
     expect(curDraftId(0)).toBe(t!.id)
-    const d2 = dayDrafts(0).find((x: any) => x.name === 'Draft 2')
+    const d2 = dayDrafts(0).find((x: any) => x.name === 'Plan B')
     expect(d2.d.notes[0].t).toBe('PLAN B NOTE')       // the stow caught the edit
     expect(t!.d.notes[0].t).toBe('PLAN B NOTE')       // the new draft copies live
   })
 
-  it('default numbering is highest existing Draft N + 1, surviving renames and deletes', () => {
-    draftDup(0)                                     // Draft 1, Draft 2
-    draftDup(0)                                     // Draft 3
+  it('default naming is the LOWEST unused Plan letter — a rename frees its letter (C1)', () => {
+    draftDup(0)                                     // Plan A, Plan B
+    draftDup(0)                                     // Plan C  (list: A, B, C — C live)
     const d1 = dayDrafts(0)[0]
-    draftRename(0, d1.id, 'Wet weather')            // Draft 1 is gone by name
-    const d2 = dayDrafts(0).find((x: any) => x.name === 'Draft 2')
-    draftDelete(0, d2.id)
+    draftRename(0, d1.id, 'Wet weather')            // Plan A's letter A is freed
+    const d2 = dayDrafts(0).find((x: any) => x.name === 'Plan B')
+    draftDelete(0, d2.id)                           // list: Wet, Plan C (length 2 — no clear)
     const t = draftDup(0)
-    expect(t!.name).toBe('Draft 4')                 // 3 is the highest left, not the count
+    expect(t!.name).toBe('Plan A')                  // the freed letter A is reused, not "Plan D"
+  })
+
+  it('past Z the numeric fallback stays UNIQUE — never a duplicate "Plan 27" (Codex PS-005 / Fable #1)', () => {
+    /* mint 28 plans: A..Z then Plan 27, Plan 28. A letter-only "used" set would
+       never mark "Plan 27" used and would mint it forever — the day-wide name
+       uniqueness draftRename enforces must hold for the auto-mint too. */
+    for (let i = 0; i < 27; i++) draftDup(0)         // first dup makes A+B, then 26 more → 28 entries
+    const names = dayDrafts(0).map((x: any) => x.name)
+    expect(names.length).toBe(28)
+    expect(new Set(names).size).toBe(28)             // all distinct
+    expect(names.slice(0, 26)).toEqual([...Array(26)].map((_, i) => 'Plan ' + String.fromCharCode(65 + i)))
+    expect(names.slice(26)).toEqual(['Plan 27', 'Plan 28'])
   })
 
   it('a published day duplicates too, and its pending marks ride along untouched', () => {
@@ -107,7 +128,7 @@ describe('duplicating a day', () => {
     txtSet('dn:0.0', 'AMEND ME')
     expect(SCHED.pending['dn:0.0']).toBe(1)
     const t = draftDup(0)
-    expect(t!.name).toBe('Draft 2')
+    expect(t!.name).toBe('Plan B')
     expect(dayDrafts(0).length).toBe(2)
     expect(SCHED.pending['dn:0.0']).toBe(1)
   })
@@ -479,7 +500,7 @@ describe('rename and delete', () => {
     expect(draftRename(0, d1.id, '  Wet weather  ')).toBe(true)
     expect(d1.name).toBe('Wet weather')
     expect(draftRename(0, d2.id, '   ')).toBe(false)
-    expect(d2.name).toBe('Draft 2')
+    expect(d2.name).toBe('Plan B')
     expect(draftRename(0, d2.id, 'Wet weather')).toBe(false)   // dup in the day
     expect(draftRename(0, d1.id, 'Wet weather')).toBe(true)    // its own name is not a dup
     expect(draftRename(0, d1.id, 'x'.repeat(40))).toBe(true)
@@ -487,25 +508,28 @@ describe('rename and delete', () => {
     expect(draftRename(0, 'nope', 'x')).toBe(false)
   })
 
-  it('delete refuses the selected draft; anything else goes, down to one entry', () => {
-    draftDup(0)
+  it('delete refuses the selected plan; deleting down to one CLEARS the day\'s plans (B1 option a)', () => {
+    draftDup(0)                                     // Plan A, Plan B (B live)
     const [d1, d2] = dayDrafts(0)
     expect(draftDelete(0, d2.id)).toBe(false)       // selected — the live day
     expect(dayDrafts(0).length).toBe(2)
-    expect(draftDelete(0, d1.id)).toBe(true)
-    expect(dayDrafts(0).length).toBe(1)             // a one-entry list is legal
-    expect(curDraftId(0)).toBe(d2.id)
-    expect(draftDelete(0, 'nope')).toBe(false)
+    expect(draftDelete(0, 'nope')).toBe(false)      // unknown id
+    expect(draftDelete(0, d1.id)).toBe(true)        // deletes Plan A, leaving only Plan B
+    /* B1 (owner, 15 Sep 26): once one plan is left there is no ALTERNATIVE, so the
+       day drops back to a plain live working copy — the list and the selection
+       stamp are cleared, and the live day (the surviving plan's content) is kept. */
+    expect(dayDrafts(0)).toEqual([])
+    expect(curDraftId(0)).toBeUndefined()
   })
 })
 
 describe('publish — unchanged, and that is the point', () => {
   it('setDayApproved publishes whatever is live, which is the selected draft', () => {
     draftDup(0)
-    txtSet('dn:0.0', 'THE WET PLAN')                // Draft 2 is live; edit it
+    txtSet('dn:0.0', 'THE WET PLAN')                // Plan B is live; edit it
     sign(0); setDayApproved(0, 1)
     expect(dayApproved(0)).toBe(true)
-    /* the Original froze the SELECTED draft's content, not Draft 1's */
+    /* the Original froze the SELECTED plan's content, not Plan A's */
     expect(SCHED.orig[0].d.notes[0].t).toBe('THE WET PLAN')
     /* and the day's pending marks were spent on the issue as always */
     expect(Object.keys(SCHED.pending).filter(k => k.indexOf(':0.') > 0 || /^dn:0\./.test(k))).toEqual([])
@@ -574,7 +598,7 @@ describe('undo carries the drafts', () => {
     expect(curDraftId(0)).toBeUndefined()
     expect(JSON.stringify(DAYS[0])).toBe(init)
     histApply(1)                                    // redo brings both drafts back
-    expect(dayDrafts(0).map((x: any) => x.name)).toEqual(['Draft 1', 'Draft 2'])
+    expect(dayDrafts(0).map((x: any) => x.name)).toEqual(['Plan A', 'Plan B'])
   })
 })
 
@@ -698,5 +722,109 @@ describe('reconcileIssuedMarks — a mark stranded at an address in neither docu
     DAYS[0].ground[0].info = false
     reconcileIssuedMarks()
     expect(SCHED.pending['gr:0.0.prog'], 'flipped back = nothing to publish').toBeUndefined()
+  })
+})
+
+describe('signatures are PER PLAN (owner, 15 Sep 26 — item 1a)', () => {
+  it('each plan keeps its own sign-offs across switches — B signed, A empty, both green after signing both', () => {
+    draftDup(0)                                        // Plan A + Plan B (B selected/live)
+    const [planA, planB] = dayDrafts(0).map((t: any) => t.id)
+    /* sign the live plan (B) through the bound path */
+    signBound(0)
+    expect(daySigned(0), 'Plan B is signed while live').toBe(true)
+    /* switch to Plan A — never signed → its own empty sign-off bar (item 1's bug:
+       it used to show B's four greens) */
+    draftSelect(0, planA)
+    expect(daySigned(0), 'Plan A was never signed').toBe(false)
+    expect(signMissing(0).length).toBe(4)
+    expect(Object.values(signShown(0)).every(v => v === ''), 'Plan A shows empty').toBe(true)
+    /* sign Plan A too, then ping-pong: each plan holds its OWN greens */
+    signBound(0)
+    expect(daySigned(0)).toBe(true)
+    draftSelect(0, planB)
+    expect(daySigned(0), 'Plan B is still signed independently').toBe(true)
+    draftSelect(0, planA)
+    expect(daySigned(0), 'Plan A is still signed independently').toBe(true)
+  })
+
+  it('the plan blob carries sign + signBind, and undo round-trips them (schedFields)', () => {
+    histInit()
+    draftDup(0); histPush()
+    const [planA, planB] = dayDrafts(0).map((t: any) => t.id)
+    signBound(0); histPush()                           // sign Plan B (live)
+    expect(daySigned(0)).toBe(true)
+    draftSelect(0, planB === curDraftId(0) ? planA : planB); histPush()   // switch away
+    expect(daySigned(0), 'the other plan is unsigned').toBe(false)
+    /* the stowed plan blob carries its sign + binding */
+    const stowedB = dayDrafts(0).find((t: any) => t.id === planB)
+    expect(stowedB.sign.cur, 'Plan B stowed its signer').toBe('ignite')
+    expect(stowedB.signBind.cur, 'Plan B stowed its binding').toBeTruthy()
+    /* undo the switch — back on Plan B, signed again */
+    histApply(HIST.ix - 1)
+    expect(daySigned(0), 'undo restores Plan B signed').toBe(true)
+  })
+})
+
+describe('a CHANGE clears the displayed sign-offs (owner, 15 Sep 26 — R1)', () => {
+  it('signShown blanks a role once an edit moves the content, and restores it on revert', () => {
+    signBound(0)
+    expect(Object.values(signShown(0)).every(v => v), 'all four show while valid').toBe(true)
+    /* a real canonical edit (a day note) moves the digest with no sign slot touched */
+    DAYS[0].notes = DAYS[0].notes || []
+    DAYS[0].notes.push({ rid: 'nR1', t: 'edit after sign' })
+    expect(Object.values(signShown(0)).every(v => v === ''), 'a change clears the greens').toBe(true)
+    expect(signOf(0).cur, 'the stored name is NOT destroyed — only the display clears').toBe('ignite')
+    DAYS[0].notes.pop()                                // revert the edit in place
+    expect(signShown(0).cur, 'reverting the content restores the name').toBe('ignite')
+  })
+
+  it('an unappointed-but-signed name is NOT blanked by this (only binding breakage is)', () => {
+    /* the legacy unbound path: no signBind, so signShown must keep showing the name */
+    const g = signOf(0)
+    g.cur = 'ignite'; g.sked = 'bane'; g.plan = 'stiff'; g.appr = 'pump'
+    DAYS[0].notes = DAYS[0].notes || []
+    DAYS[0].notes.push({ rid: 'nR1b', t: 'edit' })
+    expect(signShown(0).cur, 'an unbound (appointment-only) signature still shows').toBe('ignite')
+  })
+})
+
+describe('per-plan sign-offs survive content-preserving plan ops (Codex PSF-002 / Fable #1)', () => {
+  it('signing BEFORE the first dup carries the sign-offs into BOTH plans', () => {
+    signBound(0)                                       // sign the plain live day (rev '')
+    expect(daySigned(0)).toBe(true)
+    draftDup(0)                                        // Plan A + Plan B (B live)
+    const [planA] = dayDrafts(0).map((t: any) => t.id)
+    expect(daySigned(0), 'Plan B (live) stays signed after the dup').toBe(true)
+    draftSelect(0, planA)
+    expect(daySigned(0), 'Plan A carries the identical-content sign-offs too').toBe(true)
+  })
+
+  it('deleting down to one plan keeps the survivor signed', () => {
+    draftDup(0)                                        // A + B (B live)
+    const [planA] = dayDrafts(0).map((t: any) => t.id)
+    signBound(0)                                       // sign Plan B (live)
+    expect(daySigned(0)).toBe(true)
+    expect(draftDelete(0, planA)).toBe(true)           // down to one → plan structure dropped
+    expect(curDraftId(0)).toBeUndefined()
+    expect(daySigned(0), 'the survivor keeps its greens — content unchanged, only rev').toBe(true)
+  })
+
+  it('a later dup of a signed plan carries the sign-offs to the copy, source keeps its own', () => {
+    draftDup(0)                                        // A + B (B live)
+    const planB = curDraftId(0)
+    signBound(0)                                       // sign Plan B
+    draftDup(0)                                        // stow B, mint C (live)
+    expect(daySigned(0), 'the new copy C is signed (identical content)').toBe(true)
+    draftSelect(0, planB)                              // back to the source B
+    expect(daySigned(0), 'the source B keeps its greens').toBe(true)
+  })
+
+  it('a real content EDIT after signing still invalidates (restamp never revives a moved-out signature)', () => {
+    signBound(0)
+    draftDup(0)                                        // both plans signed (identical)
+    expect(daySigned(0)).toBe(true)
+    DAYS[0].notes = DAYS[0].notes || []
+    DAYS[0].notes.push({ rid: 'nps2', t: 'edit on plan B' })
+    expect(daySigned(0), 'a content change still clears validity — dg/iso/base still checked').toBe(false)
   })
 })

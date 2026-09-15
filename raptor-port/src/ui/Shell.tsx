@@ -8,7 +8,6 @@ import { PEOPLE } from '../engine/people'
 import { CURWEEK } from '../engine/waves'
 import { weekWindow } from './weeknav'
 import { CalIcon, XlsIcon, PdfIcon, HistIcon, HlIcon, SrchIcon } from './icons'
-import { SCHED, approvedDays, alColor, alCount, daysLabel, pendDays, pendCount, verLabel } from '../engine/publish'
 import { rulesOffCount } from '../engine/rules'
 import { SESSION, ME, setMe, canToggleRole } from '../state/auth'
 import { resetSession, toggleRole, notify, setPage } from '../state/store'
@@ -16,7 +15,7 @@ import { HLSET, SEARCH, HLOPEN, toggleHlOpen, HLGROUP, setSearch, CURPAGE, setDa
 import { HlChips } from './hlchips'
 import { initDrag } from './drag'
 import { initPan, updateWeekNav, panDays } from './pan'
-import { signOf } from '../engine/publish'
+import { setSign, daySigned, dayApproved, dayHasChanges } from '../engine/publish'
 import { HOOKS } from '../engine/hooks'
 import { canEditSched } from '../state/auth'
 import { slotVal, setSlotVal } from '../engine/slots'
@@ -62,25 +61,13 @@ import { HelpPage } from './HelpPage'
 import { SaveStatus } from './SaveStatus'
 import { bugAlert, unseenReports } from '../state/reports'
 
-/* the week banner — the exact strings renderStatus builds, as a pure value */
-function banner() {
-  const al = SCHED.al, col = alColor(al)
-  const okD = approvedDays(), okN = okD.length, tot = DAYS.length
-  let txt: string, cls: string
-  if (okN === 0 && SCHED.als.length) { txt = `REOPENED · ${SCHED.als.length} amendment${SCHED.als.length > 1 ? 's' : ''} still issued`; cls = 'part' }
-  else if (okN === 0) { txt = 'DRAFT · no days published'; cls = 'draft' }
-  else if (okN < tot) { txt = `PART-PUBLISHED · ${okN} of ${tot} days`; cls = 'part' }
-  else if (al > 0) { txt = `AL${al} PUBLISHED · all ${tot} days published`; cls = 'al' }
-  else { txt = `APPROVED · all ${tot} days published`; cls = 'approved' }
-  const which = okN && okN < tot ? ` · ${daysLabel(okD)}` : ''
-  const pd = pendDays(), np = pendCount()
-  const extra = np ? ` · ${np} unpublished edit${np > 1 ? 's' : ''} on ${daysLabel(pd)}` : ''
-  const alRoll = SCHED.als.length
-    ? `<span class="sb-als">` + SCHED.als.slice().sort((a: any, b: any) => a.iso === b.iso ? +a.seq - +b.seq : (a.iso < b.iso ? -1 : 1))
-      .map((a: any) => `<span class="sb-al" data-alc="${a.seq}" title="${verLabel(a.id)} — ${alCount(a)} item${alCount(a) > 1 ? 's' : ''} on ${daysLabel([a.di])}"><b>${verLabel(a.id)}</b> ${daysLabel([a.di])}</span>`).join('') + `</span>`
-    : ''
-  return { col, cls, html: `<span class="sb-badge">${txt}${which}${extra}</span>` + alRoll }
-}
+/* THE WEEK BANNER IS GONE (owner, 15 Sep 26 — item 2). First the week-STATUS
+   text went (each day wears its own green issued-version tag / dashed DRAFT tag);
+   now the amendment ROLL (.sb-als — one chip per issued AL) goes too, finishing
+   the removal. The only thing the banner still carries is the RULES MODIFIED
+   stamp (::after in scheduler.css), so the #vBanner/#eBanner elements stay as its
+   host — collapsed (display:none) unless rules are modified, when a `.rules-off`
+   class shows just that stamp. No AL roll, no status colour, nothing else. */
 
 /* The HL_CHIPS lists moved to ui/hlchips.tsx (23 Aug 26) — one definition,
    three surfaces (view week, edit week, board), the drift-seam doctrine. */
@@ -168,7 +155,18 @@ export function Shell() {
       const sel = (e.target as HTMLElement).closest('select[data-sign]') as HTMLSelectElement | null
       if (!sel) return
       const di = +sel.dataset.signday!
-      signOf(di)[sel.dataset.sign!] = sel.value
+      const wasSigned = daySigned(di)             // capture BEFORE, so the note fires only on COMPLETING the set
+      setSign(di, sel.dataset.sign!, sel.value)   // AM-06: binds the signature to the content it signed
+      /* R2 (owner, 15 Sep 26): completing the four sign-offs on an ALREADY-published
+         day with nothing pending correctly shows NO publish button — which reads like
+         a bug ("I signed everything, where's publish?"). Say so, once, only on the
+         transition INTO fully-signed (not when re-picking a name on an already-signed
+         day — Codex PSF-004). Not on an unpublished day: there, signing IS what
+         unlocks the first publish, so the button appears and there is no confusion.
+         dayHasChanges is the one publish-eligibility authority (same one the status
+         line reads). */
+      if (!wasSigned && daySigned(di) && dayApproved(di) && !dayHasChanges(di))
+        HOOKS.toast('All signed — no changes to publish right now')
       HOOKS.histPush(); HOOKS.reflow()
     }
     /* right-click a filled slot in edit mode → clear it (reference verbatim,
@@ -232,11 +230,9 @@ export function Shell() {
      be set only by renderLogic(), so a reload with saved overrides showed a
      clean banner until someone happened to open Logic" (audit2 probe #6) */
   useEffect(() => { document.body.classList.toggle('page-rules-off', !!rulesOffCount()) })
-  /* NO validate() here: the reference never validates during a repaint — the
-     banner reads WARN as the last mutation left it (initStore and every
-     mutation path have already validated), and a second engine pass per paint
-     is what blew the phone budget */
-  const b = banner()
+  /* NO validate() here: the reference never validates during a repaint — every
+     mutation path has already validated, and a second engine pass per paint is
+     what blew the phone budget */
   const admin = SESSION && SESSION.role === 'admin'
   const nav = (p: string) => { setPage(p); notify() }
   /* The five page tabs are <a>s with no href — visually a nav, but the reference
@@ -453,8 +449,7 @@ export function Shell() {
               onInput={e => { setSearch((e.target as HTMLInputElement).value); notify() }} /></div>
           </div>
         </div>
-        <div className={'schedbanner ' + b.cls + (rulesOffCount() ? ' rules-off' : '')} id="vBanner"
-          style={{ ['--al' as any]: b.col }} dangerouslySetInnerHTML={{ __html: b.html }} />
+        <div className={'schedbanner' + (rulesOffCount() ? ' rules-off' : '')} id="vBanner" />
         <details className="legendbox" id="vLegendBox">
           <summary className="legend-sum">Legend — colours &amp; flags</summary>
           <div className="legend" id="vLegend" dangerouslySetInnerHTML={{ __html: legendHTML() }} />
@@ -468,7 +463,7 @@ export function Shell() {
      lit state render here, so a fold or a search that changes without either
      in the list would paint stale (SEARCH is the toggle's other lit source —
      spec'd as HLOPEN alone, added for the same staleness reason). */
-  ), [page, b.cls, b.col, b.html, hlSig, HLOPEN, HLGROUP, SEARCH, rulesOff, legend, CURWEEK])
+  ), [page, hlSig, HLOPEN, HLGROUP, SEARCH, rulesOff, legend, CURWEEK])
 
   /* .editing rides unconditionally with the page since the Edit-mode toggle
      went (owner, 9 Aug 26): being on Edit Schedule IS the edit mode. */
@@ -533,8 +528,7 @@ export function Shell() {
               to this prototype" title was removed (owner, 22 Aug 26) on both
               widths — it carried a stale hardcoded date and being on Edit
               Schedule already says it is the edit surface. */}
-          <div className={'schedbanner ' + b.cls} id="eBanner" style={{ ['--al' as any]: b.col }}
-            dangerouslySetInnerHTML={{ __html: b.html }} />
+          <div className={'schedbanner' + (rulesOffCount() ? ' rules-off' : '')} id="eBanner" />
           <ALPanel />
           <details className="legendbox" id="eLegendBox">
             <summary className="legend-sum">Legend — colours &amp; flags</summary>
@@ -562,10 +556,10 @@ export function Shell() {
      without hlSig the chips' .on state would go stale the moment a chip was
      toggled on another surface, and without HLOPEN/SEARCH the fold and the
      toggle's lit state would freeze (same reasoning as the view page's). */
-  ), [page, b.cls, b.col, b.html, HIST.ix, HIST.stack.length, hlSig, HLOPEN, HLGROUP, SEARCH, legend, CURWEEK])
+  ), [page, rulesOff, HIST.ix, HIST.stack.length, hlSig, HLOPEN, HLGROUP, SEARCH, legend, CURWEEK])
 
   return (
-    <div id="shell" style={{ ['--al' as any]: b.col }}>
+    <div id="shell">
       {topbar}
       {viewPage}
       {editPage}

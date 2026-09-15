@@ -1,5 +1,5 @@
-/* The Drafts manage modal (owner, 15 Aug 26) — opened from the drafts menu's
-   pencils (board.ts's draftsMenu), on either surface, and SCOPED TO ONE DAY:
+/* The plans manage modal (owner, 15 Aug 26; "Plan" rename 15 Sep 26) — opened
+   from the plans menu's pencils (board.ts's planMenu), and SCOPED TO ONE DAY:
    drafts are per-day alternate blobs, so unlike DayTplModal's global library
    this modal manages exactly the day whose menu opened it. Same shape
    otherwise: pops.ts flag, hidden shell when closed, App.tsx mount, tabs
@@ -57,7 +57,7 @@ export function DraftsModal() {
          blobs ride histSnap, so one push makes it one ordinary undo step */
       HOOKS.histPush()
     } else {
-      HOOKS.toast(nm.trim() ? 'Another draft on this day already has that name' : 'A draft needs a name', 'warn')
+      HOOKS.toast(nm.trim() ? 'Another plan on this day already has that name' : 'A plan needs a name', 'warn')
     }
     setNm(null); notify()
   }
@@ -65,7 +65,7 @@ export function DraftsModal() {
   return (
     <div className="modal" id="draftsModal" onClick={e => { if ((e.target as HTMLElement).id === 'draftsModal') close() }}>
       <div className="modal-box" style={{ width: 460 }}>
-        <div className="modal-head"><b>Drafts — {d ? d.dow : ''}</b><button className="x" id="draftsClose" onClick={close}>✕</button></div>
+        <div className="modal-head"><b>Plans — {d ? d.dow : ''}</b><button className="x" id="draftsClose" onClick={close}>✕</button></div>
         <div className="modal-body">
           {list.length
             ? <>
@@ -76,7 +76,7 @@ export function DraftsModal() {
                   ))}
                 </div>
                 <input className="tpl-name" value={nm ?? (t ? t.name : '')} maxLength={MAX_DRAFT_NAME}
-                  aria-label="Draft name"
+                  aria-label="Plan name"
                   onChange={e => setNm(e.target.value)}
                   onBlur={commitName}
                   onKeyDown={e => { if (e.key === 'Enter') commitName() }} />
@@ -91,33 +91,35 @@ export function DraftsModal() {
                       : `A stored alternative — Select makes it the live ${d ? d.dow : 'day'}; its differences from the issued schedule become pending.`)
                     : (isLive
                       ? `"${t!.name}" is the live ${d ? d.dow : 'day'} — publishing the day publishes it.`
-                      : `A stored alternative — Select makes it the live ${d ? d.dow : 'day'}. The selected draft is what publishes.`)}
+                      : `A stored alternative — Select makes it the live ${d ? d.dow : 'day'}. The selected plan is what publishes.`)}
                 </div>
               </>
             : <div className="sb-empty" style={{ padding: '14px 0' }}>
-                No drafts on this day yet — choose "Duplicate this day" in the Drafts
+                No plans on this day yet — choose "+ Alt Plan" in the plans
                 menu to plan an alternative over a copy.
               </div>}
         </div>
         <div className="modal-foot">
           <button className="abtn danger" style={{ marginRight: 'auto' }} disabled={!t || isLive}
-            title={isLive ? 'This draft is the live day — switch to another draft first' : 'Delete this draft'}
+            title={isLive ? 'This plan is the live day — switch to another plan first' : 'Delete this plan'}
             onClick={() => {
               if (!t || !draftDelete(di, t.id)) return
               const name = t.name
               /* deletion rides the undo stack like the rename above; any frozen
-                 preview of the deleted draft falls out through prunePreviews'
-                 daySnapOf test on the next paint */
+                 preview of the deleted plan falls out through prunePreviews'
+                 daySnapOf test on the next paint. Deleting down to one clears the
+                 day's plans (engine B1), so dayDrafts may now be empty — setSel
+                 falls back to null and the modal shows its empty state. */
               HOOKS.histPush()
               setSel(dayDrafts(di)[0] ? dayDrafts(di)[0].id : null)
               setNm(null)
               notify()
               /* the menu's own create/select actions already toast (board.ts's
                  draftDup/switchDraft) — deleting was the one silent one left */
-              HOOKS.toast(`"${name}" draft deleted`, 'ok')
-            }}>Delete draft</button>
+              HOOKS.toast(`"${name}" plan deleted`, 'ok')
+            }}>Delete plan</button>
           <button className="abtn" disabled={!t || isLive}
-            title={isLive ? 'Already the live day' : 'Make this draft the live day'}
+            title={isLive ? 'Already the live day' : 'Make this plan the live day'}
             onClick={() => { if (t && switchDraft(di, t.id)) notify() }}>Select</button>
           <button className="abtn primary" onClick={close}>Done</button>
         </div>

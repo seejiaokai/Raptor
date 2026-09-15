@@ -76,8 +76,11 @@ describe('the app shell', () => {
      it"). Their absence is pinned, not just untested: every day already leads
      with its own issue count, and a later "the topbar looks empty" pass must
      not put the sum back. */
-  it('the banner reads DRAFT, and the topbar carries no warning count pills', () => {
-    expect(host.querySelector('#vBanner')!.textContent).toContain('DRAFT')
+  it('the week-status banner text is retired, and the topbar carries no warning count pills', () => {
+    /* the DRAFT/PART-PUBLISHED/APPROVED banner text is gone (owner, 15 Sep 26) —
+       per-day green/DRAFT tags carry it now; the banner keeps only the AL roll,
+       empty on a fully-draft week. */
+    expect(host.querySelector('#vBanner')!.textContent!.trim()).toBe('')
     for (const id of ['#warnBtn', '#warnBtn2', '#warnBtn3', '#nHard', '#nAdv', '#nNote'])
       expect(host.querySelector(id), `${id} is gone from the topbar`).toBeNull()
   })

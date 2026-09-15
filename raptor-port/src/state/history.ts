@@ -20,7 +20,7 @@ const syncHistBtns=()=>HOOKS.syncHistBtns()
    added. Same key ORDER as histSnap always wrote them in, so splicing this
    in with `...schedFields()` leaves histSnap's JSON.stringify output
    byte-identical to before this existed. */
-export function schedFields(){return {c:SCHED.changes,p:SCHED.pending,ad:SCHED.added,a:SCHED.als,al:SCHED.al,ok:SCHED.dayOK,sg:SCHED.sign,o:SCHED.orig,cv:SCHED.cur,dr:SCHED.drafts,cd:SCHED.curDraft,v:SCHED.ridV,am:SCHED.amV}}
+export function schedFields(){return {c:SCHED.changes,p:SCHED.pending,ad:SCHED.added,a:SCHED.als,al:SCHED.al,ok:SCHED.dayOK,sg:SCHED.sign,sb:SCHED.signBind,o:SCHED.orig,cv:SCHED.cur,dr:SCHED.drafts,cd:SCHED.curDraft,v:SCHED.ridV,am:SCHED.amV}}
 export const HIST:any={stack:[],ix:-1,lock:false,cap:60};
 /* `ok` carries SCHED.dayOK — the per-day publish state. It replaced the old
    week-wide ap/dr pair, so publishing or reopening a single day is an ordinary
@@ -72,6 +72,7 @@ export function histRestore(snapStr:any){
   SCHED.changes=s.c||{}; SCHED.pending=s.p||{}; SCHED.added=s.ad||{}; SCHED.als=s.a||[];
   SCHED.al=s.al||0; SCHED.dayOK=s.ok||{};
   SCHED.sign=s.sg||{};
+  SCHED.signBind=s.sb||{};   // AM-06 content bindings ride the snapshot so undo re-verifies (F-09)
   SCHED.orig=s.o||{};
   SCHED.cur=s.cv||{};   // stale entries are inert — dayCurVer self-heals
   SCHED.drafts=s.dr||{}; SCHED.curDraft=s.cd||{};

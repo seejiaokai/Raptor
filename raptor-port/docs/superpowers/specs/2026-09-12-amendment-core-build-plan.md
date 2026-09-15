@@ -37,9 +37,45 @@ one deliberate test-first unit rather than piecemeal:
   per-path replacement map, and the test-rewrite list), then build it test-first
   as a coherent unit. HEAVY, silent-defect, saved-data territory.
 
-**Resume at Phase 2 (b/c) — the coupled record rewrite** (per-day sequence +
-verId key + stored diff + take-back removal), following the sequencing note
-above.
+**Phase 2 COMPLETE + merged** (the coupled record rewrite: per-day sequence, verId
+key, stored diff, take-backs removed; three review rounds + quarantine redesign; on
+`main`). Phases 1a/1c also on `main`.
+
+**Phase 3 (signatures bound to content, AM-06) — CORE done (14 Sep 2026)** on
+`claude/amendment-engine-core`, test-first (`engine/signbind.test.ts`, 9 green).
+A signature now records, at sign time, the content it signed — canonical digest
+(§5.0) + schedule date + current issued base id + candidate (plan/draft) revision —
+in a new `SCHED.signBind` field that rides `schedFields()`/`histApply`/the week
+stash. Validity is RECOMPUTED on every read (`signMissing`), never cleared by a
+hook (Rev-4 command-layer §2.1): an edit silently invalidates every signature with
+no cell touched, an undo or in-place revert to the signed content re-validates it
+(F-09), a plan switch or a newer issued baseline invalidates it, and issuing spends
+the binding with the signature. The one production sign path (`Shell.tsx` →
+`setSign`) always binds; a legacy/demo signer written with no binding stays
+appointment-only-valid (back-compat; demo data is reset, not migrated). Gates:
+`npm test` 4657/4657, `node reference/tfin.js` 728/0, `npm run build` clean; browser
+gates (e2e/smoke) deferred to pre-merge (logic-only change). **Hold for "merge live".**
+- **Remaining in Phase 3 (checkpoint — owner steer):** (a) the "relevant automatic
+  input updates (availability/currency) invalidate with no cell touched" tie-in
+  needs the frozen-availability projection in the canonical content (AM-04) — the
+  digest does not yet include availability, so an availability-only change does not
+  yet move it; (b) the publish-entry **validation matrix** (§12 item 3: rerun the
+  rules at every publish entry, hard issues BLOCK vs advisories need a recorded ack)
+  — the signature-content gate blocks a stale-signature publish today, but publish
+  does not yet re-run `validate` with a hard/soft split.
+
+**Phase 4 (backups/contingency §4) — SIMPLIFIED by owner (14–15 Sep). The elaborate
+activation flow (three-way base→issued→candidate diff, itemised keep/revert screen,
+stale-confirm) is REJECTED.** Owner: bringing out a saved plan is treated EXACTLY like
+manually editing the day into that shape — changed items show as the normal AL marks,
+sign, publish as the next AL; the old version stays frozen in history. This ALREADY works
+(`drafts.ts:draftSelect`→`rebaseDayPending` + publish; Phase 3 re-sets signatures on the
+change), so there is nothing to build for activation. A Phase-4a `planActivationReview` +
+`base`/`baseDg` provenance build was made then reverted (local-only, never pushed). The one
+open item is a cosmetic rename of "Draft 1/2" → "Plan A/B" (owner go/skip pending). See
+`docs/session-state.md` + memory `amendment-plan-activation-is-plain-edit`.
+(Phase 5 migration SKIPPED — owner, 14 Sep: reset demo data, don't migrate; the DB step
+owns migration once. Rev-4 command-layer spec §9 flags the same.)
 **Spec (frozen):** `2026-09-12-amendment-core-build-brief.md` (Rev 5, core scope).
 **Decisions/rationale:** `2026-09-11-amendment-model-decisions.md`.
 **Scope:** the Rev 3-converged core + four must-fixes + durability/undo/crew.

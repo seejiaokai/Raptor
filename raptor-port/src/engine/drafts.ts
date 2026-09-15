@@ -19,7 +19,9 @@ import { ridKey, posKey, rowsOf, ensureRowIds } from './rowids'
    that is the whole point of the shape.
 
    State rides SCHED (engine/publish.ts) rather than a module of its own:
-     SCHED.drafts   — {di: [{id, name, d}]}   the day's blobs
+     SCHED.drafts   — {di: [{id, name, d, sign?, signBind?}]}  the day's blobs
+                      (sign/signBind ride the blob since 15 Sep 26 — each plan owns
+                      its four sign-offs, item 1a)
      SCHED.curDraft — {di: id}                which entry the live day IS
    so it serializes with undo exactly like the AL records do —
    state/history.ts's histSnap/histApply carry both fields explicitly. Like
@@ -35,6 +37,31 @@ import { ridKey, posKey, rowsOf, ensureRowIds } from './rowids'
 export const MAX_DRAFT_NAME = 24
 
 const clone = (o: any) => JSON.parse(JSON.stringify(o))
+
+/* PER-PLAN SIGN-OFFS (owner, 15 Sep 26 — item 1a): a plan is an alternate VERSION
+   of the day and owns its four sign-offs. draftDup/draftSelect stow and load the
+   day's sign state on the plan blob alongside its content, so signing Plan B never
+   bleeds onto Plan A. Cloned so a stowed blob never shares the object SCHED.sign[di]
+   keeps mutating; signBind rides too so validity survives the round trip (a plan-rev
+   mismatch alone invalidates a signature — engine/signbind). schedFields already
+   serializes sg+sb, so undo/stash carry a plan's sign the same way. */
+const signSnap = (di: number) => ({
+  sign: clone((SCHED.sign || {})[di] || { cur: '', sked: '', plan: '', appr: '' }),
+  signBind: clone((SCHED.signBind || {})[di] || {}),
+})
+
+/* A content-preserving plan transition (a duplicate, or a delete down to one) changes
+   only a signature binding's plan-REVISION (currentBind.rev = SCHED.curDraft[di]), not
+   the content it signed. Without this, duplicating or collapsing a SIGNED day would
+   silently blank its sign-offs (Codex PSF-002 / Fable #1): the copied binding still
+   names the old plan revision and fails the rev check. Re-stamp a binding's rev from
+   `from` to `to` ONLY when it currently reads `from` — dg/iso/base are still checked,
+   so this can never revive a signature the content or issued base has moved out from
+   under, it only carries an IDENTICAL-content signature onto its new plan id. */
+const restampRev = (bind: any, from: any, to: any) => {
+  if (!bind) return
+  for (const r of Object.keys(bind)) { if (bind[r] && bind[r].rev === from) bind[r].rev = to }
+}
 
 /* the day's draft list — empty array (not undefined) when the day has none,
    so every caller can .map/.length without a guard */
@@ -73,13 +100,20 @@ const newId = (list: any[]) => {
   return 'dr' + (n + 1)
 }
 
-/* the next default name: highest existing "Draft N" + 1, so renaming Draft 2
-   to "Wet weather" then duplicating again still mints "Draft 3", and deleting
-   Draft 2 never lets a later mint collide with a surviving Draft 3 */
-const nextNum = (list: any[]) => {
-  let n = 0
-  list.forEach((t: any) => { const m = /^Draft (\d+)$/.exec(String(t.name)); if (m) n = Math.max(n, +m[1]!) })
-  return n + 1
+/* the next default name: LETTERED plans (owner, 15 Sep 26 — "Draft" became
+   "Plan", lettered A/B/C). Walk the sequence Plan A … Plan Z, then Plan 27, Plan
+   28, … and return the first name NO existing entry holds. Comparing whole
+   candidate NAMES (not just the letter index) is load-bearing: past Z the fallback
+   is numeric, and a letter-only "used" set would never mark "Plan 27" used and so
+   would mint it forever (Codex PS-005 / Fable #1). It also means a rename to
+   "Plan C" frees C for reuse and blocks a fresh "Plan C" — one uniqueness rule,
+   the same day-wide invariant draftRename enforces. */
+const nextName = (list: any[]) => {
+  const names = new Set(list.map((t: any) => String(t.name)))
+  for (let i = 0; ; i++) {
+    const nm = 'Plan ' + (i < 26 ? String.fromCharCode(65 + i) : String(i + 1))
+    if (!names.has(nm)) return nm
+  }
 }
 
 /* Duplicate the live day into a new draft and switch the working copy to it.
@@ -130,19 +164,36 @@ export function draftDup(di: any) {
        fresh id at the next histPush, so a real add is never read as a survivor —
        which is what let the swap-time adoption gate (and its RID-R4-01 hole) be
        removed entirely. */
-    list.push({ id: newId(list), name: 'Draft 1', d: clone(DAYS[di]) })
-    const t = { id: newId(list), name: 'Draft 2', d: clone(DAYS[di]) }
+    /* both blobs copy the live day's current sign state (they are identical copies
+       of the live day), so a day SIGNED before it was duplicated carries its
+       sign-offs into both plans — validity is still recomputed per plan (item 1a).
+       The pre-dup day had no plan (rev ''), so re-stamp each destination's binding
+       rev to its own id, and the live copy (which IS Plan B) to Plan B's id, or the
+       identical-content signatures would read invalid (restampRev above). */
+    const a = { id: newId(list), name: nextName(list), d: clone(DAYS[di]), ...signSnap(di) }   // Plan A
+    list.push(a)
+    const t = { id: newId(list), name: nextName(list), d: clone(DAYS[di]), ...signSnap(di) }   // Plan B, selected
     list.push(t)
     SCHED.curDraft[di] = t.id
+    restampRev(a.signBind, '', a.id)                       // Plan A IS the pre-dup day
+    restampRev(t.signBind, '', t.id)                       // Plan B is an identical copy
+    restampRev((SCHED.signBind || {})[di], '', t.id)       // the live day IS Plan B now
     return t
   }
   const cur = list.find((x: any) => x.id === SCHED.curDraft[di])
   /* a later dup: stow live into the entry being left behind and mint a new
-     entry as a plain clone of live — both keep live's ids (keep-ids, above) */
-  if (cur) cur.d = clone(DAYS[di])
-  const t = { id: newId(list), name: 'Draft ' + nextNum(list), d: clone(DAYS[di]) }
+     entry as a plain clone of live — both keep live's ids (keep-ids, above) and
+     both carry the live sign state (per-plan sign-offs, item 1a) */
+  if (cur) { cur.d = clone(DAYS[di]); const s = signSnap(di); cur.sign = s.sign; cur.signBind = s.signBind }
+  const t = { id: newId(list), name: nextName(list), d: clone(DAYS[di]), ...signSnap(di) }
   list.push(t)
   SCHED.curDraft[di] = t.id
+  /* the new plan is an identical copy of the plan just left (cur) — carry cur's
+     signatures onto the new plan id so an identical copy stays signed (cur's own
+     blob keeps its rev and stays valid for cur). */
+  const from = cur ? cur.id : ''
+  restampRev(t.signBind, from, t.id)
+  restampRev((SCHED.signBind || {})[di], from, t.id)
   return t
 }
 
@@ -184,7 +235,7 @@ export function draftSelect(di: any, id: any) {
      live content — skip the stow rather than guess which blob to overwrite.
      Mint before the stow (Astra RID-IR-05) so the stowed blob never carries an
      id-less row; a no-op in production where the day already has its ids. */
-  if (cur) { ensureRowIds(DAYS); cur.d = clone(DAYS[di]) }
+  if (cur) { ensureRowIds(DAYS); cur.d = clone(DAYS[di]); const s = signSnap(di); cur.sign = s.sign; cur.signBind = s.signBind }
   const nd = clone(t.d)
   nd.today = !!(DAYS[di] && DAYS[di].today)
   DAYS[di] = nd
@@ -199,6 +250,14 @@ export function draftSelect(di: any, id: any) {
     Object.keys(SCHED.pending).forEach((k: any) => { if (keyDay(k) === di) delete SCHED.pending[k] })
     Object.keys(SCHED.added || {}).forEach((k: any) => { if (keyDay(k) === di) delete SCHED.added[k] })
   }
+  /* PER-PLAN SIGN-OFFS (owner, 15 Sep 26 — item 1a): load the incoming plan's own
+     sign state (the outgoing plan's was stowed on its blob above). A plan never
+     signed reads empty; one that was signed comes back green, because signBind rode
+     the blob and its plan-rev now matches curDraft again. */
+  SCHED.sign = SCHED.sign || {}
+  SCHED.sign[di] = clone(t.sign || { cur: '', sked: '', plan: '', appr: '' })
+  SCHED.signBind = SCHED.signBind || {}
+  SCHED.signBind[di] = clone(t.signBind || {})
   SCHED.curDraft = SCHED.curDraft || {}
   SCHED.curDraft[di] = id
   return true
@@ -424,8 +483,14 @@ export function draftRename(di: any, id: any, name: any) {
 /* delete: any entry EXCEPT the selected one — the selected draft IS the live
    day, and deleting the thing being edited from underneath itself is exactly
    the ambiguity this refusal exists to prevent (the caller toasts "Switch to
-   another draft first"). A list holding one entry is legal: deleting the
-   others just leaves the selected plan as the only named one. */
+   another draft first").
+   DELETE DOWN TO ONE CLEARS THE DAY'S PLANS (owner, 15 Sep 26 — B1 option a):
+   once only the selected plan is left, the list no longer holds an ALTERNATIVE,
+   so the "Plan A" label is meaningless — the day is just its live working copy
+   again. Drop SCHED.drafts[di]/curDraft[di] entirely so the selector returns to
+   "Live working copy" (the matrix's no-plans state). The live DAYS[di] IS the
+   surviving plan's content, so nothing is lost; histApply round-trips the empty
+   fields exactly as it round-trips a populated list. */
 export function draftDelete(di: any, id: any) {
   di = +di
   if (protectedWeek()) return false   // read-only quarantine — the draft list rides the frozen blob (P2-REV2-02)
@@ -434,6 +499,16 @@ export function draftDelete(di: any, id: any) {
   const i = list.findIndex((x: any) => x.id === id)
   if (i < 0) return false
   list.splice(i, 1)
+  if (list.length === 1) {
+    /* collapsing to one plan drops the plan structure (the live day is just its
+       working copy again, rev ''). Re-stamp the surviving live signatures from the
+       plan id to '' so a SIGNED survivor keeps its sign-offs — content is unchanged,
+       only the plan-revision (Codex PSF-002 / Fable #1). Do this BEFORE clearing
+       curDraft, while it still names the survivor. */
+    restampRev((SCHED.signBind || {})[di], String(curDraftId(di)), '')
+    if (SCHED.drafts) delete SCHED.drafts[di]
+    if (SCHED.curDraft) delete SCHED.curDraft[di]
+  }
   return true
 }
 

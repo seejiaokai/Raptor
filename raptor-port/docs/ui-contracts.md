@@ -640,19 +640,39 @@ becomes the preview banner. Belt-and-braces gates on stale markup:
 `armSlot`, `boardChange`/`boardMbtn`/`boardArmClick`, `dragFrom`
 (`.preview`/`.pv-frozen`), Shell's contextmenu clear. Previews are pruned
 lazily (EditWeek/SchedBoard), on `histApply`, and on week switch.
-**The version cluster (redesigned, owner 16 Aug 26 — "I feel confused").**
-`verSelHTML` (edit week) and the board's React `.dver` both split the one
-dropdown into two `<optgroup>`s — **Your plans** (the live entry + the other
-drafts) and **Issued · read-only** (Original/ALn) — so a plan is never read as
-a document already issued. A persistent **Live-copy** control leads the
-cluster: a static green `.livebtn.on` "you are here" on the working copy, an
-active `.livebtn.back` **← Back to live copy** while previewing (`data-golive`
-→ `setDayPreview(di,null)`, pure view state, no gate). The board carries the
-same home button inside its preview banner (`.dprev-back`) rather than on its
-one-row phone bar. The reworded banner: an **issued** preview offers **"Load
-onto working copy"** (`data-restore`, was "Restore this version"); a **draft**
-preview offers **"Switch to this plan"** (`data-draftgo` → `draftSelect`,
-edit-surface-only — gated on `vsel`, since a preview always renders `ed=false`).
+**The plans selector (redesigned, owner 15 Sep 26 — LOCKED spec
+`docs/superpowers/specs/2026-09-15-plans-selector-redteam.md`).** ONE white
+button per day, `planSelectorHTML(di)` (`ui/html.ts`), shared verbatim by the
+week day head (inside the excised `.dhtpl`) and the board sign strip (`.sb-pub`)
+— A5, one builder so the two surfaces can't drift. Its LABEL is what you are
+looking at: "Live working copy", the live plan's name ("Plan B"), or amber
+"👁 AL2" while previewing (`.planselbtn.pv`). It ALWAYS renders (it is also the
+"+ Alt Plan" entry point), which is why it lives in the already-excised `.dhtpl`
+— the byte-parity day head is untouched (A6; the `noDhTpl` excision became a
+balanced-span walk because the selector nests its own `<span>`s). `data-planmenu`
+routes through `routeClick` (document level) to `planMenu` (`ui/board.ts`), which
+reads top-to-bottom: **editable copies** (tap = `switchDraft`, INSTANT, A4 — the
+edit side never `d:`-previews a plan, it switches; the live row carries
+`data-plangolive` = back-to-live) → **Issued · read-only** (`data-planpv` =
+`setDayPreview`, look don't switch) → **+ Alt Plan** (`data-plandup` =
+`draftDup`; withheld under `protectedWeek`, C2). A **green title tag**
+(`verTagHTML`, `.verchip`) beside the day title names the issued version
+(ORIG/ALn) once published, a dashed `DRAFT` tag while not — it REPLACED the
+"✓ Published · ALn" stamp; the publish ACTIONS (Publish day / Publish AL) stay as
+buttons, and Publish AL is hidden under a preview (A3). RETIRED by this redesign:
+`verSelHTML`/`dverSelectHTML`/`verSelBoardHTML`, the `<select data-dver>` on edit
+surfaces, the green `.livebtn` "Live copy" pill, the `.ddraft` "Publishes …"
+chip, and the week-status banner text (`Shell.tsx` `banner()` keeps only the AL
+roll). Plans are lettered A/B/C (`drafts.ts` `nextName`, C1 — lowest unused
+letter); deleting down to ONE clears the day's plans back to "Live working copy"
+(B1). **The VIEW page keeps its own pickers unchanged** (`viewDraftSelHTML`
+`data-dver` + the `d:` frozen preview, and `viewVerSelHTML` `data-vwork`) — the
+`d:` preview machinery (`daySnapOf`/`isDraftVer`/`draftVerLabel`) lives on for it.
+**← Back to live** (`data-golive` → `setDayPreview(di,null)`, pure view state, no
+gate) now lives in the read-only preview bar on BOTH surfaces (`.dprev-back`, A2).
+The reworded banner: an **issued** preview offers **"Load onto working copy"**
+(`data-restore`); a **draft** preview (view page only now) offers **"Switch to
+this plan"** (`data-draftgo` → `draftSelect`, gated on `vsel`).
 The `data-restore` button routes through `routeClick` →
 `loadVersionToWorkingCopy` (`engine/drafts.ts`) — **NOT a rollback** (owner, 16
 Aug 26 — "the view only schedule should still see AL1, it shouldn't go to
@@ -3264,14 +3284,14 @@ placed anywhere else on the day-head would have needed the byte-compare
 loosened for real markup, which is the one thing that gate exists to catch.
 
 **One picker per feature, reached from either door.** `board.ts`'s
-`dayTplMenu`/`draftsMenu` are the SINGLE builders; the board's own buttons
-(`data-daytpladd`/`data-draftsadd`, routed through `boardMbtn`) and the
-week's strip buttons (`data-daytplopen`/`data-draftsopen`, routed through
-`interactions.ts`'s `routeClick`) both open the identical popup — different
-data attributes only because the two handlers are scoped differently
-(`boardMbtn` requires `.mbtn` inside `#sbBoard`; `routeClick` is global), so
-a shared attribute name would risk one click opening the menu twice. Neither
-menu renders unless `canEditSched() && HOOKS.editMode()`.
+`dayTplMenu`/`planMenu` are the SINGLE builders. **Templates** still uses split
+attributes because its two handlers are scoped differently (`data-daytpladd`
+through `boardMbtn`, which requires `.mbtn` inside `#sbBoard`; `data-daytplopen`
+through `interactions.ts`'s global `routeClick`). **Plans** (owner, 15 Sep 26)
+uses ONE attribute for both surfaces — `data-planmenu` — because its selector
+renders in `#sbSign` (the sign strip, not `#sbBoard`), which `boardMbtn` does not
+cover, so `routeClick` catches it wherever it renders and no split is needed.
+Neither menu renders unless `canEditSched() && HOOKS.editMode()`.
 
 **Day templates**: the picker lists the saved library (tap = apply, with the
 day's read-only structure summary — waves/duty blocks/ground rows/sims
@@ -3286,33 +3306,32 @@ template's content is a whole day's worth of waves, duties, sims and ground
 rows, which already has its own editor (the board / the week themselves), so
 a second, narrower copy of those surfaces here would only drift from them.
 
-**Drafts**: the picker lists the day's drafts (tap a non-selected one to
-switch, the selected one marked ●), "+ Duplicate this day → new draft", then
-a ✎ per row into `DraftsModal.tsx` (scoped to the one day whose menu opened
-it, unlike the template library's global one). `DraftsModal.tsx`'s name
-field commits on blur/Enter, not per keystroke — `draftRename` refuses empty
-and duplicate names, and refusing mid-keystroke would fight the typist — and
-its Delete/Select buttons disable on the selected draft with a title
-explaining why. Duplicating and switching both toast a named sentence for
-the same no-single-key reason templates do.
+**Plans** (`planMenu`, owner 15 Sep 26): the menu lists the **editable copies**
+first — each plan (the live one marked ● and carrying `data-plangolive` =
+back-to-live; the others `data-plansel` = switch) or, when the day has none, a
+single "Live working copy" row. Then **Issued · read-only** rows (`data-planpv`
+= preview each ORIG/ALn), then **+ Alt Plan** (`data-plandup`). A ✎ per plan
+(`data-planedit`) and a "✎ Manage plans" (`data-planmanage`) open
+`DraftsModal.tsx` (scoped to the one day whose menu opened it). The modal's name
+field commits on blur/Enter, not per keystroke — `draftRename` refuses empty and
+duplicate names — and its Delete/Select buttons disable on the live plan with a
+title explaining why. Switching and "+ Alt Plan" both toast a named sentence.
+Plans are lettered A/B/C (`nextName`, lowest unused letter); deleting down to one
+clears the day's plans (B1). The selector's own LABEL names the live plan, so the
+old `.ddraft` "Publishes …" chip is retired.
 
-**The day-head strip names which draft is live** (edit surfaces only —
-`.ddraft`, next to the version chip, own colour so the "one version chip"
-pin does not count it): once a day has drafts, `dayStatHTML` says "`<name>`
-is the live one, and is what publishes" — the view page's own picker below
-already names the selected one, so this chip is `ed`-only.
-
-**Drafts on a published day (owner, 15 Aug 26 — the reopen-first refusal
-is gone).** The menu's rows and Duplicate all WORK on a published day now:
-`switchDraft` lets `draftSelect`'s rebase re-mark the day's pending set as
-the true diff against the issued document (engine-rules §Drafts), and its
-toast reports what that came to — "Switched to "X" — this is now the live
-Wed · 2 differences from AL1 pending" / "· matches AL1 — nothing pending".
-The menu carries a one-line note on a published day ("This day is published
-— the issued ALs don't change. Switching drafts marks the differences as
-pending."), the selected row's sublabel reads "live now — differences from
-`<verLabel>` go out as AL`<next>`" instead of "this is what publishes", and
-`DraftsModal.tsx`'s note switches register the same way. `applyDayTpl`'s
+**Plans on a published day (owner, 15 Aug 26 — the reopen-first refusal is
+gone).** Switching WORKS on a published day: `switchDraft` lets `draftSelect`'s
+rebase re-mark the day's pending set as the true diff against the issued document
+(engine-rules §Drafts), and its toast reports what that came to — "Switched to
+"X" … · 2 differences from AL1 pending" / "· matches AL1 — nothing pending". (The
+old "· signatures reset" clause is GONE since 15 Sep 26 — item 1a: each plan owns
+its four sign-offs, so a switch loads that plan's own sign state, it does not reset
+anything; an unsigned plan simply shows its own empty sign-off bar.) The menu
+carries a one-line note ("This day is published — the issued versions don't
+change. Switching plans marks the differences as the next AL."), the live row's
+sublabel reads "live now — differences from `<verLabel>` go out as AL`<next>`",
+and `DraftsModal.tsx`'s note switches register the same way. `applyDayTpl`'s
 "Reopen the day first" refusal stays — templates have no rebase.
 
 **The view-only week's picker** (`viewVerSelHTML`) branches on publish

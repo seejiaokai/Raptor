@@ -397,6 +397,13 @@ export type Day = {
 
 /** The four sign-off names for a day; each is a PEOPLE id ('' unsigned) on SCHED.sign, a callsign on an issued AL. */
 export type SignSet = { cur: string; sked: string; plan: string; appr: string }
+/** AM-06 (Phase 3) — the content a signed role is bound to, captured at sign
+ *  time: the canonical digest (§5.0), the schedule date, the current issued base
+ *  id, and the candidate (plan/draft) revision. A signature is content-valid only
+ *  while all four still match the live day; validity is recomputed, never cleared. */
+export type SignBinding = { dg: string; iso: string; base: string; rev: string; fil: string }
+/** Per-day, per-role bindings — only roles signed through `setSign` appear. */
+export type SignBindSet = Record<number, Partial<Record<keyof SignSet, SignBinding>>>
 
 /** A frozen day plus the AL marks it carried — engine (`daySnap`). */
 export type DaySnapshot = {
@@ -410,8 +417,12 @@ export type DaySnapshot = {
   id?: string
 }
 
-/** A per-day alternate draft blob — engine (drafts.ts). */
-export type DayDraft = { id: string; name: string; d: Day }
+/** A per-day alternate draft blob — engine (drafts.ts). Since 15 Sep 26 (item 1a)
+ *  each plan OWNS its four sign-offs: draftDup/draftSelect stow the day's sign state
+ *  (`sign`) and its AM-06 content bindings (`signBind`) on the blob, so switching
+ *  plans carries each plan's own sign-offs. Optional — a pre-15-Sep blob has neither
+ *  and loads as unsigned (fail closed). */
+export type DayDraft = { id: string; name: string; d: Day; sign?: SignSet; signBind?: Partial<Record<keyof SignSet, SignBinding>> }
 
 /** One canonical delta entry in an AL's frozen `diff` — engine (canonical.ts `DeltaEntry`). */
 export type AlDiffEntry = { addr: string; kind: 'add' | 'delete' | 'change' | 'move' | 'input'; from?: any; to?: any }
@@ -452,6 +463,8 @@ export type Sched = {
   dayOK: Record<number, 1>
   /** Sign-off names per day — engine (`signOf`); screen picks them. */
   sign: Record<number, SignSet>
+  /** AM-06 content bindings per day/role — engine (`setSign`/`signBindOf`); a signature reads valid only while its binding still matches the live content. */
+  signBind: SignBindSet
   /** The day as first published (seq 0), carrying its own verId — engine. */
   orig: Record<number, DaySnapshot>
   /** Which version each day currently shows — a verId (`iso#seq`; Original = `iso#0`) — engine. */
@@ -509,6 +522,7 @@ export type SchedFields = {
   al: Sched['al']
   ok: Sched['dayOK']
   sg: Sched['sign']
+  sb: Sched['signBind']
   o: Sched['orig']
   cv: Sched['cur']
   dr?: Sched['drafts']

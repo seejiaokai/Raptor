@@ -102,17 +102,23 @@ const weekView = (di: number) => {
   finally { setPage('editsched') }
 }
 
-/* what a surface SAYS about publish state, read off its rendered markup. The
-   same four chips are what a scheduler actually looks at: which draft
-   publishes, how many edits are ahead of the issued document, the published
-   stamp with its version tag, and the per-day "Publish ALn" button. */
+/* what a surface SAYS about publish state, read off its rendered markup (the
+   plans-selector redesign, owner 15 Sep 26). What a scheduler looks at: which
+   plan is live (the selector label), the green title tag naming the issued
+   version (or dashed DRAFT), how many edits are ahead of the issued document,
+   the Publish-day button while draft, and the per-day "Publish ALn" button.
+   `beak` is the non-AL publish button/stamp: "Publish day" (draft, edit),
+   "Draft"/"Working draft" (read-only stamps), or null once published on an edit
+   surface (the "✓ Published" stamp is retired — its info is the `ver` tag). */
 const pubState = (html: string) => {
   const r = el(html)
   const btn = r.querySelector('.dalpub')
+  const nonAlBeak = r.querySelector('.dbeak:not(.dalpub)')
   return {
-    draft: r.querySelector('.ddraft')?.textContent ?? null,
+    plan: r.querySelector('.planselbtn .psl')?.textContent ?? null,
+    ver: r.querySelector('.verchip')?.textContent ?? null,
     pend: r.querySelector('.dpend')?.textContent ?? null,
-    stamp: r.querySelector('.dbeak:not(.dalpub)')!.textContent,
+    beak: nonAlBeak ? nonAlBeak.textContent : null,
     alpub: btn ? btn.textContent : null,
   }
 }
@@ -137,36 +143,37 @@ const mbtn = (data: Record<string, string>) => {
 
 /* ===================================================================== 1 */
 describe('1 · lifecycle: unpublished day → sign → publish the Original', () => {
-  it('an unsigned day offers a LOCKED Publish button, and no version tag anywhere', () => {
-    /* dayStatHTML's stamp is a button while the day is draft, disabled until
-       the four sign-offs are in — "Sign off … before publishing" is the title.
-       The version tag rides INSIDE the stamp and only on a published day
-       (ui-contracts §The day-head version chip), so there is nothing to name
-       yet on any surface. */
+  it('an unsigned day offers a LOCKED Publish button, and a dashed DRAFT tag', () => {
+    /* dayStatHTML's beak is a button while the day is draft, disabled until the
+       four sign-offs are in. The green title tag (verTagHTML) reads a dashed
+       "DRAFT" until the day is published — no ORIG/ALn version to name yet. */
     const e = el(weekEdit(DI))
     const beak = e.querySelector('.dbeak') as HTMLButtonElement
     expect(beak.textContent).toBe('Publish day')
     expect(beak.hasAttribute('disabled')).toBe(true)
     expect(beak.className).toContain('locked')
-    expect(e.querySelector('.dal')).toBeNull()
+    expect(e.querySelector('.dal')).toBeNull()                        // the old chip is gone
+    expect(e.querySelector('.verchip')!.textContent).toBe('DRAFT')    // the new title tag
     /* the view page calls the same day "Draft", as a plain read-only stamp */
     expect(el(weekView(DI)).querySelector('.dbeak')!.textContent).toBe('Draft')
   })
 
-  it('signing unlocks the button; publishing stamps "✓ Published · ORIG" on all three surfaces', () => {
+  it('signing unlocks the button; publishing shows the green ORIG tag; the viewer picker names it', () => {
     sign(DI)
     expect((el(weekEdit(DI)).querySelector('.dbeak') as HTMLButtonElement).hasAttribute('disabled')).toBe(false)
     setDayApproved(DI, true)
     /* first publish stamps the Original (engine-rules §Version snapshots), so
-       dayCurVer resolves to 'orig' and every surface names ORIG — including a
-       day no AL has ever touched, which is the 16 Aug 26 change: "published…
-       what? Original Published makes sense". */
+       dayCurVer resolves to 'orig' and the edit surfaces name ORIG via the green
+       title tag; the "✓ Published" stamp itself is retired (owner, 15 Sep 26). */
     expect(verSeq(dayCurVer(DI))).toBe(0)   // the Original (seq 0)
-    expect(pubState(weekEdit(DI)).stamp).toBe('✓ Published · ORIG')
-    expect(pubState(boardStrip(DI)).stamp).toBe('✓ Published · ORIG')
-    expect(el(weekView(DI)).querySelector('.dbeak')!.textContent).toBe('✓ Published · ORIG')
-    /* ORIG is grey by design — the bare .dal fallback colour is AL1's cyan */
-    expect(el(weekEdit(DI)).querySelector('.dal')!.className).toBe('dal orig')
+    expect(pubState(weekEdit(DI)).ver).toBe('ORIG')
+    expect(pubState(boardStrip(DI)).ver).toBe('ORIG')
+    expect(pubState(weekEdit(DI)).beak).toBeNull()          // no "✓ Published" stamp any more
+    /* the view page names the issued version through its own picker */
+    expect((el(weekView(DI)).querySelector('select[data-vwork]') as HTMLSelectElement).options[0]!.text)
+      .toBe('Original — as issued')
+    /* ORIG is grey by design — the .verchip.orig tag */
+    expect(el(weekEdit(DI)).querySelector('.verchip')!.className).toBe('verchip orig')
   })
 
   it('the view week defaults to the FROZEN issued face, with no pending anywhere', () => {
@@ -250,8 +257,9 @@ describe('2 · editing after publish: pending on the edit surfaces, frozen for t
     publishDay(DI)
     toggleViewWork(DI, true)
     setPage('editsched')
-    expect(el(dayStatHTML(DI, false)).querySelector('.dbeak')!.textContent).toBe('✓ Published · ORIG')
-    expect(pubState(boardStrip(DI)).stamp).toBe('✓ Published · ORIG')
+    /* the working-draft STAMP must not bleed onto a read-only editsched render */
+    expect(el(dayStatHTML(DI, false)).querySelector('.dbeak.ro.work')).toBeNull()
+    expect(pubState(boardStrip(DI)).ver).toBe('ORIG')
   })
 
   it('Publish AL1 moves the edit into the issued document, tints it, and clears pending', () => {
@@ -266,13 +274,13 @@ describe('2 · editing after publish: pending on the edit surfaces, frozen for t
     expect(dayPendCount(DI)).toBe(0)
     expect(verSeq(dayCurVer(DI))).toBe(1)
     /* every surface now names AL1 */
-    expect(pubState(weekEdit(DI)).stamp).toBe('✓ Published · AL1')
+    expect(pubState(weekEdit(DI)).ver).toBe('AL1')
     expect(pubState(weekEdit(DI)).pend).toBeNull()
-    expect(pubState(boardStrip(DI)).stamp).toBe('✓ Published · AL1')
+    expect(pubState(boardStrip(DI)).ver).toBe('AL1')
     /* and the viewer's default face IS AL1 now — content and tint both, the
        tint read off the snapshot's own changes slice, not the live one */
     const v = el(weekView(DI))
-    expect(v.querySelector('.dbeak')!.textContent).toBe('✓ Published · AL1')
+    expect(v.textContent).not.toContain('✓ Published')      // the stamp is retired
     expect(v.textContent).toContain('AMENDED NOTE')
     expect(v.querySelector('.ah-note')!.getAttribute('data-alc')).toBe('1')
     expect((v.querySelector('select[data-vwork="0"]') as HTMLSelectElement).options[0]!.text)
@@ -442,11 +450,11 @@ describe('5 · drafts on a published day: the diff is rebased against the ISSUED
     draftDup(DI); afterSchedMutate()
     expect(dayPendCount(DI)).toBe(0)
     const [d1, d2] = dayDrafts(DI).map((t: any) => t.id)
-    /* the edit surfaces now name which plan publishes — the view page never
-       does, it has its own picker */
-    expect(pubState(weekEdit(DI)).draft).toBe('Publishes Draft 2')
-    expect(pubState(boardStrip(DI)).draft).toBe('Publishes Draft 2')
-    expect(el(weekView(DI)).querySelector('.ddraft')).toBeNull()
+    /* the edit surfaces now name which plan is live via the selector label — the
+       view page never does, it has its own picker */
+    expect(pubState(weekEdit(DI)).plan).toBe('Plan B')
+    expect(pubState(boardStrip(DI)).plan).toBe('Plan B')
+    expect(el(weekView(DI)).querySelector('.planselbtn')).toBeNull()
 
     writeText('dn:0.0', 'PLAN B NOTE')                 // diverge Draft 2
     expect(dayPendCount(DI)).toBe(1)
@@ -458,7 +466,7 @@ describe('5 · drafts on a published day: the diff is rebased against the ISSUED
     expect(dayPendCount(DI)).toBe(0)
     expect(pubState(weekEdit(DI)).pend).toBeNull()
     expect(pubState(boardStrip(DI)).pend).toBeNull()
-    expect(pubState(weekEdit(DI)).draft).toBe('Publishes Draft 1')
+    expect(pubState(weekEdit(DI)).plan).toBe('Plan A')
 
     /* and back — the stow kept Draft 2's edit, and the diff reappears */
     draftSelect(DI, d2); afterSchedMutate()
@@ -490,7 +498,7 @@ describe('5 · drafts on a published day: the diff is rebased against the ISSUED
     expect(pubState(weekEdit(DI)).alpub).toBe('Publish AL2')
     /* the issued face has not moved under any of it */
     expect(el(weekView(DI)).textContent).toContain('PLAN B NOTE')
-    expect(el(weekView(DI)).querySelector('.dbeak')!.textContent).toBe('✓ Published · AL1')
+    expect((el(weekView(DI)).querySelector('select[data-vwork]') as HTMLSelectElement).options[0]!.text).toBe('AL1 — as issued')
   })
 })
 
@@ -516,13 +524,13 @@ describe('6 · load a version onto the working copy: the viewer keeps seeing the
     expect(verSeq(SCHED.cur[DI])).toBe(1)
     expect(verSeq(dayCurVer(DI))).toBe(1)
     const v = el(weekView(DI))
-    expect(v.querySelector('.dbeak')!.textContent).toBe('✓ Published · AL1')
+    expect((v.querySelector('select[data-vwork]') as HTMLSelectElement).options[0]!.text).toBe('AL1 — as issued')
     expect(v.textContent).toContain('AMENDED NOTE')
     expect(v.textContent).not.toContain(orig)
     /* and the pending set is the diff of the loaded content against the still
        issued AL1 — one field, heading for AL2 */
     expect(Object.keys(SCHED.pending)).toEqual(['dn:0.0'])
-    expect(pubState(weekEdit(DI)).stamp).toBe('✓ Published · AL1')
+    expect(pubState(weekEdit(DI)).ver).toBe('AL1')
     expect(pubState(weekEdit(DI)).pend).toBe('1 pending')
     expect(pubState(weekEdit(DI)).alpub).toBe('Publish AL2')
     expect(pubState(boardStrip(DI)).alpub).toBe('Publish AL2')
@@ -566,7 +574,15 @@ describe('9 · cross-surface agreement: the week and the board read one state', 
      resolves its version through a third path (dayIssuedHTML → daySnapOf).
      Two copies of one rule is exactly where this app's publishing bugs live,
      so the agreement is asserted directly rather than assumed. */
-  const verOf = (html: string) => el(html).querySelector('.dal')?.textContent ?? null
+  /* the view page names its issued version through its picker (it has no green
+     title tag — that is an edit-surface thing); read the issued option, mapping
+     "Original" back to the ORIG label the edit tag uses. */
+  const verOf = (html: string) => {
+    const sel = el(html).querySelector('select[data-vwork]') as HTMLSelectElement | null
+    if (!sel) return null
+    const t = sel.options[0]!.text.replace(' — as issued', '')
+    return t === 'Original' ? 'ORIG' : t
+  }
 
   it('an amended, unpublished-edit state reads the same on the week, the board and the view page', () => {
     publishDay(DI)
@@ -579,7 +595,7 @@ describe('9 · cross-surface agreement: the week and the board read one state', 
     expect(week).toEqual(board)
     expect(week.pend).toBe('2 pending')
     expect(week.alpub).toBe('Publish AL2')
-    expect(week.stamp).toBe('✓ Published · AL1')
+    expect(week.ver).toBe('AL1')
     /* the view page names the same issued version — through its own resolver,
        and with none of the pending count (that is scheduler state) */
     expect(verOf(weekView(DI))).toBe('AL1')
@@ -594,16 +610,30 @@ describe('9 · cross-surface agreement: the week and the board read one state', 
     writeText('dn:0.0', 'PLAN B NOTE')
     const week = pubState(weekEdit(DI)), board = pubState(boardStrip(DI))
     expect(week).toEqual(board)
-    expect(week.draft).toBe('Publishes Draft 2')
+    expect(week.plan).toBe('Plan B')
     expect(week.pend).toBe('1 pending')
-    expect(week.stamp).toBe('✓ Published · ORIG')
+    expect(week.ver).toBe('ORIG')
     /* the view page shows the issued document and says nothing about drafts —
        stored alternatives are the scheduler's business once a day is out */
     const view = weekView(DI)
     const v = el(view)
-    expect(v.querySelector('.ddraft')).toBeNull()
+    expect(v.querySelector('.planselbtn')).toBeNull()   // no plans selector on the view page
     expect(v.querySelector('select[data-dver]')).toBeNull()
     expect(v.textContent).not.toContain('PLAN B NOTE')
     expect(verOf(view)).toBe('ORIG')
+  })
+})
+
+describe('the sign-off status line is robust to a missing snapshot (Fable #3)', () => {
+  it('an approved day whose snapshot cannot resolve reads "Signed", never "ALNaN"', () => {
+    publishDay(DI)                                  // approved at ORIG
+    /* corrupt to a probe/import state: approved but no resolvable current version */
+    delete SCHED.orig[DI]; delete SCHED.cur[DI]; SCHED.als = []
+    sign(DI)                                        // re-sign (publish spent them); unbound → daySigned true
+    expect(dayApproved(DI)).toBe(true)
+    expect(dayCurVer(DI) == null).toBe(true)
+    const state = el(dayHTML(DI, true, true)).querySelector('.so-state')!.textContent!
+    expect(state).not.toContain('NaN')
+    expect(state).toContain('Signed')
   })
 })

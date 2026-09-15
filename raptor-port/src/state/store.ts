@@ -457,7 +457,7 @@ function applyWeekModel(v: any): any {
     s.d.forEach((d: any, i: number) => { if (d && DATES[i] != null) d.dt = DATES[i] })
     SCHED.changes = s.c || {}; SCHED.pending = s.p || {}; SCHED.added = s.ad || {}
     SCHED.als = s.a || []; SCHED.al = s.al || 0; SCHED.dayOK = s.ok || {}
-    SCHED.sign = s.sg || {}; SCHED.orig = s.o || {}; SCHED.cur = s.cv || {}
+    SCHED.sign = s.sg || {}; SCHED.signBind = s.sb || {}; SCHED.orig = s.o || {}; SCHED.cur = s.cv || {}
     SCHED.drafts = s.dr || {}; SCHED.curDraft = s.cd || {}; SCHED.ridV = s.v   // undefined on a foundation-era book → migrateLegacyIds runs
     SCHED.amV = s.am   // undefined on a PRE-Phase-2 book → amFormatOf flags it unsupported (read-only, §5)
   } else {

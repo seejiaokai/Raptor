@@ -6,7 +6,7 @@
    history (no unpublish ✕ — take-backs are gone), its counts from the frozen
    diff. The week-wide AL-number dropdown is gone. */
 import { SCHED, pendCount, pendingPublishDays, publishALDay, discardPending, nextSeq, daySigned, signMissing, dowShort, diffCounts, dayDelta, verLabel, alCount, SIGN_ROLES } from '../engine/publish'
-import { esc } from '../state/view'
+import { esc, DPREV } from '../state/view'
 import { notify } from '../state/store'
 import { useVersion } from './useStore'
 
@@ -30,6 +30,12 @@ export function ALPanel() {
         ? <div className="al-pubdays">
             {pubDays.map((di: number) => {
               const c = diffCounts(dayDelta(di)), seq = nextSeq(di), signed = daySigned(di)
+              /* PREVIEW GUARD (owner, 15 Sep 26 — A3, Codex PS-001): while the
+                 day is showing a frozen version, "Publish AL" would publish the
+                 LIVE working copy, not the thing on screen. Hiding the day-head /
+                 board buttons is not enough — THIS panel's button reaches
+                 publishALDay too, so lock it (and re-check in the handler). */
+              const previewing = DPREV.has(di)
               const bits = [`${c.total} change${c.total === 1 ? '' : 's'}`]
               if (c.del) bits.push(`${c.del} removal${c.del > 1 ? 's' : ''}`)
               if (c.mov) bits.push(`${c.mov} reorder${c.mov > 1 ? 's' : ''}`)
@@ -37,9 +43,9 @@ export function ALPanel() {
               return (
                 <div className="al-pubday" key={di}>
                   <span className="al-pd-lbl"><b>{dowShort(di)}</b> · {bits.join(' · ')}</span>
-                  <button className={'abtn primary' + (signed ? '' : ' locked')} disabled={!signed}
-                    title={signed ? `Publish AL${seq} — ${c.total} change${c.total === 1 ? '' : 's'} on ${dowShort(di)} only` : `Sign off ${signMissing(di).join(', ')} before publishing AL${seq}`}
-                    onClick={() => { publishALDay(di); notify() }}>Publish AL{seq}</button>
+                  <button className={'abtn primary' + (signed && !previewing ? '' : ' locked')} disabled={!signed || previewing}
+                    title={previewing ? `Return to the live copy of ${dowShort(di)} before publishing — you're viewing a past version` : signed ? `Publish AL${seq} — ${c.total} change${c.total === 1 ? '' : 's'} on ${dowShort(di)} only` : `Sign off ${signMissing(di).join(', ')} before publishing AL${seq}`}
+                    onClick={() => { if (DPREV.has(di)) return; publishALDay(di); notify() }}>Publish AL{seq}</button>
                 </div>
               )
             })}

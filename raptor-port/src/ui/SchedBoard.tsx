@@ -377,11 +377,10 @@ export function SchedBoard() {
             onClick={() => { toggleHistMode(); hideHistBub(); notify() }}>
             <span className="bi"><HistIcon /></span><span className="bl"> History</span></button>
           {/* THE VERSION PICKER LEFT THIS BAR (owner, 26 Aug 26). It moved down
-              into the board's sign-off strip, beside the ✓ Published stamp —
-              board.ts's boardSignHTML now renders it with verSelBoardHTML, a
-              string select routed by the shared data-dver listener. The React
-              copy that lived here (grouped "Your plans" / "Issued") is retired;
-              nothing on this bar replaces it, so the bar simply gets shorter. */}
+              into the board's sign-off strip, and since the 15 Sep 26 redesign
+              that strip carries the ONE plans selector (boardSignHTML →
+              planSelectorHTML + verTagHTML), routed by data-planmenu. Nothing on
+              this bar replaces it, so the bar simply stays shorter. */}
           {/* Sort all — every section on this day at once, not one row like
               every other control here. Gated on HOOKS.editMode() — the same
               flag the grip, the nudge buttons and every per-section ⇅ Auto
