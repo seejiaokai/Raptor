@@ -113,16 +113,20 @@ Note this interacts with item 1 (a leaked signature could wrongly satisfy `daySi
 ## When done
 Run all gates (npm test, tfin, build, test:e2e, smoke:tracker), note that test:e2e's only
 real failures are the 2 pre-existing ones (geometry board flying-line at phone width;
-Leave War tab). **Drive the real built app end-to-end like a human — but SCOPED to this change's blast
-radius, not a blanket regression** (owner, 15 Sep 26). The shallow smoke test missed item 1;
-a real playthrough would have caught it. So walk the journeys the change actually touches and
-the areas it could plausibly affect, re-entering states after transitions, and **exercise
-undo/redo at the junctures the change touches** (e.g. build from scratch → add lines/timings →
-rearrange → undo/redo → sign → publish → Plan A/B → publish → switch back → undo/redo → look at
-what carried over on screen). **Be flexible and token-smart:** if an area is robust and this
-change doesn't touch it, DON'T re-test it — testing unaffected, stable areas just burns tokens.
-The judgement is "what did I change, and what could that break?" — test that, thoroughly;
-skip the rest. Bug-check across Codex + Fable. Then hold for the owner's "merge live".
+Leave War tab). **Drive the real built app end-to-end like a human — scoped by JUDGEMENT to what the change
+affects** (owner, 15 Sep 26). The shallow smoke test missed item 1; a real playthrough would
+have caught it. The method is NOT a fixed checklist:
+- First REASON about the whole blast radius — everything this change could affect across the
+  app, not just the file you edited (use `docs/feature-impact.md` and the CLAUDE.md "weigh the
+  whole ecosystem" standing order: which surfaces read the same data/rule, what's downstream,
+  which drift-seams open). The owner's examples (undo/redo, switch-away-and-back, publish-then-
+  edit) are ILLUSTRATIONS of the kind of thing to think of, not the list itself.
+- Then JUDGE what's worth driving by hand: walk those journeys end to end in the real app,
+  re-entering states after transitions, checking what's on SCREEN, and exercising the
+  cross-cutting ops (undo/redo etc.) at the junctures the change reaches.
+- Be token-smart: if an area is robust and this change doesn't touch it, DON'T re-test it.
+  Make the scoping visible ("testing X/Y because the change reaches them; not Z, unaffected").
+Bug-check across Codex + Fable. Then hold for the owner's "merge live".
 
 ## SECOND TASK (housekeeping) — owner ask, 15 Sep 26, AFTER the fixes merge
 Do this only once the seven fixes above are merged; it is not part of the feature.
