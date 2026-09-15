@@ -113,10 +113,16 @@ Note this interacts with item 1 (a leaked signature could wrongly satisfy `daySi
 ## When done
 Run all gates (npm test, tfin, build, test:e2e, smoke:tracker), note that test:e2e's only
 real failures are the 2 pre-existing ones (geometry board flying-line at phone width;
-Leave War tab). **Drive the real built app end-to-end like a human** (build from scratch →
-lines/timings/rearrange → sign → publish → Plan A/B → publish → switch back → look at what
-carried over) — the shallow smoke test missed item 1; a full playthrough would have caught
-it. Bug-check across Codex + Fable. Then hold for the owner's "merge live".
+Leave War tab). **Drive the real built app end-to-end like a human — but SCOPED to this change's blast
+radius, not a blanket regression** (owner, 15 Sep 26). The shallow smoke test missed item 1;
+a real playthrough would have caught it. So walk the journeys the change actually touches and
+the areas it could plausibly affect, re-entering states after transitions, and **exercise
+undo/redo at the junctures the change touches** (e.g. build from scratch → add lines/timings →
+rearrange → undo/redo → sign → publish → Plan A/B → publish → switch back → undo/redo → look at
+what carried over on screen). **Be flexible and token-smart:** if an area is robust and this
+change doesn't touch it, DON'T re-test it — testing unaffected, stable areas just burns tokens.
+The judgement is "what did I change, and what could that break?" — test that, thoroughly;
+skip the rest. Bug-check across Codex + Fable. Then hold for the owner's "merge live".
 
 ## SECOND TASK (housekeeping) — owner ask, 15 Sep 26, AFTER the fixes merge
 Do this only once the seven fixes above are merged; it is not part of the feature.
