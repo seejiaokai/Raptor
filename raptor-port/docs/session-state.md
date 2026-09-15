@@ -1,3 +1,23 @@
+# Session handoff — crew-rest / flagging on the PUBLISHED schedule: BUILD IN PROGRESS
+
+## RESUME HERE (overnight autonomous run, 15–16 Sep 26)
+Building [CRP-FLAG] on branch `claude/crewrest-published-flagging`, test-first, Opus.
+**Progress + locked design + phase table live in
+`raptor-port/docs/superpowers/specs/2026-09-15-crewrest-flagging-build-context.md` — READ THAT FIRST.**
+Committed so far (all on the branch, NOT merged — owner has NOT said "merge live"):
+phases 1–5 (d650a32, 89703c2, d72634a, ec14acc, c663bc7). Full unit suite 4777/4777
+green after each; build clean; tfin parity untouched.
+- **Phase 6 (next):** divergence surfacing — the "Not Yet Signed" day marker (everyone)
+  + in-list "goes away / new once signed" markings (§6, §14.5). IN PROGRESS.
+- **Phase 7:** full gates + live-view drive (desktop+phone) + fresh Codex + Fable code
+  inspection of the built diff (§14 spots). Then HOLD for "merge live".
+Then the overnight backlog (no merge, no owner-decision needed): **[FLAG-EXPORT]** (exports
+the published version). Do NOT start [REPO-CLEANUP] (needs owner sign-off on deletions) or
+the risky half of [AMEND-SEL-FOLLOWUPS] unattended.
+
+---
+
+## (original design handoff, kept for reference)
 # Session handoff — crew-rest / flagging on the PUBLISHED schedule: DESIGN DONE + RED-TEAMED, ready to BUILD
 
 ## Where it is
