@@ -68,7 +68,25 @@ unavailable" (that week protected / no flags), NEVER "no delta → alias".
 | 6 | "Not Yet Signed" marker (`publish.notYetSigned`, captured pre-swap via `NYS`, rendered in `.dhver`, shown to everyone) + in-list "goes away / new once signed" markings (keyed diff code+who+di+prevDi, gated `!OFW && dayApproved && officialWarn()!==WARN` so parity holds). CSS added. pubsweep byte-frozen test updated to allow the marker. | §6,§14.5 | **DONE** |
 
 **Phase 6 notes for inspection:** (1) the "goes away" rows render only when the working box already has ≥1 warning (`if(!all.length)return soloTrace` early-return kept) — a day whose warnings ALL clear to zero shows the marker but no struck rows; note only, marker covers it. (2) The markings annotate the FLAG day's list; §6's "also on the cause day" (the crew-rest trace box on prevDi) is NOT annotated — deferred, flag for inspection. (3) Marker lives inside `.dhver` so html.test.ts's noVerTag excision keeps parity.
-| 7 | Full gates + live drive (desktop+phone) + fresh Codex + Fable code inspection. Hold for "merge live". | §11,§12 | TODO |
+| 7 | Gates all green; live drive confirmed on desktop+phone; Codex + Fable inspection. Hold for "merge live". | §11,§12 | **IN PROGRESS** |
+
+## Phase 7 results (overnight 15–16 Sep 26)
+**Gates (all green):** vitest 4781/4781 · build clean · tfin.js **728/0** · smoke:tracker 425/0 ·
+e2e 423 passed / **2 pre-existing phone-width failures** (`geometry.spec.ts:1976` board flying-line
+brief-inline + `leavewar.spec.ts:2241` phone sheet-gesture) — both documented pre-existing on `main`,
+in code this change does NOT touch (board-html.ts + Leave War; my html.ts changes are inert under
+PV=false/OFW=false, the board/edit path), e2e wrapper exit 0.
+**Live drive (production bundle, Browser pane, admin ad/a):**
+- Published Monday (day 0 signed+approved via probe bridge) STILL shows "14 issues · 6 warning" +
+  all puck flags on the frozen issued face ("Original — as issued") — the headline criterion:
+  before this feature publishing HID them. ✅
+- Unpublished amendment (addWave) → the amber **"Not yet signed"** marker paints beside the ORIG tag,
+  desktop AND phone (375px) — no day-head layout break. ✅
+- No console errors, no 404s. Content frozen (issued face unchanged). ✅
+- In-list "goes away / new once signed" tags: NOT driven live (needs a warning-CHANGING amendment,
+  awkward via the console bridge) — proven by official-flags.test.ts + CSS in place.
+**Bug-check:** Codex (gpt-6-astra high) code inspection launched via claudex-loop runner
+(`review --host claude --model gpt-6-astra`); Fable pass next. Findings → fix → re-gate.
 
 ## Test-first cases (§11 + §14 extras) — tick as pinned
 1 published day shows crew-rest/run/conflict, content frozen · 2 cross-week bust both dirs ·
