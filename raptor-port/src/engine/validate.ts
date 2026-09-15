@@ -1121,6 +1121,15 @@ function validateCore(){
    are emitted from WORKING only. [F-1/CRP-002, CRP-004] */
 export let OFFICIAL:any = WARN;
 export function officialWarn(){ return OFFICIAL; }
+/* THE ONE SURFACE-RESOLVED ACCESSOR (spec §5.4, F-3/CRP-007). Every warning
+   reader — sevOf/chipOf/dashOf/traceOf/traceLeads/traceIx/tracesOn, dayWarnHTML,
+   personWarns — reads the module WARN by name. Rendering a published day's frozen
+   face wraps the build in this, which points WARN at the OFFICIAL bundle for the
+   duration (the same swap-and-restore trick withDaySnap uses for DAYS), so the
+   whole surface resolves to the displayed day's version with no per-reader change.
+   Synchronous, restored in finally — never left swapped. REST/EVD are NOT swapped:
+   they feed the edit-page crew picker / drop probes only, never the issued face. */
+export function withOfficialWarn(fn:any){ const w=WARN; WARN=OFFICIAL; try{ return fn(); } finally{ WARN=w; } }
 export function validate(){
   const w = validateCore();          // WORKING — writes the module globals
   OFFICIAL = officialFor(w);         // aliased, or a snapshot/restore OFFICIAL run

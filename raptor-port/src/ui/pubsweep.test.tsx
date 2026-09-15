@@ -179,15 +179,19 @@ describe('1 · lifecycle: unpublished day → sign → publish the Original', ()
   it('the view week defaults to the FROZEN issued face, with no pending anywhere', () => {
     publishDay(DI)
     /* the issued default is not dressed as a preview: section class `issued`,
-       no banner, no write control, and no warnings list (a snapshot is never
-       validated — the standing preview rule). */
+       no banner, no write control. Since the published-schedule flagging build
+       (§5.4/§8) it DOES carry the warning overlay: a published day shows the flags
+       of its OFFICIAL (signed) version on top of byte-frozen content — reversing
+       the old "a snapshot is never validated" rule at the render layer. The seed
+       Monday's issued content carries warnings, so the header renders here; the
+       byte-frozen guarantee is pinned by the next test. */
     const v = el(weekView(DI))
     const sec = v.querySelector('section.day')!
     expect(sec.className).toContain('issued')
     expect(sec.className).not.toContain('preview')
     expect(v.querySelector('.dprev-bar')).toBeNull()
     expect(v.querySelector('[data-restore]')).toBeNull()
-    expect(v.querySelector('.daywarn')).toBeNull()
+    expect(v.querySelector('.daywarn'), 'the OFFICIAL flags now overlay the frozen face').not.toBeNull()
     /* the viewer's one control is the two-option issued/working picker */
     const sel = v.querySelector('select[data-vwork="0"]') as HTMLSelectElement
     expect([...sel.options].map(o => [o.value, o.text])).toEqual([

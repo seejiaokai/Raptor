@@ -54,8 +54,8 @@ unavailable" (that week protected / no flags), NEVER "no delta → alias".
 
 | Phase | What | Spec refs | Status |
 |---|---|---|---|
-| 1 | Engine foundation: validateCore, world.ts, OFFICIAL/officialFor/withIssuedWeek, loaded-week alias gate, official accessor+probe. WORKING behaviour unchanged (existing suite = guard). | §5.1,5.5 F-1/CRP-002/CRP-004 | TODO |
-| 2 | Render overlay: view week's published days show OFFICIAL flags on the frozen face; content frozen. | §5.4,§8 F-3/CRP-007 | TODO |
+| 1 | Engine foundation: validateCore, OFFICIAL/officialFor/withIssuedWeek, loaded-week alias gate, officialWarn() accessor. WORKING behaviour unchanged (4770/4770 green). | §5.1,5.5 F-1/CRP-002/CRP-004 | **DONE** (d650a32) |
+| 2 | Render overlay: view week's published days show OFFICIAL flags on the frozen face via withOfficialWarn + OFW; content frozen. pubsweep flipped per §10. | §5.4,§8 F-3/CRP-007 | **DONE** |
 | 3 | Cross-week: world-aware seeds; stashed-window alias gate + days-param delta; unresolvable→protect. | §5.3,§14.1-2 F-2/CRP-001 | TODO |
 | 4 | Filing truth: install snapshot.fil override honoured by buildDay/inpShow/workedSet; xweek dedup. | §14.3 Codex V2-002/003 | TODO |
 | 5 | Click/focus world-identity + trace world-identity (defined no-op). | §14.4 F-3/CRP-007/V2-004 | TODO |

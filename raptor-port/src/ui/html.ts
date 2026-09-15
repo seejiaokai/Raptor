@@ -9,7 +9,7 @@ import { slotVal, txtGet, TIME_TXT, whoArr, rowCrew, rowRef } from '../engine/sl
 /* RANK left with the focus-scoped trace: ranking the CR chip against the day's
    own worst is traceLeads' job now, in the engine, so both the chip and the
    click that follows it read one test */
-import { WARN, sevOf, chipOf, dashOf, traceOf, traceLeads, traceChip, traceIx, tracesOn, chipText, wlbl, WCODE, SEVWORD, CHIP_LABEL, ordinal } from '../engine/validate'
+import { WARN, sevOf, chipOf, dashOf, traceOf, traceLeads, traceChip, traceIx, tracesOn, chipText, wlbl, WCODE, SEVWORD, CHIP_LABEL, ordinal, withOfficialWarn } from '../engine/validate'
 import { availByWave, personBusy, dayOff, dayEngaged, personWarns } from '../engine/avail'
 import { SCHED, alAttr, dayApproved, dayCurVer, dayPendCount, dayDelta, dayDiscardCount, alColor, signOf, signMissing, signShown, signPeople, SIGN_ROLES, daySigned, nextSeq, dowShort, alCount, daySnapOf, verLabel, protectedWeek } from '../engine/publish'
 import { verSeq } from '../engine/verid'
@@ -41,11 +41,21 @@ const editMode=()=>HOOKS.editMode()
    labelling) and the section class reads `issued`, not `preview`, so the
    preview dimming and its CSS never apply to the page's default face. */
 let PV=false, PVV:any=null, PVQ=false
+/* OFW — the OFFICIAL-FLAGS overlay (published-schedule flagging, §5.4/§8). A
+   published day's frozen face renders under PV (content frozen, write surfaces
+   stripped) but must now SHOW the flags of its issued version. OFW says "show the
+   flags on this frozen face"; dayIssuedHTML pairs it with withOfficialWarn so the
+   flags read are the OFFICIAL bundle's, matching the frozen text under them. The
+   PV null-gates below become `PV&&!OFW` so the frozen face flags while every other
+   preview (an old AL, a parked draft: a past version is read, not checked) still
+   shows none. The write surfaces (data-slot / data-drag) stay gated on PV alone —
+   OFW never re-enables editing. */
+let OFW=false
 /* the LIVE unpublished-edit count captured by withDaySnap BEFORE it zeroes
    pending — what the discard-confirm button must show (P2-IMPL-09). Read only
    under PV; withDaySnap sets it before the swap and restores it in finally. */
 let PVND=0
-const sev=(di:any,id:any)=>PV?null:sevOf(di,id)
+const sev=(di:any,id:any)=>(PV&&!OFW)?null:sevOf(di,id)
 /* THE PREVIOUS-DAY TRACE (owner, 6 Aug 26; made a standing mark 6 Aug 26).
    A crew-rest breach is raised on the day the man is told to report, but the
    day a scheduler can still FIX is the one before — so that day carries the
@@ -55,14 +65,14 @@ const sev=(di:any,id:any)=>PV?null:sevOf(di,id)
    Model state now (validate() files every breach against its previous day and
    publishes it as WARN.trace), so this re-derives nothing — and PV still gets
    nothing at all, because a frozen snapshot must not read live WARN. */
-const traceHit=(di:any,id:any)=>PV?null:traceOf(di,id)
+const traceHit=(di:any,id:any)=>(PV&&!OFW)?null:traceOf(di,id)
 /* the flag the puck prints: the day's own worst chip, or CR where this day
    caused tomorrow's breach and the man carries nothing louder of his own.
    traceLeads applies exactly that test, and interactions.ts routes the click
    by the same call, so the chip and the warning it opens cannot disagree. */
-const chip=(di:any,id:any)=>{ if(PV)return null
+const chip=(di:any,id:any)=>{ if(PV&&!OFW)return null
   const t=traceLeads(di,id); return t?traceChip(t):chipOf(di,id) }
-const dsh=(di:any,id:any)=>PV?false:dashOf(di,id)
+const dsh=(di:any,id:any)=>(PV&&!OFW)?false:dashOf(di,id)
 /* the ONE place the snapshot may stand in for the live model. finally is not
    optional: a throw mid-build with the swap live would leave the old day
    installed as the real schedule — a silent history rewrite on the next
@@ -125,9 +135,14 @@ export function dayIssuedHTML(di:any){
        A never-approved day (not reached from ViewWeek) keeps the plain render. */
     return dayApproved(di)?dayUnsupportedHTML(di):dayHTML(di,false)
   }
-  PVQ=true
-  try{ return withDaySnap(di,ver,(ok:any)=>ok?dayHTML(di,false):dayHTML(di,false)) }
-  finally{ PVQ=false }
+  /* the issued face now OVERLAYS the OFFICIAL flags (§5.4/§8): OFW un-suppresses the
+     flag helpers + warning list on this frozen face, and withOfficialWarn points the
+     warning reads at the OFFICIAL bundle — the version validated against this very
+     snapshot — so the flags match the frozen text. Content stays byte-frozen (PV) and
+     the write surfaces stay stripped (PV alone gates those). */
+  PVQ=true; OFW=true
+  try{ return withDaySnap(di,ver,(ok:any)=>withOfficialWarn(()=>ok?dayHTML(di,false):dayHTML(di,false))) }
+  finally{ PVQ=false; OFW=false }
 }
 /* THE PLANS SELECTOR (owner, 15 Sep 26 — the day-head redesign, LOCKED spec
    docs/superpowers/specs/2026-09-15-plans-selector-redteam.md). ONE white
@@ -609,7 +624,7 @@ export function storesView(o:any){
    itself revealed the cause, so you had to already know; now the day tells
    you where to look, and opening the list is enough to be told. */
 function dayTraceHTML(di:any,pf:any){
-  if(PV)return '';
+  if(PV&&!OFW)return '';
   if(!pf&&!DWOPEN.has(di))return '';
   /* one trace object can carry TWO rows since 5 Sep 26: the crew-rest
      fields (top level) and the run trace (`run`) — each resolves its own
@@ -1125,7 +1140,7 @@ export function dayHTML(di:any,ed:any,vsel?:any){
       +(ed?`<div class="signoff day-sign" data-signbar="${di}">${signoffHTML(di,false)}</div>`:'')
       +`<div class="day-body">`;
     /* warnings are live-model state — a snapshot is never validated */
-    if(!PV)h+=dayWarnHTML(di);
+    if(!PV||OFW)h+=dayWarnHTML(di);
     /* THE SCHEDULE SECTIONS are captured by slicing `h` at these boundary marks
        and re-emitted in the day's own order (owner, 29 Aug 26 — engine/order.ts
        secOrder), so a re-arrange costs no churn in the dense builders below and

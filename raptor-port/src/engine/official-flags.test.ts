@@ -14,6 +14,8 @@ import { INPUTS } from './inputs'
 import { setCurWeek } from './waves'
 import { validate, officialWarn } from './validate'
 import { SCHED, signOf, setDayApproved } from './publish'
+import { dayIssuedHTML, dayHTML } from '../ui/html'
+import { DWOPEN } from '../state/view'
 
 const { MOCKS, weekBundleMock } = vi.hoisted(() => {
   const MOCKS: Record<string, any> = {}
@@ -114,5 +116,43 @@ describe('Phase 1 — validate() computes WORKING and OFFICIAL bundles', () => {
     flyMonday('waldo', '06:00', '07:25')
     const w = validate()
     expect(officialWarn()).toBe(w)
+  })
+})
+
+/* PHASE 2 (spec §5.4/§8, F-3/CRP-007). The view page's frozen issued face now
+   OVERLAYS the OFFICIAL flags — the warning list, the puck rings and the trace
+   box — on top of byte-frozen content. dayIssuedHTML is a pure string builder, so
+   the whole surface is asserted on the rendered string here (no DOM needed). */
+describe('Phase 2 — the published (view) face shows OFFICIAL flags on frozen content', () => {
+  afterEach(() => DWOPEN.clear())
+
+  it('a published day with a frozen crew-rest breach shows the warning on its issued face', () => {
+    const WK = wkFor(10)
+    MOCKS[shiftWeekKey(WK, -1)] = weekOf(weekDateLabels(shiftWeekKey(WK, -1)), { 6: dutyRow('waldo', '1900', '2300') })
+    setCurWeek(WK)
+    flyMonday('waldo', '06:00', '07:25')
+    validate()
+    sign(0); setDayApproved(0, true)
+    DWOPEN.add(0)                                        // open the list so the row prose renders
+    const issued = dayIssuedHTML(0)
+    expect(issued, 'the warning header now renders on the frozen face').toContain('daywarn')
+    expect(issued, "waldo's puck flags crew rest on the frozen face").toMatch(/data-person="waldo"[^>]*Crew rest/)
+  })
+
+  it('an unpublished fix clears WORKING but the issued face still shows the breach (the whole point)', () => {
+    const WK = wkFor(11)
+    MOCKS[shiftWeekKey(WK, -1)] = weekOf(weekDateLabels(shiftWeekKey(WK, -1)), { 6: dutyRow('waldo', '1900', '2300') })
+    setCurWeek(WK)
+    flyMonday('waldo', '06:00', '07:25')
+    validate()
+    sign(0); setDayApproved(0, true)                    // freeze the breach into the issued version
+    ;(DAYS[0] as any).waves[0].formations[0].to = '14:00'   // working: fixed
+    ;(DAYS[0] as any).waves[0].formations[0].ld = '15:25'
+    validate()
+    DWOPEN.add(0)
+    const issued = dayIssuedHTML(0)
+    const working = dayHTML(0, false)                    // the live working face (no official overlay)
+    expect(issued, 'official/frozen face still flags waldo').toMatch(/data-person="waldo"[^>]*Crew rest/)
+    expect(working, 'the working copy is clean — no crew-rest flag on waldo').not.toMatch(/data-person="waldo"[^>]*Crew rest/)
   })
 })
