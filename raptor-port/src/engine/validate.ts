@@ -9,6 +9,7 @@ import { seedRunIn, prevSundaySeed, nextMondaySeed, nextMondayWorked } from './w
 import { CURWEEK } from './waves'
 import { DAYS } from './data'
 import { keyDay } from './keys'
+import { SCHED, approvedDays, dayDelta, dayCurVer, daySnapOf } from './publish'
 
 /* the reference guards its header counters with $() lookups; the engine takes
    $ from the hooks (null outside a browser) so the guarded lines stay verbatim */
@@ -114,7 +115,7 @@ export function workSpan(evs:any){
   return {s,e,span:e-s,ef};
 }
 export function dayEvents(di:any,id:any){const m=EVD[di]; return (m&&m[id])||[];}
-export function validate(){
+function validateCore(){
   const ev=collectEvents(), all:any[]=[], byDay:any[]=[], sev:any={}, chip:any={}, dash:any={}, trace:any={};
   REST={}; EVD={};
   /* ring precedence: red beats orange beats grey, so a person carrying both a
@@ -1105,13 +1106,71 @@ export function validate(){
   CREWREST_BODY=crewRestDay;
   XD_CACHE=new Map();
   WARN={all,byDay,sev,chip,dash,trace};
-  const hard=all.filter((w:any)=>w.sev==='hard').length;
-  const note=all.filter((w:any)=>w.sev==='note').length;
-  if($('nHard'))$('nHard').textContent=hard;
-  if($('nAdv'))$('nAdv').textContent=all.length-hard-note;
-  if($('nNote'))$('nNote').textContent=note;
   return WARN;
 }
+/* ---- THE TWO DOCUMENTS (published-schedule flagging, spec §5) ---------------
+   validate() computes the WORKING bundle exactly as before — validateCore() above
+   writes every module global (WARN/REST/EVD/RUNLEN/RUNSEED/NEXTON/EVDAYS/PREVSUN/
+   NEXTMON/CREWREST_BODY/XD_CACHE), which every EDIT surface and the crew-picker/
+   drop probes read — then computes the OFFICIAL bundle: each APPROVED day judged
+   at its ISSUED (signed) version. The OFFICIAL run leaves NO global behind: it is a
+   snapshot/restore around a second validateCore() run, exactly as withDaySnap does
+   for a single day, widened to the whole week and to the validator's own globals.
+   When no approved day carries an unpublished amendment, OFFICIAL is the SAME object
+   as WORKING (the alias — drift-proof by construction, zero cost). The DOM counters
+   are emitted from WORKING only. [F-1/CRP-002, CRP-004] */
+export let OFFICIAL:any = WARN;
+export function officialWarn(){ return OFFICIAL; }
+export function validate(){
+  const w = validateCore();          // WORKING — writes the module globals
+  OFFICIAL = officialFor(w);         // aliased, or a snapshot/restore OFFICIAL run
+  const hard=w.all.filter((x:any)=>x.sev==='hard').length;
+  const note=w.all.filter((x:any)=>x.sev==='note').length;
+  if($('nHard'))$('nHard').textContent=hard;
+  if($('nAdv'))$('nAdv').textContent=w.all.length-hard-note;
+  if($('nNote'))$('nNote').textContent=note;
+  return w;
+}
+/* SOME approved day carries an unpublished amendment (a non-empty publication
+   delta against its issued version). Phase 1: the loaded week only; the cross-week
+   dependency window (§14.1) and the stashed-day delta (§14.2) arrive with the
+   cross-week phase. dayDelta already gates on dayApproved + a resolvable issued
+   snapshot, so an unresolvable snapshot never reads as "no delta". */
+function officialDiverges(){
+  return approvedDays().some((di:any)=>dayDelta(di).length>0);
+}
+function officialFor(working:any){
+  if(!officialDiverges())return working;   // ALIAS — the exact same object, cannot drift
+  return withIssuedWeek(()=>validateCore());
+}
+/* Install EVERY approved day's issued snapshot at once (F-4/CRP-006 — a
+   Tuesday-issued day must be judged against a Monday-issued day, not Monday-
+   working), run fn against it, then restore DAYS, SCHED and every validate()
+   global. Mirrors withDaySnap's swap+finally, widened to the whole week and to the
+   validator's own globals. Filing overrides (§14.3) and the world-aware cross-week
+   seeds (§5.3) are added in later phases. */
+function withIssuedWeek(fn:any){
+  const days=approvedDays().map((di:any)=>{
+    const ver=dayCurVer(di); const snap=ver!=null?daySnapOf(di,ver):null;
+    return (snap&&snap.d)?{di,snap}:null;
+  }).filter(Boolean) as any[];
+  if(!days.length)return fn();       // nothing resolvable to install (defensive; the gate already filtered)
+  const d0:any={}, ch0=SCHED.changes, pd0=SCHED.pending, changes:any={};
+  days.forEach(({di,snap}:any)=>{ d0[di]=DAYS[di]; DAYS[di]=snap.d; Object.assign(changes,snap.c||{}); });
+  SCHED.changes=changes; SCHED.pending={};
+  const g=snapGlobals();
+  try{ return fn(); }
+  finally{
+    days.forEach(({di}:any)=>{ DAYS[di]=d0[di]; });
+    SCHED.changes=ch0; SCHED.pending=pd0;
+    restoreGlobals(g);
+  }
+}
+/* the complete set of module state validateCore() reassigns — snapshotted before
+   the OFFICIAL run and restored after, so WORKING's globals (which every edit
+   surface reads) survive the second run untouched. */
+function snapGlobals(){ return {WARN,REST,EVD,RUNLEN,RUNSEED,NEXTON,EVDAYS,PREVSUN,NEXTMON,CREWREST_BODY,XD_CACHE}; }
+function restoreGlobals(g:any){ WARN=g.WARN;REST=g.REST;EVD=g.EVD;RUNLEN=g.RUNLEN;RUNSEED=g.RUNSEED;NEXTON=g.NEXTON;EVDAYS=g.EVDAYS;PREVSUN=g.PREVSUN;NEXTMON=g.NEXTMON;CREWREST_BODY=g.CREWREST_BODY;XD_CACHE=g.XD_CACHE; }
 export const sevOf=(di:any,id:any)=>WARN.sev[di]&&WARN.sev[di][id];
 export const chipOf=(di:any,id:any)=>WARN.chip&&WARN.chip[di]&&WARN.chip[di][id];
 /* the ring STROKE, published per person like the ring colour above it: true
