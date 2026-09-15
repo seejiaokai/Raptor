@@ -433,10 +433,24 @@ marker (everyone). Clock-free; NOT coupled to EOD.
 - **HEAVY**, test-first, Opus; keep `tfin.js` 728/0; fresh Codex+Fable CODE inspection after
   build; no merge without "merge live". Owner decisions locked in session-state.md.
 
-### [FLAG-EXPORT] PDF/CSV export exports the working copy, should export the PUBLISHED one — OPEN (follow-up of [CRP-FLAG])
-Exports (`schedRows`→export.ts/printpdf.ts) read the live working `DAYS`; the owner's intent
-is to export the **published** schedule (owner, 15 Sep 26). Also label the next-week peek as
-working-vs-signed. Small, separate gated PR after [CRP-FLAG]. Context: [CRP-FLAG]'s review log.
+### [FLAG-EXPORT] PDF export — print the PUBLISHED version + a nicer agency-facing redesign — OPEN (follow-up of [CRP-FLAG])
+TWO halves (owner, 15–16 Sep 26):
+- **Functional (not a design call — safe to build):** exports (`schedRows`→export.ts/printpdf.ts)
+  read the live working `DAYS`; export the **published** version instead, and label the
+  next-week peek working-vs-signed.
+- **Visual redesign (owner direction, 16 Sep 26 — "your call on the design"):** the PDF is a
+  REPORTING tool to an agency next time, not a planning tool. So:
+  - **DROP the right-hand personnel / "Aircrew Available" roster columns** (planning-only, not
+    needed for the report).
+  - **White background** (not the app's dark theme).
+  - **Make the format nicer / cleaner — NOT multiple grids** (a single clean layout).
+  - Similar to Raptor style is fine; it need NOT match the sheet exactly. Initials-vs-callsign
+    doesn't matter.
+  - **Sample of the current sheet:** `raptor-port/docs/img/flag-export-sample-current.png`
+    (the "16 Sep 2026 Schedule AL0" export the squadron sends today).
+  - **Process:** produce 1–2 rendered sample PDFs for the owner to PICK before finalizing
+    (his "show a picture before product code" rule); nothing merges without "merge live".
+- Separate gated PR after [CRP-FLAG]. Context: [CRP-FLAG]'s review log + the sample image.
 
 ---
 
