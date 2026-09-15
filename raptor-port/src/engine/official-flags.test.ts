@@ -267,3 +267,64 @@ describe('Phase 5 — a view-page tap on a published-only warning focuses the OF
     expect(WFOCUS && (WFOCUS as any).ids.includes('waldo'), 'focus landed on the official warning').toBe(true)
   })
 })
+
+/* PHASE 6 (spec §6/§14.5). Two divergence affordances, shown to everyone: the
+   "Not Yet Signed" day marker (a published day whose working copy diverges from the
+   signed version), and the in-list "goes away / new once signed" markings on the
+   working view. The marker is computed on the LIVE day, before the snapshot swap. */
+describe('Phase 6 — "Not Yet Signed" marker', () => {
+  it('shows on a published day with an unpublished amendment, on the issued face and the working face; absent when clean', () => {
+    const WK = wkFor(50)
+    setCurWeek(WK)
+    flyMonday('waldo', '14:00', '15:25')
+    validate()
+    sign(0); setDayApproved(0, true)                     // published, clean
+    expect(dayIssuedHTML(0), 'clean published day: no marker').not.toContain('Not yet signed')
+    ;(DAYS[0] as any).waves[0].formations[0].to = '06:00'  // unpublished amendment
+    validate()
+    expect(dayIssuedHTML(0), 'issued face warns that newer unsigned edits exist').toContain('Not yet signed')
+    expect(dayHTML(0, false), 'the working face too').toContain('Not yet signed')
+  })
+
+  it('is absent on a never-published (draft) day', () => {
+    const WK = wkFor(51)
+    setCurWeek(WK)
+    flyMonday('waldo', '06:00', '07:25')
+    validate()
+    expect(dayHTML(0, true), 'a draft day has no signed version to diverge from').not.toContain('Not yet signed')
+  })
+})
+
+describe('Phase 6 — in-list "goes away / new once signed" markings on the working view', () => {
+  afterEach(() => { DWOPEN.clear(); setPage('editsched') })
+
+  it('a HIDDEN FIX marks the cleared warning "goes away once signed" on the working list', () => {
+    const WK = wkFor(52)
+    MOCKS[shiftWeekKey(WK, -1)] = weekOf(weekDateLabels(shiftWeekKey(WK, -1)), { 6: dutyRow('waldo', '1900', '2300') })
+    setCurWeek(WK)
+    flyMonday('waldo', '06:00', '07:25')
+    validate()
+    sign(0); setDayApproved(0, true)                     // freeze the breach
+    ;(DAYS[0] as any).waves[0].formations[0].to = '14:00'
+    ;(DAYS[0] as any).waves[0].formations[0].ld = '15:25'  // working clears it
+    validate()
+    DWOPEN.add(0); setPage('editsched')
+    const h = dayHTML(0, true, true)                     // the edit-week working render
+    expect(h, 'the warning the edit will clear is marked').toContain('goes away once signed')
+  })
+
+  it('a FRESH BREACH marks the added warning "new once signed" on the working list', () => {
+    const WK = wkFor(53)
+    MOCKS[shiftWeekKey(WK, -1)] = weekOf(weekDateLabels(shiftWeekKey(WK, -1)), { 6: dutyRow('waldo', '1900', '2300') })
+    setCurWeek(WK)
+    flyMonday('waldo', '14:00', '15:25')                 // clean at sign time
+    validate()
+    sign(0); setDayApproved(0, true)
+    ;(DAYS[0] as any).waves[0].formations[0].to = '06:00'
+    ;(DAYS[0] as any).waves[0].formations[0].ld = '07:25'  // working adds a breach
+    validate()
+    DWOPEN.add(0); setPage('editsched')
+    const h = dayHTML(0, true, true)
+    expect(h, 'the warning the edit introduces is marked').toContain('new once signed')
+  })
+})

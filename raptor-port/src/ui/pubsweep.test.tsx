@@ -226,17 +226,24 @@ describe('2 · editing after publish: pending on the edit surfaces, frozen for t
     expect(cell.getAttribute('data-alc')).toBeNull()
   })
 
-  it('the ISSUED face is byte-identical before and after that edit', () => {
-    /* the strongest form of "the viewer does not see the scheduler's work in
-       progress": not "the text is absent" but "not one byte of the issued
-       document moved". withDaySnap swaps DAYS/changes/pending for the frozen
-       snapshot, so even the pending count in the day head cannot leak. */
+  it('the ISSUED CONTENT stays frozen after an edit — only the "Not Yet Signed" marker appears', () => {
+    /* the strong guarantee: the viewer does not see the scheduler's work in
+       progress — not one byte of the issued DOCUMENT moves (withDaySnap swaps
+       DAYS/changes/pending for the frozen snapshot, so even the pending count in
+       the day head cannot leak). Since the published-schedule flagging build the ONE
+       thing that does change is the "Not Yet Signed" head marker (§6/§14.5): it tells
+       every viewer newer unsigned edits now exist. So the two renders are identical
+       once that marker is lifted, and the marker was absent while the day was clean. */
     publishDay(DI)
     const before = weekView(DI)
+    expect(before).not.toContain('Not yet signed')          // clean at publish
     writeText('dn:0.0', 'SCHEDULER WIP')
-    expect(weekView(DI)).toBe(before)
-    expect(el(weekView(DI)).textContent).not.toContain('SCHEDULER WIP')
-    expect(el(weekView(DI)).querySelector('[data-alp]')).toBeNull()
+    const after = weekView(DI)
+    expect(el(after).textContent).not.toContain('SCHEDULER WIP')   // the edit never leaks
+    expect(el(after).querySelector('[data-alp]')).toBeNull()       // no pending marks on the issued face
+    expect(after).toContain('Not yet signed')                      // the marker now warns of unsigned edits
+    const strip = (s: string) => s.replace(/<span class="nysmark"[^>]*>Not yet signed<\/span>/, '')
+    expect(strip(after), 'the issued document is byte-identical once the marker is lifted').toBe(strip(before))
   })
 
   it('the WORKING choice shows the edit, under a banner and an amber Working-draft stamp', () => {

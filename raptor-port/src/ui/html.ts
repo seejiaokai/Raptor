@@ -9,9 +9,9 @@ import { slotVal, txtGet, TIME_TXT, whoArr, rowCrew, rowRef } from '../engine/sl
 /* RANK left with the focus-scoped trace: ranking the CR chip against the day's
    own worst is traceLeads' job now, in the engine, so both the chip and the
    click that follows it read one test */
-import { WARN, sevOf, chipOf, dashOf, traceOf, traceLeads, traceChip, traceIx, tracesOn, chipText, wlbl, WCODE, SEVWORD, CHIP_LABEL, ordinal, withOfficialWarn } from '../engine/validate'
+import { WARN, sevOf, chipOf, dashOf, traceOf, traceLeads, traceChip, traceIx, tracesOn, chipText, wlbl, WCODE, SEVWORD, CHIP_LABEL, ordinal, withOfficialWarn, officialWarn } from '../engine/validate'
 import { availByWave, personBusy, dayOff, dayEngaged, personWarns } from '../engine/avail'
-import { SCHED, alAttr, dayApproved, dayCurVer, dayPendCount, dayDelta, dayDiscardCount, alColor, signOf, signMissing, signShown, signPeople, SIGN_ROLES, daySigned, nextSeq, dowShort, alCount, daySnapOf, verLabel, protectedWeek } from '../engine/publish'
+import { SCHED, alAttr, dayApproved, dayCurVer, dayPendCount, dayDelta, dayDiscardCount, alColor, signOf, signMissing, signShown, signPeople, SIGN_ROLES, daySigned, nextSeq, dowShort, alCount, daySnapOf, verLabel, protectedWeek, notYetSigned } from '../engine/publish'
 import { verSeq } from '../engine/verid'
 import { dayDrafts, curDraftId, isDraftVer, draftVerLabel } from '../engine/drafts'
 import { keyDay } from '../engine/keys'
@@ -51,6 +51,10 @@ let PV=false, PVV:any=null, PVQ=false
    shows none. The write surfaces (data-slot / data-drag) stay gated on PV alone —
    OFW never re-enables editing. */
 let OFW=false
+/* the LIVE "Not Yet Signed" value captured BEFORE a withDaySnap swap (§14.5 — inside
+   the swap the day diffs against itself and reads clean). dayIssuedHTML sets it from
+   the live day; dayHTML reads it under PV, and computes live off the day otherwise. */
+let NYS=false
 /* the LIVE unpublished-edit count captured by withDaySnap BEFORE it zeroes
    pending — what the discard-confirm button must show (P2-IMPL-09). Read only
    under PV; withDaySnap sets it before the swap and restores it in finally. */
@@ -140,9 +144,9 @@ export function dayIssuedHTML(di:any){
      warning reads at the OFFICIAL bundle — the version validated against this very
      snapshot — so the flags match the frozen text. Content stays byte-frozen (PV) and
      the write surfaces stay stripped (PV alone gates those). */
-  PVQ=true; OFW=true
+  PVQ=true; OFW=true; NYS=notYetSigned(di)   // captured on the LIVE day, before the swap (§14.5)
   try{ return withDaySnap(di,ver,(ok:any)=>withOfficialWarn(()=>ok?dayHTML(di,false):dayHTML(di,false))) }
-  finally{ PVQ=false; OFW=false }
+  finally{ PVQ=false; OFW=false; NYS=false }
 }
 /* THE PLANS SELECTOR (owner, 15 Sep 26 — the day-head redesign, LOCKED spec
    docs/superpowers/specs/2026-09-15-plans-selector-redteam.md). ONE white
@@ -711,6 +715,22 @@ export function dayWarnHTML(di:any){
   const nh=dw.filter((w:any)=>w.sev==='hard').length;
   const open=DWOPEN.has(di);
   const cs=pf&&PEOPLE[pf]?PEOPLE[pf].cs:'';
+  /* THE "GOES AWAY / NEW ONCE SIGNED" DIFF (published-schedule flagging, §6/§14.5).
+     On the WORKING view of a published day whose working copy diverges from the
+     signed version, mark each warning the unpublished edit will ADD ("new once
+     signed") and, struck through, each one it will CLEAR ("goes away once signed").
+     Gated hard so a non-diverged / unapproved / official-face render is byte-identical
+     (parity): OFF the official face (!OFW), the day is published, and OFFICIAL is a
+     DISTINCT bundle from WORKING (the alias means no divergence anywhere). Keyed by
+     code + who + flag-day + cause-day, message EXCLUDED so a within-threshold edit
+     does not mark spuriously (§14.5). */
+  const diffMode=!OFW&&dayApproved(di)&&officialWarn()!==WARN;
+  const wkey=(w:any)=>`${w.code}|${(w.who||[]).slice().sort().join(',')}|${w.di}|${w.prevDi==null?'':w.prevDi}`;
+  const offW:any[]=diffMode?((officialWarn().byDay[di]&&officialWarn().byDay[di].warns)||[]):[];
+  const offKeys=new Set(offW.map(wkey));
+  const workKeys=new Set(all.map(wkey));
+  const goneW=diffMode?offW.filter((w:any)=>!workKeys.has(wkey(w))):[];
+  const sigNew=(w:any)=>diffMode&&!offKeys.has(wkey(w))?`<span class="wsig new" title="This warning is not on the signed version — publishing this day adds it">new once signed</span>`:'';
   let h=`<div class="dwbox ${open?'open':''}${pf?' pfoc':''}" data-dwbox="${di}">`
    +`<div class="daywarn ${worst}" data-daywarn="${di}">`
    +`${pf?`<span class="dwwho">${esc(cs)}</span>`:''}`
@@ -736,9 +756,18 @@ export function dayWarnHTML(di:any){
       const on=WFOCUS&&WFOCUS.di===di&&WFOCUS.ix===ix;
       return `<div class="witem ${w.sev}${on?' on':''}${muted?' muted':''}" data-wdi="${di}" data-wix="${ix}" title="Jump to the puck that caused this">`
         +`<span class="wbar"></span><span${ed?' class="wtx"':''}><span class="wcode">${esc(wlbl(WCODE[w.code]||w.code))}</span>`
-        +`<b>${esc(names)}</b>${names?' — ':''}${esc(w.msg||'')}</span>`
+        +`<b>${esc(names)}</b>${names?' — ':''}${esc(w.msg||'')}${sigNew(w)}</span>`
         +(ed?`<button class="witem-mute" data-woff="${di}.${ix}" title="${muted?'Show this check again':'Hide this check — it comes back if the situation changes'}">${muted?'↺':'✕'}</button>`:'')
         +`</div>`;
+    };
+    /* an OFFICIAL-only warning (it clears once the day is signed): struck through,
+       non-interactive (its index belongs to the official bundle, not this working
+       list), ranked by its own severity among the shown rows. */
+    const goneRow=(w:any)=>{
+      const names=(w.who||[]).map((id:any)=>PEOPLE[id]?PEOPLE[id].cs:id).join(', ');
+      return `<div class="witem ${w.sev} gone" title="On the signed version — publishing this day removes it">`
+        +`<span class="wbar"></span><span${ed?' class="wtx"':''}><s><span class="wcode">${esc(wlbl(WCODE[w.code]||w.code))}</span> `
+        +`<b>${esc(names)}</b></s> <span class="wsig gone">goes away once signed</span></span></div>`;
     };
     /* split the muted checks out of the visible list (edit only). warnShown
        reads the shared WARNOFF; the hidden ones gather under a "N hidden"
@@ -755,6 +784,7 @@ export function dayWarnHTML(di:any){
     h+=`<div class="dwlist">`+hards.map((x:any)=>row(x)).join('')
      +dayTraceHTML(di,pf)
      +rest.map((x:any)=>row(x)).join('')
+     +goneW.map(goneRow).join('')
      +(hidden.length
         ? `<div class="wmuted-h${mopen?' open':''}" data-wmtog="${di}" title="Show or hide the checks you have muted">`
           +`<span class="dwcar">${mopen?'▲':'▼'}</span>${hidden.length} hidden</div>`
@@ -1110,7 +1140,7 @@ export function dayHTML(di:any,ed:any,vsel?:any){
     let h=`<section class="day ${d.today?'today':''} ${ok?'dok':''}${PV?(PVQ?' issued':' preview'):''}" data-day="${di}">
       <div class="day-head">${ed
         ? `<span class="dow crewday" data-crewday="${di}" title="Show this day's crew in the aircrew panel">${d.dow}</span><span class="dt sb-open" data-sbday="${di}" title="Open scheduler board">${d.dt}${d.today?' · Today':''}</span>`
-        : `<span class="dow di-open" data-dayinfo="${di}" title="Day details">${d.dow}</span><span class="dt di-open" data-dayinfo="${di}" title="Day details">${d.dt}${d.today?' · Today':''}</span>`}${(ed||vsel)?`<span class="dhtpl">${ed?`<button class="dhbtn" data-daytplopen="${di}" title="Save this day, or apply a saved template">Templates</button>`:''}${planSelectorHTML(di)}</span>`:''}<span class="dhver">${verTagHTML(di)}</span>
+        : `<span class="dow di-open" data-dayinfo="${di}" title="Day details">${d.dow}</span><span class="dt di-open" data-dayinfo="${di}" title="Day details">${d.dt}${d.today?' · Today':''}</span>`}${(ed||vsel)?`<span class="dhtpl">${ed?`<button class="dhbtn" data-daytplopen="${di}" title="Save this day, or apply a saved template">Templates</button>`:''}${planSelectorHTML(di)}</span>`:''}<span class="dhver">${verTagHTML(di)}${(PV?NYS:notYetSigned(di))?`<span class="nysmark" title="This day has edits that have not been signed and published yet — everyone sees the signed version until it is">Not yet signed</span>`:''}</span>
       <span class="badge" title="Aircraft per wave · standalone lines after the slash">${dayCount(d)}</span>
       <span class="dstat">${(!ed&&!vsel)?viewVerSelHTML(di):''}${dayStatHTML(di,ed)}</span></div>`
       +pvBar
