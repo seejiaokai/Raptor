@@ -891,9 +891,15 @@ body.ros-open .eroster .ros-tab{background:var(--accent);color:var(--accent-ink)
    day title (ORIG/ALn) once published; a dashed grey DRAFT tag while it is not.
    It REPLACED the "✓ Published · ALn" stamp. Rides the excised .dhtpl on the week
    and the board's own sign strip. Green = issued (which version is in the label). */
-.day-head .dhtpl .verchip,.sb-pub .verchip{font-family:'Barlow Condensed','Inter Tight',sans-serif;font-size:10px;font-weight:800;
+.day-head .verchip,.sb-pub .verchip{font-family:'Barlow Condensed','Inter Tight',sans-serif;font-size:10px;font-weight:800;
   letter-spacing:.06em;padding:1px 6px;border-radius:5px;white-space:nowrap;align-self:center}
-.verchip.pub{color:#0b1f14;background:#57C97A}
+/* the tag rides its own .dhver span now (owner, 15 Sep 26 — item 4), immediately
+   LEFT of the .badge on every surface (item 5) */
+.day-head .dhver{display:inline-flex;align-items:center}
+/* COLOURED BY AL NUMBER (item 3): --alc comes from the shared [data-alc] palette
+   (AL1 cyan · AL2 amber · AL3 green · …), so the tag and the amendment marks read
+   the same ramp. ORIG grey, DRAFT dashed — unchanged. */
+.verchip[data-alc]{color:#08131b;background:var(--alc,#57C97A)}
 .verchip.orig{color:#08131b;background:var(--ink-3)}
 .verchip.draft{color:var(--ink-3);background:transparent;border:1px dashed var(--edge-2);font-weight:700}
 /* ---- per-day approval strip in the day head -------------------------------
@@ -1558,21 +1564,12 @@ body.dnd .schedboard .ppl[data-fill].dragover .addz{border-color:var(--accent);c
   background:rgba(59,198,232,.16);color:rgba(59,198,232,.62);border-color:rgba(59,198,232,.3)}
 .dbeak.locked{border-style:dashed}
 .dbeak.locked::before{content:'🔒 ';font-size:9px}
+/* THE WEEK BANNER IS GONE (owner, 15 Sep 26 — item 2): no status text, no AL roll.
+   The #vBanner/#eBanner elements survive ONLY to host the RULES MODIFIED stamp
+   (::after above), so the banner is display:none unless rules are modified, when
+   `.rules-off` reveals just that stamp. */
 .schedbanner{margin:0 20px 8px;display:none}
-.schedbanner.approved,.schedbanner.draft,.schedbanner.al,.schedbanner.part{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:9px 14px;border-radius:10px;font-weight:700}
-.schedbanner .sb-badge{font-size:13px;letter-spacing:.04em}
-.schedbanner .sb-actions{margin-left:auto;display:flex;gap:8px}
-.schedbanner.draft{background:rgba(138,150,163,.12);border:1px solid var(--edge-2);color:var(--ink-2)}
-.schedbanner.approved{background:rgba(87,201,122,.14);border:1px solid rgba(87,201,122,.5);color:#A8E6BC}
-/* part-published: some days approved, some still draft — amber, because the week is
-   neither safe to fly wholesale nor still wholly a draft */
-.schedbanner.part{background:rgba(229,168,59,.13);border:1px solid rgba(229,168,59,.5);color:#F2D699}
-.schedbanner.al{background:rgba(0,0,0,.25);border:1px solid var(--al);color:var(--al)}
-/* which ALs are live and which days each one covers, right in the banner */
-.schedbanner .sb-als{display:flex;flex-wrap:wrap;gap:6px}
-.schedbanner .sb-al{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:600;
-  color:var(--ink-2);background:rgba(0,0,0,.28);border:1px solid var(--alc);border-radius:999px;padding:2px 9px}
-.schedbanner .sb-al b{color:var(--alc);font-weight:800;letter-spacing:.04em}
+.schedbanner.rules-off{display:block;margin-bottom:8px}
 /* ---- AL amendment marks: ONLY the changed item is coloured ----
    Keep in step with AL_COLORS in engine/publish.ts — the banner reads its tint
    from there, everything else from these rules, and the two drifting apart shows
@@ -1647,9 +1644,12 @@ body.dnd .schedboard .ppl[data-fill].dragover .addz{border-color:var(--accent);c
    carries it — the owner asked for it (Aug 26), superseding the earlier call
    that any pending underline was noise while editing.
    Post-port enhancement: the reference marked only pucks and the cells above. */
-:is(span,b,i,div)[data-alc]:not(.seat):not(.areacell):not(.timecell):not(.rmkcell):not(.intimes):not(.sb-rcell){
+/* .verchip is excluded: the version tag (item 3) uses --alc for its BACKGROUND and
+   already reads "ALn" as its own text, so the generic underline + "ALn" ::after
+   badge would double it up. */
+:is(span,b,i,div)[data-alc]:not(.seat):not(.areacell):not(.timecell):not(.rmkcell):not(.intimes):not(.sb-rcell):not(.verchip){
   text-decoration:underline solid var(--alc);text-decoration-thickness:1px;text-underline-offset:2px}
-:is(span,b,i,div)[data-alc]:not(.seat):not(.areacell):not(.timecell):not(.rmkcell):not(.intimes):not(.sb-rcell)::after{
+:is(span,b,i,div)[data-alc]:not(.seat):not(.areacell):not(.timecell):not(.rmkcell):not(.intimes):not(.sb-rcell):not(.verchip)::after{
   content:'AL' attr(data-alc);font-family:'Barlow Condensed','Inter Tight',sans-serif;font-size:7px;font-weight:800;
   letter-spacing:.02em;color:var(--alc);margin-left:3px;vertical-align:top;pointer-events:none}
 /* amendment-level panel (edit page) */

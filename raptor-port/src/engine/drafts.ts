@@ -36,6 +36,18 @@ export const MAX_DRAFT_NAME = 24
 
 const clone = (o: any) => JSON.parse(JSON.stringify(o))
 
+/* PER-PLAN SIGN-OFFS (owner, 15 Sep 26 — item 1a): a plan is an alternate VERSION
+   of the day and owns its four sign-offs. draftDup/draftSelect stow and load the
+   day's sign state on the plan blob alongside its content, so signing Plan B never
+   bleeds onto Plan A. Cloned so a stowed blob never shares the object SCHED.sign[di]
+   keeps mutating; signBind rides too so validity survives the round trip (a plan-rev
+   mismatch alone invalidates a signature — engine/signbind). schedFields already
+   serializes sg+sb, so undo/stash carry a plan's sign the same way. */
+const signSnap = (di: number) => ({
+  sign: clone((SCHED.sign || {})[di] || { cur: '', sked: '', plan: '', appr: '' }),
+  signBind: clone((SCHED.signBind || {})[di] || {}),
+})
+
 /* the day's draft list — empty array (not undefined) when the day has none,
    so every caller can .map/.length without a guard */
 export function dayDrafts(di: any): any[] {
@@ -137,17 +149,21 @@ export function draftDup(di: any) {
        fresh id at the next histPush, so a real add is never read as a survivor —
        which is what let the swap-time adoption gate (and its RID-R4-01 hole) be
        removed entirely. */
-    list.push({ id: newId(list), name: nextName(list), d: clone(DAYS[di]) })   // Plan A
-    const t = { id: newId(list), name: nextName(list), d: clone(DAYS[di]) }     // Plan B, selected
+    /* both blobs copy the live day's current sign state (they are identical copies
+       of the live day), so a day signed before it was duplicated carries its
+       sign-offs into both plans — validity is still recomputed per plan (item 1a). */
+    list.push({ id: newId(list), name: nextName(list), d: clone(DAYS[di]), ...signSnap(di) })   // Plan A
+    const t = { id: newId(list), name: nextName(list), d: clone(DAYS[di]), ...signSnap(di) }     // Plan B, selected
     list.push(t)
     SCHED.curDraft[di] = t.id
     return t
   }
   const cur = list.find((x: any) => x.id === SCHED.curDraft[di])
   /* a later dup: stow live into the entry being left behind and mint a new
-     entry as a plain clone of live — both keep live's ids (keep-ids, above) */
-  if (cur) cur.d = clone(DAYS[di])
-  const t = { id: newId(list), name: nextName(list), d: clone(DAYS[di]) }
+     entry as a plain clone of live — both keep live's ids (keep-ids, above) and
+     both carry the live sign state (per-plan sign-offs, item 1a) */
+  if (cur) { cur.d = clone(DAYS[di]); const s = signSnap(di); cur.sign = s.sign; cur.signBind = s.signBind }
+  const t = { id: newId(list), name: nextName(list), d: clone(DAYS[di]), ...signSnap(di) }
   list.push(t)
   SCHED.curDraft[di] = t.id
   return t
@@ -191,7 +207,7 @@ export function draftSelect(di: any, id: any) {
      live content — skip the stow rather than guess which blob to overwrite.
      Mint before the stow (Astra RID-IR-05) so the stowed blob never carries an
      id-less row; a no-op in production where the day already has its ids. */
-  if (cur) { ensureRowIds(DAYS); cur.d = clone(DAYS[di]) }
+  if (cur) { ensureRowIds(DAYS); cur.d = clone(DAYS[di]); const s = signSnap(di); cur.sign = s.sign; cur.signBind = s.signBind }
   const nd = clone(t.d)
   nd.today = !!(DAYS[di] && DAYS[di].today)
   DAYS[di] = nd
@@ -206,6 +222,14 @@ export function draftSelect(di: any, id: any) {
     Object.keys(SCHED.pending).forEach((k: any) => { if (keyDay(k) === di) delete SCHED.pending[k] })
     Object.keys(SCHED.added || {}).forEach((k: any) => { if (keyDay(k) === di) delete SCHED.added[k] })
   }
+  /* PER-PLAN SIGN-OFFS (owner, 15 Sep 26 — item 1a): load the incoming plan's own
+     sign state (the outgoing plan's was stowed on its blob above). A plan never
+     signed reads empty; one that was signed comes back green, because signBind rode
+     the blob and its plan-rev now matches curDraft again. */
+  SCHED.sign = SCHED.sign || {}
+  SCHED.sign[di] = clone(t.sign || { cur: '', sked: '', plan: '', appr: '' })
+  SCHED.signBind = SCHED.signBind || {}
+  SCHED.signBind[di] = clone(t.signBind || {})
   SCHED.curDraft = SCHED.curDraft || {}
   SCHED.curDraft[di] = id
   return true

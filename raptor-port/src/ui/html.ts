@@ -11,7 +11,7 @@ import { slotVal, txtGet, TIME_TXT, whoArr, rowCrew, rowRef } from '../engine/sl
    click that follows it read one test */
 import { WARN, sevOf, chipOf, dashOf, traceOf, traceLeads, traceChip, traceIx, tracesOn, chipText, wlbl, WCODE, SEVWORD, CHIP_LABEL, ordinal } from '../engine/validate'
 import { availByWave, personBusy, dayOff, dayEngaged, personWarns } from '../engine/avail'
-import { SCHED, alAttr, dayApproved, dayCurVer, dayPendCount, dayDelta, dayDiscardCount, alColor, signOf, signMissing, signPeople, SIGN_ROLES, daySigned, nextSeq, dowShort, alCount, daySnapOf, verLabel, protectedWeek } from '../engine/publish'
+import { SCHED, alAttr, dayApproved, dayCurVer, dayPendCount, dayDelta, dayDiscardCount, alColor, signOf, signMissing, signShown, signPeople, SIGN_ROLES, daySigned, nextSeq, dowShort, alCount, daySnapOf, verLabel, protectedWeek } from '../engine/publish'
 import { verSeq } from '../engine/verid'
 import { dayDrafts, curDraftId, isDraftVer, draftVerLabel } from '../engine/drafts'
 import { keyDay } from '../engine/keys'
@@ -172,9 +172,12 @@ export function verTagHTML(di:any){
   if(!dayApproved(di)) return `<span class="verchip draft" title="${esc(DAYS[di]?.dow||'')} is still a working draft — not yet published">DRAFT</span>`
   const cv=dayCurVer(di)
   if(cv==null) return ''   // published with no snapshot — probe/import state
+  /* COLOUR BY AL NUMBER (owner, 15 Sep 26 — item 3): AL1 cyan, AL2 amber, AL3
+     green, … off the SAME data-alc palette the amendment marks use (one source, so
+     the tag and the marks can never drift). ORIG stays grey, DRAFT dashed. */
   return verSeq(cv)===0
     ? `<span class="verchip orig" title="${esc(DAYS[di]?.dow||'')} is issued as the Original">ORIG</span>`
-    : `<span class="verchip pub" title="${esc(DAYS[di]?.dow||'')} is issued as ${verLabel(cv)}">${verLabel(cv)}</span>`
+    : `<span class="verchip" data-alc="${verSeq(cv)}" title="${esc(DAYS[di]?.dow||'')} is issued as ${verLabel(cv)}">${verLabel(cv)}</span>`
 }
 /* THE VIEW-ONLY WEEK'S DRAFT PICKER (owner, 15 Aug 26 — "on view schedule
    mode, you can also view the different drafts"). The view page deliberately
@@ -1092,27 +1095,30 @@ export function dayHTML(di:any,ed:any,vsel?:any){
     let h=`<section class="day ${d.today?'today':''} ${ok?'dok':''}${PV?(PVQ?' issued':' preview'):''}" data-day="${di}">
       <div class="day-head">${ed
         ? `<span class="dow crewday" data-crewday="${di}" title="Show this day's crew in the aircrew panel">${d.dow}</span><span class="dt sb-open" data-sbday="${di}" title="Open scheduler board">${d.dt}${d.today?' · Today':''}</span>`
-        : `<span class="dow di-open" data-dayinfo="${di}" title="Day details">${d.dow}</span><span class="dt di-open" data-dayinfo="${di}" title="Day details">${d.dt}${d.today?' · Today':''}</span>`}${(ed||vsel)?`<span class="dhtpl">${verTagHTML(di)}${ed?`<button class="dhbtn" data-daytplopen="${di}" title="Save this day, or apply a saved template">Templates</button>`:''}${planSelectorHTML(di)}</span>`:''}
+        : `<span class="dow di-open" data-dayinfo="${di}" title="Day details">${d.dow}</span><span class="dt di-open" data-dayinfo="${di}" title="Day details">${d.dt}${d.today?' · Today':''}</span>`}${(ed||vsel)?`<span class="dhtpl">${ed?`<button class="dhbtn" data-daytplopen="${di}" title="Save this day, or apply a saved template">Templates</button>`:''}${planSelectorHTML(di)}</span>`:''}<span class="dhver">${verTagHTML(di)}</span>
       <span class="badge" title="Aircraft per wave · standalone lines after the slash">${dayCount(d)}</span>
       <span class="dstat">${(!ed&&!vsel)?viewVerSelHTML(di):''}${dayStatHTML(di,ed)}</span></div>`
       +pvBar
-      /* THE .dhtpl SPAN carries the day's version chrome, between the date (.dt)
-         and the turn-pattern badge: the green title tag (verTagHTML), the
-         Templates button, and the plans selector (planSelectorHTML). The old
-         "Drafts" button folded into the selector's menu; the grouped version
-         <select> and the green "Live copy" pill are gone (owner, 15 Sep 26).
-         Gated on `ed||vsel` rather than `ed`, so the selector is present while
+      /* THE .dhtpl SPAN carries the day's edit chrome, between the date (.dt) and
+         the turn-pattern badge: the Templates button and the plans selector
+         (planSelectorHTML). The old "Drafts" button folded into the selector's
+         menu; the grouped version <select> and the green "Live copy" pill are gone
+         (owner, 15 Sep 26). Gated on `ed||vsel` so the selector is present while
          you PREVIEW an issued version too (a preview renders read-only, ed=false,
          and `vsel` is the edit-week signal) — that is where its label reads the
          amber "👁 AL2" state. Templates stays `ed`-only (you don't apply a
          template while previewing).
-         The day-head is otherwise byte-compared against the reference verbatim,
-         so html.test.ts's `noDhTpl` excision lifts the whole `.dhtpl` span off
-         both strings before comparison (A6). The selector and the tag nest their
-         own <span>s now, so that excision is a BALANCED span-depth walk (the
-         seed week is never previewed, so the compare only ever sees ed=true, and
-         the whole span is excised either way). The Templates button keeps its
-         `.dhbtn`/data-daytplopen routeClick door; the selector's is data-planmenu.
+         THE GREEN TITLE TAG (verTagHTML) MOVED OUT of .dhtpl into its own .dhver
+         span, placed immediately LEFT of the .badge (owner, 15 Sep 26 — item 4),
+         and it renders on EVERY surface — edit, view-only and the frozen issued
+         face — so the view page names its issued version too (item 5). ORIG/ALn is
+         coloured by AL number (item 3); DRAFT is the dashed unpublished tag.
+         The day-head is otherwise byte-compared against the reference verbatim, so
+         html.test.ts's `noDhTpl` excision lifts the whole `.dhtpl` span off both
+         strings, and a sibling `noVerTag` excision lifts the whole `.dhver` span —
+         both BALANCED span-depth walks, a no-op on the reference (which has
+         neither). The Templates button keeps its `.dhbtn`/data-daytplopen
+         routeClick door; the selector's is data-planmenu.
          The sign-off block stays exactly as it was minus the two buttons: still
          edit-mode only, still excised wholesale by noSign (signoffHTML nests no
          <div>, so the lazy match runs to this wrapper's own close). */
@@ -1580,7 +1586,10 @@ export function accCtl(di:any,inp:any){
 }
 /* the strip that lives in one day's header. `full` is the roomy board version. */
 export function signoffHTML(di:any,full:any){
-  const g=signOf(di), miss=signMissing(di), any=SIGN_ROLES.some((r:any)=>g[r[0]]);
+  /* signShown, not signOf: a signature the day's content has moved out from under
+     reads EMPTY here (owner, 15 Sep 26 — a change clears the sign-offs). `any`
+     (the Clear button) and each select's value/`.on` all follow the shown state. */
+  const g=signShown(di), miss=signMissing(di), any=SIGN_ROLES.some((r:any)=>g[r[0]]);
   return `<span class="so-h">Sign-off</span>`
     +SIGN_ROLES.map(([k,lbl,sch]:any)=>{
       const v=g[k], ids=signPeople(sch,v);
@@ -1597,9 +1606,20 @@ export function signoffHTML(di:any,full:any){
         +ids.map((id:any)=>`<option value="${id}"${id===v?' selected':''}>${esc(PEOPLE[id].cs)}</option>`).join('')
         +`</select></label>`;}).join('')
     +(any?`<button class="so-clear" data-signclear="${di}">Clear</button>`:'')
-    +`<span class="so-state ${miss.length?'no':'yes'}">${miss.length
-        ? `${miss.length} to sign${full?' · '+miss.join(', '):''}`
-        : 'Signed — this day can be published'}</span>`;
+    /* the status line is PUBLISH-AWARE once the four are in (owner, 15 Sep 26 —
+       item 7). On an unpublished day, signing IS what unlocks the first publish, so
+       it still reads "can be published". On an ALREADY-published day it names the
+       issued version and says whether there is anything to publish — the old flat
+       "can be published" wrongly implied a publish button that (correctly) is not
+       there when nothing has changed. dayDelta is the ONE eligibility authority. */
+    +`<span class="so-state ${miss.length?'no':'yes'}">${
+        miss.length ? `${miss.length} to sign${full?' · '+miss.join(', '):''}`
+        : !dayApproved(di) ? 'Signed — this day can be published'
+        : (()=>{const chg=dayDelta(di).length,cv=dayCurVer(di);
+            return chg
+              ? `Published at ${esc(verLabel(cv))} · ${chg} change${chg>1?'s':''} to publish — Publish AL${nextSeq(di)}`
+              : `Published at ${esc(verLabel(cv))} — no changes to publish`;})()
+      }</span>`;
 }
 /* =====================================================================
    DAY DETAILS — the ⓘ chip on every day head. Approval state, which AL

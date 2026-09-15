@@ -14,7 +14,7 @@ import { createRoot, type Root } from 'react-dom/client'
 import { App } from './App'
 import { initStore, setSession, notify, setPage } from '../state/store'
 import { DAYS } from '../engine/data'
-import { SCHED, signOf, setDayApproved, dayPendCount } from '../engine/publish'
+import { SCHED, signOf, setDayApproved, dayApproved, dayPendCount } from '../engine/publish'
 import { dayDrafts, curDraftId, draftDup, draftSelect } from '../engine/drafts'
 import { txtSet, txtGet } from '../engine/slots'
 import { DPREV, VWORK, setDayPreview } from '../state/view'
@@ -350,5 +350,46 @@ describe('the manage modal (DraftsModal)', () => {
     expect(curDraftId(0)).toBe(dayDrafts(0)[0].id)      // Plan A is live
     await click($('#draftsClose'))
     expect(($('#draftsModal') as any).hidden).toBe(true)
+  })
+})
+
+describe('sign-offs: a change clears the greens, and the "nothing to publish" note (owner, 15 Sep 26 — R1/R2/item 7)', () => {
+  /* sign all four through the real sign-off selects, so it routes Shell.tsx's
+     onChange → setSign (bound) and fires the R2 note on the fourth. */
+  const signAllUI = async (di: number, off = 0) => {
+    for (const [i, k] of (['cur', 'sked', 'plan', 'appr'] as const).entries()) {
+      const sel = $(`#eWeek .day[data-day="${di}"] select[data-sign="${k}"]`) as unknown as HTMLSelectElement
+      await pick(sel, sel.options[off + i + 2]!.value)
+    }
+  }
+
+  it('signing a published day with nothing pending pops the "no changes" note; the status line says so; no Publish button', async () => {
+    await resetDrafts()
+    SCHED.signBind = {}
+    /* publish day 0 first — that spends its signatures, leaving it approved with 0 pending */
+    await act(async () => { const g = signOf(0); g.cur = 'ignite'; g.sked = 'bane'; g.plan = 'stiff'; g.appr = 'pump'; setDayApproved(0, 1); notify() })
+    expect(dayApproved(0)).toBe(true)
+    /* re-sign the four through the UI; the fourth completes with nothing to publish */
+    const toasts = await withToasts(async () => { await signAllUI(0) })
+    expect(toasts.some(t => /no changes to publish/i.test(t)), 'the R2 bubble fired').toBe(true)
+    const bar = $(`#eWeek .day[data-day="0"] .signoff.day-sign`)
+    expect(bar.textContent, 'the status line is publish-aware').toContain('no changes to publish')
+    expect($(`#eWeek .day[data-day="0"] button[data-alpub]`), 'correctly NO publish button').toBeFalsy()
+  })
+
+  it('a change clears the greens (R1); re-signing then reads "1 change to publish"', async () => {
+    /* state: day 0 published + fully signed, 0 pending, from the test above */
+    await act(async () => { txtSet('dn:0.0', 'AMEND ONE'); notify() })
+    const bar = () => $(`#eWeek .day[data-day="0"] .signoff.day-sign`)
+    /* R1: the change invalidated all four sign-offs — the selects read EMPTY and the
+       day is unsigned again, exactly the owner's rule ("a change needs to be signed
+       off"). The status line correctly says the day is unsigned, not "publishable". */
+    expect([...bar().querySelectorAll('select[data-sign]')].every((s: any) => s.value === ''), 'greens cleared by the change').toBe(true)
+    expect(bar().textContent).toContain('4 to sign')
+    /* re-sign → now signed + published + 1 pending → the honest publish-aware line
+       AND the Publish AL button returns */
+    await signAllUI(0)
+    expect(bar().textContent).toMatch(/1 change to publish — Publish AL1/)
+    expect($(`#eWeek .day[data-day="0"] button[data-alpub]`), 'Publish AL returns after re-signing').toBeTruthy()
   })
 })

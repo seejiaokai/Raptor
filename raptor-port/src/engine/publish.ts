@@ -642,13 +642,38 @@ function signBoundOk(di:any,role:any,cur?:any){const b=(SCHED.signBind||{})[+di]
    Scheduler qual after they signed used to leave the day looking signed — AND
    only while its content binding still holds (AM-06). currentBind is computed at
    most once per call, and only if some role carries a binding. */
-export function signMissing(di:any){const g=signOf(di); const b=(SCHED.signBind||{})[+di]; let cur:any=null;
-  return SIGN_ROLES.filter((r:any)=>{
-    if(!g[r[0]]||(r[2]&&!isScheduler(g[r[0]])))return true;
-    if(b&&b[r[0]]){if(!cur)cur=currentBind(di); if(!signBoundOk(di,r[0],cur))return true;}
-    return false;
-  }).map((r:any)=>r[1]);}
+/* a role's stored signer, but only while it still COUNTS: signed, still an
+   appointed scheduler where the role requires it, and (AM-06) its content binding
+   still holding. This is the ONE per-role predicate — signMissing lists the roles
+   it rejects, signShown blanks the roles whose BINDING it rejects — so the "N to
+   sign" text and the greened sign-off selects can never drift. `cur` is the
+   caller's once-per-day currentBind; pass it to avoid recomputing the digest. */
+export function signRoleOk(di:any,role:any,cur?:any){
+  const g=signOf(di),who=g[role]; if(!who)return false;
+  const rr=SIGN_ROLES.find((r:any)=>r[0]===role); if(rr&&rr[2]&&!isScheduler(who))return false;
+  const b=(SCHED.signBind||{})[+di];
+  if(b&&b[role]){const c=cur||currentBind(di); if(!signBoundOk(di,role,c))return false;}
+  return true;}
+/* currentBind digest is the only non-trivial cost, so compute it at most once per
+   call and only if some role actually carries a binding (the old signMissing rule). */
+function signCur(di:any){const b=(SCHED.signBind||{})[+di];
+  return b&&SIGN_ROLES.some((r:any)=>b[r[0]])?currentBind(di):undefined;}
+export function signMissing(di:any){const cur=signCur(di);
+  return SIGN_ROLES.filter((r:any)=>!signRoleOk(di,r[0],cur)).map((r:any)=>r[1]);}
 export function daySigned(di:any){return signMissing(di).length===0;}
+/* the signer to DISPLAY per role. A signature the day's CONTENT has moved out from
+   under (its binding no longer matches the live content) reads EMPTY, so a change
+   wipes the green and the day must be re-signed before it can publish (owner, 15
+   Sep 26 — "a change needs to be signed off … the sign offs will be removed and
+   back to default cleared"). Reverting the content in place restores the binding
+   and the name returns (AM-06 F-09). Scoped to BINDING breakage ONLY: an
+   unappointed-but-signed name still shows (signPeople keeps it offered) — that
+   path is unchanged, so this never silently blanks a name on an appointment change. */
+export function signShown(di:any){const b=(SCHED.signBind||{})[+di]; const cur=signCur(di);
+  const g=signOf(di),o:any={};
+  SIGN_ROLES.forEach((r:any)=>{const k=r[0],who=g[k];
+    o[k]=(who&&b&&b[k]&&!signBoundOk(di,k,cur))?'':who;});
+  return o;}
 export function signClear(di:any){SCHED.sign[+di]={cur:'',sked:'',plan:'',appr:''}; if(SCHED.signBind)SCHED.signBind[+di]={};}
 export function signNames(di:any){const g=signOf(di),o:any={};SIGN_ROLES.forEach((r:any)=>{const p=PEOPLE[g[r[0]]];o[r[0]]=p?p.cs:'';});return o;}
 export function signPeople(schedOnly:any,keep?:any){

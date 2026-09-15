@@ -135,7 +135,10 @@ describe('the edit page (tfin)', () => {
     expect(alBtn2.disabled).toBe(false)
     await click(alBtn2)
     expect(SCHED.als.length).toBe(1)
-    expect(/AL1/.test($('#eBanner').textContent!)).toBe(true)
+    /* the week banner's AL roll is gone (owner, 15 Sep 26 — item 2); the day's own
+       green title tag names the issued version now, coloured by AL number (item 3). */
+    expect($('#eBanner').textContent!.trim()).toBe('')
+    expect(/AL1/.test($(`#eWeek .day[data-day="0"] .verchip`)!.textContent!)).toBe(true)
     expect($$('#eWeek [data-alc="1"]').length).toBeGreaterThanOrEqual(1)
     expect(/AL1/.test($('#alPanel').textContent!)).toBe(true)
   })

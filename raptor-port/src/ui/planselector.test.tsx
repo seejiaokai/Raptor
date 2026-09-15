@@ -63,7 +63,10 @@ describe('the selector LABEL + title tag — the five-state matrix (A6)', () => 
   it('3b · issued as AL1 → green AL1 tag (not ORIG, not DRAFT)', () => {
     sign(0); setDayApproved(0, 1)
     txtSet('dn:0.0', 'LIVE CHANGE'); sign(0); alIssue(0)
-    expect(verTagHTML(0)).toContain('verchip pub')
+    /* coloured by AL number now (owner, 15 Sep 26 — item 3): the flat green .pub
+       class is gone; AL1 wears data-alc="1" off the shared palette (cyan). */
+    expect(verTagHTML(0)).toContain('class="verchip" data-alc="1"')
+    expect(verTagHTML(0)).not.toContain('verchip pub')
     expect(verTagHTML(0)).toContain('AL1')
   })
 

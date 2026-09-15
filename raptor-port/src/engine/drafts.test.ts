@@ -6,7 +6,8 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import { DAYS } from './data'
 import {
-  SCHED, signOf, setDayApproved, dayApproved, daySnapOf, dayCurVer,
+  SCHED, signOf, setSign, daySigned, signMissing, signShown,
+  setDayApproved, dayApproved, daySnapOf, dayCurVer,
   publishALDay, deleteCount, deletionWasIssued, alAttr, markStructuralAdd, markEdit, dayHasChanges,
 } from './publish'
 import { txtSet, txtGet, setSlotVal, fillSlot } from './slots'
@@ -48,8 +49,16 @@ beforeEach(() => {
   DAYS[0] = JSON.parse(JSON.stringify(D0))
   SCHED.pending = {}; SCHED.changes = {}; SCHED.added = {}; SCHED.als = []
   SCHED.al = 0; SCHED.dayOK = {}; SCHED.sign = {}; SCHED.orig = {}; SCHED.cur = {}
-  SCHED.drafts = {}; SCHED.curDraft = {}
+  SCHED.drafts = {}; SCHED.curDraft = {}; SCHED.signBind = {}
 })
+
+/* sign all four through the SANCTIONED (bound) path, so signBind is populated and
+   validity really depends on the plan/content — the legacy `sign` helper above uses
+   the unbound direct-assignment path and would read signed on every plan. */
+const signBound = (di: number) => {
+  setSign(di, 'cur', 'ignite'); setSign(di, 'sked', 'bane')
+  setSign(di, 'plan', 'stiff'); setSign(di, 'appr', 'pump')
+}
 
 describe('duplicating a day', () => {
   it('a day starts with no drafts, and dayDrafts always answers an array', () => {
@@ -713,5 +722,68 @@ describe('reconcileIssuedMarks — a mark stranded at an address in neither docu
     DAYS[0].ground[0].info = false
     reconcileIssuedMarks()
     expect(SCHED.pending['gr:0.0.prog'], 'flipped back = nothing to publish').toBeUndefined()
+  })
+})
+
+describe('signatures are PER PLAN (owner, 15 Sep 26 — item 1a)', () => {
+  it('each plan keeps its own sign-offs across switches — B signed, A empty, both green after signing both', () => {
+    draftDup(0)                                        // Plan A + Plan B (B selected/live)
+    const [planA, planB] = dayDrafts(0).map((t: any) => t.id)
+    /* sign the live plan (B) through the bound path */
+    signBound(0)
+    expect(daySigned(0), 'Plan B is signed while live').toBe(true)
+    /* switch to Plan A — never signed → its own empty sign-off bar (item 1's bug:
+       it used to show B's four greens) */
+    draftSelect(0, planA)
+    expect(daySigned(0), 'Plan A was never signed').toBe(false)
+    expect(signMissing(0).length).toBe(4)
+    expect(Object.values(signShown(0)).every(v => v === ''), 'Plan A shows empty').toBe(true)
+    /* sign Plan A too, then ping-pong: each plan holds its OWN greens */
+    signBound(0)
+    expect(daySigned(0)).toBe(true)
+    draftSelect(0, planB)
+    expect(daySigned(0), 'Plan B is still signed independently').toBe(true)
+    draftSelect(0, planA)
+    expect(daySigned(0), 'Plan A is still signed independently').toBe(true)
+  })
+
+  it('the plan blob carries sign + signBind, and undo round-trips them (schedFields)', () => {
+    histInit()
+    draftDup(0); histPush()
+    const [planA, planB] = dayDrafts(0).map((t: any) => t.id)
+    signBound(0); histPush()                           // sign Plan B (live)
+    expect(daySigned(0)).toBe(true)
+    draftSelect(0, planB === curDraftId(0) ? planA : planB); histPush()   // switch away
+    expect(daySigned(0), 'the other plan is unsigned').toBe(false)
+    /* the stowed plan blob carries its sign + binding */
+    const stowedB = dayDrafts(0).find((t: any) => t.id === planB)
+    expect(stowedB.sign.cur, 'Plan B stowed its signer').toBe('ignite')
+    expect(stowedB.signBind.cur, 'Plan B stowed its binding').toBeTruthy()
+    /* undo the switch — back on Plan B, signed again */
+    histApply(HIST.ix - 1)
+    expect(daySigned(0), 'undo restores Plan B signed').toBe(true)
+  })
+})
+
+describe('a CHANGE clears the displayed sign-offs (owner, 15 Sep 26 — R1)', () => {
+  it('signShown blanks a role once an edit moves the content, and restores it on revert', () => {
+    signBound(0)
+    expect(Object.values(signShown(0)).every(v => v), 'all four show while valid').toBe(true)
+    /* a real canonical edit (a day note) moves the digest with no sign slot touched */
+    DAYS[0].notes = DAYS[0].notes || []
+    DAYS[0].notes.push({ rid: 'nR1', t: 'edit after sign' })
+    expect(Object.values(signShown(0)).every(v => v === ''), 'a change clears the greens').toBe(true)
+    expect(signOf(0).cur, 'the stored name is NOT destroyed — only the display clears').toBe('ignite')
+    DAYS[0].notes.pop()                                // revert the edit in place
+    expect(signShown(0).cur, 'reverting the content restores the name').toBe('ignite')
+  })
+
+  it('an unappointed-but-signed name is NOT blanked by this (only binding breakage is)', () => {
+    /* the legacy unbound path: no signBind, so signShown must keep showing the name */
+    const g = signOf(0)
+    g.cur = 'ignite'; g.sked = 'bane'; g.plan = 'stiff'; g.appr = 'pump'
+    DAYS[0].notes = DAYS[0].notes || []
+    DAYS[0].notes.push({ rid: 'nR1b', t: 'edit' })
+    expect(signShown(0).cur, 'an unbound (appointment-only) signature still shows').toBe('ignite')
   })
 })

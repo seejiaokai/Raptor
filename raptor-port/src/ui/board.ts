@@ -11,7 +11,7 @@ import { WARN, validate, WCODE, wlbl } from '../engine/validate'
 import { hhmm, fmtHM, minus, parseHM } from '../engine/time'
 import { VCONF } from '../engine/rules'
 import { slotVal, txtGet, txtSet, acRef, rollCx, whoArr, unacceptInput, TIME_TXT } from '../engine/slots'
-import { markEdit, markDeletion, deletionWasIssued, markStructuralAdd, alAttr, dayApproved, dayCurVer, dayPendCount, dayHasChanges, verLabel, nextSeq, dropRowMarks, protectedWeek, dayVersions, daySigned } from '../engine/publish'
+import { markEdit, markDeletion, deletionWasIssued, markStructuralAdd, alAttr, dayApproved, dayCurVer, dayPendCount, dayHasChanges, verLabel, nextSeq, dropRowMarks, protectedWeek, dayVersions } from '../engine/publish'
 import { logAction, ELOG } from '../engine/editlog'
 import { hideHistBub } from './histbubble'
 import { touchDragBusy } from './drag'
@@ -1357,7 +1357,6 @@ export function switchDraft(di: any, id: any) {
   if (!t) return false
   if (id === curDraftId(di)) { toast(`"${t.name}" is already the live ${d.dow}`); return false }
   const pub = dayApproved(di), cv = pub ? dayCurVer(di) : null
-  const wasSigned = daySigned(di)   // capture BEFORE the swap — Phase 3 recomputes signature validity on the new content
   if (view.ARM && view.ARM.di === di) view.disarmSlot()   // the swap may remove the armed row
   if (!draftSelect(di, id)) return false
   view.setDayPreview(di, null)
@@ -1370,10 +1369,11 @@ export function switchDraft(di: any, id: any) {
     said += n ? ` · ${n} difference${n > 1 ? 's' : ''} from ${verLabel(cv)} pending`
       : ` · matches ${verLabel(cv)} — nothing pending`
   }
-  /* signatures are bound to content (Phase 3, AM-06): a plan switch changes the
-     day's content, so every signature that was in falls invalid — say so, since
-     the "N to sign" jumps and Publish AL locks until they are re-signed (C3). */
-  if (wasSigned && !daySigned(di)) said += ' · signatures reset'
+  /* PER-PLAN SIGN-OFFS (owner, 15 Sep 26 — item 1a): each plan owns its four
+     sign-offs (draftSelect stows the outgoing plan's and loads the incoming plan's),
+     so a switch no longer "resets" anything — an unsigned plan simply shows its own
+     empty sign-off bar, a signed one comes back green. The old "· signatures reset"
+     note is gone with the day-level signature it described. */
   logAction(di, said)
   toast(said)
   return true
