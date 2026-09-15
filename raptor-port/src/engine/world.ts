@@ -39,6 +39,13 @@ export function clearFiling() { FILING = null }
    Lets the hot read sites keep their exact prior path (inputDormant, no id mint)
    off the official run, and only fold through fileAcc when it can matter. */
 export function filingActive() { return FILING != null }
+/* is a given date SIGNED in the current official context (has a frozen filing
+   fingerprint)? Lets workedSet treat a signed date's frozen document events as
+   authoritative and skip the hypothetical input-landing (Codex CRPF-007). */
+export function filingHas(dt: any) {
+  if (!FILING) return false
+  const k = dateOrd(dt); return k != null && !!FILING[k]
+}
 /* the effective acc for one input on one date. Off the official run (or on a date
    that was never signed) → the LIVE acc, unchanged. On a signed date: the frozen
    acc when the input was present at sign time, else 'r' (dormant) — an input that

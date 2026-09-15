@@ -1,5 +1,5 @@
 import { DAYS } from './data'
-import { INPUTS, inputCoversDate, inputFlags, inputDormant, inpWin, isSansAvail, inpMeta, shiftHardInput, shiftHardLabel, inpById, inpId } from './inputs'
+import { INPUTS, inputCoversDate, inputFlags, inputDormant, inpWin, isSansAvail, inpMeta, shiftHardInput, shiftHardLabel, inpById, inpId, isDownchit } from './inputs'
 import { fileAcc, filingActive } from './world'
 import { PEOPLE, isSpecial, whoId, aarNeed } from './people'
 import { toMin, parseHM, win, overlap } from './time'
@@ -33,8 +33,12 @@ export const inpShow=(inp:any,dt:any,xweek?:any)=>{
      On the OFFICIAL run (published-schedule flagging, §14.3) read through fileAcc so
      an approved date sees the SIGNED filing — a working-copy 'r' cannot silence a
      signed warning, and a post-publish-added input reads 'r' (absent when signed).
-     Off the official run the path is the exact prior inputDormant (no id mint). */
-  if(filingActive()?fileAcc(dt,inpId(inp),inp.acc)==='r':inputDormant(inp))return false;
+     Off the official run the path is the exact prior inputDormant (no id mint).
+     EXCEPTION — CURRENT SAFETY FACTS are never versioned (§4, Codex CRPF-001): a
+     medical downchit (grp 'med') flags the OFFICIAL programme the instant it is filed
+     and clears the instant it is lifted, with no publish. So medical inputs always
+     read their LIVE acc, never the frozen filing — you don't "publish" going unfit. */
+  if((filingActive()&&!isDownchit(inp.type))?fileAcc(dt,inpId(inp),inp.acc)==='r':inputDormant(inp))return false;
   /* CROSS-WEEK SEED READS BYPASS THE ACCEPTED-ROW DEDUP (weekctx.ts, via
      buildDay's xweek flag). acceptedDay(inp) below finds the row on the
      LOADED week's live DAYS — it has no idea a non-loaded day even exists,

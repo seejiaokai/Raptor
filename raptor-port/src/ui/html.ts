@@ -367,7 +367,7 @@ export function plCols(){return `<div class="pl-cols"><span class="h-nm">Name</s
 export function exemptDeskOwn(di:any,key:any,id:any){
   const m=/^d:(\d+)\.(\d+)\.(\d+)/.exec(String(key||'')); if(!m)return undefined;
   const dw=((DAYS[+m[1]]||{}).dutywaves||[])[+m[2]]; if(!dw||!dw.noconf)return undefined;
-  if(PV||!id)return null;
+  if((PV&&!OFW)||!id)return null;   /* official face shows these flags too (§8, Codex CRPF-008) */
   const rk=`d:${m[1]}.${m[2]}.${m[3]}`, g=WARN.byDay[di];
   const hit=((g&&g.warns)||[]).find((x:any)=>(x.code==='DNIF_FLY'||x.code==='LEAVE_FLY'||x.code==='DOUBLE_BOOK')
     &&(x.who||[]).includes(id)&&(x.key===rk||x.also===rk));
@@ -697,24 +697,10 @@ const soloTrace=(di:any,pf:any)=>{
 };
 export function dayWarnHTML(di:any){
   const all=(WARN.byDay[di]&&WARN.byDay[di].warns)||[];
-  /* the strip stands on its own: a day with no issues of its own can still be
-     the day that wrecks tomorrow, and that is exactly the case worth seeing */
-  if(!all.length)return soloTrace(di,PFOCUS&&PFOCUS.id);
   /* When a puck is clicked the box narrows to that person's issues on this day
      — every other day they are flagged on opens the same way, so a cause that
      sits on the day before is right there next to the effect. */
   const pf=PFOCUS&&PFOCUS.id;
-  const items=pf?personWarns(di,pf):all.map((w:any,ix:any)=>({w,ix}));
-  if(pf&&!items.length)return soloTrace(di,pf);
-  const dw=items.map((x:any)=>x.w);
-  /* the header count stays the TRUE total — muting a check declutters the
-     list, it does not change what the day is (the board does the same). So
-     worst / nh / the issue count all read `dw`, the full set including any
-     muted rows; only the LIST below drops them. */
-  const worst=dw.some((w:any)=>w.sev==='hard')?'hard':dw.some((w:any)=>w.sev==='adv')?'adv':'note';
-  const nh=dw.filter((w:any)=>w.sev==='hard').length;
-  const open=DWOPEN.has(di);
-  const cs=pf&&PEOPLE[pf]?PEOPLE[pf].cs:'';
   /* THE "GOES AWAY / NEW ONCE SIGNED" DIFF (published-schedule flagging, §6/§14.5).
      On the WORKING view of a published day whose working copy diverges from the
      signed version, mark each warning the unpublished edit will ADD ("new once
@@ -723,19 +709,40 @@ export function dayWarnHTML(di:any){
      (parity): OFF the official face (!OFW), the day is published, and OFFICIAL is a
      DISTINCT bundle from WORKING (the alias means no divergence anywhere). Keyed by
      code + who + flag-day + cause-day, message EXCLUDED so a within-threshold edit
-     does not mark spuriously (§14.5). */
+     does not mark spuriously (§14.5). Computed BEFORE the empty-list early return
+     (Codex CRPF-012) so a hidden fix that clears the LAST warning still shows its
+     "goes away" row; person-filtered so a pf-focused box shows only that person's. */
   const diffMode=!OFW&&dayApproved(di)&&officialWarn()!==WARN;
+  const inPf=(w:any)=>!pf||(w.who||[]).includes(pf);
   const wkey=(w:any)=>`${w.code}|${(w.who||[]).slice().sort().join(',')}|${w.di}|${w.prevDi==null?'':w.prevDi}`;
-  const offW:any[]=diffMode?((officialWarn().byDay[di]&&officialWarn().byDay[di].warns)||[]):[];
+  const offW:any[]=diffMode?((officialWarn().byDay[di]&&officialWarn().byDay[di].warns)||[]).filter(inPf):[];
+  const workKeys=new Set(all.filter(inPf).map(wkey));
   const offKeys=new Set(offW.map(wkey));
-  const workKeys=new Set(all.map(wkey));
   const goneW=diffMode?offW.filter((w:any)=>!workKeys.has(wkey(w))):[];
   const sigNew=(w:any)=>diffMode&&!offKeys.has(wkey(w))?`<span class="wsig new" title="This warning is not on the signed version — publishing this day adds it">new once signed</span>`:'';
+  const items=pf?personWarns(di,pf):all.map((w:any,ix:any)=>({w,ix}));
+  /* the strip stands on its own: a day with no issues of its own can still be the
+     day that wrecks tomorrow, or one whose only issues clear once signed — both
+     worth seeing. Only bail when there is genuinely nothing to show. */
+  if(!items.length&&!goneW.length)return soloTrace(di,pf);
+  const dw=items.map((x:any)=>x.w);
+  /* the header count stays the TRUE total — muting a check declutters the
+     list, it does not change what the day is (the board does the same). So
+     worst / nh / the issue count all read `dw`, the full set including any
+     muted rows; only the LIST below drops them. When the working day is clean but
+     signed warnings remain to clear, the header names those instead. */
+  const sevOfList=(ls:any[])=>ls.some((w:any)=>w.sev==='hard')?'hard':ls.some((w:any)=>w.sev==='adv')?'adv':'note';
+  const worst=dw.length?sevOfList(dw):sevOfList(goneW);
+  const nh=dw.filter((w:any)=>w.sev==='hard').length;
+  const open=DWOPEN.has(di);
+  const cs=pf&&PEOPLE[pf]?PEOPLE[pf].cs:'';
   let h=`<div class="dwbox ${open?'open':''}${pf?' pfoc':''}" data-dwbox="${di}">`
    +`<div class="daywarn ${worst}" data-daywarn="${di}">`
    +`${pf?`<span class="dwwho">${esc(cs)}</span>`:''}`
-   +`<b>⚠ ${dw.length} issue${dw.length>1?'s':''}</b>`
-   +`${nh?` · ${nh} warning`:''} · <span class="dwcue">${open?'tap to collapse':'tap to review'}</span>`
+   +(dw.length
+      ? `<b>⚠ ${dw.length} issue${dw.length>1?'s':''}</b>${nh?` · ${nh} warning`:''}`
+      : `<b>⚠ ${goneW.length} to clear once signed</b>`)
+   +` · <span class="dwcue">${open?'tap to collapse':'tap to review'}</span>`
    +`<span class="dwcar">${open?'▲':'▼'}</span></div>`;
   if(open){
     /* MUTING A CHECK IS AVAILABLE ON EDIT SCHEDULE TOO (owner, 29 Aug 26 —
@@ -1324,7 +1331,7 @@ export function dayHTML(di:any,ed:any,vsel?:any){
              rings, with no special case — until 7 Sep 26, when BB became
              AVALON's twin and anchors the same codes. */
           const chk=!saExempt(w,f,a), fkey=`${di}.${gi}.${li}`;
-          const own=(id:any)=>{ if(PV||!id)return null;
+          const own=(id:any)=>{ if((PV&&!OFW)||!id)return null;   /* official face shows these flags too (Codex CRPF-008) */
             const g=WARN.byDay[di];
             const hit=((g&&g.warns)||[]).find((x:any)=>(x.code==='DNIF_FLY'||x.code==='LEAVE_FLY'||x.code==='SC_QUAL'||x.code==='DOUBLE_BOOK'||x.code==='QUAL')
               /* also `x.also`, so the SECOND place of a one-man-two-places pair

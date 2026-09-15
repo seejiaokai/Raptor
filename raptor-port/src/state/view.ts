@@ -463,7 +463,12 @@ export function toggleDayWarn(di:any){
    never a throw (§14.4). */
 export function displayedByDay(di:any){
   di=+di
-  const official=CURPAGE==='viewsched'&&dayApproved(di)&&!VWORK.has(di)&&!DPREV.has(di)
+  /* mirror ViewWeek.tsx's own render selection EXACTLY (Codex CRPF-009): an approved
+     view day shows its issued (OFFICIAL) face unless VWORK'd — and an edit-page 'd:'
+     preview left in DPREV is IGNORED for approved days, so it must NOT reroute the
+     click here either. Every other surface (edit page, VWORK, unapproved) is WORKING;
+     a preview renders no flags, so there is nothing to resolve there. */
+  const official=CURPAGE==='viewsched'&&dayApproved(di)&&!VWORK.has(di)
   return (official?officialWarn():WARN).byDay[di]
 }
 /* one warning → focus + snap (reference 3997-4003, verbatim) */

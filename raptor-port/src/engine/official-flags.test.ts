@@ -13,7 +13,7 @@ import { DAYS } from './data'
 import { INPUTS } from './inputs'
 import { setCurWeek } from './waves'
 import { validate, officialWarn } from './validate'
-import { SCHED, signOf, setDayApproved } from './publish'
+import { SCHED, signOf, setDayApproved, dayCurVer } from './publish'
 import { dayIssuedHTML, dayHTML } from '../ui/html'
 import { DWOPEN, WFOCUS, focusWarn, setPage } from '../state/view'
 import { stashPut, stashClear } from './weekstash'
@@ -227,17 +227,18 @@ describe('Phase 4 — the OFFICIAL run honours the SIGNED filing state', () => {
     expect(leaveFly(officialWarn(), 'waldo'), 'OFFICIAL: the signed filing keeps it').toBeTruthy()
   })
 
-  /* trap (a): the 7-day RUN count reads INPUTS directly (workedSet), not through
-     inpShow — so it must honour the frozen filing too, or the official run count
-     would drop a signed day's work when its input is later filed 'r'. */
-  it('the RUN count (workedSet) honours the signed filing — a working r still counts as signed work', () => {
+  /* trap (a) / CRPF-007: the 7-day RUN count (workedSet) hypothesises the auto-landing
+     of an activity input only on an UNSIGNED seed date — on a SIGNED date the frozen
+     document's events are authoritative (matching a loaded day's RUNLEN on-set), so an
+     unlanded/cancelled activity must NOT be counted off its input. */
+  it('the RUN count derives a SIGNED date from events only, not a hypothetical input landing', () => {
     const WK = wkFor(31)
     const labels = weekDateLabels(shiftWeekKey(WK, -1))
     setCurWeek(WK)
-    INPUTS.push({ person: 'waldo', date: labels[6], allday: true, type: 'Training', acc: 'r', remarks: '', mod: '', iid: 'iTR1' })
-    expect(seedRunIn(WK, VCONF.maxRun), 'WORKING: removed → not counted').toEqual({})
-    setWorld('official'); setFiling({ [labels[6]]: { iTR1: '' } })       // as signed: active
-    try { expect(seedRunIn(WK, VCONF.maxRun), 'OFFICIAL: signed-active → counts').toEqual({ waldo: 1 }) }
+    INPUTS.push({ person: 'waldo', date: labels[6], allday: true, type: 'Training', acc: 'g', remarks: '', mod: '', iid: 'iTR1' })
+    expect(seedRunIn(WK, VCONF.maxRun), 'UNSIGNED seed: the input would auto-land → counts').toEqual({ waldo: 1 })
+    setWorld('official'); setFiling({ [labels[6]]: { iTR1: 'g' } })       // this date is signed
+    try { expect(seedRunIn(WK, VCONF.maxRun), 'SIGNED date: events only, no landed row → not counted').toEqual({}) }
     finally { setWorld('working'); clearFiling() }
   })
 })
@@ -292,6 +293,70 @@ describe('Phase 6 — "Not Yet Signed" marker', () => {
     flyMonday('waldo', '06:00', '07:25')
     validate()
     expect(dayHTML(0, true), 'a draft day has no signed version to diverge from').not.toContain('Not yet signed')
+  })
+})
+
+/* CODE-REVIEW ROUND 1 fixes (Codex GPT-6 Astra). */
+describe('CRPF-005 — an unresolvable published day is PROTECTED, not left as a live draft', () => {
+  it("a published day whose snapshot cannot resolve does not bust its neighbour on OFFICIAL", () => {
+    const WK = wkFor(62)
+    setCurWeek(WK)
+    const dt0 = (DAYS[0] as any).dt, dt1 = (DAYS[1] as any).dt
+    ;(DAYS[0] as any) = { ...blankDay('Monday', dt0), ...dutyRow('waldo', '1900', '2300') }   // late duty
+    ;(DAYS[1] as any) = { ...blankDay('Tuesday', dt1), waves: [{ kind: 'fly', formations: [{ to: '06:00', ld: '07:25', br: '', aircraft: [{ p: '', w: 'waldo' }] }] }] }
+    validate()
+    const cr1 = (b: any) => b.all.find((x: any) => x.code === 'CREW_REST' && (x.who || []).includes('waldo') && x.di === 1)
+    expect(cr1(validate()), 'baseline: Monday late duty busts Tuesday').toBeTruthy()
+    sign(0); setDayApproved(0, true); sign(1); setDayApproved(1, true)
+    /* corrupt day 0 to an UNRESOLVABLE approved state (a legacy/damaged book) */
+    delete (SCHED.orig as any)[0]; delete (SCHED.cur as any)[0]
+    SCHED.als = SCHED.als.filter((a: any) => +a.di !== 0)
+    const w = validate()
+    expect(dayCurVer(0) == null, 'day 0 is now unresolvable').toBe(true)
+    expect(cr1(w), 'WORKING still busts Tuesday off the live Monday').toBeTruthy()
+    expect(cr1(officialWarn()), 'OFFICIAL protects the unresolvable Monday — no derived breach').toBeFalsy()
+  })
+})
+
+describe('CRPF-001 — a current medical fact flags OFFICIAL immediately (§4, unversioned)', () => {
+  const dnif = (b: any, id: string) => b.all.find((x: any) => x.code === 'DNIF_FLY' && (x.who || []).includes(id) && x.di === 0)
+
+  it('a downchit added after publish flags OFFICIAL even under an unrelated amendment', () => {
+    const WK = wkFor(60)
+    setCurWeek(WK)
+    const dt = (DAYS[0] as any).dt
+    flyMonday('waldo', '06:00', '07:25')
+    validate()
+    sign(0); setDayApproved(0, true)                          // clean publish (no medical yet)
+    ;(DAYS[0] as any).waves[0].formations[0].msn = 'XREF'     // unrelated content amendment → forces the official pass
+    INPUTS.push({ person: 'waldo', date: dt, allday: true, type: 'ATT C', acc: '', remarks: 'Medically down', mod: '', iid: 'iMED1' })
+    const w = validate()
+    expect(dnif(w, 'waldo'), 'WORKING flags the downchit').toBeTruthy()
+    expect(dnif(officialWarn(), 'waldo'), 'OFFICIAL flags medical unfitness immediately (§4) — not frozen out').toBeTruthy()
+  })
+})
+
+describe('CRPF-012 — the "goes away" row survives when the working list empties', () => {
+  afterEach(() => DWOPEN.clear())
+
+  it('a hidden fix that clears the ONLY warning still shows a "to clear once signed" box', () => {
+    const WK = wkFor(61)
+    MOCKS[shiftWeekKey(WK, -1)] = weekOf(weekDateLabels(shiftWeekKey(WK, -1)), { 6: dutyRow('waldo', '1900', '2300') })
+    setCurWeek(WK)
+    const dt = (DAYS[0] as any).dt
+    /* a MINIMAL day 0 — one flying seat that busts crew rest off the mocked Sunday,
+       and nothing else, so clearing it empties the working warning list entirely. */
+    ;(DAYS[0] as any) = { ...blankDay('Monday', dt), waves: [{ kind: 'fly', formations: [{ to: '06:00', ld: '07:25', br: '', aircraft: [{ p: '', w: 'waldo' }] }] }] }
+    validate()
+    sign(0); setDayApproved(0, true)                     // freeze the breach
+    ;(DAYS[0] as any).waves[0].formations[0].to = '14:00'
+    ;(DAYS[0] as any).waves[0].formations[0].ld = '15:25'  // working clears it — now zero working warnings
+    validate()
+    expect((officialWarn().byDay[0].warns as any[]).some((x: any) => x.code === 'CREW_REST'), 'official still has the breach').toBe(true)
+    DWOPEN.add(0)
+    const h = dayHTML(0, true, true)
+    expect(h, 'the box renders even with no working warnings').toContain('to clear once signed')
+    expect(h, 'and shows the cleared warning struck-through').toContain('goes away once signed')
   })
 })
 

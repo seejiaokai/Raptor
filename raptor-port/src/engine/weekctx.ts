@@ -32,7 +32,7 @@ import { buildDay } from './events'
 import { INPUTS, inputCoversDate, isPersonal, inputDormant, baseYear, inpId } from './inputs'
 import { PEOPLE, isSpecial } from './people'
 import { stashDays, stashSched } from './weekstash'
-import { getWorld, fileAcc, filingActive } from './world'
+import { getWorld, filingActive, filingHas } from './world'
 import { dayCurVerIn, daySnapIn } from './publish'
 import { canonicalDiff } from './canonical'
 
@@ -63,7 +63,12 @@ const bundleCache:any={};
 function issuedDayIn(sc:any,di:number,v:any,working:any){
   if(!(sc.dayOK||{})[di])return working;
   const ver=dayCurVerIn(sc,di,v), snap=ver!=null?daySnapIn(sc,di,ver,v):null;
-  if(snap&&snap.d)return snap.d;
+  /* the frozen CONTENT, but the NORMALIZED date from the stashed working day (Codex
+     CRPF-004): a snapshot froze its dt under the year that was loaded when it was
+     signed, so returning snap.d raw would re-introduce that label and, at a New Year
+     boundary, address the wrong year in inputCoversDate/fileAcc. Never mutate the
+     stored snapshot — spread a fresh object. */
+  if(snap&&snap.d)return {...snap.d,dt:working.dt};
   return {...working,waves:[],dutywaves:[],sims:{amt:[],oft:[]},ground:[],allhands:[]};
 }
 function bundle(v:any){
@@ -118,20 +123,22 @@ function workedSet(day:any,ix:any){
   const built=buildDay(day,ix,null,null,true);
   const ids=new Set<any>();
   (built.events||[]).forEach((e:any)=>{ if(e.id&&PEOPLE[e.id]&&!isSpecial(e.id))ids.add(e.id); });
-  INPUTS.forEach((inp:any)=>{
-    if(!isPersonal(inp.type))return;
-    /* a REMOVED input (acc 'r' — dormant, owner 26 Aug 26) is the one acc
-       state this scan does honour: the mark rides the input itself and
-       survives week switches (loadWeek's clear skips it), so "would have
-       auto-landed" is genuinely false for it — autoAcceptInput refuses it.
-       On the OFFICIAL run the 7-day count uses the SIGNED filing (§14.3 trap a): a
-       working-copy 'r' still counts as work on a signed date, and a post-publish add
-       does not. Off it, the exact prior inputDormant path (no id mint). */
-    if(filingActive()?fileAcc(day.dt,inpId(inp),inp.acc)==='r':inputDormant(inp))return;
-    if(!inputCoversDate(inp,day.dt))return;
-    const id=inp.person;
-    if(id&&PEOPLE[id]&&!isSpecial(id))ids.add(id);
-  });
+  /* the hypothetical auto-landing of a personal ACTIVITY input models an UNSIGNED
+     seed date: loadWeek would land it as a ground row, but a non-loaded week never
+     does. A SIGNED date's frozen document already reflects exactly what landed, so
+     its events ARE the work — matching validateCore's own RUNLEN on-set for a loaded
+     day (day.events only) — and a cancelled or unlanded activity must NOT be counted
+     off its input (Codex CRPF-007). So skip the re-add entirely on a signed date. */
+  if(!(filingActive()&&filingHas(day.dt))){
+    INPUTS.forEach((inp:any)=>{
+      if(!isPersonal(inp.type))return;
+      /* a REMOVED input (acc 'r' — dormant, owner 26 Aug 26) never auto-lands. */
+      if(inputDormant(inp))return;
+      if(!inputCoversDate(inp,day.dt))return;
+      const id=inp.person;
+      if(id&&PEOPLE[id]&&!isSpecial(id))ids.add(id);
+    });
+  }
   return ids;
 }
 
@@ -227,6 +234,26 @@ export function nextMondaySeed(curWeek:any){
    copy. An UNRESOLVABLE approved snapshot forces the official pass (so that week is
    protected there), never an alias. Bounded to the same window the seeds read:
    prev week (crew rest + run), next Monday, and the week-before when maxRun>7. */
+/* the LIVE filing (acc) for one date, keyed by input id — dayFilingFingerprint
+   parameterized on a date instead of a loaded DAYS index (Codex CRPF-002/§14.2). */
+function liveFilingAt(dt:any){
+  const f:any={};
+  (INPUTS||[]).forEach((inp:any)=>{ if(inputCoversDate(inp,dt))f[inpId(inp)]=inp.acc||''; });
+  return f;
+}
+/* a filing divergence between a frozen fingerprint and the live filing for its date.
+   MEMBERSHIP-aware (Codex CRPF-003 half): an input present now but absent when signed
+   (or vice versa) is a divergence regardless of its acc value; so is a changed acc. */
+function filingDiffers(snapFil:any,dt:any){
+  const now=liveFilingAt(dt), was=snapFil||{};
+  const ids=new Set([...Object.keys(now),...Object.keys(was)]);
+  for(const id of ids){
+    const inNow=Object.prototype.hasOwnProperty.call(now,id), inWas=Object.prototype.hasOwnProperty.call(was,id);
+    if(inNow!==inWas)return true;
+    if((now[id]||'')!==(was[id]||''))return true;
+  }
+  return false;
+}
 export function windowDiverges(curWeek:any,maxRun:any){
   const keys=[shiftWeekKey(curWeek,-1),shiftWeekKey(curWeek,1)];
   if(maxRun>7)keys.push(shiftWeekKey(curWeek,-2));
@@ -238,6 +265,11 @@ export function windowDiverges(curWeek:any,maxRun:any){
       const ver=dayCurVerIn(sc,di,v), snap=ver!=null?daySnapIn(sc,di,ver,v):null;
       if(!snap||!snap.d)return true;                // unresolvable → compute official (protect), never alias
       if(canonicalDiff(snap.d,days.days[di],di).length>0)return true;
+      /* FILING divergence too (Codex CRPF-002): a signed input removed to 'r' (or a
+         new one added) changes no DAYS content, so a content-only gate would alias and
+         drop the signed input's contribution from OFFICIAL. */
+      const dt=days.days[di]&&days.days[di].dt;
+      if(dt!=null&&filingDiffers(snap.fil,dt))return true;
     }
     return false;
   });

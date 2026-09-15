@@ -1151,7 +1151,10 @@ function officialDiverges(){
      dependency window (§14.1): a published neighbour Sunday/Monday whose stashed
      working copy carries an unpublished amendment. Either forces the second pass;
      otherwise OFFICIAL aliases WORKING (zero cost, cannot drift). */
-  if(approvedDays().some((di:any)=>dayDelta(di).length>0))return true;
+  /* an approved day whose issued snapshot is UNRESOLVABLE (dayCurVer null → dayDelta
+     empty) must still force the official pass so it can be PROTECTED there, never
+     aliased to the live working draft (Codex CRPF-005). */
+  if(approvedDays().some((di:any)=>dayCurVer(di)==null||dayDelta(di).length>0))return true;
   return windowDiverges(CURWEEK,VCONF.maxRun);
 }
 function officialFor(working:any){
@@ -1165,10 +1168,13 @@ function officialFor(working:any){
    validator's own globals. Filing overrides (§14.3) and the world-aware cross-week
    seeds (§5.3) are added in later phases. */
 function withIssuedWeek(fn:any){
+  /* every approved day: its issued snapshot when resolvable, else null → PROTECT it
+     (Codex CRPF-005 — an unresolvable approved day must NOT be left as its live draft
+     for the official pass to judge neighbours against). */
   const days=approvedDays().map((di:any)=>{
     const ver=dayCurVer(di); const snap=ver!=null?daySnapOf(di,ver):null;
-    return (snap&&snap.d)?{di,snap}:null;
-  }).filter(Boolean) as any[];
+    return {di,snap:(snap&&snap.d)?snap:null};
+  });
   const d0:any={}, ch0=SCHED.changes, pd0=SCHED.pending, changes:any={};
   /* install the loaded week's approved days at their issued snapshot (F-4/CRP-006).
      Even with NONE to install, the pass still runs: world='official' makes the
@@ -1179,7 +1185,12 @@ function withIssuedWeek(fn:any){
      belongs to exactly one week, so there is no real collision, loaded simply wins. */
   const filing:any=windowFiling(CURWEEK,VCONF.maxRun);
   if(days.length){
-    days.forEach(({di,snap}:any)=>{ d0[di]=DAYS[di]; DAYS[di]=snap.d; Object.assign(changes,snap.c||{}); if(snap.d.dt!=null)filing[snap.d.dt]=snap.fil||{}; });
+    days.forEach(({di,snap}:any)=>{ d0[di]=DAYS[di];
+      if(snap){ DAYS[di]=snap.d; Object.assign(changes,snap.c||{}); if(snap.d.dt!=null)filing[snap.d.dt]=snap.fil||{}; }
+      /* PROTECT: content stripped, so no flag is derived from unavailable signed
+         evidence — never the live working draft. */
+      else DAYS[di]={...DAYS[di],waves:[],dutywaves:[],sims:{amt:[],oft:[]},ground:[],allhands:[]};
+    });
     SCHED.changes=changes; SCHED.pending={};
   }
   const g=snapGlobals(); setWorld('official'); setFiling(filing);
