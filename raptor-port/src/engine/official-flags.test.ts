@@ -15,7 +15,7 @@ import { setCurWeek } from './waves'
 import { validate, officialWarn } from './validate'
 import { SCHED, signOf, setDayApproved } from './publish'
 import { dayIssuedHTML, dayHTML } from '../ui/html'
-import { DWOPEN } from '../state/view'
+import { DWOPEN, WFOCUS, focusWarn, setPage } from '../state/view'
 import { stashPut, stashClear } from './weekstash'
 import { verId, dayIso } from './verid'
 import { setWorld, setFiling, clearFiling } from './world'
@@ -239,5 +239,31 @@ describe('Phase 4 — the OFFICIAL run honours the SIGNED filing state', () => {
     setWorld('official'); setFiling({ [labels[6]]: { iTR1: '' } })       // as signed: active
     try { expect(seedRunIn(WK, VCONF.maxRun), 'OFFICIAL: signed-active → counts').toEqual({ waldo: 1 }) }
     finally { setWorld('working'); clearFiling() }
+  })
+})
+
+/* PHASE 5 (spec §14.4, F-3/CRP-007, test #9). The click/focus path must resolve a
+   clicked warning against the SAME bundle its rendered list came from: a view-page
+   tap on a published-only warning opens THAT (official) warning, and a stale index
+   is a defined no-op, never a throw. */
+describe('Phase 5 — a view-page tap on a published-only warning focuses the OFFICIAL warning', () => {
+  afterEach(() => { setPage('editsched') })
+
+  it('focuses the official crew-rest warning even though WORKING has cleared it', () => {
+    const WK = wkFor(40)
+    MOCKS[shiftWeekKey(WK, -1)] = weekOf(weekDateLabels(shiftWeekKey(WK, -1)), { 6: dutyRow('waldo', '1900', '2300') })
+    setCurWeek(WK)
+    flyMonday('waldo', '06:00', '07:25')
+    validate()
+    sign(0); setDayApproved(0, true)                    // freeze the breach
+    ;(DAYS[0] as any).waves[0].formations[0].to = '14:00'
+    ;(DAYS[0] as any).waves[0].formations[0].ld = '15:25'
+    validate()
+    const off = officialWarn()
+    const ix = (off.byDay[0].warns as any[]).findIndex((x: any) => x.code === 'CREW_REST' && (x.who || []).includes('waldo'))
+    expect(ix, 'the official list carries the breach').toBeGreaterThanOrEqual(0)
+    setPage('viewsched')                                // the published day shows OFFICIAL flags
+    focusWarn(0, ix)
+    expect(WFOCUS && (WFOCUS as any).ids.includes('waldo'), 'focus landed on the official warning').toBe(true)
   })
 })

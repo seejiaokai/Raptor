@@ -5,8 +5,8 @@ import { keyDay } from '../engine/keys'
 import { slotVal, setSlotVal, fillSlot, armTargetExists } from '../engine/slots'
 import { popReorderedDay } from '../engine/reorder'
 import { slotBar, personCount, personWarnDays } from '../engine/avail'
-import { validate, WARN, traceOf } from '../engine/validate'
-import { markEdit, daySnapOf } from '../engine/publish'
+import { validate, WARN, traceOf, officialWarn } from '../engine/validate'
+import { markEdit, daySnapOf, dayApproved } from '../engine/publish'
 import { curDraftId, reconcileIssuedMarks } from '../engine/drafts'
 import { isLead, isInstr, isOcu } from '../engine/people'
 import { HOOKS } from '../engine/hooks'
@@ -453,10 +453,23 @@ export function toggleDayWarn(di:any){
   if(DWOPEN.has(di)){DWOPEN.delete(di); if(WFOCUS&&WFOCUS.di===di)WFOCUS=null;}
   else {DWOPEN.add(di); WFOCUS=null; clearOtherHL();}
 }
+/* WHICH warning bundle a day is currently DISPLAYING (published-schedule flagging,
+   §5.4/§14.4). The click/focus path must read the SAME bundle the day's rendered
+   list came from, or a tap on a published-only warning would resolve against the
+   working copy and open the wrong thing (or nothing). The view page's published,
+   non-VWORK, non-preview day shows the OFFICIAL flags (dayIssuedHTML, phase 2);
+   every other surface — the edit page, a VWORK'd "Working draft" day — shows
+   WORKING. A stale/foreign index then simply resolves to nothing (a defined no-op),
+   never a throw (§14.4). */
+export function displayedByDay(di:any){
+  di=+di
+  const official=CURPAGE==='viewsched'&&dayApproved(di)&&!VWORK.has(di)&&!DPREV.has(di)
+  return (official?officialWarn():WARN).byDay[di]
+}
 /* one warning → focus + snap (reference 3997-4003, verbatim) */
 export function focusWarn(di:any,ix:any){
   di=+di; ix=+ix;
-  const g=WARN.byDay[di], w=g&&g.warns&&g.warns[ix]; if(!w)return;
+  const g=displayedByDay(di), w=g&&g.warns&&g.warns[ix]; if(!w)return;
   if(WFOCUS&&WFOCUS.di===di&&WFOCUS.ix===ix)WFOCUS=null;
   /* keep PFOCUS across clearOtherHL: picking one of a person's warnings must
      not widen their box back out to the whole day's list */
