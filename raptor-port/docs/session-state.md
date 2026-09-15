@@ -62,7 +62,7 @@ findings:
 - `npm run smoke:tracker`: run this session (see the report).
 
 ## NEXT — owner follow-ups (15 Sep 26), BEFORE merge
-The owner tested PR #405 on Vercel and asked for **6 changes, incl. a real BUG**
+The owner tested PR #405 on Vercel and asked for **7 changes, incl. a real BUG**
 (sign-offs leak across plans — day-level, not per-plan). **Do these next, same branch,
 Opus high, test-first, then Codex+Fable bug-check.** **Do NOT merge #405 until they land.**
 **Full spec (READ FIRST): `docs/plans-selector-followups.md`.** In brief:
@@ -73,6 +73,9 @@ Opus high, test-first, then Codex+Fable bug-check.** **Do NOT merge #405 until t
 4. Move the version tag to the LEFT of the "4 X 4" wave-count badge.
 5. Show the version tag on the VIEW-only schedule too (watch byte-parity).
 6. Show warnings on the VIEW-only schedule, like edit schedule.
+7. Board publish control: the "Signed — this day can be published" line isn't
+   publish-aware — no button shows on a published day with no changes (correct), but the
+   wording misleads. Make it publish-aware; ask owner if he wants the control always shown.
 
 Then hold for the owner's explicit **"merge live"**. The two pre-existing e2e failures
 (geometry board flying-line; Leave War tab) still want their own separate fix session.

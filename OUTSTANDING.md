@@ -48,7 +48,7 @@ in-flight and risk-reducing** first.
    **CORE built + round-3 in progress** on `claude/amendment-engine-core`. **[BUG2]**
    folds in here.
    - **[AMEND-SEL-FOLLOWUPS] (owner, 15 Sep 26) — DO NEXT, blocks merge of PR #405.**
-     After testing the plans-selector redesign the owner asked for 6 changes, incl. a
+     After testing the plans-selector redesign the owner asked for 7 changes, incl. a
      real BUG (signatures leak across plans — day-level, not per-plan). Same branch
      `claude/amendment-engine-core` (PR #405), Opus high, test-first, Codex+Fable
      bug-check. **Do NOT merge #405 until these land.**

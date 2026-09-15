@@ -1,13 +1,18 @@
 # Plans selector redesign — owner follow-ups (batch, 15 Sep 26)
 
 After testing the redesign on the Vercel preview of PR #405 (branch
-`claude/amendment-engine-core`), the owner asked for six changes. **Do these in a
+`claude/amendment-engine-core`), the owner asked for seven changes. **Do these in a
 fresh chat, on the SAME branch (PR #405 accumulates), test-first.** Until they are
 done, **PR #405 must NOT be merged** — item 1 is a real bug.
 
 Companion: `docs/superpowers/specs/2026-09-15-plans-selector-redteam.md` (the locked
 spec) and `docs/session-state.md`. The redesign itself is built + bug-checked (commits
 `43edb04`, `6337b02`).
+
+**Owner's screenshots (in the repo — no need to re-paste):**
+`docs/img/plans-selector-followups/01-amber-bar-and-signoff-bug.jpg` (items 1 + 2),
+`.../02-tag-colour-and-position.jpg` (items 3 + 4), `.../03-board-no-publish-button.png`
+(item 7). Read them to see exactly what the owner circled.
 
 ## Model / approach
 Opus high, test-first. Item 1 is HEAVY (it touches the Phase-3 signature machinery /
@@ -16,7 +21,7 @@ are light UI. Items 5–6 are medium but **byte-parity-sensitive on the view wee
 watch `html.test.ts`. Bug-check the diff across BOTH Codex and Fable before merge, as
 before.
 
-## The six items
+## The seven items
 
 ### 1. BUG — signatures leak across plans (day-level, not per-plan)
 **What the owner saw:** on a day with plans, sign all four sign-offs green while **Plan
@@ -84,6 +89,26 @@ the working-copy view), NOT the frozen issued face. Confirm which faces show war
 **Files:** `ui/html.ts` (the `dwbox`/`daywarn` render is currently gated — find the gate and
 open it for the view live render), and ensure `validate()` has run for the view week (it may
 already, since ViewWeek renders live days). Pins in `html.test.ts` / a view test.
+
+### 7. Board publish control — no button after first publish; misleading "can be published"
+**What the owner saw (screenshot 03):** on the scheduler board, a published+signed day (AL3)
+shows "Signed — this day can be published" but NO publish button; he only ever saw a publish
+button at the FIRST publish.
+**What's actually happening (verified):** the board DOES show "Publish AL" when a published
+day has pending CHANGES (`pubsweep.test.tsx` proves `boardStrip` renders it, and the day-head
+does too). His day had 0 pending changes since AL3, so there is correctly nothing to publish
+→ no button. The confusion is the **sign-off status line**, which is NOT publish-aware:
+`signoffHTML` (`ui/html.ts:1600-1602`) always prints "Signed — this day can be published" when
+all four are signed, even on an already-published day with nothing to publish.
+**Do:** make that status line publish-aware — e.g. on a published day read "Published at
+`<verLabel>` · N change(s) to publish — Publish AL`<next>`" when there are pending changes,
+and "Published at `<verLabel>` — no changes to publish" when there are none; keep "Signed —
+this day can be published" only for the FIRST publish (unpublished day). **ASK the owner:**
+does he also want the publish control ALWAYS visible on the board (greyed/disabled when there
+is nothing to publish) rather than hidden? That is a product preference, not a bug.
+**Files:** `ui/html.ts` `signoffHTML` (make the status line branch on `dayApproved(di)` /
+`nextSeq` / the pending count); confirm the board (`boardSignHTML`) and week read the same.
+Note this interacts with item 1 (a leaked signature could wrongly satisfy `daySigned`).
 
 ## When done
 Run all gates (npm test, tfin, build, test:e2e, smoke:tracker), note that test:e2e's only
