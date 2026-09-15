@@ -5,7 +5,7 @@ import { overlap, hm24, lgT } from './time'
 import { collectEvents, shiftEvHard, scSeatHits, avSeatHits } from './events'
 import { HOOKS } from './hooks'
 import { sansGate, SANS_LABEL } from './avail'
-import { seedRunIn, prevSundaySeed, nextMondaySeed, nextMondayWorked, windowDiverges, windowFiling } from './weekctx'
+import { seedRunIn, prevSundaySeed, nextMondaySeed, nextMondayWorked, windowDiverges, windowFiling, filingDivergesAt } from './weekctx'
 import { setWorld, setFiling, clearFiling } from './world'
 import { CURWEEK } from './waves'
 import { DAYS } from './data'
@@ -1151,10 +1151,17 @@ function officialDiverges(){
      dependency window (§14.1): a published neighbour Sunday/Monday whose stashed
      working copy carries an unpublished amendment. Either forces the second pass;
      otherwise OFFICIAL aliases WORKING (zero cost, cannot drift). */
-  /* an approved day whose issued snapshot is UNRESOLVABLE (dayCurVer null → dayDelta
-     empty) must still force the official pass so it can be PROTECTED there, never
-     aliased to the live working draft (Codex CRPF-005). */
-  if(approvedDays().some((di:any)=>dayCurVer(di)==null||dayDelta(di).length>0))return true;
+  /* per loaded approved day, force the official pass when its evidence is UNAVAILABLE
+     (no version / snapshot / snapshot.d → protect, Codex CRPF-005/R2-003), when its
+     content diverges (dayDelta), or when its FILING diverges membership-aware
+     (Codex R2-001 — the coarse dayDelta filingDelta treats absent == present-empty, so
+     a fresh unaccepted commitment on an approved day would otherwise alias). */
+  if(approvedDays().some((di:any)=>{
+    const ver=dayCurVer(di), snap=ver!=null?daySnapOf(di,ver):null;
+    if(!snap||!snap.d)return true;
+    if(dayDelta(di).length>0)return true;
+    return filingDivergesAt(snap.fil,(DAYS[di]||{}).dt);
+  }))return true;
   return windowDiverges(CURWEEK,VCONF.maxRun);
 }
 function officialFor(working:any){
@@ -1187,9 +1194,14 @@ function withIssuedWeek(fn:any){
   if(days.length){
     days.forEach(({di,snap}:any)=>{ d0[di]=DAYS[di];
       if(snap){ DAYS[di]=snap.d; Object.assign(changes,snap.c||{}); if(snap.d.dt!=null)filing[snap.d.dt]=snap.fil||{}; }
-      /* PROTECT: content stripped, so no flag is derived from unavailable signed
-         evidence — never the live working draft. */
-      else DAYS[di]={...DAYS[di],waves:[],dutywaves:[],sims:{amt:[],oft:[]},ground:[],allhands:[]};
+      /* PROTECT: content stripped AND an EMPTY filing map installed for the date
+         (Codex R2-002) — stripping the programme alone left global INPUTS still
+         contributing via buildDay's day.input (fileAcc fell back to live acc). An
+         empty frozen filing makes fileAcc return 'r' for every input on the date, so
+         no schedule OR commitment-input flag is derived from unavailable evidence.
+         (A current medical fact still reads live, but with the seats stripped there is
+         nothing for it to clash with.) */
+      else { const sdt=(DAYS[di]||{}).dt; DAYS[di]={...DAYS[di],waves:[],dutywaves:[],sims:{amt:[],oft:[]},ground:[],allhands:[]}; if(sdt!=null)filing[sdt]={}; }
     });
     SCHED.changes=changes; SCHED.pending={};
   }

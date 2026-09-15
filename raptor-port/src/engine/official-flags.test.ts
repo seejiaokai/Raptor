@@ -296,6 +296,25 @@ describe('Phase 6 — "Not Yet Signed" marker', () => {
   })
 })
 
+/* CODE-REVIEW ROUND 2 completions. */
+describe('CRPF-R2-001 — a fresh unaccepted commitment on an approved loaded day is excluded from OFFICIAL', () => {
+  const inpFly = (b: any, id: string) => b.all.find((x: any) => x.code === 'INPUT_FLY' && (x.who || []).includes(id) && x.di === 0)
+  it('the loaded gate is membership-aware, so a new empty-acc input does not alias into OFFICIAL', () => {
+    const WK = wkFor(64)
+    setCurWeek(WK)
+    const dt = (DAYS[0] as any).dt
+    flyMonday('waldo', '08:00', '10:00')
+    validate()
+    sign(0); setDayApproved(0, true)                     // clean publish
+    /* a timed activity input overlapping the flight — refused auto-land on an approved
+       day, so acc stays '' (the coarse filingDelta would call this "no delta") */
+    INPUTS.push({ person: 'waldo', date: dt, allday: false, s: 8 * 60, e: 9 * 60, type: 'Meeting', acc: '', remarks: '', mod: '', iid: 'iMTG1' })
+    const w = validate()
+    expect(inpFly(w, 'waldo'), 'WORKING flags the clash').toBeTruthy()
+    expect(inpFly(officialWarn(), 'waldo'), 'OFFICIAL excludes the fresh unpublished commitment').toBeFalsy()
+  })
+})
+
 /* CODE-REVIEW ROUND 1 fixes (Codex GPT-6 Astra). */
 describe('CRPF-005 — an unresolvable published day is PROTECTED, not left as a live draft', () => {
   it("a published day whose snapshot cannot resolve does not bust its neighbour on OFFICIAL", () => {

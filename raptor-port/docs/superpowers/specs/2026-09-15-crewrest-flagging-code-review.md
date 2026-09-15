@@ -30,6 +30,23 @@ Two root-cause clusters (owner's "guardrail over a bug cascade"):
 **Confirmed sound by the reviewer:** the synchronous official-pass finally block restores all
 validator globals/DAYS/SCHED/world/filing; no new editing capability; dependency window correct.
 
+## ROUND 2 (Codex GPT-6 Astra, high) — verify the round-1 fixes. Verdict REVISE, 5 findings.
+Codex: "CRPF-005 and CRPF-007 are incomplete; deferring CRPF-003 and CRPF-006 is not safe as
+categorized." 4 of 5 were completions of my own fixes → FIXED; the 5th (xweek dedup) stays FLAGGED.
+
+| id | sev | one-line | disposition |
+|----|-----|----------|-------------|
+| CRPF-R2-001 | high | the LOADED gate still used coarse dayDelta (absent==empty) → a fresh empty-acc commitment on an approved day aliased into OFFICIAL | **FIXED** — officialDiverges now uses the membership-aware `filingDivergesAt(snap.fil, DAYS[di].dt)` per loaded approved day (contained to the flagging gate, NOT amendment filingDelta). Test. |
+| CRPF-R2-002 | high | CRPF-005 strip left the date's INPUT contribution live (fileAcc fell back to live acc) | **FIXED** — the strip branch also installs `filing[dt]={}` so fileAcc returns 'r' for every input on the protected date (schedule + commitment inputs suppressed). |
+| CRPF-R2-003 | med | `dayCurVer!=null` doesn't prove `snapshot.d` exists (a damaged Original id resolves) | **FIXED** — the loaded gate resolves the snapshot and forces the pass on `!snap||!snap.d`, same predicate as withIssuedWeek/windowDiverges. |
+| CRPF-R2-004 | high | CRPF-006 is broader than categorized: a signed row RETIMED (no input removal) still double-counts via the xweek bypass in prevSundaySeed | **FLAGGED (escalated)** — this is a PRE-EXISTING cross-week seed-dedup bug (the blanket `if(xweek)return true` in inpShow), not introduced by this feature, and it affects WORKING seeds too. The fix (date-local timed-input dedup against the selected doc's rows + resolved filing, threaded through buildDay for loaded/neighbour/midnight-tail) is HIGH regression risk across every seed read. Needs its own careful test-first session (owner-aware), not a blind overnight change. |
+| CRPF-R2-005 | med | CRPF-007's events-only applied only in the official pass; an APPROVED next Monday still added the hypothetical in the WORKING seed | **FIXED** — workedSet now skips the hypothetical for an APPROVED date (from the stash's dayOK) in BOTH worlds, matching autoAcceptInput's approved-day guard. |
+
+**Round-2 outcome:** 4 FIXED (R2-001, R2-002, R2-003, R2-005); 1 FLAGGED+escalated (R2-004 = the
+pre-existing xweek dedup, = CRPF-006). Full suite green, build clean, tfin 728/0. The ONE remaining
+correctness gap Codex will not clear (R2-004/CRPF-006) is a pre-existing seed-engine dedup issue that
+predates this feature; it is the right thing to fix in a dedicated, careful pass — flagged for the owner.
+
 **Round-1 outcome:** 8 findings FIXED test-first (001, 002, 004, 005, 007, 008, 009-DPREV, 012-empty);
 4 FLAGGED for the owner with fix specs (003 amendment-engine semantics · 006 high-risk seed-engine
 dedup · 010 modal · 011 person-select) + two deferred design halves (009-trace-world, 012 cross-day

@@ -119,17 +119,20 @@ function bundle(v:any){
    for a non-loaded week. xweek:true on buildDay bypasses the accepted-row dedup in inpShow
    (events.ts) — irrelevant to workedSet, which never reads day.input, but
    passed for the one buildDay contract every caller here shares. */
-function workedSet(day:any,ix:any){
+function workedSet(day:any,ix:any,approved?:any){
   const built=buildDay(day,ix,null,null,true);
   const ids=new Set<any>();
   (built.events||[]).forEach((e:any)=>{ if(e.id&&PEOPLE[e.id]&&!isSpecial(e.id))ids.add(e.id); });
   /* the hypothetical auto-landing of a personal ACTIVITY input models an UNSIGNED
      seed date: loadWeek would land it as a ground row, but a non-loaded week never
-     does. A SIGNED date's frozen document already reflects exactly what landed, so
-     its events ARE the work — matching validateCore's own RUNLEN on-set for a loaded
-     day (day.events only) — and a cancelled or unlanded activity must NOT be counted
-     off its input (Codex CRPF-007). So skip the re-add entirely on a signed date. */
-  if(!(filingActive()&&filingHas(day.dt))){
+     does. An APPROVED date never auto-lands a working input at all (autoAcceptInput's
+     own approved-day guard), and its frozen/selected document already reflects exactly
+     what landed — so its events ARE the work in BOTH worlds (Codex CRPF-007/R2-005),
+     matching validateCore's own RUNLEN on-set (day.events only). Skip the re-add for
+     an approved date (from the stash) or a signed official date; a cancelled/unlanded
+     activity must never be counted off its input. */
+  const signed=approved||(filingActive()&&filingHas(day.dt));
+  if(!signed){
     INPUTS.forEach((inp:any)=>{
       if(!isPersonal(inp.type))return;
       /* a REMOVED input (acc 'r' — dormant, owner 26 Aug 26) never auto-lands. */
@@ -158,15 +161,17 @@ export function seedRunIn(curWeek:any,maxRun:any){
   let prevPrevBundle:any=null;
   const counts:any={};
   const done=new Set<any>();
+  const prevSc=stashSched(prevKey); let prevPrevSc:any=undefined;
   for(let k=1;k<=maxRun;k++){
-    let day:any,ix:any;
-    if(k<=7){ ix=7-k; day=prevBundle.days[ix]; }
+    let day:any,ix:any,sc:any;
+    if(k<=7){ ix=7-k; day=prevBundle.days[ix]; sc=prevSc; }
     else{
-      if(!prevPrevBundle)prevPrevBundle=bundle(shiftWeekKey(curWeek,-2));
-      ix=14-k; day=prevPrevBundle.days[ix];
+      if(!prevPrevBundle){prevPrevBundle=bundle(shiftWeekKey(curWeek,-2)); prevPrevSc=stashSched(shiftWeekKey(curWeek,-2));}
+      ix=14-k; day=prevPrevBundle.days[ix]; sc=prevPrevSc;
     }
     if(!day)break;
-    const worked=workedSet(day,ix);
+    /* an APPROVED seed date counts events only, in both worlds (R2-005) */
+    const worked=workedSet(day,ix,!!((sc&&sc.dayOK)||{})[ix]);
     if(k===1){
       worked.forEach((id:any)=>{ counts[id]=1; });
     }else{
@@ -214,8 +219,8 @@ export function prevSundaySeed(curWeek:any){
    seed, so an edited next week (the stash) is what Sunday is judged
    against. Bounded to Monday — one lookahead day, like the crew-rest trace. */
 export function nextMondayWorked(curWeek:any){
-  const nextBundle=bundle(shiftWeekKey(curWeek,1));
-  return workedSet(nextBundle.days[0],0);
+  const nextKey=shiftWeekKey(curWeek,1), nextBundle=bundle(nextKey), sc=stashSched(nextKey);
+  return workedSet(nextBundle.days[0],0,!!((sc&&sc.dayOK)||{})[0]);
 }
 export function nextMondaySeed(curWeek:any){
   const nextBundle=bundle(shiftWeekKey(curWeek,1));
@@ -243,7 +248,10 @@ function liveFilingAt(dt:any){
 }
 /* a filing divergence between a frozen fingerprint and the live filing for its date.
    MEMBERSHIP-aware (Codex CRPF-003 half): an input present now but absent when signed
-   (or vice versa) is a divergence regardless of its acc value; so is a changed acc. */
+   (or vice versa) is a divergence regardless of its acc value; so is a changed acc.
+   Exported so the LOADED-week gate uses the same comparator (Codex R2-001), not the
+   coarse filingDelta (which treats absent == present-empty). */
+export function filingDivergesAt(snapFil:any,dt:any){ return filingDiffers(snapFil,dt); }
 function filingDiffers(snapFil:any,dt:any){
   const now=liveFilingAt(dt), was=snapFil||{};
   const ids=new Set([...Object.keys(now),...Object.keys(was)]);
