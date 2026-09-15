@@ -419,6 +419,25 @@ save signal) and the Tracker's dropped SharePoint/Dataverse/Firebase layers.
 - **Model:** design review on Fable, high (the expensive-to-get-wrong decision);
   build volume on Opus.
 
+### [CRP-FLAG] Live flagging on the PUBLISHED schedule — DESIGNED + RED-TEAMED, ready to build (15 Sep 26)
+Show live warnings (crew rest incl. cross-day/past-midnight, the 7-day work rule, timing
+clashes) on the published/signed schedule again — today publishing a day hides them. Model:
+two checked versions (signed + working); each screen flags the version it shows; check a day
+against each surrounding day's **published version if it has one, else its working copy**; the
+day being amended drives the scheduler's own preview. Content byte-frozen; "Not Yet Signed"
+marker (everyone). Clock-free; NOT coupled to EOD.
+- **Fully scoped + cross-provider red-teamed** (2 rounds + a confirmation, Codex + Fable). On
+  branch `claude/crewrest-published-flagging`. **Build spec:**
+  `raptor-port/docs/superpowers/specs/2026-09-15-crewrest-flagging-plan-v2.md` (§5 mechanism,
+  §11 tests, §14 tricky build spots); review log alongside it.
+- **HEAVY**, test-first, Opus; keep `tfin.js` 728/0; fresh Codex+Fable CODE inspection after
+  build; no merge without "merge live". Owner decisions locked in session-state.md.
+
+### [FLAG-EXPORT] PDF/CSV export exports the working copy, should export the PUBLISHED one — OPEN (follow-up of [CRP-FLAG])
+Exports (`schedRows`→export.ts/printpdf.ts) read the live working `DAYS`; the owner's intent
+is to export the **published** schedule (owner, 15 Sep 26). Also label the next-week peek as
+working-vs-signed. Small, separate gated PR after [CRP-FLAG]. Context: [CRP-FLAG]'s review log.
+
 ---
 
 ## Done

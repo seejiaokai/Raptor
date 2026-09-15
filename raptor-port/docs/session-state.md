@@ -1,35 +1,52 @@
-# Session handoff — [AMEND] plans-selector follow-ups DONE + reconciled with main
+# Session handoff — crew-rest / flagging on the PUBLISHED schedule: DESIGN DONE + RED-TEAMED, ready to BUILD
 
 ## Where it is
-Branch `claude/amendment-engine-core` (PR #405). The plans-selector redesign AND the
-7 owner follow-ups (+ 2 refinements) are BUILT, cross-provider bug-checked (Codex +
-Fable), and the branch has been **merged up to `main`** (main had advanced 52 commits
-with ARCH-STACK person-ids + TRK-CSID syllabus-ids; those are now in the branch).
-All gates re-run green after the reconciliation. Merging live on the owner's word.
+The owner's parked ask — show live warnings (crew rest incl. cross-day/past-midnight,
+the 7-day work rule, timing clashes) on the PUBLISHED schedule — is **fully scoped,
+designed, and cross-provider red-teamed. NOT built.** Everything needed to build is
+written down. On its own branch `claude/crewrest-published-flagging` (off `main`).
 
-## What shipped in the follow-ups (see docs/plans-selector-followups-plan.md for detail)
-1. Signatures are PER PLAN + display-follows-validity — a content change clears the
-   sign-offs (owner R1). 2. Week AL-roll banner removed (banner only hosts the RULES
-   MODIFIED stamp now). 3. Version tag coloured by AL number (data-alc). 4. Tag moved
-   to a `.dhver` span immediately left of the 4X4 badge. 5. Tag shows on view-only too.
-   6. Warnings already show on view live faces (frozen issued face stays clean by the
-   snapshot rule). 7. Sign-off status line publish-aware + "no changes to publish"
-   bubble (owner R2). Plus Codex/Fable fixes: restampRev (sign-offs survive dup/delete),
-   tag-adjacency CSS, R2 re-fire guard, ALNaN guard, and PSF-001 (signatures now bind
-   to the filing axis — a leave/Other filing on a published day clears the sign-offs).
+**Build spec (read this first):**
+`raptor-port/docs/superpowers/specs/2026-09-15-crewrest-flagging-plan-v2.md`
+— §5 mechanism, §11 tests, **§14 the tricky build spots**. Review history:
+`…-crewrest-flagging-review-log.md` (2 red-team rounds + a confirmation round, Codex GPT-6 Astra + Fable 5.1). The earlier `…-crewrest-on-published-flagging-plan.md` and
+`…-flagging-architecture-workflow-question.md` are superseded context.
 
-## PARKED — the owner's next ask (crew-rest on published + the 7-day rule)
-Not built. The owner wants the CURRENT published day to show forward crew-rest
-warnings (dotted lines + CR) driven by the NEXT day's plan, i.e. warnings on the
-frozen published face — which reverses the settled "never validate a snapshot / the
-issued face is byte-frozen" rule (pubsweep.test.tsx pins it). The forward crew-rest
-TRACE already exists on the live/edit view (validate.ts `crewRestDay`, weekctx.ts
-`nextMondaySeed`, the "Breaks <tomorrow>" box, `boxdash`). He is also unsure about the
-max-consecutive-workday rule (VCONF.maxRun / DAYS_RUN). This is a HEAVY rules-engine
-feature — scope it properly: drive the app to show current behaviour, agree the exact
-change, red-team the plan across BOTH providers before building, then bug-check across
-both after. Its own branch/session.
+## The model, in one line
+Two versions of each day get checked: the **signed** (official) schedule and the **live
+working copy**. Every screen shows one of them per day, and the warnings follow whichever
+version that day is showing. Rule for checking a day (crew rest / 7-day / midnight, looking
+at the days before AND after it): reference each surrounding day's **published version if it
+has one, else its working copy**; while a day is being amended, that amendment drives the
+scheduler's own preview so they see the effect before publishing. Content stays byte-frozen;
+warnings are a live overlay. A **"Not Yet Signed"** marker (everyone) shows where the live
+copy differs from the signed one. Clock-free; NOT coupled to EOD.
 
-## The done-means-live chain (on the owner's "merge live")
-merge PR #405 on green → wait for Pages → load the live page and look → one "it's live"
-notification. Do NOT watch the PR.
+## Owner decisions (15 Sep 26) — settled, do not reopen
+- Show **everything a draft shows** on published days.
+- Published flags render **identically for everyone** (member = admin); only *publishing* is scheduler-gated.
+- The "view as working" per-day peek stays **open to all** (a peeked day shows working flags, stamped "Working draft").
+- **No number on the publish button** — show affected warnings in the LIST ("goes away once signed" / "new once signed"); a "Not Yet Signed" day marker for everyone. No wrap-up reminder.
+- **Exports (PDF/CSV) must export the PUBLISHED version** — split to follow-up `[FLAG-EXPORT]` in OUTSTANDING (with next-week-peek labelling). NOT in this build.
+- The phone "board" fix is a **no-op** — no separate view-page board exists; the view week is the surface.
+
+## Build process (owner's rules)
+Opus 4.8, HEAVY, **test-first**. Keep parity `tfin.js` **728/0** (issued CONTENT is byte-frozen).
+Full gates before the PR. After building, a **fresh cross-provider CODE inspection** (Codex + Fable) — the §14 spots are only truly checkable in code. **No merge without the owner's "merge live".** Don't watch the PR.
+
+## Still parked (separate task, NOT this build)
+- **Housekeeping** (own gated PR): delete the handoff screenshots in
+  `raptor-port/docs/img/plans-selector-followups/` and the consumed plan docs, then a
+  repo-wide dead-code/space sweep following the CAUTION list in
+  `raptor-port/docs/plans-selector-followups.md` (some dead-looking code is kept on
+  purpose). Report what's removed; ask before anything load-bearing.
+- Tracker smoke gate is flaky (random `addStudent` timeout, no auto-retry) — Tracker
+  workstream, not this task.
+
+## Opening prompt for the fresh chat
+> Picking up Raptor on branch `claude/crewrest-published-flagging`. BUILD the "live flagging
+> on the published schedule" feature. The design is DONE and cross-provider red-teamed — read
+> `raptor-port/docs/session-state.md` then the build spec
+> `raptor-port/docs/superpowers/specs/2026-09-15-crewrest-flagging-plan-v2.md` (esp. §5, §11, §14).
+> Build it test-first on Opus, keep tfin.js 728/0, run all gates, then a fresh Codex + Fable
+> code inspection. Do NOT merge until I say "merge live." Speak to me in plain layman terms.
