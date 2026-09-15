@@ -1,5 +1,6 @@
 import { DAYS } from './data'
-import { INPUTS, inputCoversDate, inputFlags, inputDormant, inpWin, isSansAvail, inpMeta, shiftHardInput, shiftHardLabel, inpById } from './inputs'
+import { INPUTS, inputCoversDate, inputFlags, inputDormant, inpWin, isSansAvail, inpMeta, shiftHardInput, shiftHardLabel, inpById, inpId } from './inputs'
+import { fileAcc, filingActive } from './world'
 import { PEOPLE, isSpecial, whoId, aarNeed } from './people'
 import { toMin, parseHM, win, overlap } from './time'
 import { VCONF, SHIFT_HARD } from './rules'
@@ -28,8 +29,12 @@ export const inpShow=(inp:any,dt:any,xweek?:any)=>{
   /* A REMOVED INPUT IS DORMANT (owner, 26 Aug 26 — see inputDormant): parked
      back in Personal Inputs by unacceptInput, it speaks NOWHERE until
      re-accepted. Before the xweek bypass on purpose — dormancy holds for
-     cross-week seed reads of the loaded week too. */
-  if(inputDormant(inp))return false;
+     cross-week seed reads of the loaded week too.
+     On the OFFICIAL run (published-schedule flagging, §14.3) read through fileAcc so
+     an approved date sees the SIGNED filing — a working-copy 'r' cannot silence a
+     signed warning, and a post-publish-added input reads 'r' (absent when signed).
+     Off the official run the path is the exact prior inputDormant (no id mint). */
+  if(filingActive()?fileAcc(dt,inpId(inp),inp.acc)==='r':inputDormant(inp))return false;
   /* CROSS-WEEK SEED READS BYPASS THE ACCEPTED-ROW DEDUP (weekctx.ts, via
      buildDay's xweek flag). acceptedDay(inp) below finds the row on the
      LOADED week's live DAYS — it has no idea a non-loaded day even exists,

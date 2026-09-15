@@ -29,10 +29,10 @@
    not off the bundle.) */
 import { weekBundle, shiftWeekKey } from './weeks-data'
 import { buildDay } from './events'
-import { INPUTS, inputCoversDate, isPersonal, inputDormant, baseYear } from './inputs'
+import { INPUTS, inputCoversDate, isPersonal, inputDormant, baseYear, inpId } from './inputs'
 import { PEOPLE, isSpecial } from './people'
 import { stashDays, stashSched } from './weekstash'
-import { getWorld } from './world'
+import { getWorld, fileAcc, filingActive } from './world'
 import { dayCurVerIn, daySnapIn } from './publish'
 import { canonicalDiff } from './canonical'
 
@@ -123,8 +123,11 @@ function workedSet(day:any,ix:any){
     /* a REMOVED input (acc 'r' — dormant, owner 26 Aug 26) is the one acc
        state this scan does honour: the mark rides the input itself and
        survives week switches (loadWeek's clear skips it), so "would have
-       auto-landed" is genuinely false for it — autoAcceptInput refuses it. */
-    if(inputDormant(inp))return;
+       auto-landed" is genuinely false for it — autoAcceptInput refuses it.
+       On the OFFICIAL run the 7-day count uses the SIGNED filing (§14.3 trap a): a
+       working-copy 'r' still counts as work on a signed date, and a post-publish add
+       does not. Off it, the exact prior inputDormant path (no id mint). */
+    if(filingActive()?fileAcc(day.dt,inpId(inp),inp.acc)==='r':inputDormant(inp))return;
     if(!inputCoversDate(inp,day.dt))return;
     const id=inp.person;
     if(id&&PEOPLE[id]&&!isSpecial(id))ids.add(id);
@@ -238,4 +241,25 @@ export function windowDiverges(curWeek:any,maxRun:any){
     }
     return false;
   });
+}
+/* THE SIGNED FILING of each stashed neighbour approved day, keyed by date
+   (published-schedule flagging, §14.3 trap a). The loaded week's own filing is
+   installed by validate.ts:withIssuedWeek off the live snapshots; this is its
+   cross-week half, so the official run's 7-day count and neighbour seed reads read
+   the SIGNED filing there too. Same window and resolver as windowDiverges. */
+export function windowFiling(curWeek:any,maxRun:any){
+  const out:any={};
+  const keys=[shiftWeekKey(curWeek,-1),shiftWeekKey(curWeek,1)];
+  if(maxRun>7)keys.push(shiftWeekKey(curWeek,-2));
+  keys.forEach((v:any)=>{
+    const days=stashDays(v), sc=stashSched(v);
+    if(!days||!sc)return;
+    for(let di=0;di<7;di++){
+      if(!(sc.dayOK||{})[di])continue;
+      const ver=dayCurVerIn(sc,di,v), snap=ver!=null?daySnapIn(sc,di,ver,v):null;
+      const dt=days.days[di]&&days.days[di].dt;
+      if(snap&&snap.fil&&dt!=null)out[dt]=snap.fil;
+    }
+  });
+  return out;
 }

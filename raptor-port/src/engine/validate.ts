@@ -5,8 +5,8 @@ import { overlap, hm24, lgT } from './time'
 import { collectEvents, shiftEvHard, scSeatHits, avSeatHits } from './events'
 import { HOOKS } from './hooks'
 import { sansGate, SANS_LABEL } from './avail'
-import { seedRunIn, prevSundaySeed, nextMondaySeed, nextMondayWorked, windowDiverges } from './weekctx'
-import { setWorld } from './world'
+import { seedRunIn, prevSundaySeed, nextMondaySeed, nextMondayWorked, windowDiverges, windowFiling } from './weekctx'
+import { setWorld, setFiling, clearFiling } from './world'
 import { CURWEEK } from './waves'
 import { DAYS } from './data'
 import { keyDay } from './keys'
@@ -1174,14 +1174,18 @@ function withIssuedWeek(fn:any){
      Even with NONE to install, the pass still runs: world='official' makes the
      cross-week seeds resolve neighbour weeks at their signed version (§5.3), which is
      the whole point of the delta-free-loaded-week case (§14.1). */
+  /* the signed filing to honour during the official pass (§14.3): neighbour weeks
+     first (windowFiling), then the loaded week's own approved days override — a date
+     belongs to exactly one week, so there is no real collision, loaded simply wins. */
+  const filing:any=windowFiling(CURWEEK,VCONF.maxRun);
   if(days.length){
-    days.forEach(({di,snap}:any)=>{ d0[di]=DAYS[di]; DAYS[di]=snap.d; Object.assign(changes,snap.c||{}); });
+    days.forEach(({di,snap}:any)=>{ d0[di]=DAYS[di]; DAYS[di]=snap.d; Object.assign(changes,snap.c||{}); if(snap.d.dt!=null)filing[snap.d.dt]=snap.fil||{}; });
     SCHED.changes=changes; SCHED.pending={};
   }
-  const g=snapGlobals(); setWorld('official');
+  const g=snapGlobals(); setWorld('official'); setFiling(filing);
   try{ return fn(); }
   finally{
-    setWorld('working');
+    setWorld('working'); clearFiling();
     days.forEach(({di}:any)=>{ DAYS[di]=d0[di]; });
     SCHED.changes=ch0; SCHED.pending=pd0;
     restoreGlobals(g);

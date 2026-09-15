@@ -18,6 +18,9 @@ import { dayIssuedHTML, dayHTML } from '../ui/html'
 import { DWOPEN } from '../state/view'
 import { stashPut, stashClear } from './weekstash'
 import { verId, dayIso } from './verid'
+import { setWorld, setFiling, clearFiling } from './world'
+import { seedRunIn } from './weekctx'
+import { VCONF } from './rules'
 
 const { MOCKS, weekBundleMock } = vi.hoisted(() => {
   const MOCKS: Record<string, any> = {}
@@ -200,5 +203,41 @@ describe('Phase 3 — cross-week: OFFICIAL judges the loaded Monday against the 
     const w = validate()
     expect(crMon(w, 'waldo')).toBeTruthy()
     expect(crMon(officialWarn(), 'waldo')).toBeTruthy()
+  })
+})
+
+/* PHASE 4 (spec §14.3, Codex V2-002/003). Filing (an input's acc) is a fourth
+   publication axis that day content does not carry. The OFFICIAL run must read each
+   approved date's FROZEN filing (snapshot.fil), so marking an input 'r' (removed)
+   on the working copy does NOT clear a signed warning until it is published. */
+describe('Phase 4 — the OFFICIAL run honours the SIGNED filing state', () => {
+  const leaveFly = (w: any, id: string) => w.all.find((x: any) => x.code === 'LEAVE_FLY' && (x.who || []).includes(id) && x.di === 0)
+
+  it("filing an input 'r' after publish keeps the OFFICIAL warning; WORKING clears it", () => {
+    const WK = wkFor(30)
+    setCurWeek(WK)
+    const dt = (DAYS[0] as any).dt
+    flyMonday('waldo', '06:00', '07:25')                 // waldo is flying Monday
+    INPUTS.push({ person: 'waldo', date: dt, allday: true, type: 'LL', acc: '', remarks: '', mod: '', iid: 'iLL1' })
+    expect(leaveFly(validate(), 'waldo'), 'baseline: on leave + flying').toBeTruthy()
+    sign(0); setDayApproved(0, true)                     // freeze the filing (iLL1 → '')
+    ;(INPUTS.find((i: any) => i.iid === 'iLL1') as any).acc = 'r'   // file it removed on the working copy
+    const w = validate()
+    expect(leaveFly(w, 'waldo'), 'WORKING: removed → the warning clears').toBeFalsy()
+    expect(leaveFly(officialWarn(), 'waldo'), 'OFFICIAL: the signed filing keeps it').toBeTruthy()
+  })
+
+  /* trap (a): the 7-day RUN count reads INPUTS directly (workedSet), not through
+     inpShow — so it must honour the frozen filing too, or the official run count
+     would drop a signed day's work when its input is later filed 'r'. */
+  it('the RUN count (workedSet) honours the signed filing — a working r still counts as signed work', () => {
+    const WK = wkFor(31)
+    const labels = weekDateLabels(shiftWeekKey(WK, -1))
+    setCurWeek(WK)
+    INPUTS.push({ person: 'waldo', date: labels[6], allday: true, type: 'Training', acc: 'r', remarks: '', mod: '', iid: 'iTR1' })
+    expect(seedRunIn(WK, VCONF.maxRun), 'WORKING: removed → not counted').toEqual({})
+    setWorld('official'); setFiling({ [labels[6]]: { iTR1: '' } })       // as signed: active
+    try { expect(seedRunIn(WK, VCONF.maxRun), 'OFFICIAL: signed-active → counts').toEqual({ waldo: 1 }) }
+    finally { setWorld('working'); clearFiling() }
   })
 })
