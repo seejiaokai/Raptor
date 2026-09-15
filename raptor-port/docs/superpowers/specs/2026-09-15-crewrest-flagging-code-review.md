@@ -30,6 +30,30 @@ Two root-cause clusters (owner's "guardrail over a bug cascade"):
 **Confirmed sound by the reviewer:** the synchronous official-pass finally block restores all
 validator globals/DAYS/SCHED/world/filing; no new editing capability; dependency window correct.
 
+## ROUND 3 (Codex GPT-6 Astra, high) — verify the round-2 completions. Verdict REVISE, 4 findings.
+| id | sev | one-line | disposition |
+|----|-----|----------|-------------|
+| R3-001 | high | the ADJACENT-week equivalent of R2-002: windowFiling installed no filing for an unresolvable adjacent approved date → fileAcc fell back to live acc, a live neighbour commitment leaked into the seed | **FIXED** — windowFiling now installs `snap.fil` when resolvable else `{}` for every approved adjacent date. |
+| R3-002 | high | filingDelta/filingKey still collapse absent vs present-empty, so publication + signatures are inconsistent with the now-membership-aware OFFICIAL (a fresh empty-acc commitment on a published day: OFFICIAL excludes it, but no Not-Yet-Signed marker and not publishable) | **FLAGGED (amendment-engine decision)** — see "Owner decisions" below. |
+| R3-003 | med | CRPF-010: DayPop day-detail modal reads live DAYS + WORKING WARN → on an issued day with a hidden fix, the panel says "clean" while the face is flagged | **FLAGGED** — resolve the modal's displayed document (withDaySnap + withOfficialWarn for an approved view day). Intricate; UI-focus. |
+| R3-004 | med | CRPF-011: selectPerson/personWarnDays + warnFocusMap read WORKING → a published-only breach's puck opens no box | **PARTIAL FIX** (warnFocusMap now resolves per displayed day) + **FLAGGED** (selectPerson/personWarnDays needs avail↔view world-resolution — cycle risk). |
+
+## OWNER DECISIONS / remaining work (a coherent "phase 8", none a safety gap in the published flags)
+1. **The filing-membership model (CRPF-003 / R2-001 implications / R3-002) — the ONE root decision.**
+   The amendment engine treats an input ABSENT-at-sign and PRESENT-with-empty-acc identically
+   (filingDelta/filingKey). The flagging OFFICIAL gate + fileAcc now treat them as different
+   (membership-aware). For a fresh unaccepted commitment on a published day this means OFFICIAL
+   correctly excludes it, but the amendment engine sees "no change" (no Not-Yet-Signed marker, not
+   publishable, signatures unaffected). Full consistency needs filingDelta/filingKey to become
+   membership-aware too — which CHANGES publish eligibility + signature binding, and so intersects
+   `[AMEND-SEL-FOLLOWUPS]` (the signature workstream). **Owner's call**, best done WITH that work.
+   (Not patched piecemeal overnight — that would be another half-measure.)
+2. **The deferred §14.3 xweek dedup (CRPF-006 / R2-004).** Pre-existing seed-engine bug; a dedicated
+   careful test-first pass.
+3. **Accessor completeness UI (R3-003 modal, R3-004 selectPerson, 009 trace-world-identity).** Apply
+   the world-resolution + a `data-world`/stable-warning-id to the modal, person-select, and
+   trace/warning refs. Medium, UI-focus — the flags themselves are correct and visible.
+
 ## ROUND 2 (Codex GPT-6 Astra, high) — verify the round-1 fixes. Verdict REVISE, 5 findings.
 Codex: "CRPF-005 and CRPF-007 are incomplete; deferring CRPF-003 and CRPF-006 is not safe as
 categorized." 4 of 5 were completions of my own fixes → FIXED; the 5th (xweek dedup) stays FLAGGED.

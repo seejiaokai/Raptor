@@ -782,7 +782,7 @@ export function warnFocusMap(){
   if(PFOCUS)return null;          // a clicked puck alone uses the ordinary selection highlight
   if(!DWOPEN.size)return null;
   const m=new Map();
-  DWOPEN.forEach((di:any)=>{const g=WARN.byDay[di]; if(!g||!g.warns||!g.warns.length)return;
+  DWOPEN.forEach((di:any)=>{const g=displayedByDay(di); if(!g||!g.warns||!g.warns.length)return;   /* per displayed version (Codex R3-004) */
     const ids=new Set(); let sev='adv';
     g.warns.forEach((w:any)=>{(w.who||[]).forEach((id:any)=>ids.add(id)); if(w.sev==='hard')sev='hard';});
     if(ids.size)m.set(di,{ids,sev});});

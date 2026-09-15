@@ -298,7 +298,11 @@ export function windowFiling(curWeek:any,maxRun:any){
       if(!(sc.dayOK||{})[di])continue;
       const ver=dayCurVerIn(sc,di,v), snap=ver!=null?daySnapIn(sc,di,ver,v):null;
       const dt=days.days[di]&&days.days[di].dt;
-      if(snap&&snap.fil&&dt!=null)out[dt]=snap.fil;
+      /* ALWAYS install a filing entry for an approved adjacent date (Codex R3-001):
+         its signed fingerprint when resolvable, else {} to PROTECT it — issuedDayIn
+         strips such a day's programme, but without an empty filing here fileAcc would
+         fall back to live acc and let a live commitment input leak into the seed. */
+      if(dt!=null)out[dt]=(snap&&snap.d)?(snap.fil||{}):{};
     }
   });
   return out;
