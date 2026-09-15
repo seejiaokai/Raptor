@@ -113,4 +113,24 @@ Note this interacts with item 1 (a leaked signature could wrongly satisfy `daySi
 ## When done
 Run all gates (npm test, tfin, build, test:e2e, smoke:tracker), note that test:e2e's only
 real failures are the 2 pre-existing ones (geometry board flying-line at phone width;
-Leave War tab). Bug-check across Codex + Fable. Then hold for the owner's "merge live".
+Leave War tab). **Drive the real built app end-to-end like a human** (build from scratch →
+lines/timings/rearrange → sign → publish → Plan A/B → publish → switch back → look at what
+carried over) — the shallow smoke test missed item 1; a full playthrough would have caught
+it. Bug-check across Codex + Fable. Then hold for the owner's "merge live".
+
+## SECOND TASK (housekeeping) — owner ask, 15 Sep 26, AFTER the fixes merge
+Do this only once the seven fixes above are merged; it is not part of the feature.
+1. **Delete the handoff screenshots** — `raptor-port/docs/img/plans-selector-followups/`
+   (three images) exist only for THIS handoff; remove the folder once the fixes are done.
+   Also drop their reference lines from this doc (or delete this doc if fully consumed).
+2. **Repo-wide space / redundancy sweep.** Find genuinely dead or redundant material that
+   can be safely removed to save space: orphaned files, unreferenced assets/images, dead
+   CSS, unused exports/functions, stale docs, duplicated content, build cruft.
+   **CAUTION — this repo deliberately KEEPS some dead-looking code** (CLAUDE.md §Stable
+   decisions): e.g. `WEEKS`, `restoreDayVersion`, `openWarns`, `autoSortRoster`,
+   `saDutyIx`/`waveDutyBlock`, `localBackend`, the `probe-bridge` API — kept for
+   reference/tests/probes. Do NOT remove those. For each candidate: grep the whole repo
+   (code, tests, probes, docs, reference) for references, and confirm it isn't a
+   deliberately-retained item, before removing. Land it as its own gated PR, in batches,
+   with gates green — never bundled with the feature fixes. Report what was removed and the
+   space saved; ask the owner before removing anything load-bearing or ambiguous.
