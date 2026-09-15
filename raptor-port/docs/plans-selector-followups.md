@@ -124,6 +124,12 @@ have caught it. The method is NOT a fixed checklist:
 - Then JUDGE what's worth driving by hand: walk those journeys end to end in the real app,
   re-entering states after transitions, checking what's on SCREEN, and exercising the
   cross-cutting ops (undo/redo etc.) at the junctures the change reaches.
+- Test a COMBINATION of sequences, not one happy path — vary the ORDER of operations
+  (sign→switch→publish vs switch→sign→publish, edit-then-undo-then-switch, etc.), because
+  robustness bugs live in the orderings, not the single linear run.
+- But recognise EQUIVALENCE: repeated instances of the same mechanism are one test, not N.
+  Many ALs (AL1, AL2, AL3…) are the same code path — test one representative, don't re-prove
+  every version. Same for "day 2 vs day 3", "Plan C vs Plan D": test the mechanism once.
 - Be token-smart: if an area is robust and this change doesn't touch it, DON'T re-test it.
   Make the scoping visible ("testing X/Y because the change reaches them; not Z, unaffected").
 Bug-check across Codex + Fable. Then hold for the owner's "merge live".
